@@ -26,7 +26,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Freemarker实现 见：https://freemarker.apache.org/
+ * Provides an implementation for the FreeMarker template engine. For more information about the FreeMarker template
+ * engine, please refer to: https://freemarker.apache.org/
  *
  * @author Kimi Liu
  * @since Java 17+

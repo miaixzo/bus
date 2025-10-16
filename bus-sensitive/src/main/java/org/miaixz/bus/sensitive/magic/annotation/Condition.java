@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.sensitive.magic.annotation;
 
-import java.lang.annotation.*;
-
 import org.miaixz.bus.sensitive.metric.ConditionProvider;
 
+import java.lang.annotation.*;
+
 /**
- * 用于自定义策略生效条件的注解
+ * An annotation used to specify a custom condition for a desensitization strategy to be applied.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,9 +43,10 @@ import org.miaixz.bus.sensitive.metric.ConditionProvider;
 public @interface Condition {
 
     /**
-     * 策略生效的条件
+     * Specifies the class that implements the condition logic. The strategy will only be applied if the condition
+     * provided by this class is met.
      *
-     * @return 对应的条件实现
+     * @return The condition implementation class.
      */
     Class<? extends ConditionProvider> value();
 

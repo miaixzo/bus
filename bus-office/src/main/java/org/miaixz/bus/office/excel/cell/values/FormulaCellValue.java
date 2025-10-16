@@ -32,11 +32,11 @@ import org.apache.poi.ss.usermodel.CellType;
 import org.miaixz.bus.office.excel.cell.setters.CellSetter;
 
 /**
- * 公式类型的值
+ * Represents a formula type cell value.
  *
  * <ul>
- * <li>在Sax读取模式时，此对象用于接收单元格的公式以及公式结果值信息</li>
- * <li>在写出模式时，用于定义写出的单元格类型为公式</li>
+ * <li>In SAX read mode, this object is used to receive the cell's formula and formula result information.</li>
+ * <li>In write mode, it is used to define the cell type to be written as a formula.</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -45,40 +45,43 @@ import org.miaixz.bus.office.excel.cell.setters.CellSetter;
 public class FormulaCellValue implements CellValue<String>, CellSetter {
 
     /**
-     * 公式
+     * The formula string.
      */
     private final String formula;
     /**
-     * 结果，使用ExcelWriter时可以不用
+     * The result of the formula. This can be omitted when using ExcelWriter.
      */
     private final Object result;
+    /**
+     * The type of the formula result.
+     */
     private final CellType resultType;
 
     /**
-     * 构造
+     * Constructs a new {@code FormulaCellValue} with the specified formula.
      *
-     * @param formula 公式
+     * @param formula The formula string.
      */
     public FormulaCellValue(final String formula) {
         this(formula, null);
     }
 
     /**
-     * 构造
+     * Constructs a new {@code FormulaCellValue} with the specified formula and result.
      *
-     * @param formula 公式
-     * @param result  结果
+     * @param formula The formula string.
+     * @param result  The result of the formula.
      */
     public FormulaCellValue(final String formula, final Object result) {
         this(formula, result, null);
     }
 
     /**
-     * 构造
+     * Constructs a new {@code FormulaCellValue} with the specified formula, result, and result type.
      *
-     * @param formula    公式
-     * @param result     结果
-     * @param resultType 结果类型
+     * @param formula    The formula string.
+     * @param result     The result of the formula.
+     * @param resultType The type of the formula result.
      */
     public FormulaCellValue(final String formula, final Object result, final CellType resultType) {
         this.formula = formula;
@@ -87,9 +90,9 @@ public class FormulaCellValue implements CellValue<String>, CellSetter {
     }
 
     /**
-     * 获取结果类型
+     * Gets the type of the formula result.
      *
-     * @return 结果类型，{@code null}表示未明确
+     * @return The result type. {@code null} indicates that the type is not explicitly defined.
      */
     public CellType getResultType() {
         return this.resultType;
@@ -106,9 +109,9 @@ public class FormulaCellValue implements CellValue<String>, CellSetter {
     }
 
     /**
-     * 获取结果
+     * Gets the result of the formula.
      *
-     * @return 结果
+     * @return The result.
      */
     public Object getResult() {
         return this.result;

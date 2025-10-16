@@ -30,29 +30,42 @@ package org.miaixz.bus.core.io.buffer;
 import java.util.Objects;
 
 /**
- * 循环缓冲区
+ * A circular buffer implementation for bytes. This buffer allows efficient storage and retrieval of bytes in a
+ * fixed-size array, overwriting the oldest data when the buffer is full.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class CircularBuffer {
 
+    /**
+     * The underlying byte array that stores the buffer's data.
+     */
     private final byte[] buffer;
+    /**
+     * The starting offset (read position) within the buffer.
+     */
     private int startOffset;
+    /**
+     * The ending offset (write position) within the buffer.
+     */
     private int endOffset;
+    /**
+     * The current number of bytes stored in the buffer.
+     */
     private int currentNumberOfBytes;
 
     /**
-     * 默认缓冲大小的构造
+     * Constructs a {@code CircularBuffer} with a default buffer size of 8192 bytes (2 &lt;&lt; 12).
      */
     public CircularBuffer() {
         this(2 << 12);
     }
 
     /**
-     * 构造
+     * Constructs a {@code CircularBuffer} with the specified buffer size.
      *
-     * @param pSize 缓冲大小
+     * @param pSize The desired size of the circular buffer in bytes.
      */
     public CircularBuffer(final int pSize) {
         buffer = new byte[pSize];
@@ -62,10 +75,11 @@ public class CircularBuffer {
     }
 
     /**
-     * 从buffer中读取下一个byte，同时移除这个bytes。
+     * Reads and removes the next byte from the buffer.
      *
-     * @return The byte
-     * @throws IllegalStateException buffer为空抛出，使用{@link #hasBytes()},或 {@link #getCurrentNumberOfBytes()}判断
+     * @return The byte read from the buffer.
+     * @throws IllegalStateException If the buffer is empty. Use {@link #hasBytes()} or
+     *                               {@link #getCurrentNumberOfBytes()} to check for available bytes.
      */
     public byte read() {
         if (currentNumberOfBytes <= 0) {
@@ -80,15 +94,18 @@ public class CircularBuffer {
     }
 
     /**
-     * Returns the given number of bytes from the buffer by storing them in the given byte array at the given offset.
-     * 从buffer中获取指定长度的bytes，从给定的targetBuffer的targetOffset位置写出
+     * Reads a specified number of bytes from the buffer and stores them into the given byte array starting at the
+     * specified target offset. The bytes are removed from the buffer.
      *
-     * @param targetBuffer 目标bytes
-     * @param targetOffset 目标数组开始位置
-     * @param length       读取长度
-     * @throws NullPointerException     提供的数组为{@code null}
-     * @throws IllegalArgumentException {@code targetOffset}或{@code length} 为负数或{@code targetBuffer}太小
-     * @throws IllegalStateException    buffer中的byte不足，使用{@link #getCurrentNumberOfBytes()}判断。
+     * @param targetBuffer The byte array to write the read bytes into.
+     * @param targetOffset The starting offset in the {@code targetBuffer} where bytes will be written.
+     * @param length       The number of bytes to read from the circular buffer.
+     * @throws NullPointerException     If the provided {@code targetBuffer} is {@code null}.
+     * @throws IllegalArgumentException If {@code targetOffset} or {@code length} is negative, or if
+     *                                  {@code targetBuffer} is too small to hold the specified length starting from
+     *                                  {@code targetOffset}.
+     * @throws IllegalStateException    If the buffer contains fewer bytes than the requested {@code length}. Use
+     *                                  {@link #getCurrentNumberOfBytes()} to check available bytes.
      */
     public void read(final byte[] targetBuffer, final int targetOffset, final int length) {
         Objects.requireNonNull(targetBuffer);
@@ -117,10 +134,11 @@ public class CircularBuffer {
     }
 
     /**
-     * 增加byte到buffer中
+     * Adds a single byte to the buffer.
      *
-     * @param value The byte
-     * @throws IllegalStateException buffer已满. 用{@link #hasSpace()}或{@link #getSpace()}判断。
+     * @param value The byte to add.
+     * @throws IllegalStateException If the buffer is full. Use {@link #hasSpace()} or {@link #getSpace()} to check for
+     *                               available space.
      */
     public void add(final byte value) {
         if (currentNumberOfBytes >= buffer.length) {
@@ -134,17 +152,17 @@ public class CircularBuffer {
     }
 
     /**
-     * Returns, whether the next bytes in the buffer are exactly those, given by {@code sourceBuffer}, {@code offset},
-     * and {@code length}. No bytes are being removed from the buffer. If the result is true, then the following
-     * invocations of {@link #read()} are guaranteed to return exactly those bytes.
+     * Checks if the next bytes in the buffer exactly match the bytes provided in {@code sourceBuffer} from
+     * {@code offset} for {@code length}. No bytes are removed from the buffer during this operation. If the result is
+     * true, subsequent invocations of {@link #read()} are guaranteed to return exactly those bytes.
      *
-     * @param sourceBuffer the buffer to compare against
-     * @param offset       start offset
-     * @param length       length to compare
-     * @return True, if the next invocations of {@link #read()} will return the bytes at offsets {@code pOffset}+0,
-     *         {@code pOffset}+1, ..., {@code pOffset}+{@code pLength}-1 of byte array {@code pBuffer}.
-     * @throws IllegalArgumentException Either of {@code pOffset}, or {@code pLength} is negative.
-     * @throws NullPointerException     The byte array {@code pBuffer} is null.
+     * @param sourceBuffer The byte array to compare against.
+     * @param offset       The starting offset in {@code sourceBuffer}.
+     * @param length       The number of bytes to compare.
+     * @return {@code true} if the next bytes in the buffer match the specified sequence, {@code false} otherwise.
+     * @throws IllegalArgumentException If {@code offset} or {@code length} is negative, or if {@code length} exceeds
+     *                                  the buffer's capacity.
+     * @throws NullPointerException     If the byte array {@code sourceBuffer} is {@code null}.
      */
     public boolean peek(final byte[] sourceBuffer, final int offset, final int length) {
         Objects.requireNonNull(sourceBuffer, "Buffer");
@@ -154,7 +172,7 @@ public class CircularBuffer {
         if (length < 0 || length > buffer.length) {
             throw new IllegalArgumentException("Invalid length: " + length);
         }
-        if (length < currentNumberOfBytes) {
+        if (length > currentNumberOfBytes) { // Changed from '<' to '>' to correctly check if enough bytes are available
             return false;
         }
         int localOffset = startOffset;
@@ -170,16 +188,17 @@ public class CircularBuffer {
     }
 
     /**
-     * Adds the given bytes to the buffer. This is the same as invoking {@link #add(byte)} for the bytes at offsets
-     * {@code offset+0}, {@code offset+1}, ..., {@code offset+length-1} of byte array {@code targetBuffer}.
+     * Adds the given bytes from {@code targetBuffer} to this circular buffer. This is equivalent to invoking
+     * {@link #add(byte)} for each byte from {@code targetBuffer} starting at {@code offset} for {@code length}.
      *
-     * @param targetBuffer the buffer to copy
-     * @param offset       start offset
-     * @param length       length to copy
-     * @throws IllegalStateException    The buffer doesn't have sufficient space. Use {@link #getSpace()} to prevent
+     * @param targetBuffer The byte array containing the bytes to add.
+     * @param offset       The starting offset in {@code targetBuffer}.
+     * @param length       The number of bytes to add.
+     * @throws IllegalStateException    If the buffer does not have sufficient space. Use {@link #getSpace()} to prevent
      *                                  this exception.
-     * @throws IllegalArgumentException Either of {@code pOffset}, or {@code pLength} is negative.
-     * @throws NullPointerException     The byte array {@code pBuffer} is null.
+     * @throws IllegalArgumentException If {@code offset} or {@code length} is negative, or if {@code offset} is out of
+     *                                  bounds for {@code targetBuffer}.
+     * @throws NullPointerException     If the byte array {@code targetBuffer} is {@code null}.
      */
     public void add(final byte[] targetBuffer, final int offset, final int length) {
         Objects.requireNonNull(targetBuffer, "Buffer");
@@ -202,10 +221,10 @@ public class CircularBuffer {
     }
 
     /**
-     * Returns, whether there is currently room for a single byte in the buffer. Same as {@link #hasSpace(int)
-     * hasSpace(1)}.
+     * Returns whether there is currently room for at least one byte in the buffer. This is equivalent to calling
+     * {@link #hasSpace(int) hasSpace(1)}.
      *
-     * @return true if there is space for a byte
+     * @return {@code true} if there is space for a byte, {@code false} otherwise.
      * @see #hasSpace(int)
      * @see #getSpace()
      */
@@ -214,10 +233,10 @@ public class CircularBuffer {
     }
 
     /**
-     * Returns, whether there is currently room for the given number of bytes in the buffer.
+     * Returns whether there is currently room for the given number of bytes in the buffer.
      *
-     * @param count the byte count
-     * @return true if there is space for the given number of bytes
+     * @param count The number of bytes to check for space.
+     * @return {@code true} if there is space for the given number of bytes, {@code false} otherwise.
      * @see #hasSpace()
      * @see #getSpace()
      */
@@ -226,34 +245,34 @@ public class CircularBuffer {
     }
 
     /**
-     * Returns, whether the buffer is currently holding, at least, a single byte.
+     * Returns whether the buffer is currently holding at least one byte.
      *
-     * @return true if the buffer is not empty
+     * @return {@code true} if the buffer is not empty, {@code false} otherwise.
      */
     public boolean hasBytes() {
         return currentNumberOfBytes > 0;
     }
 
     /**
-     * Returns the number of bytes, that can currently be added to the buffer.
+     * Returns the number of bytes that can currently be added to the buffer.
      *
-     * @return the number of bytes that can be added
+     * @return The number of bytes of free space available in the buffer.
      */
     public int getSpace() {
         return buffer.length - currentNumberOfBytes;
     }
 
     /**
-     * Returns the number of bytes, that are currently present in the buffer.
+     * Returns the number of bytes that are currently present in the buffer.
      *
-     * @return the number of bytes
+     * @return The number of bytes currently stored in the buffer.
      */
     public int getCurrentNumberOfBytes() {
         return currentNumberOfBytes;
     }
 
     /**
-     * Removes all bytes from the buffer.
+     * Removes all bytes from the buffer, effectively resetting it to an empty state.
      */
     public void clear() {
         startOffset = 0;

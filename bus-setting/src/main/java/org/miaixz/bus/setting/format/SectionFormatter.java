@@ -34,7 +34,7 @@ import org.miaixz.bus.setting.metric.ini.IniSection;
 import org.miaixz.bus.setting.metric.ini.IniSectionService;
 
 /**
- * 将字符串值格式设置为{@link IniSection}
+ * A formatter that parses a string value into an {@link IniSection} object.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,73 +42,95 @@ import org.miaixz.bus.setting.metric.ini.IniSectionService;
 public class SectionFormatter extends AbstractFormatter<IniSection> {
 
     /**
-     * 节点开始字符, {@link Symbol#C_BRACKET_LEFT}
+     * The character that marks the beginning of a section header (e.g., '[').
      */
-    private char head;
+    private final char head;
     /**
-     * 节点结束字符, {@link Symbol#C_BRACKET_RIGHT}
+     * The character that marks the end of a section header (e.g., ']').
      */
-    private char end;
+    private final char end;
 
+    /**
+     * Constructs a SectionFormatter with a specific comment formatter and default section delimiters ('[' and ']').
+     *
+     * @param commentElementFormatter The formatter for parsing comments.
+     */
     public SectionFormatter(CommentFormatter commentElementFormatter) {
         super(commentElementFormatter);
         head = Symbol.C_BRACKET_LEFT;
         end = Symbol.C_BRACKET_RIGHT;
     }
 
+    /**
+     * Constructs a SectionFormatter with default settings.
+     */
     public SectionFormatter() {
         head = Symbol.C_BRACKET_LEFT;
         end = Symbol.C_BRACKET_RIGHT;
     }
 
+    /**
+     * Constructs a SectionFormatter with custom delimiters and a specific comment formatter.
+     *
+     * @param head                    The starting delimiter character.
+     * @param end                     The ending delimiter character.
+     * @param commentElementFormatter The formatter for parsing comments.
+     */
     public SectionFormatter(char head, char end, CommentFormatter commentElementFormatter) {
         super(commentElementFormatter);
         this.head = head;
         this.end = end;
     }
 
+    /**
+     * Constructs a SectionFormatter with custom delimiters and a default comment formatter.
+     *
+     * @param head The starting delimiter character.
+     * @param end  The ending delimiter character.
+     */
     public SectionFormatter(char head, char end) {
         this.head = head;
         this.end = end;
     }
 
     /**
-     * check this value. if this value's first char == {@code HEAD} value, pass.
+     * Checks if the given string value is a section header.
      *
-     * @param value value
-     * @return true if can.
+     * @param value The string to check.
+     * @return {@code true} if the string starts with the configured 'head' character.
      */
     @Override
     public boolean check(String value) {
-        return value.charAt(0) == head;
+        return !value.isEmpty() && value.charAt(0) == head;
     }
 
     /**
-     * this method will not check value, so you should {@link #check(String)} first. However, not checking will not
-     * necessarily report an error, but may result in non-compliance.
+     * Formats the string value into an {@link IniSection}. This method assumes that {@link #check(String)} has already
+     * returned true.
      *
-     * @param value a String value
-     * @param line  line number
-     * @return {@link IniSection}, can not be null.
+     * @param value A string value representing a section header (e.g., "[section_name]").
+     * @param line  The line number where the value originated.
+     * @return The parsed {@link IniSection}, which cannot be null.
+     * @throws InternalException if the section format is invalid.
      */
     @Override
     public IniSection format(String value, int line) {
         int indexOfEnd = value.indexOf(end);
         if (indexOfEnd <= 0) {
             throw new InternalException(
-                    "can not found the end character '" + end + "' for section line " + line + " : " + value);
+                    "Cannot find the end character '" + end + "' for section on line " + line + ": " + value);
         }
 
         String sectionValue = value.substring(0, indexOfEnd + 1).trim();
         String endOfValue = value.substring(indexOfEnd + 1).trim();
         IniComment comment = null;
-        if (endOfValue.length() > 0) {
+        if (!endOfValue.isEmpty()) {
             CommentFormatter commentElementFormatter = getCommentElementFormatter();
             if (commentElementFormatter.check(endOfValue)) {
                 comment = commentElementFormatter.format(endOfValue, line);
             } else {
-                throw new InternalException("can not format the value end of section value (" + line + Symbol.COLON
-                        + (indexOfEnd + 1) + ") :" + endOfValue);
+                throw new InternalException("Cannot format the trailing content after section on line " + line
+                        + " at column " + (indexOfEnd + 1) + ": " + endOfValue);
             }
         }
 

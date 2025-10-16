@@ -27,105 +27,115 @@
 */
 package org.miaixz.bus.starter;
 
-import java.lang.annotation.Annotation;
-import java.util.Map;
-
 import org.miaixz.bus.spring.GeniusBuilder;
 import org.miaixz.bus.starter.annotation.*;
 import org.springframework.context.annotation.Condition;
 import org.springframework.context.annotation.ConditionContext;
 import org.springframework.core.type.AnnotatedTypeMetadata;
 
+import java.lang.annotation.Annotation;
+import java.util.Map;
+
 /**
- * 中心化的复合条件：检查是否有任何一个子功能被启用/激活，从而决定是否需要代理支持。
+ * Centralized composite condition: checks if any sub-feature is enabled/active to determine whether proxy support is
+ * required.
  * <p>
- * 这是一个实现了 Spring {@link Condition} 接口的自定义条件类。 它的核心职责是作为一个“或”逻辑的聚合器，用于判断一个共享的功能（例如代理支持）是否应该被激活。
+ * This class implements Spring's {@link Condition} interface. Its core responsibility is to act as an "OR" logic
+ * aggregator, deciding if a shared functionality (e.g., proxy support) should be activated.
+ *
  * <p>
- * <b>工作逻辑:</b> 该条件会遍历内部 {@link #FEATURES} 注册表中的所有条目。对于每一个条目，它会检查：
+ * <b>Working Logic:</b>
+ *
+ * <p>
+ * This condition iterates through all entries in the internal {@link #FEATURES} registry. For each entry, it checks:
  * <ol>
- * <li>对应的配置文件属性是否为 {@code true}。</li>
- * <li>或者，Spring 容器中是否存在被对应注解所标记的 Bean。</li>
+ * <li>If the corresponding configuration property is set to {@code true}.</li>
+ * <li>Or, if there is any Spring bean annotated with the corresponding {@code @Enable*} annotation.</li>
  * </ol>
- * 只要有**任何一个**功能满足其激活条件，此复合条件就会立即返回 {@code true}。
- * 
+ * As soon as <b>any one</b> feature meets its activation criteria, this composite condition immediately returns
+ * {@code true}.
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class Nexus implements Condition {
 
     /**
-     * 功能注册表：一个静态不可变的 Map，作为所有相关功能的“单一事实来源”。 Key 为属性名，Value 为功能的启用注解。
+     * Feature registry: a static immutable Map serving as the "single source of truth" for all related features. The
+     * key is the property name, and the value is the {@code @Enable*} annotation for that feature.
      */
     private static final Map<String, Class<? extends Annotation>> FEATURES = Map.ofEntries(
-            // 认证授权
+            // Authentication and Authorization
             Map.entry(GeniusBuilder.AUTH, EnableAuth.class),
-            // 服务桥接
+            // Service Bridge
             Map.entry(GeniusBuilder.BRIDGE, EnableBridge.class),
-            // 缓存管理
+            // Cache Management
             Map.entry(GeniusBuilder.CACHE, EnableCache.class),
-            // 跨域资源共享
+            // Cross-Origin Resource Sharing
             Map.entry(GeniusBuilder.CORS, EnableCors.class),
-            // Dubbo 集成
+            // Dubbo Integration
             Map.entry(GeniusBuilder.DUBBO, EnableDubbo.class),
             // Elasticsearch
             Map.entry(GeniusBuilder.ELASTIC, EnableElastic.class),
-            // 健康检查
+            // Health Check
             Map.entry(GeniusBuilder.HEALTH, EnableHealth.class),
-            // 国际化(i18n)
+            // Internationalization (i18n)
             Map.entry(GeniusBuilder.I18N, EnableI18n.class),
-            // 图像处理
+            // Image Processing
             Map.entry(GeniusBuilder.IMAGE, EnableImage.class),
-            // 接口限流
+            // API Rate Limiting
             Map.entry(GeniusBuilder.LIMITER, EnableLimiter.class),
-            // ORM/数据映射
+            // ORM/Data Mapping
             Map.entry(GeniusBuilder.MAPPER, EnableMapper.class),
-            // 消息通知
+            // Message Notification
             Map.entry(GeniusBuilder.NOTIFY, EnableNotify.class),
-            // Office文档处理
+            // Office Document Processing
             Map.entry(GeniusBuilder.OFFICE, EnableOffice.class),
-            // 数据脱敏
+            // Data Desensitization
             Map.entry(GeniusBuilder.SENSITIVE, EnableSensitive.class),
             // WebSocket
             Map.entry(GeniusBuilder.SOCKET, EnableSocket.class),
-            // 分布式存储
+            // Distributed Storage
             Map.entry(GeniusBuilder.STORAGE, EnableStorage.class),
-            // 分布式链路追踪
+            // Distributed Tracing
             Map.entry(GeniusBuilder.TRACER, EnableTracer.class),
-            // 参数校验
+            // Parameter Validation
             Map.entry(GeniusBuilder.VALIDATE, EnableValidate.class),
-            // Vortex网关
+            // Vortex Gateway
             Map.entry(GeniusBuilder.VORTEX, EnableVortex.class),
-            // 请求/响应包装
+            // Request/Response Wrapping
             Map.entry(GeniusBuilder.WRAPPER, EnableWrapper.class));
 
     /**
-     * 评估此条件是否匹配。
+     * Evaluates whether this condition matches.
      *
-     * @param context  条件上下文，提供访问 Environment, BeanFactory 等核心 Spring 组件的能力。
-     * @param metadata 被检查的类或方法的元数据（在此实现中未使用）。
-     * @return 如果 {@link #FEATURES} 注册表中有任何一个功能被激活，则返回 {@code true}；否则返回 {@code false}。
+     * @param context  The condition context, providing access to {@link org.springframework.core.env.Environment},
+     *                 {@link org.springframework.beans.factory.BeanFactory}, and other core Spring components.
+     * @param metadata The metadata of the class or method being checked (unused in this implementation).
+     * @return {@code true} if any feature in the {@link #FEATURES} registry is activated (either by property or
+     *         annotation), {@code false} otherwise.
      */
     @Override
     public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
-        // 遍历功能注册表中的所有条目
+        // Iterate through all entries in the feature registry
         for (Map.Entry<String, Class<? extends Annotation>> feature : FEATURES.entrySet()) {
             String propertyName = feature.getKey();
             Class<? extends Annotation> annotationType = feature.getValue();
 
-            // 检查方式一：配置文件中的属性是否为 "true"
+            // Check method one: Is the property in the configuration file set to "true"?
             if ("true".equalsIgnoreCase(context.getEnvironment().getProperty(propertyName))) {
-                // 短路逻辑：只要有一个满足条件，就立即返回 true，无需再检查其他功能
+                // Short-circuit logic: if one condition is met, immediately return true.
                 return true;
             }
 
-            // 检查方式二：Spring 容器中是否存在被相应注解标记的 Bean
+            // Check method two: Is there any bean in the Spring container annotated with the corresponding annotation?
             if (!context.getBeanFactory().getBeansWithAnnotation(annotationType).isEmpty()) {
-                // 短路逻辑：同样，只要有一个满足，就立即返回 true
+                // Short-circuit logic: if one condition is met, immediately return true.
                 return true;
             }
         }
 
-        // 如果遍历完所有功能，都没有任何一个被激活，则最终返回 false
+        // If no feature is activated after checking all of them, return false.
         return false;
     }
 

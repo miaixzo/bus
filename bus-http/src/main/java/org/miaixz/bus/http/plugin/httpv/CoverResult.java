@@ -42,7 +42,8 @@ import org.miaixz.bus.http.Httpv;
 import org.miaixz.bus.http.Response;
 
 /**
- * 执行结果
+ * Represents the result of an HTTP execution. This interface provides access to the response status, headers, body, and
+ * any errors that may have occurred during the request.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -50,21 +51,23 @@ import org.miaixz.bus.http.Response;
 public interface CoverResult {
 
     /**
-     * 构造一个 Results 此方法构造的 Results 不可设置进度回调，不可进行下载操作！ 若需要，请使用方法： {@link #of(Response, CoverTasks.Executor)}
+     * Creates a {@code CoverResult} from a raw {@link Response}. Note: Results created this way cannot have progress
+     * callbacks set or perform download operations, as they lack a task executor. This is suitable for simple,
+     * synchronous use cases.
      *
-     * @param response Response
-     * @return Results
+     * @param response The raw {@link Response} from the HTTP client.
+     * @return A new {@code CoverResult} instance.
      */
     static CoverResult of(Response response) {
         return of(response, null);
     }
 
     /**
-     * 构造一个 Results
+     * Creates a fully functional {@code CoverResult} from a raw {@link Response} and a task executor.
      *
-     * @param response Response
-     * @param executor 任务执行器, 可通过方法 {@link Httpv#executor()} 获得
-     * @return Results
+     * @param response The raw {@link Response} from the HTTP client.
+     * @param executor The task executor, typically obtained from {@link Httpv#executor()}.
+     * @return A new {@code CoverResult} instance.
      */
     static CoverResult of(Response response, CoverTasks.Executor executor) {
         if (null != response) {
@@ -74,278 +77,383 @@ public interface CoverResult {
     }
 
     /**
-     * @return 执行状态
+     * Retrieves the final state of the HTTP execution.
+     *
+     * @return The execution {@link State}.
      */
     State getState();
 
     /**
-     * @return HTTP状态码
+     * Retrieves the HTTP status code from the response.
+     *
+     * @return The HTTP status code (e.g., 200, 404). Returns 0 if no response was received.
      */
     int getStatus();
 
     /**
-     * @return 是否响应成功，状态码在 [200..300) 之间
+     * Checks if the response was successful (i.e., the status code is in the range [200..299]).
+     *
+     * @return {@code true} if the response was successful, {@code false} otherwise.
      */
     boolean isSuccessful();
 
     /**
-     * @return 响应头
+     * Retrieves the headers from the HTTP response.
+     *
+     * @return The response {@link Headers}.
      */
     Headers getHeaders();
 
     /**
-     * @param name 头名称
-     * @return 响应头
+     * Retrieves all header values for a given name.
+     *
+     * @param name The case-insensitive header name.
+     * @return A list of header values, or an empty list if the header is not present.
      */
     List<String> getHeaders(String name);
 
     /**
-     * @param name 头名称
-     * @return 响应头
+     * Retrieves the first header value for a given name.
+     *
+     * @param name The case-insensitive header name.
+     * @return The header value, or {@code null} if the header is not present.
      */
     String getHeader(String name);
 
     /**
-     * 获取响应报文体长度（从请求头内提取） 在 HEAD 请求时，该方法返回不为 0，但{@link Body#getLength()} 将返回 0
+     * Gets the response body length as specified by the 'Content-Length' header. Note: For HEAD requests, this method
+     * may return a non-zero value, but {@link Body#getLength()} will return 0 because there is no actual body content.
      *
-     * @return 长度
+     * @return The content length in bytes, or 0 if not specified.
      */
     long getContentLength();
 
     /**
-     * @return 响应报文体
+     * Retrieves the response body handler.
+     *
+     * @return The {@link Body} object for consuming the response content.
      */
     Body getBody();
 
     /**
-     * @return 执行中发生的异常
+     * Retrieves the exception that occurred during execution, if any.
+     *
+     * @return The {@link IOException} that caused the failure, or {@code null} if the request was successful.
      */
     IOException getError();
 
     /**
-     * 关闭报文 未对报文体做任何消费时使用，比如只读取报文头
+     * Closes the underlying response. This should be called to release resources, especially if the response body is
+     * not fully consumed.
      *
-     * @return HttpResult
+     * @return This {@code CoverResult} instance.
      */
     CoverResult close();
 
+    /**
+     * Represents the final state of an HTTP task.
+     */
     enum State {
 
         /**
-         * 执行异常
+         * The task failed due to an exception during execution.
          */
         EXCEPTION,
 
         /**
-         * 请求被取消
+         * The task was canceled before completion.
          */
         CANCELED,
 
         /**
-         * 请求已响应
+         * The task completed successfully and a response was received.
          */
         RESPONSED,
 
         /**
-         * 网络超时
+         * The task failed due to a network timeout.
          */
         TIMEOUT,
 
         /**
-         * 网络出错
+         * The task failed due to a network connectivity issue.
          */
         NETWORK_ERROR
 
     }
 
     /**
-     * HTTP响应报文体
+     * An interface for consuming the HTTP response body in various formats.
      */
     interface Body {
 
         /**
-         * @return 消息体转字节流
+         * Converts the response body to a byte stream.
+         *
+         * @return An {@link InputStream} of the response body.
          */
         InputStream toByteStream();
 
         /**
-         * @return 消息体转字节数组
+         * Reads the entire response body into a byte array. This method consumes the body.
+         *
+         * @return A byte array containing the response body.
          */
         byte[] toBytes();
 
         /**
-         * @return ByteString
+         * Reads the entire response body into a ByteString. This method consumes the body.
+         *
+         * @return A {@link ByteString} containing the response body.
          */
         ByteString toByteString();
 
         /**
-         * @return 消息体转字符流
+         * Converts the response body to a character stream using the response's charset.
+         *
+         * @return A {@link Reader} for the response body.
          */
         Reader toCharStream();
 
         /**
-         * @return 消息体转字符串
+         * Reads the entire response body into a string using the response's charset. This method consumes the body.
+         *
+         * @return The response body as a {@link String}.
          */
         String toString();
 
         /**
-         * @return 消息体转 Mapper 对象（不想定义 Java Bean 时使用）
+         * Deserializes the response body into a schemaless map-like object.
+         *
+         * @return A {@link CoverWapper} representing the data structure.
          */
         CoverWapper toWapper();
 
         /**
-         * @return 消息体转 Array 数组（不想定义 Java Bean 时使用）
+         * Deserializes the response body into a schemaless list-like object.
+         *
+         * @return A {@link CoverArray} representing the data structure.
          */
         CoverArray toArray();
 
         /**
-         * @param <T>  目标泛型
-         * @param type 目标类型
-         * @return 报文体Json文本转JavaBean
+         * Deserializes the response body into an object of the specified type.
+         *
+         * @param <T>  The target generic type.
+         * @param type The class of the target object.
+         * @return An instance of the target type.
          */
         <T> T toBean(Class<T> type);
 
         /**
-         * @param <T>  目标泛型
-         * @param type 目标类型
-         * @return 报文体Json文本转JavaBean列表
+         * Deserializes the response body into a list of objects of the specified type.
+         *
+         * @param <T>  The target generic type for list elements.
+         * @param type The class of the elements in the list.
+         * @return A list of instances of the target type.
          */
         <T> List<T> toList(Class<T> type);
 
         /**
-         * @return 媒体类型
+         * Gets the {@link MediaType} of the response body.
+         *
+         * @return The media type.
          */
         MediaType getType();
 
         /**
-         * @return 报文体字节长度
+         * Gets the length of the response body in bytes.
+         *
+         * @return The length of the body.
          */
         long getLength();
 
         /**
-         * 在IO线程执行
+         * Specifies that the next download-related callback should be executed on an I/O thread.
          *
-         * @return Body
+         * @return This {@code Body} instance for chaining.
          */
         Body nextOnIO();
 
         /**
-         * 设置报文体接收进度回调
+         * Sets a progress callback for monitoring the download of the response body.
          *
-         * @param onProcess 进度回调函数
-         * @return Body
+         * @param onProcess The progress callback function.
+         * @return This {@code Body} instance for chaining.
          */
         Body setOnProcess(Callback<Progress> onProcess);
 
         /**
-         * 设置进度回调的步进字节，默认 8K（8192） 表示每接收 stepBytes 个字节，执行一次进度回调
+         * Sets the interval in bytes for progress callback invocations. Defaults to 8KB (8192).
          *
-         * @param stepBytes 步进字节
-         * @return Body
+         * @param stepBytes The step size in bytes.
+         * @return This {@code Body} instance for chaining.
          */
         Body stepBytes(long stepBytes);
 
         /**
-         * 设置进度回调的步进比例 表示每接收 stepRate 比例，执行一次进度回调
+         * Sets the interval as a rate (percentage) for progress callback invocations.
          *
-         * @param stepRate 步进比例
-         * @return Body
+         * @param stepRate The step rate, from 0.0 to 1.0.
+         * @return This {@code Body} instance for chaining.
          */
         Body stepRate(double stepRate);
 
         /**
-         * 设置进度回调忽略响应的Range头信息，即进度回调会从0开始
+         * Configures the progress callback to ignore the HTTP Range header, calculating progress from 0. This is useful
+         * when the total file size is known but the download is of a partial chunk.
          *
-         * @return Body
+         * @return This {@code Body} instance for chaining.
          */
         Body setRangeIgnored();
 
         /**
-         * 下载到指定路径 同一个 Body 对象的 toXXX 类方法只可使用一个并且只能调用一次
+         * Downloads the response body to a file at the specified path.
          *
-         * @param filePath 目标路径
-         * @return 下载过程 #Download
+         * @param filePath The absolute or relative path to the target file.
+         * @return A {@link Downloads} object to control the download process.
          */
         Downloads toFile(String filePath);
 
         /**
-         * 下载到指定文件 同一个 Body 对象的 toXXX 类方法只可使用一个并且只能调用一次
+         * Downloads the response body to the specified file.
          *
-         * @param file 目标文件
-         * @return 下载过程 #Download
+         * @param file The target file.
+         * @return A {@link Downloads} object to control the download process.
          */
         Downloads toFile(File file);
 
         /**
-         * 下载到指定文件夹 同一个 Body 对象的 toXXX 类方法只可使用一个并且只能调用一次
+         * Downloads the response body to the specified directory. The filename is automatically resolved from the
+         * 'Content-Disposition' header or the URL.
          *
-         * @param dirPath 目标目录
-         * @return 下载过程 #Download
+         * @param dirPath The path to the target directory.
+         * @return A {@link Downloads} object to control the download process.
          */
         Downloads toFolder(String dirPath);
 
         /**
-         * 下载到指定文件夹 同一个 Body 对象的 toXXX 类方法只可使用一个并且只能调用一次
+         * Downloads the response body to the specified directory. The filename is automatically resolved from the
+         * 'Content-Disposition' header or the URL.
          *
-         * @param dir 目标目录
-         * @return 下载过程 #Download
+         * @param dir The target directory.
+         * @return A {@link Downloads} object to control the download process.
          */
         Downloads toFolder(File dir);
 
         /**
-         * 缓存自己，缓存后可 重复使用 toXXX 类方法
+         * Caches the response body in memory after the first read. This allows multiple consumption methods (e.g.,
+         * {@code toBytes()}, {@code toString()}) to be called. Note: Progress callbacks cannot be used when caching is
+         * enabled.
          *
-         * @return Body
+         * @return This {@code Body} instance for chaining.
          */
         Body cache();
 
         /**
-         * 关闭报文体 未对报文体做任何消费时使用，比如只读取长度
+         * Closes the response body without consuming it.
          *
-         * @return Body
+         * @return This {@code Body} instance.
          */
         Body close();
 
     }
 
     /**
+     * The concrete implementation of {@link CoverResult}.
+     *
      * @author Kimi Liu
      * @since Java 17+
      */
     class Real implements CoverResult {
 
+        /**
+         * The final state of the task.
+         */
         private State state;
+        /**
+         * The raw HTTP response, null if an error occurred before a response was received.
+         */
         private Response response;
+        /**
+         * The exception that occurred, null if the task was successful.
+         */
         private IOException error;
+        /**
+         * The executor for callbacks and conversions.
+         */
         private CoverTasks.Executor executor;
+        /**
+         * The original HTTP task.
+         */
         private CoverHttp<?> coverHttp;
+        /**
+         * The lazily-initialized body handler.
+         */
         private Body body;
 
+        /**
+         * Constructs a result with a final state (e.g., CANCELED).
+         * 
+         * @param coverHttp The original HTTP task.
+         * @param state     The final state.
+         */
         public Real(CoverHttp<?> coverHttp, State state) {
             this.coverHttp = coverHttp;
             this.state = state;
         }
 
+        /**
+         * Constructs a result from a successful response.
+         * 
+         * @param coverHttp The original HTTP task.
+         * @param response  The raw HTTP response.
+         * @param executor  The task executor.
+         */
         public Real(CoverHttp<?> coverHttp, Response response, CoverTasks.Executor executor) {
             this(coverHttp, executor);
             response(response);
         }
 
+        /**
+         * Constructs a result with an executor, to be populated later.
+         * 
+         * @param coverHttp The original HTTP task.
+         * @param executor  The task executor.
+         */
         public Real(CoverHttp<?> coverHttp, CoverTasks.Executor executor) {
             this.coverHttp = coverHttp;
             this.executor = executor;
         }
 
+        /**
+         * Constructs a result from a failure.
+         * 
+         * @param coverHttp The original HTTP task.
+         * @param state     The failure state.
+         * @param error     The exception that caused the failure.
+         */
         public Real(CoverHttp<?> coverHttp, State state, IOException error) {
             this.coverHttp = coverHttp;
             exception(state, error);
         }
 
+        /**
+         * Sets the result to a failure state.
+         * 
+         * @param state The failure state.
+         * @param error The exception.
+         */
         public void exception(State state, IOException error) {
             this.state = state;
             this.error = error;
         }
 
+        /**
+         * Sets the result to a success state with a response.
+         * 
+         * @param response The raw HTTP response.
+         */
         public void response(Response response) {
             this.state = State.RESPONSED;
             this.response = response;
@@ -403,6 +511,7 @@ public interface CoverResult {
                 try {
                     return Long.parseLong(length);
                 } catch (Exception ignore) {
+                    // Ignore parsing errors
                 }
             }
             return 0;
@@ -421,6 +530,11 @@ public interface CoverResult {
             return error;
         }
 
+        /**
+         * Gets the raw Httpd {@link Response}.
+         *
+         * @return The raw response object.
+         */
         public Response getResponse() {
             return response;
         }

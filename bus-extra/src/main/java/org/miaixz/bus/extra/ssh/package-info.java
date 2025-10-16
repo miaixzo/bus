@@ -23,10 +23,11 @@
  ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Jsch封装，包括端口映射、SFTP封装等，入口为JschKit
+ * Provides an encapsulation for SSH (Secure Shell) operations, including port forwarding and SFTP functionalities. The
+ * main entry point for these utilities is the {@link org.miaixz.bus.extra.ssh.JschKit} class.
  *
  * @author Kimi Liu
  * @since Java 17+

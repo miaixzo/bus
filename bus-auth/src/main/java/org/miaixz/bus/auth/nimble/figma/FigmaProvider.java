@@ -50,27 +50,52 @@ import org.miaixz.bus.auth.magic.Material;
 import org.miaixz.bus.auth.nimble.AbstractProvider;
 
 /**
- * Figma 登录
+ * Figma login provider.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class FigmaProvider extends AbstractProvider {
 
+    /**
+     * Constructs a {@code FigmaProvider} with the specified context.
+     *
+     * @param context the authentication context
+     */
     public FigmaProvider(Context context) {
         super(context, Registry.FIGMA);
     }
 
+    /**
+     * Constructs a {@code FigmaProvider} with the specified context and cache.
+     *
+     * @param context the authentication context
+     * @param cache   the cache implementation
+     */
     public FigmaProvider(Context context, CacheX cache) {
         super(context, Registry.FIGMA, cache);
     }
 
+    /**
+     * Returns the authorization URL with a {@code state} parameter. The {@code state} will be included in the
+     * authorization callback.
+     *
+     * @param state the parameter to verify the authorization process, which can prevent CSRF attacks
+     * @return the authorization URL
+     */
     @Override
     public String authorize(String state) {
         return Builder.fromUrl(super.authorize(state))
                 .queryParam("scope", this.getScopes(Symbol.COMMA, true, getDefaultScopes(FigmaScope.values()))).build();
     }
 
+    /**
+     * Retrieves the access token from Figma's authorization server.
+     *
+     * @param callback the callback object containing the authorization code
+     * @return the {@link AuthToken} containing access token details
+     * @throws AuthorizedException if parsing the response fails or required token information is missing
+     */
     @Override
     public AuthToken getAccessToken(Callback callback) {
         Map<String, String> headers = new HashMap<>(3);
@@ -106,6 +131,13 @@ public class FigmaProvider extends AbstractProvider {
         }
     }
 
+    /**
+     * Refreshes the access token (renews its validity).
+     *
+     * @param authToken the token information returned after successful login
+     * @return a {@link Message} containing the refreshed token information
+     * @throws AuthorizedException if parsing the response fails or an error occurs during token refresh
+     */
     @Override
     public Message refresh(AuthToken authToken) {
         Map<String, String> headers = new HashMap<>(3);
@@ -138,12 +170,25 @@ public class FigmaProvider extends AbstractProvider {
         }
     }
 
+    /**
+     * Constructs the refresh token URL for Figma.
+     *
+     * @param refreshToken the refresh token
+     * @return the refresh token URL
+     */
     @Override
     protected String refreshTokenUrl(String refreshToken) {
         return Builder.fromUrl(this.complex.refresh()).queryParam("client_id", context.getAppKey())
                 .queryParam("client_secret", context.getAppSecret()).queryParam("refresh_token", refreshToken).build();
     }
 
+    /**
+     * Retrieves user information from Figma's user info endpoint.
+     *
+     * @param authToken the {@link AuthToken} obtained after successful authorization
+     * @return {@link Material} containing the user's information
+     * @throws AuthorizedException if parsing the response fails or required user information is missing
+     */
     @Override
     public Material getUserInfo(AuthToken authToken) {
         Map<String, String> headers = new HashMap<>(3);
@@ -173,9 +218,10 @@ public class FigmaProvider extends AbstractProvider {
     }
 
     /**
-     * 校验响应结果
+     * Checks the response content for errors.
      *
-     * @param object 接口返回的结果
+     * @param object the response map to check
+     * @throws AuthorizedException if the response contains an error or message indicating failure
      */
     private void checkResponse(Map<String, Object> object) {
         if (object.containsKey("error")) {

@@ -39,10 +39,11 @@ import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.logger.Logger;
 
 /**
- * 缓存模块工厂类
+ * A singleton factory for initializing and providing access to cache components.
  * <p>
- * 负责初始化和管理缓存相关的核心组件，包括Complex、SingleCacheReader和MultiCacheReader。 采用单例模式，通过ModuleHolder确保全局唯一实例，线程安全。
- * 提供静态的instance方法以初始化并返回Complex实例。
+ * This class orchestrates the setup of the caching infrastructure, including the {@link Complex} facade, {@link Manage}
+ * for cache instances, and various readers. It follows the initialization-on-demand holder idiom to ensure thread-safe,
+ * lazy instantiation of the singleton.
  * </p>
  *
  * @author Kimi Liu
@@ -51,73 +52,71 @@ import org.miaixz.bus.logger.Logger;
 public class Module {
 
     /**
-     * 缓存复合操作实例
+     * The primary facade for all cache operations.
      */
     private Complex complex;
 
     /**
-     * 缓存上下文配置
+     * The configuration context for the cache module.
      */
     private Context context;
 
     /**
-     * 缓存映射集合，键为缓存名称，值为缓存实例
+     * An unmodifiable map of named cache instances.
      */
     private Map<String, CacheX> caches;
 
     /**
-     * 缓存命中率统计组件
+     * The component for tracking cache performance metrics.
      */
     private Metrics metrics;
 
     /**
-     * 单键缓存读取器
+     * The reader responsible for handling single-key cache lookups.
      */
     private AbstractReader singleCacheReader;
 
     /**
-     * 多键缓存读取器
+     * The reader responsible for handling multi-key batch cache lookups.
      */
     private AbstractReader multiCacheReader;
 
     /**
-     * 缓存管理器
+     * The manager for all registered cache instances.
      */
     private Manage manage;
 
     /**
-     * 初始化状态标志，true表示已初始化，false表示未初始化
+     * A flag indicating whether the module has been initialized.
      */
     private boolean initialized;
 
     /**
-     * 私有构造方法，防止外部实例化
+     * Private constructor to enforce the singleton pattern.
      */
     private Module() {
         this.initialized = false;
     }
 
     /**
-     * 获取Module工厂的单例实例
-     * <p>
-     * 使用ModuleHolder实现延迟加载的单例模式，确保线程安全。
-     * </p>
+     * Retrieves the singleton instance of the {@code Module}.
      *
-     * @return Module工厂实例
+     * @return The singleton {@code Module} instance.
      */
     private static Module getInstance() {
         return ModuleHolder.INSTANCE;
     }
 
     /**
-     * 初始化缓存工厂并返回Complex实例
+     * Initializes the cache module with the given configuration and returns the operational facade.
      * <p>
-     * 静态方法，确保只初始化一次，线程安全。如果已初始化，直接返回Complex实例。
+     * This method is synchronized to ensure that the initialization process is performed only once. On subsequent
+     * calls, it returns the already-initialized {@link Complex} instance without re-initializing.
      * </p>
      *
-     * @param config 缓存配置对象
-     * @return Complex缓存复合实例
-     * @throws IllegalArgumentException 如果配置为空或缓存映射为空
+     * @param config The cache configuration object ({@link Context}).
+     * @return The fully configured {@link Complex} instance, ready for use.
+     * @throws IllegalArgumentException if the configuration is null or contains no cache instances.
      */
     public static synchronized Complex instance(Context config) {
         Module module = getInstance();
@@ -130,39 +129,40 @@ public class Module {
     }
 
     /**
-     * 初始化所有缓存组件
+     * Performs the one-time initialization of all cache components.
      * <p>
-     * 包括缓存映射、Hitting、SingleCacheReader、MultiCacheReader和Complex实例。
+     * This method sets up the cache map, metrics, readers, manager, and the main {@code Complex} object. It is called
+     * internally by the {@link #instance(Context)} method.
      * </p>
      *
-     * @param config 缓存配置对象
-     * @throws IllegalArgumentException 如果配置为空或缓存映射为空
+     * @param config The cache configuration object.
+     * @throws IllegalArgumentException if the configuration is null or the cache map is empty.
      */
     private void initialize(Context config) {
         Assert.isTrue(null != config, "context param can not be null.");
         Assert.isTrue(CollKit.isNotEmpty(config.getCaches()), "caches param can not be empty.");
 
         this.context = config;
-        // 初始化缓存映射
+        // Initialize cache map
         caches = Collections.unmodifiableMap(new HashMap<>(config.getCaches()));
         Logger.debug("Initialized caches with size: {}", caches.size());
 
-        // 初始化 Hitting
-        metrics = config.getHitting();
-        Logger.debug("Initialized hitting: {}", metrics != null ? metrics.getClass().getSimpleName() : "null");
+        // Initialize Metrics
+        metrics = config.getMetrics();
+        Logger.debug("Initialized metrics: {}", metrics != null ? metrics.getClass().getSimpleName() : "null");
 
-        // 初始化 Reader 实例
+        // Initialize Reader instances
         singleCacheReader = new SingleCacheReader();
         multiCacheReader = new MultiCacheReader();
         Logger.debug("Initialized singleCacheReader and multiCacheReader");
 
-        // 初始化 Manage 实例
+        // Initialize Manage instance
         manage = new Manage(caches, metrics);
         Logger.debug("Initialized manage");
 
-        // 创建 Complex 实例
+        // Create Complex instance
         complex = new Complex();
-        // 设置 Complex 实例的依赖
+        // Set dependencies for the Complex instance
         complex.setContext(context);
         complex.setManage(manage);
         complex.setSingleCacheReader(singleCacheReader);
@@ -171,11 +171,11 @@ public class Module {
     }
 
     /**
-     * 获取指定名称的缓存实例
+     * Retrieves a named cache instance.
      *
-     * @param name 缓存名称
-     * @return 缓存实例
-     * @throws IllegalStateException 如果缓存工厂未初始化
+     * @param name The name of the cache to retrieve.
+     * @return The {@link CacheX} instance associated with the given name.
+     * @throws IllegalStateException if the cache module has not been initialized.
      */
     public CacheX getCache(String name) {
         if (caches == null) {
@@ -191,20 +191,21 @@ public class Module {
     }
 
     /**
-     * 获取Hitting实例
+     * Retrieves the cache metrics component.
      *
-     * @return Hitting实例的Optional包装
+     * @return An {@link Optional} containing the {@link Metrics} instance, or an empty Optional if it is not
+     *         configured.
      */
     public Optional<Metrics> getHitting() {
-        Logger.debug("Retrieved hitting: {}", metrics != null ? metrics.getClass().getSimpleName() : "null");
+        Logger.debug("Retrieved metrics: {}", metrics != null ? metrics.getClass().getSimpleName() : "null");
         return Optional.ofNullable(metrics);
     }
 
     /**
-     * 获取单缓存读取器
+     * Retrieves the reader for single-key cache operations.
      *
-     * @return 单缓存读取器实例
-     * @throws IllegalStateException 如果缓存工厂未初始化
+     * @return The configured {@link AbstractReader} for single lookups.
+     * @throws IllegalStateException if the cache module has not been initialized.
      */
     public AbstractReader getSingleCacheReader() {
         if (singleCacheReader == null) {
@@ -216,10 +217,10 @@ public class Module {
     }
 
     /**
-     * 获取多缓存读取器
+     * Retrieves the reader for multi-key cache operations.
      *
-     * @return 多缓存读取器实例
-     * @throws IllegalStateException 如果缓存工厂未初始化
+     * @return The configured {@link AbstractReader} for batch lookups.
+     * @throws IllegalStateException if the cache module has not been initialized.
      */
     public AbstractReader getMultiCacheReader() {
         if (multiCacheReader == null) {
@@ -231,15 +232,15 @@ public class Module {
     }
 
     /**
-     * 单例持有者类，用于延迟加载Module实例
+     * A static inner class that holds the singleton instance of {@code Module}.
      * <p>
-     * 使用静态内部类实现线程安全的延迟初始化单例模式
+     * This pattern ensures lazy and thread-safe initialization without using explicit synchronization.
      * </p>
      */
     private static class ModuleHolder {
 
         /**
-         * Module单例实例
+         * The singleton instance of Module.
          */
         private static final Module INSTANCE = new Module();
     }

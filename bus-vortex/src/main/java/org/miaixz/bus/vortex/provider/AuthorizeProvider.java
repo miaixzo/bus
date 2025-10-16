@@ -27,25 +27,96 @@
 */
 package org.miaixz.bus.vortex.provider;
 
+import org.miaixz.bus.core.basic.entity.Authorize;
+import org.miaixz.bus.core.basic.entity.Message;
+import org.miaixz.bus.core.basic.normal.Consts;
+import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.xyz.ObjectKit;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.magic.Delegate;
+import org.miaixz.bus.vortex.magic.ErrorCode;
 import org.miaixz.bus.vortex.magic.Principal;
 
 /**
- * 访问授权认证接口，定义授权认证相关的功能
+ * Interface for access authorization providers, defining methods for authentication and authorization operations.
+ * Implementations of this interface handle validation of credentials such as tokens, API keys, or licenses, and return
+ * the result of the authorization process.
  *
- * @author Justubborn
+ * @author Kimi Liu
  * @since Java 17+
  */
 public interface AuthorizeProvider {
 
     /**
-     * 执行认证操作，验证授权主体并返回认证结果
+     * Validates the provided principal and performs the authorization process. This method checks the principal's type
+     * and delegates to the appropriate authorization method (e.g., token, API key, or license). If the principal is
+     * invalid or the type is unsupported, an appropriate error is returned.
      *
-     * @param principal 授权主体，包含认证所需的信息
-     * @return Delegate 认证结果对象，默认为空 Delegate 实例
+     * @param principal The {@link Principal} object containing authentication details, such as a token, API key, or
+     *                  license.
+     * @return A {@link Delegate} object encapsulating the authorization result, including a {@link Message} with status
+     *         information and an optional {@link Authorize} object with authorization details.
+     * @throws ValidateException If the principal is null or empty, with error code {@link ErrorCode#_100806}.
      */
     default Delegate authorize(Principal principal) {
-        return new Delegate();
+        // Validate the principal object itself.
+        if (ObjectKit.isEmpty(principal)) {
+            Logger.warn("Authorization failed: The principal entity is null or empty.");
+            throw new ValidateException(ErrorCode._100806);
+        }
+
+        // Default workflow: Dispatch based on credential type.
+        if (Consts.ONE.equals(principal.getType())) {
+            return this.token(principal);
+        }
+        if (Consts.TWO.equals(principal.getType())) {
+            return this.apiKey(principal);
+        }
+
+        // The default implementation does not handle other types (e.g., type '3' for licenses).
+        // To support them, the user must override this `authorize` method.
+        Logger.warn(
+                "==>     Provider: Unsupported or unhandled principal type: {}. "
+                        + "Override the 'authorize' method in your provider to handle custom types.",
+                principal.getType());
+        return Delegate.builder()
+                .message(
+                        Message.builder().errcode(ErrorCode._100802.getKey())
+                                .errmsg("Unsupported credential type: " + principal.getType()).build())
+                .build();
+    }
+
+    /**
+     * Validates a token-based principal. Users should override this method to implement their specific token validation
+     * logic (e.g., JWT parsing, database lookup, Redis cache check).
+     * <p>
+     * The default implementation always returns a successful result, effectively "skipping" the validation. This is
+     * useful for deployments that do not use token-based authentication.
+     *
+     * @param principal The {@link Principal} object containing the token in its {@code key} field.
+     * @return A {@link Delegate} object containing the authorization result.
+     */
+    default Delegate token(Principal principal) {
+        Logger.debug("Executing default `token` method. Returning success without validation.");
+        return Delegate.builder().message(
+                Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build())
+                .authorize(Authorize.builder().build()).build();
+    }
+
+    /**
+     * Validates an API key-based principal. Users should override this method to implement their specific API key
+     * validation logic (e.g., database lookup).
+     * <p>
+     * The default implementation always returns a successful result, effectively "skipping" the validation.
+     *
+     * @param principal The {@link Principal} object containing the API key in its {@code key} field.
+     * @return A {@link Delegate} object containing the authorization result.
+     */
+    default Delegate apiKey(Principal principal) {
+        Logger.debug("Executing default `apiKey` method. Returning success without validation.");
+        return Delegate.builder().message(
+                Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build())
+                .authorize(Authorize.builder().build()).build();
     }
 
 }

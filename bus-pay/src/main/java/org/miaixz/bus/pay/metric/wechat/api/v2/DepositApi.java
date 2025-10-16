@@ -30,7 +30,7 @@ package org.miaixz.bus.pay.metric.wechat.api.v2;
 import org.miaixz.bus.pay.Matcher;
 
 /**
- * 微信支付 v2 版本-支付押金相关接口
+ * WeChat Pay V2 API interfaces related to deposits.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,64 +38,70 @@ import org.miaixz.bus.pay.Matcher;
 public enum DepositApi implements Matcher {
 
     /**
-     * 支付押金（JSAPI、APP 下单）
+     * Pay deposit (JSAPI, APP order).
      */
-    PAY("/deposit/unifiedorder", "支付押金（JSAPI、APP 下单）"),
+    PAY("/deposit/unifiedorder", "Pay deposit (JSAPI, APP order)"),
 
     /**
-     * 支付押金（人脸支付）
+     * Pay deposit (face payment).
      */
-    FACE_PAY("/deposit/facepay", "支付押金（人脸支付）"),
+    FACE_PAY("/deposit/facepay", "Pay deposit (face payment)"),
 
     /**
-     * 支付押金（付款码支付）
+     * Pay deposit (micropay).
      */
-    MICRO_PAY("/deposit/micropay", "支付押金（付款码支付）"),
+    MICRO_PAY("/deposit/micropay", "Pay deposit (micropay)"),
 
     /**
-     * 查询订单
+     * Query order.
      */
-    ORDER_QUERY("/deposit/orderquery", "查询订单"),
+    ORDER_QUERY("/deposit/orderquery", "Query order"),
 
     /**
-     * 撤销订单
+     * Reverse order.
      */
-    REVERSE("/deposit/reverse", "撤销订单"),
+    REVERSE("/deposit/reverse", "Reverse order"),
 
     /**
-     * 消费押金
+     * Consume deposit.
      */
-    CONSUME("/deposit/consume", "消费押金"),
+    CONSUME("/deposit/consume", "Consume deposit"),
 
     /**
-     * 申请退款
+     * Apply for refund.
      */
-    REFUND("/deposit/refund", "申请退款"),
+    REFUND("/deposit/refund", "Apply for refund"),
 
     /**
-     * 查询退款
+     * Query refund.
      */
-    REFUND_QUERY("deposit/refundquery", "查询退款");
+    REFUND_QUERY("deposit/refundquery", "Query refund");
 
     /**
-     * 接口方法
+     * The API method.
      */
     private final String method;
 
     /**
-     * 接口描述
+     * The API description.
      */
     private final String desc;
 
+    /**
+     * Constructs a new DepositApi enum.
+     *
+     * @param method The API method.
+     * @param desc   The API description.
+     */
     DepositApi(String method, String desc) {
         this.method = method;
         this.desc = desc;
     }
 
     /**
-     * 交易类型
+     * Gets the transaction type.
      *
-     * @return the string
+     * @return The transaction type.
      */
     @Override
     public String type() {
@@ -103,9 +109,9 @@ public enum DepositApi implements Matcher {
     }
 
     /**
-     * 类型描述
+     * Gets the type description.
      *
-     * @return the string
+     * @return The type description.
      */
     @Override
     public String desc() {
@@ -113,9 +119,9 @@ public enum DepositApi implements Matcher {
     }
 
     /**
-     * 接口方法
+     * Gets the API method.
      *
-     * @return the string
+     * @return The API method.
      */
     @Override
     public String method() {

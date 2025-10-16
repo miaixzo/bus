@@ -44,7 +44,7 @@ import org.miaixz.bus.core.xyz.FileKit;
 import org.miaixz.bus.core.xyz.IoKit;
 
 /**
- * CSV文件读取器，参考：FastCSV
+ * CSV file reader, inspired by FastCSV.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -54,71 +54,75 @@ public class CsvReader extends CsvBaseReader implements Iterable<CsvRow>, Closea
     @Serial
     private static final long serialVersionUID = 2852283180950L;
 
+    /**
+     * The reader for the CSV data.
+     */
     private final Reader reader;
 
     /**
-     * 构造，使用默认配置项
+     * Constructs a new {@code CsvReader} with default configuration.
      */
     public CsvReader() {
         this(null);
     }
 
     /**
-     * 构造
+     * Constructs a new {@code CsvReader} with the given configuration.
      *
-     * @param config 配置项
+     * @param config The CSV read configuration. May be {@code null} for default configuration.
      */
     public CsvReader(final CsvReadConfig config) {
         this((Reader) null, config);
     }
 
     /**
-     * 构造
+     * Constructs a new {@code CsvReader} for the specified CSV file path with default character set.
      *
-     * @param file   CSV文件路径，null表示不设置路径
-     * @param config 配置项，null表示默认配置
+     * @param file   The CSV file. May be {@code null} if the reader is to be set later.
+     * @param config The CSV read configuration. May be {@code null} for default configuration.
      */
     public CsvReader(final File file, final CsvReadConfig config) {
         this(file, Charset.UTF_8, config);
     }
 
     /**
-     * 构造
+     * Constructs a new {@code CsvReader} for the specified CSV file path with default character set.
      *
-     * @param path   CSV文件路径，null表示不设置路径
-     * @param config 配置项，null表示默认配置
+     * @param path   The CSV file path. May be {@code null} if the reader is to be set later.
+     * @param config The CSV read configuration. May be {@code null} for default configuration.
      */
     public CsvReader(final Path path, final CsvReadConfig config) {
         this(path, Charset.UTF_8, config);
     }
 
     /**
-     * 构造
+     * Constructs a new {@code CsvReader} for the specified CSV file with the given character set and configuration.
      *
-     * @param file    CSV文件路径，null表示不设置路径
-     * @param charset 编码
-     * @param config  配置项，null表示默认配置
+     * @param file    The CSV file. May be {@code null} if the reader is to be set later.
+     * @param charset The character set to use for reading the file.
+     * @param config  The CSV read configuration. May be {@code null} for default configuration.
      */
     public CsvReader(final File file, final java.nio.charset.Charset charset, final CsvReadConfig config) {
         this(FileKit.getReader(file, charset), config);
     }
 
     /**
-     * 构造
+     * Constructs a new {@code CsvReader} for the specified CSV file path with the given character set and
+     * configuration.
      *
-     * @param path    CSV文件路径，null表示不设置路径
-     * @param charset 编码
-     * @param config  配置项，null表示默认配置
+     * @param path    The CSV file path. May be {@code null} if the reader is to be set later.
+     * @param charset The character set to use for reading the file.
+     * @param config  The CSV read configuration. May be {@code null} for default configuration.
      */
     public CsvReader(final Path path, final java.nio.charset.Charset charset, final CsvReadConfig config) {
         this(PathResolve.getReader(path, charset), config);
     }
 
     /**
-     * 构造
+     * Constructs a new {@code CsvReader} with the given {@link Reader} and configuration.
      *
-     * @param reader {@link Reader}，null表示不设置默认reader
-     * @param config 配置项，null表示默认配置
+     * @param reader The {@link Reader} to read CSV data from. May be {@code null} if not set initially.
+     * @param config The CSV read configuration. May be {@code null} for default configuration.
      */
     public CsvReader(final Reader reader, final CsvReadConfig config) {
         super(config);
@@ -126,29 +130,31 @@ public class CsvReader extends CsvBaseReader implements Iterable<CsvRow>, Closea
     }
 
     /**
-     * 读取CSV文件，此方法只能调用一次 调用此方法的前提是构造中传入文件路径或Reader
+     * Reads the entire CSV file into a {@link CsvData} object. This method can only be called once. This method
+     * requires that a file path or {@link Reader} has been provided during construction.
      *
-     * @return {@link CsvData}，包含数据列表和行信息
-     * @throws InternalException IO异常
+     * @return A {@link CsvData} object containing the data list and row information.
+     * @throws InternalException If an I/O error occurs during reading.
      */
     public CsvData read() throws InternalException {
         return read(this.reader, false);
     }
 
     /**
-     * 读取CSV数据，此方法只能调用一次 调用此方法的前提是构造中传入文件路径或Reader
+     * Reads CSV data and processes each row using the provided {@link ConsumerX}. This method can only be called once.
+     * This method requires that a file path or {@link Reader} has been provided during construction.
      *
-     * @param rowHandler 行处理器，用于一行一行的处理数据
-     * @throws InternalException IO异常
+     * @param rowHandler The row handler to process each {@link CsvRow}.
+     * @throws InternalException If an I/O error occurs during reading.
      */
     public void read(final ConsumerX<CsvRow> rowHandler) throws InternalException {
         read(this.reader, false, rowHandler);
     }
 
     /**
-     * 根据Reader创建{@link Stream}，以便使用stream方式读取csv行
+     * Creates a {@link Stream} from the underlying {@link Reader} to allow for stream-based CSV row processing.
      *
-     * @return {@link Stream}
+     * @return A {@link Stream} of {@link CsvRow} objects.
      */
     public Stream<CsvRow> stream() {
         return StreamSupport.stream(spliterator(), false).onClose(this::close);

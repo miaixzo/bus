@@ -28,14 +28,12 @@
 package org.miaixz.bus.starter.sensitive;
 
 import java.io.InputStream;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.stream.Collectors;
 
 import org.miaixz.bus.base.advice.BaseAdvice;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -50,7 +48,9 @@ import org.springframework.http.converter.HttpMessageConverter;
 import jakarta.annotation.Resource;
 
 /**
- * 请求请求处理类(目前仅仅对requestbody有效) 对加了@P的方法的数据进行解密密操作
+ * A {@link org.springframework.web.servlet.mvc.method.annotation.RequestBodyAdvice} implementation that handles the
+ * decryption of incoming request bodies for methods or classes annotated with {@link Sensitive}. This advice is
+ * specifically effective for {@code @RequestBody} annotated parameters.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -59,115 +59,129 @@ public class RequestBodyAdvice extends BaseAdvice
         implements org.springframework.web.servlet.mvc.method.annotation.RequestBodyAdvice {
 
     @Resource
-    SensitiveProperties properties;
+    private SensitiveProperties properties;
 
     /**
-     * 首次调用,以确定是否应用此拦截.
+     * Determines if this advice should be applied to the given method parameter.
      *
-     * @param parameter     方法参数
-     * @param type          目标类型,不一定与方法相同 参数类型,例如 {@code HttpEntity<String>}.
-     * @param converterType 转换器类型
-     * @return true/false 是否应该调用此拦截
+     * @param parameter     The method parameter.
+     * @param targetType    The target type, not necessarily the same as the method parameter type.
+     * @param converterType The selected converter type.
+     * @return {@code true} if this advice should be applied, {@code false} otherwise.
      */
     @Override
     public boolean supports(
             MethodParameter parameter,
-            Type type,
+            Type targetType,
             Class<? extends HttpMessageConverter<?>> converterType) {
-        Annotation[] annotations = parameter.getDeclaringClass().getAnnotations();
-        if (ArrayKit.isNotEmpty(annotations)) {
-            for (Annotation annotation : annotations) {
-                if (annotation instanceof Sensitive) {
-                    return true;
-                }
-            }
+        // Check for @Sensitive annotation on the class
+        if (parameter.getDeclaringClass().isAnnotationPresent(Sensitive.class)) {
+            return true;
         }
+        // Check for @Sensitive annotation on the method
         return parameter.getMethod().isAnnotationPresent(Sensitive.class);
     }
 
     /**
-     * 在读取和转换请求体之前调用.
+     * Invoked before the request body is read and converted.
+     * <p>
+     * If decryption is enabled via the {@link Sensitive} annotation, this method wraps the original
+     * {@link HttpInputMessage} with a custom implementation that decrypts the body on the fly.
+     * </p>
      *
-     * @param inputMessage  HTTP输入消息
-     * @param parameter     方法参数
-     * @param type          目标类型,不一定与方法相同 参数类型,例如 {@code HttpEntity<String>}.
-     * @param converterType 转换器类型
-     * @return 输入请求或新实例, 永远不会 {@code null}
+     * @param inputMessage  The HTTP input message.
+     * @param parameter     The method parameter.
+     * @param targetType    The target type for the conversion.
+     * @param converterType The selected converter type.
+     * @return The original or a new {@link HttpInputMessage} instance; never {@code null}.
      */
     @Override
     public HttpInputMessage beforeBodyRead(
             HttpInputMessage inputMessage,
             MethodParameter parameter,
-            Type type,
+            Type targetType,
             Class<? extends HttpMessageConverter<?>> converterType) {
         if (ObjectKit.isNotEmpty(this.properties) && !this.properties.isDebug()) {
             try {
-                final Sensitive sensitive = parameter.getMethod().getAnnotation(Sensitive.class);
+                final Sensitive sensitive = parameter.getMethodAnnotation(Sensitive.class);
                 if (ObjectKit.isEmpty(sensitive)) {
                     return inputMessage;
                 }
 
-                // 数据解密
-                if (Builder.ALL.equals(sensitive.value()) || Builder.SAFE.equals(sensitive.value())
+                // Decrypt the data if the stage is 'ALL' or 'IN'
+                if ((Builder.ALL.equals(sensitive.value()) || Builder.SAFE.equals(sensitive.value()))
                         && (Builder.ALL.equals(sensitive.stage()) || Builder.IN.equals(sensitive.stage()))) {
-                    inputMessage = new InputMessage(inputMessage, this.properties.getDecrypt().getKey(),
+                    return new InputMessage(inputMessage, this.properties.getDecrypt().getKey(),
                             this.properties.getDecrypt().getType(), Charset.DEFAULT_UTF_8);
                 }
             } catch (Exception e) {
-                Logger.error("Internal processing failure:" + e.getMessage());
+                Logger.error("Internal processing failure during request body decryption", e);
             }
         }
         return inputMessage;
     }
 
     /**
-     * 在请求体转换为对象之后调用第三个(也是最后一个).
+     * Invoked after the request body has been converted to an object.
      *
-     * @param body          在调用第一个通知之前将其设置为转换器对象
-     * @param inputMessage  HTTP输入消息
-     * @param parameter     方法参数
-     * @param type          目标类型,不一定与方法相同 参数类型,例如 {@code HttpEntity<String>}.
-     * @param converterType 转换器类型
-     * @return 相同的主体或新实例
+     * @param body          The converted object.
+     * @param inputMessage  The HTTP input message.
+     * @param parameter     The method parameter.
+     * @param targetType    The target type for the conversion.
+     * @param converterType The selected converter type.
+     * @return The same body instance or a new one.
      */
     @Override
     public Object afterBodyRead(
             Object body,
             HttpInputMessage inputMessage,
             MethodParameter parameter,
-            Type type,
+            Type targetType,
             Class<? extends HttpMessageConverter<?>> converterType) {
         return body;
     }
 
     /**
-     * 如果主体为空,则调用第二个(也是最后一个).
+     * Invoked when the request body is empty.
      *
-     * @param body          通常在调用第一个通知之前将其设置为{@code null}
-     * @param inputMessage  HTTP输入消息
-     * @param parameter     方法参数
-     * @param type          目标类型,不一定与方法相同 参数类型,例如 {@code HttpEntity<String>}.
-     * @param converterType 转换器类型
-     * @return 要使用的值或{@code null},该值可能会引发{@code HttpMessageNotReadableException}.
+     * @param body          Usually {@code null} before this call.
+     * @param inputMessage  The HTTP input message.
+     * @param parameter     The method parameter.
+     * @param targetType    The target type for the conversion.
+     * @param converterType The selected converter type.
+     * @return The value to use, or {@code null}, which may result in an {@code HttpMessageNotReadableException}.
      */
     @Override
     public Object handleEmptyBody(
             Object body,
             HttpInputMessage inputMessage,
             MethodParameter parameter,
-            Type type,
+            Type targetType,
             Class<? extends HttpMessageConverter<?>> converterType) {
         return body;
     }
 
+    /**
+     * A custom {@link HttpInputMessage} that wraps the original message and provides a decrypted body stream.
+     */
     class InputMessage implements HttpInputMessage {
 
-        private HttpHeaders headers;
-        private InputStream body;
+        private final HttpHeaders headers;
+        private final InputStream body;
 
+        /**
+         * Constructs a new InputMessage.
+         *
+         * @param inputMessage The original HTTP input message.
+         * @param key          The decryption key.
+         * @param type         The decryption algorithm type.
+         * @param charset      The character set of the body.
+         * @throws Exception if an error occurs during decryption.
+         */
         public InputMessage(HttpInputMessage inputMessage, String key, String type, String charset) throws Exception {
             if (StringKit.isEmpty(key)) {
-                throw new NullPointerException("Please check the request.crypto.decrypt");
+                throw new IllegalArgumentException(
+                        "Decryption key is missing. Please check the 'bus.sensitive.decrypt.key' property.");
             }
 
             this.headers = inputMessage.getHeaders();
@@ -177,16 +191,19 @@ public class RequestBodyAdvice extends BaseAdvice
 
             String decryptBody;
             if (content.startsWith(Symbol.BRACE_LEFT)) {
+                // Assume it's a plain JSON object, not encrypted.
                 decryptBody = content;
             } else {
+                // The content is expected to be encrypted.
                 StringBuilder json = new StringBuilder();
                 content = content.replaceAll(Symbol.SPACE, Symbol.PLUS);
 
-                if (!StringKit.isEmpty(content)) {
-                    Logger.debug("Request data decryption enabled ...");
+                if (StringKit.isNotEmpty(content)) {
+                    Logger.debug("Request data decryption enabled...");
+                    // The content might be split by a delimiter if it was encrypted in chunks.
                     String[] contents = content.split("\\|");
-                    for (int k = 0; k < contents.length; k++) {
-                        json.append(org.miaixz.bus.crypto.Builder.decrypt(type, key, contents[k], Charset.UTF_8));
+                    for (String encryptedPart : contents) {
+                        json.append(org.miaixz.bus.crypto.Builder.decrypt(type, key, encryptedPart, Charset.UTF_8));
                     }
                 }
                 decryptBody = json.toString();

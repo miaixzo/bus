@@ -33,46 +33,81 @@ import org.miaixz.bus.core.center.date.culture.cn.JulianDay;
 import org.miaixz.bus.core.xyz.EnumKit;
 
 /**
- * 节气
+ * Represents a Solar Term (Jieqi).
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class SolarTerms extends Samsara {
 
+    /**
+     * Names of solar terms.
+     */
     public static final String[] NAMES = X.get("name");
     /**
-     * 年
+     * The year of the solar term.
      */
     protected int year;
 
     /**
-     * 粗略的儒略日
+     * The cursory Julian day of the solar term.
      */
     protected double cursoryJulianDay;
 
+    /**
+     * Constructs a {@code SolarTerms} with the given year and index.
+     *
+     * @param year  The year.
+     * @param index The index of the solar term (0-23).
+     */
     public SolarTerms(int year, int index) {
         super(NAMES, index);
         int size = getSize();
         initByYear((year * size + index) / size, getIndex());
     }
 
+    /**
+     * Constructs a {@code SolarTerms} with the given year and name.
+     *
+     * @param year The year.
+     * @param name The name of the solar term.
+     */
     public SolarTerms(int year, String name) {
         super(NAMES, name);
         initByYear(year, index);
     }
 
+    /**
+     * Creates a {@code SolarTerms} instance from the given year and index.
+     *
+     * @param year  The year.
+     * @param index The index of the solar term.
+     * @return A new {@link SolarTerms} instance.
+     */
     public static SolarTerms fromIndex(int year, int index) {
         return new SolarTerms(year, index);
     }
 
+    /**
+     * Creates a {@code SolarTerms} instance from the given year and name.
+     *
+     * @param year The year.
+     * @param name The name of the solar term.
+     * @return A new {@link SolarTerms} instance.
+     */
     public static SolarTerms fromName(int year, String name) {
         return new SolarTerms(year, name);
     }
 
+    /**
+     * Initializes the solar term by year and offset.
+     *
+     * @param year   The year.
+     * @param offset The offset of the solar term.
+     */
     protected void initByYear(int year, int offset) {
         double jd = Math.floor((year - 2000) * 365.2422 + 180);
-        // 355是2000.12冬至，得到较靠近jd的冬至估计值
+        // 355 is the Winter Solstice of 2000.12, get an estimated Winter Solstice closer to jd
         double w = Math.floor((jd - 355 + 183) / 365.2422) * 365.2422 + 355;
         if (Galaxy.calcQi(w) > jd) {
             w -= 365.2422;
@@ -81,6 +116,12 @@ public class SolarTerms extends Samsara {
         cursoryJulianDay = Galaxy.calcQi(w + 15.2184 * offset);
     }
 
+    /**
+     * Gets the next solar term after a specified number of terms.
+     *
+     * @param n The number of terms to advance.
+     * @return The {@link SolarTerms} after {@code n} terms.
+     */
     public SolarTerms next(int n) {
         int size = getSize();
         int i = index + n;
@@ -88,50 +129,53 @@ public class SolarTerms extends Samsara {
     }
 
     /**
-     * 是否节令
+     * Checks if this solar term is a Jie (节令).
      *
-     * @return true/false
+     * @return {@code true} if it's a Jie, {@code false} otherwise.
      */
     public boolean isJie() {
         return index % 2 == 1;
     }
 
     /**
-     * 是否气令
+     * Checks if this solar term is a Qi (气令).
      *
-     * @return true/false
+     * @return {@code true} if it's a Qi, {@code false} otherwise.
      */
     public boolean isQi() {
         return index % 2 == 0;
     }
 
     /**
-     * 儒略日
+     * Gets the Julian day corresponding to this solar term.
      *
-     * @return 儒略日
+     * @return The {@link JulianDay} for this solar term.
      */
     public JulianDay getJulianDay() {
         return JulianDay.fromJulianDay(Galaxy.qiAccurate2(cursoryJulianDay) + JulianDay.J2000);
     }
 
     /**
-     * 年
+     * Gets the year of the solar term.
      *
-     * @return 年
+     * @return The year.
      */
     public int getYear() {
         return year;
     }
 
     /**
-     * 粗略的儒略日
+     * Gets the cursory Julian day of the solar term.
      *
-     * @return 儒略日数
+     * @return The cursory Julian day number.
      */
     public double getCursoryJulianDay() {
         return cursoryJulianDay;
     }
 
+    /**
+     * Inner enum representing the 24 solar terms with their codes, names, and descriptions.
+     */
     public enum X {
 
         S_DZ(22, "冬至",
@@ -186,19 +230,26 @@ public class SolarTerms extends Samsara {
         private static final X[] ENUMS = X.values();
 
         /**
-         * 编码
+         * The code of the solar term.
          */
         private final int code;
         /**
-         * 名称
+         * The name of the solar term.
          */
         private final String name;
 
         /**
-         * 描述
+         * The description of the solar term.
          */
         private final String desc;
 
+        /**
+         * Constructs an {@code X} enum constant.
+         *
+         * @param code The code of the solar term.
+         * @param name The name of the solar term.
+         * @param desc The description of the solar term.
+         */
         X(final int code, final String name, final String desc) {
             this.code = code;
             this.name = name;
@@ -206,10 +257,11 @@ public class SolarTerms extends Samsara {
         }
 
         /**
-         * 获取节气
+         * Gets the solar term by its code.
          *
-         * @param code 编码
-         * @return this
+         * @param code The code of the solar term.
+         * @return The corresponding {@link X} enum constant.
+         * @throws IllegalArgumentException if the code is out of valid range.
          */
         public static X get(int code) {
             if (code < 1 || code > 24) {
@@ -219,31 +271,38 @@ public class SolarTerms extends Samsara {
         }
 
         /**
-         * 获取枚举属性信息
+         * Gets an array of field values for the given field name.
          *
-         * @param fieldName 属性名称
-         * @return the string[]
+         * @param fieldName The name of the field.
+         * @return An array of strings representing the field values.
          */
         public static String[] get(String fieldName) {
             return EnumKit.getFieldValues(X.class, fieldName).toArray(String[]::new);
         }
 
         /**
-         * @return 对应的名称
+         * Gets the name corresponding to the given code.
+         *
+         * @param code The code of the solar term.
+         * @return The corresponding name.
          */
         public String getName(final int code) {
             return this.name;
         }
 
         /**
-         * @return 对应的编码
+         * Gets the code of the solar term.
+         *
+         * @return The code.
          */
         public long getCode() {
             return this.code;
         }
 
         /**
-         * @return 对应的名称
+         * Gets the name of the solar term.
+         *
+         * @return The name.
          */
         public String getName() {
             return this.name;

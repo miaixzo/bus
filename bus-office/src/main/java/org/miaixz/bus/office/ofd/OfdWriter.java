@@ -42,7 +42,7 @@ import org.ofdrw.layout.element.Paragraph;
 import org.ofdrw.reader.OFDReader;
 
 /**
- * OFD文件生成器
+ * OFD file generator.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -53,23 +53,24 @@ public class OfdWriter implements Serializable, Closeable {
     private static final long serialVersionUID = 2852287375522L;
 
     /**
-     * OFD文档
+     * The OFD document instance.
      */
     private final OFDDoc doc;
 
     /**
-     * 构造
+     * Constructs an {@code OfdWriter} for the specified file.
      *
-     * @param file 生成的文件
+     * @param file The file to generate the OFD document into.
      */
     public OfdWriter(final File file) {
         this(file.toPath());
     }
 
     /**
-     * 构造
+     * Constructs an {@code OfdWriter} for the specified path.
      *
-     * @param file 生成的文件
+     * @param file The path to generate the OFD document into.
+     * @throws InternalException if an I/O error occurs during document creation or opening.
      */
     public OfdWriter(final Path file) {
         try {
@@ -84,20 +85,20 @@ public class OfdWriter implements Serializable, Closeable {
     }
 
     /**
-     * 构造
+     * Constructs an {@code OfdWriter} that writes to the given output stream.
      *
-     * @param out 需要输出的流
+     * @param out The output stream to write the OFD document to.
      */
     public OfdWriter(final OutputStream out) {
         this.doc = new OFDDoc(out);
     }
 
     /**
-     * 增加文本内容
+     * Adds text content to the OFD document.
      *
-     * @param font  字体
-     * @param texts 文本
-     * @return this
+     * @param font  The font to use for the text. May be {@code null} to use the default font.
+     * @param texts An array of text strings to add.
+     * @return This {@code OfdWriter} instance, for chaining.
      */
     public OfdWriter addText(final Font font, final String... texts) {
         final Paragraph paragraph = new Paragraph();
@@ -111,24 +112,25 @@ public class OfdWriter implements Serializable, Closeable {
     }
 
     /**
-     * 追加图片
+     * Appends an image to the OFD document.
      *
-     * @param picFile 图片文件
-     * @param width   宽度
-     * @param height  高度
-     * @return this
+     * @param picFile The image file.
+     * @param width   The width of the image.
+     * @param height  The height of the image.
+     * @return This {@code OfdWriter} instance, for chaining.
      */
     public OfdWriter addPicture(final File picFile, final int width, final int height) {
         return addPicture(picFile.toPath(), width, height);
     }
 
     /**
-     * 追加图片
+     * Appends an image to the OFD document.
      *
-     * @param picFile 图片文件
-     * @param width   宽度
-     * @param height  高度
-     * @return this
+     * @param picFile The path to the image file.
+     * @param width   The width of the image.
+     * @param height  The height of the image.
+     * @return This {@code OfdWriter} instance, for chaining.
+     * @throws InternalException if an I/O error occurs while creating the image element.
      */
     public OfdWriter addPicture(final Path picFile, final int width, final int height) {
         final Img img;
@@ -141,10 +143,10 @@ public class OfdWriter implements Serializable, Closeable {
     }
 
     /**
-     * 增加节点
+     * Adds a Div element to the OFD document.
      *
-     * @param div 节点，可以是段落、Canvas、Img或者填充
-     * @return this
+     * @param div The Div element to add, which can be a paragraph, Canvas, Img, or fill.
+     * @return This {@code OfdWriter} instance, for chaining.
      */
     public OfdWriter add(final Div div) {
         this.doc.add(div);
@@ -152,11 +154,12 @@ public class OfdWriter implements Serializable, Closeable {
     }
 
     /**
-     * 增加注释，比如水印等
+     * Adds an annotation, such as a watermark, to a specific page.
      *
-     * @param page       页码
-     * @param annotation 节点，可以是段落、Canvas、Img或者填充
-     * @return this
+     * @param page       The page number to add the annotation to.
+     * @param annotation The annotation element to add, which can be a paragraph, Canvas, Img, or fill.
+     * @return This {@code OfdWriter} instance, for chaining.
+     * @throws InternalException if an I/O error occurs while adding the annotation.
      */
     public OfdWriter add(final int page, final Annotation annotation) {
         try {

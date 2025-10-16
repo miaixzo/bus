@@ -26,7 +26,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * IO相关封装，包括Inputstream、OutputStream、Buffer等实现
+ * IO related encapsulation, including implementations for InputStream, OutputStream, Buffer, etc.
  *
  * @author Kimi Liu
  * @since Java 17+

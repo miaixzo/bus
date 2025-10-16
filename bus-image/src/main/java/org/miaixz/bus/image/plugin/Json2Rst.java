@@ -27,6 +27,11 @@
 */
 package org.miaixz.bus.image.plugin;
 
+import jakarta.json.Json;
+import jakarta.json.JsonArray;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonReader;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -34,39 +39,78 @@ import java.util.LinkedList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import jakarta.json.Json;
-import jakarta.json.JsonArray;
-import jakarta.json.JsonObject;
-import jakarta.json.JsonReader;
-
 /**
+ * The {@code Json2Rst} class converts JSON schema files into reStructuredText (RST) format, primarily for generating
+ * documentation for DICOM-related LDAP schemas. It processes a root JSON schema file and recursively transforms any
+ * referenced schemas.
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class Json2Rst {
 
+    /**
+     * A constant string of '=' characters used for underlining titles in RST.
+     */
     private static final String UNDERLINE = "===============================================================";
+    /**
+     * The input directory containing the JSON schema files.
+     */
     private final File indir;
+    /**
+     * The output directory where the RST files will be generated.
+     */
     private final File outdir;
+    /**
+     * A queue of input files to be processed.
+     */
     private final LinkedList<File> inFiles = new LinkedList<>();
+    /**
+     * A set to keep track of all processed references to avoid duplicates.
+     */
     private final HashSet<String> totRefs = new HashSet<>();
+    /**
+     * The format string for the RST tabular columns directive.
+     */
     private String tabularColumns = "|p{4cm}|l|p{8cm}|";
 
+    /**
+     * Constructs a new {@code Json2Rst} converter.
+     *
+     * @param inFile The initial JSON schema file to process.
+     * @param outdir The directory where the output RST files will be saved.
+     */
     public Json2Rst(File inFile, File outdir) {
         this.indir = inFile.getParentFile();
         this.outdir = outdir;
         inFiles.add(inFile);
     }
 
+    /**
+     * Sets the format for the tabular columns in the generated RST file.
+     *
+     * @param tabularColumns A string defining the column specifications (e.g., "|p{4cm}|l|p{8cm}|").
+     */
     public void setTabularColumns(String tabularColumns) {
         this.tabularColumns = tabularColumns;
     }
 
+    /**
+     * Starts the conversion process. It iterates through the file queue and transforms each file.
+     *
+     * @throws IOException if an I/O error occurs during file processing.
+     */
     private void process() throws IOException {
         while (!inFiles.isEmpty())
             transform(inFiles.remove());
     }
 
+    /**
+     * Transforms a single JSON schema file into an RST file.
+     *
+     * @param inFile The JSON schema file to transform.
+     * @throws IOException if an I/O error occurs during file reading or writing.
+     */
     private void transform(File inFile) throws IOException {
         String outFileName = inFile.getName().replace(".schema.json", ".rst");
         File outFile = new File(outdir, outFileName);
@@ -78,6 +122,14 @@ public class Json2Rst {
         }
     }
 
+    /**
+     * Writes the content of a JSON document to an RST file.
+     *
+     * @param doc         The {@link JsonObject} representing the JSON schema.
+     * @param out         The {@link PrintStream} for the output RST file.
+     * @param outFileName The name of the output file.
+     * @throws IOException if an I/O error occurs.
+     */
     private void writeTo(JsonObject doc, PrintStream out, String outFileName) throws IOException {
         writeHeader(doc, out, outFileName);
         ArrayList<String> refs = new ArrayList<>();
@@ -86,6 +138,13 @@ public class Json2Rst {
             writeTocTree(refs, out);
     }
 
+    /**
+     * Writes the header section of the RST file, including the title and table directives.
+     *
+     * @param doc         The JSON document.
+     * @param out         The output stream.
+     * @param outFileName The name of the output file, used to derive the LDAP object name.
+     */
     private void writeHeader(JsonObject doc, PrintStream out, String outFileName) {
         String title = doc.getString("title");
         out.println(title);
@@ -114,6 +173,12 @@ public class Json2Rst {
         out.println();
     }
 
+    /**
+     * Checks if the schema is for a standard DICOM-defined object.
+     *
+     * @param outFileName The name of the output RST file.
+     * @return {@code true} if it's a standard DICOM object, {@code false} otherwise.
+     */
     private boolean isDefinedByDicom(String outFileName) {
         switch (outFileName) {
             case "device.rst":
@@ -121,10 +186,18 @@ public class Json2Rst {
             case "networkConnection.rst":
             case "transferCapability.rst":
                 return true;
+
+            default:
+                return false;
         }
-        return false;
     }
 
+    /**
+     * Writes a 'toctree' (table of contents tree) directive for all referenced schemas.
+     *
+     * @param refs A list of schema references.
+     * @param out  The output stream.
+     */
     private void writeTocTree(ArrayList<String> refs, PrintStream out) {
         out.println();
         out.println(".. toctree::");
@@ -135,6 +208,13 @@ public class Json2Rst {
         }
     }
 
+    /**
+     * Recursively writes the properties defined in a JSON schema object to the RST file.
+     *
+     * @param doc  The JSON object containing the properties.
+     * @param out  The output stream.
+     * @param refs A list to collect new schema references found.
+     */
     private void writePropertiesTo(JsonObject doc, PrintStream out, ArrayList<String> refs) {
         JsonObject properties = doc.getJsonObject("properties");
         for (String name : properties.keySet()) {
@@ -146,6 +226,14 @@ public class Json2Rst {
         }
     }
 
+    /**
+     * Writes a single property from the JSON schema to a row in the RST CSV table.
+     *
+     * @param property The JSON object for the property.
+     * @param name     The name of the property.
+     * @param out      The output stream.
+     * @param refs     A list to collect new schema references.
+     */
     private void writePropertyTo(JsonObject property, String name, PrintStream out, ArrayList<String> refs) {
         JsonObject items = property.getJsonObject("items");
         JsonObject typeObj = items == null ? property : items;
@@ -208,6 +296,12 @@ public class Json2Rst {
         out.println('"');
     }
 
+    /**
+     * Formats HTML anchor tags in the description into RST-style links.
+     *
+     * @param desc The description string.
+     * @return The formatted description string.
+     */
     private String formatURL(String desc) {
         int urlIndex = desc.indexOf("<a href");
         if (urlIndex == -1)
@@ -220,6 +314,12 @@ public class Json2Rst {
         return desc2.contains("<a href") ? formatURL(desc2) : desc2;
     }
 
+    /**
+     * Ensures that any substitution references in the description are properly escaped for RST.
+     *
+     * @param desc The description string.
+     * @return The escaped description string.
+     */
     private String ensureNoUndefinedSubstitutionReferenced(String desc) {
         if (!desc.contains("|"))
             return desc;

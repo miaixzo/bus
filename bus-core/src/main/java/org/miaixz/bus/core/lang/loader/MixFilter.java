@@ -33,48 +33,65 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
- * 复合过滤器,实际上内部维护一个过滤器的{@link LinkedHashSet}集合,提供添加/删除以及链式拼接的方法来混合多个子过滤器,该过滤器的具体逻辑由子类拓展
+ * A composite filter that internally maintains a {@link LinkedHashSet} of {@link Filter} instances. It provides methods
+ * for adding, removing, and chaining multiple child filters. The specific filtering logic is determined by subclasses.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public abstract class MixFilter implements Filter {
 
+    /**
+     * The set of filters contained within this composite filter.
+     */
     protected final Set<Filter> filters;
 
+    /**
+     * Constructs a {@code MixFilter} with the given array of initial filters.
+     *
+     * @param filters An array of {@link Filter} instances to initialize the composite filter.
+     */
     protected MixFilter(Filter... filters) {
         this(Arrays.asList(filters));
     }
 
+    /**
+     * Constructs a {@code MixFilter} with the given collection of initial filters.
+     *
+     * @param filters A collection of {@link Filter} instances to initialize the composite filter.
+     */
     protected MixFilter(Collection<? extends Filter> filters) {
         this.filters = null != filters ? new LinkedHashSet<>(filters) : new LinkedHashSet<>();
     }
 
     /**
-     * 添加过滤器
+     * Adds a filter to this composite filter.
      *
-     * @param filter 过滤器
-     * @return 添加成功：true 否则：false 即代表重复添加
+     * @param filter The {@link Filter} to add.
+     * @return {@code true} if the filter was added successfully (i.e., it was not already present), {@code false}
+     *         otherwise.
      */
     public boolean add(Filter filter) {
         return filters.add(filter);
     }
 
     /**
-     * 删除过滤器
+     * Removes a filter from this composite filter.
      *
-     * @param filter 过滤器
-     * @return 删除成功：true 否则：false 即代表已不存在
+     * @param filter The {@link Filter} to remove.
+     * @return {@code true} if the filter was removed successfully (i.e., it was present), {@code false} otherwise.
      */
     public boolean remove(Filter filter) {
         return filters.remove(filter);
     }
 
     /**
-     * 支持采用链式调用的方式混合多个过滤器,其内部调用{@link MixFilter#add(Filter)}且返回this. 该方法设计成abstract其用意是强制子类将方法的返回值类型替换成自身类型
+     * Supports chaining multiple filters. This method internally calls {@link MixFilter#add(Filter)} and returns
+     * {@code this}. This method is abstract to force subclasses to override it with their own return type for proper
+     * method chaining.
      *
-     * @param filter 过滤器
-     * @return this
+     * @param filter The {@link Filter} to mix in.
+     * @return This {@code MixFilter} instance, for method chaining.
      */
     public abstract MixFilter mix(Filter filter);
 

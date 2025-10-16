@@ -36,21 +36,28 @@ import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * Map拼接器，可以拼接包括Map、Entry列表等。
+ * A utility for joining {@link Map} entries into a formatted string. This class provides a fluent API for concatenating
+ * key-value pairs with specified delimiters, similar to how {@link StringJoiner} works for sequences.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class MapJoiner {
 
+    /**
+     * The underlying joiner used to concatenate formatted map entries.
+     */
     private final StringJoiner joiner;
+    /**
+     * The separator placed between each key and its corresponding value.
+     */
     private final String keyValueSeparator;
 
     /**
-     * 构造
+     * Constructs a new {@code MapJoiner}.
      *
-     * @param joiner            entry之间的Joiner
-     * @param keyValueSeparator kv之间的连接符
+     * @param joiner            The {@link StringJoiner} used to combine the final key-value strings.
+     * @param keyValueSeparator The separator to place between a key and its value (e.g., "=").
      */
     public MapJoiner(final StringJoiner joiner, final String keyValueSeparator) {
         this.joiner = joiner;
@@ -58,48 +65,53 @@ public class MapJoiner {
     }
 
     /**
-     * 构建一个MapJoiner
+     * Creates a new {@code MapJoiner} with specified separators.
      *
-     * @param separator         entry之间的连接符
-     * @param keyValueSeparator kv之间的连接符
-     * @return MapJoiner
+     * @param separator         The separator to place between each map entry (e.g., "&amp;").
+     * @param keyValueSeparator The separator to place between a key and its value (e.g., "=").
+     * @return A new {@code MapJoiner} instance.
      */
     public static MapJoiner of(final String separator, final String keyValueSeparator) {
         return of(StringJoiner.of(separator), keyValueSeparator);
     }
 
     /**
-     * 构建一个MapJoiner
+     * Creates a new {@code MapJoiner} with a custom {@link StringJoiner}.
      *
-     * @param joiner            entry之间的Joiner
-     * @param keyValueSeparator kv之间的连接符
-     * @return MapJoiner
+     * @param joiner            The {@link StringJoiner} to use for concatenating entries.
+     * @param keyValueSeparator The separator to place between a key and its value.
+     * @return A new {@code MapJoiner} instance.
      */
     public static MapJoiner of(final StringJoiner joiner, final String keyValueSeparator) {
         return new MapJoiner(joiner, keyValueSeparator);
     }
 
     /**
-     * 追加Map
+     * Appends all entries from the given {@link Map}, optionally filtering them.
      *
-     * @param <K>       键类型
-     * @param <V>       值类型
-     * @param map       Map
-     * @param predicate Map过滤器
-     * @return this
+     * @param <K>       The type of keys in the map.
+     * @param <V>       The type of values in the map.
+     * @param map       The map whose entries are to be appended.
+     * @param predicate A {@link Predicate} to filter which entries are included. If {@code null}, all entries are
+     *                  appended.
+     * @return This {@code MapJoiner} instance for method chaining.
      */
     public <K, V> MapJoiner append(final Map<K, V> map, final Predicate<Map.Entry<K, V>> predicate) {
+        if (map == null) {
+            return this;
+        }
         return append(map.entrySet().iterator(), predicate);
     }
 
     /**
-     * 追加Entry列表
+     * Appends all entries from the given {@link Iterator}, optionally filtering them.
      *
-     * @param <K>       键类型
-     * @param <V>       值类型
-     * @param parts     Entry列表
-     * @param predicate Map过滤器
-     * @return this
+     * @param <K>       The type of keys in the entries.
+     * @param <V>       The type of values in the entries.
+     * @param parts     An iterator over the {@link Map.Entry} objects to append.
+     * @param predicate A {@link Predicate} to filter which entries are included. If {@code null}, all entries are
+     *                  appended.
+     * @return This {@code MapJoiner} instance for method chaining.
      */
     public <K, V> MapJoiner append(
             final Iterator<? extends Map.Entry<K, V>> parts,
@@ -108,9 +120,8 @@ public class MapJoiner {
             return this;
         }
 
-        Map.Entry<K, V> entry;
         while (parts.hasNext()) {
-            entry = parts.next();
+            Map.Entry<K, V> entry = parts.next();
             if (null == predicate || predicate.test(entry)) {
                 joiner.append(StringJoiner.of(this.keyValueSeparator).append(entry.getKey()).append(entry.getValue()));
             }
@@ -120,10 +131,10 @@ public class MapJoiner {
     }
 
     /**
-     * 追加其他字符串，其他字符串简单拼接
+     * Appends additional string parts to the joiner. These parts are added directly without key-value separation.
      *
-     * @param params 字符串列表
-     * @return this
+     * @param params An array of strings to append.
+     * @return This {@code MapJoiner} instance for method chaining.
      */
     public MapJoiner append(final String... params) {
         if (ArrayKit.isNotEmpty(params)) {
@@ -132,6 +143,11 @@ public class MapJoiner {
         return this;
     }
 
+    /**
+     * Returns the final joined string.
+     *
+     * @return The string representation of the joined map entries.
+     */
     @Override
     public String toString() {
         return joiner.toString();

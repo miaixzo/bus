@@ -32,29 +32,38 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.miaixz.bus.core.io.file.FileName;
 import org.miaixz.bus.core.io.resource.Resource;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.xyz.FileKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * Zip文件替换，用户替换源Zip文件，并生成新的文件
+ * Zip file replacer, used to replace content in a source Zip file and generate a new file.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class ZipReplacer implements Closeable {
 
+    /**
+     * The Zip reader for the source Zip file.
+     */
     private final ZipReader zipReader;
+    /**
+     * Flag indicating whether to ignore case when comparing paths.
+     */
     private final boolean ignoreCase;
 
+    /**
+     * A map of resources to replace, where the key is the entry path and the value is the replacement resource.
+     */
     private final Map<String, Resource> replacedResources = new HashMap<>();
 
     /**
-     * 构造
+     * Constructs a new ZipReplacer instance.
      *
-     * @param zipReader  ZipReader
-     * @param ignoreCase 是否忽略path大小写
+     * @param zipReader  The ZipReader for the source Zip file.
+     * @param ignoreCase {@code true} to ignore case when comparing paths, {@code false} otherwise.
      */
     public ZipReplacer(final ZipReader zipReader, final boolean ignoreCase) {
         this.zipReader = zipReader;
@@ -62,25 +71,26 @@ public class ZipReplacer implements Closeable {
     }
 
     /**
-     * 判断路径是否相等
+     * Checks if two paths are the same, with an option to ignore case.
      *
-     * @param entryPath  路径A
-     * @param targetPath 路径B
-     * @param ignoreCase 是否忽略大小写
-     * @return ture 路径相等
+     * @param entryPath  The first path.
+     * @param targetPath The second path.
+     * @param ignoreCase {@code true} to ignore case during comparison, {@code false} otherwise.
+     * @return {@code true} if the paths are the same, {@code false} otherwise.
      */
     private static boolean isSamePath(String entryPath, String targetPath, final boolean ignoreCase) {
-        entryPath = StringKit.removePrefix(FileKit.normalize(entryPath), Symbol.SLASH);
-        targetPath = StringKit.removePrefix(FileKit.normalize(targetPath), Symbol.SLASH);
+        entryPath = StringKit.removePrefix(FileName.normalize(entryPath), Symbol.SLASH);
+        targetPath = StringKit.removePrefix(FileName.normalize(targetPath), Symbol.SLASH);
         return StringKit.equals(entryPath, targetPath, ignoreCase);
     }
 
     /**
-     * 增加替换的内容，如果路径不匹配，则不做替换，也不加入
+     * Adds a resource to be replaced. If the path does not match an existing entry, no replacement occurs, and the
+     * resource is not added.
      *
-     * @param entryPath 路径
-     * @param resource  被压缩的内容
-     * @return this
+     * @param entryPath The path of the entry to be replaced within the Zip file.
+     * @param resource  The resource containing the content for replacement.
+     * @return This ZipReplacer instance.
      */
     public ZipReplacer addReplace(final String entryPath, final Resource resource) {
         replacedResources.put(entryPath, resource);
@@ -88,9 +98,10 @@ public class ZipReplacer implements Closeable {
     }
 
     /**
-     * 写出到{@link ZipWriter}
+     * Writes the modified Zip content to the specified {@link ZipWriter}. Entries that are not replaced will be copied
+     * from the source Zip file.
      *
-     * @param writer {@link ZipWriter}
+     * @param writer The {@link ZipWriter} to write the modified content to.
      */
     public void write(final ZipWriter writer) {
         zipReader.read((entry) -> {

@@ -31,7 +31,8 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 
 /**
- * 获奖java中需要的驼峰命名
+ * Provides utility methods for converting database naming conventions to Java-style camel case naming. This includes
+ * converting table names to class names and field names to Java field names.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -39,10 +40,11 @@ import org.miaixz.bus.core.lang.Symbol;
 public class NamingRules {
 
     /**
-     * 说明:获取java类名
+     * Converts a database table name to a Java class name, applying camel case convention. The first letter of the
+     * resulting class name will be capitalized.
      *
-     * @param table 表名
-     * @return String
+     * @param table The database table name (e.g., "user_info").
+     * @return The corresponding Java class name (e.g., "UserInfo").
      */
     public static String getClassName(String table) {
         table = changeToJavaFiled(table, true);
@@ -54,11 +56,14 @@ public class NamingRules {
     }
 
     /**
-     * 说明:获取字段名,把"_"后面字母变大写
+     * Converts a database field name to a Java field name, applying camel case convention. If {@code named} is true, it
+     * converts underscores to camel case (e.g., "user_name" to "userName"). If {@code named} is false, the field name
+     * is returned as is.
      *
-     * @param field 字段名
-     * @param named 是否为名称
-     * @return String
+     * @param field The database field name (e.g., "user_name").
+     * @param named A boolean indicating whether to apply naming conversion. If false, the original field name is
+     *              returned.
+     * @return The corresponding Java field name.
      */
     public static String changeToJavaFiled(String field, boolean named) {
         if (!named) {
@@ -75,10 +80,11 @@ public class NamingRules {
     }
 
     /**
-     * 说明:把sql的数据类型转为java需要的类型
+     * Converts a SQL data type to its corresponding Java type. This method uses {@link MySQLTypeConvert} with
+     * {@link DateType#ONLY_DATE} strategy for date types.
      *
-     * @param sqlType sql类型
-     * @return String java类型
+     * @param sqlType The SQL data type string (e.g., "varchar", "int", "datetime").
+     * @return The corresponding Java type name (e.g., "String", "Integer", "Date").
      */
     public static String jdbcTypeToJavaType(String sqlType) {
         MySQLTypeConvert typeConvert = new MySQLTypeConvert();

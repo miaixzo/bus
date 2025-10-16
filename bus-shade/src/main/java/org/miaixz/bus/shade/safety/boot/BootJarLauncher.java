@@ -31,23 +31,45 @@ import org.miaixz.bus.shade.safety.Launcher;
 import org.springframework.boot.loader.launch.JarLauncher;
 
 /**
- * Spring-Boot Jar 启动器
+ * A custom {@link JarLauncher} for Spring Boot applications that integrates with the {@link Launcher} to provide
+ * enhanced security features such as JAR encryption and decryption. This class acts as the entry point for launching
+ * encrypted Spring Boot JARs.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class BootJarLauncher extends JarLauncher {
 
+    /**
+     * The internal {@link Launcher} instance responsible for handling encryption/decryption setup.
+     */
     private final Launcher launcher;
 
+    /**
+     * Constructs a new {@code BootJarLauncher} and initializes the underlying {@link Launcher}.
+     *
+     * @param args Command-line arguments passed to the application.
+     * @throws Exception If an error occurs during the initialization of the {@link Launcher}.
+     */
     public BootJarLauncher(String... args) throws Exception {
         this.launcher = new Launcher(args);
     }
 
+    /**
+     * The main entry point for launching the Spring Boot application with security features.
+     *
+     * @param args Command-line arguments.
+     * @throws Exception If an error occurs during application launch.
+     */
     public static void main(String[] args) throws Exception {
         new BootJarLauncher(args).launch();
     }
 
+    /**
+     * Launches the Spring Boot application using the arguments processed by the internal {@link Launcher}.
+     *
+     * @throws Exception If an error occurs during the launch process.
+     */
     public void launch() throws Exception {
         launch(launcher.args);
     }

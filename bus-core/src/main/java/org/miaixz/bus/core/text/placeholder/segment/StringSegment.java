@@ -28,7 +28,7 @@
 package org.miaixz.bus.core.text.placeholder.segment;
 
 /**
- * 字符串模板-抽象 SectionBuffer
+ * Represents a segment in a string template.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -36,9 +36,11 @@ package org.miaixz.bus.core.text.placeholder.segment;
 public interface StringSegment {
 
     /**
-     * 获取文本值
+     * Retrieves the text value of the segment.
      *
-     * @return 文本值，对于固定文本Segment，返回文本值；对于单占位符Segment，返回占位符；对于有前后缀的占位符Segment，返回占位符完整文本，例如: "{name}"
+     * @return The text value. For a literal segment, it returns the literal text. For a single placeholder segment, it
+     *         returns the placeholder itself. For a named placeholder segment, it returns the complete placeholder
+     *         text, e.g., "{name}".
      */
     String getText();
 

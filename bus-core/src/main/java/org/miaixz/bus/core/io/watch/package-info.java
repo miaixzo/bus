@@ -26,7 +26,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 基于JDK7+ WatchService的文件和目录监听封装，支持多级目录
+ * Provides a wrapper for file and directory monitoring based on JDK7+ {@link java.nio.file.WatchService}, supporting
+ * multi-level directories.
  *
  * @author Kimi Liu
  * @since Java 17+

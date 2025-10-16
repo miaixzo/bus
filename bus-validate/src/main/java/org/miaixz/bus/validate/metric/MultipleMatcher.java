@@ -27,35 +27,45 @@
 */
 package org.miaixz.bus.validate.metric;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.miaixz.bus.core.lang.exception.NoSuchException;
 import org.miaixz.bus.validate.Context;
 import org.miaixz.bus.validate.Registry;
 import org.miaixz.bus.validate.magic.Matcher;
 import org.miaixz.bus.validate.magic.annotation.Multiple;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * 多规则匹配校验
+ * Validator for the {@link Multiple} annotation, allowing multiple validation rules to be applied sequentially.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class MultipleMatcher implements Matcher<Object, Multiple> {
 
+    /**
+     * Applies multiple validators to the given object. Validation stops and returns {@code false} upon the first
+     * failure.
+     *
+     * @param object   The object to validate.
+     * @param multiple The {@link Multiple} annotation instance, specifying the validators to apply.
+     * @param context  The validation context.
+     * @return {@code true} if the object passes all specified validations, {@code false} otherwise.
+     * @throws NoSuchException if a specified validator cannot be found in the registry.
+     */
     @Override
     public boolean on(Object object, Multiple multiple, Context context) {
         List<Matcher> validators = new ArrayList<>();
         for (String validatorName : multiple.value()) {
             if (!Registry.getInstance().contains(validatorName)) {
-                throw new NoSuchException("尝试使用一个不存在的校验器：" + validatorName);
+                throw new NoSuchException("Attempting to use a non-existent validator: " + validatorName);
             }
             validators.add((Matcher) Registry.getInstance().require(validatorName));
         }
         for (Class<? extends Matcher> clazz : multiple.classes()) {
             if (!Registry.getInstance().contains(clazz.getSimpleName())) {
-                throw new NoSuchException("尝试使用一个不存在的校验器：" + clazz.getName());
+                throw new NoSuchException("Attempting to use a non-existent validator: " + clazz.getName());
             }
             validators.add((Matcher) Registry.getInstance().require(clazz.getSimpleName()));
         }

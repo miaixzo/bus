@@ -27,9 +27,6 @@
 */
 package org.miaixz.bus.cron.pattern.parser;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.CrontabException;
@@ -39,8 +36,11 @@ import org.miaixz.bus.cron.pattern.matcher.AlwaysTrueMatcher;
 import org.miaixz.bus.cron.pattern.matcher.PartMatcher;
 import org.miaixz.bus.cron.pattern.matcher.PatternMatcher;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * 定时任务表达式解析器，用于将表达式字符串解析为{@link PatternMatcher}的列表
+ * A parser for cron expressions that converts a cron string into a list of {@link PatternMatcher} objects.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -56,24 +56,25 @@ public class PatternParser {
     private static final PartParser YEAR_VALUE_PARSER = PartParser.of(Part.YEAR);
 
     /**
-     * 解析表达式到匹配列表中
+     * Parses a cron expression string into a list of {@link PatternMatcher}s. The expression can be a single pattern or
+     * multiple patterns separated by '|'.
      *
-     * @param cronPattern 复合表达式
-     * @return {@link List}
+     * @param cronPattern The cron expression string.
+     * @return A list of {@link PatternMatcher}s.
      */
     public static List<PatternMatcher> parse(final String cronPattern) {
         return parseGroupPattern(cronPattern);
     }
 
     /**
-     * 解析复合任务表达式，格式为：
+     * Parses a grouped cron expression, where individual patterns are separated by '|'.
      * 
      * <pre>
      *     cronA | cronB | ...
      * </pre>
      *
-     * @param groupPattern 复合表达式
-     * @return {@link List}
+     * @param groupPattern The grouped cron expression string.
+     * @return A list of {@link PatternMatcher}s, one for each individual pattern.
      */
     private static List<PatternMatcher> parseGroupPattern(final String groupPattern) {
         Assert.notBlank(groupPattern, "Cron expression must not be empty!");
@@ -86,10 +87,10 @@ public class PatternParser {
     }
 
     /**
-     * 解析单一定时任务表达式
+     * Parses a single cron expression pattern.
      *
-     * @param pattern 表达式
-     * @return {@link PatternMatcher}
+     * @param pattern The single cron pattern string.
+     * @return A {@link PatternMatcher} for the given pattern.
      */
     private static PatternMatcher parseSingle(final String pattern) {
         final String[] parts = pattern.split("\\s+");
@@ -99,37 +100,38 @@ public class PatternParser {
                 7,
                 () -> new CrontabException("Pattern [{}] is invalid, it must be 5-7 parts!", pattern));
 
-        // 偏移量用于兼容Quartz表达式，当表达式有6或7项时，第一项为秒
+        // An offset is used to support Quartz-style expressions where the first field is seconds (for 6 or 7-part
+        // expressions).
         int offset = 0;
         if (parts.length == 6 || parts.length == 7) {
             offset = 1;
         }
 
-        // 秒，如果不支持秒的表达式，则第一位赋值0，表示整分匹配
+        // The second part. If the expression does not include seconds, default to "0" for matching on the minute.
         final String secondPart = (1 == offset) ? parts[0] : "0";
 
-        // 年
+        // The year part.
         final PartMatcher yearMatcher;
-        if (parts.length == 7) {// 支持年的表达式
+        if (parts.length == 7) { // 7-part expression with year
             yearMatcher = YEAR_VALUE_PARSER.parse(parts[6]);
-        } else {// 不支持年的表达式，全部匹配
+        } else { // 5 or 6-part expression, year is not specified, so it always matches.
             yearMatcher = AlwaysTrueMatcher.INSTANCE;
         }
 
         return new PatternMatcher(
-                // 秒
+                // Second
                 SECOND_VALUE_PARSER.parse(secondPart),
-                // 分
+                // Minute
                 MINUTE_VALUE_PARSER.parse(parts[offset]),
-                // 时
+                // Hour
                 HOUR_VALUE_PARSER.parse(parts[1 + offset]),
-                // 天
+                // Day of Month
                 DAY_OF_MONTH_VALUE_PARSER.parse(parts[2 + offset]),
-                // 月
+                // Month
                 MONTH_VALUE_PARSER.parse(parts[3 + offset]),
-                // 周
+                // Day of Week
                 DAY_OF_WEEK_VALUE_PARSER.parse(parts[4 + offset]),
-                // 年
+                // Year
                 yearMatcher);
     }
 

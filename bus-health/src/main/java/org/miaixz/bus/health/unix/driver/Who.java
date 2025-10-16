@@ -76,9 +76,9 @@ public final class Who {
     }
 
     /**
-     * Query {@code who} to get logged in users
+     * Query {@code who} to get logged in users.
      *
-     * @return A list of logged in user sessions
+     * @return A list of logged in user sessions.
      */
     public static synchronized List<OSSession> queryWho() {
         List<OSSession> whoList = new ArrayList<>();
@@ -96,11 +96,11 @@ public final class Who {
     }
 
     /**
-     * Attempt to match Linux WHO format and add to the list
+     * Attempt to match Linux WHO format and add to the list.
      *
-     * @param whoList the list to add to
-     * @param s       the string to match
-     * @return true if successful, false otherwise
+     * @param whoList the list to add to.
+     * @param s       the string to match.
+     * @return true if successful, false otherwise.
      */
     private static boolean matchLinux(List<OSSession> whoList, String s) {
         Matcher m = WHO_FORMAT_LINUX.matcher(s);
@@ -120,11 +120,11 @@ public final class Who {
     }
 
     /**
-     * Attempt to match Unix WHO format and add to the list
+     * Attempt to match Unix WHO format and add to the list.
      *
-     * @param whoList the list to add to
-     * @param s       the string to match
-     * @return true if successful, false otherwise
+     * @param whoList the list to add to.
+     * @param s       the string to match.
+     * @return true if successful, false otherwise.
      */
     private static boolean matchUnix(List<OSSession> whoList, String s) {
         Matcher m = WHO_FORMAT_UNIX.matcher(s);

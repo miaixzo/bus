@@ -33,7 +33,7 @@ import org.miaixz.bus.extra.captcha.provider.LineProvider;
 import org.miaixz.bus.extra.captcha.provider.ShearProvider;
 
 /**
- * 图形验证码工具
+ * Utility class for graphic CAPTCHA generation.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -41,10 +41,10 @@ import org.miaixz.bus.extra.captcha.provider.ShearProvider;
 public class CaptchaBuilder {
 
     /**
-     * 创建线干扰的验证码，默认5位验证码，150条干扰线
+     * Creates a CAPTCHA with line interference, default 5 characters, 150 interference lines.
      *
-     * @param width  图片宽
-     * @param height 图片高
+     * @param width  Image width.
+     * @param height Image height.
      * @return {@link LineProvider}
      */
     public static LineProvider ofLine(final int width, final int height) {
@@ -52,12 +52,12 @@ public class CaptchaBuilder {
     }
 
     /**
-     * 创建线干扰的验证码
+     * Creates a CAPTCHA with line interference.
      *
-     * @param width     图片宽
-     * @param height    图片高
-     * @param codeCount 字符个数
-     * @param lineCount 干扰线条数
+     * @param width     Image width.
+     * @param height    Image height.
+     * @param codeCount Number of characters.
+     * @param lineCount Number of interference lines.
      * @return {@link LineProvider}
      */
     public static LineProvider ofLine(final int width, final int height, final int codeCount, final int lineCount) {
@@ -65,13 +65,13 @@ public class CaptchaBuilder {
     }
 
     /**
-     * 创建线干扰的验证码
+     * Creates a CAPTCHA with line interference.
      *
-     * @param width          图片宽
-     * @param height         图片高
-     * @param codeCount      字符个数
-     * @param lineCount      干扰线条数
-     * @param sizeBaseHeight 字体的大小 高度的倍数
+     * @param width          Image width.
+     * @param height         Image height.
+     * @param codeCount      Number of characters.
+     * @param lineCount      Number of interference lines.
+     * @param sizeBaseHeight Font size, a multiple of height.
      * @return {@link LineProvider}
      */
     public static LineProvider ofLine(
@@ -84,10 +84,10 @@ public class CaptchaBuilder {
     }
 
     /**
-     * 创建圆圈干扰的验证码，默认5位验证码，15个干扰圈
+     * Creates a CAPTCHA with circle interference, default 5 characters, 15 interference circles.
      *
-     * @param width  图片宽
-     * @param height 图片高
+     * @param width  Image width.
+     * @param height Image height.
      * @return {@link CircleProvider}
      */
     public static CircleProvider ofCircle(final int width, final int height) {
@@ -95,12 +95,12 @@ public class CaptchaBuilder {
     }
 
     /**
-     * 创建圆圈干扰的验证码
+     * Creates a CAPTCHA with circle interference.
      *
-     * @param width       图片宽
-     * @param height      图片高
-     * @param codeCount   字符个数
-     * @param circleCount 干扰圆圈条数
+     * @param width       Image width.
+     * @param height      Image height.
+     * @param codeCount   Number of characters.
+     * @param circleCount Number of interference circles.
      * @return {@link CircleProvider}
      */
     public static CircleProvider ofCircle(
@@ -112,13 +112,13 @@ public class CaptchaBuilder {
     }
 
     /**
-     * 创建圆圈干扰的验证码
+     * Creates a CAPTCHA with circle interference.
      *
-     * @param width       图片宽
-     * @param height      图片高
-     * @param codeCount   字符个数
-     * @param circleCount 干扰圆圈条数
-     * @param size        字体的大小 高度的倍数
+     * @param width       Image width.
+     * @param height      Image height.
+     * @param codeCount   Number of characters.
+     * @param circleCount Number of interference circles.
+     * @param size        Font size, a multiple of height.
      * @return {@link CircleProvider}
      */
     public static CircleProvider ofCircle(
@@ -131,10 +131,10 @@ public class CaptchaBuilder {
     }
 
     /**
-     * 创建扭曲干扰的验证码，默认5位验证码
+     * Creates a CAPTCHA with shear interference, default 5 characters.
      *
-     * @param width  图片宽
-     * @param height 图片高
+     * @param width  Image width.
+     * @param height Image height.
      * @return {@link ShearProvider}
      */
     public static ShearProvider ofShear(final int width, final int height) {
@@ -142,12 +142,12 @@ public class CaptchaBuilder {
     }
 
     /**
-     * 创建扭曲干扰的验证码，默认5位验证码
+     * Creates a CAPTCHA with shear interference.
      *
-     * @param width     图片宽
-     * @param height    图片高
-     * @param codeCount 字符个数
-     * @param thickness 干扰线宽度
+     * @param width     Image width.
+     * @param height    Image height.
+     * @param codeCount Number of characters.
+     * @param thickness Interference line thickness.
      * @return {@link ShearProvider}
      */
     public static ShearProvider ofShear(final int width, final int height, final int codeCount, final int thickness) {
@@ -155,13 +155,13 @@ public class CaptchaBuilder {
     }
 
     /**
-     * 创建扭曲干扰的验证码，默认5位验证码
+     * Creates a CAPTCHA with shear interference.
      *
-     * @param width          图片宽
-     * @param height         图片高
-     * @param codeCount      字符个数
-     * @param thickness      干扰线宽度
-     * @param sizeBaseHeight 字体的大小 高度的倍数
+     * @param width          Image width.
+     * @param height         Image height.
+     * @param codeCount      Number of characters.
+     * @param thickness      Interference line thickness.
+     * @param sizeBaseHeight Font size, a multiple of height.
      * @return {@link ShearProvider}
      */
     public static ShearProvider ofShear(
@@ -174,10 +174,10 @@ public class CaptchaBuilder {
     }
 
     /**
-     * 创建GIF验证码
+     * Creates a GIF CAPTCHA.
      *
-     * @param width  宽
-     * @param height 高
+     * @param width  Image width.
+     * @param height Image height.
      * @return {@link GifProvider}
      */
     public static GifProvider ofGif(final int width, final int height) {
@@ -185,11 +185,11 @@ public class CaptchaBuilder {
     }
 
     /**
-     * 创建GIF验证码
+     * Creates a GIF CAPTCHA.
      *
-     * @param width     宽
-     * @param height    高
-     * @param codeCount 字符个数
+     * @param width     Image width.
+     * @param height    Image height.
+     * @param codeCount Number of characters.
      * @return {@link GifProvider}
      */
     public static GifProvider ofGif(final int width, final int height, final int codeCount) {
@@ -197,13 +197,13 @@ public class CaptchaBuilder {
     }
 
     /**
-     * 创建圆圈干扰的验证码
+     * Creates a GIF CAPTCHA with circle interference.
      *
-     * @param width          图片宽
-     * @param height         图片高
-     * @param codeCount      字符个数
-     * @param thickness      验证码干扰元素个数
-     * @param sizeBaseHeight 字体的大小 高度的倍数
+     * @param width          Image width.
+     * @param height         Image height.
+     * @param codeCount      Number of characters.
+     * @param thickness      Number of CAPTCHA interference elements.
+     * @param sizeBaseHeight Font size, a multiple of height.
      * @return {@link GifProvider}
      */
     public static GifProvider ofGif(

@@ -31,13 +31,21 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.sensitive.Context;
 
 /**
- * 密码的脱敏策略： 直接返回 null
+ * A desensitization provider for passwords. For security, this strategy always returns an empty string instead of the
+ * actual password or a masked version, effectively removing it from the output.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class PasswordProvider extends AbstractProvider {
 
+    /**
+     * Returns an empty string, effectively removing the password from the output.
+     *
+     * @param object  The original password object (ignored).
+     * @param context The current desensitization context (ignored).
+     * @return An empty string.
+     */
     @Override
     public Object build(Object object, Context context) {
         return Normal.EMPTY;

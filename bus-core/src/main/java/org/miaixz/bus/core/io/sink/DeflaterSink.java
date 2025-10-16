@@ -38,7 +38,8 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.IoKit;
 
 /**
- * 使用 Deflater 进行压缩的接收器，立即压缩并写入缓冲数据，调用 flush 会导致压缩率降低。
+ * A {@code DeflaterSink} compresses data using a {@link Deflater} and writes it to an underlying {@link Sink}. Data is
+ * compressed immediately as it is written. Calling {@link #flush()} may reduce compression efficiency.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -46,36 +47,36 @@ import org.miaixz.bus.core.xyz.IoKit;
 public class DeflaterSink implements Sink {
 
     /**
-     * 底层缓冲接收器
+     * The underlying buffered sink to which compressed data is written.
      */
     private final BufferSink sink;
 
     /**
-     * 压缩器
+     * The deflater instance used for compression.
      */
     private final Deflater deflater;
 
     /**
-     * 是否已关闭
+     * A flag indicating whether this sink has been closed.
      */
     private boolean closed;
 
     /**
-     * 构造方法，使用指定的接收器和压缩器。
+     * Constructs a {@code DeflaterSink} with the specified underlying sink and deflater.
      *
-     * @param sink     底层接收器
-     * @param deflater 压缩器
+     * @param sink     The underlying sink to write compressed data to.
+     * @param deflater The deflater to use for compression.
      */
     public DeflaterSink(Sink sink, Deflater deflater) {
         this(IoKit.buffer(sink), deflater);
     }
 
     /**
-     * 构造方法，使用指定的缓冲接收器和压缩器。
+     * Constructs a {@code DeflaterSink} with the specified underlying buffered sink and deflater.
      *
-     * @param sink     缓冲接收器
-     * @param deflater 压缩器
-     * @throws IllegalArgumentException 如果 sink 或 deflater 为 null
+     * @param sink     The underlying buffered sink to write compressed data to.
+     * @param deflater The deflater to use for compression.
+     * @throws IllegalArgumentException If {@code sink} or {@code deflater} is {@code null}.
      */
     DeflaterSink(BufferSink sink, Deflater deflater) {
         if (sink == null)
@@ -87,11 +88,12 @@ public class DeflaterSink implements Sink {
     }
 
     /**
-     * 从源缓冲区读取指定字节数并压缩写入接收器。
+     * Writes {@code byteCount} bytes from {@code source} to this sink, compressing them before writing to the
+     * underlying sink.
      *
-     * @param source    数据源缓冲区
-     * @param byteCount 要读取的字节数
-     * @throws IOException 如果写入失败
+     * @param source    The buffer containing the data to write.
+     * @param byteCount The number of bytes to read from {@code source} and write.
+     * @throws IOException If an I/O error occurs during the write or compression operation.
      */
     @Override
     public void write(Buffer source, long byteCount) throws IOException {
@@ -112,10 +114,11 @@ public class DeflaterSink implements Sink {
     }
 
     /**
-     * 压缩数据到接收器。
+     * Compresses data from the deflater's input buffer and writes it to the underlying sink.
      *
-     * @param syncFlush 是否同步刷新
-     * @throws IOException 如果压缩或写入失败
+     * @param syncFlush If {@code true}, a {@link Deflater#SYNC_FLUSH} is performed, which may reduce compression
+     *                  efficiency but ensures all pending data is written.
+     * @throws IOException If an I/O error occurs during the compression or write operation.
      */
     private void deflate(boolean syncFlush) throws IOException {
         Buffer buffer = sink.buffer();
@@ -139,9 +142,10 @@ public class DeflaterSink implements Sink {
     }
 
     /**
-     * 刷新缓冲区，立即压缩并写入所有数据。
+     * Flushes any buffered data to the underlying sink, performing a synchronous flush on the deflater to ensure all
+     * pending data is compressed and written.
      *
-     * @throws IOException 如果刷新失败
+     * @throws IOException If an I/O error occurs during the flush operation.
      */
     @Override
     public void flush() throws IOException {
@@ -150,9 +154,10 @@ public class DeflaterSink implements Sink {
     }
 
     /**
-     * 完成压缩过程，写入剩余数据。
+     * Finishes the compression process, writing any remaining compressed data to the sink. This method should be called
+     * before closing the sink to ensure all data is written.
      *
-     * @throws IOException 如果写入失败
+     * @throws IOException If an I/O error occurs during the compression or write operation.
      */
     void finishDeflate() throws IOException {
         deflater.finish();
@@ -160,9 +165,10 @@ public class DeflaterSink implements Sink {
     }
 
     /**
-     * 关闭接收器，完成压缩并释放资源。
+     * Closes this sink, finishes the compression, and releases any system resources associated with the deflater and
+     * the underlying sink.
      *
-     * @throws IOException 如果关闭失败
+     * @throws IOException If an I/O error occurs during the close operation.
      */
     @Override
     public void close() throws IOException {
@@ -192,9 +198,9 @@ public class DeflaterSink implements Sink {
     }
 
     /**
-     * 获取底层接收器的超时配置。
+     * Returns the timeout for the underlying sink.
      *
-     * @return 超时对象
+     * @return The timeout object associated with the underlying sink.
      */
     @Override
     public Timeout timeout() {
@@ -202,9 +208,10 @@ public class DeflaterSink implements Sink {
     }
 
     /**
-     * 返回对象的字符串表示。
+     * Returns a string representation of this {@code DeflaterSink}. The string representation includes the class name
+     * and the string representation of the underlying sink.
      *
-     * @return 字符串表示，包含类名和底层接收器信息
+     * @return A string representation of this object.
      */
     @Override
     public String toString() {

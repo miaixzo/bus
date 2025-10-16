@@ -31,54 +31,64 @@ import jakarta.mail.Authenticator;
 import jakarta.mail.PasswordAuthentication;
 
 /**
- * 用户名密码授权
- * 
+ * An authenticator that provides username and password authentication for a mail session. This class extends
+ * {@link Authenticator} and is used to supply credentials to the mail server.
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class MailAuthenticator extends Authenticator {
 
+    /**
+     * The password authentication object containing the username and password.
+     */
     private final PasswordAuthentication auth;
 
     /**
-     * 创建账号密码形式的{@link java.net.Authenticator} 实现。
+     * Creates a new {@code MailAuthenticator} instance with the given username and password.
      *
-     * @param user 用户名
-     * @param pass 密码
-     * @return PassAuth
+     * @param user The username for authentication.
+     * @param pass The password for authentication.
+     * @return A new {@code MailAuthenticator} instance.
      */
     public static MailAuthenticator of(final String user, final String pass) {
         return new MailAuthenticator(user, pass);
     }
 
     /**
-     * 构造
+     * Constructs a new {@code MailAuthenticator} from a {@link MailAccount} object.
      *
-     * @param mailAccount 邮箱账号信息
+     * @param mailAccount The {@link MailAccount} containing the username and password.
      */
     public MailAuthenticator(final MailAccount mailAccount) {
         this.auth = new PasswordAuthentication(mailAccount.getUser(), String.valueOf(mailAccount.getPass()));
     }
 
     /**
-     * 构造
+     * Constructs a new {@code MailAuthenticator} with the given username and password.
      *
-     * @param userName 用户名
-     * @param password 密码
+     * @param userName The username for authentication.
+     * @param password The password for authentication.
      */
     public MailAuthenticator(final String userName, final String password) {
         this.auth = new PasswordAuthentication(userName, password);
     }
 
     /**
-     * 构造
+     * Constructs a new {@code MailAuthenticator} with a pre-existing {@link PasswordAuthentication} object.
      *
-     * @param auth 密码授权信息
+     * @param auth The {@link PasswordAuthentication} object.
      */
     public MailAuthenticator(final PasswordAuthentication auth) {
         this.auth = auth;
     }
 
+    /**
+     * Returns the {@link PasswordAuthentication} object containing the credentials. This method is called by the
+     * Jakarta Mail API to get the authentication details.
+     *
+     * @return The {@link PasswordAuthentication} object.
+     */
     @Override
     protected PasswordAuthentication getPasswordAuthentication() {
         return this.auth;

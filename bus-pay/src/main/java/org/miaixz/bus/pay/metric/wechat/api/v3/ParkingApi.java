@@ -30,7 +30,7 @@ package org.miaixz.bus.pay.metric.wechat.api.v3;
 import org.miaixz.bus.pay.Matcher;
 
 /**
- * 微信支付 v3 接口-微信支付分停车服务接口
+ * WeChat Pay V3 API interfaces related to WeChat Pay Score parking services.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,44 +38,51 @@ import org.miaixz.bus.pay.Matcher;
 public enum ParkingApi implements Matcher {
 
     /**
-     * 查询车牌服务开通信息
+     * Query vehicle service activation information.
      */
-    VEHICLE_PARKING_SERVICES_FIND("/v3/vehicle/parking/services/find", "查询车牌服务开通信息"),
+    VEHICLE_PARKING_SERVICES_FIND("/v3/vehicle/parking/services/find", "Query vehicle service activation information"),
 
     /**
-     * 创建停车入场
+     * Create parking entry.
      */
-    VEHICLE_PARKING("/v3/vehicle/parking/parkings", "创建停车入场"),
+    VEHICLE_PARKING("/v3/vehicle/parking/parkings", "Create parking entry"),
 
     /**
-     * 扣费受理
+     * Deduction acceptance.
      */
-    VEHICLE_TRANSACTION_PARKING("/v3/vehicle/transactions/parking", "扣费受理"),
+    VEHICLE_TRANSACTION_PARKING("/v3/vehicle/transactions/parking", "Deduction acceptance"),
 
     /**
-     * 查询订单
+     * Query order by out trade number.
      */
-    VEHICLE_TRANSACTION_QUERY_BY_OUT_TRADE_NO("/v3/vehicle/transactions/out-trade-no/%s", "查询订单");
+    VEHICLE_TRANSACTION_QUERY_BY_OUT_TRADE_NO("/v3/vehicle/transactions/out-trade-no/%s",
+            "Query order by out trade number");
 
     /**
-     * 接口方法
+     * The API method.
      */
     private final String method;
 
     /**
-     * 接口描述
+     * The API description.
      */
     private final String desc;
 
+    /**
+     * Constructs a new ParkingApi enum.
+     *
+     * @param method The API method.
+     * @param desc   The API description.
+     */
     ParkingApi(String method, String desc) {
         this.method = method;
         this.desc = desc;
     }
 
     /**
-     * 交易类型
+     * Gets the transaction type.
      *
-     * @return the string
+     * @return The transaction type.
      */
     @Override
     public String type() {
@@ -83,9 +90,9 @@ public enum ParkingApi implements Matcher {
     }
 
     /**
-     * 类型描述
+     * Gets the type description.
      *
-     * @return the string
+     * @return The type description.
      */
     @Override
     public String desc() {
@@ -93,9 +100,9 @@ public enum ParkingApi implements Matcher {
     }
 
     /**
-     * 接口方法
+     * Gets the API method.
      *
-     * @return the string
+     * @return The API method.
      */
     @Override
     public String method() {

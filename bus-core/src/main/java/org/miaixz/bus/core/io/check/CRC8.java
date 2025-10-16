@@ -32,25 +32,38 @@ import java.io.Serializable;
 import java.util.zip.Checksum;
 
 /**
- * CRC8 循环冗余校验码（Cyclic Redundancy Check）实现 代码来自：<a href="https://github.com/BBSc0der">https://github.com/BBSc0der</a>
+ * Implements the CRC8 (Cyclic Redundancy Check) algorithm. This code is adapted from
+ * <a href="https://github.com/BBSc0der">https://github.com/BBSc0der</a>.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class CRC8 implements Checksum, Serializable {
 
+    /**
+     * The serial version UID for serialization.
+     */
     @Serial
     private static final long serialVersionUID = 2852278059978L;
 
+    /**
+     * The initial value for the CRC calculation.
+     */
     private final short init;
+    /**
+     * The CRC lookup table.
+     */
     private final short[] crcTable = new short[256];
+    /**
+     * The current CRC value.
+     */
     private short value;
 
     /**
-     * 构造
+     * Constructs a new CRC8 instance with the specified polynomial and initial value.
      *
-     * @param polynomial Polynomial, typically one of the POLYNOMIAL_* constants.
-     * @param init       Initial value, typically either 0xff or zero.
+     * @param polynomial The polynomial to use for CRC calculation, typically one of the POLYNOMIAL_* constants.
+     * @param init       The initial value for the CRC, typically either 0xff or zero.
      */
     public CRC8(final int polynomial, final short init) {
         this.value = this.init = init;
@@ -67,6 +80,13 @@ public class CRC8 implements Checksum, Serializable {
         }
     }
 
+    /**
+     * Updates the current CRC with the specified array of bytes.
+     *
+     * @param buffer The byte array to update the CRC with.
+     * @param offset The start offset in the data.
+     * @param len    The number of bytes to use for the update.
+     */
     @Override
     public void update(final byte[] buffer, final int offset, final int len) {
         for (int i = 0; i < len; i++) {
@@ -76,25 +96,38 @@ public class CRC8 implements Checksum, Serializable {
     }
 
     /**
-     * Updates the current check with the specified array of bytes. Equivalent to calling
+     * Updates the current CRC with the specified array of bytes. Equivalent to calling
      * {@code update(buffer, 0, buffer.length)}.
      *
-     * @param buffer the byte array to update the check with
+     * @param buffer The byte array to update the CRC with.
      */
     public void update(final byte[] buffer) {
         update(buffer, 0, buffer.length);
     }
 
+    /**
+     * Updates the current CRC with the specified byte.
+     *
+     * @param b The byte to update the CRC with.
+     */
     @Override
     public void update(final int b) {
         update(new byte[] { (byte) b }, 0, 1);
     }
 
+    /**
+     * Returns the current CRC value.
+     *
+     * @return The current CRC value.
+     */
     @Override
     public long getValue() {
         return value & 0xff;
     }
 
+    /**
+     * Resets the CRC to its initial value.
+     */
     @Override
     public void reset() {
         value = init;

@@ -39,8 +39,11 @@ import org.miaixz.bus.http.NewCall;
 import org.miaixz.bus.http.RealCall;
 
 /**
- * 关于何时执行异步请求的策略 每个dispatcher使用一个{@link ExecutorService}在内部运行调用。 如果您提供自己的执行程序，它应该能够并发地运行{@linkplain #getMaxRequests
- * 配置的最大调用数}
+ * Policy on when async requests are executed.
+ *
+ * <p>
+ * Each dispatcher uses an {@link ExecutorService} to run calls internally. If you supply your own executor, it should
+ * be able to run {@linkplain #getMaxRequests the configured maximum} calls concurrently.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,33 +51,56 @@ import org.miaixz.bus.http.RealCall;
 public class Dispatcher {
 
     /**
-     * 准备异步调用的顺序，他们将被运行
+     * Ready async calls in the order they'll be run.
      */
     private final Deque<RealCall.AsyncCall> readyAsyncCalls = new ArrayDeque<>();
+
     /**
-     * 运行异步调用。包括尚未结束的已取消调用
+     * Running asynchronous calls. Includes canceled calls that haven't finished yet.
      */
     private final Deque<RealCall.AsyncCall> runningAsyncCalls = new ArrayDeque<>();
+
     /**
-     * 运行同步调用。包括尚未结束的已取消调用
+     * Running synchronous calls. Includes canceled calls that haven't finished yet.
      */
     private final Deque<RealCall> runningSyncCalls = new ArrayDeque<>();
+    /**
+     * Maximum number of simultaneous requests.
+     */
     private int maxRequests = Normal._64;
+    /**
+     * Maximum number of simultaneous requests per host.
+     */
     private int maxRequestsPerHost = 5;
+    /**
+     * A callback to be invoked when the dispatcher is idle.
+     */
     private Runnable idleCallback;
     /**
-     * 执行调用
+     * The executor service that runs calls.
      */
     private ExecutorService executorService;
 
+    /**
+     * Constructor that takes an ExecutorService.
+     *
+     * @param executorService The executor service to use for running calls.
+     */
     public Dispatcher(ExecutorService executorService) {
         this.executorService = executorService;
     }
 
+    /**
+     * Default constructor.
+     */
     public Dispatcher() {
-
     }
 
+    /**
+     * Returns the executor service that runs calls. Creates one if none exists.
+     *
+     * @return The executor service.
+     */
     public synchronized ExecutorService executorService() {
         if (null == executorService) {
             executorService = new ThreadPoolExecutor(0, Integer.MAX_VALUE, 60, TimeUnit.SECONDS,
@@ -83,14 +109,21 @@ public class Dispatcher {
         return executorService;
     }
 
+    /**
+     * Returns the maximum number of simultaneous requests.
+     *
+     * @return The maximum number of requests.
+     */
     public synchronized int getMaxRequests() {
         return maxRequests;
     }
 
     /**
-     * 设置并发执行的最大请求数。上述请求在内存中排队，等待正在运行的调用完成 如果在调用它时有超过{@code maxRequests}的请求在运行，那么这些请求将保持运行状态
+     * Set the maximum number of requests to execute concurrently. Above this requests stay in memory, waiting for
+     * naming calls to finish. If more than {@code maxRequests} requests are in flight when this is called, they'll
+     * remain in flight.
      *
-     * @param maxRequests 最大请求数
+     * @param maxRequests The maximum number of requests.
      */
     public void setMaxRequests(int maxRequests) {
         if (maxRequests < 1) {
@@ -102,15 +135,22 @@ public class Dispatcher {
         promoteAndExecute();
     }
 
+    /**
+     * Returns the maximum number of simultaneous requests per host.
+     *
+     * @return The maximum number of requests per host.
+     */
     public synchronized int getMaxRequestsPerHost() {
         return maxRequestsPerHost;
     }
 
     /**
-     * 设置每个主机并发执行的最大请求数。这将根据URL的主机名限制请求。 注意，对单个IP地址的并发请求仍然可能超过这个限制:多个主机名可能共享一个IP地址，或者通过相同的HTTP代理进行路由
-     * 如果在调用它时有超过{@code maxRequestsPerHost}的请求在运行，那么这些请求将保持运行状态
+     * Set the maximum number of requests for each host to execute concurrently. This limits requests by the URL's host
+     * name. Note that concurrent requests to a single IP address may still exceed this limit: multiple hostnames may
+     * share an IP address or be routed through the same HTTP proxy. If more than {@code maxRequestsPerHost} requests
+     * are in flight when this is called, they'll remain in flight.
      *
-     * @param maxRequestsPerHost 最大请求数
+     * @param maxRequestsPerHost The maximum number of requests per host.
      */
     public void setMaxRequestsPerHost(int maxRequestsPerHost) {
         if (maxRequestsPerHost < 1) {
@@ -123,14 +163,20 @@ public class Dispatcher {
     }
 
     /**
-     * 设置一个回调，以便每次调度程序变为空闲时调用(当运行的调用数量返回零时)
+     * Set a callback to be invoked each time the dispatcher becomes idle (when the number of running calls returns to
+     * zero).
      *
-     * @param idleCallback 回调
+     * @param idleCallback The callback.
      */
     public synchronized void setIdleCallback(Runnable idleCallback) {
         this.idleCallback = idleCallback;
     }
 
+    /**
+     * Schedules {@code call} to be executed at some point in the future.
+     *
+     * @param call The asynchronous call to enqueue.
+     */
     public void enqueue(RealCall.AsyncCall call) {
         synchronized (this) {
             readyAsyncCalls.add(call);
@@ -143,6 +189,12 @@ public class Dispatcher {
         promoteAndExecute();
     }
 
+    /**
+     * Finds an existing call (either running or ready) with the same host.
+     *
+     * @param host The host to search for.
+     * @return An existing async call, or null if none is found.
+     */
     public RealCall.AsyncCall findExistingCallWithHost(String host) {
         for (RealCall.AsyncCall existingCall : runningAsyncCalls) {
             if (existingCall.host().equals(host))
@@ -156,7 +208,8 @@ public class Dispatcher {
     }
 
     /**
-     * 取消当前排队或执行的所有调用。包括同步执行的 {@linkplain NewCall#execute()}和异步 执行的{@linkplain NewCall#enqueue}。
+     * Cancel all queued and running calls. Includes calls executed synchronously {@linkplain NewCall#execute()} and
+     * asynchronously {@linkplain NewCall#enqueue}.
      */
     public synchronized void cancelAll() {
         for (RealCall.AsyncCall call : readyAsyncCalls) {
@@ -173,9 +226,10 @@ public class Dispatcher {
     }
 
     /**
-     * 将符合条件的调用从{@link #readyAsyncCalls}提升到{@link #runningAsyncCalls}， 并在executor服务上运行它们。必须不与同步调用，因为执行调用可以调用到用户代码
+     * Promotes eligible calls from {@link #readyAsyncCalls} to {@link #runningAsyncCalls} and runs them on the executor
+     * service. Must not be called with synchronization because executing calls can call into user code.
      *
-     * @return 如果调度程序当前正在运行调用，则为true
+     * @return true if the dispatcher is currently running calls.
      */
     public boolean promoteAndExecute() {
         assert (!Thread.holdsLock(this));
@@ -209,6 +263,8 @@ public class Dispatcher {
 
     /**
      * Used by {@code Call#execute} to signal it is in-flight.
+     *
+     * @param call the call that has been executed.
      */
     public synchronized void executed(RealCall call) {
         runningSyncCalls.add(call);
@@ -216,6 +272,8 @@ public class Dispatcher {
 
     /**
      * Used by {@code AsyncCall#run} to signal completion.
+     *
+     * @param call the async call that has finished.
      */
     public void finished(RealCall.AsyncCall call) {
         call.callsPerHost().decrementAndGet();
@@ -224,11 +282,20 @@ public class Dispatcher {
 
     /**
      * Used by {@code Call#execute} to signal completion.
+     *
+     * @param call the call that has finished.
      */
     public void finished(RealCall call) {
         finished(runningSyncCalls, call);
     }
 
+    /**
+     * A general-purpose function to finish a call, either synchronous or asynchronous.
+     *
+     * @param calls The deque of calls to remove from.
+     * @param call  The call to remove.
+     * @param <T>   The type of the call.
+     */
     public <T> void finished(Deque<T> calls, T call) {
         Runnable idleCallback;
         synchronized (this) {
@@ -247,6 +314,8 @@ public class Dispatcher {
 
     /**
      * Returns a snapshot of the calls currently awaiting execution.
+     *
+     * @return A list of queued calls.
      */
     public synchronized List<NewCall> queuedCalls() {
         List<NewCall> result = new ArrayList<>();
@@ -258,6 +327,8 @@ public class Dispatcher {
 
     /**
      * Returns a snapshot of the calls currently being executed.
+     *
+     * @return A list of running calls.
      */
     public synchronized List<NewCall> runningCalls() {
         List<NewCall> result = new ArrayList<>();
@@ -268,10 +339,20 @@ public class Dispatcher {
         return Collections.unmodifiableList(result);
     }
 
+    /**
+     * Returns the number of calls that are waiting to be executed.
+     *
+     * @return The count of queued calls.
+     */
     public synchronized int queuedCallsCount() {
         return readyAsyncCalls.size();
     }
 
+    /**
+     * Returns the number of calls that are currently being executed.
+     *
+     * @return The count of running calls.
+     */
     public synchronized int runningCallsCount() {
         return runningAsyncCalls.size() + runningSyncCalls.size();
     }

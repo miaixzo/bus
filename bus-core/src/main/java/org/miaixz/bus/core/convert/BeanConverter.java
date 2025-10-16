@@ -41,13 +41,14 @@ import org.miaixz.bus.core.lang.exception.ConvertException;
 import org.miaixz.bus.core.xyz.*;
 
 /**
- * Bean转换器，支持：
- * 
- * <pre>
- * Map = Bean
- * Bean = Bean
- * ValueProvider = Bean
- * </pre>
+ * Converts an object to a JavaBean object.
+ * <p>
+ * This converter supports the following source types:
+ * <ul>
+ * <li>{@link Map}</li>
+ * <li>Another JavaBean</li>
+ * <li>{@link ValueProvider}</li>
+ * </ul>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -58,36 +59,47 @@ public class BeanConverter implements Converter, Serializable {
     private static final long serialVersionUID = 2852265579700L;
 
     /**
-     * 单例对象
+     * Singleton instance with default copy options.
      */
     public static BeanConverter INSTANCE = new BeanConverter();
 
+    /**
+     * The options to control the bean copying process.
+     */
     private final CopyOptions copyOptions;
 
     /**
-     * 构造
+     * Constructs a new {@code BeanConverter} with default copy options (errors ignored).
      */
     public BeanConverter() {
         this(CopyOptions.of().setIgnoreError(true));
     }
 
     /**
-     * 构造
+     * Constructs a new {@code BeanConverter} with the specified copy options.
      *
-     * @param copyOptions Bean转换选项参数
+     * @param copyOptions The options for bean copying.
      */
     public BeanConverter(final CopyOptions copyOptions) {
         this.copyOptions = copyOptions;
     }
 
+    /**
+     * Converts the given value to the specified target type.
+     *
+     * @param targetType The target type to convert to.
+     * @param value      The value to convert.
+     * @return The converted object, or {@code null} if the input value is {@code null}.
+     * @throws ConvertException if the conversion is not supported or fails.
+     */
     @Override
     public Object convert(final Type targetType, final Object value) throws ConvertException {
-        Assert.notNull(targetType);
+        Assert.notNull(targetType, "Target type must not be null.");
         if (null == value) {
             return null;
         }
 
-        // value本身实现了Converter接口，直接调用
+        // If the value is a Converter itself, use it for conversion.
         if (value instanceof Converter) {
             return ((Converter) value).convert(targetType, value);
         }
@@ -98,20 +110,31 @@ public class BeanConverter implements Converter, Serializable {
         return convertInternal(targetType, targetClass, value);
     }
 
+    /**
+     * Performs the internal conversion logic.
+     *
+     * @param targetType  The target type.
+     * @param targetClass The target class.
+     * @param value       The value to be converted.
+     * @return The converted object.
+     * @throws ConvertException if the source type is not supported.
+     */
     private Object convertInternal(final Type targetType, final Class<?> targetClass, final Object value) {
+        // Handle conversion from Map, ValueProvider, or another readable bean.
         if (value instanceof Map || value instanceof ValueProvider || BeanKit.isReadableBean(value.getClass())) {
             if (value instanceof Map && targetClass.isInterface()) {
-                // 将Map动态代理为Bean
+                // Create a dynamic proxy for the Map to act as a bean.
                 return MapProxy.of((Map<?, ?>) value).toProxyBean(targetClass);
             }
 
-            // 限定被转换对象类型
+            // Copy properties from the source to a new instance of the target class.
             return BeanCopier.of(value, ReflectKit.newInstanceIfPossible(targetClass), targetType, this.copyOptions)
                     .copy();
         } else if (value instanceof byte[]) {
-            // 尝试反序列化
+            // Attempt to deserialize from a byte array.
             return SerializeKit.deserialize((byte[]) value);
         } else if (ObjectKit.isEmptyIfString(value)) {
+            // Return null for empty string values.
             return null;
         }
 

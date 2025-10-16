@@ -30,8 +30,11 @@ package org.miaixz.bus.core.text.bloom;
 import java.io.Serializable;
 
 /**
- * Bloom filter 是由 Howard Bloom 在 1970 年提出的二进制向量数据结构，它具有很好的空间和时间效率，被用来检测一个元素是不是集合中的一个成员。
- * 如果检测结果为是，该元素不一定在集合中；但如果检测结果为否，该元素一定不在集合中。 因此Bloom filter具有100%的召回率。这样每个检测请求返回有“在集合内（可能错误）”和“不在集合内（绝对不在集合内）”两种情况。
+ * Bloom filter is a binary vector data structure proposed by Howard Bloom in 1970. It offers excellent space and time
+ * efficiency and is used to check if an element is a member of a set. If the check result is positive, the element may
+ * or may not be in the set; however, if the check result is negative, the element is definitely not in the set.
+ * Therefore, a Bloom filter has a 100% recall rate. Each check request can return two outcomes: "in the set (possibly
+ * false positive)" and "not in the set (definitely not in the set)".
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -39,18 +42,21 @@ import java.io.Serializable;
 public interface BloomFilter extends Serializable {
 
     /**
-     * 否包含字符
+     * Checks if the given text is contained in the Bloom filter. If the text is definitely not in the filter, it
+     * returns {@code false}. If the text might be in the filter (with a possibility of false positive), it returns
+     * {@code true}.
      *
-     * @param text 字符串
-     * @return 判断一个字符串是否bitMap中存在
+     * @param text The string to check.
+     * @return {@code true} if the text might be in the filter, {@code false} if it is definitely not in the filter.
      */
     boolean contains(String text);
 
     /**
-     * 在boolean的bitMap中增加一个字符串 如果存在就返回{@code false} .如果不存在.先增加这个字符串.再返回{@code true}
+     * Adds a string to the Bloom filter. If the string already exists in the filter, it returns {@code false}. If the
+     * string does not exist, it adds the string and returns {@code true}.
      *
-     * @param text 字符串
-     * @return 是否加入成功，如果存在就返回{@code false} .如果不存在返回{@code true}
+     * @param text The string to add.
+     * @return {@code true} if the string was added successfully, {@code false} if it already existed.
      */
     boolean add(String text);
 

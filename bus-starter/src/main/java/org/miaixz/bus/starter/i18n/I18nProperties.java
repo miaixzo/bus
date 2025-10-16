@@ -27,14 +27,13 @@
 */
 package org.miaixz.bus.starter.i18n;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.miaixz.bus.spring.GeniusBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-import lombok.Getter;
-import lombok.Setter;
-
 /**
- * 国际化资源配置属性
+ * Configuration properties for internationalization (i18n) resource bundles.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -45,9 +44,16 @@ import lombok.Setter;
 public class I18nProperties {
 
     /**
-     * 默认 UTF-8
+     * The default character encoding for the message bundles. If not specified, the system's default encoding will be
+     * used. It is recommended to set this to UTF-8.
      */
     private String defaultEncoding;
+
+    /**
+     * An array of base names for the resource bundles. Each base name corresponds to a set of property files. For
+     * example, a base name of "messages" would correspond to files like {@code messages.properties},
+     * {@code messages_en_US.properties}, etc.
+     */
     private String[] baseNames;
 
 }

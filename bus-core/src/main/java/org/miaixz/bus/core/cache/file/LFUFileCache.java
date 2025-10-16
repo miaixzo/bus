@@ -34,7 +34,8 @@ import org.miaixz.bus.core.cache.Cache;
 import org.miaixz.bus.core.cache.provider.LFUCache;
 
 /**
- * 使用LFU缓存文件，以解决频繁读取文件引起的性能问题
+ * A file cache implementation that uses the LFU (Least Frequently Used) strategy to manage cached files and mitigate
+ * performance issues from frequent file reads.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -45,47 +46,66 @@ public class LFUFileCache extends AbstractFileCache {
     private static final long serialVersionUID = 2852230262897L;
 
     /**
-     * 构造 最大文件大小为缓存容量的一半 默认无超时
+     * Constructs an LFU file cache with a default max file size (half of the capacity) and no timeout.
      *
-     * @param capacity 缓存容量
+     * @param capacity The cache capacity in bytes.
      */
     public LFUFileCache(final int capacity) {
         this(capacity, capacity / 2, 0);
     }
 
     /**
-     * 构造 默认无超时
+     * Constructs an LFU file cache with a specified max file size and no timeout.
      *
-     * @param capacity    缓存容量
-     * @param maxFileSize 最大文件大小
+     * @param capacity    The cache capacity in bytes.
+     * @param maxFileSize The maximum file size in bytes.
      */
     public LFUFileCache(final int capacity, final int maxFileSize) {
         this(capacity, maxFileSize, 0);
     }
 
     /**
-     * 构造
+     * Constructs an LFU file cache with specified capacity, max file size, and timeout.
      *
-     * @param capacity    缓存容量
-     * @param maxFileSize 文件最大大小
-     * @param timeout     默认超时时间，0表示无默认超时
+     * @param capacity    The cache capacity in bytes.
+     * @param maxFileSize The maximum file size in bytes.
+     * @param timeout     The default timeout in milliseconds (0 for no timeout).
      */
     public LFUFileCache(final int capacity, final int maxFileSize, final long timeout) {
         super(capacity, maxFileSize, timeout);
     }
 
+    /**
+     * Initializes the underlying LFU cache. This implementation uses a custom {@link LFUCache} that tracks memory usage
+     * in bytes.
+     *
+     * @return A new {@link LFUCache} instance.
+     */
     @Override
     protected Cache<File, byte[]> initCache() {
-        return new LFUCache<>(LFUFileCache.this.capacity, LFUFileCache.this.timeout) {
+        // The cache capacity is managed by the parent class in terms of byte size,
+        // while the underlying LFUCache manages the number of items.
+        return new LFUCache<>(this.capacity, this.timeout) {
 
             @Serial
             private static final long serialVersionUID = 2852368337873L;
 
+            /**
+             * Determines if the cache is full by comparing the used byte size against the capacity.
+             *
+             * @return {@code true} if the used size exceeds the capacity.
+             */
             @Override
             public boolean isFull() {
                 return LFUFileCache.this.usedSize > this.capacity;
             }
 
+            /**
+             * Updates the used size when an item is removed from the cache.
+             *
+             * @param key          The file being removed.
+             * @param cachedObject The byte content of the file being removed.
+             */
             @Override
             protected void onRemove(final File key, final byte[] cachedObject) {
                 usedSize -= cachedObject.length;

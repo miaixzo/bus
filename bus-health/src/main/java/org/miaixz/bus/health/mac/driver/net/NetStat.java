@@ -43,7 +43,7 @@ import com.sun.jna.platform.mac.SystemB.IFmsgHdr2;
 import com.sun.jna.platform.unix.LibCAPI.size_t;
 
 /**
- * Utility to query NetStat.
+ * Utility to query NetStat on macOS.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -51,17 +51,29 @@ import com.sun.jna.platform.unix.LibCAPI.size_t;
 @ThreadSafe
 public final class NetStat {
 
+    /**
+     * Control Network (CTL_NET) MIB value.
+     */
     private static final int CTL_NET = 4;
+    /**
+     * Protocol Family Route (PF_ROUTE) MIB value.
+     */
     private static final int PF_ROUTE = 17;
+    /**
+     * Net Route Interface List 2 (NET_RT_IFLIST2) MIB value.
+     */
     private static final int NET_RT_IFLIST2 = 6;
+    /**
+     * Routing Message Interface Info 2 (RTM_IFINFO2) message type.
+     */
     private static final int RTM_IFINFO2 = 0x12;
 
     /**
-     * Map data for network interfaces.
+     * Retrieves network interface data.
      *
      * @param index If positive, limit the map to only return data for this interface index. If negative, returns data
      *              for all indices.
-     * @return a map of {@link IFdata} object indexed by the interface index, encapsulating the stats
+     * @return A map of {@link IFdata} objects indexed by the interface index, encapsulating the stats.
      */
     public static Map<Integer, IFdata> queryIFdata(int index) {
         // Ported from source code of "netstat -ir". See
@@ -117,7 +129,7 @@ public final class NetStat {
     }
 
     /**
-     * Class to encapsulate IF data for method return
+     * Class to encapsulate network interface data for method return.
      */
     @Immutable
     public static class IFdata {
@@ -134,6 +146,21 @@ public final class NetStat {
         private final long speed;
         private final long timeStamp;
 
+        /**
+         * Constructs an {@code IFdata} object.
+         *
+         * @param ifType     The interface type.
+         * @param oPackets   The number of outgoing packets.
+         * @param iPackets   The number of incoming packets.
+         * @param oBytes     The number of outgoing bytes.
+         * @param iBytes     The number of incoming bytes.
+         * @param oErrors    The number of outgoing errors.
+         * @param iErrors    The number of incoming errors.
+         * @param collisions The number of collisions.
+         * @param iDrops     The number of incoming packet drops.
+         * @param speed      The interface speed.
+         * @param timeStamp  The timestamp when this data was captured.
+         */
         IFdata(int ifType, // NOSONAR squid:S00107
                 long oPackets, long iPackets, long oBytes, long iBytes, long oErrors, long iErrors, long collisions,
                 long iDrops, long speed, long timeStamp) {
@@ -151,77 +178,99 @@ public final class NetStat {
         }
 
         /**
-         * @return the ifType
+         * Gets the interface type.
+         *
+         * @return The interface type.
          */
         public int getIfType() {
             return ifType;
         }
 
         /**
-         * @return the oPackets
+         * Gets the number of outgoing packets.
+         *
+         * @return The number of outgoing packets.
          */
         public long getOPackets() {
             return oPackets;
         }
 
         /**
-         * @return the iPackets
+         * Gets the number of incoming packets.
+         *
+         * @return The number of incoming packets.
          */
         public long getIPackets() {
             return iPackets;
         }
 
         /**
-         * @return the oBytes
+         * Gets the number of outgoing bytes.
+         *
+         * @return The number of outgoing bytes.
          */
         public long getOBytes() {
             return oBytes;
         }
 
         /**
-         * @return the iBytes
+         * Gets the number of incoming bytes.
+         *
+         * @return The number of incoming bytes.
          */
         public long getIBytes() {
             return iBytes;
         }
 
         /**
-         * @return the oErrors
+         * Gets the number of outgoing errors.
+         *
+         * @return The number of outgoing errors.
          */
         public long getOErrors() {
             return oErrors;
         }
 
         /**
-         * @return the iErrors
+         * Gets the number of incoming errors.
+         *
+         * @return The number of incoming errors.
          */
         public long getIErrors() {
             return iErrors;
         }
 
         /**
-         * @return the collisions
+         * Gets the number of collisions.
+         *
+         * @return The number of collisions.
          */
         public long getCollisions() {
             return collisions;
         }
 
         /**
-         * @return the iDrops
+         * Gets the number of incoming packet drops.
+         *
+         * @return The number of incoming packet drops.
          */
         public long getIDrops() {
             return iDrops;
         }
 
         /**
-         * @return the speed
+         * Gets the interface speed.
+         *
+         * @return The interface speed.
          */
         public long getSpeed() {
             return speed;
         }
 
         /**
-         * @return the timeStamp
+         * Gets the timestamp when this data was captured.
+         *
+         * @return The timestamp in milliseconds.
          */
         public long getTimeStamp() {
             return timeStamp;

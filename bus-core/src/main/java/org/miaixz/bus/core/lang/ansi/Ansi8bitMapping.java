@@ -30,7 +30,9 @@ package org.miaixz.bus.core.lang.ansi;
 import java.util.LinkedHashMap;
 
 /**
- * ANSI 8bit 颜色和Lab颜色映射关系
+ * Provides a mapping between ANSI 8-bit colors and their corresponding LabColor representations. This class is used to
+ * find the closest ANSI 8-bit color for a given LabColor. The mapping includes standard, high-intensity, 6x6x6 color
+ * cube, and grayscale colors.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,10 +40,14 @@ import java.util.LinkedHashMap;
 public class Ansi8bitMapping extends AnsiLabMapping {
 
     /**
-     * 单例
+     * Singleton instance of {@code Ansi8bitMapping}.
      */
     public static final Ansi8bitMapping INSTANCE = new Ansi8bitMapping();
 
+    /**
+     * Lookup table for ANSI 8-bit color codes to their corresponding RGB integer values. This array contains 256 RGB
+     * color values, where the index corresponds to the 8-bit ANSI color code.
+     */
     private static final int[] ANSI_8BIT_COLOR_CODE_LOOKUP = new int[] { 0x000000, 0x800000, 0x008000, 0x808000,
             0x000080, 0x800080, 0x008080, 0xc0c0c0, 0x808080, 0xff0000, 0x00ff00, 0xffff00, 0x0000ff, 0xff00ff,
             0x00ffff, 0xffffff, 0x000000, 0x00005f, 0x000087, 0x0000af, 0x0000d7, 0x0000ff, 0x005f00, 0x005f5f,
@@ -71,7 +77,8 @@ public class Ansi8bitMapping extends AnsiLabMapping {
             0xe4e4e4, 0xeeeeee };
 
     /**
-     * 构造
+     * Constructs a new {@code Ansi8bitMapping} and initializes the {@code ansiLabMap} with ANSI 8-bit colors and their
+     * RGB-derived LabColor values. Each of the 256 ANSI 8-bit colors is mapped to its corresponding LabColor.
      */
     public Ansi8bitMapping() {
         ansiLabMap = new LinkedHashMap<>(256, 1);

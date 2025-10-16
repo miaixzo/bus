@@ -30,10 +30,12 @@ package org.miaixz.bus.office.excel.cell.editors;
 import org.apache.poi.ss.usermodel.Cell;
 
 /**
- * 单元格编辑器接口 在读取Excel值时，有时我们需要针对所有单元格统一处理结果值（如null转默认值）的情况，实现接口并调用 reader.setCellEditor()设置编辑器 此接口可完成以下功能：
+ * Cell editor interface. When reading Excel values, it is sometimes necessary to process all cell values uniformly
+ * (e.g., converting null to a default value). This can be achieved by implementing this interface and setting the
+ * editor via {@code reader.setCellEditor()}. This interface can perform the following functions:
  * <ul>
- * <li>对单元格进行编辑，如修改样式等。</li>
- * <li>对单元格的值进行编辑，如根据单元格修改不同值，然后返回</li>
+ * <li>Edit cells, such as modifying styles.</li>
+ * <li>Edit cell values, such as modifying different values based on the cell and returning the processed value.</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -43,11 +45,11 @@ import org.apache.poi.ss.usermodel.Cell;
 public interface CellEditor {
 
     /**
-     * 编辑，根据单元格信息处理结果值，返回处理后的结果
+     * Edits the cell and processes the result value based on cell information, returning the processed result.
      *
-     * @param cell  单元格对象，可以获取单元格行、列样式等信息
-     * @param value 单元格值
-     * @return 编辑后的值
+     * @param cell  The cell object, from which cell row, column, style, and other information can be obtained.
+     * @param value The original cell value.
+     * @return The edited value.
      */
     Object edit(Cell cell, Object value);
 

@@ -26,7 +26,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 分页插件
+ * Provides various handlers for the pagination plugin, including tenant, permission, and SQL parsing handlers. These
+ * handlers extend the functionality of the pagination process by allowing custom logic to be injected.
  *
  * @author Kimi Liu
  * @since Java 17+

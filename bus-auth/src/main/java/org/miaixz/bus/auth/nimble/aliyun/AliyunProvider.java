@@ -40,21 +40,38 @@ import org.miaixz.bus.auth.nimble.AbstractProvider;
 import java.util.Map;
 
 /**
- * 阿里云登录
+ * Aliyun login provider.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class AliyunProvider extends AbstractProvider {
 
+    /**
+     * Constructs an {@code AliyunProvider} with the specified context.
+     *
+     * @param context the authentication context
+     */
     public AliyunProvider(Context context) {
         super(context, Registry.ALIYUN);
     }
 
+    /**
+     * Constructs an {@code AliyunProvider} with the specified context and cache.
+     *
+     * @param context the authentication context
+     * @param cache   the cache implementation
+     */
     public AliyunProvider(Context context, CacheX cache) {
         super(context, Registry.ALIYUN, cache);
     }
 
+    /**
+     * Retrieves the access token from Aliyun's authorization server.
+     *
+     * @param callback the callback object containing the authorization code
+     * @return the {@link AuthToken} containing access token details
+     */
     @Override
     public AuthToken getAccessToken(Callback callback) {
         String response = doPostAuthorizationCode(callback.getCode());
@@ -66,6 +83,12 @@ public class AliyunProvider extends AbstractProvider {
                 .refreshToken((String) accessTokenObject.get("refresh_token")).build();
     }
 
+    /**
+     * Retrieves user information from Aliyun's user info endpoint.
+     *
+     * @param authToken the {@link AuthToken} obtained after successful authorization
+     * @return {@link Material} containing the user's information
+     */
     @Override
     public Material getUserInfo(AuthToken authToken) {
         String userInfo = doGetUserInfo(authToken);

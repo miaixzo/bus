@@ -33,7 +33,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.shade.screw.metadata.DataSchema;
 
 /**
- * 文件产生接口
+ * Interface for file generation engines.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -41,11 +41,11 @@ import org.miaixz.bus.shade.screw.metadata.DataSchema;
 public interface TemplateEngine extends Serializable {
 
     /**
-     * 生成文档
+     * Generates a document based on the provided data model.
      *
-     * @param info    {@link DataSchema}
-     * @param docName {@link String}
-     * @throws InternalException 异常
+     * @param info    The {@link DataSchema} data model containing the information to be rendered.
+     * @param docName The base name for the output document.
+     * @throws InternalException if an error occurs during document generation.
      */
     void produce(DataSchema info, String docName) throws InternalException;
 

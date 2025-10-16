@@ -34,7 +34,9 @@ import java.nio.file.attribute.BasicFileAttributes;
 import org.miaixz.bus.core.io.file.PathResolve;
 
 /**
- * 文件拷贝的FileVisitor实现，用于递归遍历拷贝目录，此类非线程安全 此类在遍历源目录并复制过程中会自动创建目标目录中不存在的上级目录。
+ * FileVisitor implementation for file copying, used to recursively traverse and copy directories. This class is not
+ * thread-safe. This class automatically creates non-existent parent directories in the target directory during the
+ * traversal and copying process.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,23 +44,30 @@ import org.miaixz.bus.core.io.file.PathResolve;
 public class CopyVisitor extends SimpleFileVisitor<Path> {
 
     /**
-     * 源Path，或基准路径，用于计算被拷贝文件的相对路径
+     * Source Path, or base path, used to calculate the relative path of the file to be copied.
      */
     private final Path source;
+    /**
+     * Target Path.
+     */
     private final Path target;
+    /**
+     * Copy options, such as skipping existing files.
+     */
     private final CopyOption[] copyOptions;
 
     /**
-     * 标记目标目录是否创建，省略每次判断目标是否存在
+     * Flag indicating whether the target directory has been created, avoiding repeated checks for its existence.
      */
     private boolean isTargetCreated;
 
     /**
-     * 构造
+     * Constructs a {@code CopyVisitor} with the specified source, target, and copy options.
      *
-     * @param source      源Path，或基准路径，用于计算被拷贝文件的相对路径
-     * @param target      目标Path
-     * @param copyOptions 拷贝选项，如跳过已存在等
+     * @param source      The source Path, or base path, used to calculate the relative path of the file to be copied.
+     * @param target      The target Path.
+     * @param copyOptions Copy options, such as skipping existing files.
+     * @throws IllegalArgumentException if the target exists and is not a directory.
      */
     public CopyVisitor(final Path source, final Path target, final CopyOption... copyOptions) {
         if (PathResolve.exists(target, false) && !PathResolve.isDirectory(target)) {
@@ -69,48 +78,69 @@ public class CopyVisitor extends SimpleFileVisitor<Path> {
         this.copyOptions = copyOptions;
     }
 
+    /**
+     * Invoked before visiting a directory. Initializes the target directory and copies the current directory to the
+     * target.
+     *
+     * @param dir   The directory to visit.
+     * @param attrs The basic file attributes of the directory.
+     * @return {@link FileVisitResult#CONTINUE} to continue the file tree traversal.
+     * @throws IOException if an I/O error occurs.
+     */
     @Override
     public FileVisitResult preVisitDirectory(final Path dir, final BasicFileAttributes attrs) throws IOException {
         initTargetDir();
-        // 将当前目录相对于源路径转换为相对于目标路径
+        // Convert the current directory relative to the source path to a path relative to the target path.
         final Path targetDir = resolveTarget(dir);
 
-        // 在目录不存在的情况下，copy方法会创建新目录
+        // The copy method will create a new directory if it does not exist.
         try {
             Files.copy(dir, targetDir, copyOptions);
         } catch (final FileAlreadyExistsException e) {
             if (!Files.isDirectory(targetDir)) {
-                // 目标文件存在抛出异常，目录忽略
+                // If the target file exists, throw an exception; directories are ignored.
                 throw e;
             }
         }
         return FileVisitResult.CONTINUE;
     }
 
+    /**
+     * Invoked when a file is visited. Initializes the target directory and copies the current file to the target.
+     *
+     * @param file  The file to visit.
+     * @param attrs The basic file attributes of the file.
+     * @return {@link FileVisitResult#CONTINUE} to continue the file tree traversal.
+     * @throws IOException if an I/O error occurs.
+     */
     @Override
     public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
         initTargetDir();
-        // 如果目标存在，无论目录还是文件都抛出FileAlreadyExistsException异常，此处不做特别处理
+        // If the target exists, whether it's a directory or a file, a FileAlreadyExistsException is thrown.
+        // No special handling is done here.
         Files.copy(file, resolveTarget(file), copyOptions);
         return FileVisitResult.CONTINUE;
     }
 
     /**
-     * 根据源文件或目录路径，拼接生成目标的文件或目录路径 原理是首先截取源路径，得到相对路径，再和目标路径拼接
+     * Generates the target file or directory path based on the source file or directory path. The principle is to first
+     * truncate the source path to get the relative path, and then concatenate it with the target path.
      *
      * <p>
-     * 如：源路径是 /opt/test/，需要拷贝的文件是 /opt/test/a/a.txt，得到相对路径 a/a.txt 目标路径是/home/，则得到最终目标路径是 /home/a/a.txt
-     * </p>
+     * For example: If the source path is {@code /opt/test/}, the file to be copied is {@code /opt/test/a/a.txt}, the
+     * relative path obtained is {@code a/a.txt}. If the target path is {@code /home/}, the final target path will be
+     * {@code /home/a/a.txt}.
      *
-     * @param file 需要拷贝的文件或目录Path
-     * @return 目标Path
+     * @param file The Path of the file or directory to be copied.
+     * @return The target Path.
      */
     private Path resolveTarget(final Path file) {
         return target.resolve(source.relativize(file));
     }
 
     /**
-     * 初始化目标文件或目录
+     * Initializes the target file or directory. This method ensures that the target directory exists before any copy
+     * operations.
      */
     private void initTargetDir() {
         if (!this.isTargetCreated) {

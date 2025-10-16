@@ -33,33 +33,42 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.xyz.CharKit;
 
 /**
- * 字符查找器 查找指定字符在字符串中的位置信息
+ * Character finder. Finds the position information of a specified character within a string.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class CharFinder extends TextFinder {
 
+    /**
+     * The serial version UID
+     */
     @Serial
     private static final long serialVersionUID = 2852236682062L;
 
+    /**
+     * The character to be searched.
+     */
     private final char c;
+    /**
+     * Whether to ignore case during the search.
+     */
     private final boolean caseInsensitive;
 
     /**
-     * 构造，不忽略字符大小写
+     * Constructor, does not ignore character case.
      *
-     * @param c 被查找的字符
+     * @param c The character to be searched.
      */
     public CharFinder(final char c) {
         this(c, false);
     }
 
     /**
-     * 构造
+     * Constructor.
      *
-     * @param c               被查找的字符
-     * @param caseInsensitive 是否忽略大小写
+     * @param c               The character to be searched.
+     * @param caseInsensitive Whether to ignore case.
      */
     public CharFinder(final char c, final boolean caseInsensitive) {
         this.c = c;

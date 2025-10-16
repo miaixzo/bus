@@ -36,11 +36,19 @@ import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.image.Tag;
 
 /**
+ * Enumerates binary value types used in DICOM, providing methods for converting between byte arrays and various
+ * primitive types. Each enum constant represents a specific binary data format (e.g., BYTE, SHORT, INT, FLOAT, DOUBLE,
+ * TAG, LONG, ULONG) and defines how to handle endianness, conversion to/from strings, and conversion to/from primitive
+ * arrays.
+ * 
  * @author Kimi Liu
  * @since Java 17+
  */
 enum BinaryValueType implements ValueType {
 
+    /**
+     * Represents a single byte value.
+     */
     BYTE(1, 1) {
 
         @Override
@@ -59,6 +67,9 @@ enum BinaryValueType implements ValueType {
             return b;
         }
     },
+    /**
+     * Represents a 2-byte signed short integer value.
+     */
     SHORT(2, 2) {
 
         @Override
@@ -91,6 +102,9 @@ enum BinaryValueType implements ValueType {
             return toBytes((int) l, b, off, bigEndian);
         }
     },
+    /**
+     * Represents a 2-byte unsigned short integer value.
+     */
     USHORT(2, 2) {
 
         @Override
@@ -123,6 +137,9 @@ enum BinaryValueType implements ValueType {
             return toBytes((int) l, b, off, bigEndian);
         }
     },
+    /**
+     * Represents a 4-byte signed integer value.
+     */
     INT(4, 4) {
 
         @Override
@@ -155,6 +172,9 @@ enum BinaryValueType implements ValueType {
             return toBytes((int) l, b, off, bigEndian);
         }
     },
+    /**
+     * Represents a 4-byte unsigned integer value.
+     */
     UINT(4, 4) {
 
         @Override
@@ -192,6 +212,9 @@ enum BinaryValueType implements ValueType {
             return Integer.toUnsignedString(toInt(b, off, bigEndian));
         }
     },
+    /**
+     * Represents a DICOM tag, which is a 4-byte value (group and element numbers).
+     */
     TAG(4, 2) {
 
         @Override
@@ -219,6 +242,9 @@ enum BinaryValueType implements ValueType {
             return ByteKit.tagToBytes(i, b, off, bigEndian);
         }
     },
+    /**
+     * Represents an 8-byte signed long integer value.
+     */
     LONG(8, 8) {
 
         @Override
@@ -251,6 +277,9 @@ enum BinaryValueType implements ValueType {
             return ByteKit.longToBytes(l, b, off, bigEndian);
         }
     },
+    /**
+     * Represents an 8-byte unsigned long integer value.
+     */
     ULONG(8, 8) {
 
         @Override
@@ -293,6 +322,9 @@ enum BinaryValueType implements ValueType {
             return Long.toUnsignedString(toLong(b, off, bigEndian));
         }
     },
+    /**
+     * Represents a 4-byte single-precision floating-point value.
+     */
     FLOAT(4, 4) {
 
         @Override
@@ -330,6 +362,9 @@ enum BinaryValueType implements ValueType {
             return ByteKit.floatToBytes((float) d, b, off, bigEndian);
         }
     },
+    /**
+     * Represents an 8-byte double-precision floating-point value.
+     */
     DOUBLE(8, 8) {
 
         @Override
@@ -368,9 +403,21 @@ enum BinaryValueType implements ValueType {
         }
     };
 
+    /**
+     * The number of bytes this value type occupies.
+     */
     final int numBytes;
+    /**
+     * The number of bytes involved in endian swapping for this value type.
+     */
     final int numEndianBytes;
 
+    /**
+     * Constructs a {@code BinaryValueType} with the specified number of bytes and endian-swapping bytes.
+     * 
+     * @param numBytes       The number of bytes this value type occupies.
+     * @param numEndianBytes The number of bytes involved in endian swapping.
+     */
     BinaryValueType(int numBytes, int numEndianBytes) {
         this.numBytes = numBytes;
         this.numEndianBytes = numEndianBytes;
@@ -401,42 +448,136 @@ enum BinaryValueType implements ValueType {
         return numEndianBytes;
     }
 
+    /**
+     * Converts a byte array segment to its string representation.
+     * 
+     * @param b         The byte array.
+     * @param off       The offset in the byte array.
+     * @param bigEndian {@code true} if big-endian, {@code false} if little-endian.
+     * @return The string representation.
+     */
     protected String toString(byte[] b, int off, boolean bigEndian) {
         return Long.toString(toLong(b, off, bigEndian));
     }
 
+    /**
+     * Converts a byte array segment to an integer.
+     * 
+     * @param b         The byte array.
+     * @param off       The offset in the byte array.
+     * @param bigEndian {@code true} if big-endian, {@code false} if little-endian.
+     * @return The integer value.
+     * @throws UnsupportedOperationException if this operation is not supported by the specific enum constant.
+     */
     protected int toInt(byte[] b, int off, boolean bigEndian) {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * Converts a byte array segment to a long.
+     * 
+     * @param b         The byte array.
+     * @param off       The offset in the byte array.
+     * @param bigEndian {@code true} if big-endian, {@code false} if little-endian.
+     * @return The long value.
+     * @throws UnsupportedOperationException if this operation is not supported by the specific enum constant.
+     */
     protected long toLong(byte[] b, int off, boolean bigEndian) {
         return toInt(b, off, bigEndian);
     }
 
+    /**
+     * Converts a byte array segment to a float.
+     * 
+     * @param b         The byte array.
+     * @param off       The offset in the byte array.
+     * @param bigEndian {@code true} if big-endian, {@code false} if little-endian.
+     * @return The float value.
+     * @throws UnsupportedOperationException if this operation is not supported by the specific enum constant.
+     */
     protected float toFloat(byte[] b, int off, boolean bigEndian) {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * Converts a byte array segment to a double.
+     * 
+     * @param b         The byte array.
+     * @param off       The offset in the byte array.
+     * @param bigEndian {@code true} if big-endian, {@code false} if little-endian.
+     * @return The double value.
+     * @throws UnsupportedOperationException if this operation is not supported by the specific enum constant.
+     */
     protected double toDouble(byte[] b, int off, boolean bigEndian) {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * Converts a string to a byte array segment.
+     * 
+     * @param s         The string to convert.
+     * @param b         The target byte array.
+     * @param off       The offset in the byte array.
+     * @param bigEndian {@code true} if big-endian, {@code false} if little-endian.
+     * @return The modified byte array.
+     * @throws UnsupportedOperationException if this operation is not supported by the specific enum constant.
+     */
     protected byte[] toBytes(String s, byte[] b, int off, boolean bigEndian) {
         return toBytes(Builder.parseIS(s), b, off, bigEndian);
     }
 
+    /**
+     * Converts an integer to a byte array segment.
+     * 
+     * @param i         The integer to convert.
+     * @param b         The target byte array.
+     * @param off       The offset in the byte array.
+     * @param bigEndian {@code true} if big-endian, {@code false} if little-endian.
+     * @return The modified byte array.
+     * @throws UnsupportedOperationException if this operation is not supported by the specific enum constant.
+     */
     protected byte[] toBytes(int i, byte[] b, int off, boolean bigEndian) {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * Converts a long to a byte array segment.
+     * 
+     * @param l         The long to convert.
+     * @param b         The target byte array.
+     * @param off       The offset in the byte array.
+     * @param bigEndian {@code true} if big-endian, {@code false} if little-endian.
+     * @return The modified byte array.
+     * @throws UnsupportedOperationException if this operation is not supported by the specific enum constant.
+     */
     protected byte[] toBytes(long l, byte[] b, int off, boolean bigEndian) {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * Converts a float to a byte array segment.
+     * 
+     * @param f         The float to convert.
+     * @param b         The target byte array.
+     * @param off       The offset in the byte array.
+     * @param bigEndian {@code true} if big-endian, {@code false} if little-endian.
+     * @return The modified byte array.
+     * @throws UnsupportedOperationException if this operation is not supported by the specific enum constant.
+     */
     protected byte[] toBytes(float f, byte[] b, int off, boolean bigEndian) {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * Converts a double to a byte array segment.
+     * 
+     * @param d         The double to convert.
+     * @param b         The target byte array.
+     * @param off       The offset in the byte array.
+     * @param bigEndian {@code true} if big-endian, {@code false} if little-endian.
+     * @return The modified byte array.
+     * @throws UnsupportedOperationException if this operation is not supported by the specific enum constant.
+     */
     protected byte[] toBytes(double d, byte[] b, int off, boolean bigEndian) {
         throw new UnsupportedOperationException();
     }
@@ -459,6 +600,12 @@ enum BinaryValueType implements ValueType {
         return off + numBytes <= len ? toString(b, off, bigEndian) : defVal;
     }
 
+    /**
+     * Checks if the given length is a multiple of the number of bytes for this value type.
+     * 
+     * @param len The length to check.
+     * @throws IllegalArgumentException if the length is not a multiple of {@code numBytes}.
+     */
     private void checkLength(int len) {
         if (len % numBytes != 0)
             throw new IllegalArgumentException("length: " + len);
@@ -676,6 +823,15 @@ enum BinaryValueType implements ValueType {
         return StringValueType.prompt(val.toString(), maxChars, sb);
     }
 
+    /**
+     * Appends the string representation of the byte array to the StringBuilder, respecting maxChars.
+     * 
+     * @param b         The byte array to prompt.
+     * @param bigEndian {@code true} if big-endian, {@code false} if little-endian.
+     * @param maxChars  The maximum number of characters to append.
+     * @param sb        The StringBuilder to append to.
+     * @return {@code true} if the entire value was appended, {@code false} if truncated.
+     */
     private boolean prompt(byte[] b, boolean bigEndian, int maxChars, StringBuilder sb) {
         int maxLength = sb.length() + maxChars;
         for (int i = b.length / numBytes, off = 0; i-- > 0; off += numBytes) {

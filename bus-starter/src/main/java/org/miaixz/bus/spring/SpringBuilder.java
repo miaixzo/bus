@@ -52,12 +52,17 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.ResolvableType;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.EnumerablePropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.core.type.MethodMetadata;
 import org.springframework.stereotype.Component;
 
 /**
- * Spring上下文管理和Bean操作工具类
+ * Utility class for Spring context management and Bean operations.
+ * <p>
+ * This class provides static methods to access the Spring {@link ApplicationContext}, retrieve beans by various
+ * criteria, manage bean definitions, publish events, and perform environment-related operations like placeholder
+ * replacement. It implements {@link ApplicationContextAware} to capture the application context.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -66,24 +71,28 @@ import org.springframework.stereotype.Component;
 public class SpringBuilder implements ApplicationContextAware {
 
     /**
-     * "@PostConstruct"注解标记的类中，由于ApplicationContext还未加载，导致空指针
-     * 因此实现BeanFactoryPostProcessor注入ConfigurableApplicationContext实现bean的操作
+     * The Spring {@link ConfigurableApplicationContext} instance. This is set via
+     * {@link #setApplicationContext(ApplicationContext)}.
      */
     private static ConfigurableApplicationContext context;
 
     /**
-     * 获取Spring上下文
+     * Retrieves the Spring {@link ConfigurableApplicationContext}.
      *
-     * @return 上下文对象
+     * @return The application context object.
      */
     public static ConfigurableApplicationContext getContext() {
         return context;
     }
 
     /**
-     * 设置Spring上下文
+     * Sets the Spring {@link ConfigurableApplicationContext}.
+     * <p>
+     * This method is typically called by the Spring framework during initialization. It also sets the
+     * {@link SpringHolder#alive} flag to {@code true}.
+     * </p>
      *
-     * @param context 上下文对象
+     * @param context The application context object.
      */
     public static void setContext(ConfigurableApplicationContext context) {
         Assert.notNull(context, "Spring context not found.");
@@ -92,67 +101,67 @@ public class SpringBuilder implements ApplicationContextAware {
     }
 
     /**
-     * 获取Bean工厂
+     * Retrieves the Spring {@link ListableBeanFactory}.
      *
-     * @return Bean工厂对象
+     * @return The BeanFactory object, or {@code null} if the context is not set.
      */
     public static ListableBeanFactory getBeanFactory() {
         return context != null ? context.getBeanFactory() : null;
     }
 
     /**
-     * 通过名称获取Bean
+     * Retrieves a bean by its name.
      *
-     * @param name Bean名称
-     * @param <T>  Bean类型
-     * @return Bean实例
+     * @param name The name of the bean.
+     * @param <T>  The type of the bean.
+     * @return The bean instance.
      */
     public static <T> T getBean(String name) {
         return (T) getBeanFactory().getBean(name);
     }
 
     /**
-     * 通过类型获取Bean
+     * Retrieves a bean by its type, optionally with constructor arguments.
      *
-     * @param clazz Bean类型
-     * @param args  构造函数参数
-     * @param <T>   Bean类型
-     * @return Bean实例
+     * @param clazz The type of the bean.
+     * @param args  Constructor arguments for the bean.
+     * @param <T>   The type of the bean.
+     * @return The bean instance.
      */
     public static <T> T getBean(Class<T> clazz, Object... args) {
         return ArrayKit.isEmpty(args) ? getBeanFactory().getBean(clazz) : getBeanFactory().getBean(clazz, args);
     }
 
     /**
-     * 通过名称和参数获取Bean
+     * Retrieves a bean by its type, optionally with constructor arguments.
      *
-     * @param name Bean名称
-     * @param args 构造函数参数
-     * @param <T>  Bean类型
-     * @return Bean实例
+     * @param name The name of the bean.
+     * @param args Constructor arguments for the bean.
+     * @param <T>  The type of the bean.
+     * @return The bean instance.
      */
     public static <T> T getBean(String name, Object... args) {
         return (T) (ArrayKit.isEmpty(args) ? getBeanFactory().getBean(name) : getBeanFactory().getBean(name, args));
     }
 
     /**
-     * 通过名称和类型获取Bean
+     * Retrieves a bean by its name and type.
      *
-     * @param name  Bean名称
-     * @param clazz Bean类型
-     * @param <T>   Bean类型
-     * @return Bean实例
+     * @param name  The name of the bean.
+     * @param clazz The type of the bean.
+     * @param <T>   The type of the bean.
+     * @return The bean instance.
      */
     public static <T> T getBean(String name, Class<T> clazz) {
         return getBeanFactory().getBean(name, clazz);
     }
 
     /**
-     * 通过类型参考获取带泛型的Bean
+     * Retrieves a bean with generic type information using a {@link TypeReference}.
      *
-     * @param reference 类型参考
-     * @param <T>       Bean类型
-     * @return Bean实例
+     * @param reference The {@link TypeReference} providing generic type information.
+     * @param <T>       The generic type of the bean.
+     * @return The bean instance matching the generic type.
      */
     public static <T> T getBean(TypeReference<T> reference) {
         ParameterizedType type = (ParameterizedType) reference.getType();
@@ -165,49 +174,49 @@ public class SpringBuilder implements ApplicationContextAware {
     }
 
     /**
-     * 获取指定类型的所有Bean
+     * Retrieves all beans of a specified type.
      *
-     * @param type Bean类型
-     * @param <T>  Bean类型
-     * @return Bean名称到实例的映射
+     * @param type The type of the beans.
+     * @param <T>  The type of the beans.
+     * @return A map where keys are bean names and values are bean instances of the specified type.
      */
     public static <T> Map<String, T> getBeansOfType(Class<T> type) {
         return getBeanFactory().getBeansOfType(type);
     }
 
     /**
-     * 获取指定类型的Bean名称
+     * Retrieves the names of all beans of a specified type.
      *
-     * @param type Bean类型
-     * @return Bean名称数组
+     * @param type The type of the beans.
+     * @return An array of bean names.
      */
     public static String[] getBeanNamesForType(Class<?> type) {
         return getBeanFactory().getBeanNamesForType(type);
     }
 
     /**
-     * 获取配置属性值
+     * Retrieves a property value from the Spring {@link Environment}.
      *
-     * @param key 属性键
-     * @return 属性值
+     * @param key The property key.
+     * @return The property value, or {@code null} if not found or context is not set.
      */
     public static String getProperty(String key) {
         return context != null ? context.getEnvironment().getProperty(key) : null;
     }
 
     /**
-     * 获取当前激活的环境配置
+     * Retrieves the current active profiles from the Spring {@link Environment}.
      *
-     * @return 环境配置数组
+     * @return An array of active profile names, or {@code null} if context is not set.
      */
     public static String[] getActiveProfiles() {
         return context != null ? context.getEnvironment().getActiveProfiles() : null;
     }
 
     /**
-     * 获取第一个激活的环境配置
+     * Retrieves the first active profile from the Spring {@link Environment}.
      *
-     * @return 环境配置 fcn
+     * @return The name of the first active profile, or {@code null} if no profiles are active or context is not set.
      */
     public static String getActiveProfile() {
         String[] profiles = getActiveProfiles();
@@ -215,9 +224,9 @@ public class SpringBuilder implements ApplicationContextAware {
     }
 
     /**
-     * 动态注册Bean定义
+     * Dynamically registers a bean definition with the Spring container.
      *
-     * @param clazz Bean类型
+     * @param clazz The class of the bean to register.
      */
     public static void registerBeanDefinition(Class<?> clazz) {
         DefaultListableBeanFactory factory = (DefaultListableBeanFactory) getBeanFactory();
@@ -227,9 +236,12 @@ public class SpringBuilder implements ApplicationContextAware {
     }
 
     /**
-     * 动态注册单例Bean
+     * Dynamically registers a singleton bean with the Spring container.
+     * <p>
+     * This method attempts to create a new instance of the class using its default constructor.
+     * </p>
      *
-     * @param clazz Bean类型
+     * @param clazz The class of the singleton bean to register.
      */
     public static void registerSingleton(Class<?> clazz) {
         try {
@@ -241,10 +253,10 @@ public class SpringBuilder implements ApplicationContextAware {
     }
 
     /**
-     * 动态注册单例Bean
+     * Dynamically registers a singleton bean instance with the Spring container.
      *
-     * @param clazz Bean类型
-     * @param bean  Bean实例
+     * @param clazz The class of the singleton bean.
+     * @param bean  The instance of the singleton bean.
      */
     public static void registerSingleton(Class<?> clazz, Object bean) {
         ConfigurableListableBeanFactory factory = (ConfigurableListableBeanFactory) getBeanFactory();
@@ -253,9 +265,10 @@ public class SpringBuilder implements ApplicationContextAware {
     }
 
     /**
-     * 注销单例Bean
+     * Unregisters a singleton bean from the Spring container.
      *
-     * @param beanName Bean名称
+     * @param beanName The name of the bean to unregister.
+     * @throws InternalException if the BeanFactory is not a {@link DefaultSingletonBeanRegistry}.
      */
     public static void unRegisterSingleton(String beanName) {
         ConfigurableListableBeanFactory factory = (ConfigurableListableBeanFactory) getBeanFactory();
@@ -267,9 +280,9 @@ public class SpringBuilder implements ApplicationContextAware {
     }
 
     /**
-     * 发布事件
+     * Publishes an event to the Spring application context.
      *
-     * @param event 事件对象
+     * @param event The event object to publish.
      */
     public static void publishEvent(Object event) {
         if (context != null) {
@@ -278,7 +291,10 @@ public class SpringBuilder implements ApplicationContextAware {
     }
 
     /**
-     * 刷新Spring上下文
+     * Refreshes the Spring application context.
+     * <p>
+     * This operation is only performed if the context is currently alive.
+     * </p>
      */
     public static void refreshContext() {
         if (SpringHolder.alive) {
@@ -287,7 +303,10 @@ public class SpringBuilder implements ApplicationContextAware {
     }
 
     /**
-     * 关闭并移除Spring上下文
+     * Closes and removes the Spring application context.
+     * <p>
+     * This operation is only performed if the context is currently alive.
+     * </p>
      */
     public static void removeContext() {
         if (SpringHolder.alive) {
@@ -298,47 +317,51 @@ public class SpringBuilder implements ApplicationContextAware {
     }
 
     /**
-     * 获取应用程序名称
+     * Retrieves the application name from the Spring environment.
      *
-     * @return 应用程序名称
+     * @return The application name, or {@code null} if not found.
      */
     public static String getApplicationName() {
         return getProperty(GeniusBuilder.APP_NAME);
     }
 
     /**
-     * 判断是否为开发或测试模式
+     * Checks if the application is running in development or test mode.
      *
-     * @return 是否为开发/测试模式
+     * @return {@code true} if in dev or test mode, {@code false} otherwise.
      */
     public static boolean isDemoMode() {
         return isDevMode() || isTestMode();
     }
 
     /**
-     * 判断是否为开发环境
+     * Checks if the application is running in development environment mode.
      *
-     * @return 是否为开发环境
+     * @return {@code true} if in dev mode, {@code false} otherwise.
      */
     public static boolean isDevMode() {
         return "dev".equalsIgnoreCase(getActiveProfile());
     }
 
     /**
-     * 判断是否为测试环境
+     * Checks if the application is running in test environment mode.
      *
-     * @return 是否为测试环境
+     * @return {@code true} if in test mode, {@code false} otherwise.
      */
     public static boolean isTestMode() {
         return "test".equalsIgnoreCase(getActiveProfile());
     }
 
     /**
-     * 替换文本中的环境变量占位符
+     * Replaces environment variable placeholders in the given text.
+     * <p>
+     * This method iterates through all property sources in the environment and replaces placeholders like
+     * {@code ${property.name}} with their corresponding values.
+     * </p>
      *
-     * @param text 待处理文本
-     * @param env  环境配置
-     * @return 替换后的文本
+     * @param text The text containing placeholders.
+     * @param env  The {@link ConfigurableEnvironment} to use for placeholder resolution.
+     * @return The text with placeholders resolved.
      */
     public static String replacePlaceholders(String text, ConfigurableEnvironment env) {
         if (context != null) {
@@ -361,11 +384,16 @@ public class SpringBuilder implements ApplicationContextAware {
     }
 
     /**
-     * 从BeanDefinition解析Bean的类类型
+     * Resolves the class type of a bean from its {@link BeanDefinition}.
+     * <p>
+     * This method attempts to determine the actual {@link Class} of a bean by inspecting its {@link BeanDefinition},
+     * handling various types like {@link AnnotatedBeanDefinition} and
+     * {@link org.springframework.beans.factory.support.AbstractBeanDefinition}.
+     * </p>
      *
-     * @param beanDefinition Bean定义，非空
-     * @return Bean的类类型，可能为null
-     * @throws IllegalArgumentException 如果beanDefinition为null
+     * @param beanDefinition The {@link BeanDefinition} of the bean, must not be {@code null}.
+     * @return The resolved {@link Class} of the bean, or {@code null} if it cannot be determined.
+     * @throws IllegalArgumentException if {@code beanDefinition} is {@code null}.
      */
     public static Class<?> resolveBeanClassType(BeanDefinition beanDefinition) {
         if (beanDefinition == null) {
@@ -375,20 +403,20 @@ public class SpringBuilder implements ApplicationContextAware {
         Class<?> clazz = null;
         String className = null;
 
-        // 处理AnnotatedBeanDefinition类型
+        // Handle AnnotatedBeanDefinition types
         if (beanDefinition instanceof AnnotatedBeanDefinition annotatedBeanDefinition) {
             if (isFromConfigurationSource(beanDefinition)) {
-                // 从工厂方法元数据获取返回类型
+                // Get return type from factory method metadata
                 MethodMetadata methodMetadata = annotatedBeanDefinition.getFactoryMethodMetadata();
                 className = methodMetadata != null ? methodMetadata.getReturnTypeName() : null;
             } else {
-                // 从注解元数据获取类名
+                // Get class name from annotation metadata
                 AnnotationMetadata annotationMetadata = annotatedBeanDefinition.getMetadata();
                 className = annotationMetadata != null ? annotationMetadata.getClassName() : null;
             }
         }
 
-        // 尝试加载类
+        // Attempt to load the class
         if (StringKit.hasText(className)) {
             try {
                 clazz = ClassKit.forName(className, null);
@@ -397,7 +425,7 @@ public class SpringBuilder implements ApplicationContextAware {
             }
         }
 
-        // 如果类未解析，尝试从AbstractBeanDefinition获取
+        // If class is still not resolved, try to get it from AbstractBeanDefinition
         if (clazz == null && beanDefinition instanceof AbstractBeanDefinition abstractBeanDefinition) {
             try {
                 clazz = abstractBeanDefinition.getBeanClass();
@@ -414,7 +442,7 @@ public class SpringBuilder implements ApplicationContextAware {
             }
         }
 
-        // 如果类仍未解析，尝试从RootBeanDefinition获取目标类型
+        // If class is still not resolved, try to get target type from RootBeanDefinition
         if (clazz == null && beanDefinition instanceof RootBeanDefinition rootBeanDefinition) {
             clazz = rootBeanDefinition.getTargetType();
         }
@@ -423,15 +451,17 @@ public class SpringBuilder implements ApplicationContextAware {
     }
 
     /**
-     * 检查BeanDefinition是否来源于配置类（而非其他配置源，如XML或组件扫描）。
+     * Checks if a {@link BeanDefinition} originates from a Spring {@code @Configuration} class.
      * <p>
-     * 该方法通过检查BeanDefinition的类全限定名是否以
-     * {@code org.springframework.context.annotation.ConfigurationClassBeanDefinitionReader} 开头，
-     * 判断其是否由Spring的{@code @Configuration}类生成。通常用于区分注解配置与传统XML配置或组件扫描的Bean定义。
+     * This method determines if a {@link BeanDefinition} was generated by Spring's configuration class processing
+     * (e.g., from a method annotated with {@code @Bean}) rather than from other sources like XML configuration or
+     * component scanning.
+     * </p>
      *
-     * @param beanDefinition 要检查的Bean定义对象，非空
-     * @return 如果BeanDefinition来源于配置类，返回{@code true}；否则返回{@code false}
-     * @throws IllegalArgumentException 如果beanDefinition为null
+     * @param beanDefinition The {@link BeanDefinition} object to check, must not be {@code null}.
+     * @return {@code true} if the {@link BeanDefinition} originates from a configuration class; {@code false}
+     *         otherwise.
+     * @throws IllegalArgumentException if {@code beanDefinition} is {@code null}.
      */
     public static boolean isFromConfigurationSource(BeanDefinition beanDefinition) {
         if (beanDefinition == null) {
@@ -441,6 +471,14 @@ public class SpringBuilder implements ApplicationContextAware {
                 .startsWith("org.springframework.context.annotation.ConfigurationClassBeanDefinitionReader");
     }
 
+    /**
+     * Sets the {@link ApplicationContext} for this utility class.
+     * <p>
+     * This method is part of the {@link ApplicationContextAware} interface implementation.
+     * </p>
+     *
+     * @param applicationContext The application context to be set.
+     */
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) {
         SpringBuilder.context = (ConfigurableApplicationContext) applicationContext;

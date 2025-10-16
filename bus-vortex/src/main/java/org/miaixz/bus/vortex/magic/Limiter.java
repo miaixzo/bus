@@ -36,7 +36,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * 限流器类，基于令牌桶算法实现请求限流功能
+ * Rate limiter class, implementing request rate limiting based on the token bucket algorithm.
  *
  * @author Justubborn
  * @since Java 17+
@@ -49,41 +49,42 @@ import lombok.experimental.SuperBuilder;
 public class Limiter {
 
     /**
-     * 请求来源的 IP 地址
+     * The IP address of the request source.
      */
     private String ip;
 
     /**
-     * 请求的方法名
+     * The name of the request method.
      */
     private String method;
 
     /**
-     * 请求的版本号
+     * The version number of the request.
      */
     private String version;
 
     /**
-     * 令牌桶的令牌生成速率（每秒生成令牌数）
+     * The token generation rate of the token bucket (tokens generated per second).
      */
     private int tokenCount;
 
     /**
-     * 令牌桶实例，使用 Google Guava 的 RateLimiter 实现限流
+     * The {@link RateLimiter} instance, implementing rate limiting using Google Guava's RateLimiter.
      */
     private volatile RateLimiter rateLimiter;
 
     /**
-     * 初始化令牌桶，设置令牌生成速率 使用 synchronized 确保线程安全
+     * Initializes the token bucket, setting the token generation rate. Uses {@code synchronized} to ensure thread
+     * safety during initialization.
      */
     public synchronized void initRateLimiter() {
         rateLimiter = RateLimiter.create(tokenCount);
     }
 
     /**
-     * 获取令牌桶实例，采用双重检查锁确保线程安全
+     * Retrieves the {@link RateLimiter} instance, using double-checked locking to ensure thread safety.
      *
-     * @return 限流器实例（RateLimiter）
+     * @return The {@link RateLimiter} instance.
      */
     public RateLimiter fetchRateLimiter() {
         if (null == rateLimiter) {
@@ -97,9 +98,9 @@ public class Limiter {
     }
 
     /**
-     * 尝试获取一个令牌，阻塞直到获取成功
+     * Attempts to acquire a token, blocking until successful.
      *
-     * @return 获取令牌的等待时间（秒）
+     * @return The waiting time (in seconds) to acquire the token.
      */
     public double acquire() {
         return fetchRateLimiter().acquire();

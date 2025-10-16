@@ -35,32 +35,51 @@ import org.apache.lucene.util.Attribute;
 import org.miaixz.bus.extra.nlp.NLPWord;
 
 /**
- * Lucene-analysis分词中的一个单词包装
+ * Wrapper class for a single word (Attribute) from Lucene-analysis word segmentation. This class adapts the Lucene
+ * {@link Attribute} (specifically {@link CharTermAttribute} and {@link OffsetAttribute}) to the common {@link NLPWord}
+ * interface, providing a unified way to access segmented word information.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class AnalysisWord implements NLPWord {
 
+    /**
+     * The serialization version identifier for this class.
+     */
     @Serial
     private static final long serialVersionUID = 2852285660095L;
 
+    /**
+     * The underlying Lucene {@link Attribute} object, typically a {@link CharTermAttribute}.
+     */
     private final Attribute word;
 
     /**
-     * 构造
+     * Constructs an {@code AnalysisWord} instance by wrapping a Lucene {@link CharTermAttribute}.
      *
-     * @param word {@link CharTermAttribute}
+     * @param word The {@link CharTermAttribute} object from Lucene analysis.
      */
     public AnalysisWord(final CharTermAttribute word) {
         this.word = word;
     }
 
+    /**
+     * Retrieves the text of the word from the wrapped Lucene {@link Attribute}.
+     *
+     * @return The text of the word as a {@link String}.
+     */
     @Override
     public String getText() {
         return word.toString();
     }
 
+    /**
+     * Retrieves the starting character offset of this word within the original text. This method checks if the
+     * underlying attribute is an instance of {@link OffsetAttribute} and returns the start offset if available.
+     *
+     * @return The starting position (inclusive) of the word, or -1 if not available.
+     */
     @Override
     public int getStartOffset() {
         if (this.word instanceof OffsetAttribute) {
@@ -69,6 +88,12 @@ public class AnalysisWord implements NLPWord {
         return -1;
     }
 
+    /**
+     * Retrieves the ending character offset of this word within the original text. This method checks if the underlying
+     * attribute is an instance of {@link OffsetAttribute} and returns the end offset if available.
+     *
+     * @return The ending position (exclusive) of the word, or -1 if not available.
+     */
     @Override
     public int getEndOffset() {
         if (this.word instanceof OffsetAttribute) {
@@ -77,6 +102,11 @@ public class AnalysisWord implements NLPWord {
         return -1;
     }
 
+    /**
+     * Returns the textual representation of this word, which is the same as {@link #getText()}.
+     *
+     * @return The text of the word.
+     */
     @Override
     public String toString() {
         return getText();

@@ -41,21 +41,28 @@ import com.alibaba.fastjson2.filter.Filter;
 import com.alibaba.fastjson2.filter.ValueFilter;
 
 /**
- * FastJson 解析器
+ * A {@link org.miaixz.bus.extra.json.JsonProvider} implementation based on Alibaba's Fastjson2 library. This class
+ * provides JSON serialization and deserialization functionalities using Fastjson2.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class FastJsonProvider extends AbstractJsonProvider {
 
+    /**
+     * Default writer features for Fastjson serialization, including field-based serialization and writing null values.
+     */
     private static final JSONWriter.Feature[] WRITER_FEATURES = { JSONWriter.Feature.FieldBased,
             JSONWriter.Feature.WriteMapNullValue, JSONWriter.Feature.WriteNulls };
 
+    /**
+     * Default filters for Fastjson serialization, which convert null, empty, or blank string values to null.
+     */
     private static final Filter[] FILTERS = { (ValueFilter) (object, name, value) -> value == null
             || Normal.EMPTY.equals(value) || Symbol.SPACE.equals(value) ? null : value };
 
     /**
-     * 构造
+     * Constructs a new {@code FastJsonProvider} instance.
      */
     public FastJsonProvider() {
 

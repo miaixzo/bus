@@ -35,7 +35,8 @@ import org.miaixz.bus.core.io.source.BufferSource;
 import java.io.IOException;
 
 /**
- * 服务器推送事件（Server-Sent Events, SSE）读取器，负责解析事件流数据。 通过读取输入流，识别事件字段（id、event、data、retry 等），并触发回调处理事件。
+ * A reader for Server-Sent Events (SSE), responsible for parsing event stream data. It reads from an input stream,
+ * identifies event fields (id, event, data, retry, etc.), and triggers callbacks to process the events.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,25 +44,25 @@ import java.io.IOException;
 public final class ServerSentEventReader {
 
     /**
-     * 输入流，用于读取服务器推送事件数据
+     * The input stream for reading server-sent event data.
      */
     private final BufferSource source;
 
     /**
-     * 事件回调接口，用于通知事件数据和重试时间变化
+     * The event callback interface for notifying event data and retry time changes.
      */
     private final Callback callback;
 
     /**
-     * 上一个事件的 ID，可能为 null
+     * The ID of the last event, which may be null.
      */
     private String lastId;
 
     /**
-     * 构造一个新的 {@code ServerSentEventReader} 实例。
+     * Constructs a new {@code ServerSentEventReader} instance.
      *
-     * @param source   输入流，包含服务器推送事件数据
-     * @param callback 事件回调接口，用于处理解析的事件
+     * @param source   The input stream containing server-sent event data.
+     * @param callback The event callback interface for processing parsed events.
      */
     public ServerSentEventReader(BufferSource source, Callback callback) {
         this.source = source;
@@ -70,10 +71,11 @@ public final class ServerSentEventReader {
     }
 
     /**
-     * 处理下一个事件。如果数据部分非空，将触发一次 {@link Callback#onEvent} 调用。 在处理事件期间，可能触发多次 {@link Callback#onRetryChange} 调用。
+     * Processes the next event. If the data part is non-empty, an {@link Callback#onEvent} call will be triggered.
+     * Multiple {@link Callback#onRetryChange} calls may be triggered during event processing.
      *
-     * @return 如果达到输入流末尾（EOF），返回 false；否则返回 true
-     * @throws IOException 如果发生 I/O 错误
+     * @return {@code false} if the end of the input stream (EOF) is reached; {@code true} otherwise.
+     * @throws IOException if an I/O error occurs.
      */
     public boolean processNextEvent() throws IOException {
         String id = lastId;
@@ -135,11 +137,11 @@ public final class ServerSentEventReader {
                 case -1:
                     long lineEnd = source.indexOfElement(CRLF);
                     if (lineEnd != -1L) {
-                        // 跳过当前行和换行符
+                        // Skip the current line and newline characters.
                         source.skip(lineEnd);
                         source.select(options);
                     } else {
-                        return false; // 没有更多换行符
+                        return false; // No more newline characters, indicating EOF.
                     }
                     break;
 
@@ -150,22 +152,24 @@ public final class ServerSentEventReader {
     }
 
     /**
-     * 完成一个事件的处理，如果数据非空，则保存 ID 并触发回调。
+     * Completes the processing of an event. If the data is non-empty, it saves the ID and triggers the callback.
      *
-     * @param id   事件 ID，可能为 null
-     * @param type 事件类型，可能为 null
-     * @param data 事件数据缓冲区
-     * @throws IOException 如果发生 I/O 错误
+     * @param id   The event ID, which may be null.
+     * @param type The event type, which may be null.
+     * @param data The event data buffer.
+     * @throws IOException if an I/O error occurs.
      */
     private void completeEvent(String id, String type, Buffer data) throws IOException {
         if (data.size() != 0L) {
             lastId = id;
-            data.skip(1L); // 跳过开头的换行符
+            data.skip(1L); // Skip the leading newline character.
             callback.onEvent(id, type, data.readUtf8());
         }
     }
 
-    /** SSE 事件字段的前缀和换行符选项，用于解析事件流 */
+    /**
+     * Options for SSE event fields and newline characters, used for parsing the event stream.
+     */
     private static final SegmentBuffer options = SegmentBuffer.of(
             /* 0 */ ByteString.encodeUtf8("\r\n"),
             /* 1 */ ByteString.encodeUtf8("\r"),
@@ -188,28 +192,30 @@ public final class ServerSentEventReader {
             /* 18 */ ByteString.encodeUtf8("retry: "),
             /* 19 */ ByteString.encodeUtf8("retry:"));
 
-    /** 换行符（CRLF），用于定位事件流中的行结束 */
+    /**
+     * Carriage return-line feed (CRLF), used to locate line endings in the event stream.
+     */
     private static final ByteString CRLF = ByteString.encodeUtf8("\r\n");
 
     /**
-     * 从输入流中读取数据字段内容，添加到数据缓冲区。
+     * Reads the content of a data field from the input stream and appends it to the data buffer.
      *
-     * @param source 输入流
-     * @param data   数据缓冲区
-     * @throws IOException 如果发生 I/O 错误
+     * @param source The input stream.
+     * @param data   The data buffer.
+     * @throws IOException if an I/O error occurs.
      */
     private static void readData(BufferSource source, Buffer data) throws IOException {
         data.writeByte('\n');
         source.readFully(data, source.indexOfElement(CRLF));
-        source.select(options); // 跳过换行符
+        source.select(options); // Skip the newline characters.
     }
 
     /**
-     * 读取重试时间字段（retry），解析为毫秒数。
+     * Reads the retry time field and parses it into milliseconds.
      *
-     * @param source 输入流
-     * @return 重试时间（毫秒），如果解析失败返回 -1
-     * @throws IOException 如果发生 I/O 错误
+     * @param source The input stream.
+     * @return The retry time in milliseconds, or -1 if parsing fails.
+     * @throws IOException if an I/O error occurs.
      */
     private static long readRetryMs(BufferSource source) throws IOException {
         String retryString = source.readUtf8LineStrict();
@@ -221,23 +227,23 @@ public final class ServerSentEventReader {
     }
 
     /**
-     * 回调接口，用于处理服务器推送事件和重试时间变化。
+     * Callback interface for handling server-sent events and retry time changes.
      */
     public interface Callback {
 
         /**
-         * 当接收到新的事件时调用。
+         * Called when a new event is received.
          *
-         * @param id   事件 ID，可能为 null
-         * @param type 事件类型，可能为 null
-         * @param data 事件数据
+         * @param id   The event ID, which may be null.
+         * @param type The event type, which may be null.
+         * @param data The event data.
          */
         void onEvent(String id, String type, String data);
 
         /**
-         * 当重试时间（retry 字段）发生变化时调用。
+         * Called when the retry time (from the 'retry' field) changes.
          *
-         * @param timeMs 重试时间（毫秒）
+         * @param timeMs The retry time in milliseconds.
          */
         void onRetryChange(long timeMs);
     }

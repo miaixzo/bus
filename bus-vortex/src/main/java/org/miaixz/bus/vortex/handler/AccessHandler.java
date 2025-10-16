@@ -35,7 +35,11 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 /**
- * 用于异步处理 API 请求的前置逻辑
+ * Handles asynchronous pre-processing logic for API requests.
+ * <p>
+ * This handler is typically used to perform initial checks or setup before the main request processing. It is ordered
+ * with {@code Ordered.HIGHEST_PRECEDENCE}, ensuring it runs early in the handler chain.
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,62 +48,78 @@ import reactor.core.publisher.Mono;
 public class AccessHandler extends AbstractHandler {
 
     /**
-     * 异步预处理方法，执行权限验证
+     * Asynchronous pre-processing method, typically used for permission validation or initial setup.
+     * <p>
+     * This method logs basic request information (HTTP method and path) and then proceeds. Currently, it assumes
+     * validation passes and returns {@code true}.
+     * </p>
      *
-     * @param exchange 当前 HTTP 请求对象
-     * @param service  服务实例（通常为策略对象）
-     * @param args     方法参数，可为 null
-     * @return 返回 true 表示验证通过，false 表示验证失败
+     * @param exchange The current {@link ServerWebExchange} object, containing the HTTP request and response.
+     * @param service  The service instance (typically a strategy object), may be {@code null}.
+     * @param args     Method arguments, may be {@code null}.
+     * @return {@code Mono<Boolean>} indicating whether the pre-handle validation passed ({@code true}) or failed
+     *         ({@code false}).
      */
     @Override
     public Mono<Boolean> preHandle(ServerWebExchange exchange, Object service, Object args) {
         return Mono.fromCallable(() -> {
-            // 我们需要记录基本信息，而不是尝试获取 exchange
+            // We need to log basic information, not try to get exchange
             ServerHttpRequest request = exchange.getRequest();
             String path = request.getPath().value();
             String method = request.getMethod() != null ? request.getMethod().name() : "UNKNOWN";
 
-            // 使用 Logger 直接记录，而不是 VortexLogger
+            // Use Logger directly, not VortexLogger
             Logger.info(
-                    "[N/A] [{}] [{}] [ACCESS_PREHANDLE] - Performing async preHandle validation for request",
+                    "==>    Handler: [N/A] [{}] [{}] [ACCESS_PREHANDLE] - Performing async preHandle validation for request",
                     method,
                     path);
 
-            return true; // 假设验证通过
+            return true; // Assume validation passes
         });
     }
 
     /**
-     * 异步后处理方法，处理响应数据
+     * Asynchronous post-processing method, typically used to process response data.
+     * <p>
+     * This method logs basic request information after the main request handling has completed.
+     * </p>
      *
-     * @param exchange 当前 HTTP 请求对象
-     * @param service  服务实例
-     * @param args     方法参数，可为 null
-     * @param result   接口方法返回的结果
-     * @return 表示异步处理完成
+     * @param exchange The current {@link ServerWebExchange} object, containing the HTTP request and response.
+     * @param service  The service instance, may be {@code null}.
+     * @param args     Method arguments, may be {@code null}.
+     * @param result   The result returned by the interface method, may be {@code null}.
+     * @return {@code Mono<Void>} indicating the asynchronous completion of post-processing.
      */
     @Override
     public Mono<Void> postHandle(ServerWebExchange exchange, Object service, Object args, Object result) {
         return Mono.fromRunnable(() -> {
-            // 我们需要记录基本信息，而不是尝试获取 exchange
+            // We need to log basic information, not try to get exchange
             ServerHttpRequest request = exchange.getRequest();
             String path = request.getPath().value();
             String method = request.getMethod() != null ? request.getMethod().name() : "UNKNOWN";
 
-            // 使用 Logger 直接记录，而不是 VortexLogger
-            Logger.info("[N/A] [{}] [{}] [ACCESS_POSTHANDLE] - Post-processing response for request", method, path);
+            // Use Logger directly, not VortexLogger
+            Logger.info(
+                    "==>    Handler: [N/A] [{}] [{}] [ACCESS_POSTHANDLE] - Post-processing response for request",
+                    method,
+                    path);
         });
     }
 
     /**
-     * 异步完成处理方法，执行清理或日志记录
+     * Asynchronous completion method, executed after the request is fully completed (whether successfully or with an
+     * exception).
+     * <p>
+     * This method is typically used for cleanup, resource release, or final logging. It logs basic request information
+     * and any exception that occurred during processing.
+     * </p>
      *
-     * @param exchange  当前 HTTP 请求对象
-     * @param service   服务实例
-     * @param args      方法参数，可为 null
-     * @param result    最终响应结果，可为 null
-     * @param exception 异常对象（若有），可为 null
-     * @return 表示异步处理完成
+     * @param exchange  The current {@link ServerWebExchange} object, containing the HTTP request and response.
+     * @param service   The service instance, may be {@code null}.
+     * @param args      Method arguments, may be {@code null}.
+     * @param result    The final response result, may be {@code null}.
+     * @param exception The exception object (if any) that occurred during request processing, may be {@code null}.
+     * @return {@code Mono<Void>} indicating the asynchronous completion of the after-completion processing.
      */
     @Override
     public Mono<Void> afterCompletion(
@@ -109,15 +129,15 @@ public class AccessHandler extends AbstractHandler {
             Object result,
             Throwable exception) {
         return Mono.fromRunnable(() -> {
-            // 我们需要记录基本信息，而不是尝试获取 exchange
+            // We need to log basic information, not try to get exchange
             ServerHttpRequest request = exchange.getRequest();
             String path = request.getPath().value();
             String method = request.getMethod() != null ? request.getMethod().name() : "UNKNOWN";
             String exceptionMsg = exception != null ? exception.getMessage() : "none";
 
-            // 使用 Logger 直接记录
+            // Use Logger directly
             Logger.info(
-                    "[N/A] [{}] [{}] [ACCESS_COMPLETION] - Request completed, exception: {}",
+                    "==>    Handler: [N/A] [{}] [{}] [ACCESS_COMPLETION] - Request completed, exception: {}",
                     method,
                     path,
                     exceptionMsg);

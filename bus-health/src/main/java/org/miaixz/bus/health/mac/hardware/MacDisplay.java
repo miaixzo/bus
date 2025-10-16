@@ -44,7 +44,9 @@ import com.sun.jna.platform.mac.IOKit.IORegistryEntry;
 import com.sun.jna.platform.mac.IOKitUtil;
 
 /**
- * A Display
+ * <p>
+ * MacDisplay class.
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -55,7 +57,7 @@ final class MacDisplay extends AbstractDisplay {
     /**
      * Constructor for MacDisplay.
      *
-     * @param edid a byte array representing a display EDID
+     * @param edid A byte array representing a display EDID (Extended Display Identification Data).
      */
     MacDisplay(byte[] edid) {
         super(edid);
@@ -63,27 +65,29 @@ final class MacDisplay extends AbstractDisplay {
     }
 
     /**
-     * Gets Display Information
+     * Retrieves a list of {@link Display} objects representing the monitors connected to the system. This method
+     * queries both Intel-based and Apple Silicon-based display services.
      *
-     * @return An array of Display objects representing monitors, etc.
+     * @return A list of {@link Display} objects, each encapsulating information about a connected monitor.
      */
     public static List<Display> getDisplays() {
         List<Display> displays = new ArrayList<>();
-        // Intel
+        // Intel-based Macs
         displays.addAll(getDisplaysFromService("IODisplayConnect", "IODisplayEDID", "IOService"));
-        // Apple Silicon
+        // Apple Silicon-based Macs
         displays.addAll(getDisplaysFromService("IOPortTransportStateDisplayPort", "EDID", null));
 
         return displays;
     }
 
     /**
-     * Helper method to get displays from a specific IOKit service
+     * Helper method to get displays from a specific IOKit service.
      *
-     * @param serviceName    The IOKit service name to search for
-     * @param edidKeyName    The key name for the EDID property
-     * @param childEntryName The name of the child entry to search in, or null to search directly in the service
-     * @return List of Display objects found using this service
+     * @param serviceName    The IOKit service name to search for (e.g., "IODisplayConnect").
+     * @param edidKeyName    The key name for the EDID property within the service (e.g., "IODisplayEDID").
+     * @param childEntryName The name of the child entry to search in, or {@code null} to search directly in the
+     *                       service.
+     * @return A list of {@link Display} objects found using this service.
      */
     private static List<Display> getDisplaysFromService(String serviceName, String edidKeyName, String childEntryName) {
         List<Display> displays = new ArrayList<>();

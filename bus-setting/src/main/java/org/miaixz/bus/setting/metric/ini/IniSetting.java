@@ -28,109 +28,102 @@
 package org.miaixz.bus.setting.metric.ini;
 
 import java.io.*;
-import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.StringJoiner;
 
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Keys;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.setting.Builder;
 import org.miaixz.bus.setting.metric.props.Props;
 
 /**
- * Ini数据,扩展{@code ArrayList <IniElement>} 如果要向此ini添加空行，只需添加null 如果您想创建Ini，则可以{@link Builder}
+ * Represents the in-memory structure of an INI file, extending {@code ArrayList<IniElement>}. An empty line in the INI
+ * file is represented by a {@code null} element in this list. To create an instance of this class programmatically, use
+ * the {@link INI} builder.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class IniSetting extends ArrayList<IniElement> {
 
+    /**
+     * Constructs an empty list with an initial capacity of ten.
+     */
     public IniSetting() {
-
     }
 
+    /**
+     * Constructs an empty list with the specified initial capacity.
+     *
+     * @param initialCapacity the initial capacity of the list.
+     */
     public IniSetting(int initialCapacity) {
         super(initialCapacity);
     }
 
+    /**
+     * Constructs a list containing the elements of the specified collection.
+     *
+     * @param c the collection whose elements are to be placed into this list.
+     */
     public IniSetting(Collection<? extends IniElement> c) {
         super(c);
     }
 
+    /**
+     * Returns a string representation of the INI data, formatted as a valid INI file.
+     *
+     * @return The INI content as a string.
+     */
     @Override
     public String toString() {
         if (this.isEmpty()) {
-            // if data empty, return empty.
             return Normal.EMPTY;
         } else {
-            // Imitation of super toString method.
-            // Imitation ? maybe not ?
             String newLineSplit = getNewLineSplit();
-            // use joiner for every line
             StringJoiner joiner = new StringJoiner(newLineSplit);
             for (IniElement iniElement : this) {
-                // if null, show a empty line.
+                // A null element represents an empty line.
                 joiner.add(null == iniElement ? Normal.EMPTY : iniElement.toString());
             }
             return joiner.toString();
         }
     }
 
+    /**
+     * Gets the system-dependent newline character sequence.
+     *
+     * @return The newline string.
+     */
     private String getNewLineSplit() {
         return System.getProperty(Keys.LINE_SEPARATOR, Symbol.LF);
     }
 
     /**
+     * Converts the INI data into a {@link Props} object. The keys in the resulting properties will be a combination of
+     * the section name and the property key, joined by the specified delimiter.
      * <p>
-     * get properties.
-     * </p>
-     * <p>
-     * for example:
-     * </p>
-     * <p>
-     * <code>
-     * [se1] # section named 'se1'
-     * # key 1
+     * For example, with a delimiter of '.':
+     * 
+     * <pre>
+     * [se1]
      * key1=value1
-     * # key 2
-     * key1=value2
-     * [se2]
-     * </code>
-     * </p>
-     * <p>
-     * will be
-     * </p>
-     * <p>
-     * <code>
-     * se1${delimiter}value1=value1
-     * se1${delimiter}value2=value2
-     * </code>
-     * </p>
-     * <p>
-     * Suppose delimiter is'.'
-     * </p>
-     * <p>
-     * <code>
-     * se1.value1=value1
-     * se1.value2=value2
-     * </code>
-     * </p>
+     * </pre>
+     * 
+     * becomes a property with the key {@code "se1.key1"}.
      *
-     * @param delimiter Connect the property value to the section value. if null, ignore section.
-     * @return properties
+     * @param delimiter The string to use for joining the section name and property key. If null, only the property key
+     *                  is used.
+     * @return A {@link Props} object representing the INI data.
      */
     public Props toProperties(String delimiter) {
         final Props prop = new Props();
-        final Iterator<IniElement> iter = iterator();
-        IniElement next;
-        while (iter.hasNext()) {
-            next = iter.next();
-            if (next.isProperty()) {
+        for (IniElement next : this) {
+            if (next != null && next.isProperty()) {
                 String pk;
                 IniProperty inip = (IniProperty) next;
                 if (null != delimiter) {
@@ -145,9 +138,9 @@ public class IniSetting extends ArrayList<IniElement> {
     }
 
     /**
-     * to properties. delimiter is '.'
+     * Converts the INI data into a {@link Props} object using '.' as the delimiter between section names and keys.
      *
-     * @return properties
+     * @return A {@link Props} object.
      * @see #toProperties(String)
      */
     public Props toProperties() {
@@ -155,17 +148,17 @@ public class IniSetting extends ArrayList<IniElement> {
     }
 
     /**
-     * write the {@link #toString()} value to output stream.
+     * Writes the INI content to an {@link OutputStream}.
      *
-     * @param out         output stream.
-     * @param charset     param for {@link String#getBytes(Charset)}
-     * @param withComment write with comment
-     * @throws IOException io exception from {@link OutputStream#write(byte[])}
+     * @param out         The output stream to write to.
+     * @param charset     The character set to use for encoding.
+     * @param withComment If {@code true}, comments will be included in the output.
+     * @throws IOException if an I/O error occurs.
      */
-    public void write(OutputStream out, Charset charset, boolean withComment) throws IOException {
+    public void write(OutputStream out, java.nio.charset.Charset charset, boolean withComment) throws IOException {
         String text;
         for (IniElement element : this) {
-            if (!withComment && element.isComment()) {
+            if (!withComment && element != null && element.isComment()) {
                 continue;
             }
             text = null == element ? getNewLineSplit()
@@ -176,28 +169,28 @@ public class IniSetting extends ArrayList<IniElement> {
     }
 
     /**
-     * write the {@link #toString()} value to output stream. charset is utf-8
+     * Writes the INI content to an {@link OutputStream} using UTF-8 encoding.
      *
-     * @param out         output stream.
-     * @param withComment write with comment
-     * @throws IOException io exception from {@link OutputStream#write(byte[])}
-     * @see #write(OutputStream, Charset, boolean)
+     * @param out         The output stream to write to.
+     * @param withComment If {@code true}, comments will be included in the output.
+     * @throws IOException if an I/O error occurs.
+     * @see #write(OutputStream, java.nio.charset.Charset, boolean)
      */
     public void write(OutputStream out, boolean withComment) throws IOException {
-        write(out, org.miaixz.bus.core.lang.Charset.UTF_8, withComment);
+        write(out, Charset.UTF_8, withComment);
     }
 
     /**
-     * write the {@link #toString()} value to Writer.
+     * Writes the INI content to a {@link Writer}.
      *
-     * @param writer      Writer
-     * @param withComment write with comment
-     * @throws IOException io exception from {@link Writer#write(String)}
+     * @param writer      The writer to use.
+     * @param withComment If {@code true}, comments will be included in the output.
+     * @throws IOException if an I/O error occurs.
      */
     public void write(Writer writer, boolean withComment) throws IOException {
         String text;
         for (IniElement element : this) {
-            if (!withComment && element.isComment()) {
+            if (!withComment && element != null && element.isComment()) {
                 continue;
             }
             text = null == element ? getNewLineSplit()
@@ -208,15 +201,15 @@ public class IniSetting extends ArrayList<IniElement> {
     }
 
     /**
-     * write the {@link #toString()} value to PrintStream.
+     * Writes the INI content to a {@link PrintStream}.
      *
-     * @param print       PrintStream
-     * @param withComment write with comment
+     * @param print       The print stream to write to.
+     * @param withComment If {@code true}, comments will be included in the output.
      */
     public void write(PrintStream print, boolean withComment) {
         String text;
         for (IniElement element : this) {
-            if (!withComment && element.isComment()) {
+            if (!withComment && element != null && element.isComment()) {
                 continue;
             }
             text = null == element ? Normal.EMPTY : withComment ? element.toString() : element.toNoCommentString();
@@ -226,14 +219,14 @@ public class IniSetting extends ArrayList<IniElement> {
     }
 
     /**
-     * write the {@link #toString()} value to File.
+     * Writes the INI content to a {@link File}.
      *
-     * @param file        file
-     * @param charset     charset
-     * @param withComment write with comment
-     * @throws IOException io exception
+     * @param file        The destination file.
+     * @param charset     The character set to use.
+     * @param withComment If {@code true}, comments will be included in the output.
+     * @throws IOException if an I/O error occurs.
      */
-    public void write(File file, Charset charset, boolean withComment) throws IOException {
+    public void write(File file, java.nio.charset.Charset charset, boolean withComment) throws IOException {
         if (!file.exists()) {
             file.getParentFile().mkdirs();
             file.createNewFile();
@@ -244,25 +237,25 @@ public class IniSetting extends ArrayList<IniElement> {
     }
 
     /**
-     * write the {@link #toString()} value to File. charset is utf-8
+     * Writes the INI content to a {@link File} using UTF-8 encoding.
      *
-     * @param file        file
-     * @param withComment write with comment
-     * @throws IOException io exception
+     * @param file        The destination file.
+     * @param withComment If {@code true}, comments will be included in the output.
+     * @throws IOException if an I/O error occurs.
      */
     public void write(File file, boolean withComment) throws IOException {
         write(file, org.miaixz.bus.core.lang.Charset.UTF_8, withComment);
     }
 
     /**
-     * write the {@link #toString()} value to Path(file).
+     * Writes the INI content to a {@link Path}.
      *
-     * @param path        path
-     * @param charset     charset
-     * @param withComment write with comment
-     * @throws IOException io exception
+     * @param path        The destination path.
+     * @param charset     The character set to use.
+     * @param withComment If {@code true}, comments will be included in the output.
+     * @throws IOException if an I/O error occurs.
      */
-    public void write(Path path, Charset charset, boolean withComment) throws IOException {
+    public void write(Path path, java.nio.charset.Charset charset, boolean withComment) throws IOException {
         if (!Files.exists(path)) {
             Files.createDirectories(path.getParent());
             Files.createFile(path);
@@ -273,14 +266,14 @@ public class IniSetting extends ArrayList<IniElement> {
     }
 
     /**
-     * write the {@link #toString()} value to Path(file). charset is utf-8
+     * Writes the INI content to a {@link Path} using UTF-8 encoding.
      *
-     * @param path        path
-     * @param withComment write with comment
-     * @throws IOException io exception
+     * @param path        The destination path.
+     * @param withComment If {@code true}, comments will be included in the output.
+     * @throws IOException if an I/O error occurs.
      */
     public void write(Path path, boolean withComment) throws IOException {
-        write(path, org.miaixz.bus.core.lang.Charset.UTF_8, withComment);
+        write(path, Charset.UTF_8, withComment);
     }
 
 }

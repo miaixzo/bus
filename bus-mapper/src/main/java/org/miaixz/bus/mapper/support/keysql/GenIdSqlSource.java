@@ -31,7 +31,7 @@ import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.SqlSource;
 
 /**
- * 封装 SqlSource 以实现在插入前生成主键。
+ * Wraps an {@link SqlSource} to enable primary key generation before insertion.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -39,20 +39,20 @@ import org.apache.ibatis.mapping.SqlSource;
 public class GenIdSqlSource implements SqlSource {
 
     /**
-     * 原始 SQL 源
+     * The original SQL source.
      */
     private final SqlSource sqlSource;
 
     /**
-     * 主键生成器
+     * The primary key generator.
      */
     private final GenIdKeyGenerator keyGenerator;
 
     /**
-     * 构造函数，初始化 SQL 源和主键生成器。
+     * Constructs a new GenIdSqlSource, initializing the SQL source and key generator.
      *
-     * @param sqlSource    原始 SQL 源
-     * @param keyGenerator 主键生成器
+     * @param sqlSource    The original SQL source.
+     * @param keyGenerator The primary key generator.
      */
     public GenIdSqlSource(SqlSource sqlSource, GenIdKeyGenerator keyGenerator) {
         this.sqlSource = sqlSource;
@@ -60,14 +60,14 @@ public class GenIdSqlSource implements SqlSource {
     }
 
     /**
-     * 获取绑定 SQL，并在必要时提前生成主键。
+     * Gets the bound SQL and generates the primary key if necessary before execution.
      *
-     * @param parameterObject 参数对象
-     * @return 绑定后的 SQL 对象
+     * @param parameterObject The parameter object.
+     * @return The bound SQL object.
      */
     @Override
     public BoundSql getBoundSql(Object parameterObject) {
-        // 确保初始化时不会漏掉首次主键生成
+        // Ensure primary key generation for the first time if missed during initialization.
         keyGenerator.prepare(parameterObject);
         return sqlSource.getBoundSql(parameterObject);
     }

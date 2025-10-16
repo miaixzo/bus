@@ -31,7 +31,9 @@ import java.io.Serializable;
 import java.lang.reflect.Method;
 
 /**
- * 标识提供者
+ * Abstract base class for a supplier that provides a unique identifier for a user or request. This supplier is used in
+ * limiting scenarios to identify the entity being limited. It also provides a default interception message for blocked
+ * requests.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -39,19 +41,21 @@ import java.lang.reflect.Method;
 public abstract class Supplier {
 
     /**
-     * 获取当前用户标识
+     * Retrieves the current user or request identifier. This method must be implemented by concrete subclasses to
+     * provide the specific identification logic.
      *
-     * @return 用户表示
+     * @return A {@link Serializable} object representing the user or request identifier.
      */
     public abstract Serializable get();
 
     /**
-     * 拦截请求的结果
+     * Provides a default interception message when a request is blocked by a limiter. Subclasses can override this
+     * method to provide custom messages or actions upon interception.
      *
-     * @param bean   对象信息
-     * @param method 执行方法
-     * @param args   参数
-     * @return the serializable
+     * @param bean   The target object on which the method was invoked.
+     * @param method The {@link Method} that was attempted to be executed.
+     * @param args   The arguments passed to the method invocation.
+     * @return A {@link Serializable} object, typically a message, indicating the request was intercepted.
      */
     public Serializable intercept(Object bean, Method method, Object[] args) {
         return "Your request is frequent. Please wait...";

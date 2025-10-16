@@ -34,18 +34,18 @@ import org.miaixz.bus.core.lang.I18n;
 import org.miaixz.bus.core.lang.Keys;
 
 /**
- * 基础错误码注册类，实现了 {@link Errors} 接口。
+ * A base class for registering error codes, implementing the {@link Errors} interface.
  * <p>
- * 本类提供了错误码的注册、构建和国际化支持功能。每个错误码包含一个唯一键(key)和对应的错误信息(value)， 支持根据不同的语言环境获取本地化的错误信息。
- * </p>
+ * This class provides functionality for registering, building, and internationalizing error codes. Each error code
+ * consists of a unique key and a corresponding error message (value). It supports retrieving localized error messages
+ * based on different locales.
  *
  * <p>
- * 使用示例：
- * </p>
+ * Example usage:
  *
  * <pre>{@code
  * 
- * Errors error = ErrorRegistry.builder().key("AUTH_001").value("认证失败").build();
+ * Errors error = ErrorRegistry.builder().key("AUTH_001").value("Authentication failed").build();
  * }</pre>
  *
  * @author Kimi Liu
@@ -54,44 +54,44 @@ import org.miaixz.bus.core.lang.Keys;
 public class ErrorRegistry implements Errors {
 
     /**
-     * 错误码键，用于唯一标识一个错误
+     * The unique key for the error code.
      */
     private final String key;
 
     /**
-     * 默认错误信息，当找不到本地化信息时使用
+     * The default error message, used when a localized message is not found.
      */
     private final String value;
 
     /**
-     * 私有构造函数，通过 Builder 构建实例。
+     * Private constructor to be used by the {@link Builder}.
      *
-     * @param builder 包含构建参数的 Builder 对象
-     * @throws IllegalArgumentException 如果 key 或 value 为 null
+     * @param builder The builder object containing the construction parameters.
+     * @throws IllegalArgumentException if the key or value is null.
      */
     public ErrorRegistry(Builder builder) {
         if (builder.key == null || builder.value == null) {
-            throw new IllegalArgumentException("key和value不能为null");
+            throw new IllegalArgumentException("Key and value cannot be null");
         }
         this.key = builder.key;
         this.value = builder.value;
-        // 构造时立即注册
+        // Register the error code upon construction.
         this.register();
     }
 
     /**
-     * 获取 Builder 实例，用于构建 ErrorRegistry 对象。
+     * Gets a new {@link Builder} instance for constructing an {@code ErrorRegistry} object.
      *
-     * @return 新的 Builder 实例
+     * @return A new {@link Builder} instance.
      */
     public static Builder builder() {
         return new Builder();
     }
 
     /**
-     * 获取错误码键。
+     * Gets the unique error code key.
      *
-     * @return 错误码键
+     * @return The error code key.
      */
     @Override
     public String getKey() {
@@ -99,9 +99,9 @@ public class ErrorRegistry implements Errors {
     }
 
     /**
-     * 获取默认错误信息（使用自动检测的语言环境）。
+     * Gets the error message using the auto-detected locale.
      *
-     * @return 错误信息字符串
+     * @return The error message string.
      */
     @Override
     public String getValue() {
@@ -109,43 +109,46 @@ public class ErrorRegistry implements Errors {
     }
 
     /**
-     * 根据指定语言环境获取本地化的错误信息。
+     * Gets the localized error message for the specified locale.
      *
-     * @param i18n 语言环境枚举，使用 {@link I18n#AUTO_DETECT} 表示自动检测
-     * @return 本地化的错误信息
+     * @param i18n The locale enumeration; use {@link I18n#AUTO_DETECT} for auto-detection.
+     * @return The localized error message.
      */
     public String getValue(I18n i18n) {
         try {
+            // Determine the locale: use default if auto-detect, otherwise create a new locale.
             Locale locale = i18n == I18n.AUTO_DETECT ? Locale.getDefault() : new Locale(i18n.lang());
+            // Get the resource bundle for the specified locale.
             ResourceBundle bundle = ResourceBundle.getBundle(Keys.BUNDLE_NAME, locale);
+            // Return the localized message from the bundle.
             return bundle.getString(this.key);
         } catch (Exception e) {
-            // 回退到 ERRORS_CACHE 中注册的错误信息
+            // Fallback to the error message registered in the ERRORS_CACHE.
             Entry entry = Errors.require(this.key);
             return entry != null ? entry.getValue() : this.value;
         }
     }
 
     /**
-     * ErrorRegistry 的构建器，支持链式调用。
+     * A builder for {@link ErrorRegistry}, supporting a fluent, chainable interface.
      */
     public static class Builder {
 
         /**
-         * 错误码键，用于唯一标识一个错误。
+         * The unique key for the error code.
          */
         private String key;
 
         /**
-         * 默认错误信息，当找不到本地化信息时使用。
+         * The default error message, used when a localized message is not found.
          */
         private String value;
 
         /**
-         * 设置错误码键
+         * Sets the error code key.
          *
-         * @param key 错误码键
-         * @return 当前 Builder 实例
+         * @param key The error code key.
+         * @return The current {@link Builder} instance.
          */
         public Builder key(String key) {
             this.key = key;
@@ -153,10 +156,10 @@ public class ErrorRegistry implements Errors {
         }
 
         /**
-         * 设置默认错误信息
+         * Sets the default error message.
          *
-         * @param value 错误信息
-         * @return 当前 Builder 实例
+         * @param value The error message.
+         * @return The current {@link Builder} instance.
          */
         public Builder value(String value) {
             this.value = value;
@@ -164,9 +167,9 @@ public class ErrorRegistry implements Errors {
         }
 
         /**
-         * 构建 ErrorRegistry 实例
+         * Builds a new {@link ErrorRegistry} instance.
          *
-         * @return 新的 ErrorRegistry 实例
+         * @return A new {@link ErrorRegistry} instance.
          */
         public ErrorRegistry build() {
             return new ErrorRegistry(this);

@@ -35,7 +35,8 @@ import org.miaixz.bus.core.center.date.culture.lunar.LunarDay;
 import org.miaixz.bus.core.lang.Symbol;
 
 /**
- * 逐日胎神
+ * Represents the daily Fetus God (逐日胎神), a concept in Chinese traditional culture related to pregnancy and auspicious
+ * directions. This class extends {@link Tradition} to provide information about the Fetus God for a specific day.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,25 +44,30 @@ import org.miaixz.bus.core.lang.Symbol;
 public class FetusDay extends Tradition {
 
     /**
-     * 天干六甲胎神
+     * Fetus God associated with Heavenly Stems (天干六甲胎神).
      */
     protected FetusHeavenStem fetusHeavenStem;
 
     /**
-     * 地支六甲胎神
+     * Fetus God associated with Earthly Branches (地支六甲胎神).
      */
     protected FetusEarthBranch fetusEarthBranch;
 
     /**
-     * 内外
+     * Indicates whether the Fetus God is inside (0) or outside (1).
      */
     protected int side;
 
     /**
-     * 方位
+     * The direction associated with the Fetus God.
      */
     protected Direction direction;
 
+    /**
+     * Constructs a {@code FetusDay} instance based on a {@link SixtyCycle}.
+     *
+     * @param sixtyCycle The SixtyCycle (GanZhi) of the day.
+     */
     protected FetusDay(SixtyCycle sixtyCycle) {
         fetusHeavenStem = new FetusHeavenStem(sixtyCycle.getHeavenStem().getIndex() % 5);
         fetusEarthBranch = new FetusEarthBranch(sixtyCycle.getEarthBranch().getIndex() % 6);
@@ -72,34 +78,49 @@ public class FetusDay extends Tradition {
         direction = Direction.fromIndex(index);
     }
 
+    /**
+     * Constructs a {@code FetusDay} instance based on a {@link LunarDay}.
+     *
+     * @param lunarDay The LunarDay.
+     */
     public FetusDay(LunarDay lunarDay) {
         this(lunarDay.getSixtyCycle());
     }
 
+    /**
+     * Constructs a {@code FetusDay} instance based on a {@link SixtyCycleDay}.
+     *
+     * @param sixtyCycleDay The SixtyCycleDay.
+     */
     public FetusDay(SixtyCycleDay sixtyCycleDay) {
         this(sixtyCycleDay.getSixtyCycle());
     }
 
     /**
-     * 从农历日初始化
+     * Creates a {@code FetusDay} instance from a {@link LunarDay}.
      *
-     * @param lunarDay 农历日
-     * @return 逐日胎神
+     * @param lunarDay The LunarDay.
+     * @return A new {@code FetusDay} instance.
      */
     public static FetusDay fromLunarDay(LunarDay lunarDay) {
         return new FetusDay(lunarDay);
     }
 
     /**
-     * 从干支日初始化
+     * Creates a {@code FetusDay} instance from a {@link SixtyCycleDay}.
      *
-     * @param sixtyCycleDay 干支日
-     * @return 逐日胎神
+     * @param sixtyCycleDay The SixtyCycleDay.
+     * @return A new {@code FetusDay} instance.
      */
     public static FetusDay fromSixtyCycleDay(SixtyCycleDay sixtyCycleDay) {
         return new FetusDay(sixtyCycleDay);
     }
 
+    /**
+     * Gets the name of the Fetus God, including its location and direction.
+     *
+     * @return The name of the Fetus God.
+     */
     public String getName() {
         String s = fetusHeavenStem.getName() + fetusEarthBranch.getName();
         if ("门门".equals(s)) {
@@ -128,36 +149,36 @@ public class FetusDay extends Tradition {
     }
 
     /**
-     * 内外
+     * Gets the side (inside or outside) of the Fetus God.
      *
-     * @return 内外
+     * @return 0 for inside, 1 for outside.
      */
     public int getSide() {
         return side;
     }
 
     /**
-     * 方位
+     * Gets the direction associated with the Fetus God.
      *
-     * @return 方位
+     * @return The {@link Direction} instance.
      */
     public Direction getDirection() {
         return direction;
     }
 
     /**
-     * 天干六甲胎神
+     * Gets the Fetus God associated with Heavenly Stems.
      *
-     * @return 天干六甲胎神
+     * @return The {@link FetusHeavenStem} instance.
      */
     public FetusHeavenStem getFetusHeavenStem() {
         return fetusHeavenStem;
     }
 
     /**
-     * 地支六甲胎神
+     * Gets the Fetus God associated with Earthly Branches.
      *
-     * @return 地支六甲胎神
+     * @return The {@link FetusEarthBranch} instance.
      */
     public FetusEarthBranch getFetusEarthBranch() {
         return fetusEarthBranch;

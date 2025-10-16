@@ -39,9 +39,9 @@ import org.miaixz.bus.core.xyz.BeanKit;
 import org.miaixz.bus.core.xyz.ClassKit;
 
 /**
- * 存放lambda信息 此类是{@link SerializedLambda}信息的扩充和补充类，包括：
+ * Stores lambda information. This class extends and complements {@link SerializedLambda} information, including:
  * <ul>
- * <li>实例化后的对象方法参数类型，一般用于方法引用</li>
+ * <li>Instantiated object method parameter types, generally used for method references.</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -49,29 +49,44 @@ import org.miaixz.bus.core.xyz.ClassKit;
  */
 public class LambdaX {
 
+    /**
+     * An empty array of {@link Type} objects.
+     */
     private static final Type[] EMPTY_TYPE = new Type[0];
     /**
-     * 实例对象的方法参数类型
+     * The parameter types of the instantiated method.
      */
     private final Type[] instantiatedMethodParameterTypes;
     /**
-     * 方法或构造的参数类型
+     * The parameter types of the method or constructor.
      */
     private final Type[] parameterTypes;
+    /**
+     * The return type of the method or constructor.
+     */
     private final Type returnType;
     /**
-     * 方法名或构造名称
+     * The name of the method or constructor.
      */
     private final String name;
+    /**
+     * The executable (method or constructor) object.
+     */
     private final Executable executable;
+    /**
+     * The class where the method or constructor is declared.
+     */
     private final Class<?> clazz;
+    /**
+     * The serialized lambda object.
+     */
     private final SerializedLambda lambda;
 
     /**
-     * 构造
+     * Constructs a {@code LambdaX} instance.
      *
-     * @param executable 构造对象{@link Constructor}或方法对象{@link Method}
-     * @param lambda     实现了序列化接口的lambda表达式
+     * @param executable The constructor object ({@link Constructor}) or method object ({@link Method}).
+     * @param lambda     The lambda expression that implements the serializable interface.
      */
     public LambdaX(final Executable executable, final SerializedLambda lambda) {
         Assert.notNull(executable, "executable must be not null!");
@@ -98,7 +113,10 @@ public class LambdaX {
     }
 
     /**
-     * 根据lambda对象的方法签名信息，解析获得实际的参数类型
+     * Parses the actual parameter types based on the method signature information of the lambda object.
+     *
+     * @param className The class name string from the lambda's instantiated method type.
+     * @return An array of {@link Type} objects representing the instantiated method parameter types.
      */
     private static Type[] getInstantiatedMethodParamTypes(final String className) {
         final String[] instantiatedTypeNames = className.split(Symbol.SEMICOLON);
@@ -106,15 +124,15 @@ public class LambdaX {
         for (int i = 0; i < instantiatedTypeNames.length; i++) {
             final boolean isArray = instantiatedTypeNames[i].startsWith(Symbol.BRACKET_LEFT);
             if (isArray && !instantiatedTypeNames[i].endsWith(Symbol.SEMICOLON)) {
-                // 如果是数组，需要以 ";" 结尾才能加载
+                // If it is an array, it needs to end with ";" to be loaded
                 instantiatedTypeNames[i] += Symbol.SEMICOLON;
             } else {
                 if (instantiatedTypeNames[i].startsWith("L")) {
-                    // 如果以 "L" 开头，删除 L
+                    // If it starts with "L", remove L
                     instantiatedTypeNames[i] = instantiatedTypeNames[i].substring(1);
                 }
                 if (instantiatedTypeNames[i].endsWith(Symbol.SEMICOLON)) {
-                    // 如果以 ";" 结尾，删除 ";"
+                    // If it ends with ";", remove ";"
                     instantiatedTypeNames[i] = instantiatedTypeNames[i]
                             .substring(0, instantiatedTypeNames[i].length() - 1);
                 }
@@ -125,72 +143,72 @@ public class LambdaX {
     }
 
     /**
-     * 实例方法参数类型
+     * Gets the instantiated method parameter types.
      *
-     * @return 实例方法参数类型
+     * @return An array of {@link Type} objects representing the instantiated method parameter types.
      */
     public Type[] getInstantiatedMethodParameterTypes() {
         return instantiatedMethodParameterTypes;
     }
 
     /**
-     * 获得构造或方法参数类型列表
+     * Gets the parameter types of the constructor or method.
      *
-     * @return 参数类型列表
+     * @return An array of {@link Type} objects representing the parameter types.
      */
     public Type[] getParameterTypes() {
         return parameterTypes;
     }
 
     /**
-     * 获取返回值类型（方法引用）
+     * Gets the return type (for method references).
      *
-     * @return 返回值类型
+     * @return The return type.
      */
     public Type getReturnType() {
         return returnType;
     }
 
     /**
-     * 方法或构造名称
+     * Gets the name of the method or constructor.
      *
-     * @return 方法或构造名称
+     * @return The name of the method or constructor.
      */
     public String getName() {
         return name;
     }
 
     /**
-     * 字段名称，主要用于方法名称截取，方法名称必须为getXXX、isXXX、setXXX
+     * Gets the field name, mainly used for method name truncation. The method name must be getXXX, isXXX, or setXXX.
      *
-     * @return getter或setter对应的字段名称
+     * @return The field name corresponding to the getter or setter.
      */
     public String getFieldName() {
         return BeanKit.getFieldName(getName());
     }
 
     /**
-     * 方法或构造对象
+     * Gets the method or constructor object.
      *
-     * @return 方法或构造对象
+     * @return The {@link Executable} object (method or constructor).
      */
     public Executable getExecutable() {
         return executable;
     }
 
     /**
-     * 方法或构造所在类
+     * Gets the class where the method or constructor is declared.
      *
-     * @return 方法或构造所在类
+     * @return The declaring {@link Class}.
      */
     public Class<?> getClazz() {
         return clazz;
     }
 
     /**
-     * 获得Lambda表达式对象
+     * Gets the serialized lambda expression object.
      *
-     * @return 获得Lambda表达式对象
+     * @return The {@link SerializedLambda} object.
      */
     public SerializedLambda getLambda() {
         return lambda;

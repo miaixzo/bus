@@ -28,21 +28,21 @@
 package org.miaixz.bus.core.center.map.concurrent;
 
 /**
+ * A strategy interface that determines the "weight" or cost of a value. This is typically used in caches to manage
+ * eviction policies based on the combined weight of stored entries, rather than just the count of entries.
  *
- * 确定值的选择器
- *
- * @param <V> 值类型
+ * @param <V> The type of the value to be weighed.
  * @author Kimi Liu
  * @since Java 17+
  */
 public interface Weigher<V> {
 
     /**
+     * Measures the weight of a given value. The returned weight must be non-negative. A weight of zero means the value
+     * consumes no capacity.
      *
-     * 测量对象的选择器以确定值消耗了多少个容量单位
-     *
-     * @param value 称量物体
-     * @return 对象的选择器
+     * @param value The value to be weighed.
+     * @return The non-negative weight of the value.
      */
     int weightOf(V value);
 

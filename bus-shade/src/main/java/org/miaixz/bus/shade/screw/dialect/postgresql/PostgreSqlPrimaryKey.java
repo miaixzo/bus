@@ -34,7 +34,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * 表主键
+ * Represents primary key information for a PostgreSQL table.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,32 +44,32 @@ import lombok.Setter;
 public class PostgreSqlPrimaryKey implements PrimaryKey {
 
     /**
-     * 主键名称
+     * The name of the primary key constraint.
      */
     @MappingField(value = "pk_name")
     private String pkName;
     /**
-     *
+     * The schema of the table.
      */
     @MappingField(value = "table_schem")
     private String tableSchem;
     /**
-     *
+     * The sequence number of the column within the primary key (for composite keys).
      */
     @MappingField(value = "key_seq")
     private String keySeq;
     /**
-     * tableCat
+     * The table catalog (may be {@code null}).
      */
     @MappingField(value = "table_cat")
     private String tableCat;
     /**
-     * 列名
+     * The name of the column in the primary key.
      */
     @MappingField(value = "column_name")
     private String columnName;
     /**
-     * 表名
+     * The name of the table.
      */
     @MappingField(value = "table_name")
     private String tableName;

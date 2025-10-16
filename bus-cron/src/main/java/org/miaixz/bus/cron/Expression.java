@@ -27,16 +27,17 @@
 */
 package org.miaixz.bus.cron;
 
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.DateKit;
+
 import java.io.Serial;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.util.*;
 
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.xyz.DateKit;
-
 /**
- * 类似unix cron表达式提供解析器和执行器 Crontab表达式提供了指定复杂时间组合的能力
+ * Provides a parser and evaluator for unix-like cron expressions. Cron expressions provide the ability to specify
+ * complex time combinations.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -102,10 +103,10 @@ public final class Expression implements Serializable, Cloneable {
     private TimeZone timeZone = null;
 
     /**
-     * 根据指定的参数构造一个新的<code> CronExpression </code>
+     * Constructs a new {@code CronExpression} based on the specified parameter.
      *
-     * @param cronExpression 新对象应表示的cron表达式的字符串表示形式
-     * @throws ParseException 如果字符串表达式不能解析为有效的<code> CronExpression </code>
+     * @param cronExpression String representation of the cron expression the new object should represent
+     * @throws ParseException if the string expression cannot be parsed into a valid {@code CronExpression}
      */
     public Expression(String cronExpression) throws ParseException {
         if (null == cronExpression) {
@@ -118,9 +119,9 @@ public final class Expression implements Serializable, Cloneable {
     }
 
     /**
-     * 构造一个新的{@code CronExpression}作为现有*实例的副本
+     * Constructs a new {@code CronExpression} as a copy of an existing instance.
      *
-     * @param expression 要复制的现有cron表达式
+     * @param expression The existing cron expression to be copied
      */
     public Expression(Expression expression) {
         this.cronExpression = expression.getCronExpression();
@@ -135,10 +136,10 @@ public final class Expression implements Serializable, Cloneable {
     }
 
     /**
-     * 指示是否可以将指定的cron表达式解析为有效的cron表达式
+     * Indicates whether the specified cron expression can be parsed into a valid cron expression.
      *
-     * @param cronExpression 要评估的表达式
-     * @return 指示给定表达式是否为有效cron表达式的布尔值
+     * @param cronExpression the expression to evaluate
+     * @return a boolean indicating whether the given expression is a valid cron expression
      */
     public static boolean isValidExpression(String cronExpression) {
 
@@ -157,10 +158,11 @@ public final class Expression implements Serializable, Cloneable {
     }
 
     /**
-     * 指示给定的日期是否满足cron表达式 请注意，毫秒将被忽略，因此两个日期在同一秒的不同毫秒 处始终具有相同的结果
+     * Indicates whether the given date satisfies the cron expression. Note that milliseconds are ignored, so two dates
+     * in the same second but different milliseconds will have the same result.
      *
-     * @param date 评估日期
-     * @return 指示给定日期是否满足cron 表达式的布尔值
+     * @param date the date to evaluate
+     * @return a boolean indicating whether the given date satisfies the cron expression
      */
     public boolean isSatisfiedBy(Date date) {
         Calendar testDateCal = Calendar.getInstance(getTimeZone());

@@ -40,7 +40,8 @@ import org.miaixz.bus.extra.mq.Producer;
 import jakarta.jms.*;
 
 /**
- * JMS(Java Message Service)引擎抽象基类 提供JMS消息队列服务的基本实现
+ * Abstract base class for JMS (Java Message Service) engine. Provides a basic implementation for JMS message queue
+ * services.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,35 +49,36 @@ import jakarta.jms.*;
 public abstract class JmsProvider implements MQProvider, Closeable {
 
     /**
-     * JMS连接对象
+     * The JMS connection object.
      */
     private Connection connection;
 
     /**
-     * JMS会话对象
+     * The JMS session object.
      */
     private Session session;
 
     /**
-     * 是否使用Topic模式，false表示使用Queue模式
+     * Indicates whether to use Topic mode (true) or Queue mode (false).
      */
     private boolean isTopic;
 
     /**
-     * 生产者组名称，默认为"bus.queue"
+     * The name of the producer group, defaults to "bus.queue".
      */
     private String producerGroup = "bus.queue";
 
     /**
-     * 消费者组名称，默认为"bus.queue"
+     * The name of the consumer group, defaults to "bus.queue".
      */
     private String consumerGroup = "bus.queue";
 
     /**
-     * 使用MQConfig初始化JMS连接和会话
+     * Initializes the JMS connection and session using the provided {@link MQConfig}.
      *
-     * @param config JMS配置对象，包含连接所需信息
-     * @return 当前JmsProvider实例，支持链式调用
+     * @param config The JMS configuration object, containing necessary connection information.
+     * @return This {@code JmsProvider} instance, supporting chained calls.
+     * @throws MQueueException if a JMS error occurs during initialization.
      */
     @Override
     public MQProvider init(final MQConfig config) {
@@ -90,18 +92,19 @@ public abstract class JmsProvider implements MQProvider, Closeable {
     }
 
     /**
-     * 创建JMS连接工厂 子类需要实现此方法以提供具体的连接工厂实现
+     * Creates a JMS connection factory. Subclasses must implement this method to provide a concrete connection factory
+     * implementation.
      *
-     * @param config JMS配置对象，包含连接所需信息
-     * @return JMS连接工厂
+     * @param config The JMS configuration object, containing necessary connection information.
+     * @return The JMS connection factory.
      */
     protected abstract ConnectionFactory createConnectionFactory(final MQConfig config);
 
     /**
-     * 设置是否使用Topic模式
+     * Sets whether to use Topic mode.
      *
-     * @param isTopic true表示使用Topic模式，false表示使用Queue模式
-     * @return 当前JmsProvider实例，支持链式调用
+     * @param isTopic {@code true} to use Topic mode, {@code false} to use Queue mode.
+     * @return This {@code JmsProvider} instance, supporting chained calls.
      */
     public JmsProvider setTopic(final boolean isTopic) {
         this.isTopic = isTopic;
@@ -109,10 +112,10 @@ public abstract class JmsProvider implements MQProvider, Closeable {
     }
 
     /**
-     * 设置生产者组名称
+     * Sets the name of the producer group.
      *
-     * @param producerGroup 生产者组名称
-     * @return 当前JmsProvider实例，支持链式调用
+     * @param producerGroup The name of the producer group.
+     * @return This {@code JmsProvider} instance, supporting chained calls.
      */
     public JmsProvider setProducerGroup(final String producerGroup) {
         this.producerGroup = producerGroup;
@@ -120,10 +123,10 @@ public abstract class JmsProvider implements MQProvider, Closeable {
     }
 
     /**
-     * 设置消费者组名称
+     * Sets the name of the consumer group.
      *
-     * @param consumerGroup 消费者组名称
-     * @return 当前JmsProvider实例，支持链式调用
+     * @param consumerGroup The name of the consumer group.
+     * @return This {@code JmsProvider} instance, supporting chained calls.
      */
     public JmsProvider setConsumerGroup(final String consumerGroup) {
         this.consumerGroup = consumerGroup;
@@ -131,9 +134,10 @@ public abstract class JmsProvider implements MQProvider, Closeable {
     }
 
     /**
-     * 获取JMS生产者实例
+     * Retrieves a JMS producer instance.
      *
-     * @return JMS生产者实例
+     * @return A JMS producer instance.
+     * @throws MQueueException if a JMS error occurs while creating the producer.
      */
     @Override
     public Producer getProducer() {
@@ -147,9 +151,10 @@ public abstract class JmsProvider implements MQProvider, Closeable {
     }
 
     /**
-     * 获取JMS消费者实例
+     * Retrieves a JMS consumer instance.
      *
-     * @return JMS消费者实例
+     * @return A JMS consumer instance.
+     * @throws MQueueException if a JMS error occurs while creating the consumer.
      */
     @Override
     public Consumer getConsumer() {
@@ -163,9 +168,9 @@ public abstract class JmsProvider implements MQProvider, Closeable {
     }
 
     /**
-     * 关闭JMS连接和会话，释放资源
+     * Closes the JMS connection and session, releasing resources.
      *
-     * @throws IOException 关闭过程中发生IO异常时抛出
+     * @throws IOException if an I/O error occurs during closing.
      */
     @Override
     public void close() throws IOException {
@@ -174,10 +179,11 @@ public abstract class JmsProvider implements MQProvider, Closeable {
     }
 
     /**
-     * 创建目标对象（Queue或Topic）
+     * Creates a destination object (Queue or Topic).
      *
-     * @param group 组名称，用于创建Queue或Topic的名称
-     * @return 目标对象（Queue或Topic）
+     * @param group The group name, used to create the name of the Queue or Topic.
+     * @return The destination object (Queue or Topic).
+     * @throws MQueueException if a JMS error occurs while creating the destination.
      */
     private Destination createDestination(final String group) {
         try {

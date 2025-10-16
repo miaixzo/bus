@@ -33,7 +33,7 @@ import org.miaixz.bus.core.codec.binary.provider.Base62Provider;
 import org.miaixz.bus.core.lang.Normal;
 
 /**
- * Base62解码器
+ * Decodes a Base62 encoded byte array into a byte array.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -41,20 +41,24 @@ import org.miaixz.bus.core.lang.Normal;
 public class Base62Decoder implements Decoder<byte[], byte[]> {
 
     /**
-     * GMP风格解码器
+     * The GMP-style Base62 decoder.
      */
     public static Base62Decoder GMP_DECODER = new Base62Decoder(Base62Encoder.GMP);
+
     /**
-     * 反转风格，即将GMP风格中的大小写做转换解码器
+     * The inverted-style Base62 decoder, which swaps the case of letters from the GMP style.
      */
     public static Base62Decoder INVERTED_DECODER = new Base62Decoder(Base62Encoder.INVERTED);
 
+    /**
+     * A lookup table for decoding Base62 characters.
+     */
     private final byte[] lookupTable;
 
     /**
-     * 构造
+     * Constructs a new Base62Decoder with a custom alphabet.
      *
-     * @param alphabet 字母表
+     * @param alphabet The alphabet to use for decoding.
      */
     public Base62Decoder(final byte[] alphabet) {
         lookupTable = new byte['z' + 1];
@@ -63,6 +67,12 @@ public class Base62Decoder implements Decoder<byte[], byte[]> {
         }
     }
 
+    /**
+     * Decodes a Base62 encoded byte array.
+     *
+     * @param encoded The Base62 encoded data.
+     * @return The decoded byte array.
+     */
     @Override
     public byte[] decode(final byte[] encoded) {
         final byte[] prepared = Base62Provider.translate(encoded, lookupTable);

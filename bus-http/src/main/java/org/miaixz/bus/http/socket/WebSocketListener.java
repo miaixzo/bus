@@ -31,7 +31,7 @@ import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.http.Response;
 
 /**
- * web socket 监听器
+ * A listener for events related to a WebSocket connection.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -39,63 +39,65 @@ import org.miaixz.bus.http.Response;
 public abstract class WebSocketListener {
 
     /**
-     * 当web socket被远程对等方接受并可以开始传输消息时调用
+     * Invoked when a web socket has been accepted by the remote peer and may begin transmitting messages.
      *
-     * @param webSocket 当前web socket
-     * @param response  当前响应体
+     * @param webSocket The WebSocket that has been opened.
+     * @param response  The HTTP response from the upgrade request.
      */
     public void onOpen(WebSocket webSocket, Response response) {
 
     }
 
     /**
-     * 当收到文本(类型为{@code 0x1})消息时调用
+     * Invoked when a text (type {@code 0x1}) message has been received.
      *
-     * @param webSocket 当前web socket
-     * @param text      文本内容
+     * @param webSocket The WebSocket that received the message.
+     * @param text      The text content of the message.
      */
     public void onMessage(WebSocket webSocket, String text) {
 
     }
 
     /**
-     * 当接收到二进制(类型为{@code 0x2})消息时调用
+     * Invoked when a binary (type {@code 0x2}) message has been received.
      *
-     * @param webSocket 当前web socket
-     * @param bytes     二进制内容
+     * @param webSocket The WebSocket that received the message.
+     * @param bytes     The binary content of the message.
      */
     public void onMessage(WebSocket webSocket, ByteString bytes) {
 
     }
 
     /**
-     * 当远程对等点指示不再传输传入消息时调用
+     * Invoked when the remote peer has indicated that no more incoming messages will be transmitted.
      *
-     * @param webSocket 当前web socket
-     * @param code      状态码
-     * @param reason    关闭终止原因
+     * @param webSocket The WebSocket that is closing.
+     * @param code      The status code from the remote peer.
+     * @param reason    The reason for the closure, or an empty string.
      */
     public void onClosing(WebSocket webSocket, int code, String reason) {
 
     }
 
     /**
-     * 当两个对等点都指示不再传输任何消息且连接已成功释放时调用。不再调用此侦听器
+     * Invoked when both peers have indicated that no more messages will be transmitted and the connection has been
+     * successfully released. No further calls to this listener will be made.
      *
-     * @param webSocket 当前web socket
-     * @param code      状态码
-     * @param reason    关闭终止原因
+     * @param webSocket The WebSocket that has been closed.
+     * @param code      The status code from the remote peer.
+     * @param reason    The reason for the closure, or an empty string.
      */
     public void onClosed(WebSocket webSocket, int code, String reason) {
 
     }
 
     /**
-     * 当web套接字由于从网络读取或写入错误而关闭时调用。发出和传入的消息可能都丢失了。不再调用此侦听器
+     * Invoked when a web socket has been closed due to an error reading from or writing to the network. Both outgoing
+     * and incoming messages may have been lost. No further calls to this listener will be made.
      *
-     * @param webSocket 当前web socket
-     * @param throwable 线程信息
-     * @param response  当前响应体
+     * @param webSocket The WebSocket that failed.
+     * @param throwable The exception that caused the failure.
+     * @param response  The HTTP response from the upgrade request, or null if no response was received.
      */
     public void onFailure(WebSocket webSocket, Throwable throwable, Response response) {
 

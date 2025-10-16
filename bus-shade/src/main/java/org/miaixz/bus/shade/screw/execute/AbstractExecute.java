@@ -34,37 +34,47 @@ import org.miaixz.bus.shade.screw.Builder;
 import org.miaixz.bus.shade.screw.Config;
 
 /**
- * 抽象执行
+ * Abstract base class for execution tasks. Provides common functionality, such as configuration handling and document
+ * name generation.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public abstract class AbstractExecute implements Execute {
 
+    /**
+     * The main configuration object for the execution task.
+     */
     protected Config config;
 
+    /**
+     * Constructs an {@code AbstractExecute} with the given configuration.
+     *
+     * @param config The {@link Config} object. Must not be null.
+     */
     public AbstractExecute(Config config) {
         Assert.notNull(config, "Configuration can not be empty!");
         this.config = config;
     }
 
     /**
-     * 获取文档名称
+     * Generates the document name based on the configuration. If a custom file name is provided in the engine
+     * configuration, it is used. Otherwise, the name is constructed from the database name, description, and version.
      *
-     * @param database {@link String}
-     * @return {@link String} 名称
+     * @param database The name of the database.
+     * @return The generated document name.
      */
     String getDocName(String database) {
-        // 自定义文件名称不为空
+        // Use custom file name if provided.
         if (StringKit.isNotBlank(config.getEngineConfig().getFileName())) {
             return config.getEngineConfig().getFileName();
         }
-        // 描述
+        // Use description from config, or default if blank.
         String description = config.getDescription();
         if (StringKit.isBlank(description)) {
             description = Builder.DESCRIPTION;
         }
-        // 版本号
+        // Use version from config.
         String version = config.getVersion();
         if (StringKit.isBlank(version)) {
             return database + Symbol.UNDERLINE + description;

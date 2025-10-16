@@ -33,42 +33,71 @@ import org.lionsoul.jcseg.IWord;
 import org.miaixz.bus.extra.nlp.NLPWord;
 
 /**
- * Jcseg分词中的一个单词包装
+ * Wrapper class for a single word (IWord) from Jcseg word segmentation. This class adapts the Jcseg {@link IWord}
+ * object to the common {@link NLPWord} interface, providing a unified way to access segmented word information.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class JcsegWord implements NLPWord {
 
+    /**
+     * The serialization version identifier for this class.
+     */
     @Serial
     private static final long serialVersionUID = 2852286128127L;
 
+    /**
+     * The underlying Jcseg {@link IWord} object.
+     */
     private final IWord word;
 
     /**
-     * 构造
+     * Constructs a {@code JcsegWord} instance by wrapping a Jcseg {@link IWord}.
      *
-     * @param word {@link IWord}
+     * @param word The {@link IWord} object from Jcseg word segmentation.
      */
     public JcsegWord(final IWord word) {
         this.word = word;
     }
 
+    /**
+     * Retrieves the text of the word from the wrapped Jcseg {@link IWord}.
+     *
+     * @return The text of the word as a {@link String}.
+     */
     @Override
     public String getText() {
         return word.getValue();
     }
 
+    /**
+     * Retrieves the starting character offset of this word within the original text. This delegates to the
+     * {@code getPosition()} method of the Jcseg {@link IWord}.
+     *
+     * @return The starting position (inclusive) of the word.
+     */
     @Override
     public int getStartOffset() {
         return word.getPosition();
     }
 
+    /**
+     * Retrieves the ending character offset of this word within the original text. This is calculated based on the
+     * starting offset and the length of the word.
+     *
+     * @return The ending position (exclusive) of the word.
+     */
     @Override
     public int getEndOffset() {
         return getStartOffset() + word.getLength();
     }
 
+    /**
+     * Returns the textual representation of this word, which is the same as {@link #getText()}.
+     *
+     * @return The text of the word.
+     */
     @Override
     public String toString() {
         return getText();

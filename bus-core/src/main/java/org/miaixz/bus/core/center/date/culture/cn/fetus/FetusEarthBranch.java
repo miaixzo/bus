@@ -30,19 +30,36 @@ package org.miaixz.bus.core.center.date.culture.cn.fetus;
 import org.miaixz.bus.core.center.date.culture.Samsara;
 
 /**
- * 地支六甲胎神（《地支六甲胎神歌》子午二日碓须忌，丑未厕道莫修移。寅申火炉休要动，卯酉大门修当避。辰戌鸡栖巳亥床，犯着六甲身堕胎。）
+ * Represents the Fetus God associated with Earthly Branches (地支六甲胎神), a concept in Chinese traditional culture related
+ * to pregnancy. The names indicate the location where the Fetus God resides based on the Earthly Branch of the day.
+ * (Reference: 《地支六甲胎神歌》子午二日碓须忌，丑未厕道莫修移。寅申火炉休要动，卯酉大门修当避。辰戌鸡栖巳亥床，犯着六甲身堕胎。) This class extends {@link Samsara} to manage a
+ * cyclical list of these entities.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class FetusEarthBranch extends Samsara {
 
+    /**
+     * Array of names for the Fetus God locations based on Earthly Branches.
+     */
     public static final String[] NAMES = { "碓", "厕", "炉", "门", "栖", "床" };
 
+    /**
+     * Constructs a {@code FetusEarthBranch} instance with the specified index.
+     *
+     * @param index The index of the Fetus God location in the {@link #NAMES} array.
+     */
     public FetusEarthBranch(int index) {
         super(NAMES, index);
     }
 
+    /**
+     * Gets the next {@code FetusEarthBranch} in the cycle.
+     *
+     * @param n The number of steps to move forward or backward in the cycle.
+     * @return The next {@code FetusEarthBranch} instance.
+     */
     public FetusEarthBranch next(int n) {
         return new FetusEarthBranch(nextIndex(n));
     }

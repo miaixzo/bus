@@ -44,7 +44,7 @@ import org.miaixz.bus.http.metric.Internal;
 import org.miaixz.bus.http.metric.NewChain;
 
 /**
- * 使用HTTP/2帧对请求和响应进行编码.
+ * Encodes requests and decodes responses using HTTP/2 frames.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -52,7 +52,7 @@ import org.miaixz.bus.http.metric.NewChain;
 public class Http2Codec implements HttpCodec {
 
     /**
-     * See http://tools.ietf.org/html/draft-ietf-httpbis-http2-09#section-8.1.3.
+     * HTTP/2 request headers to be skipped. See http://tools.ietf.org/html/draft-ietf-httpbis-http2-09#section-8.1.3.
      */
     private static final List<String> HTTP_2_SKIPPED_REQUEST_HEADERS = Builder.immutableList(
             HTTP.CONNECTION,
@@ -67,6 +67,10 @@ public class Http2Codec implements HttpCodec {
             HTTP.TARGET_PATH_UTF8,
             HTTP.TARGET_SCHEME_UTF8,
             HTTP.TARGET_AUTHORITY_UTF8);
+
+    /**
+     * HTTP/2 response headers to be skipped.
+     */
     private static final List<String> HTTP_2_SKIPPED_RESPONSE_HEADERS = Builder.immutableList(
             HTTP.CONNECTION,
             HTTP.HOST,
@@ -84,6 +88,14 @@ public class Http2Codec implements HttpCodec {
     private volatile Http2Stream stream;
     private volatile boolean canceled;
 
+    /**
+     * Constructs a new Http2Codec.
+     *
+     * @param client         The Httpd client instance.
+     * @param realConnection The real connection to the server.
+     * @param chain          The interceptor chain.
+     * @param connection     The HTTP/2 connection.
+     */
     public Http2Codec(Httpd client, RealConnection realConnection, NewChain chain, Http2Connection connection) {
         this.realConnection = realConnection;
         this.chain = chain;
@@ -92,6 +104,12 @@ public class Http2Codec implements HttpCodec {
                 : Protocol.HTTP_2;
     }
 
+    /**
+     * Converts an HTTP request to a list of HTTP/2 headers.
+     *
+     * @param request The HTTP request.
+     * @return A list of HTTP/2 headers.
+     */
     public static List<Http2Header> http2HeadersList(Request request) {
         Headers headers = request.headers();
         List<Http2Header> result = new ArrayList<>(headers.size() + 4);
@@ -115,7 +133,12 @@ public class Http2Codec implements HttpCodec {
     }
 
     /**
-     * Returns headers for a name value block containing an HTTP/2 response.
+     * Creates a {@link Response.Builder} from a list of HTTP/2 headers.
+     *
+     * @param headerBlock The block of headers.
+     * @param protocol    The HTTP protocol.
+     * @return A {@link Response.Builder}.
+     * @throws IOException if an I/O error occurs.
      */
     public static Response.Builder readHttp2HeadersList(Headers headerBlock, Protocol protocol) throws IOException {
         StatusLine statusLine = null;
@@ -136,16 +159,34 @@ public class Http2Codec implements HttpCodec {
                 .headers(headersBuilder.build());
     }
 
+    /**
+     * Returns the connection that carries the transport.
+     *
+     * @return The real connection.
+     */
     @Override
     public RealConnection connection() {
         return realConnection;
     }
 
+    /**
+     * Creates a sink to write the request body.
+     *
+     * @param request       The request.
+     * @param contentLength The length of the content.
+     * @return A sink for writing the request body.
+     */
     @Override
     public Sink createRequestBody(Request request, long contentLength) {
         return stream.getSink();
     }
 
+    /**
+     * Writes the request headers to the stream.
+     *
+     * @param request The request.
+     * @throws IOException if an I/O error occurs.
+     */
     @Override
     public void writeRequestHeaders(Request request) throws IOException {
         if (stream != null)
@@ -164,16 +205,33 @@ public class Http2Codec implements HttpCodec {
         stream.writeTimeout().timeout(chain.writeTimeoutMillis(), TimeUnit.MILLISECONDS);
     }
 
+    /**
+     * Flushes the request to the underlying connection.
+     *
+     * @throws IOException if an I/O error occurs.
+     */
     @Override
     public void flushRequest() throws IOException {
         connection.flush();
     }
 
+    /**
+     * Finishes writing the request.
+     *
+     * @throws IOException if an I/O error occurs.
+     */
     @Override
     public void finishRequest() throws IOException {
         stream.getSink().close();
     }
 
+    /**
+     * Reads the response headers from the stream.
+     *
+     * @param expectContinue true if a 100-continue response is expected.
+     * @return A {@link Response.Builder} with the response headers.
+     * @throws IOException if an I/O error occurs.
+     */
     @Override
     public Response.Builder readResponseHeaders(boolean expectContinue) throws IOException {
         Headers headers = stream.takeHeaders();
@@ -184,21 +242,42 @@ public class Http2Codec implements HttpCodec {
         return responseBuilder;
     }
 
+    /**
+     * Reports the content length of the response.
+     *
+     * @param response The response.
+     * @return The content length.
+     */
     @Override
     public long reportedContentLength(Response response) {
         return Headers.contentLength(response);
     }
 
+    /**
+     * Opens a source to read the response body.
+     *
+     * @param response The response.
+     * @return A source for reading the response body.
+     */
     @Override
     public Source openResponseBodySource(Response response) {
         return stream.getSource();
     }
 
+    /**
+     * Returns the trailers of the response.
+     *
+     * @return The response trailers.
+     * @throws IOException if an I/O error occurs.
+     */
     @Override
     public Headers trailers() throws IOException {
         return stream.trailers();
     }
 
+    /**
+     * Cancels the stream.
+     */
     @Override
     public void cancel() {
         canceled = true;

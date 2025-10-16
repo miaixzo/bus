@@ -35,16 +35,32 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.reflect.JdkProxy;
 
 /**
- * 构造信息
+ * Utility class for building and resolving information related to method calls and classes. This class provides methods
+ * to extract the real user class from a potentially proxied class and to generate a unique string representation for a
+ * given method.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class Builder {
 
+    /**
+     * A concurrent hash map to cache method names for performance. The key is the {@link Method} object, and the value
+     * is its string representation.
+     */
     private static final Map<Method, String> MAP = new ConcurrentHashMap<>();
+    /**
+     * A lock object used for synchronizing access to the {@link #MAP} when resolving method names.
+     */
     private static final Object LOCK = new Object();
 
+    /**
+     * Retrieves the actual user class from a given class, handling CGLIB proxies. If the provided class is a CGLIB
+     * proxy, it recursively gets the superclass until the non-proxied user class is found.
+     *
+     * @param clazz The class to inspect.
+     * @return The actual user class, or the original class if it's not a CGLIB proxy.
+     */
     public static Class<?> getUserClass(Class<?> clazz) {
         if (JdkProxy.isCglibProxyClass(clazz)) {
             Class<?> superclass = clazz.getSuperclass();
@@ -54,10 +70,13 @@ public class Builder {
     }
 
     /**
-     * 解析并解析方法名，然后缓存到map中
+     * Resolves and caches a unique string representation for the given method. The method name is constructed using the
+     * declaring class's name, the method's name, and the canonical names of its parameter types. This string is then
+     * cached to avoid repeated computation.
      *
-     * @param method 方法实例
-     * @return the string
+     * @param method The method instance for which to resolve the name.
+     * @return A unique string representation of the method.
+     * @throws IllegalArgumentException if the provided method is {@code null}.
      */
     public static String resolveMethodName(Method method) {
         if (method == null) {

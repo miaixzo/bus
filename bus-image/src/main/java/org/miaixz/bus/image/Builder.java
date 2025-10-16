@@ -35,7 +35,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.time.LocalDate;
@@ -65,37 +64,46 @@ import org.miaixz.bus.image.galaxy.data.*;
 import org.miaixz.bus.image.galaxy.io.ImageInputStream;
 import org.miaixz.bus.image.nimble.CIELab;
 import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.setting.metric.props.Props;
 
 /**
+ * A utility class providing a collection of static helper methods for common tasks within the DICOM toolkit. This
+ * includes data conversion, string manipulation, DICOM attribute handling, date/time formatting, file I/O, and other
+ * miscellaneous functions.
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class Builder {
 
+    /**
+     * Characters for Base64 encoding.
+     */
     private static final char[] BASE64 = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O',
             'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j',
             'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4',
             '5', '6', '7', '8', '9', '+', '/' };
+    /**
+     * Lookup table for Base64 decoding.
+     */
     private static final byte[] INV_BASE64 = { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
             -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 62, -1,
             -1, -1, 63, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, -1, -1, -1, -1, -1, -1, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8,
             9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, -1, -1, -1, -1, -1, -1, 26, 27, 28, 29,
             30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51 };
+    /**
+     * The system-dependent line separator string.
+     */
     public static String LINE_SEPARATOR = System.getProperty(Keys.LINE_SEPARATOR);
 
     /**
-     * Prepare a file to be written by creating the parent directory if necessary.
+     * Prepares a file for writing by creating its parent directories if they do not exist.
      *
-     * @param file the source file
-     * @throws IOException if an I/O error occurs
+     * @param file the file to be written.
+     * @throws IOException if the parent directories cannot be created.
      */
     public static void prepareToWriteFile(File file) throws IOException {
         if (!file.exists()) {
-            // Check the file that doesn't exist yet.
-            // Create a new file. The file is writable if the creation succeeds.
             File outputDir = file.getParentFile();
-            // necessary to check exists otherwise mkdirs() is false when dir exists
             if (outputDir != null && !outputDir.exists() && !outputDir.mkdirs()) {
                 throw new IOException("Cannot write parent directory of " + file.getPath());
             }
@@ -103,13 +111,11 @@ public class Builder {
     }
 
     /**
-     * Print a byte count in a human-readable format
+     * Formats a byte count into a human-readable string (e.g., "1.2 kB", "3.4 MiB").
      *
-     * @param bytes number of bytes
-     * @param si    true for SI units (powers of 1000), false for binary units (powers of 1024)
-     * @return the human-readable size of the byte count
-     * @see <a href="https://programming.guide/worlds-most-copied-so-snippet.html">World's most copied StackOverflow
-     *      snippet</a>
+     * @param bytes the number of bytes.
+     * @param si    if {@code true}, use SI units (powers of 1000); if {@code false}, use binary units (powers of 1024).
+     * @return a human-readable string representation of the byte count.
      */
     public static String humanReadableByte(long bytes, boolean si) {
         int unit = si ? 1000 : 1024;
@@ -128,6 +134,14 @@ public class Builder {
         return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
     }
 
+    /**
+     * Loads properties from a given URL or file path into a {@link Properties} object.
+     *
+     * @param url a string representing the URL or file path of the properties file.
+     * @param p   an existing {@link Properties} object to load into, or {@code null} to create a new one.
+     * @return the loaded {@link Properties} object.
+     * @throws IOException if an I/O error occurs while reading from the stream.
+     */
     public static Properties loadProperties(String url, Properties p) throws IOException {
         if (p == null) {
             p = new Properties();
@@ -138,6 +152,13 @@ public class Builder {
         return p;
     }
 
+    /**
+     * Adds or updates attributes in a DICOM dataset based on a tag path and string values.
+     *
+     * @param attrs the DICOM dataset to modify.
+     * @param tags  an array of tags representing the path to the attribute.
+     * @param ss    the string values to set for the attribute.
+     */
     public static void addAttributes(Attributes attrs, int[] tags, String... ss) {
         Attributes item = attrs;
         for (int i = 0; i < tags.length - 1; i++) {
@@ -164,6 +185,13 @@ public class Builder {
         }
     }
 
+    /**
+     * Adds or updates attributes in a DICOM dataset from an array of string options. Each string can be a tag path
+     * (e.g., "00100010") or a path with a value (e.g., "00100010=Doe^John").
+     *
+     * @param attrs   the DICOM dataset to modify.
+     * @param optVals an array of string options.
+     */
     public static void addAttributes(Attributes attrs, String[] optVals) {
         if (optVals != null)
             for (String optVal : optVals) {
@@ -179,6 +207,12 @@ public class Builder {
             }
     }
 
+    /**
+     * Adds empty attributes to a DICOM dataset based on an array of tag paths.
+     *
+     * @param attrs   the DICOM dataset to modify.
+     * @param optVals an array of strings, each representing a tag path.
+     */
     public static void addEmptyAttributes(Attributes attrs, String[] optVals) {
         if (optVals != null) {
             for (String optVal : optVals) {
@@ -187,6 +221,14 @@ public class Builder {
         }
     }
 
+    /**
+     * Updates a target DICOM dataset with attributes from another dataset and optionally appends a suffix to UIDs.
+     *
+     * @param data      the target dataset to be updated.
+     * @param attrs     the source attributes to merge.
+     * @param uidSuffix a suffix to append to Study, Series, and SOP Instance UIDs, or {@code null} if no change.
+     * @return {@code true} if the target dataset was modified.
+     */
     public static boolean updateAttributes(Attributes data, Attributes attrs, String uidSuffix) {
         if (attrs.isEmpty() && uidSuffix == null) {
             return false;
@@ -200,16 +242,30 @@ public class Builder {
         return true;
     }
 
+    /**
+     * Shuts down an {@link ExecutorService} gracefully.
+     *
+     * @param executorService the executor service to shut down.
+     */
     public static void shutdown(ExecutorService executorService) {
         if (executorService != null) {
             try {
                 executorService.shutdown();
             } catch (Exception e) {
-                Logger.error("ExecutorService shutdown", e);
+                Logger.error("ExecutorService shutdown failed", e);
             }
         }
     }
 
+    /**
+     * Base64 encodes a byte array into a character array.
+     *
+     * @param src     the source byte array.
+     * @param srcPos  the starting position in the source array.
+     * @param srcLen  the number of bytes to encode.
+     * @param dest    the destination character array.
+     * @param destPos the starting position in the destination array.
+     */
     public static void encode(byte[] src, int srcPos, int srcLen, char[] dest, int destPos) {
         if (srcPos < 0 || srcLen < 0 || srcLen > src.length - srcPos)
             throw new IndexOutOfBoundsException();
@@ -225,7 +281,7 @@ public class Builder {
             dest[destPos++] = BASE64[((b2 & 0x0F) << 2) | (((b3 = src[srcPos++]) >>> 6) & 0x03)];
             dest[destPos++] = BASE64[b3 & 0x3F];
         }
-        if (r > 0)
+        if (r > 0) {
             if (r == 1) {
                 dest[destPos++] = BASE64[((b1 = src[srcPos]) >>> 2) & 0x3F];
                 dest[destPos++] = BASE64[((b1 & 0x03) << 4)];
@@ -237,8 +293,18 @@ public class Builder {
                 dest[destPos++] = BASE64[(b2 & 0x0F) << 2];
                 dest[destPos++] = '=';
             }
+        }
     }
 
+    /**
+     * Base64 decodes a character array and writes the result to an output stream.
+     *
+     * @param ch  the source character array.
+     * @param off the starting offset in the source array.
+     * @param len the number of characters to decode.
+     * @param out the output stream to write the decoded bytes to.
+     * @throws IOException if an I/O error occurs.
+     */
     public static void decode(char[] ch, int off, int len, OutputStream out) throws IOException {
         byte b2, b3;
         while ((len -= 2) >= 0) {
@@ -252,6 +318,12 @@ public class Builder {
         }
     }
 
+    /**
+     * Converts a string to a boolean, returning {@code false} if the string is empty or null.
+     *
+     * @param val the string to convert.
+     * @return the boolean value.
+     */
     public static boolean getEmptytoFalse(String val) {
         if (StringKit.hasText(val)) {
             return getBoolean(val);
@@ -259,18 +331,42 @@ public class Builder {
         return false;
     }
 
+    /**
+     * Converts a string to a boolean.
+     *
+     * @param val the string to convert (case-insensitive "true").
+     * @return the boolean value.
+     */
     private static boolean getBoolean(String val) {
         return Boolean.TRUE.toString().equalsIgnoreCase(val);
     }
 
+    /**
+     * Wraps a {@link Double} in an {@link OptionalDouble}.
+     *
+     * @param val the Double value.
+     * @return an {@link OptionalDouble} containing the value, or an empty optional if the input is null.
+     */
     public static OptionalDouble getOptionalDouble(Double val) {
         return val == null ? OptionalDouble.empty() : OptionalDouble.of(val);
     }
 
+    /**
+     * Wraps an {@link Integer} in an {@link OptionalInt}.
+     *
+     * @param val the Integer value.
+     * @return an {@link OptionalInt} containing the value, or an empty optional if the input is null.
+     */
     public static OptionalInt getOptionalInteger(Integer val) {
         return val == null ? OptionalInt.empty() : OptionalInt.of(val);
     }
 
+    /**
+     * Checks if the given SOP Class UID corresponds to a video storage type.
+     *
+     * @param uid the SOP Class UID.
+     * @return {@code true} if the UID is a known video storage UID.
+     */
     public static boolean isVideo(String uid) {
         return switch (UID.from(uid)) {
             case UID.MPEG2MPML, UID.MPEG2MPMLF, UID.MPEG2MPHL, UID.MPEG2MPHLF, UID.MPEG4HP41, UID.MPEG4HP41F, UID.MPEG4HP41BD, UID.MPEG4HP41BDF, UID.MPEG4HP422D, UID.MPEG4HP422DF, UID.MPEG4HP423D, UID.MPEG4HP423DF, UID.MPEG4HP42STEREO, UID.MPEG4HP42STEREOF, UID.HEVCMP51, UID.HEVCM10P51 -> true;
@@ -278,6 +374,12 @@ public class Builder {
         };
     }
 
+    /**
+     * Checks if the given Transfer Syntax UID corresponds to a JPEG 2000 compression type.
+     *
+     * @param uid the Transfer Syntax UID.
+     * @return {@code true} if the UID is a known JPEG 2000 Transfer Syntax.
+     */
     public static boolean isJpeg2000(String uid) {
         return switch (UID.from(uid)) {
             case UID.JPEG2000Lossless, UID.JPEG2000, UID.JPEG2000MCLossless, UID.JPEG2000MC, UID.HTJ2KLossless, UID.HTJ2KLosslessRPCL, UID.HTJ2K -> true;
@@ -285,6 +387,12 @@ public class Builder {
         };
     }
 
+    /**
+     * Checks if the given Transfer Syntax UID is a native (uncompressed) DICOM format.
+     *
+     * @param uid the Transfer Syntax UID.
+     * @return {@code true} if the UID is a native Transfer Syntax.
+     */
     public static boolean isNative(String uid) {
         return switch (UID.from(uid)) {
             case UID.ImplicitVRLittleEndian, UID.ExplicitVRLittleEndian, UID.ExplicitVRBigEndian -> true;
@@ -292,10 +400,25 @@ public class Builder {
         };
     }
 
+    /**
+     * Formats a value into a string using a custom format pattern.
+     *
+     * @param value  the value to format.
+     * @param format the custom format string.
+     * @return the formatted string.
+     */
     public static String getFormattedText(Object value, String format) {
         return getFormattedText(value, format, Locale.getDefault());
     }
 
+    /**
+     * Formats a value into a string using a custom format pattern and a specific locale.
+     *
+     * @param value  the value to format.
+     * @param format the custom format string.
+     * @param locale the locale to use for formatting.
+     * @return the formatted string.
+     */
     public static String getFormattedText(Object value, String format, Locale locale) {
         if (value == null) {
             return Normal.EMPTY;
@@ -329,13 +452,20 @@ public class Builder {
         return str == null ? Normal.EMPTY : str;
     }
 
+    /**
+     * Applies a format pattern to a value string.
+     *
+     * @param value   the string representation of the value.
+     * @param decimal whether the value is a decimal type.
+     * @param format  the format pattern.
+     * @return the formatted string.
+     */
     protected static String formatValue(String value, boolean decimal, String format) {
         String str = value;
         int index = format.indexOf("$V");
         int fmLength = 2;
         if (index != -1) {
             boolean suffix = format.length() > index + fmLength;
-            // If the value ($V) is followed by ':' that means a number formatter is used
             if (suffix && format.charAt(index + fmLength) == ':') {
                 fmLength++;
                 if (format.charAt(index + fmLength) == 'f' && decimal) {
@@ -375,6 +505,13 @@ public class Builder {
         return str;
     }
 
+    /**
+     * Extracts a pattern enclosed in '$' characters from a format string.
+     *
+     * @param startIndex the index to start searching from.
+     * @param format     the format string.
+     * @return the extracted pattern, or {@code null}.
+     */
     private static String getPattern(int startIndex, String format) {
         int beginIndex = format.indexOf('$', startIndex);
         int endIndex = format.indexOf('$', startIndex + 2);
@@ -384,6 +521,14 @@ public class Builder {
         return format.substring(beginIndex + 1, endIndex);
     }
 
+    /**
+     * Retrieves the string value of a DICOM attribute. If the attribute is multi-valued, the values are concatenated
+     * with a backslash separator.
+     *
+     * @param dicom the DICOM dataset.
+     * @param tag   the attribute tag.
+     * @return the string value, or {@code null} if the attribute is not present.
+     */
     public static String getStringFromDicomElement(Attributes dicom, int tag) {
         if (dicom == null || !dicom.containsValue(tag)) {
             return null;
@@ -403,10 +548,25 @@ public class Builder {
         return sb.toString();
     }
 
+    /**
+     * Retrieves the string array value of a DICOM attribute.
+     *
+     * @param dicom the DICOM dataset.
+     * @param tag   the attribute tag.
+     * @return the string array, or {@code null} if not present.
+     */
     public static String[] getStringArrayFromDicomElement(Attributes dicom, int tag) {
         return getStringArrayFromDicomElement(dicom, tag, (String) null);
     }
 
+    /**
+     * Retrieves the string array value of a private DICOM attribute.
+     *
+     * @param dicom            the DICOM dataset.
+     * @param tag              the attribute tag.
+     * @param privateCreatorID the private creator ID.
+     * @return the string array, or {@code null} if not present.
+     */
     public static String[] getStringArrayFromDicomElement(Attributes dicom, int tag, String privateCreatorID) {
         if (dicom == null || !dicom.containsValue(tag)) {
             return null;
@@ -414,10 +574,27 @@ public class Builder {
         return dicom.getStrings(privateCreatorID, tag);
     }
 
+    /**
+     * Retrieves the string array value of a DICOM attribute, returning a default value if not present.
+     *
+     * @param dicom        the DICOM dataset.
+     * @param tag          the attribute tag.
+     * @param defaultValue the default value to return.
+     * @return the string array, or the default value.
+     */
     public static String[] getStringArrayFromDicomElement(Attributes dicom, int tag, String[] defaultValue) {
         return getStringArrayFromDicomElement(dicom, tag, null, defaultValue);
     }
 
+    /**
+     * Retrieves the string array value of a private DICOM attribute, returning a default value if not present.
+     *
+     * @param dicom            the DICOM dataset.
+     * @param tag              the attribute tag.
+     * @param privateCreatorID the private creator ID.
+     * @param defaultValue     the default value to return.
+     * @return the string array, or the default value.
+     */
     public static String[] getStringArrayFromDicomElement(
             Attributes dicom,
             int tag,
@@ -433,6 +610,14 @@ public class Builder {
         return val;
     }
 
+    /**
+     * Retrieves the date value of a DICOM attribute.
+     *
+     * @param dicom        the DICOM dataset.
+     * @param tag          the attribute tag.
+     * @param defaultValue the default value.
+     * @return the date, or the default value.
+     */
     public static Date getDateFromDicomElement(Attributes dicom, int tag, Date defaultValue) {
         if (dicom == null || !dicom.containsValue(tag)) {
             return defaultValue;
@@ -440,6 +625,15 @@ public class Builder {
         return dicom.getDate(tag, defaultValue);
     }
 
+    /**
+     * Retrieves an array of date values from a private DICOM attribute.
+     *
+     * @param dicom            the DICOM dataset.
+     * @param tag              the attribute tag.
+     * @param privateCreatorID the private creator ID.
+     * @param defaultValue     the default value.
+     * @return the date array, or the default value.
+     */
     public static Date[] getDatesFromDicomElement(
             Attributes dicom,
             int tag,
@@ -455,10 +649,28 @@ public class Builder {
         return val;
     }
 
+    /**
+     * Gets or computes the patient's age as a DICOM age string (e.g., "035Y").
+     *
+     * @param dicom             the DICOM dataset.
+     * @param tag               the tag of the Patient Age attribute.
+     * @param computeOnlyIfNull if {@code true}, computation is only performed if the attribute is absent or empty.
+     * @return the patient's age string.
+     */
     public static String getPatientAgeInPeriod(Attributes dicom, int tag, boolean computeOnlyIfNull) {
         return getPatientAgeInPeriod(dicom, tag, null, null, computeOnlyIfNull);
     }
 
+    /**
+     * Gets or computes the patient's age as a DICOM age string.
+     *
+     * @param dicom             the DICOM dataset.
+     * @param tag               the tag of the Patient Age attribute.
+     * @param privateCreatorID  the private creator ID, if applicable.
+     * @param defaultValue      the default value.
+     * @param computeOnlyIfNull if {@code true}, computation is only performed if the attribute is absent or empty.
+     * @return the patient's age string.
+     */
     public static String getPatientAgeInPeriod(
             Attributes dicom,
             int tag,
@@ -493,6 +705,13 @@ public class Builder {
         return null;
     }
 
+    /**
+     * Retrieves the first available date from a list of date tags in a DICOM dataset.
+     *
+     * @param dicom the DICOM dataset.
+     * @param tagID a list of date tags to check in order.
+     * @return the first found date, or {@code null}.
+     */
     private static Date getDate(Attributes dicom, int... tagID) {
         Date date = null;
         for (int i : tagID) {
@@ -504,6 +723,13 @@ public class Builder {
         return date;
     }
 
+    /**
+     * Calculates the period between two dates and formats it as a DICOM age string (e.g., "035Y", "006M", "021D").
+     *
+     * @param first the start date.
+     * @param last  the end date.
+     * @return the formatted age string.
+     */
     public static String getPeriod(LocalDate first, LocalDate last) {
         Objects.requireNonNull(first);
         Objects.requireNonNull(last);
@@ -519,10 +745,27 @@ public class Builder {
         return String.format("%03dY", years);
     }
 
+    /**
+     * Retrieves the float value of a DICOM attribute.
+     *
+     * @param dicom        the DICOM dataset.
+     * @param tag          the attribute tag.
+     * @param defaultValue the default value.
+     * @return the float value, or the default value.
+     */
     public static Float getFloatFromDicomElement(Attributes dicom, int tag, Float defaultValue) {
         return getFloatFromDicomElement(dicom, tag, null, defaultValue);
     }
 
+    /**
+     * Retrieves the float value of a private DICOM attribute.
+     *
+     * @param dicom            the DICOM dataset.
+     * @param tag              the attribute tag.
+     * @param privateCreatorID the private creator ID.
+     * @param defaultValue     the default value.
+     * @return the float value, or the default value.
+     */
     public static Float getFloatFromDicomElement(
             Attributes dicom,
             int tag,
@@ -539,10 +782,27 @@ public class Builder {
         return defaultValue;
     }
 
+    /**
+     * Retrieves the integer value of a DICOM attribute.
+     *
+     * @param dicom        the DICOM dataset.
+     * @param tag          the attribute tag.
+     * @param defaultValue the default value.
+     * @return the integer value, or the default value.
+     */
     public static Integer getIntegerFromDicomElement(Attributes dicom, int tag, Integer defaultValue) {
         return getIntegerFromDicomElement(dicom, tag, null, defaultValue);
     }
 
+    /**
+     * Retrieves the integer value of a private DICOM attribute.
+     *
+     * @param dicom            the DICOM dataset.
+     * @param tag              the attribute tag.
+     * @param privateCreatorID the private creator ID.
+     * @param defaultValue     the default value.
+     * @return the integer value, or the default value.
+     */
     public static Integer getIntegerFromDicomElement(
             Attributes dicom,
             int tag,
@@ -559,10 +819,27 @@ public class Builder {
         return defaultValue;
     }
 
+    /**
+     * Retrieves the double value of a DICOM attribute.
+     *
+     * @param dicom        the DICOM dataset.
+     * @param tag          the attribute tag.
+     * @param defaultValue the default value.
+     * @return the double value, or the default value.
+     */
     public static Double getDoubleFromDicomElement(Attributes dicom, int tag, Double defaultValue) {
         return getDoubleFromDicomElement(dicom, tag, null, defaultValue);
     }
 
+    /**
+     * Retrieves the double value of a private DICOM attribute.
+     *
+     * @param dicom            the DICOM dataset.
+     * @param tag              the attribute tag.
+     * @param privateCreatorID the private creator ID.
+     * @param defaultValue     the default value.
+     * @return the double value, or the default value.
+     */
     public static Double getDoubleFromDicomElement(
             Attributes dicom,
             int tag,
@@ -579,10 +856,27 @@ public class Builder {
         return defaultValue;
     }
 
+    /**
+     * Retrieves an array of integer values from a DICOM attribute.
+     *
+     * @param dicom        the DICOM dataset.
+     * @param tag          the attribute tag.
+     * @param defaultValue the default value.
+     * @return the int array, or the default value.
+     */
     public static int[] getIntArrayFromDicomElement(Attributes dicom, int tag, int[] defaultValue) {
         return getIntArrayFromDicomElement(dicom, tag, null, defaultValue);
     }
 
+    /**
+     * Retrieves an array of integer values from a private DICOM attribute.
+     *
+     * @param dicom            the DICOM dataset.
+     * @param tag              the attribute tag.
+     * @param privateCreatorID the private creator ID.
+     * @param defaultValue     the default value.
+     * @return the int array, or the default value.
+     */
     public static int[] getIntArrayFromDicomElement(
             Attributes dicom,
             int tag,
@@ -602,10 +896,27 @@ public class Builder {
         return defaultValue;
     }
 
+    /**
+     * Retrieves an array of float values from a DICOM attribute.
+     *
+     * @param dicom        the DICOM dataset.
+     * @param tag          the attribute tag.
+     * @param defaultValue the default value.
+     * @return the float array, or the default value.
+     */
     public static float[] getFloatArrayFromDicomElement(Attributes dicom, int tag, float[] defaultValue) {
         return getFloatArrayFromDicomElement(dicom, tag, null, defaultValue);
     }
 
+    /**
+     * Retrieves an array of float values from a private DICOM attribute.
+     *
+     * @param dicom            the DICOM dataset.
+     * @param tag              the attribute tag.
+     * @param privateCreatorID the private creator ID.
+     * @param defaultValue     the default value.
+     * @return the float array, or the default value.
+     */
     public static float[] getFloatArrayFromDicomElement(
             Attributes dicom,
             int tag,
@@ -625,10 +936,27 @@ public class Builder {
         return defaultValue;
     }
 
+    /**
+     * Retrieves an array of double values from a DICOM attribute.
+     *
+     * @param dicom        the DICOM dataset.
+     * @param tag          the attribute tag.
+     * @param defaultValue the default value.
+     * @return the double array, or the default value.
+     */
     public static double[] getDoubleArrayFromDicomElement(Attributes dicom, int tag, double[] defaultValue) {
         return getDoubleArrayFromDicomElement(dicom, tag, null, defaultValue);
     }
 
+    /**
+     * Retrieves an array of double values from a private DICOM attribute.
+     *
+     * @param dicom            the DICOM dataset.
+     * @param tag              the attribute tag.
+     * @param privateCreatorID the private creator ID.
+     * @param defaultValue     the default value.
+     * @return the double array, or the default value.
+     */
     public static double[] getDoubleArrayFromDicomElement(
             Attributes dicom,
             int tag,
@@ -648,6 +976,13 @@ public class Builder {
         return defaultValue;
     }
 
+    /**
+     * Retrieves a sequence (SQ attribute) from a DICOM dataset.
+     *
+     * @param dicom  the DICOM dataset.
+     * @param tagSeq the tag of the sequence attribute.
+     * @return a list of {@link Attributes} representing the items in the sequence, or an empty list if not found.
+     */
     public static List<Attributes> getSequence(Attributes dicom, int tagSeq) {
         if (dicom != null) {
             Sequence item = dicom.getSequence(tagSeq);
@@ -658,6 +993,16 @@ public class Builder {
         return Collections.emptyList();
     }
 
+    /**
+     * Checks if a specific image frame is applicable according to a Referenced Image Sequence.
+     *
+     * @param refImgSeq      the Referenced Image Sequence.
+     * @param childTag       the tag of the referenced frame numbers within a sequence item.
+     * @param sopInstanceUID the SOP Instance UID of the image.
+     * @param frame          the frame number to check.
+     * @param required       if {@code true}, the sequence must exist for the check to pass.
+     * @return {@code true} if the frame is applicable.
+     */
     public static boolean isImageFrameApplicableToReferencedImageSequence(
             List<Attributes> refImgSeq,
             int childTag,
@@ -679,7 +1024,6 @@ public class Builder {
                             return true;
                         }
                     }
-                    // if the frame has been excluded
                     return false;
                 }
             }
@@ -687,6 +1031,14 @@ public class Builder {
         return false;
     }
 
+    /**
+     * Creates a memoized (caching) supplier from an original supplier. The original supplier is only called once.
+     *
+     * @param <T>      the type of the result.
+     * @param <E>      the type of the exception thrown.
+     * @param original the original supplier.
+     * @return a memoized supplier.
+     */
     public static <T, E extends Exception> SupplierEx<T, E> memoize(SupplierEx<T, E> original) {
         return new SupplierEx<>() {
 
@@ -710,28 +1062,48 @@ public class Builder {
         };
     }
 
+    /**
+     * Parses a DICOM DA (Date) string into a {@link LocalDate}.
+     *
+     * @param date the DA string.
+     * @return the parsed {@link LocalDate}, or {@code null} on failure.
+     */
     public static LocalDate getDicomDate(String date) {
         if (StringKit.hasText(date)) {
             try {
                 return Format.parseDA(date);
             } catch (Exception e) {
-                Logger.error("Parse DICOM date", e); // $NON-NLS-1$
+                Logger.error("Failed to parse DICOM date: {}", date, e);
             }
         }
         return null;
     }
 
+    /**
+     * Parses a DICOM TM (Time) string into a {@link LocalTime}.
+     *
+     * @param time the TM string.
+     * @return the parsed {@link LocalTime}, or {@code null} on failure.
+     */
     public static LocalTime getDicomTime(String time) {
         if (StringKit.hasText(time)) {
             try {
                 return Format.parseTM(time);
             } catch (Exception e1) {
-                Logger.error("Parse DICOM time", e1); // $NON-NLS-1$
+                Logger.error("Failed to parse DICOM time: {}", time, e1);
             }
         }
         return null;
     }
 
+    /**
+     * Combines date and time attributes from a DICOM dataset into a {@link LocalDateTime}.
+     *
+     * @param dcm    the DICOM dataset.
+     * @param dateID the tag for the date attribute.
+     * @param timeID the tag for the time attribute.
+     * @return the combined {@link LocalDateTime}, or {@code null} if the date is not present.
+     */
     public static LocalDateTime dateTime(Attributes dcm, int dateID, int timeID) {
         if (dcm == null) {
             return null;
@@ -748,19 +1120,16 @@ public class Builder {
     }
 
     /**
-     * Build the shape from DICOM Shutter
+     * Builds a {@link Shape} from DICOM Display Shutter attributes.
      *
-     * @param dcm the DICOM attributes
-     * @return the shape
-     * @see <a href="http://dicom.nema.org/MEDICAL/DICOM/current/output/chtml/part03/sect_C.7.6.11.html">C.7.6.11
-     *      Display Shutter Module</a>
+     * @param dcm the DICOM dataset.
+     * @return the shutter shape as an {@link Area}, or {@code null} if no valid shutter is defined.
      */
     public static Area getShutterShape(Attributes dcm) {
         Area shape = null;
         String shutterShape = getStringFromDicomElement(dcm, Tag.ShutterShape);
         if (shutterShape != null) {
-            if (shutterShape.contains("RECTANGULAR") || shutterShape.contains("RECTANGLE")) { // $NON-NLS-1$
-                                                                                              // //$NON-NLS-2$
+            if (shutterShape.contains("RECTANGULAR") || shutterShape.contains("RECTANGLE")) {
                 Rectangle2D rect = new Rectangle2D.Double();
                 rect.setFrameFromDiagonal(
                         dcm.getInt(Tag.ShutterLeftVerticalEdge, 0),
@@ -773,12 +1142,11 @@ public class Builder {
                     shape = new Area(rect);
                 }
             }
-            if (shutterShape.contains("CIRCULAR")) { // $NON-NLS-1$
+            if (shutterShape.contains("CIRCULAR")) {
                 int[] centerOfCircularShutter = dcm.getInts(Tag.CenterOfCircularShutter);
                 if (centerOfCircularShutter != null && centerOfCircularShutter.length >= 2) {
                     Ellipse2D ellipse = new Ellipse2D.Double();
                     double radius = dcm.getInt(Tag.RadiusOfCircularShutter, 0);
-                    // Thanks DICOM for reversing x,y by row,column
                     ellipse.setFrameFromCenter(
                             centerOfCircularShutter[1],
                             centerOfCircularShutter[0],
@@ -795,12 +1163,11 @@ public class Builder {
                     }
                 }
             }
-            if (shutterShape.contains("POLYGONAL")) { // $NON-NLS-1$
+            if (shutterShape.contains("POLYGONAL")) {
                 int[] points = dcm.getInts(Tag.VerticesOfThePolygonalShutter);
                 if (points != null && points.length >= 6) {
                     Polygon polygon = new Polygon();
                     for (int i = 0; i < points.length / 2; i++) {
-                        // Thanks DICOM for reversing x,y by row,column
                         polygon.addPoint(points[i * 2 + 1], points[i * 2]);
                     }
                     if (isPolygonValid(polygon)) {
@@ -810,7 +1177,7 @@ public class Builder {
                             shape.intersect(new Area(polygon));
                         }
                     } else {
-                        Logger.error("Shutter rectangle has an empty area!");
+                        Logger.error("Shutter polygon is invalid or has an empty area!");
                     }
                 }
             }
@@ -818,6 +1185,12 @@ public class Builder {
         return shape;
     }
 
+    /**
+     * Validates a {@link Polygon} to ensure it represents a valid area.
+     *
+     * @param polygon the polygon to validate.
+     * @return {@code true} if the polygon is valid.
+     */
     private static boolean isPolygonValid(Polygon polygon) {
         int[] xPoints = polygon.xpoints;
         int[] yPoints = polygon.ypoints;
@@ -826,21 +1199,26 @@ public class Builder {
             area += (xPoints[i] * yPoints[(i + 1) % polygon.npoints])
                     - (xPoints[(i + 1) % polygon.npoints] * yPoints[i]);
         }
-        // Evaluating if this is a polygon, not a line
         return area != 0 && polygon.npoints > 2;
     }
 
     /**
-     * Extract the shutter color from ShutterPresentationColorCIELabValue or ShutterPresentationValue
+     * Extracts the shutter color from DICOM attributes.
      *
-     * @param dcm the DICOM attributes
-     * @return the color
+     * @param dcm the DICOM dataset.
+     * @return the shutter color as a {@link Color}.
      */
     public static Color getShutterColor(Attributes dcm) {
         int[] rgb = CIELab.dicomLab2rgb(dcm.getInts(Tag.ShutterPresentationColorCIELabValue));
         return ColorKit.getColor(dcm.getInt(Tag.ShutterPresentationValue, 0x0000), rgb);
     }
 
+    /**
+     * Safely closes a resource if the progress tracking in the {@link Status} object is active.
+     *
+     * @param dcmState  the current operation status.
+     * @param closeable the resource to close.
+     */
     public static void forceGettingAttributes(Status dcmState, AutoCloseable closeable) {
         ImageProgress p = dcmState.getProgress();
         if (p != null) {
@@ -848,12 +1226,17 @@ public class Builder {
         }
     }
 
+    /**
+     * Updates a DIMSE command dataset with progress information.
+     *
+     * @param p                     the progress tracking object.
+     * @param cmd                   the DIMSE command dataset.
+     * @param ps                    the status of the current sub-operation.
+     * @param numberOfSuboperations the initial total number of sub-operations.
+     */
     public static void notifyProgession(ImageProgress p, Attributes cmd, ProgressStatus ps, int numberOfSuboperations) {
         if (p != null && cmd != null) {
-            int c;
-            int f;
-            int r;
-            int w;
+            int c, f, r, w;
             if (p.getAttributes() == null) {
                 c = 0;
                 f = 0;
@@ -884,6 +1267,16 @@ public class Builder {
         }
     }
 
+    /**
+     * Notifies progress by updating the {@link Status} object and its associated {@link ImageProgress}.
+     *
+     * @param state                 the operation status object.
+     * @param iuid                  the Affected SOP Instance UID.
+     * @param cuid                  the Affected SOP Class UID.
+     * @param status                the DICOM status code.
+     * @param ps                    the status of the sub-operation.
+     * @param numberOfSuboperations the initial total number of sub-operations.
+     */
     public static void notifyProgession(
             Status state,
             String iuid,
@@ -903,6 +1296,12 @@ public class Builder {
         }
     }
 
+    /**
+     * Calculates the total number of sub-operations from a DIMSE command dataset.
+     *
+     * @param cmd the DIMSE command dataset.
+     * @return the total number of sub-operations.
+     */
     public static int getTotalOfSuboperations(Attributes cmd) {
         if (cmd != null) {
             int c = cmd.getInt(Tag.NumberOfCompletedSuboperations, 0);
@@ -914,6 +1313,13 @@ public class Builder {
         return 0;
     }
 
+    /**
+     * Concatenates an array of strings with a delimiter.
+     *
+     * @param ss    the array of strings.
+     * @param delim the delimiter character.
+     * @return the concatenated string.
+     */
     public static String concat(String[] ss, char delim) {
         int n = ss.length;
         if (n == 0)
@@ -943,12 +1349,26 @@ public class Builder {
         return new String(cs);
     }
 
+    /**
+     * Appends a series of objects to a StringBuilder, followed by a line separator.
+     *
+     * @param sb the StringBuilder.
+     * @param ss the objects to append.
+     * @return the modified StringBuilder.
+     */
     public static StringBuilder appendLine(StringBuilder sb, Object... ss) {
         for (Object s : ss)
             sb.append(s);
         return sb.append(LINE_SEPARATOR);
     }
 
+    /**
+     * Splits a string by a delimiter and trims leading/trailing whitespace from each part.
+     *
+     * @param s     the string to split.
+     * @param delim the delimiter character.
+     * @return a single trimmed String if no delimiter is found, otherwise a String array.
+     */
     public static Object splitAndTrim(String s, char delim) {
         int count = 1;
         int delimPos = -1;
@@ -968,6 +1388,13 @@ public class Builder {
         return ss;
     }
 
+    /**
+     * Splits a string by a delimiter into an array.
+     *
+     * @param s     the string to split.
+     * @param delim the delimiter character.
+     * @return an array of strings.
+     */
     public static String[] split(String s, char delim) {
         if (s == null || s.isEmpty())
             return Normal.EMPTY_STRING_ARRAY;
@@ -990,6 +1417,14 @@ public class Builder {
         return ss;
     }
 
+    /**
+     * Custom substring method that also trims whitespace from both ends.
+     *
+     * @param s          the source string.
+     * @param beginIndex the beginning index, inclusive.
+     * @param endIndex   the ending index, exclusive.
+     * @return the trimmed substring.
+     */
     private static String substring(String s, int beginIndex, int endIndex) {
         while (beginIndex < endIndex && s.charAt(beginIndex) <= ' ')
             beginIndex++;
@@ -998,6 +1433,12 @@ public class Builder {
         return beginIndex < endIndex ? s.substring(beginIndex, endIndex) : "";
     }
 
+    /**
+     * Trims trailing whitespace from a string.
+     *
+     * @param s the string to trim.
+     * @return the trimmed string.
+     */
     public static String trimTrailing(String s) {
         int endIndex = s.length();
         while (endIndex > 0 && s.charAt(endIndex - 1) <= ' ')
@@ -1005,18 +1446,42 @@ public class Builder {
         return s.substring(0, endIndex);
     }
 
+    /**
+     * Parses a DICOM IS (Integer String) value.
+     *
+     * @param s the IS string.
+     * @return the parsed long value.
+     */
     public static long parseIS(String s) {
-        return s != null && s.length() != 0 ? Long.parseLong(s) : 0L;
+        return s != null && !s.isEmpty() ? Long.parseLong(s) : 0L;
     }
 
+    /**
+     * Parses a DICOM UV (Unsigned Very Long) value.
+     *
+     * @param s the UV string.
+     * @return the parsed long value.
+     */
     public static long parseUV(String s) {
-        return s != null && s.length() != 0 ? Long.parseUnsignedLong(s) : 0L;
+        return s != null && !s.isEmpty() ? Long.parseUnsignedLong(s) : 0L;
     }
 
+    /**
+     * Parses a DICOM DS (Decimal String) value.
+     *
+     * @param s the DS string.
+     * @return the parsed double value.
+     */
     public static double parseDS(String s) {
-        return s != null && s.length() != 0 ? Double.parseDouble(s.replace(',', '.')) : 0;
+        return s != null && !s.isEmpty() ? Double.parseDouble(s.replace(',', '.')) : 0;
     }
 
+    /**
+     * Formats a float as a DICOM DS (Decimal String).
+     *
+     * @param f the float value.
+     * @return the formatted string.
+     */
     public static String formatDS(float f) {
         String s = Float.toString(f);
         int l = s.length();
@@ -1026,6 +1491,12 @@ public class Builder {
         return e > 0 && s.startsWith(".0", e - 2) ? cut(s, e - 2, e) : s;
     }
 
+    /**
+     * Formats a double as a DICOM DS (Decimal String), truncating to 16 characters if necessary.
+     *
+     * @param d the double value.
+     * @return the formatted string.
+     */
     public static String formatDS(double d) {
         String s = Double.toString(d);
         int l = s.length();
@@ -1037,6 +1508,9 @@ public class Builder {
                 : s.startsWith(".0", e - 2) ? cut(s, e - 2, e) : skip > 0 ? cut(s, e - skip, e) : s;
     }
 
+    /**
+     * Helper method to cut a section out of a string.
+     */
     private static String cut(String s, int begin, int end) {
         int l = s.length();
         char[] ch = new char[l - (end - begin)];
@@ -1045,6 +1519,15 @@ public class Builder {
         return new String(ch);
     }
 
+    /**
+     * Matches a string against a key, which may contain wildcards (*, ?).
+     *
+     * @param s                the string to test.
+     * @param key              the match key with optional wildcards.
+     * @param matchNullOrEmpty if {@code true}, a null or empty string will match.
+     * @param ignoreCase       if {@code true}, perform a case-insensitive match.
+     * @return {@code true} if the string matches the key.
+     */
     public static boolean matches(String s, String key, boolean matchNullOrEmpty, boolean ignoreCase) {
         if (key == null || key.isEmpty())
             return true;
@@ -1056,6 +1539,13 @@ public class Builder {
                 : ignoreCase ? key.equalsIgnoreCase(s) : key.equals(s);
     }
 
+    /**
+     * Compiles a wildcard string (*, ?) into a regular expression {@link Pattern}.
+     *
+     * @param key        the string with wildcards.
+     * @param ignoreCase if {@code true}, compile with {@link Pattern#CASE_INSENSITIVE}.
+     * @return the compiled {@link Pattern}.
+     */
     public static Pattern compilePattern(String key, boolean ignoreCase) {
         StringTokenizer stk = new StringTokenizer(key, "*?", true);
         StringBuilder regex = new StringBuilder();
@@ -1073,33 +1563,66 @@ public class Builder {
         return Pattern.compile(regex.toString(), ignoreCase ? Pattern.CASE_INSENSITIVE : 0);
     }
 
+    /**
+     * Checks if a string contains wildcard characters ('*' or '?').
+     *
+     * @param s the string to check.
+     * @return {@code true} if wildcards are present.
+     */
     public static boolean containsWildCard(String s) {
         return (s.indexOf('*') >= 0 || s.indexOf('?') >= 0);
     }
 
+    /**
+     * Returns an empty array if the input array is null.
+     *
+     * @param ss the input string array.
+     * @return the input array or an empty array.
+     */
     public static String[] maskNull(String[] ss) {
         return maskNull(ss, Normal.EMPTY_STRING_ARRAY);
     }
 
+    /**
+     * Returns a mask value if the input object is null.
+     *
+     * @param <T>  the type of the object.
+     * @param o    the object to check.
+     * @param mask the value to return if {@code o} is null.
+     * @return {@code o} or {@code mask}.
+     */
     public static <T> T maskNull(T o, T mask) {
         return o == null ? mask : o;
     }
 
+    /**
+     * Returns a mask value if the input string is null or empty.
+     *
+     * @param s    the string to check.
+     * @param mask the value to return if {@code s} is null or empty.
+     * @return {@code s} or {@code mask}.
+     */
     public static String maskEmpty(String s, String mask) {
         return s == null || s.isEmpty() ? mask : s;
     }
 
+    /**
+     * Truncates a string to a maximum length.
+     *
+     * @param s      the string to truncate.
+     * @param maxlen the maximum length.
+     * @return the truncated string.
+     */
     public static String truncate(String s, int maxlen) {
         return s.length() > maxlen ? s.substring(0, maxlen) : s;
     }
 
     /**
-     * Returns a {@code String} resulting from replacing all non-ASCII and non-printable characters in the specified
-     * {@code String} with {@code replacement} character.
+     * Replaces all non-ASCII and non-printable characters in a string with a replacement character.
      *
-     * @param s           - the specified string
-     * @param replacement - the replacement character
-     * @return a string
+     * @param s           the string to process.
+     * @param replacement the character to use for replacement.
+     * @return the sanitized string.
      */
     public static String replaceNonPrintASCII(String s, char replacement) {
         char[] cs = s.toCharArray();
@@ -1113,10 +1636,25 @@ public class Builder {
         return count > 0 ? new String(cs) : s;
     }
 
+    /**
+     * A null-safe equals method.
+     *
+     * @param <T> the type of the objects.
+     * @param o1  the first object.
+     * @param o2  the second object.
+     * @return {@code true} if the objects are equal.
+     */
     public static <T> boolean equals(T o1, T o2) {
         return Objects.equals(o1, o2);
     }
 
+    /**
+     * Replaces placeholders in a string with system properties or environment variables. Placeholders are in the format
+     * `${property.name}` or `${env.VAR_NAME}`.
+     *
+     * @param s the string with placeholders.
+     * @return the string with placeholders replaced.
+     */
     public static String replaceSystemProperties(String s) {
         int i = s.indexOf("${");
         if (i == -1)
@@ -1140,6 +1678,14 @@ public class Builder {
         return sb.toString();
     }
 
+    /**
+     * Checks if an array contains a specific object.
+     *
+     * @param <T> the type of the objects.
+     * @param a   the array.
+     * @param o   the object to find.
+     * @return {@code true} if the array contains the object.
+     */
     public static <T> boolean contains(T[] a, T o) {
         for (T t : a)
             if (Objects.equals(t, o))
@@ -1147,24 +1693,55 @@ public class Builder {
         return false;
     }
 
+    /**
+     * Ensures an array is not empty.
+     *
+     * @param <T>     the type of the array elements.
+     * @param a       the array.
+     * @param message the exception message if the array is empty.
+     * @return the original array.
+     * @throws IllegalArgumentException if the array is empty.
+     */
     public static <T> T[] requireNotEmpty(T[] a, String message) {
         if (a.length == 0)
             throw new IllegalArgumentException(message);
         return a;
     }
 
+    /**
+     * Ensures a string is not empty.
+     *
+     * @param s       the string.
+     * @param message the exception message if the string is empty.
+     * @return the original string.
+     * @throws IllegalArgumentException if the string is empty.
+     */
     public static String requireNotEmpty(String s, String message) {
         if (s.isEmpty())
             throw new IllegalArgumentException(message);
         return s;
     }
 
+    /**
+     * Ensures an array of strings contains no empty elements.
+     *
+     * @param ss      the string array.
+     * @param message the exception message if an element is empty.
+     * @return the original array.
+     */
     public static String[] requireContainsNoEmpty(String[] ss, String message) {
         for (String s : ss)
             requireNotEmpty(s, message);
         return ss;
     }
 
+    /**
+     * Determines the appropriate {@link MediaType} for a given Transfer Syntax UID.
+     *
+     * @param ts the Transfer Syntax UID.
+     * @return the corresponding {@link MediaType}.
+     * @throws IllegalArgumentException if the Transfer Syntax is not supported.
+     */
     public static MediaType forTransferSyntax(String ts) {
         MediaType type;
         switch (UID.from(ts)) {
@@ -1219,6 +1796,12 @@ public class Builder {
         return new MediaType(type.getType(), type.getSubtype(), Collections.singletonMap("transfer-syntax", ts));
     }
 
+    /**
+     * Determines the appropriate Transfer Syntax UID from a {@link MediaType}.
+     *
+     * @param bulkdataMediaType the media type.
+     * @return the corresponding Transfer Syntax UID.
+     */
     public static String transferSyntaxOf(MediaType bulkdataMediaType) {
         String tsuid = bulkdataMediaType.getParameters().get("transfer-syntax");
         if (tsuid != null)
@@ -1259,6 +1842,12 @@ public class Builder {
         return UID.ExplicitVRLittleEndian.uid;
     }
 
+    /**
+     * Determines the appropriate SOP Class UID from a {@link MediaType}.
+     *
+     * @param bulkdataMediaType the media type.
+     * @return the corresponding SOP Class UID, or {@code null}.
+     */
     public static String sopClassOf(MediaType bulkdataMediaType) {
         String type = bulkdataMediaType.getType().toLowerCase();
         return type.equals("image") ? UID.SecondaryCaptureImageStorage.uid
@@ -1279,24 +1868,37 @@ public class Builder {
                                                                                 : null;
     }
 
+    /**
+     * Extracts the Transfer Syntax UID from an "application/dicom" media type.
+     *
+     * @param type the media type.
+     * @return the Transfer Syntax UID, or {@code null}.
+     */
     public static String getTransferSyntax(MediaType type) {
         return type != null && MediaType.equalsIgnoreParameters(MediaType.APPLICATION_DICOM_TYPE, type)
                 ? type.getParameters().get("transfer-syntax")
                 : null;
     }
 
+    /**
+     * Creates an "application/dicom" media type with a specified Transfer Syntax.
+     *
+     * @param tsuid the Transfer Syntax UID.
+     * @return the constructed {@link MediaType}.
+     */
     public static MediaType applicationDicomWithTransferSyntax(String tsuid) {
         return new MediaType("application", "dicom", Collections.singletonMap("transfer-syntax", tsuid));
     }
 
-    public static Props loadRelSoap(URL url) {
-        String name = "sop-classes-uid.properties";
-        return null;
-    }
-
+    /**
+     * Validates a DICOM file against a given Information Object Definition (IOD).
+     *
+     * @param file the DICOM file to validate.
+     * @param iod  the IOD to validate against.
+     */
     public void validate(File file, IOD iod) {
         if (iod == null)
-            throw new IllegalStateException("IOD net initialized");
+            throw new IllegalStateException("IOD not initialized");
         ImageInputStream dis = null;
         try {
             System.out.print("Validate: " + file + " ... ");

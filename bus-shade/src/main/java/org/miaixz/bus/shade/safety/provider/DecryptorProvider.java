@@ -35,7 +35,7 @@ import java.io.OutputStream;
 import org.miaixz.bus.shade.safety.algorithm.Key;
 
 /**
- * 解密器
+ * Defines the contract for a decryptor, which provides methods for decrypting files and streams.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,42 +43,42 @@ import org.miaixz.bus.shade.safety.algorithm.Key;
 public interface DecryptorProvider {
 
     /**
-     * 解密,将目标文件解密输出至目标文件
+     * Decrypts a source file and writes the result to a destination file.
      *
-     * @param key  密钥
-     * @param src  源文件
-     * @param dest 目标文件
-     * @throws IOException I/O 异常
+     * @param key  The decryption key.
+     * @param src  The source file to decrypt.
+     * @param dest The destination file to write the decrypted content to.
+     * @throws IOException If an I/O error occurs during decryption.
      */
     void decrypt(Key key, File src, File dest) throws IOException;
 
     /**
-     * 解密,将输入流解密输出至输出流
+     * Decrypts an input stream and writes the result to an output stream.
      *
-     * @param key 密钥
-     * @param in  输入流
-     * @param out 输出流
-     * @throws IOException I/O 异常
+     * @param key The decryption key.
+     * @param in  The input stream containing the encrypted data.
+     * @param out The output stream to write the decrypted data to.
+     * @throws IOException If an I/O error occurs during decryption.
      */
     void decrypt(Key key, InputStream in, OutputStream out) throws IOException;
 
     /**
-     * 解密,将输入流包装成解密的输入流
+     * Wraps an input stream with a decrypting input stream.
      *
-     * @param key 密钥
-     * @param in  输入流
-     * @return 解密后的输入流
-     * @throws IOException I/O 异常
+     * @param key The decryption key.
+     * @param in  The input stream to wrap.
+     * @return A new input stream that decrypts the data from the original stream.
+     * @throws IOException If an I/O error occurs.
      */
     InputStream decrypt(Key key, InputStream in) throws IOException;
 
     /**
-     * 解密,将输入流包装成解密的输出流
+     * Wraps an output stream with a decrypting output stream.
      *
-     * @param key 密钥
-     * @param out 输出流
-     * @return 解密后的输出流
-     * @throws IOException I/O 异常
+     * @param key The decryption key.
+     * @param out The output stream to wrap.
+     * @return A new output stream that decrypts data before writing it to the original stream.
+     * @throws IOException If an I/O error occurs.
      */
     OutputStream decrypt(Key key, OutputStream out) throws IOException;
 

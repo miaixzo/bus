@@ -26,7 +26,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 配置文件格式化封装
+ * Provides classes for formatting and parsing lines within configuration files, specifically for the INI format.
  *
  * @author Kimi Liu
  * @since Java 17+

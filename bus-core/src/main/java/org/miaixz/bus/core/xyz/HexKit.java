@@ -36,9 +36,12 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 
 /**
- * 十六进制（简写为hex或下标16）在数学中是一种逢16进1的进位制，一般用数字0到9和字母A到F表示（其中:A~F即10~15）。 例如十进制数57，在二进制写作111001，在16进制写作39。
- * 像java,c这样的语言为了区分十六进制和十进制数值,会在十六进制数的前面加上 0x,比如0x20是十进制的32,而不是十进制的20
- * 此工具类为16进制组合工具类，除了继承{@link Hex}实现编码解码外，提供其它转换类和识别类工具。
+ * Hexadecimal (abbreviated as hex or subscript 16) is a base-16 numeral system in mathematics, generally represented by
+ * digits 0 to 9 and letters A to F (where A-F are 10-15). For example, the decimal number 57 is written as 111001 in
+ * binary and 39 in hexadecimal. Languages like Java and C distinguish hexadecimal from decimal values by prefixing
+ * hexadecimal numbers with 0x, for instance, 0x20 is decimal 32, not decimal 20. This utility class provides
+ * hexadecimal related tools, including encoding and decoding inherited from {@link Hex}, as well as other conversion
+ * and identification tools.
  *
  * @author Kimi Liu
  * @see Hex
@@ -47,21 +50,21 @@ import org.miaixz.bus.core.lang.Symbol;
 public class HexKit extends Hex {
 
     /**
-     * 将{@link Color}编码为Hex形式
+     * Encodes a {@link Color} object into its hexadecimal string representation.
      *
-     * @param color {@link Color}
-     * @return Hex字符串
+     * @param color The {@link Color} object to encode.
+     * @return The hexadecimal string representation of the color.
      */
     public static String encodeColor(final Color color) {
         return encodeColor(color, Symbol.HASH);
     }
 
     /**
-     * 将{@link Color}编码为Hex形式
+     * Encodes a {@link Color} object into its hexadecimal string representation with a specified prefix.
      *
-     * @param color  {@link Color}
-     * @param prefix 前缀字符串，可以是#、0x等
-     * @return Hex字符串
+     * @param color  The {@link Color} object to encode.
+     * @param prefix The prefix string, such as '#' or '0x'.
+     * @return The hexadecimal string representation of the color.
      */
     public static String encodeColor(final Color color, final String prefix) {
         final StringBuilder builder = new StringBuilder(prefix);
@@ -85,20 +88,22 @@ public class HexKit extends Hex {
     }
 
     /**
-     * 将Hex颜色值转为
+     * Decodes a hexadecimal color string into a {@link Color} object.
      *
-     * @param hexColor 16进制颜色值，可以以#开头，也可以用0x开头
-     * @return {@link Color}
+     * @param hexColor The hexadecimal color string, which can start with '#' or '0x'.
+     * @return The {@link Color} object represented by the hexadecimal string.
      */
     public static Color decodeColor(final String hexColor) {
         return Color.decode(hexColor);
     }
 
     /**
-     * 判断给定字符串是否为16进制数 如果是，需要使用对应数字类型对象的{@code decode}方法解码 例如：{@code Integer.decode}方法解码int类型的16进制数字
+     * Checks if the given string is a valid hexadecimal number. If it is, it can be decoded using the {@code decode}
+     * method of the corresponding numeric type object, for example, {@code Integer.decode} for an int type hexadecimal
+     * number.
      *
-     * @param value 值
-     * @return 是否为16进制
+     * @param value The string value to check.
+     * @return {@code true} if the string is a hexadecimal number, {@code false} otherwise.
      */
     public static boolean isHexNumber(final String value) {
         if (StringKit.startWith(value, Symbol.C_MINUS)) {
@@ -119,14 +124,16 @@ public class HexKit extends Hex {
     }
 
     /**
-     * 将指定int值转换为Unicode字符串形式，常用于特殊字符（例如汉字）转Unicode形式 转换的字符串如果u后不足4位，则前面用0填充，例如：
-     *
+     * Converts a given int value to its Unicode hexadecimal string representation. This is commonly used for converting
+     * special characters (e.g., Chinese characters) to Unicode form. If the hexadecimal string after 'u' is less than 4
+     * digits, it will be padded with leading zeros. For example:
+     * 
      * <pre>
-     * 你 = &#92;u4f60
+     * 你 = \u4f60
      * </pre>
      *
-     * @param value int值，也可以是char
-     * @return Unicode表现形式
+     * @param value The int value, which can also be a char.
+     * @return The Unicode hexadecimal representation.
      */
     public static String toUnicodeHex(final int value) {
         final StringBuilder builder = new StringBuilder(6);
@@ -135,7 +142,7 @@ public class HexKit extends Hex {
         final String hex = toHex(value);
         final int len = hex.length();
         if (len < 4) {
-            builder.append("0000", 0, 4 - len);// 不足4位补0
+            builder.append("0000", 0, 4 - len); // Pad with leading zeros if less than 4 digits
         }
         builder.append(hex);
 
@@ -143,75 +150,78 @@ public class HexKit extends Hex {
     }
 
     /**
-     * 将指定char值转换为Unicode字符串形式，常用于特殊字符（例如汉字）转Unicode形式 转换的字符串如果u后不足4位，则前面用0填充，例如：
-     *
+     * Converts a given char value to its Unicode hexadecimal string representation. This is commonly used for
+     * converting special characters (e.g., Chinese characters) to Unicode form. If the hexadecimal string after 'u' is
+     * less than 4 digits, it will be padded with leading zeros. For example:
+     * 
      * <pre>
-     * 你 = &#92;u4f60
+     * 你 = \u4f60
      * </pre>
      *
-     * @param ch char值
-     * @return Unicode表现形式
+     * @param ch The char value.
+     * @return The Unicode hexadecimal representation.
      */
     public static String toUnicodeHex(final char ch) {
         return Base16Provider.CODEC_LOWER.toUnicodeHex(ch);
     }
 
     /**
-     * 转为16进制字符串
+     * Converts an int value to its hexadecimal string representation.
      *
-     * @param value int值
-     * @return 16进制字符串
+     * @param value The int value.
+     * @return The hexadecimal string representation.
      */
     public static String toHex(final int value) {
         return Integer.toHexString(value);
     }
 
     /**
-     * 16进制字符串转为int
+     * Converts a hexadecimal string to an int value.
      *
-     * @param value 16进制字符串
-     * @return 16进制字符串int值
+     * @param value The hexadecimal string.
+     * @return The int value represented by the hexadecimal string.
      */
     public static int hexToInt(final String value) {
         return Integer.parseInt(value, 16);
     }
 
     /**
-     * 转为16进制字符串
+     * Converts a long value to its hexadecimal string representation.
      *
-     * @param value int值
-     * @return 16进制字符串
+     * @param value The long value.
+     * @return The hexadecimal string representation.
      */
     public static String toHex(final long value) {
         return Long.toHexString(value);
     }
 
     /**
-     * 16进制字符串转为long
+     * Converts a hexadecimal string to a long value.
      *
-     * @param value 16进制字符串
-     * @return long值
+     * @param value The hexadecimal string.
+     * @return The long value represented by the hexadecimal string.
      */
     public static long hexToLong(final String value) {
         return Long.parseLong(value, 16);
     }
 
     /**
-     * 将byte值转为16进制并添加到{@link StringBuilder}中
+     * Converts a byte value to its hexadecimal representation and appends it to a {@link StringBuilder}.
      *
-     * @param builder     {@link StringBuilder}
-     * @param b           byte
-     * @param toLowerCase 是否使用小写
+     * @param builder     The {@link StringBuilder} to append to.
+     * @param b           The byte value.
+     * @param toLowerCase {@code true} to use lowercase hexadecimal characters, {@code false} for uppercase.
      */
     public static void appendHex(final StringBuilder builder, final byte b, final boolean toLowerCase) {
         (toLowerCase ? Base16Provider.CODEC_LOWER : Base16Provider.CODEC_UPPER).appendHex(builder, b);
     }
 
     /**
-     * Hex（16进制）字符串转为BigInteger
+     * Converts a hexadecimal string to a {@link BigInteger}.
      *
-     * @param hexStr Hex(16进制字符串)
-     * @return {@link BigInteger}
+     * @param hexStr The hexadecimal string.
+     * @return The {@link BigInteger} represented by the hexadecimal string, or {@code null} if the input string is
+     *         {@code null}.
      */
     public static BigInteger toBigInteger(final String hexStr) {
         if (null == hexStr) {
@@ -221,29 +231,29 @@ public class HexKit extends Hex {
     }
 
     /**
-     * 格式化Hex字符串，结果为每2位加一个空格，类似于：
+     * Formats a hexadecimal string by inserting a space every two characters. For example:
      * 
      * <pre>
      *     e8 8c 67 03 80 cb 22 00 95 26 8f
      * </pre>
      *
-     * @param hexStr Hex字符串
-     * @return 格式化后的字符串
+     * @param hexStr The hexadecimal string to format.
+     * @return The formatted string.
      */
     public static String format(final String hexStr) {
         return format(hexStr, Normal.EMPTY);
     }
 
     /**
-     * 格式化Hex字符串，结果为每2位加一个空格，类似于：
+     * Formats a hexadecimal string by inserting a space and a custom prefix every two characters. For example:
      * 
      * <pre>
      *     e8 8c 67 03 80 cb 22 00 95 26 8f
      * </pre>
      *
-     * @param hexStr Hex字符串
-     * @param prefix 自定义前缀，如0x
-     * @return 格式化后的字符串
+     * @param hexStr The hexadecimal string to format.
+     * @param prefix The custom prefix to insert, such as "0x". If {@code null}, an empty string is used.
+     * @return The formatted string.
      */
     public static String format(final String hexStr, String prefix) {
         if (null == prefix) {

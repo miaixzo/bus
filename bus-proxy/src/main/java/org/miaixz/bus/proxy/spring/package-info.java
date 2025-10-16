@@ -26,7 +26,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Spring-cglib切面实现
+ * Provides proxy implementations based on the CGLIB library bundled with the Spring Framework. This allows for creating
+ * proxies of classes, not just interfaces.
  *
  * @author Kimi Liu
  * @since Java 17+

@@ -33,11 +33,12 @@ import java.util.Objects;
 import org.miaixz.bus.core.xyz.ExceptionKit;
 
 /**
- * 3参数Consumer
+ * A functional interface representing a consumer that accepts three arguments. This is a three-arity specialization of
+ * {@link java.util.function.Consumer}.
  *
- * @param <P1> 参数一类型
- * @param <P2> 参数二类型
- * @param <P3> 参数三类型
+ * @param <P1> The type of the first argument.
+ * @param <P2> The type of the second argument.
+ * @param <P3> The type of the third argument.
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -45,21 +46,21 @@ import org.miaixz.bus.core.xyz.ExceptionKit;
 public interface Consumer3X<P1, P2, P3> extends Serializable {
 
     /**
-     * 接收参数方法
+     * Performs this operation on the given arguments, allowing for checked exceptions.
      *
-     * @param p1 参数一
-     * @param p2 参数二
-     * @param p3 参数三
-     * @throws Exception 包装检查异常
+     * @param p1 The first input argument.
+     * @param p2 The second input argument.
+     * @param p3 The third input argument.
+     * @throws Throwable if an error occurs.
      */
     void accepting(P1 p1, P2 p2, P3 p3) throws Throwable;
 
     /**
-     * 接收参数方法
+     * Performs this operation on the given arguments, wrapping any checked exceptions in a runtime exception.
      *
-     * @param p1 参数一
-     * @param p2 参数二
-     * @param p3 参数三
+     * @param p1 The first input argument.
+     * @param p2 The second input argument.
+     * @param p3 The third input argument.
      */
     default void accept(final P1 p1, final P2 p2, final P3 p3) {
         try {
@@ -70,12 +71,14 @@ public interface Consumer3X<P1, P2, P3> extends Serializable {
     }
 
     /**
-     * 返回一个组合的{@link Consumer3X}，按顺序执行此操作，然后执行{@code after}操作。
-     * 如果执行任何操作都会抛出异常，则将其传递给组合操作的调用者。如果执行此操作会抛出异常，则不会执行{@code}操作。
+     * Returns a composed {@code Consumer3X} that performs, in sequence, this operation followed by the {@code after}
+     * operation. If performing either operation throws an exception, it is relayed to the caller of the composed
+     * operation. If performing this operation throws an exception, the {@code after} operation will not be performed.
      *
-     * @param after 后续要要执行的操作
-     * @return 一个组合 {@link Consumer3X}，按顺序执行此操作，然后执行{@code after}操作
-     * @throws NullPointerException if {@code after} is null
+     * @param after the operation to perform after this operation.
+     * @return a composed {@code Consumer3X} that performs in sequence this operation followed by the {@code after}
+     *         operation.
+     * @throws NullPointerException if {@code after} is null.
      */
     default Consumer3X<P1, P2, P3> andThen(final Consumer3X<P1, P2, P3> after) {
         Objects.requireNonNull(after);

@@ -27,6 +27,12 @@
 */
 package org.miaixz.bus.http.accord;
 
+import org.miaixz.bus.http.metric.Internal;
+
+import javax.net.ssl.SSLException;
+import javax.net.ssl.SSLHandshakeException;
+import javax.net.ssl.SSLPeerUnverifiedException;
+import javax.net.ssl.SSLSocket;
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.net.ProtocolException;
@@ -35,37 +41,50 @@ import java.security.cert.CertificateException;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.net.ssl.SSLException;
-import javax.net.ssl.SSLHandshakeException;
-import javax.net.ssl.SSLPeerUnverifiedException;
-import javax.net.ssl.SSLSocket;
-
-import org.miaixz.bus.http.metric.Internal;
-
 /**
- * 处理连接规范回退策略:当安全套接字连接由于握手/协议问题而失败时， 可能会使用不同的协议重试连接。实例是有状态的，应该创建并用于单个连接尝试
+ * Handles the fallback strategy for connection specifications: when a secure socket connection fails due to a handshake
+ * or protocol issue, the connection may be retried with a different protocol. Instances are stateful and should be
+ * created and used for a single connection attempt.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class ConnectionSelector {
+public final class ConnectionSelector {
 
+    /**
+     * The list of connection suites to try.
+     */
     private final List<ConnectionSuite> connectionSuites;
+    /**
+     * The index of the next mode to try.
+     */
     private int nextModeIndex;
+    /**
+     * Whether a fallback is possible.
+     */
     private boolean isFallbackPossible;
+    /**
+     * Whether this is a fallback attempt.
+     */
     private boolean isFallback;
 
+    /**
+     * Constructor
+     *
+     * @param connectionSuites The list of connection suites.
+     */
     public ConnectionSelector(List<ConnectionSuite> connectionSuites) {
         this.nextModeIndex = 0;
         this.connectionSuites = connectionSuites;
     }
 
     /**
-     * 根据{@link SSLSocket} 配置连接到指定的主机的信息{@link ConnectionSuite} 返回{@link ConnectionSuite}，不会返回{@code null}
+     * Configures the {@link SSLSocket} with the appropriate {@link ConnectionSuite} for connecting to the specified
+     * host. Returns a {@link ConnectionSuite} and will not return {@code null}.
      *
-     * @param sslSocket ssl套接字
-     * @return 套接字连接的配置
-     * @throws IOException 如果套接字不支持任何可用的TLS模式
+     * @param sslSocket The SSL socket to configure.
+     * @return The configuration for the socket connection.
+     * @throws IOException if the socket does not support any of the available TLS modes.
      */
     public ConnectionSuite configureSecureSocket(SSLSocket sslSocket) throws IOException {
         ConnectionSuite tlsConfiguration = null;
@@ -79,8 +98,8 @@ public class ConnectionSelector {
         }
 
         if (null == tlsConfiguration) {
-            // 这可能是第一次尝试连接，而套接字不支持任何必需的协议
-            // 或者可能是重试(但此套接字支持的协议比先前的套接字所建议的少)
+            // This could be the first attempt to connect, and the socket does not support any required protocols.
+            // Or it could be a retry (but this socket supports fewer protocols than the previous socket suggested).
             throw new UnknownServiceException(
                     "Unable to find acceptable protocols. isFallback=" + isFallback + ", modes=" + connectionSuites
                             + ", supported protocols=" + Arrays.toString(sslSocket.getEnabledProtocols()));
@@ -94,49 +113,54 @@ public class ConnectionSelector {
     }
 
     /**
-     * 报告连接失败。确定下一个要尝试的{@link ConnectionSuite}(如果有的话)
+     * Reports a connection failure. Determines the next {@link ConnectionSuite} to try, if any.
      *
-     * @param ex 异常信息
-     * @return 如果需要使用 {@link #configureSecureSocket(SSLSocket)} 或{@code false}重试连接，
-     *         则为{@code true};如果不需要重试连接，则为{@link #configureSecureSocket(SSLSocket)}或{@code false}
+     * @param ex The exception that occurred.
+     * @return {@code true} if the connection should be retried with {@link #configureSecureSocket(SSLSocket)}, or
+     *         {@code false} if no further retries are necessary.
      */
     public boolean connectionFailed(IOException ex) {
-        // 未来使用此策略进行连接的任何尝试都将是一次回退尝试
+        // Any future attempts to connect using this strategy will be a fallback attempt.
         isFallback = true;
 
         if (!isFallbackPossible) {
             return false;
         }
 
-        // 如果有协议问题，不会恢复.
+        // Don't recover from protocol problems.
         if (ex instanceof ProtocolException) {
             return false;
         }
 
-        // 如果出现中断或超时(SocketTimeoutException)，则不进行恢复。对于套接字连接超时情况，
-        // 我们不会使用不同的ConnectionSpec尝试相同的主机:认为通讯是不可到达的
+        // Don't recover from interruptions or timeouts (SocketTimeoutException). For socket connection timeouts,
+        // we do not try the same host with a different ConnectionSpec: assume the host is unreachable.
         if (ex instanceof InterruptedIOException) {
             return false;
         }
 
-        // 查找已知的客户端或协商错误，这些错误不太可能通过再次尝试使用不同的连接规范来修复
+        // Look for known client or negotiation errors that are unlikely to be fixed by trying again with a different
+        // connection specification.
         if (ex instanceof SSLHandshakeException) {
-            // 如果问题是来自X509TrustManager的一个证书异常，那么不会重试.
+            // If the problem is a certificate exception from the X509TrustManager, then we won't retry.
             if (ex.getCause() instanceof CertificateException) {
                 return false;
             }
         }
         if (ex instanceof SSLPeerUnverifiedException) {
-            // 例如，证书未经许可的错误.
+            // For example, a certificate not permitted error.
             return false;
         }
 
-        // 重试所有其他SSL失败
+        // Retry all other SSL failures.
         return ex instanceof SSLException;
     }
 
     /**
-     * 如果根据提供的{@link SSLSocket}，回退策略中的任何后面的{@link ConnectionSuite} 看起来都是可能的，则返回{@code true}。假设具有与提供的套接字相同的功能
+     * Returns {@code true} if any subsequent {@link ConnectionSuite} in the fallback strategy appears to be possible,
+     * given the provided {@link SSLSocket}. Assumes the socket has the same capabilities as the provided socket.
+     *
+     * @param socket The SSL socket.
+     * @return {@code true} if a fallback is possible.
      */
     private boolean isFallbackPossible(SSLSocket socket) {
         for (int i = nextModeIndex; i < connectionSuites.size(); i++) {

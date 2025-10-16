@@ -35,7 +35,7 @@ import org.miaixz.bus.core.center.date.culture.lunar.LunarDay;
 import org.miaixz.bus.core.center.date.culture.lunar.LunarHour;
 
 /**
- * 公历时刻
+ * Represents a specific time in the Gregorian calendar.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,34 +43,35 @@ import org.miaixz.bus.core.center.date.culture.lunar.LunarHour;
 public class SolarTime extends Loops {
 
     /**
-     * 公历日
+     * The solar day this time belongs to.
      */
     protected SolarDay day;
 
     /**
-     * 时
+     * The hour of the day (0-23).
      */
     protected int hour;
 
     /**
-     * 分
+     * The minute of the hour (0-59).
      */
     protected int minute;
 
     /**
-     * 秒
+     * The second of the minute (0-59).
      */
     protected int second;
 
     /**
-     * 初始化
+     * Constructs a {@code SolarTime} with the given year, month, day, hour, minute, and second.
      *
-     * @param year   年
-     * @param month  月
-     * @param day    日
-     * @param hour   时
-     * @param minute 分
-     * @param second 秒
+     * @param year   The year.
+     * @param month  The month.
+     * @param day    The day.
+     * @param hour   The hour (0-23).
+     * @param minute The minute (0-59).
+     * @param second The second (0-59).
+     * @throws IllegalArgumentException if hour, minute, or second are out of valid range.
      */
     public SolarTime(int year, int month, int day, int hour, int minute, int second) {
         if (hour < 0 || hour > 23) {
@@ -88,73 +89,89 @@ public class SolarTime extends Loops {
         this.second = second;
     }
 
+    /**
+     * Creates a {@code SolarTime} instance from the given year, month, day, hour, minute, and second.
+     *
+     * @param year   The year.
+     * @param month  The month.
+     * @param day    The day.
+     * @param hour   The hour.
+     * @param minute The minute.
+     * @param second The second.
+     * @return A new {@link SolarTime} instance.
+     */
     public static SolarTime fromYmdHms(int year, int month, int day, int hour, int minute, int second) {
         return new SolarTime(year, month, day, hour, minute, second);
     }
 
     /**
-     * 公历日
+     * Gets the solar day this time belongs to.
      *
-     * @return 公历日
+     * @return The {@link SolarDay}.
      */
     public SolarDay getSolarDay() {
         return day;
     }
 
     /**
-     * 年
+     * Gets the year of this solar time.
      *
-     * @return 年
+     * @return The year.
      */
     public int getYear() {
         return day.getYear();
     }
 
     /**
-     * 月
+     * Gets the month of this solar time.
      *
-     * @return 月
+     * @return The month.
      */
     public int getMonth() {
         return day.getMonth();
     }
 
     /**
-     * 日
+     * Gets the day of this solar time.
      *
-     * @return 日
+     * @return The day.
      */
     public int getDay() {
         return day.getDay();
     }
 
     /**
-     * 时
+     * Gets the hour of this solar time.
      *
-     * @return 时
+     * @return The hour.
      */
     public int getHour() {
         return hour;
     }
 
     /**
-     * 分
+     * Gets the minute of this solar time.
      *
-     * @return 分
+     * @return The minute.
      */
     public int getMinute() {
         return minute;
     }
 
     /**
-     * 秒
+     * Gets the second of this solar time.
      *
-     * @return 秒
+     * @return The second.
      */
     public int getSecond() {
         return second;
     }
 
+    /**
+     * Gets the formatted time string (HH:mm:ss).
+     *
+     * @return The formatted time string.
+     */
     public String getName() {
         return String.format("%02d:%02d:%02d", hour, minute, second);
     }
@@ -165,10 +182,10 @@ public class SolarTime extends Loops {
     }
 
     /**
-     * 是否在指定公历时刻之前
+     * Checks if this solar time is before the target solar time.
      *
-     * @param target 公历时刻
-     * @return true/false
+     * @param target The target solar time.
+     * @return {@code true} if this time is before the target, {@code false} otherwise.
      */
     public boolean isBefore(SolarTime target) {
         if (!day.equals(target.getSolarDay())) {
@@ -181,10 +198,10 @@ public class SolarTime extends Loops {
     }
 
     /**
-     * 是否在指定公历时刻之后
+     * Checks if this solar time is after the target solar time.
      *
-     * @param target 公历时刻
-     * @return true/false
+     * @param target The target solar time.
+     * @return {@code true} if this time is after the target, {@code false} otherwise.
      */
     public boolean isAfter(SolarTime target) {
         if (!day.equals(target.getSolarDay())) {
@@ -197,9 +214,9 @@ public class SolarTime extends Loops {
     }
 
     /**
-     * 节气
+     * Gets the solar term for this solar time.
      *
-     * @return 节气
+     * @return The {@link SolarTerms} for this time.
      */
     public SolarTerms getTerm() {
         SolarTerms term = day.getTerm();
@@ -210,9 +227,9 @@ public class SolarTime extends Loops {
     }
 
     /**
-     * 候
+     * Gets the phenology (Hou) for this solar time.
      *
-     * @return 候
+     * @return The {@link Climate} for this time.
      */
     public Climate getPhenology() {
         Climate p = day.getPhenology();
@@ -223,19 +240,19 @@ public class SolarTime extends Loops {
     }
 
     /**
-     * 儒略日
+     * Gets the Julian day corresponding to this solar time.
      *
-     * @return 儒略日
+     * @return The {@link JulianDay} for this solar time.
      */
     public JulianDay getJulianDay() {
         return JulianDay.fromYmdHms(getYear(), getMonth(), getDay(), hour, minute, second);
     }
 
     /**
-     * 公历时刻相减，获得相差秒数
+     * Subtracts a target {@code SolarTime} from this {@code SolarTime}, returning the difference in seconds.
      *
-     * @param target 公历时刻
-     * @return 秒数
+     * @param target The target {@code SolarTime}.
+     * @return The number of seconds difference.
      */
     public int subtract(SolarTime target) {
         int days = day.subtract(target.getSolarDay());
@@ -251,10 +268,10 @@ public class SolarTime extends Loops {
     }
 
     /**
-     * 推移
+     * Advances this solar time by a specified number of seconds.
      *
-     * @param n 推移秒数
-     * @return 公历时刻
+     * @param n The number of seconds to advance.
+     * @return The {@link SolarTime} after advancing by {@code n} seconds.
      */
     public SolarTime next(int n) {
         if (n == 0) {
@@ -285,9 +302,9 @@ public class SolarTime extends Loops {
     }
 
     /**
-     * 农历时辰
+     * Gets the lunar hour corresponding to this solar time.
      *
-     * @return 农历时辰
+     * @return The {@link LunarHour} for this solar time.
      */
     public LunarHour getLunarHour() {
         LunarDay d = day.getLunarDay();
@@ -295,9 +312,9 @@ public class SolarTime extends Loops {
     }
 
     /**
-     * 干支时辰
+     * Gets the Sixty Cycle Hour (GanZhi hour) corresponding to this solar time.
      *
-     * @return 干支时辰
+     * @return The {@link SixtyCycleHour} for this solar time.
      */
     public SixtyCycleHour getSixtyCycleHour() {
         return SixtyCycleHour.fromSolarTime(this);

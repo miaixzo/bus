@@ -27,14 +27,6 @@
 */
 package org.miaixz.bus.http;
 
-import java.io.IOException;
-import java.io.InterruptedIOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.RejectedExecutionException;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import org.miaixz.bus.core.io.timout.Timeout;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.IoKit;
@@ -50,46 +42,54 @@ import org.miaixz.bus.http.metric.http.RealInterceptorChain;
 import org.miaixz.bus.http.metric.http.RetryAndFollowUp;
 import org.miaixz.bus.logger.Logger;
 
+import java.io.IOException;
+import java.io.InterruptedIOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.atomic.AtomicInteger;
+
 /**
- * HTTP 请求的实际执行者
+ * The concrete implementation of an HTTP call.
  * <p>
- * 负责执行同步和异步 HTTP 请求，通过拦截器链处理请求和响应。 支持 WebSocket 连接、请求取消、超时管理和重试机制。
- * </p>
+ * This class is responsible for executing synchronous and asynchronous HTTP requests by processing them through an
+ * interceptor chain. It supports WebSocket connections, request cancellation, timeout management, and retry mechanisms.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class RealCall implements NewCall {
+public final class RealCall implements NewCall {
 
     /**
-     * HTTP 客户端
+     * The HTTP client that created this call.
      */
     public final Httpd client;
     /**
-     * 原始请求
+     * The original, unmodified request that initiated this call.
      */
     public final Request originalRequest;
     /**
-     * 是否为 WebSocket 请求
+     * True if this call is for a WebSocket connection.
      */
     public final boolean forWebSocket;
     /**
-     * 请求传输器
+     * The transmitter for this call, which manages the connection and exchange.
      */
     public Transmitter transmitter;
     /**
-     * 是否已执行
+     * True if this call has been executed.
      */
     public boolean executed;
 
     private boolean timeoutEarlyExit;
 
     /**
-     * 构造函数，初始化 RealCall 实例
+     * Constructs a new {@code RealCall} instance.
      *
-     * @param client          HTTP 客户端
-     * @param originalRequest 原始请求
-     * @param forWebSocket    是否为 WebSocket 请求
+     * @param client          The HTTP client.
+     * @param originalRequest The original request.
+     * @param forWebSocket    Whether this call is for a WebSocket.
      */
     private RealCall(Httpd client, Request originalRequest, boolean forWebSocket) {
         this.client = client;
@@ -99,12 +99,12 @@ public class RealCall implements NewCall {
     }
 
     /**
-     * 创建 RealCall 实例
+     * Creates a new {@code RealCall} instance.
      *
-     * @param client          HTTP 客户端
-     * @param originalRequest 原始请求
-     * @param forWebSocket    是否为 WebSocket 请求
-     * @return RealCall 实例
+     * @param client          The HTTP client.
+     * @param originalRequest The original request.
+     * @param forWebSocket    Whether this call is for a WebSocket.
+     * @return A new {@code RealCall} instance.
      */
     static RealCall newRealCall(Httpd client, Request originalRequest, boolean forWebSocket) {
         RealCall call = new RealCall(client, originalRequest, forWebSocket);
@@ -113,9 +113,9 @@ public class RealCall implements NewCall {
     }
 
     /**
-     * 获取原始请求
+     * Returns the original request that initiated this call.
      *
-     * @return 原始请求
+     * @return The original request.
      */
     @Override
     public Request request() {
@@ -123,11 +123,11 @@ public class RealCall implements NewCall {
     }
 
     /**
-     * 同步执行请求
+     * Executes the request synchronously.
      *
-     * @return 响应
-     * @throws IOException           如果执行失败
-     * @throws IllegalStateException 如果请求已执行
+     * @return The response from the server.
+     * @throws IOException           if the request fails to execute.
+     * @throws IllegalStateException if the call has already been executed.
      */
     @Override
     public Response execute() throws IOException {
@@ -147,10 +147,10 @@ public class RealCall implements NewCall {
     }
 
     /**
-     * 异步执行请求
+     * Executes the request asynchronously.
      *
-     * @param responseCallback 响应回调
-     * @throws IllegalStateException 如果请求已执行
+     * @param responseCallback The callback to be invoked with the response or failure.
+     * @throws IllegalStateException if the call has already been executed.
      */
     @Override
     public void enqueue(Callback responseCallback) {
@@ -164,7 +164,7 @@ public class RealCall implements NewCall {
     }
 
     /**
-     * 取消请求
+     * Cancels the call.
      */
     @Override
     public void cancel() {
@@ -172,23 +172,26 @@ public class RealCall implements NewCall {
     }
 
     /**
-     * 获取超时配置
+     * Returns the timeout configuration for this call.
      *
-     * @return 超时配置
+     * @return The timeout configuration.
      */
     @Override
     public Timeout timeout() {
         return transmitter.timeout();
     }
 
+    /**
+     * Marks this call for an early exit due to a timeout.
+     */
     public void timeoutEarlyExit() {
         timeoutEarlyExit = true;
     }
 
     /**
-     * 检查是否已执行
+     * Returns whether this call has been executed.
      *
-     * @return true 如果已执行
+     * @return {@code true} if this call has been executed.
      */
     @Override
     public synchronized boolean isExecuted() {
@@ -196,9 +199,9 @@ public class RealCall implements NewCall {
     }
 
     /**
-     * 检查是否已取消
+     * Returns whether this call has been canceled.
      *
-     * @return true 如果已取消
+     * @return {@code true} if this call has been canceled.
      */
     @Override
     public boolean isCanceled() {
@@ -206,9 +209,9 @@ public class RealCall implements NewCall {
     }
 
     /**
-     * 克隆 RealCall 实例
+     * Creates a new, identical call to this one.
      *
-     * @return 新的 RealCall 实例
+     * @return A new {@code RealCall} instance.
      */
     @Override
     public RealCall clone() {
@@ -216,9 +219,9 @@ public class RealCall implements NewCall {
     }
 
     /**
-     * 获取可记录的字符串表示
+     * Returns a loggable string representation of this call.
      *
-     * @return 描述调用的字符串（不包含完整 URL）
+     * @return A string describing the call, without the full URL.
      */
     public String toLoggableString() {
         return (isCanceled() ? "canceled " : Normal.EMPTY) + (forWebSocket ? "web socket" : "call") + " to "
@@ -226,19 +229,19 @@ public class RealCall implements NewCall {
     }
 
     /**
-     * 获取隐藏敏感信息的 URL
+     * Returns the URL with sensitive information redacted.
      *
-     * @return 隐藏敏感信息的 URL
+     * @return The redacted URL.
      */
     public String redactedUrl() {
         return originalRequest.url().redact();
     }
 
     /**
-     * 通过拦截器链获取响应
+     * Gets the response by processing the request through the interceptor chain.
      *
-     * @return 响应
-     * @throws IOException 如果执行失败
+     * @return The response.
+     * @throws IOException if an I/O error occurs.
      */
     public Response getResponseWithInterceptorChain() throws IOException {
         List<Interceptor> interceptors = new ArrayList<>();
@@ -274,23 +277,23 @@ public class RealCall implements NewCall {
     }
 
     /**
-     * 异步调用类
+     * An asynchronous call that can be executed on a background thread.
      */
-    public class AsyncCall extends NamedRunnable {
+    public final class AsyncCall extends NamedRunnable {
 
         /**
-         * 响应回调
+         * The callback for the response.
          */
         private final Callback responseCallback;
         /**
-         * 主机调用计数
+         * The number of calls per host.
          */
         private volatile AtomicInteger callsPerHost = new AtomicInteger(0);
 
         /**
-         * 构造函数，初始化异步调用
+         * Constructs a new asynchronous call.
          *
-         * @param responseCallback 响应回调
+         * @param responseCallback The response callback.
          */
         AsyncCall(Callback responseCallback) {
             super("Http %s", redactedUrl());
@@ -298,54 +301,54 @@ public class RealCall implements NewCall {
         }
 
         /**
-         * 获取主机调用计数
+         * Returns the number of calls per host.
          *
-         * @return 主机调用计数
+         * @return The number of calls per host.
          */
         public AtomicInteger callsPerHost() {
             return callsPerHost;
         }
 
         /**
-         * 重用其他异步调用的主机计数
+         * Reuses the host call count from another asynchronous call.
          *
-         * @param other 其他异步调用
+         * @param other The other asynchronous call.
          */
         public void reuseCallsPerHostFrom(AsyncCall other) {
             this.callsPerHost = other.callsPerHost;
         }
 
         /**
-         * 获取主机名
+         * Returns the hostname for this call.
          *
-         * @return 主机名
+         * @return The hostname.
          */
         public String host() {
             return originalRequest.url().host();
         }
 
         /**
-         * 获取请求
+         * Returns the request for this call.
          *
-         * @return 请求
+         * @return The request.
          */
         Request request() {
             return originalRequest;
         }
 
         /**
-         * 获取 RealCall 实例
+         * Returns the {@code RealCall} instance for this asynchronous call.
          *
-         * @return RealCall 实例
+         * @return The {@code RealCall} instance.
          */
         public RealCall get() {
             return RealCall.this;
         }
 
         /**
-         * 在执行器服务上执行异步调用
+         * Executes this asynchronous call on the given executor service.
          *
-         * @param executorService 执行器服务
+         * @param executorService The executor service.
          */
         public void executeOn(ExecutorService executorService) {
             assert (!Thread.holdsLock(client.dispatcher()));
@@ -360,13 +363,13 @@ public class RealCall implements NewCall {
                 responseCallback.onFailure(RealCall.this, ioException);
             } finally {
                 if (!success) {
-                    client.dispatcher().finished(RealCall.this);
+                    client.dispatcher().finished(RealCall.this); // Clean up.
                 }
             }
         }
 
         /**
-         * 执行异步调用
+         * Executes the asynchronous call.
          */
         @Override
         protected void execute() {
@@ -378,12 +381,13 @@ public class RealCall implements NewCall {
                 responseCallback.onResponse(RealCall.this, response);
             } catch (IOException e) {
                 if (signalledCallback) {
+                    // Do not signal the callback twice.
                     Logger.info("Callback failure for " + toLoggableString(), e);
                 } else {
                     responseCallback.onFailure(RealCall.this, e);
                 }
             } catch (Throwable t) {
-                cancel();
+                cancel(); // Cancel the call on any unexpected error.
                 if (!signalledCallback) {
                     IOException canceledException = new IOException("canceled due to " + t);
                     canceledException.addSuppressed(t);

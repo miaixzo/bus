@@ -34,32 +34,39 @@ import java.util.function.Predicate;
 import org.miaixz.bus.core.lang.Assert;
 
 /**
- * 包装 {@link Iterator}并根据{@link Predicate}定义，过滤元素输出 类实现来自Apache Commons Collection
+ * A {@code FilterIterator} wraps another {@link Iterator} and filters its elements based on a {@link Predicate}. This
+ * implementation is inspired by Apache Commons Collections.
  *
- * @param <E> 元素类型
+ * @param <E> The type of the elements.
  * @author Kimi Liu
  * @since Java 17+
  */
 public class FilterIterator<E> implements Iterator<E> {
 
+    /**
+     * The underlying iterator being filtered.
+     */
     private final Iterator<? extends E> iterator;
+    /**
+     * The predicate used to filter elements.
+     */
     private final Predicate<? super E> filter;
 
     /**
-     * 下一个元素
+     * The next element that matches the predicate.
      */
     private E nextObject;
     /**
-     * 标记下一个元素是否被计算
+     * A flag indicating whether the next element has been calculated.
      */
     private boolean nextObjectSet = false;
 
     /**
-     * 构造
+     * Constructs a new {@code FilterIterator}.
      *
-     * @param iterator 被包装的{@link Iterator}
-     * @param filter   过滤函数，{@code null}表示不过滤
-     * @throws NullPointerException {@code iterator}为{@code null}时抛出
+     * @param iterator The {@link Iterator} to be wrapped.
+     * @param filter   The filter predicate. If {@code null}, no filtering is applied.
+     * @throws NullPointerException if the iterator is {@code null}.
      */
     public FilterIterator(final Iterator<? extends E> iterator, final Predicate<? super E> filter) {
         this.iterator = Assert.notNull(iterator);
@@ -83,31 +90,33 @@ public class FilterIterator<E> implements Iterator<E> {
     @Override
     public void remove() {
         if (nextObjectSet) {
-            throw new IllegalStateException("remove() cannot be called");
+            throw new IllegalStateException("remove() cannot be called before next()");
         }
         iterator.remove();
     }
 
     /**
-     * 获取被包装的{@link Iterator}
+     * Gets the underlying (wrapped) iterator.
      *
-     * @return {@link Iterator}
+     * @return The wrapped {@link Iterator}.
      */
     public Iterator<? extends E> getIterator() {
         return iterator;
     }
 
     /**
-     * 获取过滤函数
+     * Gets the predicate used for filtering.
      *
-     * @return 过滤函数，可能为{@code null}
+     * @return The filter predicate, which may be {@code null}.
      */
     public Predicate<? super E> getFilter() {
         return filter;
     }
 
     /**
-     * 设置下一个元素，如果存在返回{@code true}，否则{@code false}
+     * Finds and sets the next object that matches the predicate.
+     *
+     * @return {@code true} if a matching element is found, {@code false} otherwise.
      */
     private boolean setNextObject() {
         while (iterator.hasNext()) {

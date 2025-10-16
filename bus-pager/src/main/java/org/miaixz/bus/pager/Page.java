@@ -37,129 +37,135 @@ import org.miaixz.bus.pager.binding.PageAutoDialect;
 import org.miaixz.bus.pager.builder.BoundSqlBuilder;
 
 /**
- * MyBatis分页对象，支持分页查询及结果集管理。
+ * MyBatis paging object, supporting paginated queries and result set management. This class extends {@link ArrayList}
+ * to hold the paginated data and implements {@link Closeable} to manage the paging context.
  *
- * @param <E> 分页数据元素的类型
+ * @param <E> the type of elements in this page
  * @author Kimi Liu
  * @since Java 17+
  */
 public class Page<E> extends ArrayList<E> implements Closeable {
 
+    /**
+     * The serial version UID for serialization.
+     */
     @Serial
     private static final long serialVersionUID = 2852289758798L;
 
     /**
-     * 记录当前堆栈，可查找到Page对象创建位置（需开启page.debug）
+     * Records the current stack trace, allowing the location where the Page object was created to be found (requires
+     * page.debug to be enabled).
      */
     private final String stackTrace = Builder.current();
     /**
-     * 页码，从1开始
+     * The current page number, starting from 1.
      */
     private int pageNo;
     /**
-     * 页面大小
+     * The size of each page.
      */
     private int pageSize;
     /**
-     * 起始行
+     * The starting row number for the current page.
      */
     private long startRow;
     /**
-     * 末行
+     * The ending row number for the current page.
      */
     private long endRow;
     /**
-     * 总数
+     * The total number of records across all pages.
      */
     private long total;
     /**
-     * 总页数
+     * The total number of pages.
      */
     private int pages;
     /**
-     * 是否包含count查询
+     * Flag indicating whether a count query should be executed.
      */
     private boolean count = true;
     /**
-     * 分页合理化开关
+     * Flag for pagination reasonableness. If true, page numbers are adjusted to be within valid range.
      */
     private Boolean reasonable;
     /**
-     * 当为true时，若pageSize为0（或RowBounds的limit=0），不执行分页，返回全部结果
+     * If true, and pageSize is 0 (or RowBounds limit is 0), no pagination is performed, and all results are returned.
      */
     private Boolean pageSizeZero;
     /**
-     * count查询的列名
+     * The column name used for the count query.
      */
     private String countColumn;
     /**
-     * 排序字段
+     * The order by clause for sorting.
      */
     private String orderBy;
     /**
-     * 是否仅增加排序
+     * Flag indicating whether only ordering should be applied without pagination.
      */
     private boolean orderByOnly;
     /**
-     * SQL拦截处理
+     * SQL interception handler for BoundSql.
      */
     private BoundSqlBuilder boundSqlHandler;
     /**
-     * BoundSql处理链
+     * The chain of BoundSql handlers.
      */
     private transient BoundSqlBuilder.Chain chain;
     /**
-     * 分页实现类，可使用{@link PageAutoDialect}注册的别名，如"mysql"、"oracle"
+     * The dialect class for pagination, can use aliases registered in {@link PageAutoDialect} like "mysql", "oracle".
      */
     private String dialectClass;
     /**
-     * 是否在count查询时保留order by排序
+     * Flag indicating whether to retain the order by clause in the count query.
      */
     private Boolean keepOrderBy;
     /**
-     * 是否在count查询时保留子查询的order by排序
+     * Flag indicating whether to retain the order by clause of sub-queries in the count query.
      */
     private Boolean keepSubSelectOrderBy;
     /**
-     * 是否启用异步count查询
+     * Flag indicating whether to enable asynchronous count queries.
      */
     private Boolean asyncCount;
 
     /**
-     * 默认构造函数。
+     * Default constructor.
      */
     public Page() {
         super();
     }
 
     /**
-     * 构造函数，指定页码和页面大小。
+     * Constructs a Page object with specified page number and page size.
      *
-     * @param pageNo   页码（从1开始）
-     * @param pageSize 页面大小
+     * @param pageNo   the page number (starts from 1)
+     * @param pageSize the size of the page
      */
     public Page(int pageNo, int pageSize) {
         this(pageNo, pageSize, true, null);
     }
 
     /**
-     * 构造函数，指定页码、页面大小和是否执行count查询。
+     * Constructs a Page object with specified page number, page size, and whether to perform a count query.
      *
-     * @param pageNo   页码（从1开始）
-     * @param pageSize 页面大小
-     * @param count    是否执行count查询
+     * @param pageNo   the page number (starts from 1)
+     * @param pageSize the size of the page
+     * @param count    true to perform a count query, false otherwise
      */
     public Page(int pageNo, int pageSize, boolean count) {
         this(pageNo, pageSize, count, null);
     }
 
     /**
-     * 构造函数，指定页码、页面大小、是否执行count查询及合理化开关。
+     * Constructs a Page object with specified page number, page size, whether to perform a count query, and the
+     * reasonableness switch.
      *
-     * @param pageNo     页码（从1开始）
-     * @param pageSize   页面大小
-     * @param count      是否执行count查询
-     * @param reasonable 分页合理化开关
+     * @param pageNo     the page number (starts from 1)
+     * @param pageSize   the size of the page
+     * @param count      true to perform a count query, false otherwise
+     * @param reasonable the reasonableness switch for pagination
      */
     private Page(int pageNo, int pageSize, boolean count, Boolean reasonable) {
         super(0);
@@ -175,10 +181,10 @@ public class Page<E> extends ArrayList<E> implements Closeable {
     }
 
     /**
-     * 构造函数，基于行范围分页。
+     * Constructs a Page object based on row bounds for pagination.
      *
-     * @param rowBounds 行范围数组，0: offset, 1: limit
-     * @param count     是否执行count查询
+     * @param rowBounds an array containing row bounds, where index 0 is offset and index 1 is limit
+     * @param count     true to perform a count query, false otherwise
      */
     public Page(int[] rowBounds, boolean count) {
         super(0);
@@ -197,37 +203,37 @@ public class Page<E> extends ArrayList<E> implements Closeable {
     }
 
     /**
-     * 获取创建Page对象的堆栈信息。
+     * Retrieves the stack trace where this Page object was created.
      *
-     * @return 堆栈信息
+     * @return the stack trace information
      */
     public String getStackTrace() {
         return stackTrace;
     }
 
     /**
-     * 获取分页结果集。
+     * Retrieves the paginated result set.
      *
-     * @return 分页数据列表
+     * @return a list of paginated data
      */
     public List<E> getResult() {
         return this;
     }
 
     /**
-     * 获取总页数。
+     * Retrieves the total number of pages.
      *
-     * @return 总页数
+     * @return the total number of pages
      */
     public int getPages() {
         return pages;
     }
 
     /**
-     * 设置总页数。
+     * Sets the total number of pages.
      *
-     * @param pages 总页数
-     * @return 当前Page对象
+     * @param pages the total number of pages
+     * @return the current Page object
      */
     public Page<E> setPages(int pages) {
         this.pages = pages;
@@ -235,19 +241,19 @@ public class Page<E> extends ArrayList<E> implements Closeable {
     }
 
     /**
-     * 获取末行位置。
+     * Retrieves the ending row position.
      *
-     * @return 末行位置
+     * @return the ending row position
      */
     public long getEndRow() {
         return endRow;
     }
 
     /**
-     * 设置末行位置。
+     * Sets the ending row position.
      *
-     * @param endRow 末行位置
-     * @return 当前Page对象
+     * @param endRow the ending row position
+     * @return the current Page object
      */
     public Page<E> setEndRow(long endRow) {
         this.endRow = endRow;
@@ -255,19 +261,20 @@ public class Page<E> extends ArrayList<E> implements Closeable {
     }
 
     /**
-     * 获取当前页码。
+     * Retrieves the current page number.
      *
-     * @return 当前页码
+     * @return the current page number
      */
     public int getPageNo() {
         return pageNo;
     }
 
     /**
-     * 设置页码，支持合理化处理。
+     * Sets the page number, with support for reasonableness handling. If reasonableness is enabled and pageNo is less
+     * than or equal to 0, it will be set to 1.
      *
-     * @param pageNo 页码
-     * @return 当前Page对象
+     * @param pageNo the page number
+     * @return the current Page object
      */
     public Page<E> setPageNo(int pageNo) {
         this.pageNo = ((reasonable != null && reasonable) && pageNo <= 0) ? 1 : pageNo;
@@ -275,19 +282,19 @@ public class Page<E> extends ArrayList<E> implements Closeable {
     }
 
     /**
-     * 获取页面大小。
+     * Retrieves the page size.
      *
-     * @return 页面大小
+     * @return the page size
      */
     public int getPageSize() {
         return pageSize;
     }
 
     /**
-     * 设置页面大小。
+     * Sets the page size.
      *
-     * @param pageSize 页面大小
-     * @return 当前Page对象
+     * @param pageSize the page size
+     * @return the current Page object
      */
     public Page<E> setPageSize(int pageSize) {
         this.pageSize = pageSize;
@@ -295,19 +302,19 @@ public class Page<E> extends ArrayList<E> implements Closeable {
     }
 
     /**
-     * 获取起始行位置。
+     * Retrieves the starting row position.
      *
-     * @return 起始行位置
+     * @return the starting row position
      */
     public long getStartRow() {
         return startRow;
     }
 
     /**
-     * 设置起始行位置。
+     * Sets the starting row position.
      *
-     * @param startRow 起始行位置
-     * @return 当前Page对象
+     * @param startRow the starting row position
+     * @return the current Page object
      */
     public Page<E> setStartRow(long startRow) {
         this.startRow = startRow;
@@ -315,18 +322,18 @@ public class Page<E> extends ArrayList<E> implements Closeable {
     }
 
     /**
-     * 获取总记录数。
+     * Retrieves the total number of records.
      *
-     * @return 总记录数
+     * @return the total number of records
      */
     public long getTotal() {
         return total;
     }
 
     /**
-     * 设置总记录数并计算总页数。
+     * Sets the total number of records and calculates the total number of pages.
      *
-     * @param total 总记录数
+     * @param total the total number of records
      */
     public void setTotal(long total) {
         this.total = total;
@@ -348,19 +355,20 @@ public class Page<E> extends ArrayList<E> implements Closeable {
     }
 
     /**
-     * 获取分页合理化开关状态。
+     * Retrieves the state of the pagination reasonableness switch.
      *
-     * @return 合理化开关状态
+     * @return the state of the reasonableness switch
      */
     public Boolean getReasonable() {
         return reasonable;
     }
 
     /**
-     * 设置分页合理化开关。
+     * Sets the pagination reasonableness switch. If reasonableness is enabled and the current page number is less than
+     * or equal to 0, it will be set to 1.
      *
-     * @param reasonable 合理化开关
-     * @return 当前Page对象
+     * @param reasonable the reasonableness switch
+     * @return the current Page object
      */
     public Page<E> setReasonable(Boolean reasonable) {
         if (reasonable == null) {
@@ -375,19 +383,19 @@ public class Page<E> extends ArrayList<E> implements Closeable {
     }
 
     /**
-     * 获取pageSizeZero开关状态。
+     * Retrieves the state of the pageSizeZero switch.
      *
-     * @return pageSizeZero开关状态
+     * @return the state of the pageSizeZero switch
      */
     public Boolean getPageSizeZero() {
         return pageSizeZero;
     }
 
     /**
-     * 设置pageSizeZero开关。
+     * Sets the pageSizeZero switch. If true, and pageSize is 0, all results are returned without pagination.
      *
-     * @param pageSizeZero 当为true时，若pageSize为0则返回全部结果
-     * @return 当前Page对象
+     * @param pageSizeZero true if pageSize 0 should return all results, false otherwise
+     * @return the current Page object
      */
     public Page<E> setPageSizeZero(Boolean pageSizeZero) {
         if (this.pageSizeZero == null && pageSizeZero != null) {
@@ -397,20 +405,20 @@ public class Page<E> extends ArrayList<E> implements Closeable {
     }
 
     /**
-     * 获取排序字段。
+     * Retrieves the order by clause.
      *
-     * @return 排序字段
+     * @return the order by clause
      */
     public String getOrderBy() {
         return orderBy;
     }
 
     /**
-     * 设置排序字段。
+     * Sets the order by clause.
      *
-     * @param orderBy 排序字段
-     * @param <E>     分页数据元素类型
-     * @return 当前Page对象
+     * @param orderBy the order by clause
+     * @param <E>     the type of elements in this page
+     * @return the current Page object
      */
     public <E> Page<E> setOrderBy(String orderBy) {
         this.orderBy = orderBy;
@@ -418,11 +426,12 @@ public class Page<E> extends ArrayList<E> implements Closeable {
     }
 
     /**
-     * 不安全设置排序字段，需自行确保无SQL注入风险。
+     * Sets the order by clause unsafely. This method does not perform SQL injection checks, so ensure the
+     * {@code orderBy} parameter is safe.
      *
-     * @param orderBy 排序字段
-     * @param <E>     分页数据元素类型
-     * @return 当前Page对象
+     * @param orderBy the order by clause
+     * @param <E>     the type of elements in this page
+     * @return the current Page object
      */
     public <E> Page<E> setUnsafeOrderBy(String orderBy) {
         this.orderBy = orderBy;
@@ -430,55 +439,55 @@ public class Page<E> extends ArrayList<E> implements Closeable {
     }
 
     /**
-     * 是否仅增加排序。
+     * Checks if only ordering should be applied without pagination.
      *
-     * @return 是否仅增加排序
+     * @return true if only ordering should be applied, false otherwise
      */
     public boolean isOrderByOnly() {
         return orderByOnly;
     }
 
     /**
-     * 设置是否仅增加排序。
+     * Sets whether only ordering should be applied without pagination.
      *
-     * @param orderByOnly 是否仅增加排序
+     * @param orderByOnly true if only ordering should be applied, false otherwise
      */
     public void setOrderByOnly(boolean orderByOnly) {
         this.orderByOnly = orderByOnly;
     }
 
     /**
-     * 获取分页实现类。
+     * Retrieves the dialect class used for pagination.
      *
-     * @return 分页实现类
+     * @return the dialect class name
      */
     public String getDialectClass() {
         return dialectClass;
     }
 
     /**
-     * 设置分页实现类。
+     * Sets the dialect class used for pagination.
      *
-     * @param dialectClass 分页实现类
+     * @param dialectClass the dialect class name
      */
     public void setDialectClass(String dialectClass) {
         this.dialectClass = dialectClass;
     }
 
     /**
-     * 获取是否保留count查询的order by排序。
+     * Retrieves whether to retain the order by clause in the count query.
      *
-     * @return 是否保留order by排序
+     * @return true if the order by clause should be retained, false otherwise
      */
     public Boolean getKeepOrderBy() {
         return keepOrderBy;
     }
 
     /**
-     * 设置是否保留count查询的order by排序。
+     * Sets whether to retain the order by clause in the count query.
      *
-     * @param keepOrderBy 是否保留order by排序
-     * @return 当前Page对象
+     * @param keepOrderBy true if the order by clause should be retained, false otherwise
+     * @return the current Page object
      */
     public Page<E> setKeepOrderBy(Boolean keepOrderBy) {
         this.keepOrderBy = keepOrderBy;
@@ -486,46 +495,47 @@ public class Page<E> extends ArrayList<E> implements Closeable {
     }
 
     /**
-     * 获取是否保留子查询的order by排序。
+     * Retrieves whether to retain the order by clause of sub-queries in the count query.
      *
-     * @return 是否保留子查询的order by排序
+     * @return true if the order by clause of sub-queries should be retained, false otherwise
      */
     public Boolean getKeepSubSelectOrderBy() {
         return keepSubSelectOrderBy;
     }
 
     /**
-     * 设置是否保留子查询的order by排序。
+     * Sets whether to retain the order by clause of sub-queries in the count query.
      *
-     * @param keepSubSelectOrderBy 是否保留子查询的order by排序
+     * @param keepSubSelectOrderBy true if the order by clause of sub-queries should be retained, false otherwise
      */
     public void setKeepSubSelectOrderBy(Boolean keepSubSelectOrderBy) {
         this.keepSubSelectOrderBy = keepSubSelectOrderBy;
     }
 
     /**
-     * 获取是否启用异步count查询。
+     * Retrieves whether asynchronous count queries are enabled.
      *
-     * @return 是否启用异步count查询
+     * @return true if asynchronous count queries are enabled, false otherwise
      */
     public Boolean getAsyncCount() {
         return asyncCount;
     }
 
     /**
-     * 设置是否启用异步count查询。
+     * Sets whether asynchronous count queries are enabled.
      *
-     * @param asyncCount 是否启用异步count查询
+     * @param asyncCount true to enable asynchronous count queries, false otherwise
      */
     public void setAsyncCount(Boolean asyncCount) {
         this.asyncCount = asyncCount;
     }
 
     /**
-     * 指定使用的分页实现。
+     * Specifies the pagination implementation to use.
      *
-     * @param dialect 分页实现类，可使用{@link PageAutoDialect}注册的别名，如"mysql"、"oracle"
-     * @return 当前Page对象
+     * @param dialect the dialect class name, can use aliases registered in {@link PageAutoDialect} like "mysql",
+     *                "oracle"
+     * @return the current Page object
      */
     public Page<E> using(String dialect) {
         this.dialectClass = dialect;
@@ -533,7 +543,7 @@ public class Page<E> extends ArrayList<E> implements Closeable {
     }
 
     /**
-     * 计算分页的起始和结束行号。
+     * Calculates the starting and ending row numbers for the current page.
      */
     private void calculateStartAndEndRow() {
         this.startRow = this.pageNo > 0 ? (this.pageNo - 1) * this.pageSize : 0;
@@ -541,19 +551,19 @@ public class Page<E> extends ArrayList<E> implements Closeable {
     }
 
     /**
-     * 是否执行count查询。
+     * Checks if a count query should be executed.
      *
-     * @return 是否执行count查询
+     * @return true if a count query should be executed, false otherwise
      */
     public boolean isCount() {
         return this.count;
     }
 
     /**
-     * 设置是否执行count查询。
+     * Sets whether a count query should be executed.
      *
-     * @param count 是否执行count查询
-     * @return 当前Page对象
+     * @param count true to execute a count query, false otherwise
+     * @return the current Page object
      */
     public Page<E> setCount(boolean count) {
         this.count = count;
@@ -561,10 +571,10 @@ public class Page<E> extends ArrayList<E> implements Closeable {
     }
 
     /**
-     * 设置页码。
+     * Sets the page number. If reasonableness is enabled and pageNo is less than or equal to 0, it will be set to 1.
      *
-     * @param pageNo 页码
-     * @return 当前Page对象
+     * @param pageNo the page number
+     * @return the current Page object
      */
     public Page<E> pageNo(int pageNo) {
         this.pageNo = ((reasonable != null && reasonable) && pageNo <= 0) ? 1 : pageNo;
@@ -572,10 +582,10 @@ public class Page<E> extends ArrayList<E> implements Closeable {
     }
 
     /**
-     * 设置页面大小。
+     * Sets the page size.
      *
-     * @param pageSize 分页大小
-     * @return 当前Page对象
+     * @param pageSize the page size
+     * @return the current Page object
      */
     public Page<E> pageSize(int pageSize) {
         this.pageSize = pageSize;
@@ -584,10 +594,10 @@ public class Page<E> extends ArrayList<E> implements Closeable {
     }
 
     /**
-     * 设置是否执行count查询。
+     * Sets whether a count query should be executed.
      *
-     * @param count 是否执行count查询
-     * @return 当前Page对象
+     * @param count true to execute a count query, false otherwise
+     * @return the current Page object
      */
     public Page<E> count(Boolean count) {
         this.count = count;
@@ -595,10 +605,10 @@ public class Page<E> extends ArrayList<E> implements Closeable {
     }
 
     /**
-     * 设置分页合理化开关。
+     * Sets the pagination reasonableness switch.
      *
-     * @param reasonable 分页合理化开关
-     * @return 当前Page对象
+     * @param reasonable the pagination reasonableness switch
+     * @return the current Page object
      */
     public Page<E> reasonable(Boolean reasonable) {
         setReasonable(reasonable);
@@ -606,10 +616,10 @@ public class Page<E> extends ArrayList<E> implements Closeable {
     }
 
     /**
-     * 设置pageSizeZero开关。
+     * Sets the pageSizeZero switch.
      *
-     * @param pageSizeZero 当为true时，若pageSize为0则返回全部结果
-     * @return 当前Page对象
+     * @param pageSizeZero true if pageSize 0 should return all results, false otherwise
+     * @return the current Page object
      */
     public Page<E> pageSizeZero(Boolean pageSizeZero) {
         setPageSizeZero(pageSizeZero);
@@ -617,10 +627,10 @@ public class Page<E> extends ArrayList<E> implements Closeable {
     }
 
     /**
-     * 设置BoundSql拦截器。
+     * Sets the BoundSql interceptor.
      *
-     * @param boundSqlHandler 分页拦截器
-     * @return 当前Page对象
+     * @param boundSqlHandler the BoundSql interceptor
+     * @return the current Page object
      */
     public Page<E> boundSqlInterceptor(BoundSqlBuilder boundSqlHandler) {
         setBoundSqlInterceptor(boundSqlHandler);
@@ -628,10 +638,10 @@ public class Page<E> extends ArrayList<E> implements Closeable {
     }
 
     /**
-     * 指定count查询列。
+     * Specifies the column name for the count query.
      *
-     * @param columnName 列名
-     * @return 当前Page对象
+     * @param columnName the column name
+     * @return the current Page object
      */
     public Page<E> countColumn(String columnName) {
         setCountColumn(columnName);
@@ -639,10 +649,10 @@ public class Page<E> extends ArrayList<E> implements Closeable {
     }
 
     /**
-     * 设置是否保留count查询的order by排序。
+     * Sets whether to retain the order by clause in the count query.
      *
-     * @param keepOrderBy 是否保留order by排序
-     * @return 当前Page对象
+     * @param keepOrderBy true if the order by clause should be retained, false otherwise
+     * @return the current Page object
      */
     public Page<E> keepOrderBy(boolean keepOrderBy) {
         this.keepOrderBy = keepOrderBy;
@@ -650,19 +660,19 @@ public class Page<E> extends ArrayList<E> implements Closeable {
     }
 
     /**
-     * 检查是否保留count查询的order by排序。
+     * Checks if the order by clause should be retained in the count query.
      *
-     * @return 是否保留order by排序
+     * @return true if the order by clause should be retained, false otherwise
      */
     public boolean keepOrderBy() {
         return this.keepOrderBy != null && this.keepOrderBy;
     }
 
     /**
-     * 设置是否保留子查询的order by排序。
+     * Sets whether to retain the order by clause of sub-queries in the count query.
      *
-     * @param keepSubSelectOrderBy 是否保留子查询的order by排序
-     * @return 当前Page对象
+     * @param keepSubSelectOrderBy true if the order by clause of sub-queries should be retained, false otherwise
+     * @return the current Page object
      */
     public Page<E> keepSubSelectOrderBy(boolean keepSubSelectOrderBy) {
         this.keepSubSelectOrderBy = keepSubSelectOrderBy;
@@ -670,19 +680,19 @@ public class Page<E> extends ArrayList<E> implements Closeable {
     }
 
     /**
-     * 检查是否保留子查询的order by排序。
+     * Checks if the order by clause of sub-queries should be retained in the count query.
      *
-     * @return 是否保留子查询的order by排序
+     * @return true if the order by clause of sub-queries should be retained, false otherwise
      */
     public boolean keepSubSelectOrderBy() {
         return this.keepSubSelectOrderBy != null && this.keepSubSelectOrderBy;
     }
 
     /**
-     * 设置是否启用异步count查询。
+     * Sets whether asynchronous count queries are enabled.
      *
-     * @param asyncCount 是否启用异步count查询
-     * @return 当前Page对象
+     * @param asyncCount true to enable asynchronous count queries, false otherwise
+     * @return the current Page object
      */
     public Page<E> asyncCount(boolean asyncCount) {
         this.asyncCount = asyncCount;
@@ -690,47 +700,47 @@ public class Page<E> extends ArrayList<E> implements Closeable {
     }
 
     /**
-     * 启用异步count查询。
+     * Enables asynchronous count queries.
      *
-     * @return 当前Page对象
+     * @return the current Page object
      */
     public Page<E> enableAsyncCount() {
         return asyncCount(true);
     }
 
     /**
-     * 禁用异步count查询。
+     * Disables asynchronous count queries.
      *
-     * @return 当前Page对象
+     * @return the current Page object
      */
     public Page<E> disableAsyncCount() {
         return asyncCount(false);
     }
 
     /**
-     * 检查是否启用异步count查询。
+     * Checks if asynchronous count queries are enabled.
      *
-     * @return 是否启用异步count查询
+     * @return true if asynchronous count queries are enabled, false otherwise
      */
     public boolean asyncCount() {
         return this.asyncCount != null && this.asyncCount;
     }
 
     /**
-     * 转换为Paginating对象。
+     * Converts the current Page object to a {@link Paginating} object.
      *
-     * @return Paginating对象
+     * @return a {@link Paginating} object
      */
     public Paginating<E> toPageInfo() {
         return new Paginating<>(this);
     }
 
     /**
-     * 转换分页数据并返回Paginating对象。
+     * Converts the paginated data and returns a {@link Paginating} object.
      *
-     * @param function 数据转换函数
-     * @param <T>      转换后数据类型
-     * @return Paginating对象
+     * @param function the data conversion function
+     * @param <T>      the type of the converted data elements
+     * @return a {@link Paginating} object with converted data
      */
     public <T> Paginating<T> toPageInfo(FunctionX<E, T> function) {
         List<T> list = new ArrayList<>(this.size());
@@ -749,20 +759,20 @@ public class Page<E> extends ArrayList<E> implements Closeable {
     }
 
     /**
-     * 转换为Serialize对象。
+     * Converts the current Page object to a {@link Serialize} object.
      *
-     * @return Serialize对象
+     * @return a {@link Serialize} object
      */
     public Serialize<E> toPageSerializable() {
         return new Serialize<>(this);
     }
 
     /**
-     * 转换分页数据并返回Serialize对象。
+     * Converts the paginated data and returns a {@link Serialize} object.
      *
-     * @param function 数据转换函数
-     * @param <T>      转换后数据类型
-     * @return Serialize对象
+     * @param function the data conversion function
+     * @param <T>      the type of the converted data elements
+     * @return a {@link Serialize} object with converted data
      */
     public <T> Serialize<T> toPageSerializable(FunctionX<E, T> function) {
         List<T> list = new ArrayList<>(this.size());
@@ -775,11 +785,11 @@ public class Page<E> extends ArrayList<E> implements Closeable {
     }
 
     /**
-     * 执行分页查询。
+     * Executes a paginated query.
      *
-     * @param select 查询对象
-     * @param <E>    分页数据元素类型
-     * @return 当前Page对象
+     * @param select the query object
+     * @param <E>    the type of elements in this page
+     * @return the current Page object
      */
     public <E> Page<E> doSelectPage(Querying select) {
         select.doSelect();
@@ -787,11 +797,11 @@ public class Page<E> extends ArrayList<E> implements Closeable {
     }
 
     /**
-     * 执行分页查询并返回Paginating对象。
+     * Executes a paginated query and returns a {@link Paginating} object.
      *
-     * @param select 查询对象
-     * @param <E>    分页数据元素类型
-     * @return Paginating对象
+     * @param select the query object
+     * @param <E>    the type of elements in this page
+     * @return a {@link Paginating} object
      */
     public <E> Paginating<E> doSelectPageInfo(Querying select) {
         select.doSelect();
@@ -799,11 +809,11 @@ public class Page<E> extends ArrayList<E> implements Closeable {
     }
 
     /**
-     * 执行分页查询并返回Serialize对象。
+     * Executes a paginated query and returns a {@link Serialize} object.
      *
-     * @param select 查询对象
-     * @param <E>    分页数据元素类型
-     * @return Serialize对象
+     * @param select the query object
+     * @param <E>    the type of elements in this page
+     * @return a {@link Serialize} object
      */
     public <E> Serialize<E> doSelectPageSerializable(Querying select) {
         select.doSelect();
@@ -811,10 +821,10 @@ public class Page<E> extends ArrayList<E> implements Closeable {
     }
 
     /**
-     * 执行count查询。
+     * Executes a count query.
      *
-     * @param select 查询对象
-     * @return 总记录数
+     * @param select the query object
+     * @return the total number of records
      */
     public long doCount(Querying select) {
         this.pageSizeZero = true;
@@ -824,63 +834,63 @@ public class Page<E> extends ArrayList<E> implements Closeable {
     }
 
     /**
-     * 获取count查询列名。
+     * Retrieves the column name used for the count query.
      *
-     * @return count查询列名
+     * @return the count query column name
      */
     public String getCountColumn() {
         return countColumn;
     }
 
     /**
-     * 设置count查询列名，包含SQL注入校验。
+     * Sets the column name for the count query, including SQL injection validation.
      *
-     * @param countColumn 列名
+     * @param countColumn the column name
      */
     public void setCountColumn(String countColumn) {
         this.countColumn = countColumn;
     }
 
     /**
-     * 获取BoundSql拦截器。
+     * Retrieves the BoundSql interceptor.
      *
-     * @return BoundSql拦截器
+     * @return the BoundSql interceptor
      */
     public BoundSqlBuilder getBoundSqlInterceptor() {
         return boundSqlHandler;
     }
 
     /**
-     * 设置BoundSql拦截器。
+     * Sets the BoundSql interceptor.
      *
-     * @param boundSqlHandler BoundSql拦截器
+     * @param boundSqlHandler the BoundSql interceptor
      */
     public void setBoundSqlInterceptor(BoundSqlBuilder boundSqlHandler) {
         this.boundSqlHandler = boundSqlHandler;
     }
 
     /**
-     * 获取BoundSql处理链。
+     * Retrieves the BoundSql processing chain.
      *
-     * @return BoundSql处理链
+     * @return the BoundSql processing chain
      */
     BoundSqlBuilder.Chain getChain() {
         return chain;
     }
 
     /**
-     * 设置BoundSql处理链。
+     * Sets the BoundSql processing chain.
      *
-     * @param chain BoundSql处理链
+     * @param chain the BoundSql processing chain
      */
     void setChain(BoundSqlBuilder.Chain chain) {
         this.chain = chain;
     }
 
     /**
-     * 返回Page对象的字符串表示。
+     * Returns a string representation of the Page object.
      *
-     * @return 字符串表示
+     * @return a string representation of the object
      */
     @Override
     public String toString() {
@@ -890,7 +900,8 @@ public class Page<E> extends ArrayList<E> implements Closeable {
     }
 
     /**
-     * 关闭Page对象，清理分页上下文。
+     * Closes the Page object and clears the paging context. This method is part of the {@link Closeable} interface
+     * implementation.
      */
     @Override
     public void close() {

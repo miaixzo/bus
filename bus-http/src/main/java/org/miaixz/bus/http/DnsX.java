@@ -33,20 +33,27 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * 解析主机名的IP地址的域名服务。大多数应用程序将使用默认的 {@linkplain #SYSTEM SYSTEM DNS服务}，应用程序可能提供 它们自己的实现来使用不同的DNS服务器
- * 选择IPv6地址、选择IPv4地址或强制使用特定的已知IP地址
+ * A Domain Name System (DNS) service that resolves IP addresses for hostnames.
+ *
+ * <p>
+ * Most applications will use the default {@linkplain #SYSTEM system DNS service}. Applications may provide their own
+ * implementation to use a different DNS server, to prefer IPv6 addresses over IPv4 addresses, or to force the use of
+ * specific known IP addresses for testing or other purposes.
  *
  * @author Kimi Liu
+ * @see <a href="https://en.wikipedia.org/wiki/Domain_Name_System">Domain Name System on Wikipedia</a>
  * @since Java 17+
  */
 public interface DnsX {
 
     /**
-     * 使用{@link InetAddress#getAllByName(String)}请求底层操作系统 查找IP地址的DNS。大多数自定义{@link DnsX}实现应该委托给这个实例.
+     * A DNS implementation that uses {@link InetAddress#getAllByName(String)} to ask the underlying operating system to
+     * look up IP addresses. Most custom {@link DnsX} implementations should delegate to this instance.
      */
     DnsX SYSTEM = hostname -> {
-        if (null == hostname)
+        if (null == hostname) {
             throw new UnknownHostException("hostname == null");
+        }
         try {
             return Arrays.asList(InetAddress.getAllByName(hostname));
         } catch (NullPointerException e) {
@@ -58,11 +65,13 @@ public interface DnsX {
     };
 
     /**
-     * 返回{@code hostname}的IP地址，按Httpd尝试的顺序排列。如果到地址的连接 失败，Httpd将重试下一个地址的连接，直到建立连接、耗尽IP地址集或超出限制
+     * Returns the IP addresses for {@code hostname}, in the order they should be attempted. If a connection to an
+     * address fails, the HTTP client will retry the connection with the next address until a connection is established,
+     * the set of IP addresses is exhausted, or a limit is exceeded.
      *
-     * @param hostname 主机名信息
-     * @return ip地址信息
-     * @throws UnknownHostException 异常信息
+     * @param hostname the hostname to look up.
+     * @return a list of IP addresses for the given hostname.
+     * @throws UnknownHostException if the host is unknown or cannot be resolved.
      */
     List<InetAddress> lookup(String hostname) throws UnknownHostException;
 

@@ -40,49 +40,53 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ZipKit;
 
 /**
- * Jar包资源对象
+ * Represents a resource located within a JAR file. This class extends {@link UrlResource} to provide specific handling
+ * for JAR entries.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class JarResource extends UrlResource {
 
+    /**
+     * The serial version UID for serialization.
+     */
     @Serial
     private static final long serialVersionUID = 2852231952129L;
 
     /**
-     * 构造
+     * Constructs a {@code JarResource} from a given {@link URI}.
      *
-     * @param uri JAR的URI
+     * @param uri The {@link URI} pointing to the JAR entry.
      */
     public JarResource(final URI uri) {
         super(uri);
     }
 
     /**
-     * 构造
+     * Constructs a {@code JarResource} from a given {@link URL}.
      *
-     * @param url JAR的URL
+     * @param url The {@link URL} pointing to the JAR entry.
      */
     public JarResource(final URL url) {
         super(url);
     }
 
     /**
-     * 构造
+     * Constructs a {@code JarResource} from a given {@link URL} and a resource name.
      *
-     * @param url  JAR的URL
-     * @param name 资源名称
+     * @param url  The {@link URL} pointing to the JAR entry.
+     * @param name The name of the resource.
      */
     public JarResource(final URL url, final String name) {
         super(url, name);
     }
 
     /**
-     * 获取URL对应的{@link JarFile}对象
+     * Retrieves the {@link JarFile} object corresponding to the resource's URL.
      *
-     * @return {@link JarFile}
-     * @throws InternalException IO异常
+     * @return The {@link JarFile} instance.
+     * @throws InternalException If an I/O error occurs while obtaining the JAR file.
      */
     public JarFile getJarFile() throws InternalException {
         try {
@@ -93,11 +97,12 @@ public class JarResource extends UrlResource {
     }
 
     /**
-     * 获取{@link JarFile} 首席按通过openConnection方式获取，如果得到的不是{@link JarURLConnection}，
-     * 则尝试去除WAR、JAR等协议分隔符，裁剪分隔符前段来直接获取{@link JarFile}。
+     * Internal method to obtain the {@link JarFile}. It first attempts to get it via {@link URLConnection}. If the
+     * connection is not a {@link JarURLConnection}, it tries to extract the JAR file path by removing WAR or JAR
+     * protocol separators from the URL file string.
      *
-     * @return {@link JarFile}
-     * @throws IOException IO异常
+     * @return The {@link JarFile} instance.
+     * @throws IOException If an I/O error occurs.
      */
     private JarFile doGetJarFile() throws IOException {
         final URLConnection con = getUrl().openConnection();

@@ -35,7 +35,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * sql解析类,提供更智能的count查询sql
+ * SQL parsing interface for generating more intelligent count queries.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,7 +43,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public interface CountSqlParser {
 
     /**
-     * 聚合函数，以下列函数开头的都认为是聚合函数
+     * A set of aggregate functions. Any function starting with these strings is considered an aggregate function.
      */
     Set<String> AGGREGATE_FUNCTIONS = new HashSet<>(
             Arrays.asList(("APPROX_COUNT_DISTINCT," + "ARRAY_AGG," + "AVG," + "BIT_," +
@@ -106,9 +106,9 @@ public interface CountSqlParser {
                     "XMLAGG").split(Symbol.COMMA)));
 
     /**
-     * 添加到聚合函数，可以是逗号隔开的多个函数前缀
+     * Adds aggregate functions to the set. Can be multiple comma-separated function prefixes.
      *
-     * @param functions 函数
+     * @param functions the functions to add
      */
     static void addAggregateFunctions(String functions) {
         if (StringKit.isNotEmpty(functions)) {
@@ -120,21 +120,21 @@ public interface CountSqlParser {
     }
 
     /**
-     * 获取智能的countSql
+     * Retrieves an intelligent count SQL statement.
      *
-     * @param sql sql
-     * @return the string
+     * @param sql the original SQL statement
+     * @return the generated count SQL string
      */
     default String getSmartCountSql(String sql) {
         return getSmartCountSql(sql, Symbol.ZERO);
     }
 
     /**
-     * 获取智能的countSql
+     * Retrieves an intelligent count SQL statement.
      *
-     * @param sql         sql
-     * @param countColumn 列名,默认 0
-     * @return the string
+     * @param sql         the original SQL statement
+     * @param countColumn the column name to be used for the count, defaults to "0"
+     * @return the generated count SQL string
      */
     String getSmartCountSql(String sql, String countColumn);
 

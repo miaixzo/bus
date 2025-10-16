@@ -31,13 +31,22 @@ import org.miaixz.bus.validate.Context;
 import org.miaixz.bus.validate.magic.Matcher;
 
 /**
- * 这个校验器的结果永远为true
+ * A validator that always returns {@code true}. This can be useful for testing or for conditional validations where a
+ * certain branch should always pass.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public final class AlwaysMatcher implements Matcher {
+public final class AlwaysMatcher implements Matcher<Object, Object> {
 
+    /**
+     * Always returns {@code true}, indicating that the validation passes.
+     *
+     * @param object     The object to be validated (ignored).
+     * @param annotation The annotation associated with the validation (ignored).
+     * @param context    The validation context (ignored).
+     * @return always {@code true}.
+     */
     @Override
     public boolean on(Object object, Object annotation, Context context) {
         return true;

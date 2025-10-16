@@ -40,30 +40,36 @@ import org.miaixz.bus.extra.mq.Message;
 import org.miaixz.bus.extra.mq.MessageHandler;
 
 /**
- * RocketMQ 消费者实现类
+ * RocketMQ consumer implementation class. This class provides an adapter for consuming messages from Apache RocketMQ,
+ * integrating with the internal {@link Consumer} interface. It handles the subscription to topics and the processing of
+ * RocketMQ {@link MessageExt} objects.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class RocketMQConsumer implements Consumer {
 
+    /**
+     * The native Apache RocketMQ push consumer object, responsible for receiving messages.
+     */
     private final MQPushConsumer consumer;
 
     /**
-     * 构造方法
+     * Constructs a {@code RocketMQConsumer} with the specified native RocketMQ push consumer.
      *
-     * @param consumer RocketMQ 原生推送消费者对象
+     * @param consumer The native RocketMQ {@link MQPushConsumer} object.
      */
     public RocketMQConsumer(final MQPushConsumer consumer) {
         this.consumer = consumer;
     }
 
     /**
-     * 设置消费的Topic
+     * Sets the topic for consumption and subscribes the consumer to it. By default, it subscribes to all tags ('*')
+     * within the specified topic.
      *
-     * @param topic 要订阅的主题名称
-     * @return 当前消费者对象，支持链式调用
-     * @throws MQueueException 订阅主题失败时抛出异常
+     * @param topic The name of the topic to subscribe to.
+     * @return This consumer object, supporting chained calls.
+     * @throws MQueueException if subscribing to the topic fails due to an underlying RocketMQ client exception.
      */
     public RocketMQConsumer setTopic(final String topic) {
         try {
@@ -75,9 +81,11 @@ public class RocketMQConsumer implements Consumer {
     }
 
     /**
-     * 订阅消息并注册消息处理器
+     * Subscribes to messages from RocketMQ and registers a {@link MessageHandler} to process incoming messages. This
+     * method sets up a {@link MessageListenerConcurrently} on the underlying {@link MQPushConsumer} to convert RocketMQ
+     * messages into the internal {@link Message} format and dispatch them to the handler.
      *
-     * @param messageHandler 消息处理器，用于处理接收到的消息
+     * @param messageHandler The {@link MessageHandler} to be used for processing received messages.
      */
     @Override
     public void subscribe(final MessageHandler messageHandler) {
@@ -90,9 +98,11 @@ public class RocketMQConsumer implements Consumer {
     }
 
     /**
-     * 关闭消费者，释放资源
+     * Closes the underlying RocketMQ push consumer and releases all associated resources. This method ensures that the
+     * consumer is properly shut down.
      *
-     * @throws IOException 关闭过程中发生IO异常时抛出
+     * @throws IOException if an I/O error occurs during closing (though RocketMQ shutdown typically handles this
+     *                     internally).
      */
     @Override
     public void close() throws IOException {
@@ -102,25 +112,29 @@ public class RocketMQConsumer implements Consumer {
     }
 
     /**
-     * RocketMQ消息包装类，实现了Message接口
+     * An internal static nested class that wraps a RocketMQ {@link MessageExt} to conform to the {@link Message}
+     * interface. This allows RocketMQ messages to be processed by generic message handlers.
      */
     private static class RocketMQMessage implements Message {
 
+        /**
+         * The original RocketMQ {@link MessageExt} object that this object wraps.
+         */
         private final MessageExt messageExt;
 
         /**
-         * 构造方法
+         * Constructs a {@code RocketMQMessage} with the specified native RocketMQ message object.
          *
-         * @param messageExt RocketMQ原生消息对象
+         * @param messageExt The native RocketMQ {@link MessageExt} object to be wrapped.
          */
         private RocketMQMessage(final MessageExt messageExt) {
             this.messageExt = messageExt;
         }
 
         /**
-         * 获取消息主题
+         * Retrieves the topic name from the wrapped RocketMQ {@link MessageExt}.
          *
-         * @return 消息主题名称
+         * @return The name of the RocketMQ topic from which the message was consumed.
          */
         @Override
         public String topic() {
@@ -128,9 +142,9 @@ public class RocketMQConsumer implements Consumer {
         }
 
         /**
-         * 获取消息内容
+         * Retrieves the message content (body) as a byte array from the wrapped RocketMQ {@link MessageExt}.
          *
-         * @return 消息内容的字节数组
+         * @return The message content as a {@code byte[]}.
          */
         @Override
         public byte[] content() {

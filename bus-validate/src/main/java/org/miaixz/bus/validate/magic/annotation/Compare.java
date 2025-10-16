@@ -27,12 +27,13 @@
 */
 package org.miaixz.bus.validate.magic.annotation;
 
-import java.lang.annotation.*;
-
+import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.validate.Builder;
 
+import java.lang.annotation.*;
+
 /**
- * 参数值比较验证注解
+ * Annotation for validating by comparing the values of two parameters.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,76 +44,45 @@ import org.miaixz.bus.validate.Builder;
 public @interface Compare {
 
     /**
-     * @return 比较的条件
+     * The comparison condition.
+     *
+     * @return the comparison condition enum.
      */
-    Cond cond() default Cond.EQ;
+    EnumValue.Compare cond() default EnumValue.Compare.EQ;
 
     /**
-     * @return 与之比较的参数名称
+     * The name of the parameter to compare with.
+     *
+     * @return the name of the other parameter.
      */
     String with();
 
     /**
-     * 默认使用的异常码
+     * The error code to be used when validation fails.
      *
-     * @return the string
+     * @return the error code.
      */
     String errcode() default Builder.DEFAULT_ERRCODE;
 
     /**
-     * 默认使用的异常信息
+     * The error message to be used when validation fails. The message can be a template with placeholders.
      *
-     * @return the string
+     * @return the error message.
      */
-    String errmsg() default "${field}参数不符合规则";
+    String errmsg() default "The value of ${field} does not meet the comparison rule";
 
     /**
-     * 校验器组
+     * The validation groups this constraint belongs to.
      *
-     * @return the array
+     * @return an array of group names.
      */
     String[] group() default {};
 
     /**
-     * 被校验字段名称
+     * The name of the field being validated.
      *
-     * @return the string
+     * @return the field name.
      */
     String field() default Builder.DEFAULT_FIELD;
-
-    /**
-     * 比较条件
-     */
-    enum Cond {
-        /**
-         * 相等
-         */
-        EQ,
-
-        /**
-         * 不相等
-         */
-        NOT_EQ,
-
-        /**
-         * 大于
-         */
-        GT,
-
-        /**
-         * 大于等于
-         */
-        GT_EQ,
-
-        /**
-         * 小于
-         */
-        LT,
-
-        /**
-         * 小于等于
-         */
-        LT_EQ
-    }
 
 }

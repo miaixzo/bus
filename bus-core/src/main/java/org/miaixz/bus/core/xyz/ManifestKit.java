@@ -40,7 +40,7 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
 
 /**
- * Jar包中manifest.mf文件获取和解析工具类
+ * Utility class for retrieving and parsing `manifest.mf` files from JARs.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -50,11 +50,12 @@ public class ManifestKit {
     private static final String[] MANIFEST_NAMES = { "Manifest.mf", "manifest.mf", "MANIFEST.MF" };
 
     /**
-     * 根据 class 获取 所在 jar 包文件的 Manifest 如果这个类不在jar包中，返回{@code null}
+     * Gets the Manifest from the JAR file that contains the given class. Returns `null` if the class is not in a JAR
+     * file.
      *
-     * @param cls 类
-     * @return Manifest
-     * @throws InternalException IO异常
+     * @param cls The class.
+     * @return The Manifest.
+     * @throws InternalException for IO errors.
      */
     public static Manifest getManifest(final Class<?> cls) throws InternalException {
         final URL url = ResourceKit.getResourceUrl(null, cls);
@@ -73,11 +74,11 @@ public class ManifestKit {
     }
 
     /**
-     * 获取 jar 包文件或项目目录下的 Manifest
+     * Gets the Manifest from a JAR file or a project directory.
      *
-     * @param classpathItem 文件路径
-     * @return Manifest
-     * @throws InternalException IO异常
+     * @param classpathItem The file path.
+     * @return The Manifest.
+     * @throws InternalException for IO errors.
      */
     public static Manifest getManifest(final File classpathItem) throws InternalException {
         Manifest manifest = null;
@@ -113,11 +114,11 @@ public class ManifestKit {
     }
 
     /**
-     * 根据 {@link JarURLConnection} 获取 jar 包文件的 Manifest
+     * Gets the Manifest from a {@link JarURLConnection}.
      *
-     * @param connection {@link JarURLConnection}
-     * @return Manifest
-     * @throws InternalException IO异常
+     * @param connection The {@link JarURLConnection}.
+     * @return The Manifest.
+     * @throws InternalException for IO errors.
      */
     public static Manifest getManifest(final JarURLConnection connection) throws InternalException {
         final JarFile jarFile;
@@ -130,11 +131,11 @@ public class ManifestKit {
     }
 
     /**
-     * 根据 {@link JarURLConnection} 获取 jar 包文件的 Manifest
+     * Gets the Manifest from a {@link JarFile}.
      *
-     * @param jarFile {@link JarURLConnection}
-     * @return Manifest
-     * @throws InternalException IO异常
+     * @param jarFile The {@link JarFile}.
+     * @return The Manifest.
+     * @throws InternalException for IO errors.
      */
     public static Manifest getManifest(final JarFile jarFile) throws InternalException {
         try {

@@ -44,28 +44,79 @@ import org.miaixz.bus.http.bodys.MultipartBody;
 import org.miaixz.bus.http.bodys.RequestBody;
 
 /**
- * HTTP请求处理
+ * An abstract base class for representing an HTTP request. It encapsulates common request properties such as URL,
+ * parameters, headers, and body, and provides a template for building the final Httpd {@link Request} object.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public abstract class HttpRequest {
 
+    /**
+     * The unique identifier for this request.
+     */
     protected String id;
+    /**
+     * The request URL.
+     */
     protected String url;
+    /**
+     * The request body as a raw string (e.g., for JSON).
+     */
     protected String body;
+    /**
+     * The request parameters (e.g., for form submissions or query strings).
+     */
     protected Map<String, String> params;
+    /**
+     * The pre-encoded request parameters.
+     */
     protected Map<String, String> encodedParams;
+    /** The request headers. */
     protected Map<String, String> headers;
+    /**
+     * The multipart body for file uploads.
+     */
     protected MultipartBody multipartBody;
+    /**
+     * A list of files for multipart uploads.
+     */
     protected List<MultipartFile> list;
+    /**
+     * The builder for the final Httpd Request.
+     */
     protected Request.Builder builder = new Request.Builder();
 
+    /**
+     * Constructs an HttpRequest.
+     *
+     * @param url           The request URL.
+     * @param tag           A tag for the request, used for cancellation.
+     * @param params        The request parameters.
+     * @param headers       The request headers.
+     * @param list          A list of files for multipart uploads.
+     * @param body          The raw request body string.
+     * @param multipartBody The multipart body.
+     * @param id            The unique request identifier.
+     */
     protected HttpRequest(String url, Object tag, Map<String, String> params, Map<String, String> headers,
             List<MultipartFile> list, String body, MultipartBody multipartBody, String id) {
         this(url, tag, params, null, headers, list, body, multipartBody, id);
     }
 
+    /**
+     * Constructs an HttpRequest with both standard and pre-encoded parameters.
+     *
+     * @param url           The request URL.
+     * @param tag           A tag for the request, used for cancellation.
+     * @param params        The standard request parameters.
+     * @param encodedParams The pre-encoded request parameters.
+     * @param headers       The request headers.
+     * @param list          A list of files for multipart uploads.
+     * @param body          The raw request body string.
+     * @param multipartBody The multipart body.
+     * @param id            The unique request identifier.
+     */
     protected HttpRequest(String url, Object tag, Map<String, String> params, Map<String, String> encodedParams,
             Map<String, String> headers, List<MultipartFile> list, String body, MultipartBody multipartBody,
             String id) {
@@ -84,6 +135,14 @@ public abstract class HttpRequest {
         headers();
     }
 
+    /**
+     * A static factory method to create a {@link RequestBody} from an {@link InputStream}.
+     *
+     * @param contentType The media type of the content.
+     * @param is          The input stream to read from.
+     * @return A new {@link RequestBody} instance.
+     * @throws NullPointerException if the input stream is null.
+     */
     public static RequestBody createRequestBody(final MediaType contentType, final InputStream is) {
         if (null == is)
             throw new NullPointerException("is == null");
@@ -96,7 +155,7 @@ public abstract class HttpRequest {
             }
 
             @Override
-            public long length() {
+            public long contentLength() {
                 try {
                     return is.available();
                 } catch (IOException e) {
@@ -117,18 +176,46 @@ public abstract class HttpRequest {
         };
     }
 
+    /**
+     * Abstract method to be implemented by subclasses to construct the specific request body (e.g., for POST, PUT).
+     *
+     * @return The constructed {@link RequestBody}.
+     */
     protected abstract RequestBody buildRequestBody();
 
+    /**
+     * Abstract method to be implemented by subclasses to construct the final {@link Request} object with the correct
+     * HTTP method.
+     *
+     * @param requestBody The request body to be used.
+     * @return The final {@link Request} object.
+     */
     protected abstract Request buildRequest(RequestBody requestBody);
 
+    /**
+     * Builds a {@link RequestCall}, which is the executable representation of this request.
+     *
+     * @param httpd The {@link Httpd} client instance.
+     * @return A new {@link RequestCall}.
+     */
     public RequestCall build(Httpd httpd) {
         return new RequestCall(this, httpd);
     }
 
+    /**
+     * Creates the final {@link Request} object. This is a convenience method that combines building the request body
+     * and the request itself.
+     *
+     * @param callback The callback for the request (not used in this implementation).
+     * @return The constructed {@link Request}.
+     */
     public Request createRequest(Callback callback) {
         return buildRequest(buildRequestBody());
     }
 
+    /**
+     * Appends the configured headers to the internal {@link Request.Builder}.
+     */
     protected void headers() {
         Headers.Builder headerBuilder = new Headers.Builder();
         if (null == headers || headers.isEmpty())
@@ -139,6 +226,11 @@ public abstract class HttpRequest {
         builder.headers(headerBuilder.build());
     }
 
+    /**
+     * Gets the unique identifier for this request.
+     *
+     * @return The request ID string.
+     */
     public String getId() {
         return id;
     }

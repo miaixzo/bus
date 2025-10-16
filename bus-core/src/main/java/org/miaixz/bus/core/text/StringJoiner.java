@@ -43,12 +43,13 @@ import org.miaixz.bus.core.xyz.IteratorKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 字符串连接器（拼接器），通过给定的字符串和多个元素，拼接为一个字符串 相较于{@link java.util.StringJoiner}提供更加灵活的配置，包括：
+ * A flexible string joiner that provides more configuration options than {@link java.util.StringJoiner}. Features
+ * include:
  * <ul>
- * <li>支持任意Appendable接口实现</li>
- * <li>支持每个元素单独wrap</li>
- * <li>支持自定义null的处理逻辑</li>
- * <li>支持自定义默认结果</li>
+ * <li>Support for any {@link Appendable} implementation.</li>
+ * <li>Option to wrap each element individually with a prefix and suffix.</li>
+ * <li>Customizable handling for null elements.</li>
+ * <li>A default result for when no elements are joined.</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -59,64 +60,76 @@ public class StringJoiner implements Appendable, Serializable {
     @Serial
     private static final long serialVersionUID = 2852233611385L;
 
+    /**
+     * The Appendable to which the strings will be appended.
+     */
     private Appendable appendable;
+    /**
+     * The delimiter to be used between each element.
+     */
     private CharSequence delimiter;
+    /**
+     * The prefix to be added to the result.
+     */
     private CharSequence prefix;
+    /**
+     * The suffix to be added to the result.
+     */
     private CharSequence suffix;
     /**
-     * 前缀和后缀是否包装每个元素，true表示包装每个元素，false包装整个字符串
+     * Whether to wrap each element with the prefix and suffix, or the entire string.
      */
     private boolean wrapElement;
     /**
-     * null元素处理逻辑
+     * The strategy for handling null elements.
      */
     private NullMode nullMode = NullMode.NULL_STRING;
     /**
-     * 当结果为空时默认返回的拼接结果
+     * The default string to return if no elements are added.
      */
     private String emptyResult = Normal.EMPTY;
     /**
-     * appendable中是否包含内容，用于判断增加内容时，是否首先加入分隔符
+     * A flag to indicate if the appendable already has content, to decide whether to add a delimiter first.
      */
     private boolean hasContent;
 
     /**
-     * 构造
+     * Constructs a {@code StringJoiner} with a specified delimiter.
      *
-     * @param delimiter 分隔符，{@code null}表示无连接符，直接拼接
+     * @param delimiter The delimiter. If {@code null}, elements are concatenated directly.
      */
     public StringJoiner(final CharSequence delimiter) {
         this(null, delimiter);
     }
 
     /**
-     * 构造
+     * Constructs a {@code StringJoiner} with a specified appendable and delimiter.
      *
-     * @param appendable 字符串追加器，拼接的字符串都将加入到此，{@code null}使用默认{@link StringBuilder}
-     * @param delimiter  分隔符，{@code null}表示无连接符，直接拼接
+     * @param appendable The appendable to use. If {@code null}, a new {@link StringBuilder} is created.
+     * @param delimiter  The delimiter.
      */
     public StringJoiner(final Appendable appendable, final CharSequence delimiter) {
         this(appendable, delimiter, null, null);
     }
 
     /**
-     * 构造
+     * Constructs a {@code StringJoiner} with a delimiter, prefix, and suffix.
      *
-     * @param delimiter 分隔符，{@code null}表示无连接符，直接拼接
-     * @param prefix    前缀
-     * @param suffix    后缀
+     * @param delimiter The delimiter.
+     * @param prefix    The prefix.
+     * @param suffix    The suffix.
      */
     public StringJoiner(final CharSequence delimiter, final CharSequence prefix, final CharSequence suffix) {
         this(null, delimiter, prefix, suffix);
     }
 
     /**
-     * 构造
+     * Constructs a {@code StringJoiner} with full configuration.
      *
-     * @param appendable 字符串追加器，拼接的字符串都将加入到此，{@code null}使用默认{@link StringBuilder}
-     * @param delimiter  分隔符，{@code null}表示无连接符，直接拼接
-     * @param prefix     前缀
-     * @param suffix     后缀
+     * @param appendable The appendable to use.
+     * @param delimiter  The delimiter.
+     * @param prefix     The prefix.
+     * @param suffix     The suffix.
      */
     public StringJoiner(final Appendable appendable, final CharSequence delimiter, final CharSequence prefix,
             final CharSequence suffix) {
@@ -124,54 +137,52 @@ public class StringJoiner implements Appendable, Serializable {
             this.appendable = appendable;
             checkHasContent(appendable);
         }
-
         this.delimiter = delimiter;
         this.prefix = prefix;
         this.suffix = suffix;
     }
 
     /**
-     * 根据已有StrJoiner配置新建一个新的StrJoiner
+     * Creates a new {@code StringJoiner} with the same configuration as an existing one.
      *
-     * @param joiner 已有StrJoiner
-     * @return 新的StrJoiner，配置相同
+     * @param joiner The existing {@code StringJoiner}.
+     * @return A new {@code StringJoiner} with identical settings.
      */
     public static StringJoiner of(final StringJoiner joiner) {
         final StringJoiner joinerNew = new StringJoiner(joiner.delimiter, joiner.prefix, joiner.suffix);
         joinerNew.wrapElement = joiner.wrapElement;
         joinerNew.nullMode = joiner.nullMode;
         joinerNew.emptyResult = joiner.emptyResult;
-
         return joinerNew;
     }
 
     /**
-     * 使用指定分隔符创建StrJoiner
+     * Creates a {@code StringJoiner} with a specified delimiter.
      *
-     * @param delimiter 分隔符
-     * @return StringJoiner
+     * @param delimiter The delimiter.
+     * @return A new {@code StringJoiner}.
      */
     public static StringJoiner of(final CharSequence delimiter) {
         return new StringJoiner(delimiter);
     }
 
     /**
-     * 使用指定分隔符创建StrJoiner
+     * Creates a {@code StringJoiner} with a delimiter, prefix, and suffix.
      *
-     * @param delimiter 分隔符
-     * @param prefix    前缀
-     * @param suffix    后缀
-     * @return StringJoiner
+     * @param delimiter The delimiter.
+     * @param prefix    The prefix.
+     * @param suffix    The suffix.
+     * @return A new {@code StringJoiner}.
      */
     public static StringJoiner of(final CharSequence delimiter, final CharSequence prefix, final CharSequence suffix) {
         return new StringJoiner(delimiter, prefix, suffix);
     }
 
     /**
-     * 设置分隔符
+     * Sets the delimiter.
      *
-     * @param delimiter 分隔符，{@code null}表示无连接符，直接拼接
-     * @return this
+     * @param delimiter The delimiter.
+     * @return this instance for chaining.
      */
     public StringJoiner setDelimiter(final CharSequence delimiter) {
         this.delimiter = delimiter;
@@ -179,10 +190,10 @@ public class StringJoiner implements Appendable, Serializable {
     }
 
     /**
-     * 设置前缀
+     * Sets the prefix.
      *
-     * @param prefix 前缀
-     * @return this
+     * @param prefix The prefix.
+     * @return this instance for chaining.
      */
     public StringJoiner setPrefix(final CharSequence prefix) {
         this.prefix = prefix;
@@ -190,10 +201,10 @@ public class StringJoiner implements Appendable, Serializable {
     }
 
     /**
-     * 设置后缀
+     * Sets the suffix.
      *
-     * @param suffix 后缀
-     * @return this
+     * @param suffix The suffix.
+     * @return this instance for chaining.
      */
     public StringJoiner setSuffix(final CharSequence suffix) {
         this.suffix = suffix;
@@ -201,10 +212,10 @@ public class StringJoiner implements Appendable, Serializable {
     }
 
     /**
-     * 设置前缀和后缀是否包装每个元素
+     * Sets whether the prefix and suffix should wrap each element instead of the entire string.
      *
-     * @param wrapElement true表示包装每个元素，false包装整个字符串
-     * @return this
+     * @param wrapElement {@code true} to wrap each element, {@code false} to wrap the whole string.
+     * @return this instance for chaining.
      */
     public StringJoiner setWrapElement(final boolean wrapElement) {
         this.wrapElement = wrapElement;
@@ -212,10 +223,10 @@ public class StringJoiner implements Appendable, Serializable {
     }
 
     /**
-     * 设置{@code null}元素处理逻辑
+     * Sets the handling strategy for null elements.
      *
-     * @param nullMode 逻辑枚举，可选忽略、转换为""或转换为null字符串
-     * @return this
+     * @param nullMode The null handling mode.
+     * @return this instance for chaining.
      */
     public StringJoiner setNullMode(final NullMode nullMode) {
         this.nullMode = nullMode;
@@ -223,10 +234,10 @@ public class StringJoiner implements Appendable, Serializable {
     }
 
     /**
-     * 设置当没有任何元素加入时，默认返回的字符串，默认""
+     * Sets the default string to return if no elements are added.
      *
-     * @param emptyResult 默认字符串
-     * @return this
+     * @param emptyResult The default string for an empty result.
+     * @return this instance for chaining.
      */
     public StringJoiner setEmptyResult(final String emptyResult) {
         this.emptyResult = emptyResult;
@@ -234,17 +245,11 @@ public class StringJoiner implements Appendable, Serializable {
     }
 
     /**
-     * 追加对象到拼接器中，支持：
-     * <ul>
-     * <li>null，按照 {@link #nullMode} 策略追加</li>
-     * <li>array，逐个追加</li>
-     * <li>{@link Iterator}，逐个追加</li>
-     * <li>{@link Iterable}，逐个追加</li>
-     * <li>{@link Map.Entry}，追加键，分隔符，再追加值</li>
-     * </ul>
+     * Appends an object to the joiner. This method handles various types, including arrays, iterators, iterables, and
+     * map entries.
      *
-     * @param object 对象，支持数组、集合等
-     * @return this
+     * @param object The object to append.
+     * @return this instance for chaining.
      */
     public StringJoiner append(final Object object) {
         if (null == object) {
@@ -265,11 +270,11 @@ public class StringJoiner implements Appendable, Serializable {
     }
 
     /**
-     * 追加数组中的元素到拼接器中
+     * Appends the elements of an array to this joiner.
      *
-     * @param <T>   元素类型
-     * @param array 元素数组
-     * @return this
+     * @param <T>   The type of the elements.
+     * @param array The array of elements.
+     * @return this instance for chaining.
      */
     public <T> StringJoiner append(final T[] array) {
         if (null == array) {
@@ -279,11 +284,11 @@ public class StringJoiner implements Appendable, Serializable {
     }
 
     /**
-     * 追加{@link Iterator}中的元素到拼接器中
+     * Appends the elements of an {@link Iterator} to this joiner.
      *
-     * @param <T>      元素类型
-     * @param iterator 元素列表
-     * @return this
+     * @param <T>      The type of the elements.
+     * @param iterator The iterator.
+     * @return this instance for chaining.
      */
     public <T> StringJoiner append(final Iterator<T> iterator) {
         if (null != iterator) {
@@ -295,24 +300,24 @@ public class StringJoiner implements Appendable, Serializable {
     }
 
     /**
-     * 追加数组中的元素到拼接器中
+     * Appends the elements of an array, converting each to a string using a provided function.
      *
-     * @param <T>       元素类型
-     * @param array     元素数组
-     * @param toStrFunc 元素对象转换为字符串的函数
-     * @return this
+     * @param <T>       The type of the elements.
+     * @param array     The array of elements.
+     * @param toStrFunc A function to convert each element to a string.
+     * @return this instance for chaining.
      */
     public <T> StringJoiner append(final T[] array, final Function<T, ? extends CharSequence> toStrFunc) {
         return append((Iterator<T>) new ArrayIterator<>(array), toStrFunc);
     }
 
     /**
-     * 追加{@link Iterator}中的元素到拼接器中
+     * Appends the elements of an {@link Iterable}, converting each to a string using a provided function.
      *
-     * @param <E>       元素类型
-     * @param iterable  元素列表
-     * @param toStrFunc 元素对象转换为字符串的函数
-     * @return this
+     * @param <E>       The type of the elements.
+     * @param iterable  The iterable.
+     * @param toStrFunc A function to convert each element to a string.
+     * @return this instance for chaining.
      */
     public <E> StringJoiner append(
             final Iterable<E> iterable,
@@ -321,12 +326,12 @@ public class StringJoiner implements Appendable, Serializable {
     }
 
     /**
-     * 追加{@link Iterator}中的元素到拼接器中
+     * Appends the elements of an {@link Iterator}, converting each to a string using a provided function.
      *
-     * @param <E>       元素类型
-     * @param iterator  元素列表
-     * @param toStrFunc 元素对象转换为字符串的函数
-     * @return this
+     * @param <E>       The type of the elements.
+     * @param iterator  The iterator.
+     * @param toStrFunc A function to convert each element to a string.
+     * @return this instance for chaining.
      */
     public <E> StringJoiner append(
             final Iterator<E> iterator,
@@ -382,10 +387,10 @@ public class StringJoiner implements Appendable, Serializable {
     }
 
     /**
-     * 合并一个StrJoiner 到当前的StrJoiner 合并规则为，在尾部直接追加，当存在{@link #prefix}时，如果{@link #wrapElement}为{@code false}，则去除之。
+     * Merges another {@code StringJoiner} into this one.
      *
-     * @param stringJoiner 其他的StrJoiner
-     * @return this
+     * @param stringJoiner The other {@code StringJoiner}.
+     * @return this instance for chaining.
      */
     public StringJoiner merge(final StringJoiner stringJoiner) {
         if (null != stringJoiner && null != stringJoiner.appendable) {
@@ -393,20 +398,20 @@ public class StringJoiner implements Appendable, Serializable {
             if (stringJoiner.wrapElement) {
                 this.append(otherStr);
             } else {
-                this.append(otherStr, this.prefix.length(), otherStr.length());
+                this.append(otherStr, StringKit.length(this.prefix), otherStr.length());
             }
         }
         return this;
     }
 
     /**
-     * 长度 长度计算方式为prefix + suffix + content 此方法结果与toString().length()一致。
+     * Returns the current length of the joined string.
      *
-     * @return 长度，如果结果为{@code null}，返回-1
+     * @return The length, or -1 if the result would be null.
      */
     public int length() {
         return (this.appendable != null ? this.appendable.toString().length() + StringKit.length(suffix)
-                : null == this.emptyResult ? -1 : emptyResult.length());
+                : (this.emptyResult == null ? -1 : this.emptyResult.length()));
     }
 
     @Override
@@ -414,7 +419,6 @@ public class StringJoiner implements Appendable, Serializable {
         if (null == this.appendable) {
             return emptyResult;
         }
-
         String result = this.appendable.toString();
         if (!wrapElement && StringKit.isNotEmpty(this.suffix)) {
             result += this.suffix;
@@ -423,10 +427,11 @@ public class StringJoiner implements Appendable, Serializable {
     }
 
     /**
-     * 准备连接器，如果连接器非空，追加元素，否则初始化前缀
+     * Prepares the {@link Appendable} for appending a new element, adding the prefix on first use and the delimiter on
+     * subsequent uses.
      *
-     * @return {@link Appendable}
-     * @throws IOException IO异常
+     * @return The {@link Appendable}.
+     * @throws IOException if an I/O error occurs.
      */
     private Appendable prepare() throws IOException {
         if (hasContent) {
@@ -446,14 +451,13 @@ public class StringJoiner implements Appendable, Serializable {
     }
 
     /**
-     * 检查用户传入的{@link Appendable} 是否已经存在内容，而且不能以分隔符结尾
+     * Checks if the provided {@link Appendable} already contains content.
      *
-     * @param appendable {@link Appendable}
+     * @param appendable The {@link Appendable} to check.
      */
     private void checkHasContent(final Appendable appendable) {
-        if (appendable instanceof CharSequence) {
-            final CharSequence charSequence = (CharSequence) appendable;
-            if (charSequence.length() > 0 && StringKit.endWith(charSequence, delimiter)) {
+        if (appendable instanceof CharSequence charSequence) {
+            if (!charSequence.isEmpty() && !StringKit.endWith(charSequence, delimiter)) {
                 this.hasContent = true;
             }
         } else {
@@ -465,19 +469,19 @@ public class StringJoiner implements Appendable, Serializable {
     }
 
     /**
-     * {@code null}处理的模式
+     * Defines the strategy for handling null elements.
      */
     public enum NullMode {
         /**
-         * 忽略{@code null}，即null元素不加入拼接的字符串
+         * Ignores null elements.
          */
         IGNORE,
         /**
-         * {@code null}转为""
+         * Converts null elements to an empty string ("").
          */
         TO_EMPTY,
         /**
-         * {@code null}转为null字符串
+         * Converts null elements to the string "null".
          */
         NULL_STRING
     }

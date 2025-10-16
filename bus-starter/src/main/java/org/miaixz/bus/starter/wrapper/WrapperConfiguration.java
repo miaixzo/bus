@@ -27,10 +27,11 @@
 */
 package org.miaixz.bus.starter.wrapper;
 
-import java.io.IOException;
-import java.lang.reflect.Method;
-import java.util.Arrays;
-
+import jakarta.annotation.Resource;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.CollKit;
@@ -55,43 +56,42 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
-import jakarta.annotation.Resource;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.lang.reflect.Method;
 
 /**
- * XSS防护和请求/响应内容缓存配置类，用于配置Web请求的包装器和过滤器。
- *
- * 该类主要功能包括：
+ * Configuration class for XSS protection and request/response content caching. This class configures web request
+ * wrappers and filters.
+ * <p>
+ * Its main functions include:
  * <ul>
- * <li>配置请求和响应包装器，实现XSS防护和内容缓存</li>
- * <li>自定义请求映射处理器，支持基于包名的URL前缀自动生成</li>
- * <li>注册过滤器，对特定HTTP方法的请求进行包装处理</li>
- * <li>配置Web MVC相关组件，如请求处理器和MVC配置器</li>
+ * <li>Configuring request and response wrappers for XSS protection and content caching.</li>
+ * <li>Customizing the request mapping handler to support automatic URL prefix generation based on package names.</li>
+ * <li>Registering filters to wrap requests for specific HTTP methods.</li>
+ * <li>Configuring Web MVC components like request handlers and MVC configurers.</li>
  * </ul>
- * 
- * <pre>
- * // 在application.yml中配置
+ *
+ * <pre>{@code
+ * // In application.yml:
  * bus:
  *   wrapper:
- *     enabled: true  # 启用包装器
- *     order: -100   # 过滤器顺序
- *     base-packages:  # 需要自动生成URL前缀的包名
+ *     enabled: true       # Enable the wrapper
+ *     order: -100         # Filter order
+ *     base-packages:      # Packages for automatic URL prefix generation
  *       - com.example.controller
  *
- * // 控制器类
+ * // Controller class:
  * &#64;RestController
  * &#64;RequestMapping("/user")
  * public class UserController {
- *     // 实际访问路径会自动加上包名前缀，如 /example/user/info
+ *     // The actual access path will be prefixed with the package name,
+ *     // e.g., /example/user/info
  *     &#64;GetMapping("/info")
  *     public UserInfo getUserInfo() {
  *         return userService.getUserInfo();
  *     }
  * }
- * </pre>
+ * }</pre>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -100,19 +100,18 @@ import jakarta.servlet.http.HttpServletResponse;
 public class WrapperConfiguration implements WebMvcRegistrations {
 
     /**
-     * 包装器配置属性，包含各种包装器相关的配置信息。 通过{@link EnableConfigurationProperties}注解自动注入。
+     * Injected wrapper configuration properties.
      */
     @Resource
-    WrapperProperties properties;
+    private WrapperProperties properties;
 
     /**
-     * 获取自定义的请求映射处理器。
-     *
+     * Provides a custom {@link RequestMappingHandlerMapping}.
      * <p>
-     * 该方法返回一个自定义的{@link RequestMappingHandlerMapping}实例， 用于处理请求映射的生成，支持基于包名的URL前缀自动生成。
+     * This custom handler supports automatic URL prefix generation based on the controller's package name.
      * </p>
      *
-     * @return 自定义的请求映射处理器
+     * @return A custom {@link RequestMappingHandlerMapping} instance.
      */
     @Override
     public RequestMappingHandlerMapping getRequestMappingHandlerMapping() {
@@ -120,21 +119,21 @@ public class WrapperConfiguration implements WebMvcRegistrations {
     }
 
     /**
-     * 注册请求体缓存过滤器。
-     *
+     * Registers the request body caching filter.
      * <p>
-     * 该方法创建并配置一个{@link BodyCacheFilter}过滤器，用于对特定HTTP方法的请求进行包装处理， 实现XSS防护和请求/响应内容缓存。
+     * This method creates and configures a {@link BodyCacheFilter} to wrap requests for specific HTTP methods, enabling
+     * XSS protection and request/response content caching.
      * </p>
      *
-     * @return 配置好的过滤器注册Bean
+     * @return A configured {@link FilterRegistrationBean} for the body cache filter.
      */
     @Bean("registrationBodyCacheFilter")
-    public FilterRegistrationBean registrationBodyCacheFilter() {
+    public FilterRegistrationBean<BodyCacheFilter> registrationBodyCacheFilter() {
         FilterRegistrationBean<BodyCacheFilter> registrationBean = new FilterRegistrationBean<>();
         registrationBean.setEnabled(this.properties.isEnabled());
         registrationBean.setOrder(this.properties.getOrder());
         registrationBean.setFilter(new BodyCacheFilter());
-        if (!StringKit.isEmpty(this.properties.getName())) {
+        if (StringKit.isNotEmpty(this.properties.getName())) {
             registrationBean.setName(this.properties.getName());
         }
         if (MapKit.isNotEmpty(this.properties.getInitParameters())) {
@@ -143,20 +142,16 @@ public class WrapperConfiguration implements WebMvcRegistrations {
         if (ObjectKit.isNotEmpty(this.properties.getServletRegistrationBeans())) {
             registrationBean.setServletRegistrationBeans(this.properties.getServletRegistrationBeans());
         }
-        if (!CollKit.isEmpty(this.properties.getServletNames())) {
+        if (CollKit.isNotEmpty(this.properties.getServletNames())) {
             registrationBean.setServletNames(this.properties.getServletNames());
         }
         return registrationBean;
     }
 
     /**
-     * 创建请求处理器。
+     * Creates a {@link SentinelRequestHandler} bean.
      *
-     * <p>
-     * 该方法创建一个{@link SentinelRequestHandler}实例，用于处理请求。
-     * </p>
-     *
-     * @return 请求处理器实例
+     * @return A new {@link SentinelRequestHandler} instance.
      */
     @Bean("supportRequestHandler")
     public SentinelRequestHandler requestHandler() {
@@ -164,13 +159,9 @@ public class WrapperConfiguration implements WebMvcRegistrations {
     }
 
     /**
-     * 创建Web MVC配置器。
+     * Creates a {@link org.springframework.web.servlet.config.annotation.WebMvcConfigurer} bean.
      *
-     * <p>
-     * 该方法创建一个{@link org.springframework.web.servlet.config.annotation.WebMvcConfigurer}实例， 用于配置Web MVC相关组件。
-     * </p>
-     *
-     * @return Web MVC配置器实例
+     * @return A new {@link AwareWebMvcConfigurer} instance.
      */
     @Bean("supportWebMvcConfigurer")
     public org.springframework.web.servlet.config.annotation.WebMvcConfigurer supportWebMvcConfigurer() {
@@ -178,37 +169,38 @@ public class WrapperConfiguration implements WebMvcRegistrations {
     }
 
     /**
-     * 注册 ForwardedHeaderFilter Bean。
+     * Registers the {@link ForwardedHeaderFilter} bean.
      * <p>
-     * ForwardedHeaderFilter 是 Spring 框架提供的标准 Servlet Filter， 用于包装 HttpServletRequest 对象，使其 getScheme(), getServerName()
-     * 等方法 能够返回原始客户端的请求信息。
+     * This standard Spring Framework filter processes {@code Forwarded} and {@code X-Forwarded-*} headers, which is
+     * essential when the application runs behind a reverse proxy.
+     * </p>
      *
-     * @return FilterRegistrationBean 实例，用于向 Servlet 容器注册 Filter。
+     * @return A {@link FilterRegistrationBean} for the {@link ForwardedHeaderFilter}.
      */
     @Bean
     public FilterRegistrationBean<ForwardedHeaderFilter> forwardedHeaderFilter() {
         FilterRegistrationBean<ForwardedHeaderFilter> bean = new FilterRegistrationBean<>();
         bean.setFilter(new ForwardedHeaderFilter());
-        // 可以设置 Filter 的执行顺序，例如最先执行
         bean.setOrder(Ordered.HIGHEST_PRECEDENCE);
         return bean;
     }
 
     /**
-     * 自定义的请求映射处理器，支持基于包名的URL前缀自动生成。
+     * A custom {@link RequestMappingHandlerMapping} that supports automatic URL prefix generation based on package
+     * names.
      */
     class RequestMappingHandler extends RequestMappingHandlerMapping {
 
         /**
-         * 获取方法的请求映射信息。
-         *
+         * Derives the mapping for a given handler method.
          * <p>
-         * 该方法在生成请求映射信息时，会检查控制器类所在的包是否在配置的基础包中， 如果是，则自动添加包名前缀到URL路径中。
+         * It checks if the controller's package matches any of the configured base packages. If it does, a URL prefix
+         * is automatically generated from the package structure and prepended to the method's mapping.
          * </p>
          *
-         * @param method      控制器方法
-         * @param handlerType 控制器类
-         * @return 请求映射信息
+         * @param method      The method to map.
+         * @param handlerType The class of the handler.
+         * @return The derived {@link RequestMappingInfo}, or {@code null}.
          */
         @Override
         protected RequestMappingInfo getMappingForMethod(Method method, Class<?> handlerType) {
@@ -226,10 +218,11 @@ public class WrapperConfiguration implements WebMvcRegistrations {
                         String prefix = StringKit.splitToArray(packName, arrays[arrays.length - 1])[1]
                                 .replace(Symbol.C_DOT, Symbol.C_SLASH);
                         Logger.debug(
-                                "Create a URL request mapping '" + prefix
-                                        + Arrays.toString(
-                                                requestMappingInfo.getPathPatternsCondition().getPatterns().toArray())
-                                        + "' for " + packName + Symbol.C_DOT + handlerType.getSimpleName());
+                                "Create a URL request mapping '{}{}' for {}.{}",
+                                prefix,
+                                requestMappingInfo.getPathPatternsCondition().getPatterns(),
+                                packName,
+                                handlerType.getSimpleName());
                         requestMappingInfo = RequestMappingInfo.paths(prefix).options(getBuilderConfiguration()).build()
                                 .combine(requestMappingInfo);
                     }
@@ -240,22 +233,24 @@ public class WrapperConfiguration implements WebMvcRegistrations {
     }
 
     /**
-     * 请求体缓存过滤器，用于对特定HTTP方法的请求进行包装处理。
+     * A filter that caches the request body by wrapping the {@link HttpServletRequest}. This allows the request body to
+     * be read multiple times, which is necessary for features like XSS filtering and logging.
      */
     class BodyCacheFilter extends OncePerRequestFilter {
 
         /**
-         * 执行过滤操作。
-         *
+         * Wraps the request and response if necessary.
          * <p>
-         * 该方法对POST、PATCH、PUT等HTTP方法的请求进行包装处理， 实现XSS防护和请求/响应内容缓存。
+         * This method wraps the {@link HttpServletRequest} in a {@link MutableRequestWrapper} for HTTP methods that
+         * typically contain a body (POST, PATCH, PUT) to allow for repeatable reads. The {@link HttpServletResponse} is
+         * also wrapped to allow for response body manipulation or caching.
          * </p>
          *
-         * @param request     HTTP请求对象
-         * @param response    HTTP响应对象
-         * @param filterChain 过滤器链
-         * @throws ServletException 如果发生Servlet异常
-         * @throws IOException      如果发生I/O异常
+         * @param request     The original HTTP request.
+         * @param response    The original HTTP response.
+         * @param filterChain The filter chain.
+         * @throws ServletException if a servlet-specific error occurs.
+         * @throws IOException      if an I/O error occurs.
          */
         @Override
         protected void doFilterInternal(
@@ -263,7 +258,7 @@ public class WrapperConfiguration implements WebMvcRegistrations {
                 HttpServletResponse response,
                 FilterChain filterChain) throws ServletException, IOException {
             final String method = request.getMethod();
-            // 如果不是 POST PATCH PUT 等有流的接口则无需进行类型转换,提高性能
+            // Only wrap requests with a body to improve performance.
             if (HTTP.POST.equals(method) || HTTP.PATCH.equals(method) || HTTP.PUT.equals(method)) {
                 if (!(request instanceof MutableRequestWrapper)) {
                     request = new MutableRequestWrapper(request);

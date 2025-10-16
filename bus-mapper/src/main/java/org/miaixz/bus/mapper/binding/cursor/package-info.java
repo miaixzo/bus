@@ -26,7 +26,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 游标处理
+ * Provides interfaces for cursor-based query operations, which are useful for handling large datasets by streaming
+ * results rather than loading them all into memory at once.
  *
  * @author Kimi Liu
  * @since Java 17+

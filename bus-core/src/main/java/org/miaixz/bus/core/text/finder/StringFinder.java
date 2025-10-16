@@ -34,24 +34,33 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.text.CharsBacker;
 
 /**
- * 字符串查找器
+ * String finder. Used to find the position of a specified string within a text.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class StringFinder extends TextFinder {
 
+    /**
+     * The serial version UID.
+     */
     @Serial
     private static final long serialVersionUID = 2852237656798L;
 
+    /**
+     * The string to find.
+     */
     private final CharSequence strToFind;
+    /**
+     * Whether to ignore case during the search.
+     */
     private final boolean caseInsensitive;
 
     /**
-     * 构造
+     * Constructor.
      *
-     * @param strToFind       查找的字符串
-     * @param caseInsensitive 是否忽略大小写
+     * @param strToFind       The string to be searched.
+     * @param caseInsensitive Whether to ignore case.
      */
     public StringFinder(final CharSequence strToFind, final boolean caseInsensitive) {
         Assert.notEmpty(strToFind);
@@ -60,11 +69,12 @@ public class StringFinder extends TextFinder {
     }
 
     /**
-     * 创建查找器，构造后须调用{@link #setText(CharSequence)} 设置被查找的文本
+     * Creates a finder. After construction, {@link #setText(CharSequence)} must be called to set the text to be
+     * searched.
      *
-     * @param strToFind       查找的字符串
-     * @param caseInsensitive 是否忽略大小写
-     * @return {@code StringFinder}
+     * @param strToFind       The string to be searched.
+     * @param caseInsensitive Whether to ignore case.
+     * @return A new {@code StringFinder} instance.
      */
     public static StringFinder of(final CharSequence strToFind, final boolean caseInsensitive) {
         return new StringFinder(strToFind, caseInsensitive);

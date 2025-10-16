@@ -30,12 +30,13 @@ package org.miaixz.bus.core.lang.reflect.lookup;
 import java.lang.invoke.MethodHandles;
 
 /**
- * {@link MethodHandles.Lookup}方法工厂，用于创建{@link MethodHandles.Lookup}对象
- * {@link MethodHandles.Lookup}是一个方法句柄查找对象，用于在指定类中查找符合给定方法名称、方法类型的方法句柄。
+ * {@link MethodHandles.Lookup} factory for creating {@link MethodHandles.Lookup} objects. A
+ * {@link MethodHandles.Lookup} is a method handle lookup object used to find method handles that match a given method
+ * name and method type within a specified class.
  *
  * <p>
- * 参考：https://blog.csdn.net/u013202238/article/details/108687086
- * </p>
+ * Reference: <a href=
+ * "https://blog.csdn.net/u013202238/article/details/108687086">https://blog.csdn.net/u013202238/article/details/108687086</a>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,11 +44,13 @@ import java.lang.invoke.MethodHandles;
 public interface LookupFactory {
 
     /**
-     * jdk8中如果直接调用{@link MethodHandles#lookup()}获取到的{@link MethodHandles.Lookup}在调用findSpecial和unreflectSpecial
-     * 时会出现权限不够问题，抛出"no private access for invokespecial"异常，因此针对JDK8及JDK9+分别封装lookup方法。
+     * In JDK 8, directly calling {@link MethodHandles#lookup()} to obtain a {@link MethodHandles.Lookup} may lead to
+     * permission issues ("no private access for invokespecial") when invoking {@code findSpecial} and
+     * {@code unreflectSpecial}. Therefore, this method provides a way to obtain a {@code Lookup} instance that works
+     * correctly across JDK 8 and JDK 9+.
      *
-     * @param callerClass 被调用的类或接口
-     * @return {@link MethodHandles.Lookup}
+     * @param callerClass The class or interface from which the lookup is being performed.
+     * @return A {@link MethodHandles.Lookup} object with appropriate access privileges.
      */
     MethodHandles.Lookup lookup(final Class<?> callerClass);
 

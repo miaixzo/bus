@@ -31,7 +31,8 @@ import org.miaixz.bus.core.xyz.CharKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 数据单位封装 此类来自于：Spring-framework
+ * Enumeration representing common data units and their corresponding sizes. This class is inspired by Spring
+ * Framework's DataUnit.
  *
  * <pre>
  *     BYTES      1B      2^0     1
@@ -47,45 +48,45 @@ import org.miaixz.bus.core.xyz.StringKit;
 public enum DataUnit {
 
     /**
-     * Bytes, 后缀表示为： {@code B}.
+     * Bytes, represented by the suffix: {@code B}.
      */
     BYTES("B", DataSize.ofBytes(1)),
 
     /**
-     * Kilobytes, 后缀表示为： {@code KB}.
+     * Kilobytes, represented by the suffix: {@code KB}.
      */
     KILOBYTES("KB", DataSize.ofKilobytes(1)),
 
     /**
-     * Megabytes, 后缀表示为： {@code MB}.
+     * Megabytes, represented by the suffix: {@code MB}.
      */
     MEGABYTES("MB", DataSize.ofMegabytes(1)),
 
     /**
-     * Gigabytes, 后缀表示为： {@code GB}.
+     * Gigabytes, represented by the suffix: {@code GB}.
      */
     GIGABYTES("GB", DataSize.ofGigabytes(1)),
 
     /**
-     * Terabytes, 后缀表示为： {@code TB}.
+     * Terabytes, represented by the suffix: {@code TB}.
      */
     TERABYTES("TB", DataSize.ofTerabytes(1));
 
     /**
-     * 单位后缀
+     * The suffix string representing this data unit (e.g., "B", "KB", "MB").
      */
     private final String suffix;
 
     /**
-     * 数据大小
+     * The {@link DataSize} object representing one unit of this type (e.g., 1 byte, 1 kilobyte).
      */
     private final DataSize size;
 
     /**
-     * 构造
+     * Constructs a {@code DataUnit} enum constant.
      *
-     * @param suffix 单位后缀
-     * @param size   单位大小
+     * @param suffix The string suffix for this unit (e.g., "B", "KB").
+     * @param size   The {@link DataSize} representing one unit of this type.
      */
     DataUnit(final String suffix, final DataSize size) {
         this.suffix = suffix;
@@ -93,20 +94,22 @@ public enum DataUnit {
     }
 
     /**
-     * 通过后缀返回对应的 DataUnit
+     * Returns the {@code DataUnit} corresponding to the given suffix. This method supports common suffixes like "KB",
+     * "MB", "GB", "TB", and also handles variations like "KiB", "MiB", "GiB" by converting them to their standard
+     * forms. It also supports case-insensitive matching and partial matches (e.g., "M" for "MB").
      *
-     * @param suffix 单位后缀，如KB、GB、GiB等
-     * @return 匹配到的{@link DataUnit}
-     * @throws IllegalArgumentException 后缀无法识别报错
+     * @param suffix The unit suffix string (e.g., "KB", "GB", "GiB").
+     * @return The matching {@link DataUnit}.
+     * @throws IllegalArgumentException If the suffix is not recognized.
      */
     public static DataUnit fromSuffix(String suffix) {
-        // 兼容KiB、MiB、GiB
+        // Handle KiB, MiB, GiB variations by converting to KB, MB, GB
         if (StringKit.length(suffix) == 3 && CharKit.equals(suffix.charAt(1), 'i', true)) {
             suffix = new String(new char[] { suffix.charAt(0), suffix.charAt(2) });
         }
 
         for (final DataUnit candidate : values()) {
-            // 支持类似于 3MB，3M，3m等写法
+            // Supports variations like 3MB, 3M, 3m
             if (StringKit.startWithIgnoreCase(candidate.suffix, suffix)) {
                 return candidate;
             }
@@ -115,18 +118,18 @@ public enum DataUnit {
     }
 
     /**
-     * 单位后缀
+     * Returns the suffix string for this data unit.
      *
-     * @return 单位后缀
+     * @return The unit suffix (e.g., "B", "KB").
      */
     public String getSuffix() {
         return this.suffix;
     }
 
     /**
-     * 单位大小
+     * Returns the {@link DataSize} object representing one unit of this type.
      *
-     * @return 单位大小
+     * @return The {@link DataSize} equivalent of one unit.
      */
     DataSize getSize() {
         return this.size;

@@ -39,11 +39,18 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.TypeKit;
 
 /**
- * 复合转换器，融合了所有支持类型和自定义类型的转换规则 在此类中，存放着默认转换器和自定义转换器，默认转换器是预定义的一些转换器，自定义转换器存放用户自定的转换器。 转换过程类似于转换链，过程如下：
- *
- * <pre>{@code
- *     处理null、Optional --> 自定义匹配转换器 --> 自定义类型转换器 --> 预注册的标准转换器 --> Map、集合、Enum等特殊转换器 --> Bean转换器
- * }</pre>
+ * A composite converter that aggregates all supported default and custom conversion rules.
+ * <p>
+ * The conversion process follows a specific chain of responsibility:
+ * <ol>
+ * <li>Handle {@code null} and {@link Optional} values.</li>
+ * <li>Attempt conversion using custom {@link MatcherConverter} instances.</li>
+ * <li>Attempt conversion using custom type-specific converters.</li>
+ * <li>Attempt conversion using pre-registered standard converters (e.g., for primitives).</li>
+ * <li>Attempt conversion using special converters (e.g., for {@link java.util.Map}, {@link java.util.Collection},
+ * {@link Enum}).</li>
+ * <li>Finally, attempt conversion to a JavaBean.</li>
+ * </ol>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -53,30 +60,40 @@ public class CompositeConverter implements Converter, Serializable {
     @Serial
     private static final long serialVersionUID = 2852267583368L;
 
+    /**
+     * Manages registered standard and custom converters.
+     */
     private RegisterConverter registerConverter;
+    /**
+     * Handles conversion for special types like collections, maps, and arrays.
+     */
     private SpecialConverter specialConverter;
 
     /**
-     * 构造
+     * Private constructor to prevent direct instantiation.
      */
     private CompositeConverter() {
 
     }
 
     /**
-     * 获得单例的 CompositeConverter
+     * Returns the singleton instance of {@code CompositeConverter}.
      *
-     * @return CompositeConverter
+     * @return The singleton {@code CompositeConverter} instance.
      */
     public static CompositeConverter getInstance() {
         return SingletonHolder.INSTANCE;
     }
 
     /**
-     * 登记自定义转换器，符合{@link MatcherConverter#match(Type, Class, Object)}则使用其转换器 注意：如果单例使用，此方法会影响全局
+     * Registers a custom {@link MatcherConverter}. If the converter's {@code match} method returns {@code true}, it
+     * will be used for conversion.
+     * <p>
+     * <strong>Warning:</strong> Since this is a singleton, this registration is global.
+     * 
      *
-     * @param converter 转换器
-     * @return this
+     * @param converter The {@link MatcherConverter} to register.
+     * @return This {@code CompositeConverter} instance.
      */
     public CompositeConverter register(final MatcherConverter converter) {
         registerConverter.register(converter);
@@ -84,11 +101,14 @@ public class CompositeConverter implements Converter, Serializable {
     }
 
     /**
-     * 登记自定义转换器，登记的目标类型必须一致 注意：如果单例使用，此方法会影响全局
+     * Registers a custom converter for a specific target type.
+     * <p>
+     * <strong>Warning:</strong> Since this is a singleton, this registration is global.
+     * 
      *
-     * @param type      转换的目标类型
-     * @param converter 转换器
-     * @return this
+     * @param type      The target type for which this converter will be used.
+     * @param converter The {@link Converter} to register.
+     * @return This {@code CompositeConverter} instance.
      */
     public CompositeConverter register(final Type type, final Converter converter) {
         registerConverter.register(type, converter);
@@ -96,12 +116,12 @@ public class CompositeConverter implements Converter, Serializable {
     }
 
     /**
-     * 转换值为指定类型
+     * Converts the given value to the specified type.
      *
-     * @param type  类型
-     * @param value 值
-     * @return 转换后的值，默认为{@code null}
-     * @throws ConvertException 转换器不存在
+     * @param type  The target type.
+     * @param value The value to convert.
+     * @return The converted value.
+     * @throws ConvertException if no suitable converter is found.
      */
     @Override
     public Object convert(final Type type, final Object value) throws ConvertException {
@@ -109,14 +129,14 @@ public class CompositeConverter implements Converter, Serializable {
     }
 
     /**
-     * 转换值为指定类型,自定义转换器优先
+     * Converts the given value to the specified type, returning a default value if conversion is not possible.
      *
-     * @param <T>          转换的目标类型（转换器转换到的类型）
-     * @param type         类型
-     * @param value        值
-     * @param defaultValue 默认值
-     * @return 转换后的值
-     * @throws ConvertException 转换器不存在
+     * @param <T>          The target type.
+     * @param type         The target type.
+     * @param value        The value to convert.
+     * @param defaultValue The default value to return if conversion fails or the input is {@code null}.
+     * @return The converted value, or the default value.
+     * @throws ConvertException if conversion fails and no default value is provided.
      */
     @Override
     public <T> T convert(final Type type, final Object value, final T defaultValue) throws ConvertException {
@@ -124,15 +144,15 @@ public class CompositeConverter implements Converter, Serializable {
     }
 
     /**
-     * 转换值为指定类型
+     * Converts the given value to the specified type, with control over converter priority.
      *
-     * @param <T>           转换的目标类型（转换器转换到的类型）
-     * @param type          类型目标
-     * @param value         被转换值
-     * @param defaultValue  默认值
-     * @param isCustomFirst 是否自定义转换器优先
-     * @return 转换后的值
-     * @throws ConvertException 转换器不存在
+     * @param <T>           The target type.
+     * @param type          The target type.
+     * @param value         The value to be converted.
+     * @param defaultValue  The default value to return on failure.
+     * @param isCustomFirst If {@code true}, custom converters are given priority over default converters.
+     * @return The converted value.
+     * @throws ConvertException if no suitable converter is found.
      */
     public <T> T convert(Type type, Object value, final T defaultValue, final boolean isCustomFirst)
             throws ConvertException {
@@ -140,27 +160,24 @@ public class CompositeConverter implements Converter, Serializable {
             return defaultValue;
         }
         if (TypeKit.isUnknown(type)) {
-            // 对于用户不指定目标类型的情况，返回原值
             if (null == defaultValue) {
-                return (T) value;
+                return (T) value; // Return original value if target type is unknown and no default is set.
             }
             type = defaultValue.getClass();
         }
 
+        // Unwrap Optional types
         if (value instanceof Optional<?>) {
             value = ((Optional<T>) value).getOrNull();
-            if (ObjectKit.isNull(value)) {
-                return defaultValue;
-            }
         }
         if (value instanceof java.util.Optional) {
             value = ((Optional<T>) value).orElse(null);
-            if (ObjectKit.isNull(value)) {
-                return defaultValue;
-            }
+        }
+        if (ObjectKit.isNull(value)) {
+            return defaultValue;
         }
 
-        // value本身实现了Converter接口，直接调用
+        // If the value is a Converter itself, use it.
         if (value instanceof Converter) {
             return ((Converter) value).convert(type, value, defaultValue);
         }
@@ -169,7 +186,7 @@ public class CompositeConverter implements Converter, Serializable {
             type = ((TypeReference<?>) type).getType();
         }
 
-        // 标准转换器
+        // Find and apply a suitable standard or custom converter.
         final Converter converter = registerConverter.getConverter(type, value, isCustomFirst);
         if (null != converter) {
             return converter.convert(type, value, defaultValue);
@@ -180,33 +197,32 @@ public class CompositeConverter implements Converter, Serializable {
             if (null != defaultValue) {
                 rawType = (Class<T>) defaultValue.getClass();
             } else {
-                throw new ConvertException("Can not get class from type: {}", type);
+                throw new ConvertException("Cannot determine raw class from type: {}", type);
             }
         }
 
-        // 特殊类型转换，包括Collection、Map、强转、Array等
+        // Attempt conversion for special types (Collection, Map, Array, etc.).
         final T result = (T) specialConverter.convert(type, rawType, value);
         if (null != result) {
             return result;
         }
 
-        // 尝试转Bean
+        // Attempt to convert to a JavaBean.
         if (BeanKit.isWritableBean(rawType)) {
             return (T) BeanConverter.INSTANCE.convert(type, value);
         }
 
-        // 无法转换
-        throw new ConvertException("Can not support from {}: [{}] to [{}]", value.getClass().getName(), value,
-                type.getTypeName());
+        throw new ConvertException("No suitable converter found for from {}: [{}] to [{}]", value.getClass().getName(),
+                value, type.getTypeName());
     }
 
     /**
-     * 类级的内部类，也就是静态的成员式内部类，该内部类的实例与外部类的实例 没有绑定关系，而且只有被调用到才会装载，从而实现了延迟加载
+     * A static inner class that holds the singleton instance, ensuring lazy initialization and thread safety.
      */
     private static class SingletonHolder {
 
         /**
-         * 静态初始化器，由JVM来保证线程安全
+         * The singleton instance, initialized on first access.
          */
         private static final CompositeConverter INSTANCE;
         static {

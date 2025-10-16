@@ -47,7 +47,8 @@ import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.WatchKit;
 
 /**
- * 文件内容跟随器，实现类似Linux下"tail -f"命令功能
+ * File content tailer, implementing functionality similar to the "tail -f" command in Linux. This utility continuously
+ * monitors a file for new content and processes it line by line.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -58,74 +59,94 @@ public class FileTailer implements Serializable {
     private static final long serialVersionUID = 2852227513936L;
 
     /**
-     * 控制台打印的处理类
+     * A predefined line handler that prints each line to the console.
      */
     public static final ConsumerX<String> CONSOLE_HANDLER = new ConsoleLineHandler();
 
     /**
-     * 编码
+     * The character set used for reading the file.
      */
     private final java.nio.charset.Charset charset;
     /**
-     * 行处理器
+     * The handler responsible for processing each new line read from the file.
      */
     private final ConsumerX<String> lineHandler;
     /**
-     * 初始读取的行数
+     * The number of lines to read from the end of the file when the tailer starts. If 0, no initial lines are read.
      */
     private final int initReadLine;
     /**
-     * 定时任务检查间隔时长
+     * The interval in milliseconds at which the file is checked for new content.
      */
     private final long period;
 
+    /**
+     * The absolute path of the file being tailed.
+     */
     private final String filePath;
+    /**
+     * The {@link RandomAccessFile} used for reading the file content.
+     */
     private final RandomAccessFile randomAccessFile;
+    /**
+     * The scheduled executor service used to periodically check for file changes.
+     */
     private final ScheduledExecutorService executorService;
+    /**
+     * A {@link WatchMonitor} to detect if the tailed file is removed.
+     */
     private WatchMonitor fileWatchMonitor;
 
+    /**
+     * Flag indicating whether the tailer should stop and throw an exception if the file is removed.
+     */
     private boolean stopOnRemove;
 
     /**
-     * 构造，默认UTF-8编码
+     * Constructs a new {@code FileTailer} with default UTF-8 encoding and a default check period of 1 second. No
+     * initial lines are read.
      *
-     * @param file        文件
-     * @param lineHandler 行处理器
+     * @param file        The file to tail. Must exist and be a regular file.
+     * @param lineHandler The line handler to process each line. Must not be {@code null}.
+     * @throws InternalException if the file does not exist or is not a regular file.
      */
     public FileTailer(final File file, final ConsumerX<String> lineHandler) {
         this(file, lineHandler, 0);
     }
 
     /**
-     * 构造，默认UTF-8编码
+     * Constructs a new {@code FileTailer} with default UTF-8 encoding and a default check period of 1 second.
      *
-     * @param file         文件
-     * @param lineHandler  行处理器
-     * @param initReadLine 启动时预读取的行数，1表示一行
+     * @param file         The file to tail. Must exist and be a regular file.
+     * @param lineHandler  The line handler to process each line. Must not be {@code null}.
+     * @param initReadLine The number of lines to read initially from the end of the file when starting.
+     * @throws InternalException if the file does not exist or is not a regular file.
      */
     public FileTailer(final File file, final ConsumerX<String> lineHandler, final int initReadLine) {
         this(file, Charset.UTF_8, lineHandler, initReadLine, Units.SECOND.getMillis());
     }
 
     /**
-     * 构造
+     * Constructs a new {@code FileTailer} with a default check period of 1 second. No initial lines are read.
      *
-     * @param file        文件
-     * @param charset     编码
-     * @param lineHandler 行处理器
+     * @param file        The file to tail. Must exist and be a regular file.
+     * @param charset     The character set for reading the file. Must not be {@code null}.
+     * @param lineHandler The line handler to process each line. Must not be {@code null}.
+     * @throws InternalException if the file does not exist or is not a regular file.
      */
     public FileTailer(final File file, final java.nio.charset.Charset charset, final ConsumerX<String> lineHandler) {
         this(file, charset, lineHandler, 0, Units.SECOND.getMillis());
     }
 
     /**
-     * 构造
+     * Constructs a new {@code FileTailer}.
      *
-     * @param file         文件
-     * @param charset      编码
-     * @param lineHandler  行处理器
-     * @param initReadLine 启动时预读取的行数，1表示一行
-     * @param period       检查间隔
+     * @param file         The file to tail. Must exist and be a regular file.
+     * @param charset      The character set for reading the file. Must not be {@code null}.
+     * @param lineHandler  The line handler to process each line. Must not be {@code null}.
+     * @param initReadLine The number of lines to read initially from the end of the file when starting.
+     * @param period       The interval in milliseconds for checking file changes. Must be positive.
+     * @throws InternalException if the file does not exist or is not a regular file.
      */
     public FileTailer(final File file, final java.nio.charset.Charset charset, final ConsumerX<String> lineHandler,
             final int initReadLine, final long period) {
@@ -140,9 +161,10 @@ public class FileTailer implements Serializable {
     }
 
     /**
-     * 检查文件有效性
+     * Checks the validity of the provided file.
      *
-     * @param file 文件
+     * @param file The file to check. Must not be {@code null}.
+     * @throws InternalException if the file does not exist or is not a regular file.
      */
     private static void checkFile(final File file) {
         if (!file.exists()) {
@@ -154,28 +176,32 @@ public class FileTailer implements Serializable {
     }
 
     /**
-     * 设置删除文件后是否退出并抛出异常
+     * Sets whether the tailer should stop and throw an exception if the monitored file is removed.
      *
-     * @param stopOnRemove 删除文件后是否退出并抛出异常
+     * @param stopOnRemove {@code true} to stop and throw an exception on file removal; {@code false} otherwise.
      */
     public void setStopOnRemove(final boolean stopOnRemove) {
         this.stopOnRemove = stopOnRemove;
     }
 
     /**
-     * 开始监听
+     * Starts the file tailing process in synchronous mode. This method will block until the tailer is stopped or an
+     * error occurs.
      */
     public void start() {
         start(false);
     }
 
     /**
-     * 开始监听
+     * Starts the file tailing process.
      *
-     * @param async 是否异步执行
+     * @param async {@code true} to execute asynchronously (non-blocking); {@code false} for synchronous execution
+     *              (blocking).
+     * @throws InternalException if an I/O error occurs during initial read or if an execution error occurs in
+     *                           asynchronous mode.
      */
     public void start(final boolean async) {
-        // 初始读取
+        // Initial read of tail lines
         try {
             this.readTail();
         } catch (final IOException e) {
@@ -189,7 +215,7 @@ public class FileTailer implements Serializable {
                 this.period,
                 TimeUnit.MILLISECONDS);
 
-        // 监听删除
+        // Monitor for file deletion if stopOnRemove is enabled
         if (stopOnRemove) {
             fileWatchMonitor = WatchKit.of(this.filePath, WatchKind.DELETE.getValue());
             fileWatchMonitor.setWatcher(new SimpleWatcher() {
@@ -213,13 +239,15 @@ public class FileTailer implements Serializable {
             } catch (final ExecutionException e) {
                 throw new InternalException(e);
             } catch (final InterruptedException e) {
-                // ignore and exist
+                // ignore and exit gracefully
+                Thread.currentThread().interrupt();
             }
         }
     }
 
     /**
-     * 结束，此方法需在异步模式或
+     * Stops the file tailing process. This method should be called to gracefully shut down the tailer, especially when
+     * it's running in asynchronous mode.
      */
     public void stop() {
         try {
@@ -231,9 +259,11 @@ public class FileTailer implements Serializable {
     }
 
     /**
-     * 预读取行
+     * Reads the initial lines from the tail of the file based on {@link #initReadLine}. The file pointer is then set to
+     * the end of the file.
      *
-     * @throws IOException IO异常
+     * @throws IOException       if an I/O error occurs during file access.
+     * @throws InternalException if an I/O error occurs.
      */
     private void readTail() throws IOException {
         final long len = this.randomAccessFile.length();
@@ -247,16 +277,16 @@ public class FileTailer implements Serializable {
             int c;
             int currentLine = 0;
             while (nextEnd > start) {
-                // 满
+                // If the desired number of initial lines has been read, stop.
                 if (currentLine >= initReadLine) {
-                    // initReadLine是行数，从1开始，currentLine是行号，从0开始
-                    // 因此行号0表示一行，所以currentLine == initReadLine表示读取完毕
+                    // initReadLine is the number of lines, starting from 1. currentLine is the line number, starting
+                    // from 0.
+                    // Therefore, currentLine == initReadLine means reading is complete.
                     break;
                 }
 
                 c = this.randomAccessFile.read();
                 if (c == Symbol.C_LF || c == Symbol.C_CR) {
-                    // FileKit.readLine(this.randomAccessFile, this.charset, this.lineHandler);
                     final String line = FileKit.readLine(this.randomAccessFile, this.charset);
                     if (null != line) {
                         stack.push(line);
@@ -267,8 +297,7 @@ public class FileTailer implements Serializable {
                 nextEnd--;
                 this.randomAccessFile.seek(nextEnd);
                 if (nextEnd == 0) {
-                    // 当文件指针退至文件开始处，输出第一行
-                    // FileKit.readLine(this.randomAccessFile, this.charset, this.lineHandler);
+                    // When the file pointer retreats to the beginning of the file, read the first line.
                     final String line = FileKit.readLine(this.randomAccessFile, this.charset);
                     if (null != line) {
                         stack.push(line);
@@ -277,13 +306,13 @@ public class FileTailer implements Serializable {
                 }
             }
 
-            // 输出缓存栈中的内容
+            // Output the content in the buffer stack in correct order (LIFO)
             while (!stack.isEmpty()) {
                 this.lineHandler.accept(stack.pop());
             }
         }
 
-        // 将指针置于末尾
+        // Set the pointer to the end of the file for continuous tailing
         try {
             this.randomAccessFile.seek(len);
         } catch (final IOException e) {
@@ -292,7 +321,7 @@ public class FileTailer implements Serializable {
     }
 
     /**
-     * 命令行打印的行处理器
+     * A concrete implementation of {@link ConsumerX} that prints each accepted string (line) to the console.
      */
     public static class ConsoleLineHandler implements ConsumerX<String> {
 

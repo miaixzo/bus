@@ -26,7 +26,10 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 提供可变值对象的封装，用于封装int、long等不可变值，使其可变
+ * Provides mutable wrapper classes for immutable value types such as {@code int}, {@code long}, {@code boolean}, etc.
+ * These wrappers allow their encapsulated values to be modified, which is useful in scenarios where a mutable reference
+ * to a primitive or immutable object is required, for example, when passing values to methods that modify them or when
+ * using them in collections that require mutable elements.
  *
  * @author Kimi Liu
  * @since Java 17+

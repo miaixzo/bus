@@ -30,7 +30,14 @@ package org.miaixz.bus.core.lang.annotation.env;
 import java.lang.annotation.*;
 
 /**
- * 注解: 生产环境，表示当前方法性能安全性各方面达标,可以用于生产环境。
+ * A marker annotation indicating that a class or method is suitable for use in a <strong>production
+ * environment</strong>.
+ * <p>
+ * This annotation signifies that the annotated component has met the necessary standards for performance, stability,
+ * and security. It serves as a clear indicator that the code is production-ready.
+ * <p>
+ * It is the counterpart to {@link Dev} and is intended for documentation and to be used by static analysis tools or
+ * build scripts to validate deployment configurations.
  *
  * @author Kimi Liu
  * @since Java 17+

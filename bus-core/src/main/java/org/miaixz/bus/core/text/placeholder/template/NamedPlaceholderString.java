@@ -38,10 +38,9 @@ import org.miaixz.bus.core.text.placeholder.segment.*;
 import org.miaixz.bus.core.xyz.*;
 
 /**
- * 有前后缀的字符串模板
+ * String template with named or indexed placeholders.
  * <p>
- * 例如，"{1}", "{name}", "#{data}"
- * </p>
+ * For example, "{1}", "{name}", "#{data}"
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -49,26 +48,38 @@ import org.miaixz.bus.core.xyz.*;
 public class NamedPlaceholderString extends StringTemplate {
 
     /**
-     * 默认前缀
+     * Default prefix for placeholders.
      */
     public static final String DEFAULT_PREFIX = Symbol.BRACE_LEFT;
     /**
-     * 默认后缀
+     * Default suffix for placeholders.
      */
     public static final String DEFAULT_SUFFIX = Symbol.BRACE_RIGHT;
     /**
-     * 占位符前缀，默认为: {@link #DEFAULT_PREFIX}
+     * Placeholder prefix, defaults to {@link #DEFAULT_PREFIX}
      */
     protected String prefix;
     /**
-     * 占位符后缀，默认为: {@link #DEFAULT_SUFFIX}
+     * Placeholder suffix, defaults to {@link #DEFAULT_SUFFIX}
      */
     protected String suffix;
     /**
-     * 在下标占位符中，最大的下标值
+     * In indexed placeholders, the maximum index value.
      */
     protected int indexedSegmentMaxIdx = 0;
 
+    /**
+     * Constructs a {@code NamedPlaceholderString} with the specified template, features, prefix, suffix, escape
+     * character, default value, and default value handler.
+     *
+     * @param template            The string template, cannot be {@code null}.
+     * @param features            The features to enable for this template.
+     * @param prefix              The prefix for placeholders.
+     * @param suffix              The suffix for placeholders.
+     * @param escape              The escape character.
+     * @param defaultValue        The default value to use when a placeholder cannot be resolved.
+     * @param defaultValueHandler The handler for default values.
+     */
     protected NamedPlaceholderString(final String template, final int features, final String prefix,
             final String suffix, final char escape, final String defaultValue,
             final UnaryOperator<String> defaultValueHandler) {
@@ -79,10 +90,10 @@ public class NamedPlaceholderString extends StringTemplate {
         this.prefix = prefix;
         this.suffix = suffix;
 
-        // 一些初始化后续操作
+        // Some initialization subsequent operations
         afterInit();
 
-        // 记录 下标占位符 最大的 下标值
+        // Record the maximum index value for indexed placeholders
         if (!placeholderSegments.isEmpty()) {
             for (final AbstractSegment segment : placeholderSegments) {
                 if (segment instanceof IndexedSegment) {
@@ -94,20 +105,27 @@ public class NamedPlaceholderString extends StringTemplate {
     }
 
     /**
-     * 创建 builder
+     * Creates a builder for {@code NamedPlaceholderString}.
      *
-     * @param template 字符串模板，不能为 {@code null}
-     * @return builder实例
+     * @param template The string template, cannot be {@code null}.
+     * @return A builder instance.
      */
     public static Builder builder(final String template) {
         return new Builder(template);
     }
 
+    /**
+     * Parses the template string into a list of segments.
+     *
+     * @param template The template string to parse.
+     * @return A list of {@link StringSegment} representing the parsed template.
+     * @throws InternalException if a placeholder's opening delimiter is not matched by a closing delimiter.
+     */
     @Override
     protected List<StringSegment> parseSegments(final String template) {
-        // 寻找第一个前缀符号
+        // Find the first prefix symbol
         int openCursor = template.indexOf(prefix);
-        // 没有任何占位符
+        // No placeholders
         if (openCursor == -1) {
             return Collections.singletonList(new LiteralSegment(template));
         }
@@ -116,24 +134,25 @@ public class NamedPlaceholderString extends StringTemplate {
         final int closeLength = suffix.length();
         final List<StringSegment> segments = new ArrayList<>();
         int closeCursor = 0;
-        // 开始匹配
+        // Start matching
         final char[] src = template.toCharArray();
         final StringBuilder expression = new StringBuilder(16);
         boolean hasDoubleEscape = false;
-        // 占位变量名称
+        // Placeholder variable name
         String variableName;
-        // 完整的占位符
+        // Complete placeholder
         String wholePlaceholder;
-        // 上一个解析的segment是否是固定文本，如果是，则需要和当前新的文本部分合并
+        // Whether the last parsed segment was a literal text, if so, it needs to be merged with the new text part
         boolean isLastLiteralSegment = false;
         while (openCursor > -1) {
-            // 开始符号是否被转义，若是则跳过，并寻找下一个开始符号
+            // Whether the opening symbol is escaped, if so, skip and find the next opening symbol
             if (openCursor > 0 && src[openCursor - 1] == escape) {
-                // 存在 双转义符，转义符之前还有一个转义符，形如："\\{"，占位符依旧有效
+                // There is a double escape character, another escape character before the escape character, like:
+                // "\\{", the placeholder is still valid
                 if (openCursor > 1 && src[openCursor - 2] == escape) {
                     hasDoubleEscape = true;
                 } else {
-                    // 开始符号被转义，跳过，寻找下一个开始符号
+                    // The opening symbol is escaped, skip, find the next opening symbol
                     addLiteralSegment(
                             isLastLiteralSegment,
                             segments,
@@ -145,27 +164,28 @@ public class NamedPlaceholderString extends StringTemplate {
                 }
             }
 
-            // 没有双转义符
+            // No double escape character
             if (!hasDoubleEscape) {
                 if (closeCursor < openCursor) {
-                    // 完整记录当前占位符的开始符号与上一占位符的结束符号间的字符串
+                    // Completely record the string between the opening symbol of the current placeholder and the
+                    // closing symbol of the previous placeholder
                     addLiteralSegment(isLastLiteralSegment, segments, template.substring(closeCursor, openCursor));
                 }
             } else {
-                // 存在双转义符，只能保留一个转义符
+                // There is a double escape character, only one escape character can be kept
                 hasDoubleEscape = false;
                 addLiteralSegment(isLastLiteralSegment, segments, template.substring(closeCursor, openCursor - 1));
             }
 
-            // 重置结束游标至当前占位符的开始处
+            // Reset the closing cursor to the beginning of the current placeholder
             closeCursor = openCursor + openLength;
 
-            // 寻找结束符号下标
+            // Find the index of the closing symbol
             int end = template.indexOf(suffix, closeCursor);
             while (end > -1) {
-                // 结束符号被转义，寻找下一个结束符号
+                // The closing symbol is escaped, find the next closing symbol
                 if (end > closeCursor && src[end - 1] == escape) {
-                    // 双转义符，保留一个转义符，并且找到了结束符
+                    // Double escape character, keep one escape character, and found the closing character
                     if (end > 1 && src[end - 2] == escape) {
                         expression.append(src, closeCursor, end - closeCursor - 1);
                         break;
@@ -175,42 +195,44 @@ public class NamedPlaceholderString extends StringTemplate {
                         end = template.indexOf(suffix, closeCursor);
                     }
                 }
-                // 找到结束符号
+                // Found the closing symbol
                 else {
                     expression.append(src, closeCursor, end - closeCursor);
                     break;
                 }
             }
 
-            // 未能找到结束符号，说明匹配异常
+            // If the closing symbol is not found, it means the match is abnormal
             if (end == -1) {
-                throw new InternalException("\"{}\" 中字符下标 {} 处的开始符没有找到对应的结束符", template, openCursor);
+                throw new InternalException(
+                        "The opening delimiter at character index {} in \"{}\" has no corresponding closing delimiter",
+                        openCursor, template);
             }
-            // 找到结束符号，开始到结束符号 之间的字符串 就是占位变量
+            // If the closing symbol is found, the string between the start and end symbols is the placeholder variable
             else {
-                // 占位变量名称
+                // Placeholder variable name
                 variableName = expression.toString();
                 expression.setLength(0);
-                // 完整的占位符
+                // Complete placeholder
                 wholePlaceholder = expression.append(prefix).append(variableName).append(suffix).toString();
                 expression.setLength(0);
-                // 如果是整数，则当作下标处理
+                // If it is an integer, treat it as an index
                 if (MathKit.isInteger(variableName)) {
                     segments.add(new IndexedSegment(variableName, wholePlaceholder));
                 } else {
-                    // 当作变量名称处理
+                    // Treat as variable name
                     segments.add(new NamedSegment(variableName, wholePlaceholder));
                 }
                 isLastLiteralSegment = false;
-                // 完成当前占位符的处理匹配，寻找下一个
+                // Complete the processing and matching of the current placeholder, find the next one
                 closeCursor = end + closeLength;
             }
 
-            // 寻找下一个开始符号
+            // Find the next opening symbol
             openCursor = template.indexOf(prefix, closeCursor);
         }
 
-        // 若匹配结束后仍有未处理的字符串，则直接将其拼接到表达式上
+        // If there are unprocessed strings after matching, append them directly to the expression
         if (closeCursor < src.length) {
             addLiteralSegment(isLastLiteralSegment, segments, template.substring(closeCursor));
         }
@@ -218,30 +240,30 @@ public class NamedPlaceholderString extends StringTemplate {
     }
 
     /**
-     * 按顺序使用数组元素替换占位符
+     * Replaces placeholders with array elements in sequence.
      *
-     * @param args 可变参数
-     * @return 格式化字符串
+     * @param args Variable arguments.
+     * @return The formatted string.
      */
     public String formatSequence(final Object... args) {
         return formatArraySequence(args);
     }
 
     /**
-     * 按顺序使用原始数组元素替换占位符
+     * Replaces placeholders with raw array elements in sequence.
      *
-     * @param array 原始类型数组，例如: {@code int[]}
-     * @return 格式化字符串
+     * @param array A raw type array, e.g., {@code int[]}.
+     * @return The formatted string.
      */
     public String formatArraySequence(final Object array) {
         return formatArraySequence(ArrayKit.wrap(array));
     }
 
     /**
-     * 按顺序使用数组元素替换占位符
+     * Replaces placeholders with array elements in sequence.
      *
-     * @param array 数组
-     * @return 格式化字符串
+     * @param array The array.
+     * @return The formatted string.
      */
     public String formatArraySequence(final Object[] array) {
         if (array == null) {
@@ -251,10 +273,10 @@ public class NamedPlaceholderString extends StringTemplate {
     }
 
     /**
-     * 按顺序使用迭代器元素替换占位符
+     * Replaces placeholders with iterator elements in sequence.
      *
-     * @param iterable iterable
-     * @return 格式化字符串
+     * @param iterable The iterable.
+     * @return The formatted string.
      */
     @Override
     public String formatSequence(final Iterable<?> iterable) {
@@ -262,30 +284,30 @@ public class NamedPlaceholderString extends StringTemplate {
     }
 
     /**
-     * 按下标使用数组元素替换占位符
+     * Replaces placeholders with array elements by index.
      *
-     * @param args 可变参数
-     * @return 格式化字符串
+     * @param args Variable arguments.
+     * @return The formatted string.
      */
     public String formatIndexed(final Object... args) {
         return formatArrayIndexed(args);
     }
 
     /**
-     * 按下标使用原始数组元素替换占位符
+     * Replaces placeholders with raw array elements by index.
      *
-     * @param array 原始类型数组
-     * @return 格式化字符串
+     * @param array A raw type array.
+     * @return The formatted string.
      */
     public String formatArrayIndexed(final Object array) {
         return formatArrayIndexed(ArrayKit.wrap(array));
     }
 
     /**
-     * 按 下标 使用 数组元素 替换 占位符
+     * Replaces placeholders with array elements by index.
      *
-     * @param array 数组
-     * @return 格式化字符串
+     * @param array The array.
+     * @return The formatted string.
      */
     public String formatArrayIndexed(final Object[] array) {
         if (array == null) {
@@ -295,21 +317,22 @@ public class NamedPlaceholderString extends StringTemplate {
     }
 
     /**
-     * 按下标使用集合元素替换占位符
+     * Replaces placeholders with collection elements by index.
      *
-     * @param collection 集合元素
-     * @return 格式化字符串
+     * @param collection The collection elements.
+     * @return The formatted string.
      */
     public String formatIndexed(final Collection<?> collection) {
         return formatIndexed(collection, null);
     }
 
     /**
-     * 按 下标 使用 集合元素 替换 占位符
+     * Replaces placeholders with collection elements by index.
      *
-     * @param collection          集合元素
-     * @param missingIndexHandler 集合中不存在下标位置时的处理器，根据 下标 返回 代替值
-     * @return 格式化字符串
+     * @param collection          The collection elements.
+     * @param missingIndexHandler A handler for when an index is not found in the collection, returns a substitute value
+     *                            based on the index.
+     * @return The formatted string.
      */
     public String formatIndexed(final Collection<?> collection, final IntFunction<String> missingIndexHandler) {
         if (collection == null) {
@@ -329,7 +352,7 @@ public class NamedPlaceholderString extends StringTemplate {
                 }
                 return CollKit.get(collection, index);
             }
-            // 下标越界，代表 占位符 没有对应值，尝试获取代替值
+            // Index out of bounds, meaning the placeholder has no corresponding value, try to get a substitute value
             else if (missingIndexHandler != null) {
                 return missingIndexHandler.apply(index);
             } else {
@@ -339,10 +362,10 @@ public class NamedPlaceholderString extends StringTemplate {
     }
 
     /**
-     * 使用占位变量名称，从 Bean 或 Map 中查询值来替换占位符
+     * Replaces placeholders by querying values from a Bean or Map using the placeholder variable name.
      *
-     * @param beanOrMap Bean 或 Map 实例
-     * @return 格式化字符串
+     * @param beanOrMap The Bean or Map instance.
+     * @return The formatted string.
      */
     public String format(final Object beanOrMap) {
         if (beanOrMap == null) {
@@ -355,10 +378,10 @@ public class NamedPlaceholderString extends StringTemplate {
     }
 
     /**
-     * 使用占位变量名称，从 Map 中查询值来替换占位符
+     * Replaces placeholders by querying values from a Map using the placeholder variable name.
      *
-     * @param map map
-     * @return 格式化字符串
+     * @param map The map.
+     * @return The formatted string.
      */
     public String format(final Map<String, ?> map) {
         if (null == map) {
@@ -368,10 +391,10 @@ public class NamedPlaceholderString extends StringTemplate {
     }
 
     /**
-     * 使用占位变量名称，从 valueSupplier 中查询值来替换占位符
+     * Replaces placeholders by querying values from a value supplier using the placeholder variable name.
      *
-     * @param valueSupplier 根据 占位变量名称 返回 值
-     * @return 格式化字符串
+     * @param valueSupplier A function that returns a value based on the placeholder variable name.
+     * @return The formatted string.
      */
     public String format(final Function<String, ?> valueSupplier) {
         if (valueSupplier == null) {
@@ -381,11 +404,12 @@ public class NamedPlaceholderString extends StringTemplate {
     }
 
     /**
-     * 使用占位变量名称，从 valueSupplier 中查询值来替换占位符
+     * Replaces placeholders by querying values from a value supplier using the placeholder variable name.
      *
-     * @param valueSupplier 根据 占位变量名称 返回 值
-     * @param containsKey   占位变量名称 是否存在，例如：{@code map.containsKey(data)}
-     * @return 格式化字符串
+     * @param valueSupplier A function that returns a value based on the placeholder variable name.
+     * @param containsKey   A predicate to check if the placeholder variable name exists, e.g.,
+     *                      {@code map.containsKey(data)}.
+     * @return The formatted string.
      */
     public String format(final Function<String, ?> valueSupplier, final Predicate<String> containsKey) {
         if (valueSupplier == null || containsKey == null) {
@@ -402,20 +426,20 @@ public class NamedPlaceholderString extends StringTemplate {
     }
 
     /**
-     * 将占位符位置的值，按顺序解析为字符串数组
+     * Parses the values at placeholder positions into a string array in sequence.
      *
-     * @param text 待解析的字符串，一般是格式化方法的返回值
-     * @return 字符串数组
+     * @param text The string to be parsed, typically the return value of a formatting method.
+     * @return A string array.
      */
     public String[] matchesSequenceToArray(final String text) {
         return matchesSequence(text).toArray(new String[0]);
     }
 
     /**
-     * 将占位符位置的值，按顺序解析为字符串列表
+     * Parses the values at placeholder positions into a string list in sequence.
      *
-     * @param text 待解析的字符串，一般是格式化方法的返回值
-     * @return 字符串列表
+     * @param text The string to be parsed, typically the return value of a formatting method.
+     * @return A string list.
      */
     @Override
     public List<String> matchesSequence(final String text) {
@@ -423,10 +447,10 @@ public class NamedPlaceholderString extends StringTemplate {
     }
 
     /**
-     * 将占位符位置的值，按占位符下标值解析为字符串数组
+     * Parses the values at placeholder positions into a string array by placeholder index.
      *
-     * @param text 待解析的字符串，一般是格式化方法的返回值
-     * @return 字符串数组
+     * @param text The string to be parsed, typically the return value of a formatting method.
+     * @return A string array.
      * @see #matchesIndexed(String, IntFunction)
      */
     public String[] matchesIndexedToArray(final String text) {
@@ -434,12 +458,13 @@ public class NamedPlaceholderString extends StringTemplate {
     }
 
     /**
-     * 将占位符位置的值，按占位符下标值解析为字符串数组
+     * Parses the values at placeholder positions into a string array by placeholder index.
      *
-     * @param text                待解析的字符串，一般是格式化方法的返回值
-     * @param missingIndexHandler 根据 下标 返回 默认值，该参数可以为 {@code null}，仅在 {@link Feature#MATCH_EMPTY_VALUE_TO_DEFAULT_VALUE}
-     *                            策略时生效
-     * @return 字符串数组
+     * @param text                The string to be parsed, typically the return value of a formatting method.
+     * @param missingIndexHandler A function that returns a default value based on the index when the index position is
+     *                            not found in the collection. This parameter can be {@code null}, and is only effective
+     *                            with the {@link Feature#MATCH_EMPTY_VALUE_TO_DEFAULT_VALUE} strategy.
+     * @return A string array.
      * @see #matchesIndexed(String, IntFunction)
      */
     public String[] matchesIndexedToArray(final String text, final IntFunction<String> missingIndexHandler) {
@@ -447,10 +472,10 @@ public class NamedPlaceholderString extends StringTemplate {
     }
 
     /**
-     * 将占位符位置的值，按占位符下标值解析为字符串列表
+     * Parses the values at placeholder positions into a string list by placeholder index.
      *
-     * @param text 待解析的字符串，一般是格式化方法的返回值
-     * @return 字符串列表
+     * @param text The string to be parsed, typically the return value of a formatting method.
+     * @return A string list.
      * @see #matchesIndexed(String, IntFunction)
      */
     public List<String> matchesIndexed(final String text) {
@@ -458,17 +483,17 @@ public class NamedPlaceholderString extends StringTemplate {
     }
 
     /**
-     * 将占位符位置的值，按占位符下标值解析为字符串列表
-     *
+     * Parses the values at placeholder positions into a string list by placeholder index.
      * <p>
-     * 例如，模板中为 {@literal "This is between {1} and {2}"}，格式化结果为 {@literal "This is between 666 and 999"}, 由于其最大下标为 2,
-     * 则解析结果中固定有 3 个元素，解析结果为 {@code [null, "666", "999"]}
-     * </p>
+     * For example, if the template is {@literal "This is between {1} and {2}"}, and the formatted result is
+     * {@literal "This is between 666 and 999"}, since the maximum index is 2, the parsing result will always have 3
+     * elements, and the result will be {@code [null, "666", "999"]}.
      *
-     * @param text                待解析的字符串，一般是格式化方法的返回值
-     * @param missingIndexHandler 根据 下标 返回 默认值，该参数可以为 {@code null}，仅在 {@link Feature#MATCH_EMPTY_VALUE_TO_DEFAULT_VALUE}
-     *                            策略时生效
-     * @return 字符串列表
+     * @param text                The string to be parsed, typically the return value of a formatting method.
+     * @param missingIndexHandler A function that returns a default value based on the index when the index position is
+     *                            not found in the collection. This parameter can be {@code null}, and is only effective
+     *                            with the {@link Feature#MATCH_EMPTY_VALUE_TO_DEFAULT_VALUE} strategy.
+     * @return A string list.
      */
     public List<String> matchesIndexed(final String text, final IntFunction<String> missingIndexHandler) {
         if (text == null || placeholderSegments.isEmpty() || !isMatches(text)) {
@@ -476,24 +501,25 @@ public class NamedPlaceholderString extends StringTemplate {
         }
 
         final List<String> params = new ArrayList<>(this.indexedSegmentMaxIdx + 1);
-        // 用null值填充所有位置
+        // Fill all positions with null values
         ListKit.setOrPadding(params, this.indexedSegmentMaxIdx, null, null);
         matchesIndexed(text, params::set, missingIndexHandler);
         return params;
     }
 
     /**
-     * 根据下标和下标占位符位置的值，自行提取结果值
-     *
+     * Extracts result values based on the index and the value at the indexed placeholder position.
      * <p>
-     * 例如，模板中为 {@literal "This is between {1} and {2}"}，格式化结果为 {@literal "This is between 666 and 999"}, 由于其最大下标为 2,
-     * 则解析结果中固定有 3 个元素，解析结果为 {@code [null, "666", "999"]}
-     * </p>
+     * For example, if the template is {@literal "This is between {1} and {2}"}, and the formatted result is
+     * {@literal "This is between 666 and 999"}, since the maximum index is 2, the parsing result will always have 3
+     * elements, and the result will be {@code [null, "666", "999"]}.
      *
-     * @param text                待解析的字符串，一般是格式化方法的返回值
-     * @param idxValueConsumer    处理 下标 和 下标占位符位置的值 的消费者，例如：{@code (idx, value) -> list.set(idx, value)}
-     * @param missingIndexHandler 根据 下标 返回 默认值，该参数可以为 {@code null}，仅在 {@link Feature#MATCH_EMPTY_VALUE_TO_DEFAULT_VALUE}
-     *                            策略时生效
+     * @param text                The string to be parsed, typically the return value of a formatting method.
+     * @param idxValueConsumer    A consumer that processes the index and the value at the indexed placeholder position,
+     *                            e.g., {@code (idx, value) -> list.set(idx, value)}.
+     * @param missingIndexHandler A function that returns a default value based on the index when the index position is
+     *                            not found in the collection. This parameter can be {@code null}, and is only effective
+     *                            with the {@link Feature#MATCH_EMPTY_VALUE_TO_DEFAULT_VALUE} strategy.
      */
     public void matchesIndexed(
             final String text,
@@ -516,22 +542,22 @@ public class NamedPlaceholderString extends StringTemplate {
     }
 
     /**
-     * 根据占位变量和对应位置解析值，构造 {@link Map}
+     * Constructs a {@link Map} based on placeholder variables and their corresponding parsed values.
      *
-     * @param text 待解析的字符串，一般是格式化方法的返回值
-     * @return {@link Map}
+     * @param text The string to be parsed, typically the return value of a formatting method.
+     * @return A {@link Map}.
      */
     public Map<String, String> matches(final String text) {
         return matches(text, HashMap::new);
     }
 
     /**
-     * 根据占位变量和对应位置解析值，构造 map 或者 beans 实例
+     * Constructs a map or bean instance based on placeholder variables and their corresponding parsed values.
      *
-     * @param text              待解析的字符串，一般是格式化方法的返回值
-     * @param beanOrMapSupplier 提供一个 beans 或者 map，例如：{@code HashMap::new}
-     * @param <T>               返回结果对象类型
-     * @return map 或者 beans 实例
+     * @param text              The string to be parsed, typically the return value of a formatting method.
+     * @param beanOrMapSupplier A supplier that provides a bean or map, e.g., {@code HashMap::new}.
+     * @param <T>               The type of the returned object.
+     * @return A map or bean instance.
      */
     public <T> T matches(final String text, final Supplier<T> beanOrMapSupplier) {
         Assert.notNull(beanOrMapSupplier, "beanOrMapSupplier cannot be null");
@@ -550,33 +576,33 @@ public class NamedPlaceholderString extends StringTemplate {
     }
 
     /**
-     * 构造器
+     * Builder for {@link NamedPlaceholderString}.
      */
     public static class Builder extends AbstractBuilder<Builder, NamedPlaceholderString> {
 
         /**
-         * 占位符前缀，默认为 {@link NamedPlaceholderString#DEFAULT_PREFIX} 不能为空字符串
+         * Placeholder prefix, defaults to {@link NamedPlaceholderString#DEFAULT_PREFIX}, cannot be an empty string.
          */
         protected String prefix;
         /**
-         * 占位符后缀，默认为 {@link NamedPlaceholderString#DEFAULT_SUFFIX} 不能为空字符串
+         * Placeholder suffix, defaults to {@link NamedPlaceholderString#DEFAULT_SUFFIX}, cannot be an empty string.
          */
         protected String suffix;
 
         /**
-         * 构造
+         * Constructs a new Builder.
          *
-         * @param template 模板
+         * @param template The template string.
          */
         protected Builder(final String template) {
             super(template);
         }
 
         /**
-         * 设置 占位符前缀
+         * Sets the placeholder prefix.
          *
-         * @param prefix 占位符前缀，不能为空字符串
-         * @return builder
+         * @param prefix The placeholder prefix, cannot be an empty string.
+         * @return This builder instance.
          */
         public Builder prefix(final String prefix) {
             this.prefix = prefix;
@@ -584,16 +610,21 @@ public class NamedPlaceholderString extends StringTemplate {
         }
 
         /**
-         * 设置 占位符后缀
+         * Sets the placeholder suffix.
          *
-         * @param suffix 占位符后缀，不能为空字符串
-         * @return builder
+         * @param suffix The placeholder suffix, cannot be an empty string.
+         * @return This builder instance.
          */
         public Builder suffix(final String suffix) {
             this.suffix = suffix;
             return this;
         }
 
+        /**
+         * Builds a new {@link NamedPlaceholderString} instance.
+         *
+         * @return A new {@link NamedPlaceholderString} instance.
+         */
         @Override
         protected NamedPlaceholderString buildInstance() {
             if (this.prefix == null) {
@@ -606,6 +637,11 @@ public class NamedPlaceholderString extends StringTemplate {
                     this.defaultValue, this.defaultValueHandler);
         }
 
+        /**
+         * Returns this builder instance.
+         *
+         * @return This builder instance.
+         */
         @Override
         protected Builder self() {
             return this;

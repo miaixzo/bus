@@ -36,7 +36,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * 查询企业付款到零钱/银行卡
+ * Query enterprise transfer to balance/bank card model.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,9 +48,21 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class GetTransferInfo extends Material {
 
+    /**
+     * Random string.
+     */
     private String nonce_str;
+    /**
+     * Signature.
+     */
     private String sign;
+    /**
+     * Partner trade number.
+     */
     private String partner_trade_no;
+    /**
+     * Merchant ID.
+     */
     private String mch_id;
 
 }

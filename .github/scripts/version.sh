@@ -27,48 +27,48 @@
 #################################################################################
 
 #------------------------------------------------
-# 升级版本，包括：
-# 1. 升级pom.xml中的版本号
-# 2. 替换README.md和version中的版本号
+# This script upgrades the project version. It includes:
+# 1. Updating the version number in pom.xml files.
+# 2. Replacing the version number in README.md and the VERSION file.
 #------------------------------------------------
 
 set -o errexit
 
 pwd=$(pwd)
 
-# 显示 LOGO
+# Display the LOGO
 "$(dirname ${BASH_SOURCE[0]})"/logo.sh
 
 if [ -z "$1" ]; then
-        echo "ERROR: 新版本不存在，请指定参数1"
-        exit
+        echo "ERROR: New version not specified. Please provide it as the first argument."
+        exit 1
 fi
 
-# 替换所有模块pom.xml中的版本
+# Set the version in all module pom.xml files
 mvn versions:set -DnewVersion=$1
 
-# 不带-SNAPSHOT的版本号，用于替换其它地方
+# Get the version number without the -SNAPSHOT suffix for use elsewhere
 version=${1%-SNAPSHOT}
 
-# 替换其它地方的版本
-echo "当前路径：${pwd}"
+# Replace the version number in other files
+echo "Current path: ${pwd}"
 
 if [ -n "$1" ];then
     old_version=$(cat "${pwd}"/VERSION)
-    echo "$old_version 替换为新版本 ${version}"
+    echo "Replacing old version ${old_version} with new version ${version}"
 else
-    # 参数错误，退出
-    echo "ERROR: 请指定新版本！"
-    exit
+    # Argument error, exit
+    echo "ERROR: Please specify the new version!"
+    exit 1
 fi
 
 if [ -z "$old_version" ]; then
-    echo "ERROR: 旧版本不存在，请确认/VERSION中信息正确"
-    exit
+    echo "ERROR: Old version not found. Please verify the contents of the /VERSION file."
+    exit 1
 fi
 
-# 替换README.md中的版本
+# Replace the version in README.md
 sed -i "s/${old_version}/${version}/g" "$pwd"/README.md
 
-# 保留新版本号
+# Save the new version number to the VERSION file
 echo "$version" > "$pwd"/VERSION

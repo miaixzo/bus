@@ -31,7 +31,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Hyperlink;
 
 /**
- * {@link Hyperlink} 值单元格设置器
+ * {@link CellSetter} for {@link Hyperlink} values.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -41,9 +41,9 @@ public class HyperlinkCellSetter implements CellSetter {
     private final Hyperlink value;
 
     /**
-     * 构造
+     * Constructs a {@code HyperlinkCellSetter} with the specified {@link Hyperlink} value.
      *
-     * @param value 值
+     * @param value The {@link Hyperlink} value to set in the cell.
      */
     HyperlinkCellSetter(final Hyperlink value) {
         this.value = value;

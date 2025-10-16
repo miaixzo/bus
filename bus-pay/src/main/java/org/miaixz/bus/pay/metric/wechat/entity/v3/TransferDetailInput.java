@@ -34,7 +34,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * 发起批量转账的明细列表
+ * Model for an individual transfer detail within a batch transfer.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -47,28 +47,30 @@ import lombok.experimental.SuperBuilder;
 public class TransferDetailInput {
 
     /**
-     * 商户系统内部区分转账批次单下不同转账明细单的唯一标识，要求此参数只能由数字、大小写字母组成
+     * The merchant's unique identifier for this specific detail within the batch. Can only consist of numbers and
+     * uppercase/lowercase letters.
      */
     private String out_detail_no;
     /**
-     * 转账金额单位为“分”
+     * The transfer amount in cents.
      */
     private Integer transfer_amount;
     /**
-     * 单条转账备注（微信用户会收到该备注），UTF8编码，最多允许32个字符
+     * A remark for this specific transfer, which the recipient will see. UTF-8 encoded, up to 32 characters.
      */
     private String transfer_remark;
     /**
-     * 商户appid下，某用户的openid
+     * The user's OpenID under the merchant's AppID.
      */
     private String openid;
     /**
-     * 收款方真实姓名。支持标准RSA算法和国密算法，公钥由微信侧提供 明细转账金额<0.3元时，不允许填写收款用户姓名 明细转账金额 >= 2,000元时，该笔明细必须填写收款用户姓名
-     * 同一批次转账明细中的姓名字段传入规则需保持一致，也即全部填写、或全部不填写 若商户传入收款用户姓名，微信支付会校验用户openID与姓名是否一致，并提供电子回单
+     * The recipient's real name. This field must be encrypted. It is not allowed for transfers less than 0.3 yuan. It
+     * is required for transfers greater than or equal to 2,000 yuan.
      */
     private String user_name;
     /**
-     * 收款方身份证号，可不用填（采用标准RSA算法，公钥由微信侧提供） 当填入收款方身份证号时，姓名字段必须填入。
+     * The recipient's ID card number. This field is optional and must be encrypted if provided. If this field is
+     * provided, the user_name must also be provided.
      */
     private String user_id_card;
 

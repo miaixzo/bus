@@ -26,7 +26,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 定时任务中作业的抽象封装和实现，包括Runnable实现和反射实现
+ * Provides abstract encapsulation and implementation of cron jobs, including support for both {@link Runnable} and
+ * reflection-based tasks.
  *
  * @author Kimi Liu
  * @since Java 17+

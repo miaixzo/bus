@@ -27,17 +27,18 @@
 */
 package org.miaixz.bus.validate.magic.annotation;
 
-import java.lang.annotation.*;
-
 import org.miaixz.bus.validate.Builder;
 import org.miaixz.bus.validate.metric.InEnumMatcher;
 
+import java.lang.annotation.*;
+
 /**
- * 校验对象在枚举中,默认将对象与枚举名称匹配
+ * Validates that the annotated object is a member of the specified enum. By default, the object is matched against the
+ * enum constant's name.
  *
  * <p>
- * 默认被校验对象是null时,通过校验
- * </P>
+ * By default, if the object to be validated is null, the validation passes.
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -49,45 +50,46 @@ import org.miaixz.bus.validate.metric.InEnumMatcher;
 public @interface InEnum {
 
     /**
-     * 枚举类型
+     * The enum class to check against.
      *
-     * @return the object
+     * @return the enum class.
      */
     @Filler("enumClass")
     Class<? extends Enum> enumClass();
 
     /**
-     * 枚举中的方法,将枚举方法的结果与被校验参数进行equals判断校验结果
+     * The method to invoke on the enum constant. The result of this method will be compared with the validated object
+     * for equality. Defaults to "name", which compares against the enum constant's name.
      *
-     * @return the string
+     * @return the name of the method.
      */
     String method() default "name";
 
     /**
-     * 默认使用的异常码
+     * The error code to be used when validation fails.
      *
-     * @return the string
+     * @return the error code.
      */
     String errcode() default Builder.DEFAULT_ERRCODE;
 
     /**
-     * 默认使用的异常信息
+     * The error message to be used when validation fails. The message can be a template with placeholders.
      *
-     * @return the string
+     * @return the error message.
      */
-    String errmsg() default "${field}必须属于指定枚举类型:${enumClass}";
+    String errmsg() default "${field} must be a value of the specified enum type: ${enumClass}";
 
     /**
-     * 校验器组
+     * The validation groups this constraint belongs to.
      *
-     * @return the array
+     * @return an array of group names.
      */
     String[] group() default {};
 
     /**
-     * 被校验字段名称
+     * The name of the field being validated.
      *
-     * @return the string
+     * @return the field name.
      */
     String field() default Builder.DEFAULT_FIELD;
 

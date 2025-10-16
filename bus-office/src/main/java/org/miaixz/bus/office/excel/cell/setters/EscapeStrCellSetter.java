@@ -33,36 +33,41 @@ import org.miaixz.bus.core.xyz.PatternKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 字符串转义Cell值设置器 使用 _x005F前缀转义_xXXXX_，避免被decode的问题 如用户传入'_x5116_'会导致乱码，使用此设置器转义为'_x005F_x5116_'
+ * Cell value setter for escaping strings. It uses the {@code _x005F} prefix to escape {@code _xXXXX_} patterns,
+ * preventing decoding issues. For example, if a user inputs '_x5116_', it could be garbled; this setter escapes it to
+ * '_x005F_x5116_'.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class EscapeStrCellSetter extends CharSequenceCellSetter {
 
+    /**
+     * Pattern for matching {@code _xXXXX_} sequences.
+     */
     private static final Pattern utfPtrn = Pattern.compile("_x[0-9A-Fa-f]{4}_");
 
     /**
-     * 构造
+     * Constructor.
      *
-     * @param value 值
+     * @param value The value.
      */
     public EscapeStrCellSetter(final CharSequence value) {
         super(escape(StringKit.toStringOrNull(value)));
     }
 
     /**
-     * 使用 _x005F前缀转义_xXXXX_，避免被decode的问题
+     * Escapes {@code _xXXXX_} patterns with the {@code _x005F} prefix to prevent decoding issues.
      *
-     * @param value 被转义的字符串
-     * @return 转义后的字符串
+     * @param value The string to be escaped.
+     * @return The escaped string.
      */
     private static String escape(final String value) {
         if (value == null || !value.contains("_x")) {
             return value;
         }
 
-        // 使用 _x005F前缀转义_xXXXX_，避免被decode的问题
+        // Escape `_xXXXX_` with the `_x005F` prefix to avoid decoding issues.
         return PatternKit.replaceAll(value, utfPtrn, "_x005F$0");
     }
 

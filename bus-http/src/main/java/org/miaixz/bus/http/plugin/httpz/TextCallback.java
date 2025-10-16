@@ -27,21 +27,29 @@
 */
 package org.miaixz.bus.http.plugin.httpz;
 
-import java.io.IOException;
-
 import org.miaixz.bus.http.Callback;
 import org.miaixz.bus.http.NewCall;
 import org.miaixz.bus.http.Response;
 import org.miaixz.bus.logger.Logger;
 
+import java.io.IOException;
+
 /**
- * 回调处理
+ * An abstract {@link Callback} implementation for handling responses where the body is expected to be a text string.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public abstract class TextCallback implements Callback {
 
+    /**
+     * Handles the successful HTTP response by consuming the response body as a string and passing it to the
+     * {@link #onSuccess(NewCall, String, String)} method.
+     *
+     * @param call     The {@link NewCall} that resulted in this response.
+     * @param response The HTTP {@link Response}.
+     * @param id       The unique ID of the request.
+     */
     @Override
     public void onResponse(NewCall call, Response response, String id) {
         try {
@@ -51,6 +59,13 @@ public abstract class TextCallback implements Callback {
         }
     }
 
+    /**
+     * Handles request failures by logging the error.
+     *
+     * @param call The {@link NewCall} that failed.
+     * @param e    The {@link Exception} that caused the failure.
+     * @param id   The unique ID of the request.
+     */
     @Override
     public void onFailure(NewCall call, Exception e, String id) {
         Logger.error("onFailure id:{}", id);
@@ -58,9 +73,12 @@ public abstract class TextCallback implements Callback {
     }
 
     /**
-     * @param call     回调
-     * @param response 响应信息
-     * @param id       当前请求标识
+     * Abstract callback method invoked when a successful response with a text body is received. Subclasses must
+     * implement this method to handle the response string.
+     *
+     * @param call     The {@link NewCall} that resulted in this response.
+     * @param response The response body as a string.
+     * @param id       The unique ID of the request.
      */
     public abstract void onSuccess(NewCall call, String response, String id);
 

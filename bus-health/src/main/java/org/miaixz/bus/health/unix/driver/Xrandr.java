@@ -36,7 +36,7 @@ import org.miaixz.bus.core.xyz.ByteKit;
 import org.miaixz.bus.health.Executor;
 
 /**
- * Utility to query xrandr
+ * Utility to query xrandr for display information.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,11 +44,22 @@ import org.miaixz.bus.health.Executor;
 @ThreadSafe
 public final class Xrandr {
 
+    /**
+     * The command to execute for verbose xrandr output.
+     */
     private static final String[] XRANDR_VERBOSE = { "xrandr", "--verbose" };
 
+    /**
+     * Private constructor to prevent instantiation.
+     */
     private Xrandr() {
     }
 
+    /**
+     * Retrieves the EDID (Extended Display Identification Data) for all connected displays.
+     *
+     * @return A list of byte arrays, where each array represents the EDID of a display.
+     */
     public static List<byte[]> getEdidArrays() {
         // Special handling for X commands, don't use LC_ALL
         List<String> xrandr = Executor.runNative(XRANDR_VERBOSE, null);

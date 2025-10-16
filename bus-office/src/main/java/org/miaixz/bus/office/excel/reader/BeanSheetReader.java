@@ -36,9 +36,9 @@ import org.miaixz.bus.core.bean.copier.CopyOptions;
 import org.miaixz.bus.core.xyz.BeanKit;
 
 /**
- * 读取{@link Sheet}为bean的List列表形式
+ * Reads an {@link Sheet} into a list of beans.
  *
- * @param <T> 结果类型
+ * @param <T> The type of the bean to convert each row to.
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -48,12 +48,13 @@ public class BeanSheetReader<T> implements SheetReader<List<T>> {
     private final MapSheetReader mapSheetReader;
 
     /**
-     * 构造
+     * Constructs a new {@code BeanSheetReader}.
      *
-     * @param headerRowIndex 标题所在行，如果标题行在读取的内容行中间，这行做为数据将忽略
-     * @param startRowIndex  起始行（包含，从0开始计数）
-     * @param endRowIndex    结束行（包含，从0开始计数）
-     * @param beanClass      每行对应Bean的类型
+     * @param headerRowIndex The row index where the header is located. If the header row is in the middle of the
+     *                       content rows to be read, this row will be ignored as data.
+     * @param startRowIndex  The starting row index (inclusive, 0-based).
+     * @param endRowIndex    The ending row index (inclusive, 0-based).
+     * @param beanClass      The type of the Bean corresponding to each row.
      */
     public BeanSheetReader(final int headerRowIndex, final int startRowIndex, final int endRowIndex,
             final Class<T> beanClass) {
@@ -77,9 +78,9 @@ public class BeanSheetReader<T> implements SheetReader<List<T>> {
     }
 
     /**
-     * 设置Excel配置
+     * Sets the Excel read configuration.
      *
-     * @param config Excel配置
+     * @param config The Excel read configuration.
      */
     public void setExcelConfig(final ExcelReadConfig config) {
         this.mapSheetReader.setExcelConfig(config);

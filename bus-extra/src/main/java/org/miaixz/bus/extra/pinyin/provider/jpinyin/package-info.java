@@ -26,14 +26,14 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 封装了Jpinyin的引擎。
+ * Encapsulates the Jpinyin engine.
  *
  * <p>
- * jpinyin（github库作者已删除）封装。
+ * Jpinyin (the GitHub repository author has deleted it) encapsulation.
  * </p>
  *
  * <p>
- * 引入：
+ * To introduce (dependency):
  * 
  * <pre>
  * &lt;dependency&gt;

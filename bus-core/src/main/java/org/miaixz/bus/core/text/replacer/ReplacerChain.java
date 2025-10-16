@@ -35,22 +35,28 @@ import java.util.List;
 import org.miaixz.bus.core.lang.Chain;
 
 /**
- * 字符串替换链，用于组合多个字符串替换逻辑
+ * A chain of string replacers, allowing multiple replacement logics to be combined.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class ReplacerChain extends StringReplacer implements Chain<StringReplacer, ReplacerChain> {
 
+    /**
+     * The serial version UID.
+     */
     @Serial
     private static final long serialVersionUID = 2852239321085L;
 
+    /**
+     * The list of string replacers in this chain.
+     */
     private final List<StringReplacer> replacers = new LinkedList<>();
 
     /**
-     * 构造
+     * Constructs a new {@code ReplacerChain} with the given string replacers.
      *
-     * @param stringReplacers 字符串替换器
+     * @param stringReplacers The string replacers to add to the chain.
      */
     public ReplacerChain(final StringReplacer... stringReplacers) {
         for (final StringReplacer stringReplacer : stringReplacers) {
@@ -69,6 +75,15 @@ public class ReplacerChain extends StringReplacer implements Chain<StringReplace
         return this;
     }
 
+    /**
+     * Replaces a portion of the text using the replacers in the chain. Iterates through the chain and applies the first
+     * replacer that matches.
+     *
+     * @param text The text to be processed.
+     * @param pos  The current position in the text.
+     * @param out  The {@code StringBuilder} to which the replaced text is appended.
+     * @return The number of characters consumed by the replacement, or 0 if no replacement occurred.
+     */
     @Override
     protected int replace(final CharSequence text, final int pos, final StringBuilder out) {
         int consumed = 0;

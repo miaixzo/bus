@@ -39,7 +39,7 @@ import org.miaixz.bus.mapper.parsing.FieldMeta;
 import org.miaixz.bus.mapper.parsing.TableMeta;
 
 /**
- * 提供命名样式的接口，支持通过 SPI 扩展自定义命名规则。
+ * Provides an interface for naming styles, supporting custom naming rules extensible via SPI.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -47,7 +47,7 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
 public interface NamingProvider extends Provider {
 
     /**
-     * 存储命名样式与实现类的映射。
+     * Stores the mapping between naming styles and their implementation classes.
      */
     Map<String, NamingProvider> styleMap = new HashMap() {
 
@@ -60,20 +60,20 @@ public interface NamingProvider extends Provider {
     };
 
     /**
-     * 获取默认命名样式处理实例。
+     * Gets the default naming style handler instance.
      *
-     * @return 默认命名样式实现
+     * @return The default naming style implementation.
      */
     static NamingProvider getDefaultStyle() {
         return type(null);
     }
 
     /**
-     * 根据样式名称获取命名样式处理实例。
+     * Gets a naming style handler instance by style name.
      *
-     * @param style 样式名称，若为空则使用全局配置或默认样式
-     * @return 命名样式实现
-     * @throws IllegalArgumentException 如果样式名称无效
+     * @param style The name of the style. If null or empty, the global configuration or default style will be used.
+     * @return The naming style implementation.
+     * @throws IllegalArgumentException if the style name is invalid.
      */
     static NamingProvider type(String style) {
         if (style == null || style.isEmpty()) {
@@ -91,19 +91,19 @@ public interface NamingProvider extends Provider {
     }
 
     /**
-     * 转换实体类为表名。
+     * Converts an entity class to a table name.
      *
-     * @param entityClass 实体类
-     * @return 对应的表名
+     * @param entityClass The entity class.
+     * @return The corresponding table name.
      */
     String tableName(Class<?> entityClass);
 
     /**
-     * 转换字段为列名。
+     * Converts a field to a column name.
      *
-     * @param entityTable 实体表信息
-     * @param field       实体字段信息
-     * @return 对应的列名
+     * @param entityTable The entity table information.
+     * @param field       The entity field information.
+     * @return The corresponding column name.
      */
     String columnName(TableMeta entityTable, FieldMeta field);
 

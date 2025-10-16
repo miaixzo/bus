@@ -27,7 +27,6 @@
 */
 package org.miaixz.bus.sensitive;
 
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.*;
 import org.miaixz.bus.extra.json.JsonKit;
@@ -36,6 +35,7 @@ import org.miaixz.bus.sensitive.metric.BuiltInProvider;
 import org.miaixz.bus.sensitive.metric.ConditionProvider;
 import org.miaixz.bus.sensitive.metric.StrategyProvider;
 
+import java.io.*;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
@@ -45,59 +45,59 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * 敏感数据处理提供者， 提供对象脱敏功能，支持深度拷贝和 JSON 输出。 通过反射和原生 Java 实现，确保安全性和性能。
+ * A provider for processing sensitive data. It offers object desensitization capabilities, including support for deep
+ * cloning and JSON serialization. It is implemented using reflection to ensure flexibility and performance.
  *
- * @param <T> 参数类型
+ * @param <T> The type of the object to be processed.
  * @author Kimi Liu
  * @since Java 17+
  */
 public class Provider<T> {
 
-    /**
-     * 脱敏属性
-     */
+    /** An array of specific field names to desensitize. If not null, only these fields are considered. */
     private String[] value;
 
     /**
-     * 深度拷贝对象
+     * Performs a deep copy of a serializable object.
      *
-     * @param object 要拷贝的对象
-     * @return 深拷贝后的对象
+     * @param object The object to clone.
+     * @param <T>    The type of the object.
+     * @return A deep copy of the object.
      */
     public static <T> T clone(T object) {
         if (object == null) {
             return null;
         }
-        try {
-            // 使用序列化进行深拷贝
-            java.io.ByteArrayOutputStream baos = new java.io.ByteArrayOutputStream();
-            java.io.ObjectOutputStream oos = new java.io.ObjectOutputStream(baos);
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                ObjectOutputStream oos = new ObjectOutputStream(baos)) {
             oos.writeObject(object);
-            java.io.ByteArrayInputStream bais = new java.io.ByteArrayInputStream(baos.toByteArray());
-            java.io.ObjectInputStream ois = new java.io.ObjectInputStream(bais);
-            return (T) ois.readObject();
+            try (ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+                    ObjectInputStream ois = new ObjectInputStream(bais)) {
+                return (T) ois.readObject();
+            }
         } catch (Exception e) {
-            throw new InternalException("深度拷贝失败: " + e.getMessage(), e);
+            throw new InternalException("Deep clone failed: " + e.getMessage(), e);
         }
     }
 
     /**
-     * 检查对象是否已脱敏
+     * Checks if an object's string representation appears to have already been desensitized (i.e., contains a star
+     * '*').
      *
-     * @param object 原始数据
-     * @return 是否已脱敏
+     * @param object The object to check.
+     * @return {@code true} if the object's string representation contains a star, {@code false} otherwise.
      */
     public static boolean alreadyBeSentisived(Object object) {
-        return object == null || object.toString().contains(Symbol.STAR);
+        return object != null && object.toString().contains("*");
     }
 
     /**
-     * 对对象进行脱敏处理
+     * Applies desensitization to the given object.
      *
-     * @param object     原始对象
-     * @param annotation 注解信息
-     * @param clone      是否进行克隆
-     * @return 脱敏后的对象
+     * @param object     The original object.
+     * @param annotation The annotation providing context for the operation (e.g., {@link Sensitive}).
+     * @param clone      If true, a deep copy of the object is created before desensitization.
+     * @return The desensitized object.
      */
     public T on(T object, Annotation annotation, boolean clone) {
         if (ObjectKit.isEmpty(object)) {
@@ -109,21 +109,19 @@ public class Provider<T> {
             this.value = sensitive.field();
         }
 
-        // 1. 初始化
-        final Class clazz = object.getClass();
         final Context context = new Context();
 
         T result = clone ? clone(object) : object;
-        handleClassField(context, result, clazz);
+        handleClassField(context, result, result.getClass());
         return result;
     }
 
     /**
-     * 返回脱敏后的 JSON 字符串
+     * Serializes the object to a JSON string after applying desensitization.
      *
-     * @param object     对象
-     * @param annotation 注解
-     * @return 脱敏后的 JSON 字符串
+     * @param object     The object to process and serialize.
+     * @param annotation The annotation providing context for the operation (e.g., {@link Sensitive}).
+     * @return The desensitized JSON string.
      */
     public String json(T object, Annotation annotation) {
         if (ObjectKit.isEmpty(object)) {
@@ -142,13 +140,15 @@ public class Provider<T> {
     }
 
     /**
-     * 处理类字段的脱敏
+     * Recursively handles desensitization for all fields of a given class.
      *
-     * @param context    执行上下文
-     * @param copyObject 拷贝的对象
-     * @param clazz      类类型
+     * @param context    The current desensitization context.
+     * @param copyObject The object to process (may be a clone).
+     * @param clazz      The class of the object.
      */
     private void handleClassField(final Context context, final Object copyObject, final Class<?> clazz) {
+        if (copyObject == null)
+            return;
         List<Field> fieldList = ListKit.of(FieldKit.getFields(clazz));
         context.setAllFieldList(fieldList);
         context.setCurrentObject(copyObject);
@@ -159,14 +159,18 @@ public class Provider<T> {
                     continue;
                 }
 
+                field.setAccessible(true);
                 final Class<?> fieldTypeClass = field.getType();
                 context.setCurrentField(field);
 
                 Entry sensitiveEntry = field.getAnnotation(Entry.class);
                 if (ObjectKit.isNotNull(sensitiveEntry)) {
+                    Object fieldObject = field.get(copyObject);
+                    if (fieldObject == null)
+                        continue;
+
                     if (TypeKit.isJavaBean(fieldTypeClass)) {
-                        Object fieldNewObject = field.get(copyObject);
-                        handleClassField(context, fieldNewObject, fieldTypeClass);
+                        handleClassField(context, fieldObject, fieldTypeClass);
                     } else if (TypeKit.isArray(fieldTypeClass)) {
                         processArrayField(context, copyObject, field);
                     } else if (TypeKit.isCollection(fieldTypeClass)) {
@@ -179,16 +183,17 @@ public class Provider<T> {
                 }
             }
         } catch (IllegalAccessException e) {
-            throw new InternalException("字段访问失败: " + e.getMessage(), e);
+            throw new InternalException("Field access failed: " + e.getMessage(), e);
         }
     }
 
     /**
-     * 处理数组字段
+     * Processes an array field, applying desensitization to its elements.
      *
-     * @param context    上下文
-     * @param copyObject 对象
-     * @param field      字段
+     * @param context    The current desensitization context.
+     * @param copyObject The parent object containing the array field.
+     * @param field      The array field.
+     * @throws IllegalAccessException if field access fails.
      */
     private void processArrayField(final Context context, final Object copyObject, final Field field)
             throws IllegalAccessException {
@@ -218,11 +223,12 @@ public class Provider<T> {
     }
 
     /**
-     * 处理集合字段
+     * Processes a collection field, applying desensitization to its elements.
      *
-     * @param context    上下文
-     * @param copyObject 对象
-     * @param field      字段
+     * @param context    The current desensitization context.
+     * @param copyObject The parent object containing the collection field.
+     * @param field      The collection field.
+     * @throws IllegalAccessException if field access fails.
      */
     private void processCollectionField(final Context context, final Object copyObject, final Field field)
             throws IllegalAccessException {
@@ -232,6 +238,8 @@ public class Provider<T> {
         }
 
         Object firstCollectionEntry = entryCollection.iterator().next();
+        if (firstCollectionEntry == null)
+            return;
         Class<?> collectionEntryClass = firstCollectionEntry.getClass();
 
         if (needHandleEntryType(collectionEntryClass)) {
@@ -243,17 +251,18 @@ public class Provider<T> {
             for (Object entry : entryCollection) {
                 newResultList.add(handleSensitiveEntry(context, entry, field));
             }
+            // Note: This replaces the original collection.
             field.set(copyObject, newResultList);
         }
     }
 
     /**
-     * 处理单个对象的脱敏
+     * Handles desensitization for a single element within a collection or array.
      *
-     * @param context 上下文
-     * @param entry   明细
-     * @param field   字段信息
-     * @return 处理后的信息
+     * @param context The desensitization context.
+     * @param entry   The element to process.
+     * @param field   The field containing the collection/array.
+     * @return The desensitized element.
      */
     private Object handleSensitiveEntry(final Context context, final Object entry, final Field field) {
         try {
@@ -279,16 +288,16 @@ public class Provider<T> {
             }
             return entry;
         } catch (Exception e) {
-            throw new InternalException("脱敏处理失败: " + e.getMessage(), e);
+            throw new InternalException("Desensitization failed: " + e.getMessage(), e);
         }
     }
 
     /**
-     * 处理脱敏信息
+     * Applies the desensitization logic to a single field.
      *
-     * @param context    上下文
-     * @param copyObject 复制的对象
-     * @param field      当前字段
+     * @param context    The desensitization context.
+     * @param copyObject The object containing the field.
+     * @param field      The field to desensitize.
      */
     private void handleSensitive(final Context context, final Object copyObject, final Field field) {
         try {
@@ -301,10 +310,10 @@ public class Provider<T> {
                     final Object originalFieldVal = field.get(copyObject);
                     final Object result = strategy.build(originalFieldVal, context);
                     field.set(copyObject, result);
+                    return; // Avoid processing other annotations if @Shield is present and applied.
                 }
             }
 
-            // 系统内置自定义注解的处理,获取所有的注解
             Annotation[] annotations = field.getAnnotations();
             if (ArrayKit.isNotEmpty(annotations)) {
                 ConditionProvider condition = getCondition(annotations);
@@ -323,16 +332,16 @@ public class Provider<T> {
     }
 
     /**
-     * 获取策略
+     * Gets the strategy provider from a field's annotations.
      *
-     * @param annotations 字段注解
-     * @return 策略提供者
+     * @param annotations The array of annotations on a field.
+     * @return The appropriate strategy provider, or null if none is found.
      */
     private StrategyProvider getStrategy(final Annotation[] annotations) {
         for (Annotation annotation : annotations) {
-            Strategy strategy = annotation.annotationType().getAnnotation(Strategy.class);
-            if (ObjectKit.isNotNull(strategy)) {
-                Class<? extends StrategyProvider> clazz = strategy.value();
+            Strategy sensitiveStrategy = annotation.annotationType().getAnnotation(Strategy.class);
+            if (ObjectKit.isNotEmpty(sensitiveStrategy)) {
+                Class<? extends StrategyProvider> clazz = sensitiveStrategy.value();
                 if (BuiltInProvider.class.equals(clazz)) {
                     return Registry.require(annotation.annotationType());
                 }
@@ -343,10 +352,10 @@ public class Provider<T> {
     }
 
     /**
-     * 获取用户自定义条件
+     * Gets a custom condition provider from a field's annotations.
      *
-     * @param annotations 字段注解
-     * @return 条件提供者
+     * @param annotations The array of annotations on a field.
+     * @return The condition provider, or null if none is found.
      */
     private ConditionProvider getCondition(final Annotation[] annotations) {
         for (Annotation annotation : annotations) {
@@ -359,10 +368,10 @@ public class Provider<T> {
     }
 
     /**
-     * 判断是否需要特殊处理的类型
+     * Checks if a field type is a complex type that needs recursive handling.
      *
-     * @param fieldTypeClass 字段类型
-     * @return 是否需要特殊处理
+     * @param fieldTypeClass The class of the field type.
+     * @return {@code true} if the type should be handled recursively, {@code false} otherwise.
      */
     private boolean needHandleEntryType(final Class<?> fieldTypeClass) {
         return (TypeKit.isJavaBean(fieldTypeClass) || TypeKit.isArray(fieldTypeClass)

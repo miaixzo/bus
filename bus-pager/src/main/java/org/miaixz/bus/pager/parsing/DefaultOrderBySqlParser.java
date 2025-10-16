@@ -38,7 +38,7 @@ import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.select.*;
 
 /**
- * 处理 Order by
+ * Default implementation of {@link OrderBySqlParser} for handling Order by clauses.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -46,10 +46,10 @@ import net.sf.jsqlparser.statement.select.*;
 public class DefaultOrderBySqlParser implements OrderBySqlParser {
 
     /**
-     * extra order by and set default orderby to null
+     * Extracts the ORDER BY elements from a SELECT statement and sets the default order by to null.
      *
-     * @param select 获取select
-     * @return the list
+     * @param select the SELECT statement
+     * @return the list of {@link OrderByElement}s
      */
     public static List<OrderByElement> extraOrderBy(Select select) {
         if (select != null) {
@@ -65,26 +65,28 @@ public class DefaultOrderBySqlParser implements OrderBySqlParser {
     }
 
     /**
-     * convert to order by sql
+     * Converts a SQL statement to include an ORDER BY clause. If the original SQL contains an ORDER BY clause with
+     * parameters, it throws a {@link PageException}. If parsing fails, it falls back to appending the ORDER BY clause
+     * directly.
      *
-     * @param sql     sql
-     * @param orderBy 排序
-     * @return the string
+     * @param sql     the original SQL statement
+     * @param orderBy the ORDER BY clause to be added
+     * @return the modified SQL statement with the ORDER BY clause
      */
     @Override
     public String converToOrderBySql(String sql, String orderBy) {
         try {
-            // 解析SQL
+            // Parse the SQL
             Statement stmt = Builder.parse(sql);
             Select select = (Select) stmt;
-            // 处理body-去最外层order by
+            // Process the body to remove the outermost order by
             List<OrderByElement> orderByElements = extraOrderBy(select);
             String defaultOrderBy = PlainSelect.orderByToString(orderByElements);
             if (defaultOrderBy.indexOf(Symbol.C_QUESTION_MARK) != -1) {
                 throw new PageException("The order by in the original SQL[" + sql
                         + "] contains parameters, so it cannot be modified using the OrderBy handler!");
             }
-            // 新的sql
+            // New SQL
             sql = select.toString();
         } catch (Throwable e) {
             Logger.warn("Failed to handle sorting: " + e + ", downgraded to a direct splice of the order by parameter");

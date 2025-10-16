@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.http.secure;
 
+import javax.security.auth.x500.X500Principal;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
 import java.util.LinkedHashMap;
@@ -34,18 +35,23 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
-import javax.security.auth.x500.X500Principal;
-
 /**
- * 简单的索引，包含已加载到内存中的受信任根证书
+ * An in-memory index of trusted root certificates. This class holds a cache of CA certificates, indexed by their
+ * subject distinguished name, to allow for quick lookups when building a certificate chain.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class BasicTrustRootIndex implements TrustRootIndex {
 
+    /** A map from a certificate's subject X.500 principal to the certificate itself. */
     private final Map<X500Principal, Set<X509Certificate>> subjectToCaCerts;
 
+    /**
+     * Creates a new index from a set of CA certificates.
+     *
+     * @param caCerts The trusted CA certificates.
+     */
     public BasicTrustRootIndex(X509Certificate... caCerts) {
         subjectToCaCerts = new LinkedHashMap<>();
         for (X509Certificate caCert : caCerts) {
@@ -59,6 +65,13 @@ public class BasicTrustRootIndex implements TrustRootIndex {
         }
     }
 
+    /**
+     * Finds a trusted CA certificate that signed the given certificate. This method works by first finding candidate
+     * certificates based on the issuer's distinguished name and then verifying the signature.
+     *
+     * @param cert The certificate for which to find the issuer.
+     * @return The signing CA certificate, or {@code null} if no trusted issuer is found.
+     */
     @Override
     public X509Certificate findByIssuerAndSignature(X509Certificate cert) {
         X500Principal issuer = cert.getIssuerX500Principal();
@@ -72,6 +85,7 @@ public class BasicTrustRootIndex implements TrustRootIndex {
                 cert.verify(publicKey);
                 return caCert;
             } catch (Exception ignored) {
+                // Signature verification failed, try the next certificate.
             }
         }
 

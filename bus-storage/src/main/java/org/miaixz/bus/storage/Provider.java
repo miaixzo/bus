@@ -36,7 +36,7 @@ import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.storage.magic.ErrorCode;
 
 /**
- * 文件存储提供者
+ * Provides an interface for file storage operations.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,174 +44,181 @@ import org.miaixz.bus.storage.magic.ErrorCode;
 public interface Provider extends org.miaixz.bus.core.Provider {
 
     /**
-     * 文件下载(流式下载)
+     * Downloads a file as a stream.
      *
-     * @param fileName 文件名
-     * @return 处理结果 {@link Message}
+     * @param fileName The name of the file to download.
+     * @return A {@link Message} containing the result of the operation, including the file stream if successful.
      */
     Message download(String fileName);
 
     /**
-     * 文件下载(流式下载)
+     * Downloads a file from a specified bucket as a stream.
      *
-     * @param bucket   存储桶名
-     * @param fileName 文件名
-     * @return 处理结果 {@link Message}
+     * @param bucket   The name of the storage bucket.
+     * @param fileName The name of the file to download.
+     * @return A {@link Message} containing the result of the operation, including the file stream if successful.
      */
     Message download(String bucket, String fileName);
 
     /**
-     * 文件下载(文件下载到本地)
+     * Downloads a file from a specified bucket to a local file.
      *
-     * @param bucket   存储桶名
-     * @param fileName 文件名
-     * @param file     目标路径
-     * @return 处理结果 {@link Message}
+     * @param bucket   The name of the storage bucket.
+     * @param fileName The name of the file to download.
+     * @param file     The target local file to save the downloaded content.
+     * @return A {@link Message} containing the result of the operation.
      */
     Message download(String bucket, String fileName, File file);
 
     /**
-     * 文件下载(文件下载到本地)
+     * Downloads a file to a local file.
      *
-     * @param fileName 文件名
-     * @param file     目标路径
-     * @return 处理结果 {@link Message}
+     * @param fileName The name of the file to download.
+     * @param file     The target local file to save the downloaded content.
+     * @return A {@link Message} containing the result of the operation.
      */
     Message download(String fileName, File file);
 
     /**
-     * 文件列表
+     * Lists files in the default storage location.
      *
-     * @return 处理结果 {@link Message}
+     * @return A {@link Message} containing the result of the operation. By default, returns a failure message.
      */
     default Message list() {
         return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
     }
 
     /**
-     * 重命名
+     * Renames a file.
      *
-     * @param oldName 原始名称
-     * @param newName 新名称
-     * @return 处理结果 {@link Message}
+     * @param oldName The current name of the file.
+     * @param newName The new name for the file.
+     * @return A {@link Message} containing the result of the operation.
      */
     Message rename(String oldName, String newName);
 
     /**
-     * 重命名
+     * Renames a file within a specified path.
      *
-     * @param path    路径
-     * @param oldName 原始名称
-     * @param newName 新名称
-     * @return 处理结果 {@link Message}
+     * @param path    The path where the file is located.
+     * @param oldName The current name of the file.
+     * @param newName The new name for the file.
+     * @return A {@link Message} containing the result of the operation.
      */
     Message rename(String path, String oldName, String newName);
 
     /**
-     * 重命名
+     * Renames a file within a specified bucket and path.
      *
-     * @param bucket  存储桶名
-     * @param path    路径
-     * @param oldName 原始名称
-     * @param newName 新名称
-     * @return 处理结果 {@link Message}
+     * @param bucket  The name of the storage bucket.
+     * @param path    The path where the file is located.
+     * @param oldName The current name of the file.
+     * @param newName The new name for the file.
+     * @return A {@link Message} containing the result of the operation.
      */
     Message rename(String bucket, String path, String oldName, String newName);
 
     /**
-     * 上传文件
+     * Uploads a file using a byte array.
      *
-     * @param fileName 文件名称
-     * @param content  字节数组
-     * @return 处理结果 {@link Message}
+     * @param fileName The name of the file to upload.
+     * @param content  The file content as a byte array.
+     * @return A {@link Message} containing the result of the operation.
      */
     Message upload(String fileName, byte[] content);
 
     /**
-     * 上传文件-到指定的 path
+     * Uploads a file to a specified path using a byte array.
      *
-     * @param fileName 文件名称
-     * @param content  字节数组
-     * @return 处理结果 {@link Message}
+     * @param path     The target path for the file.
+     * @param fileName The name of the file to upload.
+     * @param content  The file content as a byte array.
+     * @return A {@link Message} containing the result of the operation.
      */
     Message upload(String path, String fileName, byte[] content);
 
     /**
-     * 上传文件-到指定的 bucket 和指定的 path
+     * Uploads a file to a specified bucket and path using a byte array.
      *
-     * @param bucket   存储桶名
-     * @param path     上传路径
-     * @param fileName 文件名称
-     * @param content  字节数组
-     * @return 处理结果 {@link Message}
+     * @param bucket   The name of the storage bucket.
+     * @param path     The target path for the file.
+     * @param fileName The name of the file to upload.
+     * @param content  The file content as a byte array.
+     * @return A {@link Message} containing the result of the operation.
      */
     Message upload(String bucket, String path, String fileName, byte[] content);
 
     /**
-     * 上传文件
+     * Uploads a file using an {@link InputStream}.
      *
-     * @param fileName 文件名称
-     * @param content  文件内容
-     * @return 处理结果 {@link Message}
+     * @param fileName The name of the file to upload.
+     * @param content  The file content as an {@link InputStream}.
+     * @return A {@link Message} containing the result of the operation.
      */
     Message upload(String fileName, InputStream content);
 
     /**
-     * 上传文件-到指定的 path
+     * Uploads a file to a specified path using an {@link InputStream}.
      *
-     * @param path     上传路径
-     * @param fileName 文件名称
-     * @param content  文件内容
-     * @return 处理结果 {@link Message}
+     * @param path     The target path for the file.
+     * @param fileName The name of the file to upload.
+     * @param content  The file content as an {@link InputStream}.
+     * @return A {@link Message} containing the result of the operation.
      */
     Message upload(String path, String fileName, InputStream content);
 
     /**
-     * 上传文件-到指定的 bucket 和指定的 path
+     * Uploads a file to a specified bucket and path using an {@link InputStream}.
      *
-     * @param bucket   存储桶名
-     * @param path     上传路径
-     * @param fileName 文件名称
-     * @param content  文件内容
-     * @return 处理结果 {@link Message}
+     * @param bucket   The name of the storage bucket.
+     * @param path     The target path for the file.
+     * @param fileName The name of the file to upload.
+     * @param content  The file content as an {@link InputStream}.
+     * @return A {@link Message} containing the result of the operation.
      */
     Message upload(String bucket, String path, String fileName, InputStream content);
 
     /**
-     * 删除文件
+     * Removes a file.
      *
-     * @param fileName 文件名
-     * @return 处理结果 {@link Message}
+     * @param fileName The name of the file to remove.
+     * @return A {@link Message} containing the result of the operation.
      */
     Message remove(String fileName);
 
     /**
-     * 删除文件
+     * Removes a file from a specified path.
      *
-     * @param path     存储路径
-     * @param fileName 文件名称
-     * @return 处理结果 {@link Message}
+     * @param path     The storage path where the file is located.
+     * @param fileName The name of the file to remove.
+     * @return A {@link Message} containing the result of the operation.
      */
     Message remove(String path, String fileName);
 
     /**
-     * 删除文件
+     * Removes a file from a specified bucket and path.
      *
-     * @param bucket   存储桶名
-     * @param fileName 文件名称
-     * @return 处理结果 {@link Message}
+     * @param bucket   The name of the storage bucket.
+     * @param path     The storage path where the file is located.
+     * @param fileName The name of the file to remove.
+     * @return A {@link Message} containing the result of the operation.
      */
     Message remove(String bucket, String path, String fileName);
 
     /**
-     * 删除文件
+     * Removes a file from a specified bucket and target path.
      *
-     * @param bucket 存储桶名
-     * @param path   目标路径
-     * @return 处理结果 {@link Message}
+     * @param bucket The name of the storage bucket.
+     * @param path   The target path of the file to remove.
+     * @return A {@link Message} containing the result of the operation.
      */
     Message remove(String bucket, Path path);
 
+    /**
+     * Returns the type of this provider.
+     *
+     * @return The provider type, which is {@link EnumValue.Povider#STORAGE}.
+     */
     @Override
     default Object type() {
         return EnumValue.Povider.STORAGE;

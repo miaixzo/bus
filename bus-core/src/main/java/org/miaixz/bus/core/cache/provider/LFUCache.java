@@ -34,11 +34,15 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.miaixz.bus.core.lang.thread.lock.NoLock;
 
 /**
- * LFU(least frequently used) 最少使用率缓存 根据使用次数来判定对象是否被持续缓存 使用率是通过访问次数计算的。 当缓存满时清理过期对象。
- * 清理后依旧满的情况下清除最少访问（访问计数最小）的对象并将其他对象的访问数减去这个最小访问数，以便新对象进入后可以公平计数。
+ * LFU (Least Frequently Used) cache.
+ * <p>
+ * This cache determines which objects to evict based on their usage frequency, which is calculated from the access
+ * count. When the cache is full, it first removes any expired objects. If the cache remains full, it removes the object
+ * with the lowest access count. The access counts of all remaining objects are then reduced by this minimum count to
+ * ensure fair competition for new objects.
  *
- * @param <K> 键类型
- * @param <V> 值类型
+ * @param <K> The type of the key.
+ * @param <V> The type of the value.
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -48,70 +52,73 @@ public class LFUCache<K, V> extends LockedCache<K, V> {
     private static final long serialVersionUID = 2852231672235L;
 
     /**
-     * 构造
+     * Constructs an LFU cache with a specified capacity and no default timeout.
      *
-     * @param capacity 容量
+     * @param capacity The cache capacity.
      */
     public LFUCache(final int capacity) {
         this(capacity, 0);
     }
 
     /**
-     * 构造
+     * Constructs an LFU cache with a specified capacity and timeout.
      *
-     * @param capacity 容量
-     * @param timeout  过期时长
+     * @param capacity The cache capacity.
+     * @param timeout  The default timeout for cache entries in milliseconds.
      */
     public LFUCache(int capacity, final long timeout) {
         if (Integer.MAX_VALUE == capacity) {
+            // Prevent potential overflow issues by reducing capacity by one.
             capacity -= 1;
         }
 
         this.capacity = capacity;
         this.timeout = timeout;
+        // LFU cache uses ConcurrentHashMap, which is thread-safe, so no external lock is needed.
         this.lock = NoLock.INSTANCE;
         this.cacheMap = new ConcurrentHashMap<>(capacity + 1, 1.0f);
     }
 
     /**
-     * 清理过期对象。 清理后依旧满的情况下清除最少访问（访问计数最小）的对象并将其他对象的访问数减去这个最小访问数，以便新对象进入后可以公平计数。
+     * Prunes the cache by removing expired objects. If the cache is still full, it removes the least frequently used
+     * object and normalizes the access counts of the remaining objects.
      *
-     * @return 清理个数
+     * @return The number of items pruned.
      */
     @Override
     protected int pruneCache() {
         int count = 0;
-        CacheObject<K, V> comin = null;
+        CacheObject<K, V> leastUsed = null;
 
-        // 清理过期对象并找出访问最少的对象
+        // First, remove all expired objects and find the one with the minimum access count.
         Iterator<CacheObject<K, V>> values = cacheObjIter();
-        CacheObject<K, V> co;
         while (values.hasNext()) {
-            co = values.next();
-            if (co.isExpired() == true) {
+            CacheObject<K, V> co = values.next();
+            if (co.isExpired()) {
                 values.remove();
                 onRemove(co.key, co.object);
                 count++;
                 continue;
             }
 
-            // 找出访问最少的对象
-            if (comin == null || co.accessCount.get() < comin.accessCount.get()) {
-                comin = co;
+            // Find the object with the lowest access count among non-expired items.
+            if (leastUsed == null || co.accessCount.get() < leastUsed.accessCount.get()) {
+                leastUsed = co;
             }
         }
 
-        // 减少所有对象访问量，并清除减少后为0的访问对象
-        if (isFull() && comin != null) {
-            final long minAccessCount = comin.accessCount.get();
+        // If the cache is still full and a least-used object was found, normalize access counts.
+        if (isFull() && leastUsed != null) {
+            final long minAccessCount = leastUsed.accessCount.get();
 
             values = cacheObjIter();
-            CacheObject<K, V> co1;
             while (values.hasNext()) {
-                co1 = values.next();
-                if (co1.accessCount.addAndGet(-minAccessCount) <= 0) {
+                CacheObject<K, V> co = values.next();
+                // Reduce the access count of all objects by the minimum count.
+                // If an object's count becomes zero or less, it is a candidate for removal.
+                if (co.accessCount.addAndGet(-minAccessCount) <= 0) {
                     values.remove();
-                    onRemove(co1.key, co1.object);
+                    onRemove(co.key, co.object);
                     count++;
                 }
             }

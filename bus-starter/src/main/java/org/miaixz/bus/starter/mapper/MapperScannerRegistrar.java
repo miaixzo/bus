@@ -27,11 +27,6 @@
 */
 package org.miaixz.bus.starter.mapper;
 
-import java.lang.annotation.Annotation;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import org.apache.ibatis.annotations.Mapper;
 import org.miaixz.bus.core.xyz.*;
 import org.miaixz.bus.spring.GeniusBuilder;
@@ -47,8 +42,16 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.type.AnnotationMetadata;
 
+import java.lang.annotation.Annotation;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
- * 扫描注册
+ * An {@link ImportBeanDefinitionRegistrar} that handles the registration of mapper interfaces.
+ * <p>
+ * This class is triggered by the {@link EnableMapper} annotation. It configures and launches a
+ * {@link ClassPathMapperScanner} to discover and register mapper interfaces as Spring beans.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -58,6 +61,10 @@ public class MapperScannerRegistrar implements ImportBeanDefinitionRegistrar, Re
     private ResourceLoader resourceLoader;
     private Environment environment;
 
+    /**
+     * Default implementation of the {@code registerBeanDefinitions} method. This is part of the
+     * {@link ImportBeanDefinitionRegistrar} interface.
+     */
     @Override
     public void registerBeanDefinitions(
             AnnotationMetadata importingClassMetadata,
@@ -69,16 +76,24 @@ public class MapperScannerRegistrar implements ImportBeanDefinitionRegistrar, Re
                 importBeanNameGenerator);
     }
 
+    /**
+     * Registers bean definitions for mapper interfaces based on the {@link EnableMapper} annotation metadata.
+     *
+     * @param annotationMetadata The annotation metadata of the importing class.
+     * @param registry           The bean definition registry.
+     */
     @Override
     public void registerBeanDefinitions(AnnotationMetadata annotationMetadata, BeanDefinitionRegistry registry) {
         AnnotationAttributes annoAttrs = AnnotationAttributes
                 .fromMap(annotationMetadata.getAnnotationAttributes(EnableMapper.class.getName()));
         ClassPathMapperScanner scanner = new ClassPathMapperScanner(registry);
-        // Spring 3.1中需要这个检查
+
+        // Set the resource loader if available (required in Spring 3.1+).
         if (resourceLoader != null) {
             scanner.setResourceLoader(resourceLoader);
         }
 
+        // Configure the scanner from the annotation attributes.
         Class<? extends Annotation> annotationClass = annoAttrs.getClass("annotationClass");
         if (!Annotation.class.equals(annotationClass)) {
             scanner.setAnnotationClass(annotationClass);
@@ -102,41 +117,46 @@ public class MapperScannerRegistrar implements ImportBeanDefinitionRegistrar, Re
         scanner.setSqlSessionTemplateBeanName(annoAttrs.getString("sqlSessionTemplateRef"));
         scanner.setSqlSessionFactoryBeanName(annoAttrs.getString("sqlSessionFactoryRef"));
 
+        // Gather base packages to scan.
         List<String> basePackage = new ArrayList<>();
-        for (String pkg : annoAttrs.getStringArray("value")) {
-            if (StringKit.hasText(pkg)) {
-                basePackage.add(pkg);
-            }
-        }
-        for (String pkg : annoAttrs.getStringArray("basePackage")) {
-            if (StringKit.hasText(pkg)) {
-                basePackage.add(pkg);
-            }
-        }
+        basePackage.addAll(Arrays.asList(annoAttrs.getStringArray("value")));
+        basePackage.addAll(Arrays.asList(annoAttrs.getStringArray("basePackage")));
         for (Class<?> clazz : annoAttrs.getClassArray("basePackageClasses")) {
             basePackage.add(ClassKit.getPackageName(clazz));
         }
 
+        // If no base packages are specified, fall back to properties or default to scanning for @Mapper.
         if (CollKit.isEmpty(basePackage)) {
             MapperProperties properties = PlaceHolderBinder
                     .bind(environment, MapperProperties.class, GeniusBuilder.MAPPER);
             if (properties != null && properties.getBasePackage() != null && properties.getBasePackage().length > 0) {
                 basePackage.addAll(Arrays.asList(properties.getBasePackage()));
             } else {
-                // 未设置任何package的前提下，扫描@Mapper注解
+                // If no packages are set, scan for the @Mapper annotation by default.
                 scanner.setAnnotationClass(Mapper.class);
             }
         }
 
+        // Register filters and perform the scan.
         scanner.registerFilters();
         scanner.doScan(ArrayKit.ofArray(basePackage, String.class));
     }
 
+    /**
+     * Sets the Spring {@link Environment}.
+     *
+     * @param environment The environment to set.
+     */
     @Override
     public void setEnvironment(Environment environment) {
         this.environment = environment;
     }
 
+    /**
+     * Sets the Spring {@link ResourceLoader}.
+     *
+     * @param resourceLoader The resource loader to set.
+     */
     @Override
     public void setResourceLoader(ResourceLoader resourceLoader) {
         this.resourceLoader = resourceLoader;

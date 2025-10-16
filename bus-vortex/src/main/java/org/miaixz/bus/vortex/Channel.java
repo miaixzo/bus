@@ -34,10 +34,11 @@ import lombok.NoArgsConstructor;
 import java.util.Arrays;
 
 /**
- * 请求渠道枚举，定义不同的请求来源及其属性。
+ * Enumerates different request channels, defining various request sources and their attributes.
  * <p>
- * 该枚举类用于标识请求的来源渠道（如 WEB、APP、钉钉、微信等），并为每个渠道关联一个字符串值和令牌类型。 每个枚举值通过构造函数初始化其属性，并提供静态方法 {@link #get(String)}
- * 用于根据字符串值获取对应的枚举实例。
+ * This enum class identifies the source channel of a request (e.g., WEB, APP, DingTalk, WeChat) and associates a string
+ * value and a token type with each channel. Each enum value initializes its properties through the constructor and
+ * provides a static method {@link #get(String)} to retrieve the corresponding enum instance based on its string value.
  * </p>
  *
  * @author Kimi Liu
@@ -49,51 +50,54 @@ import java.util.Arrays;
 public enum Channel {
 
     /**
-     * WEB 请求，表示通过浏览器或网页发起的请求。
+     * WEB request, indicating a request initiated via a browser or web page.
      */
     WEB("1", 0),
 
     /**
-     * APP 请求，表示通过移动应用程序发起的请求。
+     * APP request, indicating a request initiated via a mobile application.
      */
     APP("2", 1),
 
     /**
-     * 钉钉请求，表示通过钉钉平台发起的请求。
+     * DingTalk request, indicating a request initiated via the DingTalk platform.
      */
     DINGTALK("3", 1),
 
     /**
-     * 微信请求，表示通过微信平台发起的请求。
+     * WeChat request, indicating a request initiated via the WeChat platform.
      */
     WECHAT("4", 1),
 
     /**
-     * 其他请求，表示无法归类到特定渠道的请求，作为默认回退值。
+     * Other request, indicating a request that cannot be categorized into a specific channel, serving as a default
+     * fallback.
      */
     OTHER("5", 0);
 
     /**
-     * 渠道的字符串值，用于唯一标识渠道。
+     * The string value of the channel, used to uniquely identify the channel.
      */
     private String value;
 
     /**
-     * 令牌类型，用于区分不同渠道的令牌处理方式。
+     * The token type, used to distinguish token handling methods for different channels.
      * <p>
-     * 值为 0 表示不需要特殊令牌处理，值为 1 表示需要特定的令牌处理逻辑。
+     * A value of 0 indicates no special token handling is required, while a value of 1 indicates specific token
+     * handling logic is needed.
      * </p>
      */
     private Integer type;
 
     /**
-     * 根据渠道值获取对应的渠道枚举实例。
+     * Retrieves the corresponding channel enum instance based on the channel value.
      * <p>
-     * 该方法通过给定的字符串值查找匹配的枚举实例。如果未找到匹配的渠道，则返回 {@link #OTHER} 作为默认值。
+     * This method searches for a matching enum instance using the given string value. If no matching channel is found,
+     * it returns {@link #OTHER} as the default value.
      * </p>
      *
-     * @param value 渠道的字符串值
-     * @return 匹配的 {@link Channel} 枚举实例，若无匹配则返回 {@link #OTHER}
+     * @param value The string value of the channel.
+     * @return The matching {@link Channel} enum instance, or {@link #OTHER} if no match is found.
      */
     public static Channel get(String value) {
         return Arrays.stream(Channel.values()).filter(c -> c.getValue().equals(value)).findFirst()

@@ -30,7 +30,8 @@ package org.miaixz.bus.core.center.date.format.parser;
 import java.util.function.Predicate;
 
 /**
- * 通过判断字符串的匹配，解析为日期 通过实现{@link #test(Object)}方法判断字符串是否符合此解析器的规则，如果符合，则调用{@link #parse(CharSequence)}完成解析。
+ * An interface for date parsers that first test if a string matches a specific format before attempting to parse it.
+ * Implementations should provide the matching logic in the {@link #test(Object)} method.
  *
  * @author Kimi Liu
  * @since Java 17+

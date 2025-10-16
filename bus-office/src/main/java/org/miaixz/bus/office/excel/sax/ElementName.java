@@ -28,7 +28,7 @@
 package org.miaixz.bus.office.excel.sax;
 
 /**
- * 标签名枚举
+ * Enumeration of element names used in Excel SAX parsing.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -36,27 +36,27 @@ package org.miaixz.bus.office.excel.sax;
 public enum ElementName {
 
     /**
-     * 行标签名，表示一行
+     * Row tag name, representing a row.
      */
     row,
     /**
-     * Cell单元格标签名，表示一个单元格
+     * Cell tag name, representing a cell.
      */
     c,
     /**
-     * Value单元格值的标签，表示单元格内的值
+     * Value tag name, representing the value within a cell.
      */
     v,
     /**
-     * Formula公式，表示一个存放公式的单元格
+     * Formula tag name, representing a cell containing a formula.
      */
     f;
 
     /**
-     * 解析支持的节点名枚举
+     * Parses the given element name string into an {@code ElementName} enum.
      *
-     * @param elementName 节点名
-     * @return 节点名枚举
+     * @param elementName The element name string.
+     * @return The corresponding {@code ElementName} enum, or {@code null} if no match is found.
      */
     public static ElementName of(final String elementName) {
         try {
@@ -67,10 +67,10 @@ public enum ElementName {
     }
 
     /**
-     * 给定标签名是否匹配当前标签
+     * Checks if the given element name matches the current enum instance.
      *
-     * @param elementName 标签名
-     * @return 是否匹配
+     * @param elementName The element name string to match.
+     * @return {@code true} if the element name matches, {@code false} otherwise.
      */
     public boolean match(final String elementName) {
         return this.name().equals(elementName);

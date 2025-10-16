@@ -32,7 +32,7 @@ import java.io.Serial;
 import org.miaixz.bus.core.xyz.CompareKit;
 
 /**
- * 可变 {@code double} 类型
+ * A mutable {@code double} wrapper.
  *
  * @author Kimi Liu
  * @see Double
@@ -43,37 +43,40 @@ public class MutableDouble extends Number implements Comparable<MutableDouble>, 
     @Serial
     private static final long serialVersionUID = 2852270070171L;
 
+    /**
+     * The mutable value.
+     */
     private double value;
 
     /**
-     * 构造，默认值0
+     * Constructs a new MutableDouble with a default value of 0.
      */
     public MutableDouble() {
     }
 
     /**
-     * 构造
+     * Constructs a new MutableDouble with the specified value.
      *
-     * @param value 值
+     * @param value The initial value.
      */
     public MutableDouble(final double value) {
         this.value = value;
     }
 
     /**
-     * 构造
+     * Constructs a new MutableDouble with the value from the specified Number.
      *
-     * @param value 值
+     * @param value The initial value as a Number.
      */
     public MutableDouble(final Number value) {
         this(value.doubleValue());
     }
 
     /**
-     * 构造
+     * Constructs a new MutableDouble with the value parsed from the specified String.
      *
-     * @param value String值
-     * @throws NumberFormatException 数字转换错误
+     * @param value The initial value as a String.
+     * @throws NumberFormatException if the String cannot be parsed to a double.
      */
     public MutableDouble(final String value) throws NumberFormatException {
         this.value = Double.parseDouble(value);
@@ -85,9 +88,9 @@ public class MutableDouble extends Number implements Comparable<MutableDouble>, 
     }
 
     /**
-     * 设置值
+     * Sets the value.
      *
-     * @param value 值
+     * @param value The new value.
      */
     public void set(final double value) {
         this.value = value;
@@ -99,9 +102,9 @@ public class MutableDouble extends Number implements Comparable<MutableDouble>, 
     }
 
     /**
-     * 值+1
+     * Increments the value by one.
      *
-     * @return this
+     * @return This MutableDouble instance.
      */
     public MutableDouble increment() {
         value++;
@@ -109,9 +112,9 @@ public class MutableDouble extends Number implements Comparable<MutableDouble>, 
     }
 
     /**
-     * 值减一
+     * Decrements the value by one.
      *
-     * @return this
+     * @return This MutableDouble instance.
      */
     public MutableDouble decrement() {
         value--;
@@ -119,10 +122,10 @@ public class MutableDouble extends Number implements Comparable<MutableDouble>, 
     }
 
     /**
-     * 增加值
+     * Adds the specified value to this MutableDouble.
      *
-     * @param operand 被增加的值
-     * @return this
+     * @param operand The value to add.
+     * @return This MutableDouble instance.
      */
     public MutableDouble add(final double operand) {
         this.value += operand;
@@ -130,10 +133,10 @@ public class MutableDouble extends Number implements Comparable<MutableDouble>, 
     }
 
     /**
-     * 增加值
+     * Adds the value of the specified Number to this MutableDouble.
      *
-     * @param operand 被增加的值，非空
-     * @return this
+     * @param operand The value to add, must not be null.
+     * @return This MutableDouble instance.
      */
     public MutableDouble add(final Number operand) {
         this.value += operand.doubleValue();
@@ -141,10 +144,10 @@ public class MutableDouble extends Number implements Comparable<MutableDouble>, 
     }
 
     /**
-     * 减去值
+     * Subtracts the specified value from this MutableDouble.
      *
-     * @param operand 被减的值
-     * @return this
+     * @param operand The value to subtract.
+     * @return This MutableDouble instance.
      */
     public MutableDouble subtract(final double operand) {
         this.value -= operand;
@@ -152,10 +155,10 @@ public class MutableDouble extends Number implements Comparable<MutableDouble>, 
     }
 
     /**
-     * 减去值
+     * Subtracts the value of the specified Number from this MutableDouble.
      *
-     * @param operand 被减的值，非空
-     * @return this
+     * @param operand The value to subtract, must not be null.
+     * @return This MutableDouble instance.
      */
     public MutableDouble subtract(final Number operand) {
         this.value -= operand.doubleValue();
@@ -183,15 +186,16 @@ public class MutableDouble extends Number implements Comparable<MutableDouble>, 
     }
 
     /**
-     * 相等需同时满足如下条件：
+     * Compares this object to the specified object. The objects are considered equal if all of the following conditions
+     * are met:
      * <ol>
-     * <li>非空</li>
-     * <li>类型为 {@code MutableDouble}</li>
-     * <li>值相等</li>
+     * <li>The other object is not null.</li>
+     * <li>The other object is an instance of {@code MutableDouble}.</li>
+     * <li>The double value of the other object is equal to this object's value.</li>
      * </ol>
      *
-     * @param object 比对的对象
-     * @return 相同返回<code>true</code>，否则 {@code false}
+     * @param object The object to compare against.
+     * @return {@code true} if the objects are equal, {@code false} otherwise.
      */
     @Override
     public boolean equals(final Object object) {
@@ -207,10 +211,11 @@ public class MutableDouble extends Number implements Comparable<MutableDouble>, 
     }
 
     /**
-     * 比较
+     * Compares this {@code MutableDouble} object with the specified {@code MutableDouble} object.
      *
-     * @param other 其它 {@code MutableDouble} 对象
-     * @return x==y返回0，x&lt;y返回-1，x&gt;y返回1
+     * @param other The other {@code MutableDouble} object to compare against.
+     * @return 0 if the values are equal, a negative integer if this value is less than the other value, or a positive
+     *         integer if this value is greater than the other value.
      */
     @Override
     public int compareTo(final MutableDouble other) {

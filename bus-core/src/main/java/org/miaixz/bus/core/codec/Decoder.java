@@ -28,20 +28,21 @@
 package org.miaixz.bus.core.codec;
 
 /**
- * 解码接口
+ * Generic interface for decoding operations. This interface defines a contract for classes that perform decoding from
+ * one data type to another.
  *
- * @param <T> 被解码的数据类型
- * @param <R> 解码后的数据类型
+ * @param <T> The type of the data to be decoded (encoded data).
+ * @param <R> The type of the decoded data (result).
  * @author Kimi Liu
  * @since Java 17+
  */
 public interface Decoder<T, R> {
 
     /**
-     * 执行解码
+     * Executes the decoding operation.
      *
-     * @param encoded 被解码的数据
-     * @return 解码后的数据
+     * @param encoded The data to be decoded.
+     * @return The decoded data.
      */
     R decode(T encoded);
 

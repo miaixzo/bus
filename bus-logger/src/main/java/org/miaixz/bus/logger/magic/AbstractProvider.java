@@ -27,16 +27,16 @@
 */
 package org.miaixz.bus.logger.magic;
 
-import java.io.Serial;
-import java.io.Serializable;
-
 import org.miaixz.bus.core.xyz.ExceptionKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Level;
 import org.miaixz.bus.logger.Provider;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 /**
- * 抽象日志类 实现了一些通用的接口
+ * Abstract base class for logger providers, implementing common functionality.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -46,8 +46,14 @@ public abstract class AbstractProvider implements Provider, Serializable {
     @Serial
     private static final long serialVersionUID = 2852286301053L;
 
+    /**
+     * The fully qualified class name of this abstract provider.
+     */
     private static final String FQCN = AbstractProvider.class.getName();
 
+    /**
+     * The name of the logger.
+     */
     protected String name;
 
     @Override
@@ -96,7 +102,7 @@ public abstract class AbstractProvider implements Provider, Serializable {
     @Override
     public void debug(final String format, final Object... args) {
         if (null != args && 1 == args.length && args[0] instanceof Throwable) {
-            // 兼容Slf4j中的xxx(String message, Throwable e)
+            // Compatible with xxx(String message, Throwable e) in Slf4j
             debug((Throwable) args[0], format);
         } else {
             debug(null, format, args);
@@ -116,7 +122,7 @@ public abstract class AbstractProvider implements Provider, Serializable {
     @Override
     public void info(final String format, final Object... args) {
         if (null != args && 1 == args.length && args[0] instanceof Throwable) {
-            // 兼容Slf4j中的xxx(String message, Throwable e)
+            // Compatible with xxx(String message, Throwable e) in Slf4j
             info((Throwable) args[0], format);
         } else {
             info(null, format, args);
@@ -136,7 +142,7 @@ public abstract class AbstractProvider implements Provider, Serializable {
     @Override
     public void warn(final String format, final Object... args) {
         if (null != args && 1 == args.length && args[0] instanceof Throwable) {
-            // 兼容Slf4j中的xxx(String message, Throwable e)
+            // Compatible with xxx(String message, Throwable e) in Slf4j
             warn((Throwable) args[0], format);
         } else {
             warn(null, format, args);
@@ -156,7 +162,7 @@ public abstract class AbstractProvider implements Provider, Serializable {
     @Override
     public void error(final String format, final Object... args) {
         if (null != args && 1 == args.length && args[0] instanceof Throwable) {
-            // 兼容Slf4j中的xxx(String message, Throwable e)
+            // Compatible with xxx(String message, Throwable e) in Slf4j
             error((Throwable) args[0], format);
         } else {
             error(null, format, args);
@@ -171,7 +177,7 @@ public abstract class AbstractProvider implements Provider, Serializable {
     @Override
     public void log(final Level level, final String format, final Object... args) {
         if (null != args && 1 == args.length && args[0] instanceof Throwable) {
-            // 兼容Slf4j中的xxx(String message, Throwable e)
+            // Compatible with xxx(String message, Throwable e) in Slf4j
             log(level, (Throwable) args[0], format);
         } else {
             log(level, null, format, args);

@@ -30,7 +30,9 @@ package org.miaixz.bus.http.plugin.sse;
 import org.miaixz.bus.http.Request;
 
 /**
- * 服务器推送事件（Server-Sent Events, SSE）源接口，定义了与事件源交互的基本操作。 实现此接口的类负责管理 SSE 连接，包括获取原始请求和取消连接。
+ * An interface for a Server-Sent Events (SSE) source, defining the basic operations for interacting with an event
+ * source. Implementations of this interface are responsible for managing the SSE connection, including retrieving the
+ * original request and canceling the connection.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,28 +40,31 @@ import org.miaixz.bus.http.Request;
 public interface EventSource {
 
     /**
-     * 返回发起事件源的原始请求。
+     * Returns the original request that initiated this event source.
      *
-     * @return 原始的 HTTP 请求
+     * @return The original HTTP request.
      */
     Request request();
 
     /**
-     * 立即且强制性地释放事件源持有的资源。如果事件源已被关闭或取消，则此方法无效。
+     * Immediately and forcefully releases the resources held by this event source. If the event source is already
+     * closed or canceled, this method has no effect.
      */
     void cancel();
 
     /**
-     * 事件源工厂接口，用于创建新的 {@link EventSource} 实例。
+     * A factory for creating new {@link EventSource} instances.
      */
     interface Factory {
 
         /**
-         * 创建并立即返回一个新的事件源。创建事件源会启动一个异步过程来连接服务器。 连接成功或失败时，将通知监听器。调用者必须在不再使用返回的事件源时取消它。
+         * Creates and immediately returns a new event source. Creating an event source initiates an asynchronous
+         * process to connect to the server. The listener will be notified when the connection is successful or fails.
+         * The caller must cancel the returned event source when it is no longer in use.
          *
-         * @param request  用于发起事件源的 HTTP 请求
-         * @param listener 事件源监听器，用于接收连接状态和事件数据
-         * @return 新创建的 {@link EventSource} 实例
+         * @param request  The HTTP request used to initiate the event source.
+         * @param listener The event source listener to receive connection status and event data.
+         * @return A new {@link EventSource} instance.
          */
         EventSource newEventSource(Request request, EventSourceListener listener);
     }

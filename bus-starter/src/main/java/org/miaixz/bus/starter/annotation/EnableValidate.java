@@ -27,13 +27,16 @@
 */
 package org.miaixz.bus.starter.annotation;
 
-import java.lang.annotation.*;
-
 import org.miaixz.bus.starter.validate.ValidateConfiguration;
 import org.springframework.context.annotation.Import;
 
+import java.lang.annotation.*;
+
 /**
- * 启用数据校验
+ * Enables data validation support.
+ * <p>
+ * This annotation imports the {@link ValidateConfiguration}, which sets up AOP-based validation for method parameters.
+ * It allows for declarative validation using annotations like {@code @Valid} on method parameters.
  *
  * @author Kimi Liu
  * @since Java 17+

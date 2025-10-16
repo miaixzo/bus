@@ -27,24 +27,33 @@
 */
 package org.miaixz.bus.http.metric.http;
 
-import java.io.IOException;
-import java.net.ProtocolException;
-
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.http.Response;
 
+import java.io.IOException;
+import java.net.ProtocolException;
+
 /**
- * HTTP响应“HTTP/ 1.1200 OK”这样的在线状态.
+ * Represents the status line of an HTTP response, such as "HTTP/1.1 200 OK".
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class StatusLine {
 
+    /**
+     * The HTTP protocol, such as {@link Protocol#HTTP_1_1}.
+     */
     public final Protocol protocol;
+    /**
+     * The HTTP status code, such as 200.
+     */
     public final int code;
+    /**
+     * The HTTP status message, such as "OK".
+     */
     public final String message;
 
     public StatusLine(Protocol protocol, int code, String message) {
@@ -53,10 +62,23 @@ public class StatusLine {
         this.message = message;
     }
 
+    /**
+     * Creates a {@code StatusLine} from a {@link Response}.
+     *
+     * @param response The response to extract the status line from.
+     * @return A new {@code StatusLine} instance.
+     */
     public static StatusLine get(Response response) {
         return new StatusLine(response.protocol(), response.code(), response.message());
     }
 
+    /**
+     * Parses a status line from a string.
+     *
+     * @param statusLine The status line string.
+     * @return A new {@code StatusLine} instance.
+     * @throws IOException if the status line is malformed.
+     */
     public static StatusLine parse(String statusLine) throws IOException {
         int codeStart;
         Protocol protocol;
@@ -74,14 +96,14 @@ public class StatusLine {
                 throw new ProtocolException("Unexpected status line: " + statusLine);
             }
         } else if (statusLine.startsWith("ICY ")) {
-            // Shoutcast使用的是ICY而不是"HTTP/1.0"
+            // Shoutcast uses ICY instead of "HTTP/1.0".
             protocol = Protocol.HTTP_1_0;
             codeStart = 4;
         } else {
             throw new ProtocolException("Unexpected status line: " + statusLine);
         }
 
-        // 解析“200”这样的响应代码。总是3位数.
+        // Parse the response code, like "200". Always 3 digits.
         if (statusLine.length() < codeStart + 3) {
             throw new ProtocolException("Unexpected status line: " + statusLine);
         }
@@ -92,7 +114,7 @@ public class StatusLine {
             throw new ProtocolException("Unexpected status line: " + statusLine);
         }
 
-        // 解析一个可选的响应消息，比如"OK"或"Not Modified",如果存在，则用空格将其与响应代码分隔开.
+        // Parse an optional response message, like "OK" or "Not Modified".
         String message = Normal.EMPTY;
         if (statusLine.length() > codeStart + 3) {
             if (statusLine.charAt(codeStart + 3) != Symbol.C_SPACE) {
@@ -109,7 +131,7 @@ public class StatusLine {
         StringBuilder result = new StringBuilder();
         result.append(protocol == Protocol.HTTP_1_0 ? Protocol.HTTP_1_0.name : Protocol.HTTP_1_1.name);
         result.append(Symbol.C_SPACE).append(code);
-        if (null != message) {
+        if (message != null) {
             result.append(Symbol.C_SPACE).append(message);
         }
         return result.toString();

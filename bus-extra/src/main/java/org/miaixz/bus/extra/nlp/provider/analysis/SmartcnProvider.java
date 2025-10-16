@@ -30,7 +30,9 @@ package org.miaixz.bus.extra.nlp.provider.analysis;
 import org.apache.lucene.analysis.cn.smart.SmartChineseAnalyzer;
 
 /**
- * Lucene-smartcn分词引擎实现 项目地址：https://github.com/apache/lucene-solr/tree/master/lucene/analysis/smartcn
+ * Lucene-smartcn word segmentation engine implementation. This class provides a concrete implementation of
+ * {@link AnalysisProvider} for the Lucene SmartChineseAnalyzer. Project homepage: <a href=
+ * "https://github.com/apache/lucene-solr/tree/master/lucene/analysis/smartcn">https://github.com/apache/lucene-solr/tree/master/lucene/analysis/smartcn</a>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,7 +40,8 @@ import org.apache.lucene.analysis.cn.smart.SmartChineseAnalyzer;
 public class SmartcnProvider extends AnalysisProvider {
 
     /**
-     * 构造
+     * Constructs a new {@code SmartcnProvider} instance. It initializes the provider with a new instance of
+     * {@link SmartChineseAnalyzer}.
      */
     public SmartcnProvider() {
         super(new SmartChineseAnalyzer());

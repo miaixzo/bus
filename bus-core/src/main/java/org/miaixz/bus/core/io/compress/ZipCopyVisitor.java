@@ -34,7 +34,9 @@ import java.nio.file.attribute.BasicFileAttributes;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * Zip文件拷贝的FileVisitor实现，zip中追加文件，此类非线程安全 此类在遍历源目录并复制过程中会自动创建目标目录中不存在的上级目录
+ * FileVisitor implementation for copying files to a Zip file, appending files to the Zip archive. This class is not
+ * thread-safe. This class automatically creates non-existent parent directories in the target directory during the
+ * traversal and copying process.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,18 +44,24 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class ZipCopyVisitor extends SimpleFileVisitor<Path> {
 
     /**
-     * 源Path，或基准路径，用于计算被拷贝文件的相对路径
+     * The source Path, or base path, used to calculate the relative path of the file being copied.
      */
     private final Path source;
+    /**
+     * The target FileSystem, representing the Zip file.
+     */
     private final FileSystem fileSystem;
+    /**
+     * Copy options, such as skipping existing files.
+     */
     private final CopyOption[] copyOptions;
 
     /**
-     * 构造
+     * Constructs a new ZipCopyVisitor.
      *
-     * @param source      源Path，或基准路径，用于计算被拷贝文件的相对路径
-     * @param fileSystem  目标Zip文件
-     * @param copyOptions 拷贝选项，如跳过已存在等
+     * @param source      The source Path, or base path, used to calculate the relative path of the file being copied.
+     * @param fileSystem  The target FileSystem, representing the Zip file.
+     * @param copyOptions Copy options, such as skipping existing files.
      */
     public ZipCopyVisitor(final Path source, final FileSystem fileSystem, final CopyOption... copyOptions) {
         this.source = source;
@@ -65,16 +73,16 @@ public class ZipCopyVisitor extends SimpleFileVisitor<Path> {
     public FileVisitResult preVisitDirectory(final Path dir, final BasicFileAttributes attrs) throws IOException {
         final Path targetDir = resolveTarget(dir);
         if (StringKit.isNotEmpty(targetDir.toString())) {
-            // 在目标的Zip文件中的相对位置创建目录
+            // Create directory in the target Zip file at the relative location.
             try {
                 Files.copy(dir, targetDir, copyOptions);
             } catch (final DirectoryNotEmptyException ignore) {
-                // 目录已经存在，则跳过
+                // Directory already exists, skip.
             } catch (final FileAlreadyExistsException e) {
                 if (!Files.isDirectory(targetDir)) {
                     throw e;
                 }
-                // 目录非空情况下，跳过创建目录
+                // If the directory is not empty, skip creating it.
             }
         }
 
@@ -83,21 +91,23 @@ public class ZipCopyVisitor extends SimpleFileVisitor<Path> {
 
     @Override
     public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
-        // 如果目标存在，无论目录还是文件都抛出FileAlreadyExistsException异常，此处不做特别处理
+        // If the target exists, whether it's a directory or a file, a FileAlreadyExistsException will be thrown. No
+        // special handling is done here.
         Files.copy(file, resolveTarget(file), copyOptions);
 
         return FileVisitResult.CONTINUE;
     }
 
     /**
-     * 根据源文件或目录路径，拼接生成目标的文件或目录路径 原理是首先截取源路径，得到相对路径，再和目标路径拼接
+     * Resolves the target file or directory path based on the source file or directory path. The principle is to first
+     * truncate the source path to get the relative path, and then concatenate it with the target path.
      *
      * <p>
-     * 如：源路径是 /opt/test/，需要拷贝的文件是 /opt/test/a/a.txt，得到相对路径 a/a.txt 目标路径是/home/，则得到最终目标路径是 /home/a/a.txt
-     * </p>
+     * For example: if the source path is /opt/test/, the file to be copied is /opt/test/a/a.txt, the relative path
+     * obtained is a/a.txt. If the target path is /home/, the final target path will be /home/a/a.txt.
      *
-     * @param file 需要拷贝的文件或目录Path
-     * @return 目标Path
+     * @param file The file or directory Path to be copied.
+     * @return The target Path.
      */
     private Path resolveTarget(final Path file) {
         return fileSystem.getPath(source.relativize(file).toString());

@@ -36,7 +36,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * 现金红包对账单下载
+ * Download Red Packet Bill model.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,8 +48,17 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class DownloadHbBill extends Material {
 
+    /**
+     * Signature.
+     */
     private String sign;
+    /**
+     * Merchant ID.
+     */
     private String mch_id;
+    /**
+     * Bill date.
+     */
     private String date;
 
 }

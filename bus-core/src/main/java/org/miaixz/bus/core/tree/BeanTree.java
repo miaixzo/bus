@@ -46,70 +46,83 @@ import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.core.xyz.ListKit;
 
 /**
- * 本类是用于构建树的工具类，特点是采取lambda，以及满足指定类型的Bean进行树操作 Bean需要满足三个属性：
+ * A utility class for building tree structures from a list of beans using lambda expressions. The bean type must have
+ * the following properties:
  * <ul>
- * <li>包含不为null的主键(例如id)</li>
- * <li>包含容许为null的关联外键(例如parentId)</li>
- * <li>包含自身的子集，例如类型为List的children</li>
+ * <li>A non-null primary key (e.g., id).</li>
+ * <li>A nullable foreign key to associate with a parent (e.g., parentId).</li>
+ * <li>A list to hold its own children (e.g., a {@code List<T>} named children).</li>
  * </ul>
- * 本类的构建方法是通过{@code BeanTree.of} 进行构建，例如：
- * 
- * <pre>{@code
- * 
- * final BeanTree beanTree = BeanTree
- *         .of(JavaBean::getId, JavaBean::getParentId, null, JavaBean::getChildren, JavaBean::setChildren);
- * }</pre>
- * 
- * 得到的BeanTree实例可以调用toTree方法，将集合转换为树，例如：
- * 
- * <pre>{@code
- * 
- * final List<JavaBean> javaBeanTree = beanTree.toTree(originJavaBeanList);
- * }</pre>
- * 
- * 也可以将已有的树转换为集合，例如：
- * 
- * <pre>{@code
- * 
- * final List<JavaBean> javaBeanList = beanTree.flat(originJavaBeanTree);
- * }</pre>
- *
  * <p>
- * 最后，引用一句电影经典台词： 无处安放的双手，以及无处安放的灵魂。《Hello!树先生》
- * </p>
+ * To use this class, create an instance via the static factory method {@code BeanTree.of()}, for example:
+ * 
+ * <pre>{@code
+ * 
+ * BeanTree<JavaBean, Long> beanTree = BeanTree.of(
+ *         JavaBean::getId,
+ *         JavaBean::getParentId,
+ *         null, // Value of the parent
+ *               // ID for root nodes
+ *         JavaBean::getChildren,
+ *         JavaBean::setChildren);
+ * }</pre>
+ * <p>
+ * Once you have a {@code BeanTree} instance, you can convert a flat list into a tree:
+ * 
+ * <pre>{@code
+ * 
+ * List<JavaBean> tree = beanTree.toTree(flatList);
+ * }</pre>
+ * <p>
+ * You can also flatten an existing tree structure back into a list:
+ * 
+ * <pre>{@code
+ * 
+ * List<JavaBean> flatList = beanTree.flat(tree);
+ * }</pre>
  *
- * @param <T> Bean类型
- * @param <R> 主键、外键类型
+ * @param <T> The type of the bean.
+ * @param <R> The type of the primary key and foreign key.
  * @author Kimi Liu
  * @since Java 17+
  */
 public class BeanTree<T, R extends Comparable<R>> {
 
     /**
-     * 主键getter
+     * The getter for the primary key.
      */
     private final FunctionX<T, R> idGetter;
     /**
-     * 外键getter
+     * The getter for the parent ID (foreign key).
      */
     private final FunctionX<T, R> pidGetter;
     /**
-     * 外键匹配值(保留此属性主要是性能较外键条件匹配稍微好一点)
+     * The value of the parent ID for root nodes. Using this is slightly more performant than a predicate.
      */
     private final R pidValue;
     /**
-     * 外键匹配条件
+     * The predicate to identify root nodes.
      */
     private final PredicateX<T> parentPredicate;
     /**
-     * 子集getter
+     * The getter for the list of children.
      */
     private final FunctionX<T, List<T>> childrenGetter;
     /**
-     * 子集setter
+     * The setter for the list of children.
      */
     private final BiConsumerX<T, List<T>> childrenSetter;
 
+    /**
+     * Private constructor to initialize the {@code BeanTree}.
+     *
+     * @param idGetter        The getter for the primary key.
+     * @param pidGetter       The getter for the parent ID.
+     * @param pidValue        The parent ID value that identifies a root node.
+     * @param parentPredicate The predicate to identify a root node.
+     * @param childrenGetter  The getter for the children list.
+     * @param childrenSetter  The setter for the children list.
+     */
     private BeanTree(final FunctionX<T, R> idGetter, final FunctionX<T, R> pidGetter, final R pidValue,
             final PredicateX<T> parentPredicate, final FunctionX<T, List<T>> childrenGetter,
             final BiConsumerX<T, List<T>> childrenSetter) {
@@ -122,16 +135,16 @@ public class BeanTree<T, R extends Comparable<R>> {
     }
 
     /**
-     * 构建BeanTree
+     * Creates a {@code BeanTree} instance.
      *
-     * @param idGetter       主键getter，例如 {@code JavaBean::getId}
-     * @param pidGetter      外键getter，例如 {@code JavaBean::getParentId}
-     * @param pidValue       根节点的外键值，例如 {@code null}
-     * @param childrenGetter 子集getter，例如 {@code JavaBean::getChildren}
-     * @param childrenSetter 子集setter，例如 {@code JavaBean::setChildren}
-     * @param <T>            Bean类型
-     * @param <R>            主键、外键类型
-     * @return BeanTree
+     * @param idGetter       The getter for the primary key (e.g., {@code JavaBean::getId}).
+     * @param pidGetter      The getter for the parent ID (e.g., {@code JavaBean::getParentId}).
+     * @param pidValue       The parent ID value for root nodes (e.g., {@code null}).
+     * @param childrenGetter The getter for the children list (e.g., {@code JavaBean::getChildren}).
+     * @param childrenSetter The setter for the children list (e.g., {@code JavaBean::setChildren}).
+     * @param <T>            The type of the bean.
+     * @param <R>            The type of the primary and foreign keys.
+     * @return A new {@code BeanTree} instance.
      */
     public static <T, R extends Comparable<R>> BeanTree<T, R> of(
             final FunctionX<T, R> idGetter,
@@ -143,16 +156,16 @@ public class BeanTree<T, R extends Comparable<R>> {
     }
 
     /**
-     * 构建BeanTree
+     * Creates a {@code BeanTree} instance using a predicate to find root nodes.
      *
-     * @param idGetter        主键getter，例如 {@code JavaBean::getId}
-     * @param pidGetter       外键getter，例如 {@code JavaBean::getParentId}
-     * @param parentPredicate 根节点判断条件，例如 {@code o -> Objects.isNull(o.getParentId())}
-     * @param childrenGetter  子集getter，例如 {@code JavaBean::getChildren}
-     * @param childrenSetter  子集setter，例如 {@code JavaBean::setChildren}
-     * @param <T>             Bean类型
-     * @param <R>             主键、外键类型
-     * @return BeanTree
+     * @param idGetter        The getter for the primary key (e.g., {@code JavaBean::getId}).
+     * @param pidGetter       The getter for the parent ID (e.g., {@code JavaBean::getParentId}).
+     * @param parentPredicate The predicate to identify root nodes (e.g., {@code o -> Objects.isNull(o.getParentId())}).
+     * @param childrenGetter  The getter for the children list (e.g., {@code JavaBean::getChildren}).
+     * @param childrenSetter  The setter for the children list (e.g., {@code JavaBean::setChildren}).
+     * @param <T>             The type of the bean.
+     * @param <R>             The type of the primary and foreign keys.
+     * @return A new {@code BeanTree} instance.
      */
     public static <T, R extends Comparable<R>> BeanTree<T, R> ofMatch(
             final FunctionX<T, R> idGetter,
@@ -166,10 +179,10 @@ public class BeanTree<T, R extends Comparable<R>> {
     }
 
     /**
-     * 将集合转换为树
+     * Converts a flat list of items into a tree structure.
      *
-     * @param list 集合
-     * @return 转换后的树
+     * @param list The flat list of items.
+     * @return The list of root nodes of the tree.
      */
     public List<T> toTree(final List<T> list) {
         if (CollKit.isEmpty(list)) {
@@ -195,13 +208,11 @@ public class BeanTree<T, R extends Comparable<R>> {
     }
 
     /**
-     * 将树扁平化为集合，相当于将树里的所有节点都放到一个集合里
-     * <p>
-     * 本方法会主动将节点的子集合字段置为null
-     * </p>
+     * Flattens a tree structure into a single list of nodes. This method will set the children list of each node to
+     * {@code null}.
      *
-     * @param tree 树
-     * @return 集合
+     * @param tree The tree structure (list of root nodes).
+     * @return The flattened list of all nodes in the tree.
      */
     public List<T> flat(final List<T> tree) {
         final AtomicReference<Function<T, EasyStream<T>>> recursiveRef = new AtomicReference<>();
@@ -212,12 +223,13 @@ public class BeanTree<T, R extends Comparable<R>> {
     }
 
     /**
-     * 树的过滤操作，本方法一般适用于寻找某人所在部门以及所有上级部门类似的逻辑 通过{@link PredicateX}指定的过滤规则，本节点或子节点满足过滤条件，则保留当前节点，否则抛弃节点及其子节点
-     * 即，一条路径上只要有一个节点符合条件，就保留整条路径上的节点
+     * Filters the tree. A node is kept if it or any of its descendants match the given condition. This is useful for
+     * scenarios like finding an employee's department and all its parent departments. If a child node matches, its
+     * parent nodes will be kept to preserve the path from the root.
      *
-     * @param tree      树
-     * @param condition 节点过滤规则函数，只需处理本级节点本身即可，{@link PredicateX#test(Object)}为{@code true}保留
-     * @return 过滤后的树
+     * @param tree      The tree to filter.
+     * @param condition The condition to test on each node. If a node returns {@code true}, it is kept.
+     * @return The filtered tree.
      */
     public List<T> filter(final List<T> tree, final PredicateX<T> condition) {
         Objects.requireNonNull(condition, "filter condition must be not null");
@@ -233,11 +245,11 @@ public class BeanTree<T, R extends Comparable<R>> {
     }
 
     /**
-     * 树节点遍历操作
+     * Performs an action on each node in the tree (depth-first).
      *
-     * @param tree   数
-     * @param action 操作
-     * @return 树
+     * @param tree   The tree to iterate over.
+     * @param action The action to perform on each node.
+     * @return The original tree.
      */
     public List<T> forEach(final List<T> tree, final ConsumerX<T> action) {
         Objects.requireNonNull(action, "action must be not null");
@@ -252,10 +264,10 @@ public class BeanTree<T, R extends Comparable<R>> {
     }
 
     /**
-     * 内联函数，设置每个节点的子集
+     * Private helper method to find and set the children for each node in the list.
      *
-     * @param list         集合
-     * @param pIdValuesMap 父id与子集的映射
+     * @param list         The full list of nodes.
+     * @param pIdValuesMap A map from parent ID to a list of its direct children.
      */
     private void findChildren(final List<T> list, final Map<R, List<T>> pIdValuesMap) {
         for (final T node : list) {

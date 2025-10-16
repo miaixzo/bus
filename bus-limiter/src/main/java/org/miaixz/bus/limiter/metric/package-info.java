@@ -26,7 +26,9 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 管控规则
+ * Provides classes related to metric management and strategy implementation for the limiter module. This package
+ * contains components for handling fallback mechanisms, method-level caching, and request limiting based on various
+ * metrics.
  *
  * @author Kimi Liu
  * @since Java 17+

@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.starter.health;
 
+import jakarta.annotation.Resource;
 import org.miaixz.bus.health.Provider;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.starter.annotation.EnableHealth;
@@ -44,10 +45,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
-import jakarta.annotation.Resource;
-
 /**
- * 健康状态
+ * Auto-configuration for application health status and monitoring.
+ * <p>
+ * This configuration class sets up all the necessary beans for the health monitoring feature, including the data
+ * provider, the service layer, and the controller with its endpoints. The entire configuration is conditional on the
+ * presence of the {@link EnableHealth} annotation on a user-defined configuration class.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -56,12 +59,13 @@ import jakarta.annotation.Resource;
 public class HealthConfiguration {
 
     @Resource
-    HealthProperties properties;
+    private HealthProperties properties;
 
     /**
-     * 定义 Provider Bean，延迟初始化并捕获异常
+     * Creates the {@link Provider} bean, which is responsible for gathering raw system and hardware information.
      *
-     * @return {@link Provider}
+     * @return A new {@link Provider} instance.
+     * @throws IllegalStateException if the provider fails to initialize.
      */
     @Bean
     @Conditional(EnableHealthCondition.class)
@@ -75,12 +79,12 @@ public class HealthConfiguration {
     }
 
     /**
-     * 定义 HealthProviderService Bean。
+     * Creates the {@link HealthService} bean, which orchestrates health data retrieval and state changes.
      *
-     * @param publisher    Spring 应用事件发布器
-     * @param availability Spring 应用可用性接口
-     * @param provider     系统信息提供者
-     * @return {@link HealthService}
+     * @param publisher    The application event publisher.
+     * @param availability The application availability manager.
+     * @param provider     The system information provider.
+     * @return A new {@link HealthService} instance.
      */
     @Bean
     @Conditional(EnableHealthCondition.class)
@@ -92,9 +96,10 @@ public class HealthConfiguration {
     }
 
     /**
-     * Spring 应用可用性接口，用于获取和检查当前的存活状态和就绪状态。
+     * Creates the {@link ApplicationAvailability} bean, which tracks and provides the application's liveness and
+     * readiness states.
      *
-     * @return {@link ApplicationAvailability}
+     * @return A new {@link ApplicationAvailabilityBean} instance.
      */
     @Bean
     @Conditional(EnableHealthCondition.class)
@@ -103,85 +108,81 @@ public class HealthConfiguration {
     }
 
     /**
-     * Spring 应用事件发布器，用于发布可用性状态变更事件。
+     * Creates the {@link ApplicationEventPublisher} bean, used to broadcast availability state changes.
      *
-     * @param applicationContext Spring 应用上下文
-     * @return {@link ApplicationEventPublisher}
+     * @param applicationContext The Spring application context.
+     * @return An {@link ApplicationEventPublisher} that delegates to the application context.
      */
     @Bean
     @Conditional(EnableHealthCondition.class)
     public ApplicationEventPublisher publisher(ApplicationContext applicationContext) {
-        return event -> {
-            if (event != null) {
-                applicationContext.publishEvent(event);
-            } else {
-                Logger.warn("Null event received");
-            }
-        };
+        return applicationContext::publishEvent;
     }
 
     /**
-     * 定义 HealthController Bean，并手动注册REST端点。
+     * Creates the {@link HealthController} bean and manually registers its REST endpoints.
+     * <p>
+     * Manual registration is used here to provide more control over the endpoint paths and methods, independent of a
+     * class-level {@code @RequestMapping}.
+     * </p>
      *
-     * @param healthService  健康状态服务
-     * @param handlerMapping 用于注册端点
-     * @return {@link HealthController}
+     * @param healthService  The health service to be used by the controller.
+     * @param handlerMapping The Spring request mapping handler for registering endpoints.
+     * @return The configured {@link HealthController} instance.
+     * @throws RuntimeException if the controller methods cannot be found for mapping.
      */
     @Bean
     @Conditional(EnableHealthCondition.class)
     public HealthController healthController(HealthService healthService, RequestMappingHandlerMapping handlerMapping) {
         HealthController controller = new HealthController(healthService);
         try {
-            // 注册/healthz端点（支持GET和POST）
-            RequestMappingInfo healthzMapping = RequestMappingInfo.paths("/healthz")
-                    .methods(RequestMethod.GET, RequestMethod.POST).build();
-            handlerMapping.registerMapping(
-                    healthzMapping,
-                    controller,
-                    HealthController.class.getMethod("healthz", String.class));
-
-            // 注册/broken端点
-            RequestMappingInfo brokenMapping = RequestMappingInfo.paths("/broken")
-                    .methods(RequestMethod.GET, RequestMethod.POST).build();
-            handlerMapping.registerMapping(brokenMapping, controller, HealthController.class.getMethod("broken"));
-
-            // 注册/correct端点
-            RequestMappingInfo correctMapping = RequestMappingInfo.paths("/correct")
-                    .methods(RequestMethod.GET, RequestMethod.POST).build();
-            handlerMapping.registerMapping(correctMapping, controller, HealthController.class.getMethod("correct"));
-
-            // 注册/accept端点
-            RequestMappingInfo acceptMapping = RequestMappingInfo.paths("/accept")
-                    .methods(RequestMethod.GET, RequestMethod.POST).build();
-            handlerMapping.registerMapping(acceptMapping, controller, HealthController.class.getMethod("accept"));
-
-            // 注册/refuse端点
-            RequestMappingInfo refuseMapping = RequestMappingInfo.paths("/refuse")
-                    .methods(RequestMethod.GET, RequestMethod.POST).build();
-            handlerMapping.registerMapping(refuseMapping, controller, HealthController.class.getMethod("refuse"));
-
+            // Register /healthz endpoint (supports GET and POST)
+            registerMapping(handlerMapping, "/healthz", controller, "healthz", String.class);
+            // Register state-changing endpoints
+            registerMapping(handlerMapping, "/broken", controller, "broken");
+            registerMapping(handlerMapping, "/correct", controller, "correct");
+            registerMapping(handlerMapping, "/accept", controller, "accept");
+            registerMapping(handlerMapping, "/refuse", controller, "refuse");
         } catch (NoSuchMethodException e) {
             Logger.error("Failed to register HealthController mappings: {}", e.getMessage(), e);
-            throw new RuntimeException("Failed to register mapping", e);
+            throw new RuntimeException("Failed to register health mappings", e);
         }
         return controller;
     }
 
     /**
-     * 条件类：检查是否应用了 @EnableHealth 注解
+     * Helper method to register a request mapping for the health controller.
+     */
+    private void registerMapping(
+            RequestMappingHandlerMapping handlerMapping,
+            String path,
+            Object handler,
+            String methodName,
+            Class<?>... parameterTypes) throws NoSuchMethodException {
+        RequestMappingInfo mappingInfo = RequestMappingInfo.paths(path).methods(RequestMethod.GET, RequestMethod.POST)
+                .build();
+        handlerMapping.registerMapping(mappingInfo, handler, handler.getClass().getMethod(methodName, parameterTypes));
+    }
+
+    /**
+     * A {@link Condition} that checks for the presence of the {@link EnableHealth} annotation.
+     * <p>
+     * This condition ensures that the health monitoring beans are only created when the feature is explicitly enabled
+     * by the user.
      */
     static class EnableHealthCondition implements Condition {
 
         /**
-         * 检查 Spring 上下文中是否存在 @EnableHealth 注解的 Bean
+         * Determines if the condition matches.
          *
-         * @param context  Spring 条件上下文
-         * @param metadata 注解元数据（未使用）
-         * @return the true/false
+         * @param context  The condition context.
+         * @param metadata The metadata of the class or method being checked.
+         * @return {@code true} if a bean with the {@link EnableHealth} annotation is found, {@code false} otherwise.
          */
         @Override
         public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
-            return context.getBeanFactory().getBeansWithAnnotation(EnableHealth.class).size() > 0;
+            // The condition matches if any bean with the @EnableHealth annotation exists.
+            return !context.getBeanFactory().getBeansWithAnnotation(EnableHealth.class).isEmpty();
         }
     }
 

@@ -26,7 +26,9 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * RowBounds处理
+ * Provides implementations for handling pagination based on MyBatis {@link org.apache.ibatis.session.RowBounds}. This
+ * package contains dialect-specific classes that extend {@link org.miaixz.bus.pager.dialect.AbstractRowBounds} to
+ * provide customized SQL generation for various databases when using RowBounds.
  *
  * @author Kimi Liu
  * @since Java 17+

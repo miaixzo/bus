@@ -27,28 +27,48 @@
 */
 package org.miaixz.bus.socket.plugin;
 
-import java.nio.channels.AsynchronousChannelGroup;
-
 import org.miaixz.bus.socket.Session;
 import org.miaixz.bus.socket.Status;
 import org.miaixz.bus.socket.accord.AioClient;
 
+import java.nio.channels.AsynchronousChannelGroup;
+
 /**
- * 断链重连插件
+ * A plugin that provides automatic reconnection functionality for clients upon disconnection.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 class ReconnectPlugin extends AbstractPlugin {
 
+    /**
+     * The asynchronous channel group to be used for reconnection, if provided.
+     */
     private final AsynchronousChannelGroup asynchronousChannelGroup;
+    /**
+     * The AIO client instance that this plugin manages for reconnection.
+     */
     private final AioClient client;
+    /**
+     * A flag indicating whether the plugin has been explicitly shut down.
+     */
     private boolean shutdown = false;
 
+    /**
+     * Constructs a {@code ReconnectPlugin} for the given client.
+     *
+     * @param client the {@link AioClient} instance to manage
+     */
     public ReconnectPlugin(AioClient client) {
         this(client, null);
     }
 
+    /**
+     * Constructs a {@code ReconnectPlugin} for the given client and an optional asynchronous channel group.
+     *
+     * @param client                   the {@link AioClient} instance to manage
+     * @param asynchronousChannelGroup an optional {@link AsynchronousChannelGroup} to use for reconnection
+     */
     public ReconnectPlugin(AioClient client, AsynchronousChannelGroup asynchronousChannelGroup) {
         this.client = client;
         this.asynchronousChannelGroup = asynchronousChannelGroup;
@@ -56,6 +76,7 @@ class ReconnectPlugin extends AbstractPlugin {
 
     @Override
     public void stateEvent(Status status, Session session, Throwable throwable) {
+        // Only attempt reconnection if the session is closed and the plugin is not shut down.
         if (status != Status.SESSION_CLOSED || shutdown) {
             return;
         }
@@ -72,6 +93,9 @@ class ReconnectPlugin extends AbstractPlugin {
 
     }
 
+    /**
+     * Shuts down the reconnection plugin, preventing further reconnection attempts.
+     */
     public void shutdown() {
         shutdown = true;
     }

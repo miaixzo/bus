@@ -26,7 +26,9 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * FileVisitor功能性实现，包括递归删除、拷贝等
+ * Provides functional implementations of {@link java.nio.file.FileVisitor}, including recursive deletion, copying, and
+ * moving operations for files and directories. This package contains classes that facilitate common file system
+ * traversal and manipulation tasks.
  *
  * @author Kimi Liu
  * @since Java 17+

@@ -32,23 +32,40 @@ import java.lang.ref.WeakReference;
 import org.miaixz.bus.core.center.map.reference.WeakConcurrentMap;
 
 /**
- * 使用WeakHashMap(线程安全)存储对象的规范化对象，注意此对象需单例使用！
+ * An implementation of {@link Intern} that uses a thread-safe {@link WeakConcurrentMap} to store canonical objects.
+ * This ensures that canonical objects can be garbage collected if they are no longer strongly referenced elsewhere.
+ * <p>
+ * This class should generally be used as a singleton instance to maintain a consistent pool of interned objects.
  *
- * @param <T> data 类型
+ * @param <T> The type of the object to be interned.
  * @author Kimi Liu
  * @since Java 17+
  */
 public class WeakIntern<T> implements Intern<T> {
 
+    /**
+     * The cache for storing weak references to interned objects. The keys are the objects themselves, and the values
+     * are weak references to the canonical objects.
+     */
     private final WeakConcurrentMap<T, WeakReference<T>> cache = new WeakConcurrentMap<>();
 
+    /**
+     * Returns the canonical representation for the given object. If the object is already in the cache, its canonical
+     * instance is returned. Otherwise, the object is added to the cache as a new canonical instance.
+     * <p>
+     * This method handles the case where a weak reference might be garbage collected immediately after creation by
+     * looping until a non-null value is retrieved.
+     *
+     * @param sample The object for which to retrieve the canonical representation.
+     * @return The canonical object instance, or {@code null} if the sample is {@code null}.
+     */
     @Override
     public T intern(final T sample) {
         if (null == sample) {
             return null;
         }
         T val;
-        // 循环避免刚创建就被回收的情况
+        // Loop to avoid the situation where a newly created WeakReference is immediately garbage collected.
         do {
             val = this.cache.computeIfAbsent(sample, WeakReference::new).get();
         } while (val == null);

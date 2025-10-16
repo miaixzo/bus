@@ -30,7 +30,7 @@ package org.miaixz.bus.cron;
 import java.util.TimeZone;
 
 /**
- * 定时任务配置类
+ * Cron task configuration.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,35 +38,35 @@ import java.util.TimeZone;
 public class Configure {
 
     /**
-     * 时区
+     * The time zone for the scheduler.
      */
     protected TimeZone timezone = TimeZone.getDefault();
     /**
-     * 是否支持秒匹配
+     * Whether to match the seconds field in a cron expression.
      */
     protected boolean matchSecond;
 
     /**
-     * 构造
+     * Default constructor.
      */
     public Configure() {
 
     }
 
     /**
-     * 获得时区，默认为 {@link TimeZone#getDefault()}
+     * Gets the time zone.
      *
-     * @return 时区
+     * @return The time zone, defaulting to {@link TimeZone#getDefault()}.
      */
     public TimeZone getTimeZone() {
         return this.timezone;
     }
 
     /**
-     * 设置时区
+     * Sets the time zone.
      *
-     * @param timezone 时区
-     * @return this
+     * @param timezone The time zone.
+     * @return this {@link Configure} instance for chaining.
      */
     public Configure setTimeZone(final TimeZone timezone) {
         this.timezone = timezone;
@@ -74,19 +74,19 @@ public class Configure {
     }
 
     /**
-     * 是否支持秒匹配
+     * Checks if second matching is enabled.
      *
-     * @return {@code true}使用，{@code false}不使用
+     * @return {@code true} if enabled, {@code false} otherwise.
      */
     public boolean isMatchSecond() {
         return this.matchSecond;
     }
 
     /**
-     * 设置是否支持秒匹配，默认不使用
+     * Sets whether to support second matching in cron expressions. Defaults to false.
      *
-     * @param isMatchSecond {@code true}支持，{@code false}不支持
-     * @return this
+     * @param isMatchSecond {@code true} to enable, {@code false} to disable.
+     * @return this {@link Configure} instance for chaining.
      */
     public Configure setMatchSecond(final boolean isMatchSecond) {
         this.matchSecond = isMatchSecond;

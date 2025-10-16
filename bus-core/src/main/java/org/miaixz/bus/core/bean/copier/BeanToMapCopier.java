@@ -37,7 +37,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.TypeKit;
 
 /**
- * Bean属性拷贝到Map中的拷贝器
+ * A copier that copies properties from a Bean to a Map.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -45,17 +45,17 @@ import org.miaixz.bus.core.xyz.TypeKit;
 public class BeanToMapCopier extends AbstractCopier<Object, Map> {
 
     /**
-     * 目标 Map 的泛型参数类型
+     * The generic parameter types of the target Map.
      */
     private final Type[] typeArguments;
 
     /**
-     * 构造
+     * Constructs a new {@code BeanToMapCopier} instance.
      *
-     * @param source      来源Map
-     * @param target      目标Map对象
-     * @param targetType  目标泛型类型
-     * @param copyOptions 拷贝选项
+     * @param source      The source Bean object. Must not be {@code null}.
+     * @param target      The target Map object. Must not be {@code null}.
+     * @param targetType  The generic type of the target Map.
+     * @param copyOptions The options to configure the copying process.
      */
     public BeanToMapCopier(final Object source, final Map target, final Type targetType,
             final CopyOptions copyOptions) {
@@ -63,12 +63,17 @@ public class BeanToMapCopier extends AbstractCopier<Object, Map> {
         this.typeArguments = TypeKit.getTypeArguments(targetType);
     }
 
+    /**
+     * Performs the property copying operation from the source Bean to the target Map.
+     *
+     * @return The target Map with copied properties.
+     */
     @Override
     public Map copy() {
         final CopyOptions copyOptions = this.copyOptions;
         Class<?> actualEditable = source.getClass();
         if (null != copyOptions.editable) {
-            // 检查限制类是否为target的父类或接口
+            // Check if the restricted class is a superclass or interface of the source.
             Assert.isTrue(
                     copyOptions.editable.isInstance(source),
                     "Source class [{}] not assignable to Editable class [{}]",
@@ -80,34 +85,34 @@ public class BeanToMapCopier extends AbstractCopier<Object, Map> {
         final Map<String, PropDesc> sourcePropDescMap = getBeanDesc(actualEditable).getPropMap(copyOptions.ignoreCase);
         sourcePropDescMap.forEach((sFieldName, sDesc) -> {
             if (null == sFieldName || !sDesc.isReadable(copyOptions.transientSupport)) {
-                // 字段空或不可读，跳过
+                // Field is null or not readable, skip.
                 return;
             }
 
-            // 检查源对象属性是否过滤属性
+            // Check if the source object property is filtered.
             Object sValue = sDesc.getValue(this.source, copyOptions.ignoreError);
             if (!copyOptions.testPropertyFilter(sDesc.getField(), sValue)) {
                 return;
             }
 
-            // 编辑键值对
+            // Edit key-value pair.
             final MutableEntry<Object, Object> entry = copyOptions.editField(sFieldName, sValue);
             if (null == entry) {
                 return;
             }
             sFieldName = StringKit.toStringOrNull(entry.getKey());
-            // 对key做转换，转换后为null的跳过
+            // If the key is null after conversion, skip.
             if (null == sFieldName) {
                 return;
             }
             sValue = entry.getValue();
 
-            // 获取目标值真实类型并转换源值
+            // Get the actual type of the target value and convert the source value.
             if (null != typeArguments && typeArguments.length > 1) {
                 sValue = copyOptions.convertField(typeArguments[1], sValue);
             }
 
-            // 目标赋值
+            // Assign to target.
             if (null != sValue || !copyOptions.ignoreNullValue) {
                 target.put(sFieldName, sValue);
             }

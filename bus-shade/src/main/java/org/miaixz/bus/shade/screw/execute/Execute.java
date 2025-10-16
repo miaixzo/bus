@@ -28,7 +28,7 @@
 package org.miaixz.bus.shade.screw.execute;
 
 /**
- * 执行文档生成
+ * Interface for tasks that can be executed, such as document generation.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -36,7 +36,7 @@ package org.miaixz.bus.shade.screw.execute;
 public interface Execute {
 
     /**
-     * 执行生成
+     * Executes the defined task.
      */
     void execute();
 

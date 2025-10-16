@@ -30,7 +30,16 @@ package org.miaixz.bus.validate.magic.annotation;
 import java.lang.annotation.*;
 
 /**
- * 字段错误消息插值填充的功能注解 当前的框架内,默认提供的两个插值是： field: 注解内定义的字段名称, val: 被校验对象的字符串格式 在校验注解内部提供的方法上标记该注解,表示可以在校验注解的errmsg中使用该字符串插值
+ * A functional annotation for interpolating values into validation error messages.
+ * <p>
+ * Within the framework, two default placeholder variables are provided for interpolation:
+ * <ul>
+ * <li>{@code ${field}}: The name of the field being validated.</li>
+ * <li>{@code ${value}}: The string representation of the object being validated.</li>
+ * </ul>
+ * By marking a method within a custom validation annotation with {@code @Filler}, the method's return value can be used
+ * as a custom placeholder in the {@code errmsg} of that annotation. The name of the placeholder is specified by the
+ * {@link #value()} attribute of this annotation.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -40,6 +49,11 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Filler {
 
+    /**
+     * The name of the placeholder to be used in the error message template.
+     *
+     * @return the placeholder name.
+     */
     String value();
 
 }

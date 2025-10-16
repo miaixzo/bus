@@ -37,7 +37,8 @@ import org.miaixz.bus.mapper.parsing.FieldMeta;
 import org.miaixz.bus.mapper.parsing.TableMeta;
 
 /**
- * 实体类信息工厂接口，可通过 SPI 加入处理链以扩展列信息创建逻辑
+ * An interface for an entity class information factory. It can be added to the processing chain via SPI (Service
+ * Provider Interface) to extend the logic for creating column information.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -45,31 +46,35 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
 public interface ColumnSchemaBuilder extends ORDER {
 
     /**
-     * 忽略字段的默认值，表示空列信息列表
+     * A default value for ignored fields, representing an empty list of column information.
      */
     Optional<List<ColumnMeta>> IGNORE = Optional.of(Collections.emptyList());
 
     /**
-     * 创建列信息，一个字段可能不是列，也可能是列，还可能对应多个列（如 ValueObject 对象）
+     * Creates column information. A field may not be a column, it may be a single column, or it may correspond to
+     * multiple columns (e.g., a ValueObject).
      *
-     * @param tableMeta 实体表信息
-     * @param fieldMeta 字段信息
-     * @param chain     工厂链，用于调用下一个处理逻辑
-     * @return 实体类中列的信息的 Optional 包装对象，若为空则表示不属于实体中的列
+     * @param tableMeta The entity table information.
+     * @param fieldMeta The field information.
+     * @param chain     The factory chain, used to invoke the next processing logic.
+     * @return An {@link Optional} containing the column information for the entity class. An empty Optional indicates
+     *         that the field is not a column in the entity.
      */
     Optional<List<ColumnMeta>> createColumn(TableMeta tableMeta, FieldMeta fieldMeta, Chain chain);
 
     /**
-     * 工厂链接口，用于链式调用列信息创建逻辑
+     * A factory chain interface for invoking column information creation logic in a chained manner.
      */
     interface Chain {
 
         /**
-         * 创建列信息，一个字段可能不是列，也可能是列，还可能对应多个列（如 ValueObject 对象）
+         * Creates column information. A field may not be a column, it may be a single column, or it may correspond to
+         * multiple columns (e.g., a ValueObject).
          *
-         * @param tableMeta 实体表信息
-         * @param fieldMeta 字段信息
-         * @return 实体类中列的信息的 Optional 包装对象，若为空则表示不属于实体中的列
+         * @param tableMeta The entity table information.
+         * @param fieldMeta The field information.
+         * @return An {@link Optional} containing the column information for the entity class. An empty Optional
+         *         indicates that the field is not a column in the entity.
          */
         Optional<List<ColumnMeta>> createColumn(TableMeta tableMeta, FieldMeta fieldMeta);
     }

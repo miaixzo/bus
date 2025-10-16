@@ -34,7 +34,7 @@ import java.util.function.Supplier;
 import org.miaixz.bus.core.lang.thread.RetryableTask;
 
 /**
- * 重试工具类 自定义功能请使用{@link RetryableTask}类
+ * Retry utility class. For more advanced custom functionality, please use the {@link RetryableTask} class.
  *
  * @author Kimi Liu
  * @see RetryableTask
@@ -43,14 +43,16 @@ import org.miaixz.bus.core.lang.thread.RetryableTask;
 public class RetryKit {
 
     /**
-     * 根据异常信息进行重试 没有返回值，重试执行方法
+     * Retries a task based on specified exceptions. This method has no return value.
      *
-     * @param run         执行方法
-     * @param maxAttempts 最大的重试次数, 小于1不会重试, 但任务至少会被执行1次
-     * @param delay       重试间隔
-     * @param recover     达到最大重试次数后执行的备用方法
-     * @param exs         指定的异常类型需要重试
+     * @param run         The task to execute.
+     * @param maxAttempts The maximum number of retry attempts. If less than 1, no retries will occur, but the task will
+     *                    be executed at least once.
+     * @param delay       The delay between retries.
+     * @param recover     The recovery task to run if the maximum number of retries is reached.
+     * @param exs         The specified exception types that trigger a retry.
      */
+    @SafeVarargs
     public static void ofException(
             final Runnable run,
             final long maxAttempts,
@@ -68,16 +70,17 @@ public class RetryKit {
     }
 
     /**
-     * 根据异常信息进行重试 有返回值，重试执行方法
+     * Retries a task based on specified exceptions. This method has a return value.
      *
-     * @param sup         执行方法
-     * @param maxAttempts 最大的重试次数, 小于1不会重试, 但任务至少会被执行1次
-     * @param delay       重试间隔
-     * @param recover     达到最大重试次数后执行的备用方法
-     * @param exs         指定的异常类型需要重试
-     * @param <T>         结果类型
-     * @return 执行结果
+     * @param sup         The task to execute, which returns a value.
+     * @param maxAttempts The maximum number of retry attempts.
+     * @param delay       The delay between retries.
+     * @param recover     The recovery task to run if retries fail, which returns a value.
+     * @param exs         The specified exception types that trigger a retry.
+     * @param <T>         The type of the result.
+     * @return The result of the execution.
      */
+    @SafeVarargs
     public static <T> T ofException(
             final Supplier<T> sup,
             final long maxAttempts,
@@ -92,13 +95,13 @@ public class RetryKit {
     }
 
     /**
-     * 根据自定义结果进行重试 没有返回值，重试执行方法
+     * Retries a task based on a custom predicate. This method has no return value.
      *
-     * @param run         执行方法
-     * @param maxAttempts 最大的重试次数, 小于1不会重试, 但任务至少会被执行1次
-     * @param delay       重试间隔
-     * @param recover     达到最大重试次数后执行的备用方法
-     * @param predicate   自定义重试条件, 返回true时表示重试
+     * @param run         The task to execute.
+     * @param maxAttempts The maximum number of retry attempts.
+     * @param delay       The delay between retries.
+     * @param recover     The recovery task to run if retries fail.
+     * @param predicate   A custom predicate to determine if a retry is needed. Returns `true` to retry.
      */
     public static void ofPredicate(
             final Runnable run,
@@ -111,15 +114,15 @@ public class RetryKit {
     }
 
     /**
-     * 根据异常信息进行重试 有返回值，重试执行方法
+     * Retries a task based on a custom predicate. This method has a return value.
      *
-     * @param sup         执行方法
-     * @param maxAttempts 最大的重试次数, 小于1不会重试, 但任务至少会被执行1次
-     * @param delay       重试间隔
-     * @param recover     达到最大重试次数后执行的备用方法
-     * @param predicate   自定义重试条件, 返回true时表示重试
-     * @param <T>         结果类型
-     * @return 执行结果
+     * @param sup         The task to execute, which returns a value.
+     * @param maxAttempts The maximum number of retry attempts.
+     * @param delay       The delay between retries.
+     * @param recover     The recovery task to run if retries fail, which returns a value.
+     * @param predicate   A custom predicate to determine if a retry is needed. Returns `true` to retry.
+     * @param <T>         The type of the result.
+     * @return The result of the execution.
      */
     public static <T> T ofPredicate(
             final Supplier<T> sup,

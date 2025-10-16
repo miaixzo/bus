@@ -26,7 +26,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 支付主体-V3
+ * Provides entity classes for the WeChat Pay V3 API, representing various request and response data structures.
  *
  * @author Kimi Liu
  * @since Java 17+

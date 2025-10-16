@@ -30,7 +30,18 @@ package org.miaixz.bus.core.lang.annotation;
 import java.lang.annotation.*;
 
 /**
- * 注解: 属性忽略，使用此注解的字段等会被忽略，主要用于Bean拷贝、Bean转Map等 此注解应用于字段时，忽略读取和设置属性值，应用于setXXX方法忽略设置值，应用于getXXX忽略读取值
+ * Marks a field, method, or parameter to be ignored during certain automated processes, such as bean copying,
+ * serialization, or map conversion.
+ * <p>
+ * The behavior of this annotation depends on where it is applied:
+ * <ul>
+ * <li>When applied to a <strong>field</strong>, both read and write operations on that property are ignored.</li>
+ * <li>When applied to a <strong>setter method</strong> (e.g., {@code setXxx}), the property will not be written
+ * to.</li>
+ * <li>When applied to a <strong>getter method</strong> (e.g., {@code getXxx}), the property will not be read from.</li>
+ * <li>When applied to a <strong>parameter</strong>, it may be ignored by frameworks that process method
+ * parameters.</li>
+ * </ul>
  *
  * @author Kimi Liu
  * @since Java 17+

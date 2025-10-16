@@ -34,17 +34,31 @@ import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.miaixz.bus.shade.safety.Builder;
 
 /**
- * 为了兼容Spring-Boot FatJar 和普通Jar 的包内资源URL一致 所以去掉路径前面的 BOOT-INF/classes/
+ * Extends {@link JarArchiveEntry} to provide a consistent resource path for entries within Spring Boot's fat JAR
+ * structure (specifically, entries under {@code BOOT-INF/classes/}). This class removes the {@code BOOT-INF/classes/}
+ * prefix from the entry name to make it compatible with standard JAR resource loading mechanisms.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class BootJarArchiveEntry extends JarArchiveEntry {
 
+    /**
+     * Constructs a new {@code BootJarArchiveEntry} from an existing {@link ZipArchiveEntry}.
+     *
+     * @param entry The {@link ZipArchiveEntry} to wrap.
+     * @throws ZipException If a ZIP format error occurs.
+     */
     public BootJarArchiveEntry(ZipArchiveEntry entry) throws ZipException {
         super(entry);
     }
 
+    /**
+     * Returns the name of the entry, with the {@code BOOT-INF/classes/} prefix removed. This ensures that resources
+     * within the Spring Boot fat JAR can be accessed as if they were in a standard JAR structure.
+     *
+     * @return The normalized name of the entry.
+     */
     @Override
     public String getName() {
         return super.getName().substring(Builder.BOOT_INF_CLASSES.length());

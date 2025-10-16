@@ -36,46 +36,74 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.DateKit;
 
 /**
- * 生肖
+ * Represents the Chinese Zodiac (生肖) animals. This class extends {@link Samsara} to manage a cyclical list of these
+ * entities.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class Zodiac extends Samsara {
 
+    /**
+     * Array of names for the Chinese Zodiac animals.
+     */
     public static final String[] NAMES = { "鼠", "牛", "虎", "兔", "龙", "蛇", "马", "羊", "猴", "鸡", "狗", "猪" };
 
+    /**
+     * Constructs a {@code Zodiac} instance with the specified index.
+     *
+     * @param index The index of the Zodiac animal in the {@link #NAMES} array.
+     */
     public Zodiac(int index) {
         super(NAMES, index);
     }
 
+    /**
+     * Constructs a {@code Zodiac} instance with the specified name.
+     *
+     * @param name The name of the Zodiac animal.
+     */
     public Zodiac(String name) {
         super(NAMES, name);
     }
 
+    /**
+     * Creates a {@code Zodiac} instance from its index.
+     *
+     * @param index The index of the Zodiac animal.
+     * @return A new {@code Zodiac} instance.
+     */
     public static Zodiac fromIndex(int index) {
         return new Zodiac(index);
     }
 
+    /**
+     * Creates a {@code Zodiac} instance from its name.
+     *
+     * @param name The name of the Zodiac animal.
+     * @return A new {@code Zodiac} instance.
+     */
     public static Zodiac fromName(String name) {
         return new Zodiac(name);
     }
 
     /**
-     * 通过生日计算生肖，只计算1900年后出生的人
+     * Calculates the Chinese Zodiac animal based on the birth date. This method is designed for birth dates after 1900
+     * (Gregorian calendar).
      *
-     * @param date 出生日期（年需农历）
-     * @return 星座名
+     * @param date The birth date (Gregorian year is used for calculation).
+     * @return The name of the Zodiac animal.
      */
     public static String getName(final Date date) {
         return getName(DateKit.calendar(date));
     }
 
     /**
-     * 通过生日计算生肖，只计算1900年后出生的人
+     * Calculates the Chinese Zodiac animal based on the birth date. This method is designed for birth dates after 1900
+     * (Gregorian calendar).
      *
-     * @param calendar 出生日期（年需农历）
-     * @return 星座名
+     * @param calendar The birth date (Gregorian year is used for calculation).
+     * @return The name of the Zodiac animal.
      */
     public static String getName(final Calendar calendar) {
         if (null == calendar) {
@@ -85,23 +113,29 @@ public class Zodiac extends Samsara {
     }
 
     /**
-     * 计算生肖
+     * Calculates the Chinese Zodiac animal based on the Gregorian year.
      *
-     * @param year 农历年
-     * @return 生肖名
+     * @param year The Gregorian year.
+     * @return The name of the Zodiac animal.
      */
     public static String getName(final int year) {
         return NAMES[year % Normal._12];
     }
 
+    /**
+     * Gets the next {@code Zodiac} in the cycle.
+     *
+     * @param n The number of steps to move forward or backward in the cycle.
+     * @return The next {@code Zodiac} instance.
+     */
     public Zodiac next(int n) {
         return fromIndex(nextIndex(n));
     }
 
     /**
-     * 地支
+     * Gets the corresponding {@link EarthBranch} (地支) for this Zodiac animal.
      *
-     * @return 地支
+     * @return The {@link EarthBranch} associated with this Zodiac animal.
      */
     public EarthBranch getEarthBranch() {
         return EarthBranch.fromIndex(index);

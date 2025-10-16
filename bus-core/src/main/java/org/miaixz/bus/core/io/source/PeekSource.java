@@ -34,22 +34,50 @@ import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.timout.Timeout;
 
 /**
- * 一个{@link Source},它可以窥视上游的{@link BufferSource}并允许读取和 展开缓冲数据而不使用它 这是通过请求额外的数据吗 如果需要,则复制上游源文件,如果需要,则从上游源文件的内部缓冲区复制
- * 此源还维护其上游缓冲区的起始位置的快照 每次读取时验证 如果从上游缓冲区读取,则此源将变为 无效,在以后的读取中抛出{@link IllegalStateException}
+ * A {@link Source} that can peek into an upstream {@link BufferSource} and allows reading and expanding buffered data
+ * without consuming it. This is achieved by requesting additional data from the upstream source if needed, and copying
+ * from the upstream source's internal buffer. This source also maintains a snapshot of the starting position of its
+ * upstream buffer, which is validated on each read. If the upstream buffer is read from directly, this source becomes
+ * invalid and will throw an {@link IllegalStateException} on subsequent reads.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class PeekSource implements Source {
 
+    /**
+     * The upstream {@link BufferSource} from which data is peeked.
+     */
     private final BufferSource upstream;
+    /**
+     * The internal buffer of the upstream source, used for peeking.
+     */
     private final Buffer buffer;
 
+    /**
+     * The expected {@link SectionBuffer} head of the upstream buffer at the time this peek source was created or last
+     * reset.
+     */
     private SectionBuffer expectedSegment;
+    /**
+     * The expected position within the {@link #expectedSegment} of the upstream buffer.
+     */
     private int expectedPos;
+    /**
+     * A flag indicating whether this peek source has been closed.
+     */
     private boolean closed;
+    /**
+     * The current position within the peeked data, relative to the start of the upstream buffer.
+     */
     private long pos;
 
+    /**
+     * Constructs a new {@code PeekSource} that peeks into the given {@link BufferSource}. The peek source will maintain
+     * a view of the upstream buffer without consuming its data.
+     *
+     * @param upstream The {@link BufferSource} to peek into.
+     */
     public PeekSource(BufferSource upstream) {
         this.upstream = upstream;
         this.buffer = upstream.getBuffer();
@@ -57,6 +85,18 @@ public class PeekSource implements Source {
         this.expectedPos = expectedSegment != null ? expectedSegment.pos : -1;
     }
 
+    /**
+     * Reads at least 1 byte and at most {@code byteCount} bytes from this peek source and appends them to {@code sink}.
+     * This method does not consume data from the underlying {@link BufferSource}. If the underlying source has been
+     * consumed directly, this method will throw an {@link IllegalStateException}.
+     *
+     * @param sink      The buffer to which bytes will be appended.
+     * @param byteCount The maximum number of bytes to read.
+     * @return The number of bytes read, or -1 if this source has been exhausted.
+     * @throws IOException              If an I/O error occurs during reading.
+     * @throws IllegalArgumentException If {@code byteCount} is negative.
+     * @throws IllegalStateException    If this peek source is closed or if the upstream source was used directly.
+     */
     @Override
     public long read(Buffer sink, long byteCount) throws IOException {
         if (byteCount < 0)
@@ -64,7 +104,8 @@ public class PeekSource implements Source {
         if (closed)
             throw new IllegalStateException("closed");
 
-        // 如果存在 SectionBuffer，并且它的位置与缓冲区的位置不匹配，则源将变为无效
+        // If a SectionBuffer exists, and its position does not match the buffer's position,
+        // the source becomes invalid.
         if (expectedSegment != null && (expectedSegment != buffer.head || expectedPos != buffer.head.pos)) {
             throw new IllegalStateException("Peek source is invalid because upstream source was used");
         }
@@ -74,7 +115,7 @@ public class PeekSource implements Source {
             return -1L;
 
         if (expectedSegment == null && buffer.head != null) {
-            // 只有当缓冲区实际保存数据时，才应记录预期的 SectionBuffer 和位置。
+            // Only record the expected SectionBuffer and position when the buffer actually holds data.
             expectedSegment = buffer.head;
             expectedPos = buffer.head.pos;
         }
@@ -85,11 +126,21 @@ public class PeekSource implements Source {
         return toCopy;
     }
 
+    /**
+     * Returns the timeout for this peek source, which is delegated to the upstream source.
+     *
+     * @return The timeout instance of the upstream source.
+     */
     @Override
     public Timeout timeout() {
         return upstream.timeout();
     }
 
+    /**
+     * Closes this peek source. Once closed, further read operations will throw an {@link IllegalStateException}.
+     *
+     * @throws IOException If an I/O error occurs during closing (though this implementation does not throw one).
+     */
     @Override
     public void close() throws IOException {
         closed = true;

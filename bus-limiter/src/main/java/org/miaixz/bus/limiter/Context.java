@@ -34,7 +34,8 @@ import lombok.Builder;
 import lombok.experimental.SuperBuilder;
 
 /**
- * 上下文配置类
+ * Context configuration class for the limiter module. This class holds various settings and properties related to the
+ * limiting functionality, such as hotspot cache duration, logging enablement, and user identifier provider.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -47,25 +48,27 @@ import lombok.experimental.SuperBuilder;
 public class Context {
 
     /**
-     * 热点缓存默认时长
+     * Default duration for hotspot caching in seconds.
      */
     @Builder.Default
     private int seconds = 60;
 
     /**
-     * 是否启动日志
+     * Flag indicating whether logging is enabled for the limiter.
      */
     @Builder.Default
     private boolean logger = true;
 
     /**
-     * 用户标识提供者全限定类名
+     * The fully qualified class name of the user identifier provider. This provider is used to determine the current
+     * user for limiting purposes.
      */
     @Builder.Default
     private String supplier = Normal.EMPTY;
 
     /**
-     * 扩展属性
+     * Extension properties or additional configuration in a string format. This field can be used to store custom,
+     * module-specific settings.
      */
     private String extension;
 

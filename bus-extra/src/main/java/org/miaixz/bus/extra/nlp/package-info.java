@@ -26,7 +26,9 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 中文分词封装 通过定义统一接口，适配第三方分词引擎
+ * Provides a unified encapsulation for Natural Language Processing (NLP) functionalities, specifically focusing on
+ * Chinese word segmentation. This package defines a common interface to adapt various third-party word segmentation
+ * engines, allowing for flexible integration and interchangeability of NLP providers.
  *
  * @author Kimi Liu
  * @since Java 17+

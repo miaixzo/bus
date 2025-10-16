@@ -33,7 +33,7 @@ import java.util.function.Consumer;
 import java.util.zip.ZipEntry;
 
 /**
- * Zip资源表示，如Zip流资源或Zip文件资源
+ * Represents a Zip resource, such as a Zip stream resource or a Zip file resource.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -41,26 +41,29 @@ import java.util.zip.ZipEntry;
 public interface ZipResource extends Closeable {
 
     /**
-     * 读取并处理Zip文件中的每一个{@link ZipEntry}
+     * Reads and processes each {@link ZipEntry} in the Zip file.
      *
-     * @param consumer    {@link ZipEntry}处理器
-     * @param maxSizeDiff 检查ZipBomb文件差异倍数，-1表示不检查ZipBomb
+     * @param consumer    The {@link ZipEntry} processor.
+     * @param maxSizeDiff The maximum size difference multiplier for ZipBomb check. A value of -1 indicates no ZipBomb
+     *                    check.
      */
     void read(final Consumer<ZipEntry> consumer, final int maxSizeDiff);
 
     /**
-     * 获取指定路径的文件流 如果是文件模式，则直接获取Entry对应的流，如果是流模式，则遍历entry后，找到对应流返回
+     * Retrieves the input stream for a specific entry within the Zip file. If in file mode, it directly gets the stream
+     * corresponding to the entry. If in stream mode, it iterates through entries to find and return the corresponding
+     * stream.
      *
-     * @param path 路径
-     * @return 文件流
+     * @param path The path of the entry.
+     * @return The input stream for the specified entry.
      */
     InputStream get(String path);
 
     /**
-     * 获取指定{@link ZipEntry}对应的文件流
+     * Retrieves the input stream corresponding to the specified {@link ZipEntry}.
      *
-     * @param entry {@link ZipEntry}
-     * @return 文件流
+     * @param entry The {@link ZipEntry}.
+     * @return The input stream for the specified entry.
      */
     InputStream get(ZipEntry entry);
 

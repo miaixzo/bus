@@ -37,28 +37,41 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 文件移动封装
+ * Encapsulates file and directory moving operations. This class provides methods to move files or directories with
+ * various options, including overwriting existing files and handling cross-partition moves.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class PathMover {
 
+    /**
+     * The source file or directory to be moved.
+     */
     private final Path src;
+    /**
+     * The target destination for the move operation.
+     */
     private final Path target;
+    /**
+     * The move options, such as {@link StandardCopyOption#REPLACE_EXISTING}.
+     */
     private final CopyOption[] options;
 
     /**
-     * 构造
+     * Constructs a new {@code PathMover} instance.
      *
-     * @param src     源文件或目录，不能为{@code null}且必须存在
-     * @param target  目标文件或目录
-     * @param options 移动参数
+     * @param src     The source file or directory, must not be {@code null} and must exist.
+     * @param target  The target file or directory. Must not be {@code null}.
+     * @param options An array of {@link CopyOption} specifying how the move operation should be performed. If
+     *                {@code null}, an empty array is used.
+     * @throws IllegalArgumentException if the source path is {@code null} or does not exist, or if the target path is
+     *                                  {@code null}.
      */
     public PathMover(final Path src, final Path target, final CopyOption[] options) {
-        Assert.notNull(target, "Src path must be not null !");
+        Assert.notNull(src, "Src path must be not null !");
         if (!PathResolve.exists(src, false)) {
-            throw new IllegalArgumentException("Src path is not exist!");
+            throw new IllegalArgumentException("Src path does not exist!");
         }
         this.src = src;
         this.target = Assert.notNull(target, "Target path must be not null !");
@@ -66,12 +79,13 @@ public class PathMover {
     }
 
     /**
-     * 创建文件或目录移动器
+     * Creates a file or directory mover with the specified source, target, and overwrite option.
      *
-     * @param src        源文件或目录
-     * @param target     目标文件或目录
-     * @param isOverride 是否覆盖目标文件
-     * @return {@code PathMover}
+     * @param src        The source file or directory to be moved.
+     * @param target     The target destination for the move operation.
+     * @param isOverride Whether to overwrite the target file if it exists. If {@code true},
+     *                   {@link StandardCopyOption#REPLACE_EXISTING} is used.
+     * @return A new {@code PathMover} instance.
      */
     public static PathMover of(final Path src, final Path target, final boolean isOverride) {
         return of(
@@ -81,27 +95,28 @@ public class PathMover {
     }
 
     /**
-     * 创建文件或目录移动器
+     * Creates a file or directory mover with the specified source, target, and move options.
      *
-     * @param src     源文件或目录
-     * @param target  目标文件或目录
-     * @param options 移动参数
-     * @return {@code PathMover}
+     * @param src     The source file or directory to be moved.
+     * @param target  The target destination for the move operation.
+     * @param options An array of {@link CopyOption} specifying how the move operation should be performed.
+     * @return A new {@code PathMover} instance.
      */
     public static PathMover of(final Path src, final Path target, final CopyOption[] options) {
         return new PathMover(src, target, options);
     }
 
     /**
-     * 递归移动
+     * Recursively moves files and directories from the source to the target using a {@link MoveVisitor}. This method is
+     * typically used for cross-partition moves or when {@link Files#move(Path, Path, CopyOption...)} fails.
      *
-     * @param src     源目录
-     * @param target  目标目录
-     * @param options 移动参数
+     * @param src     The source directory to move.
+     * @param target  The target directory to move to.
+     * @param options The move options to apply during the walk.
+     * @throws InternalException if an {@link IOException} occurs during the file tree traversal or move operation.
      */
     private static void walkMove(final Path src, final Path target, final CopyOption... options) {
         try {
-            // 移动源目录下的内容而不删除目录
             Files.walkFileTree(src, new MoveVisitor(src, target, options));
         } catch (final IOException e) {
             throw new InternalException(e);
@@ -109,20 +124,15 @@ public class PathMover {
     }
 
     /**
-     * 移动文件或目录到目标中，例如：
-     * <ul>
-     * <li>如果src和target为同一文件或目录，直接返回target。</li>
-     * <li>如果src为文件，target为目录，则移动到目标目录下，存在同名文件则按照是否覆盖参数执行。</li>
-     * <li>如果src为文件，target为文件，则按照是否覆盖参数执行。</li>
-     * <li>如果src为文件，target为不存在的路径，则重命名源文件到目标指定的文件，如move("/a/b", "/c/d"), d不存在，则b变成d。</li>
-     * <li>如果src为目录，target为文件，抛出{@link IllegalArgumentException}</li>
-     * <li>如果src为目录，target为目录，则将源目录及其内容移动到目标路径目录中，如move("/a/b", "/c/d")，结果为"/c/d/b"</li>
-     * <li>如果src为目录，target为其子目录，抛出{@link IllegalArgumentException}</li>
-     * <li>如果src为目录，target为不存在的路径，则重命名src到target，如move("/a/b", "/c/d")，结果为"/c/d/"，相当于b重命名为d</li>
-     * </ul>
+     * Moves the source file or directory to the specified target location. If the target is a directory, the source
+     * will be moved into it, retaining its original name. If the move operation fails due to cross-partition issues, it
+     * falls back to a recursive copy-and-delete strategy.
      *
-     * @return 目标文件Path
-     * @throws IllegalArgumentException src为目录，target为其子目录抛出此异常
+     * @return The target file {@link Path} after the move operation.
+     * @throws IllegalArgumentException if the source is a directory and the target is its subdirectory, or if the
+     *                                  source and target are the same.
+     * @throws InternalException        if an I/O error occurs during the move operation, or if a
+     *                                  {@link FileAlreadyExistsException} or {@link AccessDeniedException} occurs.
      */
     public Path move() throws IllegalArgumentException {
         final Path src = this.src;
@@ -131,71 +141,54 @@ public class PathMover {
 
         if (PathResolve.isSub(src, target)) {
             if (PathResolve.equals(src, target)) {
-                // 当用户传入目标路径与源路径一致时，直接返回，否则会导致删除风险。
                 return target;
             }
-
-            // 当用户将文件夹拷贝到其子文件夹时，报错
-            throw new IllegalArgumentException(StringKit.format("Target [{}] is sub path of src [{}]!", target, src));
+            throw new IllegalArgumentException(StringKit.format("Target [{}] is a subpath of src [{}]!", target, src));
         }
 
         if (PathResolve.isDirectory(target)) {
-            // 创建子路径的情况，1是目标是目录，需要移动到目录下，2是目标不能存在，自动创建目录
             target = target.resolve(src.getFileName());
         }
 
-        // 自动创建目标的父目录
         PathResolve.mkParentDirs(target);
         try {
             return Files.move(src, target, options);
         } catch (final IOException e) {
             if (e instanceof FileAlreadyExistsException || e instanceof AccessDeniedException) {
-                // FileAlreadyExistsException 目标已存在
-                // AccessDeniedException 目标已存在且只读
                 throw new InternalException(e);
             }
-            // 移动失败，可能是跨分区移动导致的，采用递归移动方式
+            // Fallback to recursive move for cross-partition moves.
             walkMove(src, target, options);
-            // 移动后删除空目录
             PathResolve.remove(src);
             return target;
         }
     }
 
     /**
-     * 移动文件或目录内容到目标中，例如：
-     * <ul>
-     * <li>如果src为文件，target为目录，则移动到目标目录下，存在同名文件则按照是否覆盖参数执行。</li>
-     * <li>如果src为文件，target为文件，则按照是否覆盖参数执行。</li>
-     * <li>如果src为文件，target为不存在的路径，则重命名源文件到目标指定的文件，如moveContent("/a/b", "/c/d"), d不存在，则b变成d。</li>
-     * <li>如果src为目录，target为文件，抛出{@link IllegalArgumentException}</li>
-     * <li>如果src为目录，target为目录，则将源目录下的内容移动到目标路径目录中，源目录不删除。</li>
-     * <li>如果src为目录，target为不存在的路径，则创建目标路径为目录，将源目录下的内容移动到目标路径目录中，源目录不删除。</li>
-     * </ul>
+     * Moves the content of the source file or directory to the target location. If the target is an existing file, the
+     * source will be moved to replace it. If the target is a directory, the content of the source will be moved into
+     * the target directory.
      *
-     * @return 目标文件Path
+     * @return The target file {@link Path} after the move operation.
+     * @throws IllegalArgumentException if the source is a directory and the target is a file.
+     * @throws InternalException        if an I/O error occurs during the move operation.
      */
     public Path moveContent() {
         final Path src = this.src;
         final Path target = this.target;
 
-        // 文件移动调用move方法
         if (PathResolve.isExistsAndNotDirectory(target, false)) {
             return move();
         }
 
-        // target 不存在导致NoSuchFileException
         if (PathResolve.equals(src, target)) {
-            // 当用户传入目标路径与源路径一致时，直接返回，否则会导致删除风险。
             return target;
         }
 
         final CopyOption[] options = this.options;
 
-        // 自动创建目标的父目录
         PathResolve.mkParentDirs(target);
 
-        // 移动失败，可能是跨分区移动导致的，采用递归移动方式
         walkMove(src, target, options);
         return target;
     }

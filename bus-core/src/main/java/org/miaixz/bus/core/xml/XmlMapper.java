@@ -39,7 +39,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * XML转换器，用于转换Map或Bean等
+ * XML converter for transforming XML data into Maps, Java Beans, etc.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -49,29 +49,30 @@ public class XmlMapper {
     private final Node node;
 
     /**
-     * 构造
+     * Constructs a new XmlMapper with the specified XML node.
      *
-     * @param node {@link Node}XML节点
+     * @param node The XML {@link Node}.
      */
     public XmlMapper(final Node node) {
         this.node = node;
     }
 
     /**
-     * 创建XmlMapper
+     * Creates a new XmlMapper instance from the given XML node.
      *
-     * @param node {@link Node}XML节点
-     * @return XmlMapper
+     * @param node The XML {@link Node}.
+     * @return A new {@link XmlMapper} instance.
      */
     public static XmlMapper of(final Node node) {
         return new XmlMapper(node);
     }
 
     /**
-     * XML节点转Map
+     * Recursively converts an XML {@link Node} and its children to a {@link Map}.
      *
-     * @param result 结果Map
-     * @return map
+     * @param node   The XML node to convert.
+     * @param result The map to store the results in.
+     * @return The resulting map.
      */
     private static Map<String, Object> toMap(final Node node, Map<String, Object> result) {
         if (null == result) {
@@ -90,7 +91,7 @@ public class XmlMapper {
             childEle = (Element) childNode;
             final Object newValue;
             if (childEle.hasChildNodes()) {
-                // 子节点继续递归遍历
+                // Recursively traverse child nodes
                 final Map<String, Object> map = toMap(childEle, new LinkedHashMap<>());
                 if (MapKit.isNotEmpty(map)) {
                     newValue = map;
@@ -118,39 +119,40 @@ public class XmlMapper {
     }
 
     /**
-     * XML转Java Bean 如果XML根节点只有一个，且节点名和Bean的名称一致，则直接转换子节点
+     * Converts the XML to a Java Bean. If the XML root has only one child and its name matches the bean's class name,
+     * it converts the child node directly.
      *
-     * @param <T>         bean类型
-     * @param bean        bean类
-     * @param copyOptions 拷贝选线，可选是否忽略错误等
-     * @return bean
+     * @param <T>         The type of the bean.
+     * @param beanClass   The class of the bean.
+     * @param copyOptions The options for copying properties.
+     * @return The converted bean.
      */
-    public <T> T toBean(final Class<T> bean, final CopyOptions copyOptions) {
+    public <T> T toBean(final Class<T> beanClass, final CopyOptions copyOptions) {
         final Map<String, Object> map = toMap();
         if (null != map && map.size() == 1) {
             final String nodeName = CollKit.getFirst(map.keySet());
-            if (bean.getSimpleName().equalsIgnoreCase(nodeName)) {
-                // 只有key和bean的名称匹配时才做单一对象转换
-                return BeanKit.toBean(CollKit.get(map.values(), 0), bean);
+            if (beanClass.getSimpleName().equalsIgnoreCase(nodeName)) {
+                // Convert only when the key matches the bean name
+                return BeanKit.toBean(CollKit.get(map.values(), 0), beanClass);
             }
         }
-        return BeanKit.toBean(map, bean, copyOptions);
+        return BeanKit.toBean(map, beanClass, copyOptions);
     }
 
     /**
-     * XML节点转Map
+     * Converts the XML node to a {@link Map}.
      *
-     * @return map
+     * @return The resulting map.
      */
     public Map<String, Object> toMap() {
         return toMap(new LinkedHashMap<>());
     }
 
     /**
-     * XML节点转Map
+     * Converts the XML node to a {@link Map}.
      *
-     * @param result 结果Map
-     * @return map
+     * @param result The map to store the results in.
+     * @return The resulting map.
      */
     public Map<String, Object> toMap(final Map<String, Object> result) {
         return toMap(this.node, result);

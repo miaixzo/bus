@@ -34,7 +34,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * V3 统一下单-订单金额
+ * Model for the Amount object in the V3 Unified Order API.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -47,11 +47,11 @@ import lombok.experimental.SuperBuilder;
 public class Amount {
 
     /**
-     * 总金额
+     * The total amount in cents.
      */
     private int total;
     /**
-     * 货币类型
+     * The currency type, e.g., "CNY".
      */
     private String currency;
 

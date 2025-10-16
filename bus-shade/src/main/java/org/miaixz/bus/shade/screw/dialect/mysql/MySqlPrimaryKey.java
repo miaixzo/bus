@@ -34,7 +34,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * 表主键
+ * Table primary key metadata for MySQL.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,32 +44,32 @@ import lombok.Setter;
 public class MySqlPrimaryKey implements PrimaryKey {
 
     /**
-     * tableCat
+     * Table catalog (may be {@code null}).
      */
     @MappingField(value = "TABLE_CAT")
     private String tableCat;
     /**
-     * 表名
+     * Table name.
      */
     @MappingField(value = "TABLE_NAME")
     private String tableName;
     /**
-     * 主键名称
+     * Primary key name (may be {@code null}).
      */
     @MappingField(value = "PK_NAME")
     private String pkName;
     /**
-     *
+     * Table schema (may be {@code null}).
      */
     @MappingField(value = "TABLE_SCHEM")
     private String tableSchem;
     /**
-     * 列名
+     * Column name.
      */
     @MappingField(value = "COLUMN_NAME")
     private String columnName;
     /**
-     *
+     * Sequence number within the primary key (1-based).
      */
     @MappingField(value = "KEY_SEQ")
     private String keySeq;

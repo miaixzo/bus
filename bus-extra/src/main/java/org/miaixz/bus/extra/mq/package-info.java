@@ -26,12 +26,16 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * MQ(message queue)（消息队列）门面封装<br>
- * 通过定义统一接口，统一消息中间件的调用，实现消息队列的解耦。 组件包括：
+ * Provides a facade encapsulation for Message Queue (MQ) functionalities. This package defines a unified interface to
+ * abstract various message middleware implementations, thereby achieving decoupling between the application and the
+ * underlying message queue system. Key components include:
  * <ul>
- * <li>{@link org.miaixz.bus.extra.mq.Producer}: 消息生产者，业务的发起方，负责生产消息</li>
- * <li>{@link org.miaixz.bus.extra.mq.Consumer}: 消息消费者，业务的处理方</li>
- * <li>{@link org.miaixz.bus.extra.mq.Message}: 消息体，根据不同通信协议定义的固定格式进行编码的数据包</li>
+ * <li>{@link org.miaixz.bus.extra.mq.Producer}: The message producer, responsible for initiating business processes by
+ * sending messages.</li>
+ * <li>{@link org.miaixz.bus.extra.mq.Consumer}: The message consumer, responsible for processing business logic upon
+ * receiving messages.</li>
+ * <li>{@link org.miaixz.bus.extra.mq.Message}: The message body, representing the data packet exchanged between
+ * producers and consumers, encoded according to specific communication protocols.</li>
  * </ul>
  *
  * @author Kimi Liu

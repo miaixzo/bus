@@ -27,10 +27,8 @@
 */
 package org.miaixz.bus.spring.http;
 
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
-
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.ansi.Ansi4BitColor;
@@ -44,37 +42,43 @@ import org.miaixz.bus.spring.ContextBuilder;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * 请求安全哨兵拦截器 - 提供API请求的全链路安全防护与审计功能
+ * A request security sentinel interceptor that provides full-lifecycle security protection and auditing for API
+ * requests.
  *
- * 性能优化
+ * <p>
+ * <b>Performance Optimizations</b>
  * <ul>
- * <li>使用{@link MutableRequestWrapper}实现请求体缓存， 解决InputStream只能读取一次的问题</li>
- * <li>响应体记录限制长度(默认150字符)，防止大响应体导致内存溢出</li>
- * <li>支持异步日志记录，减少对主流程性能影响</li>
+ * <li>Uses {@link MutableRequestWrapper} to cache the request body, solving the issue of an InputStream only being
+ * readable once.</li>
+ * <li>Limits the length of the logged response body (default 150 characters) to prevent memory overflow with large
+ * responses.</li>
+ * <li>Supports asynchronous logging to reduce performance impact on the main thread.</li>
  * </ul>
  *
- * 安全最佳实践
+ * <p>
+ * <b>Security Best Practices</b>
  * <ol>
- * <li>在生产环境启用所有安全模块</li>
- * <li>定期审计安全日志，分析异常模式</li>
- * <li>结合WAF(Web应用防火墙)使用，形成纵深防御</li>
- * <li>对敏感API实施更严格的安全策略</li>
- * <li>定期更新安全策略，应对新型攻击手段</li>
+ * <li>Enable all security modules in a production environment.</li>
+ * <li>Regularly audit security logs to analyze abnormal patterns.</li>
+ * <li>Use in conjunction with a WAF (Web Application Firewall) for defense-in-depth.</li>
+ * <li>Implement stricter security policies for sensitive APIs.</li>
+ * <li>Periodically update security policies to counter new attack methods.</li>
  * </ol>
  *
- * 扩展点
  * <p>
- * 此类设计为可扩展架构，支持以下扩展点：
- * </p>
+ * <b>Extensibility</b>
+ * <p>
+ * This class is designed with an extensible architecture, supporting the following:
  * <ul>
- * <li>自定义安全策略实现</li>
- * <li>插件式安全模块添加</li>
- * <li>自定义日志格式和输出目标</li>
- * <li>集成第三方安全服务</li>
+ * <li>Custom security policy implementations.</li>
+ * <li>Pluggable security modules.</li>
+ * <li>Custom log formats and output destinations.</li>
+ * <li>Integration with third-party security services.</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -83,32 +87,33 @@ import jakarta.servlet.http.HttpServletResponse;
 public class SentinelRequestHandler implements HandlerInterceptor {
 
     /**
-     * 业务处理器处理请求之前被调用,对用户的request进行处理,若返回值为true, 则继续调用后续的拦截器和目标方法；若返回值为false, 则终止请求； 这里可以加上登录校验,权限拦截、请求限流等
+     * Called before the target handler is executed. This method can be used for pre-processing tasks like
+     * authentication, authorization, and rate limiting.
      *
-     * @param request  当前的HTTP请求
-     * @param response 当前的HTTP响应
-     * @param handler  执行的处理程序
-     * @return 如果执行链应该继续执行, 则为:true 否则:false
+     * @param request  the current HTTP request.
+     * @param response the current HTTP response.
+     * @param handler  the handler to be executed.
+     * @return {@code true} to continue the execution chain, or {@code false} to abort it.
      */
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        // 添加日志确认拦截器被调用
+        // Log to confirm the interceptor is called.
         final String method = request.getMethod().toUpperCase();
         this.requestInfo(request, method);
 
-        // 根据请求方法类型处理日志
+        // Handle logging based on the request method type.
         if (HTTP.POST.equals(method) || HTTP.PATCH.equals(method) || HTTP.PUT.equals(method)) {
-            // 对于有请求体的方法，如果是CacheRequestWrapper则输出请求体
+            // For methods with a request body, log the body if it's a MutableRequestWrapper.
             if (request instanceof MutableRequestWrapper) {
                 String requestBody = new String(((MutableRequestWrapper) request).getBody())
                         .replaceAll("\\s+", Normal.EMPTY);
                 Logger.info("==>       Body: {}", requestBody);
             } else {
-                // 如果没有被包装，则输出请求参数
+                // If not wrapped, log the request parameters.
                 requestParameters(request);
             }
         } else {
-            // 对于GET等其他请求方法，输出请求参数
+            // For GET and other methods, log the request parameters.
             requestParameters(request);
         }
 
@@ -116,13 +121,13 @@ public class SentinelRequestHandler implements HandlerInterceptor {
     }
 
     /**
-     * 完成请求处理后回调,将调用处理程序执行的任何结果, 因此允许进行适当的资源清理等 注意:只有在拦截器的{@code preHandle} 方法返回{@code true}
-     * 与{@code postHandle}方法一样,将在每个方法上调用该方法, 在链中的拦截器的顺序是相反的,所以第一个拦截器是最后调用的
+     * Called after the request is completed and the view is rendered. This method is suitable for resource cleanup and
+     * final logging. It logs the response body and status, and clears the request context.
      *
-     * @param request   当前的HTTP请求
-     * @param response  当前的HTTP响应
-     * @param handler   执行的处理程序
-     * @param exception 处理程序执行时抛出异常
+     * @param request   the current HTTP request.
+     * @param response  the current HTTP response.
+     * @param handler   the handler that was executed.
+     * @param exception any exception thrown on handler execution, or null if none.
      */
     @Override
     public void afterCompletion(
@@ -130,29 +135,28 @@ public class SentinelRequestHandler implements HandlerInterceptor {
             HttpServletResponse response,
             Object handler,
             Exception exception) {
-        if (response instanceof MutableResponseWrapper) {
-            MutableResponseWrapper mutableResponseWrapper = ((MutableResponseWrapper) response);
+        if (response instanceof MutableResponseWrapper mutableResponseWrapper) {
             String responseBody = new String(mutableResponseWrapper.getBody());
-            // 只记录响应体的一部分，避免日志过大
+            // Log only a portion of the response body to avoid overly large logs.
             String logBody = responseBody.length() > 150
                     ? responseBody.substring(0, 150) + "... [truncated, total length: " + responseBody.length() + "]"
                     : responseBody;
             Logger.info("<==   Response: (length: {}): {}", mutableResponseWrapper.getBody().length, logBody);
         } else {
-            Logger.info("==>     Status: {}", response.getStatus());
+            Logger.info("<==     Status: {}", response.getStatus());
         }
-        // 请求结束，清理缓存
+        // Clean up the cache at the end of the request.
         ContextBuilder.clear();
     }
 
     /**
-     * 拦截处理程序的执行 实际上是在HandlerAdapter之后调用的 调用处理程序,但在DispatcherServlet呈现视图之前 可以通过给定的ModelAndView向视图公开额外的模型对象
-     * DispatcherServlet在一个执行链中处理一个处理程序,由 任意数量的拦截器,处理程序本身在最后 使用这种方法,每个拦截器可以对一个执行进行后处理, 按执行链的相反顺序应用
+     * Called after the handler is executed but before the view is rendered. This allows for modifying the
+     * {@link ModelAndView} before it is presented to the user.
      *
-     * @param request      当前的HTTP请求
-     * @param response     当前的HTTP响应
-     * @param handler      执行的处理程序
-     * @param modelAndView 处理程序返回的{code ModelAndView} 也可以是{@code null})
+     * @param request      the current HTTP request.
+     * @param response     the current HTTP response.
+     * @param handler      the handler that was executed.
+     * @param modelAndView the {@code ModelAndView} that the handler returned (can be {@code null}).
      */
     @Override
     public void postHandle(
@@ -160,13 +164,13 @@ public class SentinelRequestHandler implements HandlerInterceptor {
             HttpServletResponse response,
             Object handler,
             ModelAndView modelAndView) {
-        Logger.info("==>        URI: {}", request.getRequestURI());
+        Logger.info("<==        URI: {}", request.getRequestURI());
     }
 
     /**
-     * 记录请求参数
+     * Logs the request parameters and headers.
      *
-     * @param request HTTP请求
+     * @param request The HTTP request.
      */
     public void requestParameters(HttpServletRequest request) {
         Map<String, String[]> parameterMap = request.getParameterMap();
@@ -181,7 +185,7 @@ public class SentinelRequestHandler implements HandlerInterceptor {
             Logger.info("==>       Body: {}", params);
         }
 
-        // 记录请求头信息
+        // Log request headers.
         Enumeration<String> headerNames = request.getHeaderNames();
         if (headerNames.hasMoreElements()) {
             Map<String, String> headers = new HashMap<>();
@@ -194,22 +198,23 @@ public class SentinelRequestHandler implements HandlerInterceptor {
     }
 
     /**
-     * 获取客户端IP 默认检测的Header:
+     * Gets the client's IP address by inspecting common proxy headers.
+     * <p>
+     * Default headers checked:
      *
      * <pre>
-     * 1、X-Forwarded-For
-     * 2、X-Real-IP
-     * 3、Proxy-Client-IP
-     * 4、WL-Proxy-Client-IP
+     * 1. X-Forwarded-For
+     * 2. X-Real-IP
+     * 3. Proxy-Client-IP
+     * 4. WL-Proxy-Client-IP
      * </pre>
-     *
      * <p>
-     * otherHeaderNames参数用于自定义检测的Header 需要注意的是，使用此方法获取的客户IP地址必须在Http服务器（例如Nginx）中配置头信息，否则容易造成IP伪造。
-     * </p>
+     * Note: To prevent IP spoofing, ensure these headers are properly configured and managed by your proxy server
+     * (e.g., Nginx).
      *
-     * @param request          请求对象{@link HttpServletRequest}
-     * @param otherHeaderNames 其他自定义头文件，通常在Http服务器（例如Nginx）中配置
-     * @return IP地址
+     * @param request          The {@link HttpServletRequest} object.
+     * @param otherHeaderNames Additional custom header names to check.
+     * @return The client's IP address.
      */
     public static String getClientIP(final HttpServletRequest request, final String... otherHeaderNames) {
         String[] headers = { "X-Forwarded-For", "X-Real-IP", "Proxy-Client-IP", "WL-Proxy-Client-IP", "HTTP_CLIENT_IP",
@@ -221,11 +226,11 @@ public class SentinelRequestHandler implements HandlerInterceptor {
     }
 
     /**
-     * 获取客户端IP headerNames参数用于自定义检测的Header 需要注意的是，使用此方法获取的客户IP地址必须在Http服务器（例如Nginx）中配置头信息，否则容易造成IP伪造。
+     * Gets the client's IP address by inspecting a custom list of headers.
      *
-     * @param request     请求对象{@link HttpServletRequest}
-     * @param headerNames 自定义头，通常在Http服务器（例如Nginx）中配置
-     * @return IP地址
+     * @param request     The {@link HttpServletRequest} object.
+     * @param headerNames The custom header names to check.
+     * @return The client's IP address.
      */
     public static String getClientIPByHeader(final HttpServletRequest request, final String... headerNames) {
         String ip;
@@ -240,13 +245,13 @@ public class SentinelRequestHandler implements HandlerInterceptor {
     }
 
     /**
-     * 请求日志信息
+     * Logs basic request information, including IP, method, and URL, with color-coding for the method.
      *
-     * @param method  请求类型
-     * @param request 网络请求
+     * @param request The web request.
+     * @param method  The request method type.
      */
     public void requestInfo(HttpServletRequest request, String method) {
-        // 定义 HTTP 方法与颜色的映射
+        // Define a map of HTTP methods to colors.
         Map<String, Ansi4BitColor> methodColorMap = new HashMap<>();
         methodColorMap.put(HTTP.GET, Ansi4BitColor.GREEN);
         methodColorMap.put(HTTP.POST, Ansi4BitColor.MAGENTA);
@@ -257,11 +262,11 @@ public class SentinelRequestHandler implements HandlerInterceptor {
         methodColorMap.put(HTTP.BEFORE, Ansi4BitColor.BLACK);
         methodColorMap.put(HTTP.AFTER, Ansi4BitColor.CYAN);
 
-        // 获取对应方法的颜色，默认为绿色
+        // Get the color for the method, defaulting to green.
         Ansi4BitColor color = methodColorMap.getOrDefault(method, Ansi4BitColor.GREEN);
-        // 格式化 HTTP 方法，添加 ANSI 颜色
+        // Format the HTTP method with an ANSI color.
         String requestMethod = AnsiEncoder.encode(color, method);
-        // 记录日志
+        // Log the request information.
         Logger.info(
                 "==>    Request: {ip={}, method={}, url={}}",
                 getClientIP(request),

@@ -32,33 +32,57 @@ import org.miaixz.bus.setting.metric.ini.IniComment;
 import org.miaixz.bus.setting.metric.ini.IniCommentService;
 
 /**
- * 将字符串值格式设置为{@link IniComment}
+ * A formatter that parses a string value into an {@link IniComment} object.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class CommentFormatter extends AbstractFormatter<IniComment> {
 
-    private char start;
+    /**
+     * The character that indicates the start of a comment.
+     */
+    private final char start;
 
+    /**
+     * Constructs a CommentFormatter with a specific starting character.
+     *
+     * @param startChar The character that identifies a comment line.
+     */
     public CommentFormatter(char startChar) {
-        super(null);
+        super(null); // A comment formatter does not need another comment formatter.
         start = startChar;
     }
 
+    /**
+     * Constructs a CommentFormatter with the default starting character ('#').
+     */
     public CommentFormatter() {
         super(null);
         start = Symbol.C_HASH;
     }
 
+    /**
+     * Formats a comment string into an {@link IniComment} object.
+     *
+     * @param value The raw string line, including the starting comment character.
+     * @param line  The line number in the original file.
+     * @return The parsed {@link IniComment} object.
+     */
     @Override
     public IniComment format(String value, int line) {
         return new IniCommentService(value.substring(1), value, line);
     }
 
+    /**
+     * Checks if the given string value is a comment.
+     *
+     * @param value The string to check.
+     * @return {@code true} if the string starts with the configured comment character.
+     */
     @Override
     public boolean check(String value) {
-        return value.charAt(0) == start;
+        return !value.isEmpty() && value.charAt(0) == start;
     }
 
 }

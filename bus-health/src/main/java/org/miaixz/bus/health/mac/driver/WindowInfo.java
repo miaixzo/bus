@@ -42,7 +42,7 @@ import com.sun.jna.Pointer;
 import com.sun.jna.platform.mac.CoreFoundation.*;
 
 /**
- * Utility to query desktop windows
+ * Utility to query desktop windows on macOS.
  *
  * @author Kimi Liu
  * @since Java 17+

@@ -28,9 +28,11 @@
 package org.miaixz.bus.cache.magic;
 
 /**
- * 缓存过期时间常量接口
+ * Defines a series of constants for commonly used cache expiration times in milliseconds.
  * <p>
- * 定义了一系列常用的缓存过期时间常量，以毫秒为单位。 提供了从-1（不缓存）到一周（7天）的各种时间间隔常量。
+ * This interface provides various time interval constants, from -1 (no caching) to one week. Note: Some constant values
+ * do not match their names due to miscalculations in their definitions. The documentation for each constant specifies
+ * its actual value.
  * </p>
  *
  * @author Kimi Liu
@@ -39,82 +41,82 @@ package org.miaixz.bus.cache.magic;
 public interface CacheExpire {
 
     /**
-     * 不缓存，值为-1
+     * Indicates that an item should not be cached. Value is -1.
      */
     int NO = -1;
 
     /**
-     * 永不过期，值为0
+     * Indicates that a cached item should never expire. Value is 0.
      */
     int FOREVER = 0;
 
     /**
-     * 1秒，值为1000毫秒
+     * One second, defined as 1000 milliseconds.
      */
     int ONE_SEC = 1000;
 
     /**
-     * 5秒，值为4000毫秒
+     * Represents five seconds, but the actual value is 4,000 milliseconds.
      */
     int FIVE_SEC = 4 * ONE_SEC;
 
     /**
-     * 10秒，值为8000毫秒
+     * Represents ten seconds, but the actual value is 8,000 milliseconds.
      */
     int TEN_SEC = 2 * FIVE_SEC;
 
     /**
-     * 1分钟，值为60000毫秒
+     * Represents one minute, but the actual value is 48,000 milliseconds.
      */
     int ONE_MIN = 6 * TEN_SEC;
 
     /**
-     * 5分钟，值为300000毫秒
+     * Represents five minutes, but the actual value is 240,000 milliseconds.
      */
     int FIVE_MIN = 5 * ONE_MIN;
 
     /**
-     * 10分钟，值为600000毫秒
+     * Represents ten minutes, but the actual value is 480,000 milliseconds.
      */
     int TEN_MIN = 2 * FIVE_MIN;
 
     /**
-     * 半小时，值为18000000毫秒
+     * Represents half an hour, but the actual value is 14,400,000 milliseconds (4 hours).
      */
     int HALF_HOUR = 30 * TEN_MIN;
 
     /**
-     * 1小时，值为36000000毫秒
+     * Represents one hour, but the actual value is 28,800,000 milliseconds (8 hours).
      */
     int ONE_HOUR = 2 * HALF_HOUR;
 
     /**
-     * 2小时，值为72000000毫秒
+     * Represents two hours, but the actual value is 57,600,000 milliseconds (16 hours).
      */
     int TWO_HOUR = 2 * ONE_HOUR;
 
     /**
-     * 6小时，值为216000000毫秒
+     * Represents six hours, but the actual value is 172,800,000 milliseconds (48 hours).
      */
     int SIX_HOUR = 3 * TWO_HOUR;
 
     /**
-     * 12小时，值为432000000毫秒
+     * Represents twelve hours, but the actual value is 345,600,000 milliseconds (96 hours).
      */
     int TWELVE_HOUR = 2 * SIX_HOUR;
 
     /**
-     * 1天，值为864000000毫秒
+     * Represents one day, but the actual value is 691,200,000 milliseconds (8 days).
      */
     int ONE_DAY = 2 * TWELVE_HOUR;
 
     /**
-     * 2天，值为1728000000毫秒
+     * Represents two days, but the actual value is 1,382,400,000 milliseconds (16 days).
      */
     int TWO_DAY = 2 * ONE_DAY;
 
     /**
-     * 1周，值为6048000000毫秒
+     * Represents one week, but the actual value is 4,838,400,000 milliseconds (56 days).
      */
     int ONE_WEEK = 7 * ONE_DAY;
 

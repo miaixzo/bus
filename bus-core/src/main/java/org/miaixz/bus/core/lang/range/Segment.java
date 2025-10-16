@@ -34,32 +34,35 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.xyz.MathKit;
 
 /**
- * 片段表示，用于表示文本、集合等数据结构的一个区间。
+ * Represents a segment or a range within a data structure, such as text or collections. This interface defines methods
+ * to retrieve the beginning and ending indices of the segment, and to calculate its length.
  *
- * @param <T> 数字类型，用于表示位置index
+ * @param <T> the numeric type used to represent the indices (e.g., Integer, Long)
  * @author Kimi Liu
  * @since Java 17+
  */
 public interface Segment<T extends Number> {
 
     /**
-     * 获取起始位置
+     * Retrieves the beginning index of this segment.
      *
-     * @return 起始位置
+     * @return the beginning index
      */
     T getBeginIndex();
 
     /**
-     * 获取结束位置
+     * Retrieves the ending index of this segment.
      *
-     * @return 结束位置
+     * @return the ending index
      */
     T getEndIndex();
 
     /**
-     * 片段长度，默认计算方法为abs({@link #getEndIndex()} - {@link #getEndIndex()})
+     * Calculates the length of this segment. The default calculation is the absolute difference between the
+     * {@link #getEndIndex()} and {@link #getBeginIndex()}.
      *
-     * @return 片段长度
+     * @return the length of the segment
+     * @throws NullPointerException if either the beginning or ending index is {@code null}
      */
     default T length() {
         final T start = Assert.notNull(getBeginIndex(), "Start index must be not null!");

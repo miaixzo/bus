@@ -45,13 +45,13 @@ import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
- * 在Sax方式读取Excel时，读取sheet标签中sheetId和rid的对应关系，类似于:
+ * Reads the mapping between sheetId and r:id in the sheet tag when reading Excel using SAX, similar to:
  * 
  * <pre>
  *  sheet name="Sheet6" sheetId="4" r:id="rId6"
  * </pre>
  *
- * 读取结果为：
+ * The reading result is:
  *
  * <pre>
  *     {"4": "6"}
@@ -62,28 +62,47 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class SheetRidReader extends DefaultHandler {
 
+    /**
+     * The tag name for a sheet element in the Excel XML.
+     */
     private final static String TAG_NAME = "sheet";
+    /**
+     * The attribute name for the relationship ID (r:id).
+     */
     private final static String RID_ATTR = "r:id";
+    /**
+     * The attribute name for the sheet ID.
+     */
     private final static String SHEET_ID_ATTR = "sheetId";
+    /**
+     * The attribute name for the sheet name.
+     */
     private final static String NAME_ATTR = "name";
+    /**
+     * Map storing the mapping from sheet ID (1-based) to relationship ID (1-based).
+     */
     private final Map<Integer, Integer> ID_RID_MAP = new LinkedHashMap<>();
+    /**
+     * Map storing the mapping from sheet name to relationship ID (1-based).
+     */
     private final Map<String, Integer> NAME_RID_MAP = new LinkedHashMap<>();
 
     /**
-     * 从{@link XSSFReader}中解析sheet名、sheet id等相关信息
+     * Parses sheet name, sheet ID, and other related information from {@link XSSFReader}.
      *
-     * @param reader {@link XSSFReader}
-     * @return SheetRidReader
+     * @param reader The {@link XSSFReader} instance.
+     * @return A {@code SheetRidReader} instance with parsed data.
      */
     public static SheetRidReader parse(final XSSFReader reader) {
         return new SheetRidReader().read(reader);
     }
 
     /**
-     * 读取Wordkbook的XML中sheet标签中sheetId和rid的对应关系
+     * Reads the mapping between sheetId and r:id from the sheet tags in the Workbook XML.
      *
-     * @param xssfReader XSSF读取器
-     * @return this
+     * @param xssfReader The XSSF reader.
+     * @return This {@code SheetRidReader} instance, for chaining.
+     * @throws InternalException if an {@link InvalidFormatException} or {@link IOException} occurs.
      */
     public SheetRidReader read(final XSSFReader xssfReader) {
         InputStream workbookData = null;
@@ -99,20 +118,20 @@ public class SheetRidReader extends DefaultHandler {
     }
 
     /**
-     * 根据sheetId获取rid，从1开始
+     * Gets the relationship ID (rId) by sheet ID. The rId is 1-based.
      *
-     * @param sheetId Sheet的ID，从1开始
-     * @return rid，从1开始
+     * @param sheetId The sheet ID (1-based).
+     * @return The relationship ID (1-based), or {@code null} if not found.
      */
     public Integer getRidBySheetId(final int sheetId) {
         return ID_RID_MAP.get(sheetId);
     }
 
     /**
-     * 根据sheetId获取rid，从0开始
+     * Gets the relationship ID (rId) by sheet ID. The rId is 0-based.
      *
-     * @param sheetId Sheet的ID，从0开始
-     * @return rid，从0开始
+     * @param sheetId The sheet ID (0-based).
+     * @return The relationship ID (0-based), or {@code null} if not found.
      */
     public Integer getRidBySheetIdBase0(final int sheetId) {
         final Integer rid = getRidBySheetId(sheetId + 1);
@@ -123,20 +142,20 @@ public class SheetRidReader extends DefaultHandler {
     }
 
     /**
-     * 根据sheet name获取rid，从1开始
+     * Gets the relationship ID (rId) by sheet name. The rId is 1-based.
      *
-     * @param sheetName Sheet的name
-     * @return rid，从1开始
+     * @param sheetName The name of the sheet.
+     * @return The relationship ID (1-based), or {@code null} if not found.
      */
     public Integer getRidByName(final String sheetName) {
         return NAME_RID_MAP.get(sheetName);
     }
 
     /**
-     * 根据sheet name获取rid，从0开始
+     * Gets the relationship ID (rId) by sheet name. The rId is 0-based.
      *
-     * @param sheetName Sheet的name
-     * @return rid，从0开始
+     * @param sheetName The name of the sheet.
+     * @return The relationship ID (0-based), or {@code null} if not found.
      */
     public Integer getRidByNameBase0(final String sheetName) {
         final Integer rid = getRidByName(sheetName);
@@ -147,20 +166,20 @@ public class SheetRidReader extends DefaultHandler {
     }
 
     /**
-     * 通过sheet的序号获取rid
+     * Gets the relationship ID (rId) by sheet index. The rId is 1-based.
      *
-     * @param index 序号，从0开始
-     * @return rid
+     * @param index The index of the sheet, starting from 0.
+     * @return The relationship ID (1-based), or {@code null} if not found.
      */
     public Integer getRidByIndex(final int index) {
         return CollKit.get(this.NAME_RID_MAP.values(), index);
     }
 
     /**
-     * 通过sheet的序号获取rid
+     * Gets the relationship ID (rId) by sheet index. The rId is 0-based.
      *
-     * @param index 序号，从0开始
-     * @return rid，从0开始
+     * @param index The index of the sheet, starting from 0.
+     * @return The relationship ID (0-based), or {@code null} if not found.
      */
     public Integer getRidByIndexBase0(final int index) {
         final Integer rid = CollKit.get(this.NAME_RID_MAP.values(), index);
@@ -171,9 +190,9 @@ public class SheetRidReader extends DefaultHandler {
     }
 
     /**
-     * 获取所有sheet名称
+     * Gets a list of all sheet names.
      *
-     * @return sheet名称
+     * @return A list of sheet names.
      */
     public List<String> getSheetNames() {
         return ListKit.of(this.NAME_RID_MAP.keySet());
@@ -192,13 +211,13 @@ public class SheetRidReader extends DefaultHandler {
             }
             final int rid = Integer.parseInt(StringKit.removePrefixIgnoreCase(ridStr, Excel07SaxReader.RID_PREFIX));
 
-            // sheet名和rid映射
+            // Map sheet name to rId
             final String name = attributes.getValue(NAME_ATTR);
             if (StringKit.isNotEmpty(name)) {
                 NAME_RID_MAP.put(name, rid);
             }
 
-            // sheetId和rid映射
+            // Map sheetId to rId
             final String sheetIdStr = attributes.getValue(SHEET_ID_ATTR);
             if (StringKit.isNotEmpty(sheetIdStr)) {
                 ID_RID_MAP.put(Integer.parseInt(sheetIdStr), rid);

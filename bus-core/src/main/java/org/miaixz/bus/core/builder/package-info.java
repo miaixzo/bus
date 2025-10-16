@@ -26,7 +26,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 建造者工具 用于建造特定对象或结果，建造者模式的抽象。
+ * Provides a generic, lambda-based implementation of the Builder pattern for constructing objects.
  *
  * @author Kimi Liu
  * @since Java 17+

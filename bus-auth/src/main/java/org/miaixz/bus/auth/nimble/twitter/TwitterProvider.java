@@ -52,7 +52,8 @@ import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
 
 /**
- * Twitter 登录提供者，支持 OAuth 1.0a 认证流程。 实现 Twitter 的单点登录，获取用户访问令牌和用户信息。
+ * Twitter login provider, supporting OAuth 1.0a authentication flow. Implements Twitter's single sign-on to obtain user
+ * access tokens and user information.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -62,29 +63,29 @@ public class TwitterProvider extends AbstractProvider {
     private static final String PREAMBLE = "OAuth";
 
     /**
-     * 使用默认缓存构造 Twitter 提供者。
+     * Constructs a {@code TwitterProvider} with the specified context.
      *
-     * @param context 上下文配置
+     * @param context the authentication context
      */
     public TwitterProvider(Context context) {
         super(context, Registry.TWITTER);
     }
 
     /**
-     * 使用指定缓存构造 Twitter 提供者。
+     * Constructs a {@code TwitterProvider} with the specified context and cache.
      *
-     * @param context 上下文配置
-     * @param cache   缓存实现
+     * @param context the authentication context
+     * @param cache   the cache implementation
      */
     public TwitterProvider(Context context, CacheX cache) {
         super(context, Registry.TWITTER, cache);
     }
 
     /**
-     * 生成指定长度的随机 nonce。
+     * Generates a random nonce of the specified length.
      *
-     * @param len 长度
-     * @return nonce 字符串
+     * @param len the length of the nonce
+     * @return the generated nonce string
      */
     public static String generateNonce(int len) {
         String s = "0123456789QWERTYUIOPLKJHGFDSAZXCVBNMqwertyuioplkjhgfdsazxcvbnm";
@@ -98,14 +99,15 @@ public class TwitterProvider extends AbstractProvider {
     }
 
     /**
-     * 生成 Twitter 签名。 参考：https://developer.twitter.com/en/docs/basics/authentication/guides/creating-a-signature
+     * Generates a Twitter signature. Reference:
+     * https://developer.twitter.com/en/docs/basics/authentication/guides/creating-a-signature
      *
-     * @param params      参数，包括 OAuth 头、查询参数、表单参数
-     * @param method      HTTP 方法
-     * @param baseUrl     基础 URL
-     * @param apiSecret   API 密钥（可在开发者门户查看）
-     * @param tokenSecret OAuth 令牌密钥
-     * @return Base64 编码的签名字符串
+     * @param params      parameters including OAuth headers, query parameters, and form parameters
+     * @param method      the HTTP method
+     * @param baseUrl     the base URL
+     * @param apiSecret   the API secret (viewable in the developer portal)
+     * @param tokenSecret the OAuth token secret
+     * @return the Base64 encoded signature string
      */
     public static String sign(
             Map<String, String> params,
@@ -126,10 +128,10 @@ public class TwitterProvider extends AbstractProvider {
     }
 
     /**
-     * 返回带状态参数的授权 URL，回调时会携带该状态。
+     * Returns the authorization URL with a state parameter, which will be carried during the callback.
      *
-     * @param state 状态参数，用于防止 CSRF 攻击
-     * @return 授权 URL
+     * @param state the state parameter, used to prevent CSRF attacks
+     * @return the authorization URL
      */
     @Override
     public String authorize(String state) {
@@ -138,10 +140,10 @@ public class TwitterProvider extends AbstractProvider {
     }
 
     /**
-     * 获取请求令牌（Request Token）。
-     * 参考：https://developer.twitter.com/en/docs/twitter-for-websites/log-in-with-twitter/guides/implementing-sign-in-with-twitter
+     * Retrieves the request token. Reference:
+     * https://developer.twitter.com/en/docs/twitter-for-websites/log-in-with-twitter/guides/implementing-sign-in-with-twitter
      *
-     * @return 请求令牌对象
+     * @return the request token object
      */
     public AuthToken getRequestToken() {
         String baseUrl = "https://api.twitter.com/oauth/request_token";
@@ -162,11 +164,11 @@ public class TwitterProvider extends AbstractProvider {
     }
 
     /**
-     * 将请求令牌转换为访问令牌（Access Token）。
-     * 参考：https://developer.twitter.com/en/docs/twitter-for-websites/log-in-with-twitter/guides/implementing-sign-in-with-twitter
+     * Converts the request token to an access token. Reference:
+     * https://developer.twitter.com/en/docs/twitter-for-websites/log-in-with-twitter/guides/implementing-sign-in-with-twitter
      *
-     * @param callback 回调数据
-     * @return 访问令牌对象
+     * @param callback the callback data
+     * @return the access token object
      */
     @Override
     public AuthToken getAccessToken(Callback callback) {
@@ -193,11 +195,11 @@ public class TwitterProvider extends AbstractProvider {
     }
 
     /**
-     * 获取用户信息。
+     * Retrieves user information.
      *
-     * @param authToken 访问令牌
-     * @return 用户信息对象
-     * @throws IllegalArgumentException 如果解析用户信息失败
+     * @param authToken the access token
+     * @return the user information object
+     * @throws IllegalArgumentException if parsing user information fails
      */
     @Override
     public Material getUserInfo(AuthToken authToken) {
@@ -216,18 +218,18 @@ public class TwitterProvider extends AbstractProvider {
         header.put("Authorization", buildHeader(form));
         String response = Httpx.get(userInfoUrl(authToken), null, header);
 
-        // 使用 JsonKit 解析 JSON 响应
+        // Parse JSON response using JsonKit
         Map<String, Object> userInfo = JsonKit.toPojo(response, Map.class);
 
-        // 验证响应数据
+        // Validate response data
         if (userInfo == null || userInfo.isEmpty()) {
             throw new IllegalArgumentException("Failed to parse user info from response: " + response);
         }
 
-        // 将用户信息转换为 JSON 字符串
+        // Convert user information to JSON string
         String rawJson = JsonKit.toJsonString(userInfo);
 
-        // 构建用户信息对象
+        // Build user information object
         return Material.builder().rawJson(rawJson).uuid((String) userInfo.get("id_str"))
                 .username((String) userInfo.get("screen_name")).nickname((String) userInfo.get("name"))
                 .remark((String) userInfo.get("description")).avatar((String) userInfo.get("profile_image_url_https"))
@@ -237,9 +239,9 @@ public class TwitterProvider extends AbstractProvider {
     }
 
     /**
-     * 构建 OAuth 参数。
+     * Builds OAuth parameters.
      *
-     * @return OAuth 参数映射
+     * @return a map of OAuth parameters
      */
     private Map<String, String> buildOauthParams() {
         Map<String, String> params = new HashMap<>(12);
@@ -252,10 +254,10 @@ public class TwitterProvider extends AbstractProvider {
     }
 
     /**
-     * 构建 OAuth 授权头。
+     * Builds the OAuth authorization header.
      *
-     * @param oauthParams OAuth 参数
-     * @return 授权头字符串
+     * @param oauthParams OAuth parameters
+     * @return the authorization header string
      */
     private String buildHeader(Map<String, String> oauthParams) {
         final StringBuilder sb = new StringBuilder(PREAMBLE + Symbol.SPACE);
@@ -269,10 +271,10 @@ public class TwitterProvider extends AbstractProvider {
     }
 
     /**
-     * 构造用户信息 URL。
+     * Constructs the user information URL.
      *
-     * @param authToken 访问令牌
-     * @return 用户信息 URL
+     * @param authToken the access token
+     * @return the user information URL
      */
     @Override
     protected String userInfoUrl(AuthToken authToken) {

@@ -25,8 +25,12 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~*/
 /**
- * 一个校验器框架，提供注解校验方法参数和对象属性的功能，在方法运行前，拦截方法并执行参数校验，如果校验失败可以抛出自定义异常和信息；便于拓展自定义校验器 开发时，参考了Hibernate-Validator
- * 5.x，但是没有做到兼容，因为JSR-303提供的注解的方法太少，不方便拓展，所以写了这个框架。
+ * A validator framework that provides annotation-based validation for method parameters and object properties. It
+ * intercepts method execution to perform parameter validation beforehand. If validation fails, it can throw custom
+ * exceptions and messages. The framework is designed for easy extension with custom validators.
+ * <p>
+ * This framework was inspired by Hibernate Validator 5.x but is not compatible with it. The decision to create a new
+ * framework was made because the annotations provided by JSR-303 are limited and not easily extensible.
  *
  * @author Kimi Liu
  * @since Java 17+

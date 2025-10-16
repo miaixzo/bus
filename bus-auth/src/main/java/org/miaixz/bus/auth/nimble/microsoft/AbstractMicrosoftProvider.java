@@ -50,31 +50,52 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 微软 登录抽象类,负责处理使用微软国际和微软中国账号登录第三方网站的登录方式
+ * Abstract class for Microsoft login providers. This class handles login methods for both Microsoft International and
+ * Microsoft China accounts to third-party websites.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public abstract class AbstractMicrosoftProvider extends AbstractProvider {
 
+    /**
+     * Constructs an {@code AbstractMicrosoftProvider} with the specified context and complex configuration.
+     *
+     * @param context the authentication context
+     * @param complex the complex configuration for Microsoft
+     */
     public AbstractMicrosoftProvider(Context context, Complex complex) {
         super(context, complex);
     }
 
+    /**
+     * Constructs an {@code AbstractMicrosoftProvider} with the specified context, complex configuration, and cache.
+     *
+     * @param context the authentication context
+     * @param complex the complex configuration for Microsoft
+     * @param cache   the cache implementation
+     */
     public AbstractMicrosoftProvider(Context context, Complex complex, CacheX cache) {
         super(context, complex, cache);
     }
 
+    /**
+     * Retrieves the access token from Microsoft's authorization server.
+     *
+     * @param callback the callback object containing the authorization code
+     * @return the {@link AuthToken} containing access token details
+     */
     @Override
     public AuthToken getAccessToken(Callback callback) {
         return getToken(accessTokenUrl(callback.getCode()));
     }
 
     /**
-     * 获取token，适用于获取access_token和刷新token
+     * Retrieves the token, applicable for both obtaining access tokens and refreshing tokens.
      *
-     * @param accessTokenUrl 实际请求token的地址
-     * @return token对象
+     * @param accessTokenUrl the actual URL to request the token from
+     * @return the {@link AuthToken} object
+     * @throws AuthorizedException if parsing the response fails or required token information is missing
      */
     private AuthToken getToken(String accessTokenUrl) {
         Map<String, String> form = new HashMap<>();
@@ -107,9 +128,10 @@ public abstract class AbstractMicrosoftProvider extends AbstractProvider {
     }
 
     /**
-     * 检查响应内容是否正确
+     * Checks the response content for errors.
      *
-     * @param object 请求响应内容
+     * @param object the response map to check
+     * @throws AuthorizedException if the response contains an error or message indicating failure
      */
     private void checkResponse(Map<String, Object> object) {
         if (object.containsKey("error")) {
@@ -118,6 +140,13 @@ public abstract class AbstractMicrosoftProvider extends AbstractProvider {
         }
     }
 
+    /**
+     * Retrieves user information from Microsoft's user info endpoint.
+     *
+     * @param authToken the {@link AuthToken} obtained after successful authorization
+     * @return {@link Material} containing the user's information
+     * @throws AuthorizedException if parsing the response fails or required user information is missing
+     */
     @Override
     public Material getUserInfo(AuthToken authToken) {
         Map<String, String> header = new HashMap<>();
@@ -150,10 +179,10 @@ public abstract class AbstractMicrosoftProvider extends AbstractProvider {
     }
 
     /**
-     * 刷新access token （续期）
+     * Refreshes the access token (renews its validity).
      *
-     * @param authToken 登录成功后返回的Token信息
-     * @return Message
+     * @param authToken the token information returned after successful login
+     * @return a {@link Message} containing the refreshed token information
      */
     @Override
     public Message refresh(AuthToken authToken) {
@@ -162,14 +191,15 @@ public abstract class AbstractMicrosoftProvider extends AbstractProvider {
     }
 
     /**
-     * 返回带{@code state}参数的授权url，授权回调时会带上这个{@code state}
+     * Returns the authorization URL with a {@code state} parameter. The {@code state} will be included in the
+     * authorization callback.
      *
-     * @param state state 验证授权流程的参数，可以防止csrf
-     * @return 返回授权地址
+     * @param state the parameter to verify the authorization process, which can prevent CSRF attacks
+     * @return the authorization URL
      */
     @Override
     public String authorize(String state) {
-        // 兼容 MicrosoftScope Entra ID 登录（原微软 AAD）
+        // Compatible with Microsoft Entra ID login (formerly Microsoft AAD)
         String tenantId = StringKit.isEmpty(context.getUnionId()) ? "common" : context.getUnionId();
         return Builder.fromUrl(String.format(complex.authorize(), tenantId)).queryParam("response_type", "code")
                 .queryParam("client_id", context.getAppKey()).queryParam("redirect_uri", context.getRedirectUri())
@@ -181,10 +211,10 @@ public abstract class AbstractMicrosoftProvider extends AbstractProvider {
     }
 
     /**
-     * 返回获取accessToken的url
+     * Returns the URL to obtain the access token.
      *
-     * @param code 授权code
-     * @return 返回获取accessToken的url
+     * @param code the authorization code
+     * @return the URL to obtain the access token
      */
     @Override
     protected String accessTokenUrl(String code) {
@@ -199,10 +229,10 @@ public abstract class AbstractMicrosoftProvider extends AbstractProvider {
     }
 
     /**
-     * 返回获取userInfo的url
+     * Returns the URL to obtain user information.
      *
-     * @param authToken 用户授权后的token
-     * @return 返回获取userInfo的url
+     * @param authToken the user's authorization token
+     * @return the URL to obtain user information
      */
     @Override
     protected String userInfoUrl(AuthToken authToken) {
@@ -210,10 +240,10 @@ public abstract class AbstractMicrosoftProvider extends AbstractProvider {
     }
 
     /**
-     * 返回获取accessToken的url
+     * Returns the URL to refresh the access token.
      *
-     * @param refreshToken 用户授权后的token
-     * @return 返回获取accessToken的url
+     * @param refreshToken the user's refresh token
+     * @return the URL to refresh the access token
      */
     @Override
     protected String refreshTokenUrl(String refreshToken) {

@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.starter.auth;
 
+import jakarta.annotation.Resource;
 import org.miaixz.bus.auth.cache.AuthCache;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.spring.GeniusBuilder;
@@ -35,31 +36,36 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
-import jakarta.annotation.Resource;
-
 /**
- * 授权自动配置类，用于配置授权相关的Bean。
- *
- * 该类负责创建并配置以下主要组件：
+ * Auto-configuration class for authorization, responsible for setting up authorization-related beans.
+ * <p>
+ * This class creates and configures the following main components:
  * <ul>
- * <li>{@link AuthService} - 授权服务提供者工厂，用于创建各种第三方授权服务</li>
- * <li>{@link CacheX} - 授权缓存实现，默认使用{@link AuthCache}作为缓存实现</li>
+ * <li>{@link AuthService} - The authorization service provider factory for creating various third-party authorization
+ * services.</li>
+ * <li>{@link CacheX} - The authorization cache implementation, using {@link AuthCache} as the default.</li>
  * </ul>
+ * <p>
+ * <strong>Configuration Example (in {@code application.yml}):</strong>
  * 
- * <pre>
- * // 在application.yml中配置
+ * <pre>{@code
  * bus:
  *   auth:
  *     cache:
- *       type: default  # 使用默认缓存
- *
- * // 在代码中直接注入使用
+ *       type: default  # Use the default cache
+ * }
+ * </pre>
+ * <p>
+ * <strong>Usage in Code:</strong>
+ * 
+ * <pre>{@code
+ * 
  * &#64;Autowired
  * private AuthService authService;
  *
- * // 获取GitHub授权提供者
+ * // Get the GitHub authorization provider
  * Provider provider = authService.require(Registry.GITHUB);
- * </pre>
+ * }</pre>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -68,20 +74,22 @@ import jakarta.annotation.Resource;
 public class AuthConfiguration {
 
     /**
-     * 授权配置属性，包含各种授权组件的配置信息。 通过{@link EnableConfigurationProperties}注解自动注入。
+     * Injected authorization configuration properties, containing settings for various authorization components.
+     * Automatically injected via the {@link EnableConfigurationProperties} annotation.
      */
     @Resource
     AuthProperties properties;
 
     /**
-     * 创建授权服务提供者工厂Bean。
-     *
+     * Creates the authorization service provider factory bean.
      * <p>
-     * 该方法创建一个{@link AuthService}实例，用于管理和创建各种第三方授权服务提供者。 该实例会使用传入的缓存实现和配置属性来初始化。
+     * This method creates an {@link AuthService} instance, which is used to manage and create various third-party
+     * authorization service providers. The instance is initialized with the provided cache implementation and
+     * configuration properties.
      * </p>
      *
-     * @param cache 缓存实现，用于存储授权过程中的临时数据
-     * @return 配置好的授权服务提供者工厂实例
+     * @param cache The cache implementation for storing temporary data during the authorization process.
+     * @return A configured instance of the authorization service provider factory.
      */
     @Bean
     public AuthService authProviderFactory(CacheX cache) {
@@ -89,13 +97,15 @@ public class AuthConfiguration {
     }
 
     /**
-     * 创建默认的授权缓存实现Bean。 当满足以下条件时，该方法会创建一个默认的缓存实现：
+     * Creates the default authorization cache implementation bean.
+     * <p>
+     * This method creates a default cache implementation under the following conditions:
      * <ul>
-     * <li>容器中不存在自定义的{@link CacheX} Bean</li>
-     * <li>配置属性中缓存类型设置为"default"（默认值）</li>
+     * <li>No custom {@link CacheX} bean exists in the container.</li>
+     * <li>The cache type in the configuration properties is set to "default" (which is the default setting).</li>
      * </ul>
      *
-     * @return 默认的授权缓存实现实例
+     * @return The default authorization cache implementation instance.
      */
     @Bean
     @ConditionalOnMissingBean(CacheX.class)

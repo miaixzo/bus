@@ -41,15 +41,30 @@ import org.miaixz.bus.pager.binding.PageAutoDialect;
 import org.miaixz.bus.pager.dialect.AbstractPaging;
 
 /**
- * 早期版本默认实现，获取连接再获取 url，这种方式通用性强，但是性能低，处理不好关闭连接时容易出问题
+ * Early version default implementation for auto-detecting database dialects. This approach involves obtaining a
+ * connection to extract the JDBC URL, which is highly generic but can be less performant and may lead to issues if
+ * connections are not properly closed.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class Early implements AutoDialect<String> {
 
+    /**
+     * Default instance of the Early auto-dialect.
+     */
     public static final AutoDialect<String> DEFAULT = new Early();
 
+    /**
+     * Extracts the dialect key (JDBC URL) from the DataSource by obtaining a connection. This method is generic but can
+     * be less efficient due to connection handling.
+     *
+     * @param ms         the MappedStatement being executed
+     * @param dataSource the DataSource associated with the MappedStatement
+     * @param properties the configuration properties, including "closeConn" to control connection closing
+     * @return the JDBC URL as the dialect key
+     * @throws PageException if a SQLException occurs while getting the connection or its metadata
+     */
     @Override
     public String extractDialectKey(MappedStatement ms, DataSource dataSource, Properties properties) {
         Connection conn = null;
@@ -72,6 +87,16 @@ public class Early implements AutoDialect<String> {
         }
     }
 
+    /**
+     * Extracts and returns the appropriate {@link AbstractPaging} dialect based on the extracted JDBC URL.
+     *
+     * @param dialectKey the JDBC URL obtained from {@link #extractDialectKey}
+     * @param ms         the MappedStatement being executed
+     * @param dataSource the DataSource associated with the MappedStatement
+     * @param properties the configuration properties
+     * @return an instance of {@link AbstractPaging} representing the determined dialect
+     * @throws PageException if the database type cannot be automatically obtained or if dialect instantiation fails
+     */
     @Override
     public AbstractPaging extractDialect(
             String dialectKey,

@@ -39,10 +39,11 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * Array检查工具类，提供字对象的blank和empty等检查
+ * Array validation utility class, providing checks for blank and empty objects.
  * <ul>
- * <li>empty定义：{@code null} or 空字对象：{@code ""}</li>
- * <li>blank定义：{@code null} or 空字对象：{@code ""} or 空格、全角空格、制表符、换行符，等不可见字符</li>
+ * <li>Empty definition: {@code null} or empty string: {@code ""}</li>
+ * <li>Blank definition: {@code null} or empty string: {@code ""} or whitespace characters (spaces, full-width spaces,
+ * tabs, newlines, etc.)</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -51,170 +52,170 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class ArrayValidator {
 
     /**
-     * 数组是否为空
+     * Checks if the given long array is empty.
      *
-     * @param array 数组
-     * @return 是否为空
+     * @param array The long array to check.
+     * @return {@code true} if the array is {@code null} or has a length of 0, {@code false} otherwise.
      */
     public static boolean isEmpty(final long[] array) {
         return array == null || array.length == 0;
     }
 
     /**
-     * 数组是否为空
+     * Checks if the given int array is empty.
      *
-     * @param array 数组
-     * @return 是否为空
+     * @param array The int array to check.
+     * @return {@code true} if the array is {@code null} or has a length of 0, {@code false} otherwise.
      */
     public static boolean isEmpty(final int[] array) {
         return array == null || array.length == 0;
     }
 
     /**
-     * 数组是否为空
+     * Checks if the given short array is empty.
      *
-     * @param array 数组
-     * @return 是否为空
+     * @param array The short array to check.
+     * @return {@code true} if the array is {@code null} or has a length of 0, {@code false} otherwise.
      */
     public static boolean isEmpty(final short[] array) {
         return array == null || array.length == 0;
     }
 
     /**
-     * 数组是否为空
+     * Checks if the given char array is empty.
      *
-     * @param array 数组
-     * @return 是否为空
+     * @param array The char array to check.
+     * @return {@code true} if the array is {@code null} or has a length of 0, {@code false} otherwise.
      */
     public static boolean isEmpty(final char[] array) {
         return array == null || array.length == 0;
     }
 
     /**
-     * 数组是否为空
+     * Checks if the given byte array is empty.
      *
-     * @param array 数组
-     * @return 是否为空
+     * @param array The byte array to check.
+     * @return {@code true} if the array is {@code null} or has a length of 0, {@code false} otherwise.
      */
     public static boolean isEmpty(final byte[] array) {
         return array == null || array.length == 0;
     }
 
     /**
-     * 数组是否为空
+     * Checks if the given double array is empty.
      *
-     * @param array 数组
-     * @return 是否为空
+     * @param array The double array to check.
+     * @return {@code true} if the array is {@code null} or has a length of 0, {@code false} otherwise.
      */
     public static boolean isEmpty(final double[] array) {
         return array == null || array.length == 0;
     }
 
     /**
-     * 数组是否为空
+     * Checks if the given float array is empty.
      *
-     * @param array 数组
-     * @return 是否为空
+     * @param array The float array to check.
+     * @return {@code true} if the array is {@code null} or has a length of 0, {@code false} otherwise.
      */
     public static boolean isEmpty(final float[] array) {
         return array == null || array.length == 0;
     }
 
     /**
-     * 数组是否为空
+     * Checks if the given boolean array is empty.
      *
-     * @param array 数组
-     * @return 是否为空
+     * @param array The boolean array to check.
+     * @return {@code true} if the array is {@code null} or has a length of 0, {@code false} otherwise.
      */
     public static boolean isEmpty(final boolean[] array) {
         return array == null || array.length == 0;
     }
 
     /**
-     * 数组是否为非空
+     * Checks if the given long array is not empty.
      *
-     * @param array 数组
-     * @return 是否为非空
+     * @param array The long array to check.
+     * @return {@code true} if the array is not {@code null} and has a length greater than 0, {@code false} otherwise.
      */
     public static boolean isNotEmpty(final long[] array) {
         return !isEmpty(array);
     }
 
     /**
-     * 数组是否为非空
+     * Checks if the given int array is not empty.
      *
-     * @param array 数组
-     * @return 是否为非空
+     * @param array The int array to check.
+     * @return {@code true} if the array is not {@code null} and has a length greater than 0, {@code false} otherwise.
      */
     public static boolean isNotEmpty(final int[] array) {
         return !isEmpty(array);
     }
 
     /**
-     * 数组是否为非空
+     * Checks if the given short array is not empty.
      *
-     * @param array 数组
-     * @return 是否为非空
+     * @param array The short array to check.
+     * @return {@code true} if the array is not {@code null} and has a length greater than 0, {@code false} otherwise.
      */
     public static boolean isNotEmpty(final short[] array) {
         return !isEmpty(array);
     }
 
     /**
-     * 数组是否为非空
+     * Checks if the given char array is not empty.
      *
-     * @param array 数组
-     * @return 是否为非空
+     * @param array The char array to check.
+     * @return {@code true} if the array is not {@code null} and has a length greater than 0, {@code false} otherwise.
      */
     public static boolean isNotEmpty(final char[] array) {
         return !isEmpty(array);
     }
 
     /**
-     * 数组是否为非空
+     * Checks if the given byte array is not empty.
      *
-     * @param array 数组
-     * @return 是否为非空
+     * @param array The byte array to check.
+     * @return {@code true} if the array is not {@code null} and has a length greater than 0, {@code false} otherwise.
      */
     public static boolean isNotEmpty(final byte[] array) {
         return !isEmpty(array);
     }
 
     /**
-     * 数组是否为非空
+     * Checks if the given double array is not empty.
      *
-     * @param array 数组
-     * @return 是否为非空
+     * @param array The double array to check.
+     * @return {@code true} if the array is not {@code null} and has a length greater than 0, {@code false} otherwise.
      */
     public static boolean isNotEmpty(final double[] array) {
         return !isEmpty(array);
     }
 
     /**
-     * 数组是否为非空
+     * Checks if the given float array is not empty.
      *
-     * @param array 数组
-     * @return 是否为非空
+     * @param array The float array to check.
+     * @return {@code true} if the array is not {@code null} and has a length greater than 0, {@code false} otherwise.
      */
     public static boolean isNotEmpty(final float[] array) {
         return !isEmpty(array);
     }
 
     /**
-     * 数组是否为非空
+     * Checks if the given boolean array is not empty.
      *
-     * @param array 数组
-     * @return 是否为非空
+     * @param array The boolean array to check.
+     * @return {@code true} if the array is not {@code null} and has a length greater than 0, {@code false} otherwise.
      */
     public static boolean isNotEmpty(final boolean[] array) {
         return !isEmpty(array);
     }
 
     /**
-     * 对象是否为数组对象
+     * Checks if the given object is an array.
      *
-     * @param object 对象
-     * @return 是否为数组对象，如果为{@code null} 返回false
+     * @param object The object to check.
+     * @return {@code true} if the object is an array and not {@code null}, {@code false} otherwise.
      */
     public static boolean isArray(final Object object) {
         return null != object && object.getClass().isArray();
@@ -222,11 +223,11 @@ public class ArrayValidator {
 
     /**
      * <p>
-     * 指定字符串数组中，是否包含空字符串。
-     * </p>
+     * Checks if any of the specified {@code CharSequence} array elements are blank.
+     * 
      * <p>
-     * 如果指定的字符串数组的长度为 0，或者其中的任意一个元素是空字符串，则返回 true。
-     * </p>
+     * Returns {@code true} if the array is {@code null} or empty, or if any element is blank.
+     * 
      * <ul>
      * <li>{@code hasBlank()                  // true}</li>
      * <li>{@code hasBlank("", null, " ")     // true}</li>
@@ -235,15 +236,15 @@ public class ArrayValidator {
      * </ul>
      *
      * <p>
-     * 注意：该方法与 {@link #isAllBlank(CharSequence...)} 的区别在于：
-     * </p>
+     * Note: The difference between this method and {@link #isAllBlank(CharSequence...)} is:
+     * 
      * <ul>
-     * <li>hasBlank(CharSequence...) 等价于 {@code isBlank(...) || isBlank(...) || ...}</li>
-     * <li>{@link #isAllBlank(CharSequence...)} 等价于 {@code isBlank(...) && isBlank(...) && ...}</li>
+     * <li>{@code hasBlank(CharSequence...)} is equivalent to {@code isBlank(...) || isBlank(...) || ...}</li>
+     * <li>{@link #isAllBlank(CharSequence...)} is equivalent to {@code isBlank(...) && isBlank(...) && ...}</li>
      * </ul>
      *
-     * @param args 字符串列表
-     * @return 是否包含空字符串
+     * @param args The {@code CharSequence} array to check.
+     * @return {@code true} if any element is blank or the array is empty/null, {@code false} otherwise.
      */
     public static boolean hasBlank(final CharSequence... args) {
         if (isEmpty(args)) {
@@ -259,10 +260,11 @@ public class ArrayValidator {
     }
 
     /**
-     * 是否全都不为{@code null}或空对象或空白符的对象，通过{@link #hasBlank(CharSequence...)} 判断元素
+     * Checks if all elements in the given {@code CharSequence} array are not {@code null}, empty, or blank. This method
+     * uses {@link #hasBlank(CharSequence...)} internally.
      *
-     * @param args 被检查的对象,一个或者多个
-     * @return 是否都不为空
+     * @param args The {@code CharSequence} array to check.
+     * @return {@code true} if all elements are not blank, {@code false} otherwise.
      */
     public static boolean isAllNotBlank(final CharSequence... args) {
         return !hasBlank(args);
@@ -270,11 +272,11 @@ public class ArrayValidator {
 
     /**
      * <p>
-     * 指定字符串数组中的元素，是否全部为空字符串。
-     * </p>
+     * Checks if all elements in the specified {@code CharSequence} array are blank.
+     * 
      * <p>
-     * 如果指定的字符串数组的长度为 0，或者所有元素都是空字符串，则返回 true。
-     * </p>
+     * Returns {@code true} if the array is {@code null} or empty, or if all elements are blank.
+     * 
      * <ul>
      * <li>{@code isAllBlank()                  // true}</li>
      * <li>{@code isAllBlank("", null, " ")     // true}</li>
@@ -283,15 +285,15 @@ public class ArrayValidator {
      * </ul>
      *
      * <p>
-     * 注意：该方法与 {@link #hasBlank(CharSequence...)} 的区别在于：
-     * </p>
+     * Note: The difference between this method and {@link #hasBlank(CharSequence...)} is:
+     * 
      * <ul>
-     * <li>{@link #hasBlank(CharSequence...)} 等价于 {@code isBlank(...) || isBlank(...) || ...}</li>
-     * <li>isAllBlank(CharSequence...) 等价于 {@code isBlank(...) && isBlank(...) && ...}</li>
+     * <li>{@link #hasBlank(CharSequence...)} is equivalent to {@code isBlank(...) || isBlank(...) || ...}</li>
+     * <li>{@code isAllBlank(CharSequence...)} is equivalent to {@code isBlank(...) && isBlank(...) && ...}</li>
      * </ul>
      *
-     * @param args 字符串列表
-     * @return 所有字符串是否为空白
+     * @param args The {@code CharSequence} array to check.
+     * @return {@code true} if all elements are blank or the array is empty/null, {@code false} otherwise.
      */
     public static boolean isAllBlank(final CharSequence... args) {
         if (isEmpty(args)) {
@@ -307,34 +309,35 @@ public class ArrayValidator {
     }
 
     /**
-     * 数组是否为空
+     * Checks if the given generic array is empty.
      *
-     * @param <T>   数组元素类型
-     * @param array 数组
-     * @return 是否为空
+     * @param <T>   The type of elements in the array.
+     * @param array The generic array to check.
+     * @return {@code true} if the array is {@code null} or has a length of 0, {@code false} otherwise.
      */
     public static <T> boolean isEmpty(final T[] array) {
         return array == null || array.length == 0;
     }
 
     /**
-     * 如果给定数组为空，返回默认数组
+     * Returns the original array if it is not empty, otherwise returns the default array.
      *
-     * @param <T>          数组元素类型
-     * @param array        数组
-     * @param defaultArray 默认数组
-     * @return 非空（empty）的原数组或默认数组
+     * @param <T>          The type of elements in the array.
+     * @param array        The array to check.
+     * @param defaultArray The default array to return if the original array is empty.
+     * @return The original array if not empty, otherwise the default array.
      */
     public static <T> T[] defaultIfEmpty(final T[] array, final T[] defaultArray) {
         return isEmpty(array) ? defaultArray : array;
     }
 
     /**
-     * 数组是否为空 此方法会匹配单一对象，如果此对象为{@code null}则返回true 如果此对象为非数组，理解为此对象为数组的第一个元素，则返回false
-     * 如果此对象为数组对象，数组长度大于0的情况下返回false，否则返回true
+     * Checks if the given object, which may be an array, is empty. If the object is {@code null}, it returns
+     * {@code true}. If the object is not an array, it is considered a single element, and thus not empty, returning
+     * {@code false}. If the object is an array, it returns {@code true} if its length is 0, {@code false} otherwise.
      *
-     * @param array 数组
-     * @return 是否为空
+     * @param array The object to check, which can be an array or a single element.
+     * @return {@code true} if the object is {@code null} or an empty array, {@code false} otherwise.
      */
     public static boolean isEmpty(final Object array) {
         if (array != null) {
@@ -347,37 +350,42 @@ public class ArrayValidator {
     }
 
     /**
-     * 数组是否为非空
+     * Checks if the given generic array is not empty.
      *
-     * @param <T>   数组元素类型
-     * @param array 数组
-     * @return 是否为非空
+     * @param <T>   The type of elements in the array.
+     * @param array The generic array to check.
+     * @return {@code true} if the array is not {@code null} and has a length greater than 0, {@code false} otherwise.
      */
     public static <T> boolean isNotEmpty(final T[] array) {
         return !isEmpty(array);
     }
 
     /**
-     * 数组是否为非空 此方法会匹配单一对象，如果此对象为{@code null}则返回false 如果此对象为非数组，理解为此对象为数组的第一个元素，则返回true
-     * 如果此对象为数组对象，数组长度大于0的情况下返回true，否则返回false
+     * Checks if the given object, which may be an array, is not empty. If the object is {@code null}, it returns
+     * {@code false}. If the object is not an array, it is considered a single element, and thus not empty, returning
+     * {@code true}. If the object is an array, it returns {@code true} if its length is greater than 0, {@code false}
+     * otherwise.
      *
-     * @param array 数组
-     * @return 是否为非空
+     * @param array The object to check, which can be an array or a single element.
+     * @return {@code true} if the object is not {@code null} and not an empty array, {@code false} otherwise.
      */
     public static boolean isNotEmpty(final Object array) {
         return !isEmpty(array);
     }
 
     /**
-     * 检查数组是否有序，升序或者降序，使用指定比较器比较
+     * Checks if the array is sorted in ascending or descending order using the specified comparator.
      * <p>
-     * 若传入空数组或空比较器，则返回{@code false}；元素全部相等，返回 {@code true}
-     * </p>
+     * If an empty array or a {@code null} comparator is provided, it returns {@code false}.
+     * 
+     * <p>
+     * If all elements are equal, it returns {@code true}.
+     * 
      *
-     * @param <T>        数组元素类型
-     * @param array      数组
-     * @param comparator 比较器，需要自己处理null值比较
-     * @return 数组是否有序
+     * @param <T>        The type of elements in the array.
+     * @param array      The array to check.
+     * @param comparator The comparator to use for comparison. It should handle {@code null} values if necessary.
+     * @return {@code true} if the array is sorted (ascending or descending), {@code false} otherwise.
      */
     public static <T> boolean isSorted(final T[] array, final Comparator<? super T> comparator) {
         if (isEmpty(array) || null == comparator) {
@@ -400,15 +408,18 @@ public class ArrayValidator {
     }
 
     /**
-     * 检查数组是否有序，升序或者降序
+     * Checks if the array is sorted in ascending or descending order.
      * <p>
-     * 若传入空数组，则返回{@code false}；元素全部相等，返回 {@code true}
-     * </p>
+     * If an empty array is provided, it returns {@code false}.
+     * 
+     * <p>
+     * If all elements are equal, it returns {@code true}.
+     * 
      *
-     * @param <T>   数组元素类型，该类型需要实现Comparable接口
-     * @param array 数组
-     * @return 数组是否有序
-     * @throws NullPointerException 如果数组元素含有null值
+     * @param <T>   The type of elements in the array, which must implement {@link Comparable}.
+     * @param array The array to check.
+     * @return {@code true} if the array is sorted (ascending or descending), {@code false} otherwise.
+     * @throws NullPointerException If any array element is {@code null}.
      */
     public static <T extends Comparable<? super T>> boolean isSorted(final T[] array) {
         if (isEmpty(array)) {
@@ -430,10 +441,11 @@ public class ArrayValidator {
     }
 
     /**
-     * 检查数组是否升序，即{@code array[i] <= array[i+1]} 若传入空数组，则返回{@code false}
+     * Checks if the byte array is sorted in ascending order (i.e., {@code array[i] <= array[i+1]}). If an empty array
+     * is provided, it returns {@code false}.
      *
-     * @param array 数组
-     * @return 数组是否升序
+     * @param array The byte array to check.
+     * @return {@code true} if the array is sorted in ascending order, {@code false} otherwise.
      */
     public static boolean isSortedASC(final byte[] array) {
         if (isEmpty(array)) {
@@ -450,10 +462,11 @@ public class ArrayValidator {
     }
 
     /**
-     * 检查数组是否降序，即{@code array[i] >= array[i+1]} 若传入空数组，则返回{@code false}
+     * Checks if the byte array is sorted in descending order (i.e., {@code array[i] >= array[i+1]}). If an empty array
+     * is provided, it returns {@code false}.
      *
-     * @param array 数组
-     * @return 数组是否降序
+     * @param array The byte array to check.
+     * @return {@code true} if the array is sorted in descending order, {@code false} otherwise.
      */
     public static boolean isSortedDESC(final byte[] array) {
         if (isEmpty(array)) {
@@ -470,10 +483,11 @@ public class ArrayValidator {
     }
 
     /**
-     * 检查数组是否升序，即{@code array[i] <= array[i+1]} 若传入空数组，则返回{@code false}
+     * Checks if the short array is sorted in ascending order (i.e., {@code array[i] <= array[i+1]}). If an empty array
+     * is provided, it returns {@code false}.
      *
-     * @param array 数组
-     * @return 数组是否升序
+     * @param array The short array to check.
+     * @return {@code true} if the array is sorted in ascending order, {@code false} otherwise.
      */
     public static boolean isSortedASC(final short[] array) {
         if (isEmpty(array)) {
@@ -490,10 +504,11 @@ public class ArrayValidator {
     }
 
     /**
-     * 检查数组是否降序，即{@code array[i] >= array[i+1]} 若传入空数组，则返回{@code false}
+     * Checks if the short array is sorted in descending order (i.e., {@code array[i] >= array[i+1]}). If an empty array
+     * is provided, it returns {@code false}.
      *
-     * @param array 数组
-     * @return 数组是否降序
+     * @param array The short array to check.
+     * @return {@code true} if the array is sorted in descending order, {@code false} otherwise.
      */
     public static boolean isSortedDESC(final short[] array) {
         if (isEmpty(array)) {
@@ -510,10 +525,11 @@ public class ArrayValidator {
     }
 
     /**
-     * 检查数组是否升序，即{@code array[i] <= array[i+1]} 若传入空数组，则返回{@code false}
+     * Checks if the char array is sorted in ascending order (i.e., {@code array[i] <= array[i+1]}). If an empty array
+     * is provided, it returns {@code false}.
      *
-     * @param array 数组
-     * @return 数组是否升序
+     * @param array The char array to check.
+     * @return {@code true} if the array is sorted in ascending order, {@code false} otherwise.
      */
     public static boolean isSortedASC(final char[] array) {
         if (isEmpty(array)) {
@@ -530,10 +546,11 @@ public class ArrayValidator {
     }
 
     /**
-     * 检查数组是否降序，即{@code array[i] >= array[i+1]} 若传入空数组，则返回{@code false}
+     * Checks if the char array is sorted in descending order (i.e., {@code array[i] >= array[i+1]}). If an empty array
+     * is provided, it returns {@code false}.
      *
-     * @param array 数组
-     * @return 数组是否降序
+     * @param array The char array to check.
+     * @return {@code true} if the array is sorted in descending order, {@code false} otherwise.
      */
     public static boolean isSortedDESC(final char[] array) {
         if (isEmpty(array)) {
@@ -550,10 +567,11 @@ public class ArrayValidator {
     }
 
     /**
-     * 检查数组是否升序，即{@code array[i] <= array[i+1]} 若传入空数组，则返回{@code false}
+     * Checks if the int array is sorted in ascending order (i.e., {@code array[i] <= array[i+1]}). If an empty array is
+     * provided, it returns {@code false}.
      *
-     * @param array 数组
-     * @return 数组是否升序
+     * @param array The int array to check.
+     * @return {@code true} if the array is sorted in ascending order, {@code false} otherwise.
      */
     public static boolean isSortedASC(final int[] array) {
         if (isEmpty(array)) {
@@ -570,10 +588,11 @@ public class ArrayValidator {
     }
 
     /**
-     * 检查数组是否降序，即{@code array[i] >= array[i+1]} 若传入空数组，则返回{@code false}
+     * Checks if the int array is sorted in descending order (i.e., {@code array[i] >= array[i+1]}). If an empty array
+     * is provided, it returns {@code false}.
      *
-     * @param array 数组
-     * @return 数组是否降序
+     * @param array The int array to check.
+     * @return {@code true} if the array is sorted in descending order, {@code false} otherwise.
      */
     public static boolean isSortedDESC(final int[] array) {
         if (isEmpty(array)) {
@@ -590,10 +609,11 @@ public class ArrayValidator {
     }
 
     /**
-     * 检查数组是否升序，即{@code array[i] <= array[i+1]} 若传入空数组，则返回{@code false}
+     * Checks if the long array is sorted in ascending order (i.e., {@code array[i] <= array[i+1]}). If an empty array
+     * is provided, it returns {@code false}.
      *
-     * @param array 数组
-     * @return 数组是否升序
+     * @param array The long array to check.
+     * @return {@code true} if the array is sorted in ascending order, {@code false} otherwise.
      */
     public static boolean isSortedASC(final long[] array) {
         if (isEmpty(array)) {
@@ -610,10 +630,11 @@ public class ArrayValidator {
     }
 
     /**
-     * 检查数组是否降序，即{@code array[i] >= array[i+1]} 若传入空数组，则返回{@code false}
+     * Checks if the long array is sorted in descending order (i.e., {@code array[i] >= array[i+1]}). If an empty array
+     * is provided, it returns {@code false}.
      *
-     * @param array 数组
-     * @return 数组是否降序
+     * @param array The long array to check.
+     * @return {@code true} if the array is sorted in descending order, {@code false} otherwise.
      */
     public static boolean isSortedDESC(final long[] array) {
         if (isEmpty(array)) {
@@ -630,10 +651,11 @@ public class ArrayValidator {
     }
 
     /**
-     * 检查数组是否升序，即{@code array[i] <= array[i+1]} 若传入空数组，则返回{@code false}
+     * Checks if the double array is sorted in ascending order (i.e., {@code array[i] <= array[i+1]}). If an empty array
+     * is provided, it returns {@code false}.
      *
-     * @param array 数组
-     * @return 数组是否升序
+     * @param array The double array to check.
+     * @return {@code true} if the array is sorted in ascending order, {@code false} otherwise.
      */
     public static boolean isSortedASC(final double[] array) {
         if (isEmpty(array)) {
@@ -650,10 +672,11 @@ public class ArrayValidator {
     }
 
     /**
-     * 检查数组是否降序，即{@code array[i] >= array[i+1]} 若传入空数组，则返回{@code false}
+     * Checks if the double array is sorted in descending order (i.e., {@code array[i] >= array[i+1]}). If an empty
+     * array is provided, it returns {@code false}.
      *
-     * @param array 数组
-     * @return 数组是否降序
+     * @param array The double array to check.
+     * @return {@code true} if the array is sorted in descending order, {@code false} otherwise.
      */
     public static boolean isSortedDESC(final double[] array) {
         if (isEmpty(array)) {
@@ -670,10 +693,11 @@ public class ArrayValidator {
     }
 
     /**
-     * 检查数组是否升序，即{@code array[i] <= array[i+1]} 若传入空数组，则返回{@code false}
+     * Checks if the float array is sorted in ascending order (i.e., {@code array[i] <= array[i+1]}). If an empty array
+     * is provided, it returns {@code false}.
      *
-     * @param array 数组
-     * @return 数组是否升序
+     * @param array The float array to check.
+     * @return {@code true} if the array is sorted in ascending order, {@code false} otherwise.
      */
     public static boolean isSortedASC(final float[] array) {
         if (isEmpty(array)) {
@@ -690,10 +714,11 @@ public class ArrayValidator {
     }
 
     /**
-     * 检查数组是否降序，即array[i] &gt;= array[i+1] 若传入空数组，则返回{@code false}
+     * Checks if the float array is sorted in descending order (i.e., {@code array[i] >= array[i+1]}). If an empty array
+     * is provided, it returns {@code false}.
      *
-     * @param array 数组
-     * @return 数组是否降序
+     * @param array The float array to check.
+     * @return {@code true} if the array is sorted in descending order, {@code false} otherwise.
      */
     public static boolean isSortedDESC(final float[] array) {
         if (isEmpty(array)) {
@@ -709,15 +734,15 @@ public class ArrayValidator {
     }
 
     /**
-     * 检查数组是否升序，即 {@code array[i].compareTo(array[i + 1]) <= 0}
+     * Checks if the generic array is sorted in ascending order (i.e., {@code array[i].compareTo(array[i + 1]) <= 0}).
      * <p>
-     * 若传入空数组，则返回{@code false}
-     * </p>
+     * If an empty array is provided, it returns {@code false}.
+     * 
      *
-     * @param <T>   数组元素类型，该类型需要实现Comparable接口
-     * @param array 数组
-     * @return 数组是否升序
-     * @throws NullPointerException 如果数组元素含有null值
+     * @param <T>   The type of elements in the array, which must implement {@link Comparable}.
+     * @param array The generic array to check.
+     * @return {@code true} if the array is sorted in ascending order, {@code false} otherwise.
+     * @throws NullPointerException If any array element is {@code null}.
      */
     public static <T extends Comparable<? super T>> boolean isSortedASC(final T[] array) {
         if (isEmpty(array)) {
@@ -735,15 +760,15 @@ public class ArrayValidator {
     }
 
     /**
-     * 检查数组是否降序，即 {@code array[i].compareTo(array[i + 1]) >= 0}
+     * Checks if the generic array is sorted in descending order (i.e., {@code array[i].compareTo(array[i + 1]) >= 0}).
      * <p>
-     * 若传入空数组，则返回{@code false}
-     * </p>
+     * If an empty array is provided, it returns {@code false}.
+     * 
      *
-     * @param <T>   数组元素类型，该类型需要实现Comparable接口
-     * @param array 数组
-     * @return 数组是否降序
-     * @throws NullPointerException 如果数组元素含有null值
+     * @param <T>   The type of elements in the array, which must implement {@link Comparable}.
+     * @param array The generic array to check.
+     * @return {@code true} if the array is sorted in descending order, {@code false} otherwise.
+     * @throws NullPointerException If any array element is {@code null}.
      */
     public static <T extends Comparable<? super T>> boolean isSortedDESC(final T[] array) {
         if (isEmpty(array)) {
@@ -761,15 +786,16 @@ public class ArrayValidator {
     }
 
     /**
-     * 检查数组是否升序，使用指定的比较器比较，即 {@code compare.compare(array[i], array[i + 1]) <= 0}
+     * Checks if the generic array is sorted in ascending order using the specified comparator (i.e.,
+     * {@code comparator.compare(array[i], array[i + 1]) <= 0}).
      * <p>
-     * 若传入空数组或空比较器，则返回{@code false}
-     * </p>
+     * If an empty array or a {@code null} comparator is provided, it returns {@code false}.
+     * 
      *
-     * @param <T>        数组元素类型
-     * @param array      数组
-     * @param comparator 比较器，需要自己处理null值比较
-     * @return 数组是否升序
+     * @param <T>        The type of elements in the array.
+     * @param array      The generic array to check.
+     * @param comparator The comparator to use for comparison. It should handle {@code null} values if necessary.
+     * @return {@code true} if the array is sorted in ascending order, {@code false} otherwise.
      */
     public static <T> boolean isSortedASC(final T[] array, final Comparator<? super T> comparator) {
         if (isEmpty(array) || null == comparator) {
@@ -787,15 +813,16 @@ public class ArrayValidator {
     }
 
     /**
-     * 检查数组是否降序，使用指定的比较器比较，即 {@code compare.compare(array[i], array[i + 1]) >= 0}
+     * Checks if the generic array is sorted in descending order using the specified comparator (i.e.,
+     * {@code comparator.compare(array[i], array[i + 1]) >= 0}).
      * <p>
-     * 若传入空数组或空比较器，则返回{@code false}
-     * </p>
+     * If an empty array or a {@code null} comparator is provided, it returns {@code false}.
+     * 
      *
-     * @param <T>        数组元素类型
-     * @param array      数组
-     * @param comparator 比较器，需要自己处理null值比较
-     * @return 数组是否降序
+     * @param <T>        The type of elements in the array.
+     * @param array      The generic array to check.
+     * @param comparator The comparator to use for comparison. It should handle {@code null} values if necessary.
+     * @return {@code true} if the array is sorted in descending order, {@code false} otherwise.
      */
     public static <T> boolean isSortedDESC(final T[] array, final Comparator<? super T> comparator) {
         if (isEmpty(array) || null == comparator) {
@@ -813,11 +840,13 @@ public class ArrayValidator {
     }
 
     /**
-     * 是否所有元素都为{@code null}或空对象，通过{@link ObjectKit#isEmpty(Object)} 判断元素 如果提供的数组本身为空，则返回{@code true}
+     * Checks if all elements in the given array are {@code null} or empty objects, using
+     * {@link ObjectKit#isEmpty(Object)} to determine emptiness. If the provided array itself is empty, it returns
+     * {@code true}.
      *
-     * @param <T>  元素类型
-     * @param args 被检查的对象,一个或者多个
-     * @return 是否都为空
+     * @param <T>  The type of elements in the array.
+     * @param args The array of objects to check.
+     * @return {@code true} if all elements are {@code null} or empty, {@code false} otherwise.
      */
     public static <T> boolean isAllEmpty(final T[] args) {
         for (final T object : args) {
@@ -829,18 +858,20 @@ public class ArrayValidator {
     }
 
     /**
-     * 是否局部匹配，相当于对比以下子串是否相等
+     * Checks if a sub-array matches a portion of a larger array. This is equivalent to comparing the following
+     * sub-sequences for equality:
      * 
      * <pre>
-     *     array1[offset1, subArray.length]
+     *     array[offset, subArray.length]
      *                  ||
      *               subArray
      * </pre>
      *
-     * @param array    数组
-     * @param offset   开始位置
-     * @param subArray 子数组
-     * @return 是否局部匹配
+     * @param array    The main array.
+     * @param offset   The starting offset in the main array.
+     * @param subArray The sub-array to compare.
+     * @return {@code true} if the sub-array matches the specified portion of the main array, {@code false} otherwise.
+     * @throws IndexOutOfBoundsException If {@code offset + subArray.length} exceeds the bounds of {@code array}.
      */
     public static boolean isSubEquals(final byte[] array, final int offset, final byte... subArray) {
         if (array == subArray) {
@@ -853,25 +884,26 @@ public class ArrayValidator {
     }
 
     /**
-     * 是否是数组的子数组
+     * Checks if the {@code subArray} is a sub-array of {@code array}.
      *
-     * @param array    数组
-     * @param subArray 子数组
-     * @param <T>      数组元素类型
-     * @return 是否是数组的子数组
+     * @param array    The main array.
+     * @param subArray The sub-array to check for.
+     * @param <T>      The type of elements in the arrays.
+     * @return {@code true} if {@code subArray} is found within {@code array}, {@code false} otherwise.
      */
     public static <T> boolean isSub(final T[] array, final T[] subArray) {
         return indexOfSub(array, subArray) > Normal.__1;
     }
 
     /**
-     * 查找子数组的位置
+     * Finds the starting index of the first occurrence of a sub-array within a larger array, starting the search from a
+     * specified index.
      *
-     * @param array        数组
-     * @param beginInclude 查找开始的位置（包含）
-     * @param subArray     子数组
-     * @param <T>          数组元素类型
-     * @return 子数组的开始位置，即子数字第一个元素在数组中的位置
+     * @param array        The main array to search within.
+     * @param beginInclude The starting index (inclusive) in the main array to begin the search.
+     * @param subArray     The sub-array to search for.
+     * @param <T>          The type of elements in the arrays.
+     * @return The starting index of the sub-array if found, or {@link Normal#__1} if not found or if arrays are empty.
      */
     public static <T> int indexOfSub(final T[] array, int beginInclude, final T[] subArray) {
         if (isEmpty(array) || isEmpty(subArray)) {
@@ -884,7 +916,7 @@ public class ArrayValidator {
             return Normal.__1;
         }
         if (array.length - beginInclude < subArray.length) {
-            // 剩余长度不足
+            // Remaining length is insufficient
             return Normal.__1;
         }
 
@@ -905,18 +937,19 @@ public class ArrayValidator {
     }
 
     /**
-     * 是否所有元素都为{@code null}或空对象，通过{@link ObjectKit#isEmpty(Object)} 判断元素
+     * Checks if all elements in the given array are {@code null} or empty objects, using
+     * {@link ObjectKit#isEmpty(Object)} to determine emptiness.
      * <p>
-     * 如果提供的数组本身为空，则返回{@code true}
-     * </p>
+     * If the provided array itself is empty, it returns {@code true}.
+     * 
      * <p>
-     * <strong>限制条件：args的每个item不能是数组、不能是集合</strong>
-     * </p>
+     * <strong>Constraint: Each item in {@code args} must not be an array or a collection.</strong>
+     * 
      *
-     * @param <T>  元素类型
-     * @param args 被检查的对象,一个或者多个
-     * @return 是否都为空
-     * @throws IllegalArgumentException 如果提供的args的item存在数组或集合，抛出异常
+     * @param <T>  The type of elements in the array.
+     * @param args The array of objects to check.
+     * @return {@code true} if all elements are {@code null} or empty, {@code false} otherwise.
+     * @throws IllegalArgumentException If any item in {@code args} is an array or a collection.
      */
     @SafeVarargs
     public static <T> boolean isAllEmptyVarargs(final T... args) {
@@ -924,27 +957,31 @@ public class ArrayValidator {
     }
 
     /**
-     * 是否所有元素都不为{@code null}或空对象，通过{@link ObjectKit#isEmpty(Object)} 判断元素
+     * Checks if all elements in the given array are not {@code null} or empty objects, using
+     * {@link ObjectKit#isEmpty(Object)} to determine emptiness.
      * <p>
-     * 如果提供的数组本身为空，则返回{@code true}
-     * </p>
+     * If the provided array itself is empty, it returns {@code true}.
+     * 
      *
-     * @param args 被检查的对象,一个或者多个
-     * @return 是否都不为空
+     * @param args The array of objects to check.
+     * @return {@code true} if all elements are not {@code null} or empty, {@code false} otherwise.
      */
     public static boolean isAllNotEmpty(final Object... args) {
         return !hasEmpty(args);
     }
 
     /**
-     * 是否包含{@code null}元素
+     * Checks if the given array contains any {@code null} elements.
      * <p>
-     * 如果数组为null，则返回{@code true}，如果数组为空，则返回{@code false}
-     * </p>
+     * If the array is {@code null}, it returns {@code true}.
+     * 
+     * <p>
+     * If the array is empty, it returns {@code false}.
+     * 
      *
-     * @param <T>   数组元素类型
-     * @param array 被检查的数组
-     * @return 是否包含 {@code null} 元素
+     * @param <T>   The type of elements in the array.
+     * @param array The array to check.
+     * @return {@code true} if the array contains any {@code null} elements or is {@code null}, {@code false} otherwise.
      */
     public static <T> boolean hasNull(final T... array) {
         if (isNotEmpty(array)) {
@@ -958,14 +995,15 @@ public class ArrayValidator {
     }
 
     /**
-     * 是否存在{@code null}或空对象，通过{@link ObjectKit#isEmpty(Object)} 判断元素
+     * Checks if the given array contains any {@code null} or empty objects, using {@link ObjectKit#isEmpty(Object)} to
+     * determine emptiness.
      * <p>
-     * 如果提供的数组本身为空，则返回{@code false}
-     * </p>
+     * If the provided array itself is empty, it returns {@code false}.
+     * 
      *
-     * @param <T>  元素类型
-     * @param args 被检查对象
-     * @return 是否存在 {@code null} 或空对象
+     * @param <T>  The type of elements in the array.
+     * @param args The array of objects to check.
+     * @return {@code true} if any element is {@code null} or empty, {@code false} otherwise.
      */
     public static <T> boolean hasEmpty(final T[] args) {
         if (isNotEmpty(args)) {
@@ -979,18 +1017,19 @@ public class ArrayValidator {
     }
 
     /**
-     * 是否存在{@code null}或空对象，通过{@link ObjectKit#isEmpty(Object)} 判断元素
+     * Checks if the given array contains any {@code null} or empty objects, using {@link ObjectKit#isEmpty(Object)} to
+     * determine emptiness.
      * <p>
-     * 如果提供的数组本身为空，则返回{@code false}
-     * </p>
+     * If the provided array itself is empty, it returns {@code false}.
+     * 
      * <p>
-     * <strong>限制条件：args的每个item不能是数组、不能是集合</strong>
-     * </p>
+     * <strong>Constraint: Each item in {@code args} must not be an array or a collection.</strong>
+     * 
      *
-     * @param <T>  元素类型
-     * @param args 被检查对象
-     * @return 是否存在 {@code null} 或空对象
-     * @throws IllegalArgumentException 如果提供的args的item存在数组或集合，抛出异常
+     * @param <T>  The type of elements in the array.
+     * @param args The array of objects to check.
+     * @return {@code true} if any element is {@code null} or empty, {@code false} otherwise.
+     * @throws IllegalArgumentException If any item in {@code args} is an array or a collection.
      */
     @SafeVarargs
     public static <T> boolean hasEmptyVarargs(final T... args) {
@@ -998,52 +1037,60 @@ public class ArrayValidator {
     }
 
     /**
-     * 所有字段是否全为null
+     * Checks if all elements in the given array are {@code null}.
      * <p>
-     * 如果数组为{@code null}或者空，则返回 {@code true}
-     * </p>
+     * If the array is {@code null} or empty, it returns {@code true}.
+     * 
      *
-     * @param <T>   数组元素类型
-     * @param array 被检查的数组
-     * @return 所有字段是否全为null
+     * @param <T>   The type of elements in the array.
+     * @param array The array to check.
+     * @return {@code true} if all elements are {@code null} or the array is {@code null}/empty, {@code false}
+     *         otherwise.
      */
     public static <T> boolean isAllNull(final T... array) {
         return null == firstNonNull(array);
     }
 
     /**
-     * 是否所有元素都不为 {@code null}
+     * Checks if all elements in the given array are not {@code null}.
      * <p>
-     * 如果提供的数组为null，则返回{@code false}，如果提供的数组为空，则返回{@code true}
-     * </p>
+     * If the provided array is {@code null}, it returns {@code false}.
+     * 
+     * <p>
+     * If the provided array is empty, it returns {@code true}.
+     * 
      *
-     * @param <T>   数组元素类型
-     * @param array 被检查的数组
-     * @return 是否所有元素都不为 {@code null}
+     * @param <T>   The type of elements in the array.
+     * @param array The array to check.
+     * @return {@code true} if all elements are not {@code null} or the array is empty, {@code false} otherwise.
      */
     public static <T> boolean isAllNotNull(final T... array) {
         return !hasNull(array);
     }
 
     /**
-     * 是否包含非{@code null}元素
+     * Checks if the given array contains any non-{@code null} elements.
      * <p>
-     * 如果数组是{@code null}或者空，返回{@code false}，否则当数组中有非{@code null}元素时返回{@code true}
-     * </p>
+     * If the array is {@code null} or empty, it returns {@code false}.
+     * 
+     * <p>
+     * Otherwise, it returns {@code true} if there is at least one non-{@code null} element.
+     * 
      *
-     * @param <T>   数组元素类型
-     * @param array 被检查的数组
-     * @return 是否包含非 {@code null} 元素
+     * @param <T>   The type of elements in the array.
+     * @param array The array to check.
+     * @return {@code true} if the array contains at least one non-{@code null} element, {@code false} otherwise.
      */
     public static <T> boolean hasNonNull(final T... array) {
         return null != firstNonNull(array);
     }
 
     /**
-     * 计算{@code null}或空元素对象的个数，通过{@link ObjectKit#isEmpty(Object)} 判断元素
+     * Counts the number of {@code null} or empty elements in the given array, using {@link ObjectKit#isEmpty(Object)}
+     * to determine emptiness.
      *
-     * @param args 被检查的对象,一个或者多个
-     * @return {@code null}或空元素对象的个数
+     * @param args The array of objects to count.
+     * @return The count of {@code null} or empty elements.
      */
     public static int emptyCount(final Object... args) {
         int count = 0;
@@ -1058,11 +1105,12 @@ public class ArrayValidator {
     }
 
     /**
-     * 返回数组中第一个非空元素
+     * Returns the first non-{@code null} element from the given array.
      *
-     * @param <T>   数组元素类型
-     * @param array 数组
-     * @return 第一个非空元素，如果 不存在非空元素 或 数组为空，返回{@code null}
+     * @param <T>   The type of elements in the array.
+     * @param array The array to search.
+     * @return The first non-{@code null} element, or {@code null} if no non-{@code null} elements are found or the
+     *         array is empty.
      */
     public static <T> T firstNonNull(final T... array) {
         if (isEmpty(array)) {
@@ -1072,12 +1120,12 @@ public class ArrayValidator {
     }
 
     /**
-     * 返回数组中第一个匹配规则的值
+     * Returns the first element in the array that matches the given predicate.
      *
-     * @param <T>     数组元素类型
-     * @param matcher 匹配接口，实现此接口自定义匹配规则
-     * @param array   数组
-     * @return 第一个匹配元素，如果 不存在匹配元素 或 数组为空，返回 {@code null}
+     * @param <T>     The type of elements in the array.
+     * @param matcher The predicate to use for matching.
+     * @param array   The array to search.
+     * @return The first matching element, or {@code null} if no matching element is found or the array is empty.
      */
     public static <T> T firstMatch(final Predicate<T> matcher, final T... array) {
         final int index = matchIndex(matcher, array);
@@ -1089,25 +1137,26 @@ public class ArrayValidator {
     }
 
     /**
-     * 返回数组中第一个匹配规则的值的位置
+     * Returns the index of the first element in the array that matches the given predicate.
      *
-     * @param <T>     数组元素类型
-     * @param matcher 匹配接口，实现此接口自定义匹配规则
-     * @param array   数组
-     * @return 第一个匹配元素的位置，{@link Normal#__1}表示未匹配到
+     * @param <T>     The type of elements in the array.
+     * @param matcher The predicate to use for matching.
+     * @param array   The array to search.
+     * @return The index of the first matching element, or {@link Normal#__1} if no matching element is found.
      */
     public static <T> int matchIndex(final Predicate<T> matcher, final T... array) {
         return matchIndex(0, matcher, array);
     }
 
     /**
-     * 返回数组中第一个匹配规则的值的位置
+     * Returns the index of the first element in the array that matches the given predicate, starting the search from a
+     * specified index.
      *
-     * @param <E>               数组元素类型
-     * @param matcher           匹配接口，实现此接口自定义匹配规则
-     * @param beginIndexInclude 检索开始的位置，不能为负数
-     * @param array             数组
-     * @return 第一个匹配元素的位置，{@link Normal#__1}表示未匹配到
+     * @param <E>               The type of elements in the array.
+     * @param matcher           The predicate to use for matching.
+     * @param beginIndexInclude The starting index (inclusive) to begin the search. Must not be negative.
+     * @param array             The array to search.
+     * @return The index of the first matching element, or {@link Normal#__1} if no matching element is found.
      */
     public static <E> int matchIndex(final int beginIndexInclude, final Predicate<E> matcher, final E... array) {
         if (isEmpty(array)) {
@@ -1118,36 +1167,38 @@ public class ArrayValidator {
     }
 
     /**
-     * 返回数组中指定元素所在位置，未找到返回{@link Normal#__1}
+     * Returns the index of the first occurrence of the specified value in the array, starting the search from a
+     * specified index.
      *
-     * @param <T>               数组类型
-     * @param array             数组
-     * @param value             被检查的元素
-     * @param beginIndexInclude 检索开始的位置
-     * @return 数组中指定元素所在位置，未找到返回{@link Normal#__1}
+     * @param <T>               The type of elements in the array.
+     * @param array             The array to search within.
+     * @param value             The element to search for.
+     * @param beginIndexInclude The starting index (inclusive) to begin the search.
+     * @return The index of the first occurrence of the value, or {@link Normal#__1} if not found.
      */
     public static <T> int indexOf(final T[] array, final Object value, final int beginIndexInclude) {
         return ArrayWrapper.of(array).indexOf(value, beginIndexInclude);
     }
 
     /**
-     * 返回数组中指定元素所在位置，未找到返回{@link Normal#__1}
+     * Returns the index of the first occurrence of the specified value in the array.
      *
-     * @param <T>   数组类型
-     * @param array 数组
-     * @param value 被检查的元素
-     * @return 数组中指定元素所在位置，未找到返回{@link Normal#__1}
+     * @param <T>   The type of elements in the array.
+     * @param array The array to search within.
+     * @param value The element to search for.
+     * @return The index of the first occurrence of the value, or {@link Normal#__1} if not found.
      */
     public static <T> int indexOf(final T[] array, final Object value) {
         return ArrayWrapper.of(array).indexOf(value);
     }
 
     /**
-     * 返回数组中指定元素所在位置，忽略大小写，未找到返回{@link Normal#__1}
+     * Returns the index of the first occurrence of the specified {@code CharSequence} value in the array, ignoring case
+     * considerations.
      *
-     * @param array 数组
-     * @param value 被检查的元素
-     * @return 数组中指定元素所在位置，未找到返回{@link Normal#__1}
+     * @param array The array of {@code CharSequence} to search within.
+     * @param value The {@code CharSequence} element to search for.
+     * @return The index of the first occurrence of the value (case-insensitive), or {@link Normal#__1} if not found.
      */
     public static int indexOfIgnoreCase(final CharSequence[] array, final CharSequence value) {
         if (isNotEmpty(array)) {
@@ -1161,12 +1212,12 @@ public class ArrayValidator {
     }
 
     /**
-     * 返回数组中指定元素最后的所在位置，未找到返回{@link Normal#__1}
+     * Returns the index of the last occurrence of the specified value in the array.
      *
-     * @param <T>   数组类型
-     * @param array 数组
-     * @param value 被检查的元素
-     * @return 数组中指定元素最后的所在位置，未找到返回{@link Normal#__1}
+     * @param <T>   The type of elements in the array.
+     * @param array The array to search within.
+     * @param value The element to search for.
+     * @return The index of the last occurrence of the value, or {@link Normal#__1} if not found.
      */
     public static <T> int lastIndexOf(final T[] array, final Object value) {
         if (isEmpty(array)) {
@@ -1176,13 +1227,14 @@ public class ArrayValidator {
     }
 
     /**
-     * 返回数组中指定元素最后的所在位置，未找到返回{@link Normal#__1}
+     * Returns the index of the last occurrence of the specified value in the array, searching backward from a specified
+     * starting index.
      *
-     * @param <T>        数组类型
-     * @param array      数组
-     * @param value      被检查的元素
-     * @param endInclude 从后向前查找时的起始位置，一般为{@code array.length - 1}
-     * @return 数组中指定元素最后的所在位置，未找到返回{@link Normal#__1}
+     * @param <T>        The type of elements in the array.
+     * @param array      The array to search within.
+     * @param value      The element to search for.
+     * @param endInclude The starting index (inclusive) for the backward search, typically {@code array.length - 1}.
+     * @return The index of the last occurrence of the value, or {@link Normal#__1} if not found.
      */
     public static <T> int lastIndexOf(final T[] array, final Object value, final int endInclude) {
         if (isNotEmpty(array)) {
@@ -1196,19 +1248,20 @@ public class ArrayValidator {
     }
 
     /**
-     * 查找子数组的位置
+     * Finds the starting index of the first occurrence of a sub-array within a larger array.
      *
-     * @param array    数组
-     * @param subArray 子数组
-     * @param <T>      数组元素类型
-     * @return 子数组的开始位置，即子数字第一个元素在数组中的位置
+     * @param array    The main array to search within.
+     * @param subArray The sub-array to search for.
+     * @param <T>      The type of elements in the arrays.
+     * @return The starting index of the sub-array if found, or {@link Normal#__1} if not found or if arrays are empty.
      */
     public static <T> int indexOfSub(final T[] array, final T[] subArray) {
         return indexOfSub(array, 0, subArray);
     }
 
     /**
-     * 是否局部匹配，相当于对比以下子串是否相等
+     * Checks if a region of the first byte array matches a region of the second byte array. This is equivalent to
+     * comparing the following sub-sequences for equality:
      * 
      * <pre>
      *     array1[offset1 : offset1 + length]
@@ -1216,12 +1269,13 @@ public class ArrayValidator {
      *     array2[offset2 : offset2 + length]
      * </pre>
      *
-     * @param array1  第一个数组
-     * @param offset1 第一个数组开始位置
-     * @param array2  第二个数组
-     * @param offset2 第二个数组开始位置
-     * @param length  检查长度
-     * @return 是否局部匹配
+     * @param array1  The first byte array.
+     * @param offset1 The starting offset in the first array.
+     * @param array2  The second byte array.
+     * @param offset2 The starting offset in the second array.
+     * @param length  The number of bytes to compare.
+     * @return {@code true} if the specified regions match, {@code false} otherwise.
+     * @throws IndexOutOfBoundsException If the specified offsets and length exceed the bounds of either array.
      */
     public static boolean regionMatches(
             final byte[] array1,
@@ -1245,10 +1299,11 @@ public class ArrayValidator {
     }
 
     /**
-     * 数组或集合转String
+     * Converts an array or collection object to its string representation. The format for arrays is similar to that of
+     * collections.
      *
-     * @param object 集合或数组对象
-     * @return 数组字符串，与集合转字符串格式相同
+     * @param object The array or collection object to convert.
+     * @return The string representation of the array or collection, or {@code null} if the object is {@code null}.
      */
     public static String toString(final Object object) {
         if (Objects.isNull(object)) {
@@ -1271,7 +1326,7 @@ public class ArrayValidator {
         } else if (object instanceof double[]) {
             return Arrays.toString((double[]) object);
         } else if (ArrayKit.isArray(object)) {
-            // 对象数组
+            // Object array
             try {
                 return Arrays.deepToString((Object[]) object);
             } catch (final Exception ignore) {
@@ -1283,7 +1338,7 @@ public class ArrayValidator {
     }
 
     /**
-     * 获取数组长度 如果参数为{@code null}，返回0
+     * Gets the length of an array object. If the parameter is {@code null}, it returns 0.
      *
      * <pre>
      * ArrayKit.length(null)            = 0
@@ -1294,9 +1349,9 @@ public class ArrayValidator {
      * ArrayKit.length(["a", "b", "c"]) = 3
      * </pre>
      *
-     * @param array 数组对象
-     * @return 数组长度
-     * @throws IllegalArgumentException 如果参数不为数组，抛出此异常
+     * @param array The array object.
+     * @return The length of the array.
+     * @throws IllegalArgumentException If the parameter is not an array.
      * @see Array#getLength(Object)
      */
     public static int length(final Object array) throws IllegalArgumentException {

@@ -27,18 +27,18 @@
 */
 package org.miaixz.bus.sensitive;
 
+import lombok.Getter;
+import lombok.Setter;
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.sensitive.magic.annotation.Shield;
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.sensitive.magic.annotation.Shield;
-
-import lombok.Getter;
-import lombok.Setter;
-
 /**
- * 脱敏的执行上下文
+ * Represents the execution context for a desensitization operation. It holds information about the current object,
+ * field, and annotations being processed.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,62 +48,62 @@ import lombok.Setter;
 public class Context {
 
     /**
-     * 当前对象
+     * The current object being processed.
      */
     private Object currentObject;
 
     /**
-     * 当前字段
+     * The current field being processed.
      */
     private Field currentField;
 
     /**
-     * 所有字段
+     * A list of all fields in the current object's class.
      */
     private List<Field> allFieldList = new ArrayList<>();
 
     /**
-     * 当前注解
+     * The current {@link Shield} annotation being applied.
      */
     private Shield shield;
 
     /**
-     * 类信息
+     * The class of the current object.
      */
-    private Class beanClass;
+    private Class<?> beanClass;
 
     /**
-     * 明细信息
+     * The entry object, used when processing elements of a collection or array.
      */
     private Object entry;
 
     /**
-     * 扩展属性
+     * An extension property for custom data.
      */
     private String extension;
 
     /**
-     * 新建一个对象实例
+     * Creates a new {@code Context} instance.
      *
-     * @return this
+     * @return this new instance.
      */
     public static Context newInstance() {
         return new Context();
     }
 
     /**
-     * 获取当前字段名称
+     * Gets the name of the current field being processed.
      *
-     * @return 字段名称
+     * @return The field name.
      */
     public String getCurrentFieldName() {
         return this.currentField.getName();
     }
 
     /**
-     * 获取当前字段值
+     * Gets the value of the current field being processed.
      *
-     * @return 字段值
+     * @return The field's value.
      */
     public Object getCurrentFieldValue() {
         try {

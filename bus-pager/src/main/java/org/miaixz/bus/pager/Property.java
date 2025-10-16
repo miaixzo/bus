@@ -30,7 +30,8 @@ package org.miaixz.bus.pager;
 import java.util.Properties;
 
 /**
- * 分页配置，实现该接口的类在初始化后会调用 {@link #setProperties(Properties)} 方法
+ * Paging configuration interface. Classes implementing this interface will have their
+ * {@link #setProperties(Properties)} method called after initialization.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,9 +39,9 @@ import java.util.Properties;
 public interface Property {
 
     /**
-     * 设置参数
+     * Sets the properties for the implementing class.
      *
-     * @param properties 插件属性
+     * @param properties the plugin properties to be set
      */
     void setProperties(Properties properties);
 

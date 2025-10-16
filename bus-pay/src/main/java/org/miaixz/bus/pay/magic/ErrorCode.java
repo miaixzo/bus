@@ -31,7 +31,7 @@ import org.miaixz.bus.core.basic.normal.ErrorRegistry;
 import org.miaixz.bus.core.basic.normal.Errors;
 
 /**
- * 支付错误码: 112xxx
+ * Payment error codes: 112xxx
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -39,8 +39,9 @@ import org.miaixz.bus.core.basic.normal.Errors;
 public class ErrorCode extends org.miaixz.bus.core.basic.normal.ErrorCode {
 
     /**
-     * 通知参数不完整。
+     * Incomplete notification parameters.
      */
-    public static final Errors _PARAMETER_INCOMPLETE = ErrorRegistry.builder().key("112001").value("参数不完整").build();
+    public static final Errors _PARAMETER_INCOMPLETE = ErrorRegistry.builder().key("112001")
+            .value("Incomplete parameters").build();
 
 }

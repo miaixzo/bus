@@ -32,17 +32,30 @@ import org.miaixz.bus.shade.safety.Complex;
 import org.miaixz.bus.shade.safety.complex.AntComplex;
 
 /**
- * Zip记录Ant表达式规则
+ * A {@link Complex} implementation that filters {@link ZipArchiveEntry} entries based on Ant-style path matching. This
+ * class extends {@link AntComplex} and provides a way to apply Ant patterns to the names of ZIP archive entries.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class ZipAntComplex extends AntComplex<ZipArchiveEntry> implements Complex<ZipArchiveEntry> {
 
+    /**
+     * Constructs a new {@code ZipAntComplex} with the specified Ant pattern.
+     *
+     * @param ant The Ant-style pattern to use for filtering.
+     */
     public ZipAntComplex(String ant) {
         super(ant);
     }
 
+    /**
+     * Converts a {@link ZipArchiveEntry} into a string representation for pattern matching. This implementation returns
+     * the name of the ZIP entry.
+     *
+     * @param entry The {@link ZipArchiveEntry} to convert.
+     * @return The name of the ZIP archive entry.
+     */
     @Override
     protected String toText(ZipArchiveEntry entry) {
         return entry.getName();

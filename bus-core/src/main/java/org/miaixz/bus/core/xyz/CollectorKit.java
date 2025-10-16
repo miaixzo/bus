@@ -40,7 +40,7 @@ import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.core.lang.tuple.Triplet;
 
 /**
- * 可变的汇聚操作{@link Collector} 相关工具封装
+ * Utility class for mutable reduction operations using {@link Collector}.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,33 +48,33 @@ import org.miaixz.bus.core.lang.tuple.Triplet;
 public class CollectorKit {
 
     /**
-     * 说明已包含IDENTITY_FINISH特征 为 Characteristics.IDENTITY_FINISH 的缩写
+     * Collector characteristics indicating IDENTITY_FINISH.
      */
     public static final Set<Collector.Characteristics> CH_ID = Collections
             .unmodifiableSet(EnumSet.of(Collector.Characteristics.IDENTITY_FINISH));
     /**
-     * 说明不包含IDENTITY_FINISH特征
+     * Collector characteristics indicating no IDENTITY_FINISH.
      */
     public static final Set<Collector.Characteristics> CH_NOID = Collections.emptySet();
 
     /**
-     * 提供任意对象的Join操作的{@link Collector}实现，对象默认调用toString方法
+     * Provides a {@link Collector} that joins any object by calling its {@code toString()} method.
      *
-     * @param delimiter 分隔符
-     * @param <T>       对象类型
-     * @return {@link Collector}
+     * @param delimiter The delimiter to be used between each element.
+     * @param <T>       The type of the objects.
+     * @return A {@link Collector}.
      */
     public static <T> Collector<T, ?, String> joining(final CharSequence delimiter) {
         return joining(delimiter, Object::toString);
     }
 
     /**
-     * 提供任意对象的Join操作的{@link Collector}实现
+     * Provides a {@link Collector} that joins any object using a custom toString function.
      *
-     * @param delimiter    分隔符
-     * @param toStringFunc 自定义指定对象转换为字符串的方法
-     * @param <T>          对象类型
-     * @return {@link Collector}
+     * @param delimiter    The delimiter to be used between each element.
+     * @param toStringFunc A function to convert each object to a string.
+     * @param <T>          The type of the objects.
+     * @return A {@link Collector}.
      */
     public static <T> Collector<T, ?, String> joining(
             final CharSequence delimiter,
@@ -83,14 +83,14 @@ public class CollectorKit {
     }
 
     /**
-     * 提供任意对象的Join操作的{@link Collector}实现
+     * Provides a {@link Collector} that joins any object using a custom toString function, with a prefix and suffix.
      *
-     * @param delimiter    分隔符
-     * @param prefix       前缀
-     * @param suffix       后缀
-     * @param toStringFunc 自定义指定对象转换为字符串的方法
-     * @param <T>          对象类型
-     * @return {@link Collector}
+     * @param delimiter    The delimiter to be used between each element.
+     * @param prefix       The prefix to be used at the beginning.
+     * @param suffix       The suffix to be used at the end.
+     * @param toStringFunc A function to convert each object to a string.
+     * @param <T>          The type of the objects.
+     * @return A {@link Collector}.
      */
     public static <T> Collector<T, ?, String> joining(
             final CharSequence delimiter,
@@ -103,17 +103,17 @@ public class CollectorKit {
     }
 
     /**
-     * 提供对null值友好的groupingBy操作的{@link Collector}实现，可指定map类型
+     * Provides a null-friendly {@link Collector} that performs a `groupingBy` operation, with a specified map type.
      *
-     * @param classifier 分组依据
-     * @param mapFactory 提供的map
-     * @param downstream 下游操作
-     * @param <T>        实体类型
-     * @param <K>        实体中的分组依据对应类型，也是Map中key的类型
-     * @param <D>        下游操作对应返回类型，也是Map中value的类型
-     * @param <A>        下游操作在进行中间操作时对应类型
-     * @param <M>        最后返回结果Map类型
-     * @return {@link Collector}
+     * @param classifier The classifier function mapping input elements to keys.
+     * @param mapFactory A function which returns a new, empty {@code Map} into which the results will be inserted.
+     * @param downstream A {@code Collector} implementing the downstream reduction.
+     * @param <T>        The type of the input elements.
+     * @param <K>        The type of the keys.
+     * @param <D>        The result type of the downstream reduction.
+     * @param <A>        The intermediate accumulation type of the downstream collector.
+     * @param <M>        The type of the resulting {@code Map}.
+     * @return A {@link Collector}.
      */
     public static <T, K, D, A, M extends Map<K, D>> Collector<T, ?, M> groupingBy(
             final Function<? super T, ? extends K> classifier,
@@ -125,7 +125,6 @@ public class CollectorKit {
             final K key = java.util.Optional.ofNullable(t).map(classifier).orElse(null);
             final A container = m.computeIfAbsent(key, k -> downstreamSupplier.get());
             if (ArrayKit.isArray(container) || Objects.nonNull(t)) {
-                // 如果是数组类型，不需要判空，场景——分组后需要使用：java.util.unwrap.Collectors.counting 求null元素个数
                 downstreamAccumulator.accept(container, t);
             }
         };
@@ -146,15 +145,15 @@ public class CollectorKit {
     }
 
     /**
-     * 提供对null值友好的groupingBy操作的{@link Collector}实现
+     * Provides a null-friendly {@link Collector} that performs a `groupingBy` operation.
      *
-     * @param classifier 分组依据
-     * @param downstream 下游操作
-     * @param <T>        实体类型
-     * @param <K>        实体中的分组依据对应类型，也是Map中key的类型
-     * @param <D>        下游操作对应返回类型，也是Map中value的类型
-     * @param <A>        下游操作在进行中间操作时对应类型
-     * @return {@link Collector}
+     * @param classifier The classifier function.
+     * @param downstream The downstream collector.
+     * @param <T>        The type of the input elements.
+     * @param <K>        The type of the keys.
+     * @param <D>        The result type of the downstream reduction.
+     * @param <A>        The intermediate accumulation type of the downstream collector.
+     * @return A {@link Collector}.
      */
     public static <T, K, A, D> Collector<T, ?, Map<K, D>> groupingBy(
             final Function<? super T, ? extends K> classifier,
@@ -163,12 +162,12 @@ public class CollectorKit {
     }
 
     /**
-     * 提供对null值友好的groupingBy操作的{@link Collector}实现
+     * Provides a null-friendly {@link Collector} that performs a `groupingBy` operation into a `List`.
      *
-     * @param classifier 分组依据
-     * @param <T>        实体类型
-     * @param <K>        实体中的分组依据对应类型，也是Map中key的类型
-     * @return {@link Collector}
+     * @param classifier The classifier function.
+     * @param <T>        The type of the input elements.
+     * @param <K>        The type of the keys.
+     * @return A {@link Collector}.
      */
     public static <T, K> Collector<T, ?, Map<K, List<T>>> groupingBy(
             final Function<? super T, ? extends K> classifier) {
@@ -176,18 +175,18 @@ public class CollectorKit {
     }
 
     /**
-     * 提供对null值友好的groupingBy操作的{@link Collector}实现， 对集合分组，然后对分组后的值集合进行映射
+     * Provides a null-friendly `groupingBy` collector that also maps the grouped values.
      *
-     * @param classifier       分组依据
-     * @param valueMapper      值映射方法
-     * @param valueCollFactory 值集合的工厂方法
-     * @param mapFactory       Map集合的工厂方法
-     * @param <T>              元素类型
-     * @param <K>              键类型
-     * @param <R>              值类型
-     * @param <C>              值集合类型
-     * @param <M>              返回的Map集合类型
-     * @return {@link Collector}
+     * @param classifier       The classifier function.
+     * @param valueMapper      The function to map the values.
+     * @param valueCollFactory The factory for the collection of values.
+     * @param mapFactory       The factory for the resulting map.
+     * @param <T>              The type of the input elements.
+     * @param <K>              The type of the keys.
+     * @param <R>              The type of the mapped values.
+     * @param <C>              The type of the value collection.
+     * @param <M>              The type of the resulting map.
+     * @return A {@link Collector}.
      */
     public static <T, K, R, C extends Collection<R>, M extends Map<K, C>> Collector<T, ?, M> groupingBy(
             final Function<? super T, ? extends K> classifier,
@@ -201,16 +200,16 @@ public class CollectorKit {
     }
 
     /**
-     * 提供对null值友好的groupingBy操作的{@link Collector}实现， 对集合分组，然后对分组后的值集合进行映射
+     * Provides a null-friendly `groupingBy` collector that also maps the grouped values.
      *
-     * @param classifier       分组依据
-     * @param valueMapper      值映射方法
-     * @param valueCollFactory 值集合的工厂方法
-     * @param <T>              元素类型
-     * @param <K>              键类型
-     * @param <R>              值类型
-     * @param <C>              值集合类型
-     * @return {@link Collector}
+     * @param classifier       The classifier function.
+     * @param valueMapper      The function to map the values.
+     * @param valueCollFactory The factory for the collection of values.
+     * @param <T>              The type of the input elements.
+     * @param <K>              The type of the keys.
+     * @param <R>              The type of the mapped values.
+     * @param <C>              The type of the value collection.
+     * @return A {@link Collector}.
      */
     public static <T, K, R, C extends Collection<R>> Collector<T, ?, Map<K, C>> groupingBy(
             final Function<? super T, ? extends K> classifier,
@@ -220,14 +219,14 @@ public class CollectorKit {
     }
 
     /**
-     * 提供对null值友好的groupingBy操作的{@link Collector}实现， 对集合分组，然后对分组后的值集合进行映射
+     * Provides a null-friendly `groupingBy` collector that also maps the grouped values into a `List`.
      *
-     * @param classifier  分组依据
-     * @param valueMapper 值映射方法
-     * @param <T>         元素类型
-     * @param <K>         键类型
-     * @param <R>         值类型
-     * @return {@link Collector}
+     * @param classifier  The classifier function.
+     * @param valueMapper The function to map the values.
+     * @param <T>         The type of the input elements.
+     * @param <K>         The type of the keys.
+     * @param <R>         The type of the mapped values.
+     * @return A {@link Collector}.
      */
     public static <T, K, R> Collector<T, ?, Map<K, List<R>>> groupingBy(
             final Function<? super T, ? extends K> classifier,
@@ -236,14 +235,14 @@ public class CollectorKit {
     }
 
     /**
-     * 对null友好的 toMap 操作的 {@link Collector}实现，默认使用HashMap
+     * Provides a null-friendly {@link Collector} that collects elements into a `Map`, using `HashMap` by default.
      *
-     * @param keyMapper   指定map中的key
-     * @param valueMapper 指定map中的value
-     * @param <T>         实体类型
-     * @param <K>         map中key的类型
-     * @param <U>         map中value的类型
-     * @return 对null友好的 toMap 操作的 {@link Collector}实现
+     * @param keyMapper   A mapping function to produce keys.
+     * @param valueMapper A mapping function to produce values.
+     * @param <T>         The type of the input elements.
+     * @param <K>         The output type of the key mapping function.
+     * @param <U>         The output type of the value mapping function.
+     * @return A null-friendly {@link Collector}.
      */
     public static <T, K, U> Collector<T, ?, Map<K, U>> toMap(
             final Function<? super T, ? extends K> keyMapper,
@@ -252,27 +251,27 @@ public class CollectorKit {
     }
 
     /**
-     * 对null友好的 toMap 操作的 {@link Collector}实现，默认使用HashMap
+     * Provides a null-friendly {@link Collector} that collects elements into a `Map`, using `HashMap` by default.
      *
-     * @param keyMapper 指定map中的key
-     * @param <T>       实体类型
-     * @param <K>       map中key的类型
-     * @return 对null友好的 toMap 操作的 {@link Collector}实现
+     * @param keyMapper A mapping function to produce keys.
+     * @param <T>       The type of the input elements.
+     * @param <K>       The output type of the key mapping function.
+     * @return A null-friendly {@link Collector}.
      */
     public static <T, K> Collector<T, ?, Map<K, T>> toMap(final Function<? super T, ? extends K> keyMapper) {
         return toMap(keyMapper, Function.identity());
     }
 
     /**
-     * 对null友好的 toMap 操作的 {@link Collector}实现，默认使用HashMap
+     * Provides a null-friendly {@link Collector} that collects elements into a `Map`, using `HashMap` by default.
      *
-     * @param keyMapper     指定map中的key
-     * @param valueMapper   指定map中的value
-     * @param mergeFunction 合并前对value进行的操作
-     * @param <T>           实体类型
-     * @param <K>           map中key的类型
-     * @param <U>           map中value的类型
-     * @return 对null友好的 toMap 操作的 {@link Collector}实现
+     * @param keyMapper     A mapping function to produce keys.
+     * @param valueMapper   A mapping function to produce values.
+     * @param mergeFunction A merge function, used to resolve collisions between values associated with the same key.
+     * @param <T>           The type of the input elements.
+     * @param <K>           The output type of the key mapping function.
+     * @param <U>           The output type of the value mapping function.
+     * @return A null-friendly {@link Collector}.
      */
     public static <T, K, U> Collector<T, ?, Map<K, U>> toMap(
             final Function<? super T, ? extends K> keyMapper,
@@ -282,17 +281,17 @@ public class CollectorKit {
     }
 
     /**
-     * 对null友好的 toMap 操作的 {@link Collector}实现
+     * Provides a null-friendly {@link Collector} that collects elements into a `Map`.
      *
-     * @param keyMapper     指定map中的key
-     * @param valueMapper   指定map中的value
-     * @param mergeFunction 合并前对value进行的操作
-     * @param mapSupplier   最终需要的map类型
-     * @param <T>           实体类型
-     * @param <K>           map中key的类型
-     * @param <U>           map中value的类型
-     * @param <M>           map的类型
-     * @return 对null友好的 toMap 操作的 {@link Collector}实现
+     * @param keyMapper     A mapping function to produce keys.
+     * @param valueMapper   A mapping function to produce values.
+     * @param mergeFunction A merge function, used to resolve collisions.
+     * @param mapSupplier   A function which returns a new, empty {@code Map}.
+     * @param <T>           The type of the input elements.
+     * @param <K>           The output type of the key mapping function.
+     * @param <U>           The output type of the value mapping function.
+     * @param <M>           The type of the resulting {@code Map}.
+     * @return A null-friendly {@link Collector}.
      */
     public static <T, K, U, M extends Map<K, U>> Collector<T, ?, M> toMap(
             final Function<? super T, ? extends K> keyMapper,
@@ -306,13 +305,13 @@ public class CollectorKit {
     }
 
     /**
-     * 用户合并map的BinaryOperator，传入合并前需要对value进行的操作
+     * Returns a `BinaryOperator` for merging two maps, using a provided function to resolve value collisions.
      *
-     * @param mergeFunction 合并前需要对value进行的操作
-     * @param <K>           key的类型
-     * @param <V>           value的类型
-     * @param <M>           map
-     * @return 用户合并map的BinaryOperator
+     * @param mergeFunction The function to resolve collisions.
+     * @param <K>           The type of the keys.
+     * @param <V>           The type of the values.
+     * @param <M>           The type of the maps.
+     * @return A `BinaryOperator` for merging maps.
      */
     public static <K, V, M extends Map<K, V>> BinaryOperator<M> mapMerger(final BinaryOperator<V> mergeFunction) {
         return (m1, m2) -> {
@@ -324,24 +323,24 @@ public class CollectorKit {
     }
 
     /**
-     * 聚合这种数据类型:{@code Collection<Map<K,V>> => Map<K,List<V>>} 其中key相同的value，会累加到List中
+     * A {@link Collector} that aggregates a stream of maps ({@code Map<K, V>}) into a single {@code Map<K, List<V>>}.
      *
-     * @param <K> key的类型
-     * @param <V> value的类型
-     * @return 聚合后的map
+     * @param <K> The type of the keys.
+     * @param <V> The type of the values.
+     * @return The aggregated map.
      */
     public static <K, V> Collector<Map<K, V>, ?, Map<K, List<V>>> reduceListMap() {
         return reduceListMap(HashMap::new);
     }
 
     /**
-     * 聚合这种数据类型:{@code Collection<Map<K,V>> => Map<K,List<V>>} 其中key相同的value，会累加到List中
+     * A {@link Collector} that aggregates a stream of maps ({@code Map<K, V>}) into a single {@code Map<K, List<V>>}.
      *
-     * @param mapSupplier 可自定义map的类型如concurrentHashMap等
-     * @param <K>         key的类型
-     * @param <V>         value的类型
-     * @param <R>         返回值的类型
-     * @return 聚合后的map
+     * @param mapSupplier A function which returns a new, empty {@code Map}.
+     * @param <K>         The type of the keys.
+     * @param <V>         The type of the values.
+     * @param <R>         The type of the resulting map.
+     * @return The aggregated map.
      */
     public static <K, V, R extends Map<K, List<V>>> Collector<Map<K, V>, ?, R> reduceListMap(
             final Supplier<R> mapSupplier) {
@@ -358,12 +357,12 @@ public class CollectorKit {
     }
 
     /**
-     * 将流转为{@link EntryStream}
+     * A {@link Collector} that transforms a stream into an {@link EntryStream}.
      *
-     * @param keyMapper 键的映射方法
-     * @param <T>       输入元素类型
-     * @param <K>       元素的键类型
-     * @return 收集器
+     * @param keyMapper The mapping function for the key.
+     * @param <T>       The type of the input elements.
+     * @param <K>       The type of the entry key.
+     * @return A collector.
      */
     public static <T, K> Collector<T, List<T>, EntryStream<K, T>> toEntryStream(
             final Function<? super T, ? extends K> keyMapper) {
@@ -371,14 +370,14 @@ public class CollectorKit {
     }
 
     /**
-     * 将流转为{@link EntryStream}
+     * A {@link Collector} that transforms a stream into an {@link EntryStream}.
      *
-     * @param keyMapper   键的映射方法
-     * @param valueMapper 值的映射方法
-     * @param <T>         输入元素类型
-     * @param <K>         元素的键类型
-     * @param <V>         元素的值类型
-     * @return 收集器
+     * @param keyMapper   The mapping function for the key.
+     * @param valueMapper The mapping function for the value.
+     * @param <T>         The type of the input elements.
+     * @param <K>         The type of the entry key.
+     * @param <V>         The type of the entry value.
+     * @return A collector.
      */
     public static <T, K, V> Collector<T, List<T>, EntryStream<K, V>> toEntryStream(
             final Function<? super T, ? extends K> keyMapper,
@@ -389,30 +388,31 @@ public class CollectorKit {
     }
 
     /**
-     * 将流转为{@link EasyStream}
+     * A {@link Collector} that transforms a stream into an {@link EasyStream}.
      *
-     * @param <T> 输入元素类型
-     * @return 收集器
+     * @param <T> The type of the input elements.
+     * @return A collector.
      */
     public static <T> Collector<T, ?, EasyStream<T>> toEasyStream() {
         return transform(ArrayList::new, EasyStream::of);
     }
 
     /**
-     * 收集元素，将其转为指定{@link Collection}集合后，再对该集合进行转换，并最终返回转换后的结果。 返回的收集器的效果等同于：
+     * A {@link Collector} that first collects elements into a specified {@link Collection} and then applies a final
+     * transformation to that collection. The effect is equivalent to:
      * 
      * <pre>{@code
      * 
-     * Collection<T> coll = Stream.of(a, b, c, d).collect(Collectors.toColl(collFactory));
+     * Collection<T> coll = Stream.of(a, b, c, d).collect(Collectors.toCollection(collFactory));
      * R result = mapper.apply(coll);
      * }</pre>
      *
-     * @param collFactory 中间收集输入元素的集合的创建方法
-     * @param mapper      最终将元素集合映射为返回值的方法
-     * @param <R>         返回值类型
-     * @param <T>         输入元素类型
-     * @param <C>         中间收集输入元素的集合类型
-     * @return 收集器
+     * @param collFactory The factory for the intermediate collection.
+     * @param mapper      The final mapping function to apply to the collection.
+     * @param <R>         The type of the final result.
+     * @param <T>         The type of the input elements.
+     * @param <C>         The type of the intermediate collection.
+     * @return A collector.
      */
     public static <T, R, C extends Collection<T>> Collector<T, C, R> transform(
             final Supplier<C> collFactory,
@@ -426,43 +426,44 @@ public class CollectorKit {
     }
 
     /**
-     * 收集元素，将其转为{@link ArrayList}集合后，再对该集合进行转换，并最终返回转换后的结果。 返回的收集器的效果等同于：
+     * A {@link Collector} that first collects elements into an {@link ArrayList} and then applies a final
+     * transformation to that list. The effect is equivalent to:
      * 
      * <pre>{@code
      * 
-     * List<T> coll = Stream.of(a, b, c, d).collect(Collectors.toList());
-     * R result = mapper.apply(coll);
+     * List<T> list = Stream.of(a, b, c, d).collect(Collectors.toList());
+     * R result = mapper.apply(list);
      * }</pre>
      *
-     * @param mapper 最终将元素集合映射为返回值的方法
-     * @param <R>    返回值类型
-     * @param <T>    输入元素类型
-     * @return 收集器
+     * @param mapper The final mapping function to apply to the list.
+     * @param <R>    The type of the final result.
+     * @param <T>    The type of the input elements.
+     * @return A collector.
      */
     public static <T, R> Collector<T, List<T>, R> transform(final Function<List<T>, R> mapper) {
         return transform(ArrayList::new, mapper);
     }
 
     /**
-     * 用于{@code Stream<Entry>} 转 Map 的情况
+     * A {@link Collector} for converting a {@code Stream<Map.Entry<K, V>>} into a {@code Map<K, V>}.
      *
-     * @param <K> key类型
-     * @param <V> value类型
-     * @return map
+     * @param <K> The type of the keys.
+     * @param <V> The type of the values.
+     * @return A map.
      */
     public static <K, V> Collector<Map.Entry<K, V>, ?, Map<K, V>> entryToMap() {
         return toMap(Map.Entry::getKey, Map.Entry::getValue);
     }
 
     /**
-     * 过滤
+     * A {@link Collector} that filters elements based on a predicate before passing them to a downstream collector.
      *
-     * @param predicate  断言
-     * @param downstream 下游操作
-     * @param <T>        元素类型
-     * @param <A>        中间类型
-     * @param <R>        结束类型
-     * @return 一个用于过滤元素的 {@link java.util.stream.Collector}
+     * @param predicate  The predicate to apply to each element.
+     * @param downstream The downstream collector.
+     * @param <T>        The type of the input elements.
+     * @param <A>        The intermediate accumulation type of the downstream collector.
+     * @param <R>        The result type of the downstream collector.
+     * @return A collector which filters elements.
      */
     public static <T, A, R> Collector<T, ?, R> filtering(
             final Predicate<? super T> predicate,
@@ -474,14 +475,15 @@ public class CollectorKit {
     }
 
     /**
-     * 将一个{@code Collection<T>}两个属性分流至两个List,并使用Pair收集。
+     * A {@link Collector} that partitions a stream into two separate `List`s based on two mapping functions, returning
+     * the result as a {@link Pair}.
      *
-     * @param lMapper 左属性收集方法
-     * @param rMapper 右属性收集方法
-     * @param <T>     元素类型
-     * @param <L>     左属性类型
-     * @param <R>     右属性类型
-     * @return {@code Pair<List<L>,List<R>>} Pair收集的两个List
+     * @param lMapper The mapping function for the left list.
+     * @param rMapper The mapping function for the right list.
+     * @param <T>     The type of the input elements.
+     * @param <L>     The type of elements in the left list.
+     * @param <R>     The type of elements in the right list.
+     * @return A {@code Pair} containing the two lists.
      */
     public static <T, L, R> Collector<T, ?, Pair<List<L>, List<R>>> toPairList(
             final Function<? super T, ? extends L> lMapper,
@@ -490,20 +492,21 @@ public class CollectorKit {
     }
 
     /**
-     * 将一个{@code Collection<T>}两个属性分流至两个Collection,并使用Pair收集。
+     * A {@link Collector} that partitions a stream into two separate collections based on two mapping functions and
+     * downstream collectors, returning the result as a {@link Pair}.
      *
-     * @param lMapper     左属性收集方法
-     * @param rMapper     右属性收集方法
-     * @param lDownstream 左属性下游操作
-     * @param rDownstream 右属性下游操作
-     * @param <T>         元素类型
-     * @param <LU>        左属性类型
-     * @param <LA>        左属性收集类型
-     * @param <LR>        左属性收集最终类型
-     * @param <RU>        左属性类型
-     * @param <RA>        左属性收集类型
-     * @param <RR>        左属性收集最终类型
-     * @return {@code Pair<LR,RR>} Pair收集的结果
+     * @param lMapper     The mapping function for the left element.
+     * @param rMapper     The mapping function for the right element.
+     * @param lDownstream The downstream collector for the left side.
+     * @param rDownstream The downstream collector for the right side.
+     * @param <T>         The type of the input elements.
+     * @param <LU>        The type of the left element before downstream collection.
+     * @param <LA>        The intermediate accumulation type of the left collector.
+     * @param <LR>        The final result type of the left collector.
+     * @param <RU>        The type of the right element before downstream collection.
+     * @param <RA>        The intermediate accumulation type of the right collector.
+     * @param <RR>        The final result type of the right collector.
+     * @return A {@code Pair} containing the two collected results.
      */
     public static <T, LU, LA, LR, RU, RA, RR> Collector<T, ?, Pair<LR, RR>> toPair(
             final Function<? super T, ? extends LU> lMapper,
@@ -541,16 +544,17 @@ public class CollectorKit {
     }
 
     /**
-     * 将一个{@code Collection<T>}三个属性分流至三个List,并使用Triple收集。
+     * A {@link Collector} that partitions a stream into three separate `List`s based on three mapping functions,
+     * returning the result as a {@link Triplet}.
      *
-     * @param lMapper 左属性收集方法
-     * @param mMapper 中属性收集方法
-     * @param rMapper 右属性收集方法
-     * @param <T>     元素类型
-     * @param <L>     左属性类型
-     * @param <M>     中属性类型
-     * @param <R>     右属性类型
-     * @return {@code Triplet<List<L>,List<M>,List<R>>} Triple收集的三个List
+     * @param lMapper The mapping function for the left list.
+     * @param mMapper The mapping function for the middle list.
+     * @param rMapper The mapping function for the right list.
+     * @param <T>     The type of the input elements.
+     * @param <L>     The type of elements in the left list.
+     * @param <M>     The type of elements in the middle list.
+     * @param <R>     The type of elements in the right list.
+     * @return A {@code Triplet} containing the three lists.
      */
     public static <T, L, M, R> Collector<T, ?, Triplet<List<L>, List<M>, List<R>>> toTripletList(
             final Function<? super T, ? extends L> lMapper,
@@ -560,25 +564,26 @@ public class CollectorKit {
     }
 
     /**
-     * 将一个{@code Collection<T>}两个属性分流至两个Collection,并使用Pair收集。
+     * A {@link Collector} that partitions a stream into three separate collections based on three mapping functions and
+     * downstream collectors, returning the result as a {@link Triplet}.
      *
-     * @param lMapper     左元素收集方法
-     * @param mMapper     中元素收集方法
-     * @param rMapper     右元素收集方法
-     * @param lDownstream 左元素下游操作
-     * @param mDownstream 中元素下游操作
-     * @param rDownstream 右元素下游操作
-     * @param <T>         元素类型
-     * @param <LU>        左属性类型
-     * @param <LA>        左属性收集类型
-     * @param <LR>        左属性收集最终类型
-     * @param <MU>        中属性类型
-     * @param <MA>        中属性收集类型
-     * @param <MR>        中属性收集最终类型
-     * @param <RU>        左属性类型
-     * @param <RA>        左属性收集类型
-     * @param <RR>        左属性收集最终类型
-     * @return {@code Triplet<LR,MR,RR>} Triple收集的结果
+     * @param lMapper     The mapping function for the left element.
+     * @param mMapper     The mapping function for the middle element.
+     * @param rMapper     The mapping function for the right element.
+     * @param lDownstream The downstream collector for the left side.
+     * @param mDownstream The downstream collector for the middle side.
+     * @param rDownstream The downstream collector for the right side.
+     * @param <T>         The type of the input elements.
+     * @param <LU>        The type of the left element.
+     * @param <LA>        ... (Types for left downstream collector)
+     * @param <LR>
+     * @param <MU>        The type of the middle element.
+     * @param <MA>        ... (Types for middle downstream collector)
+     * @param <MR>
+     * @param <RU>        The type of the right element.
+     * @param <RA>        ... (Types for right downstream collector)
+     * @param <RR>
+     * @return A {@code Triplet} containing the three collected results.
      */
     public static <T, LU, LA, LR, MU, MA, MR, RU, RA, RR> Collector<T, ?, Triplet<LR, MR, RR>> toTriplet(
             final Function<? super T, ? extends LU> lMapper,

@@ -28,33 +28,37 @@
 package org.miaixz.bus.core.lang.pool;
 
 /**
- * 对象工厂接口，用于自定义对象创建、验证和销毁 来自：https://github.com/DanielYWoo/fast-object-pool/
+ * Interface for an object factory, providing methods for custom object creation, validation, and destruction. This
+ * interface is inspired by:
+ * <a href="https://github.com/DanielYWoo/fast-object-pool/">https://github.com/DanielYWoo/fast-object-pool/</a>
  *
- * @param <T> 对象类型
+ * @param <T> the type of object managed by this factory
  * @author Kimi Liu
  * @since Java 17+
  */
 public interface ObjectFactory<T> {
 
     /**
-     * 创建对象
+     * Creates a new instance of the object.
      *
-     * @return 创建的对象
+     * @return the newly created object
      */
     T create();
 
     /**
-     * 验证对象可用性，一般用于对象池中借出对象和返还对象前的验证操作。
+     * Validates the usability of an object. This is typically used before borrowing an object from the pool or before
+     * returning an object to the pool.
      *
-     * @param t 被验证的对象
-     * @return 是否可用
+     * @param t the object to be validated
+     * @return {@code true} if the object is valid and usable, {@code false} otherwise
      */
     boolean validate(T t);
 
     /**
-     * 销毁对象，用于在验证对象不可用或不需要时的销毁逻辑。
+     * Destroys an object. This method defines the logic for disposing of an object when it is no longer needed or found
+     * to be invalid.
      *
-     * @param t 被销毁的对象
+     * @param t the object to be destroyed
      */
     void destroy(T t);
 

@@ -39,7 +39,9 @@ import org.miaixz.bus.extra.mq.Message;
 import org.miaixz.bus.extra.mq.MessageHandler;
 
 /**
- * Kafka消费端实现类
+ * Kafka consumer implementation class. This class provides an adapter for consuming messages from Apache Kafka,
+ * integrating with the internal {@link Consumer} interface. It handles the subscription to topics and the processing of
+ * Kafka {@link ConsumerRecord}s.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -47,33 +49,37 @@ import org.miaixz.bus.extra.mq.MessageHandler;
 public class KafkaConsumer implements Consumer {
 
     /**
-     * Kafka原生消费者实例
+     * The native Apache Kafka consumer instance, responsible for fetching records from Kafka topics. It consumes
+     * messages with String keys and byte array values.
      */
     private final org.apache.kafka.clients.consumer.Consumer<String, byte[]> consumer;
 
     /**
-     * 构造方法
+     * Constructs a {@code KafkaConsumer} with the specified Kafka configuration properties. This constructor
+     * initializes the underlying {@link org.apache.kafka.clients.consumer.KafkaConsumer}.
      *
-     * @param properties Kafka配置属性
+     * @param properties The {@link Properties} object containing Kafka consumer configuration, e.g., bootstrap servers,
+     *                   group ID.
      */
     public KafkaConsumer(final Properties properties) {
         this.consumer = new org.apache.kafka.clients.consumer.KafkaConsumer<>(properties);
     }
 
     /**
-     * 构造方法
+     * Constructs a {@code KafkaConsumer} with an already initialized native Kafka consumer instance. This allows for
+     * more flexible instantiation where the Kafka consumer is managed externally.
      *
-     * @param consumer Kafka原生消费者实例
+     * @param consumer The pre-configured native Kafka consumer instance.
      */
     public KafkaConsumer(final org.apache.kafka.clients.consumer.Consumer<String, byte[]> consumer) {
         this.consumer = consumer;
     }
 
     /**
-     * 设置消费的topic
+     * Subscribes this consumer to a list of specified Kafka topics.
      *
-     * @param topics 要订阅的主题列表
-     * @return 当前KafkaConsumer实例，支持链式调用
+     * @param topics An array of topic names to subscribe to.
+     * @return This {@code KafkaConsumer} instance, allowing for method chaining.
      */
     public KafkaConsumer setTopics(final String... topics) {
         this.consumer.subscribe(ListKit.of(topics));
@@ -81,10 +87,11 @@ public class KafkaConsumer implements Consumer {
     }
 
     /**
-     * 设置消费的topic正则
+     * Subscribes this consumer to topics that match the given regular expression pattern. This allows for dynamic
+     * subscription to multiple topics based on a pattern.
      *
-     * @param topicPattern 主题匹配模式，使用正则表达式匹配多个主题
-     * @return 当前KafkaConsumer实例，支持链式调用
+     * @param topicPattern The {@link Pattern} used to match topic names for subscription.
+     * @return This {@code KafkaConsumer} instance, allowing for method chaining.
      */
     public KafkaConsumer setTopicPattern(final Pattern topicPattern) {
         this.consumer.subscribe(topicPattern);
@@ -92,9 +99,11 @@ public class KafkaConsumer implements Consumer {
     }
 
     /**
-     * 订阅消息并注册消息处理器
+     * Subscribes to messages from Kafka and processes them using the provided {@link MessageHandler}. This method polls
+     * Kafka for records and converts each {@link ConsumerRecord} into an internal {@link Message} object before passing
+     * it to the handler. The polling duration is fixed at 3000 milliseconds.
      *
-     * @param messageHandler 消息处理器，用于处理接收到的消息
+     * @param messageHandler The {@link MessageHandler} to be used for processing received messages.
      */
     @Override
     public void subscribe(final MessageHandler messageHandler) {
@@ -104,9 +113,11 @@ public class KafkaConsumer implements Consumer {
     }
 
     /**
-     * 关闭消费者，释放资源
+     * Closes the underlying Kafka consumer and releases all associated resources. This method ensures that the consumer
+     * is properly shut down.
      *
-     * @throws IOException 关闭过程中发生IO异常时抛出
+     * @throws IOException if an I/O error occurs during the closing process (though Kafka consumer typically handles
+     *                     this internally).
      */
     @Override
     public void close() throws IOException {
@@ -114,28 +125,29 @@ public class KafkaConsumer implements Consumer {
     }
 
     /**
-     * 消费者记录包装为消息 将Kafka的ConsumerRecord包装为统一的Message接口实现
+     * An internal static nested class that wraps a Kafka {@link ConsumerRecord} to conform to the {@link Message}
+     * interface. This allows Kafka records to be processed by generic message handlers.
      */
     private static class ConsumerRecordMessage implements Message {
 
         /**
-         * Kafka消费者记录
+         * The original Kafka {@link ConsumerRecord} that this object wraps.
          */
         private final ConsumerRecord<String, byte[]> record;
 
         /**
-         * 构造方法
+         * Constructs a {@code ConsumerRecordMessage} with the specified Kafka consumer record.
          *
-         * @param record Kafka消费者记录
+         * @param record The Kafka {@link ConsumerRecord} to be wrapped.
          */
         private ConsumerRecordMessage(final ConsumerRecord<String, byte[]> record) {
             this.record = record;
         }
 
         /**
-         * 获取消息主题
+         * Retrieves the topic name from the wrapped Kafka {@link ConsumerRecord}.
          *
-         * @return 消息主题名称
+         * @return The name of the Kafka topic from which the message was consumed.
          */
         @Override
         public String topic() {
@@ -143,9 +155,9 @@ public class KafkaConsumer implements Consumer {
         }
 
         /**
-         * 获取消息内容
+         * Retrieves the message content (value) as a byte array from the wrapped Kafka {@link ConsumerRecord}.
          *
-         * @return 消息内容的字节数组
+         * @return The message content as a {@code byte[]}.
          */
         @Override
         public byte[] content() {

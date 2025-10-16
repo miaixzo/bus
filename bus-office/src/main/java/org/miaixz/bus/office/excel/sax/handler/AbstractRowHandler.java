@@ -33,32 +33,33 @@ import java.util.function.Function;
 import org.miaixz.bus.core.lang.Assert;
 
 /**
- * 抽象行数据处理器，通过实现{@link #handle(int, long, List)} 处理原始数据 并调用{@link #handleData(int, long, Object)}处理经过转换后的数据。
+ * Abstract row data handler. It processes raw data by implementing {@link #handle(int, long, List)} and processes
+ * converted data by calling {@link #handleData(int, long, Object)}.
  *
- * @param <T> 转换后的数据类型
+ * @param <T> The type of the converted data.
  * @author Kimi Liu
  * @since Java 17+
  */
 public abstract class AbstractRowHandler<T> implements RowHandler {
 
     /**
-     * 读取起始行（包含，从0开始计数）
+     * The starting row index (inclusive, 0-based) for reading.
      */
     protected final int startRowIndex;
     /**
-     * 读取结束行（包含，从0开始计数）
+     * The ending row index (inclusive, 0-based) for reading.
      */
     protected final int endRowIndex;
     /**
-     * 行数据转换函数
+     * Function to convert raw row data to type T.
      */
     protected Function<List<Object>, T> convertFunc;
 
     /**
-     * 构造
+     * Constructs a new {@code AbstractRowHandler}.
      *
-     * @param startRowIndex 读取起始行（包含，从0开始计数）
-     * @param endRowIndex   读取结束行（包含，从0开始计数）
+     * @param startRowIndex The starting row index (inclusive, 0-based) for reading.
+     * @param endRowIndex   The ending row index (inclusive, 0-based) for reading.
      */
     public AbstractRowHandler(final int startRowIndex, final int endRowIndex) {
         this.startRowIndex = startRowIndex;
@@ -75,11 +76,11 @@ public abstract class AbstractRowHandler<T> implements RowHandler {
     }
 
     /**
-     * 处理转换后的数据
+     * Processes the converted data.
      *
-     * @param sheetIndex 当前Sheet序号
-     * @param rowIndex   当前行号，从0开始计数
-     * @param data       行数据
+     * @param sheetIndex The 0-based index of the current sheet.
+     * @param rowIndex   The 0-based row number of the current row.
+     * @param data       The converted row data.
      */
     public abstract void handleData(int sheetIndex, long rowIndex, T data);
 

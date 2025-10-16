@@ -31,7 +31,7 @@ import java.lang.ref.PhantomReference;
 import java.lang.ref.ReferenceQueue;
 
 /**
- * 引用类型
+ * Enumeration of reference types.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -39,20 +39,21 @@ import java.lang.ref.ReferenceQueue;
 public enum ReferenceType {
 
     /**
-     * 强引用，不回收
+     * A strong reference, which is not garbage collected.
      */
     STRONG,
     /**
-     * 软引用，在GC报告内存不足时会被GC回收
+     * A soft reference, which is garbage collected when the JVM reports low memory.
      */
     SOFT,
     /**
-     * 弱引用，在GC时发现弱引用会回收其对象
+     * A weak reference, which is garbage collected when it is discovered during a GC cycle.
      */
     WEAK,
     /**
-     * 虚引用，在GC时发现虚引用对象，会将{@link PhantomReference}插入{@link ReferenceQueue}。
-     * 此时对象未被真正回收，要等到{@link ReferenceQueue}被真正处理后才会被回收。
+     * A phantom reference. When a phantom reference is discovered during a GC cycle, the {@link PhantomReference}
+     * object is enqueued on its {@link ReferenceQueue}. The referenced object is not yet reclaimed. It will be
+     * reclaimed only after the {@link ReferenceQueue} is processed.
      */
     PHANTOM
 

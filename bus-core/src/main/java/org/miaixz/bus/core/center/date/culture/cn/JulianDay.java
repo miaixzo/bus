@@ -32,7 +32,8 @@ import org.miaixz.bus.core.center.date.culture.solar.SolarDay;
 import org.miaixz.bus.core.center.date.culture.solar.SolarTime;
 
 /**
- * 儒略日
+ * Represents a Julian Day. The Julian Day is the continuous count of days since the beginning of the Julian period and
+ * is used primarily in astronomical calculations.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -40,26 +41,49 @@ import org.miaixz.bus.core.center.date.culture.solar.SolarTime;
 public class JulianDay extends Loops {
 
     /**
-     * 2000年儒略日数(2000-1-1 12:00:00 UTC)
+     * The Julian Day for the standard epoch J2000.0, which corresponds to 2000-01-01 12:00:00 UTC.
      */
     public static final double J2000 = 2451545;
 
     /**
-     * 儒略日
+     * The Julian Day number.
      */
     protected double day;
 
+    /**
+     * Constructs a JulianDay from a numeric value.
+     *
+     * @param day The Julian Day number.
+     */
     public JulianDay(double day) {
         this.day = day;
     }
 
+    /**
+     * Creates a {@code JulianDay} instance from a numeric value.
+     *
+     * @param day The Julian Day number.
+     * @return a new {@code JulianDay} instance.
+     */
     public static JulianDay fromJulianDay(double day) {
         return new JulianDay(day);
     }
 
+    /**
+     * Creates a {@code JulianDay} instance from Gregorian calendar components.
+     *
+     * @param year   The year.
+     * @param month  The month (1-12).
+     * @param day    The day.
+     * @param hour   The hour.
+     * @param minute The minute.
+     * @param second The second.
+     * @return a new {@code JulianDay} instance.
+     */
     public static JulianDay fromYmdHms(int year, int month, int day, int hour, int minute, int second) {
-        double d = day + ((second * 1D / 60 + minute) / 60 + hour) / 24;
+        double d = day + ((second / 60 + minute) / 60 + hour) / 24;
         int n = 0;
+        // Determine if the date is Gregorian
         boolean g = year * 372 + month * 31 + (int) d >= 588829;
         if (month <= 2) {
             month += 12;
@@ -73,35 +97,37 @@ public class JulianDay extends Loops {
     }
 
     /**
-     * 儒略日
+     * Gets the Julian Day number.
      *
-     * @return 儒略日
+     * @return The Julian Day number.
      */
     public double getDay() {
         return day;
     }
 
+    @Override
     public String getName() {
-        return day + "";
+        return String.valueOf(day);
     }
 
+    @Override
     public JulianDay next(int n) {
         return fromJulianDay(day + n);
     }
 
     /**
-     * 公历日
+     * Converts this Julian Day to a {@link SolarDay} (Gregorian calendar day).
      *
-     * @return 公历日
+     * @return The corresponding {@code SolarDay}.
      */
     public SolarDay getSolarDay() {
         return getSolarTime().getSolarDay();
     }
 
     /**
-     * 公历时刻
+     * Converts this Julian Day to a {@link SolarTime} (Gregorian calendar date and time).
      *
-     * @return 公历时刻
+     * @return The corresponding {@code SolarTime}.
      */
     public SolarTime getSolarTime() {
         int n = (int) (day + 0.5);
@@ -134,24 +160,26 @@ public class JulianDay extends Loops {
         f -= minute;
         f *= 60;
         int second = (int) Math.round(f);
+
+        // Handle leap second overflow
         return second < 60 ? SolarTime.fromYmdHms(y, m, d, hour, minute, second)
                 : SolarTime.fromYmdHms(y, m, d, hour, minute, second - 60).next(60);
     }
 
     /**
-     * 星期
+     * Calculates the day of the week for this Julian Day.
      *
-     * @return 星期
+     * @return The {@link Week}.
      */
     public Week getWeek() {
         return Week.fromIndex((int) (day + 0.5) + 7000001);
     }
 
     /**
-     * 儒略日相减
+     * Subtracts another {@code JulianDay} from this one to find the difference in days.
      *
-     * @param target 儒略日
-     * @return 差
+     * @param target The {@code JulianDay} to subtract.
+     * @return The difference in days.
      */
     public double subtract(JulianDay target) {
         return day - target.getDay();

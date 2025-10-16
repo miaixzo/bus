@@ -31,7 +31,9 @@ import java.net.URL;
 import java.util.Collection;
 
 /**
- * ANY逻辑复合过滤器,即任意一个过滤器满足时就满足,当没有过滤器的时候则认为没有过滤器满足,也就是不满足
+ * A composite filter that implements an 'OR' logic. If any of the contained filters return {@code true}, this filter
+ * will return {@code true}. If no filters are present, or if all filters return {@code false}, this filter will return
+ * {@code false}.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -39,23 +41,32 @@ import java.util.Collection;
 public class AnyFilter extends MixFilter implements Filter {
 
     /**
-     * 构造
+     * Constructs an {@code AnyFilter} with the given array of filters.
      *
-     * @param filters 过滤器
+     * @param filters An array of {@link Filter} instances.
      */
     public AnyFilter(Filter... filters) {
         super(filters);
     }
 
     /**
-     * 构造
+     * Constructs an {@code AnyFilter} with the given collection of filters.
      *
-     * @param filters 过滤器
+     * @param filters A collection of {@link Filter} instances.
      */
     public AnyFilter(Collection<? extends Filter> filters) {
         super(filters);
     }
 
+    /**
+     * Filters a resource. Returns {@code true} if any contained filter returns {@code true}, otherwise returns
+     * {@code false}.
+     *
+     * @param name The name of the resource (relative path).
+     * @param url  The URL of the resource.
+     * @return {@code true} if any filter accepts the resource, {@code false} otherwise.
+     */
+    @Override
     public boolean filtrate(String name, URL url) {
         Filter[] filters = this.filters.toArray(new Filter[0]);
         for (Filter filter : filters) {
@@ -66,6 +77,12 @@ public class AnyFilter extends MixFilter implements Filter {
         return false;
     }
 
+    /**
+     * Adds a filter to this composite filter.
+     *
+     * @param filter The {@link Filter} to add.
+     * @return This {@code AnyFilter} instance, for method chaining.
+     */
     public AnyFilter mix(Filter filter) {
         add(filter);
         return this;

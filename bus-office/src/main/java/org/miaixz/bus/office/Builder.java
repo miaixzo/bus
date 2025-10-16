@@ -40,7 +40,7 @@ import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 为office提供辅助功能 Excel中日期判断、读取、处理等补充工具类
+ * Provides auxiliary functions for office documents, such as Excel date judgment, reading, and processing.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,41 +48,41 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class Builder {
 
     /**
-     * xls的ContentType
+     * Content type for XLS files.
      */
     public static final String XLS_CONTENT_TYPE = "application/vnd.ms-excel";
 
     /**
-     * xlsx的ContentType
+     * Content type for XLSX files.
      */
     public static final String XLSX_CONTENT_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
     /**
-     * 没有引入POI的错误消息
+     * Error message when POI dependency is missing.
      */
     public static final String NO_POI_ERROR_MSG = "You need to add dependency of 'poi-ooxml' to your project, and version >= 5.3.0";
 
     /**
-     * 某些特殊的自定义日期格式
+     * Some special custom date formats.
      */
     private static final int[] CUSTOM_FORMATS = new int[] { 28, 30, 31, 32, 33, 55, 56, 57, 58 };
 
     /**
-     * 是否日期格式
+     * Checks if the cell is in date format.
      *
-     * @param cell 单元格
-     * @return 是否日期格式
+     * @param cell The cell to check.
+     * @return {@code true} if the cell is in date format, {@code false} otherwise.
      */
     public static boolean isDateFormat(final Cell cell) {
         return isDateFormat(cell, null);
     }
 
     /**
-     * 判断是否日期格式
+     * Checks if the cell is in date format.
      *
-     * @param cell        单元格
-     * @param cfEvaluator {@link ConditionalFormattingEvaluator}
-     * @return 是否日期格式
+     * @param cell        The cell to check.
+     * @param cfEvaluator The {@link ConditionalFormattingEvaluator} for evaluating conditional formats.
+     * @return {@code true} if the cell is in date format, {@code false} otherwise.
      */
     public static boolean isDateFormat(final Cell cell, final ConditionalFormattingEvaluator cfEvaluator) {
         final ExcelNumberFormat nf = ExcelNumberFormat.from(cell, cfEvaluator);
@@ -90,31 +90,31 @@ public class Builder {
     }
 
     /**
-     * 判断是否日期格式
+     * Checks if the number format is a date format.
      *
-     * @param numFmt {@link ExcelNumberFormat}
-     * @return 是否日期格式
+     * @param numFmt The {@link ExcelNumberFormat} to check.
+     * @return {@code true} if the number format is a date format, {@code false} otherwise.
      */
     public static boolean isDateFormat(final ExcelNumberFormat numFmt) {
         return isDateFormat(numFmt.getIdx(), numFmt.getFormat());
     }
 
     /**
-     * 判断日期格式
+     * Checks if the given format index and format string represent a date format.
      *
-     * @param formatIndex  格式索引，一般用于内建格式
-     * @param formatString 格式字符串
-     * @return 是否为日期格式
+     * @param formatIndex  The format index, usually for built-in formats.
+     * @param formatString The format string.
+     * @return {@code true} if it is a date format, {@code false} otherwise.
      */
     public static boolean isDateFormat(final int formatIndex, final String formatString) {
         if (ArrayKit.contains(CUSTOM_FORMATS, formatIndex)) {
             return true;
         }
 
-        // 自定义格式判断
+        // Custom format judgment
         if (StringKit.isNotEmpty(formatString) && StringKit.containsAny(formatString, "周", "星期", "aa")) {
-            // aa -> 周一
-            // aaa -> 星期一
+            // aa -> Mon
+            // aaa -> Monday
             return true;
         }
 
@@ -122,30 +122,33 @@ public class Builder {
     }
 
     /**
-     * 是否为XLS格式的Excel文件（HSSF） XLS文件主要用于Excel 97~2003创建 此方法会自动调用{@link InputStream#reset()}方法
+     * Checks if the given input stream is an XLS format Excel file (HSSF). XLS files are mainly used for Excel 97~2003.
+     * This method automatically calls {@link InputStream#reset()}.
      *
-     * @param in excel输入流
-     * @return 是否为XLS格式的Excel文件（HSSF）
+     * @param in The Excel input stream.
+     * @return {@code true} if it is an XLS format Excel file, {@code false} otherwise.
      */
     public static boolean isXls(final InputStream in) {
         return FileMagic.OLE2 == getFileMagic(in);
     }
 
     /**
-     * 是否为XLSX格式的Excel文件（XSSF） XLSX文件主要用于Excel 2007+创建 此方法会自动调用{@link InputStream#reset()}方法
+     * Checks if the given input stream is an XLSX format Excel file (XSSF). XLSX files are mainly used for Excel 2007+.
+     * This method automatically calls {@link InputStream#reset()}.
      *
-     * @param in excel输入流
-     * @return 是否为XLSX格式的Excel文件（XSSF）
+     * @param in The Excel input stream.
+     * @return {@code true} if it is an XLSX format Excel file, {@code false} otherwise.
      */
     public static boolean isXlsx(final InputStream in) {
         return FileMagic.OOXML == getFileMagic(in);
     }
 
     /**
-     * 是否为XLSX格式的Excel文件（XSSF） XLSX文件主要用于Excel 2007+创建
+     * Checks if the given file is an XLSX format Excel file (XSSF). XLSX files are mainly used for Excel 2007+.
      *
-     * @param file excel文件
-     * @return 是否为XLSX格式的Excel文件（XSSF）
+     * @param file The Excel file.
+     * @return {@code true} if it is an XLSX format Excel file, {@code false} otherwise.
+     * @throws InternalException if an I/O error occurs.
      */
     public static boolean isXlsx(final File file) {
         try {
@@ -156,11 +159,13 @@ public class Builder {
     }
 
     /**
-     * {@link java.io.PushbackInputStream} PushbackInputStream的markSupported()为false，并不支持mark和reset
-     * 如果强转成PushbackInputStream在调用FileMagic.valueOf(inputStream)时会报错 {@link FileMagic} 报错内容：getFileMagic() only operates
-     * on streams which support mark(int) 此处修改成 final InputStream in = FileMagic.prepareToCheckMagic(in)
+     * Gets the {@link FileMagic} from the input stream. Handles cases where {@link java.io.PushbackInputStream} does
+     * not support mark and reset. The input stream is prepared using
+     * {@link FileMagic#prepareToCheckMagic(InputStream)}.
      *
-     * @param in {@link InputStream}
+     * @param in The {@link InputStream} to check.
+     * @return The {@link FileMagic} of the stream.
+     * @throws InternalException if an I/O error occurs during magic number detection.
      */
     private static FileMagic getFileMagic(InputStream in) {
         final FileMagic magic;

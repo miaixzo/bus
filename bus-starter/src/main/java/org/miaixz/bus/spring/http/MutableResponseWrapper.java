@@ -27,52 +27,50 @@
 */
 package org.miaixz.bus.spring.http;
 
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.WriteListener;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponseWrapper;
+import org.miaixz.bus.core.lang.MediaType;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import org.miaixz.bus.core.lang.MediaType;
-
-import jakarta.servlet.ServletOutputStream;
-import jakarta.servlet.WriteListener;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpServletResponseWrapper;
-
 /**
- * 可重复读取响应内容的包装器，支持缓存响应内容，便于日志记录和后续处理（不缓存SSE）。
- *
+ * A repeatable-read response wrapper that supports caching response content for logging and further processing.
  * <p>
- * 该类继承自{@link HttpServletResponseWrapper}，主要功能包括：
- * </p>
+ * This class extends {@link HttpServletResponseWrapper} and primarily offers the following functionalities:
+ *
  * <ul>
- * <li>缓存响应内容，使得响应内容可以被多次读取</li>
- * <li>自动识别并处理流式响应（如SSE），对流式响应不进行缓存</li>
- * <li>提供获取响应内容的方法，便于日志记录和后续处理</li>
+ * <li>Caches the response content, allowing it to be read multiple times.</li>
+ * <li>Automatically identifies and handles streaming responses (e.g., Server-Sent Events - SSE), and does not cache
+ * them.</li>
+ * <li>Provides methods to retrieve the cached response content for logging or other post-processing.</li>
  * </ul>
  *
  * <p>
- * 使用示例：
- * </p>
+ * <strong>Usage Example:</strong>
  * 
- * <pre>
- * // 在过滤器中使用
+ * <pre>{@code
+ * // In a Servlet Filter:
  * public class ResponseCacheFilter implements Filter {
  *
- *     &#64;Override
+ *     @Override
  *     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
  *             throws IOException, ServletException {
- *         // 包装响应
- *         CacheResponseWrapper wrappedResponse = new CacheResponseWrapper((HttpServletResponse) response);
- *         // 继续过滤器链
+ *         // Wrap the response
+ *         MutableResponseWrapper wrappedResponse = new MutableResponseWrapper((HttpServletResponse) response);
+ *         // Continue the filter chain
  *         chain.doFilter(request, wrappedResponse);
- *         // 获取响应内容
+ *         // Get the response content
  *         byte[] responseBody = wrappedResponse.getBody();
- *         // 记录日志或进行其他处理
+ *         // Log or perform other processing
  *         logResponse(responseBody);
  *     }
  * }
- * </pre>
+ * }</pre>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -80,24 +78,24 @@ import jakarta.servlet.http.HttpServletResponseWrapper;
 public class MutableResponseWrapper extends HttpServletResponseWrapper {
 
     /**
-     * 字节数组输出流，用于缓存响应内容
+     * A {@link ByteArrayOutputStream} used to cache the response content.
      */
     private ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
     /**
-     * 打印写入器，用于缓存响应内容
+     * A {@link PrintWriter} used to write character data to the cached output stream.
      */
     private PrintWriter writer = new PrintWriter(byteArrayOutputStream);
 
     /**
-     * 是否为流式响应的标志
+     * A flag indicating whether the response is a streaming response (e.g., SSE). Streaming responses are not cached.
      */
     private boolean isStreaming = false;
 
     /**
-     * 构造方法，初始化响应包装器。
+     * Constructs a new {@code MutableResponseWrapper}, initializing the response wrapper.
      *
-     * @param response 原始HTTP响应对象
+     * @param response The original {@link HttpServletResponse} object.
      */
     public MutableResponseWrapper(HttpServletResponse response) {
         super(response);
@@ -105,38 +103,38 @@ public class MutableResponseWrapper extends HttpServletResponseWrapper {
     }
 
     /**
-     * 获取打印写入器，用于写入响应内容。
-     *
+     * Returns a {@link PrintWriter} for writing response content.
      * <p>
-     * 对于流式响应（如SSE），直接返回原始响应的打印写入器，不做额外处理； 对于非流式响应，返回一个包装后的打印写入器，可以同时写入原始响应和缓存。
+     * For streaming responses (e.g., SSE), it directly returns the original response's {@link PrintWriter} without
+     * caching. For non-streaming responses, it returns a wrapped {@link PrintWriter} that writes to both the original
+     * response and the cache.
      * </p>
      *
-     * @return 打印写入器
-     * @throws IOException 如果发生I/O错误
+     * @return A {@link PrintWriter} for the response.
+     * @throws IOException If an I/O error occurs.
      */
     @Override
     public PrintWriter getWriter() throws IOException {
         this.streaming();
         if (isStreaming) {
-            // 对于 SSE 流式响应，直接返回原始响应写入器，不做额外处理
+            // For SSE streaming responses, directly return the original response writer without additional processing.
             return super.getWriter();
         }
         return new ServletPrintWriter(super.getWriter(), writer);
     }
 
     /**
-     * 设置响应的内容类型。
-     *
+     * Sets the content type of the response.
      * <p>
-     * 该方法在设置内容类型的同时，会根据内容类型判断是否为流式响应（如SSE）。
+     * This method also checks the content type to determine if it's a streaming response (e.g., SSE).
      * </p>
      *
-     * @param type 内容类型
+     * @param type The content type string.
      */
     @Override
     public void setContentType(String type) {
         super.setContentType(type);
-        // 根据 Content-Type 判断是否为流式响应
+        // Determine if it's a streaming response based on Content-Type
         if (type != null) {
             String lowerType = type.toLowerCase();
             isStreaming = lowerType.contains(MediaType.SERVER_SENT_EVENTS);
@@ -144,19 +142,20 @@ public class MutableResponseWrapper extends HttpServletResponseWrapper {
     }
 
     /**
-     * 获取Servlet输出流，用于写入响应内容。
-     *
+     * Returns a {@link ServletOutputStream} for writing response content.
      * <p>
-     * 对于流式响应（如SSE），直接返回原始响应的输出流，不做额外处理； 对于非流式响应，返回一个包装后的输出流，可以同时写入原始响应和缓存。
+     * For streaming responses (e.g., SSE), it directly returns the original response's {@link ServletOutputStream}
+     * without caching. For non-streaming responses, it returns a wrapped {@link ServletOutputStream} that writes to
+     * both the original response and the cache.
      * </p>
      *
-     * @return Servlet输出流
-     * @throws IOException 如果发生I/O错误
+     * @return A {@link ServletOutputStream} for the response.
+     * @throws IOException If an I/O error occurs.
      */
     @Override
     public ServletOutputStream getOutputStream() throws IOException {
         this.streaming();
-        // 对于 SSE 流式响应，直接返回原始响应流，不做额外处理
+        // For SSE streaming responses, directly return the original response stream without additional processing.
         if (isStreaming) {
             return super.getOutputStream();
         }
@@ -169,7 +168,7 @@ public class MutableResponseWrapper extends HttpServletResponseWrapper {
 
             @Override
             public void setWriteListener(WriteListener writeListener) {
-                // 空实现
+                // Empty implementation
             }
 
             @Override
@@ -182,19 +181,19 @@ public class MutableResponseWrapper extends HttpServletResponseWrapper {
     }
 
     /**
-     * 获取缓存的响应内容。
+     * Returns the cached response content as a byte array.
      *
-     * @return 响应内容的字节数组
+     * @return The response content as a byte array.
      */
     public byte[] getBody() {
         return byteArrayOutputStream.toByteArray();
     }
 
     /**
-     * 检查并设置是否为流式响应。
-     *
+     * Checks and sets whether the response is a streaming response.
      * <p>
-     * 该方法会根据当前响应的内容类型判断是否为流式响应（如SSE）， 并设置{@link #isStreaming}标志。
+     * This method determines if the response is streaming (e.g., SSE) based on its content type and updates the
+     * {@link #isStreaming} flag.
      * </p>
      */
     public void streaming() {
@@ -206,29 +205,30 @@ public class MutableResponseWrapper extends HttpServletResponseWrapper {
     }
 
     /**
-     * 判断是否为流式响应。
+     * Checks if the response is a streaming response.
      *
-     * @return 如果为流式响应则返回true，否则返回false
+     * @return {@code true} if it is a streaming response, {@code false} otherwise.
      */
     public boolean isStreaming() {
         return isStreaming;
     }
 
     /**
-     * 自定义的打印写入器，用于同时写入原始响应和缓存。
+     * A custom {@link PrintWriter} that writes to both the original response's {@link PrintWriter} and a cached
+     * {@link PrintWriter}.
      */
     private static class ServletPrintWriter extends PrintWriter {
 
         /**
-         * 缓存的打印写入器
+         * The cached {@link PrintWriter}.
          */
         PrintWriter printWriter;
 
         /**
-         * 构造方法，初始化打印写入器。
+         * Constructs a new {@code ServletPrintWriter}.
          *
-         * @param main        原始响应的打印写入器
-         * @param printWriter 缓存的打印写入器
+         * @param main        The original response's {@link PrintWriter}.
+         * @param printWriter The cached {@link PrintWriter}.
          */
         ServletPrintWriter(PrintWriter main, PrintWriter printWriter) {
             super(main, true);
@@ -267,25 +267,25 @@ public class MutableResponseWrapper extends HttpServletResponseWrapper {
     }
 
     /**
-     * 分支输出流，用于同时将数据写入两个输出流。
+     * A {@link OutputStream} that writes all data to two underlying {@link OutputStream}s.
      */
     class TeeOutputStream extends OutputStream {
 
         /**
-         * 第一个输出流
+         * The first underlying output stream, typically the original response's output stream.
          */
         private OutputStream oneOut;
 
         /**
-         * 第二个输出流
+         * The second underlying output stream, typically the cache output stream.
          */
         private OutputStream twoOut;
 
         /**
-         * 构造方法，初始化分支输出流。
+         * Constructs a new {@code TeeOutputStream}.
          *
-         * @param oneOut 第一个输出流，通常是原始响应的输出流
-         * @param twoOut 第二个输出流，通常是缓存输出流
+         * @param oneOut The first output stream.
+         * @param twoOut The second output stream.
          */
         public TeeOutputStream(OutputStream oneOut, OutputStream twoOut) {
             this.oneOut = oneOut;
@@ -293,10 +293,10 @@ public class MutableResponseWrapper extends HttpServletResponseWrapper {
         }
 
         /**
-         * 写入字节数组。
+         * Writes the specified byte array to both output streams.
          *
-         * @param buf 要写入的字节数组
-         * @throws IOException 如果发生I/O错误
+         * @param buf The byte array to write.
+         * @throws IOException If an I/O error occurs.
          */
         public void write(byte[] buf) throws IOException {
             this.oneOut.write(buf);
@@ -304,12 +304,12 @@ public class MutableResponseWrapper extends HttpServletResponseWrapper {
         }
 
         /**
-         * 写入字节数组的指定部分。
+         * Writes {@code len} bytes from the specified byte array starting at offset {@code off} to both output streams.
          *
-         * @param buf 要写入的字节数组
-         * @param off 起始偏移量
-         * @param len 要写入的长度
-         * @throws IOException 如果发生I/O错误
+         * @param buf The byte array to write from.
+         * @param off The start offset in the data.
+         * @param len The number of bytes to write.
+         * @throws IOException If an I/O error occurs.
          */
         public void write(byte[] buf, int off, int len) throws IOException {
             this.oneOut.write(buf, off, len);
@@ -317,10 +317,10 @@ public class MutableResponseWrapper extends HttpServletResponseWrapper {
         }
 
         /**
-         * 写入单个字节。
+         * Writes the specified byte to both output streams.
          *
-         * @param b 要写入的字节
-         * @throws IOException 如果发生I/O错误
+         * @param b The byte to write.
+         * @throws IOException If an I/O error occurs.
          */
         public void write(int b) throws IOException {
             this.oneOut.write(b);
@@ -328,9 +328,9 @@ public class MutableResponseWrapper extends HttpServletResponseWrapper {
         }
 
         /**
-         * 刷新输出流。
+         * Flushes both output streams.
          *
-         * @throws IOException 如果发生I/O错误
+         * @throws IOException If an I/O error occurs.
          */
         public void flush() throws IOException {
             this.oneOut.flush();
@@ -338,9 +338,9 @@ public class MutableResponseWrapper extends HttpServletResponseWrapper {
         }
 
         /**
-         * 关闭输出流。
+         * Closes both output streams.
          *
-         * @throws IOException 如果发生I/O错误
+         * @throws IOException If an I/O error occurs.
          */
         public void close() throws IOException {
             this.oneOut.close();

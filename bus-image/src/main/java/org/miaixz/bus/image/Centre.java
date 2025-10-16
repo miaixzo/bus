@@ -51,7 +51,9 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * 进程服务管理器 1. 端口监听进程 2. 设备服务进程
+ * Manages the lifecycle of a DICOM service process. This class acts as a central controller for starting and stopping
+ * DICOM services, managing the main {@link Device} object, and coordinating its components like the {@link StoreSCP}.
+ * It handles the initialization of executor services and the binding of network connections.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -64,57 +66,82 @@ import lombok.experimental.SuperBuilder;
 public class Centre {
 
     /**
-     * 设备信息
+     * The main DICOM device configuration, which encapsulates all network and application settings.
      */
     public Device device;
 
     /**
-     * 操作行为
+     * The Store SCP (Service Class Provider) implementation that defines the behavior for C-STORE operations.
      */
     public StoreSCP storeSCP;
 
     /**
-     * 服务器信息
+     * The network node information (AET, hostname, port) used for binding the DICOM listener.
      */
     public Node node;
+
     /**
-     * 参数信息
+     * Configuration parameters, typically parsed from command-line arguments, for the DICOM service.
      */
     public Args args;
 
     /**
-     * 业务处理
+     * Custom post-processing logic to be applied after a DICOM object is stored.
      */
     public Efforts efforts;
+
     /**
-     * 任务处理者
+     * The primary executor service for handling concurrent DICOM association tasks.
      */
     public ExecutorService executor;
+
     /**
-     * 业务处理
+     * The scheduled executor service for running delayed or periodic tasks.
      */
     public ScheduledExecutorService scheduledExecutor;
 
+    /**
+     * Constructs a new Centre with a specified device.
+     *
+     * @param device The DICOM device to manage. Must not be null.
+     */
     public Centre(Device device) {
         this.device = Objects.requireNonNull(device);
     }
 
+    /**
+     * Gets the managed DICOM device.
+     *
+     * @return the device.
+     */
     public Device getDevice() {
         return device;
     }
 
+    /**
+     * Checks if the service is currently running (i.e., if the executor service has been initialized).
+     *
+     * @return {@code true} if the service is running, {@code false} otherwise.
+     */
     public boolean isRunning() {
         return executor != null;
     }
 
+    /**
+     * Starts the DICOM service with default settings.
+     */
     public void start() {
         start(false);
     }
 
     /**
-     * 启动管理器
+     * Starts the DICOM service manager. This method is synchronized to prevent concurrent startup. It can operate in
+     * two modes depending on the flag: 1. If flag is true, it only initializes the executor services. 2. If flag is
+     * false (default), it performs a full startup, configuring and binding the DICOM listener.
      *
-     * @param flag 标记信息
+     * @param flag A boolean flag to control the startup mode.
+     * @throws InternalException    if the listener is already running.
+     * @throws NullPointerException if essential components like StoreSCP, Node, or Args are not configured.
      */
     public synchronized void start(boolean... flag) {
         if (isRunning()) {
@@ -161,7 +188,7 @@ public class Centre {
         try {
             args.configureTLS(conn, null);
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger.error("Error configuring TLS", e);
         }
 
         storeSCP.getApplicationEntity().setAcceptedCallingAETitles(args.getAcceptedCallingAETitles());
@@ -183,12 +210,13 @@ public class Centre {
             device.bindConnections();
         } catch (IOException | GeneralSecurityException e) {
             stop();
-            Logger.error(e.getMessage());
+            Logger.error("Failed to start DICOM service: {}", e.getMessage(), e);
         }
     }
 
     /**
-     * 停止管理器
+     * Stops the DICOM service manager. This method is synchronized. It unbinds all device connections and shuts down
+     * the executor services.
      */
     public synchronized void stop() {
         if (null != device) {

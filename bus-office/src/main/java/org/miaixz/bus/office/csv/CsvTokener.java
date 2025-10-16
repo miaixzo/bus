@@ -36,7 +36,7 @@ import org.miaixz.bus.core.lang.wrapper.SimpleWrapper;
 import org.miaixz.bus.core.xyz.IoKit;
 
 /**
- * CSV解析器，用于解析CSV文件
+ * CSV parser, used for parsing CSV files.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,31 +44,31 @@ import org.miaixz.bus.core.xyz.IoKit;
 public class CsvTokener extends SimpleWrapper<Reader> implements Closeable {
 
     /**
-     * 在Reader的位置（解析到第几个字符）
+     * The position in the Reader (index of the character parsed to).
      */
     private long index;
     /**
-     * 前一个字符
+     * The previous character.
      */
     private int prev;
     /**
-     * 是否使用前一个字符
+     * Whether to use the previous character.
      */
     private boolean usePrev;
 
     /**
-     * 构造
+     * Constructor.
      *
-     * @param reader {@link Reader}
+     * @param reader The {@link Reader}.
      */
     public CsvTokener(final Reader reader) {
         super(IoKit.toBuffered(reader));
     }
 
     /**
-     * 读取下一个字符，并记录位置
+     * Reads the next character and records the position.
      *
-     * @return 下一个字符
+     * @return The next character.
      */
     public int next() {
         if (this.usePrev) {
@@ -85,9 +85,9 @@ public class CsvTokener extends SimpleWrapper<Reader> implements Closeable {
     }
 
     /**
-     * 将标记回退到第一个字符
+     * Moves the mark back one character.
      *
-     * @throws IllegalStateException 当多次调用back时，抛出此异常
+     * @throws IllegalStateException Throws this exception if back() is called multiple times.
      */
     public void back() throws IllegalStateException {
         if (this.usePrev || this.index <= 0) {
@@ -98,9 +98,9 @@ public class CsvTokener extends SimpleWrapper<Reader> implements Closeable {
     }
 
     /**
-     * 获取当前位置
+     * Gets the current position.
      *
-     * @return 位置
+     * @return The position.
      */
     public long getIndex() {
         return this.index;

@@ -32,7 +32,8 @@ import java.io.File;
 import org.miaixz.bus.image.galaxy.data.Attributes;
 
 /**
- * 图像处理额外接触点 即: 后续业务处理支持
+ * Defines an extension point for custom post-processing of DICOM images. Implementations of this interface can be used
+ * to perform additional business logic after an image has been processed or received.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -40,10 +41,13 @@ import org.miaixz.bus.image.galaxy.data.Attributes;
 public interface Efforts {
 
     /**
-     * @param attributes 完整影像信息
-     * @param file       影像原始文件
-     * @param clazz      调用类信息
-     * @return 根据业务需要返回不同类型的值
+     * Executes the post-processing logic on a DICOM image.
+     *
+     * @param attributes The complete DICOM attributes of the image.
+     * @param file       The original DICOM file on the filesystem.
+     * @param clazz      The class that invoked this post-processing step, providing context.
+     * @return An object representing the result of the post-processing. The default implementation simply returns the
+     *         original file.
      */
     default Object supports(Attributes attributes, File file, Class<?> clazz) {
         return file;

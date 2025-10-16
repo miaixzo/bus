@@ -31,7 +31,8 @@ import org.miaixz.bus.mapper.ORDER;
 import org.miaixz.bus.mapper.parsing.TableMeta;
 
 /**
- * 实体类信息工厂接口，可通过 SPI 加入处理链以扩展表信息创建逻辑
+ * An interface for an entity class information factory. It can be added to the processing chain via SPI (Service
+ * Provider Interface) to extend the logic for creating table information.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -39,24 +40,26 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
 public interface TableSchemaBuilder extends ORDER {
 
     /**
-     * 根据实体类创建表信息，仅返回表信息，不处理字段，可使用自定义注解实现
+     * Creates table information based on an entity class. This method should only return table-level information and
+     * not process fields. Custom annotations can be used for implementation.
      *
-     * @param entityClass 实体类类型
-     * @param chain       工厂链，用于调用下一个处理逻辑
-     * @return 实体类表信息
+     * @param entityClass The entity class type.
+     * @param chain       The factory chain, used to invoke the next processing logic.
+     * @return The entity class table information.
      */
     TableMeta createTable(Class<?> entityClass, Chain chain);
 
     /**
-     * 工厂链接口，用于链式调用表信息创建逻辑
+     * A factory chain interface for invoking table information creation logic in a chained manner.
      */
     interface Chain {
 
         /**
-         * 根据实体类创建表信息，仅返回表信息，不处理字段
+         * Creates table information based on an entity class, returning only table-level information without processing
+         * fields.
          *
-         * @param entityClass 实体类类型
-         * @return 实体类表信息
+         * @param entityClass The entity class type.
+         * @return The entity class table information.
          */
         TableMeta createTable(Class<?> entityClass);
     }

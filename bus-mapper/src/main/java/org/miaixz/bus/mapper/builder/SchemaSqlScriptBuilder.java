@@ -45,7 +45,7 @@ import org.miaixz.bus.mapper.parsing.SqlScriptWrapper;
 import org.miaixz.bus.mapper.parsing.TableMeta;
 
 /**
- * 通过 {@link SqlWrapper} 注解支持对 SQL 的扩展
+ * Supports SQL extension by processing {@link SqlWrapper} annotations.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -53,28 +53,28 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
 public class SchemaSqlScriptBuilder implements SqlScriptWrapper {
 
     /**
-     * 对 SQL 脚本进行包装，应用接口、方法和参数上的注解
+     * Wraps an SQL script by applying annotations from the interface, method, and parameters.
      *
-     * @param context   提供者上下文
-     * @param tableMeta 实体表信息
-     * @param sqlScript SQL 脚本
-     * @return 包装后的 SQL 脚本
+     * @param context   The provider context.
+     * @param tableMeta The entity table information.
+     * @param sqlScript The SQL script to be wrapped.
+     * @return The wrapped SQL script.
      */
     @Override
     public SqlScript wrap(ProviderContext context, TableMeta tableMeta, SqlScript sqlScript) {
         Class<?> mapperType = context.getMapperType();
         Method mapperMethod = context.getMapperMethod();
-        // 接口注解
+        // Interface annotations
         List<SchemaSqlBuilder> wrappers = parseAnnotations(mapperType, ElementType.TYPE, mapperType.getAnnotations());
-        // 方法注解
+        // Method annotations
         wrappers.addAll(parseAnnotations(mapperMethod, ElementType.METHOD, mapperMethod.getAnnotations()));
-        // 参数注解
+        // Parameter annotations
         Parameter[] parameters = mapperMethod.getParameters();
         Annotation[][] parameterAnnotations = mapperMethod.getParameterAnnotations();
         for (int i = 0; i < parameters.length; i++) {
             wrappers.addAll(parseAnnotations(parameters[i], ElementType.PARAMETER, parameterAnnotations[i]));
         }
-        // 去重，排序
+        // Deduplicate and sort
         wrappers = wrappers.stream().distinct().sorted(Comparator.comparing(f -> ((ORDER) f).order()).reversed())
                 .collect(Collectors.toList());
         for (SqlScriptWrapper wrapper : wrappers) {
@@ -84,14 +84,14 @@ public class SchemaSqlScriptBuilder implements SqlScriptWrapper {
     }
 
     /**
-     * 实例化 {@link SchemaSqlBuilder} 对象
+     * Instantiates a {@link SchemaSqlBuilder} object.
      *
-     * @param instanceClass 实例类
-     * @param target        目标对象
-     * @param type          元素类型
-     * @param annotations   注解数组
-     * @param <T>           泛型
-     * @return 实例化的对象
+     * @param instanceClass The class to instantiate.
+     * @param target        The target object.
+     * @param type          The element type.
+     * @param annotations   The array of annotations.
+     * @param <T>           The generic type.
+     * @return The instantiated object.
      */
     public <T> T newInstance(Class<T> instanceClass, Object target, ElementType type, Annotation[] annotations) {
         try {
@@ -103,12 +103,12 @@ public class SchemaSqlScriptBuilder implements SqlScriptWrapper {
     }
 
     /**
-     * 解析对象上的 {@link SchemaSqlBuilder} 实例
+     * Parses {@link SchemaSqlBuilder} instances from an object's annotations.
      *
-     * @param target      目标对象（类、方法或参数）
-     * @param type        元素类型（TYPE, METHOD, PARAMETER）
-     * @param annotations 注解数组
-     * @return {@link SchemaSqlBuilder} 实例列表
+     * @param target      The target object (class, method, or parameter).
+     * @param type        The element type (TYPE, METHOD, PARAMETER).
+     * @param annotations The array of annotations.
+     * @return A list of {@link SchemaSqlBuilder} instances.
      */
     protected List<SchemaSqlBuilder> parseAnnotations(Object target, ElementType type, Annotation[] annotations) {
         List<Class<? extends SchemaSqlBuilder>> classes = new ArrayList<>();

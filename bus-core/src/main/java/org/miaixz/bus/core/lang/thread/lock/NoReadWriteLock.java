@@ -31,18 +31,30 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 
 /**
- * 无锁的读写锁实现
+ * A no-operation implementation of the {@link ReadWriteLock} interface. This class provides a "read-write lock" that
+ * does not actually perform any locking or synchronization. Both {@link #readLock()} and {@link #writeLock()} methods
+ * return a singleton {@link NoLock} instance, effectively making all read and write operations non-blocking.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class NoReadWriteLock implements ReadWriteLock {
 
+    /**
+     * Returns a no-operation read lock.
+     *
+     * @return A singleton instance of {@link NoLock}.
+     */
     @Override
     public Lock readLock() {
         return NoLock.INSTANCE;
     }
 
+    /**
+     * Returns a no-operation write lock.
+     *
+     * @return A singleton instance of {@link NoLock}.
+     */
     @Override
     public Lock writeLock() {
         return NoLock.INSTANCE;

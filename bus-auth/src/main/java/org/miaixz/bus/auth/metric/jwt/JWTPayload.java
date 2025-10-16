@@ -31,12 +31,13 @@ import java.io.Serial;
 import java.util.Map;
 
 /**
- * JWT载荷信息 载荷就是存放有效信息的地方。这个名字像是特指飞机上承载的货品，这些有效信息包含三个部分:
+ * JWT Payload information. The payload is the part where effective information is stored. This name is like referring
+ * to the cargo carried on an airplane. This effective information includes three parts:
  *
  * <ul>
- * <li>标准中注册的声明</li>
- * <li>公共的声明</li>
- * <li>私有的声明</li>
+ * <li>Standard registered claims</li>
+ * <li>Public claims</li>
+ * <li>Private claims</li>
  * </ul>
  * <p>
  *
@@ -49,10 +50,10 @@ public class JWTPayload extends Claims implements JWTRegister<JWTPayload> {
     private static final long serialVersionUID = 2852289330860L;
 
     /**
-     * 增加自定义JWT认证载荷信息
+     * Adds custom JWT authentication payload information.
      *
-     * @param payloadClaims 载荷信息
-     * @return this
+     * @param payloadClaims a map containing multiple payload claims to add
+     * @return this {@link JWTPayload} instance
      */
     public JWTPayload addPayloads(final Map<String, ?> payloadClaims) {
         putAll(payloadClaims);

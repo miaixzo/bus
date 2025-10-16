@@ -31,37 +31,37 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.util.CellRangeAddress;
 
 /**
- * 抽象{@link Sheet}数据读取实现
+ * Abstract implementation of a {@link Sheet} data reader.
  *
- * @param <T> 读取类型
+ * @param <T> The type of data to read.
  * @author Kimi Liu
  * @since Java 17+
  */
 public abstract class AbstractSheetReader<T> implements SheetReader<T> {
 
     /**
-     * 读取范围
+     * The range of cells to read.
      */
     protected final CellRangeAddress cellRangeAddress;
     /**
-     * Excel配置
+     * Excel configuration settings.
      */
     protected ExcelReadConfig config;
 
     /**
-     * 构造
+     * Constructor.
      *
-     * @param cellRangeAddress 读取范围
+     * @param cellRangeAddress The range of cells to read.
      */
     public AbstractSheetReader(final CellRangeAddress cellRangeAddress) {
         this.cellRangeAddress = cellRangeAddress;
     }
 
     /**
-     * 构造
+     * Constructor.
      *
-     * @param startRowIndex 起始行（包含，从0开始计数）
-     * @param endRowIndex   结束行（包含，从0开始计数）
+     * @param startRowIndex The starting row index (inclusive, 0-based).
+     * @param endRowIndex   The ending row index (inclusive, 0-based).
      */
     public AbstractSheetReader(final int startRowIndex, final int endRowIndex) {
         this(new CellRangeAddress(Math.min(startRowIndex, endRowIndex), Math.max(startRowIndex, endRowIndex), 0,
@@ -69,9 +69,9 @@ public abstract class AbstractSheetReader<T> implements SheetReader<T> {
     }
 
     /**
-     * 设置Excel配置
+     * Sets the Excel configuration.
      *
-     * @param config Excel配置
+     * @param config The Excel configuration.
      */
     public void setExcelConfig(final ExcelReadConfig config) {
         this.config = config;

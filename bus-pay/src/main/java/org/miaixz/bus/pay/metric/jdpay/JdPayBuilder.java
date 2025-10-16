@@ -51,25 +51,28 @@ import org.miaixz.bus.pay.metric.wechat.WechatPayBuilder;
 import lombok.SneakyThrows;
 
 /**
- * 商户二维码支付接口
+ * Utility class for JD Pay, providing methods for signing, encryption, decryption, and XML manipulation.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class JdPayBuilder {
 
-    private static String XML_HEAD = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
-    private static String XML_JDPAY_START = "<jdpay>";
-    private static String XML_JDPAY_END = "</jdpay>";
-    private static Pattern PATTERN = Pattern.compile("\t|\r|\n");
-    private static String XML_SIGN_START = "<sign>";
-    private static String XML_SIGN_END = "</sign>";
-    private static String SIGN = "sign";
+    private static final String XML_HEAD = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
+    private static final String XML_JDPAY_START = "<jdpay>";
+    private static final String XML_JDPAY_END = "</jdpay>";
+    private static final Pattern PATTERN = Pattern.compile("\t|\r|\n");
+    private static final String XML_SIGN_START = "<sign>";
+    private static final String XML_SIGN_END = "</sign>";
+    private static final String SIGN = "sign";
 
     /**
-     * 在线支付接口 除了merchant（商户号）、version（版本号）、sign(签名)以外，其余字段全部采用3DES进行加密
+     * Encrypts the values of a map using 3DES for online payment interfaces. All fields except for 'merchant',
+     * 'version', and 'sign' are encrypted.
      *
-     * @return 转化后的 Map
+     * @param map    The map containing the parameters.
+     * @param desKey The 3DES key for encryption.
+     * @return A new map with encrypted values.
      */
     public static Map<String, String> toMap(Map<String, String> map, String desKey) {
         HashMap<String, String> tempMap = new HashMap<>(map.size());
@@ -88,10 +91,10 @@ public class JdPayBuilder {
     }
 
     /**
-     * 将支付接口返回的 xml 数据转化为 Map
+     * Parses the XML data returned from the payment interface into a Map.
      *
-     * @param xml 接口返回的 xml 数据
-     * @return 解析后的数据
+     * @param xml The XML data returned from the interface.
+     * @return A map containing the parsed data.
      */
     public static Map<String, String> parse(String xml) {
         if (StringKit.isEmpty(xml)) {
@@ -111,7 +114,11 @@ public class JdPayBuilder {
     }
 
     /**
-     * Helper method to extract value between XML tags
+     * Helper method to extract the value between XML tags.
+     *
+     * @param xml     The XML string.
+     * @param tagName The name of the tag.
+     * @return The value within the specified tag, or null if not found.
      */
     private static String extractTagValue(String xml, String tagName) {
         String startTag = "<" + tagName + ">";
@@ -124,16 +131,29 @@ public class JdPayBuilder {
         return null;
     }
 
+    /**
+     * Formats an XML string by removing tabs, carriage returns, and newlines.
+     *
+     * @param xml The XML string to format.
+     * @return The formatted XML string.
+     */
     public static String fomatXml(String xml) {
         StringBuilder formatStr = new StringBuilder();
-        Scanner scanner = new Scanner(xml);
-        scanner.useDelimiter(PATTERN);
-        while (scanner.hasNext()) {
-            formatStr.append(scanner.next().trim());
+        try (Scanner scanner = new Scanner(xml)) {
+            scanner.useDelimiter(PATTERN);
+            while (scanner.hasNext()) {
+                formatStr.append(scanner.next().trim());
+            }
         }
         return formatStr.toString();
     }
 
+    /**
+     * Adds an XML header to the given XML string if it doesn't already have one.
+     *
+     * @param xml The XML string.
+     * @return The XML string with a header.
+     */
     public static String addXmlHead(String xml) {
         if (xml != null && !"".equals(xml) && !xml.trim().startsWith("<?xml")) {
             xml = XML_HEAD + xml;
@@ -141,6 +161,12 @@ public class JdPayBuilder {
         return xml;
     }
 
+    /**
+     * Adds the XML header and the jdpay element to the XML string if they are not present.
+     *
+     * @param xml The XML string.
+     * @return The modified XML string.
+     */
     public static String addXmlHeadAndElJdPay(String xml) {
         if (xml != null && !"".equals(xml)) {
             if (!xml.contains(XML_JDPAY_START)) {
@@ -156,6 +182,13 @@ public class JdPayBuilder {
         return xml;
     }
 
+    /**
+     * Gets the content of a specified XML element.
+     *
+     * @param xml    The XML string.
+     * @param elName The name of the element.
+     * @return The content of the XML element.
+     */
     public static String getXmlElm(String xml, String elName) {
         String result = "";
         String elStart = "<" + elName + ">";
@@ -168,6 +201,13 @@ public class JdPayBuilder {
         return result;
     }
 
+    /**
+     * Deletes a specified XML element from the XML string.
+     *
+     * @param xml     The XML string.
+     * @param elmName The name of the element to delete.
+     * @return The XML string with the element removed.
+     */
     public static String delXmlElm(String xml, String elmName) {
         String elStart = "<" + elmName + ">";
         String elEnd = "</" + elmName + ">";
@@ -183,25 +223,33 @@ public class JdPayBuilder {
     }
 
     /**
-     * MD5 加密
+     * Encrypts data using MD5 and converts it to lowercase.
      *
-     * @param data 需要加密的数据
-     * @return 加密后的数据
+     * @param data The data to be encrypted.
+     * @return The encrypted data in lowercase.
      */
     public static String md5LowerCase(String data) {
         return Builder.md5(data).toLowerCase();
     }
 
     /**
-     * 请求参数 Map 转化为京东支付 xml
+     * Converts a map of request parameters to a JD Pay XML string.
      *
-     * @param params 请求参数
-     * @return
+     * @param params The request parameters.
+     * @return The resulting XML string.
      */
     public static String toJdPayXml(Map<String, String> params) {
         return WechatPayBuilder.forEachMap(params, "<jdpay>", "</jdpay>").toString();
     }
 
+    /**
+     * Creates a signature for an object, excluding specified keys.
+     *
+     * @param object      The object to be signed.
+     * @param rsaPriKey   The RSA private key.
+     * @param signKeyList A list of keys to be excluded from signing.
+     * @return The Base64-encoded signature.
+     */
     public static String signRemoveSelectedKeys(Object object, String rsaPriKey, List<String> signKeyList) {
         String result = "";
         try {
@@ -215,6 +263,14 @@ public class JdPayBuilder {
         return result;
     }
 
+    /**
+     * Creates a string for signing from an object's properties, excluding specified keys.
+     *
+     * @param object The object.
+     * @param list   A list of keys to exclude.
+     * @return A string formatted for signing.
+     * @throws IllegalArgumentException if an error occurs.
+     */
     public static String signString(Object object, List<String> list) throws IllegalArgumentException {
         Map<String, Object> map = BeanKit.beanToMap(object, null);
         StringBuilder sb = new StringBuilder();
@@ -241,6 +297,14 @@ public class JdPayBuilder {
         return result;
     }
 
+    /**
+     * Signs data using MD5withRSA.
+     *
+     * @param data       The data to be signed.
+     * @param privateKey The private key.
+     * @return The Base64-encoded signature.
+     * @throws Exception if an error occurs.
+     */
     public static String sign(byte[] data, String privateKey) throws Exception {
         byte[] keyBytes = Base64.decode(privateKey);
         PKCS8EncodedKeySpec pkcs8KeySpec = new PKCS8EncodedKeySpec(keyBytes);
@@ -253,12 +317,12 @@ public class JdPayBuilder {
     }
 
     /**
-     * 请求参数签名
+     * Encrypts and signs the request data.
      *
-     * @param rsaPrivateKey RSA 私钥
-     * @param strDesKey     DES 密钥
-     * @param genSignStr    xml 数据
-     * @return 签名后的数据
+     * @param rsaPrivateKey The RSA private key.
+     * @param strDesKey     The DES key.
+     * @param genSignStr    The XML data to be signed.
+     * @return The encrypted and signed data.
      */
     public static String encrypt(String rsaPrivateKey, String strDesKey, String genSignStr) {
         if (StringKit.isNotEmpty(rsaPrivateKey) && StringKit.isNotEmpty(strDesKey)
@@ -278,12 +342,12 @@ public class JdPayBuilder {
     }
 
     /**
-     * 解密接口返回的 xml 数据
+     * Decrypts the XML data returned from the interface.
      *
-     * @param rsaPubKey RSA 公钥
-     * @param strDesKey DES 密钥
-     * @param encrypt   加密的 xml 数据
-     * @return 解密后的数据
+     * @param rsaPubKey The RSA public key.
+     * @param strDesKey The DES key.
+     * @param encrypt   The encrypted XML data.
+     * @return The decrypted data.
      */
     public static String decrypt(String rsaPubKey, String strDesKey, String encrypt) {
         try {
@@ -301,11 +365,11 @@ public class JdPayBuilder {
     }
 
     /**
-     * 明文验证签名
+     * Verifies the signature of plaintext data.
      *
-     * @param rsaPubKey RSA 公钥
-     * @param reqBody   xml 数据
-     * @return 明文数据
+     * @param rsaPubKey The RSA public key.
+     * @param reqBody   The XML data.
+     * @return The plaintext data if the signature is valid.
      */
     public static String decrypt(String rsaPubKey, String reqBody) {
         try {
@@ -321,6 +385,13 @@ public class JdPayBuilder {
         }
     }
 
+    /**
+     * Creates a signature for the merchant.
+     *
+     * @param sourceSignString The string to be signed.
+     * @param rsaPriKey        The RSA private key.
+     * @return The Base64-encoded signature.
+     */
     public static String encryptMerchant(String sourceSignString, String rsaPriKey) {
         try {
             String sha256SourceSignString = Builder.sha256Hex(sourceSignString);
@@ -331,6 +402,14 @@ public class JdPayBuilder {
         }
     }
 
+    /**
+     * Verifies the merchant's signature.
+     *
+     * @param strSourceData The original data.
+     * @param signData      The signature data.
+     * @param rsaPubKey     The RSA public key.
+     * @return true if the signature is valid, false otherwise.
+     */
     public static boolean decryptMerchant(String strSourceData, String signData, String rsaPubKey) {
         if (signData == null || signData.isEmpty()) {
             throw new IllegalArgumentException("Argument 'signData' is null or empty");
@@ -353,6 +432,13 @@ public class JdPayBuilder {
         }
     }
 
+    /**
+     * Decrypts data using the public key.
+     *
+     * @param data The data to be decrypted.
+     * @param key  The public key.
+     * @return The decrypted data.
+     */
     @SneakyThrows
     public static byte[] decryptByPublicKey(byte[] data, String key) {
         byte[] keyBytes = Base64.decode(key);
@@ -364,6 +450,13 @@ public class JdPayBuilder {
         return cipher.doFinal(data);
     }
 
+    /**
+     * Encrypts data using the private key.
+     *
+     * @param data The data to be encrypted.
+     * @param key  The private key.
+     * @return The encrypted data.
+     */
     @SneakyThrows
     public static byte[] encryptByPrivateKey(byte[] data, String key) {
         byte[] keyBytes = Base64.decode(key);

@@ -28,18 +28,19 @@
 package org.miaixz.bus.office.excel.cell.values;
 
 /**
- * 抽象的单元格值接口，用于判断不同类型的单元格值 通过自定义的此接口，对于复杂的单元格值类型，可以自定义读取值的类型，如数字、公式等。
+ * Abstract interface for cell values, used to determine different types of cell values. Through this custom interface,
+ * for complex cell value types, the type of the read value can be customized, such as numbers, formulas, etc.
  *
- * @param <T> 值得类型
+ * @param <T> The type of the value.
  * @author Kimi Liu
  * @since Java 17+
  */
 public interface CellValue<T> {
 
     /**
-     * 获取单元格值
+     * Gets the cell value.
      *
-     * @return 值
+     * @return The value.
      */
     T getValue();
 

@@ -37,12 +37,16 @@ import java.util.function.Supplier;
 import org.miaixz.bus.core.center.function.SupplierX;
 
 /**
- * {@link MultipleValueMap}的通用实现，可视为值为{@link Collection}集合的{@link Map}集合。
- * 构建时指定一个工厂方法用于生成原始的{@link Map}集合，然后再指定一个工厂方法用于生成自定义类型的值集合。
- * 当调用{@link MultipleValueMap}中格式为“putXXX”的方法时，将会为key创建值集合，并将key相同的值追加到集合中
+ * A generic implementation of {@link MultipleValueMap} where the values associated with each key are stored in a
+ * {@link Collection}. This class allows specifying custom factories for both the underlying map and the type of
+ * collection used to hold multiple values.
+ * <p>
+ * When methods like {@code putValue} or {@code putAllValues} are called, a value collection will be created for the key
+ * (if one doesn't exist), and new values will be appended to this collection.
+ * 
  *
- * @param <K> 键类型
- * @param <V> 值类型
+ * @param <K> The type of keys in the map.
+ * @param <V> The type of values stored in the collections.
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -51,13 +55,17 @@ public class CollectionValueMap<K, V> extends AbstractCollValueMap<K, V> {
     @Serial
     private static final long serialVersionUID = 2852277301182L;
 
+    /**
+     * The supplier for creating new {@link Collection} instances to hold values for a key.
+     */
     private final SupplierX<Collection<V>> collFactory;
 
     /**
-     * 创建一个多值映射集合，基于{@code mapFactory}与{@code collFactory}实现
+     * Constructs a new {@code CollectionValueMap} using provided factories for the underlying map and value
+     * collections.
      *
-     * @param mapFactory  生成集合的工厂方法
-     * @param collFactory 生成值集合的工厂方法
+     * @param mapFactory  A factory method that supplies a {@link Map} to store the key-collection pairs.
+     * @param collFactory A factory method that supplies a {@link Collection} to store the values for each key.
      */
     public CollectionValueMap(final Supplier<Map<K, Collection<V>>> mapFactory,
             final SupplierX<Collection<V>> collFactory) {
@@ -66,31 +74,40 @@ public class CollectionValueMap<K, V> extends AbstractCollValueMap<K, V> {
     }
 
     /**
-     * 创建一个多值映射集合，默认基于{@link HashMap}与{@code collFactory}生成的集合实现
+     * Constructs a new {@code CollectionValueMap} with a default {@link HashMap} as the underlying map and a custom
+     * factory for value collections.
      *
-     * @param collFactory 生成值集合的工厂方法
+     * @param collFactory A factory method that supplies a {@link Collection} to store the values for each key.
      */
     public CollectionValueMap(final SupplierX<Collection<V>> collFactory) {
         this.collFactory = collFactory;
     }
 
     /**
-     * 创建一个多值映射集合，默认基于{@link HashMap}与{@link ArrayList}实现
+     * Constructs a new {@code CollectionValueMap} with a default {@link HashMap} as the underlying map and an
+     * {@link ArrayList} as the default value collection type.
      */
     public CollectionValueMap() {
         this.collFactory = ArrayList::new;
     }
 
     /**
-     * 创建一个多值映射集合，默认基于指定Map与指定List类型实现
+     * Constructs a new {@code CollectionValueMap} with initial data from the provided map. A new {@link HashMap} is
+     * created to store the data, and {@link ArrayList} is used for value collections.
      *
-     * @param map 提供数据的原始集合
+     * @param map The map providing initial key-collection pairs.
      */
     public CollectionValueMap(final Map<K, Collection<V>> map) {
         super(map);
         this.collFactory = ArrayList::new;
     }
 
+    /**
+     * Creates a new {@link Collection} instance using the configured {@link #collFactory}. This method is called
+     * internally when a new collection of values needs to be created for a key.
+     *
+     * @return A new {@link Collection} instance.
+     */
     @Override
     protected Collection<V> createCollection() {
         return collFactory.get();

@@ -33,13 +33,22 @@ import org.miaixz.bus.validate.magic.Matcher;
 import org.miaixz.bus.validate.magic.annotation.NotEmpty;
 
 /**
- * NOT NUll 校验
+ * Validator for the {@link NotEmpty} annotation. Checks if an object is not empty. An object is considered empty if it
+ * is null, an empty string, an empty collection, an empty map, or an empty array.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class NotEmptyMatcher implements Matcher<Object, NotEmpty> {
 
+    /**
+     * Checks if the given object is not empty.
+     *
+     * @param object     The object to validate.
+     * @param annotation The {@link NotEmpty} annotation instance (ignored).
+     * @param context    The validation context (ignored).
+     * @return {@code true} if the object is not empty, {@code false} otherwise.
+     */
     @Override
     public boolean on(Object object, NotEmpty annotation, Context context) {
         return ObjectKit.isNotEmpty(object);

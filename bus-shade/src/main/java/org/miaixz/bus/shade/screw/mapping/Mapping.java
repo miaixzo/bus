@@ -42,45 +42,48 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
 
 /**
- * 映射器
+ * A utility class for mapping {@link ResultSet} data to Java objects.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class Mapping {
 
+    /**
+     * Private constructor to prevent instantiation.
+     */
     private Mapping() {
     }
 
     /**
-     * 将ResultSet 结果转为对象
+     * Converts a single row from a {@link ResultSet} into an object of the specified class.
      *
-     * @param <T>       领域泛型
-     * @param resultSet {@link ResultSet} 对象
-     * @param clazz     领域类型
-     * @return 领域对象
-     * @throws InternalException 异常
+     * @param <T>       The generic type of the target object.
+     * @param resultSet The {@link ResultSet} containing the data.
+     * @param clazz     The target class to which the data will be mapped.
+     * @return An instance of the target class populated with data from the result set.
+     * @throws InternalException if a mapping or reflection error occurs.
      */
     public static <T> T convert(ResultSet resultSet, Class<T> clazz) throws InternalException {
-        // 存放列名和结果
+        // Map to store column names and their corresponding values.
         Map<String, Object> values = new HashMap<>(Normal._16);
         try {
-            // 处理 ResultSet
+            // Get metadata from the result set.
             ResultSetMetaData metaData = resultSet.getMetaData();
             int columnCount = metaData.getColumnCount();
-            // 迭代
+            // Iterate through the result set.
             while (resultSet.next()) {
-                // 放入内存
+                // Store column values in the map.
                 for (int i = 1; i <= columnCount; i++) {
                     String columnName = metaData.getColumnName(i);
                     values.put(columnName, resultSet.getString(columnName));
                 }
             }
-            // 有结果
-            if (values.size() != 0) {
-                // 获取类数据
+            // If there are results, create and populate the object.
+            if (!values.isEmpty()) {
+                // Get field and method information for the target class.
                 List<FieldMethod> fieldMethods = getFieldMethods(clazz);
-                // 设置属性值
+                // Create and populate the object.
                 return getObject(clazz, fieldMethods, values);
             }
             return clazz.getConstructor().newInstance();
@@ -90,35 +93,37 @@ public class Mapping {
     }
 
     /**
-     * @param resultSet {@link ResultSet} 对象
-     * @param clazz     领域类型
-     * @param <T>       领域泛型
-     * @return 领域对象
-     * @throws InternalException 异常
+     * Converts multiple rows from a {@link ResultSet} into a list of objects of the specified class.
+     *
+     * @param <T>       The generic type of the target objects.
+     * @param resultSet The {@link ResultSet} containing the data.
+     * @param clazz     The target class to which the data will be mapped.
+     * @return A list of instances of the target class.
+     * @throws InternalException if a mapping or reflection error occurs.
      */
     public static <T> List<T> convertList(ResultSet resultSet, Class<T> clazz) throws InternalException {
-        // 存放列名和结果
+        // List to store maps of column names and values for each row.
         List<Map<String, Object>> values = new ArrayList<>(Normal._16);
-        // 结果集合
+        // List to store the resulting objects.
         List<T> list = new ArrayList<>();
         try {
-            // 处理 ResultSet
+            // Get metadata from the result set.
             ResultSetMetaData metaData = resultSet.getMetaData();
             int columnCount = metaData.getColumnCount();
-            // 迭代
+            // Iterate through the result set.
             while (resultSet.next()) {
-                // map object
+                // Map for the current row.
                 HashMap<String, Object> value = new HashMap<>(Normal._16);
-                // 循环所有的列，获取列名，根据列名获取值
+                // Get column values for the current row.
                 for (int i = 1; i <= columnCount; i++) {
                     String columnName = metaData.getColumnName(i);
                     value.put(columnName, resultSet.getString(i));
                 }
                 values.add(value);
             }
-            // 获取类数据
+            // Get field and method information for the target class.
             List<FieldMethod> fieldMethods = getFieldMethods(clazz);
-            // 循环集合，根据类型反射构建对象
+            // Create and populate objects for each row.
             for (Map<String, Object> map : values) {
                 T rsp = getObject(clazz, fieldMethods, map);
                 list.add(rsp);
@@ -130,21 +135,22 @@ public class Mapping {
     }
 
     /**
-     * 获取对象
+     * Creates an object of the specified class and populates its fields from a map.
      *
-     * @param clazz        class
-     * @param fieldMethods List<FieldMethod>
-     * @param map          数据集合
-     * @param <T>          领域泛型
-     * @return 领域对象
-     * @throws InstantiationException    InstantiationException
-     * @throws IllegalAccessException    IllegalAccessException
-     * @throws InvocationTargetException InvocationTargetException
+     * @param <T>          The generic type of the target object.
+     * @param clazz        The target class.
+     * @param fieldMethods A list of {@link FieldMethod} pairs for the class.
+     * @param map          A map of data to populate the object with.
+     * @return An instance of the target class populated with data.
+     * @throws InstantiationException    if the class cannot be instantiated.
+     * @throws IllegalAccessException    if a field or method is not accessible.
+     * @throws InvocationTargetException if a setter method throws an exception.
+     * @throws NoSuchMethodException     if a required constructor is not found.
      */
     private static <T> T getObject(Class<T> clazz, List<FieldMethod> fieldMethods, Map<String, Object> map)
             throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         T rsp = clazz.getConstructor().newInstance();
-        // 设置属性值
+        // Set property values.
         for (FieldMethod filed : fieldMethods) {
             Field field = filed.getField();
             Method method = filed.getMethod();
@@ -157,69 +163,37 @@ public class Mapping {
     }
 
     /**
-     * 根据类型获取 FieldMethod
+     * Retrieves a list of {@link FieldMethod} pairs for a given class.
      *
-     * @param clazz {@link Class}
-     * @param <T>   {@link T}
-     * @return {@link List<FieldMethod>}
-     * @throws IntrospectionException IntrospectionException
-     * @throws NoSuchFieldException   NoSuchFieldException
+     * @param <T>   The generic type of the class.
+     * @param clazz The class to introspect.
+     * @return A list of {@link FieldMethod} pairs.
+     * @throws IntrospectionException if an error occurs during introspection.
+     * @throws NoSuchFieldException   if a field described by a property descriptor is not found.
      */
     private static <T> List<FieldMethod> getFieldMethods(Class<T> clazz)
             throws IntrospectionException, NoSuchFieldException {
-        // 结果集合
+        // List to store the results.
         List<FieldMethod> fieldMethods = new ArrayList<>();
-        // BeanInfo
+        // Get bean info for the class.
         BeanInfo beanInfo = Introspector.getBeanInfo(clazz);
         PropertyDescriptor[] pds = beanInfo.getPropertyDescriptors();
-        // 循环处理值
+        // Iterate through property descriptors.
         for (PropertyDescriptor pd : pds) {
             Method writeMethod = pd.getWriteMethod();
             if (null == writeMethod) {
                 continue;
             }
-            // 获取字段
+            // Get the corresponding field.
             Field field = clazz.getDeclaredField(pd.getName());
-            // 获取只写方法
+            // Create and populate a FieldMethod object.
             FieldMethod fieldMethod = new FieldMethod();
             fieldMethod.setField(field);
             fieldMethod.setMethod(writeMethod);
-            // 放入集合
+            // Add to the list.
             fieldMethods.add(fieldMethod);
         }
         return fieldMethods;
-    }
-
-    /**
-     * 尝试获取属性
-     * <p>
-     * 不会抛出异常，不存在则返回null
-     *
-     * @param clazz    {@link Class}
-     * @param itemName {@link String}
-     * @return {@link Field}
-     */
-    private static Field tryGetFieldWithoutExp(Class<?> clazz, String itemName) {
-        try {
-            return clazz.getDeclaredField(itemName);
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    /**
-     * 获取属性设置属性
-     *
-     * @param clazz {@link Class}
-     * @param field {@link Field}
-     * @return {@link Method}
-     */
-    private static <T> Method tryGetSetMethod(Class<T> clazz, Field field, String methodName) {
-        try {
-            return clazz.getDeclaredMethod(methodName, field.getType());
-        } catch (Exception e) {
-            return null;
-        }
     }
 
 }

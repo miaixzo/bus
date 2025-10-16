@@ -38,23 +38,24 @@ import org.miaixz.bus.core.xyz.StreamKit;
 import org.miaixz.bus.core.xyz.TreeKit;
 
 /**
+ * An iterator for traversing hierarchical structures (like trees or graphs), supporting both {@link #depthFirst
+ * depth-first} and {@link #breadthFirst breadth-first} traversal modes. This iterator is designed for read-only access
+ * and does not support the {@link Iterator#remove} method. For building or manipulating tree structures, see
+ * {@link BeanTree} or {@link TreeKit}.
  * <p>
- * 用于迭代层级结构（比如树或图）的迭代器， 支持{@link #depthFirst 广度优先}与{@link #breadthFirst 深度优先}两种遍历模式。
- * 迭代器仅适用于访问层级结构，因此不支持{@link Iterator#remove}方法。 要构建树或者操作数，请参见{@link BeanTree}或{@link TreeKit}。
- *
- * <p>
- * 该迭代器侧重于打通图或树这类数据结构与传统集合间的隔阂， 从而支持通过传统可迭代集合的方式对树或图中的节点进行操作。 比如：
+ * This iterator bridges the gap between hierarchical data structures and traditional collections, allowing you to
+ * operate on nodes in a tree or graph as if they were in a standard iterable collection. For example:
  * 
  * <pre>{@code
- * Tree root = // 构建树结构
- * // 搜索树结构中所有级别为3的节点，并按权重排序
- * List<Tree> thirdLevelNodes = StreamKit.iterateHierarchies(root, Tree:getChildren)
- * 	.filter(node -> node.getLevel() == 3)
- * 	.sorted(Comparator.comparing(Tree::getWeight))
- * 	.toList();
+ * Tree root = // ... build your tree structure
+ * // Find all nodes at level 3 and sort them by weight
+ * List<Tree> thirdLevelNodes = StreamKit.iterateHierarchies(root, Tree::getChildren)
+ *     .filter(node -> node.getLevel() == 3)
+ *     .sorted(Comparator.comparing(Tree::getWeight))
+ *     .toList();
  * }</pre>
  *
- * @param <T> 元素类型
+ * @param <T> The type of elements in the hierarchy.
  * @author Kimi Liu
  * @see EasyStream#iterateHierarchies
  * @see StreamKit#iterateHierarchies
@@ -63,31 +64,32 @@ import org.miaixz.bus.core.xyz.TreeKit;
 public abstract class HierarchyIterator<T> implements Iterator<T> {
 
     /**
-     * 下一层级节点的获取方法
+     * Function to discover the next level of nodes.
      */
     protected final Function<T, Collection<T>> elementDiscoverer;
     /**
-     * 节点过滤器，不匹配的节点与以其作为根节点的子树将将会被忽略
+     * A filter for nodes. Nodes that do not match (and their subtrees) will be ignored.
      */
     protected final Predicate<T> filter;
     /**
-     * 已经访问过的列表
+     * A set of nodes that have already been visited to prevent cycles.
      */
     protected final Set<T> accessed = new HashSet<>();
     /**
-     * 当前待遍历的节点
+     * A queue of nodes waiting to be traversed.
      */
     protected final LinkedList<T> queue = new LinkedList<>();
 
     /**
-     * 创建一个迭代器
+     * Creates a new hierarchy iterator.
      *
-     * @param root              根节点，根节点不允许被{@code filter}过滤
-     * @param elementDiscoverer 获取下一层级节点的方法
-     * @param filter            节点过滤器，不匹配的节点与以其作为根节点的子树将将会被忽略
+     * @param root              The root element. It cannot be filtered out.
+     * @param elementDiscoverer A function to get the children of an element.
+     * @param filter            A predicate to filter elements. Non-matching elements and their children will be
+     *                          skipped.
      */
     HierarchyIterator(final T root, final Function<T, Collection<T>> elementDiscoverer, final Predicate<T> filter) {
-        // 根节点不允许被过滤
+        // The root node cannot be filtered out.
         Assert.isTrue(filter.test(root), "root node cannot be filtered!");
         queue.add(root);
         this.elementDiscoverer = Assert.notNull(elementDiscoverer);
@@ -95,13 +97,13 @@ public abstract class HierarchyIterator<T> implements Iterator<T> {
     }
 
     /**
-     * 获取一个迭代器，用于按广度优先迭代层级结构中的每一个结点
+     * Creates an iterator for breadth-first traversal of a hierarchical structure.
      *
-     * @param root           根节点，根节点不允许被{@code filter}过滤
-     * @param nextDiscoverer 下一层级节点的获取方法
-     * @param filter         节点过滤器，不匹配的节点与以其作为根节点的子树将将会被忽略
-     * @param <T>            元素类型
-     * @return 迭代器
+     * @param <T>            The type of the elements.
+     * @param root           The root element. It cannot be filtered out.
+     * @param nextDiscoverer A function to get the children of an element.
+     * @param filter         A predicate to filter elements. Non-matching elements and their children will be skipped.
+     * @return A new breadth-first iterator.
      */
     public static <T> HierarchyIterator<T> breadthFirst(
             final T root,
@@ -111,25 +113,25 @@ public abstract class HierarchyIterator<T> implements Iterator<T> {
     }
 
     /**
-     * 获取一个迭代器，用于按广度优先迭代层级结构中的每一个结点
+     * Creates an iterator for breadth-first traversal of a hierarchical structure with no filtering.
      *
-     * @param root           根节点，根节点不允许被{@code filter}过滤
-     * @param nextDiscoverer 下一层级节点的获取方法
-     * @param <T>            元素类型
-     * @return 迭代器
+     * @param <T>            The type of the elements.
+     * @param root           The root element.
+     * @param nextDiscoverer A function to get the children of an element.
+     * @return A new breadth-first iterator.
      */
     public static <T> HierarchyIterator<T> breadthFirst(final T root, final Function<T, Collection<T>> nextDiscoverer) {
         return breadthFirst(root, nextDiscoverer, t -> true);
     }
 
     /**
-     * 获取一个迭代器，用于按深度优先迭代层级结构中的每一个结点
+     * Creates an iterator for depth-first traversal of a hierarchical structure.
      *
-     * @param root           根节点，根节点不允许被{@code filter}过滤
-     * @param nextDiscoverer 下一层级节点的获取方法
-     * @param filter         节点过滤器，不匹配的节点与以其作为根节点的子树将将会被忽略
-     * @param <T>            元素类型
-     * @return 迭代器
+     * @param <T>            The type of the elements.
+     * @param root           The root element. It cannot be filtered out.
+     * @param nextDiscoverer A function to get the children of an element.
+     * @param filter         A predicate to filter elements. Non-matching elements and their children will be skipped.
+     * @return A new depth-first iterator.
      */
     public static <T> HierarchyIterator<T> depthFirst(
             final T root,
@@ -139,21 +141,21 @@ public abstract class HierarchyIterator<T> implements Iterator<T> {
     }
 
     /**
-     * 获取一个迭代器，用于按深度优先迭代层级结构中的每一个结点
+     * Creates an iterator for depth-first traversal of a hierarchical structure with no filtering.
      *
-     * @param root           根节点，根节点不允许被{@code filter}过滤
-     * @param nextDiscoverer 下一层级节点的获取方法
-     * @param <T>            元素类型
-     * @return 迭代器
+     * @param <T>            The type of the elements.
+     * @param root           The root element.
+     * @param nextDiscoverer A function to get the children of an element.
+     * @return A new depth-first iterator.
      */
     public static <T> HierarchyIterator<T> depthFirst(final T root, final Function<T, Collection<T>> nextDiscoverer) {
         return depthFirst(root, nextDiscoverer, t -> true);
     }
 
     /**
-     * 是否仍有下一个节点
+     * Returns {@code true} if the iteration has more elements.
      *
-     * @return 是否
+     * @return {@code true} if the iteration has more elements.
      */
     @Override
     public boolean hasNext() {
@@ -161,9 +163,10 @@ public abstract class HierarchyIterator<T> implements Iterator<T> {
     }
 
     /**
-     * 获取下一个节点
+     * Returns the next element in the iteration.
      *
-     * @return 下一个节点
+     * @return The next element in the iteration.
+     * @throws NoSuchElementException if the iteration has no more elements.
      */
     @Override
     public T next() {
@@ -181,36 +184,36 @@ public abstract class HierarchyIterator<T> implements Iterator<T> {
     }
 
     /**
-     * 将下一层级的节点搜集到队列
+     * Collects the next level of elements and adds them to the traversal queue.
      *
-     * @param nextElements 待收集的下一层级的节点
+     * @param nextElements The elements to be added to the queue.
      * @see #queue
      * @see #accessed
      */
     protected abstract void collectNextElementsToQueue(final Collection<T> nextElements);
 
     /**
-     * 深度优先遍历
+     * Implements depth-first traversal.
      *
-     * @param <T> 元素
+     * @param <T> The type of the elements.
      */
     static class DepthFirst<T> extends HierarchyIterator<T> {
 
         /**
-         * 创建一个迭代器
+         * Creates a new depth-first iterator.
          *
-         * @param root           根节点，根节点不允许被{@code filter}过滤
-         * @param nextDiscoverer 获取下一层级节点的方法
-         * @param filter         节点过滤器，不匹配的节点与以其作为根节点的子树将将会被忽略
+         * @param root           The root element.
+         * @param nextDiscoverer A function to get the children of an element.
+         * @param filter         A predicate to filter elements.
          */
         DepthFirst(final T root, final Function<T, Collection<T>> nextDiscoverer, final Predicate<T> filter) {
             super(root, nextDiscoverer, filter);
         }
 
         /**
-         * 将下一层级的节点搜集到队列
+         * Adds the next elements to the front of the queue to achieve depth-first traversal.
          *
-         * @param nextElements 待收集的下一层级的节点
+         * @param nextElements The elements to be added.
          */
         @Override
         protected void collectNextElementsToQueue(final Collection<T> nextElements) {
@@ -225,27 +228,27 @@ public abstract class HierarchyIterator<T> implements Iterator<T> {
     }
 
     /**
-     * 广度优先遍历
+     * Implements breadth-first traversal.
      *
-     * @param <T> 元素类型
+     * @param <T> The type of the elements.
      */
     static class BreadthFirst<T> extends HierarchyIterator<T> {
 
         /**
-         * 创建一个迭代器
+         * Creates a new breadth-first iterator.
          *
-         * @param root           根节点，根节点不允许被{@code filter}过滤
-         * @param nextDiscoverer 获取下一层级节点的方法
-         * @param filter         节点过滤器，不匹配的节点与以其作为根节点的子树将将会被忽略
+         * @param root           The root element.
+         * @param nextDiscoverer A function to get the children of an element.
+         * @param filter         A predicate to filter elements.
          */
         BreadthFirst(final T root, final Function<T, Collection<T>> nextDiscoverer, final Predicate<T> filter) {
             super(root, nextDiscoverer, filter);
         }
 
         /**
-         * 将下一层级的节点搜集到队列
+         * Adds the next elements to the end of the queue to achieve breadth-first traversal.
          *
-         * @param nextElements 待收集的下一层级的节点
+         * @param nextElements The elements to be added.
          */
         @Override
         protected void collectNextElementsToQueue(final Collection<T> nextElements) {

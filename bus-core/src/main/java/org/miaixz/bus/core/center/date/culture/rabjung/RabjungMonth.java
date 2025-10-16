@@ -27,46 +27,34 @@
 */
 package org.miaixz.bus.core.center.date.culture.rabjung;
 
-import org.miaixz.bus.core.center.date.culture.Loops;
-import org.miaixz.bus.core.center.date.culture.cn.Zodiac;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.miaixz.bus.core.center.date.culture.Loops;
+import org.miaixz.bus.core.center.date.culture.cn.Zodiac;
+
 /**
- * 藏历月，仅支持藏历1950年十二月至藏历2050年十二月
+ * Represents a month in the Tibetan calendar. Only supports Tibetan calendar from December 1950 to December 2050.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class RabjungMonth extends Loops {
 
+    /**
+     * Names of Tibetan months.
+     */
     public static final String[] NAMES = { "正月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月" };
+    /**
+     * Aliases for Tibetan months.
+     */
     public static final String[] ALIAS = { "神变月", "苦行月", "具香月", "萨嘎月", "作净月", "明净月", "具醉月", "具贤月", "天降月", "持众月", "庄严月",
             "满意月" };
-
     /**
-     * 藏历年
+     * Map storing special days (leap days and missing days) for each month.
      */
-    protected RabjungYear year;
-
-    /**
-     * 月
-     */
-    protected int month;
-
-    /**
-     * 是否闰月
-     */
-    protected boolean leap;
-
-    /**
-     * 位于当年的索引，0-12
-     */
-    protected int indexInYear;
-
     protected static final Map<Integer, int[]> DAYS = new HashMap<>();
 
     static {
@@ -90,6 +78,31 @@ public class RabjungMonth extends Loops {
         }
     }
 
+    /**
+     * The Tibetan year this month belongs to.
+     */
+    protected RabjungYear year;
+    /**
+     * The month number.
+     */
+    protected int month;
+    /**
+     * Indicates if this is a leap month.
+     */
+    protected boolean leap;
+    /**
+     * The index of this month within the year, 0-12.
+     */
+    protected int indexInYear;
+
+    /**
+     * Constructs a {@code RabjungMonth} with the given Tibetan year and month.
+     *
+     * @param year  The Tibetan year.
+     * @param month The Tibetan month, negative for leap months.
+     * @throws IllegalArgumentException if the month is out of valid range, or if the year is outside the supported
+     *                                  range (1950-2050), or if a leap month is specified incorrectly.
+     */
     public RabjungMonth(RabjungYear year, int month) {
         if (month == 0 || month > 12 || month < -12) {
             throw new IllegalArgumentException(String.format("illegal rab-byung month: %d", month));
@@ -110,7 +123,7 @@ public class RabjungMonth extends Loops {
         this.year = year;
         this.month = m;
         this.leap = leap;
-        // 位于当年的索引
+        // Index within the current year
         int index = m - 1;
         if (leap || (0 < leapMonth && leapMonth < m)) {
             index += 1;
@@ -119,101 +132,118 @@ public class RabjungMonth extends Loops {
     }
 
     /**
-     * 从藏历年月初始化
+     * Constructs a {@code RabjungMonth} from the given Tibetan year and month.
      *
-     * @param year  藏历年
-     * @param month 藏历月，闰月为负
+     * @param year  The Tibetan year.
+     * @param month The Tibetan month, negative for leap months.
      */
     public RabjungMonth(int year, int month) {
         this(RabjungYear.fromYear(year), month);
     }
 
+    /**
+     * Constructs a {@code RabjungMonth} from the given Rabjung index, element, zodiac, and month.
+     *
+     * @param rabByungIndex The Rabjung cycle index.
+     * @param element       The Rabjung element.
+     * @param zodiac        The Rabjung zodiac.
+     * @param month         The Tibetan month.
+     */
     public RabjungMonth(int rabByungIndex, RabjungElement element, Zodiac zodiac, int month) {
         this(RabjungYear.fromElementZodiac(rabByungIndex, element, zodiac), month);
     }
 
     /**
-     * 从藏历年月初始化
+     * Creates a {@code RabjungMonth} instance from the given Tibetan year and month.
      *
-     * @param year  藏历年
-     * @param month 藏历月，闰月为负
-     * @return 藏历月
+     * @param year  The Tibetan year.
+     * @param month The Tibetan month, negative for leap months.
+     * @return A new {@link RabjungMonth} instance.
      */
     public static RabjungMonth fromYm(int year, int month) {
         return new RabjungMonth(year, month);
     }
 
+    /**
+     * Creates a {@code RabjungMonth} instance from the given Rabjung index, element, zodiac, and month.
+     *
+     * @param rabByungIndex The Rabjung cycle index.
+     * @param element       The Rabjung element.
+     * @param zodiac        The Rabjung zodiac.
+     * @param month         The Tibetan month.
+     * @return A new {@link RabjungMonth} instance.
+     */
     public static RabjungMonth fromElementZodiac(int rabByungIndex, RabjungElement element, Zodiac zodiac, int month) {
         return new RabjungMonth(rabByungIndex, element, zodiac, month);
     }
 
     /**
-     * 藏历年
+     * Gets the Tibetan year this month belongs to.
      *
-     * @return 藏历年
+     * @return The {@link RabjungYear}.
      */
     public RabjungYear getRabByungYear() {
         return year;
     }
 
     /**
-     * 年
+     * Gets the Gregorian year corresponding to this Tibetan month.
      *
-     * @return 年
+     * @return The Gregorian year.
      */
     public int getYear() {
         return year.getYear();
     }
 
     /**
-     * 月
+     * Gets the month number.
      *
-     * @return 月
+     * @return The month number.
      */
     public int getMonth() {
         return month;
     }
 
     /**
-     * 月
+     * Gets the month number, returning a negative value if it's a leap month.
      *
-     * @return 月，当月为闰月时，返回负数
+     * @return The month number, negative for leap months.
      */
     public int getMonthWithLeap() {
         return leap ? -month : month;
     }
 
     /**
-     * 位于当年的索引(0-12)
+     * Gets the index of this month within the year (0-12).
      *
-     * @return 索引
+     * @return The index.
      */
     public int getIndexInYear() {
         return indexInYear;
     }
 
     /**
-     * 是否闰月
+     * Checks if this is a leap month.
      *
-     * @return true/false
+     * @return {@code true} if it's a leap month, {@code false} otherwise.
      */
     public boolean isLeap() {
         return leap;
     }
 
     /**
-     * 名称
+     * Gets the name of this Tibetan month.
      *
-     * @return 名称
+     * @return The name of this Tibetan month.
      */
     public String getName() {
         return (leap ? "闰" : "") + NAMES[month - 1];
     }
 
     /**
-     * 别名
+     * Gets the alias name of this Tibetan month.
      *
-     * @return 别名
+     * @return The alias name of this Tibetan month.
      */
     public String getAlias() {
         return (leap ? "闰" : "") + ALIAS[month - 1];
@@ -224,6 +254,12 @@ public class RabjungMonth extends Loops {
         return year + getName();
     }
 
+    /**
+     * Gets the Tibetan month after a specified number of months.
+     *
+     * @param n The number of months to add.
+     * @return The {@link RabjungMonth} after {@code n} months.
+     */
     public RabjungMonth next(int n) {
         if (n == 0) {
             return fromYm(getYear(), getMonthWithLeap());
@@ -257,18 +293,18 @@ public class RabjungMonth extends Loops {
     }
 
     /**
-     * 首日
+     * Gets the first day of this Tibetan month.
      *
-     * @return 藏历日
+     * @return The first {@link RabjungDay} of this month.
      */
     public RabjungDay getFirstDay() {
         return new RabjungDay(this, 1);
     }
 
     /**
-     * 本月的藏历日列表
+     * Gets a list of all Tibetan days in this month.
      *
-     * @return 藏历日列表
+     * @return A list of {@link RabjungDay} objects for this month.
      */
     public List<RabjungDay> getDays() {
         List<RabjungDay> l = new ArrayList<>();
@@ -287,18 +323,19 @@ public class RabjungMonth extends Loops {
     }
 
     /**
-     * 当月天数
+     * Gets the number of days in this month.
      *
-     * @return 数量
+     * @return The number of days.
      */
     public int getDayCount() {
         return 30 + getLeapDays().size() - getMissDays().size();
     }
 
     /**
-     * 特殊日子列表，闰日为正，缺日为负
+     * Gets a list of special days in this month. Positive values indicate leap days, negative values indicate missing
+     * days.
      *
-     * @return 特殊日子列表
+     * @return A list of integers representing special days.
      */
     public List<Integer> getSpecialDays() {
         List<Integer> l = new ArrayList<>();
@@ -313,9 +350,9 @@ public class RabjungMonth extends Loops {
     }
 
     /**
-     * 闰日列表
+     * Gets a list of leap days in this month.
      *
-     * @return 闰日列表
+     * @return A list of integers representing leap days.
      */
     public List<Integer> getLeapDays() {
         List<Integer> l = new ArrayList<>();
@@ -329,9 +366,9 @@ public class RabjungMonth extends Loops {
     }
 
     /**
-     * 缺日列表
+     * Gets a list of missing days in this month.
      *
-     * @return 缺日列表
+     * @return A list of integers representing missing days.
      */
     public List<Integer> getMissDays() {
         List<Integer> l = new ArrayList<>();

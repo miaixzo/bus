@@ -31,40 +31,42 @@ import org.miaixz.bus.core.io.StreamProgress;
 import org.miaixz.bus.core.lang.Normal;
 
 /**
- * IO拷贝抽象，可自定义包括缓存、进度条等信息 此对象非线程安全
+ * Abstract IO copier, allowing customization including buffer, progress bar, and other information. This object is not
+ * thread-safe.
  *
- * @param <S> 拷贝源类型，如InputStream、Reader等
- * @param <T> 拷贝目标类型，如OutputStream、Writer等
+ * @param <S> The type of the copy source, such as InputStream, Reader, etc.
+ * @param <T> The type of the copy target, such as OutputStream, Writer, etc.
  * @author Kimi Liu
  * @since Java 17+
  */
 public abstract class IoCopier<S, T> {
 
     /**
-     * 缓存大小
+     * The buffer size.
      */
     protected final int bufferSize;
     /**
-     * 拷贝总数
+     * The total number of bytes to copy. Use {@link Long#MAX_VALUE} for unlimited.
      */
     protected final long count;
 
     /**
-     * 进度条
+     * The stream progress listener.
      */
     protected StreamProgress progress;
 
     /**
-     * 是否每次写出一个buffer内容就执行flush
+     * Whether to flush after writing each buffer content.
      */
     protected boolean flushEveryBuffer;
 
     /**
-     * 构造
+     * Constructs an {@code IoCopier} with the specified buffer size, total count, and progress listener.
      *
-     * @param bufferSize 缓存大小，&lt; 0 表示默认{@link Normal#_8192}
-     * @param count      拷贝总数，-1表示无限制
-     * @param progress   进度条
+     * @param bufferSize The buffer size. If less than or equal to 0, the default {@link Normal#_8192} is used.
+     * @param count      The total number of bytes to copy. If less than or equal to 0, {@link Long#MAX_VALUE}
+     *                   (unlimited) is used.
+     * @param progress   The progress listener.
      */
     public IoCopier(final int bufferSize, final long count, final StreamProgress progress) {
         this.bufferSize = bufferSize > 0 ? bufferSize : Normal._8192;
@@ -73,29 +75,29 @@ public abstract class IoCopier<S, T> {
     }
 
     /**
-     * 执行拷贝
+     * Executes the copy operation.
      *
-     * @param source 拷贝源，如InputStream、Reader等
-     * @param target 拷贝目标，如OutputStream、Writer等
-     * @return 拷贝的实际长度
+     * @param source The copy source, such as InputStream, Reader, etc.
+     * @param target The copy target, such as OutputStream, Writer, etc.
+     * @return The actual number of bytes copied.
      */
     public abstract long copy(S source, T target);
 
     /**
-     * 缓存大小，取默认缓存和目标长度最小值
+     * Calculates the buffer size, taking the minimum of the default buffer size and the target length.
      *
-     * @param count 目标长度
-     * @return 缓存大小
+     * @param count The target length.
+     * @return The calculated buffer size.
      */
     protected int bufferSize(final long count) {
         return (int) Math.min(this.bufferSize, count);
     }
 
     /**
-     * 设置是否每次写出一个buffer内容就执行flush
+     * Sets whether to flush after writing each buffer content.
      *
-     * @param flushEveryBuffer 是否每次写出一个buffer内容就执行flush
-     * @return this
+     * @param flushEveryBuffer {@code true} to flush after each buffer write, {@code false} otherwise.
+     * @return This {@link IoCopier} instance.
      */
     public IoCopier<S, T> setFlushEveryBuffer(final boolean flushEveryBuffer) {
         this.flushEveryBuffer = flushEveryBuffer;

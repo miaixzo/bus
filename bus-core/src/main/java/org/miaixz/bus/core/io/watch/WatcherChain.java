@@ -36,7 +36,8 @@ import java.util.List;
 import org.miaixz.bus.core.lang.Chain;
 
 /**
- * 观察者链 用于加入多个观察者
+ * A chain of {@link Watcher} instances. This class allows multiple watchers to be grouped together and notified
+ * sequentially for file system events.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,29 +45,37 @@ import org.miaixz.bus.core.lang.Chain;
 public class WatcherChain implements Watcher, Chain<Watcher, WatcherChain> {
 
     /**
-     * 观察者列表
+     * The list of {@link Watcher} instances in this chain.
      */
     final private List<Watcher> chain;
 
     /**
-     * 构造
+     * Constructs a new {@code WatcherChain} with the specified array of watchers.
      *
-     * @param watchers 观察者列表
+     * @param watchers An array of {@link Watcher} instances to be included in this chain.
      */
     public WatcherChain(final Watcher... watchers) {
         chain = Arrays.asList(watchers);
     }
 
     /**
-     * 创建观察者链{@code WatcherChain}
+     * Creates a new {@code WatcherChain} instance with the given watchers.
      *
-     * @param watchers 观察者列表
-     * @return {@code WatcherChain}
+     * @param watchers An array of {@link Watcher} instances to form the chain.
+     * @return A new {@code WatcherChain} instance.
      */
     public static WatcherChain of(final Watcher... watchers) {
         return new WatcherChain(watchers);
     }
 
+    /**
+     * Notifies all watchers in the chain that a file or directory has been created.
+     *
+     * @param event The {@link WatchEvent} that occurred. The created file or directory name can be obtained via
+     *              {@link WatchEvent#context()}.
+     * @param key   The {@link WatchKey} on which the event occurred. The monitored path can be obtained via
+     *              {@link WatchKey#watchable()}.
+     */
     @Override
     public void onCreate(final WatchEvent<?> event, final WatchKey key) {
         for (final Watcher watcher : chain) {
@@ -74,6 +83,14 @@ public class WatcherChain implements Watcher, Chain<Watcher, WatcherChain> {
         }
     }
 
+    /**
+     * Notifies all watchers in the chain that a file or directory has been modified.
+     *
+     * @param event The {@link WatchEvent} that occurred. The modified file or directory name can be obtained via
+     *              {@link WatchEvent#context()}.
+     * @param key   The {@link WatchKey} on which the event occurred. The monitored path can be obtained via
+     *              {@link WatchKey#watchable()}.
+     */
     @Override
     public void onModify(final WatchEvent<?> event, final WatchKey key) {
         for (final Watcher watcher : chain) {
@@ -81,6 +98,14 @@ public class WatcherChain implements Watcher, Chain<Watcher, WatcherChain> {
         }
     }
 
+    /**
+     * Notifies all watchers in the chain that a file or directory has been deleted.
+     *
+     * @param event The {@link WatchEvent} that occurred. The deleted file or directory name can be obtained via
+     *              {@link WatchEvent#context()}.
+     * @param key   The {@link WatchKey} on which the event occurred. The monitored path can be obtained via
+     *              {@link WatchKey#watchable()}.
+     */
     @Override
     public void onDelete(final WatchEvent<?> event, final WatchKey key) {
         for (final Watcher watcher : chain) {
@@ -88,6 +113,14 @@ public class WatcherChain implements Watcher, Chain<Watcher, WatcherChain> {
         }
     }
 
+    /**
+     * Notifies all watchers in the chain that an overflow event has occurred.
+     *
+     * @param event The {@link WatchEvent} that occurred. The context of the overflow event can be obtained via
+     *              {@link WatchEvent#context()}.
+     * @param key   The {@link WatchKey} on which the event occurred. The monitored path can be obtained via
+     *              {@link WatchKey#watchable()}.
+     */
     @Override
     public void onOverflow(final WatchEvent<?> event, final WatchKey key) {
         for (final Watcher watcher : chain) {
@@ -95,11 +128,22 @@ public class WatcherChain implements Watcher, Chain<Watcher, WatcherChain> {
         }
     }
 
+    /**
+     * Returns an iterator over the {@link Watcher} instances in this chain.
+     *
+     * @return An {@link Iterator} over the watchers.
+     */
     @Override
     public Iterator<Watcher> iterator() {
         return this.chain.iterator();
     }
 
+    /**
+     * Adds a {@link Watcher} to the end of this chain.
+     *
+     * @param element The {@link Watcher} to add to the chain.
+     * @return This {@code WatcherChain} instance, allowing for method chaining.
+     */
     @Override
     public WatcherChain addChain(final Watcher element) {
         this.chain.add(element);

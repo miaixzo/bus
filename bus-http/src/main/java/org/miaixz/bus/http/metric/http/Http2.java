@@ -27,22 +27,27 @@
 */
 package org.miaixz.bus.http.metric.http;
 
-import java.io.IOException;
-
 import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 
+import java.io.IOException;
+
 /**
+ * Defines constants and utility methods for the HTTP/2 protocol.
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class Http2 {
+public final class Http2 {
 
+    /**
+     * The HTTP/2 connection preface string.
+     */
     static final ByteString CONNECTION_PREFACE = ByteString.encodeUtf8("PRI * HTTP/2.0\r\n\r\nSM\r\n\r\n");
 
     /**
-     * 初始最大帧大小，应用于独立写入，或从同行读取.
+     * The initial maximum frame size, applied to independent writes or read from the peer.
      */
     static final int INITIAL_MAX_FRAME_SIZE = 0x4000; // 16384
 
@@ -66,12 +71,13 @@ public class Http2 {
     static final byte FLAG_PRIORITY = 0x20; // Used for headers.
     static final byte FLAG_COMPRESSED = 0x20; // Used for data.
     /**
-     * 查找表的有效标志的数据，报头，延续。无效的组合用二进制表示.
+     * A lookup table for valid flags for DATA, HEADERS, and CONTINUATION frames. Invalid combinations are represented
+     * in binary.
      */
     static final String[] FLAGS = new String[0x40];
     static final String[] BINARY = new String[Normal._256];
     /**
-     * 查找有效框架类型的表
+     * A lookup table for valid frame types.
      */
     private static final String[] FRAME_NAMES = new String[] { "DATA", "HEADERS", "PRIORITY", "RST_STREAM", "SETTINGS",
             "PUSH_PROMISE", "PING", "GOAWAY", "WINDOW_UPDATE", "CONTINUATION" };
@@ -105,7 +111,7 @@ public class Http2 {
         }
 
         for (int i = 0; i < FLAGS.length; i++) {
-            if (null == FLAGS[i])
+            if (FLAGS[i] == null)
                 FLAGS[i] = BINARY[i];
         }
     }
@@ -113,16 +119,31 @@ public class Http2 {
     private Http2() {
     }
 
+    /**
+     * Creates an {@link IllegalArgumentException} with a formatted message.
+     *
+     * @param message The format string for the message.
+     * @param args    The arguments for the format string.
+     * @return An {@link IllegalArgumentException}.
+     */
     static IllegalArgumentException illegalArgument(String message, Object... args) {
         throw new IllegalArgumentException(String.format(message, args));
     }
 
+    /**
+     * Creates an {@link IOException} with a formatted message.
+     *
+     * @param message The format string for the message.
+     * @param args    The arguments for the format string.
+     * @return An {@link IOException}.
+     * @throws IOException always throws this exception.
+     */
     static IOException ioException(String message, Object... args) throws IOException {
         throw new IOException(String.format(message, args));
     }
 
     /**
-     * Returns human-readable representation of HTTP/2 frame headers. The format is:
+     * Returns a human-readable representation of HTTP/2 frame headers. The format is:
      * 
      * <pre>
      *   direction streamID length type flags
@@ -136,6 +157,13 @@ public class Http2 {
      *   << 0x0000000f    12 HEADERS       END_HEADERS|END_STREAM
      * }
      * </pre>
+     *
+     * @param inbound  True if the frame is inbound, false if outbound.
+     * @param streamId The stream ID.
+     * @param length   The length of the frame payload.
+     * @param type     The frame type.
+     * @param flags    The frame flags.
+     * @return A formatted string representing the HTTP/2 frame.
      */
     static String frameLog(boolean inbound, int streamId, int length, byte type, byte flags) {
         String formattedType = type < FRAME_NAMES.length ? FRAME_NAMES[type] : String.format("0x%02x", type);
@@ -150,7 +178,11 @@ public class Http2 {
     }
 
     /**
-     * Looks up valid string representing flags from the table. Invalid combinations are represented in binary.
+     * Looks up a valid string representing flags from the table. Invalid combinations are represented in binary.
+     *
+     * @param type  The frame type.
+     * @param flags The frame flags.
+     * @return A string representation of the flags.
      */
     // Visible for testing.
     static String formatFlags(byte type, byte flags) {

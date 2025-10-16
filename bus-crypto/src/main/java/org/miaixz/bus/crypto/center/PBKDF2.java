@@ -35,7 +35,9 @@ import org.miaixz.bus.core.xyz.HexKit;
 import org.miaixz.bus.crypto.Keeper;
 
 /**
- * PBKDF2应用一个伪随机函数以导出密钥，PBKDF2简单而言就是将salted hash进行多次重复计算。 参考：https://blog.csdn.net/huoji555/article/details/83659687
+ * PBKDF2 (Password-Based Key Derivation Function 2) applies a pseudorandom function to derive a key. In simple terms,
+ * PBKDF2 is the repeated calculation of a salted hash. Reference:
+ * https://blog.csdn.net/huoji555/article/details/83659687
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -45,28 +47,28 @@ public class PBKDF2 {
     private String algorithm = Algorithm.PBKDF2WITHHMACSHA1.getValue();
 
     /**
-     * 生成密文的长度
+     * The length of the generated key.
      */
     private int keyLength = 512;
 
     /**
-     * 迭代次数
+     * The number of iterations.
      */
     private int iterationCount = 1000;
 
     /**
-     * 构造，算法PBKDF2WithHmacSHA1，盐长度16，密文长度512，迭代次数1000
+     * Constructor with default algorithm PBKDF2WithHmacSHA1, key length 512, and 1000 iterations.
      */
     public PBKDF2() {
 
     }
 
     /**
-     * 构造
+     * Constructor.
      *
-     * @param algorithm      算法，一般为PBKDF2WithXXX
-     * @param keyLength      生成密钥长度，默认512
-     * @param iterationCount 迭代次数，默认1000
+     * @param algorithm      The algorithm, generally PBKDF2WithXXX.
+     * @param keyLength      The length of the key to generate, default is 512.
+     * @param iterationCount The number of iterations, default is 1000.
      */
     public PBKDF2(final String algorithm, final int keyLength, final int iterationCount) {
         this.algorithm = algorithm;
@@ -75,11 +77,11 @@ public class PBKDF2 {
     }
 
     /**
-     * 加密
+     * Encrypts a password.
      *
-     * @param password 密码
-     * @param salt     盐
-     * @return 加密后的密码
+     * @param password The password.
+     * @param salt     The salt.
+     * @return The encrypted password.
      */
     public byte[] encrypt(final char[] password, final byte[] salt) {
         final PBEKeySpec pbeKeySpec = new PBEKeySpec(password, salt, iterationCount, keyLength);
@@ -88,11 +90,11 @@ public class PBKDF2 {
     }
 
     /**
-     * 加密
+     * Encrypts a password and returns it as a hex string.
      *
-     * @param password 密码
-     * @param salt     盐
-     * @return 加密后的密码
+     * @param password The password.
+     * @param salt     The salt.
+     * @return The encrypted password as a hex string.
      */
     public String encryptHex(final char[] password, final byte[] salt) {
         return HexKit.encodeString(encrypt(password, salt));

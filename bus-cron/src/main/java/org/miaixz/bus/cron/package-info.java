@@ -26,14 +26,20 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 定时任务模块，提供类Crontab表达式的定时任务，实现参考了Cron4j，同时可以支持秒级别的定时任务定义和年的定义（同时兼容Crontab、Cron4j、Quartz表达式） 定时任务模块由三部分组成：
+ * Provides a cron-like task scheduling module.
+ * <p>
+ * This module is inspired by Cron4j and supports second-level granularity as well as an optional year field, ensuring
+ * compatibility with Crontab, Cron4j, and Quartz expressions. The main components of the cron module are:
  * <ul>
- * <li>{@link org.miaixz.bus.cron.Scheduler} 定时任务调度器，用于整体管理任务的增删、启停和触发运行。</li>
- * <li>{@link org.miaixz.bus.cron.crontab.Crontab} 定时任务实现，用于定义具体的任务</li>
- * <li>{@link org.miaixz.bus.cron.pattern.CronPattern} 定时任务表达式，用于定义任务触发时间</li>
+ * <li>{@link org.miaixz.bus.cron.Scheduler} The central scheduler for managing task lifecycles (add, remove, start,
+ * stop).</li>
+ * <li>{@link org.miaixz.bus.cron.crontab.Crontab} An interface for defining the tasks to be executed.</li>
+ * <li>{@link org.miaixz.bus.cron.pattern.CronPattern} Represents a cron expression for defining task trigger
+ * times.</li>
  * </ul>
  * <p>
- * 同时，提供了{@link org.miaixz.bus.cron.Builder}工具类，维护一个全局的{@link org.miaixz.bus.cron.Scheduler}。
+ * For convenience, the {@link org.miaixz.bus.cron.Builder} utility class is provided to manage a global
+ * {@link org.miaixz.bus.cron.Scheduler} instance.
  *
  * @author Kimi Liu
  * @since Java 17+

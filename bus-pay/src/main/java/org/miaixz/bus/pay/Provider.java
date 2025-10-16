@@ -31,15 +31,19 @@ import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.pay.magic.Material;
 
 /**
- * {@code Provider}公共接口，所有平台的{@code Provider}都需要实现该接口
+ * Common interface for {@code Provider}. All platform {@code Provider}s need to implement this interface.
  *
- *
- * @param <T> 全局对象
+ * @param <T> The global object type, extending {@link Material}.
  * @author Kimi Liu
  * @since Java 17+
  */
 public interface Provider<T extends Material> extends org.miaixz.bus.core.Provider {
 
+    /**
+     * Returns the type of this provider.
+     *
+     * @return The provider type, which is {@link EnumValue.Povider#PAY}.
+     */
     @Override
     default Object type() {
         return EnumValue.Povider.PAY;

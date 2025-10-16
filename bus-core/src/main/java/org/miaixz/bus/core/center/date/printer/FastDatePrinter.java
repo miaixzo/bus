@@ -36,7 +36,9 @@ import org.miaixz.bus.core.center.date.format.parser.FastDateParser;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 线程安全的日期格式化类，替代 {@link java.text.SimpleDateFormat}，用于将 {@link Date} 格式化为字符串。 参考 Apache Commons Lang 3.5。
+ * A thread-safe date formatting class that can be used as a replacement for {@link java.text.SimpleDateFormat}. It is
+ * used to format a {@link Date} into a string. This implementation is inspired by Apache Commons Lang's
+ * {@code FastDatePrinter}.
  *
  * @author Kimi Liu
  * @see FastDateParser
@@ -48,21 +50,21 @@ public class FastDatePrinter extends SimpleDatePrinter implements FormatPrinter 
     private static final long serialVersionUID = 2852257551539L;
 
     /**
-     * 日期格式化模式对象
+     * The parsed date pattern used for formatting.
      */
     private final DatePattern datePattern;
 
     /**
-     * 缓存的 Calendar 对象队列，用于减少对象创建
+     * A queue of cached {@link Calendar} objects to reduce object creation overhead.
      */
     private final Queue<Calendar> queue;
 
     /**
-     * 构造方法，初始化日期格式化器。
+     * Constructs a new {@code FastDatePrinter}.
      *
-     * @param pattern  {@link java.text.SimpleDateFormat} 兼容的日期格式
-     * @param timeZone 非空时区对象
-     * @param locale   非空地域对象
+     * @param pattern  A {@link java.text.SimpleDateFormat} compatible date format pattern.
+     * @param timeZone The timezone to use, not null.
+     * @param locale   The locale to use, not null.
      */
     public FastDatePrinter(final String pattern, final TimeZone timeZone, final Locale locale) {
         super(pattern, timeZone, locale);
@@ -71,11 +73,11 @@ public class FastDatePrinter extends SimpleDatePrinter implements FormatPrinter 
     }
 
     /**
-     * 格式化对象为字符串，支持 {@link Date}、{@link Calendar} 或 {@link Long}（毫秒）。
+     * Formats a {@link Date}, {@link Calendar}, or {@link Long} (milliseconds) object into a date string.
      *
-     * @param obj 要格式化的对象
-     * @return 格式化后的字符串
-     * @throws IllegalArgumentException 如果对象类型不支持
+     * @param obj The object to format.
+     * @return The formatted string.
+     * @throws IllegalArgumentException if the object type is not supported.
      */
     public String format(final Object obj) {
         if (obj instanceof Date) {
@@ -83,17 +85,17 @@ public class FastDatePrinter extends SimpleDatePrinter implements FormatPrinter 
         } else if (obj instanceof Calendar) {
             return format((Calendar) obj);
         } else if (obj instanceof Long) {
-            return format(((Long) obj).longValue());
+            return format((Long) obj);
         } else {
             throw new IllegalArgumentException("Unknown class: " + (obj == null ? "<null>" : obj.getClass().getName()));
         }
     }
 
     /**
-     * 格式化日期对象为字符串。
+     * Formats a {@link Date} object into a date string.
      *
-     * @param date 日期对象
-     * @return 格式化后的字符串
+     * @param date The date object.
+     * @return The formatted date string.
      */
     @Override
     public String format(final Date date) {
@@ -101,10 +103,10 @@ public class FastDatePrinter extends SimpleDatePrinter implements FormatPrinter 
     }
 
     /**
-     * 格式化毫秒时间戳为字符串。
+     * Formats a millisecond timestamp into a date string.
      *
-     * @param millis 毫秒时间戳
-     * @return 格式化后的字符串
+     * @param millis The timestamp in milliseconds.
+     * @return The formatted date string.
      */
     @Override
     public String format(final long millis) {
@@ -112,10 +114,10 @@ public class FastDatePrinter extends SimpleDatePrinter implements FormatPrinter 
     }
 
     /**
-     * 格式化日历对象为字符串。
+     * Formats a {@link Calendar} object into a date string.
      *
-     * @param calendar 日历对象
-     * @return 格式化后的字符串
+     * @param calendar The calendar object.
+     * @return The formatted date string.
      */
     @Override
     public String format(final Calendar calendar) {
@@ -123,12 +125,12 @@ public class FastDatePrinter extends SimpleDatePrinter implements FormatPrinter 
     }
 
     /**
-     * 格式化日期对象到指定缓冲区。
+     * Formats a {@link Date} object into the provided {@link Appendable} buffer.
      *
-     * @param date 日期对象
-     * @param buf  输出缓冲区
-     * @param <B>  Appendable 类型
-     * @return 格式化后的缓冲区
+     * @param date The date object.
+     * @param buf  The buffer to append to.
+     * @param <B>  The type of the Appendable.
+     * @return The buffer with the formatted date.
      */
     @Override
     public <B extends Appendable> B format(final Date date, final B buf) {
@@ -136,12 +138,12 @@ public class FastDatePrinter extends SimpleDatePrinter implements FormatPrinter 
     }
 
     /**
-     * 格式化毫秒时间戳到指定缓冲区。
+     * Formats a millisecond timestamp into the provided {@link Appendable} buffer.
      *
-     * @param millis 毫秒时间戳
-     * @param buf    输出缓冲区
-     * @param <B>    Appendable 类型
-     * @return 格式化后的缓冲区
+     * @param millis The timestamp in milliseconds.
+     * @param buf    The buffer to append to.
+     * @param <B>    The type of the Appendable.
+     * @return The buffer with the formatted date.
      */
     @Override
     public <B extends Appendable> B format(final long millis, final B buf) {
@@ -149,12 +151,12 @@ public class FastDatePrinter extends SimpleDatePrinter implements FormatPrinter 
     }
 
     /**
-     * 格式化日历对象到指定缓冲区。
+     * Formats a {@link Calendar} object into the provided {@link Appendable} buffer.
      *
-     * @param calendar 日历对象
-     * @param buf      输出缓冲区
-     * @param <B>      Appendable 类型
-     * @return 格式化后的缓冲区
+     * @param calendar The calendar object.
+     * @param buf      The buffer to append to.
+     * @param <B>      The type of the Appendable.
+     * @return The buffer with the formatted date.
      */
     @Override
     public <B extends Appendable> B format(Calendar calendar, final B buf) {
@@ -166,12 +168,13 @@ public class FastDatePrinter extends SimpleDatePrinter implements FormatPrinter 
     }
 
     /**
-     * 将时间戳格式化为 Appendable，使用缓存的 Calendar 对象以减少创建开销。
+     * Applies the formatting rules to a timestamp, appending the result to a buffer. This method uses a cached
+     * {@link Calendar} instance to reduce object creation overhead.
      *
-     * @param millis 时间戳
-     * @param buf    待拼接的 Appendable
-     * @param <B>    Appendable 类型
-     * @return 拼接后的 Appendable
+     * @param millis The timestamp in milliseconds.
+     * @param buf    The {@link Appendable} to write to.
+     * @param <B>    The type of the Appendable.
+     * @return The provided {@link Appendable}.
      */
     private <B extends Appendable> B applyRules(final long millis, final B buf) {
         Calendar calendar = queue.poll();
@@ -185,9 +188,9 @@ public class FastDatePrinter extends SimpleDatePrinter implements FormatPrinter 
     }
 
     /**
-     * 估算格式化后的日期字符串最大长度。
+     * Gets an estimate of the maximum length that the formatted date string could have.
      *
-     * @return 最大长度估算值
+     * @return The estimated maximum length.
      */
     public int getMaxLengthEstimate() {
         return datePattern.getEstimateLength();

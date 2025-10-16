@@ -85,13 +85,16 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.net.Protocol;
 
 /**
- * 内置的各协议需要的配置，用枚举类分平台类型管理
+ * Built-in configurations required by various protocols, managed by platform type using an enum.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public enum Registry implements Complex {
 
+    /**
+     * AfDian platform registry.
+     */
     AFDIAN {
 
         @Override
@@ -113,6 +116,9 @@ public enum Registry implements Complex {
             return ProginnProvider.class;
         }
     },
+    /**
+     * Alipay platform registry.
+     */
     ALIPAY {
 
         @Override
@@ -134,6 +140,9 @@ public enum Registry implements Complex {
             return AlipayProvider.class;
         }
     },
+    /**
+     * Aliyun platform registry.
+     */
     ALIYUN {
 
         @Override
@@ -156,6 +165,9 @@ public enum Registry implements Complex {
             return AliyunProvider.class;
         }
     },
+    /**
+     * Amazon platform registry.
+     */
     AMAZON {
 
         @Override
@@ -178,6 +190,9 @@ public enum Registry implements Complex {
             return AmazonProvider.class;
         }
     },
+    /**
+     * Apple platform registry.
+     */
     APPLE {
 
         @Override
@@ -199,6 +214,9 @@ public enum Registry implements Complex {
             return AppleProvider.class;
         }
     },
+    /**
+     * Baidu platform registry.
+     */
     BAIDU {
 
         @Override
@@ -222,6 +240,9 @@ public enum Registry implements Complex {
             return BaiduProvider.class;
         }
     },
+    /**
+     * Coding platform registry.
+     */
     CODING {
 
         @Override
@@ -243,6 +264,9 @@ public enum Registry implements Complex {
             return CodingProvider.class;
         }
     },
+    /**
+     * DingTalk platform registry.
+     */
     DINGTALK {
 
         @Override
@@ -264,6 +288,9 @@ public enum Registry implements Complex {
             return DingTalkProvider.class;
         }
     },
+    /**
+     * DingTalk Account platform registry.
+     */
     DINGTALK_ACCOUNT {
 
         @Override
@@ -285,6 +312,9 @@ public enum Registry implements Complex {
             return DingTalkAccountProvider.class;
         }
     },
+    /**
+     * Douyin platform registry.
+     */
     DOUYIN {
 
         @Override
@@ -307,17 +337,20 @@ public enum Registry implements Complex {
             return DouyinProvider.class;
         }
     },
+    /**
+     * Douyin Mini Program platform registry.
+     */
     DOUYIN_MINI {
 
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
-            // 参见
+            // See
             // https://developer.open-douyin.com/docs/resource/zh-CN/mini-game/develop/api/open-capacity/log-in/tt-login
             map.put(Endpoint.AUTHORIZE, Normal.EMPTY);
-            // 参见 https://developer.open-douyin.com/docs/resource/zh-CN/mini-game/develop/server/log-in/code-2-session
+            // See https://developer.open-douyin.com/docs/resource/zh-CN/mini-game/develop/server/log-in/code-2-session
             map.put(Endpoint.ACCESS_TOKEN, "https://minigame.zijieapi.com/mgplatform/api/apps/jscode2session");
-            // 参见
+            // See
             // https://developer.open-douyin.com/docs/resource/zh-CN/mini-game/develop/guide/open-api/info/tt-get-user-info
             map.put(Endpoint.USERINFO, Normal.EMPTY);
             return map;
@@ -333,6 +366,9 @@ public enum Registry implements Complex {
             return DouyinMiniProvider.class;
         }
     },
+    /**
+     * Eleme platform registry.
+     */
     ELEME {
 
         @Override
@@ -355,6 +391,9 @@ public enum Registry implements Complex {
             return ElemeProvider.class;
         }
     },
+    /**
+     * Facebook platform registry.
+     */
     FACEBOOK {
 
         @Override
@@ -376,6 +415,9 @@ public enum Registry implements Complex {
             return FacebookProvider.class;
         }
     },
+    /**
+     * Feishu platform registry.
+     */
     FEISHU {
 
         @Override
@@ -398,6 +440,9 @@ public enum Registry implements Complex {
             return FeishuProvider.class;
         }
     },
+    /**
+     * Figma platform registry.
+     */
     FIGMA {
 
         @Override
@@ -420,6 +465,9 @@ public enum Registry implements Complex {
             return FigmaProvider.class;
         }
     },
+    /**
+     * Gitee platform registry.
+     */
     GITEE {
 
         @Override
@@ -441,6 +489,9 @@ public enum Registry implements Complex {
             return GiteeProvider.class;
         }
     },
+    /**
+     * Github platform registry.
+     */
     GITHUB {
 
         @Override
@@ -462,6 +513,9 @@ public enum Registry implements Complex {
             return GithubProvider.class;
         }
     },
+    /**
+     * Gitlab platform registry.
+     */
     GITLAB {
 
         @Override
@@ -483,6 +537,9 @@ public enum Registry implements Complex {
             return GitlabProvider.class;
         }
     },
+    /**
+     * Google platform registry.
+     */
     GOOGLE {
 
         @Override
@@ -504,6 +561,9 @@ public enum Registry implements Complex {
             return GoogleProvider.class;
         }
     },
+    /**
+     * Huawei platform registry.
+     */
     HUAWEI {
 
         @Override
@@ -526,6 +586,9 @@ public enum Registry implements Complex {
             return HuaweiProvider.class;
         }
     },
+    /**
+     * JD (Jingdong) platform registry.
+     */
     JD {
 
         @Override
@@ -548,6 +611,9 @@ public enum Registry implements Complex {
             return JdProvider.class;
         }
     },
+    /**
+     * Kujiale platform registry.
+     */
     KUJIALE {
 
         @Override
@@ -570,6 +636,9 @@ public enum Registry implements Complex {
             return KujialeProvider.class;
         }
     },
+    /**
+     * LINE platform registry.
+     */
     LINE {
 
         @Override
@@ -593,6 +662,9 @@ public enum Registry implements Complex {
             return LineProvider.class;
         }
     },
+    /**
+     * LinkedIn platform registry.
+     */
     LINKEDIN {
 
         @Override
@@ -615,6 +687,9 @@ public enum Registry implements Complex {
             return LinkedinProvider.class;
         }
     },
+    /**
+     * Meituan platform registry.
+     */
     MEITUAN {
 
         @Override
@@ -637,6 +712,9 @@ public enum Registry implements Complex {
             return MeituanProvider.class;
         }
     },
+    /**
+     * Xiaomi (Mi) platform registry.
+     */
     MI {
 
         @Override
@@ -659,6 +737,9 @@ public enum Registry implements Complex {
             return MiProvider.class;
         }
     },
+    /**
+     * Microsoft platform registry.
+     */
     MICROSOFT {
 
         @Override
@@ -681,6 +762,9 @@ public enum Registry implements Complex {
             return MicrosoftProvider.class;
         }
     },
+    /**
+     * Microsoft China platform registry.
+     */
     MICROSOFT_CN {
 
         @Override
@@ -703,6 +787,9 @@ public enum Registry implements Complex {
             return MicrosoftCnProvider.class;
         }
     },
+    /**
+     * Okta platform registry.
+     */
     OKTA {
 
         @Override
@@ -726,6 +813,9 @@ public enum Registry implements Complex {
             return OktaProvider.class;
         }
     },
+    /**
+     * OSChina platform registry.
+     */
     OSCHINA {
 
         @Override
@@ -747,6 +837,9 @@ public enum Registry implements Complex {
             return OschinaProvider.class;
         }
     },
+    /**
+     * Pinterest platform registry.
+     */
     PINTEREST {
 
         @Override
@@ -768,6 +861,9 @@ public enum Registry implements Complex {
             return PinterestProvider.class;
         }
     },
+    /**
+     * Proginn platform registry.
+     */
     PROGINN {
 
         @Override
@@ -789,6 +885,9 @@ public enum Registry implements Complex {
             return ProginnProvider.class;
         }
     },
+    /**
+     * QQ platform registry.
+     */
     QQ {
 
         @Override
@@ -811,6 +910,9 @@ public enum Registry implements Complex {
             return QqProvider.class;
         }
     },
+    /**
+     * QQ Mini Program platform registry.
+     */
     QQ_MINI {
 
         @Override
@@ -830,6 +932,9 @@ public enum Registry implements Complex {
             return QqMiniProvider.class;
         }
     },
+    /**
+     * Renren platform registry.
+     */
     RENREN {
 
         @Override
@@ -852,6 +957,9 @@ public enum Registry implements Complex {
             return RenrenProvider.class;
         }
     },
+    /**
+     * Rednote Market platform registry.
+     */
     REDNOTE_MARKET {
 
         @Override
@@ -874,6 +982,9 @@ public enum Registry implements Complex {
             return RednoteMarketiProvider.class;
         }
     },
+    /**
+     * Slack platform registry.
+     */
     SLACK {
 
         @Override
@@ -896,6 +1007,9 @@ public enum Registry implements Complex {
             return SlackProvider.class;
         }
     },
+    /**
+     * Stack Overflow platform registry.
+     */
     STACK_OVERFLOW {
 
         @Override
@@ -917,6 +1031,9 @@ public enum Registry implements Complex {
             return StackOverflowProvider.class;
         }
     },
+    /**
+     * Taobao platform registry.
+     */
     TAOBAO {
 
         @Override
@@ -937,6 +1054,9 @@ public enum Registry implements Complex {
             return TaobaoProvider.class;
         }
     },
+    /**
+     * Teambition platform registry.
+     */
     TEAMBITION {
 
         @Override
@@ -959,6 +1079,9 @@ public enum Registry implements Complex {
             return TeambitionProvider.class;
         }
     },
+    /**
+     * Toutiao platform registry.
+     */
     TOUTIAO {
 
         @Override
@@ -980,6 +1103,9 @@ public enum Registry implements Complex {
             return ToutiaoProvider.class;
         }
     },
+    /**
+     * Twitter platform registry.
+     */
     TWITTER {
 
         @Override
@@ -1001,6 +1127,9 @@ public enum Registry implements Complex {
             return TwitterProvider.class;
         }
     },
+    /**
+     * VK platform registry.
+     */
     VK {
 
         @Override
@@ -1024,6 +1153,9 @@ public enum Registry implements Complex {
             return VKProvider.class;
         }
     },
+    /**
+     * WeChat Enterprise platform registry.
+     */
     WECHAT_EE {
 
         @Override
@@ -1045,6 +1177,9 @@ public enum Registry implements Complex {
             return WeChatEeQrcodeProvider.class;
         }
     },
+    /**
+     * WeChat Enterprise QR Code platform registry.
+     */
     WECHAT_EE_QRCODE {
 
         @Override
@@ -1066,6 +1201,9 @@ public enum Registry implements Complex {
             return WeChatEeThirdQrcodeProvider.class;
         }
     },
+    /**
+     * WeChat Enterprise Web platform registry.
+     */
     WECHAT_EE_WEB {
 
         @Override
@@ -1087,6 +1225,9 @@ public enum Registry implements Complex {
             return WeChatEeWebProvider.class;
         }
     },
+    /**
+     * WeChat Official Account (MP) platform registry.
+     */
     WECHAT_MP {
 
         @Override
@@ -1109,6 +1250,9 @@ public enum Registry implements Complex {
             return WeChatMpProvider.class;
         }
     },
+    /**
+     * WeChat Mini Program platform registry.
+     */
     WECHAT_MINI {
 
         @Override
@@ -1128,6 +1272,9 @@ public enum Registry implements Complex {
             return WeChatMiniProvider.class;
         }
     },
+    /**
+     * WeChat Open Platform registry.
+     */
     WECHAT_OPEN {
 
         @Override
@@ -1150,6 +1297,9 @@ public enum Registry implements Complex {
             return WeChatOpenProvider.class;
         }
     },
+    /**
+     * Weibo platform registry.
+     */
     WEIBO {
 
         @Override
@@ -1172,6 +1322,9 @@ public enum Registry implements Complex {
             return WeiboProvider.class;
         }
     },
+    /**
+     * Ximalaya platform registry.
+     */
     XIMALAYA {
 
         @Override
@@ -1196,6 +1349,13 @@ public enum Registry implements Complex {
 
     private final static Set<Registry> values = Arrays.stream(Registry.values()).collect(Collectors.toSet());
 
+    /**
+     * Retrieves a {@link Registry} enum by its name (case-insensitive).
+     *
+     * @param name the name of the registry to retrieve
+     * @return the matching {@link Registry} enum instance
+     * @throws IllegalArgumentException if no registry with the given name is found
+     */
     public static Registry require(String name) {
         for (Registry registry : Registry.values()) {
             if (registry.name().equalsIgnoreCase(name)) {
@@ -1205,6 +1365,13 @@ public enum Registry implements Complex {
         throw new IllegalArgumentException("Unsupported type for " + name);
     }
 
+    /**
+     * Retrieves a set of {@link Registry} enums based on the provided name. If the name is "all", returns all registry
+     * values. If the name matches a single registry, returns a singleton set. Otherwise, returns an empty set.
+     *
+     * @param name the name to match, or "all" for all registries
+     * @return a set of matching {@link Registry} enums
+     */
     public static Set<Registry> from(String name) {
         if (name.equals("all"))
             return values;
@@ -1216,6 +1383,13 @@ public enum Registry implements Complex {
         return Collections.emptySet();
     }
 
+    /**
+     * Retrieves a set of {@link Registry} enums based on a list of names. If the list contains "all", returns all
+     * registry values. Otherwise, returns a set of registries matching the names in the list.
+     *
+     * @param list a list of names to match
+     * @return a set of matching {@link Registry} enums
+     */
     public static Set<Registry> from(List<String> list) {
         Set<Registry> result = new HashSet<>();
         for (String obj : list) {

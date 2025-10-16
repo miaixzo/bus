@@ -31,13 +31,23 @@ import org.miaixz.bus.storage.Context;
 import org.miaixz.bus.storage.Provider;
 
 /**
- * 预定义存储实现
+ * Abstract base class for storage providers, offering common functionalities and properties.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public abstract class AbstractProvider implements Provider {
 
+    /**
+     * The context containing configuration details for the storage provider.
+     */
     protected Context context;
+
+    /**
+     * Constructs a new AbstractProvider with default settings.
+     */
+    protected AbstractProvider() {
+
+    }
 
 }

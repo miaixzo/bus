@@ -41,16 +41,35 @@ import org.miaixz.bus.image.galaxy.data.ElementDictionary;
 import org.miaixz.bus.image.galaxy.data.VR;
 
 /**
+ * A {@link FileTypeDetector} implementation for detecting DICOM image files. It checks for DICOM Part 10 header,
+ * Implicit VR Little Endian, and Explicit VR transfer syntaxes.
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class ImageFileDetector extends FileTypeDetector {
 
+    /**
+     * Checks if the given byte array indicates a DICOM Part 10 file format. A DICOM Part 10 file typically has "DICM"
+     * at offset 128.
+     *
+     * @param b134 The byte array containing the first 134 bytes of the file.
+     * @param rlen The number of bytes read into the array.
+     * @return {@code true} if it's a DICOM Part 10 file, {@code false} otherwise.
+     */
     private static boolean isPart10(byte[] b134, int rlen) {
         return rlen == 134 && b134[128] == 'D' && b134[129] == 'I' && b134[130] == 'C' && b134[131] == 'M'
                 && b134[132] == 2 && b134[133] == 0;
     }
 
+    /**
+     * Checks if the given byte array indicates an Implicit VR Little Endian transfer syntax. This is determined by
+     * checking the tag and value length of the first element.
+     *
+     * @param b134 The byte array containing the first 134 bytes of the file.
+     * @param rlen The number of bytes read into the array.
+     * @return {@code true} if it's Implicit VR Little Endian, {@code false} otherwise.
+     */
     private static boolean isIVR_LE(byte[] b134, int rlen) {
         int tag = ByteKit.bytesToTagLE(b134, 0);
         int vlen = ByteKit.bytesToIntLE(b134, 4);
@@ -58,6 +77,14 @@ public class ImageFileDetector extends FileTypeDetector {
                 : (ElementDictionary.getStandardElementDictionary().vrOf(tag) != VR.UN && (16 + vlen) <= rlen);
     }
 
+    /**
+     * Checks if the given byte array indicates an Explicit VR transfer syntax. This is determined by attempting to
+     * parse the VR from the byte array and comparing it with the expected VR for the tag.
+     *
+     * @param b134 The byte array containing the first 134 bytes of the file.
+     * @param rlen The number of bytes read into the array.
+     * @return {@code true} if it's Explicit VR, {@code false} otherwise.
+     */
     private static boolean isEVR(byte[] b134, int rlen) {
         int tagLE = ByteKit.bytesToTagLE(b134, 0);
         int tagBE = ByteKit.bytesToTagBE(b134, 0);
@@ -66,6 +93,15 @@ public class ImageFileDetector extends FileTypeDetector {
                 .vrOf(tagLE >= 0 && tagLE < tagBE ? tagLE : tagBE);
     }
 
+    /**
+     * Probes the content type of the given file path to determine if it is a DICOM file. It reads the first 134 bytes
+     * and checks for DICOM Part 10 header, Implicit VR Little Endian, or Explicit VR characteristics.
+     *
+     * @param path The path to the file.
+     * @return The MIME type {@code MediaType.APPLICATION_DICOM} if the file is detected as DICOM, otherwise
+     *         {@code null}.
+     * @throws IOException If an I/O error occurs.
+     */
     @Override
     public String probeContentType(Path path) throws IOException {
         try (InputStream in = Files.newInputStream(path)) {

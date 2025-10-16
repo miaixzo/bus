@@ -41,12 +41,14 @@ import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * URL解码，数据内容的类型是 application/x-www-form-urlencoded。
- *
+ * Decodes URL-encoded strings of the {@code application/x-www-form-urlencoded} type.
+ * <p>
+ * The decoding process includes:
+ * 
  * <pre>
- * 1. 将%20转换为空格 ;
- * 2. 将"%xy"转换为文本形式,xy是两位16进制的数值;
- * 3. 跳过不符合规范的%形式，直接输出
+ * 1. Converting "%20" to a space.
+ * 2. Converting "%xy" to its corresponding character, where "xy" is a two-digit hexadecimal number.
+ * 3. Skipping any malformed "%" patterns and outputting them directly.
  * </pre>
  *
  * @author Kimi Liu
@@ -58,87 +60,86 @@ public class UrlDecoder implements Serializable {
     private static final long serialVersionUID = 2852231876163L;
 
     /**
-     * 解码，不对+解码
-     *
+     * Decodes a URL path segment, which does not decode the plus sign ({@code +}).
      * <ol>
-     * <li>将%20转换为空格</li>
-     * <li>将 "%xy"转换为文本形式,xy是两位16进制的数值</li>
-     * <li>跳过不符合规范的%形式，直接输出</li>
+     * <li>Converts "%20" to a space.</li>
+     * <li>Converts "%xy" to its corresponding character, where "xy" is a two-digit hexadecimal number.</li>
+     * <li>Skips any malformed "%" patterns and outputting them directly.</li>
      * </ol>
      *
-     * @param text    包含URL编码后的字符串
-     * @param charset 解码的编码，{@code null}表示不做解码
-     * @return 解码后的字符串
+     * @param text    The URL-encoded string.
+     * @param charset The character set for decoding; if {@code null}, no decoding is performed.
+     * @return The decoded string.
      */
     public static String decodeForPath(final String text, final java.nio.charset.Charset charset) {
         return decode(text, charset, false);
     }
 
     /**
-     * 解码
-     * 规则见：<a href="https://url.spec.whatwg.org/#urlencoded-parsing">https://url.spec.whatwg.org/#urlencoded-parsing</a>
-     *
+     * Decodes a URL-encoded string according to the rules at
+     * <a href="https://url.spec.whatwg.org/#urlencoded-parsing">https://url.spec.whatwg.org/#urlencoded-parsing</a>.
+     * 
      * <pre>
-     *   1. 将+和%20转换为空格(" ");
-     *   2. 将"%xy"转换为文本形式,xy是两位16进制的数值;
-     *   3. 跳过不符合规范的%形式，直接输出
+     * 1. Converts "+" and "%20" to a space (" ").
+     * 2. Converts "%xy" to its corresponding character, where "xy" is a two-digit hexadecimal number.
+     * 3. Skips any malformed "%" patterns and outputting them directly.
      * </pre>
      *
-     * @param text 包含URL编码后的字符串
-     * @return 解码后的字符串
+     * @param text The URL-encoded string.
+     * @return The decoded string.
      */
     public static String decode(final String text) {
         return decode(text, Charset.UTF_8);
     }
 
     /**
-     * 解码
-     * 规则见：<a href="https://url.spec.whatwg.org/#urlencoded-parsing">https://url.spec.whatwg.org/#urlencoded-parsing</a>
-     *
+     * Decodes a URL-encoded string according to the rules at
+     * <a href="https://url.spec.whatwg.org/#urlencoded-parsing">https://url.spec.whatwg.org/#urlencoded-parsing</a>.
+     * 
      * <pre>
-     *   1. 将+和%20转换为空格(" ");
-     *   2. 将"%xy"转换为文本形式,xy是两位16进制的数值;
-     *   3. 跳过不符合规范的%形式，直接输出
+     * 1. Converts "+" and "%20" to a space (" ").
+     * 2. Converts "%xy" to its corresponding character, where "xy" is a two-digit hexadecimal number.
+     * 3. Skips any malformed "%" patterns and outputting them directly.
      * </pre>
      *
-     * @param text    包含URL编码后的字符串
-     * @param charset 编码
-     * @return 解码后的字符串
+     * @param text    The URL-encoded string.
+     * @param charset The character set for decoding.
+     * @return The decoded string.
      */
     public static String decode(final String text, final java.nio.charset.Charset charset) {
         return decode(text, charset, true);
     }
 
     /**
-     * 解码
-     *
+     * Decodes a URL-encoded string.
+     * 
      * <pre>
-     *   1. 将%20转换为空格 ;
-     *   2. 将"%xy"转换为文本形式,xy是两位16进制的数值;
-     *   3. 跳过不符合规范的%形式，直接输出
+     * 1. Converts "%20" to a space.
+     * 2. Converts "%xy" to its corresponding character, where "xy" is a two-digit hexadecimal number.
+     * 3. Skips any malformed "%" patterns and outputting them directly.
      * </pre>
      *
-     * @param text          包含URL编码后的字符串
-     * @param isPlusToSpace 是否+转换为空格
-     * @return 解码后的字符串
+     * @param text          The URL-encoded string.
+     * @param isPlusToSpace If {@code true}, converts the plus sign ({@code +}) to a space.
+     * @return The decoded string.
      */
     public static String decode(final String text, final boolean isPlusToSpace) {
         return decode(text, Charset.UTF_8, isPlusToSpace);
     }
 
     /**
-     * 解码
-     *
+     * Decodes a URL-encoded string.
+     * 
      * <pre>
-     *   1. 将%20转换为空格 ;
-     *   2. 将"%xy"转换为文本形式,xy是两位16进制的数值;
-     *   3. 跳过不符合规范的%形式，直接输出
+     * 1. Converts "%20" to a space.
+     * 2. Converts "%xy" to its corresponding character, where "xy" is a two-digit hexadecimal number.
+     * 3. Skips any malformed "%" patterns and outputting them directly.
      * </pre>
      *
-     * @param text          包含URL编码后的字符串
-     * @param isPlusToSpace 是否+转换为空格
-     * @param charset       编码，{@code null}表示不做解码
-     * @return 解码后的字符串
+     * @param text          The URL-encoded string.
+     * @param charset       The character set for decoding; if {@code null}, no decoding is performed.
+     * @param isPlusToSpace If {@code true}, converts the plus sign ({@code +}) to a space.
+     * @return The decoded string.
      */
     public static String decode(
             final String text,
@@ -165,13 +166,10 @@ public class UrlDecoder implements Serializable {
                 continue;
             }
 
-            // 遇到非需要处理的字符跳过
-            // 处理之前的hex字符
             if (i > begin) {
                 result.append(decodeSub(text, begin, i, charset, isPlusToSpace));
             }
 
-            // 非Hex字符，忽略本字符
             if (Symbol.C_PLUS == c && isPlusToSpace) {
                 c = Symbol.C_SPACE;
             }
@@ -180,7 +178,6 @@ public class UrlDecoder implements Serializable {
             begin = i + 1;
         }
 
-        // 处理剩余字符
         if (begin < length) {
             result.append(decodeSub(text, begin, length, charset, isPlusToSpace));
         }
@@ -189,33 +186,33 @@ public class UrlDecoder implements Serializable {
     }
 
     /**
-     * 解码
-     *
+     * Decodes URL-encoded bytes.
+     * 
      * <pre>
-     *   1. 将+和%20转换为空格 ;
-     *   2. 将"%xy"转换为文本形式,xy是两位16进制的数值;
-     *   3. 跳过不符合规范的%形式，直接输出
+     * 1. Converts "+" and "%20" to a space.
+     * 2. Converts "%xy" to its corresponding character, where "xy" is a two-digit hexadecimal number.
+     * 3. Skips any malformed "%" patterns and outputting them directly.
      * </pre>
      *
-     * @param bytes url编码的bytes
-     * @return 解码后的bytes
+     * @param bytes The URL-encoded bytes.
+     * @return The decoded bytes.
      */
     public static byte[] decode(final byte[] bytes) {
         return decode(bytes, true);
     }
 
     /**
-     * 解码
-     *
+     * Decodes URL-encoded bytes.
+     * 
      * <pre>
-     *   1. 将%20转换为空格 ;
-     *   2. 将"%xy"转换为文本形式,xy是两位16进制的数值;
-     *   3. 跳过不符合规范的%形式，直接输出
+     * 1. Converts "%20" to a space.
+     * 2. Converts "%xy" to its corresponding character, where "xy" is a two-digit hexadecimal number.
+     * 3. Skips any malformed "%" patterns and outputting them directly.
      * </pre>
      *
-     * @param bytes         url编码的bytes
-     * @param isPlusToSpace 是否+转换为空格
-     * @return 解码后的bytes
+     * @param bytes         The URL-encoded bytes.
+     * @param isPlusToSpace If {@code true}, converts the plus sign ({@code +}) to a space.
+     * @return The decoded bytes.
      */
     public static byte[] decode(final byte[] bytes, final boolean isPlusToSpace) {
         if (bytes == null) {
@@ -239,7 +236,6 @@ public class UrlDecoder implements Serializable {
                         }
                     }
                 }
-                // 跳过不符合规范的%形式
                 buffer.write(b);
             } else {
                 buffer.write(b);
@@ -249,14 +245,14 @@ public class UrlDecoder implements Serializable {
     }
 
     /**
-     * 解码子串
+     * Decodes a substring.
      *
-     * @param text          字符串
-     * @param begin         开始位置（包含）
-     * @param end           结束位置（不包含）
-     * @param charset       编码
-     * @param isPlusToSpace 是否+转换为空格
-     * @return 解码后的字符串
+     * @param text          The string.
+     * @param begin         The beginning index, inclusive.
+     * @param end           The ending index, exclusive.
+     * @param charset       The character set.
+     * @param isPlusToSpace If {@code true}, converts the plus sign ({@code +}) to a space.
+     * @return The decoded substring.
      */
     private static String decodeSub(
             final String text,
@@ -264,18 +260,15 @@ public class UrlDecoder implements Serializable {
             final int end,
             final java.nio.charset.Charset charset,
             final boolean isPlusToSpace) {
-        return new String(decode(
-                // 截取需要decode的部分
-                text.substring(begin, end).getBytes(Charset.ISO_8859_1),
-                isPlusToSpace), charset);
+        return new String(decode(text.substring(begin, end).getBytes(Charset.ISO_8859_1), isPlusToSpace), charset);
     }
 
     /**
-     * 将URL参数解析为Map(也可以解析Post中的键值对参数)
+     * Parses URL parameters (or POST key-value pairs) into a map.
      *
-     * @param params  参数字符串(或者带参数的Path)
-     * @param charset 字符集
-     * @return 参数Map
+     * @param params  The parameter string (or a path with parameters).
+     * @param charset The character set.
+     * @return A map of the parameters.
      */
     public static Map<String, String> decodeMap(String params, String charset) {
         final Map<String, List<String>> paramsMap = decodeObject(params, charset);
@@ -289,18 +282,17 @@ public class UrlDecoder implements Serializable {
     }
 
     /**
-     * 将URL参数解析为Map(也可以解析Post中的键值对参数)
+     * Parses URL parameters (or POST key-value pairs) into a map where values are lists of strings.
      *
-     * @param params  参数字符串(或者带参数的Path)
-     * @param charset 字符集
-     * @return 参数Map
+     * @param params  The parameter string (or a path with parameters).
+     * @param charset The character set.
+     * @return A map of the parameters.
      */
     public static Map<String, List<String>> decodeObject(String params, String charset) {
         if (StringKit.isBlank(params)) {
             return Collections.emptyMap();
         }
 
-        // 去掉Path部分
         int pathEndPos = params.indexOf(Symbol.C_QUESTION_MARK);
         if (pathEndPos > -1) {
             params = StringKit.subSuf(params, pathEndPos + 1);
@@ -309,20 +301,18 @@ public class UrlDecoder implements Serializable {
         final Map<String, List<String>> map = new LinkedHashMap<>();
         final int len = params.length();
         String name = null;
-        int pos = 0; // 未处理字符开始位置
-        int i; // 未处理字符结束位置
-        char c; // 当前字符
+        int pos = 0; // Start position of the unprocessed string
+        int i; // End position of the unprocessed string
+        char c; // Current character
         for (i = 0; i < len; i++) {
             c = params.charAt(i);
-            if (c == Symbol.C_EQUAL) { // 键值对的分界点
+            if (c == Symbol.C_EQUAL) { // Delimiter for key-value pair
                 if (null == name) {
-                    // name可以是""
                     name = params.substring(pos, i);
                 }
                 pos = i + 1;
-            } else if (c == Symbol.C_AND) { // 参数对的分界点
+            } else if (c == Symbol.C_AND) { // Delimiter for parameter pair
                 if (null == name && pos != i) {
-                    // 对于像&a&这类无参数值的字符串,我们将name为a的值设为""
                     addParam(map, params.substring(pos, i), Normal.EMPTY, charset);
                 } else if (null != name) {
                     addParam(map, name, params.substring(pos, i), charset);
@@ -332,7 +322,6 @@ public class UrlDecoder implements Serializable {
             }
         }
 
-        // 处理结尾
         if (pos != i) {
             if (null == name) {
                 addParam(map, params.substring(pos, i), Normal.EMPTY, charset);
@@ -347,21 +336,17 @@ public class UrlDecoder implements Serializable {
     }
 
     /**
-     * 将键值对加入到值为List类型的Map中
+     * Adds a key-value pair to a map where the values are lists of strings.
      *
-     * @param params  参数
-     * @param name    key
-     * @param value   value
-     * @param charset 编码
+     * @param params  The parameter map.
+     * @param name    The key.
+     * @param value   The value.
+     * @param charset The character set.
      */
     private static void addParam(Map<String, List<String>> params, String name, String value, String charset) {
         name = decode(name, Charset.parse(charset));
         value = decode(value, Charset.parse(charset));
-        List<String> values = params.get(name);
-        if (null == values) {
-            values = new ArrayList<>(1);
-            params.put(name, values);
-        }
+        List<String> values = params.computeIfAbsent(name, k -> new ArrayList<>(1));
         values.add(value);
     }
 

@@ -27,9 +27,6 @@
 */
 package org.miaixz.bus.spring;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.starter.Nexus;
 import org.springframework.context.annotation.ComponentScan;
@@ -41,8 +38,15 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.type.classreading.CachingMetadataReaderFactory;
 import org.springframework.core.type.classreading.MetadataReader;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
- * Spring上下文等信息持有者 扫描包配置项及其他属性等
+ * Holds Spring context information and provides utility methods.
+ * <p>
+ * This class is responsible for scanning packages for class objects and acts as a central holder for various
+ * Spring-related configurations. It is conditionally activated by {@link Nexus} and has a high order to ensure early
+ * initialization.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -52,16 +56,23 @@ import org.springframework.core.type.classreading.MetadataReader;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class SpringHolder {
 
+    /**
+     * A static flag indicating whether the Spring application context is alive.
+     */
     public static boolean alive = false;
 
     /**
-     * 获取某个包下所有的class对象
+     * Scans a given package and returns a set of all class objects found within it.
+     * <p>
+     * This method uses Spring's {@link PathMatchingResourcePatternResolver} to find class files and
+     * {@link CachingMetadataReaderFactory} to read their metadata without loading the classes.
+     * </p>
      *
-     * @param packageName 包路径
-     * @return the object
+     * @param packageName The package path to scan (e.g., "org.miaixz.bus.example").
+     * @return A {@link Set} of {@link Class} objects found in the specified package.
      */
     public static Set<Class<?>> scan(String packageName) {
-        Set<Class<?>> handlerSet = new HashSet();
+        Set<Class<?>> handlerSet = new HashSet<>();
         try {
             String pattern = "classpath*:" + packageName.replace(Symbol.C_DOT, Symbol.C_SLASH) + "/**/*.class";
             PathMatchingResourcePatternResolver resourcePatternResolver = new PathMatchingResourcePatternResolver();
@@ -74,10 +85,12 @@ public class SpringHolder {
                     Class<?> clazz = Class.forName(className);
                     handlerSet.add(clazz);
                 } catch (Exception e) {
+                    // Log the exception but continue scanning other resources
                     e.printStackTrace();
                 }
             }
         } catch (Exception e) {
+            // Log the exception if resource pattern resolution fails
             e.printStackTrace();
         }
         return handlerSet;

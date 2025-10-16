@@ -51,26 +51,39 @@ import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
 
 /**
- * Amazon 登录
+ * Amazon login provider.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class AmazonProvider extends AbstractProvider {
 
+    /**
+     * Constructs an {@code AmazonProvider} with the specified context.
+     *
+     * @param context the authentication context
+     */
     public AmazonProvider(Context context) {
         super(context, Registry.AMAZON);
     }
 
+    /**
+     * Constructs an {@code AmazonProvider} with the specified context and cache.
+     *
+     * @param context the authentication context
+     * @param cache   the cache implementation
+     */
     public AmazonProvider(Context context, CacheX cache) {
         super(context, Registry.AMAZON, cache);
     }
 
     /**
+     * Returns the authorization URL with a {@code state} parameter. The {@code state} will be included in the
+     * authorization callback. Reference:
      * https://developer.amazon.com/zh/docs/login-with-amazon/authorization-code-grant.html#authorization-request
      *
-     * @param state state 验证授权流程的参数，可以防止csrf
-     * @return String
+     * @param state the parameter to verify the authorization process, which can prevent CSRF attacks
+     * @return the authorization URL
      */
     @Override
     public String authorize(String state) {
@@ -87,7 +100,7 @@ public class AmazonProvider extends AbstractProvider {
             String codeChallenge = Builder.codeChallenge(codeChallengeMethod, codeVerifier);
             builder.queryParam("code_challenge", codeChallenge)
                     .queryParam("code_challenge_method", codeChallengeMethod);
-            // 缓存 codeVerifier 十分钟
+            // Cache codeVerifier for ten minutes
             this.cache.write(cacheKey, codeVerifier, TimeUnit.MINUTES.toMillis(10));
         }
 
@@ -95,9 +108,11 @@ public class AmazonProvider extends AbstractProvider {
     }
 
     /**
+     * Retrieves the access token from Amazon's authorization server. Reference:
      * https://developer.amazon.com/zh/docs/login-with-amazon/authorization-code-grant.html#access-token-request
      *
-     * @return access token
+     * @param callback the callback object containing the authorization code
+     * @return the {@link AuthToken} containing access token details
      */
     @Override
     public AuthToken getAccessToken(Callback callback) {
@@ -116,6 +131,12 @@ public class AmazonProvider extends AbstractProvider {
         return getToken(form, this.complex.accessToken());
     }
 
+    /**
+     * Refreshes the access token (renews its validity).
+     *
+     * @param authToken the token information returned after successful login
+     * @return a {@link Message} containing the refreshed token information
+     */
     @Override
     public Message refresh(AuthToken authToken) {
         Map<String, String> form = new HashMap<>(7);
@@ -127,6 +148,14 @@ public class AmazonProvider extends AbstractProvider {
                 .build();
     }
 
+    /**
+     * Retrieves an authentication token from the specified URL with given parameters.
+     *
+     * @param param a map of parameters for the token request
+     * @param url   the URL to request the token from
+     * @return the {@link AuthToken} containing token details
+     * @throws AuthorizedException if parsing the response fails or required token information is missing
+     */
     private AuthToken getToken(Map<String, String> param, String url) {
         Map<String, String> header = new HashMap<>();
         header.put(HTTP.HOST, "api.amazon.com");
@@ -157,9 +186,10 @@ public class AmazonProvider extends AbstractProvider {
     }
 
     /**
-     * 校验响应内容是否正确
+     * Checks the response content for errors.
      *
-     * @param jsonObject 响应内容
+     * @param jsonObject the response map to check
+     * @throws AuthorizedException if the response indicates an error or message indicating failure
      */
     private void checkResponse(Map<String, Object> jsonObject) {
         if (jsonObject.containsKey("error")) {
@@ -169,10 +199,12 @@ public class AmazonProvider extends AbstractProvider {
     }
 
     /**
+     * Retrieves user information from Amazon's user info endpoint. Reference:
      * https://developer.amazon.com/zh/docs/login-with-amazon/obtain-customer-profile.html#call-profile-endpoint
      *
-     * @param authToken token信息
-     * @return Property
+     * @param authToken the token information
+     * @return {@link Material} containing the user's information
+     * @throws AuthorizedException if parsing the response fails or required user information is missing
      */
     @Override
     public Material getUserInfo(AuthToken authToken) {
@@ -205,6 +237,12 @@ public class AmazonProvider extends AbstractProvider {
         }
     }
 
+    /**
+     * Checks the validity of the access token by calling Amazon's token info endpoint.
+     *
+     * @param accessToken the access token to check
+     * @throws AuthorizedException if the token is invalid or an error occurs during validation
+     */
     private void checkToken(String accessToken) {
         String tokenInfo = Httpx
                 .get("https://api.amazon.com/auth/o2/tokeninfo?access_token=" + UrlEncoder.encodeAll(accessToken));
@@ -222,6 +260,12 @@ public class AmazonProvider extends AbstractProvider {
         }
     }
 
+    /**
+     * Constructs the user information URL.
+     *
+     * @param authToken the user's authorization token
+     * @return the user information URL
+     */
     @Override
     protected String userInfoUrl(AuthToken authToken) {
         return Builder.fromUrl(this.complex.userinfo()).queryParam("user_id", authToken.getUserId())

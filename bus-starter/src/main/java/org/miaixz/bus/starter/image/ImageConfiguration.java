@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.starter.image;
 
+import jakarta.annotation.Resource;
 import org.miaixz.bus.core.xyz.ResourceKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.image.Args;
@@ -38,21 +39,41 @@ import org.miaixz.bus.image.plugin.StoreSCP;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
-import jakarta.annotation.Resource;
-
 /**
+ * Auto-configuration for DICOM image processing.
+ * <p>
+ * This class sets up the DICOM Store SCP (Service Class Provider) as a Spring bean, based on the settings provided in
+ * {@link ImageProperties}. It conditionally initializes OpenCV and the DICOM server itself.
+ * </p>
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
 @EnableConfigurationProperties(value = { ImageProperties.class })
 public class ImageConfiguration {
 
+    /**
+     * Injected image configuration properties.
+     */
     @Resource
     ImageProperties properties;
 
+    /**
+     * Injected Efforts bean, likely for handling DICOM processing tasks.
+     */
     @Resource
     Efforts efforts;
 
+    /**
+     * Creates and configures the DICOM Store SCP bean, represented by the {@link Centre} class.
+     * <p>
+     * The bean's lifecycle is managed by Spring, with its {@code start} and {@code stop} methods called automatically.
+     * The server is only created if {@code bus.image.server} is enabled.
+     * </p>
+     *
+     * @return A configured {@link Centre} instance, or {@code null} if the server is disabled.
+     * @throws NullPointerException if essential server properties (aeTitle, host, port) are missing.
+     */
     @Bean(initMethod = "start", destroyMethod = "stop")
     public Centre onStoreSCP() {
         if (this.properties.isOpencv()) {
@@ -89,7 +110,7 @@ public class ImageConfiguration {
             return Centre.builder().args(args).efforts(efforts)
                     .node(
                             new Node(this.properties.getNode().getAeTitle(), this.properties.getNode().getHost(),
-                                    Integer.valueOf(this.properties.getNode().getPort())))
+                                    Integer.parseInt(this.properties.getNode().getPort())))
                     .storeSCP(new StoreSCP(this.properties.getDcmDir())).build();
         }
         return null;

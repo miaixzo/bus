@@ -52,93 +52,99 @@ import org.miaixz.bus.core.net.url.UrlDecoder;
 import org.miaixz.bus.core.xyz.*;
 
 /**
- * 类扫描器
+ * Class scanner for scanning classes in packages, JARs, and classpaths. This utility provides methods to find classes
+ * based on package name, annotations, or superclasses/interfaces.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class ClassScanner implements Serializable {
 
+    /**
+     * The serial version UID for serialization.
+     */
     @Serial
     private static final long serialVersionUID = 2852276616111L;
 
     /**
-     * 包名
+     * The package name to scan.
      */
     private final String packageName;
     /**
-     * 包名，最后跟一个点，表示包名，避免在检查前缀时的歧义 如果包名指定为空，不跟点
+     * The package name with a trailing dot, used to avoid ambiguity when checking prefixes. If the package name is
+     * empty, this will also be empty.
      */
     private final String packageNameWithDot;
     /**
-     * 包路径，用于文件中对路径操作
+     * The package directory name, used for file system operations.
      */
     private final String packageDirName;
     /**
-     * 包路径，用于jar中对路径操作，在Linux下与packageDirName一致
+     * The package path, used for operations within JAR files. On Linux, this is consistent with {@code packageDirName}.
      */
     private final String packagePath;
     /**
-     * 过滤器
+     * The class filter predicate. Only classes that satisfy this predicate will be included in the scan results.
      */
     private final Predicate<Class<?>> classPredicate;
     /**
-     * 编码
+     * The character set used for decoding URLs and file paths.
      */
     private final java.nio.charset.Charset charset;
     /**
-     * 扫描结果集
+     * The set of scanned classes that satisfy the filter conditions.
      */
     private final Set<Class<?>> classes = new HashSet<>();
     /**
-     * 获取加载错误的类名列表
+     * A set of class names that failed to load during scanning, if {@code ignoreLoadError} is true.
      */
     private final Set<String> classesOfLoadError = new HashSet<>();
     /**
-     * 类加载器
+     * The class loader to use for loading classes.
      */
     private ClassLoader classLoader;
     /**
-     * 是否初始化类
+     * Flag indicating whether to initialize classes when loading them.
      */
     private boolean initialize;
     /**
-     * 忽略loadClass时的错误
+     * Flag indicating whether to ignore errors during class loading. If {@code true}, loading errors will be recorded
+     * in {@code classesOfLoadError} but will not stop the scan.
      */
     private boolean ignoreLoadError = false;
 
     /**
-     * 构造，默认UTF-8编码
+     * Constructs a new {@code ClassScanner} with default settings (UTF-8 encoding, no package filter).
      */
     public ClassScanner() {
         this(null);
     }
 
     /**
-     * 构造，默认UTF-8编码
+     * Constructs a new {@code ClassScanner} for the given package name, with default UTF-8 encoding.
      *
-     * @param packageName 包名，所有包传入""或者null
+     * @param packageName The package name to scan. Use {@code null} or an empty string to scan all packages.
      */
     public ClassScanner(final String packageName) {
         this(packageName, null);
     }
 
     /**
-     * 构造，默认UTF-8编码
+     * Constructs a new {@code ClassScanner} for the given package name and class filter, with default UTF-8 encoding.
      *
-     * @param packageName    包名，所有包传入""或者null
-     * @param classPredicate 过滤器，无需传入null
+     * @param packageName    The package name to scan. Use {@code null} or an empty string to scan all packages.
+     * @param classPredicate The class filter predicate. Can be {@code null} to accept all classes.
      */
     public ClassScanner(final String packageName, final Predicate<Class<?>> classPredicate) {
         this(packageName, classPredicate, Charset.UTF_8);
     }
 
     /**
-     * 构造
+     * Constructs a new {@code ClassScanner} for the given package name, class filter, and character set.
      *
-     * @param packageName    包名，所有包传入""或者null
-     * @param classPredicate 过滤器，无需传入null
-     * @param charset        编码
+     * @param packageName    The package name to scan. Use {@code null} or an empty string to scan all packages.
+     * @param classPredicate The class filter predicate. Can be {@code null} to accept all classes.
+     * @param charset        The character set for decoding URLs and file paths.
      */
     public ClassScanner(String packageName, final Predicate<Class<?>> classPredicate,
             final java.nio.charset.Charset charset) {
@@ -152,11 +158,12 @@ public class ClassScanner implements Serializable {
     }
 
     /**
-     * 扫描指定包路径下所有包含指定注解的类，包括其他加载的jar或者类
+     * Scans all packages (including those in other loaded JARs or classes) for classes annotated with the specified
+     * annotation.
      *
-     * @param packageName     包路径，{@code null}表示扫描全部
-     * @param annotationClass 注解类
-     * @return 类集合
+     * @param packageName     The package path. {@code null} or empty string indicates scanning all packages.
+     * @param annotationClass The annotation class to search for.
+     * @return A set of classes that are annotated with the specified annotation.
      */
     public static Set<Class<?>> scanAllPackageByAnnotation(
             final String packageName,
@@ -165,11 +172,12 @@ public class ClassScanner implements Serializable {
     }
 
     /**
-     * 扫描指定包路径下所有包含指定注解的类 如果classpath下已经有类，不再扫描其他加载的jar或者类
+     * Scans the specified package path for classes annotated with the specified annotation. If classes are already
+     * present in the classpath, other loaded JARs or classes are not scanned.
      *
-     * @param packageName     包路径，{@code null}表示扫描全部
-     * @param annotationClass 注解类
-     * @return 类集合
+     * @param packageName     The package path. {@code null} or empty string indicates scanning all packages.
+     * @param annotationClass The annotation class to search for.
+     * @return A set of classes that are annotated with the specified annotation.
      */
     public static Set<Class<?>> scanPackageByAnnotation(
             final String packageName,
@@ -178,96 +186,106 @@ public class ClassScanner implements Serializable {
     }
 
     /**
-     * 扫描指定包路径下所有指定类或接口的子类或实现类，不包括指定父类本身，包括其他加载的jar或者类
+     * Scans all packages (including those in other loaded JARs or classes) for subclasses or implementations of the
+     * specified superclass or interface. The superclass itself is excluded.
      *
-     * @param packageName 包路径，{@code null}表示扫描全部
-     * @param superClass  父类或接口（不包括）
-     * @return 类集合
+     * @param packageName The package path. {@code null} or empty string indicates scanning all packages.
+     * @param superClass  The superclass or interface (excluded from results).
+     * @return A set of classes that are subclasses or implementations of the specified superclass/interface.
      */
     public static Set<Class<?>> scanAllPackageBySuper(final String packageName, final Class<?> superClass) {
         return scanAllPackage(packageName, clazz -> superClass.isAssignableFrom(clazz) && !superClass.equals(clazz));
     }
 
     /**
-     * 扫描指定包路径下所有指定类或接口的子类或实现类，不包括指定父类本身 如果classpath下已经有类，不再扫描其他加载的jar或者类
+     * Scans the specified package path for subclasses or implementations of the specified superclass or interface. The
+     * superclass itself is excluded. If classes are already present in the classpath, other loaded JARs or classes are
+     * not scanned.
      *
-     * @param packageName 包路径，{@code null}表示扫描全部
-     * @param superClass  父类或接口（不包括）
-     * @return 类集合
+     * @param packageName The package path. {@code null} or empty string indicates scanning all packages.
+     * @param superClass  The superclass or interface (excluded from results).
+     * @return A set of classes that are subclasses or implementations of the specified superclass/interface.
      */
     public static Set<Class<?>> scanPackageBySuper(final String packageName, final Class<?> superClass) {
         return scanPackage(packageName, clazz -> superClass.isAssignableFrom(clazz) && !superClass.equals(clazz));
     }
 
     /**
-     * 扫描该包路径下所有class文件，包括其他加载的jar或者类
+     * Scans all class files in the entire classpath, including those in other loaded JARs or classes.
      *
-     * @return 类集合
+     * @return A set of all scanned classes.
      */
     public static Set<Class<?>> scanAllPackage() {
         return scanAllPackage(Normal.EMPTY, null);
     }
 
     /**
-     * 扫描classpath下所有class文件，如果classpath下已经有类，不再扫描其他加载的jar或者类
+     * Scans all class files in the classpath. If classes are already present in the classpath, other loaded JARs or
+     * classes are not scanned.
      *
-     * @return 类集合
+     * @return A set of all scanned classes.
      */
     public static Set<Class<?>> scanPackage() {
         return scanPackage(Normal.EMPTY, null);
     }
 
     /**
-     * 扫描该包路径下所有class文件
+     * Scans all class files within the specified package path.
      *
-     * @param packageName 包路径 com | com. | com.abs | com.abs.
-     * @return 类集合
+     * @param packageName The package path (e.g., "com", "com.", "com.abs", "com.abs.").
+     * @return A set of classes found in the specified package.
      */
     public static Set<Class<?>> scanPackage(final String packageName) {
         return scanPackage(packageName, null);
     }
 
     /**
-     * 扫描包路径下和所有在classpath中加载的类，满足class过滤器条件的所有class文件， 如果包路径为 com.abs + A.class 但是输入 abs会产生classNotFoundException
-     * 因为className 应该为 com.abs.A 现在却成为abs.A,此工具类对该异常进行忽略处理
+     * Scans all class files in the specified package path and all loaded classes in the classpath that satisfy the
+     * class filter conditions. If the package path is "com.abs" and a class is "com.abs.A.class", but the input is
+     * "abs", it may cause a ClassNotFoundException because the className should be "com.abs.A" but becomes "abs.A".
+     * This utility handles such exceptions by ignoring them.
      *
-     * @param packageName 包路径 com | com. | com.abs | com.abs.
-     * @param classFilter class过滤器，过滤掉不需要的class
-     * @return 类集合
+     * @param packageName The package path (e.g., "com", "com.", "com.abs", "com.abs.").
+     * @param classFilter The class filter predicate to filter out unwanted classes. Can be {@code null}.
+     * @return A set of classes that satisfy the filter conditions.
      */
     public static Set<Class<?>> scanAllPackage(final String packageName, final Predicate<Class<?>> classFilter) {
         return new ClassScanner(packageName, classFilter).scan(true);
     }
 
     /**
-     * 扫描包路径下满足class过滤器条件的所有class文件， 如果包路径为 com.abs + A.class 但是输入 abs会产生classNotFoundException 因为className 应该为
-     * com.abs.A 现在却成为abs.A,此工具类对该异常进行忽略处理
+     * Scans all class files in the specified package path that satisfy the class filter conditions. If the package path
+     * is "com.abs" and a class is "com.abs.A.class", but the input is "abs", it may cause a ClassNotFoundException
+     * because the className should be "com.abs.A" but becomes "abs.A". This utility handles such exceptions by ignoring
+     * them.
      *
-     * @param packageName 包路径 com | com. | com.abs | com.abs.
-     * @param classFilter class过滤器，过滤掉不需要的class
-     * @return 类集合
+     * @param packageName The package path (e.g., "com", "com.", "com.abs", "com.abs.").
+     * @param classFilter The class filter predicate to filter out unwanted classes. Can be {@code null}.
+     * @return A set of classes that satisfy the filter conditions.
      */
     public static Set<Class<?>> scanPackage(final String packageName, final Predicate<Class<?>> classFilter) {
         return new ClassScanner(packageName, classFilter).scan();
     }
 
     /**
-     * 扫描包路径下满足class过滤器条件的所有class文件 此方法首先扫描指定包名下的资源目录，如果未扫描到，则扫描整个classpath中所有加载的类
+     * Scans all class files in the package path that satisfy the class filter conditions. This method first scans the
+     * resource directories of the specified package. If no classes are found, it then scans all loaded classes in the
+     * entire classpath.
      *
-     * @return 类集合
+     * @return A set of classes that satisfy the filter conditions.
      */
     public Set<Class<?>> scan() {
         return scan(false);
     }
 
     /**
-     * 扫描包路径下满足class过滤器条件的所有class文件
+     * Scans all class files in the package path that satisfy the class filter conditions.
      *
-     * @param forceScanJavaClassPaths 是否强制扫描其他位于classpath关联jar中的类
-     * @return 类集合
+     * @param forceScanJavaClassPaths Whether to force scanning of other classes located in classpath-associated JARs.
+     * @return A set of classes that satisfy the filter conditions.
      */
     public Set<Class<?>> scan(final boolean forceScanJavaClassPaths) {
-        // 多次扫描时,清理上次扫描历史
+        // Clear previous scan history for multiple scans
         this.classes.clear();
         this.classesOfLoadError.clear();
 
@@ -283,7 +301,7 @@ public class ClassScanner implements Serializable {
             }
         }
 
-        // classpath下未找到，则扫描其他jar包下的类
+        // If no classes are found in the classpath, or if forced, scan other JARs in the classpath.
         if (forceScanJavaClassPaths || CollKit.isEmpty(this.classes)) {
             scanJavaClassPaths();
         }
@@ -292,48 +310,51 @@ public class ClassScanner implements Serializable {
     }
 
     /**
-     * 忽略加载错误扫描后，可以获得之前扫描时加载错误的类名字集合
+     * After scanning with {@code ignoreLoadError} set to true, this method returns the set of class names that failed
+     * to load during the scan.
      *
-     * @return 加载错误的类名字集合
+     * @return A set of class names that encountered loading errors.
      */
     public Set<String> getClassesOfLoadError() {
         return Collections.unmodifiableSet(this.classesOfLoadError);
     }
 
     /**
-     * 设置是否忽略所有错误
+     * Sets whether to ignore all errors during class loading. If set to {@code true}, loading errors will be recorded
+     * but will not stop the scanning process.
      *
-     * @param ignoreLoadError 是否忽略错误
+     * @param ignoreLoadError {@code true} to ignore loading errors, {@code false} otherwise.
      */
     public void setIgnoreLoadError(final boolean ignoreLoadError) {
         this.ignoreLoadError = ignoreLoadError;
     }
 
     /**
-     * 设置是否在扫描到类时初始化类
+     * Sets whether to initialize classes when they are scanned and loaded.
      *
-     * @param initialize 是否初始化类
+     * @param initialize {@code true} to initialize classes, {@code false} otherwise.
      */
     public void setInitialize(final boolean initialize) {
         this.initialize = initialize;
     }
 
     /**
-     * 设置自定义的类加载器
+     * Sets a custom class loader to be used for loading classes during the scan.
      *
-     * @param classLoader 类加载器
+     * @param classLoader The custom class loader.
      */
     public void setClassLoader(final ClassLoader classLoader) {
         this.classLoader = classLoader;
     }
 
     /**
-     * 扫描Java指定的ClassPath路径
+     * Scans the Java specified ClassPath paths. This method iterates through all entries in the Java classpath and
+     * scans them for classes.
      */
     private void scanJavaClassPaths() {
         final String[] javaClassPaths = Keys.getJavaClassPaths();
         for (String classPath : javaClassPaths) {
-            // bug修复，由于路径中空格和中文导致的Jar找不到
+            // Bug fix: JARs not found due to spaces and Chinese characters in the path.
             classPath = UrlDecoder.decode(classPath, Charset.defaultCharset());
 
             scanFile(new File(classPath), null);
@@ -341,20 +362,21 @@ public class ClassScanner implements Serializable {
     }
 
     /**
-     * 扫描文件或目录中的类
+     * Scans for classes within a given file or directory.
      *
-     * @param file    文件或目录
-     * @param rootDir 包名对应classpath绝对路径
+     * @param file    The file or directory to scan.
+     * @param rootDir The absolute path of the classpath corresponding to the package name. If {@code null}, it will be
+     *                determined from the file path.
      */
     private void scanFile(final File file, final String rootDir) {
         if (file.isFile()) {
             final String fileName = file.getAbsolutePath();
             if (fileName.endsWith(FileType.CLASS)) {
                 final String className = fileName//
-                        // 8为classes长度，fileName.length() - 6为".class"的长度
+                        // 8 is the length of "classes", fileName.length() - 6 is the length of ".class"
                         .substring(rootDir.length(), fileName.length() - 6)//
                         .replace(File.separatorChar, Symbol.C_DOT);//
-                // 加入满足条件的类
+                // Add classes that meet the conditions
                 addIfAccept(className);
             } else if (fileName.endsWith(FileType.JAR)) {
                 try {
@@ -374,9 +396,9 @@ public class ClassScanner implements Serializable {
     }
 
     /**
-     * 扫描jar包，扫描结束后关闭jar文件
+     * Scans a JAR file for classes. The JAR file is closed after scanning.
      *
-     * @param jar jar包
+     * @param jar The JAR file to scan.
      */
     private void scanJar(final JarFile jar) {
         try {
@@ -398,10 +420,10 @@ public class ClassScanner implements Serializable {
     }
 
     /**
-     * 加载类
+     * Loads a class by its fully qualified name.
      *
-     * @param className 类名
-     * @return 加载的类
+     * @param className The fully qualified name of the class to load.
+     * @return The loaded {@code Class} object, or {@code null} if the class could not be loaded.
      */
     protected Class<?> loadClass(final String className) {
         ClassLoader loader = this.classLoader;
@@ -414,9 +436,9 @@ public class ClassScanner implements Serializable {
         try {
             clazz = Class.forName(className, this.initialize, loader);
         } catch (final NoClassDefFoundError | ClassNotFoundException e) {
-            // 由于依赖库导致的类无法加载，直接跳过此类
+            // Classes that cannot be loaded due to dependent libraries are skipped directly.
         } catch (final UnsupportedClassVersionError e) {
-            // 版本导致的不兼容的类，跳过
+            // Incompatible classes due to version differences are skipped.
         } catch (final Exception e) {
             classesOfLoadError.add(className);
         } catch (final Throwable e) {
@@ -430,9 +452,9 @@ public class ClassScanner implements Serializable {
     }
 
     /**
-     * 通过过滤器，是否满足接受此类的条件
+     * Adds a class to the results if it matches the package name and satisfies the class filter.
      *
-     * @param className 类名
+     * @param className The fully qualified name of the class to potentially add.
      */
     private void addIfAccept(final String className) {
         if (StringKit.isBlank(className)) {
@@ -441,22 +463,23 @@ public class ClassScanner implements Serializable {
         final int classLen = className.length();
         final int packageLen = this.packageName.length();
         if (classLen == packageLen) {
-            // 类名和包名长度一致，用户可能传入的包名是类名
+            // If class name and package name have the same length, the user might have provided a class name as package
+            // name.
             if (className.equals(this.packageName)) {
                 addIfAccept(loadClass(className));
             }
         } else if (classLen > packageLen) {
-            // 检查类名是否以指定包名为前缀，包名后加.
-            if (".".equals(this.packageNameWithDot) || className.startsWith(this.packageNameWithDot)) {
+            // Check if the class name starts with the specified package name, followed by a dot.
+            if (Symbol.DOT.equals(this.packageNameWithDot) || className.startsWith(this.packageNameWithDot)) {
                 addIfAccept(loadClass(className));
             }
         }
     }
 
     /**
-     * 通过过滤器，是否满足接受此类的条件
+     * Adds a class to the results if it is not {@code null} and satisfies the class filter.
      *
-     * @param clazz 类
+     * @param clazz The {@code Class} object to potentially add.
      */
     private void addIfAccept(final Class<?> clazz) {
         if (null != clazz) {
@@ -468,10 +491,10 @@ public class ClassScanner implements Serializable {
     }
 
     /**
-     * 截取文件绝对路径中包名之前的部分
+     * Extracts the path segment before the package name from an absolute file path.
      *
-     * @param file 文件
-     * @return 包名之前的部分
+     * @param file The file from which to extract the path.
+     * @return The path segment before the package name, with a trailing file separator.
      */
     private String subPathBeforePackage(final File file) {
         String filePath = file.getAbsolutePath();

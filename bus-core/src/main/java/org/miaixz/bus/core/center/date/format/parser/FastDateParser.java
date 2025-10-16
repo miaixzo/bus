@@ -46,7 +46,8 @@ import org.miaixz.bus.core.lang.exception.DateException;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 线程安全的日期解析器，替代 {@link java.text.SimpleDateFormat}，用于将日期字符串转换为 {@link Date} 对象。
+ * Thread-safe date parser, replacing {@link java.text.SimpleDateFormat}, used to convert date strings to {@link Date}
+ * objects.
  *
  * @author Kimi Liu
  * @see FastDatePrinter
@@ -58,22 +59,22 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
     private static final long serialVersionUID = 2852256079661L;
 
     /**
-     * 日本历法地区
+     * Locale for Japanese Imperial calendar.
      */
     private static final Locale JAPANESE_IMPERIAL = new Locale("ja", "JP", "JP");
 
     /**
-     * 按长度从长到短排序的比较器，用于正则表达式选项
+     * Comparator for sorting strings by length in descending order, for regular expression options.
      */
     private static final Comparator<String> LONGER_FIRST_LOWERCASE = Comparator.reverseOrder();
 
     /**
-     * 策略缓存数组，按日历字段索引
+     * Strategy cache array, indexed by calendar field.
      */
     private static final ConcurrentMap<Locale, Strategy>[] CACHES = new ConcurrentMap[Calendar.FIELD_COUNT];
 
     /**
-     * 解析两位年份的策略，自动调整为四位年份
+     * Strategy for parsing two-digit years, automatically adjusting to four-digit years.
      */
     private static final Strategy ABBREVIATED_YEAR_STRATEGY = new NumberStrategy(Calendar.YEAR) {
 
@@ -84,7 +85,7 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
     };
 
     /**
-     * 解析月份数字的策略，月份值减1以符合Calendar标准
+     * Strategy for parsing month numbers, adjusting the value by subtracting 1 to conform to Calendar standards.
      */
     private static final Strategy NUMBER_MONTH_STRATEGY = new NumberStrategy(Calendar.MONTH) {
 
@@ -95,32 +96,32 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
     };
 
     /**
-     * 解析完整年份的策略
+     * Strategy for parsing full years.
      */
     private static final Strategy LITERAL_YEAR_STRATEGY = new NumberStrategy(Calendar.YEAR);
 
     /**
-     * 解析一年中第几周的策略
+     * Strategy for parsing week of year.
      */
     private static final Strategy WEEK_OF_YEAR_STRATEGY = new NumberStrategy(Calendar.WEEK_OF_YEAR);
 
     /**
-     * 解析一月中第几周的策略
+     * Strategy for parsing week of month.
      */
     private static final Strategy WEEK_OF_MONTH_STRATEGY = new NumberStrategy(Calendar.WEEK_OF_MONTH);
 
     /**
-     * 解析一年中第几天的策略
+     * Strategy for parsing day of year.
      */
     private static final Strategy DAY_OF_YEAR_STRATEGY = new NumberStrategy(Calendar.DAY_OF_YEAR);
 
     /**
-     * 解析一个月中第几天的策略
+     * Strategy for parsing day of month.
      */
     private static final Strategy DAY_OF_MONTH_STRATEGY = new NumberStrategy(Calendar.DAY_OF_MONTH);
 
     /**
-     * 解析一周中第几天的策略，调整值为Calendar标准
+     * Strategy for parsing day of week, adjusting the value to Calendar standards.
      */
     private static final Strategy DAY_OF_WEEK_STRATEGY = new NumberStrategy(Calendar.DAY_OF_WEEK) {
 
@@ -131,17 +132,17 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
     };
 
     /**
-     * 解析一月中第几周的策略
+     * Strategy for parsing day of week in month.
      */
     private static final Strategy DAY_OF_WEEK_IN_MONTH_STRATEGY = new NumberStrategy(Calendar.DAY_OF_WEEK_IN_MONTH);
 
     /**
-     * 解析24小时制（0-23）的策略
+     * Strategy for parsing 24-hour format (0-23).
      */
     private static final Strategy HOUR_OF_DAY_STRATEGY = new NumberStrategy(Calendar.HOUR_OF_DAY);
 
     /**
-     * 解析24小时制（1-24）的策略，24转换为0
+     * Strategy for parsing 24-hour format (1-24), where 24 is converted to 0.
      */
     private static final Strategy HOUR24_OF_DAY_STRATEGY = new NumberStrategy(Calendar.HOUR_OF_DAY) {
 
@@ -152,7 +153,7 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
     };
 
     /**
-     * 解析12小时制（1-12）的策略，12转换为0
+     * Strategy for parsing 12-hour format (1-12), where 12 is converted to 0.
      */
     private static final Strategy HOUR12_STRATEGY = new NumberStrategy(Calendar.HOUR) {
 
@@ -163,58 +164,59 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
     };
 
     /**
-     * 解析12小时制（0-11）的策略
+     * Strategy for parsing 12-hour format (0-11).
      */
     private static final Strategy HOUR_STRATEGY = new NumberStrategy(Calendar.HOUR);
 
     /**
-     * 解析分钟的策略
+     * Strategy for parsing minutes.
      */
     private static final Strategy MINUTE_STRATEGY = new NumberStrategy(Calendar.MINUTE);
 
     /**
-     * 解析秒的策略
+     * Strategy for parsing seconds.
      */
     private static final Strategy SECOND_STRATEGY = new NumberStrategy(Calendar.SECOND);
 
     /**
-     * 解析毫秒的策略
+     * Strategy for parsing milliseconds.
      */
     private static final Strategy MILLISECOND_STRATEGY = new NumberStrategy(Calendar.MILLISECOND);
 
     /**
-     * 当前世纪值（如2000年前为19，之后为20）
+     * The current century value (e.g., 19 for years before 2000, 20 for years after).
      */
     private final int century;
 
     /**
-     * 世纪起始年份
+     * The starting year of the century.
      */
     private final int startYear;
 
     /**
-     * 解析策略和宽度的列表
+     * List of parsing strategies and their widths.
      */
     private transient List<StrategyAndWidth> list;
 
     /**
-     * 构造FastDateParser实例，推荐使用{@link FormatBuilder}的工厂方法获取缓存实例。
+     * Constructs a {@code FastDateParser} instance. It is recommended to use the factory methods of
+     * {@link FormatBuilder} to obtain cached instances.
      *
-     * @param pattern  非空的{@link java.text.SimpleDateFormat}兼容格式
-     * @param timeZone 非空时区
-     * @param locale   非空地域
+     * @param pattern  The non-null {@link java.text.SimpleDateFormat} compatible format.
+     * @param timeZone The non-null time zone.
+     * @param locale   The non-null locale.
      */
     public FastDateParser(final String pattern, final TimeZone timeZone, final Locale locale) {
         this(pattern, timeZone, locale, null);
     }
 
     /**
-     * 构造FastDateParser实例，允许指定世纪起始时间。
+     * Constructs a {@code FastDateParser} instance, allowing specification of the century start time.
      *
-     * @param pattern      非空的{@link java.text.SimpleDateFormat}兼容格式
-     * @param timeZone     非空时区
-     * @param locale       非空地域
-     * @param centuryStart 两位年份解析的世纪起始时间
+     * @param pattern      The non-null {@link java.text.SimpleDateFormat} compatible format.
+     * @param timeZone     The non-null time zone.
+     * @param locale       The non-null locale.
+     * @param centuryStart The century start time for two-digit year parsing.
      */
     public FastDateParser(final String pattern, final TimeZone timeZone, final Locale locale, final Date centuryStart) {
         super(pattern, timeZone, locale);
@@ -237,21 +239,21 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
     }
 
     /**
-     * 检查字符是否为格式化字母（A-Z或a-z）。
+     * Checks if a character is a format letter (A-Z or a-z).
      *
-     * @param c 字符
-     * @return 是否为格式化字母
+     * @param c The character to check.
+     * @return {@code true} if it's a format letter, {@code false} otherwise.
      */
     private static boolean isFormatLetter(final char c) {
         return c >= 'A' && c <= 'Z' || c >= 'a' && c <= 'z';
     }
 
     /**
-     * 将字符串追加到正则表达式中，处理特殊字符转义。
+     * Appends a string to a regular expression, handling special character escaping.
      *
-     * @param sb    正则表达式构建器
-     * @param value 要追加的字符串
-     * @return 正则表达式构建器
+     * @param sb    The regular expression builder.
+     * @param value The string to append.
+     * @return The regular expression builder.
      */
     private static StringBuilder simpleQuote(final StringBuilder sb, final String value) {
         for (int i = 0; i < value.length(); ++i) {
@@ -278,13 +280,13 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
     }
 
     /**
-     * 获取日历字段的短名称和长名称。
+     * Retrieves short and long names for a calendar field.
      *
-     * @param cal    日历对象
-     * @param locale 地域
-     * @param field  日历字段
-     * @param regex  正则表达式构建器
-     * @return 名称到字段值的映射
+     * @param cal    The calendar object.
+     * @param locale The locale.
+     * @param field  The calendar field.
+     * @param regex  The regular expression builder.
+     * @return A map of names to field values.
      */
     private static Map<String, Integer> appendDisplayNames(
             final Calendar cal,
@@ -307,10 +309,10 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
     }
 
     /**
-     * 获取指定日历字段的策略缓存。
+     * Retrieves the strategy cache for a specified calendar field.
      *
-     * @param field 日历字段
-     * @return 地域到策略的缓存
+     * @param field The calendar field.
+     * @return The cache mapping locales to strategies.
      */
     private static ConcurrentMap<Locale, Strategy> getCache(final int field) {
         synchronized (CACHES) {
@@ -322,9 +324,9 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
     }
 
     /**
-     * 初始化派生字段，由构造函数和反序列化调用。
+     * Initializes derived fields, called by the constructor and deserialization.
      *
-     * @param definingCalendar 用于初始化的日历对象
+     * @param definingCalendar The calendar object used for initialization.
      */
     private void init(final Calendar definingCalendar) {
         list = new ArrayList<>();
@@ -339,11 +341,11 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
     }
 
     /**
-     * 反序列化后创建对象，重新初始化瞬态属性。
+     * Creates the object after deserialization, re-initializing transient properties.
      *
-     * @param in 输入流
-     * @throws IOException            如果发生I/O错误
-     * @throws ClassNotFoundException 如果类未找到
+     * @param in The input stream.
+     * @throws IOException            if an I/O error occurs.
+     * @throws ClassNotFoundException if the class is not found.
      */
     private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
@@ -352,11 +354,11 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
     }
 
     /**
-     * 解析日期字符串。
+     * Parses a date string.
      *
-     * @param source 日期字符串
-     * @return 解析后的日期对象
-     * @throws DateException 如果解析失败
+     * @param source The date string to parse.
+     * @return The parsed date object.
+     * @throws DateException if parsing fails.
      */
     @Override
     public Date parse(final CharSequence source) throws DateException {
@@ -373,12 +375,12 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
     }
 
     /**
-     * 解析日期字符串到日历对象。
+     * Parses a date string into a calendar object.
      *
-     * @param source   日期字符串
-     * @param pos      解析位置
-     * @param calendar 日历对象
-     * @return 是否解析成功
+     * @param source   The date string.
+     * @param pos      The parse position.
+     * @param calendar The calendar object.
+     * @return {@code true} if parsing is successful, {@code false} otherwise.
      */
     @Override
     public boolean parse(final CharSequence source, ParsePosition pos, final Calendar calendar) {
@@ -397,10 +399,10 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
     }
 
     /**
-     * 使用当前世纪将两位年份调整为四位年份。
+     * Adjusts a two-digit year to a four-digit year using the current century.
      *
-     * @param twoDigitYear 两位年份
-     * @return 调整后的四位年份
+     * @param twoDigitYear The two-digit year.
+     * @return The adjusted four-digit year.
      */
     private int adjustYear(final int twoDigitYear) {
         final int trial = century + twoDigitYear;
@@ -408,12 +410,13 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
     }
 
     /**
-     * 根据格式字符获取解析策略。
+     * Retrieves a parsing strategy based on the format character and field width.
      *
-     * @param f                格式字符
-     * @param width            字段宽度
-     * @param definingCalendar 日历对象
-     * @return 解析策略
+     * @param f                The format character.
+     * @param width            The field width.
+     * @param definingCalendar The calendar object.
+     * @return The parsing strategy.
+     * @throws IllegalArgumentException if the format character is not supported.
      */
     private Strategy getStrategy(final char f, final int width, final Calendar definingCalendar) {
         switch (f) {
@@ -488,11 +491,11 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
     }
 
     /**
-     * 获取特定地域的解析策略。
+     * Retrieves a locale-specific parsing strategy.
      *
-     * @param field            日历字段
-     * @param definingCalendar 日历对象
-     * @return 解析策略
+     * @param field            The calendar field.
+     * @param definingCalendar The calendar object.
+     * @return The parsing strategy.
      */
     private Strategy getLocaleSpecificStrategy(final int field, final Calendar definingCalendar) {
         final ConcurrentMap<Locale, Strategy> cache = getCache(field);
@@ -509,26 +512,26 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
     }
 
     /**
-     * 日期字段解析策略接口。
+     * Interface for date field parsing strategies.
      */
     interface Strategy {
 
         /**
-         * 解析日期字段。
+         * Parses a date field.
          *
-         * @param parser   解析器
-         * @param calendar 日历对象
-         * @param source   源字符串
-         * @param pos      解析位置
-         * @param maxWidth 最大宽度
-         * @return 是否解析成功
+         * @param parser   The parser.
+         * @param calendar The calendar object.
+         * @param source   The source string.
+         * @param pos      The parse position.
+         * @param maxWidth The maximum width.
+         * @return {@code true} if parsing is successful, {@code false} otherwise.
          */
         boolean parse(FastDateParser parser, Calendar calendar, CharSequence source, ParsePosition pos, int maxWidth);
 
         /**
-         * 是否为数字字段。
+         * Checks if the field is a number field.
          *
-         * @return 是否为数字字段
+         * @return {@code true} if it's a number field, {@code false} otherwise.
          */
         default boolean isNumber() {
             return false;
@@ -536,24 +539,24 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
     }
 
     /**
-     * 存储解析策略和字段宽度的类。
+     * Class to store parsing strategy and field width.
      */
     private static class StrategyAndWidth {
 
         /**
-         * 解析策略
+         * The parsing strategy.
          */
         final Strategy strategy;
         /**
-         * 字段宽度
+         * The field width.
          */
         final int width;
 
         /**
-         * 构造StrategyAndWidth实例。
+         * Constructs a {@code StrategyAndWidth} instance.
          *
-         * @param strategy 解析策略
-         * @param width    字段宽度
+         * @param strategy The parsing strategy.
+         * @param width    The field width.
          */
         StrategyAndWidth(final Strategy strategy, final int width) {
             this.strategy = strategy;
@@ -561,10 +564,10 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
         }
 
         /**
-         * 获取最大宽度。
+         * Gets the maximum width.
          *
-         * @param lt 策略迭代器
-         * @return 最大宽度
+         * @param lt The strategy iterator.
+         * @return The maximum width.
          */
         int getMaxWidth(final ListIterator<StrategyAndWidth> lt) {
             if (!strategy.isNumber() || !lt.hasNext()) {
@@ -577,42 +580,42 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
     }
 
     /**
-     * 解析单一字段的策略。
+     * Strategy for parsing a single field.
      */
     private static abstract class PatternStrategy implements Strategy {
 
         /**
-         * 正则表达式模式
+         * The regular expression pattern.
          */
         private Pattern pattern;
 
         /**
-         * 创建正则表达式模式。
+         * Creates a regular expression pattern.
          *
-         * @param regex 正则表达式
+         * @param regex The regular expression builder.
          */
         void createPattern(final StringBuilder regex) {
             createPattern(regex.toString());
         }
 
         /**
-         * 创建正则表达式模式。
+         * Creates a regular expression pattern.
          *
-         * @param regex 正则表达式字符串
+         * @param regex The regular expression string.
          */
         void createPattern(final String regex) {
             this.pattern = Pattern.compile(regex);
         }
 
         /**
-         * 解析字段值。
+         * Parses a field value.
          *
-         * @param parser   解析器
-         * @param calendar 日历对象
-         * @param source   源字符串
-         * @param pos      解析位置
-         * @param maxWidth 最大宽度
-         * @return 是否解析成功
+         * @param parser   The parser.
+         * @param calendar The calendar object.
+         * @param source   The source string.
+         * @param pos      The parse position.
+         * @param maxWidth The maximum width.
+         * @return {@code true} if parsing is successful, {@code false} otherwise.
          */
         @Override
         public boolean parse(
@@ -632,43 +635,43 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
         }
 
         /**
-         * 设置日历字段值。
+         * Sets the calendar field value.
          *
-         * @param parser 解析器
-         * @param cal    日历对象
-         * @param value  字段值
+         * @param parser The parser.
+         * @param cal    The calendar object.
+         * @param value  The field value.
          */
         abstract void setCalendar(FastDateParser parser, Calendar cal, String value);
     }
 
     /**
-     * 复制格式化模式中的静态或引用字段的策略。
+     * Strategy for copying static or quoted fields in the format pattern.
      */
     private static class CopyQuotedStrategy implements Strategy {
 
         /**
-         * 格式化字段的字面文本
+         * The literal text of the format field.
          */
         final private String formatField;
 
         /**
-         * 构造CopyQuotedStrategy实例。
+         * Constructs a {@code CopyQuotedStrategy} instance.
          *
-         * @param formatField 要匹配的字面文本
+         * @param formatField The literal text to match.
          */
         CopyQuotedStrategy(final String formatField) {
             this.formatField = formatField;
         }
 
         /**
-         * 解析字面文本字段。
+         * Parses the literal text field.
          *
-         * @param parser   解析器
-         * @param calendar 日历对象
-         * @param source   源字符串
-         * @param pos      解析位置
-         * @param maxWidth 最大宽度
-         * @return 是否解析成功
+         * @param parser   The parser.
+         * @param calendar The calendar object.
+         * @param source   The source string.
+         * @param pos      The parse position.
+         * @param maxWidth The maximum width.
+         * @return {@code true} if parsing is successful, {@code false} otherwise.
          */
         @Override
         public boolean parse(
@@ -694,29 +697,29 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
     }
 
     /**
-     * 解析文本字段的策略（不区分大小写）。
+     * Strategy for parsing text fields (case-insensitive).
      */
     private static class CaseInsensitiveTextStrategy extends PatternStrategy {
 
         /**
-         * 日历字段
+         * The calendar field.
          */
         final int field;
         /**
-         * 地域
+         * The locale.
          */
         final Locale locale;
         /**
-         * 字段值映射（小写键）
+         * Map of field values (lowercase keys).
          */
         private final Map<String, Integer> lKeyValues;
 
         /**
-         * 构造CaseInsensitiveTextStrategy实例。
+         * Constructs a {@code CaseInsensitiveTextStrategy} instance.
          *
-         * @param field            日历字段
-         * @param definingCalendar 日历对象
-         * @param locale           地域
+         * @param field            The calendar field.
+         * @param definingCalendar The calendar object.
+         * @param locale           The locale.
          */
         CaseInsensitiveTextStrategy(final int field, final Calendar definingCalendar, final Locale locale) {
             this.field = field;
@@ -730,11 +733,11 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
         }
 
         /**
-         * 设置日历字段值。
+         * Sets the calendar field value.
          *
-         * @param parser 解析器
-         * @param cal    日历对象
-         * @param value  字段值
+         * @param parser The parser.
+         * @param cal    The calendar object.
+         * @param value  The field value.
          */
         @Override
         void setCalendar(final FastDateParser parser, final Calendar cal, final String value) {
@@ -744,28 +747,28 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
     }
 
     /**
-     * 解析数字字段的策略。
+     * Strategy for parsing number fields.
      */
     private static class NumberStrategy implements Strategy {
 
         /**
-         * 日历字段
+         * The calendar field.
          */
         private final int field;
 
         /**
-         * 构造NumberStrategy实例。
+         * Constructs a {@code NumberStrategy} instance.
          *
-         * @param field 日历字段
+         * @param field The calendar field.
          */
         NumberStrategy(final int field) {
             this.field = field;
         }
 
         /**
-         * 是否为数字字段。
+         * Checks if the field is a number field.
          *
-         * @return 始终返回true
+         * @return Always returns {@code true}.
          */
         @Override
         public boolean isNumber() {
@@ -773,14 +776,14 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
         }
 
         /**
-         * 解析数字字段。
+         * Parses a number field.
          *
-         * @param parser   解析器
-         * @param calendar 日历对象
-         * @param source   源字符串
-         * @param pos      解析位置
-         * @param maxWidth 最大宽度
-         * @return 是否解析成功
+         * @param parser   The parser.
+         * @param calendar The calendar object.
+         * @param source   The source string.
+         * @param pos      The parse position.
+         * @param maxWidth The maximum width.
+         * @return {@code true} if parsing is successful, {@code false} otherwise.
          */
         @Override
         public boolean parse(
@@ -822,11 +825,11 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
         }
 
         /**
-         * 修改解析的数字值。
+         * Modifies the parsed number value.
          *
-         * @param parser 解析器
-         * @param iValue 解析的数字
-         * @return 修改后的值
+         * @param parser The parser.
+         * @param iValue The parsed number.
+         * @return The modified value.
          */
         int modify(final FastDateParser parser, final int iValue) {
             return iValue;
@@ -834,39 +837,39 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
     }
 
     /**
-     * 解析时区字段的策略。
+     * Strategy for parsing time zone fields.
      */
     static class TimeZoneStrategy extends PatternStrategy {
 
         /**
-         * RFC 822时区格式正则
+         * Regular expression for RFC 822 time zone format.
          */
         private static final String RFC_822_TIME_ZONE = "[+-]\\d{4}";
         /**
-         * UTC带偏移的时区格式正则
+         * Regular expression for UTC time zone with offset format.
          */
         private static final String UTC_TIME_ZONE_WITH_OFFSET = "[+-]\\d{2}:\\d{2}";
         /**
-         * GMT选项正则
+         * Regular expression for GMT option.
          */
         private static final String GMT_OPTION = "GMT[+-]\\d{1,2}:\\d{2}";
         /**
-         * 时区ID索引
+         * Index for time zone ID.
          */
         private static final int ID = 0;
         /**
-         * 地域
+         * The locale.
          */
         private final Locale locale;
         /**
-         * 时区名称到信息的映射
+         * Map of time zone names to information.
          */
         private final Map<String, TzInfo> tzNames = new HashMap<>();
 
         /**
-         * 构造TimeZoneStrategy实例。
+         * Constructs a {@code TimeZoneStrategy} instance.
          *
-         * @param locale 地域
+         * @param locale The locale.
          */
         TimeZoneStrategy(final Locale locale) {
             this.locale = locale;
@@ -904,11 +907,11 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
         }
 
         /**
-         * 设置日历时区。
+         * Sets the calendar time zone.
          *
-         * @param parser 解析器
-         * @param cal    日历对象
-         * @param value  时区值
+         * @param parser The parser.
+         * @param cal    The calendar object.
+         * @param value  The time zone value.
          */
         @Override
         void setCalendar(final FastDateParser parser, final Calendar cal, final String value) {
@@ -926,24 +929,24 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
         }
 
         /**
-         * 时区信息类。
+         * Time zone information class.
          */
         private static class TzInfo {
 
             /**
-             * 时区对象
+             * The time zone object.
              */
             TimeZone zone;
             /**
-             * 夏令时偏移量
+             * Daylight saving time offset.
              */
             int dstOffset;
 
             /**
-             * 构造TzInfo实例。
+             * Constructs a {@code TzInfo} instance.
              *
-             * @param tz     时区
-             * @param useDst 是否使用夏令时
+             * @param tz     The time zone.
+             * @param useDst Whether to use daylight saving time.
              */
             TzInfo(final TimeZone tz, final boolean useDst) {
                 zone = tz;
@@ -953,39 +956,39 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
     }
 
     /**
-     * 解析ISO 8601时区格式的策略。
+     * Strategy for parsing ISO 8601 time zone formats.
      */
     private static class ISO8601TimeZoneStrategy extends PatternStrategy {
 
         /**
-         * ISO 8601单小时策略
+         * ISO 8601 single hour strategy.
          */
         private static final Strategy ISO_8601_1_STRATEGY = new ISO8601TimeZoneStrategy("(Z|(?:[+-]\\d{2}))");
         /**
-         * ISO 8601小时分钟策略
+         * ISO 8601 hour and minute strategy.
          */
         private static final Strategy ISO_8601_2_STRATEGY = new ISO8601TimeZoneStrategy("(Z|(?:[+-]\\d{2}\\d{2}))");
         /**
-         * ISO 8601带冒号小时分钟策略
+         * ISO 8601 hour and minute strategy with colon.
          */
         private static final Strategy ISO_8601_3_STRATEGY = new ISO8601TimeZoneStrategy(
                 "(Z|(?:[+-]\\d{2}(?::)\\d{2}))");
 
         /**
-         * 构造ISO8601TimeZoneStrategy实例。
+         * Constructs an {@code ISO8601TimeZoneStrategy} instance.
          *
-         * @param pattern 正则表达式模式
+         * @param pattern The regular expression pattern.
          */
         ISO8601TimeZoneStrategy(final String pattern) {
             createPattern(pattern);
         }
 
         /**
-         * 获取指定长度的ISO 8601时区策略。
+         * Gets the ISO 8601 rule for the specified length.
          *
-         * @param tokenLen 时区字符串长度
-         * @return ISO 8601时区策略
-         * @throws IllegalArgumentException 如果长度无效
+         * @param tokenLen The length of the time zone string token.
+         * @return The {@code Iso8601_Rule} instance.
+         * @throws IllegalArgumentException if the length is invalid.
          */
         static Strategy getStrategy(final int tokenLen) {
             return switch (tokenLen) {
@@ -997,11 +1000,11 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
         }
 
         /**
-         * 设置日历时区。
+         * Sets the calendar time zone.
          *
-         * @param parser 解析器
-         * @param cal    日历对象
-         * @param value  时区值
+         * @param parser The parser.
+         * @param cal    The calendar object.
+         * @param value  The time zone value.
          */
         @Override
         void setCalendar(final FastDateParser parser, final Calendar cal, final String value) {
@@ -1014,32 +1017,32 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
     }
 
     /**
-     * 解析格式字符串的策略解析器。
+     * Strategy parser for parsing format strings.
      */
     private class StrategyParser {
 
         /**
-         * 定义日历
+         * The defining calendar.
          */
         final private Calendar definingCalendar;
         /**
-         * 当前解析索引
+         * The current parsing index.
          */
         private int currentIdx;
 
         /**
-         * 构造StrategyParser实例。
+         * Constructs a {@code StrategyParser} instance.
          *
-         * @param definingCalendar 定义日历
+         * @param definingCalendar The defining calendar.
          */
         StrategyParser(final Calendar definingCalendar) {
             this.definingCalendar = definingCalendar;
         }
 
         /**
-         * 获取下一个解析策略。
+         * Gets the next parsing strategy.
          *
-         * @return 策略和宽度对象，若无则返回null
+         * @return The strategy and width object, or {@code null} if no more strategies.
          */
         StrategyAndWidth getNextStrategy() {
             if (currentIdx >= pattern.length()) {
@@ -1053,10 +1056,10 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
         }
 
         /**
-         * 解析字母格式字段。
+         * Parses a letter format field.
          *
-         * @param c 格式字符
-         * @return 策略和宽度对象
+         * @param c The format character.
+         * @return The strategy and width object.
          */
         private StrategyAndWidth letterPattern(final char c) {
             final int begin = currentIdx;
@@ -1070,9 +1073,10 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
         }
 
         /**
-         * 解析字面量字段。
+         * Parses a literal field.
          *
-         * @return 策略和宽度对象
+         * @return The strategy and width object.
+         * @throws IllegalArgumentException if a quote is unterminated.
          */
         private StrategyAndWidth literal() {
             boolean activeQuote = false;

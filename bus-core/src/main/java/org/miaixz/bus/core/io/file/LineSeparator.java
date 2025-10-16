@@ -28,12 +28,12 @@
 package org.miaixz.bus.core.io.file;
 
 /**
- * 换行符枚举 换行符包括：
+ * Enumeration for common line separator types. Line separators include:
  * 
  * <pre>
- * Mac系统换行符："\r"
- * Linux系统换行符："\n"
- * Windows系统换行符："\r\n"
+ * Mac system line separator: "\r"
+ * Linux system line separator: "\n"
+ * Windows system line separator: "\r\n"
  * </pre>
  *
  * @author Kimi Liu
@@ -45,36 +45,36 @@ package org.miaixz.bus.core.io.file;
 public enum LineSeparator {
 
     /**
-     * Mac系统换行符："\r"
+     * Mac system line separator: "\r"
      */
     MAC("\r"),
     /**
-     * Linux系统换行符："\n"
+     * Linux system line separator: "\n"
      */
     LINUX("\n"),
     /**
-     * Windows系统换行符："\r\n"
+     * Windows system line separator: "\r\n"
      */
     WINDOWS("\r\n");
 
     /**
-     * 获取换行符值
+     * The string value of the line separator.
      */
     private final String value;
 
     /**
-     * 构造
+     * Constructs a {@code LineSeparator} enum constant.
      *
-     * @param lineSeparator 换行符
+     * @param lineSeparator The string value of the line separator.
      */
     LineSeparator(final String lineSeparator) {
         this.value = lineSeparator;
     }
 
     /**
-     * 获取换行符值
+     * Returns the string value of the line separator.
      *
-     * @return 值
+     * @return The string value of the line separator.
      */
     public String getValue() {
         return this.value;

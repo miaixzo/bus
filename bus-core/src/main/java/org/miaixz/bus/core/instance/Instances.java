@@ -41,7 +41,8 @@ import org.miaixz.bus.core.xyz.ReflectKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 单例类 提供单例对象的统一管理，当调用get方法时，如果对象池中存在此对象，返回此对象，否则创建新对象返回
+ * Singleton class. Provides unified management of singleton objects. When the get method is called, if the object
+ * exists in the pool, it is returned; otherwise, a new object is created and returned.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -49,19 +50,28 @@ import org.miaixz.bus.core.xyz.StringKit;
 @ThreadSafe
 public final class Instances {
 
+    /**
+     * The singleton object pool.
+     */
     private static final ConcurrentHashMap<String, Object> POOL = new ConcurrentHashMap<>();
 
+    /**
+     * Private constructor to prevent instantiation.
+     */
     private Instances() {
 
     }
 
     /**
-     * 获得指定类的单例对象 对象存在于池中返回，否则创建，每次调用此方法获得的对象为同一个对象 注意：单例针对的是类和参数，也就是说只有类、参数一致才会返回同一个对象
+     * Gets the singleton object of the specified class. If the object exists in the pool, it is returned; otherwise, it
+     * is created. Each call to this method for the same class and arguments will return the same object. Note: The
+     * singleton is specific to the class and its arguments, meaning that only when the class and arguments are
+     * identical will the same object be returned.
      *
-     * @param <T>   单例对象类型
-     * @param clazz 类
-     * @param args  构造方法参数
-     * @return 单例对象
+     * @param <T>   The type of the singleton object.
+     * @param clazz The class.
+     * @param args  The constructor arguments.
+     * @return The singleton object.
      */
     public static <T> T get(final Class<T> clazz, final Object... args) {
         Assert.notNull(clazz, "Class must be not null !");
@@ -70,21 +80,22 @@ public final class Instances {
     }
 
     /**
-     * 获得指定类的单例对象 对象存在于池中返回，否则创建，每次调用此方法获得的对象为同一个对象
+     * Gets the singleton object for the specified key. If the object exists in the pool, it is returned; otherwise, it
+     * is created using the provided supplier. Each call to this method with the same key will return the same object.
      *
-     * @param <T>      单例对象类型
-     * @param key      自定义键
-     * @param supplier 单例对象的创建函数
-     * @return 单例对象
+     * @param <T>      The type of the singleton object.
+     * @param key      The custom key.
+     * @param supplier The supplier to create the singleton object.
+     * @return The singleton object.
      */
     public static <T> T get(final String key, final SupplierX<T> supplier) {
         return (T) POOL.computeIfAbsent(key, (k) -> supplier.get());
     }
 
     /**
-     * 将已有对象放入单例中，其Class做为键
+     * Puts an existing object into the singleton pool, using its class name as the key.
      *
-     * @param object 对象
+     * @param object The object to put into the pool.
      */
     public static void put(final Object object) {
         Assert.notNull(object, "Bean object must be not null !");
@@ -92,21 +103,21 @@ public final class Instances {
     }
 
     /**
-     * 将已有对象放入单例中，key做为键
+     * Puts an existing object into the singleton pool with a custom key.
      *
-     * @param key    键
-     * @param object 对象
+     * @param key    The key.
+     * @param object The object.
      */
     public static void put(final String key, final Object object) {
         POOL.put(key, object);
     }
 
     /**
-     * 判断某个类的对象是否存在
+     * Checks if an object of a certain class exists in the pool.
      *
-     * @param clazz 类
-     * @param args  构造参数
-     * @return 是否存在
+     * @param clazz The class.
+     * @param args  The constructor arguments.
+     * @return {@code true} if the object exists, {@code false} otherwise.
      */
     public static boolean exists(final Class<?> clazz, final Object... args) {
         if (null != clazz) {
@@ -117,18 +128,18 @@ public final class Instances {
     }
 
     /**
-     * 获取单例池中存在的所有类
+     * Gets all classes that exist in the singleton pool.
      *
-     * @return 非重复的类集合
+     * @return A set of unique classes.
      */
     public static Set<Class<?>> getExistClass() {
         return POOL.values().stream().map(Object::getClass).collect(Collectors.toSet());
     }
 
     /**
-     * 移除指定Singleton对象
+     * Removes the specified singleton object from the pool.
      *
-     * @param clazz 类
+     * @param clazz The class of the object to remove.
      */
     public static void remove(final Class<?> clazz) {
         if (null != clazz) {
@@ -137,84 +148,88 @@ public final class Instances {
     }
 
     /**
-     * 移除指定Singleton对象
+     * Removes the specified singleton object from the pool by its key.
      *
-     * @param key 键
+     * @param key The key of the object to remove.
      */
     public static void remove(final String key) {
         POOL.remove(key);
     }
 
     /**
-     * 清除所有Singleton对象
+     * Clears all singleton objects from the pool.
      */
     public static void destroy() {
         POOL.clear();
     }
 
     /**
-     * 静态方法单例
+     * Gets a singleton instance using a static method.
      *
-     * @param clazz 类信息
-     * @param <T>   泛型
-     * @return 结果
+     * @param <T>   The generic type.
+     * @param clazz The class information.
+     * @return The singleton instance.
      */
     public static <T> T singletion(Class<T> clazz) {
         return InstanceFactory.getInstance().singleton(clazz);
     }
 
     /**
-     * 静态方法单例
+     * Gets a singleton instance from a specific group using a static method.
      *
-     * @param clazz     类信息
-     * @param groupName 分组名称
-     * @param <T>       泛型
-     * @return 结果
+     * @param <T>       The generic type.
+     * @param clazz     The class information.
+     * @param groupName The group name.
+     * @return The singleton instance.
      */
     public static <T> T singletion(Class<T> clazz, final String groupName) {
         return InstanceFactory.getInstance().singleton(clazz, groupName);
     }
 
     /**
-     * threadLocal 同一个线程对应的实例一致
+     * Gets a thread-local instance, ensuring that the same instance is returned for the same thread.
      *
-     * @param clazz class
-     * @param <T>   泛型
-     * @return 结果
+     * @param <T>   The generic type.
+     * @param clazz The class.
+     * @return The thread-local instance.
      */
     public static <T> T threadLocal(Class<T> clazz) {
         return InstanceFactory.getInstance().threadLocal(clazz);
     }
 
     /**
-     * {@link ThreadSafe} 线程安全标示的使用单例,或者使用多例
+     * Gets a thread-safe instance. If the class is marked with {@link ThreadSafe}, a singleton is returned; otherwise,
+     * a new instance is returned.
      *
-     * @param clazz class
-     * @param <T>   泛型
-     * @return 结果
+     * @param <T>   The generic type.
+     * @param clazz The class.
+     * @return The thread-safe instance.
      */
     public static <T> T threadSafe(Class<T> clazz) {
         return InstanceFactory.getInstance().threadSafe(clazz);
     }
 
     /**
-     * 多例
+     * Gets a new instance (multiple instances).
      *
-     * @param clazz class
-     * @param <T>   泛型
-     * @return 结果
+     * @param <T>   The generic type.
+     * @param clazz The class.
+     * @return A new instance.
      */
     public static <T> T multiple(Class<T> clazz) {
         return InstanceFactory.getInstance().multiple(clazz);
     }
 
     /**
-     * 获得指定类的单例对象 对象存在于池中返回，否则创建，每次调用此方法获得的对象为同一个对象 注意：单例针对的是类和参数，也就是说只有类、参数一致才会返回同一个对象
+     * Gets the singleton object of the specified class. If the object exists in the pool, it is returned; otherwise, it
+     * is created. Each call to this method for the same class and arguments will return the same object. Note: The
+     * singleton is specific to the class and its arguments, meaning that only when the class and arguments are
+     * identical will the same object be returned.
      *
-     * @param <T>   单例对象类型
-     * @param clazz 类
-     * @param args  构造方法参数
-     * @return 单例对象
+     * @param <T>   The type of the singleton object.
+     * @param clazz The class.
+     * @param args  The constructor arguments.
+     * @return The singleton object.
      */
     public static <T> T singletion(Class<T> clazz, Object... args) {
         Assert.notNull(clazz, "Class must be not null !");
@@ -223,12 +238,13 @@ public final class Instances {
     }
 
     /**
-     * 获得指定类的单例对象 对象存在于池中返回，否则创建，每次调用此方法获得的对象为同一个对象
+     * Gets the singleton object for the specified key. If the object exists in the pool, it is returned; otherwise, it
+     * is created using the provided supplier. Each call to this method with the same key will return the same object.
      *
-     * @param <T>      单例对象类型
-     * @param key      自定义键
-     * @param supplier 单例对象的创建函数
-     * @return 单例对象
+     * @param <T>      The type of the singleton object.
+     * @param key      The custom key.
+     * @param supplier The supplier to create the singleton object.
+     * @return The singleton object.
      */
     public static <T> T singletion(String key, SupplierX<T> supplier) {
         Object value = POOL.get(key);
@@ -240,12 +256,13 @@ public final class Instances {
     }
 
     /**
-     * 获得指定类的单例对象 对象存在于池中返回，否则创建，每次调用此方法获得的对象为同一个对象
+     * Gets the singleton object of the specified class. If the object exists in the pool, it is returned; otherwise, it
+     * is created. Each call to this method for the same class and arguments will return the same object.
      *
-     * @param <T>       单例对象类型
-     * @param className 类名
-     * @param args      构造参数
-     * @return 单例对象
+     * @param <T>       The type of the singleton object.
+     * @param className The class name.
+     * @param args      The constructor arguments.
+     * @return The singleton object.
      */
     public static <T> T singletion(String className, Object... args) {
         Assert.notBlank(className, "Class name must be not blank !");
@@ -254,11 +271,11 @@ public final class Instances {
     }
 
     /**
-     * 构建key
+     * Builds the key for the singleton pool.
      *
-     * @param className 类名
-     * @param args      参数列表
-     * @return data
+     * @param className The class name.
+     * @param args      The argument list.
+     * @return The built key.
      */
     private static String buildKey(final String className, final Object... args) {
         if (ArrayKit.isEmpty(args)) {

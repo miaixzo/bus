@@ -83,26 +83,29 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ObjectKit;
 
 /**
- * 授权服务提供类，用于管理和创建各种第三方登录/授权服务提供者实例。 该类维护了一个授权组件的缓存，支持通过配置或手动注册方式添加授权组件。 该类支持多种第三方平台，包括但不限于：
+ * Authorization service provider class for managing and creating various third-party login/authorization service
+ * provider instances. This class maintains a cache of authorization components and supports adding them through
+ * configuration or manual registration. It supports a wide range of third-party platforms, including but not limited
+ * to:
  * <ul>
- * <li>国内平台：微信、QQ、微博、支付宝、淘宝、百度、华为等</li>
- * <li>国外平台：GitHub、Google、Facebook、Twitter、Microsoft等</li>
- * <li>企业平台：钉钉、飞书、企业微信等</li>
+ * <li>Domestic Platforms: WeChat, QQ, Weibo, Alipay, Taobao, Baidu, Huawei, etc.</li>
+ * <li>International Platforms: GitHub, Google, Facebook, Twitter, Microsoft, etc.</li>
+ * <li>Enterprise Platforms: DingTalk, Feishu, WeChat Work, etc.</li>
  * </ul>
  *
  * <p>
- * 使用示例：
+ * <strong>Usage Example:</strong>
  * </p>
  * 
- * <pre>
+ * <pre>{@code
  * 
- * // 创建配置
+ * // Create configuration properties
  * AuthProperties properties = new AuthProperties();
- * // 创建服务
+ * // Create the authorization service
  * AuthService service = new AuthService(properties);
- * // 获取GitHub授权提供者
+ * // Get the GitHub authorization provider
  * Provider provider = service.require(Registry.GITHUB);
- * </pre>
+ * }</pre>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -110,34 +113,34 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 public class AuthService {
 
     /**
-     * 授权组件缓存，用于存储已注册的授权组件。 使用ConcurrentHashMap保证线程安全。
+     * Cache for storing registered authorization components. Uses {@link ConcurrentHashMap} for thread safety.
      */
-    private static Map<Registry, Context> CACHE = new ConcurrentHashMap<>();
+    private static final Map<Registry, Context> CACHE = new ConcurrentHashMap<>();
 
     /**
-     * 授权配置属性，包含各种授权组件的配置信息。
+     * Authorization configuration properties, containing settings for various authorization components.
      */
     public AuthProperties properties;
 
     /**
-     * 缓存接口，用于存储授权过程中的临时数据。
+     * Cache interface for storing temporary data during the authorization process.
      */
     public CacheX cache;
 
     /**
-     * 使用默认缓存创建授权服务提供者实例。
+     * Constructs an instance of the authorization service provider with the default cache.
      *
-     * @param properties 授权配置属性，不能为null
+     * @param properties The authorization configuration properties (must not be null).
      */
     public AuthService(AuthProperties properties) {
         this(properties, AuthCache.INSTANCE);
     }
 
     /**
-     * 使用指定缓存创建授权服务提供者实例。
+     * Constructs an instance of the authorization service provider with a specified cache.
      *
-     * @param properties 授权配置属性，不能为null
-     * @param cache      缓存实现，不能为null
+     * @param properties The authorization configuration properties (must not be null).
+     * @param cache      The cache implementation to use (must not be null).
      */
     public AuthService(AuthProperties properties, CacheX cache) {
         this.properties = properties;
@@ -145,124 +148,171 @@ public class AuthService {
     }
 
     /**
-     * 注册授权组件到缓存中。 如果已存在相同类型的组件，则抛出异常。
+     * Registers an authorization component in the cache. Throws an exception if a component of the same type is already
+     * registered.
      *
-     * @param type    授权组件类型，不能为null
-     * @param context 授权组件上下文，不能为null
-     * @throws InternalException 如果已存在相同类型的组件
+     * @param registry The type of the authorization component (must not be null).
+     * @param context  The context of the authorization component (must not be null).
+     * @throws InternalException if a component of the same type already exists.
      */
-    public static void register(Registry type, Context context) {
-        if (CACHE.containsKey(type)) {
-            throw new InternalException("重复注册同名称的组件：" + type.name());
+    public static void register(Registry registry, Context context) {
+        if (CACHE.containsKey(registry)) {
+            throw new InternalException("A component with the same name is already registered: " + registry.name());
         }
-        CACHE.putIfAbsent(type, context);
+        CACHE.putIfAbsent(registry, context);
     }
 
     /**
-     * 根据授权组件类型获取对应的授权服务提供者实例。 首先从缓存中查找，如果不存在则从配置中获取。
+     * Retrieves the corresponding authorization service provider instance based on the component type. It first
+     * searches the cache; if not found, it retrieves from the configuration.
      *
-     * @param type 授权组件类型，不能为null
-     * @return 对应的授权服务提供者实例
-     * @throws InternalException 如果找不到对应的授权组件
+     * @param registry The type of the authorization component (must not be null).
+     * @return The corresponding authorization service provider instance.
+     * @throws InternalException if the corresponding authorization component cannot be found.
      */
-    public Provider require(Registry type) {
-        // 从缓存中获取授权组件上下文
-        Context context = CACHE.get(type);
-        // 如果缓存中不存在，则从配置中获取
+    public Provider require(Registry registry) {
+        // Get the authorization component context from the cache
+        Context context = CACHE.get(registry);
+        // If not in the cache, get it from the properties
         if (ObjectKit.isEmpty(context)) {
-            context = properties.getType().get(type);
+            context = properties.getType().get(registry);
         }
 
-        // 根据不同的授权类型创建对应的授权服务提供者实例
-        if (Registry.AFDIAN.equals(type)) {
-            return new AfDianProvider(context, cache);
-        } else if (Registry.ALIPAY.equals(type)) {
-            return new AlipayProvider(context, cache);
-        } else if (Registry.ALIYUN.equals(type)) {
-            return new AliyunProvider(context, cache);
-        } else if (Registry.AMAZON.equals(type)) {
-            return new AmazonProvider(context, cache);
-        } else if (Registry.BAIDU.equals(type)) {
-            return new BaiduProvider(context, cache);
-        } else if (Registry.CODING.equals(type)) {
-            return new CodingProvider(context, cache);
-        } else if (Registry.DINGTALK.equals(type)) {
-            return new DingTalkProvider(context, cache);
-        } else if (Registry.DOUYIN.equals(type)) {
-            return new DouyinProvider(context, cache);
-        } else if (Registry.ELEME.equals(type)) {
-            return new ElemeProvider(context, cache);
-        } else if (Registry.FACEBOOK.equals(type)) {
-            return new FacebookProvider(context, cache);
-        } else if (Registry.FEISHU.equals(type)) {
-            return new FeishuProvider(context, cache);
-        } else if (Registry.GITEE.equals(type)) {
-            return new GiteeProvider(context, cache);
-        } else if (Registry.GITHUB.equals(type)) {
-            return new GithubProvider(context, cache);
-        } else if (Registry.GITLAB.equals(type)) {
-            return new GitlabProvider(context, cache);
-        } else if (Registry.GOOGLE.equals(type)) {
-            return new GoogleProvider(context, cache);
-        } else if (Registry.HUAWEI.equals(type)) {
-            return new HuaweiProvider(context, cache);
-        } else if (Registry.JD.equals(type)) {
-            return new JdProvider(context, cache);
-        } else if (Registry.KUJIALE.equals(type)) {
-            return new KujialeProvider(context, cache);
-        } else if (Registry.LINE.equals(type)) {
-            return new LineProvider(context, cache);
-        } else if (Registry.LINKEDIN.equals(type)) {
-            return new LinkedinProvider(context, cache);
-        } else if (Registry.MEITUAN.equals(type)) {
-            return new MeituanProvider(context, cache);
-        } else if (Registry.MI.equals(type)) {
-            return new MiProvider(context, cache);
-        } else if (Registry.MICROSOFT_CN.equals(type)) {
-            return new MicrosoftCnProvider(context, cache);
-        } else if (Registry.MICROSOFT.equals(type)) {
-            return new MicrosoftProvider(context, cache);
-        } else if (Registry.OKTA.equals(type)) {
-            return new OktaProvider(context, cache);
-        } else if (Registry.OSCHINA.equals(type)) {
-            return new OschinaProvider(context, cache);
-        } else if (Registry.PINTEREST.equals(type)) {
-            return new PinterestProvider(context, cache);
-        } else if (Registry.PROGINN.equals(type)) {
-            return new ProginnProvider(context, cache);
-        } else if (Registry.QQ.equals(type)) {
-            return new QqProvider(context, cache);
-        } else if (Registry.RENREN.equals(type)) {
-            return new RenrenProvider(context, cache);
-        } else if (Registry.SLACK.equals(type)) {
-            return new SlackProvider(context, cache);
-        } else if (Registry.STACK_OVERFLOW.equals(type)) {
-            return new StackOverflowProvider(context, cache);
-        } else if (Registry.TAOBAO.equals(type)) {
-            return new TaobaoProvider(context, cache);
-        } else if (Registry.TEAMBITION.equals(type)) {
-            return new TeambitionProvider(context, cache);
-        } else if (Registry.TOUTIAO.equals(type)) {
-            return new ToutiaoProvider(context, cache);
-        } else if (Registry.TWITTER.equals(type)) {
-            return new TwitterProvider(context, cache);
-        } else if (Registry.WECHAT_EE.equals(type)) {
-            return new WeChatEeQrcodeProvider(context, cache);
-        } else if (Registry.WECHAT_EE_QRCODE.equals(type)) {
-            return new WeChatEeThirdQrcodeProvider(context, cache);
-        } else if (Registry.WECHAT_EE_WEB.equals(type)) {
-            return new WeChatEeWebProvider(context, cache);
-        } else if (Registry.WECHAT_MP.equals(type)) {
-            return new WeChatMpProvider(context, cache);
-        } else if (Registry.WECHAT_OPEN.equals(type)) {
-            return new WeChatOpenProvider(context, cache);
-        } else if (Registry.WEIBO.equals(type)) {
-            return new WeiboProvider(context, cache);
-        } else if (Registry.XIMALAYA.equals(type)) {
-            return new XimalayaProvider(context, cache);
+        // Create the corresponding provider instance based on the authorization type
+        switch (registry) {
+            case AFDIAN:
+                return new AfDianProvider(context, cache);
+
+            case ALIPAY:
+                return new AlipayProvider(context, cache);
+
+            case ALIYUN:
+                return new AliyunProvider(context, cache);
+
+            case AMAZON:
+                return new AmazonProvider(context, cache);
+
+            case BAIDU:
+                return new BaiduProvider(context, cache);
+
+            case CODING:
+                return new CodingProvider(context, cache);
+
+            case DINGTALK:
+                return new DingTalkProvider(context, cache);
+
+            case DOUYIN:
+                return new DouyinProvider(context, cache);
+
+            case ELEME:
+                return new ElemeProvider(context, cache);
+
+            case FACEBOOK:
+                return new FacebookProvider(context, cache);
+
+            case FEISHU:
+                return new FeishuProvider(context, cache);
+
+            case GITEE:
+                return new GiteeProvider(context, cache);
+
+            case GITHUB:
+                return new GithubProvider(context, cache);
+
+            case GITLAB:
+                return new GitlabProvider(context, cache);
+
+            case GOOGLE:
+                return new GoogleProvider(context, cache);
+
+            case HUAWEI:
+                return new HuaweiProvider(context, cache);
+
+            case JD:
+                return new JdProvider(context, cache);
+
+            case KUJIALE:
+                return new KujialeProvider(context, cache);
+
+            case LINE:
+                return new LineProvider(context, cache);
+
+            case LINKEDIN:
+                return new LinkedinProvider(context, cache);
+
+            case MEITUAN:
+                return new MeituanProvider(context, cache);
+
+            case MI:
+                return new MiProvider(context, cache);
+
+            case MICROSOFT_CN:
+                return new MicrosoftCnProvider(context, cache);
+
+            case MICROSOFT:
+                return new MicrosoftProvider(context, cache);
+
+            case OKTA:
+                return new OktaProvider(context, cache);
+
+            case OSCHINA:
+                return new OschinaProvider(context, cache);
+
+            case PINTEREST:
+                return new PinterestProvider(context, cache);
+
+            case PROGINN:
+                return new ProginnProvider(context, cache);
+
+            case QQ:
+                return new QqProvider(context, cache);
+
+            case RENREN:
+                return new RenrenProvider(context, cache);
+
+            case SLACK:
+                return new SlackProvider(context, cache);
+
+            case STACK_OVERFLOW:
+                return new StackOverflowProvider(context, cache);
+
+            case TAOBAO:
+                return new TaobaoProvider(context, cache);
+
+            case TEAMBITION:
+                return new TeambitionProvider(context, cache);
+
+            case TOUTIAO:
+                return new ToutiaoProvider(context, cache);
+
+            case TWITTER:
+                return new TwitterProvider(context, cache);
+
+            case WECHAT_EE:
+                return new WeChatEeQrcodeProvider(context, cache);
+
+            case WECHAT_EE_QRCODE:
+                return new WeChatEeThirdQrcodeProvider(context, cache);
+
+            case WECHAT_EE_WEB:
+                return new WeChatEeWebProvider(context, cache);
+
+            case WECHAT_MP:
+                return new WeChatMpProvider(context, cache);
+
+            case WECHAT_OPEN:
+                return new WeChatOpenProvider(context, cache);
+
+            case WEIBO:
+                return new WeiboProvider(context, cache);
+
+            case XIMALAYA:
+                return new XimalayaProvider(context, cache);
+
+            default:
+                // If no matching authorization type is found, throw an exception
+                throw new InternalException(ErrorCode._100803.getValue());
         }
-        // 如果没有匹配的授权类型，抛出异常
-        throw new InternalException(ErrorCode._100803.getValue());
     }
 
 }

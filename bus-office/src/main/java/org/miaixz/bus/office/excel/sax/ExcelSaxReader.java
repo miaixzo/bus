@@ -34,119 +34,124 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.FileKit;
 
 /**
- * Sax方式读取Excel接口，提供一些共用方法
+ * Interface for SAX-based Excel readers, providing common methods for reading Excel files.
  *
- * @param <T> 子对象类型，用于标记返回值this
+ * @param <T> The type of the implementing object, used for method chaining (returning {@code this}).
  * @author Kimi Liu
  * @since Java 17+
  */
 public interface ExcelSaxReader<T> {
 
     /**
-     * sheet r:Id前缀
+     * Prefix for sheet r:Id attribute.
      */
     String RID_PREFIX = "rId";
     /**
-     * sheet name前缀
+     * Prefix for sheet name.
      */
     String SHEET_NAME_PREFIX = "sheetName:";
 
     /**
-     * 开始读取Excel
+     * Starts reading an Excel file.
      *
-     * @param file               Excel文件
-     * @param idOrRidOrSheetName Excel中的sheet id或者rid编号或sheet名称，rid必须加rId前缀，例如rId1，如果为-1处理所有编号的sheet
-     * @return this
-     * @throws InternalException POI异常
+     * @param file               The Excel file.
+     * @param idOrRidOrSheetName The sheet identifier in Excel, which can be a sheet ID, an rId (prefixed with "rId",
+     *                           e.g., "rId1"), or a sheet name. If -1, all sheets will be processed.
+     * @return This reader instance, for chaining.
+     * @throws InternalException If a POI-related exception occurs.
      */
     T read(File file, String idOrRidOrSheetName) throws InternalException;
 
     /**
-     * 开始读取Excel，读取结束后并不关闭流
+     * Starts reading an Excel file from an input stream. The stream will not be closed after reading.
      *
-     * @param in                 Excel流
-     * @param idOrRidOrSheetName Excel中的sheet id或者rid编号，rid必须加rId前缀，例如rId1，如果为-1处理所有编号的sheet
-     * @return this
-     * @throws InternalException POI异常
+     * @param in                 The Excel input stream.
+     * @param idOrRidOrSheetName The sheet identifier in Excel, which can be a sheet ID, an rId (prefixed with "rId",
+     *                           e.g., "rId1"), or a sheet name. If -1, all sheets will be processed.
+     * @return This reader instance, for chaining.
+     * @throws InternalException If a POI-related exception occurs.
      */
     T read(InputStream in, String idOrRidOrSheetName) throws InternalException;
 
     /**
-     * 开始读取Excel，读取所有sheet
+     * Starts reading an Excel file from a path, processing all sheets.
      *
-     * @param path Excel文件路径
-     * @return this
-     * @throws InternalException POI异常
+     * @param path The path to the Excel file.
+     * @return This reader instance, for chaining.
+     * @throws InternalException If a POI-related exception occurs.
      */
     default T read(final String path) throws InternalException {
         return read(FileKit.file(path));
     }
 
     /**
-     * 开始读取Excel，读取所有sheet
+     * Starts reading an Excel file, processing all sheets.
      *
-     * @param file Excel文件
-     * @return this
-     * @throws InternalException POI异常
+     * @param file The Excel file.
+     * @return This reader instance, for chaining.
+     * @throws InternalException If a POI-related exception occurs.
      */
     default T read(final File file) throws InternalException {
         return read(file, -1);
     }
 
     /**
-     * 开始读取Excel，读取所有sheet，读取结束后并不关闭流
+     * Starts reading an Excel file from an input stream, processing all sheets. The stream will not be closed after
+     * reading.
      *
-     * @param in Excel包流
-     * @return this
-     * @throws InternalException POI异常
+     * @param in The Excel input stream.
+     * @return This reader instance, for chaining.
+     * @throws InternalException If a POI-related exception occurs.
      */
     default T read(final InputStream in) throws InternalException {
         return read(in, -1);
     }
 
     /**
-     * 开始读取Excel
+     * Starts reading an Excel file from a path.
      *
-     * @param path               文件路径
-     * @param idOrRidOrSheetName Excel中的sheet id或者rid编号或sheet名称，rid必须加rId前缀，例如rId1，如果为-1处理所有编号的sheet
-     * @return this
-     * @throws InternalException POI异常
+     * @param path               The path to the Excel file.
+     * @param idOrRidOrSheetName The sheet identifier in Excel, which can be a sheet ID, an rId (prefixed with "rId",
+     *                           e.g., "rId1"), or a sheet name. If -1, all sheets will be processed.
+     * @return This reader instance, for chaining.
+     * @throws InternalException If a POI-related exception occurs.
      */
     default T read(final String path, final int idOrRidOrSheetName) throws InternalException {
         return read(FileKit.file(path), idOrRidOrSheetName);
     }
 
     /**
-     * 开始读取Excel
+     * Starts reading an Excel file from a path.
      *
-     * @param path               文件路径
-     * @param idOrRidOrSheetName Excel中的sheet id或者rid编号或sheet名称，rid必须加rId前缀，例如rId1，如果为-1处理所有编号的sheet
-     * @return this
-     * @throws InternalException POI异常
+     * @param path               The path to the Excel file.
+     * @param idOrRidOrSheetName The sheet identifier in Excel, which can be a sheet ID, an rId (prefixed with "rId",
+     *                           e.g., "rId1"), or a sheet name. If -1, all sheets will be processed.
+     * @return This reader instance, for chaining.
+     * @throws InternalException If a POI-related exception occurs.
      */
     default T read(final String path, final String idOrRidOrSheetName) throws InternalException {
         return read(FileKit.file(path), idOrRidOrSheetName);
     }
 
     /**
-     * 开始读取Excel
+     * Starts reading an Excel file.
      *
-     * @param file Excel文件
-     * @param rid  Excel中的sheet rid编号，如果为-1处理所有编号的sheet
-     * @return this
-     * @throws InternalException POI异常
+     * @param file The Excel file.
+     * @param rid  The sheet rId in Excel. If -1, all sheets will be processed.
+     * @return This reader instance, for chaining.
+     * @throws InternalException If a POI-related exception occurs.
      */
     default T read(final File file, final int rid) throws InternalException {
         return read(file, String.valueOf(rid));
     }
 
     /**
-     * 开始读取Excel，读取结束后并不关闭流
+     * Starts reading an Excel file from an input stream. The stream will not be closed after reading.
      *
-     * @param in  Excel流
-     * @param rid Excel中的sheet rid编号，如果为-1处理所有编号的sheet
-     * @return this
-     * @throws InternalException POI异常
+     * @param in  The Excel input stream.
+     * @param rid The sheet rId in Excel. If -1, all sheets will be processed.
+     * @return This reader instance, for chaining.
+     * @throws InternalException If a POI-related exception occurs.
      */
     default T read(final InputStream in, final int rid) throws InternalException {
         return read(in, String.valueOf(rid));

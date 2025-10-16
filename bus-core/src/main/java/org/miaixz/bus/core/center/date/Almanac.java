@@ -28,7 +28,7 @@
 package org.miaixz.bus.core.center.date;
 
 /**
- * 年鉴
+ * Represents an almanac, providing a name for a specific calendar or date system.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -36,9 +36,9 @@ package org.miaixz.bus.core.center.date;
 public interface Almanac {
 
     /**
-     * 名称
+     * Retrieves the name of this almanac.
      *
-     * @return 名称
+     * @return The name of the almanac.
      */
     String getName();
 

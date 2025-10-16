@@ -32,7 +32,8 @@ import java.lang.annotation.*;
 import org.miaixz.bus.limiter.magic.FlowGrade;
 
 /**
- * 提升热点请求
+ * Annotation for marking methods that require hotspot protection. This annotation is used to apply flow control rules
+ * to frequently accessed methods or resources, preventing them from being overloaded.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,10 +44,27 @@ import org.miaixz.bus.limiter.magic.FlowGrade;
 @Target(ElementType.METHOD)
 public @interface Hotspot {
 
+    /**
+     * Specifies the flow grade for the hotspot rule. This determines the type of metric used for limiting, e.g., QPS or
+     * thread count.
+     *
+     * @return The {@link FlowGrade} for the hotspot rule.
+     */
     FlowGrade grade();
 
+    /**
+     * Specifies the threshold count for the hotspot rule. When the resource usage exceeds this count, the hotspot
+     * protection mechanism is triggered.
+     *
+     * @return The count threshold for the hotspot rule.
+     */
     int count();
 
+    /**
+     * Specifies the duration in seconds for which the hotspot rule is active after being triggered.
+     *
+     * @return The duration in seconds for the hotspot rule.
+     */
     int duration();
 
 }

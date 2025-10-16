@@ -40,7 +40,7 @@ import org.miaixz.bus.core.xyz.PatternKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 时间日期字符串，日期默认为当天，支持格式类似于；
+ * Parses time strings, defaulting the date to the current day. Supports formats similar to:
  *
  * <pre>
  *   HH:mm:ss
@@ -56,15 +56,15 @@ public class TimeParser implements PredicateDateParser, Serializable {
     private static final long serialVersionUID = 2852257133063L;
 
     /**
-     * 单例实例
+     * Singleton instance of {@code TimeParser}.
      */
     public static final TimeParser INSTANCE = new TimeParser();
 
     /**
-     * 测试字符串是否符合时间格式。
+     * Tests if the given string matches a time format.
      *
-     * @param date 时间字符串
-     * @return 是否匹配时间格式
+     * @param date The time string to test.
+     * @return {@code true} if the string matches a time format, {@code false} otherwise.
      */
     @Override
     public boolean test(final CharSequence date) {
@@ -72,20 +72,20 @@ public class TimeParser implements PredicateDateParser, Serializable {
     }
 
     /**
-     * 解析时间字符串，默认日期为当天。
+     * Parses a time string, defaulting the date to the current day.
      *
-     * @param source 时间字符串
-     * @return 解析后的 DateTime 对象
+     * @param source The time string to parse.
+     * @return The parsed {@link DateTime} object.
      */
     @Override
     public DateTime parse(CharSequence source) {
         source = StringKit.replaceChars(source, "时分秒", Symbol.COLON);
         source = StringKit.format("{} {}", DateKit.formatToday(), source);
         if (1 == StringKit.count(source, Symbol.C_COLON)) {
-            // 时间格式为 HH:mm
+            // Time format is HH:mm
             return new DateTime(source, Fields.NORM_DATETIME_MINUTE);
         } else {
-            // 时间格式为 HH:mm:ss
+            // Time format is HH:mm:ss
             return new DateTime(source, Formatter.NORM_DATETIME_FORMAT);
         }
     }

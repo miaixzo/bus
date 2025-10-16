@@ -38,29 +38,48 @@ import org.miaixz.bus.auth.magic.ErrorCode;
 import org.miaixz.bus.auth.magic.Material;
 import org.miaixz.bus.auth.nimble.AbstractProvider;
 import org.miaixz.bus.cache.CacheX;
+import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.extra.json.JsonKit;
 
 /**
- * 今日头条 登录
+ * Toutiao (ByteDance) login provider.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class ToutiaoProvider extends AbstractProvider {
 
+    /**
+     * Constructs a {@code ToutiaoProvider} with the specified context.
+     *
+     * @param context the authentication context
+     */
     public ToutiaoProvider(Context context) {
         super(context, Registry.TOUTIAO);
     }
 
+    /**
+     * Constructs a {@code ToutiaoProvider} with the specified context and cache.
+     *
+     * @param context the authentication context
+     * @param cache   the cache implementation
+     */
     public ToutiaoProvider(Context context, CacheX cache) {
         super(context, Registry.TOUTIAO, cache);
     }
 
+    /**
+     * Retrieves the access token from Toutiao's authorization server.
+     *
+     * @param callback the callback object containing the authorization code
+     * @return the {@link AuthToken} containing access token details
+     * @throws AuthorizedException if parsing the response fails or required token information is missing
+     */
     @Override
     public AuthToken getAccessToken(Callback callback) {
-        String response = doGetAuthorizationCode(callback.getCode());
+        String response = doPostAuthorizationCode(callback.getCode());
         Map<String, Object> accessTokenObject = JsonKit.toPojo(response, Map.class);
 
         this.checkResponse(accessTokenObject);
@@ -70,6 +89,13 @@ public class ToutiaoProvider extends AbstractProvider {
                 .openId((String) accessTokenObject.get("open_id")).build();
     }
 
+    /**
+     * Retrieves user information from Toutiao's user info endpoint.
+     *
+     * @param authToken the {@link AuthToken} obtained after successful authorization
+     * @return {@link Material} containing the user's information
+     * @throws AuthorizedException if parsing the response fails or required user information is missing
+     */
     @Override
     public Material getUserInfo(AuthToken authToken) {
         String userResponse = doGetUserInfo(authToken);
@@ -77,10 +103,10 @@ public class ToutiaoProvider extends AbstractProvider {
 
         this.checkResponse(userProfile);
 
-        Map<String, Object> user = (Map<String, Object>) userProfile.get("data");
+        Map<String, Object> user = (Map<String, Object>) userProfile.get(Consts.DATA);
 
         boolean isAnonymousUser = "14".equals(user.get("uid_type"));
-        String anonymousUserName = "匿名用户";
+        String anonymousUserName = "Anonymous User";
 
         return Material.builder().rawJson(JsonKit.toJsonString(userProfile)).uuid((String) user.get("uid"))
                 .username(isAnonymousUser ? anonymousUserName : (String) user.get("screen_name"))
@@ -90,10 +116,11 @@ public class ToutiaoProvider extends AbstractProvider {
     }
 
     /**
-     * 返回带{@code state}参数的授权url，授权回调时会带上这个{@code state}
+     * Returns the authorization URL with a {@code state} parameter. The {@code state} will be included in the
+     * authorization callback.
      *
-     * @param state state 验证授权流程的参数，可以防止csrf
-     * @return 返回授权地址
+     * @param state the parameter to verify the authorization process, which can prevent CSRF attacks
+     * @return the authorization URL
      */
     @Override
     public String authorize(String state) {
@@ -103,10 +130,10 @@ public class ToutiaoProvider extends AbstractProvider {
     }
 
     /**
-     * 返回获取accessToken的url
+     * Returns the URL to obtain the access token.
      *
-     * @param code 授权码
-     * @return 返回获取accessToken的url
+     * @param code the authorization code
+     * @return the URL to obtain the access token
      */
     @Override
     protected String accessTokenUrl(String code) {
@@ -116,10 +143,10 @@ public class ToutiaoProvider extends AbstractProvider {
     }
 
     /**
-     * 返回获取userInfo的url
+     * Returns the URL to obtain user information.
      *
-     * @param authToken 用户授权后的token
-     * @return 返回获取userInfo的url
+     * @param authToken the user's authorization token
+     * @return the URL to obtain user information
      */
     @Override
     protected String userInfoUrl(AuthToken authToken) {
@@ -128,9 +155,10 @@ public class ToutiaoProvider extends AbstractProvider {
     }
 
     /**
-     * 检查响应内容是否正确
+     * Checks the response content for errors.
      *
-     * @param object 请求响应内容
+     * @param object the response map to check
+     * @throws AuthorizedException if the response indicates an error or message indicating failure
      */
     private void checkResponse(Map<String, Object> object) {
         if (object.containsKey("error_code")) {

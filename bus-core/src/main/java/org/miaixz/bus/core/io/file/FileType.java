@@ -41,15 +41,15 @@ import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 文件类型判断工具类
+ * File type determination utility class.
  *
  * <p>
- * 此工具根据文件的前几位bytes猜测文件类型，对于文本、zip判断不准确，对于视频、图片类型判断准确
- * </p>
+ * This tool attempts to guess the file type based on the first few bytes of the file. It may not be accurate for text
+ * and zip files, but is generally accurate for video and image types.
  *
  * <p>
- * 需要注意的是，xlsx、docx等Office2007格式，全部识别为zip，因为新版采用了OpenXML格式，这些格式本质上是XML文件打包为zip
- * </p>
+ * It's important to note that Office 2007 formats like XLSX and DOCX are all identified as ZIP files because the new
+ * versions use the OpenXML format, which essentially packages XML files into a ZIP archive.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -57,97 +57,119 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class FileType {
 
     /**
-     * Jar文件扩展名
+     * Java source file extension.
      */
     public static final String JAVA = ".java";
     /**
-     * Class文件扩展名
+     * Java compiled class file extension.
      */
     public static final String CLASS = ".class";
     /**
-     * Jar文件扩展名
+     * Java Archive (JAR) file extension.
      */
     public static final String JAR = ".jar";
     /**
-     * 在Jar中的路径jar的扩展名形式
+     * Extension form for paths within a JAR file.
      */
     public static final String JAR_PATH_EXT = ".jar!";
     /**
-     * 微软excel文档
+     * Microsoft Excel document extension (legacy).
      */
     public static final String TYPE_XLS = ".xls";
+    /**
+     * Microsoft Excel document extension (OpenXML).
+     */
     public static final String TYPE_XLSX = ".xlsx";
     /**
-     * 微软word文档
+     * Microsoft Word document extension (legacy).
      */
     public static final String TYPE_DOC = ".doc";
+    /**
+     * Microsoft Word document extension (OpenXML).
+     */
     public static final String TYPE_DOCX = ".docx";
     /**
-     * 微软ppt文档
+     * Microsoft PowerPoint document extension (legacy).
      */
     public static final String TYPE_PPT = ".ppt";
+    /**
+     * Microsoft PowerPoint document extension (OpenXML).
+     */
     public static final String TYPE_PPTX = ".pptx";
+    /**
+     * Microsoft PowerPoint Slideshow extension (legacy).
+     */
     public static final String TYPE_PPS = ".pps";
+    /**
+     * Microsoft PowerPoint Slideshow extension (OpenXML).
+     */
     public static final String TYPE_PPSX = ".ppsx";
     /**
-     * XML格式
+     * XML format extension.
      */
     public static final String TYPE_XML = ".xml";
 
     /**
-     * psd格式，Photoshop的专用格式Photoshop
+     * PSD format, Photoshop's proprietary format.
      */
     public static final String TYPE_PSD = "psd";
     /**
-     * gif格式
+     * GIF format.
      */
     public static final String TYPE_GIF = "gif";
     /**
-     * jpg格式
+     * JPG format.
      */
     public static final String TYPE_JPG = "jpg";
     /**
-     * jpeg格式
+     * JPEG format.
      */
     public static final String TYPE_JPEG = "jpeg";
     /**
-     * bmp格式
+     * BMP format.
      */
     public static final String TYPE_BMP = "bmp";
     /**
-     * png格式
+     * PNG format.
      */
     public static final String TYPE_PNG = "png";
 
     /**
-     * csv格式
+     * CSV format.
      */
     public static final String TYPE_CSV = "csv";
 
     /**
-     * pdf格式
+     * PDF format.
      */
     public static final String TYPE_PDF = "pdf";
 
     /**
-     * dcm格式
+     * DCM format.
      */
     public static final String TYPE_DCM = "dcm";
 
     /**
-     * svg格式
+     * SVG format.
      */
     public static final String TYPE_SVG = "svg";
 
     /**
-     * txt格式
+     * TXT format.
      */
     public static final String TYPE_TXT = "txt";
 
+    /**
+     * A map storing file type mappings, where the key is the file's hexadecimal header (magic number) or file
+     * extension, and the value is the corresponding file type extension. This map is initialized with common image,
+     * document, compressed, video, and audio file types.
+     */
     public static final Map<String, String> FILE_TYPE = new ConcurrentSkipListMap<>() {
 
+        private static final long serialVersionUID = 1L;
+
         /**
-         * 图片格式
+         * Image formats.
          */
         {
             put(".jpe", "image/jpeg");
@@ -189,7 +211,7 @@ public class FileType {
         }
 
         /**
-         * 文档
+         * Document formats.
          */
         {
             // txt
@@ -220,7 +242,7 @@ public class FileType {
             put(".accdb", "application/msaccess");
             // visio
             put(".vsd", "application/vnd.visio");
-            /** 不常用 */
+            /** Less common document types */
             put(".323", "text/h323");
             put(".rqy", "text/x-ms-rqy");
             put(".rtx", "text/richtext");
@@ -376,13 +398,13 @@ public class FileType {
             put(".vsw", "application/vnd.visio");
             put(".vsx", "application/vnd.visio");
             put(".vtx", "application/vnd.visio");
-            // note类型文本
+            // note type text
             put(".onea", "application/onenote");
             put(".onepkg", "application/onenote");
             put(".onetmp", "application/onenote");
             put(".onetoc", "application/onenote");
             put(".onetoc2", "application/onenote");
-            // 其他
+            // other
             put(".pko", "application/vnd.ms-pki.pko");
             put(".cat", "application/vnd.ms-pki.seccat");
             put(".sst", "application/vnd.ms-pki.certstore");
@@ -414,7 +436,7 @@ public class FileType {
         }
 
         /**
-         * 压缩文档
+         * Compressed archive formats.
          */
         {
             put(".7z", "application/x-7z-compressed");
@@ -428,7 +450,7 @@ public class FileType {
         }
 
         /**
-         * 视频
+         * Video formats.
          */
         {
             put(".flv", "video/x-flv");
@@ -477,7 +499,7 @@ public class FileType {
         }
 
         /**
-         * 音频
+         * Audio formats.
          */
         {
             put(".mp3", "audio/mpeg");
@@ -519,10 +541,10 @@ public class FileType {
         }
 
         /**
-         * 其他
+         * Other file types, including XML, binary streams, and various application-specific formats.
          */
         {
-            // xml类型文件
+            // xml type files
             put(".asa", "application/xml");
             put(".asax", "application/xml");
             put(".ascx", "application/xml");
@@ -566,7 +588,7 @@ public class FileType {
             put(".filters", "Application/xml");
             put(".vcproj", "Application/xml");
             put(".vcxproj", "Application/xml");
-            // 文件流类型
+            // file stream types
             put(".thn", "application/octet-stream");
             put(".toc", "application/octet-stream");
             put(".ttf", "application/octet-stream");
@@ -765,7 +787,7 @@ public class FileType {
         }
 
         /**
-         * 文件信息头
+         * File magic numbers (hexadecimal headers) for type detection.
          */
         {
             // JPEG (jpg)
@@ -776,7 +798,7 @@ public class FileType {
             put("47494638396126026f01", "gif");
             // TIFF (tif)
             put("49492a00227105008037", "tif");
-            // 位图(bmp)
+            // Bitmap (bmp)
             put("424d", "bmp");
             // CAD (dwg)
             put("41433130313500000000", "dwg");
@@ -790,18 +812,18 @@ public class FileType {
             put("38425053000100000000", "psd");
             // Email [Outlook Express 6] (eml)
             put("46726f6d3a203d3f6762", "eml");
-            // MS Excel 注意：word、msi 和 excel的文件头一样
+            // MS Excel Note: Word, MSI, and Excel have the same file header
             put("d0cf11e0a1b11ae10000", "doc");
-            // Visio 绘图
+            // Visio Drawing
             put("d0cf11e0a1b11ae10000", "vsd");
             // MS Access (mdb)
             put("5374616E64617264204A", "mdb");
             put("252150532D41646F6265", "ps");
             // Adobe Acrobat (pdf)
             put("255044462d312e", "pdf");
-            // rmvb/rm相同
+            // rmvb/rm are the same
             put("2e524d46000000120001", "rmvb");
-            // flv与f4v相同
+            // flv and f4v are the same
             put("464c5601050000000900", "flv");
             put("0000001C66747970", "mp4");
             put("00000020667479706", "mp4");
@@ -832,7 +854,7 @@ public class FileType {
             put("cafebabe0000002e0041", "class");
             put("49545346030000006000", "chm");
             put("04000000010000001300", "mxp");
-            // WPS文字wps、表格et、演示dps都是一样的
+            // WPS text wps, spreadsheet et, presentation dps are all the same
             put("d0cf11e0a1b11ae10000", "wps");
             put("6431303a637265617465", "torrent");
             // Quicktime (mov)
@@ -853,7 +875,7 @@ public class FileType {
 
             // 2-byte signatures
             // https://github.com/sindresorhus/file-type/blob/main/core.js#L90
-            put("424D", "bmp"); // 位图(bmp)
+            put("424D", "bmp"); // Bitmap (bmp)
             put("0B77", "ac3");
             put("7801", "dmg");
             put("4D5A", "exe");
@@ -878,36 +900,40 @@ public class FileType {
         }
     };
 
+    /**
+     * Private constructor to prevent instantiation of this utility class.
+     */
     private FileType() {
 
     }
 
     /**
-     * 增加文件类型映射 如果已经存在将覆盖之前的映射
+     * Adds a file type mapping. If a mapping for the given hexadecimal head already exists, it will be overwritten.
      *
-     * @param fileStreamHexHead 文件流头部Hex信息
-     * @param extName           文件扩展名
-     * @return 之前已经存在的文件扩展名
+     * @param fileStreamHexHead The hexadecimal string representing the file stream's head (magic number).
+     * @param extName           The file extension name (e.g., "jpg", "pdf").
+     * @return The previously associated file extension for the given hexadecimal head, or {@code null} if none was
+     *         present.
      */
     public static String putFileType(final String fileStreamHexHead, final String extName) {
         return FILE_TYPE.put(fileStreamHexHead, extName);
     }
 
     /**
-     * 移除文件类型映射
+     * Removes a file type mapping.
      *
-     * @param fileStreamHexHead 文件流头部Hex信息
-     * @return 移除的文件扩展名
+     * @param fileStreamHexHead The hexadecimal string representing the file stream's head (magic number).
+     * @return The removed file extension name, or {@code null} if no mapping was found for the given hexadecimal head.
      */
     public static String removeFileType(final String fileStreamHexHead) {
         return FILE_TYPE.remove(fileStreamHexHead);
     }
 
     /**
-     * 根据文件流的头部信息获得文件类型
+     * Determines the file type based on the hexadecimal header of a file stream.
      *
-     * @param fileStreamHexHead 文件流头部16进制字符串
-     * @return 文件类型，未找到为{@code null}
+     * @param fileStreamHexHead The hexadecimal string representing the file stream's head.
+     * @return The file type extension (e.g., "jpg", "pdf"), or {@code null} if the type cannot be determined.
      */
     public static String getType(final String fileStreamHexHead) {
         if (StringKit.isBlank(fileStreamHexHead)) {
@@ -923,24 +949,28 @@ public class FileType {
     }
 
     /**
-     * 根据文件流的头部信息获得文件类型
+     * Determines the file type based on the hexadecimal header of an input stream.
      *
-     * @param in           文件流
-     * @param fileHeadSize 自定义读取文件头部的大小
-     * @return 文件类型，未找到为{@code null}
-     * @throws InternalException IO异常
+     * @param in           The input stream.
+     * @param fileHeadSize The number of bytes to read from the stream's head for type determination.
+     * @return The file type extension, or {@code null} if the type cannot be determined.
+     * @throws InternalException If an I/O error occurs while reading the stream.
      */
     public static String getType(final InputStream in, final int fileHeadSize) throws InternalException {
         return getType((IoKit.readHex(in, fileHeadSize, false)));
     }
 
     /**
-     * 根据文件流的头部信息获得文件类型 注意此方法会读取头部一些bytes，造成此流接下来读取时缺少部分bytes 因此如果想复用此流，流需支持{@link InputStream#reset()}方法。
+     * Determines the file type based on the hexadecimal header of an input stream. Note that this method reads a
+     * portion of the stream's header, which may affect subsequent reads. If the stream needs to be reused, it should
+     * support {@link InputStream#reset()}.
      *
-     * @param in      {@link InputStream}
-     * @param isExact 是否精确匹配，如果为false，使用前64个bytes匹配，如果为true，使用前8192bytes匹配
-     * @return 类型，文件的扩展名，in为{@code null}或未找到为{@code null}
-     * @throws InternalException 读取流引起的异常
+     * @param in      The {@link InputStream}.
+     * @param isExact If {@code false}, uses the first 64 bytes for matching; if {@code true}, uses the first 8192 bytes
+     *                for more precise matching.
+     * @return The file type extension, or {@code null} if the input stream is {@code null} or the type cannot be
+     *         determined.
+     * @throws InternalException If an I/O error occurs while reading the stream.
      */
     public static String getType(final InputStream in, final boolean isExact) throws InternalException {
         if (null == in) {
@@ -950,57 +980,64 @@ public class FileType {
     }
 
     /**
-     * 根据文件流的头部信息获得文件类型 注意此方法会读取头部64个bytes，造成此流接下来读取时缺少部分bytes 因此如果想复用此流，流需支持{@link InputStream#reset()}方法。
+     * Determines the file type based on the hexadecimal header of an input stream, using the first 64 bytes. Note that
+     * this method reads a portion of the stream's header, which may affect subsequent reads. If the stream needs to be
+     * reused, it should support {@link InputStream#reset()}.
      *
-     * @param in {@link InputStream}
-     * @return 类型，文件的扩展名，未找到为{@code null}
-     * @throws InternalException 读取流引起的异常
+     * @param in The {@link InputStream}.
+     * @return The file type extension, or {@code null} if the type cannot be determined.
+     * @throws InternalException If an I/O error occurs while reading the stream.
      */
     public static String getType(final InputStream in) throws InternalException {
         return getType(in, false);
     }
 
     /**
-     * 根据文件流的头部信息获得文件类型 注意此方法会读取头部64个bytes，造成此流接下来读取时缺少部分bytes 因此如果想复用此流，流需支持{@link InputStream#reset()}方法。
+     * Determines the file type based on the hexadecimal header of an input stream and the file's extension as a
+     * fallback. Note that this method reads a portion of the stream's header, which may affect subsequent reads. If the
+     * stream needs to be reused, it should support {@link InputStream#reset()}.
      *
      * <pre>
-     *     1、无法识别类型默认按照扩展名识别
-     *     2、xls、doc、msi头信息无法区分，按照扩展名区分
-     *     3、zip可能为docx、xlsx、pptx、jar、war、ofd头信息无法区分，按照扩展名区分
+     *     1. If the type cannot be recognized by the header, it defaults to recognition by extension.
+     *     2. For files like XLS, DOC, MSI, whose headers are indistinguishable, the extension is used.
+     *     3. For ZIP files that could be DOCX, XLSX, PPTX, JAR, WAR, OFD, etc., the extension is used for differentiation.
      * </pre>
      *
-     * @param in       {@link InputStream}
-     * @param filename 文件名
-     * @return 类型，文件的扩展名，未找到为{@code null}
-     * @throws InternalException 读取流引起的异常
+     * @param in       The {@link InputStream}.
+     * @param filename The file name, used as a fallback for type determination.
+     * @return The file type extension, or {@code null} if the type cannot be determined.
+     * @throws InternalException If an I/O error occurs while reading the stream.
      */
     public static String getType(final InputStream in, final String filename) throws InternalException {
         return getType(in, filename, false);
     }
 
     /**
-     * 根据文件流的头部信息获得文件类型 注意此方法会读取头部一些bytes，造成此流接下来读取时缺少部分bytes 因此如果想复用此流，流需支持{@link InputStream#reset()}方法。
+     * Determines the file type based on the hexadecimal header of an input stream and the file's extension as a
+     * fallback. Note that this method reads a portion of the stream's header, which may affect subsequent reads. If the
+     * stream needs to be reused, it should support {@link InputStream#reset()}.
      *
      * <pre>
-     *     1、无法识别类型默认按照扩展名识别
-     *     2、xls、doc、msi头信息无法区分，按照扩展名区分
-     *     3、zip可能为docx、xlsx、pptx、jar、war、ofd头信息无法区分，按照扩展名区分
+     *     1. If the type cannot be recognized by the header, it defaults to recognition by extension.
+     *     2. For files like XLS, DOC, MSI, whose headers are indistinguishable, the extension is used.
+     *     3. For ZIP files that could be DOCX, XLSX, PPTX, JAR, WAR, OFD, etc., the extension is used for differentiation.
      * </pre>
      *
-     * @param in       {@link InputStream}
-     * @param filename 文件名
-     * @param isExact  是否精确匹配，如果为false，使用前64个bytes匹配，如果为true，使用前8192bytes匹配
-     * @return 类型，文件的扩展名，未找到为{@code null}
-     * @throws InternalException 读取流引起的异常
+     * @param in       The {@link InputStream}.
+     * @param filename The file name, used as a fallback for type determination.
+     * @param isExact  If {@code false}, uses the first 64 bytes for matching; if {@code true}, uses the first 8192
+     *                 bytes for more precise matching.
+     * @return The file type extension, or {@code null} if the type cannot be determined.
+     * @throws InternalException If an I/O error occurs while reading the stream.
      */
     public static String getType(final InputStream in, final String filename, final boolean isExact)
             throws InternalException {
         String typeName = getType(in, isExact);
         if (null == typeName) {
-            // 未成功识别类型，扩展名辅助识别
+            // If type recognition by header fails, use extension as a fallback
             typeName = FileName.extName(filename);
         } else if ("zip".equals(typeName)) {
-            // zip可能为docx、xlsx、pptx、jar、war、ofd等格式，扩展名辅助判断
+            // ZIP files can be DOCX, XLSX, PPTX, JAR, WAR, OFD, etc.; use extension for differentiation
             final String extName = FileName.extName(filename);
             if ("docx".equalsIgnoreCase(extName)) {
                 typeName = "docx";
@@ -1018,7 +1055,7 @@ public class FileType {
                 typeName = "apk";
             }
         } else if ("jar".equals(typeName)) {
-            // wps编辑过的.xlsx文件与.jar的开头相同,通过扩展名判断
+            // WPS-edited .xlsx files have the same header as .jar files; differentiate by extension
             final String extName = FileName.extName(filename);
             if ("xlsx".equalsIgnoreCase(extName)) {
                 typeName = "xlsx";
@@ -1036,18 +1073,20 @@ public class FileType {
     }
 
     /**
-     * 根据文件流的头部信息获得文件类型
+     * Determines the file type based on the hexadecimal header of a {@link File} and its extension as a fallback.
      *
      * <pre>
-     *     1、无法识别类型默认按照扩展名识别
-     *     2、xls、doc、msi头信息无法区分，按照扩展名区分
-     *     3、zip可能为jar、war头信息无法区分，按照扩展名区分
+     *     1. If the type cannot be recognized by the header, it defaults to recognition by extension.
+     *     2. For files like XLS, DOC, MSI, whose headers are indistinguishable, the extension is used.
+     *     3. For ZIP files that could be JAR, WAR, etc., the extension is used for differentiation.
      * </pre>
      *
-     * @param file    文件 {@link File}
-     * @param isExact 是否精确匹配，如果为false，使用前64个bytes匹配，如果为true，使用前8192bytes匹配
-     * @return 类型，文件的扩展名，未找到为{@code null}
-     * @throws InternalException 读取文件引起的异常
+     * @param file    The {@link File} object.
+     * @param isExact If {@code false}, uses the first 64 bytes for matching; if {@code true}, uses the first 8192 bytes
+     *                for more precise matching.
+     * @return The file type extension, or {@code null} if the type cannot be determined.
+     * @throws InternalException        If an I/O error occurs while reading the file.
+     * @throws IllegalArgumentException If the provided {@code file} is not a regular file.
      */
     public static String getType(final File file, final boolean isExact) throws InternalException {
         if (!FileKit.isFile(file)) {
@@ -1063,51 +1102,54 @@ public class FileType {
     }
 
     /**
-     * 根据文件流的头部信息获得文件类型
+     * Determines the file type based on the hexadecimal header of a {@link File} and its extension as a fallback, using
+     * the first 64 bytes for header matching.
      *
      * <pre>
-     *     1、无法识别类型默认按照扩展名识别
-     *     2、xls、doc、msi头信息无法区分，按照扩展名区分
-     *     3、zip可能为jar、war头信息无法区分，按照扩展名区分
+     *     1. If the type cannot be recognized by the header, it defaults to recognition by extension.
+     *     2. For files like XLS, DOC, MSI, whose headers are indistinguishable, the extension is used.
+     *     3. For ZIP files that could be JAR, WAR, etc., the extension is used for differentiation.
      * </pre>
      *
-     * @param file 文件 {@link File}
-     * @return 类型，文件的扩展名，未找到为{@code null}
-     * @throws InternalException 读取文件引起的异常
+     * @param file The {@link File} object.
+     * @return The file type extension, or {@code null} if the type cannot be determined.
+     * @throws InternalException        If an I/O error occurs while reading the file.
+     * @throws IllegalArgumentException If the provided {@code file} is not a regular file.
      */
     public static String getType(final File file) throws InternalException {
         return getType(file, false);
     }
 
     /**
-     * 通过路径获得文件类型
+     * Determines the file type by path, reading the file's header.
      *
-     * @param path    路径，绝对路径或相对ClassPath的路径
-     * @param isExact 是否精确匹配，如果为false，使用前64个bytes匹配，如果为true，使用前8192bytes匹配
-     * @return 类型
-     * @throws InternalException 读取文件引起的异常
+     * @param path    The file path (absolute or relative to ClassPath).
+     * @param isExact If {@code false}, uses the first 64 bytes for matching; if {@code true}, uses the first 8192 bytes
+     *                for more precise matching.
+     * @return The file type extension.
+     * @throws InternalException If an I/O error occurs while reading the file.
      */
     public static String getTypeByPath(final String path, final boolean isExact) throws InternalException {
         return getType(FileKit.file(path), isExact);
     }
 
     /**
-     * 通过路径获得文件类型
+     * Determines the file type by path, reading the file's header using the first 64 bytes for matching.
      *
-     * @param path 路径，绝对路径或相对ClassPath的路径
-     * @return 类型
-     * @throws InternalException 读取文件引起的异常
+     * @param path The file path (absolute or relative to ClassPath).
+     * @return The file type extension.
+     * @throws InternalException If an I/O error occurs while reading the file.
      */
     public static String getTypeByPath(final String path) throws InternalException {
         return getTypeByPath(path, false);
     }
 
     /**
-     * 从流中读取前8192个byte并转换为16进制，字母部分使用大写
+     * Reads the first 8192 bytes from an input stream and converts them to an uppercase hexadecimal string.
      *
-     * @param in {@link InputStream}
-     * @return 16进制字符串
-     * @throws InternalException IO异常
+     * @param in The {@link InputStream}.
+     * @return The hexadecimal string representation of the first 8192 bytes (or fewer if the stream is shorter).
+     * @throws InternalException If an I/O error occurs while reading the stream.
      */
     private static String readHex8192Upper(final InputStream in) throws InternalException {
         try {
@@ -1118,11 +1160,11 @@ public class FileType {
     }
 
     /**
-     * 从流中读取前64个byte并转换为16进制，字母部分使用大写
+     * Reads the first 64 bytes from an input stream and converts them to an uppercase hexadecimal string.
      *
-     * @param in {@link InputStream}
-     * @return 16进制字符串
-     * @throws InternalException IO异常
+     * @param in The {@link InputStream}.
+     * @return The hexadecimal string representation of the first 64 bytes (or fewer if the stream is shorter).
+     * @throws InternalException If an I/O error occurs while reading the stream.
      */
     private static String readHex64Upper(final InputStream in) throws InternalException {
         return IoKit.readHex(in, 64, false);

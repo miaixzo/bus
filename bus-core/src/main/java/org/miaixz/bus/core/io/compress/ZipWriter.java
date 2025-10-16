@@ -39,7 +39,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.*;
 
 /**
- * Zip生成封装
+ * Zip file writer encapsulation. This class provides methods to create and write to Zip archives.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -47,23 +47,23 @@ import org.miaixz.bus.core.xyz.*;
 public class ZipWriter implements Closeable {
 
     /**
-     * 原始输出流
+     * The underlying {@link ZipOutputStream}.
      */
     private final ZipOutputStream out;
     /**
-     * Zip文件
+     * The Zip file being written to.
      */
     private File zipFile;
     /**
-     * 自定义缓存大小
+     * Custom buffer size for writing operations.
      */
     private int bufferSize = Normal._8192;
 
     /**
-     * 构造
+     * Constructs a new ZipWriter instance.
      *
-     * @param zipFile 生成的Zip文件
-     * @param charset 编码
+     * @param zipFile The Zip file to be generated.
+     * @param charset The character set to be used for Zip entry names.
      */
     public ZipWriter(final File zipFile, final Charset charset) {
         this(getZipOutputStream(zipFile, charset));
@@ -71,62 +71,63 @@ public class ZipWriter implements Closeable {
     }
 
     /**
-     * 构造
+     * Constructs a new ZipWriter instance.
      *
-     * @param out     {@link ZipOutputStream}
-     * @param charset 编码
+     * @param out     The {@link OutputStream} to write Zip data to.
+     * @param charset The character set to be used for Zip entry names.
      */
     public ZipWriter(final OutputStream out, final Charset charset) {
         this(ZipKit.getZipOutputStream(out, charset));
     }
 
     /**
-     * 构造
+     * Constructs a new ZipWriter instance.
      *
-     * @param out {@link ZipOutputStream}
+     * @param out The {@link ZipOutputStream} to write Zip data to.
      */
     public ZipWriter(final ZipOutputStream out) {
         this.out = out;
     }
 
     /**
-     * 创建ZipWriter
+     * Creates a new ZipWriter instance.
      *
-     * @param zipFile 生成的Zip文件
-     * @param charset 编码
-     * @return ZipWriter
+     * @param zipFile The Zip file to be generated.
+     * @param charset The character set to be used for Zip entry names.
+     * @return A new ZipWriter instance.
      */
     public static ZipWriter of(final File zipFile, final Charset charset) {
         return new ZipWriter(zipFile, charset);
     }
 
     /**
-     * 创建ZipWriter
+     * Creates a new ZipWriter instance.
      *
-     * @param out     Zip输出的流，一般为输出文件流
-     * @param charset 编码
-     * @return ZipWriter
+     * @param out     The Zip output stream, typically a file output stream.
+     * @param charset The character set to be used for Zip entry names.
+     * @return A new ZipWriter instance.
      */
     public static ZipWriter of(final OutputStream out, final Charset charset) {
         return new ZipWriter(out, charset);
     }
 
     /**
-     * 获得 {@link ZipOutputStream}
+     * Obtains a {@link ZipOutputStream} for the given Zip file and charset.
      *
-     * @param zipFile 压缩文件
-     * @param charset 编码
-     * @return {@link ZipOutputStream}
+     * @param zipFile The Zip file to write to.
+     * @param charset The character set for Zip entry names.
+     * @return A {@link ZipOutputStream}.
      */
     private static ZipOutputStream getZipOutputStream(final File zipFile, final Charset charset) {
         return ZipKit.getZipOutputStream(FileKit.getOutputStream(zipFile), charset);
     }
 
     /**
-     * 自定义压缩缓存大小，特定条件下调节性能
+     * Sets the custom buffer size for writing operations. Adjusting this can affect performance under specific
+     * conditions.
      *
-     * @param bufferSize 缓存大小
-     * @return this
+     * @param bufferSize The buffer size in bytes.
+     * @return This ZipWriter instance.
      */
     public ZipWriter setBufferSize(final int bufferSize) {
         this.bufferSize = bufferSize;
@@ -134,10 +135,10 @@ public class ZipWriter implements Closeable {
     }
 
     /**
-     * 设置压缩级别，可选1~9，-1表示默认
+     * Sets the compression level. Optional values are 1 to 9, where -1 indicates the default level.
      *
-     * @param level 压缩级别
-     * @return this
+     * @param level The compression level.
+     * @return This ZipWriter instance.
      */
     public ZipWriter setLevel(final int level) {
         this.out.setLevel(level);
@@ -145,10 +146,10 @@ public class ZipWriter implements Closeable {
     }
 
     /**
-     * 设置注释
+     * Sets the comment for the Zip archive.
      *
-     * @param comment 注释
-     * @return this
+     * @param comment The comment string.
+     * @return This ZipWriter instance.
      */
     public ZipWriter setComment(final String comment) {
         this.out.setComment(comment);
@@ -156,10 +157,11 @@ public class ZipWriter implements Closeable {
     }
 
     /**
-     * 设置压缩方式
+     * Sets the compression method.
      *
-     * @param method 压缩方式，支持{@link ZipOutputStream#DEFLATED}和{@link ZipOutputStream#STORED}
-     * @return this
+     * @param method The compression method, supporting {@link ZipOutputStream#DEFLATED} and
+     *               {@link ZipOutputStream#STORED}.
+     * @return This ZipWriter instance.
      */
     public ZipWriter setMethod(final int method) {
         this.out.setMethod(method);
@@ -167,32 +169,37 @@ public class ZipWriter implements Closeable {
     }
 
     /**
-     * 获取原始的{@link ZipOutputStream}
+     * Retrieves the underlying {@link ZipOutputStream}.
      *
-     * @return {@link ZipOutputStream}
+     * @return The {@link ZipOutputStream}.
      */
     public ZipOutputStream getOut() {
         return this.out;
     }
 
     /**
-     * 对文件或文件目录进行压缩
+     * Adds files or directories to the Zip archive.
      *
-     * @param withSrcDir 是否包含被打包目录，只针对压缩目录有效。若为false，则只压缩目录下的文件或目录，为true则将本目录也压缩
-     * @param filter     文件过滤器，通过实现此接口，自定义要过滤的文件（过滤掉哪些文件或文件夹不加入压缩），{@code null}表示不过滤
-     * @param files      要压缩的源文件或目录。如果压缩一个文件，则为该文件的全路径；如果压缩一个目录，则为该目录的顶层目录路径
-     * @return this
-     * @throws InternalException IO异常
+     * @param withSrcDir Whether to include the source directory itself. This is only effective for compressing
+     *                   directories. If {@code false}, only files or subdirectories within the directory are
+     *                   compressed. If {@code true}, the directory itself is also compressed.
+     * @param filter     A file filter to customize which files (or folders) are excluded from compression. {@code null}
+     *                   means no filtering.
+     * @param files      The source files or directories to be compressed. If compressing a single file, provide its
+     *                   full path; if compressing a directory, provide the path to its top-level directory.
+     * @return This ZipWriter instance.
+     * @throws InternalException If an I/O error occurs.
      */
     public ZipWriter add(final boolean withSrcDir, final FileFilter filter, final File... files)
             throws InternalException {
         for (final File file : files) {
-            // 如果只是压缩一个文件，则需要截取该文件的父目录
+            // If only compressing a single file, the parent directory needs to be truncated.
             String srcRootDir;
             try {
                 srcRootDir = file.getCanonicalPath();
                 if ((!file.isDirectory()) || withSrcDir) {
-                    // 若是文件，则将父目录完整路径都截取掉；若设置包含目录，则将上级目录全部截取掉，保留本目录名
+                    // If it's a file, truncate the full parent directory path; if including the directory, truncate all
+                    // parent directories, keeping the current directory name.
                     srcRootDir = file.getCanonicalFile().getParentFile().getCanonicalPath();
                 }
             } catch (final IOException e) {
@@ -205,11 +212,12 @@ public class ZipWriter implements Closeable {
     }
 
     /**
-     * 添加资源到压缩包，添加后关闭资源流
+     * Adds resources to the Zip archive. The resource streams are closed after adding.
      *
-     * @param resources 需要压缩的资源，资源的路径为{@link Resource#getName()}
-     * @return this
-     * @throws InternalException IO异常
+     * @param resources The resources to be compressed. The path of the resource is determined by
+     *                  {@link Resource#getName()}.
+     * @return This ZipWriter instance.
+     * @throws InternalException If an I/O error occurs.
      */
     public ZipWriter add(final Resource... resources) throws InternalException {
         for (final Resource resource : resources) {
@@ -221,17 +229,19 @@ public class ZipWriter implements Closeable {
     }
 
     /**
-     * 添加文件流到压缩包，添加后关闭输入文件流 如果输入流为{@code null}，则只创建空目录
+     * Adds an input stream to the Zip archive. The input stream is closed after adding. If the input stream is
+     * {@code null}, only an empty directory is created.
      *
-     * @param path 压缩的路径, {@code null}和""表示根目录下
-     * @param in   需要压缩的输入流，使用完后自动关闭，{@code null}表示加入空目录
-     * @return this
-     * @throws InternalException IO异常
+     * @param path The path for the compressed entry. {@code null} or an empty string indicates the root directory.
+     * @param in   The input stream to be compressed. It will be automatically closed after use. {@code null} indicates
+     *             adding an empty directory.
+     * @return This ZipWriter instance.
+     * @throws InternalException If an I/O error occurs.
      */
     public ZipWriter add(String path, final InputStream in) throws InternalException {
         path = StringKit.toStringOrEmpty(path);
         if (null == in) {
-            // 空目录需要检查路径规范性，目录以"/"结尾
+            // For empty directories, ensure path ends with "/"
             path = StringKit.addSuffixIfNot(path, Symbol.SLASH);
             if (StringKit.isBlank(path)) {
                 return this;
@@ -242,12 +252,14 @@ public class ZipWriter implements Closeable {
     }
 
     /**
-     * 对流中的数据加入到压缩文件 路径列表和流列表长度必须一致
+     * Adds data from multiple input streams to the Zip archive. The length of paths and input streams arrays must be
+     * equal.
      *
-     * @param paths 流数据在压缩文件中的路径或文件名
-     * @param ins   要压缩的源，添加完成后自动关闭流
-     * @return 压缩文件
-     * @throws InternalException IO异常
+     * @param paths An array of paths or filenames for the stream data within the compressed file.
+     * @param ins   An array of input streams to be compressed. They will be automatically closed after use.
+     * @return This ZipWriter instance.
+     * @throws InternalException        If an I/O error occurs.
+     * @throws IllegalArgumentException If paths or ins arrays are empty, or their lengths do not match.
      */
     public ZipWriter add(final String[] paths, final InputStream[] ins) throws InternalException {
         if (ArrayKit.isEmpty(paths) || ArrayKit.isEmpty(ins)) {
@@ -276,48 +288,55 @@ public class ZipWriter implements Closeable {
     }
 
     /**
-     * 递归压缩文件夹或压缩文件 srcRootDir决定了路径截取的位置，例如： file的路径为d:/a/b/c/d.txt，srcRootDir为d:/a/b，则压缩后的文件与目录为结构为c/d.txt
+     * Recursively compresses a folder or file. The {@code srcRootDir} determines the truncation point of the path. For
+     * example, if the file path is d:/a/b/c/d.txt and {@code srcRootDir} is d:/a/b, the compressed file and directory
+     * structure will be c/d.txt.
      *
-     * @param srcRootDir 被压缩的文件夹根目录
-     * @param file       当前递归压缩的文件或目录对象
-     * @param filter     文件过滤器，通过实现此接口，自定义要过滤的文件（过滤掉哪些文件或文件夹不加入压缩），{@code null}表示不过滤
-     * @throws InternalException IO异常
+     * @param file       The current file or directory object being recursively compressed.
+     * @param srcRootDir The root directory of the folder being compressed.
+     * @param filter     A file filter to customize which files (or folders) are excluded from compression. {@code null}
+     *                   means no filtering.
+     * @throws InternalException If an I/O error occurs.
      */
     private void _add(final File file, final String srcRootDir, final FileFilter filter) throws InternalException {
         if (null == file || (null != filter && !filter.accept(file))) {
             return;
         }
 
-        // 获取文件相对于压缩文件夹根目录的子路径
+        // Get the sub-path of the file relative to the root directory of the compressed folder.
         final String subPath = FileKit.subPath(srcRootDir, file);
         if (file.isDirectory()) {
-            // 如果是目录，则压缩压缩目录中的文件或子目录
+            // If it's a directory, compress files or subdirectories within it.
             final File[] files = file.listFiles();
             if (ArrayKit.isEmpty(files)) {
-                // 加入目录，只有空目录时才加入目录，非空时会在创建文件时自动添加父级目录
+                // Add directory. Only empty directories are added as directories; for non-empty ones, parent
+                // directories are automatically added when files are created.
                 add(subPath, null);
             } else {
-                // 压缩目录下的子文件或目录
+                // Compress sub-files or directories within the current directory.
                 for (final File childFile : files) {
                     _add(childFile, srcRootDir, filter);
                 }
             }
         } else {
-            // 检查加入的文件是否为压缩结果文件本身，避免死循环
+            // Check if the file to be added is the compressed result file itself to avoid an infinite loop.
             if (FileKit.equals(file, zipFile)) {
                 return;
             }
-            // 如果是文件或其它符号，则直接压缩该文件
+            // If it's a file or other symbol, compress it directly.
             putEntry(subPath, FileKit.getInputStream(file));
         }
     }
 
     /**
-     * 添加文件流到压缩包，添加后关闭输入文件流 如果输入流为{@code null}，则只创建空目录
+     * Adds an input stream to the Zip archive. The input stream is closed after adding. If the input stream is
+     * {@code null}, only an empty directory is created.
      *
-     * @param path 压缩的路径, {@code null}和""表示根目录下
-     * @param in   需要压缩的输入流，使用完后自动关闭，{@code null}表示加入空目录
-     * @throws InternalException IO异常
+     * @param path The path for the compressed entry. {@code null} or an empty string indicates the root directory.
+     * @param in   The input stream to be compressed. It will be automatically closed after use. {@code null} indicates
+     *             adding an empty directory.
+     * @return This ZipWriter instance.
+     * @throws InternalException If an I/O error occurs.
      */
     private ZipWriter putEntry(final String path, final InputStream in) throws InternalException {
         final ZipEntry entry = new ZipEntry(path);

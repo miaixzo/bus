@@ -27,7 +27,9 @@
 */
 
 /**
- * 消息队列引擎实现
+ * Provides concrete implementations of Message Queue (MQ) engines. This package contains various provider-specific
+ * implementations that adhere to the {@link org.miaixz.bus.extra.mq.MQProvider} interface, allowing for integration
+ * with different MQ systems.
  *
  * @author Kimi Liu
  * @since Java 17+

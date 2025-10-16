@@ -34,7 +34,8 @@ import org.miaixz.bus.auth.metric.jwt.signature.JWTSigner;
 import org.miaixz.bus.core.xyz.MapKit;
 
 /**
- * JSON Web Token (JWT)工具类
+ * Utility class for creating JSON Web Tokens (JWT). This class provides convenient methods to construct JWTs with
+ * various header and payload configurations, supporting different signing algorithms.
  * 
  * @author Kimi Liu
  * @since Java 17+
@@ -42,46 +43,46 @@ import org.miaixz.bus.core.xyz.MapKit;
 public class JWTCreator {
 
     /**
-     * 创建HS256(HmacSHA256) JWT Token
+     * Creates an HS256 (HmacSHA256) JWT Token.
      *
-     * @param payload 荷载信息
-     * @param key     HS256(HmacSHA256)密钥
-     * @return JWT Token
+     * @param payload the payload claims of the JWT
+     * @param key     the HS256 (HmacSHA256) secret key
+     * @return the generated JWT Token string
      */
     public static String create(final Map<String, ?> payload, final byte[] key) {
         return create(MapKit.of(JWTHeader.TYPE, "JWT"), payload, key);
     }
 
     /**
-     * 创建HS256(HmacSHA256) JWT Token
+     * Creates an HS256 (HmacSHA256) JWT Token with custom headers.
      *
-     * @param headers 头信息
-     * @param payload 荷载信息
-     * @param key     HS256(HmacSHA256)密钥
-     * @return JWT Token
+     * @param headers the header claims of the JWT
+     * @param payload the payload claims of the JWT
+     * @param key     the HS256 (HmacSHA256) secret key
+     * @return the generated JWT Token string
      */
     public static String create(final Map<String, ?> headers, final Map<String, ?> payload, final byte[] key) {
         return JWT.of().addHeaders(headers).addPayloads(payload).setKey(key).sign();
     }
 
     /**
-     * 创建JWT Token
+     * Creates a JWT Token using a custom signer.
      *
-     * @param payload 荷载信息
-     * @param signer  签名算法
-     * @return JWT Token
+     * @param payload the payload claims of the JWT
+     * @param signer  the {@link JWTSigner} to use for signing
+     * @return the generated JWT Token string
      */
     public static String create(final Map<String, Object> payload, final JWTSigner signer) {
         return create(null, payload, signer);
     }
 
     /**
-     * 创建JWT Token
+     * Creates a JWT Token with custom headers and a custom signer.
      *
-     * @param headers 头信息
-     * @param payload 荷载信息
-     * @param signer  签名算法
-     * @return JWT Token
+     * @param headers the header claims of the JWT
+     * @param payload the payload claims of the JWT
+     * @param signer  the {@link JWTSigner} to use for signing
+     * @return the generated JWT Token string
      */
     public static String create(
             final Map<String, Object> headers,

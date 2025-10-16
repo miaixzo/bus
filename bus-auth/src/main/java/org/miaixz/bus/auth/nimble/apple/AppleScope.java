@@ -32,7 +32,10 @@ import lombok.Getter;
 import org.miaixz.bus.auth.nimble.AuthorizeScope;
 
 /**
- * @see <a href="https://developer.apple.com/documentation/sign_in_with_apple/clientconfigi/3230955-scope/">scope</a>
+ * Apple authorization scopes.
+ * 
+ * @see <a href="https://developer.apple.com/documentation/sign_in_with_apple/clientconfigi/3230955-scope/">Apple
+ *      Sign-in Scope Documentation</a>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -41,10 +44,26 @@ import org.miaixz.bus.auth.nimble.AuthorizeScope;
 @AllArgsConstructor
 public enum AppleScope implements AuthorizeScope {
 
-    EMAIL("email", "用户邮箱", true), NAME("name", "用户名", true),;
+    /**
+     * User's email address.
+     */
+    EMAIL("email", "User's email address", true),
+    /**
+     * User's name.
+     */
+    NAME("name", "User's name", true);
 
+    /**
+     * The scope string as defined by Apple.
+     */
     private final String scope;
+    /**
+     * A description of what the scope grants access to.
+     */
     private final String description;
+    /**
+     * Indicates if this scope is enabled by default.
+     */
     private final boolean isDefault;
 
 }

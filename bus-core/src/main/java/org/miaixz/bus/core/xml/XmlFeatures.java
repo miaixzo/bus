@@ -28,28 +28,32 @@
 package org.miaixz.bus.core.xml;
 
 /**
- * XXE安全相关参数 见：https://blog.spoock.com/2018/10/23/java-xxe/
+ * XML security-related features for preventing XXE (XML External Entity) attacks.
  *
  * @author Kimi Liu
+ * @see <a href="https://blog.spoock.com/2018/10/23/java-xxe/">Java XXE</a>
  * @since Java 17+
  */
 public class XmlFeatures {
 
     /**
-     * 禁用xml中的inline DOCTYPE 声明，即禁用DTD 不允许将外部实体包含在传入的 XML 文档中，从而防止XML实体注入（XML External Entities 攻击，利用能够在处理时动态构建文档的 XML
-     * 功能，注入外部实体）
+     * Feature to disallow DOCTYPE declarations in XML. This prevents XML External Entity (XXE) attacks by not allowing
+     * external entities to be included in the XML document.
      */
     public static final String DISALLOW_DOCTYPE_DECL = "http://apache.org/xml/features/disallow-doctype-decl";
+
     /**
-     * 忽略外部DTD
+     * Feature to ignore external DTDs.
      */
     public static final String LOAD_EXTERNAL_DTD = "http://apache.org/xml/features/nonvalidating/load-external-dtd";
+
     /**
-     * 不包括外部一般实体
+     * Feature to exclude external general entities.
      */
     public static final String EXTERNAL_GENERAL_ENTITIES = "http://xml.org/sax/features/external-general-entities";
+
     /**
-     * 不包含外部参数实体或外部DTD子集。
+     * Feature to exclude external parameter entities and the external DTD subset.
      */
     public static final String EXTERNAL_PARAMETER_ENTITIES = "http://xml.org/sax/features/external-parameter-entities";
 

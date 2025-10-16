@@ -32,7 +32,7 @@ import lombok.Getter;
 import org.miaixz.bus.auth.nimble.AuthorizeScope;
 
 /**
- * Pinterest 授权范围
+ * Pinterest authorization scopes.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,18 +42,36 @@ import org.miaixz.bus.auth.nimble.AuthorizeScope;
 public enum PinterestScope implements AuthorizeScope {
 
     /**
-     * {@code scope} 含义，以{@code description} 为准
+     * Use GET method on a user’s Pins, boards. The meaning of {@code scope} is subject to {@code description}.
      */
     READ_PUBLIC("read_public", "Use GET method on a user’s Pins, boards.", true),
+    /**
+     * Use PATCH, POST and DELETE methods on a user’s Pins and boards.
+     */
     WRITE_PUBLIC("write_public", "Use PATCH, POST and DELETE methods on a user’s Pins and boards.", false),
+    /**
+     * Use GET method on a user’s follows and followers (on boards, users and interests).
+     */
     READ_RELATIONSHIPS("read_relationships",
             "Use GET method on a user’s follows and followers (on boards, users and interests).", false),
+    /**
+     * Use PATCH, POST and DELETE methods on a user’s follows and followers (on boards, users and interests).
+     */
     WRITE_RELATIONSHIPS("write_relationships",
             "Use PATCH, POST and DELETE methods on a user’s follows and followers (on boards, users and interests).",
             false);
 
+    /**
+     * The scope string as defined by Pinterest.
+     */
     private final String scope;
+    /**
+     * A description of what the scope grants access to.
+     */
     private final String description;
+    /**
+     * Indicates if this scope is enabled by default.
+     */
     private final boolean isDefault;
 
 }

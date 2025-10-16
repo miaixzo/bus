@@ -62,7 +62,9 @@ import org.springframework.core.io.support.ResourcePatternResolver;
 import jakarta.annotation.Resource;
 
 /**
- * Mybatis配置类，提供SqlSessionFactory和SqlSessionTemplate
+ * Auto-configuration for MyBatis, providing {@link SqlSessionFactory} and {@link SqlSessionTemplate} beans. This
+ * configuration is activated when {@link SqlSessionFactory} and {@link SqlSessionFactoryBean} are on the classpath and
+ * no other {@link MapperFactoryBean} is defined.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -74,32 +76,32 @@ import jakarta.annotation.Resource;
 public class MapperConfiguration implements InitializingBean {
 
     /**
-     * Spring环境配置
+     * Spring environment configuration.
      */
     private final Environment environment;
 
     /**
-     * 资源加载器
+     * Spring resource loader.
      */
     private final ResourceLoader resourceLoader;
 
     /**
-     * MyBatis配置定制器列表
+     * List of MyBatis configuration customizers.
      */
     private final List<ConfigurationCustomizer> configurationCustomizers;
 
     /**
-     * MyBatis属性配置
+     * MyBatis-specific configuration properties.
      */
     @Resource
-    MapperProperties properties;
+    private MapperProperties properties;
 
     /**
-     * 构造函数，初始化环境、资源加载器和配置定制器
+     * Constructs the configuration, injecting the environment, resource loader, and customizers.
      *
-     * @param environment                      Spring环境
-     * @param resourceLoader                   资源加载器
-     * @param configurationCustomizersProvider MyBatis配置定制器提供者
+     * @param environment                      The Spring Environment.
+     * @param resourceLoader                   The Spring ResourceLoader.
+     * @param configurationCustomizersProvider A provider for a list of {@link ConfigurationCustomizer} beans.
      */
     public MapperConfiguration(Environment environment, ResourceLoader resourceLoader,
             ObjectProvider<List<ConfigurationCustomizer>> configurationCustomizersProvider) {
@@ -110,7 +112,7 @@ public class MapperConfiguration implements InitializingBean {
     }
 
     /**
-     * 初始化后检查配置文件是否存在
+     * After properties are set, this method checks if the specified MyBatis config location exists.
      */
     @Override
     public void afterPropertiesSet() {
@@ -126,11 +128,11 @@ public class MapperConfiguration implements InitializingBean {
     }
 
     /**
-     * 创建SqlSessionFactory bean
+     * Creates the {@link SqlSessionFactory} bean.
      *
-     * @param dataSource 数据源
-     * @return SqlSessionFactory
-     * @throws Exception 异常
+     * @param dataSource The primary data source.
+     * @return The configured {@link SqlSessionFactory}.
+     * @throws Exception if an error occurs during factory creation.
      */
     @Bean
     @ConditionalOnMissingBean
@@ -138,41 +140,55 @@ public class MapperConfiguration implements InitializingBean {
         Logger.info("Creating SqlSessionFactory with dataSource");
         SqlSessionFactoryBean factory = new SqlSessionFactoryBean();
         factory.setDataSource(dataSource);
+
+        // Use a custom VFS for Spring Boot executable jars if none is specified.
         if (properties.getConfiguration() == null || properties.getConfiguration().getVfsImpl() == null) {
             factory.setVfs(SpringBootVFS.class);
         }
+
+        // Set the config location if specified.
         if (StringKit.hasText(this.properties.getConfigLocation())) {
             factory.setConfigLocation(this.resourceLoader.getResource(this.properties.getConfigLocation()));
         }
+
+        // Create a new Configuration object if none is provided and no config location is set.
         Configuration configuration = this.properties.getConfiguration();
         if (configuration == null && !StringKit.hasText(this.properties.getConfigLocation())) {
             configuration = new Configuration();
         }
 
-        // 应用配置定制器
+        // Apply customizers to the configuration.
         if (configuration != null && !CollKit.isEmpty(this.configurationCustomizers)) {
             for (ConfigurationCustomizer customizer : this.configurationCustomizers) {
                 customizer.customize(configuration);
             }
         }
+
+        // Apply external properties.
         if (this.properties.getConfigurationProperties() != null) {
             factory.setConfigurationProperties(this.properties.getConfigurationProperties());
             Context.INSTANCE.putAll(this.properties.getConfigurationProperties());
         }
-        if (ObjectKit.isEmptyIfString(this.properties.getTypeAliasesPackage())) {
+
+        // Configure type aliases and handlers.
+        if (StringKit.isNotEmpty(this.properties.getTypeAliasesPackage())) {
             factory.setTypeAliasesPackage(this.properties.getTypeAliasesPackage());
         }
         if (this.properties.getTypeAliasesSuperType() != null) {
             factory.setTypeAliasesSuperType(this.properties.getTypeAliasesSuperType());
         }
-        if (ObjectKit.isEmptyIfString(this.properties.getTypeHandlersPackage())) {
+        if (StringKit.isNotEmpty(this.properties.getTypeHandlersPackage())) {
             factory.setTypeHandlersPackage(this.properties.getTypeHandlersPackage());
         }
+
+        // Set mapper locations.
         if (!ObjectKit.isEmpty(this.properties.resolveMapperLocations())) {
             factory.setMapperLocations(this.properties.resolveMapperLocations());
         }
+
         factory.setConfiguration(configuration);
-        // 插件配置
+
+        // Configure plugins.
         factory.setPlugins(MapperPluginBuilder.build(environment));
 
         SqlSessionFactory sqlSessionFactory = factory.getObject();
@@ -181,10 +197,10 @@ public class MapperConfiguration implements InitializingBean {
     }
 
     /**
-     * 创建SqlSessionTemplate bean
+     * Creates the {@link SqlSessionTemplate} bean.
      *
-     * @param sqlSessionFactory SqlSessionFactory
-     * @return SqlSessionTemplate
+     * @param sqlSessionFactory The {@link SqlSessionFactory} to use.
+     * @return The configured {@link SqlSessionTemplate}.
      */
     @Bean
     @ConditionalOnMissingBean
@@ -202,15 +218,18 @@ public class MapperConfiguration implements InitializingBean {
     }
 
     /**
-     * 自定义VFS实现，用于Spring Boot环境
+     * A custom {@link VFS} implementation for MyBatis that works correctly in a Spring Boot environment, especially
+     * with executable jars.
      */
     class SpringBootVFS extends VFS {
 
-        /** 资源解析器 */
+        /**
+         * The resource resolver.
+         */
         private final ResourcePatternResolver resourceResolver;
 
         /**
-         * 构造函数，初始化资源解析器
+         * Constructs the SpringBootVFS, initializing the resource resolver.
          */
         public SpringBootVFS() {
             this.resourceResolver = new PathMatchingResourcePatternResolver(getClass().getClassLoader());
@@ -218,21 +237,9 @@ public class MapperConfiguration implements InitializingBean {
         }
 
         /**
-         * 保留子包名称
+         * Checks if the VFS is valid.
          *
-         * @param uri      URI
-         * @param rootPath 根路径
-         * @return 子包路径
-         */
-        private String preserveSubpackageName(final URI uri, final String rootPath) {
-            final String url = uri.toString();
-            return url.substring(url.indexOf(rootPath));
-        }
-
-        /**
-         * 检查VFS是否有效
-         *
-         * @return 始终返回true
+         * @return Always returns {@code true}.
          */
         @Override
         public boolean isValid() {
@@ -240,12 +247,12 @@ public class MapperConfiguration implements InitializingBean {
         }
 
         /**
-         * 列出指定路径下的类文件
+         * Lists all resources under a given path, which is essential for MyBatis to find mappers and type aliases.
          *
-         * @param url  URL
-         * @param path 路径
-         * @return 类文件路径列表
-         * @throws IOException IO exception
+         * @param url  The URL of the resource to list.
+         * @param path The path within the URL to list.
+         * @return A list of resource paths as strings.
+         * @throws IOException if an I/O error occurs.
          */
         @Override
         protected List<String> list(URL url, String path) throws IOException {
@@ -259,6 +266,17 @@ public class MapperConfiguration implements InitializingBean {
             return resourcePaths;
         }
 
+        /**
+         * Preserves the sub-package name from the full resource URI.
+         *
+         * @param uri      The URI of the resource.
+         * @param rootPath The root path to relativize against.
+         * @return The relative path of the resource.
+         */
+        private String preserveSubpackageName(final URI uri, final String rootPath) {
+            final String url = uri.toString();
+            return url.substring(url.indexOf(rootPath));
+        }
     }
 
 }

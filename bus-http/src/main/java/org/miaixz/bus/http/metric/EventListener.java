@@ -40,7 +40,13 @@ import org.miaixz.bus.http.accord.ConnectionPool;
 import org.miaixz.bus.http.socket.Handshake;
 
 /**
- * 用于度量事件的侦听器。扩展这个类来监视应用程序的HTTP调用的数量、大小和持续时间 所有事件方法必须快速执行，不需要外部锁定，不能抛出异常，不能尝试更改事件参数， 也不能重入客户机。任何对文件或网络的IO写入都应该异步进行
+ * Listener for metrics events. Extend this class to monitor the quantity, size, and duration of your application's HTTP
+ * calls.
+ *
+ * <p>
+ * All event methods must execute quickly, without external locking, without throwing exceptions, without attempting to
+ * mutate the event parameters, and without reentrant calls into the client. Any IO writing should be done
+ * asynchronously.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -51,91 +57,104 @@ public abstract class EventListener {
 
     };
 
+    /**
+     * Creates a factory that returns the same listener instance for all calls.
+     *
+     * @param listener The listener to be returned by the factory.
+     * @return A factory that returns the given listener.
+     */
     public static EventListener.Factory factory(EventListener listener) {
         return call -> listener;
     }
 
     /**
-     * 在调用进入队列或由客户端执行时立即调用。在线程或流限制的情况下，这个调用可能在处理请求 开始之前就已经执行了 对于单个{@link NewCall}只调用一次。不同路由或重定向的重试将在
-     * 单个callStart和{@link #callEnd}/{@link #callFailed}对的范围内处理。
+     * Invoked immediately when a call is enqueued or executed by the client. In case of thread or stream limits, this
+     * call may be executed before processing of the request starts.
      *
-     * @param call 调用信息
+     * <p>
+     * This is invoked only once for a single {@link NewCall}. Retries of different routes or redirects will be handled
+     * within the boundaries of a single callStart and {@link #callEnd}/{@link #callFailed} pair.
+     *
+     * @param call The call information.
      */
     public void callStart(NewCall call) {
 
     }
 
     /**
-     * 仅在DNS查找之前调用。看到{@link DnsX #查找(String)}
+     * Invoked just prior to a DNS lookup. See {@link DnsX#lookup(String)}.
      *
-     * @param call       调用信息
-     * @param domainName 主机名
+     * @param call       The call information.
+     * @param domainName The hostname.
      */
     public void dnsStart(NewCall call, String domainName) {
 
     }
 
     /**
-     * 在DNS查找后立即调用. 此方法在{@link #dnsStart}之后调用
+     * Invoked immediately after a DNS lookup. This method is invoked after {@link #dnsStart}.
      *
-     * @param call            调用信息
-     * @param domainName      主机名
-     * @param inetAddressList IP地址信息
+     * @param call            The call information.
+     * @param domainName      The hostname.
+     * @param inetAddressList The list of IP addresses.
      */
     public void dnsEnd(NewCall call, String domainName, List<InetAddress> inetAddressList) {
 
     }
 
     /**
-     * 仅在初始化套接字连接之前调用. 如果不能重用{@link ConnectionPool}中的现有连接，则将调用此方法.
+     * Invoked just prior to initiating a socket connection. This method will be invoked if no existing connection in
+     * the {@link ConnectionPool} can be reused.
      *
-     * @param call              调用信息
-     * @param inetSocketAddress 网络套接字信息
-     * @param proxy             代理
+     * @param call              The call information.
+     * @param inetSocketAddress The socket address.
+     * @param proxy             The proxy.
      */
     public void connectStart(NewCall call, InetSocketAddress inetSocketAddress, Proxy proxy) {
 
     }
 
     /**
-     * 在启动TLS连接之前调用.
+     * Invoked prior to starting a TLS connection.
      *
-     * @param call 调用信息
+     * @param call The call information.
      */
     public void secureConnectStart(NewCall call) {
 
     }
 
     /**
-     * 尝试TLS连接后立即调用. 此方法在{@link #secureConnectStart}之后调用.
+     * Invoked immediately after a TLS connection was attempted. This method is invoked after
+     * {@link #secureConnectStart}.
      *
-     * @param call      调用信息
-     * @param handshake 网络握手信息
+     * @param call      The call information.
+     * @param handshake The handshake information.
      */
     public void secureConnectEnd(NewCall call, Handshake handshake) {
 
     }
 
     /**
-     * 在尝试套接字连接后立即调用.
+     * Invoked immediately after a socket connection was attempted.
      *
-     * @param call              调用信息
-     * @param inetSocketAddress 网络套接字信息
-     * @param proxy             代理
-     * @param protocol          协议
+     * @param call              The call information.
+     * @param inetSocketAddress The socket address.
+     * @param proxy             The proxy.
+     * @param protocol          The protocol.
      */
     public void connectEnd(NewCall call, InetSocketAddress inetSocketAddress, Proxy proxy, Protocol protocol) {
 
     }
 
     /**
-     * 连接尝试失败时调用。如果有进一步的路由可用并且启用了故障恢复，则此故障不是终端.
+     * Invoked when a connection attempt fails. This failure is not terminal if further routes are available and failure
+     * recovery is enabled.
      *
-     * @param call              调用信息
-     * @param inetSocketAddress 网络套接字信息
-     * @param proxy             代理
-     * @param protocol          协议
-     * @param ioe               异常
+     * @param call              The call information.
+     * @param inetSocketAddress The socket address.
+     * @param proxy             The proxy.
+     * @param protocol          The protocol.
+     * @param ioe               The exception.
      */
     public void connectFailed(
             NewCall call,
@@ -147,129 +166,149 @@ public abstract class EventListener {
     }
 
     /**
-     * 为{@code call}获取连接后调用.
+     * Invoked after a connection is acquired for a {@code call}.
      *
-     * @param call       调用信息
-     * @param connection 连接信息
+     * @param call       The call information.
+     * @param connection The connection information.
      */
     public void connectionAcquired(NewCall call, Connection connection) {
 
     }
 
     /**
-     * 在为{@code call}释放连接后调用. 这个方法总是在{@link #connectionAcquired(NewCall, Connection)}之后调用。
+     * Invoked after a connection is released for a {@code call}. This method is always invoked after
+     * {@link #connectionAcquired(NewCall, Connection)}.
      *
-     * @param call       调用信息
-     * @param connection 连接信息
+     * @param call       The call information.
+     * @param connection The connection information.
      */
     public void connectionReleased(NewCall call, Connection connection) {
 
     }
 
     /**
-     * 仅在发送请求头之前调用. 连接是隐式的，通常与最后一个{@link #connectionAcquired(NewCall, Connection)}事件相关
+     * Invoked just prior to sending request headers. The connection is implicit and is typically associated with the
+     * last {@link #connectionAcquired(NewCall, Connection)} event.
      *
-     * @param call 调用信息
+     * @param call The call information.
      */
     public void requestHeadersStart(NewCall call) {
 
     }
 
     /**
-     * 发送请求头后立即调用. 这个方法总是在{@link #requestHeadersStart(NewCall)}之后调用
+     * Invoked immediately after sending request headers. This method is always invoked after
+     * {@link #requestHeadersStart(NewCall)}.
      *
-     * @param call    调用信息
-     * @param request 通过网络发送的请求
+     * @param call    The call information.
+     * @param request The request sent over the network.
      */
     public void requestHeadersEnd(NewCall call, Request request) {
 
     }
 
     /**
-     * 仅在发送请求主体之前调用。只有在请求允许并有一个请求体要发送时才会被调用吗. 连接是隐式的，通常与最后一个{@link #connectionAcquired(NewCall, Connection)}事件相关
+     * Invoked just prior to sending a request body. Will only be invoked if the request permits and has a request body
+     * to send. The connection is implicit and is typically associated with the last
+     * {@link #connectionAcquired(NewCall, Connection)} event.
      *
-     * @param call 调用信息
+     * @param call The call information.
      */
     public void requestBodyStart(NewCall call) {
 
     }
 
     /**
-     * 在发送请求主体后立即调用 此方法总是在{@link #requestBodyStart(NewCall)}之后调用
+     * Invoked immediately after sending a request body. This method is always invoked after
+     * {@link #requestBodyStart(NewCall)}.
      *
-     * @param call      调用信息
-     * @param byteCount 字节流长度信息
+     * @param call      The call information.
+     * @param byteCount The byte count.
      */
     public void requestBodyEnd(NewCall call, long byteCount) {
 
     }
 
     /**
-     * 当写入请求失败时调用 这个方法在{@link #requestHeadersStart}或{@link #requestBodyStart}之后被调用
+     * Invoked when a request fails to be written. This method is invoked after {@link #requestHeadersStart} or
+     * {@link #requestBodyStart}.
+     *
+     * @param call The call information.
+     * @param ioe  The exception.
      */
     public void requestFailed(NewCall call, IOException ioe) {
     }
 
     /**
-     * 仅在接收响应标头之前调用. 连接是隐式的，通常与最后一个{@link #connectionAcquired(NewCall, Connection)}事件相关
-     * 对于单个{@link NewCall}可以调用多次。例如，如果对{@link NewCall#request()}的响应是重定向到另一个地址
+     * Invoked just prior to receiving response headers. The connection is implicit and is typically associated with the
+     * last {@link #connectionAcquired(NewCall, Connection)} event. This may be invoked multiple times for a single
+     * {@link NewCall}. For example, if the response to {@link NewCall#request()} is a redirect to another address.
      *
-     * @param call 调用信息
+     * @param call The call information.
      */
     public void responseHeadersStart(NewCall call) {
 
     }
 
     /**
-     * 在接收响应标头后立即调用 这个方法总是在{@link #responseHeadersStart}之后调用
+     * Invoked immediately after receiving response headers. This method is always invoked after
+     * {@link #responseHeadersStart}.
      *
-     * @param call     调用信息
-     * @param response 通过网络接收到的响应
+     * @param call     The call information.
+     * @param response The response received from the network.
      */
     public void responseHeadersEnd(NewCall call, Response response) {
 
     }
 
     /**
-     * 仅在接收响应主体之前调用. 连接是隐式的，通常与最后一个{@link #connectionAcquired(NewCall, Connection)}事件相关
-     * 对于单个{@link NewCall}通常只会调用一次，例外情况是一组有限的情况，包括故障恢复
+     * Invoked just prior to receiving a response body. The connection is implicit and is typically associated with the
+     * last {@link #connectionAcquired(NewCall, Connection)} event. This is typically invoked only once for a single
+     * {@link NewCall}, except for a limited set of cases including failure recovery.
      *
-     * @param call 调用信息
+     * @param call The call information.
      */
     public void responseBodyStart(NewCall call) {
 
     }
 
     /**
-     * 在接收到响应体并完成读取后立即调用. 只会在有响应体的请求时调用，例如，不会在websocket升级时调用 此方法总是在{@link #requestBodyStart(NewCall)}之后调用
+     * Invoked immediately after receiving a response body and completing reading it. Will only be invoked for requests
+     * that have a response body, for example, it will not be invoked for a websocket upgrade. This method is always
+     * invoked after {@link #requestBodyStart(NewCall)}.
      *
-     * @param call      调用信息
-     * @param byteCount 字节流长度信息
+     * @param call      The call information.
+     * @param byteCount The byte count.
      */
     public void responseBodyEnd(NewCall call, long byteCount) {
 
     }
 
     /**
-     * 当读取响应失败时调用 这个方法在{@link #responseHeadersStart}或{@link #responseBodyStart}之后被调用
+     * Invoked when a response fails to be read. This method is invoked after {@link #responseHeadersStart} or
+     * {@link #responseBodyStart}.
+     *
+     * @param call The call information.
+     * @param ioe  The exception.
      */
     public void responseFailed(NewCall call, IOException ioe) {
     }
 
     /**
-     * 在调用完全结束后立即调用。这包括调用方延迟消耗响应体. 此方法总是在{@link #callStart(NewCall)}之后调用
+     * Invoked immediately after a call has completely ended. This includes any delayed consumption of the response body
+     * by the caller. This method is always invoked after {@link #callStart(NewCall)}.
      *
-     * @param call 调用信息
+     * @param call The call information.
      */
     public void callEnd(NewCall call) {
 
     }
 
     /**
-     * 永久失败时调用. 此方法总是在{@link #callStart(NewCall)}之后调用
+     * Invoked when a call fails permanently. This method is always invoked after {@link #callStart(NewCall)}.
      *
-     * @param call 调用信息
-     * @param ioe  异常
+     * @param call The call information.
+     * @param ioe  The exception.
      */
     public void callFailed(NewCall call, IOException ioe) {
 
@@ -278,11 +317,15 @@ public abstract class EventListener {
     public interface Factory {
 
         /**
-         * 为特定的{@link NewCall}创建{@link EventListener}的实例。 返回的{@link EventListener}实例将在{@code call}的生命周期中使用
-         * 此方法在创建{@code call}之后调用。查看{@link Httpd # newCall(请求)} 对实现来说，在这个方法的{@code call}实例上发出任何变化操作都是错误的
+         * Creates an instance of the {@link EventListener} for a specific {@link NewCall}. The returned
+         * {@link EventListener} instance will be used for the lifecycle of the {@code call}.
          *
-         * @param call 调用信息
-         * @return 监听器
+         * <p>
+         * This method is invoked after the {@code call} is created. See {@link Httpd#newCall(Request)}. It is an error
+         * for implementations to issue any mutating operations on the {@code call} instance in this method.
+         *
+         * @param call The call information.
+         * @return The listener.
          */
         EventListener create(NewCall call);
     }

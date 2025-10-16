@@ -36,7 +36,7 @@ import org.miaixz.bus.pager.Paging;
 import org.miaixz.bus.pager.RowBounds;
 
 /**
- * 分页参数配置类，负责管理和解析分页相关参数。
+ * Configuration class for pagination parameters, responsible for managing and parsing pagination-related parameters.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,48 +44,52 @@ import org.miaixz.bus.pager.RowBounds;
 public class PageParams {
 
     /**
-     * 是否将RowBounds的offset作为页码使用，默认false
+     * Whether to use {@link org.apache.ibatis.session.RowBounds#offset} as the page number. Default is false.
      */
     protected boolean offsetAsPageNo = false;
     /**
-     * RowBounds是否执行count查询，默认false
+     * Whether to perform a count query when using {@link org.apache.ibatis.session.RowBounds}. Default is false.
      */
     protected boolean rowBoundsWithCount = false;
     /**
-     * 当为true且pageSize为0（或RowBounds的limit=0）时，返回全部结果
+     * If true, and {@code pageSize} is 0 (or {@link org.apache.ibatis.session.RowBounds#limit} is 0), all results are
+     * returned.
      */
     protected boolean pageSizeZero = false;
     /**
-     * 是否启用分页合理化，默认false
+     * Whether to enable pagination reasonableness. Default is false. If enabled, page numbers will be adjusted to be
+     * within valid ranges.
      */
     protected boolean reasonable = false;
     /**
-     * 是否支持通过接口参数传递分页参数，默认false
+     * Whether to support passing pagination parameters through method arguments. Default is false.
      */
     protected boolean supportMethodsArguments = false;
     /**
-     * 默认count查询列，默认为"0"
+     * The default column name for the count query. Defaults to "0".
      */
     protected String countColumn = "0";
     /**
-     * count查询时是否保留order by排序
+     * Whether to retain the order by clause during a count query.
      */
     private boolean keepOrderBy = false;
     /**
-     * count查询时是否保留子查询的order by排序
+     * Whether to retain the order by clause of sub-queries during a count query.
      */
     private boolean keepSubSelectOrderBy = false;
     /**
-     * 是否启用异步count查询
+     * Whether to enable asynchronous count queries.
      */
     private boolean asyncCount = false;
 
     /**
-     * 获取分页参数对象。
+     * Retrieves the {@link Page} object based on the provided query parameters and
+     * {@link org.apache.ibatis.session.RowBounds}. It checks for existing {@link Page} in {@link PageContext}, or
+     * creates a new one from {@code rowBounds} or {@code parameterObject}.
      *
-     * @param parameterObject 查询参数对象
-     * @param rowBounds       MyBatis RowBounds对象
-     * @return 分页对象，若无分页参数则返回null
+     * @param parameterObject the query parameter object
+     * @param rowBounds       the MyBatis RowBounds object
+     * @return a {@link Page} object, or null if no pagination parameters are found
      */
     public Page getPage(Object parameterObject, org.apache.ibatis.session.RowBounds rowBounds) {
         Page page = PageContext.getLocalPage();
@@ -95,7 +99,7 @@ public class PageParams {
                     page = new Page(rowBounds.getOffset(), rowBounds.getLimit(), rowBoundsWithCount);
                 } else {
                     page = new Page(new int[] { rowBounds.getOffset(), rowBounds.getLimit() }, rowBoundsWithCount);
-                    page.setReasonable(false); // offsetAsPageNo=false时禁用合理化
+                    page.setReasonable(false); // Disable reasonableness when offsetAsPageNo=false
                 }
                 if (rowBounds instanceof RowBounds) {
                     RowBounds pageRowBounds = (RowBounds) rowBounds;
@@ -129,9 +133,10 @@ public class PageParams {
     }
 
     /**
-     * 设置分页相关配置属性。
+     * Sets the pagination-related configuration properties. This method is typically called during plugin
+     * initialization to configure default behaviors.
      *
-     * @param properties 配置属性
+     * @param properties the configuration properties
      */
     public void setProperties(Properties properties) {
         this.offsetAsPageNo = Boolean.parseBoolean(properties.getProperty("offsetAsPageNo"));
@@ -150,63 +155,63 @@ public class PageParams {
     }
 
     /**
-     * 是否将offset作为页码使用。
+     * Checks if {@link org.apache.ibatis.session.RowBounds#offset} is used as the page number.
      *
-     * @return 是否启用offset作为页码
+     * @return true if offset is used as page number, false otherwise
      */
     public boolean isOffsetAsPageNo() {
         return offsetAsPageNo;
     }
 
     /**
-     * RowBounds是否执行count查询。
+     * Checks if a count query is performed when using {@link org.apache.ibatis.session.RowBounds}.
      *
-     * @return 是否执行count查询
+     * @return true if count query is performed with RowBounds, false otherwise
      */
     public boolean isRowBoundsWithCount() {
         return rowBoundsWithCount;
     }
 
     /**
-     * 是否在pageSize为0时返回全部结果。
+     * Checks if all results are returned when {@code pageSize} is 0.
      *
-     * @return 是否启用pageSizeZero
+     * @return true if pageSize 0 returns all results, false otherwise
      */
     public boolean isPageSizeZero() {
         return pageSizeZero;
     }
 
     /**
-     * 是否启用分页合理化。
+     * Checks if pagination reasonableness is enabled.
      *
-     * @return 是否启用合理化
+     * @return true if reasonableness is enabled, false otherwise
      */
     public boolean isReasonable() {
         return reasonable;
     }
 
     /**
-     * 是否支持接口参数传递分页参数。
+     * Checks if passing pagination parameters through method arguments is supported.
      *
-     * @return 是否支持接口参数
+     * @return true if method arguments are supported for pagination, false otherwise
      */
     public boolean isSupportMethodsArguments() {
         return supportMethodsArguments;
     }
 
     /**
-     * 获取count查询列名。
+     * Retrieves the column name used for the count query.
      *
-     * @return count查询列名
+     * @return the count query column name
      */
     public String getCountColumn() {
         return countColumn;
     }
 
     /**
-     * 是否启用异步count查询。
+     * Checks if asynchronous count queries are enabled.
      *
-     * @return 是否启用异步count
+     * @return true if asynchronous count queries are enabled, false otherwise
      */
     public boolean isAsyncCount() {
         return asyncCount;

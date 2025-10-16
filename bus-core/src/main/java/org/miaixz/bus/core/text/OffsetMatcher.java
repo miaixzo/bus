@@ -34,8 +34,10 @@ import java.util.function.BiPredicate;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 字符串区域匹配器，用于匹配字串是头部匹配还是尾部匹配，亦或者是某个位置的匹配。 offset用于锚定开始或结束位置，正数表示从开始偏移，负数表示从后偏移
- * 
+ * String region matcher, used to match whether a substring matches at the head, tail, or a specific position. The
+ * offset is used to anchor the start or end position. A positive number indicates an offset from the beginning, and a
+ * negative number indicates an offset from the end.
+ *
  * <pre>
  *     a  b  c  d  e  f
  *     |  |        |  |
@@ -50,30 +52,38 @@ public class OffsetMatcher implements BiPredicate<CharSequence, CharSequence>, S
     @Serial
     private static final long serialVersionUID = 2852233335568L;
 
+    /**
+     * Whether to ignore case during comparison.
+     */
     private final boolean ignoreCase;
+    /**
+     * Whether to ignore the case where the two strings are exactly equal.
+     */
     private final boolean ignoreEquals;
     /**
-     * 匹配位置，正数表示从开始偏移，负数表示从后偏移
+     * The matching position. A positive number indicates an offset from the beginning, and a negative number indicates
+     * an offset from the end.
      */
     private final int offset;
 
     /**
-     * 构造
+     * Constructs an {@code OffsetMatcher} for prefix or suffix matching.
      *
-     * @param ignoreCase   是否忽略大小写
-     * @param ignoreEquals 是否忽略字符串相等的情况
-     * @param isPrefix     {@code true}表示检查开头匹配，{@code false}检查末尾匹配
+     * @param ignoreCase   Whether to ignore case during comparison.
+     * @param ignoreEquals Whether to ignore the case where the two strings are exactly equal.
+     * @param isPrefix     {@code true} for prefix matching, {@code false} for suffix matching.
      */
     public OffsetMatcher(final boolean ignoreCase, final boolean ignoreEquals, final boolean isPrefix) {
         this(ignoreCase, ignoreEquals, isPrefix ? 0 : -1);
     }
 
     /**
-     * 构造
+     * Constructs an {@code OffsetMatcher} with a specific offset.
      *
-     * @param ignoreCase   是否忽略大小写
-     * @param ignoreEquals 是否忽略字符串相等的情况
-     * @param offset       匹配位置，正数表示从开始偏移，负数表示从后偏移
+     * @param ignoreCase   Whether to ignore case during comparison.
+     * @param ignoreEquals Whether to ignore the case where the two strings are exactly equal.
+     * @param offset       The matching position. A positive number indicates an offset from the beginning, and a
+     *                     negative number indicates an offset from the end.
      */
     public OffsetMatcher(final boolean ignoreCase, final boolean ignoreEquals, final int offset) {
         this.ignoreCase = ignoreCase;

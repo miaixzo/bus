@@ -26,7 +26,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 分页插件
+ * Provides automatic dialect detection implementations for the pagination plugin. These classes help in identifying the
+ * database dialect based on the DataSource being used.
  *
  * @author Kimi Liu
  * @since Java 17+

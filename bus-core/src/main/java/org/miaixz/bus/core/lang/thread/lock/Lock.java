@@ -33,29 +33,36 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.concurrent.locks.StampedLock;
 
 /**
- * 锁相关类
+ * Utility class for creating and managing various types of locks and synchronization primitives. This class provides
+ * factory methods for standard Java locks as well as custom segment locks.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class Lock {
 
+    /**
+     * A singleton instance of {@link NoLock} representing a no-operation lock.
+     */
     private static final NoLock NO_LOCK = new NoLock();
 
     /**
-     * 创建{@link StampedLock}锁
+     * Creates a new {@link StampedLock} instance. {@link StampedLock} is a capability-based lock with three modes for
+     * controlling read/write access.
      *
-     * @return {@link StampedLock}锁
+     * @return A new {@link StampedLock}.
      */
     public static StampedLock createStampLock() {
         return new StampedLock();
     }
 
     /**
-     * 创建{@link ReentrantReadWriteLock}锁
+     * Creates a new {@link ReentrantReadWriteLock} instance. This lock maintains a pair of associated
+     * {@link java.util.concurrent.locks.Lock}s, one for read-only operations and one for writing. The {@code fair}
+     * parameter determines if the lock grants access to the longest-waiting thread.
      *
-     * @param fair 是否公平锁
-     * @return {@link ReentrantReadWriteLock}锁
+     * @param fair {@code true} if this lock should use a fair ordering policy; {@code false} for a non-fair policy.
+     * @return A new {@link ReentrantReadWriteLock}.
      */
     public static ReentrantReadWriteLock createReadWriteLock(final boolean fair) {
         return new ReentrantReadWriteLock(fair);
@@ -63,106 +70,123 @@ public class Lock {
 
     // region ----- SegmentLock
     /**
-     * 创建分段锁（强引用），使用 ReentrantLock
+     * Creates a segment lock with strong references, using {@link java.util.concurrent.locks.ReentrantLock} for each
+     * segment. Segment locks divide a resource into segments, each protected by its own lock, reducing contention.
      *
-     * @param segments 分段数量，必须大于 0
-     * @return 分段锁实例
+     * @param segments The number of segments, must be greater than 0.
+     * @return A {@link SegmentLock} instance managing {@link java.util.concurrent.locks.Lock}s.
+     * @throws IllegalArgumentException if {@code segments} is not greater than 0.
      */
     public static SegmentLock<java.util.concurrent.locks.Lock> createSegmentLock(final int segments) {
         return SegmentLock.lock(segments);
     }
 
     /**
-     * 创建分段读写锁（强引用），使用 ReentrantReadWriteLock
+     * Creates a segment read-write lock with strong references, using {@link ReentrantReadWriteLock} for each segment.
      *
-     * @param segments 分段数量，必须大于 0
-     * @return 分段读写锁实例
+     * @param segments The number of segments, must be greater than 0.
+     * @return A {@link SegmentLock} instance managing {@link ReadWriteLock}s.
+     * @throws IllegalArgumentException if {@code segments} is not greater than 0.
      */
     public static SegmentLock<ReadWriteLock> createSegmentReadWriteLock(final int segments) {
         return SegmentLock.readWriteLock(segments);
     }
 
     /**
-     * 创建分段信号量（强引用）
+     * Creates a segment semaphore with strong references.
      *
-     * @param segments 分段数量，必须大于 0
-     * @param permits  每个信号量的许可数
-     * @return 分段信号量实例
+     * @param segments The number of segments, must be greater than 0.
+     * @param permits  The number of permits available for each semaphore segment.
+     * @return A {@link SegmentLock} instance managing {@link Semaphore}s.
+     * @throws IllegalArgumentException if {@code segments} is not greater than 0.
      */
     public static SegmentLock<Semaphore> createSegmentSemaphore(final int segments, final int permits) {
         return SegmentLock.semaphore(segments, permits);
     }
 
     /**
-     * 创建弱引用分段锁，使用 ReentrantLock，懒加载
+     * Creates a segment lock with weak references, using {@link java.util.concurrent.locks.ReentrantLock} for each
+     * segment. Locks are lazily initialized and can be garbage collected if not in use.
      *
-     * @param segments 分段数量，必须大于 0
-     * @return 弱引用分段锁实例
+     * @param segments The number of segments, must be greater than 0.
+     * @return A {@link SegmentLock} instance managing weakly-referenced {@link java.util.concurrent.locks.Lock}s.
+     * @throws IllegalArgumentException if {@code segments} is not greater than 0.
      */
     public static SegmentLock<java.util.concurrent.locks.Lock> createLazySegmentLock(final int segments) {
         return SegmentLock.lazyWeakLock(segments);
     }
 
     /**
-     * 根据 key 获取分段锁（强引用）
+     * Retrieves a segment lock (strong reference) based on a given key. The key is used to determine which segment's
+     * lock to return.
      *
-     * @param segments 分段数量，必须大于 0
-     * @param key      用于映射分段的 key
-     * @return 对应的 Lock 实例
+     * @param segments The total number of segments, must be greater than 0.
+     * @param key      The key used to map to a specific segment.
+     * @return The {@link java.util.concurrent.locks.Lock} instance corresponding to the key's segment.
+     * @throws IllegalArgumentException if {@code segments} is not greater than 0.
      */
     public static java.util.concurrent.locks.Lock getSegmentLock(final int segments, final Object key) {
         return SegmentLock.lock(segments).get(key);
     }
 
     /**
-     * 根据 key 获取分段读锁（强引用）
+     * Retrieves a segment read lock (strong reference) based on a given key. The key is used to determine which
+     * segment's read lock to return.
      *
-     * @param segments 分段数量，必须大于 0
-     * @param key      用于映射分段的 key
-     * @return 对应的读锁实例
+     * @param segments The total number of segments, must be greater than 0.
+     * @param key      The key used to map to a specific segment.
+     * @return The read {@link java.util.concurrent.locks.Lock} instance corresponding to the key's segment.
+     * @throws IllegalArgumentException if {@code segments} is not greater than 0.
      */
     public static java.util.concurrent.locks.Lock getSegmentReadLock(final int segments, final Object key) {
         return SegmentLock.readWriteLock(segments).get(key).readLock();
     }
 
     /**
-     * 根据 key 获取分段写锁（强引用）
+     * Retrieves a segment write lock (strong reference) based on a given key. The key is used to determine which
+     * segment's write lock to return.
      *
-     * @param segments 分段数量，必须大于 0
-     * @param key      用于映射分段的 key
-     * @return 对应的写锁实例
+     * @param segments The total number of segments, must be greater than 0.
+     * @param key      The key used to map to a specific segment.
+     * @return The write {@link java.util.concurrent.locks.Lock} instance corresponding to the key's segment.
+     * @throws IllegalArgumentException if {@code segments} is not greater than 0.
      */
     public static java.util.concurrent.locks.Lock getSegmentWriteLock(final int segments, final Object key) {
         return SegmentLock.readWriteLock(segments).get(key).writeLock();
     }
 
     /**
-     * 根据 key 获取分段信号量（强引用）
+     * Retrieves a segment semaphore (strong reference) based on a given key. The key is used to determine which
+     * segment's semaphore to return.
      *
-     * @param segments 分段数量，必须大于 0
-     * @param permits  每个信号量的许可数
-     * @param key      用于映射分段的 key
-     * @return 对应的 Semaphore 实例
+     * @param segments The total number of segments, must be greater than 0.
+     * @param permits  The number of permits available for each semaphore segment.
+     * @param key      The key used to map to a specific segment.
+     * @return The {@link Semaphore} instance corresponding to the key's segment.
+     * @throws IllegalArgumentException if {@code segments} is not greater than 0.
      */
     public static Semaphore getSegmentSemaphore(final int segments, final int permits, final Object key) {
         return SegmentLock.semaphore(segments, permits).get(key);
     }
 
     /**
-     * 根据 key 获取弱引用分段锁，懒加载
+     * Retrieves a weakly-referenced segment lock (lazy-loaded) based on a given key. The key is used to determine which
+     * segment's lock to return.
      *
-     * @param segments 分段数量，必须大于 0
-     * @param key      用于映射分段的 key
-     * @return 对应的 Lock 实例
+     * @param segments The total number of segments, must be greater than 0.
+     * @param key      The key used to map to a specific segment.
+     * @return The {@link java.util.concurrent.locks.Lock} instance corresponding to the key's segment.
+     * @throws IllegalArgumentException if {@code segments} is not greater than 0.
      */
     public static java.util.concurrent.locks.Lock getLazySegmentLock(final int segments, final Object key) {
         return SegmentLock.lazyWeakLock(segments).get(key);
     }
 
     /**
-     * 获取单例的无锁对象
+     * Returns a singleton instance of {@link NoLock}, which is a no-operation lock. This can be used when a lock
+     * interface is required but no actual locking is desired.
      *
-     * @return {@link NoLock}
+     * @return The singleton {@link NoLock} instance.
      */
     public static NoLock getNoLock() {
         return NO_LOCK;

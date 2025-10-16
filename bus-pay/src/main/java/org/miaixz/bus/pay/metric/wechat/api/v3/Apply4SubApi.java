@@ -30,7 +30,7 @@ package org.miaixz.bus.pay.metric.wechat.api.v3;
 import org.miaixz.bus.pay.Matcher;
 
 /**
- * 微信支付 v3 版本接口-特约商户进件接口
+ * WeChat Pay V3 API interfaces for sub-merchant applications.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,64 +38,72 @@ import org.miaixz.bus.pay.Matcher;
 public enum Apply4SubApi implements Matcher {
 
     /**
-     * 提交申请单
+     * Submit application form.
      */
-    APPLY_4_SUB("/v3/applyment4sub/applyment/", "提交申请单"),
+    APPLY_4_SUB("/v3/applyment4sub/applyment/", "Submit application form"),
 
     /**
-     * 查询申请单状态
+     * Query application status.
      */
-    GET_APPLY_STATE("/v3/applyment4sub/applyment/business_code/%s", "查询申请单状态"),
+    GET_APPLY_STATE("/v3/applyment4sub/applyment/business_code/%s", "Query application status"),
 
     /**
-     * 通过申请单号查询申请状态
+     * Query application status by application ID.
      */
-    GET_APPLY_STATE_BY_ID("/v3/applyment4sub/applyment/applyment_id/%s", "通过申请单号查询申请状态"),
+    GET_APPLY_STATE_BY_ID("/v3/applyment4sub/applyment/applyment_id/%s", "Query application status by application ID"),
 
     /**
-     * 修改结算账号
+     * Modify settlement account.
      */
-    MODIFY_SETTLEMENT("/v3/apply4sub/sub_merchants/%s/modify-settlement", "修改结算账号"),
+    MODIFY_SETTLEMENT("/v3/apply4sub/sub_merchants/%s/modify-settlement", "Modify settlement account"),
 
     /**
-     * 查询结算账户
+     * Query settlement account.
      */
-    GET_SETTLEMENT("/v3/apply4sub/sub_merchants/%s/settlement", "查询结算账户"),
+    GET_SETTLEMENT("/v3/apply4sub/sub_merchants/%s/settlement", "Query settlement account"),
 
     /**
-     * 商户开户意愿确认-提交申请单 OR 查询申请单审核结果
+     * Merchant account opening intention confirmation - submit application form OR query application review result.
      */
-    MER_OPEN_APPLY_SUBMIT_OR_RESULT("/v3/apply4subject/applyment", "提交申请单/查询申请单审核结果"),
+    MER_OPEN_APPLY_SUBMIT_OR_RESULT("/v3/apply4subject/applyment",
+            "Submit application form/query application review result"),
 
     /**
-     * 商户开户意愿确认-撤销申请单
+     * Merchant account opening intention confirmation - cancel application form.
      */
-    MER_OPEN_APPLY_CANCEL("/v3/apply4subject/applyment/%s/cancel", "撤销申请单"),
+    MER_OPEN_APPLY_CANCEL("/v3/apply4subject/applyment/%s/cancel", "Cancel application form"),
 
     /**
-     * 商户开户意愿确认-获取商户开户意愿确认状态
+     * Merchant account opening intention confirmation - get merchant account opening intention confirmation status.
      */
-    GET_MER_OPEN_APPLY_STATE("/v3/apply4subject/applyment/merchants/%s/state", "获取商户开户意愿确认状态");
+    GET_MER_OPEN_APPLY_STATE("/v3/apply4subject/applyment/merchants/%s/state",
+            "Get merchant account opening intention confirmation status");
 
     /**
-     * 接口方法
+     * The API method.
      */
     private final String method;
 
     /**
-     * 接口描述
+     * The API description.
      */
     private final String desc;
 
+    /**
+     * Constructs a new Apply4SubApi enum.
+     *
+     * @param method The API method.
+     * @param desc   The API description.
+     */
     Apply4SubApi(String method, String desc) {
         this.method = method;
         this.desc = desc;
     }
 
     /**
-     * 交易类型
+     * Gets the transaction type.
      *
-     * @return the string
+     * @return The transaction type.
      */
     @Override
     public String type() {
@@ -103,9 +111,9 @@ public enum Apply4SubApi implements Matcher {
     }
 
     /**
-     * 类型描述
+     * Gets the type description.
      *
-     * @return the string
+     * @return The type description.
      */
     @Override
     public String desc() {
@@ -113,9 +121,9 @@ public enum Apply4SubApi implements Matcher {
     }
 
     /**
-     * 接口方法
+     * Gets the API method.
      *
-     * @return the string
+     * @return The API method.
      */
     @Override
     public String method() {

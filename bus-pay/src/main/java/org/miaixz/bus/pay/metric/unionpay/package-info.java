@@ -26,7 +26,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 银联-云闪付
+ * This package contains the implementation for the UnionPay Cloud QuickPass payment provider.
  *
  * @author Kimi Liu
  * @since Java 17+

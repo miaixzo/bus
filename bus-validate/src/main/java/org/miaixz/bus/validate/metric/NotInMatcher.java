@@ -34,19 +34,28 @@ import org.miaixz.bus.validate.magic.Matcher;
 import org.miaixz.bus.validate.magic.annotation.NotIn;
 
 /**
- * NOT IN 校验
+ * Validator for the {@link NotIn} annotation, checking if a value is NOT present in a specified array of strings.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class NotInMatcher implements Matcher<Object, NotIn> {
 
+    /**
+     * Checks if the given object is NOT present in the array of strings specified in the {@link NotIn} annotation.
+     *
+     * @param object     The object to validate.
+     * @param annotation The {@link NotIn} annotation instance, which provides the array of forbidden values.
+     * @param context    The validation context (ignored).
+     * @return {@code true} if the object is empty (null) or if its string representation is NOT found in the
+     *         annotation's value array, {@code false} otherwise.
+     */
     @Override
     public boolean on(Object object, NotIn annotation, Context context) {
         if (ObjectKit.isEmpty(object)) {
             return false;
         }
-        return !ArrayKit.contains(annotation.value(), object);
+        return !ArrayKit.contains(annotation.value(), object.toString());
     }
 
 }

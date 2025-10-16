@@ -30,7 +30,7 @@ package org.miaixz.bus.pay;
 import org.miaixz.bus.core.lang.Normal;
 
 /**
- * 交易类型匹配 即多场景支付业务支持
+ * Transaction type matching, i.e., support for multi-scenario payment services.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,18 +38,18 @@ import org.miaixz.bus.core.lang.Normal;
 public interface Matcher extends Complex {
 
     /**
-     * 获取交易类型
+     * Gets the transaction type.
      *
-     * @return 交易类型
+     * @return The transaction type.
      */
     default String type() {
         return Normal.NULL;
     }
 
     /**
-     * 获取交易描述
+     * Gets the transaction description.
      *
-     * @return 交易类型
+     * @return The transaction description.
      */
     default String desc() {
         return Normal.NULL;

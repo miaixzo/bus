@@ -42,7 +42,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.crypto.Builder;
 
 /**
- * 支付宝配置
+ * Alipay configuration and utility class.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -52,12 +52,13 @@ public class AliPayBuilder {
     private static final String CHARSET_UTF8 = "UTF-8";
 
     /**
-     * 生成签名结果
+     * Generates the signature result.
      *
-     * @param params   要签名的数组
-     * @param key      签名密钥
-     * @param signType 签名类型 (MD5, RSA, RSA2)
-     * @return 签名结果字符串
+     * @param params   The array to be signed.
+     * @param key      The signing key.
+     * @param signType The signature type (MD5, RSA, RSA2).
+     * @return The signature result string.
+     * @throws IllegalArgumentException if the sign_type is not supported.
      */
     public static String buildRequestMySign(Map<String, String> params, String key, String signType)
             throws IllegalArgumentException {
@@ -73,12 +74,12 @@ public class AliPayBuilder {
     }
 
     /**
-     * 生成要请求的参数数组
+     * Generates the parameter array to be requested.
      *
-     * @param params   请求前的参数数组
-     * @param key      商户的私钥
-     * @param signType 签名类型
-     * @return 要请求的参数数组
+     * @param params   The parameter array before the request.
+     * @param key      The merchant's private key.
+     * @param signType The signature type.
+     * @return The parameter array to be requested.
      */
     public static Map<String, String> buildRequestPara(Map<String, String> params, String key, String signType) {
         Map<String, String> tempMap = paraFilter(params);
@@ -95,10 +96,10 @@ public class AliPayBuilder {
     }
 
     /**
-     * 除去数组中的空值和签名参数
+     * Removes empty values and signature parameters from the array.
      *
-     * @param params 签名参数组
-     * @return 去掉空值与签名参数后的新签名参数组
+     * @param params The signature parameter group.
+     * @return The new signature parameter group after removing empty values and signature parameters.
      */
     public static Map<String, String> paraFilter(Map<String, String> params) {
         if (params == null) {
@@ -120,10 +121,10 @@ public class AliPayBuilder {
     }
 
     /**
-     * 把数组所有元素排序
+     * Sorts all elements of the array.
      *
-     * @param params 需要排序并参与字符拼接的参数组
-     * @return 拼接后字符串
+     * @param params The parameter group to be sorted and involved in character splicing.
+     * @return The spliced string.
      */
     public static String createLinkString(Map<String, String> params) {
         List<String> keys = new ArrayList<>(params.keySet());
@@ -140,13 +141,13 @@ public class AliPayBuilder {
     }
 
     /**
-     * 从证书内容验签
+     * Verifies the signature from the certificate content.
      *
-     * @param params                  待验签的参数Map
-     * @param alipayPublicCertContent 支付宝公钥证书内容
-     * @param charset                 参数内容编码集
-     * @param signType                指定采用的签名方式，RSA或RSA2
-     * @return true：验签通过；false：验签不通过
+     * @param params                  The parameter map to be verified.
+     * @param alipayPublicCertContent The content of the Alipay public key certificate.
+     * @param charset                 The character set of the parameter content.
+     * @param signType                The signature method to be used, RSA or RSA2.
+     * @return true: verification passed; false: verification failed.
      */
     public static boolean rsaCertCheckV1ByContent(
             Map<String, String> params,
@@ -158,7 +159,6 @@ public class AliPayBuilder {
             CertificateFactory cf = CertificateFactory.getInstance("X.509");
             Certificate cert = cf.generateCertificate(new ByteArrayInputStream(alipayPublicCertContent.getBytes()));
             PublicKey publicKey = cert.getPublicKey();
-            String publicKeyEncoded = Base64.encode(publicKey.getEncoded());
 
             // Prepare data for verification
             String content = createLinkString(paraFilter(params));
@@ -180,12 +180,12 @@ public class AliPayBuilder {
     }
 
     /**
-     * RSA or RSA2 signing
+     * Performs RSA or RSA2 signing.
      *
-     * @param content    Data to sign
-     * @param privateKey Private key
-     * @param algorithm  Signature algorithm (SHA1withRSA or SHA256withRSA)
-     * @return Base64-encoded signature
+     * @param content    The data to be signed.
+     * @param privateKey The private key.
+     * @param algorithm  The signature algorithm (SHA1withRSA or SHA256withRSA).
+     * @return The Base64-encoded signature.
      */
     private static String rsaSign(String content, String privateKey, String algorithm) {
         try {

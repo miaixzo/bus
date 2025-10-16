@@ -45,7 +45,7 @@ import org.miaixz.bus.mapper.parsing.ColumnMeta;
 import org.miaixz.bus.mapper.parsing.TableMeta;
 
 /**
- * 主键生成器，负责在插入操作前或后生成主键值。
+ * A primary key generator responsible for generating primary key values before or after an insert operation.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -53,48 +53,49 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
 public class GenIdKeyGenerator implements KeyGenerator {
 
     /**
-     * 并发度，默认 1000，限制首次并发插入时的最大并发数，确保 executeBefore=true 时不会漏生成主键。
+     * Concurrency level, defaults to 1000. Limits the maximum concurrency during the first insertion, ensuring that
+     * primary keys are not missed when {@code executeBefore=true}.
      */
     private static volatile Integer CONCURRENCY;
 
     /**
-     * 主键生成器接口实例
+     * The {@link GenId} interface instance for primary key generation.
      */
     private final GenId<?> genId;
 
     /**
-     * 实体表信息
+     * The entity table information.
      */
     private final TableMeta table;
 
     /**
-     * 主键列信息
+     * The primary key column information.
      */
     private final ColumnMeta column;
 
     /**
-     * MyBatis 配置对象
+     * The MyBatis configuration object.
      */
     private final Configuration configuration;
 
     /**
-     * 是否在插入前生成主键
+     * Whether to generate the primary key before insertion.
      */
     private final boolean executeBefore;
 
     /**
-     * 计数器，记录生成主键的调用次数
+     * A counter to track the number of times primary keys have been generated.
      */
     private final AtomicInteger count = new AtomicInteger(0);
 
     /**
-     * 构造函数，初始化主键生成器。
+     * Constructs a new primary key generator.
      *
-     * @param genId         主键生成器接口实例
-     * @param table         实体表信息
-     * @param column        主键列信息
-     * @param configuration MyBatis 配置对象
-     * @param executeBefore 是否在插入前生成主键
+     * @param genId         The {@link GenId} interface instance.
+     * @param table         The entity table information.
+     * @param column        The primary key column information.
+     * @param configuration The MyBatis configuration object.
+     * @param executeBefore Whether to generate the primary key before insertion.
      */
     public GenIdKeyGenerator(GenId<?> genId, TableMeta table, ColumnMeta column, Configuration configuration,
             boolean executeBefore) {
@@ -106,9 +107,9 @@ public class GenIdKeyGenerator implements KeyGenerator {
     }
 
     /**
-     * 获取并发度，默认值为 1000，通过全局配置加载。
+     * Gets the concurrency level. Defaults to 1000, loaded from global configuration.
      *
-     * @return 并发度值
+     * @return The concurrency level value.
      */
     private static int getConcurrency() {
         if (CONCURRENCY == null) {
@@ -122,12 +123,12 @@ public class GenIdKeyGenerator implements KeyGenerator {
     }
 
     /**
-     * 在 SQL 执行前处理主键生成（若配置为插入前生成）。
+     * Processes primary key generation before SQL execution (if configured for pre-insertion generation).
      *
-     * @param executor  MyBatis 执行器
-     * @param ms        MappedStatement 对象
-     * @param stmt      JDBC 语句对象
-     * @param parameter 参数对象
+     * @param executor  The MyBatis executor.
+     * @param ms        The MappedStatement object.
+     * @param stmt      The JDBC Statement object.
+     * @param parameter The parameter object.
      */
     @Override
     public void processBefore(Executor executor, MappedStatement ms, Statement stmt, Object parameter) {
@@ -137,12 +138,12 @@ public class GenIdKeyGenerator implements KeyGenerator {
     }
 
     /**
-     * 在 SQL 执行后处理主键生成（若配置为插入后生成）。
+     * Processes primary key generation after SQL execution (if configured for post-insertion generation).
      *
-     * @param executor  MyBatis 执行器
-     * @param ms        MappedStatement 对象
-     * @param stmt      JDBC 语句对象
-     * @param parameter 参数对象
+     * @param executor  The MyBatis executor.
+     * @param ms        The MappedStatement object.
+     * @param stmt      The JDBC Statement object.
+     * @param parameter The parameter object.
      */
     @Override
     public void processAfter(Executor executor, MappedStatement ms, Statement stmt, Object parameter) {
@@ -152,9 +153,9 @@ public class GenIdKeyGenerator implements KeyGenerator {
     }
 
     /**
-     * 为参数对象生成主键值，支持单对象、Map、Iterator 和 Iterable 类型。
+     * Generates primary key values for the parameter object, supporting single objects, Maps, Iterators, and Iterables.
      *
-     * @param parameter 参数对象
+     * @param parameter The parameter object.
      */
     public void genId(Object parameter) {
         if (parameter != null) {
@@ -181,15 +182,19 @@ public class GenIdKeyGenerator implements KeyGenerator {
     }
 
     /**
-     * 准备参数，当 executeBefore=true 时，确保在执行前生成主键。
+     * Prepares parameters. If {@code executeBefore=true}, ensures primary keys are generated before execution.
      * <p>
-     * 如果在 MappedStatement 初始化前调用此方法，可能未生成主键，此处补充生成。 初始化后，MyBatis 会通过 selectKey 自动调用，无需重复生成。
+     * If this method is called before MappedStatement initialization, primary keys might not have been generated yet,
+     * so they are generated here. After initialization, MyBatis will automatically call this via selectKey, so no
+     * duplicate generation is needed.
      * </p>
      * <p>
-     * 使用并发度阈值 ({@link #CONCURRENCY}) 限制重复生成，超过阈值后不再检查。 仅当首次并发插入超过并发度时，可能漏生成主键。
+     * A concurrency threshold ({@link #CONCURRENCY}) is used to limit duplicate generation. Beyond this threshold, no
+     * further checks are performed. Primary keys might only be missed if the first concurrent insertion exceeds the
+     * concurrency threshold.
      * </p>
      *
-     * @param parameter 参数对象
+     * @param parameter The parameter object.
      */
     public void prepare(Object parameter) {
         if (executeBefore) {

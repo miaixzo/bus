@@ -38,7 +38,8 @@ import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.sink.Sink;
 
 /**
- * 内部保存一个缓冲区,以便调用者可以在没有性能的情况下进行少量读取 它还允许客户端提前读取,在消费之前进行必要的缓冲输入
+ * A {@link Source} that maintains an internal buffer, allowing callers to perform small reads without performance
+ * penalties. It also enables clients to read ahead, buffering necessary input before consumption.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -46,47 +47,51 @@ import org.miaixz.bus.core.io.sink.Sink;
 public interface BufferSource extends Source, ReadableByteChannel {
 
     /**
-     * 该源的内部缓冲区
+     * Returns the internal buffer of this source.
      *
-     * @return {@link Buffer}
+     * @return The {@link Buffer} instance used by this source.
      */
     Buffer getBuffer();
 
     /**
-     * 如果此源中没有更多字节，则返回 true。 这将阻塞，直到有字节可读取或源确实已耗尽
+     * Returns true if there are no more bytes in this source. This method will block until bytes are available to read
+     * or the source is truly exhausted.
      *
-     * @return the true/false
-     * @throws IOException 异常
+     * @return True if the source is exhausted, false otherwise.
+     * @throws IOException If an I/O error occurs.
      */
     boolean exhausted() throws IOException;
 
     /**
-     * 当缓冲区至少包含 {@code byteCount} 个字节时返回。 如果在读取所需字节之前源已耗尽，则抛出 {@link java.io.EOFException}。
+     * Ensures that at least {@code byteCount} bytes are in the buffer. If the source is exhausted before
+     * {@code byteCount} bytes can be read, an {@link java.io.EOFException} is thrown.
      *
-     * @param byteCount 字节数
-     * @throws IOException 异常
+     * @param byteCount The minimum number of bytes required in the buffer.
+     * @throws IOException If an I/O error occurs or the source is exhausted before {@code byteCount} bytes are
+     *                     available.
      */
     void require(long byteCount) throws IOException;
 
     /**
-     * 如果缓冲区至少包含 {@code byteCount} 个字节，则返回 true，并根据需要对其进行扩展。 如果在读取请求的字节之前源已耗尽，则返回 false。
+     * Returns true if the buffer contains at least {@code byteCount} bytes, expanding it as necessary. Returns false if
+     * the source is exhausted before the requested bytes can be read.
      *
-     * @param byteCount 字节数
-     * @return the true/false
-     * @throws IOException 异常
+     * @param byteCount The minimum number of bytes to request in the buffer.
+     * @return True if at least {@code byteCount} bytes are available, false if the source is exhausted.
+     * @throws IOException If an I/O error occurs.
      */
     boolean request(long byteCount) throws IOException;
 
     /**
-     * 从该源中删除一个字节并返回它
+     * Removes and returns a single byte from this source.
      *
-     * @return the true/false
-     * @throws IOException 异常
+     * @return The byte read.
+     * @throws IOException If an I/O error occurs or the source is exhausted.
      */
     byte readByte() throws IOException;
 
     /**
-     * 从此源中删除两个字节并返回一个短整型
+     * Removes two bytes from this source and returns them as a short.
      * 
      * <pre>{@code
      * Buffer buffer = new Buffer().writeByte(0x7f).writeByte(0xff).writeByte(0x00).writeByte(0x0f);
@@ -99,13 +104,13 @@ public interface BufferSource extends Source, ReadableByteChannel {
      * assertEquals(0, buffer.size());
      * }</pre>
      *
-     * @return the short
-     * @throws IOException 异常
+     * @return The short value read.
+     * @throws IOException If an I/O error occurs or the source is exhausted before 2 bytes are available.
      */
     short readShort() throws IOException;
 
     /**
-     * 从此源中删除两个字节并返回一个整型
+     * Removes two bytes from this source and returns them as a short, in little-endian order.
      * 
      * <pre>{@code
      * Buffer buffer = new Buffer().writeByte(0xff).writeByte(0x7f).writeByte(0x0f).writeByte(0x00);
@@ -118,13 +123,13 @@ public interface BufferSource extends Source, ReadableByteChannel {
      * assertEquals(0, buffer.size());
      * }</pre>
      *
-     * @return the short
-     * @throws IOException 异常
+     * @return The short value read.
+     * @throws IOException If an I/O error occurs or the source is exhausted before 2 bytes are available.
      */
     short readShortLe() throws IOException;
 
     /**
-     * 从此源中删除四个字节并返回一个大整数
+     * Removes four bytes from this source and returns them as an integer.
      * 
      * <pre>{@code
      * Buffer buffer = new Buffer().writeByte(0x7f).writeByte(0xff).writeByte(0xff).writeByte(0xff).writeByte(0x00)
@@ -138,12 +143,13 @@ public interface BufferSource extends Source, ReadableByteChannel {
      * assertEquals(0, buffer.size());
      * }</pre>
      *
-     * @return the int
+     * @return The integer value read.
+     * @throws IOException If an I/O error occurs or the source is exhausted before 4 bytes are available.
      */
     int readInt() throws IOException;
 
     /**
-     * 从该源中删除四个字节并返回一个小整数
+     * Removes four bytes from this source and returns them as an integer, in little-endian order.
      * 
      * <pre>{@code
      * Buffer buffer = new Buffer().writeByte(0xff).writeByte(0xff).writeByte(0xff).writeByte(0x7f).writeByte(0x0f)
@@ -157,12 +163,13 @@ public interface BufferSource extends Source, ReadableByteChannel {
      * assertEquals(0, buffer.size());
      * }</pre>
      *
-     * @return the int
+     * @return The integer value read.
+     * @throws IOException If an I/O error occurs or the source is exhausted before 4 bytes are available.
      */
     int readIntLe() throws IOException;
 
     /**
-     * 该源中删除八个字节并返回一个大长整型
+     * Removes eight bytes from this source and returns them as a long.
      * 
      * <pre>{@code
      * Buffer buffer = new Buffer().writeByte(0x7f).writeByte(0xff).writeByte(0xff).writeByte(0xff).writeByte(0xff)
@@ -177,12 +184,13 @@ public interface BufferSource extends Source, ReadableByteChannel {
      * assertEquals(0, buffer.size());
      * }</pre>
      *
-     * @return the long
+     * @return The long value read.
+     * @throws IOException If an I/O error occurs or the source is exhausted before 8 bytes are available.
      */
     long readLong() throws IOException;
 
     /**
-     * 从此源中删除八个字节并返回一个小长整型
+     * Removes eight bytes from this source and returns them as a long, in little-endian order.
      * 
      * <pre>{@code
      * Buffer buffer = new Buffer().writeByte(0xff).writeByte(0xff).writeByte(0xff).writeByte(0xff).writeByte(0xff)
@@ -197,12 +205,14 @@ public interface BufferSource extends Source, ReadableByteChannel {
      * assertEquals(0, buffer.size());
      * }</pre>
      *
-     * @return the long
+     * @return The long value read.
+     * @throws IOException If an I/O error occurs or the source is exhausted before 8 bytes are available.
      */
     long readLongLe() throws IOException;
 
     /**
-     * 以有符号十进制形式从此源读取一个长整型值（即以十进制为基数的字符串，前导字符可选为“-”）。此操作将不断迭代，直到找到非数字字符。
+     * Reads a signed decimal long from this source (i.e., a string of base-10 digits with an optional leading '-'
+     * character). This operation will iterate until a non-digit character is found.
      * 
      * <pre>{@code
      * Buffer buffer = new Buffer().writeUtf8("8675309 -123 00001");
@@ -214,13 +224,15 @@ public interface BufferSource extends Source, ReadableByteChannel {
      * assertEquals(1L, buffer.readDecimalLong());
      * }</pre>
      *
-     * @return the long
-     * @throws NumberFormatException 如果找到的数字不适合 {@code long} 或不存在十进制数。
+     * @return The decimal long value read.
+     * @throws IOException           If an I/O error occurs.
+     * @throws NumberFormatException If the number found does not fit in a {@code long} or no decimal number is present.
      */
     long readDecimalLong() throws IOException;
 
     /**
-     * 以十六进制形式（即以 16 进制表示的字符串）读取此源的长格式。此过程将不断迭代，直到找到非十六进制字符
+     * Reads an unsigned hexadecimal long from this source (i.e., a string of base-16 digits). This operation will
+     * iterate until a non-hexadecimal character is found.
      * 
      * <pre>{@code
      * Buffer buffer = new Buffer().writeUtf8("ffff CAFEBABE 10");
@@ -232,39 +244,46 @@ public interface BufferSource extends Source, ReadableByteChannel {
      * assertEquals(0x10L, buffer.readHexadecimalUnsignedLong());
      * }</pre>
      *
-     * @return the long
-     * @throws NumberFormatException 如果找到的十六进制数不适合 {@code long} 或未找到十六进制数。
+     * @return The hexadecimal unsigned long value read.
+     * @throws IOException           If an I/O error occurs.
+     * @throws NumberFormatException If the hexadecimal number found does not fit in a {@code long} or no hexadecimal
+     *                               number is present.
      */
     long readHexadecimalUnsignedLong() throws IOException;
 
     /**
-     * 从此源读取并丢弃 {@code byteCount} 个字节
+     * Removes and discards {@code byteCount} bytes from this source.
      *
-     * @param byteCount 字节数
-     * @throws IOException 如果在跳过请求的字节之前源已耗尽，则抛出。
+     * @param byteCount The number of bytes to skip.
+     * @throws IOException If the source is exhausted before the requested bytes can be skipped.
      */
     void skip(long byteCount) throws IOException;
 
     /**
-     * 从中删除所有字节并将它们作为字节字符串返回
+     * Removes all bytes from this source and returns them as a {@link ByteString}.
      *
-     * @return the {@link ByteString}
-     * @throws IOException 异常
+     * @return A {@link ByteString} containing all bytes from the source.
+     * @throws IOException If an I/O error occurs.
      */
     ByteString readByteString() throws IOException;
 
     /**
-     * 从中删除 {@code byteCount} 个字节并将其作为字节字符串返回。
+     * Removes {@code byteCount} bytes from this source and returns them as a {@link ByteString}.
      *
-     * @return the {@link ByteString}
-     * @throws IOException 异常
+     * @param byteCount The number of bytes to read.
+     * @return A {@link ByteString} containing {@code byteCount} bytes from the source.
+     * @throws IOException If an I/O error occurs or the source is exhausted before {@code byteCount} bytes are
+     *                     available.
      */
     ByteString readByteString(long byteCount) throws IOException;
 
     /**
-     * 在{@code options} 中查找第一个作为此缓冲区前缀的字符串，从此缓冲区中使用它，并返回其索引。 如果 {@code options} 中没有字节字符串是此缓冲区的前缀，则返回 -1，并且不消耗任何字节。
+     * Finds the first string in {@code options} that is a prefix of this buffer, consumes it from this buffer, and
+     * returns its index. If no byte string in {@code options} is a prefix of this buffer, -1 is returned and no bytes
+     * are consumed.
      *
-     * 如果事先知道预期值集，则可以将其用作 {@link #readByteString} 甚至 {@link #readUtf8} 的替代。
+     * This can be used as an alternative to {@link #readByteString} or even {@link #readUtf8} if the set of expected
+     * values is known in advance.
      * 
      * <pre>{@code
      * Options FIELDS = Options
@@ -280,76 +299,87 @@ public interface BufferSource extends Source, ReadableByteChannel {
      * assertEquals('\n', buffer.readByte());
      * }</pre>
      *
-     * @param segmentBuffer 索引值
-     * @return the int
-     * @throws IOException 异常
+     * @param segmentBuffer The {@link SegmentBuffer} containing the options to match against.
+     * @return The index of the matched {@link ByteString} in the {@link SegmentBuffer}, or -1 if no match is found and
+     *         the source is exhausted.
+     * @throws IOException If an I/O error occurs.
      */
     int select(SegmentBuffer segmentBuffer) throws IOException;
 
     /**
-     * 从中删除所有字节并将它们作为字节数组返回。
+     * Removes all bytes from this source and returns them as a byte array.
      *
-     * @return the byte
-     * @throws IOException 异常
+     * @return A byte array containing all bytes from the source.
+     * @throws IOException If an I/O error occurs.
      */
     byte[] readByteArray() throws IOException;
 
     /**
-     * 从中删除 {@code byteCount} 个字节并将其作为字节数组返回。
+     * Removes {@code byteCount} bytes from this source and returns them as a byte array.
      *
-     * @return the byte
-     * @throws IOException 异常
+     * @param byteCount The number of bytes to read.
+     * @return A byte array containing {@code byteCount} bytes from the source.
+     * @throws IOException If an I/O error occurs or the source is exhausted before {@code byteCount} bytes are
+     *                     available.
      */
     byte[] readByteArray(long byteCount) throws IOException;
 
     /**
-     * 从中移除最多 {@code sink.length} 个字节并将其复制到 {@code sink}。 返回读取的字节数，如果此源已耗尽，则返回 -1。
+     * Removes up to {@code sink.length} bytes from this source and copies them into {@code sink}. Returns the number of
+     * bytes read, or -1 if this source is exhausted.
      *
-     * @param sink 字节集合
-     * @return the int
-     * @throws IOException 异常
+     * @param sink The byte array to write bytes into.
+     * @return The number of bytes read, or -1 if the source is exhausted.
+     * @throws IOException If an I/O error occurs.
      */
     int read(byte[] sink) throws IOException;
 
     /**
-     * 从中删除恰好 {@code sink.length} 个字节并将其复制到 {@code sink}。 如果无法读取请求的字节数，则抛出 {@link java.io.EOFException}。
+     * Removes exactly {@code sink.length} bytes from this source and copies them into {@code sink}. An
+     * {@link java.io.EOFException} is thrown if the requested number of bytes cannot be read.
      *
-     * @param sink 字节集合
-     * @throws IOException 异常
+     * @param sink The byte array to write bytes into.
+     * @throws IOException If an I/O error occurs or the source is exhausted before {@code sink.length} bytes are
+     *                     available.
      */
     void readFully(byte[] sink) throws IOException;
 
     /**
-     * 从此处删除最多 {@code byteCount} 个字节并将其复制到 {@code offset} 处的 {@code sink}。 返回读取的字节数，如果此源已耗尽，则返回 -1。
+     * Removes up to {@code byteCount} bytes from this source and copies them into {@code sink} at {@code offset}.
+     * Returns the number of bytes read, or -1 if this source is exhausted.
      *
-     * @param sink      字节集合
-     * @param offset    偏移位
-     * @param byteCount 字节数
-     * @return the int
-     * @throws IOException 异常
+     * @param sink      The byte array to write bytes into.
+     * @param offset    The starting offset in the byte array.
+     * @param byteCount The maximum number of bytes to read.
+     * @return The number of bytes read, or -1 if the source is exhausted.
+     * @throws IOException If an I/O error occurs.
      */
     int read(byte[] sink, int offset, int byteCount) throws IOException;
 
     /**
-     * 从中删除精确的 {@code byteCount} 个字节并将其附加到 {@code sink}。 如果无法读取请求的字节数，则抛出 {@link java.io.EOFException}。
+     * Removes exactly {@code byteCount} bytes from this source and appends them to {@code sink}. An
+     * {@link java.io.EOFException} is thrown if the requested number of bytes cannot be read.
      *
-     * @param sink      字节集合
-     * @param byteCount 字节数
-     * @throws IOException 异常
+     * @param sink      The buffer to write bytes into.
+     * @param byteCount The number of bytes to read.
+     * @throws IOException If an I/O error occurs or the source is exhausted before {@code byteCount} bytes are
+     *                     available.
      */
     void readFully(Buffer sink, long byteCount) throws IOException;
 
     /**
-     * 从中删除所有字节并将其附加到 {@code sink}。返回写入 {@code sink} 的总字节数，如果已用尽，则为 0。
+     * Removes all bytes from this source and appends them to {@code sink}. Returns the total number of bytes written to
+     * {@code sink}, or 0 if exhausted.
      *
-     * @param sink 字节集合
-     * @return the long
-     * @throws IOException 异常
+     * @param sink The {@link Sink} to write all bytes to.
+     * @return The total number of bytes written to the sink.
+     * @throws IOException If an I/O error occurs.
      */
     long readAll(Sink sink) throws IOException;
 
     /**
-     * 从中删除所有字节，将其解码为 UTF-8，然后返回字符串。如果此源为空，则返回空字符串。
+     * Removes all bytes from this source, decodes them as UTF-8, and returns the string. If this source is empty, an
+     * empty string is returned.
      * 
      * <pre>{@code
      * Buffer buffer = new Buffer().writeUtf8("Uh uh uh!").writeByte(' ').writeUtf8("You didn't say the magic word!");
@@ -361,13 +391,13 @@ public interface BufferSource extends Source, ReadableByteChannel {
      * assertEquals(0, buffer.size());
      * }</pre>
      *
-     * @return the string
-     * @throws IOException 异常
+     * @return The decoded UTF-8 string.
+     * @throws IOException If an I/O error occurs.
      */
     String readUtf8() throws IOException;
 
     /**
-     * 从中删除 {@code byteCount} 个字节，将其解码为 UTF-8，并返回字符串。
+     * Removes {@code byteCount} bytes from this source, decodes them as UTF-8, and returns the string.
      * 
      * <pre>{@code
      * Buffer buffer = new Buffer().writeUtf8("Uh uh uh!").writeByte(' ').writeUtf8("You didn't say the magic word!");
@@ -383,14 +413,16 @@ public interface BufferSource extends Source, ReadableByteChannel {
      * assertEquals(0, buffer.size());
      * }</pre>
      *
-     * @param byteCount 字节数
-     * @return the string
-     * @throws IOException 异常
+     * @param byteCount The number of bytes to read.
+     * @return The decoded UTF-8 string.
+     * @throws IOException If an I/O error occurs or the source is exhausted before {@code byteCount} bytes are
+     *                     available.
      */
     String readUtf8(long byteCount) throws IOException;
 
     /**
-     * 删除并返回直到下一个换行符（但不包括该换行符）的字符。 换行符为 {@code "\n"} 或 {@code "\r\n"}；这些字符不包含在结果中。
+     * Removes and returns characters until the next newline (but not including the newline). The newline is either
+     * {@code "\n"} or {@code "\r\n"}; these characters are not included in the result.
      * 
      * <pre>{@code
      * Buffer buffer = new Buffer().writeUtf8("I'm a hacker!\n").writeUtf8("That's what I said: you're a nerd.\n")
@@ -410,24 +442,28 @@ public interface BufferSource extends Source, ReadableByteChannel {
      * assertEquals(0, buffer.size());
      * }</pre>
      *
-     * <strong>在流的末尾，此方法返回 null，</strong> 就像 {@link java.io.BufferedReader} 一样。 如果源未以换行符结尾，则假定为隐式换行符。一旦源耗尽，将返回
-     * Null。将此方法用于人工生成的数据，其中尾随换行符是可选的。
+     * <strong>At the end of the stream, this method returns null,</strong> just like {@link java.io.BufferedReader}. If
+     * the source does not end with a newline, an implicit newline is assumed. Null will be returned once the source is
+     * exhausted. Use this method for human-generated data where trailing newlines are optional.
      *
-     * @return the string
-     * @throws IOException 异常
+     * @return The decoded UTF-8 line, or null if the source is exhausted before a newline is found.
+     * @throws IOException If an I/O error occurs.
      */
     String readUtf8Line() throws IOException;
 
     /**
-     * 删除并返回直到下一个换行符（但不包括该换行符）的字符。 换行符为 {@code "\n"} 或 {@code "\r\n"}；这些字符不包含在结果中
+     * Removes and returns characters until the next newline (but not including the newline). The newline is either
+     * {@code "\n"} or {@code "\r\n"}; these characters are not included in the result. This method is strict and will
+     * throw an {@link java.io.EOFException} if a newline is not found.
      *
-     * @return the string
-     * @throws IOException 异常
+     * @return The decoded UTF-8 line.
+     * @throws IOException If an I/O error occurs or a newline is not found before the source is exhausted.
      */
     String readUtf8LineStrict() throws IOException;
 
     /**
-     * 与 {@link #readUtf8LineStrict()} 类似，不同之处在于它允许调用者指定允许的最长匹配。 使用它来防止可能不包含 {@code "\n"} 或 {@code "\r\n"} 的流。
+     * Similar to {@link #readUtf8LineStrict()}, but allows the caller to specify the maximum length allowed for the
+     * match. Use this to prevent streams that may not contain {@code "\n"} or {@code "\r\n"}.
      * 
      * <pre>{@code
      * Buffer buffer = new Buffer();
@@ -440,53 +476,58 @@ public interface BufferSource extends Source, ReadableByteChannel {
      * assertEquals("12345", buffer.readUtf8LineStrict(5));
      * }</pre>
      *
-     * @param limit 限制
-     * @return the string
-     * @throws IOException 异常
+     * @param limit The maximum number of bytes to scan for a newline character.
+     * @return The decoded UTF-8 line.
+     * @throws IOException              If an I/O error occurs or a newline is not found within the limit.
+     * @throws IllegalArgumentException If {@code limit} is negative.
      */
     String readUtf8LineStrict(long limit) throws IOException;
 
     /**
-     * 删除并返回单个 UTF-8 代码点，根据需要读取 1 到 4 个字节。 如果此源不是以正确编码的 UTF-8 代码点开头，则此方法将删除 1 个或多个非 UTF-8 字节并返回替换字符 ({@code U+FFFD})。
-     * 这包括编码问题（输入不是正确编码的 UTF-8）、字符超出范围（超出 Unicode 的 0x10ffff 限制）、UTF-16 代理的代码 点 (U+d800..U+dfff) 和过长编码（例如，修改版 UTF-8 中的
-     * NUL 字符为 {@code 0xc080}）
+     * Removes and returns a single UTF-8 code point, reading 1 to 4 bytes as necessary. If this source does not begin
+     * with a correctly-encoded UTF-8 code point, this method will remove 1 or more malformed UTF-8 bytes and return the
+     * replacement character ({@code U+FFFD}). This includes encoding problems (input is not correctly-encoded UTF-8),
+     * out-of-range characters (beyond Unicode's 0x10ffff limit), code points that are UTF-16 surrogates
+     * (U+d800..U+dfff), and overlong encodings (e.g., the NUL character as {@code 0xc080} in modified UTF-8).
      *
-     * @return the int
-     * @throws IOException 异常
+     * @return The decoded UTF-8 code point.
+     * @throws IOException If an I/O error occurs or the source is exhausted before a complete code point can be read.
      */
     int readUtf8CodePoint() throws IOException;
 
     /**
-     * 从中删除所有字节，将其解码为{@code charset}，并返回字符串。
+     * Removes all bytes from this source, decodes them using {@code charset}, and returns the string.
      *
-     * @param charset 字符编码
-     * @return the string
-     * @throws IOException 异常
+     * @param charset The charset to use for decoding.
+     * @return The decoded string.
+     * @throws IOException If an I/O error occurs.
      */
     String readString(Charset charset) throws IOException;
 
     /**
-     * 从中删除 {@code byteCount} 个字节，将其解码为 {@code charset}，并返回字符串。
+     * Removes {@code byteCount} bytes from this source, decodes them using {@code charset}, and returns the string.
      *
-     * @param byteCount 字节数
-     * @param charset   字符编码
-     * @return the string
-     * @throws IOException 异常
+     * @param byteCount The number of bytes to read.
+     * @param charset   The charset to use for decoding.
+     * @return The decoded string.
+     * @throws IOException If an I/O error occurs or the source is exhausted before {@code byteCount} bytes are
+     *                     available.
      */
     String readString(long byteCount, Charset charset) throws IOException;
 
     /**
      * Equivalent to {@link #indexOf(byte, long) indexOf(b, 0)}.
      *
-     * @param b
-     * @return the long
-     * @throws IOException 异常
+     * @param b The byte to search for.
+     * @return The index of the first occurrence of the byte, or -1 if not found.
+     * @throws IOException If an I/O error occurs.
      */
     long indexOf(byte b) throws IOException;
 
     /**
-     * 返回缓冲区中第一个 {@code b} 的索引，位于 {@code fromIndex} 处或之后。 这会根据需要扩展缓冲区，直到找到
-     * {@code b}。这会将无限数量的字节读入缓冲区。如果在找到请求的字节之前流已耗尽，则返回 -1。
+     * Returns the index of the first {@code b} in this buffer at or after {@code fromIndex}. This expands the buffer as
+     * necessary until {@code b} is found. This will read an unbounded number of bytes into the buffer. Returns -1 if
+     * the stream is exhausted before the requested byte is found.
      * 
      * <pre>{@code
      * Buffer buffer = new Buffer();
@@ -497,37 +538,38 @@ public interface BufferSource extends Source, ReadableByteChannel {
      * assertEquals(40, buffer.indexOf(m, 12));
      * }</pre>
      *
-     * @param b
-     * @param fromIndex
-     * @return the long
-     * @throws IOException 异常
+     * @param b         The byte to search for.
+     * @param fromIndex The index to start the search from.
+     * @return The index of the first occurrence of the byte, or -1 if not found.
+     * @throws IOException If an I/O error occurs.
      */
     long indexOf(byte b, long fromIndex) throws IOException;
 
     /**
-     * 如果在 {@code fromIndex} 到 {@code toIndex} 范围内找到 {@code b}，则返回其索引。 如果未找到 {@code b}，或者
-     * {@code fromIndex == toIndex}，则返回 -1。
+     * Returns the index of {@code b} if found in the range of {@code fromIndex} to {@code toIndex}. Returns -1 if
+     * {@code b} is not found, or if {@code fromIndex == toIndex}.
      *
-     * @param b         字节
-     * @param fromIndex 开始索引
-     * @param toIndex   目标索引
-     * @return the long
-     * @throws IOException 异常
+     * @param b         The byte to search for.
+     * @param fromIndex The index to start the search from (inclusive).
+     * @param toIndex   The index to end the search at (exclusive).
+     * @return The index of the first occurrence of the byte, or -1 if not found within the range.
+     * @throws IOException If an I/O error occurs.
      */
     long indexOf(byte b, long fromIndex, long toIndex) throws IOException;
 
     /**
-     * 相当于{@link #indexOf(ByteString, long) indexOf(bytes, 0)}。
+     * Equivalent to {@link #indexOf(ByteString, long) indexOf(bytes, 0)}.
      *
-     * @param bytes 字节
-     * @return the long
-     * @throws IOException 异常
+     * @param bytes The {@link ByteString} to search for.
+     * @return The index of the first occurrence of the byte string, or -1 if not found.
+     * @throws IOException If an I/O error occurs.
      */
     long indexOf(ByteString bytes) throws IOException;
 
     /**
-     * 返回缓冲区中 {@code bytes} 的第一个匹配项的索引，位于 {@code fromIndex} 处或之后。 这会根据需要扩展缓冲区，直到找到
-     * {@code bytes}。这会将无限数量的字节读入缓冲区。如果在找到请求的字节之前流已耗尽，则返回 -1。
+     * Returns the index of the first match for {@code bytes} in this buffer at or after {@code fromIndex}. This expands
+     * the buffer as necessary until {@code bytes} is found. This will read an unbounded number of bytes into the
+     * buffer. Returns -1 if the stream is exhausted before the requested bytes are found.
      * 
      * <pre>{@code
      * ByteString MOVE = ByteString.encodeUtf8("move");
@@ -538,25 +580,26 @@ public interface BufferSource extends Source, ReadableByteChannel {
      * assertEquals(40, buffer.indexOf(MOVE, 12));
      * }</pre>
      *
-     * @param bytes     字节
-     * @param fromIndex 字节索引
-     * @return the long
-     * @throws IOException 异常
+     * @param bytes     The {@link ByteString} to search for.
+     * @param fromIndex The index to start the search from.
+     * @return The index of the first occurrence of the byte string, or -1 if not found.
+     * @throws IOException If an I/O error occurs.
      */
     long indexOf(ByteString bytes, long fromIndex) throws IOException;
 
     /**
-     * 相当于{@link #indexOfElement(ByteString, long) indexOfElement(targetBytes, 0)}。
+     * Equivalent to {@link #indexOfElement(ByteString, long) indexOfElement(targetBytes, 0)}.
      *
-     * @param targetBytes 目标字节
-     * @return the long
-     * @throws IOException 异常
+     * @param targetBytes The {@link ByteString} containing the bytes to search for.
+     * @return The index of the first occurrence of any byte from {@code targetBytes}, or -1 if not found.
+     * @throws IOException If an I/O error occurs.
      */
     long indexOfElement(ByteString targetBytes) throws IOException;
 
     /**
-     * 返回此缓冲区中位于 {@code fromIndex} 或之后且包含 {@code targetBytes} 中任意字节的第一个索引。
-     * 这会根据需要扩展缓冲区，直到找到目标字节。这会将无限数量的字节读入缓冲区。如果在找到请求的字节之前流已耗尽，则返回 -1。
+     * Returns the index in this buffer at or after {@code fromIndex} of the first byte that is in {@code targetBytes}.
+     * This expands the buffer as necessary until a target byte is found. This will read an unbounded number of bytes
+     * into the buffer. Returns -1 if the stream is exhausted before a requested byte is found.
      * 
      * <pre>{@code
      * ByteString ANY_VOWEL = ByteString.encodeUtf8("AEOIUaeoiu");
@@ -567,15 +610,17 @@ public interface BufferSource extends Source, ReadableByteChannel {
      * assertEquals(11, buffer.indexOfElement(ANY_VOWEL, 9)); // 'a' in 'Grant'.
      * }</pre>
      *
-     * @param targetBytes 目标字节
-     * @param fromIndex   开始索引
-     * @return the long
-     * @throws IOException 异常
+     * @param targetBytes The {@link ByteString} containing the bytes to search for.
+     * @param fromIndex   The index to start the search from.
+     * @return The index of the first occurrence of any byte from {@code targetBytes}, or -1 if not found.
+     * @throws IOException If an I/O error occurs.
      */
     long indexOfElement(ByteString targetBytes, long fromIndex) throws IOException;
 
     /**
-     * 如果此源中 {@code offset} 处的字节等于 {@code bytes}，则返回 true。 这会根据需要扩展缓冲区，直到某个字节不匹配、所有字节都匹配，或者在足够的字节确定匹配之前流已耗尽。
+     * Returns true if the bytes in this source at {@code offset} equal {@code bytes}. This expands the buffer as
+     * necessary until either a byte does not match, all bytes match, or the stream is exhausted before enough bytes can
+     * be read to determine a match.
      * 
      * <pre>{@code
      * ByteString simonSays = ByteString.encodeUtf8("Simon says:");
@@ -586,28 +631,30 @@ public interface BufferSource extends Source, ReadableByteChannel {
      * assertFalse(payMeMoney.rangeEquals(0, simonSays));
      * }</pre>
      *
-     * @param offset 偏移量
-     * @param bytes  字节
-     * @return
-     * @throws IOException 异常
+     * @param offset The offset in this source to start the comparison.
+     * @param bytes  The {@link ByteString} to compare against.
+     * @return True if the bytes are equal, false otherwise.
+     * @throws IOException If an I/O error occurs.
      */
     boolean rangeEquals(long offset, ByteString bytes) throws IOException;
 
     /**
-     * 如果此源中 {@code offset} 处的 {@code byteCount} 个字节等于 {@code bytesOffset} 处的 {@code bytes}，则返回 true。
-     * 这会根据需要扩展缓冲区，直到某个字节不匹配、所有字节都匹配，或者在足够的字节确定匹配之前流已耗尽。
+     * Returns true if {@code byteCount} bytes in this source at {@code offset} equal the bytes in {@code bytes} at
+     * {@code bytesOffset}. This expands the buffer as necessary until either a byte does not match, all bytes match, or
+     * the stream is exhausted before enough bytes can be read to determine a match.
      *
-     * @param offset      偏移量
-     * @param bytes       字节
-     * @param bytesOffset 字节偏移量
-     * @param byteCount   字节数
-     * @return the true/false
-     * @throws IOException 异常
+     * @param offset      The offset in this source to start the comparison.
+     * @param bytes       The {@link ByteString} to compare against.
+     * @param bytesOffset The offset in {@code bytes} to start the comparison.
+     * @param byteCount   The number of bytes to compare.
+     * @return True if the bytes are equal, false otherwise.
+     * @throws IOException If an I/O error occurs.
      */
     boolean rangeEquals(long offset, ByteString bytes, int bytesOffset, int byteCount) throws IOException;
 
     /**
-     * 返回一个新的 {@code BufferSource}，可从此 {@code BufferSource}读取数据但不使用它。 一旦下次读取或关闭此源，返回的源将变为无效。
+     * Returns a new {@code BufferSource} that can read from this {@code BufferSource} without consuming its data. The
+     * returned source becomes invalid once this source is next read or closed.
      * 
      * <pre> {@code
      *   Buffer buffer = new Buffer();
@@ -620,14 +667,14 @@ public interface BufferSource extends Source, ReadableByteChannel {
      *   buffer.readUtf8(3); // returns "def", buffer contains "ghi"
      * }</pre>
      *
-     * @return {@link BufferSource}
+     * @return A new {@link BufferSource} for peeking.
      */
     BufferSource peek();
 
     /**
-     * 返回从该源读取的输入流
+     * Returns an {@link InputStream} that reads from this source.
      *
-     * @return {@link InputStream}
+     * @return An {@link InputStream} instance.
      */
     InputStream inputStream();
 

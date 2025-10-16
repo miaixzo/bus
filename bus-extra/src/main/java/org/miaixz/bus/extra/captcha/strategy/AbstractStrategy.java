@@ -32,7 +32,8 @@ import java.io.Serial;
 import org.miaixz.bus.core.lang.Normal;
 
 /**
- * 随机字符验证码生成策略 可以通过传入的基础集合和长度随机生成验证码字符
+ * Abstract CAPTCHA code generation strategy. Generates a random CAPTCHA string from a given base character set and
+ * length.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,28 +44,28 @@ public abstract class AbstractStrategy implements CodeStrategy {
     private static final long serialVersionUID = 2852292099713L;
 
     /**
-     * 基础字符集合，用于随机获取字符串的字符集合
+     * The base character set from which to randomly select characters for the CAPTCHA string.
      */
     protected final String baseStr;
     /**
-     * 验证码长度
+     * The length of the CAPTCHA code.
      */
     protected final int length;
 
     /**
-     * 构造，使用字母+数字做为基础
+     * Constructor, using letters and numbers as the base set.
      *
-     * @param count 生成验证码长度
+     * @param count The length of the CAPTCHA code to generate.
      */
     public AbstractStrategy(final int count) {
         this(Normal.LOWER_ALPHABET_NUMBER, count);
     }
 
     /**
-     * 构造
+     * Constructor.
      *
-     * @param baseStr 基础字符集合，用于随机获取字符串的字符集合
-     * @param length  生成验证码长度
+     * @param baseStr The base character set from which to randomly select characters.
+     * @param length  The length of the CAPTCHA code to generate.
      */
     public AbstractStrategy(final String baseStr, final int length) {
         this.baseStr = baseStr;
@@ -72,9 +73,9 @@ public abstract class AbstractStrategy implements CodeStrategy {
     }
 
     /**
-     * 获取长度验证码
+     * Gets the length of the CAPTCHA code.
      *
-     * @return 验证码长度
+     * @return The length of the CAPTCHA code.
      */
     public int getLength() {
         return this.length;

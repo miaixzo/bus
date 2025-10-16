@@ -28,7 +28,7 @@
 package org.miaixz.bus.logger.magic.level;
 
 /**
- * INFO 级别日志
+ * This interface defines methods for logging at the INFO level.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -36,43 +36,43 @@ package org.miaixz.bus.logger.magic.level;
 public interface Info {
 
     /**
-     * INFO 等级是否开启
+     * Checks if logging at the INFO level is enabled.
      *
-     * @return the true/false
+     * @return {@code true} if INFO level is enabled, {@code false} otherwise.
      */
     boolean isInfoEnabled();
 
     /**
-     * 打印 INFO 等级的日志
+     * Logs a throwable at the INFO level.
      *
-     * @param t 错误对象
+     * @param t the throwable to log.
      */
     void info(Throwable t);
 
     /**
-     * 打印 INFO 等级的日志
+     * Logs a formatted message at the INFO level.
      *
-     * @param format 消息模板
-     * @param args   参数
+     * @param format the message format.
+     * @param args   the arguments for the message format.
      */
     void info(String format, Object... args);
 
     /**
-     * 打印 INFO 等级的日志
+     * Logs a formatted message with a throwable at the INFO level.
      *
-     * @param t      错误对象
-     * @param format 消息模板
-     * @param args   参数
+     * @param t      the throwable to log.
+     * @param format the message format.
+     * @param args   the arguments for the message format.
      */
     void info(Throwable t, String format, Object... args);
 
     /**
-     * 打印 INFO 等级的日志
+     * Logs a formatted message with a throwable at the INFO level, specifying the fully qualified class name (FQCN).
      *
-     * @param fqcn   完全限定类名(Fully Qualified Class Name)，用于定位日志位置
-     * @param t      错误对象
-     * @param format 消息模板
-     * @param args   参数
+     * @param fqcn   the fully qualified class name of the logger.
+     * @param t      the throwable to log.
+     * @param format the message format.
+     * @param args   the arguments for the message format.
      */
     void info(String fqcn, Throwable t, String format, Object... args);
 

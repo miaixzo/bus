@@ -27,6 +27,12 @@
 */
 package org.miaixz.bus.http.secure;
 
+import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.http.Request;
+import org.miaixz.bus.http.Response;
+import org.miaixz.bus.http.Route;
+import org.miaixz.bus.http.UnoUrl;
+
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -34,13 +40,10 @@ import java.net.PasswordAuthentication;
 import java.net.Proxy;
 import java.util.List;
 
-import org.miaixz.bus.core.net.HTTP;
-import org.miaixz.bus.http.Request;
-import org.miaixz.bus.http.Response;
-import org.miaixz.bus.http.Route;
-import org.miaixz.bus.http.UnoUrl;
-
 /**
+ * An authenticator that bridges Httpd's authentication mechanism with Java's built-in {@link java.net.Authenticator}.
+ * This allows the client to use credentials configured globally in the JVM.
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -56,8 +59,9 @@ public class NetAuthenticator implements Authenticator {
 
         for (int i = 0, size = challenges.size(); i < size; i++) {
             Challenge challenge = challenges.get(i);
-            if (!"Basic".equalsIgnoreCase(challenge.scheme()))
+            if (!"Basic".equalsIgnoreCase(challenge.scheme())) {
                 continue;
+            }
 
             PasswordAuthentication auth;
             if (proxyAuthorization) {
@@ -87,13 +91,21 @@ public class NetAuthenticator implements Authenticator {
                 String credential = Credentials
                         .basic(auth.getUserName(), new String(auth.getPassword()), challenge.charset());
                 return request.newBuilder()
-                        .header(proxyAuthorization ? HTTP.PROXY_AUTHENTICATE : HTTP.AUTHORIZATION, credential).build();
+                        .header(proxyAuthorization ? HTTP.PROXY_AUTHORIZATION : HTTP.AUTHORIZATION, credential).build();
             }
         }
 
-        return null;
+        return null; // No credentials found.
     }
 
+    /**
+     * Determines the correct InetAddress to use for the authentication request based on the proxy configuration.
+     *
+     * @param proxy The proxy being used.
+     * @param url   The request URL.
+     * @return The InetAddress of the host to connect to.
+     * @throws IOException if the host cannot be resolved.
+     */
     private InetAddress getConnectToInetAddress(Proxy proxy, UnoUrl url) throws IOException {
         return (null != proxy && proxy.type() != Proxy.Type.DIRECT) ? ((InetSocketAddress) proxy.address()).getAddress()
                 : InetAddress.getByName(url.host());

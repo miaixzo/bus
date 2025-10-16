@@ -39,21 +39,27 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
- * 基础请求封装
+ * Base request encapsulation for common CRUD operations. This controller provides a set of RESTful endpoints for
+ * adding, removing, deleting, updating, and querying data.
  *
+ * @param <T>       the entity type
+ * @param <Service> the service type, which must extend {@link BaseService}
  * @author Kimi Liu
  * @since Java 17+
  */
 public class BaseController<T, Service extends BaseService<T>> extends Controller {
 
+    /**
+     * The service instance for performing business logic operations.
+     */
     @Autowired
     protected Service service;
 
     /**
-     * 通用:添加数据
+     * Adds a new entity to the database.
      *
-     * @param entity 对象参数
-     * @return 操作结果
+     * @param entity the entity to be added
+     * @return the operation result, containing the added entity if successful, or an error code otherwise
      */
     @ResponseBody
     @RequestMapping(value = "/add", method = RequestMethod.POST)
@@ -66,10 +72,11 @@ public class BaseController<T, Service extends BaseService<T>> extends Controlle
     }
 
     /**
-     * 通用:逻辑删除
+     * Performs a logical removal of an entity. This typically involves updating a status field rather than physically
+     * deleting the record.
      *
-     * @param entity 对象参数
-     * @return 操作结果
+     * @param entity the entity to be logically removed
+     * @return the operation result, containing the number of affected rows if successful, or an error code otherwise
      */
     @ResponseBody
     @RequestMapping(value = "/remove", method = RequestMethod.POST)
@@ -82,10 +89,10 @@ public class BaseController<T, Service extends BaseService<T>> extends Controlle
     }
 
     /**
-     * 通用:物理删除
+     * Performs a physical deletion of an entity from the database.
      *
-     * @param entity 对象参数
-     * @return 操作结果
+     * @param entity the entity to be physically deleted
+     * @return the operation result, containing the number of affected rows if successful, or an error code otherwise
      */
     @ResponseBody
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
@@ -98,10 +105,10 @@ public class BaseController<T, Service extends BaseService<T>> extends Controlle
     }
 
     /**
-     * 通用:主键更新
+     * Updates an existing entity based on its primary key.
      *
-     * @param entity 对象参数
-     * @return 操作结果
+     * @param entity the entity with updated information
+     * @return the operation result, containing the updated entity if successful, or an error code otherwise
      */
     @ResponseBody
     @RequestMapping(value = "/update", method = RequestMethod.POST)
@@ -114,10 +121,10 @@ public class BaseController<T, Service extends BaseService<T>> extends Controlle
     }
 
     /**
-     * 通用:数据主键查询
+     * Retrieves an entity by its primary key.
      *
-     * @param entity 对象参数
-     * @return 操作结果
+     * @param entity an entity containing the primary key for lookup
+     * @return the operation result, containing the found entity or null if not found
      */
     @ResponseBody
     @RequestMapping(value = "/get", method = RequestMethod.GET)
@@ -126,10 +133,10 @@ public class BaseController<T, Service extends BaseService<T>> extends Controlle
     }
 
     /**
-     * 通用:数据条件查询
+     * Retrieves a list of entities based on specified conditions.
      *
-     * @param entity 对象参数
-     * @return 操作结果
+     * @param entity an entity containing the query conditions
+     * @return the operation result, containing a list of entities matching the conditions
      */
     @ResponseBody
     @RequestMapping(value = "/list", method = RequestMethod.GET)
@@ -138,10 +145,10 @@ public class BaseController<T, Service extends BaseService<T>> extends Controlle
     }
 
     /**
-     * 通用:数据分页查询
+     * Retrieves a paginated list of entities based on specified conditions.
      *
-     * @param entity 对象参数
-     * @return 操作结果
+     * @param entity an entity containing the query conditions, including page size and page number
+     * @return the operation result, containing a paginated list of entities
      */
     @ResponseBody
     @RequestMapping(value = "/page", method = RequestMethod.GET)

@@ -34,7 +34,9 @@ import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.lang.reflect.TypeReference;
 
 /**
- * Map的getXXX封装，提供针对通用型的value按照所需类型获取值
+ * Provides utility methods for safely retrieving and converting values from a {@link Map}. This class extends
+ * {@link MapValidator} and offers a suite of {@code getXXX} methods for common data types, simplifying data extraction
+ * and type conversion.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,289 +44,301 @@ import org.miaixz.bus.core.lang.reflect.TypeReference;
 public class MapGets extends MapValidator {
 
     /**
-     * 获取Map指定key的值，并转换为字符串
+     * Retrieves the value for the specified key and converts it to a {@code String}.
      *
-     * @param map Map
-     * @param key 键
-     * @return 值
+     * @param map The map to query.
+     * @param key The key whose associated value is to be returned.
+     * @return The value as a {@code String}, or {@code null} if the key is not found.
      */
     public static String getString(final Map<?, ?> map, final Object key) {
         return get(map, key, String.class);
     }
 
     /**
-     * 获取Map指定key的值，并转换为字符串
+     * Retrieves the value for the specified key and converts it to a {@code String}, returning a default value if not
+     * found.
      *
-     * @param map          Map
-     * @param key          键
-     * @param defaultValue 默认值
-     * @return 值
+     * @param map          The map to query.
+     * @param key          The key whose associated value is to be returned.
+     * @param defaultValue The default value to return if the key is not found or the value is {@code null}.
+     * @return The value as a {@code String}, or the default value.
      */
     public static String getString(final Map<?, ?> map, final Object key, final String defaultValue) {
         return get(map, key, String.class, defaultValue);
     }
 
     /**
-     * 获取Map指定key的值，并转换为Integer
+     * Retrieves the value for the specified key and converts it to an {@code Integer}.
      *
-     * @param map Map
-     * @param key 键
-     * @return 值
+     * @param map The map to query.
+     * @param key The key whose associated value is to be returned.
+     * @return The value as an {@code Integer}, or {@code null} if the key is not found.
      */
     public static Integer getInt(final Map<?, ?> map, final Object key) {
         return get(map, key, Integer.class);
     }
 
     /**
-     * 获取Map指定key的值，并转换为Integer
+     * Retrieves the value for the specified key and converts it to an {@code Integer}, returning a default value if not
+     * found.
      *
-     * @param map          Map
-     * @param key          键
-     * @param defaultValue 默认值
-     * @return 值
+     * @param map          The map to query.
+     * @param key          The key whose associated value is to be returned.
+     * @param defaultValue The default value to return if the key is not found or the value is {@code null}.
+     * @return The value as an {@code Integer}, or the default value.
      */
     public static Integer getInt(final Map<?, ?> map, final Object key, final Integer defaultValue) {
         return get(map, key, Integer.class, defaultValue);
     }
 
     /**
-     * 获取Map指定key的值，并转换为Double
+     * Retrieves the value for the specified key and converts it to a {@code Double}.
      *
-     * @param map Map
-     * @param key 键
-     * @return 值
+     * @param map The map to query.
+     * @param key The key whose associated value is to be returned.
+     * @return The value as a {@code Double}, or {@code null} if the key is not found.
      */
     public static Double getDouble(final Map<?, ?> map, final Object key) {
         return get(map, key, Double.class);
     }
 
     /**
-     * 获取Map指定key的值，并转换为Double
+     * Retrieves the value for the specified key and converts it to a {@code Double}, returning a default value if not
+     * found.
      *
-     * @param map          Map
-     * @param key          键
-     * @param defaultValue 默认值
-     * @return 值
+     * @param map          The map to query.
+     * @param key          The key whose associated value is to be returned.
+     * @param defaultValue The default value to return if the key is not found or the value is {@code null}.
+     * @return The value as a {@code Double}, or the default value.
      */
     public static Double getDouble(final Map<?, ?> map, final Object key, final Double defaultValue) {
         return get(map, key, Double.class, defaultValue);
     }
 
     /**
-     * 获取Map指定key的值，并转换为Float
+     * Retrieves the value for the specified key and converts it to a {@code Float}.
      *
-     * @param map Map
-     * @param key 键
-     * @return 值
+     * @param map The map to query.
+     * @param key The key whose associated value is to be returned.
+     * @return The value as a {@code Float}, or {@code null} if the key is not found.
      */
     public static Float getFloat(final Map<?, ?> map, final Object key) {
         return get(map, key, Float.class);
     }
 
     /**
-     * 获取Map指定key的值，并转换为Float
+     * Retrieves the value for the specified key and converts it to a {@code Float}, returning a default value if not
+     * found.
      *
-     * @param map          Map
-     * @param key          键
-     * @param defaultValue 默认值
-     * @return 值
+     * @param map          The map to query.
+     * @param key          The key whose associated value is to be returned.
+     * @param defaultValue The default value to return if the key is not found or the value is {@code null}.
+     * @return The value as a {@code Float}, or the default value.
      */
     public static Float getFloat(final Map<?, ?> map, final Object key, final Float defaultValue) {
         return get(map, key, Float.class, defaultValue);
     }
 
     /**
-     * 获取Map指定key的值，并转换为Short
+     * Retrieves the value for the specified key and converts it to a {@code Short}.
      *
-     * @param map Map
-     * @param key 键
-     * @return 值
+     * @param map The map to query.
+     * @param key The key whose associated value is to be returned.
+     * @return The value as a {@code Short}, or {@code null} if the key is not found.
      */
     public static Short getShort(final Map<?, ?> map, final Object key) {
         return get(map, key, Short.class);
     }
 
     /**
-     * 获取Map指定key的值，并转换为Short
+     * Retrieves the value for the specified key and converts it to a {@code Short}, returning a default value if not
+     * found.
      *
-     * @param map          Map
-     * @param key          键
-     * @param defaultValue 默认值
-     * @return 值
+     * @param map          The map to query.
+     * @param key          The key whose associated value is to be returned.
+     * @param defaultValue The default value to return if the key is not found or the value is {@code null}.
+     * @return The value as a {@code Short}, or the default value.
      */
     public static Short getShort(final Map<?, ?> map, final Object key, final Short defaultValue) {
         return get(map, key, Short.class, defaultValue);
     }
 
     /**
-     * 获取Map指定key的值，并转换为Bool
+     * Retrieves the value for the specified key and converts it to a {@code Boolean}.
      *
-     * @param map Map
-     * @param key 键
-     * @return 值
+     * @param map The map to query.
+     * @param key The key whose associated value is to be returned.
+     * @return The value as a {@code Boolean}, or {@code null} if the key is not found.
      */
     public static Boolean getBoolean(final Map<?, ?> map, final Object key) {
         return get(map, key, Boolean.class);
     }
 
     /**
-     * 获取Map指定key的值，并转换为Bool
+     * Retrieves the value for the specified key and converts it to a {@code Boolean}, returning a default value if not
+     * found.
      *
-     * @param map          Map
-     * @param key          键
-     * @param defaultValue 默认值
-     * @return 值
+     * @param map          The map to query.
+     * @param key          The key whose associated value is to be returned.
+     * @param defaultValue The default value to return if the key is not found or the value is {@code null}.
+     * @return The value as a {@code Boolean}, or the default value.
      */
     public static Boolean getBoolean(final Map<?, ?> map, final Object key, final Boolean defaultValue) {
         return get(map, key, Boolean.class, defaultValue);
     }
 
     /**
-     * 获取Map指定key的值，并转换为Character
+     * Retrieves the value for the specified key and converts it to a {@code Character}.
      *
-     * @param map Map
-     * @param key 键
-     * @return 值
+     * @param map The map to query.
+     * @param key The key whose associated value is to be returned.
+     * @return The value as a {@code Character}, or {@code null} if the key is not found.
      */
     public static Character getChar(final Map<?, ?> map, final Object key) {
         return get(map, key, Character.class);
     }
 
     /**
-     * 获取Map指定key的值，并转换为Character
+     * Retrieves the value for the specified key and converts it to a {@code Character}, returning a default value if
+     * not found.
      *
-     * @param map          Map
-     * @param key          键
-     * @param defaultValue 默认值
-     * @return 值
+     * @param map          The map to query.
+     * @param key          The key whose associated value is to be returned.
+     * @param defaultValue The default value to return if the key is not found or the value is {@code null}.
+     * @return The value as a {@code Character}, or the default value.
      */
     public static Character getChar(final Map<?, ?> map, final Object key, final Character defaultValue) {
         return get(map, key, Character.class, defaultValue);
     }
 
     /**
-     * 获取Map指定key的值，并转换为Long
+     * Retrieves the value for the specified key and converts it to a {@code Long}.
      *
-     * @param map Map
-     * @param key 键
-     * @return 值
+     * @param map The map to query.
+     * @param key The key whose associated value is to be returned.
+     * @return The value as a {@code Long}, or {@code null} if the key is not found.
      */
     public static Long getLong(final Map<?, ?> map, final Object key) {
         return get(map, key, Long.class);
     }
 
     /**
-     * 获取Map指定key的值，并转换为Long
+     * Retrieves the value for the specified key and converts it to a {@code Long}, returning a default value if not
+     * found.
      *
-     * @param map          Map
-     * @param key          键
-     * @param defaultValue 默认值
-     * @return 值
+     * @param map          The map to query.
+     * @param key          The key whose associated value is to be returned.
+     * @param defaultValue The default value to return if the key is not found or the value is {@code null}.
+     * @return The value as a {@code Long}, or the default value.
      */
     public static Long getLong(final Map<?, ?> map, final Object key, final Long defaultValue) {
         return get(map, key, Long.class, defaultValue);
     }
 
     /**
-     * 获取Map指定key的值，并转换为{@link Date}
+     * Retrieves the value for the specified key and converts it to a {@link Date}.
      *
-     * @param map Map
-     * @param key 键
-     * @return 值
+     * @param map The map to query.
+     * @param key The key whose associated value is to be returned.
+     * @return The value as a {@link Date}, or {@code null} if the key is not found.
      */
     public static Date getDate(final Map<?, ?> map, final Object key) {
         return get(map, key, Date.class);
     }
 
     /**
-     * 获取Map指定key的值，并转换为{@link Date}
+     * Retrieves the value for the specified key and converts it to a {@link Date}, returning a default value if not
+     * found.
      *
-     * @param map          Map
-     * @param key          键
-     * @param defaultValue 默认值
-     * @return 值
+     * @param map          The map to query.
+     * @param key          The key whose associated value is to be returned.
+     * @param defaultValue The default value to return if the key is not found or the value is {@code null}.
+     * @return The value as a {@link Date}, or the default value.
      */
     public static Date getDate(final Map<?, ?> map, final Object key, final Date defaultValue) {
         return get(map, key, Date.class, defaultValue);
     }
 
     /**
-     * 获取Map指定key的值，并转换为指定类型
+     * Retrieves the value for the specified key and converts it to the specified type.
      *
-     * @param <T>  目标值类型
-     * @param map  Map
-     * @param key  键
-     * @param type 值类型
-     * @return 值
+     * @param <T>  The target type.
+     * @param map  The map to query.
+     * @param key  The key whose associated value is to be returned.
+     * @param type The {@code Class} of the target type.
+     * @return The converted value, or {@code null} if the key is not found.
      */
     public static <T> T get(final Map<?, ?> map, final Object key, final Class<T> type) {
         return get(map, key, type, null);
     }
 
     /**
-     * 获取Map指定key的值，并转换为指定类型
+     * Retrieves the value for the specified key and converts it to the specified type, returning a default value if not
+     * found.
      *
-     * @param <T>          目标值类型
-     * @param map          Map
-     * @param key          键
-     * @param type         值类型
-     * @param defaultValue 默认值
-     * @return 值
+     * @param <T>          The target type.
+     * @param map          The map to query.
+     * @param key          The key whose associated value is to be returned.
+     * @param type         The {@code Class} of the target type.
+     * @param defaultValue The default value to return if the key is not found or the value is {@code null}.
+     * @return The converted value, or the default value.
      */
     public static <T> T get(final Map<?, ?> map, final Object key, final Class<T> type, final T defaultValue) {
         return null == map ? defaultValue : Convert.convert(type, map.get(key), defaultValue);
     }
 
     /**
-     * 获取Map指定key的值，并转换为指定类型，此方法在转换失败后不抛异常，返回null。
+     * Retrieves and converts a value from the map, suppressing any conversion exceptions.
      *
-     * @param <T>          目标值类型
-     * @param map          Map
-     * @param key          键
-     * @param type         值类型
-     * @param defaultValue 默认值
-     * @return 值
+     * @param <T>          The target type.
+     * @param map          The map to query.
+     * @param key          The key whose associated value is to be returned.
+     * @param type         The {@code Class} of the target type.
+     * @param defaultValue The default value to return if the key is not found, the value is {@code null}, or conversion
+     *                     fails.
+     * @return The converted value, or the default value on failure.
      */
     public static <T> T getQuietly(final Map<?, ?> map, final Object key, final Class<T> type, final T defaultValue) {
         return null == map ? defaultValue : Convert.convertQuietly(type, map.get(key), defaultValue);
     }
 
     /**
-     * 获取Map指定key的值，并转换为指定类型
+     * Retrieves the value for a key and converts it to a generic type specified by a {@link TypeReference}.
      *
-     * @param <T>  目标值类型
-     * @param map  Map
-     * @param key  键
-     * @param type 值类型
-     * @return 值
+     * @param <T>  The target generic type.
+     * @param map  The map to query.
+     * @param key  The key whose associated value is to be returned.
+     * @param type A {@link TypeReference} describing the target type.
+     * @return The converted value, or {@code null} if the key is not found.
      */
     public static <T> T get(final Map<?, ?> map, final Object key, final TypeReference<T> type) {
         return get(map, key, type, null);
     }
 
     /**
-     * 获取Map指定key的值，并转换为指定类型
+     * Retrieves and converts a value to a generic type, returning a default value if not found.
      *
-     * @param <T>          目标值类型
-     * @param map          Map
-     * @param key          键
-     * @param type         值类型
-     * @param defaultValue 默认值
-     * @return 值
+     * @param <T>          The target generic type.
+     * @param map          The map to query.
+     * @param key          The key whose associated value is to be returned.
+     * @param type         A {@link TypeReference} describing the target type.
+     * @param defaultValue The default value to return if the key is not found or the value is {@code null}.
+     * @return The converted value, or the default value.
      */
     public static <T> T get(final Map<?, ?> map, final Object key, final TypeReference<T> type, final T defaultValue) {
         return null == map ? defaultValue : Convert.convert(type, map.get(key), defaultValue);
     }
 
     /**
-     * 获取Map指定key的值，并转换为指定类型，转换失败后返回null，不抛异常
+     * Retrieves and converts a value to a generic type, suppressing any conversion exceptions.
      *
-     * @param <T>          目标值类型
-     * @param map          Map
-     * @param key          键
-     * @param type         值类型
-     * @param defaultValue 默认值
-     * @return 值
+     * @param <T>          The target generic type.
+     * @param map          The map to query.
+     * @param key          The key whose associated value is to be returned.
+     * @param type         A {@link TypeReference} describing the target type.
+     * @param defaultValue The default value to return if the key is not found, the value is {@code null}, or conversion
+     *                     fails.
+     * @return The converted value, or the default value on failure.
      */
     public static <T> T getQuietly(
             final Map<?, ?> map,

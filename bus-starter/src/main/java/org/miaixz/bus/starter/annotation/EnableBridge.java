@@ -27,13 +27,16 @@
 */
 package org.miaixz.bus.starter.annotation;
 
-import java.lang.annotation.*;
-
 import org.miaixz.bus.starter.bridge.BridgeConfiguration;
 import org.springframework.context.annotation.Import;
 
+import java.lang.annotation.*;
+
 /**
- * 启用配置中心
+ * Enables the configuration center bridge.
+ * <p>
+ * This annotation imports the {@link BridgeConfiguration}, which sets up both the client-side property loader for
+ * fetching remote configurations and the server-side Vert.x verticle for serving those configurations.
  *
  * @author Kimi Liu
  * @since Java 17+

@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.sensitive.magic.annotation;
 
-import java.lang.annotation.*;
-
 import org.miaixz.bus.sensitive.Builder;
 
+import java.lang.annotation.*;
+
 /**
- * 隐私数据加解密
+ * Marks a field, method parameter, or class for encryption and decryption of sensitive data.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,9 +43,11 @@ import org.miaixz.bus.sensitive.Builder;
 public @interface Privacy {
 
     /**
-     * 数据处理模式 可选值 1.Builder.ALL 全部开启 2.Builder.IN 请求/写入 3.Builder.OUT 查询/输出
+     * The data processing mode, determining when encryption/decryption should occur. Options are: 1.
+     * {@link Builder#ALL}: Both encryption on write and decryption on read. 2. {@link Builder#IN}: Encryption only on
+     * write/request. 3. {@link Builder#OUT}: Decryption only on read/response.
      *
-     * @return the string
+     * @return The processing mode string.
      */
     String value() default Builder.ALL;
 

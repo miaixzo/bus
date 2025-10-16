@@ -33,7 +33,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * 性别相关类
+ * Enumeration for gender-related information.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,14 +43,40 @@ import lombok.Getter;
 public enum Gender {
 
     /**
-     * MALE/FAMALE为正常值,通过{@link Gender#of(String)} 方法获取真实的性别UNKNOWN为容错值,部分平台不会返回用户性别, 为了方便统一,使用UNKNOWN标记所有未知或不可测的用户性别信息
+     * Male gender. MALE/FEMALE are normal values. The actual gender is obtained through the {@link Gender#of(String)}
+     * method. UNKNOWN is a fallback value for platforms that do not return user gender. It is used to mark all unknown
+     * or unpredictable user gender information for consistency.
      */
-    MALE(1, "M", "男"), FEMALE(0, "F", "女"), UNKNOWN(-1, "U", "未知");
+    MALE(1, "M", "男"),
+    /**
+     * Female gender.
+     */
+    FEMALE(0, "F", "女"),
+    /**
+     * Unknown gender. Used when gender information is not available or cannot be determined.
+     */
+    UNKNOWN(-1, "U", "未知");
 
+    /**
+     * The integer key representing the gender.
+     */
     private final int key;
+    /**
+     * The string code representing the gender (e.g., "M", "F", "U").
+     */
     private final String code;
+    /**
+     * The descriptive name of the gender in Chinese.
+     */
     private final String desc;
 
+    /**
+     * Returns the {@code Gender} enum constant corresponding to the given code. This method supports various
+     * representations for male and female, including Chinese characters and numeric symbols.
+     *
+     * @param code The string code representing the gender (e.g., "M", "F", "男", "女", "1", "0").
+     * @return The {@code Gender} enum constant, or {@link #UNKNOWN} if the code does not match any known gender.
+     */
     public static Gender of(String code) {
         if (null == code) {
             return UNKNOWN;

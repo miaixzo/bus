@@ -28,8 +28,8 @@
 package org.miaixz.bus.core.lang.event;
 
 /**
- * 事件接口，所有事件必须实现此接口
- * 
+ * Marker interface for all events. Any class that represents an event in the system must implement this interface.
+ *
  * @author Kimi Liu
  * @since Java 17+
  */

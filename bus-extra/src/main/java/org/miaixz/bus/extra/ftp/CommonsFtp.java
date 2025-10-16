@@ -44,14 +44,15 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.net.PORT;
 import org.miaixz.bus.core.xyz.*;
 import org.miaixz.bus.extra.ssh.Connector;
 
 /**
- * Apache Commons FTP客户端封装 此客户端基于Apache-Commons-Net 常见搭建ftp的工具有：
+ * FTP client wrapper based on Apache Commons Net. Common tools for setting up FTP servers include:
  * <ul>
- * <li>filezila server ;根目录一般都是空</li>
- * <li>linux vsftpd ; 使用的 系统用户的目录，这里往往都是不是根目录，如：/home/bus/ftp</li>
+ * <li>FileZilla Server: The root directory is generally empty.</li>
+ * <li>Linux vsftpd: Uses the system user's directory, which is often not the root directory, e.g., /home/bus/ftp.</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -60,21 +61,23 @@ import org.miaixz.bus.extra.ssh.Connector;
 public class CommonsFtp extends AbstractFtp {
 
     /**
-     * 默认端口
+     * The underlying FTP client from Apache Commons Net.
      */
-    public static final int DEFAULT_PORT = 21;
     private FTPClient client;
+    /**
+     * The connection mode (Active or Passive).
+     */
     private EnumValue.FtpMode mode;
     /**
-     * 执行完操作是否返回当前目录
+     * Whether to return to the current working directory after an operation is completed.
      */
     private boolean backToPwd;
 
     /**
-     * 构造
+     * Constructor.
      *
-     * @param config FTP配置
-     * @param mode   模式
+     * @param config The FTP configuration.
+     * @param mode   The connection mode (Active or Passive).
      */
     public CommonsFtp(final FtpConfig config, final EnumValue.FtpMode mode) {
         super(config);
@@ -83,9 +86,9 @@ public class CommonsFtp extends AbstractFtp {
     }
 
     /**
-     * 构造
+     * Constructor with a custom-instantiated {@link FTPClient}.
      *
-     * @param client 自定义实例化好的{@link FTPClient}
+     * @param client The pre-configured {@link FTPClient}.
      */
     public CommonsFtp(final FTPClient client) {
         super(FtpConfig.of());
@@ -93,58 +96,58 @@ public class CommonsFtp extends AbstractFtp {
     }
 
     /**
-     * 构造CommonsFtp，匿名登录
+     * Creates a CommonsFtp instance with anonymous login.
      *
-     * @param host 域名或IP
-     * @return CommonsFtp
+     * @param host The domain name or IP address.
+     * @return A new CommonsFtp instance.
      */
     public static CommonsFtp of(final String host) {
-        return of(host, DEFAULT_PORT);
+        return of(host, PORT._21);
     }
 
     /**
-     * 构造，匿名登录
+     * Creates a CommonsFtp instance with anonymous login.
      *
-     * @param host 域名或IP
-     * @param port 端口
-     * @return CommonsFtp
+     * @param host The domain name or IP address.
+     * @param port The port number.
+     * @return A new CommonsFtp instance.
      */
     public static CommonsFtp of(final String host, final int port) {
         return of(host, port, "anonymous", Normal.EMPTY);
     }
 
     /**
-     * 构造
+     * Creates a CommonsFtp instance.
      *
-     * @param host     域名或IP
-     * @param port     端口
-     * @param user     用户名
-     * @param password 密码
-     * @return CommonsFtp
+     * @param host     The domain name or IP address.
+     * @param port     The port number.
+     * @param user     The username.
+     * @param password The password.
+     * @return A new CommonsFtp instance.
      */
     public static CommonsFtp of(final String host, final int port, final String user, final String password) {
         return of(Connector.of(host, port, user, password), DEFAULT_CHARSET);
     }
 
     /**
-     * 构造
+     * Creates a CommonsFtp instance.
      *
-     * @param connector 连接信息，包括host、port、user、password等信息
-     * @param charset   编码
-     * @return CommonsFtp
+     * @param connector The connection information, including host, port, user, password, etc.
+     * @param charset   The character encoding.
+     * @return A new CommonsFtp instance.
      */
     public static CommonsFtp of(final Connector connector, final java.nio.charset.Charset charset) {
         return of(connector, charset, null, null);
     }
 
     /**
-     * 构造
+     * Creates a CommonsFtp instance.
      *
-     * @param connector          连接信息，包括host、port、user、password等信息
-     * @param charset            编码
-     * @param serverLanguageCode 服务器语言 例如：zh
-     * @param systemKey          服务器标识 例如：org.apache.commons.net.ftp.FTPClientConfig.SYST_NT
-     * @return CommonsFtp
+     * @param connector          The connection information, including host, port, user, password, etc.
+     * @param charset            The character encoding.
+     * @param serverLanguageCode The server language code (e.g., "zh").
+     * @param systemKey          The server system key (e.g., org.apache.commons.net.ftp.FTPClientConfig.SYST_NT).
+     * @return A new CommonsFtp instance.
      */
     public static CommonsFtp of(
             final Connector connector,
@@ -155,14 +158,14 @@ public class CommonsFtp extends AbstractFtp {
     }
 
     /**
-     * 构造
+     * Creates a CommonsFtp instance.
      *
-     * @param connector          连接信息，包括host、port、user、password等信息
-     * @param charset            编码
-     * @param serverLanguageCode 服务器语言
-     * @param systemKey          系统关键字
-     * @param mode               模式
-     * @return CommonsFtp
+     * @param connector          The connection information, including host, port, user, password, etc.
+     * @param charset            The character encoding.
+     * @param serverLanguageCode The server language code.
+     * @param systemKey          The system key.
+     * @param mode               The connection mode.
+     * @return A new CommonsFtp instance.
      */
     public static CommonsFtp of(
             final Connector connector,
@@ -174,7 +177,7 @@ public class CommonsFtp extends AbstractFtp {
     }
 
     /**
-     * 初始化连接
+     * Initializes the connection.
      *
      * @return this
      */
@@ -183,10 +186,10 @@ public class CommonsFtp extends AbstractFtp {
     }
 
     /**
-     * 初始化连接
+     * Initializes the connection.
      *
-     * @param config FTP配置
-     * @param mode   模式
+     * @param config The FTP configuration.
+     * @param mode   The connection mode.
      * @return this
      */
     public CommonsFtp init(final FtpConfig config, final EnumValue.FtpMode mode) {
@@ -211,15 +214,15 @@ public class CommonsFtp extends AbstractFtp {
         // connect
         final Connector connector = config.getConnector();
         try {
-            // 连接ftp服务器
+            // Connect to the FTP server
             client.connect(connector.getHost(), connector.getPort());
             client.setSoTimeout((int) config.getSoTimeout());
-            // 登录ftp服务器
+            // Log in to the FTP server
             client.login(connector.getUser(), connector.getPassword());
         } catch (final IOException e) {
             throw new InternalException(e);
         }
-        final int replyCode = client.getReplyCode(); // 是否成功登录服务器
+        final int replyCode = client.getReplyCode(); // Check if login was successful
         if (!FTPReply.isPositiveCompletion(replyCode)) {
             try {
                 client.disconnect();
@@ -238,9 +241,9 @@ public class CommonsFtp extends AbstractFtp {
     }
 
     /**
-     * 设置FTP连接模式，可选主动和被动模式
+     * Sets the FTP connection mode (Active or Passive).
      *
-     * @param mode 模式枚举
+     * @param mode The mode enumeration.
      * @return this
      */
     public CommonsFtp setMode(final EnumValue.FtpMode mode) {
@@ -258,18 +261,18 @@ public class CommonsFtp extends AbstractFtp {
     }
 
     /**
-     * 是否执行完操作返回当前目录
+     * Gets whether to return to the current directory after an operation.
      *
-     * @return 执行完操作是否返回当前目录
+     * @return True if it returns to the current directory, false otherwise.
      */
     public boolean isBackToPwd() {
         return this.backToPwd;
     }
 
     /**
-     * 设置执行完操作是否返回当前目录
+     * Sets whether to return to the current directory after an operation.
      *
-     * @param backToPwd 执行完操作是否返回当前目录
+     * @param backToPwd True to return to the current directory, false otherwise.
      * @return this
      */
     public CommonsFtp setBackToPwd(final boolean backToPwd) {
@@ -278,7 +281,9 @@ public class CommonsFtp extends AbstractFtp {
     }
 
     /**
-     * 如果连接超时的话，重新进行连接 经测试，当连接超时时，client.isConnected()仍然返回ture，无法判断是否连接超时 因此，通过发送pwd命令的方式，检查连接是否超时
+     * Reconnects if the connection has timed out. It has been tested that when the connection times out,
+     * client.isConnected() still returns true, so it is not possible to determine if the connection has timed out.
+     * Therefore, the connection status is checked by sending a PWD command.
      *
      * @return this
      */
@@ -298,15 +303,15 @@ public class CommonsFtp extends AbstractFtp {
     }
 
     /**
-     * 改变目录
+     * Changes the current directory.
      *
-     * @param directory 目录
-     * @return 是否成功
+     * @param directory The target directory.
+     * @return True if successful, false otherwise.
      */
     @Override
     synchronized public boolean cd(final String directory) {
         if (StringKit.isBlank(directory)) {
-            // 当前目录
+            // Stay in the current directory
             return true;
         }
 
@@ -318,9 +323,9 @@ public class CommonsFtp extends AbstractFtp {
     }
 
     /**
-     * 远程当前目录
+     * Gets the current remote directory.
      *
-     * @return 远程当前目录
+     * @return The current remote directory path.
      */
     @Override
     public String pwd() {
@@ -337,22 +342,24 @@ public class CommonsFtp extends AbstractFtp {
     }
 
     /**
-     * 遍历某个目录下所有文件和目录，不会递归遍历 此方法自动过滤"."和".."两种目录
+     * Lists all files and directories in a given path without recursion. This method automatically filters out "." and
+     * "..".
      *
-     * @param path      目录
-     * @param predicate 过滤器，null表示不过滤，默认去掉"."和".."两种目录
-     * @return 文件名或目录名列表
+     * @param path      The directory path.
+     * @param predicate A filter for the files. If null, no filtering is applied (besides removing "." and "..").
+     * @return A list of file or directory names.
      */
     public List<String> ls(final String path, final Predicate<FTPFile> predicate) {
         return CollKit.map(lsFiles(path, predicate), FTPFile::getName);
     }
 
     /**
-     * 遍历某个目录下所有文件和目录，不会递归遍历 此方法自动过滤"."和".."两种目录
+     * Lists all files and directories in a given path without recursion. This method automatically filters out "." and
+     * "..".
      *
-     * @param path      目录
-     * @param predicate 过滤器，null表示不过滤，默认去掉"."和".."两种目录
-     * @return 文件或目录列表
+     * @param path      The directory path.
+     * @param predicate A filter for the files. If null, no filtering is applied (besides removing "." and "..").
+     * @return A list of files or directories.
      */
     public List<FTPFile> lsFiles(final String path, final Predicate<FTPFile> predicate) {
         final FTPFile[] ftpFiles = lsFiles(path);
@@ -374,11 +381,11 @@ public class CommonsFtp extends AbstractFtp {
     }
 
     /**
-     * 遍历某个目录下所有文件和目录，不会递归遍历
+     * Lists all files and directories in a given path without recursion.
      *
-     * @param path 目录，如果目录不存在，抛出异常
-     * @return 文件或目录列表
-     * @throws InternalException IO异常
+     * @param path The directory path. If the directory does not exist, an exception is thrown.
+     * @return An array of files or directories.
+     * @throws InternalException if an I/O error occurs.
      */
     public FTPFile[] lsFiles(final String path) throws InternalException {
         String pwd = null;
@@ -395,7 +402,7 @@ public class CommonsFtp extends AbstractFtp {
         } catch (final IOException e) {
             throw new InternalException(e);
         } finally {
-            // 回到原目录
+            // Return to the original directory
             cd(pwd);
         }
 
@@ -421,11 +428,11 @@ public class CommonsFtp extends AbstractFtp {
     }
 
     /**
-     * 获取服务端目录状态。
+     * Gets the status of a directory on the server.
      *
-     * @param path 路径
-     * @return 状态int，服务端不同，返回不同
-     * @throws InternalException IO异常
+     * @param path The path.
+     * @return An integer status code, which varies by server.
+     * @throws InternalException if an I/O error occurs.
      */
     public int stat(final String path) throws InternalException {
         try {
@@ -436,11 +443,11 @@ public class CommonsFtp extends AbstractFtp {
     }
 
     /**
-     * 判断ftp服务器目录内是否还有子元素（目录或文件）
+     * Checks if a directory on the FTP server has any sub-elements (directories or files).
      *
-     * @param path 文件路径
-     * @return 是否存在
-     * @throws InternalException IO异常
+     * @param path The file path.
+     * @return True if it exists, false otherwise.
+     * @throws InternalException if an I/O error occurs.
      */
     public boolean existFile(final String path) throws InternalException {
         final FTPFile[] ftpFileArr;
@@ -467,7 +474,7 @@ public class CommonsFtp extends AbstractFtp {
         } catch (final IOException e) {
             throw new InternalException(e);
         } finally {
-            // 回到原目录
+            // Return to the original directory
             cd(pwd);
         }
         return isSuccess;
@@ -487,7 +494,7 @@ public class CommonsFtp extends AbstractFtp {
             name = ftpFile.getName();
             childPath = StringKit.format("{}/{}", dirPath, name);
             if (ftpFile.isDirectory()) {
-                // 上级和本级目录除外
+                // Exclude parent and current directories
                 if (!".".equals(name) && !"..".equals(name)) {
                     delDir(childPath);
                 }
@@ -496,7 +503,7 @@ public class CommonsFtp extends AbstractFtp {
             }
         }
 
-        // 删除空目录
+        // Delete the empty directory
         try {
             return this.client.removeDirectory(dirPath);
         } catch (final IOException e) {
@@ -505,17 +512,17 @@ public class CommonsFtp extends AbstractFtp {
     }
 
     /**
-     * 上传文件到指定目录，可选：
+     * Uploads a file to the specified directory. Options:
      *
      * <pre>
-     * 1. remotePath为null或""上传到当前路径
-     * 2. remotePath为相对路径则相对于当前路径的子路径
-     * 3. remotePath为绝对路径则上传到此路径
+     * 1. If remotePath is null or "", upload to the current path.
+     * 2. If remotePath is a relative path, upload to a sub-path of the current path.
+     * 3. If remotePath is an absolute path, upload to that path.
      * </pre>
      *
-     * @param remotePath 服务端路径，可以为{@code null} 或者相对路径或绝对路径
-     * @param file       文件
-     * @return 是否上传成功
+     * @param remotePath The server path, which can be {@code null}, a relative path, or an absolute path.
+     * @param file       The file to upload.
+     * @return True if the upload is successful, false otherwise.
      */
     @Override
     public boolean uploadFile(final String remotePath, final File file) {
@@ -527,19 +534,13 @@ public class CommonsFtp extends AbstractFtp {
     }
 
     /**
-     * 上传文件到指定目录，可选：
+     * Uploads a file to the specified directory. Options are the same as above.
      *
-     * <pre>
-     * 1. remotePath为null或""上传到当前路径
-     * 2. remotePath为相对路径则相对于当前路径的子路径
-     * 3. remotePath为绝对路径则上传到此路径
-     * </pre>
-     *
-     * @param file       文件
-     * @param remotePath 服务端路径，可以为{@code null} 或者相对路径或绝对路径
-     * @param fileName   自定义在服务端保存的文件名
-     * @return 是否上传成功
-     * @throws InternalException IO异常
+     * @param file       The file to upload.
+     * @param remotePath The server path, which can be {@code null}, a relative path, or an absolute path.
+     * @param fileName   A custom file name to save on the server.
+     * @return True if the upload is successful, false otherwise.
+     * @throws InternalException if an I/O error occurs.
      */
     public boolean uploadFile(final String remotePath, final String fileName, final File file)
             throws InternalException {
@@ -551,19 +552,13 @@ public class CommonsFtp extends AbstractFtp {
     }
 
     /**
-     * 上传文件到指定目录，可选：
+     * Uploads a file to the specified directory. Options are the same as above.
      *
-     * <pre>
-     * 1. remotePath为null或""上传到当前路径
-     * 2. remotePath为相对路径则相对于当前路径的子路径
-     * 3. remotePath为绝对路径则上传到此路径
-     * </pre>
-     *
-     * @param remotePath 服务端路径，可以为{@code null} 或者相对路径或绝对路径
-     * @param fileName   文件名
-     * @param fileStream 文件流
-     * @return 是否上传成功
-     * @throws InternalException IO异常
+     * @param remotePath The server path, which can be {@code null}, a relative path, or an absolute path.
+     * @param fileName   The file name.
+     * @param fileStream The file stream.
+     * @return True if the upload is successful, false otherwise.
+     * @throws InternalException if an I/O error occurs.
      */
     public boolean uploadFile(final String remotePath, final String fileName, final InputStream fileStream)
             throws InternalException {
@@ -597,10 +592,12 @@ public class CommonsFtp extends AbstractFtp {
     }
 
     /**
-     * 递归上传文件（支持目录） 上传时，如果uploadFile为目录，只复制目录下所有目录和文件到目标路径下，并不会复制目录本身 上传时，自动创建父级目录
+     * Recursively uploads files (including directories). When uploading, if uploadFile is a directory, only its
+     * contents (subdirectories and files) are copied to the target path, not the directory itself. Parent directories
+     * are created automatically during upload.
      *
-     * @param remotePath 目录路径
-     * @param uploadFile 上传文件或目录
+     * @param remotePath The directory path.
+     * @param uploadFile The file or directory to upload.
      */
     public void upload(final String remotePath, final File uploadFile) {
         if (!FileKit.isDirectory(uploadFile)) {
@@ -614,7 +611,7 @@ public class CommonsFtp extends AbstractFtp {
         }
 
         final List<File> dirs = new ArrayList<>(files.length);
-        // 第一次只处理文件，防止目录在前面导致先处理子目录，而引发文件所在目录不正确
+        // First, process only files to avoid incorrect directory structures
         for (final File f : files) {
             if (f.isDirectory()) {
                 dirs.add(f);
@@ -622,7 +619,7 @@ public class CommonsFtp extends AbstractFtp {
                 this.uploadFile(remotePath, f);
             }
         }
-        // 第二次只处理目录
+        // Second, process only directories
         for (final File f : dirs) {
             final String dir = FileKit.normalize(remotePath + "/" + f.getName());
             upload(dir, f);
@@ -630,10 +627,10 @@ public class CommonsFtp extends AbstractFtp {
     }
 
     /**
-     * 下载文件
+     * Downloads a file.
      *
-     * @param path    文件路径，包含文件名
-     * @param outFile 输出文件或目录，当为目录时，使用服务端的文件名
+     * @param path    The file path, including the file name.
+     * @param outFile The output file or directory. If a directory, the server's file name is used.
      */
     @Override
     public void download(final String path, final File outFile) {
@@ -643,10 +640,10 @@ public class CommonsFtp extends AbstractFtp {
     }
 
     /**
-     * 递归下载FTP服务器上文件到本地(文件目录和服务器同步)
+     * Recursively downloads files from an FTP server to a local directory, syncing the structure.
      *
-     * @param sourceDir ftp服务器目录
-     * @param targetDir 本地目录
+     * @param sourceDir The source directory on the FTP server.
+     * @param targetDir The target local directory.
      */
     @Override
     public void recursiveDownloadFolder(final String sourceDir, final File targetDir) {
@@ -659,12 +656,12 @@ public class CommonsFtp extends AbstractFtp {
             destFile = FileKit.file(targetDir, fileName);
 
             if (!ftpFile.isDirectory()) {
-                // 本地不存在文件或者ftp上文件有修改则下载
+                // Download if the local file doesn't exist or the FTP file has been modified
                 if (!FileKit.exists(destFile) || (ftpFile.getTimestamp().getTimeInMillis() > destFile.lastModified())) {
                     download(srcFile, destFile);
                 }
             } else {
-                // 服务端依旧是目录，继续递归
+                // If it's still a directory on the server, recurse
                 FileKit.mkdir(destFile);
                 recursiveDownloadFolder(srcFile, destFile);
             }
@@ -672,13 +669,13 @@ public class CommonsFtp extends AbstractFtp {
     }
 
     /**
-     * 下载文件
+     * Downloads a file.
      *
-     * @param path     文件所在路径（远程目录），不包含文件名
-     * @param fileName 文件名
-     * @param outFile  输出文件或目录，当为目录时使用服务端文件名
-     * @throws InternalException IO异常
-     * @return 是否下载成功
+     * @param path     The file's path (remote directory), excluding the file name.
+     * @param fileName The file name.
+     * @param outFile  The output file or directory. If a directory, the server's file name is used.
+     * @return True if the download is successful, false otherwise.
+     * @throws InternalException if an I/O error occurs.
      */
     public boolean download(final String path, final String fileName, File outFile) throws InternalException {
         if (outFile.isDirectory()) {
@@ -695,26 +692,26 @@ public class CommonsFtp extends AbstractFtp {
     }
 
     /**
-     * 下载文件到输出流
+     * Downloads a file to an output stream.
      *
-     * @param path     文件路径
-     * @param fileName 文件名
-     * @param out      输出位置
-     * @return 是否下载成功
+     * @param path     The file path.
+     * @param fileName The file name.
+     * @param out      The output location.
+     * @return True if the download is successful, false otherwise.
      */
     public boolean download(final String path, final String fileName, final OutputStream out) {
         return download(path, fileName, out, null);
     }
 
     /**
-     * 下载文件到输出流
+     * Downloads a file to an output stream.
      *
-     * @param path            服务端的文件路径
-     * @param fileName        服务端的文件名
-     * @param out             输出流，下载的文件写出到这个流中
-     * @param fileNameCharset 文件名编码，通过此编码转换文件名编码为ISO8859-1
-     * @throws InternalException IO异常
-     * @return 是否下载成功
+     * @param path            The server's file path.
+     * @param fileName        The server's file name.
+     * @param out             The output stream to write the downloaded file to.
+     * @param fileNameCharset The character set for the file name.
+     * @return True if the download is successful, false otherwise.
+     * @throws InternalException if an I/O error occurs.
      */
     public boolean download(
             final String path,
@@ -753,12 +750,12 @@ public class CommonsFtp extends AbstractFtp {
     }
 
     /**
-     * 读取文件为输入流
+     * Reads a file as an input stream.
      *
-     * @param dir      服务端的文件目录
-     * @param fileName 服务端的文件名
-     * @return {@link InputStream}
-     * @throws InternalException IO异常
+     * @param dir      The server's file directory.
+     * @param fileName The server's file name.
+     * @return An {@link InputStream}.
+     * @throws InternalException if an I/O error occurs.
      */
     public InputStream getFileStream(final String dir, final String fileName) throws InternalException {
         String pwd = null;
@@ -782,9 +779,9 @@ public class CommonsFtp extends AbstractFtp {
     }
 
     /**
-     * 获取FTPClient客户端对象
+     * Gets the FTPClient object.
      *
-     * @return {@link FTPClient}
+     * @return The {@link FTPClient}.
      */
     public FTPClient getClient() {
         return this.client;

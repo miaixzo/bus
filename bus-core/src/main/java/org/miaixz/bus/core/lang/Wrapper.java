@@ -30,18 +30,18 @@ package org.miaixz.bus.core.lang;
 import org.miaixz.bus.core.Provider;
 
 /**
- * 包装接口
+ * Generic wrapper interface for encapsulating an original object.
  *
- * @param <T> 原始对象类型
+ * @param <T> The type of the original object being wrapped.
  * @author Kimi Liu
  * @since Java 17+
  */
 public interface Wrapper<T> extends Provider {
 
     /**
-     * 获取原始对象
+     * Retrieves the raw, unwrapped object.
      *
-     * @return 原始对象
+     * @return The original object.
      */
     T getRaw();
 

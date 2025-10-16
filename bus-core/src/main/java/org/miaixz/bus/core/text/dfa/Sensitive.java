@@ -40,7 +40,8 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.ThreadKit;
 
 /**
- * 敏感词工具类
+ * Utility class for sensitive word filtering based on the DFA (Deterministic Finite Automaton) algorithm. This class
+ * provides methods to initialize a sensitive word dictionary and perform sensitive word detection and filtering.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,23 +49,30 @@ import org.miaixz.bus.core.xyz.ThreadKit;
 public class Sensitive {
 
     /**
-     * 默认关键词分隔符
+     * The default separator used for sensitive words in a string, typically a comma.
      */
     public static final String DEFAULT_SEPARATOR = Symbol.COMMA;
+    /**
+     * The underlying {@link WordTree} instance used to store and search for sensitive words.
+     */
     private static final WordTree sensitiveTree = new WordTree();
 
     /**
-     * @return 是否已经被初始化
+     * Checks if the sensitive word tree has been initialized with sensitive words.
+     *
+     * @return {@code true} if the sensitive word tree is not empty, {@code false} otherwise.
      */
     public static boolean isInitialized() {
         return !sensitiveTree.isEmpty();
     }
 
     /**
-     * 初始化敏感词树
+     * Initializes the sensitive word tree with a collection of sensitive words. The initialization can be performed
+     * asynchronously.
      *
-     * @param isAsync        是否异步初始化
-     * @param sensitiveWords 敏感词列表
+     * @param sensitiveWords The collection of sensitive words to add.
+     * @param isAsync        {@code true} to perform initialization asynchronously, {@code false} for synchronous
+     *                       initialization.
      */
     public static void init(final Collection<String> sensitiveWords, final boolean isAsync) {
         if (isAsync) {
@@ -78,9 +86,9 @@ public class Sensitive {
     }
 
     /**
-     * 初始化敏感词树
+     * Initializes the sensitive word tree with a collection of sensitive words synchronously.
      *
-     * @param sensitiveWords 敏感词列表
+     * @param sensitiveWords The collection of sensitive words to add.
      */
     public static void init(final Collection<String> sensitiveWords) {
         sensitiveTree.clear();
@@ -88,11 +96,13 @@ public class Sensitive {
     }
 
     /**
-     * 初始化敏感词树
+     * Initializes the sensitive word tree from a string of sensitive words, using a specified separator. The
+     * initialization can be performed asynchronously.
      *
-     * @param sensitiveWords 敏感词列表组成的字符串
-     * @param isAsync        是否异步初始化
-     * @param separator      分隔符
+     * @param sensitiveWords The string containing sensitive words, separated by the given separator.
+     * @param separator      The separator character(s) used to split the sensitive words string.
+     * @param isAsync        {@code true} to perform initialization asynchronously, {@code false} for synchronous
+     *                       initialization.
      */
     public static void init(final String sensitiveWords, final String separator, final boolean isAsync) {
         if (StringKit.isNotBlank(sensitiveWords)) {
@@ -101,19 +111,23 @@ public class Sensitive {
     }
 
     /**
-     * 初始化敏感词树，使用逗号分隔每个单词
+     * Initializes the sensitive word tree from a string of sensitive words, using the {@link #DEFAULT_SEPARATOR}
+     * (comma). The initialization can be performed asynchronously.
      *
-     * @param sensitiveWords 敏感词列表组成的字符串
-     * @param isAsync        是否异步初始化
+     * @param sensitiveWords The string containing sensitive words, separated by commas.
+     * @param isAsync        {@code true} to perform initialization asynchronously, {@code false} for synchronous
+     *                       initialization.
      */
     public static void init(final String sensitiveWords, final boolean isAsync) {
         init(sensitiveWords, DEFAULT_SEPARATOR, isAsync);
     }
 
     /**
-     * 设置字符过滤规则，通过定义字符串过滤规则，过滤不需要的字符 当accept为false时，此字符不参与匹配
+     * Sets the character filtering rule for the underlying {@link WordTree}. Characters for which the predicate returns
+     * {@code false} will be ignored during sensitive word matching.
      *
-     * @param charFilter 过滤函数
+     * @param charFilter The filtering function. If {@code charFilter.test(char)} returns {@code false}, the character
+     *                   is skipped.
      */
     public static void setCharFilter(final Predicate<Character> charFilter) {
         if (charFilter != null) {
@@ -122,42 +136,46 @@ public class Sensitive {
     }
 
     /**
-     * 是否包含敏感词
+     * Checks if the given text contains any sensitive words.
      *
-     * @param text 文本
-     * @return 是否包含
+     * @param text The text to check.
+     * @return {@code true} if the text contains any sensitive word, {@code false} otherwise.
      */
     public static boolean containsSensitive(final String text) {
         return sensitiveTree.isMatch(text);
     }
 
     /**
-     * 查找敏感词，返回找到的第一个敏感词
+     * Finds the first sensitive word in the given text.
      *
-     * @param text 文本
-     * @return 敏感词
+     * @param text The text to search within.
+     * @return A {@link FoundWord} object representing the first sensitive word found, or {@code null} if no sensitive
+     *         word is found.
      */
     public static FoundWord getFoundFirstSensitive(final String text) {
         return sensitiveTree.matchWord(text);
     }
 
     /**
-     * 查找敏感词，返回找到的所有敏感词
+     * Finds all sensitive words in the given text.
      *
-     * @param text 文本
-     * @return 敏感词
+     * @param text The text to search within.
+     * @return A list of {@link FoundWord} objects representing all sensitive words found.
      */
     public static List<FoundWord> getFoundAllSensitive(final String text) {
         return sensitiveTree.matchAllWords(text);
     }
 
     /**
-     * 查找敏感词，返回找到的所有敏感词 密集匹配原则：假如关键词有 ab,b，文本是abab，将匹配 [ab,b,ab] 贪婪匹配（最长匹配）原则：假如关键字a,ab，最长匹配将匹配[a, ab]
+     * Finds all sensitive words in the given text with specified matching strategies.
+     * <p>
+     * Dense matching principle: If keywords are "ab", "b", and text is "abab", it will match [ab, b, ab]. Greedy
+     * matching (longest match) principle: If keywords are "a", "ab", the longest match will be [ab].
      *
-     * @param text           文本
-     * @param isDensityMatch 是否使用密集匹配原则
-     * @param isGreedMatch   是否使用贪婪匹配（最长匹配）原则
-     * @return 敏感词
+     * @param text           The text to search within.
+     * @param isDensityMatch If {@code true}, performs a dense match (finds all overlapping matches).
+     * @param isGreedMatch   If {@code true}, performs a greedy match (prefers the longest possible match).
+     * @return A list of {@link FoundWord} objects representing all sensitive words found.
      */
     public static List<FoundWord> getFoundAllSensitive(
             final String text,
@@ -167,22 +185,24 @@ public class Sensitive {
     }
 
     /**
-     * 处理过滤文本中的敏感词，默认替换成*
+     * Filters sensitive words in the given text, replacing them with asterisks by default.
      *
-     * @param text 文本
-     * @return 敏感词过滤处理后的文本
+     * @param text The text to filter.
+     * @return The text with sensitive words filtered (replaced).
      */
     public static String sensitiveFilter(final String text) {
         return sensitiveFilter(text, true, null);
     }
 
     /**
-     * 处理过滤文本中的敏感词，默认替换成*
+     * Filters sensitive words in the given text with specified matching strategy and a custom sensitive word processor.
      *
-     * @param text               文本
-     * @param isGreedMatch       贪婪匹配（最长匹配）原则：假如关键字a,ab，最长匹配将匹配[a, ab]
-     * @param sensitiveProcessor 敏感词处理器，默认按匹配内容的字符数替换成*
-     * @return 敏感词过滤处理后的文本
+     * @param text               The text to filter.
+     * @param isGreedMatch       If {@code true}, performs a greedy match (prefers the longest possible match).
+     * @param sensitiveProcessor The sensitive word processor to use for replacing sensitive words. If {@code null}, a
+     *                           default processor that replaces with asterisks based on the matched word's length is
+     *                           used.
+     * @return The text with sensitive words filtered (replaced).
      */
     public static String sensitiveFilter(
             final String text,
@@ -192,7 +212,7 @@ public class Sensitive {
             return text;
         }
 
-        // 敏感词过滤场景下，不需要密集匹配
+        // For sensitive word filtering, dense matching is not typically required.
         final List<FoundWord> foundWordList = getFoundAllSensitive(text, true, isGreedMatch);
         if (CollKit.isEmpty(foundWordList)) {
             return text;

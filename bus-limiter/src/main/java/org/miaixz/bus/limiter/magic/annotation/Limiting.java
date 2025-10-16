@@ -30,7 +30,8 @@ package org.miaixz.bus.limiter.magic.annotation;
 import java.lang.annotation.*;
 
 /**
- * 限制请求数量
+ * Annotation for marking methods that require request limiting. This annotation is used to control the rate of incoming
+ * requests to a method, preventing it from being overwhelmed.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -41,8 +42,18 @@ import java.lang.annotation.*;
 @Target(ElementType.METHOD)
 public @interface Limiting {
 
+    /**
+     * Specifies the maximum number of requests allowed within a defined duration.
+     *
+     * @return The maximum request count.
+     */
     int count();
 
+    /**
+     * Specifies the time window in seconds during which the {@link #count()} is applied.
+     *
+     * @return The duration in seconds for the limiting window.
+     */
     int duration();
 
 }

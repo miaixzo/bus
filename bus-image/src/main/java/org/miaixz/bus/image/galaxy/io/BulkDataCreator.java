@@ -32,11 +32,22 @@ import java.io.IOException;
 import org.miaixz.bus.image.galaxy.data.BulkData;
 
 /**
+ * Functional interface for creating {@link BulkData} objects from an {@link ImageInputStream}. This interface is used
+ * to abstract the creation process of bulk data, allowing for different strategies to handle large data elements.
+ * 
  * @author Kimi Liu
  * @since Java 17+
  */
+@FunctionalInterface
 public interface BulkDataCreator {
 
+    /**
+     * Creates a {@link BulkData} object by reading from the provided {@link ImageInputStream}.
+     * 
+     * @param dis The {@link ImageInputStream} to read bulk data from.
+     * @return A new {@link BulkData} instance containing the read data.
+     * @throws IOException if an I/O error occurs during reading.
+     */
     BulkData createBulkData(ImageInputStream dis) throws IOException;
 
 }

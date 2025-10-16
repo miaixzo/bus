@@ -34,7 +34,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * V3 统一下单-H5 场景信息
+ * Model for the H5 Scene Info object in the V3 Unified Order API.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -47,23 +47,23 @@ import lombok.experimental.SuperBuilder;
 public class H5Info {
 
     /**
-     * 场景类型
+     * The scene type (e.g., "iOS", "Android", "Wap").
      */
     private String type;
     /**
-     * 应用名称
+     * The application name.
      */
     private String app_name;
     /**
-     * 网站URL
+     * The website URL.
      */
     private String app_url;
     /**
-     * iOS 平台 BundleID
+     * The Bundle ID for the iOS platform.
      */
     private String bundle_id;
     /**
-     * Android 平台 PackageName
+     * The Package Name for the Android platform.
      */
     private String package_name;
 

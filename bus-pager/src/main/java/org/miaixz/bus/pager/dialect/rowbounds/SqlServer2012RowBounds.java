@@ -31,13 +31,23 @@ import org.apache.ibatis.cache.CacheKey;
 import org.apache.ibatis.session.RowBounds;
 
 /**
- * sqlserver2012 基于 RowBounds 的分页
+ * SQL Server 2012 dialect for pagination based on {@link RowBounds}. This class provides SQL Server 2012-specific SQL
+ * generation for pagination using `OFFSET ... ROWS FETCH NEXT ... ROWS ONLY` syntax.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class SqlServer2012RowBounds extends SqlServerRowBounds {
 
+    /**
+     * Generates the SQL Server 2012-specific pagination SQL using {@link RowBounds}. It appends `OFFSET ? ROWS FETCH
+     * NEXT ? ROWS ONLY` to the original SQL.
+     *
+     * @param sql       the original SQL string
+     * @param rowBounds the {@link RowBounds} object containing offset and limit
+     * @param pageKey   the CacheKey for the paginated query
+     * @return the SQL Server 2012-specific paginated SQL string
+     */
     @Override
     public String getPageSql(String sql, RowBounds rowBounds, CacheKey pageKey) {
         StringBuilder sqlBuilder = new StringBuilder(sql.length() + 14);

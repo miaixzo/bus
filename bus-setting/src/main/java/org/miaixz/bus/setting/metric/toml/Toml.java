@@ -27,15 +27,15 @@
 */
 package org.miaixz.bus.setting.metric.toml;
 
+import org.miaixz.bus.core.io.resource.Resource;
+
 import java.io.Writer;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.util.Map;
 
-import org.miaixz.bus.core.io.resource.Resource;
-
 /**
- * toml读写封装
+ * A utility class providing static methods for reading and writing TOML data.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,7 +43,7 @@ import org.miaixz.bus.core.io.resource.Resource;
 public class Toml {
 
     /**
-     * A DateTimeFormatter that uses the TOML format.
+     * A {@link DateTimeFormatter} that parses and formats dates and times according to the TOML specification.
      */
     public static final DateTimeFormatter DATE_FORMATTER = new DateTimeFormatterBuilder()
             .append(DateTimeFormatter.ISO_LOCAL_DATE).optionalStart().appendLiteral('T')
@@ -51,20 +51,20 @@ public class Toml {
             .toFormatter();
 
     /**
-     * 读取TOML
+     * Reads and parses TOML data from a given {@link Resource}.
      *
-     * @param resource 资源
-     * @return TOML信息
+     * @param resource The resource containing the TOML data.
+     * @return A map representing the parsed TOML data.
      */
     public static Map<String, Object> read(final Resource resource) {
         return new TomlReader(resource.readString(), false).read();
     }
 
     /**
-     * 将TOML数据写出到Writer
+     * Writes the given data map to a {@link Writer} in TOML format.
      *
-     * @param data   TOML数据
-     * @param writer {@link Writer}
+     * @param data   The map of data to be written.
+     * @param writer The writer to which the TOML data will be written.
      */
     public static void write(final Map<String, Object> data, final Writer writer) {
         new TomlWriter(writer).write(data);

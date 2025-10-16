@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.notify.metric.netease;
 
+import java.io.Serial;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,22 +36,36 @@ import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.notify.Context;
 
 /**
- * 网易云短信消息
+ * Netease Cloud SMS message provider.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class NeteaseSmsProvider extends NeteaseProvider<NeteaseMaterial, Context> {
 
-    public NeteaseSmsProvider(Context properties) {
-        super(properties);
+    @Serial
+    private static final long serialVersionUID = -202510031219L;
+
+    /**
+     * Constructs a {@code NeteaseSmsProvider} with the given context.
+     *
+     * @param context The context containing configuration information for the provider.
+     */
+    public NeteaseSmsProvider(Context context) {
+        super(context);
     }
 
+    /**
+     * Sends an SMS notification using Netease Cloud SMS service.
+     *
+     * @param entity The {@link NeteaseMaterial} containing SMS details such as template ID, parameters, and recipient.
+     * @return A {@link Message} indicating the result of the SMS sending operation.
+     */
     @Override
     public Message send(NeteaseMaterial entity) {
         Map<String, String> bodys = new HashMap<>();
         bodys.put("templateid", entity.getTemplate());
-        bodys.put("mobiles", entity.getReceive());
+        bodys.put("mobiles", JsonKit.toJsonString(new String[] { entity.getReceive() }));
         bodys.put("params", JsonKit.toJsonString(entity.getParams()));
         return post(this.getUrl(entity), bodys);
     }

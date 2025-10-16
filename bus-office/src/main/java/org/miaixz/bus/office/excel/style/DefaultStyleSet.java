@@ -40,7 +40,7 @@ import org.apache.poi.ss.util.CellReference;
 import org.miaixz.bus.office.excel.xyz.StyleKit;
 
 /**
- * 默认样式集合，定义了标题、数字、日期等默认样式
+ * Default style set, defining default styles for headers, numbers, dates, etc.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -51,51 +51,51 @@ public class DefaultStyleSet implements StyleSet, Serializable {
     private static final long serialVersionUID = 2852286072270L;
 
     /**
-     * 工作簿引用
+     * Workbook reference.
      */
     private final Workbook workbook;
     /**
-     * 标题样式
+     * Header cell style.
      */
     private final CellStyle headCellStyle;
     /**
-     * 默认样式
+     * Default cell style.
      */
     private final CellStyle cellStyle;
     /**
-     * 默认数字样式
+     * Default numeric cell style.
      */
     private final CellStyle cellStyleForNumber;
     /**
-     * 默认日期样式
+     * Default date cell style.
      */
     private final CellStyle cellStyleForDate;
     /**
-     * 默认链接样式
+     * Default hyperlink cell style.
      */
     private final CellStyle cellStyleForHyperlink;
 
     /**
-     * 构造
+     * Constructs a new {@code DefaultStyleSet}.
      *
-     * @param workbook 工作簿
+     * @param workbook The workbook to which these styles apply.
      */
     public DefaultStyleSet(final Workbook workbook) {
         this.workbook = workbook;
         this.headCellStyle = StyleKit.createHeadCellStyle(workbook);
         this.cellStyle = StyleKit.createDefaultCellStyle(workbook);
 
-        // 默认数字格式
+        // Default numeric format.
         cellStyleForNumber = StyleKit.cloneCellStyle(workbook, this.cellStyle);
-        // 0表示：General
+        // 0 means: General
         cellStyleForNumber.setDataFormat((short) 0);
 
-        // 默认日期格式
+        // Default date format.
         this.cellStyleForDate = StyleKit.cloneCellStyle(workbook, this.cellStyle);
-        // 22表示：m/d/yy h:mm
+        // 22 means: m/d/yy h:mm
         this.cellStyleForDate.setDataFormat((short) 22);
 
-        // 默认链接样式
+        // Default hyperlink style.
         this.cellStyleForHyperlink = StyleKit.cloneCellStyle(workbook, this.cellStyle);
         final Font font = workbook.createFont();
         font.setUnderline((byte) 1);
@@ -114,18 +114,18 @@ public class DefaultStyleSet implements StyleSet, Serializable {
         }
 
         if (cellValue instanceof Date || cellValue instanceof TemporalAccessor || cellValue instanceof Calendar) {
-            // 日期单独定义格式
+            // Date values have a specific format.
             if (null != this.cellStyleForDate) {
                 style = this.cellStyleForDate;
             }
         } else if (cellValue instanceof Number) {
-            // 数字单独定义格式
+            // Numeric values have a specific format.
             if ((cellValue instanceof Double || cellValue instanceof Float || cellValue instanceof BigDecimal)
                     && null != this.cellStyleForNumber) {
                 style = this.cellStyleForNumber;
             }
         } else if (cellValue instanceof Hyperlink) {
-            // 自定义超链接样式
+            // Custom hyperlink style.
             if (null != this.cellStyleForHyperlink) {
                 style = this.cellStyleForHyperlink;
             }
@@ -135,56 +135,56 @@ public class DefaultStyleSet implements StyleSet, Serializable {
     }
 
     /**
-     * 获取头部样式，获取后可以定义整体头部样式
+     * Gets the header style. After obtaining, the overall header style can be defined.
      *
-     * @return 头部样式
+     * @return The header {@link CellStyle}.
      */
     public CellStyle getHeadCellStyle() {
         return this.headCellStyle;
     }
 
     /**
-     * 获取常规单元格样式，获取后可以定义整体头部样式
+     * Gets the general cell style. After obtaining, the overall general cell style can be defined.
      *
-     * @return 常规单元格样式
+     * @return The general cell {@link CellStyle}.
      */
     public CellStyle getCellStyle() {
         return this.cellStyle;
     }
 
     /**
-     * 获取数字（带小数点）单元格样式，获取后可以定义整体数字样式
+     * Gets the numeric cell style (with decimal points). After obtaining, the overall numeric style can be defined.
      *
-     * @return 数字（带小数点）单元格样式
+     * @return The numeric (with decimal points) cell {@link CellStyle}.
      */
     public CellStyle getCellStyleForNumber() {
         return this.cellStyleForNumber;
     }
 
     /**
-     * 获取日期单元格样式，获取后可以定义整体日期样式
+     * Gets the date cell style. After obtaining, the overall date style can be defined.
      *
-     * @return 日期单元格样式
+     * @return The date cell {@link CellStyle}.
      */
     public CellStyle getCellStyleForDate() {
         return this.cellStyleForDate;
     }
 
     /**
-     * 获取链接单元格样式，获取后可以定义整体链接样式
+     * Gets the hyperlink cell style. After obtaining, the overall hyperlink style can be defined.
      *
-     * @return 链接单元格样式
+     * @return The hyperlink cell {@link CellStyle}.
      */
     public CellStyle getCellStyleForHyperlink() {
         return this.cellStyleForHyperlink;
     }
 
     /**
-     * 定义所有单元格的边框类型
+     * Defines the border type for all cells.
      *
-     * @param borderSize 边框粗细{@link BorderStyle}枚举
-     * @param colorIndex 颜色的short值
-     * @return this
+     * @param borderSize The border thickness, represented by {@link BorderStyle} enum.
+     * @param colorIndex The short value of the color, see {@link IndexedColors} enum.
+     * @return This {@code DefaultStyleSet} instance, for chaining.
      */
     public DefaultStyleSet setBorder(final BorderStyle borderSize, final IndexedColors colorIndex) {
         StyleKit.setBorder(this.headCellStyle, borderSize, colorIndex);
@@ -196,11 +196,11 @@ public class DefaultStyleSet implements StyleSet, Serializable {
     }
 
     /**
-     * 设置cell文本对齐样式
+     * Sets the text alignment for cells.
      *
-     * @param halign 横向位置
-     * @param valign 纵向位置
-     * @return this
+     * @param halign The horizontal alignment.
+     * @param valign The vertical alignment.
+     * @return This {@code DefaultStyleSet} instance, for chaining.
      */
     public DefaultStyleSet setAlign(final HorizontalAlignment halign, final VerticalAlignment valign) {
         StyleKit.setAlign(this.headCellStyle, halign, valign);
@@ -212,11 +212,11 @@ public class DefaultStyleSet implements StyleSet, Serializable {
     }
 
     /**
-     * 设置单元格背景样式
+     * Sets the background style for cells.
      *
-     * @param backgroundColor 背景色
-     * @param withHeadCell    是否也定义头部样式
-     * @return this
+     * @param backgroundColor The background color.
+     * @param withHeadCell    {@code true} to also define the header cell style, {@code false} otherwise.
+     * @return This {@code DefaultStyleSet} instance, for chaining.
      */
     public DefaultStyleSet setBackgroundColor(final IndexedColors backgroundColor, final boolean withHeadCell) {
         if (withHeadCell) {
@@ -230,13 +230,13 @@ public class DefaultStyleSet implements StyleSet, Serializable {
     }
 
     /**
-     * 设置全局字体
+     * Sets the global font for cells.
      *
-     * @param color      字体颜色
-     * @param fontSize   字体大小，-1表示默认大小
-     * @param fontName   字体名，null表示默认字体
-     * @param ignoreHead 是否跳过头部样式
-     * @return this
+     * @param color      The font color.
+     * @param fontSize   The font size. -1 indicates default size.
+     * @param fontName   The font name. {@code null} indicates default font.
+     * @param ignoreHead {@code true} to skip header style, {@code false} otherwise.
+     * @return This {@code DefaultStyleSet} instance, for chaining.
      */
     public DefaultStyleSet setFont(
             final short color,
@@ -248,11 +248,12 @@ public class DefaultStyleSet implements StyleSet, Serializable {
     }
 
     /**
-     * 设置全局字体
+     * Sets the global font for cells.
      *
-     * @param font       字体，可以通过{@link StyleKit#createFont(Workbook, short, short, String)}创建
-     * @param ignoreHead 是否跳过头部样式
-     * @return this
+     * @param font       The font, which can be created using
+     *                   {@link StyleKit#createFont(Workbook, short, short, String)}.
+     * @param ignoreHead {@code true} to skip header style, {@code false} otherwise.
+     * @return This {@code DefaultStyleSet} instance, for chaining.
      */
     public DefaultStyleSet setFont(final Font font, final boolean ignoreHead) {
         if (!ignoreHead) {
@@ -266,9 +267,9 @@ public class DefaultStyleSet implements StyleSet, Serializable {
     }
 
     /**
-     * 设置单元格文本自动换行
+     * Sets text wrapping for cells.
      *
-     * @return this
+     * @return This {@code DefaultStyleSet} instance, for chaining.
      */
     public DefaultStyleSet setWrapText() {
         this.cellStyle.setWrapText(true);

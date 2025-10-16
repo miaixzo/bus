@@ -43,20 +43,37 @@ import org.miaixz.bus.notify.magic.Material;
 import org.miaixz.bus.notify.metric.AbstractProvider;
 
 /**
- * 网易云抽象类
+ * Abstract base class for NetEase Cloud notification providers, handling common logic like authentication.
  *
+ * @param <T> The type of {@link Material} this provider handles.
+ * @param <K> The type of {@link Context} this provider uses.
  * @author Justubborn
  * @since Java 17+
  */
 public abstract class NeteaseProvider<T extends Material, K extends Context> extends AbstractProvider<T, K> {
 
+    /**
+     * Hexadecimal digits for SHA1 encoding.
+     */
     private static final char[] HEX_DIGITS = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd',
             'e', 'f' };
 
+    /**
+     * Constructs a {@code NeteaseProvider} with the given context.
+     *
+     * @param properties The context containing configuration information for the provider.
+     */
     public NeteaseProvider(K properties) {
         super(properties);
     }
 
+    /**
+     * Encodes a string value using SHA1 algorithm.
+     *
+     * @param value The string value to encode.
+     * @return The SHA1 encoded string.
+     * @throws RuntimeException if the SHA1 algorithm is not found.
+     */
     private static String encode(String value) {
         if (null == value) {
             return null;
@@ -70,6 +87,12 @@ public abstract class NeteaseProvider<T extends Material, K extends Context> ext
         }
     }
 
+    /**
+     * Converts a byte array to its hexadecimal string representation.
+     *
+     * @param bytes The byte array to convert.
+     * @return The hexadecimal string representation.
+     */
     private static String getFormattedText(byte[] bytes) {
         int len = bytes.length;
         StringBuilder buf = new StringBuilder(len * 2);
@@ -80,6 +103,12 @@ public abstract class NeteaseProvider<T extends Material, K extends Context> ext
         return buf.toString();
     }
 
+    /**
+     * Retrieves the HTTP headers required for NetEase Cloud API POST requests. These headers include AppKey, Nonce,
+     * CurTime, and CheckSum for authentication.
+     *
+     * @return A {@link HashMap} containing the necessary HTTP headers.
+     */
     protected HashMap<String, String> getPostHeader() {
         String curTime = String.valueOf((new Date()).getTime() / 1000L);
         HashMap<String, String> map = new HashMap<>();
@@ -90,6 +119,13 @@ public abstract class NeteaseProvider<T extends Material, K extends Context> ext
         return map;
     }
 
+    /**
+     * Sends a POST request to the specified router URL with the given parameters and headers.
+     *
+     * @param routerUrl The URL to send the POST request to.
+     * @param map       The request body parameters.
+     * @return A {@link Message} indicating the result of the sending operation.
+     */
     public Message post(String routerUrl, Map<String, String> map) {
         Map<String, String> header = getPostHeader();
         Logger.debug("netease send：{}", map);
@@ -101,10 +137,10 @@ public abstract class NeteaseProvider<T extends Material, K extends Context> ext
     }
 
     /**
-     * CheckSum
+     * Calculates the CheckSum for NetEase Cloud API authentication.
      *
-     * @param curTime 时间
-     * @return 结果
+     * @param curTime The current time in seconds since epoch.
+     * @return The calculated CheckSum string.
      */
     private String getCheckSum(String curTime) {
         return encode(context.getAppSecret() + context.getNonce() + curTime);

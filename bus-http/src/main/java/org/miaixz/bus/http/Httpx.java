@@ -27,18 +27,6 @@
 */
 package org.miaixz.bus.http;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.X509TrustManager;
-
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Normal;
@@ -58,8 +46,21 @@ import org.miaixz.bus.http.metric.Dispatcher;
 import org.miaixz.bus.http.plugin.httpx.HttpProxy;
 import org.miaixz.bus.logger.Logger;
 
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.X509TrustManager;
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+
 /**
- * 发送HTTP请求辅助类
+ * A utility class for sending HTTP requests with a simplified API. This class provides static methods for common
+ * request types like GET, POST, PUT, DELETE, and HEAD. It uses a shared, lazily-initialized {@link Httpd} instance for
+ * all requests.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -67,7 +68,7 @@ import org.miaixz.bus.logger.Logger;
 public class Httpx {
 
     /**
-     * 懒汉安全加同步 私有的静态成员变量 只声明不创建 私有的构造方法 提供返回实例的静态方法
+     * The lazily-initialized, thread-safe {@link Httpd} instance.
      */
     private static Httpd httpd;
 
@@ -76,16 +77,16 @@ public class Httpx {
     }
 
     /**
-     * 提供返回实例的静态方法
+     * Default constructor that initializes the client with default timeouts.
      */
     public Httpx() {
         this(30, 30, 30);
     }
 
     /**
-     * 提供返回实例的静态方法
+     * Constructor that initializes the client with a custom trust manager.
      *
-     * @param x509TrustManager 信任管理器
+     * @param x509TrustManager The trust manager for SSL connections.
      */
     public Httpx(X509TrustManager x509TrustManager) {
         this(null, null, 30, 30, 30, 64, 5, 5, 5, SSLContextBuilder.newSslSocketFactory(x509TrustManager),
@@ -93,26 +94,26 @@ public class Httpx {
     }
 
     /**
-     * 构建一个自定义配置的 HTTP Client 类
+     * Constructor that initializes the client with custom timeouts.
      *
-     * @param connTimeout  连接
-     * @param readTimeout  读取
-     * @param writeTimeout 输出
+     * @param connTimeout  The connection timeout in seconds.
+     * @param readTimeout  The read timeout in seconds.
+     * @param writeTimeout The write timeout in seconds.
      */
     public Httpx(int connTimeout, int readTimeout, int writeTimeout) {
         this(null, null, connTimeout, readTimeout, writeTimeout, Normal._64, 5, 5, 5);
     }
 
     /**
-     * 构建一个自定义配置的 HTTP Client 类
+     * Constructor that initializes the client with detailed custom settings.
      *
-     * @param connTimeout        连接
-     * @param readTimeout        读取
-     * @param writeTimeout       输出
-     * @param maxRequests        最大请求
-     * @param maxRequestsPerHost 主机最大请求
-     * @param maxIdleConnections 最大连接
-     * @param keepAliveDuration  链接时长
+     * @param connTimeout        The connection timeout in seconds.
+     * @param readTimeout        The read timeout in seconds.
+     * @param writeTimeout       The write timeout in seconds.
+     * @param maxRequests        The maximum number of parallel requests.
+     * @param maxRequestsPerHost The maximum number of parallel requests per host.
+     * @param maxIdleConnections The maximum number of idle connections.
+     * @param keepAliveDuration  The keep-alive duration for idle connections in minutes.
      */
     public Httpx(int connTimeout, int readTimeout, int writeTimeout, int maxRequests, int maxRequestsPerHost,
             int maxIdleConnections, int keepAliveDuration) {
@@ -121,17 +122,17 @@ public class Httpx {
     }
 
     /**
-     * 构建一个自定义配置的 HTTP Client 类
+     * Constructor that initializes the client with DNS and proxy settings.
      *
-     * @param dns                DNS 信息
-     * @param httpProxy          代理信息
-     * @param connTimeout        连接
-     * @param readTimeout        读取
-     * @param writeTimeout       输出
-     * @param maxRequests        最大请求
-     * @param maxRequestsPerHost 主机最大请求
-     * @param maxIdleConnections 最大连接
-     * @param keepAliveDuration  链接时长
+     * @param dns                The custom DNS resolver.
+     * @param httpProxy          The HTTP proxy configuration.
+     * @param connTimeout        The connection timeout in seconds.
+     * @param readTimeout        The read timeout in seconds.
+     * @param writeTimeout       The write timeout in seconds.
+     * @param maxRequests        The maximum number of parallel requests.
+     * @param maxRequestsPerHost The maximum number of parallel requests per host.
+     * @param maxIdleConnections The maximum number of idle connections.
+     * @param keepAliveDuration  The keep-alive duration for idle connections in minutes.
      */
     public Httpx(DnsX dns, HttpProxy httpProxy, int connTimeout, int readTimeout, int writeTimeout, int maxRequests,
             int maxRequestsPerHost, int maxIdleConnections, int keepAliveDuration) {
@@ -140,20 +141,20 @@ public class Httpx {
     }
 
     /**
-     * 构建一个自定义配置的 HTTP Client 类
+     * The main constructor that initializes the underlying {@link Httpd} client with all possible configurations.
      *
-     * @param dns                DNS 信息
-     * @param httpProxy          代理信息
-     * @param connTimeout        连接
-     * @param readTimeout        读取
-     * @param writeTimeout       输出
-     * @param maxRequests        最大请求
-     * @param maxRequestsPerHost 主机最大请求
-     * @param maxIdleConnections 最大连接
-     * @param keepAliveDuration  链接时长
-     * @param sslSocketFactory   抽象类,扩展自SocketFactory, SSLSocket的工厂
-     * @param x509TrustManager   证书信任管理器
-     * @param hostnameVerifier   主机名校验信息
+     * @param dns                The custom DNS resolver.
+     * @param httpProxy          The HTTP proxy configuration.
+     * @param connTimeout        The connection timeout in seconds.
+     * @param readTimeout        The read timeout in seconds.
+     * @param writeTimeout       The write timeout in seconds.
+     * @param maxRequests        The maximum number of parallel requests.
+     * @param maxRequestsPerHost The maximum number of parallel requests per host.
+     * @param maxIdleConnections The maximum number of idle connections.
+     * @param keepAliveDuration  The keep-alive duration for idle connections in minutes.
+     * @param sslSocketFactory   The SSL socket factory for HTTPS connections.
+     * @param x509TrustManager   The trust manager for SSL connections.
+     * @param hostnameVerifier   The hostname verifier for HTTPS connections.
      */
     public Httpx(final DnsX dns, final HttpProxy httpProxy, int connTimeout, int readTimeout, int writeTimeout,
             int maxRequests, int maxRequestsPerHost, int maxIdleConnections, int keepAliveDuration,
@@ -202,32 +203,33 @@ public class Httpx {
     }
 
     /**
-     * 简单的 GET 请求 使用默认编码 UTF-8
+     * Sends a simple GET request with the default UTF-8 encoding.
      *
-     * @param url URL地址
-     * @return the {@link String}
+     * @param url The URL to send the request to.
+     * @return The response body as a {@link String}.
      */
     public static String get(final String url) {
         return get(url, Charset.DEFAULT_UTF_8);
     }
 
     /**
-     * 简单的 GET 请求 使用自定义编码
+     * Sends a simple GET request with a custom encoding.
      *
-     * @param url     URL地址
-     * @param charset 自定义编码
-     * @return the {@link String}
+     * @param url     The URL to send the request to.
+     * @param charset The custom character set for the response.
+     * @return The response body as a {@link String}.
      */
     public static String get(final String url, final String charset) {
         return execute(Builder.builder().url(url).requestCharset(charset).responseCharset(charset).build());
     }
 
     /**
-     * 异步get请求,回调
+     * Sends a GET request, either synchronously or asynchronously.
      *
-     * @param url     URL地址
-     * @param isAsync 是否异步
-     * @return the {@link String}
+     * @param url     The URL to send the request to.
+     * @param isAsync If {@code true}, the request is sent asynchronously.
+     * @return The response body as a {@link String} (for synchronous requests) or an empty string (for asynchronous
+     *         requests).
      */
     public static String get(final String url, final boolean isAsync) {
         if (isAsync) {
@@ -237,21 +239,21 @@ public class Httpx {
     }
 
     /**
-     * 带查询参数 GET 请求 使用默认编码 UTF-8
+     * Sends a GET request with query parameters and default UTF-8 encoding.
      *
-     * @param url     URL地址
-     * @param formMap 查询参数
-     * @return the {@link String}
+     * @param url     The URL to send the request to.
+     * @param formMap A map of query parameters.
+     * @return The response body as a {@link String}.
      */
     public static String get(final String url, final Map<String, String> formMap) {
         return get(url, formMap, null, Charset.DEFAULT_UTF_8);
     }
 
     /**
-     * 异步处理的GET请求,自定义请求类型
+     * Sends an asynchronous GET request with a callback.
      *
-     * @param url      URL地址
-     * @param callback 回调信息
+     * @param url      The URL to send the request to.
+     * @param callback The callback to handle the response or failure.
      */
     public static void get(String url, Callback callback) {
         Request request = new Request.Builder().url(url).get().build();
@@ -260,25 +262,25 @@ public class Httpx {
     }
 
     /**
-     * 带查询参数 GET 请求 使用默认编码 UTF-8
+     * Sends a GET request with query and header parameters and default UTF-8 encoding.
      *
-     * @param url       URL地址
-     * @param formMap   查询参数
-     * @param headerMap Header参数
-     * @return the {@link String}
+     * @param url       The URL to send the request to.
+     * @param formMap   A map of query parameters.
+     * @param headerMap A map of header parameters.
+     * @return The response body as a {@link String}.
      */
     public static String get(final String url, final Map<String, String> formMap, Map<String, String> headerMap) {
         return get(url, formMap, headerMap, Charset.DEFAULT_UTF_8);
     }
 
     /**
-     * 带查询参数 GET 请求 使用自定义编码
+     * Sends a GET request with query parameters, header parameters, and a custom encoding.
      *
-     * @param url       URL地址
-     * @param formMap   查询参数
-     * @param headerMap Header参数
-     * @param charset   自定义编码
-     * @return the {@link String}
+     * @param url       The URL to send the request to.
+     * @param formMap   A map of query parameters.
+     * @param headerMap A map of header parameters.
+     * @param charset   The custom character set for the response.
+     * @return The response body as a {@link String}.
      */
     public static String get(
             final String url,
@@ -291,11 +293,11 @@ public class Httpx {
     }
 
     /**
-     * 异步处理的POST请求,自定义请求类型
+     * Sends an asynchronous POST request with form data and a callback.
      *
-     * @param url      URL地址
-     * @param formMap  查询参数
-     * @param callback 回调信息
+     * @param url      The URL to send the request to.
+     * @param formMap  A map of form data.
+     * @param callback The callback to handle the response or failure.
      */
     public static void post(String url, Map<String, String> formMap, Callback callback) {
         StringBuilder data = new StringBuilder();
@@ -312,21 +314,21 @@ public class Httpx {
     }
 
     /**
-     * form 方式 POST 请求
+     * Sends a simple POST request with an empty body.
      *
-     * @param url URL地址 String
-     * @return the {@link String}
+     * @param url The URL to send the request to.
+     * @return The response body as a {@link String}.
      */
     public static String post(final String url) {
         return post(url, null);
     }
 
     /**
-     * form 方式 POST 请求 application/x-www-form-urlencoded
+     * Sends a POST request with form data using {@code application/x-www-form-urlencoded} content type.
      *
-     * @param url     URL地址
-     * @param formMap 查询参数
-     * @return the {@link String}
+     * @param url     The URL to send the request to.
+     * @param formMap A map of form data.
+     * @return The response body as a {@link String}.
      */
     public static String post(final String url, final Map<String, String> formMap) {
         String data = Normal.EMPTY;
@@ -338,36 +340,36 @@ public class Httpx {
     }
 
     /**
-     * 带查询参数 POST 请求 使用默认编码 UTF-8
+     * Sends a POST request with a raw data body and a specified content type.
      *
-     * @param url         URL地址
-     * @param data        请求数据
-     * @param contentType 类型
-     * @return the {@link String}
+     * @param url         The URL to send the request to.
+     * @param data        The raw request body data.
+     * @param contentType The content type of the request body.
+     * @return The response body as a {@link String}.
      */
     public static String post(final String url, final String data, final String contentType) {
         return post(url, data, contentType, Charset.DEFAULT_UTF_8);
     }
 
     /**
-     * 带查询参数 POST 请求 使用默认编码 UTF-8
+     * Sends a POST request with form data and a specified content type.
      *
-     * @param url         URL地址
-     * @param formMap     请求数据
-     * @param contentType 类型
-     * @return the {@link String}
+     * @param url         The URL to send the request to.
+     * @param formMap     A map of form data.
+     * @param contentType The content type of the request body.
+     * @return The response body as a {@link String}.
      */
     public static String post(final String url, final Map<String, String> formMap, final String contentType) {
         return post(url, formMap, contentType, Charset.DEFAULT_UTF_8);
     }
 
     /**
-     * 带查询参数 POST 请求 使用自定义编码
+     * Sends a POST request with form data and header parameters.
      *
-     * @param url       URL地址
-     * @param formMap   请求数据
-     * @param headerMap 头部数据
-     * @return the {@link String}
+     * @param url       The URL to send the request to.
+     * @param formMap   A map of form data.
+     * @param headerMap A map of header parameters.
+     * @return The response body as a {@link String}.
      */
     public static String post(
             final String url,
@@ -377,13 +379,13 @@ public class Httpx {
     }
 
     /**
-     * 带查询参数 POST 请求 使用自定义编码
+     * Sends a POST request with a raw data body, a specified content type, and a custom encoding.
      *
-     * @param url         URL地址
-     * @param data        请求数据
-     * @param contentType 类型
-     * @param charset     自定义编码
-     * @return the {@link String}
+     * @param url         The URL to send the request to.
+     * @param data        The raw request body data.
+     * @param contentType The content type of the request body.
+     * @param charset     The custom character set for the request and response.
+     * @return The response body as a {@link String}.
      */
     public static String post(final String url, final String data, final String contentType, final String charset) {
         return execute(
@@ -392,13 +394,13 @@ public class Httpx {
     }
 
     /**
-     * 带查询参数 POST 请求 使用默认编码 UTF-8
+     * Sends a POST request with a raw data body, header parameters, and a specified content type.
      *
-     * @param url         URL地址
-     * @param data        请求数据
-     * @param headerMap   头部数据
-     * @param contentType 类型
-     * @return the {@link String}
+     * @param url         The URL to send the request to.
+     * @param data        The raw request body data.
+     * @param headerMap   A map of header parameters.
+     * @param contentType The content type of the request body.
+     * @return The response body as a {@link String}.
      */
     public static String post(
             final String url,
@@ -411,13 +413,13 @@ public class Httpx {
     }
 
     /**
-     * 带查询参数 POST 请求 使用自定义编码
+     * Sends a POST request with form data, a specified content type, and a custom encoding.
      *
-     * @param url         URL地址
-     * @param formMap     请求数据
-     * @param contentType 类型
-     * @param charset     自定义编码
-     * @return the {@link String}
+     * @param url         The URL to send the request to.
+     * @param formMap     A map of form data.
+     * @param contentType The content type of the request body.
+     * @param charset     The custom character set for the request and response.
+     * @return The response body as a {@link String}.
      */
     public static String post(
             final String url,
@@ -430,13 +432,13 @@ public class Httpx {
     }
 
     /**
-     * 带查询参数 POST 请求 使用自定义编码
+     * Sends a POST request with form data, header parameters, and a specified content type.
      *
-     * @param url         URL地址
-     * @param headerMap   头部数据
-     * @param formMap     请求数据
-     * @param contentType 类型
-     * @return the {@link String}
+     * @param url         The URL to send the request to.
+     * @param formMap     A map of form data.
+     * @param headerMap   A map of header parameters.
+     * @param contentType The content type of the request body.
+     * @return The response body as a {@link String}.
      */
     public static String post(
             final String url,
@@ -447,14 +449,14 @@ public class Httpx {
     }
 
     /**
-     * 带查询参数 POST 请求 使用自定义编码
+     * Sends a POST request with form data, header parameters, a specified content type, and a custom encoding.
      *
-     * @param url         URL地址
-     * @param headerMap   头部数据
-     * @param formMap     请求数据
-     * @param contentType 类型
-     * @param charset     自定义编码
-     * @return the {@link String}
+     * @param url         The URL to send the request to.
+     * @param formMap     A map of form data.
+     * @param headerMap   A map of header parameters.
+     * @param contentType The content type of the request body.
+     * @param charset     The custom character set for the request and response.
+     * @return The response body as a {@link String}.
      */
     public static String post(
             final String url,
@@ -468,70 +470,70 @@ public class Httpx {
     }
 
     /**
-     * 简单的 PUT 请求 使用默认编码 UTF-8
+     * Sends a simple PUT request with a null body and default UTF-8 encoding.
      *
-     * @param url URL地址
-     * @return the {@link String}
+     * @param url The URL to send the request to.
+     * @return The response body as a {@link String}.
      */
     public static String put(final String url) {
         return put(url, (String) null, Charset.DEFAULT_UTF_8);
     }
 
     /**
-     * 带查询参数 PUT 请求 使用默认编码 UTF-8
+     * Sends a PUT request with form data using {@code application/x-www-form-urlencoded} content type.
      *
-     * @param url     URL地址
-     * @param formMap 请求数据
-     * @return the {@link String}
+     * @param url     The URL to send the request to.
+     * @param formMap A map of form data.
+     * @return The response body as a {@link String}.
      */
     public static String put(final String url, final Map<String, String> formMap) {
         return put(url, formMap, MediaType.APPLICATION_FORM_URLENCODED, Charset.DEFAULT_UTF_8);
     }
 
     /**
-     * 带查询参数 PUT 请求 使用默认编码 UTF-8
+     * Sends a PUT request with a raw data body and a specified content type.
      *
-     * @param url         URL地址
-     * @param data        请求数据
-     * @param contentType 类型
-     * @return the {@link String}
+     * @param url         The URL to send the request to.
+     * @param data        The raw request body data.
+     * @param contentType The content type of the request body.
+     * @return The response body as a {@link String}.
      */
     public static String put(final String url, final String data, final String contentType) {
         return put(url, data, contentType, Charset.DEFAULT_UTF_8);
     }
 
     /**
-     * 带查询参数 PUT 请求 使用默认编码 UTF-8
+     * Sends a PUT request with form data and a specified content type.
      *
-     * @param url         URL地址
-     * @param formMap     请求数据
-     * @param contentType 类型
-     * @return the {@link String}
+     * @param url         The URL to send the request to.
+     * @param formMap     A map of form data.
+     * @param contentType The content type of the request body.
+     * @return The response body as a {@link String}.
      */
     public static String put(final String url, final Map<String, String> formMap, final String contentType) {
         return put(url, formMap, contentType, Charset.DEFAULT_UTF_8);
     }
 
     /**
-     * 带查询参数 PUT 请求 使用自定义编码
+     * Sends a PUT request with form data and header parameters.
      *
-     * @param url       URL地址
-     * @param formMap   请求数据
-     * @param headerMap 头部数据
-     * @return the {@link String}
+     * @param url       The URL to send the request to.
+     * @param formMap   A map of form data.
+     * @param headerMap A map of header parameters.
+     * @return The response body as a {@link String}.
      */
     public static String put(final String url, final Map<String, String> formMap, final Map<String, String> headerMap) {
         return put(url, formMap, headerMap, MediaType.APPLICATION_FORM_URLENCODED);
     }
 
     /**
-     * 带查询参数 PUT 请求 使用默认编码 UTF-8
+     * Sends a PUT request with a raw data body, a specified content type, and a custom encoding.
      *
-     * @param url         URL地址
-     * @param data        请求数据
-     * @param contentType 类型
-     * @param charset     自定义编码
-     * @return the {@link String}
+     * @param url         The URL to send the request to.
+     * @param data        The raw request body data.
+     * @param contentType The content type of the request body.
+     * @param charset     The custom character set for the request and response.
+     * @return The response body as a {@link String}.
      */
     public static String put(final String url, final String data, final String contentType, final String charset) {
         return execute(
@@ -540,13 +542,13 @@ public class Httpx {
     }
 
     /**
-     * 带查询参数 PUT 请求 使用默认编码 UTF-8
+     * Sends a PUT request with a raw data body, header parameters, and a specified content type.
      *
-     * @param url         URL地址
-     * @param data        请求数据
-     * @param headerMap   头部数据
-     * @param contentType 类型
-     * @return the {@link String}
+     * @param url         The URL to send the request to.
+     * @param data        The raw request body data.
+     * @param headerMap   A map of header parameters.
+     * @param contentType The content type of the request body.
+     * @return The response body as a {@link String}.
      */
     public static String put(
             final String url,
@@ -559,13 +561,13 @@ public class Httpx {
     }
 
     /**
-     * 带查询参数 PUT 请求 使用自定义编码
+     * Sends a PUT request with form data, a specified content type, and a custom encoding.
      *
-     * @param url         URL地址
-     * @param formMap     请求数据
-     * @param contentType 类型
-     * @param charset     自定义编码
-     * @return the {@link String}
+     * @param url         The URL to send the request to.
+     * @param formMap     A map of form data.
+     * @param contentType The content type of the request body.
+     * @param charset     The custom character set for the request and response.
+     * @return The response body as a {@link String}.
      */
     public static String put(
             final String url,
@@ -578,13 +580,13 @@ public class Httpx {
     }
 
     /**
-     * 带查询参数 PUT 请求 使用自定义编码
+     * Sends a PUT request with form data, header parameters, and a specified content type.
      *
-     * @param url         URL地址
-     * @param headerMap   头部数据
-     * @param formMap     请求数据
-     * @param contentType 类型
-     * @return the {@link String}
+     * @param url         The URL to send the request to.
+     * @param formMap     A map of form data.
+     * @param headerMap   A map of header parameters.
+     * @param contentType The content type of the request body.
+     * @return The response body as a {@link String}.
      */
     public static String put(
             final String url,
@@ -595,14 +597,14 @@ public class Httpx {
     }
 
     /**
-     * 带查询参数 PUT 请求 使用自定义编码
+     * Sends a PUT request with form data, header parameters, a specified content type, and a custom encoding.
      *
-     * @param url         URL地址
-     * @param headerMap   头部数据
-     * @param formMap     请求数据
-     * @param contentType 类型
-     * @param charset     自定义编码
-     * @return the {@link String}
+     * @param url         The URL to send the request to.
+     * @param formMap     A map of form data.
+     * @param headerMap   A map of header parameters.
+     * @param contentType The content type of the request body.
+     * @param charset     The custom character set for the request and response.
+     * @return The response body as a {@link String}.
      */
     public static String put(
             final String url,
@@ -616,33 +618,33 @@ public class Httpx {
     }
 
     /**
-     * 简单的 DELETE 请求 使用默认编码 UTF-8
+     * Sends a simple DELETE request with default UTF-8 encoding.
      *
-     * @param url URL地址
-     * @return the {@link String}
+     * @param url The URL to send the request to.
+     * @return The response body as a {@link String}.
      */
     public static String delete(final String url) {
         return delete(url, null, Charset.DEFAULT_UTF_8);
     }
 
     /**
-     * 带查询参数 DELETE 请求 使用默认编码 UTF-8
+     * Sends a DELETE request with form data and default UTF-8 encoding.
      *
-     * @param url     URL地址
-     * @param formMap 请求数据
-     * @return the {@link String}
+     * @param url     The URL to send the request to.
+     * @param formMap A map of form data.
+     * @return The response body as a {@link String}.
      */
     public static String delete(final String url, final Map<String, String> formMap) {
         return delete(url, formMap, Charset.DEFAULT_UTF_8);
     }
 
     /**
-     * 带查询参数 DELETE 请求 使用自定义编码
+     * Sends a DELETE request with form data and a custom encoding.
      *
-     * @param url     URL地址
-     * @param formMap 请求数据
-     * @param charset 自定义编码
-     * @return the {@link String}
+     * @param url     The URL to send the request to.
+     * @param formMap A map of form data.
+     * @param charset The custom character set for the request and response.
+     * @return The response body as a {@link String}.
      */
     public static String delete(final String url, final Map<String, String> formMap, final String charset) {
         return execute(
@@ -651,12 +653,12 @@ public class Httpx {
     }
 
     /**
-     * 带查询参数 DELETE 请求 使用默认编码 UTF-8
+     * Sends a DELETE request with form data and header parameters.
      *
-     * @param url       URL地址
-     * @param formMap   请求数据
-     * @param headerMap 头部数据
-     * @return the {@link String}
+     * @param url       The URL to send the request to.
+     * @param formMap   A map of form data.
+     * @param headerMap A map of header parameters.
+     * @return The response body as a {@link String}.
      */
     public static String delete(
             final String url,
@@ -666,13 +668,13 @@ public class Httpx {
     }
 
     /**
-     * 带查询参数 DELETE 请求 使用自定义编码
+     * Sends a DELETE request with form data, header parameters, and a custom encoding.
      *
-     * @param url       URL地址
-     * @param formMap   请求数据
-     * @param headerMap 头部数据
-     * @param charset   自定义编码
-     * @return the {@link String}
+     * @param url       The URL to send the request to.
+     * @param formMap   A map of form data.
+     * @param headerMap A map of header parameters.
+     * @param charset   The custom character set for the request and response.
+     * @return The response body as a {@link String}.
      */
     public static String delete(
             final String url,
@@ -685,33 +687,33 @@ public class Httpx {
     }
 
     /**
-     * 简单的 HEAD 请求 使用默认编码 UTF-8
+     * Sends a simple HEAD request with default UTF-8 encoding.
      *
-     * @param url URL地址
-     * @return 响应头信息，格式为字符串
+     * @param url The URL to send the request to.
+     * @return The response headers as a formatted string.
      */
     public static String head(final String url) {
         return head(url, Charset.DEFAULT_UTF_8);
     }
 
     /**
-     * HEAD 请求 使用自定义编码
+     * Sends a HEAD request with a custom encoding.
      *
-     * @param url     URL地址
-     * @param charset 自定义编码
-     * @return 响应头信息，格式为字符串
+     * @param url     The URL to send the request to.
+     * @param charset The custom character set.
+     * @return The response headers as a formatted string.
      */
     public static String head(final String url, final String charset) {
         return head(url, null, charset);
     }
 
     /**
-     * 带头部参数 HEAD 请求 使用自定义编码
+     * Sends a HEAD request with header parameters and a custom encoding.
      *
-     * @param url       URL地址
-     * @param headerMap 头部数据
-     * @param charset   自定义编码
-     * @return 响应头信息，格式为字符串
+     * @param url       The URL to send the request to.
+     * @param headerMap A map of header parameters.
+     * @param charset   The custom character set.
+     * @return The response headers as a formatted string.
      */
     public static String head(final String url, final Map<String, String> headerMap, final String charset) {
         StringBuilder result = new StringBuilder();
@@ -733,12 +735,12 @@ public class Httpx {
     }
 
     /**
-     * 表单提交带文件上传
+     * Sends a POST request with form data and file uploads.
      *
-     * @param url     请求地址
-     * @param formMap 请求参数
-     * @param list    文件路径
-     * @return the {@link String}
+     * @param url     The URL to send the request to.
+     * @param formMap A map of form data.
+     * @param list    A list of file paths to upload.
+     * @return The response body as a {@link String}.
      */
     public static String post(final String url, final Map<String, String> formMap, final List<String> list) {
         MediaType contentType = MediaType
@@ -773,10 +775,10 @@ public class Httpx {
     }
 
     /**
-     * 通用同步执行方法
+     * A private helper method to build a {@link Request.Builder} from the internal {@link Builder}.
      *
-     * @param builder Builder
-     * @return the {@link Request.Builder}
+     * @param builder The internal builder with request details.
+     * @return A {@link Request.Builder} configured with the provided details.
      */
     private static Request.Builder builder(final Builder builder) {
         if (StringKit.isBlank(builder.requestCharset)) {
@@ -821,7 +823,7 @@ public class Httpx {
             if (StringKit.isNotEmpty(builder.data)) {
                 requestBody = RequestBody.create(MediaType.valueOf(contentType), builder.data);
             } else if (MapKit.isNotEmpty(builder.formMap)) {
-                FormBody.Builder form = new FormBody.Builder(Charset.UTF_8);
+                FormBody.Builder form = new FormBody.Builder(java.nio.charset.Charset.forName(Charset.DEFAULT_UTF_8));
                 builder.formMap.forEach((key, value) -> form.add(key, StringKit.toString(value)));
                 requestBody = form.build();
             }
@@ -833,10 +835,10 @@ public class Httpx {
     }
 
     /**
-     * 通用同步执行方法
+     * A private helper method for executing a synchronous request.
      *
-     * @param builder Builder
-     * @return the {@link String}
+     * @param builder The internal builder with request details.
+     * @return The response body as a {@link String}.
      */
     private static String execute(final Builder builder) {
         String result = Normal.EMPTY;
@@ -858,10 +860,10 @@ public class Httpx {
     }
 
     /**
-     * 通用异步执行方法
+     * A private helper method for executing an asynchronous request.
      *
-     * @param builder Builder
-     * @return the {@link String}
+     * @param builder The internal builder with request details.
+     * @return An empty string, as the result is handled by the callback.
      */
     private static String enqueue(final Builder builder) {
         Request request = builder(builder).url(builder.url).build();
@@ -892,45 +894,48 @@ public class Httpx {
         return result[0];
     }
 
+    /**
+     * An internal builder class for configuring HTTP requests in a fluent way.
+     */
     @lombok.Builder
     @lombok.ToString
     private static class Builder {
 
         /**
-         * 请求 url
+         * The request URL.
          */
         private String url;
         /**
-         * 方法类型
+         * The HTTP method (e.g., GET, POST).
          */
         private String method;
         /**
-         * 请求参数
+         * The raw request body data.
          */
         private String data;
         /**
-         * 数据格式类型
+         * The content type of the request body.
          */
         private String contentType;
         /**
-         * 请求参数
+         * A map of form data parameters.
          */
         private Map<String, String> formMap;
         /**
-         * 头部参数
+         * A map of header parameters.
          */
         private Map<String, String> headerMap;
 
         /**
-         * 请求编码
+         * The character set for the request body.
          */
         private String requestCharset;
         /**
-         * 响应编码
+         * The character set for the response body.
          */
         private String responseCharset;
         /**
-         * 日志追踪
+         * Whether to enable logging for this request.
          */
         private boolean tracer;
     }

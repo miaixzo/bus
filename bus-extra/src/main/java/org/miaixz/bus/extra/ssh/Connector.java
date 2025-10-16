@@ -28,13 +28,14 @@
 package org.miaixz.bus.extra.ssh;
 
 /**
- * 连接者对象，提供一些连接的基本信息，包括：
+ * Represents a connector object that provides basic connection information for services like SSH, FTP, etc. This class
+ * encapsulates the following details:
  * <ul>
- * <li>host：主机名</li>
- * <li>port：端口</li>
- * <li>user：用户名（默认root）</li>
- * <li>password：密码</li>
- * <li>timeout：连接超时毫秒数</li>
+ * <li>host: The hostname or IP address of the server.</li>
+ * <li>port: The port number for the connection.</li>
+ * <li>user: The username for authentication (defaults to "root").</li>
+ * <li>password: The password for authentication.</li>
+ * <li>timeout: The connection timeout in milliseconds.</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -42,26 +43,41 @@ package org.miaixz.bus.extra.ssh;
  */
 public class Connector {
 
+    /**
+     * The hostname or IP address of the server.
+     */
     private String host;
+    /**
+     * The port number for the connection.
+     */
     private int port;
+    /**
+     * The username for authentication, defaulting to "root".
+     */
     private String user = "root";
+    /**
+     * The password for authentication.
+     */
     private String password;
+    /**
+     * The connection timeout duration in milliseconds.
+     */
     private long timeout;
 
     /**
-     * 构造
+     * Constructs a new, empty {@code Connector} instance.
      */
     public Connector() {
     }
 
     /**
-     * 构造
+     * Constructs a new {@code Connector} instance with specified host, port, user, password, and timeout.
      *
-     * @param host     主机名
-     * @param port     端口
-     * @param user     用户名
-     * @param password 密码
-     * @param timeout  连接超时时长，0表示默认
+     * @param host     The hostname or IP address of the server.
+     * @param port     The port number for the connection.
+     * @param user     The username for authentication.
+     * @param password The password for authentication.
+     * @param timeout  The connection timeout duration in milliseconds; a value of 0 may indicate the default timeout.
      */
     public Connector(final String host, final int port, final String user, final String password, final long timeout) {
         this.host = host;
@@ -72,36 +88,38 @@ public class Connector {
     }
 
     /**
-     * 创建Connector，所有参数为默认，用于构建模式
+     * Creates a new {@code Connector} instance with default parameters. This is useful for a builder-style pattern of
+     * object creation.
      *
-     * @return Connector
+     * @return A new, empty {@code Connector} instance.
      */
     public static Connector of() {
         return new Connector();
     }
 
     /**
-     * 创建Connector
+     * Creates a new {@code Connector} instance with specified host, port, user, and password. The timeout is set to its
+     * default value (0).
      *
-     * @param host     主机名
-     * @param port     端口
-     * @param user     用户名
-     * @param password 密码
-     * @return Connector
+     * @param host     The hostname or IP address of the server.
+     * @param port     The port number for the connection.
+     * @param user     The username for authentication.
+     * @param password The password for authentication.
+     * @return A new {@code Connector} instance initialized with the provided details.
      */
     public static Connector of(final String host, final int port, final String user, final String password) {
         return of(host, port, user, password, 0);
     }
 
     /**
-     * 创建Connector
+     * Creates a new {@code Connector} instance with specified host, port, user, password, and timeout.
      *
-     * @param host     主机名
-     * @param port     端口
-     * @param user     用户名
-     * @param password 密码
-     * @param timeout  连接超时时长，0表示默认
-     * @return Connector
+     * @param host     The hostname or IP address of the server.
+     * @param port     The port number for the connection.
+     * @param user     The username for authentication.
+     * @param password The password for authentication.
+     * @param timeout  The connection timeout duration in milliseconds; a value of 0 may indicate the default timeout.
+     * @return A new {@code Connector} instance initialized with the provided details.
      */
     public static Connector of(
             final String host,
@@ -113,19 +131,19 @@ public class Connector {
     }
 
     /**
-     * 获得主机名
+     * Retrieves the hostname or IP address of the server.
      *
-     * @return 主机名
+     * @return The hostname as a {@link String}.
      */
     public String getHost() {
         return host;
     }
 
     /**
-     * 设定主机名
+     * Sets the hostname or IP address of the server.
      *
-     * @param host 主机名
-     * @return this
+     * @param host The hostname to set.
+     * @return This {@code Connector} instance, allowing for method chaining.
      */
     public Connector setHost(final String host) {
         this.host = host;
@@ -133,19 +151,19 @@ public class Connector {
     }
 
     /**
-     * 获得端口号
+     * Retrieves the port number for the connection.
      *
-     * @return 端口号
+     * @return The port number.
      */
     public int getPort() {
         return port;
     }
 
     /**
-     * 设定端口号
+     * Sets the port number for the connection.
      *
-     * @param port 端口号
-     * @return this
+     * @param port The port number to set.
+     * @return This {@code Connector} instance, allowing for method chaining.
      */
     public Connector setPort(final int port) {
         this.port = port;
@@ -153,19 +171,19 @@ public class Connector {
     }
 
     /**
-     * 获得用户名
+     * Retrieves the username for authentication.
      *
-     * @return 用户名
+     * @return The username as a {@link String}.
      */
     public String getUser() {
         return user;
     }
 
     /**
-     * 设定用户名
+     * Sets the username for authentication.
      *
-     * @param name 用户名
-     * @return this
+     * @param name The username to set.
+     * @return This {@code Connector} instance, allowing for method chaining.
      */
     public Connector setUser(final String name) {
         this.user = name;
@@ -173,19 +191,19 @@ public class Connector {
     }
 
     /**
-     * 获得密码
+     * Retrieves the password for authentication.
      *
-     * @return 密码
+     * @return The password as a {@link String}.
      */
     public String getPassword() {
         return password;
     }
 
     /**
-     * 设定密码
+     * Sets the password for authentication.
      *
-     * @param password 密码
-     * @return this
+     * @param password The password to set.
+     * @return This {@code Connector} instance, allowing for method chaining.
      */
     public Connector setPassword(final String password) {
         this.password = password;
@@ -193,19 +211,19 @@ public class Connector {
     }
 
     /**
-     * 获得连接超时时间
+     * Retrieves the connection timeout duration in milliseconds.
      *
-     * @return 连接超时时间
+     * @return The connection timeout duration.
      */
     public long getTimeout() {
         return timeout;
     }
 
     /**
-     * 设置连接超时时间
+     * Sets the connection timeout duration in milliseconds.
      *
-     * @param timeout 连接超时时间
-     * @return this
+     * @param timeout The connection timeout duration to set.
+     * @return This {@code Connector} instance, allowing for method chaining.
      */
     public Connector setTimeout(final long timeout) {
         this.timeout = timeout;
@@ -213,7 +231,10 @@ public class Connector {
     }
 
     /**
-     * toString方法仅用于测试显示
+     * Returns a string representation of the connector object. This method is intended for logging and debugging
+     * purposes only.
+     *
+     * @return A string representation of the connector's properties.
      */
     @Override
     public String toString() {

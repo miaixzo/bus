@@ -33,13 +33,21 @@ import org.miaixz.bus.sensitive.Context;
 import org.miaixz.bus.sensitive.magic.annotation.Shield;
 
 /**
- * 公司开户银行联号 前四位明文,后面脱敏
+ * A desensitization provider for CNAPS (China National Advanced Payment System) codes. The strategy keeps the first 4
+ * characters visible and masks the rest.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class CnapsProvider extends AbstractProvider {
 
+    /**
+     * Applies CNAPS code-specific desensitization logic to the provided value.
+     *
+     * @param object  The object containing the CNAPS code string to be desensitized.
+     * @param context The current desensitization context, providing access to field annotations and other details.
+     * @return The desensitized CNAPS code, or null if the input is empty.
+     */
     @Override
     public Object build(Object object, Context context) {
         if (ObjectKit.isEmpty(object)) {

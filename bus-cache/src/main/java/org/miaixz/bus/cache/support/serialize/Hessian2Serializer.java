@@ -27,15 +27,16 @@
 */
 package org.miaixz.bus.cache.support.serialize;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import com.caucho.hessian.io.Hessian2Input;
 import com.caucho.hessian.io.Hessian2Output;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 
 /**
- * Hessian2序列化器
+ * A serializer that uses the Hessian 2 binary web service protocol.
  * <p>
- * 基于Hessian2实现的序列化器，提供高效的二进制序列化功能。 Hessian是一种轻量级的二进制RPC协议，具有跨语言支持和较高的序列化效率。
+ * This implementation provides efficient, cross-language binary serialization. Hessian is a lightweight RPC protocol
+ * that is well-suited for performance-critical applications.
  * </p>
  *
  * @author Kimi Liu
@@ -44,42 +45,34 @@ import com.caucho.hessian.io.Hessian2Output;
 public class Hessian2Serializer extends AbstractSerializer {
 
     /**
-     * 执行序列化操作
-     * <p>
-     * 使用Hessian2将对象序列化为字节数组
-     * </p>
+     * Performs serialization using Hessian 2.
      *
-     * @param object 要序列化的对象
-     * @return 序列化后的字节数组
-     * @throws Throwable 可能抛出的异常
+     * @param object The object to be serialized.
+     * @return The serialized byte array.
+     * @throws Throwable if an I/O or serialization error occurs.
      */
     @Override
     protected byte[] doSerialize(Object object) throws Throwable {
         try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
             Hessian2Output out = new Hessian2Output(os);
             out.writeObject(object);
-            os.close();
+            out.flush(); // Ensure all data is written to the underlying stream
             return os.toByteArray();
         }
     }
 
     /**
-     * 执行反序列化操作
-     * <p>
-     * 使用Hessian2将字节数组反序列化为对象
-     * </p>
+     * Performs deserialization using Hessian 2.
      *
-     * @param bytes 要反序列化的字节数组
-     * @return 反序列化后的对象
-     * @throws Throwable 可能抛出的异常
+     * @param bytes The byte array to be deserialized.
+     * @return The deserialized object.
+     * @throws Throwable if an I/O or deserialization error occurs.
      */
     @Override
     protected Object doDeserialize(byte[] bytes) throws Throwable {
         try (ByteArrayInputStream is = new ByteArrayInputStream(bytes)) {
             Hessian2Input in = new Hessian2Input(is);
-            Object result = in.readObject();
-            in.close();
-            return result;
+            return in.readObject();
         }
     }
 

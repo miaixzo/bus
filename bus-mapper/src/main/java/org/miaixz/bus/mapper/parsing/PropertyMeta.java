@@ -40,9 +40,9 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 /**
- * 属性映射基类，提供属性的存储和操作
+ * A base class for property mapping, providing storage and manipulation of properties.
  *
- * @param <T> 子类类型，用于支持链式调用
+ * @param <T> The subtype, for supporting fluent-style chaining.
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -52,22 +52,22 @@ import lombok.experimental.Accessors;
 public class PropertyMeta<T extends PropertyMeta> {
 
     /**
-     * 附加属性，用于扩展
+     * Additional properties for extension.
      */
     protected Map<String, String> props;
 
     /**
-     * 获取属性值
+     * Gets a property value.
      *
-     * @param key 属性名
-     * @return 属性值，若不存在则返回 null
+     * @param key The property name.
+     * @return The property value, or `null` if it does not exist.
      */
     public String getProp(String key) {
         if (key == null || key.isEmpty()) {
             return null;
         }
         String val = props != null ? props.get(key) : null;
-        // 如果配置值不存在，从全局获取配置
+        // If the configured value does not exist, get it from the global configuration.
         if (val == null) {
             val = Context.INSTANCE.getProperty(key);
         }
@@ -75,53 +75,53 @@ public class PropertyMeta<T extends PropertyMeta> {
     }
 
     /**
-     * 获取属性值，支持默认值
+     * Gets a property value, with support for a default value.
      *
-     * @param key          属性名
-     * @param defaultValue 默认值
-     * @return 属性值，若不存在则返回默认值
+     * @param key          The property name.
+     * @param defaultValue The default value.
+     * @return The property value, or the default value if it does not exist.
      */
     public String getProp(String key, String defaultValue) {
         return ObjectKit.defaultIfNull(getProp(key), defaultValue);
     }
 
     /**
-     * 获取整型属性值
+     * Gets an integer property value.
      *
-     * @param prop 属性名
-     * @return 整型属性值，若不存在或无法解析则返回 null
+     * @param prop The property name.
+     * @return The integer property value, or `null` if it does not exist or cannot be parsed.
      */
     public Integer getInt(String prop) {
         return Convert.toInt(getProp(prop));
     }
 
     /**
-     * 获取整型属性值，支持默认值
+     * Gets an integer property value, with support for a default value.
      *
-     * @param key          属性名
-     * @param defaultValue 默认值
-     * @return 整型属性值，若不存在或无法解析则返回默认值
+     * @param key          The property name.
+     * @param defaultValue The default value.
+     * @return The integer property value, or the default value if it does not exist or cannot be parsed.
      */
     public Integer getInt(String key, Integer defaultValue) {
         return Convert.toInt(getInt(key), defaultValue);
     }
 
     /**
-     * 获取布尔型属性值
+     * Gets a boolean property value.
      *
-     * @param key 属性名
-     * @return 布尔型属性值，若不存在则返回 null
+     * @param key The property name.
+     * @return The boolean property value, or `null` if it does not exist.
      */
     public Boolean getBoolean(String key) {
         return BooleanKit.toBoolean(getProp(key));
     }
 
     /**
-     * 获取布尔型属性值，支持默认值
+     * Gets a boolean property value, with support for a default value.
      *
-     * @param key          属性名
-     * @param defaultValue 默认值
-     * @return 布尔型属性值，若不存在则返回默认值
+     * @param key          The property name.
+     * @param defaultValue The default value.
+     * @return The boolean property value, or the default value if it does not exist.
      */
     public Boolean getBoolean(String key, Boolean defaultValue) {
         final String value = getProp(key);
@@ -132,11 +132,11 @@ public class PropertyMeta<T extends PropertyMeta> {
     }
 
     /**
-     * 设置属性值
+     * Sets a property value.
      *
-     * @param prop  属性名
-     * @param value 属性值
-     * @return 当前实例，支持链式调用
+     * @param prop  The property name.
+     * @param value The property value.
+     * @return The current instance for fluent-style chaining.
      */
     public T put(String prop, String value) {
         if (this.props == null) {
@@ -151,10 +151,10 @@ public class PropertyMeta<T extends PropertyMeta> {
     }
 
     /**
-     * 批量设置属性值，追加到原有属性集合
+     * Sets multiple property values, appending them to the existing property set.
      *
-     * @param props 属性映射
-     * @return 当前实例，支持链式调用
+     * @param props The map of properties.
+     * @return The current instance for fluent-style chaining.
      */
     public T put(Map<String, String> props) {
         if (props != null && !props.isEmpty()) {
@@ -166,10 +166,10 @@ public class PropertyMeta<T extends PropertyMeta> {
     }
 
     /**
-     * 删除指定属性
+     * Removes a specified property.
      *
-     * @param prop 属性名
-     * @return 被删除的属性值，若不存在则返回 null
+     * @param prop The property name.
+     * @return The removed property value, or `null` if it did not exist.
      */
     public String remove(String prop) {
         if (props != null) {

@@ -70,6 +70,17 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
     private long timeStamp = 0L;
     private List<HWPartition> partitionList;
 
+    /**
+     * Constructs a {@code MacHWDiskStore} object.
+     *
+     * @param name          The name of the disk.
+     * @param model         The model of the disk.
+     * @param serial        The serial number of the disk.
+     * @param size          The size of the disk in bytes.
+     * @param session       The DiskArbitration session reference.
+     * @param mountPointMap A map of partition BSD names to their mount points.
+     * @param cfKeyMap      A map of {@link CFKey} enum values to their corresponding {@link CFStringRef}.
+     */
     private MacHWDiskStore(String name, String model, String serial, long size, DASessionRef session,
             Map<String, String> mountPointMap, Map<CFKey, CFStringRef> cfKeyMap) {
         super(name, model, serial, size);
@@ -77,9 +88,9 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
     }
 
     /**
-     * Gets the disks on this machine
+     * Gets the disks on this machine.
      *
-     * @return a list of {@link HWDiskStore} objects representing the disks
+     * @return A list of {@link HWDiskStore} objects representing the disks.
      */
     public static List<HWDiskStore> getDisks() {
         Map<String, String> mountPointMap = Fsstat.queryPartitionToMountMap();
@@ -191,7 +202,7 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
     }
 
     /**
-     * Temporarily cache pointers to keys. The values from this map must be released after use.}
+     * Temporarily caches pointers to keys. The values from this map must be released after use.
      *
      * @return A map of keys in the {@link CFKey} enum to corresponding {@link CFStringRef}.
      */
@@ -203,46 +214,73 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
         return keyMap;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public long getReads() {
         return reads;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public long getReadBytes() {
         return readBytes;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public long getWrites() {
         return writes;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public long getWriteBytes() {
         return writeBytes;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public long getCurrentQueueLength() {
         return currentQueueLength;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public long getTransferTime() {
         return transferTime;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public long getTimeStamp() {
         return timeStamp;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<HWPartition> getPartitions() {
         return this.partitionList;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean updateAttributes() {
         // Open a session and create CFStrings
@@ -263,6 +301,14 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
         return diskFound;
     }
 
+    /**
+     * Updates disk statistics for this disk store.
+     *
+     * @param session       The DiskArbitration session reference.
+     * @param mountPointMap A map of partition BSD names to their mount points.
+     * @param cfKeyMap      A map of {@link CFKey} enum values to their corresponding {@link CFStringRef}.
+     * @return {@code true} if the disk statistics were successfully updated, {@code false} otherwise.
+     */
     private boolean updateDiskStats(
             DASessionRef session,
             Map<String, String> mountPointMap,
@@ -404,8 +450,6 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
                         if (parent != null) {
                             parent.release();
                         }
-                    } else {
-                        Logger.error("Unable to find IOMedia device or parent for {}", bsdName);
                     }
                     drive.release();
                 }
@@ -416,28 +460,95 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
         return false;
     }
 
-    /*
-     * Strings to convert to CFStringRef for pointer lookups
+    /**
+     * Enum to hold CFStringRef keys for DiskArbitration and IOKit lookups.
      */
     private enum CFKey {
 
+        /**
+         * Key for IOPropertyMatch.
+         */
         IO_PROPERTY_MATCH("IOPropertyMatch"), //
 
+        /**
+         * Key for Statistics.
+         */
         STATISTICS("Statistics"), //
-        READ_OPS("Operations (Read)"), READ_BYTES("Bytes (Read)"), READ_TIME("Total Time (Read)"), //
-        WRITE_OPS("Operations (Write)"), WRITE_BYTES("Bytes (Write)"), WRITE_TIME("Total Time (Write)"), //
+        /**
+         * Key for Read Operations.
+         */
+        READ_OPS("Operations (Read)"),
+        /**
+         * Key for Read Bytes.
+         */
+        READ_BYTES("Bytes (Read)"),
+        /**
+         * Key for Total Time (Read).
+         */
+        READ_TIME("Total Time (Read)"), //
+        /**
+         * Key for Write Operations.
+         */
+        WRITE_OPS("Operations (Write)"),
+        /**
+         * Key for Write Bytes.
+         */
+        WRITE_BYTES("Bytes (Write)"),
+        /**
+         * Key for Total Time (Write).
+         */
+        WRITE_TIME("Total Time (Write)"), //
 
-        BSD_UNIT("BSD Unit"), LEAF("Leaf"), WHOLE("Whole"), //
+        /**
+         * Key for BSD Unit.
+         */
+        BSD_UNIT("BSD Unit"),
+        /**
+         * Key for Leaf.
+         */
+        LEAF("Leaf"),
+        /**
+         * Key for Whole.
+         */
+        WHOLE("Whole"), //
 
-        DA_MEDIA_NAME("DAMediaName"), DA_VOLUME_NAME("DAVolumeName"), DA_MEDIA_SIZE("DAMediaSize"), //
-        DA_DEVICE_MODEL("DADeviceModel"), MODEL("Model");
+        /**
+         * Key for DAMediaName.
+         */
+        DA_MEDIA_NAME("DAMediaName"),
+        /**
+         * Key for DAVolumeName.
+         */
+        DA_VOLUME_NAME("DAVolumeName"),
+        /**
+         * Key for DAMediaSize.
+         */
+        DA_MEDIA_SIZE("DAMediaSize"), //
+        /**
+         * Key for DADeviceModel.
+         */
+        DA_DEVICE_MODEL("DADeviceModel"),
+        /**
+         * Key for Model.
+         */
+        MODEL("Model");
 
         private final String key;
 
+        /**
+         * Constructs a {@code CFKey} enum value.
+         *
+         * @param key The string representation of the key.
+         */
         CFKey(String key) {
             this.key = key;
         }
 
+        /**
+         * Gets the string representation of the key.
+         *
+         * @return The key string.
+         */
         public String getKey() {
             return this.key;
         }

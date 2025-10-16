@@ -28,10 +28,9 @@
 package org.miaixz.bus.core.text.placeholder.segment;
 
 /**
- * 字符串模板-单变量占位符 SectionBuffer
+ * Represents a single variable placeholder segment in a string template.
  * <p>
- * 例如，"?", "{}", "$$$"
- * </p>
+ * For example, "?", "{}", "$$$".
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -39,19 +38,19 @@ package org.miaixz.bus.core.text.placeholder.segment;
 public class SingleSegment extends AbstractSegment {
 
     /**
-     * 构造
+     * Constructs a {@code SingleSegment} with the given placeholder.
      *
-     * @param placeholder 占位符
+     * @param placeholder The placeholder string.
      */
     private SingleSegment(final String placeholder) {
         super(placeholder);
     }
 
     /**
-     * 创建
+     * Creates a new {@code SingleSegment} instance.
      *
-     * @param placeholder 占位符
-     * @return this
+     * @param placeholder The placeholder string.
+     * @return A new {@code SingleSegment} instance.
      */
     public static SingleSegment of(final String placeholder) {
         return new SingleSegment(placeholder);

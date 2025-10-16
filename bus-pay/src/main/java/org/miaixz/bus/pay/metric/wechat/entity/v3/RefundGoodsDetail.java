@@ -34,7 +34,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * V3 微信申请退款-退款商品
+ * Model for the Goods Detail object in the V3 Create Refund API.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -47,27 +47,27 @@ import lombok.experimental.SuperBuilder;
 public class RefundGoodsDetail {
 
     /**
-     * 商户侧商品编码
+     * The merchant's internal goods ID.
      */
     private String merchant_goods_id;
     /**
-     * 微信侧商品编码
+     * The WeChat Pay goods ID.
      */
     private String wechatpay_goods_id;
     /**
-     * 商品名称
+     * The name of the goods.
      */
     private String goods_name;
     /**
-     * 商品单价
+     * The unit price of the goods in cents.
      */
     private int unit_price;
     /**
-     * 商品退款金额
+     * The refund amount for this specific item in cents.
      */
     private int refund_amount;
     /**
-     * 商品退货数量
+     * The quantity of this item being refunded.
      */
     private int refund_quantity;
 

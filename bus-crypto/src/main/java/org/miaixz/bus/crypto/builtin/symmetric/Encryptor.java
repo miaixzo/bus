@@ -38,11 +38,11 @@ import org.miaixz.bus.core.xyz.HexKit;
 import org.miaixz.bus.core.xyz.IoKit;
 
 /**
- * 对称加密器接口，提供：
+ * Symmetric encryptor interface, providing methods for:
  * <ul>
- * <li>加密为bytes</li>
- * <li>加密为Hex(16进制)</li>
- * <li>加密为Base64</li>
+ * <li>Encrypting to byte arrays</li>
+ * <li>Encrypting to hexadecimal strings</li>
+ * <li>Encrypting to Base64 encoded strings</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -51,132 +51,135 @@ import org.miaixz.bus.core.xyz.IoKit;
 public interface Encryptor {
 
     /**
-     * 加密
+     * Encrypts the given byte array.
      *
-     * @param data 被加密的bytes
-     * @return 加密后的bytes
+     * @param data The byte array to be encrypted.
+     * @return The encrypted content as a byte array.
      */
     byte[] encrypt(byte[] data);
 
     /**
-     * 加密，针对大数据量，可选结束后是否关闭流
+     * Encrypts data from an input stream and writes it to an output stream. This method is suitable for large amounts
+     * of data. The option to close streams after operation is provided.
      *
-     * @param data    被加密的字符串
-     * @param out     输出流，可以是文件或网络位置
-     * @param isClose 是否关闭流
-     * @throws InternalException IO异常
+     * @param data    The input stream containing the data to be encrypted.
+     * @param out     The output stream to write the encrypted data to (e.g., a file or network stream).
+     * @param isClose Whether to close the input and output streams after the operation.
+     * @throws InternalException if an I/O error occurs during encryption.
      */
     void encrypt(InputStream data, OutputStream out, boolean isClose);
 
     /**
-     * 加密
+     * Encrypts the given byte array and returns the result as a hexadecimal string.
      *
-     * @param data 数据
-     * @return 加密后的Hex
+     * @param data The byte array to be encrypted.
+     * @return The encrypted content as a hexadecimal string.
      */
     default String encryptHex(final byte[] data) {
         return HexKit.encodeString(encrypt(data));
     }
 
     /**
-     * 加密
+     * Encrypts the given byte array and returns the result as a Base64 encoded string.
      *
-     * @param data 数据
-     * @return 加密后的Base64
+     * @param data The byte array to be encrypted.
+     * @return The encrypted content as a Base64 encoded string.
      */
     default String encryptBase64(final byte[] data) {
         return Base64.encode(encrypt(data));
     }
 
     /**
-     * 加密
+     * Encrypts the given string data using the specified charset.
      *
-     * @param data    被加密的字符串
-     * @param charset 编码
-     * @return 加密后的bytes
+     * @param data    The string data to be encrypted.
+     * @param charset The character set to use for encoding the string.
+     * @return The encrypted content as a byte array.
      */
     default byte[] encrypt(final String data, final java.nio.charset.Charset charset) {
         return encrypt(ByteKit.toBytes(data, charset));
     }
 
     /**
-     * 加密
+     * Encrypts the given string data using the specified charset and returns the result as a hexadecimal string.
      *
-     * @param data    被加密的字符串
-     * @param charset 编码
-     * @return 加密后的Hex
+     * @param data    The string data to be encrypted.
+     * @param charset The character set to use for encoding the string.
+     * @return The encrypted content as a hexadecimal string.
      */
     default String encryptHex(final String data, final java.nio.charset.Charset charset) {
         return HexKit.encodeString(encrypt(data, charset));
     }
 
     /**
-     * 加密
+     * Encrypts the given string data using the specified charset and returns the result as a Base64 encoded string.
      *
-     * @param data    被加密的字符串
-     * @param charset 编码
-     * @return 加密后的Base64
+     * @param data    The string data to be encrypted.
+     * @param charset The character set to use for encoding the string.
+     * @return The encrypted content as a Base64 encoded string.
      */
     default String encryptBase64(final String data, final java.nio.charset.Charset charset) {
         return Base64.encode(encrypt(data, charset));
     }
 
     /**
-     * 加密，使用UTF-8编码
+     * Encrypts the given string data using UTF-8 encoding.
      *
-     * @param data 被加密的字符串
-     * @return 加密后的bytes
+     * @param data The string data to be encrypted.
+     * @return The encrypted content as a byte array.
      */
     default byte[] encrypt(final String data) {
         return encrypt(ByteKit.toBytes(data, Charset.UTF_8));
     }
 
     /**
-     * 加密，使用UTF-8编码
+     * Encrypts the given string data using UTF-8 encoding and returns the result as a hexadecimal string.
      *
-     * @param data 被加密的字符串
-     * @return 加密后的Hex
+     * @param data The string data to be encrypted.
+     * @return The encrypted content as a hexadecimal string.
      */
     default String encryptHex(final String data) {
         return HexKit.encodeString(encrypt(data));
     }
 
     /**
-     * 加密，使用UTF-8编码
+     * Encrypts the given string data using UTF-8 encoding and returns the result as a Base64 encoded string.
      *
-     * @param data 被加密的字符串
-     * @return 加密后的Base64
+     * @param data The string data to be encrypted.
+     * @return The encrypted content as a Base64 encoded string.
      */
     default String encryptBase64(final String data) {
         return Base64.encode(encrypt(data));
     }
 
     /**
-     * 加密，加密后关闭流
+     * Encrypts data from an input stream. The input stream will be closed after the operation.
      *
-     * @param data 被加密的字符串
-     * @return 加密后的bytes
-     * @throws InternalException IO异常
+     * @param data The input stream containing the data to be encrypted.
+     * @return The encrypted content as a byte array.
+     * @throws InternalException if an I/O error occurs during encryption.
      */
     default byte[] encrypt(final InputStream data) throws InternalException {
         return encrypt(IoKit.readBytes(data));
     }
 
     /**
-     * 加密
+     * Encrypts data from an input stream and returns the result as a hexadecimal string. The input stream will be
+     * closed after the operation.
      *
-     * @param data 被加密的字符串
-     * @return 加密后的Hex
+     * @param data The input stream containing the data to be encrypted.
+     * @return The encrypted content as a hexadecimal string.
      */
     default String encryptHex(final InputStream data) {
         return HexKit.encodeString(encrypt(data));
     }
 
     /**
-     * 加密
+     * Encrypts data from an input stream and returns the result as a Base64 encoded string. The input stream will be
+     * closed after the operation.
      *
-     * @param data 被加密的字符串
-     * @return 加密后的Base64
+     * @param data The input stream containing the data to be encrypted.
+     * @return The encrypted content as a Base64 encoded string.
      */
     default String encryptBase64(final InputStream data) {
         return Base64.encode(encrypt(data));

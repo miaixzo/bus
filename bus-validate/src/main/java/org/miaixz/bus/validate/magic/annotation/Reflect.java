@@ -27,17 +27,17 @@
 */
 package org.miaixz.bus.validate.magic.annotation;
 
-import java.lang.annotation.*;
-
 import org.miaixz.bus.validate.Builder;
 import org.miaixz.bus.validate.metric.ReflectMatcher;
 
+import java.lang.annotation.*;
+
 /**
- * 通过反射调用被校验参数,并判断反射方法的结果
+ * Validates by reflectively invoking a method on the validated parameter and then checking the result.
  *
  * <p>
- * 默认被校验对象是null时,通过校验
- * </P>
+ * By default, if the object to be validated is null, the validation passes.
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -49,51 +49,52 @@ import org.miaixz.bus.validate.metric.ReflectMatcher;
 public @interface Reflect {
 
     /**
-     * 反射要执行的类
+     * The target class on which the reflective method call is performed.
      *
-     * @return the object
+     * @return the target class.
      */
+    @Filler("target")
     Class<?> target();
 
     /**
-     * 反射要执行的方法
+     * The name of the method to be executed via reflection.
      *
-     * @return the string
+     * @return the method name.
      */
     String method();
 
     /**
-     * 校验器名称数组,将会校验反射的执行结果
+     * An array of validator names that will be used to validate the result of the reflective method invocation.
      *
-     * @return the array
+     * @return an array of validator names.
      */
     String[] validator() default {};
 
     /**
-     * 默认使用的异常码
+     * The error code to be used when validation fails.
      *
-     * @return the string
+     * @return the error code.
      */
     String errcode() default Builder.DEFAULT_ERRCODE;
 
     /**
-     * 默认使用的异常信息
+     * The error message to be used when validation fails. The message can be a template with placeholders.
      *
-     * @return the string
+     * @return the error message.
      */
-    String errmsg() default "${field}参数校验失败";
+    String errmsg() default "Validation failed for parameter ${field}";
 
     /**
-     * 校验器组
+     * The validation groups this constraint belongs to.
      *
-     * @return the array
+     * @return an array of group names.
      */
     String[] group() default {};
 
     /**
-     * 被校验字段名称
+     * The name of the field being validated.
      *
-     * @return the string
+     * @return the field name.
      */
     String field() default Builder.DEFAULT_FIELD;
 

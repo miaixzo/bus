@@ -58,9 +58,8 @@ import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.Context;
 
 /**
- * MyBatis SQL 拦截器
- * <p>
- * 通过注册的处理器应用自定义逻辑处理 SQL 执行。 拦截 Executor 和 StatementHandler，处理查询、更新和 SQL 准备。
+ * A MyBatis SQL interceptor that applies custom logic to SQL execution by using registered handlers. It intercepts
+ * {@link Executor} and {@link StatementHandler} to process queries, updates, and SQL preparation.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -76,16 +75,16 @@ import org.miaixz.bus.mapper.Context;
 public class MybatisInterceptor extends AbstractSqlHandler implements Interceptor {
 
     /**
-     * 自定义处理器集合，使用 Set 避免重复
+     * A set of custom handlers to avoid duplicates.
      */
     private final Set<MapperHandler> handlers = new HashSet<>();
 
     /**
-     * 拦截方法，处理 MyBatis 的 Executor 和 StatementHandler 调用
+     * Intercepts MyBatis Executor and StatementHandler calls.
      *
-     * @param invocation 拦截调用信息
-     * @return 拦截处理后的结果
-     * @throws Throwable 如果拦截过程中发生异常
+     * @param invocation The invocation details.
+     * @return The result of the intercepted method.
+     * @throws Throwable if an error occurs during interception.
      */
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
@@ -122,13 +121,13 @@ public class MybatisInterceptor extends AbstractSqlHandler implements Intercepto
     }
 
     /**
-     * 处理 Executor 相关拦截逻辑（查询或更新）
+     * Handles interception logic for Executor (query or update).
      *
-     * @param executor   Executor 实例
-     * @param args       参数数组
-     * @param invocation 拦截调用信息
-     * @return 处理结果
-     * @throws Throwable 如果处理过程中发生异常
+     * @param executor   The Executor instance.
+     * @param args       The arguments array.
+     * @param invocation The invocation details.
+     * @return The result of the operation.
+     * @throws Throwable if an error occurs during processing.
      */
     private Object handleExecutor(Executor executor, Object[] args, Invocation invocation) throws Throwable {
         MappedStatement ms = (MappedStatement) args[0];
@@ -146,13 +145,13 @@ public class MybatisInterceptor extends AbstractSqlHandler implements Intercepto
     }
 
     /**
-     * 处理 StatementHandler 相关拦截逻辑（getBoundSql 或 prepare）
+     * Handles interception logic for StatementHandler (getBoundSql or prepare).
      *
-     * @param statementHandler StatementHandler 实例
-     * @param args             参数数组
-     * @param invocation       拦截调用信息
-     * @return 处理结果
-     * @throws Throwable 如果处理过程中发生异常
+     * @param statementHandler The StatementHandler instance.
+     * @param args             The arguments array.
+     * @param invocation       The invocation details.
+     * @return The result of the operation.
+     * @throws Throwable if an error occurs during processing.
      */
     private Object handleStatementHandler(StatementHandler statementHandler, Object[] args, Invocation invocation)
             throws Throwable {
@@ -166,15 +165,15 @@ public class MybatisInterceptor extends AbstractSqlHandler implements Intercepto
     }
 
     /**
-     * 处理查询操作
+     * Processes a query operation.
      *
-     * @param executor   Executor 实例
-     * @param ms         MappedStatement 实例
-     * @param parameter  参数对象
-     * @param args       参数数组
-     * @param invocation 拦截调用信息
-     * @return 查询结果，拦截器阻止时返回空列表
-     * @throws Throwable 如果处理过程中发生异常
+     * @param executor   The Executor instance.
+     * @param ms         The MappedStatement instance.
+     * @param parameter  The parameter object.
+     * @param args       The arguments array.
+     * @param invocation The invocation details.
+     * @return The query result, or an empty list if blocked by an interceptor.
+     * @throws Throwable if an error occurs during processing.
      */
     private Object processQuery(
             Executor executor,
@@ -201,14 +200,14 @@ public class MybatisInterceptor extends AbstractSqlHandler implements Intercepto
     }
 
     /**
-     * 处理更新操作
+     * Processes an update operation.
      *
-     * @param executor   Executor 实例
-     * @param ms         MappedStatement 实例
-     * @param parameter  参数对象
-     * @param invocation 拦截调用信息
-     * @return 更新结果，拦截器阻止时返回 -1
-     * @throws Throwable 如果处理过程中发生异常
+     * @param executor   The Executor instance.
+     * @param ms         The MappedStatement instance.
+     * @param parameter  The parameter object.
+     * @param invocation The invocation details.
+     * @return The update result, or -1 if blocked by an interceptor.
+     * @throws Throwable if an error occurs during processing.
      */
     private Object processUpdate(Executor executor, MappedStatement ms, Object parameter, Invocation invocation)
             throws Throwable {
@@ -222,11 +221,11 @@ public class MybatisInterceptor extends AbstractSqlHandler implements Intercepto
     }
 
     /**
-     * 记录 SQL 执行信息
+     * Logs SQL execution information.
      *
-     * @param ms       MappedStatement 实例
-     * @param boundSql BoundSql 实例
-     * @param start    开始时间
+     * @param ms       The MappedStatement instance.
+     * @param boundSql The BoundSql instance.
+     * @param start    The start time.
      */
     private void logging(MappedStatement ms, BoundSql boundSql, long start) {
         long duration = DateKit.current() - start;
@@ -236,31 +235,29 @@ public class MybatisInterceptor extends AbstractSqlHandler implements Intercepto
     }
 
     /**
-     * 格式化 SQL 语句，替换参数值
+     * Formats an SQL statement by replacing placeholders with parameter values.
      *
-     * @param configuration MyBatis 配置
-     * @param boundSql      BoundSql 实例
-     * @return 格式化后的 SQL 语句
+     * @param configuration The MyBatis configuration.
+     * @param boundSql      The BoundSql instance.
+     * @return The formatted SQL statement.
      */
     private String format(Configuration configuration, BoundSql boundSql) {
         String id = ID.objectId();
-        // 1.SQL语句多个空格全部使用一个空格代替
-        // 2.防止参数值中有问号问题,全部动态替换
+        // 1. Replace multiple spaces with a single space.
+        // 2. Replace question marks with a unique ID to avoid issues with parameter values.
         String sql = boundSql.getSql().replaceAll("[\\s]+", Symbol.SPACE).replaceAll("\\?", id);
-        // 获取参数
+        // Get parameters.
         Object parameterObject = boundSql.getParameterObject();
         List<ParameterMapping> parameterMappings = boundSql.getParameterMappings();
         if (CollKit.isEmpty(parameterMappings) || parameterObject == null) {
             return sql;
         }
-        // 获取类型处理器注册器,类型处理器的功能是进行java类型和数据库类型的转换
-        // 如果根据parameterObject.getClass()可以找到对应的类型,则替换
+        // Get the type handler registry.
         TypeHandlerRegistry typeHandlerRegistry = configuration.getTypeHandlerRegistry();
         if (typeHandlerRegistry.hasTypeHandler(parameterObject.getClass())) {
             return sql.replaceFirst(id, Matcher.quoteReplacement(getParameterValue(parameterObject)));
         }
-        // MetaObject主要是封装了originalObject对象,提供了get和set的方法
-        // 主要支持对JavaBean、Collection、Map三种类型对象的操作
+        // MetaObject provides get/set methods for JavaBeans, Collections, and Maps.
         MetaObject metaObject = configuration.newMetaObject(parameterObject);
         for (ParameterMapping mapping : parameterMappings) {
             String propertyName = mapping.getProperty();
@@ -269,12 +266,12 @@ public class MybatisInterceptor extends AbstractSqlHandler implements Intercepto
                         id,
                         Matcher.quoteReplacement(getParameterValue(metaObject.getValue(propertyName))));
             } else if (boundSql.hasAdditionalParameter(propertyName)) {
-                // 该分支是动态sql
+                // This branch handles dynamic SQL.
                 sql = sql.replaceFirst(
                         id,
                         Matcher.quoteReplacement(getParameterValue(boundSql.getAdditionalParameter(propertyName))));
             } else {
-                // 打印Missing,提醒该参数缺失并防止错位
+                // Print "Missing" to indicate a missing parameter and prevent misalignment.
                 sql = sql.replaceFirst(id, "Missing");
             }
         }
@@ -282,10 +279,10 @@ public class MybatisInterceptor extends AbstractSqlHandler implements Intercepto
     }
 
     /**
-     * 格式化参数值
+     * Formats a parameter value.
      *
-     * @param object 参数对象
-     * @return 格式化后的参数值
+     * @param object The parameter object.
+     * @return The formatted parameter value.
      */
     private static String getParameterValue(Object object) {
         if (object instanceof String) {
@@ -299,10 +296,10 @@ public class MybatisInterceptor extends AbstractSqlHandler implements Intercepto
     }
 
     /**
-     * 插件方法，决定是否对目标对象进行代理
+     * The plugin method, which determines whether to proxy the target object.
      *
-     * @param target 目标对象
-     * @return 代理对象或原对象
+     * @param target The target object.
+     * @return The proxy object or the original object.
      */
     @Override
     public Object plugin(Object target) {
@@ -312,18 +309,18 @@ public class MybatisInterceptor extends AbstractSqlHandler implements Intercepto
     }
 
     /**
-     * 添加自定义处理器
+     * Adds a custom handler.
      *
-     * @param handler 自定义处理器实例
+     * @param handler The custom handler instance.
      */
     public void addHandler(MapperHandler handler) {
         handlers.add(handler);
     }
 
     /**
-     * 设置处理器列表（兼容旧版本 MybatisPluginBuilder）
+     * Sets the list of handlers (for compatibility with older MybatisPluginBuilder versions).
      *
-     * @param handlers 处理器列表
+     * @param handlers The list of handlers.
      */
     public void setHandlers(List<MapperHandler> handlers) {
         this.handlers.clear();
@@ -333,18 +330,18 @@ public class MybatisInterceptor extends AbstractSqlHandler implements Intercepto
     }
 
     /**
-     * 获取处理器列表
+     * Gets the list of handlers.
      *
-     * @return 处理器列表副本
+     * @return A copy of the list of handlers.
      */
     public List<MapperHandler> getHandlers() {
         return new ArrayList<>(handlers);
     }
 
     /**
-     * 设置属性配置，动态创建和配置处理器
+     * Sets property configurations, dynamically creating and configuring handlers.
      *
-     * @param properties 配置属性
+     * @param properties The configuration properties.
      */
     @Override
     public void setProperties(Properties properties) {

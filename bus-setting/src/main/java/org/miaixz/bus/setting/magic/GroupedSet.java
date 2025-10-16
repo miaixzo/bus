@@ -37,8 +37,12 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.*;
 
 /**
- * 分组化的Set集合类 在配置文件中可以用中括号分隔不同的分组，每个分组会放在独立的Set中，用group区别 无分组的集合和`[]`分组集合会合并成员，重名的分组也会合并成员 分组配置文件如下：
- *
+ * A class representing a collection of grouped sets, parsed from a configuration file. In the file, groups are
+ * separated by square brackets {@code []}, and each group contains a set of unique string values. Ungrouped values and
+ * values in a {@code []} group are merged. Duplicate group names are also merged.
+ * <p>
+ * Example file format:
+ * 
  * <pre>
  * [group1]
  * aaa
@@ -60,51 +64,52 @@ public class GroupedSet extends HashMap<String, LinkedHashSet<String>> {
     private static final long serialVersionUID = 2852227976051L;
 
     /**
-     * 分组行识别的环绕标记
+     * The characters that surround a group name (e.g., '[' and ']').
      */
     private static final char[] GROUP_SURROUND = { '[', ']' };
 
     /**
-     * 本设置对象的字符集
+     * The character set used to read the settings file.
      */
     private java.nio.charset.Charset charset;
     /**
-     * 设定文件的URL
+     * The URL of the settings file.
      */
     private URL groupedSetUrl;
 
     /**
-     * 基本构造 需自定义初始化配置文件
+     * Constructs a new, empty {@code GroupedSet} with a specified charset. The configuration must be initialized
+     * manually by calling {@link #init} or {@link #load}.
      *
-     * @param charset 字符集
+     * @param charset The character set to use.
      */
     public GroupedSet(final java.nio.charset.Charset charset) {
         this.charset = charset;
     }
 
     /**
-     * 构造，使用相对于Class文件根目录的相对路径
+     * Constructs a {@code GroupedSet} by loading a file from the classpath.
      *
-     * @param pathBaseClassLoader 相对路径（相对于当前项目的classes路径）
-     * @param charset             字符集
+     * @param pathOnClasspath The relative path from the root of the classpath.
+     * @param charset         The character set to use.
      */
-    public GroupedSet(String pathBaseClassLoader, final java.nio.charset.Charset charset) {
-        if (null == pathBaseClassLoader) {
-            pathBaseClassLoader = Normal.EMPTY;
+    public GroupedSet(String pathOnClasspath, final java.nio.charset.Charset charset) {
+        if (null == pathOnClasspath) {
+            pathOnClasspath = Normal.EMPTY;
         }
 
-        final URL url = UrlKit.getURL(pathBaseClassLoader);
+        final URL url = UrlKit.getURL(pathOnClasspath);
         if (url == null) {
-            throw new RuntimeException(StringKit.format("Can not find GroupSet file: [{}]", pathBaseClassLoader));
+            throw new RuntimeException(StringKit.format("Can not find GroupSet file: [{}]", pathOnClasspath));
         }
         this.init(url, charset);
     }
 
     /**
-     * 构造
+     * Constructs a {@code GroupedSet} from a {@link File}.
      *
-     * @param configFile 配置文件对象
-     * @param charset    字符集
+     * @param configFile The configuration file.
+     * @param charset    The character set to use.
      */
     public GroupedSet(final File configFile, final java.nio.charset.Charset charset) {
         if (configFile == null) {
@@ -115,11 +120,11 @@ public class GroupedSet extends HashMap<String, LinkedHashSet<String>> {
     }
 
     /**
-     * 构造，相对于classes读取文件
+     * Constructs a {@code GroupedSet} from a path relative to a given class.
      *
-     * @param path    相对路径
-     * @param clazz   基准类
-     * @param charset 字符集
+     * @param path    The path relative to the class.
+     * @param clazz   The class to which the path is relative.
+     * @param charset The character set to use.
      */
     public GroupedSet(final String path, final Class<?> clazz, final java.nio.charset.Charset charset) {
         final URL url = UrlKit.getURL(path, clazz);
@@ -130,10 +135,10 @@ public class GroupedSet extends HashMap<String, LinkedHashSet<String>> {
     }
 
     /**
-     * 构造
+     * Constructs a {@code GroupedSet} from a {@link URL}.
      *
-     * @param url     设定文件的URL
-     * @param charset 字符集
+     * @param url     The URL of the configuration file.
+     * @param charset The character set to use.
      */
     public GroupedSet(final URL url, final java.nio.charset.Charset charset) {
         if (url == null) {
@@ -143,20 +148,20 @@ public class GroupedSet extends HashMap<String, LinkedHashSet<String>> {
     }
 
     /**
-     * 构造
+     * Constructs a {@code GroupedSet} by loading a file from the classpath with UTF-8 encoding.
      *
-     * @param pathBaseClassLoader 相对路径（相对于当前项目的classes路径）
+     * @param pathOnClasspath The relative path from the root of the classpath.
      */
-    public GroupedSet(final String pathBaseClassLoader) {
-        this(pathBaseClassLoader, Charset.UTF_8);
+    public GroupedSet(final String pathOnClasspath) {
+        this(pathOnClasspath, Charset.UTF_8);
     }
 
     /**
-     * 初始化设定文件
+     * Initializes this {@code GroupedSet} by loading from a URL.
      *
-     * @param groupedSetUrl 设定文件的URL
-     * @param charset       字符集
-     * @return 成功初始化与否
+     * @param groupedSetUrl The URL of the configuration file.
+     * @param charset       The character set to use.
+     * @return {@code true} if loading was successful.
      */
     public boolean init(final URL groupedSetUrl, final java.nio.charset.Charset charset) {
         if (groupedSetUrl == null) {
@@ -169,110 +174,83 @@ public class GroupedSet extends HashMap<String, LinkedHashSet<String>> {
     }
 
     /**
-     * 加载设置文件
+     * Loads the settings from the specified URL.
      *
-     * @param groupedSetUrl 配置文件URL
-     * @return 加载是否成功
+     * @param groupedSetUrl The URL of the configuration file.
+     * @return {@code true} if loading was successful, {@code false} otherwise.
      */
-    synchronized public boolean load(final URL groupedSetUrl) {
+    public synchronized boolean load(final URL groupedSetUrl) {
         if (groupedSetUrl == null) {
             throw new RuntimeException("Null GroupSet url define!");
         }
-        // logger.debug("Load GroupSet file [{}]", groupedSetUrl.getPath());
-        InputStream settingStream = null;
-        try {
-            settingStream = groupedSetUrl.openStream();
+        try (InputStream settingStream = groupedSetUrl.openStream()) {
             load(settingStream);
         } catch (final IOException e) {
-            // logger.error(e, "Load GroupSet error!");
             return false;
-        } finally {
-            IoKit.closeQuietly(settingStream);
         }
         return true;
     }
 
     /**
-     * 重新加载配置文件
+     * Reloads the configuration file from the original URL.
      */
     public void reload() {
         this.load(groupedSetUrl);
     }
 
     /**
-     * 加载设置文件。 此方法不会关闭流对象
+     * Loads settings from an {@link InputStream}. This method does not close the stream.
      *
-     * @param settingStream 文件流
-     * @throws IOException IO异常
+     * @param settingStream The input stream to read from.
+     * @throws IOException if an I/O error occurs.
      */
     public void load(final InputStream settingStream) throws IOException {
         super.clear();
-        BufferedReader reader = null;
-        try {
-            reader = IoKit.toReader(settingStream, charset);
-            // 分组
-            String group;
+        try (BufferedReader reader = IoKit.toReader(settingStream, charset)) {
+            String group = null;
             LinkedHashSet<String> valueSet = null;
 
-            while (true) {
-                String line = reader.readLine();
-                if (line == null) {
-                    break;
-                }
+            String line;
+            while ((line = reader.readLine()) != null) {
                 line = line.trim();
-                // 跳过注释行和空行
                 if (StringKit.isBlank(line) || line.startsWith(Symbol.HASH)) {
-                    // 空行和注释忽略
-                    continue;
+                    continue; // Skip blank lines and comments
                 } else if (line.startsWith(Symbol.BACKSLASH + Symbol.HASH)) {
-                    // 对于值中出现开头为#的字符串，需要转义处理，在此做反转义
-                    line = line.substring(1);
+                    line = line.substring(1); // Unescape lines starting with \#
                 }
 
-                // 记录分组名
                 if (line.charAt(0) == GROUP_SURROUND[0] && line.charAt(line.length() - 1) == GROUP_SURROUND[1]) {
-                    // 开始新的分组取值，当出现重名分组时候，合并分组值
                     group = line.substring(1, line.length() - 1).trim();
-                    valueSet = super.get(group);
-                    if (null == valueSet) {
-                        valueSet = new LinkedHashSet<>();
+                    valueSet = super.computeIfAbsent(group, k -> new LinkedHashSet<>());
+                } else {
+                    if (valueSet == null) {
+                        valueSet = super.computeIfAbsent(Normal.EMPTY, k -> new LinkedHashSet<>());
                     }
-                    super.put(group, valueSet);
-                    continue;
+                    valueSet.add(line);
                 }
-
-                // 添加值
-                if (null == valueSet) {
-                    // 当出现无分组值的时候，会导致valueSet为空，此时group为""
-                    valueSet = new LinkedHashSet<>();
-                    super.put(Normal.EMPTY, valueSet);
-                }
-                valueSet.add(line);
             }
-        } finally {
-            IoKit.closeQuietly(reader);
         }
     }
 
     /**
-     * @return 获得设定文件的路径
+     * @return The path of the loaded settings file.
      */
     public String getPath() {
-        return groupedSetUrl.getPath();
+        return groupedSetUrl != null ? groupedSetUrl.getPath() : null;
     }
 
     /**
-     * @return 获得所有分组名
+     * @return A set of all group names.
      */
     public Set<String> getGroups() {
         return super.keySet();
     }
 
     /**
-     * 获得对应分组的所有值
+     * Gets the set of values for a specific group.
      *
-     * @param group 分组名
-     * @return 分组的值集合
+     * @param group The group name. If null, the default (ungrouped) group is used.
+     * @return The set of values, or null if the group does not exist.
      */
     public LinkedHashSet<String> getValues(String group) {
         if (group == null) {
@@ -282,44 +260,35 @@ public class GroupedSet extends HashMap<String, LinkedHashSet<String>> {
     }
 
     /**
-     * 是否在给定分组的集合中包含指定值 如果给定分组对应集合不存在，则返回false
+     * Checks if a group contains one or more specified values.
      *
-     * @param group       分组名
-     * @param value       测试的值
-     * @param otherValues 其他值
-     * @return 是否包含
+     * @param group       The group name.
+     * @param value       The primary value to check for.
+     * @param otherValues Additional values to check for.
+     * @return {@code true} if the group's set contains the value(s).
      */
     public boolean contains(final String group, final String value, final String... otherValues) {
         if (ArrayKit.isNotEmpty(otherValues)) {
-            // 需要测试多个值的情况
-            final List<String> valueList = Arrays.asList(otherValues);
+            final List<String> valueList = new ArrayList<>(otherValues.length + 1);
             valueList.add(value);
+            Collections.addAll(valueList, otherValues);
             return contains(group, valueList);
         } else {
-            // 测试单个值
             final LinkedHashSet<String> valueSet = getValues(group);
-            if (CollKit.isEmpty(valueSet)) {
-                return false;
-            }
-
-            return valueSet.contains(value);
+            return valueSet != null && valueSet.contains(value);
         }
     }
 
     /**
-     * 是否在给定分组的集合中全部包含指定值集合 如果给定分组对应集合不存在，则返回false
+     * Checks if a group contains all values from a given collection.
      *
-     * @param group  分组名
-     * @param values 测试的值集合
-     * @return 是否包含
+     * @param group  The group name.
+     * @param values The collection of values to check for.
+     * @return {@code true} if the group's set contains all the specified values.
      */
     public boolean contains(final String group, final Collection<String> values) {
         final LinkedHashSet<String> valueSet = getValues(group);
-        if (CollKit.isEmpty(values) || CollKit.isEmpty(valueSet)) {
-            return false;
-        }
-
-        return valueSet.containsAll(values);
+        return CollKit.isNotEmpty(values) && CollKit.isNotEmpty(valueSet) && valueSet.containsAll(values);
     }
 
 }

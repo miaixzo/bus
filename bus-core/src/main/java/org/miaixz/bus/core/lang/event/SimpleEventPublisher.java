@@ -39,21 +39,32 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.ThreadKit;
 
 /**
- * 简单的事件发布者实现，基于{@link Subscriber}和{@link Event}实现
+ * A simple implementation of {@link EventPublisher} based on {@link Subscriber} and {@link Event}. This publisher
+ * manages a list of subscribers and dispatches events to them, supporting both synchronous and asynchronous execution
+ * based on the subscriber's preference.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class SimpleEventPublisher implements EventPublisher {
 
+    /**
+     * The list of registered subscribers.
+     */
     private final List<Subscriber> subscribers;
+    /**
+     * A loader for the {@link ExecutorService} used for asynchronous event processing. Defaults to a new executor
+     * created by {@link ThreadKit#newExecutor()}.
+     */
     private Loader<ExecutorService> executorServiceLoader;
 
     /**
-     * 构造
+     * Constructs a new {@code SimpleEventPublisher}.
      *
-     * @param subscribers           订阅者列表
-     * @param executorServiceLoader 线程池加载器，用于异步执行，默认为{@link ThreadKit#newExecutor()}
+     * @param subscribers           The initial list of subscribers. Can be {@code null} to start with an empty list.
+     * @param executorServiceLoader A loader for the {@link ExecutorService} to be used for asynchronous event
+     *                              execution. If {@code null}, a default executor will be used via
+     *                              {@link ThreadKit#newExecutor()}.
      */
     public SimpleEventPublisher(final List<Subscriber> subscribers,
             final Loader<ExecutorService> executorServiceLoader) {
@@ -63,35 +74,47 @@ public class SimpleEventPublisher implements EventPublisher {
     }
 
     /**
-     * 创建一个默认的{@code SimpleEventPublisher}，默认线程池为{@link ThreadKit#newExecutor()}
+     * Creates a default {@code SimpleEventPublisher} instance. It starts with no subscribers and uses a default
+     * {@link ExecutorService} created by {@link ThreadKit#newExecutor()} for asynchronous tasks.
      *
-     * @return {@code SimpleEventPublisher}
+     * @return A new {@code SimpleEventPublisher} instance.
      */
     public static SimpleEventPublisher of() {
         return of(null);
     }
 
     /**
-     * 创建一个默认的{@code SimpleEventPublisher}，默认线程池为{@link ThreadKit#newExecutor()}
+     * Creates a {@code SimpleEventPublisher} instance with an optional initial list of subscribers. It uses a default
+     * {@link ExecutorService} created by {@link ThreadKit#newExecutor()} for asynchronous tasks.
      *
-     * @param subscribers 订阅者列表，也可以传入空列表后调用{@link #register(Subscriber)}添加
-     * @return {@code SimpleEventPublisher}
+     * @param subscribers An initial list of subscribers. Can be {@code null} or an empty list. Additional subscribers
+     *                    can be added later using {@link #register(Subscriber)}.
+     * @return A new {@code SimpleEventPublisher} instance.
      */
     public static SimpleEventPublisher of(final List<Subscriber> subscribers) {
         return new SimpleEventPublisher(subscribers, null);
     }
 
     /**
-     * 设置自定义的{@link ExecutorService}线程池，默认为{@link ThreadKit#newExecutor()}
+     * Sets a custom {@link ExecutorService} for asynchronous event processing. If not set, a default executor from
+     * {@link ThreadKit#newExecutor()} is used.
      *
-     * @param executorService {@link ExecutorService}，不能为空
-     * @return this
+     * @param executorService The {@link ExecutorService} to use. Must not be {@code null}.
+     * @return This {@code SimpleEventPublisher} instance, allowing for method chaining.
+     * @throws IllegalArgumentException if the provided {@code executorService} is {@code null}.
      */
     public SimpleEventPublisher setExecutorService(final ExecutorService executorService) {
         this.executorServiceLoader = () -> Assert.notNull(executorService);
         return this;
     }
 
+    /**
+     * Registers a {@link Subscriber} with this publisher. Registered subscribers will receive events published by this
+     * instance. The list of subscribers is sorted after each registration based on their {@link Subscriber#order()}.
+     *
+     * @param subscriber The subscriber to register.
+     * @return This {@code EventPublisher} instance, allowing for method chaining.
+     */
     @Override
     public EventPublisher register(final Subscriber subscriber) {
         subscribers.add(subscriber);
@@ -99,6 +122,13 @@ public class SimpleEventPublisher implements EventPublisher {
         return this;
     }
 
+    /**
+     * Publishes an {@link Event} to all registered subscribers. If a subscriber is configured for asynchronous
+     * execution ({@link Subscriber#async()} returns {@code true}), the event will be processed in the
+     * {@link ExecutorService}. Otherwise, it will be processed synchronously.
+     *
+     * @param event The event object to publish.
+     */
     @Override
     public void publish(final Event event) {
         for (final Subscriber subscriber : subscribers) {

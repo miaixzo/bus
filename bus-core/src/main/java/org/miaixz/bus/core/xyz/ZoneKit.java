@@ -32,7 +32,7 @@ import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 /**
- * {@link ZoneId}和{@link TimeZone}相关封装
+ * Utility class for {@link ZoneId} and {@link TimeZone}.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -40,48 +40,46 @@ import java.util.concurrent.TimeUnit;
 public class ZoneKit {
 
     /**
-     * UTC 的 ZoneID
+     * The {@link TimeZone} for UTC.
      */
     public static final TimeZone ZONE_UTC = TimeZone.getTimeZone("UTC");
     /**
-     * UTC 的 TimeZone
+     * The {@link ZoneId} for UTC.
      */
     public static final ZoneId ZONE_ID_UTC = ZONE_UTC.toZoneId();
 
     /**
-     * {@link ZoneId}转换为{@link TimeZone}，{@code null}则返回系统默认值
+     * Converts a {@link ZoneId} to a {@link TimeZone}.
      *
-     * @param zoneId {@link ZoneId}，{@code null}则返回系统默认值
-     * @return {@link TimeZone}
+     * @param zoneId The `ZoneId`. If `null`, returns the system default `TimeZone`.
+     * @return The corresponding `TimeZone`.
      */
     public static TimeZone toTimeZone(final ZoneId zoneId) {
         if (null == zoneId) {
             return TimeZone.getDefault();
         }
-
         return TimeZone.getTimeZone(zoneId);
     }
 
     /**
-     * {@link TimeZone}转换为{@link ZoneId}，{@code null}则返回系统默认值
+     * Converts a {@link TimeZone} to a {@link ZoneId}.
      *
-     * @param timeZone {@link TimeZone}，{@code null}则返回系统默认值
-     * @return {@link ZoneId}
+     * @param timeZone The `TimeZone`. If `null`, returns the system default `ZoneId`.
+     * @return The corresponding `ZoneId`.
      */
     public static ZoneId toZoneId(final TimeZone timeZone) {
         if (null == timeZone) {
             return ZoneId.systemDefault();
         }
-
         return timeZone.toZoneId();
     }
 
     /**
-     * 获取指定偏移量的可用时区，如果有多个时区匹配，使用第一个
+     * Gets an available `TimeZone` for a given raw offset.
      *
-     * @param rawOffset 偏移量
-     * @param timeUnit  偏移量单位
-     * @return 时区
+     * @param rawOffset The offset from UTC.
+     * @param timeUnit  The unit of the offset.
+     * @return The `TimeZone`, or `null` if not found.
      */
     public static TimeZone getTimeZoneByOffset(final int rawOffset, final TimeUnit timeUnit) {
         final String id = getAvailableID(rawOffset, timeUnit);
@@ -89,11 +87,11 @@ public class ZoneKit {
     }
 
     /**
-     * 获取指定偏移量的可用时区ID，如果有多个时区匹配，使用第一个
+     * Gets an available `TimeZone` ID for a given raw offset.
      *
-     * @param rawOffset 偏移量
-     * @param timeUnit  偏移量单位
-     * @return 时区ID，未找到返回{@code null}
+     * @param rawOffset The offset from UTC.
+     * @param timeUnit  The unit of the offset.
+     * @return The `TimeZone` ID, or `null` if not found.
      */
     public static String getAvailableID(final int rawOffset, final TimeUnit timeUnit) {
         final String[] availableIDs = TimeZone

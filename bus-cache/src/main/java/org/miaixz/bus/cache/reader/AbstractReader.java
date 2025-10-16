@@ -36,9 +36,11 @@ import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.proxy.invoker.ProxyChain;
 
 /**
- * 抽象缓存读取器
+ * An abstract base class for cache readers.
  * <p>
- * 提供缓存读取的基本框架，包含日志记录和方法调用耗时统计功能。 子类需要实现具体的读取逻辑。
+ * This class provides a foundational framework for cache reading logic, including dependency injection for core
+ * components and a utility method for logging method invocation times. Subclasses must implement the specific logic for
+ * reading from the cache.
  * </p>
  *
  * @author Kimi Liu
@@ -47,32 +49,34 @@ import org.miaixz.bus.proxy.invoker.ProxyChain;
 public abstract class AbstractReader {
 
     /**
-     * 缓存管理器
+     * The manager for all registered cache instances.
      */
     protected Manage manage;
 
     /**
-     * 缓存上下文配置
+     * The configuration context for the cache module.
      */
     protected Context context;
 
     /**
-     * 缓存命中率统计组件
+     * The component for tracking cache performance metrics.
      */
     protected Metrics metrics;
 
     /**
-     * 执行缓存读取操作
+     * Executes the cache read operation.
      * <p>
-     * 根据注解信息和方法信息执行缓存读取操作，支持可选的写入功能。
+     * Subclasses must implement this method to define the specific strategy for reading from the cache (e.g.,
+     * single-key or multi-key lookup), handling cache misses, and optionally writing back the result of the original
+     * method invocation.
      * </p>
      *
-     * @param annoHolder   注解持有者，包含缓存相关的注解信息
-     * @param methodHolder 方法持有者，包含方法相关的信息
-     * @param baseInvoker  代理调用链，用于执行原始方法
-     * @param needWrite    是否需要写入缓存
-     * @return 缓存值或方法执行结果
-     * @throws Throwable 可能抛出的异常
+     * @param annoHolder   The holder for the caching annotations on the method.
+     * @param methodHolder The holder for metadata about the method itself.
+     * @param baseInvoker  The proxy chain invoker to proceed with the original method call on a cache miss.
+     * @param needWrite    If {@code true}, the result of the method invocation should be written to the cache.
+     * @return The value from the cache or the result of the original method invocation.
+     * @throws Throwable if the underlying method invocation throws an exception.
      */
     public abstract Object read(
             AnnoHolder annoHolder,
@@ -81,14 +85,14 @@ public abstract class AbstractReader {
             boolean needWrite) throws Throwable;
 
     /**
-     * 执行带日志记录的方法调用
+     * Executes a supplier function and logs the total execution time.
      * <p>
-     * 包装方法调用，记录方法执行耗时，无论方法是否抛出异常都会记录日志。
+     * This wrapper ensures that the invocation time is logged, even if the supplier throws an exception.
      * </p>
      *
-     * @param throwableSupplier 可抛出异常的供应者
-     * @return 方法执行结果
-     * @throws Throwable 可能抛出的异常
+     * @param throwableSupplier The supplier function to execute.
+     * @return The result of the supplier function.
+     * @throws Throwable if the supplier function throws an exception.
      */
     Object doLogInvoke(ThrowableSupplier<Object> throwableSupplier) throws Throwable {
         long start = System.currentTimeMillis();
@@ -100,48 +104,45 @@ public abstract class AbstractReader {
     }
 
     /**
-     * 设置缓存管理器
+     * Sets the cache manager.
      *
-     * @param manage 缓存管理器
+     * @param manage The cache manager.
      */
     public void setManage(Manage manage) {
         this.manage = manage;
     }
 
     /**
-     * 设置缓存上下文配置
+     * Sets the cache context configuration.
      *
-     * @param config 缓存上下文配置
+     * @param config The cache context configuration.
      */
     public void setContext(Context config) {
         this.context = config;
     }
 
     /**
-     * 设置缓存命中率统计组件
+     * Sets the cache metrics component.
      *
-     * @param metrics 缓存命中率统计组件
+     * @param metrics The cache metrics component.
      */
     public void setHitting(Metrics metrics) {
         this.metrics = metrics;
     }
 
     /**
-     * 可抛出异常的供应者接口
-     * <p>
-     * 函数式接口，用于包装可能抛出异常的操作。
-     * </p>
+     * A functional interface for a supplier that can throw a {@link Throwable}.
      *
-     * @param <T> 返回值类型
+     * @param <T> The type of the result.
      */
     @FunctionalInterface
     protected interface ThrowableSupplier<T> {
 
         /**
-         * 获取结果
+         * Gets a result.
          *
-         * @return 结果
-         * @throws Throwable 可能抛出的异常
+         * @return a result
+         * @throws Throwable if unable to compute a result
          */
         T get() throws Throwable;
     }

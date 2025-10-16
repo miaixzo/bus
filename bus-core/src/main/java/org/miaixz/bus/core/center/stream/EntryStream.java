@@ -42,54 +42,58 @@ import org.miaixz.bus.core.xyz.IteratorKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 
 /**
- * 参考StreamEx的EntryStream与vavr的Map，是针对键值对对象{@link Map.Entry}特化的单元素增强流实现。 本身可视为一个元素类型为{@link Map.Entry}的{@link Stream}，
- * 用于支持流式处理{@link Map}集合中的、或其他键值对类型的数据。
+ * An enhanced stream implementation specialized for key-value pairs, {@link Map.Entry}, inspired by StreamEx's
+ * EntryStream and vavr's Map. It can be viewed as a {@link Stream} whose elements are of type {@link Map.Entry}, used
+ * to support stream processing of data from {@link Map} collections or other key-value pair types.
  *
- * @param <K> 键类型
- * @param <V> 值类型
+ * @param <K> the type of keys
+ * @param <V> the type of values
  * @author Kimi Liu
  * @since Java 17+
  */
 public class EntryStream<K, V> extends EnhancedWrappedStream<Map.Entry<K, V>, EntryStream<K, V>> {
 
     /**
-     * 默认的空键值对
+     * The default empty key-value pair.
      */
     private static final Map.Entry<?, ?> EMPTY_ENTRY = new AbstractMap.SimpleImmutableEntry<>(null, null);
 
     /**
-     * 构造
+     * Constructs an {@code EntryStream} from a given {@link Stream} of {@link Map.Entry} objects.
+     *
+     * @param stream the {@link Stream} of {@link Map.Entry} objects to wrap
      */
     EntryStream(final Stream<Map.Entry<K, V>> stream) {
         super(stream);
     }
 
     /**
-     * 根据键与值的集合创建键值对流，若两集合在相同下标的位置找不到对应的键或值，则使用{@code null}填充。 比如: {@code [1, 2, 3]}与{@code [1, 2]}合并，则得到{@code [{1=1},
-     * {2=2}, {3=null}]}。
+     * Creates an {@code EntryStream} by merging a collection of keys and a collection of values. If a key or value is
+     * not found at a corresponding index in the other collection, {@code null} will be used as a placeholder. For
+     * example, merging {@code [1, 2, 3]} and {@code [1, 2]} will result in {@code [{1=1}, {2=2}, {3=null}]}.
      *
-     * @param <K>    键类型
-     * @param <V>    值类型
-     * @param keys   键集合
-     * @param values 值集合
-     * @return {@code EntryStream}实例
+     * @param <K>    the type of keys
+     * @param <V>    the type of values
+     * @param keys   the collection of keys
+     * @param values the collection of values
+     * @return an {@code EntryStream} instance
      */
     public static <K, V> EntryStream<K, V> merge(final Iterable<K> keys, final Iterable<V> values) {
         final boolean hasKeys = ObjectKit.isNotNull(keys);
         final boolean hasValues = ObjectKit.isNotNull(values);
-        // 皆为空
+        // Both empty
         if (!hasKeys && !hasValues) {
             return empty();
         }
-        // 值为空
+        // Values empty
         if (hasKeys && !hasValues) {
             return of(keys, Function.identity(), k -> null);
         }
-        // 键为空
+        // Keys empty
         if (!hasKeys) {
             return of(values, v -> null, Function.identity());
         }
-        // 皆不为空
+        // Both not empty
         final List<Map.Entry<K, V>> entries = new ArrayList<>();
         final Iterator<K> keyItr = keys.iterator();
         final Iterator<V> valueItr = values.iterator();
@@ -100,40 +104,42 @@ public class EntryStream<K, V> extends EnhancedWrappedStream<Map.Entry<K, V>, En
     }
 
     /**
-     * 根据一个{@link Map}集合中的键值对创建一个串行流， 对流的操作不会影响到入参的{@code map}实例本身
+     * Creates a sequential {@code EntryStream} from the key-value pairs of a {@link Map}. Operations on the stream will
+     * not affect the input {@code map} instance itself.
      *
-     * @param map 集合
-     * @param <K> 键类型
-     * @param <V> 值类型
-     * @return {@code EntryStream}实例
+     * @param map the {@link Map} to create the stream from
+     * @param <K> the type of keys
+     * @param <V> the type of values
+     * @return an {@code EntryStream} instance
      */
     public static <K, V> EntryStream<K, V> of(final Map<K, V> map) {
         return ObjectKit.isNull(map) ? empty() : of(map.entrySet());
     }
 
     /**
-     * 根据一个{@link Map.Entry}类型的{@link Iterable}创建一个串行流， 对流的操作不会影响到入参的{@code entries}实例本身。
-     * 若输入流中存在元素为{@code null}，则会映射为一个键值皆为{@code null}的键值对。
+     * Creates a sequential {@code EntryStream} from an {@link Iterable} of {@link Map.Entry} objects. Operations on the
+     * stream will not affect the input {@code entries} instance itself. If the input stream contains {@code null}
+     * elements, they will be mapped to key-value pairs where both key and value are {@code null}.
      *
-     * @param entries {@link Iterable}实例
-     * @param <K>     键类型
-     * @param <V>     值类型
-     * @return {@code EntryStream}实例
+     * @param entries the {@link Iterable} of {@link Map.Entry} objects
+     * @param <K>     the type of keys
+     * @param <V>     the type of values
+     * @return an {@code EntryStream} instance
      */
     public static <K, V> EntryStream<K, V> of(final Iterable<? extends Map.Entry<K, V>> entries) {
         return ObjectKit.isNull(entries) ? empty() : of(StreamSupport.stream(entries.spliterator(), false));
     }
 
     /**
-     * 根据一个{@link Collection}集合中创建一个串行流
+     * Creates a sequential {@code EntryStream} from a {@link Collection}.
      *
-     * @param source      原始集合
-     * @param keyMapper   键的映射方法
-     * @param valueMapper 值的映射方法
-     * @param <T>         元素类型
-     * @param <K>         键类型
-     * @param <V>         值类型
-     * @return {@code EntryStream}实例
+     * @param source      the source collection
+     * @param keyMapper   the function to map elements to keys
+     * @param valueMapper the function to map elements to values
+     * @param <T>         the type of elements in the source collection
+     * @param <K>         the type of keys
+     * @param <V>         the type of values
+     * @return an {@code EntryStream} instance
      */
     public static <T, K, V> EntryStream<K, V> of(
             final Iterable<T> source,
@@ -150,44 +156,61 @@ public class EntryStream<K, V> extends EnhancedWrappedStream<Map.Entry<K, V>, En
     }
 
     /**
-     * 包装一个已有的流，若入参为空则返回一个空的串行流。 若输入流中存在元素为{@code null}，则会映射为一个键值皆为{@code null}的键值对。
+     * Wraps an existing {@link Stream} of {@link Map.Entry} objects into an {@code EntryStream}. If the input stream is
+     * {@code null}, an empty sequential stream is returned. If the input stream contains {@code null} elements, they
+     * will be mapped to key-value pairs where both key and value are {@code null}.
      *
-     * @param stream 流
-     * @param <K>    键类型
-     * @param <V>    值类型
-     * @return {@code EntryStream}实例
+     * @param stream the {@link Stream} to wrap
+     * @param <K>    the type of keys
+     * @param <V>    the type of values
+     * @return an {@code EntryStream} instance
      */
     public static <K, V> EntryStream<K, V> of(final Stream<? extends Map.Entry<K, V>> stream) {
         return ObjectKit.isNull(stream) ? empty() : new EntryStream<>(stream.map(EntryStream::ofEntry));
     }
 
     /**
-     * 创建一个空的串行流
+     * Creates an empty sequential {@code EntryStream}.
      *
-     * @param <K> 键类型
-     * @param <V> 值类型
-     * @return {@code EntryStream}实例
+     * @param <K> the type of keys
+     * @param <V> the type of values
+     * @return an empty {@code EntryStream} instance
      */
     public static <K, V> EntryStream<K, V> empty() {
         return new EntryStream<>(Stream.empty());
     }
 
     /**
-     * 将键值对转为{@link AbstractMap.SimpleImmutableEntry}
+     * Converts a {@link Map.Entry} to an {@link AbstractMap.SimpleImmutableEntry}.
+     *
+     * @param entry the {@link Map.Entry} to convert
+     * @param <K>   the type of keys
+     * @param <V>   the type of values
+     * @return an {@link AbstractMap.SimpleImmutableEntry}
      */
     static <K, V> Map.Entry<K, V> ofEntry(final Map.Entry<K, V> entry) {
         return ObjectKit.defaultIfNull(entry, e -> ofEntry(e.getKey(), e.getValue()), (Map.Entry<K, V>) EMPTY_ENTRY);
     }
 
     /**
-     * 将键值对转为{@link AbstractMap.SimpleImmutableEntry}
+     * Creates an {@link AbstractMap.SimpleImmutableEntry} from a key and a value.
+     *
+     * @param key   the key
+     * @param value the value
+     * @param <K>   the type of the key
+     * @param <V>   the type of the value
+     * @return an {@link AbstractMap.SimpleImmutableEntry}
      */
     static <K, V> Map.Entry<K, V> ofEntry(final K key, final V value) {
         return new AbstractMap.SimpleImmutableEntry<>(key, value);
     }
 
     /**
-     * key重复时直接抛出异常
+     * Returns a {@link BinaryOperator} that throws an {@link IllegalStateException} if a duplicate key is encountered
+     * during a merge operation.
+     *
+     * @param <T> the type of the elements
+     * @return a {@link BinaryOperator} for throwing exceptions on duplicate keys
      */
     private static <T> BinaryOperator<T> throwingMerger() {
         return (u, v) -> {
@@ -196,9 +219,10 @@ public class EntryStream<K, V> extends EnhancedWrappedStream<Map.Entry<K, V>, En
     }
 
     /**
-     * 根据键去重，默认丢弃靠后的
+     * Returns an {@code EntryStream} consisting of the distinct key-value pairs based on their keys. If duplicate keys
+     * are found, the later occurrences are discarded.
      *
-     * @return {@code EntryStream}实例
+     * @return an {@code EntryStream} instance with distinct keys
      */
     public EntryStream<K, V> distinctByKey() {
         // FIXME fix happen NPE when has null data
@@ -214,9 +238,10 @@ public class EntryStream<K, V> extends EnhancedWrappedStream<Map.Entry<K, V>, En
     }
 
     /**
-     * 根据值去重，默认丢弃靠后的
+     * Returns an {@code EntryStream} consisting of the distinct key-value pairs based on their values. If duplicate
+     * values are found, the later occurrences are discarded.
      *
-     * @return {@code EntryStream}实例
+     * @return an {@code EntryStream} instance with distinct values
      */
     public EntryStream<K, V> distinctByValue() {
         // FIXME fix happen NPE when has null value
@@ -232,10 +257,10 @@ public class EntryStream<K, V> extends EnhancedWrappedStream<Map.Entry<K, V>, En
     }
 
     /**
-     * 根据键和值过滤键值对
+     * Returns an {@code EntryStream} consisting of the key-value pairs that match the given predicate.
      *
-     * @param filter 判断条件
-     * @return {@code EntryStream}实例
+     * @param filter a {@link BiPredicate} to apply to each key-value pair to determine if it should be included
+     * @return an {@code EntryStream} instance containing only the matching key-value pairs
      */
     public EntryStream<K, V> filter(final BiPredicate<? super K, ? super V> filter) {
         Objects.requireNonNull(filter);
@@ -243,10 +268,11 @@ public class EntryStream<K, V> extends EnhancedWrappedStream<Map.Entry<K, V>, En
     }
 
     /**
-     * 根据键过滤键值对
+     * Returns an {@code EntryStream} consisting of the key-value pairs whose keys match the given predicate.
      *
-     * @param filter 判断条件
-     * @return {@code EntryStream}实例
+     * @param filter a {@link Predicate} to apply to each key to determine if its corresponding key-value pair should be
+     *               included
+     * @return an {@code EntryStream} instance containing only the key-value pairs with matching keys
      */
     public EntryStream<K, V> filterByKey(final Predicate<? super K> filter) {
         Objects.requireNonNull(filter);
@@ -254,10 +280,11 @@ public class EntryStream<K, V> extends EnhancedWrappedStream<Map.Entry<K, V>, En
     }
 
     /**
-     * 根据值过滤键值对
+     * Returns an {@code EntryStream} consisting of the key-value pairs whose values match the given predicate.
      *
-     * @param filter 判断条件
-     * @return {@code EntryStream}实例
+     * @param filter a {@link Predicate} to apply to each value to determine if its corresponding key-value pair should
+     *               be included
+     * @return an {@code EntryStream} instance containing only the key-value pairs with matching values
      */
     public EntryStream<K, V> filterByValue(final Predicate<? super V> filter) {
         Objects.requireNonNull(filter);
@@ -265,9 +292,10 @@ public class EntryStream<K, V> extends EnhancedWrappedStream<Map.Entry<K, V>, En
     }
 
     /**
-     * 过滤流中键值对本身、键值对中的值或键为{@code null}的元素
+     * Returns an {@code EntryStream} consisting of the key-value pairs where neither the entry itself, nor its key, nor
+     * its value is {@code null}.
      *
-     * @return {@code EntryStream}实例
+     * @return an {@code EntryStream} instance with non-null entries, keys, and values
      */
     public EntryStream<K, V> nonNullKeyValue() {
         return super.filter(
@@ -275,28 +303,30 @@ public class EntryStream<K, V> extends EnhancedWrappedStream<Map.Entry<K, V>, En
     }
 
     /**
-     * 过滤流中键值对本身，或键值对的键为{@code null}的元素
+     * Returns an {@code EntryStream} consisting of the key-value pairs where neither the entry itself nor its key is
+     * {@code null}.
      *
-     * @return {@code EntryStream}实例
+     * @return an {@code EntryStream} instance with non-null entries and keys
      */
     public EntryStream<K, V> nonNullKey() {
         return super.filter(e -> ObjectKit.isNotNull(e) && ObjectKit.isNotNull(e.getKey()));
     }
 
     /**
-     * 过滤流中键值对本身，或键值对的值为{@code null}的元素
+     * Returns an {@code EntryStream} consisting of the key-value pairs where neither the entry itself nor its value is
+     * {@code null}.
      *
-     * @return {@code EntryStream}实例
+     * @return an {@code EntryStream} instance with non-null entries and values
      */
     public EntryStream<K, V> nonNullValue() {
         return super.filter(e -> ObjectKit.isNotNull(e) && ObjectKit.isNotNull(e.getValue()));
     }
 
     /**
-     * 检查键
+     * Performs the given action on each key of the key-value pairs in the stream. This is an intermediate operation.
      *
-     * @param consumer 操作
-     * @return {@code EntryStream}实例
+     * @param consumer the {@link Consumer} to apply to each key
+     * @return this {@code EntryStream} instance
      */
     public EntryStream<K, V> peekKey(final Consumer<? super K> consumer) {
         Objects.requireNonNull(consumer);
@@ -304,10 +334,10 @@ public class EntryStream<K, V> extends EnhancedWrappedStream<Map.Entry<K, V>, En
     }
 
     /**
-     * 检查值
+     * Performs the given action on each value of the key-value pairs in the stream. This is an intermediate operation.
      *
-     * @param consumer 操作
-     * @return {@code EntryStream}实例
+     * @param consumer the {@link Consumer} to apply to each value
+     * @return this {@code EntryStream} instance
      */
     public EntryStream<K, V> peekValue(final Consumer<? super V> consumer) {
         Objects.requireNonNull(consumer);
@@ -315,10 +345,10 @@ public class EntryStream<K, V> extends EnhancedWrappedStream<Map.Entry<K, V>, En
     }
 
     /**
-     * 根据键排序
+     * Returns a sorted {@code EntryStream} by the keys of its key-value pairs.
      *
-     * @param comparator 排序器
-     * @return {@code EntryStream}实例
+     * @param comparator the {@link Comparator} to use for comparing keys
+     * @return a sorted {@code EntryStream} instance
      */
     public EntryStream<K, V> sortByKey(final Comparator<? super K> comparator) {
         Objects.requireNonNull(comparator);
@@ -326,10 +356,10 @@ public class EntryStream<K, V> extends EnhancedWrappedStream<Map.Entry<K, V>, En
     }
 
     /**
-     * 根据值排序
+     * Returns a sorted {@code EntryStream} by the values of its key-value pairs.
      *
-     * @param comparator 排序器
-     * @return {@code EntryStream}实例
+     * @param comparator the {@link Comparator} to use for comparing values
+     * @return a sorted {@code EntryStream} instance
      */
     public EntryStream<K, V> sortByValue(final Comparator<? super V> comparator) {
         Objects.requireNonNull(comparator);
@@ -337,32 +367,33 @@ public class EntryStream<K, V> extends EnhancedWrappedStream<Map.Entry<K, V>, En
     }
 
     /**
-     * 向当前流末尾追加元素
+     * Appends a new key-value pair to the end of the current stream.
      *
-     * @param key   键
-     * @param value 值
-     * @return {@code EntryStream}实例
+     * @param key   the key of the new entry
+     * @param value the value of the new entry
+     * @return a new {@code EntryStream} instance with the appended entry
      */
     public EntryStream<K, V> push(final K key, final V value) {
         return wrap(Stream.concat(stream, Stream.of(ofEntry(key, value))));
     }
 
     /**
-     * 项当前流队首追加元素
+     * Prepends a new key-value pair to the beginning of the current stream.
      *
-     * @param key   键
-     * @param value 值
-     * @return {@code EntryStream}实例
+     * @param key   the key of the new entry
+     * @param value the value of the new entry
+     * @return a new {@code EntryStream} instance with the prepended entry
      */
     public EntryStream<K, V> unshift(final K key, final V value) {
         return wrap(Stream.concat(Stream.of(ofEntry(key, value)), stream));
     }
 
     /**
-     * 将输入元素转为流，返回一个前半段为当前流，后半段为新流的新{@link EasyStream}实例
+     * Appends the elements from the given {@link Iterable} of {@link Map.Entry} objects to the end of the current
+     * stream.
      *
-     * @param entries 键值对
-     * @return {@code EntryStream}实例
+     * @param entries the {@link Iterable} of {@link Map.Entry} objects to append
+     * @return a new {@code EntryStream} instance with the appended elements
      */
     @Override
     public EntryStream<K, V> append(final Iterable<? extends Map.Entry<K, V>> entries) {
@@ -375,10 +406,11 @@ public class EntryStream<K, V> extends EnhancedWrappedStream<Map.Entry<K, V>, En
     }
 
     /**
-     * 将输入元素转为流，返回一个前半段为新流，后半段为当前流的新{@link EasyStream}实例
+     * Prepends the elements from the given {@link Iterable} of {@link Map.Entry} objects to the beginning of the
+     * current stream.
      *
-     * @param entries 键值对
-     * @return {@code EntryStream}实例
+     * @param entries the {@link Iterable} of {@link Map.Entry} objects to prepend
+     * @return a new {@code EntryStream} instance with the prepended elements
      */
     @Override
     public EntryStream<K, V> prepend(final Iterable<? extends Map.Entry<K, V>> entries) {
@@ -391,29 +423,29 @@ public class EntryStream<K, V> extends EnhancedWrappedStream<Map.Entry<K, V>, En
     }
 
     /**
-     * 转为值的流
+     * Converts this {@code EntryStream} into an {@link EasyStream} of its values.
      *
-     * @return 值的流
+     * @return an {@link EasyStream} of values
      */
     public EasyStream<V> toValueStream() {
         return EasyStream.of(stream.map(Map.Entry::getValue));
     }
 
     /**
-     * 转为键的流
+     * Converts this {@code EntryStream} into an {@link EasyStream} of its keys.
      *
-     * @return 值的流
+     * @return an {@link EasyStream} of keys
      */
     public EasyStream<K> toKeyStream() {
         return EasyStream.of(stream.map(Map.Entry::getKey));
     }
 
     /**
-     * 将键映射为另一类型
+     * Maps the keys of the key-value pairs in this stream to a new type.
      *
-     * @param mapper 映射方法
-     * @param <N>    新的键类型
-     * @return {@code EntryStream}实例
+     * @param mapper a function to apply to each key to produce a new key
+     * @param <N>    the type of the new keys
+     * @return a new {@code EntryStream} with the mapped keys
      */
     public <N> EntryStream<N, V> mapKeys(final Function<? super K, ? extends N> mapper) {
         Objects.requireNonNull(mapper);
@@ -421,11 +453,11 @@ public class EntryStream<K, V> extends EnhancedWrappedStream<Map.Entry<K, V>, En
     }
 
     /**
-     * 将值映射为另一类型
+     * Maps the values of the key-value pairs in this stream to a new type.
      *
-     * @param mapper 映射方法
-     * @param <N>    新的值类型
-     * @return {@code EntryStream}实例
+     * @param mapper a function to apply to each value to produce a new value
+     * @param <N>    the type of the new values
+     * @return a new {@code EntryStream} with the mapped values
      */
     public <N> EntryStream<K, N> mapValues(final Function<? super V, ? extends N> mapper) {
         Objects.requireNonNull(mapper);
@@ -433,11 +465,14 @@ public class EntryStream<K, V> extends EnhancedWrappedStream<Map.Entry<K, V>, En
     }
 
     /**
-     * 返回与指定函数将元素作为参数执行的结果组成的流 这是一个无状态中间操作
+     * Returns an {@link EasyStream} consisting of the results of applying the given function to the elements of this
+     * stream. This is a stateless intermediate operation.
      *
-     * @param mapper 指定的函数
-     * @param <R>    函数执行后返回流中元素的类型
-     * @return 返回叠加操作后的流
+     * @param mapper a <a href="package-summary.html#NonInterference">non-interfering</a>,
+     *               <a href="package-summary.html#Statelessness">stateless</a> function to apply to each element to
+     *               produce a new element
+     * @param <R>    the element type of the new stream
+     * @return the new {@link EasyStream}
      */
     @Override
     public <R> EasyStream<R> map(final Function<? super Map.Entry<K, V>, ? extends R> mapper) {
@@ -446,11 +481,12 @@ public class EntryStream<K, V> extends EnhancedWrappedStream<Map.Entry<K, V>, En
     }
 
     /**
-     * 将实例转为根据键值对生成的单对象{@link Stream}实例
+     * Returns an {@link EasyStream} consisting of the results of applying the given {@link BiFunction} to the key and
+     * value of each element in this stream.
      *
-     * @param mapper 映射方法
-     * @param <N>    函数执行后返回流中元素的类型
-     * @return 映射后的单对象组成的流
+     * @param mapper a {@link BiFunction} to apply to each key-value pair to produce a new element
+     * @param <N>    the element type of the new stream
+     * @return the new {@link EasyStream}
      */
     public <N> EasyStream<N> map(final BiFunction<? super K, ? super V, ? extends N> mapper) {
         Objects.requireNonNull(mapper);
@@ -458,16 +494,23 @@ public class EntryStream<K, V> extends EnhancedWrappedStream<Map.Entry<K, V>, En
     }
 
     /**
-     * 扩散流操作，可能影响流元素个数，将原有流元素执行mapper操作，返回多个流所有元素组成的流 这是一个无状态中间操作 例如，将users里所有user的id和parentId组合在一起，形成一个新的流:
+     * Returns an {@link EasyStream} consisting of the results of replacing each element of this stream with the
+     * contents of a mapped stream produced by applying the provided mapping function to each element. Each mapped
+     * stream is closed after its contents have been placed into this stream. This is a stateless intermediate
+     * operation.
+     * <p>
+     * For example, to combine the IDs and parent IDs of all users in a list into a new stream:
      * 
      * <pre>{@code
      * 
      * FastStream<Long> ids = FastStream.of(users).flatMap(user -> FastStream.of(user.getId(), user.getParentId()));
      * }</pre>
      *
-     * @param mapper 操作，返回流
-     * @param <R>    拆分后流的元素类型
-     * @return 返回叠加拆分操作后的流
+     * @param mapper a <a href="package-summary.html#NonInterference">non-interfering</a>,
+     *               <a href="package-summary.html#Statelessness">stateless</a> function to apply to each element which
+     *               produces a stream of new values
+     * @param <R>    the element type of the new stream
+     * @return the new {@link EasyStream}
      */
     @Override
     public <R> EasyStream<R> flatMap(final Function<? super Map.Entry<K, V>, ? extends Stream<? extends R>> mapper) {
@@ -476,8 +519,11 @@ public class EntryStream<K, V> extends EnhancedWrappedStream<Map.Entry<K, V>, En
     }
 
     /**
+     * Returns an {@code EntryStream} consisting of the results of replacing each key of this stream with the contents
+     * of a mapped stream produced by applying the provided mapping function to each key. The original values are
+     * retained for each new key.
      * <p>
-     * 将原有流的键执行mapper操作映射为流，流中的所有所有元素仍然对应原本的值， 然后再返回由这些流中所有元素组成的流新{@code EntryStream}串行流。 效果类似：
+     * Example:
      * 
      * <pre>{@code
      * // unwrap = [{a = 1}, {b = 2}, {c = 3}]
@@ -485,9 +531,9 @@ public class EntryStream<K, V> extends EnhancedWrappedStream<Map.Entry<K, V>, En
      * // unwrap = [{a1 = 1}, {a2 = 1}, {b1 = 2}, {b2 = 2}, {c1 = 3}, {c2 = 3}]
      * }</pre>
      *
-     * @param keyMapper 值转映射方法
-     * @param <N>       新的键类型
-     * @return 返回叠加拆分操作后的流
+     * @param keyMapper a function to apply to each key which produces a stream of new keys
+     * @param <N>       the type of the new keys
+     * @return the new {@code EntryStream}
      */
     public <N> EntryStream<N, V> flatMapKey(final Function<? super K, Stream<? extends N>> keyMapper) {
         Objects.requireNonNull(keyMapper);
@@ -496,8 +542,11 @@ public class EntryStream<K, V> extends EnhancedWrappedStream<Map.Entry<K, V>, En
     }
 
     /**
+     * Returns an {@code EntryStream} consisting of the results of replacing each value of this stream with the contents
+     * of a mapped stream produced by applying the provided mapping function to each value. The original keys are
+     * retained for each new value.
      * <p>
-     * 将原有流的值执行mapper操作映射为流，流中的所有所有元素仍然对应原本的键， 然后再返回由这些流中所有元素组成的流新{@code EntryStream}串行流。 效果类似：
+     * Example:
      * 
      * <pre>{@code
      * // unwrap = [{a = 1}, {b = 2}, {c = 3}]
@@ -505,9 +554,9 @@ public class EntryStream<K, V> extends EnhancedWrappedStream<Map.Entry<K, V>, En
      * // unwrap = [{a = 1}, {a = 2}, {b = 2}, {b = 3}, {c = 3}, {c = 4}]
      * }</pre>
      *
-     * @param valueMapper 值转映射方法
-     * @param <N>         新的值类型
-     * @return 返回叠加拆分操作后的流
+     * @param valueMapper a function to apply to each value which produces a stream of new values
+     * @param <N>         the type of the new values
+     * @return the new {@code EntryStream}
      */
     public <N> EntryStream<K, N> flatMapValue(final Function<? super V, Stream<? extends N>> valueMapper) {
         Objects.requireNonNull(valueMapper);
@@ -516,11 +565,11 @@ public class EntryStream<K, V> extends EnhancedWrappedStream<Map.Entry<K, V>, En
     }
 
     /**
-     * 转为{@link Map}集合
+     * Collects the elements of this stream into a {@link Map} using the provided factory and merge operator.
      *
-     * @param mapFactory 获取集合的工厂方法
-     * @param operator   当存在重复键时的处理
-     * @return 集合
+     * @param mapFactory a {@link Supplier} that returns a new, empty {@link Map} of the appropriate type
+     * @param operator   a {@link BinaryOperator} used to resolve collisions between values associated with the same key
+     * @return a {@link Map} containing the collected elements
      * @see Collectors#toMap(Function, Function, BinaryOperator, Supplier)
      */
     public Map<K, V> toMap(final Supplier<Map<K, V>> mapFactory, final BinaryOperator<V> operator) {
@@ -530,11 +579,12 @@ public class EntryStream<K, V> extends EnhancedWrappedStream<Map.Entry<K, V>, En
     }
 
     /**
-     * 转为{@link Map}集合
+     * Collects the elements of this stream into a {@link Map} using the provided factory. If duplicate keys are
+     * encountered, the later value overwrites the earlier one.
      *
-     * @param mapFactory 获取集合的工厂方法
-     * @return 集合
-     * @see Collectors#toMap(Function, Function, BinaryOperator)
+     * @param mapFactory a {@link Supplier} that returns a new, empty {@link Map} of the appropriate type
+     * @return a {@link Map} containing the collected elements
+     * @see Collectors#toMap(Function, Function, BinaryOperator, Supplier)
      */
     public Map<K, V> toMap(final Supplier<Map<K, V>> mapFactory) {
         Objects.requireNonNull(mapFactory);
@@ -542,10 +592,10 @@ public class EntryStream<K, V> extends EnhancedWrappedStream<Map.Entry<K, V>, En
     }
 
     /**
-     * 转为{@link HashMap}集合
+     * Collects the elements of this stream into a {@link HashMap}.
      *
-     * @return 集合
-     * @throws IllegalArgumentException 当键重复时抛出
+     * @return a {@link HashMap} containing the collected elements
+     * @throws IllegalArgumentException if duplicate keys are encountered
      * @see Collectors#toMap(Function, Function)
      */
     public Map<K, V> toMap() {
@@ -553,13 +603,14 @@ public class EntryStream<K, V> extends EnhancedWrappedStream<Map.Entry<K, V>, En
     }
 
     /**
-     * 将键值对分组后再转为二维{@link Map}集合，最终返回一个{@link Table}集合
+     * Groups the key-value pairs into a two-dimensional {@link Map} and returns a {@link Table}.
      *
-     * @param rowKeyMapper  将键映射为父集合中键的方法
-     * @param colMapFactory 创建子集合的工厂方法
-     * @param operator      当存在重复键时的处理
-     * @param <N>           父集合的键类型
-     * @return 集合
+     * @param rowKeyMapper  a {@link BiFunction} to map keys and values to the row key of the parent map
+     * @param colMapFactory a {@link Supplier} that returns a new, empty {@link Map} for the inner map
+     * @param operator      a {@link BinaryOperator} used to resolve collisions between values associated with the same
+     *                      key in the inner map
+     * @param <N>           the type of the row keys in the parent map
+     * @return a {@link Table} containing the grouped elements
      * @see Collectors#groupingBy(Function, Supplier, Collector)
      */
     public <N> Table<N, K, V> toTable(
@@ -578,25 +629,26 @@ public class EntryStream<K, V> extends EnhancedWrappedStream<Map.Entry<K, V>, En
     }
 
     /**
-     * 将键值对分组后再转为二维{@link HashMap}集合，最终返回一个{@link Table}集合
+     * Groups the key-value pairs into a two-dimensional {@link HashMap} and returns a {@link Table}.
      *
-     * @param rowKeyMapper 创建父集合的工厂方法
-     * @param <N>          父集合的键类型
-     * @return 集合
-     * @throws IllegalArgumentException 当父集合或子集合中的键重复时抛出
+     * @param rowKeyMapper a {@link BiFunction} to map keys and values to the row key of the parent map
+     * @param <N>          the type of the row keys in the parent map
+     * @return a {@link Table} containing the grouped elements
+     * @throws IllegalArgumentException if duplicate keys are encountered in either the parent or inner maps
      */
     public <N> Table<N, K, V> toTable(final BiFunction<? super K, ? super V, ? extends N> rowKeyMapper) {
         return toTable(rowKeyMapper, HashMap::new, throwingMerger());
     }
 
     /**
-     * 将键值对按值分组后再转为二维{@link Map}集合，最终返回一个{@link Table}集合
+     * Groups the key-value pairs by key into a two-dimensional {@link Map} and returns a {@link Table}.
      *
-     * @param rowKeyMapper  将键映射为父集合中键的方法
-     * @param colMapFactory 创建子集合的工厂方法
-     * @param operator      当存在重复键时的处理
-     * @param <N>           父集合的键类型
-     * @return 集合
+     * @param rowKeyMapper  a {@link Function} to map keys to the row key of the parent map
+     * @param colMapFactory a {@link Supplier} that returns a new, empty {@link Map} for the inner map
+     * @param operator      a {@link BinaryOperator} used to resolve collisions between values associated with the same
+     *                      key in the inner map
+     * @param <N>           the type of the row keys in the parent map
+     * @return a {@link Table} containing the grouped elements
      */
     public <N> Table<N, K, V> toTableByKey(
             final Function<? super K, ? extends N> rowKeyMapper,
@@ -606,25 +658,26 @@ public class EntryStream<K, V> extends EnhancedWrappedStream<Map.Entry<K, V>, En
     }
 
     /**
-     * 将键值对按键分组后再转为二维{@link HashMap}集合，最终返回一个{@link Table}集合
+     * Groups the key-value pairs by key into a two-dimensional {@link HashMap} and returns a {@link Table}.
      *
-     * @param rowKeyMapper 创建父集合的工厂方法
-     * @param <N>          父集合的键类型
-     * @return 集合
-     * @throws IllegalArgumentException 当父集合或子集合中的键重复时抛出
+     * @param rowKeyMapper a {@link Function} to map keys to the row key of the parent map
+     * @param <N>          the type of the row keys in the parent map
+     * @return a {@link Table} containing the grouped elements
+     * @throws IllegalArgumentException if duplicate keys are encountered in either the parent or inner maps
      */
     public <N> Table<N, K, V> toTableByKey(final Function<? super K, ? extends N> rowKeyMapper) {
         return toTable((k, v) -> rowKeyMapper.apply(k));
     }
 
     /**
-     * 将键值对按值分组后再转为二维{@link Map}集合，最终返回一个{@link Table}集合
+     * Groups the key-value pairs by value into a two-dimensional {@link Map} and returns a {@link Table}.
      *
-     * @param rowKeyMapper  将键映射为父集合中键的方法
-     * @param colMapFactory 创建子集合的工厂方法
-     * @param operator      当存在重复键时的处理
-     * @param <N>           父集合的键类型
-     * @return 集合
+     * @param rowKeyMapper  a {@link Function} to map values to the row key of the parent map
+     * @param colMapFactory a {@link Supplier} that returns a new, empty {@link Map} for the inner map
+     * @param operator      a {@link BinaryOperator} used to resolve collisions between values associated with the same
+     *                      key in the inner map
+     * @param <N>           the type of the row keys in the parent map
+     * @return a {@link Table} containing the grouped elements
      */
     public <N> Table<N, K, V> toTableByValue(
             final Function<? super V, ? extends N> rowKeyMapper,
@@ -634,45 +687,46 @@ public class EntryStream<K, V> extends EnhancedWrappedStream<Map.Entry<K, V>, En
     }
 
     /**
-     * 将键值对按键分组后再转为二维{@link HashMap}集合，最终返回一个{@link Table}集合
+     * Groups the key-value pairs by value into a two-dimensional {@link HashMap} and returns a {@link Table}.
      *
-     * @param rowKeyMapper 创建父集合的工厂方法
-     * @param <N>          父集合的键类型
-     * @return 集合
-     * @throws IllegalArgumentException 当父集合或子集合中的键重复时抛出
+     * @param rowKeyMapper a {@link Function} to map values to the row key of the parent map
+     * @param <N>          the type of the row keys in the parent map
+     * @return a {@link Table} containing the grouped elements
+     * @throws IllegalArgumentException if duplicate keys are encountered in either the parent or inner maps
      */
     public <N> Table<N, K, V> toTableByValue(final Function<? super V, ? extends N> rowKeyMapper) {
         return toTable((k, v) -> rowKeyMapper.apply(v));
     }
 
     /**
-     * 将键值对按键分组
+     * Groups the key-value pairs by key, collecting values into a {@link List}.
      *
-     * @return 集合
+     * @return a {@link Map} where keys are the original keys and values are lists of corresponding values
      */
     public Map<K, List<V>> groupByKey() {
         return groupByKey(Collectors.toList());
     }
 
     /**
-     * 将键值对按键分组
+     * Groups the key-value pairs by key, collecting values using the provided {@link Collector}.
      *
-     * @param collector 对具有相同键的值的收集器
-     * @param <C>       值集合的类型
-     * @return 集合
+     * @param collector a {@link Collector} to accumulate the values for each key
+     * @param <C>       the type of the collection holding the values
+     * @return a {@link Map} where keys are the original keys and values are collections of corresponding values
      */
     public <C extends Collection<V>> Map<K, C> groupByKey(final Collector<V, ?, C> collector) {
         return groupByKey((Supplier<Map<K, C>>) HashMap::new, collector);
     }
 
     /**
-     * 将键值对按键分组
+     * Groups the key-value pairs by key, collecting values using the provided {@link Collector} and {@link Map}
+     * factory.
      *
-     * @param mapFactory 创建map集合的工厂方法
-     * @param collector  对具有相同键的值的收集器
-     * @param <C>        值集合的类型
-     * @param <M>        返回的map集合类型
-     * @return 集合
+     * @param mapFactory a {@link Supplier} that returns a new, empty {@link Map} of the appropriate type
+     * @param collector  a {@link Collector} to accumulate the values for each key
+     * @param <C>        the type of the collection holding the values
+     * @param <M>        the type of the resulting map
+     * @return a {@link Map} where keys are the original keys and values are collections of corresponding values
      */
     public <C extends Collection<V>, M extends Map<K, C>> M groupByKey(
             final Supplier<M> mapFactory,
@@ -687,9 +741,9 @@ public class EntryStream<K, V> extends EnhancedWrappedStream<Map.Entry<K, V>, En
     }
 
     /**
-     * 遍历键值对
+     * Performs the given action for each key-value pair in the stream.
      *
-     * @param consumer 操作
+     * @param consumer the {@link BiConsumer} to apply to each key-value pair
      */
     public void forEach(final BiConsumer<K, V> consumer) {
         Objects.requireNonNull(consumer);
@@ -697,51 +751,51 @@ public class EntryStream<K, V> extends EnhancedWrappedStream<Map.Entry<K, V>, En
     }
 
     /**
-     * 将键值对翻转
+     * Returns a new {@code EntryStream} with keys and values swapped.
      *
-     * @return {@code EntryStream}实例
+     * @return a new {@code EntryStream} with inverted key-value pairs
      */
     public EntryStream<V, K> inverse() {
         return new EntryStream<>(stream.map(e -> ofEntry(e.getValue(), e.getKey())));
     }
 
     /**
-     * 收集键
+     * Collects the keys of this stream using the provided {@link Collector}.
      *
-     * @param collector 收集器
-     * @param <R>       返回值类型
-     * @return 收集容器
+     * @param collector the {@link Collector} to accumulate the keys
+     * @param <R>       the type of the result from the collector
+     * @return the result of the collection
      */
     public <R> R collectKeys(final Collector<K, ?, R> collector) {
         return toKeyStream().collect(collector);
     }
 
     /**
-     * 收集值
+     * Collects the values of this stream using the provided {@link Collector}.
      *
-     * @param collector 收集器
-     * @param <R>       返回值类型
-     * @return 收集容器
+     * @param collector the {@link Collector} to accumulate the values
+     * @param <R>       the type of the result from the collector
+     * @return the result of the collection
      */
     public <R> R collectValues(final Collector<V, ?, R> collector) {
         return toValueStream().collect(collector);
     }
 
     /**
-     * 是否存在任意符合条件的键值对
+     * Returns whether any key-value pair in this stream matches the given predicate.
      *
-     * @param predicate 判断条件
-     * @return 是否
+     * @param predicate a {@link BiPredicate} to apply to each key-value pair to determine if a match exists
+     * @return {@code true} if any key-value pair matches the predicate, {@code false} otherwise
      */
     public boolean anyMatch(final BiPredicate<? super K, ? super V> predicate) {
         return super.anyMatch(e -> predicate.test(e.getKey(), e.getValue()));
     }
 
     /**
-     * 所有键值对是否都符合条件
+     * Returns whether all key-value pairs in this stream match the given predicate.
      *
-     * @param predicate 判断条件
-     * @return 是否
+     * @param predicate a {@link BiPredicate} to apply to each key-value pair to determine if all match
+     * @return {@code true} if all key-value pairs match the predicate, {@code false} otherwise
      */
     public boolean allMatch(final BiPredicate<? super K, ? super V> predicate) {
         Objects.requireNonNull(predicate);
@@ -749,10 +803,10 @@ public class EntryStream<K, V> extends EnhancedWrappedStream<Map.Entry<K, V>, En
     }
 
     /**
-     * 所有键值对是否都不符合条件
+     * Returns whether no key-value pairs in this stream match the given predicate.
      *
-     * @param predicate 判断条件
-     * @return 是否
+     * @param predicate a {@link BiPredicate} to apply to each key-value pair to determine if none match
+     * @return {@code true} if no key-value pair matches the predicate, {@code false} otherwise
      */
     public boolean noneMatch(final BiPredicate<? super K, ? super V> predicate) {
         Objects.requireNonNull(predicate);
@@ -760,10 +814,10 @@ public class EntryStream<K, V> extends EnhancedWrappedStream<Map.Entry<K, V>, En
     }
 
     /**
-     * 根据一个原始的流，返回一个新包装类实例
+     * Wraps a given {@link Stream} of {@link Map.Entry} objects into a new {@code EntryStream} instance.
      *
-     * @param stream 流
-     * @return 实现类
+     * @param stream the {@link Stream} of {@link Map.Entry} objects to wrap
+     * @return a new {@code EntryStream} instance wrapping the provided stream
      */
     @Override
     public EntryStream<K, V> wrap(final Stream<Map.Entry<K, V>> stream) {

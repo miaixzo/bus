@@ -30,8 +30,17 @@ package org.miaixz.bus.core.io;
 import org.miaixz.bus.core.lang.Normal;
 
 /**
- * 缓冲区的一段 缓冲区中的每个段都是一个循环链表节点,它引用以下内容和 缓冲区中前面的段 池中的每个段都是一个单链列表节点,引用池 段的底层字节数组可以在缓冲区和字节字符串之间共享 当一个 段不能回收,也不能改变它的字节数据
- * 唯一的例外是允许所有者段附加到段中,写入数据 {@code limit}及以上 每个字节数组都有一个单独的拥有段 的立场, 限制、prev和next引用不共享
+ * A segment of a buffer. Each segment in a buffer is a circularly-linked list node that references the following and
+ * preceding segments in the buffer. Each segment in the pool is a singly-linked list node that references the pool's
+ * next segment.
+ *
+ * <p>
+ * The underlying byte array of a segment can be shared between a buffer and a byte string. When a segment cannot be
+ * recycled, its byte data cannot be changed. The only exception is that an owner segment is allowed to append to
+ * itself, writing data at or beyond {@code limit}.
+ *
+ * <p>
+ * Each byte array has a single owning segment. The pos, limit, prev, and next references are not shared.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -39,53 +48,68 @@ import org.miaixz.bus.core.lang.Normal;
 public class SectionBuffer {
 
     /**
-     * 所有段的大小(以字节为单位)
+     * The size of all segments in bytes.
      */
     public static final int SIZE = 8192;
 
     /**
-     * 这样做避免了这么多字节的{@code arraycopy()}时，将被共享
+     * This avoids {@code arraycopy()} for this many bytes when they will be shared.
      */
     public static final int SHARE_MINIMUM = Normal._1024;
 
+    /**
+     * The underlying byte array for this segment.
+     */
     public final byte[] data;
 
     /**
-     * 此段中要读取的应用程序数据字节的下一个字节.
+     * The next byte of application data to read in this segment.
      */
     public int pos;
 
     /**
-     * 准备写入的可用数据的第一个字节.
+     * The first byte of available data to write.
      */
     public int limit;
 
     /**
-     * 如果其他段或字节字符串使用相同的字节数组，则为真.
+     * True if other segments or byte strings share the same byte array.
      */
     public boolean shared;
 
     /**
-     * 如果这个段拥有字节数组并可以向其追加，则为True，扩展{@code limit}.
+     * True if this segment owns the byte array and can append to it, extending {@code limit}.
      */
     public boolean owner;
 
     /**
-     * 链表或循环链表中的下一段.
+     * The next segment in the circularly-linked list.
      */
     public SectionBuffer next;
 
     /**
-     * 循环链表中的前一段.
+     * The previous segment in the circularly-linked list.
      */
     public SectionBuffer prev;
 
+    /**
+     * Constructs a new, unshared SectionBuffer with a default size.
+     */
     public SectionBuffer() {
         this.data = new byte[SIZE];
         this.owner = true;
         this.shared = false;
     }
 
+    /**
+     * Constructs a new SectionBuffer with the given data and properties.
+     *
+     * @param data   The byte array for this segment.
+     * @param pos    The next byte of application data to read in this segment.
+     * @param limit  The first byte of available data to write.
+     * @param shared True if other segments or byte strings share the same byte array.
+     * @param owner  True if this segment owns the byte array and can append to it.
+     */
     public SectionBuffer(byte[] data, int pos, int limit, boolean shared, boolean owner) {
         this.data = data;
         this.pos = pos;
@@ -97,6 +121,8 @@ public class SectionBuffer {
     /**
      * Returns a new segment that shares the underlying byte array with this. Adjusting pos and limit are safe but
      * writes are forbidden. This also marks the current segment as shared, which prevents it from being pooled.
+     *
+     * @return A new shared {@link SectionBuffer} instance.
      */
     public final SectionBuffer sharedCopy() {
         shared = true;
@@ -104,15 +130,19 @@ public class SectionBuffer {
     }
 
     /**
-     * Returns a new segment that its own private copy of the underlying byte array.
+     * Returns a new segment that has its own private copy of the underlying byte array.
+     *
+     * @return A new unshared {@link SectionBuffer} instance with a copy of the data.
      */
     public final SectionBuffer unsharedCopy() {
         return new SectionBuffer(data.clone(), pos, limit, false, true);
     }
 
     /**
-     * Removes this segment of a circularly-linked list and returns its successor. Returns null if the list is now
+     * Removes this segment from a circularly-linked list and returns its successor. Returns null if the list is now
      * empty.
+     *
+     * @return The successor segment, or null if the list becomes empty.
      */
     public final SectionBuffer pop() {
         SectionBuffer result = next != this ? next : null;
@@ -125,6 +155,9 @@ public class SectionBuffer {
 
     /**
      * Appends {@code segment} after this segment in the circularly-linked list. Returns the pushed segment.
+     *
+     * @param segment The segment to push.
+     * @return The pushed segment.
      */
     public final SectionBuffer push(SectionBuffer segment) {
         segment.prev = this;
@@ -139,7 +172,12 @@ public class SectionBuffer {
      * {@code [pos..pos+byteCount)}. The second segment contains the data in {@code [pos+byteCount..limit)}. This can be
      * useful when moving partial segments from one buffer to another.
      *
+     * <p>
      * Returns the new head of the circularly-linked list.
+     *
+     * @param byteCount The number of bytes to include in the first segment.
+     * @return The new head of the circularly-linked list.
+     * @throws IllegalArgumentException if {@code byteCount} is negative or exceeds the available data.
      */
     public final SectionBuffer split(int byteCount) {
         if (byteCount <= 0 || byteCount > limit - pos)
@@ -164,6 +202,12 @@ public class SectionBuffer {
         return prefix;
     }
 
+    /**
+     * Compacts this segment by moving its data to the previous segment if possible. This operation is only allowed if
+     * the previous segment is owned and has enough space. If successful, this segment is recycled.
+     *
+     * @throws IllegalStateException if this segment is the only segment in the list (i.e., {@code prev == this}).
+     */
     public void compact() {
         if (prev == this) {
             throw new IllegalStateException();
@@ -183,6 +227,10 @@ public class SectionBuffer {
 
     /**
      * Moves {@code byteCount} bytes from this segment to {@code sink}.
+     *
+     * @param sink      The destination segment to write to.
+     * @param byteCount The number of bytes to move.
+     * @throws IllegalArgumentException if the sink is not an owner, or if the data cannot fit.
      */
     public final void writeTo(SectionBuffer sink, int byteCount) {
         if (!sink.owner)

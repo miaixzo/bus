@@ -35,13 +35,22 @@ import org.miaixz.bus.validate.magic.Matcher;
 import org.miaixz.bus.validate.magic.annotation.Email;
 
 /**
- * 邮箱校验
+ * Validator for email addresses.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class EmailMatcher implements Matcher<Object, Email> {
 
+    /**
+     * Checks if the given object, when converted to a string, is a valid email address.
+     *
+     * @param object     The object to validate.
+     * @param annotation The {@link Email} annotation instance (ignored).
+     * @param context    The validation context (ignored).
+     * @return {@code true} if the object is a valid email address, {@code false} otherwise. Returns {@code true} if the
+     *         object is null or a blank string.
+     */
     @Override
     public boolean on(Object object, Email annotation, Context context) {
         if (ObjectKit.isEmpty(object)) {

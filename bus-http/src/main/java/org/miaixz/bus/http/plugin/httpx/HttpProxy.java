@@ -27,33 +27,51 @@
 */
 package org.miaixz.bus.http.plugin.httpx;
 
-import java.net.InetSocketAddress;
-import java.net.Proxy;
-
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.http.secure.Authenticator;
 import org.miaixz.bus.http.secure.Credentials;
 
+import java.net.InetSocketAddress;
+import java.net.Proxy;
+
 /**
- * HTTP代理配置
+ * Represents the configuration for an HTTP proxy server. This class holds the address, port, credentials, and type of
+ * the proxy.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class HttpProxy {
 
+    /**
+     * The proxy server's hostname or IP address.
+     */
     public final String hostAddress;
+    /**
+     * The proxy server's port number.
+     */
     public final int port;
+    /**
+     * The username for proxy authentication. Can be null if no authentication is required.
+     */
     public final String user;
+    /**
+     * The password for proxy authentication. Can be null if no authentication is required.
+     */
     public final String password;
+    /**
+     * The type of proxy (e.g., HTTP, SOCKS).
+     */
     public final Proxy.Type type;
 
     /**
-     * @param hostAddress 服务器域名或IP,比如miaixz.org, 192.168.1.1
-     * @param port        端口
-     * @param user        用户名,无则填null
-     * @param password    用户密码,无则填null
-     * @param type        代理类型
+     * Constructs a new proxy configuration.
+     *
+     * @param hostAddress The hostname or IP address of the proxy server (e.g., "proxy.example.com", "192.168.1.1").
+     * @param port        The port number of the proxy server.
+     * @param user        The username for authentication, or null if not required.
+     * @param password    The password for authentication, or null if not required.
+     * @param type        The type of the proxy (e.g., {@link java.net.Proxy.Type#HTTP}).
      */
     public HttpProxy(String hostAddress, int port, String user, String password, java.net.Proxy.Type type) {
         this.hostAddress = hostAddress;
@@ -63,14 +81,31 @@ public class HttpProxy {
         this.type = type;
     }
 
+    /**
+     * Constructs a new HTTP proxy configuration without authentication.
+     *
+     * @param hostAddress The hostname or IP address of the proxy server.
+     * @param port        The port number of the proxy server.
+     */
     public HttpProxy(String hostAddress, int port) {
         this(hostAddress, port, null, null, java.net.Proxy.Type.HTTP);
     }
 
+    /**
+     * Creates a {@link java.net.Proxy} object from this configuration.
+     *
+     * @return A {@link java.net.Proxy} instance suitable for use with an HTTP client.
+     */
     public java.net.Proxy proxy() {
         return new java.net.Proxy(type, new InetSocketAddress(hostAddress, port));
     }
 
+    /**
+     * Creates an {@link Authenticator} for this proxy configuration. This authenticator adds the 'Proxy-Authorization'
+     * header with Basic authentication credentials.
+     *
+     * @return An {@link Authenticator} instance.
+     */
     public Authenticator authenticator() {
         return (route, response) -> {
             String credential = Credentials.basic(user, password);

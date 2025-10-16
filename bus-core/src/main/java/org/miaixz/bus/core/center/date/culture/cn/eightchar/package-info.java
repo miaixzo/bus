@@ -26,7 +26,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 生成八字
+ * Provides classes related to the Eight Characters (八字), also known as Bazi or Four Pillars of Destiny, in Chinese
+ * astrology.
  *
  * @author Kimi Liu
  * @since Java 17+

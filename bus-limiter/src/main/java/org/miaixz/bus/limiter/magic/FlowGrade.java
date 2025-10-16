@@ -31,7 +31,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * 流量等级
+ * Enumeration representing different grades or types of flow control. These grades are typically used to specify the
+ * dimension of limiting, such as by thread or by QPS.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -41,14 +42,17 @@ import lombok.Getter;
 public enum FlowGrade {
 
     /**
-     * 流量线程
+     * Flow control based on the number of concurrent threads.
      */
     FLOW_GRADE_THREAD(0),
     /**
-     * 流量QPS
+     * Flow control based on Queries Per Second (QPS).
      */
     FLOW_GRADE_QPS(1);
 
+    /**
+     * The integer value representing the grade of flow control.
+     */
     private int grade;
 
 }

@@ -20,13 +20,28 @@
  ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
  ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
  ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
- ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ OUT of OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 工业级缓存解决方案
+ * Provides the core components for an industrial-grade, annotation-driven caching framework.
+ *
+ * <p>
+ * This package contains the central interfaces and classes that form the foundation of the caching mechanism. Key
+ * components include:
+ * <ul>
+ * <li>{@link org.miaixz.bus.cache.CacheX}: The fundamental interface defining cache operations.</li>
+ * <li>{@link org.miaixz.bus.cache.Manage}: A manager for handling multiple, named cache instances.</li>
+ * <li>{@link org.miaixz.bus.cache.Complex}: The primary engine that processes caching annotations and orchestrates
+ * cache reads, writes, and invalidations.</li>
+ * <li>{@link org.miaixz.bus.cache.Context}: A configuration holder for global cache settings.</li>
+ * <li>{@link org.miaixz.bus.cache.Metrics}: An interface for implementing cache performance tracking.</li>
+ * </ul>
+ *
+ * <p>
+ * Sub-packages contain supporting elements like annotations, readers, and other utilities.
  *
  * @author Kimi Liu
  * @since Java 17+

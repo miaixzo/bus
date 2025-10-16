@@ -31,11 +31,11 @@ import org.miaixz.bus.base.entity.BaseEntity;
 import org.miaixz.bus.base.mapper.BaseMapper;
 
 /**
- * 默认服务类，继承AbstractService，提供实体和Mapper的默认实现
+ * Default service class, extending {@link AbstractService} and providing default implementations for entities and
+ * mappers.
  *
- * @param <T> 继承自BaseEntity的实体类型
- * @param <M> 继承自BaseMapper的Mapper类型，主键为String
- *
+ * @param <T> the entity type, which must extend {@link BaseEntity}
+ * @param <M> the mapper type, which must extend {@link BaseMapper} with String as the primary key type
  * @author Kimi Liu
  * @since Java 17+
  */

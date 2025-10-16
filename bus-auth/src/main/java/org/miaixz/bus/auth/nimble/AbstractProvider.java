@@ -50,7 +50,9 @@ import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.logger.Logger;
 
 /**
- * 抽象授权处理基类，支持 OAuth2、SAML、LDAP 等多种协议。 提供通用的授权、令牌获取和用户信息查询逻辑，协议特定实现由子类完成。
+ * Abstract base class for authorization processing, supporting various protocols such as OAuth2, SAML, and LDAP.
+ * Provides common logic for authorization, token acquisition, and user information retrieval, with protocol-specific
+ * implementations handled by subclasses.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -58,53 +60,53 @@ import org.miaixz.bus.logger.Logger;
 public abstract class AbstractProvider implements Provider {
 
     /**
-     * 包含协议特定配置的上下文对象
+     * The context object containing protocol-specific configurations.
      */
     protected Context context;
     /**
-     * 定义协议端点或配置的协议对象
+     * The protocol object defining protocol endpoints or configurations.
      */
     protected Complex complex;
     /**
-     * 用于存储状态或其他临时数据的缓存
+     * The cache implementation used to store state or other temporary data.
      */
     protected CacheX cache;
 
     /**
-     * 使用指定的上下文和协议配置构造 AbstractProvider。
+     * Constructs an {@code AbstractProvider} with the specified context and protocol configuration.
      *
-     * @param context 上下文配置
-     * @param complex 协议配置
+     * @param context the context configuration
+     * @param complex the protocol configuration
      */
     public AbstractProvider(Context context, Complex complex) {
         this(context, complex, AuthCache.INSTANCE);
     }
 
     /**
-     * 使用自定义缓存构造 AbstractProvider。
+     * Constructs an {@code AbstractProvider} with a custom cache implementation.
      *
-     * @param context 上下文配置
-     * @param complex 协议配置
-     * @param cache   缓存实现
-     * @throws AuthorizedException 如果配置不完整
+     * @param context the context configuration
+     * @param complex the protocol configuration
+     * @param cache   the cache implementation
+     * @throws AuthorizedException if the configuration is incomplete or invalid
      */
     public AbstractProvider(Context context, Complex complex, CacheX cache) {
         this.context = context;
         this.complex = complex;
         this.cache = cache;
-        // 验证授权支持
+        // Validate authorization support
         if (!Checker.isSupportedAuth(this.context, this.complex)) {
             throw new AuthorizedException(ErrorCode.PARAMETER_INCOMPLETE);
         }
-        // 验证配置
+        // Validate configuration
         check(this.context);
     }
 
     /**
-     * 从授权范围数组中获取标记为默认的范围。
+     * Retrieves a list of default scopes from an array of {@link AuthorizeScope}.
      *
-     * @param scopes 授权范围数组
-     * @return 默认范围名称列表，若无则返回 null
+     * @param scopes an array of authorization scopes
+     * @return a list of default scope names, or null if no scopes are provided or no default scopes are found
      */
     public static List<String> getDefaultScopes(AuthorizeScope[] scopes) {
         if (null == scopes || scopes.length == 0) {
@@ -115,10 +117,10 @@ public abstract class AbstractProvider implements Provider {
     }
 
     /**
-     * 从授权范围数组中获取范围名称。
+     * Retrieves a list of scope names from a variable number of {@link AuthorizeScope} arguments.
      *
-     * @param scopes 可变数量的授权范围
-     * @return 范围名称列表，若无则返回 null
+     * @param scopes a variable number of authorization scopes
+     * @return a list of scope names, or null if no scopes are provided
      */
     public static List<String> getScopes(AuthorizeScope... scopes) {
         if (null == scopes || scopes.length == 0) {
@@ -128,37 +130,37 @@ public abstract class AbstractProvider implements Provider {
     }
 
     /**
-     * 处理登录流程，验证回调数据，获取访问令牌并查询用户信息。
+     * Processes the login flow, validates callback data, obtains an access token, and retrieves user information.
      *
-     * @param callback 包含授权数据的回调对象（例如代码、状态）
-     * @return 包含用户信息或错误的 Message 对象
+     * @param callback the callback object containing authorization data (e.g., code, state)
+     * @return a {@link Message} object containing user information or an error message
      */
     @Override
     public Message login(Callback callback) {
         try {
-            // 验证回调数据
+            // Validate callback data
             check(callback);
-            // 对于 OAuth2，验证状态参数（若未忽略）
+            // For OAuth2, validate the state parameter (if not ignored)
             if (!context.isIgnoreState() && complex.getProtocol() == Protocol.OIDC) {
                 Checker.check(callback.getState(), complex, cache);
             }
 
-            // 获取访问令牌
+            // Obtain access token
             AuthToken authToken = this.getAccessToken(callback);
-            // 查询用户信息
+            // Retrieve user information
             Material user = this.getUserInfo(authToken);
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(user).build();
         } catch (Exception e) {
-            Logger.error("使用授权登录失败。", e);
+            Logger.error("Authorization login failed.", e);
             return this.responseError(e);
         }
     }
 
     /**
-     * 验证回调数据，主要用于 OAuth2 协议。
+     * Validates callback data, primarily used for OAuth2 protocol.
      *
-     * @param callback 包含授权数据的回调对象
-     * @throws AuthorizedException 如果 OAuth2 验证失败
+     * @param callback the callback object containing authorization data
+     * @throws AuthorizedException if OAuth2 validation fails
      */
     protected void check(Callback callback) {
         if (complex.getProtocol() == Protocol.OIDC) {
@@ -167,10 +169,10 @@ public abstract class AbstractProvider implements Provider {
     }
 
     /**
-     * 构造登录过程中异常的错误响应。
+     * Constructs an error response message for exceptions during the login process.
      *
-     * @param e 发生的异常
-     * @return 包含错误详情的 Message 对象
+     * @param e the exception that occurred
+     * @return a {@link Message} object containing error details
      */
     protected Message responseError(Exception e) {
         String errorCode = ErrorCode._FAILURE.getKey();
@@ -186,32 +188,32 @@ public abstract class AbstractProvider implements Provider {
     }
 
     /**
-     * 生成用于启动认证流程的授权 URL。
+     * Generates the authorization URL to initiate the authentication flow.
      *
-     * @param state 用于防止 CSRF 攻击的状态参数
-     * @return 授权 URL，对于 LDAP 等协议返回 null
+     * @param state the state parameter used to prevent CSRF attacks
+     * @return the authorization URL, or null for protocols like LDAP that do not use an authorization URL
      */
     @Override
     public String authorize(String state) {
         if (complex.getProtocol() == Protocol.OIDC) {
-            // 构建 OAuth2 授权 URL
+            // Build OAuth2 authorization URL
             return Builder.fromUrl(this.complex.authorize()).queryParam("response_type", "code")
                     .queryParam("client_id", this.context.getAppKey())
                     .queryParam("redirect_uri", this.context.getRedirectUri()).queryParam("state", getRealState(state))
                     .queryParam("scope", getScopes(Symbol.SPACE, true, getDefaultScopes(null))).build();
         } else if (this.complex.getProtocol() == Protocol.SAML) {
-            // 构建 SAML 单点登录 URL
+            // Build SAML single sign-on URL
             return Builder.fromUrl(this.complex.endpoint().get("ssoEndpoint"))
                     .queryParam("RelayState", getRealState(state)).build();
         }
-        return null; // LDAP 不使用授权 URL
+        return null; // LDAP does not use an authorization URL
     }
 
     /**
-     * 构造 OAuth2 的访问令牌 URL。
+     * Constructs the OAuth2 access token URL.
      *
-     * @param code 授权代码
-     * @return 访问令牌 URL
+     * @param code the authorization code
+     * @return the access token URL
      */
     protected String accessTokenUrl(String code) {
         return Builder.fromUrl(complex.accessToken()).queryParam("code", code)
@@ -221,10 +223,10 @@ public abstract class AbstractProvider implements Provider {
     }
 
     /**
-     * 构造 OAuth2 的刷新令牌 URL。
+     * Constructs the OAuth2 refresh token URL.
      *
-     * @param refreshToken 刷新令牌
-     * @return 刷新令牌 URL
+     * @param refreshToken the refresh token
+     * @return the refresh token URL
      */
     protected String refreshTokenUrl(String refreshToken) {
         return Builder.fromUrl(complex.refresh()).queryParam("client_id", context.getAppKey())
@@ -233,30 +235,30 @@ public abstract class AbstractProvider implements Provider {
     }
 
     /**
-     * 构造 OAuth2 的用户信息 URL。
+     * Constructs the OAuth2 user information URL.
      *
-     * @param authToken 访问令牌
-     * @return 用户信息 URL
+     * @param authToken the access token
+     * @return the user information URL
      */
     protected String userInfoUrl(AuthToken authToken) {
         return Builder.fromUrl(complex.userinfo()).queryParam("access_token", authToken.getAccessToken()).build();
     }
 
     /**
-     * 构造 OAuth2 的撤销授权 URL。
+     * Constructs the OAuth2 revoke authorization URL.
      *
-     * @param authToken 访问令牌
-     * @return 撤销授权 URL
+     * @param authToken the access token
+     * @return the revoke authorization URL
      */
     protected String revokeUrl(AuthToken authToken) {
         return Builder.fromUrl(complex.revoke()).queryParam("access_token", authToken.getAccessToken()).build();
     }
 
     /**
-     * 生成或缓存用于防止 CSRF 攻击的状态参数。
+     * Generates or retrieves a cached state parameter used to prevent CSRF attacks.
      *
-     * @param state 提供的状态值，若为空则生成新值
-     * @return 非空的狀態值
+     * @param state the provided state value; if empty, a new value will be generated
+     * @return the non-empty state value
      */
     protected String getRealState(String state) {
         if (StringKit.isEmpty(state)) {
@@ -267,52 +269,52 @@ public abstract class AbstractProvider implements Provider {
     }
 
     /**
-     * 执行 POST 请求以获取 OAuth2 访问令牌。
+     * Executes a POST request to obtain an OAuth2 access token.
      *
-     * @param code 授权代码
-     * @return 响应内容
+     * @param code the authorization code
+     * @return the response content
      */
     protected String doPostAuthorizationCode(String code) {
         return Httpx.post(accessTokenUrl(code));
     }
 
     /**
-     * 执行 GET 请求以获取 OAuth2 访问令牌。
+     * Executes a GET request to obtain an OAuth2 access token.
      *
-     * @param code 授权代码
-     * @return 响应内容
+     * @param code the authorization code
+     * @return the response content
      */
     protected String doGetAuthorizationCode(String code) {
         return Httpx.get(accessTokenUrl(code));
     }
 
     /**
-     * 执行 GET 请求以获取 OAuth2 用户信息。
+     * Executes a GET request to obtain OAuth2 user information.
      *
-     * @param authToken 访问令牌
-     * @return 响应内容
+     * @param authToken the access token
+     * @return the response content
      */
     protected String doGetUserInfo(AuthToken authToken) {
         return Httpx.get(userInfoUrl(authToken));
     }
 
     /**
-     * 执行 GET 请求以撤销 OAuth2 授权。
+     * Executes a GET request to revoke OAuth2 authorization.
      *
-     * @param authToken 访问令牌
-     * @return 响应内容
+     * @param authToken the access token
+     * @return the response content
      */
     protected String doGetRevoke(AuthToken authToken) {
         return Httpx.get(revokeUrl(authToken));
     }
 
     /**
-     * 从配置或默认范围构造范围字符串。
+     * Constructs a scope string from configured or default scopes.
      *
-     * @param separator     多个范围的分隔符
-     * @param encode        是否对范围字符串进行 URL 编码
-     * @param defaultScopes 默认范围（若未配置范围时使用）
-     * @return 范围字符串，若无则返回空字符串
+     * @param separator     the delimiter for multiple scopes
+     * @param encode        whether to URL-encode the scope string
+     * @param defaultScopes default scopes to use if no scopes are configured
+     * @return the scope string, or an empty string if no scopes are found
      */
     protected String getScopes(String separator, boolean encode, List<String> defaultScopes) {
         List<String> scopes = context.getScopes();
@@ -330,10 +332,10 @@ public abstract class AbstractProvider implements Provider {
     }
 
     /**
-     * 验证上下文配置的完整性，根据协议类型检查所需字段。
+     * Validates the completeness of the context configuration, checking required fields based on the protocol type.
      *
-     * @param context 上下文配置
-     * @throws AuthorizedException 如果配置不完整
+     * @param context the context configuration
+     * @throws AuthorizedException if the configuration is incomplete
      */
     protected void check(Context context) {
         if (complex.getProtocol() == Protocol.OIDC) {

@@ -38,7 +38,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * 认证及委托处理类，用于封装认证结果和 OAuth2 授权信息
+ * Authentication and delegation processing class, used to encapsulate authentication results and OAuth2 authorization
+ * information.
  *
  * @author Justubborn
  * @since Java 17+
@@ -51,22 +52,23 @@ import lombok.Setter;
 public class Delegate {
 
     /**
-     * 认证结果消息，包含错误码和错误信息等
+     * The authentication result message, containing error code and error message.
      */
     private Message message;
 
     /**
-     * OAuth2 授权信息，包含认证相关的详细信息
+     * OAuth2 authorization information, containing detailed authentication-related information.
      */
     private Authorize authorize;
 
     /**
-     * 判断认证是否成功
+     * Checks if the authentication was successful.
      *
-     * @return 如果消息错误码为 Consts.STATUS_ZERO（通常表示成功），返回 true，否则返回 false
+     * @return {@code true} if the message error code is {@link Consts#ZERO} (typically indicating success),
+     *         {@code false} otherwise.
      */
     public boolean isOk() {
-        return Consts.STATUS_ZERO.equals(message.getErrcode());
+        return Consts.ZERO.equals(message.getErrcode());
     }
 
 }

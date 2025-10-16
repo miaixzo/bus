@@ -31,7 +31,8 @@ import org.bouncycastle.crypto.CipherParameters;
 import org.bouncycastle.crypto.engines.SM4Engine;
 
 /**
- * SM4算法的MAC引擎实现
+ * MAC engine implementation for the SM4 algorithm. This class extends {@link CBCBlockCipherMac} and uses
+ * {@link SM4Engine} for its underlying block cipher.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -41,9 +42,9 @@ public class SM4Mac extends CBCBlockCipherMac {
     private static final int MAC_SIZE = 128;
 
     /**
-     * 构造
+     * Constructs an {@code SM4Mac} instance with the specified cipher parameters.
      *
-     * @param params {@link CipherParameters}
+     * @param params The {@link CipherParameters} for initializing the SM4 MAC.
      */
     public SM4Mac(final CipherParameters params) {
         super(new SM4Engine(), MAC_SIZE, params);

@@ -34,9 +34,9 @@ import java.util.function.UnaryOperator;
 import org.miaixz.bus.core.xyz.ExceptionKit;
 
 /**
- * 可序列化的UnaryOperator接口，支持异常抛出和类型转换操作。
+ * A serializable {@link UnaryOperator} interface that supports throwing exceptions and type casting operations.
  *
- * @param <T> 参数和返回值类型
+ * @param <T> The type of the input and output of the operator.
  * @author Kimi Liu
  * @see UnaryOperator
  * @since Java 17+
@@ -45,43 +45,44 @@ import org.miaixz.bus.core.xyz.ExceptionKit;
 public interface UnaryOperatorX<T> extends UnaryOperator<T>, Serializable {
 
     /**
-     * 返回一个恒等UnaryOperator，始终返回输入参数。
+     * Returns an identity {@code UnaryOperator} that always returns its input argument.
      *
-     * @param <T> 输入和输出的类型
-     * @return 恒等UnaryOperator
+     * @param <T> The type of the input and output.
+     * @return An identity {@code UnaryOperator}.
      */
     static <T> UnaryOperatorX<T> identity() {
         return t -> t;
     }
 
     /**
-     * 返回一个支持类型转换的UnaryOperator。
+     * Returns a {@code UnaryOperator} that supports type casting.
      *
-     * @param function 源函数
-     * @param <T>      输入参数类型
-     * @param <R>      返回值类型
-     * @param <F>      函数类型
-     * @return 类型转换后的UnaryOperator
+     * @param function The source function.
+     * @param <T>      The type of the input argument.
+     * @param <R>      The type of the return value.
+     * @param <F>      The type of the function.
+     * @return A {@code UnaryOperator} with type casting.
      */
     static <T, R, F extends Function<T, R>> UnaryOperatorX<T> casting(final F function) {
         return t -> (T) function.apply(t);
     }
 
     /**
-     * 对给定参数应用此操作，可能抛出异常。
+     * Applies this operation to the given argument, potentially throwing an exception.
      *
-     * @param t 输入参数
-     * @return 操作结果
-     * @throws Throwable 可能抛出的异常
+     * @param t The input argument.
+     * @return The result of the operation.
+     * @throws Throwable Any throwable exception that might occur during the operation.
      */
     T applying(T t) throws Throwable;
 
     /**
-     * 对给定参数应用此操作，自动处理异常。
+     * Applies this operation to the given argument, automatically handling checked exceptions by wrapping them in a
+     * {@link RuntimeException}.
      *
-     * @param t 输入参数
-     * @return 操作结果
-     * @throws RuntimeException 包装后的运行时异常
+     * @param t The input argument.
+     * @return The result of the operation.
+     * @throws RuntimeException A wrapped runtime exception if a checked exception occurs.
      */
     @Override
     default T apply(final T t) {

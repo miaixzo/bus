@@ -26,7 +26,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 核心组件，所有支付都是基于{@code provider}实现
+ * Core components, all payments are implemented based on the {@code provider}.
  *
  * @author Kimi Liu
  * @since Java 17+

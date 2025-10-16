@@ -30,15 +30,32 @@ package org.miaixz.bus.image.builtin;
 import org.miaixz.bus.core.lang.Normal;
 
 /**
+ * Implements the Metaphone algorithm for phonetic encoding of words. This algorithm converts a word into a phonetic
+ * key, allowing for approximate string matching based on pronunciation rather than spelling.
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class Metaphone implements FuzzyString {
 
+    /**
+     * Checks if a given character is a vowel (A, E, I, O, U).
+     *
+     * @param ch The character to check.
+     * @return {@code true} if the character is a vowel, {@code false} otherwise.
+     */
     private static boolean vowel(char ch) {
         return ch == 'A' || ch == 'E' || ch == 'I' || ch == 'O' || ch == 'U';
     }
 
+    /**
+     * Converts the input string into its Metaphone phonetic representation. The algorithm processes the string
+     * character by character, applying a set of rules to reduce it to a phonetic key. This key can be used for
+     * approximate string matching.
+     *
+     * @param s The input string to convert.
+     * @return The Metaphone encoded string. Returns an empty string if the input is null or empty.
+     */
     @Override
     public String toFuzzy(String s) {
         if (null == s || s.length() == 0)

@@ -27,13 +27,17 @@
 */
 package org.miaixz.bus.starter.annotation;
 
-import java.lang.annotation.*;
-
 import org.miaixz.bus.starter.jdbc.JdbcConfiguration;
 import org.springframework.context.annotation.Import;
 
+import java.lang.annotation.*;
+
 /**
- * 启用Druid 支持
+ * Enables JDBC and data source support, typically using the Druid or HikariCP connection pool.
+ * <p>
+ * This annotation imports the {@link JdbcConfiguration}, which sets up single or multiple data sources based on the
+ * application's properties. It is the entry point for configuring dynamic data source routing via the
+ * {@code @DataSource} annotation.
  *
  * @author Kimi Liu
  * @since Java 17+

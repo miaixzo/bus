@@ -30,31 +30,64 @@ package org.miaixz.bus.core.center.date.culture.cn;
 import org.miaixz.bus.core.center.date.culture.Samsara;
 
 /**
- * 元（60年=1元）
+ * Represents the Sixty-year Cycle (元), a larger temporal unit in Chinese traditional calendar. Each cycle is composed
+ * of 60 years, and there are three such cycles: Upper, Middle, and Lower. This class extends {@link Samsara} to manage
+ * a cyclical list of these entities.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class Sixty extends Samsara {
 
+    /**
+     * Array of names for the Sixty-year Cycles.
+     */
     public static final String[] NAMES = { "上元", "中元", "下元" };
 
+    /**
+     * Constructs a {@code Sixty} instance with the specified index.
+     *
+     * @param index The index of the Sixty-year Cycle in the {@link #NAMES} array.
+     */
     public Sixty(int index) {
         super(NAMES, index);
     }
 
+    /**
+     * Constructs a {@code Sixty} instance with the specified name.
+     *
+     * @param name The name of the Sixty-year Cycle.
+     */
     public Sixty(String name) {
         super(NAMES, name);
     }
 
+    /**
+     * Creates a {@code Sixty} instance from its index.
+     *
+     * @param index The index of the Sixty-year Cycle.
+     * @return A new {@code Sixty} instance.
+     */
     public static Sixty fromIndex(int index) {
         return new Sixty(index);
     }
 
+    /**
+     * Creates a {@code Sixty} instance from its name.
+     *
+     * @param name The name of the Sixty-year Cycle.
+     * @return A new {@code Sixty} instance.
+     */
     public static Sixty fromName(String name) {
         return new Sixty(name);
     }
 
+    /**
+     * Gets the next {@code Sixty} in the cycle.
+     *
+     * @param n The number of steps to move forward or backward in the cycle.
+     * @return The next {@code Sixty} instance.
+     */
     public Sixty next(int n) {
         return fromIndex(nextIndex(n));
     }

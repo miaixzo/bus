@@ -33,7 +33,7 @@ import java.util.Set;
 import org.miaixz.bus.core.lang.Normal;
 
 /**
- * Boolean类型相关工具类
+ * Utility class for Boolean operations.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -41,19 +41,19 @@ import org.miaixz.bus.core.lang.Normal;
 public class BooleanKit {
 
     /**
-     * 表示为真的字符串
+     * A set of strings that represent the boolean value {@code true}.
      */
     private static final Set<String> TRUE_SET = SetKit.of(Normal.TRUE_ARRAY);
     /**
-     * 表示为假的字符串
+     * A set of strings that represent the boolean value {@code false}.
      */
     private static final Set<String> FALSE_SET = SetKit.of(Normal.FALSE_ARRAY);
 
     /**
-     * 取相反值
+     * Negates the given boolean.
      *
-     * @param bool Boolean值
-     * @return 相反的Boolean值，如果传入 {@code null} 则返回 {@code null}
+     * @param bool The Boolean to negate.
+     * @return The negated Boolean, or {@code null} if the input is {@code null}.
      */
     public static Boolean negate(final Boolean bool) {
         if (bool == null) {
@@ -63,55 +63,54 @@ public class BooleanKit {
     }
 
     /**
-     * 检查 {@code Boolean} 值是否为 {@code true}
+     * Checks if a {@code Boolean} value is {@code true}.
      *
      * <pre>
-     *   BooleanKit.isTrue(Boolean.TRUE)  = true
-     *   BooleanKit.isTrue(Boolean.FALSE) = false
-     *   BooleanKit.isTrue(null)          = false
+     * BooleanKit.isTrue(Boolean.TRUE)  = true
+     * BooleanKit.isTrue(Boolean.FALSE) = false
+     * BooleanKit.isTrue(null)          = false
      * </pre>
      *
-     * @param bool 被检查的Boolean值
-     * @return 当值非 {@code null} 且为 {@code true} 时返回 {@code true}
+     * @param bool The Boolean to check.
+     * @return {@code true} if the Boolean is not {@code null} and is {@code true}.
      */
     public static boolean isTrue(final Boolean bool) {
         return Boolean.TRUE.equals(bool);
     }
 
     /**
-     * 检查 {@code Boolean} 值是否为 {@code false}
+     * Checks if a {@code Boolean} value is {@code false}.
      *
      * <pre>
-     *   BooleanKit.isFalse(Boolean.TRUE)  = false
-     *   BooleanKit.isFalse(Boolean.FALSE) = true
-     *   BooleanKit.isFalse(null)          = false
+     * BooleanKit.isFalse(Boolean.TRUE)  = false
+     * BooleanKit.isFalse(Boolean.FALSE) = true
+     * BooleanKit.isFalse(null)          = false
      * </pre>
      *
-     * @param bool 被检查的Boolean值
-     * @return 当值非 {@code null} 且为 {@code false} 时返回 {@code true}
+     * @param bool The Boolean to check.
+     * @return {@code true} if the Boolean is not {@code null} and is {@code false}.
      */
     public static boolean isFalse(final Boolean bool) {
         return Boolean.FALSE.equals(bool);
     }
 
     /**
-     * 取相反值
+     * Negates the given primitive boolean.
      *
-     * @param bool boolean值
-     * @return 相反的boolean值
+     * @param bool The boolean to negate.
+     * @return The negated boolean.
      */
     public static boolean negate(final boolean bool) {
         return !bool;
     }
 
     /**
-     * 转换字符串为boolean值
+     * Converts a String to a boolean.
      * <p>
-     * 该字符串 是否在 {@link #TRUE_SET} 中，存在则为 {@code true}，否则为 {@code false}
-     * </p>
+     * Returns {@code true} if the trimmed, lower-cased string is in {@link #TRUE_SET}, otherwise {@code false}.
      *
-     * @param values 字符串，不区分大小写，前后可以有空格 {@link String#trim()}
-     * @return boolean值
+     * @param values The string to convert, case-insensitive, with leading/trailing whitespace trimmed.
+     * @return The boolean value.
      */
     public static boolean toBoolean(final String values) {
         if (StringKit.isNotBlank(values)) {
@@ -121,11 +120,12 @@ public class BooleanKit {
     }
 
     /**
-     * 转换字符串为Boolean值 如果字符串在 {@link #TRUE_SET} 中，返回 {@link Boolean#TRUE} 如果字符串在 {@link #FALSE_SET} 中，返回
-     * {@link Boolean#FALSE} 其他情况返回{@code null}
+     * Converts a String to a Boolean object. If the trimmed, lower-cased string is in {@link #TRUE_SET}, returns
+     * {@link Boolean#TRUE}. If the trimmed, lower-cased string is in {@link #FALSE_SET}, returns {@link Boolean#FALSE}.
+     * Otherwise, returns {@code null}.
      *
-     * @param values 字符串，不区分大小写，前后可以有空格 {@link String#trim()}
-     * @return the boolean
+     * @param values The string to convert, case-insensitive, with leading/trailing whitespace trimmed.
+     * @return the Boolean object, or {@code null}.
      */
     public static Boolean toBooleanObject(String values) {
         if (StringKit.isNotBlank(values)) {
@@ -140,221 +140,221 @@ public class BooleanKit {
     }
 
     /**
-     * boolean值转为int
+     * Converts a boolean to an int.
      *
-     * @param value boolean值
-     * @return int值
+     * @param value The boolean to convert.
+     * @return 1 if {@code true}, 0 if {@code false}.
      */
     public static int toInt(final boolean value) {
         return value ? 1 : 0;
     }
 
     /**
-     * boolean值转为Integer
+     * Converts a boolean to an Integer.
      *
-     * @param value boolean值
-     * @return Integer值
+     * @param value The boolean to convert.
+     * @return The Integer representation (1 for true, 0 for false).
      */
     public static Integer toInteger(final boolean value) {
         return toInt(value);
     }
 
     /**
-     * boolean值转为char
+     * Converts a boolean to a char.
      *
-     * @param value boolean值
-     * @return char值
+     * @param value The boolean to convert.
+     * @return The char representation (char)1 for true, (char)0 for false.
      */
     public static char toChar(final boolean value) {
         return (char) toInt(value);
     }
 
     /**
-     * boolean值转为Character
+     * Converts a boolean to a Character.
      *
-     * @param value boolean值
-     * @return Character值
+     * @param value The boolean to convert.
+     * @return The Character representation.
      */
     public static Character toCharacter(final boolean value) {
         return toChar(value);
     }
 
     /**
-     * boolean值转为byte
+     * Converts a boolean to a byte.
      *
-     * @param value boolean值
-     * @return byte值
+     * @param value The boolean to convert.
+     * @return The byte representation (1 for true, 0 for false).
      */
     public static byte toByte(final boolean value) {
         return (byte) toInt(value);
     }
 
     /**
-     * boolean值转为Byte
+     * Converts a boolean to a Byte.
      *
-     * @param value boolean值
-     * @return Byte值
+     * @param value The boolean to convert.
+     * @return The Byte representation.
      */
     public static Byte toByteObject(final boolean value) {
         return toByte(value);
     }
 
     /**
-     * boolean值转为long
+     * Converts a boolean to a long.
      *
-     * @param value boolean值
-     * @return long值
+     * @param value The boolean to convert.
+     * @return The long representation (1 for true, 0 for false).
      */
     public static long toLong(final boolean value) {
         return toInt(value);
     }
 
     /**
-     * boolean值转为Long
+     * Converts a boolean to a Long.
      *
-     * @param value boolean值
-     * @return Long值
+     * @param value The boolean to convert.
+     * @return The Long representation.
      */
     public static Long toLongObject(final boolean value) {
         return toLong(value);
     }
 
     /**
-     * boolean值转为short
+     * Converts a boolean to a short.
      *
-     * @param value boolean值
-     * @return short值
+     * @param value The boolean to convert.
+     * @return The short representation (1 for true, 0 for false).
      */
     public static short toShort(final boolean value) {
         return (short) toInt(value);
     }
 
     /**
-     * boolean值转为Short
+     * Converts a boolean to a Short.
      *
-     * @param value boolean值
-     * @return Short值
+     * @param value The boolean to convert.
+     * @return The Short representation.
      */
     public static Short toShortObject(final boolean value) {
         return toShort(value);
     }
 
     /**
-     * boolean值转为float
+     * Converts a boolean to a float.
      *
-     * @param value boolean值
-     * @return float值
+     * @param value The boolean to convert.
+     * @return The float representation (1.0f for true, 0.0f for false).
      */
     public static float toFloat(final boolean value) {
         return (float) toInt(value);
     }
 
     /**
-     * boolean值转为Float
+     * Converts a boolean to a Float.
      *
-     * @param value boolean值
-     * @return Float值
+     * @param value The boolean to convert.
+     * @return The Float representation.
      */
     public static Float toFloatObject(final boolean value) {
         return toFloat(value);
     }
 
     /**
-     * boolean值转为double
+     * Converts a boolean to a double.
      *
-     * @param value boolean值
-     * @return double值
+     * @param value The boolean to convert.
+     * @return The double representation (1.0 for true, 0.0 for false).
      */
     public static double toDouble(final boolean value) {
         return toInt(value);
     }
 
     /**
-     * boolean值转为Double
+     * Converts a boolean to a Double.
      *
-     * @param value boolean值
-     * @return Double值
+     * @param value The boolean to convert.
+     * @return The Double representation.
      */
     public static Double toDoubleObject(final boolean value) {
         return toDouble(value);
     }
 
     /**
-     * 将boolean转换为字符串 {@code 'true'} 或者 {@code 'false'}.
+     * Converts a boolean to the string {@code "true"} or {@code "false"}.
      *
      * <pre>
-     *   BooleanKit.toStringTrueFalse(true)   = "true"
-     *   BooleanKit.toStringTrueFalse(false)  = "false"
+     * BooleanKit.toStringTrueFalse(true)   = "true"
+     * BooleanKit.toStringTrueFalse(false)  = "false"
      * </pre>
      *
-     * @param bool boolean值
-     * @return {@code 'true'}, {@code 'false'}
+     * @param bool The boolean to convert.
+     * @return {@code "true"} or {@code "false"}.
      */
     public static String toStringTrueFalse(final boolean bool) {
         return toString(bool, "true", "false");
     }
 
     /**
-     * 将boolean转换为字符串 {@code 'on'} 或者 {@code 'off'}.
+     * Converts a boolean to the string {@code "on"} or {@code "off"}.
      *
      * <pre>
-     *   BooleanKit.toStringOnOff(true)   = "on"
-     *   BooleanKit.toStringOnOff(false)  = "off"
+     * BooleanKit.toStringOnOff(true)   = "on"
+     * BooleanKit.toStringOnOff(false)  = "off"
      * </pre>
      *
-     * @param bool boolean值
-     * @return {@code 'on'}, {@code 'off'}
+     * @param bool The boolean to convert.
+     * @return {@code "on"} or {@code "off"}.
      */
     public static String toStringOnOff(final boolean bool) {
         return toString(bool, "on", "off");
     }
 
     /**
-     * 将boolean转换为字符串 {@code 'yes'} 或者 {@code 'no'}.
+     * Converts a boolean to the string {@code "yes"} or {@code "no"}.
      *
      * <pre>
-     *   BooleanKit.toStringYesNo(true)   = "yes"
-     *   BooleanKit.toStringYesNo(false)  = "no"
+     * BooleanKit.toStringYesNo(true)   = "yes"
+     * BooleanKit.toStringYesNo(false)  = "no"
      * </pre>
      *
-     * @param bool boolean值
-     * @return {@code 'yes'}, {@code 'no'}
+     * @param bool The boolean to convert.
+     * @return {@code "yes"} or {@code "no"}.
      */
     public static String toStringYesNo(final boolean bool) {
         return toString(bool, "yes", "no");
     }
 
     /**
-     * 将boolean转换为字符串
+     * Converts a boolean to a String, returning one of two specified strings.
      *
      * <pre>
-     *   BooleanKit.toString(true, "true", "false")   = "true"
-     *   BooleanKit.toString(false, "true", "false")  = "false"
+     * BooleanKit.toString(true, "true", "false")   = "true"
+     * BooleanKit.toString(false, "true", "false")  = "false"
      * </pre>
      *
-     * @param bool        boolean值
-     * @param trueString  当值为 {@code true}时返回此字符串, 可能为 {@code null}
-     * @param falseString 当值为 {@code false}时返回此字符串, 可能为 {@code null}
-     * @return 结果值
+     * @param bool        The boolean to convert.
+     * @param trueString  The String to return if the boolean is {@code true}, may be {@code null}.
+     * @param falseString The String to return if the boolean is {@code false}, may be {@code null}.
+     * @return The resulting String.
      */
     public static String toString(final boolean bool, final String trueString, final String falseString) {
         return bool ? trueString : falseString;
     }
 
     /**
-     * 将boolean转换为字符串
+     * Converts a Boolean to a String, returning one of three specified strings.
      *
      * <pre>
-     *   BooleanKit.toString(true, "true", "false", null) = "true"
-     *   BooleanKit.toString(false, "true", "false", null) = "false"
-     *   BooleanKit.toString(null, "true", "false", null) = null
+     * BooleanKit.toString(Boolean.TRUE, "true", "false", "null") = "true"
+     * BooleanKit.toString(Boolean.FALSE, "true", "false", "null") = "false"
+     * BooleanKit.toString(null, "true", "false", "null") = "null"
      * </pre>
      *
-     * @param bool        Boolean值
-     * @param trueString  当值为 {@code true}时返回此字符串, 可能为 {@code null}
-     * @param falseString 当值为 {@code false}时返回此字符串, 可能为 {@code null}
-     * @param nullString  当值为 {@code null}时返回此字符串, 可能为 {@code null}
-     * @return 结果值
+     * @param bool        The Boolean to convert.
+     * @param trueString  The String to return if the Boolean is {@code true}, may be {@code null}.
+     * @param falseString The String to return if the Boolean is {@code false}, may be {@code null}.
+     * @param nullString  The String to return if the Boolean is {@code null}, may be {@code null}.
+     * @return The resulting String.
      */
     public static String toString(
             final Boolean bool,
@@ -368,19 +368,19 @@ public class BooleanKit {
     }
 
     /**
-     * boolean数组所有元素相 与 的结果
+     * Performs a logical AND operation on an array of booleans.
      *
      * <pre>
-     *   BooleanKit.and(true, true)         = true
-     *   BooleanKit.and(false, false)       = false
-     *   BooleanKit.and(true, false)        = false
-     *   BooleanKit.and(true, true, false)  = false
-     *   BooleanKit.and(true, true, true)   = true
+     * BooleanKit.and(true, true)         = true
+     * BooleanKit.and(false, false)       = false
+     * BooleanKit.and(true, false)        = false
+     * BooleanKit.and(true, true, false)  = false
+     * BooleanKit.and(true, true, true)   = true
      * </pre>
      *
-     * @param array {@code boolean}数组
-     * @return 数组所有元素相 与 的结果
-     * @throws IllegalArgumentException 如果数组为空
+     * @param array An array of {@code boolean}s.
+     * @return The result of the logical AND.
+     * @throws IllegalArgumentException if the array is empty.
      */
     public static boolean and(final boolean... array) {
         if (ArrayKit.isEmpty(array)) {
@@ -395,24 +395,23 @@ public class BooleanKit {
     }
 
     /**
-     * Boolean数组所有元素相 与 的结果
+     * Performs a logical AND operation on an array of Booleans.
      * <p>
-     * 注意：{@code null} 元素 被当作 {@code true}
-     * </p>
+     * Note: {@code null} elements are treated as {@code false}.
      *
      * <pre>
-     *   BooleanKit.and(Boolean.TRUE, Boolean.TRUE)                 = Boolean.TRUE
-     *   BooleanKit.and(Boolean.FALSE, Boolean.FALSE)               = Boolean.FALSE
-     *   BooleanKit.and(Boolean.TRUE, Boolean.FALSE)                = Boolean.FALSE
-     *   BooleanKit.and(Boolean.TRUE, Boolean.TRUE, Boolean.TRUE)   = Boolean.TRUE
-     *   BooleanKit.and(Boolean.FALSE, Boolean.FALSE, Boolean.TRUE) = Boolean.FALSE
-     *   BooleanKit.and(Boolean.TRUE, Boolean.FALSE, Boolean.TRUE)  = Boolean.FALSE
-     *   BooleanKit.and(Boolean.TRUE, null)                         = Boolean.TRUE
+     * BooleanKit.andOfWrap(Boolean.TRUE, Boolean.TRUE)                 = Boolean.TRUE
+     * BooleanKit.andOfWrap(Boolean.FALSE, Boolean.FALSE)               = Boolean.FALSE
+     * BooleanKit.andOfWrap(Boolean.TRUE, Boolean.FALSE)                = Boolean.FALSE
+     * BooleanKit.andOfWrap(Boolean.TRUE, Boolean.TRUE, Boolean.TRUE)   = Boolean.TRUE
+     * BooleanKit.andOfWrap(Boolean.FALSE, Boolean.FALSE, Boolean.TRUE) = Boolean.FALSE
+     * BooleanKit.andOfWrap(Boolean.TRUE, Boolean.FALSE, Boolean.TRUE)  = Boolean.FALSE
+     * BooleanKit.andOfWrap(Boolean.TRUE, null)                         = Boolean.FALSE
      * </pre>
      *
-     * @param array {@code Boolean}数组
-     * @return 数组所有元素相 与 的结果
-     * @throws IllegalArgumentException 如果数组为空
+     * @param array An array of {@code Boolean}s.
+     * @return The result of the logical AND.
+     * @throws IllegalArgumentException if the array is empty.
      */
     public static Boolean andOfWrap(final Boolean... array) {
         if (ArrayKit.isEmpty(array)) {
@@ -428,20 +427,20 @@ public class BooleanKit {
     }
 
     /**
-     * boolean数组所有元素 或 的结果
+     * Performs a logical OR operation on an array of booleans.
      *
      * <pre>
-     *   BooleanKit.or(true, true)          = true
-     *   BooleanKit.or(false, false)        = false
-     *   BooleanKit.or(true, false)         = true
-     *   BooleanKit.or(true, true, false)   = true
-     *   BooleanKit.or(true, true, true)    = true
-     *   BooleanKit.or(false, false, false) = false
+     * BooleanKit.or(true, true)          = true
+     * BooleanKit.or(false, false)        = false
+     * BooleanKit.or(true, false)         = true
+     * BooleanKit.or(true, true, false)   = true
+     * BooleanKit.or(true, true, true)    = true
+     * BooleanKit.or(false, false, false) = false
      * </pre>
      *
-     * @param array {@code boolean}数组
-     * @return 数组所有元素 或 的结果
-     * @throws IllegalArgumentException 如果数组为空
+     * @param array An array of {@code boolean}s.
+     * @return The result of the logical OR.
+     * @throws IllegalArgumentException if the array is empty.
      */
     public static boolean or(final boolean... array) {
         if (ArrayKit.isEmpty(array)) {
@@ -456,25 +455,24 @@ public class BooleanKit {
     }
 
     /**
-     * Boolean数组所有元素 或 的结果
+     * Performs a logical OR operation on an array of Booleans.
      * <p>
-     * 注意：{@code null} 元素 被当作 {@code false}
-     * </p>
+     * Note: {@code null} elements are treated as {@code false}.
      *
      * <pre>
-     *   BooleanKit.or(Boolean.TRUE, Boolean.TRUE)                  = Boolean.TRUE
-     *   BooleanKit.or(Boolean.FALSE, Boolean.FALSE)                = Boolean.FALSE
-     *   BooleanKit.or(Boolean.TRUE, Boolean.FALSE)                 = Boolean.TRUE
-     *   BooleanKit.or(Boolean.TRUE, Boolean.TRUE, Boolean.TRUE)    = Boolean.TRUE
-     *   BooleanKit.or(Boolean.FALSE, Boolean.FALSE, Boolean.TRUE)  = Boolean.TRUE
-     *   BooleanKit.or(Boolean.TRUE, Boolean.FALSE, Boolean.TRUE)   = Boolean.TRUE
-     *   BooleanKit.or(Boolean.FALSE, Boolean.FALSE, Boolean.FALSE) = Boolean.FALSE
-     *   BooleanKit.or(Boolean.FALSE, null)                         = Boolean.FALSE
+     * BooleanKit.orOfWrap(Boolean.TRUE, Boolean.TRUE)                  = Boolean.TRUE
+     * BooleanKit.orOfWrap(Boolean.FALSE, Boolean.FALSE)                = Boolean.FALSE
+     * BooleanKit.orOfWrap(Boolean.TRUE, Boolean.FALSE)                 = Boolean.TRUE
+     * BooleanKit.orOfWrap(Boolean.TRUE, Boolean.TRUE, Boolean.TRUE)    = Boolean.TRUE
+     * BooleanKit.orOfWrap(Boolean.FALSE, Boolean.FALSE, Boolean.TRUE)  = Boolean.TRUE
+     * BooleanKit.orOfWrap(Boolean.TRUE, Boolean.FALSE, Boolean.TRUE)   = Boolean.TRUE
+     * BooleanKit.orOfWrap(Boolean.FALSE, Boolean.FALSE, Boolean.FALSE) = Boolean.FALSE
+     * BooleanKit.orOfWrap(Boolean.FALSE, null)                         = Boolean.FALSE
      * </pre>
      *
-     * @param array {@code Boolean}数组
-     * @return 数组所有元素 或 的结果
-     * @throws IllegalArgumentException 如果数组为空
+     * @param array An array of {@code Boolean}s.
+     * @return The result of the logical OR.
+     * @throws IllegalArgumentException if the array is empty.
      */
     public static Boolean orOfWrap(final Boolean... array) {
         if (ArrayKit.isEmpty(array)) {
@@ -490,21 +488,21 @@ public class BooleanKit {
     }
 
     /**
-     * 对boolean数组取异或
+     * Performs a logical XOR operation on an array of booleans.
      *
      * <pre>
-     *   BooleanKit.xor(true, true)   = false
-     *   BooleanKit.xor(false, false) = false
-     *   BooleanKit.xor(true, false)  = true
-     *   BooleanKit.xor(true, true, true)   = true
-     *   BooleanKit.xor(false, false, false) = false
-     *   BooleanKit.xor(true, true, false)  = false
-     *   BooleanKit.xor(true, false, false)  = true
+     * BooleanKit.xor(true, true)   = false
+     * BooleanKit.xor(false, false) = false
+     * BooleanKit.xor(true, false)  = true
+     * BooleanKit.xor(true, true, true)   = true
+     * BooleanKit.xor(false, false, false) = false
+     * BooleanKit.xor(true, true, false)  = false
+     * BooleanKit.xor(true, false, false)  = true
      * </pre>
      *
-     * @param array {@code boolean}数组
-     * @return 如果异或计算为true返回 {@code true}
-     * @throws IllegalArgumentException 如果数组为空
+     * @param array An array of {@code boolean}s.
+     * @return {@code true} if the result of the XOR operation is true.
+     * @throws IllegalArgumentException if the array is empty.
      */
     public static boolean xor(final boolean... array) {
         if (ArrayKit.isEmpty(array)) {
@@ -520,21 +518,22 @@ public class BooleanKit {
     }
 
     /**
-     * 对Boolean数组取异或
+     * Performs a logical XOR operation on an array of Booleans.
      *
      * <pre>
-     *   BooleanKit.xor(Boolean.TRUE, Boolean.TRUE)                  = Boolean.FALSE
-     *   BooleanKit.xor(Boolean.FALSE, Boolean.FALSE)                = Boolean.FALSE
-     *   BooleanKit.xor(Boolean.TRUE, Boolean.FALSE)                 = Boolean.TRUE
-     *   BooleanKit.xor(Boolean.TRUE, Boolean.TRUE, Boolean.TRUE)    = Boolean.TRUE
-     *   BooleanKit.xor(Boolean.FALSE, Boolean.FALSE, Boolean.FALSE) = Boolean.FALSE
-     *   BooleanKit.xor(Boolean.TRUE, Boolean.TRUE, Boolean.FALSE)   = Boolean.FALSE
-     *   BooleanKit.xor(Boolean.TRUE, Boolean.FALSE, Boolean.FALSE)  = Boolean.TRUE
+     * BooleanKit.xorOfWrap(Boolean.TRUE, Boolean.TRUE)                  = Boolean.FALSE
+     * BooleanKit.xorOfWrap(Boolean.FALSE, Boolean.FALSE)                = Boolean.FALSE
+     * BooleanKit.xorOfWrap(Boolean.TRUE, Boolean.FALSE)                 = Boolean.TRUE
+     * BooleanKit.xorOfWrap(Boolean.TRUE, Boolean.TRUE, Boolean.TRUE)    = Boolean.TRUE
+     * BooleanKit.xorOfWrap(Boolean.FALSE, Boolean.FALSE, Boolean.FALSE) = Boolean.FALSE
+     * BooleanKit.xorOfWrap(Boolean.TRUE, Boolean.TRUE, Boolean.FALSE)   = Boolean.FALSE
+     * BooleanKit.xorOfWrap(Boolean.TRUE, Boolean.FALSE, Boolean.FALSE)  = Boolean.TRUE
      * </pre>
      *
-     * @param array {@code Boolean} 数组
-     * @return 异或为真取 {@code true}
-     * @throws IllegalArgumentException 如果数组为空
+     * @param array An array of {@code Boolean}s.
+     * @return {@code true} if the result of the XOR operation is true.
+     * @throws IllegalArgumentException if the array is empty.
+     * @throws NullPointerException     if the array contains {@code null}.
      * @see #xor(boolean...)
      */
     public static Boolean xorOfWrap(final Boolean... array) {
@@ -551,10 +550,10 @@ public class BooleanKit {
     }
 
     /**
-     * 给定类是否为Boolean或者boolean
+     * Checks if the given type is either {@code Boolean.class} or {@code boolean.class}.
      *
-     * @param type 类
-     * @return 是否为Boolean或者boolean
+     * @param type The type to check.
+     * @return {@code true} if the type is a boolean type, {@code false} otherwise.
      */
     public static boolean isBoolean(final Type type) {
         return (type == Boolean.class || type == boolean.class);

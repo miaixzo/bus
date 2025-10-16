@@ -34,21 +34,26 @@ import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 
 /**
- * Gson 解析器
+ * A {@link org.miaixz.bus.extra.json.JsonProvider} implementation based on Google's Gson library. This class provides
+ * JSON serialization and deserialization functionalities using Gson.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class GsonProvider extends AbstractJsonProvider {
 
+    /**
+     * The underlying Gson instance used for JSON operations. It is configured with custom type adapters.
+     */
     public static Gson gson;
 
     /**
-     * 构造
+     * Constructs a new {@code GsonProvider} instance. Initializes a {@link Gson} instance with custom type adapters to
+     * handle potential issues, such as integers being converted to floating-point numbers during deserialization.
      */
     public GsonProvider() {
         gson = new GsonBuilder()
-                // 解决gson序列化时出现整型变为浮点型的问题
+                // Custom deserializer for Map to prevent integers from being parsed as doubles.
                 .registerTypeAdapter(new TypeToken<Map<Object, Object>>() {
                 }.getType(),
                         (JsonDeserializer<Map<Object, Object>>) (jsonElement, type, jsonDeserializationContext) -> {
@@ -65,6 +70,7 @@ public class GsonProvider extends AbstractJsonProvider {
                             }
                             return map;
                         })
+                // Custom deserializer for List to handle mixed-type arrays.
                 .registerTypeAdapter(new TypeToken<List<Object>>() {
                 }.getType(), (JsonDeserializer<List<Object>>) (jsonElement, type, jsonDeserializationContext) -> {
                     List<Object> list = new LinkedList<>();
@@ -89,6 +95,7 @@ public class GsonProvider extends AbstractJsonProvider {
 
     @Override
     public String toJsonString(Object object, String format) {
+        // Note: This creates a new Gson instance on each call, which can be inefficient.
         gson = new GsonBuilder().setDateFormat(format).create();
         return gson.toJson(object);
     }

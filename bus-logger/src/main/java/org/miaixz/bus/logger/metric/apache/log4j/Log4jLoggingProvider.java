@@ -27,8 +27,6 @@
 */
 package org.miaixz.bus.logger.metric.apache.log4j;
 
-import java.io.Serial;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -36,8 +34,10 @@ import org.apache.logging.log4j.spi.AbstractLogger;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.magic.AbstractProvider;
 
+import java.io.Serial;
+
 /**
- * apache log4j
+ * A logger provider implementation that wraps an {@link org.apache.logging.log4j.Logger} instance.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,32 +48,32 @@ public class Log4jLoggingProvider extends AbstractProvider {
     private static final long serialVersionUID = 2852286601223L;
 
     /**
-     * 日志门面
+     * The underlying Log4j 2 logger instance.
      */
     private final transient Logger logger;
 
     /**
-     * 构造
+     * Constructs a new {@code Log4jLoggingProvider} with the specified logger.
      *
-     * @param logger 日志对象
+     * @param logger the {@link Logger} instance to use.
      */
     public Log4jLoggingProvider(final Logger logger) {
         this.logger = logger;
     }
 
     /**
-     * 构造
+     * Constructs a new {@code Log4jLoggingProvider} for the specified class.
      *
-     * @param clazz 日志实现类
+     * @param clazz the class for which to create the logger.
      */
     public Log4jLoggingProvider(final Class<?> clazz) {
         this(LogManager.getLogger(clazz));
     }
 
     /**
-     * 构造
+     * Constructs a new {@code Log4jLoggingProvider} for the specified name.
      *
-     * @param name 日志实现类名
+     * @param name the name of the logger.
      */
     public Log4jLoggingProvider(final String name) {
         this(LogManager.getLogger(name));
@@ -170,13 +170,14 @@ public class Log4jLoggingProvider extends AbstractProvider {
     }
 
     /**
-     * 打印日志 此方法用于兼容底层日志实现，通过传入当前包装类名，以解决打印日志中行号错误问题
+     * Logs a message. This method is used to support underlying logging implementations by passing the fully qualified
+     * class name of the caller, which helps in correcting the line number in the log output.
      *
-     * @param fqcn   完全限定类名(Fully Qualified Class Name)，用于纠正定位错误行号
-     * @param level  日志级别，使用org.apache.logging.log4j.Level中的常量
-     * @param t      异常
-     * @param format 消息模板
-     * @param args   参数
+     * @param fqcn   the fully qualified class name of the caller.
+     * @param level  the logging level, using the constants from {@link org.apache.logging.log4j.Level}.
+     * @param t      the throwable to log.
+     * @param format the message format.
+     * @param args   the arguments for the message format.
      */
     private void logIfEnabled(
             final String fqcn,
@@ -199,13 +200,12 @@ public class Log4jLoggingProvider extends AbstractProvider {
         if (log4jLevel == null) {
             return org.miaixz.bus.logger.Level.OFF;
         }
-        return switch (log4jLevel.getStandardLevel().toString()) {
-            case "TRACE" -> org.miaixz.bus.logger.Level.TRACE;
-            case "DEBUG" -> org.miaixz.bus.logger.Level.DEBUG;
-            case "INFO" -> org.miaixz.bus.logger.Level.INFO;
-            case "WARN" -> org.miaixz.bus.logger.Level.WARN;
-            case "ERROR" -> org.miaixz.bus.logger.Level.ERROR;
-            case "FATAL" -> org.miaixz.bus.logger.Level.ERROR; // 映射 FATAL 到 ERROR
+        return switch (log4jLevel.getStandardLevel()) {
+            case TRACE -> org.miaixz.bus.logger.Level.TRACE;
+            case DEBUG -> org.miaixz.bus.logger.Level.DEBUG;
+            case INFO -> org.miaixz.bus.logger.Level.INFO;
+            case WARN -> org.miaixz.bus.logger.Level.WARN;
+            case ERROR, FATAL -> org.miaixz.bus.logger.Level.ERROR; // Map FATAL to ERROR
             default -> org.miaixz.bus.logger.Level.OFF;
         };
     }

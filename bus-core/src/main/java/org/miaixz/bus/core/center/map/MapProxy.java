@@ -45,37 +45,58 @@ import org.miaixz.bus.core.xyz.ClassKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * Map代理，提供各种getXXX方法，并提供默认值支持
+ * A dynamic proxy for a {@link Map} that serves two main purposes:
+ * <ol>
+ * <li>Provides convenient, type-safe {@code getXXX} methods for retrieving values with default value support.</li>
+ * <li>Acts as an {@link InvocationHandler} to adapt a Map to a given interface, allowing map entries to be accessed as
+ * bean properties.</li>
+ * </ol>
+ * This allows for treating a {@code Map} like a bean, which is particularly useful for configuration or data transfer
+ * objects.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class MapProxy implements Map<Object, Object>, TypeGetter<Object>, InvocationHandler, Serializable {
 
+    /**
+     * The serialization version identifier for this class.
+     */
     @Serial
     private static final long serialVersionUID = 2852275756380L;
 
-    Map map;
+    /**
+     * The underlying map instance that this proxy wraps.
+     */
+    private final Map map;
 
     /**
-     * 构造
+     * Constructs a new {@code MapProxy} that wraps the given map.
      *
-     * @param map 被代理的Map
+     * @param map The map to be proxied. Must not be {@code null}.
      */
-    public MapProxy(final Map<?, ?> map) {
+    public MapProxy(final Map map) {
         this.map = map;
     }
 
     /**
-     * 创建代理Map 此类对Map做一次包装，提供各种getXXX方法
+     * Creates a {@code MapProxy} instance. If the given map is already a {@code MapProxy}, it is cast and returned;
+     * otherwise, a new {@code MapProxy} is created to wrap it.
      *
-     * @param map 被代理的Map
-     * @return {@code MapProxy}
+     * @param map The map to be proxied.
+     * @return A {@code MapProxy} instance.
      */
     public static MapProxy of(final Map<?, ?> map) {
         return (map instanceof MapProxy) ? (MapProxy) map : new MapProxy(map);
     }
 
+    /**
+     * Retrieves the value for the specified key, returning a default value if the key is not found.
+     *
+     * @param key          The key whose associated value is to be returned.
+     * @param defaultValue The default value to return if the key is not present in the map.
+     * @return The value associated with the key, or the default value.
+     */
     @Override
     public Object getObject(final Object key, final Object defaultValue) {
         return map.getOrDefault(key, defaultValue);
@@ -141,20 +162,35 @@ public class MapProxy implements Map<Object, Object>, TypeGetter<Object>, Invoca
         return map.entrySet();
     }
 
+    /**
+     * Handles method invocations on the proxy instance. It translates method calls into map operations.
+     * <ul>
+     * <li><b>Getter methods</b> (e.g., {@code getPropertyName()}, {@code isPropertyName()}) are mapped to
+     * {@code map.get("propertyName")}.</li>
+     * <li><b>Setter methods</b> (e.g., {@code setPropertyName(value)}) are mapped to
+     * {@code map.put("propertyName", value)}.</li>
+     * </ul>
+     * It also handles standard methods like {@code hashCode()}, {@code toString()}, and {@code equals()}.
+     *
+     * @param proxy  The proxy instance that the method was invoked on.
+     * @param method The {@code Method} instance for the interface method that was invoked.
+     * @param args   An array of arguments passed in the method invocation.
+     * @return The result of the map operation, converted to the method's return type.
+     * @throws UnsupportedOperationException if the invoked method is not a recognized getter, setter, or standard
+     *                                       Object method.
+     */
     @Override
     public Object invoke(final Object proxy, final Method method, final Object[] args) {
         final Class<?>[] parameterTypes = method.getParameterTypes();
         if (ArrayKit.isEmpty(parameterTypes)) {
             final Class<?> returnType = method.getReturnType();
             if (void.class != returnType) {
-                // 匹配Getter
+                // Handle getter methods
                 final String methodName = method.getName();
                 String fieldName = null;
                 if (methodName.startsWith("get")) {
-                    // 匹配getXXX
                     fieldName = StringKit.removePreAndLowerFirst(methodName, 3);
                 } else if (BooleanKit.isBoolean(returnType) && methodName.startsWith("is")) {
-                    // 匹配isXXX
                     fieldName = StringKit.removePreAndLowerFirst(methodName, 2);
                 } else if (Normal.HASHCODE.equals(methodName)) {
                     return this.hashCode();
@@ -164,21 +200,21 @@ public class MapProxy implements Map<Object, Object>, TypeGetter<Object>, Invoca
 
                 if (StringKit.isNotBlank(fieldName)) {
                     if (!this.containsKey(fieldName)) {
-                        // 驼峰不存在转下划线尝试
+                        // Fallback to snake_case if camelCase key does not exist
                         fieldName = StringKit.toUnderlineCase(fieldName);
                     }
                     return Convert.convert(method.getGenericReturnType(), this.get(fieldName));
                 }
             }
-
         } else if (1 == parameterTypes.length) {
-            // 匹配Setter
+            // Handle setter methods
             final String methodName = method.getName();
             if (methodName.startsWith("set")) {
                 final String fieldName = StringKit.removePreAndLowerFirst(methodName, 3);
                 if (StringKit.isNotBlank(fieldName)) {
                     this.put(fieldName, args[0]);
                     final Class<?> returnType = method.getReturnType();
+                    // Support fluent interface by returning the proxy instance
                     if (returnType.isInstance(proxy)) {
                         return proxy;
                     }
@@ -192,11 +228,12 @@ public class MapProxy implements Map<Object, Object>, TypeGetter<Object>, Invoca
     }
 
     /**
-     * 将Map代理为指定接口的动态代理对象
+     * Creates a dynamic proxy instance that implements the specified interface, backed by the wrapped map. This allows
+     * the map to be treated as a bean-like object, with interface methods mapping to map operations.
      *
-     * @param <T>            代理的Bean类型
-     * @param interfaceClass 接口
-     * @return 代理对象
+     * @param <T>            The type of the interface.
+     * @param interfaceClass The interface class to be implemented by the proxy.
+     * @return A proxy object that implements the specified interface.
      */
     public <T> T toProxyBean(final Class<T> interfaceClass) {
         return (T) Proxy.newProxyInstance(ClassKit.getClassLoader(), new Class<?>[] { interfaceClass }, this);

@@ -28,12 +28,14 @@
 package org.miaixz.bus.core.io.stream;
 
 import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.xyz.ByteKit;
 
 /**
- * 基于字符串的InputStream
+ * An {@link InputStream} implementation that reads bytes from a {@link CharSequence}. This class converts a string into
+ * a byte stream using a specified character set.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -41,31 +43,32 @@ import org.miaixz.bus.core.xyz.ByteKit;
 public class StringInputStream extends ByteArrayInputStream {
 
     /**
-     * 构造
+     * Constructs a new {@code StringInputStream} from the given character sequence and character set. The character
+     * sequence is converted into bytes using the specified charset.
      *
-     * @param text    字符串
-     * @param charset 编码
+     * @param text    The character sequence to be converted into a byte stream.
+     * @param charset The character set to use for encoding the character sequence.
      */
     public StringInputStream(final CharSequence text, final java.nio.charset.Charset charset) {
         super(ByteKit.toBytes(text, charset));
     }
 
     /**
-     * 创建StrInputStream
+     * Creates a new {@code StringInputStream} from the given character sequence using UTF-8 encoding.
      *
-     * @param text 字符串
-     * @return StrInputStream
+     * @param text The character sequence to be converted into a byte stream.
+     * @return A new {@code StringInputStream} instance.
      */
     public static StringInputStream of(final CharSequence text) {
         return of(text, Charset.UTF_8);
     }
 
     /**
-     * 创建StrInputStream
+     * Creates a new {@code StringInputStream} from the given character sequence and character set.
      *
-     * @param text    字符串
-     * @param charset 编码
-     * @return StrInputStream
+     * @param text    The character sequence to be converted into a byte stream.
+     * @param charset The character set to use for encoding the character sequence.
+     * @return A new {@code StringInputStream} instance.
      */
     public static StringInputStream of(final CharSequence text, final java.nio.charset.Charset charset) {
         return new StringInputStream(text, charset);

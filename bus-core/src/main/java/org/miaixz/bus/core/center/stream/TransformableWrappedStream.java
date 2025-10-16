@@ -42,23 +42,27 @@ import org.miaixz.bus.core.lang.mutable.MutableObject;
 import org.miaixz.bus.core.xyz.*;
 
 /**
- * {@link WrappedStream}的扩展，用于为实现类提供更多中间操作方法的增强接口， 该接口提供的方法，返回值类型都为{@link Stream}。
+ * An extension of {@link WrappedStream} that provides additional intermediate operations for implementing classes. The
+ * methods provided by this interface return a {@link Stream}.
  *
- * @param <T> 流中的元素类型
- * @param <S> {@link TransformableWrappedStream}的实现类类型
+ * @param <T> the type of the elements in the stream
+ * @param <S> the type of the {@link TransformableWrappedStream} implementation itself
  * @author Kimi Liu
  * @since Java 17+
  */
 public interface TransformableWrappedStream<T, S extends TransformableWrappedStream<T, S>> extends WrappedStream<T, S> {
 
     /**
-     * 将 现有元素 与 给定迭代器中对应位置的元素 使用 zipper 转换为新的元素，并返回新元素组成的流 新流的数量为两个集合中较小的数量, 即, 只合并下标位置相同的部分
+     * Combines the current elements with elements from a given {@link Iterable} using a zipper function. The new stream
+     * will have a number of elements equal to the smaller of the two collections, meaning only elements at matching
+     * indices are combined.
      *
-     * @param other  给定的迭代器
-     * @param zipper 两个元素的合并器
-     * @param <U>    给定的迭代对象类型
-     * @param <R>    合并后的结果对象类型
-     * @return 合并后的结果对象的流
+     * @param other  the {@link Iterable} to zip with
+     * @param zipper a {@link BiFunction} that combines an element from this stream and an element from the other
+     *               iterable
+     * @param <U>    the type of elements in the other iterable
+     * @param <R>    the type of elements in the resulting stream after zipping
+     * @return a new {@link EasyStream} containing the combined elements
      */
     default <U, R> EasyStream<R> zip(
             final Iterable<U> other,
@@ -77,20 +81,21 @@ public interface TransformableWrappedStream<T, S extends TransformableWrappedStr
     }
 
     /**
-     * 按指定长度切分为双层流
+     * Splits the stream into sub-streams of a specified batch size.
      * <p>
-     * 形如：[1,2,3,4,5] -&gt; [[1,2], [3,4], [5,6]]
-     * </p>
+     * Example: {@code [1,2,3,4,5]} -> {@code [[1,2], [3,4], [5]]}
+     * 
      *
-     * @param batchSize 指定长度, 正整数
-     * @return 切好的流
+     * @param batchSize the desired size of each sub-stream (must be a positive integer)
+     * @return an {@link EasyStream} of {@link EasyStream}s, where each inner stream contains elements of the specified
+     *         batch size
      */
     default EasyStream<EasyStream<T>> split(final int batchSize) {
         final List<T> list = this.collect(Collectors.toList());
         final int size = list.size();
-        // 指定长度 大于等于 列表长度
+        // If batchSize is greater than or equal to the list size
         if (size <= batchSize) {
-            // 返回第一层只有单个元素的双层流，形如：[[1,2,3,4,5]]
+            // Return a stream with a single inner stream containing all elements
             return EasyStream.<EasyStream<T>>of(EasyStream.of(list, isParallel()));
         }
         return EasyStream.iterate(0, i -> i < size, i -> i + batchSize)
@@ -99,26 +104,26 @@ public interface TransformableWrappedStream<T, S extends TransformableWrappedStr
     }
 
     /**
-     * 按指定长度切分为元素为list的流
+     * Splits the stream into sub-lists of a specified batch size.
      * <p>
-     * 形如：[1,2,3,4,5] -&gt; [[1,2], [3,4], [5,6]]
-     * </p>
+     * Example: {@code [1,2,3,4,5]} -> {@code [[1,2], [3,4], [5]]}
+     * 
      *
-     * @param batchSize 指定长度, 正整数
-     * @return 切好的流
+     * @param batchSize the desired size of each sub-list (must be a positive integer)
+     * @return an {@link EasyStream} of {@link List}s, where each list contains elements of the specified batch size
      */
     default EasyStream<List<T>> splitList(final int batchSize) {
         return split(batchSize).map(EasyStream::toList);
     }
 
     /**
-     * 将当前流转为键值对流
+     * Converts the current stream into an {@link EntryStream} using the provided key and value mappers.
      *
-     * @param keyMapper   键的映射方法
-     * @param valueMapper 值的映射方法
-     * @param <K>         键类型
-     * @param <V>         值类型
-     * @return {@link EntryStream}实例
+     * @param keyMapper   a function to extract the key from each element
+     * @param valueMapper a function to extract the value from each element
+     * @param <K>         the type of the keys in the resulting {@link EntryStream}
+     * @param <V>         the type of the values in the resulting {@link EntryStream}
+     * @return an {@link EntryStream} instance
      */
     default <K, V> EntryStream<K, V> toEntries(final Function<T, K> keyMapper, final Function<T, V> valueMapper) {
         Objects.requireNonNull(keyMapper);
@@ -127,20 +132,21 @@ public interface TransformableWrappedStream<T, S extends TransformableWrappedStr
     }
 
     /**
-     * 将当前流转为键值对流
+     * Converts the current stream into an {@link EntryStream} using the provided key mapper, with the elements
+     * themselves serving as values.
      *
-     * @param keyMapper 键的映射方法
-     * @param <K>       键类型
-     * @return {@link EntryStream}实例
+     * @param keyMapper a function to extract the key from each element
+     * @param <K>       the type of the keys in the resulting {@link EntryStream}
+     * @return an {@link EntryStream} instance
      */
     default <K> EntryStream<K, T> toEntries(final Function<T, K> keyMapper) {
         return toEntries(keyMapper, Function.identity());
     }
 
     /**
-     * 反转顺序
+     * Returns a stream with the elements in reverse order.
      *
-     * @return 反转元素顺序
+     * @return a new stream with elements in reverse order
      */
     default S reverse() {
         final T[] array = (T[]) toArray();
@@ -149,23 +155,25 @@ public interface TransformableWrappedStream<T, S extends TransformableWrappedStr
     }
 
     /**
-     * 更改流的并行状态
+     * Changes the parallel status of the stream.
      *
-     * @param parallel 是否并行
-     * @return 流
+     * @param parallel {@code true} to make the stream parallel, {@code false} to make it sequential
+     * @return the stream with the updated parallel status
      */
     default S parallel(final boolean parallel) {
         return parallel ? parallel() : sequential();
     }
 
     /**
-     * 通过删除或替换现有元素或者原地添加新的元素来修改列表，并以列表形式返回被修改的内容。此方法不会改变原列表。 类似js的<a href=
-     * "https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Array/splice">splice</a>函数
+     * Modifies the stream by deleting or replacing existing elements or adding new elements in place, similar to
+     * JavaScript's <a href=
+     * "https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Array/splice">splice</a>
+     * function. This method does not modify the original list.
      *
-     * @param start       起始下标
-     * @param deleteCount 删除个数，正整数
-     * @param items       放入值
-     * @return 操作后的流
+     * @param start       the index at which to start changing the array
+     * @param deleteCount the number of elements to remove from the start index
+     * @param items       the elements to add to the array, beginning at the start index
+     * @return a new stream containing the modified elements
      */
     default S splice(final int start, final int deleteCount, final T... items) {
         final List<T> elements = unwrap().collect(Collectors.toList());
@@ -173,28 +181,34 @@ public interface TransformableWrappedStream<T, S extends TransformableWrappedStr
     }
 
     /**
+     * Returns a stream consisting of the longest prefix of elements taken from this stream that match the given
+     * predicate. The stream terminates when the first non-matching element is encountered.
      * <p>
-     * 遍历流中与断言匹配的元素，当遇到第一个不匹配的元素时终止，返回由匹配的元素组成的流。 eg:
+     * Example:
      * 
      * <pre>{@code
-     * EasyStream.of(1, 2, 3, 4, 5).takeWhile(i -> Objects.equals(3, i)) // 获取元素，一直到遇到第一个3为止
+     * EasyStream.of(1, 2, 3, 4, 5).takeWhile(i -> i < 3) // Get elements until the first element >= 3 is encountered
      *         .toList(); // = [1, 2]
      * }</pre>
-     *
      * <p>
-     * 与{@code JDK9}中的{@code takeWhile}方法不太一样，此操作为顺序且有状态的中间操作。 即使在并行流中，该操作仍然是顺序执行的，并且不影响后续的并行操作：
+     * Unlike {@code JDK9}'s {@code takeWhile} method, this operation is a sequential and stateful intermediate
+     * operation. Even in parallel streams, this operation is executed sequentially and does not affect subsequent
+     * parallel operations:
      * 
      * <pre>{@code
-     * EasyStream.iterate(1, i -> i + 1).parallel().takeWhile(e -> e < 50) // 顺序执行
-     *         .map(e -> e + 1) // 并发
-     *         .map(String::valueOf) // 并发
+     * EasyStream.iterate(1, i -> i + 1).parallel().takeWhile(e -> e < 50) // Sequential execution
+     *         .map(e -> e + 1) // Concurrent
+     *         .map(String::valueOf) // Concurrent
      *         .toList();
      * }</pre>
      * 
-     * 若非必要，不推荐在并行流中进行该操作。
+     * If not strictly necessary, it is not recommended to perform this operation in parallel streams.
      *
-     * @param predicate 断言
-     * @return 与指定断言匹配的元素组成的流
+     * @param predicate a <a href="package-summary.html#NonInterference">non-interfering</a>,
+     *                  <a href="package-summary.html#Statelessness">stateless</a> predicate to apply to elements of
+     *                  this stream
+     * @return a stream consisting of the longest prefix of elements taken from this stream that match the given
+     *         predicate
      */
     default S takeWhile(final Predicate<? super T> predicate) {
         Objects.requireNonNull(predicate);
@@ -202,27 +216,34 @@ public interface TransformableWrappedStream<T, S extends TransformableWrappedStr
     }
 
     /**
-     * 删除流中与断言匹配的元素，当遇到第一个不匹配的元素时终止，返回由剩余不匹配的元素组成的流。 eg:
+     * Returns a stream consisting of the remaining elements of this stream after discarding the longest prefix of
+     * elements that match the given predicate. The stream starts emitting elements when the first non-matching element
+     * is encountered.
+     * <p>
+     * Example:
      * 
      * <pre>{@code
-     * EasyStream.of(1, 2, 3, 4, 5).dropWhile(i -> !Objects.equals(3, i)) // 删除不为3的元素，一直到遇到第一个3为止
+     * EasyStream.of(1, 2, 3, 4, 5).dropWhile(i -> i < 3) // Drop elements until the first element >= 3 is encountered
      *         .toList(); // = [3, 4, 5]
      * }</pre>
-     *
      * <p>
-     * 与{@code JDK9}中的{@code dropWhile}方法不太一样，此操作为顺序且有状态的中间操作。 即使在并行流中，该操作仍然是顺序执行的，并且不影响后续的并行操作：
+     * Unlike {@code JDK9}'s {@code dropWhile} method, this operation is a sequential and stateful intermediate
+     * operation. Even in parallel streams, this operation is executed sequentially and does not affect subsequent
+     * parallel operations:
      * 
      * <pre>{@code
-     * EasyStream.iterate(1, i -> i + 1).parallel().dropWhile(e -> e < 50) // 顺序执行
-     *         .map(e -> e + 1) // 并发
-     *         .map(String::valueOf) // 并发
+     * EasyStream.iterate(1, i -> i + 1).parallel().dropWhile(e -> e < 50) // Sequential execution
+     *         .map(e -> e + 1) // Concurrent
+     *         .map(String::valueOf) // Concurrent
      *         .toList();
      * }</pre>
      * 
-     * 若非必要，不推荐在并行流中进行该操作。
+     * If not strictly necessary, it is not recommended to perform this operation in parallel streams.
      *
-     * @param predicate 断言
-     * @return 剩余元素组成的流
+     * @param predicate a <a href="package-summary.html#NonInterference">non-interfering</a>,
+     *                  <a href="package-summary.html#Statelessness">stateless</a> predicate to apply to elements of
+     *                  this stream
+     * @return a stream consisting of the remaining elements of this stream after discarding the longest matching prefix
      */
     default S dropWhile(final Predicate<? super T> predicate) {
         Objects.requireNonNull(predicate);
@@ -230,30 +251,33 @@ public interface TransformableWrappedStream<T, S extends TransformableWrappedStr
     }
 
     /**
-     * 返回一个具有去重特征的流 非并行流(顺序流)下对于重复元素，保留遇到顺序中最先出现的元素，并行流情况下不能保证具体保留哪一个 这是一个有状态中间操作
+     * Returns a stream consisting of the distinct elements of this stream based on a key extracted by the
+     * {@code keyExtractor}. For non-parallel (sequential) streams, in case of duplicate keys, the first encountered
+     * element is retained. For parallel streams, there is no guarantee which specific duplicate element will be
+     * retained. This is a stateful intermediate operation.
      *
-     * @param <F>          参数类型
-     * @param keyExtractor 去重依据
-     * @return 一个具有去重特征的流
+     * @param <F>          the type of the key extracted from the elements
+     * @param keyExtractor a function to extract the key from each element for distinctness comparison
+     * @return a stream consisting of the distinct elements of this stream
      */
     default <F> EasyStream<T> distinct(final Function<? super T, F> keyExtractor) {
         Objects.requireNonNull(keyExtractor);
         if (isParallel()) {
             final ConcurrentHashMap<F, Boolean> exists = new ConcurrentHashMap<>();
-            // 标记是否出现过null值，用于保留第一个出现的null
-            // 由于ConcurrentHashMap的key不能为null，所以用此变量来标记
+            // Flag to mark if a null value has been encountered, used to retain the first null.
+            // Since ConcurrentHashMap keys cannot be null, this variable is used to track nulls.
             final AtomicBoolean hasNull = new AtomicBoolean(false);
             return EasyStream.of(unwrap().filter(e -> {
                 final F key = keyExtractor.apply(e);
                 if (key == null) {
-                    // 已经出现过null值，跳过该值
+                    // If a null value has already been encountered, skip this value
                     if (hasNull.get()) {
                         return false;
                     }
                     hasNull.set(Boolean.TRUE);
                     return true;
                 } else {
-                    // 第一次出现的key返回true
+                    // Return true for the first occurrence of a key
                     return null == exists.putIfAbsent(key, Boolean.TRUE);
                 }
             })).parallel();
@@ -264,8 +288,11 @@ public interface TransformableWrappedStream<T, S extends TransformableWrappedStr
     }
 
     /**
-     * 返回与指定函数将元素作为参数执行后组成的流。操作带下标
-     *
+     * Returns a stream consisting of the results of applying the given action to each element of this stream, providing
+     * the element and its index. This is a stateless intermediate operation.
+     * <p>
+     * Example:
+     * 
      * <pre>
      *     {@code
      * Stream.of("one", "two", "three", "four").filter(e -> e.length() > 3)
@@ -275,8 +302,10 @@ public interface TransformableWrappedStream<T, S extends TransformableWrappedStr
      *         .collect(Collectors.toList());
      * }</pre>
      *
-     * @param action 指定的函数
-     * @return 返回叠加操作后的FastStream当你需要查看经过操作管道某处的元素和下标，可以执行以下操作:
+     * @param action a <a href="package-summary.html#NonInterference">non-interfering</a>,
+     *               <a href="package-summary.html#Statelessness">stateless</a> action to perform on the elements and
+     *               their indices as they are consumed from the stream
+     * @return the new stream
      */
     default S peekIdx(final BiConsumer<? super T, Integer> action) {
         Objects.requireNonNull(action);
@@ -285,19 +314,20 @@ public interface TransformableWrappedStream<T, S extends TransformableWrappedStr
     }
 
     /**
-     * 返回叠加调用{@link Console#log(Object)}打印出结果的流
+     * Returns a stream that prints each element to the console using {@link Console#log(Object)}. This is a stateless
+     * intermediate operation.
      *
-     * @return 返回叠加操作后的FastStream
+     * @return the new stream
      */
     default S log() {
         return peek(Console::log);
     }
 
     /**
-     * 与给定元素组成的流合并，成为新的流
+     * Appends the given elements to the end of the current stream.
      *
-     * @param object 元素
-     * @return 流
+     * @param object the elements to append
+     * @return a new stream with the appended elements
      */
     default S push(final T... object) {
         Stream<T> result = unwrap();
@@ -308,10 +338,10 @@ public interface TransformableWrappedStream<T, S extends TransformableWrappedStr
     }
 
     /**
-     * 给定元素组成的流与当前流合并，成为新的流
+     * Prepends the given elements to the beginning of the current stream.
      *
-     * @param object 元素
-     * @return 流
+     * @param object the elements to prepend
+     * @return a new stream with the prepended elements
      */
     default S unshift(final T... object) {
         Stream<T> result = unwrap();
@@ -322,10 +352,10 @@ public interface TransformableWrappedStream<T, S extends TransformableWrappedStr
     }
 
     /**
-     * 将输入元素转为流，返回一个前半段为当前流，后半段为新流的新实例
+     * Appends the elements from the given {@link Iterable} to the end of the current stream.
      *
-     * @param iterable 集合
-     * @return {@link EntryStream}实例
+     * @param iterable the {@link Iterable} whose elements are to be appended
+     * @return a new stream with the appended elements
      */
     default S append(final Iterable<? extends T> iterable) {
         if (IteratorKit.isEmpty(iterable)) {
@@ -336,10 +366,10 @@ public interface TransformableWrappedStream<T, S extends TransformableWrappedStr
     }
 
     /**
-     * 将输入元素转为流，返回一个前半段为新流，后半段为当前流的新实例
+     * Prepends the elements from the given {@link Iterable} to the beginning of the current stream.
      *
-     * @param iterable 集合
-     * @return {@link EntryStream}实例
+     * @param iterable the {@link Iterable} whose elements are to be prepended
+     * @return a new stream with the prepended elements
      */
     default S prepend(final Iterable<? extends T> iterable) {
         if (IteratorKit.isEmpty(iterable)) {
@@ -350,19 +380,22 @@ public interface TransformableWrappedStream<T, S extends TransformableWrappedStr
     }
 
     /**
-     * 过滤掉空元素
+     * Returns a stream consisting of the non-null elements of this stream.
      *
-     * @return 过滤后的流
+     * @return a new stream with non-null elements
      */
     default S nonNull() {
         return filter(Objects::nonNull);
     }
 
     /**
-     * 过滤元素，返回与指定断言匹配的元素组成的流，断言带下标
+     * Returns a stream consisting of the elements of this stream that match the given predicate, providing the element
+     * and its index. This is a stateless intermediate operation.
      *
-     * @param predicate 断言
-     * @return 返回叠加过滤操作后的流
+     * @param predicate a <a href="package-summary.html#NonInterference">non-interfering</a>,
+     *                  <a href="package-summary.html#Statelessness">stateless</a> predicate to apply to each element
+     *                  and its index to determine if it should be included
+     * @return the new stream
      */
     default S filterIdx(final BiPredicate<? super T, Integer> predicate) {
         Objects.requireNonNull(predicate);
@@ -371,12 +404,15 @@ public interface TransformableWrappedStream<T, S extends TransformableWrappedStr
     }
 
     /**
-     * 过滤元素，返回与 指定操作结果 匹配 指定值 的元素组成的流 这是一个无状态中间操作
+     * Returns a stream consisting of the elements of this stream whose mapped value matches the specified value. This
+     * is a stateless intermediate operation.
      *
-     * @param <R>    返回类型
-     * @param mapper 操作
-     * @param value  用来匹配的值
-     * @return 与 指定操作结果 匹配 指定值 的元素组成的流
+     * @param <R>    the type of the result of the mapper function
+     * @param mapper a <a href="package-summary.html#NonInterference">non-interfering</a>,
+     *               <a href="package-summary.html#Statelessness">stateless</a> function to apply to each element to
+     *               produce a value for comparison
+     * @param value  the value to match against the mapped elements
+     * @return a new stream containing only the elements whose mapped value matches the specified value
      */
     default <R> S filter(final Function<? super T, ? extends R> mapper, final R value) {
         Objects.requireNonNull(mapper);
@@ -384,16 +420,23 @@ public interface TransformableWrappedStream<T, S extends TransformableWrappedStr
     }
 
     /**
-     * 扩散流操作，可能影响流元素个数，将原有流元素执行mapper操作，返回多个流所有元素组成的流 这是一个无状态中间操作 例如，将users里所有user的id和parentId组合在一起，形成一个新的流:
+     * Returns an {@link EasyStream} consisting of the results of replacing each element of this stream with the
+     * contents of a mapped stream produced by applying the provided mapping function to each element. Each mapped
+     * stream is closed after its contents have been placed into this stream. This is a stateless intermediate
+     * operation.
+     * <p>
+     * For example, to combine the IDs and parent IDs of all users in a list into a new stream:
      * 
      * <pre>{@code
      * 
      * EasyStream<Long> ids = EasyStream.of(users).flatMap(user -> FastStream.of(user.getId(), user.getParentId()));
      * }</pre>
      *
-     * @param mapper 操作，返回流
-     * @param <R>    拆分后流的元素类型
-     * @return 返回叠加拆分操作后的流
+     * @param mapper a <a href="package-summary.html#NonInterference">non-interfering</a>,
+     *               <a href="package-summary.html#Statelessness">stateless</a> function to apply to each element which
+     *               produces a stream of new values
+     * @param <R>    the element type of the new stream
+     * @return the new {@link EasyStream}
      */
     @Override
     default <R> EasyStream<R> flatMap(final Function<? super T, ? extends Stream<? extends R>> mapper) {
@@ -402,11 +445,16 @@ public interface TransformableWrappedStream<T, S extends TransformableWrappedStr
     }
 
     /**
-     * 扩散流操作，可能影响流元素个数，将原有流元素执行mapper操作，返回多个流所有元素组成的流，操作带下标
+     * Returns an {@link EasyStream} consisting of the results of replacing each element of this stream with the
+     * contents of a mapped stream produced by applying the provided mapping function to each element and its index.
+     * Each mapped stream is closed after its contents have been placed into this stream. This is a stateless
+     * intermediate operation.
      *
-     * @param mapper 操作，返回流
-     * @param <R>    拆分后流的元素类型
-     * @return 返回叠加拆分操作后的流
+     * @param mapper a <a href="package-summary.html#NonInterference">non-interfering</a>,
+     *               <a href="package-summary.html#Statelessness">stateless</a> function to apply to each element and
+     *               its index which produces a stream of new values
+     * @param <R>    the element type of the new stream
+     * @return the new {@link EasyStream}
      */
     default <R> EasyStream<R> flatMapIdx(final BiFunction<? super T, Integer, ? extends Stream<? extends R>> mapper) {
         Objects.requireNonNull(mapper);
@@ -415,17 +463,21 @@ public interface TransformableWrappedStream<T, S extends TransformableWrappedStr
     }
 
     /**
-     * 扩散流操作，可能影响流元素个数，将原有流元素执行mapper操作, 转换为迭代器元素, 最后返回所有迭代器的所有元素组成的流 这是一个无状态中间操作
-     * 例如，将users里所有user的id和parentId组合在一起，形成一个新的流:
+     * Returns an {@link EasyStream} consisting of the results of replacing each element of this stream with the
+     * contents of a mapped {@link Iterable} produced by applying the provided mapping function to each element. This is
+     * a stateless intermediate operation.
+     * <p>
+     * For example, to combine the IDs and parent IDs of all users in a list into a new stream:
      * 
      * <pre>{@code
      * 
      * EasyStream<Long> ids = EasyStream.of(users).flat(user -> FastStream.of(user.getId(), user.getParentId()));
      * }</pre>
      *
-     * @param mapper 操作，返回可迭代对象
-     * @param <R>    拆分后流的元素类型
-     * @return 返回叠加拆分操作后的流
+     * @param mapper a non-interfering stateless function to apply to each element which produces an {@link Iterable} of
+     *               new values
+     * @param <R>    the element type of the new stream
+     * @return the new {@link EasyStream}
      */
     default <R> EasyStream<R> flat(final Function<? super T, ? extends Iterable<? extends R>> mapper) {
         Objects.requireNonNull(mapper);
@@ -433,11 +485,15 @@ public interface TransformableWrappedStream<T, S extends TransformableWrappedStr
     }
 
     /**
-     * 扩散流操作，可能影响流元素个数，对过滤后的非{@code null}元素执行mapper操作，转换为迭代器, 并过滤迭代器中为{@code null}的元素, 返回所有迭代器的所有非空元素组成的流 这是一个无状态中间操作
+     * Returns an {@link EasyStream} consisting of the results of replacing each non-null element of this stream with
+     * the contents of a mapped {@link Iterable} produced by applying the provided mapping function to each element, and
+     * then filtering out any null elements from the resulting stream. This is a stateless intermediate operation.
      *
-     * @param mapper 操作，返回流
-     * @param <R>    拆分后流的元素类型
-     * @return 返回叠加拆分操作后的流
+     * @param mapper a <a href="package-summary.html#NonInterference">non-interfering</a>,
+     *               <a href="package-summary.html#Statelessness">stateless</a> function to apply to each non-null
+     *               element which produces an {@link Iterable} of new values
+     * @param <R>    the element type of the new stream
+     * @return the new {@link EasyStream} with non-null flattened elements
      * @see #flat(Function)
      * @see #nonNull()
      */
@@ -446,7 +502,10 @@ public interface TransformableWrappedStream<T, S extends TransformableWrappedStr
     }
 
     /**
-     * 将树递归扁平化为集合，内置一个小递归 这是一个无状态中间操作 eg:
+     * Flattens a hierarchical structure (e.g., a tree) into a single stream. This is a stateless intermediate
+     * operation.
+     * <p>
+     * Example:
      * 
      * <pre>{@code
      * 
@@ -454,9 +513,9 @@ public interface TransformableWrappedStream<T, S extends TransformableWrappedStr
      *         .toList();
      * }</pre>
      *
-     * @param childrenGetter 获取子节点的lambda，可以写作 {@code Student::getChildren}
-     * @param childrenSetter 设置子节点的lambda，可以写作 {@code Student::setChildren}
-     * @return EasyStream 一个流
+     * @param childrenGetter a function to get the children of a node
+     * @param childrenSetter a function to set the children of a node (used to clear children after flattening)
+     * @return an {@link EasyStream} containing all nodes from the flattened tree
      */
     default S flatTree(final Function<T, List<T>> childrenGetter, final BiConsumer<T, List<T>> childrenSetter) {
         Objects.requireNonNull(childrenGetter);
@@ -469,21 +528,25 @@ public interface TransformableWrappedStream<T, S extends TransformableWrappedStr
     }
 
     /**
-     * 如果当前元素是集合，则会将集合中的元素解构出来 例如：{@code List<List<List<String>>> 解构成 List<String>}
+     * Flattens a stream of collections into a stream of their elements. For example, a {@code List<List<List<String>>>}
+     * can be flattened into a {@code List<String>}.
      *
-     * @param <R> 函数执行后返回的List里面的类型
-     * @return EasyStream 一个流
+     * @param <R> the type of elements in the flattened stream
+     * @return an {@link EasyStream} containing all elements from the flattened collections
      */
     default <R> EasyStream<R> flat() {
         return EasyStream.of(CollKit.flat(nonNull().collect(Collectors.toList())));
     }
 
     /**
-     * 返回与指定函数将元素作为参数执行的结果组成的流 这是一个无状态中间操作
+     * Returns an {@link EasyStream} consisting of the results of applying the given function to the elements of this
+     * stream. This is a stateless intermediate operation.
      *
-     * @param mapper 指定的函数
-     * @param <R>    函数执行后返回的类型
-     * @return 返回叠加操作后的流
+     * @param mapper a <a href="package-summary.html#NonInterference">non-interfering</a>,
+     *               <a href="package-summary.html#Statelessness">stateless</a> function to apply to each element to
+     *               produce a new element
+     * @param <R>    the element type of the new stream
+     * @return the new {@link EasyStream}
      */
     @Override
     default <R> EasyStream<R> map(final Function<? super T, ? extends R> mapper) {
@@ -492,16 +555,17 @@ public interface TransformableWrappedStream<T, S extends TransformableWrappedStr
     }
 
     /**
-     * 返回 元素 转换后 并且不为 {@code null} 的 新元素组成的流 这是一个无状态中间操作
+     * Returns an {@link EasyStream} consisting of the non-null results of applying the given function to the elements
+     * of this stream. This is a stateless intermediate operation.
+     * <p>
+     * This is equivalent to calling {@code nonNull().map(...).nonNull()...}
      * 
-     * <pre>{@code
-     * // 等价于先调用map再调用nonNull
-     * .nonNull().map(...).nonNull()...
-     * }</pre>
      *
-     * @param mapper 指定的函数
-     * @param <R>    函数执行后返回的类型
-     * @return 新元素组成的流
+     * @param mapper a <a href="package-summary.html#NonInterference">non-interfering</a>,
+     *               <a href="package-summary.html#Statelessness">stateless</a> function to apply to each element to
+     *               produce a new element
+     * @param <R>    the element type of the new stream
+     * @return the new {@link EasyStream} with non-null mapped elements
      */
     default <R> EasyStream<R> mapNonNull(final Function<? super T, ? extends R> mapper) {
         Objects.requireNonNull(mapper);
@@ -509,11 +573,14 @@ public interface TransformableWrappedStream<T, S extends TransformableWrappedStr
     }
 
     /**
-     * 返回与指定函数将元素作为参数执行的结果组成的流，操作带下标
+     * Returns an {@link EasyStream} consisting of the results of applying the given function to the elements of this
+     * stream and their indices. This is a stateless intermediate operation.
      *
-     * @param mapper 指定的函数
-     * @param <R>    函数执行后返回的类型
-     * @return 返回叠加操作后的流
+     * @param mapper a <a href="package-summary.html#NonInterference">non-interfering</a>,
+     *               <a href="package-summary.html#Statelessness">stateless</a> function to apply to each element and
+     *               its index to produce a new element
+     * @param <R>    the element type of the new stream
+     * @return the new {@link EasyStream}
      */
     default <R> EasyStream<R> mapIdx(final BiFunction<? super T, Integer, ? extends R> mapper) {
         Objects.requireNonNull(mapper);
@@ -522,11 +589,14 @@ public interface TransformableWrappedStream<T, S extends TransformableWrappedStr
     }
 
     /**
-     * 扩散流操作，可能影响流元素个数，将原有流元素执行mapper操作，返回多个流所有元素组成的流，操作带一个方法，调用该方法可增加元素 这是一个无状态中间操作
+     * Returns an {@link EasyStream} consisting of the results of applying the given function to each element of this
+     * stream, where the function may produce zero, one, or more elements. This is a stateless intermediate operation.
      *
-     * @param mapper 操作，返回流
-     * @param <R>    拆分后流的元素类型
-     * @return 返回叠加拆分操作后的流
+     * @param mapper a <a href="package-summary.html#NonInterference">non-interfering</a>,
+     *               <a href="package-summary.html#Statelessness">stateless</a> function to apply to each element which
+     *               produces zero, one, or more elements
+     * @param <R>    the element type of the new stream
+     * @return the new {@link EasyStream}
      */
     default <R> EasyStream<R> mapMulti(final BiConsumer<? super T, ? super Consumer<R>> mapper) {
         Objects.requireNonNull(mapper);

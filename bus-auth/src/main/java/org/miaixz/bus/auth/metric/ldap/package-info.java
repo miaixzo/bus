@@ -26,7 +26,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 标准协议-LDAP
+ * Provides standard LDAP (Lightweight Directory Access Protocol) implementations.
  *
  * @author Kimi Liu
  * @since Java 17+

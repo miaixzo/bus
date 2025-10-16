@@ -26,7 +26,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Sax读取中行处理器的定义和实现
+ * Defines and implements row handlers for SAX-based Excel reading.
  *
  * @author Kimi Liu
  * @since Java 17+

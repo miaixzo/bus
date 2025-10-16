@@ -30,6 +30,7 @@ package org.miaixz.bus.auth.nimble.wechat.open;
 import org.miaixz.bus.auth.magic.AuthToken;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Message;
+import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
@@ -44,32 +45,50 @@ import org.miaixz.bus.auth.nimble.wechat.AbstractWeChatProvider;
 import java.util.Map;
 
 /**
- * 微信开放平台 登录
+ * WeChat Open Platform login provider.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class WeChatOpenProvider extends AbstractWeChatProvider {
 
+    /**
+     * Constructs a {@code WeChatOpenProvider} with the specified context.
+     *
+     * @param context the authentication context
+     */
     public WeChatOpenProvider(Context context) {
         super(context, Registry.WECHAT_OPEN);
     }
 
+    /**
+     * Constructs a {@code WeChatOpenProvider} with the specified context and cache.
+     *
+     * @param context the authentication context
+     * @param cache   the cache implementation
+     */
     public WeChatOpenProvider(Context context, CacheX cache) {
         super(context, Registry.WECHAT_OPEN, cache);
     }
 
     /**
-     * 微信的特殊性，此时返回的信息同时包含 openid 和 access_token
+     * Due to the specificity of WeChat, the returned information at this time includes both openid and access_token.
      *
-     * @param callback 回调返回的参数
-     * @return 所有信息
+     * @param callback the callback parameters returned
+     * @return all information
      */
     @Override
     public AuthToken getAccessToken(Callback callback) {
         return this.getToken(accessTokenUrl(callback.getCode()));
     }
 
+    /**
+     * Retrieves user information from WeChat Open Platform's user info endpoint.
+     *
+     * @param authToken the {@link AuthToken} obtained after successful authorization
+     * @return {@link Material} containing the user's information
+     * @throws AuthorizedException if parsing the response fails or required user information is missing
+     */
     @Override
     public Material getUserInfo(AuthToken authToken) {
         String openId = authToken.getOpenId();
@@ -104,6 +123,12 @@ public class WeChatOpenProvider extends AbstractWeChatProvider {
         }
     }
 
+    /**
+     * Refreshes the access token (renews its validity).
+     *
+     * @param authToken the token information returned after successful login
+     * @return a {@link Message} containing the refreshed token information
+     */
     @Override
     public Message refresh(AuthToken authToken) {
         return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
@@ -111,23 +136,25 @@ public class WeChatOpenProvider extends AbstractWeChatProvider {
     }
 
     /**
-     * 检查响应内容是否正确
+     * Checks if the response content is correct.
      *
-     * @param object 请求响应内容
+     * @param object the response map to check
+     * @throws AuthorizedException if the response indicates an error or message indicating failure
      */
     private void checkResponse(Map<String, Object> object) {
-        if (object.containsKey("errcode")) {
-            String errcode = String.valueOf(object.get("errcode"));
-            String errmsg = (String) object.get("errmsg");
+        if (object.containsKey(Consts.ERRCODE)) {
+            String errcode = String.valueOf(object.get(Consts.ERRCODE));
+            String errmsg = (String) object.get(Consts.ERRMSG);
             throw new AuthorizedException(errcode, errmsg != null ? errmsg : "Unknown error");
         }
     }
 
     /**
-     * 获取token，适用于获取access_token和刷新token
+     * Retrieves the token, applicable for both obtaining access tokens and refreshing tokens.
      *
-     * @param accessTokenUrl 实际请求token的地址
-     * @return token对象
+     * @param accessTokenUrl the actual URL to request the token from
+     * @return the {@link AuthToken} object
+     * @throws AuthorizedException if parsing the response fails or required token information is missing
      */
     private AuthToken getToken(String accessTokenUrl) {
         String response = Httpx.get(accessTokenUrl);
@@ -156,10 +183,11 @@ public class WeChatOpenProvider extends AbstractWeChatProvider {
     }
 
     /**
-     * 返回带{@code state}参数的授权url，授权回调时会带上这个{@code state}
+     * Returns the authorization URL with a {@code state} parameter. The {@code state} will be included in the
+     * authorization callback.
      *
-     * @param state state 验证授权流程的参数，可以防止csrf
-     * @return 返回授权地址
+     * @param state the parameter to verify the authorization process, which can prevent CSRF attacks
+     * @return the authorization URL
      */
     @Override
     public String authorize(String state) {
@@ -169,10 +197,10 @@ public class WeChatOpenProvider extends AbstractWeChatProvider {
     }
 
     /**
-     * 返回获取accessToken的url
+     * Returns the URL to obtain the access token.
      *
-     * @param code 授权码
-     * @return 返回获取accessToken的url
+     * @param code the authorization code
+     * @return the URL to obtain the access token
      */
     @Override
     protected String accessTokenUrl(String code) {
@@ -182,10 +210,10 @@ public class WeChatOpenProvider extends AbstractWeChatProvider {
     }
 
     /**
-     * 返回获取userInfo的url
+     * Returns the URL to obtain user information.
      *
-     * @param authToken 用户授权后的token
-     * @return 返回获取userInfo的url
+     * @param authToken the user's authorization token
+     * @return the URL to obtain user information
      */
     @Override
     protected String userInfoUrl(AuthToken authToken) {
@@ -194,10 +222,10 @@ public class WeChatOpenProvider extends AbstractWeChatProvider {
     }
 
     /**
-     * 返回获取userInfo的url
+     * Returns the URL to refresh the access token.
      *
-     * @param refreshToken getAccessToken方法返回的refreshToken
-     * @return 返回获取userInfo的url
+     * @param refreshToken the refresh token returned by the getAccessToken method
+     * @return the URL to refresh the access token
      */
     @Override
     protected String refreshTokenUrl(String refreshToken) {

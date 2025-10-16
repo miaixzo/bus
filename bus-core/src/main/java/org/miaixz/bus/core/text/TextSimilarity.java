@@ -31,7 +31,8 @@ import org.miaixz.bus.core.xyz.MathKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 文本相似度计算
+ * Utility class for calculating text similarity. This class provides methods to compute the similarity between two
+ * strings primarily using variations of the Levenshtein distance and longest common subsequence algorithms.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -39,15 +40,17 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class TextSimilarity {
 
     /**
-     * 利用莱文斯坦距离(Levenshtein distance)算法计算相似度，两个都是空串相似度为1，被认为是相同的串 比较方法为：
+     * Calculates the similarity between two strings using the Levenshtein distance algorithm. If both strings are
+     * empty, the similarity is considered 1 (identical). The comparison method involves:
      * <ul>
-     * <li>只比较两个字符串字母、数字、汉字部分，其他符号去除</li>
-     * <li>计算出两个字符串最大子串，除以最长的字符串，结果即为相似度</li>
+     * <li>Only comparing alphanumeric and Chinese characters; other symbols are removed.</li>
+     * <li>Calculating the length of the longest common subsequence and dividing it by the length of the longer
+     * string.</li>
      * </ul>
      *
-     * @param strA 字符串1
-     * @param strB 字符串2
-     * @return 相似度
+     * @param strA The first string.
+     * @param strB The second string.
+     * @return The similarity score, a double value between 0 and 1.
      */
     public static double similar(final String strA, final String strB) {
         final String newStrA;
@@ -60,10 +63,11 @@ public class TextSimilarity {
             newStrB = removeSign(strB);
         }
 
-        // 用较大的字符串长度作为分母，相似子串作为分子计算出字串相似度
+        // Use the length of the longer string as the denominator, and the common subsequence as the numerator to
+        // calculate similarity.
         final int temp = Math.max(newStrA.length(), newStrB.length());
         if (0 == temp) {
-            // 两个都是空串相似度为1，被认为是相同的串
+            // If both are empty strings, similarity is 1, considered identical.
             return 1;
         }
 
@@ -72,34 +76,39 @@ public class TextSimilarity {
     }
 
     /**
-     * 利用莱文斯坦距离(Levenshtein distance)算法计算相似度百分比
+     * Calculates the similarity percentage between two strings using the Levenshtein distance algorithm.
      *
-     * @param strA  字符串1
-     * @param strB  字符串2
-     * @param scale 保留小数
-     * @return 百分比
+     * @param strA  The first string.
+     * @param strB  The second string.
+     * @param scale The number of decimal places to retain for the percentage.
+     * @return The similarity as a formatted percentage string.
      */
     public static String similar(final String strA, final String strB, final int scale) {
         return MathKit.formatPercent(similar(strA, strB), scale);
     }
 
     /**
-     * 最长公共子串，采用动态规划算法。 其不要求所求得的字符在所给的字符串中是连续的。 算法解析见：<a href=
-     * "https://leetcode-cn.com/problems/longest-common-subsequence/solution/zui-chang-gong-gong-zi-xu-lie-by-leetcod-y7u0/">zui-chang-gong-gong-zi-xu-lie-by-leetcod-y7u0</a>
+     * Finds the longest common subsequence between two strings using a dynamic programming algorithm. This method does
+     * not require the characters in the subsequence to be contiguous in the original strings. Algorithm explanation:
+     * <a href=
+     * "https://leetcode-cn.com/problems/longest-common-subsequence/solution/zui-chang-gong-gong-zi-xu-lie-by-leetcod-y7u0/">Longest
+     * Common Subsequence</a>
      *
-     * @param strA 字符串1
-     * @param strB 字符串2
-     * @return 最长公共子串
+     * @param strA The first string.
+     * @param strB The second string.
+     * @return The longest common subsequence as a string.
      */
     public static String longestCommonSubstring(final String strA, final String strB) {
-        // 初始化矩阵数据,matrix[0][0]的值为0， 如果字符数组chars_strA和chars_strB的对应位相同，则matrix[i][j]的值为左上角的值加1，
-        // 否则，matrix[i][j]的值等于左上方最近两个位置的较大值， 矩阵中其余各点的值为0.
+        // Initialize matrix data. matrix[0][0] is 0. If corresponding characters in chars_strA and chars_strB are the
+        // same,
+        // matrix[i][j] is the value of the top-left cell + 1. Otherwise, matrix[i][j] is the maximum of the values
+        // from the cell directly above and the cell directly to the left. Other matrix values are 0.
         final int[][] matrix = generateMatrix(strA, strB);
 
         int m = strA.length();
         int n = strB.length();
-        // 矩阵中，如果matrix[m][n]的值不等于matrix[m-1][n]的值也不等于matrix[m][n-1]的值，
-        // 则matrix[m][n]对应的字符为相似字符元，并将其存入result数组中。
+        // In the matrix, if matrix[m][n] is not equal to matrix[m-1][n] and not equal to matrix[m][n-1],
+        // then the character corresponding to matrix[m][n] is a common character and is stored in the result array.
         final char[] result = new char[matrix[m][n]];
         int currentIndex = result.length - 1;
         while (matrix[m][n] != 0) {
@@ -118,15 +127,16 @@ public class TextSimilarity {
     }
 
     /**
-     * 将字符串的所有数据依次写成一行，去除无意义字符串
+     * Removes non-alphanumeric and non-Chinese characters from a string. This method iterates through the input string
+     * and appends only valid characters (Chinese characters, digits, or letters) to a new string builder.
      *
-     * @param text 字符串
-     * @return 处理后的字符串
+     * @param text The input string.
+     * @return The processed string with only valid characters.
      */
     private static String removeSign(final String text) {
         final int length = text.length();
         final StringBuilder sb = StringKit.builder(length);
-        // 遍历字符串str,如果是汉字数字或字母，则追加到ab上面
+        // Iterate through the string. If a character is a Chinese character, digit, or letter, append it to sb.
         char c;
         for (int i = 0; i < length; i++) {
             c = text.charAt(i);
@@ -139,31 +149,38 @@ public class TextSimilarity {
     }
 
     /**
-     * 判断字符是否为汉字，数字和字母， 因为对符号进行相似度比较没有实际意义，故符号不加入考虑范围。
+     * Checks if a character is a valid character for similarity comparison. Valid characters include Chinese
+     * characters, digits, and letters. Symbols are not considered as they have no practical meaning in similarity
+     * comparison.
      *
-     * @param charValue 字符
-     * @return true表示为非汉字，数字和字母，false反之
+     * @param charValue The character to check.
+     * @return {@code true} if the character is a Chinese character, digit, or letter; {@code false} otherwise.
      */
     private static boolean isValidChar(final char charValue) {
-        return (charValue >= 0x4E00 && charValue <= 0X9FFF) || //
-                (charValue >= 'a' && charValue <= 'z') || //
-                (charValue >= 'A' && charValue <= 'Z') || //
-                (charValue >= '0' && charValue <= '9');
+        return (charValue >= 0x4E00 && charValue <= 0X9FFF) || // Chinese characters
+                (charValue >= 'a' && charValue <= 'z') || // Lowercase letters
+                (charValue >= 'A' && charValue <= 'Z') || // Uppercase letters
+                (charValue >= '0' && charValue <= '9'); // Digits
     }
 
     /**
-     * 求公共子串，采用动态规划算法。 其不要求所求得的字符在所给的字符串中是连续的。 2023-04-06 优化堆内存占用，此处不需要matrix[m][n]的完整矩阵，仅需右下角值
+     * Calculates the length of the longest common subsequence between two strings using a dynamic programming
+     * algorithm. This method does not require the characters in the subsequence to be contiguous in the original
+     * strings. Optimized on 2023-04-06 to reduce heap memory usage, as only the bottom-right value of the matrix is
+     * needed.
      *
-     * @param strA 字符串1
-     * @param strB 字符串2
-     * @return 公共子串
+     * @param strA The first string.
+     * @param strB The second string.
+     * @return The length of the longest common subsequence.
      */
     public static int longestCommonSubstringLength(final String strA, final String strB) {
         final int m = strA.length();
         final int n = strB.length();
 
-        // 初始化矩阵数据,matrix[0][0]的值为0， 如果字符数组chars_strA和chars_strB的对应位相同，则matrix[i][j]的值为左上角的值加1，
-        // 否则，matrix[i][j]的值等于左上方最近两个位置的较大值， 矩阵中其余各点的值为0.
+        // Initialize matrix data. matrix[0][0] is 0. If corresponding characters in chars_strA and chars_strB are the
+        // same,
+        // matrix[i][j] is the value of the top-left cell + 1. Otherwise, matrix[i][j] is the maximum of the values
+        // from the cell directly above and the cell directly to the left. Other matrix values are 0.
         int[] lastLine = new int[n + 1];
         int[] currLine = new int[n + 1];
         int[] temp;
@@ -184,18 +201,21 @@ public class TextSimilarity {
     }
 
     /**
-     * 求公共子串，采用动态规划算法。 其不要求所求得的字符在所给的字符串中是连续的。
+     * Generates the dynamic programming matrix for calculating the longest common subsequence. This method does not
+     * require the characters in the subsequence to be contiguous in the original strings.
      *
-     * @param strA 字符串1
-     * @param strB 字符串2
-     * @return 公共串矩阵
+     * @param strA The first string.
+     * @param strB The second string.
+     * @return A 2D integer array representing the common subsequence matrix.
      */
     private static int[][] generateMatrix(final String strA, final String strB) {
         final int m = strA.length();
         final int n = strB.length();
 
-        // 初始化矩阵数据,matrix[0][0]的值为0， 如果字符数组chars_strA和chars_strB的对应位相同，则matrix[i][j]的值为左上角的值加1，
-        // 否则，matrix[i][j]的值等于左上方最近两个位置的较大值， 矩阵中其余各点的值为0.
+        // Initialize matrix data. matrix[0][0] is 0. If corresponding characters in chars_strA and chars_strB are the
+        // same,
+        // matrix[i][j] is the value of the top-left cell + 1. Otherwise, matrix[i][j] is the maximum of the values
+        // from the cell directly above and the cell directly to the left. Other matrix values are 0.
         final int[][] matrix = new int[m + 1][n + 1];
         for (int i = 1; i <= m; i++) {
             for (int j = 1; j <= n; j++) {

@@ -38,33 +38,42 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 基于byte[]的资源获取器 注意：此对象中getUrl方法始终返回null
+ * Resource provider based on a byte array. Note: The {@code getUrl} method of this object always returns {@code null}.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class BytesResource implements Resource, Serializable {
 
+    /**
+     * The serial version UID for serialization.
+     */
     @Serial
     private static final long serialVersionUID = 2852230357020L;
 
+    /**
+     * The byte array representing the resource content.
+     */
     private final byte[] bytes;
+    /**
+     * The name of the resource.
+     */
     private final String name;
 
     /**
-     * 构造
+     * Constructs a {@code BytesResource} with the given byte array.
      *
-     * @param bytes 字节数组
+     * @param bytes The byte array content of the resource.
      */
     public BytesResource(final byte[] bytes) {
         this(bytes, null);
     }
 
     /**
-     * 构造
+     * Constructs a {@code BytesResource} with the given byte array and resource name.
      *
-     * @param bytes 字节数组
-     * @param name  资源名称
+     * @param bytes The byte array content of the resource.
+     * @param name  The name of the resource.
      */
     public BytesResource(final byte[] bytes, final String name) {
         this.bytes = bytes;

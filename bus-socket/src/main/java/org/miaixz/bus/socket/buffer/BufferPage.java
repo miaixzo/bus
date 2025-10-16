@@ -36,7 +36,13 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * ByteBuffer内存页
+ * Represents a memory page for {@link ByteBuffer} instances.
+ * <p>
+ * This class manages a single, large, underlying {@code ByteBuffer} (either direct or heap-allocated). It allows for
+ * the allocation of smaller, logical {@link VirtualBuffer} instances from this page. It handles the lifecycle of these
+ * virtual buffers, including allocation and recycling, to reduce the overhead of frequent memory allocation and garbage
+ * collection.
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,29 +50,31 @@ import java.util.concurrent.locks.ReentrantLock;
 public final class BufferPage {
 
     /**
-     * 条件锁
+     * A lock to ensure thread-safe allocation and cleaning of buffers.
      */
     private final ReentrantLock lock = new ReentrantLock();
     /**
-     * 当前缓存页的物理缓冲区
+     * The underlying physical buffer for this page.
      */
     private final ByteBuffer buffer;
     /**
-     * 待回收的虚拟Buffer
+     * A queue of virtual buffers that are pending cleanup and recycling.
      */
     private final ConcurrentLinkedQueue<VirtualBuffer> cleanBuffers = new ConcurrentLinkedQueue<>();
     /**
-     * 当前空闲的虚拟Buffer
+     * A list of currently available (free) virtual buffers within this page.
      */
     private final List<VirtualBuffer> availableBuffers;
     /**
-     * 内存页是否处于空闲状态
+     * A flag indicating whether the buffer page is currently idle.
      */
     private boolean idle = true;
 
     /**
-     * @param size   缓存页大小
-     * @param direct 是否使用堆外内存
+     * Constructs a new BufferPage.
+     *
+     * @param size   the size of the buffer page
+     * @param direct whether to use a direct (off-heap) buffer
      */
     BufferPage(int size, boolean direct) {
         availableBuffers = new LinkedList<>();
@@ -75,21 +83,22 @@ public final class BufferPage {
     }
 
     /**
-     * 申请物理内存页空间
+     * Allocates the physical buffer for this page.
      *
-     * @param size   物理空间大小
-     * @param direct true:堆外缓冲区,false:堆内缓冲区
-     * @return 缓冲区
+     * @param size   the size of the buffer to allocate
+     * @param direct {@code true} for a direct buffer, {@code false} for a heap buffer
+     * @return the allocated {@link ByteBuffer}
      */
     private ByteBuffer allocate0(int size, boolean direct) {
         return direct ? ByteBuffer.allocateDirect(size) : ByteBuffer.allocate(size);
     }
 
     /**
-     * 申请虚拟内存
+     * Allocates a virtual buffer of the specified size from this page.
      *
-     * @param size 申请大小
-     * @return 虚拟内存对象
+     * @param size the size of the virtual buffer to allocate
+     * @return a {@link VirtualBuffer} of the requested size
+     * @throws UnsupportedOperationException if the requested size is zero
      */
     public VirtualBuffer allocate(final int size) {
         if (size == 0) {
@@ -100,10 +109,10 @@ public final class BufferPage {
     }
 
     /**
-     * 申请虚拟内存
+     * Internal method to allocate a virtual buffer.
      *
-     * @param size 申请大小
-     * @return 虚拟内存对象
+     * @param size the size of the virtual buffer to allocate
+     * @return an allocated {@link VirtualBuffer}, or {@code null} if allocation fails
      */
     private VirtualBuffer allocate0(final int size) {
         idle = false;
@@ -130,7 +139,7 @@ public final class BufferPage {
 
             int count = availableBuffers.size();
             VirtualBuffer bufferChunk = null;
-            // 仅剩一个可用内存块的时候使用快速匹配算法
+            // Use a fast allocation algorithm if only one free chunk remains
             if (count == 1) {
                 bufferChunk = fastAllocate(size);
             } else if (count > 1) {
@@ -143,10 +152,10 @@ public final class BufferPage {
     }
 
     /**
-     * 快速匹配
+     * A fast allocation algorithm for when there is only one available free chunk.
      *
-     * @param size 申请内存大小
-     * @return 申请到的内存块, 若空间不足则返回null
+     * @param size the requested allocation size
+     * @return an allocated {@link VirtualBuffer}, or {@code null} if space is insufficient
      */
     private VirtualBuffer fastAllocate(int size) {
         VirtualBuffer freeChunk = availableBuffers.get(0);
@@ -158,10 +167,10 @@ public final class BufferPage {
     }
 
     /**
-     * 迭代申请
+     * An iterative allocation algorithm for when there are multiple available free chunks.
      *
-     * @param size 申请内存大小
-     * @return 申请到的内存块, 若空间不足则返回null
+     * @param size the requested allocation size
+     * @return an allocated {@link VirtualBuffer}, or {@code null} if space is insufficient
      */
     private VirtualBuffer slowAllocate(int size) {
         Iterator<VirtualBuffer> iterator = availableBuffers.listIterator(0);
@@ -180,11 +189,11 @@ public final class BufferPage {
     }
 
     /**
-     * 从可用内存大块中申请所需的内存小块
+     * Allocates a smaller buffer chunk from a larger free chunk.
      *
-     * @param size      申请内存大小
-     * @param freeChunk 可用于申请的内存块
-     * @return 申请到的内存块, 若空间不足则返回null
+     * @param size      the requested size of the new chunk
+     * @param freeChunk the larger free chunk from which to allocate
+     * @return an allocated {@link VirtualBuffer}, or {@code null} if the free chunk is too small
      */
     private VirtualBuffer allocate(int size, VirtualBuffer freeChunk) {
         final int capacity = freeChunk.getCapacity();
@@ -210,19 +219,20 @@ public final class BufferPage {
     }
 
     /**
-     * 内存回收
+     * Marks a virtual buffer for cleaning by adding it to the clean queue.
      *
-     * @param cleanBuffer 待回收的虚拟内存
+     * @param cleanBuffer the virtual buffer to be cleaned
      */
     void clean(VirtualBuffer cleanBuffer) {
         cleanBuffers.offer(cleanBuffer);
     }
 
     /**
-     * 尝试回收缓冲区
+     * Attempts to clean and merge any pending buffers in the clean queue. This method is intended to be called
+     * periodically and will only perform cleanup if the page is idle to avoid contention.
      */
     void tryClean() {
-        // 下个周期依旧处于空闲则触发回收任务
+        // If the page is still idle in the next cycle, trigger the cleanup task
         if (!idle) {
             idle = true;
         } else if (!cleanBuffers.isEmpty() && lock.tryLock()) {
@@ -238,45 +248,48 @@ public final class BufferPage {
     }
 
     /**
-     * 回收虚拟缓冲区
+     * Recycles a virtual buffer by merging it back into the list of available buffers.
      *
-     * @param cleanBuffer 虚拟缓冲区
+     * @param cleanBuffer the virtual buffer to recycle
      */
     private void clean0(VirtualBuffer cleanBuffer) {
         ListIterator<VirtualBuffer> iterator = availableBuffers.listIterator(0);
         while (iterator.hasNext()) {
             VirtualBuffer freeBuffer = iterator.next();
-            // cleanBuffer在freeBuffer之前并且形成连续块
+            // Case 1: The cleanBuffer is immediately before the freeBuffer and can be merged
             if (freeBuffer.getParentPosition() == cleanBuffer.getParentLimit()) {
                 freeBuffer.setParentPosition(cleanBuffer.getParentPosition());
                 return;
             }
-            // cleanBuffer与freeBuffer之后并形成连续块
+            // Case 2: The cleanBuffer is immediately after the freeBuffer and can be merged
             if (freeBuffer.getParentLimit() == cleanBuffer.getParentPosition()) {
                 freeBuffer.setParentLimit(cleanBuffer.getParentLimit());
-                // 判断后一个是否连续
+                // Check if the next buffer is also contiguous and merge it as well
                 if (iterator.hasNext()) {
                     VirtualBuffer next = iterator.next();
                     if (next.getParentPosition() == freeBuffer.getParentLimit()) {
                         freeBuffer.setParentLimit(next.getParentLimit());
                         iterator.remove();
                     } else if (next.getParentPosition() < freeBuffer.getParentLimit()) {
-                        throw new IllegalStateException("");
+                        throw new IllegalStateException("Buffer order inconsistency detected");
                     }
                 }
                 return;
             }
+            // Case 3: The cleanBuffer should be inserted before the current freeBuffer
             if (freeBuffer.getParentPosition() > cleanBuffer.getParentLimit()) {
                 iterator.previous();
                 iterator.add(cleanBuffer);
                 return;
             }
         }
+        // Case 4: The cleanBuffer should be added to the end of the list
         iterator.add(cleanBuffer);
     }
 
     /**
-     * 释放内存
+     * Releases the resources held by this buffer page. For direct buffers, this does not explicitly deallocate memory
+     * but clears the buffer.
      */
     void release() {
         if (buffer.isDirect()) {
@@ -286,7 +299,7 @@ public final class BufferPage {
 
     @Override
     public String toString() {
-        return "BufferPage{availableBuffers=" + availableBuffers + ", cleanBuffers=" + cleanBuffers + '}';
+        return "BufferPage{" + "availableBuffers=" + availableBuffers + ", " + "cleanBuffers=" + cleanBuffers + '}';
     }
 
 }

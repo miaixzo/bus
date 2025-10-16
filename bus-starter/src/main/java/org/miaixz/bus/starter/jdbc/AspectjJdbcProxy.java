@@ -28,16 +28,18 @@
 package org.miaixz.bus.starter.jdbc;
 
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.annotation.*;
+import org.aspectj.lang.annotation.After;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
 import org.miaixz.bus.logger.Logger;
 import org.springframework.core.annotation.Order;
 
 /**
- * AOP aspect for dynamic datasource switching.
+ * AOP aspect for dynamic data source switching.
  * <p>
- * This aspect intercepts methods annotated with {@link DataSource} and manages the datasource context before and after
- * method execution.
- * </p>
+ * This aspect intercepts methods annotated with {@link DataSource} and manages the data source context before and after
+ * method execution. The {@code @Order(-1)} annotation ensures that this aspect runs before the transaction aspect, so
+ * data source switching occurs before transaction management begins.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -47,14 +49,14 @@ import org.springframework.core.annotation.Order;
 public class AspectjJdbcProxy {
 
     /**
-     * Advice that runs before a method execution with {@link DataSource} annotation.
+     * Advice that executes before a method annotated with {@link DataSource}.
      * <p>
-     * Sets the datasource context based on the value specified in the annotation. If no datasource is specified, the
-     * default datasource will be used.
+     * It sets the data source context based on the value specified in the annotation. If no data source name is
+     * provided, it defaults to the primary data source.
      * </p>
      *
-     * @param joinPoint  the join point representing the method execution
-     * @param dataSource the datasource annotation on the method
+     * @param joinPoint  The join point representing the method execution.
+     * @param dataSource The {@link DataSource} annotation instance on the method.
      */
     @Before("@annotation(dataSource)")
     public void before(JoinPoint joinPoint, DataSource dataSource) {
@@ -78,15 +80,15 @@ public class AspectjJdbcProxy {
     }
 
     /**
-     * Advice that runs after a method execution with {@link DataSource} annotation.
+     * Advice that executes after a method annotated with {@link DataSource}.
      * <p>
-     * Cleans up the datasource context based on the configuration in the annotation. If {@link DataSource#clear()} is
-     * true, the datasource context will be cleared. Otherwise, the datasource context will be maintained for subsequent
-     * operations.
+     * It cleans up the data source context based on the annotation's configuration. If {@link DataSource#clear()} is
+     * {@code true}, the data source context is cleared. Otherwise, it is maintained for subsequent operations within
+     * the same thread.
      * </p>
      *
-     * @param joinPoint  the join point representing the method execution
-     * @param dataSource the datasource annotation on the method
+     * @param joinPoint  The join point representing the method execution.
+     * @param dataSource The {@link DataSource} annotation instance on the method.
      */
     @After("@annotation(dataSource)")
     public void after(JoinPoint joinPoint, DataSource dataSource) {

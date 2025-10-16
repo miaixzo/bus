@@ -32,7 +32,9 @@ import java.io.InterruptedIOException;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 在放弃一项任务之前要花多少时间的策略 当一个任务 超时时,它处于未指定的状态,应该被放弃 例如,如果从源读取超时,则应关闭该源并 稍后应重试读取 如果向接收器写入超时,也是一样 适用规则:关闭洗涤槽,稍后重试
+ * A policy for how much time to spend on a task before giving up. When a task times out, it is in an unspecified state
+ * and should be abandoned. For example, if reading from a source times out, the source should be closed and reading
+ * should be retried later. If writing to a sink times out, the same rule applies: close the sink and retry later.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -40,7 +42,8 @@ import java.util.concurrent.TimeUnit;
 public class Timeout {
 
     /**
-     * 既不跟踪也不检测超时的空超时。在不需要超时 的情况下使用它，例如在操作不会阻塞的实现中
+     * An empty timeout that neither tracks nor detects timeouts. Use this when no timeout is needed, for example, in
+     * implementations where operations do not block.
      */
     public static final Timeout NONE = new Timeout() {
 
@@ -60,31 +63,33 @@ public class Timeout {
     };
 
     /**
-     * 如果定义了 {@code deadlineNanoTime}，则为 True。 对于 {@link System#nanoTime}，没有与 null 或 0 等价的值
+     * True if a {@code deadlineNanoTime} is defined. There is no equivalent to null or 0 for {@link System#nanoTime}.
      */
     private boolean hasDeadline;
     /**
-     * 截止时间
+     * The deadline in nanoseconds, as returned by {@link System#nanoTime()}.
      */
     private long deadlineNanoTime;
     /**
-     * 超时时间
+     * The timeout duration in nanoseconds.
      */
     private long timeoutNanos;
 
     /**
-     * 构建
+     * Constructs a new {@code Timeout} instance with no timeout and no deadline set.
      */
     public Timeout() {
 
     }
 
     /**
-     * 最多等待 {@code timeout} 时间，然后中止操作。 使用每个操作超时意味着只要向前推进，任何操作序列都不会失败。
+     * Waits for at most {@code timeout} duration before aborting an operation. Using per-operation timeouts means that
+     * any sequence of operations will not fail as long as progress is being made.
      *
-     * @param timeout 超时时间
-     * @param unit    时间单位
-     * @return {@link Timeout}
+     * @param timeout The maximum time to wait.
+     * @param unit    The time unit of the {@code timeout} argument.
+     * @return This {@code Timeout} instance for method chaining.
+     * @throws IllegalArgumentException If {@code timeout} is negative or {@code unit} is null.
      */
     public Timeout timeout(long timeout, TimeUnit unit) {
         if (timeout < 0)
@@ -96,23 +101,28 @@ public class Timeout {
     }
 
     /**
-     * 返回以纳秒为单位的超时时间，或 {@code 0} 表示无超时。
+     * Returns the timeout duration in nanoseconds, or {@code 0} if no timeout is set.
+     *
+     * @return The timeout duration in nanoseconds.
      */
     public long timeoutNanos() {
         return timeoutNanos;
     }
 
     /**
-     * 如果启用了截止期限，则返回 true
+     * Returns {@code true} if a deadline is enabled for this timeout.
+     *
+     * @return {@code true} if a deadline is set, {@code false} otherwise.
      */
     public boolean hasDeadline() {
         return hasDeadline;
     }
 
     /**
-     * 返回截止期限的 {@linkplain System#nanoTime()}
+     * Returns the deadline in {@linkplain System#nanoTime()} units.
      *
-     * @throws IllegalStateException 如果没有设定截止时间
+     * @return The deadline in nanoseconds.
+     * @throws IllegalStateException If no deadline has been set.
      */
     public long deadlineNanoTime() {
         if (!hasDeadline)
@@ -121,7 +131,11 @@ public class Timeout {
     }
 
     /**
-     * 设置达到截止期限的 {@linkplain System#nanoTime()} 所有操作必须在此时间之前完成。使用截止期限来设置一系列操作所花费时间的最大限度。
+     * Sets the deadline in {@linkplain System#nanoTime()} units. All operations must complete before this time. Use a
+     * deadline to set an upper bound on the total time spent for a sequence of operations.
+     *
+     * @param deadlineNanoTime The deadline in nanoseconds.
+     * @return This {@code Timeout} instance for method chaining.
      */
     public Timeout deadlineNanoTime(long deadlineNanoTime) {
         this.hasDeadline = true;
@@ -130,11 +144,12 @@ public class Timeout {
     }
 
     /**
-     * 设定现在加上{@code duration} 时间的截止时间
+     * Sets the deadline to be {@code duration} from now.
      *
-     * @param duration 期间
-     * @param unit     时间单位
-     * @return {@link Timeout}
+     * @param duration The duration from now until the deadline.
+     * @param unit     The time unit of the {@code duration} argument.
+     * @return This {@code Timeout} instance for method chaining.
+     * @throws IllegalArgumentException If {@code duration} is less than or equal to 0, or {@code unit} is null.
      */
     public final Timeout deadline(long duration, TimeUnit unit) {
         if (duration <= 0)
@@ -145,7 +160,9 @@ public class Timeout {
     }
 
     /**
-     * 清除超时
+     * Clears any timeout set for this instance.
+     *
+     * @return This {@code Timeout} instance for method chaining.
      */
     public Timeout clearTimeout() {
         this.timeoutNanos = 0;
@@ -153,7 +170,9 @@ public class Timeout {
     }
 
     /**
-     * 清除最后期限
+     * Clears any deadline set for this instance.
+     *
+     * @return This {@code Timeout} instance for method chaining.
      */
     public Timeout clearDeadline() {
         this.hasDeadline = false;
@@ -161,11 +180,15 @@ public class Timeout {
     }
 
     /**
-     * 如果已达到截止时间或当前线程已中断，则抛出 {@link InterruptedIOException}。 此方法不检测超时；应实施超时以异步中止正在进行的操作
+     * Throws an {@link InterruptedIOException} if the deadline has been reached or if the current thread has been
+     * interrupted. This method does not detect timeouts; timeouts should be implemented to abort ongoing operations
+     * asynchronously.
+     *
+     * @throws IOException If the deadline is reached or the thread is interrupted.
      */
     public void throwIfReached() throws IOException {
         if (Thread.interrupted()) {
-            // 保留中断状态
+            // Preserve the interrupted status
             Thread.currentThread().interrupt();
             throw new InterruptedIOException("interrupted");
         }
@@ -176,11 +199,12 @@ public class Timeout {
     }
 
     /**
-     * 等待 {@code monitor} 直到收到通知。 如果线程中断或在 {@code monitor} 收到通知之前超时，则抛出 {@link InterruptedIOException}。 调用者必须在
-     * {@code monitor} 上同步。
+     * Waits on {@code monitor} until notified. If the thread is interrupted or times out before being notified on
+     * {@code monitor}, an {@link InterruptedIOException} is thrown. The caller must synchronize on {@code monitor}.
      *
-     * @param monitor 监视器
-     * @throws InterruptedIOException 异常
+     * @param monitor The object to wait on.
+     * @throws InterruptedIOException       If the wait is interrupted or times out.
+     * @throws IllegalMonitorStateException If the current thread is not the owner of the monitor's object.
      */
     public final void waitUntilNotified(Object monitor) throws InterruptedIOException {
         try {
@@ -188,12 +212,12 @@ public class Timeout {
             long timeoutNanos = timeoutNanos();
 
             if (!hasDeadline && timeoutNanos == 0L) {
-                // 没有超时：永远等待
+                // No timeout: wait indefinitely
                 monitor.wait();
                 return;
             }
 
-            // 计算一下要等待多久
+            // Calculate how long to wait
             long waitNanos;
             long start = System.nanoTime();
             if (hasDeadline && timeoutNanos != 0) {
@@ -205,7 +229,7 @@ public class Timeout {
                 waitNanos = timeoutNanos;
             }
 
-            // 尝试等待那么长时间。如果监视器收到通知，这将提前触发
+            // Attempt to wait for that duration. This will trigger early if the monitor is notified.
             long elapsedNanos = 0L;
             if (waitNanos > 0L) {
                 long waitMillis = waitNanos / 1000000L;
@@ -213,7 +237,7 @@ public class Timeout {
                 elapsedNanos = System.nanoTime() - start;
             }
 
-            // 如果在监视器收到通知之前已经超时，则抛出
+            // If the timeout occurred before the monitor was notified, throw an exception.
             if (elapsedNanos >= waitNanos) {
                 throw new InterruptedIOException("timeout");
             }

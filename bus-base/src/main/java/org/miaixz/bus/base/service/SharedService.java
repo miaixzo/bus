@@ -38,276 +38,276 @@ import org.miaixz.bus.mapper.binding.condition.ConditionWrapper;
 import org.miaixz.bus.mapper.binding.function.Fn;
 
 /**
- * 通用：通用服务接口，用于实体类的基本增删改查操作
+ * Generic service interface for basic CRUD (Create, Retrieve, Update, Delete) operations on entities.
  *
- * @param <T> 实体类型
- * @param <I> 主键类型，必须实现Serializable
- *
+ * @param <T> the entity type
+ * @param <I> the type of the primary key, which must implement {@link Serializable}
  * @author Kimi Liu
  * @since Java 17+
  */
 interface SharedService<T, I extends Serializable> extends Service {
 
     /**
-     * 通用：插入实体（所有字段）
+     * Inserts a new entity with all fields.
      *
-     * @param entity 实体类
-     * @return 保存后的实体
+     * @param entity the entity to insert
+     * @return the inserted entity
      */
     Object insert(T entity);
 
     /**
-     * 通用：插入实体（非空字段）
+     * Inserts a new entity, only including non-null fields.
      *
-     * @param entity 实体类
-     * @return 保存后的实体
+     * @param entity the entity to insert
+     * @return the inserted entity
      */
     Object insertSelective(T entity);
 
     /**
-     * 通用：批量插入实体（所有字段）
+     * Inserts a batch of entities with all fields.
      *
-     * @param list 实体列表
-     * @return 保存后的实体列表
+     * @param list the list of entities to insert
+     * @return the list of inserted entities
      */
     List<T> insertBatch(List<T> list);
 
     /**
-     * 通用：批量插入实体（非空字段）
+     * Inserts a batch of entities, only including non-null fields.
      *
-     * @param list 实体列表
-     * @return 保存后的实体列表
+     * @param list the list of entities to insert
+     * @return the list of inserted entities
      */
     List<T> insertBatchSelective(List<T> list);
 
     /**
-     * 通用：更新实体（所有字段）
+     * Updates an existing entity with all fields.
      *
-     * @param entity 实体类
-     * @return 更新后的实体
+     * @param entity the entity to update
+     * @return the updated entity
      */
     Object update(T entity);
 
     /**
-     * 通用：更新实体（指定字段）
+     * Updates an existing entity, specifying which fields to update.
      *
-     * @param entity 实体类
-     * @param fields 需要更新的字段
-     * @return 更新后的实体
+     * @param entity the entity to update
+     * @param fields the fields to be updated
+     * @return the updated entity
      */
     Object update(T entity, Fn<T, Object>... fields);
 
     /**
-     * 通用：更新实体（非空字段）
+     * Updates an existing entity, only including non-null fields.
      *
-     * @param entity 实体类
-     * @return 更新后的实体
+     * @param entity the entity to update
+     * @return the updated entity
      */
     Object updateSelective(T entity);
 
     /**
-     * 通用：更新实体（非空字段，强制更新指定字段）
+     * Updates an existing entity, only including non-null fields, and forces update for specified fields.
      *
-     * @param entity 实体类
-     * @param fields 强制更新的字段
-     * @return 更新后的实体
+     * @param entity the entity to update
+     * @param fields the fields to force update
+     * @return the updated entity
      */
     Object updateSelective(T entity, Fn<T, Object>... fields);
 
     /**
-     * 通用：插入或更新实体（所有字段）
+     * Inserts a new entity or updates an existing one with all fields.
      *
-     * @param entity 实体类
-     * @return 保存或更新后的实体
+     * @param entity the entity to insert or update
+     * @return the inserted or updated entity
      */
     Object insertOrUpdate(T entity);
 
     /**
-     * 通用：插入或更新实体（非空字段）
+     * Inserts a new entity or updates an existing one, only including non-null fields.
      *
-     * @param entity 实体类
-     * @return 保存或更新后的实体
+     * @param entity the entity to insert or update
+     * @return the inserted or updated entity
      */
     Object insertOrUpdateSelective(T entity);
 
     /**
-     * 通用：逻辑删除实体
+     * Performs a logical deletion of an entity. This typically involves updating a status field rather than physically
+     * deleting the record.
      *
-     * @param entity 要删除的实体
-     * @return 受影响的行数
+     * @param entity the entity to be logically removed
+     * @return the number of affected rows
      */
     long remove(T entity);
 
     /**
-     * 通用：删除实体
+     * Performs a physical deletion of an entity from the database.
      *
-     * @param entity 实体类
-     * @return 删除的记录数，大于0表示成功
+     * @param entity the entity to delete
+     * @return the number of records deleted, greater than 0 indicates success
      */
     long delete(T entity);
 
     /**
-     * 通用：根据主键删除
+     * Deletes an entity by its primary key.
      *
-     * @param id 主键
-     * @return 删除的记录数，1表示成功
+     * @param id the primary key
+     * @return the number of records deleted, 1 indicates success
      */
     long deleteById(I id);
 
     /**
-     * 通用：根据多个主键集合删除
+     * Deletes entities by a collection of primary keys.
      *
-     * @param ids 主键集合
-     * @return 删除的记录数
+     * @param ids the collection of primary keys
+     * @return the number of records deleted
      */
     long deleteByIds(Collection<I> ids);
 
     /**
-     * 通用：根据指定字段集合删除
+     * Deletes entities by a collection of field values.
      *
-     * @param field          字段
-     * @param fieldValueList 字段值集合
-     * @param <F>            字段值类型
-     * @return 删除的记录数
+     * @param field          the field to match against
+     * @param fieldValueList the collection of field values
+     * @param <F>            the type of the field value
+     * @return the number of records deleted
      */
     <F> long deleteByFieldList(Fn<T, F> field, Collection<F> fieldValueList);
 
     /**
-     * 通用：根据主键查询
+     * Retrieves an entity by its primary key.
      *
-     * @param id 主键
-     * @return 实体，未找到返回null
+     * @param id the primary key
+     * @return the entity, or null if not found
      */
     Object selectById(I id);
 
     /**
-     * 通用：根据实体条件查询单条记录
+     * Retrieves a single entity based on the provided entity conditions.
      *
-     * @param entity 实体类
-     * @return 实体，未找到返回null
+     * @param entity the entity containing query conditions
+     * @return the entity, or null if not found
      */
     Object selectOne(T entity);
 
     /**
-     * 通用：根据实体条件查询列表
+     * Retrieves a list of entities based on the provided entity conditions.
      *
-     * @param entity 实体类
-     * @return 实体列表
+     * @param entity the entity containing query conditions
+     * @return a list of entities
      */
     List<T> selectList(T entity);
 
     /**
-     * 通用：根据指定字段集合查询
+     * Retrieves a list of entities based on a collection of field values.
      *
-     * @param field          字段
-     * @param fieldValueList 字段值集合
-     * @param <F>            字段值类型
-     * @return 实体列表
+     * @param field          the field to match against
+     * @param fieldValueList the collection of field values
+     * @param <F>            the type of the field value
+     * @return a list of entities
      */
     <F> List<T> selectByFieldList(Fn<T, F> field, Collection<F> fieldValueList);
 
     /**
-     * 通用：查询所有记录
+     * Retrieves all records.
      *
-     * @return 实体列表
+     * @return a list of all entities
      */
     List<T> selectAll();
 
     /**
-     * 通用：根据实体条件查询总数
+     * Counts the number of records matching the provided entity conditions.
      *
-     * @param entity 实体类
-     * @return 记录总数
+     * @param entity the entity containing query conditions
+     * @return the total number of records
      */
     long count(T entity);
 
     /**
-     * 通用：获取条件对象
+     * Returns a new {@link Condition} object for building complex queries.
      *
-     * @return 条件对象
+     * @return a new Condition object
      */
     default Condition<T> condition() {
         return new Condition<>();
     }
 
     /**
-     * 通用：根据条件批量删除
+     * Deletes records based on the provided {@link Condition}.
      *
-     * @param condition 查询条件
-     * @return 删除的记录数，大于0表示成功
+     * @param condition the query condition
+     * @return the number of records deleted, greater than 0 indicates success
      */
     long delete(Condition<T> condition);
 
     /**
-     * 通用：根据条件批量更新（所有字段）
+     * Updates records based on the provided entity and {@link Condition}, updating all fields.
      *
-     * @param entity    实体类
-     * @param condition 查询条件
-     * @return 更新的记录数，大于0表示成功
+     * @param entity    the entity with updated information
+     * @param condition the query condition
+     * @return the number of records updated, greater than 0 indicates success
      */
     long update(T entity, Condition<T> condition);
 
     /**
-     * 通用：根据条件批量更新（非空字段）
+     * Updates records based on the provided entity and {@link Condition}, only updating non-null fields.
      *
-     * @param entity    实体类
-     * @param condition 查询条件
-     * @return 更新的记录数，大于0 STRUCTURE表示成功
+     * @param entity    the entity with updated information
+     * @param condition the query condition
+     * @return the number of records updated, greater than 0 indicates success
      */
     long updateSelective(T entity, Condition<T> condition);
 
     /**
-     * 通用：根据条件查询单条记录
+     * Retrieves a single entity based on the provided {@link Condition}.
      *
-     * @param condition 查询条件
-     * @return 实体，未找到返回null
+     * @param condition the query condition
+     * @return the entity, or null if not found
      */
     Object selectOne(Condition<T> condition);
 
     /**
-     * 通用：根据条件查询单条记录
+     * Retrieves the first entity found based on the provided {@link Condition}.
      *
-     * @param condition 查询条件
-     * @return 实体
+     * @param condition the query condition
+     * @return the entity
      */
     Object selectFirst(Condition<T> condition);
 
     /**
-     * 通用：根据条件查询列表
+     * Retrieves a list of entities based on the provided {@link Condition}.
      *
-     * @param condition 查询条件
-     * @return 实体列表
+     * @param condition the query condition
+     * @return a list of entities
      */
     List<T> selectList(Condition<T> condition);
 
     /**
-     * 通用：根据条件查询总数
+     * Counts the number of records matching the provided {@link Condition}.
      *
-     * @param condition 查询条件
-     * @return 记录总数
+     * @param condition the query condition
+     * @return the total number of records
      */
     long count(Condition<T> condition);
 
     /**
-     * 通用：检查实体主键是否有值
+     * Checks if the primary key of the given entity has a value.
      *
-     * @param entity 实体类
-     * @return true表示有值，false表示为空
+     * @param entity the entity to check
+     * @return true if the primary key has a value, false otherwise
      */
     boolean pkHasValue(T entity);
 
     /**
-     * 通用：分页查询
+     * Performs a paginated query based on the provided entity, which should contain pagination and sorting parameters.
      *
-     * @param entity 实体类（包含分页和排序参数）
-     * @return 分页结果，包含记录列表和总数
+     * @param entity the entity containing pagination and sorting parameters
+     * @return a {@link Result} object containing the paginated list of records and the total count
      */
     Result<T> page(T entity);
 
     /**
-     * 通用：获取条件包装器
+     * Returns a new {@link ConditionWrapper} object for building complex query conditions.
      *
-     * @return 条件包装器
+     * @return a new ConditionWrapper object
      */
     ConditionWrapper<T, I> wrapper();
 

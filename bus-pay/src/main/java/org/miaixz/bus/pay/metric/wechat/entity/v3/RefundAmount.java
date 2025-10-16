@@ -34,7 +34,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * V3 微信申请退款-金额信息
+ * V3 WeChat Refund Application - Amount Information.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -47,15 +47,15 @@ import lombok.experimental.SuperBuilder;
 public class RefundAmount {
 
     /**
-     * 总金额
+     * Total amount.
      */
     private int total;
     /**
-     * 货币类型
+     * Currency type.
      */
     private String currency;
     /**
-     * 退款金额
+     * Refund amount.
      */
     private int refund;
 

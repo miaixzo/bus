@@ -33,20 +33,24 @@ import java.io.Serial;
 import org.miaixz.bus.core.xyz.FileKit;
 
 /**
- * Web root资源访问对象
+ * Web root resource access object. This class represents a resource located relative to the web application's root
+ * directory.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class WebAppResource extends FileResource {
 
+    /**
+     * The serial version UID for serialization.
+     */
     @Serial
     private static final long serialVersionUID = 2852232920252L;
 
     /**
-     * 构造
+     * Constructs a {@code WebAppResource} with a path relative to the Web root.
      *
-     * @param path 相对于Web root的路径
+     * @param path The path relative to the Web root.
      */
     public WebAppResource(final String path) {
         super(new File(FileKit.getWebRoot(), path));

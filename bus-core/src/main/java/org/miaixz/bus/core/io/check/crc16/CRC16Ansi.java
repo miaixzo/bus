@@ -30,23 +30,37 @@ package org.miaixz.bus.core.io.check.crc16;
 import java.io.Serial;
 
 /**
- * CRC16_ANSI
+ * Implements the CRC16-ANSI (Cyclic Redundancy Check) algorithm.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class CRC16Ansi extends CRC16Checksum {
 
+    /**
+     * The serial version UID for serialization.
+     */
     @Serial
     private static final long serialVersionUID = 2852278118286L;
 
+    /**
+     * The polynomial used in the CRC16-ANSI calculation.
+     */
     private static final int WC_POLY = 0xa001;
 
+    /**
+     * Resets the CRC16-ANSI calculation to its initial state (0xFFFF).
+     */
     @Override
     public void reset() {
         this.wCRCin = 0xffff;
     }
 
+    /**
+     * Updates the CRC16-ANSI checksum with the specified byte.
+     *
+     * @param b The byte to update the checksum with.
+     */
     @Override
     public void update(final int b) {
         int hi = wCRCin >> 8;

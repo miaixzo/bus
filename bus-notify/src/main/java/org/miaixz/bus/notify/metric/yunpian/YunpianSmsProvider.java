@@ -39,29 +39,45 @@ import org.miaixz.bus.notify.magic.ErrorCode;
 import org.miaixz.bus.notify.metric.AbstractProvider;
 
 /**
- * 云片短信
+ * Yunpian SMS service provider implementation.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class YunpianSmsProvider extends AbstractProvider<YunpianMaterial, Context> {
 
+    /**
+     * Constructs a {@code YunpianSmsProvider} with the given context.
+     *
+     * @param context The context containing configuration information for the provider.
+     */
     public YunpianSmsProvider(Context context) {
         super(context);
     }
 
+    /**
+     * Sends an SMS notification using Yunpian SMS service.
+     *
+     * @param entity The {@link YunpianMaterial} containing SMS details like API key, recipient, template ID, and
+     *               template parameters.
+     * @return A {@link Message} indicating the result of the SMS sending operation.
+     */
     @Override
     public Message send(YunpianMaterial entity) {
         Map<String, String> bodys = new HashMap<>();
+        // The API key for Yunpian.
         bodys.put("apikey", entity.getApikey());
+        // The recipient's mobile number.
         bodys.put("mobile", entity.getReceive());
+        // The template ID for the SMS message.
         bodys.put("tpl_id", entity.getTemplate());
+        // The parameters for the SMS template.
         bodys.put("tpl_value", entity.getParams());
 
         String response = Httpx.post(this.getUrl(entity), bodys);
         boolean succeed = Objects.equals(JsonKit.getValue(response, "code"), 0);
-        String errcode = succeed ? ErrorCode._SUCCESS.getKey() : ErrorCode._FAILURE.getKey();
-        String errmsg = succeed ? ErrorCode._SUCCESS.getValue() : ErrorCode._FAILURE.getValue();
+        String errcode = succeed ? ErrorCode._SUCCESS.getKey() : JsonKit.getValue(response, "code");
+        String errmsg = succeed ? ErrorCode._SUCCESS.getValue() : JsonKit.getValue(response, "msg");
 
         return Message.builder().errcode(errcode).errmsg(errmsg).build();
     }

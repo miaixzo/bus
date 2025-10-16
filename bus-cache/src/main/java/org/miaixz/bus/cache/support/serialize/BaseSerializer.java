@@ -28,9 +28,10 @@
 package org.miaixz.bus.cache.support.serialize;
 
 /**
- * 基础序列化器接口
+ * Defines the basic operations for serialization and deserialization in the cache system.
  * <p>
- * 定义了序列化和反序列化的基本操作，用于在缓存系统中存储和检索对象。 实现类需要提供具体的序列化和反序列化逻辑。
+ * Implementations of this interface provide the specific logic for converting objects to and from byte arrays for
+ * storage and retrieval from a cache.
  * </p>
  *
  * @author Kimi Liu
@@ -39,26 +40,20 @@ package org.miaixz.bus.cache.support.serialize;
 public interface BaseSerializer {
 
     /**
-     * 序列化对象
-     * <p>
-     * 将对象转换为字节数组，以便在缓存中存储
-     * </p>
+     * Serializes an object into a byte array.
      *
-     * @param <T>    对象类型
-     * @param object 要序列化的对象
-     * @return 序列化后的字节数组
+     * @param <T>    The type of the object.
+     * @param object The object to be serialized.
+     * @return The resulting byte array.
      */
     <T> byte[] serialize(T object);
 
     /**
-     * 反序列化字节数组
-     * <p>
-     * 将字节数组转换为对象，以便从缓存中检索
-     * </p>
+     * Deserializes a byte array back into an object.
      *
-     * @param <T>   对象类型
-     * @param bytes 要反序列化的字节数组
-     * @return 反序列化后的对象
+     * @param <T>   The expected type of the deserialized object.
+     * @param bytes The byte array to be deserialized.
+     * @return The deserialized object.
      */
     <T> T deserialize(byte[] bytes);
 

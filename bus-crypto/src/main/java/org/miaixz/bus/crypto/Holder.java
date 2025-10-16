@@ -31,45 +31,63 @@ import org.miaixz.bus.core.lang.loader.spi.NormalSpiLoader;
 import org.miaixz.bus.crypto.metric.BouncyCastleProvider;
 
 /**
- * 全局单例的{@link java.security.Provider}对象
- * 在此类加载时，通过SPI方式查找用户引入的加密库，查找对应的{@link java.security.Provider}实现，然后全局创建唯一的{@link BouncyCastleProvider}对象
- * 用户依旧可以通过{@link #setUseCustomProvider(boolean)} 方法选择是否使用自定义的Provider。
+ * Global singleton {@link java.security.Provider} object holder.
+ * <p>
+ * Upon class loading, this class uses SPI (Service Provider Interface) to locate and load available cryptographic
+ * providers. It specifically searches for implementations of {@link BouncyCastleProvider} and creates a unique instance
+ * globally.
+ * </p>
+ * <p>
+ * Users can still control whether to use this custom provider or the JDK's default providers by calling the
+ * {@link #setUseCustomProvider(boolean)} method.
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class Holder implements org.miaixz.bus.core.Holder {
 
+    /**
+     * The globally held {@link java.security.Provider} instance, initialized via SPI. If no custom provider is found or
+     * configured, this might be {@code null}.
+     */
     private static final java.security.Provider provider = _createProvider();
+    /**
+     * Flag indicating whether to use the custom {@link java.security.Provider}. Defaults to {@code true}.
+     */
     private static boolean useCustomProvider = true;
 
     /**
-     * 获取{@link java.security.Provider}，无提供方，返回{@code null}表示使用JDK默认
+     * Retrieves the {@link java.security.Provider} instance. If {@link #useCustomProvider} is {@code false}, this
+     * method returns {@code null}, indicating that the JDK's default providers should be used.
      *
-     * @return {@link java.security.Provider} or {@code null}
+     * @return The {@link java.security.Provider} instance, or {@code null} if not using a custom provider.
      */
     public static java.security.Provider getProvider() {
         return useCustomProvider ? provider : null;
     }
 
     /**
-     * 设置是否使用自定义的{@link java.security.Provider} 如果设置为false，表示使用JDK默认的Provider
+     * Sets whether to use the custom {@link java.security.Provider}. If set to {@code false}, the JDK's default
+     * providers will be used instead.
      *
-     * @param isUseCustomProvider 是否使用自定义{@link java.security.Provider}
+     * @param isUseCustomProvider {@code true} to use the custom provider, {@code false} to use JDK's default.
      */
     public static void setUseCustomProvider(final boolean isUseCustomProvider) {
         useCustomProvider = isUseCustomProvider;
     }
 
     /**
-     * 通过SPI方式，创建{@link java.security.Provider}，无提供的返回{@code null}
+     * Creates a {@link java.security.Provider} instance via SPI (Service Provider Interface). This method attempts to
+     * load the first available {@link BouncyCastleProvider} implementation.
      *
-     * @return {@link java.security.Provider} or {@code null}
+     * @return A {@link java.security.Provider} instance if found and created, otherwise {@code null} (indicating that
+     *         the JDK's default JCE providers will be used).
      */
     private static java.security.Provider _createProvider() {
         final BouncyCastleProvider factory = NormalSpiLoader.loadFirstAvailable(BouncyCastleProvider.class);
         if (null == factory) {
-            // 默认JCE
+            // Default to JCE
             return null;
         }
 

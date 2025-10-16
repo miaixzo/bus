@@ -28,7 +28,7 @@
 package org.miaixz.bus.auth.metric;
 
 /**
- * LDAP 相关的常量
+ * Constants related to LDAP (Lightweight Directory Access Protocol).
  *
  * @author Kimi Liu
  * @since Java 17+

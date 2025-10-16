@@ -35,21 +35,39 @@ import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Registry;
 
 /**
- * 企业微信 网页登录
+ * WeChat Enterprise web login provider.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class WeChatEeWebProvider extends AbstractWeChatEeProvider {
 
+    /**
+     * Constructs a {@code WeChatEeWebProvider} with the specified context.
+     *
+     * @param context the authentication context
+     */
     public WeChatEeWebProvider(Context context) {
         super(context, Registry.WECHAT_EE_WEB);
     }
 
+    /**
+     * Constructs a {@code WeChatEeWebProvider} with the specified context and cache.
+     *
+     * @param context the authentication context
+     * @param cache   the cache implementation
+     */
     public WeChatEeWebProvider(Context context, CacheX cache) {
         super(context, Registry.WECHAT_EE_WEB, cache);
     }
 
+    /**
+     * Returns the authorization URL with a {@code state} parameter. The {@code state} will be included in the
+     * authorization callback.
+     *
+     * @param state the parameter to verify the authorization process, which can prevent CSRF attacks
+     * @return the authorization URL
+     */
     @Override
     public String authorize(String state) {
         return Builder.fromUrl(complex.authorize()).queryParam("appid", context.getAppKey())

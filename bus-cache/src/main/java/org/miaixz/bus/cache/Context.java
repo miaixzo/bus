@@ -32,9 +32,10 @@ import org.miaixz.bus.core.lang.EnumValue;
 import java.util.Map;
 
 /**
- * 缓存上下文配置类
+ * Represents the global configuration for the cache system.
  * <p>
- * 用于配置缓存系统的全局参数，包括缓存实现、命中率统计组件、缓存开关和防击穿开关。 提供了创建默认配置的工厂方法，以及各种参数的getter和setter方法。
+ * This class holds settings such as the cache implementations, metrics component, and global feature switches like
+ * cache enabling and penetration prevention.
  * </p>
  *
  * @author Kimi Liu
@@ -43,33 +44,35 @@ import java.util.Map;
 public class Context {
 
     /**
-     * 缓存接口实现映射，键为缓存名称，值为缓存实现实例
+     * A map of named cache instances, where the key is the cache name and the value is the {@link CacheX}
+     * implementation.
      */
     private Map<String, CacheX> caches;
 
     /**
-     * 缓存分组命中率统计组件
+     * The component responsible for tracking cache metrics, such as hit and miss rates.
      */
     private Metrics metrics;
 
     /**
-     * 是否开启Cache(全局开关)
+     * The global switch to enable or disable all caching operations.
      */
     private EnumValue.Switch cache;
 
     /**
-     * 是否开启缓存防击穿
+     * The global switch to enable or disable cache penetration prevention.
      */
     private EnumValue.Switch prevent;
 
     /**
-     * 创建默认配置的Context实例
+     * Creates a new {@link Context} instance with default settings.
      * <p>
-     * 使用传入的缓存映射创建Context实例，默认开启缓存，关闭防击穿功能。
+     * By default, caching is enabled ({@code Switch.ON}), and penetration prevention is disabled ({@code Switch.OFF}).
+     * The metrics component is initially null.
      * </p>
      *
-     * @param caches 缓存接口实现映射，键为缓存名称，值为缓存实现实例
-     * @return 配置好的Context实例
+     * @param caches A map of cache names to {@link CacheX} instances.
+     * @return A new, configured {@link Context} instance.
      */
     public static Context newConfig(Map<String, CacheX> caches) {
         Context config = new Context();
@@ -81,81 +84,81 @@ public class Context {
     }
 
     /**
-     * 判断是否开启了缓存防击穿功能
+     * Checks if the cache penetration prevention feature is globally enabled.
      *
-     * @return 如果开启了防击穿功能则返回true，否则返回false
+     * @return {@code true} if penetration prevention is on, otherwise {@code false}.
      */
     public boolean isPreventOn() {
         return null != prevent && prevent == EnumValue.Switch.ON;
     }
 
     /**
-     * 获取缓存接口实现映射
+     * Gets the map of cache implementations.
      *
-     * @return 缓存接口实现映射，键为缓存名称，值为缓存实现实例
+     * @return A map where keys are cache names and values are {@link CacheX} instances.
      */
     public Map<String, CacheX> getCaches() {
         return caches;
     }
 
     /**
-     * 设置缓存接口实现映射
+     * Sets the map of cache implementations.
      *
-     * @param caches 缓存接口实现映射，键为缓存名称，值为缓存实现实例
+     * @param caches A map where keys are cache names and values are {@link CacheX} instances.
      */
     public void setCaches(Map<String, CacheX> caches) {
         this.caches = caches;
     }
 
     /**
-     * 获取缓存分组命中率统计组件
+     * Gets the cache metrics component.
      *
-     * @return 缓存分组命中率统计组件
+     * @return The {@link Metrics} component, or {@code null} if not configured.
      */
-    public Metrics getHitting() {
+    public Metrics getMetrics() {
         return metrics;
     }
 
     /**
-     * 设置缓存分组命中率统计组件
+     * Sets the cache metrics component.
      *
-     * @param metrics 缓存分组命中率统计组件
+     * @param metrics The {@link Metrics} component to be used for tracking statistics.
      */
-    public void setHitting(Metrics metrics) {
+    public void setMetrics(Metrics metrics) {
         this.metrics = metrics;
     }
 
     /**
-     * 获取缓存全局开关状态
+     * Gets the global cache switch status.
      *
-     * @return 缓存全局开关状态
+     * @return The current status of the global cache switch (ON/OFF).
      */
     public EnumValue.Switch getCache() {
         return cache;
     }
 
     /**
-     * 设置缓存全局开关状态
+     * Sets the global cache switch status.
      *
-     * @param cache 缓存全局开关状态
+     * @param cache The desired status for the global cache switch (ON/OFF).
      */
     public void setCache(EnumValue.Switch cache) {
         this.cache = cache;
     }
 
     /**
-     * 获取缓存防击穿开关状态
+     * Gets the cache penetration prevention switch status.
      *
-     * @return 缓存防击穿开关状态
+     * @return The current status of the penetration prevention switch (ON/OFF).
      */
     public EnumValue.Switch getPrevent() {
         return prevent;
     }
 
     /**
-     * 设置缓存防击穿开关状态
+     * Sets the cache penetration prevention switch status.
      *
-     * @param prevent 缓存防击穿开关状态
+     * @param prevent The desired status for the penetration prevention switch (ON/OFF).
      */
     public void setPrevent(EnumValue.Switch prevent) {
         this.prevent = prevent;

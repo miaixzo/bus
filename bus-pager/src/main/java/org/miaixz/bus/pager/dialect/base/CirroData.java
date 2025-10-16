@@ -36,13 +36,25 @@ import org.miaixz.bus.pager.Page;
 import org.miaixz.bus.pager.dialect.AbstractPaging;
 
 /**
- * CirroData
+ * Database dialect for CirroData. This class provides CirroData-specific implementations for pagination SQL generation
+ * and parameter processing.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class CirroData extends AbstractPaging {
 
+    /**
+     * Processes the pagination parameters for CirroData. It adds {@code PAGEPARAMETER_FIRST} (start row + 1) and
+     * {@code PAGEPARAMETER_SECOND} (end row) to the parameter map and updates the {@link CacheKey}.
+     *
+     * @param ms       the MappedStatement object
+     * @param paramMap a map containing the query parameters
+     * @param page     the {@link Page} object containing pagination details
+     * @param boundSql the BoundSql object for the query
+     * @param pageKey  the CacheKey for the paginated query
+     * @return the processed parameter map
+     */
     @Override
     public Object processPageParameter(
             MappedStatement ms,
@@ -52,14 +64,22 @@ public class CirroData extends AbstractPaging {
             CacheKey pageKey) {
         paramMap.put(PAGEPARAMETER_FIRST, page.getStartRow() + 1);
         paramMap.put(PAGEPARAMETER_SECOND, page.getEndRow());
-        // 处理pageKey
+        // Process pageKey
         pageKey.update(page.getStartRow() + 1);
         pageKey.update(page.getEndRow());
-        // 处理参数配置
+        // Process parameter configuration
         handleParameter(boundSql, ms, long.class, long.class);
         return paramMap;
     }
 
+    /**
+     * Generates the CirroData-specific pagination SQL. It appends {@code LIMIT ( ?, ? )} to the original SQL.
+     *
+     * @param sql     the original SQL string
+     * @param page    the {@link Page} object containing pagination details
+     * @param pageKey the CacheKey for the paginated query
+     * @return the CirroData-specific paginated SQL string
+     */
     @Override
     public String getPageSql(String sql, Page page, CacheKey pageKey) {
         StringBuilder sqlBuilder = new StringBuilder(sql.length() + 16);

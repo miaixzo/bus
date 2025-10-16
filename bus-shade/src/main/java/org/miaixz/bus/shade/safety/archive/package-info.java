@@ -26,9 +26,6 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 文件加解密器
- *
- * @author Kimi Liu
- * @since Java 17+
+ * Provides classes for file encryption and decryption within archives.
  */
 package org.miaixz.bus.shade.safety.archive;

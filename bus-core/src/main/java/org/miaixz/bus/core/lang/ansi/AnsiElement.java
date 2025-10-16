@@ -28,7 +28,7 @@
 package org.miaixz.bus.core.lang.ansi;
 
 /**
- * ANSI可转义节点接口，实现为ANSI颜色等
+ * Interface for ANSI escapable elements, such as ANSI colors.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -36,14 +36,16 @@ package org.miaixz.bus.core.lang.ansi;
 public interface AnsiElement {
 
     /**
-     * 获取ANSI代码
+     * Retrieves the ANSI code associated with this element.
      *
-     * @return ANSI代码
+     * @return The ANSI code.
      */
     int getCode();
 
     /**
-     * @return ANSI转义编码
+     * Returns the ANSI escape sequence representation of this element.
+     *
+     * @return The ANSI escape sequence.
      */
     @Override
     String toString();

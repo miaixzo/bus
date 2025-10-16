@@ -41,53 +41,59 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * 类型: IO相关异常
+ * Represents an exception related to I/O operations or other relevant system issues.
+ *
+ * @author Kimi Liu
+ * @since Java 17+
  */
 @Getter
 @Setter
 public class RelevantException extends IOException {
 
+    /**
+     * The serialization version identifier.
+     */
     @Serial
     private static final long serialVersionUID = 2852263392627L;
 
     /**
-     * 错误码
+     * The error code associated with this exception.
      */
     protected String errcode;
     /**
-     * 错误信息
+     * The error message associated with this exception.
      */
     protected String errmsg;
 
     /**
-     * 构造
+     * Constructs a new RelevantException with no detail message.
      */
     protected RelevantException() {
         super();
     }
 
     /**
-     * 将抛出对象包裹成运行时异常,并增加自己的描述
+     * Constructs a new RelevantException with the specified cause.
      *
-     * @param cause 抛出对象
+     * @param cause The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
      */
     protected RelevantException(final Throwable cause) {
         super(cause);
     }
 
     /**
-     * 将抛出对象包裹成运行时异常,并增加自己的描述
+     * Constructs a new RelevantException with the specified detail message.
      *
-     * @param errmsg 打印信息
+     * @param errmsg The detail message.
      */
     protected RelevantException(final String errmsg) {
         super(errmsg);
     }
 
     /**
-     * 构造 将抛出对象包裹成运行时异常,并增加自己的描述
+     * Constructs a new RelevantException with the specified error object.
      *
-     * @param errors 错误码对象，包含键和值
+     * @param errors The error object containing error code and message.
      */
     protected RelevantException(final Errors errors) {
         super(errors.getValue());
@@ -96,10 +102,10 @@ public class RelevantException extends IOException {
     }
 
     /**
-     * 构造
+     * Constructs a new RelevantException with the specified error object and detail message.
      *
-     * @param errors 错误码对象，包含键和值
-     * @param errmsg 消息
+     * @param errors The error object containing error code.
+     * @param errmsg The detail message.
      */
     public RelevantException(final Errors errors, String errmsg) {
         super(errmsg);
@@ -108,20 +114,20 @@ public class RelevantException extends IOException {
     }
 
     /**
-     * 将抛出对象包裹成运行时异常,并增加自己的描述
+     * Constructs a new RelevantException with the specified detail message and cause.
      *
-     * @param errmsg 打印信息
-     * @param cause  抛出对象
+     * @param errmsg The detail message.
+     * @param cause  The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
      */
     protected RelevantException(final String errmsg, final Throwable cause) {
         super(errmsg, cause);
     }
 
     /**
-     * 将抛出对象包裹成运行时异常,并增加自己的描述
+     * Constructs a new RelevantException with the specified error code and detail message.
      *
-     * @param errcode 错误编码
-     * @param errmsg  错误提示
+     * @param errcode The error code.
+     * @param errmsg  The detail message.
      */
     protected RelevantException(final String errcode, final String errmsg) {
         super(errmsg);
@@ -130,44 +136,51 @@ public class RelevantException extends IOException {
     }
 
     /**
-     * 根据格式化字符串,生成运行时异常
+     * Constructs a new RelevantException with the specified detail message format and arguments.
      *
-     * @param format 格式
-     * @param args   参数
+     * @param format The format string for the detail message.
+     * @param args   The arguments referenced by the format specifiers in the format string.
      */
     protected RelevantException(final String format, final Object... args) {
         super(String.format(format, args));
     }
 
     /**
-     * 将抛出对象包裹成运行时异常,并增加自己的描述
+     * Constructs a new RelevantException with the specified cause, detail message format, and arguments.
      *
-     * @param e    抛出对象
-     * @param fmt  格式
-     * @param args 参数
+     * @param e    The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
+     * @param fmt  The format string for the detail message.
+     * @param args The arguments referenced by the format specifiers in the format string.
      */
     protected RelevantException(final Throwable e, String fmt, final Object... args) {
         super(String.format(fmt, args), e);
     }
 
     /**
-     * 生成一个未实现的运行时异常
+     * Creates a new RelevantException indicating an unimplemented feature.
      *
-     * @return 一个未实现的运行时异常
+     * @return A new RelevantException instance.
      */
     protected static RelevantException noImplement() {
         return new RelevantException("Not implement yet!");
     }
 
     /**
-     * 生成一个不可能的运行时异常
+     * Creates a new RelevantException indicating an impossible scenario.
      *
-     * @return 一个不可能的运行时异常
+     * @return A new RelevantException instance.
      */
     protected static RelevantException impossible() {
         return new RelevantException("r u kidding me?! It is impossible!");
     }
 
+    /**
+     * Unwraps the given throwable to its root cause if it's an {@link InvocationTargetException} or a
+     * {@link RuntimeException} with a cause.
+     *
+     * @param e The throwable to unwrap.
+     * @return The unwrapped throwable, or null if the input is null.
+     */
     protected static Throwable unwrapThrow(final Throwable e) {
         if (null == e) {
             return null;
@@ -183,6 +196,13 @@ public class RelevantException extends IOException {
         return e;
     }
 
+    /**
+     * Checks if the given throwable or any of its causes is of the specified cause type.
+     *
+     * @param e         The throwable to check.
+     * @param causeType The class of the cause type to look for.
+     * @return True if the throwable or any of its causes is of the specified type, false otherwise.
+     */
     protected static boolean isCauseBy(final Throwable e, final Class<? extends Throwable> causeType) {
         if (e.getClass() == causeType)
             return true;
@@ -208,7 +228,7 @@ public class RelevantException extends IOException {
                 ResourceBundle bundle = ResourceBundle.getBundle(Keys.BUNDLE_NAME, locale);
                 return bundle.getString(this.errcode);
             } catch (Exception e) {
-                // 回退到 ERRORS_CACHE 中注册的错误信息
+                // Fallback to the error message registered in ERRORS_CACHE
                 Errors.Entry entry = Errors.require(this.errcode);
                 return entry != null ? entry.getValue() : this.getMessage();
             }

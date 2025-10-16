@@ -37,17 +37,21 @@ import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.core.xyz.RandomKit;
 
 /**
- * Twitter的Snowflake 算法 分布式系统中，有一些需要使用全局唯一ID的场景，有些时候我们希望能使用一种简单一些的ID，并且希望ID能够按照时间有序生成。 snowflake的结构如下(每部分用-分开):
- * 
+ * Twitter's Snowflake algorithm. In distributed systems, there are scenarios that require globally unique IDs.
+ * Sometimes we want to use a simpler ID, and we want the ID to be generated in chronological order. The structure of a
+ * snowflake ID is as follows (each part is separated by a hyphen):
+ *
  * <pre>
- * 符号位（1bit）- 时间戳相对值（41bit）- 数据中心标志（5bit）- 机器标志（5bit）- 递增序号（12bit）
+ * Sign bit (1bit) - Relative timestamp (41bit) - Data center ID (5bit) - Machine ID (5bit) - Sequence number (12bit)
  * (0) - (0000000000 0000000000 0000000000 0000000000 0) - (00000) - (00000) - (000000000000)
  * </pre>
- * 
- * 第一位为未使用(符号位表示正数)，接下来的41位为毫秒级时间(41位的长度可以使用69年) 然后是5位datacenterId和5位workerId(10位的长度最多支持部署1024个节点）
- * 最后12位是毫秒内的计数（12位的计数顺序号支持每个节点每毫秒产生4096个ID序号） 并且可以通过生成的id反推出生成时间,datacenterId和workerId
- * 参考：http://www.cnblogs.com/relucent/p/4955340.html
- * 关于长度是18还是19的问题见：https://blog.csdn.net/unifirst/article/details/80408050
+ *
+ * The first bit is unused (the sign bit indicates a positive number). The next 41 bits are the timestamp in
+ * milliseconds (41 bits can be used for 69 years). Then there are 5 bits for the datacenterId and 5 bits for the
+ * workerId (10 bits can support up to 1024 nodes). The last 12 bits are a counter within the millisecond (a 12-bit
+ * counter supports 4096 IDs per node per millisecond). The generation time, datacenterId, and workerId can be
+ * reverse-engineered from the generated ID. Reference: http://www.cnblogs.com/relucent/p/4955340.html For the issue of
+ * whether the length is 18 or 19, see: https://blog.csdn.net/unifirst/article/details/80408050
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -58,101 +62,121 @@ public class Snowflake implements Serializable {
     private static final long serialVersionUID = 2852275920328L;
 
     /**
-     * 默认的起始时间，为Thu, 04 Nov 2010 01:42:54 GMT
+     * Default start time: Thu, 04 Nov 2010 01:42:54 GMT
      */
     public static final long DEFAULT_TWEPOCH = 1288834974657L;
     private static final long WORKER_ID_BITS = 5L;
     /**
-     * 最大支持机器节点数0~31，一共32个
+     * Maximum supported machine nodes: 0~31, for a total of 32.
      */
     private static final long MAX_WORKER_ID = ~(-1L << WORKER_ID_BITS);
     private static final long DATA_CENTER_ID_BITS = 5L;
     /**
-     * 最大支持数据中心节点数0~31，一共32个
+     * Maximum supported data center nodes: 0~31, for a total of 32.
      */
     private static final long MAX_DATA_CENTER_ID = ~(-1L << DATA_CENTER_ID_BITS);
     /**
-     * 序列号12位（表示只允许序号的范围为：0-4095）
+     * Sequence number is 12 bits (meaning the sequence can range from 0 to 4095).
      */
     private static final long SEQUENCE_BITS = 12L;
     /**
-     * 机器节点左移12位
+     * Machine node left shift 12 bits.
      */
     private static final long WORKER_ID_SHIFT = SEQUENCE_BITS;
     /**
-     * 数据中心节点左移17位
+     * Data center node left shift 17 bits.
      */
     private static final long DATA_CENTER_ID_SHIFT = SEQUENCE_BITS + WORKER_ID_BITS;
     /**
-     * 时间毫秒数左移22位
+     * Timestamp in milliseconds left shift 22 bits.
      */
     private static final long TIMESTAMP_LEFT_SHIFT = SEQUENCE_BITS + WORKER_ID_BITS + DATA_CENTER_ID_BITS;
     /**
-     * 序列掩码，用于限定序列最大值不能超过4095
+     * Sequence mask, used to limit the maximum sequence value to not exceed 4095.
      */
     private static final long SEQUENCE_MASK = ~(-1L << SEQUENCE_BITS);// 4095
 
     /**
-     * 初始化时间点
+     * The start timestamp.
      */
     private final long twepoch;
+    /**
+     * The worker ID.
+     */
     private final long workerId;
+    /**
+     * The data center ID.
+     */
     private final long dataCenterId;
+    /**
+     * Whether to use the system clock.
+     */
     private final boolean useSystemClock;
     /**
-     * 当在低频模式下时，序号始终为0，导致生成ID始终为偶数 此属性用于限定一个随机上限，在不同毫秒下生成序号时，给定一个随机数，避免偶数问题。
-     * 注意次数必须小于{@link #SEQUENCE_MASK}，{@code 0}表示不使用随机数。 这个上限不包括值本身。
+     * When in low-frequency mode, the sequence number is always 0, causing the generated ID to always be even. This
+     * property is used to limit a random upper bound. When generating a sequence number in a different millisecond, a
+     * random number is given to avoid the even number problem. Note that this number must be less than
+     * {@link #SEQUENCE_MASK}. {@code 0} means no random number is used. This upper bound does not include the value
+     * itself.
      */
     private final long randomSequenceLimit;
 
     /**
-     * 自增序号，当高频模式下时，同一毫秒内生成N个ID，则这个序号在同一毫秒下，自增以避免ID重复。
+     * The sequence number. In high-frequency mode, when N IDs are generated in the same millisecond, this sequence
+     * number is incremented to avoid ID duplication.
      */
     private long sequence = 0L;
+    /**
+     * The last timestamp.
+     */
     private long lastTimestamp = -1L;
 
     /**
-     * 构造，使用自动生成的工作节点ID和数据中心ID
+     * Constructor, uses automatically generated worker ID and data center ID.
      */
     public Snowflake() {
         this(ID.getWorkerId(ID.getDataCenterId(MAX_DATA_CENTER_ID), MAX_WORKER_ID));
     }
 
     /**
-     * 构造
+     * Constructor.
      *
-     * @param workerId 终端ID
+     * @param workerId The worker ID.
      */
     public Snowflake(final long workerId) {
         this(workerId, ID.getDataCenterId(MAX_DATA_CENTER_ID));
     }
 
     /**
-     * 构造
+     * Constructor.
      *
-     * @param workerId     终端ID
-     * @param dataCenterId 数据中心ID
+     * @param workerId     The worker ID.
+     * @param dataCenterId The data center ID.
      */
     public Snowflake(final long workerId, final long dataCenterId) {
         this(workerId, dataCenterId, false);
     }
 
     /**
-     * 构造
+     * Constructor.
      *
-     * @param workerId         终端ID
-     * @param dataCenterId     数据中心ID
-     * @param isUseSystemClock 是否使用{@link NonClock} 获取当前时间戳
+     * @param workerId         The worker ID.
+     * @param dataCenterId     The data center ID.
+     * @param isUseSystemClock Whether to use {@link NonClock} to get the current timestamp.
      */
     public Snowflake(final long workerId, final long dataCenterId, final boolean isUseSystemClock) {
         this(null, workerId, dataCenterId, isUseSystemClock);
     }
 
     /**
-     * @param epochDate        初始化时间起点（null表示默认起始日期）,后期修改会导致id重复,如果要修改连workerId dataCenterId，慎用
-     * @param workerId         工作机器节点id
-     * @param dataCenterId     数据中心id
-     * @param isUseSystemClock 是否使用{@link NonClock} 获取当前时间戳
+     * Constructor.
+     *
+     * @param epochDate        The start date of the epoch (null means the default start date). Modifying this later
+     *                         will cause ID duplication. Use with caution if you also need to modify workerId and
+     *                         dataCenterId.
+     * @param workerId         The worker machine node ID.
+     * @param dataCenterId     The data center ID.
+     * @param isUseSystemClock Whether to use {@link NonClock} to get the current timestamp.
      */
     public Snowflake(final Date epochDate, final long workerId, final long dataCenterId,
             final boolean isUseSystemClock) {
@@ -160,11 +184,17 @@ public class Snowflake implements Serializable {
     }
 
     /**
-     * @param epochDate           初始化时间起点（null表示默认起始日期）,后期修改会导致id重复,如果要修改连workerId dataCenterId，慎用
-     * @param workerId            工作机器节点id
-     * @param dataCenterId        数据中心id
-     * @param isUseSystemClock    是否使用{@link NonClock} 获取当前时间戳
-     * @param randomSequenceLimit 限定一个随机上限，在不同毫秒下生成序号时，给定一个随机数，避免偶数问题，0表示无随机，上限不包括值本身。
+     * Constructor.
+     *
+     * @param epochDate           The start date of the epoch (null means the default start date). Modifying this later
+     *                            will cause ID duplication. Use with caution if you also need to modify workerId and
+     *                            dataCenterId.
+     * @param workerId            The worker machine node ID.
+     * @param dataCenterId        The data center ID.
+     * @param isUseSystemClock    Whether to use {@link NonClock} to get the current timestamp.
+     * @param randomSequenceLimit A random upper limit. When generating a sequence number in a different millisecond, a
+     *                            random number is given to avoid the even number problem. 0 means no random number. The
+     *                            upper limit does not include the value itself.
      */
     public Snowflake(final Date epochDate, final long workerId, final long dataCenterId, final boolean isUseSystemClock,
             final long randomSequenceLimit) {
@@ -176,57 +206,60 @@ public class Snowflake implements Serializable {
     }
 
     /**
-     * 根据Snowflake的ID，获取机器id
+     * Gets the machine ID from a Snowflake ID.
      *
-     * @param id snowflake算法生成的id
-     * @return 所属机器的id
+     * @param id The Snowflake ID.
+     * @return The machine ID.
      */
     public long getWorkerId(final long id) {
         return id >> WORKER_ID_SHIFT & ~(-1L << WORKER_ID_BITS);
     }
 
     /**
-     * 根据Snowflake的ID，获取数据中心id
+     * Gets the data center ID from a Snowflake ID.
      *
-     * @param id snowflake算法生成的id
-     * @return 所属数据中心
+     * @param id The Snowflake ID.
+     * @return The data center ID.
      */
     public long getDataCenterId(final long id) {
         return id >> DATA_CENTER_ID_SHIFT & ~(-1L << DATA_CENTER_ID_BITS);
     }
 
     /**
-     * 根据Snowflake的ID，获取生成时间
+     * Gets the generation time from a Snowflake ID.
      *
-     * @param id snowflake算法生成的id
-     * @return 生成的时间
+     * @param id The Snowflake ID.
+     * @return The generation time.
      */
     public long getGenerateDateTime(final long id) {
         return (id >> TIMESTAMP_LEFT_SHIFT & ~(-1L << 41L)) + twepoch;
     }
 
     /**
-     * 下一个ID
+     * Generates the next ID.
      *
-     * @return ID
+     * @return The next ID.
      */
     public synchronized Long next() {
         long timestamp = genTime();
         if (timestamp < this.lastTimestamp) {
+            // If the clock moves backwards, use the last timestamp.
             timestamp = lastTimestamp;
         }
 
         if (timestamp == this.lastTimestamp) {
-            // 时间出现回拨，递增序号
+            // If the timestamp is the same, increment the sequence.
             final long sequence = (this.sequence + 1) & SEQUENCE_MASK;
             if (sequence == 0) {
-                // 如果序号耗尽，不再等待时间追赶，而是采用“超前消费”方式，让时间递增。
-                // 这样可以避免系统暂停等待，而选择在“未来”ID新增不快时追上来。
+                // If the sequence overflows, instead of waiting for the time to catch up,
+                // we "borrow" from the future by incrementing the timestamp.
+                // This avoids system pauses and allows the ID to catch up when the generation rate slows down.
                 timestamp += 1;
             }
             this.sequence = sequence;
         } else {
-            // 通过随机数避免低频生成ID序号始终为0的问题
+            // Use a random number to avoid the problem of the sequence number always being 0 in low-frequency
+            // generation.
             sequence = randomSequenceLimit > 1 ? RandomKit.randomLong(randomSequenceLimit) : 0L;
         }
 
@@ -237,32 +270,33 @@ public class Snowflake implements Serializable {
     }
 
     /**
-     * 下一个ID（字符串形式）
+     * Generates the next ID as a string.
      *
-     * @return ID 字符串形式
+     * @return The next ID as a string.
      */
     public String nextString() {
         return Long.toString(next());
     }
 
     /**
-     * 根据传入时间戳-计算ID起终点
+     * Calculates the start and end IDs for a given timestamp range.
      *
-     * @param timestampStart 开始时间戳
-     * @param timestampEnd   结束时间戳
-     * @return data-ID起点，Value-ID终点
+     * @param timestampStart The start timestamp.
+     * @param timestampEnd   The end timestamp.
+     * @return A pair containing the start ID and end ID.
      */
     public Pair<Long, Long> getIdScopeByTimestamp(final long timestampStart, final long timestampEnd) {
         return getIdScopeByTimestamp(timestampStart, timestampEnd, true);
     }
 
     /**
-     * 根据传入时间戳-计算ID起终点
+     * Calculates the start and end IDs for a given timestamp range.
      *
-     * @param timestampStart        开始时间戳
-     * @param timestampEnd          结束时间戳
-     * @param ignoreCenterAndWorker 是否忽略数据中心和机器节点的占位，忽略后可获得分布式环境全局可信赖的起终点。
-     * @return data-ID起点，Value-ID终点
+     * @param timestampStart        The start timestamp.
+     * @param timestampEnd          The end timestamp.
+     * @param ignoreCenterAndWorker Whether to ignore the data center and worker node placeholders. If ignored, a
+     *                              globally reliable start and end point can be obtained in a distributed environment.
+     * @return A pair containing the start ID and end ID.
      */
     public Pair<Long, Long> getIdScopeByTimestamp(
             final long timestampStart,
@@ -283,9 +317,9 @@ public class Snowflake implements Serializable {
     }
 
     /**
-     * 生成时间戳
+     * Generates a timestamp.
      *
-     * @return 时间戳
+     * @return The timestamp.
      */
     private long genTime() {
         return this.useSystemClock ? NonClock.now() : System.currentTimeMillis();

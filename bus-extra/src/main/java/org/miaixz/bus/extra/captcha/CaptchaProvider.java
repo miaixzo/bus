@@ -33,7 +33,8 @@ import org.miaixz.bus.core.Provider;
 import org.miaixz.bus.core.lang.EnumValue;
 
 /**
- * 验证码接口，提供验证码对象接口定义
+ * CAPTCHA interface, defining the contract for CAPTCHA objects. Implementations of this interface are responsible for
+ * generating CAPTCHA images and their corresponding text.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -41,29 +42,30 @@ import org.miaixz.bus.core.lang.EnumValue;
 public interface CaptchaProvider extends Provider {
 
     /**
-     * 创建验证码，实现类需同时生成随机验证码字符串和验证码图片
+     * Creates a CAPTCHA. Implementations should generate both a random CAPTCHA string and a CAPTCHA image.
      */
     void create();
 
     /**
-     * 获取验证码的文字内容
+     * Retrieves the text content of the generated CAPTCHA.
      *
-     * @return 验证码文字内容
+     * @return The text content of the CAPTCHA.
      */
     String get();
 
     /**
-     * 验证验证码是否正确，建议忽略大小写
+     * Verifies if the user-provided CAPTCHA input matches the generated CAPTCHA text. It is recommended to perform a
+     * case-insensitive comparison.
      *
-     * @param userInputCode 用户输入的验证码
-     * @return 是否与生成的一直
+     * @param userInputCode The CAPTCHA code entered by the user.
+     * @return {@code true} if the user input matches the generated CAPTCHA, {@code false} otherwise.
      */
     boolean verify(String userInputCode);
 
     /**
-     * 将验证码写出到目标流中
+     * Writes the CAPTCHA image to the target output stream.
      *
-     * @param out 目标流
+     * @param out The target output stream to which the CAPTCHA image will be written.
      */
     void write(OutputStream out);
 

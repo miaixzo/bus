@@ -27,6 +27,14 @@
 */
 package org.miaixz.bus.socket.accord;
 
+import org.miaixz.bus.core.xyz.IoKit;
+import org.miaixz.bus.socket.Context;
+import org.miaixz.bus.socket.Handler;
+import org.miaixz.bus.socket.Message;
+import org.miaixz.bus.socket.Session;
+import org.miaixz.bus.socket.buffer.BufferPagePool;
+import org.miaixz.bus.socket.metric.channel.AsynchronousChannelProvider;
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
@@ -35,21 +43,10 @@ import java.nio.channels.AsynchronousChannelGroup;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-
-import org.miaixz.bus.core.xyz.IoKit;
-import org.miaixz.bus.socket.Context;
-import org.miaixz.bus.socket.Handler;
-import org.miaixz.bus.socket.Message;
-import org.miaixz.bus.socket.Session;
-import org.miaixz.bus.socket.buffer.BufferPagePool;
-import org.miaixz.bus.socket.metric.channels.AsynchronousChannelProvider;
+import java.util.concurrent.*;
 
 /**
- * AIO实现的客户端服务
+ * AIO implementation of a client service.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -57,7 +54,7 @@ import org.miaixz.bus.socket.metric.channels.AsynchronousChannelProvider;
 public class AioClient {
 
     /**
-     * 健康检查
+     * Executor for monitoring connection timeouts.
      */
     private static final ScheduledExecutorService CONNECT_TIMEOUT_EXECUTOR = Executors
             .newSingleThreadScheduledExecutor(r -> {
@@ -66,48 +63,50 @@ public class AioClient {
                 return thread;
             });
     /**
-     * 客户端服务配置 调用AioClient的各setXX()方法，都是为了设置各配置项
+     * Client service configuration. All setXX() methods of AioClient are used to set configuration items.
      */
     private final Context context = new Context();
     /**
-     * 网络连接的会话对象
+     * The session object for the network connection.
      *
      * @see TcpSession
      */
     private TcpSession session;
     /**
-     * IO事件处理线程组 作为客户端，该AsynchronousChannelGroup只需保证2个长度的线程池大小即可满足通信读写所需。
+     * IO event handling thread group. As a client, this AsynchronousChannelGroup only needs a thread pool of size 2 to
+     * meet the communication read and write requirements.
      */
     private AsynchronousChannelGroup asynchronousChannelGroup;
     /**
-     * 绑定本地地址
+     * Binds the local address.
      */
     private SocketAddress localAddress;
     /**
-     * 连接超时时间
+     * Connection timeout in milliseconds.
      */
     private int connectTimeout;
 
     /**
-     * write 内存池
+     * Write buffer pool.
      */
     private BufferPagePool writeBufferPool = null;
     /**
-     * read 内存池
+     * Read buffer pool.
      */
     private BufferPagePool readBufferPool = null;
     /**
-     * 是否开启低内存模式
+     * Whether to enable low memory mode.
      */
     private boolean lowMemory = true;
 
     /**
-     * 当前构造方法设置了启动Aio客户端的必要参数，基本实现开箱即用。
+     * This constructor sets the necessary parameters to start the AioClient, providing an out-of-the-box experience.
      *
-     * @param host    远程服务器地址
-     * @param port    远程服务器端口号
-     * @param message 协议编解码
-     * @param handler 消息处理器
+     * @param <T>     the type of message handled by this client
+     * @param host    the remote server address
+     * @param port    the remote server port
+     * @param message the protocol message codec
+     * @param handler the message handler
      */
     public <T> AioClient(String host, int port, Message<T> message, Handler<T> handler) {
         context.setHost(host);
@@ -117,12 +116,12 @@ public class AioClient {
     }
 
     /**
-     * 采用异步的方式启动客户端
+     * Starts the client asynchronously.
      *
-     * @param attachment 可传入回调方法中的附件对象
-     * @param handler    异步回调
-     * @param <A>        附件对象类型
-     * @throws IOException
+     * @param <A>        the type of the attachment
+     * @param attachment the object to pass to the completion handler
+     * @param handler    the asynchronous completion handler
+     * @throws IOException if an I/O error occurs
      */
     public <A> void start(A attachment, CompletionHandler<Session, ? super A> handler) throws IOException {
         this.asynchronousChannelGroup = new AsynchronousChannelProvider(lowMemory)
@@ -131,13 +130,13 @@ public class AioClient {
     }
 
     /**
-     * 采用异步的方式启动客户端
+     * Starts the client asynchronously with a shared asynchronous channel group.
      *
-     * @param asynchronousChannelGroup 通信线程资源组
-     * @param attachment               可传入回调方法中的附件对象
-     * @param handler                  异步回调
-     * @param <A>                      附件对象类型
-     * @throws IOException
+     * @param <A>                      the type of the attachment
+     * @param asynchronousChannelGroup the shared asynchronous channel group for communication threads
+     * @param attachment               the object to pass to the completion handler
+     * @param handler                  the asynchronous completion handler
+     * @throws IOException if an I/O error occurs
      */
     public <A> void start(
             AsynchronousChannelGroup asynchronousChannelGroup,
@@ -183,7 +182,7 @@ public class AioClient {
                             if (connectedChannel == null) {
                                 throw new RuntimeException("Monitor refuse channel");
                             }
-                            // 连接成功则构造Session对象
+                            // On successful connection, create a Session object
                             session = new TcpSession(connectedChannel, context, writeBufferPool.allocateBufferPage(),
                                     () -> readBufferPool.allocateBufferPage().allocate(context.getReadBufferSize()));
                             handler.completed(session, attachment);
@@ -209,11 +208,13 @@ public class AioClient {
     }
 
     /**
-     * 启动客户端。 在与服务端建立连接期间，该方法处于阻塞状态。直至连接建立成功，或者发生异常。 该start方法支持外部指定AsynchronousChannelGroup，实现多个客户端共享一组线程池资源，有效提升资源利用率。
+     * Starts the client. This method blocks until a connection is established with the server or an exception occurs.
+     * This start method supports an external AsynchronousChannelGroup, allowing multiple clients to share a thread
+     * pool, which improves resource utilization.
      *
-     * @param asynchronousChannelGroup IO事件处理线程组
-     * @return 建立连接后的会话对象
-     * @throws IOException IOException
+     * @param asynchronousChannelGroup the IO event handling thread group
+     * @return the session object after the connection is established
+     * @throws IOException if an I/O error occurs
      * @see AsynchronousSocketChannel#connect(SocketAddress)
      */
     public Session start(AsynchronousChannelGroup asynchronousChannelGroup) throws IOException {
@@ -243,15 +244,21 @@ public class AioClient {
         }
     }
 
+    /**
+     * Gets the current TCP session.
+     *
+     * @return the current {@link TcpSession}
+     */
     public TcpSession getSession() {
         return session;
     }
 
     /**
-     * 启动客户端。 本方法会构建线程数为2的{@code asynchronousChannelGroup}，并通过调用{@link AioClient#start(AsynchronousChannelGroup)}启动服务。
+     * Starts the client. This method creates an {@code asynchronousChannelGroup} with two threads and starts the
+     * service by calling {@link AioClient#start(AsynchronousChannelGroup)}.
      *
-     * @return 建立连接后的会话对象
-     * @throws IOException IOException
+     * @return the session object after the connection is established
+     * @throws IOException if an I/O error occurs
      * @see AioClient#start(AsynchronousChannelGroup)
      */
     public Session start() throws IOException {
@@ -261,31 +268,31 @@ public class AioClient {
     }
 
     /**
-     * 停止客户端服务.
-     * 调用该方法会触发Session的close方法，并且如果当前客户端若是通过执行{@link AioClient#start()}方法构建的，同时会触发asynchronousChannelGroup的shutdown动作。
+     * Stops the client service. Calling this method will trigger the session's close method. If the client was started
+     * using the {@link AioClient#start()} method, it will also trigger the shutdown of the asynchronousChannelGroup.
      */
     public void shutdown() {
         shutdown0(false);
     }
 
     /**
-     * 立即关闭客户端
+     * Shuts down the client immediately.
      */
     public void shutdownNow() {
         shutdown0(true);
     }
 
     /**
-     * 停止client
+     * Stops the client.
      *
-     * @param flag 是否立即停止
+     * @param flag whether to stop immediately
      */
     private synchronized void shutdown0(boolean flag) {
         if (session != null) {
             session.close(flag);
             session = null;
         }
-        // 仅Client内部创建的ChannelGroup需要shutdown
+        // Only shutdown the ChannelGroup created internally by the Client
         if (asynchronousChannelGroup != null) {
             asynchronousChannelGroup.shutdown();
             asynchronousChannelGroup = null;
@@ -293,10 +300,10 @@ public class AioClient {
     }
 
     /**
-     * 设置读缓存区大小
+     * Sets the read buffer size.
      *
-     * @param size 单位：byte
-     * @return 当前AioClient对象
+     * @param size the size in bytes
+     * @return the current AioClient instance
      */
     public AioClient setReadBufferSize(int size) {
         this.context.setReadBufferSize(size);
@@ -304,16 +311,16 @@ public class AioClient {
     }
 
     /**
-     * 设置Socket的TCP参数配置
+     * Sets the TCP socket options.
      * <p>
-     * AIO客户端的有效可选范围为： 1. StandardSocketOptions.SO_SNDBUF 2. StandardSocketOptions.SO_RCVBUF 3.
+     * The valid options for an AIO client are: 1. StandardSocketOptions.SO_SNDBUF 2. StandardSocketOptions.SO_RCVBUF 3.
      * StandardSocketOptions.SO_KEEPALIVE 4. StandardSocketOptions.SO_REUSEADDR 5. StandardSocketOptions.TCP_NODELAY
      * </p>
      *
-     * @param socketOption 配置项
-     * @param value        配置值
-     * @param <V>          泛型
-     * @return 当前客户端实例
+     * @param <V>          the type of the socket option value
+     * @param socketOption the socket option
+     * @param value        the value of the socket option
+     * @return the current client instance
      */
     public <V> AioClient setOption(SocketOption<V> socketOption, V value) {
         context.setOption(socketOption, value);
@@ -321,11 +328,11 @@ public class AioClient {
     }
 
     /**
-     * 绑定本机地址、端口用于连接远程服务
+     * Binds the client to a local address and port for connecting to the remote service.
      *
-     * @param local 若传null则由系统自动获取
-     * @param port  若传0则由系统指定
-     * @return 当前客户端实例
+     * @param local the local address to bind to; if null, the system will pick one
+     * @param port  the local port to bind to; if 0, the system will pick one
+     * @return the current client instance
      */
     public AioClient bindLocal(String local, int port) {
         localAddress = local == null ? new InetSocketAddress(port) : new InetSocketAddress(local, port);
@@ -333,16 +340,24 @@ public class AioClient {
     }
 
     /**
-     * 设置内存池。 通过该方法设置的内存池，在AioClient执行shutdown时不会触发内存池的释放。 该方法适用于多个AioServer、AioClient共享内存池的场景。
-     * <b>在启用内存池的情况下会有更好的性能表现</b>
+     * Sets the buffer pool. The buffer pool set by this method will not be released when the AioClient is shut down.
+     * This method is suitable for scenarios where multiple AioServers and AioClients share a buffer pool. <b>Using a
+     * buffer pool provides better performance.</b>
      *
-     * @param bufferPool 内存池对象
-     * @return 当前客户端实例
+     * @param bufferPool the buffer pool to use
+     * @return the current client instance
      */
     public AioClient setBufferPagePool(BufferPagePool bufferPool) {
         return setBufferPagePool(bufferPool, bufferPool);
     }
 
+    /**
+     * Sets the read and write buffer pools.
+     *
+     * @param readBufferPool  the buffer pool for read operations
+     * @param writeBufferPool the buffer pool for write operations
+     * @return the current client instance
+     */
     public AioClient setBufferPagePool(BufferPagePool readBufferPool, BufferPagePool writeBufferPool) {
         this.writeBufferPool = writeBufferPool;
         this.readBufferPool = readBufferPool;
@@ -350,11 +365,11 @@ public class AioClient {
     }
 
     /**
-     * 设置输出缓冲区容量
+     * Sets the output buffer capacity.
      *
-     * @param bufferSize     单个内存块大小
-     * @param bufferCapacity 内存块数量上限
-     * @return 当前客户端实例
+     * @param bufferSize     the size of a single buffer block
+     * @param bufferCapacity the maximum number of buffer blocks
+     * @return the current client instance
      */
     public AioClient setWriteBuffer(int bufferSize, int bufferCapacity) {
         context.setWriteBufferSize(bufferSize);
@@ -363,10 +378,10 @@ public class AioClient {
     }
 
     /**
-     * 客户端连接超时时间，单位:毫秒
+     * Sets the client connection timeout in milliseconds.
      *
-     * @param timeout 超时时间
-     * @return 当前客户端实例
+     * @param timeout the timeout in milliseconds
+     * @return the current client instance
      */
     public AioClient connectTimeout(int timeout) {
         this.connectTimeout = timeout;
@@ -374,9 +389,9 @@ public class AioClient {
     }
 
     /**
-     * 禁用低代码模式
+     * Disables low memory mode.
      *
-     * @return
+     * @return the current client instance
      */
     public AioClient disableLowMemory() {
         this.lowMemory = false;

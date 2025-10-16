@@ -36,24 +36,42 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 /**
- * Excel兼容的ZIP64 OutputStream实现 来自并见： https://github.com/rzymek/opczip
+ * Excel compatible ZIP64 OutputStream implementation. Based on: https://github.com/rzymek/opczip
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class OpcZipOutputStream extends ZipOutputStream {
 
+    /**
+     * The Zip64 specification handler.
+     */
     private final Zip64 spec;
+    /**
+     * List of Zip64 entries.
+     */
     private final List<Zip64.Entry> entries = new ArrayList<>();
+    /**
+     * CRC32 checksum calculator.
+     */
     private final CRC32 crc = new CRC32();
+    /**
+     * The current Zip64 entry being processed.
+     */
     private Zip64.Entry current;
+    /**
+     * The total number of bytes written to the output stream.
+     */
     private int written = 0;
+    /**
+     * Flag indicating whether the output stream has been finished.
+     */
     private boolean finished = false;
 
     /**
-     * 构造
+     * Constructs a new OpcZipOutputStream.
      *
-     * @param out 写出压缩数据额输出流
+     * @param out The output stream to which compressed data will be written.
      */
     public OpcZipOutputStream(final OutputStream out) {
         super(out);
@@ -109,7 +127,14 @@ public class OpcZipOutputStream extends ZipOutputStream {
     }
 
     /**
-     * @see ZipOutputStream#write(byte[], int, int)
+     * Writes an array of bytes to the current ZIP entry.
+     *
+     * @param b   The data to be written.
+     * @param off The start offset in the data.
+     * @param len The number of bytes to write.
+     * @throws IOException               If an I/O error occurs.
+     * @throws IndexOutOfBoundsException If {@code off} is negative, {@code len} is negative, or {@code off + len} is
+     *                                   greater than the length of the array {@code b}.
      */
     @Override
     public synchronized void write(final byte[] b, final int off, final int len) throws IOException {

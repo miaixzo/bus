@@ -33,12 +33,14 @@ import java.util.Comparator;
 import java.util.Objects;
 
 /**
- * {@code null}友好的比较器包装，如果nullGreater，则{@code null} &gt; non-null，否则反之。 如果二者皆为{@code null}，则为相等，返回0。
- * 如果二者都非{@code null}，则使用传入的比较器排序。
- * 传入比较器为{@code null}，则看被比较的两个对象是否都实现了{@link Comparable}实现则调用{@link Comparable#compareTo(Object)}。
- * 如果两者至少一个未实现，则视为所有元素相等。
+ * A {@code null}-friendly comparator that wraps another comparator. If {@code nullGreater} is true, {@code null} is
+ * considered greater than non-null values; otherwise, it's the reverse. If both objects are {@code null}, they are
+ * considered equal (returns 0). If both objects are non-null, the wrapped comparator is used for sorting. If the
+ * wrapped comparator is {@code null}, this comparator checks if both objects implement {@link Comparable}. If they do,
+ * their {@link Comparable#compareTo(Object)} method is invoked. If at least one of them does not implement
+ * {@link Comparable}, they are considered equal.
  *
- * @param <T> 被比较的对象
+ * @param <T> the type of objects to be compared.
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -48,19 +50,19 @@ public class NullCompare<T> implements Comparator<T>, Serializable {
     private static final long serialVersionUID = 2852262152885L;
 
     /**
-     * 是否{@code null}最大，排在最后
+     * Indicates whether {@code null} is considered greater than non-null values.
      */
     protected final boolean nullGreater;
     /**
-     * 实际比较器
+     * The actual comparator to use for non-null objects.
      */
     protected final Comparator<T> comparator;
 
     /**
-     * 构造
+     * Constructs a new {@code NullCompare}.
      *
-     * @param nullGreater 是否{@code null}最大，排在最后
-     * @param comparator  实际比较器
+     * @param nullGreater {@code true} if {@code null} should be treated as the greatest value, {@code false} otherwise.
+     * @param comparator  the comparator to use for non-null objects. Can be {@code null}.
      */
     public NullCompare(final boolean nullGreater, final Comparator<? super T> comparator) {
         this.nullGreater = nullGreater;
@@ -88,11 +90,13 @@ public class NullCompare<T> implements Comparator<T>, Serializable {
     }
 
     /**
-     * 不检查{@code null}的比较方法 用户可自行重写此方法自定义比较方式
+     * A comparison method that does not check for {@code null} values. Users can override this method to customize the
+     * comparison logic.
      *
-     * @param a A值
-     * @param b B值
-     * @return 比较结果，-1:a小于b，0:相等，1:a大于b
+     * @param a the first object to be compared.
+     * @param b the second object to be compared.
+     * @return a negative integer, zero, or a positive integer as the first argument is less than, equal to, or greater
+     *         than the second.
      */
     protected int doCompare(final T a, final T b) {
         if (null == comparator) {

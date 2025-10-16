@@ -31,13 +31,20 @@ import org.apache.commons.compress.archivers.jar.JarArchiveEntry;
 import org.miaixz.bus.shade.safety.Complex;
 
 /**
- * Spring-Boot 所有资源加密规则
+ * A {@link Complex} implementation for Spring Boot JAR entries that always returns {@code true}. This effectively means
+ * that all resources within the JAR are subject to the associated operation (e.g., encryption).
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class JarAllComplex implements Complex<JarArchiveEntry> {
 
+    /**
+     * Always returns {@code true}, indicating that the given JAR archive entry should be processed.
+     *
+     * @param entry The {@link JarArchiveEntry} to check.
+     * @return Always {@code true}.
+     */
     @Override
     public boolean on(JarArchiveEntry entry) {
         return true;

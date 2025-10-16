@@ -40,20 +40,23 @@ import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.core.xyz.NetKit;
 
 /**
- * IPv6工具类
+ * A utility class for IPv6 addresses.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class IPv6 {
 
+    /**
+     * Cached local hostname.
+     */
     private static volatile String localhostName;
 
     /**
-     * 将IPv6地址字符串转为大整数
+     * Converts an IPv6 address string to a {@link BigInteger}.
      *
-     * @param ipv6Str 字符串
-     * @return 大整数, 如发生异常返回 null
+     * @param ipv6Str The IPv6 address string.
+     * @return The {@link BigInteger} representation, or null on failure.
      */
     public static BigInteger ipv6ToBigInteger(final String ipv6Str) {
         try {
@@ -62,65 +65,64 @@ public class IPv6 {
                 return new BigInteger(1, address.getAddress());
             }
         } catch (final UnknownHostException ignore) {
+            // Ignore invalid address format
         }
         return null;
     }
 
     /**
-     * 将大整数转换成ipv6字符串
+     * Converts a {@link BigInteger} to an IPv6 address string.
      *
-     * @param bigInteger 大整数
-     * @return IPv6字符串, 如发生异常返回 null
+     * @param bigInteger The big integer representing an IPv6 address.
+     * @return The IPv6 address string, or null on failure.
      */
     public static String bigIntegerToIPv6(final BigInteger bigInteger) {
-        // 确保 BigInteger 在 IPv6 地址范围内
         if (bigInteger.compareTo(BigInteger.ZERO) < 0
                 || bigInteger.compareTo(new BigInteger("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF", 16)) > 0) {
             throw new IllegalArgumentException("BigInteger value is out of IPv6 range");
         }
 
-        // 将 BigInteger 转换为 16 字节的字节数组
         byte[] bytes = bigInteger.toByteArray();
         if (bytes.length > 16) {
-            // 如果字节数组长度大于 16，去掉前导零
+            // If the byte array is longer than 16, remove leading zeros.
             final int offset = bytes[0] == 0 ? 1 : 0;
             final byte[] newBytes = new byte[16];
             System.arraycopy(bytes, offset, newBytes, 0, 16);
             bytes = newBytes;
         } else if (bytes.length < 16) {
-            // 如果字节数组长度小于 16，前面补零
+            // If the byte array is shorter than 16, pad with leading zeros.
             final byte[] paddedBytes = new byte[16];
             System.arraycopy(bytes, 0, paddedBytes, 16 - bytes.length, bytes.length);
             bytes = paddedBytes;
         }
 
-        // 将字节数组转换为 IPv6 地址字符串
         try {
             return Inet6Address.getByAddress(bytes).getHostAddress();
         } catch (final UnknownHostException e) {
+            // This should not happen with a 16-byte array.
             return null;
         }
     }
 
     /**
-     * 获得本机的IPv6地址列表 返回的IP列表有序，按照系统设备顺序
+     * Gets a list of all IPv6 addresses for the local machine, ordered by network interface.
      *
-     * @return IP地址列表 {@link LinkedHashSet}
+     * @return A {@link LinkedHashSet} of IP address strings.
      */
     public static LinkedHashSet<String> localIps() {
         final LinkedHashSet<InetAddress> localAddressList = NetKit.localAddressList(t -> t instanceof Inet6Address);
-
         return NetKit.toIpList(localAddressList);
     }
 
     /**
-     * 获取主机名称，一次获取会缓存名称 注意此方法会触发反向DNS解析，导致阻塞，阻塞时间取决于网络！
+     * Gets the cached hostname of the local machine. Note: This method can trigger a reverse DNS lookup, which may
+     * cause a delay depending on network conditions.
      *
-     * @return 主机名称
+     * @return The hostname.
      */
     public static String getLocalHostName() {
         if (null == localhostName) {
-            synchronized (IPv4.class) {
+            synchronized (IPv6.class) {
                 if (null == localhostName) {
                     localhostName = NetKit.getAddressName(getLocalhostDirectly());
                 }
@@ -130,70 +132,50 @@ public class IPv6 {
     }
 
     /**
-     * 获得本机MAC地址，默认使用获取到的IPv6本地地址对应网卡
+     * Gets the MAC address of the network interface associated with the default local IPv6 address.
      *
-     * @return 本机MAC地址
+     * @return The MAC address string.
      */
     public static String getLocalMacAddress() {
         return NetKit.getMacAddress(getLocalhost());
     }
 
     /**
-     * 获得本机物理地址（IPv6网卡）
+     * Gets the hardware address (MAC address as a byte array) of the network interface associated with the default
+     * local IPv6 address.
      *
-     * @return 本机物理地址
+     * @return The hardware address as a byte array.
      */
     public static byte[] getLocalHardwareAddress() {
         return NetKit.getHardwareAddress(getLocalhost());
     }
 
     /**
-     * 获取本机网卡IPv6地址，规则如下：
+     * Gets the preferred non-loopback, non-site-local IPv6 address for the local machine. The result is cached for
+     * subsequent calls.
      *
-     * <ul>
-     * <li>必须非回路（loopback）地址、非局域网地址（siteLocal）、IPv6地址</li>
-     * <li>多网卡则返回第一个满足条件的地址</li>
-     * <li>如果无满足要求的地址，调用 {@link InetAddress#getLocalHost()} 获取地址</li>
-     * </ul>
-     *
-     * <p>
-     * 此方法不会抛出异常，获取失败将返回{@code null}
-     * </p>
-     *
-     * @return 本机网卡IP地址，获取失败返回{@code null}
+     * @return The local {@link InetAddress}, or {@code null} if not found.
      */
     public static InetAddress getLocalhost() {
         return Instances.get(IPv6.class.getName(), IPv6::getLocalhostDirectly);
     }
 
     /**
-     * 获取本机网卡IPv6地址，不使用缓存，规则如下：
+     * Gets the preferred non-loopback, non-site-local IPv6 address for the local machine without using a cache.
      *
-     * <ul>
-     * <li>必须非回路（loopback）地址、非局域网地址（siteLocal）、IPv6地址</li>
-     * <li>多网卡则返回第一个满足条件的地址</li>
-     * <li>如果无满足要求的地址，调用 {@link InetAddress#getLocalHost()} 获取地址</li>
-     * </ul>
-     *
-     * <p>
-     * 此方法不会抛出异常，获取失败将返回{@code null}
-     * </p>
-     *
-     * @return 本机网卡IP地址，获取失败返回{@code null}
+     * @return The local {@link InetAddress}, or {@code null} if not found.
      */
     public static InetAddress getLocalhostDirectly() {
-        final LinkedHashSet<InetAddress> localAddressList = NetKit.localAddressList(address ->
-        // 需为IPV6地址
-        address instanceof Inet6Address
-                // 非loopback地址，::1
-                && !address.isLoopbackAddress()
-                // 非地区本地地址，fec0::/10
-                && !address.isSiteLocalAddress()
-                // 非链路本地地址，fe80::/10
-                && !address.isLinkLocalAddress());
+        final LinkedHashSet<InetAddress> localAddressList = NetKit.localAddressList(
+                address -> address instanceof Inet6Address && !address.isLoopbackAddress() // Exclude
+                                                                                           // loopback
+                                                                                           // address
+                                                                                           // (::1)
+                        && !address.isSiteLocalAddress() // Exclude site-local address (fec0::/10)
+                        && !address.isLinkLocalAddress() // Exclude link-local address (fe80::/10)
+        );
 
         if (CollKit.isNotEmpty(localAddressList)) {
-            // 如果存在多网卡，返回首个地址
             return CollKit.getFirst(localAddressList);
         }
 
@@ -203,25 +185,21 @@ public class IPv6 {
                 return localHost;
             }
         } catch (final UnknownHostException e) {
-            // ignore
+            // Ignore and return null
         }
-
         return null;
     }
 
     /**
-     * 规范IPv6地址，转换scope名称为scope data，如：
+     * Normalizes an IPv6 address by replacing the scope name (e.g., {@code %en0}) with its numeric scope ID (e.g.,
+     * {@code %5}).
      * 
      * <pre>
-     *     fe80:0:0:0:894:aeec:f37d:23e1%en0
-     *                   |
-     *     fe80:0:0:0:894:aeec:f37d:23e1%5
+     * fe80:0:0:0:894:aeec:f37d:23e1%en0  ->  fe80:0:0:0:894:aeec:f37d:23e1%5
      * </pre>
-     * 
-     * 地址后的“%5” 叫做 scope data.
      *
-     * @param address IPv6地址
-     * @return 规范之后的IPv6地址，使用scope data
+     * @param address The IPv6 address to normalize.
+     * @return The normalized IPv6 address.
      */
     public static InetAddress normalizeV6Address(final Inet6Address address) {
         final String addr = address.getHostAddress();

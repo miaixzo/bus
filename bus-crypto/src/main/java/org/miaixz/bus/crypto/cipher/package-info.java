@@ -26,7 +26,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * cipher相关封装
+ * Provides classes related to cryptographic cipher implementations. This package contains wrappers and utilities for
+ * various cipher engines, including those from JCE (Java Cryptography Extension) and Bouncy Castle.
  *
  * @author Kimi Liu
  * @since Java 17+

@@ -30,7 +30,8 @@ package org.miaixz.bus.cron.listener;
 import org.miaixz.bus.cron.Executor;
 
 /**
- * 定时任务监听接口 通过实现此接口，实现对定时任务的各个环节做监听
+ * An interface for listening to cron task execution events. By implementing this interface, you can monitor various
+ * stages of a task's lifecycle.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,24 +39,24 @@ import org.miaixz.bus.cron.Executor;
 public interface TaskListener {
 
     /**
-     * 定时任务启动时触发
+     * Triggered when a task is about to start.
      *
-     * @param executor {@link Executor}
+     * @param executor The {@link Executor} for the task that is starting.
      */
     void onStart(Executor executor);
 
     /**
-     * 任务成功结束时触发
+     * Triggered when a task has completed successfully.
      *
-     * @param executor {@link Executor}
+     * @param executor The {@link Executor} for the task that has succeeded.
      */
     void onSucceeded(Executor executor);
 
     /**
-     * 任务启动失败时触发
+     * Triggered when a task fails to execute.
      *
-     * @param executor  {@link Executor}
-     * @param exception 异常
+     * @param executor  The {@link Executor} for the task that has failed.
+     * @param exception The exception that caused the failure.
      */
     void onFailed(Executor executor, Throwable exception);
 

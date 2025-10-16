@@ -27,7 +27,9 @@
 */
 
 /**
- * JMS(Java Message Service)消息队列引擎
+ * Provides the Java Message Service (JMS) implementation for the Message Queue (MQ) engine. This package contains
+ * classes that enable integration with JMS-compliant message brokers, offering functionalities for sending and
+ * receiving messages using JMS APIs.
  *
  * @author Kimi Liu
  * @since Java 17+

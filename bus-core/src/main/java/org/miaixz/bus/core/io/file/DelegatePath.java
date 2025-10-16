@@ -27,16 +27,13 @@
 */
 package org.miaixz.bus.core.io.file;
 
-import org.miaixz.bus.core.io.resource.Resource;
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.lang.wrapper.SimpleWrapper;
-
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.*;
+import java.nio.file.FileSystem;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileAttribute;
 import java.util.Iterator;
@@ -44,14 +41,20 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.function.Predicate;
 
+import org.miaixz.bus.core.io.resource.Resource;
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.lang.wrapper.SimpleWrapper;
+
 /**
- * 代理路径类，实现Path接口，用于代理一个实际的Path对象，并提供对Files类功能的访问。
+ * Delegate Path class, implementing the {@link Path} interface, used to wrap an actual {@link Path} object and provide
+ * convenient access to {@link Files} class functionalities.
  * <p>
- * 该类包装了一个Path对象，并提供了与Path接口相同的所有方法，同时添加了许多便捷方法来访问Files类的功能。 所有方法调用都会被委托给内部的Path对象，而返回的Path对象会被包装为DelegatePath实例。
- * </p>
+ * This class wraps a {@link Path} object and provides all methods identical to the {@link Path} interface, while also
+ * adding many convenience methods to access functionalities of the {@link Files} class. All method calls are delegated
+ * to the internal {@link Path} object, and returned {@link Path} objects are wrapped as {@code DelegatePath} instances.
  * <p>
- * 该类还实现了Resource接口，使其可以作为资源对象使用，提供了读取文件内容、获取流等便捷方法。
- * </p>
+ * This class also implements the {@link Resource} interface, allowing it to be used as a resource object, providing
+ * convenient methods for reading file content, obtaining streams, and more.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -59,33 +62,34 @@ import java.util.function.Predicate;
 public class DelegatePath extends SimpleWrapper<Path> implements Path, Resource {
 
     /**
-     * 构造一个代理路径。
+     * Constructs a new {@code DelegatePath} instance from a sequence of path name elements.
      *
-     * @param first 路径的第一个元素，不能为null
-     * @param more  更多路径元素，可以为null
-     * @throws IllegalArgumentException 如果first为null
+     * @param first The first path element. Must not be {@code null}.
+     * @param more  Additional path elements. Can be {@code null} or empty.
+     * @throws IllegalArgumentException If {@code first} is {@code null}.
      */
     public DelegatePath(final String first, final String... more) {
         this(Paths.get(first, more));
     }
 
     /**
-     * 构造一个代理路径。
+     * Constructs a new {@code DelegatePath} instance from a {@link URI}.
      *
-     * @param uri URI路径，不能为null
-     * @throws IllegalArgumentException    如果uri为null
-     * @throws FileSystemNotFoundException 如果uri标识的文件系统不存在
-     * @throws SecurityException           如果安全管理器拒绝访问文件系统
+     * @param uri The {@link URI} to convert to a {@link Path}. Must not be {@code null}.
+     * @throws IllegalArgumentException    If {@code uri} is {@code null}.
+     * @throws FileSystemNotFoundException If the file system identified by the {@code uri} does not exist.
+     * @throws SecurityException           If a security manager exists and its {@code checkRead} method denies access
+     *                                     to the file system.
      */
     public DelegatePath(final URI uri) {
         this(Paths.get(uri));
     }
 
     /**
-     * 构造一个代理路径。
+     * Constructs a new {@code DelegatePath} instance by wrapping an existing {@link Path} object.
      *
-     * @param path 被代理的路径对象，不能为null
-     * @throws IllegalArgumentException 如果path为null
+     * @param path The {@link Path} object to be wrapped. Must not be {@code null}.
+     * @throws IllegalArgumentException If {@code path} is {@code null}.
      */
     public DelegatePath(final Path path) {
         super(path);
@@ -95,18 +99,18 @@ public class DelegatePath extends SimpleWrapper<Path> implements Path, Resource 
     }
 
     /**
-     * 获取被代理的路径对象。
+     * Returns the raw, unwrapped {@link Path} object that this {@code DelegatePath} is wrapping.
      *
-     * @return 被代理的路径对象
+     * @return The underlying {@link Path} object.
      */
     public Path getRawPath() {
         return this.raw;
     }
 
     /**
-     * 返回创建此路径的文件系统。
+     * Returns the file system that created this path.
      *
-     * @return 创建此路径的文件系统
+     * @return The file system that created this path.
      */
     @Override
     public FileSystem getFileSystem() {
@@ -114,9 +118,9 @@ public class DelegatePath extends SimpleWrapper<Path> implements Path, Resource 
     }
 
     /**
-     * 测试此路径是否为绝对路径。
+     * Tests if this path is absolute.
      *
-     * @return 如果此路径是绝对路径则返回true，否则返回false
+     * @return {@code true} if this path is absolute; {@code false} otherwise.
      */
     @Override
     public boolean isAbsolute() {
@@ -124,9 +128,9 @@ public class DelegatePath extends SimpleWrapper<Path> implements Path, Resource 
     }
 
     /**
-     * 返回此路径的根组件，如果此路径没有根组件则返回null。
+     * Returns the root component of this path, or {@code null} if this path does not have a root component.
      *
-     * @return 表示此路径根组件的路径，如果没有根组件则返回null
+     * @return A {@code DelegatePath} object representing the root component of this path, or {@code null}.
      */
     @Override
     public Path getRoot() {
@@ -135,9 +139,10 @@ public class DelegatePath extends SimpleWrapper<Path> implements Path, Resource 
     }
 
     /**
-     * 返回此路径的文件名组件，如果此路径没有文件名组件则返回null。
+     * Returns the name of the file or directory denoted by this path. The file name is the farthest element from the
+     * root in the directory hierarchy.
      *
-     * @return 表示此路径文件名组件的路径，如果没有文件名组件则返回null
+     * @return A {@code DelegatePath} object representing the file name, or {@code null} if this path has zero elements.
      */
     @Override
     public Path getFileName() {
@@ -146,9 +151,10 @@ public class DelegatePath extends SimpleWrapper<Path> implements Path, Resource 
     }
 
     /**
-     * 返回此路径的父路径，如果此路径没有父路径则返回null。
+     * Returns the parent path, or {@code null} if this path has no parent. The parent path consists of this path's root
+     * component, if any, and each element in the path except for the farthest element from the root.
      *
-     * @return 表示此路径父路径的路径，如果没有父路径则返回null
+     * @return A {@code DelegatePath} object representing the parent path, or {@code null}.
      */
     @Override
     public Path getParent() {
@@ -157,9 +163,9 @@ public class DelegatePath extends SimpleWrapper<Path> implements Path, Resource 
     }
 
     /**
-     * 返回路径中的名称元素数量。
+     * Returns the number of name elements in the path.
      *
-     * @return 路径中的元素数量，如果路径为空则返回0
+     * @return The number of elements in the path. An empty path has zero elements.
      */
     @Override
     public int getNameCount() {
@@ -167,11 +173,12 @@ public class DelegatePath extends SimpleWrapper<Path> implements Path, Resource 
     }
 
     /**
-     * 返回指定索引处的名称元素。
+     * Returns a name element of this path as a {@code DelegatePath} object.
      *
-     * @param index 名称元素的索引
-     * @return 名称元素
-     * @throws IllegalArgumentException 如果index为负数或大于等于名称元素数量
+     * @param index The index of the element.
+     * @return A {@code DelegatePath} object representing the name element.
+     * @throws IllegalArgumentException If {@code index} is negative, or greater than or equal to the number of
+     *                                  elements.
      */
     @Override
     public Path getName(final int index) {
@@ -179,12 +186,14 @@ public class DelegatePath extends SimpleWrapper<Path> implements Path, Resource 
     }
 
     /**
-     * 返回此路径的子路径，它是从beginIndex到endIndex-1的名称元素的序列。
+     * Returns a relative {@code DelegatePath} that is a subsequence of the name elements of this path.
      *
-     * @param beginIndex 第一个元素的索引（包含）
-     * @param endIndex   最后一个元素的索引（不包含）
-     * @return 新的子路径
-     * @throws IllegalArgumentException 如果beginIndex或endIndex为负数、beginIndex大于等于endIndex或endIndex大于名称元素数量
+     * @param beginIndex The index of the first element, inclusive.
+     * @param endIndex   The index of the last element, exclusive.
+     * @return A new {@code DelegatePath} object that is a subsequence of the name elements of this path.
+     * @throws IllegalArgumentException If {@code beginIndex} or {@code endIndex} are negative, or {@code beginIndex} is
+     *                                  greater than or equal to {@code endIndex}, or {@code endIndex} is greater than
+     *                                  the number of elements.
      */
     @Override
     public Path subpath(final int beginIndex, final int endIndex) {
@@ -192,10 +201,10 @@ public class DelegatePath extends SimpleWrapper<Path> implements Path, Resource 
     }
 
     /**
-     * 测试此路径是否以给定路径开头。
+     * Tests if this path starts with the given path.
      *
-     * @param other 要测试的路径
-     * @return 如果此路径以给定路径开头则返回true，否则返回false
+     * @param other The path to test against.
+     * @return {@code true} if this path starts with the given path; {@code false} otherwise.
      */
     @Override
     public boolean startsWith(final Path other) {
@@ -206,10 +215,10 @@ public class DelegatePath extends SimpleWrapper<Path> implements Path, Resource 
     }
 
     /**
-     * 测试此路径是否以给定路径字符串开头。
+     * Tests if this path starts with the given path string.
      *
-     * @param other 要测试的路径字符串
-     * @return 如果此路径以给定路径字符串开头则返回true，否则返回false
+     * @param other The path string to test against.
+     * @return {@code true} if this path starts with the given path string; {@code false} otherwise.
      */
     @Override
     public boolean startsWith(final String other) {
@@ -217,10 +226,10 @@ public class DelegatePath extends SimpleWrapper<Path> implements Path, Resource 
     }
 
     /**
-     * 测试此路径是否以给定路径结尾。
+     * Tests if this path ends with the given path.
      *
-     * @param other 要测试的路径
-     * @return 如果此路径以给定路径结尾则返回true，否则返回false
+     * @param other The path to test against.
+     * @return {@code true} if this path ends with the given path; {@code false} otherwise.
      */
     @Override
     public boolean endsWith(final Path other) {
@@ -231,10 +240,10 @@ public class DelegatePath extends SimpleWrapper<Path> implements Path, Resource 
     }
 
     /**
-     * 测试此路径是否以给定路径字符串结尾。
+     * Tests if this path ends with the given path string.
      *
-     * @param other 要测试的路径字符串
-     * @return 如果此路径以给定路径字符串结尾则返回true，否则返回false
+     * @param other The path string to test against.
+     * @return {@code true} if this path ends with the given path string; {@code false} otherwise.
      */
     @Override
     public boolean endsWith(final String other) {
@@ -242,9 +251,9 @@ public class DelegatePath extends SimpleWrapper<Path> implements Path, Resource 
     }
 
     /**
-     * 返回此路径的规范化形式。
+     * Returns a path that is this path with redundant name elements eliminated.
      *
-     * @return 规范化路径
+     * @return A {@code DelegatePath} object representing the normalized path.
      */
     @Override
     public Path normalize() {
@@ -252,10 +261,12 @@ public class DelegatePath extends SimpleWrapper<Path> implements Path, Resource 
     }
 
     /**
-     * 根据此路径解析给定路径。
+     * Resolves the given path against this path. If the {@code other} path is absolute, then this method returns
+     * {@code other}. If {@code other} is an empty path then this method returns this path. Otherwise this method
+     * considers this path to be a directory and resolves the {@code other} path against this path.
      *
-     * @param other 要解析的路径
-     * @return 结果路径
+     * @param other The path to resolve against this path.
+     * @return The resulting {@code DelegatePath} object.
      */
     @Override
     public Path resolve(final Path other) {
@@ -266,10 +277,11 @@ public class DelegatePath extends SimpleWrapper<Path> implements Path, Resource 
     }
 
     /**
-     * 根据此路径解析给定路径字符串。
+     * Resolves the given path string against this path. This method works in the same manner as {@link #resolve(Path)}
+     * except that it converts the given path string to a path.
      *
-     * @param other 要解析的路径字符串
-     * @return 结果路径
+     * @param other The path string to resolve against this path.
+     * @return The resulting {@code DelegatePath} object.
      */
     @Override
     public Path resolve(final String other) {
@@ -277,10 +289,11 @@ public class DelegatePath extends SimpleWrapper<Path> implements Path, Resource 
     }
 
     /**
-     * 根据此路径的父路径解析给定路径。
+     * Resolves the given path against this path's parent path. This is useful where a file in a directory needs to be
+     * replaced with another file.
      *
-     * @param other 要解析的路径
-     * @return 结果路径
+     * @param other The path to resolve against this path's parent.
+     * @return The resulting {@code DelegatePath} object.
      */
     @Override
     public Path resolveSibling(final Path other) {
@@ -291,10 +304,11 @@ public class DelegatePath extends SimpleWrapper<Path> implements Path, Resource 
     }
 
     /**
-     * 根据此路径的父路径解析给定路径字符串。
+     * Resolves the given path string against this path's parent path. This method works in the same manner as
+     * {@link #resolveSibling(Path)} except that it converts the given path string to a path.
      *
-     * @param other 要解析的路径字符串
-     * @return 结果路径
+     * @param other The path string to resolve against this path's parent.
+     * @return The resulting {@code DelegatePath} object.
      */
     @Override
     public Path resolveSibling(final String other) {
@@ -302,10 +316,11 @@ public class DelegatePath extends SimpleWrapper<Path> implements Path, Resource 
     }
 
     /**
-     * 构造此路径与给定路径之间的相对路径。
+     * Constructs a relative path between this path and a given path.
      *
-     * @param other 要相对化的路径
-     * @return 相对路径
+     * @param other The path to relativize against this path.
+     * @return The resulting relative {@code DelegatePath} object.
+     * @throws IllegalArgumentException If {@code other} is not an instance of {@code DelegatePath}.
      */
     @Override
     public Path relativize(final Path other) {
@@ -316,10 +331,10 @@ public class DelegatePath extends SimpleWrapper<Path> implements Path, Resource 
     }
 
     /**
-     * 返回表示此路径的URI。
+     * Returns a {@link URI} to represent this path.
      *
-     * @return 表示此路径的URI
-     * @throws IOError 如果在获取URI时发生I/O错误
+     * @return A {@link URI} that represents this path.
+     * @throws IOError If an I/O error occurs when constructing the URI.
      */
     @Override
     public URI toUri() {
@@ -327,10 +342,10 @@ public class DelegatePath extends SimpleWrapper<Path> implements Path, Resource 
     }
 
     /**
-     * 返回此路径的绝对路径。
+     * Returns a {@code DelegatePath} object representing the absolute path of this path.
      *
-     * @return 表示此路径的绝对路径
-     * @throws IOError 如果在获取绝对路径时发生I/O错误
+     * @return A {@code DelegatePath} object representing the absolute path.
+     * @throws IOError If an I/O error occurs when constructing the absolute path.
      */
     @Override
     public Path toAbsolutePath() {
@@ -338,11 +353,12 @@ public class DelegatePath extends SimpleWrapper<Path> implements Path, Resource 
     }
 
     /**
-     * 返回此路径的实际路径。
+     * Returns the real path of an existing file. This method resolves any symbolic links, and if the path is relative,
+     * it is resolved against the current working directory.
      *
-     * @param options 链接选项，指示如何处理符号链接
-     * @return 表示此路径的实际路径
-     * @throws IOException 如果发生I/O错误
+     * @param options Options indicating how symbolic links are handled.
+     * @return A {@code DelegatePath} object representing the real path.
+     * @throws IOException If an I/O error occurs.
      */
     @Override
     public Path toRealPath(final LinkOption... options) throws IOException {
@@ -350,9 +366,9 @@ public class DelegatePath extends SimpleWrapper<Path> implements Path, Resource 
     }
 
     /**
-     * 返回表示此路径的File对象。
+     * Returns a {@link File} object representing this path.
      *
-     * @return 表示此路径的File对象
+     * @return A {@link File} object representing this path.
      */
     @Override
     public File toFile() {
@@ -360,13 +376,13 @@ public class DelegatePath extends SimpleWrapper<Path> implements Path, Resource 
     }
 
     /**
-     * 使用监视服务注册此路径。
+     * Registers the file denoted by this path with a watch service.
      *
-     * @param watcher   监视服务
-     * @param events    要监视的事件
-     * @param modifiers 监视修饰符
-     * @return 表示此路径注册的监视键
-     * @throws IOException 如果发生I/O错误
+     * @param watcher   The watch service to which this path is to be registered.
+     * @param events    The events for which the path should be watched.
+     * @param modifiers Modifiers to the watch event.
+     * @return A {@link WatchKey} representing the registration of this path with the watch service.
+     * @throws IOException If an I/O error occurs.
      */
     @Override
     public WatchKey register(
@@ -377,12 +393,12 @@ public class DelegatePath extends SimpleWrapper<Path> implements Path, Resource 
     }
 
     /**
-     * 使用监视服务注册此路径。
+     * Registers the file denoted by this path with a watch service.
      *
-     * @param watcher 监视服务
-     * @param events  要监视的事件
-     * @return 表示此路径注册的监视键
-     * @throws IOException 如果发生I/O错误
+     * @param watcher The watch service to which this path is to be registered.
+     * @param events  The events for which the path should be watched.
+     * @return A {@link WatchKey} representing the registration of this path with the watch service.
+     * @throws IOException If an I/O error occurs.
      */
     @Override
     public WatchKey register(final WatchService watcher, final WatchEvent.Kind<?>... events) throws IOException {
@@ -390,9 +406,11 @@ public class DelegatePath extends SimpleWrapper<Path> implements Path, Resource 
     }
 
     /**
-     * 返回此路径的名称元素的迭代器。
+     * Returns an iterator over the name elements of this path. The first element returned by the iterator is the
+     * element closest to the root in the directory hierarchy, and the last element is the element farthest from the
+     * root.
      *
-     * @return 此路径的名称元素的迭代器
+     * @return An iterator over the name elements of this path.
      */
     @Override
     public Iterator<Path> iterator() {
@@ -416,10 +434,12 @@ public class DelegatePath extends SimpleWrapper<Path> implements Path, Resource 
     }
 
     /**
-     * 比较此路径与给定路径的字典顺序。
+     * Compares this path to another path.
      *
-     * @param other 要比较的路径
-     * @return 如果此路径等于给定路径则返回0；如果此路径小于给定路径则返回小于0的值；如果此路径大于给定路径则返回大于0的值
+     * @param other The path to compare against.
+     * @return Zero if this path is equal to the other path; a value less than zero if this path is lexicographically
+     *         less than the other path; and a value greater than zero if this path is lexicographically greater than
+     *         the other path.
      */
     @Override
     public int compareTo(final Path other) {
@@ -430,10 +450,11 @@ public class DelegatePath extends SimpleWrapper<Path> implements Path, Resource 
     }
 
     /**
-     * 测试此路径与给定对象是否相等。
+     * Tests this path for equality with the given object.
      *
-     * @param other 要比较的对象
-     * @return 如果给定对象也是Path，并且两个路径相等则返回true，否则返回false
+     * @param other The object to which this path is to be compared.
+     * @return {@code true} if, and only if, the given object is a {@code DelegatePath} that represents the same path as
+     *         this path.
      */
     @Override
     public boolean equals(final Object other) {
@@ -450,9 +471,9 @@ public class DelegatePath extends SimpleWrapper<Path> implements Path, Resource 
     }
 
     /**
-     * 返回此路径的哈希码。
+     * Computes a hash code for this path.
      *
-     * @return 此路径的哈希码
+     * @return The hash code for this path.
      */
     @Override
     public int hashCode() {
@@ -460,22 +481,22 @@ public class DelegatePath extends SimpleWrapper<Path> implements Path, Resource 
     }
 
     /**
-     * 返回此路径的字符串表示形式。
+     * Returns the string representation of this path.
      *
-     * @return 此路径的字符串表示形式
+     * @return The string representation of this path.
      */
     @Override
     public String toString() {
         return raw.toString();
     }
 
-    // 添加对Files类功能的便捷访问方法
+    // Convenience methods for Files class functionalities
 
     /**
-     * 检查文件是否存在。
+     * Tests whether the file denoted by this path exists.
      *
-     * @param options 检查选项
-     * @return 文件是否存在
+     * @param options Options to configure how the existence check is performed.
+     * @return {@code true} if the file exists; {@code false} otherwise.
      * @see Files#exists(Path, LinkOption...)
      */
     public boolean exists(final LinkOption... options) {
@@ -483,20 +504,20 @@ public class DelegatePath extends SimpleWrapper<Path> implements Path, Resource 
     }
 
     /**
-     * 检查文件是否为给定文件的子文件。
+     * Checks if this path is a sub-path of the given parent path.
      *
-     * @param parent 父文件
-     * @return 是否为子文件
+     * @param parent The parent path to check against.
+     * @return {@code true} if this path is a sub-path of the parent; {@code false} otherwise.
      */
     public boolean isSubOf(final Path parent) {
         return PathResolve.isSub(parent, this.raw);
     }
 
     /**
-     * 检查文件是否不存在。
+     * Tests whether the file denoted by this path does not exist.
      *
-     * @param options 检查选项
-     * @return 文件是否不存在
+     * @param options Options to configure how the non-existence check is performed.
+     * @return {@code true} if the file does not exist; {@code false} otherwise.
      * @see Files#notExists(Path, LinkOption...)
      */
     public boolean notExists(final LinkOption... options) {
@@ -504,10 +525,10 @@ public class DelegatePath extends SimpleWrapper<Path> implements Path, Resource 
     }
 
     /**
-     * 检查文件是否为目录。
+     * Tests whether the file denoted by this path is a directory.
      *
-     * @param options 检查选项
-     * @return 是否为目录
+     * @param options Options to configure how symbolic links are handled.
+     * @return {@code true} if the file is a directory; {@code false} otherwise.
      * @see Files#isDirectory(Path, LinkOption...)
      */
     public boolean isDirectory(final LinkOption... options) {
@@ -515,10 +536,10 @@ public class DelegatePath extends SimpleWrapper<Path> implements Path, Resource 
     }
 
     /**
-     * 检查文件是否为普通文件。
+     * Tests whether the file denoted by this path is a regular file.
      *
-     * @param options 检查选项
-     * @return 是否为普通文件
+     * @param options Options to configure how symbolic links are handled.
+     * @return {@code true} if the file is a regular file; {@code false} otherwise.
      * @see Files#isRegularFile(Path, LinkOption...)
      */
     public boolean isFile(final LinkOption... options) {
@@ -526,9 +547,9 @@ public class DelegatePath extends SimpleWrapper<Path> implements Path, Resource 
     }
 
     /**
-     * 检查文件是否为符号链接。
+     * Tests whether the file denoted by this path is a symbolic link.
      *
-     * @return 是否为符号链接
+     * @return {@code true} if the file is a symbolic link; {@code false} otherwise.
      * @see Files#isSymbolicLink(Path)
      */
     public boolean isSymbolicLink() {
@@ -536,18 +557,20 @@ public class DelegatePath extends SimpleWrapper<Path> implements Path, Resource 
     }
 
     /**
-     * 判断是否为其它类型文件，即非文件、非目录、非链接。
+     * Tests whether the file denoted by this path is of an \"other\" type. An \"other\" type is a file that is not a
+     * regular file, a directory, or a symbolic link.
      *
-     * @return 是否为其他类型
+     * @return {@code true} if the file is of an \"other\" type; {@code false} otherwise.
+     * @throws InternalException if an I/O error occurs while reading file attributes.
      */
     public boolean isOther() {
         return PathResolve.isOther(this.raw);
     }
 
     /**
-     * 检查文件是否可执行。
+     * Tests whether the file denoted by this path is executable.
      *
-     * @return 是否可执行
+     * @return {@code true} if the file is executable; {@code false} otherwise.
      * @see Files#isExecutable(Path)
      */
     public boolean isExecutable() {
@@ -555,9 +578,9 @@ public class DelegatePath extends SimpleWrapper<Path> implements Path, Resource 
     }
 
     /**
-     * 检查文件是否可读。
+     * Tests whether the file denoted by this path is readable.
      *
-     * @return 是否可读
+     * @return {@code true} if the file is readable; {@code false} otherwise.
      * @see Files#isReadable(Path)
      */
     public boolean isReadable() {
@@ -565,9 +588,9 @@ public class DelegatePath extends SimpleWrapper<Path> implements Path, Resource 
     }
 
     /**
-     * 检查文件是否可写。
+     * Tests whether the file denoted by this path is writable.
      *
-     * @return 是否可写
+     * @return {@code true} if the file is writable; {@code false} otherwise.
      * @see Files#isWritable(Path)
      */
     public boolean isWritable() {
@@ -575,10 +598,10 @@ public class DelegatePath extends SimpleWrapper<Path> implements Path, Resource 
     }
 
     /**
-     * 获取文件大小。
+     * Returns the size of the file denoted by this path in bytes.
      *
-     * @return 文件大小（字节数）
-     * @throws InternalException 如果发生I/O错误
+     * @return The file size in bytes.
+     * @throws InternalException if an I/O error occurs.
      * @see Files#size(Path)
      */
     @Override
@@ -591,9 +614,9 @@ public class DelegatePath extends SimpleWrapper<Path> implements Path, Resource 
     }
 
     /**
-     * 获取文件名。
+     * Returns the name of the file or directory denoted by this path.
      *
-     * @return 文件名
+     * @return The file name as a {@link String}.
      */
     @Override
     public String getName() {
@@ -601,9 +624,9 @@ public class DelegatePath extends SimpleWrapper<Path> implements Path, Resource 
     }
 
     /**
-     * 删除文件或目录。
+     * Deletes the file or directory denoted by this path. If this path is a directory, the directory must be empty.
      *
-     * @throws InternalException 如果发生I/O错误
+     * @throws InternalException if an I/O error occurs.
      * @see Files#delete(Path)
      */
     public void delete() {
@@ -615,10 +638,11 @@ public class DelegatePath extends SimpleWrapper<Path> implements Path, Resource 
     }
 
     /**
-     * 如果存在则删除文件或目录。
+     * Deletes the file or directory denoted by this path if it exists.
      *
-     * @return 是否删除成功
-     * @throws InternalException 如果发生I/O错误
+     * @return {@code true} if the file was deleted by this method; {@code false} if the file could not be deleted
+     *         because it did not exist.
+     * @throws InternalException if an I/O error occurs.
      * @see Files#deleteIfExists(Path)
      */
     public boolean deleteIfExists() {
@@ -630,11 +654,11 @@ public class DelegatePath extends SimpleWrapper<Path> implements Path, Resource 
     }
 
     /**
-     * 创建目录。
+     * Creates a new directory denoted by this path.
      *
-     * @param attrs 文件属性
-     * @return 创建的目录路径
-     * @throws InternalException 如果发生I/O错误
+     * @param attrs An optional list of file attributes to set atomically when creating the directory.
+     * @return A new {@code DelegatePath} object representing the created directory.
+     * @throws InternalException if an I/O error occurs.
      * @see Files#createDirectory(Path, FileAttribute[])
      */
     public DelegatePath createDirectory(final FileAttribute<?>... attrs) {
@@ -646,11 +670,11 @@ public class DelegatePath extends SimpleWrapper<Path> implements Path, Resource 
     }
 
     /**
-     * 创建目录（包括必要时的父目录）。
+     * Creates a directory denoted by this path, along with any necessary but nonexistent parent directories.
      *
-     * @param attrs 文件属性
-     * @return 创建的目录路径
-     * @throws InternalException 如果发生I/O错误
+     * @param attrs An optional list of file attributes to set atomically when creating the directory.
+     * @return A new {@code DelegatePath} object representing the created directory.
+     * @throws InternalException if an I/O error occurs.
      * @see Files#createDirectories(Path, FileAttribute[])
      */
     public DelegatePath createDirectories(final FileAttribute<?>... attrs) {
@@ -662,11 +686,11 @@ public class DelegatePath extends SimpleWrapper<Path> implements Path, Resource 
     }
 
     /**
-     * 创建文件。
+     * Creates a new empty file denoted by this path.
      *
-     * @param attrs 文件属性
-     * @return 创建的文件路径
-     * @throws InternalException 如果发生I/O错误
+     * @param attrs An optional list of file attributes to set atomically when creating the file.
+     * @return A new {@code DelegatePath} object representing the created file.
+     * @throws InternalException if an I/O error occurs.
      * @see Files#createFile(Path, FileAttribute[])
      */
     public DelegatePath createFile(final FileAttribute<?>... attrs) {
@@ -678,12 +702,12 @@ public class DelegatePath extends SimpleWrapper<Path> implements Path, Resource 
     }
 
     /**
-     * 创建临时目录。
+     * Creates a new empty directory in the directory denoted by this path, using the given prefix to generate its name.
      *
-     * @param prefix 前缀
-     * @param attrs  文件属性
-     * @return 创建的临时目录路径
-     * @throws InternalException 如果发生I/O错误
+     * @param prefix The prefix string to be used in generating the directory's name; may be {@code null}.
+     * @param attrs  An optional list of file attributes to set atomically when creating the directory.
+     * @return A new {@code DelegatePath} object representing the created temporary directory.
+     * @throws InternalException if an I/O error occurs.
      * @see Files#createTempDirectory(Path, String, FileAttribute[])
      */
     public DelegatePath createTempDirectory(final String prefix, final FileAttribute<?>... attrs) {
@@ -695,13 +719,14 @@ public class DelegatePath extends SimpleWrapper<Path> implements Path, Resource 
     }
 
     /**
-     * 创建临时文件。
+     * Creates a new empty file in the directory denoted by this path, using the given prefix and suffix to generate its
+     * name.
      *
-     * @param prefix 前缀
-     * @param suffix 后缀
-     * @param attrs  文件属性
-     * @return 创建的临时文件路径
-     * @throws InternalException 如果发生I/O错误
+     * @param prefix The prefix string to be used in generating the file's name; may be {@code null}.
+     * @param suffix The suffix string to be used in generating the file's name; may be {@code null}.
+     * @param attrs  An optional list of file attributes to set atomically when creating the file.
+     * @return A new {@code DelegatePath} object representing the created temporary file.
+     * @throws InternalException if an I/O error occurs.
      * @see Files#createTempFile(Path, String, String, FileAttribute[])
      */
     public DelegatePath createTempFile(final String prefix, final String suffix, final FileAttribute<?>... attrs) {
@@ -713,12 +738,12 @@ public class DelegatePath extends SimpleWrapper<Path> implements Path, Resource 
     }
 
     /**
-     * 复制文件。
+     * Copies the file denoted by this path to the target path.
      *
-     * @param target  目标路径
-     * @param options 复制选项
-     * @return 目标路径
-     * @throws InternalException 如果发生I/O错误
+     * @param target  The target path to copy the file to.
+     * @param options Options specifying how the copy should be performed.
+     * @return A new {@code DelegatePath} object representing the target path.
+     * @throws InternalException if an I/O error occurs.
      * @see Files#copy(Path, Path, CopyOption...)
      */
     public DelegatePath copyTo(final Path target, final CopyOption... options) {
@@ -735,12 +760,12 @@ public class DelegatePath extends SimpleWrapper<Path> implements Path, Resource 
     }
 
     /**
-     * 移动文件。
+     * Moves the file denoted by this path to the target path.
      *
-     * @param target  目标路径
-     * @param options 移动选项
-     * @return 目标路径
-     * @throws InternalException 如果发生I/O错误
+     * @param target  The target path to move the file to.
+     * @param options Options specifying how the move should be performed.
+     * @return A new {@code DelegatePath} object representing the target path.
+     * @throws InternalException if an I/O error occurs.
      * @see Files#move(Path, Path, CopyOption...)
      */
     public DelegatePath moveTo(final Path target, final CopyOption... options) {
@@ -757,31 +782,32 @@ public class DelegatePath extends SimpleWrapper<Path> implements Path, Resource 
     }
 
     /**
-     * 判断文件是否为空目录。
+     * Checks if the directory denoted by this path is empty.
      *
-     * @return 是否为空目录
+     * @return {@code true} if the directory is empty; {@code false} otherwise.
      */
     public boolean isDirEmpty() {
         return PathResolve.isDirEmpty(this);
     }
 
     /**
-     * 列出目录中的所有文件（不会递归子目录）。
+     * Lists all files and directories directly within the directory denoted by this path (non-recursive).
      *
-     * @param filter 文件过滤器，null表示不过滤，返回所有文件
-     * @return 文件列表（包含目录）
+     * @param filter A {@link Predicate} to filter the files. If {@code null}, all files are returned.
+     * @return An array of {@link Path} objects representing the files and directories that match the filter.
      */
     public Path[] listFiles(final Predicate<? super Path> filter) {
         return PathResolve.listFiles(this, filter);
     }
 
     /**
-     * 遍历目录中的所有文件（不会递归子目录）。
+     * Traverses the file tree rooted at this path and applies a {@link FileVisitor} to each file and directory.
      *
-     * @param options  访问选项
-     * @param maxDepth 最大深度
-     * @param visitor  {@link FileVisitor} 接口，用于自定义在访问文件时，访问目录前后等节点做的操作
-     * @throws InternalException 如果发生I/O错误
+     * @param options  A set of {@link FileVisitOption} to configure the traversal.
+     * @param maxDepth The maximum depth of directories to visit. Use {@link Integer#MAX_VALUE} for unlimited depth.
+     * @param visitor  The {@link FileVisitor} to apply during traversal.
+     * @throws InternalException if an I/O error occurs during traversal.
+     * @see Files#walkFileTree(Path, Set, int, FileVisitor)
      */
     public void walkFiles(
             final Set<FileVisitOption> options,
@@ -795,29 +821,29 @@ public class DelegatePath extends SimpleWrapper<Path> implements Path, Resource 
     }
 
     /**
-     * 获取文件属性。
+     * Retrieves the basic file attributes for the file denoted by this path.
      *
-     * @param options 链接选项
-     * @return 文件属性
+     * @param options Options to configure how symbolic links are handled.
+     * @return The {@link BasicFileAttributes} of the file.
      */
     public BasicFileAttributes getAttributes(final LinkOption... options) {
         return PathResolve.getAttributes(this.raw, options);
     }
 
     /**
-     * 获取文件输入流。
+     * Obtains a buffered input stream for the file denoted by this path.
      *
-     * @param options 链接选项
-     * @return 文件输入流
+     * @param options Options specifying how the file is opened.
+     * @return A {@link BufferedInputStream} for the file.
      */
     public BufferedInputStream getStream(final LinkOption... options) {
         return PathResolve.getInputStream(this, options);
     }
 
     /**
-     * 获取文件输入流。
+     * Obtains an input stream for the file denoted by this path.
      *
-     * @return 文件输入流
+     * @return An {@link InputStream} for the file.
      */
     @Override
     public InputStream getStream() {
@@ -825,10 +851,10 @@ public class DelegatePath extends SimpleWrapper<Path> implements Path, Resource 
     }
 
     /**
-     * 获取文件的URL。
+     * Returns a {@link URL} to represent the file denoted by this path.
      *
-     * @return 文件的URL
-     * @throws InternalException 如果URL格式错误
+     * @return A {@link URL} that represents this path.
+     * @throws InternalException if a {@link MalformedURLException} occurs.
      */
     @Override
     public URL getUrl() {
@@ -840,21 +866,21 @@ public class DelegatePath extends SimpleWrapper<Path> implements Path, Resource 
     }
 
     /**
-     * 获取文件字符输入流。
+     * Obtains a {@link Reader} for the file denoted by this path with a specified character set and open options.
      *
-     * @param charset 字符集
-     * @param options 链接选项
-     * @return 文件字符输入流
+     * @param charset The character set to use for reading.
+     * @param options Options specifying how the file is opened.
+     * @return A {@link Reader} for the file.
      */
     public Reader getReader(final Charset charset, final OpenOption... options) {
         return PathResolve.getReader(this, charset, options);
     }
 
     /**
-     * 读取文件内容为字节数组。
+     * Reads all bytes from the file denoted by this path.
      *
-     * @return 文件内容的字节数组
-     * @throws InternalException 如果发生I/O错误
+     * @return A byte array containing all the bytes from the file.
+     * @throws InternalException if an I/O error occurs.
      */
     @Override
     public byte[] readBytes() {
@@ -862,19 +888,20 @@ public class DelegatePath extends SimpleWrapper<Path> implements Path, Resource 
     }
 
     /**
-     * 获取文件输出流。
+     * Obtains a buffered output stream for the file denoted by this path with specified open options.
      *
-     * @param options 链接选项
-     * @return 文件输出流
+     * @param options Options specifying how the file is opened.
+     * @return A {@link BufferedOutputStream} for the file.
      */
     public BufferedOutputStream getOutputStream(final OpenOption... options) {
         return PathResolve.getOutputStream(this, options);
     }
 
     /**
-     * 获取文件的MIME类型。
+     * Retrieves the MIME type of the file denoted by this path.
      *
-     * @return MIME类型
+     * @return The MIME type string (e.g., "image/jpeg", "text/plain"), or {@code null} if the MIME type cannot be
+     *         determined.
      */
     public String getMimeType() {
         return PathResolve.getMimeType(this);

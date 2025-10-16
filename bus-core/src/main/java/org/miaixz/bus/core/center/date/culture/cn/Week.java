@@ -31,41 +31,76 @@ import org.miaixz.bus.core.center.date.culture.Samsara;
 import org.miaixz.bus.core.center.date.culture.cn.star.seven.SevenStar;
 
 /**
- * 星期
+ * Represents the days of the week (星期) in Chinese culture. This class extends {@link Samsara} to manage a cyclical list
+ * of these entities.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class Week extends Samsara {
 
+    /**
+     * Array of names for the days of the week, retrieved from the English Week enumeration.
+     */
     public static final String[] NAMES = org.miaixz.bus.core.center.date.culture.en.Week.get("name");
 
+    /**
+     * Array representing the ordinal number of the week (e.g., "First Week", "Second Week").
+     */
     public static final String[] WHICH = { "第一周", "第二周", "第三周", "第四周", "第五周", "第六周" };
 
+    /**
+     * Constructs a {@code Week} instance with the specified index.
+     *
+     * @param index The index of the day of the week in the {@link #NAMES} array.
+     */
     public Week(int index) {
         super(NAMES, index);
     }
 
+    /**
+     * Constructs a {@code Week} instance with the specified name.
+     *
+     * @param name The name of the day of the week.
+     */
     public Week(String name) {
         super(NAMES, name);
     }
 
+    /**
+     * Creates a {@code Week} instance from its index.
+     *
+     * @param index The index of the day of the week.
+     * @return A new {@code Week} instance.
+     */
     public static Week fromIndex(int index) {
         return new Week(index);
     }
 
+    /**
+     * Creates a {@code Week} instance from its name.
+     *
+     * @param name The name of the day of the week.
+     * @return A new {@code Week} instance.
+     */
     public static Week fromName(String name) {
         return new Week(name);
     }
 
+    /**
+     * Gets the next {@code Week} in the cycle.
+     *
+     * @param n The number of steps to move forward or backward in the cycle.
+     * @return The next {@code Week} instance.
+     */
     public Week next(int n) {
         return fromIndex(nextIndex(n));
     }
 
     /**
-     * 七曜
+     * Gets the corresponding {@link SevenStar} (七曜) for this day of the week.
      *
-     * @return 七曜
+     * @return The {@link SevenStar} associated with this day.
      */
     public SevenStar getSevenStar() {
         return SevenStar.fromIndex(index);

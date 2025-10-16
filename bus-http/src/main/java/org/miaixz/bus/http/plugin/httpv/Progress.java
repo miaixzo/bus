@@ -28,54 +28,97 @@
 package org.miaixz.bus.http.plugin.httpv;
 
 /**
- * 进度（上传或下载）
+ * Represents the progress of an upload or download operation.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class Progress {
 
+    /**
+     * The default step size in bytes for progress updates.
+     */
     public static final int DEFAULT_STEP_BYTES = 8192;
 
     /**
-     * 总字节数
+     * The total number of bytes to be transferred.
      */
     private long totalBytes;
 
     /**
-     * 已经完成字节数
+     * The number of bytes that have been transferred so far.
      */
     private long doneBytes;
 
+    /**
+     * Constructs a new {@code Progress} instance.
+     *
+     * @param totalBytes The total number of bytes.
+     * @param doneBytes  The number of bytes already completed.
+     */
     public Progress(long totalBytes, long doneBytes) {
         this.totalBytes = totalBytes;
         this.doneBytes = doneBytes;
     }
 
+    /**
+     * Returns the progress rate as a value between 0.0 and 1.0.
+     *
+     * @return The progress rate.
+     */
     public double getRate() {
         return (double) doneBytes / totalBytes;
     }
 
+    /**
+     * Returns the total number of bytes.
+     *
+     * @return The total number of bytes.
+     */
     public long getTotalBytes() {
         return totalBytes;
     }
 
+    /**
+     * Returns the number of bytes that have been completed.
+     *
+     * @return The number of completed bytes.
+     */
     public long getDoneBytes() {
         return doneBytes;
     }
 
+    /**
+     * Returns whether the operation is complete.
+     *
+     * @return {@code true} if the operation is complete, {@code false} otherwise.
+     */
     public boolean isDone() {
         return doneBytes >= totalBytes;
     }
 
-    public void addDoneBytes(long delt) {
-        doneBytes += delt;
+    /**
+     * Adds a delta to the number of completed bytes.
+     *
+     * @param delta The number of bytes to add.
+     */
+    public void addDoneBytes(long delta) {
+        doneBytes += delta;
     }
 
+    /**
+     * Increments the number of completed bytes by one.
+     */
     public void increaseDoneBytes() {
         doneBytes++;
     }
 
+    /**
+     * Returns whether the operation is not yet done or has not reached a certain number of bytes.
+     *
+     * @param bytes The threshold in bytes.
+     * @return {@code true} if the operation is not done or has not reached the threshold.
+     */
     public boolean notDoneOrReached(long bytes) {
         return doneBytes < bytes && doneBytes < totalBytes;
     }

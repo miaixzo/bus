@@ -29,17 +29,16 @@ package org.miaixz.bus.sensitive.magic.annotation;
 
 import java.lang.annotation.*;
 
+import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.sensitive.Builder;
-import org.miaixz.bus.sensitive.magic.Condition;
 import org.miaixz.bus.sensitive.metric.ConditionProvider;
 import org.miaixz.bus.sensitive.metric.DafaultProvider;
 import org.miaixz.bus.sensitive.metric.StrategyProvider;
 
 /**
- * 标注在字段上,用以说明字段上那些类型需要脱敏 脱敏后,插件在写请求后对数据脱敏后存在数据库,对读请求不拦截 设计的考虑： 本来想过将生效条件单独抽离为一个注解,这样可以达到条件注解的复用
- * 但是有一个缺点,当指定多个策略时,条件的注解就会太宽泛,无法保证精细到每一个策略生效的场景 平衡的方式： 在 Strategy 注解中,可以指定策略 默认是全部,如果指定,则只针对其中的某个策略生效
+ * Marks a field for desensitization. This annotation specifies the strategy and conditions for masking sensitive
+ * information. It can also be used within {@link NShield} to define rules for keys in a JSON string.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -50,72 +49,77 @@ import org.miaixz.bus.sensitive.metric.StrategyProvider;
 public @interface Shield {
 
     /**
-     * json中的key的信息
+     * The key name within a JSON string to which this rule applies. This is only used when this annotation is part of
+     * an {@link NShield} annotation.
      *
-     * @return the string
+     * @return The JSON key name.
      */
     String key() default Normal.EMPTY;
 
     /**
-     * 脱敏类型 不同的脱敏类型置换*的方式不同
+     * The built-in type of desensitization to apply (e.g., CHINESE_NAME, ID_CARD). Different types have different
+     * masking rules.
      *
-     * @return the object
+     * @return The desensitization type.
      */
-    Builder.Type type() default Builder.Type.NONE;
+    EnumValue.Masking type() default EnumValue.Masking.NONE;
 
     /**
-     * 脱敏模型 不同的脱敏类型脱敏模型可自定义模型
+     * The masking mode, which determines which part of the string to mask.
      *
-     * @return the object
+     * @return The desensitization mode.
      */
-    Builder.Mode mode() default Builder.Mode.MIDDLE;
+    EnumValue.Mode mode() default EnumValue.Mode.MIDDLE;
 
     /**
-     * 该属性从哪个字段取得
+     * The name of the field from which to get the value for desensitization. This is useful if the value to be
+     * desensitized is in a different field than the one being annotated.
      *
-     * @return the string
+     * @return The source field name.
      */
     String field() default Normal.EMPTY;
 
     /**
-     * 设置遮挡字符
+     * The character to use for masking sensitive information.
      *
-     * @return the string
+     * @return The masking character.
      */
     String shadow() default Symbol.STAR;
 
     /**
-     * 固定的头部字符数量
+     * The fixed number of characters to keep unmasked at the beginning of the string.
      *
-     * @return the int
+     * @return The size of the unmasked header.
      */
     int fixedHeaderSize() default 0;
 
     /**
-     * 固定的尾部字符数量
+     * The fixed number of characters to keep unmasked at the end of the string.
      *
-     * @return the int
+     * @return The size of the unmasked trailer.
      */
     int fixedTailorSize() default 3;
 
     /**
-     * 自动头尾固定部分
+     * Whether to automatically determine the unmasked parts based on the specified {@link #type()}. If true,
+     * {@link #fixedHeaderSize()} and {@link #fixedTailorSize()} may be ignored.
      *
-     * @return the boolean
+     * @return {@code true} to enable auto-fixing, {@code false} otherwise.
      */
     boolean autoFixedPart() default true;
 
     /**
-     * 注解生效的条件
+     * A custom condition class that determines if this annotation should be applied. The desensitization will only
+     * occur if the condition is met.
      *
-     * @return the object
+     * @return The condition provider class.
      */
-    Class<? extends ConditionProvider> condition() default Condition.class;
+    Class<? extends ConditionProvider> condition() default ConditionProvider.class;
 
     /**
-     * 脱敏策略
+     * A custom strategy class that defines the desensitization logic. This overrides the built-in {@link #type()}.
      *
-     * @return the object
+     * @return The strategy provider class.
      */
     Class<? extends StrategyProvider> strategy() default DafaultProvider.class;
 

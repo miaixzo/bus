@@ -26,7 +26,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 转码/消息处理等实现
+ * Provides implementations for transcoding, message processing, and other metric-related functionalities.
  *
  * @author Kimi Liu
  * @since Java 17+

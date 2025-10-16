@@ -30,7 +30,7 @@ package org.miaixz.bus.pay.metric.wechat.api.v3;
 import org.miaixz.bus.pay.Matcher;
 
 /**
- * 微信支付 v3 接口-电商收付通相关接口
+ * WeChat Pay v3 API - E-commerce Acquiring related APIs
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,167 +38,180 @@ import org.miaixz.bus.pay.Matcher;
 public enum EcommerceApi implements Matcher {
 
     /**
-     * 二级商户进件
+     * Sub-merchant Onboarding
      */
-    APPLY("/v3/ecommerce/applyments/", "二级商户进件"),
+    APPLY("/v3/ecommerce/applyments/", "Sub-merchant Onboarding"),
 
     /**
-     * 查询进件申请状态
+     * Query Onboarding Application Status
      */
-    APPLY_STATE("/v3/ecommerce/applyments/%s", "查询进件申请状态"),
+    APPLY_STATE("/v3/ecommerce/applyments/%s", "Query Onboarding Application Status"),
 
     /**
-     * 通过业务申请编号查询申请状态
+     * Query Application Status by Business Application Number
      */
-    APPLY_STATE_BY_NO("/v3/ecommerce/applyments/out-request-no/%s", "通过业务申请编号查询申请状态"),
+    APPLY_STATE_BY_NO("/v3/ecommerce/applyments/out-request-no/%s",
+            "Query Application Status by Business Application Number"),
 
     /**
-     * 分账接口-请求分账/查询分账结果
+     * Profit Sharing API - Request Profit Sharing/Query Profit Sharing Result
      */
-    PROFIT_SHARING_ORDERS("/v3/ecommerce/profitsharing/orders", "请求分账/查询分账结果"),
+    PROFIT_SHARING_ORDERS("/v3/ecommerce/profitsharing/orders",
+            "Profit Sharing API - Request Profit Sharing/Query Profit Sharing Result"),
 
     /**
-     * 分账接口-查询分账回退结果
+     * Profit Sharing API - Query Profit Sharing Return Result
      */
-    PROFIT_SHARING_RETURN_ORDERS("/v3/ecommerce/profitsharing/returnorders", "查询分账回退结果"),
+    PROFIT_SHARING_RETURN_ORDERS("/v3/ecommerce/profitsharing/returnorders",
+            "Profit Sharing API - Query Profit Sharing Return Result"),
 
     /**
-     * 分账接口-完结分账
+     * Profit Sharing API - Finish Profit Sharing
      */
-    PROFIT_SHARING_FINISH_ORDER("/v3/ecommerce/profitsharing/finish-order", "完结分账"),
+    PROFIT_SHARING_FINISH_ORDER("/v3/ecommerce/profitsharing/finish-order",
+            "Profit Sharing API - Finish Profit Sharing"),
 
     /**
-     * 查询订单剩余待分金额
+     * Query Remaining Amount to be Shared for an Order
      */
-    PROFIT_SHARING_QUERY("/v3/ecommerce/profitsharing/orders/%s/amounts", "查询订单剩余待分金额"),
+    PROFIT_SHARING_QUERY("/v3/ecommerce/profitsharing/orders/%s/amounts",
+            "Query Remaining Amount to be Shared for an Order"),
 
     /**
-     * 添加分账接收方
+     * Add Profit Sharing Receiver
      */
-    PROFIT_SHARING_RECEIVERS_ADD("/v3/ecommerce/profitsharing/receivers/add", "添加分账接收方"),
+    PROFIT_SHARING_RECEIVERS_ADD("/v3/ecommerce/profitsharing/receivers/add", "Add Profit Sharing Receiver"),
 
     /**
-     * 删除分账接收方
+     * Delete Profit Sharing Receiver
      */
-    PROFIT_SHARING_RECEIVERS_DELETE("/v3/ecommerce/profitsharing/receivers/delete", "删除分账接收方"),
+    PROFIT_SHARING_RECEIVERS_DELETE("/v3/ecommerce/profitsharing/receivers/delete", "Delete Profit Sharing Receiver"),
 
     /**
-     * 补差接口-请求补差
+     * Subsidy API - Request Subsidy
      */
-    CREATE_SUBSIDIES("/v3/ecommerce/subsidies/create", "请求补差"),
+    CREATE_SUBSIDIES("/v3/ecommerce/subsidies/create", "Subsidy API - Request Subsidy"),
 
     /**
-     * 补差接口-请求补差
+     * Subsidy API - Return Subsidy
      */
-    RETURN_SUBSIDIES("/v3/ecommerce/subsidies/return", "请求补差"),
+    RETURN_SUBSIDIES("/v3/ecommerce/subsidies/return", "Subsidy API - Return Subsidy"),
 
     /**
-     * 补差接口-取消补差
+     * Subsidy API - Cancel Subsidy
      */
-    CANCEL_SUBSIDIES("/v3/ecommerce/subsidies/cancel", "取消补差"),
+    CANCEL_SUBSIDIES("/v3/ecommerce/subsidies/cancel", "Subsidy API - Cancel Subsidy"),
 
     /**
-     * 退款接口-申请退款
+     * Refund API - Apply for Refund
      */
-    REFUNDS("/v3/ecommerce/refunds/apply", "申请退款"),
+    REFUNDS("/v3/ecommerce/refunds/apply", "Refund API - Apply for Refund"),
 
     /**
-     * 退款接口-通过微信支付退款单号查询退款
+     * Refund API - Query Refund by WeChat Pay Refund ID
      */
-    QUERY_REFUND("/v3/ecommerce/refunds/id/%s", "通过微信支付退款单号查询退款"),
+    QUERY_REFUND("/v3/ecommerce/refunds/id/%s", "Refund API - Query Refund by WeChat Pay Refund ID"),
 
     /**
-     * 退款接口-通过商户退款单号查询退款
+     * Refund API - Query Refund by Merchant Refund ID
      */
-    QUERY_REFUNDS_BY_REFUND_NO("/v3/ecommerce/refunds/out-refund-no/%s", "通过商户退款单号查询退款"),
+    QUERY_REFUNDS_BY_REFUND_NO("/v3/ecommerce/refunds/out-refund-no/%s",
+            "Refund API - Query Refund by Merchant Refund ID"),
 
     /**
-     * 退款接口-查询/垫付退款回补
+     * Refund API - Query/Advance Refund Replenishment
      */
-    RETURN_ADVANCE_OR_QUERY("/v3/ecommerce/refunds/%s/return-advance", "查询/垫付退款回补"),
+    RETURN_ADVANCE_OR_QUERY("/v3/ecommerce/refunds/%s/return-advance",
+            "Refund API - Query/Advance Refund Replenishment"),
 
     /**
-     * 查询二级商户账户实时余额
+     * Query Sub-merchant Real-time Account Balance
      */
-    QUERY_BALANCE("/v3/ecommerce/fund/balance/%s", "查询二级商户账户实时余额"),
+    QUERY_BALANCE("/v3/ecommerce/fund/balance/%s", "Query Sub-merchant Real-time Account Balance"),
 
     /**
-     * 查询二级商户账户日终余额
+     * Query Sub-merchant End-of-day Account Balance
      */
-    QUERY_END_DAY_BALANCE("/v3/ecommerce/fund/enddaybalance/%s", "查询二级商户账户日终余额"),
+    QUERY_END_DAY_BALANCE("/v3/ecommerce/fund/enddaybalance/%s", "Query Sub-merchant End-of-day Account Balance"),
 
     /**
-     * 查询电商平台账户实时余额
+     * Query E-commerce Platform Real-time Account Balance
      */
-    QUERY_MERCHANT_BALANCE("/v3/merchant/fund/balance/%s", "查询电商平台账户实时余额"),
+    QUERY_MERCHANT_BALANCE("/v3/merchant/fund/balance/%s", "Query E-commerce Platform Real-time Account Balance"),
 
     /**
-     * 查询电商平台账户日终余额
+     * Query E-commerce Platform End-of-day Account Balance
      */
-    QUERY_MERCHANT_END_DAY_BALANCE("/v3/merchant/fund/dayendbalance/%s", "查询电商平台账户日终余额"),
+    QUERY_MERCHANT_END_DAY_BALANCE("/v3/merchant/fund/dayendbalance/%s",
+            "Query E-commerce Platform End-of-day Account Balance"),
 
     /**
-     * 提现接口-二级商户预约提现
+     * Withdrawal API - Sub-merchant Scheduled Withdrawal
      */
-    WITHDRAW("/v3/ecommerce/fund/withdraw", "二级商户预约提现"),
+    WITHDRAW("/v3/ecommerce/fund/withdraw", "Withdrawal API - Sub-merchant Scheduled Withdrawal"),
 
     /**
-     * 提现接口-二级商户查询预约提现状态
+     * Withdrawal API - Query Sub-merchant Scheduled Withdrawal Status
      */
-    WITHDRAW_QUERY("/v3/ecommerce/fund/withdraw/%s", "二级商户查询预约提现状态"),
+    WITHDRAW_QUERY("/v3/ecommerce/fund/withdraw/%s", "Withdrawal API - Query Sub-merchant Scheduled Withdrawal Status"),
 
     /**
-     * 提现接口-电商平台预约提现
+     * Withdrawal API - E-commerce Platform Scheduled Withdrawal
      */
-    MERCHANT_WITHDRAW("/v3/merchant/fund/withdraw", "电商平台预约提现"),
+    MERCHANT_WITHDRAW("/v3/merchant/fund/withdraw", "Withdrawal API - E-commerce Platform Scheduled Withdrawal"),
 
     /**
-     * 提现接口-电商平台查询预约提现状态
+     * Withdrawal API - Query E-commerce Platform Scheduled Withdrawal Status
      */
-    MERCHANT_WITHDRAW_QUERY("/v3/merchant/fund/withdraw/withdraw-id/%s", "电商平台查询预约提现状态"),
+    MERCHANT_WITHDRAW_QUERY("/v3/merchant/fund/withdraw/withdraw-id/%s",
+            "Withdrawal API - Query E-commerce Platform Scheduled Withdrawal Status"),
 
     /**
-     * 提现接口-商户预约提现单号查询
+     * Withdrawal API - Query by Merchant Scheduled Withdrawal ID
      */
-    MERCHANT_WITHDRAW_QUERY_BY_OUT_REQUEST_NO("/v3/merchant/fund/withdraw/out-request-no/%s", "商户预约提现单号查询"),
+    MERCHANT_WITHDRAW_QUERY_BY_OUT_REQUEST_NO("/v3/merchant/fund/withdraw/out-request-no/%s",
+            "Withdrawal API - Query by Merchant Scheduled Withdrawal ID"),
 
     /**
-     * 提现接口-按日下载提现异常文件
+     * Withdrawal API - Download Daily Withdrawal Exception File
      */
-    WITHDRAW_BILL("/v3/merchant/fund/withdraw/bill-type/%s", "按日下载提现异常文件"),
+    WITHDRAW_BILL("/v3/merchant/fund/withdraw/bill-type/%s",
+            "Withdrawal API - Download Daily Withdrawal Exception File"),
 
     /**
-     * 查询订单剩余可出境余额
+     * Query Remaining Cross-border Balance for an Order
      */
-    AVAILABLE_ABROAD_AMOUNTS("/v3/funds-to-oversea/transactions/%s/available_abroad_amounts", "查询订单剩余可出境余额"),
+    AVAILABLE_ABROAD_AMOUNTS("/v3/funds-to-oversea/transactions/%s/available_abroad_amounts",
+            "Query Remaining Cross-border Balance for an Order"),
 
     /**
-     * 申请资金出境
+     * Apply for Cross-border Funds Transfer
      */
-    FUNDS_TO_OVERSEA("/v3/funds-to-oversea/orders", "申请资金出境"),
+    FUNDS_TO_OVERSEA("/v3/funds-to-oversea/orders", "Apply for Cross-border Funds Transfer"),
 
     /**
-     * 查询出境结果
+     * Query Cross-border Transfer Result
      */
-    FUNDS_TO_OVERSEA_QUERY("/v3/funds-to-oversea/orders/%s", "查询出境结果"),
+    FUNDS_TO_OVERSEA_QUERY("/v3/funds-to-oversea/orders/%s", "Query Cross-border Transfer Result"),
 
     /**
-     * 获取购付汇账单文件下载链接
+     * Get Download Link for Foreign Exchange Purchase and Payment Bill
      */
-    FUNDS_TO_OVERSEA_BILL("/v3/funds-to-oversea/bill-download-url", "获取购付汇账单文件下载链接"),
+    FUNDS_TO_OVERSEA_BILL("/v3/funds-to-oversea/bill-download-url",
+            "Get Download Link for Foreign Exchange Purchase and Payment Bill"),
 
     /**
-     * 申请二级商户资金账单
+     * Apply for Sub-merchant Fund Bill
      */
-    FUND_FLOW_BILL("/v3/ecommerce/bill/fundflowbill", "申请二级商户资金账单");
+    FUND_FLOW_BILL("/v3/ecommerce/bill/fundflowbill", "Apply for Sub-merchant Fund Bill");
 
     /**
-     * 接口方法
+     * API method
      */
     private final String method;
 
     /**
-     * 接口描述
+     * API description
      */
     private final String desc;
 
@@ -208,7 +221,7 @@ public enum EcommerceApi implements Matcher {
     }
 
     /**
-     * 交易类型
+     * Transaction type
      *
      * @return the string
      */
@@ -218,7 +231,7 @@ public enum EcommerceApi implements Matcher {
     }
 
     /**
-     * 类型描述
+     * Type description
      *
      * @return the string
      */
@@ -228,7 +241,7 @@ public enum EcommerceApi implements Matcher {
     }
 
     /**
-     * 接口方法
+     * API method
      *
      * @return the string
      */

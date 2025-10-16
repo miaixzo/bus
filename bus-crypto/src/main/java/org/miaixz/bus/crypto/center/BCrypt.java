@@ -34,19 +34,23 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 
 /**
- * BCrypt加密算法实现。由它加密的文件可在所有支持的操作系统和处理器上进行转移。它的口令必须是8至56个字符，并将在内部被转化为448位的密钥。
+ * BCrypt hashing algorithm implementation. Files encrypted by it can be transferred across all supported operating
+ * systems and processors. Its password must be between 8 and 56 characters and will be internally converted to a
+ * 448-bit key.
  *
  * <p>
- * 此类来自于https://github.com/jeremyh/jBCrypt
+ * This class is from https://github.com/jeremyh/jBCrypt
  * </p>
  *
  * <p>
- * 使用方法如下： {@code String pw_hash = BCrypt.hashpw(plain_password, BCrypt.gensalt());} 使用checkpw方法检查被加密的字符串是否与原始字符串匹配：
+ * Usage is as follows: {@code String pw_hash = BCrypt.hashpw(plain_password, BCrypt.gensalt());} Use the checkpw method
+ * to check if the encrypted string matches the original string:
  * {@code BCrypt.checkpw(candidate_password, stored_hash); }
  * </p>
  *
  * <p>
- * gensalt方法提供了可选参数 (log_rounds) 来定义加盐多少，也决定了加密的复杂度:
+ * The gensalt method provides an optional parameter (log_rounds) to define how much the salt is, which also determines
+ * the complexity of the encryption:
  * {@code  String strong_salt = BCrypt.gensalt(10);  String stronger_salt = BCrypt.gensalt(12); }
  * <p>
  *
@@ -242,9 +246,9 @@ public class BCrypt {
     }
 
     /**
-     * Look up the 3 bits base64-encoded by the specified character, range-checking againt conversion table
+     * Look up the 3 bits base64-encoded by the specified character, range-checking againt conversion table * @param x
+     * the base64-encoded value
      * 
-     * @param x the base64-encoded value
      * @return the decoded value of x
      */
     private static byte char64(final char x) {
@@ -255,9 +259,8 @@ public class BCrypt {
 
     /**
      * Decode a string encoded using bcrypt's base64 scheme to a byte array. Note that this is *not* compatible with the
-     * standard MIME-base64 encoding.
+     * standard MIME-base64 encoding. * @param s the string to decode
      * 
-     * @param s       the string to decode
      * @param maxolen the maximum number of bytes to decode
      * @return an array containing the decoded bytes
      * @throws IllegalArgumentException if maxolen is invalid
@@ -326,21 +329,21 @@ public class BCrypt {
     }
 
     /**
-     * 生成密文，使用长度为10的加盐方式
+     * Generate a ciphertext using a salt with a length of 10.
      *
-     * @param password 需要加密的明文
-     * @return 密文
+     * @param password The plaintext to be encrypted.
+     * @return The ciphertext.
      */
     public static String hashpw(final String password) {
         return hashpw(password, gensalt());
     }
 
     /**
-     * 生成密文
+     * Generate a ciphertext.
      *
-     * @param password 需要加密的明文
-     * @param salt     盐，使用{@link #gensalt()} 生成
-     * @return 密文
+     * @param password The plaintext to be encrypted.
+     * @param salt     The salt, generated using {@link #gensalt()}.
+     * @return The ciphertext.
      */
     public static String hashpw(final String password, final String salt) {
         final BCrypt bcrypt;
@@ -358,7 +361,7 @@ public class BCrypt {
             off = 3;
         else {
             minor = salt.charAt(2);
-            // 修正一个在Blowfish实现上的安全风险
+            // Fix a security risk in the Blowfish implementation
             if ((minor != 'a' && minor != 'x' && minor != 'y' && minor != 'b') || salt.charAt(3) != Symbol.C_DOLLAR)
                 throw new IllegalArgumentException("Invalid salt revision");
             off = 4;
@@ -393,9 +396,10 @@ public class BCrypt {
     }
 
     /**
-     * 生成盐
+     * Generate a salt.
      *
-     * @param log_rounds hash中叠加的2的对数 - the work factor therefore increases as 2**log_rounds.
+     * @param log_rounds The logarithm of 2 to be superimposed in the hash - the work factor therefore increases as
+     *                   2**log_rounds.
      * @param random     {@link SecureRandom}
      * @return an encoded salt value
      */
@@ -418,31 +422,31 @@ public class BCrypt {
     }
 
     /**
-     * 生成盐
+     * Generate a salt.
      *
      * @param log_rounds the log2 of the number of rounds of hashing to apply - the work factor therefore increases as
      *                   2**log_rounds.
-     * @return 盐
+     * @return The salt.
      */
     public static String gensalt(final int log_rounds) {
         return gensalt(log_rounds, new SecureRandom());
     }
 
     /**
-     * 生成盐
+     * Generate a salt.
      *
-     * @return 盐
+     * @return The salt.
      */
     public static String gensalt() {
         return gensalt(Normal._10);
     }
 
     /**
-     * 检查明文密码文本是否匹配加密后的文本
+     * Check if the plaintext password matches the hashed text.
      *
-     * @param plaintext 需要验证的明文密码
-     * @param hashed    密文
-     * @return 是否匹配
+     * @param plaintext The plaintext password to be verified.
+     * @param hashed    The ciphertext.
+     * @return Whether they match.
      */
     public static boolean checkpw(final String plaintext, final String hashed) {
         final byte[] hashed_bytes;
@@ -452,7 +456,7 @@ public class BCrypt {
         try {
             try_pw = hashpw(plaintext, hashed);
         } catch (final Exception ignore) {
-            // 生成密文时错误直接返回false
+            // Return false directly if an error occurs during ciphertext generation
             return false;
         }
         hashed_bytes = hashed.getBytes(Charset.UTF_8);
@@ -567,13 +571,13 @@ public class BCrypt {
     }
 
     /**
-     * 加密密文
+     * Encrypt the ciphertext.
      *
-     * @param password   明文密码
-     * @param salt       加盐
-     * @param log_rounds hash中叠加的对数
-     * @param cdata      加密数据
-     * @return 加密后的密文
+     * @param password   The plaintext password.
+     * @param salt       The salt.
+     * @param log_rounds The logarithm to be superimposed in the hash.
+     * @param cdata      The encrypted data.
+     * @return The encrypted ciphertext.
      */
     public byte[] crypt(final byte[] password, final byte[] salt, final int log_rounds, final int[] cdata) {
         final int rounds;

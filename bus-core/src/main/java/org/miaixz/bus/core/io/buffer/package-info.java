@@ -26,7 +26,9 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * {@link java.nio.Buffer}相关工具封装
+ * Provides utilities and implementations for byte buffers, including efficient buffer management and operations. This
+ * package focuses on fast and flexible handling of byte data, often leveraging concepts similar to
+ * {@link java.nio.Buffer}.
  *
  * @author Kimi Liu
  * @since Java 17+

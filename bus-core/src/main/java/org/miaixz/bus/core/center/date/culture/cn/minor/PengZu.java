@@ -31,7 +31,8 @@ import org.miaixz.bus.core.center.date.culture.Tradition;
 import org.miaixz.bus.core.center.date.culture.cn.sixty.SixtyCycle;
 
 /**
- * 彭祖百忌
+ * Represents the Peng Zu Bai Ji (彭祖百忌), a traditional Chinese calendar concept of taboos for certain days. This class
+ * extends {@link Tradition} to provide information about daily taboos.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -39,47 +40,57 @@ import org.miaixz.bus.core.center.date.culture.cn.sixty.SixtyCycle;
 public class PengZu extends Tradition {
 
     /**
-     * 天干彭祖百忌
+     * Peng Zu Bai Ji associated with Heavenly Stems.
      */
     protected PengZuHeavenStem pengZuHeavenStem;
 
     /**
-     * 地支彭祖百忌
+     * Peng Zu Bai Ji associated with Earthly Branches.
      */
     protected PengZuEarthBranch pengZuEarthBranch;
 
+    /**
+     * Constructs a {@code PengZu} instance based on a {@link SixtyCycle}.
+     *
+     * @param sixtyCycle The SixtyCycle (GanZhi) of the day.
+     */
     public PengZu(SixtyCycle sixtyCycle) {
         pengZuHeavenStem = PengZuHeavenStem.fromIndex(sixtyCycle.getHeavenStem().getIndex());
         pengZuEarthBranch = PengZuEarthBranch.fromIndex(sixtyCycle.getEarthBranch().getIndex());
     }
 
     /**
-     * 从干支初始化
+     * Creates a {@code PengZu} instance from a {@link SixtyCycle}.
      *
-     * @param sixtyCycle 干支
-     * @return 彭祖百忌
+     * @param sixtyCycle The SixtyCycle (GanZhi).
+     * @return A new {@code PengZu} instance.
      */
     public static PengZu fromSixtyCycle(SixtyCycle sixtyCycle) {
         return new PengZu(sixtyCycle);
     }
 
+    /**
+     * Gets the combined name of the Peng Zu Bai Ji from Heavenly Stem and Earthly Branch.
+     *
+     * @return The combined name as a formatted string.
+     */
     public String getName() {
         return String.format("%s %s", pengZuHeavenStem, pengZuEarthBranch);
     }
 
     /**
-     * 天干彭祖百忌
+     * Gets the Peng Zu Bai Ji associated with Heavenly Stems.
      *
-     * @return 天干彭祖百忌
+     * @return The {@link PengZuHeavenStem} instance.
      */
     public PengZuHeavenStem getPengZuHeavenStem() {
         return pengZuHeavenStem;
     }
 
     /**
-     * 地支彭祖百忌
+     * Gets the Peng Zu Bai Ji associated with Earthly Branches.
      *
-     * @return 地支彭祖百忌
+     * @return The {@link PengZuEarthBranch} instance.
      */
     public PengZuEarthBranch getPengZuEarthBranch() {
         return pengZuEarthBranch;

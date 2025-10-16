@@ -31,16 +31,26 @@ import java.io.Serial;
 import java.util.concurrent.atomic.AtomicLongArray;
 
 /**
- * {@link AtomicLongArray}转换器
+ * Converts an object to an {@link AtomicLongArray}.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class AtomicLongArrayConverter extends AbstractConverter {
 
+    /**
+     * The serial version UID.
+     */
     @Serial
     private static final long serialVersionUID = 2852265081792L;
 
+    /**
+     * Internally converts the given value to an {@link AtomicLongArray}.
+     *
+     * @param targetClass The target class, which should be {@link AtomicLongArray}.
+     * @param value       The value to be converted.
+     * @return The converted {@link AtomicLongArray} object.
+     */
     @Override
     protected AtomicLongArray convertInternal(final Class<?> targetClass, final Object value) {
         return new AtomicLongArray(Convert.convert(long[].class, value));

@@ -34,22 +34,34 @@ import java.util.Set;
 import org.miaixz.bus.core.xyz.CollKit;
 
 /**
- * 带有类验证的对象流，用于避免反序列化漏洞 详细见：https://xz.aliyun.com/t/41/
+ * An {@link ObjectInputStream} extension that provides class validation to prevent deserialization vulnerabilities.
+ * This stream allows defining a whitelist and blacklist of classes that are permitted or forbidden during
+ * deserialization.
+ * <p>
+ * For more details, refer to: <a href="https://xz.aliyun.com/t/41/">https://xz.aliyun.com/t/41/</a>
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class ValidateObjectInputStream extends ObjectInputStream {
 
+    /**
+     * A set of class names that are explicitly allowed for deserialization (whitelist).
+     */
     private Set<String> whiteClassSet;
+    /**
+     * A set of class names that are explicitly forbidden for deserialization (blacklist).
+     */
     private Set<String> blackClassSet;
 
     /**
-     * 构造
+     * Constructs a new {@code ValidateObjectInputStream} that reads from the specified {@link InputStream}. Optionally,
+     * initial whitelist classes can be provided.
      *
-     * @param inputStream   流
-     * @param acceptClasses 白名单的类
-     * @throws IOException IO异常
+     * @param inputStream   The input stream to read serialized objects from.
+     * @param acceptClasses An array of classes to be added to the whitelist. Only these classes and their subclasses
+     *                      will be allowed for deserialization, unless explicitly refused.
+     * @throws IOException If an I/O error occurs while reading stream header.
      */
     public ValidateObjectInputStream(final InputStream inputStream, final Class<?>... acceptClasses)
             throws IOException {
@@ -58,23 +70,23 @@ public class ValidateObjectInputStream extends ObjectInputStream {
     }
 
     /**
-     * 禁止反序列化的类，用于反序列化验证
+     * Adds classes to the blacklist, preventing them from being deserialized.
      *
-     * @param refuseClasses 禁止反序列化的类
+     * @param refuseClasses An array of classes whose deserialization should be forbidden.
      */
     public void refuse(final Class<?>... refuseClasses) {
         if (null == this.blackClassSet) {
             this.blackClassSet = new HashSet<>();
         }
-        for (final Class<?> acceptClass : refuseClasses) {
-            this.blackClassSet.add(acceptClass.getName());
+        for (final Class<?> refuseClass : refuseClasses) {
+            this.blackClassSet.add(refuseClass.getName());
         }
     }
 
     /**
-     * 接受反序列化的类，用于反序列化验证
+     * Adds classes to the whitelist, allowing them to be deserialized.
      *
-     * @param acceptClasses 接受反序列化的类
+     * @param acceptClasses An array of classes whose deserialization should be allowed.
      */
     public void accept(final Class<?>... acceptClasses) {
         if (null == this.whiteClassSet) {
@@ -86,7 +98,14 @@ public class ValidateObjectInputStream extends ObjectInputStream {
     }
 
     /**
-     * 只允许反序列化SerialObject class
+     * Overrides the default class resolution mechanism to validate classes against the whitelist and blacklist. Only
+     * classes that pass the validation will be allowed to be deserialized.
+     *
+     * @param desc The {@link ObjectStreamClass} of the class to be resolved.
+     * @return The {@link Class} object corresponding to {@code desc}.
+     * @throws IOException            If an I/O error occurs.
+     * @throws ClassNotFoundException If the class cannot be found or if it fails validation.
+     * @throws InvalidClassException  If the class is not allowed for deserialization based on the whitelist/blacklist.
      */
     @Override
     protected Class<?> resolveClass(final ObjectStreamClass desc) throws IOException, ClassNotFoundException {
@@ -95,30 +114,36 @@ public class ValidateObjectInputStream extends ObjectInputStream {
     }
 
     /**
-     * 验证反序列化的类是否合法
+     * Validates the given class name against the configured whitelist and blacklist. If the class name is in the
+     * blacklist, or not in the whitelist (and whitelist is not empty), an {@link InvalidClassException} is thrown.
      *
-     * @param className 类名
-     * @throws InvalidClassException 非法类
+     * @param className The fully qualified name of the class to validate.
+     * @throws InvalidClassException If the class is not authorized for deserialization.
      */
     private void validateClassName(final String className) throws InvalidClassException {
-        // 黑名单
+        // Check against blacklist first
         if (CollKit.isNotEmpty(this.blackClassSet)) {
             if (this.blackClassSet.contains(className)) {
                 throw new InvalidClassException("Unauthorized deserialization attempt by black list", className);
             }
         }
 
+        // If whitelist is empty, all classes are allowed (after blacklist check).
         if (CollKit.isEmpty(this.whiteClassSet)) {
             return;
         }
+
+        // Java internal classes are always allowed if a whitelist is present.
         if (className.startsWith("java.")) {
-            // java中的类默认在白名单中
             return;
         }
+
+        // Check against whitelist
         if (this.whiteClassSet.contains(className)) {
             return;
         }
 
+        // If not in whitelist and whitelist is not empty, then it's unauthorized.
         throw new InvalidClassException("Unauthorized deserialization attempt", className);
     }
 

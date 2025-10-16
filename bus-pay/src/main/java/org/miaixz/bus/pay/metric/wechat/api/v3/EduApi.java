@@ -30,7 +30,7 @@ package org.miaixz.bus.pay.metric.wechat.api.v3;
 import org.miaixz.bus.pay.Matcher;
 
 /**
- * 微信支付 v3 接口-教培续费通相关接口
+ * WeChat Pay V3 API interfaces related to education and training renewal services.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,64 +38,71 @@ import org.miaixz.bus.pay.Matcher;
 public enum EduApi implements Matcher {
 
     /**
-     * 通过协议号查询签约
+     * Query contract by contract number.
      */
-    QUERY_CONTRACTS_BY_ID("/v3/edu-papay/contracts/id/%s", "通过协议号查询签约"),
+    QUERY_CONTRACTS_BY_ID("/v3/edu-papay/contracts/id/%s", "Query contract by contract number"),
 
     /**
-     * 预签约
+     * Pre-sign a contract.
      */
-    PRE_SIGN("/v3/edu-papay/contracts/presign", "预签约"),
+    PRE_SIGN("/v3/edu-papay/contracts/presign", "Pre-sign a contract"),
 
     /**
-     * 解约
+     * Terminate contract.
      */
-    DELETE_CONTRACTS("/v3/edu-papay/contracts/%s", "解约"),
+    DELETE_CONTRACTS("/v3/edu-papay/contracts/%s", "Terminate contract"),
 
     /**
-     * 通过用户标识查询签约
+     * Query contract by user identifier.
      */
-    QUERY_CONTRACTS_BY_USER("/v3/edu-papay/user/%s/contracts", "通过用户标识查询签约"),
+    QUERY_CONTRACTS_BY_USER("/v3/edu-papay/user/%s/contracts", "Query contract by user identifier"),
 
     /**
-     * 受理扣款
+     * Accept deduction.
      */
-    TRANSACTIONS("/v3/edu-papay/transactions", "受理扣款"),
+    TRANSACTIONS("/v3/edu-papay/transactions", "Accept deduction"),
 
     /**
-     * 通过微信订单号查询订单
+     * Query order by WeChat transaction ID.
      */
-    QUERY_TRANSACTIONS_BY_TRANSACTION_ID("/v3/edu-papay/transactions/id/%s", "通过微信订单号查询订单"),
+    QUERY_TRANSACTIONS_BY_TRANSACTION_ID("/v3/edu-papay/transactions/id/%s", "Query order by WeChat transaction ID"),
 
     /**
-     * 通过商户订单号查询订单
+     * Query order by merchant order number.
      */
-    QUERY_TRANSACTIONS_BY_OUT_TRADE_NO("/v3/edu-papay/transactions/out-trade-no/%s", "通过商户订单号查询订单"),
+    QUERY_TRANSACTIONS_BY_OUT_TRADE_NO("/v3/edu-papay/transactions/out-trade-no/%s",
+            "Query order by merchant order number"),
 
     /**
-     * 发送扣款预通知
+     * Send deduction pre-notification.
      */
-    SEND_NOTIFICATION("/v3/edu-papay/user-notifications/%s/send", "发送扣款预通知");
+    SEND_NOTIFICATION("/v3/edu-papay/user-notifications/%s/send", "Send deduction pre-notification");
 
     /**
-     * 接口方法
+     * The API method.
      */
     private final String method;
 
     /**
-     * 接口描述
+     * The API description.
      */
     private final String desc;
 
+    /**
+     * Constructs a new EduApi enum.
+     *
+     * @param method The API method.
+     * @param desc   The API description.
+     */
     EduApi(String method, String desc) {
         this.method = method;
         this.desc = desc;
     }
 
     /**
-     * 交易类型
+     * Gets the transaction type.
      *
-     * @return the string
+     * @return The transaction type.
      */
     @Override
     public String type() {
@@ -103,9 +110,9 @@ public enum EduApi implements Matcher {
     }
 
     /**
-     * 类型描述
+     * Gets the type description.
      *
-     * @return the string
+     * @return The type description.
      */
     @Override
     public String desc() {
@@ -113,9 +120,9 @@ public enum EduApi implements Matcher {
     }
 
     /**
-     * 接口方法
+     * Gets the API method.
      *
-     * @return the string
+     * @return The API method.
      */
     @Override
     public String method() {

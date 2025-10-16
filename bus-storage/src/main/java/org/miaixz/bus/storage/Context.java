@@ -27,11 +27,15 @@
 */
 package org.miaixz.bus.storage;
 
+import org.miaixz.bus.core.lang.Normal;
+
 import lombok.*;
 import lombok.Builder;
 import lombok.experimental.SuperBuilder;
 
 /**
+ * Represents the context for storage operations, containing configuration details for connecting to a storage service.
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -43,57 +47,58 @@ import lombok.experimental.SuperBuilder;
 public class Context {
 
     /**
-     * URL前缀
+     * The URL prefix for the storage service.
      */
-    private String prefix;
+    @Builder.Default
+    private String prefix = Normal.EMPTY;
     /**
-     * 容器名称
+     * The name of the bucket or container.
      */
     private String bucket;
     /**
-     * 服务端点
+     * The endpoint URL of the storage service.
      */
     private String endpoint;
     /**
-     * 访问key
+     * The access key for authentication.
      */
     private String accessKey;
     /**
-     * 访问秘钥
+     * The secret key for authentication.
      */
     private String secretKey;
     /**
-     * 存储区域
+     * The region where the storage bucket is located.
      */
     private String region;
 
     /**
-     * 扩展属性
+     * Extension properties for the storage context.
      */
     private String extension;
 
     /**
-     * 是否私有
+     * Indicates whether the connection is secure (e.g., using HTTPS).
      */
     private boolean secure;
 
     /**
-     * 路径样式
+     * Indicates whether path-style access is used for buckets. Default is {@code true}.
      */
     @Builder.Default
     private boolean pathStyle = true;
     /**
-     * 连接超时
+     * The connection timeout in seconds. Default is 30 seconds.
      */
     @Builder.Default
     private long connectTimeout = 30;
     /**
-     * 写入超时
+     * The write timeout in seconds. Default is 60 seconds.
      */
     @Builder.Default
     private long writeTimeout = 60;
     /**
-     * 读取超时
+     * The read timeout in seconds. Default is 30 seconds.
      */
     @Builder.Default
     private long readTimeout = 30;

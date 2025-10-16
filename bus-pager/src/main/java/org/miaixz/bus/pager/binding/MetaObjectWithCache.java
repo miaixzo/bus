@@ -37,17 +37,36 @@ import org.apache.ibatis.reflection.wrapper.ObjectWrapperFactory;
 import org.miaixz.bus.core.lang.exception.PageException;
 
 /**
- * 反射带缓存，提高反射性能
+ * Provides a cached reflection mechanism to improve reflection performance. This class uses MyBatis's
+ * {@link MetaObject} with default factories and a reflector factory to efficiently handle object reflection.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class MetaObjectWithCache {
 
+    /**
+     * The default {@link ObjectFactory} for creating new object instances.
+     */
     public static final ObjectFactory DEFAULT_OBJECT_FACTORY = new DefaultObjectFactory();
+    /**
+     * The default {@link ObjectWrapperFactory} for wrapping objects.
+     */
     public static final ObjectWrapperFactory DEFAULT_OBJECT_WRAPPER_FACTORY = new DefaultObjectWrapperFactory();
+    /**
+     * The default {@link ReflectorFactory} for creating and caching {@link org.apache.ibatis.reflection.Reflector}
+     * instances.
+     */
     public static final ReflectorFactory DEFAULT_REFLECTOR_FACTORY = new DefaultReflectorFactory();
 
+    /**
+     * Creates a {@link MetaObject} for the given object using cached reflection factories. This method provides an
+     * optimized way to access object properties and methods.
+     *
+     * @param object the object for which to create a MetaObject
+     * @return a {@link MetaObject} instance for the given object
+     * @throws PageException if an error occurs during MetaObject creation
+     */
     public static MetaObject forObject(Object object) {
         try {
             return MetaObject.forObject(

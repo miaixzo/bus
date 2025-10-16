@@ -36,7 +36,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * 企业付款到余额
+ * Enterprise payment to balance model.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,22 +48,73 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class Transfer extends Material {
 
+    /**
+     * Character set.
+     */
     private String input_charset;
+    /**
+     * Recipient's OpenID.
+     */
     private String openid;
+    /**
+     * Recipient's UIN.
+     */
     private String uin;
+    /**
+     * Merchant ID.
+     */
     private String mch_id;
+    /**
+     * Random string.
+     */
     private String nonce_str;
+    /**
+     * Signature.
+     */
     private String sign;
+    /**
+     * Merchant order number.
+     */
     private String out_trade_no;
+    /**
+     * Currency type.
+     */
     private String fee_type;
+    /**
+     * Total amount.
+     */
     private String total_fee;
+    /**
+     * Payment memo.
+     */
     private String memo;
+    /**
+     * Check user name option.
+     */
     private String check_name;
+    /**
+     * Recipient's name.
+     */
     private String re_user_name;
+    /**
+     * Whether to forcibly check the user's real name.
+     */
     private String check_real_name;
+    /**
+     * Operator ID.
+     */
     private String op_user_id;
+    /**
+     * Operator password.
+     */
     private String op_user_passwd;
+    /**
+     * Terminal IP address.
+     */
     private String spbill_create_ip;
+    /**
+     * Asynchronous notification URL.
+     */
     private String notify_url;
 
 }

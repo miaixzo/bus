@@ -31,7 +31,8 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 
 /**
- * 实现了{@link BeanPostProcessor}将StartupReporter注入到{@link StartupReporterAware} bean中。
+ * An implementation of {@link BeanPostProcessor} that injects a {@link StartupReporter} into any bean that implements
+ * the {@link StartupReporterAware} interface.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -39,19 +40,32 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
 public class StartupReporterProcessor implements BeanPostProcessor {
 
     /**
-     * 收集和启动报告成本的基本组件
+     * The {@link StartupReporter} instance to be injected.
      */
     private final StartupReporter startupReporter;
 
     /**
-     * 构造
+     * Constructs a new {@code StartupReporterProcessor} with the given {@link StartupReporter}.
      *
-     * @param startupReporter 收集和启动组件
+     * @param startupReporter The {@link StartupReporter} instance.
      */
     public StartupReporterProcessor(StartupReporter startupReporter) {
         this.startupReporter = startupReporter;
     }
 
+    /**
+     * Applies this {@code BeanPostProcessor} to the given new bean instance before any construction callbacks (like
+     * {@code InitializingBean}'s {@code afterPropertiesSet} or a custom init-method).
+     * <p>
+     * If the bean implements {@link StartupReporterAware}, its {@code setStartupReporter} method is called with the
+     * {@code startupReporter} instance.
+     * </p>
+     *
+     * @param bean     The new bean instance.
+     * @param beanName The name of the bean.
+     * @return The given bean instance.
+     * @throws BeansException in case of initialization errors.
+     */
     @Override
     public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
         if (bean instanceof StartupReporterAware) {

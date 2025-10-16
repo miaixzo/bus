@@ -49,7 +49,7 @@ import org.miaixz.bus.office.excel.xyz.CellKit;
 import org.miaixz.bus.office.excel.xyz.RowKit;
 
 /**
- * Sheet数据写出器 此对象只封装将数据写出到Sheet中，并不刷新到文件
+ * Sheet data writer. This object only encapsulates writing data to a Sheet and does not flush to a file.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -58,28 +58,29 @@ public class SheetDataWriter {
 
     private final Sheet sheet;
     /**
-     * Excel输出配置
+     * Excel output configuration.
      */
     private final ExcelWriteConfig config;
     /**
-     * 当前行，用于标记初始可写数据的行和部分写完后当前的行
+     * The current row, used to mark the initial writable row and the current row after partial writing.
      */
     private final AtomicInteger currentRow;
     /**
-     * 样式集，定义不同类型数据样式
+     * Style set, defining styles for different data types.
      */
     private StyleSet styleSet;
     /**
-     * 标题项对应列号缓存，每次写标题更新此缓存 此缓存用于用户多次write时，寻找标题位置
+     * Header item to column number mapping cache. This cache is updated each time a header is written. This cache is
+     * used to find the header position when the user writes multiple times.
      */
     private Map<String, Integer> headerLocationCache;
 
     /**
-     * 构造
+     * Constructs a new {@code SheetDataWriter}.
      *
-     * @param sheet    {@link Sheet}
-     * @param config   Excel配置
-     * @param styleSet 样式表
+     * @param sheet    The {@link Sheet} to write to.
+     * @param config   The Excel write configuration.
+     * @param styleSet The style set.
      */
     public SheetDataWriter(final Sheet sheet, final ExcelWriteConfig config, final StyleSet styleSet) {
         this.sheet = sheet;
@@ -89,10 +90,10 @@ public class SheetDataWriter {
     }
 
     /**
-     * 设置样式表
+     * Sets the style set.
      *
-     * @param styleSet 样式表
-     * @return this
+     * @param styleSet The style set.
+     * @return This {@code SheetDataWriter} instance, for chaining.
      */
     public SheetDataWriter setStyleSet(final StyleSet styleSet) {
         this.styleSet = styleSet;
@@ -100,10 +101,11 @@ public class SheetDataWriter {
     }
 
     /**
-     * 设置标题位置映射缓存
+     * Sets the header location mapping cache.
      *
-     * @param headerLocationCache 标题位置映射缓存，key为表明名，value为列号
-     * @return this
+     * @param headerLocationCache The header location mapping cache, where keys are header names and values are column
+     *                            numbers.
+     * @return This {@code SheetDataWriter} instance, for chaining.
      */
     public SheetDataWriter setHeaderLocationCache(final Map<String, Integer> headerLocationCache) {
         this.headerLocationCache = headerLocationCache;
@@ -111,27 +113,28 @@ public class SheetDataWriter {
     }
 
     /**
-     * 写出分组标题行
+     * Writes a grouped header row.
      *
-     * @param x        开始的列，下标从0开始
-     * @param y        开始的行，下标从0开始
-     * @param rowCount 当前分组行所占行数，此数值为标题占用行数+子分组占用的最大行数，不确定传1
-     * @param rowGroup 分组行
-     * @return this
+     * @param x        The starting column index (0-based).
+     * @param y        The starting row index (0-based).
+     * @param rowCount The number of rows occupied by the current group row. This value is the sum of rows occupied by
+     *                 the header and the maximum rows occupied by child groups. Pass 1 if uncertain.
+     * @param rowGroup The {@link RowGroup} representing the grouped header.
+     * @return This {@code SheetDataWriter} instance, for chaining.
      */
     public SheetDataWriter writeHeader(int x, int y, int rowCount, final RowGroup rowGroup) {
 
-        // 写主标题
+        // Write main header.
         final String name = rowGroup.getName();
         final List<RowGroup> children = rowGroup.getChildren();
         if (null != name) {
             if (CollKit.isNotEmpty(children)) {
-                // 有子节点，标题行只占用除子节点占用的行数
+                // If there are child nodes, the header row only occupies the rows not occupied by child nodes.
                 rowCount = Math.max(1, rowCount - rowGroup.childrenMaxRowCount());
                 // nameRowCount = 1;
             }
 
-            // 如果无子节点，则标题行占用所有行
+            // If there are no child nodes, the header row occupies all rows.
             final CellRangeAddress cellRangeAddresses = CellKit
                     .of(y, y + rowCount - 1, x, x + rowGroup.maxColumnCount() - 1);
             CellStyle style = rowGroup.getStyle();
@@ -148,15 +151,15 @@ public class SheetDataWriter {
                 CellKit.setCellValue(cell, name, style, this.config.getCellEditor());
             }
 
-            // 子分组写到下N行
+            // Child groups are written to the next N rows.
             y += rowCount;
         }
 
-        // 写分组
+        // Write groups.
         final int childrenMaxRowCount = rowGroup.childrenMaxRowCount();
         if (childrenMaxRowCount > 0) {
             for (final RowGroup child : children) {
-                // 子分组行高填充为当前分组最大值
+                // Child group row height is filled to the maximum value of the current group.
                 writeHeader(x, y, childrenMaxRowCount, child);
                 x += child.maxColumnCount();
             }
@@ -166,24 +169,33 @@ public class SheetDataWriter {
     }
 
     /**
-     * 写出一行，根据rowBean数据类型不同，写出情况如下：
+     * Writes a row. The behavior depends on the type of {@code rowBean}:
      *
      * <pre>
-     * 1、如果为Iterable，直接写出一行
-     * 2、如果为Map，isWriteKeyAsHead为true写出两行，Map的keys做为一行，values做为第二行，否则只写出一行values
-     * 3、如果为Bean，转为Map写出，isWriteKeyAsHead为true写出两行，Map的keys做为一行，values做为第二行，否则只写出一行values
+     * 1. If it is an {@link Iterable}, a single row is written directly.
+     * 2. If it is a {@link Map}, and {@code
+     * isWriteKeyAsHead
+     * } is {@code
+     * true
+     * }, two rows are written: the Map's keys as the first row, and its values as the second row. Otherwise, only the values are written as a single row.
+     * 3. If it is a Bean, it is converted to a Map. If {@code
+     * isWriteKeyAsHead
+     * } is {@code
+     * true
+     * }, two rows are written: the Bean's field names as the first row, and its field values as the second row. Otherwise, only the field values are written as a single row.
      * </pre>
      *
-     * @param rowBean          写出的Bean
-     * @param isWriteKeyAsHead 为true写出两行，Map的keys做为一行，values做为第二行，否则只写出一行values
-     * @return this
+     * @param rowBean          The Bean to write, which can be a {@link Map}, Bean, or {@link Iterable}.
+     * @param isWriteKeyAsHead {@code true} to write two rows (keys as header, values as data) for Map or Bean,
+     *                         {@code false} to write only values as a single row.
+     * @return This {@code SheetDataWriter} instance, for chaining.
      * @see #writeRow(Iterable)
      * @see #writeRow(Map, boolean)
      */
     public SheetDataWriter writeRow(final Object rowBean, final boolean isWriteKeyAsHead) {
         final ExcelWriteConfig config = this.config;
 
-        final Map rowMap;
+        final Map<?, ?> rowMap;
         if (rowBean instanceof Map) {
             if (MapKit.isNotEmpty(config.getHeaderAlias())) {
                 rowMap = MapKit.newTreeMap((Map) rowBean, config.getCachedAliasComparator());
@@ -191,44 +203,47 @@ public class SheetDataWriter {
                 rowMap = (Map) rowBean;
             }
         } else if (rowBean instanceof Iterable) {
-            // MapWrapper由于实现了Iterable接口，应该优先按照Map处理
+            // MapWrapper, since it implements Iterable, should be processed as a Map first.
             return writeRow((Iterable<?>) rowBean);
         } else if (rowBean instanceof Hyperlink) {
-            // Hyperlink当成一个值
+            // Hyperlink is treated as a single value.
             return writeRow(ListKit.of(rowBean), isWriteKeyAsHead);
         } else if (BeanKit.isReadableBean(rowBean.getClass())) {
             if (MapKit.isEmpty(config.getHeaderAlias())) {
                 rowMap = BeanKit.beanToMap(rowBean, new LinkedHashMap<>(), false, false);
             } else {
-                // 别名存在情况下按照别名的添加顺序排序Bean数据
+                // If aliases exist, sort Bean data according to the order of aliases.
                 rowMap = BeanKit.beanToMap(rowBean, new TreeMap<>(config.getCachedAliasComparator()), false, false);
             }
         } else {
-            // 其它转为字符串默认输出
+            // Other types are converted to string and output by default.
             return writeRow(ListKit.of(rowBean), isWriteKeyAsHead);
         }
         return writeRow(rowMap, isWriteKeyAsHead);
     }
 
     /**
-     * 将一个Map写入到Excel，isWriteKeyAsHead为true写出两行，Map的keys做为一行，values做为第二行，否则只写出一行values 如果rowMap为空（包括null），则写出空行
+     * Writes a {@link Map} to Excel. If {@code isWriteKeyAsHead} is {@code true}, two rows are written: the Map's keys
+     * as the first row, and its values as the second row. Otherwise, only the values are written as a single row. If
+     * {@code rowMap} is empty (including {@code null}), an empty row is written.
      *
-     * @param rowMap           写出的Map，为空（包括null），则写出空行
-     * @param isWriteKeyAsHead 为true写出两行，Map的keys做为一行，values做为第二行，否则只写出一行values
-     * @return this
+     * @param rowMap           The Map to write. If empty (including {@code null}), an empty row is written.
+     * @param isWriteKeyAsHead {@code true} to write two rows (keys as header, values as data), {@code false} to write
+     *                         only values as a single row.
+     * @return This {@code SheetDataWriter} instance, for chaining.
      */
     public SheetDataWriter writeRow(final Map<?, ?> rowMap, final boolean isWriteKeyAsHead) {
         if (MapKit.isEmpty(rowMap)) {
-            // 如果写出数据为null或空，跳过当前行
+            // If the data to write is null or empty, skip the current row.
             passAndGet();
             return this;
         }
 
         final Table<?, ?, ?> aliasTable = this.config.aliasTable(rowMap);
         if (isWriteKeyAsHead) {
-            // 写出标题行，并记录标题别名和列号的关系
+            // Write header row and record the relationship between header aliases and column numbers.
             writeHeaderRow(aliasTable.columnKeys());
-            // 记录原数据key和别名对应列号
+            // Record original data key and corresponding column number for alias.
             int i = 0;
             for (final Object key : aliasTable.rowKeySet()) {
                 this.headerLocationCache.putIfAbsent(StringKit.toString(key), i);
@@ -236,7 +251,7 @@ public class SheetDataWriter {
             }
         }
 
-        // 如果已经写出标题行，根据标题行找对应的值写入
+        // If the header row has already been written, write values according to the header row's positions.
         if (MapKit.isNotEmpty(this.headerLocationCache)) {
             final Row row = RowKit.getOrCreateRow(this.sheet, this.currentRow.getAndIncrement());
             final CellEditor cellEditor = this.config.getCellEditor();
@@ -259,11 +274,12 @@ public class SheetDataWriter {
     }
 
     /**
-     * 写出一行标题数据，标题数据不替换别名 本方法只是将数据写入Workbook中的Sheet，并不写出到文件
-     * 写出的起始行为当前行号，可使用{@link #getCurrentRow()}方法调用，根据写出的的行数，当前行号自动+1
+     * Writes a header row. Header data does not apply aliases. This method only writes data to the Workbook's Sheet and
+     * does not flush to a file. The starting row for writing is the current row number, which can be obtained using
+     * {@link #getCurrentRow()}. The current row number automatically increments based on the number of rows written.
      *
-     * @param rowData 一行的数据
-     * @return this
+     * @param rowData The data for the header row.
+     * @return This {@code SheetDataWriter} instance, for chaining.
      */
     public SheetDataWriter writeHeaderRow(final Iterable<?> rowData) {
         final int rowNum = this.currentRow.getAndIncrement();
@@ -284,10 +300,12 @@ public class SheetDataWriter {
     }
 
     /**
-     * 写出一行数据 本方法只是将数据写入Workbook中的Sheet，并不写出到文件 写出的起始行为当前行号，可使用{@link #getCurrentRow()}方法调用，根据写出的的行数，当前行号自动+1
+     * Writes a row of data. This method only writes data to the Workbook's Sheet and does not flush to a file. The
+     * starting row for writing is the current row number, which can be obtained using {@link #getCurrentRow()}. The
+     * current row number automatically increments based on the number of rows written.
      *
-     * @param rowData 一行的数据
-     * @return this
+     * @param rowData The data for the row.
+     * @return This {@code SheetDataWriter} instance, for chaining.
      */
     public SheetDataWriter writeRow(final Iterable<?> rowData) {
         final int rowNum = this.currentRow.getAndIncrement();
@@ -298,19 +316,19 @@ public class SheetDataWriter {
     }
 
     /**
-     * 获得当前行
+     * Gets the current row number.
      *
-     * @return 当前行
+     * @return The current row number (0-based).
      */
     public int getCurrentRow() {
         return this.currentRow.get();
     }
 
     /**
-     * 设置当前所在行
+     * Sets the current row number.
      *
-     * @param rowIndex 行号
-     * @return this
+     * @param rowIndex The row number to set.
+     * @return This {@code SheetDataWriter} instance, for chaining.
      */
     public SheetDataWriter setCurrentRow(final int rowIndex) {
         this.currentRow.set(rowIndex);
@@ -318,28 +336,28 @@ public class SheetDataWriter {
     }
 
     /**
-     * 跳过当前行，并获取下一行的行号
+     * Skips the current row and gets the next row number.
      *
-     * @return this
+     * @return The next row number.
      */
     public int passAndGet() {
         return this.currentRow.incrementAndGet();
     }
 
     /**
-     * 跳过指定行数，并获取当前行号
+     * Skips a specified number of rows and gets the current row number.
      *
-     * @param rowNum 跳过的行数
-     * @return this
+     * @param rowNum The number of rows to skip.
+     * @return The current row number after skipping.
      */
     public int passRowsAndGet(final int rowNum) {
         return this.currentRow.addAndGet(rowNum);
     }
 
     /**
-     * 重置当前行为0
+     * Resets the current row number to 0.
      *
-     * @return this
+     * @return This {@code SheetDataWriter} instance, for chaining.
      */
     public SheetDataWriter resetRow() {
         this.currentRow.set(0);
@@ -347,16 +365,16 @@ public class SheetDataWriter {
     }
 
     /**
-     * 查找标题或标题别名对应的列号
+     * Finds the column number corresponding to a header or header alias.
      *
-     * @param cell 别名表，rowKey：原名，columnKey：别名
-     * @return 列号，如果未找到返回null
+     * @param cell The alias table, where rowKey is the original name and columnKey is the alias.
+     * @return The column number, or {@code null} if not found.
      */
     private Integer getColumnIndex(final Table.Cell<?, ?, ?> cell) {
-        // 首先查找原名对应的列号
+        // First, look for the column number corresponding to the original name.
         Integer location = this.headerLocationCache.get(StringKit.toString(cell.getRowKey()));
         if (null == location) {
-            // 未找到，则查找别名对应的列号
+            // If not found, look for the column number corresponding to the alias.
             location = this.headerLocationCache.get(StringKit.toString(cell.getColumnKey()));
         }
         return location;

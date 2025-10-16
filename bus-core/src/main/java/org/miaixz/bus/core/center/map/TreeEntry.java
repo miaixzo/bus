@@ -34,10 +34,12 @@ import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 
 /**
- * 允许拥有一个父节点与多个子节点的{@link Map.Entry}实现， 表示一个以key作为唯一标识，并且可以挂载一个对应值的树节点， 提供一些基于该节点对其所在树结构进行访问的方法
+ * Represents a node within a tree structure, extending {@link Map.Entry} to hold a key-value pair. Each
+ * {@code TreeEntry} can have a single parent and multiple children, allowing for hierarchical data representation. This
+ * interface provides methods for navigating the tree, querying relationships, and accessing node properties.
  *
- * @param <V> 节点的key类型
- * @param <K> 节点的value类型
+ * @param <K> The type of the key that uniquely identifies this node.
+ * @param <V> The type of the value associated with this node.
  * @author Kimi Liu
  * @see ForestMap
  * @since Java 17+
@@ -45,97 +47,102 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 public interface TreeEntry<K, V> extends Map.Entry<K, V> {
 
     /**
-     * 获取以当前节点作为叶子节点的树结构，然后获取当前节点与根节点的距离
+     * Retrieves the depth or level of this node within its tree structure. The root node typically has a weight of 0.
      *
-     * @return 当前节点与根节点的距离
+     * @return The integer weight (depth) of the current node from the root.
      */
     int getWeight();
 
     /**
-     * 获取以当前节点作为叶子节点的树结构，然后获取该树结构的根节点
+     * Retrieves the root node of the tree to which this node belongs. The root node is the topmost node in the
+     * hierarchy, having no parent.
      *
-     * @return 根节点
+     * @return The root {@link TreeEntry} of the tree.
      */
     TreeEntry<K, V> getRoot();
 
     /**
-     * 当前节点是否存在直接关联的父节点
+     * Checks if this node has a directly declared parent.
      *
-     * @return 是否
+     * @return {@code true} if this node has an immediate parent, {@code false} otherwise (e.g., if it's a root node).
      */
     default boolean hasParent() {
         return ObjectKit.isNotNull(getDeclaredParent());
     }
 
     /**
-     * 获取当前节点直接关联的父节点
+     * Retrieves the directly declared parent node of this node.
      *
-     * @return 父节点，当节点不存在对应父节点时返回null
+     * @return The immediate parent {@link TreeEntry}, or {@code null} if this node is a root node or has no declared
+     *         parent.
      */
     TreeEntry<K, V> getDeclaredParent();
 
     /**
-     * 获取以当前节点作为叶子节点的树结构，然后获取该树结构中当前节点的指定父节点
+     * Retrieves a specific ancestor node by its key within the tree structure. This method traverses up the hierarchy
+     * from the current node to find the ancestor.
      *
-     * @param key 指定父节点的key
-     * @return 指定父节点，当不存在时返回null
+     * @param key The key of the specific parent (ancestor) node to retrieve.
+     * @return The specified parent {@link TreeEntry}, or {@code null} if no such ancestor is found.
      */
     TreeEntry<K, V> getParent(K key);
 
     /**
-     * 获取以当前节点作为叶子节点的树结构，然后确认该树结构中当前节点是否存在指定父节点
+     * Checks if a node with the given key is an ancestor of this node.
      *
-     * @param key 指定父节点的key
-     * @return 是否
+     * @param key The key of the potential ancestor node.
+     * @return {@code true} if the node with the given key is an ancestor of this node, {@code false} otherwise.
      */
     default boolean containsParent(final K key) {
         return ObjectKit.isNotNull(getParent(key));
     }
 
     /**
-     * 获取以当前节点作为根节点的树结构，然后遍历所有节点
+     * Traverses all descendant nodes (including itself if {@code includeSelf} is true) in a depth-first manner,
+     * applying the given consumer to each node.
      *
-     * @param includeSelf  是否处理当前节点
-     * @param nodeConsumer 对节点的处理
+     * @param includeSelf  If {@code true}, the current node is included in the traversal; otherwise, traversal starts
+     *                     from its children.
+     * @param nodeConsumer A {@link Consumer} to apply to each traversed {@link TreeEntry}.
      */
     void forEachChild(boolean includeSelf, Consumer<TreeEntry<K, V>> nodeConsumer);
 
     /**
-     * 获取当前节点直接关联的子节点
+     * Retrieves a map of the direct children of this node, where keys are the children's keys.
      *
-     * @return 节点
+     * @return A {@link Map} containing the direct child {@link TreeEntry} objects, keyed by their keys.
      */
     Map<K, TreeEntry<K, V>> getDeclaredChildren();
 
     /**
-     * 获取以当前节点作为根节点的树结构，然后获取该树结构中的当前节点的全部子节点
+     * Retrieves a map of all descendant nodes (direct and indirect children) of this node, keyed by their keys.
      *
-     * @return 节点
+     * @return A {@link Map} containing all descendant {@link TreeEntry} objects, keyed by their keys.
      */
     Map<K, TreeEntry<K, V>> getChildren();
 
     /**
-     * 当前节点是否有子节点
+     * Checks if this node has any direct child nodes.
      *
-     * @return 是否
+     * @return {@code true} if this node has one or more direct children, {@code false} otherwise.
      */
     default boolean hasChildren() {
         return CollKit.isNotEmpty(getDeclaredChildren());
     }
 
     /**
-     * 获取以当前节点作为根节点的树结构，然后获取该树结构中的当前节点的指定子节点
+     * Retrieves a specific child node by its key from the direct children of this node.
      *
-     * @param key 指定子节点的key
-     * @return 节点
+     * @param key The key of the specific child node to retrieve.
+     * @return The specified child {@link TreeEntry}, or {@code null} if no direct child with that key is found.
      */
     TreeEntry<K, V> getChild(K key);
 
     /**
-     * 获取以当前节点作为根节点的树结构，然后确认该树结构中当前节点是否存在指定子节点
+     * Checks if this node has a direct child with the specified key.
      *
-     * @param key 指定子节点的key
-     * @return 是否
+     * @param key The key of the child node to check for.
+     * @return {@code true} if a direct child with the given key exists, {@code false} otherwise.
      */
     default boolean containsChild(final K key) {
         return ObjectKit.isNotNull(getChild(key));

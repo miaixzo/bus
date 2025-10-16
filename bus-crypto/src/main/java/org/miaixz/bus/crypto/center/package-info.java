@@ -26,12 +26,12 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 加密解密模块，实现了对JDK中加密解密算法的封装。
+ * Encryption and decryption module, which encapsulates the encryption and decryption algorithms in the JDK.
  *
  * <pre>
- * 1. 对称加密，例如：AES、DES等
- * 2. 非对称加密，例如：RSA、DSA等
- * 3. 摘要加密，例如：MD5、SHA-1、SHA-256、HMAC等
+ * 1. Symmetric encryption, e.g., AES, DES, etc.
+ * 2. Asymmetric encryption, e.g., RSA, DSA, etc.
+ * 3. Digest encryption, e.g., MD5, SHA-1, SHA-256, HMAC, etc.
  * </pre>
  *
  * @author Kimi Liu

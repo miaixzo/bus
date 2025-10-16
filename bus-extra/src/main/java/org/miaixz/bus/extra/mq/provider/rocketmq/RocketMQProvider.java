@@ -39,32 +39,47 @@ import org.miaixz.bus.extra.mq.Producer;
 import org.miaixz.bus.extra.mq.MQProvider;
 
 /**
- * RocketMQ引擎
+ * RocketMQ message queue engine implementation class. This class serves as a concrete {@link MQProvider} for Apache
+ * RocketMQ, handling the initialization of RocketMQ producers and consumers. It abstracts the underlying RocketMQ
+ * client details and provides a simplified interface for message operations.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class RocketMQProvider implements MQProvider {
 
+    /**
+     * The message queue configuration object, holding connection details like broker URL.
+     */
     private MQConfig config;
+    /**
+     * The name of the producer group for RocketMQ. Defaults to {@link MixAll#DEFAULT_PRODUCER_GROUP}.
+     */
     private String producerGroup;
+    /**
+     * The name of the consumer group for RocketMQ. Defaults to {@link MixAll#DEFAULT_CONSUMER_GROUP}.
+     */
     private String consumerGroup;
 
     /**
-     * 默认构造方法 初始化 RocketMQProvider 实例，检查必要库是否引入，并设置默认的生产者和消费者组
+     * Default constructor for {@code RocketMQProvider}. This constructor is primarily used when the provider is loaded
+     * via Java's Service Provider Interface (SPI). It includes an assertion to ensure that the RocketMQ client library
+     * (specifically {@link org.apache.rocketmq.common.message.Message} class) is present on the classpath, preventing
+     * runtime errors if the dependency is missing. It also sets default values for producer and consumer groups.
      */
     public RocketMQProvider() {
-        // SPI方式加载时检查库是否引入
+        // Check if the library is introduced when loading via SPI
         Assert.notNull(org.apache.rocketmq.common.message.Message.class);
         this.producerGroup = MixAll.DEFAULT_PRODUCER_GROUP;
         this.consumerGroup = MixAll.DEFAULT_CONSUMER_GROUP;
     }
 
     /**
-     * 设置生产者组
+     * Sets the producer group name for this RocketMQ provider. This group name is used when creating
+     * {@link DefaultMQProducer} instances.
      *
-     * @param producerGroup 生产者组名称
-     * @return 当前 RocketMQProvider 实例
+     * @param producerGroup The name of the producer group.
+     * @return This {@code RocketMQProvider} instance, allowing for method chaining.
      */
     public RocketMQProvider setProducerGroup(final String producerGroup) {
         this.producerGroup = producerGroup;
@@ -72,10 +87,11 @@ public class RocketMQProvider implements MQProvider {
     }
 
     /**
-     * 设置消费者组
+     * Sets the consumer group name for this RocketMQ provider. This group name is used when creating
+     * {@link DefaultMQPushConsumer} instances.
      *
-     * @param consumerGroup 消费者组名称
-     * @return 当前 RocketMQProvider 实例
+     * @param consumerGroup The name of the consumer group.
+     * @return This {@code RocketMQProvider} instance, allowing for method chaining.
      */
     public RocketMQProvider setConsumerGroup(final String consumerGroup) {
         this.consumerGroup = consumerGroup;
@@ -83,10 +99,11 @@ public class RocketMQProvider implements MQProvider {
     }
 
     /**
-     * 初始化 RocketMQProvider
+     * Initializes the RocketMQProvider with the provided {@link MQConfig}. This method stores the configuration for
+     * later use when creating producers and consumers.
      *
-     * @param config 消息队列配置对象
-     * @return 当前 RocketMQProvider 实例
+     * @param config The {@link MQConfig} object, containing necessary connection information like the broker URL.
+     * @return This {@code RocketMQProvider} instance, allowing for method chaining.
      */
     @Override
     public RocketMQProvider init(final MQConfig config) {
@@ -95,10 +112,11 @@ public class RocketMQProvider implements MQProvider {
     }
 
     /**
-     * 获取消息生产者 创建并启动一个 DefaultMQProducer 实例，配置其 Broker 地址
+     * Retrieves a {@link Producer} instance configured for RocketMQ. This method creates and starts a
+     * {@link DefaultMQProducer} using the configured producer group and broker address from the {@link MQConfig}.
      *
-     * @return 消息生产者实例
-     * @throws MQueueException 如果启动生产者失败
+     * @return A {@link RocketMQProducer} instance for sending messages to RocketMQ.
+     * @throws MQueueException if starting the producer fails due to an underlying RocketMQ client exception.
      */
     @Override
     public Producer getProducer() {
@@ -113,9 +131,10 @@ public class RocketMQProvider implements MQProvider {
     }
 
     /**
-     * 获取消息消费者 创建一个 DefaultMQPushConsumer 实例，配置其 Broker 地址
+     * Retrieves a {@link Consumer} instance configured for RocketMQ. This method creates a
+     * {@link DefaultMQPushConsumer} using the configured consumer group and broker address from the {@link MQConfig}.
      *
-     * @return 消息消费者实例
+     * @return A {@link RocketMQConsumer} instance for receiving messages from RocketMQ.
      */
     @Override
     public Consumer getConsumer() {

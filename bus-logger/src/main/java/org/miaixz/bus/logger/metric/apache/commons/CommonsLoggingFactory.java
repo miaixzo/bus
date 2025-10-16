@@ -31,7 +31,7 @@ import org.miaixz.bus.logger.Provider;
 import org.miaixz.bus.logger.magic.AbstractFactory;
 
 /**
- * apache commons logging
+ * A factory for creating {@link org.apache.commons.logging.Log} instances.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -39,7 +39,9 @@ import org.miaixz.bus.logger.magic.AbstractFactory;
 public class CommonsLoggingFactory extends AbstractFactory {
 
     /**
-     * 构造
+     * Constructs a new {@code CommonsLoggingFactory}. This factory is responsible for creating loggers based on the
+     * Apache Commons Logging framework. It also checks for the existence of the
+     * {@link org.apache.commons.logging.LogFactory} class.
      */
     public CommonsLoggingFactory() {
         super("org.apache.commons.logging.Log");
@@ -56,9 +58,15 @@ public class CommonsLoggingFactory extends AbstractFactory {
         return new CommonsLoggingProvider(clazz);
     }
 
+    /**
+     * Checks if the logging implementation exists and creates a logger for this factory class.
+     *
+     * @param logClassName the logging implementation class to check.
+     */
     @Override
     protected void exists(final Class<?> logClassName) {
         super.exists(logClassName);
+        // This is to ensure that the logging framework is initialized.
         create(CommonsLoggingFactory.class);
     }
 

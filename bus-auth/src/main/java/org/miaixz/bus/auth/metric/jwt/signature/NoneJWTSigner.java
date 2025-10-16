@@ -31,9 +31,10 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 无需签名的 JWT 签名器。
+ * JWT signer for unsigned JWTs.
  * <p>
- * 实现 {@link JWTSigner} 接口，用于不需签名验证的 JWT 场景（算法标识为 "none"）。 该签名器返回空签名，并验证签名是否为空。
+ * Implements the {@link JWTSigner} interface for scenarios where JWTs do not require signature verification (algorithm
+ * identifier is "none"). This signer returns an empty signature and verifies if the provided signature is empty.
  * </p>
  *
  * @author Kimi Liu
@@ -43,24 +44,24 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class NoneJWTSigner implements JWTSigner {
 
     /**
-     * 无签名算法标识，值为 "none"。
+     * Algorithm identifier for no signature, with a value of "none".
      */
     public static final String ID_NONE = Normal.NONE;
 
     /**
-     * 单例实例，无需签名的签名器。
+     * Singleton instance of the signer for unsigned JWTs.
      */
     public static NoneJWTSigner NONE = new NoneJWTSigner();
 
     /**
-     * 生成 JWT 签名。
+     * Generates a JWT signature.
      * <p>
-     * 对于 "none" 算法，返回空字符串作为签名。
+     * For the "none" algorithm, an empty string is returned as the signature.
      * </p>
      *
-     * @param headerBase64  Base64 编码的 JWT header
-     * @param payloadBase64 Base64 编码的 JWT payload
-     * @return 空字符串签名
+     * @param headerBase64  Base64 encoded JWT header
+     * @param payloadBase64 Base64 encoded JWT payload
+     * @return an empty string as the signature
      */
     @Override
     public String sign(final String headerBase64, final String payloadBase64) {
@@ -68,15 +69,15 @@ public class NoneJWTSigner implements JWTSigner {
     }
 
     /**
-     * 验证 JWT 签名。
+     * Verifies the JWT signature.
      * <p>
-     * 检查提供的签名是否为空字符串，表示无签名验证通过。
+     * Checks if the provided signature is an empty string, indicating successful verification for unsigned JWTs.
      * </p>
      *
-     * @param headerBase64  Base64 编码的 JWT header
-     * @param payloadBase64 Base64 编码的 JWT payload
-     * @param signBase64    Base64 编码的签名
-     * @return 是否验证通过（签名为空时返回 true）
+     * @param headerBase64  Base64 encoded JWT header
+     * @param payloadBase64 Base64 encoded JWT payload
+     * @param signBase64    Base64 encoded signature to be verified
+     * @return true if the signature is empty, false otherwise
      */
     @Override
     public boolean verify(final String headerBase64, final String payloadBase64, final String signBase64) {
@@ -84,9 +85,9 @@ public class NoneJWTSigner implements JWTSigner {
     }
 
     /**
-     * 获取签名算法标识。
+     * Retrieves the signing algorithm identifier.
      *
-     * @return 算法标识 "none"
+     * @return the algorithm identifier "none"
      */
     @Override
     public String getAlgorithm() {

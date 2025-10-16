@@ -27,8 +27,6 @@
 */
 package org.miaixz.bus.spring.banner;
 
-import java.io.PrintStream;
-
 import org.miaixz.bus.core.Version;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.spring.GeniusBuilder;
@@ -36,36 +34,49 @@ import org.springframework.boot.Banner;
 import org.springframework.boot.SpringBootVersion;
 import org.springframework.boot.ansi.AnsiColor;
 import org.springframework.boot.ansi.AnsiOutput;
-import org.springframework.core.env.Environment;
 
 /**
- * 旗标生成器
+ * A text-based {@link Banner} implementation that displays a custom ASCII art banner along with Spring Boot and Bus
+ * framework version information.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class TextBanner extends AbstractBanner implements Banner {
+public class TextBanner extends AbstractBanner {
 
+    /**
+     * Constructs a default {@code TextBanner} with no specific resource location.
+     */
     public TextBanner() {
         super(null, null, null);
     }
 
+    /**
+     * Constructs a {@code TextBanner} with a specified resource class, location, and default banner text.
+     *
+     * @param resourceClass    The class to use for loading resources.
+     * @param resourceLocation The location of the banner resource.
+     * @param defaultBanner    The default banner text to use if the resource is not found.
+     */
     public TextBanner(Class<?> resourceClass, String resourceLocation, String defaultBanner) {
         super(resourceClass, resourceLocation, defaultBanner);
     }
 
-    @Override
-    public void printBanner(Environment environment, Class<?> sourceClass, PrintStream printStream) {
-        printStream.println();
-        printStream.println(printBanner(null));
-        printStream.println();
-    }
-
+    /**
+     * Generates the banner text, including custom ASCII art and version information.
+     * <p>
+     * The custom ASCII art is retrieved from {@code GeniusBuilder.BUS_BANNER} and colored green. Spring Boot and Bus
+     * framework versions are also included and colored magenta.
+     * </p>
+     *
+     * @param bannerText (Ignored in this implementation, as the banner is generated internally).
+     * @return The formatted banner string.
+     */
     @Override
     protected String printBanner(String bannerText) {
         StringBuilder builder = new StringBuilder();
         for (String line : GeniusBuilder.BUS_BANNER) {
-            builder.append(AnsiOutput.toString(AnsiColor.BRIGHT_GREEN, line) + "\n");
+            builder.append(AnsiOutput.toString(AnsiColor.BRIGHT_GREEN, line)).append("\n");
         }
 
         String springVersion = GeniusBuilder.SPRING_BOOT_BANNER

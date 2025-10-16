@@ -33,7 +33,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 作业启动管理器
+ * Manages the creation and lifecycle of {@link Launcher} instances. Each time the cron timer ticks, a new
+ * {@link Launcher} is spawned by this supervisor to check for tasks that should be executed.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,25 +44,28 @@ public class Supervisor implements Serializable {
     @Serial
     private static final long serialVersionUID = 2852287618105L;
     /**
-     * 启动器列表
+     * A list of currently active launchers.
      */
     protected final List<Launcher> launchers = new ArrayList<>();
+    /**
+     * The scheduler that this supervisor belongs to.
+     */
     protected Scheduler scheduler;
 
     /**
-     * 构造
+     * Constructs a new Supervisor.
      *
-     * @param scheduler {@link Scheduler}
+     * @param scheduler The {@link Scheduler}.
      */
     public Supervisor(final Scheduler scheduler) {
         this.scheduler = scheduler;
     }
 
     /**
-     * 启动 Launcher
+     * Spawns and executes a new {@link Launcher}.
      *
-     * @param millis 触发事件的毫秒数
-     * @return {@link Launcher}
+     * @param millis The timestamp for the trigger event in milliseconds.
+     * @return The newly created {@link Launcher}.
      */
     protected Launcher spawnLauncher(final long millis) {
         final Launcher launcher = new Launcher(this.scheduler, millis);
@@ -73,9 +77,10 @@ public class Supervisor implements Serializable {
     }
 
     /**
-     * 启动器启动完毕，启动完毕后从执行器列表中移除
+     * Called by a {@link Launcher} to notify the supervisor that it has completed its work. The completed launcher is
+     * then removed from the list of active launchers.
      *
-     * @param launcher 启动器 {@link Launcher}
+     * @param launcher The {@link Launcher} that has completed.
      */
     protected void notifyLauncherCompleted(final Launcher launcher) {
         synchronized (launchers) {

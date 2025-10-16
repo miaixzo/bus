@@ -26,13 +26,13 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 提供日期解析相关封装，主要包括：
+ * Provides date parsing related encapsulations, mainly including:
  * 
  * <pre>
  *                  DateParser
  *                   /    \
  *     FastDateParser     RegisterDateParser
- *   （根据日期格式解析）   （根据注册的模式匹配解析）
+ *   (Parses based on date format)   (Parses based on registered pattern matching)
  * </pre>
  *
  * @author Kimi Liu

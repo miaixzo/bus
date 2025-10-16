@@ -27,6 +27,14 @@
 */
 package org.miaixz.bus.socket.accord;
 
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.xyz.IoKit;
+import org.miaixz.bus.socket.*;
+import org.miaixz.bus.socket.buffer.BufferPage;
+import org.miaixz.bus.socket.buffer.VirtualBuffer;
+import org.miaixz.bus.socket.buffer.WriteBuffer;
+import org.miaixz.bus.socket.metric.channel.AsynchronousChannelProvider;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetSocketAddress;
@@ -36,32 +44,25 @@ import java.nio.channels.CompletionHandler;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.xyz.IoKit;
-import org.miaixz.bus.socket.*;
-import org.miaixz.bus.socket.buffer.BufferPage;
-import org.miaixz.bus.socket.buffer.VirtualBuffer;
-import org.miaixz.bus.socket.buffer.WriteBuffer;
-import org.miaixz.bus.socket.metric.channels.AsynchronousChannelProvider;
-
 /**
- * AIO传输层会话
- *
+ * Represents a TCP session for AIO (Asynchronous I/O).
  * <p>
- * Session为最核心的类，封装{@link AsynchronousSocketChannel} API接口，简化IO操作。
+ * This class is the core component, encapsulating the {@link AsynchronousSocketChannel} API to simplify I/O operations.
+ * The public API for users includes methods for managing the session lifecycle, accessing addresses, and handling data
+ * streams.
  * </p>
- * 其中开放给用户使用的接口为：
+ * Publicly accessible methods include:
  * <ol>
- * <li>{@link TcpSession#close()}</li>
- * <li>{@link TcpSession#close(boolean)}</li>
- * <li>{@link TcpSession#getAttachment()}</li>
- * <li>{@link TcpSession#getInputStream()}</li>
- * <li>{@link TcpSession#getInputStream(int)}</li>
- * <li>{@link TcpSession#getLocalAddress()}</li>
- * <li>{@link TcpSession#getRemoteAddress()}</li>
- * <li>{@link TcpSession#getSessionID()}</li>
- * <li>{@link TcpSession#isInvalid()}</li>
- * <li>{@link TcpSession#setAttachment(Object)}</li>
+ * <li>{@link #close()}
+ * <li>{@link #close(boolean)}
+ * <li>{@link #getAttachment()}
+ * <li>{@link #getInputStream()}
+ * <li>{@link #getInputStream(int)}
+ * <li>{@link #getLocalAddress()}
+ * <li>{@link #getRemoteAddress()}
+ * <li>{@link #getSessionID()}
+ * <li>{@link #isInvalid()}
+ * <li>{@link #setAttachment(Object)}
  * </ol>
  *
  * @author Kimi Liu
@@ -70,49 +71,58 @@ import org.miaixz.bus.socket.metric.channels.AsynchronousChannelProvider;
 public class TcpSession extends Session {
 
     /**
-     * 底层通信channel对象
+     * The underlying asynchronous socket channel for communication.
      */
     private final AsynchronousSocketChannel channel;
     /**
-     * 输出流
+     * The buffer for handling outgoing data.
      */
     private final WriteBuffer byteBuf;
     /**
-     * 服务上下文
+     * The server or client context.
      */
     private final Context context;
     /**
-     * 缓冲函数
+     * A supplier for providing read buffers.
      */
     private final Supplier<VirtualBuffer> readBufferSupplier;
     /**
-     * 读缓冲 大小取决于AioClient/AioServer设置的setReadBufferSize
+     * The buffer for reading incoming data. Its size is determined by the `setReadBufferSize` setting in
+     * AioClient/AioServer.
      */
     private VirtualBuffer readBuffer;
     /**
-     * 写缓冲
+     * The buffer for writing outgoing data.
      */
     private VirtualBuffer writeBuffer;
     /**
-     * 同步输入流
+     * The input stream for synchronous reading.
      */
     private InputStream inputStream;
 
     /**
-     * @param channel Socket通道
+     * Constructs a new TcpSession.
+     *
+     * @param channel            the underlying socket channel
+     * @param context            the server/client context
+     * @param writeBufferPage    the buffer page for writing
+     * @param readBufferSupplier a supplier for read buffers
      */
     public TcpSession(AsynchronousSocketChannel channel, Context context, BufferPage writeBufferPage,
             Supplier<VirtualBuffer> readBufferSupplier) {
         this.channel = channel;
         this.context = context;
         this.readBufferSupplier = readBufferSupplier;
-        byteBuf = new WriteBuffer(writeBufferPage, this::continueWrite, this.context.getWriteBufferSize(),
+        this.byteBuf = new WriteBuffer(writeBufferPage, this::continueWrite, this.context.getWriteBufferSize(),
                 this.context.getWriteBufferCapacity());
-        // 触发状态机
+        // Trigger the state machine for a new session
         this.context.getProcessor().stateEvent(this, Status.NEW_SESSION, null);
         doRead();
     }
 
+    /**
+     * Initializes the read buffer and signals the start of a read operation.
+     */
     void doRead() {
         this.readBuffer = readBufferSupplier.get();
         this.readBuffer.buffer().flip();
@@ -120,43 +130,46 @@ public class TcpSession extends Session {
     }
 
     /**
-     * 触发AIO的写操作, 需要调用控制同步
+     * Called upon completion of an AIO write operation. Requires synchronous control.
+     *
+     * @param result the number of bytes written
      */
     void writeCompleted(int result) {
         Monitor monitor = context.getMonitor();
         if (monitor != null) {
             monitor.afterWrite(this, result);
         }
-        VirtualBuffer writeBuffer = TcpSession.this.writeBuffer;
-        TcpSession.this.writeBuffer = null;
-        if (writeBuffer == null) {
-            writeBuffer = byteBuf.poll();
-        } else if (!writeBuffer.buffer().hasRemaining()) {
-            writeBuffer.clean();
-            writeBuffer = byteBuf.poll();
+        VirtualBuffer currentWriteBuffer = this.writeBuffer;
+        this.writeBuffer = null;
+        if (currentWriteBuffer == null) {
+            currentWriteBuffer = byteBuf.poll();
+        } else if (!currentWriteBuffer.buffer().hasRemaining()) {
+            currentWriteBuffer.clean();
+            currentWriteBuffer = byteBuf.poll();
         }
 
-        if (writeBuffer != null) {
-            continueWrite(writeBuffer);
+        if (currentWriteBuffer != null) {
+            continueWrite(currentWriteBuffer);
             return;
         }
         byteBuf.finishWrite();
-        // 此时可能是Closing或Closed状态
+        // The session might be in a Closing or Closed state
         if (status != SESSION_STATUS_ENABLED) {
             close();
         } else {
-            // 也许此时有新的消息通过write方法添加到writeCacheQueue中
+            // New messages might have been added to the write queue via the write method
             byteBuf.flush();
         }
     }
 
     /**
-     * 是否立即关闭会话
+     * Closes the session.
      *
-     * @param immediate true:立即关闭,false:响应消息发送完后关闭
+     * @param immediate if {@code true}, the session is closed immediately; otherwise, it closes after all pending
+     *                  messages are sent.
      */
     public synchronized void close(boolean immediate) {
-        // status == SESSION_STATUS_CLOSED说明close方法被重复调用
+        // Check if the close method has already been called
         if (status == SESSION_STATUS_CLOSED) {
             return;
         }
@@ -185,7 +198,9 @@ public class TcpSession extends Session {
     }
 
     /**
-     * @return 输入流
+     * Gets the write buffer for this session.
+     *
+     * @return the {@link WriteBuffer}
      */
     public WriteBuffer writeBuffer() {
         return byteBuf;
@@ -201,8 +216,13 @@ public class TcpSession extends Session {
         modCount++;
     }
 
+    /**
+     * Called upon completion of a read operation.
+     *
+     * @param result the number of bytes read, or -1 if the end of the stream has been reached
+     */
     void readCompleted(int result) {
-        // 释放缓冲区
+        // Release the buffer
         if (result == AsynchronousChannelProvider.READ_MONITOR_SIGNAL) {
             this.readBuffer.clean();
             this.readBuffer = null;
@@ -212,7 +232,7 @@ public class TcpSession extends Session {
             doRead();
             return;
         }
-        // 接收到的消息进行预处理
+        // Pre-process the received message
         Monitor monitor = context.getMonitor();
         if (monitor != null) {
             monitor.afterRead(this, result);
@@ -225,7 +245,7 @@ public class TcpSession extends Session {
     }
 
     /**
-     * 读事件回调处理
+     * Completion handler for read events.
      */
     private static final CompletionHandler<Integer, TcpSession> READ_COMPLETION_HANDLER = new CompletionHandler<>() {
 
@@ -254,7 +274,7 @@ public class TcpSession extends Session {
     };
 
     /**
-     * 触发通道的读回调操作
+     * Triggers the channel's read callback operation.
      */
     public void signalRead() {
         int modCount = this.modCount;
@@ -275,7 +295,7 @@ public class TcpSession extends Session {
                 break;
             }
 
-            // 处理消息
+            // Process the message
             try {
                 handler.process(this, dataEntry);
                 if (modCount != this.modCount) {
@@ -298,7 +318,7 @@ public class TcpSession extends Session {
         byteBuf.flush();
 
         readBuffer.compact();
-        // 读缓冲区已满
+        // If the read buffer is full, it indicates a potential issue with the protocol decoding
         if (!readBuffer.hasRemaining()) {
             InternalException exception = new InternalException(
                     "readBuffer overflow. The current TCP connection will be closed. Please fix your "
@@ -307,7 +327,7 @@ public class TcpSession extends Session {
             throw exception;
         }
 
-        // 从通道读取
+        // Read from the channel
         Monitor monitor = context.getMonitor();
         if (monitor != null) {
             monitor.beforeRead(this);
@@ -316,9 +336,9 @@ public class TcpSession extends Session {
     }
 
     /**
-     * 触发写操作
+     * Triggers a write operation.
      *
-     * @param writeBuffer 存放待输出数据的buffer
+     * @param writeBuffer the buffer containing the data to be written
      */
     private void continueWrite(VirtualBuffer writeBuffer) {
         this.writeBuffer = writeBuffer;
@@ -330,8 +350,10 @@ public class TcpSession extends Session {
     }
 
     /**
-     * @return 本地地址
-     * @throws IOException IO异常
+     * Gets the local address of the socket.
+     *
+     * @return the local address
+     * @throws IOException if an I/O error occurs
      * @see AsynchronousSocketChannel#getLocalAddress()
      */
     public InetSocketAddress getLocalAddress() throws IOException {
@@ -340,8 +362,10 @@ public class TcpSession extends Session {
     }
 
     /**
-     * @return 远程地址
-     * @throws IOException IO异常
+     * Gets the remote address of the socket.
+     *
+     * @return the remote address
+     * @throws IOException if an I/O error occurs
      * @see AsynchronousSocketChannel#getRemoteAddress()
      */
     public InetSocketAddress getRemoteAddress() throws IOException {
@@ -350,7 +374,10 @@ public class TcpSession extends Session {
     }
 
     /**
-     * 同步读取数据
+     * Performs a synchronous read from the channel.
+     *
+     * @return the number of bytes read
+     * @throws IOException if an I/O error occurs
      */
     private int synRead() throws IOException {
         ByteBuffer buffer = readBuffer.buffer();
@@ -368,9 +395,9 @@ public class TcpSession extends Session {
     }
 
     /**
-     * 断言当前会话是否可用
+     * Asserts that the current session is available.
      *
-     * @throws IOException IO异常
+     * @throws IOException if the session is closed
      */
     private void assertChannel() throws IOException {
         if (status == SESSION_STATUS_CLOSED || channel == null) {
@@ -379,28 +406,29 @@ public class TcpSession extends Session {
     }
 
     /**
-     * 获得数据输入流对象。
+     * Gets the input stream for this session.
      * <p>
-     * faster模式下调用该方法会触发UnsupportedOperationException异常。 Handler采用异步处理消息的方式时，调用该方法可能会出现异常。
+     * Calling this method in faster mode will throw an {@link UnsupportedOperationException}. Using this method when
+     * the handler processes messages asynchronously may cause exceptions.
      * </p>
      *
-     * @return 同步读操作的流对象
-     * @throws IOException io异常
+     * @return the input stream for synchronous reading
+     * @throws IOException if an I/O error occurs
      */
     public InputStream getInputStream() throws IOException {
         return inputStream == null ? getInputStream(-1) : inputStream;
     }
 
     /**
-     * 获取已知长度的InputStream
+     * Gets an input stream with a known length.
      *
-     * @param length InputStream长度
-     * @return 同步读操作的流对象
-     * @throws IOException io异常
+     * @param length the length of the input stream
+     * @return the input stream for synchronous reading
+     * @throws IOException if an I/O error occurs or if a previous stream is still open
      */
     public InputStream getInputStream(int length) throws IOException {
         if (inputStream != null) {
-            throw new IOException("pre inputStream has not closed");
+            throw new IOException("previous inputStream has not been closed");
         }
         synchronized (this) {
             if (inputStream == null) {
@@ -411,15 +439,20 @@ public class TcpSession extends Session {
     }
 
     /**
-     * 同步读操作的InputStream
+     * An inner class providing a synchronous InputStream for the session.
      */
     private class InnerInputStream extends InputStream {
 
         /**
-         * 当前InputSteam可读字节数
+         * The number of bytes remaining to be read from this input stream.
          */
         private int remainLength;
 
+        /**
+         * Constructs an InnerInputStream.
+         *
+         * @param length the total length of the stream, or -1 if unknown.
+         */
         InnerInputStream(int length) {
             this.remainLength = length >= 0 ? length : -1;
         }
@@ -432,7 +465,7 @@ public class TcpSession extends Session {
             ByteBuffer readBuffer = TcpSession.this.readBuffer.buffer();
             if (readBuffer.hasRemaining()) {
                 remainLength--;
-                return readBuffer.get();
+                return readBuffer.get() & 0xFF; // Return unsigned byte
             }
             if (synRead() == -1) {
                 remainLength = 0;
@@ -463,8 +496,10 @@ public class TcpSession extends Session {
                 size += readSize;
                 len -= readSize;
             }
-            remainLength -= size;
-            return size;
+            if (size > 0 && remainLength > 0) {
+                remainLength -= size;
+            }
+            return size == 0 ? -1 : size;
         }
 
         @Override
@@ -474,10 +509,10 @@ public class TcpSession extends Session {
             }
             if (synRead() == -1) {
                 remainLength = 0;
-                return remainLength;
+                return 0;
             }
             ByteBuffer readBuffer = TcpSession.this.readBuffer.buffer();
-            if (remainLength < -1) {
+            if (remainLength < 0) { // remainLength is -1
                 return readBuffer.remaining();
             } else {
                 return Math.min(remainLength, readBuffer.remaining());
@@ -493,9 +528,9 @@ public class TcpSession extends Session {
     }
 
     /**
-     * 写事件回调处理
+     * Completion handler for write events.
      */
-    private static final CompletionHandler<Integer, TcpSession> WRITE_COMPLETION_HANDLER = new CompletionHandler<Integer, TcpSession>() {
+    private static final CompletionHandler<Integer, TcpSession> WRITE_COMPLETION_HANDLER = new CompletionHandler<>() {
 
         @Override
         public void completed(Integer result, TcpSession session) {

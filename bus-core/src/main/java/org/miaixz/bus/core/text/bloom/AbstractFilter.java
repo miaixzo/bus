@@ -33,29 +33,35 @@ import java.util.BitSet;
 import org.miaixz.bus.core.lang.Assert;
 
 /**
- * 抽象Bloom过滤器
+ * Abstract Bloom filter implementation. This class provides a basic structure for Bloom filters, managing a
+ * {@link BitSet} to store the hashed values and defining the common operations for Bloom filters.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public abstract class AbstractFilter implements BloomFilter {
 
+    /**
+     * The serial version UID for serialization.
+     */
     @Serial
     private static final long serialVersionUID = 2852235255163L;
 
     /**
-     * 增长向量
+     * The underlying {@link BitSet} used to store the presence of elements. This bit set represents the Bloom filter's
+     * bit array.
      */
     private final BitSet bitSet;
     /**
-     * 容量
+     * The capacity of the Bloom filter, representing the number of bits in the {@link BitSet}.
      */
     protected int size;
 
     /**
-     * 构造
+     * Constructs a new AbstractFilter with the specified size.
      *
-     * @param size 容量
+     * @param size The capacity of the Bloom filter, must be greater than 0.
+     * @throws IllegalArgumentException if the size is not greater than 0.
      */
     public AbstractFilter(final int size) {
         Assert.isTrue(size > 0, "Size must be greater than 0.");
@@ -80,10 +86,11 @@ public abstract class AbstractFilter implements BloomFilter {
     }
 
     /**
-     * 自定义Hash方法
+     * Abstract method to define a custom hash function for the Bloom filter. Implementations should provide a hash
+     * value for the given text.
      *
-     * @param text 字符串
-     * @return the int
+     * @param text The string to be hashed.
+     * @return The hash value (an integer) for the given string.
      */
     public abstract int hash(String text);
 

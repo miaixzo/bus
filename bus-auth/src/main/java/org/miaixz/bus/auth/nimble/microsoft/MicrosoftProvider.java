@@ -35,27 +35,44 @@ import org.miaixz.bus.auth.Registry;
 import org.miaixz.bus.auth.magic.ErrorCode;
 
 /**
- * 微软 登录
+ * Microsoft login provider.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class MicrosoftProvider extends AbstractMicrosoftProvider {
 
+    /**
+     * Constructs a {@code MicrosoftProvider} with the specified context.
+     *
+     * @param context the authentication context
+     */
     public MicrosoftProvider(Context context) {
         super(context, Registry.MICROSOFT);
     }
 
+    /**
+     * Constructs a {@code MicrosoftProvider} with the specified context and cache.
+     *
+     * @param context the authentication context
+     * @param cache   the cache implementation
+     */
     public MicrosoftProvider(Context context, CacheX cache) {
         super(context, Registry.MICROSOFT, cache);
     }
 
+    /**
+     * Checks the completeness and validity of the context configuration for Microsoft authentication. Specifically, it
+     * ensures that the redirect URI uses HTTPS or is a localhost address.
+     *
+     * @param context the authentication context
+     * @throws AuthorizedException if the redirect URI is invalid
+     */
     @Override
     protected void check(Context context) {
         super.check(context);
-        // 微软的回调地址必须为https的链接或者localhost,不允许使用http
+        // Microsoft's redirect uri must use the HTTPS or localhost
         if (Registry.MICROSOFT == this.complex && !Protocol.isHttpsOrLocalHost(context.getRedirectUri())) {
-            // Microsoft's redirect uri must use the HTTPS or localhost
             throw new AuthorizedException(ErrorCode.ILLEGAL_REDIRECT_URI.getKey(), this.complex);
         }
     }

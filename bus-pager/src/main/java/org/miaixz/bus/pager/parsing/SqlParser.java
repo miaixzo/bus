@@ -34,7 +34,7 @@ import net.sf.jsqlparser.parser.ParseException;
 import net.sf.jsqlparser.statement.Statement;
 
 /**
- * 为了能自己控制是否使用单线程池，是否支持超时控制，所以自己实现了一个
+ * Custom SQL parser interface to control whether a single thread pool is used and whether timeout control is supported.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,7 +42,7 @@ import net.sf.jsqlparser.statement.Statement;
 public interface SqlParser {
 
     /**
-     * 不使用单线程池，不支持超时控制
+     * Default implementation that does not use a single thread pool and does not support timeout control.
      */
     SqlParser DEFAULT = statementReader -> {
         CCJSqlParser parser = CCJSqlParserUtil.newParser(statementReader);
@@ -51,11 +51,12 @@ public interface SqlParser {
     };
 
     /**
-     * 解析 SQL
+     * Parses a SQL statement string.
      *
-     * @param statementReader SQL
-     * @return
-     * @throws JSQLParserException
+     * @param statementReader the SQL statement string to parse
+     * @return the parsed {@link Statement} object
+     * @throws JSQLParserException if a JSQLParser-specific error occurs
+     * @throws ParseException      if a general parsing error occurs
      */
     Statement parse(String statementReader) throws JSQLParserException, ParseException;
 

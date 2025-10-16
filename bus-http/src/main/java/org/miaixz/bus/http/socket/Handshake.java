@@ -40,44 +40,41 @@ import javax.net.ssl.SSLSession;
 
 import org.miaixz.bus.core.net.tls.TlsVersion;
 import org.miaixz.bus.http.Builder;
-import org.miaixz.bus.http.accord.ConnectionSuite;
 import org.miaixz.bus.http.secure.CipherSuite;
 
 /**
- * TLS 握手记录
- * <p>
- * 记录 HTTPS 连接的 TLS 握手信息，包括 TLS 版本、密码套件、远程和本地证书。 用于描述已完成的握手，可通过 {@link ConnectionSuite} 配置新的握手策略。
- * </p>
+ * A record of a TLS handshake. This class holds information about the TLS version, cipher suite, and the certificates
+ * of both the peer and the local party for an HTTPS connection.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class Handshake {
+public final class Handshake {
 
     /**
-     * TLS 版本
+     * The TLS version used for this handshake.
      */
     private final TlsVersion tlsVersion;
     /**
-     * 密码套件
+     * The cipher suite used for this handshake.
      */
     private final CipherSuite cipherSuite;
     /**
-     * 远程对等点证书列表
+     * The list of certificates presented by the peer.
      */
     private final List<Certificate> peerCertificates;
     /**
-     * 本地证书列表
+     * The list of certificates presented by the local party.
      */
     private final List<Certificate> localCertificates;
 
     /**
-     * 构造函数，初始化 Handshake 实例
+     * Constructs a new Handshake instance.
      *
-     * @param tlsVersion        TLS 版本
-     * @param cipherSuite       密码套件
-     * @param peerCertificates  远程对等点证书列表
-     * @param localCertificates 本地证书列表
+     * @param tlsVersion        The TLS version.
+     * @param cipherSuite       The cipher suite.
+     * @param peerCertificates  The list of peer certificates.
+     * @param localCertificates The list of local certificates.
      */
     private Handshake(TlsVersion tlsVersion, CipherSuite cipherSuite, List<Certificate> peerCertificates,
             List<Certificate> localCertificates) {
@@ -88,11 +85,11 @@ public class Handshake {
     }
 
     /**
-     * 从 SSL 会话创建 Handshake 实例
+     * Creates a Handshake instance from an SSL session.
      *
-     * @param session SSL 会话
-     * @return Handshake 实例
-     * @throws IOException 如果会话无效或解析失败
+     * @param session The SSL session.
+     * @return A new Handshake instance.
+     * @throws IOException if the session is invalid or parsing fails.
      */
     public static Handshake get(SSLSession session) throws IOException {
         String cipherSuiteString = session.getCipherSuite();
@@ -129,14 +126,14 @@ public class Handshake {
     }
 
     /**
-     * 创建 Handshake 实例
+     * Creates a Handshake instance from its components.
      *
-     * @param tlsVersion        TLS 版本
-     * @param cipherSuite       密码套件
-     * @param peerCertificates  远程对等点证书列表
-     * @param localCertificates 本地证书列表
-     * @return Handshake 实例
-     * @throws NullPointerException 如果 tlsVersion 或 cipherSuite 为 null
+     * @param tlsVersion        The TLS version.
+     * @param cipherSuite       The cipher suite.
+     * @param peerCertificates  The list of peer certificates.
+     * @param localCertificates The list of local certificates.
+     * @return A new Handshake instance.
+     * @throws NullPointerException if tlsVersion or cipherSuite is null.
      */
     public static Handshake get(
             TlsVersion tlsVersion,
@@ -152,36 +149,36 @@ public class Handshake {
     }
 
     /**
-     * 获取 TLS 版本
+     * Returns the TLS version of the connection.
      *
-     * @return TLS 版本
+     * @return The {@link TlsVersion}.
      */
     public TlsVersion tlsVersion() {
         return tlsVersion;
     }
 
     /**
-     * 获取密码套件
+     * Returns the cipher suite of the connection.
      *
-     * @return 密码套件
+     * @return The {@link CipherSuite}.
      */
     public CipherSuite cipherSuite() {
         return cipherSuite;
     }
 
     /**
-     * 获取远程对等点证书列表
+     * Returns a list of certificates that identify the remote peer.
      *
-     * @return 不可修改的证书列表（可能为空）
+     * @return An immutable list of certificates, which may be empty.
      */
     public List<Certificate> peerCertificates() {
         return peerCertificates;
     }
 
     /**
-     * 获取远程对等点主体
+     * Returns the principal that identifies the remote peer.
      *
-     * @return 主体（匿名时为 null）
+     * @return The peer's principal, or null if the peer is anonymous.
      */
     public Principal peerPrincipal() {
         return !peerCertificates.isEmpty() ? ((X509Certificate) peerCertificates.get(0)).getSubjectX500Principal()
@@ -189,18 +186,18 @@ public class Handshake {
     }
 
     /**
-     * 获取本地证书列表
+     * Returns a list of certificates that identify this side of the connection.
      *
-     * @return 不可修改的证书列表（可能为空）
+     * @return An immutable list of certificates, which may be empty.
      */
     public List<Certificate> localCertificates() {
         return localCertificates;
     }
 
     /**
-     * 获取本地主体
+     * Returns the principal that identifies this side of the connection.
      *
-     * @return 主体（匿名时为 null）
+     * @return The local principal, or null if this side is anonymous.
      */
     public Principal localPrincipal() {
         return !localCertificates.isEmpty() ? ((X509Certificate) localCertificates.get(0)).getSubjectX500Principal()
@@ -208,10 +205,10 @@ public class Handshake {
     }
 
     /**
-     * 比较两个 Handshake 对象是否相等
+     * Compares this Handshake object with another for equality.
      *
-     * @param other 另一个对象
-     * @return true 如果两个 Handshake 对象相等
+     * @param other The other object to compare against.
+     * @return true if the two Handshake objects are equal.
      */
     @Override
     public boolean equals(Object other) {
@@ -223,9 +220,9 @@ public class Handshake {
     }
 
     /**
-     * 计算 Handshake 对象的哈希码
+     * Computes the hash code for this Handshake object.
      *
-     * @return 哈希码值
+     * @return The hash code value.
      */
     @Override
     public int hashCode() {
@@ -238,9 +235,9 @@ public class Handshake {
     }
 
     /**
-     * 返回 Handshake 的字符串表示
+     * Returns a string representation of this Handshake.
      *
-     * @return 包含 TLS 版本、密码套件和证书信息的字符串
+     * @return A string containing TLS version, cipher suite, and certificate information.
      */
     @Override
     public String toString() {
@@ -249,10 +246,10 @@ public class Handshake {
     }
 
     /**
-     * 将证书列表转换为名称列表
+     * Converts a list of certificates to a list of their subject distinguished names.
      *
-     * @param certificates 证书列表
-     * @return 名称列表
+     * @param certificates The list of certificates.
+     * @return A list of subject DN strings.
      */
     private List<String> names(List<Certificate> certificates) {
         List<String> strings = new ArrayList<>();

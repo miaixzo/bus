@@ -28,7 +28,8 @@
 package org.miaixz.bus.shade.safety.algorithm;
 
 /**
- * 密钥
+ * Represents a cryptographic key, providing essential information about the key, including its algorithm, size,
+ * associated password, and the actual key material for encryption and decryption.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -36,37 +37,54 @@ package org.miaixz.bus.shade.safety.algorithm;
 public interface Key {
 
     /**
-     * @return 密钥算法名称
+     * Retrieves the name of the cryptographic algorithm used with this key.
+     *
+     * @return The algorithm name (e.g., "AES", "RSA").
      */
     String getAlgorithm();
 
     /**
-     * @return 密钥长度
+     * Retrieves the size of the key in bits.
+     *
+     * @return The key size.
      */
     int getKeysize();
 
     /**
-     * @return 向量长度
+     * Retrieves the size of the initialization vector (IV) in bits. This is primarily applicable to symmetric
+     * encryption algorithms that use IVs.
+     *
+     * @return The IV size.
      */
     int getIvsize();
 
     /**
-     * @return 密码
+     * Retrieves the password associated with this key, if any. This might be used for password-based key derivation
+     * functions.
+     *
+     * @return The password string, or {@code null} if no password is associated.
      */
     String getPassword();
 
     /**
-     * @return 加密密钥
+     * Retrieves the raw byte array of the key material used for encryption.
+     *
+     * @return The encryption key as a byte array.
      */
     byte[] getEncryptKey();
 
     /**
-     * @return 解密密钥
+     * Retrieves the raw byte array of the key material used for decryption.
+     *
+     * @return The decryption key as a byte array.
      */
     byte[] getDecryptKey();
 
     /**
-     * @return 向量参数
+     * Retrieves the raw byte array of the initialization vector (IV) parameter. This is typically used in symmetric
+     * block ciphers to ensure unique ciphertext for identical plaintexts.
+     *
+     * @return The IV parameter as a byte array, or {@code null} if not applicable.
      */
     byte[] getIvParameter();
 

@@ -27,14 +27,15 @@
 */
 package org.miaixz.bus.sensitive.magic.annotation;
 
-import java.lang.annotation.*;
-
 import org.miaixz.bus.sensitive.metric.StrategyProvider;
 
+import java.lang.annotation.*;
+
 /**
- * 脱敏策略注解
+ * An annotation used to specify a custom desensitization strategy implementation.
  * <p>
- * 1.自定义的策略默认生效 2.如果有多个策略, 则优先执行一次满足条件的策略
+ * 1. A custom strategy takes precedence over built-in types. 2. If multiple strategies are applicable, the first one
+ * that meets its conditions will be executed.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -45,9 +46,9 @@ import org.miaixz.bus.sensitive.metric.StrategyProvider;
 public @interface Strategy {
 
     /**
-     * 自定义脱敏的策略实现
+     * Specifies the class that implements the custom desensitization logic.
      *
-     * @return 策略实现类信息
+     * @return The strategy implementation class.
      */
     Class<? extends StrategyProvider> value();
 

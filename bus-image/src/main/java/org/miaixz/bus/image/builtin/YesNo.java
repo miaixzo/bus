@@ -30,13 +30,25 @@ package org.miaixz.bus.image.builtin;
 import org.miaixz.bus.image.galaxy.data.Code;
 
 /**
+ * This class defines standard DICOM codes for Yes, No, and Undetermined responses as {@link Code} objects. These codes
+ * are commonly used in various DICOM contexts where a binary or ternary choice is required.
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class YesNo {
 
+    /**
+     * Code representing a 'Yes' response.
+     */
     public static final Code Yes = new Code("373066001", "SCT", null, "Yes");
+    /**
+     * Code representing a 'No' response.
+     */
     public static final Code No = new Code("373067005", "SCT", null, "No");
+    /**
+     * Code representing an 'Undetermined' response.
+     */
     public static final Code Undetermined = new Code("373068000", "SCT", null, "Undetermined");
 
 }

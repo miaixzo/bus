@@ -40,7 +40,9 @@ import jakarta.jms.MessageConsumer;
 import jakarta.jms.TextMessage;
 
 /**
- * JMS消息消费者实现类
+ * JMS (Java Message Service) message consumer implementation. This class acts as an adapter for consuming messages from
+ * a JMS provider, converting JMS messages into the internal {@link Message} format and dispatching them to a
+ * {@link MessageHandler}.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,20 +50,22 @@ import jakarta.jms.TextMessage;
 public class JmsConsumer implements Consumer {
 
     /**
-     * 消费者组名称
+     * The name of the consumer group to which this consumer belongs. This is used as the topic for the internal
+     * {@link Message} representation.
      */
     private String consumerGroup;
 
     /**
-     * JMS消息消费者对象
+     * The underlying Jakarta Messaging {@link MessageConsumer} instance responsible for receiving messages.
      */
     private final MessageConsumer consumer;
 
     /**
-     * 构造方法
+     * Constructs a {@code JmsConsumer} with the specified consumer group name and the underlying Jakarta Messaging
+     * {@link MessageConsumer}.
      *
-     * @param consumerGroup 消费者组名称
-     * @param consumer      JMS消息消费者对象
+     * @param consumerGroup The name of the consumer group. This will be used as the topic for received messages.
+     * @param consumer      The actual {@link MessageConsumer} from the JMS provider.
      */
     public JmsConsumer(final String consumerGroup, final MessageConsumer consumer) {
         this.consumerGroup = consumerGroup;
@@ -69,10 +73,10 @@ public class JmsConsumer implements Consumer {
     }
 
     /**
-     * 设置消费者组名称
+     * Sets the name of the consumer group for this {@code JmsConsumer}.
      *
-     * @param consumerGroup 消费者组名称
-     * @return 当前JmsConsumer实例，支持链式调用
+     * @param consumerGroup The new name of the consumer group.
+     * @return This {@code JmsConsumer} instance, allowing for method chaining.
      */
     public JmsConsumer setConsumerGroup(final String consumerGroup) {
         this.consumerGroup = consumerGroup;
@@ -80,22 +84,26 @@ public class JmsConsumer implements Consumer {
     }
 
     /**
-     * 订阅消息并注册消息处理器
+     * Subscribes to messages from the JMS topic/queue and registers a {@link MessageHandler} to process incoming
+     * messages. This method sets up a listener on the underlying {@link MessageConsumer} to convert JMS messages into
+     * the internal {@link Message} format.
      *
-     * @param messageHandler 消息处理器，用于处理接收到的消息
+     * @param messageHandler The {@link MessageHandler} to be used for processing received messages.
+     * @throws MQueueException if a JMS error occurs during the subscription process or message handling.
      */
     @Override
     public void subscribe(final MessageHandler messageHandler) {
         try {
-            // 设置消息监听器
+            // Set the message listener to handle incoming JMS messages
             this.consumer.setMessageListener(message -> {
-                // 创建消息对象并交给处理器处理
+                // Create an anonymous Message implementation to wrap the JMS message
                 messageHandler.handle(new Message() {
 
                     /**
-                     * 获取消息主题（消费者组名称）
+                     * Retrieves the message topic, which is represented by the consumer group name in this JMS consumer
+                     * implementation.
                      *
-                     * @return 消费者组名称作为主题
+                     * @return The consumer group name as the topic of the message.
                      */
                     @Override
                     public String topic() {
@@ -103,27 +111,30 @@ public class JmsConsumer implements Consumer {
                     }
 
                     /**
-                     * 获取消息内容
+                     * Retrieves the content of the JMS message as a byte array. It supports {@link TextMessage} and
+                     * {@link BytesMessage} types.
                      *
-                     * @return 消息内容的字节数组
-                     * @throws MQueueException 处理消息内容时发生异常
+                     * @return The message content as a {@code byte[]}.
+                     * @throws MQueueException if an error occurs while extracting content from the JMS message or if an
+                     *                         unsupported message type is encountered.
                      */
                     @Override
                     public byte[] content() {
                         try {
-                            // 处理文本消息
+                            // Handle text messages by converting their text content to bytes
                             if (message instanceof TextMessage) {
                                 return ByteKit.toBytes(((TextMessage) message).getText());
                             }
-                            // 处理字节消息
+                            // Handle byte messages by reading their body into a byte array
                             else if (message instanceof BytesMessage) {
-                                // 创建与消息长度相同的字节数组
-                                final byte[] bytes = new byte[(int) ((BytesMessage) message).getBodyLength()];
-                                // 读取字节消息内容
-                                ((BytesMessage) message).readBytes(bytes);
+                                final BytesMessage bytesMessage = (BytesMessage) message;
+                                // Create a byte array with the same length as the message body
+                                final byte[] bytes = new byte[(int) bytesMessage.getBodyLength()];
+                                // Read the byte message content into the array
+                                bytesMessage.readBytes(bytes);
                                 return bytes;
                             }
-                            // 不支持的消息类型
+                            // Throw an exception for unsupported JMS message types
                             else {
                                 throw new IllegalArgumentException(
                                         "Unsupported message type: " + message.getClass().getName());
@@ -140,9 +151,9 @@ public class JmsConsumer implements Consumer {
     }
 
     /**
-     * 关闭消费者，释放资源
+     * Closes the underlying JMS {@link MessageConsumer} and releases any associated resources.
      *
-     * @throws IOException 关闭过程中发生IO异常时抛出
+     * @throws IOException if an I/O error occurs during the closing process.
      */
     @Override
     public void close() throws IOException {

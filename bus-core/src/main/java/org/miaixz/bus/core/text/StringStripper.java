@@ -35,7 +35,8 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 字符串裁剪器，用于裁剪字符串前后缀 强调去除两边或某一边的指定字符串，如果一边不存在，另一边不影响去除
+ * String stripper, used to strip prefixes and suffixes from strings. Emphasizes removing specified strings from one or
+ * both ends. If one side does not exist, the other side's removal is unaffected.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -45,18 +46,30 @@ public class StringStripper implements UnaryOperator<CharSequence>, Serializable
     @Serial
     private static final long serialVersionUID = 2852233890053L;
 
+    /**
+     * The prefix to strip.
+     */
     private final CharSequence prefix;
+    /**
+     * The suffix to strip.
+     */
     private final CharSequence suffix;
+    /**
+     * Whether to ignore case during stripping.
+     */
     private final boolean ignoreCase;
+    /**
+     * Whether to strip all occurrences of the prefix/suffix.
+     */
     private final boolean stripAll;
 
     /**
-     * 构造
+     * Constructs a new {@code StringStripper} instance.
      *
-     * @param prefix     前缀，{@code null}忽略
-     * @param suffix     后缀，{@code null}忽略
-     * @param ignoreCase 是否忽略大小写
-     * @param stripAll   是否去除全部
+     * @param prefix     The prefix to strip. {@code null} is ignored.
+     * @param suffix     The suffix to strip. {@code null} is ignored.
+     * @param ignoreCase Whether to ignore case during stripping.
+     * @param stripAll   Whether to strip all occurrences of the prefix/suffix.
      */
     public StringStripper(final CharSequence prefix, final CharSequence suffix, final boolean ignoreCase,
             final boolean stripAll) {
@@ -72,8 +85,9 @@ public class StringStripper implements UnaryOperator<CharSequence>, Serializable
     }
 
     /**
-     * 去除两边的指定字符串 两边字符如果存在，则去除，不存在不做处理
-     * 
+     * Strips the specified prefix and suffix from both ends of a string, removing them only once. If characters exist
+     * on both sides, they are removed; otherwise, no action is taken.
+     *
      * <pre>{@code
      * "aaa_STRIPPED_bbb", "a", "b"  -> "aa_STRIPPED_bb"
      * "aaa_STRIPPED_bbb", null, null  -> "aaa_STRIPPED_bbb"
@@ -86,8 +100,8 @@ public class StringStripper implements UnaryOperator<CharSequence>, Serializable
      * "a", "a", "a"  -> ""
      * }</pre>
      *
-     * @param charSequence 被处理的字符串
-     * @return 处理后的字符串
+     * @param charSequence The string to process.
+     * @return The processed string.
      */
     private String stripOnce(final CharSequence charSequence) {
         if (StringKit.isEmpty(charSequence)) {
@@ -111,7 +125,7 @@ public class StringStripper implements UnaryOperator<CharSequence>, Serializable
                 // "a", "a", "a" -> ""
                 return Normal.EMPTY;
             } else if (to < from) {
-                // pre去除后和suffix有重叠，如 ("aba", "ab", "ba") -> "a"
+                // If prefix removal overlaps with suffix, e.g., ("aba", "ab", "ba") -> "a"
                 to += this.suffix.length();
             }
         }
@@ -120,7 +134,7 @@ public class StringStripper implements UnaryOperator<CharSequence>, Serializable
     }
 
     /**
-     * 去除两边所有的指定字符串
+     * Strips all occurrences of the specified prefix and suffix from both ends of a string.
      *
      * <pre>{@code
      * "aaa_STRIPPED_bbb", "a", "b"  -> "_STRIPPED_"
@@ -139,8 +153,8 @@ public class StringStripper implements UnaryOperator<CharSequence>, Serializable
      * "a", "a", "a"  -> ""
      * }</pre>
      *
-     * @param charSequence 被处理的字符串
-     * @return 处理后的字符串
+     * @param charSequence The string to process.
+     * @return The processed string.
      */
     private String stripAll(final CharSequence charSequence) {
         if (StringKit.isEmpty(charSequence)) {
@@ -168,7 +182,7 @@ public class StringStripper implements UnaryOperator<CharSequence>, Serializable
                     // "a", "a", "a" -> ""
                     return Normal.EMPTY;
                 } else if (to < from) {
-                    // pre去除后和suffix有重叠，如 ("aba", "ab", "ba") -> "a"
+                    // If prefix removal overlaps with suffix, e.g., ("aba", "ab", "ba") -> "a"
                     to += suffixLength;
                     break;
                 }
@@ -179,21 +193,22 @@ public class StringStripper implements UnaryOperator<CharSequence>, Serializable
     }
 
     /**
-     * 判断是否以指定前缀开头
+     * Checks if the string starts with the specified prefix from a given position.
      *
-     * @param charSequence 被检查的字符串
-     * @param from         开始位置
-     * @return 是否以指定前缀开头
+     * @param charSequence The string to check.
+     * @param strToCheck   The prefix string to check for.
+     * @param from         The starting position in the string to check.
+     * @return {@code true} if the string starts with the prefix at the specified position, {@code false} otherwise.
      */
     private boolean startWith(final CharSequence charSequence, final CharSequence strToCheck, final int from) {
         return new OffsetMatcher(this.ignoreCase, false, from).test(charSequence, strToCheck);
     }
 
     /**
-     * 判断是否以指定后缀结尾
+     * Checks if the string ends with the specified suffix.
      *
-     * @param charSequence 被检查的字符串
-     * @return 是否以指定后缀结尾
+     * @param charSequence The string to check.
+     * @return {@code true} if the string ends with the suffix, {@code false} otherwise.
      */
     private boolean endWithSuffix(final CharSequence charSequence) {
         return StringKit.isNotEmpty(suffix) && StringKit.endWith(charSequence, suffix, ignoreCase);

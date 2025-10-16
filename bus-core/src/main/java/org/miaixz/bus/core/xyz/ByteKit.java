@@ -46,15 +46,14 @@ import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 
 /**
- * 对数字和字节进行转换。 假设数据存储是以大端模式存储的：
+ * Utility class for converting between numbers and bytes. Data type sizes are as follows:
  * <ul>
- * <li>byte: 字节类型 占8位二进制 00000000</li>
- * <li>char: 字符类型 占2个字节 16位二进制 byte[0] byte[1]</li>
- * <li>int : 整数类型 占4个字节 32位二进制 byte[0] byte[1] byte[2] byte[3]</li>
- * <li>long: 长整数类型 占8个字节 64位二进制 byte[0] byte[1] byte[2] byte[3] byte[4] byte[5]</li>
- * <li>long: 长整数类型 占8个字节 64位二进制 byte[0] byte[1] byte[2] byte[3] byte[4] byte[5] byte[6] byte[7]</li>
- * <li>float: 浮点数(小数) 占4个字节 32位二进制 byte[0] byte[1] byte[2] byte[3]</li>
- * <li>double: 双精度浮点数(小数) 占8个字节 64位二进制 byte[0] byte[1] byte[2] byte[3] byte[4]byte[5] byte[6] byte[7]</li>
+ * <li>byte: 8 bits</li>
+ * <li>char: 2 bytes, 16 bits</li>
+ * <li>int: 4 bytes, 32 bits</li>
+ * <li>long: 8 bytes, 64 bits</li>
+ * <li>float: 4 bytes, 32 bits</li>
+ * <li>double: 8 bytes, 64 bits</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -63,32 +62,32 @@ import org.miaixz.bus.core.lang.Normal;
 public class ByteKit {
 
     /**
-     * 默认字节序：大端在前，小端在后
+     * Default byte order: Little Endian.
      */
     public static final ByteOrder DEFAULT_ORDER = ByteOrder.LITTLE_ENDIAN;
     /**
-     * CPU的字节序
+     * The byte order of the current CPU.
      */
     public static final ByteOrder CPU_ENDIAN = "little".equals(System.getProperty("sun.cpu.endian"))
             ? ByteOrder.LITTLE_ENDIAN
             : ByteOrder.BIG_ENDIAN;
 
     /**
-     * 编码字符串，编码为UTF-8
+     * Encodes a CharSequence into a byte array using UTF-8 charset.
      *
-     * @param text 字符串
-     * @return 编码后的字节码
+     * @param text The CharSequence to encode.
+     * @return The encoded byte array.
      */
     public static byte[] toBytes(final CharSequence text) {
         return toBytes(text, Charset.UTF_8);
     }
 
     /**
-     * 编码字符串
+     * Encodes a CharSequence into a byte array using the specified charset.
      *
-     * @param text    字符串
-     * @param charset 字符集，如果此字段为空，则解码的结果取决于平台
-     * @return 编码后的字节码
+     * @param text    The CharSequence to encode.
+     * @param charset The charset to use. If null, the platform's default charset will be used.
+     * @return The encoded byte array.
      */
     public static byte[] toBytes(final CharSequence text, final java.nio.charset.Charset charset) {
         if (text == null) {
@@ -102,31 +101,31 @@ public class ByteKit {
     }
 
     /**
-     * int转byte
+     * Converts an int to a byte.
      *
-     * @param intValue int值
-     * @return byte值
+     * @param intValue The int value.
+     * @return The byte value.
      */
     public static byte toByte(final int intValue) {
         return (byte) intValue;
     }
 
     /**
-     * short转byte数组 默认以小端序转换
+     * Converts a short to a byte array using the default little-endian byte order.
      *
-     * @param shortValue short值
-     * @return byte数组
+     * @param shortValue The short value.
+     * @return The byte array.
      */
     public static byte[] toBytes(final short shortValue) {
         return toBytes(shortValue, DEFAULT_ORDER);
     }
 
     /**
-     * short转byte数组 自定义端序
+     * Converts a short to a byte array using the specified byte order.
      *
-     * @param shortValue short值
-     * @param byteOrder  端序
-     * @return byte数组
+     * @param shortValue The short value.
+     * @param byteOrder  The byte order.
+     * @return The byte array.
      */
     public static byte[] toBytes(final short shortValue, final ByteOrder byteOrder) {
         final byte[] b = new byte[Short.BYTES];
@@ -141,10 +140,10 @@ public class ByteKit {
     }
 
     /**
-     * char转byte数组
+     * Converts a char to a byte array.
      *
-     * @param data char值
-     * @return the byte
+     * @param data The char value.
+     * @return The byte array.
      */
     public static byte[] toBytes(char data) {
         byte[] bytes = new byte[2];
@@ -154,10 +153,10 @@ public class ByteKit {
     }
 
     /**
-     * char转byte数组
+     * Converts a char array to a byte array using UTF-8 encoding.
      *
-     * @param data char值
-     * @return the byte
+     * @param data The char array.
+     * @return The byte array.
      */
     public static byte[] toBytes(char[] data) {
         CharBuffer cb = CharBuffer.allocate(data.length);
@@ -168,34 +167,34 @@ public class ByteKit {
     }
 
     /**
-     * int转byte数组 默认以小端序转换
+     * Converts an int to a byte array using the default little-endian byte order.
      *
-     * @param intValue int值
-     * @return byte数组
+     * @param intValue The int value.
+     * @return The byte array.
      */
     public static byte[] toBytes(final int intValue) {
         return toBytes(intValue, DEFAULT_ORDER);
     }
 
     /**
-     * int转byte数组 自定义端序
+     * Converts an int to a byte array using the specified byte order.
      *
-     * @param intValue  int值
-     * @param byteOrder 端序
-     * @return byte数组
+     * @param intValue  The int value.
+     * @param byteOrder The byte order.
+     * @return The byte array.
      */
     public static byte[] toBytes(final int intValue, final ByteOrder byteOrder) {
         return fill(intValue, 0, byteOrder, new byte[Integer.BYTES]);
     }
 
     /**
-     * 将int值转为bytes并填充到给定的bytes中
+     * Fills a given byte array with the bytes of an integer value.
      *
-     * @param intValue  int值
-     * @param start     开始位置（包含）
-     * @param byteOrder 端续
-     * @param bytes     被填充的bytes
-     * @return 填充后的byte数组
+     * @param intValue  The int value.
+     * @param start     The starting position in the byte array.
+     * @param byteOrder The byte order.
+     * @param bytes     The byte array to fill.
+     * @return The filled byte array.
      */
     public static byte[] fill(int intValue, final int start, final ByteOrder byteOrder, final byte[] bytes) {
         final int offset = (ByteOrder.LITTLE_ENDIAN == byteOrder) ? 0 : (bytes.length - 1);
@@ -207,23 +206,25 @@ public class ByteKit {
     }
 
     /**
-     * long转byte数组 默认以小端序转换 from: <a href=
-     * "https://stackoverflow.com/questions/4485128/how-do-i-convert-long-to-byte-and-back-in-java">https://stackoverflow.com/questions/4485128/how-do-i-convert-long-to-byte-and-back-in-java</a>
+     * Converts a long to a byte array using the default little-endian byte order. from:
+     * <a href="https://stackoverflow.com/questions/4485128/how-do-i-convert-long-to-byte-and-back-in-java">Stack
+     * Overflow</a>
      *
-     * @param longValue long值
-     * @return byte数组
+     * @param longValue The long value.
+     * @return The byte array.
      */
     public static byte[] toBytes(final long longValue) {
         return toBytes(longValue, DEFAULT_ORDER);
     }
 
     /**
-     * long转byte数组 自定义端序 from: <a href=
-     * "https://stackoverflow.com/questions/4485128/how-do-i-convert-long-to-byte-and-back-in-java">https://stackoverflow.com/questions/4485128/how-do-i-convert-long-to-byte-and-back-in-java</a>
+     * Converts a long to a byte array using the specified byte order. from:
+     * <a href="https://stackoverflow.com/questions/4485128/how-do-i-convert-long-to-byte-and-back-in-java">Stack
+     * Overflow</a>
      *
-     * @param longValue long值
-     * @param byteOrder 端序
-     * @return byte数组
+     * @param longValue The long value.
+     * @param byteOrder The byte order.
+     * @return The byte array.
      */
     public static byte[] toBytes(final long longValue, final ByteOrder byteOrder) {
         final byte[] result = new byte[Long.BYTES];
@@ -231,13 +232,13 @@ public class ByteKit {
     }
 
     /**
-     * 将long值转为bytes并填充到给定的bytes中
+     * Fills a given byte array with the bytes of a long value.
      *
-     * @param longValue long值
-     * @param start     开始位置（包含）
-     * @param byteOrder 端续
-     * @param bytes     被填充的bytes
-     * @return 填充后的bytes
+     * @param longValue The long value.
+     * @param start     The starting position in the byte array.
+     * @param byteOrder The byte order.
+     * @param bytes     The byte array to fill.
+     * @return The filled byte array.
      */
     public static byte[] fill(long longValue, final int start, final ByteOrder byteOrder, final byte[] bytes) {
         final int offset = (ByteOrder.LITTLE_ENDIAN == byteOrder) ? 0 : (bytes.length - 1);
@@ -249,64 +250,65 @@ public class ByteKit {
     }
 
     /**
-     * float转byte数组，默认以小端序转换
+     * Converts a float to a byte array using the default little-endian byte order.
      *
-     * @param floatValue float值
-     * @return byte数组
+     * @param floatValue The float value.
+     * @return The byte array.
      */
     public static byte[] toBytes(final float floatValue) {
         return toBytes(floatValue, DEFAULT_ORDER);
     }
 
     /**
-     * float转byte数组，自定义端序
+     * Converts a float to a byte array using the specified byte order.
      *
-     * @param floatValue float值
-     * @param byteOrder  端序
-     * @return byte数组
+     * @param floatValue The float value.
+     * @param byteOrder  The byte order.
+     * @return The byte array.
      */
     public static byte[] toBytes(final float floatValue, final ByteOrder byteOrder) {
         return toBytes(Float.floatToIntBits(floatValue), byteOrder);
     }
 
     /**
-     * double转byte数组 默认以小端序转换
+     * Converts a double to a byte array using the default little-endian byte order.
      *
-     * @param doubleValue double值
-     * @return byte数组
+     * @param doubleValue The double value.
+     * @return The byte array.
      */
     public static byte[] toBytes(final double doubleValue) {
         return toBytes(doubleValue, DEFAULT_ORDER);
     }
 
     /**
-     * double转byte数组 自定义端序 from: <a href=
-     * "https://stackoverflow.com/questions/4485128/how-do-i-convert-long-to-byte-and-back-in-java">https://stackoverflow.com/questions/4485128/how-do-i-convert-long-to-byte-and-back-in-java</a>
+     * Converts a double to a byte array using the specified byte order. from:
+     * <a href="https://stackoverflow.com/questions/4485128/how-do-i-convert-long-to-byte-and-back-in-java">Stack
+     * Overflow</a>
      *
-     * @param doubleValue double值
-     * @param byteOrder   端序
-     * @return byte数组
+     * @param doubleValue The double value.
+     * @param byteOrder   The byte order.
+     * @return The byte array.
      */
     public static byte[] toBytes(final double doubleValue, final ByteOrder byteOrder) {
         return toBytes(Double.doubleToLongBits(doubleValue), byteOrder);
     }
 
     /**
-     * 将{@link Number}转换为
+     * Converts a {@link Number} to a byte array.
      *
-     * @param number 数字
-     * @return bytes
+     * @param number The number.
+     * @return The byte array.
      */
     public static byte[] toBytes(final Number number) {
         return toBytes(number, DEFAULT_ORDER);
     }
 
     /**
-     * 将{@link Number}转换为
+     * Converts a {@link Number} to a byte array using the specified byte order.
      *
-     * @param number    数字
-     * @param byteOrder 端序
-     * @return bytes
+     * @param number    The number.
+     * @param byteOrder The byte order.
+     * @return The byte array.
      */
     public static byte[] toBytes(final Number number, final ByteOrder byteOrder) {
         if (number instanceof Byte) {
@@ -329,37 +331,37 @@ public class ByteKit {
     }
 
     /**
-     * byte数组转short 默认以小端序转换
+     * Converts a byte array to a short using the default little-endian byte order.
      *
-     * @param bytes byte数组
-     * @return short值
+     * @param bytes The byte array.
+     * @return The short value.
      */
     public static short toShort(final byte[] bytes) {
         return toShort(bytes, DEFAULT_ORDER);
     }
 
     /**
-     * byte数组转short 自定义端序
+     * Converts a byte array to a short using the specified byte order.
      *
-     * @param bytes     byte数组，长度必须为2
-     * @param byteOrder 端序
-     * @return short值
+     * @param bytes     The byte array (must be at least 2 bytes long).
+     * @param byteOrder The byte order.
+     * @return The short value.
      */
     public static short toShort(final byte[] bytes, final ByteOrder byteOrder) {
         return toShort(bytes, 0, byteOrder);
     }
 
     /**
-     * byte数组转short 自定义端序
+     * Converts a byte array to a short starting from a given position, using the specified byte order.
      *
-     * @param bytes     byte数组，长度必须大于2
-     * @param start     开始位置
-     * @param byteOrder 端序
-     * @return short值
+     * @param bytes     The byte array.
+     * @param start     The starting position.
+     * @param byteOrder The byte order.
+     * @return The short value.
      */
     public static short toShort(final byte[] bytes, final int start, final ByteOrder byteOrder) {
         if (ByteOrder.LITTLE_ENDIAN == byteOrder) {
-            // 小端模式，数据的高字节保存在内存的高地址中，而数据的低字节保存在内存的低地址中
+            // Little-endian: LSB is at the lower address.
             return (short) (bytes[start] & 0xff | (bytes[start + 1] & 0xff) << Byte.SIZE);
         } else {
             return (short) (bytes[start + 1] & 0xff | (bytes[start] & 0xff) << Byte.SIZE);
@@ -367,37 +369,37 @@ public class ByteKit {
     }
 
     /**
-     * byte[]转int值 默认以小端序转换
+     * Converts a byte array to an int using the default little-endian byte order.
      *
-     * @param bytes byte数组
-     * @return int值
+     * @param bytes The byte array.
+     * @return The int value.
      */
     public static int toInt(final byte[] bytes) {
         return toInt(bytes, DEFAULT_ORDER);
     }
 
     /**
-     * byte[]转int值 自定义端序
+     * Converts a byte array to an int using the specified byte order.
      *
-     * @param bytes     byte数组
-     * @param byteOrder 端序
-     * @return int值
+     * @param bytes     The byte array.
+     * @param byteOrder The byte order.
+     * @return The int value.
      */
     public static int toInt(final byte[] bytes, final ByteOrder byteOrder) {
         return toInt(bytes, 0, byteOrder);
     }
 
     /**
-     * byte[]转int值 自定义端序
+     * Converts a byte array to an int starting from a given position, using the specified byte order.
      *
-     * @param bytes     byte数组
-     * @param start     开始位置（包含）
-     * @param byteOrder 端序
-     * @return int值
+     * @param bytes     The byte array.
+     * @param start     The starting position.
+     * @param byteOrder The byte order.
+     * @return The int value.
      */
     public static int toInt(final byte[] bytes, final int start, final ByteOrder byteOrder) {
         if (bytes.length - start < Integer.BYTES) {
-            throw new IllegalArgumentException("bytes length must be greater than or equal to " + Long.BYTES);
+            throw new IllegalArgumentException("bytes length must be greater than or equal to " + Integer.BYTES);
         }
 
         int values = 0;
@@ -416,47 +418,50 @@ public class ByteKit {
     }
 
     /**
-     * byte转无符号int
+     * Converts a signed byte to an unsigned int.
      *
-     * @param byteValue byte值
-     * @return 无符号int值
+     * @param byteValue The byte value.
+     * @return The unsigned int value.
      */
     public static int toUnsignedInt(final byte byteValue) {
-        // Java 总是把 byte 当做有符处理；我们可以通过将其和 0xFF 进行二进制与得到它的无符值
+        // Java always treats bytes as signed; we can get its unsigned value by ANDing with 0xFF.
         return byteValue & 0xFF;
     }
 
     /**
-     * byte数组转long 默认以小端序转换 from: <a href=
-     * "https://stackoverflow.com/questions/4485128/how-do-i-convert-long-to-byte-and-back-in-java">https://stackoverflow.com/questions/4485128/how-do-i-convert-long-to-byte-and-back-in-java</a>
+     * Converts a byte array to a long using the default little-endian byte order. from:
+     * <a href="https://stackoverflow.com/questions/4485128/how-do-i-convert-long-to-byte-and-back-in-java">Stack
+     * Overflow</a>
      *
-     * @param bytes byte数组
-     * @return long值
+     * @param bytes The byte array.
+     * @return The long value.
      */
     public static long toLong(final byte[] bytes) {
         return toLong(bytes, DEFAULT_ORDER);
     }
 
     /**
-     * byte数组转long 自定义端序 from: <a href=
-     * "https://stackoverflow.com/questions/4485128/how-do-i-convert-long-to-byte-and-back-in-java">https://stackoverflow.com/questions/4485128/how-do-i-convert-long-to-byte-and-back-in-java</a>
+     * Converts a byte array to a long using the specified byte order. from:
+     * <a href="https://stackoverflow.com/questions/4485128/how-do-i-convert-long-to-byte-and-back-in-java">Stack
+     * Overflow</a>
      *
-     * @param bytes     byte数组
-     * @param byteOrder 端序
-     * @return long值
+     * @param bytes     The byte array.
+     * @param byteOrder The byte order.
+     * @return The long value.
      */
     public static long toLong(final byte[] bytes, final ByteOrder byteOrder) {
         return toLong(bytes, 0, byteOrder);
     }
 
     /**
-     * byte数组转long 自定义端序 from: <a href=
-     * "https://stackoverflow.com/questions/4485128/how-do-i-convert-long-to-byte-and-back-in-java">https://stackoverflow.com/questions/4485128/how-do-i-convert-long-to-byte-and-back-in-java</a>
+     * Converts a byte array to a long starting from a given position, using the specified byte order. from:
+     * <a href="https://stackoverflow.com/questions/4485128/how-do-i-convert-long-to-byte-and-back-in-java">Stack
+     * Overflow</a>
      *
-     * @param bytes     byte数组
-     * @param start     计算数组开始位置
-     * @param byteOrder 端序
-     * @return long值
+     * @param bytes     The byte array.
+     * @param start     The starting position in the array.
+     * @param byteOrder The byte order.
+     * @return The long value.
      */
     public static long toLong(final byte[] bytes, final int start, final ByteOrder byteOrder) {
         if (bytes.length - start < Long.BYTES) {
@@ -479,56 +484,56 @@ public class ByteKit {
     }
 
     /**
-     * byte数组转float 默认以小端序转换
+     * Converts a byte array to a float using the default little-endian byte order.
      *
-     * @param bytes byte数组
-     * @return float值
+     * @param bytes The byte array.
+     * @return The float value.
      */
     public static float toFloat(final byte[] bytes) {
         return toFloat(bytes, DEFAULT_ORDER);
     }
 
     /**
-     * byte数组转float 自定义端序
+     * Converts a byte array to a float using the specified byte order.
      *
-     * @param bytes     byte数组
-     * @param byteOrder 端序
-     * @return float值
+     * @param bytes     The byte array.
+     * @param byteOrder The byte order.
+     * @return The float value.
      */
     public static float toFloat(final byte[] bytes, final ByteOrder byteOrder) {
         return Float.intBitsToFloat(toInt(bytes, byteOrder));
     }
 
     /**
-     * byte数组转Double 默认以小端序转换
+     * Converts a byte array to a double using the default little-endian byte order.
      *
-     * @param bytes byte数组
-     * @return long值
+     * @param bytes The byte array.
+     * @return The double value.
      */
     public static double toDouble(final byte[] bytes) {
         return toDouble(bytes, DEFAULT_ORDER);
     }
 
     /**
-     * byte数组转double 自定义端序
+     * Converts a byte array to a double using the specified byte order.
      *
-     * @param bytes     byte数组
-     * @param byteOrder 端序
-     * @return long值
+     * @param bytes     The byte array.
+     * @param byteOrder The byte order.
+     * @return The double value.
      */
     public static double toDouble(final byte[] bytes, final ByteOrder byteOrder) {
         return Double.longBitsToDouble(toLong(bytes, byteOrder));
     }
 
     /**
-     * byte数组转换为指定类型数字
+     * Converts a byte array to a specified Number type.
      *
-     * @param <T>         数字类型
-     * @param bytes       byte数组
-     * @param targetClass 目标数字类型
-     * @param byteOrder   端序
-     * @return 转换后的数字
-     * @throws IllegalArgumentException 不支持的数字类型，如用户自定义数字类型
+     * @param <T>         The target number type.
+     * @param bytes       The byte array.
+     * @param targetClass The target number class.
+     * @param byteOrder   The byte order.
+     * @return The converted number.
+     * @throws IllegalArgumentException if the target number type is not supported.
      */
     public static <T extends Number> T toNumber(
             final byte[] bytes,
@@ -564,10 +569,10 @@ public class ByteKit {
         } else if (BigInteger.class == targetClass) {
             number = BigInteger.valueOf(toLong(bytes, byteOrder));
         } else if (Number.class == targetClass) {
-            // 用户没有明确类型具体类型，默认Double
+            // If no specific type is given, default to Double.
             number = toDouble(bytes, byteOrder);
         } else {
-            // 用户自定义类型不支持
+            // Custom Number types are not supported.
             throw new IllegalArgumentException("Unsupported Number type: " + targetClass.getName());
         }
 
@@ -575,10 +580,10 @@ public class ByteKit {
     }
 
     /**
-     * 以无符号字节数组的形式返回传入值。
+     * Returns the two's-complement representation of a BigInteger as an unsigned byte array.
      *
-     * @param value 需要转换的值
-     * @return 无符号bytes
+     * @param value The value to convert.
+     * @return The unsigned byte array.
      */
     public static byte[] toUnsignedByteArray(final BigInteger value) {
         final byte[] bytes = value.toByteArray();
@@ -594,11 +599,11 @@ public class ByteKit {
     }
 
     /**
-     * 以无符号字节数组的形式返回传入值。
+     * Returns the two's-complement representation of a BigInteger as an unsigned byte array of a specific length.
      *
-     * @param length bytes长度
-     * @param value  需要转换的值
-     * @return 无符号bytes
+     * @param length The desired length of the byte array.
+     * @param value  The value to convert.
+     * @return The unsigned byte array.
      */
     public static byte[] toUnsignedByteArray(final int length, final BigInteger value) {
         final byte[] bytes = value.toByteArray();
@@ -619,22 +624,22 @@ public class ByteKit {
     }
 
     /**
-     * 无符号bytes转{@link BigInteger}
+     * Converts an unsigned byte array to a {@link BigInteger}.
      *
-     * @param buf buf 无符号bytes
-     * @return {@link BigInteger}
+     * @param buf The unsigned byte array.
+     * @return The {@link BigInteger}.
      */
     public static BigInteger fromUnsignedByteArray(final byte[] buf) {
         return new BigInteger(1, buf);
     }
 
     /**
-     * 无符号bytes转{@link BigInteger}
+     * Converts a sub-array of an unsigned byte array to a {@link BigInteger}.
      *
-     * @param buf    无符号bytes
-     * @param off    起始位置
-     * @param length 长度
-     * @return {@link BigInteger}
+     * @param buf    The unsigned byte array.
+     * @param off    The starting offset.
+     * @param length The length of the sub-array.
+     * @return The {@link BigInteger}.
      */
     public static BigInteger fromUnsignedByteArray(final byte[] buf, final int off, final int length) {
         byte[] mag = buf;
@@ -646,10 +651,10 @@ public class ByteKit {
     }
 
     /**
-     * 连接多个byte[]
+     * Concatenates multiple byte arrays into a single array.
      *
-     * @param byteArrays 多个byte[]
-     * @return 连接后的byte[]
+     * @param byteArrays The byte arrays to concatenate.
+     * @return The concatenated byte array.
      */
     public static byte[] concat(final byte[]... byteArrays) {
         int totalLength = 0;
@@ -665,10 +670,10 @@ public class ByteKit {
     }
 
     /**
-     * 统计byte中位数为1的个数
+     * Counts the number of bits set to 1 in a byte array.
      *
-     * @param buf 无符号bytes
-     * @return 为 1 的个数
+     * @param buf The byte array.
+     * @return The number of set bits.
      * @see Integer#bitCount(int)
      */
     public static int bitCount(final byte[] buf) {
@@ -680,10 +685,10 @@ public class ByteKit {
     }
 
     /**
-     * 统计无符号bytes转为bit位数为1的索引集合
+     * Gets a list of indices of the bits that are set to 1 in the given byte array.
      *
-     * @param bytes 无符号bytes
-     * @return 位数为1的索引集合
+     * @param bytes The byte array.
+     * @return A list of indices for set bits.
      */
     public static List<Integer> toUnsignedBitIndex(final byte[] bytes) {
         final List<Integer> idxList = new LinkedList<>();
@@ -701,59 +706,59 @@ public class ByteKit {
     }
 
     /**
-     * byte数组转int 默认以: {@link ByteOrder#BIG_ENDIAN } or {@link ByteOrder#LITTLE_ENDIAN }
+     * Converts bytes to an int.
      *
-     * @param data      byte数组
-     * @param off       偏移量
-     * @param bigEndian 是否大字节序列
-     * @return the int
+     * @param data      The byte array.
+     * @param off       The offset.
+     * @param bigEndian True for big-endian, false for little-endian.
+     * @return The int value.
      */
     public static int bytesToInt(byte[] data, int off, boolean bigEndian) {
         return bigEndian ? bytesToIntBE(data, off) : bytesToIntLE(data, off);
     }
 
     /**
-     * byte数组转int 默认以: {@link ByteOrder#BIG_ENDIAN }
+     * Converts bytes to an int (Big-Endian).
      *
-     * @param data byte数组
-     * @param off  偏移量
-     * @return the int
+     * @param data The byte array.
+     * @param off  The offset.
+     * @return The int value.
      */
     public static int bytesToIntBE(byte[] data, int off) {
         return (data[off] << 24) + ((data[off + 1] & 255) << 16) + ((data[off + 2] & 255) << 8) + (data[off + 3] & 255);
     }
 
     /**
-     * byte数组转int 默认以: {@link ByteOrder#LITTLE_ENDIAN }
+     * Converts bytes to an int (Little-Endian).
      *
-     * @param data byte数组
-     * @param off  偏移量
-     * @return the int
+     * @param data The byte array.
+     * @param off  The offset.
+     * @return The int value.
      */
     public static int bytesToIntLE(byte[] data, int off) {
         return (data[off + 3] << 24) + ((data[off + 2] & 255) << 16) + ((data[off + 1] & 255) << 8) + (data[off] & 255);
     }
 
     /**
-     * byte数组转int 默认以: {@link ByteOrder#BIG_ENDIAN } or {@link ByteOrder#LITTLE_ENDIAN }
+     * Converts bytes to a short.
      *
-     * @param data      byte数组
-     * @param off       偏移量
-     * @param bigEndian 是否大字节序列
-     * @return the int
+     * @param data      The byte array.
+     * @param off       The offset.
+     * @param bigEndian True for big-endian, false for little-endian.
+     * @return The short value as an int.
      */
     public static int bytesToShort(byte[] data, int off, boolean bigEndian) {
         return bigEndian ? bytesToShortBE(data, off) : bytesToShortLE(data, off);
     }
 
     /**
-     * byte数组处理 排序: {@link ByteOrder#BIG_ENDIAN } or {@link ByteOrder#LITTLE_ENDIAN }
+     * Converts a byte array to a short array.
      *
-     * @param data      long值
-     * @param s         字符
-     * @param off       偏移量
-     * @param len       字符长度
-     * @param bigEndian 是否大字节序列
+     * @param data      The byte array.
+     * @param s         The destination short array.
+     * @param off       The offset in the destination array.
+     * @param len       The number of shorts to convert.
+     * @param bigEndian True for big-endian, false for little-endian.
      */
     public static void bytesToShort(byte[] data, short[] s, int off, int len, boolean bigEndian) {
         if (bigEndian)
@@ -763,34 +768,34 @@ public class ByteKit {
     }
 
     /**
-     * byte数组转int 默认以: {@link ByteOrder#LITTLE_ENDIAN }
+     * Converts bytes to a short (Big-Endian).
      *
-     * @param data byte数组
-     * @param off  偏移量
-     * @return the int
+     * @param data The byte array.
+     * @param off  The offset.
+     * @return The short value as an int.
      */
     public static int bytesToShortBE(byte[] data, int off) {
         return (data[off] << 8) + (data[off + 1] & 255);
     }
 
     /**
-     * byte数组转int 默认以: {@link ByteOrder#LITTLE_ENDIAN }
+     * Converts bytes to a short (Little-Endian).
      *
-     * @param data byte数组
-     * @param off  偏移量
-     * @return the int
+     * @param data The byte array.
+     * @param off  The offset.
+     * @return The short value as an int.
      */
     public static int bytesToShortLE(byte[] data, int off) {
         return (data[off + 1] << 8) + (data[off] & 255);
     }
 
     /**
-     * byte数组处理 默认排序: {@link ByteOrder#BIG_ENDIAN }
+     * Converts a byte array to a short array (Big-Endian).
      *
-     * @param data double值
-     * @param s    字符
-     * @param off  偏移量
-     * @param len  字符长度
+     * @param data The byte array.
+     * @param s    The destination short array.
+     * @param off  The offset in the destination array.
+     * @param len  The number of shorts to convert.
      */
     public static void bytesToShortsBE(byte[] data, short[] s, int off, int len) {
         int boff = 0;
@@ -803,12 +808,12 @@ public class ByteKit {
     }
 
     /**
-     * byte数组处理 默认排序: {@link ByteOrder#LITTLE_ENDIAN }
+     * Converts a byte array to a short array (Little-Endian).
      *
-     * @param data double值
-     * @param s    字符
-     * @param off  偏移量
-     * @param len  字符长度
+     * @param data The byte array.
+     * @param s    The destination short array.
+     * @param off  The offset in the destination array.
+     * @param len  The number of shorts to convert.
      */
     public static void bytesToShortLE(byte[] data, short[] s, int off, int len) {
         int boff = 0;
@@ -821,91 +826,91 @@ public class ByteKit {
     }
 
     /**
-     * byte数组转int 默认以: {@link ByteOrder#BIG_ENDIAN }
+     * Converts bytes to an unsigned short.
      *
-     * @param data      byte数组
-     * @param off       偏移量
-     * @param bigEndian 是否大字节序列
-     * @return the int
+     * @param data      The byte array.
+     * @param off       The offset.
+     * @param bigEndian True for big-endian, false for little-endian.
+     * @return The unsigned short value as an int.
      */
     public static int bytesToUShort(byte[] data, int off, boolean bigEndian) {
         return bigEndian ? bytesToUShortBE(data, off) : bytesToUShortLE(data, off);
     }
 
     /**
-     * byte数组转int 默认以: {@link ByteOrder#LITTLE_ENDIAN }
+     * Converts bytes to an unsigned short (Big-Endian).
      *
-     * @param data byte数组
-     * @param off  偏移量
-     * @return the int
+     * @param data The byte array.
+     * @param off  The offset.
+     * @return The unsigned short value as an int.
      */
     public static int bytesToUShortBE(byte[] data, int off) {
         return ((data[off] & 255) << 8) + (data[off + 1] & 255);
     }
 
     /**
-     * byte数组转int 默认以: {@link ByteOrder#LITTLE_ENDIAN }
+     * Converts bytes to an unsigned short (Little-Endian).
      *
-     * @param data byte数组
-     * @param off  偏移量
-     * @return the int
+     * @param data The byte array.
+     * @param off  The offset.
+     * @return The unsigned short value as an int.
      */
     public static int bytesToUShortLE(byte[] data, int off) {
         return ((data[off + 1] & 255) << 8) + (data[off] & 255);
     }
 
     /**
-     * byte数组转float 默认以: {@link ByteOrder#BIG_ENDIAN } or {@link ByteOrder#LITTLE_ENDIAN }
+     * Converts bytes to a float.
      *
-     * @param data      byte数组
-     * @param off       偏移量
-     * @param bigEndian 是否大字节序列
-     * @return the float
+     * @param data      The byte array.
+     * @param off       The offset.
+     * @param bigEndian True for big-endian, false for little-endian.
+     * @return The float value.
      */
     public static float bytesToFloat(byte[] data, int off, boolean bigEndian) {
         return bigEndian ? bytesToFloatBE(data, off) : bytesToFloatLE(data, off);
     }
 
     /**
-     * byte数组转float 默认以: {@link ByteOrder#BIG_ENDIAN }
+     * Converts bytes to a float (Big-Endian).
      *
-     * @param data byte数组
-     * @param off  偏移量
-     * @return the float
+     * @param data The byte array.
+     * @param off  The offset.
+     * @return The float value.
      */
     public static float bytesToFloatBE(byte[] data, int off) {
         return Float.intBitsToFloat(bytesToIntBE(data, off));
     }
 
     /**
-     * byte数组转float 默认以: {@link ByteOrder#LITTLE_ENDIAN }
+     * Converts bytes to a float (Little-Endian).
      *
-     * @param data byte数组
-     * @param off  偏移量
-     * @return the float
+     * @param data The byte array.
+     * @param off  The offset.
+     * @return The float value.
      */
     public static float bytesToFloatLE(byte[] data, int off) {
         return Float.intBitsToFloat(bytesToIntLE(data, off));
     }
 
     /**
-     * byte数组转long 默认以: {@link ByteOrder#BIG_ENDIAN } or {@link ByteOrder#LITTLE_ENDIAN }
+     * Converts bytes to a long.
      *
-     * @param data      byte数组
-     * @param off       偏移量
-     * @param bigEndian 是否大字节序列
-     * @return the long
+     * @param data      The byte array.
+     * @param off       The offset.
+     * @param bigEndian True for big-endian, false for little-endian.
+     * @return The long value.
      */
     public static long bytesToLong(byte[] data, int off, boolean bigEndian) {
         return bigEndian ? bytesToLongBE(data, off) : bytesToLongLE(data, off);
     }
 
     /**
-     * byte数组转long 默认以: {@link ByteOrder#BIG_ENDIAN }
+     * Converts bytes to a long (Big-Endian).
      *
-     * @param data byte数组
-     * @param off  偏移量
-     * @return the long
+     * @param data The byte array.
+     * @param off  The offset.
+     * @return The long value.
      */
     public static long bytesToLongBE(byte[] data, int off) {
         return ((long) data[off] << 56) + ((long) (data[off + 1] & 255) << 48) + ((long) (data[off + 2] & 255) << 40)
@@ -914,11 +919,11 @@ public class ByteKit {
     }
 
     /**
-     * byte数组转long 默认以: {@link ByteOrder#LITTLE_ENDIAN }
+     * Converts bytes to a long (Little-Endian).
      *
-     * @param data byte数组
-     * @param off  偏移量
-     * @return the long
+     * @param data The byte array.
+     * @param off  The offset.
+     * @return The long value.
      */
     public static long bytesToLongLE(byte[] data, int off) {
         return ((long) data[off + 7] << 56) + ((long) (data[off + 6] & 255) << 48)
@@ -928,104 +933,104 @@ public class ByteKit {
     }
 
     /**
-     * byte数组转double 默认以: {@link ByteOrder#BIG_ENDIAN } or {@link ByteOrder#LITTLE_ENDIAN }
+     * Converts bytes to a double.
      *
-     * @param data      byte数组
-     * @param off       偏移量
-     * @param bigEndian 是否大字节序列
-     * @return the double
+     * @param data      The byte array.
+     * @param off       The offset.
+     * @param bigEndian True for big-endian, false for little-endian.
+     * @return The double value.
      */
     public static double bytesToDouble(byte[] data, int off, boolean bigEndian) {
         return bigEndian ? bytesToDoubleBE(data, off) : bytesToDoubleLE(data, off);
     }
 
     /**
-     * byte数组转double 默认以: {@link ByteOrder#BIG_ENDIAN }
+     * Converts bytes to a double (Big-Endian).
      *
-     * @param data byte数组
-     * @param off  偏移量
-     * @return the double
+     * @param data The byte array.
+     * @param off  The offset.
+     * @return The double value.
      */
     public static double bytesToDoubleBE(byte[] data, int off) {
         return Double.longBitsToDouble(bytesToLongBE(data, off));
     }
 
     /**
-     * byte数组转double 默认以: {@link ByteOrder#LITTLE_ENDIAN }
+     * Converts bytes to a double (Little-Endian).
      *
-     * @param data byte数组
-     * @param off  偏移量
-     * @return the double
+     * @param data The byte array.
+     * @param off  The offset.
+     * @return The double value.
      */
     public static double bytesToDoubleLE(byte[] data, int off) {
         return Double.longBitsToDouble(bytesToLongLE(data, off));
     }
 
     /**
-     * byte数组转int 默认以: {@link ByteOrder#BIG_ENDIAN }
+     * Converts bytes to a VR (Value Representation) code (Big-Endian).
      *
-     * @param data byte数组
-     * @param off  偏移量
-     * @return the int
+     * @param data The byte array.
+     * @param off  The offset.
+     * @return The VR code as an int.
      */
     public static int bytesToVR(byte[] data, int off) {
         return bytesToUShortBE(data, off);
     }
 
     /**
-     * byte数组转int 默认以: {@link ByteOrder#BIG_ENDIAN } or {@link ByteOrder#LITTLE_ENDIAN }
+     * Converts bytes to a DICOM tag.
      *
-     * @param data      byte数组
-     * @param off       偏移量
-     * @param bigEndian 是否大字节序列
-     * @return the int
+     * @param data      The byte array.
+     * @param off       The offset.
+     * @param bigEndian True for big-endian, false for little-endian.
+     * @return The tag value as an int.
      */
     public static int bytesToTag(byte[] data, int off, boolean bigEndian) {
         return bigEndian ? bytesToTagBE(data, off) : bytesToTagLE(data, off);
     }
 
     /**
-     * byte数组转int 默认以: {@link ByteOrder#BIG_ENDIAN }
+     * Converts bytes to a DICOM tag (Big-Endian).
      *
-     * @param data byte数组
-     * @param off  偏移量
-     * @return the int
+     * @param data The byte array.
+     * @param off  The offset.
+     * @return The tag value as an int.
      */
     public static int bytesToTagBE(byte[] data, int off) {
         return bytesToIntBE(data, off);
     }
 
     /**
-     * byte数组转int 默认以: {@link ByteOrder#LITTLE_ENDIAN }
+     * Converts bytes to a DICOM tag (Little-Endian).
      *
-     * @param data byte数组
-     * @param off  偏移量
-     * @return the int
+     * @param data The byte array.
+     * @param off  The offset.
+     * @return The tag value as an int.
      */
     public static int bytesToTagLE(byte[] data, int off) {
         return (data[off + 1] << 24) + ((data[off] & 255) << 16) + ((data[off + 3] & 255) << 8) + (data[off + 2] & 255);
     }
 
     /**
-     * int转byte数组 排序: {@link ByteOrder#BIG_ENDIAN } or {@link ByteOrder#LITTLE_ENDIAN }
+     * Converts an int to bytes and places them in a byte array.
      *
-     * @param data      float值
-     * @param bytes     目标字节
-     * @param off       偏移量
-     * @param bigEndian 是否大字节序列
-     * @return the byte
+     * @param data      The int value.
+     * @param bytes     The destination byte array.
+     * @param off       The offset.
+     * @param bigEndian True for big-endian, false for little-endian.
+     * @return The destination byte array.
      */
     public static byte[] intToBytes(int data, byte[] bytes, int off, boolean bigEndian) {
         return bigEndian ? intToBytesBE(data, bytes, off) : intToBytesLE(data, bytes, off);
     }
 
     /**
-     * int转byte数组 默认排序: {@link ByteOrder#BIG_ENDIAN }
+     * Converts an int to bytes (Big-Endian) and places them in a byte array.
      *
-     * @param data  int值
-     * @param bytes 目标字节
-     * @param off   偏移量
-     * @return the byte
+     * @param data  The int value.
+     * @param bytes The destination byte array.
+     * @param off   The offset.
+     * @return The destination byte array.
      */
     public static byte[] intToBytesBE(int data, byte[] bytes, int off) {
         bytes[off] = (byte) (data >> 24);
@@ -1036,12 +1041,12 @@ public class ByteKit {
     }
 
     /**
-     * int转byte数组 默认排序: {@link ByteOrder#LITTLE_ENDIAN }
+     * Converts an int to bytes (Little-Endian) and places them in a byte array.
      *
-     * @param data  int值
-     * @param bytes 目标字节
-     * @param off   偏移量
-     * @return the byte
+     * @param data  The int value.
+     * @param bytes The destination byte array.
+     * @param off   The offset.
+     * @return The destination byte array.
      */
     public static byte[] intToBytesLE(int data, byte[] bytes, int off) {
         bytes[off + 3] = (byte) (data >> 24);
@@ -1052,25 +1057,25 @@ public class ByteKit {
     }
 
     /**
-     * int转byte数组 排序: {@link ByteOrder#BIG_ENDIAN } or {@link ByteOrder#LITTLE_ENDIAN }
+     * Converts a short (as int) to bytes and places them in a byte array.
      *
-     * @param data      int值
-     * @param bytes     目标字节
-     * @param off       偏移量
-     * @param bigEndian 是否大字节序列
-     * @return the byte
+     * @param data      The short value (passed as an int).
+     * @param bytes     The destination byte array.
+     * @param off       The offset.
+     * @param bigEndian True for big-endian, false for little-endian.
+     * @return The destination byte array.
      */
     public static byte[] shortToBytes(int data, byte[] bytes, int off, boolean bigEndian) {
         return bigEndian ? shortToBytesBE(data, bytes, off) : shortToBytesLE(data, bytes, off);
     }
 
     /**
-     * int转byte数组 默认排序: {@link ByteOrder#BIG_ENDIAN }
+     * Converts a short (as int) to bytes (Big-Endian) and places them in a byte array.
      *
-     * @param data  int值
-     * @param bytes 目标字节
-     * @param off   偏移量
-     * @return the byte
+     * @param data  The short value (passed as an int).
+     * @param bytes The destination byte array.
+     * @param off   The offset.
+     * @return The destination byte array.
      */
     public static byte[] shortToBytesBE(int data, byte[] bytes, int off) {
         bytes[off] = (byte) (data >> 8);
@@ -1079,12 +1084,12 @@ public class ByteKit {
     }
 
     /**
-     * int转byte数组 默认排序: {@link ByteOrder#LITTLE_ENDIAN }
+     * Converts a short (as int) to bytes (Little-Endian) and places them in a byte array.
      *
-     * @param data  int值
-     * @param bytes 目标字节
-     * @param off   偏移量
-     * @return the byte
+     * @param data  The short value (passed as an int).
+     * @param bytes The destination byte array.
+     * @param off   The offset.
+     * @return The destination byte array.
      */
     public static byte[] shortToBytesLE(int data, byte[] bytes, int off) {
         bytes[off + 1] = (byte) (data >> 8);
@@ -1093,25 +1098,25 @@ public class ByteKit {
     }
 
     /**
-     * long转byte数组 排序: {@link ByteOrder#BIG_ENDIAN } or {@link ByteOrder#LITTLE_ENDIAN }
+     * Converts a long to bytes and places them in a byte array.
      *
-     * @param data      long值
-     * @param bytes     目标字节
-     * @param off       偏移量
-     * @param bigEndian 是否大字节序列
-     * @return the byte
+     * @param data      The long value.
+     * @param bytes     The destination byte array.
+     * @param off       The offset.
+     * @param bigEndian True for big-endian, false for little-endian.
+     * @return The destination byte array.
      */
     public static byte[] longToBytes(long data, byte[] bytes, int off, boolean bigEndian) {
         return bigEndian ? longToBytesBE(data, bytes, off) : longToBytesLE(data, bytes, off);
     }
 
     /**
-     * long转byte数组 默认排序: {@link ByteOrder#BIG_ENDIAN }
+     * Converts a long to bytes (Big-Endian) and places them in a byte array.
      *
-     * @param data  long值
-     * @param bytes 目标字节
-     * @param off   偏移量
-     * @return the byte
+     * @param data  The long value.
+     * @param bytes The destination byte array.
+     * @param off   The offset.
+     * @return The destination byte array.
      */
     public static byte[] longToBytesBE(long data, byte[] bytes, int off) {
         bytes[off] = (byte) (data >> 56);
@@ -1126,12 +1131,12 @@ public class ByteKit {
     }
 
     /**
-     * long转byte数组 默认排序: {@link ByteOrder#LITTLE_ENDIAN }
+     * Converts a long to bytes (Little-Endian) and places them in a byte array.
      *
-     * @param data  long值
-     * @param bytes 目标字节
-     * @param off   偏移量
-     * @return the byte
+     * @param data  The long value.
+     * @param bytes The destination byte array.
+     * @param off   The offset.
+     * @return The destination byte array.
      */
     public static byte[] longToBytesLE(long data, byte[] bytes, int off) {
         bytes[off + 7] = (byte) (data >> 56);
@@ -1146,111 +1151,111 @@ public class ByteKit {
     }
 
     /**
-     * float转byte数组 排序: {@link ByteOrder#BIG_ENDIAN } or {@link ByteOrder#LITTLE_ENDIAN }
+     * Converts a float to bytes and places them in a byte array.
      *
-     * @param data      float值
-     * @param bytes     目标字节
-     * @param off       偏移量
-     * @param bigEndian 是否大字节序列
-     * @return the byte
+     * @param data      The float value.
+     * @param bytes     The destination byte array.
+     * @param off       The offset.
+     * @param bigEndian True for big-endian, false for little-endian.
+     * @return The destination byte array.
      */
     public static byte[] floatToBytes(float data, byte[] bytes, int off, boolean bigEndian) {
         return bigEndian ? floatToBytesBE(data, bytes, off) : floatToBytesLE(data, bytes, off);
     }
 
     /**
-     * float转byte数组 默认排序: {@link ByteOrder#BIG_ENDIAN }
+     * Converts a float to bytes (Big-Endian) and places them in a byte array.
      *
-     * @param data  double值
-     * @param bytes 目标字节
-     * @param off   偏移量
-     * @return the byte
+     * @param data  The float value.
+     * @param bytes The destination byte array.
+     * @param off   The offset.
+     * @return The destination byte array.
      */
     public static byte[] floatToBytesBE(float data, byte[] bytes, int off) {
         return intToBytesBE(Float.floatToIntBits(data), bytes, off);
     }
 
     /**
-     * float转byte数组 默认排序: {@link ByteOrder#LITTLE_ENDIAN }
+     * Converts a float to bytes (Little-Endian) and places them in a byte array.
      *
-     * @param data  double值
-     * @param bytes 目标字节
-     * @param off   偏移量
-     * @return the byte
+     * @param data  The float value.
+     * @param bytes The destination byte array.
+     * @param off   The offset.
+     * @return The destination byte array.
      */
     public static byte[] floatToBytesLE(float data, byte[] bytes, int off) {
         return intToBytesLE(Float.floatToIntBits(data), bytes, off);
     }
 
     /**
-     * double转byte数组 排序: {@link ByteOrder#BIG_ENDIAN } or {@link ByteOrder#LITTLE_ENDIAN }
+     * Converts a double to bytes and places them in a byte array.
      *
-     * @param data      double值
-     * @param bytes     目标字节
-     * @param off       偏移量
-     * @param bigEndian 是否大字节序列
-     * @return the byte
+     * @param data      The double value.
+     * @param bytes     The destination byte array.
+     * @param off       The offset.
+     * @param bigEndian True for big-endian, false for little-endian.
+     * @return The destination byte array.
      */
     public static byte[] doubleToBytes(double data, byte[] bytes, int off, boolean bigEndian) {
         return bigEndian ? doubleToBytesBE(data, bytes, off) : doubleToBytesLE(data, bytes, off);
     }
 
     /**
-     * double转byte数组 默认排序: {@link ByteOrder#BIG_ENDIAN }
+     * Converts a double to bytes (Big-Endian) and places them in a byte array.
      *
-     * @param data  double值
-     * @param bytes 目标字节
-     * @param off   偏移量
-     * @return the byte
+     * @param data  The double value.
+     * @param bytes The destination byte array.
+     * @param off   The offset.
+     * @return The destination byte array.
      */
     public static byte[] doubleToBytesBE(double data, byte[] bytes, int off) {
         return longToBytesBE(Double.doubleToLongBits(data), bytes, off);
     }
 
     /**
-     * double转byte数组 默认排序: {@link ByteOrder#LITTLE_ENDIAN }
+     * Converts a double to bytes (Little-Endian) and places them in a byte array.
      *
-     * @param data  double值
-     * @param bytes 目标字节
-     * @param off   偏移量
-     * @return the byte
+     * @param data  The double value.
+     * @param bytes The destination byte array.
+     * @param off   The offset.
+     * @return The destination byte array.
      */
     public static byte[] doubleToBytesLE(double data, byte[] bytes, int off) {
         return longToBytesLE(Double.doubleToLongBits(data), bytes, off);
     }
 
     /**
-     * int转byte数组 排序: {@link ByteOrder#BIG_ENDIAN } or {@link ByteOrder#LITTLE_ENDIAN }
+     * Converts a DICOM tag to bytes and places them in a byte array.
      *
-     * @param data      float值
-     * @param bytes     目标字节
-     * @param off       偏移量
-     * @param bigEndian 是否大字节序列
-     * @return the byte
+     * @param data      The tag value (as int).
+     * @param bytes     The destination byte array.
+     * @param off       The offset.
+     * @param bigEndian True for big-endian, false for little-endian.
+     * @return The destination byte array.
      */
     public static byte[] tagToBytes(int data, byte[] bytes, int off, boolean bigEndian) {
         return bigEndian ? tagToBytesBE(data, bytes, off) : tagToBytesLE(data, bytes, off);
     }
 
     /**
-     * int转byte数组 默认排序: {@link ByteOrder#BIG_ENDIAN }
+     * Converts a DICOM tag to bytes (Big-Endian) and places them in a byte array.
      *
-     * @param data  int值
-     * @param bytes 目标字节
-     * @param off   偏移量
-     * @return the byte
+     * @param data  The tag value (as int).
+     * @param bytes The destination byte array.
+     * @param off   The offset.
+     * @return The destination byte array.
      */
     public static byte[] tagToBytesBE(int data, byte[] bytes, int off) {
         return intToBytesBE(data, bytes, off);
     }
 
     /**
-     * int转byte数组 默认排序: {@link ByteOrder#LITTLE_ENDIAN }
+     * Converts a DICOM tag to bytes (Little-Endian) and places them in a byte array.
      *
-     * @param data  int值
-     * @param bytes 目标字节
-     * @param off   偏移量
-     * @return the byte
+     * @param data  The tag value (as int).
+     * @param bytes The destination byte array.
+     * @param off   The offset.
+     * @return The destination byte array.
      */
     public static byte[] tagToBytesLE(int data, byte[] bytes, int off) {
         bytes[off + 1] = (byte) (data >> 24);
@@ -1261,12 +1266,12 @@ public class ByteKit {
     }
 
     /**
-     * 字符交换
+     * Swaps bytes for an array of 4-byte integers.
      *
-     * @param data byte值
-     * @param off  偏移量
-     * @param len  长度
-     * @return the byte
+     * @param data The byte array.
+     * @param off  The offset.
+     * @param len  The length of the segment to process.
+     * @return The modified byte array.
      */
     public static byte[] swapInts(byte[] data, int off, int len) {
         checkLength(len, 4);
@@ -1278,12 +1283,12 @@ public class ByteKit {
     }
 
     /**
-     * 字符交换
+     * Swaps bytes for an array of 8-byte longs.
      *
-     * @param data byte值
-     * @param off  偏移量
-     * @param len  长度
-     * @return the byte
+     * @param data The byte array.
+     * @param off  The offset.
+     * @param len  The length of the segment to process.
+     * @return The modified byte array.
      */
     public static byte[] swapLongs(byte[] data, int off, int len) {
         checkLength(len, 8);
@@ -1297,10 +1302,10 @@ public class ByteKit {
     }
 
     /**
-     * 字符交换
+     * Swaps bytes for an array of 2-byte shorts across multiple byte arrays.
      *
-     * @param data byte值
-     * @return the byte
+     * @param data An array of byte arrays.
+     * @return The modified array of byte arrays.
      */
     public static byte[][] swapShorts(byte[][] data) {
         int carry = 0;
@@ -1316,12 +1321,12 @@ public class ByteKit {
     }
 
     /**
-     * 字符交换
+     * Swaps bytes for an array of 2-byte shorts.
      *
-     * @param data byte值
-     * @param off  偏移量
-     * @param len  长度
-     * @return the byte
+     * @param data The byte array.
+     * @param off  The offset.
+     * @param len  The length of the segment to process.
+     * @return The modified byte array.
      */
     public static byte[] swapShorts(byte[] data, int off, int len) {
         checkLength(len, 2);
@@ -1331,13 +1336,13 @@ public class ByteKit {
     }
 
     /**
-     * 寻找目标字节在字节数组中的下标
+     * Finds the index of a target byte in a byte array within a specified range.
      *
-     * @param data   字节数组
-     * @param target 目标字节
-     * @param from   检索开始下标（包含）
-     * @param to     检索结束下标（不包含）
-     * @return 找不到则返回-1
+     * @param data   The byte array.
+     * @param target The target byte.
+     * @param from   The starting index (inclusive).
+     * @param to     The ending index (exclusive).
+     * @return The index of the target byte, or -1 if not found.
      */
     public static int indexOf(byte[] data, byte target, int from, int to) {
         for (int i = from; i < to; i++) {
@@ -1349,11 +1354,11 @@ public class ByteKit {
     }
 
     /**
-     * 统计目标字节在字节数组中出现的次数
+     * Counts the occurrences of a target byte in a byte array.
      *
-     * @param data   字节数组
-     * @param target 目标字节
-     * @return the int
+     * @param data   The byte array.
+     * @param target The target byte.
+     * @return The number of occurrences.
      */
     public static int countOf(byte[] data, byte target) {
         int count = 0;
@@ -1366,12 +1371,12 @@ public class ByteKit {
     }
 
     /**
-     * 解析 BCD 码
+     * Parses a byte array segment as Binary-Coded Decimal (BCD).
      *
-     * @param data 字节数组
-     * @param from 开始下标（包含）
-     * @param to   结束下标（不包含）
-     * @return the string
+     * @param data The byte array.
+     * @param from The starting index (inclusive).
+     * @param to   The ending index (exclusive).
+     * @return The BCD string.
      */
     public static String bcd(byte[] data, int from, int to) {
         char[] chars = new char[2 * (to - from)];
@@ -1384,10 +1389,10 @@ public class ByteKit {
     }
 
     /**
-     * 无符号整数
+     * Converts a signed byte to an unsigned int value.
      *
-     * @param data 字节
-     * @return the int
+     * @param data The byte.
+     * @return The unsigned int value.
      */
     public static int unsigned(byte data) {
         if (data >= 0) {
@@ -1397,10 +1402,10 @@ public class ByteKit {
     }
 
     /**
-     * 异或值，返回
+     * Calculates the XOR checksum of a byte array.
      *
-     * @param data 数组
-     * @return 异或值
+     * @param data The byte array.
+     * @return The XOR checksum value.
      */
     public static int xor(byte[] data) {
         int temp = 0;
@@ -1413,11 +1418,11 @@ public class ByteKit {
     }
 
     /**
-     * 将两个字节数组连接到一个新的字节数组
+     * Concatenates two byte arrays into a new byte array.
      *
-     * @param buf1 字节数组
-     * @param buf2 字节数组
-     * @return the byte
+     * @param buf1 The first byte array.
+     * @param buf2 The second byte array.
+     * @return The new concatenated byte array.
      */
     public static byte[] concat(byte[] buf1, byte[] buf2) {
         byte[] buffer = new byte[buf1.length + buf2.length];
@@ -1429,9 +1434,9 @@ public class ByteKit {
     }
 
     /**
-     * Parse a byte array into a string of hexadecimal digits including all array bytes as digits
+     * Parse a byte array into a string of hexadecimal digits including all array bytes as digits.
      *
-     * @param bytes The byte array to represent
+     * @param bytes The byte array to represent.
      * @return A string of hex characters corresponding to the bytes. The string is upper case.
      */
     public static String byteArrayToHexString(byte[] bytes) {
@@ -1444,11 +1449,11 @@ public class ByteKit {
     }
 
     /**
-     * Parse a string of hexadecimal digits into a byte array
+     * Parse a string of hexadecimal digits into a byte array.
      *
-     * @param digits The string to be parsed
+     * @param digits The string to be parsed.
      * @return a byte array with each pair of characters converted to a byte, or empty array if the string is not valid
-     *         hex
+     *         hex.
      */
     public static byte[] hexStringToByteArray(String digits) {
         int len = digits.length();
@@ -1465,10 +1470,10 @@ public class ByteKit {
     }
 
     /**
-     * 字符交换
+     * Checks if the length is valid.
      *
-     * @param len      长度
-     * @param numBytes 字符
+     * @param len      The length.
+     * @param numBytes The size of the primitive type in bytes.
      */
     private static void checkLength(int len, int numBytes) {
         if (len < 0 || (len % numBytes) != 0)
@@ -1476,11 +1481,11 @@ public class ByteKit {
     }
 
     /**
-     * 字符交换
+     * Swaps two bytes in a byte array.
      *
-     * @param data byte值
-     * @param a    字符A
-     * @param b    字符B
+     * @param data The byte array.
+     * @param a    The index of the first byte.
+     * @param b    The index of the second byte.
      */
     private static void swap(byte[] data, int a, int b) {
         byte t = data[a];
@@ -1489,10 +1494,11 @@ public class ByteKit {
     }
 
     /**
-     * 字符交换
+     * Swaps the last byte of the first array with the first byte of the second array.
      *
-     * @param b1 byte值
-     * @param b2 byte值
+     * < * @param b1 The first byte array.
+     * 
+     * @param b2 The second byte array.
      */
     private static void swapLastFirst(byte[] b1, byte[] b2) {
         int last = b1.length - 1;

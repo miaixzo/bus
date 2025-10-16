@@ -39,19 +39,18 @@ import org.miaixz.bus.core.xyz.CharKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 数字解析器 用于将字符串解析为对应的数字类型，支持包括：
+ * A parser for converting strings to their corresponding numeric types. It supports:
  * <ul>
- * <li>0开头的忽略开头的0</li>
- * <li>空串返回0</li>
- * <li>NaN返回0</li>
- * <li>其它情况按照10进制转换</li>
- * <li>.123形式返回0.123（按照小于0的小数对待）</li>
+ * <li>Ignoring leading zeros for numbers starting with 0.</li>
+ * <li>Returning 0 for empty strings.</li>
+ * <li>Returning 0 for "NaN" (by default).</li>
+ * <li>Converting other cases as base-10 numbers.</li>
+ * <li>Parsing formats like ".123" as 0.123.</li>
  * </ul>
  *
  * <p>
- * 构造时可选是否将NaN转为0，默认为true。
- * 参考：https://stackoverflow.com/questions/5876369/why-does-casting-double-nan-to-int-not-throw-an-exception-in-java
- * </p>
+ * The constructor allows specifying whether to convert "NaN" to 0. The default is true. See:
+ * https://stackoverflow.com/questions/5876369/why-does-casting-double-nan-to-int-not-throw-an-exception-in-java
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -59,7 +58,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class NumberParser {
 
     /**
-     * 单例
+     * Singleton instance.
      */
     public static final NumberParser INSTANCE = of(null);
     private static final String NaN = "NaN";
@@ -67,10 +66,10 @@ public class NumberParser {
     private final boolean zeroIfNaN;
 
     /**
-     * 构造
+     * Constructor.
      *
-     * @param locale    地域，{@code null}表示默认本地
-     * @param zeroIfNaN 如果用户传入NaN，是否转为0，如果为{@code false}，则抛出{@link NumberFormatException}
+     * @param locale    The locale to use, or {@code null} for the default locale.
+     * @param zeroIfNaN If {@code true}, converts "NaN" to 0; otherwise, throws a {@link NumberFormatException}.
      */
     public NumberParser(final Locale locale, final boolean zeroIfNaN) {
         this.locale = locale;
@@ -78,42 +77,42 @@ public class NumberParser {
     }
 
     /**
-     * 构建NumberParser
+     * Creates a NumberParser.
      *
-     * @param locale 地域，{@code null}表示默认本地
-     * @return NumberParser
+     * @param locale The locale to use, or {@code null} for the default locale.
+     * @return A new NumberParser instance.
      */
     public static NumberParser of(final Locale locale) {
         return of(locale, true);
     }
 
     /**
-     * 构建NumberParser
+     * Creates a NumberParser.
      *
-     * @param locale    地域，{@code null}表示默认本地
-     * @param zeroIfNaN 如果用户传入NaN，是否转为0，如果为{@code false}，则抛出{@link NumberFormatException}
-     * @return NumberParser
+     * @param locale    The locale to use, or {@code null} for the default locale.
+     * @param zeroIfNaN If {@code true}, converts "NaN" to 0; otherwise, throws a {@link NumberFormatException}.
+     * @return A new NumberParser instance.
      */
     public static NumberParser of(final Locale locale, final boolean zeroIfNaN) {
         return new NumberParser(locale, zeroIfNaN);
     }
 
     /**
-     * 解析转换数字字符串为int型数字，规则如下：
+     * Parses a string into an int based on the following rules:
      *
      * <pre>
-     * 1、0x开头的视为16进制数字
-     * 2、0开头的忽略开头的0
-     * 3、其它情况按照10进制转换
-     * 4、空串返回0
-     * 5、.123形式返回0（按照小于0的小数对待）
-     * 6、123.56截取小数点之前的数字，忽略小数部分
-     * 7、科学计数法抛出NumberFormatException异常
+     * 1. Strings starting with "0x" are treated as hexadecimal numbers.
+     * 2. Leading zeros are ignored.
+     * 3. Other cases are converted as base-10 numbers.
+     * 4. Empty strings return 0.
+     * 5. Formats like ".123" return 0 (treated as a decimal less than 1).
+     * 6. For numbers like "123.56", the fractional part is truncated.
+     * 7. Scientific notation throws a NumberFormatException.
      * </pre>
      *
-     * @param numberStr 数字字符串
-     * @return the int
-     * @throws NumberFormatException 数字格式异常
+     * @param numberStr The string to parse.
+     * @return The parsed int.
+     * @throws NumberFormatException If the string has an invalid number format.
      */
     public int parseInt(final String numberStr) throws NumberFormatException {
         if (isBlankOrNaN(numberStr)) {
@@ -121,12 +120,13 @@ public class NumberParser {
         }
 
         if (StringKit.startWithIgnoreCase(numberStr, "0x")) {
-            // 0x04表示16进制数
+            // "0x04" represents a hexadecimal number.
             return Integer.parseInt(numberStr.substring(2), 16);
         }
 
         if (StringKit.containsIgnoreCase(numberStr, "E")) {
-            // 科学计数法忽略支持，科学计数法一般用于表示非常小和非常大的数字，这类数字转换为int后精度丢失，没有意义。
+            // Scientific notation is not supported because converting very large or small numbers to int results in
+            // precision loss.
             throw new NumberFormatException(StringKit.format("Unsupported int format: [{}]", numberStr));
         }
 
@@ -138,11 +138,13 @@ public class NumberParser {
     }
 
     /**
-     * 转换char数组为一个int值，此方法拷贝自{@link Integer#parseInt(String, int)} 拷贝的原因是直接转换char[]避免创建String对象造成的多余拷贝 此方法自动跳过首尾空白符
+     * Parses a char array into an int. This method is copied from {@link Integer#parseInt(String, int)} to avoid
+     * creating a String object, thus reducing unnecessary copying. It automatically trims leading and trailing
+     * whitespace.
      *
-     * @param chars char数组
-     * @param radix 进制数
-     * @return int值
+     * @param chars The char array to parse.
+     * @param radix The radix to be used while parsing.
+     * @return The parsed int.
      * @see Integer#parseInt(String, int)
      */
     public int parseInt(final char[] chars, final int radix) {
@@ -156,7 +158,7 @@ public class NumberParser {
         int limit = -Integer.MAX_VALUE;
         int digit;
 
-        // 跳过空白符
+        // Skip whitespace.
         while (CharKit.isBlankChar(chars[i])) {
             i++;
         }
@@ -171,7 +173,7 @@ public class NumberParser {
             }
 
             if (chars.length == 1) {
-                // Cannot have lone "+" or "-"
+                // Cannot have a lone "+" or "-".
                 throw new NumberFormatException("Invalid chars has lone: " + firstChar);
             }
             i++;
@@ -179,13 +181,13 @@ public class NumberParser {
 
         final int multmin = limit / radix;
         while (i < chars.length) {
-            // 跳过空白符
+            // Skip whitespace.
             if (CharKit.isBlankChar(chars[i])) {
                 i++;
                 continue;
             }
 
-            // Accumulating negatively avoids surprises near MAX_VALUE
+            // Accumulating negatively avoids surprises near MAX_VALUE.
             digit = Character.digit(chars[i++], radix);
             if (digit < 0) {
                 throw new NumberFormatException(StringKit.format("Invalid chars: {} at {}", chars, i - 1));
@@ -203,19 +205,19 @@ public class NumberParser {
     }
 
     /**
-     * 解析转换数字字符串为long型数字，规则如下：
+     * Parses a string into a long based on the following rules:
      *
      * <pre>
-     * 1、0x开头的视为16进制数字
-     * 2、0开头的忽略开头的0
-     * 3、空串返回0
-     * 4、其它情况按照10进制转换
-     * 5、.123形式返回0（按照小于0的小数对待）
-     * 6、123.56截取小数点之前的数字，忽略小数部分
+     * 1. Strings starting with "0x" are treated as hexadecimal numbers.
+     * 2. Leading zeros are ignored.
+     * 3. Empty strings return 0.
+     * 4. Other cases are converted as base-10 numbers.
+     * 5. Formats like ".123" return 0 (treated as a decimal less than 1).
+     * 6. For numbers like "123.56", the fractional part is truncated.
      * </pre>
      *
-     * @param numberStr 数字字符串
-     * @return the long
+     * @param numberStr The string to parse.
+     * @return The parsed long.
      */
     public long parseLong(final String numberStr) {
         if (isBlankOrNaN(numberStr)) {
@@ -223,7 +225,7 @@ public class NumberParser {
         }
 
         if (StringKit.startWithIgnoreCase(numberStr, "0x")) {
-            // 0x04表示16进制数
+            // "0x04" represents a hexadecimal number.
             return Long.parseLong(numberStr.substring(2), 16);
         }
 
@@ -235,17 +237,17 @@ public class NumberParser {
     }
 
     /**
-     * 解析转换数字字符串为long型数字，规则如下：
+     * Parses a string into a float based on the following rules:
      *
      * <pre>
-     * 1、0开头的忽略开头的0
-     * 2、空串返回0
-     * 3、其它情况按照10进制转换
-     * 4、.123形式返回0.123（按照小于0的小数对待）
+     * 1. Leading zeros are ignored.
+     * 2. Empty strings return 0.
+     * 3. Other cases are converted as base-10 numbers.
+     * 4. Formats like ".123" return 0.123.
      * </pre>
      *
-     * @param numberStr 数字字符串
-     * @return the long
+     * @param numberStr The string to parse.
+     * @return The parsed float.
      */
     public float parseFloat(final String numberStr) {
         if (isBlankOrNaN(numberStr)) {
@@ -260,18 +262,18 @@ public class NumberParser {
     }
 
     /**
-     * 解析转换数字字符串为long型数字，规则如下：
+     * Parses a string into a double based on the following rules:
      *
      * <pre>
-     * 1、0开头的忽略开头的0
-     * 2、空串返回0
-     * 3、其它情况按照10进制转换
-     * 4、.123形式返回0.123（按照小于0的小数对待）
-     * 5、NaN返回0
+     * 1. Leading zeros are ignored.
+     * 2. Empty strings return 0.
+     * 3. Other cases are converted as base-10 numbers.
+     * 4. Formats like ".123" return 0.123.
+     * 5. "NaN" returns 0.
      * </pre>
      *
-     * @param numberStr 数字字符串
-     * @return the double
+     * @param numberStr The string to parse.
+     * @return The parsed double.
      */
     public double parseDouble(final String numberStr) {
         if (isBlankOrNaN(numberStr)) {
@@ -286,10 +288,11 @@ public class NumberParser {
     }
 
     /**
-     * 解析为{@link BigInteger}，支持16进制、10进制和8进制，如果传入空白串返回null
+     * Parses a string into a {@link BigInteger}, supporting hexadecimal, decimal, and octal formats. Returns
+     * {@code null} for blank strings.
      *
-     * @param text 数字字符串
-     * @return {@link BigInteger}
+     * @param text The string to parse.
+     * @return A {@link BigInteger} or {@code null}.
      */
     public BigInteger parseBigInteger(String text) {
         text = StringKit.trimToNull(text);
@@ -297,26 +300,26 @@ public class NumberParser {
             return null;
         }
 
-        int pos = 0; // 数字字符串位置
+        int pos = 0; // Position in the string.
         int radix = 10;
-        boolean negate = false; // 负数与否
+        boolean negate = false; // Whether the number is negative.
         if (text.startsWith(Symbol.MINUS)) {
             negate = true;
             pos = 1;
         }
         if (text.startsWith("0x", pos) || text.startsWith("0X", pos)) {
-            // hex
+            // Hexadecimal
             radix = 16;
             pos += 2;
         } else if (text.startsWith(Symbol.HASH, pos)) {
-            // alternative hex (allowed by Long/Integer)
+            // Alternative hex (allowed by Long/Integer).
             radix = 16;
             pos++;
         } else if (text.startsWith("0", pos) && text.length() > pos + 1) {
-            // octal; so long as there are additional digits
+            // Octal, so long as there are additional digits.
             radix = 8;
             pos++;
-        } // default is to treat as decimal
+        } // Default is to treat as decimal.
 
         if (pos > 0) {
             text = text.substring(pos);
@@ -326,30 +329,31 @@ public class NumberParser {
     }
 
     /**
-     * 将指定字符串转换为{@link Number} 对象 此方法不支持科学计数法
+     * Converts the specified string to a {@link Number} object. This method does not support scientific notation.
      *
      * <ul>
-     * <li>空白符和NaN转换为0</li>
-     * <li>0x开头使用16进制解析为Long类型</li>
+     * <li>Blank strings and "NaN" are converted to 0.</li>
+     * <li>Strings starting with "0x" are parsed as hexadecimal Longs.</li>
      * </ul>
      *
      * <p>
-     * 需要注意的是，在不同Locale下，数字的表示形式也是不同的，例如： 德国、荷兰、比利时、丹麦、意大利、罗马尼亚和欧洲大多地区使用`,`区分小数 也就是说，在这些国家地区，1.20表示120，而非1.2。
-     * </p>
+     * Note that number formats can vary by locale. For example, in Germany, the Netherlands, Belgium, Denmark, Italy,
+     * Romania, and most of Europe, a comma (`,`) is used as the decimal separator. In these regions, "1.20" represents
+     * 120, not 1.2.
      *
-     * @param numberStr 数字字符串
-     * @return Number对象
-     * @throws NumberFormatException 包装了{@link ParseException}，当给定的数字字符串无法解析时抛出
+     * @param numberStr The string to parse.
+     * @return A Number object.
+     * @throws NumberFormatException Wraps a {@link ParseException} and is thrown when the string cannot be parsed.
      */
     public Number parseNumber(final String numberStr) throws NumberFormatException {
         if (isBlankOrNaN(numberStr)) {
-            // 在JDK9+中，NaN的处理逻辑是返回0，此处保持一致
+            // In JDK 9+, NaN is handled by returning 0. This maintains consistency.
             return 0;
         }
 
-        // 16进制
+        // Hexadecimal
         if (StringKit.startWithIgnoreCase(numberStr, "0x")) {
-            // 0x04表示16进制数
+            // "0x04" represents a hexadecimal number.
             return Long.parseLong(numberStr.substring(2), 16);
         }
 
@@ -357,9 +361,11 @@ public class NumberParser {
     }
 
     /**
-     * 使用{@link NumberFormat} 完成数字解析 如果为{@link DecimalFormat}
+     * Performs number parsing using {@link NumberFormat}. If it is a {@link DecimalFormat}, it is configured to parse
+     * into a BigDecimal to avoid precision loss.
      *
-     * @return 数字
+     * @param numberStr The string to parse.
+     * @return The parsed Number.
      */
     private Number doParse(String numberStr) {
         Locale locale = this.locale;
@@ -373,7 +379,8 @@ public class NumberParser {
         try {
             final NumberFormat format = NumberFormat.getInstance(locale);
             if (format instanceof DecimalFormat) {
-                // 当字符串数字超出double的长度时，会导致截断，此处使用BigDecimal接收
+                // When the string number exceeds the range of a double, it can be truncated. Use BigDecimal to receive
+                // it.
                 ((DecimalFormat) format).setParseBigDecimal(true);
             }
             return format.parse(numberStr);
@@ -385,9 +392,12 @@ public class NumberParser {
     }
 
     /**
-     * 是否空白串或者NaN 如果{@link #zeroIfNaN}为{@code false}，则抛出{@link NumberFormatException}
+     * Checks if the string is blank or "NaN". If {@link #zeroIfNaN} is {@code false}, throws a
+     * {@link NumberFormatException} for "NaN".
      *
-     * @return 是否空白串或者NaN
+     * @param numberStr The string to check.
+     * @return {@code true} if the string is blank or "NaN", {@code false} otherwise.
+     * @throws NumberFormatException If the string is "NaN" and {@code zeroIfNaN} is false.
      */
     private boolean isBlankOrNaN(final String numberStr) throws NumberFormatException {
         if (StringKit.isBlank(numberStr)) {
@@ -398,7 +408,7 @@ public class NumberParser {
             if (zeroIfNaN) {
                 return true;
             } else {
-                throw new NumberFormatException("Can not parse NaN when 'zeroIfNaN' is false!");
+                throw new NumberFormatException("Cannot parse NaN when 'zeroIfNaN' is false!");
             }
         }
 

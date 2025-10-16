@@ -27,18 +27,26 @@
 */
 package org.miaixz.bus.http.metric.http;
 
-import org.miaixz.bus.core.lang.exception.RevisedException;
+import java.io.IOException;
 
 /**
- * 当取消HTTP/2流而不损坏承载它的套接字时抛出
+ * An exception thrown when an HTTP/2 stream is reset without damaging the underlying socket.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class StreamException extends RevisedException {
+public final class StreamException extends IOException {
 
+    /**
+     * The error code that prompted this exception.
+     */
     public final Http2ErrorCode errorCode;
 
+    /**
+     * Constructs a new {@code StreamException} with the specified error code.
+     *
+     * @param errorCode The error code indicating the reason for the stream reset.
+     */
     public StreamException(Http2ErrorCode errorCode) {
         super("stream was reset: " + errorCode);
         this.errorCode = errorCode;

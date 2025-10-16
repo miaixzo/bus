@@ -31,51 +31,55 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
 /**
- * Apache 发布的MetroHash算法接口，是一组用于非加密用例的最先进的哈希函数。 除了卓越的性能外，他们还以算法生成而著称。
+ * Interface for Apache MetroHash algorithm, a set of state-of-the-art hash functions for non-cryptographic use cases.
+ * Besides their excellent performance, they are also known for being algorithmically generated.
  *
  * <p>
- * 官方实现：https://github.com/jandrewrogers/MetroHash 官方文档：http://www.jandrewrogers.com/2015/05/27/metrohash/
- * 来自：https://github.com/postamar/java-metrohash/
- * </p>
+ * Official implementation:
+ * <a href="https://github.com/jandrewrogers/MetroHash">https://github.com/jandrewrogers/MetroHash</a> Official
+ * documentation:
+ * <a href="http://www.jandrewrogers.com/2015/05/27/metrohash/">http://www.jandrewrogers.com/2015/05/27/metrohash/</a>
+ * Adapted from: <a href="https://github.com/postamar/java-metrohash/">https://github.com/postamar/java-metrohash/</a>
  *
- * @param <R> 返回值类型，为this类型
+ * @param <R> The type of the implementing class, allowing for method chaining.
  * @author Kimi Liu
  * @since Java 17+
  */
 public interface MetroHash<R extends MetroHash<R>> {
 
     /**
-     * 创建 {@code MetroHash}对象
+     * Creates a {@code MetroHash} object based on the provided seed and hash size.
      *
-     * @param seed  种子
-     * @param is128 是否128位
-     * @return {@code MetroHash}对象
+     * @param seed  The seed value for the hash function.
+     * @param is128 A boolean indicating whether to create a 128-bit hash (true) or a 64-bit hash (false).
+     * @return A new {@code MetroHash} object, either {@link MetroHash128} or {@link MetroHash64}.
      */
     static MetroHash<?> of(final long seed, final boolean is128) {
         return is128 ? new MetroHash128(seed) : new MetroHash64(seed);
     }
 
     /**
-     * 将给定的{@link ByteBuffer}中的数据追加计算hash值 此方法会更新hash值状态
+     * Appends data from the given {@link ByteBuffer} to the hash calculation. This method updates the internal state of
+     * the hash function.
      *
-     * @param input 内容
-     * @return this
+     * @param input The {@link ByteBuffer} containing the data to be hashed.
+     * @return This {@code MetroHash} instance for method chaining.
      */
     R apply(final ByteBuffer input);
 
     /**
-     * 将结果hash值写出到{@link ByteBuffer}中，可选端序
+     * Writes the calculated hash value to the provided {@link ByteBuffer}. The byte order for writing can be specified.
      *
-     * @param output    输出
-     * @param byteOrder 端序
-     * @return this
+     * @param output    The {@link ByteBuffer} to write the hash result to.
+     * @param byteOrder The desired byte order for the output hash.
+     * @return This {@code MetroHash} instance for method chaining.
      */
     R write(ByteBuffer output, final ByteOrder byteOrder);
 
     /**
-     * 重置，重置后可复用对象开启新的计算
+     * Resets the hash function to its initial state, allowing the object to be reused for a new hash calculation.
      *
-     * @return this
+     * @return This {@code MetroHash} instance for method chaining.
      */
     R reset();
 

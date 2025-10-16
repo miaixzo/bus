@@ -28,21 +28,29 @@
 package org.miaixz.bus.core.center.regex;
 
 /**
- * 正则表达式和正则标识位的包装
+ * Wrapper for a regular expression string and its associated flags. This class is used as a key in a cache to store
+ * compiled {@link java.util.regex.Pattern} objects, ensuring that patterns with the same regex string and flags are
+ * reused.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class RegexWithFlag {
 
+    /**
+     * The regular expression string.
+     */
     private final String regex;
+    /**
+     * The flags for the regular expression, e.g., {@link java.util.regex.Pattern#CASE_INSENSITIVE}.
+     */
     private final int flag;
 
     /**
-     * 构造
+     * Constructs a new {@code RegexWithFlag} instance.
      *
-     * @param regex 正则
-     * @param flag  标识
+     * @param regex The regular expression string.
+     * @param flag  The flags for the regular expression.
      */
     public RegexWithFlag(final String regex, final int flag) {
         this.regex = regex;

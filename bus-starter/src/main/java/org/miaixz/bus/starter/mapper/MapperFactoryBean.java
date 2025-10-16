@@ -35,8 +35,10 @@ import org.mybatis.spring.support.SqlSessionDaoSupport;
 import org.springframework.beans.factory.FactoryBean;
 
 /**
- * 支持注入MyBatis映射器接口的BeanFactory， 通过sqlessionFactory或者预先配置的sqlessionTemplate来设置
+ * A {@link FactoryBean} for creating MyBatis mapper interface proxies. It is configured via a SqlSessionFactory or a
+ * pre-configured SqlSessionTemplate.
  *
+ * @param <T> The type of the mapper interface.
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -44,14 +46,27 @@ public class MapperFactoryBean<T> extends SqlSessionDaoSupport implements Factor
 
     private Class<T> mapperInterface;
 
+    /**
+     * Default constructor.
+     */
     public MapperFactoryBean() {
 
     }
 
+    /**
+     * Constructor that sets the mapper interface.
+     *
+     * @param mapperInterface The class of the mapper interface.
+     */
     public MapperFactoryBean(Class<T> mapperInterface) {
         this.mapperInterface = mapperInterface;
     }
 
+    /**
+     * Checks that the DAO configuration is valid. It ensures that the {@code mapperInterface} property is set and that
+     * the mapper is registered with the MyBatis {@link Configuration}. If the mapper is not already registered, it will
+     * be added.
+     */
     @Override
     protected void checkDaoConfig() {
         super.checkDaoConfig();
@@ -63,7 +78,7 @@ public class MapperFactoryBean<T> extends SqlSessionDaoSupport implements Factor
             try {
                 configuration.addMapper(this.mapperInterface);
             } catch (Exception e) {
-                Logger.error("Error while adding the mapper '" + this.mapperInterface + "' to configuration.", e);
+                Logger.error("Error while adding the mapper '{}' to configuration.", this.mapperInterface, e);
                 throw new IllegalArgumentException(e);
             } finally {
                 ErrorContext.instance().reset();
@@ -71,34 +86,49 @@ public class MapperFactoryBean<T> extends SqlSessionDaoSupport implements Factor
         }
     }
 
+    /**
+     * Returns the mapper proxy instance. This is the core method of the {@link FactoryBean} interface.
+     *
+     * @return The mapper proxy instance.
+     */
     @Override
     public T getObject() {
         return getSqlSession().getMapper(this.mapperInterface);
     }
 
+    /**
+     * Returns the type of the mapper interface.
+     *
+     * @return The class of the mapper interface.
+     */
     @Override
     public Class<T> getObjectType() {
         return this.mapperInterface;
     }
 
+    /**
+     * Indicates that this factory bean produces a singleton object.
+     *
+     * @return Always {@code true}.
+     */
     @Override
     public boolean isSingleton() {
         return true;
     }
 
     /**
-     * 返回MyBatis mapper的mapper接口
+     * Gets the mapper interface type.
      *
-     * @return the object
+     * @return The class of the mapper interface.
      */
     public Class<T> getMapperInterface() {
         return mapperInterface;
     }
 
     /**
-     * 设置MyBatis mapper的mapper接口
+     * Sets the mapper interface of the MyBatis mapper.
      *
-     * @param mapperInterface 接口
+     * @param mapperInterface The class of the mapper interface.
      */
     public void setMapperInterface(Class<T> mapperInterface) {
         this.mapperInterface = mapperInterface;

@@ -36,123 +36,148 @@ import org.miaixz.bus.pay.metric.AbstractProvider;
 import org.miaixz.bus.pay.metric.jdpay.api.JdPayApi;
 
 /**
- * 京东支付
+ * JD Pay provider.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class JdPayProvider extends AbstractProvider<Material, Context> {
 
+    /**
+     * Constructs a new JdPayProvider.
+     *
+     * @param context The context.
+     */
     public JdPayProvider(Context context) {
         super(context);
     }
 
+    /**
+     * Constructs a new JdPayProvider.
+     *
+     * @param context The context.
+     * @param complex The complex object.
+     */
     public JdPayProvider(Context context, Complex complex) {
         super(context, complex);
     }
 
+    /**
+     * Constructs a new JdPayProvider.
+     *
+     * @param context The context.
+     * @param complex The complex object.
+     * @param cache   The cache.
+     */
     public JdPayProvider(Context context, Complex complex, CacheX cache) {
         super(context, complex, cache);
     }
 
     /**
-     * 统一下单
+     * Unified order.
      *
-     * @param xml 请求参数
-     * @return {@link String} 请求返回的结果
+     * @param xml The request parameters in XML format.
+     * @return The result of the request.
      */
     public static String uniOrder(String xml) {
         return doPost(JdPayApi.UNI_ORDER_URL.method(), xml);
     }
 
     /**
-     * 付款码支付
+     * Payment code payment.
      *
-     * @param xml 请求参数
-     * @return {@link String} 请求返回的结果
+     * @param xml The request parameters in XML format.
+     * @return The result of the request.
      */
     public static String fkmPay(String xml) {
         return doPost(JdPayApi.FKM_PAY_URL.method(), xml);
     }
 
     /**
-     * 白条分期策略查询
+     * Query for Baitiao installment plan.
      *
-     * @param xml 请求参数
-     * @return {@link String} 请求返回的结果
+     * @param xml The request parameters in XML format.
+     * @return The result of the request.
      */
     public static String queryBaiTiaoFq(String xml) {
         return doPost(JdPayApi.QUERY_BAI_TIAO_FQ_URL.method(), xml);
     }
 
     /**
-     * 查询订单
+     * Query order.
      *
-     * @param xml 请求参数
-     * @return {@link String} 请求返回的结果
+     * @param xml The request parameters in XML format.
+     * @return The result of the request.
      */
     public static String queryOrder(String xml) {
         return doPost(JdPayApi.QUERY_ORDER_URL.method(), xml);
     }
 
     /**
-     * 退款申请
+     * Refund application.
      *
-     * @param xml 请求参数
-     * @return {@link String} 请求返回的结果
+     * @param xml The request parameters in XML format.
+     * @return The result of the request.
      */
     public static String refund(String xml) {
         return doPost(JdPayApi.REFUND_URL.method(), xml);
     }
 
     /**
-     * 撤销申请
+     * Revocation application.
      *
-     * @param xml 请求参数
-     * @return {@link String} 请求返回的结果
+     * @param xml The request parameters in XML format.
+     * @return The result of the request.
      */
     public static String revoke(String xml) {
         return doPost(JdPayApi.REVOKE_URL.method(), xml);
     }
 
     /**
-     * 查询用户关系
+     * Query user relationship.
      *
-     * @param xml 请求参数
-     * @return {@link String} 请求返回的结果
+     * @param xml The request parameters in XML format.
+     * @return The result of the request.
      */
     public static String getUserRelation(String xml) {
         return doPost(JdPayApi.GET_USER_RELATION_URL.method(), xml);
     }
 
     /**
-     * 解除用户关系
+     * Cancel user relationship.
      *
-     * @param xml 请求参数
-     * @return {@link String} 请求返回的结果
+     * @param xml The request parameters in XML format.
+     * @return The result of the request.
      */
     public static String cancelUserRelation(String xml) {
         return doPost(JdPayApi.GET_USER_RELATION_URL.method(), xml);
     }
 
+    /**
+     * Performs a POST request.
+     *
+     * @param url    The request URL.
+     * @param reqXml The request XML.
+     * @return The response from the server.
+     */
     public static String doPost(String url, String reqXml) {
         return post(url, reqXml);
     }
 
     /**
-     * 获取接口请求的 URL
+     * Gets the complete URL for the API request.
      *
-     * @return {@link String} 返回完整的接口请求URL
+     * @return The complete URL.
      */
     public String getUrl() {
         return getUrl(this.complex);
     }
 
     /**
-     * 获取接口请求的 URL
+     * Gets the complete URL for the API request.
      *
-     * @param complex {@link JdPayApi} 支付 API 接口枚举
-     * @return {@link String} 返回完整的接口请求URL
+     * @param complex The payment API interface enumeration.
+     * @return The complete URL.
      */
     public String getUrl(Complex complex) {
         return (complex.isSandbox() ? Registry.JDPAY.sandbox() : Registry.JDPAY.service()).concat(complex.method());

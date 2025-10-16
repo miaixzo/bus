@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health;
 
 import java.lang.management.ManagementFactory;
@@ -51,31 +51,42 @@ import org.miaixz.bus.health.builtin.software.OSProcess;
 import org.miaixz.bus.health.builtin.software.OperatingSystem;
 
 /**
- * 服务器信息收集
- * 
+ * Server information collector.
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class Provider implements org.miaixz.bus.core.Provider {
 
+    /**
+     * Main method for testing purposes.
+     *
+     * @param args Command line arguments.
+     */
     public static void main(String[] args) {
         System.out.println(Platform.INSTANCE.getOperatingSystem().toString());
     }
 
+    /**
+     * Retrieves a list of local IPv4 addresses.
+     *
+     * @return A list of {@link Inet4Address}.
+     * @throws SocketException if a socket error occurs.
+     */
     public static List<Inet4Address> getLocalIp4() throws SocketException {
         List<Inet4Address> addresses = new ArrayList<>(1);
-        Enumeration e = NetworkInterface.getNetworkInterfaces();
+        Enumeration<NetworkInterface> e = NetworkInterface.getNetworkInterfaces();
         if (e == null) {
             return addresses;
         }
         while (e.hasMoreElements()) {
-            NetworkInterface n = (NetworkInterface) e.nextElement();
+            NetworkInterface n = e.nextElement();
             if (!isValidInterface(n)) {
                 continue;
             }
-            Enumeration ee = n.getInetAddresses();
+            Enumeration<InetAddress> ee = n.getInetAddresses();
             while (ee.hasMoreElements()) {
-                InetAddress i = (InetAddress) ee.nextElement();
+                InetAddress i = ee.nextElement();
                 if (isValidAddress(i)) {
                     addresses.add((Inet4Address) i);
                 }
@@ -85,10 +96,12 @@ public class Provider implements org.miaixz.bus.core.Provider {
     }
 
     /**
-     * 过滤回环网卡、点对点网卡、非活动网卡、虚拟网卡并要求网卡名字是eth或ens开头
+     * Filters out loopback, point-to-point, inactive, and virtual network interfaces, and requires the interface name
+     * to start with "eth" or "ens".
      *
-     * @param ni 网卡
-     * @return 如果满足要求则true，否则false
+     * @param ni The network interface.
+     * @return {@code true} if the interface meets the criteria, {@code false} otherwise.
+     * @throws SocketException if a socket error occurs.
      */
     private static boolean isValidInterface(NetworkInterface ni) throws SocketException {
         return !ni.isLoopback() && !ni.isPointToPoint() && ni.isUp() && !ni.isVirtual()
@@ -96,62 +109,61 @@ public class Provider implements org.miaixz.bus.core.Provider {
     }
 
     /**
-     * 判断是否是IPv4，并且内网地址并过滤回环地址.
+     * Checks if an address is an IPv4, site-local, and not a loopback address.
+     *
+     * @param address The address to check.
+     * @return {@code true} if the address is valid, {@code false} otherwise.
      */
     private static boolean isValidAddress(InetAddress address) {
         return address instanceof Inet4Address && address.isSiteLocalAddress() && !address.isLoopbackAddress();
     }
 
     /**
-     * 获取硬件抽象层信息
+     * Gets the hardware abstraction layer information.
      *
-     * @return {@link HardwareAbstractionLayer}
+     * @return The {@link HardwareAbstractionLayer}.
      */
     public HardwareAbstractionLayer getHardware() {
         return Platform.INSTANCE.getHardware();
     }
 
     /**
-     * 操作系统
+     * Gets the operating system information.
      *
-     * @return {@link OperatingSystem}
+     * @return The {@link OperatingSystem}.
      */
     public OperatingSystem getOperatingSystem() {
         return Platform.INSTANCE.getOperatingSystem();
     }
 
     /**
-     * 中央处理器
+     * Gets the central processor information.
      *
-     * @return {@link CentralProcessor}
+     * @return The {@link CentralProcessor}.
      */
     public CentralProcessor getProcessor() {
         return getHardware().getProcessor();
     }
 
     /**
-     * 获取计算机系统信息
+     * Gets the computer system information.
      *
-     * @return {@link ComputerSystem}
+     * @return The {@link ComputerSystem}.
      */
     public ComputerSystem getComputerSystem() {
         return getHardware().getComputerSystem();
     }
 
     /**
-     * 获取系统信息
+     * Gets the system host information.
      *
-     * @return {@link Host}
+     * @return A {@link Host} object.
      */
     public Host getHost() {
         long rxBytesBegin = 0;
         long txBytesBegin = 0;
         long rxPacketsBegin = 0;
         long txPacketsBegin = 0;
-        long rxBytesEnd = 0;
-        long txBytesEnd = 0;
-        long rxPacketsEnd = 0;
-        long txPacketsEnd = 0;
         HardwareAbstractionLayer hal = getHardware();
         List<NetworkIF> listBegin = hal.getNetworkIFs();
         for (NetworkIF net : listBegin) {
@@ -161,9 +173,13 @@ public class Provider implements org.miaixz.bus.core.Provider {
             txPacketsBegin += net.getPacketsSent();
         }
 
-        // 暂停3秒以计算平均值
+        // Pause for 3 seconds to calculate the average
         ThreadKit.sleep(3000);
 
+        long rxBytesEnd = 0;
+        long txBytesEnd = 0;
+        long rxPacketsEnd = 0;
+        long txPacketsEnd = 0;
         List<NetworkIF> listEnd = hal.getNetworkIFs();
         for (NetworkIF net : listEnd) {
             rxBytesEnd += net.getBytesRecv();
@@ -181,10 +197,10 @@ public class Provider implements org.miaixz.bus.core.Provider {
     }
 
     /**
-     * 获取所有磁盘使用率信息并添加到结果映射。
+     * Appends all disk usage information to the result map.
      *
-     * @param type 类型标识
-     * @param map  结果映射
+     * @param type The type identifier.
+     * @param map  The result map.
      */
     public void appendAllDisk(String type, Map<String, Object> map) {
         List<Disk> diskList = getDisk();
@@ -201,11 +217,11 @@ public class Provider implements org.miaixz.bus.core.Provider {
     }
 
     /**
-     * 获取指定数量的进程列表（按 CPU 使用率降序排序）。
+     * Gets a list of processes sorted by CPU usage in descending order.
      *
-     * @param limitNumber 限制返回的进程数量
-     * @param type        类型标识
-     * @param map         结果映射
+     * @param limitNumber The maximum number of processes to return.
+     * @param type        The type identifier.
+     * @param map         The result map.
      */
     public void appendProcessList(Integer limitNumber, String type, Map<String, Object> map) {
         List<OSProcess> processList = getOperatingSystem()
@@ -222,10 +238,10 @@ public class Provider implements org.miaixz.bus.core.Provider {
     }
 
     /**
-     * 获取硬件信息并添加到结果映射。
+     * Appends hardware information to the result map.
      *
-     * @param type 类型标识
-     * @param map  结果映射
+     * @param type The type identifier.
+     * @param map  The result map.
      */
     public void appendHardware(String type, Map<String, Object> map) {
         Map<String, Object> hardwareMap = new HashMap<>();
@@ -242,10 +258,10 @@ public class Provider implements org.miaixz.bus.core.Provider {
     }
 
     /**
-     * 根据类型添加系统或硬件信息到结果映射。
+     * Appends system or hardware information to the result map based on the type.
      *
-     * @param type 类型标识
-     * @param map  结果映射
+     * @param type The type identifier.
+     * @param map  The result map.
      */
     public void append(String type, Map<String, Object> map) {
         switch (type.toLowerCase()) {
@@ -304,19 +320,19 @@ public class Provider implements org.miaixz.bus.core.Provider {
     }
 
     /**
-     * 获取系统所有支持的监控信息。
+     * Gets all supported monitoring information for the system.
      *
-     * @return 包含所有类型信息的映射
+     * @return A map containing all types of information.
      */
     public Map<String, Object> getAll() {
         return get(TID.ALL_TID);
     }
 
     /**
-     * 获取单个类型的系统或硬件信息。
+     * Gets system or hardware information for a single type.
      *
-     * @param type 类型标识
-     * @return 包含指定类型信息的映射
+     * @param type The type identifier.
+     * @return A map containing the specified type of information.
      */
     public Map<String, Object> getSingle(String type) {
         Map<String, Object> map = new HashMap<>(1);
@@ -325,10 +341,10 @@ public class Provider implements org.miaixz.bus.core.Provider {
     }
 
     /**
-     * 根据类型列表获取系统或硬件信息。
+     * Gets system or hardware information based on a list of types.
      *
-     * @param list 类型列表
-     * @return 包含指定类型信息的映射
+     * @param list The list of types.
+     * @return A map containing the specified types of information.
      */
     public Map<String, Object> get(List<String> list) {
         Map<String, Object> map = new HashMap<>(5);
@@ -339,10 +355,10 @@ public class Provider implements org.miaixz.bus.core.Provider {
     }
 
     /**
-     * 获取指定进程的信息。
+     * Gets information for a specific process.
      *
-     * @param pid 进程 ID
-     * @return 包含指定进程信息的映射
+     * @param pid The process ID.
+     * @return A map containing information about the specified process.
      */
     public Map<String, Object> getProcessById(int pid) {
         OSProcess process = getOperatingSystem().getProcess(pid);
@@ -359,9 +375,9 @@ public class Provider implements org.miaixz.bus.core.Provider {
     }
 
     /**
-     * 获取 CPU 信息
+     * Gets CPU information.
      *
-     * @return {@link Cpu}
+     * @return A {@link Cpu} object.
      */
     public Cpu getCpu() {
         CentralProcessor centralProcessor = getProcessor();
@@ -393,9 +409,9 @@ public class Provider implements org.miaixz.bus.core.Provider {
     }
 
     /**
-     * 获取内存使用信息
+     * Gets memory usage information.
      *
-     * @return {@link Memory}
+     * @return A {@link Memory} object.
      */
     public Memory getMemory() {
         GlobalMemory globalMemory = getHardware().getMemory();
@@ -407,9 +423,9 @@ public class Provider implements org.miaixz.bus.core.Provider {
     }
 
     /**
-     * 获取 JVM 信息
+     * Gets JVM information.
      *
-     * @return {@link Jvm}
+     * @return A {@link Jvm} object.
      */
     public Jvm getJvm() {
         Runtime runtime = Runtime.getRuntime();
@@ -424,9 +440,9 @@ public class Provider implements org.miaixz.bus.core.Provider {
     }
 
     /**
-     * 获取磁盘使用信息
+     * Gets disk usage information.
      *
-     * @return List of {@link Disk}
+     * @return A list of {@link Disk} objects.
      */
     public List<Disk> getDisk() {
         OperatingSystem operatingSystem = getOperatingSystem();
@@ -447,9 +463,9 @@ public class Provider implements org.miaixz.bus.core.Provider {
     }
 
     /**
-     * 获取当前系统的网络接口信息。
+     * Gets the network interface information for the current system.
      *
-     * @return 包含网络接口信息的映射
+     * @return A map containing network interface information.
      */
     public Map<String, Object> getNetworkInfo() {
         Map<String, Object> map = new HashMap<>(1);
@@ -458,9 +474,9 @@ public class Provider implements org.miaixz.bus.core.Provider {
     }
 
     /**
-     * 获取当前系统的电源信息。
+     * Gets the power source information for the current system.
      *
-     * @return 包含电源信息的映射
+     * @return A map containing power source information.
      */
     public Map<String, Object> getPowerSourceInfo() {
         Map<String, Object> map = new HashMap<>(1);
@@ -469,10 +485,10 @@ public class Provider implements org.miaixz.bus.core.Provider {
     }
 
     /**
-     * 格式化字节为人类可读的单位（KB, MB, GB, TB）
+     * Formats a byte value into a human-readable unit (KB, MB, GB, TB).
      *
-     * @param byteNumber 字节数
-     * @return 格式化后的字符串
+     * @param byteNumber The number of bytes.
+     * @return The formatted string.
      */
     public String formatByte(long byteNumber) {
         double FORMAT = 1024.0;
@@ -492,29 +508,30 @@ public class Provider implements org.miaixz.bus.core.Provider {
     }
 
     /**
-     * 格式化数字为指定模式
+     * Formats a number to the specified pattern.
      *
-     * @param pattern 格式模式
-     * @param number  数字
-     * @return 格式化后的字符串
+     * @param pattern The format pattern.
+     * @param number  The number.
+     * @return The formatted string.
      */
     public String formatDecimal(String pattern, double number) {
         return new DecimalFormat(pattern).format(number);
     }
 
     /**
-     * 格式化双精度浮点数，保留两位小数
+     * Formats a double value to two decimal places.
      *
-     * @param value 输入值
-     * @return 格式化后的双精度值
+     * @param value The input value.
+     * @return The formatted double value.
      */
     public double formatDouble(double value) {
         return new BigDecimal(value).setScale(2, RoundingMode.HALF_UP).doubleValue();
     }
 
     /**
+     * Returns the type of the operating system.
      *
-     * @return the {@link int}
+     * @return The OS type from {@link Platform}.
      */
     @Override
     public Object type() {

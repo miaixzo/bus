@@ -27,9 +27,6 @@
 */
 package org.miaixz.bus.starter.pay;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ObjectKit;
@@ -45,8 +42,12 @@ import org.miaixz.bus.pay.metric.tenpay.TenpayProvider;
 import org.miaixz.bus.pay.metric.unionpay.UnionPayProvider;
 import org.miaixz.bus.pay.metric.wechat.WechatPayProvider;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 /**
- * 集合支付服务
+ * Integrated payment service. This service manages different payment providers and their configurations. It allows for
+ * dynamic registration and retrieval of payment providers.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -54,22 +55,52 @@ import org.miaixz.bus.pay.metric.wechat.WechatPayProvider;
 public class PayService {
 
     /**
-     * 通知器配置
+     * A cache to store payment provider contexts, keyed by their registry type.
      */
-    private static Map<Registry, Context> CACHE = new ConcurrentHashMap();
+    private static final Map<Registry, Context> CACHE = new ConcurrentHashMap<>();
+
+    /**
+     * Payment configuration properties.
+     */
     public PayProperties properties;
+
+    /**
+     * Cache instance for handling caching operations.
+     */
     public CacheX cache;
+
+    /**
+     * Complex payment parameters.
+     */
     public Complex complex;
 
+    /**
+     * Constructs a new PayService with the given properties.
+     *
+     * @param properties The payment configuration properties.
+     */
     public PayService(PayProperties properties) {
         this.properties = properties;
     }
 
+    /**
+     * Constructs a new PayService with the given properties and complex parameters.
+     *
+     * @param properties The payment configuration properties.
+     * @param complex    The complex payment parameters.
+     */
     public PayService(PayProperties properties, Complex complex) {
         this.properties = properties;
         this.complex = complex;
     }
 
+    /**
+     * Constructs a new PayService with the given properties, complex parameters, and cache.
+     *
+     * @param properties The payment configuration properties.
+     * @param complex    The complex payment parameters.
+     * @param cache      The cache instance.
+     */
     public PayService(PayProperties properties, Complex complex, CacheX cache) {
         this.properties = properties;
         this.complex = complex;
@@ -77,43 +108,54 @@ public class PayService {
     }
 
     /**
-     * 注册组件
+     * Registers a new payment provider context.
      *
-     * @param registry 组件名称
-     * @param context  组件对象
+     * @param registry The registry type of the payment provider.
+     * @param context  The context object for the payment provider.
+     * @throws InternalException if a provider with the same registry name is already registered.
      */
     public static void register(Registry registry, Context context) {
         if (CACHE.containsKey(registry)) {
-            throw new InternalException("重复注册同名称的组件：" + registry.name());
+            throw new InternalException("A component with the same name is already registered: " + registry.name());
         }
         CACHE.putIfAbsent(registry, context);
     }
 
     /**
-     * 返回type对象
+     * Retrieves a payment provider instance based on the registry type. It first checks the local cache, then falls
+     * back to the properties.
      *
-     * @param registry {@link Registry}
-     * @return {@link Provider}
+     * @param registry The {@link Registry} type of the required provider.
+     * @return The {@link Provider} instance.
+     * @throws InternalException if the requested provider is not supported or cannot be found.
      */
     public Provider require(Registry registry) {
         Context context = CACHE.get(registry);
         if (ObjectKit.isEmpty(context)) {
             context = this.properties.getType().get(registry);
         }
-        if (Registry.ALIPAY.equals(registry)) {
-            return new AliPayProvider(context, complex, cache);
-        } else if (Registry.JDPAY.equals(registry)) {
-            return new JdPayProvider(context, complex, cache);
-        } else if (Registry.PAYPAL.equals(registry)) {
-            return new PaypalProvider(context, complex, cache);
-        } else if (Registry.TENPAY.equals(registry)) {
-            return new TenpayProvider(context, complex, cache);
-        } else if (Registry.UNIONPAY.equals(registry)) {
-            return new UnionPayProvider(context, complex, cache);
-        } else if (Registry.WECHAT.equals(registry)) {
-            return new WechatPayProvider(context, complex, cache);
+        switch (registry) {
+            case ALIPAY:
+                return new AliPayProvider(context, complex, cache);
+
+            case JDPAY:
+                return new JdPayProvider(context, complex, cache);
+
+            case PAYPAL:
+                return new PaypalProvider(context, complex, cache);
+
+            case TENPAY:
+                return new TenpayProvider(context, complex, cache);
+
+            case UNIONPAY:
+                return new UnionPayProvider(context, complex, cache);
+
+            case WECHAT:
+                return new WechatPayProvider(context, complex, cache);
+
+            default:
+                throw new InternalException(ErrorCode._100803.getValue());
         }
-        throw new InternalException(ErrorCode._100803.getValue());
     }
 
 }

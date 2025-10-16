@@ -51,7 +51,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 
 /**
- * 压缩工具类
+ * Compression utility class.
  *
  * @author Kimi Liu
  * @see ZipWriter
@@ -60,51 +60,51 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 public class ZipKit {
 
     /**
-     * 默认编码，使用平台相关编码
+     * Default charset, using the platform's default charset.
      */
     private static final java.nio.charset.Charset DEFAULT_CHARSET = Charset.defaultCharset();
 
     /**
-     * 打包到当前目录，使用默认编码UTF-8
+     * Zips a source file or directory into a zip file in the same directory, using UTF-8 encoding.
      *
-     * @param srcPath 源文件路径
-     * @return 打包好的压缩文件
-     * @throws InternalException IO异常
+     * @param srcPath The path of the source file.
+     * @return The created zip file.
+     * @throws InternalException for IO errors.
      */
     public static File zip(final String srcPath) throws InternalException {
         return zip(srcPath, DEFAULT_CHARSET);
     }
 
     /**
-     * 打包到当前目录
+     * Zips a source file or directory into a zip file in the same directory.
      *
-     * @param srcPath 源文件路径
-     * @param charset 编码
-     * @return 打包好的压缩文件
-     * @throws InternalException IO异常
+     * @param srcPath The path of the source file.
+     * @param charset The charset to use.
+     * @return The created zip file.
+     * @throws InternalException for IO errors.
      */
     public static File zip(final String srcPath, final java.nio.charset.Charset charset) throws InternalException {
         return zip(FileKit.file(srcPath), charset);
     }
 
     /**
-     * 打包到当前目录，使用默认编码UTF-8
+     * Zips a source file or directory into a zip file in the same directory, using UTF-8 encoding.
      *
-     * @param srcFile 源文件或目录
-     * @return 打包好的压缩文件
-     * @throws InternalException IO异常
+     * @param srcFile The source file or directory.
+     * @return The created zip file.
+     * @throws InternalException for IO errors.
      */
     public static File zip(final File srcFile) throws InternalException {
         return zip(srcFile, DEFAULT_CHARSET);
     }
 
     /**
-     * 打包到当前目录
+     * Zips a source file or directory into a zip file in the same directory.
      *
-     * @param srcFile 源文件或目录
-     * @param charset 编码
-     * @return 打包好的压缩文件
-     * @throws InternalException IO异常
+     * @param srcFile The source file or directory.
+     * @param charset The charset to use.
+     * @return The created zip file.
+     * @throws InternalException for IO errors.
      */
     public static File zip(final File srcFile, final java.nio.charset.Charset charset) throws InternalException {
         final File zipFile = FileKit.file(srcFile.getParentFile(), FileName.mainName(srcFile) + ".zip");
@@ -113,25 +113,25 @@ public class ZipKit {
     }
 
     /**
-     * 对文件或文件目录进行压缩 不包含被打包目录
+     * Zips a file or directory.
      *
-     * @param srcPath 要压缩的源文件路径。如果压缩一个文件，则为该文件的全路径；如果压缩一个目录，则为该目录的顶层目录路径
-     * @param zipPath 压缩文件保存的路径，包括文件名。注意：zipPath不能是srcPath路径下的子文件夹
-     * @return 压缩好的Zip文件
-     * @throws InternalException IO异常
+     * @param srcPath The source file path.
+     * @param zipPath The destination zip file path.
+     * @return The created zip file.
+     * @throws InternalException for IO errors.
      */
     public static File zip(final String srcPath, final String zipPath) throws InternalException {
         return zip(srcPath, zipPath, false);
     }
 
     /**
-     * 对文件或文件目录进行压缩
+     * Zips a file or directory.
      *
-     * @param srcPath    要压缩的源文件路径。如果压缩一个文件，则为该文件的全路径；如果压缩一个目录，则为该目录的顶层目录路径
-     * @param zipPath    压缩文件保存的路径，包括文件名。注意：zipPath不能是srcPath路径下的子文件夹
-     * @param withSrcDir 是否包含被打包目录
-     * @return 压缩文件
-     * @throws InternalException IO异常
+     * @param srcPath    The source file path.
+     * @param zipPath    The destination zip file path.
+     * @param withSrcDir Whether to include the source directory itself in the zip.
+     * @return The created zip file.
+     * @throws InternalException for IO errors.
      */
     public static File zip(final String srcPath, final String zipPath, final boolean withSrcDir)
             throws InternalException {
@@ -139,14 +139,14 @@ public class ZipKit {
     }
 
     /**
-     * 对文件或文件目录进行压缩
+     * Zips a file or directory.
      *
-     * @param srcPath    要压缩的源文件路径。如果压缩一个文件，则为该文件的全路径；如果压缩一个目录，则为该目录的顶层目录路径
-     * @param zipPath    压缩文件保存的路径，包括文件名。注意：zipPath不能是srcPath路径下的子文件夹
-     * @param charset    编码
-     * @param withSrcDir 是否包含被打包目录
-     * @return 压缩文件
-     * @throws InternalException IO异常
+     * @param srcPath    The source file path.
+     * @param zipPath    The destination zip file path.
+     * @param charset    The charset to use.
+     * @param withSrcDir Whether to include the source directory.
+     * @return The created zip file.
+     * @throws InternalException for IO errors.
      */
     public static File zip(
             final String srcPath,
@@ -160,13 +160,13 @@ public class ZipKit {
     }
 
     /**
-     * 对文件或文件目录进行压缩 使用默认UTF-8编码
+     * Zips files or directories using UTF-8 encoding.
      *
-     * @param zipFile    生成的Zip文件，包括文件名。注意：zipPath不能是srcPath路径下的子文件夹
-     * @param withSrcDir 是否包含被打包目录，只针对压缩目录有效。若为false，则只压缩目录下的文件或目录，为true则将本目录也压缩
-     * @param srcFiles   要压缩的源文件或目录。
-     * @return 压缩文件
-     * @throws InternalException IO异常
+     * @param zipFile    The destination zip file.
+     * @param withSrcDir Whether to include the source directory.
+     * @param srcFiles   The source files or directories to zip.
+     * @return The created zip file.
+     * @throws InternalException for IO errors.
      */
     public static File zip(final File zipFile, final boolean withSrcDir, final File... srcFiles)
             throws InternalException {
@@ -174,14 +174,14 @@ public class ZipKit {
     }
 
     /**
-     * 对文件或文件目录进行压缩
+     * Zips files or directories.
      *
-     * @param zipFile    生成的Zip文件，包括文件名。注意：zipPath不能是srcPath路径下的子文件夹
-     * @param charset    编码
-     * @param withSrcDir 是否包含被打包目录，只针对压缩目录有效。若为false，则只压缩目录下的文件或目录，为true则将本目录也压缩
-     * @param srcFiles   要压缩的源文件或目录。如果压缩一个文件，则为该文件的全路径；如果压缩一个目录，则为该目录的顶层目录路径
-     * @return 压缩文件
-     * @throws InternalException IO异常
+     * @param zipFile    The destination zip file.
+     * @param charset    The charset to use.
+     * @param withSrcDir Whether to include the source directory.
+     * @param srcFiles   The source files or directories to zip.
+     * @return The created zip file.
+     * @throws InternalException for IO errors.
      */
     public static File zip(
             final File zipFile,
@@ -192,15 +192,15 @@ public class ZipKit {
     }
 
     /**
-     * 对文件或文件目录进行压缩
+     * Zips files or directories.
      *
-     * @param zipFile    生成的Zip文件，包括文件名。注意：zipPath不能是srcPath路径下的子文件夹
-     * @param charset    编码
-     * @param withSrcDir 是否包含被打包目录，只针对压缩目录有效。若为false，则只压缩目录下的文件或目录，为true则将本目录也压缩
-     * @param filter     文件过滤器，通过实现此接口，自定义要过滤的文件（过滤掉哪些文件或文件夹不加入压缩）
-     * @param srcFiles   要压缩的源文件或目录。如果压缩一个文件，则为该文件的全路径；如果压缩一个目录，则为该目录的顶层目录路径
-     * @return 压缩文件
-     * @throws InternalException IO异常
+     * @param zipFile    The destination zip file.
+     * @param charset    The charset to use.
+     * @param withSrcDir Whether to include the source directory.
+     * @param filter     A file filter to exclude files or directories.
+     * @param srcFiles   The source files or directories to zip.
+     * @return The created zip file.
+     * @throws InternalException for IO errors.
      */
     public static File zip(
             final File zipFile,
@@ -209,20 +209,21 @@ public class ZipKit {
             final FileFilter filter,
             final File... srcFiles) throws InternalException {
         validateFiles(zipFile, srcFiles);
-        // noinspection resource
-        ZipWriter.of(zipFile, charset).add(withSrcDir, filter, srcFiles).close();
+        try (final ZipWriter zipWriter = ZipWriter.of(zipFile, charset)) {
+            zipWriter.add(withSrcDir, filter, srcFiles);
+        }
         return zipFile;
     }
 
     /**
-     * 对文件或文件目录进行压缩
+     * Zips files or directories to an output stream.
      *
-     * @param out        生成的Zip到的目标流，包括文件名。注意：zipPath不能是srcPath路径下的子文件夹
-     * @param charset    编码
-     * @param withSrcDir 是否包含被打包目录，只针对压缩目录有效。若为false，则只压缩目录下的文件或目录，为true则将本目录也压缩
-     * @param filter     文件过滤器，通过实现此接口，自定义要过滤的文件（过滤掉哪些文件或文件夹不加入压缩）
-     * @param srcFiles   要压缩的源文件或目录。如果压缩一个文件，则为该文件的全路径；如果压缩一个目录，则为该目录的顶层目录路径
-     * @throws InternalException IO异常
+     * @param out        The target output stream.
+     * @param charset    The charset to use.
+     * @param withSrcDir Whether to include the source directory.
+     * @param filter     A file filter.
+     * @param srcFiles   The source files or directories.
+     * @throws InternalException for IO errors.
      */
     public static void zip(
             final OutputStream out,
@@ -230,31 +231,33 @@ public class ZipKit {
             final boolean withSrcDir,
             final FileFilter filter,
             final File... srcFiles) throws InternalException {
-        ZipWriter.of(out, charset).add(withSrcDir, filter, srcFiles).close();
+        try (final ZipWriter zipWriter = ZipWriter.of(out, charset)) {
+            zipWriter.add(withSrcDir, filter, srcFiles);
+        }
     }
 
     /**
-     * 对流中的数据加入到压缩文件，使用默认UTF-8编码
+     * Adds string data to a zip file using UTF-8 encoding.
      *
-     * @param zipFile 生成的Zip文件，包括文件名。注意：zipPath不能是srcPath路径下的子文件夹
-     * @param path    流数据在压缩文件中的路径或文件名
-     * @param data    要压缩的数据
-     * @return 压缩文件
-     * @throws InternalException IO异常
+     * @param zipFile The destination zip file.
+     * @param path    The path of the entry in the zip file.
+     * @param data    The string data to compress.
+     * @return The modified zip file.
+     * @throws InternalException for IO errors.
      */
     public static File zip(final File zipFile, final String path, final String data) throws InternalException {
         return zip(zipFile, path, data, DEFAULT_CHARSET);
     }
 
     /**
-     * 对流中的数据加入到压缩文件
+     * Adds string data to a zip file.
      *
-     * @param zipFile 生成的Zip文件，包括文件名。注意：zipPath不能是srcPath路径下的子文件夹
-     * @param path    流数据在压缩文件中的路径或文件名
-     * @param data    要压缩的数据
-     * @param charset 编码
-     * @return 压缩文件
-     * @throws InternalException IO异常
+     * @param zipFile The destination zip file.
+     * @param path    The path of the entry in the zip file.
+     * @param data    The string data to compress.
+     * @param charset The charset to use.
+     * @return The modified zip file.
+     * @throws InternalException for IO errors.
      */
     public static File zip(
             final File zipFile,
@@ -265,27 +268,27 @@ public class ZipKit {
     }
 
     /**
-     * 对流中的数据加入到压缩文件 使用默认编码UTF-8
+     * Adds data from an input stream to a zip file using UTF-8 encoding.
      *
-     * @param zipFile 生成的Zip文件，包括文件名。注意：zipPath不能是srcPath路径下的子文件夹
-     * @param path    流数据在压缩文件中的路径或文件名
-     * @param in      要压缩的源
-     * @return 压缩文件
-     * @throws InternalException IO异常
+     * @param zipFile The destination zip file.
+     * @param path    The path of the entry in the zip file.
+     * @param in      The input stream.
+     * @return The modified zip file.
+     * @throws InternalException for IO errors.
      */
     public static File zip(final File zipFile, final String path, final InputStream in) throws InternalException {
         return zip(zipFile, path, in, DEFAULT_CHARSET);
     }
 
     /**
-     * 对流中的数据加入到压缩文件
+     * Adds data from an input stream to a zip file.
      *
-     * @param zipFile 生成的Zip文件，包括文件名。注意：zipPath不能是srcPath路径下的子文件夹
-     * @param path    流数据在压缩文件中的路径或文件名
-     * @param in      要压缩的源，默认关闭
-     * @param charset 编码
-     * @return 压缩文件
-     * @throws InternalException IO异常
+     * @param zipFile The destination zip file.
+     * @param path    The path of the entry in the zip file.
+     * @param in      The input stream (will be closed).
+     * @param charset The charset to use.
+     * @return The modified zip file.
+     * @throws InternalException for IO errors.
      */
     public static File zip(
             final File zipFile,
@@ -296,27 +299,27 @@ public class ZipKit {
     }
 
     /**
-     * 对流中的数据加入到压缩文件 路径列表和流列表长度必须一致
+     * Adds multiple streams to a zip file.
      *
-     * @param zipFile 生成的Zip文件，包括文件名。注意：zipPath不能是srcPath路径下的子文件夹
-     * @param paths   流数据在压缩文件中的路径或文件名
-     * @param ins     要压缩的源，添加完成后自动关闭流
-     * @return 压缩文件
-     * @throws InternalException IO异常
+     * @param zipFile The destination zip file.
+     * @param paths   The entry paths.
+     * @param ins     The input streams.
+     * @return The modified zip file.
+     * @throws InternalException for IO errors.
      */
     public static File zip(final File zipFile, final String[] paths, final InputStream[] ins) throws InternalException {
         return zip(zipFile, paths, ins, DEFAULT_CHARSET);
     }
 
     /**
-     * 对流中的数据加入到压缩文件 路径列表和流列表长度必须一致
+     * Adds multiple streams to a zip file.
      *
-     * @param zipFile 生成的Zip文件，包括文件名。注意：zipPath不能是srcPath路径下的子文件夹
-     * @param paths   流数据在压缩文件中的路径或文件名
-     * @param ins     要压缩的源，添加完成后自动关闭流
-     * @param charset 编码
-     * @return 压缩文件
-     * @throws InternalException IO异常
+     * @param zipFile The destination zip file.
+     * @param paths   The entry paths.
+     * @param ins     The input streams (will be closed).
+     * @param charset The charset to use.
+     * @return The modified zip file.
+     * @throws InternalException for IO errors.
      */
     public static File zip(
             final File zipFile,
@@ -326,28 +329,27 @@ public class ZipKit {
         try (final ZipWriter zipWriter = ZipWriter.of(zipFile, charset)) {
             zipWriter.add(paths, ins);
         }
-
         return zipFile;
     }
 
     /**
-     * 将文件流压缩到目标流中
+     * Zips multiple streams to a target output stream.
      *
-     * @param out   目标流，压缩完成自动关闭
-     * @param paths 流数据在压缩文件中的路径或文件名
-     * @param ins   要压缩的源，添加完成后自动关闭流
+     * @param out   The target output stream (will be closed).
+     * @param paths The entry paths.
+     * @param ins   The input streams (will be closed).
      */
     public static void zip(final OutputStream out, final String[] paths, final InputStream[] ins) {
         zip(getZipOutputStream(out, DEFAULT_CHARSET), paths, ins);
     }
 
     /**
-     * 将文件流压缩到目标流中
+     * Zips multiple streams to a target zip output stream.
      *
-     * @param zipOutputStream 目标流，压缩完成自动关闭
-     * @param paths           流数据在压缩文件中的路径或文件名
-     * @param ins             要压缩的源，添加完成后自动关闭流
-     * @throws InternalException IO异常
+     * @param zipOutputStream The target zip output stream (will be closed).
+     * @param paths           The entry paths.
+     * @param ins             The input streams (will be closed).
+     * @throws InternalException for IO errors.
      */
     public static void zip(final ZipOutputStream zipOutputStream, final String[] paths, final InputStream[] ins)
             throws InternalException {
@@ -357,39 +359,40 @@ public class ZipKit {
     }
 
     /**
-     * 对流中的数据加入到压缩文件 路径列表和流列表长度必须一致
+     * Zips multiple `Resource` objects into a zip file.
      *
-     * @param zipFile   生成的Zip文件，包括文件名。注意：zipPath不能是srcPath路径下的子文件夹
-     * @param charset   编码
-     * @param resources 需要压缩的资源，资源的路径为{@link Resource#getName()}
-     * @return 压缩文件
-     * @throws InternalException IO异常
+     * @param zipFile   The destination zip file.
+     * @param charset   The charset to use.
+     * @param resources The resources to compress.
+     * @return The created zip file.
+     * @throws InternalException for IO errors.
      */
     public static File zip(final File zipFile, final java.nio.charset.Charset charset, final Resource... resources)
             throws InternalException {
-        // noinspection resource
-        ZipWriter.of(zipFile, charset).add(resources).close();
+        try (final ZipWriter zipWriter = ZipWriter.of(zipFile, charset)) {
+            zipWriter.add(resources);
+        }
         return zipFile;
     }
 
     /**
-     * 解压到文件名相同的目录中，默认编码UTF-8
+     * Unzips a file to a directory of the same name, using UTF-8 encoding.
      *
-     * @param zipFilePath 压缩文件路径
-     * @return 解压的目录
-     * @throws InternalException IO异常
+     * @param zipFilePath The path of the zip file.
+     * @return The destination directory.
+     * @throws InternalException for IO errors.
      */
     public static File unzip(final String zipFilePath) throws InternalException {
         return unzip(zipFilePath, DEFAULT_CHARSET);
     }
 
     /**
-     * 解压到文件名相同的目录中
+     * Unzips a file to a directory of the same name.
      *
-     * @param zipFilePath 压缩文件路径
-     * @param charset     编码
-     * @return 解压的目录
-     * @throws InternalException IO异常
+     * @param zipFilePath The path of the zip file.
+     * @param charset     The charset to use.
+     * @return The destination directory.
+     * @throws InternalException for IO errors.
      */
     public static File unzip(final String zipFilePath, final java.nio.charset.Charset charset)
             throws InternalException {
@@ -397,23 +400,23 @@ public class ZipKit {
     }
 
     /**
-     * 解压到文件名相同的目录中，使用UTF-8编码
+     * Unzips a file to a directory of the same name, using UTF-8 encoding.
      *
-     * @param zipFile 压缩文件
-     * @return 解压的目录
-     * @throws InternalException IO异常
+     * @param zipFile The zip file.
+     * @return The destination directory.
+     * @throws InternalException for IO errors.
      */
     public static File unzip(final File zipFile) throws InternalException {
         return unzip(zipFile, DEFAULT_CHARSET);
     }
 
     /**
-     * 解压到文件名相同的目录中
+     * Unzips a file to a directory of the same name.
      *
-     * @param zipFile 压缩文件
-     * @param charset 编码
-     * @return 解压的目录
-     * @throws InternalException IO异常
+     * @param zipFile The zip file.
+     * @param charset The charset to use.
+     * @return The destination directory.
+     * @throws InternalException for IO errors.
      */
     public static File unzip(final File zipFile, final java.nio.charset.Charset charset) throws InternalException {
         final File destDir = FileKit.file(zipFile.getParentFile(), FileName.mainName(zipFile));
@@ -421,25 +424,25 @@ public class ZipKit {
     }
 
     /**
-     * 解压，默认UTF-8编码
+     * Unzips a file to a specified directory, using UTF-8 encoding.
      *
-     * @param zipFilePath 压缩文件的路径
-     * @param outFileDir  解压到的目录
-     * @return 解压的目录
-     * @throws InternalException IO异常
+     * @param zipFilePath The path of the zip file.
+     * @param outFileDir  The destination directory.
+     * @return The destination directory.
+     * @throws InternalException for IO errors.
      */
     public static File unzip(final String zipFilePath, final String outFileDir) throws InternalException {
         return unzip(zipFilePath, outFileDir, DEFAULT_CHARSET);
     }
 
     /**
-     * 解压
+     * Unzips a file to a specified directory.
      *
-     * @param zipFilePath 压缩文件的路径
-     * @param outFileDir  解压到的目录
-     * @param charset     编码
-     * @return 解压的目录
-     * @throws InternalException IO异常
+     * @param zipFilePath The path of the zip file.
+     * @param outFileDir  The destination directory.
+     * @param charset     The charset to use.
+     * @return The destination directory.
+     * @throws InternalException for IO errors.
      */
     public static File unzip(final String zipFilePath, final String outFileDir, final java.nio.charset.Charset charset)
             throws InternalException {
@@ -447,55 +450,55 @@ public class ZipKit {
     }
 
     /**
-     * 解压，默认使用UTF-8编码
+     * Unzips a file to a specified directory, using UTF-8 encoding.
      *
-     * @param zipFile zip文件
-     * @param outFile 解压到的目录
-     * @return 解压的目录
-     * @throws InternalException IO异常
+     * @param zipFile The zip file.
+     * @param outFile The destination directory.
+     * @return The destination directory.
+     * @throws InternalException for IO errors.
      */
     public static File unzip(final File zipFile, final File outFile) throws InternalException {
         return unzip(zipFile, outFile, DEFAULT_CHARSET);
     }
 
     /**
-     * 解压
+     * Unzips a file to a specified directory.
      *
-     * @param zipFile zip文件
-     * @param outFile 解压到的目录
-     * @param charset 编码
-     * @return 解压的目录
+     * @param zipFile The zip file.
+     * @param outFile The destination directory.
+     * @param charset The charset to use.
+     * @return The destination directory.
      */
     public static File unzip(final File zipFile, final File outFile, final java.nio.charset.Charset charset) {
         return unzip(toZipFile(zipFile, charset), outFile);
     }
 
     /**
-     * 解压
+     * Unzips a `ZipFile` to a specified directory.
      *
-     * @param zipFile zip文件，附带编码信息，使用完毕自动关闭
-     * @param outFile 解压到的目录
-     * @return 解压的目录
-     * @throws InternalException IO异常
+     * @param zipFile The `ZipFile` (will be closed).
+     * @param outFile The destination directory.
+     * @return The destination directory.
+     * @throws InternalException for IO errors.
      */
     public static File unzip(final ZipFile zipFile, final File outFile) throws InternalException {
         return unzip(zipFile, outFile, -1);
     }
 
     /**
-     * 限制解压后文件大小
+     * Unzips a `ZipFile` to a specified directory with a size limit to prevent zip bomb attacks.
      *
-     * @param zipFile zip文件，附带编码信息，使用完毕自动关闭
-     * @param outFile 解压到的目录
-     * @param limit   限制解压文件大小(单位B)
-     * @return 解压的目录
-     * @throws InternalException IO异常
+     * @param zipFile The `ZipFile` (will be closed).
+     * @param outFile The destination directory.
+     * @param limit   The maximum allowed size of uncompressed data in bytes.
+     * @return The destination directory.
+     * @throws InternalException for IO errors.
      */
     public static File unzip(final ZipFile zipFile, final File outFile, final long limit) throws InternalException {
         if (outFile.exists() && outFile.isFile()) {
-            throw new IllegalArgumentException(StringKit.format("Target path [{}] exist!", outFile.getAbsolutePath()));
+            throw new IllegalArgumentException(
+                    StringKit.format("Target path [{}] exists and is a file!", outFile.getAbsolutePath()));
         }
-
         if (limit > 0) {
             final Enumeration<? extends ZipEntry> zipEntries = zipFile.entries();
             long zipFileSize = 0L;
@@ -508,7 +511,6 @@ public class ZipKit {
                 }
             }
         }
-
         try (final ZipReader reader = new ZipReader(zipFile)) {
             reader.readTo(outFile);
         }
@@ -516,13 +518,13 @@ public class ZipKit {
     }
 
     /**
-     * 解压 ZIP条目不使用高速缓冲。
+     * Unzips a stream to a specified directory.
      *
-     * @param in      zip文件流，使用完毕自动关闭
-     * @param outFile 解压到的目录
-     * @param charset 编码
-     * @return 解压的目录
-     * @throws InternalException IO异常
+     * @param in      The zip input stream (will be closed).
+     * @param outFile The destination directory.
+     * @param charset The charset to use.
+     * @return The destination directory.
+     * @throws InternalException for IO errors.
      */
     public static File unzip(final InputStream in, final File outFile, java.nio.charset.Charset charset)
             throws InternalException {
@@ -533,12 +535,12 @@ public class ZipKit {
     }
 
     /**
-     * 解压 ZIP条目不使用高速缓冲。
+     * Unzips a `ZipInputStream` to a specified directory.
      *
-     * @param zipStream zip文件流，包含编码信息
-     * @param outFile   解压到的目录
-     * @return 解压的目录
-     * @throws InternalException IO异常
+     * @param zipStream The zip input stream (will be closed).
+     * @param outFile   The destination directory.
+     * @return The destination directory.
+     * @throws InternalException for IO errors.
      */
     public static File unzip(final ZipInputStream zipStream, final File outFile) throws InternalException {
         try (final ZipReader reader = new ZipReader(zipStream)) {
@@ -548,23 +550,23 @@ public class ZipKit {
     }
 
     /**
-     * 从Zip文件中提取指定的文件为bytes
+     * Extracts a specific file from a zip archive as a byte array.
      *
-     * @param zipFilePath Zip文件
-     * @param name        文件名，如果存在于子文件夹中，此文件名必须包含目录名，例如images/aaa.txt
-     * @return 文件内容bytes
+     * @param zipFilePath The path to the zip file.
+     * @param name        The name of the entry to extract.
+     * @return The content of the file as a byte array.
      */
     public static byte[] unzipFileBytes(final String zipFilePath, final String name) {
         return unzipFileBytes(zipFilePath, DEFAULT_CHARSET, name);
     }
 
     /**
-     * 从Zip文件中提取指定的文件为bytes
+     * Extracts a specific file from a zip archive as a byte array.
      *
-     * @param zipFilePath Zip文件
-     * @param charset     编码
-     * @param name        文件名，如果存在于子文件夹中，此文件名必须包含目录名，例如images/aaa.txt
-     * @return 文件内容bytes
+     * @param zipFilePath The path to the zip file.
+     * @param charset     The charset to use.
+     * @param name        The name of the entry to extract.
+     * @return The content of the file as a byte array.
      */
     public static byte[] unzipFileBytes(
             final String zipFilePath,
@@ -574,23 +576,23 @@ public class ZipKit {
     }
 
     /**
-     * 从Zip文件中提取指定的文件为bytes
+     * Extracts a specific file from a zip archive as a byte array.
      *
-     * @param zipFile Zip文件
-     * @param name    文件名，如果存在于子文件夹中，此文件名必须包含目录名，例如images/aaa.txt
-     * @return 文件内容bytes
+     * @param zipFile The zip file.
+     * @param name    The name of the entry to extract.
+     * @return The content of the file as a byte array.
      */
     public static byte[] unzipFileBytes(final File zipFile, final String name) {
         return unzipFileBytes(zipFile, DEFAULT_CHARSET, name);
     }
 
     /**
-     * 从Zip文件中提取指定的文件为bytes
+     * Extracts a specific file from a zip archive as a byte array.
      *
-     * @param zipFile Zip文件
-     * @param charset 编码
-     * @param name    文件名，如果存在于子文件夹中，此文件名必须包含目录名，例如images/aaa.txt
-     * @return 文件内容bytes
+     * @param zipFile The zip file.
+     * @param charset The charset to use.
+     * @param name    The name of the entry to extract.
+     * @return The content of the file as a byte array.
      */
     public static byte[] unzipFileBytes(final File zipFile, final java.nio.charset.Charset charset, final String name) {
         try (final ZipReader reader = ZipReader.of(zipFile, charset)) {
@@ -599,34 +601,34 @@ public class ZipKit {
     }
 
     /**
-     * Gzip压缩处理
+     * Gzips a string.
      *
-     * @param content 被压缩的字符串
-     * @param charset 编码 {@link Charset#UTF_8}、 {@link Charset#UTF_8}
-     * @return 压缩后的字节流
-     * @throws InternalException IO异常
+     * @param content The string to compress.
+     * @param charset The charset to use.
+     * @return The compressed byte array.
+     * @throws InternalException for IO errors.
      */
     public static byte[] gzip(final String content, final java.nio.charset.Charset charset) throws InternalException {
         return gzip(ByteKit.toBytes(content, charset));
     }
 
     /**
-     * Gzip压缩处理
+     * Gzips a byte array.
      *
-     * @param buf 被压缩的字节流
-     * @return 压缩后的字节流
-     * @throws InternalException IO异常
+     * @param buf The byte array to compress.
+     * @return The compressed byte array.
+     * @throws InternalException for IO errors.
      */
     public static byte[] gzip(final byte[] buf) throws InternalException {
         return gzip(new ByteArrayInputStream(buf), buf.length);
     }
 
     /**
-     * Gzip压缩文件
+     * Gzips a file.
      *
-     * @param file 被压缩的文件
-     * @return 压缩后的字节流
-     * @throws InternalException IO异常
+     * @param file The file to compress.
+     * @return The compressed byte array.
+     * @throws InternalException for IO errors.
      */
     public static byte[] gzip(final File file) throws InternalException {
         BufferedInputStream in = null;
@@ -639,23 +641,23 @@ public class ZipKit {
     }
 
     /**
-     * Gzip压缩文件
+     * Gzips an input stream.
      *
-     * @param in 被压缩的流
-     * @return 压缩后的字节流
-     * @throws InternalException IO异常
+     * @param in The input stream.
+     * @return The compressed byte array.
+     * @throws InternalException for IO errors.
      */
     public static byte[] gzip(final InputStream in) throws InternalException {
         return gzip(in, Normal._32);
     }
 
     /**
-     * Gzip压缩文件
+     * Gzips an input stream.
      *
-     * @param in     被压缩的流
-     * @param length 预估长度
-     * @return 压缩后的字节流
-     * @throws InternalException IO异常
+     * @param in     The input stream.
+     * @param length The estimated length.
+     * @return The compressed byte array.
+     * @throws InternalException for IO errors.
      */
     public static byte[] gzip(final InputStream in, final int length) throws InternalException {
         final ByteArrayOutputStream bos = new ByteArrayOutputStream(length);
@@ -664,46 +666,46 @@ public class ZipKit {
     }
 
     /**
-     * Gzip解压缩处理
+     * Un-gzips a byte array into a string.
      *
-     * @param buf     压缩过的字节流
-     * @param charset 编码
-     * @return 解压后的字符串
-     * @throws InternalException IO异常
+     * @param buf     The compressed byte array.
+     * @param charset The charset.
+     * @return The decompressed string.
+     * @throws InternalException for IO errors.
      */
     public static String unGzip(final byte[] buf, final java.nio.charset.Charset charset) throws InternalException {
         return StringKit.toString(unGzip(buf), charset);
     }
 
     /**
-     * Gzip解压处理
+     * Un-gzips a byte array.
      *
-     * @param buf buf
-     * @return bytes
-     * @throws InternalException IO异常
+     * @param buf The compressed byte array.
+     * @return The decompressed byte array.
+     * @throws InternalException for IO errors.
      */
     public static byte[] unGzip(final byte[] buf) throws InternalException {
         return unGzip(new ByteArrayInputStream(buf), buf.length);
     }
 
     /**
-     * Gzip解压处理
+     * Un-gzips an input stream.
      *
-     * @param in Gzip数据
-     * @return 解压后的数据
-     * @throws InternalException IO异常
+     * @param in The gzipped input stream.
+     * @return The decompressed byte array.
+     * @throws InternalException for IO errors.
      */
     public static byte[] unGzip(final InputStream in) throws InternalException {
         return unGzip(in, Normal._32);
     }
 
     /**
-     * Gzip解压处理
+     * Un-gzips an input stream.
      *
-     * @param in     Gzip数据
-     * @param length 估算长度，如果无法确定请传入{@link Normal#_32}
-     * @return 解压后的数据
-     * @throws InternalException IO异常
+     * @param in     The gzipped input stream.
+     * @param length The estimated length.
+     * @return The decompressed byte array.
+     * @throws InternalException for IO errors.
      */
     public static byte[] unGzip(final InputStream in, final int length) throws InternalException {
         final FastByteArrayOutputStream bos = new FastByteArrayOutputStream(length);
@@ -712,23 +714,23 @@ public class ZipKit {
     }
 
     /**
-     * Zlib压缩处理
+     * Zlib compresses a string.
      *
-     * @param content 被压缩的字符串
-     * @param charset 编码
-     * @param level   压缩级别，1~9
-     * @return 压缩后的字节流
+     * @param content The string to compress.
+     * @param charset The charset.
+     * @param level   The compression level (1-9).
+     * @return The compressed byte array.
      */
     public static byte[] zlib(final String content, final java.nio.charset.Charset charset, final int level) {
         return zlib(ByteKit.toBytes(content, charset), level);
     }
 
     /**
-     * Zlib压缩文件
+     * Zlib compresses a file.
      *
-     * @param file  被压缩的文件
-     * @param level 压缩级别
-     * @return 压缩后的字节流
+     * @param file  The file to compress.
+     * @param level The compression level.
+     * @return The compressed byte array.
      */
     public static byte[] zlib(final File file, final int level) {
         BufferedInputStream in = null;
@@ -741,34 +743,34 @@ public class ZipKit {
     }
 
     /**
-     * 打成Zlib压缩包
+     * Zlib compresses a byte array.
      *
-     * @param buf   数据
-     * @param level 压缩级别，0~9
-     * @return 压缩后的bytes
+     * @param buf   The data.
+     * @param level The compression level (0-9).
+     * @return The compressed byte array.
      */
     public static byte[] zlib(final byte[] buf, final int level) {
         return zlib(new ByteArrayInputStream(buf), level, buf.length);
     }
 
     /**
-     * 打成Zlib压缩包
+     * Zlib compresses an input stream.
      *
-     * @param in    数据流
-     * @param level 压缩级别，0~9
-     * @return 压缩后的bytes
+     * @param in    The input stream.
+     * @param level The compression level (0-9).
+     * @return The compressed byte array.
      */
     public static byte[] zlib(final InputStream in, final int level) {
         return zlib(in, level, Normal._32);
     }
 
     /**
-     * 打成Zlib压缩包
+     * Zlib compresses an input stream.
      *
-     * @param in     数据流
-     * @param level  压缩级别，0~9
-     * @param length 预估大小
-     * @return 压缩后的bytes
+     * @param in     The input stream.
+     * @param level  The compression level (0-9).
+     * @param length The estimated length.
+     * @return The compressed byte array.
      */
     public static byte[] zlib(final InputStream in, final int level, final int length) {
         final ByteArrayOutputStream out = new ByteArrayOutputStream(length);
@@ -777,42 +779,42 @@ public class ZipKit {
     }
 
     /**
-     * Zlib解压缩处理
+     * Un-zlibs a byte array into a string.
      *
-     * @param buf     压缩过的字节流
-     * @param charset 编码
-     * @return 解压后的字符串
+     * @param buf     The compressed byte array.
+     * @param charset The charset.
+     * @return The decompressed string.
      */
     public static String unZlib(final byte[] buf, final java.nio.charset.Charset charset) {
         return StringKit.toString(unZlib(buf), charset);
     }
 
     /**
-     * 解压缩zlib
+     * Un-zlibs a byte array.
      *
-     * @param buf 数据
-     * @return 解压后的bytes
+     * @param buf The data.
+     * @return The decompressed byte array.
      */
     public static byte[] unZlib(final byte[] buf) {
         return unZlib(new ByteArrayInputStream(buf), buf.length);
     }
 
     /**
-     * 解压缩zlib
+     * Un-zlibs an input stream.
      *
-     * @param in 数据流
-     * @return 解压后的bytes
+     * @param in The input stream.
+     * @return The decompressed byte array.
      */
     public static byte[] unZlib(final InputStream in) {
         return unZlib(in, Normal._32);
     }
 
     /**
-     * 解压缩zlib
+     * Un-zlibs an input stream.
      *
-     * @param in     数据流
-     * @param length 预估长度
-     * @return 解压后的bytes
+     * @param in     The input stream.
+     * @param length The estimated length.
+     * @return The decompressed byte array.
      */
     public static byte[] unZlib(final InputStream in, final int length) {
         final ByteArrayOutputStream out = new ByteArrayOutputStream(length);
@@ -821,23 +823,23 @@ public class ZipKit {
     }
 
     /**
-     * 获取压缩包中的指定文件流
+     * Gets an input stream for a specific entry in a zip file.
      *
-     * @param zipFile 压缩文件
-     * @param charset 编码
-     * @param path    需要提取文件的文件名或路径
-     * @return 压缩文件流，如果未找到返回{@code null}
+     * @param zipFile The zip file.
+     * @param charset The charset.
+     * @param path    The path of the entry.
+     * @return The `InputStream` for the entry, or `null` if not found.
      */
     public static InputStream get(final File zipFile, final java.nio.charset.Charset charset, final String path) {
         return get(toZipFile(zipFile, charset), path);
     }
 
     /**
-     * 获取压缩包中的指定文件流
+     * Gets an input stream for a specific entry in a zip file.
      *
-     * @param zipFile 压缩文件
-     * @param path    需要提取文件的文件名或路径
-     * @return 压缩文件流，如果未找到返回{@code null}
+     * @param zipFile The `ZipFile`.
+     * @param path    The path of the entry.
+     * @return The `InputStream` for the entry, or `null` if not found.
      */
     public static InputStream get(final ZipFile zipFile, final String path) {
         final ZipEntry entry = zipFile.getEntry(path);
@@ -848,10 +850,10 @@ public class ZipKit {
     }
 
     /**
-     * 读取并处理Zip文件中的每一个{@link ZipEntry}
+     * Reads and processes each `ZipEntry` in a `ZipFile`.
      *
-     * @param zipFile  Zip文件
-     * @param consumer {@link ZipEntry}处理器
+     * @param zipFile  The `ZipFile`.
+     * @param consumer The consumer for each `ZipEntry`.
      */
     public static void read(final ZipFile zipFile, final Consumer<ZipEntry> consumer) {
         try (final ZipReader reader = new ZipReader(zipFile)) {
@@ -860,10 +862,10 @@ public class ZipKit {
     }
 
     /**
-     * 读取并处理Zip流中的每一个{@link ZipEntry}
+     * Reads and processes each `ZipEntry` in a `ZipInputStream`.
      *
-     * @param zipStream zip文件流，包含编码信息
-     * @param consumer  {@link ZipEntry}处理器
+     * @param zipStream The `ZipInputStream`.
+     * @param consumer  The consumer for each `ZipEntry`.
      */
     public static void read(final ZipInputStream zipStream, final Consumer<ZipEntry> consumer) {
         try (final ZipReader reader = new ZipReader(zipStream)) {
@@ -872,12 +874,12 @@ public class ZipKit {
     }
 
     /**
-     * 在zip文件中添加新文件或目录 新文件添加在zip根目录，文件夹包括其本身和内容 如果待添加文件夹是系统根路径（如/或c:/），则只复制文件夹下的内容
+     * Appends a new file or directory to an existing zip file.
      *
-     * @param zipPath        zip文件的Path
-     * @param appendFilePath 待添加文件Path(可以是文件夹)
-     * @param options        拷贝选项，可选是否覆盖等
-     * @throws InternalException IO异常
+     * @param zipPath        The path to the zip file.
+     * @param appendFilePath The path of the file or directory to append.
+     * @param options        Copy options.
+     * @throws InternalException for IO errors.
      */
     public static void append(final Path zipPath, final Path appendFilePath, final CopyOption... options)
             throws InternalException {
@@ -885,7 +887,6 @@ public class ZipKit {
             if (Files.isDirectory(appendFilePath)) {
                 Path source = appendFilePath.getParent();
                 if (null == source) {
-                    // 如果用户提供的是根路径，则不复制目录，直接复制目录下的内容
                     source = appendFilePath;
                 }
                 Files.walkFileTree(appendFilePath, new ZipCopyVisitor(source, zipFileSystem, options));
@@ -893,18 +894,18 @@ public class ZipKit {
                 Files.copy(appendFilePath, zipFileSystem.getPath(PathResolve.getName(appendFilePath)), options);
             }
         } catch (final FileAlreadyExistsException ignored) {
-            // 不覆盖情况下，文件已存在, 跳过
+            // ignore if file already exists and not overwriting
         } catch (final IOException e) {
             throw new InternalException(e);
         }
     }
 
     /**
-     * 将Zip文件转换为{@link ZipFile}
+     * Converts a `File` to a `ZipFile`, handling potential encoding issues.
      *
-     * @param file    zip文件
-     * @param charset 解析zip文件的编码，null表示{@link Charset#UTF_8}
-     * @return {@link ZipFile}
+     * @param file    The zip file.
+     * @param charset The charset to use for entry names.
+     * @return A `ZipFile`.
      */
     public static ZipFile toZipFile(final File file, java.nio.charset.Charset charset) {
         if (null == charset) {
@@ -913,15 +914,12 @@ public class ZipKit {
         try {
             return new ZipFile(file, charset);
         } catch (final IOException e) {
-            // 可能编码错误提示
-            if (e instanceof ZipException) {
-                if (e.getMessage().contains("invalid CEN header")) {
-                    try {
-                        // 尝试使用不同编码
-                        return new ZipFile(file, Charset.UTF_8.equals(charset) ? Charset.GBK : Charset.UTF_8);
-                    } catch (final IOException ex) {
-                        throw new InternalException(ex);
-                    }
+            if (e instanceof ZipException && e.getMessage().contains("invalid CEN header")) {
+                try {
+                    // Try with a different encoding
+                    return new ZipFile(file, Charset.UTF_8.equals(charset) ? Charset.GBK : Charset.UTF_8);
+                } catch (final IOException ex) {
+                    throw new InternalException(ex);
                 }
             }
             throw new InternalException(e);
@@ -929,11 +927,11 @@ public class ZipKit {
     }
 
     /**
-     * 获取指定{@link ZipEntry}的流，用于读取这个entry的内容
+     * Gets the `InputStream` for a specific `ZipEntry`.
      *
-     * @param zipFile  {@link ZipFile}
-     * @param zipEntry {@link ZipEntry}
-     * @return 流
+     * @param zipFile  The `ZipFile`.
+     * @param zipEntry The `ZipEntry`.
+     * @return The `InputStream`.
      */
     public static InputStream getStream(final ZipFile zipFile, final ZipEntry zipEntry) {
         try {
@@ -944,11 +942,11 @@ public class ZipKit {
     }
 
     /**
-     * 获得 {@link ZipOutputStream}
+     * Gets a `ZipOutputStream`.
      *
-     * @param out     压缩文件流
-     * @param charset 编码
-     * @return {@link ZipOutputStream}
+     * @param out     The target output stream.
+     * @param charset The charset.
+     * @return A `ZipOutputStream`.
      */
     public static ZipOutputStream getZipOutputStream(final OutputStream out, final java.nio.charset.Charset charset) {
         if (out instanceof ZipOutputStream) {
@@ -958,15 +956,14 @@ public class ZipKit {
     }
 
     /**
-     * 获取Zip文件中指定目录下的所有文件，只显示文件，不显示目录 此方法并不会关闭{@link ZipFile}。
+     * Lists all file names in a specified directory within a zip file.
      *
-     * @param zipFile Zip文件
-     * @param dir     目录前缀（目录前缀不包含开头的/）
-     * @return 文件列表
+     * @param zipFile The `ZipFile` (will not be closed).
+     * @param dir     The directory prefix.
+     * @return A list of file names.
      */
     public static List<String> listFileNames(final ZipFile zipFile, String dir) {
         if (StringKit.isNotBlank(dir)) {
-            // 目录尾部添加"/"
             dir = StringKit.addSuffixIfNot(dir, Symbol.SLASH);
         }
 
@@ -981,17 +978,15 @@ public class ZipKit {
                 }
             }
         }
-
         return fileNames;
     }
 
     /**
-     * 获取对应URL路径的jar文件，支持包括file://xxx这类路径
-     * 来自：org.springframework.core.io.support.PathMatchingResourcePatternResolver#getJarFile
+     * Gets a `JarFile` from a JAR file URL.
      *
-     * @param jarFileUrl jar文件路径
-     * @return {@link JarFile}
-     * @throws InternalException IO异常
+     * @param jarFileUrl The JAR file URL.
+     * @return A `JarFile`.
+     * @throws InternalException for IO errors.
      */
     public static JarFile ofJar(String jarFileUrl) throws InternalException {
         Assert.notBlank(jarFileUrl, "Jar file url is blank!");
@@ -1011,10 +1006,10 @@ public class ZipKit {
     }
 
     /**
-     * 判断压缩文件保存的路径是否为源文件路径的子文件夹，如果是，则抛出异常（防止无限递归压缩的发生）
+     * Validates that the destination zip file is not a sub-directory of the source files.
      *
-     * @param zipFile  压缩后的产生的文件路径
-     * @param srcFiles 被压缩的文件或目录
+     * @param zipFile  The destination zip file.
+     * @param srcFiles The source files.
      */
     private static void validateFiles(final File zipFile, final File... srcFiles) throws InternalException {
         if (zipFile.isDirectory()) {
@@ -1029,7 +1024,6 @@ public class ZipKit {
                 throw new InternalException(StringKit.format("File [{}] not exist!", srcFile.getAbsolutePath()));
             }
 
-            // 当 zipFile = new File("temp.zip") 时, zipFile.getParentFile() == null
             File parentFile;
             try {
                 parentFile = zipFile.getCanonicalFile().getParentFile();
@@ -1037,7 +1031,6 @@ public class ZipKit {
                 parentFile = zipFile.getParentFile();
             }
 
-            // 压缩文件不能位于被压缩的目录内
             if (srcFile.isDirectory() && FileKit.isSub(srcFile, parentFile)) {
                 throw new InternalException("Zip file path [{}] must not be the child directory of [{}] !",
                         zipFile.getPath(), srcFile.getPath());

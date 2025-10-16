@@ -31,7 +31,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.office.Context;
 
 /**
- * 表示由执行的任务
+ * Represents a task to be executed by the office application.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -39,10 +39,10 @@ import org.miaixz.bus.office.Context;
 public interface MadeInOffice {
 
     /**
-     * 在上下文中执行任务
+     * Executes the task within the given office context.
      *
-     * @param context office环境上下文
-     * @throws InternalException 如果发生错误
+     * @param context The office environment context.
+     * @throws InternalException If an error occurs during execution.
      */
     void execute(Context context) throws InternalException;
 

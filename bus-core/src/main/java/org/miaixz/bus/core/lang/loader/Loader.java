@@ -33,7 +33,8 @@ import java.util.Enumeration;
 import org.miaixz.bus.core.io.resource.Resource;
 
 /**
- * 资源加载器,充分采用惰性加载的逻辑, 让资源的加载延后到{@link Enumeration#hasMoreElements()} 调用时,避免无用的提前全部预加载
+ * Resource loader, fully adopting lazy loading logic, allowing resource loading to be deferred until
+ * {@link Enumeration#hasMoreElements()} is called, avoiding unnecessary eager pre-loading.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -41,55 +42,59 @@ import org.miaixz.bus.core.io.resource.Resource;
 public interface Loader {
 
     /**
-     * 加载指定路径的所有资源,等效于Loader.load(path, false, Filters.ALWAYS)的调用 通常情况下不递归加载,但是子类可以改变此方法的行为,
-     * 例如ANT风格路径的资源加载器可以根据传入表达式来判断是否递归加载
+     * Loads all resources at the specified path. This is equivalent to calling
+     * {@code Loader.load(path, false, Filters.ALWAYS)}. Typically, resources are not loaded recursively, but subclasses
+     * can change this behavior, for example, an ANT-style path resource loader can determine whether to load
+     * recursively based on the expression.
      *
-     * @param path 资源路径
-     * @return 资源对象
-     * @throws IOException I/O 异常
+     * @param path The resource path.
+     * @return An enumeration of resource objects.
+     * @throws IOException If an I/O error occurs.
      */
     Enumeration<Resource> load(String path) throws IOException;
 
     /**
-     * 加载指定路径的所有资源,等效于Loader.load(path, recursively, Filters.ALWAYS)的调用
+     * Loads all resources at the specified path. This is equivalent to calling
+     * {@code Loader.load(path, recursively, Filters.ALWAYS)}.
      *
-     * @param path        资源路径
-     * @param recursively 递归加载
-     * @return 资源枚举器
-     * @throws IOException I/O 异常
+     * @param path        The resource path.
+     * @param recursively Whether to load resources recursively.
+     * @return An enumeration of resource objects.
+     * @throws IOException If an I/O error occurs.
      */
     Enumeration<Resource> load(String path, boolean recursively) throws IOException;
 
     /**
-     * 加载指定路径的所有满足过滤条件的资源,等效于Loader.load(path, true, boot)的调用
+     * Loads all resources at the specified path that satisfy the given filter. This is equivalent to calling
+     * {@code Loader.load(path, true, filter)}.
      *
-     * @param path  资源路径
-     * @param clazz 对象信息
-     * @return 资源枚举器
-     * @throws IOException I/O 异常
+     * @param path   The resource path.
+     * @param filter The filter to apply to resources.
+     * @return An enumeration of resource objects.
+     * @throws IOException If an I/O error occurs.
      */
-    Enumeration<Resource> load(String path, Filter clazz) throws IOException;
+    Enumeration<Resource> load(String path, Filter filter) throws IOException;
 
     /**
-     * 加载动态库信息 例如: .dll/.so等
+     * Loads dynamic library information, e.g., .dll/.so files.
      *
-     * @param path  资源路径
-     * @param clazz 对象信息
-     * @return 资源枚举器
-     * @throws IOException I/O 异常
+     * @param path  The resource path.
+     * @param clazz The class information.
+     * @return An enumeration of resource objects.
+     * @throws IOException If an I/O error occurs.
      */
     default Enumeration<Resource> load(String path, Class<?> clazz) throws IOException {
         return load(path);
     }
 
     /**
-     * 加载指定路径的所有满足过滤条件的资源
+     * Loads all resources at the specified path that satisfy the given filter, with an option for recursive loading.
      *
-     * @param path        资源路径
-     * @param recursively 递归加载
-     * @param filter      过滤器
-     * @return 资源枚举器
-     * @throws IOException I/O 异常
+     * @param path        The resource path.
+     * @param recursively Whether to load resources recursively.
+     * @param filter      The filter to apply to resources.
+     * @return An enumeration of resource objects.
+     * @throws IOException If an I/O error occurs.
      */
     Enumeration<Resource> load(String path, boolean recursively, Filter filter) throws IOException;
 

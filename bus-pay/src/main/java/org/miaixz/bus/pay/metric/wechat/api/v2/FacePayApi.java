@@ -30,7 +30,7 @@ package org.miaixz.bus.pay.metric.wechat.api.v2;
 import org.miaixz.bus.pay.Matcher;
 
 /**
- * 微信支付 v2 版本-刷脸支付相关接口
+ * WeChat Pay V2 API interfaces related to face payment.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,44 +38,50 @@ import org.miaixz.bus.pay.Matcher;
 public enum FacePayApi implements Matcher {
 
     /**
-     * 获取调用凭证
+     * Get device invocation credentials.
      */
-    GET_AUTH_INFO("/face/get_wxpayface_authinfo", "获取调用凭证"),
+    GET_AUTH_INFO("/face/get_wxpayface_authinfo", "Get device invocation credentials"),
 
     /**
-     * 刷脸支付
+     * Face payment.
      */
-    FACE_PAY("/pay/facepay", "刷脸支付"),
+    FACE_PAY("/pay/facepay", "Face payment"),
 
     /**
-     * 查询刷脸支付订单
+     * Query face payment order.
      */
-    FACE_PAY_QUERY("/pay/facepayqueryy", "查询刷脸支付订单"),
+    FACE_PAY_QUERY("/pay/facepayqueryy", "Query face payment order"),
 
     /**
-     * 撤销刷脸支付订单
+     * Reverse face payment order.
      */
-    FACE_PAY_REVERSE("/secapi/pay/facepayreverse", "撤销刷脸支付订单");
+    FACE_PAY_REVERSE("/secapi/pay/facepayreverse", "Reverse face payment order");
 
     /**
-     * 接口方法
+     * The API method.
      */
     private final String method;
 
     /**
-     * 接口描述
+     * The API description.
      */
     private final String desc;
 
+    /**
+     * Constructs a new FacePayApi enum.
+     *
+     * @param method The API method.
+     * @param desc   The API description.
+     */
     FacePayApi(String method, String desc) {
         this.method = method;
         this.desc = desc;
     }
 
     /**
-     * 交易类型
+     * Gets the transaction type.
      *
-     * @return the string
+     * @return The transaction type.
      */
     @Override
     public String type() {
@@ -83,9 +89,9 @@ public enum FacePayApi implements Matcher {
     }
 
     /**
-     * 类型描述
+     * Gets the type description.
      *
-     * @return the string
+     * @return The type description.
      */
     @Override
     public String desc() {
@@ -93,9 +99,9 @@ public enum FacePayApi implements Matcher {
     }
 
     /**
-     * 接口方法
+     * Gets the API method.
      *
-     * @return the string
+     * @return The API method.
      */
     @Override
     public String method() {

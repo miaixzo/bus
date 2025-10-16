@@ -27,15 +27,17 @@
 */
 package org.miaixz.bus.starter.office;
 
+import jakarta.annotation.Resource;
 import org.miaixz.bus.office.builtin.LocalOfficeProvider;
 import org.miaixz.bus.office.builtin.OnlineOfficeProvider;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
-import jakarta.annotation.Resource;
-
 /**
- * 文档在线预览配置
+ * Auto-configuration for online document preview.
+ * <p>
+ * This class enables the {@link OfficeProperties} and configures the necessary beans for both local and online document
+ * conversion, conditional on their presence in the classpath.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,7 +46,10 @@ import jakarta.annotation.Resource;
 @EnableConfigurationProperties(value = { OfficeProperties.class })
 public class OfficeConfiguration {
 
+    /**
+     * Injected office configuration properties.
+     */
     @Resource
-    OfficeProperties properties;
+    private OfficeProperties properties;
 
 }

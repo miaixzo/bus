@@ -37,12 +37,12 @@ import org.miaixz.bus.core.xyz.MathKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 数字转中文类 包括：
+ * A class for converting numbers to Chinese numerals. It includes:
  * 
  * <pre>
- * 1. 数字转中文大写形式，比如一百二十一
- * 2. 数字转金额用的大写形式，比如：壹佰贰拾壹
- * 3. 转金额形式，比如：壹佰贰拾壹整
+ * 1. Converting numbers to standard Chinese characters (e.g., 一百二十一).
+ * 2. Converting numbers to financial Chinese characters (e.g., 壹佰贰拾壹).
+ * 3. Formatting numbers into a financial string (e.g., 壹佰贰拾壹整).
  * </pre>
  *
  * @author Kimi Liu
@@ -51,21 +51,39 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class ChineseNumberFormatter {
 
     /**
-     * 中文形式，奇数位置是简体，偶数位置是记账繁体，0共用 使用混合数组提高效率和数组复用
+     * Chinese numeral characters. Odd indices are simplified, even indices are traditional (for accounting). '零' (zero)
+     * is shared.
      */
     static final char[] DIGITS = { '零', '一', '壹', '二', '贰', '三', '叁', '四', '肆', '五', '伍', '六', '陆', '七', '柒', '八', '捌',
             '九', '玖' };
+
+    /**
+     * Whether to use traditional characters (financial format).
+     */
     private boolean useTraditional;
+    /**
+     * Whether to use money mode (adds currency units like Yuan, Jiao, Fen).
+     */
     private boolean moneyMode;
+    /**
+     * Whether to use colloquial mode (e.g., '十一' instead of '一十一').
+     */
     private boolean colloquialMode;
+    /**
+     * The character or string to represent negative numbers.
+     */
     private String negativeName = "负";
+    /**
+     * The name of the main currency unit (e.g., '元' or '圆').
+     */
     private String unitName = "元";
 
     /**
-     * 阿拉伯数字（支持正负整数）四舍五入后转换成中文节权位简洁计数单位，例如 -5_5555 = -5.56万
+     * Converts an Arabic numeral (integer, positive or negative) to a concise Chinese representation with section units
+     * after rounding. For example, -55,555 becomes -5.56万.
      *
-     * @param amount 数字
-     * @return 中文
+     * @param amount The number to format.
+     * @return The formatted Chinese string.
      */
     public static String formatSimple(final long amount) {
         if (amount < 1_0000 && amount > -1_0000) {
@@ -83,11 +101,11 @@ public class ChineseNumberFormatter {
     }
 
     /**
-     * 数字字符转中文，非数字字符原样返回
+     * Converts a numeric character to its Chinese numeral equivalent. Non-numeric characters are returned as is.
      *
-     * @param c                数字字符
-     * @param isUseTraditional 是否繁体
-     * @return 中文字符
+     * @param c                The numeric character ('0'-'9').
+     * @param isUseTraditional Whether to use traditional characters.
+     * @return The Chinese numeral character.
      */
     public static char formatChar(final char c, final boolean isUseTraditional) {
         if (c < '0' || c > '9') {
@@ -97,28 +115,35 @@ public class ChineseNumberFormatter {
     }
 
     /**
-     * 获取 {@link ChineseNumberFormatter} 默认对象
+     * Gets the default instance of {@link ChineseNumberFormatter}.
      *
-     * @return {@link ChineseNumberFormatter}
+     * @return A new {@link ChineseNumberFormatter} instance.
      */
     public static ChineseNumberFormatter of() {
         return new ChineseNumberFormatter();
     }
 
     /**
-     * 单个数字转汉字
+     * Converts a single digit to its Chinese character representation.
      *
-     * @param number           数字
-     * @param isUseTraditional 是否使用繁体
-     * @return 汉字
+     * @param number           The digit (0-9).
+     * @param isUseTraditional Whether to use traditional characters.
+     * @return The Chinese character.
      */
     private static char singleNumberToChinese(final int number, final boolean isUseTraditional) {
         if (0 == number) {
             return DIGITS[0];
         }
+        // Simplified characters are at odd indices, traditional at even (except for zero).
         return DIGITS[number * 2 - (isUseTraditional ? 0 : 1)];
     }
 
+    /**
+     * Adds a '零' (zero) character to the beginning of the string if it's needed to bridge gaps between different place
+     * value sections (e.g., between thousands and tens in 1010).
+     *
+     * @param chineseStr The string builder to modify.
+     */
     private static void addPreZero(final StringBuilder chineseStr) {
         if (StringKit.isEmpty(chineseStr)) {
             return;
@@ -129,10 +154,10 @@ public class ChineseNumberFormatter {
     }
 
     /**
-     * 是否使用繁体，即金额表示模式，如：壹拾贰圆叁角贰分
+     * Sets whether to use traditional characters (financial format), e.g., 壹拾贰圆叁角贰分.
      *
-     * @param useTraditional 是否使用繁体
-     * @return this
+     * @param useTraditional {@code true} to use traditional characters.
+     * @return this instance for chaining.
      */
     public ChineseNumberFormatter setUseTraditional(final boolean useTraditional) {
         this.useTraditional = useTraditional;
@@ -140,10 +165,10 @@ public class ChineseNumberFormatter {
     }
 
     /**
-     * 是否使用金额模式，，如：壹拾贰圆
+     * Sets whether to use money mode, which adds currency units like 元(Yuan), 角(Jiao), 分(Fen).
      *
-     * @param moneyMode 是否使用金额模式
-     * @return this
+     * @param moneyMode {@code true} to use money mode.
+     * @return this instance for chaining.
      */
     public ChineseNumberFormatter setMoneyMode(final boolean moneyMode) {
         this.moneyMode = moneyMode;
@@ -151,10 +176,11 @@ public class ChineseNumberFormatter {
     }
 
     /**
-     * 是否使用口语模式，此模式下的数字更加简化，如“一十一”会表示为“十一”
+     * Sets whether to use colloquial mode, which simplifies numbers. For example, "一十一" (yī shí yī) becomes "十一" (shí
+     * yī) for 11.
      *
-     * @param colloquialMode 是否口语模式
-     * @return this
+     * @param colloquialMode {@code true} to use colloquial mode.
+     * @return this instance for chaining.
      */
     public ChineseNumberFormatter setColloquialMode(final boolean colloquialMode) {
         this.colloquialMode = colloquialMode;
@@ -162,10 +188,10 @@ public class ChineseNumberFormatter {
     }
 
     /**
-     * 设置负数的表示名称，如"负"
+     * Sets the name for representing negative numbers (default is "负").
      *
-     * @param negativeName 负数表示名称，非空
-     * @return this
+     * @param negativeName The name for negative numbers (must not be null).
+     * @return this instance for chaining.
      */
     public ChineseNumberFormatter setNegativeName(final String negativeName) {
         this.negativeName = Assert.notNull(negativeName);
@@ -173,10 +199,10 @@ public class ChineseNumberFormatter {
     }
 
     /**
-     * 设置金额单位名称，如：“元”或“圆”
+     * Sets the currency unit name (default is "元"). Can be set to "圆" for formal contexts.
      *
-     * @param unitName 金额单位名称
-     * @return this
+     * @param unitName The currency unit name.
+     * @return this instance for chaining.
      */
     public ChineseNumberFormatter setUnitName(final String unitName) {
         this.unitName = Assert.notNull(unitName);
@@ -184,60 +210,46 @@ public class ChineseNumberFormatter {
     }
 
     /**
-     * 阿拉伯数字转换成中文. 使用于整数、小数的转换. 支持多位小数
+     * Converts a {@link BigDecimal} to its Chinese representation. Supports integers and decimals.
      *
-     * @param amount 数字
-     * @return 中文
+     * @param amount The number to format.
+     * @return The formatted Chinese string.
      */
     public String format(final BigDecimal amount) {
-        final long longValue = amount.longValue();
-
         String formatAmount;
         if (amount.scale() <= 0) {
-            formatAmount = format(longValue);
+            formatAmount = format(amount.longValue());
         } else {
             final List<String> numberList = CharsBacker.split(amount.toPlainString(), Symbol.DOT);
-            // 小数部分逐个数字转换为汉字
             final StringBuilder decimalPartStr = new StringBuilder();
             for (final char decimalChar : numberList.get(1).toCharArray()) {
                 decimalPartStr.append(formatChar(decimalChar, this.useTraditional));
             }
-            formatAmount = format(longValue) + "点" + decimalPartStr;
+            formatAmount = format(amount.longValue()) + "点" + decimalPartStr;
         }
 
         return formatAmount;
     }
 
     /**
-     * 阿拉伯数字转换成中文
+     * Converts a double to its Chinese representation, often used for financial amounts. For example, -12.32 could be
+     * formatted as "(负数)壹拾贰圆叁角贰分".
      *
-     * <p>
-     * 主要是对发票票面金额转换的扩展
-     * <p>
-     * 如：-10.10
-     * <p>
-     * 发票票面转换为：(负数)壹拾贰圆叁角贰分
-     * <p>
-     * 而非：负壹拾贰元叁角贰分
-     * <p>
-     * 共两点不同：1、(负数) 而非 负；2、圆 而非 元
-     *
-     * @param amount 数字
-     * @return 格式化后的字符串
+     * @param amount The number to format.
+     * @return The formatted string.
      */
     public String format(double amount) {
         if (0 == amount) {
-            return this.moneyMode ? "零" + unitName + "整" : Symbol.UL_ZERO;
+            return this.moneyMode ? "零" + unitName + "整" : String.valueOf(DIGITS[0]);
         }
         Assert.checkBetween(
                 amount,
                 -99_9999_9999_9999.99,
                 99_9999_9999_9999.99,
-                "Number support only: (-99999999999999.99 ~ 99999999999999.99)！");
+                "Number is out of range: (-99999999999999.99 ~ 99999999999999.99)");
 
         final StringBuilder chineseStr = new StringBuilder();
 
-        // 负数
         if (amount < 0) {
             chineseStr.append(this.negativeName);
             amount = -amount;
@@ -245,14 +257,12 @@ public class ChineseNumberFormatter {
 
         long yuan = Math.round(amount * 100);
         final int fen = (int) (yuan % 10);
-        yuan = yuan / 10;
+        yuan /= 10;
         final int jiao = (int) (yuan % 10);
-        yuan = yuan / 10;
+        yuan /= 10;
 
         final boolean isMoneyMode = this.moneyMode;
-        // 元
         if (!isMoneyMode || 0 != yuan) {
-            // 金额模式下，无需“零元”
             chineseStr.append(longToChinese(yuan));
             if (isMoneyMode) {
                 chineseStr.append(this.unitName);
@@ -260,23 +270,19 @@ public class ChineseNumberFormatter {
         }
 
         if (0 == jiao && 0 == fen) {
-            // 无小数部分的金额结尾
             if (isMoneyMode) {
                 chineseStr.append(Symbol.CNY_ZHENG);
             }
             return chineseStr.toString();
         }
 
-        // 小数部分
         if (!isMoneyMode) {
             chineseStr.append("点");
         }
 
-        // 角
         if (0 == yuan && 0 == jiao) {
-            // 元和角都为0时，只有非金额模式下补“零”
             if (!isMoneyMode) {
-                chineseStr.append(Symbol.UL_ZERO);
+                chineseStr.append(DIGITS[0]);
             }
         } else {
             chineseStr.append(singleNumberToChinese(jiao, this.useTraditional));
@@ -285,96 +291,77 @@ public class ChineseNumberFormatter {
             }
         }
 
-        // 分
         if (0 != fen) {
             chineseStr.append(singleNumberToChinese(fen, this.useTraditional));
             if (isMoneyMode) {
                 chineseStr.append(Symbol.CNY_FEN);
             }
         }
-
         return chineseStr.toString();
     }
 
     /**
-     * 阿拉伯数字整数部分转换成中文，只支持正数
+     * Converts the integer part of a positive number to its Chinese numeral string.
      *
-     * @param amount 数字
-     * @return 中文
+     * @param amount The number to convert.
+     * @return The Chinese numeral string.
      */
     private String longToChinese(long amount) {
         if (0 == amount) {
-            return Symbol.UL_ZERO;
+            return String.valueOf(DIGITS[0]);
         }
 
-        // 对于10~20，可选口语模式，如一十一，口语模式下为十一
-        if (amount < 20 && amount >= 10) {
-            final String chinese = thousandToChinese((int) amount);
-            // "十一"而非"一十一"
-            return this.colloquialMode ? chinese.substring(1) : chinese;
+        if (amount >= 10 && amount < 20 && this.colloquialMode) {
+            return thousandToChinese((int) amount).substring(1);
         }
 
-        // 将数字以万为单位分为多份
         final int[] parts = new int[4];
         for (int i = 0; amount != 0; i++) {
             parts[i] = (int) (amount % 10000);
-            amount = amount / 10000;
+            amount /= 10000;
         }
 
         final StringBuilder chineseStr = new StringBuilder();
         int partValue;
         String partChinese;
 
-        // 千
         partValue = parts[0];
         if (partValue > 0) {
             partChinese = thousandToChinese(partValue);
             chineseStr.insert(0, partChinese);
-
             if (partValue < 1000) {
-                // 和万位之间空0，则补零，如一万零三百
                 addPreZero(chineseStr);
             }
         }
 
-        // 万
         partValue = parts[1];
         if (partValue > 0) {
             if ((partValue % 10 == 0 && parts[0] > 0)) {
-                // 如果"万"的个位是0，则补零，如十万零八千
                 addPreZero(chineseStr);
             }
             partChinese = thousandToChinese(partValue);
             chineseStr.insert(0, partChinese + Symbol.L_TEN_THOUSAND);
-
             if (partValue < 1000) {
-                // 和亿位之间空0，则补零，如一亿零三百万
                 addPreZero(chineseStr);
             }
         } else {
             addPreZero(chineseStr);
         }
 
-        // 亿
         partValue = parts[2];
         if (partValue > 0) {
             if ((partValue % 10 == 0 && parts[1] > 0)) {
-                // 如果"万"的个位是0，则补零，如十万零八千
                 addPreZero(chineseStr);
             }
-
             partChinese = thousandToChinese(partValue);
             chineseStr.insert(0, partChinese + Symbol.L_ONE_HUNDRED_MILLION);
-
             if (partValue < 1000) {
-                // 和万亿位之间空0，则补零，如一万亿零三百亿
                 addPreZero(chineseStr);
             }
         } else {
             addPreZero(chineseStr);
         }
 
-        // 万亿
         partValue = parts[3];
         if (partValue > 0) {
             if (parts[2] == 0) {
@@ -384,18 +371,17 @@ public class ChineseNumberFormatter {
             chineseStr.insert(0, partChinese + Symbol.L_TEN_THOUSAND);
         }
 
-        if (StringKit.isNotEmpty(chineseStr) && Symbol.C_UL_ZERO == chineseStr.charAt(0)) {
+        if (!chineseStr.isEmpty() && Symbol.C_UL_ZERO == chineseStr.charAt(0)) {
             return chineseStr.substring(1);
         }
-
         return chineseStr.toString();
     }
 
     /**
-     * 把一个 0~9999 之间的整数转换为汉字的字符串，如果是 0 则返回 ""
+     * Converts an integer between 0 and 9999 to its Chinese numeral string representation.
      *
-     * @param amountPart 数字部分
-     * @return 转换后的汉字
+     * @param amountPart The numeric part to convert (must be < 10000).
+     * @return The converted Chinese numeral string.
      */
     private String thousandToChinese(final int amountPart) {
         if (amountPart == 0) {
@@ -403,26 +389,23 @@ public class ChineseNumberFormatter {
         }
 
         int temp = amountPart;
-
         final StringBuilder chineseStr = new StringBuilder();
-        boolean lastIsZero = true; // 在从低位往高位循环时，记录上一位数字是不是 0
+        boolean lastIsZero = true;
         for (int i = 0; temp > 0; i++) {
             final int digit = temp % 10;
-            if (digit == 0) { // 取到的数字为 0
+            if (digit == 0) {
                 if (!lastIsZero) {
-                    // 前一个数字不是 0，则在当前汉字串前加“零”字;
                     chineseStr.insert(0, Symbol.UL_ZERO);
                 }
                 lastIsZero = true;
-            } else { // 取到的数字不是 0
-                final boolean isUseTraditional = this.useTraditional;
+            } else {
                 chineseStr.insert(
                         0,
-                        singleNumberToChinese(digit, isUseTraditional)
-                                + ChineseNumberParser.getUnitName(i, isUseTraditional));
+                        singleNumberToChinese(digit, this.useTraditional)
+                                + ChineseNumberParser.getUnitName(i, this.useTraditional));
                 lastIsZero = false;
             }
-            temp = temp / 10;
+            temp /= 10;
         }
         return chineseStr.toString();
     }

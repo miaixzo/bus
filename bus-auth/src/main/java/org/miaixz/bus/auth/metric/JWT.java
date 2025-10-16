@@ -51,11 +51,12 @@ import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * JSON Web Token (JWT) 实现类，基于 RFC 7519 标准，用于在网络应用间传递声明。
+ * JSON Web Token (JWT) implementation class, based on RFC 7519 standard, used to transmit claims between network
+ * applications. A JWT consists of three parts:
  * <ul>
- * <li>header：声明签名算法等信息</li>
- * <li>payload：承载声明和明文数据</li>
- * <li>signature：签名部分（JWS），确保数据完整性</li>
+ * <li>Header: Declares the signing algorithm and other metadata.</li>
+ * <li>Payload: Carries claims and plaintext data.</li>
+ * <li>Signature: The cryptographic signature (JWS), ensuring data integrity.</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -64,48 +65,48 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class JWT implements JWTRegister<JWT> {
 
     /**
-     * JWT 头部信息
+     * JWT header information.
      */
     private final JWTHeader header;
     /**
-     * JWT 载荷信息
+     * JWT payload information.
      */
     private final JWTPayload payload;
     /**
-     * 编码格式，默认 UTF-8
+     * Encoding charset, default is UTF-8.
      */
     private java.nio.charset.Charset charset;
     /**
-     * 签名器，用于生成和验证签名
+     * Signer, used to generate and verify signatures.
      */
     private JWTSigner signer;
     /**
-     * 解析后的 JWT 令牌分段（header, payload, signature）
+     * The parsed JWT token segments (header, payload, signature).
      */
     private List<String> tokens;
 
     /**
-     * 创建空的 JWT 对象。
+     * Creates an empty JWT object.
      *
-     * @return 新的 JWT 实例
+     * @return a new JWT instance
      */
     public static JWT of() {
         return new JWT();
     }
 
     /**
-     * 创建并解析 JWT 对象。
+     * Creates and parses a JWT object from a token string.
      *
-     * @param token JWT 令牌字符串，格式为 xxxx.yyyy.zzzz
-     * @return 解析后的 JWT 实例
-     * @throws IllegalArgumentException 如果令牌为空
+     * @param token the JWT token string, in the format xxxx.yyyy.zzzz
+     * @return the parsed JWT instance
+     * @throws IllegalArgumentException if the token is blank or malformed
      */
     public static JWT of(final String token) {
         return new JWT(token);
     }
 
     /**
-     * 构造函数，初始化空的 JWT 对象，设置默认编码为 UTF-8。
+     * Constructor, initializes an empty JWT object and sets the default charset to UTF-8.
      */
     public JWT() {
         this.header = new JWTHeader();
@@ -114,9 +115,9 @@ public class JWT implements JWTRegister<JWT> {
     }
 
     /**
-     * 构造函数，初始化并解析 JWT 令牌。
+     * Constructor, initializes and parses a JWT token string.
      *
-     * @param token JWT 令牌字符串
+     * @param token the JWT token string
      */
     public JWT(final String token) {
         this();
@@ -124,11 +125,11 @@ public class JWT implements JWTRegister<JWT> {
     }
 
     /**
-     * 解析 JWT 令牌字符串，分解为 header、payload 和 signature 三部分。
+     * Parses the JWT token string, splitting it into three parts: header, payload, and signature.
      *
-     * @param token JWT 令牌字符串
-     * @return 当前 JWT 实例
-     * @throws IllegalArgumentException 如果令牌为空或格式不正确
+     * @param token the JWT token string
+     * @return the current JWT instance
+     * @throws IllegalArgumentException if the token is blank or has an incorrect format
      */
     public JWT parse(final String token) throws IllegalArgumentException {
         Assert.notBlank(token, "Token String must be not blank!");
@@ -140,10 +141,10 @@ public class JWT implements JWTRegister<JWT> {
     }
 
     /**
-     * 设置 JWT 使用的字符编码。
+     * Sets the character encoding used by the JWT.
      *
-     * @param charset 字符编码
-     * @return 当前 JWT 实例
+     * @param charset the character encoding
+     * @return the current JWT instance
      */
     public JWT setCharset(final java.nio.charset.Charset charset) {
         this.charset = charset;
@@ -151,10 +152,10 @@ public class JWT implements JWTRegister<JWT> {
     }
 
     /**
-     * 设置签名密钥，默认使用 HS256 (HmacSHA256) 算法。
+     * Sets the signing key, defaulting to HS256 (HmacSHA256) algorithm if not specified in the header.
      *
-     * @param key 签名密钥
-     * @return 当前 JWT 实例
+     * @param key the signing key
+     * @return the current JWT instance
      */
     public JWT setKey(final byte[] key) {
         final String algorithmId = (String) this.header.getClaim(JWTHeader.ALGORITHM);
@@ -165,43 +166,43 @@ public class JWT implements JWTRegister<JWT> {
     }
 
     /**
-     * 设置签名算法和密钥。
+     * Sets the signing algorithm and key.
      *
-     * @param algorithmId 签名算法 ID（如 HS256）
-     * @param key         签名密钥
-     * @return 当前 JWT 实例
+     * @param algorithmId the signing algorithm ID (e.g., HS256)
+     * @param key         the signing key
+     * @return the current JWT instance
      */
     public JWT setSigner(final String algorithmId, final byte[] key) {
         return setSigner(JWTSignerBuilder.createSigner(algorithmId, key));
     }
 
     /**
-     * 设置签名算法和密钥。
+     * Sets the signing algorithm and key.
      *
-     * @param algorithmId 签名算法 ID（如 HS256）
-     * @param key         签名密钥
-     * @return 当前 JWT 实例
+     * @param algorithmId the signing algorithm ID (e.g., HS256)
+     * @param key         the signing key
+     * @return the current JWT instance
      */
     public JWT setSigner(final String algorithmId, final Key key) {
         return setSigner(JWTSignerBuilder.createSigner(algorithmId, key));
     }
 
     /**
-     * 设置非对称签名算法和密钥对。
+     * Sets the asymmetric signing algorithm and key pair.
      *
-     * @param algorithmId 签名算法 ID（如 RS256）
-     * @param keyPair     密钥对
-     * @return 当前 JWT 实例
+     * @param algorithmId the signing algorithm ID (e.g., RS256)
+     * @param keyPair     the key pair
+     * @return the current JWT instance
      */
     public JWT setSigner(final String algorithmId, final KeyPair keyPair) {
         return setSigner(JWTSignerBuilder.createSigner(algorithmId, keyPair));
     }
 
     /**
-     * 设置签名器。
+     * Sets the signer.
      *
-     * @param signer 签名器
-     * @return 当前 JWT 实例
+     * @param signer the signer to use
+     * @return the current JWT instance
      */
     public JWT setSigner(final JWTSigner signer) {
         this.signer = signer;
@@ -209,46 +210,46 @@ public class JWT implements JWTRegister<JWT> {
     }
 
     /**
-     * 获取签名器。
+     * Retrieves the currently used signer.
      *
-     * @return 当前使用的签名器
+     * @return the {@link JWTSigner} instance
      */
     public JWTSigner getSigner() {
         return this.signer;
     }
 
     /**
-     * 获取所有头部信息。
+     * Retrieves all header claims as a Map.
      *
-     * @return 头部信息的 Map
+     * @return a Map of header claims
      */
     public Map<String, Object> getHeaders() {
         return this.header.getClaimsJson();
     }
 
     /**
-     * 获取头部对象。
+     * Retrieves the header object.
      *
-     * @return JWTHeader 实例
+     * @return the {@link JWTHeader} instance
      */
     public JWTHeader getHeader() {
         return this.header;
     }
 
     /**
-     * 获取指定头部信息。
+     * Retrieves a specific header claim by its name.
      *
-     * @param name 头部字段名称
-     * @return 头部字段值
+     * @param name the name of the header field
+     * @return the value of the header field
      */
     public Object getHeader(final String name) {
         return this.header.getClaim(name);
     }
 
     /**
-     * 获取算法 ID（alg）头部信息。
+     * Retrieves the algorithm ID (alg) from the header.
      *
-     * @return 算法 ID
+     * @return the algorithm ID string
      * @see JWTHeader#ALGORITHM
      */
     public String getAlgorithm() {
@@ -256,11 +257,11 @@ public class JWT implements JWTRegister<JWT> {
     }
 
     /**
-     * 设置头部信息。
+     * Sets a header claim.
      *
-     * @param name  头部字段名称
-     * @param value 头部字段值
-     * @return 当前 JWT 实例
+     * @param name  the name of the header field
+     * @param value the value of the header field
+     * @return the current JWT instance
      */
     public JWT setHeader(final String name, final Object value) {
         this.header.setClaim(name, value);
@@ -268,10 +269,10 @@ public class JWT implements JWTRegister<JWT> {
     }
 
     /**
-     * 添加多个头部信息。
+     * Adds multiple header claims from a Map.
      *
-     * @param headers 头部信息 Map
-     * @return 当前 JWT 实例
+     * @param headers a Map of header claims to add
+     * @return the current JWT instance
      */
     public JWT addHeaders(final Map<String, ?> headers) {
         this.header.putAll(headers);
@@ -279,40 +280,40 @@ public class JWT implements JWTRegister<JWT> {
     }
 
     /**
-     * 获取所有载荷信息。
+     * Retrieves all payload claims as a Map.
      *
-     * @return 载荷信息的 Map
+     * @return a Map of payload claims
      */
     public Map<String, Object> getPayloads() {
         return this.payload.getClaimsJson();
     }
 
     /**
-     * 获取载荷对象。
+     * Retrieves the payload object.
      *
-     * @return JWTPayload 实例
+     * @return the {@link JWTPayload} instance
      */
     public JWTPayload getPayload() {
         return this.payload;
     }
 
     /**
-     * 获取指定载荷信息。
+     * Retrieves a specific payload claim by its name.
      *
-     * @param name 载荷字段名称
-     * @return 载荷字段值
+     * @param name the name of the payload field
+     * @return the value of the payload field
      */
     public Object getPayload(final String name) {
         return getPayload().getClaim(name);
     }
 
     /**
-     * 获取指定载荷信息并转换为指定类型。
+     * Retrieves a specific payload claim and casts it to the specified type.
      *
-     * @param <T>          目标类型
-     * @param propertyName 载荷字段名称
-     * @param propertyType 目标类型
-     * @return 转换后的载荷字段值，或 null 如果无法转换
+     * @param <T>          the target type
+     * @param propertyName the name of the payload field
+     * @param propertyType the target type to cast the value to
+     * @return the casted payload field value, or null if unable to cast or not found
      */
     public <T> T getPayload(final String propertyName, final Type propertyType) {
         Object value = getPayload().getClaim(propertyName);
@@ -323,11 +324,11 @@ public class JWT implements JWTRegister<JWT> {
     }
 
     /**
-     * 设置载荷信息。
+     * Sets a payload claim.
      *
-     * @param name  载荷字段名称
-     * @param value 载荷字段值
-     * @return 当前 JWT 实例
+     * @param name  the name of the payload field
+     * @param value the value of the payload field
+     * @return the current JWT instance
      */
     @Override
     public JWT setPayload(final String name, final Object value) {
@@ -336,10 +337,10 @@ public class JWT implements JWTRegister<JWT> {
     }
 
     /**
-     * 添加多个载荷信息。
+     * Adds multiple payload claims from a Map.
      *
-     * @param payloads 载荷信息 Map
-     * @return 当前 JWT 实例
+     * @param payloads a Map of payload claims to add
+     * @return the current JWT instance
      */
     public JWT addPayloads(final Map<String, ?> payloads) {
         this.payload.putAll(payloads);
@@ -347,25 +348,25 @@ public class JWT implements JWTRegister<JWT> {
     }
 
     /**
-     * 使用默认签名器生成 JWT 字符串。
+     * Generates the JWT string using the default signer.
      *
-     * @return JWT 字符串（header.payload.signature）
+     * @return the JWT string (header.payload.signature)
      */
     public String sign() {
         return sign(this.signer);
     }
 
     /**
-     * 使用指定签名器生成 JWT 字符串
+     * Generates the JWT string using the specified signer.
      * <p>
-     * 自动补充头部信息：
+     * Automatically populates header information:
      * <ul>
-     * <li>若未定义 "alg"，根据签名器设置算法 ID</li>
+     * <li>If "alg" is not defined, it sets the algorithm ID based on the signer.</li>
      * </ul>
      *
-     * @param signer 签名器
-     * @return JWT 字符串
-     * @throws JWTException 如果签名器为 null
+     * @param signer the signer to use
+     * @return the JWT string
+     * @throws JWTException if the signer is null
      */
     public String sign(final JWTSigner signer) {
         Assert.notNull(signer, () -> new JWTException("No Signer provided!"));
@@ -380,27 +381,27 @@ public class JWT implements JWTRegister<JWT> {
     }
 
     /**
-     * 验证 JWT 令牌是否有效。
+     * Verifies if the JWT token is valid using the default signer.
      *
-     * @return true 如果签名有效，否则 false
+     * @return true if the signature is valid, false otherwise
      */
     public boolean verify() {
         return verify(this.signer);
     }
 
     /**
-     * 验证 JWT 令牌是否有效，包括签名和时间字段检查。
+     * Validates the JWT token, including signature and time-based claims.
      * <p>
-     * 检查内容：
+     * Checks performed:
      * <ul>
-     * <li>签名是否有效</li>
-     * <li>notBefore：生效时间不能晚于当前时间</li>
-     * <li>expiresAt：失效时间不能早于当前时间</li>
-     * <li>issuedAt：签发时间不能晚于当前时间</li>
+     * <li>Signature validity</li>
+     * <li>Not Before (nbf): The token's effective time must not be later than the current time.</li>
+     * <li>Expires At (exp): The token's expiration time must not be earlier than the current time.</li>
+     * <li>Issued At (iat): The token's issuance time must not be later than the current time.</li>
      * </ul>
      *
-     * @param leeway 容忍时间（秒），用于时间检查的宽松度
-     * @return true 如果令牌有效，否则 false
+     * @param leeway the tolerance time in seconds, for leniency in time-based checks
+     * @return true if the token is valid, false otherwise
      */
     public boolean validate(final long leeway) {
         if (!verify()) {
@@ -415,13 +416,14 @@ public class JWT implements JWTRegister<JWT> {
     }
 
     /**
-     * 使用指定签名器验证 JWT 令牌。
+     * Verifies the JWT token using the specified signer.
      * <p>
-     * 如果签名器为 null 或 NoneJWTSigner，则认为 JWT 无签名，签名部分必须为空。
+     * If the signer is null or {@link NoneJWTSigner}, the JWT is considered unsigned, and the signature part must be
+     * empty.
      *
-     * @param signer 签名器，null 时默认为无签名
-     * @return true 如果签名有效，否则 false
-     * @throws JWTException 如果没有可验证的令牌
+     * @param signer the signer to use; if null, it defaults to no-signature verification
+     * @return true if the signature is valid, false otherwise
+     * @throws JWTException if there is no verifiable token
      */
     public boolean verify(JWTSigner signer) {
         if (null == signer) {
@@ -435,11 +437,11 @@ public class JWT implements JWTRegister<JWT> {
     }
 
     /**
-     * 将 JWT 令牌字符串拆分为三部分（header, payload, signature）。
+     * Splits the JWT token string into three parts (header, payload, signature).
      *
-     * @param token JWT 令牌字符串
-     * @return 包含三部分的 List
-     * @throws JWTException 如果令牌格式不正确（不是三部分）
+     * @param token the JWT token string
+     * @return a List containing the three parts
+     * @throws JWTException if the token format is incorrect (not three parts)
      */
     public static List<String> splitToken(final String token) {
         final List<String> tokens = StringKit.split(token, Symbol.DOT);

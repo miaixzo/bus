@@ -26,7 +26,9 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 流量注解
+ * Provides annotations for defining various limiting and protection rules. These annotations are used to mark methods
+ * for downgrade, hotspot protection, and request limiting, enabling declarative configuration of flow control within
+ * the application.
  *
  * @author Kimi Liu
  * @since Java 17+

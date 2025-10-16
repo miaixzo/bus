@@ -27,15 +27,16 @@
 */
 package org.miaixz.bus.validate;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.validate.metric.*;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 /**
- * 校验器注册中心
+ * The validator registry center. This class manages the registration and retrieval of validator instances. It uses a
+ * singleton pattern to ensure a single registry throughout the application.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,15 +44,18 @@ import org.miaixz.bus.validate.metric.*;
 public class Registry {
 
     /**
-     * 验证组列表
+     * Cache for storing validator instances, keyed by both name and class simple name.
      */
-    private static Map<Object, Object> COMPLEX_CACHE = new ConcurrentHashMap<>();
+    private static final Map<Object, Object> COMPLEX_CACHE = new ConcurrentHashMap<>();
 
     /**
-     * 校验实例信息
+     * The singleton instance of the registry.
      */
     private static Registry INSTANCE;
 
+    /**
+     * Static initializer to register all predefined validators.
+     */
     static {
         register(Builder._ALWAYS, new AlwaysMatcher());
         register(Builder._BLANK, new BlankMatcher());
@@ -82,14 +86,17 @@ public class Registry {
         register(Builder._TRUE, new TrueMatcher());
     }
 
+    /**
+     * Private constructor to prevent direct instantiation.
+     */
     public Registry() {
 
     }
 
     /**
-     * 单例模型初始化
+     * Gets the singleton instance of the validator registry.
      *
-     * @return the object
+     * @return the singleton {@code Registry} instance.
      */
     public static Registry getInstance() {
         synchronized (Registry.class) {
@@ -101,10 +108,12 @@ public class Registry {
     }
 
     /**
-     * 注册组件
+     * Registers a validator component. The validator is registered under both its given name and its class's simple
+     * name.
      *
-     * @param name   组件名称
-     * @param object 组件对象
+     * @param name   the name of the component.
+     * @param object the validator object to register.
+     * @throws InternalException if a validator with the same name or type is already registered.
      */
     public static void register(String name, Object object) {
         if (COMPLEX_CACHE.containsKey(name)) {
@@ -119,31 +128,31 @@ public class Registry {
     }
 
     /**
-     * 是否包含指定名称的校验器
+     * Checks if a validator with the specified name is registered.
      *
-     * @param name 校验器名称
-     * @return true：包含, false：不包含
+     * @param name the name of the validator.
+     * @return {@code true} if the validator is registered, {@code false} otherwise.
      */
     public boolean contains(String name) {
         return COMPLEX_CACHE.containsKey(name);
     }
 
     /**
-     * 根据校验器名称获取校验器
+     * Retrieves a validator by its name.
      *
-     * @param name 校验器名称
-     * @return 校验器对象, 找不到时返回null
+     * @param name the name of the validator.
+     * @return the validator object, or {@code null} if not found.
      */
     public Object require(String name) {
         return COMPLEX_CACHE.get(name);
     }
 
     /**
-     * 优先根据校验器名称获取校验器,找不到时,根据类型获取校验器对象
+     * Retrieves a validator, first by name, and then by class type if not found by name.
      *
-     * @param name  校验器名称
-     * @param clazz 校验器类型
-     * @return 校验器对象, 找不到时返回null
+     * @param name  the name of the validator.
+     * @param clazz the class of the validator.
+     * @return the validator object, or {@code null} if not found by either name or class.
      */
     public Object require(String name, Class<?> clazz) {
         Object object = this.require(name);

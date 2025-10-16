@@ -38,7 +38,31 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * HTTP 媒体类型
+ * Represents an HTTP Media Type (also known as MIME type).
+ *
+ * <p>
+ * This class provides a structured representation of media types as defined in RFC 2046. It supports parsing of media
+ * type strings, comparison of media types, and handling of parameters such as charset. The class includes predefined
+ * constants for common media types.
+ *
+ * <p>
+ * Media types consist of a type, a subtype, and optional parameters. For example, "text/html;charset=utf-8" has type
+ * "text", subtype "html", and a charset parameter with value "utf-8".
+ *
+ * <p>
+ * Example usage:
+ * 
+ * <pre>{@code
+ * 
+ * // Create a media type from a string
+ * MediaType mediaType = MediaType.valueOf("application/json;charset=utf-8");
+ *
+ * // Check compatibility
+ * boolean compatible = MediaType.APPLICATION_JSON_TYPE.isCompatible(mediaType);
+ *
+ * // Get charset
+ * java.nio.charset.Charset charset = mediaType.charset();
+ * }</pre>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -555,46 +579,133 @@ public class MediaType {
      */
     public final static MediaType APPLICATION_PRS_VCFBZIP2_TYPE = new MediaType("application", "prs.vcfbzip2");
 
+    /**
+     * Regular expression pattern for matching media type tokens.
+     */
     public static final String TOKEN = "([a-zA-Z0-9-!#$%&'*+.^_`{|}~]+)";
+
+    /**
+     * Regular expression pattern for matching quoted strings.
+     */
     public static final String QUOTED = "\"([^\"]*)\"";
+
+    /**
+     * Compiled pattern for matching type/subtype in media type strings.
+     */
     public static final Pattern TYPE_SUBTYPE = Pattern.compile(TOKEN + Symbol.SLASH + TOKEN);
+
+    /**
+     * Compiled pattern for matching parameters in media type strings.
+     */
     public static final Pattern PARAMETER = Pattern
             .compile(";\\s*(?:" + TOKEN + "=(?:" + TOKEN + Symbol.OR + QUOTED + "))?");
 
+    /**
+     * The primary type of the media type (e.g., "text", "image", "application").
+     */
     public final String type;
+
+    /**
+     * The subtype of the media type (e.g., "plain", "png", "json").
+     */
     public final String subtype;
+
+    /**
+     * The charset parameter of the media type, or null if not specified.
+     */
     public final String charset;
+
+    /**
+     * The full media type string representation.
+     */
     public final String mediaType;
+
+    /**
+     * Immutable map of parameters for this media type.
+     */
     public Map<String, String> parameters;
 
+    /**
+     * Creates a wildcard media type "*\/*".
+     */
     public MediaType() {
         this(null, MEDIA_TYPE_WILDCARD, MEDIA_TYPE_WILDCARD, null, null);
     }
 
+    /**
+     * Creates a media type from the specified string.
+     *
+     * @param mediaType the media type string
+     */
     public MediaType(String mediaType) {
         this(mediaType, MEDIA_TYPE_WILDCARD, MEDIA_TYPE_WILDCARD, null, null);
     }
 
+    /**
+     * Creates a media type with the specified type and subtype.
+     *
+     * @param type    the primary type
+     * @param subtype the subtype
+     */
     public MediaType(String type, String subtype) {
         this(null, type, subtype, null, null);
     }
 
+    /**
+     * Creates a media type with the specified type, subtype, and charset.
+     *
+     * @param type    the primary type
+     * @param subtype the subtype
+     * @param charset the charset
+     */
     public MediaType(String type, String subtype, String charset) {
         this(null, type, subtype, charset, null);
     }
 
+    /**
+     * Creates a media type with the specified values.
+     *
+     * @param mediaType the media type string
+     * @param type      the primary type
+     * @param subtype   the subtype
+     * @param charset   the charset
+     */
     public MediaType(String mediaType, String type, String subtype, String charset) {
         this(mediaType, type, subtype, charset, null);
     }
 
+    /**
+     * Creates a media type with the specified type, subtype, and parameters.
+     *
+     * @param type    the primary type
+     * @param subtype the subtype
+     * @param params  the parameters map
+     */
     public MediaType(String type, String subtype, Map<String, String> params) {
         this(null, type, subtype, null, createParametersMap(params));
     }
 
+    /**
+     * Creates a media type with the specified type, subtype, charset, and parameters.
+     *
+     * @param type    the primary type
+     * @param subtype the subtype
+     * @param charset the charset
+     * @param params  the parameters map
+     */
     public MediaType(String type, String subtype, String charset, Map<String, String> params) {
         this(null, type, subtype, charset, createParametersMap(params));
     }
 
+    /**
+     * Creates a media type with the specified values.
+     *
+     * @param mediaType the media type string
+     * @param type      the primary type
+     * @param subtype   the subtype
+     * @param charset   the charset
+     * @param params    the parameters map
+     */
     public MediaType(String mediaType, String type, String subtype, String charset, Map<String, String> params) {
         this.type = null == type ? MEDIA_TYPE_WILDCARD : type;
         this.subtype = null == subtype ? MEDIA_TYPE_WILDCARD : subtype;
@@ -612,10 +723,11 @@ public class MediaType {
     }
 
     /**
-     * 返回媒体类型.
+     * Parses a media type string into a MediaType object.
      *
-     * @param text 字符串
-     * @return the mediaType
+     * @param text the media type string to parse
+     * @return the parsed MediaType
+     * @throws IllegalArgumentException if the string is not a valid media type
      */
     public static MediaType valueOf(String text) {
         Matcher typeSubtype = TYPE_SUBTYPE.matcher(text);
@@ -656,6 +768,12 @@ public class MediaType {
         return new MediaType(text, type, subtype, charset);
     }
 
+    /**
+     * Creates a case-insensitive parameters map from the specified initial values.
+     *
+     * @param initialValues the initial values for the map
+     * @return a new TreeMap with case-insensitive keys
+     */
     private static TreeMap<String, String> createParametersMap(Map<String, String> initialValues) {
         TreeMap<String, String> map = new TreeMap((Comparator<String>) (o1, o2) -> o1.compareToIgnoreCase(o2));
         if (null != initialValues) {
@@ -669,22 +787,47 @@ public class MediaType {
         return map;
     }
 
+    /**
+     * Checks if the specified media type represents an STL file format.
+     *
+     * @param mediaType the media type to check
+     * @return true if the media type is an STL type, false otherwise
+     */
     public static boolean isSTLType(MediaType mediaType) {
         return equalsIgnoreParameters(mediaType, MODEL_STL_TYPE)
                 || equalsIgnoreParameters(mediaType, MODEL_X_STL_BINARY_TYPE)
                 || equalsIgnoreParameters(mediaType, APPLICATION_SLA_TYPE);
     }
 
+    /**
+     * Checks if the specified string represents an STL file format.
+     *
+     * @param type the media type string to check
+     * @return true if the type is an STL type, false otherwise
+     */
     public static boolean isSTLType(String type) {
         return MODEL_STL.equalsIgnoreCase(type) || MODEL_X_STL_BINARY.equalsIgnoreCase(type)
                 || APPLICATION_SLA.equalsIgnoreCase(type);
     }
 
+    /**
+     * Compares two media types for equality, ignoring parameters.
+     *
+     * @param type1 the first media type
+     * @param type2 the second media type
+     * @return true if the types and subtypes are equal (case-insensitive), false otherwise
+     */
     public static boolean equalsIgnoreParameters(MediaType type1, MediaType type2) {
         return type1.getType().equalsIgnoreCase(type2.getType())
                 && type1.getSubtype().equalsIgnoreCase(type2.getSubtype());
     }
 
+    /**
+     * Extracts the part type from a multipart/related media type.
+     *
+     * @param mediaType the multipart/related media type
+     * @return the part type, or WILDCARD_TYPE if not a multipart/related type
+     */
     public static MediaType getMultiPartRelatedType(MediaType mediaType) {
         if (!MULTIPART_RELATED_TYPE.isCompatible(mediaType))
             return null;
@@ -702,6 +845,12 @@ public class MediaType {
         return partType;
     }
 
+    /**
+     * Compares this media type to the specified object for equality.
+     *
+     * @param object the object to compare with
+     * @return true if the objects are equal, false otherwise
+     */
     public boolean equals(Object object) {
         if (!(object instanceof MediaType)) {
             return false;
@@ -712,51 +861,58 @@ public class MediaType {
         }
     }
 
+    /**
+     * Returns a hash code value for this media type.
+     *
+     * @return a hash code value for this media type
+     */
     public int hashCode() {
         return (this.type.toLowerCase() + this.subtype.toLowerCase()).hashCode() + this.parameters.hashCode();
     }
 
     /**
-     * 返回已编码的媒体类型,如“text/plain;charset=utf-8",适用于内容类型头部.
+     * Returns the encoded media type string, such as "text/plain;charset=utf-8", suitable for use in a Content-Type
+     * header.
      *
-     * @return the string
+     * @return the string representation of this media type
      */
     public String toString() {
         return mediaType;
     }
 
     /**
-     * 返回高级媒体类型,如: "text", "image", "audio", "video", or "application".
+     * Returns the high-level media type, such as "text", "image", "audio", "video", or "application".
      *
-     * @return the string
+     * @return the primary type of this media type
      */
     public String type() {
         return type;
     }
 
     /**
-     * 返回特定的媒体子类型,如： "plain" or "png", "mpeg", "mp4" or "xml".
+     * Returns the specific media subtype, such as "plain", "png", "mpeg", "mp4", or "xml".
      *
-     * @return the string
+     * @return the subtype of this media type
      */
     public String subtype() {
         return subtype;
     }
 
     /**
-     * 返回此媒体类型的字符集,如果该媒体类型没有指定字符集,则返回null.
+     * Returns the charset of this media type, or null if this media type does not specify a charset.
      *
-     * @return the string
+     * @return the charset of this media type, or null
      */
     public java.nio.charset.Charset charset() {
         return charset(null);
     }
 
     /**
-     * 返回此媒体类型的字符集,或者{@code defaultValue}, 如果此媒体类型没有指定字符集,则当前运行时不支持该字符集
+     * Returns the charset of this media type, or {@code defaultValue} if this media type does not specify a charset or
+     * the current runtime does not support the charset.
      *
-     * @param defaultValue 字符集
-     * @return the charset
+     * @param defaultValue the default charset to return if none is specified
+     * @return the charset of this media type, or the default value
      */
     public java.nio.charset.Charset charset(java.nio.charset.Charset defaultValue) {
         try {
@@ -767,10 +923,11 @@ public class MediaType {
     }
 
     /**
-     * 检查此媒体类型是否与其他媒体类型兼容 例如:image/*与image/jpeg、image/png等兼容 忽略媒体类型参数 这个函数是可交换的
+     * Checks if this media type is compatible with another media type. For example, image/* is compatible with
+     * image/jpeg, image/png, etc. Media type parameters are ignored. This function is commutative.
      *
-     * @param mediaType 要比较的媒体类型.
-     * @return 如果类型兼容, 则为true, 否则为false.
+     * @param mediaType the media type to compare with
+     * @return true if the types are compatible, false otherwise
      */
     public boolean isCompatible(MediaType mediaType) {
         return null != mediaType && (type.equals(MEDIA_TYPE_WILDCARD) || mediaType.type.equals(MEDIA_TYPE_WILDCARD)

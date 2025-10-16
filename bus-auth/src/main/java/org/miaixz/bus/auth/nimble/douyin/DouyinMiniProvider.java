@@ -37,41 +37,89 @@ import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.Material;
 import org.miaixz.bus.auth.nimble.AbstractProvider;
 import org.miaixz.bus.cache.CacheX;
+import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
 
 /**
- * 抖音 登录
+ * Douyin Mini Program login provider.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class DouyinMiniProvider extends AbstractProvider {
 
+    /**
+     * Constructs a {@code DouyinMiniProvider} with the specified context.
+     *
+     * @param context the authentication context
+     */
     public DouyinMiniProvider(Context context) {
         super(context, Registry.DOUYIN_MINI);
     }
 
+    /**
+     * Constructs a {@code DouyinMiniProvider} with the specified context and cache.
+     *
+     * @param context the authentication context
+     * @param cache   the cache implementation
+     */
     public DouyinMiniProvider(Context context, CacheX cache) {
         super(context, Registry.DOUYIN_MINI, cache);
     }
 
+    /**
+     * Retrieves the access token for the Douyin Mini Program. See
+     * https://developer.open-douyin.com/docs/resource/zh-CN/mini-game/develop/api/open-capacity/log-in/auth.code2Session.html
+     * documentation. Uses the authorization code to obtain the openId, unionId, and session_key.
+     *
+     * @param callback the callback object containing the authorization code and anonymous code
+     * @return the {@link AuthToken} containing access token details
+     * @throws AuthorizedException if the response indicates an error or is missing required token information
+     */
     @Override
     public AuthToken getAccessToken(Callback callback) {
-        return this.getToken(accessTokenUrl(callback.getCode(), callback.getAnonymous_code()));
+        // See https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/login/auth.code2Session.html
+        // documentation
+        // Use the code to get the corresponding openId, unionId, etc.
+        String response = Httpx.get(accessTokenUrl(callback.getCode(), callback.getAnonymous_code()));
+
+        Map<String, Object> accessTokenObject = JsonKit.toPojo(response, Map.class);
+        checkResponse(accessTokenObject);
+
+        // Assemble the result
+        return AuthToken.builder().openId((String) accessTokenObject.get("openid"))
+                .unionId((String) accessTokenObject.get("unionid"))
+                .accessToken((String) accessTokenObject.get("session_key")).build();
     }
 
+    /**
+     * Retrieves user information for the Douyin Mini Program. See
+     * https://developers.weixin.qq.com/miniprogram/dev/api/open-api/user-info/wx.getUserProfile.html documentation.
+     * Note: If user information is required, it needs to be passed to the backend after the Mini Program calls a
+     * function.
+     *
+     * @param authToken the {@link AuthToken} obtained after successful authorization
+     * @return {@link Material} containing the user's information
+     */
     @Override
     public Material getUserInfo(AuthToken authToken) {
-        // 参见
-        // https://developer.open-douyin.com/docs/resource/zh-CN/mini-game/develop/guide/open-api/info/tt-get-user-info
-        // 如果需要用户信息，需要在小程序调用函数后传给后端
+        // See https://developers.weixin.qq.com/miniprogram/dev/api/open-api/user-info/wx.getUserProfile.html
+        // documentation
+        // If user information is required, it needs to be passed to the backend after the Mini Program calls a function
         return Material.builder().username(Normal.EMPTY).nickname(Normal.EMPTY).avatar(Normal.EMPTY)
-                .uuid(authToken.getOpenId()).token(authToken).source(authToken.toString()).build();
+                .uuid(authToken.getOpenId()).token(authToken).source(complex.toString()).build();
     }
 
+    /**
+     * Constructs the access token URL for the Douyin Mini Program.
+     *
+     * @param code          the authorization code
+     * @param anonymousCode the anonymous code for anonymous login
+     * @return the access token URL
+     */
     private String accessTokenUrl(String code, String anonymousCode) {
         return Builder.fromUrl(this.complex.accessToken()).queryParam("appid", this.context.getAppKey())
                 .queryParam("secret", this.context.getAppSecret()).queryParam("code", code)
@@ -79,13 +127,14 @@ public class DouyinMiniProvider extends AbstractProvider {
     }
 
     /**
-     * 获取token，适用于获取access_token和刷新token
+     * Retrieves the token, applicable for both obtaining access tokens and refreshing tokens.
      *
-     * @param accessTokenUrl 实际请求token的地址
-     * @return token对象
+     * @param accessTokenUrl the actual URL to request the token from
+     * @return the {@link AuthToken} object
+     * @throws AuthorizedException if parsing the response fails or required token information is missing
      */
     private AuthToken getToken(String accessTokenUrl) {
-        String response = Httpx.post(accessTokenUrl);
+        String response = Httpx.get(accessTokenUrl);
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
             if (object == null) {
@@ -93,7 +142,7 @@ public class DouyinMiniProvider extends AbstractProvider {
             }
             this.checkResponse(object);
 
-            Map<String, Object> dataObj = (Map<String, Object>) object.get("data");
+            Map<String, Object> dataObj = (Map<String, Object>) object.get(Consts.DATA);
             if (dataObj == null) {
                 throw new AuthorizedException("Missing data field in token response");
             }
@@ -120,13 +169,14 @@ public class DouyinMiniProvider extends AbstractProvider {
     }
 
     /**
-     * 检查响应内容是否正确
+     * Checks if the response content is correct.
      *
-     * @param object 请求响应内容
+     * @param object the response map to check
+     * @throws AuthorizedException if the response indicates an error
      */
     private void checkResponse(Map<String, Object> object) {
         String message = (String) object.get("message");
-        Map<String, Object> data = (Map<String, Object>) object.get("data");
+        Map<String, Object> data = (Map<String, Object>) object.get(Consts.DATA);
         if (data == null) {
             throw new AuthorizedException("Missing data field in response");
         }

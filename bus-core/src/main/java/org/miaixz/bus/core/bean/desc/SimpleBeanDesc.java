@@ -39,11 +39,15 @@ import org.miaixz.bus.core.xyz.MethodKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 简单的Bean描述，只查找getter和setter方法，规则如下：
+ * A simple Bean description that primarily focuses on finding getter and setter methods. The rules for method discovery
+ * are as follows:
  * <ul>
- * <li>不匹配字段，只查找getXXX、isXXX、setXXX方法。</li>
- * <li>如果同时存在getXXX和isXXX，返回值为Boolean或boolean，isXXX优先。</li>
- * <li>如果同时存在setXXX的多个重载方法，最小子类优先，如setXXX(List)优先于setXXX(Collection)</li>
+ * <li>It does not match fields directly; it only searches for {@code getXXX}, {@code isXXX}, and {@code setXXX}
+ * methods.</li>
+ * <li>If both {@code getXXX} and {@code isXXX} methods exist, and the return type is {@code Boolean} or
+ * {@code boolean}, {@code isXXX} takes precedence.</li>
+ * <li>If multiple overloaded {@code setXXX} methods exist, the method with the most specific parameter type takes
+ * precedence (e.g., {@code setXXX(List)} over {@code setXXX(Collection)}).</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -55,9 +59,9 @@ public class SimpleBeanDesc extends AbstractBeanDesc {
     private static final long serialVersionUID = 2852227709360L;
 
     /**
-     * 构造
+     * Constructs a {@code SimpleBeanDesc} for the given Bean class.
      *
-     * @param beanClass Bean类
+     * @param beanClass The class of the Bean. Must not be {@code null}.
      */
     public SimpleBeanDesc(final Class<?> beanClass) {
         super(beanClass);
@@ -65,7 +69,7 @@ public class SimpleBeanDesc extends AbstractBeanDesc {
     }
 
     /**
-     * 普通Bean初始化，查找和加载getter和setter
+     * Initializes the Bean description by finding and loading getter and setter methods.
      */
     private void init() {
         final Map<String, PropDesc> propMap = this.propMap;
@@ -107,13 +111,14 @@ public class SimpleBeanDesc extends AbstractBeanDesc {
                 if (isSetter) {
                     if (null == propDesc.setter
                             || propDesc.setter.getTypeClass().isAssignableFrom(method.getParameterTypes()[0])) {
-                        // 如果存在多个重载的setter方法，选择参数类型最匹配的
+                        // If multiple overloaded setter methods exist, choose the one with the most specific parameter
+                        // type.
                         propDesc.setter = MethodInvoker.of(method);
                     }
                 } else {
                     if (null == propDesc.getter || (BooleanKit.isBoolean(propDesc.getter.getTypeClass())
                             && BooleanKit.isBoolean(method.getReturnType()) && methodName.startsWith(Normal.IS))) {
-                        // 如果返回值为Boolean或boolean，isXXX优先于getXXX
+                        // If the return type is Boolean or boolean, isXXX takes precedence over getXXX.
                         propDesc.getter = MethodInvoker.of(method);
                     }
                 }

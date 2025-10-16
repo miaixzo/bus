@@ -36,30 +36,32 @@ import org.miaixz.bus.mapper.provider.ConditionProvider;
 import org.miaixz.bus.mapper.provider.EntityProvider;
 
 /**
- * 游标查询接口，提供基于实体和条件的游标查询方法
+ * An interface for cursor-based queries, providing methods for querying with cursors based on entities and conditions.
+ * Cursors are suitable for handling large result sets by fetching data row by row, which can reduce memory consumption.
  *
- * @param <T> 实体类类型
- * @param <E> 符合 Condition 数据结构的对象，如 {@link Condition} 或 MBG 生成的 Condition 对象
+ * @param <T> The type of the entity class.
+ * @param <E> An object that conforms to the Condition data structure, such as {@link Condition} or an MBG-generated
+ *            Condition object.
  * @author Kimi Liu
  * @since Java 17+
  */
 public interface CursorMapper<T, E> {
 
     /**
-     * 根据实体字段条件进行游标查询
+     * Performs a cursor-based query based on the fields of the given entity.
      *
-     * @param entity 实体对象
-     * @return 实体对象游标
+     * @param entity The entity object containing the query criteria.
+     * @return A {@link Cursor} for the entity objects.
      */
     @Lang(Caching.class)
     @SelectProvider(type = EntityProvider.class, method = "select")
     Cursor<T> selectCursor(T entity);
 
     /**
-     * 根据 Condition 条件进行游标查询
+     * Performs a cursor-based query based on the given {@link Condition}.
      *
-     * @param condition 条件对象
-     * @return 实体对象游标
+     * @param condition The condition object.
+     * @return A {@link Cursor} for the entity objects.
      */
     @Lang(Caching.class)
     @SelectProvider(type = ConditionProvider.class, method = "selectByCondition")

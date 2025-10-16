@@ -34,7 +34,7 @@ import java.util.Locale;
 import org.miaixz.bus.core.lang.Assert;
 
 /**
- * 月份枚举 与Calendar中的月份int值对应
+ * Enumeration for months, corresponding to the int values of months in {@link Calendar}.
  *
  * @author Kimi Liu
  * @see Calendar#JANUARY
@@ -55,79 +55,82 @@ import org.miaixz.bus.core.lang.Assert;
 public enum Month {
 
     /**
-     * 一月
+     * January
      */
     JANUARY(Calendar.JANUARY),
     /**
-     * 二月
+     * February
      */
     FEBRUARY(Calendar.FEBRUARY),
     /**
-     * 三月
+     * March
      */
     MARCH(Calendar.MARCH),
     /**
-     * 四月
+     * April
      */
     APRIL(Calendar.APRIL),
     /**
-     * 五月
+     * May
      */
     MAY(Calendar.MAY),
     /**
-     * 六月
+     * June
      */
     JUNE(Calendar.JUNE),
     /**
-     * 七月
+     * July
      */
     JULY(Calendar.JULY),
     /**
-     * 八月
+     * August
      */
     AUGUST(Calendar.AUGUST),
     /**
-     * 九月
+     * September
      */
     SEPTEMBER(Calendar.SEPTEMBER),
     /**
-     * 十月
+     * October
      */
     OCTOBER(Calendar.OCTOBER),
     /**
-     * 十一月
+     * November
      */
     NOVEMBER(Calendar.NOVEMBER),
     /**
-     * 十二月
+     * December
      */
     DECEMBER(Calendar.DECEMBER),
     /**
-     * 十三月，仅用于农历
+     * Undecimber (thirteenth month), only used for the lunar calendar.
      */
     UNDECIMBER(Calendar.UNDECIMBER);
 
+    /**
+     * Array of all {@link Month} enum constants.
+     */
     private static final Month[] ENUMS = Month.values();
 
     /**
-     * 对应值，见{@link Calendar}
+     * The corresponding value, see {@link Calendar}.
      */
     private final int value;
 
     /**
-     * 构造
+     * Constructor for Month enum.
      *
-     * @param value 对应值，见{@link Calendar}
+     * @param value The corresponding value, see {@link Calendar}.
      */
     Month(final int value) {
         this.value = value;
     }
 
     /**
-     * 将 {@link Calendar}月份相关值转换为Month枚举对象 未找到返回{@code null}
+     * Converts a {@link Calendar} month int value to a {@link Month} enum object. Returns {@code null} if not found.
      *
-     * @param calendarMonthIntValue Calendar中关于Month的int值，从0开始
-     * @return Month
+     * @param calendarMonthIntValue The int value of the month in Calendar, starting from 0.
+     * @return The corresponding {@link Month} enum.
      * @see Calendar#JANUARY
      * @see Calendar#FEBRUARY
      * @see Calendar#MARCH
@@ -150,11 +153,11 @@ public enum Month {
     }
 
     /**
-     * 解析别名为Month对象，别名如：jan或者JANUARY，不区分大小写
+     * Parses an alias into a {@link Month} object. Aliases like "jan" or "JANUARY" are case-insensitive.
      *
-     * @param name 别名值
-     * @return 月份枚举Month，非空
-     * @throws IllegalArgumentException 如果别名无对应的枚举，抛出此异常
+     * @param name The alias value.
+     * @return The {@link Month} enum, non-null.
+     * @throws IllegalArgumentException If the alias does not correspond to a valid enum.
      */
     public static Month of(final String name) throws IllegalArgumentException {
         if (null != name && name.length() > 1) {
@@ -250,21 +253,21 @@ public enum Month {
     }
 
     /**
-     * {@link java.time.Month}转换为Month对象
+     * Converts a {@link java.time.Month} object to a {@link Month} enum object.
      *
-     * @param month {@link java.time.Month}
-     * @return Month
+     * @param month The {@link java.time.Month} object.
+     * @return The corresponding {@link Month} enum.
      */
     public static Month of(final java.time.Month month) {
         return of(month.ordinal());
     }
 
     /**
-     * 获得指定月的最后一天
+     * Gets the last day of the specified month.
      *
-     * @param month      月份，从0开始
-     * @param isLeapYear 是否为闰年，闰年只对二月有影响
-     * @return 最后一天，可能为28,29,30,31
+     * @param month      The month, starting from 0 (0 for January).
+     * @param isLeapYear Whether it is a leap year. Leap year only affects February.
+     * @return The last day of the month, which can be 28, 29, 30, or 31.
      */
     public static int getLastDay(final int month, final boolean isLeapYear) {
         final Month of = of(month);
@@ -273,18 +276,20 @@ public enum Month {
     }
 
     /**
-     * 获取{@link Calendar}中的对应值 此值从0开始，即0表示一月
+     * Gets the corresponding value in {@link Calendar}. This value starts from 0, where 0 represents January.
      *
-     * @return {@link Calendar}中的对应月份值，从0开始计数
+     * @return The corresponding month value in {@link Calendar}, counted from 0.
      */
     public int getValue() {
         return this.value;
     }
 
     /**
-     * 获取月份值，此值与{@link java.time.Month}对应 此值从1开始，即1表示一月
+     * Gets the month value, which corresponds to {@link java.time.Month}. This value starts from 1, where 1 represents
+     * January.
      *
-     * @return 月份值，对应{@link java.time.Month}，从1开始计数
+     * @return The month value, corresponding to {@link java.time.Month}, counted from 1.
+     * @throws IllegalArgumentException if {@link #UNDECIMBER} is used, as it is unsupported.
      */
     public int getIsoValue() {
         Assert.isFalse(this == UNDECIMBER, "Unsupported Undecimber field");
@@ -292,10 +297,10 @@ public enum Month {
     }
 
     /**
-     * 获取此月份最后一天的值 不支持 {@link #UNDECIMBER}
+     * Gets the value of the last day of this month. Does not support {@link #UNDECIMBER}.
      *
-     * @param isLeapYear 是否闰年
-     * @return 此月份最后一天的值
+     * @param isLeapYear True if it is a leap year, false otherwise.
+     * @return The value of the last day of this month.
      */
     public int getLastDay(final boolean isLeapYear) {
         switch (this) {
@@ -314,30 +319,30 @@ public enum Month {
     }
 
     /**
-     * 转换为{@link java.time.Month}
+     * Converts this {@link Month} enum to a {@link java.time.Month} object.
      *
-     * @return {@link java.time.Month}
+     * @return The corresponding {@link java.time.Month} object.
      */
     public java.time.Month toJdkMonth() {
         return java.time.Month.of(getIsoValue());
     }
 
     /**
-     * 获取显示名称
+     * Gets the display name of the month.
      *
-     * @param style 名称风格
-     * @return 显示名称
+     * @param style The style of the name (e.g., full, short).
+     * @return The display name.
      */
     public String getDisplayName(final TextStyle style) {
         return getDisplayName(style, Locale.getDefault());
     }
 
     /**
-     * 获取显示名称
+     * Gets the display name of the month with a specified locale.
      *
-     * @param style  名称风格
-     * @param locale {@link Locale}
-     * @return 显示名称
+     * @param style  The style of the name (e.g., full, short).
+     * @param locale The {@link Locale} to use.
+     * @return The display name.
      */
     public String getDisplayName(final TextStyle style, final Locale locale) {
         return toJdkMonth().getDisplayName(style, locale);

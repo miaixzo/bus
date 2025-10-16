@@ -26,7 +26,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 六曜（孔明六曜星、小六壬）
+ * Provides classes related to the Rokuyo (六曜) or Six-day Cycle, also known as Koumei Rokuyo-sei (孔明六曜星), a system of
+ * divination used in Japan.
  *
  * @author Kimi Liu
  * @since Java 17+

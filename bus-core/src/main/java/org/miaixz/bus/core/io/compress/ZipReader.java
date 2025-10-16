@@ -45,74 +45,80 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.ZipKit;
 
 /**
- * Zip文件或流读取器，一般用于Zip文件解压
+ * Zip file or stream reader, generally used for decompressing Zip files.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class ZipReader implements Closeable {
 
+    /**
+     * Default maximum size difference for ZipBomb check.
+     */
     private static final int DEFAULT_MAX_SIZE_DIFF = 100;
+    /**
+     * The Zip resource to be read.
+     */
     private final ZipResource resource;
     /**
-     * 检查ZipBomb文件差异倍数，-1表示不检查ZipBomb
+     * The maximum size difference multiplier for ZipBomb check. A value of -1 indicates no ZipBomb check.
      */
     private int maxSizeDiff = DEFAULT_MAX_SIZE_DIFF;
 
     /**
-     * 构造
+     * Constructs a new ZipReader instance from a {@link ZipFile}.
      *
-     * @param zipFile 读取的的Zip文件
+     * @param zipFile The Zip file to be read.
      */
     public ZipReader(final ZipFile zipFile) {
         this(new ZipFileResource(zipFile));
     }
 
     /**
-     * 构造
+     * Constructs a new ZipReader instance from a {@link ZipInputStream}.
      *
-     * @param zin 读取的的Zip文件流
+     * @param zin The Zip input stream to be read.
      */
     public ZipReader(final ZipInputStream zin) {
         this(new ZipStream(zin));
     }
 
     /**
-     * 构造
+     * Constructs a new ZipReader instance from a {@link ZipResource}.
      *
-     * @param resource 读取的的Zip文件流
+     * @param resource The Zip resource to be read.
      */
     public ZipReader(final ZipResource resource) {
         this.resource = resource;
     }
 
     /**
-     * 创建ZipReader
+     * Creates a new ZipReader instance from a file.
      *
-     * @param zipFile 生成的Zip文件
-     * @param charset 编码
-     * @return ZipReader
+     * @param zipFile The Zip file to be read.
+     * @param charset The character set for the Zip file entries.
+     * @return A new ZipReader instance.
      */
     public static ZipReader of(final File zipFile, final Charset charset) {
         return new ZipReader(ZipKit.toZipFile(zipFile, charset));
     }
 
     /**
-     * 创建ZipReader
+     * Creates a new ZipReader instance from an input stream.
      *
-     * @param in      Zip输入的流，一般为输入文件流
-     * @param charset 编码
-     * @return ZipReader
+     * @param in      The Zip input stream, typically a file input stream.
+     * @param charset The character set for the Zip file entries.
+     * @return A new ZipReader instance.
      */
     public static ZipReader of(final InputStream in, final Charset charset) {
         return new ZipReader(new ZipInputStream(in, charset));
     }
 
     /**
-     * 设置检查ZipBomb文件差异倍数，-1表示不检查ZipBomb
+     * Sets the maximum size difference multiplier for ZipBomb check. A value of -1 indicates no ZipBomb check.
      *
-     * @param maxSizeDiff 检查ZipBomb文件差异倍数，-1表示不检查ZipBomb
-     * @return this
+     * @param maxSizeDiff The maximum size difference multiplier.
+     * @return This ZipReader instance.
      */
     public ZipReader setMaxSizeDiff(final int maxSizeDiff) {
         this.maxSizeDiff = maxSizeDiff;
@@ -120,33 +126,35 @@ public class ZipReader implements Closeable {
     }
 
     /**
-     * 获取指定路径的文件流 如果是文件模式，则直接获取Entry对应的流，如果是流模式，则遍历entry后，找到对应流返回
+     * Retrieves the input stream for a specific entry within the Zip file. If in file mode, it directly gets the stream
+     * corresponding to the entry. If in stream mode, it iterates through entries to find and return the corresponding
+     * stream.
      *
-     * @param path 路径
-     * @return 文件流
+     * @param path The path of the entry within the Zip file.
+     * @return The input stream for the specified entry, or {@code null} if not found.
      */
     public InputStream get(final String path) {
         return this.resource.get(path);
     }
 
     /**
-     * 解压到指定目录中
+     * Decompresses the Zip file to the specified output directory.
      *
-     * @param outFile 解压到的目录
-     * @return 解压的目录
-     * @throws InternalException IO异常
+     * @param outFile The directory to which the Zip file contents will be extracted.
+     * @return The output directory.
+     * @throws InternalException If an I/O error occurs during decompression.
      */
     public File readTo(final File outFile) throws InternalException {
         return readTo(outFile, null);
     }
 
     /**
-     * 解压到指定目录中
+     * Decompresses the Zip file to the specified output directory, filtering entries with a {@link Predicate}.
      *
-     * @param outFile     解压到的目录
-     * @param entryFilter 过滤器，只保留{@link Predicate#test(Object)}结果为{@code true}的文件
-     * @return 解压的目录
-     * @throws InternalException IO异常
+     * @param outFile     The directory to which the Zip file contents will be extracted.
+     * @param entryFilter A filter to retain only entries for which {@link Predicate#test(Object)} returns {@code true}.
+     * @return The output directory.
+     * @throws InternalException If an I/O error occurs during decompression.
      */
     public File readTo(final File outFile, final Predicate<ZipEntry> entryFilter) throws InternalException {
         read((zipEntry) -> {
@@ -158,11 +166,11 @@ public class ZipReader implements Closeable {
     }
 
     /**
-     * 读取并处理Zip文件中的每一个{@link ZipEntry}
+     * Reads and processes each {@link ZipEntry} in the Zip file.
      *
-     * @param consumer {@link ZipEntry}处理器
-     * @return this
-     * @throws InternalException IO异常
+     * @param consumer A {@link ZipEntry} consumer to process each entry.
+     * @return This ZipReader instance.
+     * @throws InternalException If an I/O error occurs during reading.
      */
     public ZipReader read(final Consumer<ZipEntry> consumer) throws InternalException {
         resource.read(consumer, this.maxSizeDiff);
@@ -175,24 +183,25 @@ public class ZipReader implements Closeable {
     }
 
     /**
-     * 读取一个ZipEntry的数据到目标目录下，如果entry是个目录，则创建对应目录，否则解压并写出到文件
+     * Reads a ZipEntry's data into the target directory. If the entry is a directory, it creates the corresponding
+     * directory; otherwise, it decompresses and writes to a file.
      *
-     * @param zipEntry entry
-     * @param outFile  写出到的目录
+     * @param zipEntry The Zip entry to read.
+     * @param outFile  The output directory to which the entry will be written.
      */
     private void readEntry(final ZipEntry zipEntry, final File outFile) {
         String path = zipEntry.getName();
         if (FileKit.isWindows()) {
-            // Win系统下
+            // On Windows systems, replace '*' with '_'
             path = StringKit.replace(path, Symbol.STAR, Symbol.UNDERLINE);
         }
-        // FileKit.file会检查slip漏洞，漏洞说明见http://blog.nsfocus.net/zip-slip-2/
+        // FileKit.file checks for zip slip vulnerability, see http://blog.nsfocus.net/zip-slip-2/
         final File outItemFile = FileKit.file(outFile, path);
         if (zipEntry.isDirectory()) {
-            // 目录
+            // Directory
             outItemFile.mkdirs();
         } else {
-            // 文件
+            // File
             FileKit.copy(this.resource.get(zipEntry), outItemFile);
         }
     }

@@ -31,7 +31,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.miaixz.bus.core.xyz.MathKit;
 
 /**
- * {@link Number} 值单元格设置器
+ * {@link CellSetter} for {@link Number} values.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -41,9 +41,9 @@ public class NumberCellSetter implements CellSetter {
     private final Number value;
 
     /**
-     * 构造
+     * Constructs a {@code NumberCellSetter} with the specified {@link Number} value.
      *
-     * @param value 值
+     * @param value The {@link Number} value to set in the cell.
      */
     NumberCellSetter(final Number value) {
         this.value = value;
@@ -51,7 +51,7 @@ public class NumberCellSetter implements CellSetter {
 
     @Override
     public void setValue(final Cell cell) {
-        // 避免float到double的精度问题
+        // Avoid precision issues from float to double.
         cell.setCellValue(MathKit.toDouble(value));
     }
 

@@ -26,7 +26,12 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 通用Mapper接口
+ * Provides the core generic Mapper interfaces for data access operations.
+ * <p>
+ * This package contains a set of foundational mapper interfaces that define common CRUD (Create, Read, Update, Delete)
+ * and query methods. By extending these interfaces, developers can quickly implement data persistence layers without
+ * writing boilerplate SQL code.
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+

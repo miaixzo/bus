@@ -39,10 +39,14 @@ import org.miaixz.bus.core.lang.mutable.Mutable;
 import org.miaixz.bus.core.xyz.SetKit;
 
 /**
- * 使用{@link Lock}保护的缓存，读写都使用悲观锁完成，主要避免某些Map无法使用读写锁的问题, 例如使用了LinkedHashMap的缓存，由于get方法也会改变Map的结构，因此读写必须加互斥锁
+ * A cache implementation protected by a pessimistic {@link Lock}.
+ * <p>
+ * Both read and write operations are performed under a mutual exclusion lock. This is primarily intended for cache
+ * implementations where read operations can also modify the underlying map structure (e.g., a
+ * {@link java.util.LinkedHashMap} in an LRU cache), making a standard read-write lock unsuitable.
  *
- * @param <K> 键类型
- * @param <V> 值类型
+ * @param <K> The type of the key.
+ * @param <V> The type of the value.
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -52,7 +56,8 @@ public abstract class LockedCache<K, V> extends AbstractCache<K, V> {
     private static final long serialVersionUID = 2852231905670L;
 
     /**
-     * 一些特殊缓存，例如使用了LinkedHashMap的缓存，由于get方法也会改变Map的结构，导致无法使用读写锁
+     * The mutual exclusion lock. This is necessary for caches like those based on LinkedHashMap, where the get method
+     * can also change the map's structure, requiring a full lock.
      */
     protected Lock lock = new ReentrantLock();
 
@@ -80,17 +85,16 @@ public abstract class LockedCache<K, V> extends AbstractCache<K, V> {
     public V get(final K key, final boolean isUpdateLastAccess, final long timeout, final SupplierX<V> supplier) {
         V v = get(key, isUpdateLastAccess);
 
-        // 对象不存在，则加锁创建
+        // If the object does not exist, create it under a lock.
         if (null == v && null != supplier) {
-            // 使用key锁可以避免对象创建等待问题，但是会带来循环锁问题。
-            // 因此此处依旧采用全局锁，在对象创建过程中，全局等待，避免循环锁依赖
-            // 这样避免了循环锁，但是会存在一个缺点，即对象创建过程中，其它线程无法获得锁，从而无法使用缓存，因此需要考虑对象创建的耗时问题
+            // A global lock is used here to prevent deadlock issues that could arise from per-key locks.
+            // This avoids circular dependencies but means that all other cache operations are blocked
+            // during the object creation process. The performance impact depends on the creation time.
             lock.lock();
             try {
-                // 双重检查锁，防止在竞争锁的过程中已经有其它线程写入
+                // Double-check to prevent regeneration if another thread has already written the value.
                 final CacheObject<K, V> co = getOrRemoveExpiredWithoutLock(key);
                 if (null == co) {
-                    // supplier的创建是一个耗时过程，此处创建与全局锁无关，而与key锁相关，这样就保证每个key只创建一个value，且互斥
                     v = supplier.get();
                     putWithoutLock(key, v, timeout);
                 }
@@ -106,6 +110,7 @@ public abstract class LockedCache<K, V> extends AbstractCache<K, V> {
         CopiedIterator<CacheObject<K, V>> copiedIterator;
         lock.lock();
         try {
+            // Create a copy of the iterator to prevent ConcurrentModificationException.
             copiedIterator = CopiedIterator.copyOf(cacheObjIter());
         } finally {
             lock.unlock();
@@ -141,13 +146,12 @@ public abstract class LockedCache<K, V> extends AbstractCache<K, V> {
     public void clear() {
         lock.lock();
         try {
-            // 获取所有键的副本
+            // Create a copy of the key set to iterate over.
             final Set<Mutable<K>> keys = SetKit.of(cacheMap.keySet());
-            CacheObject<K, V> co;
             for (final Mutable<K> key : keys) {
-                co = removeWithoutLock(key.get());
+                CacheObject<K, V> co = removeWithoutLock(key.get());
                 if (null != co) {
-                    // 触发资源释放
+                    // Trigger resource release or listener notification.
                     onRemove(co.key, co.object);
                 }
             }
@@ -167,12 +171,12 @@ public abstract class LockedCache<K, V> extends AbstractCache<K, V> {
     }
 
     /**
-     * 获得值或清除过期值
-     * 
-     * @param key                键
-     * @param isUpdateLastAccess 是否更新最后访问时间
-     * @param isUpdateCount      是否更新计数器
-     * @return 值或null
+     * Gets a value or removes it if it has expired.
+     *
+     * @param key                The key.
+     * @param isUpdateLastAccess Whether to update the last access time.
+     * @param isUpdateCount      Whether to update the hit/miss counters.
+     * @return The value, or {@code null} if not found or expired.
      */
     private V getOrRemoveExpired(final K key, final boolean isUpdateLastAccess, final boolean isUpdateCount) {
         CacheObject<K, V> co;
@@ -180,7 +184,7 @@ public abstract class LockedCache<K, V> extends AbstractCache<K, V> {
         try {
             co = getWithoutLock(key);
             if (null != co && co.isExpired()) {
-                // 过期移除
+                // Remove the expired object.
                 removeWithoutLock(key);
                 onRemove(co.key, co.object);
                 co = null;
@@ -189,7 +193,7 @@ public abstract class LockedCache<K, V> extends AbstractCache<K, V> {
             lock.unlock();
         }
 
-        // 未命中
+        // Handle cache miss.
         if (null == co) {
             if (isUpdateCount) {
                 missCount.increment();
@@ -197,6 +201,7 @@ public abstract class LockedCache<K, V> extends AbstractCache<K, V> {
             return null;
         }
 
+        // Handle cache hit.
         if (isUpdateCount) {
             hitCount.increment();
         }

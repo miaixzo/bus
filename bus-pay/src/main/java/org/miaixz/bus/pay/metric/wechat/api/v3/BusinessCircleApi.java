@@ -30,7 +30,7 @@ package org.miaixz.bus.pay.metric.wechat.api.v3;
 import org.miaixz.bus.pay.Matcher;
 
 /**
- * 微信支付 v3 接口-智慧商圈接口
+ * WeChat Pay V3 API interfaces for smart business circles.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,44 +38,54 @@ import org.miaixz.bus.pay.Matcher;
 public enum BusinessCircleApi implements Matcher {
 
     /**
-     * 智慧商圈-商圈积分同步
+     * Smart business circle - synchronize business circle points.
      */
-    BUSINESS_CIRCLE_POINTS_NOTIFY("/v3/businesscircle/points/notify", "商圈会员积分同步"),
+    BUSINESS_CIRCLE_POINTS_NOTIFY("/v3/businesscircle/points/notify",
+            "Smart business circle - synchronize business circle points"),
 
     /**
-     * 智慧商圈-商圈积分授权查询
+     * Smart business circle - query business circle points authorization.
      */
-    BUSINESS_CIRCLE_USER_AUTHORIZATIONS("/v3/businesscircle/user-authorizations/%s", "商圈积分授权查询"),
+    BUSINESS_CIRCLE_USER_AUTHORIZATIONS("/v3/businesscircle/user-authorizations/%s",
+            "Smart business circle - query business circle points authorization"),
 
     /**
-     * 智慧商圈-商圈会员待积分状态查询
+     * Smart business circle - query business circle member pending points status.
      */
-    BUSINESS_CIRCLE_COMMIT_STATUS("/v3/businesscircle/users/%s/points/commit_status", "商圈会员待积分状态查询"),
+    BUSINESS_CIRCLE_COMMIT_STATUS("/v3/businesscircle/users/%s/points/commit_status",
+            "Smart business circle - query business circle member pending points status"),
 
     /**
-     * 智慧商圈-商圈会员停车状态同步
+     * Smart business circle - synchronize business circle member parking status.
      */
-    BUSINESS_CIRCLE_PARKING("v3/businesscircle/parkings", "商圈会员停车状态同步");
+    BUSINESS_CIRCLE_PARKING("v3/businesscircle/parkings",
+            "Smart business circle - synchronize business circle member parking status");
 
     /**
-     * 接口方法
+     * The API method.
      */
     private final String method;
 
     /**
-     * 接口描述
+     * The API description.
      */
     private final String desc;
 
+    /**
+     * Constructs a new BusinessCircleApi enum.
+     *
+     * @param method The API method.
+     * @param desc   The API description.
+     */
     BusinessCircleApi(String method, String desc) {
         this.method = method;
         this.desc = desc;
     }
 
     /**
-     * 交易类型
+     * Gets the transaction type.
      *
-     * @return the string
+     * @return The transaction type.
      */
     @Override
     public String type() {
@@ -83,9 +93,9 @@ public enum BusinessCircleApi implements Matcher {
     }
 
     /**
-     * 类型描述
+     * Gets the type description.
      *
-     * @return the string
+     * @return The type description.
      */
     @Override
     public String desc() {
@@ -93,9 +103,9 @@ public enum BusinessCircleApi implements Matcher {
     }
 
     /**
-     * 接口方法
+     * Gets the API method.
      *
-     * @return the string
+     * @return The API method.
      */
     @Override
     public String method() {

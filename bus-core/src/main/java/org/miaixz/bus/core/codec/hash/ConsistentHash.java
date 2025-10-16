@@ -36,12 +36,10 @@ import java.util.TreeMap;
 import org.miaixz.bus.core.xyz.HashKit;
 
 /**
- * 一致性Hash算法 算法详解：<a href=
- * "http://blog.csdn.net/sparkliang/article/details/5279393">http://blog.csdn.net/sparkliang/article/details/5279393</a>
- * 算法实现：<a href=
- * "https://weblogs.java.net/blog/2007/11/27/consistent-hashing">https://weblogs.java.net/blog/2007/11/27/consistent-hashing</a>
+ * An implementation of the Consistent Hashing algorithm. This is useful for distributing items among a set of nodes in
+ * a way that minimizes remapping when nodes are added or removed.
  *
- * @param <T> 节点类型
+ * @param <T> The type of the node.
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -51,56 +49,56 @@ public class ConsistentHash<T> implements Serializable {
     private static final long serialVersionUID = 2852259219707L;
 
     /**
-     * 复制的节点个数
+     * The number of virtual replicas for each physical node.
      */
     private final int numberOfReplicas;
     /**
-     * 一致性Hash环
+     * The hash circle, a sorted map of hash values to nodes.
      */
     private final SortedMap<Integer, T> circle = new TreeMap<>();
     /**
-     * Hash计算对象，用于自定义hash算法
+     * The hash function used to map nodes and keys to the circle.
      */
     Hash32<Object> hashFunc;
 
     /**
-     * 构造，使用Java默认的Hash算法
+     * Constructs a {@code ConsistentHash} with a specified number of replicas and a collection of nodes, using the
+     * default FNV1a hash algorithm.
      *
-     * @param numberOfReplicas 复制的节点个数，增加每个节点的复制节点有利于负载均衡
-     * @param nodes            节点对象
+     * @param numberOfReplicas The number of virtual nodes for each physical node, to improve distribution.
+     * @param nodes            The initial collection of physical nodes.
      */
     public ConsistentHash(final int numberOfReplicas, final Collection<T> nodes) {
         this.numberOfReplicas = numberOfReplicas;
-        this.hashFunc = key -> {
-            // 默认使用FNV1hash算法
-            return HashKit.fnvHash(key.toString());
-        };
-        // 初始化节点
+        this.hashFunc = key -> HashKit.fnvHash(key.toString());
+        // Initialize nodes
         for (final T node : nodes) {
             add(node);
         }
     }
 
     /**
-     * 构造
+     * Constructs a {@code ConsistentHash} with a custom hash function, a specified number of replicas, and a collection
+     * of nodes.
      *
-     * @param hashFunc         hash算法对象
-     * @param numberOfReplicas 复制的节点个数，增加每个节点的复制节点有利于负载均衡
-     * @param nodes            节点对象
+     * @param hashFunc         The custom hash function.
+     * @param numberOfReplicas The number of virtual nodes for each physical node.
+     * @param nodes            The initial collection of physical nodes.
      */
     public ConsistentHash(final Hash32<Object> hashFunc, final int numberOfReplicas, final Collection<T> nodes) {
         this.numberOfReplicas = numberOfReplicas;
         this.hashFunc = hashFunc;
-        // 初始化节点
+        // Initialize nodes
         for (final T node : nodes) {
             add(node);
         }
     }
 
     /**
-     * 增加节点 每增加一个节点，就会在闭环上增加给定复制节点数 例如复制节点数是2，则每调用此方法一次，增加两个虚拟节点，这两个节点指向同一Node 由于hash算法会调用node的toString方法，故按照toString去重
+     * Adds a new node to the hash circle, including its virtual replicas. The hash is based on the node's
+     * {@code toString()} value.
      *
-     * @param node 节点对象
+     * @param node The physical node to add.
      */
     public void add(final T node) {
         for (int i = 0; i < numberOfReplicas; i++) {
@@ -109,9 +107,9 @@ public class ConsistentHash<T> implements Serializable {
     }
 
     /**
-     * 移除节点的同时移除相应的虚拟节点
+     * Removes a node and its corresponding virtual replicas from the hash circle.
      *
-     * @param node 节点对象
+     * @param node The physical node to remove.
      */
     public void remove(final T node) {
         for (int i = 0; i < numberOfReplicas; i++) {
@@ -120,10 +118,10 @@ public class ConsistentHash<T> implements Serializable {
     }
 
     /**
-     * 获得一个最近的顺时针节点
+     * Gets the node responsible for the given key by finding the nearest clockwise node on the hash circle.
      *
-     * @param key 为给定键取Hash，取得顺时针方向上最近的一个虚拟节点对应的实际节点
-     * @return 节点对象
+     * @param key The key to map to a node.
+     * @return The responsible node object.
      */
     public T get(final Object key) {
         if (circle.isEmpty()) {
@@ -131,10 +129,11 @@ public class ConsistentHash<T> implements Serializable {
         }
         int hash = hashFunc.hash32(key);
         if (!circle.containsKey(hash)) {
-            final SortedMap<Integer, T> tailMap = circle.tailMap(hash); // 返回此映射的部分视图，其键大于等于 hash
+            // Get the part of the map whose keys are greater than or equal to the hash
+            SortedMap<Integer, T> tailMap = circle.tailMap(hash);
             hash = tailMap.isEmpty() ? circle.firstKey() : tailMap.firstKey();
         }
-        // 正好命中
+        // Direct hit or wrap-around
         return circle.get(hash);
     }
 

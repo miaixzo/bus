@@ -40,32 +40,32 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
 import org.miaixz.bus.mapper.support.ClassField;
 
 /**
- * 方法引用工具接口，用于获取方法引用对应的字段和列信息
+ * A utility interface for method references, used to obtain field and column information.
  *
- * @param <T> 实体类类型
- * @param <R> 返回值类型
+ * @param <T> The type of the entity class.
+ * @param <R> The return type of the method reference.
  * @author Kimi Liu
  * @since Java 17+
  */
 public interface Fn<T, R> extends Function<T, R>, Serializable {
 
     /**
-     * 缓存方法引用与对应的列信息
+     * Caches the mapping between method references and their corresponding column metadata.
      */
     Map<Fn<?, ?>, ColumnMeta> FN_COLUMN_MAP = new ConcurrentHashMap<>();
 
     /**
-     * 缓存方法引用与对应的字段信息
+     * Caches the mapping between method references and their corresponding field information.
      */
     Map<Fn<?, ?>, ClassField> FN_CLASS_FIELD_MAP = new ConcurrentHashMap<>();
 
     /**
-     * 创建包含指定字段的虚拟表，适用于基类或泛型基类场景
+     * Creates a virtual table containing the specified fields, suitable for base classes or generic base classes.
      *
-     * @param entityClass 实体类类型
-     * @param fns         方法引用数组
-     * @param <E>         实体类型
-     * @return 虚拟表对象
+     * @param entityClass The entity class type.
+     * @param fns         An array of method references.
+     * @param <E>         The entity type.
+     * @return A virtual table object (`FnArray`).
      */
     @SafeVarargs
     static <E> FnArray<E> of(Class<E> entityClass, Fn<E, Object>... fns) {
@@ -73,11 +73,11 @@ public interface Fn<T, R> extends Function<T, R>, Serializable {
     }
 
     /**
-     * 创建包含指定字段的虚拟表
+     * Creates a virtual table containing the specified fields.
      *
-     * @param fns 方法引用数组
-     * @param <E> 实体类型
-     * @return 虚拟表对象
+     * @param fns An array of method references.
+     * @param <E> The entity type.
+     * @return A virtual table object (`FnArray`).
      */
     @SafeVarargs
     static <E> FnArray<E> of(Fn<E, Object>... fns) {
@@ -85,12 +85,12 @@ public interface Fn<T, R> extends Function<T, R>, Serializable {
     }
 
     /**
-     * 创建包含指定列名的虚拟表
+     * Creates a virtual table containing the specified column names.
      *
-     * @param entityClass 实体类类型
-     * @param columnNames 列名数组
-     * @param <E>         实体类型
-     * @return 虚拟表对象
+     * @param entityClass The entity class type.
+     * @param columnNames An array of column names.
+     * @param <E>         The entity type.
+     * @return A virtual table object (`FnArray`).
      */
     static <E> FnArray<E> of(Class<E> entityClass, String... columnNames) {
         TableMeta entityTable = MapperFactory.create(entityClass);
@@ -101,82 +101,82 @@ public interface Fn<T, R> extends Function<T, R>, Serializable {
     }
 
     /**
-     * 指定实体类中的字段
+     * Specifies a field within an entity class using a method reference.
      *
-     * @param entityClass 实体类类型
-     * @param field       方法引用
-     * @param <T>         实体类型
-     * @return 方法引用对象
+     * @param entityClass The entity class type.
+     * @param field       The method reference.
+     * @param <T>         The entity type.
+     * @return A method reference object.
      */
     static <T> Fn<T, Object> field(Class<T> entityClass, Fn<T, Object> field) {
         return field.in(entityClass);
     }
 
     /**
-     * 通过字段名指定实体类中的字段
+     * Specifies a field within an entity class by its name.
      *
-     * @param entityClass 实体类类型
-     * @param field       字段名
-     * @param <T>         实体类型
-     * @return 方法引用对象
+     * @param entityClass The entity class type.
+     * @param field       The name of the field.
+     * @param <T>         The entity type.
+     * @return A method reference object.
      */
     static <T> Fn<T, Object> field(Class<T> entityClass, String field) {
         return new FnName<>(entityClass, field);
     }
 
     /**
-     * 通过列名指定实体类中的列
+     * Specifies a column within an entity class by its name.
      *
-     * @param entityClass 实体类类型
-     * @param column      列名
-     * @param <T>         实体类型
-     * @return 方法引用对象
+     * @param entityClass The entity class type.
+     * @param column      The name of the column.
+     * @param <T>         The entity type.
+     * @return A method reference object.
      */
     static <T> Fn<T, Object> column(Class<T> entityClass, String column) {
         return new FnName<>(entityClass, column, true);
     }
 
     /**
-     * 指定方法引用所属的实体类，适用于继承场景
+     * Specifies the entity class to which this method reference belongs, useful in inheritance scenarios.
      *
-     * @param entityClass 实体类类型
-     * @return 带有指定实体类的 Fn 对象
+     * @param entityClass The entity class type.
+     * @return An {@code Fn} object associated with the specified entity class.
      */
     default Fn<T, R> in(Class<?> entityClass) {
         return new FnType<>(this, entityClass);
     }
 
     /**
-     * 获取方法引用对应的字段名
+     * Gets the field name corresponding to this method reference.
      *
-     * @return 字段名
+     * @return The field name.
      */
     default String toField() {
         return toClassField().getField();
     }
 
     /**
-     * 获取方法引用对应的列名
+     * Gets the column name corresponding to this method reference.
      *
-     * @return 列名
+     * @return The column name.
      */
     default String toColumn() {
         return toEntityColumn().column();
     }
 
     /**
-     * 获取方法引用对应的字段信息
+     * Gets the field information (name and owning class) corresponding to this method reference.
      *
-     * @return 字段名及所属类信息
+     * @return The field information as a {@link ClassField} object.
      */
     default ClassField toClassField() {
         return FN_CLASS_FIELD_MAP.computeIfAbsent(this, key -> OGNL.fnToFieldName(key));
     }
 
     /**
-     * 获取方法引用对应的列信息
+     * Gets the column metadata corresponding to this method reference.
      *
-     * @return 列信息对象
+     * @return The column metadata as a {@link ColumnMeta} object.
      */
     default ColumnMeta toEntityColumn() {
         return FN_COLUMN_MAP.computeIfAbsent(this, key -> {
@@ -191,21 +191,27 @@ public interface Fn<T, R> extends Function<T, R>, Serializable {
     }
 
     /**
-     * 带有指定实体类类型的方法引用
+     * A method reference wrapper that includes a specific entity class type.
      *
-     * @param <T> 实体类型
-     * @param <R> 返回值类型
+     * @param <T> The entity type.
+     * @param <R> The return type.
      */
     class FnType<T, R> implements Fn<T, R> {
 
+        /**
+         * The original method reference.
+         */
         public final Fn<T, R> fn;
+        /**
+         * The entity class type.
+         */
         public final Class<?> entityClass;
 
         /**
-         * 构造函数，初始化方法引用和实体类
+         * Constructs an FnType with the original method reference and entity class.
          *
-         * @param fn          原始方法引用
-         * @param entityClass 实体类类型
+         * @param fn          The original method reference.
+         * @param entityClass The entity class type.
          */
         public FnType(Fn<T, R> fn, Class<?> entityClass) {
             this.fn = fn;
@@ -213,10 +219,10 @@ public interface Fn<T, R> extends Function<T, R>, Serializable {
         }
 
         /**
-         * 应用方法引用到指定对象
+         * Applies the method reference to the given object.
          *
-         * @param t 输入对象
-         * @return 方法引用执行结果
+         * @param t The input object.
+         * @return The result of applying the method reference.
          */
         @Override
         public R apply(T t) {
@@ -224,10 +230,10 @@ public interface Fn<T, R> extends Function<T, R>, Serializable {
         }
 
         /**
-         * 比较两个 FnType 对象是否相等
+         * Compares this FnType object with another object for equality.
          *
-         * @param o 比较对象
-         * @return true 表示相等，false 表示不相等
+         * @param o The object to compare with.
+         * @return {@code true} if the objects are equal, {@code false} otherwise.
          */
         @Override
         public boolean equals(Object o) {
@@ -240,9 +246,9 @@ public interface Fn<T, R> extends Function<T, R>, Serializable {
         }
 
         /**
-         * 计算对象的哈希值
+         * Computes the hash code for this object.
          *
-         * @return 哈希值
+         * @return The hash code.
          */
         @Override
         public int hashCode() {
@@ -251,36 +257,42 @@ public interface Fn<T, R> extends Function<T, R>, Serializable {
     }
 
     /**
-     * 支持直接指定字段名或列名的方法引用
+     * A method reference that supports specifying a field or column name directly.
      *
-     * @param <T> 实体类型
-     * @param <R> 返回值类型
+     * @param <T> The entity type.
+     * @param <R> The return type.
      */
     class FnName<T, R> implements Fn<T, R> {
 
+        /**
+         * The entity class type.
+         */
         public final Class<?> entityClass;
+        /**
+         * The name of the field or column.
+         */
         public final String name;
         /**
-         * 是否为列名，false 表示字段名，true 表示列名
+         * Indicates whether the name is a column name (true) or a field name (false).
          */
         public final boolean column;
 
         /**
-         * 构造函数，指定字段名
+         * Constructs an FnName with a specified field name.
          *
-         * @param entityClass 实体类类型
-         * @param name        字段名
+         * @param entityClass The entity class type.
+         * @param name        The field name.
          */
         public FnName(Class<?> entityClass, String name) {
             this(entityClass, name, false);
         }
 
         /**
-         * 构造函数，指定字段名或列名
+         * Constructs an FnName with a specified field or column name.
          *
-         * @param entityClass 实体类类型
-         * @param name        字段名或列名
-         * @param column      是否为列名
+         * @param entityClass The entity class type.
+         * @param name        The field or column name.
+         * @param column      {@code true} if the name is a column name, {@code false} if it is a field name.
          */
         public FnName(Class<?> entityClass, String name, boolean column) {
             this.entityClass = entityClass;
@@ -289,10 +301,10 @@ public interface Fn<T, R> extends Function<T, R>, Serializable {
         }
 
         /**
-         * 指定方法引用所属的实体类
+         * Specifies the entity class to which this method reference belongs.
          *
-         * @param entityClass 实体类类型
-         * @return 新的 FnName 对象
+         * @param entityClass The entity class type.
+         * @return A new {@code FnName} object.
          */
         @Override
         public Fn<T, R> in(Class<?> entityClass) {
@@ -300,10 +312,10 @@ public interface Fn<T, R> extends Function<T, R>, Serializable {
         }
 
         /**
-         * 应用方法引用到指定对象（占位实现，返回 null）
+         * Applies the method reference to the given object (placeholder implementation, returns null).
          *
-         * @param o 输入对象
-         * @return 始终返回 null
+         * @param o The input object.
+         * @return Always returns null.
          */
         @Override
         public R apply(Object o) {
@@ -311,10 +323,10 @@ public interface Fn<T, R> extends Function<T, R>, Serializable {
         }
 
         /**
-         * 比较两个 FnName 对象是否相等
+         * Compares this FnName object with another object for equality.
          *
-         * @param o 比较对象
-         * @return true 表示相等，false 表示不相等
+         * @param o The object to compare with.
+         * @return {@code true} if the objects are equal, {@code false} otherwise.
          */
         @Override
         public boolean equals(Object o) {
@@ -328,9 +340,9 @@ public interface Fn<T, R> extends Function<T, R>, Serializable {
         }
 
         /**
-         * 计算对象的哈希值
+         * Computes the hash code for this object.
          *
-         * @return 哈希值
+         * @return The hash code.
          */
         @Override
         public int hashCode() {
@@ -339,18 +351,18 @@ public interface Fn<T, R> extends Function<T, R>, Serializable {
     }
 
     /**
-     * 字段数组，表示部分字段的虚拟表
+     * Represents a virtual table with a subset of fields, defined by an array of method references.
      *
-     * @param <E> 实体类型
+     * @param <E> The entity type.
      */
     class FnArray<E> extends TableMeta {
 
         /**
-         * 通过列信息构造虚拟表
+         * Constructs a virtual table from a list of column metadata.
          *
-         * @param entityClass 实体类类型
-         * @param table       表名
-         * @param columns     列信息列表
+         * @param entityClass The entity class type.
+         * @param table       The table name.
+         * @param columns     A list of column metadata.
          */
         private FnArray(Class<E> entityClass, String table, List<ColumnMeta> columns) {
             super(entityClass);
@@ -359,10 +371,10 @@ public interface Fn<T, R> extends Function<T, R>, Serializable {
         }
 
         /**
-         * 通过方法引用构造虚拟表
+         * Constructs a virtual table from an array of method references.
          *
-         * @param entityClass 实体类类型
-         * @param fns         方法引用数组
+         * @param entityClass The entity class type.
+         * @param fns         An array of method references.
          */
         @SafeVarargs
         private FnArray(Class<E> entityClass, Fn<E, Object>... fns) {
@@ -386,9 +398,9 @@ public interface Fn<T, R> extends Function<T, R>, Serializable {
         }
 
         /**
-         * 判断虚拟表字段是否非空
+         * Checks if the virtual table has any fields.
          *
-         * @return true 表示非空，false 表示空
+         * @return {@code true} if not empty, {@code false} otherwise.
          */
         public boolean isNotEmpty() {
             return !columns().isEmpty();

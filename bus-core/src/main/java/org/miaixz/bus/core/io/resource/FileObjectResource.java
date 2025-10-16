@@ -41,28 +41,32 @@ import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.UrlKit;
 
 /**
- * {@link FileObject} 资源包装
+ * Wrapper for {@link FileObject} resources. This class provides an implementation of the {@link Resource} interface for
+ * resources represented by a {@link FileObject}, typically used in Java compilation tasks.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class FileObjectResource implements Resource {
 
+    /**
+     * The underlying {@link FileObject} instance.
+     */
     private final FileObject fileObject;
 
     /**
-     * 构造
+     * Constructs a {@code FileObjectResource} with the given {@link FileObject}.
      *
-     * @param fileObject {@link FileObject}
+     * @param fileObject The {@link FileObject} to wrap.
      */
     public FileObjectResource(final FileObject fileObject) {
         this.fileObject = fileObject;
     }
 
     /**
-     * 获取原始的{@link FileObject}
+     * Retrieves the original {@link FileObject} instance.
      *
-     * @return {@link FileObject}
+     * @return The wrapped {@link FileObject}.
      */
     public FileObject getFileObject() {
         return this.fileObject;
@@ -99,6 +103,8 @@ public class FileObjectResource implements Resource {
     @Override
     public BufferedReader getReader(final Charset charset) {
         try {
+            // The charset parameter is ignored by openReader(boolean ignoreEncodingErrors) in FileObject,
+            // but it's kept for consistency with the Resource interface.
             return IoKit.toBuffered(this.fileObject.openReader(false));
         } catch (final IOException e) {
             throw new InternalException(e);

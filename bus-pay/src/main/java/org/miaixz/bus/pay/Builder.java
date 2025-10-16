@@ -55,7 +55,6 @@ import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.CompareKit;
 import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.core.xyz.IoKit;
@@ -65,7 +64,7 @@ import org.miaixz.bus.pay.metric.wechat.AuthType;
 import org.miaixz.bus.pay.metric.wechat.WechatPayBuilder;
 
 /**
- * 支付相关支持
+ * Payment-related support class.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -73,11 +72,11 @@ import org.miaixz.bus.pay.metric.wechat.WechatPayBuilder;
 public class Builder {
 
     /**
-     * 获取国密证书私钥
+     * Gets the SM private key.
      *
-     * @param privateKey 私钥
-     * @return 返回值
-     * @throws Exception 异常信息
+     * @param privateKey The private key string.
+     * @return The private key.
+     * @throws Exception If an error occurs.
      */
     public static PrivateKey getSmPrivateKey(String privateKey) throws Exception {
         byte[] encPrivate = Base64.decode(privateKey);
@@ -85,11 +84,11 @@ public class Builder {
     }
 
     /**
-     * 获取国密证书公钥
+     * Gets the SM public key.
      *
-     * @param publicKey 公钥
-     * @return 返回值
-     * @throws Exception 异常信息
+     * @param publicKey The public key string.
+     * @return The public key.
+     * @throws Exception If an error occurs.
      */
     public static PublicKey getSmPublicKey(String publicKey) throws Exception {
         byte[] encPublic = Base64.decode(publicKey);
@@ -97,11 +96,11 @@ public class Builder {
     }
 
     /**
-     * 获取国密证书私钥
+     * Gets the SM private key.
      *
-     * @param encPrivate 私钥
-     * @return 返回值
-     * @throws Exception 异常信息
+     * @param encPrivate The private key byte array.
+     * @return The private key.
+     * @throws Exception If an error occurs.
      */
     public static PrivateKey getSmPrivateKey(byte[] encPrivate) throws Exception {
         KeyFactory keyFact = KeyFactory.getInstance("EC", new BouncyCastleProvider());
@@ -109,11 +108,11 @@ public class Builder {
     }
 
     /**
-     * 获取国密证书公钥
+     * Gets the SM public key.
      *
-     * @param encPublic 公钥
-     * @return 返回值
-     * @throws Exception 异常信息
+     * @param encPublic The public key byte array.
+     * @return The public key.
+     * @throws Exception If an error occurs.
      */
     public static PublicKey getSmPublicKey(byte[] encPublic) throws Exception {
         KeyFactory keyFact = KeyFactory.getInstance("EC", new BouncyCastleProvider());
@@ -121,12 +120,12 @@ public class Builder {
     }
 
     /**
-     * 签名
+     * Signs the content with SM2 and SM3.
      *
-     * @param privateKey 私钥
-     * @param content    需要签名的内容
-     * @return 返回结果
-     * @throws Exception 异常信息
+     * @param privateKey The private key string.
+     * @param content    The content to be signed.
+     * @return The signature.
+     * @throws Exception If an error occurs.
      */
     public static String sm2SignWithSm3(String privateKey, String content) throws Exception {
         PrivateKey smPrivateKey = getSmPrivateKey(privateKey);
@@ -134,34 +133,34 @@ public class Builder {
     }
 
     /**
-     * 签名
+     * Signs the content with SM2 and SM3.
      *
-     * @param privateKey 私钥
-     * @param content    需要签名的内容
-     * @return 返回结果
-     * @throws Exception 异常信息
+     * @param privateKey The private key.
+     * @param content    The content to be signed.
+     * @return The signature.
+     * @throws Exception If an error occurs.
      */
     public static String sm2SignWithSm3(PrivateKey privateKey, String content) throws Exception {
-        // 生成SM2sign with sm3 签名验签算法实例
+        // Generate SM2sign with sm3 signature algorithm instance
         Signature signature = Signature
                 .getInstance(GMObjectIdentifiers.sm2sign_with_sm3.toString(), new BouncyCastleProvider());
-        // 使用私钥签名,初始化签名实例
+        // Initialize the signature instance with the private key
         signature.initSign(privateKey);
-        // 签名原文
+        // Original text to be signed
         byte[] plainText = content.getBytes(Charset.UTF_8);
-        // 写入签名原文到算法中
+        // Update the algorithm with the original text
         signature.update(plainText);
-        // 计算签名值
+        // Calculate the signature value
         byte[] signatureValue = signature.sign();
         return Base64.encode(signatureValue);
     }
 
     /**
-     * SM3 Hash
+     * Calculates the SM3 hash.
      *
-     * @param content 原始内容
-     * @return 返回结果
-     * @throws Exception 异常信息
+     * @param content The original content.
+     * @return The hash result.
+     * @throws Exception If an error occurs.
      */
     public static byte[] sm3Hash(String content) throws Exception {
         MessageDigest digest = MessageDigest.getInstance(Algorithm.SM3.getValue(), new BouncyCastleProvider());
@@ -170,14 +169,14 @@ public class Builder {
     }
 
     /**
-     * 下载平台证书以及回调通知加解密
+     * Decrypts the platform certificate and callback notification.
      *
-     * @param key3           APIv3密钥
-     * @param cipherText     密文
-     * @param nonce          随机串
-     * @param associatedData 附加数据
-     * @return 解密后的明文
-     * @throws Exception 异常信息
+     * @param key3           The APIv3 key.
+     * @param cipherText     The ciphertext.
+     * @param nonce          The random string.
+     * @param associatedData The associated data.
+     * @return The decrypted plaintext.
+     * @throws Exception If an error occurs.
      */
     public static String sm4DecryptToString(String key3, String cipherText, String nonce, String associatedData)
             throws Exception {
@@ -190,35 +189,44 @@ public class Builder {
         return new String(cipher.doFinal(Base64.decode(cipherText)), Charset.UTF_8);
     }
 
+    /**
+     * Verifies the SM4 signature.
+     *
+     * @param publicKey         The public key string.
+     * @param plainText         The plaintext to be verified.
+     * @param originalSignature The original signature.
+     * @return True if the signature is valid, false otherwise.
+     * @throws Exception If an error occurs.
+     */
     public static boolean sm4Verify(String publicKey, String plainText, String originalSignature) throws Exception {
         PublicKey smPublicKey = getSmPublicKey(publicKey);
         return sm4Verify(smPublicKey, plainText, originalSignature);
     }
 
     /**
-     * 国密验签
+     * Verifies the SM signature.
      *
-     * @param publicKey         平台证书公钥
-     * @param data              待验签的签名原文
-     * @param originalSignature 签名值
-     * @return 验签结果
-     * @throws Exception 异常信息
+     * @param publicKey         The platform certificate public key.
+     * @param data              The original data to be verified.
+     * @param originalSignature The signature value.
+     * @return The verification result.
+     * @throws Exception If an error occurs.
      */
     public static boolean sm4Verify(PublicKey publicKey, String data, String originalSignature) throws Exception {
         Signature signature = Signature
                 .getInstance(GMObjectIdentifiers.sm2sign_with_sm3.toString(), new BouncyCastleProvider());
         signature.initVerify(publicKey);
-        // 写入待验签的签名原文到算法中
+        // Update the algorithm with the original data to be verified
         signature.update(data.getBytes(Charset.UTF_8));
         return signature.verify(Base64.decode(originalSignature.getBytes(Charset.UTF_8)));
     }
 
     /**
-     * AES 解密
+     * Decrypts data using AES.
      *
-     * @param base64Data 需要解密的数据
-     * @param key        密钥
-     * @return 解密后的数据
+     * @param base64Data The data to be decrypted.
+     * @param key        The key.
+     * @return The decrypted data.
      */
     public static String decryptData(String base64Data, String key) {
         return org.miaixz.bus.crypto.Builder.aes(org.miaixz.bus.crypto.Builder.md5(key).toLowerCase().getBytes())
@@ -226,11 +234,11 @@ public class Builder {
     }
 
     /**
-     * AES 加密
+     * Encrypts data using AES.
      *
-     * @param data 需要加密的数据
-     * @param key  密钥
-     * @return 加密后的数据
+     * @param data The data to be encrypted.
+     * @param key  The key.
+     * @return The encrypted data.
      */
     public static String encryptData(String data, String key) {
         return org.miaixz.bus.crypto.Builder.aes(org.miaixz.bus.crypto.Builder.md5(key).toLowerCase().getBytes())
@@ -238,34 +246,47 @@ public class Builder {
     }
 
     /**
-     * 把所有元素排序
+     * Sorts all elements.
      *
-     * @param params 需要排序并参与字符拼接的参数组
-     * @return 拼接后字符串
+     * @param params The parameter group to be sorted and concatenated.
+     * @return The concatenated string.
      */
     public static String createLinkString(Map<String, String> params) {
         return createLinkString(params, false);
     }
 
     /**
-     * @param params 需要排序并参与字符拼接的参数组
-     * @param encode 是否进行URLEncoder
-     * @return 拼接后字符串
+     * Creates a linked string from a map.
+     *
+     * @param params The parameter group to be sorted and concatenated.
+     * @param encode Whether to perform URLEncoder.
+     * @return The concatenated string.
      */
     public static String createLinkString(Map<String, String> params, boolean encode) {
         return createLinkString(params, "&", encode);
     }
 
     /**
-     * @param params  需要排序并参与字符拼接的参数组
-     * @param connStr 连接符号
-     * @param encode  是否进行URLEncoder
-     * @return 拼接后字符串
+     * Creates a linked string from a map.
+     *
+     * @param params  The parameter group to be sorted and concatenated.
+     * @param connStr The connection symbol.
+     * @param encode  Whether to perform URLEncoder.
+     * @return The concatenated string.
      */
     public static String createLinkString(Map<String, String> params, String connStr, boolean encode) {
         return createLinkString(params, connStr, encode, false);
     }
 
+    /**
+     * Creates a linked string from a map.
+     *
+     * @param params  The parameter group to be sorted and concatenated.
+     * @param connStr The connection symbol.
+     * @param encode  Whether to perform URLEncoder.
+     * @param quotes  Whether to add quotes.
+     * @return The concatenated string.
+     */
     public static String createLinkString(Map<String, String> params, String connStr, boolean encode, boolean quotes) {
         List<String> keys = new ArrayList<>(params.keySet());
         Collections.sort(keys);
@@ -273,11 +294,11 @@ public class Builder {
         for (int i = 0; i < keys.size(); i++) {
             String key = keys.get(i);
             String value = params.get(key);
-            // 参数的值为空不参与签名
+            // Skip blank values
             if (StringKit.isBlank(value)) {
                 continue;
             }
-            // 拼接时，不包括最后一个&字符
+            // Do not include the last & character
             if (i == keys.size() - 1) {
                 if (quotes) {
                     content.append(key).append("=").append('"').append(encode ? urlEncode(value) : value).append('"');
@@ -297,10 +318,10 @@ public class Builder {
     }
 
     /**
-     * URL 编码
+     * URL encodes a string.
      *
-     * @param src 需要编码的字符串
-     * @return 编码后的字符串
+     * @param src The string to be encoded.
+     * @return The encoded string.
      */
     public static String urlEncode(String src) {
         try {
@@ -312,12 +333,12 @@ public class Builder {
     }
 
     /**
-     * 遍历 Map 并构建 xml 数据
+     * Iterates through a map and builds XML data.
      *
-     * @param params 需要遍历的 Map
-     * @param prefix xml 前缀
-     * @param suffix xml 后缀
-     * @return xml 字符串
+     * @param params The map to iterate through.
+     * @param prefix The XML prefix.
+     * @param suffix The XML suffix.
+     * @return The XML string.
      */
     public static StringBuffer forEachMap(Map<String, String> params, String prefix, String suffix) {
         StringBuffer xml = new StringBuffer();
@@ -327,7 +348,7 @@ public class Builder {
         for (Map.Entry<String, String> entry : params.entrySet()) {
             String key = entry.getKey();
             String value = entry.getValue();
-            // 略过空值
+            // Skip empty values
             if (StringKit.isEmpty(value)) {
                 continue;
             }
@@ -342,14 +363,14 @@ public class Builder {
     }
 
     /**
-     * 构造签名串
+     * Constructs a signature string.
      *
-     * @param method    {@link HTTP} GET,POST,PUT等
-     * @param url       请求接口 /v3/certificates
-     * @param timestamp 获取发起请求时的系统当前时间戳
-     * @param nonceStr  随机字符串
-     * @param body      请求报文主体
-     * @return 待签名字符串
+     * @param method    The HTTP method (e.g., GET, POST, PUT).
+     * @param url       The request interface (e.g., /v3/certificates).
+     * @param timestamp The system timestamp when the request is initiated.
+     * @param nonceStr  The random string.
+     * @param body      The request body.
+     * @return The string to be signed.
      */
     public static String buildSignMessage(String method, String url, long timestamp, String nonceStr, String body) {
         ArrayList<String> arrayList = new ArrayList<>();
@@ -362,12 +383,12 @@ public class Builder {
     }
 
     /**
-     * 构造签名串
+     * Constructs a signature string.
      *
-     * @param timestamp 应答时间戳
-     * @param nonceStr  应答随机串
-     * @param body      应答报文主体
-     * @return 应答待签名字符串
+     * @param timestamp The response timestamp.
+     * @param nonceStr  The response random string.
+     * @param body      The response body.
+     * @return The response string to be signed.
      */
     public static String buildSignMessage(String timestamp, String nonceStr, String body) {
         ArrayList<String> arrayList = new ArrayList<>();
@@ -378,10 +399,10 @@ public class Builder {
     }
 
     /**
-     * 构造签名串
+     * Constructs a signature string.
      *
-     * @param signMessage 待签名的参数
-     * @return 构造后带待签名串
+     * @param signMessage The parameters to be signed.
+     * @return The constructed string to be signed.
      */
     public static String buildSignMessage(ArrayList<String> signMessage) {
         if (signMessage == null || signMessage.size() == 0) {
@@ -395,44 +416,46 @@ public class Builder {
     }
 
     /**
-     * v3 接口创建签名
+     * Creates a v3 interface signature.
      *
-     * @param signMessage 待签名的参数
-     * @param keyPath     key.pem 证书路径
-     * @return 生成 v3 签名
-     * @throws Exception 异常信息
+     * @param signMessage The parameters to be signed.
+     * @param keyPath     The path to the key.pem certificate.
+     * @param authType    The authentication type.
+     * @return The generated v3 signature.
+     * @throws Exception If an error occurs.
      */
     public static String createSign(ArrayList<String> signMessage, String keyPath, String authType) throws Exception {
         return createSign(buildSignMessage(signMessage), keyPath, authType);
     }
 
     /**
-     * v3 接口创建签名
+     * Creates a v3 interface signature.
      *
-     * @param signMessage 待签名的参数
-     * @param privateKey  商户私钥
-     * @return 生成 v3 签名
-     * @throws Exception 异常信息
+     * @param signMessage The parameters to be signed.
+     * @param privateKey  The merchant private key.
+     * @return The generated v3 signature.
+     * @throws Exception If an error occurs.
      */
     public static String createSign(ArrayList<String> signMessage, PrivateKey privateKey) throws Exception {
         return createSign(buildSignMessage(signMessage), privateKey);
     }
 
     /**
-     * v3 接口创建签名
+     * Creates a v3 interface signature.
      *
-     * @param signMessage 待签名的参数
-     * @param keyPath     key.pem 证书路径
-     * @return 生成 v3 签名
-     * @throws Exception 异常信息
+     * @param signMessage The parameters to be signed.
+     * @param keyPath     The path to the key.pem certificate.
+     * @param authType    The authentication type.
+     * @return The generated v3 signature.
+     * @throws Exception If an error occurs.
      */
     public static String createSign(String signMessage, String keyPath, String authType) throws Exception {
         if (StringKit.isEmpty(signMessage)) {
             return null;
         }
-        // 获取商户私钥
+        // Get merchant private key
         PrivateKey privateKey = Builder.getPrivateKey(keyPath, authType);
-        // 生成签名
+        // Generate signature
         if (StringKit.equals(authType, AuthType.SM2.getCode())) {
             return sm2SignWithSm3(privateKey, signMessage);
         }
@@ -440,31 +463,31 @@ public class Builder {
     }
 
     /**
-     * v3 接口创建签名
+     * Creates a v3 interface signature.
      *
-     * @param signMessage 待签名的参数
-     * @param privateKey  商户私钥
-     * @return 生成 v3 签名
-     * @throws Exception 异常信息
+     * @param signMessage The parameters to be signed.
+     * @param privateKey  The merchant private key.
+     * @return The generated v3 signature.
+     * @throws Exception If an error occurs.
      */
     public static String createSign(String signMessage, PrivateKey privateKey) throws Exception {
         if (StringKit.isEmpty(signMessage)) {
             return null;
         }
-        // 生成签名
+        // Generate signature
         return WechatPayBuilder.encryptByPrivateKey(signMessage, privateKey);
     }
 
     /**
-     * 获取授权认证信息
+     * Gets the authorization information.
      *
-     * @param mchId     商户号
-     * @param serialNo  商户API证书序列号
-     * @param nonceStr  请求随机串
-     * @param timestamp 时间戳
-     * @param signature 签名值
-     * @param authType  认证类型
-     * @return 请求头 Authorization
+     * @param mchId     The merchant ID.
+     * @param serialNo  The merchant API certificate serial number.
+     * @param nonceStr  The random string for the request.
+     * @param timestamp The timestamp.
+     * @param signature The signature value.
+     * @param authType  The authentication type.
+     * @return The Authorization request header.
      */
     public static String getAuthorization(
             String mchId,
@@ -483,26 +506,28 @@ public class Builder {
     }
 
     /**
-     * 获取商户私钥
+     * Gets the merchant private key.
      *
-     * @param keyPath 商户私钥证书路径
-     * @return {@link PrivateKey} 商户私钥
-     * @throws Exception 异常信息
+     * @param keyPath  The path to the merchant private key certificate.
+     * @param authType The authentication type.
+     * @return The merchant private key.
+     * @throws Exception If an error occurs.
      */
     public static PrivateKey getPrivateKey(String keyPath, String authType) throws Exception {
         String originalKey = getCertFileContent(keyPath);
         if (StringKit.isEmpty(originalKey)) {
-            throw new RuntimeException("商户私钥证书获取失败");
+            throw new RuntimeException("Failed to get merchant private key certificate");
         }
         return getPrivateKeyByKeyContent(originalKey, authType);
     }
 
     /**
-     * 获取商户私钥
+     * Gets the merchant private key from its content.
      *
-     * @param originalKey 私钥文本内容
-     * @return {@link PrivateKey} 商户私钥
-     * @throws Exception 异常信息
+     * @param originalKey The private key text content.
+     * @param authType    The authentication type.
+     * @return The merchant private key.
+     * @throws Exception If an error occurs.
      */
     public static PrivateKey getPrivateKeyByKeyContent(String originalKey, String authType) throws Exception {
         String privateKey = getPrivateKeyByContent(originalKey);
@@ -513,10 +538,10 @@ public class Builder {
     }
 
     /**
-     * 获取证书内容
+     * Gets the certificate content.
      *
-     * @param originalKey 私钥文本内容
-     * @return 商户私钥
+     * @param originalKey The private key text content.
+     * @return The merchant private key.
      */
     public static String getPrivateKeyByContent(String originalKey) {
         return originalKey.replace("-----BEGIN PRIVATE KEY-----", "").replace("-----END PRIVATE KEY-----", "")
@@ -524,10 +549,10 @@ public class Builder {
     }
 
     /**
-     * 获取证书内容
+     * Gets the certificate content.
      *
-     * @param originalKey 公钥文本内容
-     * @return 商户公钥
+     * @param originalKey The public key text content.
+     * @return The merchant public key.
      */
     public static String getPublicKeyByContent(String originalKey) {
         return originalKey.replace("-----BEGIN PUBLIC KEY-----", "").replace("-----END PUBLIC KEY-----", "")
@@ -535,10 +560,10 @@ public class Builder {
     }
 
     /**
-     * 获取证书
+     * Gets the certificate.
      *
-     * @param inputStream 证书文件
-     * @return {@link X509Certificate} 获取证书
+     * @param inputStream The certificate file.
+     * @return The certificate.
      */
     public static X509Certificate getCertificate(InputStream inputStream) {
         try {
@@ -548,19 +573,19 @@ public class Builder {
             cert.checkValidity();
             return cert;
         } catch (CertificateExpiredException e) {
-            throw new RuntimeException("证书已过期", e);
+            throw new RuntimeException("Certificate has expired", e);
         } catch (CertificateNotYetValidException e) {
-            throw new RuntimeException("证书尚未生效", e);
+            throw new RuntimeException("Certificate is not yet valid", e);
         } catch (CertificateException e) {
-            throw new RuntimeException("无效的证书", e);
+            throw new RuntimeException("Invalid certificate", e);
         }
     }
 
     /**
-     * 获取证书
+     * Gets the certificate.
      *
-     * @param path 证书路径，支持相对路径以及绝得路径
-     * @return {@link X509Certificate} 获取证书
+     * @param path The certificate path, supporting relative and absolute paths.
+     * @return The certificate.
      */
     public static X509Certificate getCertificate(String path) {
         if (StringKit.isEmpty(path)) {
@@ -570,16 +595,16 @@ public class Builder {
         try {
             inputStream = getCertFileInputStream(path);
         } catch (IOException e) {
-            throw new RuntimeException("请检查证书路径是否正确", e);
+            throw new RuntimeException("Please check if the certificate path is correct", e);
         }
         return getCertificate(inputStream);
     }
 
     /**
-     * 获取证书详细信息
+     * Gets the certificate details.
      *
-     * @param certificate {@link X509Certificate} 证书
-     * @return {@link Certificate} 获取证书详细信息
+     * @param certificate The certificate.
+     * @return The certificate details.
      */
     public static Certificate getCertificateInfo(X509Certificate certificate) {
         if (null == certificate) {
@@ -593,22 +618,22 @@ public class Builder {
     }
 
     /**
-     * 获取证书详细信息
+     * Gets the certificate details.
      *
-     * @param path 证书路径，支持相对路径以及绝得路径
-     * @return {@link Certificate} 获取证书详细信息
+     * @param path The certificate path, supporting relative and absolute paths.
+     * @return The certificate details.
      */
     public static Certificate getCertificateInfo(String path) {
         return getCertificateInfo(getCertificate(path));
     }
 
     /**
-     * 检查证书是否可用
+     * Checks if the certificate is valid.
      *
-     * @param certificate {@link Certificate} 证书详细
-     * @param mchId       商户号
-     * @param offsetDay   偏移天数，正数向未来偏移，负数向历史偏移
-     * @return true 有效 false 无效
+     * @param certificate The certificate details.
+     * @param mchId       The merchant ID.
+     * @param offsetDay   The offset days, positive for future, negative for past.
+     * @return True if valid, false otherwise.
      */
     public static boolean checkCertificateIsValid(Certificate certificate, String mchId, int offsetDay) {
         if (null == certificate) {
@@ -618,19 +643,19 @@ public class Builder {
         if (null == notAfter) {
             return false;
         }
-        // 证书CN字段
+        // Certificate CN field
         if (StringKit.isNotEmpty(mchId)) {
             Principal subjectDn = certificate.getSubject();
             if (null == subjectDn || !subjectDn.getName().contains("CN=".concat(mchId.trim()))) {
                 return false;
             }
         }
-        // 证书序列号固定40字节的字符串
+        // Certificate serial number is a fixed 40-byte string
         String serialNumber = certificate.getSerial();
         if (StringKit.isEmpty(serialNumber) || serialNumber.length() != 40) {
             return false;
         }
-        // 偏移后的时间
+        // Offset time
         DateTime dateTime = DateKit.offsetDay(notAfter, offsetDay);
         DateTime now = DateKit.date(new Date());
         int compare = CompareKit.compare(dateTime, now);
@@ -638,12 +663,12 @@ public class Builder {
     }
 
     /**
-     * 检查证书是否可用
+     * Checks if the certificate is valid.
      *
-     * @param certificate {@link X509Certificate} 证书
-     * @param mchId       商户号
-     * @param offsetDay   偏移天数，正数向未来偏移，负数向历史偏移
-     * @return true 有效 false 无效
+     * @param certificate The certificate.
+     * @param mchId       The merchant ID.
+     * @param offsetDay   The offset days, positive for future, negative for past.
+     * @return True if valid, false otherwise.
      */
     public static boolean checkCertificateIsValid(X509Certificate certificate, String mchId, int offsetDay) {
         if (null == certificate) {
@@ -653,24 +678,24 @@ public class Builder {
     }
 
     /**
-     * 检查证书是否可用
+     * Checks if the certificate is valid.
      *
-     * @param path      证书路径，支持相对路径以及绝得路径
-     * @param mchId     商户号
-     * @param offsetDay 偏移天数，正数向未来偏移，负数向历史偏移
-     * @return true 有效 false 无效
+     * @param path      The certificate path, supporting relative and absolute paths.
+     * @param mchId     The merchant ID.
+     * @param offsetDay The offset days, positive for future, negative for past.
+     * @return True if valid, false otherwise.
      */
     public static boolean checkCertificateIsValid(String path, String mchId, int offsetDay) {
         return checkCertificateIsValid(getCertificateInfo(path), mchId, offsetDay);
     }
 
     /**
-     * 公钥加密
+     * Encrypts data with public key.
      *
-     * @param data        待加密数据
-     * @param certificate 平台公钥证书
-     * @return 加密后的数据
-     * @throws Exception 异常信息
+     * @param data        The data to be encrypted.
+     * @param certificate The platform public key certificate.
+     * @return The encrypted data.
+     * @throws Exception If an error occurs.
      */
     public static String rsaEncryptOAEP(String data, X509Certificate certificate) throws Exception {
         try {
@@ -681,21 +706,22 @@ public class Builder {
             byte[] cipherData = cipher.doFinal(dataByte);
             return Base64.encode(cipherData);
         } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
-            throw new RuntimeException("当前Java环境不支持RSA v1.5/OAEP", e);
+            throw new RuntimeException("Current Java environment does not support RSA v1.5/OAEP", e);
         } catch (InvalidKeyException e) {
-            throw new IllegalArgumentException("无效的证书", e);
+            throw new IllegalArgumentException("Invalid certificate", e);
         } catch (IllegalBlockSizeException | BadPaddingException e) {
-            throw new IllegalBlockSizeException("加密原串的长度不能超过214字节");
+            throw new IllegalBlockSizeException(
+                    "The length of the original string to be encrypted cannot exceed 214 bytes");
         }
     }
 
     /**
-     * 私钥解密
+     * Decrypts data with private key.
      *
-     * @param cipherText 加密字符
-     * @param privateKey 私钥
-     * @return 解密后的数据
-     * @throws Exception 异常信息
+     * @param cipherText The encrypted string.
+     * @param privateKey The private key.
+     * @return The decrypted data.
+     * @throws Exception If an error occurs.
      */
     public static String rsaDecryptOAEP(String cipherText, PrivateKey privateKey) throws Exception {
         try {
@@ -704,69 +730,70 @@ public class Builder {
             byte[] data = Base64.decode(cipherText);
             return new String(cipher.doFinal(data), Charset.UTF_8);
         } catch (NoSuchPaddingException | NoSuchAlgorithmException e) {
-            throw new RuntimeException("当前Java环境不支持RSA v1.5/OAEP", e);
+            throw new RuntimeException("Current Java environment does not support RSA v1.5/OAEP", e);
         } catch (InvalidKeyException e) {
-            throw new IllegalArgumentException("无效的私钥", e);
+            throw new IllegalArgumentException("Invalid private key", e);
         } catch (BadPaddingException | IllegalBlockSizeException e) {
-            throw new BadPaddingException("解密失败");
+            throw new BadPaddingException("Decryption failed");
         }
     }
 
     /**
-     * 传入 classPath 静态资源路径返回文件输入流
+     * Returns an input stream for a classpath resource.
      *
-     * @param classPath 静态资源路径
-     * @return InputStream
+     * @param classPath The classpath resource path.
+     * @return The input stream.
      */
     public static InputStream getFileToStream(String classPath) {
         return new ClassPathResource(classPath).getStream();
     }
 
     /**
-     * 传入 classPath 静态资源路径返回绝对路径
+     * Returns the absolute path for a classpath resource.
      *
-     * @param classPath 静态资源路径
-     * @return 绝对路径
+     * @param classPath The classpath resource path.
+     * @return The absolute path.
      */
     public static String getAbsolutePath(String classPath) {
         return new ClassPathResource(classPath).getAbsolutePath();
     }
 
     /**
-     * 通过路径获取证书文件的输入流
+     * Gets the input stream of a certificate file by path.
      *
-     * @param path 文件路径
-     * @return 文件流
-     * @throws IOException 异常信息
+     * @param path The file path.
+     * @return The file stream.
+     * @throws IOException If an I/O error occurs.
      */
     public static InputStream getCertFileInputStream(String path) throws IOException {
         if (StringKit.isBlank(path)) {
             return null;
         }
-        // 绝对地址
+        // Absolute path
         File file = new File(path);
         if (file.exists()) {
             return Files.newInputStream(file.toPath());
         }
-        // 相对地址
+        // Relative path
         return getFileToStream(path);
     }
 
     /**
-     * 通过路径获取证书文件的内容
+     * Gets the content of a certificate file by path.
      *
-     * @param path 文件路径
-     * @return 文件内容
+     * @param path The file path.
+     * @return The file content.
+     * @throws IOException If an I/O error occurs.
      */
     public static String getCertFileContent(String path) throws IOException {
         return IoKit.read(getCertFileInputStream(path), Charset.UTF_8);
     }
 
     /**
-     * 获取文件真实路径
+     * Gets the real file path.
      *
-     * @param path 文件地址
-     * @return 返回文件真实路径
+     * @param path The file address.
+     * @return The real file path.
      */
     public static String getFilePath(String path) {
         if (StringKit.startWith(path, Normal.CLASSPATH)) {

@@ -33,21 +33,30 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.miaixz.bus.core.xyz.BooleanKit;
 
 /**
- * {@link AtomicBoolean}转换器
+ * Converts an object to an {@link AtomicBoolean}.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class AtomicBooleanConverter extends AbstractConverter {
 
+    /**
+     * Singleton instance.
+     */
+    public static final AtomicBooleanConverter INSTANCE = new AtomicBooleanConverter();
+    /**
+     * The serial version UID.
+     */
     @Serial
     private static final long serialVersionUID = 2852263652262L;
 
     /**
-     * 单例
+     * Internally converts the given value to an {@link AtomicBoolean}.
+     *
+     * @param targetClass The target class, which should be {@link AtomicBoolean}.
+     * @param value       The value to be converted.
+     * @return The converted {@link AtomicBoolean} object.
      */
-    public static final AtomicBooleanConverter INSTANCE = new AtomicBooleanConverter();
-
     @Override
     protected AtomicBoolean convertInternal(final Class<?> targetClass, final Object value) {
         if (value instanceof Boolean) {

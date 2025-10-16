@@ -32,8 +32,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * JVM 信息
- * 
+ * JVM Information
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -43,52 +43,52 @@ import lombok.Setter;
 public class Jvm {
 
     /**
-     * JDK 版本
+     * JDK Version
      */
     private String jdkVersion;
 
     /**
-     * JDK 安装路径
+     * JDK Home Path
      */
     private String jdkHome;
 
     /**
-     * JDK 名称
+     * JDK Name
      */
     private String jdkName;
 
     /**
-     * JVM 总内存
+     * Total JVM Memory
      */
     private long totalMemory;
 
     /**
-     * JVM 最大内存
+     * Maximum JVM Memory
      */
     private long maxMemory;
 
     /**
-     * JVM 空闲内存
+     * Free JVM Memory
      */
     private long freeMemory;
 
     /**
-     * JVM 已用内存
+     * Used JVM Memory
      */
     private long usedMemory;
 
     /**
-     * JVM 内存使用率
+     * JVM Memory Usage Percentage
      */
     private double usagePercent;
 
     /**
-     * JVM 启动时间（毫秒）
+     * JVM Start Time (milliseconds)
      */
     private long startTime;
 
     /**
-     * JVM 运行时间（毫秒）
+     * JVM Uptime (milliseconds)
      */
     private long uptime;
 

@@ -30,9 +30,11 @@ package org.miaixz.bus.cache;
 import java.util.Map;
 
 /**
- * 缓存命中统计接口
+ * An interface for tracking cache hit rate statistics.
  * <p>
- * 定义缓存命中率统计的核心操作，包括记录请求次数、命中次数、获取统计信息和重置统计。 提供对缓存模式或分组的命中率统计功能，适用于监控缓存性能。
+ * This defines the core operations for cache metrics, including recording request counts, hit counts, retrieving
+ * statistics, and resetting counters. It provides hit rate statistics for cache patterns or groups, suitable for
+ * monitoring cache performance.
  * </p>
  *
  * @author Kimi Liu
@@ -41,9 +43,9 @@ import java.util.Map;
 public interface Metrics {
 
     /**
-     * 增加缓存请求次数
+     * Increments the total number of requests for a specific cache pattern.
      * <p>
-     * 为指定缓存模式或分组增加请求次数，用于统计缓存访问频率。 示例代码：
+     * This is used to track how frequently a cached method or group is accessed. Example code:
      * </p>
      * 
      * <pre>{@code
@@ -51,15 +53,15 @@ public interface Metrics {
      * metrics.reqIncr("userCache", 1);
      * }</pre>
      *
-     * @param pattern 缓存模式或分组名称
-     * @param count   增加的请求数量
+     * @param pattern The name of the cache pattern or group.
+     * @param count   The number of requests to add.
      */
     void reqIncr(String pattern, int count);
 
     /**
-     * 增加缓存命中次数
+     * Increments the number of cache hits for a specific cache pattern.
      * <p>
-     * 为指定缓存模式或分组增加命中次数，用于统计缓存命中情况。 示例代码：
+     * This is used to track how often a request results in a cache hit. Example code:
      * </p>
      * 
      * <pre>{@code
@@ -67,31 +69,33 @@ public interface Metrics {
      * metrics.hitIncr("userCache", 1);
      * }</pre>
      *
-     * @param pattern 缓存模式或分组名称
-     * @param count   增加的命中数量
+     * @param pattern The name of the cache pattern or group.
+     * @param count   The number of hits to add.
      */
     void hitIncr(String pattern, int count);
 
     /**
-     * 获取缓存命中率统计信息
+     * Retrieves the current cache hit rate statistics.
      * <p>
-     * 返回缓存命中率统计数据，键为缓存模式或分组名称，值为对应的命中率数据对象。 示例代码：
+     * Returns a map where the keys are the cache pattern names and the values are {@link Snapshot} objects containing
+     * the statistics for that pattern. Example code:
      * </p>
      * 
      * <pre>{@code
      * Metrics metrics = new SomeMetricsImpl();
      * Map<String, Snapshot> stats = metrics.getHitting();
-     * stats.forEach((pattern, snapshot) -> System.out.println(pattern + ": 命中率 " + snapshot.getRate()));
+     * stats.forEach((pattern, snapshot) -> System.out.println(pattern + ": Hit Rate " + snapshot.getRate()));
      * }</pre>
      *
-     * @return 包含缓存模式及其命中率数据的映射
+     * @return A map containing the cache patterns and their corresponding hit rate data.
      */
     Map<String, Snapshot> getHitting();
 
     /**
-     * 重置指定缓存模式的命中率统计
+     * Resets the statistics for a specific cache pattern.
      * <p>
-     * 清空指定缓存模式或分组的命中率统计数据，重新开始计数。 示例代码：
+     * This clears the hit and request counts for the given pattern, effectively restarting the statistics collection.
+     * Example code:
      * </p>
      * 
      * <pre>{@code
@@ -99,14 +103,14 @@ public interface Metrics {
      * metrics.reset("userCache");
      * }</pre>
      *
-     * @param pattern 缓存模式或分组名称
+     * @param pattern The name of the cache pattern or group to reset.
      */
     void reset(String pattern);
 
     /**
-     * 重置所有缓存模式的命中率统计
+     * Resets the statistics for all cache patterns.
      * <p>
-     * 清空所有缓存模式或分组的命中率统计数据，重新开始计数。 示例代码：
+     * This clears all hit and request counts tracked by this metrics instance. Example code:
      * </p>
      * 
      * <pre>{@code
@@ -117,55 +121,52 @@ public interface Metrics {
     void resetAll();
 
     /**
-     * 获取汇总名称
+     * Gets the name used for the summary or global statistics.
      * <p>
-     * 根据系统语言环境返回汇总名称，中文环境返回“全局”，其他环境返回“summary”。 示例代码：
+     * Returns "全局" (Global) if the system language is Chinese, otherwise returns "summary". Example code:
      * </p>
      * 
      * <pre>{@code
      * Metrics metrics = new SomeMetricsImpl();
      * String summary = metrics.summaryName();
-     * System.out.println("汇总名称: " + summary);
+     * System.out.println("Summary Name: " + summary);
      * }</pre>
      *
-     * @return 汇总名称
+     * @return The name for the summary statistics.
      */
     default String summaryName() {
         return "zh".equalsIgnoreCase(System.getProperty("user.language")) ? "全局" : "summary";
     }
 
     /**
-     * 缓存命中率数据对象
+     * A data object representing a snapshot of cache statistics at a point in time.
      * <p>
-     * 用于存储和计算缓存命中率信息，包括命中次数、请求次数和命中率百分比。
+     * It stores the number of hits, total requests, and the calculated hit rate percentage.
      * </p>
      */
     class Snapshot {
 
         /**
-         * 命中次数
+         * The number of cache hits.
          */
         private final long hit;
 
         /**
-         * 请求次数
+         * The total number of cache requests.
          */
         private final long required;
 
         /**
-         * 命中率字符串，格式为"xx.x%"
+         * The hit rate, formatted as a string (e.g., "xx.x%").
          */
         private final String rate;
 
         /**
-         * 构造缓存命中率数据对象
-         * <p>
-         * 根据指定的命中次数、请求次数和命中率字符串创建数据对象。
-         * </p>
+         * Constructs a new Snapshot instance.
          *
-         * @param hit      命中次数
-         * @param required 请求次数
-         * @param rate     命中率字符串
+         * @param hit      The number of cache hits.
+         * @param required The total number of cache requests.
+         * @param rate     The pre-formatted hit rate string.
          */
         private Snapshot(long hit, long required, String rate) {
             this.hit = hit;
@@ -174,19 +175,19 @@ public interface Metrics {
         }
 
         /**
-         * 创建缓存命中率数据对象
+         * Creates a new {@link Snapshot} instance from hit and request counts.
          * <p>
-         * 根据命中次数和请求次数计算命中率，创建新的数据对象。 示例代码：
+         * This factory method calculates the hit rate and formats it as a string. Example code:
          * </p>
          * 
          * <pre>{@code
          * Snapshot snapshot = Snapshot.newInstance(50, 100);
-         * System.out.println("命中率: " + snapshot.getRate());
+         * System.out.println("Hit Rate: " + snapshot.getRate());
          * }</pre>
          *
-         * @param hit      命中次数
-         * @param required 请求次数
-         * @return 缓存命中率数据对象
+         * @param hit      The number of cache hits.
+         * @param required The total number of cache requests.
+         * @return A new {@link Snapshot} instance.
          */
         public static Snapshot newInstance(long hit, long required) {
             double rate = (required == 0 ? 0.0 : hit * 100.0 / required);
@@ -195,21 +196,21 @@ public interface Metrics {
         }
 
         /**
-         * 合并两个缓存命中率数据对象
+         * Merges two {@link Snapshot} instances into a new one.
          * <p>
-         * 将两个数据对象的命中次数和请求次数相加，创建新的数据对象。 示例代码：
+         * The hit and request counts from both snapshots are summed up to create a combined snapshot. Example code:
          * </p>
          * 
          * <pre>{@code
          * Snapshot snapshot1 = Snapshot.newInstance(50, 100);
          * Snapshot snapshot2 = Snapshot.newInstance(30, 50);
          * Snapshot merged = Snapshot.mergeShootingDO(snapshot1, snapshot2);
-         * System.out.println("合并后命中率: " + merged.getRate());
+         * System.out.println("Merged Hit Rate: " + merged.getRate());
          * }</pre>
          *
-         * @param do1 第一个缓存命中率数据对象
-         * @param do2 第二个缓存命中率数据对象
-         * @return 合并后的缓存命中率数据对象
+         * @param do1 The first snapshot to merge.
+         * @param do2 The second snapshot to merge.
+         * @return A new {@link Snapshot} representing the merged statistics.
          */
         public static Snapshot mergeShootingDO(Snapshot do1, Snapshot do2) {
             long hit = do1.getHit() + do2.getHit();
@@ -218,36 +219,30 @@ public interface Metrics {
         }
 
         /**
-         * 获取命中次数
-         * <p>
-         * 返回缓存命中次数。
-         * </p>
+         * Gets the number of cache hits.
          *
-         * @return 命中次数
+         * @return The hit count.
          */
         public long getHit() {
             return hit;
         }
 
         /**
-         * 获取请求次数
-         * <p>
-         * 返回缓存请求次数。
-         * </p>
+         * Gets the total number of cache requests.
          *
-         * @return 请求次数
+         * @return The request count.
          */
         public long getRequired() {
             return required;
         }
 
         /**
-         * 获取命中率字符串
+         * Gets the hit rate as a formatted string.
          * <p>
-         * 返回格式为“xx.x%”的命中率字符串。
+         * The format is typically "xx.x%".
          * </p>
          *
-         * @return 命中率字符串
+         * @return The formatted hit rate string.
          */
         public String getRate() {
             return rate;

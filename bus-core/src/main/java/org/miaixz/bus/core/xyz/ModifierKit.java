@@ -36,7 +36,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.reflect.ClassMember;
 
 /**
- * 类修饰符
+ * Class modifier utility.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,16 +44,11 @@ import org.miaixz.bus.core.lang.reflect.ClassMember;
 public class ModifierKit {
 
     /**
-     * 类是否存在给定修饰符中的<b>任意一个</b> 如定义修饰符为：{@code public static final}，那么如果传入的modifierTypes为：
-     * <ul>
-     * <li>public、static 返回{@code true}</li>
-     * <li>public、abstract返回{@code true}</li>
-     * <li>private、abstract返回{@code false}</li>
-     * </ul>
+     * Checks if a class has any of the specified modifiers.
      *
-     * @param clazz         类，如果为{@code null}返回{@code false}
-     * @param modifierTypes 修饰符枚举，如果为空返回{@code false}
-     * @return 是否有指定修饰符，如果有返回true，否则false，如果提供参数为null返回false
+     * @param clazz         The class.
+     * @param modifierTypes The modifiers to check for.
+     * @return `true` if the class has at least one of the specified modifiers.
      */
     public static boolean hasAny(final Class<?> clazz, final EnumValue.Modifier... modifierTypes) {
         if (null == clazz || ArrayKit.isEmpty(modifierTypes)) {
@@ -63,16 +58,11 @@ public class ModifierKit {
     }
 
     /**
-     * 成员是否存在给定修饰符中的<b>任意一个</b> 如定义修饰符为：{@code public static final}，那么如果传入的modifierTypes为：
-     * <ul>
-     * <li>public、static 返回{@code true}</li>
-     * <li>public、abstract返回{@code true}</li>
-     * <li>private、abstract返回{@code false}</li>
-     * </ul>
+     * Checks if a member (constructor, field, or method) has any of the specified modifiers.
      *
-     * @param member        构造、字段或方法，如果为{@code null}返回{@code false}
-     * @param modifierTypes 修饰符枚举，如果为空返回{@code false}
-     * @return 是否有指定修饰符，如果有返回true，否则false，如果提供参数为null返回false
+     * @param member        The member.
+     * @param modifierTypes The modifiers to check for.
+     * @return `true` if the member has at least one of the specified modifiers.
      */
     public static boolean hasAny(final Member member, final EnumValue.Modifier... modifierTypes) {
         if (null == member || ArrayKit.isEmpty(modifierTypes)) {
@@ -82,16 +72,11 @@ public class ModifierKit {
     }
 
     /**
-     * 需要检查的修饰符中是否存在给定修饰符中的<b>任意一个</b> 如定义修饰符为：{@code public static final}，那么如果传入的modifierTypes为：
-     * <ul>
-     * <li>public、static 返回{@code true}</li>
-     * <li>public、abstract返回{@code true}</li>
-     * <li>private、abstract返回{@code false}</li>
-     * </ul>
+     * Checks if a set of modifiers contains any of the specified modifiers.
      *
-     * @param modifiers        类、构造、字段或方法的修饰符
-     * @param checkedModifiers 需要检查的修饰符，如果为空返回{@code false}
-     * @return 是否有指定修饰符，如果有返回true，否则false，如果提供参数为null返回false
+     * @param modifiers        The modifier flags.
+     * @param checkedModifiers The modifiers to check for.
+     * @return `true` if at least one modifier matches.
      */
     public static boolean hasAny(final int modifiers, final int... checkedModifiers) {
         if (ArrayKit.isEmpty(checkedModifiers)) {
@@ -101,16 +86,11 @@ public class ModifierKit {
     }
 
     /**
-     * 类中是否同时存在<b>所有</b>给定修饰符 如定义修饰符为：{@code public static final}，那么如果传入的modifierTypes为：
-     * <ul>
-     * <li>public、static 返回{@code true}</li>
-     * <li>public、abstract返回{@code false}</li>
-     * <li>private、abstract返回{@code false}</li>
-     * </ul>
+     * Checks if a class has all of the specified modifiers.
      *
-     * @param clazz         类，如果为{@code null}返回{@code false}
-     * @param modifierTypes 修饰符枚举，如果为空返回{@code false}
-     * @return 是否同时存在所有指定修饰符，如果有返回true，否则false，如果提供参数为null返回false
+     * @param clazz         The class.
+     * @param modifierTypes The modifiers to check for.
+     * @return `true` if the class has all of the specified modifiers.
      */
     public static boolean hasAll(final Class<?> clazz, final EnumValue.Modifier... modifierTypes) {
         if (null == clazz || ArrayKit.isEmpty(modifierTypes)) {
@@ -120,16 +100,11 @@ public class ModifierKit {
     }
 
     /**
-     * 成员中是否同时存在所有给定修饰符 如定义修饰符为：{@code public static final}，那么如果传入的modifierTypes为：
-     * <ul>
-     * <li>public、static 返回{@code true}</li>
-     * <li>public、abstract返回{@code false}</li>
-     * <li>private、abstract返回{@code false}</li>
-     * </ul>
+     * Checks if a member has all of the specified modifiers.
      *
-     * @param member        构造、字段或方法，如果为{@code null}返回{@code false}
-     * @param modifierTypes 修饰符枚举，如果为空返回{@code false}
-     * @return 是否同时存在所有指定修饰符，如果有返回true，否则false，如果提供参数为null返回false
+     * @param member        The member.
+     * @param modifierTypes The modifiers to check for.
+     * @return `true` if the member has all of the specified modifiers.
      */
     public static boolean hasAll(final Member member, final EnumValue.Modifier... modifierTypes) {
         if (null == member || ArrayKit.isEmpty(modifierTypes)) {
@@ -140,16 +115,11 @@ public class ModifierKit {
     }
 
     /**
-     * 需要检查的修饰符中是否同时存在<b>所有</b>给定修饰符 如定义修饰符为：{@code public static final}，那么如果传入的checkedModifiers为：
-     * <ul>
-     * <li>public、static 返回{@code true}</li>
-     * <li>public、abstract返回{@code false}</li>
-     * <li>private、abstract返回{@code false}</li>
-     * </ul>
+     * Checks if a set of modifiers contains all of the specified modifiers.
      *
-     * @param modifiers        类、构造、字段或方法的修饰符
-     * @param checkedModifiers 需要检查的修饰符，如果为空返回{@code false}
-     * @return 是否同时存在所有指定修饰符，如果有返回true，否则false，如果提供参数为null返回false
+     * @param modifiers        The modifier flags.
+     * @param checkedModifiers The modifiers to check for.
+     * @return `true` if all modifiers match.
      */
     public static boolean hasAll(final int modifiers, final int... checkedModifiers) {
         if (ArrayKit.isEmpty(checkedModifiers)) {
@@ -160,172 +130,138 @@ public class ModifierKit {
     }
 
     /**
-     * 提供的方法是否为default方法
+     * Checks if a method is a `default` method.
      *
-     * @param method 方法，如果为{@code null}返回{@code false}
-     * @return 是否为default方法
+     * @param method The method.
+     * @return `true` if it is a `default` method.
      */
     public static boolean isDefault(final Method method) {
         return null != method && method.isDefault();
     }
 
     /**
-     * 是否是public成员，可检测包括构造、字段和方法
+     * Checks if a member is public.
      *
-     * @param member 构造、字段或方法，如果为{@code null}返回{@code false}
-     * @return 是否是public
+     * @param member The member.
+     * @return `true` if public.
      */
     public static boolean isPublic(final Member member) {
         return null != member && java.lang.reflect.Modifier.isPublic(member.getModifiers());
     }
 
     /**
-     * 是否是public类
+     * Checks if a class is public.
      *
-     * @param clazz 类，如果为{@code null}返回{@code false}
-     * @return 是否是public
+     * @param clazz The class.
+     * @return `true` if public.
      */
     public static boolean isPublic(final Class<?> clazz) {
         return null != clazz && java.lang.reflect.Modifier.isPublic(clazz.getModifiers());
     }
 
     /**
-     * 是否是private成员，可检测包括构造、字段和方法
+     * Checks if a member is private.
      *
-     * @param member 构造、字段或方法，如果为{@code null}返回{@code false}
-     * @return 是否是private
+     * @param member The member.
+     * @return `true` if private.
      */
     public static boolean isPrivate(final Member member) {
         return null != member && java.lang.reflect.Modifier.isPrivate(member.getModifiers());
     }
 
     /**
-     * 是否是private类
+     * Checks if a class is private.
      *
-     * @param clazz 类，如果为{@code null}返回{@code false}
-     * @return 是否是private类
+     * @param clazz The class.
+     * @return `true` if private.
      */
     public static boolean isPrivate(final Class<?> clazz) {
         return null != clazz && java.lang.reflect.Modifier.isPrivate(clazz.getModifiers());
     }
 
     /**
-     * 是否是static成员，包括构造、字段或方法
+     * Checks if a member is static.
      *
-     * @param member 构造、字段或方法，如果为{@code null}返回{@code false}
-     * @return 是否是static
+     * @param member The member.
+     * @return `true` if static.
      */
     public static boolean isStatic(final Member member) {
         return null != member && java.lang.reflect.Modifier.isStatic(member.getModifiers());
     }
 
     /**
-     * 是否是static类
+     * Checks if a class is static.
      *
-     * @param clazz 类，如果为{@code null}返回{@code false}
-     * @return 是否是static
+     * @param clazz The class.
+     * @return `true` if static.
      */
     public static boolean isStatic(final Class<?> clazz) {
         return null != clazz && java.lang.reflect.Modifier.isStatic(clazz.getModifiers());
     }
 
     /**
-     * 是否是合成成员（由java编译器生成的）
+     * Checks if a member is synthetic (generated by the compiler).
      *
-     * @param member 构造、字段或方法
-     * @return 是否是合成字段
+     * @param member The member.
+     * @return `true` if synthetic.
      */
     public static boolean isSynthetic(final Member member) {
         return null != member && member.isSynthetic();
     }
 
     /**
-     * 是否是合成类（由java编译器生成的）
+     * Checks if a class is synthetic.
      *
-     * @param clazz 类
-     * @return 是否是合成
+     * @param clazz The class.
+     * @return `true` if synthetic.
      */
     public static boolean isSynthetic(final Class<?> clazz) {
         return null != clazz && clazz.isSynthetic();
     }
 
     /**
-     * 是否抽象成员
+     * Checks if a member is abstract.
      *
-     * @param member 构造、字段或方法
-     * @return 是否抽象方法
+     * @param member The member.
+     * @return `true` if abstract.
      */
     public static boolean isAbstract(final Member member) {
         return null != member && java.lang.reflect.Modifier.isAbstract(member.getModifiers());
     }
 
     /**
-     * 是否抽象类
+     * Checks if a class is abstract.
      *
-     * @param clazz 构造、字段或方法
-     * @return 是否抽象类
+     * @param clazz The class.
+     * @return `true` if abstract.
      */
     public static boolean isAbstract(final Class<?> clazz) {
         return null != clazz && java.lang.reflect.Modifier.isAbstract(clazz.getModifiers());
     }
 
     /**
-     * 是否抽象类
+     * Checks if a class is an interface.
      *
-     * @param clazz 构造、字段或方法
-     * @return 是否抽象类
+     * @param clazz The class.
+     * @return `true` if it is an interface.
      */
     public static boolean isInterface(final Class<?> clazz) {
         return null != clazz && clazz.isInterface();
     }
 
     /**
-     * 设置final的field字段可以被修改 只要不会被编译器内联优化的 final 属性就可以通过反射有效的进行修改 -- 修改后代码中可使用到新的值;
-     * <p>
-     * 以下属性，编译器会内联优化，无法通过反射修改：
-     * </p>
-     * <ul>
-     * <li>基本类型 byte, char, short, int, long, float, double, boolean</li>
-     * <li>Literal String 类型(直接双引号字符串)</li>
-     * </ul>
-     * <p>
-     * 以下属性，可以通过反射修改：
-     * </p>
-     * <ul>
-     * <li>基本类型的包装类 Byte、Character、Short、Long、Float、Double、Boolean</li>
-     * <li>字符串，通过 new String("")实例化</li>
-     * <li>自定义java类</li>
-     * </ul>
-     * 
-     * <pre class="code">
-     * {@code
-     * // 示例，移除final修饰符
-     * class JdbcDialects {
-     * 
-     *     private static final List<Number> dialects = new ArrayList<>();
-     * }
-     * Field field = ReflectKit.getField(JdbcDialects.class, fieldName);
-     * ReflectKit.removeFinalModify(field);
-     * ReflectKit.setFieldValue(JdbcDialects.class, fieldName, dialects);
-     * }
-     * </pre>
+     * Removes the `final` modifier from a field, allowing it to be modified.
      *
-     * <p>
-     * JDK9+此方法抛出NoSuchFieldException异常，原因是除非开放，否则模块外无法访问属性
-     * </p>
-     *
-     * @param field 被修改的field，不可以为空
-     * @throws InternalException IllegalAccessException等异常包装
+     * @param field The field to modify.
+     * @throws InternalException if modification fails.
      */
     public static void removeFinalModify(final Field field) {
         if (!hasAny(field, EnumValue.Modifier.FINAL)) {
             return;
         }
 
-        // 将字段的访问权限设为true：即去除private修饰符的影响
         ReflectKit.setAccessible(field);
 
-        // 去除final修饰符的影响，将字段设为可修改的
         final Field modifiersField;
         try {
             modifiersField = Field.class.getDeclaredField("modifiers");
@@ -334,13 +270,9 @@ public class ModifierKit {
         }
 
         try {
-            // Field 的 modifiers 是私有的
             modifiersField.setAccessible(true);
-            // & ：位与运算符，按位与； 运算规则：两个数都转为二进制，然后从高位开始比较，如果两个数都为1则为1，否则为0。
-            // ~ ：位非运算符，按位取反；运算规则：转成二进制，如果位为0，结果是1，如果位为1，结果是0.
             modifiersField.setInt(field, field.getModifiers() & ~java.lang.reflect.Modifier.FINAL);
         } catch (final IllegalAccessException e) {
-            // 内部，工具类，基本不抛出异常
             throw new InternalException(e, "IllegalAccess for [{}.{}]", field.getDeclaringClass(), field.getName());
         }
     }

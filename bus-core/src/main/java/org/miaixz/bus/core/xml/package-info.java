@@ -26,7 +26,9 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * XML和JAXB（Java Architecture for XML Binding）相关封装 由于JDK11+移除了"javax.xml.bind"相关类型，因此封装于extra模块
+ * Provides utilities and wrappers related to XML and JAXB (Java Architecture for XML Binding).
+ * <p>
+ * Note: As JDK 11+ has removed "javax.xml.bind" related types, this package is encapsulated within the 'extra' module.
  *
  * @author Kimi Liu
  * @since Java 17+

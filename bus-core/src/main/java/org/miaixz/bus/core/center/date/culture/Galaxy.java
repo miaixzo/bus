@@ -28,7 +28,8 @@
 package org.miaixz.bus.core.center.date.culture;
 
 /**
- * 寿星天文历工具
+ * A utility class for astronomical calculations based on the Shouxing calendar. This class contains highly specialized
+ * methods and constants for orbital mechanics and time calculations.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -36,22 +37,32 @@ package org.miaixz.bus.core.center.date.culture;
 public class Galaxy {
 
     /**
-     * 2π
+     * Represents 2 * PI.
      */
     public static final double PI_2 = 2 * Math.PI;
+    /**
+     * Represents the value of one-third.
+     */
     public static final double ONE_THIRD = 1D / 3;
     /**
-     * 1天对应的秒数
+     * The number of seconds in one day.
      */
     public static final int SECOND_PER_DAY = 86400;
     /**
-     * 1弧度对应的角秒
+     * The number of arcseconds per radian.
      */
     public static final double SECOND_PER_RAD = 180 * 3600 / Math.PI;
+
+    /**
+     * Predefined constants for nutation calculations.
+     */
     private static final double[] NUT_B = { 2.1824, -33.75705, 36e-6, -1720, 920, 3.5069, 1256.66393, 11e-6, -132, 57,
             1.3375, 16799.4182, -51e-6, -23, 10, 4.3649, -67.5141, 72e-6, 21, -9, 0.04, -628.302, 0, -14, 0, 2.36,
             8328.691, 0, 7, 0, 3.46, 1884.966, 0, -5, 2, 5.44, 16833.175, 0, -4, 2, 3.69, 25128.110, 0, -3, 0, 3.55,
             628.362, 0, 2, 0 };
+    /**
+     * Predefined constants for Delta T (difference between Terrestrial Time and Universal Time) calculations.
+     */
     private static final double[] DT_AT = { -4000, 108371.7, -13036.80, 392.000, 0.0000, -500, 17201.0, -627.82, 16.170,
             -0.3413, -150, 12200.6, -346.41, 5.403, -0.1593, 150, 9113.8, -328.13, -1.647, 0.0377, 500, 5707.5, -391.41,
             0.915, 0.3145, 900, 2203.4, -283.45, 13.034, -0.1778, 1300, 490.1, -57.35, 2.085, -0.0072, 1600, 120.0,
@@ -60,6 +71,9 @@ public class Galaxy {
             0.169, -0.0135, 1920, 21.2, 1.69, -0.304, 0.0167, 1940, 24.2, 1.22, -0.064, 0.0031, 1960, 33.2, 0.51, 0.231,
             -0.0109, 1980, 51.0, 1.29, -0.026, 0.0032, 2000, 63.87, 0.1, 0, 0, 2005, 64.7, 0.21, 0, 0, 2012, 66.8, 0.22,
             0, 0, 2018, 73.6, 0.40, 0, 0, 2021, 78.1, 0.44, 0, 0, 2024, 83.1, 0.55, 0, 0, 2028, 98.6 };
+    /**
+     * Predefined constants for longitude calculations.
+     */
     private static final double[] XL0 = { 10000000000D, 20, 578, 920, 1100, 1124, 1136, 1148, 1217, 1226, 1229, 1229,
             1229, 1229, 1937, 2363, 2618, 2633, 2660, 2666, 17534704567D, 0.00000000000, 0.00000000000, 334165646,
             4.669256804, 6283.075849991, 3489428, 4.6261024, 12566.1517000, 349706, 2.744118, 5753.384885, 341757,
@@ -502,6 +516,12 @@ public class Galaxy {
     private static final String SB = decode(
             "EqoFscDcrFpmEsF2DfFideFelFpFfFfFiaipqti1ksttikptikqckstekqttgkqttgkqteksttikptikq2fjstgjqttjkqttgkqtekstfkptikq2tijstgjiFkirFsAeACoFsiDaDiADc1AFbBfgdfikijFifegF1FhaikgFag1E2btaieeibggiffdeigFfqDfaiBkF1kEaikhkigeidhhdiegcFfakF1ggkidbiaedksaFffckekidhhdhdikcikiakicjF1deedFhFccgicdekgiFbiaikcfi1kbFibefgEgFdcFkFeFkdcfkF1kfkcickEiFkDacFiEfbiaejcFfffkhkdgkaiei1ehigikhdFikfckF1dhhdikcfgjikhfjicjicgiehdikcikggcifgiejF1jkieFhegikggcikFegiegkfjebhigikggcikdgkaFkijcfkcikfkcifikiggkaeeigefkcdfcfkhkdgkegieidhijcFfakhfgeidieidiegikhfkfckfcjbdehdikggikgkfkicjicjF1dbidikFiggcifgiejkiegkigcdiegfggcikdbgfgefjF1kfegikggcikdgFkeeijcfkcikfkekcikdgkabhkFikaffcfkhkdgkegbiaekfkiakicjhfgqdq2fkiakgkfkhfkfcjiekgFebicggbedF1jikejbbbiakgbgkacgiejkijjgigfiakggfggcibFifjefjF1kfekdgjcibFeFkijcfkfhkfkeaieigekgbhkfikidfcjeaibgekgdkiffiffkiakF1jhbakgdki1dj1ikfkicjicjieeFkgdkicggkighdF1jfgkgfgbdkicggfggkidFkiekgijkeigfiskiggfaidheigF1jekijcikickiggkidhhdbgcfkFikikhkigeidieFikggikhkffaffijhidhhakgdkhkijF1kiakF1kfheakgdkifiggkigicjiejkieedikgdfcggkigieeiejfgkgkigbgikicggkiaideeijkefjeijikhkiggkiaidheigcikaikffikijgkiahi1hhdikgjfifaakekighie1hiaikggikhkffakicjhiahaikggikhkijF1kfejfeFhidikggiffiggkigicjiekgieeigikggiffiggkidheigkgfjkeigiegikifiggkidhedeijcfkFikikhkiggkidhh1ehigcikaffkhkiggkidhh1hhigikekfiFkFikcidhh1hitcikggikhkfkicjicghiediaikggikhkijbjfejfeFhaikggifikiggkigiejkikgkgieeigikggiffiggkigieeigekijcijikggifikiggkideedeijkefkfckikhkiggkidhh1ehijcikaffkhkiggkidhh1hhigikhkikFikfckcidhh1hiaikgjikhfjicjicgiehdikcikggifikigiejfejkieFhegikggifikiggfghigkfjeijkhigikggifikiggkigieeijcijcikfksikifikiggkidehdeijcfdckikhkiggkhghh1ehijikifffffkhsFngErD1pAfBoDd1BlEtFqA2AqoEpDqElAEsEeB2BmADlDkqBtC1FnEpDqnEmFsFsAFnllBbFmDsDiCtDmAB2BmtCgpEplCpAEiBiEoFqFtEqsDcCnFtADnFlEgdkEgmEtEsCtDmADqFtAFrAtEcCqAE1BoFqC1F1DrFtBmFtAC2ACnFaoCgADcADcCcFfoFtDlAFgmFqBq2bpEoAEmkqnEeCtAE1bAEqgDfFfCrgEcBrACfAAABqAAB1AAClEnFeCtCgAADqDoBmtAAACbFiAAADsEtBqAB2FsDqpFqEmFsCeDtFlCeDtoEpClEqAAFrAFoCgFmFsFqEnAEcCqFeCtFtEnAEeFtAAEkFnErAABbFkADnAAeCtFeAfBoAEpFtAABtFqAApDcCGJ");
 
+    /**
+     * Decodes a compressed string representation of astronomical data into a numeric string.
+     *
+     * @param s The compressed string.
+     * @return The decoded numeric string.
+     */
     private static String decode(String s) {
         String o = "0000000000";
         String o2 = o + o;
@@ -538,6 +558,12 @@ public class Galaxy {
         return s;
     }
 
+    /**
+     * Calculates the nutation in longitude.
+     *
+     * @param t The time parameter (usually in Julian centuries).
+     * @return The nutation in longitude.
+     */
     public static double nutationLon2(double t) {
         double a = -1.742 * t, t2 = t * t, dl = 0;
         for (int i = 0, j = NUT_B.length; i < j; i += 5) {
@@ -547,6 +573,13 @@ public class Galaxy {
         return dl / 100 / SECOND_PER_RAD;
     }
 
+    /**
+     * Calculates the ecliptic longitude.
+     *
+     * @param t A time parameter.
+     * @param n A precision parameter.
+     * @return The ecliptic longitude.
+     */
     public static double eLon(double t, int n) {
         t /= 10;
         double v = 0, tn = 1;
@@ -583,6 +616,13 @@ public class Galaxy {
         return v;
     }
 
+    /**
+     * Calculates the mean longitude.
+     *
+     * @param t A time parameter.
+     * @param n A precision parameter.
+     * @return The mean longitude.
+     */
     public static double mLon(double t, int n) {
         int obl0 = 2652;
         int[] obl = { obl0, 893, 204, 12 };
@@ -623,6 +663,12 @@ public class Galaxy {
         return v;
     }
 
+    /**
+     * Calculates the Sun's longitude correction due to aberration.
+     *
+     * @param t A time parameter.
+     * @return The longitude correction.
+     */
     public static double gxcSunLon(double t) {
         double t2 = t * t;
         double v = -0.043126 + 628.301955 * t - 0.000002732 * t2;
@@ -630,21 +676,47 @@ public class Galaxy {
         return -20.49552 * (1 + e * Math.cos(v)) / SECOND_PER_RAD;
     }
 
+    /**
+     * Calculates an evolutionary variable related to time.
+     *
+     * @param t A time parameter.
+     * @return The calculated value.
+     */
     public static double ev(double t) {
         double f = 628.307585 * t;
         return 628.332 + 21 * Math.sin(1.527 + f) + 0.44 * Math.sin(1.48 + f * 2) + 0.129 * Math.sin(5.82 + f) * t
                 + 0.00055 * Math.sin(4.21 + f) * t * t;
     }
 
+    /**
+     * Calculates the apparent longitude.
+     *
+     * @param t A time parameter.
+     * @param n A precision parameter.
+     * @return The apparent longitude.
+     */
     public static double saLon(double t, int n) {
         return eLon(t, n) + nutationLon2(t) + gxcSunLon(t) + Math.PI;
     }
 
+    /**
+     * Calculates an extended Delta T (ΔT) value.
+     *
+     * @param y   The year.
+     * @param jsd A coefficient.
+     * @return The extended Delta T value.
+     */
     public static double dtExt(double y, double jsd) {
         double dy = (y - 1820) / 100;
         return -20 + jsd * dy * dy;
     }
 
+    /**
+     * Calculates the Delta T (ΔT) value for a given year.
+     *
+     * @param y The year.
+     * @return The Delta T value.
+     */
     public static double dtCalc(double y) {
         int size = DT_AT.length;
         double y0 = DT_AT[size - 2];
@@ -666,10 +738,22 @@ public class Galaxy {
         return DT_AT[i + 1] + DT_AT[i + 2] * t1 + DT_AT[i + 3] * t2 + DT_AT[i + 4] * t3;
     }
 
+    /**
+     * Calculates the Delta T (ΔT) value as a fraction of a day.
+     *
+     * @param t A time parameter.
+     * @return The Delta T value in days.
+     */
     public static double dtT(double t) {
         return dtCalc(t / 365.2425 + 2000) / SECOND_PER_DAY;
     }
 
+    /**
+     * Calculates a mean anomaly or related value.
+     *
+     * @param t A time parameter.
+     * @return The calculated value.
+     */
     public static double mv(double t) {
         double v = 8399.71 - 914 * Math.sin(0.7848 + 8328.691425 * t + 0.0001523 * t * t);
         v -= 179 * Math.sin(2.543 + 15542.7543 * t) + 160 * Math.sin(0.1874 + 7214.0629 * t)
@@ -681,6 +765,12 @@ public class Galaxy {
         return v;
     }
 
+    /**
+     * Calculates the time parameter {@code t} for a given apparent longitude.
+     *
+     * @param w The apparent longitude.
+     * @return The time parameter {@code t}.
+     */
     public static double saLonT(double w) {
         double v = 628.3319653318;
         double t = (w - 1.75347 - Math.PI) / v;
@@ -691,10 +781,24 @@ public class Galaxy {
         return t;
     }
 
+    /**
+     * Calculates the mean solar anomaly longitude.
+     *
+     * @param t  A time parameter.
+     * @param mn A precision parameter for mean longitude.
+     * @param sn A precision parameter for ecliptic longitude.
+     * @return The mean solar anomaly longitude.
+     */
     public static double msaLon(double t, int mn, int sn) {
         return mLon(t, mn) + (-3.4E-6) - (eLon(t, sn) + gxcSunLon(t) + Math.PI);
     }
 
+    /**
+     * Calculates the time parameter {@code t} for a given mean solar anomaly longitude.
+     *
+     * @param w The mean solar anomaly longitude.
+     * @return The time parameter {@code t}.
+     */
     public static double msaLonT(double w) {
         double v = 7771.37714500204;
         double t = (w + 1.08472) / v;
@@ -705,6 +809,12 @@ public class Galaxy {
         return t;
     }
 
+    /**
+     * A more accurate calculation for the time parameter {@code t} of a given apparent longitude.
+     *
+     * @param w The apparent longitude.
+     * @return The time parameter {@code t}.
+     */
     public static double saLonT2(double w) {
         double v = 628.3319653318;
         double t = (w - 1.75347 - Math.PI) / v;
@@ -714,6 +824,12 @@ public class Galaxy {
         return t;
     }
 
+    /**
+     * A more accurate calculation for the time parameter {@code t} of a given mean solar anomaly longitude.
+     *
+     * @param w The mean solar anomaly longitude.
+     * @return The time parameter {@code t}.
+     */
     public static double msaLonT2(double w) {
         double v = 7771.37714500204;
         double t = (w + 1.08472) / v;
@@ -731,6 +847,12 @@ public class Galaxy {
         return t;
     }
 
+    /**
+     * High-precision calculation for a solar term ('qi').
+     *
+     * @param w An angular parameter.
+     * @return The calculated time parameter.
+     */
     public static double qiHigh(double w) {
         double t = saLonT2(w) * 36525;
         t = t - dtT(t) + ONE_THIRD;
@@ -741,6 +863,12 @@ public class Galaxy {
         return t;
     }
 
+    /**
+     * High-precision calculation for a new moon ('shuo').
+     *
+     * @param w An angular parameter.
+     * @return The calculated time parameter.
+     */
     public static double shuoHigh(double w) {
         double t = msaLonT2(w) * 36525;
         t = t - dtT(t) + ONE_THIRD;
@@ -751,6 +879,12 @@ public class Galaxy {
         return t;
     }
 
+    /**
+     * Low-precision calculation for a solar term ('qi').
+     *
+     * @param w An angular parameter.
+     * @return The calculated time parameter.
+     */
     public static double qiLow(double w) {
         double v = 628.3319653318;
         double t = (w - 4.895062166) / v;
@@ -763,6 +897,12 @@ public class Galaxy {
         return t * 36525 + ONE_THIRD;
     }
 
+    /**
+     * Low-precision calculation for a new moon ('shuo').
+     *
+     * @param w An angular parameter.
+     * @return The calculated time parameter.
+     */
     public static double shuoLow(double w) {
         double v = 7771.37714500204;
         double t = (w + 1.08472) / v;
@@ -772,6 +912,12 @@ public class Galaxy {
         return t * 36525 + ONE_THIRD;
     }
 
+    /**
+     * Calculates the Julian day of the new moon ('shuo') for a given Julian day.
+     *
+     * @param jd The Julian day.
+     * @return The Julian day of the new moon.
+     */
     public static double calcShuo(double jd) {
         int size = SHUO_KB.length;
         double d = 0;
@@ -806,6 +952,12 @@ public class Galaxy {
         return d;
     }
 
+    /**
+     * Calculates the Julian day of the solar term ('qi') for a given Julian day.
+     *
+     * @param jd The Julian day.
+     * @return The Julian day of the solar term.
+     */
     public static double calcQi(double jd) {
         int size = QI_KB.length;
         double d = 0;
@@ -839,11 +991,23 @@ public class Galaxy {
         return d;
     }
 
+    /**
+     * Accurate calculation for a solar term ('qi').
+     *
+     * @param w An angular parameter.
+     * @return The calculated time parameter.
+     */
     public static double qiAccurate(double w) {
         double t = saLonT(w) * 36525;
         return t - dtT(t) + ONE_THIRD;
     }
 
+    /**
+     * A second accurate calculation for a solar term, adjusting for proximity.
+     *
+     * @param jd The Julian day.
+     * @return The calculated time parameter.
+     */
     public static double qiAccurate2(double jd) {
         double d = Math.PI / 12;
         double w = Math.floor((jd + 293) / 365.2422 * 24) * d;

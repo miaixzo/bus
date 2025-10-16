@@ -30,6 +30,7 @@ package org.miaixz.bus.auth.nimble.mi;
 import org.miaixz.bus.auth.magic.AuthToken;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Message;
+import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
@@ -49,7 +50,7 @@ import java.text.MessageFormat;
 import java.util.Map;
 
 /**
- * 小米 登录
+ * Xiaomi (Mi) login provider.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -58,19 +59,43 @@ public class MiProvider extends AbstractProvider {
 
     private static final String PREFIX = "&&&START&&&";
 
+    /**
+     * Constructs a {@code MiProvider} with the specified context.
+     *
+     * @param context the authentication context
+     */
     public MiProvider(Context context) {
         super(context, Registry.MI);
     }
 
+    /**
+     * Constructs a {@code MiProvider} with the specified context and cache.
+     *
+     * @param context the authentication context
+     * @param cache   the cache implementation
+     */
     public MiProvider(Context context, CacheX cache) {
         super(context, Registry.MI, cache);
     }
 
+    /**
+     * Retrieves the access token from Xiaomi's authorization server.
+     *
+     * @param callback the callback object containing the authorization code
+     * @return the {@link AuthToken} containing access token details
+     */
     @Override
     public AuthToken getAccessToken(Callback callback) {
         return getToken(accessTokenUrl(callback.getCode()));
     }
 
+    /**
+     * Retrieves the token from the given access token URL.
+     *
+     * @param accessTokenUrl the URL to fetch the access token from
+     * @return the {@link AuthToken} containing token details
+     * @throws AuthorizedException if parsing the response fails or required token information is missing
+     */
     private AuthToken getToken(String accessTokenUrl) {
         String response = Httpx.get(accessTokenUrl);
         String jsonStr = response.replace(PREFIX, Normal.EMPTY);
@@ -105,9 +130,16 @@ public class MiProvider extends AbstractProvider {
         }
     }
 
+    /**
+     * Retrieves user information from Xiaomi's user info endpoint.
+     *
+     * @param authToken the {@link AuthToken} obtained after successful authorization
+     * @return {@link Material} containing the user's information
+     * @throws AuthorizedException if parsing the response fails or required user information is missing
+     */
     @Override
     public Material getUserInfo(AuthToken authToken) {
-        // 获取用户信息
+        // Get user information
         String userResponse = doGetUserInfo(authToken);
         try {
             Map<String, Object> userProfile = JsonKit.toPojo(userResponse, Map.class);
@@ -121,7 +153,7 @@ public class MiProvider extends AbstractProvider {
                 throw new AuthorizedException(description != null ? description : "Unknown error");
             }
 
-            Map<String, Object> object = (Map<String, Object>) userProfile.get("data");
+            Map<String, Object> object = (Map<String, Object>) userProfile.get(Consts.DATA);
             if (object == null) {
                 throw new AuthorizedException("Missing data in user info response");
             }
@@ -137,7 +169,7 @@ public class MiProvider extends AbstractProvider {
                     .username(miliaoNick).nickname(miliaoNick).avatar(miliaoIcon).email(mail).gender(Gender.UNKNOWN)
                     .token(authToken).source(complex.toString()).build();
 
-            // 获取用户邮箱手机号等信息
+            // Get user email and phone number information
             String emailPhoneUrl = MessageFormat.format(
                     "{0}?clientId={1}&token={2}",
                     "https://open.account.xiaomi.com/user/phoneAndEmail",
@@ -154,13 +186,14 @@ public class MiProvider extends AbstractProvider {
 
                 String emailResult = (String) userEmailPhone.get("result");
                 if (!"error".equalsIgnoreCase(emailResult)) {
-                    Map<String, Object> emailPhone = (Map<String, Object>) userEmailPhone.get("data");
+                    Map<String, Object> emailPhone = (Map<String, Object>) userEmailPhone.get(Consts.DATA);
                     if (emailPhone != null) {
                         String email = (String) emailPhone.get("email");
                         authUser.setEmail(email);
                     }
                 } else {
-                    Logger.warn("小米开发平台暂时不对外开放用户手机及邮箱信息的获取");
+                    Logger.warn(
+                            "Xiaomi developer platform currently does not provide access to user phone and email information");
                 }
             } catch (Exception e) {
                 Logger.warn("Failed to parse email/phone response: " + e.getMessage());
@@ -173,10 +206,10 @@ public class MiProvider extends AbstractProvider {
     }
 
     /**
-     * 刷新access token （续期）
+     * Refreshes the access token (renews its validity).
      *
-     * @param authToken 登录成功后返回的Token信息
-     * @return Message
+     * @param authToken the token information returned after successful login
+     * @return a {@link Message} containing the refreshed token information
      */
     @Override
     public Message refresh(AuthToken authToken) {
@@ -185,10 +218,11 @@ public class MiProvider extends AbstractProvider {
     }
 
     /**
-     * 返回带{@code state}参数的授权url，授权回调时会带上这个{@code state}
+     * Returns the authorization URL with a {@code state} parameter. The {@code state} will be included in the
+     * authorization callback.
      *
-     * @param state state 验证授权流程的参数，可以防止csrf
-     * @return 返回授权地址
+     * @param state the parameter to verify the authorization process, which can prevent CSRF attacks
+     * @return the authorization URL
      */
     @Override
     public String authorize(String state) {
@@ -198,10 +232,10 @@ public class MiProvider extends AbstractProvider {
     }
 
     /**
-     * 返回获取userInfo的url
+     * Returns the URL to obtain user information.
      *
-     * @param authToken 用户授权后的token
-     * @return 返回获取userInfo的url
+     * @param authToken the user's authorization token
+     * @return the URL to obtain user information
      */
     @Override
     protected String userInfoUrl(AuthToken authToken) {

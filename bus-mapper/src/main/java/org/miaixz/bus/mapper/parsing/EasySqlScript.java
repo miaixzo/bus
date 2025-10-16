@@ -28,7 +28,7 @@
 package org.miaixz.bus.mapper.parsing;
 
 /**
- * 支持简便写法的 SQL 脚本接口
+ * An interface for SQL scripts that supports a simplified writing style.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -36,10 +36,10 @@ package org.miaixz.bus.mapper.parsing;
 public interface EasySqlScript extends SqlScript {
 
     /**
-     * 默认实现，委托给 getSql(entity, util)
+     * The default implementation, which delegates to {@link #getSql(TableMeta, SqlScript)}.
      *
-     * @param entity 实体类信息
-     * @return XML SQL 脚本
+     * @param entity The entity class information.
+     * @return The XML SQL script.
      */
     @Override
     default String getSql(TableMeta entity) {
@@ -47,11 +47,11 @@ public interface EasySqlScript extends SqlScript {
     }
 
     /**
-     * 生成对应的 SQL，支持动态标签
+     * Generates the corresponding SQL, with support for dynamic tags.
      *
-     * @param entity 实体类信息
-     * @param util   当前对象的引用，便于在 lambda 中使用当前对象的方法
-     * @return XML SQL 脚本
+     * @param entity The entity class information.
+     * @param util   A reference to the current object, useful for using its methods within a lambda.
+     * @return The XML SQL script.
      */
     String getSql(TableMeta entity, SqlScript util);
 

@@ -27,10 +27,13 @@
 */
 package org.miaixz.bus.spring.http;
 
-import jakarta.servlet.http.HttpServletRequest;
+import java.util.stream.Collectors;
+
+import org.miaixz.bus.auth.magic.ErrorCode;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -47,18 +50,18 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import java.util.stream.Collectors;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
- * 自动参数解析器
+ * An automatic parameter resolver that handles parameter binding for various request formats.
  * <p>
- * 统一处理多种请求格式的参数绑定：
+ * This resolver unifies the handling of parameters from:
  * <ul>
- * <li>JSON请求 (application/json)</li>
- * <li>表单数据 (application/x-www-form-urlencoded)</li>
- * <li>文件上传 (multipart/form-data)</li>
+ * <li>JSON requests ({@code application/json})</li>
+ * <li>Form data ({@code application/x-www-form-urlencoded})</li>
+ * <li>File uploads ({@code multipart/form-data})</li>
  * </ul>
- * 通过反射自动将请求参数绑定到控制器方法参数对象
+ * It automatically binds request parameters to controller method parameter objects using reflection.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -66,10 +69,11 @@ import java.util.stream.Collectors;
 public class CompositeArgumentResolver implements HandlerMethodArgumentResolver {
 
     /**
-     * 判断是否支持解析当前参数
+     * Determines whether this resolver supports the given method parameter.
      *
-     * @param parameter 方法参数信息
-     * @return true 如果参数不是简单类型（基本类型、String、Number等），false 否则
+     * @param parameter Method parameter information.
+     * @return {@code true} if the parameter is not a simple type (primitive, String, Number, etc.) or is annotated with
+     *         {@link ModelAttribute}; {@code false} otherwise.
      */
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
@@ -77,14 +81,14 @@ public class CompositeArgumentResolver implements HandlerMethodArgumentResolver 
     }
 
     /**
-     * 解析请求参数并绑定到目标对象
+     * Resolves the method argument by binding request parameters to the target object.
      *
-     * @param methodParameter 方法参数信息
-     * @param mavContainer    模型和视图容器
-     * @param webRequest      原生 Web 请求
-     * @param binderFactory   数据绑定工厂
-     * @return 绑定好参数的目标对象
-     * @throws Exception 解析过程中可能抛出的异常
+     * @param methodParameter Method parameter information.
+     * @param mavContainer    Model and view container.
+     * @param webRequest      Native Web request.
+     * @param binderFactory   Data binder factory.
+     * @return The target object with bound parameters.
+     * @throws Exception If an exception occurs during resolution.
      */
     @Override
     public Object resolveArgument(
@@ -99,16 +103,16 @@ public class CompositeArgumentResolver implements HandlerMethodArgumentResolver 
 
         byte[] body;
         String contentType = request.getContentType();
-        // 如果是 MutableRequestWrapper，优先使用其缓存的 body
+        // If it's a MutableRequestWrapper, prioritize its cached body
         if (request instanceof MutableRequestWrapper wrapper) {
             request = wrapper.getRequest();
             body = wrapper.getBody();
             contentType = wrapper.getContentType();
         } else {
-            // 读取输入流
+            // Read input stream
             body = IoKit.readBytes(request.getInputStream());
             if (body == null || body.length == 0) {
-                // 如果输入流为空且有参数，使用parameterMap
+                // If the input stream is empty and there are parameters, use parameterMap
                 if (MapKit.isNotEmpty(request.getParameterMap())) {
                     String paramString = request.getParameterMap().entrySet().stream()
                             .map(entry -> entry.getKey() + Symbol.EQUAL + String.join(Symbol.COMMA, entry.getValue()))
@@ -121,15 +125,15 @@ public class CompositeArgumentResolver implements HandlerMethodArgumentResolver 
             }
         }
 
-        // 创建目标对象实例
+        // Create target object instance
         Class<?> parameterType = methodParameter.getParameterType();
         Object target = parameterType.getDeclaredConstructor().newInstance();
         WebDataBinder binder = binderFactory.createBinder(webRequest, target, methodParameter.getParameterName());
 
-        // 添加 query 参数
+        // Add query parameters
         MutablePropertyValues mpvs = new MutablePropertyValues(request.getParameterMap());
 
-        // 处理 application/x-www-form-urlencoded 请求
+        // Handle application/x-www-form-urlencoded requests
         if (contentType != null && contentType.startsWith(MediaType.APPLICATION_FORM_URLENCODED)) {
             String bodyString = new String(body, Charset.UTF_8);
             if (!StringKit.isEmpty(bodyString)) {
@@ -137,7 +141,7 @@ public class CompositeArgumentResolver implements HandlerMethodArgumentResolver 
             }
         }
 
-        // 处理 JSON 请求
+        // Handle JSON requests
         if (contentType != null && contentType.startsWith(MediaType.APPLICATION_JSON)) {
             String bodyString = new String(body, Charset.UTF_8);
             if (!bodyString.isEmpty() && JsonKit.isJson(bodyString)) {
@@ -145,19 +149,19 @@ public class CompositeArgumentResolver implements HandlerMethodArgumentResolver 
             }
         }
 
-        // 处理 multipart/form-data 请求（文件上传）
+        // Handle multipart/form-data requests (file uploads)
         if (request instanceof MultipartHttpServletRequest multipartRequest) {
             multipartRequest.getMultiFileMap().forEach((key, files) -> {
                 if (files.size() == 1) {
-                    mpvs.add(key, files.get(0)); // 单文件绑定到 MultipartFile
+                    mpvs.add(key, files.get(0)); // Single file bound to MultipartFile
                 } else {
-                    mpvs.add(key, files); // 多文件绑定到 List<MultipartFile> 或 MultipartFile[]
+                    mpvs.add(key, files); // Multiple files bound to List<MultipartFile> or MultipartFile[]
                 }
             });
         }
 
         if (mpvs.isEmpty() && !methodParameter.hasParameterAnnotation(ModelAttribute.class)) {
-            throw new IllegalArgumentException("No parameters provided for " + methodParameter.getParameterName());
+            throw new ValidateException(ErrorCode._100116);
         }
 
         binder.bind(mpvs);
@@ -168,20 +172,20 @@ public class CompositeArgumentResolver implements HandlerMethodArgumentResolver 
     }
 
     /**
-     * 判断是否为简单类型
+     * Determines if a given type is a simple type.
      * <p>
-     * 简单类型包括：
+     * Simple types include:
      * <ul>
-     * <li>基本类型</li>
-     * <li>String</li>
-     * <li>Number</li>
-     * <li>Boolean</li>
-     * <li>Character</li>
-     * <li>MultipartFile</li>
+     * <li>Primitive types</li>
+     * <li>{@code String}</li>
+     * <li>{@code Number} and its subclasses</li>
+     * <li>{@code Boolean}</li>
+     * <li>{@code Character}</li>
+     * <li>{@code MultipartFile}</li>
      * </ul>
      *
-     * @param type 要检查的类型
-     * @return true 如果是简单类型，false 否则
+     * @param type The type to check.
+     * @return {@code true} if it is a simple type, {@code false} otherwise.
      */
     private boolean isSimpleType(Class<?> type) {
         return type.isPrimitive() || type == String.class || Number.class.isAssignableFrom(type)

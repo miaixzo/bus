@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.notify.metric.qiniu;
 
+import java.io.Serial;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,17 +39,31 @@ import org.miaixz.bus.notify.magic.ErrorCode;
 import org.miaixz.bus.notify.metric.AbstractProvider;
 
 /**
- * 七牛云短信
+ * Qiniu Cloud SMS service provider.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class QiniuSmsProvider extends AbstractProvider<QiniuMaterial, Context> {
 
+    @Serial
+    private static final long serialVersionUID = -202510031218L;
+
+    /**
+     * Constructs a {@code QiniuSmsProvider} with the given context.
+     *
+     * @param context The context containing configuration information for the provider.
+     */
     public QiniuSmsProvider(Context context) {
         super(context);
     }
 
+    /**
+     * Sends an SMS notification using Qiniu Cloud SMS service.
+     *
+     * @param entity The {@link QiniuMaterial} containing SMS details such as template ID, parameters, and recipient.
+     * @return A {@link Message} indicating the result of the SMS sending operation.
+     */
     @Override
     public Message send(QiniuMaterial entity) {
         Map<String, String> bodys = new HashMap<>();
@@ -56,10 +71,11 @@ public class QiniuSmsProvider extends AbstractProvider<QiniuMaterial, Context> {
         bodys.put("parameters", entity.getParams());
         bodys.put("mobiles", entity.getReceive());
         String response = Httpx.post(this.getUrl(entity), bodys);
-        int status = JsonKit.getValue(response, "status");
+        Integer status = JsonKit.getValue(response, "status");
 
-        String errcode = status == 200 ? ErrorCode._SUCCESS.getKey() : ErrorCode._FAILURE.getKey();
-        String errmsg = status == 200 ? ErrorCode._SUCCESS.getValue() : ErrorCode._FAILURE.getValue();
+        String errcode = (status != null && status == 200) ? ErrorCode._SUCCESS.getKey() : ErrorCode._FAILURE.getKey();
+        String errmsg = (status != null && status == 200) ? ErrorCode._SUCCESS.getValue()
+                : ErrorCode._FAILURE.getValue();
 
         return Message.builder().errcode(errcode).errmsg(errmsg).build();
     }

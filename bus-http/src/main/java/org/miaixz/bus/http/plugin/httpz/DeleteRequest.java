@@ -27,13 +27,14 @@
 */
 package org.miaixz.bus.http.plugin.httpz;
 
-import java.util.Map;
-
 import org.miaixz.bus.http.Request;
 import org.miaixz.bus.http.bodys.RequestBody;
 
+import java.util.Map;
+
 /**
- * DELETE 请求处理类，封装 DELETE 请求的参数和配置。 DELETE 请求用于删除指定资源，不包含请求体。
+ * Represents an HTTP DELETE request. This class encapsulates all the parameters and configuration for a DELETE request.
+ * DELETE requests are used to delete a specified resource and typically do not have a request body.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -41,22 +42,22 @@ import org.miaixz.bus.http.bodys.RequestBody;
 public class DeleteRequest extends HttpRequest {
 
     /**
-     * 构造函数，初始化 DELETE 请求的参数。
+     * Constructs a new {@code DeleteRequest}.
      *
-     * @param url     请求的 URL
-     * @param tag     请求的标签，用于取消请求
-     * @param params  查询参数
-     * @param headers 请求头
-     * @param id      请求的唯一标识
+     * @param url     The request URL.
+     * @param tag     A tag for this request, used for cancellation.
+     * @param params  The query parameters for the request.
+     * @param headers The request headers.
+     * @param id      A unique identifier for this request.
      */
     public DeleteRequest(String url, Object tag, Map<String, String> params, Map<String, String> headers, String id) {
         super(url, tag, params, headers, null, null, null, id);
     }
 
     /**
-     * 构建 DELETE 请求的请求体。 DELETE 请求无请求体，返回 null。
+     * Builds the request body. For a DELETE request, the body is always null.
      *
-     * @return 始终返回 null
+     * @return Always returns {@code null}.
      */
     @Override
     protected RequestBody buildRequestBody() {
@@ -64,14 +65,15 @@ public class DeleteRequest extends HttpRequest {
     }
 
     /**
-     * 构建 DELETE 请求对象。
+     * Builds the final Httpd {@link Request} object.
      *
-     * @param requestBody 请求体（DELETE 请求为 null）
-     * @return 构建完成的 Request 对象
+     * @param requestBody The request body, which will be null for a DELETE request.
+     * @return The constructed {@link Request} object.
      */
     @Override
     protected Request buildRequest(RequestBody requestBody) {
-        return builder.delete().build(); // 使用 DELETE 方法构建请求
+        // Constructs the request using the DELETE method.
+        return builder.delete().build();
     }
 
 }

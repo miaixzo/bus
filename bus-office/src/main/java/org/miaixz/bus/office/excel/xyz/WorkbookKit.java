@@ -42,7 +42,7 @@ import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * Excel工作簿{@link Workbook}相关工具类
+ * Utility class for Excel {@link Workbook}.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -50,58 +50,58 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class WorkbookKit {
 
     /**
-     * 创建或加载工作簿（读写模式）
+     * Creates or loads a workbook (read-write mode).
      *
-     * @param excelFilePath Excel文件路径，绝对路径或相对于ClassPath路径
-     * @return {@link Workbook}
+     * @param excelFilePath The path to the Excel file, absolute or relative to the classpath.
+     * @return A {@link Workbook} instance.
      */
     public static Workbook createBook(final String excelFilePath) {
         return createBook(excelFilePath, false);
     }
 
     /**
-     * 创建或加载工作簿
+     * Creates or loads a workbook.
      *
-     * @param excelFilePath Excel文件路径，绝对路径或相对于ClassPath路径
-     * @param readOnly      是否只读模式打开，true:是（不可编辑），false:否（可编辑）
-     * @return {@link Workbook}
+     * @param excelFilePath The path to the Excel file, absolute or relative to the classpath.
+     * @param readOnly      Whether to open in read-only mode (true for non-editable, false for editable).
+     * @return A {@link Workbook} instance.
      */
     public static Workbook createBook(final String excelFilePath, final boolean readOnly) {
         return createBook(FileKit.file(excelFilePath), null, readOnly);
     }
 
     /**
-     * 创建或加载工作簿（读写模式）
+     * Creates or loads a workbook (read-write mode).
      *
-     * @param excelFile Excel文件
-     * @return {@link Workbook}
+     * @param excelFile The Excel file.
+     * @return A {@link Workbook} instance.
      */
     public static Workbook createBook(final File excelFile) {
         return createBook(excelFile, false);
     }
 
     /**
-     * 创建或加载工作簿
+     * Creates or loads a workbook.
      *
-     * @param excelFile Excel文件
-     * @param readOnly  是否只读模式打开，true:是（不可编辑），false:否（可编辑）
-     * @return {@link Workbook}
+     * @param excelFile The Excel file.
+     * @param readOnly  Whether to open in read-only mode (true for non-editable, false for editable).
+     * @return A {@link Workbook} instance.
      */
     public static Workbook createBook(final File excelFile, final boolean readOnly) {
         return createBook(excelFile, null, readOnly);
     }
 
     /**
-     * 创建工作簿，用于Excel写出（读写模式）
+     * Creates a workbook for Excel writing (read-write mode).
      *
      * <pre>
-     * 1. excelFile为null时直接返回一个空的工作簿，默认xlsx格式
-     * 2. 文件已存在则通过流的方式读取到这个工作簿
-     * 3. 文件不存在则检查传入文件路径是否以xlsx为扩展名，是则创建xlsx工作簿，否则创建xls工作簿
+     * 1. If excelFile is null, an empty workbook is returned, defaulting to xlsx format.
+     * 2. If the file exists, it is read into the workbook via a stream.
+     * 3. If the file does not exist, it checks if the file path ends with .xlsx. If so, an xlsx workbook is created; otherwise, an xls workbook is created.
      * </pre>
      *
-     * @param excelFile Excel文件
-     * @return {@link Workbook}
+     * @param excelFile The Excel file.
+     * @return A {@link Workbook} instance.
      */
     public static Workbook createBookForWriter(final File excelFile) {
         if (null == excelFile) {
@@ -116,23 +116,23 @@ public class WorkbookKit {
     }
 
     /**
-     * 创建或加载工作簿（读写模式）
+     * Creates or loads a workbook (read-write mode).
      *
-     * @param excelFile Excel文件
-     * @param password  Excel工作簿密码，如果无密码传{@code null}
-     * @return {@link Workbook}
+     * @param excelFile The Excel file.
+     * @param password  The password for the workbook, or {@code null} if no password.
+     * @return A {@link Workbook} instance.
      */
     public static Workbook createBook(final File excelFile, final String password) {
         return createBook(excelFile, password, false);
     }
 
     /**
-     * 创建或加载工作簿
+     * Creates or loads a workbook.
      *
-     * @param excelFile Excel文件
-     * @param password  Excel工作簿密码，如果无密码传{@code null}
-     * @param readOnly  是否只读模式打开，true:是（不可编辑），false:否（可编辑）
-     * @return {@link Workbook}
+     * @param excelFile The Excel file.
+     * @param password  The password for the workbook, or {@code null} if no password.
+     * @param readOnly  Whether to open in read-only mode (true for non-editable, false for editable).
+     * @return A {@link Workbook} instance.
      */
     public static Workbook createBook(final File excelFile, final String password, final boolean readOnly) {
         try {
@@ -143,21 +143,21 @@ public class WorkbookKit {
     }
 
     /**
-     * 创建或加载工作簿（只读模式）
+     * Creates or loads a workbook (read-only mode).
      *
-     * @param in Excel输入流
-     * @return {@link Workbook}
+     * @param in The Excel input stream.
+     * @return A {@link Workbook} instance.
      */
     public static Workbook createBook(final InputStream in) {
         return createBook(in, null);
     }
 
     /**
-     * 创建或加载工作簿（只读模式）
+     * Creates or loads a workbook (read-only mode). The stream is closed automatically after use.
      *
-     * @param in       Excel输入流，使用完毕自动关闭流
-     * @param password 密码
-     * @return {@link Workbook}
+     * @param in       The Excel input stream.
+     * @param password The password.
+     * @return A {@link Workbook} instance.
      */
     public static Workbook createBook(final InputStream in, final String password) {
         try {
@@ -170,10 +170,10 @@ public class WorkbookKit {
     }
 
     /**
-     * 创建新的空白Excel工作簿
+     * Creates a new blank Excel workbook.
      *
-     * @param isXlsx 是否为xlsx格式的Excel
-     * @return {@link Workbook}
+     * @param isXlsx Whether the format is xlsx.
+     * @return A {@link Workbook} instance.
      */
     public static Workbook createBook(final boolean isXlsx) {
         try {
@@ -184,117 +184,118 @@ public class WorkbookKit {
     }
 
     /**
-     * 创建或加载SXSSFWorkbook工作簿（读写模式）
+     * Creates or loads an SXSSFWorkbook workbook (read-write mode).
      *
-     * @param excelFilePath Excel文件路径，绝对路径或相对于ClassPath路径
-     * @return {@link SXSSFWorkbook}
+     * @param excelFilePath The path to the Excel file, absolute or relative to the classpath.
+     * @return An {@link SXSSFWorkbook} instance.
      */
     public static SXSSFWorkbook createSXSSFBook(final String excelFilePath) {
         return createSXSSFBook(excelFilePath, false);
     }
 
     /**
-     * 创建或加载SXSSFWorkbook工作簿
+     * Creates or loads an SXSSFWorkbook workbook.
      *
-     * @param excelFilePath Excel文件路径，绝对路径或相对于ClassPath路径
-     * @param readOnly      是否只读模式打开，true:是（不可编辑），false:否（可编辑）
-     * @return {@link SXSSFWorkbook}
+     * @param excelFilePath The path to the Excel file, absolute or relative to the classpath.
+     * @param readOnly      Whether to open in read-only mode (true for non-editable, false for editable).
+     * @return An {@link SXSSFWorkbook} instance.
      */
     public static SXSSFWorkbook createSXSSFBook(final String excelFilePath, final boolean readOnly) {
         return createSXSSFBook(FileKit.file(excelFilePath), null, readOnly);
     }
 
     /**
-     * 创建或加载SXSSFWorkbook工作簿（读写模式）
+     * Creates or loads an SXSSFWorkbook workbook (read-write mode).
      *
-     * @param excelFile Excel文件
-     * @return {@link SXSSFWorkbook}
+     * @param excelFile The Excel file.
+     * @return An {@link SXSSFWorkbook} instance.
      */
     public static SXSSFWorkbook createSXSSFBook(final File excelFile) {
         return createSXSSFBook(excelFile, false);
     }
 
     /**
-     * 创建或加载SXSSFWorkbook工作簿
+     * Creates or loads an SXSSFWorkbook workbook.
      *
-     * @param excelFile Excel文件
-     * @param readOnly  是否只读模式打开，true:是（不可编辑），false:否（可编辑）
-     * @return {@link SXSSFWorkbook}
+     * @param excelFile The Excel file.
+     * @param readOnly  Whether to open in read-only mode (true for non-editable, false for editable).
+     * @return An {@link SXSSFWorkbook} instance.
      */
     public static SXSSFWorkbook createSXSSFBook(final File excelFile, final boolean readOnly) {
         return createSXSSFBook(excelFile, null, readOnly);
     }
 
     /**
-     * 创建或加载SXSSFWorkbook工作簿（读写模式）
+     * Creates or loads an SXSSFWorkbook workbook (read-write mode).
      *
-     * @param excelFile Excel文件
-     * @param password  Excel工作簿密码，如果无密码传{@code null}
-     * @return {@link SXSSFWorkbook}
+     * @param excelFile The Excel file.
+     * @param password  The password for the workbook, or {@code null} if no password.
+     * @return An {@link SXSSFWorkbook} instance.
      */
     public static SXSSFWorkbook createSXSSFBook(final File excelFile, final String password) {
         return createSXSSFBook(excelFile, password, false);
     }
 
     /**
-     * 创建或加载{@link SXSSFWorkbook}工作簿
+     * Creates or loads an {@link SXSSFWorkbook} workbook.
      *
-     * @param excelFile Excel文件
-     * @param password  Excel工作簿密码，如果无密码传{@code null}
-     * @param readOnly  是否只读模式打开，true:是（不可编辑），false:否（可编辑）
-     * @return {@link SXSSFWorkbook}
+     * @param excelFile The Excel file.
+     * @param password  The password for the workbook, or {@code null} if no password.
+     * @param readOnly  Whether to open in read-only mode (true for non-editable, false for editable).
+     * @return An {@link SXSSFWorkbook} instance.
      */
     public static SXSSFWorkbook createSXSSFBook(final File excelFile, final String password, final boolean readOnly) {
         return toSXSSFBook(createBook(excelFile, password, readOnly));
     }
 
     /**
-     * 创建或加载{@link SXSSFWorkbook}工作簿（只读模式）
+     * Creates or loads an {@link SXSSFWorkbook} workbook (read-only mode).
      *
-     * @param in Excel输入流
-     * @return {@link SXSSFWorkbook}
+     * @param in The Excel input stream.
+     * @return An {@link SXSSFWorkbook} instance.
      */
     public static SXSSFWorkbook createSXSSFBook(final InputStream in) {
         return createSXSSFBook(in, null);
     }
 
     /**
-     * 创建或加载{@link SXSSFWorkbook}工作簿（只读模式）
+     * Creates or loads an {@link SXSSFWorkbook} workbook (read-only mode).
      *
-     * @param in       Excel输入流
-     * @param password 密码
-     * @return {@link SXSSFWorkbook}
+     * @param in       The Excel input stream.
+     * @param password The password.
+     * @return An {@link SXSSFWorkbook} instance.
      */
     public static SXSSFWorkbook createSXSSFBook(final InputStream in, final String password) {
         return toSXSSFBook(createBook(in, password));
     }
 
     /**
-     * 创建空的{@link SXSSFWorkbook}，用于大批量数据写出
+     * Creates an empty {@link SXSSFWorkbook}, suitable for writing large amounts of data.
      *
-     * @return {@link SXSSFWorkbook}
+     * @return An {@link SXSSFWorkbook} instance.
      */
     public static SXSSFWorkbook createSXSSFBook() {
         return new SXSSFWorkbook();
     }
 
     /**
-     * 创建空的{@link SXSSFWorkbook}，用于大批量数据写出
+     * Creates an empty {@link SXSSFWorkbook}, suitable for writing large amounts of data.
      *
-     * @param rowAccessWindowSize 在内存中的行数，-1表示不限制，此时需要手动刷出
-     * @return {@link SXSSFWorkbook}
+     * @param rowAccessWindowSize The number of rows to keep in memory. -1 means no limit, requiring manual flushing.
+     * @return An {@link SXSSFWorkbook} instance.
      */
     public static SXSSFWorkbook createSXSSFBook(final int rowAccessWindowSize) {
         return new SXSSFWorkbook(rowAccessWindowSize);
     }
 
     /**
-     * 创建空的{@link SXSSFWorkbook}，用于大批量数据写出
+     * Creates an empty {@link SXSSFWorkbook}, suitable for writing large amounts of data.
      *
-     * @param rowAccessWindowSize   在内存中的行数，-1表示不限制，此时需要手动刷出
-     * @param compressTmpFiles      是否使用Gzip压缩临时文件
-     * @param useSharedStringsTable 是否使用共享字符串表，一般大量重复字符串时开启可节省内存
-     * @return {@link SXSSFWorkbook}
+     * @param rowAccessWindowSize   The number of rows to keep in memory. -1 means no limit, requiring manual flushing.
+     * @param compressTmpFiles      Whether to compress temporary files with Gzip.
+     * @param useSharedStringsTable Whether to use a shared strings table, which can save memory with many duplicate
+     *                              strings.
+     * @return An {@link SXSSFWorkbook} instance.
      */
     public static SXSSFWorkbook createSXSSFBook(
             final int rowAccessWindowSize,
@@ -304,11 +305,11 @@ public class WorkbookKit {
     }
 
     /**
-     * 将Excel Workbook刷出到输出流，不关闭流
+     * Flushes the Excel Workbook to an output stream without closing the stream.
      *
-     * @param book {@link Workbook}
-     * @param out  输出流
-     * @throws InternalException IO异常
+     * @param book The {@link Workbook}.
+     * @param out  The output stream.
+     * @throws InternalException if an I/O error occurs.
      */
     public static void writeBook(final Workbook book, final OutputStream out) throws InternalException {
         try {
@@ -319,10 +320,10 @@ public class WorkbookKit {
     }
 
     /**
-     * 将普通工作簿转换为SXSSFWorkbook
+     * Converts a regular workbook to an SXSSFWorkbook.
      *
-     * @param book 工作簿
-     * @return {@link SXSSFWorkbook}
+     * @param book The workbook.
+     * @return An {@link SXSSFWorkbook} instance.
      */
     private static SXSSFWorkbook toSXSSFBook(final Workbook book) {
         if (book instanceof SXSSFWorkbook) {

@@ -37,10 +37,16 @@ import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 
 /**
- * Collection检查工具类，提供字对象的blank和empty等检查
+ * Provides utility methods for validating collections and other iterable data structures. This class offers a
+ * consistent way to check for empty or non-empty states across various types, including {@link Collection},
+ * {@link Iterable}, {@link Iterator}, {@link Enumeration}, and {@link Map}.
+ * <p>
+ * <b>Definitions:</b>
+ *
  * <ul>
- * <li>empty定义：{@code null} or 空字对象：{@code ""}</li>
- * <li>blank定义：{@code null} or 空字对象：{@code ""} or 空格、全角空格、制表符、换行符，等不可见字符</li>
+ * <li><b>Empty:</b> A data structure is considered empty if it is {@code null} or contains no elements.</li>
+ * <li><b>Blank:</b> While not explicitly implemented here for collections, this term typically refers to strings that
+ * are {@code null}, empty, or contain only whitespace. This class focuses on element presence.</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -49,20 +55,20 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 public class CollectionValidator {
 
     /**
-     * 集合是否为空
+     * Checks if the given collection is empty.
      *
-     * @param collection 集合
-     * @return 是否为空
+     * @param collection The collection to check.
+     * @return {@code true} if the collection is {@code null} or has no elements; {@code false} otherwise.
      */
     public static boolean isEmpty(final Collection<?> collection) {
         return collection == null || collection.isEmpty();
     }
 
     /**
-     * Iterable是否为空
+     * Checks if the given {@link Iterable} is empty.
      *
-     * @param iterable Iterable对象
-     * @return 是否为空
+     * @param iterable The {@link Iterable} to check.
+     * @return {@code true} if the iterable is {@code null} or has no elements; {@code false} otherwise.
      * @see IteratorKit#isEmpty(Iterable)
      */
     public static boolean isEmpty(final Iterable<?> iterable) {
@@ -70,10 +76,10 @@ public class CollectionValidator {
     }
 
     /**
-     * Iterator是否为空
+     * Checks if the given {@link Iterator} is empty.
      *
-     * @param iterator Iterator对象
-     * @return 是否为空
+     * @param iterator The {@link Iterator} to check.
+     * @return {@code true} if the iterator is {@code null} or has no more elements; {@code false} otherwise.
      * @see IteratorKit#isEmpty(Iterator)
      */
     public static boolean isEmpty(final Iterator<?> iterator) {
@@ -81,20 +87,20 @@ public class CollectionValidator {
     }
 
     /**
-     * Enumeration是否为空
+     * Checks if the given {@link Enumeration} is empty.
      *
-     * @param enumeration {@link Enumeration}
-     * @return 是否为空
+     * @param enumeration The {@link Enumeration} to check.
+     * @return {@code true} if the enumeration is {@code null} or has no more elements; {@code false} otherwise.
      */
     public static boolean isEmpty(final Enumeration<?> enumeration) {
         return null == enumeration || !enumeration.hasMoreElements();
     }
 
     /**
-     * Map是否为空
+     * Checks if the given {@link Map} is empty.
      *
-     * @param map 集合
-     * @return 是否为空
+     * @param map The {@link Map} to check.
+     * @return {@code true} if the map is {@code null} or has no key-value mappings; {@code false} otherwise.
      * @see MapKit#isEmpty(Map)
      */
     public static boolean isEmpty(final Map<?, ?> map) {
@@ -102,27 +108,28 @@ public class CollectionValidator {
     }
 
     /**
-     * 如果给定集合为空，返回默认集合
+     * Returns the given collection if it is not empty, otherwise returns a default collection.
      *
-     * @param <T>               集合类型
-     * @param <E>               集合元素类型
-     * @param collection        集合
-     * @param defaultCollection 默认数组
-     * @return 非空（empty）的原集合或默认集合
+     * @param <T>               The type of the collection.
+     * @param <E>               The type of elements in the collection.
+     * @param collection        The collection to check.
+     * @param defaultCollection The default collection to return if the input collection is empty.
+     * @return The original collection if not empty, otherwise the default collection.
      */
     public static <T extends Collection<E>, E> T defaultIfEmpty(final T collection, final T defaultCollection) {
         return isEmpty(collection) ? defaultCollection : collection;
     }
 
     /**
-     * 如果给定集合为空，返回默认集合
+     * Returns the result of a handler function if the collection is not empty, otherwise returns a default value from a
+     * supplier.
      *
-     * @param <T>             集合类型
-     * @param <E>             集合元素类型
-     * @param collection      集合
-     * @param handler         非空的处理函数
-     * @param defaultSupplier 默认值懒加载函数
-     * @return 非空（empty）的原集合或默认集合
+     * @param <T>             The type of the collection.
+     * @param <E>             The type of elements in the collection.
+     * @param collection      The collection to check.
+     * @param handler         The function to apply to the non-empty collection.
+     * @param defaultSupplier A supplier that provides a default collection if the input is empty.
+     * @return The result of the handler function or the value from the default supplier.
      */
     public static <T extends Collection<E>, E> T defaultIfEmpty(
             final T collection,
@@ -132,42 +139,42 @@ public class CollectionValidator {
     }
 
     /**
-     * 如果提供的集合为{@code null}，返回一个不可变的默认空集合，否则返回原集合 空集合使用{@link Collections#emptySet()}
+     * Returns an unmodifiable empty set if the provided set is {@code null}, otherwise returns the original set.
      *
-     * @param <T> 集合元素类型
-     * @param set 提供的集合，可能为null
-     * @return 原集合，若为null返回空集合
+     * @param <T> The type of elements in the set.
+     * @param set The set to check, may be {@code null}.
+     * @return The original set, or an unmodifiable empty set if the input is {@code null}.
      */
     public static <T> Set<T> emptyIfNull(final Set<T> set) {
         return ObjectKit.defaultIfNull(set, Collections.emptySet());
     }
 
     /**
-     * 如果提供的集合为{@code null}，返回一个不可变的默认空集合，否则返回原集合 空集合使用{@link Collections#emptyList()}
+     * Returns an unmodifiable empty list if the provided list is {@code null}, otherwise returns the original list.
      *
-     * @param <T>  集合元素类型
-     * @param list 提供的集合，可能为null
-     * @return 原集合，若为null返回空集合
+     * @param <T>  The type of elements in the list.
+     * @param list The list to check, may be {@code null}.
+     * @return The original list, or an unmodifiable empty list if the input is {@code null}.
      */
     public static <T> List<T> emptyIfNull(final List<T> list) {
         return ObjectKit.defaultIfNull(list, Collections.emptyList());
     }
 
     /**
-     * 集合是否为非空
+     * Checks if the given collection is not empty.
      *
-     * @param collection 集合
-     * @return 是否为非空
+     * @param collection The collection to check.
+     * @return {@code true} if the collection is not {@code null} and contains elements; {@code false} otherwise.
      */
     public static boolean isNotEmpty(final Collection<?> collection) {
         return !isEmpty(collection);
     }
 
     /**
-     * Iterable是否为空
+     * Checks if the given {@link Iterable} is not empty.
      *
-     * @param iterable Iterable对象
-     * @return 是否为空
+     * @param iterable The {@link Iterable} to check.
+     * @return {@code true} if the iterable is not {@code null} and contains elements; {@code false} otherwise.
      * @see IteratorKit#isNotEmpty(Iterable)
      */
     public static boolean isNotEmpty(final Iterable<?> iterable) {
@@ -175,10 +182,10 @@ public class CollectionValidator {
     }
 
     /**
-     * Iterator是否为空
+     * Checks if the given {@link Iterator} is not empty.
      *
-     * @param iterator Iterator对象
-     * @return 是否为空
+     * @param iterator The {@link Iterator} to check.
+     * @return {@code true} if the iterator is not {@code null} and has more elements; {@code false} otherwise.
      * @see IteratorKit#isNotEmpty(Iterator)
      */
     public static boolean isNotEmpty(final Iterator<?> iterator) {
@@ -186,36 +193,20 @@ public class CollectionValidator {
     }
 
     /**
-     * Enumeration是否为空
+     * Checks if the given {@link Enumeration} is not empty.
      *
-     * @param enumeration {@link Enumeration}
-     * @return 是否为空
+     * @param enumeration The {@link Enumeration} to check.
+     * @return {@code true} if the enumeration is not {@code null} and has more elements; {@code false} otherwise.
      */
     public static boolean isNotEmpty(final Enumeration<?> enumeration) {
         return null != enumeration && enumeration.hasMoreElements();
     }
 
     /**
-     * 是否包含{@code null}元素
-     * <ul>
-     * <li>集合为{@code null}，返回{@code true}</li>
-     * <li>集合为空集合，即元素个数为0，返回{@code false}</li>
-     * <li>集合中元素为""，返回{@code false}</li>
-     * </ul>
+     * Checks if the given {@link Map} is not empty.
      *
-     * @param iterable 被检查的Iterable对象，如果为{@code null} 返回true
-     * @return 是否包含{@code null}元素
-     * @see IteratorKit#hasNull(Iterator)
-     */
-    public static boolean hasNull(final Iterable<?> iterable) {
-        return IteratorKit.hasNull(IteratorKit.getIter(iterable));
-    }
-
-    /**
-     * Map是否为非空
-     *
-     * @param map 集合
-     * @return 是否为非空
+     * @param map The {@link Map} to check.
+     * @return {@code true} if the map is not {@code null} and has key-value mappings; {@code false} otherwise.
      * @see MapKit#isNotEmpty(Map)
      */
     public static boolean isNotEmpty(final Map<?, ?> map) {
@@ -223,15 +214,25 @@ public class CollectionValidator {
     }
 
     /**
-     * 判断subCollection是否为collection的子集合，不考虑顺序，只考虑元素数量。
-     * <ul>
-     * <li>如果两个集合为同一集合或，则返回true</li>
-     * <li>如果两个集合元素都相同，则返回true（无论顺序相同与否）</li>
-     * </ul>
+     * Checks if the given iterable contains any {@code null} elements.
      *
-     * @param subCollection 第一个Iterable对象，即子集合。
-     * @param collection    第二个Iterable对象，可以为任何实现了Iterable接口的集合。
-     * @return 如果subCollection是collection的子集合，则返回true；否则返回false。
+     * @param iterable The {@link Iterable} to check. If {@code null}, this method returns {@code true}.
+     * @return {@code true} if the iterable is {@code null} or contains at least one {@code null} element; {@code false}
+     *         otherwise.
+     * @see IteratorKit#hasNull(Iterator)
+     */
+    public static boolean hasNull(final Iterable<?> iterable) {
+        return IteratorKit.hasNull(IteratorKit.getIter(iterable));
+    }
+
+    /**
+     * Determines if one collection is a sub-collection of another by comparing element cardinalities. This method
+     * ignores the order of elements.
+     *
+     * @param subCollection The potential sub-collection.
+     * @param collection    The main collection.
+     * @return {@code true} if every element in {@code subCollection} has a cardinality less than or equal to its
+     *         cardinality in {@code collection}.
      */
     public static boolean isSub(final Collection<?> subCollection, final Collection<?> collection) {
         if (size(subCollection) > size(collection)) {
@@ -241,33 +242,26 @@ public class CollectionValidator {
     }
 
     /**
-     * 判断两个{@link Collection} 是否元素和顺序相同，返回{@code true}的条件是：
-     * <ul>
-     * <li>两个{@link Collection}必须长度相同</li>
-     * <li>两个{@link Collection}元素相同index的对象必须equals，满足{@link Objects#equals(Object, Object)}</li>
-     * </ul>
+     * Checks if two collections are equal in terms of both elements and their order. This is equivalent to calling
+     * {@code list1.equals(list2)} if both are lists.
      *
-     * @param list1 列表1
-     * @param list2 列表2
-     * @return 是否相同
+     * @param list1 The first collection.
+     * @param list2 The second collection.
+     * @return {@code true} if the collections have the same size and elements in the same order; {@code false}
+     *         otherwise.
      */
     public static boolean isEqualList(final Collection<?> list1, final Collection<?> list2) {
         return equals(list1, list2, false);
     }
 
     /**
-     * 判断两个{@link Iterable}中的元素是否相同，可选是否判断顺序 当满足下列情况时返回{@code true}：
-     * <ul>
-     * <li>两个{@link Iterable}都为{@code null}；</li>
-     * <li>两个{@link Iterable}满足{@code coll1 == coll2}；</li>
-     * <li>如果忽略顺序，则计算两个集合中元素和数量是否相同</li>
-     * <li>如果不忽略顺序，两个{@link Iterable}所有具有相同下标的元素皆满足{@link Objects#equals(Object, Object)}；</li>
-     * </ul>
+     * Compares two collections for equality, with an option to ignore the order of elements. If order is ignored, the
+     * comparison is based on element cardinalities (multiset equality).
      *
-     * @param coll1       集合1
-     * @param coll2       集合2
-     * @param ignoreOrder 是否忽略顺序
-     * @return 是否相同
+     * @param coll1       The first collection.
+     * @param coll2       The second collection.
+     * @param ignoreOrder If {@code true}, element order is ignored; otherwise, order is significant.
+     * @return {@code true} if the collections are equal based on the specified criteria; {@code false} otherwise.
      */
     public static boolean equals(final Collection<?> coll1, final Collection<?> coll2, final boolean ignoreOrder) {
         if (size(coll1) != size(coll2)) {
@@ -278,25 +272,18 @@ public class CollectionValidator {
     }
 
     /**
-     * 获取Collection或者iterator的大小，此方法可以处理的对象类型如下：
-     * <ul>
-     * <li>Collection - the collection size</li>
-     * <li>Map - the map size</li>
-     * <li>Array - the array size</li>
-     * <li>Iterator - the number of elements remaining in the iterator</li>
-     * <li>Enumeration - the number of elements remaining in the enumeration</li>
-     * </ul>
+     * Returns the size of a given object if it is a known data structure type. Supported types are {@link Collection},
+     * {@link Map}, array, {@link Iterator}, {@link Iterable}, and {@link Enumeration}.
      *
-     * @param object 可以为空的对象
-     * @return 如果object为空则返回0
-     * @throws IllegalArgumentException 参数object不是Collection或者iterator
+     * @param object The object whose size is to be determined.
+     * @return The size of the object, or 0 if the object is {@code null}.
+     * @throws IllegalArgumentException if the object type is not supported.
      */
     public static int size(final Object object) {
         if (object == null) {
             return 0;
         }
 
-        // 优先判断使用频率较高的类型
         if (object instanceof Collection<?>) {
             return ((Collection<?>) object).size();
         } else if (object instanceof Map<?, ?>) {

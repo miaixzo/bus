@@ -30,7 +30,8 @@ package org.miaixz.bus.office.excel.cell.editors;
 import org.apache.poi.ss.usermodel.Cell;
 
 /**
- * POI中NUMRIC类型的值默认返回的是Double类型，此编辑器用于转换其为int型
+ * A {@link CellEditor} that converts numeric cell values (which are typically {@code Double} in POI) to {@code int}
+ * type.
  *
  * @author Kimi Liu
  * @since Java 17+

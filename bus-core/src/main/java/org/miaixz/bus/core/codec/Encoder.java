@@ -28,20 +28,21 @@
 package org.miaixz.bus.core.codec;
 
 /**
- * 编码接口
+ * Generic interface for encoding operations. This interface defines a contract for classes that perform encoding from
+ * one data type to another.
  *
- * @param <T> 被编码的数据类型
- * @param <R> 编码后的数据类型
+ * @param <T> The type of the data to be encoded (raw data).
+ * @param <R> The type of the encoded data (result).
  * @author Kimi Liu
  * @since Java 17+
  */
 public interface Encoder<T, R> {
 
     /**
-     * 执行编码
+     * Executes the encoding operation.
      *
-     * @param data 被编码的数据
-     * @return 编码后的数据
+     * @param data The data to be encoded.
+     * @return The encoded data.
      */
     R encode(T data);
 

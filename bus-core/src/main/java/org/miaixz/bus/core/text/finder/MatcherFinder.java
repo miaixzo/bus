@@ -33,22 +33,29 @@ import java.util.function.Predicate;
 import org.miaixz.bus.core.lang.Assert;
 
 /**
- * 字符匹配查找器 查找满足指定{@link Predicate} 匹配的字符所在位置，此类长用于查找某一类字符，如数字等
+ * Character matcher finder. Finds the position of a character that satisfies the specified {@link Predicate}. This
+ * class is often used to find a certain type of character, such as digits.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class MatcherFinder extends TextFinder {
 
+    /**
+     * The serial version UID.
+     */
     @Serial
     private static final long serialVersionUID = 2852236936800L;
 
+    /**
+     * The character matcher predicate.
+     */
     private final Predicate<Character> matcher;
 
     /**
-     * 构造
+     * Constructor.
      *
-     * @param matcher 被查找的字符匹配器
+     * @param matcher The character matcher predicate to be used for searching.
      */
     public MatcherFinder(final Predicate<Character> matcher) {
         this.matcher = matcher;

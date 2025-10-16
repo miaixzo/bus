@@ -36,7 +36,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * 交易查询接口
+ * Transaction query interface model.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,11 +48,29 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class QueryOrder extends Material {
 
+    /**
+     * Version number.
+     */
     private String version;
+    /**
+     * Merchant number.
+     */
     private String merchant;
+    /**
+     * Transaction number.
+     */
     private String tradeNum;
+    /**
+     * Original transaction number.
+     */
     private String oTradeNum;
+    /**
+     * Trade type.
+     */
     private String tradeType;
+    /**
+     * Signature.
+     */
     private String sign;
 
 }

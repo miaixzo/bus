@@ -38,7 +38,8 @@ import org.miaixz.bus.core.codec.binary.encoder.Base62Encoder;
 import org.miaixz.bus.core.xyz.ArrayKit;
 
 /**
- * Base62编码解码实现，常用于短URL From https://github.com/seruco/base62
+ * Provides Base62 encoding and decoding functionality, commonly used for short URLs. The implementation is based on the
+ * work from https://github.com/seruco/base62.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -49,16 +50,16 @@ public class Base62Provider implements Encoder<byte[], byte[]>, Decoder<byte[], 
     public static final long serialVersionUID = 2852259077806L;
 
     /**
-     * 单例
+     * Singleton instance of the Base62Provider.
      */
     public static Base62Provider INSTANCE = new Base62Provider();
 
     /**
-     * 按照字典转换bytes
+     * Translates a byte array of indices into a byte array of characters from a dictionary.
      *
-     * @param indices    内容
-     * @param dictionary 字典
-     * @return 转换值
+     * @param indices    The byte array of indices.
+     * @param dictionary The dictionary to use for translation.
+     * @return The translated byte array.
      */
     public static byte[] translate(final byte[] indices, final byte[] dictionary) {
         final byte[] translation = new byte[indices.length];
@@ -71,30 +72,27 @@ public class Base62Provider implements Encoder<byte[], byte[]>, Decoder<byte[], 
     }
 
     /**
-     * 使用定义的字母表从源基准到目标基准
+     * Converts a byte array from a source base to a target base.
      *
-     * @param message    消息bytes
-     * @param sourceBase 源基准长度
-     * @param targetBase 目标基准长度
-     * @return 计算结果
+     * @param message    The byte array to convert.
+     * @param sourceBase The source base.
+     * @param targetBase The target base.
+     * @return The converted byte array.
      */
     public static byte[] convert(final byte[] message, final int sourceBase, final int targetBase) {
-        // 计算结果长度，算法来自：http://codegolf.stackexchange.com/a/21672
+        // Estimate the length of the output to avoid resizing the buffer.
         final int estimatedLength = estimateOutputLength(message.length, sourceBase, targetBase);
-
         final ByteArrayOutputStream out = new ByteArrayOutputStream(estimatedLength);
 
         byte[] source = message;
 
         while (source.length > 0) {
             final ByteArrayOutputStream quotient = new ByteArrayOutputStream(source.length);
-
             int remainder = 0;
 
             for (final byte b : source) {
                 final int accumulator = (b & 0xFF) + remainder * sourceBase;
                 final int digit = (accumulator - (accumulator % targetBase)) / targetBase;
-
                 remainder = accumulator % targetBase;
 
                 if (quotient.size() > 0 || digit > 0) {
@@ -103,11 +101,10 @@ public class Base62Provider implements Encoder<byte[], byte[]>, Decoder<byte[], 
             }
 
             out.write(remainder);
-
             source = quotient.toByteArray();
         }
 
-        // 使用与消息中与之数量相对应的‘0’来填充输出
+        // Pad the output with leading zeros to match the input.
         for (int i = 0; i < message.length - 1 && message[i] == 0; i++) {
             out.write(0);
         }
@@ -116,22 +113,22 @@ public class Base62Provider implements Encoder<byte[], byte[]>, Decoder<byte[], 
     }
 
     /**
-     * 估算结果长度
+     * Estimates the length of the output when converting between bases.
      *
-     * @param inputLength 输入长度
-     * @param sourceBase  源基准长度
-     * @param targetBase  目标基准长度
-     * @return 估算长度
+     * @param inputLength The length of the input array.
+     * @param sourceBase  The source base.
+     * @param targetBase  The target base.
+     * @return The estimated output length.
      */
     private static int estimateOutputLength(final int inputLength, final int sourceBase, final int targetBase) {
         return (int) Math.ceil((Math.log(sourceBase) / Math.log(targetBase)) * inputLength);
     }
 
     /**
-     * 编码指定消息bytes为Base62格式的bytes
+     * Encodes a byte array into a Base62 byte array using the GMP-style alphabet.
      *
-     * @param data 被编码的消息
-     * @return Base62内容
+     * @param data The byte array to encode.
+     * @return The Base62 encoded byte array.
      */
     @Override
     public byte[] encode(final byte[] data) {
@@ -139,11 +136,11 @@ public class Base62Provider implements Encoder<byte[], byte[]>, Decoder<byte[], 
     }
 
     /**
-     * 编码指定消息bytes为Base62格式的bytes
+     * Encodes a byte array into a Base62 byte array.
      *
-     * @param data        被编码的消息
-     * @param useInverted 是否使用反转风格，即将GMP风格中的大小写做转换
-     * @return Base62内容
+     * @param data        The byte array to encode.
+     * @param useInverted If {@code true}, the inverted alphabet is used; otherwise, the GMP-style alphabet is used.
+     * @return The Base62 encoded byte array.
      */
     public byte[] encode(final byte[] data, final boolean useInverted) {
         final Base62Encoder encoder = useInverted ? Base62Encoder.INVERTED_ENCODER : Base62Encoder.GMP_ENCODER;
@@ -151,10 +148,10 @@ public class Base62Provider implements Encoder<byte[], byte[]>, Decoder<byte[], 
     }
 
     /**
-     * 解码Base62消息
+     * Decodes a Base62 byte array using the GMP-style alphabet.
      *
-     * @param encoded Base62内容
-     * @return 消息
+     * @param encoded The Base62 byte array to decode.
+     * @return The decoded byte array.
      */
     @Override
     public byte[] decode(final byte[] encoded) {
@@ -162,11 +159,12 @@ public class Base62Provider implements Encoder<byte[], byte[]>, Decoder<byte[], 
     }
 
     /**
-     * 解码Base62消息
+     * Decodes a Base62 byte array.
      *
-     * @param encoded     Base62内容
-     * @param useInverted 是否使用反转风格，即将GMP风格中的大小写做转换
-     * @return 消息
+     * @param encoded     The Base62 byte array to decode.
+     * @param useInverted If {@code true}, the inverted alphabet is used for decoding; otherwise, the GMP-style alphabet
+     *                    is used.
+     * @return The decoded byte array.
      */
     public byte[] decode(final byte[] encoded, final boolean useInverted) {
         final Base62Decoder decoder = useInverted ? Base62Decoder.INVERTED_DECODER : Base62Decoder.GMP_DECODER;

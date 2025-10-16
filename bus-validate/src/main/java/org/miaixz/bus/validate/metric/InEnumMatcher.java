@@ -27,9 +27,6 @@
 */
 package org.miaixz.bus.validate.metric;
 
-import java.lang.reflect.Method;
-import java.util.Objects;
-
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.MethodKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
@@ -37,14 +34,29 @@ import org.miaixz.bus.validate.Context;
 import org.miaixz.bus.validate.magic.Matcher;
 import org.miaixz.bus.validate.magic.annotation.InEnum;
 
+import java.lang.reflect.Method;
+import java.util.Objects;
+
 /**
- * int enum 校验
+ * Validator for the {@link InEnum} annotation. Checks if an object's value matches one of the values of a specified
+ * enum.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class InEnumMatcher implements Matcher<Object, InEnum> {
 
+    /**
+     * Checks if the given object's value is present in the specified enum.
+     *
+     * @param object     The object to validate.
+     * @param annotation The {@link InEnum} annotation instance, which provides the enum class and the method to get the
+     *                   value from.
+     * @param context    The validation context (ignored).
+     * @return {@code true} if the object's value is found within the enum's values; {@code false} if the object is null
+     *         or not found.
+     * @throws InternalException if the method specified in the annotation does not exist in the enum class.
+     */
     @Override
     public boolean on(Object object, InEnum annotation, Context context) {
         if (ObjectKit.isEmpty(object)) {
@@ -62,7 +74,7 @@ public class InEnumMatcher implements Matcher<Object, InEnum> {
             }
             return false;
         } catch (NoSuchMethodException e) {
-            throw new InternalException(e.getMessage());
+            throw new InternalException("The method specified in @InEnum does not exist: " + e.getMessage());
         }
     }
 

@@ -34,25 +34,28 @@ import org.miaixz.bus.core.text.replacer.LookupReplacer;
 import org.miaixz.bus.core.text.replacer.ReplacerChain;
 
 /**
- * XML特殊字符转义 见：https://stackoverflow.com/questions/1091945/what-characters-do-i-need-to-escape-in-xml-documents
+ * Escapes special characters in XML strings. This class provides functionality to convert characters that have special
+ * meaning in XML into their corresponding XML entity references.
  *
- * <pre>
- * 	 &amp; (ampersand) 替换为 &amp;amp;
- * 	 &lt; (less than) 替换为 &amp;lt;
- * 	 &gt; (greater than) 替换为 &amp;gt;
- * 	 &quot; (double quote) 替换为 &amp;quot;
- * </pre>
+ * <p>
+ * The following characters are escaped:
+ *
+ * <ul>
+ * <li>{@code &} (ampersand) is replaced with {@code &amp;}</li>
+ * <li>{@code <} (less than) is replaced with {@code &lt;}</li>
+ * <li>{@code >} (greater than) is replaced with {@code &gt;}</li>
+ * <li>{@code "} (double quote) is replaced with {@code &quot;}</li>
+ * <li>{@code '} (single quote) is replaced with {@code &apos;}</li>
+ * </ul>
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class XmlEscape extends ReplacerChain {
 
-    @Serial
-    private static final long serialVersionUID = 2852236260780L;
-
     /**
-     * XML转义字符
+     * Lookup table for XML escape characters. This array defines the mapping from special characters to their XML
+     * entity references.
      */
     protected static final String[][] BASIC_ESCAPE = { { "'", "&apos;" }, // " - single-quote
             { "\"", "&quot;" }, // " - double-quote
@@ -60,9 +63,15 @@ public class XmlEscape extends ReplacerChain {
             { "<", "&lt;" }, // < - less-than
             { ">", "&gt;" }, // > - greater-than
     };
+    /**
+     * The serial version UID for serialization.
+     */
+    @Serial
+    private static final long serialVersionUID = 2852236260780L;
 
     /**
-     * 构造
+     * Constructs a new {@code XmlEscape} instance. Initializes the escape chain with the basic XML escape lookup
+     * replacer.
      */
     public XmlEscape() {
         addChain(new LookupReplacer(BASIC_ESCAPE));

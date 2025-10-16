@@ -34,7 +34,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * 表主键
+ * Represents primary key information for a CacheDB table.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,30 +44,33 @@ import lombok.Setter;
 public class CacheDbPrimaryKey implements PrimaryKey {
 
     /**
-     *
+     * The table catalog (may be {@code null}).
      */
     @MappingField(value = "TABLE_CATALOG")
     private String tableCat;
     /**
-     * TABLE_NAME
+     * The name of the table.
      */
     @MappingField(value = "TABLE_NAME")
     private String tableName;
     /**
-     * TABLE_SCHEM
+     * The schema of the table.
      */
     @MappingField(value = "TABLE_SCHEM")
     private String tableSchem;
     /**
-     * COLUMN_NAME
+     * The name of the column in the primary key.
      */
     @MappingField(value = "COLUMN_NAME")
     private String columnName;
     /**
-     * KEY_SEQ
+     * The sequence number of the column within the primary key (for composite keys).
      */
     @MappingField(value = "KEY_SEQ")
     private String keySeq;
+    /**
+     * The name of the primary key constraint.
+     */
     private String pkName;
 
 }

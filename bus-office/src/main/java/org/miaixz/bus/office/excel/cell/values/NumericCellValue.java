@@ -36,7 +36,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.office.Builder;
 
 /**
- * 数字类型单元格值 单元格值可能为Long、Double、Date
+ * Numeric type cell value. The cell value can be Long, Double, or Date.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -46,9 +46,9 @@ public class NumericCellValue implements CellValue<Object> {
     private final Cell cell;
 
     /**
-     * 构造
+     * Constructs a new {@code NumericCellValue} instance.
      *
-     * @param cell {@link Cell}
+     * @param cell The {@link Cell} object.
      */
     public NumericCellValue(final Cell cell) {
         this.cell = cell;
@@ -60,10 +60,11 @@ public class NumericCellValue implements CellValue<Object> {
 
         final CellStyle style = cell.getCellStyle();
         if (null != style) {
-            // 判断是否为日期
+            // Check if it is a date format.
             if (Builder.isDateFormat(cell)) {
                 final LocalDateTime date = cell.getLocalDateTimeCellValue();
-                // 1899年写入会导致数据错乱，读取到1899年证明这个单元格的信息不关注年月日
+                // If the year is 1899, it indicates that the date information (year, month, day) is not relevant for
+                // this cell.
                 if (1899 == date.getYear()) {
                     return date.toLocalTime();
                 }
@@ -71,17 +72,18 @@ public class NumericCellValue implements CellValue<Object> {
             }
 
             final String format = style.getDataFormatString();
-            // 普通数字
+            // Normal number.
             if (null != format && format.indexOf(Symbol.C_DOT) < 0) {
                 final long longPart = (long) value;
                 if (((double) longPart) == value) {
-                    // 对于无小数部分的数字类型，转为Long
+                    // For numeric types without decimal parts, convert to Long.
                     return longPart;
                 }
             }
         }
 
-        // 某些Excel单元格值为double计算结果，可能导致精度问题，通过转换解决精度问题。
+        // Some Excel cell values are double calculation results, which may lead to precision issues.
+        // Convert to String then parse to Double to resolve precision issues.
         return Double.parseDouble(NumberToTextConverter.toText(value));
     }
 

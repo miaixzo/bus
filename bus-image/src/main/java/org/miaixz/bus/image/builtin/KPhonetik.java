@@ -30,11 +30,23 @@ package org.miaixz.bus.image.builtin;
 import org.miaixz.bus.core.lang.Normal;
 
 /**
+ * Implements the Kölner Phonetik (Cologne Phonetics) algorithm for fuzzy string matching. This algorithm converts a
+ * given string into a phonetic code, allowing for comparison of words that sound similar but are spelled differently.
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class KPhonetik implements FuzzyString {
 
+    /**
+     * Converts the input string into its Kölner Phonetik (Cologne Phonetics) representation. The algorithm processes
+     * the input character by character, mapping them to phonetic codes. Vowels and certain consonants are mapped to
+     * '0', while other consonants are mapped to digits based on their phonetic similarity. Consecutive identical
+     * phonetic codes are reduced to a single code.
+     *
+     * @param s The input string to convert to its phonetic representation.
+     * @return The Kölner Phonetik code for the input string. Returns an empty string if the input is null or empty.
+     */
     @Override
     public String toFuzzy(String s) {
         if (null == s || s.length() == 0)

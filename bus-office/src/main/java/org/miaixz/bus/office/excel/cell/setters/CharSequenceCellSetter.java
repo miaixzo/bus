@@ -30,7 +30,7 @@ package org.miaixz.bus.office.excel.cell.setters;
 import org.apache.poi.ss.usermodel.Cell;
 
 /**
- * {@link CharSequence} 值单元格设置器
+ * {@link CellSetter} for {@link CharSequence} values.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -40,9 +40,9 @@ public class CharSequenceCellSetter implements CellSetter {
     private final CharSequence value;
 
     /**
-     * 构造
+     * Constructs a {@code CharSequenceCellSetter} with the specified {@link CharSequence} value.
      *
-     * @param value 值
+     * @param value The {@link CharSequence} value to set in the cell.
      */
     CharSequenceCellSetter(final CharSequence value) {
         this.value = value;

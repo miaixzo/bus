@@ -34,7 +34,8 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 进程ID单例封装 第一次访问时调用{@link ManagementFactory#getRuntimeMXBean()}获取PID信息，之后直接使用缓存值
+ * Singleton encapsulation of the process ID (PID). The PID information is obtained by calling
+ * {@link ManagementFactory#getRuntimeMXBean()} on the first access, and the cached value is used thereafter.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,7 +43,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public enum Pid {
 
     /**
-     * 单例
+     * Singleton instance.
      */
     INSTANCE;
 
@@ -53,10 +54,11 @@ public enum Pid {
     }
 
     /**
-     * 获取当前进程ID，首先获取进程名称，读取@前的ID值，如果不存在，则读取进程名的hash值
+     * Gets the current process ID. It first gets the process name, reads the ID value before the '@', and if it does
+     * not exist, it reads the hash value of the process name.
      *
-     * @return 进程ID
-     * @throws InternalException 进程名称为空
+     * @return The process ID.
+     * @throws InternalException if the process name is blank.
      */
     public static int getPid() throws InternalException {
         final String processName = ManagementFactory.getRuntimeMXBean().getName();
@@ -72,9 +74,9 @@ public enum Pid {
     }
 
     /**
-     * 获取PID值
+     * Gets the PID value.
      *
-     * @return pid
+     * @return the pid
      */
     public int get() {
         return this.pid;

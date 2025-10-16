@@ -36,7 +36,7 @@ import org.miaixz.bus.pay.metric.unionpay.UnionPayProvider;
 import org.miaixz.bus.pay.metric.wechat.WechatPayProvider;
 
 /**
- * 支付平台类型
+ * Represents the types of payment platforms.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,165 +44,255 @@ import org.miaixz.bus.pay.metric.wechat.WechatPayProvider;
 public enum Registry implements Complex {
 
     /**
-     * 支付宝
+     * Alipay.
      */
     ALIPAY {
 
+        /**
+         * Returns the sandbox gateway URL for Alipay.
+         *
+         * @return The sandbox gateway URL.
+         */
         @Override
         public String sandbox() {
             return "https://openapi.alipaydev.com/gateway.do?";
         }
 
+        /**
+         * Returns the production gateway URL for Alipay.
+         *
+         * @return The production gateway URL.
+         */
         @Override
         public String service() {
-            // 消息验证地址
+            // Message verification address
             // return "https://mapi.alipay.com/gateway.do?";
             return "https://openapi.alipay.com/gateway.do?";
 
         }
 
+        /**
+         * Returns the provider class for Alipay.
+         *
+         * @return The {@link AliPayProvider} class.
+         */
         @Override
         public Class<? extends AbstractProvider> getTargetClass() {
             return AliPayProvider.class;
         }
     },
     /**
-     * 京东支付
+     * JD Pay.
      */
     JDPAY {
 
+        /**
+         * JD Pay does not provide a sandbox environment.
+         *
+         * @return null.
+         */
         @Override
         public String sandbox() {
             return null;
         }
 
+        /**
+         * Returns the production service URL for JD Pay.
+         *
+         * @return The production service URL.
+         */
         @Override
         public String service() {
             return "https://paygate.jd.com/service";
         }
 
+        /**
+         * Returns the provider class for JD Pay.
+         *
+         * @return The {@link JdPayProvider} class.
+         */
         @Override
         public Class<? extends AbstractProvider> getTargetClass() {
             return JdPayProvider.class;
         }
     },
     /**
-     * Paypal
+     * Paypal.
      */
     PAYPAL {
 
+        /**
+         * Returns the sandbox API URL for Paypal.
+         *
+         * @return The sandbox API URL.
+         */
         @Override
         public String sandbox() {
             return "https://api.sandbox.paypal.com";
         }
 
+        /**
+         * Returns the production API URL for Paypal.
+         *
+         * @return The production API URL.
+         */
         @Override
         public String service() {
             return "https://api.paypal.com";
         }
 
+        /**
+         * Returns the provider class for Paypal.
+         *
+         * @return The {@link PaypalProvider} class.
+         */
         @Override
         public Class<? extends AbstractProvider> getTargetClass() {
             return PaypalProvider.class;
         }
     },
     /**
-     * QQ钱包
+     * QQ Wallet.
      */
     TENPAY {
 
+        /**
+         * QQ Wallet does not provide a sandbox environment.
+         *
+         * @return null.
+         */
         @Override
         public String sandbox() {
             return null;
         }
 
+        /**
+         * Returns the production service URL for QQ Wallet.
+         *
+         * @return The production service URL.
+         */
         @Override
         public String service() {
             // https://api.qpay.qq.com/cgi-bin
             return "https://qpay.qq.com/cgi-bin";
         }
 
+        /**
+         * Returns the provider class for QQ Wallet.
+         *
+         * @return The {@link TenpayProvider} class.
+         */
         @Override
         public Class<? extends AbstractProvider> getTargetClass() {
             return TenpayProvider.class;
         }
     },
     /**
-     * 银联云闪付
+     * UnionPay Cloud QuickPass.
      */
     UNIONPAY {
 
+        /**
+         * UnionPay does not provide a sandbox environment for this API.
+         *
+         * @return null.
+         */
         @Override
         public String sandbox() {
             return null;
         }
 
+        /**
+         * Returns the production service URL for UnionPay user authentication.
+         *
+         * @return The production service URL.
+         */
         @Override
         public String service() {
             return "https://qr.95516.com/qrcGtwWeb-web/api/userAuth?version=1.0.0&redirectUrl=%s";
         }
 
+        /**
+         * Returns the provider class for UnionPay.
+         *
+         * @return The {@link UnionPayProvider} class.
+         */
         @Override
         public Class<? extends AbstractProvider> getTargetClass() {
             return UnionPayProvider.class;
         }
     },
     /**
-     * 微信
+     * Wechat Pay.
      */
     WECHAT {
 
+        /**
+         * Wechat Pay does not provide a sandbox environment for this API.
+         *
+         * @return null.
+         */
         @Override
         public String sandbox() {
             return null;
         }
 
+        /**
+         * Returns the production service URL for Wechat Pay in China.
+         *
+         * @return The production service URL.
+         */
         @Override
         public String service() {
             return R.CHINA.url;
         }
 
+        /**
+         * Returns the provider class for Wechat Pay.
+         *
+         * @return The {@link WechatPayProvider} class.
+         */
         @Override
         public Class<? extends AbstractProvider> getTargetClass() {
             return WechatPayProvider.class;
         }
 
         /**
-         * 按照区域分地址
+         * Wechat Pay API URLs for different regions.
          */
         enum R {
 
             /**
-             * 中国国内
+             * China.
              */
             CHINA("https://api.mch.weixin.qq.com"),
             /**
-             * 中国国内(备用域名)
+             * China (alternative domain).
              */
             CHINA2("https://api2.mch.weixin.qq.com"),
             /**
-             * 东南亚
+             * Southeast Asia.
              */
             HK("https://apihk.mch.weixin.qq.com"),
             /**
-             * 其它
+             * Other regions.
              */
             US("https://apius.mch.weixin.qq.com"),
             /**
-             * 获取公钥
+             * For retrieving public keys.
              */
             FRAUD("https://fraud.mch.weixin.qq.com"),
             /**
-             * 活动
+             * For activities.
              */
             ACTION("https://action.weixin.qq.com"),
             /**
-             * 刷脸支付 PAY_APP
+             * For face recognition payment (PAY_APP).
              */
             PAY_APP("https://payapp.weixin.qq.com");
 
             /**
-             * 域名
+             * The domain URL.
              */
             private final String url;
 
@@ -213,10 +303,11 @@ public enum Registry implements Complex {
     };
 
     /**
-     * 根据名称获取第三方支付信息
+     * Gets the payment platform information by its name.
      *
-     * @param name 第三方名称简写
-     * @return 第三方支付信息, 找不到时直接抛出异常
+     * @param name The abbreviated name of the third-party platform.
+     * @return The payment platform information.
+     * @throws IllegalArgumentException if the platform type is not supported.
      */
     public static Registry require(String name) {
         for (Registry registry : Registry.values()) {

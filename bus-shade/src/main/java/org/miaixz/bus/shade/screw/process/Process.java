@@ -32,7 +32,7 @@ import java.io.Serializable;
 import org.miaixz.bus.shade.screw.metadata.DataSchema;
 
 /**
- * 构建
+ * Defines a process for building or handling data.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -40,10 +40,10 @@ import org.miaixz.bus.shade.screw.metadata.DataSchema;
 public interface Process extends Serializable {
 
     /**
-     * 处理
+     * Processes data and returns a data schema.
      *
-     * @return {@link DataSchema}
-     * @throws Exception Exception
+     * @return The processed {@link DataSchema}.
+     * @throws Exception if an error occurs during processing.
      */
     DataSchema process() throws Exception;
 

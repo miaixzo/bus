@@ -28,7 +28,7 @@
 package org.miaixz.bus.core.data.masking;
 
 /**
- * 脱敏处理器，用于自定义脱敏规则
+ * Masking handler for custom masking rules.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -37,10 +37,10 @@ package org.miaixz.bus.core.data.masking;
 public interface MaskingHandler {
 
     /**
-     * 处理传入的数据字符串，经过脱敏逻辑后，返回处理后的值
+     * Processes the input data string and returns the masked value.
      *
-     * @param value 待处理的值
-     * @return 处理后的值
+     * @param value The value to be processed.
+     * @return The processed value.
      */
     String handle(CharSequence value);
 

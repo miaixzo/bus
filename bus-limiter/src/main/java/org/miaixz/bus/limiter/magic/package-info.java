@@ -26,7 +26,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 流量管控
+ * Provides core interfaces and enumerations for defining limiting strategies and flow grades. This package contains
+ * fundamental building blocks for implementing various flow control mechanisms within the limiter module.
  *
  * @author Kimi Liu
  * @since Java 17+

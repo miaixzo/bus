@@ -27,28 +27,46 @@
 */
 package org.miaixz.bus.socket.accord;
 
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.SocketAddress;
-import java.nio.ByteBuffer;
-
 import org.miaixz.bus.socket.Session;
 import org.miaixz.bus.socket.Status;
 import org.miaixz.bus.socket.buffer.BufferPage;
 import org.miaixz.bus.socket.buffer.WriteBuffer;
 
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
+import java.nio.ByteBuffer;
+
 /**
+ * Represents a UDP session, which is a logical connection over a connectionless protocol.
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class UdpSession extends Session {
 
+    /**
+     * The underlying UDP channel associated with this session.
+     */
     private final UdpChannel udpChannel;
 
+    /**
+     * The remote address of the peer.
+     */
     private final SocketAddress remote;
 
+    /**
+     * The buffer for writing outgoing data.
+     */
     private final WriteBuffer byteBuf;
 
+    /**
+     * Constructs a new UdpSession.
+     *
+     * @param udpChannel      the underlying UDP channel
+     * @param remote          the remote address of the peer
+     * @param writeBufferPage the buffer page for writing
+     */
     public UdpSession(final UdpChannel udpChannel, final SocketAddress remote, BufferPage writeBufferPage) {
         this.udpChannel = udpChannel;
         this.remote = remote;
@@ -64,23 +82,24 @@ public class UdpSession extends Session {
 
     @Override
     public ByteBuffer readBuffer() {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("Read buffer is not supported in a UDP session");
     }
 
     @Override
     public void awaitRead() {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("awaitRead is not supported in a UDP session");
     }
 
     @Override
     public void signalRead() {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("signalRead is not supported in a UDP session");
     }
 
     /**
-     * 为确保消息尽可能发送，UDP不支持立即close
+     * To ensure messages are sent as much as possible, UDP does not support immediate close. This method will flush any
+     * pending messages.
      *
-     * @param immediate true:立即关闭,false:响应消息发送完后关闭
+     * @param immediate if {@code true}, closes immediately; if {@code false}, closes after sending pending messages.
      */
     @Override
     public void close(boolean immediate) {

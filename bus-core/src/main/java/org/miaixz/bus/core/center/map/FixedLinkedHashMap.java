@@ -33,10 +33,14 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 /**
- * 固定大小的{@link LinkedHashMap} 实现 注意此类非线程安全，由于{@link #get(Object)}操作会修改链表的顺序结构，因此也不可以使用读写锁。
+ * A fixed-size {@link LinkedHashMap} that implements a Least Recently Used (LRU) cache policy. When the map's size
+ * exceeds its capacity, the eldest (least recently accessed or inserted) entry is removed.
+ * <p>
+ * <strong>Note:</strong> This implementation is not thread-safe. Since {@link #get(Object)} operations modify the
+ * internal linked list order, even read operations are not safe for concurrent use without external synchronization.
  *
- * @param <K> 键类型
- * @param <V> 值类型
+ * @param <K> The type of keys maintained by this map.
+ * @param <V> The type of mapped values.
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -46,18 +50,18 @@ public class FixedLinkedHashMap<K, V> extends LinkedHashMap<K, V> {
     private static final long serialVersionUID = 2852273311867L;
 
     /**
-     * 容量，超过此容量自动删除末尾元素
+     * The maximum capacity of the map. When the size exceeds this, the eldest entry is removed.
      */
     private int capacity;
     /**
-     * 移除监听
+     * An optional listener that is called when an entry is removed due to the capacity being exceeded.
      */
     private Consumer<java.util.Map.Entry<K, V>> removeListener;
 
     /**
-     * 构造
+     * Constructs a {@code FixedLinkedHashMap} with the specified capacity.
      *
-     * @param capacity 容量，实际初始容量比容量大1
+     * @param capacity The maximum number of entries the map can hold.
      */
     public FixedLinkedHashMap(final int capacity) {
         super(capacity + 1, 1.0f, true);
@@ -65,38 +69,44 @@ public class FixedLinkedHashMap<K, V> extends LinkedHashMap<K, V> {
     }
 
     /**
-     * 获取容量
+     * Returns the maximum capacity of this map.
      *
-     * @return 容量
+     * @return The capacity.
      */
     public int getCapacity() {
         return this.capacity;
     }
 
     /**
-     * 设置容量
+     * Sets the maximum capacity of this map.
      *
-     * @param capacity 容量
+     * @param capacity The new capacity.
      */
     public void setCapacity(final int capacity) {
         this.capacity = capacity;
     }
 
     /**
-     * 设置自定义移除监听
+     * Sets a custom listener to be notified when an entry is removed.
      *
-     * @param removeListener 移除监听
+     * @param removeListener The consumer to be called with the removed entry.
      */
     public void setRemoveListener(final Consumer<Map.Entry<K, V>> removeListener) {
         this.removeListener = removeListener;
     }
 
+    /**
+     * Determines whether the eldest entry should be removed. This method is called by {@code put} and {@code putAll}
+     * after inserting a new entry into the map.
+     *
+     * @param eldest The least recently inserted or accessed entry in the map.
+     * @return {@code true} if the map's size is greater than its capacity, indicating the eldest entry should be
+     *         removed.
+     */
     @Override
     protected boolean removeEldestEntry(final java.util.Map.Entry<K, V> eldest) {
-        // 当链表元素大于容量时，移除最老（最久未被使用）的元素
         if (size() > this.capacity) {
             if (null != removeListener) {
-                // 自定义监听
                 removeListener.accept(eldest);
             }
             return true;

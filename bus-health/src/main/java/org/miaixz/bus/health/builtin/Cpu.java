@@ -32,8 +32,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * CPU 信息
- * 
+ * CPU Information
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -43,32 +43,32 @@ import lombok.Setter;
 public class Cpu {
 
     /**
-     * 物理核心数
+     * Number of physical cores
      */
     private int physicalCores;
 
     /**
-     * 逻辑核心数
+     * Number of logical cores
      */
     private int logicalCores;
 
     /**
-     * 系统使用率 (sys in /proc/stat)
+     * System usage (sys in /proc/stat)
      */
     private double systemUsage;
 
     /**
-     * 用户使用率 (user in /proc/stat)
+     * User usage (user in /proc/stat)
      */
     private double userUsage;
 
     /**
-     * I/O等待率 (iowait in /proc/stat)
+     * I/O wait rate (iowait in /proc/stat)
      */
     private double ioWait;
 
     /**
-     * 总使用率 (100 - idle in /proc/stat)
+     * Total usage (100 - idle in /proc/stat)
      */
     private double totalUsage;
 

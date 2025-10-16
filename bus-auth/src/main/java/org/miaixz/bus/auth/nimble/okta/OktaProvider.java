@@ -51,27 +51,51 @@ import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
 
 /**
- * Okta 登录
+ * Okta login provider.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class OktaProvider extends AbstractProvider {
 
+    /**
+     * Constructs an {@code OktaProvider} with the specified context.
+     *
+     * @param context the authentication context
+     */
     public OktaProvider(Context context) {
         super(context, Registry.OKTA);
     }
 
+    /**
+     * Constructs an {@code OktaProvider} with the specified context and cache.
+     *
+     * @param context the authentication context
+     * @param cache   the cache implementation
+     */
     public OktaProvider(Context context, CacheX cache) {
         super(context, Registry.OKTA, cache);
     }
 
+    /**
+     * Retrieves the access token from Okta's authorization server.
+     *
+     * @param callback the callback object containing the authorization code
+     * @return the {@link AuthToken} containing access token details
+     */
     @Override
     public AuthToken getAccessToken(Callback callback) {
         String tokenUrl = accessTokenUrl(callback.getCode());
         return getAuthToken(tokenUrl);
     }
 
+    /**
+     * Retrieves the authentication token from the specified URL.
+     *
+     * @param tokenUrl the URL to fetch the access token from
+     * @return the {@link AuthToken} containing token details
+     * @throws AuthorizedException if parsing the response fails or required token information is missing
+     */
     private AuthToken getAuthToken(String tokenUrl) {
         Map<String, String> header = new HashMap<>();
         header.put("accept", MediaType.APPLICATION_JSON);
@@ -107,6 +131,12 @@ public class OktaProvider extends AbstractProvider {
         }
     }
 
+    /**
+     * Refreshes the access token (renews its validity).
+     *
+     * @param authToken the token information returned after successful login
+     * @return a {@link Message} containing the refreshed token information
+     */
     @Override
     public Message refresh(AuthToken authToken) {
         if (null == authToken.getRefreshToken()) {
@@ -117,6 +147,13 @@ public class OktaProvider extends AbstractProvider {
         return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(this.getAuthToken(refreshUrl)).build();
     }
 
+    /**
+     * Retrieves user information from Okta's user info endpoint.
+     *
+     * @param authToken the {@link AuthToken} obtained after successful authorization
+     * @return {@link Material} containing the user's information
+     * @throws AuthorizedException if parsing the response fails or required user information is missing
+     */
     @Override
     public Material getUserInfo(AuthToken authToken) {
         Map<String, String> header = new HashMap<>();
@@ -150,6 +187,12 @@ public class OktaProvider extends AbstractProvider {
         }
     }
 
+    /**
+     * Revokes the authorization for the given access token.
+     *
+     * @param authToken the token information to revoke
+     * @return a {@link Message} indicating the result of the revocation
+     */
     @Override
     public Message revoke(AuthToken authToken) {
         Map<String, String> params = new HashMap<>(4);
@@ -165,6 +208,12 @@ public class OktaProvider extends AbstractProvider {
         return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build();
     }
 
+    /**
+     * Checks the response content for errors.
+     *
+     * @param object the response map to check
+     * @throws AuthorizedException if the response contains an error or message indicating failure
+     */
     private void checkResponse(Map<String, Object> object) {
         if (object.containsKey("error")) {
             String errorDescription = (String) object.get("error_description");
@@ -172,6 +221,13 @@ public class OktaProvider extends AbstractProvider {
         }
     }
 
+    /**
+     * Returns the authorization URL with a {@code state} parameter. The {@code state} will be included in the
+     * authorization callback.
+     *
+     * @param state the parameter to verify the authorization process, which can prevent CSRF attacks
+     * @return the authorization URL
+     */
     @Override
     public String authorize(String state) {
         return Builder
@@ -186,6 +242,12 @@ public class OktaProvider extends AbstractProvider {
                 .queryParam("state", getRealState(state)).build();
     }
 
+    /**
+     * Constructs the access token URL for Okta.
+     *
+     * @param code the authorization code
+     * @return the access token URL
+     */
     @Override
     public String accessTokenUrl(String code) {
         return Builder
@@ -198,6 +260,12 @@ public class OktaProvider extends AbstractProvider {
                 .queryParam("redirect_uri", context.getRedirectUri()).build();
     }
 
+    /**
+     * Constructs the refresh token URL for Okta.
+     *
+     * @param refreshToken the refresh token
+     * @return the refresh token URL
+     */
     @Override
     protected String refreshTokenUrl(String refreshToken) {
         return Builder
@@ -209,6 +277,12 @@ public class OktaProvider extends AbstractProvider {
                 .queryParam("refresh_token", refreshToken).queryParam("grant_type", "refresh_token").build();
     }
 
+    /**
+     * Constructs the revoke authorization URL for Okta.
+     *
+     * @param authToken the access token
+     * @return the revoke authorization URL
+     */
     @Override
     protected String revokeUrl(AuthToken authToken) {
         return String.format(
@@ -217,6 +291,12 @@ public class OktaProvider extends AbstractProvider {
                 ObjectKit.defaultIfNull(context.getUnionId(), "default"));
     }
 
+    /**
+     * Constructs the user information URL for Okta.
+     *
+     * @param authToken the access token
+     * @return the user information URL
+     */
     @Override
     public String userInfoUrl(AuthToken authToken) {
         return String.format(

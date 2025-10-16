@@ -39,9 +39,11 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.crypto.center.Sign;
 
 /**
- * RSA 非对称加密 JWT 签名器。
+ * RSA asymmetric encryption JWT signer.
  * <p>
- * 实现 {@link JWTSigner} 接口，使用 RSA 算法（如 RS256、RS384、RS512）对 JWT 进行签名和验证。 支持公钥验证签名和私钥生成签名，默认编码为 UTF-8。
+ * Implements the {@link JWTSigner} interface, using RSA algorithms (e.g., RS256, RS384, RS512) for JWT signing and
+ * verification. Supports public key for signature verification and private key for signature generation. Default
+ * encoding is UTF-8.
  * </p>
  *
  * @author Kimi Liu
@@ -51,54 +53,55 @@ import org.miaixz.bus.crypto.center.Sign;
 public class RSAJWTSigner implements JWTSigner {
 
     /**
-     * RSA 签名和验证的核心实现。
+     * The core implementation for RSA signing and verification.
      */
     private final Sign sign;
 
     /**
-     * 编码方式，默认 UTF-8。
+     * The character encoding, default is UTF-8.
      */
     private java.nio.charset.Charset charset = Charset.UTF_8;
 
     /**
-     * 构造函数，初始化 RSA 签名器。
+     * Constructor, initializes the RSA signer.
      * <p>
-     * 根据提供的算法和密钥（公钥或私钥）初始化签名器，公钥用于验证签名，私钥用于生成签名。
+     * Initializes the signer based on the provided algorithm and key (public or private key). A public key is used for
+     * signature verification, and a private key is used for signature generation.
      * </p>
      *
-     * @param algorithm 算法标识（如 RS256、SHA256withRSA）
-     * @param key       密钥（公钥 {@link PublicKey} 或私钥 {@link PrivateKey}）
-     * @throws IllegalArgumentException 如果算法或密钥无效
+     * @param algorithm the algorithm identifier (e.g., RS256, SHA256withRSA)
+     * @param key       the key ({@link PublicKey} or {@link PrivateKey})
+     * @throws IllegalArgumentException if the algorithm or key is invalid
      */
     public RSAJWTSigner(final String algorithm, final Key key) {
-        // 提取公钥或私钥
+        // Extract public or private key
         final PublicKey publicKey = key instanceof PublicKey ? (PublicKey) key : null;
         final PrivateKey privateKey = key instanceof PrivateKey ? (PrivateKey) key : null;
-        // 初始化签名器，构造密钥对
+        // Initialize the signer with a KeyPair
         this.sign = new Sign(algorithm, new KeyPair(publicKey, privateKey));
     }
 
     /**
-     * 构造函数，初始化 RSA 签名器。
+     * Constructor, initializes the RSA signer.
      * <p>
-     * 使用密钥对（包含公钥和私钥）初始化签名器。
+     * Initializes the signer using a key pair (containing both public and private keys).
      * </p>
      *
-     * @param algorithm 算法标识（如 RS256、SHA256withRSA）
-     * @param keyPair   密钥对（包含公钥和私钥）
-     * @throws IllegalArgumentException 如果算法或密钥对无效
+     * @param algorithm the algorithm identifier (e.g., RS256, SHA256withRSA)
+     * @param keyPair   the key pair (containing public and private keys)
+     * @throws IllegalArgumentException if the algorithm or key pair is invalid
      */
     public RSAJWTSigner(final String algorithm, final KeyPair keyPair) {
-        // 初始化签名器，使用密钥对
+        // Initialize the signer with the KeyPair
         this.sign = new Sign(algorithm, keyPair);
     }
 
     /**
-     * 设置编码方式。
+     * Sets the character encoding.
      *
-     * @param charset 编码方式（如 UTF-8）
-     * @return 当前对象，支持链式调用
-     * @throws IllegalArgumentException 如果编码无效
+     * @param charset the character encoding (e.g., UTF-8)
+     * @return this object, supporting method chaining
+     * @throws IllegalArgumentException if the charset is invalid
      */
     public RSAJWTSigner setCharset(final java.nio.charset.Charset charset) {
         this.charset = charset;
@@ -106,81 +109,82 @@ public class RSAJWTSigner implements JWTSigner {
     }
 
     /**
-     * 对 JWT 的 header 和 payload 进行 RSA 签名。
+     * Performs RSA signing on the JWT header and payload.
      * <p>
-     * 将 Base64 编码的 header 和 payload 拼接为 "header.payload" 格式， 使用 RSA 算法生成签名并返回 Base64 编码结果。
+     * Concatenates the Base64 encoded header and payload in "header.payload" format, generates a signature using the
+     * RSA algorithm, and returns the Base64 encoded result.
      * </p>
      *
-     * @param headerBase64  Base64 编码的 JWT header
-     * @param payloadBase64 Base64 编码的 JWT payload
-     * @return Base64 编码的签名
-     * @throws IllegalStateException 如果私钥不可用
+     * @param headerBase64  Base64 encoded JWT header
+     * @param payloadBase64 Base64 encoded JWT payload
+     * @return the Base64 encoded signature
+     * @throws IllegalStateException if the private key is unavailable
      */
     @Override
     public String sign(final String headerBase64, final String payloadBase64) {
-        // 拼接 header 和 payload，格式为 "header.payload"
+        // Concatenate header and payload in "header.payload" format
         final String data = StringKit.format("{}.{}", headerBase64, payloadBase64);
-        // 将字符串转换为字节数组并签名
+        // Convert the string to a byte array and sign
         byte[] signedData = sign(ByteKit.toBytes(data, charset));
-        // 返回 Base64 URL 安全的签名
+        // Return the Base64 URL-safe signature
         return Base64.encodeUrlSafe(signedData);
     }
 
     /**
-     * 对字节数组数据进行 RSA 签名。
+     * Performs RSA signing on byte array data.
      * <p>
-     * 使用配置的私钥和算法生成签名。
+     * Generates a signature using the configured private key and algorithm.
      * </p>
      *
-     * @param data 要签名的数据
-     * @return 签名字节数组
-     * @throws IllegalStateException 如果私钥不可用
+     * @param data the data to be signed
+     * @return the signed byte array
+     * @throws IllegalStateException if the private key is unavailable
      */
     protected byte[] sign(final byte[] data) {
         return sign.sign(data);
     }
 
     /**
-     * 验证 JWT 签名。
+     * Verifies the JWT signature.
      * <p>
-     * 使用公钥验证 Base64 编码的签名是否与 header 和 payload 匹配。
+     * Uses the public key to verify if the Base64 encoded signature matches the header and payload.
      * </p>
      *
-     * @param headerBase64  Base64 编码的 JWT header
-     * @param payloadBase64 Base64 编码的 JWT payload
-     * @param signBase64    Base64 编码的签名
-     * @return 是否验证通过
-     * @throws IllegalStateException 如果公钥不可用
+     * @param headerBase64  Base64 encoded JWT header
+     * @param payloadBase64 Base64 encoded JWT payload
+     * @param signBase64    Base64 encoded signature to be verified
+     * @return true if the verification passes, false otherwise
+     * @throws IllegalStateException if the public key is unavailable
      */
     @Override
     public boolean verify(final String headerBase64, final String payloadBase64, final String signBase64) {
-        // 拼接 header 和 payload，格式为 "header.payload"
+        // Concatenate header and payload in "header.payload" format
         byte[] data = ByteKit.toBytes(StringKit.format("{}.{}", headerBase64, payloadBase64), charset);
-        // 解码 Base64 签名
+        // Decode the Base64 signature
         byte[] signed = Base64.decode(signBase64);
-        // 验证签名
+        // Verify the signature
         return verify(data, signed);
     }
 
     /**
-     * 验证数据的 RSA 签名。
+     * Verifies the RSA signature of the data.
      * <p>
-     * 使用配置的公钥验证数据和签名的匹配性。
+     * Uses the configured public key to verify the match between the data and the signature.
      * </p>
      *
-     * @param data   要验证的数据
-     * @param signed 签名字节数组
-     * @return 是否验证通过
-     * @throws IllegalStateException 如果公钥不可用
+     * @param data   the data to be verified
+     * @param signed the signed byte array
+     * @return true if the verification passes, false otherwise
+     * @throws IllegalStateException if the public key is unavailable
      */
     protected boolean verify(final byte[] data, final byte[] signed) {
         return sign.verify(data, signed);
     }
 
     /**
-     * 获取签名算法名称。
+     * Retrieves the name of the signing algorithm.
      *
-     * @return 算法名称（如 SHA256withRSA）
+     * @return the algorithm name (e.g., SHA256withRSA)
      */
     @Override
     public String getAlgorithm() {

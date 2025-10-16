@@ -35,7 +35,7 @@ import org.miaixz.bus.core.center.date.Calendar;
 import org.miaixz.bus.core.xyz.EnumKit;
 
 /**
- * 星座
+ * Enumeration for constellations (zodiac signs).
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,75 +43,86 @@ import org.miaixz.bus.core.xyz.EnumKit;
 public enum Constellation {
 
     /**
-     * 白羊座
+     * Aries
      */
     ARIES(0, "白羊", MonthDay.of(3, 21), MonthDay.of(4, 19)),
     /**
-     * 金牛座
+     * Taurus
      */
     TAURUS(1, "金牛", MonthDay.of(4, 20), MonthDay.of(5, 20)),
     /**
-     * 双子座
+     * Gemini
      */
     GEMINI(2, "双子", MonthDay.of(5, 21), MonthDay.of(6, 21)),
     /**
-     * 巨蟹座
+     * Cancer
      */
     CANCER(3, "巨蟹", MonthDay.of(6, 22), MonthDay.of(7, 22)),
     /**
-     * 狮子座
+     * Leo
      */
     LEO(4, "狮子", MonthDay.of(7, 23), MonthDay.of(8, 22)),
     /**
-     * 处女座
+     * Virgo
      */
     VIRGO(5, "处女", MonthDay.of(8, 23), MonthDay.of(9, 22)),
     /**
-     * 天秤座
+     * Libra
      */
     LIBRA(6, "天秤", MonthDay.of(9, 23), MonthDay.of(10, 23)),
     /**
-     * 天蝎座
+     * Scorpio
      */
     SCORPIO(7, "天蝎", MonthDay.of(10, 24), MonthDay.of(11, 22)),
     /**
-     * 射手座
+     * Sagittarius
      */
     SAGITTARIUS(8, "射手", MonthDay.of(11, 23), MonthDay.of(12, 21)),
     /**
-     * 摩羯座
+     * Capricorn
      */
     CAPRICORN(9, "摩羯", MonthDay.of(12, 22), MonthDay.of(1, 19)),
     /**
-     * 水瓶座
+     * Aquarius
      */
     AQUARIUS(10, "水瓶", MonthDay.of(1, 20), MonthDay.of(2, 18)),
     /**
-     * 双鱼座
+     * Pisces
      */
     PISCES(11, "双鱼", MonthDay.of(2, 19), MonthDay.of(3, 20));
 
+    /**
+     * Array of all {@link Constellation} enum constants.
+     */
     private static final Constellation[] ENUMS = Constellation.values();
 
     /**
-     * 编码
+     * The code of the constellation.
      */
     private final long code;
     /**
-     * 名称
+     * The name of the constellation.
      */
     private final String name;
 
     /**
-     * 开始月日(包含)
+     * The start month and day (inclusive) of the constellation.
      */
     private final MonthDay begin;
 
     /**
-     * 结束月日(包含)
+     * The end month and day (inclusive) of the constellation.
      */
     private final MonthDay end;
 
+    /**
+     * Constructor for Constellation enum.
+     *
+     * @param code  The code of the constellation.
+     * @param name  The name of the constellation.
+     * @param begin The start month and day (inclusive) of the constellation.
+     * @param end   The end month and day (inclusive) of the constellation.
+     */
     Constellation(long code, String name, MonthDay begin, MonthDay end) {
         this.code = code;
         this.name = name;
@@ -120,10 +131,11 @@ public enum Constellation {
     }
 
     /**
-     * 按宫位获取星座
+     * Gets the constellation by its code (palace position).
      *
-     * @param code 编码
-     * @return this
+     * @param code The code of the constellation.
+     * @return The corresponding {@link Constellation}.
+     * @throws IllegalArgumentException if the code is out of range (1-12).
      */
     public static Constellation get(int code) {
         if (code < 1 || code > 12) {
@@ -133,31 +145,31 @@ public enum Constellation {
     }
 
     /**
-     * 按日期获取星座
+     * Gets the constellation by date.
      *
-     * @param date 日期
-     * @return this
+     * @param date The date.
+     * @return The corresponding {@link Constellation}.
      */
     public static Constellation get(LocalDate date) {
         return get(date.getMonthValue(), date.getDayOfMonth());
     }
 
     /**
-     * 按月日获取星座
+     * Gets the constellation by month and day.
      *
-     * @param month 月份
-     * @param day   日期
-     * @return this
+     * @param month The month.
+     * @param day   The day.
+     * @return The corresponding {@link Constellation}.
      */
     public static Constellation get(int month, int day) {
         return get(MonthDay.of(month, day));
     }
 
     /**
-     * 按月日获取星座
+     * Gets the constellation by {@link MonthDay}.
      *
-     * @param monthDay 月份
-     * @return this
+     * @param monthDay The {@link MonthDay}.
+     * @return The corresponding {@link Constellation}.
      */
     public static Constellation get(MonthDay monthDay) {
         int month = monthDay.getMonthValue();
@@ -167,20 +179,20 @@ public enum Constellation {
     }
 
     /**
-     * 通过生日计算星座
+     * Calculates the constellation based on the birth date.
      *
-     * @param date 出生日期
-     * @return 星座名
+     * @param date The birth date.
+     * @return The name of the constellation.
      */
     public static String getName(final Date date) {
         return getName(Calendar.calendar(date));
     }
 
     /**
-     * 通过生日计算星座
+     * Calculates the constellation based on the birth date.
      *
-     * @param calendar 出生日期
-     * @return 星座名
+     * @param calendar The birth date {@link java.util.Calendar}.
+     * @return The name of the constellation.
      */
     public static String getName(final java.util.Calendar calendar) {
         if (null == calendar) {
@@ -190,53 +202,60 @@ public enum Constellation {
     }
 
     /**
-     * 通过生日计算星座
+     * Calculates the constellation based on the birth month and day.
      *
-     * @param month 月，从0开始计数
-     * @param day   天
-     * @return 星座名
+     * @param month The month, starting from 0.
+     * @param day   The day.
+     * @return The name of the constellation.
      */
     public static String getName(final Month month, final int day) {
         return getName(month.getValue(), day);
     }
 
     /**
-     * 通过生日计算星座
+     * Calculates the constellation based on the birth month and day.
      *
-     * @param month 月，从0开始计数，见{@link Month#getValue()}
-     * @param day   天
-     * @return 星座名
+     * @param month The month, starting from 0, see {@link Month#getValue()}.
+     * @param day   The day.
+     * @return The name of the constellation.
      */
     public static String getName(final int month, final int day) {
         return get(month, day).name;
     }
 
     /**
-     * 获取枚举属性信息
+     * Retrieves enum property information.
      *
-     * @param fieldName 属性名称
-     * @return the string[]
+     * @param fieldName The name of the field.
+     * @return An array of strings representing the field values.
      */
     public static String[] get(String fieldName) {
         return EnumKit.getFieldValues(Constellation.class, fieldName).toArray(String[]::new);
     }
 
     /**
-     * @return 对应的名称
+     * Gets the name corresponding to the given code.
+     *
+     * @param code The code of the constellation.
+     * @return The corresponding name.
      */
     public String getName(final int code) {
         return ENUMS[code].name;
     }
 
     /**
-     * @return 单位对应的编码
+     * Gets the code corresponding to this unit.
+     *
+     * @return The code of the constellation.
      */
     public long getCode() {
         return this.code;
     }
 
     /**
-     * @return 对应的名称
+     * Gets the name of the constellation.
+     *
+     * @return The name of the constellation.
      */
     public String getName() {
         return this.name;

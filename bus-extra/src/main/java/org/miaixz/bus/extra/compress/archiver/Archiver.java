@@ -33,7 +33,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
- * 数据归档封装，归档即将几个文件或目录打成一个压缩包
+ * Data archiving wrapper, which archives several files or directories into a compressed package.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -41,9 +41,9 @@ import java.util.function.Predicate;
 public interface Archiver extends Closeable {
 
     /**
-     * 将文件或目录加入归档，目录采取递归读取方式按照层级加入
+     * Adds a file or directory to the archive. Directories are added recursively level by level.
      *
-     * @param file 文件或目录
+     * @param file The file or directory.
      * @return this
      */
     default Archiver add(final File file) {
@@ -51,10 +51,11 @@ public interface Archiver extends Closeable {
     }
 
     /**
-     * 将文件或目录加入归档，目录采取递归读取方式按照层级加入
+     * Adds a file or directory to the archive. Directories are added recursively level by level.
      *
-     * @param file   文件或目录
-     * @param filter 文件过滤器，指定哪些文件或目录可以加入，{@link Predicate#test(Object)}为{@code true}时加入，null表示全部加入
+     * @param file   The file or directory.
+     * @param filter A file filter that specifies which files or directories can be added. If
+     *               {@link Predicate#test(Object)} is {@code true}, the file is added. If null, all are added.
      * @return this
      */
     default Archiver add(final File file, final Predicate<File> filter) {
@@ -62,11 +63,12 @@ public interface Archiver extends Closeable {
     }
 
     /**
-     * 将文件或目录加入归档包，目录采取递归读取方式按照层级加入
+     * Adds a file or directory to the archive package. Directories are added recursively level by level.
      *
-     * @param file   文件或目录
-     * @param path   文件或目录的初始路径，null表示位于根路径
-     * @param filter 文件过滤器，指定哪些文件或目录可以加入，{@link Predicate#test(Object)}为{@code true}保留，null表示全部加入
+     * @param file   The file or directory.
+     * @param path   The initial path of the file or directory. If null, it is placed at the root level.
+     * @param filter A file filter that specifies which files or directories can be added. If
+     *               {@link Predicate#test(Object)} is {@code true}, the file is kept. If null, all are added.
      * @return this
      */
     default Archiver add(final File file, final String path, final Predicate<File> filter) {
@@ -74,25 +76,27 @@ public interface Archiver extends Closeable {
     }
 
     /**
-     * 将文件或目录加入归档包，目录采取递归读取方式按照层级加入
+     * Adds a file or directory to the archive package. Directories are added recursively level by level.
      *
-     * @param file           文件或目录
-     * @param path           文件或目录的初始路径，null表示位于根路径
-     * @param fileNameEditor 文件名编辑器
-     * @param filter         文件过滤器，指定哪些文件或目录可以加入，{@link Predicate#test(Object)}为{@code true}保留，null表示全部加入
+     * @param file           The file or directory.
+     * @param path           The initial path of the file or directory. If null, it is placed at the root level.
+     * @param fileNameEditor A function to edit the file name.
+     * @param filter         A file filter that specifies which files or directories can be added. If
+     *                       {@link Predicate#test(Object)} is {@code true}, the file is kept. If null, all are added.
      * @return this
      */
     Archiver add(File file, String path, Function<String, String> fileNameEditor, Predicate<File> filter);
 
     /**
-     * 结束已经增加的文件归档，此方法不会关闭归档流，可以继续添加文件
+     * Finishes archiving the added files. This method does not close the archive stream, allowing more files to be
+     * added.
      *
      * @return this
      */
     Archiver finish();
 
     /**
-     * 无异常关闭
+     * Closes without throwing an exception.
      */
     @Override
     void close();

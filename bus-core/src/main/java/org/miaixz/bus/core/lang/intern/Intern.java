@@ -28,19 +28,22 @@
 package org.miaixz.bus.core.lang.intern;
 
 /**
- * 规范化表示形式封装 所谓规范化，即当两个对象equals时，规范化的对象则可以实现== 此包中的相关封装类似于 {@link String#intern()}
+ * Encapsulates the concept of canonical representation (interning). The purpose of interning is to ensure that when two
+ * objects are {@code equals()}, their interned representations are {@code ==} (referentially equal). This package
+ * provides implementations similar to {@link String#intern()}.
  *
- * @param <T> 规范化的对象类型
+ * @param <T> The type of the object to be interned.
  * @author Kimi Liu
  * @since Java 17+
  */
 public interface Intern<T> {
 
     /**
-     * 返回指定对象对应的规范化对象，sample对象可能有多个，但是这些对象如果都equals，则返回的是同一个对象
+     * Returns the canonical representation for the given object. If multiple {@code sample} objects are
+     * {@code equals()}, this method guarantees that they will return the same object instance (referential equality).
      *
-     * @param sample 对象
-     * @return 样例对象
+     * @param sample The object for which to retrieve the canonical representation.
+     * @return The canonical object instance.
      */
     T intern(T sample);
 

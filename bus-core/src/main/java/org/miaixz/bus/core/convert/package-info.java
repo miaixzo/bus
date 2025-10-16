@@ -26,22 +26,24 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 万能类型转换器以及各种类型转换的实现类，其中Convert为转换器入口，提供各种toXXX方法和convert方法 转换器是典型的策略模式应用，可自定义转换策略。提供了常用类型的转换策略，自定义转换接口包括：
- * <ul>
- * <li>{@link org.miaixz.bus.core.convert.Converter}，标准转换接口，通过类型匹配策略后调用使用。</li>
- * <li>{@link org.miaixz.bus.core.convert.MatcherConverter}，带有match方法的Converter，通过自身匹配判断调用转换。</li>
- * </ul>
- *
+ * This package contains a universal type converter and its various implementation classes.
  * <p>
- * 公共的转换器封装有两种：
+ * The conversion framework is a classic application of the Strategy Pattern, allowing for custom conversion strategies.
+ * The primary interfaces for customization are:
  * <ul>
- * <li>{@link org.miaixz.bus.core.convert.RegisterConverter}，提供预定义的转换规则，也可以注册自定义转换规则。</li>
- * <li>{@link org.miaixz.bus.core.convert.CompositeConverter}，复合转换器，封装基于注册的、特别转换（泛型转换）等规则，实现万能转换。</li>
+ * <li>{@link org.miaixz.bus.core.convert.Converter}: A standard conversion interface, which is invoked after a
+ * type-matching strategy is applied.</li>
+ * <li>{@link org.miaixz.bus.core.convert.MatcherConverter}: A {@code Converter} with a {@code match} method that
+ * determines if it can handle a specific conversion.</li>
  * </ul>
- *
  * <p>
- * 转换器是典型的策略模式应用，通过实现{@link org.miaixz.bus.core.convert.Converter} 接口， 自定义转换策略。提供了常用类型的转换策略。
- * </p>
+ * The public converter implementations include:
+ * <ul>
+ * <li>{@link org.miaixz.bus.core.convert.RegisterConverter}: Provides a registry for both predefined and custom
+ * conversion rules.</li>
+ * <li>{@link org.miaixz.bus.core.convert.CompositeConverter}: A composite converter that combines registered rules,
+ * special conversions (e.g., for generics), and other mechanisms to achieve universal conversion.</li>
+ * </ul>
  *
  * @author Kimi Liu
  * @since Java 17+

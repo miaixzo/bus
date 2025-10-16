@@ -26,7 +26,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 非对称加密的支持，包括RSA等
+ * Provides support for asymmetric cryptographic algorithms, including RSA and others.
  *
  * @author Kimi Liu
  * @since Java 17+

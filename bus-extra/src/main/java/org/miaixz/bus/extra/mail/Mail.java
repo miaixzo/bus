@@ -47,22 +47,25 @@ import jakarta.mail.internet.MimeMessage;
 import jakarta.mail.util.ByteArrayDataSource;
 
 /**
- * 邮件发送客户端
+ * Represents a mail client for sending emails, designed with a fluent builder pattern. It simplifies the process of
+ * setting recipients, subject, content, and attachments. Supports both HTML and plain text content, and allows for file
+ * and image attachments.
  * <p>
- * 提供了一个构建器模式的邮件发送客户端，支持设置收件人、抄送人、密送人、邮件主题、内容、附件等信息。 支持HTML格式和纯文本格式的邮件内容，并可以添加文件附件或图片附件。
- * <p>
- * 使用示例：
+ * Usage Example:
  * 
  * <pre>
- * // 创建邮件客户端
+ * {@code
+ * // Create a mail client
  * Mail mail = Mail.of();
  *
- * // 设置邮件基本信息
- * mail.setTos("recipient@example.com").setTitle("邮件主题").setContent("邮件内容", true) // true表示HTML格式
- *         .addFiles(new File("附件.pdf"));
+ * // Set basic email information
+ * mail.setTos("recipient@example.com").setTitle("Email Subject").setContent("<h1>Hello!</h1>", true) // true indicates
+ *                                                                                                    // HTML format
+ *         .addFiles(new File("attachment.pdf"));
  *
- * // 发送邮件
+ * // Send the email
  * String messageId = mail.send();
+ * }
  * </pre>
  *
  * @author Kimi Liu
@@ -71,135 +74,92 @@ import jakarta.mail.util.ByteArrayDataSource;
 public class Mail implements Builder<MimeMessage> {
 
     /**
-     * 邮箱帐户信息以及一些客户端配置信息
-     * <p>
-     * 包含SMTP服务器地址、端口、用户名、密码、是否需要认证等邮件发送所需的基本配置信息
-     * </p>
+     * The mail account configuration, including SMTP server settings, authentication details, etc.
      */
     private final MailAccount mailAccount;
 
     /**
-     * 收件人列表
-     * <p>
-     * 存储邮件的主要接收人地址数组，支持多个收件人
-     * </p>
+     * An array of recipient email addresses (the 'To' field).
      */
     private String[] tos;
 
     /**
-     * 抄送人列表（carbon copy）
-     * <p>
-     * 存储需要抄送邮件的接收人地址数组，抄送人可以看到其他收件人
-     * </p>
+     * An array of carbon copy (CC) recipient email addresses.
      */
     private String[] ccs;
 
     /**
-     * 密送人列表（blind carbon copy）
-     * <p>
-     * 存储需要密送邮件的接收人地址数组，密送人不会被其他收件人看到
-     * </p>
+     * An array of blind carbon copy (BCC) recipient email addresses.
      */
     private String[] bccs;
 
     /**
-     * 回复地址(reply-to)
-     * <p>
-     * 存储邮件的回复地址数组，当收件人点击回复时，邮件将发送到此地址而非发件人地址
-     * </p>
+     * An array of email addresses to be used for the 'Reply-To' header.
      */
     private String[] reply;
 
     /**
-     * 标题
-     * <p>
-     * 邮件的主题行内容
-     * </p>
+     * The subject of the email.
      */
     private String title;
 
     /**
-     * 内容
-     * <p>
-     * 邮件的正文内容，可以是纯文本或HTML格式
-     * </p>
+     * The body content of the email.
      */
     private String content;
 
     /**
-     * 是否为HTML
-     * <p>
-     * 标记邮件内容是否为HTML格式，true表示HTML格式，false表示纯文本格式
-     * </p>
+     * Flag indicating whether the email content is in HTML format.
      */
     private boolean isHtml;
 
     /**
-     * 附件或图片
-     * <p>
-     * 存储邮件附件的数据源数组，可以是文件附件或图片附件
-     * </p>
+     * An array of {@link DataSource} objects representing email attachments (files or images).
      */
     private DataSource[] attachments;
 
     /**
-     * 是否使用全局会话，默认为false
-     * <p>
-     * 标记是否使用全局邮件会话，使用全局会话可以提高性能，但可能在多账户环境下产生问题
-     * </p>
+     * Flag indicating whether to use a global session for sending mail. Defaults to false. Using a global session can
+     * improve performance but may cause issues in multi-account environments.
      */
     private boolean useGlobalSession = false;
 
     /**
-     * debug输出位置，可以自定义debug日志
-     * <p>
-     * 指定邮件发送过程中的调试信息输出流，可用于排查邮件发送问题
-     * </p>
+     * The {@link PrintStream} for debug output. If null, no debug information is printed.
      */
     private PrintStream debugOutput;
 
     /**
-     * 创建邮件客户端
+     * Creates a new {@code Mail} instance with the specified mail account.
      *
-     * @param mailAccount 邮件帐号
-     *                    <p>
-     *                    使用指定的邮件帐号创建邮件客户端实例
-     *                    </p>
-     * @return Mail 邮件客户端实例
+     * @param mailAccount The mail account configuration.
+     * @return A new {@code Mail} instance.
      */
     public static Mail of(final MailAccount mailAccount) {
         return new Mail(mailAccount);
     }
 
     /**
-     * 创建邮件客户端，使用全局邮件帐户
-     * <p>
-     * 使用全局邮件配置创建邮件客户端实例，全局配置通常从配置文件中读取
-     * </p>
+     * Creates a new {@code Mail} instance using the global mail account configuration.
      *
-     * @return Mail 邮件客户端实例
+     * @return A new {@code Mail} instance.
      */
     public static Mail of() {
         return new Mail();
     }
 
     /**
-     * 构造，使用全局邮件帐户
-     * <p>
-     * 使用默认配置文件中的全局邮件帐户初始化邮件客户端
-     * </p>
+     * Constructs a new {@code Mail} instance using the global mail account.
      */
     public Mail() {
         this(GlobalMailAccount.INSTANCE.getAccount());
     }
 
     /**
-     * 构造
+     * Constructs a new {@code Mail} instance with the specified mail account. If the provided account is null, the
+     * global mail account configuration is used.
      *
-     * @param mailAccount 邮件帐户，如果为null使用默认配置文件的全局邮件配置
-     *                    <p>
-     *                    使用指定的邮件帐户初始化邮件客户端，如果传入null则使用全局邮件配置
-     *                    </p>
+     * @param mailAccount The mail account to use. If null, the global account is used.
      */
     public Mail(MailAccount mailAccount) {
         mailAccount = (null != mailAccount) ? mailAccount : GlobalMailAccount.INSTANCE.getAccount();
@@ -207,13 +167,10 @@ public class Mail implements Builder<MimeMessage> {
     }
 
     /**
-     * 设置收件人
+     * Sets the recipient email addresses.
      *
-     * @param tos 收件人列表
-     *            <p>
-     *            设置邮件的主要接收人地址，支持多个收件人
-     *            </p>
-     * @return this 当前邮件客户端实例，支持链式调用
+     * @param tos The recipient email addresses.
+     * @return This {@code Mail} instance for method chaining.
      * @see #setTos(String...)
      */
     public Mail to(final String... tos) {
@@ -221,13 +178,10 @@ public class Mail implements Builder<MimeMessage> {
     }
 
     /**
-     * 设置多个收件人
+     * Sets multiple recipient email addresses, overwriting any previously set recipients.
      *
-     * @param tos 收件人列表
-     *            <p>
-     *            设置邮件的主要接收人地址数组，覆盖之前设置的收件人
-     *            </p>
-     * @return this 当前邮件客户端实例，支持链式调用
+     * @param tos An array of recipient email addresses.
+     * @return This {@code Mail} instance for method chaining.
      */
     public Mail setTos(final String... tos) {
         this.tos = tos;
@@ -235,13 +189,10 @@ public class Mail implements Builder<MimeMessage> {
     }
 
     /**
-     * 设置多个抄送人（carbon copy）
+     * Sets multiple carbon copy (CC) recipient email addresses, overwriting any previously set CC recipients.
      *
-     * @param ccs 抄送人列表
-     *            <p>
-     *            设置邮件的抄送接收人地址数组，抄送人可以看到其他收件人，覆盖之前设置的抄送人
-     *            </p>
-     * @return this 当前邮件客户端实例，支持链式调用
+     * @param ccs An array of CC recipient email addresses.
+     * @return This {@code Mail} instance for method chaining.
      */
     public Mail setCcs(final String... ccs) {
         this.ccs = ccs;
@@ -249,13 +200,10 @@ public class Mail implements Builder<MimeMessage> {
     }
 
     /**
-     * 设置多个密送人（blind carbon copy）
+     * Sets multiple blind carbon copy (BCC) recipient email addresses, overwriting any previously set BCC recipients.
      *
-     * @param bccs 密送人列表
-     *             <p>
-     *             设置邮件的密送接收人地址数组，密送人不会被其他收件人看到，覆盖之前设置的密送人
-     *             </p>
-     * @return this 当前邮件客户端实例，支持链式调用
+     * @param bccs An array of BCC recipient email addresses.
+     * @return This {@code Mail} instance for method chaining.
      */
     public Mail setBccs(final String... bccs) {
         this.bccs = bccs;
@@ -263,13 +211,10 @@ public class Mail implements Builder<MimeMessage> {
     }
 
     /**
-     * 设置多个回复地址(reply-to)
+     * Sets multiple 'Reply-To' email addresses, overwriting any previously set reply-to addresses.
      *
-     * @param reply 回复地址(reply-to)列表
-     *              <p>
-     *              设置邮件的回复地址数组，当收件人点击回复时，邮件将发送到此地址而非发件人地址，覆盖之前设置的回复地址
-     *              </p>
-     * @return this 当前邮件客户端实例，支持链式调用
+     * @param reply An array of 'Reply-To' email addresses.
+     * @return This {@code Mail} instance for method chaining.
      */
     public Mail setReply(final String... reply) {
         this.reply = reply;
@@ -277,13 +222,10 @@ public class Mail implements Builder<MimeMessage> {
     }
 
     /**
-     * 设置标题
+     * Sets the subject of the email.
      *
-     * @param title 标题
-     *              <p>
-     *              设置邮件的主题行内容，覆盖之前设置的标题
-     *              </p>
-     * @return this 当前邮件客户端实例，支持链式调用
+     * @param title The subject of the email.
+     * @return This {@code Mail} instance for method chaining.
      */
     public Mail setTitle(final String title) {
         this.title = title;
@@ -291,14 +233,11 @@ public class Mail implements Builder<MimeMessage> {
     }
 
     /**
-     * 设置正文<br>
-     * 正文可以是普通文本也可以是HTML（默认普通文本），可以通过调用{@link #setHtml(boolean)} 设置是否为HTML
+     * Sets the body content of the email. The content can be plain text or HTML. Use {@link #setHtml(boolean)} to
+     * specify the content type.
      *
-     * @param content 正文
-     *                <p>
-     *                设置邮件的正文内容，可以是纯文本或HTML格式，覆盖之前设置的内容
-     *                </p>
-     * @return this 当前邮件客户端实例，支持链式调用
+     * @param content The body content of the email.
+     * @return This {@code Mail} instance for method chaining.
      */
     public Mail setContent(final String content) {
         this.content = content;
@@ -306,13 +245,10 @@ public class Mail implements Builder<MimeMessage> {
     }
 
     /**
-     * 设置是否是HTML
+     * Sets whether the email content is in HTML format.
      *
-     * @param isHtml 是否为HTML
-     *               <p>
-     *               设置邮件内容是否为HTML格式，true表示HTML格式，false表示纯文本格式
-     *               </p>
-     * @return this 当前邮件客户端实例，支持链式调用
+     * @param isHtml {@code true} if the content is HTML, {@code false} for plain text.
+     * @return This {@code Mail} instance for method chaining.
      */
     public Mail setHtml(final boolean isHtml) {
         this.isHtml = isHtml;
@@ -320,14 +256,11 @@ public class Mail implements Builder<MimeMessage> {
     }
 
     /**
-     * 设置正文
+     * Sets both the body content and the content type (HTML or plain text).
      *
-     * @param content 正文内容
-     * @param isHtml  是否为HTML
-     *                <p>
-     *                同时设置邮件的正文内容和内容格式，覆盖之前的设置
-     *                </p>
-     * @return this 当前邮件客户端实例，支持链式调用
+     * @param content The body content of the email.
+     * @param isHtml  {@code true} if the content is HTML, {@code false} for plain text.
+     * @return This {@code Mail} instance for method chaining.
      */
     public Mail setContent(final String content, final boolean isHtml) {
         setContent(content);
@@ -335,13 +268,11 @@ public class Mail implements Builder<MimeMessage> {
     }
 
     /**
-     * 设置文件类型附件，文件可以是图片文件，此时自动设置cid（正文中引用图片），默认cid为文件名
+     * Adds file attachments to the email. If a file is an image, a CID (Content-ID) is automatically generated for
+     * embedding in the email body, using the filename as the default CID.
      *
-     * @param files 附件文件列表
-     *              <p>
-     *              添加文件作为邮件附件，支持多个文件。如果是图片文件，会自动设置cid以便在正文中引用。 这些附件将添加到现有附件列表中，而不是替换现有附件。
-     *              </p>
-     * @return this 当前邮件客户端实例，支持链式调用
+     * @param files An array of {@link File} objects to attach.
+     * @return This {@code Mail} instance for method chaining.
      */
     public Mail addFiles(final File... files) {
         if (ArrayKit.isEmpty(files)) {
@@ -355,37 +286,24 @@ public class Mail implements Builder<MimeMessage> {
     }
 
     /**
-     * 增加图片，图片的键对应到邮件模板中的占位字符串，图片类型默认为"image/jpeg"
+     * Adds an embedded image to the email, referenced by a CID in the HTML body. The image content type defaults to
+     * "image/jpeg".
      *
-     * @param cid         图片与占位符，占位符格式为cid:${cid}
-     *                    <p>
-     *                    图片的内容ID，用于在HTML邮件正文中引用图片，格式为cid:${cid}
-     *                    </p>
-     * @param imageStream 图片文件
-     *                    <p>
-     *                    图片的输入流，方法不会自动关闭此流，调用者需要自行管理流的生命周期
-     *                    </p>
+     * @param cid         The Content-ID for embedding the image (e.g., "my-image").
+     * @param imageStream The {@link InputStream} of the image. This stream is not closed by this method.
+     * @return This {@code Mail} instance for method chaining.
      */
     public Mail addImage(final String cid, final InputStream imageStream) {
         return addImage(cid, imageStream, null);
     }
 
     /**
-     * 增加图片，图片的键对应到邮件模板中的占位字符串
+     * Adds an embedded image to the email with a specified content type.
      *
-     * @param cid         图片与占位符，占位符格式为cid:${cid}
-     *                    <p>
-     *                    图片的内容ID，用于在HTML邮件正文中引用图片，格式为cid:${cid}
-     *                    </p>
-     * @param imageStream 图片流，不关闭
-     *                    <p>
-     *                    图片的输入流，方法不会自动关闭此流，调用者需要自行管理流的生命周期
-     *                    </p>
-     * @param contentType 图片类型，null赋值默认的"image/jpeg"
-     *                    <p>
-     *                    图片的MIME类型，如"image/jpeg"、"image/png"等，如果为null则默认使用"image/jpeg"
-     *                    </p>
-     * @return this 当前邮件客户端实例，支持链式调用
+     * @param cid         The Content-ID for embedding the image.
+     * @param imageStream The {@link InputStream} of the image. This stream is not closed by this method.
+     * @param contentType The MIME type of the image (e.g., "image/png"). Defaults to "image/jpeg" if null.
+     * @return This {@code Mail} instance for method chaining.
      */
     public Mail addImage(final String cid, final InputStream imageStream, final String contentType) {
         final ByteArrayDataSource imgSource;
@@ -399,17 +317,11 @@ public class Mail implements Builder<MimeMessage> {
     }
 
     /**
-     * 增加图片，图片的键对应到邮件模板中的占位字符串
+     * Adds an embedded image from a {@link File} to the email.
      *
-     * @param cid       图片与占位符，占位符格式为cid:${cid}
-     *                  <p>
-     *                  图片的内容ID，用于在HTML邮件正文中引用图片，格式为cid:${cid}
-     *                  </p>
-     * @param imageFile 图片文件
-     *                  <p>
-     *                  图片文件对象，方法会自动读取文件内容并关闭文件流
-     *                  </p>
-     * @return this 当前邮件客户端实例，支持链式调用
+     * @param cid       The Content-ID for embedding the image.
+     * @param imageFile The image {@link File}.
+     * @return This {@code Mail} instance for method chaining.
      */
     public Mail addImage(final String cid, final File imageFile) {
         InputStream in = null;
@@ -422,13 +334,10 @@ public class Mail implements Builder<MimeMessage> {
     }
 
     /**
-     * 增加附件或图片，附件使用{@link DataSource} 形式表示，可以使用{@link FileDataSource}包装文件表示文件附件
+     * Adds attachments to the email, represented by {@link DataSource} objects.
      *
-     * @param attachments 附件列表
-     *                    <p>
-     *                    添加附件或图片到邮件中，附件使用DataSource形式表示。 这些附件将添加到现有附件列表中，而不是替换现有附件。
-     *                    </p>
-     * @return this 当前邮件客户端实例，支持链式调用
+     * @param attachments An array of {@link DataSource} objects to attach.
+     * @return This {@code Mail} instance for method chaining.
      */
     public Mail addAttachments(final DataSource... attachments) {
         if (ArrayKit.isNotEmpty(attachments)) {
@@ -442,13 +351,10 @@ public class Mail implements Builder<MimeMessage> {
     }
 
     /**
-     * 设置字符集编码
+     * Sets the character set encoding for the email.
      *
-     * @param charset 字符集编码
-     *                <p>
-     *                设置邮件的字符集编码，如UTF-8、GBK等，影响邮件主题和内容的编码
-     *                </p>
-     * @return this 当前邮件客户端实例，支持链式调用
+     * @param charset The character set (e.g., UTF-8, GBK).
+     * @return This {@code Mail} instance for method chaining.
      * @see MailAccount#setCharset(Charset)
      */
     public Mail setCharset(final Charset charset) {
@@ -457,13 +363,11 @@ public class Mail implements Builder<MimeMessage> {
     }
 
     /**
-     * 设置是否使用全局会话，默认为true
+     * Sets whether to use a global session for sending mail. Defaults to false.
      *
-     * @param isUseGlobalSession 是否使用全局会话，默认为true
-     *                           <p>
-     *                           设置是否使用全局邮件会话，使用全局会话可以提高性能，但可能在多账户环境下产生问题。 如果为true，则所有邮件发送使用同一个会话；如果为false，则每次发送创建新会话。
-     *                           </p>
-     * @return this 当前邮件客户端实例，支持链式调用
+     * @param isUseGlobalSession {@code true} to use a global session, {@code false} to create a new session for each
+     *                           email.
+     * @return This {@code Mail} instance for method chaining.
      */
     public Mail setUseGlobalSession(final boolean isUseGlobalSession) {
         this.useGlobalSession = isUseGlobalSession;
@@ -471,13 +375,10 @@ public class Mail implements Builder<MimeMessage> {
     }
 
     /**
-     * 设置debug输出位置，可以自定义debug日志
+     * Sets the debug output stream for logging mail sending details.
      *
-     * @param debugOutput debug输出位置
-     *                    <p>
-     *                    设置邮件发送过程中的调试信息输出流，可用于排查邮件发送问题。 如果为null，则使用系统默认输出。
-     *                    </p>
-     * @return this 当前邮件客户端实例，支持链式调用
+     * @param debugOutput The {@link PrintStream} for debug output. If null, system default is used.
+     * @return This {@code Mail} instance for method chaining.
      */
     public Mail setDebugOutput(final PrintStream debugOutput) {
         this.debugOutput = debugOutput;
@@ -485,37 +386,23 @@ public class Mail implements Builder<MimeMessage> {
     }
 
     /**
-     * 构建邮件消息
-     * <p>
-     * 根据当前设置构建SMTPMessage对象，准备发送。此方法会整合所有设置的邮件信息， 包括收件人、主题、内容、附件等，创建一个完整的邮件消息对象。
-     * </p>
+     * Builds the {@link MimeMessage} object from the current configuration. This method consolidates all settings into
+     * a complete mail message object ready for sending.
      *
-     * @return SMTPMessage 构建好的SMTP消息对象
+     * @return The constructed {@link SMTPMessage} object.
      */
     @Override
     public SMTPMessage build() {
-        return SMTPMessage.of(this.mailAccount, this.useGlobalSession, this.debugOutput)
-                // 标题
-                .setTitle(this.title)
-                // 收件人
-                .setTos(this.tos)
-                // 抄送人
-                .setCcs(this.ccs)
-                // 密送人
-                .setBccs(this.bccs)
-                // 回复地址(reply-to)
-                .setReply(this.reply)
-                // 内容和附件
+        return SMTPMessage.of(this.mailAccount, this.useGlobalSession, this.debugOutput).setTitle(this.title)
+                .setTos(this.tos).setCcs(this.ccs).setBccs(this.bccs).setReply(this.reply)
                 .setContent(this.content, this.isHtml);
     }
 
     /**
-     * 发送邮件
-     * <p>
-     * 构建并发送邮件，返回邮件的唯一标识符（message-id）。 如果发送成功，message-id可用于追踪邮件；如果发送失败，将抛出异常。
-     * </p>
+     * Builds and sends the email.
      *
-     * @return message-id 邮件的唯一标识符，可用于追踪邮件
+     * @return The unique message-id of the sent email, which can be used for tracking.
+     * @throws InternalException if sending the email fails.
      */
     public String send() {
         return build().send();

@@ -32,9 +32,10 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * 缓存键集合类
+ * A container for the results of a batch cache read operation.
  * <p>
- * 用于存储批量缓存操作的结果，包括命中的键值对和未命中的键集合。 提供了获取命中键值对和未命中键集合的方法，并处理了null值情况。
+ * This class is used to store the outcome of a multi-key lookup, separating the keys that were found in the cache
+ * (hits) from those that were not (misses).
  * </p>
  *
  * @author Kimi Liu
@@ -43,29 +44,29 @@ import java.util.Set;
 public class CacheKeys {
 
     /**
-     * 命中的键值对映射，键为缓存键，值为缓存值
+     * A map of key-value pairs for the keys that were found in the cache.
      */
     private Map<String, Object> hitKeyMap;
 
     /**
-     * 未命中的键集合
+     * A set of keys that were not found in the cache.
      */
     private Set<String> missKeySet;
 
     /**
-     * 默认构造方法
+     * Constructs a new, empty {@code CacheKeys} instance.
      * <p>
-     * 创建一个空的CacheKeys实例，hitKeyMap和missKeySet都为null
+     * Both the hit map and miss set will be {@code null} initially.
      * </p>
      */
     public CacheKeys() {
     }
 
     /**
-     * 带参数的构造方法
+     * Constructs a new {@code CacheKeys} instance with the specified hit and miss collections.
      *
-     * @param hitKeyMap  命中的键值对映射
-     * @param missKeySet 未命中的键集合
+     * @param hitKeyMap  A map of keys and their corresponding values that were found in the cache.
+     * @param missKeySet A set of keys that were not found in the cache.
      */
     public CacheKeys(Map<String, Object> hitKeyMap, Set<String> missKeySet) {
         this.hitKeyMap = hitKeyMap;
@@ -73,24 +74,24 @@ public class CacheKeys {
     }
 
     /**
-     * 获取命中的键值对映射
+     * Gets the map of key-value pairs for cache hits.
      * <p>
-     * 如果hitKeyMap为null，则返回一个空的不可修改映射
+     * If the hit map is {@code null}, this method returns an unmodifiable empty map.
      * </p>
      *
-     * @return 命中的键值对映射
+     * @return A map of cache hits; never {@code null}.
      */
     public Map<String, Object> getHitKeyMap() {
         return null == hitKeyMap ? Collections.emptyMap() : hitKeyMap;
     }
 
     /**
-     * 获取未命中的键集合
+     * Gets the set of keys that were missed in the cache lookup.
      * <p>
-     * 如果missKeySet为null，则返回一个空的不可修改集合
+     * If the miss set is {@code null}, this method returns an unmodifiable empty set.
      * </p>
      *
-     * @return 未命中的键集合
+     * @return A set of cache misses; never {@code null}.
      */
     public Set<String> getMissKeySet() {
         return null == missKeySet ? Collections.emptySet() : missKeySet;

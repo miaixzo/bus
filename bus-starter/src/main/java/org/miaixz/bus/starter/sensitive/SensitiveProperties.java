@@ -27,13 +27,14 @@
 */
 package org.miaixz.bus.starter.sensitive;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.miaixz.bus.spring.GeniusBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-import lombok.Getter;
-import lombok.Setter;
-
 /**
+ * Configuration properties for data desensitization and encryption/decryption.
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -43,39 +44,53 @@ import lombok.Setter;
 public class SensitiveProperties {
 
     /**
-     * 加密信息
-     *
+     * Configuration for encryption.
      */
     private Encrypt encrypt = new Encrypt();
+
     /**
-     * 解密信息
+     * Configuration for decryption.
      */
     private Decrypt decrypt = new Decrypt();
 
     /**
-     * 是否调试模式
+     * Whether to enable debug mode. In debug mode, encryption and decryption might be bypassed.
      */
     private boolean debug;
 
     /**
-     * 加密信息
+     * Nested class for encryption settings.
      */
     @Getter
     @Setter
-    public class Encrypt {
+    public static class Encrypt {
 
+        /**
+         * The encryption key.
+         */
         private String key;
+
+        /**
+         * The encryption algorithm type (e.g., AES, DES).
+         */
         private String type;
     }
 
     /**
-     * 解密信息
+     * Nested class for decryption settings.
      */
     @Getter
     @Setter
-    public class Decrypt {
+    public static class Decrypt {
 
+        /**
+         * The decryption key.
+         */
         private String key;
+
+        /**
+         * The decryption algorithm type (e.g., AES, DES).
+         */
         private String type;
     }
 

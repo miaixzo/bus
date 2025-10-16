@@ -26,14 +26,15 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 封装了Bopomofo4j的引擎。
+ * Encapsulates the Bopomofo4j engine.
  *
  * <p>
- * Bopomofo4j封装，项目：https://gitee.com/rnkrsoft/Bopomofo4j。
+ * Bopomofo4j encapsulation, project:
+ * <a href="https://gitee.com/rnkrsoft/Bopomofo4j">https://gitee.com/rnkrsoft/Bopomofo4j</a>.
  * </p>
  *
  * <p>
- * 引入：
+ * To introduce (dependency):
  * 
  * <pre>
  * &lt;dependency&gt;

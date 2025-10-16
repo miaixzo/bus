@@ -36,11 +36,12 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 时长格式化器，用于格式化输出两个日期相差的时长 根据{@link Level}不同，调用{@link #format()}方法后返回类似于：
+ * Duration formatter, used to format the duration between two dates. Depending on the {@link Level}, calling the
+ * {@link #format()} method will return something like:
  * <ul>
- * <li>XX小时XX分XX秒</li>
- * <li>XX天XX小时</li>
- * <li>XX月XX天XX小时</li>
+ * <li>XX hours XX minutes XX seconds</li>
+ * <li>XX days XX hours</li>
+ * <li>XX months XX days XX hours</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -52,36 +53,39 @@ public class FormatPeriod implements Serializable {
     private static final long serialVersionUID = 2852255710766L;
 
     /**
-     * 格式化级别的最大个数
+     * The maximum number of formatting levels.
      */
     private final int levelMaxCount;
     /**
-     * 时长毫秒数
+     * The duration in milliseconds.
      */
     private long betweenMs;
     /**
-     * 格式化级别
+     * The formatting level.
      */
     private Level level;
     /**
-     * 格式化器
+     * The formatter function for levels.
      */
     private Function<Level, String> formatter = Level::getName;
     /**
-     * 是否为简化模式，此标记用于自定义是否输出各个位数中间为0的部分 如为{@code true}，输出 1小时3秒，为{@code false}输出 1小时0分3秒
+     * Whether it is in simple mode. This flag is used to customize whether to output parts with 0 in between. If
+     * {@code true}, outputs "1 hour 3 seconds"; if {@code false}, outputs "1 hour 0 minutes 3 seconds".
      */
     private boolean simpleMode = true;
     /**
-     * 分隔符，默认为"" 通过{@link #setSeparator(String)}进行调整
+     * The separator, defaults to "". Can be adjusted via {@link #setSeparator(String)}.
      */
     private String separator = Normal.EMPTY;
 
     /**
-     * 构造
+     * Constructs a {@code FormatPeriod} instance.
      *
-     * @param betweenMs     日期间隔
-     * @param level         级别，按照天、小时、分、秒、毫秒分为5个等级，根据传入等级，格式化到相应级别
-     * @param levelMaxCount 格式化级别的最大个数，假如级别个数为1，但是级别到秒，那只显示一个级别
+     * @param betweenMs     The duration in milliseconds.
+     * @param level         The level, divided into 5 levels: day, hour, minute, second, millisecond. Formats to the
+     *                      corresponding level based on the input level.
+     * @param levelMaxCount The maximum number of formatting levels. If the number of levels is 1, but the level is up
+     *                      to seconds, only one level will be displayed.
      */
     public FormatPeriod(final long betweenMs, final Level level, final int levelMaxCount) {
         this.betweenMs = betweenMs;
@@ -90,32 +94,35 @@ public class FormatPeriod implements Serializable {
     }
 
     /**
-     * 创建 {@link FormatPeriod}
+     * Creates a {@link FormatPeriod} instance.
      *
-     * @param betweenMs 日期间隔
-     * @param level     级别，按照天、小时、分、秒、毫秒分为5个等级，根据传入等级，格式化到相应级别
-     * @return {@link FormatPeriod}
+     * @param betweenMs The duration in milliseconds.
+     * @param level     The level, divided into 5 levels: day, hour, minute, second, millisecond. Formats to the
+     *                  corresponding level based on the input level.
+     * @return A new {@link FormatPeriod} instance.
      */
     public static FormatPeriod of(final long betweenMs, final Level level) {
         return of(betweenMs, level, 0);
     }
 
     /**
-     * 创建 {@link FormatPeriod}
+     * Creates a {@link FormatPeriod} instance.
      *
-     * @param betweenMs     日期间隔
-     * @param level         级别，按照天、小时、分、秒、毫秒分为5个等级，根据传入等级，格式化到相应级别
-     * @param levelMaxCount 格式化级别的最大个数，假如级别个数为1，但是级别到秒，那只显示一个级别
-     * @return {@link FormatPeriod}
+     * @param betweenMs     The duration in milliseconds.
+     * @param level         The level, divided into 5 levels: day, hour, minute, second, millisecond. Formats to the
+     *                      corresponding level based on the input level.
+     * @param levelMaxCount The maximum number of formatting levels. If the number of levels is 1, but the level is up
+     *                      to seconds, only one level will be displayed.
+     * @return A new {@link FormatPeriod} instance.
      */
     public static FormatPeriod of(final long betweenMs, final Level level, final int levelMaxCount) {
         return new FormatPeriod(betweenMs, level, levelMaxCount);
     }
 
     /**
-     * 格式化日期间隔输出
+     * Formats the duration output.
      *
-     * @return 格式化后的字符串
+     * @return The formatted string.
      */
     public String format() {
         final StringBuilder sb = new StringBuilder();
@@ -131,13 +138,13 @@ public class FormatPeriod implements Serializable {
             final int level = this.level.ordinal();
             int levelCount = 0;
 
-            // 天
+            // Day
             if (isLevelCountValid(levelCount) && day > 0) {
                 sb.append(day).append(formatter.apply(Level.DAY)).append(separator);
                 levelCount++;
             }
 
-            // 时
+            // Hour
             if (isLevelCountValid(levelCount) && level >= Level.HOUR.ordinal()) {
                 if (hour > 0 || (!this.simpleMode && StringKit.isNotEmpty(sb))) {
                     sb.append(hour).append(formatter.apply(Level.HOUR)).append(separator);
@@ -145,7 +152,7 @@ public class FormatPeriod implements Serializable {
                 }
             }
 
-            // 分
+            // Minute
             if (isLevelCountValid(levelCount) && level >= Level.MINUTE.ordinal()) {
                 if (minute > 0 || (!this.simpleMode && StringKit.isNotEmpty(sb))) {
                     sb.append(minute).append(formatter.apply(Level.MINUTE)).append(separator);
@@ -153,7 +160,7 @@ public class FormatPeriod implements Serializable {
                 }
             }
 
-            // 秒
+            // Second
             if (isLevelCountValid(levelCount) && level >= Level.SECOND.ordinal()) {
                 if (second > 0 || (!this.simpleMode && StringKit.isNotEmpty(sb))) {
                     sb.append(second).append(formatter.apply(Level.SECOND)).append(separator);
@@ -161,7 +168,7 @@ public class FormatPeriod implements Serializable {
                 }
             }
 
-            // 毫秒
+            // Millisecond
             if (isLevelCountValid(levelCount) && millisecond > 0 && level >= Level.MILLISECOND.ordinal()) {
                 sb.append(millisecond).append(formatter.apply(Level.MILLISECOND)).append(separator);
             }
@@ -172,24 +179,24 @@ public class FormatPeriod implements Serializable {
         } else if (StringKit.isNotEmpty(separator)) {
             sb.delete(sb.length() - separator.length(), sb.length());
         }
-        // 自定义实现最后可能存在空格
+        // Custom implementations may have trailing spaces
         return sb.toString().trim();
     }
 
     /**
-     * 获得 时长毫秒数
+     * Gets the duration in milliseconds.
      *
-     * @return 时长毫秒数
+     * @return The duration in milliseconds.
      */
     public long getBetweenMs() {
         return betweenMs;
     }
 
     /**
-     * 设置 时长毫秒数
+     * Sets the duration in milliseconds.
      *
-     * @param betweenMs 时长毫秒数
-     * @return this
+     * @param betweenMs The duration in milliseconds.
+     * @return This {@code FormatPeriod} instance.
      */
     public FormatPeriod setBetweenMs(final long betweenMs) {
         this.betweenMs = betweenMs;
@@ -197,19 +204,19 @@ public class FormatPeriod implements Serializable {
     }
 
     /**
-     * 获得 格式化级别
+     * Gets the formatting level.
      *
-     * @return 格式化级别
+     * @return The {@link Level} of formatting.
      */
     public Level getLevel() {
         return level;
     }
 
     /**
-     * 设置格式化级别
+     * Sets the formatting level.
      *
-     * @param level 格式化级别
-     * @return this
+     * @param level The {@link Level} of formatting.
+     * @return This {@code FormatPeriod} instance.
      */
     public FormatPeriod setLevel(final Level level) {
         this.level = level;
@@ -217,10 +224,11 @@ public class FormatPeriod implements Serializable {
     }
 
     /**
-     * 是否为简化模式，此标记用于自定义是否输出各个位数中间为0的部分 如为{@code true}，输出 1小时3秒，为{@code false}输出 1小时0分3秒
+     * Sets whether to use simple mode. This flag is used to customize whether to output parts with 0 in between. If
+     * {@code true}, outputs "1 hour 3 seconds"; if {@code false}, outputs "1 hour 0 minutes 3 seconds".
      *
-     * @param simpleMode 是否简化模式
-     * @return this
+     * @param simpleMode {@code true} for simple mode, {@code false} otherwise.
+     * @return This {@code FormatPeriod} instance.
      */
     public FormatPeriod setSimpleMode(final boolean simpleMode) {
         this.simpleMode = simpleMode;
@@ -228,10 +236,10 @@ public class FormatPeriod implements Serializable {
     }
 
     /**
-     * 设置级别格式化器
+     * Sets the level formatter.
      *
-     * @param formatter 级别格式化器
-     * @return this
+     * @param formatter The level formatter function.
+     * @return This {@code FormatPeriod} instance.
      */
     public FormatPeriod setFormatter(final Function<Level, String> formatter) {
         this.formatter = formatter;
@@ -239,10 +247,10 @@ public class FormatPeriod implements Serializable {
     }
 
     /**
-     * 设置分隔符
+     * Sets the separator.
      *
-     * @param separator 分割符
-     * @return this
+     * @param separator The separator string.
+     * @return This {@code FormatPeriod} instance.
      */
     public FormatPeriod setSeparator(final String separator) {
         this.separator = StringKit.toStringOrEmpty(separator);
@@ -255,59 +263,60 @@ public class FormatPeriod implements Serializable {
     }
 
     /**
-     * 等级数量是否有效 有效的定义是：levelMaxCount大于0（被设置），当前等级数量没有超过这个最大值
+     * Checks if the level count is valid. A valid definition is: levelMaxCount is greater than 0 (set), and the current
+     * level count does not exceed this maximum value.
      *
-     * @param levelCount 登记数量
-     * @return 是否有效
+     * @param levelCount The current level count.
+     * @return {@code true} if the level count is valid, {@code false} otherwise.
      */
     private boolean isLevelCountValid(final int levelCount) {
         return this.levelMaxCount <= 0 || levelCount < this.levelMaxCount;
     }
 
     /**
-     * 格式化等级枚举
+     * Enumeration for formatting levels.
      */
     public enum Level {
 
         /**
-         * 天
+         * Day
          */
         DAY("天"),
         /**
-         * 小时
+         * Hour
          */
         HOUR("小时"),
         /**
-         * 分钟
+         * Minute
          */
         MINUTE("分"),
         /**
-         * 秒
+         * Second
          */
         SECOND("秒"),
         /**
-         * 毫秒
+         * Millisecond
          */
         MILLISECOND("毫秒");
 
         /**
-         * 级别名称
+         * The name of the level.
          */
         private final String name;
 
         /**
-         * 构造
+         * Constructs a {@code Level} enum constant.
          *
-         * @param name 级别名称
+         * @param name The name of the level.
          */
         Level(final String name) {
             this.name = name;
         }
 
         /**
-         * 获取级别名称
+         * Gets the name of the level.
          *
-         * @return 级别名称
+         * @return The name of the level.
          */
         public String getName() {
             return this.name;

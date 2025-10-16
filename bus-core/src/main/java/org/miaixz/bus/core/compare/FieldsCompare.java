@@ -34,9 +34,9 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.xyz.FieldKit;
 
 /**
- * Bean字段排序器
+ * Comparator for sorting beans based on multiple fields.
  *
- * @param <T> 被比较的Bean
+ * @param <T> the type of the bean to be compared.
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -46,21 +46,21 @@ public class FieldsCompare<T> extends NullCompare<T> {
     private static final long serialVersionUID = 2852261195893L;
 
     /**
-     * 构造
+     * Constructs a new {@code FieldsCompare}.
      *
-     * @param beanClass  Bean类
-     * @param fieldNames 多个字段名
+     * @param beanClass  the class of the bean.
+     * @param fieldNames the names of the fields to compare by, in order of priority.
      */
     public FieldsCompare(final Class<T> beanClass, final String... fieldNames) {
         this(true, beanClass, fieldNames);
     }
 
     /**
-     * 构造
+     * Constructs a new {@code FieldsCompare}.
      *
-     * @param nullGreater 是否{@code null}在后
-     * @param beanClass   Bean类
-     * @param fieldNames  多个字段名
+     * @param nullGreater whether {@code null} values should be placed at the end.
+     * @param beanClass   the class of the bean.
+     * @param fieldNames  the names of the fields to compare by, in order of priority.
      */
     public FieldsCompare(final boolean nullGreater, final Class<T> beanClass, final String... fieldNames) {
         super(nullGreater, (a, b) -> {

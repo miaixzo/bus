@@ -39,7 +39,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * 全局命名空间上下文 见：https://www.ibm.com/developerworks/cn/xml/x-nmspccontext/
+ * Universal Namespace Context for XML processing. See:
+ * <a href="https://www.ibm.com/developerworks/cn/xml/x-nmspccontext/">Using the JAXP NamespaceContext Interface</a>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -50,20 +51,22 @@ public class UniversalNamespace implements NamespaceContext {
     private final BiMap<String, String> prefixUri = new BiMap<>(new HashMap<>());
 
     /**
-     * 此构造函数解析文档并存储其能找到的所有命名空间。 如果 toplevelOnly 为 true，则仅使用根目录中的命名空间。
+     * Constructs a new UniversalNamespace by parsing the provided node and storing all found namespaces. If
+     * {@code toplevelOnly} is {@code true}, only namespaces in the root element are considered.
      *
-     * @param node         源节点
-     * @param toplevelOnly 限制搜索以提高性能
+     * @param node         The source {@link Node}.
+     * @param toplevelOnly {@code true} to limit the search to top-level namespaces for performance, {@code false}
+     *                     otherwise.
      */
     public UniversalNamespace(final Node node, final boolean toplevelOnly) {
         examineNode(node.getFirstChild(), toplevelOnly);
     }
 
     /**
-     * 取单个节点，提取并存储命名空间属性。
+     * Examines a single node, extracting and storing namespace attributes.
      *
-     * @param node           检查节点
-     * @param attributesOnly 如果为真，则不发生递归
+     * @param node           The node to examine.
+     * @param attributesOnly If {@code true}, recursion does not occur.
      */
     private void examineNode(final Node node, final boolean attributesOnly) {
         final NamedNodeMap attributes = node.getAttributes();
@@ -90,21 +93,21 @@ public class UniversalNamespace implements NamespaceContext {
     }
 
     /**
-     * 如果它是命名空间属性，则此方法查看该属性并将其存储。
+     * Examines an attribute node and stores it if it is a namespace attribute.
      *
-     * @param node 检查节点
+     * @param node The attribute node to examine.
      */
     private void storeAttribute(final Node node) {
         if (null == node) {
             return;
         }
-        // 检查命名空间 xmlns 中的属性
+        // Check attributes in the xmlns namespace
         if (XMLConstants.XMLNS_ATTRIBUTE_NS_URI.equals(node.getNamespaceURI())) {
-            // 默认命名空间 xmlns="uri goes here"
+            // Default namespace xmlns="uri goes here"
             if (XMLConstants.XMLNS_ATTRIBUTE.equals(node.getNodeName())) {
                 prefixUri.put(DEFAULT_NS, node.getNodeValue());
             } else {
-                // 定义的前缀存储在这里
+                // Defined prefixes are stored here
                 prefixUri.put(node.getLocalName(), node.getNodeValue());
             }
         }
@@ -112,10 +115,11 @@ public class UniversalNamespace implements NamespaceContext {
     }
 
     /**
-     * 此方法由 XPath 调用。如果前缀为 null 或“”，则返回默认命名空间。
+     * This method is called by XPath. If the prefix is {@code null} or an empty string, it returns the default
+     * namespace.
      *
-     * @param prefix 前缀
-     * @return 命名空间URI
+     * @param prefix The prefix to look up.
+     * @return The namespace URI associated with the prefix.
      */
     @Override
     public String getNamespaceURI(final String prefix) {
@@ -127,13 +131,22 @@ public class UniversalNamespace implements NamespaceContext {
     }
 
     /**
-     * 在这种情况下不需要这种方法，但可以用类似的方式实现。
+     * This method is not needed in this case but can be implemented in a similar way.
+     *
+     * @param namespaceURI The namespace URI to look up.
+     * @return The prefix associated with the namespace URI.
      */
     @Override
     public String getPrefix(final String namespaceURI) {
         return prefixUri.getInverse().get(namespaceURI);
     }
 
+    /**
+     * This method is not needed in this case.
+     *
+     * @param namespaceURI The namespace URI to look up.
+     * @return An iterator over the prefixes associated with the namespace URI.
+     */
     @Override
     public Iterator<String> getPrefixes(final String namespaceURI) {
         return null;

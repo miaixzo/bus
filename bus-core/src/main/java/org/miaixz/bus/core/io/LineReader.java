@@ -41,11 +41,11 @@ import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 行读取器，类似于BufferedInputStream，支持多行转义，规则如下：
+ * Line reader, similar to BufferedInputStream, supports multi-line escaping with the following rules:
  * <ul>
- * <li>支持'\n'和'\r\n'两种换行符，不支持'\r'换行符</li>
- * <li>如果想读取转义符，必须定义为'\\'</li>
- * <li>多行转义后的换行符和空格都会被忽略</li>
+ * <li>Supports both '\n' and '\r\n' as line endings, but not '\r'.</li>
+ * <li>If an escape character is desired, it must be defined as '\\'.</li>
+ * <li>Line endings and spaces after multi-line escapes will be ignored.</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -54,44 +54,44 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class LineReader extends ReaderWrapper implements Iterable<String> {
 
     /**
-     * 构造
+     * Constructs a new {@code LineReader} from an {@link InputStream} and a {@link Charset}.
      *
-     * @param in      {@link InputStream}
-     * @param charset 编码
+     * @param in      The input stream.
+     * @param charset The character set for decoding the stream.
      */
     public LineReader(final InputStream in, final Charset charset) {
         this(IoKit.toReader(in, charset));
     }
 
     /**
-     * 构造
+     * Constructs a new {@code LineReader} from a {@link Reader}.
      *
-     * @param reader {@link Reader}
+     * @param reader The reader.
      */
     public LineReader(final Reader reader) {
         super(IoKit.toBuffered(reader));
     }
 
     /**
-     * 读取一行
+     * Reads a line of text.
      *
-     * @return 内容
-     * @throws IOException IO异常
+     * @return The content of the line, or null if the end of the stream has been reached.
+     * @throws IOException If an I/O error occurs.
      */
     public String readLine() throws IOException {
         StringBuilder text = null;
-        // 换行符前是否为转义符
+        // Whether the character before the newline is an escape character
         boolean precedingBackslash = false;
         int c;
         while ((c = read()) > 0) {
             if (null == text) {
-                // 只有有字符的情况下才初始化行，否则为行结束
+                // Initialize the line only if there are characters, otherwise it's the end of the line.
                 text = StringKit.builder(1024);
             }
             if (Symbol.C_BACKSLASH == c) {
-                // 转义符转义，行尾需要使用'\'时，使用转义符转义，即`\\`
+                // Escape character. If a '\' is needed at the end of the line, use '\\'.
                 if (!precedingBackslash) {
-                    // 转义符，添加标识，但是不加入字符
+                    // Escape character, add a flag but do not add the character.
                     precedingBackslash = true;
                     continue;
                 } else {
@@ -99,15 +99,15 @@ public class LineReader extends ReaderWrapper implements Iterable<String> {
                 }
             } else {
                 if (precedingBackslash) {
-                    // 转义模式下，跳过转义符后的所有空白符
+                    // In escape mode, skip all whitespace characters after the escape character.
                     if (CharKit.isBlankChar(c)) {
                         continue;
                     }
-                    // 遇到普通字符，关闭转义
+                    // Encountered a normal character, turn off escaping.
                     precedingBackslash = false;
                 } else if (Symbol.C_LF == c) {
-                    // 非转义状态下，表示行的结束
-                    // 如果换行符是`\r\n`，删除末尾的`\r`
+                    // In non-escape state, indicates the end of the line.
+                    // If the newline character is `\r\n`, remove the trailing `\r`.
                     final int lastIndex = text.length() - 1;
                     if (lastIndex >= 0 && Symbol.C_CR == text.charAt(lastIndex)) {
                         text.deleteCharAt(lastIndex);
@@ -122,6 +122,12 @@ public class LineReader extends ReaderWrapper implements Iterable<String> {
         return StringKit.toStringOrNull(text);
     }
 
+    /**
+     * Returns an iterator over the lines in this reader.
+     *
+     * @return An {@link Iterator} of strings, where each string is a line from the reader.
+     * @throws InternalException If an {@link IOException} occurs during reading.
+     */
     @Override
     public Iterator<String> iterator() {
         return new ComputeIterator<>() {

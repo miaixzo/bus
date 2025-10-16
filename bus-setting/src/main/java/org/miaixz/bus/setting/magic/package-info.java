@@ -26,7 +26,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 配置环境封装，例如Profile可以自定义不同环境下的配置文件位置
+ * Provides classes for managing and accessing settings, including support for grouped configurations and environment
+ * profiles.
  *
  * @author Kimi Liu
  * @since Java 17+

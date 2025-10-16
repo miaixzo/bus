@@ -26,10 +26,9 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * MetroHash算法实现
+ * Provides implementations of the MetroHash algorithm.
  * <p>
- * 参考：https://github.com/postamar/java-metrohash
- * </p>
+ * Reference: <a href="https://github.com/postamar/java-metrohash">https://github.com/postamar/java-metrohash</a>
  *
  * @author Kimi Liu
  * @since Java 17+

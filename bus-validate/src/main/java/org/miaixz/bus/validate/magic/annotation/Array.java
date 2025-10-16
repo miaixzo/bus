@@ -30,11 +30,12 @@ package org.miaixz.bus.validate.magic.annotation;
 import java.lang.annotation.*;
 
 /**
- * 检查是否为数组或集合
+ * Checks if the annotated element is an array or a collection, and if so, applies the validation to its elements.
  *
  * <p>
- * 在任意校验注解类型加上{@code @Array}注解, 会在运行时对该校验对象的类型进行判断 如果是数组或者集合对象,则会对内部元素执行当前所有其他的校验器将, 否则执行对校验对象执行校验器
- * </P>
+ * By adding the {@code @Array} annotation to any validation annotation type, a runtime check is performed on the type
+ * of the validated object. If it is an array or a collection, the other validators on the annotation will be applied to
+ * each element within the array or collection. Otherwise, the validators will be applied to the object itself.
  *
  * @author Kimi Liu
  * @since Java 17+

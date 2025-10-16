@@ -42,49 +42,57 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.UrlKit;
 
 /**
- * URL资源访问类
+ * URL resource access class. This class provides an implementation of the {@link Resource} interface for resources
+ * identified by a {@link URL}.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class UrlResource implements Resource, Serializable {
 
+    /**
+     * The serial version UID for serialization.
+     */
     @Serial
     private static final long serialVersionUID = 2852232772701L;
 
     /**
-     * URL
+     * The URL of the resource.
      */
     protected URL url;
     /**
-     * 资源名称
+     * The name of the resource.
      */
     protected String name;
+    /**
+     * The last modified timestamp of the resource. Initialized to 0 for non-file resources.
+     */
     private long lastModified = 0;
 
     /**
-     * 构造
+     * Constructs a {@code UrlResource} from a given {@link URI}.
      *
-     * @param uri URI
+     * @param uri The {@link URI} of the resource.
      */
     public UrlResource(final URI uri) {
         this(UrlKit.url(uri), null);
     }
 
     /**
-     * 构造
+     * Constructs a {@code UrlResource} from a given {@link URL}.
      *
-     * @param url URL
+     * @param url The {@link URL} of the resource.
      */
     public UrlResource(final URL url) {
         this(url, null);
     }
 
     /**
-     * 构造
+     * Constructs a {@code UrlResource} from a given {@link URL} and a resource name. If the URL protocol is "file", the
+     * last modified timestamp of the file is recorded.
      *
-     * @param url  URL，允许为空
-     * @param name 资源名称
+     * @param url  The {@link URL} of the resource, may be {@code null}.
+     * @param name The name of the resource. If {@code null}, the name is derived from the URL path.
      */
     public UrlResource(final URL url, final String name) {
         this.url = url;
@@ -119,23 +127,24 @@ public class UrlResource implements Resource, Serializable {
 
     @Override
     public boolean isModified() {
-        // lastModified == 0表示此资源非文件资源
+        // lastModified == 0 indicates that this resource is not a file resource
         return (0 != this.lastModified) && this.lastModified != getFile().lastModified();
     }
 
     /**
-     * 获得File
+     * Retrieves the {@link File} object corresponding to this URL resource. This method is applicable only if the URL
+     * protocol is "file".
      *
-     * @return {@link File}
+     * @return The {@link File} object.
      */
     public File getFile() {
         return FileKit.file(this.url);
     }
 
     /**
-     * 返回路径
+     * Returns the string representation of the URL.
      *
-     * @return 返回URL路径
+     * @return The URL as a string, or "null" if the URL is {@code null}.
      */
     @Override
     public String toString() {
@@ -143,10 +152,10 @@ public class UrlResource implements Resource, Serializable {
     }
 
     /**
-     * 获取相对于本资源的资源
+     * Creates a new {@code UrlResource} relative to this resource.
      *
-     * @param relativePath 相对路径
-     * @return 子资源
+     * @param relativePath The relative path to the new resource.
+     * @return A new {@code UrlResource} representing the relative path.
      */
     public UrlResource createRelative(final String relativePath) {
         return new UrlResource(UrlKit.getURL(getUrl(), relativePath));

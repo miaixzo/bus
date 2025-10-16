@@ -28,31 +28,36 @@
 package org.miaixz.bus.socket;
 
 /**
- * 消息处理
+ * Handles the processing of decoded messages.
  * <p>
- * 通过实现该接口，对完成解码的消息进行业务处理。
+ * Implementations of this interface define the business logic to be applied to messages after they have been
+ * successfully decoded by the {@link Message} codec.
  * </p>
  *
- * @param <T> 消息对象实体类型
+ * @param <T> the type of the message object entity
  * @author Kimi Liu
  * @since Java 17+
  */
 public interface Handler<T> {
 
     /**
-     * 处理接收到的消息
+     * Processes the received message.
      *
-     * @param session 通信会话
-     * @param data    待处理的业务消息
+     * @param session the communication session associated with the message
+     * @param data    the business message to be processed
      */
     void process(Session session, T data);
 
     /**
-     * 状态机事件,当枚举事件发生时由框架触发该方法
+     * Handles state machine events triggered by the framework.
+     * <p>
+     * This method is invoked by the framework when a specific {@link Status} event occurs.
+     * </p>
      *
-     * @param session   本次触发状态机的Session对象
-     * @param status    状态枚举
-     * @param throwable 异常对象，如果存在的话
+     * @param session   the {@link Session} object that triggered the state event
+     * @param status    the {@link Status} enumeration indicating the type of event
+     * @param throwable an optional {@link Throwable} object if an exception is associated with the event, otherwise
+     *                  {@code null}
      */
     default void stateEvent(Session session, Status status, Throwable throwable) {
         if (status == Status.DECODE_EXCEPTION || status == Status.PROCESS_EXCEPTION) {

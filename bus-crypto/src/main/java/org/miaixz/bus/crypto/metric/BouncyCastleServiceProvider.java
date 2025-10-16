@@ -32,7 +32,8 @@ import java.security.Security;
 import org.miaixz.bus.core.lang.Assert;
 
 /**
- * {@link org.bouncycastle.jce.provider.BouncyCastleProvider} 工厂类
+ * Factory class for {@link org.bouncycastle.jce.provider.BouncyCastleProvider}. This class implements the
+ * {@link BouncyCastleProvider} interface to create and provide instances of the Bouncy Castle security provider.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -40,11 +41,12 @@ import org.miaixz.bus.core.lang.Assert;
 public class BouncyCastleServiceProvider implements BouncyCastleProvider {
 
     /**
-     * 构造
+     * Constructs a {@code BouncyCastleServiceProvider}. This constructor performs a check to ensure that the Bouncy
+     * Castle library is available when loaded via SPI.
      */
     public BouncyCastleServiceProvider() {
-        // SPI方式加载时检查BC库是否引入
-        Assert.notNull(BouncyCastleProvider.class);
+        // Check if the BC library is introduced when loaded via SPI
+        Assert.notNull(org.bouncycastle.jce.provider.BouncyCastleProvider.class);
     }
 
     @Override

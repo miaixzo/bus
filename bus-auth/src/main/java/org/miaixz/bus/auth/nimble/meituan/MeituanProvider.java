@@ -46,21 +46,39 @@ import org.miaixz.bus.auth.magic.Material;
 import org.miaixz.bus.auth.nimble.AbstractProvider;
 
 /**
- * 美团 登录
+ * Meituan login provider.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class MeituanProvider extends AbstractProvider {
 
+    /**
+     * Constructs a {@code MeituanProvider} with the specified context.
+     *
+     * @param context the authentication context
+     */
     public MeituanProvider(Context context) {
         super(context, Registry.MEITUAN);
     }
 
+    /**
+     * Constructs a {@code MeituanProvider} with the specified context and cache.
+     *
+     * @param context the authentication context
+     * @param cache   the cache implementation
+     */
     public MeituanProvider(Context context, CacheX cache) {
         super(context, Registry.MEITUAN, cache);
     }
 
+    /**
+     * Retrieves the access token from Meituan's authorization server.
+     *
+     * @param callback the callback object containing the authorization code
+     * @return the {@link AuthToken} containing access token details
+     * @throws AuthorizedException if parsing the response fails or required token information is missing
+     */
     @Override
     public AuthToken getAccessToken(Callback callback) {
         Map<String, String> form = new HashMap<>(7);
@@ -92,6 +110,13 @@ public class MeituanProvider extends AbstractProvider {
         }
     }
 
+    /**
+     * Retrieves user information from Meituan's user info endpoint.
+     *
+     * @param authToken the {@link AuthToken} obtained after successful authorization
+     * @return {@link Material} containing the user's information
+     * @throws AuthorizedException if parsing the response fails or required user information is missing
+     */
     @Override
     public Material getUserInfo(AuthToken authToken) {
         Map<String, String> form = new HashMap<>(5);
@@ -123,6 +148,13 @@ public class MeituanProvider extends AbstractProvider {
         }
     }
 
+    /**
+     * Refreshes the access token (renews its validity).
+     *
+     * @param authToken the token information returned after successful login
+     * @return a {@link Message} containing the refreshed token information
+     * @throws AuthorizedException if parsing the response fails or an error occurs during token refresh
+     */
     @Override
     public Message refresh(AuthToken authToken) {
         Map<String, String> form = new HashMap<>(7);
@@ -156,13 +188,26 @@ public class MeituanProvider extends AbstractProvider {
         }
     }
 
+    /**
+     * Checks the response content for errors.
+     *
+     * @param object the response map to check
+     * @throws AuthorizedException if the response indicates an error or message indicating failure
+     */
     private void checkResponse(Map<String, Object> object) {
         if (object.containsKey("error_code")) {
-            String errorMsg = (String) object.get("erroe_msg"); // 注意原代码中的拼写错误 "erroe_msg"
+            String errorMsg = (String) object.get("erroe_msg"); // Note the typo "erroe_msg" in the original code
             throw new AuthorizedException(errorMsg != null ? errorMsg : "Unknown error");
         }
     }
 
+    /**
+     * Returns the authorization URL with a {@code state} parameter. The {@code state} will be included in the
+     * authorization callback.
+     *
+     * @param state the parameter to verify the authorization process, which can prevent CSRF attacks
+     * @return the authorization URL
+     */
     @Override
     public String authorize(String state) {
         return Builder.fromUrl(super.authorize(state)).queryParam("scope", "").build();

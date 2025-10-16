@@ -32,7 +32,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.CharKit;
 
 /**
- * URL编码器，提供百分号编码实现
+ * Provides a percent-encoding implementation for URLs.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,62 +42,67 @@ public class UrlEncoder {
     private static final java.nio.charset.Charset DEFAULT_CHARSET = Charset.UTF_8;
 
     /**
-     * 编码URL，默认使用UTF-8编码 将需要转换的内容（ASCII码形式之外的内容），用十六进制表示法转换出来，并在之前加上%开头。。不参与编码的字符：
+     * Encodes a URL using the default UTF-8 charset. Non-ASCII characters are converted to their hexadecimal
+     * representation, prefixed with '%'. The following characters are not encoded:
      * 
      * <pre>
      * unreserved = ALPHA / DIGIT / "-" / "." / "_" / "~"
      * </pre>
      *
-     * @param url URL
-     * @return 编码后的URL
-     * @throws InternalException UnsupportedEncodingException
+     * @param url The URL to encode.
+     * @return The encoded URL.
+     * @throws InternalException if the encoding is not supported.
      */
     public static String encodeAll(final String url) {
         return encodeAll(url, DEFAULT_CHARSET);
     }
 
     /**
-     * 编码URL 将需要转换的内容（ASCII码形式之外的内容），用十六进制表示法转换出来，并在之前加上%开头。不参与编码的字符：
+     * Encodes a URL using the specified charset. Non-ASCII characters are converted to their hexadecimal
+     * representation, prefixed with '%'. The following characters are not encoded:
      * 
      * <pre>
      * unreserved = ALPHA / DIGIT / "-" / "." / "_" / "~"
      * </pre>
      *
-     * @param url     URL
-     * @param charset 编码，为null表示不编码
-     * @return 编码后的URL
-     * @throws InternalException UnsupportedEncodingException
+     * @param url     The URL to encode.
+     * @param charset The charset to use for encoding; if null, no encoding is performed.
+     * @return The encoded URL.
+     * @throws InternalException if the encoding is not supported.
      */
     public static String encodeAll(final String url, final java.nio.charset.Charset charset) throws InternalException {
         return RFC3986.UNRESERVED.encode(url, charset);
     }
 
     /**
-     * 编码URL，默认使用UTF-8编码 将需要转换的内容（ASCII码形式之外的内容），用十六进制表示法转换出来，并在之前加上%开头。 此方法用于POST请求中的请求体自动编码，转义大部分特殊字符
+     * Encodes a URL for a query string using the default UTF-8 charset. This method is intended for automatically
+     * encoding the request body in POST requests, and it escapes most special characters.
      *
-     * @param url URL
-     * @return 编码后的URL
+     * @param url The URL to encode.
+     * @return The encoded URL.
      */
     public static String encodeQuery(final String url) {
         return encodeQuery(url, DEFAULT_CHARSET);
     }
 
     /**
-     * 编码字符为URL中查询语句 将需要转换的内容（ASCII码形式之外的内容），用十六进制表示法转换出来，并在之前加上%开头。 此方法用于POST请求中的请求体自动编码，转义大部分特殊字符
+     * Encodes a string for a URL query. Non-ASCII characters are converted to their hexadecimal representation,
+     * prefixed with '%'. This method is intended for automatically encoding the request body in POST requests, and it
+     * escapes most special characters.
      *
-     * @param url     被编码内容
-     * @param charset 编码
-     * @return 编码后的字符
+     * @param url     The string to encode.
+     * @param charset The charset to use for encoding.
+     * @return The encoded string.
      */
     public static String encodeQuery(final String url, final java.nio.charset.Charset charset) {
         return RFC3986.QUERY.encode(url, charset);
     }
 
     /**
-     * 单独编码URL中的空白符，空白符编码为%20
+     * Encodes only the whitespace characters in a URL string to "%20".
      *
-     * @param urlStr URL字符串
-     * @return 编码后的字符串
+     * @param urlStr The URL string.
+     * @return The encoded string.
      */
     public static String encodeBlank(final CharSequence urlStr) {
         if (urlStr == null) {

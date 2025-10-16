@@ -44,22 +44,36 @@ import org.miaixz.bus.notify.magic.ErrorCode;
 import org.miaixz.bus.notify.metric.AbstractProvider;
 
 /**
- * 又拍云短信
+ * Upyun SMS service provider implementation.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class UpyunSmsProvider extends AbstractProvider<UpyunMaterial, Context> {
 
+    /**
+     * Constructs a {@code UpyunSmsProvider} with the given context.
+     *
+     * @param context The context containing configuration information for the provider.
+     */
     public UpyunSmsProvider(Context context) {
         super(context);
     }
 
+    /**
+     * Sends an SMS notification using Upyun SMS service.
+     *
+     * @param entity The {@link UpyunMaterial} containing SMS details like template ID, recipient, and parameters.
+     * @return A {@link Message} indicating the result of the SMS sending operation.
+     */
     @Override
     public Message send(UpyunMaterial entity) {
         Map<String, String> bodys = new HashMap<>();
+        // The template ID for the SMS message.
         bodys.put("template_id", entity.getTemplate());
+        // The recipient's mobile number.
         bodys.put("mobile", entity.getReceive());
+        // The parameters for the SMS template, formatted as a string representation of a list.
         bodys.put("vars", StringKit.split(entity.getParams(), "|").toString());
 
         Map<String, String> headers = new HashMap<>();
@@ -79,9 +93,12 @@ public class UpyunSmsProvider extends AbstractProvider<UpyunMaterial, Context> {
     }
 
     /**
-     * 判断是否成功. s
+     * Checks if an SMS sending operation was successful based on the error code and message ID.
      *
-     * @return 是否成功
+     * @param errorCode The error code returned by the service.
+     * @param msgId     The message ID returned by the service.
+     * @return {@code true} if the operation was successful (error code is blank and message ID is not blank),
+     *         {@code false} otherwise.
      */
     public boolean succeed(String errorCode, String msgId) {
         return StringKit.isBlank(errorCode) && StringKit.isNotBlank(msgId);

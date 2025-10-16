@@ -37,7 +37,9 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.DateException;
 
 /**
- * 日期格式表达式类，用于解析和格式化日期时间。
+ * A class for parsing and formatting date-time strings based on a pattern. This class is the core of the
+ * {@link org.miaixz.bus.core.center.date.printer.FastDatePrinter} and handles the conversion of a format pattern into a
+ * series of formatting rules.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -45,38 +47,36 @@ import org.miaixz.bus.core.lang.exception.DateException;
 public class DatePattern {
 
     /**
-     * 时区显示名称缓存，用于提升性能
+     * A cache for timezone display names to improve performance.
      */
     private static final ConcurrentMap<TimeZoneDisplayKey, String> C_TIME_ZONE_DISPLAY_CACHE = new ConcurrentHashMap<>(
             7);
-
     /**
-     * 格式化规则列表
+     * The list of formatting rules derived from the pattern.
      */
     private final Rule[] rules;
-
     /**
-     * 估算格式化后字符串长度
+     * An estimated length of the formatted string.
      */
     private int estimateLength;
 
     /**
-     * 构造函数，初始化日期格式表达式。
+     * Constructs a new {@code DatePattern}.
      *
-     * @param patternStr 日期表达式字符串
-     * @param locale     地域信息
-     * @param timeZone   时区
+     * @param patternStr The date format pattern string.
+     * @param locale     The locale.
+     * @param timeZone   The timezone.
      */
     public DatePattern(final String patternStr, final Locale locale, final TimeZone timeZone) {
         this.rules = parsePattern(patternStr, locale, timeZone).toArray(new Rule[0]);
     }
 
     /**
-     * 解析日期格式表达式中的标记。
+     * Parses a token (a sequence of the same character or a literal) from the format pattern.
      *
-     * @param pattern  格式表达式字符串
-     * @param indexRef 索引引用数组
-     * @return 解析出的标记
+     * @param pattern  The format pattern string.
+     * @param indexRef An array containing the current parsing index.
+     * @return The parsed token.
      */
     protected static String parseToken(final String pattern, final int[] indexRef) {
         final StringBuilder buf = new StringBuilder();
@@ -84,16 +84,11 @@ public class DatePattern {
         final int length = pattern.length();
         char c = pattern.charAt(i);
 
-        if (c >= 'A' && c <= 'Z' || c >= 'a' && c <= 'z') {
+        if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z')) {
             buf.append(c);
-            while (i + 1 < length) {
-                final char peek = pattern.charAt(i + 1);
-                if (peek == c) {
-                    buf.append(c);
-                    i++;
-                } else {
-                    break;
-                }
+            while (i + 1 < length && pattern.charAt(i + 1) == c) {
+                buf.append(c);
+                i++;
             }
         } else {
             buf.append('\'');
@@ -107,7 +102,7 @@ public class DatePattern {
                     } else {
                         inLiteral = !inLiteral;
                     }
-                } else if (!inLiteral && (c >= 'A' && c <= 'Z' || c >= 'a' && c <= 'z')) {
+                } else if (!inLiteral && ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z'))) {
                     i--;
                     break;
                 } else {
@@ -121,11 +116,11 @@ public class DatePattern {
     }
 
     /**
-     * 根据字段和填充长度选择合适的数字规则。
+     * Selects the appropriate {@code NumberRule} based on the field and padding length.
      *
-     * @param field   日期字段
-     * @param padding 填充长度
-     * @return 数字规则
+     * @param field   The calendar field.
+     * @param padding The padding length.
+     * @return The corresponding number rule.
      */
     protected static NumberRule selectNumberRule(final int field, final int padding) {
         return switch (padding) {
@@ -136,11 +131,11 @@ public class DatePattern {
     }
 
     /**
-     * 将两位数字追加到输出缓冲区。
+     * Appends a two-digit number to the buffer.
      *
-     * @param buffer 输出缓冲区
-     * @param value  要追加的数字
-     * @throws IOException 如果发生I/O错误
+     * @param buffer The output buffer.
+     * @param value  The number to append.
+     * @throws IOException if an I/O error occurs.
      */
     private static void appendDigits(final Appendable buffer, final int value) throws IOException {
         buffer.append((char) (value / 10 + '0'));
@@ -148,12 +143,12 @@ public class DatePattern {
     }
 
     /**
-     * 将完整数字追加到输出缓冲区，支持填充。
+     * Appends a number to the buffer, padding with leading zeros to meet the minimum field width.
      *
-     * @param buffer        输出缓冲区
-     * @param value         要追加的数字
-     * @param minFieldWidth 最小字段宽度
-     * @throws IOException 如果发生I/O错误
+     * @param buffer        The output buffer.
+     * @param value         The number to append.
+     * @param minFieldWidth The minimum field width.
+     * @throws IOException if an I/O error occurs.
      */
     private static void appendFullDigits(final Appendable buffer, int value, int minFieldWidth) throws IOException {
         if (value < 10000) {
@@ -171,25 +166,27 @@ public class DatePattern {
                 buffer.append('0');
             }
             switch (nDigits) {
-                case 4:
+                case 4 -> {
                     buffer.append((char) (value / 1000 + '0'));
                     value %= 1000;
-                case 3:
+                }
+                case 3 -> {
                     if (value >= 100) {
                         buffer.append((char) (value / 100 + '0'));
                         value %= 100;
                     } else {
                         buffer.append('0');
                     }
-                case 2:
+                }
+                case 2 -> {
                     if (value >= 10) {
                         buffer.append((char) (value / 10 + '0'));
                         value %= 10;
                     } else {
                         buffer.append('0');
                     }
-                case 1:
-                    buffer.append((char) (value + '0'));
+                }
+                case 1 -> buffer.append((char) (value + '0'));
             }
         } else {
             char[] work = new char[Normal._10];
@@ -209,13 +206,13 @@ public class DatePattern {
     }
 
     /**
-     * 获取时区显示名称，使用缓存提升性能。
+     * Gets the display name for a timezone, using a cache to improve performance.
      *
-     * @param tz       时区
-     * @param daylight 是否为夏令时
-     * @param style    显示样式（TimeZone.LONG或TimeZone.SHORT）
-     * @param locale   地域
-     * @return 时区显示名称
+     * @param tz       The timezone.
+     * @param daylight Whether it is daylight saving time.
+     * @param style    The display style (TimeZone.LONG or TimeZone.SHORT).
+     * @param locale   The locale.
+     * @return The display name of the timezone.
      */
     static String getTimeZoneDisplay(final TimeZone tz, final boolean daylight, final int style, final Locale locale) {
         final TimeZoneDisplayKey key = new TimeZoneDisplayKey(tz, daylight, style, locale);
@@ -231,22 +228,22 @@ public class DatePattern {
     }
 
     /**
-     * 获取估算的格式化后字符串长度。
+     * Gets an estimate of the maximum length of the formatted date string.
      *
-     * @return 估算长度
+     * @return The estimated length.
      */
     public int getEstimateLength() {
         return this.estimateLength;
     }
 
     /**
-     * 根据指定格式，将日期时间格式化到输出缓冲区。
+     * Applies the stored formatting rules to the given {@link Calendar} instance, appending the result to the buffer.
      *
-     * @param calendar 日历对象
-     * @param buf      输出缓冲区
-     * @param <B>      Appendable实现类（如StringBuilder或StringBuffer）
-     * @return 格式化后的Appendable对象
-     * @throws DateException 如果发生I/O错误
+     * @param calendar The calendar object to format.
+     * @param buf      The output buffer.
+     * @param <B>      The type of the Appendable (e.g., StringBuilder).
+     * @return The buffer with the formatted date.
+     * @throws DateException if an I/O error occurs.
      */
     public <B extends Appendable> B applyRules(final Calendar calendar, final B buf) {
         try {
@@ -260,13 +257,13 @@ public class DatePattern {
     }
 
     /**
-     * 解析日期表达式字符串，返回规则列表。
+     * Parses a date format pattern string into a list of formatting rules.
      *
-     * @param patternStr 日期表达式字符串
-     * @param locale     地域
-     * @param timeZone   时区
-     * @return 规则列表
-     * @throws IllegalArgumentException 如果表达式无效
+     * @param patternStr The date format pattern string.
+     * @param locale     The locale.
+     * @param timeZone   The timezone.
+     * @return A list of formatting rules.
+     * @throws IllegalArgumentException if the pattern is invalid.
      */
     private List<Rule> parsePattern(final String patternStr, final Locale locale, final TimeZone timeZone) {
         final DateFormatSymbols symbols = new DateFormatSymbols(locale);
@@ -296,12 +293,8 @@ public class DatePattern {
             final char c = token.charAt(0);
 
             switch (c) {
-                case 'G':
-                    rule = new TextField(Calendar.ERA, ERAs);
-                    break;
-
-                case 'y':
-                case 'Y':
+                case 'G' -> rule = new TextField(Calendar.ERA, ERAs);
+                case 'y', 'Y' -> {
                     if (tokenLen == 2) {
                         rule = TwoDigitYearField.INSTANCE;
                     } else {
@@ -310,9 +303,8 @@ public class DatePattern {
                     if (c == 'Y') {
                         rule = new WeekYear((NumberRule) rule);
                     }
-                    break;
-
-                case 'M':
+                }
+                case 'M' -> {
                     if (tokenLen >= 4) {
                         rule = new TextField(Calendar.MONTH, months);
                     } else if (tokenLen == 3) {
@@ -322,81 +314,26 @@ public class DatePattern {
                     } else {
                         rule = UnpaddedMonthField.INSTANCE;
                     }
-                    break;
-
-                case 'd':
-                    rule = selectNumberRule(Calendar.DAY_OF_MONTH, tokenLen);
-                    break;
-
-                case 'h':
-                    rule = new TwelveHourField(selectNumberRule(Calendar.HOUR, tokenLen));
-                    break;
-
-                case 'H':
-                    rule = selectNumberRule(Calendar.HOUR_OF_DAY, tokenLen);
-                    break;
-
-                case 'm':
-                    rule = selectNumberRule(Calendar.MINUTE, tokenLen);
-                    break;
-
-                case 's':
-                    rule = selectNumberRule(Calendar.SECOND, tokenLen);
-                    break;
-
-                case 'S':
-                    rule = selectNumberRule(Calendar.MILLISECOND, tokenLen);
-                    break;
-
-                case 'E':
-                    rule = new TextField(Calendar.DAY_OF_WEEK, tokenLen < 4 ? shortWeekdays : weekdays);
-                    break;
-
-                case 'u':
-                    rule = new DayInWeekField(selectNumberRule(Calendar.DAY_OF_WEEK, tokenLen));
-                    break;
-
-                case 'D':
-                    rule = selectNumberRule(Calendar.DAY_OF_YEAR, tokenLen);
-                    break;
-
-                case 'F':
-                    rule = selectNumberRule(Calendar.DAY_OF_WEEK_IN_MONTH, tokenLen);
-                    break;
-
-                case 'w':
-                    rule = selectNumberRule(Calendar.WEEK_OF_YEAR, tokenLen);
-                    break;
-
-                case 'W':
-                    rule = selectNumberRule(Calendar.WEEK_OF_MONTH, tokenLen);
-                    break;
-
-                case 'a':
-                    rule = new TextField(Calendar.AM_PM, AmPmStrings);
-                    break;
-
-                case 'k':
-                    rule = new TwentyFourHourField(selectNumberRule(Calendar.HOUR_OF_DAY, tokenLen));
-                    break;
-
-                case 'K':
-                    rule = selectNumberRule(Calendar.HOUR, tokenLen);
-                    break;
-
-                case 'X':
-                    rule = Iso8601_Rule.getRule(tokenLen);
-                    break;
-
-                case 'z':
-                    if (tokenLen >= 4) {
-                        rule = new TimeZoneNameRule(timeZone, locale, TimeZone.LONG);
-                    } else {
-                        rule = new TimeZoneNameRule(timeZone, locale, TimeZone.SHORT);
-                    }
-                    break;
-
-                case 'Z':
+                }
+                case 'd' -> rule = selectNumberRule(Calendar.DAY_OF_MONTH, tokenLen);
+                case 'h' -> rule = new TwelveHourField(selectNumberRule(Calendar.HOUR, tokenLen));
+                case 'H' -> rule = selectNumberRule(Calendar.HOUR_OF_DAY, tokenLen);
+                case 'm' -> rule = selectNumberRule(Calendar.MINUTE, tokenLen);
+                case 's' -> rule = selectNumberRule(Calendar.SECOND, tokenLen);
+                case 'S' -> rule = selectNumberRule(Calendar.MILLISECOND, tokenLen);
+                case 'E' -> rule = new TextField(Calendar.DAY_OF_WEEK, tokenLen < 4 ? shortWeekdays : weekdays);
+                case 'u' -> rule = new DayInWeekField(selectNumberRule(Calendar.DAY_OF_WEEK, tokenLen));
+                case 'D' -> rule = selectNumberRule(Calendar.DAY_OF_YEAR, tokenLen);
+                case 'F' -> rule = selectNumberRule(Calendar.DAY_OF_WEEK_IN_MONTH, tokenLen);
+                case 'w' -> rule = selectNumberRule(Calendar.WEEK_OF_YEAR, tokenLen);
+                case 'W' -> rule = selectNumberRule(Calendar.WEEK_OF_MONTH, tokenLen);
+                case 'a' -> rule = new TextField(Calendar.AM_PM, AmPmStrings);
+                case 'k' -> rule = new TwentyFourHourField(selectNumberRule(Calendar.HOUR_OF_DAY, tokenLen));
+                case 'K' -> rule = selectNumberRule(Calendar.HOUR, tokenLen);
+                case 'X' -> rule = Iso8601_Rule.getRule(tokenLen);
+                case 'z' -> rule = new TimeZoneNameRule(timeZone, locale,
+                        tokenLen < 4 ? TimeZone.SHORT : TimeZone.LONG);
+                case 'Z' -> {
                     if (tokenLen == 1) {
                         rule = TimeZoneNumberRule.INSTANCE_NO_COLON;
                     } else if (tokenLen == 2) {
@@ -404,80 +341,67 @@ public class DatePattern {
                     } else {
                         rule = TimeZoneNumberRule.INSTANCE_COLON;
                     }
-                    break;
-
-                case '\'':
+                }
+                case '\'' -> {
                     final String sub = token.substring(1);
                     if (sub.length() == 1) {
                         rule = new CharacterLiteral(sub.charAt(0));
                     } else {
                         rule = new StringLiteral(sub);
                     }
-                    break;
-
-                default:
-                    throw new IllegalArgumentException("Illegal pattern component: " + token);
+                }
+                default -> throw new IllegalArgumentException("Illegal pattern component: " + token);
             }
-
             this.estimateLength += rule.estimateLength();
             rules.add(rule);
         }
-
         return rules;
     }
 
     /**
-     * 日期格式化规则接口。
+     * An interface for a single formatting rule.
      */
     public interface Rule {
 
         /**
-         * 估算格式化结果的长度。
+         * Estimates the length of the formatted output.
          *
-         * @return 估算长度
+         * @return The estimated length.
          */
         int estimateLength();
 
         /**
-         * 根据规则将日历值追加到输出缓冲区。
+         * Appends the formatted value to the buffer.
          *
-         * @param buf      输出缓冲区
-         * @param calendar 日历对象
-         * @throws IOException 如果发生I/O错误
+         * @param buf      The buffer to append to.
+         * @param calendar The calendar containing the date-time information.
+         * @throws IOException if an I/O error occurs.
          */
         void appendTo(Appendable buf, Calendar calendar) throws IOException;
     }
 
     /**
-     * 数字格式化规则接口。
+     * An extension of {@link Rule} for formatting numeric fields.
      */
     public interface NumberRule extends Rule {
 
         /**
-         * 将指定数字值追加到输出缓冲区。
+         * Appends a formatted numeric value to the buffer.
          *
-         * @param buffer 输出缓冲区
-         * @param value  要追加的数字
-         * @throws IOException 如果发生I/O错误
+         * @param buffer The buffer to append to.
+         * @param value  The integer value to format.
+         * @throws IOException if an I/O error occurs.
          */
         void appendTo(Appendable buffer, int value) throws IOException;
     }
 
     /**
-     * 输出单个字符的规则。
+     * A rule to output a literal character.
      */
     private static class CharacterLiteral implements Rule {
 
-        /**
-         * 字符值
-         */
         private final char mValue;
 
-        /**
-         * 构造CharacterLiteral实例。
-         *
-         * @param value 字符值
-         */
         CharacterLiteral(final char value) {
             mValue = value;
         }
@@ -494,20 +418,12 @@ public class DatePattern {
     }
 
     /**
-     * 输出固定字符串的规则。
+     * A rule to output a literal string.
      */
     private static class StringLiteral implements Rule {
 
-        /**
-         * 字符串值
-         */
         private final String mValue;
 
-        /**
-         * 构造StringLiteral实例。
-         *
-         * @param value 字符串值
-         */
         StringLiteral(final String value) {
             mValue = value;
         }
@@ -524,25 +440,13 @@ public class DatePattern {
     }
 
     /**
-     * 输出一组值之一的规则。
+     * A rule to output a text field from a set of values (e.g., month name, day of the week).
      */
     private static class TextField implements Rule {
 
-        /**
-         * 日历字段
-         */
         private final int mField;
-        /**
-         * 字段值数组
-         */
         private final String[] mValues;
 
-        /**
-         * 构造TextField实例。
-         *
-         * @param field  日历字段
-         * @param values 字段值数组
-         */
         TextField(final int field, final String[] values) {
             mField = field;
             mValues = values;
@@ -567,20 +471,12 @@ public class DatePattern {
     }
 
     /**
-     * 输出无填充数字的规则。
+     * A rule for formatting a number field without padding.
      */
     private static class UnpaddedNumberField implements NumberRule {
 
-        /**
-         * 日历字段
-         */
         private final int mField;
 
-        /**
-         * 构造UnpaddedNumberField实例。
-         *
-         * @param field 日历字段
-         */
         UnpaddedNumberField(final int field) {
             mField = field;
         }
@@ -608,18 +504,12 @@ public class DatePattern {
     }
 
     /**
-     * 输出无填充月份的规则。
+     * A rule for formatting the month field without padding (1-12).
      */
     private static class UnpaddedMonthField implements NumberRule {
 
-        /**
-         * 单例实例
-         */
         static final UnpaddedMonthField INSTANCE = new UnpaddedMonthField();
 
-        /**
-         * 构造UnpaddedMonthField实例。
-         */
         UnpaddedMonthField() {
         }
 
@@ -644,25 +534,13 @@ public class DatePattern {
     }
 
     /**
-     * 输出填充数字的规则。
+     * A rule for formatting a number field with padding.
      */
     private static class PaddedNumberField implements NumberRule {
 
-        /**
-         * 日历字段
-         */
         private final int mField;
-        /**
-         * 输出字段大小
-         */
         private final int mSize;
 
-        /**
-         * 构造PaddedNumberField实例。
-         *
-         * @param field 日历字段
-         * @param size  输出字段大小
-         */
         PaddedNumberField(final int field, final int size) {
             if (size < 3) {
                 throw new IllegalArgumentException();
@@ -688,20 +566,12 @@ public class DatePattern {
     }
 
     /**
-     * 输出两位数字的规则。
+     * A rule for formatting a number field with two digits.
      */
     private static class TwoDigitNumberField implements NumberRule {
 
-        /**
-         * 日历字段
-         */
         private final int mField;
 
-        /**
-         * 构造TwoDigitNumberField实例。
-         *
-         * @param field 日历字段
-         */
         TwoDigitNumberField(final int field) {
             mField = field;
         }
@@ -727,18 +597,12 @@ public class DatePattern {
     }
 
     /**
-     * 输出两位年份的规则。
+     * A rule for formatting the year with two digits.
      */
     private static class TwoDigitYearField implements NumberRule {
 
-        /**
-         * 单例实例
-         */
         static final TwoDigitYearField INSTANCE = new TwoDigitYearField();
 
-        /**
-         * 构造TwoDigitYearField实例。
-         */
         TwoDigitYearField() {
         }
 
@@ -759,18 +623,12 @@ public class DatePattern {
     }
 
     /**
-     * 输出两位月份的规则。
+     * A rule for formatting the month with two digits (01-12).
      */
     private static class TwoDigitMonthField implements NumberRule {
 
-        /**
-         * 单例实例
-         */
         static final TwoDigitMonthField INSTANCE = new TwoDigitMonthField();
 
-        /**
-         * 构造TwoDigitMonthField实例。
-         */
         TwoDigitMonthField() {
         }
 
@@ -791,20 +649,12 @@ public class DatePattern {
     }
 
     /**
-     * 输出12小时制字段的规则。
+     * A rule for formatting the hour in 12-hour format (1-12).
      */
     private static class TwelveHourField implements NumberRule {
 
-        /**
-         * 数字规则
-         */
         private final NumberRule mRule;
 
-        /**
-         * 构造TwelveHourField实例。
-         *
-         * @param rule 数字规则
-         */
         TwelveHourField(final NumberRule rule) {
             mRule = rule;
         }
@@ -830,20 +680,12 @@ public class DatePattern {
     }
 
     /**
-     * 输出24小时制字段的规则。
+     * A rule for formatting the hour in 24-hour format (1-24).
      */
     private static class TwentyFourHourField implements NumberRule {
 
-        /**
-         * 数字规则
-         */
         private final NumberRule mRule;
 
-        /**
-         * 构造TwentyFourHourField实例。
-         *
-         * @param rule 数字规则
-         */
         TwentyFourHourField(final NumberRule rule) {
             mRule = rule;
         }
@@ -869,20 +711,12 @@ public class DatePattern {
     }
 
     /**
-     * 输出星期数字的规则。
+     * A rule for formatting the day of the week as a number (1=Monday...7=Sunday).
      */
     private static class DayInWeekField implements NumberRule {
 
-        /**
-         * 数字规则
-         */
         private final NumberRule mRule;
 
-        /**
-         * 构造DayInWeekField实例。
-         *
-         * @param rule 数字规则
-         */
         DayInWeekField(final NumberRule rule) {
             mRule = rule;
         }
@@ -905,20 +739,12 @@ public class DatePattern {
     }
 
     /**
-     * 输出周年份的规则。
+     * A rule for formatting the week-based year.
      */
     private static class WeekYear implements NumberRule {
 
-        /**
-         * 数字规则
-         */
         private final NumberRule mRule;
 
-        /**
-         * 构造WeekYear实例。
-         *
-         * @param rule 数字规则
-         */
         WeekYear(final NumberRule rule) {
             mRule = rule;
         }
@@ -944,34 +770,15 @@ public class DatePattern {
     }
 
     /**
-     * 输出时区名称的规则。
+     * A rule for formatting the timezone name.
      */
     private static class TimeZoneNameRule implements Rule {
 
-        /**
-         * 地域
-         */
         private final Locale mLocale;
-        /**
-         * 显示样式
-         */
         private final int mStyle;
-        /**
-         * 标准时区名称
-         */
         private final String mStandard;
-        /**
-         * 夏令时区名称
-         */
         private final String mDaylight;
 
-        /**
-         * 构造TimeZoneNameRule实例。
-         *
-         * @param timeZone 时区
-         * @param locale   地域
-         * @param style    显示样式
-         */
         TimeZoneNameRule(final TimeZone timeZone, final Locale locale, final int style) {
             mLocale = locale;
             mStyle = style;
@@ -996,28 +803,14 @@ public class DatePattern {
     }
 
     /**
-     * 输出时区数字的规则（如+/-HHMM或+/-HH:MM）。
+     * A rule for formatting the timezone as a numeric offset (e.g., +/-HHMM or +/-HH:mm).
      */
     private static class TimeZoneNumberRule implements Rule {
 
-        /**
-         * 带冒号的时区格式实例
-         */
         static final TimeZoneNumberRule INSTANCE_COLON = new TimeZoneNumberRule(true);
-        /**
-         * 无冒号的时区格式实例
-         */
         static final TimeZoneNumberRule INSTANCE_NO_COLON = new TimeZoneNumberRule(false);
-        /**
-         * 是否在小时和分钟之间添加冒号
-         */
         final boolean mColon;
 
-        /**
-         * 构造TimeZoneNumberRule实例。
-         *
-         * @param colon 是否在小时和分钟之间添加冒号
-         */
         TimeZoneNumberRule(final boolean colon) {
             mColon = colon;
         }
@@ -1047,43 +840,19 @@ public class DatePattern {
     }
 
     /**
-     * 输出ISO 8601时区格式的规则。
+     * A rule for formatting the timezone in ISO 8601 format.
      */
     private static class Iso8601_Rule implements Rule {
 
-        /**
-         * 仅小时格式实例
-         */
         static final Iso8601_Rule ISO8601_HOURS = new Iso8601_Rule(3);
-        /**
-         * 小时和分钟格式实例
-         */
         static final Iso8601_Rule ISO8601_HOURS_MINUTES = new Iso8601_Rule(5);
-        /**
-         * 带冒号的小时和分钟格式实例
-         */
         static final Iso8601_Rule ISO8601_HOURS_COLON_MINUTES = new Iso8601_Rule(6);
-        /**
-         * 输出字符长度
-         */
         final int length;
 
-        /**
-         * 构造Iso8601_Rule实例。
-         *
-         * @param length 输出字符长度（除非输出Z）
-         */
         Iso8601_Rule(final int length) {
             this.length = length;
         }
 
-        /**
-         * 获取指定长度的ISO 8601规则。
-         *
-         * @param tokenLen 时区字符串长度标记
-         * @return Iso8601_Rule实例
-         * @throws IllegalArgumentException 如果长度无效
-         */
         static Iso8601_Rule getRule(final int tokenLen) {
             return switch (tokenLen) {
                 case 1 -> Iso8601_Rule.ISO8601_HOURS;
@@ -1125,38 +894,17 @@ public class DatePattern {
     }
 
     /**
-     * 时区显示名称的复合键类。
+     * A composite key for caching timezone display names.
      */
     private static class TimeZoneDisplayKey {
 
-        /**
-         * 时区
-         */
         private final TimeZone mTimeZone;
-        /**
-         * 时区样式
-         */
         private final int mStyle;
-        /**
-         * 地域
-         */
         private final Locale mLocale;
 
-        /**
-         * 构造TimeZoneDisplayKey实例。
-         *
-         * @param timeZone 时区
-         * @param daylight 是否为夏令时
-         * @param style    时区样式
-         * @param locale   地域
-         */
         TimeZoneDisplayKey(final TimeZone timeZone, final boolean daylight, final int style, final Locale locale) {
             mTimeZone = timeZone;
-            if (daylight) {
-                mStyle = style | 0x80000000;
-            } else {
-                mStyle = style;
-            }
+            mStyle = daylight ? style | 0x80000000 : style;
             mLocale = locale;
         }
 

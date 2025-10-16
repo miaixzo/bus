@@ -28,20 +28,21 @@
 package org.miaixz.bus.core.lang;
 
 /**
- * 责任链接口
+ * Defines a generic interface for implementing the Chain of Responsibility design pattern. This interface allows
+ * elements to be added to a chain, and the chain itself is iterable.
  *
- * @param <E> 元素类型
- * @param <T> 目标类类型，用于返回this对象
+ * @param <E> The type of elements in the chain.
+ * @param <T> The type of the target class that implements this interface, used for fluent API (returning {@code this}).
  * @author Kimi Liu
  * @since Java 17+
  */
 public interface Chain<E, T> extends Iterable<E> {
 
     /**
-     * 加入责任链
+     * Adds a new element to the end of the responsibility chain.
      *
-     * @param element 责任链新的环节元素
-     * @return this
+     * @param element The new element to be added to the chain.
+     * @return The current instance of the chain, allowing for method chaining.
      */
     T addChain(E element);
 

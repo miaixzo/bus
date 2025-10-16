@@ -42,7 +42,8 @@ import org.miaixz.bus.extra.captcha.strategy.RandomStrategy;
 import org.miaixz.bus.extra.image.ImageKit;
 
 /**
- * 抽象验证码 抽象验证码实现了验证码字符串的生成、验证，验证码图片的写出 实现类通过实现{@link #createImage(String)} 方法生成图片对象
+ * Abstract CAPTCHA. This abstract class implements CAPTCHA string generation, verification, and image writing.
+ * Implementations generate the image object by implementing the {@link #createImage(String)} method.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -53,74 +54,74 @@ public abstract class AbstractProvider implements CaptchaProvider {
     private static final long serialVersionUID = 2852291319897L;
 
     /**
-     * 图片的宽度
+     * The width of the image.
      */
     protected int width;
     /**
-     * 图片的高度
+     * The height of the image.
      */
     protected int height;
     /**
-     * 验证码干扰元素个数
+     * The number of interfering elements in the CAPTCHA.
      */
     protected int interfereCount;
     /**
-     * 字体
+     * The font.
      */
     protected Font font;
     /**
-     * 验证码
+     * The CAPTCHA code.
      */
     protected String code;
     /**
-     * 验证码图片
+     * The CAPTCHA image bytes.
      */
     protected byte[] imageBytes;
     /**
-     * 验证码生成器
+     * The CAPTCHA code generator.
      */
     protected CodeStrategy generator;
     /**
-     * 背景色
+     * The background color.
      */
     protected Color background = Color.WHITE;
     /**
-     * 文字透明度
+     * The text transparency.
      */
     protected AlphaComposite textAlpha;
 
     /**
-     * 构造，使用随机验证码生成器生成验证码
+     * Constructor, uses a random CAPTCHA generator.
      *
-     * @param width          图片宽
-     * @param height         图片高
-     * @param codeCount      字符个数
-     * @param interfereCount 验证码干扰元素个数
+     * @param width          Image width.
+     * @param height         Image height.
+     * @param codeCount      Number of characters.
+     * @param interfereCount Number of interfering elements.
      */
     public AbstractProvider(final int width, final int height, final int codeCount, final int interfereCount) {
         this(width, height, new RandomStrategy(codeCount), interfereCount);
     }
 
     /**
-     * 构造
+     * Constructor.
      *
-     * @param width          图片宽
-     * @param height         图片高
-     * @param generator      验证码生成器
-     * @param interfereCount 验证码干扰元素个数
+     * @param width          Image width.
+     * @param height         Image height.
+     * @param generator      CAPTCHA code generator.
+     * @param interfereCount Number of interfering elements.
      */
     public AbstractProvider(final int width, final int height, final CodeStrategy generator, final int interfereCount) {
         this(width, height, generator, interfereCount, Normal.DEFAULT_LOAD_FACTOR);
     }
 
     /**
-     * 构造
+     * Constructor.
      *
-     * @param width          图片宽
-     * @param height         图片高
-     * @param generator      验证码生成器
-     * @param interfereCount 验证码干扰元素个数
-     * @param sizeBaseHeight 字体的大小 高度的倍数
+     * @param width          Image width.
+     * @param height         Image height.
+     * @param generator      CAPTCHA code generator.
+     * @param interfereCount Number of interfering elements.
+     * @param sizeBaseHeight Font size as a multiplier of the height.
      */
     public AbstractProvider(final int width, final int height, final CodeStrategy generator, final int interfereCount,
             final float sizeBaseHeight) {
@@ -128,7 +129,7 @@ public abstract class AbstractProvider implements CaptchaProvider {
         this.height = height;
         this.generator = generator;
         this.interfereCount = interfereCount;
-        // 字体高度设为验证码高度-2，留边距
+        // Set font height to captcha height - 2 to leave a margin
         this.font = new Font(Font.SANS_SERIF, Font.PLAIN, (int) (this.height * sizeBaseHeight));
     }
 
@@ -150,17 +151,17 @@ public abstract class AbstractProvider implements CaptchaProvider {
     }
 
     /**
-     * 生成验证码字符串
+     * Generates the CAPTCHA code string.
      */
     protected void generateCode() {
         this.code = generator.generate();
     }
 
     /**
-     * 根据生成的code创建验证码图片
+     * Creates the CAPTCHA image based on the generated code.
      *
-     * @param code 验证码
-     * @return Image
+     * @param code The CAPTCHA code.
+     * @return The CAPTCHA image.
      */
     protected abstract Image createImage(String code);
 
@@ -178,20 +179,20 @@ public abstract class AbstractProvider implements CaptchaProvider {
     }
 
     /**
-     * 验证码写出到文件
+     * Writes the CAPTCHA to a file.
      *
-     * @param path 文件路径
-     * @throws InternalException IO异常
+     * @param path The file path.
+     * @throws InternalException if an I/O error occurs.
      */
     public void write(final String path) throws InternalException {
         this.write(FileKit.touch(path));
     }
 
     /**
-     * 验证码写出到文件
+     * Writes the CAPTCHA to a file.
      *
-     * @param file 文件
-     * @throws InternalException IO异常
+     * @param file The file.
+     * @throws InternalException if an I/O error occurs.
      */
     public void write(final File file) throws InternalException {
         try (final OutputStream out = FileKit.getOutputStream(file)) {
@@ -207,9 +208,9 @@ public abstract class AbstractProvider implements CaptchaProvider {
     }
 
     /**
-     * 获取图形验证码图片bytes
+     * Gets the graphic CAPTCHA image bytes.
      *
-     * @return 图形验证码图片bytes
+     * @return The graphic CAPTCHA image bytes.
      */
     public byte[] getImageBytes() {
         if (null == this.imageBytes) {
@@ -219,72 +220,73 @@ public abstract class AbstractProvider implements CaptchaProvider {
     }
 
     /**
-     * 获取验证码图 注意返回的{@link BufferedImage}使用完毕后需要调用{@link BufferedImage#flush()}释放资源
+     * Gets the CAPTCHA image. Note: After using the returned {@link BufferedImage}, you need to call
+     * {@link BufferedImage#flush()} to release resources.
      *
-     * @return 验证码图
+     * @return The CAPTCHA image.
      */
     public BufferedImage getImage() {
         return ImageKit.read(IoKit.toStream(getImageBytes()));
     }
 
     /**
-     * 获得图片的Base64形式
+     * Gets the Base64 representation of the image.
      *
-     * @return 图片的Base64
+     * @return The Base64 of the image.
      */
     public String getImageBase64() {
         return Base64.encode(getImageBytes());
     }
 
     /**
-     * 获取图片带文件格式的 Base64
+     * Gets the Base64 of the image with the file format.
      *
-     * @return 图片带文件格式的 Base64
+     * @return The Base64 of the image with the file format.
      */
     public String getImageBase64Data() {
         return UrlKit.getDataUriBase64("image/png", getImageBase64());
     }
 
     /**
-     * 自定义字体
+     * Sets a custom font.
      *
-     * @param font 字体
+     * @param font The font.
      */
     public void setFont(final Font font) {
         this.font = font;
     }
 
     /**
-     * 获取验证码生成器
+     * Gets the CAPTCHA code generator.
      *
-     * @return 验证码生成器
+     * @return The CAPTCHA code generator.
      */
     public CodeStrategy getGenerator() {
         return generator;
     }
 
     /**
-     * 设置验证码生成器
+     * Sets the CAPTCHA code generator.
      *
-     * @param generator 验证码生成器
+     * @param generator The CAPTCHA code generator.
      */
     public void setGenerator(final CodeStrategy generator) {
         this.generator = generator;
     }
 
     /**
-     * 设置背景色，{@code null}表示透明背景
+     * Sets the background color. {@code null} means a transparent background.
      *
-     * @param background 背景色
+     * @param background The background color.
      */
     public void setBackground(final Color background) {
         this.background = background;
     }
 
     /**
-     * 设置文字透明度
+     * Sets the text transparency.
      *
-     * @param textAlpha 文字透明度，取值0~1，1表示不透明
+     * @param textAlpha The text transparency, a value from 0 to 1, where 1 is opaque.
      */
     public void setTextAlpha(final float textAlpha) {
         this.textAlpha = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, textAlpha);

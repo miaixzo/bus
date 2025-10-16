@@ -43,7 +43,8 @@ import org.miaixz.bus.core.text.CharsBacker;
 import org.miaixz.bus.core.xyz.*;
 
 /**
- * Setting抽象类
+ * An abstract base class for settings, providing common functionality for accessing configuration values. It implements
+ * getter interfaces for retrieving typed and grouped values.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -55,26 +56,32 @@ public abstract class AbstractSetting
     private static final long serialVersionUID = 2852777511686L;
 
     /**
-     * 数组类型值默认分隔符
+     * The default delimiter for array-type values.
      */
     public static final String DEFAULT_DELIMITER = Symbol.COMMA;
     /**
-     * 默认分组
+     * The default group name for settings.
      */
     public static final String DEFAULT_GROUP = Normal.EMPTY;
 
+    /**
+     * Default constructor.
+     */
+    protected AbstractSetting() {
+    }
+
     @Override
     public Object getObject(final CharSequence key, final Object defaultValue) {
-        return ObjectKit.defaultIfNull(getObjByGroup(key, DEFAULT_GROUP), defaultValue);
+        return ObjectKit.defaultIfNull(getObjectByGroup(key, DEFAULT_GROUP), defaultValue);
     }
 
     /**
-     * 根据lambda的方法引用，获取
+     * Gets a value using a lambda method reference to resolve the property name and return type.
      *
-     * @param func 方法引用
-     * @param <P>  参数类型
-     * @param <T>  返回值类型
-     * @return 获取表达式对应属性和返回的对象
+     * @param func The method reference (e.g., {@code User::getName}).
+     * @param <P>  The type of the class containing the method.
+     * @param <T>  The return type of the method.
+     * @return The value of the property corresponding to the method name.
      */
     public <P, T> T get(final FunctionX<P, T> func) {
         final LambdaX lambdaX = LambdaKit.resolve(func);
@@ -82,135 +89,121 @@ public abstract class AbstractSetting
     }
 
     /**
-     * 获得字符串类型值，如果字符串为{@code null}或者""返回默认值
+     * Gets a non-empty string value from a specific group.
      *
-     * @param key          KEY
-     * @param group        分组
-     * @param defaultValue 默认值
-     * @return 值，如果字符串为{@code null}或者""返回默认值
+     * @param key          The key of the setting.
+     * @param group        The group name.
+     * @param defaultValue The default value to return if the setting is null or empty.
+     * @return The setting value, or the default value.
      */
     public String getByGroupNotEmpty(final String key, final String group, final String defaultValue) {
-        final String value = getStrByGroup(key, group);
+        final String value = getStringByGroup(key, group);
         return StringKit.defaultIfEmpty(value, defaultValue);
     }
 
     /**
-     * 获得数组型
+     * Gets a value as a string array from the default group, split by the default delimiter (',').
      *
-     * @param key 属性名
-     * @return 属性值
+     * @param key The key of the setting.
+     * @return The value as a string array, or null if not found.
      */
     public String[] getStrs(final String key) {
         return getStrs(key, null);
     }
 
     /**
-     * 获得数组型
+     * Gets a value as a string array from the default group, split by the default delimiter (',').
      *
-     * @param key          属性名
-     * @param defaultValue 默认的值
-     * @return 属性值
+     * @param key          The key of the setting.
+     * @param defaultValue The default value to return if the setting is not found.
+     * @return The value as a string array, or the default value.
      */
     public String[] getStrs(final CharSequence key, final String[] defaultValue) {
         String[] value = getStrsByGroup(key, null);
-        if (null == value) {
-            value = defaultValue;
-        }
-
-        return value;
+        return ObjectKit.defaultIfNull(value, defaultValue);
     }
 
     /**
-     * 获得数组型默认逗号分隔 若配置文件中键值对类似于：
-     * 
-     * <pre>
-     *     a = 1,2,3,4
-     * </pre>
-     * 
-     * 则获取结果为：[1, 2, 3, 4]
+     * Gets a value from a specific group as a string array, split by the default delimiter (','). For example, a
+     * setting like {@code key = a,b,c} would result in {@code ["a", "b", "c"]}.
      *
-     * @param key   属性名
-     * @param group 分组名
-     * @return 属性值
+     * @param key   The key of the setting.
+     * @param group The group name.
+     * @return The value as a string array, or null if not found.
      */
     public String[] getStrsByGroup(final CharSequence key, final CharSequence group) {
         return getStrsByGroup(key, group, DEFAULT_DELIMITER);
     }
 
     /**
-     * 获得数组型，可自定义分隔符 假定分隔符为逗号，若配置文件中键值对类似于：
-     * 
-     * <pre>
-     *     a = 1,2,3,4
-     * </pre>
-     * 
-     * 则获取结果为：[1, 2, 3, 4]
+     * Gets a value from a specific group as a string array, split by a custom delimiter.
      *
-     * @param key       属性名
-     * @param group     分组名
-     * @param delimiter 分隔符
-     * @return 属性值
+     * @param key       The key of the setting.
+     * @param group     The group name.
+     * @param delimiter The delimiter to split the string by.
+     * @return The value as a string array, or null if not found or blank.
      */
     public String[] getStrsByGroup(final CharSequence key, final CharSequence group, final CharSequence delimiter) {
-        final String value = getStrByGroup(key, group);
+        final String value = getStringByGroup(key, group);
         if (StringKit.isBlank(value)) {
             return null;
         }
-        return CharsBacker.splitToArray(value, delimiter);
+        return CharsBacker.splitToArray(value, delimiter.toString());
     }
 
     /**
-     * 将setting中的键值关系映射到对象中，原理是调用对象对应的set方法 只支持基本类型的转换
+     * Maps the settings from a specific group to an existing Java Bean object by calling its setters. Only basic type
+     * conversions are supported.
      *
-     * @param <T>   Bean类型
-     * @param group 分组
-     * @param bean  Bean对象
-     * @return Bean
+     * @param <T>   The type of the bean.
+     * @param group The group name whose settings will be mapped.
+     * @param bean  The Java Bean object to populate.
+     * @return The populated Java Bean object.
      */
     public <T> T toBean(final CharSequence group, final T bean) {
-        return BeanKit.fillBean(bean, new ValueProvider<String>() {
+        return BeanKit.fillBean(bean, new ValueProvider<>() {
 
             @Override
             public Object value(final String key, final Type valueType) {
-                return getObjByGroup(key, group);
+                return getObjectByGroup(key, group);
             }
 
             @Override
             public boolean containsKey(final String key) {
-                return null != getObjByGroup(key, group);
+                return null != getObjectByGroup(key, group);
             }
         }, CopyOptions.of());
     }
 
     /**
-     * 将setting中的键值关系映射到对象中，原理是调用对象对应的set方法 只支持基本类型的转换
+     * Maps the settings from a specific group to a new Java Bean object.
      *
-     * @param <T>       Bean类型
-     * @param group     分组
-     * @param beanClass Bean类型
-     * @return Bean
+     * @param <T>       The type of the bean.
+     * @param group     The group name whose settings will be mapped.
+     * @param beanClass The class of the Java Bean to create and populate.
+     * @return The newly created and populated Java Bean object.
      */
     public <T> T toBean(final CharSequence group, final Class<T> beanClass) {
         return toBean(group, ReflectKit.newInstanceIfPossible(beanClass));
     }
 
     /**
-     * 将setting中的键值关系映射到对象中，原理是调用对象对应的set方法 只支持基本类型的转换
+     * Maps the settings from the default group to an existing Java Bean object.
      *
-     * @param <T>  bean类型
-     * @param bean Bean
-     * @return Bean
+     * @param <T>  The type of the bean.
+     * @param bean The Java Bean object to populate.
+     * @return The populated Java Bean object.
      */
     public <T> T toBean(final T bean) {
         return toBean(null, bean);
     }
 
     /**
-     * 将setting中的键值关系映射到对象中，原理是调用对象对应的set方法 只支持基本类型的转换
+     * Maps the settings from the default group to a new Java Bean object.
      *
-     * @param <T>       bean类型
-     * @param beanClass Bean类型
-     * @return Bean
+     * @param <T>       The type of the bean.
+     * @param beanClass The class of the Java Bean to create and populate.
+     * @return The newly created and populated Java Bean object.
      */
     public <T> T toBean(final Class<T> beanClass) {
         return toBean(null, beanClass);

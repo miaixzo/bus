@@ -28,23 +28,35 @@
 package org.miaixz.bus.starter.vortex;
 
 import java.util.List;
+import java.util.Map;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.net.PORT;
 import org.miaixz.bus.vortex.Filter;
 import org.miaixz.bus.vortex.Handler;
+import org.miaixz.bus.vortex.Router;
 import org.miaixz.bus.vortex.Vortex;
-import org.miaixz.bus.vortex.filter.*;
-import org.miaixz.bus.vortex.handler.AccessHandler;
-import org.miaixz.bus.vortex.handler.VortexHandler;
+import org.miaixz.bus.vortex.filter.PrimaryFilter;
 import org.miaixz.bus.vortex.handler.ErrorsHandler;
+import org.miaixz.bus.vortex.handler.VortexHandler;
 import org.miaixz.bus.vortex.provider.AuthorizeProvider;
-import org.miaixz.bus.vortex.provider.LicenseProvider;
 import org.miaixz.bus.vortex.registry.AssetsRegistry;
 import org.miaixz.bus.vortex.registry.LimiterRegistry;
+import org.miaixz.bus.vortex.strategy.AuthorizeStrategy;
+import org.miaixz.bus.vortex.strategy.CipherStrategy;
+import org.miaixz.bus.vortex.strategy.FormatStrategy;
+import org.miaixz.bus.vortex.strategy.LimitStrategy;
+import org.miaixz.bus.vortex.strategy.RequestStrategy;
+import org.miaixz.bus.vortex.Strategy;
+import org.miaixz.bus.vortex.strategy.StrategyFactory;
+import org.miaixz.bus.vortex.support.HttpRouter;
+import org.miaixz.bus.vortex.support.McpRouter;
+import org.miaixz.bus.vortex.support.MqRouter;
+import org.miaixz.bus.vortex.support.http.HttpService;
+import org.miaixz.bus.vortex.support.mcp.McpService;
+import org.miaixz.bus.vortex.support.mq.MqService;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.http.MediaType;
 import org.springframework.http.codec.ServerCodecConfigurer;
 import org.springframework.http.server.reactive.HttpHandler;
 import org.springframework.http.server.reactive.ReactorHttpHandlerAdapter;
@@ -59,7 +71,7 @@ import jakarta.annotation.Resource;
 import reactor.netty.http.server.HttpServer;
 
 /**
- * 路由自动配置类，负责配置 WebFlux 路由和拦截器
+ * Auto-configuration for the Vortex gateway, based on a strategy pattern for filters.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -68,126 +80,191 @@ import reactor.netty.http.server.HttpServer;
 public class VortexConfiguration {
 
     @Resource
-    VortexProperties properties;
+    private VortexProperties properties;
 
     /**
-     * 自动注入所有 filter 实现
-     */
-    @Resource
-    List<Filter> filters;
-
-    /**
-     * 自动注入所有 Handler 实现
-     */
-    @Resource
-    List<Handler> handlers;
-
-    /**
-     * 配置格式化过滤器
+     * Configures and provides the HTTP router bean. This router is responsible for handling HTTP-specific routing
+     * logic.
      *
-     * @return WebFilter 格式化过滤器实例
+     * @param service The HttpService instance to be used by the router.
+     * @return A new instance of HttpRouter.
      */
-    @Bean
-    public Filter licenseFilter(LicenseProvider provider) {
-        return new LicenseFilter(provider);
+    @Bean(name = "http")
+    public Router http(HttpService service) {
+        return new HttpRouter(service);
     }
 
     /**
-     * 配置主过滤器
+     * Configures and provides the MCP router bean. This router is responsible for handling MCP (Model Context
+     * Protocol)-specific routing logic.
      *
-     * @return WebFilter 主过滤器实例
+     * @param service The McpService instance to be used by the router.
+     * @return A new instance of McpRouter.
      */
-    @Bean
-    public Filter primaryFilter() {
-        return new PrimaryFilter();
+    @Bean(name = "mcp")
+    public Router mcp(McpService service) {
+        return new McpRouter(service);
     }
 
     /**
-     * 配置格式化过滤器
+     * Configures and provides the MQ router bean. This router is responsible for handling Message Queue-specific
+     * routing logic.
      *
-     * @return WebFilter 格式化过滤器实例
+     * @param service The MqService instance to be used by the router.
+     * @return A new instance of MqRouter.
      */
-    @Bean
-    public Filter formatFilter() {
-        return new FormatFilter();
+    @Bean(name = "mq")
+    public Router mq(MqService service) {
+        return new MqRouter(service);
     }
 
     /**
-     * 创建安全加解密过滤器
-     * <p>
-     * 当解密或加密任一功能启用时创建该Bean
-     * </p>
+     * Provides the HttpService bean. This service is responsible for executing HTTP requests to downstream services.
      *
-     * @return 安全加解密过滤器实例
+     * @return A new instance of HttpService.
      */
     @Bean
-    public Filter cipherFilter() {
-        return new CipherFilter(this.properties.getServer().getDecrypt(), this.properties.getServer().getEncrypt());
+    public HttpService httpService() {
+        return new HttpService();
     }
 
     /**
-     * 配置授权过滤器
+     * Provides the McpService bean. This service manages the lifecycle and operations of MCP clients.
      *
-     * @param provider 授权提供者
-     * @param registry 资产注册表
-     * @return WebFilter 授权过滤器实例
+     * @param assetsRegistry The AssetsRegistry instance used to access asset configurations.
+     * @return A new instance of McpService.
      */
     @Bean
-    public Filter authorizeFilter(AuthorizeProvider provider, AssetsRegistry registry) {
-        return new AuthorizeFilter(provider, registry);
+    public McpService mcpService(AssetsRegistry assetsRegistry) {
+        return new McpService(assetsRegistry);
     }
 
     /**
-     * 配置限流过滤器，根据配置决定是否启用
+     * Provides the MqService bean. This service handles sending messages to a message queue.
      *
-     * @param registry 限流注册表
-     * @return WebFilter 限流过滤器实例，若未启用返回 null
+     * @return A new instance of MqService.
      */
     @Bean
-    public Filter limitFilter(LimiterRegistry registry) {
-        return this.properties.getServer().getLimit().isEnabled() ? new LimitFilter(registry) : null;
+    public MqService mqService() {
+        return new MqService();
     }
 
     /**
-     * 业务处理类
+     * Provides the RequestStrategy bean. This strategy is responsible for initial request parsing and context
+     * initialization.
      *
-     * @return Handler 前置逻辑处理
+     * @return A new instance of RequestStrategy.
      */
     @Bean
-    public Handler accessHandler() {
-        return new AccessHandler();
+    public RequestStrategy requestStrategy() {
+        return new RequestStrategy();
     }
 
     /**
-     * 配置 Vortex 请求处理核心组件
+     * Provides the CipherStrategy bean. This strategy handles request decryption and response encryption based on
+     * configured properties.
      *
-     * @return Vortex 核心组件实例，包含 HTTP 服务器
+     * @param vortexProperties The Vortex configuration properties, containing decryption and encryption settings.
+     * @return A new instance of CipherStrategy.
+     */
+    @Bean
+    public CipherStrategy cipherStrategy(VortexProperties vortexProperties) {
+        return new CipherStrategy(vortexProperties.getDecrypt(), vortexProperties.getEncrypt());
+    }
+
+    /**
+     * Provides the AuthorizeStrategy bean. This strategy performs access authorization based on tokens, API keys, and
+     * asset configurations.
+     *
+     * @param authorizeProvider The AuthorizeProvider for handling authorization logic.
+     * @param assetsRegistry    The AssetsRegistry for accessing API asset information.
+     * @return A new instance of AuthorizeStrategy.
+     */
+    @Bean
+    public AuthorizeStrategy authorizeStrategy(AuthorizeProvider authorizeProvider, AssetsRegistry assetsRegistry) {
+        return new AuthorizeStrategy(authorizeProvider, assetsRegistry);
+    }
+
+    /**
+     * Provides the LimitStrategy bean. This strategy applies rate limiting to requests.
+     *
+     * @param limiterRegistry The LimiterRegistry for managing rate limiter configurations.
+     * @return A new instance of LimitStrategy.
+     */
+    @Bean
+    public LimitStrategy limitStrategy(LimiterRegistry limiterRegistry) {
+        return new LimitStrategy(limiterRegistry);
+    }
+
+    /**
+     * Provides the FormatStrategy bean. This strategy handles response formatting, e.g., converting XML requests to
+     * JSON responses.
+     *
+     * @return A new instance of FormatStrategy.
+     */
+    @Bean
+    public FormatStrategy formatStrategy() {
+        return new FormatStrategy();
+    }
+
+    /**
+     * Defines the StrategyFactory bean. This factory is responsible for providing the correct chain of {@link Strategy}
+     * instances based on the incoming request. Spring will inject all available {@link Strategy} beans into the
+     * constructor.
+     *
+     * @param strategies A list of all available {@link Strategy} beans, injected by Spring.
+     * @return A new instance of StrategyFactory.
+     */
+    @Bean
+    public StrategyFactory strategyFactory(List<Strategy> strategies) {
+        return new StrategyFactory(strategies);
+    }
+
+    /**
+     * Defines the PrimaryFilter bean. This filter acts as the main entry point and dispatcher for a dynamic chain of
+     * strategies. Spring will inject the {@link StrategyFactory} bean into the constructor. Since PrimaryFilter
+     * implements {@link org.springframework.web.server.WebFilter} and is annotated with {@code @Order}, Spring Boot
+     * will automatically register it in the WebFlux filter chain.
+     *
+     * @param strategyFactory The StrategyFactory instance.
+     * @return A new instance of PrimaryFilter.
+     */
+    @Bean
+    public PrimaryFilter primaryFilter(StrategyFactory strategyFactory) {
+        return new PrimaryFilter(strategyFactory);
+    }
+
+    /**
+     * Configures the core Vortex request processing component. This method sets up the WebFlux handler, integrates
+     * filters and exception handlers, and configures the Reactor Netty HTTP server.
+     *
+     * @param filters  A list of all available {@link Filter} beans, injected by Spring.
+     * @param handlers A list of all available {@link Handler} beans, injected by Spring.
+     * @param routers  A map of all available {@link Router} beans, injected by Spring.
+     * @return A {@link Vortex} core component instance, including the HTTP server.
      */
     @Bean(initMethod = "init", destroyMethod = "destroy")
-    public Vortex athlete() {
-        // 使用注入的所有 Handler 实例创建 VortexHandler
-        VortexHandler vortexHandler = new VortexHandler(handlers);
+    public Vortex vortex(List<Filter> filters, List<Handler> handlers, Map<String, Router> routers) {
+        // Create the main Vortex handler with all injected Handler instances.
+        VortexHandler vortexHandler = new VortexHandler(handlers, routers);
 
-        // 配置路由，处理指定路径的请求
-        RouterFunction<ServerResponse> routerFunction = RouterFunctions.route(
-                RequestPredicates.path(properties.getServer().getPath()).and(
-                        RequestPredicates.accept(MediaType.APPLICATION_FORM_URLENCODED, MediaType.APPLICATION_JSON)),
-                vortexHandler::handle);
+        // Configure the router to handle requests at the specified path.
+        RouterFunction<ServerResponse> routerFunction = RouterFunctions
+                .route(RequestPredicates.path(this.properties.getPath() + "/**"), vortexHandler::handle);
 
-        // 配置编解码器，设置最大内存大小
+        // Configure codecs, setting the maximum in-memory size.
         ServerCodecConfigurer configurer = ServerCodecConfigurer.create();
         configurer.defaultCodecs().maxInMemorySize(Math.toIntExact(Normal.MEBI_128));
 
-        // 构建 WebHandler，集成过滤器和异常处理器
+        // Build the WebHandler, integrating filters and exception handlers.
         WebHandler webHandler = RouterFunctions.toWebHandler(routerFunction);
-        HttpHandler handler = WebHttpHandlerBuilder.webHandler(webHandler).filters(list -> list.addAll(filters))
+        HttpHandler httpHandler = WebHttpHandlerBuilder.webHandler(webHandler).filters(list -> list.addAll(filters))
                 .exceptionHandlers(list -> list.add(new ErrorsHandler())).codecConfigurer(configurer).build();
 
-        // 创建 HTTP 服务器适配器
-        ReactorHttpHandlerAdapter adapter = new ReactorHttpHandlerAdapter(handler);
+        // Create the Reactor Netty HTTP server adapter.
+        ReactorHttpHandlerAdapter adapter = new ReactorHttpHandlerAdapter(httpHandler);
         HttpServer server = HttpServer.create()
-                .port(properties.getServer().getPort() != 0 ? properties.getServer().getPort() : PORT._8765)
-                .handle(adapter);
+                .port(this.properties.getPort() != 0 ? this.properties.getPort() : PORT._8765).handle(adapter);
 
         return new Vortex(server);
     }

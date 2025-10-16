@@ -26,12 +26,13 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 引用工具封装，主要针对{@link java.lang.ref.Reference} 工具化封装 主要封装包括：
- * 
+ * Provides utility classes for working with Java's reference objects, primarily encapsulating functionality related to
+ * {@link java.lang.ref.Reference}. The main encapsulated references include:
+ *
  * <pre>
- * 1. {@link java.lang.ref.SoftReference} 软引用，在GC报告内存不足时会被GC回收
- * 2. {@link java.lang.ref.WeakReference} 弱引用，在GC时发现弱引用会回收其对象
- * 3. {@link java.lang.ref.PhantomReference} 虚引用，在GC时发现虚引用对象，会将{@link java.lang.ref.PhantomReference}插入{@link java.lang.ref.ReferenceQueue}。 此时对象未被真正回收，要等到{@link java.lang.ref.ReferenceQueue}被真正处理后才会被回收。
+ * 1. {@link java.lang.ref.SoftReference}: A soft reference is garbage collected when the JVM reports low memory.
+ * 2. {@link java.lang.ref.WeakReference}: A weak reference is garbage collected when it is discovered during a GC cycle.
+ * 3. {@link java.lang.ref.PhantomReference}: When a phantom reference is discovered during a GC cycle, the {@link java.lang.ref.PhantomReference} object is enqueued on its {@link java.lang.ref.ReferenceQueue}. The referenced object is not yet reclaimed. It will be reclaimed only after the {@link java.lang.ref.ReferenceQueue} is processed.
  * </pre>
  *
  * @author Kimi Liu

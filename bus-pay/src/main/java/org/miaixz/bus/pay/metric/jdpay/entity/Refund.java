@@ -36,7 +36,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * 退款申请接口
+ * Refund application interface model.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,18 +48,57 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class Refund extends Material {
 
+    /**
+     * Version number.
+     */
     private String version;
+    /**
+     * Merchant number.
+     */
     private String merchant;
+    /**
+     * Transaction number.
+     */
     private String tradeNum;
+    /**
+     * Original transaction number.
+     */
     private String oTradeNum;
+    /**
+     * Refund amount.
+     */
     private String amount;
+    /**
+     * Currency.
+     */
     private String currency;
+    /**
+     * Transaction time.
+     */
     private String tradeTime;
+    /**
+     * Asynchronous notification URL.
+     */
     private String notifyUrl;
+    /**
+     * Note.
+     */
     private String note;
+    /**
+     * Signature.
+     */
     private String sign;
+    /**
+     * Device information.
+     */
     private String device;
+    /**
+     * Terminal information ID.
+     */
     private String termInfoId;
+    /**
+     * Certificate.
+     */
     private String cert;
 
 }

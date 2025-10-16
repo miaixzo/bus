@@ -27,18 +27,20 @@
 */
 package org.miaixz.bus.starter.pay;
 
-import java.util.Map;
-
+import lombok.Getter;
+import lombok.Setter;
 import org.miaixz.bus.pay.Context;
 import org.miaixz.bus.pay.Registry;
 import org.miaixz.bus.spring.GeniusBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-import lombok.Getter;
-import lombok.Setter;
+import java.util.Map;
 
 /**
- * 聚合支付配置 1. 默认读取配置文件信息 2. 通过set形式设置(动态/DB等)
+ * Configuration properties for the integrated payment service.
+ * <p>
+ * This class binds properties from the configuration file by default. It can also be configured dynamically through
+ * setter methods (e.g., from a database).
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -49,7 +51,8 @@ import lombok.Setter;
 public class PayProperties {
 
     /**
-     * 基础配置
+     * A map of payment provider configurations, where the key is the payment provider {@link Registry} type and the
+     * value is the {@link Context} containing the specific configuration for that provider.
      */
     private Map<Registry, Context> type;
 

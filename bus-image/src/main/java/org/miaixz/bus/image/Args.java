@@ -47,7 +47,9 @@ import lombok.*;
 import lombok.Builder;
 
 /**
- * 请求参数信息
+ * Represents request argument information for DICOM operations. This class encapsulates various configuration
+ * parameters for establishing and managing DICOM associations, including security, network settings, and data handling
+ * options.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -59,75 +61,117 @@ import lombok.Builder;
 @AllArgsConstructor
 public class Args {
 
+    /**
+     * Transfer Syntax order: Implicit VR Little Endian first.
+     */
     public static final String[] IVR_LE_FIRST = { UID.ImplicitVRLittleEndian.uid, UID.ExplicitVRLittleEndian.uid,
             UID.ExplicitVRBigEndian.uid };
+    /**
+     * Transfer Syntax order: Explicit VR Little Endian first.
+     */
     public static final String[] EVR_LE_FIRST = { UID.ExplicitVRLittleEndian.uid, UID.ExplicitVRBigEndian.uid,
             UID.ImplicitVRLittleEndian.uid };
+    /**
+     * Transfer Syntax order: Explicit VR Big Endian first.
+     */
     public static final String[] EVR_BE_FIRST = { UID.ExplicitVRBigEndian.uid, UID.ExplicitVRLittleEndian.uid,
             UID.ImplicitVRLittleEndian.uid };
+    /**
+     * Transfer Syntax order: Implicit VR Little Endian only.
+     */
     public static final String[] IVR_LE_ONLY = { UID.ImplicitVRLittleEndian.uid };
 
     /**
-     * 绑定调用AET
+     * If {@code true}, binds the listener to the specified calling AET. Only requests with a matching called AET will
+     * be accepted. If {@code false}, all called AETs will be accepted.
      */
     private boolean bindCallingAet;
     /**
-     * 接受的呼叫AET
+     * A list of accepted calling Application Entity Titles (AETs). If empty, all calling AETs are accepted.
      */
     private String[] acceptedCallingAETitles;
     /**
-     * 信息模型
+     * The information model for the operation (e.g., Study Root, Patient Root).
      */
     private Object informationModel;
 
+    /**
+     * A set of {@link QueryOption}s to configure query behavior.
+     */
     @Builder.Default
     private EnumSet<QueryOption> queryOptions = EnumSet.noneOf(QueryOption.class);
+    /**
+     * The preferred order of Transfer Syntax UIDs for negotiation.
+     */
     @Builder.Default
     private String[] tsuidOrder = Arrays.copyOf(IVR_LE_FIRST, IVR_LE_FIRST.length);
 
     /**
-     * 配置proxy <[user:password@]host:port>，指定HTTP代理隧道连接DICOM的主机和端口。
+     * Specifies an HTTP proxy for tunneling the DICOM connection. The format is {@code <[user:password@]host:port>}.
      */
     private String proxy;
 
+    /**
+     * The user identity request for authentication.
+     */
     private IdentityRQ identityRQ;
+    /**
+     * The user identity acceptance response.
+     */
     private IdentityAC identityAC;
 
     /**
-     * 优先级
+     * The priority of the DICOM operation.
+     * 
+     * @see Priority
      */
     @Builder.Default
     private int priority = Priority.NORMAL;
 
+    /**
+     * Advanced options for proxy, authentication, connection, and TLS settings.
+     */
     private Option option;
 
+    /**
+     * A list of {@link Editors} to modify DICOM attributes during processing.
+     */
     private List<Editors> editors;
 
     /**
-     * 是否启用通过UID或名称指定传输
+     * If {@code true}, enables extended negotiation of SOP Classes.
      */
     private boolean negociation;
     /**
-     * SOP类和传输语法可以通过其UID或名称指定 sop-classes.properties
+     * URL to a properties file defining SOP Classes and their UIDs (e.g., {@code sop-classes.properties}).
      */
     private URL sopClasses;
     /**
-     * 根据DICOM Part 4, B.3.1.4定义相关的通用SOP类 sop-classes-uid.properties
+     * URL to a properties file defining related general-purpose SOP classes as per DICOM Part 4, B.3.1.4 (e.g.,
+     * {@code sop-classes-uid.properties}).
      */
     private URL sopClassesUID;
     /**
-     * 扩展Sop类和传输语法的存储传输能力 sop-classes-tcs.properties
+     * URL to a properties file defining extended storage transfer capabilities (e.g.,
+     * {@code sop-classes-tcs.properties}).
      */
     private URL sopClassesTCS;
 
+    /**
+     * Constructs an {@code Args} object with a specific setting for binding the calling AET.
+     *
+     * @param bindCallingAet If {@code true}, binds the listener to the specified calling AET.
+     */
     public Args(boolean bindCallingAet) {
         this(null, bindCallingAet, null, null);
     }
 
     /**
-     * @param editors     修改DICOM属性的编辑器
-     * @param negociation 扩展SOP类
-     * @param sopClasses  SOP类扩展的配置文件
+     * Constructs an {@code Args} object with editors and extended negotiation settings.
+     *
+     * @param editors     A list of editors to modify DICOM attributes.
+     * @param negociation If {@code true}, enables extended negotiation of SOP Classes.
+     * @param sopClasses  URL to a properties file for SOP Class extension.
      */
     public Args(List<Editors> editors, boolean negociation, URL sopClasses) {
         this.editors = editors;
@@ -136,12 +180,16 @@ public class Args {
     }
 
     /**
-     * @param option                  可选的高级参数(代理、身份验证、连接和TLS)
-     * @param bindCallingAet          当为true时，它将设置侦听器DICOM节点的AET。只有匹配称为AETitle的请求将被接受。 如果为假，所有被调用的AETs将被接受
-     * @param sopClassesTCS           获取包含传输功能(sopclass、role、transferSyntaxes)的文件的URL
-     * @param acceptedCallingAETitles 可接受的呼叫aetitle的列表。空将接受所有aetitle
+     * Constructs an {@code Args} object with advanced options and transfer capabilities.
+     *
+     * @param option                  Advanced options (proxy, authentication, connection, TLS).
+     * @param bindCallingAet          If {@code true}, binds the listener to the specified calling AET.
+     * @param sopClassesTCS           URL to a file containing transfer capabilities (SOP class, role, transfer
+     *                                syntaxes).
+     * @param acceptedCallingAETitles A list of acceptable calling AETs. An empty list accepts all.
      */
     public Args(Option option, boolean bindCallingAet, URL sopClassesTCS, String... acceptedCallingAETitles) {
+        this.option = option;
         this.bindCallingAet = bindCallingAet;
         this.sopClassesTCS = sopClassesTCS;
         this.acceptedCallingAETitles = null == acceptedCallingAETitles ? new String[0] : acceptedCallingAETitles;
@@ -151,6 +199,13 @@ public class Args {
         }
     }
 
+    /**
+     * Configures the connection parameters for an association request.
+     *
+     * @param aAssociateRQ The association request PDU to configure.
+     * @param remote       The remote connection details.
+     * @param calledNode   The node being called.
+     */
     public void configureConnect(AAssociateRQ aAssociateRQ, Connection remote, Node calledNode) {
         aAssociateRQ.setCalledAET(calledNode.getAet());
         if (identityRQ != null) {
@@ -161,10 +216,10 @@ public class Args {
     }
 
     /**
-     * 使用callingNode绑定连接
+     * Binds the connection using the calling node's information.
      *
-     * @param connection  连接信息
-     * @param callingNode 节点信息
+     * @param connection  The connection to configure.
+     * @param callingNode The node initiating the connection.
      */
     public void configureBind(Connection connection, Node callingNode) {
         if (callingNode.getHostname() != null) {
@@ -175,6 +230,13 @@ public class Args {
         }
     }
 
+    /**
+     * Configures the binding for an association request, including identity negotiation.
+     *
+     * @param aAssociateRQ The association request PDU to configure.
+     * @param remote       The remote connection details.
+     * @param calledNode   The node being called.
+     */
     public void configureBind(AAssociateRQ aAssociateRQ, Connection remote, Node calledNode) {
         aAssociateRQ.setCalledAET(calledNode.getAet());
         if (null != identityRQ) {
@@ -188,11 +250,11 @@ public class Args {
     }
 
     /**
-     * 将连接和应用程序实体与callingNode绑定
+     * Binds the connection and application entity with the calling node's information.
      *
-     * @param applicationEntity 应用实体
-     * @param connection        连接信息
-     * @param callingNode       节点信息
+     * @param applicationEntity The application entity to configure.
+     * @param connection        The connection to configure.
+     * @param callingNode       The node initiating the connection.
      */
     public void configureBind(ApplicationEntity applicationEntity, Connection connection, Node callingNode) {
         applicationEntity.setAETitle(callingNode.getAet());
@@ -205,9 +267,9 @@ public class Args {
     }
 
     /**
-     * 配置链接相关参数
+     * Configures connection-related parameters from the advanced options.
      *
-     * @param conn 链接信息
+     * @param conn The connection to configure.
      */
     public void configure(Connection conn) {
         if (option != null) {
@@ -232,11 +294,11 @@ public class Args {
     }
 
     /**
-     * 配置TLS链接相关参数
+     * Configures TLS-related parameters for the connection.
      *
-     * @param conn   链接信息
-     * @param remote 远程信息
-     * @throws IOException 异常
+     * @param conn   The connection to configure.
+     * @param remote The remote connection details, can be {@code null}.
+     * @throws IOException if a security error occurs while configuring TLS.
      */
     public void configureTLS(Connection conn, Connection remote) throws IOException {
         if (option != null) {
@@ -271,6 +333,11 @@ public class Args {
         }
     }
 
+    /**
+     * Checks if there are any DICOM attribute editors configured.
+     *
+     * @return {@code true} if editors are configured, {@code false} otherwise.
+     */
     public boolean hasEditors() {
         return editors != null && !editors.isEmpty();
     }

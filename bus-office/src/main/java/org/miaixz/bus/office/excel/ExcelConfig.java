@@ -38,7 +38,7 @@ import org.miaixz.bus.office.excel.cell.editors.CellEditor;
 import org.miaixz.bus.office.excel.xyz.CellKit;
 
 /**
- * Excel读取和写出通用配置
+ * Common configuration for Excel reading and writing.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -46,28 +46,28 @@ import org.miaixz.bus.office.excel.xyz.CellKit;
 public class ExcelConfig {
 
     /**
-     * 标题行别名
+     * Alias map for header rows.
      */
     protected Map<String, String> headerAlias;
     /**
-     * 单元格值处理接口
+     * Cell value processing interface.
      */
     protected CellEditor cellEditor;
 
     /**
-     * 获得标题行的别名Map
+     * Gets the header row alias map.
      *
-     * @return 别名Map
+     * @return The alias map.
      */
     public Map<String, String> getHeaderAlias() {
         return headerAlias;
     }
 
     /**
-     * 设置标题行的别名Map
+     * Sets the header row alias map.
      *
-     * @param headerAlias 别名Map
-     * @return this
+     * @param headerAlias The alias map.
+     * @return This {@code ExcelConfig} instance, for chaining.
      */
     public ExcelConfig setHeaderAlias(final Map<String, String> headerAlias) {
         this.headerAlias = headerAlias;
@@ -75,11 +75,11 @@ public class ExcelConfig {
     }
 
     /**
-     * 增加标题别名
+     * Adds a header alias.
      *
-     * @param header 标题
-     * @param alias  别名
-     * @return this
+     * @param header The original header name.
+     * @param alias  The alias for the header.
+     * @return This {@code ExcelConfig} instance, for chaining.
      */
     public ExcelConfig addHeaderAlias(final String header, final String alias) {
         Map<String, String> headerAlias = this.headerAlias;
@@ -92,10 +92,10 @@ public class ExcelConfig {
     }
 
     /**
-     * 去除标题别名
+     * Removes a header alias.
      *
-     * @param header 标题
-     * @return this
+     * @param header The header name whose alias is to be removed.
+     * @return This {@code ExcelConfig} instance, for chaining.
      */
     public ExcelConfig removeHeaderAlias(final String header) {
         this.headerAlias.remove(header);
@@ -103,19 +103,20 @@ public class ExcelConfig {
     }
 
     /**
-     * 清空标题别名，key为Map中的key，value为别名
+     * Clears all header aliases. The keys in the map are original header names, and values are aliases.
      *
-     * @return this
+     * @return This {@code ExcelConfig} instance, for chaining.
      */
     public ExcelConfig clearHeaderAlias() {
         return setHeaderAlias(null);
     }
 
     /**
-     * 转换标题别名，如果没有别名则使用原标题，当标题为空时，列号对应的字母便是header
+     * Converts a list of original headers to their aliases. If an alias is not found, the original header is used. If a
+     * header is {@code null}, the column index converted to an Excel column name (e.g., A, B) is used as the header.
      *
-     * @param headerList 原标题列表
-     * @return 转换别名列表
+     * @param headerList The list of original headers.
+     * @return A list of aliased headers.
      */
     public List<Object> aliasHeader(final List<Object> headerList) {
         if (CollKit.isEmpty(headerList)) {
@@ -131,11 +132,12 @@ public class ExcelConfig {
     }
 
     /**
-     * 转换标题别名，如果没有别名则使用原标题，当标题为空时，列号对应的字母便是header
+     * Converts an original header to its alias. If an alias is not found, the original header is used. If the header is
+     * {@code null}, the column index converted to an Excel column name (e.g., A, B) is used as the header.
      *
-     * @param headerObj 原标题
-     * @param index     标题所在列号，当标题为空时，列号对应的字母便是header
-     * @return 转换别名列表
+     * @param headerObj The original header object.
+     * @param index     The column index of the header. Used when the header object is {@code null}.
+     * @return The aliased header object.
      */
     public Object aliasHeader(final Object headerObj, final int index) {
         if (null == headerObj) {
@@ -149,19 +151,21 @@ public class ExcelConfig {
     }
 
     /**
-     * 获取单元格值处理器
+     * Gets the cell value processor.
      *
-     * @return 单元格值处理器
+     * @return The {@link CellEditor} instance.
      */
     public CellEditor getCellEditor() {
         return this.cellEditor;
     }
 
     /**
-     * 设置单元格值处理逻辑 当Excel中的值并不能满足我们的读取要求时，通过传入一个编辑接口，可以对单元格值自定义，例如对数字和日期类型值转换为字符串等
+     * Sets the cell value processing logic. When the values in Excel do not meet the reading requirements, a custom
+     * editor interface can be provided to customize cell values, for example, converting numeric and date types to
+     * strings.
      *
-     * @param cellEditor 单元格值处理接口
-     * @return this
+     * @param cellEditor The cell value processing interface.
+     * @return This {@code ExcelConfig} instance, for chaining.
      */
     public ExcelConfig setCellEditor(final CellEditor cellEditor) {
         this.cellEditor = cellEditor;

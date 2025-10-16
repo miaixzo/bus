@@ -34,7 +34,7 @@ import org.miaixz.bus.core.codec.hash.metro.MetroHash128;
 import org.miaixz.bus.core.codec.hash.metro.MetroHash64;
 
 /**
- * Hash算法大全 推荐使用FNV1算法
+ * A collection of various hash algorithms. FNV1 is recommended for general use.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,11 +42,11 @@ import org.miaixz.bus.core.codec.hash.metro.MetroHash64;
 public class HashKit {
 
     /**
-     * 加法hash
+     * Additive hash.
      *
-     * @param key   字符串
-     * @param prime 一个质数
-     * @return hash结果
+     * @param key   The string.
+     * @param prime A prime number.
+     * @return The hash result.
      */
     public static int additiveHash(final String key, final int prime) {
         int hash, i;
@@ -57,29 +57,25 @@ public class HashKit {
     }
 
     /**
-     * 旋转hash
+     * Rotating hash.
      *
-     * @param key   输入字符串
-     * @param prime 质数
-     * @return hash值
+     * @param key   The input string.
+     * @param prime A prime number.
+     * @return The hash value.
      */
     public static int rotatingHash(final String key, final int prime) {
         int hash, i;
         for (hash = key.length(), i = 0; i < key.length(); ++i) {
             hash = (hash << 4) ^ (hash >> 28) ^ key.charAt(i);
         }
-
-        // 使用：hash = (hash ^ (hash>>10) ^ (hash>>20)) & mask;
-        // 替代：hash %= prime;
-        // return (hash ^ (hash>>10) ^ (hash>>20));
         return hash % prime;
     }
 
     /**
-     * 一次一个hash
+     * One-at-a-time hash.
      *
-     * @param key 输入字符串
-     * @return 输出hash值
+     * @param key The input string.
+     * @return The hash value.
      */
     public static int oneByOneHash(final String key) {
         int hash, i;
@@ -91,15 +87,14 @@ public class HashKit {
         hash += (hash << 3);
         hash ^= (hash >> 11);
         hash += (hash << 15);
-        // return (hash & M_MASK);
         return hash;
     }
 
     /**
-     * Bernstein's hash
+     * Bernstein's hash.
      *
-     * @param key 输入字节数组
-     * @return 结果hash
+     * @param key The input string.
+     * @return The hash result.
      */
     public static int bernstein(final String key) {
         int hash = 0;
@@ -111,12 +106,12 @@ public class HashKit {
     }
 
     /**
-     * Universal Hashing
+     * Universal Hashing.
      *
-     * @param key  字节数组
-     * @param mask 掩码
-     * @param tab  tab
-     * @return hash值
+     * @param key  The char array.
+     * @param mask The mask.
+     * @param tab  The table.
+     * @return The hash value.
      */
     public static int universal(final char[] key, final int mask, final int[] tab) {
         int hash = key.length;
@@ -124,41 +119,33 @@ public class HashKit {
         final int len = key.length;
         for (i = 0; i < (len << 3); i += 8) {
             final char k = key[i >> 3];
-            if ((k & 0x01) == 0) {
+            if ((k & 0x01) == 0)
                 hash ^= tab[i];
-            }
-            if ((k & 0x02) == 0) {
+            if ((k & 0x02) == 0)
                 hash ^= tab[i + 1];
-            }
-            if ((k & 0x04) == 0) {
+            if ((k & 0x04) == 0)
                 hash ^= tab[i + 2];
-            }
-            if ((k & 0x08) == 0) {
+            if ((k & 0x08) == 0)
                 hash ^= tab[i + 3];
-            }
-            if ((k & 0x10) == 0) {
+            if ((k & 0x10) == 0)
                 hash ^= tab[i + 4];
-            }
-            if ((k & 0x20) == 0) {
+            if ((k & 0x20) == 0)
                 hash ^= tab[i + 5];
-            }
-            if ((k & 0x40) == 0) {
+            if ((k & 0x40) == 0)
                 hash ^= tab[i + 6];
-            }
-            if ((k & 0x80) == 0) {
+            if ((k & 0x80) == 0)
                 hash ^= tab[i + 7];
-            }
         }
         return (hash & mask);
     }
 
     /**
-     * Zobrist Hashing
+     * Zobrist Hashing.
      *
-     * @param key  字节数组
-     * @param mask 掩码
-     * @param tab  tab
-     * @return hash值
+     * @param key  The char array.
+     * @param mask The mask.
+     * @param tab  The table.
+     * @return The hash value.
      */
     public static int zobrist(final char[] key, final int mask, final int[][] tab) {
         int hash, i;
@@ -169,10 +156,10 @@ public class HashKit {
     }
 
     /**
-     * 改进的32位FNV算法1
+     * Modified 32-bit FNV-1a hash.
      *
-     * @param data 数组
-     * @return hash结果
+     * @param data The byte array.
+     * @return The hash result.
      */
     public static int fnvHash(final byte[] data) {
         final int p = 16777619;
@@ -189,10 +176,10 @@ public class HashKit {
     }
 
     /**
-     * 改进的32位FNV算法1
+     * Modified 32-bit FNV-1a hash.
      *
-     * @param data 字符串
-     * @return hash结果
+     * @param data The string.
+     * @return The hash result.
      */
     public static int fnvHash(final String data) {
         final int p = 16777619;
@@ -209,10 +196,10 @@ public class HashKit {
     }
 
     /**
-     * Thomas Wang的算法，整数hash
+     * Thomas Wang's integer hash.
      *
-     * @param key 整数
-     * @return hash值
+     * @param key The integer.
+     * @return The hash value.
      */
     public static int intHash(int key) {
         key += ~(key << 15);
@@ -225,45 +212,41 @@ public class HashKit {
     }
 
     /**
-     * RS算法hash
+     * RS hash algorithm.
      *
-     * @param text 字符串
-     * @return hash值
+     * @param text The string.
+     * @return The hash value.
      */
     public static int rsHash(final String text) {
         final int b = 378551;
         int a = 63689;
         int hash = 0;
-
         for (int i = 0; i < text.length(); i++) {
             hash = hash * a + text.charAt(i);
             a = a * b;
         }
-
         return hash & 0x7FFFFFFF;
     }
 
     /**
-     * JS算法
+     * JS hash algorithm.
      *
-     * @param text 字符串
-     * @return hash值
+     * @param text The string.
+     * @return The hash value.
      */
     public static int jsHash(final String text) {
         int hash = 1315423911;
-
         for (int i = 0; i < text.length(); i++) {
             hash ^= ((hash << 5) + text.charAt(i) + (hash >> 2));
         }
-
         return Math.abs(hash) & 0x7FFFFFFF;
     }
 
     /**
-     * PJW算法
+     * PJW hash algorithm.
      *
-     * @param text 字符串
-     * @return hash值
+     * @param text The string.
+     * @return The hash value.
      */
     public static int pjwHash(final String text) {
         final int bitsInUnsignedInt = 32;
@@ -272,28 +255,24 @@ public class HashKit {
         final int highBits = 0xFFFFFFFF << (bitsInUnsignedInt - oneEighth);
         int hash = 0;
         int test;
-
         for (int i = 0; i < text.length(); i++) {
             hash = (hash << oneEighth) + text.charAt(i);
-
             if ((test = hash & highBits) != 0) {
                 hash = ((hash ^ (test >> threeQuarters)) & (~highBits));
             }
         }
-
         return hash & 0x7FFFFFFF;
     }
 
     /**
-     * ELF算法
+     * ELF hash algorithm.
      *
-     * @param text 字符串
-     * @return hash值
+     * @param text The string.
+     * @return The hash value.
      */
     public static int elfHash(final String text) {
         int hash = 0;
         int x;
-
         for (int i = 0; i < text.length(); i++) {
             hash = (hash << 4) + text.charAt(i);
             if ((x = (int) (hash & 0xF0000000L)) != 0) {
@@ -301,101 +280,89 @@ public class HashKit {
                 hash &= ~x;
             }
         }
-
         return hash & 0x7FFFFFFF;
     }
 
     /**
-     * BKDR算法
+     * BKDR hash algorithm.
      *
-     * @param text 字符串
-     * @return hash值
+     * @param text The string.
+     * @return The hash value.
      */
     public static int bkdrHash(final String text) {
-        final int seed = 131; // 31 131 1313 13131 131313 etc..
+        final int seed = 131; // 31, 131, 1313, 13131, 131313, etc.
         int hash = 0;
-
         for (int i = 0; i < text.length(); i++) {
             hash = (hash * seed) + text.charAt(i);
         }
-
         return hash & 0x7FFFFFFF;
     }
 
     /**
-     * SDBM算法
+     * SDBM hash algorithm.
      *
-     * @param text 字符串
-     * @return hash值
+     * @param text The string.
+     * @return The hash value.
      */
     public static int sdbmHash(final String text) {
         int hash = 0;
-
         for (int i = 0; i < text.length(); i++) {
             hash = text.charAt(i) + (hash << 6) + (hash << 16) - hash;
         }
-
         return hash & 0x7FFFFFFF;
     }
 
     /**
-     * DJB算法
+     * DJB hash algorithm.
      *
-     * @param text 字符串
-     * @return hash值
+     * @param text The string.
+     * @return The hash value.
      */
     public static int djbHash(final String text) {
         int hash = 5381;
-
         for (int i = 0; i < text.length(); i++) {
             hash = ((hash << 5) + hash) + text.charAt(i);
         }
-
         return hash & 0x7FFFFFFF;
     }
 
     /**
-     * DEK算法
+     * DEK hash algorithm.
      *
-     * @param text 字符串
-     * @return hash值
+     * @param text The string.
+     * @return The hash value.
      */
     public static int dekHash(final String text) {
         int hash = text.length();
-
         for (int i = 0; i < text.length(); i++) {
             hash = ((hash << 5) ^ (hash >> 27)) ^ text.charAt(i);
         }
-
         return hash & 0x7FFFFFFF;
     }
 
     /**
-     * AP算法
+     * AP hash algorithm.
      *
-     * @param text 字符串
-     * @return hash值
+     * @param text The string.
+     * @return The hash value.
      */
     public static int apHash(final String text) {
         int hash = 0;
-
         for (int i = 0; i < text.length(); i++) {
             hash ^= ((i & 1) == 0) ? ((hash << 7) ^ text.charAt(i) ^ (hash >> 3))
                     : (~((hash << 11) ^ text.charAt(i) ^ (hash >> 5)));
         }
-
         return hash;
     }
 
     /**
-     * TianL Hash算法
+     * TianL Hash algorithm.
      *
-     * @param text 字符串
-     * @return Hash值
+     * @param text The string.
+     * @return The hash value.
      */
     public static long tianlHash(final String text) {
         long hash;
-
         final int iLength = text.length();
         if (iLength == 0) {
             return 0;
@@ -408,9 +375,7 @@ public class HashKit {
         }
 
         int i;
-
         char ucChar;
-
         if (iLength <= 96) {
             for (i = 1; i <= iLength; i++) {
                 ucChar = text.charAt(i - 1);
@@ -435,10 +400,10 @@ public class HashKit {
     }
 
     /**
-     * JAVA自己带的算法
+     * Java's default `String.hashCode()` algorithm.
      *
-     * @param text 字符串
-     * @return hash值
+     * @param text The string.
+     * @return The hash value.
      */
     public static int javaDefaultHash(final String text) {
         int h = 0;
@@ -451,10 +416,10 @@ public class HashKit {
     }
 
     /**
-     * 混合hash算法，输出64位的值
+     * Mixed hash algorithm, producing a 64-bit value.
      *
-     * @param text 字符串
-     * @return hash值
+     * @param text The string.
+     * @return The hash value.
      */
     public static long mixHash(final String text) {
         long hash = text.hashCode();
@@ -464,157 +429,154 @@ public class HashKit {
     }
 
     /**
-     * 根据对象的内存地址生成相应的Hash值
+     * Gets the hash code from `System.identityHashCode()`.
      *
-     * @param object 对象
-     * @return hash值
+     * @param object The object.
+     * @return The hash code.
      */
     public static int identityHashCode(final Object object) {
         return System.identityHashCode(object);
     }
 
     /**
-     * MurmurHash算法32-bit实现
+     * MurmurHash 32-bit implementation.
      *
-     * @param data 数据
-     * @return hash值
+     * @param data The data.
+     * @return The hash value.
      */
     public static int murmur32(final byte[] data) {
         return MurmurHash.INSTANCE.hash32(data);
     }
 
     /**
-     * MurmurHash算法64-bit实现
+     * MurmurHash 64-bit implementation.
      *
-     * @param data 数据
-     * @return hash值
+     * @param data The data.
+     * @return The hash value.
      */
     public static long murmur64(final byte[] data) {
         return MurmurHash.INSTANCE.hash64(data);
     }
 
     /**
-     * MurmurHash算法128-bit实现
+     * MurmurHash 128-bit implementation.
      *
-     * @param data 数据
-     * @return hash值
+     * @param data The data.
+     * @return The 128-bit hash value.
      */
     public static No128 murmur128(final byte[] data) {
         return MurmurHash.INSTANCE.hash128(data);
     }
 
     /**
-     * CityHash算法32-bit实现
+     * CityHash 32-bit implementation.
      *
-     * @param data 数据
-     * @return hash值
+     * @param data The data.
+     * @return The hash value.
      */
     public static int cityHash32(final byte[] data) {
         return CityHash.INSTANCE.hash32(data);
     }
 
     /**
-     * CityHash算法64-bit实现，种子1使用默认的CityHash#k2
+     * CityHash 64-bit implementation.
      *
-     * @param data 数据
-     * @param seed 种子2
-     * @return hash值
+     * @param data The data.
+     * @param seed A seed value.
+     * @return The hash value.
      */
     public static long cityHash64(final byte[] data, final long seed) {
         return CityHash.INSTANCE.hash64(data, seed);
     }
 
     /**
-     * CityHash算法64-bit实现，种子1使用默认的CityHash#k2
+     * CityHash 64-bit implementation.
      *
-     * @param data  数据
-     * @param seed0 种子1
-     * @param seed1 种子2
-     * @return hash值
+     * @param data  The data.
+     * @param seed0 The first seed value.
+     * @param seed1 The second seed value.
+     * @return The hash value.
      */
     public static long cityHash64(final byte[] data, final long seed0, final long seed1) {
         return CityHash.INSTANCE.hash64(data, seed0, seed1);
     }
 
     /**
-     * CityHash算法64-bit实现
+     * CityHash 64-bit implementation.
      *
-     * @param data 数据
-     * @return hash值
+     * @param data The data.
+     * @return The hash value.
      */
     public static long cityHash64(final byte[] data) {
         return CityHash.INSTANCE.hash64(data);
     }
 
     /**
-     * CityHash算法128-bit实现
+     * CityHash 128-bit implementation.
      *
-     * @param data 数据
-     * @return hash值
+     * @param data The data.
+     * @return The 128-bit hash value.
      */
     public static No128 cityHash128(final byte[] data) {
         return CityHash.INSTANCE.hash128(data);
     }
 
     /**
-     * CityHash算法128-bit实现
+     * CityHash 128-bit implementation.
      *
-     * @param data 数据
-     * @param seed 种子
-     * @return hash值
+     * @param data The data.
+     * @param seed A 128-bit seed.
+     * @return The 128-bit hash value.
      */
     public static No128 cityHash128(final byte[] data, final No128 seed) {
         return CityHash.INSTANCE.hash128(data, seed);
     }
 
     /**
-     * MetroHash 算法64-bit实现
+     * MetroHash 64-bit implementation.
      *
-     * @param data 数据
-     * @param seed 种子
-     * @return hash值
+     * @param data The data.
+     * @param seed A seed value.
+     * @return The hash value.
      */
     public static long metroHash64(final byte[] data, final long seed) {
         return MetroHash64.of(seed).hash64(data);
     }
 
     /**
-     * MetroHash 算法128-bit实现
+     * MetroHash 128-bit implementation.
      *
-     * @param data 数据
-     * @param seed 种子
-     * @return hash值
+     * @param data The data.
+     * @param seed A seed value.
+     * @return The 128-bit hash value.
      */
     public static No128 metroHash128(final byte[] data, final long seed) {
         return MetroHash128.of(seed).hash128(data);
     }
 
     /**
-     * HF Hash算法
+     * HF Hash algorithm.
      *
-     * @param data 字符串
-     * @return hash结果
+     * @param data The string.
+     * @return The hash result.
      */
     public static long hfHash(final String data) {
         final int length = data.length();
         long hash = 0;
-
         for (int i = 0; i < length; i++) {
             hash += (long) data.charAt(i) * 3 * i;
         }
-
         if (hash < 0) {
             hash = -hash;
         }
-
         return hash;
     }
 
     /**
-     * HFIP Hash算法
+     * HFIP Hash algorithm.
      *
-     * @param data 字符串
-     * @return hash结果
+     * @param data The string.
+     * @return The hash result.
      */
     public static long hfIpHash(final String data) {
         final int length = data.length();

@@ -33,7 +33,7 @@ import java.net.URL;
 import java.util.jar.JarFile;
 
 /**
- * 资源加载器工具类
+ * Utility class for creating various types of resource loaders.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -41,272 +41,324 @@ import java.util.jar.JarFile;
 public abstract class Loaders {
 
     /**
-     * 创建 classpath 资源加载器,也就是对{@link ClassLoader#getResources(String)}的增强封装 默认采用
-     * {@link Thread#currentThread()}的{@link Thread#getContextClassLoader()},作为ClassLoader, 如果当前线程的上下文类加载器为{@code null}
-     * 则采用{@link ClassLoader#getSystemClassLoader()}. 示例：
+     * Creates a classpath resource loader, which is an enhanced encapsulation of
+     * {@link ClassLoader#getResources(String)}. By default, it uses the {@link Thread#currentThread()}'s
+     * {@link Thread#getContextClassLoader()} as the ClassLoader. If the current thread's context class loader is
+     * {@code null}, it falls back to {@link ClassLoader#getSystemClassLoader()}.
      * <p>
-     * 1. Loaders.std().load("org/miaixz/bus/core/loader"); 加载classpath中"org/miaixz/bus/core/loader"目录下的所有资源,但不包括子目录
-     * </p>
+     * Examples:
      * <p>
-     * 2. Loaders.std().load("org/", true); 加载classpath中"io/"目录下的所有资源,而且包括子目录
-     * </p>
+     * 1. {@code Loaders.std().load("org/miaixz/bus/core/loader");} Loads all resources under the
+     * "org/miaixz/bus/core/loader" directory in the classpath, but not its subdirectories.
+     * <p>
+     * 2. {@code Loaders.std().load("org/", true);} Loads all resources under the "org/" directory in the classpath,
+     * including its subdirectories.
      *
-     * @return classpath 资源加载器
+     * @return A classpath resource loader.
      */
     public static Loader std() {
         return new StdLoader();
     }
 
     /**
-     * 创建 classpath 资源加载器,并且指定{@link ClassLoader} 示例：
+     * Creates a classpath resource loader with a specified {@link ClassLoader}.
      * <p>
-     * 1. Loaders.std().load("org/miaixz/bus/core/loader"); 加载classpath中"org/miaixz/bus/core/loader"目录下的所有资源,但不包括子目录
-     * </p>
+     * Examples:
      * <p>
-     * 2. Loaders.std().load("org/", true); 加载classpath中"org/"目录下的所有资源,而且包括子目录
-     * </p>
+     * 1. {@code Loaders.std(myClassLoader).load("org/miaixz/bus/core/loader");} Loads all resources under the
+     * "org/miaixz/bus/core/loader" directory in the classpath using {@code myClassLoader}, but not its subdirectories.
+     * <p>
+     * 2. {@code Loaders.std(myClassLoader).load("org/", true);} Loads all resources under the "org/" directory in the
+     * classpath using {@code myClassLoader}, including its subdirectories.
      *
-     * @param classLoader 加载器
-     * @return classpath 资源加载器
+     * @param classLoader The class loader to use.
+     * @return A classpath resource loader.
      */
     public static Loader std(ClassLoader classLoader) {
         return new StdLoader(classLoader);
     }
 
     /**
-     * 创建按包名来加载的资源加载器,这是一个委派加载器,自身并没有资源加载逻辑而是委派给实际的资源加载器, 在这个创建方法中,实际委派给{@link Loaders#std()}资源加载器
-     * 示例：在{@link Loaders#std()}创建的资源加载器中加载类资源路径表达实际上不太直观,往往采用包名的方式更清晰易懂
+     * Creates a package-name-based resource loader. This is a delegating loader that does not have its own resource
+     * loading logic but delegates to an actual resource loader. In this creation method, it delegates to the
+     * {@link Loaders#std()} resource loader.
      * <p>
-     * 1. Loaders.pkg().load("io.loadkit"); 加载classpath中"io.loadkit"包下的所有资源,但不包括子包
-     * </p>
+     * Example: The resource path expression in a resource loader created by {@link Loaders#std()} is not very
+     * intuitive; using package names is often clearer and easier to understand.
      * <p>
-     * 2. Loaders.pkg().load("io", true); 加载classpath中"io"包下的所有资源,而且包括子子包
-     * </p>
+     * 1. {@code Loaders.pkg().load("io.loadkit");} Loads all resources under the "io.loadkit" package in the classpath,
+     * but not its subpackages.
+     * <p>
+     * 2. {@code Loaders.pkg().load("io", true);} Loads all resources under the "io" package in the classpath, including
+     * its subpackages.
      *
-     * @return 按包名来加载的资源加载器
+     * @return A package-name-based resource loader.
      */
     public static Loader pkg() {
         return new PkgLoader();
     }
 
     /**
-     * 创建按包名来加载的资源加载器,这是一个委派加载器,自身并没有资源加载逻辑而是委派给实际的资源加载器, 在这个创建方法中,实际委派给{@link Loaders#std(ClassLoader)}资源加载器
-     * 示例：在{@link Loaders#std()}创建的资源加载器中加载类资源路径表达实际上不太直观,往往采用包名的方式更清晰易懂
+     * Creates a package-name-based resource loader. This is a delegating loader that does not have its own resource
+     * loading logic but delegates to an actual resource loader. In this creation method, it delegates to the
+     * {@link Loaders#std(ClassLoader)} resource loader.
      * <p>
-     * 1. Loaders.pkg().load("org.miaixz.bus.core.lang.loader");
-     * 加载classpath中"org.miaixz.bus.core.lang.loader"包下的所有资源,但不包括子包
-     * </p>
+     * Example: The resource path expression in a resource loader created by {@link Loaders#std()} is not very
+     * intuitive; using package names is often clearer and easier to understand.
      * <p>
-     * 2. Loaders.pkg().load("org", true); 加载classpath中"org"包下的所有资源,而且包括子子包
-     * </p>
+     * 1. {@code Loaders.pkg(myClassLoader).load("org.miaixz.bus.core.lang.loader");} Loads all resources under the
+     * "org.miaixz.bus.core.lang.loader" package in the classpath using {@code myClassLoader}, but not its subpackages.
+     * <p>
+     * 2. {@code Loaders.pkg(myClassLoader).load("org", true);} Loads all resources under the "org" package in the
+     * classpath using {@code myClassLoader}, including its subpackages.
      *
-     * @param classLoader 加载器
-     * @return 按包名来加载的资源加载器
+     * @param classLoader The class loader to use.
+     * @return A package-name-based resource loader.
      */
     public static Loader pkg(ClassLoader classLoader) {
         return new PkgLoader(classLoader);
     }
 
     /**
-     * 创建按包名来加载的资源加载器,这是一个委派加载器,自身并没有资源加载逻辑而是委派给实际的资源加载器, 在这个创建方法中,实际委派给delegate资源加载器 通过包装一个实际资源加载器可以实现更灵活的加载方式,例如：
+     * Creates a package-name-based resource loader. This is a delegating loader that does not have its own resource
+     * loading logic but delegates to a specified delegate resource loader. This allows for more flexible loading
+     * methods by wrapping an actual resource loader.
      * <p>
-     * 1. Loaders.pkg(Loaders.ant()).load("org.miaixz.bus.core.lang.loader.*");
-     * 加载org.miaixz.bus.core.loader包下的资源,但不递归加载子包
-     * </p>
+     * Examples:
      * <p>
-     * 2. Loaders.pkg(Loaders.ant()).load("org.**"); 加载io包以及子包的资源,而且递归加载任意层次的子包
-     * </p>
-     * <p>
-     * 3. Loaders.pkg(Loaders.ant()).load("org.miaixz.bus.core.load???.*"); 加载io包下以load开头并且跟着三个字符的子包的所有资源
-     * </p>
+     * 1. {@code Loaders.pkg(Loaders.ant()).load("org.miaixz.bus.core.lang.loader.*");} Loads resources under the
+     * {@code org.miaixz.bus.core.loader} package, but does not recursively load subpackages.
      *
-     * @param delegate 加载器
-     * @return 按包名来加载的资源加载器
+     * <p>
+     * 2. {@code Loaders.pkg(Loaders.ant()).load("org.**");} Loads resources under the {@code io} package and
+     * recursively loads all subpackages at any level.
+     *
+     * <p>
+     * 3. {@code Loaders.pkg(Loaders.ant()).load("org.miaixz.bus.core.load???.*");} Loads all resources under
+     * subpackages of {@code io} that start with "load" followed by three characters.
+     *
+     *
+     * @param delegate The delegate loader.
+     * @return A package-name-based resource loader.
      */
     public static Loader pkg(Loader delegate) {
         return new PkgLoader(delegate);
     }
 
     /**
-     * 创建ANT风格路径表达式的资源加载器,这是一个委派加载器,自身并没有资源加载逻辑而是委派给实际的资源加载器, 在这个创建方法中,实际委派给{@link Loaders#std()}资源加载器 示例：
+     * Creates an ANT-style path expression resource loader. This is a delegating loader that does not have its own
+     * resource loading logic but delegates to an actual resource loader. In this creation method, it delegates to the
+     * {@link Loaders#std()} resource loader.
      * <p>
-     * 1. Loaders.ant().load("org/miaixz/bus/core/loader/*"); 加载org/miaixz/bus/core/loader/目录下的资源,但不包括子目录
-     * </p>
-     * <p>
-     * 2. Loaders.ant().load("io/**"); 加载io/目录下的资源以及递归加载所有子目录的资源
-     * </p>
-     * <p>
-     * 3. Loaders.ant().load("org/miaixz/bus/core/loader/*Loader.class");
-     * 加载org/miaixz/bus/core/loader/目录下以Loader.class结尾的资源
-     * </p>
+     * Examples:
      *
-     * @return 按包名来加载的资源加载器
+     * <p>
+     * 1. {@code Loaders.ant().load("org/miaixz/bus/core/loader/*");} Loads resources under the
+     * {@code org/miaixz/bus/core/loader/} directory, but not its subdirectories.
+     *
+     * <p>
+     * 2. {@code Loaders.ant().load("io/**");} Loads resources under the {@code io/} directory and recursively loads all
+     * resources in its subdirectories.
+     *
+     * <p>
+     * 3. {@code Loaders.ant().load("org/miaixz/bus/core/loader/*Loader.class");} Loads resources under the
+     * {@code org/miaixz/bus/core/loader/} directory that end with "Loader.class".
+     *
+     * @return An ANT-style path expression resource loader.
      */
     public static Loader ant() {
         return new AntLoader();
     }
 
     /**
-     * 创建ANT风格路径表达式的资源加载器,这是一个委派加载器,自身并没有资源加载逻辑而是委派给实际的资源加载器, 在这个创建方法中,实际委派给{@link Loaders#std(ClassLoader)}资源加载器 示例：
+     * Creates an ANT-style path expression resource loader. This is a delegating loader that does not have its own
+     * resource loading logic but delegates to an actual resource loader. In this creation method, it delegates to the
+     * {@link Loaders#std(ClassLoader)} resource loader.
      * <p>
-     * 1. Loaders.ant().load("org/miaixz/bus/core/loader/*"); 加载org/miaixz/bus/core/loader/目录下的资源,但不包括子目录
-     * </p>
-     * <p>
-     * 2. Loaders.ant().load("org/**"); 加载io/目录下的资源以及递归加载所有子目录的资源
-     * </p>
-     * <p>
-     * 3. Loaders.ant().load("org/miaixz/bus/core/loader/*Loader.class");
-     * 加载org/miaixz/bus/core/loader/目录下以Loader.class结尾的资源
-     * </p>
+     * Examples:
      *
-     * @param classLoader 加载器
-     * @return 按包名来加载的资源加载器
+     * <p>
+     * 1. {@code Loaders.ant(myClassLoader).load("org/miaixz/bus/core/loader/*");} Loads resources under the
+     * {@code org/miaixz/bus/core/loader/} directory using {@code myClassLoader}, but not its subdirectories.
+     *
+     * <p>
+     * 2. {@code Loaders.ant(myClassLoader).load("org/**");} Loads resources under the {@code io/} directory using
+     * {@code myClassLoader} and recursively loads all resources in its subdirectories.
+     *
+     * <p>
+     * 3. {@code Loaders.ant(myClassLoader).load("org/miaixz/bus/core/loader/*Loader.class");} Loads resources under the
+     * {@code org/miaixz/bus/core/loader/} directory using {@code myClassLoader} that end with "Loader.class".
+     *
+     * @param classLoader The class loader to use.
+     * @return An ANT-style path expression resource loader.
      */
     public static Loader ant(ClassLoader classLoader) {
         return new AntLoader(classLoader);
     }
 
     /**
-     * 创建ANT风格路径表达式的资源加载器,这是一个委派加载器,自身并没有资源加载逻辑而是委派给实际的资源加载器, 在这个创建方法中,实际委派给delegate资源加载器 示例：
+     * Creates an ANT-style path expression resource loader. This is a delegating loader that does not have its own
+     * resource loading logic but delegates to a specified delegate resource loader.
      * <p>
-     * 1. Loaders.ant().load("org/miaixz/bus/core/loader/*"); 加载org/miaixz/bus/core/loader/目录下的资源,但不包括子目录
-     * </p>
-     * <p>
-     * 2. Loaders.ant().load("org/**"); 加载io/目录下的资源以及递归加载所有子目录的资源
-     * </p>
-     * <p>
-     * 3. Loaders.ant().load("org/miaixz/bus/core/loader/*Loader.class");
-     * 加载org/miaixz/bus/core/loader/目录下以Loader.class结尾的资源
-     * </p>
+     * Examples:
      *
-     * @param delegate 加载器
-     * @return 按包名来加载的资源加载器
+     * <p>
+     * 1. {@code Loaders.ant(myDelegateLoader).load("org/miaixz/bus/core/loader/*");} Loads resources under the
+     * {@code org/miaixz/bus/core/loader/} directory using {@code myDelegateLoader}, but not its subdirectories.
+     *
+     * <p>
+     * 2. {@code Loaders.ant(myDelegateLoader).load("org/**");} Loads resources under the {@code io/} directory using
+     * {@code myDelegateLoader} and recursively loads all resources in its subdirectories.
+     *
+     * <p>
+     * 3. {@code Loaders.ant(myDelegateLoader).load("org/miaixz/bus/core/loader/*Loader.class");} Loads resources under
+     * the {@code org/miaixz/bus/core/loader/} directory using {@code myDelegateLoader} that end with "Loader.class".
+     *
+     * @param delegate The delegate loader.
+     * @return An ANT-style path expression resource loader.
      */
     public static Loader ant(Loader delegate) {
         return new AntLoader(delegate);
     }
 
     /**
-     * 创建正则表达式的资源加载器,这是一个委派加载器,自身并没有资源加载逻辑而是委派给实际的资源加载器, 在这个创建方法中,实际委派给{@link Loaders#std()}资源加载器 示例：
+     * Creates a regular expression resource loader. This is a delegating loader that does not have its own resource
+     * loading logic but delegates to an actual resource loader. In this creation method, it delegates to the
+     * {@link Loaders#std()} resource loader.
      * <p>
-     * 1. Loaders.regex().load("org/miaixz/bus/core/loader/\\w+Loader.class");
-     * 加载org/miaixz/bus/core/loader/目录下以Loader.class结尾的资源
-     * </p>
-     * <p>
-     * 2. Loaders.regex().load("org/.*"); 加载io包下所有资源
-     * </p>
+     * Examples:
      *
-     * @return 按包名来加载的资源加载器
+     * <p>
+     * 1. {@code Loaders.regex().load("org/miaixz/bus/core/loader/\\w+Loader.class");} Loads resources under the
+     * {@code org/miaixz/bus/core/loader/} directory that match the regular expression {@code \w+Loader.class}.
+     *
+     * <p>
+     * 2. {@code Loaders.regex().load("org/.*");} Loads all resources under the {@code org/} package.
+     *
+     * @return A regular expression resource loader.
      */
     public static Loader regex() {
         return new RegexLoader();
     }
 
     /**
-     * 创建正则表达式的资源加载器,这是一个委派加载器,自身并没有资源加载逻辑而是委派给实际的资源加载器, 在这个创建方法中,实际委派给{@link Loaders#std(ClassLoader)}资源加载器 示例：
+     * Creates a regular expression resource loader. This is a delegating loader that does not have its own resource
+     * loading logic but delegates to an actual resource loader. In this creation method, it delegates to the
+     * {@link Loaders#std(ClassLoader)} resource loader.
      * <p>
-     * 1. Loaders.regex().load("org/miaixz/bus/core/loader/\\w+Loader.class");
-     * 加载org/miaixz/bus/core/loader/目录下以Loader.class结尾的资源
-     * </p>
-     * <p>
-     * 2. Loaders.regex().load("org/.*"); 加载io包下所有资源
-     * </p>
+     * Examples:
      *
-     * @param classLoader 加载器
-     * @return 按包名来加载的资源加载器
+     * <p>
+     * 1. {@code Loaders.regex(myClassLoader).load("org/miaixz/bus/core/loader/\\w+Loader.class");} Loads resources
+     * under the {@code org/miaixz/bus/core/loader/} directory using {@code myClassLoader} that match the regular
+     * expression {@code \w+Loader.class}.
+     *
+     * <p>
+     * 2. {@code Loaders.regex(myClassLoader).load("org/.*");} Loads all resources under the {@code org/} package using
+     * {@code myClassLoader}.
+     *
+     * @param classLoader The class loader to use.
+     * @return A regular expression resource loader.
      */
     public static Loader regex(ClassLoader classLoader) {
         return new RegexLoader(classLoader);
     }
 
     /**
-     * 创建正则表达式的资源加载器,这是一个委派加载器,自身并没有资源加载逻辑而是委派给实际的资源加载器, 在这个创建方法中,实际委派给delegate资源加载器 示例：
+     * Creates a regular expression resource loader. This is a delegating loader that does not have its own resource
+     * loading logic but delegates to a specified delegate resource loader.
      * <p>
-     * 1. Loaders.regex().load("org/miaixz/bus/core/loader/\\w+Loader.class");
-     * 加载org/miaixz/bus/core/loader/目录下以Loader.class结尾的资源
-     * </p>
-     * <p>
-     * 2. Loaders.regex().load("org/.*"); 加载io包下所有资源
-     * </p>
+     * Examples:
      *
-     * @param delegate 加载器
-     * @return 按包名来加载的资源加载器
+     * <p>
+     * 1. {@code Loaders.regex(myDelegateLoader).load("org/miaixz/bus/core/loader/\\w+Loader.class");} Loads resources
+     * under the {@code org/miaixz/bus/core/loader/} directory using {@code myDelegateLoader} that match the regular
+     * expression {@code \w+Loader.class}.
+     *
+     * <p>
+     * 2. {@code Loaders.regex(myDelegateLoader).load("org/.*");} Loads all resources under the {@code org/} package
+     * using {@code myDelegateLoader}.
+     *
+     * @param delegate The delegate loader.
+     * @return A regular expression resource loader.
      */
     public static Loader regex(Loader delegate) {
         return new RegexLoader(delegate);
     }
 
     /**
-     * 创建文件资源加载器
+     * Creates a file resource loader.
      *
-     * @param root 根目录
-     * @return 文件资源加载器
-     * @throws IOException I/O 异常
+     * @param root The root directory for file resources.
+     * @return A file resource loader.
+     * @throws IOException If an I/O error occurs during initialization.
      */
     public static Loader file(File root) throws IOException {
         return new FileLoader(root);
     }
 
     /**
-     * 创建文件资源加载器
+     * Creates a file resource loader.
      *
-     * @param fileURL 文件根目录URL地址
-     * @return 文件资源加载器
+     * @param fileURL The URL of the root directory for file resources.
+     * @return A file resource loader.
      */
     public static Loader file(URL fileURL) {
         return new FileLoader(fileURL);
     }
 
     /**
-     * 创建文件资源加载器
+     * Creates a file resource loader.
      *
-     * @param context 文件根目录URL上下文
-     * @param root    根目录
-     * @return 文件资源加载器
+     * @param context The URL context for the file resources.
+     * @param root    The root directory for file resources.
+     * @return A file resource loader.
      */
     public static Loader file(URL context, File root) {
         return new FileLoader(context, root);
     }
 
     /**
-     * 创建JAR包资源加载器
+     * Creates a JAR package resource loader.
      *
-     * @param file JAR包文件
-     * @return AR包资源加载器
-     * @throws IOException I/O 异常
+     * @param file The JAR package file.
+     * @return A JAR package resource loader.
+     * @throws IOException If an I/O error occurs during initialization.
      */
     public static Loader jar(File file) throws IOException {
         return new JarLoader(file);
     }
 
     /**
-     * 创建JAR包资源加载器
+     * Creates a JAR package resource loader.
      *
-     * @param jarURL JAR包URL地址
-     * @return 文件资源加载器
-     * @throws IOException I/O 异常
+     * @param jarURL The URL of the JAR package.
+     * @return A JAR package resource loader.
+     * @throws IOException If an I/O error occurs during initialization.
      */
     public static Loader jar(URL jarURL) throws IOException {
         return new JarLoader(jarURL);
     }
 
     /**
-     * 创建JAR包资源加载器
+     * Creates a JAR package resource loader.
      *
-     * @param context JAR包URL上下文
-     * @param jarFile JAR文件
-     * @return JAR包资源加载器
+     * @param context The URL context for the JAR package.
+     * @param jarFile The JAR file.
+     * @return A JAR package resource loader.
      */
     public static Loader jar(URL context, JarFile jarFile) {
         return new JarLoader(context, jarFile);
     }
 
     /**
-     * 创建lib包资源加载器
+     * Creates a native library resource loader.
      * <p>
-     * 从当前JAR归档总加载动态库信息dll/so加载库 1.将文件从当前JAR存档复制到系统临时目录 2.JAR中的文件被复制到系统临时目录中，然后加载。退出后将删除临时文件.
+     * This loader loads dynamic library information (e.g., .dll/.so files) from the current JAR archive. 1. Files are
+     * copied from the current JAR archive to a system temporary directory. 2. The files in the JAR are copied to the
+     * system temporary directory and then loaded. Temporary files are deleted upon exit.
      *
-     * @return 资源加载器
+     * @return A native library resource loader.
      */
     public static Loader nat() {
         return new NatLoader();

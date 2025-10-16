@@ -30,7 +30,8 @@ package org.miaixz.bus.core.text.dfa;
 import java.util.*;
 
 /**
- * 基于非确定性有穷自动机（NFA） 实现的多模匹配工具
+ * A multi-pattern matching tool based on the Nondeterministic Finite Automaton (NFA) model. This implementation uses an
+ * Aho-Corasick automaton for efficient searching of multiple keywords in a text.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,24 +39,26 @@ import java.util.*;
 public class NFA {
 
     /**
-     * AC树的根节点
+     * The root node of the Aho-Corasick tree.
      */
     private final Node root;
     /**
-     * 内置锁，防止并发场景，并行建AC树，造成不可预知结果
+     * A lock to prevent concurrent builds of the Aho-Corasick automaton, which could lead to unpredictable results.
      */
     private final Object buildAcLock;
     /**
-     * 内置锁，防止并行插入，新节点建立后，被挂载到树上前 被篡改
+     * A lock to prevent concurrent insertions, which could cause new nodes to be modified before they are properly
+     * linked into the tree.
      */
     private final Object insertTreeLock;
     /**
-     * 标记是否需要构建AC自动机，做树优化
+     * A flag indicating whether the Aho-Corasick automaton needs to be rebuilt. This is set to true when new words are
+     * inserted.
      */
     private volatile boolean needBuildAc;
 
     /**
-     * 默认构造
+     * Default constructor. Initializes an empty NFA.
      */
     public NFA() {
         this.root = new Node();
@@ -65,9 +68,9 @@ public class NFA {
     }
 
     /**
-     * 构造函数 并 初始化词库
+     * Constructs an NFA and initializes it with a collection of words.
      *
-     * @param words 添加的新词
+     * @param words The words to add to the dictionary.
      */
     public NFA(final String... words) {
         this();
@@ -75,9 +78,9 @@ public class NFA {
     }
 
     /**
-     * 词库添加新词，初始化查找树
+     * Inserts a new word into the dictionary (Trie).
      *
-     * @param word 添加的新词
+     * @param word The word to add.
      */
     public void insert(final String word) {
         synchronized (insertTreeLock) {
@@ -93,9 +96,9 @@ public class NFA {
     }
 
     /**
-     * 词库批量添加新词，初始化查找树
+     * Inserts multiple words into the dictionary.
      *
-     * @param words 添加的新词
+     * @param words The words to add.
      */
     public void insert(final String... words) {
         for (final String word : words) {
@@ -104,7 +107,8 @@ public class NFA {
     }
 
     /**
-     * 构建基于NFA模型的 AC自动机
+     * Builds the Aho-Corasick automaton by creating failure links. This method optimizes the trie for efficient
+     * multi-pattern searching.
      */
     private void buildAc() {
         final Queue<Node> queue = new LinkedList<>();
@@ -117,11 +121,11 @@ public class NFA {
             final Node curr = queue.poll();
             for (final Integer key : curr.next.keySet()) {
                 Node fail = curr.fail;
-                // 查找当前节点匹配失败，他对应等效匹配的节点是哪个
+                // Find the failure link for the current node's child.
                 while (fail != null && fail.next.get(key) == null) {
                     fail = fail.fail;
                 }
-                // 代码到这，有两种可能，fail不为null，说明找到了fail；fail为null，没有找到，那么就把fail指向root节点（当到该节点匹配失败，那么从root节点开始重新匹配）
+                // If a failure link is found, set it. Otherwise, point to the root.
                 if (fail != null) {
                     fail = fail.next.get(key);
                 } else {
@@ -135,20 +139,26 @@ public class NFA {
     }
 
     /**
-     * @param text 查询的文本（母串）
-     * @return FoundWord列表，查找到的所有关键词
+     * Finds all occurrences of the keywords in the given text. This method performs a dense match, finding all possible
+     * matches.
+     *
+     * @param text The text to search within.
+     * @return A list of {@link FoundWord} objects representing the found keywords.
      */
     public List<FoundWord> find(final String text) {
         return this.find(text, true);
     }
 
     /**
-     * @param text           查找的文本（母串）
-     * @param isDensityMatch 是否密集匹配
-     * @return FoundWord列表，查找到的所有关键词
+     * Finds all occurrences of the keywords in the given text.
+     *
+     * @param text           The text to search within.
+     * @param isDensityMatch If true, performs a dense match (finding all overlapping matches). If false, performs a
+     *                       sparse match (resets search after a match is found).
+     * @return A list of {@link FoundWord} objects representing the found keywords.
      */
     public List<FoundWord> find(final String text, final boolean isDensityMatch) {
-        // double check，防止重复无用的 buildAC
+        // Double-checked locking to prevent unnecessary builds.
         if (needBuildAc) {
             synchronized (buildAcLock) {
                 if (needBuildAc) {
@@ -160,7 +170,7 @@ public class NFA {
         Node p = root, k;
         for (int i = 0, len = text.length(); i < len; i++) {
             final int ind = text.charAt(i);
-            // 状态转移(沿着fail指针链接的链表，此处区别于DFA模型)
+            // State transition (following failure links, which distinguishes this from a DFA).
             while (p != null && p.next.get(ind) == null) {
                 p = p.fail;
             }
@@ -169,7 +179,7 @@ public class NFA {
             } else {
                 p = p.next.get(ind);
             }
-            // 提取结果(沿着fail指针链接的链表，此处区别于DFA模型)
+            // Extract results (following failure links to find all matching patterns ending at this position).
             k = p;
             while (k != null) {
                 if (k.flag) {
@@ -185,25 +195,31 @@ public class NFA {
         return ans;
     }
 
+    /**
+     * Represents a node in the Aho-Corasick tree.
+     */
     private static class Node {
 
         /**
-         * 当前节点是否是一个单词的结尾
+         * If true, this node marks the end of a complete word.
          */
         boolean flag;
         /**
-         * 指向 当前节点匹配失败应该跳转的下个节点
+         * The failure link, pointing to the next node to check upon a character mismatch.
          */
         Node fail;
         /**
-         * 以当前节点结尾的单词
+         * The full word if this node is the end of a word.
          */
         String text;
         /**
-         * 当前节点的子节点
+         * The children of this node, keyed by character (as an integer).
          */
         Map<Integer, Node> next;
 
+        /**
+         * Default constructor for a new node.
+         */
         public Node() {
             this.flag = false;
             next = new HashMap<>();

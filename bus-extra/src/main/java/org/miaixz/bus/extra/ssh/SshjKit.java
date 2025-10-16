@@ -35,7 +35,9 @@ import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.transport.verification.PromiscuousVerifier;
 
 /**
- * 基于SSHJ（https://github.com/hierynomus/sshj）相关工具类
+ * Utility class for SSHJ, a Java library for SSH. This class provides a simplified way to create and configure an
+ * {@link SSHClient}. Project homepage:
+ * <a href="https://github.com/hierynomus/sshj">https://github.com/hierynomus/sshj</a>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,13 +45,18 @@ import net.schmizz.sshj.transport.verification.PromiscuousVerifier;
 public class SshjKit {
 
     /**
-     * 打开客户端连接
+     * Opens and authenticates an SSH client connection using the provided connection details. This method configures
+     * the client with a promiscuous host key verifier, sets timeouts, connects to the server, and authenticates using a
+     * password.
      *
-     * @param connector 连接信息
-     * @return {@link SSHClient}
+     * @param connector The {@link Connector} object containing connection information (host, port, user, password,
+     *                  timeout).
+     * @return An initialized and authenticated {@link SSHClient} instance.
+     * @throws InternalException if an {@link IOException} occurs during connection or authentication.
      */
     public static SSHClient openClient(final Connector connector) {
         final SSHClient ssh = new SSHClient();
+        // Use a promiscuous verifier to accept all host keys, simplifying connection setup.
         ssh.addHostKeyVerifier(new PromiscuousVerifier());
         ssh.setConnectTimeout((int) connector.getTimeout());
         ssh.setTimeout((int) connector.getTimeout());

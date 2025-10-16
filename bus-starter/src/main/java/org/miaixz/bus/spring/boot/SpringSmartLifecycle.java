@@ -37,10 +37,12 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.SmartLifecycle;
 
 /**
- * 实现{@link SmartLifecycle}计算应用程序上下文刷新时间。
+ * Implements {@link SmartLifecycle} to calculate application context refresh time.
  * <p>
- * 该类用于监控和记录Spring应用程序上下文刷新过程中的性能指标。 通过实现SmartLifecycle接口，在应用程序启动过程中自动触发上下文刷新时间的统计， 并将统计信息添加到启动报告器中，为应用程序启动性能分析提供数据支持。
- * </p>
+ * This class is used to monitor and record performance metrics during the Spring application context refresh process.
+ * By implementing the SmartLifecycle interface, it automatically triggers the collection of context refresh time
+ * statistics during application startup and adds these statistics to the {@link StartupReporter}, providing data
+ * support for application startup performance analysis.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,34 +50,34 @@ import org.springframework.context.SmartLifecycle;
 public class SpringSmartLifecycle implements SmartLifecycle, ApplicationContextAware {
 
     /**
-     * 根模块名称常量
+     * Constant for the root module name.
      */
     public static final String ROOT_MODULE_NAME = "ROOT_APPLICATION_CONTEXT";
 
     /**
-     * 收集和报告启动成本的基本组件
+     * The component responsible for collecting and reporting startup costs.
      */
     private final StartupReporter startupReporter;
 
     /**
-     * 应用程序上下文
+     * The application context.
      */
     private ConfigurableApplicationContext applicationContext;
 
     /**
-     * 构造函数，初始化SpringSmartLifecycle
+     * Constructs a new {@code SpringSmartLifecycle} instance.
      *
-     * @param startupReporter 启动报告器实例
+     * @param startupReporter The {@link StartupReporter} instance to which startup statistics will be added.
      */
     public SpringSmartLifecycle(StartupReporter startupReporter) {
         this.startupReporter = startupReporter;
     }
 
     /**
-     * 设置应用程序上下文
+     * Sets the application context.
      *
-     * @param applicationContext 应用程序上下文
-     * @throws BeansException 如果设置上下文时发生异常
+     * @param applicationContext The application context.
+     * @throws BeansException if setting the context fails.
      */
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
@@ -83,49 +85,51 @@ public class SpringSmartLifecycle implements SmartLifecycle, ApplicationContextA
     }
 
     /**
-     * 启动生命周期组件
+     * Starts the lifecycle component.
      * <p>
-     * 在应用程序启动过程中调用此方法，用于计算应用程序上下文刷新时间。 创建并初始化上下文刷新阶段统计信息和根模块统计信息，并将统计信息添加到启动报告器中。
+     * This method is called during application startup to calculate the application context refresh time. It creates
+     * and initializes context refresh stage statistics and root module statistics, then adds these statistics to the
+     * {@link StartupReporter}.
      * </p>
      */
     @Override
     public void start() {
-        // 初始化上下文刷新阶段统计信息
+        // Initialize context refresh stage statistics
         ChildrenMetrics<ModuleMetrics> stat = new ChildrenMetrics<>();
         stat.setName(GeniusBuilder.APPLICATION_CONTEXT_REFRESH_STAGE);
         stat.setEndTime(System.currentTimeMillis());
 
-        // 构建根模块统计信息
+        // Build root module statistics
         ModuleMetrics rootModuleStat = new ModuleMetrics();
         rootModuleStat.setName(ROOT_MODULE_NAME);
         rootModuleStat.setEndTime(stat.getEndTime());
         rootModuleStat.setThreadName(Thread.currentThread().getName());
 
-        // 从ApplicationStartup获取Bean统计列表
+        // Get Bean statistics list from ApplicationStartup
         rootModuleStat.setChildren(startupReporter.generateBeanStats(applicationContext));
 
-        // 将根模块添加到上下文刷新阶段统计信息中
+        // Add root module to context refresh stage statistics
         stat.addChild(rootModuleStat);
 
-        // 将上下文刷新阶段统计信息添加到启动报告器中
+        // Add context refresh stage statistics to the startup reporter
         startupReporter.addCommonStartupStat(stat);
     }
 
     /**
-     * 停止生命周期组件
+     * Stops the lifecycle component.
      * <p>
-     * 此方法为空实现，因为不需要在停止时执行任何操作
+     * This method is an empty implementation as no specific actions are required during stopping.
      * </p>
      */
     @Override
     public void stop() {
-        // 空实现，不需要在停止时执行任何操作
+        // Empty implementation, no operations needed on stop.
     }
 
     /**
-     * 检查生命周期组件是否正在运行
+     * Checks if the lifecycle component is currently running.
      *
-     * @return 始终返回false，表示此组件不需要持续运行
+     * @return Always returns {@code false}, indicating that this component does not require continuous running.
      */
     @Override
     public boolean isRunning() {
@@ -133,9 +137,10 @@ public class SpringSmartLifecycle implements SmartLifecycle, ApplicationContextA
     }
 
     /**
-     * 获取生命周期组件的执行阶段
+     * Returns the phase in which this lifecycle component should be executed.
      *
-     * @return 返回Integer.MIN_VALUE，表示此组件应该在最早阶段执行
+     * @return {@code Integer.MIN_VALUE}, indicating that this component should be executed at the earliest possible
+     *         phase.
      */
     @Override
     public int getPhase() {

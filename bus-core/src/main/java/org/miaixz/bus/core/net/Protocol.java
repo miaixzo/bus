@@ -29,15 +29,19 @@ package org.miaixz.bus.core.net;
 
 import java.io.IOException;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 /**
- * 网络协议枚举类，用于标识和处理多种网络协议。协议名称对应 {@link java.net.URL#getProtocol()} 或 {@link java.net.URI#getScheme()} 返回的 scheme（如
- * http、https 等），而非具体协议版本（如 http/1.1、spdy/3.1 等）。 本类用于区分 HTTP 消息构造方式及相关协议特性，支持多种通信协议的识别与验证。
+ * An enumeration of network protocols, used for identifying and handling various network protocols. The protocol names
+ * correspond to the scheme returned by {@link java.net.URL#getProtocol()} or {@link java.net.URI#getScheme()} (e.g.,
+ * http, https), not the specific protocol version (e.g., http/1.1, spdy/3.1). This class is used to differentiate how
+ * HTTP messages are constructed and to handle protocol-specific features, supporting the identification and validation
+ * of multiple communication protocols.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -47,258 +51,273 @@ import org.miaixz.bus.core.xyz.StringKit;
 public enum Protocol {
 
     /**
-     * 命名管道协议，使用共享内存进行进程间通信，速度略快于套接字，仅适用于同一机器上的进程。 默认情况下，Java 不支持命名管道。
+     * Named pipe protocol, used for inter-process communication via shared memory. It is slightly faster than sockets
+     * but is limited to processes on the same machine. Java does not support named pipes by default.
      */
     PIPE("pipe"),
 
     /**
-     * 可靠的 TCP/IP 套接字连接协议，提供面向连接的通信。
+     * A reliable TCP/IP socket connection protocol that provides connection-oriented communication.
      */
     SOCKET("socket"),
 
     /**
-     * 传输控制协议（TCP），提供可靠的、面向连接的通信，广泛用于网络应用。
+     * Transmission Control Protocol (TCP), providing reliable, connection-oriented communication, widely used in
+     * network applications.
      */
     TCP("tcp"),
 
     /**
-     * 用户数据报协议（UDP），提供无连接、不可靠的通信，适用于低延迟场景。
+     * User Datagram Protocol (UDP), providing connectionless, unreliable communication, suitable for low-latency
+     * scenarios.
      */
     UDP("udp"),
 
     /**
-     * 超文本传输协议（HTTP），用于网页数据传输，基于明文传输。
+     * Hypertext Transfer Protocol (HTTP), used for transmitting web page data in plain text.
      */
     HTTP("http"),
 
     /**
-     * HTTP/1.0 协议，早期明文协议，不支持持久连接，遵循 RFC 1945。
+     * HTTP/1.0 protocol, an early plain text protocol that does not support persistent connections, compliant with RFC
+     * 1945.
      */
     HTTP_1_0("HTTP/1.0"),
 
     /**
-     * HTTP/1.1 协议，明文协议，支持持久连接和流水线处理，遵循 RFC 7230。
+     * HTTP/1.1 protocol, a plain text protocol that supports persistent connections and pipelining, compliant with RFC
+     * 7230.
      */
     HTTP_1_1("HTTP/1.1"),
 
     /**
-     * HTTP/2 协议，二进制框架协议，支持头部压缩、请求多路复用和服务器推送，基于 HTTP/1.1 语义，遵循 RFC 7540。
+     * HTTP/2 protocol, a binary framing protocol that supports header compression, request multiplexing, and server
+     * push, based on HTTP/1.1 semantics, compliant with RFC 7540.
      */
     HTTP_2("h2"),
 
     /**
-     * HTTP/3 协议，基于 QUIC 传输，支持高效多路复用和低延迟，遵循 RFC 9000。
+     * HTTP/3 protocol, based on QUIC transport, supporting efficient multiplexing and low latency, compliant with RFC
+     * 9000.
      */
     HTTP_3("h3"),
 
     /**
-     * SPDY/3.1 协议，Chromium 的二进制框架协议，支持头部压缩和请求多路复用，基于 HTTP/1.1 语义（已废弃）。
+     * SPDY/3.1 protocol, a binary framing protocol from Chromium that supports header compression and request
+     * multiplexing, based on HTTP/1.1 semantics (deprecated).
      */
     SPDY_3("spdy/3.1"),
 
     /**
-     * HTTP/2 明文协议，无需升级握手，要求客户端预知服务器支持明文 HTTP/2，遵循 RFC 7540。
+     * HTTP/2 cleartext protocol, which does not require an upgrade handshake and requires the client to have prior
+     * knowledge that the server supports cleartext HTTP/2, compliant with RFC 7540.
      */
     H2_PRIOR_KNOWLEDGE("h2_prior_knowledge"),
 
     /**
-     * QUIC 协议（快速 UDP 互联网连接），基于 UDP 的安全多路复用传输，优化 HTTP/2 语义，遵循 RFC 9000。
+     * QUIC (Quick UDP Internet Connections) protocol, a secure, multiplexed transport protocol based on UDP that
+     * optimizes HTTP/2 semantics, compliant with RFC 9000.
      */
     QUIC("quic"),
 
     /**
-     * SOAP 1.1 协议，基于 XML 的简单对象访问协议，用于分布式系统通信，遵循 W3C 标准。
+     * SOAP 1.1 protocol, a simple object access protocol based on XML for communication in distributed systems,
+     * compliant with W3C standards.
      */
     SOAP_1_1("soap 1.1 protocol"),
 
     /**
-     * SOAP 1.2 协议，SOAP 的升级版本，改进性能和兼容性，遵循 W3C 标准。
+     * SOAP 1.2 protocol, an upgraded version of SOAP with improved performance and compatibility, compliant with W3C
+     * standards.
      */
     SOAP_1_2("SOAP 1.2 Protocol"),
 
     /**
-     * WebSocket 协议（明文），用于双向实时通信，基于 TCP，遵循 RFC 6455。
+     * WebSocket protocol (cleartext), used for bidirectional real-time communication over TCP, compliant with RFC 6455.
      */
     WS("ws"),
 
     /**
-     * 加密的 WebSocket 协议（安全），基于 TLS 的双向实时通信，遵循 RFC 6455。
+     * Encrypted WebSocket protocol (secure), providing bidirectional real-time communication over TLS, compliant with
+     * RFC 6455.
      */
     WSS("wss"),
 
     /**
-     * 安全的超文本传输协议（HTTPS），基于 TLS/SSL 的加密 HTTP，遵循 RFC 2818。
+     * Secure Hypertext Transfer Protocol (HTTPS), an encrypted version of HTTP over TLS/SSL, compliant with RFC 2818.
      */
     HTTPS("https"),
 
     /**
-     * 通用 SSL 协议，支持某些版本的 SSL 加密（已废弃）。
+     * Generic SSL protocol, supporting certain versions of SSL encryption (deprecated).
      */
     SSL("ssl"),
 
     /**
-     * SSL 2.0 协议，早期加密协议，因安全漏洞已废弃。
+     * SSL 2.0 protocol, an early encryption protocol, deprecated due to security vulnerabilities.
      */
     SSLv2("SSLv2"),
 
     /**
-     * SSL 3.0 协议，改进的加密协议，因安全漏洞已废弃。
+     * SSL 3.0 protocol, an improved encryption protocol, deprecated due to security vulnerabilities.
      */
     SSLv3("SSLv3"),
 
     /**
-     * 通用 TLS 协议，支持某些版本的 TLS 加密，提供安全通信。
+     * Generic TLS protocol, supporting certain versions of TLS encryption for secure communication.
      */
     TLS("tls"),
 
     /**
-     * TLS 1.0 协议，遵循 RFC 2246，提供安全的加密通信（逐渐废弃）。
+     * TLS 1.0 protocol, compliant with RFC 2246, providing secure encrypted communication (gradually being deprecated).
      */
     TLSv1("TLSv1"),
 
     /**
-     * TLS 1.1 协议，遵循 RFC 4346，改进安全性（逐渐废弃）。
+     * TLS 1.1 protocol, compliant with RFC 4346, with improved security (gradually being deprecated).
      */
     TLSv1_1("TLSv1.1"),
 
     /**
-     * TLS 1.2 协议，遵循 RFC 5246，进一步增强安全性，广泛使用。
+     * TLS 1.2 protocol, compliant with RFC 5246, with further enhanced security, widely used.
      */
     TLSv1_2("TLSv1.2"),
 
     /**
-     * TLS 1.3 协议，遵循 RFC 8446，提供更高安全性和性能，推荐使用。
+     * TLS 1.3 protocol, compliant with RFC 8446, providing higher security and performance, recommended for use.
      */
     TLSv1_3("TLSv1.3"),
 
     /**
-     * DICOM 协议，用于医学影像数据的传输和存储，遵循 ISO 12052。
+     * DICOM protocol, used for the transmission and storage of medical imaging data, compliant with ISO 12052.
      */
     DICOM("dicom"),
 
     /**
-     * HL7 协议，用于医疗信息交换的标准化协议，遵循 HL7 国际标准。
+     * HL7 protocol, a standardized protocol for exchanging medical information, compliant with HL7 international
+     * standards.
      */
     HL7("hl7"),
 
     /**
-     * OpenID Connect 协议，基于 OAuth2 的身份验证协议，遵循 OpenID 标准。
+     * OpenID Connect protocol, an authentication protocol based on OAuth2, compliant with OpenID standards.
      */
     OIDC("OIDC"),
 
     /**
-     * SAML 协议，用于单点登录和身份联合，遵循 OASIS 标准。
+     * SAML protocol, used for single sign-on and identity federation, compliant with OASIS standards.
      */
     SAML("SAML"),
 
     /**
-     * 轻量目录访问协议（LDAP），用于目录服务访问，遵循 RFC 4511。
+     * Lightweight Directory Access Protocol (LDAP), used for accessing directory services, compliant with RFC 4511.
      */
     LDAP("LDAP"),
 
     /**
-     * 消息队列。
+     * Message Queue.
      */
     MQ("MQ"),
 
     /**
-     * 高级消息队列协议。
+     * Advanced Message Queuing Protocol.
      */
     AMQP("AMQP"),
 
     /**
-     * 简单文本消息协议。
+     * Simple Text Oriented Messaging Protocol.
      */
     STOMP("STOMP"),
 
     /**
-     * 消息队列遥测传输。
+     * Message Queuing Telemetry Transport.
      */
     MQTT("MQTT"),
 
     /**
-     * 消息中间件二进制协议。
+     * Message middleware binary protocol.
      */
     OPENWIRE("Openwire"),
 
     /**
-     * Apache Kafka 使用的自定义二进制协议。
+     * Custom binary protocol used by Apache Kafka.
      */
     KAFKA("Kafka"),
 
     /**
-     * Redis 序列化协议。
+     * Redis Serialization Protocol.
      */
     RESP("RESP"),
 
     /**
-     * 模型上下文协议。
+     * Model-Context Protocol.
      */
     MCP("MCP"),
 
     ;
 
     /**
-     * HTTP 前缀，格式为 "http://"。
+     * HTTP prefix, formatted as "http://".
      */
     public static final String HTTP_PREFIX = HTTP.name + Symbol.COLON + Symbol.FORWARDSLASH;
 
     /**
-     * HTTPS 前缀，格式为 "https://"。
+     * HTTPS prefix, formatted as "https://".
      */
     public static final String HTTPS_PREFIX = HTTPS.name + Symbol.COLON + Symbol.FORWARDSLASH;
 
     /**
-     * WebSocket 前缀，格式为 "ws://"。
+     * WebSocket prefix, formatted as "ws://".
      */
     public static final String WS_PREFIX = WS.name + Symbol.COLON + Symbol.FORWARDSLASH;
 
     /**
-     * 安全 WebSocket 前缀，格式为 "wss://"。
+     * Secure WebSocket prefix, formatted as "wss://".
      */
     public static final String WSS_PREFIX = WSS.name + Symbol.COLON + Symbol.FORWARDSLASH;
 
     /**
-     * 本地 IPv4 地址，值为 "127.0.0.1"，表示本地回环地址。
+     * Local IPv4 address, with the value "127.0.0.1", representing the local loopback address.
      */
     public static final String HOST_IPV4 = "127.0.0.1";
 
     /**
-     * 本地主机名，值为 "localhost"，用于本地主机访问。
+     * Local hostname, with the value "localhost", used for local host access.
      */
     public static final String HOST_LOCAL = "localhost";
 
     /**
-     * IPv4 地址最小值，字符串形式，值为 "0.0.0.0"，通常用于监听所有接口。
+     * Minimum IPv4 address in string form, with the value "0.0.0.0", typically used to listen on all interfaces.
      */
     public static final String IPV4_STR_MIN = "0.0.0.0";
 
     /**
-     * IPv4 地址最大值，字符串形式，值为 "255.255.255.255"，表示广播地址。
+     * Maximum IPv4 address in string form, with the value "255.255.255.255", representing the broadcast address.
      */
     public static final String IPV4_STR_MAX = "255.255.255.255";
 
     /**
-     * IPv4 地址最大值，数值形式，值为 0xffffffffL，表示最大 IP 地址。
+     * Maximum IPv4 address in numerical form, with the value 0xffffffffL, representing the highest IP address.
      */
     public static final long IPV4_NUM_MAX = 0xffffffffL;
 
     /**
-     * IPv4 未使用地址最大值，字符串形式，值为 "0.255.255.255"，表示未分配地址范围。
+     * Maximum unused IPv4 address in string form, with the value "0.255.255.255", representing an unallocated address
+     * range.
      */
     public static final String IPV4_UNUSED_STR_MAX = "0.255.255.255";
 
     /**
-     * 协议名称，用于标识协议类型。
+     * The name of the protocol, used to identify the protocol type.
      */
     public final String name;
 
     /**
-     * 根据协议名称获取对应的协议枚举实例。
+     * Gets the corresponding protocol enum instance from the protocol name.
      *
-     * @param protocol 协议名称
-     * @return 对应的协议枚举实例
-     * @throws IOException 如果协议名称未知
+     * @param protocol The name of the protocol.
+     * @return The corresponding protocol enum instance.
+     * @throws IOException If the protocol name is unknown.
      */
     public static Protocol get(String protocol) throws IOException {
         if (StringKit.isEmpty(protocol)) {
@@ -335,63 +354,63 @@ public enum Protocol {
     }
 
     /**
-     * 根据URL获取对应的host。
+     * Gets the host from a URL.
      *
-     * @param url 待处理的URL
-     * @return 对应的协议枚举实例
+     * @param url The URL to process.
+     * @return The corresponding host.
      */
     public static String getHost(String url) {
         return getHost(url, true);
     }
 
     /**
-     * 根据URL获取对应的host。
+     * Gets the host from a URL.
      *
-     * @param url      待处理的URL
-     * @param withPort 是否包含端口
-     * @return 对应的host
+     * @param url      The URL to process.
+     * @param withPort Whether to include the port.
+     * @return The corresponding host.
      */
     public static String getHost(String url, boolean withPort) {
         if (StringKit.isEmpty(url)) {
             return url;
         }
 
-        // 首先移除协议部分
+        // First, remove the protocol part
         String withoutProtocol = url.replaceFirst("^[a-zA-Z]+://", Normal.EMPTY);
 
-        // 如果需要包含端口，直接返回
+        // If the port is needed, return directly
         if (withPort) {
             return withoutProtocol;
         }
 
-        // 如果不需要包含端口，检查是否存在端口号
+        // If the port is not needed, check if a port number exists
         int portIndex = withoutProtocol.indexOf(':');
         if (portIndex != -1) {
             return withoutProtocol.substring(0, portIndex);
         }
 
-        // 如果没有端口，直接返回
+        // If there is no port, return directly
         return withoutProtocol;
     }
 
     /**
-     * 从地址中获取端口号
+     * Gets the port number from an address.
      *
-     * @param address 地址，格式为 "主机名:端口号" 或 "协议://主机名:端口号"
-     * @return 端口号
-     * @throws IllegalArgumentException 如果地址格式无效或未包含端口号
+     * @param address The address, in the format "hostname:port" or "protocol://hostname:port".
+     * @return The port number.
+     * @throws IllegalArgumentException If the address format is invalid or does not include a port number.
      */
     public static int getPort(String address) {
         return getPort(address, -1);
     }
 
     /**
-     * 从地址中获取端口号，如果未找到则返回默认值
+     * Gets the port number from an address, returning a default value if not found.
      *
-     * @param address     地址，格式为 "主机名:端口号" 或 "协议://主机名:端口号"
-     * @param defaultPort 默认端口号，当地址中未指定端口时返回此值
-     * @return 端口号或默认端口号
-     * @throws IllegalArgumentException 如果地址格式无效且未提供默认端口
+     * @param address     The address, in the format "hostname:port" or "protocol://hostname:port".
+     * @param defaultPort The default port to return if no port is specified in the address.
+     * @return The port number or the default port.
+     * @throws IllegalArgumentException If the address format is invalid and no default port is provided.
      */
     public static int getPort(String address, int defaultPort) {
         if (address == null || address.isEmpty()) {
@@ -401,17 +420,17 @@ public enum Protocol {
             throw new IllegalArgumentException("Address cannot be null or empty");
         }
 
-        // 移除协议部分（如果有）
+        // Remove the protocol part (if any)
         String hostPort = address;
         int protocolIndex = address.indexOf("://");
         if (protocolIndex >= 0) {
             hostPort = address.substring(protocolIndex + 3);
         }
 
-        // 查找端口分隔符
+        // Find the port separator
         int portIndex = hostPort.lastIndexOf(Symbol.C_COLON);
         if (portIndex >= 0) {
-            // 确保不是IPv6地址中的冒号
+            // Ensure it's not a colon in an IPv6 address
             if (hostPort.lastIndexOf(Symbol.C_BRACKET_RIGHT) < portIndex) {
                 String portStr = hostPort.substring(portIndex + 1);
                 try {
@@ -425,7 +444,7 @@ public enum Protocol {
             }
         }
 
-        // 未找到端口
+        // Port not found
         if (defaultPort >= 0) {
             return defaultPort;
         }
@@ -433,10 +452,10 @@ public enum Protocol {
     }
 
     /**
-     * 判断 URL 是否为 HTTP 协议，支持标准前缀和 URL 编码格式。
+     * Checks if a URL is an HTTP protocol, supporting standard prefixes and URL-encoded formats.
      *
-     * @param url 待验证的 URL
-     * @return true 如果是 HTTP 协议，false 否则
+     * @param url The URL to validate.
+     * @return {@code true} if it is an HTTP protocol, {@code false} otherwise.
      */
     public static boolean isHttp(String url) {
         if (StringKit.isEmpty(url)) {
@@ -446,10 +465,10 @@ public enum Protocol {
     }
 
     /**
-     * 判断 URL 是否为 HTTPS 协议，支持标准前缀和 URL 编码格式。
+     * Checks if a URL is an HTTPS protocol, supporting standard prefixes and URL-encoded formats.
      *
-     * @param url 待验证的 URL
-     * @return true 如果是 HTTPS 协议，false 否则
+     * @param url The URL to validate.
+     * @return {@code true} if it is an HTTPS protocol, {@code false} otherwise.
      */
     public static boolean isHttps(String url) {
         if (StringKit.isEmpty(url)) {
@@ -459,20 +478,20 @@ public enum Protocol {
     }
 
     /**
-     * 判断 URL 是否指向本地主机（域名或 IP），支持 IPv4 和 localhost。
+     * Checks if a URL points to the local host (domain or IP), supporting IPv4 and localhost.
      *
-     * @param url 待验证的 URL
-     * @return true 如果是本地主机，false 否则
+     * @param url The URL to validate.
+     * @return {@code true} if it is a local host, {@code false} otherwise.
      */
     public static boolean isLocalHost(String url) {
         return StringKit.isEmpty(url) || url.contains(HOST_IPV4) || url.contains(HOST_LOCAL);
     }
 
     /**
-     * 判断 URL 是否为 HTTPS 协议或本地主机。
+     * Checks if a URL is an HTTPS protocol or points to the local host.
      *
-     * @param url 待验证的 URL
-     * @return true 如果是 HTTPS 或本地主机，false 否则
+     * @param url The URL to validate.
+     * @return {@code true} if it is HTTPS or a local host, {@code false} otherwise.
      */
     public static boolean isHttpsOrLocalHost(String url) {
         if (StringKit.isEmpty(url)) {
@@ -482,18 +501,18 @@ public enum Protocol {
     }
 
     /**
-     * 判断协议是否基于 TCP（非 UDP）。
+     * Checks if the protocol is TCP-based (i.e., not UDP).
      *
-     * @return true 如果是 TCP 协议，false 如果是 UDP
+     * @return {@code true} if it is a TCP protocol, {@code false} if it is UDP.
      */
     public boolean isTcp() {
         return this != UDP;
     }
 
     /**
-     * 判断协议是否为安全协议（基于 TLS/SSL）。
+     * Checks if the protocol is a secure protocol (based on TLS/SSL).
      *
-     * @return true 如果是安全协议（HTTPS, WSS, TLS, SSL 等），false 否则
+     * @return {@code true} if it is a secure protocol (e.g., HTTPS, WSS, TLS, SSL), {@code false} otherwise.
      */
     public boolean isSecure() {
         return this == HTTPS || this == WSS || this == TLS || this == SSL || this == TLSv1 || this == TLSv1_1
@@ -501,9 +520,10 @@ public enum Protocol {
     }
 
     /**
-     * 返回协议名称，用于 ALPN（应用层协议协商）协议标识，如 "http/1.1"、"h2" 等。
+     * Returns the protocol name, used for ALPN (Application-Layer Protocol Negotiation) protocol identification, such
+     * as "http/1.1", "h2", etc.
      *
-     * @return 协议名称
+     * @return The protocol name.
      */
     @Override
     public String toString() {

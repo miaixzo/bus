@@ -30,25 +30,34 @@ package org.miaixz.bus.core.lang.wrapper;
 import org.miaixz.bus.core.lang.Wrapper;
 
 /**
- * 简单包装对象 通过继承此类，可以直接使用被包装的对象，用于简化和统一封装
+ * A simple wrapper class that holds a reference to another object. By extending this class, you can directly access the
+ * wrapped object, which simplifies and unifies encapsulation.
  *
- * @param <T> 被包装对象类型
+ * @param <T> the type of the wrapped object
  * @author Kimi Liu
  * @since Java 17+
  */
 public class SimpleWrapper<T> implements Wrapper<T> {
 
+    /**
+     * The wrapped object.
+     */
     protected final T raw;
 
     /**
-     * 构造
+     * Constructs a new {@code SimpleWrapper} with the specified object to wrap.
      *
-     * @param raw 原始对象
+     * @param raw the object to wrap
      */
     public SimpleWrapper(final T raw) {
         this.raw = raw;
     }
 
+    /**
+     * Gets the wrapped object.
+     *
+     * @return the wrapped object
+     */
     @Override
     public T getRaw() {
         return this.raw;

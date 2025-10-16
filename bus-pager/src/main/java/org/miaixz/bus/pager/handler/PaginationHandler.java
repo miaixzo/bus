@@ -62,7 +62,8 @@ import org.miaixz.bus.pager.cache.CacheFactory;
 import net.sf.jsqlparser.statement.select.Select;
 
 /**
- * 分页：查询的分页
+ * Pagination handler for query pagination. This class intercepts query operations to apply pagination logic, including
+ * count queries and dialect-specific SQL modifications.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -70,41 +71,41 @@ import net.sf.jsqlparser.statement.select.Select;
 public class PaginationHandler extends SqlParserHandler implements MapperHandler {
 
     /**
-     * 缓存 MappedStatement 的计数查询结果
+     * Cache for count query MappedStatements.
      */
     private CacheX<String, MappedStatement> msCountMap;
     /**
-     * 计数查询的 MappedStatement ID 生成器
+     * Generator for count query MappedStatement IDs.
      */
     private CountMsId countMsId = CountMsId.DEFAULT;
     /**
-     * 分页方言，控制分页逻辑
+     * The pagination dialect, controlling pagination logic.
      */
     private volatile Dialect dialect;
     /**
-     * 计数查询后缀
+     * Suffix for count queries.
      */
     private String countSuffix = "_COUNT";
     /**
-     * 是否启用调试模式
+     * Flag indicating if debug mode is enabled.
      */
     private boolean debug;
     /**
-     * 默认分页方言类
+     * Default pagination dialect class.
      */
     private final String default_dialect_class = "org.miaixz.bus.pager.PageContext";
 
     /**
-     * 检查是否启用调试模式。
+     * Checks if debug mode is enabled.
      *
-     * @return 是否启用调试模式
+     * @return true if debug mode is enabled, false otherwise
      */
     public boolean isDebug() {
         return debug;
     }
 
     /**
-     * 在调试模式下记录分页调用堆栈。
+     * Logs the pagination call stack in debug mode.
      */
     protected void debugStackTraceLog() {
         if (isDebug()) {
@@ -114,7 +115,7 @@ public class PaginationHandler extends SqlParserHandler implements MapperHandler
     }
 
     /**
-     * 确保分页方言已初始化。
+     * Ensures that the pagination dialect is initialized.
      */
     private void checkDialectExists() {
         if (dialect == null) {
@@ -127,15 +128,15 @@ public class PaginationHandler extends SqlParserHandler implements MapperHandler
     }
 
     /**
-     * 判断是否需要执行分页查询。
+     * Determines whether a pagination query needs to be executed.
      *
-     * @param executor        MyBatis 执行器
-     * @param mappedStatement MappedStatement 对象
-     * @param parameter       查询参数
-     * @param rowBounds       分页参数
-     * @param resultHandler   结果处理器
-     * @param boundSql        绑定的 SQL
-     * @return 是否需要分页查询
+     * @param executor        the MyBatis executor
+     * @param mappedStatement the MappedStatement object
+     * @param parameter       the query parameters
+     * @param rowBounds       the pagination parameters
+     * @param resultHandler   the result handler
+     * @param boundSql        the bound SQL
+     * @return true if pagination is required, false otherwise
      */
     @Override
     public boolean isQuery(
@@ -168,15 +169,15 @@ public class PaginationHandler extends SqlParserHandler implements MapperHandler
     }
 
     /**
-     * 执行分页查询，处理 COUNT 和分页逻辑。
+     * Executes the pagination query, handling both COUNT and pagination logic.
      *
-     * @param result          分页结果
-     * @param executor        MyBatis 执行器
-     * @param mappedStatement MappedStatement 对象
-     * @param parameter       查询参数
-     * @param rowBounds       分页参数
-     * @param resultHandler   结果处理器
-     * @param boundSql        绑定的 SQL
+     * @param result          the pagination result
+     * @param executor        the MyBatis executor
+     * @param mappedStatement the MappedStatement object
+     * @param parameter       the query parameters
+     * @param rowBounds       the pagination parameters
+     * @param resultHandler   the result handler
+     * @param boundSql        the bound SQL
      */
     @Override
     public void query(
@@ -190,17 +191,17 @@ public class PaginationHandler extends SqlParserHandler implements MapperHandler
         try {
             CacheKey cacheKey = executor.createCacheKey(mappedStatement, parameter, rowBounds, boundSql);
             checkDialectExists();
-            // 处理 BoundSql 的拦截逻辑
+            // Handle BoundSql interception logic
             if (dialect instanceof BoundSqlBuilder.Chain) {
                 boundSql = ((BoundSqlBuilder.Chain) dialect)
                         .doBoundSql(BoundSqlBuilder.Type.ORIGINAL, boundSql, cacheKey);
             }
             List resultList;
-            // 判断是否需要分页
+            // Check if pagination is needed
             if (!dialect.skip(mappedStatement, parameter, rowBounds)) {
                 debugStackTraceLog();
                 Future<Long> countFuture = null;
-                // 判断是否需要 COUNT 查询
+                // Check if COUNT query is needed
                 if (dialect.beforeCount(mappedStatement, parameter, rowBounds)) {
                     if (dialect.isAsyncCount()) {
                         countFuture = asyncCount(mappedStatement, boundSql, parameter, rowBounds);
@@ -226,7 +227,7 @@ public class PaginationHandler extends SqlParserHandler implements MapperHandler
                     dialect.afterCount(count, parameter, rowBounds);
                 }
             } else {
-                // 默认内存分页
+                // Default in-memory pagination
                 resultList = executor.query(mappedStatement, parameter, rowBounds, resultHandler, cacheKey, boundSql);
             }
             ((Object[]) result)[0] = dialect.afterPage(resultList, parameter, rowBounds);
@@ -241,13 +242,13 @@ public class PaginationHandler extends SqlParserHandler implements MapperHandler
     }
 
     /**
-     * 异步执行 COUNT 查询。
+     * Asynchronously executes a COUNT query.
      *
-     * @param mappedStatement MappedStatement 对象
-     * @param boundSql        绑定的 SQL
-     * @param parameter       查询参数
-     * @param rowBounds       分页参数
-     * @return COUNT 查询的 Future 结果
+     * @param mappedStatement the MappedStatement object
+     * @param boundSql        the bound SQL
+     * @param parameter       the query parameters
+     * @param rowBounds       the pagination parameters
+     * @return a Future containing the result of the COUNT query
      */
     private Future<Long> asyncCount(
             MappedStatement mappedStatement,
@@ -280,16 +281,16 @@ public class PaginationHandler extends SqlParserHandler implements MapperHandler
     }
 
     /**
-     * 执行 COUNT 查询。
+     * Executes a COUNT query.
      *
-     * @param executor        MyBatis 执行器
-     * @param mappedStatement MappedStatement 对象
-     * @param parameter       查询参数
-     * @param rowBounds       分页参数
-     * @param resultHandler   结果处理器
-     * @param boundSql        绑定的 SQL
-     * @return 记录总数
-     * @throws SQLException 如果执行 COUNT 查询失败
+     * @param executor        the MyBatis executor
+     * @param mappedStatement the MappedStatement object
+     * @param parameter       the query parameters
+     * @param rowBounds       the pagination parameters
+     * @param resultHandler   the result handler
+     * @param boundSql        the bound SQL
+     * @return the total number of records
+     * @throws SQLException if the COUNT query fails
      */
     private Long count(
             Executor executor,
@@ -321,12 +322,12 @@ public class PaginationHandler extends SqlParserHandler implements MapperHandler
     }
 
     /**
-     * 处理 SELECT 语句，记录分页相关日志。
+     * Processes a SELECT statement, logging pagination-related information.
      *
-     * @param select SELECT 语句对象
-     * @param index  索引
-     * @param sql    原始 SQL 语句
-     * @param obj    附加对象
+     * @param select the SELECT statement object
+     * @param index  the index of the statement
+     * @param sql    the original SQL statement
+     * @param obj    additional object
      */
     @Override
     protected void processSelect(Select select, int index, String sql, Object obj) {
@@ -334,10 +335,10 @@ public class PaginationHandler extends SqlParserHandler implements MapperHandler
     }
 
     /**
-     * 设置分页处理器属性，初始化缓存和方言。
+     * Sets the properties for the pagination handler, initializing the cache and dialect.
      *
-     * @param properties 配置属性
-     * @return 是否设置成功
+     * @param properties the configuration properties
+     * @return true if properties were set successfully
      */
     @Override
     public boolean setProperties(Properties properties) {
@@ -365,9 +366,9 @@ public class PaginationHandler extends SqlParserHandler implements MapperHandler
     }
 
     /**
-     * 获取当前分页方言。
+     * Retrieves the current pagination dialect.
      *
-     * @return 分页方言
+     * @return the pagination dialect
      */
     public Dialect getDialect() {
         return this.dialect;

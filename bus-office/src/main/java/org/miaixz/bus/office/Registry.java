@@ -36,7 +36,7 @@ import org.miaixz.bus.core.xyz.ClassKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 
 /**
- * 支持类型
+ * Registry for supported office-related components and services.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,30 +44,33 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 public class Registry {
 
     /**
-     * 本地转换
+     * Identifier for local conversion services.
      */
     public static final String LOCAL = "LOCAL";
     /**
-     * 在线转换
+     * Identifier for online conversion services.
      */
     public static final String ONLINE = "ONLINE";
     /**
-     * 服务提供者列表
+     * Cache for storing registered service providers, mapped by name or simple class name.
      */
     private static Map<Object, Object> COMPLEX_CACHE = new ConcurrentHashMap<>();
     /**
-     * 校验实例信息
+     * Singleton instance of the Registry.
      */
     private static Registry instance;
 
+    /**
+     * Constructs a new Registry instance.
+     */
     public Registry() {
 
     }
 
     /**
-     * 单例模型初始化
+     * Retrieves the singleton instance of the Registry.
      *
-     * @return the object
+     * @return The singleton {@link Registry} instance.
      */
     public static Registry getInstance() {
         synchronized (Registry.class) {
@@ -79,25 +82,30 @@ public class Registry {
     }
 
     /**
-     * 注册组件
+     * Registers a component with a given name and object. If a component with the same name or simple class name
+     * already exists, an {@link InternalException} is thrown.
      *
-     * @param name   组件名称
-     * @param object 组件对象
+     * @param name   The name of the component to register.
+     * @param object The component object to register.
+     * @throws InternalException if a component with the same name or type is already registered.
      */
     public static void register(String name, Object object) {
         if (COMPLEX_CACHE.containsKey(name)) {
-            throw new InternalException("重复注册同名称的校验器：" + name);
+            throw new InternalException("Duplicate registration of component with the same name: " + name);
         }
         Class<?> clazz = object.getClass();
         if (COMPLEX_CACHE.containsKey(clazz.getSimpleName())) {
-            throw new InternalException("重复注册同类型的校验器：" + clazz);
+            throw new InternalException("Duplicate registration of component with the same type: " + clazz);
         }
         COMPLEX_CACHE.putIfAbsent(name, object);
         COMPLEX_CACHE.putIfAbsent(clazz.getSimpleName(), object);
     }
 
     /**
-     * 检查POI包的引入情况
+     * Checks for the presence of POI dependencies. Throws a {@link DependencyException} if the required POI classes are
+     * not found.
+     *
+     * @throws DependencyException if POI dependencies are missing.
      */
     public static void check() {
         try {
@@ -108,31 +116,31 @@ public class Registry {
     }
 
     /**
-     * 是否包含指定名称的校验器
+     * Checks if a component with the specified name is registered.
      *
-     * @param name 校验器名称
-     * @return true：包含, false：不包含
+     * @param name The name of the component to check.
+     * @return {@code true} if the component is registered, {@code false} otherwise.
      */
     public boolean contains(String name) {
         return COMPLEX_CACHE.containsKey(name);
     }
 
     /**
-     * 根据校验器名称获取校验器
+     * Retrieves a registered component by its name.
      *
-     * @param name 校验器名称
-     * @return 校验器对象, 找不到时返回null
+     * @param name The name of the component to retrieve.
+     * @return The component object, or {@code null} if not found.
      */
     public Object require(String name) {
         return COMPLEX_CACHE.get(name);
     }
 
     /**
-     * 优先根据校验器名称获取校验器,找不到时,根据类型获取校验器对象
+     * Retrieves a registered component, prioritizing by name, then by simple class name.
      *
-     * @param name  校验器名称
-     * @param clazz 校验器类型
-     * @return 校验器对象, 找不到时返回null
+     * @param name  The name of the component.
+     * @param clazz The class type of the component.
+     * @return The component object, or {@code null} if not found.
      */
     public Object require(String name, Class<?> clazz) {
         Object object = this.require(name);

@@ -33,15 +33,19 @@ import java.util.List;
 import java.util.ListIterator;
 
 /**
+ * An interface representing a proxy for a {@link List}. It delegates all {@code List} operations to an underlying list
+ * instance provided by the implementing class.
+ *
+ * @param <E> the type of elements in this list
  * @author Kimi Liu
  * @since Java 17+
  */
 public interface ProxyList<E> extends List<E> {
 
     /**
-     * get the real list.
+     * Gets the underlying, real list that this proxy delegates to.
      *
-     * @return real list.
+     * @return The real list instance.
      */
     List<E> getProxyList();
 

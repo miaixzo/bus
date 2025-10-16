@@ -36,7 +36,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * 撤销订单
+ * Order Reverse model.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,13 +48,37 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class OrderReverse extends Material {
 
+    /**
+     * Sub-merchant App ID.
+     */
     private String sub_appid;
+    /**
+     * Merchant ID.
+     */
     private String mch_id;
+    /**
+     * Sub-merchant ID.
+     */
     private String sub_mch_id;
+    /**
+     * Random string.
+     */
     private String nonce_str;
+    /**
+     * Signature.
+     */
     private String sign;
+    /**
+     * Merchant order number.
+     */
     private String out_trade_no;
+    /**
+     * Operator ID.
+     */
     private String op_user_id;
+    /**
+     * Operator password.
+     */
     private String op_user_passwd;
 
 }

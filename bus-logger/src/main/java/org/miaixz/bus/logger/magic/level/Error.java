@@ -28,7 +28,7 @@
 package org.miaixz.bus.logger.magic.level;
 
 /**
- * ERROR级别日志
+ * This interface defines methods for logging at the ERROR level.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -36,43 +36,43 @@ package org.miaixz.bus.logger.magic.level;
 public interface Error {
 
     /**
-     * ERROR 等级是否开启
+     * Checks if logging at the ERROR level is enabled.
      *
-     * @return the true/false
+     * @return {@code true} if ERROR level is enabled, {@code false} otherwise.
      */
     boolean isErrorEnabled();
 
     /**
-     * 打印 ERROR 等级的日志
+     * Logs a throwable at the ERROR level.
      *
-     * @param t 错误对象
+     * @param t the throwable to log.
      */
     void error(Throwable t);
 
     /**
-     * 打印 ERROR 等级的日志
+     * Logs a formatted message at the ERROR level.
      *
-     * @param format 消息模板
-     * @param args   参数
+     * @param format the message format.
+     * @param args   the arguments for the message format.
      */
     void error(String format, Object... args);
 
     /**
-     * 打印 ERROR 等级的日志
+     * Logs a formatted message with a throwable at the ERROR level.
      *
-     * @param t      错误对象
-     * @param format 消息模板
-     * @param args   参数
+     * @param t      the throwable to log.
+     * @param format the message format.
+     * @param args   the arguments for the message format.
      */
     void error(Throwable t, String format, Object... args);
 
     /**
-     * 打印 ERROR 等级的日志
+     * Logs a formatted message with a throwable at the ERROR level, specifying the fully qualified class name (FQCN).
      *
-     * @param fqcn   完全限定类名(Fully Qualified Class Name)，用于定位日志位置
-     * @param t      错误对象
-     * @param format 消息模板
-     * @param args   参数
+     * @param fqcn   the fully qualified class name of the logger.
+     * @param t      the throwable to log.
+     * @param format the message format.
+     * @param args   the arguments for the message format.
      */
     void error(String fqcn, Throwable t, String format, Object... args);
 

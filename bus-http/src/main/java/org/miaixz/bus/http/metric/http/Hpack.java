@@ -42,13 +42,17 @@ import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 读写HPACK v10. 这个实现为动态表使用一个数组，为索引条目使用一个列表。 动态条目被添加到数组中，从最后一个位置开始向前移动。当数组填满时，它被加倍.
+ * Reads and writes HPACK v10. This implementation uses an array for the dynamic table and a list for indexed entries.
+ * Dynamic entries are added to the array, moving forward from the last position. When the array is full, it is doubled.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-class Hpack {
+public class Hpack {
 
+    /**
+     * The static header table.
+     */
     static final Http2Header[] STATIC_HEADER_TABLE = new Http2Header[] {
             new Http2Header(Http2Header.TARGET_AUTHORITY, Normal.EMPTY),
             new Http2Header(Http2Header.TARGET_METHOD, HTTP.GET), new Http2Header(Http2Header.TARGET_METHOD, HTTP.POST),
@@ -89,15 +93,32 @@ class Hpack {
             new Http2Header(HTTP.TRANSFER_ENCODING, Normal.EMPTY), new Http2Header(HTTP.USER_AGENT, Normal.EMPTY),
             new Http2Header(HTTP.VARY, Normal.EMPTY), new Http2Header(HTTP.VIA, Normal.EMPTY),
             new Http2Header(HTTP.WWW_AUTHENTICATE, Normal.EMPTY) };
+    /**
+     * A map from header name to the first index in the static table.
+     */
     static final Map<ByteString, Integer> NAME_TO_FIRST_INDEX = nameToFirstIndex();
+    /**
+     * Prefix for 4-bit integers.
+     */
     private static final int PREFIX_4_BITS = 0x0f;
+    /**
+     * Prefix for 5-bit integers.
+     */
     private static final int PREFIX_5_BITS = 0x1f;
+    /**
+     * Prefix for 6-bit integers.
+     */
     private static final int PREFIX_6_BITS = 0x3f;
+    /**
+     * Prefix for 7-bit integers.
+     */
     private static final int PREFIX_7_BITS = 0x7f;
 
-    private Hpack() {
-    }
-
+    /**
+     * Creates a map from name to the first index in the static table.
+     * 
+     * @return an unmodifiable map from header name to index.
+     */
     private static Map<ByteString, Integer> nameToFirstIndex() {
         Map<ByteString, Integer> result = new LinkedHashMap<>(STATIC_HEADER_TABLE.length);
         for (int i = 0; i < STATIC_HEADER_TABLE.length; i++) {
@@ -110,6 +131,10 @@ class Hpack {
 
     /**
      * An HTTP/2 response cannot contain uppercase header characters and must be treated as malformed.
+     * 
+     * @param name the name of the header
+     * @return the name of the header if it is lowercase
+     * @throws IOException if the header name contains uppercase characters
      */
     static ByteString checkLowercase(ByteString name) throws IOException {
         for (int i = 0, length = name.size(); i < length; i++) {
@@ -123,14 +148,37 @@ class Hpack {
 
     static class Reader {
 
+        /**
+         * A list to hold the decoded headers.
+         */
         private final List<Http2Header> headerList = new ArrayList<>();
+        /**
+         * The source of HPACK data.
+         */
         private final BufferSource source;
-
+        /**
+         * The size of the header table as defined by the settings.
+         */
         private final int headerTableSizeSetting;
+        /**
+         * The dynamic header table.
+         */
         Http2Header[] dynamicTable = new Http2Header[8];
+        /**
+         * The index of the next header to be added to the dynamic table.
+         */
         int nextHeaderIndex = dynamicTable.length - 1;
+        /**
+         * The number of headers in the dynamic table.
+         */
         int headerCount = 0;
+        /**
+         * The current size of the dynamic table in bytes.
+         */
         int dynamicTableByteCount = 0;
+        /**
+         * The maximum size of the dynamic table in bytes.
+         */
         private int maxDynamicTableByteCount;
 
         Reader(int headerTableSizeSetting, Source source) {
@@ -164,6 +212,12 @@ class Hpack {
             dynamicTableByteCount = 0;
         }
 
+        /**
+         * Evicts entries from the dynamic table until {@code bytesToRecover} bytes are recovered.
+         * 
+         * @param bytesToRecover the number of bytes to recover.
+         * @return the number of entries evicted.
+         */
         private int evictToRecoverBytes(int bytesToRecover) {
             int entriesToEvict = 0;
             if (bytesToRecover > 0) {
@@ -187,6 +241,8 @@ class Hpack {
         /**
          * Read {@code byteCount} bytes of headers from the source stream. This implementation does not propagate the
          * never indexed flag of a header.
+         * 
+         * @throws IOException if an I/O error occurs.
          */
         void readHeaders() throws IOException {
             while (!source.exhausted()) {
@@ -216,6 +272,11 @@ class Hpack {
             }
         }
 
+        /**
+         * Returns the list of headers read and clears the list.
+         * 
+         * @return the list of headers.
+         */
         public List<Http2Header> getAndResetHeaderList() {
             List<Http2Header> result = new ArrayList<>(headerList);
             headerList.clear();
@@ -281,7 +342,10 @@ class Hpack {
         }
 
         /**
-         * index == -1 when new.
+         * Inserts a header into the dynamic table.
+         * 
+         * @param index index of the header, -1 when new.
+         * @param entry the header entry to insert.
          */
         private void insertIntoDynamicTable(int index, Http2Header entry) {
             headerList.add(entry);
@@ -346,6 +410,9 @@ class Hpack {
 
         /**
          * Reads a potentially Huffman encoded byte string.
+         * 
+         * @return the read byte string.
+         * @throws IOException if an I/O error occurs.
          */
         ByteString readByteString() throws IOException {
             int firstByte = readByte();
@@ -362,29 +429,56 @@ class Hpack {
 
     static class Writer {
 
+        /**
+         * Default header table size.
+         */
         private static final int SETTINGS_HEADER_TABLE_SIZE = 4096;
-
         /**
          * The decoder has ultimate control of the maximum size of the dynamic table but we can choose to use less.
          * We'll put a cap at 16K. This is arbitrary but should be enough for most purposes.
          */
         private static final int SETTINGS_HEADER_TABLE_SIZE_LIMIT = 16384;
 
+        /**
+         * The output buffer.
+         */
         private final Buffer out;
+        /**
+         * Whether to use Huffman compression.
+         */
         private final boolean useCompression;
+        /**
+         * The current header table size setting.
+         */
         int headerTableSizeSetting;
+        /**
+         * The maximum dynamic table size in bytes.
+         */
         int maxDynamicTableByteCount;
-        // Visible for testing.
+        /**
+         * The dynamic header table. Array is populated back to front, so new entries always have lowest index.
+         */
         Http2Header[] dynamicTable = new Http2Header[8];
-        // Array is populated back to front, so new entries always have lowest index.
+        /**
+         * The index of the next header to be added.
+         */
         int nextHeaderIndex = dynamicTable.length - 1;
+        /**
+         * The number of headers in the dynamic table.
+         */
         int headerCount = 0;
+        /**
+         * The current size of the dynamic table in bytes.
+         */
         int dynamicTableByteCount = 0;
         /**
          * In the scenario where the dynamic table size changes multiple times between transmission of header blocks, we
          * need to keep track of the smallest value in that interval.
          */
         private int smallestHeaderTableSizeSetting = Integer.MAX_VALUE;
+        /**
+         * Flag to indicate if a dynamic table size update should be emitted.
+         */
         private boolean emitDynamicTableSizeUpdate;
 
         Writer(Buffer out) {
@@ -407,6 +501,9 @@ class Hpack {
 
         /**
          * Returns the count of entries evicted.
+         * 
+         * @param bytesToRecover the number of bytes to recover.
+         * @return the number of evicted entries.
          */
         private int evictToRecoverBytes(int bytesToRecover) {
             int entriesToEvict = 0;
@@ -457,6 +554,9 @@ class Hpack {
 
         /**
          * This does not use "never indexed" semantics for sensitive headers.
+         * 
+         * @param headerBlock the list of headers to write.
+         * @throws IOException if an I/O error occurs.
          */
         void writeHeaders(List<Http2Header> headerBlock) throws IOException {
             if (emitDynamicTableSizeUpdate) {
@@ -528,6 +628,13 @@ class Hpack {
             }
         }
 
+        /**
+         * Writes an integer with HPACK-style variable-length encoding.
+         * 
+         * @param value      the integer to write.
+         * @param prefixMask the mask for the prefix.
+         * @param bits       the number of bits for the prefix.
+         */
         void writeInt(int value, int prefixMask, int bits) {
             // Write the raw value for a single byte value.
             if (value < prefixMask) {
@@ -548,6 +655,12 @@ class Hpack {
             out.writeByte(value);
         }
 
+        /**
+         * Writes a byte string, applying Huffman encoding if it is shorter.
+         * 
+         * @param data the byte string to write.
+         * @throws IOException if an I/O error occurs.
+         */
         void writeByteString(ByteString data) throws IOException {
             if (useCompression && Huffman.get().encodedLength(data) < data.size()) {
                 Buffer huffmanBuffer = new Buffer();

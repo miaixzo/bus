@@ -45,10 +45,7 @@ import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.miaixz.bus.core.codec.binary.Base64;
-import org.miaixz.bus.core.lang.Algorithm;
-import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.lang.MediaType;
-import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.*;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -58,23 +55,29 @@ import org.miaixz.bus.pay.Builder;
 import org.miaixz.bus.pay.magic.Message;
 
 /**
- * 微信支付工具类
+ * Utility class for WeChat Pay.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class WechatPayBuilder {
 
-    private static final String OS = System.getProperty("os.name") + "/" + System.getProperty("os.version");
-    private static final String VERSION = System.getProperty("java.version");
+    private static final String OS = Keys.get(Keys.OS_NAME) + "/" + Keys.get(Keys.OS_VERSION);
+    private static final String VERSION = Keys.get(Keys.JAVA_VERSION);
 
     private static final String FIELD_SIGN = "sign";
     private static final String FIELD_SIGN_TYPE = "sign_type";
     /**
-     * RSA最大加密明文大小
+     * Maximum plaintext size for RSA encryption.
      */
     private static final int MAX_ENCRYPT_BLOCK = 117;
 
+    /**
+     * Gets base headers for WeChat Pay API requests.
+     *
+     * @param authorization The authorization string.
+     * @return A map of base headers.
+     */
     public static Map<String, String> getBaseHeaders(String authorization) {
         String userAgent = String.format(
                 "Wechatpay-Http/%s (%s) Java/%s",
@@ -89,6 +92,13 @@ public class WechatPayBuilder {
         return headers;
     }
 
+    /**
+     * Gets headers for WeChat Pay API requests, including Content-Type and Wechatpay-Serial.
+     *
+     * @param authorization The authorization string.
+     * @param serialNumber  The merchant API certificate serial number.
+     * @return A map of headers.
+     */
     public static Map<String, String> getHeaders(String authorization, String serialNumber) {
         Map<String, String> headers = getBaseHeaders(authorization);
         headers.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON);
@@ -98,6 +108,13 @@ public class WechatPayBuilder {
         return headers;
     }
 
+    /**
+     * Gets upload headers for WeChat Pay API requests, including Content-Type for multipart form data.
+     *
+     * @param authorization The authorization string.
+     * @param serialNumber  The merchant API certificate serial number.
+     * @return A map of upload headers.
+     */
     public static Map<String, String> getUploadHeaders(String authorization, String serialNumber) {
         Map<String, String> headers = getBaseHeaders(authorization);
         headers.put(HTTP.CONTENT_TYPE, "multipart/form-data;boundary=\"boundary\"");
@@ -108,10 +125,10 @@ public class WechatPayBuilder {
     }
 
     /**
-     * 构建返回参数
+     * Builds a response map from a {@link Message} object.
      *
-     * @param response {@link Message}
-     * @return {@link Map}
+     * @param response The {@link Message} object containing the API response.
+     * @return A map containing timestamp, nonceStr, serialNumber, signature, body, and status.
      */
     public static Map<String, Object> buildResMap(Message response) {
         if (response == null) {
@@ -134,11 +151,11 @@ public class WechatPayBuilder {
     }
 
     /**
-     * 支付异步通知时校验 sign
+     * Verifies the signature of an asynchronous payment notification.
      *
-     * @param params     参数
-     * @param partnerKey 支付密钥
-     * @return {boolean}
+     * @param params     The parameters from the notification.
+     * @param partnerKey The payment key.
+     * @return {@code true} if the signature is valid, {@code false} otherwise.
      */
     public static boolean verifyNotify(Map<String, String> params, String partnerKey) {
         String sign = params.get(FIELD_SIGN);
@@ -147,13 +164,13 @@ public class WechatPayBuilder {
     }
 
     /**
-     * 支付异步通知时校验 sign
+     * Verifies the signature of an asynchronous payment notification.
      *
-     * @param params     参数
-     * @param partnerKey 支付密钥
-     * @param algorithm  签名类型
-     * @param signKey    签名字符
-     * @return {boolean}
+     * @param params     The parameters from the notification.
+     * @param partnerKey The payment key.
+     * @param algorithm  The signature algorithm.
+     * @param signKey    The key used for the signature field.
+     * @return {@code true} if the signature is valid, {@code false} otherwise.
      */
     public static boolean verifyNotify(
             Map<String, String> params,
@@ -169,49 +186,49 @@ public class WechatPayBuilder {
     }
 
     /**
-     * 支付异步通知时校验 sign
+     * Verifies the signature of an asynchronous payment notification.
      *
-     * @param params     参数
-     * @param partnerKey 支付密钥
-     * @param signKey    签名字符
-     * @return {boolean}
+     * @param params     The parameters from the notification.
+     * @param partnerKey The payment key.
+     * @param signKey    The key used for the signature field.
+     * @return {@code true} if the signature is valid, {@code false} otherwise.
      */
     public static boolean verifyNotify(Map<String, String> params, String partnerKey, String signKey) {
         return verifyNotify(params, partnerKey, Algorithm.MD5, signKey);
     }
 
     /**
-     * 支付异步通知时校验 sign
+     * Verifies the signature of an asynchronous payment notification.
      *
-     * @param params     参数
-     * @param partnerKey 支付密钥
-     * @param algorithm  {@link Algorithm}
-     * @return {@link Boolean} 验证签名结果
+     * @param params     The parameters from the notification.
+     * @param partnerKey The payment key.
+     * @param algorithm  The signature algorithm.
+     * @return {@code true} if the signature is valid, {@code false} otherwise.
      */
     public static boolean verifyNotify(Map<String, String> params, String partnerKey, Algorithm algorithm) {
         return verifyNotify(params, partnerKey, algorithm, null);
     }
 
     /**
-     * 生成签名
+     * Generates a signature.
      *
-     * @param params     需要签名的参数
-     * @param partnerKey 密钥
-     * @param algorithm  签名类型
-     * @return 签名后的数据
+     * @param params     The parameters to be signed.
+     * @param partnerKey The key.
+     * @param algorithm  The signature algorithm.
+     * @return The signed data.
      */
     public static String createSign(Map<String, String> params, String partnerKey, Algorithm algorithm) {
         return createSign(params, partnerKey, algorithm, null);
     }
 
     /**
-     * 生成签名
+     * Generates a signature.
      *
-     * @param params     需要签名的参数
-     * @param partnerKey 密钥
-     * @param algorithm  签名类型
-     * @param signKey    签名字符
-     * @return 签名后的数据
+     * @param params     The parameters to be signed.
+     * @param partnerKey The key.
+     * @param algorithm  The signature algorithm.
+     * @param signKey    The key used for the signature field.
+     * @return The signed data.
      */
     public static String createSign(
             Map<String, String> params,
@@ -224,7 +241,7 @@ public class WechatPayBuilder {
         if (StringKit.isEmpty(signKey)) {
             signKey = FIELD_SIGN;
         }
-        // 生成签名前先去除sign
+        // Remove sign before generating signature
         params.remove(signKey);
         String tempStr = Builder.createLinkString(params);
         String stringSignTemp = tempStr + "&key=" + partnerKey;
@@ -237,14 +254,14 @@ public class WechatPayBuilder {
     }
 
     /**
-     * 生成签名
+     * Generates a signature for WeChat Enterprise Pay.
      *
-     * @param params 需要签名的参数
-     * @param secret 企业微信支付应用secret
-     * @return 签名后的数据
+     * @param params The parameters to be signed.
+     * @param secret The secret of the WeChat Enterprise Pay application.
+     * @return The signed data.
      */
     public static String createSign(Map<String, String> params, String secret) {
-        // 生成签名前先去除sign
+        // Remove sign before generating signature
         params.remove(FIELD_SIGN);
         String tempStr = Builder.createLinkString(params);
         String stringSignTemp = tempStr + "&secret=" + secret;
@@ -252,25 +269,25 @@ public class WechatPayBuilder {
     }
 
     /**
-     * 构建签名
+     * Builds a signature.
      *
-     * @param params     需要签名的参数
-     * @param partnerKey 密钥
-     * @param algorithm  签名类型
-     * @return 签名后的 Map
+     * @param params     The parameters to be signed.
+     * @param partnerKey The key.
+     * @param algorithm  The signature algorithm.
+     * @return A map containing the signed parameters.
      */
     public static Map<String, String> buildSign(Map<String, String> params, String partnerKey, Algorithm algorithm) {
         return buildSign(params, partnerKey, algorithm, true);
     }
 
     /**
-     * 构建签名
+     * Builds a signature.
      *
-     * @param params       需要签名的参数
-     * @param partnerKey   密钥
-     * @param algorithm    签名类型
-     * @param haveSignType 签名是否包含 sign_type 字段
-     * @return 签名后的 Map
+     * @param params       The parameters to be signed.
+     * @param partnerKey   The key.
+     * @param algorithm    The signature algorithm.
+     * @param haveSignType Whether the signature includes the sign_type field.
+     * @return A map containing the signed parameters.
      */
     public static Map<String, String> buildSign(
             Map<String, String> params,
@@ -281,15 +298,15 @@ public class WechatPayBuilder {
     }
 
     /**
-     * 构建签名
+     * Builds a signature.
      *
-     * @param params       需要签名的参数
-     * @param partnerKey   密钥
-     * @param algorithm    签名类型
-     * @param signKey      签名字符串
-     * @param signTypeKey  签名类型字符串
-     * @param haveSignType 签名是否包含签名类型字符串
-     * @return 签名后的 Map
+     * @param params       The parameters to be signed.
+     * @param partnerKey   The key.
+     * @param algorithm    The signature algorithm.
+     * @param signKey      The string for the signature field.
+     * @param signTypeKey  The string for the signature type field.
+     * @param haveSignType Whether the signature includes the signature type string.
+     * @return A map containing the signed parameters.
      */
     public static Map<String, String> buildSign(
             Map<String, String> params,
@@ -312,25 +329,33 @@ public class WechatPayBuilder {
         return params;
     }
 
+    /**
+     * Iterates through a map and builds an XML string with a prefix and suffix.
+     *
+     * @param params The map to iterate through.
+     * @param prefix The XML prefix.
+     * @param suffix The XML suffix.
+     * @return A StringBuffer containing the XML string.
+     */
     public static StringBuffer forEachMap(Map<String, String> params, String prefix, String suffix) {
         return Builder.forEachMap(params, prefix, suffix);
     }
 
     /**
      * <p>
-     * 生成二维码链接
+     * Generates a QR code link.
      * </p>
      * <p>
-     * 原生支付接口模式一(扫码模式一)
+     * Native payment interface mode one (scan code mode one).
      * </p>
      *
-     * @param sign      签名
-     * @param appId     公众账号ID
-     * @param mchId     商户号
-     * @param productId 商品ID
-     * @param timeStamp 时间戳
-     * @param nonceStr  随机字符串
-     * @return {String}
+     * @param sign      The signature.
+     * @param appId     The public account ID.
+     * @param mchId     The merchant ID.
+     * @param productId The product ID.
+     * @param timeStamp The timestamp.
+     * @param nonceStr  The random string.
+     * @return The QR code link string.
      */
     public static String bizPayUrl(
             String sign,
@@ -345,20 +370,20 @@ public class WechatPayBuilder {
 
     /**
      * <p>
-     * 生成二维码链接
+     * Generates a QR code link.
      * </p>
      * <p>
-     * 原生支付接口模式一(扫码模式一)
+     * Native payment interface mode one (scan code mode one).
      * </p>
      *
-     * @param partnerKey 密钥
-     * @param appId      公众账号ID
-     * @param mchId      商户号
-     * @param productId  商品ID
-     * @param timeStamp  时间戳
-     * @param nonceStr   随机字符串
-     * @param algorithm  签名类型
-     * @return {String}
+     * @param partnerKey The key.
+     * @param appId      The public account ID.
+     * @param mchId      The merchant ID.
+     * @param productId  The product ID.
+     * @param timeStamp  The timestamp.
+     * @param nonceStr   The random string.
+     * @param algorithm  The signature algorithm.
+     * @return The QR code link string.
      */
     public static String bizPayUrl(
             String partnerKey,
@@ -381,17 +406,17 @@ public class WechatPayBuilder {
 
     /**
      * <p>
-     * 生成二维码链接
+     * Generates a QR code link.
      * </p>
      * <p>
-     * 原生支付接口模式一(扫码模式一)
+     * Native payment interface mode one (scan code mode one).
      * </p>
      *
-     * @param partnerKey 密钥
-     * @param appId      公众账号ID
-     * @param mchId      商户号
-     * @param productId  商品ID
-     * @return {String}
+     * @param partnerKey The key.
+     * @param appId      The public account ID.
+     * @param mchId      The merchant ID.
+     * @param productId  The product ID.
+     * @return The QR code link string.
      */
     public static String bizPayUrl(String partnerKey, String appId, String mchId, String productId) {
         String timeStamp = Long.toString(System.currentTimeMillis() / 1000);
@@ -406,12 +431,12 @@ public class WechatPayBuilder {
     }
 
     /**
-     * 替换url中的参数
+     * Replaces parameters in a URL string.
      *
-     * @param text  原始字符串
-     * @param regex 表达式
-     * @param args  替换字符串
-     * @return {String}
+     * @param text  The original string.
+     * @param regex The regular expression to match.
+     * @param args  The replacement strings.
+     * @return The string with parameters replaced.
      */
     public static String replace(String text, String regex, String... args) {
         for (String arg : args) {
@@ -421,10 +446,10 @@ public class WechatPayBuilder {
     }
 
     /**
-     * 判断接口返回的 code
+     * Checks if the API response code indicates success.
      *
-     * @param codeValue code 值
-     * @return 是否是 SUCCESS
+     * @param codeValue The code value from the API response.
+     * @return {@code true} if the code is "SUCCESS", {@code false} otherwise.
      */
     public static boolean codeIsOk(String codeValue) {
         return StringKit.isNotEmpty(codeValue) && "SUCCESS".equals(codeValue);
@@ -432,17 +457,17 @@ public class WechatPayBuilder {
 
     /**
      * <p>
-     * 公众号支付-预付订单再次签名
+     * Public account payment - re-sign a pre-payment order.
      * </p>
      * <p>
-     * 注意此处签名方式需与统一下单的签名类型一致
+     * Note that the signature method here must be consistent with the signature type of the unified order.
      * </p>
      *
-     * @param prepayId   预付订单号
-     * @param appId      应用编号
-     * @param partnerKey API Key
-     * @param algorithm  签名方式
-     * @return 再次签名后的 Map
+     * @param prepayId   The pre-payment order ID.
+     * @param appId      The application ID.
+     * @param partnerKey The API Key.
+     * @param algorithm  The signature method.
+     * @return A map containing the re-signed parameters.
      */
     public static Map<String, String> prepayIdCreateSign(
             String prepayId,
@@ -464,26 +489,26 @@ public class WechatPayBuilder {
     }
 
     /**
-     * JS 调起支付签名
+     * Generates a signature for JS API payment.
      *
-     * @param appId    应用编号
-     * @param prepayId 预付订单号
-     * @param keyPath  key.pem 证书路径
-     * @return 唤起支付需要的参数
-     * @throws Exception 错误信息
+     * @param appId    The application ID.
+     * @param prepayId The pre-payment order ID.
+     * @param keyPath  The path to the key.pem certificate.
+     * @return The parameters required to initiate payment.
+     * @throws Exception If an error occurs.
      */
     public static Map<String, String> jsApiCreateSign(String appId, String prepayId, String keyPath) throws Exception {
         return jsApiCreateSign(appId, prepayId, Builder.getPrivateKey(keyPath, AuthType.RSA.getCode()));
     }
 
     /**
-     * JS 调起支付签名
+     * Generates a signature for JS API payment.
      *
-     * @param appId      应用编号
-     * @param prepayId   预付订单号
-     * @param privateKey 商户私钥
-     * @return 唤起支付需要的参数
-     * @throws Exception 错误信息
+     * @param appId      The application ID.
+     * @param prepayId   The pre-payment order ID.
+     * @param privateKey The merchant's private key.
+     * @return The parameters required to initiate payment.
+     * @throws Exception If an error occurs.
      */
     public static Map<String, String> jsApiCreateSign(String appId, String prepayId, PrivateKey privateKey)
             throws Exception {
@@ -508,18 +533,18 @@ public class WechatPayBuilder {
 
     /**
      * <p>
-     * APP 支付-预付订单再次签名
+     * APP payment - re-sign a pre-payment order.
      * </p>
      * <p>
-     * 注意此处签名方式需与统一下单的签名类型一致
+     * Note that the signature method here must be consistent with the signature type of the unified order.
      * </p>
      *
-     * @param appId      应用编号
-     * @param partnerId  商户号
-     * @param prepayId   预付订单号
-     * @param partnerKey API Key
-     * @param algorithm  签名方式
-     * @return 再次签名后的 Map
+     * @param appId      The application ID.
+     * @param partnerId  The merchant ID.
+     * @param prepayId   The pre-payment order ID.
+     * @param partnerKey The API Key.
+     * @param algorithm  The signature method.
+     * @return A map containing the re-signed parameters.
      */
     public static Map<String, String> appPrepayIdCreateSign(
             String appId,
@@ -543,14 +568,14 @@ public class WechatPayBuilder {
     }
 
     /**
-     * App 调起支付签名
+     * Generates a signature for App payment.
      *
-     * @param appId     应用编号
-     * @param partnerId 商户编号
-     * @param prepayId  预付订单号
-     * @param keyPath   key.pem 证书路径
-     * @return 唤起支付需要的参数
-     * @throws Exception 错误信息
+     * @param appId     The application ID.
+     * @param partnerId The merchant ID.
+     * @param prepayId  The pre-payment order ID.
+     * @param keyPath   The path to the key.pem certificate.
+     * @return The parameters required to initiate payment.
+     * @throws Exception If an error occurs.
      */
     public static Map<String, String> appCreateSign(String appId, String partnerId, String prepayId, String keyPath)
             throws Exception {
@@ -558,14 +583,14 @@ public class WechatPayBuilder {
     }
 
     /**
-     * App 调起支付签名
+     * Generates a signature for App payment.
      *
-     * @param appId      应用编号
-     * @param partnerId  商户编号
-     * @param prepayId   预付订单号
-     * @param privateKey 商户私钥
-     * @return 唤起支付需要的参数
-     * @throws Exception 错误信息
+     * @param appId      The application ID.
+     * @param partnerId  The merchant ID.
+     * @param prepayId   The pre-payment order ID.
+     * @param privateKey The merchant's private key.
+     * @return The parameters required to initiate payment.
+     * @throws Exception If an error occurs.
      */
     public static Map<String, String> appCreateSign(
             String appId,
@@ -594,17 +619,17 @@ public class WechatPayBuilder {
 
     /**
      * <p>
-     * 小程序-预付订单再次签名
+     * Mini Program payment - re-sign a pre-payment order.
      * </p>
      * <p>
-     * 注意此处签名方式需与统一下单的签名类型一致
+     * Note that the signature method here must be consistent with the signature type of the unified order.
      * </p>
      *
-     * @param appId      应用编号
-     * @param prepayId   预付订单号
-     * @param partnerKey API Key
-     * @param algorithm  签名方式
-     * @return 再次签名后的 Map
+     * @param appId      The application ID.
+     * @param prepayId   The pre-payment order ID.
+     * @param partnerKey The API Key.
+     * @param algorithm  The signature method.
+     * @return A map containing the re-signed parameters.
      */
     public static Map<String, String> miniAppPrepayIdCreateSign(
             String appId,
@@ -626,19 +651,20 @@ public class WechatPayBuilder {
     }
 
     /**
-     * 构建 v3 接口所需的 Authorization
+     * Builds the Authorization header required for WeChat Pay v3 API requests.
      *
-     * @param method    请求方式
-     * @param urlSuffix 可通过 WxApiType 来获取，URL挂载参数需要自行拼接
-     * @param mchId     商户Id
-     * @param serialNo  商户 API 证书序列号
-     * @param keyPath   key.pem 证书路径
-     * @param body      接口请求参数
-     * @param nonceStr  随机字符库
-     * @param timestamp 时间戳
-     * @param authType  认证类型
-     * @return {@link String} 返回 v3 所需的 Authorization
-     * @throws Exception 异常信息
+     * @param method    The HTTP request method.
+     * @param urlSuffix The URL suffix, which can be obtained from WxApiType. URL parameters need to be concatenated
+     *                  manually.
+     * @param mchId     The merchant ID.
+     * @param serialNo  The merchant API certificate serial number.
+     * @param keyPath   The path to the key.pem certificate.
+     * @param body      The interface request parameters.
+     * @param nonceStr  The random string.
+     * @param timestamp The timestamp.
+     * @param authType  The authentication type.
+     * @return The Authorization header string required for v3.
+     * @throws Exception If an error occurs.
      */
     public static String buildAuthorization(
             String method,
@@ -650,27 +676,28 @@ public class WechatPayBuilder {
             String nonceStr,
             long timestamp,
             String authType) throws Exception {
-        // 构建签名参数
+        // Build signature parameters
         String buildSignMessage = Builder.buildSignMessage(method, urlSuffix, timestamp, nonceStr, body);
         String signature = Builder.createSign(buildSignMessage, keyPath, authType);
-        // 根据平台规则生成请求头 authorization
+        // Generate request header authorization according to platform rules
         return Builder.getAuthorization(mchId, serialNo, nonceStr, String.valueOf(timestamp), signature, authType);
     }
 
     /**
-     * 构建 v3 接口所需的 Authorization
+     * Builds the Authorization header required for WeChat Pay v3 API requests.
      *
-     * @param method     请求方式
-     * @param urlSuffix  可通过 WxApiType 来获取，URL挂载参数需要自行拼接
-     * @param mchId      商户Id
-     * @param serialNo   商户 API 证书序列号
-     * @param privateKey 商户私钥
-     * @param body       接口请求参数
-     * @param nonceStr   随机字符库
-     * @param timestamp  时间戳
-     * @param authType   认证类型
-     * @return {@link String} 返回 v3 所需的 Authorization
-     * @throws Exception 异常信息
+     * @param method     The HTTP request method.
+     * @param urlSuffix  The URL suffix, which can be obtained from WxApiType. URL parameters need to be concatenated
+     *                   manually.
+     * @param mchId      The merchant ID.
+     * @param serialNo   The merchant API certificate serial number.
+     * @param privateKey The merchant's private key.
+     * @param body       The interface request parameters.
+     * @param nonceStr   The random string.
+     * @param timestamp  The timestamp.
+     * @param authType   The authentication type.
+     * @return The Authorization header string required for v3.
+     * @throws Exception If an error occurs.
      */
     public static String buildAuthorization(
             String method,
@@ -682,24 +709,25 @@ public class WechatPayBuilder {
             String nonceStr,
             long timestamp,
             String authType) throws Exception {
-        // 构建签名参数
+        // Build signature parameters
         String buildSignMessage = Builder.buildSignMessage(method, urlSuffix, timestamp, nonceStr, body);
         String signature = Builder.createSign(buildSignMessage, privateKey);
-        // 根据平台规则生成请求头 authorization
+        // Generate request header authorization according to platform rules
         return Builder.getAuthorization(mchId, serialNo, nonceStr, String.valueOf(timestamp), signature, authType);
     }
 
     /**
-     * 构建 v3 接口所需的 Authorization
+     * Builds the Authorization header required for WeChat Pay v3 API requests.
      *
-     * @param method    请求方式
-     * @param urlSuffix 可通过 WxApiType 来获取，URL挂载参数需要自行拼接
-     * @param mchId     商户Id
-     * @param serialNo  商户 API 证书序列号
-     * @param keyPath   key.pem 证书路径
-     * @param body      接口请求参数
-     * @return {@link String} 返回 v3 所需的 Authorization
-     * @throws Exception 异常信息
+     * @param method    The HTTP request method.
+     * @param urlSuffix The URL suffix, which can be obtained from WxApiType. URL parameters need to be concatenated
+     *                  manually.
+     * @param mchId     The merchant ID.
+     * @param serialNo  The merchant API certificate serial number.
+     * @param keyPath   The path to the key.pem certificate.
+     * @param body      The interface request parameters.
+     * @return The Authorization header string required for v3.
+     * @throws Exception If an error occurs.
      */
     public static String buildAuthorization(
             String method,
@@ -721,16 +749,17 @@ public class WechatPayBuilder {
     }
 
     /**
-     * 构建 v3 接口所需的 Authorization
+     * Builds the Authorization header required for WeChat Pay v3 API requests.
      *
-     * @param method     请求方式
-     * @param urlSuffix  可通过 WxApiType 来获取，URL挂载参数需要自行拼接
-     * @param mchId      商户Id
-     * @param serialNo   商户 API 证书序列号
-     * @param privateKey key.pem 证书路径
-     * @param body       接口请求参数
-     * @return {@link String} 返回 v3 所需的 Authorization
-     * @throws Exception 异常信息
+     * @param method     The HTTP request method.
+     * @param urlSuffix  The URL suffix, which can be obtained from WxApiType. URL parameters need to be concatenated
+     *                   manually.
+     * @param mchId      The merchant ID.
+     * @param serialNo   The merchant API certificate serial number.
+     * @param privateKey The merchant's private key.
+     * @param body       The interface request parameters.
+     * @return The Authorization header string required for v3.
+     * @throws Exception If an error occurs.
      */
     public static String buildAuthorization(
             String method,
@@ -752,12 +781,12 @@ public class WechatPayBuilder {
     }
 
     /**
-     * 验证签名
+     * Verifies the signature of an API response.
      *
-     * @param response 接口请求返回的 {@link Message}
-     * @param certPath 平台证书路径
-     * @return 签名结果
-     * @throws Exception 异常信息
+     * @param response The {@link Message} object containing the API response.
+     * @param certPath The path to the platform certificate.
+     * @return {@code true} if the signature is valid, {@code false} otherwise.
+     * @throws Exception If an error occurs.
      */
     public static boolean verifySignature(Message response, String certPath) throws Exception {
         String timestamp = response.getHeader("Wechatpay-Timestamp");
@@ -780,12 +809,12 @@ public class WechatPayBuilder {
     }
 
     /**
-     * 验证签名
+     * Verifies the signature of an API response.
      *
-     * @param response        接口请求返回的 {@link Message}
-     * @param certInputStream 平台证书
-     * @return 签名结果
-     * @throws Exception 异常信息
+     * @param response        The {@link Message} object containing the API response.
+     * @param certInputStream The input stream of the platform certificate.
+     * @return {@code true} if the signature is valid, {@code false} otherwise.
+     * @throws Exception If an error occurs.
      */
     public static boolean verifySignature(Message response, InputStream certInputStream) throws Exception {
         String timestamp = response.getHeader("Wechatpay-Timestamp");
@@ -797,15 +826,15 @@ public class WechatPayBuilder {
     }
 
     /**
-     * 验证签名
+     * Verifies the signature.
      *
-     * @param signature 待验证的签名
-     * @param body      应答主体
-     * @param nonce     随机串
-     * @param timestamp 时间戳
-     * @param publicKey 微信支付平台公钥
-     * @return 签名结果
-     * @throws Exception 异常信息
+     * @param signature The signature to be verified.
+     * @param body      The response body.
+     * @param nonce     The random string.
+     * @param timestamp The timestamp.
+     * @param publicKey The WeChat Pay platform public key.
+     * @return {@code true} if the signature is valid, {@code false} otherwise.
+     * @throws Exception If an error occurs.
      */
     public static boolean verifySignature(
             String signature,
@@ -818,15 +847,15 @@ public class WechatPayBuilder {
     }
 
     /**
-     * 验证签名
+     * Verifies the signature.
      *
-     * @param signature 待验证的签名
-     * @param body      应答主体
-     * @param nonce     随机串
-     * @param timestamp 时间戳
-     * @param publicKey {@link PublicKey} 微信支付平台公钥
-     * @return 签名结果
-     * @throws Exception 异常信息
+     * @param signature The signature to be verified.
+     * @param body      The response body.
+     * @param nonce     The random string.
+     * @param timestamp The timestamp.
+     * @param publicKey The WeChat Pay platform public key.
+     * @return {@code true} if the signature is valid, {@code false} otherwise.
+     * @throws Exception If an error occurs.
      */
     public static boolean verifySignature(
             String signature,
@@ -839,16 +868,16 @@ public class WechatPayBuilder {
     }
 
     /**
-     * 验证签名
+     * Verifies the signature.
      *
-     * @param signatureType   签名类型
-     * @param signature       待验证的签名
-     * @param body            应答主体
-     * @param nonce           随机串
-     * @param timestamp       时间戳
-     * @param certInputStream 微信支付平台证书输入流
-     * @return 签名结果
-     * @throws Exception 异常信息
+     * @param signatureType   The signature type.
+     * @param signature       The signature to be verified.
+     * @param body            The response body.
+     * @param nonce           The random string.
+     * @param timestamp       The timestamp.
+     * @param certInputStream The input stream of the WeChat Pay platform certificate.
+     * @return {@code true} if the signature is valid, {@code false} otherwise.
+     * @throws Exception If an error occurs.
      */
     public static boolean verifySignature(
             String signatureType,
@@ -858,7 +887,7 @@ public class WechatPayBuilder {
             String timestamp,
             InputStream certInputStream) throws Exception {
         String buildSignMessage = Builder.buildSignMessage(timestamp, nonce, body);
-        // 获取证书
+        // Get certificate
         X509Certificate certificate = Builder.getCertificate(certInputStream);
         PublicKey publicKey = certificate.getPublicKey();
         if (StringKit.equals(signatureType, AuthType.SM2.getCode())) {
@@ -868,17 +897,17 @@ public class WechatPayBuilder {
     }
 
     /**
-     * v3 支付异步通知验证签名
+     * Verifies the signature of a v3 payment asynchronous notification.
      *
-     * @param serialNo        证书序列号
-     * @param body            异步通知密文
-     * @param signature       签名
-     * @param nonce           随机字符串
-     * @param timestamp       时间戳
-     * @param key             api 密钥
-     * @param certInputStream 平台证书
-     * @return 异步通知明文
-     * @throws Exception 异常信息
+     * @param serialNo        The certificate serial number.
+     * @param body            The asynchronous notification ciphertext.
+     * @param signature       The signature.
+     * @param nonce           The random string.
+     * @param timestamp       The timestamp.
+     * @param key             The API key.
+     * @param certInputStream The platform certificate input stream.
+     * @return The plaintext of the asynchronous notification.
+     * @throws Exception If an error occurs.
      */
     public static String verifyNotify(
             String serialNo,
@@ -888,10 +917,10 @@ public class WechatPayBuilder {
             String timestamp,
             String key,
             InputStream certInputStream) throws Exception {
-        // 获取平台证书序列号
+        // Get platform certificate serial number
         X509Certificate certificate = Builder.getCertificate(certInputStream);
         String serialNumber = certificate.getSerialNumber().toString(16).toUpperCase();
-        // 验证证书序列号
+        // Verify certificate serial number
         if (serialNumber.equals(serialNo)) {
             boolean verifySignature = WechatPayBuilder
                     .verifySignature(signature, body, nonce, timestamp, certificate.getPublicKey());
@@ -903,32 +932,32 @@ public class WechatPayBuilder {
                 String nonceStr = JsonKit.getValue(resource, "nonce");
                 String associatedData = JsonKit.getValue(resource, "associated_data");
 
-                // 密文解密
+                // Decrypt ciphertext
                 return decryptToString(
                         key.getBytes(Charset.UTF_8),
                         associatedData.getBytes(Charset.UTF_8),
                         nonceStr.getBytes(Charset.UTF_8),
                         cipherText);
             } else {
-                throw new Exception("签名错误");
+                throw new Exception("Signature error");
             }
         } else {
-            throw new Exception("证书序列号错误");
+            throw new Exception("Certificate serial number error");
         }
     }
 
     /**
-     * v3 支付异步通知验证签名
+     * Verifies the signature of a v3 payment asynchronous notification.
      *
-     * @param serialNo  证书序列号
-     * @param body      异步通知密文
-     * @param signature 签名
-     * @param nonce     随机字符串
-     * @param timestamp 时间戳
-     * @param key       api 密钥
-     * @param certPath  平台证书路径
-     * @return 异步通知明文
-     * @throws Exception 异常信息
+     * @param serialNo  The certificate serial number.
+     * @param body      The asynchronous notification ciphertext.
+     * @param signature The signature.
+     * @param nonce     The random string.
+     * @param timestamp The timestamp.
+     * @param key       The API key.
+     * @param certPath  The path to the platform certificate.
+     * @return The plaintext of the asynchronous notification.
+     * @throws Exception If an error occurs.
      */
     public static String verifyNotify(
             String serialNo,
@@ -943,9 +972,10 @@ public class WechatPayBuilder {
     }
 
     /**
-     * 生成公钥和私钥
+     * Generates RSA public and private keys.
      *
-     * @throws Exception 异常信息
+     * @return A map containing the public and private keys.
+     * @throws Exception If an error occurs during key generation.
      */
     public static Map<String, String> getKeys() throws Exception {
         KeyPairGenerator keyPairGen = KeyPairGenerator.getInstance(Algorithm.RSA.getValue());
@@ -958,17 +988,19 @@ public class WechatPayBuilder {
         map.put("publicKey", publicKey);
         map.put("privateKey", privateKey);
 
-        Logger.info("公钥\r\n" + publicKey);
-        Logger.info("私钥\r\n" + privateKey);
+        Logger.info("Public Key\r\n" + publicKey);
+        Logger.info("Private Key\r\n" + privateKey);
         return map;
     }
 
     /**
-     * 使用模和指数生成RSA公钥 注意：【此代码用了默认补位方式，为RSA/None/PKCS1Padding，不同JDK默认的补位方式可能不同，如Android默认是RSA /None/NoPadding】
+     * Generates an RSA public key using modulus and exponent. Note: [This code uses the default padding method,
+     * RSA/None/PKCS1Padding. Different JDKs may have different default padding methods, such as Android's default
+     * RSA/None/NoPadding].
      *
-     * @param modulus  模
-     * @param exponent 公钥指数
-     * @return {@link RSAPublicKey}
+     * @param modulus  The modulus.
+     * @param exponent The public exponent.
+     * @return The {@link RSAPublicKey}.
      */
     public static RSAPublicKey getPublicKey(String modulus, String exponent) {
         try {
@@ -984,11 +1016,13 @@ public class WechatPayBuilder {
     }
 
     /**
-     * 使用模和指数生成RSA私钥 注意：【此代码用了默认补位方式，为RSA/None/PKCS1Padding，不同JDK默认的补位方式可能不同，如Android默认是RSA /None/NoPadding】
+     * Generates an RSA private key using modulus and exponent. Note: [This code uses the default padding method,
+     * RSA/None/PKCS1Padding. Different JDKs may have different default padding methods, such as Android's default
+     * RSA/None/NoPadding].
      *
-     * @param modulus  模
-     * @param exponent 指数
-     * @return {@link RSAPrivateKey}
+     * @param modulus  The modulus.
+     * @param exponent The exponent.
+     * @return The {@link RSAPrivateKey}.
      */
     public static RSAPrivateKey getPrivateKey(String modulus, String exponent) {
         try {
@@ -1004,37 +1038,37 @@ public class WechatPayBuilder {
     }
 
     /**
-     * 公钥加密
+     * Encrypts data using a public key.
      *
-     * @param data      需要加密的数据
-     * @param publicKey 公钥
-     * @return 加密后的数据
-     * @throws Exception 异常信息
+     * @param data      The data to be encrypted.
+     * @param publicKey The public key.
+     * @return The encrypted data.
+     * @throws Exception If an error occurs during encryption.
      */
     public static String encryptByPublicKey(String data, String publicKey) throws Exception {
         return encryptByPublicKey(data, publicKey, "RSA/ECB/PKCS1Padding");
     }
 
     /**
-     * 公钥加密
+     * Encrypts data using a public key with OAEP padding for WeChat Pay.
      *
-     * @param data      需要加密的数据
-     * @param publicKey 公钥
-     * @return 加密后的数据
-     * @throws Exception 异常信息
+     * @param data      The data to be encrypted.
+     * @param publicKey The public key.
+     * @return The encrypted data.
+     * @throws Exception If an error occurs during encryption.
      */
     public static String encryptByPublicKeyByWx(String data, String publicKey) throws Exception {
         return encryptByPublicKey(data, publicKey, "RSA/ECB/OAEPWITHSHA-1ANDMGF1PADDING");
     }
 
     /**
-     * 公钥加密
+     * Encrypts data using a public key with a specified padding mode.
      *
-     * @param data      需要加密的数据
-     * @param publicKey 公钥
-     * @param fillMode  填充模式
-     * @return 加密后的数据
-     * @throws Exception 异常信息
+     * @param data      The data to be encrypted.
+     * @param publicKey The public key.
+     * @param fillMode  The padding mode.
+     * @return The encrypted data.
+     * @throws Exception If an error occurs during encryption.
      */
     public static String encryptByPublicKey(String data, String publicKey, String fillMode) throws Exception {
         byte[] dataByte = data.getBytes(Charset.UTF_8);
@@ -1042,7 +1076,7 @@ public class WechatPayBuilder {
         X509EncodedKeySpec x509KeySpec = new X509EncodedKeySpec(keyBytes);
         KeyFactory keyFactory = KeyFactory.getInstance(Algorithm.RSA.getValue());
         Key key = keyFactory.generatePublic(x509KeySpec);
-        // 对数据加密
+        // Encrypt data
         Cipher cipher = Cipher.getInstance(fillMode);
         cipher.init(Cipher.ENCRYPT_MODE, key);
         int inputLen = dataByte.length;
@@ -1050,7 +1084,7 @@ public class WechatPayBuilder {
         int offSet = 0;
         byte[] cache;
         int i = 0;
-        // 对数据分段加密
+        // Encrypt data in segments
         while (inputLen - offSet > 0) {
             if (inputLen - offSet > MAX_ENCRYPT_BLOCK) {
                 cache = cipher.doFinal(dataByte, offSet, MAX_ENCRYPT_BLOCK);
@@ -1067,12 +1101,12 @@ public class WechatPayBuilder {
     }
 
     /**
-     * 私钥签名
+     * Signs data using a private key.
      *
-     * @param data       需要加密的数据
-     * @param privateKey 私钥
-     * @return 加密后的数据
-     * @throws Exception 异常信息
+     * @param data       The data to be signed.
+     * @param privateKey The private key.
+     * @return The signed data.
+     * @throws Exception If an error occurs during signing.
      */
     public static String encryptByPrivateKey(String data, String privateKey) throws Exception {
         PKCS8EncodedKeySpec priPkcs8 = new PKCS8EncodedKeySpec(Base64.decode(privateKey));
@@ -1087,12 +1121,12 @@ public class WechatPayBuilder {
     }
 
     /**
-     * 私钥签名
+     * Signs data using a private key.
      *
-     * @param data       需要加密的数据
-     * @param privateKey 私钥
-     * @return 加密后的数据
-     * @throws Exception 异常信息
+     * @param data       The data to be signed.
+     * @param privateKey The private key.
+     * @return The signed data.
+     * @throws Exception If an error occurs during signing.
      */
     public static String encryptByPrivateKey(String data, PrivateKey privateKey) throws Exception {
         Signature signature = Signature.getInstance("SHA256WithRSA");
@@ -1103,13 +1137,13 @@ public class WechatPayBuilder {
     }
 
     /**
-     * 公钥验证签名
+     * Verifies a signature using a public key.
      *
-     * @param data      需要加密的数据
-     * @param sign      签名
-     * @param publicKey 公钥
-     * @return 验证结果
-     * @throws Exception 异常信息
+     * @param data      The data that was signed.
+     * @param sign      The signature.
+     * @param publicKey The public key.
+     * @return {@code true} if the signature is valid, {@code false} otherwise.
+     * @throws Exception If an error occurs during verification.
      */
     public static boolean checkByPublicKey(String data, String sign, String publicKey) throws Exception {
         KeyFactory keyFactory = KeyFactory.getInstance(Algorithm.RSA.getValue());
@@ -1122,13 +1156,13 @@ public class WechatPayBuilder {
     }
 
     /**
-     * 公钥验证签名
+     * Verifies a signature using a public key.
      *
-     * @param data      需要加密的数据
-     * @param sign      签名
-     * @param publicKey 公钥
-     * @return 验证结果
-     * @throws Exception 异常信息
+     * @param data      The data that was signed.
+     * @param sign      The signature.
+     * @param publicKey The public key.
+     * @return {@code true} if the signature is valid, {@code false} otherwise.
+     * @throws Exception If an error occurs during verification.
      */
     public static boolean checkByPublicKey(String data, String sign, PublicKey publicKey) throws Exception {
         Signature signature = Signature.getInstance("SHA256WithRSA");
@@ -1138,37 +1172,37 @@ public class WechatPayBuilder {
     }
 
     /**
-     * 私钥解密
+     * Decrypts data using a private key.
      *
-     * @param data       需要解密的数据
-     * @param privateKey 私钥
-     * @return 解密后的数据
-     * @throws Exception 异常信息
+     * @param data       The data to be decrypted.
+     * @param privateKey The private key.
+     * @return The decrypted data.
+     * @throws Exception If an error occurs during decryption.
      */
     public static String decryptByPrivateKey(String data, String privateKey) throws Exception {
         return decryptByPrivateKey(data, privateKey, "RSA/ECB/PKCS1Padding");
     }
 
     /**
-     * 私钥解密
+     * Decrypts data using a private key with OAEP padding for WeChat Pay.
      *
-     * @param data       需要解密的数据
-     * @param privateKey 私钥
-     * @return 解密后的数据
-     * @throws Exception 异常信息
+     * @param data       The data to be decrypted.
+     * @param privateKey The private key.
+     * @return The decrypted data.
+     * @throws Exception If an error occurs during decryption.
      */
     public static String decryptByPrivateKeyByWx(String data, String privateKey) throws Exception {
         return decryptByPrivateKey(data, privateKey, "RSA/ECB/OAEPWITHSHA-1ANDMGF1PADDING");
     }
 
     /**
-     * 私钥解密
+     * Decrypts data using a private key with a specified padding mode.
      *
-     * @param data       需要解密的数据
-     * @param privateKey 私钥
-     * @param fillMode   填充模式
-     * @return 解密后的数据
-     * @throws Exception 异常信息
+     * @param data       The data to be decrypted.
+     * @param privateKey The private key.
+     * @param fillMode   The padding mode.
+     * @return The decrypted data.
+     * @throws Exception If an error occurs during decryption.
      */
     public static String decryptByPrivateKey(String data, String privateKey, String fillMode) throws Exception {
         byte[] encryptedData = Base64.decode(data);
@@ -1184,7 +1218,7 @@ public class WechatPayBuilder {
         int offSet = 0;
         byte[] cache;
         int i = 0;
-        // 对数据分段解密
+        // Decrypt data in segments
         while (inputLen - offSet > 0) {
             if (inputLen - offSet > Normal._128) {
                 cache = cipher.doFinal(encryptedData, offSet, Normal._128);
@@ -1201,10 +1235,11 @@ public class WechatPayBuilder {
     }
 
     /**
-     * 从字符串中加载公钥
+     * Loads a public key from a string.
      *
-     * @param publicKey 公钥数据字符串
-     * @throws Exception 异常信息
+     * @param publicKey The public key data string.
+     * @return The {@link PublicKey}.
+     * @throws Exception If an error occurs during key loading.
      */
     public static PublicKey loadPublicKey(String publicKey) throws Exception {
         try {
@@ -1213,20 +1248,20 @@ public class WechatPayBuilder {
             X509EncodedKeySpec keySpec = new X509EncodedKeySpec(buffer);
             return keyFactory.generatePublic(keySpec);
         } catch (NoSuchAlgorithmException e) {
-            throw new Exception("无此算法");
+            throw new Exception("No such algorithm");
         } catch (InvalidKeySpecException e) {
-            throw new Exception("公钥非法");
+            throw new Exception("Invalid public key");
         } catch (NullPointerException e) {
-            throw new Exception("公钥数据为空");
+            throw new Exception("Public key data is null");
         }
     }
 
     /**
-     * 从字符串中加载私钥 加载时使用的是PKCS8EncodedKeySpec（PKCS#8编码的Key指令）
+     * Loads a private key from a string. Uses PKCS8EncodedKeySpec (PKCS#8 encoded key instruction) for loading.
      *
-     * @param privateKey 私钥
-     * @return {@link PrivateKey}
-     * @throws Exception 异常信息
+     * @param privateKey The private key string.
+     * @return The {@link PrivateKey}.
+     * @throws Exception If an error occurs during key loading.
      */
     public static PrivateKey loadPrivateKey(String privateKey) throws Exception {
         try {
@@ -1235,22 +1270,23 @@ public class WechatPayBuilder {
             KeyFactory keyFactory = KeyFactory.getInstance(Algorithm.RSA.getValue());
             return keyFactory.generatePrivate(keySpec);
         } catch (NoSuchAlgorithmException e) {
-            throw new Exception("无此算法");
+            throw new Exception("No such algorithm");
         } catch (InvalidKeySpecException e) {
-            throw new Exception("私钥非法");
+            throw new Exception("Invalid private key");
         } catch (NullPointerException e) {
-            throw new Exception("私钥数据为空");
+            throw new Exception("Private key data is null");
         }
     }
 
     /**
-     * 证书和回调报文解密
+     * Decrypts certificate and callback messages.
      *
-     * @param associatedData associated_data
-     * @param nonce          nonce
-     * @param cipherText     ciphertext
-     * @return {String} 平台证书明文
-     * @throws GeneralSecurityException 异常
+     * @param key            The key for decryption.
+     * @param associatedData The associated data.
+     * @param nonce          The nonce.
+     * @param cipherText     The ciphertext.
+     * @return The plaintext of the platform certificate.
+     * @throws GeneralSecurityException If a security-related error occurs.
      */
     public static String decryptToString(byte[] key, byte[] associatedData, byte[] nonce, String cipherText)
             throws GeneralSecurityException {

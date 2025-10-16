@@ -46,7 +46,8 @@ import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.select.*;
 
 /**
- * sql解析类，提供更智能的count查询sql
+ * Default implementation of {@link CountSqlParser} that provides a more intelligent way to generate count query SQL. It
+ * attempts to optimize the count query by removing unnecessary ORDER BY clauses and simplifying the SELECT statement.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -61,39 +62,40 @@ public class DefaultCountSqlParser implements CountSqlParser {
         TABLE_ALIAS.setUseAs(false);
     }
 
-    // 使用同步集合存储函数名，确保线程安全
+    // Use a synchronized set to store function names for thread safety
     private final Set<String> skipFunctions = Collections.synchronizedSet(new HashSet<>());
     private final Set<String> falseFunctions = Collections.synchronizedSet(new HashSet<>());
 
     /**
-     * 获取智能的 COUNT SQL，自动检测是否需要保留 ORDER BY。 优化字符串处理和解析逻辑，减少性能开销。
+     * Retrieves an intelligent COUNT SQL, automatically detecting whether to keep the ORDER BY clause. This method
+     * optimizes string handling and parsing logic to reduce performance overhead.
      *
-     * @param sql         原始 SQL 查询
-     * @param countColumn COUNT 列名，默认为 "0"
-     * @return 优化的 COUNT SQL
+     * @param sql         the original SQL query
+     * @param countColumn the COUNT column name, defaults to "0"
+     * @return the optimized COUNT SQL
      */
     @Override
     public String getSmartCountSql(String sql, String countColumn) {
-        // 快速检查是否需要保留 ORDER BY
+        // Quickly check if ORDER BY needs to be kept
         if (sql.contains(KEEP_ORDERBY) || keepOrderBy()) {
             return getSimpleCountSql(sql, countColumn);
         }
 
         try {
-            // 解析 SQL
+            // Parse the SQL
             Statement stmt = Builder.parse(sql);
             Select select = (Select) stmt;
 
-            // 处理 SELECT 主体，移除不必要的 ORDER BY
+            // Process the SELECT body to remove unnecessary ORDER BY clauses
             processSelect(select);
 
-            // 优化 WITH 子句处理
+            // Optimize WITH clause processing
             processWithItemsList(select.getWithItemsList());
 
-            // 转换为 COUNT 查询
+            // Convert to a COUNT query
             Select countSelect = sqlToCount(select, countColumn);
 
-            // 保留原始 SQL 的注释（如 hints）
+            // Preserve original SQL comments (like hints)
             String result = countSelect.toString();
             if (select instanceof PlainSelect && select.getASTNode() != null) {
                 Token token = select.getASTNode().jjtGetFirstToken();
@@ -107,27 +109,28 @@ public class DefaultCountSqlParser implements CountSqlParser {
             return result;
 
         } catch (Throwable e) {
-            // 解析失败时回退到简单 COUNT
+            // Fallback to simple COUNT on parsing failure
             return getSimpleCountSql(sql, countColumn);
         }
     }
 
     /**
-     * 获取简单的 COUNT SQL，适用于无法解析或复杂场景。
+     * Retrieves a simple COUNT SQL, suitable for unparseable or complex scenarios.
      *
-     * @param sql 原查询 SQL
-     * @return 简单的 COUNT SQL
+     * @param sql the original query SQL
+     * @return a simple COUNT SQL
      */
     public String getSimpleCountSql(final String sql) {
         return getSimpleCountSql(sql, "0");
     }
 
     /**
-     * 获取简单的 COUNT SQL，指定 COUNT 列名。 优化 StringBuilder 容量预估，减少扩容。
+     * Retrieves a simple COUNT SQL with a specified COUNT column name. This method optimizes StringBuilder capacity
+     * estimation to reduce resizing.
      *
-     * @param sql  原查询 SQL
-     * @param name COUNT 列名
-     * @return 简单的 COUNT SQL
+     * @param sql  the original query SQL
+     * @param name the COUNT column name
+     * @return a simple COUNT SQL
      */
     public String getSimpleCountSql(final String sql, String name) {
         StringBuilder stringBuilder = new StringBuilder(sql.length() + 50);
@@ -140,22 +143,22 @@ public class DefaultCountSqlParser implements CountSqlParser {
     }
 
     /**
-     * 将sql转换为count查询
+     * Converts a SQL statement to a count query.
      *
-     * @param select 原查询sql
-     * @param name   名称
-     * @return 返回count查询sql
+     * @param select the original query SQL
+     * @param name   the name of the count column
+     * @return the resulting count query SQL
      */
     public Select sqlToCount(Select select, String name) {
         List<SelectItem<?>> countItem = Collections.singletonList(new SelectItem<>(new Column("COUNT(" + name + ")")));
 
         if (select instanceof PlainSelect && isSimpleCount((PlainSelect) select)) {
-            // 简单场景直接替换 SELECT 项
+            // Directly replace SELECT items in simple scenarios
             ((PlainSelect) select).setSelectItems(countItem);
             return select;
         }
 
-        // 复杂场景，包装为子查询
+        // Wrap in a subquery for complex scenarios
         PlainSelect plainSelect = new PlainSelect();
         ParenthesedSelect subSelect = new ParenthesedSelect();
         subSelect.setSelect(select);
@@ -163,7 +166,7 @@ public class DefaultCountSqlParser implements CountSqlParser {
         plainSelect.setFromItem(subSelect);
         plainSelect.setSelectItems(countItem);
 
-        // 转移 WITH 子句
+        // Move WITH clauses
         if (select.getWithItemsList() != null) {
             plainSelect.setWithItemsList(select.getWithItemsList());
             select.setWithItemsList(null);
@@ -173,20 +176,21 @@ public class DefaultCountSqlParser implements CountSqlParser {
     }
 
     /**
-     * 判断是否可以使用简单的 COUNT 查询方式。 避免使用过时的 Parenthesis 类，改用 ParenthesedExpressionList 或通用 Expression 处理。
+     * Determines if a simple COUNT query can be used. This method avoids using the deprecated Parenthesis class, using
+     * ParenthesedExpressionList or generic Expression instead.
      *
-     * @param select 查询
-     * @return 是否为简单 COUNT
+     * @param select the query
+     * @return true if it is a simple COUNT, false otherwise
      */
     public boolean isSimpleCount(PlainSelect select) {
-        // GROUP BY、DISTINCT 或 HAVING 存在时无法简化
+        // Cannot be simplified if GROUP BY, DISTINCT, or HAVING exists
         if (select.getGroupBy() != null || select.getDistinct() != null || select.getHaving() != null) {
             return false;
         }
 
         for (SelectItem<?> item : select.getSelectItems()) {
             String itemStr = item.toString();
-            // 包含参数（?）时无法简化
+            // Cannot be simplified if it contains parameters (?)
             if (itemStr.contains("?")) {
                 return false;
             }
@@ -202,7 +206,7 @@ public class DefaultCountSqlParser implements CountSqlParser {
                     if (falseFunctions.contains(upperName)) {
                         return false;
                     }
-                    // 检查是否为聚合函数
+                    // Check if it is an aggregate function
                     for (String aggFunc : AGGREGATE_FUNCTIONS) {
                         if (upperName.startsWith(aggFunc)) {
                             falseFunctions.add(upperName);
@@ -212,11 +216,11 @@ public class DefaultCountSqlParser implements CountSqlParser {
                     skipFunctions.add(upperName);
                 }
             } else if (expression instanceof ParenthesedExpressionList && item.getAlias() != null) {
-                // 带别名的括号表达式列表可能在 ORDER BY 或 HAVING 中引用
+                // Parenthesized expression lists with aliases may be referenced in ORDER BY or HAVING
                 return false;
             } else if (item.getAlias() != null && expression.toString().startsWith("(")
                     && expression.toString().endsWith(")")) {
-                // 检测括号包裹的单表达式（替代 Parenthesis 的逻辑）
+                // Detect single expressions wrapped in parentheses (alternative to Parenthesis)
                 return false;
             }
         }
@@ -224,9 +228,10 @@ public class DefaultCountSqlParser implements CountSqlParser {
     }
 
     /**
-     * 处理 SELECT 主体，移除不必要的 ORDER BY。 优化递归处理逻辑，减少重复调用。
+     * Processes the SELECT body to remove unnecessary ORDER BY clauses. This method optimizes recursive processing
+     * logic to reduce redundant calls.
      *
-     * @param select 查询信息
+     * @param select the query information
      */
     public void processSelect(Select select) {
         if (select == null) {
@@ -249,9 +254,9 @@ public class DefaultCountSqlParser implements CountSqlParser {
     }
 
     /**
-     * 处理 PlainSelect 类型的 SELECT 主体。 优化 JOIN 和 FROM 项处理逻辑。
+     * Processes the body of a PlainSelect type. This method optimizes JOIN and FROM item processing logic.
      *
-     * @param plainSelect 查询
+     * @param plainSelect the query
      */
     public void processPlainSelect(PlainSelect plainSelect) {
         if (!orderByHashParameters(plainSelect.getOrderByElements())) {
@@ -273,19 +278,19 @@ public class DefaultCountSqlParser implements CountSqlParser {
     }
 
     /**
-     * 处理 WITH 子句，移除不必要的 ORDER BY。
+     * Processes the WITH clause to remove unnecessary ORDER BY clauses.
      * <ol>
-     * <li>使用 List&lt;WithItem&lt;?&gt;&gt; 适配 JSqlParser 5.1 的泛型 API。</li>
-     * <li>提前检查 keepSubSelectOrderBy 和空列表，减少不必要循环。</li>
-     * <li>使用 for-each 循环，减少迭代器创建。</li>
-     * <li>提前检查 select 非空，减少无效递归。</li>
+     * <li>Uses List&lt;WithItem&lt;?&gt;&gt; to adapt to JSqlParser 5.1's generic API.</li>
+     * <li>Checks for keepSubSelectOrderBy and empty lists early to reduce unnecessary loops.</li>
+     * <li>Uses a for-each loop to reduce iterator creation.</li>
+     * <li>Checks for non-null select early to reduce invalid recursion.</li>
      * </ol>
      *
-     * @param withItemsList WITH 子句列表
+     * @param withItemsList the list of WITH clauses
      */
     public void processWithItemsList(List<WithItem<?>> withItemsList) {
         if (withItemsList == null || withItemsList.isEmpty() || keepSubSelectOrderBy()) {
-            return; // 提前退出，避免不必要的循环
+            return; // Exit early to avoid unnecessary loops
         }
 
         for (WithItem<?> item : withItemsList) {
@@ -297,9 +302,9 @@ public class DefaultCountSqlParser implements CountSqlParser {
     }
 
     /**
-     * 处理 FROM 子句中的子查询。 优化类型检查和递归逻辑。
+     * Processes subqueries in the FROM clause. This method optimizes type checking and recursive logic.
      *
-     * @param fromItem FROM 子句项
+     * @param fromItem the FROM clause item
      */
     public void processFromItem(FromItem fromItem) {
         if (fromItem instanceof ParenthesedSelect) {
@@ -316,28 +321,28 @@ public class DefaultCountSqlParser implements CountSqlParser {
     }
 
     /**
-     * 检查是否需要保留 ORDER BY。 使用 PageMethod 的配置判断。
+     * Checks if the ORDER BY clause should be kept. This method uses the configuration from {@link PageMethod}.
      *
-     * @return 是否保留 ORDER BY
+     * @return true if ORDER BY should be kept, false otherwise
      */
     protected boolean keepOrderBy() {
         return PageMethod.getLocalPage() != null && PageMethod.getLocalPage().keepOrderBy();
     }
 
     /**
-     * 检查是否需要保留子查询的 ORDER BY。
+     * Checks if the ORDER BY clause of subqueries should be kept.
      *
-     * @return 是否保留子查询 ORDER BY
+     * @return true if subquery ORDER BY should be kept, false otherwise
      */
     protected boolean keepSubSelectOrderBy() {
         return PageMethod.getLocalPage() != null && PageMethod.getLocalPage().keepSubSelectOrderBy();
     }
 
     /**
-     * 判断 ORDER BY 是否包含参数（?）。 优化空检查和循环效率。
+     * Determines if the ORDER BY clause contains parameters (?). This method optimizes null checks and loop efficiency.
      *
-     * @param orderByElements ORDER BY 元素列表
-     * @return 是否包含参数
+     * @param orderByElements the list of ORDER BY elements
+     * @return true if it contains parameters, false otherwise
      */
     public boolean orderByHashParameters(List<OrderByElement> orderByElements) {
         if (orderByElements == null || orderByElements.isEmpty()) {

@@ -38,19 +38,22 @@ import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.ZipKit;
 
 /**
- * {@link ZipFile} 资源包装
+ * Wrapper for {@link ZipFile} resources.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class ZipFileResource implements ZipResource {
 
+    /**
+     * The underlying {@link ZipFile}.
+     */
     private final ZipFile zipFile;
 
     /**
-     * 构造
+     * Constructs a new ZipFileResource instance.
      *
-     * @param zipFile {@link ZipFile}
+     * @param zipFile The {@link ZipFile} to wrap.
      */
     public ZipFileResource(final ZipFile zipFile) {
         this.zipFile = zipFile;

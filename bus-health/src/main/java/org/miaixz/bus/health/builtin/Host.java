@@ -32,9 +32,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * 操作系统信息
+ * Host Information * @author Kimi Liu
  * 
- * @author Kimi Liu
  * @since Java 17+
  */
 @Getter
@@ -43,47 +42,47 @@ import lombok.Setter;
 public class Host {
 
     /**
-     * 系统名称
+     * System name
      */
     private String name;
 
     /**
-     * 系统 ip
+     * System IP address
      */
     private String ip;
 
     /**
-     * 操作系统
+     * Operating system
      */
     private String os;
 
     /**
-     * 系统架构
+     * System architecture
      */
     private String osArch;
 
     /**
-     * 项目路径
+     * Project path
      */
     private String userDir;
 
     /**
-     * 每秒传输的字节数
+     * Bytes sent per second
      */
     private double txBytesPerSecond;
 
     /**
-     * 每秒接收的字节数
+     * Bytes received per second
      */
     private double rxBytesPerSecond;
 
     /**
-     * 每秒传输的数据包数
+     * Packets sent per second
      */
     private double txPacketsPerSecond;
 
     /**
-     * 每秒接收的数据包数
+     * Packets received per second
      */
     private double rxPacketsPerSecond;
 

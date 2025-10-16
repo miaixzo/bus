@@ -31,10 +31,11 @@ import org.miaixz.bus.core.io.source.BufferSource;
 import org.miaixz.bus.core.lang.MediaType;
 
 /**
- * HTTP 响应体
+ * A concrete implementation of {@link ResponseBody}.
  * <p>
- * 表示 HTTP 响应的内容，仅能使用一次。提供对响应内容的媒体类型、长度和数据源的访问。 使用字符串存储媒体类型以避免解析错误。
- * </p>
+ * This class represents the content of an HTTP response and can only be used once. It provides access to the media
+ * type, content length, and data source of the response content. The media type is stored as a string to avoid parsing
+ * errors.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,24 +43,24 @@ import org.miaixz.bus.core.lang.MediaType;
 public class RealResponseBody extends ResponseBody {
 
     /**
-     * 媒体类型字符串
+     * The media type as a string.
      */
     private final String contentType;
     /**
-     * 内容长度
+     * The content length.
      */
     private final long length;
     /**
-     * 数据源
+     * The data source.
      */
     private final BufferSource source;
 
     /**
-     * 构造函数，初始化 RealResponseBody 实例
+     * Constructs a new {@code RealResponseBody} instance.
      *
-     * @param contentType 媒体类型字符串（可能为 null）
-     * @param length      内容长度
-     * @param source      数据源
+     * @param contentType The media type as a string, which may be null.
+     * @param length      The content length.
+     * @param source      The data source.
      */
     public RealResponseBody(String contentType, long length, BufferSource source) {
         this.contentType = contentType;
@@ -68,9 +69,9 @@ public class RealResponseBody extends ResponseBody {
     }
 
     /**
-     * 获取媒体类型
+     * Returns the media type of this response body.
      *
-     * @return 媒体类型（不存在时为 null）
+     * @return The media type, or null if not present.
      */
     @Override
     public MediaType contentType() {
@@ -78,19 +79,19 @@ public class RealResponseBody extends ResponseBody {
     }
 
     /**
-     * 获取内容长度
+     * Returns the content length of this response body.
      *
-     * @return 内容长度
+     * @return The content length.
      */
     @Override
-    public long length() {
+    public long contentLength() {
         return length;
     }
 
     /**
-     * 获取数据源
+     * Returns the data source for this response body.
      *
-     * @return 数据源
+     * @return The data source.
      */
     @Override
     public BufferSource source() {

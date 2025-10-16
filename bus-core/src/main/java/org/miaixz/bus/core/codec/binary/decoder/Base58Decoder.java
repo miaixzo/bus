@@ -35,7 +35,7 @@ import org.miaixz.bus.core.codec.binary.provider.Base58Provider;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * Base58解码器
+ * Decodes a Base58 encoded string into a byte array.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,16 +43,19 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class Base58Decoder implements Decoder<CharSequence, byte[]> {
 
     /**
-     * 解码器
+     * The default Base58 decoder.
      */
     public static Base58Decoder DECODER = new Base58Decoder(Base58Encoder.DEFAULT_ALPHABET);
 
+    /**
+     * A lookup table for decoding Base58 characters.
+     */
     private final byte[] lookupTable;
 
     /**
-     * 构造
+     * Constructs a new Base58Decoder with a custom alphabet.
      *
-     * @param alphabet 编码字符表
+     * @param alphabet The alphabet to use for decoding.
      */
     public Base58Decoder(final String alphabet) {
         final byte[] lookupTable = new byte['z' + 1];
@@ -65,6 +68,13 @@ public class Base58Decoder implements Decoder<CharSequence, byte[]> {
         this.lookupTable = lookupTable;
     }
 
+    /**
+     * Decodes a Base58 encoded {@link CharSequence} into a byte array.
+     *
+     * @param encoded The Base58 encoded data.
+     * @return The decoded byte array.
+     * @throws IllegalArgumentException if the input contains an invalid character.
+     */
     @Override
     public byte[] decode(final CharSequence encoded) {
         if (encoded.length() == 0) {

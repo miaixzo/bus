@@ -33,45 +33,63 @@ import java.util.LinkedList;
 import java.util.Map;
 
 /**
- * 高效替换器，通过查找指定关键字，替换对应的值 基于AC自动机算法实现，需要被替换的原字符串越大，替换的键值对越多，效率提升越明显 注意: 如果需要被替换的关键字出现交叉,最先匹配中的关键字会被替换 1、"abc","ab"
- * 会优先替换"ab" 2、"abed","be" 会优先替换"abed" 3、"abc", "ciphers" 会优先替换"abc"
+ * An efficient replacer that finds and replaces specified keywords with corresponding values. This implementation is
+ * based on the Aho-Corasick automaton algorithm, which significantly improves efficiency when the original string to be
+ * replaced is large and the number of key-value pairs for replacement is high.
+ * <p>
+ * Note: If overlapping keywords are present, the first matched keyword will be replaced. For example:
+ * <ol>
+ * <li>"abc", "ab" will prioritize replacing "ab".</li>
+ * <li>"abed", "be" will prioritize replacing "abed".</li>
+ * <li>"abc", "ciphers" will prioritize replacing "abc".</li>
+ * </ol>
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class HighMultiReplacer extends StringReplacer {
 
+    /**
+     * The serial version UID.
+     */
     @Serial
     private static final long serialVersionUID = 2852238780005L;
 
+    /**
+     * The Aho-Corasick automaton used for efficient keyword searching and replacement.
+     */
     private final AhoCorasickAutomaton ahoCorasickAutomaton;
 
     /**
-     * 构造函数，初始化AC自动机。
+     * Constructs a new {@code HighMultiReplacer} and initializes the Aho-Corasick automaton.
      *
-     * @param map 关键字映射，key为需要查找的字符串，value为替换值
+     * @param map A map where keys are the strings to be searched for, and values are their corresponding replacement
+     *            values.
      */
     public HighMultiReplacer(final Map<String, Object> map) {
         ahoCorasickAutomaton = new AhoCorasickAutomaton(map);
     }
 
     /**
-     * 工厂方法，创建HighMultiReplacer实例。
+     * Factory method to create an instance of {@code HighMultiReplacer}.
      *
-     * @param map 关键字映射，key为需要查找的字符串，value为替换值
-     * @return HighMultiReplacer实例
+     * @param map A map where keys are the strings to be searched for, and values are their corresponding replacement
+     *            values.
+     * @return A new {@code HighMultiReplacer} instance.
      */
     public static HighMultiReplacer of(final Map<String, Object> map) {
         return new HighMultiReplacer(map);
     }
 
     /**
-     * 执行字符串替换，从指定位置开始，将结果追加到输出缓冲区。
+     * Performs string replacement starting from a specified position, appending the result to the output buffer. This
+     * method delegates the actual replacement to the Aho-Corasick automaton.
      *
-     * @param text 待替换的字符串
-     * @param pos  替换起始位置
-     * @param out  输出缓冲区，存储替换结果
-     * @return 替换后处理的字符数
+     * @param text The string to be processed.
+     * @param pos  The starting position for replacement (inclusive).
+     * @param out  The {@code StringBuilder} to which the replacement result is appended.
+     * @return The number of characters consumed by the replacement, which is the length of the input text since the
+     *         Aho-Corasick automaton processes the entire text.
      */
     @Override
     public int replace(final CharSequence text, final int pos, final StringBuilder out) {
@@ -80,10 +98,11 @@ public class HighMultiReplacer extends StringReplacer {
     }
 
     /**
-     * 应用替换规则，返回替换后的字符串。
+     * Applies the replacement rules to the given character sequence and returns the replaced string. This method
+     * processes the entire input text using the Aho-Corasick automaton.
      *
-     * @param text 待替换的字符串
-     * @return 替换后的字符串
+     * @param text The character sequence to be processed.
+     * @return The character sequence after all replacements have been applied.
      */
     @Override
     public CharSequence apply(final CharSequence text) {
@@ -93,24 +112,25 @@ public class HighMultiReplacer extends StringReplacer {
     }
 
     /**
-     * AC自动机实现，用于高效查找和替换关键字。
+     * Implements the Aho-Corasick automaton for efficient keyword searching and replacement.
      */
     private static class AhoCorasickAutomaton {
 
         /**
-         * AC自动机的根节点，不存储任何字符信息。
+         * The root node of the Aho-Corasick automaton, which does not store any character information.
          */
         private final Node root;
 
         /**
-         * 关键字映射，key为查找的目标字符串，value为对应的替换值。
+         * The map containing keywords to be searched for and their corresponding replacement values.
          */
         private final Map<String, Object> target;
 
         /**
-         * 构造函数，初始化AC自动机，构建Trie树和fail指针。
+         * Constructs a new {@code AhoCorasickAutomaton}, initializing the Trie tree and building the fail pointers.
          *
-         * @param target 关键字映射
+         * @param target A map where keys are the strings to be searched for, and values are their corresponding
+         *               replacement values.
          */
         public AhoCorasickAutomaton(final Map<String, Object> target) {
             root = new Node();
@@ -120,30 +140,31 @@ public class HighMultiReplacer extends StringReplacer {
         }
 
         /**
-         * 构建Trie树，支持三种关键字格式：field、${field}和{field}。
+         * Builds the Trie tree from the target keywords. It supports three keyword formats: plain field, ${field}, and
+         * {field}.
          */
         private void buildTrieTree() {
             for (final String text : target.keySet()) {
                 if (text == null) {
-                    continue; // 跳过空关键字
+                    continue; // Skip null keywords
                 }
-                // 添加直接关键字格式（如 field）
+                // Add direct keyword format (e.g., field)
                 buildTrieTree(text, text);
-                // 添加${}包装格式（如 ${field}）
+                // Add ${} wrapped format (e.g., ${field})
                 buildTrieTree("${" + text + "}", text);
-                // 添加{}包装格式（如 {field}）
+                // Add {} wrapped format (e.g., {field})
                 buildTrieTree("{" + text + "}", text);
             }
         }
 
         /**
-         * 将关键字模式添加到Trie树。
+         * Adds a keyword pattern to the Trie tree.
          *
-         * @param pattern 匹配模式（如 field、${field} 或 {field}）
-         * @param key     原始关键字，用于查找替换值（如 field）
+         * @param pattern The pattern to match (e.g., field, ${field}, or {field}).
+         * @param key     The original keyword, used to look up the replacement value (e.g., field).
          */
         private void buildTrieTree(final String pattern, final String key) {
-            Node curr = root; // 初始化为根节点
+            Node curr = root; // Initialize with the root node
             for (int i = 0; i < pattern.length(); i++) {
                 final char ch = pattern.charAt(i);
                 Node node = curr.children.get(ch);
@@ -153,22 +174,23 @@ public class HighMultiReplacer extends StringReplacer {
                 }
                 curr = node;
             }
-            // 存储原始关键字，用于后续替换
+            // Store the original keyword for subsequent replacement
             curr.text = key;
         }
 
         /**
-         * 由Trie树构建AC自动机，生成fail指针，类似KMP算法的next数组。
+         * Builds the Aho-Corasick automaton from the Trie tree by generating fail pointers, similar to the KMP
+         * algorithm's next array.
          */
         private void buildAcFromTrie() {
             final LinkedList<Node> queue = new LinkedList<>();
-            // 初始化根节点的子节点
+            // Initialize children of the root node
             for (final Node x : root.children.values()) {
-                x.fail = root; // 子节点的fail指针指向根节点
-                queue.addLast(x); // 入队
+                x.fail = root; // The fail pointer of a child node points to the root node
+                queue.addLast(x); // Enqueue
             }
 
-            // 广度优先遍历，构建fail指针
+            // Breadth-first traversal to build fail pointers
             while (!queue.isEmpty()) {
                 final Node p = queue.removeFirst();
                 for (final Map.Entry<Character, Node> entry : p.children.entrySet()) {
@@ -176,24 +198,24 @@ public class HighMultiReplacer extends StringReplacer {
                     Node failTo = p.fail;
                     while (true) {
                         if (failTo == null) {
-                            entry.getValue().fail = root; // 未找到匹配，指向根节点
+                            entry.getValue().fail = root; // No match found, point to the root node
                             break;
                         }
                         if (failTo.children.get(entry.getKey()) != null) {
-                            entry.getValue().fail = failTo.children.get(entry.getKey()); // 找到匹配
+                            entry.getValue().fail = failTo.children.get(entry.getKey()); // Match found
                             break;
                         }
-                        failTo = failTo.fail; // 继续向上回溯
+                        failTo = failTo.fail; // Continue backtracking upwards
                     }
                 }
             }
         }
 
         /**
-         * 执行字符串替换，将匹配的关键字替换为目标值。
+         * Executes string replacement, replacing matched keywords with their target values.
          *
-         * @param text          待替换的字符串
-         * @param stringBuilder 输出缓冲区，存储替换结果
+         * @param text          The string to be processed for replacement.
+         * @param stringBuilder The output buffer where the replacement result is stored.
          */
         public void replace(final CharSequence text, final StringBuilder stringBuilder) {
             Node curr = root;
@@ -202,21 +224,21 @@ public class HighMultiReplacer extends StringReplacer {
                 final char ch = text.charAt(i);
                 final Node node = curr.children.get(ch);
                 if (node != null) {
-                    // 匹配到字符，进入下一状态
+                    // Character matched, move to the next state
                     curr = node;
                     if (curr.isWord()) {
-                        // 匹配到完整关键字，追加替换值
+                        // Full keyword matched, append the replacement value
                         final Object replacement = target.get(curr.text);
                         stringBuilder.append(replacement != null ? replacement : "");
-                        curr = root; // 重置状态机
+                        curr = root; // Reset the state machine
                     }
                     i++;
                 } else {
-                    // 未匹配，尝试fail指针
+                    // No match, try the fail pointer
                     if (curr != root) {
-                        curr = curr.fail; // 回溯
+                        curr = curr.fail; // Backtrack
                     } else {
-                        stringBuilder.append(ch); // 无匹配，追加当前字符
+                        stringBuilder.append(ch); // No match, append the current character
                         i++;
                     }
                 }
@@ -224,29 +246,30 @@ public class HighMultiReplacer extends StringReplacer {
         }
 
         /**
-         * AC自动机的节点，表示Trie树中的一个状态。
+         * Represents a node in the Aho-Corasick automaton, corresponding to a state in the Trie tree.
          */
         private static class Node {
 
             /**
-             * 终点标记，表示从根节点到此节点形成一个关键字，存储原始关键字。
+             * The original keyword string if this node marks the end of a keyword. Null if this node is not the end of
+             * a keyword.
              */
             String text;
 
             /**
-             * 子节点映射，key为字符，value为对应的子节点。
+             * A map of child nodes, where the key is a character and the value is the corresponding child node.
              */
             Map<Character, Node> children = new HashMap<>();
 
             /**
-             * fail指针，指向匹配失败时应跳转的节点。
+             * The fail pointer, indicating the next state to transition to upon a mismatch.
              */
             Node fail;
 
             /**
-             * 判断当前节点是否为关键字的终点。
+             * Checks if the current node represents the end of a complete keyword.
              *
-             * @return 是否为终点
+             * @return {@code true} if this node is the end of a keyword, {@code false} otherwise.
              */
             public boolean isWord() {
                 return text != null;

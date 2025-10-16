@@ -37,65 +37,72 @@ import org.miaixz.bus.core.center.date.Resolver;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 日期转换器
+ * Converts an object to a {@link java.util.Calendar}.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class CalendarConverter extends AbstractConverter {
 
+    /**
+     * The serial version UID.
+     */
     @Serial
     private static final long serialVersionUID = 2852265956002L;
 
     /**
-     * 日期格式化
+     * The date format pattern.
      */
     private String format;
 
     /**
-     * 构造
+     * Constructs a new {@code CalendarConverter} with no specific format.
      */
     public CalendarConverter() {
         this(null);
     }
 
     /**
-     * 构造
+     * Constructs a new {@code CalendarConverter} with the specified format.
      *
-     * @param format 日期格式，{@code null}表示无格式定义
+     * @param format The date format pattern. If {@code null}, a default format will be used.
      */
     public CalendarConverter(final String format) {
         this.format = format;
     }
 
     /**
-     * 获取日期格式
+     * Gets the date format pattern.
      *
-     * @return 设置日期格式
+     * @return The date format pattern.
      */
     public String getFormat() {
         return format;
     }
 
     /**
-     * 设置日期格式
+     * Sets the date format pattern.
      *
-     * @param format 日期格式
+     * @param format The date format pattern.
      */
     public void setFormat(final String format) {
         this.format = format;
     }
 
+    /**
+     * Internally converts the given value to a {@link java.util.Calendar}.
+     *
+     * @param targetClass The target class, which should be {@link java.util.Calendar}.
+     * @param value       The value to be converted.
+     * @return The converted {@link java.util.Calendar} object.
+     */
     @Override
     protected java.util.Calendar convertInternal(final Class<?> targetClass, final Object value) {
-        // Handle Date
         if (value instanceof Date) {
             return Calendar.calendar((Date) value);
         }
 
-        // Handle Long
         if (value instanceof Long) {
-            // 此处使用自动拆装箱
             return Calendar.calendar((Long) value);
         }
 
@@ -103,8 +110,9 @@ public class CalendarConverter extends AbstractConverter {
             return Calendar.calendar((XMLGregorianCalendar) value);
         }
 
-        final String values = convertToString(value);
-        return Calendar.calendar(StringKit.isBlank(format) ? Resolver.parse(values) : Resolver.parse(values, format));
+        final String valueStr = convertToString(value);
+        return Calendar
+                .calendar(StringKit.isBlank(format) ? Resolver.parse(valueStr) : Resolver.parse(valueStr, format));
     }
 
 }

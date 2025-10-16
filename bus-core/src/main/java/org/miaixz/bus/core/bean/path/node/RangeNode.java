@@ -34,21 +34,32 @@ import org.miaixz.bus.core.text.CharsBacker;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * [start:end:step] 模式节点
+ * Represents a range node in a Bean path expression, following the pattern {@code [start:end:step]}. This node is used
+ * to specify a sub-range of elements within a collection or array.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class RangeNode implements Node {
 
+    /**
+     * The starting index of the range (inclusive).
+     */
     private final int start;
+    /**
+     * The ending index of the range (exclusive).
+     */
     private final int end;
+    /**
+     * The step value for iterating through the range.
+     */
     private final int step;
 
     /**
-     * 构造
+     * Constructs a {@code RangeNode} by parsing the given expression string. The expression should be in the format
+     * {@code start:end} or {@code start:end:step}.
      *
-     * @param expression 表达式
+     * @param expression The expression string (e.g., "0:5" or "0:10:2").
      */
     public RangeNode(final String expression) {
         final List<String> parts = CharsBacker.splitTrim(expression, Symbol.COLON);
@@ -62,32 +73,37 @@ public class RangeNode implements Node {
     }
 
     /**
-     * 获取起始值
+     * Retrieves the starting index of the range.
      *
-     * @return 起始值
+     * @return The starting index (inclusive).
      */
     public int getStart() {
         return start;
     }
 
     /**
-     * 获取结束值
+     * Retrieves the ending index of the range.
      *
-     * @return 结束值
+     * @return The ending index (exclusive).
      */
     public int getEnd() {
         return end;
     }
 
     /**
-     * 获取步进值
+     * Retrieves the step value for iterating through the range.
      *
-     * @return 步进值
+     * @return The step value.
      */
     public int getStep() {
         return step;
     }
 
+    /**
+     * Returns a string representation of this range node in the format {@code [start:end:step]}.
+     *
+     * @return A string representation of the object.
+     */
     @Override
     public String toString() {
         return StringKit.format("[{}:{}:{}]", this.start, this.end, this.step);

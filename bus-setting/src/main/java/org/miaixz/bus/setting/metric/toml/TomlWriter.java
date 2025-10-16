@@ -44,32 +44,54 @@ import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * TOML生成器
+ * A writer for generating TOML (Tom's Obvious, Minimal Language) data from a Map.
  * <p>
- * 日期格式支持：
+ * Supported date/time types for writing:
  * <ul>
- * <li>2015-03-20 转为：{@link LocalDate}</li>
- * <li>2015-03-20T19:04:35 转为：{@link LocalDateTime}</li>
- * <li>2015-03-20T19:04:35+01:00 转为：{@link ZonedDateTime}</li>
+ * <li>{@link LocalDate} (e.g., 2015-03-20)</li>
+ * <li>{@link LocalDateTime} (e.g., 2015-03-20T19:04:35)</li>
+ * <li>{@link ZonedDateTime} (e.g., 2015-03-20T19:04:35+01:00)</li>
  * </ul>
  * <p>
- * 此类支持更加宽松的key，除了{@code A-Za-z0-9_- }，其他key使用"包装。
+ * This writer supports bare keys consisting of {@code A-Za-z0-9_-}. Any other keys will be enclosed in double quotes.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class TomlWriter {
 
+    /**
+     * The underlying writer where the TOML data will be written.
+     */
     private final Writer writer;
+    /**
+     * The number of characters to use for each level of indentation.
+     */
     private final int indentSize;
+    /**
+     * The character to use for indentation (either a space or a tab).
+     */
     private final char indentCharacter;
+    /**
+     * The string used for line breaks (e.g., "\n" or "\r\n").
+     */
     private final String lineSeparator;
+    /**
+     * A linked list that keeps track of the current table path (e.g., ["table", "subtable"]).
+     */
     private final LinkedList<String> tablesNames = new LinkedList<>();
-    private int lineBreaks = 0, indentationLevel = -1;// -1 to prevent indenting the first level
+    /**
+     * A counter to prevent writing more than two consecutive newlines.
+     */
+    private int lineBreaks = 0;
+    /**
+     * The current level of indentation for nested tables. Initialized to -1 to prevent indenting the root level.
+     */
+    private int indentationLevel = -1;
 
     /**
-     * Creates a new TomlWriter with the defaults parameters. The system line separator is used (ie '\n' on Linux and
-     * OSX, "\r\n" on Windows). This is exactly the same as {@code TomlWriter(writer, 1, false, System.lineSeparator()}.
+     * Creates a new TomlWriter with default parameters. The system line separator is used. This is equivalent to
+     * {@code TomlWriter(writer, 1, false, System.lineSeparator())}.
      *
      * @param writer where to write the data
      */
@@ -78,12 +100,11 @@ public class TomlWriter {
     }
 
     /**
-     * Creates a new TomlWriter with the specified parameters. The system line separator is used (ie '\n' on Linux and
-     * OSX, "\r\n" on Windows). This is exactly the same as
-     * {@code TomlWriter(writer, indentSize, indentWithSpaces, System.lineSeparator())}.
+     * Creates a new TomlWriter with specified indentation parameters. The system line separator is used. This is
+     * equivalent to {@code TomlWriter(writer, indentSize, indentWithSpaces, System.lineSeparator())}.
      *
      * @param writer           where to write the data
-     * @param indentSize       the size of each indent
+     * @param indentSize       the number of characters for each indent level
      * @param indentWithSpaces true to indent with spaces, false to indent with tabs
      */
     public TomlWriter(final Writer writer, final int indentSize, final boolean indentWithSpaces) {
@@ -94,9 +115,9 @@ public class TomlWriter {
      * Creates a new TomlWriter with the specified parameters.
      *
      * @param writer           where to write the data
-     * @param indentSize       the size of each indent
+     * @param indentSize       the number of characters for each indent level
      * @param indentWithSpaces true to indent with spaces, false to indent with tabs
-     * @param lineSeparator    the String to write to break lines
+     * @param lineSeparator    the string to use for line breaks
      */
     public TomlWriter(final Writer writer, final int indentSize, final boolean indentWithSpaces,
             final String lineSeparator) {
@@ -150,7 +171,7 @@ public class TomlWriter {
     /**
      * Closes the underlying writer, flushing it first.
      *
-     * @throws IOException if an error occurs
+     * @throws IOException if an I/O error occurs
      */
     public void close() throws IOException {
         writer.close();
@@ -159,17 +180,17 @@ public class TomlWriter {
     /**
      * Flushes the underlying writer.
      *
-     * @throws IOException if an error occurs
+     * @throws IOException if an I/O error occurs
      */
     public void flush() throws IOException {
         writer.flush();
     }
 
     /**
-     * Writes the specified data in the TOML format.
+     * Writes the specified data map to the writer in TOML format.
      *
      * @param data the data to write
-     * @throws InternalException if an error occurs
+     * @throws InternalException if an I/O error occurs during writing
      */
     public void write(final Map<String, Object> data) throws InternalException {
         writeTableContent(data);
@@ -187,28 +208,26 @@ public class TomlWriter {
     }
 
     private void writeTableContent(final Map<String, Object> table) throws InternalException {
-        writeTableContent(table, true);
-        writeTableContent(table, false);
+        writeTableContent(table, true); // First pass: write simple key-value pairs and simple arrays.
+        writeTableContent(table, false); // Second pass: write tables and arrays of tables.
     }
 
     /**
-     * Writes the content of a table.
+     * Writes the content of a table, separating simple values from nested tables.
      *
      * @param table        the table to write
-     * @param simpleValues true to write only the simple values (and the printer arrays), false to write only the tables
-     *                     (and the arrays of tables).
+     * @param simpleValues true to write only the simple values and arrays of simple values; false to write only nested
+     *                     tables and arrays of tables.
      */
     private void writeTableContent(final Map<String, Object> table, final boolean simpleValues)
             throws InternalException {
         for (final Map.Entry<String, Object> entry : table.entrySet()) {
             final String name = entry.getKey();
             final Object value = entry.getValue();
-            if (value instanceof Collection) {// array
-                final Collection<?> c = (Collection<?>) value;
-                if (!c.isEmpty() && c.iterator().next() instanceof Map) {// array of tables
-                    if (simpleValues) {
+            if (value instanceof Collection<?> c) {
+                if (!c.isEmpty() && c.iterator().next() instanceof Map) { // Array of tables
+                    if (simpleValues)
                         continue;
-                    }
                     tablesNames.addLast(name);
                     indentationLevel++;
                     for (final Object element : c) {
@@ -221,21 +240,18 @@ public class TomlWriter {
                     }
                     indentationLevel--;
                     tablesNames.removeLast();
-                } else {// printer array
-                    if (!simpleValues) {
+                } else { // Simple array
+                    if (!simpleValues)
                         continue;
-                    }
                     indent();
                     writeKey(name);
                     write(" = ");
                     writeArray(c);
                 }
-            } else if (value instanceof Object[]) {// array
-                final Object[] array = (Object[]) value;
-                if (array.length > 0 && array[0] instanceof Map) {// array of tables
-                    if (simpleValues) {
+            } else if (value instanceof Object[] array) {
+                if (array.length > 0 && array[0] instanceof Map) { // Array of tables
+                    if (simpleValues)
                         continue;
-                    }
                     tablesNames.addLast(name);
                     indentationLevel++;
                     for (final Object element : array) {
@@ -248,35 +264,30 @@ public class TomlWriter {
                     }
                     indentationLevel--;
                     tablesNames.removeLast();
-                } else {// printer array
-                    if (!simpleValues) {
+                } else { // Simple array
+                    if (!simpleValues)
                         continue;
-                    }
                     indent();
                     writeKey(name);
                     write(" = ");
                     writeString(StringKit.toStringOrEmpty(ArrayKit.toString(array)));
                 }
-            } else if (value instanceof Map) {// table
-                if (simpleValues) {
+            } else if (value instanceof Map) { // Table
+                if (simpleValues)
                     continue;
-                }
                 tablesNames.addLast(name);
                 indentationLevel++;
-
                 indent();
                 write('[');
                 writeTableName();
                 write(']');
                 newLine();
                 writeTableContent((Map<String, Object>) value);
-
                 indentationLevel--;
                 tablesNames.removeLast();
-            } else {// simple value
-                if (!simpleValues) {
+            } else { // Simple value
+                if (!simpleValues)
                     continue;
-                }
                 indent();
                 writeKey(name);
                 write(" = ");
@@ -291,7 +302,7 @@ public class TomlWriter {
         for (int i = 0; i < key.length(); i++) {
             final char c = key.charAt(i);
             if (!isValidCharOfKey(c)) {
-                // 含有非法字符，包装之
+                // If the key contains invalid characters for a bare key, quote it.
                 writeString(key);
                 return;
             }
@@ -312,9 +323,12 @@ public class TomlWriter {
 
     private void writeArray(final Collection<?> c) throws InternalException {
         write('[');
-        for (final Object element : c) {
-            writeValue(element);
-            write(", ");
+        Iterator<?> it = c.iterator();
+        while (it.hasNext()) {
+            writeValue(it.next());
+            if (it.hasNext()) {
+                write(", ");
+            }
         }
         write(']');
     }
@@ -326,20 +340,19 @@ public class TomlWriter {
             write(value.toString());
         } else if (value instanceof TemporalAccessor) {
             String formatted = Toml.DATE_FORMATTER.format((TemporalAccessor) value);
-            if (formatted.endsWith("T"))// If the last character is a 'T'
-            {
-                formatted = formatted.substring(0, formatted.length() - 1);// removes it because it's invalid.
+            if (formatted.endsWith("T")) { // A lone 'T' at the end is invalid.
+                formatted = formatted.substring(0, formatted.length() - 1);
             }
             write(formatted);
         } else if (value instanceof Collection) {
             writeArray((Collection<?>) value);
         } else if (ArrayKit.isArray(value)) {
             write(ArrayKit.toString(value));
-        } else if (value instanceof Map) {// should not happen because an array of tables is detected by
-            // writeTableContent()
-            throw new InternalException("Unexpected value " + value);
+        } else if (value instanceof Map) {
+            throw new InternalException("Unexpected nested map value: " + value);
         } else {
-            throw new InternalException("Unsupported value of type " + value.getClass().getCanonicalName());
+            throw new InternalException(
+                    "Unsupported value of type " + (value == null ? "null" : value.getClass().getCanonicalName()));
         }
     }
 

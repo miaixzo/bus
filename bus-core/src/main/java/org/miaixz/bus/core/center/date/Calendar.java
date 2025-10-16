@@ -51,7 +51,7 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 针对{@link java.util.Calendar} 对象封装工具类
+ * Utility class for encapsulating and manipulating {@link java.util.Calendar} objects.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -59,35 +59,35 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class Calendar extends Calculate {
 
     /**
-     * 是否为上午
+     * Checks if the given calendar represents an AM time.
      *
-     * @param calendar {@link java.util.Calendar}
-     * @return 是否为上午
+     * @param calendar The {@link java.util.Calendar} object.
+     * @return {@code true} if it's AM, {@code false} otherwise.
      */
     public static boolean isAM(final java.util.Calendar calendar) {
         return java.util.Calendar.AM == calendar.get(java.util.Calendar.AM_PM);
     }
 
     /**
-     * 是否为下午
+     * Checks if the given calendar represents a PM time.
      *
-     * @param calendar {@link java.util.Calendar}
-     * @return 是否为下午
+     * @param calendar The {@link java.util.Calendar} object.
+     * @return {@code true} if it's PM, {@code false} otherwise.
      */
     public static boolean isPM(final java.util.Calendar calendar) {
         return java.util.Calendar.PM == calendar.get(java.util.Calendar.AM_PM);
     }
 
     /**
-     * 比较两个日期是否为同一天
+     * Compares two dates to check if they fall on the same day.
      *
-     * @param cal1 日期1
-     * @param cal2 日期2
-     * @return 是否为同一天
+     * @param cal1 The first date.
+     * @param cal2 The second date.
+     * @return {@code true} if both dates are on the same day, {@code false} otherwise.
      */
     public static boolean isSameDay(final java.util.Calendar cal1, java.util.Calendar cal2) {
         if (ObjectKit.notEquals(cal1.getTimeZone(), cal2.getTimeZone())) {
-            // 统一时区
+            // Unify time zones
             cal2 = calendar(cal2, cal1.getTimeZone());
         }
         return isSameYear(cal1, cal2)
@@ -95,30 +95,33 @@ public class Calendar extends Calculate {
     }
 
     /**
-     * 比较两个日期是否为同一周 同一个周的意思是：ERA（公元）、year（年）、month（月）、week（周）都一致。
+     * Compares two dates to check if they fall within the same week. The same week means that ERA, year, month, and
+     * week are all consistent.
      *
-     * @param cal1  日期1
-     * @param cal2  日期2
-     * @param isMon 一周的第一天是否为周一。国内第一天为星期一，国外第一天为星期日
-     * @return 是否为同一周
+     * @param cal1  The first date.
+     * @param cal2  The second date.
+     * @param isMon {@code true} if Monday is considered the first day of the week (e.g., in China), {@code false} if
+     *              Sunday is considered the first day of the week (e.g., in the US).
+     * @return {@code true} if both dates are in the same week, {@code false} otherwise.
+     * @throws IllegalArgumentException if either calendar is null.
      */
     public static boolean isSameWeek(java.util.Calendar cal1, java.util.Calendar cal2, final boolean isMon) {
         if (cal1 == null || cal2 == null) {
             throw new IllegalArgumentException("The date must not be null");
         }
 
-        // 防止比较前修改原始Calendar对象
+        // Prevent modification of original Calendar objects before comparison
         cal1 = (java.util.Calendar) cal1.clone();
 
         if (ObjectKit.notEquals(cal1.getTimeZone(), cal2.getTimeZone())) {
-            // 统一时区
+            // Unify time zones
             cal2 = calendar(cal2, cal1.getTimeZone());
         } else {
             cal2 = (java.util.Calendar) cal2.clone();
         }
 
-        // 把所传日期设置为其当前周的第一天
-        // 比较设置后的两个日期是否是同一天：true 代表同一周
+        // Set both dates to the first day of their respective weeks for comparison
+        // If the two dates are the same after this, they are in the same week.
         if (isMon) {
             cal1.setFirstDayOfWeek(java.util.Calendar.MONDAY);
             cal1.set(java.util.Calendar.DAY_OF_WEEK, java.util.Calendar.MONDAY);
@@ -134,15 +137,16 @@ public class Calendar extends Calculate {
     }
 
     /**
-     * 比较两个日期是否为同一月 同一个月的意思是：ERA（公元）、year（年）、month（月）都一致。
+     * Compares two dates to check if they fall within the same month. The same month means that ERA, year, and month
+     * are all consistent.
      *
-     * @param cal1 日期1
-     * @param cal2 日期2
-     * @return 是否为同一月
+     * @param cal1 The first date.
+     * @param cal2 The second date.
+     * @return {@code true} if both dates are in the same month, {@code false} otherwise.
      */
     public static boolean isSameMonth(final java.util.Calendar cal1, java.util.Calendar cal2) {
         if (ObjectKit.notEquals(cal1.getTimeZone(), cal2.getTimeZone())) {
-            // 统一时区
+            // Unify time zones
             cal2 = calendar(cal2, cal1.getTimeZone());
         }
 
@@ -150,11 +154,13 @@ public class Calendar extends Calculate {
     }
 
     /**
-     * 比较两个日期是否为同一年 同一个年的意思是：ERA（公元）、year（年）都一致。
+     * Compares two dates to check if they fall within the same year. The same year means that ERA and year are all
+     * consistent.
      *
-     * @param cal1 日期1
-     * @param cal2 日期2
-     * @return 是否为同一年
+     * @param cal1 The first date.
+     * @param cal2 The second date.
+     * @return {@code true} if both dates are in the same year, {@code false} otherwise.
+     * @throws IllegalArgumentException if either calendar is null.
      */
     public static boolean isSameYear(final java.util.Calendar cal1, java.util.Calendar cal2) {
         if (cal1 == null || cal2 == null) {
@@ -162,7 +168,7 @@ public class Calendar extends Calculate {
         }
 
         if (ObjectKit.notEquals(cal1.getTimeZone(), cal2.getTimeZone())) {
-            // 统一时区
+            // Unify time zones
             cal2 = calendar(cal2, cal1.getTimeZone());
         }
 
@@ -171,11 +177,13 @@ public class Calendar extends Calculate {
     }
 
     /**
-     * 检查两个Calendar时间戳是否相同 此方法检查两个Calendar的毫秒数时间戳是否相同
+     * Checks if the timestamps of two {@link java.util.Calendar} objects are identical. This method compares the
+     * millisecond timestamps of the two Calendar objects.
      *
-     * @param date1 时间1
-     * @param date2 时间2
-     * @return 两个Calendar时间戳是否相同。如果两个时间都为{@code null}返回true，否则有{@code null}返回false
+     * @param date1 The first calendar.
+     * @param date2 The second calendar.
+     * @return {@code true} if the timestamps are identical. If both are {@code null}, returns {@code true}. If one is
+     *         {@code null} and the other is not, returns {@code false}.
      */
     public static boolean isSameInstant(final java.util.Calendar date1, final java.util.Calendar date2) {
         if (null == date1) {
@@ -189,20 +197,20 @@ public class Calendar extends Calculate {
     }
 
     /**
-     * 是否为本月第一天
+     * Checks if the given calendar represents the first day of its month.
      *
-     * @param calendar {@link java.util.Calendar}
-     * @return 是否为本月最后一天
+     * @param calendar The {@link java.util.Calendar} object.
+     * @return {@code true} if it's the first day of the month, {@code false} otherwise.
      */
     public static boolean isFirstDayOfMonth(final java.util.Calendar calendar) {
         return 1 == calendar.get(java.util.Calendar.DAY_OF_MONTH);
     }
 
     /**
-     * 是否为本月最后一天
+     * Checks if the given calendar represents the last day of its month.
      *
-     * @param calendar {@link java.util.Calendar}
-     * @return 是否为本月最后一天
+     * @param calendar The {@link java.util.Calendar} object.
+     * @return {@code true} if it's the last day of the month, {@code false} otherwise.
      */
     public static boolean isLastDayOfMonth(final java.util.Calendar calendar) {
         return calendar.get(java.util.Calendar.DAY_OF_MONTH) == calendar
@@ -210,19 +218,19 @@ public class Calendar extends Calculate {
     }
 
     /**
-     * 创建Calendar对象，时间为默认时区的当前时间
+     * Creates a {@link java.util.Calendar} object initialized to the current time in the default time zone.
      *
-     * @return {@link java.util.Calendar}
+     * @return A new {@link java.util.Calendar} instance.
      */
     public static java.util.Calendar calendar() {
         return java.util.Calendar.getInstance();
     }
 
     /**
-     * 转换为Calendar对象
+     * Converts a {@link Date} object to a {@link java.util.Calendar} object.
      *
-     * @param date 日期对象
-     * @return {@link java.util.Calendar}
+     * @param date The date object to convert.
+     * @return A {@link java.util.Calendar} instance representing the given date.
      */
     public static java.util.Calendar calendar(final Date date) {
         if (date instanceof DateTime) {
@@ -233,31 +241,31 @@ public class Calendar extends Calculate {
     }
 
     /**
-     * 转换为Calendar对象
+     * Converts an {@link XMLGregorianCalendar} object to a {@link java.util.Calendar} object.
      *
-     * @param calendar 日期对象
-     * @return {@link java.util.Calendar}
+     * @param calendar The XMLGregorianCalendar object to convert.
+     * @return A {@link java.util.Calendar} instance representing the given XMLGregorianCalendar.
      */
     public static java.util.Calendar calendar(final XMLGregorianCalendar calendar) {
         return calendar.toGregorianCalendar();
     }
 
     /**
-     * 转换为Calendar对象，使用当前默认时区
+     * Converts a millisecond timestamp to a {@link java.util.Calendar} object, using the current default time zone.
      *
-     * @param millis 时间戳
-     * @return {@link java.util.Calendar}
+     * @param millis The millisecond timestamp.
+     * @return A {@link java.util.Calendar} instance representing the given timestamp.
      */
     public static java.util.Calendar calendar(final long millis) {
         return calendar(millis, TimeZone.getDefault());
     }
 
     /**
-     * 转换为Calendar对象
+     * Converts a millisecond timestamp to a {@link java.util.Calendar} object, using the specified time zone.
      *
-     * @param millis   时间戳
-     * @param timeZone 时区
-     * @return {@link java.util.Calendar}
+     * @param millis   The millisecond timestamp.
+     * @param timeZone The time zone to use.
+     * @return A {@link java.util.Calendar} instance representing the given timestamp in the specified time zone.
      */
     public static java.util.Calendar calendar(final long millis, final TimeZone timeZone) {
         final java.util.Calendar cal = java.util.Calendar.getInstance(timeZone);
@@ -266,52 +274,55 @@ public class Calendar extends Calculate {
     }
 
     /**
-     * 转换为指定时区的Calendar，返回新的Calendar
+     * Converts a {@link java.util.Calendar} object to a new {@link java.util.Calendar} object in the specified time
+     * zone.
      *
-     * @param calendar 时间
-     * @param timeZone 新时区
-     * @return {@link java.util.Calendar}
+     * @param calendar The original calendar.
+     * @param timeZone The new time zone.
+     * @return A new {@link java.util.Calendar} instance in the specified time zone.
      */
     public static java.util.Calendar calendar(java.util.Calendar calendar, final TimeZone timeZone) {
-        // 转换到统一时区，例如UTC
+        // Convert to a unified time zone, e.g., UTC
         calendar = (java.util.Calendar) calendar.clone();
         calendar.setTimeZone(timeZone);
         return calendar;
     }
 
     /**
-     * 修改日期为某个时间字段起始时间
+     * Truncates the given calendar to the beginning of a specified time field. For example, if {@code Various#SECOND}
+     * is specified, the seconds field and all smaller fields (milliseconds) will be set to their minimum possible value
+     * (0).
      *
-     * @param calendar {@link java.util.Calendar}
-     * @param various  保留到的时间字段，如定义为 {@link Various#SECOND}，表示这个字段不变，这个字段以下字段全部归0
-     * @return {@link java.util.Calendar}
+     * @param calendar The {@link java.util.Calendar} object to truncate.
+     * @param various  The time field to truncate to, e.g., {@link Various#SECOND}.
+     * @return The modified {@link java.util.Calendar} object.
      */
     public static java.util.Calendar truncate(final java.util.Calendar calendar, final Various various) {
         return Modifier.modify(calendar, various.getValue(), Modify.TRUNCATE);
     }
 
     /**
-     * 修改日期为某个时间字段四舍五入时间
+     * Rounds the given calendar to the nearest value of a specified time field.
      *
-     * @param calendar {@link java.util.Calendar}
-     * @param various  时间字段，即保留到哪个日期字段
-     * @return {@link java.util.Calendar}
+     * @param calendar The {@link java.util.Calendar} object to round.
+     * @param various  The time field to round, e.g., {@link Various#MINUTE}.
+     * @return The modified {@link java.util.Calendar} object.
      */
     public static java.util.Calendar round(final java.util.Calendar calendar, final Various various) {
         return Modifier.modify(calendar, various.getValue(), Modify.ROUND);
     }
 
     /**
-     * 修改日期为某个时间字段结束时间 可选是否归零毫秒。
+     * Sets the given calendar to the end of a specified time field. Optionally, milliseconds can be truncated to 0.
      *
      * <p>
-     * 有时候由于毫秒部分必须为0（如MySQL数据库中），因此在此加上选项。
-     * </p>
+     * Sometimes, the millisecond part must be 0 (e.g., in MySQL databases), so this option is provided.
+     * 
      *
-     * @param calendar {@link java.util.Calendar}
-     * @param various  时间字段
-     * @param truncate 是否毫秒归零
-     * @return {@link java.util.Calendar}
+     * @param calendar The {@link java.util.Calendar} object to modify.
+     * @param various  The time field to set to the end of.
+     * @param truncate {@code true} to truncate milliseconds to 0, {@code false} otherwise.
+     * @return The modified {@link java.util.Calendar} object.
      */
     public static java.util.Calendar ceiling(
             final java.util.Calendar calendar,
@@ -321,155 +332,155 @@ public class Calendar extends Calculate {
     }
 
     /**
-     * 修改秒级别的开始时间，即忽略毫秒部分
+     * Sets the given calendar to the beginning of the second, ignoring milliseconds.
      *
-     * @param calendar 日期 {@link java.util.Calendar}
-     * @return {@link java.util.Calendar}
+     * @param calendar The {@link java.util.Calendar} object.
+     * @return The modified {@link java.util.Calendar} object.
      */
     public static java.util.Calendar beginOfSecond(final java.util.Calendar calendar) {
         return truncate(calendar, Various.SECOND);
     }
 
     /**
-     * 修改秒级别的结束时间，即毫秒设置为999
+     * Sets the given calendar to the end of the second, setting milliseconds to 999.
      *
-     * @param calendar 日期 {@link java.util.Calendar}
-     * @param truncate 是否毫秒归零
-     * @return {@link java.util.Calendar}
+     * @param calendar The {@link java.util.Calendar} object.
+     * @param truncate {@code true} to truncate milliseconds to 0, {@code false} otherwise.
+     * @return The modified {@link java.util.Calendar} object.
      */
     public static java.util.Calendar endOfSecond(final java.util.Calendar calendar, final boolean truncate) {
         return ceiling(calendar, Various.SECOND, truncate);
     }
 
     /**
-     * 修改某小时的开始时间
+     * Sets the given calendar to the beginning of the hour.
      *
-     * @param calendar 日期 {@link java.util.Calendar}
-     * @return {@link java.util.Calendar}
+     * @param calendar The {@link java.util.Calendar} object.
+     * @return The modified {@link java.util.Calendar} object.
      */
     public static java.util.Calendar beginOfHour(final java.util.Calendar calendar) {
         return truncate(calendar, Various.HOUR_OF_DAY);
     }
 
     /**
-     * 修改某小时的结束时间
+     * Sets the given calendar to the end of the hour.
      *
-     * @param calendar 日期 {@link java.util.Calendar}
-     * @param truncate 是否毫秒归零
-     * @return {@link java.util.Calendar}
+     * @param calendar The {@link java.util.Calendar} object.
+     * @param truncate {@code true} to truncate milliseconds to 0, {@code false} otherwise.
+     * @return The modified {@link java.util.Calendar} object.
      */
     public static java.util.Calendar endOfHour(final java.util.Calendar calendar, final boolean truncate) {
         return ceiling(calendar, Various.HOUR_OF_DAY, truncate);
     }
 
     /**
-     * 修改某分钟的开始时间
+     * Sets the given calendar to the beginning of the minute.
      *
-     * @param calendar 日期 {@link java.util.Calendar}
-     * @return {@link java.util.Calendar}
+     * @param calendar The {@link java.util.Calendar} object.
+     * @return The modified {@link java.util.Calendar} object.
      */
     public static java.util.Calendar beginOfMinute(final java.util.Calendar calendar) {
         return truncate(calendar, Various.MINUTE);
     }
 
     /**
-     * 修改某分钟的结束时间
+     * Sets the given calendar to the end of the minute.
      *
-     * @param calendar 日期 {@link java.util.Calendar}
-     * @param truncate 是否毫秒归零
-     * @return {@link java.util.Calendar}
+     * @param calendar The {@link java.util.Calendar} object.
+     * @param truncate {@code true} to truncate milliseconds to 0, {@code false} otherwise.
+     * @return The modified {@link java.util.Calendar} object.
      */
     public static java.util.Calendar endOfMinute(final java.util.Calendar calendar, final boolean truncate) {
         return ceiling(calendar, Various.MINUTE, truncate);
     }
 
     /**
-     * 修改某天的开始时间
+     * Sets the given calendar to the beginning of the day.
      *
-     * @param calendar 日期 {@link java.util.Calendar}
-     * @return {@link java.util.Calendar}
+     * @param calendar The {@link java.util.Calendar} object.
+     * @return The modified {@link java.util.Calendar} object.
      */
     public static java.util.Calendar beginOfDay(final java.util.Calendar calendar) {
         return truncate(calendar, Various.DAY_OF_MONTH);
     }
 
     /**
-     * 修改某天的结束时间
+     * Sets the given calendar to the end of the day.
      *
-     * @param calendar 日期 {@link java.util.Calendar}
-     * @param truncate 是否毫秒归零
-     * @return {@link java.util.Calendar}
+     * @param calendar The {@link java.util.Calendar} object.
+     * @param truncate {@code true} to truncate milliseconds to 0, {@code false} otherwise.
+     * @return The modified {@link java.util.Calendar} object.
      */
     public static java.util.Calendar endOfDay(final java.util.Calendar calendar, final boolean truncate) {
         return ceiling(calendar, Various.DAY_OF_MONTH, truncate);
     }
 
     /**
-     * 修改给定日期当前周的开始时间，周一定为一周的开始时间
+     * Sets the given calendar to the beginning of its current week, with Monday as the first day of the week.
      *
-     * @param calendar 日期 {@link java.util.Calendar}
-     * @return {@link java.util.Calendar}
+     * @param calendar The {@link java.util.Calendar} object.
+     * @return The modified {@link java.util.Calendar} object.
      */
     public static java.util.Calendar beginOfWeek(final java.util.Calendar calendar) {
         return beginOfWeek(calendar, true);
     }
 
     /**
-     * 修改给定日期当前周的开始时间
+     * Sets the given calendar to the beginning of its current week.
      *
-     * @param calendar           日期 {@link java.util.Calendar}
-     * @param isMondayAsFirstDay 是否周一做为一周的第一天（false表示周日做为第一天）
-     * @return {@link java.util.Calendar}
+     * @param calendar           The {@link java.util.Calendar} object.
+     * @param isMondayAsFirstDay {@code true} if Monday is the first day of the week, {@code false} if Sunday is.
+     * @return The modified {@link java.util.Calendar} object.
      */
     public static java.util.Calendar beginOfWeek(final java.util.Calendar calendar, final boolean isMondayAsFirstDay) {
         calendar.setFirstDayOfWeek(isMondayAsFirstDay ? java.util.Calendar.MONDAY : java.util.Calendar.SUNDAY);
-        // WEEK_OF_MONTH为上限的字段（不包括），实际调整的为DAY_OF_MONTH
+        // WEEK_OF_MONTH is the upper bound field (exclusive), the actual adjustment is DAY_OF_MONTH
         return truncate(calendar, Various.WEEK_OF_MONTH);
     }
 
     /**
-     * 修改某周的结束时间
+     * Sets the given calendar to the end of its current week.
      *
-     * @param calendar          日期 {@link java.util.Calendar}
-     * @param isSundayAsLastDay 是否周日做为一周的最后一天（false表示周六做为最后一天）
-     * @param truncate          是否毫秒归零
-     * @return {@link java.util.Calendar}
+     * @param calendar          The {@link java.util.Calendar} object.
+     * @param isSundayAsLastDay {@code true} if Sunday is the last day of the week, {@code false} if Saturday is.
+     * @param truncate          {@code true} to truncate milliseconds to 0, {@code false} otherwise.
+     * @return The modified {@link java.util.Calendar} object.
      */
     public static java.util.Calendar endOfWeek(
             final java.util.Calendar calendar,
             final boolean isSundayAsLastDay,
             final boolean truncate) {
         calendar.setFirstDayOfWeek(isSundayAsLastDay ? java.util.Calendar.MONDAY : java.util.Calendar.SUNDAY);
-        // WEEK_OF_MONTH为上限的字段（不包括），实际调整的为DAY_OF_MONTH
+        // WEEK_OF_MONTH is the upper bound field (exclusive), the actual adjustment is DAY_OF_MONTH
         return ceiling(calendar, Various.WEEK_OF_MONTH, truncate);
     }
 
     /**
-     * 修改某月的开始时间
+     * Sets the given calendar to the beginning of its current month.
      *
-     * @param calendar 日期 {@link java.util.Calendar}
-     * @return {@link java.util.Calendar}
+     * @param calendar The {@link java.util.Calendar} object.
+     * @return The modified {@link java.util.Calendar} object.
      */
     public static java.util.Calendar beginOfMonth(final java.util.Calendar calendar) {
         return truncate(calendar, Various.MONTH);
     }
 
     /**
-     * 修改某月的结束时间
+     * Sets the given calendar to the end of its current month.
      *
-     * @param calendar 日期 {@link java.util.Calendar}
-     * @param truncate 是否毫秒归零
-     * @return {@link java.util.Calendar}
+     * @param calendar The {@link java.util.Calendar} object.
+     * @param truncate {@code true} to truncate milliseconds to 0, {@code false} otherwise.
+     * @return The modified {@link java.util.Calendar} object.
      */
     public static java.util.Calendar endOfMonth(final java.util.Calendar calendar, final boolean truncate) {
         return ceiling(calendar, Various.MONTH, truncate);
     }
 
     /**
-     * 修改某季度的开始时间
+     * Sets the given calendar to the beginning of its current quarter.
      *
-     * @param calendar 日期 {@link java.util.Calendar}
-     * @return {@link java.util.Calendar}
+     * @param calendar The {@link java.util.Calendar} object.
+     * @return The modified {@link java.util.Calendar} object.
      */
     public static java.util.Calendar beginOfQuarter(final java.util.Calendar calendar) {
         calendar.set(java.util.Calendar.MONTH, calendar.get(Various.MONTH.getValue()) / 3 * 3);
@@ -478,11 +489,11 @@ public class Calendar extends Calculate {
     }
 
     /**
-     * 获取某季度的结束时间
+     * Sets the given calendar to the end of its current quarter.
      *
-     * @param calendar 日期 {@link java.util.Calendar}
-     * @param truncate 是否毫秒归零
-     * @return {@link java.util.Calendar}
+     * @param calendar The {@link java.util.Calendar} object.
+     * @param truncate {@code true} to truncate milliseconds to 0, {@code false} otherwise.
+     * @return The modified {@link java.util.Calendar} object.
      */
     public static java.util.Calendar endOfQuarter(final java.util.Calendar calendar, final boolean truncate) {
         final int year = calendar.get(java.util.Calendar.YEAR);
@@ -495,31 +506,31 @@ public class Calendar extends Calculate {
     }
 
     /**
-     * 修改某年的开始时间
+     * Sets the given calendar to the beginning of its current year.
      *
-     * @param calendar 日期 {@link java.util.Calendar}
-     * @return {@link java.util.Calendar}
+     * @param calendar The {@link java.util.Calendar} object.
+     * @return The modified {@link java.util.Calendar} object.
      */
     public static java.util.Calendar beginOfYear(final java.util.Calendar calendar) {
         return truncate(calendar, Various.YEAR);
     }
 
     /**
-     * 修改某年的结束时间
+     * Sets the given calendar to the end of its current year.
      *
-     * @param calendar 日期 {@link java.util.Calendar}
-     * @param truncate 是否毫秒归零
-     * @return {@link java.util.Calendar}
+     * @param calendar The {@link java.util.Calendar} object.
+     * @param truncate {@code true} to truncate milliseconds to 0, {@code false} otherwise.
+     * @return The modified {@link java.util.Calendar} object.
      */
     public static java.util.Calendar endOfYear(final java.util.Calendar calendar, final boolean truncate) {
         return ceiling(calendar, Various.YEAR, truncate);
     }
 
     /**
-     * 获得指定日期年份和季度 格式：[20131]表示2013年第一季度
+     * Gets the year and quarter of the specified date. Format: [20131] represents the first quarter of 2013.
      *
-     * @param cal 日期
-     * @return 年和季度，格式类似于20131
+     * @param cal The date calendar.
+     * @return The year and quarter, formatted as "YYYYQ" (e.g., "20131").
      */
     public static String yearAndQuarter(final java.util.Calendar cal) {
         return StringKit.builder().append(cal.get(java.util.Calendar.YEAR))
@@ -527,11 +538,11 @@ public class Calendar extends Calculate {
     }
 
     /**
-     * 获取指定日期字段的最小值，例如分钟的最小值是0
+     * Gets the minimum value for a specified date field. For example, the minimum value for minutes is 0.
      *
-     * @param calendar {@link java.util.Calendar}
-     * @param various  {@link Various}
-     * @return 字段最小值
+     * @param calendar The {@link java.util.Calendar} object.
+     * @param various  The date field, e.g., {@link Various#MINUTE}.
+     * @return The minimum value for the specified field.
      * @see java.util.Calendar#getActualMinimum(int)
      */
     public static int getBeginValue(final java.util.Calendar calendar, final Various various) {
@@ -539,11 +550,11 @@ public class Calendar extends Calculate {
     }
 
     /**
-     * 获取指定日期字段的最小值，例如分钟的最小值是0
+     * Gets the minimum value for a specified date field. For example, the minimum value for minutes is 0.
      *
-     * @param calendar  {@link java.util.Calendar}
-     * @param dateField {@link Various}
-     * @return 字段最小值
+     * @param calendar  The {@link java.util.Calendar} object.
+     * @param dateField The date field constant from {@link java.util.Calendar}.
+     * @return The minimum value for the specified field.
      * @see java.util.Calendar#getActualMinimum(int)
      */
     public static int getBeginValue(final java.util.Calendar calendar, final int dateField) {
@@ -554,11 +565,11 @@ public class Calendar extends Calculate {
     }
 
     /**
-     * 获取指定日期字段的最大值，例如分钟的最大值是59
+     * Gets the maximum value for a specified date field. For example, the maximum value for minutes is 59.
      *
-     * @param calendar {@link java.util.Calendar}
-     * @param various  {@link Various}
-     * @return 字段最大值
+     * @param calendar The {@link java.util.Calendar} object.
+     * @param various  The date field, e.g., {@link Various#MINUTE}.
+     * @return The maximum value for the specified field.
      * @see java.util.Calendar#getActualMaximum(int)
      */
     public static int getEndValue(final java.util.Calendar calendar, final Various various) {
@@ -566,11 +577,11 @@ public class Calendar extends Calculate {
     }
 
     /**
-     * 获取指定日期字段的最大值，例如分钟的最大值是59
+     * Gets the maximum value for a specified date field. For example, the maximum value for minutes is 59.
      *
-     * @param calendar  {@link java.util.Calendar}
-     * @param dateField {@link Various}
-     * @return 字段最大值
+     * @param calendar  The {@link java.util.Calendar} object.
+     * @param dateField The date field constant from {@link java.util.Calendar}.
+     * @return The maximum value for the specified field.
      * @see java.util.Calendar#getActualMaximum(int)
      */
     public static int getEndValue(final java.util.Calendar calendar, final int dateField) {
@@ -581,31 +592,33 @@ public class Calendar extends Calculate {
     }
 
     /**
-     * 获得日期的某个部分 例如获得年的部分，则使用 getField(DatePart.YEAR)
+     * Gets a specific part of the date from the given calendar. For example, to get the year, use
+     * {@code getField(calendar, Various.YEAR)}.
      *
-     * @param calendar {@link java.util.Calendar}
-     * @param field    表示日期的哪个部分的枚举 {@link Various}
-     * @return 某个部分的值
+     * @param calendar The {@link java.util.Calendar} object.
+     * @param field    The enum representing the date part to retrieve, e.g., {@link Various}.
+     * @return The value of the specified date part.
      */
     public static int getField(final java.util.Calendar calendar, final Various field) {
         return Assert.notNull(calendar).get(Assert.notNull(field).getValue());
     }
 
     /**
-     * Calendar{@link Instant}对象
+     * Converts a {@link java.util.Calendar} object to an {@link Instant} object.
      *
-     * @param calendar Date对象
-     * @return {@link Instant}对象
+     * @param calendar The {@link java.util.Calendar} object.
+     * @return The corresponding {@link Instant} object, or {@code null} if the input calendar is {@code null}.
      */
     public static Instant toInstant(final java.util.Calendar calendar) {
         return null == calendar ? null : calendar.toInstant();
     }
 
     /**
-     * {@link java.util.Calendar} 转换为 {@link LocalDateTime}，使用系统默认时区
+     * Converts a {@link java.util.Calendar} object to a {@link LocalDateTime} object, using the system default time
+     * zone.
      *
-     * @param calendar {@link java.util.Calendar}
-     * @return {@link LocalDateTime}
+     * @param calendar The {@link java.util.Calendar} object.
+     * @return The corresponding {@link LocalDateTime} object, or {@code null} if the input calendar is {@code null}.
      */
     public static LocalDateTime toLocalDateTime(final java.util.Calendar calendar) {
         if (null == calendar) {
@@ -615,32 +628,34 @@ public class Calendar extends Calculate {
     }
 
     /**
-     * {@code null}安全的{@link java.util.Calendar}比较，{@code null}小于任何日期
+     * Null-safe comparison of two {@link java.util.Calendar} objects. A {@code null} calendar is considered less than
+     * any non-null calendar.
      *
-     * @param calendar1 日期1
-     * @param calendar2 日期2
-     * @return 比较结果，如果calendar1 &lt; calendar2，返回数小于0，calendar1==calendar2返回0，calendar1 &gt; calendar2 大于0
+     * @param calendar1 The first calendar.
+     * @param calendar2 The second calendar.
+     * @return A negative integer, zero, or a positive integer as the first calendar is less than, equal to, or greater
+     *         than the second.
      */
     public static int compare(final java.util.Calendar calendar1, final java.util.Calendar calendar2) {
         return CompareKit.compare(calendar1, calendar2);
     }
 
     /**
-     * 将指定Calendar时间格式化为纯中文形式，比如：
-     *
+     * Formats the specified {@link java.util.Calendar} time into a pure Chinese representation. For example:
+     * 
      * <pre>
-     *     2018-02-24 12:13:14 转换为 二〇一八年二月二十四日（withTime为false）
-     *     2018-02-24 12:13:14 转换为 二〇一八年二月二十四日十二时十三分十四秒（withTime为true）
+     *     2018-02-24 12:13:14 converts to 二〇一八年二月二十四日 (if withTime is false)
+     *     2018-02-24 12:13:14 converts to 二〇一八年二月二十四日十二时十三分十四秒 (if withTime is true)
      * </pre>
      *
-     * @param calendar {@link java.util.Calendar}
-     * @param withTime 是否包含时间部分
-     * @return 格式化后的字符串
+     * @param calendar The {@link java.util.Calendar} object to format.
+     * @param withTime {@code true} to include the time part, {@code false} otherwise.
+     * @return The formatted Chinese date string.
      */
     public static String formatChineseDate(final java.util.Calendar calendar, final boolean withTime) {
         final StringBuilder result = StringKit.builder();
 
-        // 年
+        // Year
         final String year = String.valueOf(calendar.get(java.util.Calendar.YEAR));
         final int length = year.length();
         for (int i = 0; i < length; i++) {
@@ -648,31 +663,31 @@ public class Calendar extends Calculate {
         }
         result.append('年');
 
-        // 月
+        // Month
         final int month = calendar.get(java.util.Calendar.MONTH) + 1;
         result.append(ChineseNumberFormatter.of().setColloquialMode(true).format(month));
         result.append('月');
 
-        // 日
+        // Day
         final int day = calendar.get(java.util.Calendar.DAY_OF_MONTH);
         result.append(ChineseNumberFormatter.of().setColloquialMode(true).format(day));
         result.append('日');
 
-        // 只替换年月日，时分秒中零不需要替换
+        // Replace '0' with '〇' only for year, month, day. '0' in time part does not need replacement.
         final String temp = result.toString().replace(Symbol.C_UL_ZERO, '〇');
         result.delete(0, result.length());
         result.append(temp);
 
         if (withTime) {
-            // 时
+            // Hour
             final int hour = calendar.get(java.util.Calendar.HOUR_OF_DAY);
             result.append(ChineseNumberFormatter.of().setColloquialMode(true).format(hour));
             result.append('时');
-            // 分
+            // Minute
             final int minute = calendar.get(java.util.Calendar.MINUTE);
             result.append(ChineseNumberFormatter.of().setColloquialMode(true).format(minute));
             result.append('分');
-            // 秒
+            // Second
             final int second = calendar.get(java.util.Calendar.SECOND);
             result.append(ChineseNumberFormatter.of().setColloquialMode(true).format(second));
             result.append('秒');
@@ -682,14 +697,15 @@ public class Calendar extends Calculate {
     }
 
     /**
-     * 通过给定的日期格式解析日期时间字符串。 传入的日期格式会逐个尝试，直到解析成功，返回{@link java.util.Calendar}对象，否则抛出{@link DateException}异常。 方法来自：Apache
-     * Commons-Lang3
+     * Parses a date-time string using a given array of date formats. The provided date formats will be tried one by one
+     * until parsing succeeds. Returns a {@link java.util.Calendar} object, otherwise throws a {@link DateException}.
+     * Method adapted from Apache Commons-Lang3.
      *
-     * @param text          日期时间字符串，非空
-     * @param parsePatterns 需要尝试的日期时间格式数组，非空, 见SimpleDateFormat
-     * @return 解析后的Calendar
-     * @throws IllegalArgumentException 如果日期字符串或模式数组为空
-     * @throws DateException            如果没有合适的日期模式
+     * @param text          The date-time string, must not be null.
+     * @param parsePatterns An array of date-time formats to try, must not be null, see SimpleDateFormat.
+     * @return The parsed Calendar object.
+     * @throws IllegalArgumentException if the date string or pattern array is null.
+     * @throws DateException            if no suitable date pattern is found.
      */
     public static java.util.Calendar parseByPatterns(final CharSequence text, final String... parsePatterns)
             throws DateException {
@@ -697,15 +713,16 @@ public class Calendar extends Calculate {
     }
 
     /**
-     * 通过给定的日期格式解析日期时间字符串。 传入的日期格式会逐个尝试，直到解析成功，返回{@link java.util.Calendar}对象，否则抛出{@link DateException}异常。 方法来自：Apache
-     * Commons-Lang3
+     * Parses a date-time string using a given array of date formats. The provided date formats will be tried one by one
+     * until parsing succeeds. Returns a {@link java.util.Calendar} object, otherwise throws a {@link DateException}.
+     * Method adapted from Apache Commons-Lang3.
      *
-     * @param text          日期时间字符串，非空
-     * @param locale        地区，当为{@code null}时使用{@link Locale#getDefault()}
-     * @param parsePatterns 需要尝试的日期时间格式数组，非空, 见SimpleDateFormat
-     * @return 解析后的Calendar
-     * @throws IllegalArgumentException 如果日期字符串或模式数组为空
-     * @throws DateException            如果没有合适的日期模式
+     * @param text          The date-time string, must not be null.
+     * @param locale        The locale to use; if {@code null}, {@link Locale#getDefault()} is used.
+     * @param parsePatterns An array of date-time formats to try, must not be null, see SimpleDateFormat.
+     * @return The parsed Calendar object.
+     * @throws IllegalArgumentException if the date string or pattern array is null.
+     * @throws DateException            if no suitable date pattern is found.
      */
     public static java.util.Calendar parseByPatterns(
             final CharSequence text,
@@ -715,16 +732,17 @@ public class Calendar extends Calculate {
     }
 
     /**
-     * 通过给定的日期格式解析日期时间字符串。 传入的日期格式会逐个尝试，直到解析成功，返回{@link java.util.Calendar}对象，否则抛出{@link DateException}异常。 方法来自：Apache
-     * Commons-Lang3
+     * Parses a date-time string using a given array of date formats. The provided date formats will be tried one by one
+     * until parsing succeeds. Returns a {@link java.util.Calendar} object, otherwise throws a {@link DateException}.
+     * Method adapted from Apache Commons-Lang3.
      *
-     * @param text          日期时间字符串，非空
-     * @param locale        地区，当为{@code null}时使用{@link Locale#getDefault()}
-     * @param lenient       日期时间解析是否使用严格模式
-     * @param parsePatterns 需要尝试的日期时间格式数组，非空, 见SimpleDateFormat
-     * @return 解析后的Calendar
-     * @throws IllegalArgumentException 如果日期字符串或模式数组为空
-     * @throws DateException            如果没有合适的日期模式
+     * @param text          The date-time string, must not be null.
+     * @param locale        The locale to use; if {@code null}, {@link Locale#getDefault()} is used.
+     * @param lenient       {@code true} to use lenient parsing, {@code false} for strict parsing.
+     * @param parsePatterns An array of date-time formats to try, must not be null, see SimpleDateFormat.
+     * @return The parsed Calendar object.
+     * @throws IllegalArgumentException if the date string or pattern array is null.
+     * @throws DateException            if no suitable date pattern is found.
      * @see java.util.Calendar#isLenient()
      */
     public static java.util.Calendar parseByPatterns(
@@ -760,7 +778,7 @@ public class Calendar extends Calculate {
                     return calendar;
                 }
             } catch (final IllegalArgumentException ignore) {
-                // 宽大处理是防止日历被设定
+                // Lenient handling prevents the calendar from being set
             }
             pos.setIndex(0);
         }
@@ -769,13 +787,13 @@ public class Calendar extends Calculate {
     }
 
     /**
-     * 使用指定{@link DateParser}解析字符串为{@link java.util.Calendar}
+     * Parses a string into a {@link java.util.Calendar} using the specified {@link DateParser}.
      *
-     * @param text    日期字符串
-     * @param lenient 是否宽容模式
-     * @param parser  {@link DateParser}
-     * @return 解析后的 {@link java.util.Calendar}，解析失败返回{@code null}
-     * @throws DateException 解析失败抛出此异常
+     * @param text    The date string.
+     * @param lenient {@code true} for lenient parsing, {@code false} for strict parsing.
+     * @param parser  The {@link DateParser} to use.
+     * @return The parsed {@link java.util.Calendar} object, or {@code null} if parsing fails.
+     * @throws DateException if parsing fails.
      */
     public static java.util.Calendar parse(
             final CharSequence text,
@@ -786,10 +804,11 @@ public class Calendar extends Calculate {
     }
 
     /**
-     * 计算年龄
+     * Calculates the age based on a birth date.
      *
-     * @param birthDay 生日
-     * @return int 年龄
+     * @param birthDay The birth date as a {@link LocalDate}.
+     * @return The age in years.
+     * @throws DateTimeException if the birth date is after the current date.
      */
     public static int age(LocalDate birthDay) {
         Period period = Period.between(birthDay, LocalDate.now());
@@ -801,42 +820,51 @@ public class Calendar extends Calculate {
     }
 
     /**
-     * 计算年龄
+     * Calculates the age based on a birth date.
      *
-     * @param birthDay 生日
-     * @return int 年龄
+     * @param birthDay The birth date as a {@link LocalDateTime}.
+     * @return The age in years.
      */
     public static int age(LocalDateTime birthDay) {
         return age(birthDay.toLocalDate());
     }
 
     /**
-     * 计算相对于dateToCompare的年龄，常用于计算指定生日在某年的年龄
-     * 按照《最高人民法院关于审理未成年人刑事案件具体应用法律若干问题的解释》第二条规定刑法第十七条规定的“周岁”，按照公历的年、月、日计算，从周岁生日的第二天起算。
+     * Calculates the age (full years) relative to a comparison date. This is commonly used to calculate the age of a
+     * specific birthday in a given year. According to Article 2 of the "Interpretation of Several Issues Concerning the
+     * Application of Law in the Trial of Criminal Cases Involving Minors" by the Supreme People's Court, the "full age"
+     * stipulated in Article 17 of the Criminal Law is calculated based on the Gregorian calendar year, month, and day,
+     * starting from the second day after the birthday.
      * <ul>
-     * <li>2022-03-01出生，则相对2023-03-01，周岁为0，相对于2023-03-02才是1岁。</li>
-     * <li>1999-02-28出生，则相对2000-02-29，周岁为1</li>
+     * <li>Born on 2022-03-01, then relative to 2023-03-01, the full age is 0. It becomes 1 year old relative to
+     * 2023-03-02.</li>
+     * <li>Born on 1999-02-28, then relative to 2000-02-29, the full age is 1.</li>
      * </ul>
      *
-     * @param birthday      生日
-     * @param dateToCompare 需要对比的日期
-     * @return 年龄
+     * @param birthday      The birth date as a {@link java.util.Calendar}.
+     * @param dateToCompare The date to compare against.
+     * @return The age in years.
      */
     public static int age(final java.util.Calendar birthday, final java.util.Calendar dateToCompare) {
         return age(birthday.getTimeInMillis(), dateToCompare.getTimeInMillis());
     }
 
     /**
-     * 计算相对于dateToCompare的年龄（周岁），常用于计算指定生日在某年的年龄
-     * 按照《最高人民法院关于审理未成年人刑事案件具体应用法律若干问题的解释》第二条规定刑法第十七条规定的“周岁”，按照公历的年、月、日计算，从周岁生日的第二天起算。
+     * Calculates the age (full years) relative to a comparison date. This is commonly used to calculate the age of a
+     * specific birthday in a given year. According to Article 2 of the "Interpretation of Several Issues Concerning the
+     * Application of Law in the Trial of Criminal Cases Involving Minors" by the Supreme People's Court, the "full age"
+     * stipulated in Article 17 of the Criminal Law is calculated based on the Gregorian calendar year, month, and day,
+     * starting from the second day after the birthday.
      * <ul>
-     * <li>2022-03-01出生，则相对2023-03-01，周岁为0，相对于2023-03-02才是1岁。</li>
-     * <li>1999-02-28出生，则相对2000-02-29，周岁为1</li>
+     * <li>Born on 2022-03-01, then relative to 2023-03-01, the full age is 0. It becomes 1 year old relative to
+     * 2023-03-02.</li>
+     * <li>Born on 1999-02-28, then relative to 2000-02-29, the full age is 1.</li>
      * </ul>
      *
-     * @param birthday      生日
-     * @param dateToCompare 需要对比的日期
-     * @return 年龄
+     * @param birthday      The birth date in milliseconds.
+     * @param dateToCompare The comparison date in milliseconds.
+     * @return The age in years.
+     * @throws IllegalArgumentException if the birth date is after the comparison date.
      */
     protected static int age(final long birthday, final long dateToCompare) {
         if (birthday > dateToCompare) {
@@ -850,10 +878,10 @@ public class Calendar extends Calculate {
         final int month = cal.get(java.util.Calendar.MONTH);
         final int dayOfMonth = cal.get(java.util.Calendar.DAY_OF_MONTH);
 
-        // 复用cal
+        // Reuse cal
         cal.setTimeInMillis(birthday);
         int age = year - cal.get(java.util.Calendar.YEAR);
-        // 当前日期，则为0岁
+        // If current date is the birth year, age is 0
         if (age == 0) {
             return 0;
         }
@@ -861,13 +889,13 @@ public class Calendar extends Calculate {
         final int monthBirth = cal.get(java.util.Calendar.MONTH);
         if (month == monthBirth) {
             final int dayOfMonthBirth = cal.get(java.util.Calendar.DAY_OF_MONTH);
-            // 法定生日当天不算年龄，从第二天开始计算
+            // Legal birthday itself does not count towards age, calculation starts from the second day
             if (dayOfMonth <= dayOfMonthBirth) {
-                // 如果生日在当月，但是未达到生日当天的日期，年龄减一
+                // If birthday is in the current month, but the current day has not reached the birthday, decrement age
                 age--;
             }
         } else if (month < monthBirth) {
-            // 如果当前月份未达到生日的月份，年龄计算减一
+            // If the current month has not reached the birth month, decrement age
             age--;
         }
 

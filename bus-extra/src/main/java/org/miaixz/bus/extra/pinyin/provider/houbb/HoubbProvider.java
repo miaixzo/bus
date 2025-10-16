@@ -34,14 +34,14 @@ import com.github.houbb.pinyin.constant.enums.PinyinStyleEnum;
 import com.github.houbb.pinyin.util.PinyinHelper;
 
 /**
- * 封装了 houbb Pinyin 的引擎。
+ * Encapsulates the houbb Pinyin engine.
  *
  * <p>
- * houbb pinyin(https://github.com/houbb/pinyin)封装。
+ * houbb pinyin (<a href="https://github.com/houbb/pinyin">https://github.com/houbb/pinyin</a>) encapsulation.
  * </p>
  *
  * <p>
- * 引入：
+ * To introduce (dependency):
  * 
  * <pre>
  * &lt;dependency&gt;
@@ -57,10 +57,11 @@ import com.github.houbb.pinyin.util.PinyinHelper;
 public class HoubbProvider implements PinyinProvider {
 
     /**
-     * 构造
+     * Constructs a new HoubbProvider instance. Checks if the houbb pinyin library is available (via
+     * {@link PinyinHelper} class).
      */
     public HoubbProvider() {
-        // SPI方式加载时检查库是否引入
+        // Check if the library is introduced when loading via SPI
         Assert.notNull(PinyinHelper.class);
     }
 

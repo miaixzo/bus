@@ -27,45 +27,82 @@
 */
 package org.miaixz.bus.core.io.compress;
 
-import org.miaixz.bus.core.lang.Charset;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.zip.ZipEntry;
 
+import org.miaixz.bus.core.lang.Charset;
+
 /**
- * Excel 兼容的 Zip64 实现 来自并见： https://github.com/rzymek/opczip
+ * Excel compatible Zip64 implementation. Based on: https://github.com/rzymek/opczip
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 class Zip64 {
 
+    /**
+     * Signature for Central File Header.
+     */
     private static final long PK0102 = 0x02014b50L;
+    /**
+     * Signature for Local File Header.
+     */
     private static final long PK0304 = 0x04034b50L;
+    /**
+     * Signature for End of Central Directory Record.
+     */
     private static final long PK0506 = 0x06054b50L;
+    /**
+     * Signature for Data Descriptor.
+     */
     private static final long PK0708 = 0x08074b50L;
 
+    /**
+     * Version 2.0 of the ZIP format specification.
+     */
     private static final int VERSION_20 = 20;
+    /**
+     * Version 4.5 of the ZIP format specification, required for Zip64.
+     */
     private static final int VERSION_45 = 45;
+    /**
+     * Flag indicating that a data descriptor is used.
+     */
     private static final int DATA_DESCRIPTOR_USED = 0x08;
+    /**
+     * Extra field ID for Zip64 extended information.
+     */
     private static final int ZIP64_FIELD = 0x0001;
+    /**
+     * Maximum 32-bit unsigned integer value.
+     */
     private static final long MAX32 = 0xffffffffL;
 
+    /**
+     * The output stream to which ZIP data is written.
+     */
     private final OutputStream out;
+    /**
+     * The number of bytes written in the current operation.
+     */
     private int written = 0;
 
     /**
-     * 构造
+     * Constructs a new Zip64 instance.
      *
-     * @param out 输出流
+     * @param out The output stream to write ZIP data to.
      */
     Zip64(final OutputStream out) {
         this.out = out;
     }
 
     /**
-     * Write Local File Header
+     * Writes the Local File Header (LFH) for a given entry.
+     *
+     * @param entry The entry for which to write the LFH.
+     * @return The total number of bytes written for the LFH.
+     * @throws IOException If an I/O error occurs.
      */
     int writeLFH(final Entry entry) throws IOException {
         written = 0;
@@ -85,7 +122,11 @@ class Zip64 {
     }
 
     /**
-     * Write Data Descriptor
+     * Writes the Data Descriptor for a given entry.
+     *
+     * @param entry The entry for which to write the Data Descriptor.
+     * @return The total number of bytes written for the Data Descriptor.
+     * @throws IOException If an I/O error occurs.
      */
     int writeDAT(final Entry entry) throws IOException {
         written = 0;
@@ -97,7 +138,11 @@ class Zip64 {
     }
 
     /**
-     * Write Central directory file header
+     * Writes the Central Directory File Header (CEN) for a given entry.
+     *
+     * @param entry The entry for which to write the CEN.
+     * @return The total number of bytes written for the CEN.
+     * @throws IOException If an I/O error occurs.
      */
     int writeCEN(final Entry entry) throws IOException {
         written = 0;
@@ -132,7 +177,13 @@ class Zip64 {
     }
 
     /**
-     * Write End of central directory record (EOCD)
+     * Writes the End of Central Directory Record (EOCD).
+     *
+     * @param entriesCount The total number of entries in the central directory.
+     * @param offset       The offset of the central directory from the start of the archive.
+     * @param length       The size of the central directory.
+     * @return The total number of bytes written for the EOCD.
+     * @throws IOException If an I/O error occurs.
      */
     int writeEND(final int entriesCount, final int offset, final int length) throws IOException {
         written = 0;
@@ -149,6 +200,9 @@ class Zip64 {
 
     /**
      * Writes a 16-bit short to the output stream in little-endian byte order.
+     *
+     * @param v The short value to write.
+     * @throws IOException If an I/O error occurs.
      */
     private void writeShort(final int v) throws IOException {
         final OutputStream out = this.out;
@@ -159,6 +213,9 @@ class Zip64 {
 
     /**
      * Writes a 32-bit int to the output stream in little-endian byte order.
+     *
+     * @param v The int value to write.
+     * @throws IOException If an I/O error occurs.
      */
     private void writeInt(final long v) throws IOException {
         final OutputStream out = this.out;
@@ -170,7 +227,10 @@ class Zip64 {
     }
 
     /**
-     * Writes a 64-bit int to the output stream in little-endian byte order.
+     * Writes a 64-bit long to the output stream in little-endian byte order.
+     *
+     * @param v The long value to write.
+     * @throws IOException If an I/O error occurs.
      */
     private void writeLong(final long v) throws IOException {
         final OutputStream out = this.out;
@@ -185,14 +245,37 @@ class Zip64 {
         written += 8;
     }
 
+    /**
+     * Represents an entry within the ZIP archive.
+     */
     static class Entry {
 
+        /**
+         * The filename of the entry.
+         */
         final String filename;
+        /**
+         * The CRC-32 checksum of the uncompressed data.
+         */
         long crc;
+        /**
+         * The uncompressed size of the entry data.
+         */
         long size;
+        /**
+         * The compressed size of the entry data.
+         */
         int compressedSize;
+        /**
+         * The offset of the local file header from the start of the archive.
+         */
         int offset;
 
+        /**
+         * Constructs a new Entry with the specified filename.
+         *
+         * @param filename The filename of the entry.
+         */
         Entry(final String filename) {
             this.filename = filename;
         }

@@ -40,14 +40,14 @@ import org.miaixz.bus.crypto.Padding;
 import org.miaixz.bus.crypto.builtin.symmetric.Crypto;
 
 /**
- * 国密对称堆成加密算法SM4实现
- *
+ * SM4 symmetric encryption algorithm implementation.
  * <p>
- * 国密算法包括：
+ * The suite of national cryptographic algorithms (Guomi algorithms) includes:
+ * </p>
  * <ol>
- * <li>非对称加密和签名：SM2，asymmetric</li>
- * <li>摘要签名算法：SM3，digest</li>
- * <li>对称加密：SM4，symmetric</li>
+ * <li>Asymmetric encryption and signature: SM2 (asymmetric)</li>
+ * <li>Digest signature algorithm: SM3 (digest)</li>
+ * <li>Symmetric encryption: SM4 (symmetric)</li>
  * </ol>
  *
  * @author Kimi Liu
@@ -59,117 +59,119 @@ public class SM4 extends Crypto {
     private static final long serialVersionUID = 2852290629929L;
 
     /**
-     * 构造，使用随机密钥
+     * Constructs an SM4 encryptor/decryptor with a randomly generated key.
      */
     public SM4() {
         super(Algorithm.SM4.getValue());
     }
 
     /**
-     * 构造
+     * Constructs an SM4 encryptor/decryptor with the given key.
      *
-     * @param key 密钥
+     * @param key The SM4 key as a byte array.
      */
     public SM4(final byte[] key) {
         super(Algorithm.SM4.getValue(), key);
     }
 
     /**
-     * 构造，使用随机密钥
+     * Constructs an SM4 encryptor/decryptor with the specified mode and padding. A random key is generated.
      *
-     * @param mode    模式{@link Algorithm.Mode}
-     * @param padding {@link Padding}补码方式
+     * @param mode    The encryption mode (e.g., CBC, CTR) as defined in {@link Algorithm.Mode}.
+     * @param padding The padding scheme (e.g., PKCS5Padding, NoPadding) as defined in {@link Padding}.
      */
     public SM4(final Algorithm.Mode mode, final Padding padding) {
         this(mode.name(), padding.name());
     }
 
     /**
-     * 构造
+     * Constructs an SM4 encryptor/decryptor with the specified mode, padding, and key.
      *
-     * @param mode    模式{@link Algorithm.Mode}
-     * @param padding {@link Padding}补码方式
-     * @param key     密钥，支持密钥长度：128位
+     * @param mode    The encryption mode (e.g., CBC, CTR) as defined in {@link Algorithm.Mode}.
+     * @param padding The padding scheme (e.g., PKCS5Padding, NoPadding) as defined in {@link Padding}.
+     * @param key     The SM4 key as a byte array. Supports a key length of 128 bits.
      */
     public SM4(final Algorithm.Mode mode, final Padding padding, final byte[] key) {
         this(mode, padding, key, null);
     }
 
     /**
-     * 构造
+     * Constructs an SM4 encryptor/decryptor with the specified mode, padding, key, and initialization vector (IV).
      *
-     * @param mode    模式{@link Algorithm.Mode}
-     * @param padding {@link Padding}补码方式
-     * @param key     密钥，支持密钥长度：128位
-     * @param iv      偏移向量，加盐
+     * @param mode    The encryption mode (e.g., CBC, CTR) as defined in {@link Algorithm.Mode}.
+     * @param padding The padding scheme (e.g., PKCS5Padding, NoPadding) as defined in {@link Padding}.
+     * @param key     The SM4 key as a byte array. Supports a key length of 128 bits.
+     * @param iv      The initialization vector (IV) as a byte array. Used for modes like CBC.
      */
     public SM4(final Algorithm.Mode mode, final Padding padding, final byte[] key, final byte[] iv) {
         this(mode.name(), padding.name(), key, iv);
     }
 
     /**
-     * 构造
+     * Constructs an SM4 encryptor/decryptor with the specified mode, padding, and {@link SecretKey}.
      *
-     * @param mode    模式{@link Algorithm.Mode}
-     * @param padding {@link Padding}补码方式
-     * @param key     密钥，支持密钥长度：128位
+     * @param mode    The encryption mode (e.g., CBC, CTR) as defined in {@link Algorithm.Mode}.
+     * @param padding The padding scheme (e.g., PKCS5Padding, NoPadding) as defined in {@link Padding}.
+     * @param key     The SM4 {@link SecretKey}. Supports a key length of 128 bits.
      */
     public SM4(final Algorithm.Mode mode, final Padding padding, final SecretKey key) {
         this(mode, padding, key, (IvParameterSpec) null);
     }
 
     /**
-     * 构造
+     * Constructs an SM4 encryptor/decryptor with the specified mode, padding, {@link SecretKey}, and initialization
+     * vector (IV).
      *
-     * @param mode    模式{@link Algorithm.Mode}
-     * @param padding {@link Padding}补码方式
-     * @param key     密钥，支持密钥长度：128位
-     * @param iv      偏移向量，加盐
+     * @param mode    The encryption mode (e.g., CBC, CTR) as defined in {@link Algorithm.Mode}.
+     * @param padding The padding scheme (e.g., PKCS5Padding, NoPadding) as defined in {@link Padding}.
+     * @param key     The SM4 {@link SecretKey}. Supports a key length of 128 bits.
+     * @param iv      The initialization vector (IV) as a byte array. If empty or null, no IV is used.
      */
     public SM4(final Algorithm.Mode mode, final Padding padding, final SecretKey key, final byte[] iv) {
         this(mode, padding, key, ArrayKit.isEmpty(iv) ? null : new IvParameterSpec(iv));
     }
 
     /**
-     * 构造
+     * Constructs an SM4 encryptor/decryptor with the specified mode, padding, {@link SecretKey}, and initialization
+     * vector (IV).
      *
-     * @param mode    模式{@link Algorithm.Mode}
-     * @param padding {@link Padding}补码方式
-     * @param key     密钥，支持密钥长度：128位
-     * @param iv      偏移向量，加盐
+     * @param mode    The encryption mode (e.g., CBC, CTR) as defined in {@link Algorithm.Mode}.
+     * @param padding The padding scheme (e.g., PKCS5Padding, NoPadding) as defined in {@link Padding}.
+     * @param key     The SM4 {@link SecretKey}. Supports a key length of 128 bits.
+     * @param iv      The initialization vector (IV) as an {@link IvParameterSpec}. If null, no IV is used.
      */
     public SM4(final Algorithm.Mode mode, final Padding padding, final SecretKey key, final IvParameterSpec iv) {
         this(mode.name(), padding.name(), key, iv);
     }
 
     /**
-     * 构造
+     * Constructs an SM4 encryptor/decryptor with the specified mode and padding names. A random key is generated.
      *
-     * @param mode    模式
-     * @param padding 补码方式
+     * @param mode    The name of the encryption mode (e.g., "CBC", "CTR").
+     * @param padding The name of the padding scheme (e.g., "PKCS5Padding", "NoPadding").
      */
     public SM4(final String mode, final String padding) {
         this(mode, padding, (byte[]) null);
     }
 
     /**
-     * 构造
+     * Constructs an SM4 encryptor/decryptor with the specified mode, padding name, and key.
      *
-     * @param mode    模式
-     * @param padding 补码方式
-     * @param key     密钥，支持密钥长度：128位
+     * @param mode    The name of the encryption mode (e.g., "CBC", "CTR").
+     * @param padding The name of the padding scheme (e.g., "PKCS5Padding", "NoPadding").
+     * @param key     The SM4 key as a byte array. Supports a key length of 128 bits.
      */
     public SM4(final String mode, final String padding, final byte[] key) {
         this(mode, padding, key, null);
     }
 
     /**
-     * 构造
+     * Constructs an SM4 encryptor/decryptor with the specified mode, padding name, key, and initialization vector (IV).
      *
-     * @param mode    模式
-     * @param padding 补码方式
-     * @param key     密钥，支持密钥长度：128位
-     * @param iv      加盐
+     * @param mode    The name of the encryption mode (e.g., "CBC", "CTR").
+     * @param padding The name of the padding scheme (e.g., "PKCS5Padding", "NoPadding").
+     * @param key     The SM4 key as a byte array. Supports a key length of 128 bits.
+     * @param iv      The initialization vector (IV) as a byte array. If empty or null, no IV is used.
      */
     public SM4(final String mode, final String padding, final byte[] key, final byte[] iv) {
         this(mode, padding, //
@@ -178,23 +180,24 @@ public class SM4 extends Crypto {
     }
 
     /**
-     * 构造
+     * Constructs an SM4 encryptor/decryptor with the specified mode, padding name, and {@link SecretKey}.
      *
-     * @param mode    模式
-     * @param padding 补码方式
-     * @param key     密钥，支持密钥长度：128位
+     * @param mode    The name of the encryption mode (e.g., "CBC", "CTR").
+     * @param padding The name of the padding scheme (e.g., "PKCS5Padding", "NoPadding").
+     * @param key     The SM4 {@link SecretKey}. Supports a key length of 128 bits.
      */
     public SM4(final String mode, final String padding, final SecretKey key) {
         this(mode, padding, key, null);
     }
 
     /**
-     * 构造
+     * Constructs an SM4 encryptor/decryptor with the specified mode, padding name, {@link SecretKey}, and
+     * initialization vector (IV).
      *
-     * @param mode    模式
-     * @param padding 补码方式
-     * @param key     密钥，支持密钥长度：128位
-     * @param iv      加盐
+     * @param mode    The name of the encryption mode (e.g., "CBC", "CTR").
+     * @param padding The name of the padding scheme (e.g., "PKCS5Padding", "NoPadding").
+     * @param key     The SM4 {@link SecretKey}. Supports a key length of 128 bits.
+     * @param iv      The initialization vector (IV) as an {@link IvParameterSpec}. If null, no IV is used.
      */
     public SM4(final String mode, final String padding, final SecretKey key, final IvParameterSpec iv) {
         super(StringKit.format("SM4/{}/{}", mode, padding), key, iv);

@@ -37,22 +37,46 @@ import org.apache.ibatis.mapping.MappedStatement;
 import org.miaixz.bus.pager.binding.PageAutoDialect;
 
 /**
- * 默认实现，使用 Hikari 连接池时，简单获取 jdbcUrl
+ * Abstract base class for auto-detecting database dialects from a {@link DataSource}. This class provides a default
+ * implementation that can extract the JDBC URL from specific DataSource types, such as HikariCP, to determine the
+ * dialect.
  *
+ * @param <Ds> The specific {@link DataSource} implementation type this dialect handler supports.
  * @author Kimi Liu
  * @since Java 17+
  */
 public abstract class AbstractAutoDialect<Ds extends DataSource> implements AutoDialect<String> {
 
+    /**
+     * The class of the specific DataSource implementation.
+     */
     protected Class dataSourceClass;
 
+    /**
+     * Constructs an AbstractAutoDialect instance and determines the specific DataSource class from the generic type
+     * parameter.
+     */
     public AbstractAutoDialect() {
         Type genericSuperclass = getClass().getGenericSuperclass();
         dataSourceClass = (Class) ((ParameterizedType) genericSuperclass).getActualTypeArguments()[0];
     }
 
+    /**
+     * Retrieves the JDBC URL from the specific DataSource instance.
+     *
+     * @param ds the DataSource instance.
+     * @return the JDBC URL string.
+     */
     public abstract String getJdbcUrl(Ds ds);
 
+    /**
+     * Extracts the dialect key (JDBC URL) if the provided DataSource matches the supported type.
+     *
+     * @param ms         the MappedStatement being executed.
+     * @param dataSource the DataSource associated with the MappedStatement.
+     * @param properties the configuration properties.
+     * @return the JDBC URL as the dialect key if the DataSource is of the supported type, otherwise null.
+     */
     @Override
     public String extractDialectKey(MappedStatement ms, DataSource dataSource, Properties properties) {
         if (dataSourceClass.isInstance(dataSource)) {
@@ -61,6 +85,15 @@ public abstract class AbstractAutoDialect<Ds extends DataSource> implements Auto
         return null;
     }
 
+    /**
+     * Extracts and returns the appropriate {@link AbstractPaging} dialect based on the dialect key (JDBC URL).
+     *
+     * @param dialectKey the dialect key (JDBC URL).
+     * @param ms         the MappedStatement being executed.
+     * @param dataSource the DataSource associated with the MappedStatement.
+     * @param properties the configuration properties.
+     * @return an instance of {@link AbstractPaging} representing the determined dialect.
+     */
     @Override
     public AbstractPaging extractDialect(
             String dialectKey,

@@ -27,8 +27,6 @@
 */
 package org.miaixz.bus.auth.nimble.coding;
 
-import java.util.Map;
-
 import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Registry;
@@ -37,30 +35,51 @@ import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.Material;
 import org.miaixz.bus.auth.nimble.AbstractProvider;
 import org.miaixz.bus.cache.CacheX;
+import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.extra.json.JsonKit;
 
+import java.util.Map;
+
 /**
- * Coding 登录
+ * Coding login provider.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class CodingProvider extends AbstractProvider {
 
+    /**
+     * Constructs a {@code CodingProvider} with the specified context.
+     *
+     * @param context the authentication context
+     */
     public CodingProvider(Context context) {
         super(context, Registry.CODING);
     }
 
+    /**
+     * Constructs a {@code CodingProvider} with the specified context and cache.
+     *
+     * @param context the authentication context
+     * @param cache   the cache implementation
+     */
     public CodingProvider(Context context, CacheX cache) {
         super(context, Registry.CODING, cache);
     }
 
+    /**
+     * Retrieves the access token from Coding's authorization server.
+     *
+     * @param callback the callback object containing the authorization code
+     * @return the {@link AuthToken} containing access token details
+     * @throws AuthorizedException if parsing the response fails or required token information is missing
+     */
     @Override
     public AuthToken getAccessToken(Callback callback) {
-        String response = doGetAuthorizationCode(callback.getCode());
+        String response = doPostAuthorizationCode(callback.getCode());
         try {
             Map<String, Object> accessTokenObject = JsonKit.toPojo(response, Map.class);
             if (accessTokenObject == null) {
@@ -82,6 +101,13 @@ public class CodingProvider extends AbstractProvider {
         }
     }
 
+    /**
+     * Retrieves user information from Coding's user info endpoint.
+     *
+     * @param authToken the {@link AuthToken} obtained after successful authorization
+     * @return {@link Material} containing the user's information
+     * @throws AuthorizedException if parsing the response fails or required user information is missing
+     */
     @Override
     public Material getUserInfo(AuthToken authToken) {
         String response = doGetUserInfo(authToken);
@@ -92,7 +118,7 @@ public class CodingProvider extends AbstractProvider {
             }
             this.checkResponse(object);
 
-            Map<String, Object> data = (Map<String, Object>) object.get("data");
+            Map<String, Object> data = (Map<String, Object>) object.get(Consts.DATA);
             if (data == null) {
                 throw new AuthorizedException("Missing data field in user info response");
             }
@@ -114,16 +140,17 @@ public class CodingProvider extends AbstractProvider {
                     .avatar(avatar != null ? "https://coding.net" + avatar : null)
                     .blog(path != null ? "https://coding.net" + path : null).nickname(name).company(company)
                     .location(location).gender(Gender.of(sex)).email(email).remark(slogan).token(authToken)
-                    .source(this.complex.toString()).build();
+                    .source(complex.toString()).build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
         }
     }
 
     /**
-     * 检查响应内容是否正确
+     * Checks the response content for errors.
      *
-     * @param object 请求响应内容
+     * @param object the response map to check
+     * @throws AuthorizedException if the response indicates an error or message indicating failure
      */
     private void checkResponse(Map<String, Object> object) {
         if ((int) object.get("code") != 0) {
@@ -132,10 +159,11 @@ public class CodingProvider extends AbstractProvider {
     }
 
     /**
-     * 返回带{@code state}参数的授权url，授权回调时会带上这个{@code state}
+     * Returns the authorization URL with a {@code state} parameter. The {@code state} will be included in the
+     * authorization callback.
      *
-     * @param state state 验证授权流程的参数，可以防止csrf
-     * @return 返回授权地址
+     * @param state the parameter to verify the authorization process, which can prevent CSRF attacks
+     * @return the authorization URL
      */
     @Override
     public String authorize(String state) {
@@ -147,10 +175,10 @@ public class CodingProvider extends AbstractProvider {
     }
 
     /**
-     * 返回获取accessToken的url
+     * Returns the URL to obtain the access token.
      *
-     * @param code 授权码
-     * @return 返回获取accessToken的url
+     * @param code the authorization code
+     * @return the URL to obtain the access token
      */
     @Override
     public String accessTokenUrl(String code) {
@@ -161,10 +189,10 @@ public class CodingProvider extends AbstractProvider {
     }
 
     /**
-     * 返回获取userInfo的url
+     * Returns the URL to obtain user information.
      *
-     * @param authToken token
-     * @return 返回获取userInfo的url
+     * @param authToken the user's authorization token
+     * @return the URL to obtain user information
      */
     @Override
     public String userInfoUrl(AuthToken authToken) {

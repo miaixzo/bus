@@ -34,13 +34,21 @@ import java.security.spec.AlgorithmParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.miaixz.bus.core.lang.Algorithm;
-import org.miaixz.bus.crypto.builtin.digest.mac.Mac;
 import org.miaixz.bus.crypto.builtin.digest.mac.MacFactory;
 
 /**
- * HMAC摘要算法 HMAC，全称为“Hash Message Authentication Code”，中文名“散列消息鉴别码” 主要是利用哈希算法，以一个密钥和一个消息为输入，生成一个消息摘要作为输出。
- * 一般的，消息鉴别码用于验证传输于两个共 同享有一个密钥的单位之间的消息。 HMAC 可以与任何迭代散列函数捆绑使用。MD5 和 SHA-1 就是这种散列函数。HMAC 还可以使用一个用于计算和确认消息鉴别值的密钥。
- * 注意：此对象实例化后为非线程安全！
+ * HMAC (Hash-based Message Authentication Code) digest algorithm implementation.
+ * <p>
+ * HMAC uses a cryptographic hash function and a secret key to generate a message digest. It is primarily used to verify
+ * the authenticity and integrity of messages exchanged between two parties who share a common secret key.
+ * </p>
+ * <p>
+ * HMAC can be used with any iterative hash function, such as MD5 and SHA-1. It also uses a key for computing and
+ * verifying the message authentication value.
+ * </p>
+ * <p>
+ * Note: Instances of this object are not thread-safe after instantiation.
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -51,71 +59,71 @@ public class HMac extends org.miaixz.bus.crypto.center.Mac {
     private static final long serialVersionUID = 2852290076863L;
 
     /**
-     * 构造，自动生成密钥
+     * Constructs an HMAC instance with the specified algorithm, generating a random key.
      *
-     * @param algorithm 算法 {@link Algorithm}
+     * @param algorithm The HMAC algorithm, see {@link Algorithm}.
      */
     public HMac(final Algorithm algorithm) {
         this(algorithm, (Key) null);
     }
 
     /**
-     * 构造
+     * Constructs an HMAC instance with the specified algorithm and key material.
      *
-     * @param algorithm 算法 {@link Algorithm}
-     * @param key       密钥
+     * @param algorithm The HMAC algorithm, see {@link Algorithm}.
+     * @param key       The key material as a byte array.
      */
     public HMac(final Algorithm algorithm, final byte[] key) {
         this(algorithm.getValue(), key);
     }
 
     /**
-     * 构造
+     * Constructs an HMAC instance with the specified algorithm and {@link Key}.
      *
-     * @param algorithm 算法 {@link Algorithm}
-     * @param key       密钥
+     * @param algorithm The HMAC algorithm, see {@link Algorithm}.
+     * @param key       The cryptographic {@link Key}.
      */
     public HMac(final Algorithm algorithm, final Key key) {
         this(algorithm.getValue(), key);
     }
 
     /**
-     * 构造
+     * Constructs an HMAC instance with the specified algorithm name and key material.
      *
-     * @param algorithm 算法
-     * @param key       密钥
+     * @param algorithm The HMAC algorithm name.
+     * @param key       The key material as a byte array.
      */
     public HMac(final String algorithm, final byte[] key) {
         this(algorithm, new SecretKeySpec(key, algorithm));
     }
 
     /**
-     * 构造
+     * Constructs an HMAC instance with the specified algorithm name and {@link Key}.
      *
-     * @param algorithm 算法
-     * @param key       密钥
+     * @param algorithm The HMAC algorithm name.
+     * @param key       The cryptographic {@link Key}.
      */
     public HMac(final String algorithm, final Key key) {
         this(algorithm, key, null);
     }
 
     /**
-     * 构造
+     * Constructs an HMAC instance with the specified algorithm name, {@link Key}, and {@link AlgorithmParameterSpec}.
      *
-     * @param algorithm 算法
-     * @param key       密钥
-     * @param spec      {@link AlgorithmParameterSpec}
+     * @param algorithm The HMAC algorithm name.
+     * @param key       The cryptographic {@link Key}.
+     * @param spec      The {@link AlgorithmParameterSpec} for initializing the MAC.
      */
     public HMac(final String algorithm, final Key key, final AlgorithmParameterSpec spec) {
         this(MacFactory.createEngine(algorithm, key, spec));
     }
 
     /**
-     * 构造
+     * Constructs an HMAC instance with an existing MAC algorithm engine.
      *
-     * @param engine MAC算法实现引擎
+     * @param engine The MAC algorithm implementation engine.
      */
-    public HMac(final Mac engine) {
+    public HMac(final org.miaixz.bus.crypto.builtin.digest.mac.Mac engine) {
         super(engine);
     }
 

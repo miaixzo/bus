@@ -28,6 +28,7 @@
 package org.miaixz.bus.core.center.function;
 
 import java.lang.invoke.*;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Executable;
 import java.lang.reflect.Method;
 import java.util.Map;
@@ -39,43 +40,54 @@ import org.miaixz.bus.core.lang.mutable.MutableEntry;
 import org.miaixz.bus.core.xyz.*;
 
 /**
- * 以类似反射的方式动态创建Lambda，在性能上有一定优势，同时避免每次调用Lambda时创建匿名内部类
+ * Dynamically creates Lambdas in a reflection-like manner, offering performance advantages and avoiding the creation of
+ * anonymous inner classes with each Lambda invocation.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class LambdaFactory {
 
+    /**
+     * Cache for storing generated Lambda objects to avoid repeated creation. The key is a {@link MutableEntry}
+     * containing the function interface type and the executable (method or constructor). The value is the generated
+     * Lambda object.
+     */
     private static final Map<MutableEntry<Class<?>, Executable>, Object> CACHE = new WeakConcurrentMap<>();
 
+    /**
+     * Private constructor to prevent instantiation.
+     *
+     * @throws IllegalAccessException if this constructor is called.
+     */
     private LambdaFactory() throws IllegalAccessException {
         throw new IllegalAccessException();
     }
 
     /**
-     * 构建Lambda
-     * 
+     * Builds a Lambda function based on the provided function interface type, declaring class, method name, and
+     * parameter types.
+     *
      * <pre>{@code
      * 
      * class Something {
      * 
      *     private Long id;
      *     private String name;
-     *     // ... 省略GetterSetter方法
+     *     // ... Getter and Setter methods omitted
      * }
-     * 
-     * Function<Something, Long> getIdFunction = LambdaFactory.buildLambda(Function.class, Something.class, "getId");
-     * BiConsumer<Something, String> setNameConsumer = LambdaFactory
-     *         .buildLambda(BiConsumer.class, Something.class, "setName", String.class);
-     * }
-     * </pre>
      *
-     * @param functionInterfaceType 接受Lambda的函数式接口类型
-     * @param declaringClass        声明方法的类的类型
-     * @param methodName            方法名称
-     * @param paramTypes            方法参数数组
-     * @param <F>                   Function类型
-     * @return 接受Lambda的函数式接口对象
+     * Function<Something, Long> getIdFunction = LambdaFactory.build(Function.class, Something.class, "getId");
+     * BiConsumer<Something, String> setNameConsumer = LambdaFactory
+     *         .build(BiConsumer.class, Something.class, "setName", String.class);
+     * }</pre>
+     *
+     * @param functionInterfaceType The functional interface type that accepts the Lambda.
+     * @param declaringClass        The type of the class that declares the method.
+     * @param methodName            The name of the method.
+     * @param paramTypes            An array of parameter types for the method.
+     * @param <F>                   The type of the functional interface.
+     * @return An object of the functional interface type that represents the Lambda.
      */
     public static <F> F build(
             final Class<F> functionInterfaceType,
@@ -89,25 +101,28 @@ public class LambdaFactory {
     }
 
     /**
-     * 根据提供的方法或构造对象，构建对应的Lambda函数 调用函数相当于执行对应的方法或构造
+     * Builds a Lambda function based on the provided function interface type and executable (method or constructor).
+     * Invoking the Lambda function is equivalent to executing the corresponding method or constructor.
      *
-     * @param functionInterfaceType 接受Lambda的函数式接口类型
-     * @param executable            方法对象，支持构造器
-     * @param <F>                   Function类型
-     * @return 接受Lambda的函数式接口对象
+     * @param functionInterfaceType The functional interface type that accepts the Lambda.
+     * @param executable            The executable object ({@link Constructor} or {@link Method}).
+     * @param <F>                   The type of the functional interface.
+     * @return An object of the functional interface type that represents the Lambda.
      */
     public static <F> F build(final Class<F> functionInterfaceType, final Executable executable) {
         return build(functionInterfaceType, executable, null);
     }
 
     /**
-     * 根据提供的方法或构造对象，构建对应的Lambda函数 调用函数相当于执行对应的方法或构造
+     * Builds a Lambda function based on the provided function interface type, executable (method or constructor), and
+     * declaring class. Invoking the Lambda function is equivalent to executing the corresponding method or constructor.
      *
-     * @param <F>                   Function类型
-     * @param functionInterfaceType 接受Lambda的函数式接口类型
-     * @param executable            方法对象，支持构造器
-     * @param declaringClass        {@link Executable}声明的类，如果方法或构造定义在父类中，此处用于指定子类
-     * @return 接受Lambda的函数式接口对象
+     * @param <F>                   The type of the functional interface.
+     * @param functionInterfaceType The functional interface type that accepts the Lambda.
+     * @param executable            The executable object ({@link Constructor} or {@link Method}).
+     * @param declaringClass        The class where the {@link Executable} is declared. If the method or constructor is
+     *                              defined in a superclass, this is used to specify the subclass.
+     * @return An object of the functional interface type that represents the Lambda.
      */
     public static <F> F build(
             final Class<F> functionInterfaceType,
@@ -123,13 +138,16 @@ public class LambdaFactory {
     }
 
     /**
-     * 根据提供的方法或构造对象，构建对应的Lambda函数，即通过Lambda函数代理方法或构造 调用函数相当于执行对应的方法或构造
+     * Builds a Lambda function based on the provided method or constructor object, effectively proxying the method or
+     * constructor through the Lambda function. Invoking the Lambda function is equivalent to executing the
+     * corresponding method or constructor.
      *
-     * @param <F>            Function类型
-     * @param funcType       接受Lambda的函数式接口类型
-     * @param executable     方法对象，支持构造器
-     * @param declaringClass {@link Executable}声明的类，如果方法或构造定义在父类中，此处用于指定子类
-     * @return 接受Lambda的函数式接口对象
+     * @param <F>            The type of the functional interface.
+     * @param funcType       The functional interface type that accepts the Lambda.
+     * @param executable     The executable object (method or constructor).
+     * @param declaringClass The class where the {@link Executable} is declared. If the method or constructor is defined
+     *                       in a superclass, this is used to specify the subclass.
+     * @return An object of the functional interface type that represents the Lambda.
      */
     private static <F> F doBuildWithoutCache(
             final Class<F> funcType,
@@ -137,7 +155,7 @@ public class LambdaFactory {
             final Class<?> declaringClass) {
         ReflectKit.setAccessible(executable);
 
-        // 获取Lambda函数
+        // Get the invoke method of the functional interface
         final Method invokeMethod = LambdaKit.getInvokeMethod(funcType);
         try {
             return (F) metaFactory(funcType, invokeMethod, executable, declaringClass).getTarget().invoke();
@@ -147,31 +165,32 @@ public class LambdaFactory {
     }
 
     /**
-     * 通过Lambda函数代理方法或构造
+     * Creates a {@link CallSite} for a Lambda function that proxies a method or constructor.
      *
-     * @param funcType       函数类型
-     * @param funcMethod     函数执行的方法
-     * @param executable     被代理的方法或构造
-     * @param declaringClass {@link Executable}声明的类，如果方法或构造定义在父类中，此处用于指定子类
-     * @return {@link CallSite}
-     * @throws LambdaConversionException 权限等异常
+     * @param funcType       The functional interface type.
+     * @param funcMethod     The method of the functional interface to be implemented.
+     * @param executable     The method or constructor to be proxied.
+     * @param declaringClass The class where the {@link Executable} is declared. If the method or constructor is defined
+     *                       in a superclass, this is used to specify the subclass.
+     * @return A {@link CallSite} representing the Lambda function.
+     * @throws LambdaConversionException If there is an error during Lambda conversion, such as access permissions.
      */
     private static CallSite metaFactory(
             final Class<?> funcType,
             final Method funcMethod,
             final Executable executable,
             final Class<?> declaringClass) throws LambdaConversionException {
-        // 查找上下文与调用者的访问权限
+        // Find the context and caller's access permissions
         final MethodHandles.Lookup caller = LookupKit.lookup(executable.getDeclaringClass());
-        // 要实现的方法的名字
+        // The name of the method to be implemented
         final String invokeName = funcMethod.getName();
-        // 调用点期望的方法参数的类型和返回值的类型(方法signature)
+        // The method type (parameter types and return type) expected by the call site
         final MethodType invokedType = MethodType.methodType(funcType);
 
         final Class<?>[] paramTypes = funcMethod.getParameterTypes();
-        // 函数对象将要实现的接口方法类型
+        // The method type of the functional interface method to be implemented
         final MethodType samMethodType = MethodType.methodType(funcMethod.getReturnType(), paramTypes);
-        // 一个直接方法句柄(DirectMethodHandle), 描述调用时将被执行的具体实现方法
+        // A direct method handle describing the specific implementation method that will be executed when invoked
         final MethodHandle implMethodHandle = LookupKit.unreflect(executable);
 
         if (ClassKit.isSerializable(funcType)) {

@@ -34,7 +34,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 /**
- * 合一短信
+ * Material for Uni SMS service.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -47,26 +47,28 @@ import lombok.experimental.SuperBuilder;
 public class UniMaterial extends Material {
 
     /**
-     * 是否为简易模式
+     * Indicates whether to use simple mode. Defaults to true.
      */
     @Builder.Default
     private boolean simple = true;
 
     /**
-     * 模板变量名称
+     * The name of the template variable.
      */
     private String templateName;
     /**
-     * 重试间隔
+     * The retry interval in milliseconds.
      */
     private int retryInterval;
     /**
-     * 重试次数
+     * The maximum number of retries.
      */
     private int maxRetries;
 
     /**
-     * API默认请求地址 当 {@link Context} 中 endpoint 为空时使用地址
+     * Retrieves the default API request address. This address is used when the {@link Context} endpoint is empty.
+     *
+     * @return The default API request address for Uni SMS.
      */
     @Override
     public String getUrl() {

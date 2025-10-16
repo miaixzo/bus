@@ -23,7 +23,7 @@
  ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 package org.miaixz.bus.mapper.provider;
 
@@ -36,7 +36,7 @@ import org.miaixz.bus.mapper.parsing.SqlScript;
 import org.miaixz.bus.mapper.parsing.TableMeta;
 
 /**
- * 提供基本的增删改查操作，生成动态 SQL。
+ * Provides dynamic SQL generation for basic CRUD operations.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,21 +44,21 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
 public class EntityProvider {
 
     /**
-     * 标记不可用方法，抛出异常。
+     * Marks a method as unavailable and throws an exception.
      *
-     * @param providerContext 提供者上下文，包含方法和接口信息
-     * @return 缓存键
-     * @throws UnsupportedOperationException 方法不可用
+     * @param providerContext The provider context, containing method and interface information.
+     * @return The cache key.
+     * @throws UnsupportedOperationException if the method is not available.
      */
     public static String unsupported(ProviderContext providerContext) {
         throw new UnsupportedOperationException(providerContext.getMapperMethod().getName() + " method not available");
     }
 
     /**
-     * 保存实体，插入所有字段。
+     * Saves an entity by inserting all its fields.
      *
-     * @param providerContext 提供者上下文，包含方法和接口信息
-     * @return 缓存键
+     * @param providerContext The provider context, containing method and interface information.
+     * @return The cache key.
      */
     public static String insert(ProviderContext providerContext) {
         return SqlScript.caching(
@@ -70,10 +70,10 @@ public class EntityProvider {
     }
 
     /**
-     * 保存实体中不为空的字段。
+     * Saves only the non-null fields of an entity.
      *
-     * @param providerContext 提供者上下文，包含方法和接口信息
-     * @return 缓存键
+     * @param providerContext The provider context, containing method and interface information.
+     * @return The cache key.
      */
     public static String insertSelective(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new SqlScript() {
@@ -99,10 +99,10 @@ public class EntityProvider {
     }
 
     /**
-     * 根据主键删除记录。
+     * Deletes a record by its primary key.
      *
-     * @param providerContext 提供者上下文，包含方法和接口信息
-     * @return 缓存键
+     * @param providerContext The provider context, containing method and interface information.
+     * @return The cache key.
      */
     public static String deleteByPrimaryKey(ProviderContext providerContext) {
         return SqlScript.caching(
@@ -112,10 +112,10 @@ public class EntityProvider {
     }
 
     /**
-     * 根据实体字段条件批量删除记录。
+     * Deletes records in batch based on entity field conditions.
      *
-     * @param providerContext 提供者上下文，包含方法和接口信息
-     * @return 缓存键
+     * @param providerContext The provider context, containing method and interface information.
+     * @return The cache key.
      */
     public static String delete(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new SqlScript() {
@@ -131,10 +131,10 @@ public class EntityProvider {
     }
 
     /**
-     * 根据主键更新实体所有字段。
+     * Updates all fields of an entity by its primary key.
      *
-     * @param providerContext 提供者上下文，包含方法和接口信息
-     * @return 缓存键
+     * @param providerContext The provider context, containing method and interface information.
+     * @return The cache key.
      */
     public static String updateByPrimaryKey(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new SqlScript() {
@@ -152,10 +152,10 @@ public class EntityProvider {
     }
 
     /**
-     * 根据主键更新实体中不为空的字段。
+     * Updates non-null fields of an entity by its primary key.
      *
-     * @param providerContext 提供者上下文，包含方法和接口信息
-     * @return 缓存键
+     * @param providerContext The provider context, containing method and interface information.
+     * @return The cache key.
      */
     public static String updateByPrimaryKeySelective(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new SqlScript() {
@@ -178,10 +178,10 @@ public class EntityProvider {
     }
 
     /**
-     * 根据主键查询实体。
+     * Selects an entity by its primary key.
      *
-     * @param providerContext 提供者上下文，包含方法和接口信息
-     * @return 缓存键
+     * @param providerContext The provider context, containing method and interface information.
+     * @return The cache key.
      */
     public static String selectByPrimaryKey(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new SqlScript() {
@@ -197,10 +197,11 @@ public class EntityProvider {
     }
 
     /**
-     * 根据实体字段条件查询唯一实体或批量查询，结果数量由方法定义。
+     * Selects a single entity or a batch of entities based on entity field conditions. The number of results is defined
+     * by the method.
      *
-     * @param providerContext 提供者上下文，包含方法和接口信息
-     * @return 缓存键
+     * @param providerContext The provider context, containing method and interface information.
+     * @return The cache key.
      */
     public static String select(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new SqlScript() {
@@ -223,10 +224,10 @@ public class EntityProvider {
     }
 
     /**
-     * 根据实体字段条件查询记录总数。
+     * Counts the total number of records based on entity field conditions.
      *
-     * @param providerContext 提供者上下文，包含方法和接口信息
-     * @return 缓存键
+     * @param providerContext The provider context, containing method and interface information.
+     * @return The cache key.
      */
     public static String selectCount(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new SqlScript() {

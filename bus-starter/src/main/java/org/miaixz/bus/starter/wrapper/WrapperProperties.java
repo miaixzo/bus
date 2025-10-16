@@ -27,21 +27,20 @@
 */
 package org.miaixz.bus.starter.wrapper;
 
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
-
+import lombok.Getter;
+import lombok.Setter;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.spring.GeniusBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 
-import lombok.Getter;
-import lombok.Setter;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
- * 配置信息
+ * Configuration properties for the request/response wrapper filter.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -52,44 +51,57 @@ import lombok.Setter;
 public class WrapperProperties {
 
     /**
-     * 设置此注册的名称 如果没有指定，将使用bean名
+     * The name of this registration. If not specified, the bean name will be used.
      */
     private String name = "_wrapper";
+
     /**
-     * 设置注册bean的顺序
+     * The order of the registered filter bean. Default is 100.
      */
     private int order = 100;
 
     /**
-     * 设置访问前缀
+     * An access prefix to be applied.
      */
     private String prefix = Normal.EMPTY;
+
     /**
-     * 标志，表示已启用注册
+     * Flag to indicate if this filter registration is enabled. Default is true.
      */
     private boolean enabled = true;
+
     /**
-     * 扫描controller接口的基本包 Controller 所在包的 Ant 路径规则 主要目的是，给该 Controller 设置指定的前缀
+     * Base packages to scan for controllers. Ant-style path patterns can be used. The main purpose is to apply a
+     * specific prefix to these controllers.
      */
     private String[] basePackages;
+
     /**
-     * 扫描包后的API地址是否入库，结合basePackages使用
+     * Whether to store the API addresses found after scanning the packages. Used in conjunction with
+     * {@code basePackages}.
      */
     private boolean inStorage;
+
     /**
-     * fastjson、jackson 都支持 AutoType 功能，这个功能在序列化的 JSON 字符串中带上类型信息，在反序列化时，不需要传入类型，实现自动类型识别
+     * Specifies the auto-type handling for JSON serialization/deserialization (e.g., for Fastjson or Jackson). This
+     * feature includes type information in the JSON string, allowing for automatic type recognition during
+     * deserialization without needing to pass the type explicitly.
      */
     private String autoType;
+
     /**
-     * 为此注册设置初始化参数。调用此方法将替换任何现有的初始化参数
+     * Initialization parameters for this registration. Calling this will replace any existing parameters.
      */
     private Map<String, String> initParameters = new LinkedHashMap<>();
+
     /**
-     * 筛选器要注册的servlet名称,这将替换以前指定的任何servlet名称
+     * The servlet names that the filter will be registered against. This will replace any previously specified servlet
+     * names.
      */
     private Set<String> servletNames = new LinkedHashSet<>();
+
     /**
-     * 过滤器将注册到的ServletRegistrationBeans
+     * The ServletRegistrationBeans that the filter will be registered against.
      */
     private Set<ServletRegistrationBean<?>> servletRegistrationBeans = new LinkedHashSet<>();
 

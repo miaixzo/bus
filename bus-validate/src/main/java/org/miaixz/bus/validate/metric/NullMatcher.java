@@ -34,18 +34,33 @@ import org.miaixz.bus.validate.magic.Validator;
 import org.miaixz.bus.validate.magic.annotation.Null;
 
 /**
- * NULL校验
+ * Validator for the {@link Null} annotation. Checks if an object is null.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class NullMatcher implements Validator<Object>, Matcher<Object, Null> {
 
+    /**
+     * Checks if the given object is null.
+     *
+     * @param object  The object to validate.
+     * @param context The validation context (ignored).
+     * @return {@code true} if the object is null, {@code false} otherwise.
+     */
     @Override
     public boolean on(Object object, Context context) {
         return ObjectKit.isEmpty(object);
     }
 
+    /**
+     * Checks if the given object is null, based on the {@link Null} annotation.
+     *
+     * @param object     The object to validate.
+     * @param annotation The {@link Null} annotation instance (ignored).
+     * @param context    The validation context.
+     * @return {@code true} if the object is null, {@code false} otherwise.
+     */
     @Override
     public boolean on(Object object, Null annotation, Context context) {
         return on(object, context);

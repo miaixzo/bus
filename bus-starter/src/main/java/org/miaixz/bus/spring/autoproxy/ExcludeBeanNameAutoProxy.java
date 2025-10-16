@@ -27,15 +27,19 @@
 */
 package org.miaixz.bus.spring.autoproxy;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.xyz.PatternKit;
 import org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * 扩展{@link BeanNameAutoProxyCreator}以支持排除指定的bean名称。
+ * Extends {@link BeanNameAutoProxyCreator} to support excluding specified bean names from auto-proxying.
+ * <p>
+ * This class allows for more fine-grained control over which beans are automatically proxied by Spring AOP. In addition
+ * to the standard {@code mappedBeanNames} property, it introduces an {@code excludeBeanNames} property to prevent
+ * certain beans from being proxied, even if they match the inclusion patterns.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -45,8 +49,14 @@ public class ExcludeBeanNameAutoProxy extends BeanNameAutoProxyCreator {
     private List<String> excludeBeanNames;
 
     /**
-     * 设置不应该自动用代理包装的bean的名称。 名称可以以"*"结尾指定要匹配的前缀，例如:“myBean,tx*”将匹配名为“myBean”的bean和所有名称以“tx”开头的bean。
+     * Sets the names of beans that should NOT be automatically wrapped with a proxy.
+     * <p>
+     * Names can be specified using a wildcard at the end (e.g., "myBean,tx*") to match beans named "myBean" and all
+     * beans whose names start with "tx".
+     * </p>
      *
+     * @param beanNames An array of bean names to exclude from auto-proxying.
+     * @throws IllegalArgumentException if {@code beanNames} is empty.
      * @see org.springframework.beans.factory.FactoryBean
      * @see org.springframework.beans.factory.BeanFactory#FACTORY_BEAN_PREFIX
      */
@@ -58,11 +68,26 @@ public class ExcludeBeanNameAutoProxy extends BeanNameAutoProxyCreator {
         }
     }
 
+    /**
+     * Determines if the given bean name matches any of the configured mapped names and is not excluded by the
+     * {@code excludeBeanNames} list.
+     *
+     * @param beanName   The name of the bean to check.
+     * @param mappedName The mapped name pattern to match against.
+     * @return {@code true} if the bean matches and is not excluded, {@code false} otherwise.
+     */
     @Override
     protected boolean isMatch(String beanName, String mappedName) {
         return super.isMatch(beanName, mappedName) && !isExcluded(beanName);
     }
 
+    /**
+     * Checks if the given bean name is present in the {@code excludeBeanNames} list. Supports wildcard matching (e.g.,
+     * "tx*").
+     *
+     * @param beanName The name of the bean to check.
+     * @return {@code true} if the bean is excluded, {@code false} otherwise.
+     */
     private boolean isExcluded(String beanName) {
         if (excludeBeanNames != null) {
             for (String mappedName : this.excludeBeanNames) {

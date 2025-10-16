@@ -30,7 +30,14 @@ package org.miaixz.bus.core.lang.annotation;
 import java.lang.annotation.*;
 
 /**
- * 注解: 标记可读
+ * A marker annotation that designates a class as "readable."
+ * <p>
+ * This annotation is typically used to signal that an object's properties are intended to be accessed or read by
+ * external components. For example, a framework might use this marker to identify Data Transfer Objects (DTOs) or other
+ * value objects whose state can be safely exposed.
+ * <p>
+ * It serves as a documentation hint and can be used by tools or frameworks to apply specific conventions or
+ * optimizations for readable objects.
  *
  * @author Kimi Liu
  * @since Java 17+

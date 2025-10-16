@@ -36,16 +36,18 @@ import org.miaixz.bus.core.xyz.RandomKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 统一社会信用代码（GB32100-2015）工具类 标准见：<a href="https://www.cods.org.cn/c/2020-10-29/12575.html">GB 32100-2015</a>
- * 三证合一、一照一码政策之后，纳税人识别号 == 统一社会信用代码
- * 政策见国家税务总局：<a href="https://www.chinatax.gov.cn/n810219/n810724/c1838941/content.html">“三证合一”后纳税人识别号有何变化？</a> 规则：
+ * Unified Social Credit Code (GB32100-2015) utility class. Standard see:
+ * <a href="https://www.cods.org.cn/c/2020-10-29/12575.html">GB 32100-2015</a> After the policy of "three certificates
+ * in one, one license one code", the taxpayer identification number == unified social credit code. Policy see the State
+ * Administration of Taxation: <a href="https://www.chinatax.gov.cn/n810219/n810724/c1838941/content.html">What are the
+ * changes to the taxpayer identification number after "three certificates in one"?</a> Rules:
  * 
  * <pre>
- * 第一部分：登记管理部门代码1位 (数字或大写英文字母)
- * 第二部分：机构类别代码1位 (数字或大写英文字母)
- * 第三部分：登记管理机关行政区划码6位 (数字)
- * 第四部分：主体标识码（组织机构代码）9位 (数字或大写英文字母)
- * 第五部分：校验码1位 (数字或大写英文字母)
+ * Part 1: Registration management department code, 1 digit (number or uppercase English letter)
+ * Part 2: Institution category code, 1 digit (number or uppercase English letter)
+ * Part 3: Registration management authority administrative division code, 6 digits (number)
+ * Part 4: Main body identification code (organization code), 9 digits (number or uppercase English letter)
+ * Part 5: Check code, 1 digit (number or uppercase English letter)
  * </pre>
  *
  * @author Kimi Liu
@@ -54,18 +56,21 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class CreditCode {
 
     /**
-     * 统一社会信用代码正则
+     * Unified social credit code regex.
      */
     public static final java.util.regex.Pattern CREDIT_CODE_PATTERN = Pattern.CREDIT_CODE_PATTERN;
 
     /**
-     * 加权因子
+     * Weighting factor.
      */
     private static final int[] WEIGHT = { 1, 3, 9, 27, 19, 26, 16, 17, 20, 29, 25, 13, 8, 24, 10, 30, 28 };
     /**
-     * 代码字符集
+     * Code character set.
      */
     private static final char[] BASE_CODE_ARRAY = "0123456789ABCDEFGHJKLMNPQRTUWXY".toCharArray();
+    /**
+     * Map from code characters to their index.
+     */
     private static final Map<Character, Integer> CODE_INDEX_MAP;
 
     static {
@@ -76,20 +81,22 @@ public class CreditCode {
     }
 
     /**
-     * 正则校验统一社会信用代码（18位） 注意：此方法是简化版本，并未严格判断校验码是否符合规则，严格校验参考{@link #isCreditCode(CharSequence)}
+     * Validates the unified social credit code (18 digits) using a regular expression. Note: This method is a
+     * simplified version and does not strictly check if the check code conforms to the rules. For strict validation,
+     * refer to {@link #isCreditCode(CharSequence)}.
      *
-     * <b>规则：</b>
+     * <b>Rules:</b>
      * 
      * <pre>
-     * 第一部分：登记管理部门代码1位 (数字或大写英文字母)
-     * 第二部分：机构类别代码1位 (数字或大写英文字母)
-     * 第三部分：登记管理机关行政区划码6位 (数字)
-     * 第四部分：主体标识码（组织机构代码）9位 (数字或大写英文字母)
-     * 第五部分：校验码1位 (数字或大写英文字母)
+     * Part 1: Registration management department code, 1 digit (number or uppercase English letter)
+     * Part 2: Institution category code, 1 digit (number or uppercase English letter)
+     * Part 3: Registration management authority administrative division code, 6 digits (number)
+     * Part 4: Main body identification code (organization code), 9 digits (number or uppercase English letter)
+     * Part 5: Check code, 1 digit (number or uppercase English letter)
      * </pre>
      *
-     * @param creditCode 统一社会信用代码
-     * @return 校验结果
+     * @param creditCode The unified social credit code.
+     * @return The validation result.
      */
     public static boolean isCreditCodeSimple(final CharSequence creditCode) {
         if (StringKit.isBlank(creditCode)) {
@@ -99,18 +106,18 @@ public class CreditCode {
     }
 
     /**
-     * 是否是有效的统一社会信用代码
+     * Checks if it is a valid unified social credit code.
      * 
      * <pre>
-     * 第一部分：登记管理部门代码1位 (数字或大写英文字母)
-     * 第二部分：机构类别代码1位 (数字或大写英文字母)
-     * 第三部分：登记管理机关行政区划码6位 (数字)
-     * 第四部分：主体标识码（组织机构代码）9位 (数字或大写英文字母)
-     * 第五部分：校验码1位 (数字或大写英文字母)
+     * Part 1: Registration management department code, 1 digit (number or uppercase English letter)
+     * Part 2: Institution category code, 1 digit (number or uppercase English letter)
+     * Part 3: Registration management authority administrative division code, 6 digits (number)
+     * Part 4: Main body identification code (organization code), 9 digits (number or uppercase English letter)
+     * Part 5: Check code, 1 digit (number or uppercase English letter)
      * </pre>
      *
-     * @param creditCode 统一社会信用代码
-     * @return 校验结果
+     * @param creditCode The unified social credit code.
+     * @return The validation result.
      */
     public static boolean isCreditCode(final CharSequence creditCode) {
         if (!isCreditCodeSimple(creditCode)) {
@@ -126,9 +133,9 @@ public class CreditCode {
     }
 
     /**
-     * 获取一个随机的统一社会信用代码
+     * Gets a random unified social credit code.
      *
-     * @return 统一社会信用代码
+     * @return A unified social credit code.
      */
     public static String randomCreditCode() {
         final StringBuilder buf = new StringBuilder(18);
@@ -152,10 +159,10 @@ public class CreditCode {
     }
 
     /**
-     * 获取校验位的值
+     * Gets the value of the check digit.
      *
-     * @param creditCode 统一社会信息代码
-     * @return 获取校验位的值，-1表示获取错误
+     * @param creditCode The unified social credit code.
+     * @return The value of the check digit, or -1 if an error occurs.
      */
     private static int getParityBit(final CharSequence creditCode) {
         int sum = 0;

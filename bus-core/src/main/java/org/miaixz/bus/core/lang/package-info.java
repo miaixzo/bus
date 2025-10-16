@@ -26,20 +26,24 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 语言特性包，包括大量便捷的数据结构，包括：
+ * Language features package providing numerous convenient data structures, including:
  * <ul>
- * <li>ANSI：ANSI编码</li>
- * <li>Builder：构建器</li>
- * <li>Caller：查找调用者</li>
- * <li>Copier：拷贝（复制）</li>
- * <li>Generator：生成器</li>
- * <li>Getter：getXXX抽象</li>
- * <li>Intern：规范化表示形式</li>
- * <li>Loader：加载器的抽象</li>
- * <li>Mutable：可变值对象封装</li>
- * <li>Range：区间和边界封装</li>
- * <li>Tuple：元组</li>
+ * <li>ANSI: ANSI encoding support</li>
+ * <li>Builder: Builder pattern implementations</li>
+ * <li>Caller: Call stack inspection utilities</li>
+ * <li>Copier: Object copying (cloning) utilities</li>
+ * <li>Generator: Data generation utilities</li>
+ * <li>Getter: Abstract getter implementations</li>
+ * <li>Intern: Canonical representation utilities</li>
+ * <li>Loader: Abstract loader implementations</li>
+ * <li>Mutable: Mutable value object wrappers</li>
+ * <li>Range: Range and boundary encapsulation</li>
+ * <li>Tuple: Tuple data structures</li>
  * </ul>
+ *
+ * <p>
+ * This package provides fundamental language-level utilities and data structures that enhance Java's capabilities with
+ * more expressive and convenient abstractions.
  *
  * @author Kimi Liu
  * @since Java 17+

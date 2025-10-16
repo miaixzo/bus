@@ -32,16 +32,23 @@ import org.miaixz.bus.core.center.date.culture.solar.SolarTerms;
 import org.miaixz.bus.core.center.date.culture.solar.SolarTime;
 
 /**
- * 元亨利贞的童限计算
+ * Implementation of Child Limit calculation based on the "Yuan Heng Li Zhen" (元亨利贞) method.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class China95ChildLimitProvider extends AbstractChildLimitProvider {
 
+    /**
+     * Calculates and returns the Child Limit information based on the "Yuan Heng Li Zhen" method.
+     *
+     * @param birthTime The Gregorian birth time.
+     * @param term      The solar term (节令) relevant to the calculation.
+     * @return The {@link ChildLimitInfo} containing details about the Child Limit.
+     */
     @Override
     public ChildLimitInfo getInfo(SolarTime birthTime, SolarTerms term) {
-        // 出生时刻和节令时刻相差的分钟数
+        // Minutes difference between birth time and solar term time
         int minutes = Math.abs(term.getJulianDay().getSolarTime().subtract(birthTime)) / 60;
         int year = minutes / 4320;
         minutes %= 4320;

@@ -26,7 +26,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 分页插件sql转换
+ * Provides SQL parsing and conversion utilities for the pagination plugin. This package contains classes for parsing
+ * and manipulating SQL statements to support pagination features.
  *
  * @author Kimi Liu
  * @since Java 17+

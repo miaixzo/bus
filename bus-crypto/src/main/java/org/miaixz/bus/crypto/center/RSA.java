@@ -45,9 +45,11 @@ import org.miaixz.bus.crypto.builtin.asymmetric.Crypto;
 import org.miaixz.bus.crypto.builtin.asymmetric.KeyType;
 
 /**
- * RSA公钥/私钥/签名加密解密
+ * RSA public key/private key/signature encryption and decryption.
  * <p>
- * 由于非对称加密速度极其缓慢，一般文件不使用它来加密而是使用对称加密， 非对称加密算法可以用来对对称加密的密钥加密，这样保证密钥的安全也就保证了数据的安全
+ * Because asymmetric encryption is extremely slow, it is generally not used to encrypt files. Symmetric encryption is
+ * used instead. Asymmetric encryption algorithms can be used to encrypt the keys of symmetric encryption, thus ensuring
+ * the security of the keys and therefore the data.
  * </p>
  *
  * @author Kimi Liu
@@ -59,98 +61,105 @@ public class RSA extends Crypto {
     private static final long serialVersionUID = 2852290353723L;
 
     /**
-     * 构造，生成新的私钥公钥对
+     * Constructor, generates a new private-public key pair.
      */
     public RSA() {
         super(Algorithm.RSA_ECB_PKCS1);
     }
 
     /**
-     * 构造，生成新的私钥公钥对
+     * Constructor, generates a new private-public key pair.
      *
-     * @param algorithm 自定义RSA算法，例如RSA/ECB/PKCS1Padding
+     * @param algorithm Custom RSA algorithm, e.g., RSA/ECB/PKCS1Padding.
      */
     public RSA(final String algorithm) {
         super(algorithm);
     }
 
     /**
-     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
+     * Constructor. If both private and public keys are null, a new key pair is generated. A single key (private or
+     * public) can be passed, in which case it can only be used for encryption or decryption with that key.
      *
-     * @param algorithm 自定义RSA算法，例如RSA/ECB/PKCS1Padding
-     * @param keyPair   密钥对，{@code null}表示随机生成
+     * @param algorithm Custom RSA algorithm, e.g., RSA/ECB/PKCS1Padding.
+     * @param keyPair   The key pair, {@code null} to generate a random one.
      */
     public RSA(final String algorithm, final KeyPair keyPair) {
         super(algorithm, keyPair);
     }
 
     /**
-     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
+     * Constructor. If both private and public keys are null, a new key pair is generated. A single key (private or
+     * public) can be passed, in which case it can only be used for encryption or decryption with that key.
      *
-     * @param algorithm 自定义RSA算法，例如RSA/ECB/PKCS1Padding
-     * @param keyPair   密钥对，{@code null}表示随机生成
+     * @param algorithm Custom RSA algorithm.
+     * @param keyPair   The key pair, {@code null} to generate a random one.
      */
     public RSA(final Algorithm algorithm, final KeyPair keyPair) {
         super(algorithm.getValue(), keyPair);
     }
 
     /**
-     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
+     * Constructor. If both private and public keys are null, a new key pair is generated. A single key (private or
+     * public) can be passed, in which case it can only be used for encryption or decryption with that key.
      *
-     * @param privateKey 私钥Hex或Base64表示
-     * @param publicKey  公钥Hex或Base64表示
+     * @param privateKey The private key in Hex or Base64 representation.
+     * @param publicKey  The public key in Hex or Base64 representation.
      */
     public RSA(final String privateKey, final String publicKey) {
         super(Algorithm.RSA_ECB_PKCS1, privateKey, publicKey);
     }
 
     /**
-     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
+     * Constructor. If both private and public keys are null, a new key pair is generated. A single key (private or
+     * public) can be passed, in which case it can only be used for encryption or decryption with that key.
      *
-     * @param algorithm  自定义RSA算法，例如RSA/ECB/PKCS1Padding
-     * @param privateKey 私钥Hex或Base64表示
-     * @param publicKey  公钥Hex或Base64表示
+     * @param algorithm  Custom RSA algorithm, e.g., RSA/ECB/PKCS1Padding.
+     * @param privateKey The private key in Hex or Base64 representation.
+     * @param publicKey  The public key in Hex or Base64 representation.
      */
     public RSA(final String algorithm, final String privateKey, final String publicKey) {
         super(algorithm, privateKey, publicKey);
     }
 
     /**
-     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
+     * Constructor. If both private and public keys are null, a new key pair is generated. A single key (private or
+     * public) can be passed, in which case it can only be used for encryption or decryption with that key.
      *
-     * @param privateKey 私钥
-     * @param publicKey  公钥
+     * @param privateKey The private key.
+     * @param publicKey  The public key.
      */
     public RSA(final byte[] privateKey, final byte[] publicKey) {
         super(Algorithm.RSA_ECB_PKCS1, privateKey, publicKey);
     }
 
     /**
-     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
+     * Constructor. If both private and public keys are null, a new key pair is generated. A single key (private or
+     * public) can be passed, in which case it can only be used for encryption or decryption with that key.
      *
-     * @param modulus         N特征值
-     * @param privateExponent d特征值
-     * @param publicExponent  e特征值
+     * @param modulus         The modulus (N).
+     * @param privateExponent The private exponent (d).
+     * @param publicExponent  The public exponent (e).
      */
     public RSA(final BigInteger modulus, final BigInteger privateExponent, final BigInteger publicExponent) {
         this(generatePrivateKey(modulus, privateExponent), generatePublicKey(modulus, publicExponent));
     }
 
     /**
-     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
+     * Constructor. If both private and public keys are null, a new key pair is generated. A single key (private or
+     * public) can be passed, in which case it can only be used for encryption or decryption with that key.
      *
-     * @param privateKey 私钥
-     * @param publicKey  公钥
+     * @param privateKey The private key.
+     * @param publicKey  The public key.
      */
     public RSA(final PrivateKey privateKey, final PublicKey publicKey) {
         super(Algorithm.RSA_ECB_PKCS1, privateKey, publicKey);
     }
 
     /**
-     * 生成RSA私钥
+     * Generates an RSA private key.
      *
-     * @param modulus         N特征值
-     * @param privateExponent d特征值
+     * @param modulus         The modulus (N).
+     * @param privateExponent The private exponent (d).
      * @return {@link PrivateKey}
      */
     public static PrivateKey generatePrivateKey(final BigInteger modulus, final BigInteger privateExponent) {
@@ -160,10 +169,10 @@ public class RSA extends Crypto {
     }
 
     /**
-     * 生成RSA公钥
+     * Generates an RSA public key.
      *
-     * @param modulus        N特征值
-     * @param publicExponent e特征值
+     * @param modulus        The modulus (N).
+     * @param publicExponent The public exponent (e).
      * @return {@link PublicKey}
      */
     public static PublicKey generatePublicKey(final BigInteger modulus, final BigInteger publicExponent) {
@@ -173,9 +182,9 @@ public class RSA extends Crypto {
 
     @Override
     public byte[] encrypt(final byte[] data, final KeyType keyType) {
-        // 在非使用BC库情况下，blockSize使用默认的算法
+        // When not using the BouncyCastle provider, the block size uses the default algorithm.
         if (this.encryptBlockSize < 0 && null == Holder.getProvider()) {
-            // 加密数据长度 <= 模长-11
+            // Encrypted data length <= modulus length - 11
             this.encryptBlockSize = ((RSAKey) getKeyByType(keyType)).getModulus().bitLength() / 8 - 11;
         }
         return super.encrypt(data, keyType);
@@ -183,9 +192,9 @@ public class RSA extends Crypto {
 
     @Override
     public byte[] decrypt(final byte[] bytes, final KeyType keyType) {
-        // 在非使用BC库情况下，blockSize使用默认的算法
+        // When not using the BouncyCastle provider, the block size uses the default algorithm.
         if (this.decryptBlockSize < 0 && null == Holder.getProvider()) {
-            // 加密数据长度 <= 模长-11
+            // Encrypted data length <= modulus length
             this.decryptBlockSize = ((RSAKey) getKeyByType(keyType)).getModulus().bitLength() / 8;
         }
         return super.decrypt(bytes, keyType);
@@ -198,7 +207,8 @@ public class RSA extends Crypto {
         } catch (final CryptoException e) {
             final Throwable cause = e.getCause();
             if (cause instanceof NoSuchAlgorithmException) {
-                // 在Linux下，未引入BC库可能会导致RSA/ECB/PKCS1Padding算法无法找到，此时使用默认算法
+                // On Linux, if the BouncyCastle provider is not imported, the RSA/ECB/PKCS1Padding
+                // algorithm may not be found. In this case, use the default algorithm.
                 this.algorithm = Algorithm.RSA.getValue();
                 super.initCipher();
             }

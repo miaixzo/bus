@@ -32,7 +32,7 @@ import java.util.zip.ZipEntry;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 
 /**
- * Zip安全相关类，如检查Zip bomb漏洞等
+ * Zip security related classes, such as checking for Zip bomb vulnerabilities.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -40,18 +40,20 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 public class ZipSecurity {
 
     /**
-     * 检查Zip bomb漏洞
+     * Checks for Zip bomb vulnerabilities.
      *
-     * @param entry       {@link ZipEntry}
-     * @param maxSizeDiff 检查ZipBomb文件差异倍数，-1表示不检查ZipBomb
-     * @return 检查后的{@link ZipEntry}
+     * @param entry       The {@link ZipEntry} to check.
+     * @param maxSizeDiff The maximum size difference multiplier for the ZipBomb check. A value of -1 indicates no
+     *                    ZipBomb check.
+     * @return The checked {@link ZipEntry}.
+     * @throws ValidateException if a Zip bomb attack is detected.
      */
     public static ZipEntry checkZipBomb(final ZipEntry entry, final int maxSizeDiff) {
         if (null == entry) {
             return null;
         }
         if (maxSizeDiff < 0 || entry.isDirectory()) {
-            // 目录不检查
+            // Directories are not checked.
             return entry;
         }
 
@@ -59,7 +61,8 @@ public class ZipSecurity {
         final long uncompressedSize = entry.getSize();
         // Console.logger(entry.getName(), compressedSize, uncompressedSize);
         if (compressedSize < 0 || uncompressedSize < 0 ||
-        // 默认压缩比例是100倍，一旦发现压缩率超过这个阈值，被认为是Zip bomb
+        // Default compression ratio is 100 times. If the compression ratio exceeds this threshold, it is considered a
+        // Zip bomb.
                 compressedSize * maxSizeDiff < uncompressedSize) {
             throw new ValidateException(
                     "Zip bomb attack detected, invalid sizes: compressed {}, uncompressed {}, name {}", compressedSize,

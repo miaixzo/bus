@@ -30,7 +30,8 @@ package org.miaixz.bus.sensitive.metric;
 import org.miaixz.bus.sensitive.Context;
 
 /**
- * 执行上下文接口
+ * An interface for providing conditional logic to desensitization strategies. Implementations of this interface can
+ * decide whether a strategy should be applied based on the current context.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,11 +39,13 @@ import org.miaixz.bus.sensitive.Context;
 public interface ConditionProvider {
 
     /**
-     * 是否执行脱敏
+     * Determines if the desensitization should be applied based on the given context.
      *
-     * @param context 执行上下文
-     * @return 结果：是否执行
+     * @param context The current desensitization context.
+     * @return {@code true} to apply the desensitization, {@code false} to skip it.
      */
-    boolean valid(Context context);
+    default boolean valid(Context context) {
+        return true;
+    }
 
 }

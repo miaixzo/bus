@@ -37,32 +37,34 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 /**
- * 授权方法参数解析器，用于将带有{@link Authenticate}注解的方法参数自动注入当前登录用户信息。
- *
+ * Argument resolver for authorization, used to automatically inject the current logged-in user's information into
+ * method parameters annotated with {@link Authenticate}.
  * <p>
- * 该类实现了Spring MVC的{@link HandlerMethodArgumentResolver}接口，用于在控制器方法调用前，
- * 自动将当前登录用户信息注入到带有{@link Authenticate}注解的{@link Authorize}类型参数中。
+ * This class implements Spring MVC's {@link HandlerMethodArgumentResolver} interface to automatically inject the
+ * current user's information into parameters of type {@link Authorize} that are annotated with {@link Authenticate}
+ * before a controller method is invoked.
  * </p>
  *
  * <p>
- * 使用示例：
+ * <strong>Usage Example:</strong>
  * </p>
  * 
- * <pre>
+ * <pre>{@code
  * &#64;RestController
  * &#64;RequestMapping("/user")
  * public class UserController {
  *
  *     &#64;GetMapping("/info")
  *     public UserInfo getUserInfo(&#64;Authenticate Authorize user) {
- *         // 直接使用user参数，无需手动获取用户信息
+ *         // The 'user' parameter is directly available without manual retrieval.
  *         return userService.getUserInfo(user.getId());
  *     }
  * }
- * </pre>
- *
+ * }</pre>
  * <p>
- * 在上述示例中，当调用{@code /user/info}接口时，{@code AuthMethodResolver}会自动将当前登录用户信息 注入到{@code user}参数中，开发者无需手动从请求中获取用户信息。
+ * In the example above, when the {@code /user/info} endpoint is called, {@code AuthMethodResolver} automatically
+ * injects the current logged-in user's information into the {@code user} parameter, so the developer does not need to
+ * manually retrieve it from the request.
  * </p>
  *
  * @author Kimi Liu
@@ -71,18 +73,17 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 public class AuthMethodResolver implements HandlerMethodArgumentResolver {
 
     /**
-     * 判断方法参数是否支持解析。
-     *
+     * Determines if this resolver supports the given method parameter.
      * <p>
-     * 当且仅当满足以下条件时，该方法返回true：
+     * This method returns {@code true} if and only if the following conditions are met:
      * </p>
      * <ul>
-     * <li>参数类型是{@link Authorize}类或其子类</li>
-     * <li>参数带有{@link Authenticate}注解</li>
+     * <li>The parameter type is assignable from {@link Authorize}.</li>
+     * <li>The parameter is annotated with {@link Authenticate}.</li>
      * </ul>
      *
-     * @param parameter 要检查的方法参数
-     * @return 如果支持解析则返回true，否则返回false
+     * @param parameter The method parameter to check.
+     * @return {@code true} if this resolver supports the parameter, {@code false} otherwise.
      */
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
@@ -91,17 +92,17 @@ public class AuthMethodResolver implements HandlerMethodArgumentResolver {
     }
 
     /**
-     * 解析方法参数，将当前登录用户信息注入到参数中。
-     *
+     * Resolves the method argument by injecting the current logged-in user's information.
      * <p>
-     * 该方法从Spring上下文中获取当前登录用户信息，并将其作为方法参数的值返回。
+     * This method retrieves the current user's information from the Spring context and returns it as the value for the
+     * method parameter.
      * </p>
      *
-     * @param parameter             要解析的方法参数
-     * @param modelAndViewContainer ModelAndView容器，可用于设置模型和视图
-     * @param nativeWebRequest      原生Web请求对象
-     * @param webDataBinderFactory  Web数据绑定工厂，可用于创建WebDataBinder实例
-     * @return 当前登录用户信息对象
+     * @param parameter             The method parameter to resolve.
+     * @param modelAndViewContainer The ModelAndView container, which can be used to set the model and view.
+     * @param nativeWebRequest      The native web request object.
+     * @param webDataBinderFactory  A factory for creating WebDataBinder instances.
+     * @return The current logged-in user's information object.
      */
     @Override
     public Object resolveArgument(

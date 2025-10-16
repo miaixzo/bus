@@ -32,7 +32,7 @@ import lombok.Getter;
 import org.miaixz.bus.auth.nimble.AuthorizeScope;
 
 /**
- * 企业微信 授权范围
+ * WeChat Enterprise authorization scopes.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,12 +42,24 @@ import org.miaixz.bus.auth.nimble.AuthorizeScope;
 public enum WeChatEeWebScope implements AuthorizeScope {
 
     /**
-     * {@code scope} 含义，以{@code description} 为准
+     * Application authorization scope. For self-built enterprise applications, it is fixed to: snsapi_base. The meaning
+     * of {@code scope} is subject to {@code description}.
      */
-    SNSAPI_BASE("snsapi_base", "应用授权作用域。企业自建应用固定填写：snsapi_base", true);
+    SNSAPI_BASE("snsapi_base",
+            "Application authorization scope. For self-built enterprise applications, it is fixed to: snsapi_base",
+            true);
 
+    /**
+     * The scope string as defined by WeChat Enterprise.
+     */
     private final String scope;
+    /**
+     * A description of what the scope grants access to.
+     */
     private final String description;
+    /**
+     * Indicates if this scope is enabled by default.
+     */
     private final boolean isDefault;
 
 }

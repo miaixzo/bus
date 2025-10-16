@@ -27,12 +27,13 @@
 */
 package org.miaixz.bus.setting;
 
-import java.io.Closeable;
-
 import org.miaixz.bus.setting.metric.ini.IniElement;
 
+import java.io.Closeable;
+
 /**
- * ini formatter.
+ * An interface for an INI file line formatter. It is responsible for parsing a single line into a corresponding
+ * {@link IniElement}.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -40,20 +41,20 @@ import org.miaixz.bus.setting.metric.ini.IniElement;
 public interface Format extends Closeable {
 
     /**
-     * format a line as a element
+     * Formats a raw line from an INI file into an {@link IniElement}.
      *
-     * @param line line string
-     * @return {@link IniElement}
+     * @param line The line string to format.
+     * @return The parsed {@link IniElement}, or null if the line should be ignored (e.g., an empty line).
      */
     IniElement formatLine(String line);
 
     /**
-     * initialize
+     * Resets the formatter to its initial state. This is useful when reusing the formatter to parse a new file.
      */
     void init();
 
     /**
-     * by default, {@code close() = init()}
+     * Closes the formatter and resets its state by calling {@link #init()}.
      */
     @Override
     default void close() {

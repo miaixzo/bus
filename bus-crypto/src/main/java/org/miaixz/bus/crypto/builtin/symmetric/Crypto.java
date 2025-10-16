@@ -54,9 +54,12 @@ import org.miaixz.bus.crypto.builtin.SaltParser;
 import org.miaixz.bus.crypto.cipher.JceCipher;
 
 /**
- * 对称加密算法 在对称加密算法中，数据发信方将明文（原始数据）和加密密钥一起经过特殊加密算法处理后，使其变成复杂的加密密文发送出去。
- * 收信方收到密文后，若想解读原文，则需要使用加密用过的密钥及相同算法的逆算法对密文进行解密，才能使其恢复成可读明文。
- * 在对称加密算法中，使用的密钥只有一个，发收信双方都使用这个密钥对数据进行加密和解密，这就要求解密方事先必须知道加密密钥。
+ * Symmetric encryption algorithm.
+ * <p>
+ * In symmetric encryption, the sender encrypts the plaintext (original data) with an encryption key using a specific
+ * algorithm, turning it into complex ciphertext. To decrypt the message, the recipient must use the same key and the
+ * inverse of the algorithm. In symmetric encryption, only one key is used by both parties for encryption and
+ * decryption, which requires the decrypting party to know the key in advance.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -67,32 +70,32 @@ public class Crypto implements Encryptor, Decryptor, Serializable {
     private static final long serialVersionUID = 2852289196593L;
 
     /**
-     * 锁操作
+     * Lock for thread-safe operations.
      */
     private final Lock lock = new ReentrantLock();
     /**
-     * 密码
+     * The cipher.
      */
     private JceCipher cipher;
     /**
-     * 算法参数
+     * Algorithm parameter specifications.
      */
     private AlgorithmParameterSpec algorithmParameterSpec;
     /**
-     * 自定义随机数
+     * Custom SecureRandom.
      */
     private SecureRandom random;
     /**
-     * SecretKey 负责保存对称密钥
+     * SecretKey responsible for storing the symmetric key.
      */
     private SecretKey secretKey;
     /**
-     * 是否0填充
+     * Whether to use ZeroPadding.
      */
     private boolean isZeroPadding;
 
     /**
-     * 构造，使用随机密钥
+     * Constructor, uses a random key.
      *
      * @param algorithm {@link Algorithm}
      */
@@ -101,60 +104,60 @@ public class Crypto implements Encryptor, Decryptor, Serializable {
     }
 
     /**
-     * 构造，使用随机密钥
+     * Constructor, uses a random key.
      *
-     * @param algorithm 算法，可以是"algorithm/mode/padding"或者"algorithm"
+     * @param algorithm The algorithm, can be "algorithm/mode/padding" or just "algorithm".
      */
     public Crypto(final String algorithm) {
         this(algorithm, (byte[]) null);
     }
 
     /**
-     * 构造
+     * Constructor.
      *
-     * @param algorithm 算法 {@link Algorithm}
-     * @param key       自定义KEY
+     * @param algorithm The algorithm {@link Algorithm}.
+     * @param key       Custom key.
      */
     public Crypto(final Algorithm algorithm, final byte[] key) {
         this(algorithm.getValue(), key);
     }
 
     /**
-     * 构造
+     * Constructor.
      *
-     * @param algorithm 算法 {@link Algorithm}
-     * @param key       自定义KEY
+     * @param algorithm The algorithm {@link Algorithm}.
+     * @param key       Custom key.
      */
     public Crypto(final Algorithm algorithm, final SecretKey key) {
         this(algorithm.getValue(), key);
     }
 
     /**
-     * 构造
+     * Constructor.
      *
-     * @param algorithm 算法
-     * @param key       密钥
+     * @param algorithm The algorithm.
+     * @param key       The secret key.
      */
     public Crypto(final String algorithm, final byte[] key) {
         this(algorithm, Keeper.generateKey(algorithm, key));
     }
 
     /**
-     * 构造
+     * Constructor.
      *
-     * @param algorithm 算法
-     * @param key       密钥
+     * @param algorithm The algorithm.
+     * @param key       The secret key.
      */
     public Crypto(final String algorithm, final SecretKey key) {
         this(algorithm, key, null);
     }
 
     /**
-     * 构造
+     * Constructor.
      *
-     * @param algorithm  算法
-     * @param key        密钥
-     * @param paramsSpec 算法参数，例如加盐等
+     * @param algorithm  The algorithm.
+     * @param key        The secret key.
+     * @param paramsSpec Algorithm parameter specifications, e.g., for salt.
      */
     public Crypto(final String algorithm, final SecretKey key, final AlgorithmParameterSpec paramsSpec) {
         init(algorithm, key);
@@ -162,12 +165,12 @@ public class Crypto implements Encryptor, Decryptor, Serializable {
     }
 
     /**
-     * 拷贝解密后的流
+     * Copies the decrypted stream, handling ZeroPadding.
      *
-     * @param in        {@link CipherInputStream}
-     * @param out       输出流
-     * @param blockSize 块大小
-     * @throws IOException IO异常
+     * @param in        The {@link CipherInputStream}.
+     * @param out       The output stream.
+     * @param blockSize The block size.
+     * @throws IOException if an I/O error occurs.
      */
     private static void copyForZeroPadding(final CipherInputStream in, final OutputStream out, final int blockSize)
             throws IOException {
@@ -175,7 +178,7 @@ public class Crypto implements Encryptor, Decryptor, Serializable {
         if (Normal._8192 > blockSize) {
             n = Math.max(n, Normal._8192 / blockSize);
         }
-        // 此处缓存buffer使用blockSize的整数倍，方便读取时可以正好将补位的0读在一个buffer中
+        // The buffer here uses a multiple of blockSize to conveniently read the padded zeros into one buffer.
         final int bufSize = blockSize * n;
         final byte[] preBuffer = new byte[bufSize];
         final byte[] buffer = new byte[bufSize];
@@ -186,13 +189,13 @@ public class Crypto implements Encryptor, Decryptor, Serializable {
             if (isFirst) {
                 isFirst = false;
             } else {
-                // 将前一批数据写出
+                // Write out the previous batch of data.
                 out.write(preBuffer, 0, preReadSize);
             }
             ArrayKit.copy(buffer, preBuffer, readSize);
             preReadSize = readSize;
         }
-        // 去掉末尾所有的补位0
+        // Remove all trailing padding zeros.
         int i = preReadSize - 1;
         while (i >= 0 && 0 == preBuffer[i]) {
             i--;
@@ -202,17 +205,17 @@ public class Crypto implements Encryptor, Decryptor, Serializable {
     }
 
     /**
-     * 初始化
+     * Initializes the crypto.
      *
-     * @param algorithm 算法
-     * @param key       密钥，如果为{@code null}自动生成一个key
-     * @return SymmetricCrypto的子对象，即子对象自身
+     * @param algorithm The algorithm.
+     * @param key       The secret key. If {@code null}, a key will be generated automatically.
+     * @return this instance.
      */
     public Crypto init(String algorithm, final SecretKey key) {
         Assert.notBlank(algorithm, "'algorithm' must be not blank !");
         this.secretKey = key;
 
-        // 检查是否为ZeroPadding，是则替换为NoPadding，并标记以便单独处理
+        // Check for ZeroPadding, if found, replace it with NoPadding and set a flag for special handling.
         if (algorithm.contains(Padding.ZeroPadding.name())) {
             algorithm = StringKit.replace(algorithm, Padding.ZeroPadding.name(), Padding.NoPadding.name());
             this.isZeroPadding = true;
@@ -223,28 +226,28 @@ public class Crypto implements Encryptor, Decryptor, Serializable {
     }
 
     /**
-     * 获得对称密钥
+     * Gets the symmetric key.
      *
-     * @return 获得对称密钥
+     * @return The symmetric key.
      */
     public SecretKey getSecretKey() {
         return secretKey;
     }
 
     /**
-     * 获得加密或解密器
+     * Gets the Cipher object.
      *
-     * @return 加密或解密
+     * @return The Cipher object.
      */
     public Cipher getCipher() {
         return cipher.getRaw();
     }
 
     /**
-     * 设置{@link AlgorithmParameterSpec}，通常用于加盐或偏移向量
+     * Sets the {@link AlgorithmParameterSpec}, typically used for salt or an initialization vector (IV).
      *
-     * @param algorithmParameterSpec {@link AlgorithmParameterSpec}
-     * @return this
+     * @param algorithmParameterSpec The {@link AlgorithmParameterSpec}.
+     * @return this instance.
      */
     public Crypto setAlgorithmParameterSpec(final AlgorithmParameterSpec algorithmParameterSpec) {
         this.algorithmParameterSpec = algorithmParameterSpec;
@@ -252,30 +255,30 @@ public class Crypto implements Encryptor, Decryptor, Serializable {
     }
 
     /**
-     * 设置偏移向量
+     * Sets the initialization vector (IV).
      *
-     * @param iv {@link IvParameterSpec}偏移向量
-     * @return 自身
+     * @param iv The {@link IvParameterSpec}.
+     * @return this instance.
      */
     public Crypto setIv(final IvParameterSpec iv) {
         return setAlgorithmParameterSpec(iv);
     }
 
     /**
-     * 设置偏移向量
+     * Sets the initialization vector (IV).
      *
-     * @param iv 偏移向量，加盐
-     * @return 自身
+     * @param iv The IV bytes.
+     * @return this instance.
      */
     public Crypto setIv(final byte[] iv) {
         return setIv(new IvParameterSpec(iv));
     }
 
     /**
-     * 设置随机数生成器，可自定义随机数种子
+     * Sets the {@link SecureRandom} generator, allowing for a custom seed.
      *
-     * @param random 随机数生成器，可自定义随机数种子
-     * @return this
+     * @param random The {@link SecureRandom} generator.
+     * @return this instance.
      */
     public Crypto setRandom(final SecureRandom random) {
         this.random = random;
@@ -283,21 +286,21 @@ public class Crypto implements Encryptor, Decryptor, Serializable {
     }
 
     /**
-     * 初始化模式并清空数据
+     * Initializes the cipher mode and clears previous data.
      *
-     * @param mode 模式枚举
-     * @return this
+     * @param mode The mode enum.
+     * @return this instance.
      */
     public Crypto setMode(final Algorithm.Type mode) {
         return setMode(mode, null);
     }
 
     /**
-     * 初始化模式并清空数据
+     * Initializes the cipher mode and clears previous data.
      *
-     * @param mode 模式枚举
-     * @param salt 加盐值，用于
-     * @return this
+     * @param mode The mode enum.
+     * @param salt The salt value.
+     * @return this instance.
      */
     public Crypto setMode(final Algorithm.Type mode, final byte[] salt) {
         lock.lock();
@@ -310,10 +313,12 @@ public class Crypto implements Encryptor, Decryptor, Serializable {
     }
 
     /**
-     * 更新数据，分组加密中间结果可以当作随机数 第一次更新数据前需要调用{@link #setMode(Algorithm.Type)}初始化加密或解密模式，然后每次更新数据都是累加模式
+     * Updates the data. Intermediate results of block encryption can be used as random numbers. Before the first
+     * update, {@link #setMode(Algorithm.Type)} must be called to initialize encryption or decryption mode. Each
+     * subsequent update is cumulative.
      *
-     * @param data 被加密的bytes
-     * @return update之后的bytes
+     * @param data The bytes to be encrypted/decrypted.
+     * @return The bytes after the update.
      */
     public byte[] update(final byte[] data) {
         final Cipher cipher = this.cipher.getRaw();
@@ -328,9 +333,9 @@ public class Crypto implements Encryptor, Decryptor, Serializable {
     }
 
     /**
-     * 完成多部分加密或解密操作，具体取决于此密码的初始化方式。
+     * Finishes a multiple-part encryption or decryption operation, depending on how this cipher was initialized.
      *
-     * @return 带有结果的新缓冲区
+     * @return A new buffer with the result.
      */
     public byte[] doFinal() {
         final Cipher cipher = this.cipher.getRaw();
@@ -345,19 +350,20 @@ public class Crypto implements Encryptor, Decryptor, Serializable {
     }
 
     /**
-     * 完成多部分加密或解密操作，具体取决于此密码的初始化方式。
+     * Finishes a multiple-part encryption or decryption operation and returns the result as a hex string.
      *
-     * @return 带有结果的新缓冲区
+     * @return A new hex string with the result.
      */
     public String doFinalHex() {
         return HexKit.encodeString(doFinal());
     }
 
     /**
-     * 更新数据，分组加密中间结果可以当作随机数 第一次更新数据前需要调用{@link #setMode(Algorithm.Type)}初始化加密或解密模式，然后每次更新数据都是累加模式
+     * Updates data and returns the result as a hex string. Before the first update, {@link #setMode(Algorithm.Type)}
+     * must be called to initialize encryption or decryption mode. Each subsequent update is cumulative.
      *
-     * @param data 被加密的bytes
-     * @return update之后的hex数据
+     * @param data The bytes to be encrypted/decrypted.
+     * @return The hex string after the update.
      */
     public String updateHex(final byte[] data) {
         return HexKit.encodeString(update(data));
@@ -369,11 +375,12 @@ public class Crypto implements Encryptor, Decryptor, Serializable {
     }
 
     /**
-     * 加密
+     * Encrypts data.
      *
-     * @param data 被加密的bytes
-     * @param salt 加盐值，如果为{@code null}不设置，否则生成带Salted__头的密文数据
-     * @return 加密后的bytes
+     * @param data The bytes to be encrypted.
+     * @param salt The salt value. If {@code null}, it's not set; otherwise, it generates ciphertext with a "Salted__"
+     *             header.
+     * @return The encrypted bytes.
      */
     public byte[] encrypt(final byte[] data, final byte[] salt) {
         byte[] result;
@@ -399,10 +406,10 @@ public class Crypto implements Encryptor, Decryptor, Serializable {
             if (this.isZeroPadding) {
                 final int blockSize = cipher.getBlockSize();
                 if (blockSize > 0) {
-                    // 按照块拆分后的数据中多余的数据
+                    // The remaining data after splitting by block size.
                     final int remainLength = (int) (length % blockSize);
                     if (remainLength > 0) {
-                        // 补充0
+                        // Pad with zeros.
                         cipherOutputStream.write(new byte[blockSize - remainLength]);
                         cipherOutputStream.flush();
                     }
@@ -414,7 +421,7 @@ public class Crypto implements Encryptor, Decryptor, Serializable {
             throw new CryptoException(e);
         } finally {
             lock.unlock();
-            // CipherOutputStream必须关闭，才能完全写出
+            // The CipherOutputStream must be closed to ensure all data is written.
             IoKit.closeQuietly(cipherOutputStream);
             if (isClose) {
                 IoKit.closeQuietly(data);
@@ -465,7 +472,7 @@ public class Crypto implements Encryptor, Decryptor, Serializable {
             throw new CryptoException(e);
         } finally {
             lock.unlock();
-            // CipherOutputStream必须关闭，才能完全写出
+            // The CipherInputStream must be closed to read all data.
             IoKit.closeQuietly(cipherInputStream);
             if (isClose) {
                 IoKit.closeQuietly(data);
@@ -474,26 +481,26 @@ public class Crypto implements Encryptor, Decryptor, Serializable {
     }
 
     /**
-     * 初始化加密解密参数，如IV等
+     * Initializes encryption/decryption parameters, such as the IV.
      *
-     * @param algorithm  算法
-     * @param paramsSpec 用户定义的{@link AlgorithmParameterSpec}
-     * @return this
+     * @param algorithm  The algorithm.
+     * @param paramsSpec User-defined {@link AlgorithmParameterSpec}.
+     * @return this instance.
      */
     private Crypto initParams(final String algorithm, AlgorithmParameterSpec paramsSpec) {
         if (null == paramsSpec) {
             byte[] iv = Optional.ofNullable(cipher).map(JceCipher::getRaw).map(Cipher::getIV).getOrNull();
 
-            // 随机IV
+            // Random IV
             if (StringKit.startWithIgnoreCase(algorithm, "PBE")) {
-                // 对于PBE算法使用随机数加盐
+                // For PBE algorithms, use a random salt.
                 if (null == iv) {
                     iv = RandomKit.randomBytes(8);
                 }
                 paramsSpec = new PBEParameterSpec(iv, 100);
             } else if (StringKit.startWithIgnoreCase(algorithm, "AES")) {
                 if (null != iv) {
-                    // AES使用Cipher默认的随机盐
+                    // For AES, use the Cipher's default random IV.
                     paramsSpec = new IvParameterSpec(iv);
                 }
             }
@@ -503,15 +510,15 @@ public class Crypto implements Encryptor, Decryptor, Serializable {
     }
 
     /**
-     * 初始化{@link JceCipher}为加密或者解密模式
+     * Initializes the {@link JceCipher} for encryption or decryption mode.
      *
-     * @param mode 模式，见{@link Algorithm.Type#ENCRYPT} 或 {@link Algorithm.Type#DECRYPT}
-     * @return {@link Cipher}
+     * @param mode The mode, see {@link Algorithm.Type#ENCRYPT} or {@link Algorithm.Type#DECRYPT}.
+     * @return The initialized {@link JceCipher}.
      */
     private JceCipher initMode(final Algorithm.Type mode, final byte[] salt) {
         SecretKey secretKey = this.secretKey;
         if (null != salt) {
-            // /提供OpenSSL格式兼容支持
+            // Provide compatibility support for OpenSSL format.
             final String algorithm = getCipher().getAlgorithm();
             final byte[][] keyAndIV = SaltParser.ofMd5(32, algorithm).getKeyAndIV(secretKey.getEncoded(), salt);
             secretKey = Keeper.generateKey(algorithm, keyAndIV[0]);
@@ -526,24 +533,25 @@ public class Crypto implements Encryptor, Decryptor, Serializable {
     }
 
     /**
-     * 数据按照blockSize的整数倍长度填充填充0
+     * Pads the data with zeros to a multiple of the block size.
      * <p>
-     * 在{@link Padding#ZeroPadding} 模式下，且数据长度不是blockSize的整数倍才有效，否则返回原数据
+     * This is only effective in {@link Padding#ZeroPadding} mode and when the data length is not a multiple of the
+     * block size; otherwise, the original data is returned.
      *
      * <p>
-     * 见：https://blog.csdn.net/OrangeJack/article/details/82913804
+     * See: https://blog.csdn.net/OrangeJack/article/details/82913804
      *
-     * @param data      数据
-     * @param blockSize 块大小
-     * @return 填充后的数据，如果isZeroPadding为false或长度刚好，返回原数据
+     * @param data      The data to pad.
+     * @param blockSize The block size.
+     * @return The padded data, or the original data if ZeroPadding is false or the length is already a multiple.
      */
     private byte[] paddingDataWithZero(final byte[] data, final int blockSize) {
         if (this.isZeroPadding) {
             final int length = data.length;
-            // 按照块拆分后的数据中多余的数据
+            // The remainder length after dividing the data by the block size.
             final int remainLength = length % blockSize;
             if (remainLength > 0) {
-                // 新长度为blockSize的整数倍，多余部分填充0
+                // The new length is a multiple of blockSize, the remainder is padded with zeros.
                 return ArrayKit.resize(data, length + blockSize - remainLength);
             }
         }
@@ -551,18 +559,20 @@ public class Crypto implements Encryptor, Decryptor, Serializable {
     }
 
     /**
-     * 数据按照blockSize去除填充部分，用于解密 在{@link Padding#ZeroPadding} 模式下，且数据长度不是blockSize的整数倍才有效，否则返回原数据
+     * Removes padding from the data according to the block size, used for decryption. This is only effective in
+     * {@link Padding#ZeroPadding} mode; otherwise, the original data is returned.
      *
-     * @param data      数据
-     * @param blockSize 块大小，必须大于0
-     * @return 去除填充后的数据，如果isZeroPadding为false或长度刚好，返回原数据
+     * @param data      The data.
+     * @param blockSize The block size, must be greater than 0.
+     * @return The data with padding removed, or the original data if ZeroPadding is false.
      */
     private byte[] removePadding(final byte[] data, final int blockSize) {
         if (this.isZeroPadding && blockSize > 0) {
             final int length = data.length;
             final int remainLength = length % blockSize;
             if (remainLength == 0) {
-                // 解码后的数据正好是块大小的整数倍，说明可能存在补0的情况，去掉末尾所有的0
+                // If the decoded data length is a multiple of the block size, it might have zero padding.
+                // Remove all trailing zeros.
                 int i = length - 1;
                 while (i >= 0 && 0 == data[i]) {
                     i--;

@@ -35,7 +35,9 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 
 /**
- * 简单分词引擎工厂，用于根据用户引入的分词引擎jar，自动创建对应的引擎
+ * Factory class for creating and managing Natural Language Processing (NLP) word segmentation engines. This factory
+ * automatically detects and instantiates appropriate {@link NLPProvider} implementations based on available JARs or
+ * explicit engine names, providing a unified access point for NLP services.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,9 +45,11 @@ import org.miaixz.bus.logger.Logger;
 public class NLPFactory {
 
     /**
-     * 根据用户引入的模板引擎jar，自动创建对应的分词引擎对象 获得的是单例的TokenizerEngine
+     * Automatically creates and retrieves a singleton instance of the corresponding word segmentation engine object.
+     * The engine is determined based on the NLP engine JARs introduced by the user via SPI mechanism. The chosen
+     * engine's simple name (without "Engine" suffix) is logged for informational purposes.
      *
-     * @return 单例的TokenizerEngine
+     * @return A singleton instance of {@link NLPProvider}.
      */
     public static NLPProvider getEngine() {
         final NLPProvider engine = Instances.get(NLPProvider.class.getName(), NLPFactory::createEngine);
@@ -56,20 +60,24 @@ public class NLPFactory {
     }
 
     /**
-     * 根据用户引入的分词引擎jar，自动创建对应的分词引擎对象
+     * Automatically creates a new instance of the corresponding word segmentation engine object. The engine is
+     * determined based on the NLP engine JARs introduced by the user via SPI mechanism.
      *
-     * @return {@link NLPProvider}
+     * @return A new {@link NLPProvider} instance.
+     * @throws InternalException if no tokenizer implementation is found on the classpath.
      */
     public static NLPProvider createEngine() {
         return doCreateEngine();
     }
 
     /**
-     * 创建自定义引擎
+     * Creates a custom word segmentation engine object by its name. The engine name is case-insensitive and can
+     * optionally include the "Engine" suffix. Supported engine names include, but are not limited to: `Analysis`,
+     * `Ansj`, `HanLP`, `IKAnalyzer`, `Jcseg`, `Jieba`, `Mmseg`, `Mynlp`, `Word`.
      *
-     * @param engineName 引擎名称，忽略大小写，如`Analysis`、`Ansj`、`HanLP`、`IKAnalyzer`、`Jcseg`、`Jieba`、`Mmseg`、`Mynlp`、`Word`
-     * @return 引擎
-     * @throws InternalException 无对应名称的引擎
+     * @param engineName The name of the engine to create (e.g., `Analysis`, `Ansj`).
+     * @return An {@link NLPProvider} instance corresponding to the given engine name.
+     * @throws InternalException if no engine with the corresponding name is found via SPI.
      */
     public static NLPProvider createEngine(String engineName) throws InternalException {
         if (!StringKit.endWithIgnoreCase(engineName, "Engine")) {
@@ -85,9 +93,12 @@ public class NLPFactory {
     }
 
     /**
-     * 根据用户引入的分词引擎jar，自动创建对应的分词引擎对象
+     * Internal method to automatically create the corresponding word segmentation engine object. It uses
+     * {@link NormalSpiLoader} to find the first available {@link NLPProvider} implementation via Java's Service
+     * Provider Interface (SPI) mechanism.
      *
-     * @return {@link NLPProvider}
+     * @return An {@link NLPProvider} instance.
+     * @throws InternalException if no tokenizer implementation is found on the classpath.
      */
     private static NLPProvider doCreateEngine() {
         final NLPProvider engine = NormalSpiLoader.loadFirstAvailable(NLPProvider.class);

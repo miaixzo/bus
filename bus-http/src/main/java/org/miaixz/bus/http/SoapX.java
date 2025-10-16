@@ -27,21 +27,20 @@
 */
 package org.miaixz.bus.http;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-
+import jakarta.xml.soap.SOAPException;
+import jakarta.xml.soap.SOAPMessage;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.XmlKit;
 import org.miaixz.bus.http.plugin.soap.SoapBuilder;
 
-import jakarta.xml.soap.SOAPException;
-import jakarta.xml.soap.SOAPMessage;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 
 /**
- * SOAP相关工具类
+ * A utility class for SOAP-related operations.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -49,56 +48,56 @@ import jakarta.xml.soap.SOAPMessage;
 public class SoapX {
 
     /**
-     * 创建SOAP客户端，默认使用soap1.2版本协议
+     * Creates a SOAP client with the default SOAP 1.2 protocol.
      *
-     * @param url WS的URL地址
-     * @return {@link SoapBuilder}
+     * @param url The URL of the web service.
+     * @return a new {@link SoapBuilder} instance.
      */
     public static SoapBuilder create(final String url) {
         return SoapBuilder.of(url);
     }
 
     /**
-     * 创建SOAP客户端
+     * Creates a SOAP client with a specified protocol.
      *
-     * @param url      WS的URL地址
-     * @param protocol 协议，见{@link Protocol}
-     * @return {@link SoapBuilder}
+     * @param url      The URL of the web service.
+     * @param protocol The SOAP protocol to use (e.g., SOAP 1.1 or 1.2).
+     * @return a new {@link SoapBuilder} instance.
      */
     public static SoapBuilder create(final String url, final Protocol protocol) {
         return SoapBuilder.of(url, protocol);
     }
 
     /**
-     * 创建SOAP客户端
+     * Creates a SOAP client with a specified protocol and namespace URI.
      *
-     * @param url          WS的URL地址
-     * @param protocol     协议，见{@link Protocol}
-     * @param namespaceURI 方法上的命名空间URI
-     * @return {@link SoapBuilder}
+     * @param url          The URL of the web service.
+     * @param protocol     The SOAP protocol to use.
+     * @param namespaceURI The namespace URI for the SOAP method.
+     * @return a new {@link SoapBuilder} instance.
      */
     public static SoapBuilder create(final String url, final Protocol protocol, final String namespaceURI) {
         return SoapBuilder.of(url, protocol, namespaceURI);
     }
 
     /**
-     * {@link SOAPMessage} 转为字符串
+     * Converts a {@link SOAPMessage} to its string representation.
      *
-     * @param message SOAP消息对象
-     * @param pretty  是否格式化
-     * @return SOAP XML字符串
+     * @param message The SOAP message object.
+     * @param pretty  Whether to format the output XML.
+     * @return The SOAP XML as a string.
      */
     public static String toString(final SOAPMessage message, final boolean pretty) {
         return toString(message, pretty, Charset.UTF_8);
     }
 
     /**
-     * {@link SOAPMessage} 转为字符串
+     * Converts a {@link SOAPMessage} to its string representation with a specified character set.
      *
-     * @param message SOAP消息对象
-     * @param pretty  是否格式化
-     * @param charset 编码
-     * @return SOAP XML字符串
+     * @param message The SOAP message object.
+     * @param pretty  Whether to format the output XML.
+     * @param charset The character set to use for encoding.
+     * @return The SOAP XML as a string.
      */
     public static String toString(
             final SOAPMessage message,
@@ -112,7 +111,7 @@ public class SoapX {
         }
         final String messageToString;
         try {
-            messageToString = out.toString(charset.toString());
+            messageToString = out.toString(charset.name());
         } catch (final UnsupportedEncodingException e) {
             throw new InternalException(e);
         }

@@ -30,7 +30,9 @@ package org.miaixz.bus.core.codec;
 import org.miaixz.bus.core.lang.Assert;
 
 /**
- * 凯撒密码实现 算法来自：<a href=
+ * Implementation of the Caesar cipher. The Caesar cipher is one of the simplest and most widely known encryption
+ * techniques. It is a type of substitution cipher in which each letter in the plaintext is replaced by a letter some
+ * fixed number of positions down the alphabet. Algorithm source: <a href=
  * "https://github.com/zhaorenjie110/SymmetricEncryptionAndDecryption">https://github.com/zhaorenjie110/SymmetricEncryptionAndDecryption</a>
  *
  * @author Kimi Liu
@@ -39,16 +41,19 @@ import org.miaixz.bus.core.lang.Assert;
 public class Caesar {
 
     /**
-     * 26个字母表
+     * The alphabet table used for Caesar cipher, containing both lowercase and uppercase English letters. The order is
+     * important for shifting operations.
      */
     public static final String TABLE = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz";
 
     /**
-     * 传入明文，加密得到密文
+     * Encodes the given message using the Caesar cipher with a specified offset. Only letter characters are shifted;
+     * non-letter characters remain unchanged.
      *
-     * @param message 加密的消息
-     * @param offset  偏移量
-     * @return 加密后的内容
+     * @param message The plaintext message to be encrypted. Must not be null.
+     * @param offset  The number of positions to shift each letter.
+     * @return The encrypted ciphertext.
+     * @throws NullPointerException if the message is null.
      */
     public static String encode(final String message, final int offset) {
         Assert.notNull(message, "message must be not null!");
@@ -66,11 +71,13 @@ public class Caesar {
     }
 
     /**
-     * 传入明文解密到密文
+     * Decodes the given ciphertext using the Caesar cipher with a specified offset. Only letter characters are shifted
+     * back; non-letter characters remain unchanged.
      *
-     * @param cipherText 密文
-     * @param offset     偏移量
-     * @return 解密后的内容
+     * @param cipherText The ciphertext message to be decrypted. Must not be null.
+     * @param offset     The number of positions used for encryption (to shift back).
+     * @return The decrypted plaintext message.
+     * @throws NullPointerException if the cipherText is null.
      */
     public static String decode(final String cipherText, final int offset) {
         Assert.notNull(cipherText, "cipherText must be not null!");
@@ -88,11 +95,12 @@ public class Caesar {
     }
 
     /**
-     * 加密轮盘
+     * Encrypts a single character using the Caesar cipher. The character's position in the {@link #TABLE} is shifted by
+     * the given offset.
      *
-     * @param c      被加密字符
-     * @param offset 偏移量
-     * @return 加密后的字符
+     * @param c      The character to be encrypted.
+     * @param offset The shift offset.
+     * @return The encrypted character.
      */
     private static char encodeChar(final char c, final int offset) {
         final int position = (TABLE.indexOf(c) + offset) % 52;
@@ -101,10 +109,12 @@ public class Caesar {
     }
 
     /**
-     * 解密轮盘
+     * Decrypts a single character using the Caesar cipher. The character's position in the {@link #TABLE} is shifted
+     * back by the given offset. Handles negative results from the modulo operation to ensure a valid index.
      *
-     * @param c 字符
-     * @return 解密后的字符
+     * @param c      The character to be decrypted.
+     * @param offset The shift offset used during encryption.
+     * @return The decrypted character.
      */
     private static char decodeChar(final char c, final int offset) {
         int position = (TABLE.indexOf(c) - offset) % 52;

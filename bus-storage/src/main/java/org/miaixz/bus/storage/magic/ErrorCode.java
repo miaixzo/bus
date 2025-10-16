@@ -31,7 +31,7 @@ import org.miaixz.bus.core.basic.normal.ErrorRegistry;
 import org.miaixz.bus.core.basic.normal.Errors;
 
 /**
- * 存储错误码: 113xxx
+ * Storage error codes, ranging from 113xxx.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -39,37 +39,44 @@ import org.miaixz.bus.core.basic.normal.Errors;
 public class ErrorCode extends org.miaixz.bus.core.basic.normal.ErrorCode {
 
     /**
-     * 通用: 文件上传失败
+     * Constructs a new AbstractProvider with default settings.
+     */
+    public ErrorCode() {
+
+    }
+
+    /**
+     * Common: File upload failed.
      */
     public static final Errors _113000 = ErrorRegistry.builder().key("113000").value("文件上传失败").build();
 
     /**
-     * 通用: 目录已存在
+     * Common: Directory already exists.
      */
     public static final Errors _113001 = ErrorRegistry.builder().key("113001").value("目录已存在").build();
 
     /**
-     * 通用: 目录不存在
+     * Common: Directory does not exist.
      */
     public static final Errors _113002 = ErrorRegistry.builder().key("113002").value("目录不存在").build();
 
     /**
-     * 通用: 文件不存在
+     * Common: File does not exist.
      */
     public static final Errors _113003 = ErrorRegistry.builder().key("113003").value("文件不存在").build();
 
     /**
-     * 通用: 文件已存在
+     * Common: File already exists.
      */
     public static final Errors _113004 = ErrorRegistry.builder().key("113004").value("文件已存在").build();
 
     /**
-     * 通用: 目录获取失败
+     * Common: Failed to get directory.
      */
     public static final Errors _113005 = ErrorRegistry.builder().key("113005").value("目录获取失败").build();
 
     /**
-     * 通用: 文件MD5计算失败
+     * Common: Failed to calculate file MD5.
      */
     public static final Errors _113006 = ErrorRegistry.builder().key("113006").value("文件MD5计算失败").build();
 

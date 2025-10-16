@@ -31,28 +31,36 @@ import java.util.List;
 import java.util.RandomAccess;
 
 /**
- * 列表分区或分段（可随机访问列表） 通过传入分区个数，将指定列表分区为不同的块，每块区域的长度均匀分布（个数差不超过1）
+ * List partitioning or segmentation for {@link RandomAccess} lists. By specifying the number of partitions, a given
+ * list is divided into different blocks, with the length of each block evenly distributed (the difference in count does
+ * not exceed 1). This class extends {@link AvgPartition} and additionally implements {@link RandomAccess}, indicating
+ * that its sub-lists can be accessed efficiently by index.
  * 
  * <pre>
- *     [1,2,3,4] - [1,2], [3, 4]
- *     [1,2,3,4] - [1,2], [3], [4]
- *     [1,2,3,4] - [1], [2], [3], [4]
- *     [1,2,3,4] - [1], [2], [3], [4], []
+ *     Example:
+ *     List: [1, 2, 3, 4]
+ *     Partition into 2: [1, 2], [3, 4]
+ *     Partition into 3: [1, 2], [3], [4]
+ *     Partition into 4: [1], [2], [3], [4]
+ *     Partition into 5: [1], [2], [3], [4], []
  * </pre>
  * 
- * 分区是在原List的基础上进行的，返回的分区是不可变的抽象列表，原列表元素变更，分区中元素也会变更。
+ * Partitioning is performed on the original list. The returned partitions are immutable abstract lists, and changes to
+ * the original list's elements will also be reflected in the partitions.
  *
- * @param <T> 元素类型
+ * @param <T> the type of elements in the list
  * @author Kimi Liu
  * @since Java 17+
  */
 public class RandomAccessAvgPartition<T> extends AvgPartition<T> implements RandomAccess {
 
     /**
-     * 列表分区
+     * Constructs a {@code RandomAccessAvgPartition} for the given list and number of partitions.
      *
-     * @param list  被分区的列表
-     * @param limit 分区个数
+     * @param list  the list to be partitioned, must not be {@code null}
+     * @param limit the number of partitions. Must be greater than 0.
+     * @throws IllegalArgumentException if {@code limit} is less than or equal to 0
+     * @throws NullPointerException     if {@code list} is {@code null}
      */
     public RandomAccessAvgPartition(final List<T> list, final int limit) {
         super(list, limit);

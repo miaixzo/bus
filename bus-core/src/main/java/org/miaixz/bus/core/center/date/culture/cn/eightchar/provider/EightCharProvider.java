@@ -31,7 +31,7 @@ import org.miaixz.bus.core.center.date.culture.cn.eightchar.EightChar;
 import org.miaixz.bus.core.center.date.culture.lunar.LunarHour;
 
 /**
- * 八字计算接口
+ * Interface for calculating the Eight Characters (八字) from a Lunar Hour.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -39,10 +39,10 @@ import org.miaixz.bus.core.center.date.culture.lunar.LunarHour;
 public interface EightCharProvider {
 
     /**
-     * 八字
+     * Calculates the Eight Characters (八字) from a Lunar Hour.
      *
-     * @param hour 农历时辰
-     * @return 八字
+     * @param hour The Lunar Hour.
+     * @return The {@link EightChar} instance.
      */
     EightChar getEightChar(LunarHour hour);
 

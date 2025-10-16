@@ -30,7 +30,13 @@ package org.miaixz.bus.core.lang.annotation;
 import java.lang.annotation.*;
 
 /**
- * 注解: 不能为 Null（仅标识）
+ * A marker annotation indicating that a field, method parameter, or method return value is not expected to be
+ * {@code null}.
+ * <p>
+ * This annotation is primarily intended for documentation and to be used by static analysis tools to detect potential
+ * {@code NullPointerException} bugs. It does not, by itself, enforce null-safety at runtime, although frameworks may
+ * use it to trigger runtime checks. It serves a similar purpose to annotations like {@code jakarta.annotation.Nonnull}
+ * or those found in tools like FindBugs and IntelliJ IDEA.
  *
  * @author Kimi Liu
  * @since Java 17+

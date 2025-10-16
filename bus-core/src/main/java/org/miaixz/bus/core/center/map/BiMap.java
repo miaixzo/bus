@@ -35,36 +35,57 @@ import java.util.function.Function;
 import org.miaixz.bus.core.xyz.MapKit;
 
 /**
- * 双向Map 互换键值对不检查值是否有重复，如果有则后加入的元素替换先加入的元素 值的顺序在HashMap中不确定，所以谁覆盖谁也不确定，在有序的Map中按照先后顺序覆盖，保留最后的值
- * 它与TableMap的区别是，BiMap维护两个Map实现高效的正向和反向查找
+ * A bidirectional map that maintains an inverse mapping, allowing efficient lookups from value to key. This
+ * implementation wraps an existing {@link Map} and synchronizes a separate inverse map.
+ * <p>
+ * <strong>Value Uniqueness:</strong> While keys in a map are always unique, values are not necessarily. If multiple
+ * keys are mapped to the same value, the inverse mapping will only retain the most recently added association. For
+ * example, if {@code map.put(k1, v)} and {@code map.put(k2, v)} are called in succession, the inverse map will map
+ * {@code v} to {@code k2}.
  *
- * @param <K> 键类型
- * @param <V> 值类型
+ * @param <K> The type of keys maintained by this map.
+ * @param <V> The type of mapped values.
  * @author Kimi Liu
  * @since Java 17+
  */
 public class BiMap<K, V> extends MapWrapper<K, V> {
 
+    /**
+     * The serialization version identifier for this class.
+     */
     @Serial
     private static final long serialVersionUID = 2852268325561L;
 
+    /**
+     * The inverse map, where values from the original map are keys and keys are values. This is lazily initialized when
+     * {@link #getInverse()} is first called.
+     */
     private Map<V, K> inverse;
 
     /**
-     * 构造
+     * Constructs a new {@code BiMap} that wraps the given raw map.
      *
-     * @param raw 被包装的Map
+     * @param raw The underlying {@link Map} to be wrapped. Must not be {@code null}.
      */
     public BiMap(final Map<K, V> raw) {
         super(raw);
     }
 
+    /**
+     * Associates the specified value with the specified key in this map. If the map previously contained a mapping for
+     * the key, the old value is replaced. This operation also updates the inverse map to maintain bidirectional
+     * consistency.
+     *
+     * @param key   The key with which the specified value is to be associated.
+     * @param value The value to be associated with the specified key.
+     * @return The previous value associated with {@code key}, or {@code null} if there was no mapping for {@code key}.
+     */
     @Override
     public V put(final K key, final V value) {
         final V oldValue = super.put(key, value);
         if (null != this.inverse) {
             if (null != oldValue) {
-                // 如果put的key相同，value不同，需要在inverse中移除旧的关联
+                // If a key is re-mapped to a new value, the old value's inverse mapping must be removed.
                 this.inverse.remove(oldValue);
             }
             this.inverse.put(value, key);
@@ -72,6 +93,13 @@ public class BiMap<K, V> extends MapWrapper<K, V> {
         return oldValue;
     }
 
+    /**
+     * Copies all of the mappings from the specified map to this map. These mappings will replace any mappings that this
+     * map had for any of the keys currently in the specified map. This operation also updates the inverse map
+     * accordingly.
+     *
+     * @param m Mappings to be stored in this map.
+     */
     @Override
     public void putAll(final Map<? extends K, ? extends V> m) {
         super.putAll(m);
@@ -80,6 +108,13 @@ public class BiMap<K, V> extends MapWrapper<K, V> {
         }
     }
 
+    /**
+     * Removes the mapping for a key from this map if it is present. This operation also removes the corresponding entry
+     * from the inverse map.
+     *
+     * @param key The key whose mapping is to be removed from the map.
+     * @return The previous value associated with {@code key}, or {@code null} if there was no mapping for {@code key}.
+     */
     @Override
     public V remove(final Object key) {
         final V v = super.remove(key);
@@ -89,11 +124,23 @@ public class BiMap<K, V> extends MapWrapper<K, V> {
         return v;
     }
 
+    /**
+     * Removes the entry for the specified key only if it is currently mapped to the specified value. This operation
+     * also removes the corresponding entry from the inverse map if successful.
+     *
+     * @param key   The key with which the specified value is associated.
+     * @param value The value expected to be associated with the specified key.
+     * @return {@code true} if the entry was removed, {@code false} otherwise.
+     */
     @Override
     public boolean remove(final Object key, final Object value) {
         return super.remove(key, value) && null != this.inverse && this.inverse.remove(value, key);
     }
 
+    /**
+     * Removes all of the mappings from this map. The map will be empty after this call returns. The inverse map is also
+     * cleared.
+     */
     @Override
     public void clear() {
         super.clear();
@@ -101,9 +148,10 @@ public class BiMap<K, V> extends MapWrapper<K, V> {
     }
 
     /**
-     * 获取反向Map
+     * Retrieves the inverse view of this map, where values map to keys. The inverse map is lazily initialized upon the
+     * first call to this method.
      *
-     * @return 反向Map
+     * @return A {@link Map} representing the inverse of this map.
      */
     public Map<V, K> getInverse() {
         if (null == this.inverse) {
@@ -113,15 +161,25 @@ public class BiMap<K, V> extends MapWrapper<K, V> {
     }
 
     /**
-     * 根据值获得键
+     * Retrieves the key associated with the specified value from the inverse map.
      *
-     * @param value 值
-     * @return 键
+     * @param value The value whose associated key is to be returned.
+     * @return The key to which the specified value is mapped, or {@code null} if this map contains no mapping for the
+     *         value.
      */
     public K getKey(final V value) {
         return getInverse().get(value);
     }
 
+    /**
+     * If the specified key is not already associated with a value (or is mapped to {@code null}), associates it with
+     * the given value and returns {@code null}, else returns the current value. This operation also updates the inverse
+     * map.
+     *
+     * @param key   The key with which the specified value is to be associated.
+     * @param value The value to be associated with the specified key.
+     * @return The previous value associated with the key, or {@code null} if there was no mapping.
+     */
     @Override
     public V putIfAbsent(final K key, final V value) {
         if (null != this.inverse) {
@@ -130,6 +188,14 @@ public class BiMap<K, V> extends MapWrapper<K, V> {
         return super.putIfAbsent(key, value);
     }
 
+    /**
+     * Computes a mapping for the specified key and its current mapped value. This operation is complex and may
+     * invalidate the existing inverse map, so the inverse map is reset and will be rebuilt on next access.
+     *
+     * @param key             The key with which the specified value is to be associated.
+     * @param mappingFunction The function to compute a value.
+     * @return The new value associated with the specified key, or {@code null} if none.
+     */
     @Override
     public V computeIfAbsent(final K key, final Function<? super K, ? extends V> mappingFunction) {
         final V result = super.computeIfAbsent(key, mappingFunction);
@@ -137,6 +203,14 @@ public class BiMap<K, V> extends MapWrapper<K, V> {
         return result;
     }
 
+    /**
+     * Computes a new mapping for the specified key if it is present and non-null. This operation is complex and may
+     * invalidate the existing inverse map, so the inverse map is reset and will be rebuilt on next access.
+     *
+     * @param key               The key with which the specified value is to be associated.
+     * @param remappingFunction The function to compute a replacement value.
+     * @return The new value associated with the specified key, or {@code null} if none.
+     */
     @Override
     public V computeIfPresent(final K key, final BiFunction<? super K, ? super V, ? extends V> remappingFunction) {
         final V result = super.computeIfPresent(key, remappingFunction);
@@ -144,6 +218,14 @@ public class BiMap<K, V> extends MapWrapper<K, V> {
         return result;
     }
 
+    /**
+     * Computes a mapping for the specified key and its current value. This operation is complex and may invalidate the
+     * existing inverse map, so the inverse map is reset and will be rebuilt on next access.
+     *
+     * @param key               The key with which the specified value is to be associated.
+     * @param remappingFunction The function to compute a value.
+     * @return The new value associated with the specified key, or {@code null} if none.
+     */
     @Override
     public V compute(final K key, final BiFunction<? super K, ? super V, ? extends V> remappingFunction) {
         final V result = super.compute(key, remappingFunction);
@@ -151,6 +233,15 @@ public class BiMap<K, V> extends MapWrapper<K, V> {
         return result;
     }
 
+    /**
+     * Merges the specified key and value into the map. This operation is complex and may invalidate the existing
+     * inverse map, so the inverse map is reset and will be rebuilt on next access.
+     *
+     * @param key               The key with which the specified value is to be associated.
+     * @param value             The value to be merged with the existing value.
+     * @param remappingFunction The function to resolve conflicts between existing and new values.
+     * @return The new value associated with the key, or {@code null} if no value is associated.
+     */
     @Override
     public V merge(final K key, final V value, final BiFunction<? super V, ? super V, ? extends V> remappingFunction) {
         final V result = super.merge(key, value, remappingFunction);
@@ -159,7 +250,9 @@ public class BiMap<K, V> extends MapWrapper<K, V> {
     }
 
     /**
-     * 重置反转的Map，如果反转map为空，则不操作。
+     * Resets the inverse map by setting it to {@code null}. This forces the inverse map to be rebuilt from the primary
+     * map's current state upon its next access via {@link #getInverse()}. This method is called after complex
+     * operations like {@code compute} or {@code merge} that make incremental updates to the inverse map difficult.
      */
     private void resetInverseMap() {
         if (null != this.inverse) {

@@ -28,7 +28,7 @@
 package org.miaixz.bus.office.builtin;
 
 /**
- * 所有office任务实现的基类.
+ * Base class for all office task implementations.
  *
  * @author Kimi Liu
  * @since Java 17+

@@ -39,36 +39,62 @@ import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.notify.Context;
 
 /**
- * 阿里云语音通知
+ * Alibaba Cloud Voice Messaging Service (VMS) provider.
  *
  * @author Justubborn
  * @since Java 17+
  */
 public class AliyunVmsProvider extends AliyunProvider<AliyunMaterial, Context> {
 
+    /**
+     * Constructs an {@code AliyunVmsProvider} with the given context.
+     *
+     * @param context The context containing configuration information for the provider.
+     */
     public AliyunVmsProvider(Context context) {
         super(context);
     }
 
+    /**
+     * Sends a voice notification using Alibaba Cloud VMS service.
+     *
+     * @param entity The {@link AliyunMaterial} containing VMS details like recipient, sender, play times, template, and
+     *               parameters.
+     * @return A {@link Message} indicating the result of the VMS sending operation.
+     */
     @Override
     public Message send(AliyunMaterial entity) {
         Map<String, String> bodys = new HashMap<>();
-        // 1. 系统参数
+        // 1. System parameters
+        // The signature method used for authentication.
         bodys.put("SignatureMethod", "HMAC-SHA1");
+        // A unique random number to prevent replay attacks.
         bodys.put("SignatureNonce", UUID.randomUUID().toString());
+        // The AccessKey ID of your Alibaba Cloud account.
         bodys.put("AccessKeyId", context.getAppKey());
+        // The version of the signature algorithm.
         bodys.put("SignatureVersion", "1.0");
+        // The timestamp of the API request in UTC format.
         bodys.put("Timestamp", DateKit.format(new Date(), Fields.UTC));
+        // The format of the response, typically JSON.
         bodys.put("Format", "JSON");
 
-        // 2. 业务API参数
+        // 2. Business API parameters
+        // The API action to be performed, e.g., SingleCallByTts.
         bodys.put("Action", "SingleCallByTts");
+        // The API version.
         bodys.put("Version", "2017-05-25");
+        // The region ID of the service, e.g., cn-hangzhou.
         bodys.put("RegionId", "cn-hangzhou");
+        // The mobile number to be called.
         bodys.put("CalledNumber", entity.getReceive());
+        // The number displayed to the recipient.
         bodys.put("CalledShowNumber", entity.getSender());
+        // The number of times the voice message should be played.
         bodys.put("PlayTimes", entity.getPlayTimes());
+        // The parameters for the Text-to-Speech (TTS) template in JSON format.
         bodys.put("TtsParam", entity.getParams());
+        // The TTS template code.
         bodys.put("TtsCode", entity.getTemplate());
         bodys.put("Signature", getSign(bodys));
 

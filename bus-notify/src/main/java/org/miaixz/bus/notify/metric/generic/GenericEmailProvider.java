@@ -53,17 +53,28 @@ import jakarta.mail.*;
 import jakarta.mail.internet.*;
 
 /**
- * 电子邮件消息
+ * Generic email service provider implementation.
  *
  * @author Justubborn
  * @since Java 17+
  */
 public class GenericEmailProvider extends AbstractProvider<GenericMaterial, Context> {
 
+    /**
+     * Constructs a {@code GenericEmailProvider} with the given context.
+     *
+     * @param properties The context containing configuration information for the provider.
+     */
     public GenericEmailProvider(Context properties) {
         super(properties);
     }
 
+    /**
+     * Sends an email notification.
+     *
+     * @param entity The {@link GenericMaterial} containing email details.
+     * @return A {@link Message} indicating the result of the email sending operation.
+     */
     @Override
     public Message send(GenericMaterial entity) {
         try {
@@ -71,7 +82,7 @@ public class GenericEmailProvider extends AbstractProvider<GenericMaterial, Cont
         } catch (MessagingException e) {
             String message = e.getMessage();
             if (e instanceof SendFailedException) {
-                // 当地址无效时，显示更加详细的无效地址信息
+                // When the address is invalid, display more detailed invalid address information
                 final Address[] invalidAddresses = ((SendFailedException) e).getInvalidAddresses();
                 message = StringKit.format("Invalid Addresses: {}", ArrayKit.toString(invalidAddresses));
             }
@@ -81,11 +92,13 @@ public class GenericEmailProvider extends AbstractProvider<GenericMaterial, Cont
     }
 
     /**
-     * 将一个地址字符串解析为多个地址 地址间使用" "、","、";"分隔
+     * Parses an address string into multiple {@link InternetAddress} objects. Addresses are separated by space, comma,
+     * or semicolon.
      *
-     * @param address 地址字符串
-     * @param charset 编码
-     * @return 地址列表
+     * @param address The address string.
+     * @param charset The character set for encoding personal names.
+     * @return An array of {@link InternetAddress} objects.
+     * @throws InternalException if there is an error parsing the address or encoding the personal name.
      */
     public InternetAddress[] getAddress(String address, Charset charset) {
         InternetAddress[] addresses;
@@ -94,7 +107,7 @@ public class GenericEmailProvider extends AbstractProvider<GenericMaterial, Cont
         } catch (AddressException e) {
             throw new InternalException(e);
         }
-        // 编码用户名
+        // Encode username
         if (ArrayKit.isNotEmpty(addresses)) {
             for (InternetAddress internetAddress : addresses) {
                 try {
@@ -109,11 +122,12 @@ public class GenericEmailProvider extends AbstractProvider<GenericMaterial, Cont
     }
 
     /**
-     * 将多个字符串邮件地址转为{@link InternetAddress}列表 单个字符串地址可以是多个地址合并的字符串
+     * Converts an array of string email addresses into a list of {@link InternetAddress} objects. Each string address
+     * can be a single address or multiple addresses merged into one string.
      *
-     * @param address 地址数组
-     * @param charset 编码(主要用于中文用户名的编码)
-     * @return 地址数组
+     * @param address An array of address strings.
+     * @param charset The character set for encoding (mainly for Chinese usernames).
+     * @return An array of {@link InternetAddress} objects.
      */
     private InternetAddress[] getAddress(String[] address, Charset charset) {
         final List<InternetAddress> resultList = new ArrayList<>(address.length);
@@ -130,11 +144,12 @@ public class GenericEmailProvider extends AbstractProvider<GenericMaterial, Cont
     }
 
     /**
-     * 解析第一个地址
+     * Parses the first address from an address string.
      *
-     * @param address 地址字符串
-     * @param charset 编码
-     * @return 地址列表
+     * @param address The address string.
+     * @param charset The character set for encoding.
+     * @return The first {@link InternetAddress} object.
+     * @throws InternalException if there is an error parsing the address.
      */
     private InternetAddress getFirstAddress(String address, Charset charset) {
         final InternetAddress[] internetAddresses = getAddress(address, charset);
@@ -149,32 +164,33 @@ public class GenericEmailProvider extends AbstractProvider<GenericMaterial, Cont
     }
 
     /**
-     * 构建消息
+     * Builds a {@link MimeMessage} from the given {@link GenericMaterial}.
      *
-     * @return {@link MimeMessage}消息
-     * @throws MessagingException 消息异常
+     * @param entity The {@link GenericMaterial} containing email details.
+     * @return The constructed {@link MimeMessage}.
+     * @throws MessagingException if there is an error in building the message.
      */
     private MimeMessage build(GenericMaterial entity) throws MessagingException {
         entity.defaultIfEmpty();
         final Charset charset = entity.getCharset();
         final MimeMessage msg = new MimeMessage(getSession(entity));
-        // 发件人
+        // Sender
         final String from = entity.getSender();
         if (StringKit.isEmpty(from)) {
-            // 用户未提供发送方,则从Session中自动获取
+            // If the user does not provide the sender, it is automatically obtained from the Session
             msg.setFrom();
         } else {
             msg.setFrom(getFirstAddress(from, charset));
         }
-        // 标题
+        // Subject
         msg.setSubject(entity.getTitle(), charset.name());
-        // 发送时间
+        // Sent date
         msg.setSentDate(new Date());
-        // 内容和附件
+        // Content and attachments
 
         final Multipart mainPart = new MimeMultipart();
 
-        // 正文
+        // Body
         final BodyPart body = new MimeBodyPart();
         body.setContent(
                 entity.getContent(),
@@ -184,7 +200,7 @@ public class GenericEmailProvider extends AbstractProvider<GenericMaterial, Cont
                         entity.getCharset()));
         mainPart.addBodyPart(body);
 
-        // 附件
+        // Attachments
         if (ArrayKit.isNotEmpty(entity.getAttachments())) {
             BodyPart bodyPart;
             for (File file : entity.getAttachments()) {
@@ -195,7 +211,7 @@ public class GenericEmailProvider extends AbstractProvider<GenericMaterial, Cont
                     bodyPart.setFileName(
                             MimeUtility.encodeText(dataSource.getName(), entity.getCharset().name(), null));
                 } catch (UnsupportedEncodingException e) {
-
+                    // Log or handle the exception appropriately
                 }
                 mainPart.addBodyPart(bodyPart);
             }
@@ -203,17 +219,17 @@ public class GenericEmailProvider extends AbstractProvider<GenericMaterial, Cont
 
         msg.setContent(mainPart);
 
-        // 收件人
+        // To recipients
         msg.setRecipients(
                 MimeMessage.RecipientType.TO,
                 getAddress(StringKit.splitToArray(entity.getReceive(), Symbol.COMMA), charset));
-        // 抄送人
+        // CC recipients
         if (StringKit.isNotEmpty(entity.getCcs())) {
             msg.setRecipients(
                     MimeMessage.RecipientType.CC,
                     getAddress(StringKit.splitToArray(entity.getCcs(), Symbol.COMMA), charset));
         }
-        // 密送人
+        // BCC recipients
         if (StringKit.isNotEmpty(entity.getBccs())) {
             msg.setRecipients(
                     MimeMessage.RecipientType.BCC,
@@ -223,10 +239,11 @@ public class GenericEmailProvider extends AbstractProvider<GenericMaterial, Cont
     }
 
     /**
-     * 获取默认邮件会话 如果为全局单例的会话,则全局只允许一个邮件帐号,否则每次发送邮件会新建一个新的会话
+     * Retrieves a mail session. If a global singleton session is used, only one email account is allowed globally;
+     * otherwise, a new session will be created for each email sent.
      *
-     * @param template 是否使用单例Session
-     * @return 邮件会话 {@link Session}
+     * @param template The {@link GenericMaterial} containing session configuration.
+     * @return The mail {@link Session}.
      */
     private Session getSession(GenericMaterial template) {
         Authenticator authenticator = null;

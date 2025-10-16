@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.socket.plugin;
 
+import org.miaixz.bus.socket.metric.channel.AsynchronousSocketChannelProxy;
+
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
@@ -34,35 +36,50 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import org.miaixz.bus.socket.metric.channels.AsynchronousSocketChannelProxy;
-
 /**
- * 网络流量控制插件
+ * A plugin for controlling network traffic rate (rate limiting) on socket channels.
+ * <p>
+ * This plugin applies rate limits to both read and write operations, ensuring that data transfer does not exceed
+ * specified thresholds within a given time window.
+ * </p>
  *
+ * @param <T> the type of message object entity handled by this plugin
  * @author Kimi Liu
  * @since Java 17+
  */
 public class RateLimiterPlugin<T> extends AbstractPlugin<T> {
 
     /**
-     * read 流控阈值
+     * The read rate limit threshold in bytes per second.
      */
     private final int readRateLimiter;
     /**
-     * write 流控阈值
+     * The write rate limit threshold in bytes per second.
      */
     private final int writeRateLimiter;
     /**
-     * 流控功能是否启用
+     * Flag indicating whether rate limiting is enabled.
      */
     private final boolean enabled;
+    /**
+     * A small buffer time to account for scheduling delays, in milliseconds.
+     */
     private final int bufferTime = 10;
+    /**
+     * A scheduled executor service for delaying read/write operations when rate limits are hit.
+     */
     private ScheduledExecutorService executorService;
 
+    /**
+     * Constructs a {@code RateLimiterPlugin} with specified read and write rate limits.
+     *
+     * @param readRateLimiter  the read rate limit in bytes per second (0 or less to disable read limiting)
+     * @param writeRateLimiter the write rate limit in bytes per second (0 or less to disable write limiting)
+     */
     public RateLimiterPlugin(int readRateLimiter, int writeRateLimiter) {
         this.readRateLimiter = readRateLimiter;
         this.writeRateLimiter = writeRateLimiter;
-        this.enabled = readRateLimiter > 0 && writeRateLimiter > 0;
+        this.enabled = readRateLimiter > 0 || writeRateLimiter > 0;
         if (enabled) {
             executorService = Executors.newSingleThreadScheduledExecutor();
         }
@@ -74,30 +91,37 @@ public class RateLimiterPlugin<T> extends AbstractPlugin<T> {
     }
 
     /**
-     * 具备流控能力的通道
+     * An internal channel proxy that applies rate limiting to read and write operations.
      */
     class RateLimiterChannel extends AsynchronousSocketChannelProxy {
 
         private final int readRateLimiter;
         private final int writeRateLimiter;
         /**
-         * 上一次read流控窗口临界点
+         * The timestamp of the last read rate limiting window boundary.
          */
         private long latestReadTime;
 
         /**
-         * 流控窗口期输入字节数
+         * The number of bytes read within the current rate limiting window.
          */
         private int readSize;
         /**
-         * 上一次write流控窗口临界点
+         * The timestamp of the last write rate limiting window boundary.
          */
         private long latestWriteTime;
         /**
-         * 流控窗口期输出字节数
+         * The number of bytes written within the current rate limiting window.
          */
         private int writeCount;
 
+        /**
+         * Constructs a {@code RateLimiterChannel}.
+         *
+         * @param asynchronousSocketChannel the underlying {@link AsynchronousSocketChannel}
+         * @param readRateLimiter           the read rate limit in bytes per second
+         * @param writeRateLimiter          the write rate limit in bytes per second
+         */
         public RateLimiterChannel(AsynchronousSocketChannel asynchronousSocketChannel, int readRateLimiter,
                 int writeRateLimiter) {
             super(asynchronousSocketChannel);
@@ -118,13 +142,13 @@ public class RateLimiterPlugin<T> extends AbstractPlugin<T> {
             }
             int availReadSize;
             long remainTime = 1000 + latestReadTime - System.currentTimeMillis();
-            // 新的流控窗口
+            // Start a new rate limiting window if the previous one has expired
             if (remainTime <= bufferTime) {
                 readSize = 0;
                 latestReadTime = System.currentTimeMillis();
             }
             availReadSize = Math.min(readRateLimiter - readSize, dst.remaining());
-            // 触发流控
+            // If rate limit is triggered, schedule the read operation for later
             if (availReadSize <= 0) {
                 executorService.schedule(
                         () -> RateLimiterChannel.this.read(dst, timeout, unit, attachment, handler),
@@ -134,14 +158,14 @@ public class RateLimiterPlugin<T> extends AbstractPlugin<T> {
             }
 
             int limit = dst.limit();
-            // 限制limit,防止流控溢出
+            // Limit the buffer to prevent exceeding the rate limit
             dst.limit(dst.position() + availReadSize);
             super.read(dst, timeout, unit, attachment, new CompletionHandler<>() {
 
                 @Override
                 public void completed(Integer result, A attachment) {
                     if (result > 0) {
-                        // 是否开启新的流控窗口
+                        // Check if a new rate limiting window should be started
                         if (System.currentTimeMillis() - latestReadTime > 1000) {
                             readSize = 0;
                             latestReadTime = System.currentTimeMillis();
@@ -149,7 +173,7 @@ public class RateLimiterPlugin<T> extends AbstractPlugin<T> {
                             readSize += result;
                         }
                     }
-                    // 重置limit
+                    // Reset the buffer limit
                     dst.limit(limit);
                     handler.completed(result, attachment);
                 }
@@ -174,13 +198,13 @@ public class RateLimiterPlugin<T> extends AbstractPlugin<T> {
             }
             int availWriteSize;
             long remainTime = 1000 + latestWriteTime - System.currentTimeMillis();
-            // 新的流控窗口
+            // Start a new rate limiting window if the previous one has expired
             if (remainTime <= bufferTime) {
                 writeCount = 0;
                 latestWriteTime = System.currentTimeMillis();
             }
             availWriteSize = Math.min(writeRateLimiter - writeCount, src.remaining());
-            // 触发流控
+            // If rate limit is triggered, schedule the write operation for later
             if (availWriteSize <= 0) {
                 executorService.schedule(
                         () -> RateLimiterChannel.this.write(src, timeout, unit, attachment, handler),
@@ -190,14 +214,14 @@ public class RateLimiterPlugin<T> extends AbstractPlugin<T> {
             }
 
             int limit = src.limit();
-            // 限制limit,防止流控溢出
+            // Limit the buffer to prevent exceeding the rate limit
             src.limit(src.position() + availWriteSize);
             super.write(src, timeout, unit, attachment, new CompletionHandler<>() {
 
                 @Override
                 public void completed(Integer result, A attachment) {
                     if (result > 0) {
-                        // 是否开启新的流控窗口
+                        // Check if a new rate limiting window should be started
                         if (System.currentTimeMillis() - latestWriteTime > 1000) {
                             writeCount = 0;
                             latestWriteTime = System.currentTimeMillis();
@@ -205,7 +229,7 @@ public class RateLimiterPlugin<T> extends AbstractPlugin<T> {
                             writeCount += result;
                         }
                     }
-                    // 重置limit
+                    // Reset the buffer limit
                     src.limit(limit);
                     handler.completed(result, attachment);
                 }

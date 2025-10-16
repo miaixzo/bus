@@ -35,8 +35,9 @@ import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.timout.Timeout;
 
 /**
- * 字节流接收器接口，用于将数据写入目标（如网络、存储或内存缓冲区）。 支持分层处理以转换数据（如压缩、加密、节流或协议框架）。 通过 {@link BufferSink#outputStream} 可适配为
- * {@code OutputStream}。
+ * A {@code Sink} is an interface for writing a stream of bytes to a destination, such as a network, storage, or an
+ * in-memory buffer. Sinks can be layered to transform data, for example, to compress, encrypt, throttle, or frame a
+ * protocol. This interface can be adapted to an {@code OutputStream} via {@link BufferSink#outputStream()}.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,33 +45,36 @@ import org.miaixz.bus.core.io.timout.Timeout;
 public interface Sink extends Closeable, Flushable {
 
     /**
-     * 从源读取指定字节数并写入当前接收器。
+     * Writes {@code byteCount} bytes from {@code source} to this sink.
      *
-     * @param source    数据源缓冲区
-     * @param byteCount 要读取的字节数
-     * @throws IOException 如果读取或写入失败
+     * @param source    The buffer containing the data to write.
+     * @param byteCount The number of bytes to read from {@code source} and write to this sink.
+     * @throws IOException If an I/O error occurs during the read or write operation.
      */
     void write(Buffer source, long byteCount) throws IOException;
 
     /**
-     * 将缓冲区中的所有数据推送到最终目标。
+     * Flushes any buffered data to the ultimate destination. This method forces any buffered output bytes to be written
+     * out to the underlying stream.
      *
-     * @throws IOException 如果刷新失败
+     * @throws IOException If an I/O error occurs during the flush operation.
      */
     @Override
     void flush() throws IOException;
 
     /**
-     * 获取接收器的超时配置。
+     * Returns the timeout for this sink.
      *
-     * @return 超时对象
+     * @return The {@link Timeout} object associated with this sink.
      */
     Timeout timeout();
 
     /**
-     * 推送缓冲数据到最终目标并释放资源。关闭后不可再次写入，可安全多次关闭。
+     * Pushes any buffered data to the ultimate destination and then releases any system resources associated with this
+     * sink. After the sink has been closed, further write operations will throw an {@link IOException}. Closing a
+     * previously closed sink has no effect.
      *
-     * @throws IOException 如果关闭失败
+     * @throws IOException If an I/O error occurs during the close operation.
      */
     @Override
     void close() throws IOException;

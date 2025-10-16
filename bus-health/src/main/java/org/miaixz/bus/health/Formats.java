@@ -35,7 +35,7 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 
 /**
- * 用于格式化单位或在数字类型之间转换的工具类。
+ * Utility class for formatting units or converting between numeric types.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,16 +44,17 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 public final class Formats {
 
     /**
-     * 将字节格式化为使用 IEC 标准的四舍五入字符串表示（匹配 Mac/Linux）。对于硬盘容量，使用 {@link #formatBytesDecimal(long)}。对于 Windows 的 KB、MB 和 GB
-     * 显示，使用 JEDEC 单位时， 编辑返回的字符串以移除 'i' 以显示（不正确的）JEDEC 单位。
+     * Formats bytes as a rounded string representation using IEC standard (matches Mac/Linux). For hard drive capacity,
+     * use {@link #formatBytesDecimal(long)}. For Windows KB, MB, and GB display, edit the returned string to remove the
+     * 'i' to display (incorrect) JEDEC units.
      *
-     * @param bytes 字节数
-     * @return 字节大小的四舍五入字符串表示
+     * @param bytes The number of bytes.
+     * @return A rounded string representation of the byte size.
      */
     public static String formatBytes(long bytes) {
-        if (bytes == 1L) { // 单个字节
+        if (bytes == 1L) { // Single byte
             return String.format(Locale.ROOT, "%d byte", bytes);
-        } else if (bytes < Normal.KIBI) { // 小于 1024 字节
+        } else if (bytes < Normal.KIBI) { // Less than 1024 bytes
             return String.format(Locale.ROOT, "%d bytes", bytes);
         } else if (bytes < Normal.MEBI) { // KiB
             return formatUnits(bytes, Normal.KIBI, "KiB");
@@ -71,12 +72,12 @@ public final class Formats {
     }
 
     /**
-     * 根据前缀将单位格式化为精确整数或小数，附加适当的单位。
+     * Formats a unit to an exact integer or decimal based on the prefix, appending the appropriate unit.
      *
-     * @param value  要格式化的值
-     * @param prefix 单位乘数的除数
-     * @param unit   表示单位的字符串
-     * @return 格式化后的字符串值
+     * @param value  The value to format.
+     * @param prefix The divisor for the unit multiplier.
+     * @param unit   The string representing the unit.
+     * @return The formatted string value.
      */
     private static String formatUnits(long value, long prefix, String unit) {
         if (value % prefix == 0) {
@@ -86,15 +87,16 @@ public final class Formats {
     }
 
     /**
-     * 将字节格式化为使用十进制 SI 单位的四舍五入字符串表示。硬盘制造商用于容量表示。 大多数其他存储应使用 {@link #formatBytes(long)}。
+     * Formats bytes as a rounded string representation using decimal SI units. Used by hard drive manufacturers for
+     * capacity representation. Most other storage should use {@link #formatBytes(long)}.
      *
-     * @param bytes 字节数
-     * @return 字节大小的四舍五入字符串表示
+     * @param bytes The number of bytes.
+     * @return A rounded string representation of the byte size.
      */
     public static String formatBytesDecimal(long bytes) {
-        if (bytes == 1L) { // 单个字节
+        if (bytes == 1L) { // Single byte
             return String.format(Locale.ROOT, "%d byte", bytes);
-        } else if (bytes < Normal.KILO) { // 小于 1000 字节
+        } else if (bytes < Normal.KILO) { // Less than 1000 bytes
             return String.format(Locale.ROOT, "%d bytes", bytes);
         } else {
             return formatValue(bytes, "B");
@@ -102,21 +104,21 @@ public final class Formats {
     }
 
     /**
-     * 将赫兹格式化为四舍五入字符串表示。
+     * Formats hertz as a rounded string representation.
      *
-     * @param hertz 赫兹值
-     * @return 赫兹大小的四舍五入字符串表示
+     * @param hertz The hertz value.
+     * @return A rounded string representation of the hertz size.
      */
     public static String formatHertz(long hertz) {
         return formatValue(hertz, "Hz");
     }
 
     /**
-     * 将任意单位格式化为四舍五入字符串表示。
+     * Formats any unit as a rounded string representation.
      *
-     * @param value 要格式化的值
-     * @param unit  要附加公制前缀的单位
-     * @return 带有公制前缀的四舍五入字符串表示
+     * @param value The value to format.
+     * @param unit  The unit to append with metric prefix.
+     * @return A rounded string representation with metric prefix.
      */
     public static String formatValue(long value, String unit) {
         if (value < Normal.KILO) {
@@ -137,10 +139,10 @@ public final class Formats {
     }
 
     /**
-     * 将以秒为单位经过的时间格式化为天、小时:分钟:秒。
+     * Formats elapsed time in seconds as days, hours:minutes:seconds.
      *
-     * @param secs 经过的秒数
-     * @return 经过时间的字符串表示
+     * @param secs The number of elapsed seconds.
+     * @return A string representation of the elapsed time.
      */
     public static String formatElapsedSecs(long secs) {
         long eTime = secs;
@@ -155,22 +157,22 @@ public final class Formats {
     }
 
     /**
-     * 将无符号整数转换为有符号长整数。
+     * Converts an unsigned integer to a signed long.
      *
-     * @param x 表示无符号整数的有符号整数
-     * @return x 的无符号长整数值
+     * @param x A signed integer representing an unsigned integer.
+     * @return The unsigned long value of x.
      */
     public static long getUnsignedInt(int x) {
         return x & 0x0000_0000_ffff_ffffL;
     }
 
     /**
-     * 将 32 位值表示为无符号整数。
+     * Represents a 32-bit value as an unsigned integer.
      * <p>
-     * 这是 Java 8 的 Integer.toUnsignedString 的 Java 7 实现。
+     * This is a Java 7 implementation of Java 8's Integer.toUnsignedString.
      *
-     * @param i 32 位值
-     * @return 无符号整数的字符串表示
+     * @param i The 32-bit value.
+     * @return The string representation of the unsigned integer.
      */
     public static String toUnsignedString(int i) {
         if (i >= 0) {
@@ -180,12 +182,12 @@ public final class Formats {
     }
 
     /**
-     * 将 64 位值表示为无符号长整数。
+     * Represents a 64-bit value as an unsigned long.
      * <p>
-     * 这是 Java 8 的 Long.toUnsignedString 的 Java 7 实现。
+     * This is a Java 7 implementation of Java 8's Long.toUnsignedString.
      *
-     * @param l 64 位值
-     * @return 无符号长整数的字符串表示
+     * @param l The 64-bit value.
+     * @return The string representation of the unsigned long.
      */
     public static String toUnsignedString(long l) {
         if (l >= 0) {
@@ -195,20 +197,20 @@ public final class Formats {
     }
 
     /**
-     * 将整数错误代码转换为其十六进制表示。
+     * Converts an integer error code to its hexadecimal representation.
      *
-     * @param errorCode 错误代码
-     * @return 表示错误代码的字符串，格式为 0x....
+     * @param errorCode The error code.
+     * @return A string representing the error code in 0x.... format.
      */
     public static String formatError(int errorCode) {
         return String.format(Locale.ROOT, Normal.HEX_ERROR, errorCode);
     }
 
     /**
-     * 将浮点数四舍五入到最接近的整数。
+     * Rounds a floating-point number to the nearest integer.
      *
-     * @param x 浮点数
-     * @return 四舍五入后的整数
+     * @param x The floating-point number.
+     * @return The rounded integer.
      */
     public static int roundToInt(double x) {
         return (int) Math.round(x);

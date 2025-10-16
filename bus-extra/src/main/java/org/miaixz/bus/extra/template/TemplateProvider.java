@@ -30,7 +30,8 @@ package org.miaixz.bus.extra.template;
 import org.miaixz.bus.core.lang.Wrapper;
 
 /**
- * 引擎接口，通过实现此接口从而使用对应的模板引擎
+ * Interface for template engine providers. Implementations of this interface wrap specific template engines, providing
+ * a unified way to initialize and retrieve templates.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,18 +39,20 @@ import org.miaixz.bus.core.lang.Wrapper;
 public interface TemplateProvider extends Wrapper<Object> {
 
     /**
-     * 使用指定配置文件初始化模板引擎
+     * Initializes the template engine with the specified configuration.
      *
-     * @param config 配置文件
-     * @return this
+     * @param config The {@link TemplateConfig} containing initialization parameters for the template engine.
+     * @return This {@link TemplateProvider} instance, initialized with the given configuration.
      */
     TemplateProvider init(TemplateConfig config);
 
     /**
-     * 获取模板
+     * Retrieves a {@link Template} object based on the provided resource. The interpretation of the resource string
+     * depends on the specific template engine implementation; it could be the template content itself or a relative
+     * path to the template file.
      *
-     * @param resource 资源，根据实现不同，此资源可以是模板本身，也可以是模板的相对路径
-     * @return 模板实现
+     * @param resource The resource identifier for the template.
+     * @return A {@link Template} instance ready for rendering.
      */
     Template getTemplate(String resource);
 

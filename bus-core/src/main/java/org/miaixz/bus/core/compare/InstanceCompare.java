@@ -32,38 +32,44 @@ import java.util.Comparator;
 import org.miaixz.bus.core.lang.Assert;
 
 /**
- * 按照指定类型顺序排序，对象顺序取决于对象对应的类在数组中的位置
- *
+ * A comparator that sorts objects based on the order of their types in a specified array.
  * <p>
- * 如果对比的两个对象类型相同，返回{@code 0}，默认如果对象类型不在列表中，则排序在前
- * </p>
+ * If two compared objects are of the same type, it returns {@code 0}. By default, if an object's type is not in the
+ * specified list, it is sorted at the beginning.
+ * 
  * <p>
- * 此类来自Spring，有所改造
- * </p>
+ * This class is adapted from Spring Framework with some modifications.
+ * 
  *
- * @param <T> 用于比较的对象类型
+ * @param <T> the type of objects to be compared.
  * @author Kimi Liu
  * @since Java 17+
  */
 public class InstanceCompare<T> implements Comparator<T> {
 
+    /**
+     * Whether to place objects at the end if their type is not in the specified order.
+     */
     private final boolean atEndIfMiss;
+    /**
+     * The array of classes that defines the sort order.
+     */
     private final Class<?>[] instanceOrder;
 
     /**
-     * 构造
+     * Constructs a new {@code InstanceCompare}.
      *
-     * @param instanceOrder 用于比较排序的对象类型数组，排序按照数组位置排序
+     * @param instanceOrder an array of classes that defines the sort order based on their position.
      */
     public InstanceCompare(final Class<?>... instanceOrder) {
         this(false, instanceOrder);
     }
 
     /**
-     * 构造
+     * Constructs a new {@code InstanceCompare}.
      *
-     * @param atEndIfMiss   如果不在列表中是否排在后边
-     * @param instanceOrder 用于比较排序的对象类型数组，排序按照数组位置排序
+     * @param atEndIfMiss   if {@code true}, objects whose types are not in the list will be placed at the end.
+     * @param instanceOrder an array of classes that defines the sort order based on their position.
      */
     public InstanceCompare(final boolean atEndIfMiss, final Class<?>... instanceOrder) {
         Assert.notNull(instanceOrder, "'instanceOrder' array must not be null");
@@ -79,10 +85,11 @@ public class InstanceCompare<T> implements Comparator<T> {
     }
 
     /**
-     * 查找对象类型所在列表的位置
+     * Finds the position of the object's type in the specified order.
      *
-     * @param object 对象
-     * @return 位置，未找到位置根据{@link #atEndIfMiss}取不同值，false返回-1，否则返回列表长度
+     * @param object the object to check.
+     * @return the index in the order array. If not found, returns -1 if {@link #atEndIfMiss} is false, or the length of
+     *         the array if it is true.
      */
     private int getOrder(final T object) {
         if (object != null) {

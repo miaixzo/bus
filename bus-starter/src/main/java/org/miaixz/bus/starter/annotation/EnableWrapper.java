@@ -27,13 +27,17 @@
 */
 package org.miaixz.bus.starter.annotation;
 
-import java.lang.annotation.*;
-
 import org.miaixz.bus.starter.wrapper.WrapperConfiguration;
 import org.springframework.context.annotation.Import;
 
+import java.lang.annotation.*;
+
 /**
- * 启用Request/Response请求包装
+ * Enables request/response wrapping and XSS protection.
+ * <p>
+ * This annotation imports the {@link WrapperConfiguration}, which sets up filters to wrap HTTP requests and responses,
+ * allowing for features like repeatable-read request bodies and XSS sanitization. It also customizes request mapping
+ * behavior.
  *
  * @author Kimi Liu
  * @since Java 17+

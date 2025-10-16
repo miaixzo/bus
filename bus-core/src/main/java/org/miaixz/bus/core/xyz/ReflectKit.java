@@ -27,7 +27,10 @@
 */
 package org.miaixz.bus.core.xyz;
 
-import java.lang.reflect.*;
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Executable;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.security.CodeSource;
 import java.security.ProtectionDomain;
@@ -42,23 +45,12 @@ import org.miaixz.bus.core.lang.reflect.creator.PossibleObjectCreator;
 import org.miaixz.bus.core.text.StringTrimer;
 
 /**
- * 反射相关工具类
- *
+ * Reflection utility class.
  * <p>
- * 本工具类进行了重构，大部分被移动到了{@link FieldKit}、{@link MethodKit}、{@link ModifierKit}等中，
- * 其他相关方法请参考<strong>org.miaixz.bus.core.lang.reflect</strong>包下的类,相关类
- * </p>
- * <ul>
- * <li>反射修改属性</li>
- * <li>{@code ReflectKit#setFieldValue(Object, String, Object)} --p
- * {@link FieldKit#setFieldValue(Object, String, Object)}</li>
- * <li>修改private修饰可被外部访问</li>
- * <li>{@code ReflectKit.setAccessible(ReflectKit.getMethodByName(Xxx.class, "xxxMethodName"))} --p
- * {@link ReflectKit#setAccessible(AccessibleObject)} --p {@link MethodKit#getMethodByName(Class, String)}</li>
- * <li>移除final属性</li>
- * <li>{@code ReflectKit.removeFinalModify(Field)} --p {@link ModifierKit#removeFinalModify(Field)}</li>
- * </ul>
- * 在字节码中，类型表示如下：
+ * This class has been refactored, and many of its methods have been moved to {@link FieldKit}, {@link MethodKit},
+ * {@link ModifierKit}, etc.
+ *
+ * JVM type descriptors:
  * <ul>
  * <li>byte = B</li>
  * <li>char = C</li>
@@ -67,13 +59,9 @@ import org.miaixz.bus.core.text.StringTrimer;
  * <li>short = S</li>
  * <li>boolean = Z</li>
  * <li>void = V</li>
- * <li>对象类型以“L”开头，“;”结尾，如Ljava/lang/Object;</li>
- * <li>数组类型，每一位使用一个前置的[字符来描述，如：java.lang.String[][] = [[Ljava/lang/String;</li>
+ * <li>Object types start with 'L' and end with ';', e.g., Ljava/lang/Object;</li>
+ * <li>Array types are prefixed with '[', e.g., java.lang.String[][] = [[Ljava/lang/String;</li>
  * </ul>
- *
- * <p>
- * 此类旨在通过类描述信息和类名查找对应的类，如动态加载类等
- * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -81,62 +69,56 @@ import org.miaixz.bus.core.text.StringTrimer;
 public class ReflectKit {
 
     /**
-     * void(V).
+     * JVM type descriptor for void (V).
      */
     public static final char JVM_VOID = 'V';
 
     /**
-     * boolean(Z).
+     * JVM type descriptor for boolean (Z).
      */
     public static final char JVM_BOOLEAN = 'Z';
 
     /**
-     * byte(B).
+     * JVM type descriptor for byte (B).
      */
     public static final char JVM_BYTE = 'B';
 
     /**
-     * char(C).
+     * JVM type descriptor for char (C).
      */
     public static final char JVM_CHAR = 'C';
 
     /**
-     * double(D).
+     * JVM type descriptor for double (D).
      */
     public static final char JVM_DOUBLE = 'D';
 
     /**
-     * float(F).
+     * JVM type descriptor for float (F).
      */
     public static final char JVM_FLOAT = 'F';
 
     /**
-     * int(I).
+     * JVM type descriptor for int (I).
      */
     public static final char JVM_INT = 'I';
 
     /**
-     * long(J).
+     * JVM type descriptor for long (J).
      */
     public static final char JVM_LONG = 'J';
 
     /**
-     * short(S).
+     * JVM type descriptor for short (S).
      */
     public static final char JVM_SHORT = 'S';
 
     /**
-     * 9种原始类型对应表
-     * 
-     * <pre>
-     *     左：原始类型
-     *     中：原始类型描述符
-     *     右：原始类型名称
-     * </pre>
+     * A table mapping the 9 primitive types to their descriptors and names.
      */
     private static final TripleTable<Class<?>, Character, String> PRIMITIVE_TABLE = new TripleTable<>(9);
     /**
-     * 构造对象缓存
+     * Constructor cache.
      */
     private static final WeakConcurrentMap<Class<?>, Constructor<?>[]> CONSTRUCTORS_CACHE = new WeakConcurrentMap<>();
 
@@ -153,34 +135,29 @@ public class ReflectKit {
     }
 
     /**
-     * Class描述转Class
+     * Converts a class descriptor string to a `Class` object.
      * 
      * <pre>{@code
      * "[Z" => boolean[].class
      * "[[Ljava/util/Map;" => java.util.Map[][].class
      * }</pre>
      *
-     * @param desc 类描述
-     * @return Class
-     * @throws InternalException 类没有找到
+     * @param desc The class descriptor.
+     * @return The `Class` object.
+     * @throws InternalException if the class is not found.
      */
     public static Class<?> descToClass(final String desc) throws InternalException {
         return descToClass(desc, true, null);
     }
 
     /**
-     * Class描述转Class
-     * 
-     * <pre>{@code
-     * "[Z" => boolean[].class
-     * "[[Ljava/util/Map;" => java.util.Map[][].class
-     * }</pre>
+     * Converts a class descriptor string to a `Class` object.
      *
-     * @param desc          类描述
-     * @param isInitialized 是否初始化类
-     * @param cl            {@link ClassLoader}
-     * @return Class
-     * @throws InternalException 类没有找到
+     * @param desc          The class descriptor.
+     * @param isInitialized Whether to initialize the class.
+     * @param cl            The `ClassLoader`.
+     * @return The `Class` object.
+     * @throws InternalException if the class is not found.
      */
     public static Class<?> descToClass(String desc, final boolean isInitialized, final ClassLoader cl)
             throws InternalException {
@@ -191,11 +168,9 @@ public class ReflectKit {
             return clazz;
         }
 
-        // 去除尾部多余的"."和"/"
         desc = StringKit.trim(desc, StringTrimer.TrimMode.SUFFIX, (c) -> Symbol.C_SLASH == c || Symbol.C_DOT == c);
 
         if ('L' == firstChar) {
-            // 正常类的描述中需要去掉L;包装的修饰
             // "Ljava/lang/Object;" ==> "java.lang.Object"
             desc = desc.substring(1, desc.length() - 1);
         }
@@ -204,27 +179,23 @@ public class ReflectKit {
     }
 
     /**
-     * 获取类描述，这是编译成class文件后的二进制名称
+     * Gets the JVM descriptor for a class.
      * 
      * <pre>{@code
-     *    getDesc(boolean.class)       // Z
-     *    getDesc(Boolean.class)       // Ljava/lang/Boolean;
-     *    getDesc(double[][][].class)  // [[[D
-     *    getDesc(int.class)           // I
-     *    getDesc(Integer.class)       // Ljava/lang/Integer;
+     * getDesc(boolean.class)       // Z
+     * getDesc(Boolean.class)       // Ljava/lang/Boolean;
+     * getDesc(double[][][].class)  // [[[D
      * }</pre>
      *
-     * @param c class.
-     * @return desc.
+     * @param c The class.
+     * @return The descriptor string.
      */
     public static String getDesc(Class<?> c) {
         final StringBuilder ret = new StringBuilder();
-
         while (c.isArray()) {
             ret.append('[');
             c = c.getComponentType();
         }
-
         if (c.isPrimitive()) {
             final Character desc = PRIMITIVE_TABLE.getMiddleByLeft(c);
             if (null != desc) {
@@ -239,33 +210,11 @@ public class ReflectKit {
     }
 
     /**
-     * 获取方法或构造描述 方法（appendName为{@code true}）：
-     * 
-     * <pre>{@code
-     *    int do(int arg1) => "do(I)I"
-     *    void do(String arg1,boolean arg2) => "do(Ljava/lang/String;Z)V"
-     * }</pre>
-     * 
-     * 构造：
-     * 
-     * <pre>{@code
-     *    "()V", "(Ljava/lang/String;I)V"
-     * }</pre>
+     * Gets the descriptor for a method or constructor.
      *
-     * <p>
-     * 当appendName为{@code false}时：
-     * </p>
-     * 
-     * <pre>{@code
-     *    getDesc(Object.class.getMethod("hashCode"))                    // ()I
-     *    getDesc(Object.class.getMethod("toString"))                    // ()Ljava/lang/String;
-     *    getDesc(Object.class.getMethod("equals", Object.class))        // (Ljava/lang/Object;)Z
-     *    getDesc(ArrayKit.class.getMethod("isEmpty", Object[].class))  // "([Ljava/lang/Object;)Z"
-     * }</pre>
-     *
-     * @param methodOrConstructor 方法或构造
-     * @param appendName          是否包含方法名称
-     * @return 描述
+     * @param methodOrConstructor The method or constructor.
+     * @param appendName          Whether to include the method name.
+     * @return The descriptor string.
      */
     public static String getDesc(final Executable methodOrConstructor, final boolean appendName) {
         final StringBuilder ret = new StringBuilder();
@@ -274,13 +223,11 @@ public class ReflectKit {
         }
         ret.append(Symbol.C_PARENTHESE_LEFT);
 
-        // 参数
         final Class<?>[] parameterTypes = methodOrConstructor.getParameterTypes();
         for (final Class<?> parameterType : parameterTypes) {
             ret.append(getDesc(parameterType));
         }
 
-        // 返回类型或构造标记
         ret.append(Symbol.C_PARENTHESE_RIGHT);
         if (methodOrConstructor instanceof Method) {
             ret.append(getDesc(((Method) methodOrConstructor).getReturnType()));
@@ -292,14 +239,10 @@ public class ReflectKit {
     }
 
     /**
-     * 获得类名称 数组输出xxx[]形式，其它类调用{@link Class#getName()}
+     * Gets the name of a class. For arrays, returns "xxx[]" format.
      *
-     * <pre>{@code
-     * java.lang.Object[][].class => "java.lang.Object[][]"
-     * }</pre>
-     *
-     * @param c 类
-     * @return 类名称
+     * @param c The class.
+     * @return The class name.
      */
     public static String getName(Class<?> c) {
         if (c.isArray()) {
@@ -314,29 +257,16 @@ public class ReflectKit {
     }
 
     /**
-     * 获取构造或方法的名称表示 构造：
-     * 
-     * <pre>
-     * "()", "(java.lang.String,int)"
-     * </pre>
-     * <p>
-     * 方法：
-     * 
-     * <pre>
-     *     "void do(int)", "void do()", "int do(java.lang.String,boolean)"
-     * </pre>
+     * Gets the name representation of a constructor or method.
      *
-     * @param executable 方法或构造
-     * @return 名称
+     * @param executable The method or constructor.
+     * @return The name string.
      */
     public static String getName(final Executable executable) {
         final StringBuilder ret = new StringBuilder(Symbol.PARENTHESE_LEFT);
-
         if (executable instanceof Method) {
             ret.append(getName(((Method) executable).getReturnType())).append(Symbol.C_SPACE);
         }
-
-        // 参数
         final Class<?>[] parameterTypes = executable.getParameterTypes();
         for (int i = 0; i < parameterTypes.length; i++) {
             if (i > 0) {
@@ -344,33 +274,25 @@ public class ReflectKit {
             }
             ret.append(getName(parameterTypes[i]));
         }
-
         ret.append(Symbol.C_PARENTHESE_RIGHT);
         return ret.toString();
     }
 
     /**
-     * 类名称转类
+     * Converts a class name to a `Class` object.
      *
-     * <pre>{@code
-     * "boolean" => boolean.class
-     * "java.util.Map[][]" => java.util.Map[][].class
-     * }</pre>
-     *
-     * @param name          name.
-     * @param isInitialized 是否初始化类
-     * @param cl            ClassLoader instance.
-     * @return Class instance.
+     * @param name          The class name.
+     * @param isInitialized Whether to initialize the class.
+     * @param cl            The ClassLoader.
+     * @return The `Class` instance.
      */
     public static Class<?> nameToClass(String name, final boolean isInitialized, final ClassLoader cl) {
         Assert.notNull(name, "Name must not be null");
-        // 去除尾部多余的"."和"/"
         name = StringKit.trim(name, StringTrimer.TrimMode.SUFFIX, (c) -> Symbol.C_SLASH == c || Symbol.C_DOT == c);
 
         int c = 0;
         final int index = name.indexOf('[');
         if (index > 0) {
-            // c是[]对个数，如String[][]，则表示二维数组，c的值是2，获得desc结果就是[[LString;
             c = (name.length() - index) / 2;
             name = name.substring(0, index);
         }
@@ -380,14 +302,10 @@ public class ReflectKit {
             while (c-- > 0) {
                 sb.append('[');
             }
-
             final Class<?> clazz = PRIMITIVE_TABLE.getLeftByRight(name);
             if (null != clazz) {
-                // 原始类型数组，根据name获取其描述
                 sb.append(PRIMITIVE_TABLE.getMiddleByLeft(clazz).charValue());
             } else {
-                // 对象数组必须转换为desc形式
-                // "java.lang.Object" ==> "Ljava.lang.Object;"
                 sb.append('L').append(name).append(Symbol.C_SEMICOLON);
             }
             name = sb.toString();
@@ -402,14 +320,10 @@ public class ReflectKit {
     }
 
     /**
-     * 类名称转描述
+     * Converts a class name to a JVM descriptor.
      *
-     * <pre>{@code
-     * java.util.Map[][] => "[[Ljava/util/Map;"
-     * }</pre>
-     *
-     * @param name 名称
-     * @return 描述
+     * @param name The class name.
+     * @return The descriptor string.
      */
     public static String nameToDesc(String name) {
         final StringBuilder sb = new StringBuilder();
@@ -422,27 +336,20 @@ public class ReflectKit {
         while (c-- > 0) {
             sb.append('[');
         }
-
         final Class<?> clazz = PRIMITIVE_TABLE.getLeftByRight(name);
         if (null != clazz) {
-            // 原始类型数组，根据name获取其描述
             sb.append(PRIMITIVE_TABLE.getMiddleByLeft(clazz).charValue());
         } else {
             sb.append('L').append(name.replace(Symbol.C_DOT, Symbol.C_SLASH)).append(Symbol.C_SEMICOLON);
         }
-
         return sb.toString();
     }
 
     /**
-     * 类描述转名称
+     * Converts a JVM descriptor to a class name.
      *
-     * <pre>{@code
-     * "[[I" => "int[][]"
-     * }</pre>
-     *
-     * @param desc 描述
-     * @return 名称
+     * @param desc The descriptor string.
+     * @return The class name.
      */
     public static String descToName(final String desc) {
         final StringBuilder sb = new StringBuilder();
@@ -465,10 +372,10 @@ public class ReflectKit {
     }
 
     /**
-     * 获取code base
+     * Gets the code base location for a class.
      *
-     * @param clazz 类
-     * @return code base
+     * @param clazz The class.
+     * @return The code base path.
      */
     public static String getCodeBase(final Class<?> clazz) {
         if (clazz == null) {
@@ -490,12 +397,11 @@ public class ReflectKit {
     }
 
     /**
-     * 设置方法为可访问（私有方法可以被外部调用），静默调用，抛出异常则跳过 注意此方法在jdk9+中抛出异常，须添加`--add-opens=java.base/java.lang=ALL-UNNAMED`启动参数
+     * Sets an `AccessibleObject` to be accessible, suppressing any exceptions.
      *
-     * @param <T>              AccessibleObject的子类，比如Class、Method、Field等
-     * @param accessibleObject 可设置访问权限的对象，比如Class、Method、Field等
-     * @return 被设置可访问的对象
-     * @throws SecurityException 访问被禁止抛出此异常
+     * @param <T>              The type of the `AccessibleObject`.
+     * @param accessibleObject The object to make accessible.
+     * @return The accessible object.
      */
     public static <T extends AccessibleObject> T setAccessibleQuietly(final T accessibleObject) {
         try {
@@ -507,12 +413,12 @@ public class ReflectKit {
     }
 
     /**
-     * 设置方法为可访问（私有方法可以被外部调用） 注意此方法在jdk9+中抛出异常，须添加`--add-opens=java.base/java.lang=ALL-UNNAMED`启动参数
+     * Sets an `AccessibleObject` to be accessible. Note: This may fail on JDK 9+ unless the module is opened.
      *
-     * @param <T>              AccessibleObject的子类，比如Class、Method、Field等
-     * @param accessibleObject 可设置访问权限的对象，比如Class、Method、Field等
-     * @return 被设置可访问的对象
-     * @throws SecurityException 访问被禁止抛出此异常
+     * @param <T>              The type of the `AccessibleObject`.
+     * @param accessibleObject The object to make accessible.
+     * @return The accessible object.
+     * @throws SecurityException if access is denied.
      */
     public static <T extends AccessibleObject> T setAccessible(final T accessibleObject) throws SecurityException {
         if (null != accessibleObject && !accessibleObject.isAccessible()) {
@@ -522,24 +428,22 @@ public class ReflectKit {
     }
 
     /**
-     * 查找类中的指定参数的构造方法，如果找到构造方法，会自动设置可访问为true
+     * Finds a constructor with matching parameter types.
      *
-     * @param <T>            对象类型
-     * @param clazz          类
-     * @param parameterTypes 参数类型，只要任何一个参数是指定参数的父类或接口或相等即可，此参数可以不传
-     * @return 构造方法，如果未找到返回null
+     * @param <T>            The object type.
+     * @param clazz          The class.
+     * @param parameterTypes The parameter types.
+     * @return The `Constructor`, or `null` if not found.
      */
     public static <T> Constructor<T> getConstructor(final Class<T> clazz, final Class<?>... parameterTypes) {
         if (null == clazz) {
             return null;
         }
-
         final Constructor<?>[] constructors = getConstructors(clazz);
         Class<?>[] pts;
         for (final Constructor<?> constructor : constructors) {
             pts = constructor.getParameterTypes();
             if (ClassKit.isAllAssignableFrom(pts, parameterTypes)) {
-                // 构造可访问
                 ReflectKit.setAccessible(constructor);
                 return (Constructor<T>) constructor;
             }
@@ -548,12 +452,12 @@ public class ReflectKit {
     }
 
     /**
-     * 获得一个类中所有构造列表
+     * Gets all constructors of a class.
      *
-     * @param <T>       构造的对象类型
-     * @param beanClass 类，非{@code null}
-     * @return 字段列表
-     * @throws SecurityException 安全检查异常
+     * @param <T>       The type of the object.
+     * @param beanClass The class.
+     * @return An array of constructors.
+     * @throws SecurityException if access is denied.
      */
     public static <T> Constructor<T>[] getConstructors(final Class<T> beanClass) throws SecurityException {
         Assert.notNull(beanClass);
@@ -562,54 +466,47 @@ public class ReflectKit {
     }
 
     /**
-     * 获得一个类中所有构造列表，直接反射获取，无缓存
+     * Gets all constructors of a class directly via reflection (no cache).
      *
-     * @param beanClass 类
-     * @return 字段列表
-     * @throws SecurityException 安全检查异常
+     * @param beanClass The class.
+     * @return An array of constructors.
+     * @throws SecurityException if access is denied.
      */
     public static Constructor<?>[] getConstructorsDirectly(final Class<?> beanClass) throws SecurityException {
         return beanClass.getDeclaredConstructors();
     }
 
     /**
-     * 实例化对象 类必须有空构造函数
+     * Instantiates an object from its class name. The class must have a no-arg constructor.
      *
-     * @param <T>   对象类型
-     * @param clazz 类名
-     * @return 对象
-     * @throws InternalException 包装各类异常
+     * @param <T>   The object type.
+     * @param clazz The class name.
+     * @return The new instance.
+     * @throws InternalException if instantiation fails.
      */
     public static <T> T newInstance(final String clazz) throws InternalException {
         return (T) DefaultObjectCreator.of(clazz).create();
     }
 
     /**
-     * 实例化对象
+     * Instantiates an object from its class and constructor arguments.
      *
-     * @param <T>   对象类型
-     * @param clazz 类
-     * @param args  构造函数参数
-     * @return 对象
-     * @throws InternalException 包装各类异常
+     * @param <T>   The object type.
+     * @param clazz The class.
+     * @param args  The constructor arguments.
+     * @return The new instance.
+     * @throws InternalException if instantiation fails.
      */
     public static <T> T newInstance(final Class<T> clazz, final Object... args) throws InternalException {
         return DefaultObjectCreator.of(clazz, args).create();
     }
 
     /**
-     * 尝试遍历并调用此类的所有构造方法，直到构造成功并返回 对于某些特殊的接口，按照其默认实现实例化，例如：
-     * 
-     * <pre>
-     *     Map       - HashMap
-     *     Collction - ArrayList
-     *     List      - ArrayList
-     *     Set       - HashSet
-     * </pre>
+     * Tries to instantiate a class by iterating through its constructors.
      *
-     * @param <T>  对象类型
-     * @param type 被构造的类
-     * @return 构造后的对象，构造失败返回{@code null}
+     * @param <T>  The object type.
+     * @param type The class to instantiate.
+     * @return The new instance, or `null` on failure.
      */
     public static <T> T newInstanceIfPossible(final Class<T> type) {
         return PossibleObjectCreator.of(type).create();

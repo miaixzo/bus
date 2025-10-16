@@ -34,9 +34,11 @@ import org.miaixz.bus.core.center.map.concurrent.ConcurrentLinkedHashMap;
 import org.miaixz.bus.core.lang.Normal;
 
 /**
- * 通过{@link ConcurrentLinkedHashMap}实现的线程安全HashSet
+ * A thread-safe {@link java.util.Set} implementation backed by a {@link ConcurrentLinkedHashMap}. This class provides a
+ * concurrent hash set that maintains insertion order, similar to {@link java.util.LinkedHashSet}, but with thread-safe
+ * operations.
  *
- * @param <E> 元素类型
+ * @param <E> The type of elements in this set.
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -46,16 +48,18 @@ public class ConcurrentLinkedHashSet<E> extends SetFromMap<E> {
     private static final long serialVersionUID = 2852280151086L;
 
     /**
-     * 构造
+     * Constructs a new, empty {@code ConcurrentLinkedHashSet} with a default maximum weighted capacity (64). The
+     * underlying map is a {@link ConcurrentLinkedHashMap}.
      */
     public ConcurrentLinkedHashSet() {
         super(new ConcurrentLinkedHashMap.Builder<E, Boolean>().maximumWeightedCapacity(Normal._64).build());
     }
 
     /**
-     * 构造 触发因子为默认的0.75
+     * Constructs a new, empty {@code ConcurrentLinkedHashSet} with the specified initial capacity. The underlying map
+     * is a {@link ConcurrentLinkedHashMap} with its maximum weighted capacity set to the initial capacity.
      *
-     * @param initialCapacity 初始大小
+     * @param initialCapacity The initial capacity of the hash map.
      */
     public ConcurrentLinkedHashSet(final int initialCapacity) {
         super(new ConcurrentLinkedHashMap.Builder<E, Boolean>().initialCapacity(initialCapacity)
@@ -63,10 +67,12 @@ public class ConcurrentLinkedHashSet<E> extends SetFromMap<E> {
     }
 
     /**
-     * 构造
+     * Constructs a new, empty {@code ConcurrentLinkedHashSet} with the specified initial capacity and concurrency
+     * level. The underlying map is a {@link ConcurrentLinkedHashMap} with its maximum weighted capacity set to the
+     * initial capacity.
      *
-     * @param initialCapacity  初始大小
-     * @param concurrencyLevel 线程并发度
+     * @param initialCapacity  The initial capacity of the hash map.
+     * @param concurrencyLevel The estimated number of concurrently updating threads.
      */
     public ConcurrentLinkedHashSet(final int initialCapacity, final int concurrencyLevel) {
         super(new ConcurrentLinkedHashMap.Builder<E, Boolean>().initialCapacity(initialCapacity)
@@ -74,9 +80,10 @@ public class ConcurrentLinkedHashSet<E> extends SetFromMap<E> {
     }
 
     /**
-     * 从已有集合中构造
+     * Constructs a new {@code ConcurrentLinkedHashSet} containing the elements in the specified iterable collection.
+     * The initial capacity of the backing map is determined by the size of the iterable, if it is a {@link Collection}.
      *
-     * @param iter {@link Iterable}
+     * @param iter The collection whose elements are to be placed into this set.
      */
     public ConcurrentLinkedHashSet(final Iterable<E> iter) {
         super(iter instanceof Collection

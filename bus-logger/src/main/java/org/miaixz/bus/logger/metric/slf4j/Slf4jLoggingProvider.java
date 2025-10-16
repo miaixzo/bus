@@ -36,28 +36,29 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.spi.LocationAwareLogger;
 
 /**
- * slf4j and logback
+ * A logger provider implementation that wraps an {@link org.slf4j.Logger} instance.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class Slf4jLoggingProvider extends AbstractProvider {
 
-    private static final long serialVersionUID = -1;
+    private static final long serialVersionUID = -1L;
 
     /**
-     * 日志门面
+     * The underlying SLF4J logger instance.
      */
     private final transient Logger logger;
     /**
-     * 是否为 LocationAwareLogger ，用于判断是否可以传递FQCN
+     * Whether the underlying logger is a {@link LocationAwareLogger}. This is used to determine if the FQCN can be
+     * passed.
      */
     private final boolean isLocationAwareLogger;
 
     /**
-     * 构造
+     * Constructs a new {@code Slf4jLoggingProvider} with the specified logger.
      *
-     * @param logger 日志对象
+     * @param logger the {@link Logger} instance to use.
      */
     public Slf4jLoggingProvider(final Logger logger) {
         this.logger = logger;
@@ -65,28 +66,28 @@ public class Slf4jLoggingProvider extends AbstractProvider {
     }
 
     /**
-     * 构造
+     * Constructs a new {@code Slf4jLoggingProvider} for the specified class.
      *
-     * @param clazz 日志实现类
+     * @param clazz the class for which to create the logger.
      */
     public Slf4jLoggingProvider(final Class<?> clazz) {
         this(getSlf4jLogger(clazz));
     }
 
     /**
-     * 构造
+     * Constructs a new {@code Slf4jLoggingProvider} for the specified name.
      *
-     * @param name 日志实现类名
+     * @param name the name of the logger.
      */
     public Slf4jLoggingProvider(final String name) {
         this(LoggerFactory.getLogger(name));
     }
 
     /**
-     * 获取Slf4j Logger对象
+     * Gets the SLF4J logger for the specified class.
      *
-     * @param clazz 打印日志所在类，当为{@code null}时使用“null”表示
-     * @return {@link Logger}
+     * @param clazz the class for which to get the logger. If {@code null}, a logger named "null" is returned.
+     * @return the {@link Logger} instance.
      */
     private static Logger getSlf4jLogger(final Class<?> clazz) {
         return (null == clazz) ? LoggerFactory.getLogger(Normal.EMPTY) : LoggerFactory.getLogger(clazz);
@@ -241,14 +242,15 @@ public class Slf4jLoggingProvider extends AbstractProvider {
     }
 
     /**
-     * 打印日志 此方法用于兼容底层日志实现，通过传入当前包装类名，以解决打印日志中行号错误问题
+     * Logs a message. This method is used to support underlying logging implementations by passing the fully qualified
+     * class name of the caller, which helps in correcting the line number in the log output.
      *
-     * @param logger    {@link LocationAwareLogger} 实现
-     * @param fqcn      完全限定类名(Fully Qualified Class Name)，用于纠正定位错误行号
-     * @param level_int 日志级别，使用LocationAwareLogger中的常量
-     * @param t         异常
-     * @param format    消息模板
-     * @param args      参数
+     * @param logger    the {@link LocationAwareLogger} instance.
+     * @param fqcn      the fully qualified class name of the caller.
+     * @param level_int the logging level, using the constants from {@link LocationAwareLogger}.
+     * @param t         the throwable to log.
+     * @param format    the message format.
+     * @param args      the arguments for the message format.
      */
     private void locationAwareLog(
             final LocationAwareLogger logger,
@@ -257,14 +259,14 @@ public class Slf4jLoggingProvider extends AbstractProvider {
             final Throwable t,
             final String format,
             final Object[] args) {
-        // ((LocationAwareLogger)this.logger).log(null, fqcn, level_int, msgTemplate, args, t);
-        // 由于slf4j-log4j12中此方法的实现存在bug，故在此拼接参数
+        // The implementation of this method in slf4j-log4j12 has a bug,
+        // so the parameters are concatenated here.
         logger.log(null, fqcn, level_int, StringKit.format(format, args), null, t);
     }
 
     @Override
     public Level getLevel() {
-        // 尝试检查是否为 Logback 的 Logger
+        // Try to check if it is a Logback Logger
         if (logger instanceof ch.qos.logback.classic.Logger logbackLogger) {
             ch.qos.logback.classic.Level logbackLevel = logbackLogger.getLevel();
             if (logbackLevel != null) {
@@ -278,7 +280,7 @@ public class Slf4jLoggingProvider extends AbstractProvider {
                 };
             }
         }
-        // 回退到基于 isEnabled() 的推断
+        // Fallback to inference based on isEnabled()
         if (logger.isTraceEnabled()) {
             return Level.TRACE;
         } else if (logger.isDebugEnabled()) {

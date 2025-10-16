@@ -36,7 +36,9 @@ import org.miaixz.bus.extra.mq.Message;
 import org.miaixz.bus.extra.mq.Producer;
 
 /**
- * Kafka 生产者实现类
+ * Kafka producer implementation class. This class acts as an adapter for sending messages to Apache Kafka, integrating
+ * with the internal {@link Producer} interface. It handles the conversion of internal {@link Message} objects into
+ * Kafka {@link ProducerRecord}s.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,32 +46,37 @@ import org.miaixz.bus.extra.mq.Producer;
 public class KafkaProducer implements Producer {
 
     /**
-     * Kafka原生生产者实例
+     * The native Apache Kafka producer instance, responsible for sending records to Kafka topics. It sends messages
+     * with String keys and byte array values.
      */
     private final org.apache.kafka.clients.producer.Producer<String, byte[]> producer;
 
     /**
-     * 构造方法
+     * Constructs a {@code KafkaProducer} with the specified Kafka configuration properties. This constructor
+     * initializes the underlying {@link org.apache.kafka.clients.producer.KafkaProducer}.
      *
-     * @param properties Kafka配置属性
+     * @param properties The {@link Properties} object containing Kafka producer configuration, e.g., bootstrap servers,
+     *                   acks, retries.
      */
     public KafkaProducer(final Properties properties) {
         this(new org.apache.kafka.clients.producer.KafkaProducer<>(properties));
     }
 
     /**
-     * 构造方法
+     * Constructs a {@code KafkaProducer} with an already initialized native Kafka producer instance. This allows for
+     * more flexible instantiation where the Kafka producer is managed externally.
      *
-     * @param producer Kafka原生生产者实例
+     * @param producer The pre-configured native Kafka producer instance.
      */
     public KafkaProducer(final org.apache.kafka.clients.producer.Producer<String, byte[]> producer) {
         this.producer = producer;
     }
 
     /**
-     * 发送消息到指定主题
+     * Sends a {@link Message} to the specified Kafka topic. The message's topic and content are used to create a
+     * {@link ProducerRecord} which is then sent by the underlying Kafka producer.
      *
-     * @param message 要发送的消息对象，包含主题和内容
+     * @param message The {@link Message} object to send, containing the topic and content.
      */
     @Override
     public void send(final Message message) {
@@ -77,9 +84,11 @@ public class KafkaProducer implements Producer {
     }
 
     /**
-     * 关闭生产者，释放资源
+     * Closes the underlying Kafka producer and releases all associated resources. This method ensures that all buffered
+     * records are sent and the producer is properly shut down.
      *
-     * @throws IOException 关闭过程中发生IO异常时抛出
+     * @throws IOException if an I/O error occurs during closing (though Kafka producer typically handles this
+     *                     internally).
      */
     @Override
     public void close() throws IOException {

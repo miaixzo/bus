@@ -27,13 +27,14 @@
 */
 package org.miaixz.bus.validate.magic.annotation;
 
-import java.lang.annotation.*;
-
 import org.miaixz.bus.validate.Builder;
 import org.miaixz.bus.validate.metric.NotBlankMatcher;
 
+import java.lang.annotation.*;
+
 /**
- * 字符串不为空,不为null校验
+ * Validates that the annotated string is not null and not blank. A string is considered blank if it is empty or
+ * consists only of whitespace characters.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -45,30 +46,30 @@ import org.miaixz.bus.validate.metric.NotBlankMatcher;
 public @interface NotBlank {
 
     /**
-     * 默认使用的异常码
+     * The error code to be used when validation fails.
      *
-     * @return the string
+     * @return the error code.
      */
     String errcode() default Builder.DEFAULT_ERRCODE;
 
     /**
-     * 默认使用的异常信息
+     * The error message to be used when validation fails. The message can be a template with placeholders.
      *
-     * @return the string
+     * @return the error message.
      */
-    String errmsg() default "${field}不能为空";
+    String errmsg() default "${field} cannot be blank";
 
     /**
-     * 校验器组
+     * The validation groups this constraint belongs to.
      *
-     * @return the array
+     * @return an array of group names.
      */
     String[] group() default {};
 
     /**
-     * 被校验字段名称
+     * The name of the field being validated.
      *
-     * @return the string
+     * @return the field name.
      */
     String field() default Builder.DEFAULT_FIELD;
 

@@ -30,7 +30,7 @@ package org.miaixz.bus.pay.metric.wechat.api.v3;
 import org.miaixz.bus.pay.Matcher;
 
 /**
- * 微信支付 v3 接口-务工卡接口相关
+ * WeChat Pay V3 API interfaces related to payroll cards.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,59 +38,67 @@ import org.miaixz.bus.pay.Matcher;
 public enum PayrollCardApi implements Matcher {
 
     /**
-     * 生成授权token
+     * Generate authorization token.
      */
-    TOKEN("/v3/payroll-card/tokens", "生成授权token"),
+    TOKEN("/v3/payroll-card/tokens", "Generate authorization token"),
 
     /**
-     * 查询务工卡授权关系
+     * Query payroll card authorization relationship.
      */
-    RELATION("/v3/payroll-card/relations/%s", "查询务工卡授权关系"),
+    RELATION("/v3/payroll-card/relations/%s", "Query payroll card authorization relationship"),
 
     /**
-     * 务工卡核身预下单
+     * Payroll card identity verification pre-order.
      */
-    AUTHENTICATION_PRE_ORDER("/v3/payroll-card/authentications/pre-order", "务工卡核身预下单"),
+    AUTHENTICATION_PRE_ORDER("/v3/payroll-card/authentications/pre-order",
+            "Payroll card identity verification pre-order"),
 
     /**
-     * 获取核身结果
+     * Get identity verification result.
      */
-    AUTHENTICATION_RESULT("/v3/payroll-card/authentications/%s", "获取核身结果"),
+    AUTHENTICATION_RESULT("/v3/payroll-card/authentications/%s", "Get identity verification result"),
 
     /**
-     * 查询核身记录
+     * Query identity verification records.
      */
-    AUTHENTICATION_LIST("/v3/payroll-card/authentications", "查询核身记录"),
+    AUTHENTICATION_LIST("/v3/payroll-card/authentications", "Query identity verification records"),
 
     /**
-     * 务工卡核身预下单（流程中完成授权）
+     * Payroll card identity verification pre-order (authorization completed in the process).
      */
-    PRE_ORDER_WITH_AUTH("/v3/payroll-card/authentications/pre-order-with-auth", "务工卡核身预下单（流程中完成授权）"),
+    PRE_ORDER_WITH_AUTH("/v3/payroll-card/authentications/pre-order-with-auth",
+            "Payroll card identity verification pre-order (authorization completed in the process)"),
 
     /**
-     * 发起批量转账
+     * Initiate batch transfer.
      */
-    BATCH_TRANSFER("/v3/payroll-card/transfer-batches", "发起批量转账");
+    BATCH_TRANSFER("/v3/payroll-card/transfer-batches", "Initiate batch transfer");
 
     /**
-     * 接口方法
+     * The API method.
      */
     private final String method;
 
     /**
-     * 接口描述
+     * The API description.
      */
     private final String desc;
 
+    /**
+     * Constructs a new PayrollCardApi enum.
+     *
+     * @param method The API method.
+     * @param desc   The API description.
+     */
     PayrollCardApi(String method, String desc) {
         this.method = method;
         this.desc = desc;
     }
 
     /**
-     * 交易类型
+     * Gets the transaction type.
      *
-     * @return the string
+     * @return The transaction type.
      */
     @Override
     public String type() {
@@ -98,9 +106,9 @@ public enum PayrollCardApi implements Matcher {
     }
 
     /**
-     * 类型描述
+     * Gets the type description.
      *
-     * @return the string
+     * @return The type description.
      */
     @Override
     public String desc() {
@@ -108,9 +116,9 @@ public enum PayrollCardApi implements Matcher {
     }
 
     /**
-     * 接口方法
+     * Gets the API method.
      *
-     * @return the string
+     * @return The API method.
      */
     @Override
     public String method() {

@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.io.file;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.AccessDeniedException;
 import java.nio.file.Files;
@@ -38,38 +39,45 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
 
 /**
- * 文件删除封装
+ * Encapsulates file and directory deletion operations. This class provides methods to remove files or directories,
+ * including recursive deletion for directories and handling of read-only files.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class PathRemover {
 
+    /**
+     * The path of the file or directory to be deleted or cleaned.
+     */
     private final Path path;
 
     /**
-     * 构造
+     * Constructs a new {@code PathRemover} instance.
      *
-     * @param path 文件或目录，不能为{@code null}且必须存在
+     * @param path The {@link Path} of the file or directory to operate on. Must not be {@code null}.
+     * @throws NullPointerException if the provided {@code path} is {@code null}.
      */
     public PathRemover(final Path path) {
         this.path = Assert.notNull(path, "Path must be not null !");
     }
 
     /**
-     * 创建文件或目录移动器
+     * Creates a new {@code PathRemover} instance for the given source path.
      *
-     * @param src 源文件或目录
-     * @return {@code PathMover}
+     * @param src The source {@link Path} of the file or directory.
+     * @return A new {@code PathRemover} instance.
      */
     public static PathRemover of(final Path src) {
         return new PathRemover(src);
     }
 
     /**
-     * 删除目录
+     * Recursively deletes a directory and its contents. This method uses a {@link DeleteVisitor} to traverse and delete
+     * the file tree.
      *
-     * @param path 目录路径
+     * @param path The {@link Path} to the directory to be deleted.
+     * @throws InternalException if an {@link IOException} occurs during the file tree traversal or deletion.
      */
     private static void remove(final Path path) {
         try {
@@ -80,17 +88,18 @@ public class PathRemover {
     }
 
     /**
-     * 删除文件或空目录，不追踪软链
+     * Deletes a single file or an empty directory. Handles {@link AccessDeniedException} by attempting to delete the
+     * file using {@link File#delete()}.
      *
-     * @param path 文件对象
-     * @throws InternalException IO异常
+     * @param path The {@link Path} to the file or empty directory to be deleted.
+     * @throws InternalException if an I/O error occurs during deletion, and the fallback deletion also fails.
      */
     private static void removeFile(final Path path) throws InternalException {
         try {
             Files.delete(path);
         } catch (final IOException e) {
             if (e instanceof AccessDeniedException) {
-                // 可能遇到只读文件，无法删除.使用 file 方法删除
+                // Fallback for read-only files or permission issues.
                 if (path.toFile().delete()) {
                     return;
                 }
@@ -100,9 +109,11 @@ public class PathRemover {
     }
 
     /**
-     * 删除文件或者文件夹，不追踪软链 注意：删除文件夹时不会判断文件夹是否为空，如果不空则递归删除子文件或文件夹 某个文件删除失败会终止删除操作
+     * Deletes the file or directory associated with this {@code PathRemover}. If the path points to a directory, it
+     * will be deleted recursively along with its contents. If the path points to a file, it will be deleted. If the
+     * path does not exist, this method does nothing.
      *
-     * @throws InternalException IO异常
+     * @throws InternalException if an I/O error occurs during the deletion process.
      */
     public void remove() throws InternalException {
         final Path path = this.path;
@@ -118,7 +129,10 @@ public class PathRemover {
     }
 
     /**
-     * 清空目录
+     * Clears the contents of the directory associated with this {@code PathRemover} without deleting the directory
+     * itself. All files and subdirectories within the target directory will be deleted.
+     *
+     * @throws InternalException if an I/O error occurs during the cleaning process.
      */
     public void clean() {
         try (final Stream<Path> list = Files.list(this.path)) {

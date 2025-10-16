@@ -31,12 +31,22 @@ import org.miaixz.bus.image.galaxy.EditorContext;
 import org.miaixz.bus.image.galaxy.data.Attributes;
 
 /**
+ * Represents an operation that modifies a set of DICOM attributes. As a functional interface, it is intended to be
+ * implemented by a lambda expression or method reference that encapsulates the editing logic.
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
 @FunctionalInterface
 public interface Editors {
 
+    /**
+     * Performs the editing operation on the given DICOM attributes.
+     *
+     * @param attributes The DICOM attributes to be modified.
+     * @param context    The context in which the editor is being applied, which may contain additional information or
+     *                   state.
+     */
     void apply(Attributes attributes, EditorContext context);
 
 }

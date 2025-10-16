@@ -38,7 +38,7 @@ import com.sun.jna.Structure;
 import com.sun.jna.platform.unix.LibCAPI.size_t;
 
 /**
- * Provides access to sysctl calls on macOS
+ * Provides access to sysctl calls on macOS.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -49,23 +49,23 @@ public final class SysctlKit {
     private static final String SYSCTL_FAIL = "Failed sysctl call: {}, Error code: {}";
 
     /**
-     * Executes a sysctl call with an int result
+     * Executes a sysctl call with an int result.
      *
-     * @param name name of the sysctl
-     * @param def  default int value
-     * @return The int result of the call if successful; the default otherwise
+     * @param name name of the sysctl.
+     * @param def  default int value.
+     * @return The int result of the call if successful; the default otherwise.
      */
     public static int sysctl(String name, int def) {
         return sysctl(name, def, true);
     }
 
     /**
-     * Executes a sysctl call with an int result
+     * Executes a sysctl call with an int result.
      *
-     * @param name       name of the sysctl
-     * @param def        default int value
-     * @param logWarning whether to log the warning if not available
-     * @return The int result of the call if successful; the default otherwise
+     * @param name       name of the sysctl.
+     * @param def        default int value.
+     * @param logWarning whether to log the warning if not available.
+     * @return The int result of the call if successful; the default otherwise.
      */
     public static int sysctl(String name, int def, boolean logWarning) {
         int intSize = com.sun.jna.platform.mac.SystemB.INT_SIZE;
@@ -81,11 +81,11 @@ public final class SysctlKit {
     }
 
     /**
-     * Executes a sysctl call with a long result
+     * Executes a sysctl call with a long result.
      *
-     * @param name name of the sysctl
-     * @param def  default long value
-     * @return The long result of the call if successful; the default otherwise
+     * @param name name of the sysctl.
+     * @param def  default long value.
+     * @return The long result of the call if successful; the default otherwise.
      */
     public static long sysctl(String name, long def) {
         int uint64Size = com.sun.jna.platform.mac.SystemB.UINT64_SIZE;
@@ -100,23 +100,23 @@ public final class SysctlKit {
     }
 
     /**
-     * Executes a sysctl call with a String result
+     * Executes a sysctl call with a String result.
      *
-     * @param name name of the sysctl
-     * @param def  default String value
-     * @return The String result of the call if successful; the default otherwise
+     * @param name name of the sysctl.
+     * @param def  default String value.
+     * @return The String result of the call if successful; the default otherwise.
      */
     public static String sysctl(String name, String def) {
         return sysctl(name, def, true);
     }
 
     /**
-     * Executes a sysctl call with a String result
+     * Executes a sysctl call with a String result.
      *
-     * @param name       name of the sysctl
-     * @param def        default String value
-     * @param logWarning whether to log the warning if not available
-     * @return The String result of the call if successful; the default otherwise
+     * @param name       name of the sysctl.
+     * @param def        default String value.
+     * @param logWarning whether to log the warning if not available.
+     * @return The String result of the call if successful; the default otherwise.
      */
     public static String sysctl(String name, String def, boolean logWarning) {
         // Call first time with null pointer to get value of size
@@ -141,11 +141,11 @@ public final class SysctlKit {
     }
 
     /**
-     * Executes a sysctl call with a Structure result
+     * Executes a sysctl call with a Structure result.
      *
-     * @param name   name of the sysctl
-     * @param struct structure for the result
-     * @return True if structure is successfuly populated, false otherwise
+     * @param name   name of the sysctl.
+     * @param struct structure for the result.
+     * @return True if structure is successfully populated, false otherwise.
      */
     public static boolean sysctl(String name, Structure struct) {
         try (CloseableSizeTByReference size = new CloseableSizeTByReference(struct.size())) {
@@ -159,9 +159,9 @@ public final class SysctlKit {
     }
 
     /**
-     * Executes a sysctl call with a Pointer result
+     * Executes a sysctl call with a Pointer result.
      *
-     * @param name name of the sysctl
+     * @param name name of the sysctl.
      * @return An allocated memory buffer containing the result on success, null otherwise. Its value on failure is
      *         undefined.
      */

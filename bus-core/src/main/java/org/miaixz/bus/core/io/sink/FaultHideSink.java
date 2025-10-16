@@ -32,7 +32,8 @@ import java.io.IOException;
 import org.miaixz.bus.core.io.buffer.Buffer;
 
 /**
- * 容错接收器，捕获底层接收器的 IOException 并标记错误状态，避免抛出异常。
+ * A {@code FaultHideSink} is an {@link AssignSink} that catches {@link IOException}s from the underlying delegate sink
+ * and marks an internal error state, preventing further exceptions from being thrown for subsequent operations.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -40,25 +41,28 @@ import org.miaixz.bus.core.io.buffer.Buffer;
 public class FaultHideSink extends AssignSink {
 
     /**
-     * 是否发生错误
+     * A flag indicating whether an error has occurred in the underlying sink. If true, subsequent write, flush, and
+     * close operations will be skipped.
      */
     private boolean hasErrors;
 
     /**
-     * 构造方法，初始化代理接收器。
+     * Constructs a {@code FaultHideSink} with the specified delegate sink.
      *
-     * @param delegate 代理的接收器
+     * @param delegate The delegate sink to which operations will be forwarded.
      */
     public FaultHideSink(Sink delegate) {
         super(delegate);
     }
 
     /**
-     * 写入数据到代理接收器，若发生错误则标记并跳过数据。
+     * Writes {@code byteCount} bytes from {@code source} to the delegate sink. If an {@link IOException} occurs during
+     * the write, the error state is set, and the exception is handled by {@link #onException(IOException)}. If an error
+     * has already occurred, the bytes are skipped from the source.
      *
-     * @param source    数据源缓冲区
-     * @param byteCount 要写入的字节数
-     * @throws IOException 如果写入失败（仅在无错误时抛出）
+     * @param source    The buffer containing the data to write.
+     * @param byteCount The number of bytes to write.
+     * @throws IOException If an I/O error occurs and no error has been previously recorded.
      */
     @Override
     public void write(Buffer source, long byteCount) throws IOException {
@@ -75,9 +79,11 @@ public class FaultHideSink extends AssignSink {
     }
 
     /**
-     * 刷新代理接收器，若发生错误则忽略。
+     * Flushes any buffered data to the delegate sink. If an {@link IOException} occurs during the flush, the error
+     * state is set, and the exception is handled by {@link #onException(IOException)}. If an error has already
+     * occurred, this operation is skipped.
      *
-     * @throws IOException 如果刷新失败（仅在无错误时抛出）
+     * @throws IOException If an I/O error occurs and no error has been previously recorded.
      */
     @Override
     public void flush() throws IOException {
@@ -92,9 +98,11 @@ public class FaultHideSink extends AssignSink {
     }
 
     /**
-     * 关闭代理接收器，若发生错误则忽略。
+     * Closes the delegate sink and releases any system resources associated with it. If an {@link IOException} occurs
+     * during the close, the error state is set, and the exception is handled by {@link #onException(IOException)}. If
+     * an error has already occurred, this operation is skipped.
      *
-     * @throws IOException 如果关闭失败（仅在无错误时抛出）
+     * @throws IOException If an I/O error occurs and no error has been previously recorded.
      */
     @Override
     public void close() throws IOException {
@@ -109,9 +117,10 @@ public class FaultHideSink extends AssignSink {
     }
 
     /**
-     * 处理异常的钩子方法，子类可重写以自定义行为。
+     * Hook method to handle exceptions that occur during write, flush, or close operations. Subclasses can override
+     * this method to provide custom error handling logic.
      *
-     * @param e 发生的异常
+     * @param e The {@link IOException} that occurred.
      */
     protected void onException(IOException e) {
 

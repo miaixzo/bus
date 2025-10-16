@@ -37,7 +37,7 @@ import org.miaixz.bus.crypto.Keeper;
 import org.miaixz.bus.crypto.builtin.symmetric.Crypto;
 
 /**
- * 祖冲之算法集（ZUC算法）实现，基于BouncyCastle实现。
+ * ZUC (Zu Chongzhi) algorithm implementation, based on BouncyCastle.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,21 +48,22 @@ public class ZUC extends Crypto {
     private static final long serialVersionUID = 2852291166600L;
 
     /**
-     * 构造
+     * Constructor.
      *
-     * @param algorithm ZUC算法枚举，包括128位和256位两种
-     * @param key       密钥
-     * @param iv        加盐，128位加盐是16bytes，256位是25bytes，{@code null}是随机加盐
+     * @param algorithm ZUC algorithm enum, including 128-bit and 256-bit versions.
+     * @param key       The key.
+     * @param iv        The IV (salt), 16 bytes for 128-bit and 25 bytes for 256-bit. If {@code null}, a random IV is
+     *                  generated.
      */
     public ZUC(final Algorithm algorithm, final byte[] key, final byte[] iv) {
         super(algorithm.getValue(), Keeper.generateKey(algorithm.getValue(), key), generateIvParam(algorithm, iv));
     }
 
     /**
-     * 生成ZUC算法密钥
+     * Generates a ZUC algorithm key.
      *
-     * @param algorithm ZUC算法
-     * @return 密钥
+     * @param algorithm The ZUC algorithm.
+     * @return The key.
      * @see Keeper#generateKey(String)
      */
     public static byte[] generateKey(final Algorithm algorithm) {
@@ -70,10 +71,11 @@ public class ZUC extends Crypto {
     }
 
     /**
-     * 生成加盐参数
+     * Generates the IV parameter.
      *
-     * @param algorithm ZUC算法
-     * @param iv        加盐，128位加盐是16bytes，256位是25bytes，{@code null}是随机加盐
+     * @param algorithm The ZUC algorithm.
+     * @param iv        The IV (salt), 16 bytes for 128-bit and 25 bytes for 256-bit. If {@code null}, a random IV is
+     *                  generated.
      * @return {@link IvParameterSpec}
      */
     private static IvParameterSpec generateIvParam(final Algorithm algorithm, byte[] iv) {

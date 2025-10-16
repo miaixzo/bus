@@ -32,7 +32,7 @@ import java.util.Map;
 import org.apache.poi.ss.usermodel.Sheet;
 
 /**
- * 模板Excel写入器 解析已有模板，并填充模板中的变量为数据
+ * Template Excel writer. Parses existing templates and fills template variables with data.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -41,19 +41,19 @@ public class SheetTemplateWriter {
 
     private final Sheet sheet;
     /**
-     * Excel输出配置
+     * Excel output configuration.
      */
     private final ExcelWriteConfig config;
     /**
-     * 模板上下文，存储模板中变量及其位置信息
+     * Template context, storing variables and their position information in the template.
      */
     private final TemplateContext templateContext;
 
     /**
-     * 构造
+     * Constructs a new {@code SheetTemplateWriter}.
      *
-     * @param sheet  {@link Sheet}
-     * @param config Excel写配置
+     * @param sheet  The {@link Sheet} to write to.
+     * @param config The Excel write configuration.
      */
     public SheetTemplateWriter(final Sheet sheet, final ExcelWriteConfig config) {
         this.sheet = sheet;
@@ -62,10 +62,10 @@ public class SheetTemplateWriter {
     }
 
     /**
-     * 填充非列表模板变量（一次性变量）
+     * Fills non-list template variables (one-time variables).
      *
-     * @param rowMap 行数据
-     * @return this
+     * @param rowMap The row data map.
+     * @return This {@code SheetTemplateWriter} instance, for chaining.
      */
     public SheetTemplateWriter fillOnce(final Map<?, ?> rowMap) {
         this.templateContext.fill(rowMap, false);
@@ -73,24 +73,25 @@ public class SheetTemplateWriter {
     }
 
     /**
-     * 填充模板行，用于列表填充
+     * Fills a template row, used for list filling.
      *
-     * @param rowBean 行的Bean或Map数据
-     * @return this
+     * @param rowBean The row data as a Bean or Map.
+     * @return This {@code SheetTemplateWriter} instance, for chaining.
      */
     public SheetTemplateWriter fillRow(final Object rowBean) {
         if (this.config.insertRow) {
-            // 当前填充行的模板行以下全部下移
+            // All existing rows below the current filled template row are shifted down.
             final int bottomRowIndex = this.templateContext.getBottomRowIndex(rowBean);
             if (bottomRowIndex < 0) {
-                // 无可填充行
+                // No fillable rows.
                 return this;
             }
             if (bottomRowIndex != 0) {
                 final int lastRowNum = this.sheet.getLastRowNum();
                 if (bottomRowIndex <= lastRowNum) {
-                    // 填充行底部需有数据，无数据跳过
-                    // 虚拟行的行号就是需要填充的行，这行的已有数据整体下移
+                    // If the bottom of the filled row has data, otherwise skip.
+                    // The row number of the virtual row is the row to be filled, and the existing data in this row is
+                    // shifted down.
                     this.sheet.shiftRows(bottomRowIndex, this.sheet.getLastRowNum(), 1);
                 }
             }

@@ -30,9 +30,10 @@ package org.miaixz.bus.auth.metric.jwt;
 import org.miaixz.bus.auth.metric.JWT;
 
 /**
- * JWT 解析器。
+ * JWT parser.
  * <p>
- * 提供解析 JWT 令牌的功能，将字符串格式的 JWT 令牌（格式为 header.payload.signature）转换为 {@link JWT} 对象。
+ * Provides functionality to parse JWT tokens, converting string-formatted JWT tokens (in the format
+ * header.payload.signature) into {@link JWT} objects.
  * </p>
  * 
  * @author Kimi Liu
@@ -41,17 +42,17 @@ import org.miaixz.bus.auth.metric.JWT;
 public class JWTParser {
 
     /**
-     * 解析 JWT 令牌。
+     * Parses a JWT token.
      * <p>
-     * 将输入的 JWT 令牌字符串解析为 {@link JWT} 对象，包含 header、payload 和 signature 部分。
+     * Parses the input JWT token string into a {@link JWT} object, including the header, payload, and signature parts.
      * </p>
      *
-     * @param token JWT 令牌字符串，格式为 header.payload.signature
-     * @return 解析后的 {@link JWT} 对象
-     * @throws IllegalArgumentException 如果令牌为空或格式不正确
+     * @param token the JWT token string, in the format header.payload.signature
+     * @return the parsed {@link JWT} object
+     * @throws IllegalArgumentException if the token is blank or malformed
      */
     public static JWT parseToken(final String token) {
-        // 调用 JWT.of 方法解析令牌字符串
+        // Calls the JWT.of method to parse the token string
         return JWT.of(token);
     }
 

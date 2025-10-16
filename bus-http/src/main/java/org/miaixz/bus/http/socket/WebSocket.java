@@ -32,7 +32,9 @@ import org.miaixz.bus.http.Httpd;
 import org.miaixz.bus.http.Request;
 
 /**
- * 到web socket的非阻塞接口。使用{@linkplain WebSocket.Factory factory} 通常是{@link Httpd} 在正常操作时，每个web套接字将通过一系列状态进行处理
+ * A non-blocking interface to a WebSocket. In normal operation, a WebSocket will be processed through a sequence of
+ * states: open, message, and close. Use a {@link WebSocket.Factory} (typically the {@link Httpd} client) to create
+ * instances.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -40,57 +42,77 @@ import org.miaixz.bus.http.Request;
 public interface WebSocket {
 
     /**
-     * @return 返回初始化此web套接字的请求
+     * @return The original request that initiated this WebSocket.
      */
     Request request();
 
     /**
-     * @return 所有排队等待发送到服务器的消息的大小(以字节为单位)。这还不包括帧开销 它也不包括任何由操作系统或网络中介体缓冲的字节。如果队列中没有消息等待，则此方法返回0
-     *         如果在web套接字被取消后可能返回一个非零值;这表示未传输排队消息
+     * Returns the number of bytes of application data that have been enqueued to be transmitted to the server. This
+     * doesn't include framing overhead. It also doesn't include any bytes that have been buffered by the operating
+     * system or network intermediaries. This method returns 0 if no messages are waiting in the queue. It may return a
+     * non-zero value after the web socket has been canceled; this indicates that enqueued messages were not
+     * transmitted.
+     *
+     * @return The size of the outgoing message queue in bytes.
      */
     long queueSize();
 
     /**
-     * 尝试将{@code text}编码为UTF-8并将其作为文本(类型为{@code 0x1})消息的数据发送 如果消息被加入队列，此方法将返回true。将溢出传出消息缓冲区的消息将被拒绝，
-     * 并触发此web套接字的{@linkplain #close graceful shutdown}。此方法在这种情况下返回false， 在此web套接字关闭、关闭或取消的任何其他情况下也返回false
+     * Attempts to enqueue {@code text} to be transmitted as a text (type {@code 0x1}) message.
+     * <p>
+     * This method returns true if the message was enqueued. Messages that would overflow the outgoing message buffer
+     * will be rejected and trigger a {@linkplain #close graceful shutdown} of this web socket. This method returns
+     * false in that case, and in any other case where this web socket is closing, closed, or canceled.
      *
-     * @param text 文本信息
-     * @return the true/false
+     * @param text The text message to send.
+     * @return true if the message was successfully enqueued for sending.
      */
     boolean send(String text);
 
     /**
-     * 尝试将{@code bytes}作为二进制(类型为{@code 0x2})消息的数据发送 如果消息被加入队列，此方法将返回true。将溢出传出消息缓冲区(16 MiB)的消息将被拒绝，
-     * 并触发此web套接字的{@linkplain #close graceful shutdown}。此方法在这种情况下返回false， 在此web套接字关闭、关闭或取消的任何其他情况下也返回false
+     * Attempts to enqueue {@code bytes} to be transmitted as a binary (type {@code 0x2}) message.
+     * <p>
+     * This method returns true if the message was enqueued. Messages that would overflow the outgoing message buffer
+     * (16 MiB) will be rejected and trigger a {@linkplain #close graceful shutdown} of this web socket. This method
+     * returns false in that case, and in any other case where this web socket is closing, closed, or canceled.
      *
-     * @param bytes 缓存流
-     * @return the true/false
+     * @param bytes The binary message to send.
+     * @return true if the message was successfully enqueued for sending.
      */
     boolean send(ByteString bytes);
 
     /**
-     * 尝试启动此web套接字的正常关闭。任何已加入队列的消息将在发送关闭消息之前发送， 但是随后对{@link #send}的调用将返回false，它们的消息将不被加入队列
+     * Attempts to initiate a graceful shutdown of this web socket. Any already-enqueued messages will be transmitted
+     * before the close message is sent but subsequent calls to {@link #send} will return false and their messages will
+     * not be enqueued.
      *
-     * @param code   RFC 6455第7.4节定义的状态码
-     * @param reason 关闭或{@code null}的原因
-     * @return the true/false
-     * @throws IllegalArgumentException 如果状态码无效
+     * @param code   A status code as defined by <a href="http://tools.ietf.org/html/rfc6455#section-7.4">Section 7.4 of
+     *               RFC 6455</a>.
+     * @param reason A descriptive reason for the close, or {@code null}.
+     * @return true if the close message was successfully enqueued.
+     * @throws IllegalArgumentException if the code is invalid.
      */
     boolean close(int code, String reason);
 
     /**
-     * 立即并强烈地释放这个web套接字持有的资源，丢弃任何排队的消息 如果web套接字已经关闭或取消，则此操作不执行任何操作
+     * Immediately and violently release resources held by this web socket, discarding any enqueued messages. This does
+     * nothing if the web socket has already been closed or canceled.
      */
     void cancel();
 
+    /**
+     * A factory for creating WebSockets.
+     */
     interface Factory {
 
         /**
-         * 创建一个新的web套接字并立即返回它。创建web套接字将启动一个异步进程来连接套接字 成功或失败，{@code listener}将被通知。当返回的web套接字不再使用时，调用者必须关闭或取消它
+         * Creates a new web socket and immediately returns it. Creating a web socket initiates an asynchronous process
+         * to connect the socket. Once the socket is successfully connected or fails to connect, the {@code listener}
+         * will be notified. The caller must either close or cancel the returned web socket when it is no longer in use.
          *
-         * @param request  当前网络请求
-         * @param listener 监听器
-         * @return the web socket
+         * @param request  The HTTP request to upgrade to a WebSocket.
+         * @param listener The listener to receive events for this WebSocket.
+         * @return The new WebSocket.
          */
         WebSocket newWebSocket(Request request, WebSocketListener listener);
     }

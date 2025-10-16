@@ -35,7 +35,7 @@ import org.miaixz.bus.core.compare.IndexedCompare;
 import org.miaixz.bus.core.compare.PinyinCompare;
 
 /**
- * 比较工具类
+ * Comparison utility class.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,11 +43,11 @@ import org.miaixz.bus.core.compare.PinyinCompare;
 public class CompareKit {
 
     /**
-     * 比较两个值的大小
+     * Compares two `char` values.
      *
-     * @param x 第一个值
-     * @param y 第二个值
-     * @return x==y返回0，x&lt;y返回小于0的数，x&gt;y返回大于0的数
+     * @param x the first value.
+     * @param y the second value.
+     * @return 0 if x==y, a value less than 0 if x &lt; y, a value greater than 0 if x &gt; y.
      * @see Character#compare(char, char)
      */
     public static int compare(final char x, final char y) {
@@ -55,11 +55,11 @@ public class CompareKit {
     }
 
     /**
-     * 比较两个值的大小
+     * Compares two `double` values.
      *
-     * @param x 第一个值
-     * @param y 第二个值
-     * @return x==y返回0，x&lt;y返回小于0的数，x&gt;y返回大于0的数
+     * @param x the first value.
+     * @param y the second value.
+     * @return 0 if x==y, a value less than 0 if x &lt; y, a value greater than 0 if x &gt; y.
      * @see Double#compare(double, double)
      */
     public static int compare(final double x, final double y) {
@@ -67,11 +67,11 @@ public class CompareKit {
     }
 
     /**
-     * 比较两个值的大小
+     * Compares two `int` values.
      *
-     * @param x 第一个值
-     * @param y 第二个值
-     * @return x==y返回0，x&lt;y返回小于0的数，x&gt;y返回大于0的数
+     * @param x the first value.
+     * @param y the second value.
+     * @return 0 if x==y, a value less than 0 if x &lt; y, a value greater than 0 if x &gt; y.
      * @see Integer#compare(int, int)
      */
     public static int compare(final int x, final int y) {
@@ -79,11 +79,11 @@ public class CompareKit {
     }
 
     /**
-     * 比较两个值的大小
+     * Compares two `long` values.
      *
-     * @param x 第一个值
-     * @param y 第二个值
-     * @return x==y返回0，x&lt;y返回小于0的数，x&gt;y返回大于0的数
+     * @param x the first value.
+     * @param y the second value.
+     * @return 0 if x==y, a value less than 0 if x &lt; y, a value greater than 0 if x &gt; y.
      * @see Long#compare(long, long)
      */
     public static int compare(final long x, final long y) {
@@ -91,11 +91,11 @@ public class CompareKit {
     }
 
     /**
-     * 比较两个值的大小
+     * Compares two `short` values.
      *
-     * @param x 第一个值
-     * @param y 第二个值
-     * @return x==y返回0，x&lt;y返回小于0的数，x&gt;y返回大于0的数
+     * @param x the first value.
+     * @param y the second value.
+     * @return 0 if x==y, a value less than 0 if x &lt; y, a value greater than 0 if x &gt; y.
      * @see Short#compare(short, short)
      */
     public static int compare(final short x, final short y) {
@@ -103,11 +103,11 @@ public class CompareKit {
     }
 
     /**
-     * 比较两个值的大小
+     * Compares two `byte` values.
      *
-     * @param x 第一个值
-     * @param y 第二个值
-     * @return x==y返回0，x&lt;y返回-1，x&gt;y返回1
+     * @param x the first value.
+     * @param y the second value.
+     * @return 0 if x==y, -1 if x &lt; y, 1 if x &gt; y.
      * @see Byte#compare(byte, byte)
      */
     public static int compare(final byte x, final byte y) {
@@ -115,63 +115,66 @@ public class CompareKit {
     }
 
     /**
-     * 获取自然排序器，即默认排序器
+     * Returns a comparator that imposes the natural ordering on a {@code Comparable} object.
+     * <p>
+     * For null-friendly operations, use:
      *
      * <ul>
-     * <li>如需对null友好操作如下</li>
      * <li>{@code Comparator.nullsLast(CompareKit.natural())}</li>
      * <li>{@code Comparator.nullsFirst(CompareKit.natural())}</li>
      * </ul>
      *
-     * @param <E> 排序节点类型
-     * @return 默认排序器
+     * @param <E> The type of the comparable object.
+     * @return The natural order comparator.
      */
     public static <E extends Comparable<? super E>> Comparator<E> natural() {
         return Comparator.naturalOrder();
     }
 
     /**
-     * 获取反序排序器，即默认自然排序的反序排序器
+     * Returns a comparator that imposes the reverse of the natural ordering.
+     * <p>
+     * For null-friendly operations, use:
      *
      * <ul>
-     * <li>如需对null友好操作如下</li>
      * <li>{@code Comparator.nullsLast(CompareKit.naturalReverse())}</li>
      * <li>{@code Comparator.nullsFirst(CompareKit.naturalReverse())}</li>
      * </ul>
      *
-     * @param <E> 排序节点类型
-     * @return 默认排序器
+     * @param <E> The type of the comparable object.
+     * @return The reverse natural order comparator.
      */
     public static <E extends Comparable<? super E>> Comparator<E> naturalReverse() {
         return Comparator.reverseOrder();
     }
 
     /**
-     * 获取反序排序器，即默认排序器
+     * Returns a comparator that imposes the reverse of the specified {@code Comparator}.
+     * <p>
+     * For null-friendly operations, use:
      *
      * <ul>
-     * <li>如需对null友好操作如下</li>
-     * <li>{@code Comparator.nullsLast(CompareKit.reverse())}</li>
-     * <li>{@code Comparator.nullsFirst(CompareKit.reverse())}</li>
+     * <li>{@code Comparator.nullsLast(CompareKit.reverse(comparator))}</li>
+     * <li>{@code Comparator.nullsFirst(CompareKit.reverse(comparator))}</li>
      * </ul>
      *
-     * @param <E>        排序节点类型
-     * @param comparator 排序器
-     * @return 默认排序器
+     * @param <E>        The type of the comparable object.
+     * @param comparator The comparator to be reversed.
+     * @return The reversed comparator.
      */
     public static <E extends Comparable<? super E>> Comparator<E> reverse(final Comparator<E> comparator) {
         return null == comparator ? naturalReverse() : comparator.reversed();
     }
 
     /**
-     * 对象比较，比较结果取决于comparator，如果被比较对象为null，传入的comparator对象应处理此情况 如果传入comparator为null，则使用默认规则比较（此时被比较对象必须实现Comparable接口）
-     * 一般而言，如果c1 &lt; c2，返回数小于0，c1==c2返回0，c1 &gt; c2 大于0
+     * Compares two objects using the given {@code Comparator}. If the comparator is null, the default comparison rule
+     * is used (the objects must implement {@code Comparable}).
      *
-     * @param <T>        被比较对象类型
-     * @param c1         对象1
-     * @param c2         对象2
-     * @param comparator 比较器
-     * @return 比较结果
+     * @param <T>        The type of the objects being compared.
+     * @param c1         The first object.
+     * @param c2         The second object.
+     * @param comparator The comparator.
+     * @return The comparison result.
      * @see java.util.Comparator#compare(Object, Object)
      */
     public static <T> int compare(final T c1, final T c2, final Comparator<T> comparator) {
@@ -182,12 +185,13 @@ public class CompareKit {
     }
 
     /**
-     * {@code null}安全的对象比较，{@code null}对象小于任何对象
+     * Null-safe comparison of two {@code Comparable} objects. {@code null} is considered smaller than any non-null
+     * value.
      *
-     * @param <T> 被比较对象类型
-     * @param c1  对象1，可以为{@code null}
-     * @param c2  对象2，可以为{@code null}
-     * @return 比较结果，如果c1 &lt; c2，返回数小于0，c1==c2返回0，c1 &gt; c2 大于0
+     * @param <T> The type of the objects being compared.
+     * @param c1  The first object (can be `null`).
+     * @param c2  The second object (can be `null`).
+     * @return The comparison result.
      * @see java.util.Comparator#compare(Object, Object)
      */
     public static <T extends Comparable<? super T>> int compare(final T c1, final T c2) {
@@ -195,13 +199,14 @@ public class CompareKit {
     }
 
     /**
-     * {@code null}安全的对象比较
+     * Null-safe comparison of two {@code Comparable} objects.
      *
-     * @param <T>           被比较对象类型（必须实现Comparable接口）
-     * @param c1            对象1，可以为{@code null}
-     * @param c2            对象2，可以为{@code null}
-     * @param isNullGreater 当被比较对象为null时是否排在后面，true表示null大于任何对象，false反之
-     * @return 比较结果，如果c1 &lt; c2，返回数小于0，c1==c2返回0，c1 &gt; c2 大于0
+     * @param <T>           The type of the objects being compared.
+     * @param c1            The first object (can be `null`).
+     * @param c2            The second object (can be `null`).
+     * @param isNullGreater If `true`, `null` is considered greater than any non-null value; if `false`, `null` is
+     *                      considered smaller.
+     * @return The comparison result.
      * @see java.util.Comparator#compare(Object, Object)
      */
     public static <T extends Comparable<? super T>> int compare(final T c1, final T c2, final boolean isNullGreater) {
@@ -216,32 +221,31 @@ public class CompareKit {
     }
 
     /**
-     * 自然比较两个对象的大小，比较规则如下：
-     *
+     * Naturally compares two objects. The comparison rules are:
+     * 
      * <pre>
-     * 1、如果实现Comparable调用compareTo比较
-     * 2、o1.equals(o2)返回0
-     * 3、比较hashCode值
-     * 4、比较toString值
+     * 1. If both are `Comparable`, use `compareTo`.
+     * 2. If `o1.equals(o2)`, return 0.
+     * 3. Compare by `hashCode`.
+     * 4. Compare by `toString`.
      * </pre>
      *
-     * @param <T>           被比较对象类型
-     * @param o1            对象1
-     * @param o2            对象2
-     * @param isNullGreater null值是否做为最大值
-     * @return 比较结果，如果o1 &lt; o2，返回数小于0，o1==o2返回0，o1 &gt; o2 大于0
+     * @param <T>           The type of the objects being compared.
+     * @param o1            The first object.
+     * @param o2            The second object.
+     * @param isNullGreater If `true`, `null` is considered greater than any non-null value.
+     * @return The comparison result.
      */
     public static <T> int compare(final T o1, final T o2, final boolean isNullGreater) {
         if (o1 == o2) {
             return 0;
-        } else if (null == o1) {// null 排在后面
+        } else if (null == o1) {
             return isNullGreater ? 1 : -1;
         } else if (null == o2) {
             return isNullGreater ? -1 : 1;
         }
 
         if (o1 instanceof Comparable && o2 instanceof Comparable) {
-            // 如果bean可比较，直接比较bean
             return ((Comparable) o1).compareTo(o2);
         }
 
@@ -258,23 +262,23 @@ public class CompareKit {
     }
 
     /**
-     * 中文比较器
+     * Returns a `Comparator` that compares `String`s based on their Pinyin (Chinese phonetic) order.
      *
-     * @param keyExtractor 从对象中提取中文(参与比较的内容)
-     * @param <T>          对象类型
-     * @return 中文比较器
+     * @param keyExtractor A function to extract the string to be compared from an object.
+     * @param <T>          The type of the object.
+     * @return A Pinyin-based comparator.
      */
     public static <T> Comparator<T> comparingPinyin(final Function<T, String> keyExtractor) {
         return comparingPinyin(keyExtractor, false);
     }
 
     /**
-     * 中文（拼音）比较器
+     * Returns a `Comparator` that compares `String`s based on their Pinyin (Chinese phonetic) order.
      *
-     * @param keyExtractor 从对象中提取中文(参与比较的内容)
-     * @param reverse      是否反序
-     * @param <T>          对象类型
-     * @return 中文比较器
+     * @param keyExtractor A function to extract the string to be compared from an object.
+     * @param reverse      If true, the comparator imposes the reverse ordering.
+     * @param <T>          The type of the object.
+     * @return A Pinyin-based comparator.
      */
     public static <T> Comparator<T> comparingPinyin(final Function<T, String> keyExtractor, final boolean reverse) {
         Objects.requireNonNull(keyExtractor);
@@ -286,13 +290,13 @@ public class CompareKit {
     }
 
     /**
-     * 索引比较器 通过keyExtractor函数，提取对象的某个属性或规则，根据提供的排序数组，完成比较 objs中缺失的，默认排序在前面(atEndIfMiss=false)
+     * Returns a `Comparator` that sorts objects based on their position in a given array.
      *
-     * @param keyExtractor 从对象中提取中文(参与比较的内容)
-     * @param objs         参与排序的数组，数组的元素位置决定了对象的排序先后
-     * @param <T>          对象类型
-     * @param <U>          数组对象类型
-     * @return 索引比较器
+     * @param keyExtractor A function to extract the key to be compared.
+     * @param objs         The array defining the sort order.
+     * @param <T>          The type of the object being sorted.
+     * @param <U>          The type of the elements in the order array.
+     * @return An indexed comparator.
      */
     public static <T, U> Comparator<T> comparingIndexed(
             final Function<? super T, ? extends U> keyExtractor,
@@ -301,13 +305,13 @@ public class CompareKit {
     }
 
     /**
-     * 索引比较器 通过keyExtractor函数，提取对象的某个属性或规则，根据提供的排序数组，完成比较 objs中缺失的，默认排序在前面(atEndIfMiss=false)
+     * Returns a `Comparator` that sorts objects based on their position in a given `Iterable`.
      *
-     * @param keyExtractor 从对象中提取中文(参与比较的内容)
-     * @param objs         参与排序的集合对象，数组的元素位置决定了对象的排序先后
-     * @param <T>          对象类型
-     * @param <U>          数组对象类型
-     * @return 索引比较器
+     * @param keyExtractor A function to extract the key to be compared.
+     * @param objs         The `Iterable` defining the sort order.
+     * @param <T>          The type of the object being sorted.
+     * @param <U>          The type of the elements in the order `Iterable`.
+     * @return An indexed comparator.
      */
     public static <T, U> Comparator<T> comparingIndexed(
             final Function<? super T, ? extends U> keyExtractor,
@@ -319,14 +323,15 @@ public class CompareKit {
     }
 
     /**
-     * 索引比较器 通过keyExtractor函数，提取对象的某个属性或规则，根据提供的排序数组，完成比较
+     * Returns a `Comparator` that sorts objects based on their position in a given array.
      *
-     * @param keyExtractor 从对象中提取排序键的函数(参与比较的内容)
-     * @param atEndIfMiss  如果不在列表中是否排在后边; true:排在后边; false:排在前边
-     * @param objs         参与排序的数组，数组的元素位置决定了对象的排序先后, 示例：{@code int[] objs = new int[]{3, 2, 1, 4, 5,6};}
-     * @param <T>          对象类型
-     * @param <U>          数组对象类型
-     * @return 索引比较器
+     * @param keyExtractor A function to extract the key to be compared.
+     * @param atEndIfMiss  If `true`, elements not in the order array are placed at the end; otherwise, at the
+     *                     beginning.
+     * @param objs         The array defining the sort order.
+     * @param <T>          The type of the object being sorted.
+     * @param <U>          The type of the elements in the order array.
+     * @return An indexed comparator.
      */
     public static <T, U> Comparator<T> comparingIndexed(
             final Function<? super T, ? extends U> keyExtractor,
@@ -338,116 +343,110 @@ public class CompareKit {
     }
 
     /**
-     * 取两个值中的最小值，大小相同返回第一个值
+     * Returns the smaller of two `Comparable` objects. If they are equal, the first one is returned.
      *
-     * @param <T> 值类型
-     * @param t1  第一个值
-     * @param t2  第二个值
-     * @return 最小值
+     * @param <T> The type of the objects.
+     * @param t1  The first object.
+     * @param t2  The second object.
+     * @return The minimum value.
      */
     public static <T extends Comparable<? super T>> T min(final T t1, final T t2) {
         return compare(t1, t2) <= 0 ? t1 : t2;
     }
 
     /**
-     * 取两个值中的最大值，大小相同返回第一个值
+     * Returns the greater of two `Comparable` objects. If they are equal, the first one is returned.
      *
-     * @param <T> 值类型
-     * @param t1  第一个值
-     * @param t2  第二个值
-     * @return 最大值
+     * @param <T> The type of the objects.
+     * @param t1  The first object.
+     * @param t2  The second object.
+     * @return The maximum value.
      */
     public static <T extends Comparable<? super T>> T max(final T t1, final T t2) {
         return compare(t1, t2) >= 0 ? t1 : t2;
     }
 
     /**
-     * {@code null}安全的检查两个对象是否相同，通过调用{@code compare(c1, c2) == 0}完成
+     * Null-safe check if two `Comparable` objects are equal.
      *
-     * @param <T> 被比较对象类型
-     * @param c1  对象1，可以为{@code null}
-     * @param c2  对象2，可以为{@code null}
-     * @return 是否相等
-     * @see java.util.Comparator#compare(Object, Object)
+     * @param <T> The type of the objects.
+     * @param c1  The first object.
+     * @param c2  The second object.
+     * @return `true` if they are equal.
      */
     public static <T extends Comparable<? super T>> boolean equals(final T c1, final T c2) {
         return compare(c1, c2) == 0;
     }
 
     /**
-     * c1是否大于c2，通过调用{@code compare(c1, c2) > 0}完成
+     * Checks if `c1` is greater than `c2`.
      *
-     * @param <T> 被比较对象类型
-     * @param c1  对象1，可以为{@code null}
-     * @param c2  对象2，可以为{@code null}
-     * @return c1是否大于c2
-     * @see java.util.Comparator#compare(Object, Object)
+     * @param <T> The type of the objects.
+     * @param c1  The first object.
+     * @param c2  The second object.
+     * @return `true` if `c1` > `c2`.
      */
     public static <T extends Comparable<? super T>> boolean gt(final T c1, final T c2) {
         return compare(c1, c2) > 0;
     }
 
     /**
-     * c1是否大于或等于c2，通过调用{@code compare(c1, c2) >= 0}完成
+     * Checks if `c1` is greater than or equal to `c2`.
      *
-     * @param <T> 被比较对象类型
-     * @param c1  对象1，可以为{@code null}
-     * @param c2  对象2，可以为{@code null}
-     * @return c1是否大于或等于c2
-     * @see java.util.Comparator#compare(Object, Object)
+     * @param <T> The type of the objects.
+     * @param c1  The first object.
+     * @param c2  The second object.
+     * @return `true` if `c1` >= `c2`.
      */
     public static <T extends Comparable<? super T>> boolean ge(final T c1, final T c2) {
         return compare(c1, c2) >= 0;
     }
 
     /**
-     * c1是否大小于c2，通过调用{@code compare(c1, c2) < 0}完成
+     * Checks if `c1` is less than `c2`.
      *
-     * @param <T> 被比较对象类型
-     * @param c1  对象1，可以为{@code null}
-     * @param c2  对象2，可以为{@code null}
-     * @return c1是否小于c2
-     * @see java.util.Comparator#compare(Object, Object)
+     * @param <T> The type of the objects.
+     * @param c1  The first object.
+     * @param c2  The second object.
+     * @return `true` if `c1` &lt; `c2`.
      */
     public static <T extends Comparable<? super T>> boolean lt(final T c1, final T c2) {
         return compare(c1, c2) < 0;
     }
 
     /**
-     * c1是否小于或等于c2，通过调用{@code compare(c1, c2) <= 0}完成
+     * Checks if `c1` is less than or equal to `c2`.
      *
-     * @param <T> 被比较对象类型
-     * @param c1  对象1，可以为{@code null}
-     * @param c2  对象2，可以为{@code null}
-     * @return c1是否小于或等于c2
-     * @see java.util.Comparator#compare(Object, Object)
+     * @param <T> The type of the objects.
+     * @param c1  The first object.
+     * @param c2  The second object.
+     * @return `true` if `c1` &lt;= `c2`.
      */
     public static <T extends Comparable<? super T>> boolean le(final T c1, final T c2) {
         return compare(c1, c2) <= 0;
     }
 
     /**
-     * 给定的{@code value}是否在{@code c1}和{@code c2}的范围内 即 {@code min(c1,c2) <= value <= max(c1,c2)}
+     * Checks if a value is within the inclusive range of [c1, c2].
      *
-     * @param <T>   被比较对象类型
-     * @param value 检查的对象，可以为{@code null}
-     * @param c1    对象1，可以为{@code null}
-     * @param c2    对象2，可以为{@code null}
-     * @return 给定的{@code value}是否在{@code c1}和{@code c2}的范围内
+     * @param <T>   The type of the objects.
+     * @param value The value to check.
+     * @param c1    The first boundary.
+     * @param c2    The second boundary.
+     * @return `true` if the value is within the inclusive range.
      */
     public static <T extends Comparable<? super T>> boolean isIn(final T value, final T c1, final T c2) {
         return ge(value, min(c1, c2)) && le(value, max(c1, c2));
     }
 
     /**
-     * 给定的{@code value}是否在{@code c1}和{@code c2}的范围内，但是不包括边界 即 {@code min(c1,c2) < value < max(c1,c2)}
+     * Checks if a value is within the exclusive range of (c1, c2).
      *
-     * @param <T>   被比较对象类型
-     * @param value 检查的对象，可以为{@code null}
-     * @param c1    对象1，可以为{@code null}
-     * @param c2    对象2，可以为{@code null}
-     * @return c1是否小于或等于c2
-     * @see java.util.Comparator#compare(Object, Object)
+     * @param <T>   The type of the objects.
+     * @param value The value to check.
+     * @param c1    The first boundary.
+     * @param c2    The second boundary.
+     * @return `true` if the value is within the exclusive range.
      */
     public static <T extends Comparable<? super T>> boolean isInExclusive(final T value, final T c1, final T c2) {
         return gt(value, min(c1, c2)) && lt(value, max(c1, c2));

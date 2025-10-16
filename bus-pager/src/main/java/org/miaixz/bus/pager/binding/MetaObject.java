@@ -32,19 +32,26 @@ import java.lang.reflect.Method;
 import org.miaixz.bus.core.lang.exception.PageException;
 
 /**
+ * Provides a compatibility layer for accessing MyBatis's {@code MetaObject.forObject} method across different MyBatis
+ * versions. It dynamically determines the correct method signature based on the available MyBatis reflection classes.
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class MetaObject {
 
+    /**
+     * The {@link Method} object representing the {@code forObject} method of MyBatis's MetaObject. This field is
+     * initialized statically to ensure compatibility with different MyBatis versions.
+     */
     public static Method method;
 
     static {
         try {
-            // 高版本中的 MetaObject.forObject 有 4 个参数，低版本是 1 个
-            // 先判断当前使用的是否为高版本
+            // In higher versions, MetaObject.forObject has 4 parameters, while lower versions have 1.
+            // First, check if the current version is a higher version.
             Class.forName("org.apache.ibatis.reflection.ReflectorFactory");
-            // 下面这个 MetaObjectWithCache 带反射的缓存信息
+            // The MetaObjectWithCache below carries reflection cache information.
             Class<?> metaClass = Class.forName("org.miaixz.bus.pager.binding.MetaObjectWithCache");
             method = metaClass.getDeclaredMethod("forObject", Object.class);
         } catch (Throwable e1) {
@@ -62,6 +69,14 @@ public class MetaObject {
         }
     }
 
+    /**
+     * Invokes the appropriate {@code forObject} method of MyBatis's MetaObject to create a
+     * {@link org.apache.ibatis.reflection.MetaObject} instance.
+     *
+     * @param object the object for which to create a MetaObject
+     * @return a {@link org.apache.ibatis.reflection.MetaObject} instance for the given object
+     * @throws PageException if an error occurs during method invocation
+     */
     public static org.apache.ibatis.reflection.MetaObject forObject(Object object) {
         try {
             return (org.apache.ibatis.reflection.MetaObject) method.invoke(null, object);

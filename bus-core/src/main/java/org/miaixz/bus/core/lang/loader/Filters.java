@@ -30,7 +30,7 @@ package org.miaixz.bus.core.lang.loader;
 import java.util.Collection;
 
 /**
- * 过滤器工具类
+ * Utility class for creating and combining {@link Filter} instances.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,90 +38,100 @@ import java.util.Collection;
 public abstract class Filters {
 
     /**
-     * 永远返回true的过滤器
+     * A filter that always returns {@code true}, effectively accepting all resources.
      */
     public static final Filter ALWAYS = (name, url) -> true;
 
     /**
-     * 永远返回false的过滤器
+     * A filter that always returns {@code false}, effectively rejecting all resources.
      */
     public static final Filter NEVER = (name, url) -> false;
 
     /**
-     * 创建多个子过滤器AND连接的混合过滤器
+     * Creates a composite filter that performs a logical AND operation on multiple child filters. All child filters
+     * must return {@code true} for this filter to return {@code true}.
      *
-     * @param filters 子过滤器
-     * @return 多个子过滤器AND连接的混合过滤器
+     * @param filters An array of child filters.
+     * @return A new {@link AllFilter} instance combining the given filters with an AND operation.
      */
     public static Filter all(Filter... filters) {
         return new AllFilter(filters);
     }
 
     /**
-     * 创建多个子过滤器AND连接的混合过滤器
+     * Creates a composite filter that performs a logical AND operation on multiple child filters. All child filters
+     * must return {@code true} for this filter to return {@code true}.
      *
-     * @param filters 子过滤器
-     * @return 多个子过滤器AND连接的混合过滤器
+     * @param filters A collection of child filters.
+     * @return A new {@link AllFilter} instance combining the given filters with an AND operation.
      */
     public static Filter all(Collection<? extends Filter> filters) {
         return new AllFilter(filters);
     }
 
     /**
-     * 创建多个子过滤器AND连接的混合过滤器
+     * Creates a composite filter that performs a logical AND operation on multiple child filters. All child filters
+     * must return {@code true} for this filter to return {@code true}. This method is an alias for
+     * {@link #all(Filter...)}.
      *
-     * @param filters 子过滤器
-     * @return 多个子过滤器AND连接的混合过滤器
+     * @param filters An array of child filters.
+     * @return A new {@link AllFilter} instance combining the given filters with an AND operation.
      */
     public static Filter and(Filter... filters) {
         return all(filters);
     }
 
     /**
-     * 创建多个子过滤器AND连接的混合过滤器
+     * Creates a composite filter that performs a logical AND operation on multiple child filters. All child filters
+     * must return {@code true} for this filter to return {@code true}. This method is an alias for
+     * {@link #all(Collection)}.
      *
-     * @param filters 子过滤器
-     * @return 多个子过滤器AND连接的混合过滤器
+     * @param filters A collection of child filters.
+     * @return A new {@link AllFilter} instance combining the given filters with an AND operation.
      */
     public static Filter and(Collection<? extends Filter> filters) {
         return all(filters);
     }
 
     /**
-     * 创建多个子过滤器OR连接的混合过滤器
+     * Creates a composite filter that performs a logical OR operation on multiple child filters. If any child filter
+     * returns {@code true}, this filter will return {@code true}.
      *
-     * @param filters 子过滤器
-     * @return 多个子过滤器OR连接的混合过滤器
+     * @param filters An array of child filters.
+     * @return A new {@link AnyFilter} instance combining the given filters with an OR operation.
      */
     public static Filter any(Filter... filters) {
         return new AnyFilter(filters);
     }
 
     /**
-     * 创建多个子过滤器OR连接的混合过滤器
+     * Creates a composite filter that performs a logical OR operation on multiple child filters. If any child filter
+     * returns {@code true}, this filter will return {@code true}.
      *
-     * @param filters 子过滤器
-     * @return 多个子过滤器OR连接的混合过滤器
+     * @param filters A collection of child filters.
+     * @return A new {@link AnyFilter} instance combining the given filters with an OR operation.
      */
     public static Filter any(Collection<? extends Filter> filters) {
         return new AnyFilter(filters);
     }
 
     /**
-     * 创建多个子过滤器OR连接的混合过滤器
+     * Creates a composite filter that performs a logical OR operation on multiple child filters. If any child filter
+     * returns {@code true}, this filter will return {@code true}. This method is an alias for {@link #any(Filter...)}.
      *
-     * @param filters 子过滤器
-     * @return 多个子过滤器OR连接的混合过滤器
+     * @param filters An array of child filters.
+     * @return A new {@link AnyFilter} instance combining the given filters with an OR operation.
      */
     public static Filter or(Filter... filters) {
         return any(filters);
     }
 
     /**
-     * 创建多个子过滤器OR连接的混合过滤器
+     * Creates a composite filter that performs a logical OR operation on multiple child filters. If any child filter
+     * returns {@code true}, this filter will return {@code true}. This method is an alias for {@link #any(Collection)}.
      *
-     * @param filters 子过滤器
-     * @return 多个子过滤器OR连接的混合过滤器
+     * @param filters A collection of child filters.
+     * @return A new {@link AnyFilter} instance combining the given filters with an OR operation.
      */
     public static Filter or(Collection<? extends Filter> filters) {
         return any(filters);

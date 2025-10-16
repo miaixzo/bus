@@ -61,23 +61,39 @@ import com.hierynomus.smbj.share.DiskEntry;
 import com.hierynomus.smbj.share.DiskShare;
 
 /**
- * 存储服务-SMB共享文件
+ * Storage service provider for SMB (Server Message Block) shared files. This provider allows interaction with SMB/CIFS
+ * shares for file storage operations.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class SmbFileProvider extends AbstractProvider {
 
+    /**
+     * The SMB client instance for establishing connections.
+     */
     private final SMBClient client;
+    /**
+     * The SMB connection to the server.
+     */
     private Connection connection;
+    /**
+     * The SMB session established with the server.
+     */
     private Session session;
+    /**
+     * The connected disk share.
+     */
     private DiskShare share;
 
     /**
-     * 构造函数，初始化 SMB 客户端。
+     * Constructs an SMB file provider with the given context. Initializes the SMB client and establishes a connection,
+     * session, and disk share.
      *
-     * @param context 存储上下文，包含端点、存储桶、访问密钥、秘密密钥等配置
-     * @throws IllegalArgumentException 如果配置参数无效或初始化失败
+     * @param context The storage context, containing endpoint, bucket (share name), access key (username), secret key
+     *                (password), and domain information.
+     * @throws IllegalArgumentException If required context parameters are missing or invalid, or if SMB client
+     *                                  initialization fails.
      */
     public SmbFileProvider(Context context) {
         this.context = context;
@@ -86,10 +102,10 @@ public class SmbFileProvider extends AbstractProvider {
         Assert.notBlank(this.context.getAccessKey(), "[accessKey] cannot be blank");
         Assert.notBlank(this.context.getSecretKey(), "[secretKey] cannot be blank");
 
-        // 初始化 SMB 客户端
+        // Initialize SMB client
         this.client = new SMBClient();
 
-        // 从 endpoint 解析服务器地址和端口
+        // Parse server address, port, share name, username, password, and domain from the endpoint
         String server = parseServerFromEndpoint(context.getEndpoint());
         int port = parsePortFromEndpoint(context.getEndpoint());
         String shareName = context.getBucket();
@@ -98,44 +114,38 @@ public class SmbFileProvider extends AbstractProvider {
         String domain = parseDomainFromEndpoint(context.getEndpoint());
 
         try {
-            // 建立连接
+            // Establish connection
             this.connection = client.connect(server, port);
-            // 创建认证上下文
+            // Create authentication context
             AuthenticationContext ac = new AuthenticationContext(username, password.toCharArray(), domain);
-            // 建立会话
+            // Establish session
             this.session = connection.authenticate(ac);
-            // 连接到共享
+            // Connect to the share
             this.share = (DiskShare) session.connectShare(shareName);
         } catch (Exception e) {
-            closeResources();
+            try {
+                if (share != null) {
+                    share.close();
+                }
+                if (session != null) {
+                    session.close();
+                }
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (Exception ex) {
+                Logger.error("Error while closing SMB resources: {}", ex.getMessage(), ex);
+            }
             throw new IllegalArgumentException("Failed to initialize SMB client: " + e.getMessage(), e);
         }
     }
 
     /**
-     * 关闭资源
-     */
-    private void closeResources() {
-        try {
-            if (share != null) {
-                share.close();
-            }
-            if (session != null) {
-                session.close();
-            }
-            if (connection != null) {
-                connection.close();
-            }
-        } catch (Exception e) {
-            Logger.error("Error while closing SMB resources: {}", e.getMessage(), e);
-        }
-    }
-
-    /**
-     * 从默认存储桶下载文件。
+     * Downloads a file from the default storage bucket.
      *
-     * @param fileName 文件名
-     * @return 处理结果，包含文件内容流或错误信息
+     * @param fileName The name of the file to download.
+     * @return A {@link Message} containing the result of the operation, including the file content stream if
+     *         successful.
      */
     @Override
     public Message download(String fileName) {
@@ -143,11 +153,12 @@ public class SmbFileProvider extends AbstractProvider {
     }
 
     /**
-     * 从指定存储桶下载文件。
+     * Downloads a file from the specified storage bucket.
      *
-     * @param bucket   存储桶名称
-     * @param fileName 文件名
-     * @return 处理结果，包含文件内容流或错误信息
+     * @param bucket   The name of the storage bucket.
+     * @param fileName The name of the file to download.
+     * @return A {@link Message} containing the result of the operation, including the file content stream if
+     *         successful.
      */
     @Override
     public Message download(String bucket, String fileName) {
@@ -177,11 +188,11 @@ public class SmbFileProvider extends AbstractProvider {
     }
 
     /**
-     * 从默认存储桶下载文件并保存到本地文件。
+     * Downloads a file from the default storage bucket and saves it to a local file.
      *
-     * @param fileName 文件名
-     * @param file     本地目标文件
-     * @return 处理结果，包含成功或错误信息
+     * @param fileName The name of the file to download.
+     * @param file     The target local file to save the downloaded content.
+     * @return A {@link Message} containing the result of the operation.
      */
     @Override
     public Message download(String fileName, File file) {
@@ -189,12 +200,12 @@ public class SmbFileProvider extends AbstractProvider {
     }
 
     /**
-     * 从指定存储桶下载文件并保存到本地文件。
+     * Downloads a file from the specified storage bucket and saves it to a local file.
      *
-     * @param bucket   存储桶名称
-     * @param fileName 文件名
-     * @param file     本地目标文件
-     * @return 处理结果，包含成功或错误信息
+     * @param bucket   The name of the storage bucket.
+     * @param fileName The name of the file to download.
+     * @param file     The target local file to save the downloaded content.
+     * @return A {@link Message} containing the result of the operation.
      */
     @Override
     public Message download(String bucket, String fileName, File file) {
@@ -234,9 +245,10 @@ public class SmbFileProvider extends AbstractProvider {
     }
 
     /**
-     * 列出默认存储桶中的文件。
+     * Lists files in the default storage bucket.
      *
-     * @return 处理结果，包含文件列表或错误信息
+     * @return A {@link Message} containing the result of the operation, including a list of {@link Material} objects if
+     *         successful.
      */
     @Override
     public Message list() {
@@ -258,11 +270,11 @@ public class SmbFileProvider extends AbstractProvider {
     }
 
     /**
-     * 重命名默认存储桶中的文件。
+     * Renames a file in the default storage bucket.
      *
-     * @param oldName 原文件名
-     * @param newName 新文件名
-     * @return 处理结果，包含成功或错误信息
+     * @param oldName The current name of the file.
+     * @param newName The new name for the file.
+     * @return A {@link Message} containing the result of the operation.
      */
     @Override
     public Message rename(String oldName, String newName) {
@@ -270,12 +282,12 @@ public class SmbFileProvider extends AbstractProvider {
     }
 
     /**
-     * 在默认存储桶的指定路径中重命名文件。
+     * Renames a file within a specified path in the default storage bucket.
      *
-     * @param path    路径
-     * @param oldName 原文件名
-     * @param newName 新文件名
-     * @return 处理结果，包含成功或错误信息
+     * @param path    The path where the file is located.
+     * @param oldName The current name of the file.
+     * @param newName The new name for the file.
+     * @return A {@link Message} containing the result of the operation.
      */
     @Override
     public Message rename(String path, String oldName, String newName) {
@@ -283,13 +295,13 @@ public class SmbFileProvider extends AbstractProvider {
     }
 
     /**
-     * 在指定存储桶和路径中重命名文件。
+     * Renames a file within the specified bucket and path.
      *
-     * @param bucket  存储桶名称
-     * @param path    路径
-     * @param oldName 原文件名
-     * @param newName 新文件名
-     * @return 处理结果，包含成功或错误信息
+     * @param bucket  The name of the storage bucket.
+     * @param path    The path where the file is located.
+     * @param oldName The current name of the file.
+     * @param newName The new name for the file.
+     * @return A {@link Message} containing the result of the operation.
      */
     @Override
     public Message rename(String bucket, String path, String oldName, String newName) {
@@ -301,8 +313,8 @@ public class SmbFileProvider extends AbstractProvider {
                 return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg("File not found").build();
             }
 
-            // 使用 smbj 的正确方式重命名文件
-            // 1. 打开文件
+            // Use smbj's correct way to rename a file
+            // 1. Open the file
             DiskEntry diskEntry = share.open(
                     oldObjectKey,
                     EnumSet.of(AccessMask.GENERIC_WRITE, AccessMask.DELETE),
@@ -312,13 +324,14 @@ public class SmbFileProvider extends AbstractProvider {
                     EnumSet.of(SMB2CreateOptions.FILE_NON_DIRECTORY_FILE));
 
             try {
-                // 2. 设置重命名信息 - 修正构造函数参数顺序
-                FileRenameInformation renameInfo = new FileRenameInformation(false, // replaceIfExists - 不替换目标文件（如果存在）
-                        0L, // rootDirectory - 根目录文件ID（通常为0）
-                        newObjectKey // fileName - 新文件名
+                // 2. Set rename information - correct constructor parameter order
+                FileRenameInformation renameInfo = new FileRenameInformation(false, // replaceIfExists - do not replace
+                                                                                    // target file (if exists)
+                        0L, // rootDirectory - root directory file ID (usually 0)
+                        newObjectKey // fileName - new file name
                 );
 
-                // 3. 应用重命名
+                // 3. Apply rename
                 diskEntry.setFileInformation(renameInfo);
 
                 return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
@@ -340,11 +353,12 @@ public class SmbFileProvider extends AbstractProvider {
     }
 
     /**
-     * 上传字节数组内容到默认存储桶。
+     * Uploads a byte array to the default storage bucket.
      *
-     * @param fileName 文件名
-     * @param content  字节数组内容
-     * @return 处理结果，包含上传的文件信息或错误信息
+     * @param fileName The name of the file to upload.
+     * @param content  The file content as a byte array.
+     * @return A {@link Message} containing the result of the operation, including the uploaded file information or an
+     *         error message.
      */
     @Override
     public Message upload(String fileName, byte[] content) {
@@ -352,12 +366,13 @@ public class SmbFileProvider extends AbstractProvider {
     }
 
     /**
-     * 上传字节数组内容到默认存储桶的指定路径。
+     * Uploads a byte array to a specified path in the default storage bucket.
      *
-     * @param path     路径
-     * @param fileName 文件名
-     * @param content  字节数组内容
-     * @return 处理结果，包含上传的文件信息或错误信息
+     * @param path     The path to upload the file to.
+     * @param fileName The name of the file to upload.
+     * @param content  The file content as a byte array.
+     * @return A {@link Message} containing the result of the operation, including the uploaded file information or an
+     *         error message.
      */
     @Override
     public Message upload(String path, String fileName, byte[] content) {
@@ -365,13 +380,14 @@ public class SmbFileProvider extends AbstractProvider {
     }
 
     /**
-     * 上传字节数组内容到指定存储桶和路径。
+     * Uploads a byte array to the specified storage bucket and path.
      *
-     * @param bucket   存储桶名称
-     * @param path     路径
-     * @param fileName 文件名
-     * @param content  字节数组内容
-     * @return 处理结果，包含上传的文件信息或错误信息
+     * @param bucket   The name of the storage bucket.
+     * @param path     The path to upload the file to.
+     * @param fileName The name of the file to upload.
+     * @param content  The file content as a byte array.
+     * @return A {@link Message} containing the result of the operation, including the uploaded file information or an
+     *         error message.
      */
     @Override
     public Message upload(String bucket, String path, String fileName, byte[] content) {
@@ -379,11 +395,12 @@ public class SmbFileProvider extends AbstractProvider {
     }
 
     /**
-     * 上传输入流内容到默认存储桶。
+     * Uploads an input stream to the default storage bucket.
      *
-     * @param fileName 文件名
-     * @param content  输入流内容
-     * @return 处理结果，包含上传的文件信息或错误信息
+     * @param fileName The name of the file to upload.
+     * @param content  The file content as an {@link InputStream}.
+     * @return A {@link Message} containing the result of the operation, including the uploaded file information or an
+     *         error message.
      */
     @Override
     public Message upload(String fileName, InputStream content) {
@@ -391,12 +408,13 @@ public class SmbFileProvider extends AbstractProvider {
     }
 
     /**
-     * 上传输入流内容到默认存储桶的指定路径。
+     * Uploads an input stream to a specified path in the default storage bucket.
      *
-     * @param path     路径
-     * @param fileName 文件名
-     * @param content  输入流内容
-     * @return 处理结果，包含上传的文件信息或错误信息
+     * @param path     The path to upload the file to.
+     * @param fileName The name of the file to upload.
+     * @param content  The file content as an {@link InputStream}.
+     * @return A {@link Message} containing the result of the operation, including the uploaded file information or an
+     *         error message.
      */
     @Override
     public Message upload(String path, String fileName, InputStream content) {
@@ -404,13 +422,14 @@ public class SmbFileProvider extends AbstractProvider {
     }
 
     /**
-     * 上传输入流内容到指定存储桶和路径。
+     * Uploads an input stream to the specified storage bucket and path.
      *
-     * @param bucket   存储桶名称
-     * @param path     路径
-     * @param fileName 文件名
-     * @param content  输入流内容
-     * @return 处理结果，包含上传的文件信息或错误信息
+     * @param bucket   The name of the storage bucket.
+     * @param path     The path to upload the file to.
+     * @param fileName The name of the file to upload.
+     * @param content  The file content as an {@link InputStream}.
+     * @return A {@link Message} containing the result of the operation, including the uploaded file information or an
+     *         error message.
      */
     @Override
     public Message upload(String bucket, String path, String fileName, InputStream content) {
@@ -418,7 +437,7 @@ public class SmbFileProvider extends AbstractProvider {
             String objectKey = getAbsolutePath(bucket, path, fileName);
             String dirPath = objectKey.substring(0, objectKey.lastIndexOf(Symbol.SLASH));
 
-            // 确保目录存在
+            // Ensure directory exists
             ensureDirectoryExists(dirPath);
 
             com.hierynomus.smbj.share.File smbFile = share.openFile(
@@ -452,10 +471,10 @@ public class SmbFileProvider extends AbstractProvider {
     }
 
     /**
-     * 从默认存储桶删除文件。
+     * Removes a file from the default storage bucket.
      *
-     * @param fileName 文件名
-     * @return 处理结果，包含成功或错误信息
+     * @param fileName The name of the file to remove.
+     * @return A {@link Message} containing the result of the operation, including success or error information.
      */
     @Override
     public Message remove(String fileName) {
@@ -463,11 +482,11 @@ public class SmbFileProvider extends AbstractProvider {
     }
 
     /**
-     * 从默认存储桶的指定路径删除文件。
+     * Removes a file from a specified path in the default storage bucket.
      *
-     * @param path     路径
-     * @param fileName 文件名
-     * @return 处理结果，包含成功或错误信息
+     * @param path     The path where the file is located.
+     * @param fileName The name of the file to remove.
+     * @return A {@link Message} containing the result of the operation, including success or error information.
      */
     @Override
     public Message remove(String path, String fileName) {
@@ -475,12 +494,12 @@ public class SmbFileProvider extends AbstractProvider {
     }
 
     /**
-     * 从指定存储桶和路径删除文件。
+     * Removes a file from the specified storage bucket and path.
      *
-     * @param bucket   存储桶名称
-     * @param path     路径
-     * @param fileName 文件名
-     * @return 处理结果，包含成功或错误信息
+     * @param bucket   The name of the storage bucket.
+     * @param path     The path where the file is located.
+     * @param fileName The name of the file to remove.
+     * @return A {@link Message} containing the result of the operation, including success or error information.
      */
     @Override
     public Message remove(String bucket, String path, String fileName) {
@@ -503,11 +522,11 @@ public class SmbFileProvider extends AbstractProvider {
     }
 
     /**
-     * 从指定存储桶删除指定路径的文件。
+     * Removes a file from the specified storage bucket based on its path.
      *
-     * @param bucket 存储桶名称
-     * @param path   文件路径
-     * @return 处理结果，包含成功或错误信息
+     * @param bucket The name of the storage bucket.
+     * @param path   The path of the file to remove.
+     * @return A {@link Message} containing the result of the operation, including success or error information.
      */
     @Override
     public Message remove(String bucket, Path path) {
@@ -515,23 +534,23 @@ public class SmbFileProvider extends AbstractProvider {
     }
 
     /**
-     * 从 endpoint 解析服务器地址，确保不包含端口信息。
+     * Parses the server address from the given endpoint string, ensuring no port information is included.
      *
-     * @param endpoint SMB 服务器地址，格式如 smb://hostname/share 或 hostname/share
-     * @return 服务器地址
+     * @param endpoint The SMB server address, e.g., {@code smb://hostname:port/share} or {@code hostname/share}.
+     * @return The server address.
      */
     private String parseServerFromEndpoint(String endpoint) {
         if (StringKit.isBlank(endpoint)) {
             return "";
         }
-        // 移除协议头（如 smb://, cifs://）
+        // Remove protocol header (e.g., smb://, cifs://)
         String server = endpoint.replaceFirst("^(smb|cifs)://", "");
-        // 移除共享名称和路径
+        // Remove share name and path
         int slashIndex = server.indexOf('/');
         if (slashIndex != -1) {
             server = server.substring(0, slashIndex);
         }
-        // 移除端口信息
+        // Remove port information
         int colonIndex = server.indexOf(':');
         if (colonIndex != -1) {
             server = server.substring(0, colonIndex);
@@ -540,19 +559,19 @@ public class SmbFileProvider extends AbstractProvider {
     }
 
     /**
-     * 从 endpoint 解析端口。
+     * Parses the port from the given endpoint string.
      *
-     * @param endpoint SMB 服务器地址，格式如 smb://hostname:port/share 或 hostname/share
-     * @return 端口号，默认为 445
+     * @param endpoint The SMB server address, e.g., {@code smb://hostname:port/share} or {@code hostname/share}.
+     * @return The port number, defaulting to 445 if not specified or invalid.
      */
     private int parsePortFromEndpoint(String endpoint) {
         if (StringKit.isBlank(endpoint)) {
-            return 445; // SMB 默认端口
+            return 445; // Default SMB port
         }
         try {
-            // 移除协议头（如 smb://, cifs://）
+            // Remove protocol header (e.g., smb://, cifs://)
             String server = endpoint.replaceFirst("^(smb|cifs)://", "");
-            // 提取端口部分
+            // Extract the port part
             int colonIndex = server.indexOf(':');
             int slashIndex = server.indexOf('/');
 
@@ -563,22 +582,22 @@ public class SmbFileProvider extends AbstractProvider {
         } catch (NumberFormatException e) {
             Logger.warn("Invalid port in endpoint: {}. Using default port 445.", endpoint);
         }
-        return 445; // SMB 默认端口
+        return 445; // Default SMB port
     }
 
     /**
-     * 从 endpoint 解析域名。
+     * Parses the domain from the given endpoint string.
      *
-     * @param endpoint SMB 服务器地址，格式如 smb://domain;hostname/share 或 hostname/share
-     * @return 域名，可为空
+     * @param endpoint The SMB server address, e.g., {@code smb://domain;hostname/share} or {@code hostname/share}.
+     * @return The domain, or an empty string if not specified.
      */
     private String parseDomainFromEndpoint(String endpoint) {
         if (StringKit.isBlank(endpoint)) {
             return "";
         }
-        // 移除协议头（如 smb://, cifs://）
+        // Remove protocol header (e.g., smb://, cifs://)
         String server = endpoint.replaceFirst("^(smb|cifs)://", "");
-        // 检查是否包含域名
+        // Check if domain is present
         int semicolonIndex = server.indexOf(';');
         if (semicolonIndex != -1) {
             return server.substring(0, semicolonIndex);
@@ -587,12 +606,12 @@ public class SmbFileProvider extends AbstractProvider {
     }
 
     /**
-     * 构建文件的绝对路径。
+     * Constructs the absolute path for a file on the SMB share.
      *
-     * @param bucket   存储桶名称，可为空
-     * @param path     路径，可为空
-     * @param fileName 文件名
-     * @return 规范化后的绝对路径
+     * @param bucket   The name of the storage bucket (share), can be empty.
+     * @param path     The path within the share, can be empty.
+     * @param fileName The name of the file.
+     * @return The normalized absolute path for the file.
      */
     private String getAbsolutePath(String bucket, String path, String fileName) {
         String prefix = StringKit.isBlank(bucket) ? Builder.buildNormalizedPrefix(context.getPrefix())
@@ -601,23 +620,24 @@ public class SmbFileProvider extends AbstractProvider {
     }
 
     /**
-     * 确保目录存在，如果不存在则创建。
+     * Ensures that the specified directory path exists on the SMB share, creating it if necessary.
      *
-     * @param dirPath 目录路径
+     * @param dirPath The directory path to ensure existence.
+     * @throws InternalException If there is an error creating the directory.
      */
     private void ensureDirectoryExists(String dirPath) {
         if (StringKit.isBlank(dirPath) || dirPath.equals(Symbol.SLASH)) {
-            return; // 根目录不需要创建
+            return; // Root directory does not need to be created
         }
 
         try {
             if (!share.folderExists(dirPath)) {
-                // 创建父目录
+                // Create parent directories recursively
                 String parentPath = dirPath.substring(0, dirPath.lastIndexOf(Symbol.SLASH));
                 if (!StringKit.isBlank(parentPath) && !parentPath.equals(Symbol.SLASH)) {
                     ensureDirectoryExists(parentPath);
                 }
-                // 创建当前目录
+                // Create the current directory
                 share.mkdir(dirPath);
             }
         } catch (Exception e) {
@@ -627,10 +647,10 @@ public class SmbFileProvider extends AbstractProvider {
     }
 
     /**
-     * 检查文件是否存在。
+     * Checks if a file exists on the SMB share.
      *
-     * @param path 文件路径
-     * @return 是否存在
+     * @param path The path to the file.
+     * @return {@code true} if the file exists, {@code false} otherwise.
      */
     private boolean isExist(String path) {
         try {

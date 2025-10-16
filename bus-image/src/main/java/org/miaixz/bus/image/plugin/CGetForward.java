@@ -27,14 +27,6 @@
 */
 package org.miaixz.bus.image.plugin;
 
-import java.io.IOException;
-import java.net.URL;
-import java.security.GeneralSecurityException;
-import java.text.MessageFormat;
-import java.util.Map.Entry;
-import java.util.Properties;
-import java.util.Set;
-
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.IoKit;
@@ -63,24 +55,68 @@ import org.miaixz.bus.image.nimble.stream.BytesWithImageDescriptor;
 import org.miaixz.bus.image.nimble.stream.ImageAdapter;
 import org.miaixz.bus.image.nimble.stream.ImageAdapter.AdaptTransferSyntax;
 import org.miaixz.bus.logger.Logger;
+
+import java.io.IOException;
 import java.io.Serial;
+import java.net.URL;
+import java.security.GeneralSecurityException;
+import java.text.MessageFormat;
+import java.util.Map.Entry;
+import java.util.Properties;
+import java.util.Set;
 
 /**
+ * This class provides functionality to perform a DICOM C-GET operation and forward the retrieved instances to another
+ * DICOM node using C-STORE.
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class CGetForward implements AutoCloseable {
 
+    /**
+     * The DICOM device for the C-GET operation.
+     */
     private final Device device = new Device("getscu");
+    /**
+     * The Application Entity for the C-GET operation.
+     */
     private final ApplicationEntity ae;
+    /**
+     * The local connection settings.
+     */
     private final Connection conn = new Connection();
+    /**
+     * The remote connection settings for the C-GET source.
+     */
     private final Connection remote = new Connection();
+    /**
+     * The A-ASSOCIATE-RQ message for the C-GET operation.
+     */
     private final AAssociateRQ rq = new AAssociateRQ();
+    /**
+     * The query keys for the C-GET operation.
+     */
     private final Attributes keys = new Attributes();
+    /**
+     * The StreamSCU instance for forwarding the images.
+     */
     private final StreamSCU streamSCU;
+    /**
+     * The arguments for the forwarding operation.
+     */
     private final Args args;
+    /**
+     * The service for the StreamSCU.
+     */
     private final Centre streamSCUService;
+    /**
+     * The priority of the C-GET operation.
+     */
     private int priority;
+    /**
+     * The C-STORE SCP to handle incoming images.
+     */
     private final BasicCStoreSCP storageSCP = new BasicCStoreSCP("*") {
 
         @Override
@@ -186,26 +222,42 @@ public class CGetForward implements AutoCloseable {
             }
         }
 
+        /**
+         * Custom exception to indicate an association abort.
+         */
         class AbortException extends IllegalStateException {
 
             @Serial
             private static final long serialVersionUID = 2852291915160L;
 
+            /**
+             * Constructs a new AbortException.
+             *
+             * @param s the detail message.
+             */
             public AbortException(String s) {
                 super(s);
             }
         }
     };
+    /**
+     * The information model for the C-GET operation.
+     */
     private InformationModel model;
+    /**
+     * The association for the C-GET operation.
+     */
     private Association as;
 
     /**
+     * Constructs a new {@code CGetForward} instance.
+     *
      * @param args            the optional advanced parameters (proxy, authentication, connection and TLS) for the final
-     *                        destination
-     * @param callingNode     the calling DICOM node configuration
-     * @param destinationNode the final DICOM node configuration
-     * @param progress        the progress handler
-     * @throws IOException
+     *                        destination.
+     * @param callingNode     the calling DICOM node configuration.
+     * @param destinationNode the final DICOM node configuration.
+     * @param progress        the progress handler.
+     * @throws IOException if an I/O error occurs.
      */
     public CGetForward(Args args, Node callingNode, Node destinationNode, ImageProgress progress) throws IOException {
         this.args = args;
@@ -219,13 +271,14 @@ public class CGetForward implements AutoCloseable {
     }
 
     /**
-     * @param callingNode     the calling DICOM node configuration
-     * @param calledNode      the called DICOM node configuration
-     * @param destinationNode the final destination DICOM node configuration
-     * @param progress        the progress handler
-     * @param studyUID        the study instance UID to retrieve
-     * @return The DicomSate instance which contains the DICOM response, the DICOM status, the error message and the
-     *         progression.
+     * Processes a C-GET request for a study and forwards it.
+     *
+     * @param callingNode     the calling DICOM node configuration.
+     * @param calledNode      the called DICOM node configuration.
+     * @param destinationNode the final destination DICOM node configuration.
+     * @param progress        the progress handler.
+     * @param studyUID        the study instance UID to retrieve.
+     * @return a {@link Status} object with the operation status.
      */
     public static Status processStudy(
             Node callingNode,
@@ -237,15 +290,16 @@ public class CGetForward implements AutoCloseable {
     }
 
     /**
-     * @param args            the C-GET optional advanced parameters (proxy, authentication, connection and TLS)
-     * @param forwardParams   the C-Store optional advanced parameters (proxy, authentication, connection and TLS)
-     * @param callingNode     the calling DICOM node configuration
-     * @param calledNode      the called DICOM node configuration
-     * @param destinationNode the final destination DICOM node configuration
-     * @param progress        the progress handler
-     * @param studyUID        the study instance UID to retrieve
-     * @return The DicomSate instance which contains the DICOM response, the DICOM status, the error message and the
-     *         progression.
+     * Processes a C-GET request for a study with advanced parameters and forwards it.
+     *
+     * @param args            the C-GET optional advanced parameters (proxy, authentication, connection and TLS).
+     * @param forwardParams   the C-Store optional advanced parameters (proxy, authentication, connection and TLS).
+     * @param callingNode     the calling DICOM node configuration.
+     * @param calledNode      the called DICOM node configuration.
+     * @param destinationNode the final destination DICOM node configuration.
+     * @param progress        the progress handler.
+     * @param studyUID        the study instance UID to retrieve.
+     * @return a {@link Status} object with the operation status.
      */
     public static Status processStudy(
             Args args,
@@ -259,15 +313,16 @@ public class CGetForward implements AutoCloseable {
     }
 
     /**
-     * @param getParams       the C-GET optional advanced parameters (proxy, authentication, connection and TLS)
-     * @param forwardParams   the C-Store optional advanced parameters (proxy, authentication, connection and TLS)
-     * @param callingNode     the calling DICOM node configuration
-     * @param calledNode      the called DICOM node configuration
-     * @param destinationNode the final destination DICOM node configuration
-     * @param progress        the progress handler
-     * @param seriesUID       the series instance UID to retrieve
-     * @return The DicomSate instance which contains the DICOM response, the DICOM status, the error message and the
-     *         progression.
+     * Processes a C-GET request for a series with advanced parameters and forwards it.
+     *
+     * @param getParams       the C-GET optional advanced parameters (proxy, authentication, connection and TLS).
+     * @param forwardParams   the C-Store optional advanced parameters (proxy, authentication, connection and TLS).
+     * @param callingNode     the calling DICOM node configuration.
+     * @param calledNode      the called DICOM node configuration.
+     * @param destinationNode the final destination DICOM node configuration.
+     * @param progress        the progress handler.
+     * @param seriesUID       the series instance UID to retrieve.
+     * @return a {@link Status} object with the operation status.
      */
     public static Status processSeries(
             Args getParams,
@@ -288,6 +343,19 @@ public class CGetForward implements AutoCloseable {
                 seriesUID);
     }
 
+    /**
+     * The main processing method for C-GET and forward.
+     *
+     * @param args               the C-GET optional advanced parameters.
+     * @param forwardParams      the C-Store optional advanced parameters.
+     * @param callingNode        the calling DICOM node configuration.
+     * @param calledNode         the called DICOM node configuration.
+     * @param destinationNode    the final destination DICOM node configuration.
+     * @param progress           the progress handler.
+     * @param queryRetrieveLevel the query retrieve level (e.g., "STUDY", "SERIES").
+     * @param queryUID           the UID for the query.
+     * @return a {@link Status} object with the operation status.
+     */
     private static Status process(
             Args args,
             Args forwardParams,
@@ -368,6 +436,12 @@ public class CGetForward implements AutoCloseable {
         }
     }
 
+    /**
+     * Configures the related SOP classes for the C-GET operation.
+     *
+     * @param getSCU the {@code CGetForward} instance.
+     * @param url    the URL to the properties file for SOP classes.
+     */
     private static void configureRelatedSOPClass(CGetForward getSCU, URL url) {
         Properties p = new Properties();
         try {
@@ -386,6 +460,13 @@ public class CGetForward implements AutoCloseable {
         }
     }
 
+    /**
+     * Configures a storage SOP class with its transfer syntaxes.
+     *
+     * @param getSCU the {@code CGetForward} instance.
+     * @param cuid   the SOP Class UID.
+     * @param tsuids the transfer syntax UIDs.
+     */
     private static void configureStorageSOPClass(CGetForward getSCU, String cuid, String tsuids) {
         String[] ts = StringKit.splitToArray(tsuids, ";");
         for (int i = 0; i < ts.length; i++) {
@@ -394,6 +475,12 @@ public class CGetForward implements AutoCloseable {
         getSCU.addOfferedStorageSOPClass(UID.toUID(cuid), ts);
     }
 
+    /**
+     * Gets the information model from the given options.
+     *
+     * @param options the arguments.
+     * @return the information model.
+     */
     private static InformationModel getInformationModel(Args options) {
         Object model = options.getInformationModel();
         if (model instanceof InformationModel) {
@@ -402,40 +489,87 @@ public class CGetForward implements AutoCloseable {
         return InformationModel.StudyRoot;
     }
 
+    /**
+     * Gets the Application Entity.
+     *
+     * @return the Application Entity.
+     */
     public ApplicationEntity getApplicationEntity() {
         return ae;
     }
 
+    /**
+     * Gets the remote connection settings.
+     *
+     * @return the remote connection.
+     */
     public Connection getRemoteConnection() {
         return remote;
     }
 
+    /**
+     * Gets the A-ASSOCIATE-RQ message.
+     *
+     * @return the A-ASSOCIATE-RQ.
+     */
     public AAssociateRQ getAAssociateRQ() {
         return rq;
     }
 
+    /**
+     * Gets the current association.
+     *
+     * @return the association.
+     */
     public Association getAssociation() {
         return as;
     }
 
+    /**
+     * Gets the DICOM device.
+     *
+     * @return the device.
+     */
     public Device getDevice() {
         return device;
     }
 
+    /**
+     * Gets the query keys.
+     *
+     * @return the query keys.
+     */
     public Attributes getKeys() {
         return keys;
     }
 
+    /**
+     * Creates the DICOM service registry.
+     *
+     * @return the service registry.
+     */
     private ImageServiceRegistry createServiceRegistry() {
         ImageServiceRegistry serviceRegistry = new ImageServiceRegistry();
         serviceRegistry.addDicomService(storageSCP);
         return serviceRegistry;
     }
 
+    /**
+     * Sets the priority for the C-GET operation.
+     *
+     * @param priority the priority.
+     */
     public final void setPriority(int priority) {
         this.priority = priority;
     }
 
+    /**
+     * Sets the information model for the C-GET operation.
+     *
+     * @param model      the information model.
+     * @param tss        the transfer syntaxes.
+     * @param relational whether to use relational queries.
+     */
     public final void setInformationModel(InformationModel model, String[] tss, boolean relational) {
         this.model = model;
         rq.addPresentationContext(new PresentationContext(1, model.cuid, tss));
@@ -447,15 +581,32 @@ public class CGetForward implements AutoCloseable {
         }
     }
 
+    /**
+     * Adds the query retrieve level to the keys.
+     *
+     * @param s the query retrieve level.
+     */
     public void addLevel(String s) {
         keys.setString(Tag.QueryRetrieveLevel, VR.CS, s);
     }
 
+    /**
+     * Adds a key to the query.
+     *
+     * @param tag the tag of the key.
+     * @param ss  the values of the key.
+     */
     public void addKey(int tag, String... ss) {
         VR vr = ElementDictionary.vrOf(tag, keys.getPrivateCreator(tag));
         keys.setString(tag, vr, ss);
     }
 
+    /**
+     * Adds an offered storage SOP class.
+     *
+     * @param cuid   the SOP Class UID.
+     * @param tsuids the transfer syntax UIDs.
+     */
     public void addOfferedStorageSOPClass(String cuid, String... tsuids) {
         if (!rq.containsPresentationContextFor(cuid)) {
             rq.addRoleSelection(new RoleSelection(cuid, false, true));
@@ -463,6 +614,14 @@ public class CGetForward implements AutoCloseable {
         rq.addPresentationContext(new PresentationContext(2 * rq.getNumberOfPresentationContexts() + 1, cuid, tsuids));
     }
 
+    /**
+     * Opens the association.
+     *
+     * @throws IOException              if an I/O error occurs.
+     * @throws InterruptedException     if the thread is interrupted.
+     * @throws InternalException        if an internal error occurs.
+     * @throws GeneralSecurityException if a security error occurs.
+     */
     public void open() throws IOException, InterruptedException, InternalException, GeneralSecurityException {
         as = ae.connect(conn, remote, rq);
     }
@@ -476,10 +635,23 @@ public class CGetForward implements AutoCloseable {
         streamSCU.close(true);
     }
 
+    /**
+     * Performs the C-GET retrieve operation.
+     *
+     * @throws IOException          if an I/O error occurs.
+     * @throws InterruptedException if the thread is interrupted.
+     */
     public void retrieve() throws IOException, InterruptedException {
         retrieve(keys);
     }
 
+    /**
+     * Performs the C-GET retrieve operation with the given keys.
+     *
+     * @param keys the query keys.
+     * @throws IOException          if an I/O error occurs.
+     * @throws InterruptedException if the thread is interrupted.
+     */
     private void retrieve(Attributes keys) throws IOException, InterruptedException {
         DimseRSPHandler rspHandler = new DimseRSPHandler(as.nextMessageID()) {
 
@@ -506,39 +678,103 @@ public class CGetForward implements AutoCloseable {
         retrieve(keys, rspHandler);
     }
 
+    /**
+     * Performs the C-GET retrieve operation with a response handler.
+     *
+     * @param keys       the query keys.
+     * @param rspHandler the response handler.
+     * @throws IOException          if an I/O error occurs.
+     * @throws InterruptedException if the thread is interrupted.
+     */
     private void retrieve(Attributes keys, DimseRSPHandler rspHandler) throws IOException, InterruptedException {
         as.cget(model.cuid, priority, keys, null, rspHandler);
     }
 
+    /**
+     * Gets the local connection.
+     *
+     * @return the connection.
+     */
     public Connection getConnection() {
         return conn;
     }
 
+    /**
+     * Gets the service for the StreamSCU.
+     *
+     * @return the service.
+     */
     public Centre getStreamSCUService() {
         return streamSCUService;
     }
 
+    /**
+     * Gets the StreamSCU instance.
+     *
+     * @return the StreamSCU instance.
+     */
     public StreamSCU getStreamSCU() {
         return streamSCU;
     }
 
+    /**
+     * Gets the current status of the operation.
+     *
+     * @return the status.
+     */
     public Status getState() {
         return streamSCU.getState();
     }
 
+    /**
+     * Enumeration of the DICOM Information Models for C-GET.
+     */
     public enum InformationModel {
 
+        /**
+         * Patient Root Query/Retrieve Information Model - GET.
+         */
         PatientRoot(UID.PatientRootQueryRetrieveInformationModelGet.uid, "STUDY"),
+        /**
+         * Study Root Query/Retrieve InformationModel - GET.
+         */
         StudyRoot(UID.StudyRootQueryRetrieveInformationModelGet.uid, "STUDY"),
+        /**
+         * Patient/Study Only Query/Retrieve Information Model - GET.
+         */
         PatientStudyOnly(UID.PatientStudyOnlyQueryRetrieveInformationModelGet.uid, "STUDY"),
+        /**
+         * Composite Instance Root Retrieve - GET.
+         */
         CompositeInstanceRoot(UID.CompositeInstanceRootRetrieveGet.uid, "IMAGE"),
+        /**
+         * Composite Instance Retrieve Without Bulk Data - GET.
+         */
         WithoutBulkData(UID.CompositeInstanceRetrieveWithoutBulkDataGet.uid, null),
+        /**
+         * Hanging Protocol Information Model - GET.
+         */
         HangingProtocol(UID.HangingProtocolInformationModelGet.uid, null),
+        /**
+         * Color Palette Query/Retrieve Information Model - GET.
+         */
         ColorPalette(UID.ColorPaletteQueryRetrieveInformationModelGet.uid, null);
 
+        /**
+         * The SOP Class UID for the information model.
+         */
         final String cuid;
+        /**
+         * The default query retrieve level for the information model.
+         */
         final String level;
 
+        /**
+         * Constructs a new InformationModel.
+         *
+         * @param cuid  the SOP Class UID.
+         * @param level the query retrieve level.
+         */
         InformationModel(String cuid, String level) {
             this.cuid = cuid;
             this.level = level;

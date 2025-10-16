@@ -26,7 +26,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * slf4j/logback 实现封装
+ * This package provides an implementation of the logging facade for SLF4J/Logback.
  *
  * @author Kimi Liu
  * @since Java 17+

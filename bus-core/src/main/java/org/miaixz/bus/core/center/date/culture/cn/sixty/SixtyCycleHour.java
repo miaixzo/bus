@@ -43,7 +43,9 @@ import org.miaixz.bus.core.center.date.culture.solar.SolarTerms;
 import org.miaixz.bus.core.center.date.culture.solar.SolarTime;
 
 /**
- * 干支时辰（立春换年，节令换月，23点换日）
+ * Represents a Sixty-Year Cycle Hour (干支时辰), a traditional Chinese timekeeping unit. The year changes at the Start of
+ * Spring (立春), and the month changes at the beginning of a solar term (节令). The day changes at 23:00 (子时). This class
+ * extends {@link Loops} for cyclical operations.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -51,24 +53,24 @@ import org.miaixz.bus.core.center.date.culture.solar.SolarTime;
 public class SixtyCycleHour extends Loops {
 
     /**
-     * 公历时刻
+     * The Gregorian time associated with this Sixty-Year Cycle Hour.
      */
     protected SolarTime solarTime;
 
     /**
-     * 干支日
+     * The Sixty-Year Cycle Day associated with this hour.
      */
     protected SixtyCycleDay day;
 
     /**
-     * 时柱
+     * The Sixty-Year Cycle for the hour (时柱).
      */
     protected SixtyCycle hour;
 
     /**
-     * 初始化
+     * Constructs a {@code SixtyCycleHour} instance with the specified Gregorian time.
      *
-     * @param solarTime 公历时刻
+     * @param solarTime The Gregorian time.
      */
     public SixtyCycleHour(SolarTime solarTime) {
         int solarYear = solarTime.getYear();
@@ -101,77 +103,93 @@ public class SixtyCycleHour extends Loops {
         this.hour = lunarHour.getSixtyCycle();
     }
 
+    /**
+     * Creates a {@code SixtyCycleHour} instance from a {@link SolarTime}.
+     *
+     * @param solarTime The Gregorian time.
+     * @return A new {@code SixtyCycleHour} instance.
+     */
     public static SixtyCycleHour fromSolarTime(SolarTime solarTime) {
         return new SixtyCycleHour(solarTime);
     }
 
     /**
-     * 年柱
+     * Gets the Sixty-Year Cycle for the year (年柱).
      *
-     * @return 年柱
+     * @return The {@link SixtyCycle} instance representing the year.
      */
     public SixtyCycle getYear() {
         return day.getYear();
     }
 
     /**
-     * 月柱
+     * Gets the Sixty-Year Cycle for the month (月柱).
      *
-     * @return 月柱
+     * @return The {@link SixtyCycle} instance representing the month.
      */
     public SixtyCycle getMonth() {
         return day.getMonth();
     }
 
     /**
-     * 日柱
+     * Gets the Sixty-Year Cycle for the day (日柱).
      *
-     * @return 日柱
+     * @return The {@link SixtyCycle} instance representing the day.
      */
     public SixtyCycle getDay() {
         return day.getSixtyCycle();
     }
 
     /**
-     * 干支
+     * Gets the Sixty-Year Cycle for the hour (时柱).
      *
-     * @return 干支
+     * @return The {@link SixtyCycle} instance representing the hour.
      */
     public SixtyCycle getSixtyCycle() {
         return hour;
     }
 
     /**
-     * 干支日
+     * Gets the Sixty-Year Cycle Day associated with this hour.
      *
-     * @return 干支日
+     * @return The {@link SixtyCycleDay} instance.
      */
     public SixtyCycleDay getSixtyCycleDay() {
         return day;
     }
 
     /**
-     * 公历时刻
+     * Gets the Gregorian time associated with this Sixty-Year Cycle Hour.
      *
-     * @return 公历时刻
+     * @return The {@link SolarTime} instance.
      */
     public SolarTime getSolarTime() {
         return solarTime;
     }
 
+    /**
+     * Gets the name of this Sixty-Year Cycle Hour.
+     *
+     * @return The name of the hour as a formatted string.
+     */
     public String getName() {
         return String.format("%s时", hour);
     }
 
+    /**
+     * Returns a string representation of this Sixty-Year Cycle Hour, including the day and hour.
+     *
+     * @return A string representation of the Sixty-Year Cycle Hour.
+     */
     @Override
     public String toString() {
         return String.format("%s%s", day, getName());
     }
 
     /**
-     * 位于当天的索引
+     * Gets the index of this hour within the day (0-11).
      *
-     * @return 索引
+     * @return The index of the hour in the day.
      */
     public int getIndexInDay() {
         int h = solarTime.getHour();
@@ -179,9 +197,9 @@ public class SixtyCycleHour extends Loops {
     }
 
     /**
-     * 九星
+     * Gets the Nine Star (九星) associated with this hour.
      *
-     * @return 九星
+     * @return The {@link NineStar} instance.
      */
     public NineStar getNineStar() {
         SolarDay solar = solarTime.getSolarDay();
@@ -199,9 +217,9 @@ public class SixtyCycleHour extends Loops {
     }
 
     /**
-     * 黄道黑道十二神
+     * Gets the Twelve Star (黄道黑道十二神) associated with this hour.
      *
-     * @return 黄道黑道十二神
+     * @return The {@link TwelveStar} instance.
      */
     public TwelveStar getTwelveStar() {
         return TwelveStar
@@ -209,28 +227,28 @@ public class SixtyCycleHour extends Loops {
     }
 
     /**
-     * 宜
+     * Gets the list of recommended activities (宜) for this hour.
      *
-     * @return 宜忌列表
+     * @return A list of {@link Taboo} objects representing recommended activities.
      */
     public List<Taboo> getRecommends() {
         return Taboo.getHourRecommends(getDay(), hour);
     }
 
     /**
-     * 忌
+     * Gets the list of activities to avoid (忌) for this hour.
      *
-     * @return 宜忌列表
+     * @return A list of {@link Taboo} objects representing activities to avoid.
      */
     public List<Taboo> getAvoids() {
         return Taboo.getHourAvoids(getDay(), hour);
     }
 
     /**
-     * 推移
+     * Gets the next {@code SixtyCycleHour} by adding a specified number of seconds.
      *
-     * @param n 推移秒数
-     * @return 干支时辰
+     * @param n The number of seconds to add.
+     * @return The next {@code SixtyCycleHour} instance.
      */
     @Override
     public SixtyCycleHour next(int n) {
@@ -238,9 +256,9 @@ public class SixtyCycleHour extends Loops {
     }
 
     /**
-     * 八字
+     * Gets the Eight Characters (八字) for this Sixty-Year Cycle Hour.
      *
-     * @return 八字
+     * @return The {@link EightChar} instance.
      */
     public EightChar getEightChar() {
         return new EightChar(getYear(), getMonth(), getDay(), hour);

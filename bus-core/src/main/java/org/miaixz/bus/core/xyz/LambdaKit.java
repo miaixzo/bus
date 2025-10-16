@@ -43,7 +43,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.reflect.method.MethodInvoker;
 
 /**
- * Lambda相关工具类
+ * Utility class for Lambda expressions.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -53,9 +53,10 @@ public class LambdaKit {
     private static final WeakConcurrentMap<Object, LambdaX> CACHE = new WeakConcurrentMap<>();
 
     /**
-     * 通过对象的方法或类的静态方法引用，获取lambda实现类 传入lambda无参数但含有返回值的情况能够匹配到此方法：
+     * Gets the implementation class of a lambda expression from an object's method or a class's static method
+     * reference. This method works for lambdas with no parameters but a return value, such as:
      * <ul>
-     * <li>引用特定对象的实例方法：
+     * <li>Reference to an instance method of a particular object:
      * 
      * <pre>{@code
      * MyTeacher myTeacher = new MyTeacher();
@@ -64,7 +65,7 @@ public class LambdaKit {
      * }</pre>
      * 
      * </li>
-     * <li>引用静态无参方法：
+     * <li>Reference to a static method with no parameters:
      * 
      * <pre>{@code
      * Class<MyTeacher> staticSupplierClass = LambdaKit.getRealClass(MyTeacher::takeAge);
@@ -73,24 +74,24 @@ public class LambdaKit {
      * 
      * </li>
      * </ul>
-     * 在以下场景无法获取到正确类型
+     * Note: In some cases, the exact type cannot be retrieved:
      * 
      * <pre>{@code
-     * // 枚举测试，只能获取到枚举类型
+     * // Enum test, can only get the enum type
      * Class<Enum<?>> enumSupplierClass = LambdaKit.getRealClass(LambdaKit.LambdaKindEnum.REF_NONE::ordinal);
      * Assert.assertEquals(Enum.class, enumSupplierClass);
-     * // 调用父类方法，只能获取到父类类型
+     * // Calling a superclass method, can only get the superclass type
      * Class<Entity<?>> superSupplierClass = LambdaKit.getRealClass(myTeacher::getId);
      * Assert.assertEquals(Entity.class, superSupplierClass);
-     * // 引用父类静态带参方法，只能获取到父类类型
+     * // Reference to a superclass static method with parameters, can only get the superclass type
      * Class<Entity<?>> staticSuperFunctionClass = LambdaKit.getRealClass(MyTeacher::takeId);
      * Assert.assertEquals(Entity.class, staticSuperFunctionClass);
      * }</pre>
      *
-     * @param func lambda
-     * @param <R>  类型
-     * @param <T>  lambda的类型
-     * @return lambda实现类
+     * @param func The lambda.
+     * @param <R>  The type of the class.
+     * @param <T>  The type of the lambda.
+     * @return The lambda implementation class.
      */
     public static <R, T extends Serializable> Class<R> getRealClass(final T func) {
         final LambdaX lambdaX = resolve(func);
@@ -99,11 +100,11 @@ public class LambdaKit {
     }
 
     /**
-     * 解析lambda表达式,加了缓存。 该缓存可能会在任意不定的时间被清除
+     * Resolves a lambda expression, with caching. The cache may be cleared at any time.
      *
-     * @param func 需要解析的 lambda 对象（无参方法）
-     * @param <T>  lambda的类型
-     * @return 返回解析后的结果
+     * @param func The lambda object to resolve.
+     * @param <T>  The type of the lambda.
+     * @return The resolved lambda information.
      */
     public static <T extends Serializable> LambdaX resolve(final T func) {
         return CACHE.computeIfAbsent(func, (key) -> {
@@ -130,54 +131,54 @@ public class LambdaKit {
     }
 
     /**
-     * 获取lambda表达式函数（方法）名称
+     * Gets the method name of a lambda expression.
      *
-     * @param func 函数（无参方法）
-     * @param <T>  lambda的类型
-     * @return 函数名称
+     * @param func The function (method reference).
+     * @param <T>  The type of the lambda.
+     * @return The method name.
      */
     public static <T extends Serializable> String getMethodName(final T func) {
         return resolve(func).getName();
     }
 
     /**
-     * 获取lambda表达式Getter或Setter函数（方法）对应的字段名称，规则如下：
+     * Gets the field name corresponding to a lambda expression of a Getter or Setter method. The rules are:
      * <ul>
-     * <li>getXxxx获取为xxxx，如getName得到name。</li>
-     * <li>setXxxx获取为xxxx，如setName得到name。</li>
-     * <li>isXxxx获取为xxxx，如isName得到name。</li>
-     * <li>其它不满足规则的方法名抛出{@link IllegalArgumentException}</li>
+     * <li>`getXxxx` becomes `xxxx` (e.g., `getName` becomes `name`).</li>
+     * <li>`setXxxx` becomes `xxxx` (e.g., `setName` becomes `name`).</li>
+     * <li>`isXxxx` becomes `xxxx` (e.g., `isName` becomes `name`).</li>
+     * <li>Other method names that do not follow these rules will throw an {@link IllegalArgumentException}.</li>
      * </ul>
      *
-     * @param func 函数
-     * @param <T>  lambda的类型
-     * @return 方法名称
-     * @throws IllegalArgumentException 非Getter或Setter方法
+     * @param func The function.
+     * @param <T>  The type of the lambda.
+     * @return The field name.
+     * @throws IllegalArgumentException if the method is not a standard getter or setter.
      */
     public static <T extends Serializable> String getFieldName(final T func) throws IllegalArgumentException {
         return BeanKit.getFieldName(getMethodName(func));
     }
 
     /**
-     * 等效于 Obj::getXxx
+     * Builds a `Function` equivalent to a getter method reference (`Obj::getXxx`).
      *
-     * @param getMethod getter方法
-     * @param <T>       调用getter方法对象类型
-     * @param <R>       getter方法返回值类型
-     * @return Obj::getXxx
+     * @param getMethod The getter method.
+     * @param <T>       The type of the object calling the getter.
+     * @param <R>       The return type of the getter.
+     * @return A `Function` representing `Obj::getXxx`.
      */
     public static <T, R> Function<T, R> buildGetter(final Method getMethod) {
         return LambdaFactory.build(Function.class, getMethod);
     }
 
     /**
-     * 等效于 Obj::getXxx
+     * Builds a `Function` equivalent to a getter method reference (`Obj::getXxx`).
      *
-     * @param clazz     调用getter方法对象类
-     * @param fieldName 字段名称
-     * @param <T>       调用getter方法对象类型
-     * @param <R>       getter方法返回值类型
-     * @return Obj::getXxx
+     * @param clazz     The class of the object calling the getter.
+     * @param fieldName The name of the field.
+     * @param <T>       The type of the object calling the getter.
+     * @param <R>       The return type of the getter.
+     * @return A `Function` representing `Obj::getXxx`.
      */
     public static <T, R> Function<T, R> buildGetter(final Class<T> clazz, final String fieldName) {
         final MethodInvoker getter = (MethodInvoker) BeanKit.getBeanDesc(clazz).getGetter(fieldName);
@@ -185,12 +186,12 @@ public class LambdaKit {
     }
 
     /**
-     * 等效于 Obj::setXxx
+     * Builds a `BiConsumer` equivalent to a setter method reference (`Obj::setXxx`).
      *
-     * @param setMethod setter方法
-     * @param <T>       调用setter方法对象类型
-     * @param <P>       setter方法返回的值类型
-     * @return Obj::setXxx
+     * @param setMethod The setter method.
+     * @param <T>       The type of the object calling the setter.
+     * @param <P>       The type of the parameter of the setter.
+     * @return A `BiConsumer` representing `Obj::setXxx`.
      */
     public static <T, P> BiConsumer<T, P> buildSetter(final Method setMethod) {
         final Class<?> returnType = setMethod.getReturnType();
@@ -198,19 +199,19 @@ public class LambdaKit {
             return LambdaFactory.build(BiConsumer.class, setMethod);
         }
 
-        // 返回this的setter
+        // Handle fluent setters that return 'this'
         final BiFunction<T, P, ?> biFunction = LambdaFactory.build(BiFunction.class, setMethod);
         return biFunction::apply;
     }
 
     /**
-     * Obj::setXxx
+     * Builds a `BiConsumer` equivalent to a setter method reference (`Obj::setXxx`).
      *
-     * @param clazz     调用setter方法对象类
-     * @param fieldName 字段名称
-     * @param <T>       调用setter方法对象类型
-     * @param <P>       setter方法返回的值类型
-     * @return Obj::setXxx
+     * @param clazz     The class of the object calling the setter.
+     * @param fieldName The name of the field.
+     * @param <T>       The type of the object calling the setter.
+     * @param <P>       The type of the parameter of the setter.
+     * @return A `BiConsumer` representing `Obj::setXxx`.
      */
     public static <T, P> BiConsumer<T, P> buildSetter(final Class<T> clazz, final String fieldName) {
         final MethodInvoker setter = (MethodInvoker) BeanKit.getBeanDesc(clazz).getSetter(fieldName);
@@ -218,14 +219,14 @@ public class LambdaKit {
     }
 
     /**
-     * 等效于 Obj::method
+     * Builds a functional interface instance for a method reference (`Obj::method`).
      *
-     * @param lambdaType  接受lambda的函数式接口类型
-     * @param clazz       调用类
-     * @param methodName  方法名
-     * @param paramsTypes 方法参数类型数组
-     * @param <F>         函数式接口类型
-     * @return Obj::method
+     * @param lambdaType  The functional interface type to build.
+     * @param clazz       The class containing the method.
+     * @param methodName  The method name.
+     * @param paramsTypes The parameter types of the method.
+     * @param <F>         The type of the functional interface.
+     * @return An instance of the functional interface.
      */
     public static <F> F build(
             final Class<F> lambdaType,
@@ -236,76 +237,74 @@ public class LambdaKit {
     }
 
     /**
-     * 通过自定义固定参数，将{@link BiFunction}转换为{@link Function}
+     * Converts a {@link BiFunction} to a {@link Function} by fixing the second parameter.
      *
-     * @param biFunction {@link BiFunction}
-     * @param param      参数
-     * @param <T>        参数类型
-     * @param <U>        参数2类型
-     * @param <R>        返回值类型
-     * @return {@link Function}
+     * @param biFunction The {@link BiFunction}.
+     * @param param      The fixed second parameter.
+     * @param <T>        The type of the first parameter.
+     * @param <U>        The type of the second parameter.
+     * @param <R>        The return type.
+     * @return A {@link Function}.
      */
     public static <T, U, R> Function<T, R> toFunction(final BiFunction<T, U, R> biFunction, final U param) {
         return (t) -> biFunction.apply(t, param);
     }
 
     /**
-     * 通过自定义固定参数，将{@link BiPredicate}转换为{@link Predicate}
+     * Converts a {@link BiPredicate} to a {@link Predicate} by fixing the second parameter.
      *
-     * @param biPredicate {@link BiFunction}
-     * @param param       参数
-     * @param <T>         参数类型
-     * @param <U>         参数2类型
-     * @return {@link Predicate}
+     * @param biPredicate The {@link BiPredicate}.
+     * @param param       The fixed second parameter.
+     * @param <T>         The type of the first parameter.
+     * @param <U>         The type of the second parameter.
+     * @return A {@link Predicate}.
      */
     public static <T, U> Predicate<T> toPredicate(final BiPredicate<T, U> biPredicate, final U param) {
         return (t) -> biPredicate.test(t, param);
     }
 
     /**
-     * 通过自定义固定参数，将{@link BiConsumer}转换为{@link Consumer}
+     * Converts a {@link BiConsumer} to a {@link Consumer} by fixing the second parameter.
      *
-     * @param biConsumer {@link BiConsumer}
-     * @param param      参数
-     * @param <T>        参数类型
-     * @param <U>        参数2类型
-     * @return {@link Consumer}
+     * @param biConsumer The {@link BiConsumer}.
+     * @param param      The fixed second parameter.
+     * @param <T>        The type of the first parameter.
+     * @param <U>        The type of the second parameter.
+     * @return A {@link Consumer}.
      */
     public static <T, U> Consumer<T> toPredicate(final BiConsumer<T, U> biConsumer, final U param) {
         return (t) -> biConsumer.accept(t, param);
     }
 
     /**
-     * 获取函数的执行方法
+     * Gets the abstract method of a functional interface.
      *
-     * @param funcType 函数接口类
-     * @return {@link Method}
+     * @param funcType The functional interface class.
+     * @return The {@link Method}.
      */
     public static Method getInvokeMethod(final Class<?> funcType) {
-        // 获取Lambda函数
         final Method[] abstractMethods = MethodKit.getPublicMethods(funcType, ModifierKit::isAbstract);
         Assert.equals(abstractMethods.length, 1, "Not a function class: " + funcType.getName());
-
         return abstractMethods[0];
     }
 
     /**
-     * 解析lambda表达式,没加缓存
+     * Resolves a lambda expression without caching.
      *
      * <p>
-     * 通过反射调用实现序列化接口函数对象的writeReplace方法，从而拿到{@link SerializedLambda} 该对象中包含了lambda表达式的大部分信息。
-     * </p>
+     * It reflectively calls the `writeReplace` method on the serializable lambda to obtain the
+     * {@link SerializedLambda}, which contains most of the lambda's information.
      *
-     * @param func 需要解析的 lambda 对象
-     * @param <T>  lambda的类型
-     * @return 返回解析后的结果
+     * @param func The lambda object to resolve.
+     * @param <T>  The type of the lambda.
+     * @return The resolved `SerializedLambda`.
      */
     private static <T extends Serializable> SerializedLambda _resolve(final T func) {
         if (func instanceof SerializedLambda) {
             return (SerializedLambda) func;
         }
         if (func instanceof Proxy) {
-            throw new IllegalArgumentException("not support proxy, just for now");
+            throw new IllegalArgumentException("Proxy not supported at this time.");
         }
         final Class<? extends Serializable> clazz = func.getClass();
         if (!clazz.isSynthetic()) {

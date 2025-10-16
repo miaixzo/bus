@@ -26,7 +26,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 提供CSV文件读写的封装 规范见：https://datatracker.ietf.org/doc/html/rfc4180
+ * Provides encapsulation for CSV file reading and writing. The specification can be found at:
+ * <a href="https://datatracker.ietf.org/doc/html/rfc4180">RFC 4180</a>
  *
  * @author Kimi Liu
  * @since Java 17+

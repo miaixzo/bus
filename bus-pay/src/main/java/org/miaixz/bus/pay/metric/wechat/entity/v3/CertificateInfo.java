@@ -27,17 +27,17 @@
 */
 package org.miaixz.bus.pay.metric.wechat.entity.v3;
 
-import java.io.Serial;
-import java.io.Serializable;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 /**
- * 证书响应参数
+ * Model for the individual certificate information within the platform certificates download response.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -52,9 +52,21 @@ public class CertificateInfo implements Serializable {
     @Serial
     private static final long serialVersionUID = 2852258391088L;
 
+    /**
+     * The serial number of the certificate.
+     */
     private String serial_no;
+    /**
+     * The effective time of the certificate.
+     */
     private String effective_time;
+    /**
+     * The expiration time of the certificate.
+     */
     private String expire_time;
+    /**
+     * The encrypted certificate details.
+     */
     private EncryptCertificate encrypt_certificate;
 
 }

@@ -33,64 +33,93 @@ import java.nio.ByteOrder;
 import org.miaixz.bus.core.codec.hash.Hash64;
 
 /**
- * Apache 发布的MetroHash算法的64位实现，是一组用于非加密用例的最先进的哈希函数。 除了卓越的性能外，他们还以算法生成而著称。
+ * A 64-bit implementation of the MetroHash algorithm, a set of state-of-the-art hash functions for non-cryptographic
+ * use cases.
  *
  * <p>
- * 官方实现：https://github.com/jandrewrogers/MetroHash 官方文档：http://www.jandrewrogers.com/2015/05/27/metrohash/
- * 来自：https://github.com/postamar/java-metrohash/
- * </p>
+ * Official implementation:
+ * <a href="https://github.com/jandrewrogers/MetroHash">https://github.com/jandrewrogers/MetroHash</a><br>
+ * Official documentation: <a href=
+ * "http://www.jandrewrogers.com/2015/05/27/metrohash/">http://www.jandrewrogers.com/2015/05/27/metrohash/</a><br>
+ * Ported from: <a href="https://github.com/postamar/java-metrohash/">https://github.com/postamar/java-metrohash/</a>
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class MetroHash64 extends AbstractMetroHash<MetroHash64> implements Hash64<byte[]> {
 
+    /**
+     * Predefined constants for the MetroHash64 algorithm.
+     */
     private static final long K0 = 0xD6D018F5L;
     private static final long K1 = 0xA2AA033BL;
     private static final long K2 = 0x62992FC1L;
     private static final long K3 = 0x30BC5B29L;
+
+    /**
+     * The current hash value.
+     */
     private long hash;
 
     /**
-     * 使用指定种子构造
+     * Constructs a new {@code MetroHash64} instance with a specified seed.
      *
-     * @param seed 种子
+     * @param seed The seed value.
      */
     public MetroHash64(final long seed) {
         super(seed);
     }
 
     /**
-     * 创建 {@code MetroHash64}对象
+     * Creates a new {@code MetroHash64} instance.
      *
-     * @param seed 种子
-     * @return {@code MetroHash64}对象
+     * @param seed The seed value.
+     * @return A new {@code MetroHash64} instance.
      */
     public static MetroHash64 of(final long seed) {
         return new MetroHash64(seed);
     }
 
+    /**
+     * Resets the hash state to its initial values based on the seed.
+     *
+     * @return this instance for chaining.
+     */
     @Override
     public MetroHash64 reset() {
-        v0 = v1 = v2 = v3 = hash = (seed + K2) * K0;
+        hash = (seed + K2) * K0;
+        v0 = v1 = v2 = v3 = hash;
         nChunks = 0;
         return this;
     }
 
     /**
-     * 获取计算结果hash值
+     * Gets the final 64-bit hash value after all data has been processed.
      *
-     * @return hash值
+     * @return The 64-bit hash value.
      */
     public long get() {
         return hash;
     }
 
+    /**
+     * Calculates the 64-bit hash for the given byte array.
+     *
+     * @param bytes The input byte array.
+     * @return The 64-bit hash value.
+     */
     @Override
     public long hash64(final byte[] bytes) {
         return apply(ByteBuffer.wrap(bytes)).get();
     }
 
+    /**
+     * Writes the final 64-bit hash value to the given {@link ByteBuffer} in the specified byte order.
+     *
+     * @param output    The buffer to write to.
+     * @param byteOrder The byte order to use.
+     * @return this instance for chaining.
+     */
     @Override
     public MetroHash64 write(final ByteBuffer output, final ByteOrder byteOrder) {
         if (ByteOrder.LITTLE_ENDIAN == byteOrder) {
@@ -101,6 +130,12 @@ public class MetroHash64 extends AbstractMetroHash<MetroHash64> implements Hash6
         return this;
     }
 
+    /**
+     * Processes a 32-byte chunk from the input and updates the hash state.
+     *
+     * @param partialInput The byte buffer, which must have at least 32 bytes remaining.
+     * @return this instance for chaining.
+     */
     @Override
     MetroHash64 partialApply32ByteChunk(final ByteBuffer partialInput) {
         assert partialInput.remaining() >= 32;
@@ -116,6 +151,12 @@ public class MetroHash64 extends AbstractMetroHash<MetroHash64> implements Hash6
         return this;
     }
 
+    /**
+     * Processes the remaining bytes (less than 32) from the input and finalizes the hash state.
+     *
+     * @param partialInput The byte buffer, which has fewer than 32 bytes remaining.
+     * @return this instance for chaining.
+     */
     @Override
     MetroHash64 partialApplyRemaining(final ByteBuffer partialInput) {
         assert partialInput.remaining() < 32;
@@ -143,6 +184,9 @@ public class MetroHash64 extends AbstractMetroHash<MetroHash64> implements Hash6
         return this;
     }
 
+    /**
+     * Applies the finalization logic for inputs that were larger than 32 bytes.
+     */
     private void metroHash64_32() {
         v2 ^= Long.rotateRight(((v0 + v3) * K0) + v1, 37) * K1;
         v3 ^= Long.rotateRight(((v1 + v2) * K1) + v0, 37) * K0;
@@ -151,6 +195,11 @@ public class MetroHash64 extends AbstractMetroHash<MetroHash64> implements Hash6
         hash += v0 ^ v1;
     }
 
+    /**
+     * Applies the hashing logic for a 16-byte chunk.
+     * 
+     * @param bb The ByteBuffer containing the data.
+     */
     private void metroHash64_16(final ByteBuffer bb) {
         v0 = hash + grab(bb, 8) * K2;
         v0 = Long.rotateRight(v0, 29) * K3;
@@ -161,21 +210,41 @@ public class MetroHash64 extends AbstractMetroHash<MetroHash64> implements Hash6
         hash += v1;
     }
 
+    /**
+     * Applies the hashing logic for an 8-byte chunk.
+     * 
+     * @param bb The ByteBuffer containing the data.
+     */
     private void metroHash64_8(final ByteBuffer bb) {
         hash += grab(bb, 8) * K3;
         hash ^= Long.rotateRight(hash, 55) * K1;
     }
 
+    /**
+     * Applies the hashing logic for a 4-byte chunk.
+     * 
+     * @param bb The ByteBuffer containing the data.
+     */
     private void metroHash64_4(final ByteBuffer bb) {
         hash += grab(bb, 4) * K3;
         hash ^= Long.rotateRight(hash, 26) * K1;
     }
 
+    /**
+     * Applies the hashing logic for a 2-byte chunk.
+     * 
+     * @param bb The ByteBuffer containing the data.
+     */
     private void metroHash64_2(final ByteBuffer bb) {
         hash += grab(bb, 2) * K3;
         hash ^= Long.rotateRight(hash, 48) * K1;
     }
 
+    /**
+     * Applies the hashing logic for a 1-byte chunk.
+     * 
+     * @param bb The ByteBuffer containing the data.
+     */
     private void metroHash64_1(final ByteBuffer bb) {
         hash += grab(bb, 1) * K3;
         hash ^= Long.rotateRight(hash, 37) * K1;

@@ -50,11 +50,11 @@ import java.util.ArrayList;
  * for (int i = 0; i < n; i++) {
  *     BufferedImage frame = d.getFrame(i); // frame i
  *     int t = d.getDelay(i); // display duration of frame in milliseconds
- *     // do something with frame
+ * // do something with frame
  * }
  * }
  * </pre>
- * 
+ *
  * No copyright asserted on the source code of this class. May be used for any purpose, however, refer to the Unisys LZW
  * patent for any additional restrictions. Please forward any corrections to questions at fmsware.com.
  */
@@ -74,45 +74,150 @@ public class GifDecoder {
      * File read status: Unable to open source.
      */
     public static final int STATUS_OPEN_ERROR = 2;
+    /**
+     * The maximum decoder pixel stack size.
+     */
     protected static final int MaxStackSize = 4096;
+    /**
+     * The buffered input stream.
+     */
     protected BufferedInputStream in;
+    /**
+     * The current status of the decoder.
+     */
     protected int status;
+    /**
+     * The full image width.
+     */
     protected int width; // full image width
+    /**
+     * The full image height.
+     */
     protected int height; // full image height
+    /**
+     * Flag indicating if a global color table is used.
+     */
     protected boolean gctFlag; // global color table used
+    /**
+     * Size of the global color table.
+     */
     protected int gctSize; // size of global color table
+    /**
+     * Number of iterations; 0 means repeat forever.
+     */
     protected int loopCount = 1; // iterations; 0 = repeat forever
+    /**
+     * The global color table.
+     */
     protected int[] gct; // global color table
+    /**
+     * The local color table.
+     */
     protected int[] lct; // local color table
+    /**
+     * The active color table.
+     */
     protected int[] act; // active color table
+    /**
+     * The background color index.
+     */
     protected int bgIndex; // background color index
+    /**
+     * The background color.
+     */
     protected int bgColor; // background color
+    /**
+     * The previous background color.
+     */
     protected int lastBgColor; // previous bg color
+    /**
+     * The pixel aspect ratio.
+     */
     protected int pixelAspect; // pixel aspect ratio
+    /**
+     * Flag indicating if a local color table is used.
+     */
     protected boolean lctFlag; // local color table flag
+    /**
+     * Flag indicating if the image is interlaced.
+     */
     protected boolean interlace; // interlace flag
+    /**
+     * The size of the local color table.
+     */
     protected int lctSize; // local color table size
+    /**
+     * The current image rectangle coordinates and dimensions.
+     */
     protected int ix, iy, iw, ih; // current image rectangle
+    /**
+     * The last image rectangle.
+     */
     protected Rectangle lastRect; // last image rect
+    /**
+     * The current frame image.
+     */
     protected BufferedImage image; // current frame
+    /**
+     * The previous frame image.
+     */
     protected BufferedImage lastImage; // previous frame
+    /**
+     * The current data block.
+     */
     protected byte[] block = new byte[256]; // current data block
+    /**
+     * The size of the current block.
+     */
     protected int blockSize = 0; // block size
     // last graphic control extension info
+    /**
+     * The disposal method for the last graphic control extension.
+     */
     protected int dispose = 0;
     // 0=no action; 1=leave in place; 2=restore to bg; 3=restore to prev
+    /**
+     * The last disposal method used.
+     */
     protected int lastDispose = 0;
+    /**
+     * Flag indicating if a transparent color is used.
+     */
     protected boolean transparency = false; // use transparent color
+    /**
+     * The delay in milliseconds.
+     */
     protected int delay = 0; // delay in milliseconds
+    /**
+     * The transparent color index.
+     */
     protected int transIndex; // transparent color index
     // max decoder pixel stack size
     // LZW decoder working arrays
+    /**
+     * LZW decoder working array.
+     */
     protected short[] prefix;
+    /**
+     * LZW decoder working array.
+     */
     protected byte[] suffix;
+    /**
+     * LZW decoder working array.
+     */
     protected byte[] pixelStack;
+    /**
+     * Byte array of pixel data.
+     */
     protected byte[] pixels;
 
-    protected ArrayList frames; // frames read from current file
+    /**
+     * List of frames read from the current file.
+     */
+    protected ArrayList<GifFrame> frames; // frames read from current file
+    /**
+     * The total number of frames.
+     */
     protected int frameCount;
 
     /**
@@ -125,7 +230,7 @@ public class GifDecoder {
         //
         delay = -1;
         if ((n >= 0) && (n < frameCount)) {
-            delay = ((GifFrame) frames.get(n)).delay;
+            delay = frames.get(n).delay;
         }
         return delay;
     }
@@ -250,12 +355,13 @@ public class GifDecoder {
     /**
      * Gets the image contents of frame n.
      *
+     * @param n the frame index.
      * @return BufferedImage representation of frame, or null if n is invalid.
      */
     public BufferedImage getFrame(int n) {
         BufferedImage im = null;
         if ((n >= 0) && (n < frameCount)) {
-            im = ((GifFrame) frames.get(n)).image;
+            im = frames.get(n).image;
         }
         return im;
     }
@@ -471,6 +577,8 @@ public class GifDecoder {
 
     /**
      * Returns true if an error was encountered during reading/decoding
+     *
+     * @return true if an error occurred.
      */
     protected boolean err() {
         return status != STATUS_OK;
@@ -482,13 +590,15 @@ public class GifDecoder {
     protected void init() {
         status = STATUS_OK;
         frameCount = 0;
-        frames = new ArrayList();
+        frames = new ArrayList<>();
         gct = null;
         lct = null;
     }
 
     /**
      * Reads a single byte from the input stream.
+     *
+     * @return the byte read.
      */
     protected int read() {
         int curByte = 0;
@@ -741,6 +851,8 @@ public class GifDecoder {
 
     /**
      * Reads next 16-bit value, LSB first
+     *
+     * @return the 16-bit value.
      */
     protected int readShort() {
         // read 16-bit value, LSB first
@@ -755,9 +867,9 @@ public class GifDecoder {
         lastRect = new Rectangle(ix, iy, iw, ih);
         lastImage = image;
         lastBgColor = bgColor;
-        int dispose = 0;
-        boolean transparency = false;
-        int delay = 0;
+        dispose = 0;
+        transparency = false;
+        delay = 0;
         lct = null;
     }
 
@@ -770,11 +882,26 @@ public class GifDecoder {
         } while ((blockSize > 0) && !err());
     }
 
+    /**
+     * A frame as part of a GIF animation.
+     */
     static class GifFrame {
 
+        /**
+         * The image contents of the frame.
+         */
         public BufferedImage image;
+        /**
+         * The display delay for this frame.
+         */
         public int delay;
 
+        /**
+         * Constructor.
+         *
+         * @param image The image for this frame.
+         * @param delay The delay for this frame.
+         */
         public GifFrame(BufferedImage image, int delay) {
             this.image = image;
             this.delay = delay;

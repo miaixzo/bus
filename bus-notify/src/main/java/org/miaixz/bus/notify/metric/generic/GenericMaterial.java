@@ -42,7 +42,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * 电子邮件消息
+ * Represents the material for generic email messages.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -54,149 +54,192 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class GenericMaterial extends Material {
 
+    /**
+     * SMTP host property key.
+     */
     private static final String SMTP_HOST = "mail.smtp.host";
+    /**
+     * SMTP port property key.
+     */
     private static final String SMTP_PORT = "mail.smtp.port";
+    /**
+     * SMTP authentication property key.
+     */
     private static final String SMTP_AUTH = "mail.smtp.auth";
+    /**
+     * SMTP timeout property key.
+     */
     private static final String SMTP_TIMEOUT = "mail.smtp.timeout";
+    /**
+     * SMTP connection timeout property key.
+     */
     private static final String SMTP_CONNECTION_TIMEOUT = "mail.smtp.connectiontimeout";
 
+    /**
+     * Socket factory class property key.
+     */
     private static final String SOCKEY_FACTORY = "mail.smtp.socketFactory.class";
+    /**
+     * Socket factory port property key.
+     */
     private static final String SOCKEY_FACTORY_PORT = "smtp.socketFactory.port";
+    /**
+     * Socket factory fallback property key.
+     */
     private static final String SOCKET_FACTORY_FALLBACK = "mail.smtp.socketFactory.fallback";
 
+    /**
+     * TLS enable property key.
+     */
     private static final String MAIL_TLS_ENABLE = "mail.smtp.starttls.enable";
+    /**
+     * Mail protocol property key.
+     */
     private static final String MAIL_PROTOCOL = "mail.transport.protocol";
 
+    /**
+     * Split long parameters property key.
+     */
     private static final String SPLIT_LONG_PARAMS = "mail.mime.splitlongparameters";
+    /**
+     * Mail debug property key.
+     */
     private static final String MAIL_DEBUG = "mail.debug";
 
     /**
-     * SMTP服务器域名
+     * The SMTP server domain name.
      */
     private String host;
     /**
-     * SMTP服务端口
+     * The SMTP service port.
      */
     private Integer port;
     /**
-     * 是否需要用户名密码验证
+     * Indicates whether username and password authentication is required.
      */
     private Boolean auth;
     /**
-     * 用户名
+     * The username for authentication.
      */
     private String user;
     /**
-     * 密码
+     * The password for authentication.
      */
     private String pass;
     /**
-     * 是否打开调试模式,调试模式会显示与邮件服务器通信过程,默认不开启
+     * Whether to enable debug mode. Debug mode displays the communication process with the mail server. Disabled by
+     * default.
      */
     private boolean debug;
     /**
-     * 编码用于编码邮件正文和发送人、收件人等中文
+     * The character set used for encoding email body, sender, recipient, and other Chinese characters.
      */
     private java.nio.charset.Charset charset;
     /**
-     * 对于超长参数是否切分为多份,默认为false(国内邮箱附件不支持切分的附件名)
+     * Whether to split overly long parameters into multiple parts. Defaults to false (attachment names for domestic
+     * email do not support splitting).
      */
     private boolean splitlongparameters;
 
     /**
-     * 使用 STARTTLS安全连接,STARTTLS是对纯文本通信协议的扩展 它将纯文本连接升级为加密连接(TLS或SSL), 而不是使用一个单独的加密通信端口
+     * Uses STARTTLS for secure connection. STARTTLS is an extension to plain text communication protocols that upgrades
+     * a plain text connection to an encrypted connection (TLS or SSL), rather than using a separate encrypted
+     * communication port.
      */
     private boolean startttlsEnable;
     /**
-     * 使用 SSL安全连接
+     * Uses SSL for secure connection.
      */
     private Boolean sslEnable;
     /**
-     * 指定实现javax.net.SocketFactory接口的类的名称,这个类将被用于创建SMTP的套接字
+     * The name of the class that implements the {@code javax.net.SocketFactory} interface. This class will be used to
+     * create SMTP sockets.
      */
     private String socketFactoryClass = "javax.net.ssl.SSLSocketFactory";
     /**
-     * 如果设置为true,未能创建一个套接字使用指定的套接字工厂类将导致使用java.net.Socket创建的套接字类, 默认值为true
+     * If set to true, failure to create a socket using the specified socket factory class will result in using a socket
+     * created with {@code java.net.Socket} class. Defaults to true.
      */
     private boolean socketFactoryFallback;
     /**
-     * 指定的端口连接到在使用指定的套接字工厂 如果没有设置,将使用默认端口
+     * The specified port to connect to when using the specified socket factory. If not set, the default port will be
+     * used.
      */
     private int socketFactoryPort = 465;
 
     /**
-     * SMTP超时时长,单位毫秒,缺省值不超时
+     * The SMTP timeout duration in milliseconds. Defaults to no timeout.
      */
     private long timeout;
     /**
-     * Socket连接超时值,单位毫秒,缺省值不超时
+     * The socket connection timeout value in milliseconds. Defaults to no timeout.
      */
     private long connectionTimeout;
 
     /**
-     * 抄送人列表(carbon copy)
+     * A comma-separated list of carbon copy (CC) recipients.
      */
     private String ccs;
     /**
-     * 密送人列表(blind carbon copy)
+     * A comma-separated list of blind carbon copy (BCC) recipients.
      */
     private String bccs;
 
     /**
-     * 标题
+     * The subject of the email.
      */
     private String title;
     /**
-     * 内容
+     * The content of the email.
      */
     private String content;
 
     /**
-     * 附件列表
+     * A list of attachments for the email.
      */
     private File[] attachments;
     /**
-     * 是否使用全局会话,默认为true
+     * Whether to use a global session. Defaults to true.
      */
     private boolean useGlobalSession;
 
     /**
-     * 如果某些值为null,使用默认值
+     * Fills in default values for properties if they are null or empty.
      *
-     * @return this
+     * @return This {@code GenericMaterial} instance with default values applied.
      */
     public GenericMaterial defaultIfEmpty() {
         if (StringKit.isBlank(this.host)) {
-            // 如果SMTP地址为空,默认使用smtp.<发件人邮箱后缀>
+            // If the SMTP address is empty, default to smtp.<sender_email_suffix>
             this.host = StringKit
                     .format("smtp.{}", StringKit.subSuf(this.sender, this.sender.indexOf(Symbol.C_AT) + 1));
         }
         if (StringKit.isBlank(user)) {
-            // 如果用户名为空,默认为发件人邮箱前缀
+            // If the username is empty, default to the sender's email prefix
             this.user = StringKit.subPre(this.sender, this.sender.indexOf(Symbol.C_AT));
         }
         if (null == this.auth) {
-            // 如果密码非空白,则使用认证模式
+            // If the password is not blank, use authentication mode
             this.auth = ArrayKit.isNotEmpty(this.pass);
         }
         if (null == this.port) {
-            // 端口在SSL状态下默认与socketFactoryPort一致,非SSL状态下默认为25
+            // Port defaults to socketFactoryPort in SSL state, and 25 in non-SSL state
             this.port = (null != this.sslEnable && this.sslEnable) ? this.socketFactoryPort : 25;
         }
         if (null == this.charset) {
-            // 默认UTF-8编码
+            // Default to UTF-8 encoding
             this.charset = Charset.UTF_8;
         }
         return this;
     }
 
     /**
-     * 获得SMTP相关信息
+     * Retrieves SMTP-related properties.
      *
-     * @return {@link java.util.Properties}
+     * @return A {@link java.util.Properties} object containing SMTP configuration.
      */
     public java.util.Properties getSmtpProps() {
-        // 全局系统参数
+        // Global system parameters
         System.setProperty(SPLIT_LONG_PARAMS, String.valueOf(this.splitlongparameters));
 
         final java.util.Properties p = new java.util.Properties();
@@ -214,11 +257,13 @@ public class GenericMaterial extends Material {
         p.put(MAIL_DEBUG, String.valueOf(this.debug));
 
         if (this.startttlsEnable) {
-            // STARTTLS是对纯文本通信协议的扩展 它将纯文本连接升级为加密连接(TLS或SSL), 而不是使用一个单独的加密通信端口
+            // STARTTLS is an extension to plain text communication protocols that upgrades a plain text connection to
+            // an encrypted connection (TLS or SSL), rather than using a separate encrypted communication port
             p.put(MAIL_TLS_ENABLE, String.valueOf(this.startttlsEnable));
 
             if (null == this.sslEnable) {
-                // 为了兼容旧版本,当用户没有此项配置时,按照startttlsEnable开启状态时对待
+                // For compatibility with older versions, if this item is not configured by the user, it is treated as
+                // enabled when startttlsEnable is true
                 this.sslEnable = true;
             }
         }

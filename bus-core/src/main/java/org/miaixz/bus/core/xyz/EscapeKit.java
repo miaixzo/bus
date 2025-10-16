@@ -36,8 +36,9 @@ import org.miaixz.bus.core.text.escape.XmlEscape;
 import org.miaixz.bus.core.text.escape.XmlUnescape;
 
 /**
- * 转义和反转义工具类Escape / Unescape escape采用ISO Latin字符集对指定的字符串进行编码。
- * 所有的空格符、标点符号、特殊字符以及其他非ASCII字符都将被转化成%xx格式的字符编码(xx等于该字符在字符集表里面的编码的16进制数字)。
+ * Utility class for escaping and unescaping strings. This is equivalent to JavaScript's `escape()` and `unescape()`
+ * functions, which encode strings using the ISO Latin character set. All spaces, punctuation, special characters, and
+ * other non-ASCII characters are converted to %xx format.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -45,25 +46,25 @@ import org.miaixz.bus.core.text.escape.XmlUnescape;
 public class EscapeKit {
 
     /**
-     * 不转义的符号编码
+     * Characters that should not be escaped for JS compatibility.
      */
     private static final String NOT_ESCAPE_CHARS = "*@-_+./";
     private static final Predicate<Character> JS_ESCAPE_FILTER = c -> !(Character.isDigit(c) || Character.isLowerCase(c)
             || Character.isUpperCase(c) || StringKit.contains(NOT_ESCAPE_CHARS, c));
 
     /**
-     * 转义XML中的特殊字符
+     * Escapes special characters in XML.
      * 
      * <pre>
-     * 	 &amp; (ampersand) 替换为 &amp;amp;
-     * 	 &lt; (less than) 替换为 &amp;lt;
-     * 	 &gt; (greater than) 替换为 &amp;gt;
-     * 	 &quot; (double quote) 替换为 &amp;quot;
-     * 	 ' (single quote / apostrophe) 替换为 &amp;apos;
+     * &amp; (ampersand) becomes &amp;amp;
+     * &lt; (less than) becomes &amp;lt;
+     * &gt; (greater than) becomes &amp;gt;
+     * &quot; (double quote) becomes &amp;quot;
+     * ' (single quote / apostrophe) becomes &amp;apos;
      * </pre>
      *
-     * @param xml XML文本
-     * @return 转义后的文本
+     * @param xml The XML text.
+     * @return The escaped text.
      */
     public static String escapeXml(final CharSequence xml) {
         final XmlEscape escape = new XmlEscape();
@@ -71,10 +72,10 @@ public class EscapeKit {
     }
 
     /**
-     * 反转义XML中的特殊字符
+     * Unescapes special characters in XML.
      *
-     * @param xml XML文本
-     * @return 转义后的文本
+     * @param xml The XML text.
+     * @return The unescaped text.
      */
     public static String unescapeXml(final CharSequence xml) {
         final XmlUnescape unescape = new XmlUnescape();
@@ -82,10 +83,10 @@ public class EscapeKit {
     }
 
     /**
-     * 转义HTML4中的特殊字符
+     * Escapes special characters in HTML4.
      *
-     * @param html HTML文本
-     * @return 转义后的文本
+     * @param html The HTML text.
+     * @return The escaped text.
      */
     public static String escapeHtml4(final CharSequence html) {
         final Html4Escape escape = new Html4Escape();
@@ -93,10 +94,10 @@ public class EscapeKit {
     }
 
     /**
-     * 反转义HTML4中的特殊字符
+     * Unescapes special characters in HTML4.
      *
-     * @param html HTML文本
-     * @return 转义后的文本
+     * @param html The HTML text.
+     * @return The unescaped text.
      */
     public static String unescapeHtml4(final CharSequence html) {
         final Html4Unescape unescape = new Html4Unescape();
@@ -104,32 +105,32 @@ public class EscapeKit {
     }
 
     /**
-     * Escape编码（Unicode）（等同于JS的escape()方法） 该方法不会对 ASCII 字母和数字进行编码，也不会对下面这些 ASCII 标点符号进行编码： * @ - _ + . /
-     * 其他所有的字符都会被转义序列替换。
+     * Escapes a string using JavaScript's `escape()` style (Unicode). This method does not encode ASCII letters,
+     * digits, or the following symbols: * @ - _ + . /
      *
-     * @param content 被转义的内容
-     * @return 编码后的字符串
+     * @param content The content to be escaped.
+     * @return The escaped string.
      */
     public static String escape(final CharSequence content) {
         return escape(content, JS_ESCAPE_FILTER);
     }
 
     /**
-     * Escape编码（Unicode） 该方法不会对 ASCII 字母和数字进行编码。其他所有的字符都会被转义序列替换。
+     * Escapes a string using JavaScript's `escape()` style (Unicode), escaping all non-alphanumeric characters.
      *
-     * @param content 被转义的内容
-     * @return 编码后的字符串
+     * @param content The content to be escaped.
+     * @return The escaped string.
      */
     public static String escapeAll(final CharSequence content) {
         return escape(content, c -> true);
     }
 
     /**
-     * Escape编码（Unicode） 该方法不会对 ASCII 字母和数字进行编码。其他所有的字符都会被转义序列替换。
+     * Escapes a string using JavaScript's `escape()` style (Unicode) with a custom filter.
      *
-     * @param content 被转义的内容
-     * @param filter  编码过滤器，对于过滤器中accept为false的字符不做编码
-     * @return 编码后的字符串
+     * @param content The content to be escaped.
+     * @param filter  A predicate that returns `true` for characters that should be escaped.
+     * @return The escaped string.
      */
     public static String escape(final CharSequence content, final Predicate<Character> filter) {
         if (StringKit.isEmpty(content)) {
@@ -145,13 +146,14 @@ public class EscapeKit {
             } else if (c < 256) {
                 tmp.append(Symbol.PERCENT);
                 if (c < 16) {
-                    tmp.append("0");
+                    tmp.append(Symbol.ZERO);
                 }
                 tmp.append(Integer.toString(c, 16));
             } else {
                 tmp.append("%u");
                 if (c <= 0xfff) {
-                    tmp.append("0");
+                    // Pad with a leading zero if necessary
+                    tmp.append(Symbol.ZERO);
                 }
                 tmp.append(Integer.toString(c, 16));
             }
@@ -160,10 +162,10 @@ public class EscapeKit {
     }
 
     /**
-     * Escape解码
+     * Decodes a string using JavaScript's `unescape()` style.
      *
-     * @param content 被转义的内容
-     * @return 解码后的字符串
+     * @param content The escaped content.
+     * @return The decoded string.
      */
     public static String unescape(final String content) {
         if (StringKit.isBlank(content)) {
@@ -200,10 +202,10 @@ public class EscapeKit {
     }
 
     /**
-     * 安全的unescape文本，当文本不是被escape的时候，返回原文。
+     * Safely unescapes a string. If the string is not in a valid escaped format, the original string is returned.
      *
-     * @param content 内容
-     * @return 解码后的字符串，如果解码失败返回原字符串
+     * @param content The content.
+     * @return The decoded string, or the original string on failure.
      */
     public static String safeUnescape(final String content) {
         try {

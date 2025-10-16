@@ -30,7 +30,7 @@ package org.miaixz.bus.core.lang.loader;
 import java.net.URL;
 
 /**
- * 资源过滤器
+ * A filter for resources.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,11 +38,11 @@ import java.net.URL;
 public interface Filter {
 
     /**
-     * 过滤资源
+     * Filters a resource.
      *
-     * @param name 资源名称,即相对路径
-     * @param url  资源URL地址
-     * @return true: 加载 false: 不加载
+     * @param name The name of the resource (relative path).
+     * @param url  The URL of the resource.
+     * @return {@code true} to accept and load the resource, {@code false} to reject it.
      */
     boolean filtrate(String name, URL url);
 

@@ -36,7 +36,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.FileKit;
 
 /**
- * 文件缓存，以解决频繁读取文件引起的性能问题
+ * An abstract file cache to mitigate performance issues caused by frequent file reads.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -47,33 +47,33 @@ public abstract class AbstractFileCache implements Serializable {
     private static final long serialVersionUID = 2852230175903L;
 
     /**
-     * 容量
+     * The total cache capacity in bytes.
      */
     protected final int capacity;
     /**
-     * 缓存的最大文件大小，文件大于此大小时将不被缓存
+     * The maximum size of a file that can be cached. Files larger than this will not be cached.
      */
     protected final int maxFileSize;
     /**
-     * 默认超时时间，0表示无默认超时
+     * The default timeout for cache entries in milliseconds. A value of 0 means no timeout.
      */
     protected final long timeout;
     /**
-     * 缓存实现
+     * The underlying cache implementation.
      */
     protected final Cache<File, byte[]> cache;
 
     /**
-     * 已使用缓存空间
+     * The current used size of the cache in bytes.
      */
     protected int usedSize;
 
     /**
-     * 构造
+     * Constructs a new file cache.
      *
-     * @param capacity    缓存容量
-     * @param maxFileSize 文件最大大小
-     * @param timeout     默认超时时间，0表示无默认超时
+     * @param capacity    The cache capacity in bytes.
+     * @param maxFileSize The maximum file size in bytes.
+     * @param timeout     The default timeout in milliseconds (0 for no timeout).
      */
     public AbstractFileCache(final int capacity, final int maxFileSize, final long timeout) {
         this.capacity = capacity;
@@ -83,50 +83,52 @@ public abstract class AbstractFileCache implements Serializable {
     }
 
     /**
-     * 缓存容量
+     * Returns the total cache capacity.
      *
-     * @return 缓存容量（byte数）
+     * @return The cache capacity in bytes.
      */
     public int capacity() {
         return capacity;
     }
 
     /**
-     * 已使用空间大小
+     * Returns the currently used cache size.
      *
-     * @return 已使用空间大小（byte数）
+     * @return The used size in bytes.
      */
     public int getUsedSize() {
         return usedSize;
     }
 
     /**
-     * 允许被缓存文件的最大byte数
+     * Returns the maximum allowed file size for caching.
      *
-     * @return 允许被缓存文件的最大byte数
+     * @return The maximum file size in bytes.
      */
     public int maxFileSize() {
         return maxFileSize;
     }
 
     /**
-     * @return 缓存的文件数
+     * Returns the number of files currently in the cache.
+     *
+     * @return The number of cached files.
      */
     public int getCachedFilesCount() {
         return cache.size();
     }
 
     /**
-     * 超时时间
+     * Returns the default timeout for cache entries.
      *
-     * @return 超时时间
+     * @return The timeout in milliseconds.
      */
     public long timeout() {
         return this.timeout;
     }
 
     /**
-     * 清空缓存
+     * Clears the entire cache and resets the used size.
      */
     public void clear() {
         cache.clear();
@@ -134,49 +136,50 @@ public abstract class AbstractFileCache implements Serializable {
     }
 
     /**
-     * 获得缓存过的文件bytes
+     * Gets the byte content of a file from the cache or reads it from the filesystem.
      *
-     * @param path 文件路径
-     * @return 缓存过的文件bytes
-     * @throws InternalException IO异常
+     * @param path The path to the file.
+     * @return The byte content of the file.
+     * @throws InternalException if an I/O error occurs.
      */
     public byte[] getFileBytes(final String path) throws InternalException {
         return getFileBytes(new File(path));
     }
 
     /**
-     * 获得缓存过的文件bytes
+     * Gets the byte content of a file from the cache or reads it from the filesystem.
      *
-     * @param file 文件
-     * @return 缓存过的文件bytes
-     * @throws InternalException IO异常
+     * @param file The file to retrieve.
+     * @return The byte content of the file.
+     * @throws InternalException if an I/O error occurs.
      */
     public byte[] getFileBytes(final File file) throws InternalException {
         byte[] bytes = cache.get(file);
         if (bytes != null) {
+            // File is found in cache.
             return bytes;
         }
 
-        // 读取文件的所有内容
+        // Read all bytes from the file.
         bytes = FileKit.readBytes(file);
 
         if ((maxFileSize != 0) && (file.length() > maxFileSize)) {
-            // 大于缓存空间，不缓存，直接返回
+            // File is larger than the allowed size, so don't cache it.
             return bytes;
         }
 
         usedSize += bytes.length;
 
-        // 文件放入缓存，如果usedSize > capacity，purge()方法将被调用
+        // Put the file into the cache. The underlying cache implementation will handle pruning if capacity is exceeded.
         cache.put(file, bytes);
 
         return bytes;
     }
 
     /**
-     * 初始化实现文件缓存的缓存对象
+     * Initializes the underlying cache implementation. Must be implemented by subclasses.
      *
-     * @return {@link Cache}
+     * @return A {@link Cache} instance for storing file data.
      */
     protected abstract Cache<File, byte[]> initCache();
 

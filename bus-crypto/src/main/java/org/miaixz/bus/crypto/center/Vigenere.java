@@ -28,7 +28,8 @@
 package org.miaixz.bus.crypto.center;
 
 /**
- * 维吉尼亚密码实现。 人们在恺撒移位密码的基础上扩展出多表密码，称为维吉尼亚密码。 算法实现来自：https://github.com/zhaorenjie110/SymmetricEncryptionAndDecryption
+ * Implementation of the Vigenere cipher. The Vigenere cipher is a polyalphabetic substitution cipher that extends the
+ * Caesar cipher. Algorithm implementation from: https://github.com/zhaorenjie110/SymmetricEncryptionAndDecryption
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -36,11 +37,11 @@ package org.miaixz.bus.crypto.center;
 public class Vigenere {
 
     /**
-     * 加密
+     * Encrypts the data.
      *
-     * @param data      数据
-     * @param cipherKey 密钥
-     * @return 密文
+     * @param data      The data to encrypt.
+     * @param cipherKey The key.
+     * @return The ciphertext.
      */
     public static String encrypt(final CharSequence data, final CharSequence cipherKey) {
         final int dataLen = data.length();
@@ -61,11 +62,11 @@ public class Vigenere {
     }
 
     /**
-     * 解密
+     * Decrypts the data.
      *
-     * @param data      密文
-     * @param cipherKey 密钥
-     * @return 明文
+     * @param data      The ciphertext.
+     * @param cipherKey The key.
+     * @return The plaintext.
      */
     public static String decrypt(final CharSequence data, final CharSequence cipherKey) {
         final int dataLen = data.length();

@@ -26,7 +26,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 函数条件
+ * Provides support for using method references (functional interfaces) to create type-safe, refactor-friendly queries
+ * and updates.
  *
  * @author Kimi Liu
  * @since Java 17+

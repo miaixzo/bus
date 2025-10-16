@@ -26,10 +26,11 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 服务提供接口SPI（Service Provider interface）机制相关封装，包括：
+ * This package provides classes related to the Service Provider Interface (SPI) mechanism. It includes implementations
+ * for loading services in different formats:
  * <ul>
- * <li>{@link org.miaixz.bus.core.lang.loader.spi.ListServiceLoader}，提供列表形式的服务定义</li>
- * <li>{@link org.miaixz.bus.core.lang.loader.spi.MapServiceLoader}，提供键值对形式的服务定义</li>
+ * <li>{@link org.miaixz.bus.core.lang.loader.spi.ListServiceLoader} for services defined as a list.</li>
+ * <li>{@link org.miaixz.bus.core.lang.loader.spi.MapServiceLoader} for services defined as key-value pairs.</li>
  * </ul>
  *
  * @author Kimi Liu

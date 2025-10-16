@@ -26,7 +26,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * HTTP 安全
+ * Provides classes for managing security-related aspects of HTTP, including TLS/SSL configuration, authentication, and
+ * certificate pinning.
  *
  * @author Kimi Liu
  * @since Java 17+

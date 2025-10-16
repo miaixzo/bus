@@ -33,7 +33,7 @@ import reactor.netty.DisposableServer;
 import reactor.netty.http.server.HttpServer;
 
 /**
- * 服务端类，负责启动和管理基于 Reactor Netty 的 HTTP 服务器
+ * Server class responsible for starting and managing an HTTP server based on Reactor Netty.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -41,26 +41,27 @@ import reactor.netty.http.server.HttpServer;
 public class Vortex {
 
     /**
-     * Reactor Netty 的 HTTP 服务器实例，用于处理 HTTP 请求
+     * The Reactor Netty HTTP server instance, used for handling HTTP requests.
      */
     private final HttpServer httpServer;
 
     /**
-     * 可释放的服务器实例，表示已绑定的服务器资源
+     * The disposable server instance, representing the bound server resources.
      */
     private DisposableServer disposableServer;
 
     /**
-     * 构造器，初始化 Athlete 实例
+     * Constructs a {@code Vortex} instance with the given HTTP server.
      *
-     * @param httpServer Reactor Netty 的 HTTP 服务器实例
+     * @param httpServer The Reactor Netty HTTP server instance.
      */
     public Vortex(HttpServer httpServer) {
         this.httpServer = httpServer;
     }
 
     /**
-     * 初始化并启动 HTTP 服务器 将 httpServer 绑定到指定端口，并记录启动成功的日志
+     * Initializes and starts the HTTP server. Binds the {@code httpServer} to the specified port and logs a success
+     * message upon startup.
      */
     private void init() {
         disposableServer = httpServer.bindNow();
@@ -68,7 +69,7 @@ public class Vortex {
     }
 
     /**
-     * 停止并销毁 HTTP 服务器 释放服务器资源，并记录停止成功的日志
+     * Stops and disposes of the HTTP server. Releases server resources and logs a success message upon shutdown.
      */
     private void destroy() {
         disposableServer.disposeNow();

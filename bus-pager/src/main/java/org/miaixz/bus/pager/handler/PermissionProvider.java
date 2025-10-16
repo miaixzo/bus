@@ -23,7 +23,7 @@
  ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 package org.miaixz.bus.pager.handler;
 
@@ -31,7 +31,7 @@ import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.schema.Table;
 
 /**
- * 数据权限提供者接口 定义数据权限SQL片段的生成逻辑
+ * Data permission provider interface that defines the logic for generating data permission SQL segments.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -39,12 +39,13 @@ import net.sf.jsqlparser.schema.Table;
 public interface PermissionProvider {
 
     /**
-     * 获取数据权限SQL片段
+     * Retrieves the data permission SQL segment.
      *
-     * @param table             数据库表信息，包含表名和别名
-     * @param where             原有WHERE条件
-     * @param mappedStatementId MyBatis MappedStatement ID，用于判断具体执行方法
-     * @return JSqlParser条件表达式，拼接在原有WHERE条件后，不覆盖原有表达式
+     * @param table             the database table information, including table name and alias
+     * @param where             the original WHERE condition
+     * @param mappedStatementId the MyBatis MappedStatement ID, used to determine the specific execution method
+     * @return a JSqlParser conditional expression that will be appended to the original WHERE condition, not
+     *         overwriting it
      */
     default Expression getSqlSegment(final Table table, final Expression where, final String mappedStatementId) {
         return where;

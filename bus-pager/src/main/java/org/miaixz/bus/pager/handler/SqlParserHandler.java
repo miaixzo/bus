@@ -42,7 +42,8 @@ import net.sf.jsqlparser.statement.select.Select;
 import net.sf.jsqlparser.statement.update.Update;
 
 /**
- * 抽象SQL解析类，提供SQL语句解析和处理功能。
+ * Abstract SQL parsing class that provides functionality for parsing and processing SQL statements. This class uses
+ * JSQLParser to handle different types of SQL statements (INSERT, SELECT, UPDATE, DELETE).
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -50,34 +51,34 @@ import net.sf.jsqlparser.statement.update.Update;
 public class SqlParserHandler extends AbstractSqlHandler {
 
     /**
-     * 解析单个SQL语句。
+     * Parses a single SQL statement string.
      *
-     * @param sql SQL语句字符串
-     * @return 解析后的Statement对象
-     * @throws JSQLParserException 如果解析失败
+     * @param sql the SQL statement string
+     * @return the parsed {@link Statement} object
+     * @throws JSQLParserException if parsing fails
      */
     public static Statement parse(String sql) throws JSQLParserException {
         return CCJSqlParserUtil.parse(sql);
     }
 
     /**
-     * 解析多个SQL语句。
+     * Parses multiple SQL statement strings.
      *
-     * @param sql SQL语句字符串
-     * @return 解析后的Statements对象
-     * @throws JSQLParserException 如果解析失败
+     * @param sql the SQL statement string containing one or more statements
+     * @return the parsed {@link Statements} object
+     * @throws JSQLParserException if parsing fails
      */
     public static Statements parseStatements(String sql) throws JSQLParserException {
         return CCJSqlParserUtil.parseStatements(sql);
     }
 
     /**
-     * 解析并处理单个SQL语句。
+     * Parses and processes a single SQL statement.
      *
-     * @param sql    SQL语句字符串
-     * @param object 附加处理对象
-     * @return 处理后的SQL语句
-     * @throws InternalException 如果解析失败
+     * @param sql    the SQL statement string
+     * @param object an additional object for processing
+     * @return the processed SQL statement string
+     * @throws InternalException if parsing fails
      */
     public String parserSingle(String sql, Object object) {
         try {
@@ -89,12 +90,12 @@ public class SqlParserHandler extends AbstractSqlHandler {
     }
 
     /**
-     * 解析并处理多个SQL语句。
+     * Parses and processes multiple SQL statements.
      *
-     * @param sql    SQL语句字符串
-     * @param object 附加处理对象
-     * @return 处理后的SQL语句（多条语句以分号分隔）
-     * @throws InternalException 如果解析失败
+     * @param sql    the SQL statement string containing one or more statements
+     * @param object an additional object for processing
+     * @return the processed SQL statements, separated by semicolons
+     * @throws InternalException if parsing fails
      */
     public String parserMulti(String sql, Object object) {
         try {
@@ -115,13 +116,13 @@ public class SqlParserHandler extends AbstractSqlHandler {
     }
 
     /**
-     * 执行SQL语句解析和处理。
+     * Executes the SQL statement parsing and processing.
      *
-     * @param statement JSQLParser解析的语句对象
-     * @param index     语句索引（多语句时使用）
-     * @param sql       原始SQL语句
-     * @param object    附加处理对象
-     * @return 处理后的SQL语句
+     * @param statement the JSQLParser parsed statement object
+     * @param index     the index of the statement (for multiple statements)
+     * @param sql       the original SQL statement
+     * @param object    an additional object for processing
+     * @return the processed SQL statement string
      */
     protected String processParser(Statement statement, int index, String sql, Object object) {
         if (statement instanceof Insert) {
@@ -137,61 +138,62 @@ public class SqlParserHandler extends AbstractSqlHandler {
     }
 
     /**
-     * 处理INSERT语句。
+     * Processes an INSERT statement. This method should be overridden by subclasses to provide specific handling.
      *
-     * @param insert INSERT语句对象
-     * @param index  语句索引
-     * @param sql    原始SQL语句
-     * @param object 附加处理对象
-     * @throws UnsupportedOperationException 默认不支持INSERT处理
+     * @param insert the INSERT statement object
+     * @param index  the index of the statement
+     * @param sql    the original SQL statement
+     * @param object an additional object for processing
+     * @throws UnsupportedOperationException by default, as INSERT processing is not supported
      */
     protected void processInsert(Insert insert, int index, String sql, Object object) {
         throw new UnsupportedOperationException();
     }
 
     /**
-     * 处理DELETE语句。
+     * Processes a DELETE statement. This method should be overridden by subclasses to provide specific handling.
      *
-     * @param delete DELETE语句对象
-     * @param index  语句索引
-     * @param sql    原始SQL语句
-     * @param object 附加处理对象
-     * @throws UnsupportedOperationException 默认不支持DELETE处理
+     * @param delete the DELETE statement object
+     * @param index  the index of the statement
+     * @param sql    the original SQL statement
+     * @param object an additional object for processing
+     * @throws UnsupportedOperationException by default, as DELETE processing is not supported
      */
     protected void processDelete(Delete delete, int index, String sql, Object object) {
         throw new UnsupportedOperationException();
     }
 
     /**
-     * 处理UPDATE语句。
+     * Processes an UPDATE statement. This method should be overridden by subclasses to provide specific handling.
      *
-     * @param update UPDATE语句对象
-     * @param index  语句索引
-     * @param sql    原始SQL语句
-     * @param object 附加处理对象
-     * @throws UnsupportedOperationException 默认不支持UPDATE处理
+     * @param update the UPDATE statement object
+     * @param index  the index of the statement
+     * @param sql    the original SQL statement
+     * @param object an additional object for processing
+     * @throws UnsupportedOperationException by default, as UPDATE processing is not supported
      */
     protected void processUpdate(Update update, int index, String sql, Object object) {
         throw new UnsupportedOperationException();
     }
 
     /**
-     * 处理SELECT语句。
+     * Processes a SELECT statement. This method should be overridden by subclasses to provide specific handling.
      *
-     * @param select SELECT语句对象
-     * @param index  语句索引
-     * @param sql    原始SQL语句
-     * @param object 附加处理对象
-     * @throws UnsupportedOperationException 默认不支持SELECT处理
+     * @param select the SELECT statement object
+     * @param index  the index of the statement
+     * @param sql    the original SQL statement
+     * @param object an additional object for processing
+     * @throws UnsupportedOperationException by default, as SELECT processing is not supported
      */
     protected void processSelect(Select select, int index, String sql, Object object) {
         throw new UnsupportedOperationException();
     }
 
     /**
-     * 校验SQL防止注入风险
+     * Validates an SQL string to prevent potential injection risks.
      *
-     * @param sql SQL语句字符串
+     * @param sql the SQL statement string to validate
+     * @throws InternalException if the SQL script validation fails
      */
     protected static void validateSql(String sql) {
         if (!Symbol.ZERO.equals(sql) && !Symbol.STAR.equals(sql) && OGNL.validateSql(sql)) {

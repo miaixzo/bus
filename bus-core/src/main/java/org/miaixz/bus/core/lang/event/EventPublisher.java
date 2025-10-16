@@ -28,7 +28,7 @@
 package org.miaixz.bus.core.lang.event;
 
 /**
- * 事件发布者接口，用于发布事件
+ * Interface for event publishers, used to publish events to registered subscribers.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -36,22 +36,26 @@ package org.miaixz.bus.core.lang.event;
 public interface EventPublisher {
 
     /**
-     * 注册订阅者，订阅者将接收到所有发布者发布的事件
+     * Registers a subscriber to receive events. Once registered, the subscriber will receive all events published by
+     * this publisher.
      *
-     * @param subscriber 订阅者
-     * @return this
+     * @param subscriber The subscriber to register.
+     * @return This {@code EventPublisher} instance, allowing for method chaining.
      */
     EventPublisher register(Subscriber subscriber);
 
     /**
-     * 发布事件，事件发布者将事件发布给多个订阅者，可以自定义发布策略，如：
+     * Publishes an event to registered subscribers. The event publisher can define custom publishing strategies, such
+     * as:
      * <ul>
-     * <li>所有订阅者都接收此消息（多订阅）</li>
-     * <li>订阅者按照顺序或权重接收此消息，接收后其它订阅者不再接收。（单订阅）</li>
-     * <li>按照自定义规则选择要接收消息的订阅者，如根据消息或实践类型（选择性多订阅）</li>
+     * <li>Broadcasting to all subscribers (multi-subscription).</li>
+     * <li>Subscribers receiving the message in a specific order or by weight, with subsequent subscribers not receiving
+     * it after one has processed it (single-subscription).</li>
+     * <li>Selecting subscribers based on custom rules, such as message content or event type (selective
+     * multi-subscription).</li>
      * </ul>
      *
-     * @param event 事件对象
+     * @param event The event object to publish.
      */
     void publish(Event event);
 

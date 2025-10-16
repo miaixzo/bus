@@ -26,7 +26,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 调用者接口及实现。可以通过此类的方法获取调用者、多级调用者以及判断是否被调用
+ * Provides interfaces and implementations for retrieving caller information. This includes methods to obtain the
+ * calling class, multi-level callers, and to determine if a specific class is in the call stack.
  *
  * @author Kimi Liu
  * @since Java 17+

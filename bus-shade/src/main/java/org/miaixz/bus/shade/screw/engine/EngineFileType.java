@@ -33,7 +33,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * 文件类型
+ * Enumeration of supported file types for document generation.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,37 +42,44 @@ import lombok.Setter;
 public enum EngineFileType implements Serializable {
 
     /**
-     * HTML
+     * HTML file type.
      */
-    HTML(".html", "html", "HTML文件"),
+    HTML(".html", "html", "HTML File"),
     /**
-     * WORD
+     * Microsoft Word (.doc) file type.
      */
-    WORD(".doc", "word", "WORD文件"),
+    WORD(".doc", "word", "WORD File"),
     /**
-     * MD
+     * Markdown file type.
      */
-    MD(".md", "md", "Markdown文件");
+    MD(".md", "md", "Markdown File");
 
     /**
-     * 文件后缀
+     * The file suffix (e.g., ".html").
      */
     @Getter
     @Setter
     private String fileSuffix;
     /**
-     * 模板文件
+     * The prefix for the template file name.
      */
     @Getter
     @Setter
     private String templateNamePrefix;
     /**
-     * 描述
+     * A description of the file type.
      */
     @Getter
     @Setter
     private String desc;
 
+    /**
+     * Constructs an {@code EngineFileType} enum constant.
+     *
+     * @param type         The file suffix.
+     * @param templateFile The prefix for the template file name.
+     * @param desc         A description of the file type.
+     */
     EngineFileType(String type, String templateFile, String desc) {
         this.fileSuffix = type;
         this.templateNamePrefix = templateFile;

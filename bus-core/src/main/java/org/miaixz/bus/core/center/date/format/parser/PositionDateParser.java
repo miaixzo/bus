@@ -37,7 +37,8 @@ import org.miaixz.bus.core.lang.Keys;
 import org.miaixz.bus.core.lang.exception.DateException;
 
 /**
- * 带有{@link ParsePosition}的日期解析接口，用于解析日期字符串为 {@link Date} 对象
+ * An interface for date parsers that use a {@link ParsePosition} to track the parsing progress, similar to
+ * {@link java.text.DateFormat}.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -45,37 +46,40 @@ import org.miaixz.bus.core.lang.exception.DateException;
 public interface PositionDateParser extends DateParser, DatePrinter {
 
     /**
-     * 将日期字符串解析并转换为 {@link Date} 对象 等价于 {@link java.text.DateFormat#parse(String, ParsePosition)}
+     * Parses a date string into a {@link Date} object, updating the given {@link ParsePosition}. This is equivalent to
+     * {@link java.text.DateFormat#parse(String, ParsePosition)}.
      *
-     * @param source 日期字符串
-     * @param pos    {@link ParsePosition}
-     * @return {@link Date}
+     * @param source The date string to parse.
+     * @param pos    The {@link ParsePosition} object that tracks the parsing index.
+     * @return The parsed {@link Date}, or null if parsing fails.
      */
     default Date parse(final CharSequence source, final ParsePosition pos) {
         return parseCalendar(source, pos, Keys.getBoolean(Keys.DATE_LENIENT, false)).getTime();
     }
 
     /**
-     * 根据给定格式更新{@link Calendar} 解析成功后，{@link ParsePosition#getIndex()}更新成转换到的位置
-     * 失败则{@link ParsePosition#getErrorIndex()}更新到解析失败的位置
+     * Parses a date string, updating the fields of the given {@link Calendar}. After successful parsing,
+     * {@link ParsePosition#getIndex()} is updated to the position after the last character used. If parsing fails,
+     * {@link ParsePosition#getErrorIndex()} is updated to the position of the error.
      *
-     * @param source   被转换的日期字符串
-     * @param pos      定义开始转换的位置，转换结束后更新转换到的位置，{@code null}表示忽略，从第一个字符开始转换
-     * @param calendar 解析并更新的{@link Calendar}
-     * @return 解析成功返回 {@code true}，否则返回{@code false}
+     * @param source   The date string to be parsed.
+     * @param pos      Defines the starting position for parsing and is updated upon completion.
+     * @param calendar The {@link Calendar} to be updated with the parsed date.
+     * @return {@code true} if parsing was successful, {@code false} otherwise.
      */
     boolean parse(CharSequence source, ParsePosition pos, Calendar calendar);
 
     /**
-     * 将日期字符串解析并转换为 {@link Calendar} 对象
+     * Parses a date string into a new {@link Calendar} object.
      *
-     * @param source  日期字符串
-     * @param pos     {@link ParsePosition}
-     * @param lenient 是否宽容模式
-     * @return {@link Calendar}
+     * @param source  The date string to parse.
+     * @param pos     The {@link ParsePosition} object.
+     * @param lenient Whether parsing should be lenient.
+     * @return The parsed {@link Calendar}.
+     * @throws DateException if parsing fails.
      */
     default Calendar parseCalendar(final CharSequence source, final ParsePosition pos, final boolean lenient) {
-        Assert.notBlank(source, "Date str must be not blank!");
+        Assert.notBlank(source, "Date string must not be blank!");
         final Calendar calendar = Calendar.getInstance(getTimeZone(), getLocale());
         calendar.clear();
         calendar.setLenient(lenient);

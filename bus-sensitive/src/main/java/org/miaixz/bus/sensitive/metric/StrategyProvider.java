@@ -32,7 +32,7 @@ import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.sensitive.Context;
 
 /**
- * 脱敏策略
+ * An interface for defining a custom data desensitization strategy.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -40,14 +40,19 @@ import org.miaixz.bus.sensitive.Context;
 public interface StrategyProvider extends Provider {
 
     /**
-     * 脱敏
+     * Applies the desensitization logic to the given object.
      *
-     * @param object  原始内容
-     * @param context 执行上下文
-     * @return 脱敏后的字符串
+     * @param object  The original object/value to be desensitized.
+     * @param context The current desensitization context, providing access to field annotations and other details.
+     * @return The desensitized value, typically a string.
      */
     Object build(final Object object, final Context context);
 
+    /**
+     * Defines the type of this provider, used for service loading or identification.
+     *
+     * @return The provider type.
+     */
     @Override
     default Object type() {
         return EnumValue.Povider.SENSITIVE;

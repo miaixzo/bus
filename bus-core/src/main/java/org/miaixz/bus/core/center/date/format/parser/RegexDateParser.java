@@ -49,7 +49,8 @@ import org.miaixz.bus.core.xyz.PatternKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 使用正则列表方式的日期解析器，通过定义若干正则规则，遍历匹配后按正则方式解析为日期。
+ * A date parser that uses a list of regular expressions to parse date strings. It iterates through the defined
+ * patterns, and the first one that matches is used to extract date components.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -60,44 +61,44 @@ public class RegexDateParser implements DateParser, Serializable {
     private static final long serialVersionUID = 2852256787361L;
 
     /**
-     * 纳秒解析的倍数数组
+     * An array of multipliers for parsing nanoseconds of varying lengths.
      */
     private static final int[] NSS = { 100000000, 10000000, 1000000, 100000, 10000, 1000, 100, 10, 1 };
 
     /**
-     * 时区偏移正则表达式
+     * A regular expression for matching timezone offsets (e.g., +08:00, -0700).
      */
     private static final Pattern ZONE_OFFSET_PATTERN = Pattern.compile("[-+]\\d{1,2}:?(?:\\d{2})?");
 
     /**
-     * 时区名称词树
+     * A {@link WordTree} for efficiently matching timezone names (e.g., 'Asia/Shanghai').
      */
     private static final WordTree ZONE_TREE = WordTree.of(TimeZone.getAvailableIDs());
 
     /**
-     * 正则表达式模式列表
+     * A list of regular expression patterns to try for parsing.
      */
     private final List<Pattern> patterns;
 
     /**
-     * 是否优先将日期解析为月/日格式（mm/dd）
+     * Whether to prefer parsing ambiguous dates (e.g., 01/02/2023) as month/day first.
      */
     private boolean preferMonthFirst;
 
     /**
-     * 构造，初始化正则模式列表。
+     * Constructs a new {@code RegexDateParser}.
      *
-     * @param patterns 正则表达式模式列表
+     * @param patterns A list of regular expression patterns.
      */
     public RegexDateParser(final List<Pattern> patterns) {
         this.patterns = patterns;
     }
 
     /**
-     * 根据给定的正则表达式列表创建解析器，忽略大小写。
+     * Creates a new {@code RegexDateParser} from one or more regular expression strings (case-insensitive).
      *
-     * @param regexes 正则表达式数组
-     * @return RegexDateParser 实例
+     * @param regexes The regular expression strings.
+     * @return A new {@code RegexDateParser} instance.
      */
     public static RegexDateParser of(final String... regexes) {
         final List<Pattern> patternList = new ArrayList<>(regexes.length);
@@ -108,116 +109,100 @@ public class RegexDateParser implements DateParser, Serializable {
     }
 
     /**
-     * 根据给定的正则模式列表创建解析器。
+     * Creates a new {@code RegexDateParser} from one or more {@link Pattern} objects.
      *
-     * @param patterns 正则模式数组
-     * @return RegexDateParser 实例
+     * @param patterns The regular expression patterns.
+     * @return A new {@code RegexDateParser} instance.
      */
     public static RegexDateParser of(final Pattern... patterns) {
         return new RegexDateParser(ListKit.of(patterns));
     }
 
     /**
-     * 解析纯数字型日期。
+     * Parses a purely numeric date string based on its length.
      *
-     * @param number      纯数字字符串
-     * @param dateBuilder 日期构建器
+     * @param number      The numeric string.
+     * @param dateBuilder The {@link DateBuilder} to populate.
      */
     private static void parseNumberDate(final String number, final DateBuilder dateBuilder) {
         final int length = number.length();
         switch (length) {
-            case 4: // yyyy
-                dateBuilder.setYear(Integer.parseInt(number));
-                break;
-
-            case 6: // yyyyMM
+            case 4 -> // yyyy
+                    dateBuilder.setYear(Integer.parseInt(number));
+            case 6 -> { // yyyyMM
                 dateBuilder.setYear(parseInt(number, 0, 4));
                 dateBuilder.setMonth(parseInt(number, 4, 6));
-                break;
-
-            case 8: // yyyyMMdd
+            }
+            case 8 -> { // yyyyMMdd
                 dateBuilder.setYear(parseInt(number, 0, 4));
                 dateBuilder.setMonth(parseInt(number, 4, 6));
                 dateBuilder.setDay(parseInt(number, 6, 8));
-                break;
-
-            case 14: // yyyyMMddhhmmss
+            }
+            case 14 -> { // yyyyMMddhhmmss
                 dateBuilder.setYear(parseInt(number, 0, 4));
                 dateBuilder.setMonth(parseInt(number, 4, 6));
                 dateBuilder.setDay(parseInt(number, 6, 8));
                 dateBuilder.setHour(parseInt(number, 8, 10));
                 dateBuilder.setMinute(parseInt(number, 10, 12));
                 dateBuilder.setSecond(parseInt(number, 12, 14));
-                break;
-
-            case 10: // unixtime(10)
-                dateBuilder.setUnixsecond(parseLong(number));
-                break;
-
-            case 13: // millisecond(13)
-                dateBuilder.setMillisecond(parseLong(number));
-                break;
-
-            case 16: // microsecond(16)
+            }
+            case 10 -> // unixtime(10)
+                    dateBuilder.setUnixsecond(parseLong(number));
+            case 13 -> // millisecond(13)
+                    dateBuilder.setMillisecond(parseLong(number));
+            case 16 -> { // microsecond(16)
                 dateBuilder.setUnixsecond(parseLong(number.substring(0, 10)));
                 dateBuilder.setNanosecond(parseInt(number, 10, 16));
-                break;
-
-            case 19: // nanosecond(19)
+            }
+            case 19 -> { // nanosecond(19)
                 dateBuilder.setUnixsecond(parseLong(number.substring(0, 10)));
                 dateBuilder.setNanosecond(parseInt(number, 10, 19));
-                break;
+            }
         }
     }
 
     /**
-     * 解析年份，支持两位或四位年份。
+     * Parses a 2 or 4 digit year string. 2-digit years are interpreted relative to the current century.
      *
-     * @param year 年份字符串
-     * @return 解析后的年份
-     * @throws DateException 如果年份无效
+     * @param year The year string.
+     * @return The parsed year.
+     * @throws DateException if the year is invalid.
      */
     private static int parseYear(final String year) {
         final int length = year.length();
-        switch (length) {
-            case 4:
-                return Integer.parseInt(year);
-
-            case 2:
+        return switch (length) {
+            case 4 -> Integer.parseInt(year);
+            case 2 -> {
                 final int num = Integer.parseInt(year);
-                return (num > 50 ? 1900 : 2000) + num;
-
-            default:
-                throw new DateException("Invalid year: [{}]", year);
-        }
+                yield (num > 50 ? 1900 : 2000) + num;
+            }
+            default -> throw new DateException("Invalid year: [{}]", year);
+        };
     }
 
     /**
-     * 解析日或月（dd/mm或mm/dd格式）。
+     * Parses a string that could represent a day or a month (e.g., in "dd/mm" or "mm/dd" format).
      *
-     * @param dayOrMonth       日或月字符串
-     * @param dateBuilder      日期构建器
-     * @param preferMonthFirst 是否优先解析为月/日
+     * @param dayOrMonth       The string to parse.
+     * @param dateBuilder      The {@link DateBuilder} to populate.
+     * @param preferMonthFirst If true, ambiguous formats like "01/02" will be treated as month/day.
      */
     private static void parseDayOrMonth(
             final String dayOrMonth,
             final DateBuilder dateBuilder,
             final boolean preferMonthFirst) {
         final char next = dayOrMonth.charAt(1);
-        final int a;
-        final int b;
-        if (next < '0' || next > '9') {
-            // d/m
+        final int a, b;
+        if (!Character.isDigit(next)) { // d/m
             a = parseInt(dayOrMonth, 0, 1);
             b = parseInt(dayOrMonth, 2, dayOrMonth.length());
-        } else {
-            // dd/mm
+        } else { // dd/mm
             a = parseInt(dayOrMonth, 0, 2);
             b = parseInt(dayOrMonth, 3, dayOrMonth.length());
         }
 
         if (a > 31 || b > 31 || a == 0 || b == 0 || (a > 12 && b > 12)) {
-            throw new DateException("Invalid DayOrMonth : {}", dayOrMonth);
+            throw new DateException("Invalid DayOrMonth: {}", dayOrMonth);
         }
 
         if (b > 12 || (preferMonthFirst && a <= 12)) {
@@ -230,11 +215,11 @@ public class RegexDateParser implements DateParser, Serializable {
     }
 
     /**
-     * 解析月份，支持数字或英文名称。
+     * Parses a month string, which can be a number (1-12) or a name (e.g., "January", "Jan").
      *
-     * @param month 月份字符串
-     * @return 解析后的月份
-     * @throws DateException 如果月份无效
+     * @param month The month string.
+     * @return The parsed month number (1-12).
+     * @throws DateException if the month is invalid.
      */
     private static int parseMonth(final String month) {
         try {
@@ -249,23 +234,23 @@ public class RegexDateParser implements DateParser, Serializable {
     }
 
     /**
-     * 解析星期。
+     * Parses a week string (e.g., "Monday", "Mon").
      *
-     * @param week 星期字符串
-     * @return 解析后的星期值
+     * @param week The week string.
+     * @return The parsed week number (1-7).
      */
     private static int parseWeek(final String week) {
         return Week.of(week).getIsoValue();
     }
 
     /**
-     * 解析限定范围的数字。
+     * Parses a number string, ensuring it falls within a specified range.
      *
-     * @param numberStr  数字字符串
-     * @param minInclude 最小值（包含）
-     * @param maxInclude 最大值（包含）
-     * @return 解析后的数字
-     * @throws DateException 如果数字无效
+     * @param numberStr  The number string.
+     * @param minInclude The minimum allowed value (inclusive).
+     * @param maxInclude The maximum allowed value (inclusive).
+     * @return The parsed integer.
+     * @throws DateException if the number is invalid or out of range.
      */
     private static int parseNumberLimit(final String numberStr, final int minInclude, final int maxInclude) {
         try {
@@ -274,57 +259,60 @@ public class RegexDateParser implements DateParser, Serializable {
                 return numberInt;
             }
         } catch (final NumberFormatException ignored) {
+            // fall through to throw exception
         }
         throw new DateException("Invalid number: [{}]", numberStr);
     }
 
     /**
-     * 解析长整型数字。
+     * Parses a string as a long.
      *
-     * @param numberStr 数字字符串
-     * @return 解析后的长整型
-     * @throws DateException 如果数字无效
+     * @param numberStr The number string.
+     * @return The parsed long.
+     * @throws DateException if the string is not a valid long.
      */
     private static long parseLong(final String numberStr) {
         try {
             return Long.parseLong(numberStr);
         } catch (final NumberFormatException ignored) {
+            // fall through to throw exception
         }
         throw new DateException("Invalid long: [{}]", numberStr);
     }
 
     /**
-     * 解析指定范围的整型数字。
+     * Parses a substring as an integer.
      *
-     * @param numberStr 数字字符串
-     * @param from      起始索引
-     * @param to        结束索引
-     * @return 解析后的整型
-     * @throws DateException 如果数字无效
+     * @param numberStr The source string.
+     * @param from      The starting index.
+     * @param to        The ending index.
+     * @return The parsed integer.
+     * @throws DateException if the substring is not a valid integer.
      */
     private static int parseInt(final String numberStr, final int from, final int to) {
         try {
             return Integer.parseInt(numberStr.substring(from, to));
         } catch (final NumberFormatException ignored) {
+            // fall through to throw exception
         }
         throw new DateException("Invalid int: [{}]", numberStr);
     }
 
     /**
-     * 解析纳秒值。
+     * Parses a nanosecond string.
      *
-     * @param ns 纳秒字符串
-     * @return 解析后的纳秒值
+     * @param ns The nanosecond string.
+     * @return The parsed nanosecond value.
      */
     private static int parseNano(final String ns) {
         return NSS[ns.length() - 1] * Integer.parseInt(ns);
     }
 
     /**
-     * 解析时区，包括偏移量和名称。
+     * Parses a timezone string, which could be an offset or a name.
      *
-     * @param zone        时区字符串
-     * @param dateBuilder 日期构建器
+     * @param zone        The timezone string.
+     * @param dateBuilder The {@link DateBuilder} to populate.
      */
     private static void parseZone(final String zone, final DateBuilder dateBuilder) {
         final String zoneOffset = PatternKit.getGroup0(ZONE_OFFSET_PATTERN, zone);
@@ -341,10 +329,10 @@ public class RegexDateParser implements DateParser, Serializable {
     }
 
     /**
-     * 解析时区偏移量（如'+08', '+8:00', '+08:00', '+0800'）。
+     * Parses a timezone offset string (e.g., '+08', '+8:00', '+08:00', '+0800').
      *
-     * @param zoneOffset 时区偏移字符串
-     * @return 偏移量（分钟）
+     * @param zoneOffset The timezone offset string.
+     * @return The offset in minutes.
      */
     private static int parseZoneOffset(final String zoneOffset) {
         int from = 0;
@@ -370,29 +358,29 @@ public class RegexDateParser implements DateParser, Serializable {
     }
 
     /**
-     * 设置是否优先解析为月/日格式。
+     * Sets whether to prefer parsing ambiguous d/M formats as month/day.
      *
-     * @param preferMonthFirst true为mm/dd，false为dd/mm
+     * @param preferMonthFirst If true, parse as mm/dd; otherwise, dd/mm.
      */
     public void setPreferMonthFirst(final boolean preferMonthFirst) {
         this.preferMonthFirst = preferMonthFirst;
     }
 
     /**
-     * 添加自定义正则表达式，忽略大小写。
+     * Adds a custom regular expression for parsing (case-insensitive).
      *
-     * @param regex 正则表达式
-     * @return 当前实例
+     * @param regex The regular expression string.
+     * @return this {@code RegexDateParser} instance for chaining.
      */
     public RegexDateParser addRegex(final String regex) {
         return addPattern(Pattern.compile(regex, Pattern.CASE_INSENSITIVE));
     }
 
     /**
-     * 添加自定义正则模式。
+     * Adds a custom {@link Pattern} for parsing.
      *
-     * @param pattern 正则模式
-     * @return 当前实例
+     * @param pattern The regular expression pattern.
+     * @return this {@code RegexDateParser} instance for chaining.
      */
     public RegexDateParser addPattern(final Pattern pattern) {
         this.patterns.add(pattern);
@@ -400,44 +388,43 @@ public class RegexDateParser implements DateParser, Serializable {
     }
 
     /**
-     * 解析日期字符串。
+     * Parses a date string using the configured regular expressions.
      *
-     * @param source 日期字符串
-     * @return 解析后的日期对象
-     * @throws DateException 如果解析失败
+     * @param source The date string to parse.
+     * @return The parsed {@link Date} object.
+     * @throws DateException if no configured pattern matches the string.
      */
     @Override
     public Date parse(final CharSequence source) throws DateException {
-        Assert.notBlank(source, "Date source must be not blank!");
+        Assert.notBlank(source, "Date source must not be blank!");
         return parseToBuilder(source).toDate();
     }
 
     /**
-     * 解析日期字符串到日期构建器。
+     * Parses a date string into a {@link DateBuilder}.
      *
-     * @param source 日期字符串
-     * @return 日期构建器
-     * @throws DateException 如果解析失败
+     * @param source The date string.
+     * @return The populated {@link DateBuilder}.
+     * @throws DateException if no pattern matches.
      */
     private DateBuilder parseToBuilder(final CharSequence source) throws DateException {
         final DateBuilder dateBuilder = DateBuilder.of();
-        Matcher matcher;
         for (final Pattern pattern : this.patterns) {
-            matcher = pattern.matcher(source);
+            Matcher matcher = pattern.matcher(source);
             if (matcher.matches()) {
                 parse(matcher, dateBuilder);
                 return dateBuilder;
             }
         }
-        throw new DateException("No valid pattern for date string: [{}]", source);
+        throw new DateException("No valid pattern found for date string: [{}]", source);
     }
 
     /**
-     * 解析正则匹配结果。
+     * Parses the named groups from a successful regex match and populates a {@link DateBuilder}.
      *
-     * @param matcher     正则匹配器
-     * @param dateBuilder 日期构建器
-     * @throws DateException 如果解析失败
+     * @param matcher     The successful regex matcher.
+     * @param dateBuilder The date builder to populate.
+     * @throws DateException if parsing a group fails.
      */
     private void parse(final Matcher matcher, final DateBuilder dateBuilder) throws DateException {
         final String number = PatternKit.group(matcher, "number");
@@ -450,25 +437,24 @@ public class RegexDateParser implements DateParser, Serializable {
             dateBuilder.setMillisecond(parseLong(millisecond));
             return;
         }
-        Optional.ofNullable(PatternKit.group(matcher, "year"))
-                .ifPresent((year) -> dateBuilder.setYear(parseYear(year)));
+
+        Optional.ofNullable(PatternKit.group(matcher, "year")).ifPresent(year -> dateBuilder.setYear(parseYear(year)));
         Optional.ofNullable(PatternKit.group(matcher, "dayOrMonth"))
-                .ifPresent((dayOrMonth) -> parseDayOrMonth(dayOrMonth, dateBuilder, preferMonthFirst));
+                .ifPresent(dayOrMonth -> parseDayOrMonth(dayOrMonth, dateBuilder, preferMonthFirst));
         Optional.ofNullable(PatternKit.group(matcher, "month"))
-                .ifPresent((month) -> dateBuilder.setMonth(parseMonth(month)));
-        Optional.ofNullable(PatternKit.group(matcher, "week"))
-                .ifPresent((week) -> dateBuilder.setWeek(parseWeek(week)));
+                .ifPresent(month -> dateBuilder.setMonth(parseMonth(month)));
+        Optional.ofNullable(PatternKit.group(matcher, "week")).ifPresent(week -> dateBuilder.setWeek(parseWeek(week)));
         Optional.ofNullable(PatternKit.group(matcher, "day"))
-                .ifPresent((day) -> dateBuilder.setDay(parseNumberLimit(day, 1, 31)));
+                .ifPresent(day -> dateBuilder.setDay(parseNumberLimit(day, 1, 31)));
         Optional.ofNullable(PatternKit.group(matcher, "hour"))
-                .ifPresent((hour) -> dateBuilder.setHour(parseNumberLimit(hour, 0, 23)));
+                .ifPresent(hour -> dateBuilder.setHour(parseNumberLimit(hour, 0, 23)));
         Optional.ofNullable(PatternKit.group(matcher, "minute"))
-                .ifPresent((minute) -> dateBuilder.setMinute(parseNumberLimit(minute, 0, 59)));
+                .ifPresent(minute -> dateBuilder.setMinute(parseNumberLimit(minute, 0, 59)));
         Optional.ofNullable(PatternKit.group(matcher, "second"))
-                .ifPresent((second) -> dateBuilder.setSecond(parseNumberLimit(second, 0, 59)));
+                .ifPresent(second -> dateBuilder.setSecond(parseNumberLimit(second, 0, 59)));
         Optional.ofNullable(PatternKit.group(matcher, "nanosecond"))
-                .ifPresent((ns) -> dateBuilder.setNanosecond(parseNano(ns)));
-        Optional.ofNullable(PatternKit.group(matcher, "m")).ifPresent((m) -> {
+                .ifPresent(ns -> dateBuilder.setNanosecond(parseNano(ns)));
+        Optional.ofNullable(PatternKit.group(matcher, "m")).ifPresent(m -> {
             if (CharKit.equals('p', m.charAt(0), true)) {
                 dateBuilder.setPm(true);
             } else {
@@ -476,27 +462,19 @@ public class RegexDateParser implements DateParser, Serializable {
             }
         });
 
-        // zero zone offset
-        Optional.ofNullable(PatternKit.group(matcher, "zero")).ifPresent((zero) -> {
+        Optional.ofNullable(PatternKit.group(matcher, "zero")).ifPresent(zero -> {
             dateBuilder.setFlag(true);
             dateBuilder.setZoneOffset(0);
         });
 
-        // zone（包括可时区名称、时区偏移等信息，综合解析）
-        Optional.ofNullable(PatternKit.group(matcher, "zone")).ifPresent((zoneOffset) -> {
-            parseZone(zoneOffset, dateBuilder);
-        });
-
-        // zone offset
-        Optional.ofNullable(PatternKit.group(matcher, "zoneOffset")).ifPresent((zoneOffset) -> {
+        Optional.ofNullable(PatternKit.group(matcher, "zone")).ifPresent(zone -> parseZone(zone, dateBuilder));
+        Optional.ofNullable(PatternKit.group(matcher, "zoneOffset")).ifPresent(zoneOffset -> {
             dateBuilder.setFlag(true);
             dateBuilder.setZoneOffset(parseZoneOffset(zoneOffset));
         });
 
-        // unix时间戳，可能有NS
-        Optional.ofNullable(PatternKit.group(matcher, "unixsecond")).ifPresent((unixsecond) -> {
-            dateBuilder.setUnixsecond(parseLong(unixsecond));
-        });
+        Optional.ofNullable(PatternKit.group(matcher, "unixsecond"))
+                .ifPresent((unixsecond) -> dateBuilder.setUnixsecond(parseLong(unixsecond)));
     }
 
 }

@@ -35,10 +35,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.*;
 import org.miaixz.bus.core.lang.exception.ConvertException;
 import org.miaixz.bus.core.lang.reflect.TypeReference;
 import org.miaixz.bus.core.math.ChineseNumberFormatter;
@@ -47,7 +44,7 @@ import org.miaixz.bus.core.math.EnglishNumberFormatter;
 import org.miaixz.bus.core.xyz.*;
 
 /**
- * 类型转换器
+ * Type Converter utility.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -55,438 +52,469 @@ import org.miaixz.bus.core.xyz.*;
 public class Convert {
 
     /**
-     * 转换为字符串 如果给定的值为null，或者转换失败，返回默认值 转换失败不会报错
+     * Converts the given value to a {@code String}. If the value is null or conversion fails, the default value is
+     * returned. No exceptions are thrown on failure.
      *
-     * @param value        被转换的值
-     * @param defaultValue 转换错误时的默认值
-     * @return 结果
+     * @param value        The value to be converted.
+     * @param defaultValue The default value to return on conversion error.
+     * @return The converted result.
      */
     public static String toString(final Object value, final String defaultValue) {
         return convertQuietly(String.class, value, defaultValue);
     }
 
     /**
-     * 转换为字符串 如果给定的值为{@code null}，或者转换失败，返回默认值{@code null} 转换失败不会报错
+     * Converts the given value to a {@code String}. If the value is `null` or conversion fails, `null` is returned. No
+     * exceptions are thrown on failure.
      *
-     * @param value 被转换的值
-     * @return 结果
+     * @param value The value to be converted.
+     * @return The converted result.
      */
     public static String toString(final Object value) {
         return toString(value, null);
     }
 
     /**
-     * 转换为字符串 如果给定的值为{@code null}，或者转换失败，返回默认值"null"（即null这个字符串） 转换失败不会报错
+     * Converts the given value to a {@code String}. If the value is `null` or conversion fails, the string "null" is
+     * returned. No exceptions are thrown on failure.
      *
-     * @param value 被转换的值
-     * @return 结果
+     * @param value The value to be converted.
+     * @return The converted result.
      */
     public static String toStringOrNull(final Object value) {
         return toString(value, Normal.NULL);
     }
 
     /**
-     * 转换为String数组
+     * Converts the given value to a `String` array.
      *
-     * @param value 被转换的值
-     * @return String数组
+     * @param value The value to be converted.
+     * @return The `String` array.
      */
     public static String[] toStringArray(final Object value) {
         return convert(String[].class, value);
     }
 
     /**
-     * 转换为字符 如果给定的值为null，或者转换失败，返回默认值 转换失败不会报错
+     * Converts the given value to a {@code Character}. If the value is null or conversion fails, the default value is
+     * returned. No exceptions are thrown on failure.
      *
-     * @param value        被转换的值
-     * @param defaultValue 转换错误时的默认值
-     * @return 结果
+     * @param value        The value to be converted.
+     * @param defaultValue The default value to return on conversion error.
+     * @return The converted result.
      */
     public static Character toChar(final Object value, final Character defaultValue) {
         return convertQuietly(Character.class, value, defaultValue);
     }
 
     /**
-     * 转换为字符 如果给定的值为{@code null}，或者转换失败，返回默认值{@code null} 转换失败不会报错
+     * Converts the given value to a {@code Character}. If the value is `null` or conversion fails, `null` is returned.
+     * No exceptions are thrown on failure.
      *
-     * @param value 被转换的值
-     * @return 结果
+     * @param value The value to be converted.
+     * @return The converted result.
      */
     public static Character toChar(final Object value) {
         return toChar(value, null);
     }
 
     /**
-     * 转换为Character数组
+     * Converts the given value to a `Character` array.
      *
-     * @param value 被转换的值
-     * @return Character数组
+     * @param value The value to be converted.
+     * @return The `Character` array.
      */
     public static Character[] toCharArray(final Object value) {
         return convert(Character[].class, value);
     }
 
     /**
-     * 转换为byte 如果给定的值为{@code null}，或者转换失败，返回默认值 转换失败不会报错
+     * Converts the given value to a {@code Byte}. If the value is `null` or conversion fails, the default value is
+     * returned. No exceptions are thrown on failure.
      *
-     * @param value        被转换的值
-     * @param defaultValue 转换错误时的默认值
-     * @return 结果
+     * @param value        The value to be converted.
+     * @param defaultValue The default value to return on conversion error.
+     * @return The converted result.
      */
     public static Byte toByte(final Object value, final Byte defaultValue) {
         return convertQuietly(Byte.class, value, defaultValue);
     }
 
     /**
-     * 转换为byte 如果给定的值为{@code null}，或者转换失败，返回默认值{@code null} 转换失败不会报错
+     * Converts the given value to a {@code Byte}. If the value is `null` or conversion fails, `null` is returned. No
+     * exceptions are thrown on failure.
      *
-     * @param value 被转换的值
-     * @return 结果
+     * @param value The value to be converted.
+     * @return The converted result.
      */
     public static Byte toByte(final Object value) {
         return toByte(value, null);
     }
 
     /**
-     * 转换为Byte数组
+     * Converts the given value to a `Byte` array.
      *
-     * @param value 被转换的值
-     * @return Byte数组
+     * @param value The value to be converted.
+     * @return The `Byte` array.
      */
     public static Byte[] toByteArray(final Object value) {
         return convert(Byte[].class, value);
     }
 
     /**
-     * 转换为Byte数组
+     * Converts the given value to a primitive `byte` array.
      *
-     * @param value 被转换的值
-     * @return Byte数组
+     * @param value The value to be converted.
+     * @return The primitive `byte` array.
      */
     public static byte[] toPrimitiveByteArray(final Object value) {
         return convert(byte[].class, value);
     }
 
     /**
-     * 转换为Short 如果给定的值为{@code null}，或者转换失败，返回默认值 转换失败不会报错
+     * Converts the given value to a {@code Short}. If the value is `null` or conversion fails, the default value is
+     * returned. No exceptions are thrown on failure.
      *
-     * @param value        被转换的值
-     * @param defaultValue 转换错误时的默认值
-     * @return 结果
+     * @param value        The value to be converted.
+     * @param defaultValue The default value to return on conversion error.
+     * @return The converted result.
      */
     public static Short toShort(final Object value, final Short defaultValue) {
         return convertQuietly(Short.class, value, defaultValue);
     }
 
     /**
-     * 转换为Short 如果给定的值为{@code null}，或者转换失败，返回默认值{@code null} 转换失败不会报错
+     * Converts the given value to a {@code Short}. If the value is `null` or conversion fails, `null` is returned. No
+     * exceptions are thrown on failure.
      *
-     * @param value 被转换的值
-     * @return 结果
+     * @param value The value to be converted.
+     * @return The converted result.
      */
     public static Short toShort(final Object value) {
         return toShort(value, null);
     }
 
     /**
-     * 转换为Short数组
+     * Converts the given value to a `Short` array.
      *
-     * @param value 被转换的值
-     * @return Short数组
+     * @param value The value to be converted.
+     * @return The `Short` array.
      */
     public static Short[] toShortArray(final Object value) {
         return convert(Short[].class, value);
     }
 
     /**
-     * 转换为Number 如果给定的值为空，或者转换失败，返回默认值 转换失败不会报错
+     * Converts the given value to a {@code Number}. If the value is empty or conversion fails, the default value is
+     * returned. No exceptions are thrown on failure.
      *
-     * @param value        被转换的值
-     * @param defaultValue 转换错误时的默认值
-     * @return 结果
+     * @param value        The value to be converted.
+     * @param defaultValue The default value to return on conversion error.
+     * @return The converted result.
      */
     public static Number toNumber(final Object value, final Number defaultValue) {
         return convertQuietly(Number.class, value, defaultValue);
     }
 
     /**
-     * 转换为Number 如果给定的值为空，或者转换失败，返回默认值{@code null} 转换失败不会报错
+     * Converts the given value to a {@code Number}. If the value is empty or conversion fails, `null` is returned. No
+     * exceptions are thrown on failure.
      *
-     * @param value 被转换的值
-     * @return 结果
+     * @param value The value to be converted.
+     * @return The converted result.
      */
     public static Number toNumber(final Object value) {
         return toNumber(value, null);
     }
 
     /**
-     * 转换为Number数组
+     * Converts the given value to a `Number` array.
      *
-     * @param value 被转换的值
-     * @return Number数组
+     * @param value The value to be converted.
+     * @return The `Number` array.
      */
     public static Number[] toNumberArray(final Object value) {
         return convert(Number[].class, value);
     }
 
     /**
-     * 转换为int 如果给定的值为空，或者转换失败，返回默认值 转换失败不会报错
+     * Converts the given value to an {@code Integer}. If the value is empty or conversion fails, the default value is
+     * returned. No exceptions are thrown on failure.
      *
-     * @param value        被转换的值
-     * @param defaultValue 转换错误时的默认值
-     * @return 结果
+     * @param value        The value to be converted.
+     * @param defaultValue The default value to return on conversion error.
+     * @return The converted result.
      */
     public static Integer toInt(final Object value, final Integer defaultValue) {
         return convertQuietly(Integer.class, value, defaultValue);
     }
 
     /**
-     * 转换为int 如果给定的值为{@code null}，或者转换失败，返回默认值{@code null} 转换失败不会报错
+     * Converts the given value to an {@code Integer}. If the value is `null` or conversion fails, `null` is returned.
+     * No exceptions are thrown on failure.
      *
-     * @param value 被转换的值
-     * @return 结果
+     * @param value The value to be converted.
+     * @return The converted result.
      */
     public static Integer toInt(final Object value) {
         return toInt(value, null);
     }
 
     /**
-     * 转换为Integer数组
+     * Converts the given value to an `Integer` array.
      *
-     * @param value 被转换的值
-     * @return 结果
+     * @param value The value to be converted.
+     * @return The converted result.
      */
     public static Integer[] toIntArray(final Object value) {
         return convert(Integer[].class, value);
     }
 
     /**
-     * 转换为long 如果给定的值为空，或者转换失败，返回默认值 转换失败不会报错
+     * Converts the given value to a {@code Long}. If the value is empty or conversion fails, the default value is
+     * returned. No exceptions are thrown on failure.
      *
-     * @param value        被转换的值
-     * @param defaultValue 转换错误时的默认值
-     * @return 结果
+     * @param value        The value to be converted.
+     * @param defaultValue The default value to return on conversion error.
+     * @return The converted result.
      */
     public static Long toLong(final Object value, final Long defaultValue) {
         return convertQuietly(Long.class, value, defaultValue);
     }
 
     /**
-     * 转换为long 如果给定的值为{@code null}，或者转换失败，返回默认值{@code null} 转换失败不会报错
+     * Converts the given value to a {@code Long}. If the value is `null` or conversion fails, `null` is returned. No
+     * exceptions are thrown on failure.
      *
-     * @param value 被转换的值
-     * @return 结果
+     * @param value The value to be converted.
+     * @return The converted result.
      */
     public static Long toLong(final Object value) {
         return toLong(value, null);
     }
 
     /**
-     * 转换为Long数组
+     * Converts the given value to a `Long` array.
      *
-     * @param value 被转换的值
-     * @return 结果
+     * @param value The value to be converted.
+     * @return The converted result.
      */
     public static Long[] toLongArray(final Object value) {
         return convert(Long[].class, value);
     }
 
     /**
-     * 转换为double 如果给定的值为空，或者转换失败，返回默认值 转换失败不会报错
+     * Converts the given value to a {@code Double}. If the value is empty or conversion fails, the default value is
+     * returned. No exceptions are thrown on failure.
      *
-     * @param value        被转换的值
-     * @param defaultValue 转换错误时的默认值
-     * @return 结果
+     * @param value        The value to be converted.
+     * @param defaultValue The default value to return on conversion error.
+     * @return The converted result.
      */
     public static Double toDouble(final Object value, final Double defaultValue) {
         return convertQuietly(Double.class, value, defaultValue);
     }
 
     /**
-     * 转换为double 如果给定的值为空，或者转换失败，返回默认值{@code null} 转换失败不会报错
+     * Converts the given value to a {@code Double}. If the value is empty or conversion fails, `null` is returned. No
+     * exceptions are thrown on failure.
      *
-     * @param value 被转换的值
-     * @return 结果
+     * @param value The value to be converted.
+     * @return The converted result.
      */
     public static Double toDouble(final Object value) {
         return toDouble(value, null);
     }
 
     /**
-     * 转换为Double数组
+     * Converts the given value to a `Double` array.
      *
-     * @param value 被转换的值
-     * @return 结果
+     * @param value The value to be converted.
+     * @return The converted result.
      */
     public static Double[] toDoubleArray(final Object value) {
         return convert(Double[].class, value);
     }
 
     /**
-     * 转换为Float 如果给定的值为空，或者转换失败，返回默认值 转换失败不会报错
+     * Converts the given value to a {@code Float}. If the value is empty or conversion fails, the default value is
+     * returned. No exceptions are thrown on failure.
      *
-     * @param value        被转换的值
-     * @param defaultValue 转换错误时的默认值
-     * @return 结果
+     * @param value        The value to be converted.
+     * @param defaultValue The default value to return on conversion error.
+     * @return The converted result.
      */
     public static Float toFloat(final Object value, final Float defaultValue) {
         return convertQuietly(Float.class, value, defaultValue);
     }
 
     /**
-     * 转换为Float 如果给定的值为空，或者转换失败，返回默认值{@code null} 转换失败不会报错
+     * Converts the given value to a {@code Float}. If the value is empty or conversion fails, `null` is returned. No
+     * exceptions are thrown on failure.
      *
-     * @param value 被转换的值
-     * @return 结果
+     * @param value The value to be converted.
+     * @return The converted result.
      */
     public static Float toFloat(final Object value) {
         return toFloat(value, null);
     }
 
     /**
-     * 转换为Float数组
+     * Converts the given value to a `Float` array.
      *
-     * @param value 被转换的值
-     * @return 结果
+     * @param value The value to be converted.
+     * @return The converted result.
      */
     public static Float[] toFloatArray(final Object value) {
         return convert(Float[].class, value);
     }
 
     /**
-     * 转换为boolean String支持的值为：true、false、yes、ok、no，1,0 如果给定的值为空，或者转换失败，返回默认值 转换失败不会报错
+     * Converts the given value to a {@code Boolean}. Supported `String` values are: "true", "false", "yes", "ok", "no",
+     * "1", "0". If the value is empty or conversion fails, the default value is returned. No exceptions are thrown on
+     * failure.
      *
-     * @param value        被转换的值
-     * @param defaultValue 转换错误时的默认值
-     * @return 结果
+     * @param value        The value to be converted.
+     * @param defaultValue The default value to return on conversion error.
+     * @return The converted result.
      */
     public static Boolean toBoolean(final Object value, final Boolean defaultValue) {
         return convertQuietly(Boolean.class, value, defaultValue);
     }
 
     /**
-     * 转换为boolean 如果给定的值为空，或者转换失败，返回默认值{@code null} 转换失败不会报错
+     * Converts the given value to a {@code Boolean}. If the value is empty or conversion fails, `null` is returned. No
+     * exceptions are thrown on failure.
      *
-     * @param value 被转换的值
-     * @return 结果
+     * @param value The value to be converted.
+     * @return The converted result.
      */
     public static Boolean toBoolean(final Object value) {
         return toBoolean(value, null);
     }
 
     /**
-     * 转换为Boolean数组
+     * Converts the given value to a `Boolean` array.
      *
-     * @param value 被转换的值
-     * @return 结果
+     * @param value The value to be converted.
+     * @return The converted result.
      */
     public static Boolean[] toBooleanArray(final Object value) {
         return convert(Boolean[].class, value);
     }
 
     /**
-     * 转换为BigInteger 如果给定的值为空，或者转换失败，返回默认值 转换失败不会报错
+     * Converts the given value to a {@code BigInteger}. If the value is empty or conversion fails, the default value is
+     * returned. No exceptions are thrown on failure.
      *
-     * @param value        被转换的值
-     * @param defaultValue 转换错误时的默认值
-     * @return 结果
+     * @param value        The value to be converted.
+     * @param defaultValue The default value to return on conversion error.
+     * @return The converted result.
      */
     public static BigInteger toBigInteger(final Object value, final BigInteger defaultValue) {
         return convertQuietly(BigInteger.class, value, defaultValue);
     }
 
     /**
-     * 转换为BigInteger 如果给定的值为空，或者转换失败，返回默认值{@code null} 转换失败不会报错
+     * Converts the given value to a {@code BigInteger}. If the value is empty or conversion fails, `null` is returned.
+     * No exceptions are thrown on failure.
      *
-     * @param value 被转换的值
-     * @return 结果
+     * @param value The value to be converted.
+     * @return The converted result.
      */
     public static BigInteger toBigInteger(final Object value) {
         return toBigInteger(value, null);
     }
 
     /**
-     * 转换为BigDecimal 如果给定的值为空，或者转换失败，返回默认值 转换失败不会报错
+     * Converts the given value to a {@code BigDecimal}. If the value is empty or conversion fails, the default value is
+     * returned. No exceptions are thrown on failure.
      *
-     * @param value        被转换的值
-     * @param defaultValue 转换错误时的默认值
-     * @return 结果
+     * @param value        The value to be converted.
+     * @param defaultValue The default value to return on conversion error.
+     * @return The converted result.
      */
     public static BigDecimal toBigDecimal(final Object value, final BigDecimal defaultValue) {
         return convertQuietly(BigDecimal.class, value, defaultValue);
     }
 
     /**
-     * 转换为BigDecimal 如果给定的值为空，或者转换失败，返回null 转换失败不会报错
+     * Converts the given value to a {@code BigDecimal}. If the value is empty or conversion fails, `null` is returned.
+     * No exceptions are thrown on failure.
      *
-     * @param value 被转换的值
-     * @return 结果
+     * @param value The value to be converted.
+     * @return The converted result.
      */
     public static BigDecimal toBigDecimal(final Object value) {
         return toBigDecimal(value, null);
     }
 
     /**
-     * 转换为Date 如果给定的值为空，或者转换失败，返回默认值 转换失败不会报错
+     * Converts the given value to a {@code Date}. If the value is empty or conversion fails, the default value is
+     * returned. No exceptions are thrown on failure.
      *
-     * @param value        被转换的值
-     * @param defaultValue 转换错误时的默认值
-     * @return 结果
+     * @param value        The value to be converted.
+     * @param defaultValue The default value to return on conversion error.
+     * @return The converted result.
      */
     public static Date toDate(final Object value, final Date defaultValue) {
         return convertQuietly(Date.class, value, defaultValue);
     }
 
     /**
-     * LocalDateTime 如果给定的值为空，或者转换失败，返回默认值 转换失败不会报错
+     * Converts the given value to a {@code LocalDateTime}. If the value is empty or conversion fails, the default value
+     * is returned. No exceptions are thrown on failure.
      *
-     * @param value        被转换的值
-     * @param defaultValue 转换错误时的默认值
-     * @return 结果
+     * @param value        The value to be converted.
+     * @param defaultValue The default value to return on conversion error.
+     * @return The converted result.
      */
     public static LocalDateTime toLocalDateTime(final Object value, final LocalDateTime defaultValue) {
         return convertQuietly(LocalDateTime.class, value, defaultValue);
     }
 
     /**
-     * 转换为LocalDateTime 如果给定的值为空，或者转换失败，返回{@code null} 转换失败不会报错
+     * Converts the given value to a {@code LocalDateTime}. If the value is empty or conversion fails, `null` is
+     * returned. No exceptions are thrown on failure.
      *
-     * @param value 被转换的值
-     * @return 结果
+     * @param value The value to be converted.
+     * @return The converted result.
      */
     public static LocalDateTime toLocalDateTime(final Object value) {
         return toLocalDateTime(value, null);
     }
 
     /**
-     * Instant 如果给定的值为空，或者转换失败，返回默认值 转换失败不会报错
+     * Converts the given value to an {@code Instant}. If the value is empty or conversion fails, the default value is
+     * returned. No exceptions are thrown on failure.
      *
-     * @param value        被转换的值
-     * @param defaultValue 转换错误时的默认值
-     * @return 结果
+     * @param value        The value to be converted.
+     * @param defaultValue The default value to return on conversion error.
+     * @return The converted result.
      */
-    public static Date toInstant(final Object value, final Date defaultValue) {
+    public static Instant toInstant(final Object value, final Instant defaultValue) {
         return convertQuietly(Instant.class, value, defaultValue);
     }
 
     /**
-     * 转换为Date 如果给定的值为空，或者转换失败，返回{@code null} 转换失败不会报错
+     * Converts the given value to a {@code Date}. If the value is empty or conversion fails, `null` is returned. No
+     * exceptions are thrown on failure.
      *
-     * @param value 被转换的值
-     * @return 结果
+     * @param value The value to be converted.
+     * @return The converted result.
      */
     public static Date toDate(final Object value) {
         return toDate(value, null);
     }
 
     /**
-     * 转换为Enum对象 如果给定的值为空，或者转换失败，返回默认值
+     * Converts the given value to an {@code Enum} of the specified class.
      *
-     * @param <E>          枚举类型
-     * @param clazz        Enum的Class
-     * @param value        值
-     * @param defaultValue 默认值
-     * @return Enum
+     * @param <E>          The enum type.
+     * @param clazz        The `Enum` class.
+     * @param value        The value.
+     * @param defaultValue The default value to return on failure.
+     * @return The `Enum` constant.
      */
     public static <E extends Enum<E>> E toEnum(final Class<E> clazz, final Object value, final E defaultValue) {
         try {
@@ -497,24 +525,24 @@ public class Convert {
     }
 
     /**
-     * 转换为Enum对象 如果给定的值为空，或者转换失败，返回默认值{@code null}
+     * Converts the given value to an {@code Enum} of the specified class. Returns `null` on failure.
      *
-     * @param <E>   枚举类型
-     * @param clazz Enum的Class
-     * @param value 值
-     * @return Enum
+     * @param <E>   The enum type.
+     * @param clazz The `Enum` class.
+     * @param value The value.
+     * @return The `Enum` constant.
      */
     public static <E extends Enum<E>> E toEnum(final Class<E> clazz, final Object value) {
         return toEnum(clazz, value, null);
     }
 
     /**
-     * 转换为集合类
+     * Converts the given value to a `Collection`.
      *
-     * @param collectionType 集合类型
-     * @param elementType    集合中元素类型
-     * @param value          被转换的值
-     * @return {@link Collection}
+     * @param collectionType The target collection type.
+     * @param elementType    The element type of the collection.
+     * @param value          The value to be converted.
+     * @return A {@link Collection}.
      */
     public static Collection<?> toCollection(
             final Class<?> collectionType,
@@ -524,48 +552,48 @@ public class Convert {
     }
 
     /**
-     * 转换为ArrayList，元素类型默认Object
+     * Converts the given value to a `List`.
      *
-     * @param value 被转换的值
-     * @return {@link List}
+     * @param value The value to be converted.
+     * @return A {@link List}.
      */
     public static List<?> toList(final Object value) {
         return convert(List.class, value);
     }
 
     /**
-     * 转换为ArrayList
+     * Converts the given value to a `List` with a specified element type.
      *
-     * @param <T>         元素类型
-     * @param elementType 集合中元素类型
-     * @param value       被转换的值
-     * @return {@link ArrayList}
+     * @param <T>         The element type.
+     * @param elementType The element type class.
+     * @param value       The value to be converted.
+     * @return An {@link ArrayList}.
      */
     public static <T> List<T> toList(final Class<T> elementType, final Object value) {
         return (List<T>) toCollection(ArrayList.class, elementType, value);
     }
 
     /**
-     * 转换为HashSet
+     * Converts the given value to a `Set` with a specified element type.
      *
-     * @param <T>         元素类型
-     * @param elementType 集合中元素类型
-     * @param value       被转换的值
-     * @return {@link HashSet}
+     * @param <T>         The element type.
+     * @param elementType The element type class.
+     * @param value       The value to be converted.
+     * @return A {@link HashSet}.
      */
     public static <T> Set<T> toSet(final Class<T> elementType, final Object value) {
         return (Set<T>) toCollection(HashSet.class, elementType, value);
     }
 
     /**
-     * 转换为Map，若value原本就是Map，则转为原始类型，若不是则默认转为HashMap
+     * Converts the given value to a `Map`.
      *
-     * @param <K>       键类型
-     * @param <V>       值类型
-     * @param keyType   键类型
-     * @param valueType 值类型
-     * @param value     被转换的值
-     * @return {@link Map}
+     * @param <K>       The key type.
+     * @param <V>       The value type.
+     * @param keyType   The key type class.
+     * @param valueType The value type class.
+     * @param value     The value to be converted.
+     * @return A {@link Map}.
      */
     public static <K, V> Map<K, V> toMap(final Class<K> keyType, final Class<V> valueType, final Object value) {
         if (value instanceof Map) {
@@ -576,15 +604,15 @@ public class Convert {
     }
 
     /**
-     * 转换为Map
+     * Converts the given value to a specific `Map` type.
      *
-     * @param mapType   转后的具体Map类型
-     * @param <K>       键类型
-     * @param <V>       值类型
-     * @param keyType   键类型
-     * @param valueType 值类型
-     * @param value     被转换的值
-     * @return {@link Map}
+     * @param <K>       The key type.
+     * @param <V>       The value type.
+     * @param mapType   The target `Map` class.
+     * @param keyType   The key type class.
+     * @param valueType The value type class.
+     * @param value     The value to be converted.
+     * @return A {@link Map}.
      */
     public static <K, V> Map<K, V> toMap(
             final Class<?> mapType,
@@ -595,119 +623,119 @@ public class Convert {
     }
 
     /**
-     * 转换值为指定类型，类型采用字符串表示
+     * Converts a value to a specified type using its class name.
      *
-     * @param <T>       目标类型
-     * @param className 类的字符串表示
-     * @param value     值
-     * @return 转换后的值
-     * @throws ConvertException 转换器不存在
+     * @param <T>       The target type.
+     * @param className The string representation of the class.
+     * @param value     The value.
+     * @return The converted value.
+     * @throws ConvertException if no suitable converter is found.
      */
     public static <T> T convertByClassName(final String className, final Object value) throws ConvertException {
         return convert(ClassKit.loadClass(className), value);
     }
 
     /**
-     * 转换值为指定类型
+     * Converts a value to a specified type.
      *
-     * @param <T>   目标类型
-     * @param type  类型
-     * @param value 值
-     * @return 转换后的值
-     * @throws ConvertException 转换器不存在
+     * @param <T>   The target type.
+     * @param type  The type.
+     * @param value The value.
+     * @return The converted value.
+     * @throws ConvertException if no suitable converter is found.
      */
     public static <T> T convert(final Class<T> type, final Object value) throws ConvertException {
         return convert((Type) type, value);
     }
 
     /**
-     * 转换值为指定类型
+     * Converts a value to a specified generic type using a `TypeReference`.
      *
-     * @param <T>       目标类型
-     * @param reference 类型参考，用于持有转换后的泛型类型
-     * @param value     值
-     * @return 转换后的值
-     * @throws ConvertException 转换器不存在
+     * @param <T>       The target type.
+     * @param reference The type reference holding the generic type information.
+     * @param value     The value.
+     * @return The converted value.
+     * @throws ConvertException if no suitable converter is found.
      */
     public static <T> T convert(final TypeReference<T> reference, final Object value) throws ConvertException {
         return convert(reference.getType(), value, null);
     }
 
     /**
-     * 转换值为指定类型
+     * Converts a value to a specified type.
      *
-     * @param <T>   目标类型
-     * @param type  类型
-     * @param value 值
-     * @return 转换后的值
-     * @throws ConvertException 转换器不存在
+     * @param <T>   The target type.
+     * @param type  The type.
+     * @param value The value.
+     * @return The converted value.
+     * @throws ConvertException if no suitable converter is found.
      */
     public static <T> T convert(final Type type, final Object value) throws ConvertException {
         return convert(type, value, null);
     }
 
     /**
-     * 转换值为指定类型
+     * Converts a value to a specified type, returning a default value on failure.
      *
-     * @param <T>          目标类型
-     * @param type         类型
-     * @param value        值
-     * @param defaultValue 默认值
-     * @return 转换后的值
-     * @throws ConvertException 转换器不存在
+     * @param <T>          The target type.
+     * @param type         The type.
+     * @param value        The value.
+     * @param defaultValue The default value.
+     * @return The converted value.
+     * @throws ConvertException if no suitable converter is found.
      */
     public static <T> T convert(final Class<T> type, final Object value, final T defaultValue) throws ConvertException {
         return convert((Type) type, value, defaultValue);
     }
 
     /**
-     * 转换值为指定类型
+     * Converts a value to a specified type, returning a default value on failure.
      *
-     * @param <T>          目标类型
-     * @param type         类型
-     * @param value        值
-     * @param defaultValue 默认值
-     * @return 转换后的值
-     * @throws ConvertException 转换器不存在
+     * @param <T>          The target type.
+     * @param type         The type.
+     * @param value        The value.
+     * @param defaultValue The default value.
+     * @return The converted value.
+     * @throws ConvertException if no suitable converter is found.
      */
     public static <T> T convert(final Type type, final Object value, final T defaultValue) throws ConvertException {
         return convertWithCheck(type, value, defaultValue, false);
     }
 
     /**
-     * 转换值为指定类型，不抛异常转换 当转换失败时返回{@code null}
+     * Converts a value to a specified type quietly (without throwing exceptions).
      *
-     * @param <T>   目标类型
-     * @param type  目标类型
-     * @param value 值
-     * @return 转换后的值，转换失败返回null
+     * @param <T>   The target type.
+     * @param type  The target type.
+     * @param value The value.
+     * @return The converted value, or `null` on failure.
      */
     public static <T> T convertQuietly(final Type type, final Object value) {
         return convertQuietly(type, value, null);
     }
 
     /**
-     * 转换值为指定类型，不抛异常转换 当转换失败时返回默认值
+     * Converts a value to a specified type quietly, returning a default value on failure.
      *
-     * @param <T>          目标类型
-     * @param type         目标类型
-     * @param value        值
-     * @param defaultValue 默认值
-     * @return 转换后的值
+     * @param <T>          The target type.
+     * @param type         The target type.
+     * @param value        The value.
+     * @param defaultValue The default value.
+     * @return The converted value.
      */
     public static <T> T convertQuietly(final Type type, final Object value, final T defaultValue) {
         return convertWithCheck(type, value, defaultValue, true);
     }
 
     /**
-     * 转换值为指定类型，可选是否不抛异常转换 当转换失败时返回默认值
+     * Converts a value to a specified type, with an option for quiet conversion.
      *
-     * @param <T>          目标类型
-     * @param type         目标类型
-     * @param value        值
-     * @param defaultValue 默认值
-     * @param quietly      是否静默转换，true不抛异常
-     * @return 转换后的值
+     * @param <T>          The target type.
+     * @param type         The target type.
+     * @param value        The value.
+     * @param defaultValue The default value.
+     * @param quietly      If `true`, returns the default value on failure instead of throwing an exception.
+     * @return The converted value.
      */
     public static <T> T convertWithCheck(
             final Type type,
@@ -726,21 +754,21 @@ public class Convert {
     }
 
     /**
-     * 半角转全角
+     * Converts half-width characters (SBCS) to full-width characters (DBCS).
      *
-     * @param input String.
-     * @return 全角字符串.
+     * @param input The string.
+     * @return The full-width string.
      */
     public static String toSBC(final String input) {
         return toSBC(input, null);
     }
 
     /**
-     * 半角转全角，{@code null}返回{@code null}
+     * Converts half-width characters to full-width characters, optionally skipping some characters.
      *
-     * @param input         String
-     * @param notConvertSet 不替换的字符集合
-     * @return 全角字符串，{@code null}返回{@code null}
+     * @param input         The string.
+     * @param notConvertSet A set of characters to not convert.
+     * @return The full-width string.
      */
     public static String toSBC(final String input, final Set<Character> notConvertSet) {
         if (StringKit.isEmpty(input)) {
@@ -749,12 +777,11 @@ public class Convert {
         final char[] c = input.toCharArray();
         for (int i = 0; i < c.length; i++) {
             if (null != notConvertSet && notConvertSet.contains(c[i])) {
-                // 跳过不替换的字符
                 continue;
             }
 
             if (c[i] == Symbol.C_SPACE) {
-                c[i] = '\u3000';
+                c[i] = '\u3000'; // Full-width space
             } else if (c[i] < '\177') {
                 c[i] = (char) (c[i] + 65248);
             }
@@ -763,21 +790,21 @@ public class Convert {
     }
 
     /**
-     * 全角转半角
+     * Converts full-width characters (DBCS) to half-width characters (SBCS).
      *
-     * @param input String.
-     * @return 半角字符串
+     * @param input The string.
+     * @return The half-width string.
      */
     public static String toDBC(final String input) {
         return toDBC(input, null);
     }
 
     /**
-     * 替换全角为半角
+     * Converts full-width characters to half-width characters, optionally skipping some characters.
      *
-     * @param text          文本
-     * @param notConvertSet 不替换的字符集合
-     * @return 替换后的字符
+     * @param text          The text.
+     * @param notConvertSet A set of characters to not convert.
+     * @return The converted string.
      */
     public static String toDBC(final String text, final Set<Character> notConvertSet) {
         if (StringKit.isBlank(text)) {
@@ -786,27 +813,24 @@ public class Convert {
         final char[] c = text.toCharArray();
         for (int i = 0; i < c.length; i++) {
             if (null != notConvertSet && notConvertSet.contains(c[i])) {
-                // 跳过不替换的字符
                 continue;
             }
 
             if (c[i] == '\u3000' || c[i] == '\u00a0' || c[i] == '\u2007' || c[i] == '\u202F') {
-                // \u3000是中文全角空格，\u00a0、\u2007、\u202F是不间断空格
                 c[i] = Symbol.C_SPACE;
             } else if (c[i] > '\uFF00' && c[i] < '\uFF5F') {
                 c[i] = (char) (c[i] - 65248);
             }
         }
-
         return new String(c);
     }
 
     /**
-     * 字符串转换成十六进制字符串，结果为小写
+     * Converts a string to a hexadecimal string (lowercase).
      *
-     * @param text    待转换的ASCII字符串
-     * @param charset 编码
-     * @return 16进制字符串
+     * @param text    The string to convert.
+     * @param charset The charset.
+     * @return The hex string.
      * @see HexKit#encodeString(CharSequence, java.nio.charset.Charset)
      */
     public static String toHex(final String text, final java.nio.charset.Charset charset) {
@@ -814,10 +838,10 @@ public class Convert {
     }
 
     /**
-     * byte数组转16进制串
+     * Converts a byte array to a hexadecimal string.
      *
-     * @param bytes 被转换的byte数组
-     * @return 转换后的值
+     * @param bytes The byte array.
+     * @return The hex string.
      * @see HexKit#encodeString(byte[])
      */
     public static String toHex(final byte[] bytes) {
@@ -825,10 +849,10 @@ public class Convert {
     }
 
     /**
-     * Hex字符串转换为Byte值
+     * Converts a hexadecimal string to a byte array.
      *
-     * @param src Byte字符串，每个Byte之间没有分隔符
-     * @return byte[]
+     * @param src The hex string.
+     * @return The byte array.
      * @see HexKit#decode(char[])
      */
     public static byte[] hexToBytes(final String src) {
@@ -836,11 +860,11 @@ public class Convert {
     }
 
     /**
-     * 十六进制转换字符串
+     * Converts a hexadecimal string to a normal string.
      *
-     * @param data    Byte字符串(Byte之间无分隔符 如:[616C6B])
-     * @param charset 编码 {@link java.nio.charset.Charset}
-     * @return 对应的字符串
+     * @param data    The hex string.
+     * @param charset The charset.
+     * @return The decoded string.
      * @see HexKit#decodeString(CharSequence, java.nio.charset.Charset)
      */
     public static String hexToString(final CharSequence data, final java.nio.charset.Charset charset) {
@@ -848,10 +872,10 @@ public class Convert {
     }
 
     /**
-     * String的字符串转换成unicode的String
+     * Converts a string to its Unicode-escaped representation.
      *
-     * @param data 全角字符串
-     * @return String 每个unicode之间无分隔符
+     * @param data The string.
+     * @return The Unicode-escaped string.
      * @see UnicodeKit#toUnicode(CharSequence)
      */
     public static String strToUnicode(final String data) {
@@ -859,10 +883,10 @@ public class Convert {
     }
 
     /**
-     * unicode的String转换成String的字符串
+     * Converts a Unicode-escaped string to a normal string.
      *
-     * @param unicode Unicode符
-     * @return String 字符串
+     * @param unicode The Unicode-escaped string.
+     * @return The decoded string.
      * @see UnicodeKit#toString(String)
      */
     public static String unicodeToString(final String unicode) {
@@ -870,29 +894,28 @@ public class Convert {
     }
 
     /**
-     * 给定字符串转换字符编码 如果参数为空，则返回原字符串，不报错。
+     * Converts the character encoding of a string.
      *
-     * @param text          被转码的字符串
-     * @param sourceCharset 原字符集
-     * @param destCharset   目标字符集
-     * @return 转换后的字符串
+     * @param text          The text.
+     * @param sourceCharset The source charset.
+     * @param destCharset   The destination charset.
+     * @return The converted string.
      * @see Charset#convert(String, String, String)
      */
     public static String convertCharset(final String text, final String sourceCharset, final String destCharset) {
         if (ArrayKit.hasBlank(text, sourceCharset, destCharset)) {
             return text;
         }
-
         return Charset.convert(text, sourceCharset, destCharset);
     }
 
     /**
-     * 转换时间单位
+     * Converts a duration from a source `TimeUnit` to a destination `TimeUnit`.
      *
-     * @param sourceDuration 时长
-     * @param sourceUnit     源单位
-     * @param destUnit       目标单位
-     * @return 目标单位的时长
+     * @param sourceDuration The source duration.
+     * @param sourceUnit     The source time unit.
+     * @param destUnit       The destination time unit.
+     * @return The duration in the destination unit.
      */
     public static long convertTime(final long sourceDuration, final TimeUnit sourceUnit, final TimeUnit destUnit) {
         Assert.notNull(sourceUnit, "sourceUnit is null !");
@@ -901,83 +924,73 @@ public class Convert {
     }
 
     /**
-     * 原始类转为包装类，非原始类返回原类
+     * Converts a primitive `Class` to its corresponding wrapper `Class`.
      *
-     * @param clazz 原始类
-     * @return 包装类
-     * @see BasicType#wrap(Class)
-     * @see BasicType#wrap(Class)
+     * @param clazz The primitive class.
+     * @return The wrapper class.
+     * @see EnumValue.Type#wrap(Class)
      */
     public static Class<?> wrap(final Class<?> clazz) {
-        return BasicType.wrap(clazz);
+        return EnumValue.Type.wrap(clazz);
     }
 
     /**
-     * 包装类转为原始类，非包装类返回原类
+     * Converts a wrapper `Class` to its corresponding primitive `Class`.
      *
-     * @param clazz 包装类
-     * @return 原始类
-     * @see BasicType#unWrap(Class)
-     * @see BasicType#unWrap(Class)
+     * @param clazz The wrapper class.
+     * @return The primitive class.
+     * @see EnumValue.Type#unWrap(Class)
      */
     public static Class<?> unWrap(final Class<?> clazz) {
-        return BasicType.unWrap(clazz);
+        return EnumValue.Type.unWrap(clazz);
     }
 
     /**
-     * 将阿拉伯数字转为英文表达方式
+     * Converts a number to its English word representation.
      *
-     * @param number {@link Number}对象
-     * @return 英文表达式
+     * @param number The `Number` object.
+     * @return The English representation.
      */
     public static String numberToWord(final Number number) {
         return EnglishNumberFormatter.format(number);
     }
 
     /**
-     * 将阿拉伯数字转为精简表示形式，例如:
+     * Converts a number to a compact representation (e.g., 1200 -> 1.2k).
      *
-     * <pre>
-     *     1200 - 1.2k
-     * </pre>
-     *
-     * @param number {@link Number}对象
-     * @return 英文表达式
+     * @param number The `Number` object.
+     * @return The compact string representation.
      */
     public static String numberToSimple(final Number number) {
         return EnglishNumberFormatter.formatSimple(number.longValue());
     }
 
     /**
-     * 将阿拉伯数字转为中文表达方式
+     * Converts an Arabic numeral to its Chinese character representation.
      *
-     * @param number           数字
-     * @param isUseTraditional 是否使用繁体字（金额形式）
-     * @return 中文
+     * @param number           The number.
+     * @param isUseTraditional If true, uses traditional Chinese characters (for currency).
+     * @return The Chinese representation.
      */
     public static String numberToChinese(final double number, final boolean isUseTraditional) {
         return ChineseNumberFormatter.of().setUseTraditional(isUseTraditional).format(number);
     }
 
     /**
-     * 数字中文表示形式转数字
-     * <ul>
-     * <li>一百一十二 - 112</li>
-     * <li>一千零一十二 - 1012</li>
-     * </ul>
+     * Converts a Chinese numeral string to a number.
      *
-     * @param number 数字中文表示
-     * @return 数字
+     * @param number The Chinese numeral string.
+     * @return The number as a `BigDecimal`.
      */
     public static BigDecimal chineseToNumber(final String number) {
         return ChineseNumberParser.parseFromChineseNumber(number);
     }
 
     /**
-     * 金额转为中文形式
+     * Converts a number to its formal Chinese currency representation.
      *
-     * @param n 数字
-     * @return 中文大写数字
+     * @param n The number.
+     * @return The Chinese currency string.
      */
     public static String digitToChinese(Number n) {
         if (null == n) {
@@ -987,93 +1000,90 @@ public class Convert {
     }
 
     /**
-     * 中文大写数字金额转换为数字，返回结果以元为单位的BigDecimal类型数字 如： “陆万柒仟伍佰伍拾陆元叁角贰分”返回“67556.32” “叁角贰分”返回“0.32”
+     * Converts a formal Chinese currency string to a number.
      *
-     * @param chineseMoneyAmount 中文大写数字金额
-     * @return 返回结果以元为单位的BigDecimal类型数字
+     * @param chineseMoneyAmount The Chinese currency string.
+     * @return The number as a `BigDecimal`.
      */
     public static BigDecimal chineseMoneyToNumber(final String chineseMoneyAmount) {
         return ChineseNumberParser.parseFromChineseMoney(chineseMoneyAmount);
     }
 
     /**
-     * int转byte
+     * Converts an `int` to a `byte`.
      *
-     * @param intValue int值
-     * @return byte值
+     * @param intValue The int value.
+     * @return The byte value.
      */
     public static byte intToByte(final int intValue) {
         return (byte) intValue;
     }
 
     /**
-     * byte转无符号int
+     * Converts a `byte` to an unsigned `int`.
      *
-     * @param byteValue byte值
-     * @return 无符号int值
+     * @param byteValue The byte value.
+     * @return The unsigned int value.
      */
     public static int byteToUnsignedInt(final byte byteValue) {
-        // Java 总是把 byte 当做有符处理；我们可以通过将其和 0xFF 进行二进制与得到它的无符值
         return byteValue & 0xFF;
     }
 
     /**
-     * byte数组转short 默认以小端序转换
+     * Converts a byte array to a `short` (little-endian by default).
      *
-     * @param bytes byte数组
-     * @return short值
+     * @param bytes The byte array.
+     * @return The short value.
      */
     public static short bytesToShort(final byte[] bytes) {
         return ByteKit.toShort(bytes);
     }
 
     /**
-     * short转byte数组 默认以小端序转换
+     * Converts a `short` to a byte array (little-endian by default).
      *
-     * @param shortValue short值
-     * @return byte数组
+     * @param shortValue The short value.
+     * @return The byte array.
      */
     public static byte[] shortToBytes(final short shortValue) {
         return ByteKit.toBytes(shortValue);
     }
 
     /**
-     * byte[]转int值 默认以小端序转换
+     * Converts a byte array to an `int` (little-endian by default).
      *
-     * @param bytes byte数组
-     * @return int值
+     * @param bytes The byte array.
+     * @return The int value.
      */
     public static int bytesToInt(final byte[] bytes) {
         return ByteKit.toInt(bytes);
     }
 
     /**
-     * int转byte数组 默认以小端序转换
+     * Converts an `int` to a byte array (little-endian by default).
      *
-     * @param intValue int值
-     * @return byte数组
+     * @param intValue The int value.
+     * @return The byte array.
      */
     public static byte[] intToBytes(final int intValue) {
         return ByteKit.toBytes(intValue);
     }
 
     /**
-     * long转byte数组 默认以小端序转换 from: <a href=
-     * "https://stackoverflow.com/questions/4485128/how-do-i-convert-long-to-byte-and-back-in-java">https://stackoverflow.com/questions/4485128/how-do-i-convert-long-to-byte-and-back-in-java</a>
+     * Converts a `long` to a byte array (little-endian by default).
      *
-     * @param longValue long值
-     * @return byte数组
+     * @param longValue The long value.
+     * @return The byte array.
      */
     public static byte[] longToBytes(final long longValue) {
         return ByteKit.toBytes(longValue);
     }
 
     /**
-     * byte数组转long 默认以小端序转换 from: <a href=
-     * "https://stackoverflow.com/questions/4485128/how-do-i-convert-long-to-byte-and-back-in-java">https://stackoverflow.com/questions/4485128/how-do-i-convert-long-to-byte-and-back-in-java</a>
+     * Converts a byte array to a `long` (little-endian by default).
      *
-     * @param bytes byte数组
-     * @return long值
+     * @param bytes The byte array.
+     * @return The long value.
      */
     public static long bytesToLong(final byte[] bytes) {
         return ByteKit.toLong(bytes);

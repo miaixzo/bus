@@ -35,7 +35,8 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 
 /**
- * 简单模板引擎工厂，用于根据用户引入的模板引擎jar，自动创建对应的模板引擎对象 使用简单工厂（Simple Factory）模式
+ * Simple template engine factory that automatically creates the corresponding template engine object based on the
+ * template engine JARs introduced by the user. It uses the Simple Factory pattern.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,9 +44,10 @@ import org.miaixz.bus.logger.Logger;
 public class TemplateFactory {
 
     /**
-     * 根据用户引入的模板引擎jar，自动创建对应的模板引擎对象 获得的是单例
+     * Retrieves a singleton instance of {@link TemplateProvider} based on the available template engine JARs. The first
+     * available template engine found via SPI will be used.
      *
-     * @return 单例
+     * @return A singleton instance of {@link TemplateProvider}.
      */
     public static TemplateProvider get() {
         final TemplateProvider engine = Instances.get(TemplateProvider.class.getName(), TemplateFactory::create);
@@ -56,38 +58,42 @@ public class TemplateFactory {
     }
 
     /**
-     * 根据用户引入的模板引擎jar，自动创建对应的模板引擎对象 推荐创建的引擎单例使用，此方法每次调用会返回新的引擎
+     * Creates a new {@link TemplateProvider} instance using the default configuration. This method returns a new engine
+     * instance each time it is called.
      *
-     * @return {@link TemplateProvider}
+     * @return A new {@link TemplateProvider} instance.
      */
     public static TemplateProvider create() {
         return create(TemplateConfig.DEFAULT);
     }
 
     /**
-     * 根据用户引入的模板引擎jar，自动创建对应的模板引擎对象 推荐创建的引擎单例使用，此方法每次调用会返回新的引擎
+     * Creates a new {@link TemplateProvider} instance with the specified configuration. This method returns a new
+     * engine instance each time it is called.
      *
-     * @param config 模板配置，包括编码、模板文件path等信息
-     * @return {@link TemplateProvider}
+     * @param config The template configuration, including encoding, template file path, etc.
+     * @return A new {@link TemplateProvider} instance.
      */
     public static TemplateProvider create(final TemplateConfig config) {
         return doCreate(config);
     }
 
     /**
-     * 根据用户引入的模板引擎jar，自动创建对应的模板引擎对象 推荐创建的引擎单例使用，此方法每次调用会返回新的引擎
+     * Internal method to create a {@link TemplateProvider} instance based on the given configuration. It first checks
+     * for a custom provider specified in the config, then falls back to SPI loading.
      *
-     * @param config 模板配置，包括编码、模板文件path等信息
-     * @return {@link TemplateProvider}
+     * @param config The template configuration, including encoding, template file path, etc.
+     * @return A new {@link TemplateProvider} instance.
+     * @throws InternalException if no template engine is found or available.
      */
     private static TemplateProvider doCreate(final TemplateConfig config) {
         final Class<? extends TemplateProvider> customEngineClass = config.getProvider();
         final TemplateProvider engine;
         if (null != customEngineClass) {
-            // 自定义模板引擎
+            // Custom template engine
             engine = ReflectKit.newInstance(customEngineClass);
         } else {
-            // SPI引擎查找
+            // SPI engine lookup
             engine = NormalSpiLoader.loadFirstAvailable(TemplateProvider.class);
         }
         if (null != engine) {

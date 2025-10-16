@@ -30,28 +30,28 @@ package org.miaixz.bus.core.lang.selector;
 import java.util.Objects;
 
 /**
- * 带有权重的对象包装
+ * A wrapper for an object that assigns a weight to it.
  *
- * @param <T> 对象类型
+ * @param <T> the type of the wrapped object
  * @author Kimi Liu
  * @since Java 17+
  */
 public class WeightObject<T> {
 
     /**
-     * 权重
+     * The weight of the object.
      */
     protected int weight;
     /**
-     * 对象
+     * The wrapped object.
      */
     protected T object;
 
     /**
-     * 构造
+     * Constructs a new {@code WeightObject} with the specified object and weight.
      *
-     * @param object 对象
-     * @param weight 权重
+     * @param object the object to wrap
+     * @param weight the weight to assign to the object
      */
     public WeightObject(final T object, final int weight) {
         this.object = object;
@@ -59,32 +59,39 @@ public class WeightObject<T> {
     }
 
     /**
-     * 获取对象
+     * Gets the wrapped object.
      *
-     * @return 对象
+     * @return the wrapped object
      */
     public T getObject() {
         return object;
     }
 
     /**
-     * 设置对象
+     * Sets the wrapped object.
      *
-     * @param object 对象
+     * @param object the new object to wrap
      */
     public void setObject(final T object) {
         this.object = object;
     }
 
     /**
-     * 获取权重
+     * Gets the weight of the object.
      *
-     * @return 权重
+     * @return the weight of the object
      */
     public int getWeight() {
         return weight;
     }
 
+    /**
+     * Compares this {@code WeightObject} to another object for equality. Two {@code WeightObject} instances are
+     * considered equal if they have the same weight and their wrapped objects are equal.
+     *
+     * @param o the object to compare with
+     * @return {@code true} if the objects are equal, {@code false} otherwise
+     */
     @Override
     public boolean equals(final Object o) {
         if (this == o) {
@@ -97,6 +104,11 @@ public class WeightObject<T> {
         return weight == weightObj.weight && Objects.equals(object, weightObj.object);
     }
 
+    /**
+     * Returns the hash code for this {@code WeightObject}. The hash code is based on the wrapped object and its weight.
+     *
+     * @return the hash code for this {@code WeightObject}
+     */
     @Override
     public int hashCode() {
         return Objects.hash(object, weight);

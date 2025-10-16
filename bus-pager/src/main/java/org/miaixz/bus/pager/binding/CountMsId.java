@@ -31,7 +31,9 @@ import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 
 /**
- * 构建当前查询对应的 count 方法 id 返回的 msId 会先判断是否存在自定义的方法，存在就直接使用 如果不存在，会根据当前的 msId 创建 MappedStatement
+ * Builds the ID for the count method corresponding to the current query. The returned {@code msId} will first check for
+ * a custom method; if it exists, it will be used directly. If not, a {@link MappedStatement} will be created based on
+ * the current {@code msId}.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -39,18 +41,18 @@ import org.apache.ibatis.mapping.MappedStatement;
 public interface CountMsId {
 
     /**
-     * 默认实现
+     * Default implementation of {@code CountMsId}, which appends the count suffix to the MappedStatement ID.
      */
     CountMsId DEFAULT = (ms, parameter, boundSql, countSuffix) -> ms.getId() + countSuffix;
 
     /**
-     * 构建当前查询对应的 count 方法 id
+     * Generates the ID for the count method corresponding to the current query.
      *
-     * @param ms          查询对应的 MappedStatement
-     * @param parameter   方法参数
-     * @param boundSql    查询SQL
-     * @param countSuffix 配置的 count 后缀
-     * @return count 查询丢的 msId
+     * @param ms          the MappedStatement corresponding to the query
+     * @param parameter   the method parameters
+     * @param boundSql    the BoundSql object for the query
+     * @param countSuffix the configured suffix for count queries
+     * @return the msId for the count query
      */
     String genCountMsId(MappedStatement ms, Object parameter, BoundSql boundSql, String countSuffix);
 

@@ -27,8 +27,6 @@
 */
 package org.miaixz.bus.cron.pattern;
 
-import java.io.Serial;
-
 import org.miaixz.bus.core.Builder;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
@@ -36,8 +34,10 @@ import org.miaixz.bus.core.text.StringJoiner;
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
+import java.io.Serial;
+
 /**
- * 定时任务表达式构建器
+ * A builder for creating cron expression strings.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -50,20 +50,20 @@ public class CronPatternBuilder implements Builder<String> {
     final String[] parts = new String[7];
 
     /**
-     * 创建构建器
+     * Creates a new CronPatternBuilder.
      *
-     * @return CronPatternBuilder
+     * @return A new {@link CronPatternBuilder} instance.
      */
     public static CronPatternBuilder of() {
         return new CronPatternBuilder();
     }
 
     /**
-     * 设置值
+     * Sets a list of values for a specific part of the cron expression.
      *
-     * @param part   部分，如秒、分、时等
-     * @param values 时间值列表
-     * @return this
+     * @param part   The cron expression part (e.g., SECOND, MINUTE, HOUR).
+     * @param values The list of time values.
+     * @return this builder instance for chaining.
      */
     public CronPatternBuilder setValues(final Part part, final int... values) {
         for (final int value : values) {
@@ -73,12 +73,12 @@ public class CronPatternBuilder implements Builder<String> {
     }
 
     /**
-     * 设置区间
+     * Sets a range of values for a specific part of the cron expression.
      *
-     * @param part  部分，如秒、分、时等
-     * @param begin 起始值
-     * @param end   结束值
-     * @return this
+     * @param part  The cron expression part (e.g., SECOND, MINUTE, HOUR).
+     * @param begin The beginning of the range (inclusive).
+     * @param end   The end of the range (inclusive).
+     * @return this builder instance for chaining.
      */
     public CronPatternBuilder setRange(final Part part, final int begin, final int end) {
         Assert.notNull(part);
@@ -88,22 +88,27 @@ public class CronPatternBuilder implements Builder<String> {
     }
 
     /**
-     * 设置对应部分的定时任务值
+     * Sets the raw string value for a specific part of the cron expression.
      *
-     * @param part  部分，如秒、分、时等
-     * @param value 表达式值，如"*"、"1,2"、"5-12"等
-     * @return this
+     * @param part  The cron expression part (e.g., SECOND, MINUTE, HOUR).
+     * @param value The expression value for the part (e.g., "*", "1,2", "5-12").
+     * @return this builder instance for chaining.
      */
     public CronPatternBuilder set(final Part part, final String value) {
         parts[part.ordinal()] = value;
         return this;
     }
 
+    /**
+     * Builds the cron expression string.
+     *
+     * @return The cron expression string.
+     */
     @Override
     public String build() {
         for (int i = Part.MINUTE.ordinal(); i < Part.YEAR.ordinal(); i++) {
-            // 从分到周，用户未设置使用默认值
-            // 秒和年如果不设置，忽略之
+            // For fields from MINUTE to DAY_OF_WEEK, use the default value ('*') if not set by the user.
+            // The SECOND and YEAR fields are ignored if not set.
             if (StringKit.isBlank(parts[i])) {
                 parts[i] = Symbol.STAR;
             }

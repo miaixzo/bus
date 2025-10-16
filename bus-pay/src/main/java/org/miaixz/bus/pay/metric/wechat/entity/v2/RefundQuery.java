@@ -36,7 +36,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * 查询退款 支持: 普通接口退款查询、刷脸支付退款查询、支付押金退款查询
+ * Refund Query model. Supports: general interface refund query, face payment refund query, deposit refund query.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,16 +48,49 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class RefundQuery extends Material {
 
+    /**
+     * Sub-merchant App ID.
+     */
     private String sub_appid;
+    /**
+     * Merchant ID.
+     */
     private String mch_id;
+    /**
+     * Sub-merchant ID.
+     */
     private String sub_mch_id;
+    /**
+     * Random string.
+     */
     private String nonce_str;
+    /**
+     * Signature.
+     */
     private String sign;
+    /**
+     * Signature type.
+     */
     private String sign_type;
+    /**
+     * WeChat transaction ID.
+     */
     private String transaction_id;
+    /**
+     * Merchant order number.
+     */
     private String out_trade_no;
+    /**
+     * Merchant refund number.
+     */
     private String out_refund_no;
+    /**
+     * Refund ID.
+     */
     private String refund_id;
+    /**
+     * Offset.
+     */
     private String offset;
 
 }

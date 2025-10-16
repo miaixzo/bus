@@ -37,7 +37,7 @@ import org.miaixz.bus.office.excel.shape.ExcelPictureType;
 import org.miaixz.bus.office.excel.writer.ExcelDrawing;
 
 /**
- * 图片单元格值设置器
+ * {@link CellSetter} for picture values.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,28 +48,28 @@ public class PictureCellSetter implements CellSetter {
     private final ExcelPictureType pictureType;
 
     /**
-     * 构造，默认PNG图片
+     * Constructs a {@code PictureCellSetter} with picture data, defaulting to PNG image type.
      *
-     * @param pictureData 图片数据
+     * @param pictureData The byte array of the picture data.
      */
     public PictureCellSetter(final byte[] pictureData) {
         this(pictureData, ExcelPictureType.PNG);
     }
 
     /**
-     * 构造
+     * Constructs a {@code PictureCellSetter} with a picture file.
      *
-     * @param picturefile 图片数据
+     * @param picturefile The picture file.
      */
     public PictureCellSetter(final File picturefile) {
         this(FileKit.readBytes(picturefile), ExcelPictureType.getType(picturefile));
     }
 
     /**
-     * 构造
+     * Constructs a {@code PictureCellSetter} with picture data and a specified picture type.
      *
-     * @param pictureData 图片数据
-     * @param pictureType 图片类型
+     * @param pictureData The byte array of the picture data.
+     * @param pictureType The type of the picture.
      */
     public PictureCellSetter(final byte[] pictureData, final ExcelPictureType pictureType) {
         this.pictureData = pictureData;

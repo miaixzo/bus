@@ -49,7 +49,7 @@ import org.miaixz.bus.office.excel.xyz.RowKit;
 import org.miaixz.bus.office.excel.xyz.WorkbookKit;
 
 /**
- * Excel读取器 读取Excel工作簿
+ * Excel reader for reading Excel workbooks.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -57,30 +57,30 @@ import org.miaixz.bus.office.excel.xyz.WorkbookKit;
 public class ExcelReader extends ExcelBase<ExcelReader, ExcelReadConfig> {
 
     /**
-     * 构造
+     * Constructs a new {@code ExcelReader}.
      *
-     * @param excelFilePath Excel文件路径，绝对路径或相对于ClassPath路径
-     * @param sheetIndex    sheet序号，0表示第一个sheet
+     * @param excelFilePath The path to the Excel file, either absolute or relative to the ClassPath.
+     * @param sheetIndex    The sheet index, 0 means the first sheet.
      */
     public ExcelReader(final String excelFilePath, final int sheetIndex) {
         this(FileKit.file(excelFilePath), sheetIndex);
     }
 
     /**
-     * 构造
+     * Constructs a new {@code ExcelReader}.
      *
-     * @param excelFilePath Excel文件路径，绝对路径或相对于ClassPath路径
-     * @param sheetName     sheet名，第一个默认是sheet1
+     * @param excelFilePath The path to the Excel file, either absolute or relative to the ClassPath.
+     * @param sheetName     The sheet name. The first sheet is typically named "sheet1".
      */
     public ExcelReader(final String excelFilePath, final String sheetName) {
         this(FileKit.file(excelFilePath), sheetName);
     }
 
     /**
-     * 构造（读写方式读取）
+     * Constructs a new {@code ExcelReader} in read-write mode.
      *
-     * @param bookFile   Excel文件
-     * @param sheetIndex sheet序号，0表示第一个sheet
+     * @param bookFile   The Excel file.
+     * @param sheetIndex The sheet index, 0 means the first sheet.
      */
     public ExcelReader(final File bookFile, final int sheetIndex) {
         this(WorkbookKit.createBook(bookFile, true), sheetIndex);
@@ -88,10 +88,10 @@ public class ExcelReader extends ExcelBase<ExcelReader, ExcelReadConfig> {
     }
 
     /**
-     * 构造（读写方式读取）
+     * Constructs a new {@code ExcelReader} in read-write mode.
      *
-     * @param bookFile  Excel文件
-     * @param sheetName sheet名，第一个默认是sheet1
+     * @param bookFile  The Excel file.
+     * @param sheetName The sheet name. The first sheet is typically named "sheet1".
      */
     public ExcelReader(final File bookFile, final String sheetName) {
         this(WorkbookKit.createBook(bookFile, true), sheetName);
@@ -99,61 +99,62 @@ public class ExcelReader extends ExcelBase<ExcelReader, ExcelReadConfig> {
     }
 
     /**
-     * 构造（只读方式读取）
+     * Constructs a new {@code ExcelReader} in read-only mode.
      *
-     * @param bookStream Excel文件的流
-     * @param sheetIndex sheet序号，0表示第一个sheet
+     * @param bookStream The input stream of the Excel file.
+     * @param sheetIndex The sheet index, 0 means the first sheet.
      */
     public ExcelReader(final InputStream bookStream, final int sheetIndex) {
         this(WorkbookKit.createBook(bookStream), sheetIndex);
     }
 
     /**
-     * 构造（只读方式读取）
+     * Constructs a new {@code ExcelReader} in read-only mode.
      *
-     * @param bookStream Excel文件的流
-     * @param sheetName  sheet名，第一个默认是sheet1
+     * @param bookStream The input stream of the Excel file.
+     * @param sheetName  The sheet name. The first sheet is typically named "sheet1".
      */
     public ExcelReader(final InputStream bookStream, final String sheetName) {
         this(WorkbookKit.createBook(bookStream), sheetName);
     }
 
     /**
-     * 构造
+     * Constructs a new {@code ExcelReader}.
      *
-     * @param book       {@link Workbook} 表示一个Excel文件
-     * @param sheetIndex sheet序号，0表示第一个sheet
+     * @param book       The {@link Workbook} representing an Excel file.
+     * @param sheetIndex The sheet index, 0 means the first sheet.
      */
     public ExcelReader(final Workbook book, final int sheetIndex) {
         this(getSheetOrCloseWorkbook(book, sheetIndex));
     }
 
     /**
-     * 构造
+     * Constructs a new {@code ExcelReader}.
      *
-     * @param book      {@link Workbook} 表示一个Excel文件
-     * @param sheetName sheet名，第一个默认是sheet1
+     * @param book      The {@link Workbook} representing an Excel file.
+     * @param sheetName The sheet name. The first sheet is typically named "sheet1".
      */
     public ExcelReader(final Workbook book, final String sheetName) {
         this(getSheetOrCloseWorkbook(book, sheetName));
     }
 
     /**
-     * 构造
+     * Constructs a new {@code ExcelReader}.
      *
-     * @param sheet Excel中的sheet
+     * @param sheet The {@link Sheet} to read from.
      */
     public ExcelReader(final Sheet sheet) {
         super(new ExcelReadConfig(), sheet);
     }
 
     /**
-     * 获取Sheet，如果不存在则关闭{@link Workbook}并抛出异常，解决当sheet不存在时，文件依旧被占用问题
+     * Gets the {@link Sheet}. If the sheet does not exist, the {@link Workbook} is closed and an exception is thrown,
+     * addressing the issue of the file remaining occupied when the sheet does not exist.
      *
-     * @param workbook {@link Workbook}，非空
-     * @param name     sheet名称，不存在抛出异常
-     * @return {@link Sheet}
-     * @throws IllegalArgumentException workbook为空或sheet不能存在
+     * @param workbook The {@link Workbook}, cannot be null.
+     * @param name     The sheet name. If it does not exist, an exception is thrown.
+     * @return The {@link Sheet}.
+     * @throws IllegalArgumentException if the workbook is null or the sheet does not exist.
      */
     private static Sheet getSheetOrCloseWorkbook(final Workbook workbook, String name) throws IllegalArgumentException {
         Assert.notNull(workbook);
@@ -169,12 +170,13 @@ public class ExcelReader extends ExcelBase<ExcelReader, ExcelReadConfig> {
     }
 
     /**
-     * 获取Sheet，如果不存在则关闭{@link Workbook}并抛出异常，解决当sheet不存在时，文件依旧被占用问题
+     * Gets the {@link Sheet}. If the sheet does not exist, the {@link Workbook} is closed and an exception is thrown,
+     * addressing the issue of the file remaining occupied when the sheet does not exist.
      *
-     * @param workbook   {@link Workbook}，非空
-     * @param sheetIndex sheet index
-     * @return {@link Sheet}
-     * @throws IllegalArgumentException workbook为空或sheet不能存在
+     * @param workbook   The {@link Workbook}, cannot be null.
+     * @param sheetIndex The sheet index.
+     * @return The {@link Sheet}.
+     * @throws IllegalArgumentException if the workbook is null or the sheet does not exist.
      */
     private static Sheet getSheetOrCloseWorkbook(final Workbook workbook, final int sheetIndex)
             throws IllegalArgumentException {
@@ -194,42 +196,43 @@ public class ExcelReader extends ExcelBase<ExcelReader, ExcelReadConfig> {
     }
 
     /**
-     * 读取工作簿中指定的Sheet的所有行列数据
+     * Reads all row data from the specified sheet in the workbook.
      *
-     * @return 行的集合，一行使用List表示
+     * @return A list of rows, where each row is represented by a List of objects.
      */
     public List<List<Object>> read() {
         return read(0);
     }
 
     /**
-     * 读取工作簿中指定的Sheet
+     * Reads the specified sheet in the workbook.
      *
-     * @param startRowIndex 起始行（包含，从0开始计数）
-     * @return 行的集合，一行使用List表示
+     * @param startRowIndex The starting row index (inclusive, 0-based).
+     * @return A list of rows, where each row is represented by a List of objects.
      */
     public List<List<Object>> read(final int startRowIndex) {
         return read(startRowIndex, Integer.MAX_VALUE);
     }
 
     /**
-     * 读取工作簿中指定的Sheet，此方法会把第一行作为标题行，替换标题别名
+     * Reads the specified sheet in the workbook. The first row is treated as a header row and aliases are applied.
      *
-     * @param startRowIndex 起始行（包含，从0开始计数）
-     * @param endRowIndex   结束行（包含，从0开始计数）
-     * @return 行的集合，一行使用List表示
+     * @param startRowIndex The starting row index (inclusive, 0-based).
+     * @param endRowIndex   The ending row index (inclusive, 0-based).
+     * @return A list of rows, where each row is represented by a List of objects.
      */
     public List<List<Object>> read(final int startRowIndex, final int endRowIndex) {
         return read(startRowIndex, endRowIndex, false);
     }
 
     /**
-     * 读取工作簿中指定的Sheet
+     * Reads the specified sheet in the workbook.
      *
-     * @param startRowIndex  起始行（包含，从0开始计数）
-     * @param endRowIndex    结束行（包含，从0开始计数）
-     * @param aliasFirstLine 是否首行作为标题行转换别名
-     * @return 行的集合，一行使用List表示
+     * @param startRowIndex  The starting row index (inclusive, 0-based).
+     * @param endRowIndex    The ending row index (inclusive, 0-based).
+     * @param aliasFirstLine {@code true} if the first row should be treated as a header and aliases applied,
+     *                       {@code false} otherwise.
+     * @return A list of rows, where each row is represented by a List of objects.
      */
     public List<List<Object>> read(final int startRowIndex, final int endRowIndex, final boolean aliasFirstLine) {
         final ListSheetReader reader = new ListSheetReader(startRowIndex, endRowIndex, aliasFirstLine);
@@ -238,23 +241,23 @@ public class ExcelReader extends ExcelBase<ExcelReader, ExcelReadConfig> {
     }
 
     /**
-     * 读取工作簿中指定的Sheet中指定列
+     * Reads a specific column from the specified sheet in the workbook.
      *
-     * @param columnIndex   列号，从0开始计数
-     * @param startRowIndex 起始行（包含，从0开始计数）
-     * @return 列的集合
+     * @param columnIndex   The column index (0-based).
+     * @param startRowIndex The starting row index (inclusive, 0-based).
+     * @return A list of column values.
      */
     public List<Object> readColumn(final int columnIndex, final int startRowIndex) {
         return readColumn(columnIndex, startRowIndex, Integer.MAX_VALUE);
     }
 
     /**
-     * 读取工作簿中指定的Sheet中指定列
+     * Reads a specific column from the specified sheet in the workbook.
      *
-     * @param columnIndex   列号，从0开始计数
-     * @param startRowIndex 起始行（包含，从0开始计数）
-     * @param endRowIndex   结束行（包含，从0开始计数）
-     * @return 列的集合
+     * @param columnIndex   The column index (0-based).
+     * @param startRowIndex The starting row index (inclusive, 0-based).
+     * @param endRowIndex   The ending row index (inclusive, 0-based).
+     * @return A list of column values.
      */
     public List<Object> readColumn(final int columnIndex, final int startRowIndex, final int endRowIndex) {
         final ColumnSheetReader reader = new ColumnSheetReader(columnIndex, startRowIndex, endRowIndex);
@@ -263,20 +266,22 @@ public class ExcelReader extends ExcelBase<ExcelReader, ExcelReadConfig> {
     }
 
     /**
-     * 读取工作簿中指定的Sheet，此方法为类流处理方式，当读到指定单元格时，会调用CellEditor接口 用户通过实现此接口，可以更加灵活地处理每个单元格的数据。
+     * Reads the specified sheet in the workbook using a stream-like processing approach. When a cell is read, the
+     * {@link BiConsumerX} is called. Users can implement this interface to flexibly process data for each cell.
      *
-     * @param cellHandler 单元格处理器，用于处理读到的单元格及其数据
+     * @param cellHandler The cell handler, used to process the read cell and its data.
      */
     public void read(final BiConsumerX<Cell, Object> cellHandler) {
         read(0, Integer.MAX_VALUE, cellHandler);
     }
 
     /**
-     * 读取工作簿中指定的Sheet，此方法为类流处理方式，当读到指定单元格时，会调用CellEditor接口 用户通过实现此接口，可以更加灵活地处理每个单元格的数据。
+     * Reads the specified sheet in the workbook using a stream-like processing approach. When a cell is read, the
+     * {@link BiConsumerX} is called. Users can implement this interface to flexibly process data for each cell.
      *
-     * @param startRowIndex 起始行（包含，从0开始计数）
-     * @param endRowIndex   结束行（包含，从0开始计数）
-     * @param cellHandler   单元格处理器，用于处理读到的单元格及其数据
+     * @param startRowIndex The starting row index (inclusive, 0-based).
+     * @param endRowIndex   The ending row index (inclusive, 0-based).
+     * @param cellHandler   The cell handler, used to process the read cell and its data.
      */
     public void read(final int startRowIndex, final int endRowIndex, final BiConsumerX<Cell, Object> cellHandler) {
         checkClosed();
@@ -287,21 +292,24 @@ public class ExcelReader extends ExcelBase<ExcelReader, ExcelReadConfig> {
     }
 
     /**
-     * 读取Excel为Map的列表，读取所有行，默认第一行做为标题，数据从第二行开始 Map表示一行，标题为key，单元格内容为value
+     * Reads the Excel file into a list of maps, reading all rows. By default, the first row is treated as the header,
+     * and data starts from the second row. Each map represents a row, with headers as keys and cell content as values.
      *
-     * @return Map的列表
+     * @return A list of maps.
      */
     public List<Map<Object, Object>> readAll() {
         return read(0, 1, Integer.MAX_VALUE);
     }
 
     /**
-     * 读取Excel为Map的列表 Map表示一行，标题为key，单元格内容为value
+     * Reads the Excel file into a list of maps. Each map represents a row, with headers as keys and cell content as
+     * values.
      *
-     * @param headerRowIndex 标题所在行，如果标题行在读取的内容行中间，这行做为数据将忽略
-     * @param startRowIndex  起始行（包含，从0开始计数）
-     * @param endRowIndex    读取结束行（包含，从0开始计数）
-     * @return Map的列表
+     * @param headerRowIndex The row index where the header is located. If the header row is in the middle of the
+     *                       content rows to be read, this row will be ignored as data.
+     * @param startRowIndex  The starting row index (inclusive, 0-based).
+     * @param endRowIndex    The ending row index (inclusive, 0-based).
+     * @return A list of maps.
      */
     public List<Map<Object, Object>> read(final int headerRowIndex, final int startRowIndex, final int endRowIndex) {
         final MapSheetReader reader = new MapSheetReader(headerRowIndex, startRowIndex, endRowIndex);
@@ -310,38 +318,41 @@ public class ExcelReader extends ExcelBase<ExcelReader, ExcelReadConfig> {
     }
 
     /**
-     * 读取Excel为Bean的列表，读取所有行，默认第一行做为标题，数据从第二行开始
+     * Reads the Excel file into a list of Bean objects, reading all rows. By default, the first row is treated as the
+     * header, and data starts from the second row.
      *
-     * @param <T>      Bean类型
-     * @param beanType 每行对应Bean的类型
-     * @return Map的列表
+     * @param <T>      The type of the Bean.
+     * @param beanType The type of the Bean corresponding to each row.
+     * @return A list of Bean objects.
      */
     public <T> List<T> readAll(final Class<T> beanType) {
         return read(0, 1, Integer.MAX_VALUE, beanType);
     }
 
     /**
-     * 读取Excel为Bean的列表
+     * Reads the Excel file into a list of Bean objects.
      *
-     * @param <T>            Bean类型
-     * @param headerRowIndex 标题所在行，如果标题行在读取的内容行中间，这行做为数据将忽略，从0开始计数
-     * @param startRowIndex  起始行（包含，从0开始计数）
-     * @param beanType       每行对应Bean的类型
-     * @return Map的列表
+     * @param <T>            The type of the Bean.
+     * @param headerRowIndex The row index where the header is located. If the header row is in the middle of the
+     *                       content rows to be read, this row will be ignored as data.
+     * @param startRowIndex  The starting row index (inclusive, 0-based).
+     * @param beanType       The type of the Bean corresponding to each row.
+     * @return A list of Bean objects.
      */
     public <T> List<T> read(final int headerRowIndex, final int startRowIndex, final Class<T> beanType) {
         return read(headerRowIndex, startRowIndex, Integer.MAX_VALUE, beanType);
     }
 
     /**
-     * 读取Excel为Bean的列表
+     * Reads the Excel file into a list of Bean objects.
      *
-     * @param <T>            Bean类型
-     * @param headerRowIndex 标题所在行，如果标题行在读取的内容行中间，这行做为数据将忽略，从0开始计数
-     * @param startRowIndex  起始行（包含，从0开始计数）
-     * @param endRowIndex    读取结束行（包含，从0开始计数）
-     * @param beanType       每行对应Bean的类型
-     * @return Map的列表
+     * @param <T>            The type of the Bean.
+     * @param headerRowIndex The row index where the header is located. If the header row is in the middle of the
+     *                       content rows to be read, this row will be ignored as data.
+     * @param startRowIndex  The starting row index (inclusive, 0-based).
+     * @param endRowIndex    The ending row index (inclusive, 0-based).
+     * @param beanType       The type of the Bean corresponding to each row.
+     * @return A list of Bean objects.
      */
     public <T> List<T> read(
             final int headerRowIndex,
@@ -354,11 +365,11 @@ public class ExcelReader extends ExcelBase<ExcelReader, ExcelReadConfig> {
     }
 
     /**
-     * 读取数据为指定类型
+     * Reads data into a specified type.
      *
-     * @param <T>         读取数据类型
-     * @param sheetReader {@link SheetReader}实现
-     * @return 数据读取结果
+     * @param <T>         The type of data to read.
+     * @param sheetReader The {@link SheetReader} implementation.
+     * @return The data read result.
      */
     public <T> T read(final SheetReader<T> sheetReader) {
         checkClosed();
@@ -366,67 +377,70 @@ public class ExcelReader extends ExcelBase<ExcelReader, ExcelReadConfig> {
     }
 
     /**
-     * 读取为文本格式 使用{@link org.apache.poi.ss.extractor.ExcelExtractor} 提取Excel内容
+     * Reads the Excel content as plain text using {@link org.apache.poi.ss.extractor.ExcelExtractor}.
      *
-     * @param withSheetName 是否附带sheet名
-     * @return Excel文本
+     * @param withSheetName {@code true} to include sheet names in the extracted text, {@code false} otherwise.
+     * @return The extracted Excel content as a string.
      */
     public String readAsText(final boolean withSheetName) {
         return ExcelExtractor.readAsText(this.workbook, withSheetName);
     }
 
     /**
-     * 获取 {@link org.apache.poi.ss.extractor.ExcelExtractor} 对象
+     * Gets an {@link org.apache.poi.ss.extractor.ExcelExtractor} object.
      *
-     * @return {@link org.apache.poi.ss.extractor.ExcelExtractor}
+     * @return An {@link org.apache.poi.ss.extractor.ExcelExtractor} instance.
      */
     public org.apache.poi.ss.extractor.ExcelExtractor getExtractor() {
         return ExcelExtractor.getExtractor(this.workbook);
     }
 
     /**
-     * 读取某一行数据
+     * Reads a specific row of data.
      *
-     * @param rowIndex 行号，从0开始
-     * @return 一行数据
+     * @param rowIndex The row index, 0-based.
+     * @return A list of data for the row.
      */
     public List<Object> readRow(final int rowIndex) {
         return readRow(this.sheet.getRow(rowIndex));
     }
 
     /**
-     * 读取某个单元格的值
+     * Reads the value of a specific cell.
      *
-     * @param x X坐标，从0计数，即列号
-     * @param y Y坐标，从0计数，即行号
-     * @return 值，如果单元格无值返回null
+     * @param x X-coordinate (column index), 0-based.
+     * @param y Y-coordinate (row index), 0-based.
+     * @return The cell value, or {@code null} if the cell has no value.
      */
     public Object readCellValue(final int x, final int y) {
         return CellKit.getCellValue(getCell(x, y), this.config.getCellEditor());
     }
 
     /**
-     * 获取Excel写出器 在读取Excel并做一定编辑后，获取写出器写出，规则如下：
+     * Gets an {@link ExcelWriter} instance. After reading and editing Excel, this writer can be used to write out the
+     * changes. The rules are as follows:
      * <ul>
-     * <li>1. 当从流中读取时，转换为Writer直接使用Sheet对象，此时修改不会影响源文件，Writer中flush需要指定新的路径。</li>
-     * <li>2. 当从文件读取时，直接获取文件及sheet名称，此时可以修改原文件。</li>
+     * <li>1. When reading from a stream, the {@link Sheet} object is used directly by the Writer. Modifications will
+     * not affect the source file, and {@code Writer.flush()} needs to specify a new path.</li>
+     * <li>2. When reading from a file, the file and sheet name are directly obtained. In this case, the original file
+     * can be modified.</li>
      * </ul>
      *
-     * @return {@link ExcelWriter}
+     * @return An {@link ExcelWriter} instance.
      */
     public ExcelWriter getWriter() {
         if (null == this.targetFile) {
-            // 非读取文件形式，直接获取sheet操作。
+            // Not reading from a file, directly operate on the sheet.
             return new ExcelWriter(this.sheet);
         }
         return ExcelKit.getWriter(this.targetFile, this.sheet.getSheetName());
     }
 
     /**
-     * 读取一行
+     * Reads a single row of data.
      *
-     * @param row 行
-     * @return 单元格值列表
+     * @param row The row to read.
+     * @return A list of cell values for the row.
      */
     private List<Object> readRow(final Row row) {
         return RowKit.readRow(row, this.config.getCellEditor());

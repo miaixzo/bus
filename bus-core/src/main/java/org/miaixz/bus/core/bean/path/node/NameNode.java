@@ -30,10 +30,10 @@ package org.miaixz.bus.core.bean.path.node;
 import org.miaixz.bus.core.xyz.MathKit;
 
 /**
- * 处理名称节点或序号节点，如：
+ * Handles name nodes or index nodes in a Bean path expression, such as:
  * <ul>
- * <li>name</li>
- * <li>1</li>
+ * <li>{@code name} (for property names)</li>
+ * <li>{@code 1} (for array or list indices)</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -41,35 +41,43 @@ import org.miaixz.bus.core.xyz.MathKit;
  */
 public class NameNode implements Node {
 
+    /**
+     * The name or index represented by this node.
+     */
     private final String name;
 
     /**
-     * 构造
+     * Constructs a {@code NameNode} with the given name.
      *
-     * @param name 节点名
+     * @param name The name or index of the node.
      */
     public NameNode(final String name) {
         this.name = name;
     }
 
     /**
-     * 获取节点名
+     * Retrieves the name or index of this node.
      *
-     * @return 节点名
+     * @return The name or index of the node.
      */
     public String getName() {
         return name;
     }
 
     /**
-     * 是否为数字节点
+     * Checks if this node represents a numeric index.
      *
-     * @return 是否为数字节点
+     * @return {@code true} if the name is a valid integer, {@code false} otherwise.
      */
     public boolean isNumber() {
         return MathKit.isInteger(name);
     }
 
+    /**
+     * Returns the string representation of this node, which is its name.
+     *
+     * @return The name of the node.
+     */
     @Override
     public String toString() {
         return this.name;

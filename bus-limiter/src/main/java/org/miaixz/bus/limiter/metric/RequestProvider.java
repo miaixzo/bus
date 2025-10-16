@@ -44,22 +44,38 @@ import org.miaixz.bus.limiter.magic.StrategyMode;
 import org.miaixz.bus.limiter.magic.annotation.Limiting;
 
 /**
- * REQUEST_LIMIT 模式处理
+ * Implements the {@link Provider} interface for handling the REQUEST_LIMIT strategy mode. This provider manages request
+ * limiting based on user identifiers and configured {@link Limiting} annotations. It uses a {@link ResourceManager} for
+ * each user to track and enforce limits.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class RequestProvider implements Provider {
 
+    /**
+     * An {@link ExecutorService} used for asynchronously cleaning up expired {@link ResourceManager} instances. It uses
+     * a fixed thread pool with one thread.
+     */
     private final ExecutorService cleaner = ThreadKit.newFixedExecutor(1, 5, "L-", false);
 
+    /**
+     * A concurrent hash map to store {@link ResourceManager} instances, keyed by a serializable user identifier. Each
+     * {@link ResourceManager} manages the limiting rules for a specific user.
+     */
     private final Map<Serializable, ResourceManager> map = new ConcurrentHashMap<>();
 
     /**
-     * 默认的user标识提供者
+     * The default {@link Supplier} implementation that provides a unique object ID as the user identifier. This can be
+     * overridden by calling {@link #setMarkSupplier(Supplier)}.
      */
     private Supplier supplier = new Supplier() {
 
+        /**
+         * Generates a unique object ID as the user identifier.
+         *
+         * @return A {@link Serializable} unique object ID.
+         */
         @Override
         public Serializable get() {
             return ID.objectId();
@@ -68,52 +84,72 @@ public class RequestProvider implements Provider {
     };
 
     /**
-     * 设置新的用户标识提供者
+     * Sets a new user identifier provider. This allows customizing how user identifiers are obtained for request
+     * limiting.
      *
-     * @param supplier 提供者
+     * @param supplier The new {@link Supplier} to be used for providing user identifiers.
      */
     public void setMarkSupplier(Supplier supplier) {
         this.supplier = supplier;
     }
 
+    /**
+     * Returns the strategy mode supported by this provider, which is {@link StrategyMode#REQUEST_LIMIT}.
+     *
+     * @return The {@link StrategyMode#REQUEST_LIMIT} enum value.
+     */
     @Override
     public StrategyMode get() {
         return StrategyMode.REQUEST_LIMIT;
     }
 
+    /**
+     * Processes the method invocation by applying request limiting rules. It retrieves the current user identifier,
+     * obtains or creates a {@link ResourceManager} for that user, and then checks if the request is allowed based on
+     * the {@link Limiting} annotation configured for the method. If the request is blocked, the
+     * {@link Supplier#intercept(Object, Method, Object[])} method is called.
+     *
+     * @param bean   The target object on which the method is invoked.
+     * @param method The {@link Method} being invoked.
+     * @param args   The arguments passed to the method invocation.
+     * @return The result of the method invocation if allowed, or the result of the interception if blocked.
+     */
     @Override
     public Object process(Object bean, Method method, Object[] args) {
-        // 获取当前用户标识
+        // Get the current user identifier
         Serializable mark = supplier.get();
         ResourceManager resourceManager = map.get(mark);
 
-        // 缓存操作
+        // Cache operation: create a new ResourceManager if one doesn't exist for the current user
         if (Objects.isNull(resourceManager)) {
             resourceManager = new ResourceManager();
             map.put(mark, resourceManager);
         }
 
-        // 获取方法配置参数
+        // Get method configuration parameters
         String name = Builder.resolveMethodName(method);
         Limiting limiting = (Limiting) MethodManager.getAnnoInfo(name).getRight();
         if (!resourceManager.entry(name, limiting)) {
-            // 拦截方法
+            // Intercept the method if limiting is triggered
             return supplier.intercept(bean, method, args);
         }
 
-        // 允许执行
+        // Allow execution
         return MethodKit.invoke(bean, method, args);
     }
 
     /**
-     * 清理存在的资源管理
+     * Initiates an asynchronous cleanup of existing {@link ResourceManager} instances. This method submits a task to
+     * the {@link #cleaner} executor service to perform the cleanup.
      */
     private void clears() {
         cleaner.submit(this::clear);
     }
 
     /**
-     * 清理资源，最多10个
+     * Cleans up {@link ResourceManager} instances that are marked for clearance. It iterates through the map of
+     * resource managers and removes those that indicate they are clear. This method limits the number of resources
+     * cleaned in a single pass to a maximum of 10.
      */
     private void clear() {
         int count = 0;

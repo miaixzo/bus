@@ -32,7 +32,8 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
 
 /**
- * 获取本地 i18n 资源 key = value
+ * A helper component for retrieving internationalized (i18n) messages from property files. This class simplifies access
+ * to the Spring {@link MessageSource} by using the current locale from {@link LocaleContextHolder}.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,31 +43,46 @@ public class I18nMessage {
 
     private final MessageSource messageSource;
 
+    /**
+     * Constructs a new {@code I18nMessage} with the given {@link MessageSource}.
+     *
+     * @param messageSource The Spring message source to be used for resolving messages.
+     */
     public I18nMessage(MessageSource messageSource) {
         this.messageSource = messageSource;
     }
 
+    /**
+     * Retrieves a message for the given code, using the current locale.
+     *
+     * @param code The message code, corresponding to a key in the message properties file.
+     * @return The resolved message as a {@code String}.
+     */
     public String getMessage(String code) {
         return getMessage(code, null);
     }
 
     /**
-     * @param code ：对应messages配置的key.
-     * @param args : 数组参数.
-     * @return 返回获取到的结果
+     * Retrieves a message for the given code and arguments, using the current locale.
+     *
+     * @param code The message code, corresponding to a key in the message properties file.
+     * @param args An array of arguments to be filled into the message template.
+     * @return The resolved and formatted message as a {@code String}.
      */
     public String getMessage(String code, Object[] args) {
         return getMessage(code, args, null);
     }
 
     /**
-     * @param code           ：对应messages配置的key.
-     * @param args           : 数组参数.
-     * @param defaultMessage : 没有设置key的时候的默认值.
-     * @return 返回获取到的结果
+     * Retrieves a message for the given code and arguments, with a default message, using the current locale.
+     *
+     * @param code           The message code, corresponding to a key in the message properties file.
+     * @param args           An array of arguments to be filled into the message template.
+     * @param defaultMessage The default message to return if the specified code is not found.
+     * @return The resolved and formatted message, or the default message if the code is not found.
      */
     public String getMessage(String code, Object[] args, String defaultMessage) {
-        // 这里使用比较方便的方法,不依赖request.
+        // Use a convenient method that does not rely on the request.
         return messageSource.getMessage(code, args, defaultMessage, LocaleContextHolder.getLocale());
     }
 

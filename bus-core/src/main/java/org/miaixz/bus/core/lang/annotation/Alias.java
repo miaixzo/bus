@@ -32,21 +32,25 @@ import java.lang.annotation.*;
 import org.miaixz.bus.core.lang.annotation.resolve.AnnotatedElements;
 
 /**
- * 注解: 别名，使用此注解的字段、方法、参数等会有一个别名，用于Bean拷贝、Bean转Map等。 当在注解中使用时，可为令多个属性互相关联，当对其中任意属性赋值时， 会将属性值一并同步到所有关联的属性中。
- * 该功能参考{@link AnnotatedElements}
+ * An annotation that provides an alias for a field, method, or parameter. This is particularly useful in scenarios like
+ * bean copying or converting a bean to a map, where property names may need to be different.
+ * <p>
+ * When used on an attribute within another annotation, it can link multiple attributes together. Assigning a value to
+ * any of the linked attributes will synchronize that value across all of them. For the underlying implementation of
+ * this feature, see {@link AnnotatedElements}.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER })
+@Target({ ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER, ElementType.ANNOTATION_TYPE })
 public @interface Alias {
 
     /**
-     * 别名值，即使用此注解要替换成的别名名称
+     * The alias name to be used for the annotated element.
      *
-     * @return 别名值
+     * @return The alias value.
      */
     String value();
 

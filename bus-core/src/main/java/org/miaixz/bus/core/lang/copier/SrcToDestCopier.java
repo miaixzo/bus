@@ -32,45 +32,51 @@ import java.io.Serializable;
 import java.util.function.Predicate;
 
 /**
- * 复制器抽象类 抽象复制器抽象了一个对象复制到另一个对象，通过实现{@link #copy()}方法实现复制逻辑。
+ * Abstract copier class that defines the basic structure for copying an object of type {@code T} from a source to a
+ * destination. Implementations of this abstract class will provide the concrete copying logic within the
+ * {@link #copy()} method.
  *
- * @param <T> 拷贝的对象
- * @param <C> 本类的类型。用于set方法返回本对象，方便流式编程
+ * @param <T> The type of the object being copied.
+ * @param <C> The type of the copier itself, used for fluent programming (method chaining).
  * @author Kimi Liu
  * @since Java 17+
  */
 public abstract class SrcToDestCopier<T, C extends SrcToDestCopier<T, C>> implements Copier<T>, Serializable {
 
+    /**
+     * The serial version UID for serialization.
+     */
     @Serial
     private static final long serialVersionUID = 2852251585211L;
 
     /**
-     * 源
+     * The source object from which data will be copied.
      */
     protected T src;
     /**
-     * 目标
+     * The target object to which data will be copied.
      */
     protected T target;
     /**
-     * 拷贝过滤器，可以过滤掉不需要拷贝的源
+     * A predicate used to filter which parts of the source should be copied. If the predicate evaluates to
+     * {@code false} for a given element, that element will not be copied.
      */
     protected Predicate<T> copyPredicate;
 
     /**
-     * 获取源
+     * Retrieves the source object of the copier.
      *
-     * @return 源
+     * @return The source object.
      */
     public T getSrc() {
         return src;
     }
 
     /**
-     * 设置源
+     * Sets the source object for the copier.
      *
-     * @param src 源
-     * @return this
+     * @param src The source object.
+     * @return This copier instance, allowing for method chaining.
      */
     public C setSrc(final T src) {
         this.src = src;
@@ -78,19 +84,19 @@ public abstract class SrcToDestCopier<T, C extends SrcToDestCopier<T, C>> implem
     }
 
     /**
-     * 获得目标
+     * Retrieves the target object of the copier.
      *
-     * @return 目标
+     * @return The target object.
      */
     public T getTarget() {
         return target;
     }
 
     /**
-     * 设置目标
+     * Sets the target object for the copier.
      *
-     * @param target 目标
-     * @return this
+     * @param target The target object.
+     * @return This copier instance, allowing for method chaining.
      */
     public C setTarget(final T target) {
         this.target = target;
@@ -98,19 +104,20 @@ public abstract class SrcToDestCopier<T, C extends SrcToDestCopier<T, C>> implem
     }
 
     /**
-     * 获得过滤器
+     * Retrieves the copy predicate (filter) used by this copier.
      *
-     * @return 过滤器
+     * @return The {@link Predicate} used for filtering copy operations.
      */
     public Predicate<T> getCopyPredicate() {
         return copyPredicate;
     }
 
     /**
-     * 设置过滤器
+     * Sets the copy predicate (filter) for this copier. This predicate can be used to selectively copy elements from
+     * the source to the target.
      *
-     * @param copyPredicate 过滤器
-     * @return this
+     * @param copyPredicate The {@link Predicate} to set.
+     * @return This copier instance, allowing for method chaining.
      */
     public C setCopyPredicate(final Predicate<T> copyPredicate) {
         this.copyPredicate = copyPredicate;

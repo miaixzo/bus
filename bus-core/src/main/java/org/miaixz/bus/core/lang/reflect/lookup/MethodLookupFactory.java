@@ -34,34 +34,63 @@ import java.lang.reflect.Method;
 import org.miaixz.bus.core.lang.exception.InternalException;
 
 /**
- * jdk11中直接调用MethodHandles.lookup()获取到的MethodHandles.Lookup只能对接口类型才会权限获取方法的方法句柄MethodHandle。 如果是普通类型Class,需要使用jdk9开始提供的
- * MethodHandles#privateLookupIn(java.lang.Class, java.lang.invoke.MethodHandles.Lookup)方法.
- * 参考：https://blog.csdn.net/u013202238/article/details/108687086
+ * In JDK 11+, directly calling {@link MethodHandles#lookup()} to obtain a {@link MethodHandles.Lookup} only grants
+ * access to public methods. For non-public methods or classes, especially in the context of {@code findSpecial} and
+ * {@code unreflectSpecial}, a more privileged lookup is required. This factory utilizes the
+ * {@code MethodHandles#privateLookupIn(Class, MethodHandles.Lookup)} method, available since JDK 9, to obtain a lookup
+ * object with sufficient access rights.
+ * <p>
+ * Reference: <a href=
+ * "https://blog.csdn.net/u013202238/article/details/108687086">https://blog.csdn.net/u013202238/article/details/108687086</a>
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class MethodLookupFactory implements LookupFactory {
 
+    /**
+     * The {@code privateLookupIn} method obtained via reflection, used for creating privileged lookups.
+     */
     private final Method privateLookupInMethod;
 
     /**
-     * 构造
+     * Constructs a new {@code MethodLookupFactory}. This constructor attempts to find the {@code privateLookupIn}
+     * method, which is essential for creating lookups with private access in JDK 9 and later.
+     *
+     * @throws IllegalStateException if the {@code privateLookupIn} method is not found, indicating an incompatible JDK
+     *                               version (e.g., JDK 8 or earlier).
      */
     public MethodLookupFactory() {
         this.privateLookupInMethod = createJdk9PrivateLookupInMethod();
     }
 
+    /**
+     * Attempts to find the {@code privateLookupIn(Class, MethodHandles.Lookup)} method using reflection. This method is
+     * available from JDK 9 onwards.
+     *
+     * @return The {@link Method} object for {@code privateLookupIn}.
+     * @throws IllegalStateException if the {@code privateLookupIn} method is not found.
+     */
     private static Method createJdk9PrivateLookupInMethod() {
         try {
             return MethodHandles.class.getMethod("privateLookupIn", Class.class, MethodHandles.Lookup.class);
         } catch (final NoSuchMethodException e) {
-            // 可能是jdk9 以下版本
+            // This likely means the JDK version is below 9.
             throw new IllegalStateException(
                     "There is no 'privateLookupIn(Class, Lookup)' method in java.lang.invoke.MethodHandles.", e);
         }
     }
 
+    /**
+     * Obtains a {@link MethodHandles.Lookup} instance with private access capabilities for the specified caller class.
+     * This method uses the {@code privateLookupIn} method (available from JDK 9+) to achieve the necessary access.
+     *
+     * @param callerClass The class or interface from which the lookup is being performed. This class will be granted
+     *                    private access.
+     * @return A {@link MethodHandles.Lookup} object with appropriate access privileges.
+     * @throws InternalException if an {@link IllegalAccessException} or {@link InvocationTargetException} occurs during
+     *                           the invocation of {@code privateLookupIn}.
+     */
     @Override
     public MethodHandles.Lookup lookup(final Class<?> callerClass) {
         try {

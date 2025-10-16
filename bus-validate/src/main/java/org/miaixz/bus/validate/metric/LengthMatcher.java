@@ -27,22 +27,33 @@
 */
 package org.miaixz.bus.validate.metric;
 
-import java.util.Collection;
-import java.util.Map;
-
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.validate.Context;
 import org.miaixz.bus.validate.magic.Matcher;
 import org.miaixz.bus.validate.magic.annotation.Length;
 
+import java.util.Collection;
+import java.util.Map;
+
 /**
- * 数据长度校验
+ * Validator for the {@link Length} annotation, which checks the length or size of various data types.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class LengthMatcher implements Matcher<Object, Length> {
 
+    /**
+     * Checks if the length or size of the given object is within the range specified by the {@link Length} annotation.
+     *
+     * @param object     The object to validate. Supported types are {@link String}, arrays ({@code Object[]}),
+     *                   {@link Collection}, and {@link Map}.
+     * @param annotation The {@link Length} annotation instance, providing the min, max, and zeroAble properties.
+     * @param context    The validation context (ignored).
+     * @return {@code true} if the object is empty (null), or if its length/size is within the specified range;
+     *         {@code false} otherwise.
+     * @throws IllegalArgumentException if the object type is not supported for length checking.
+     */
     @Override
     public boolean on(Object object, Length annotation, Context context) {
         if (ObjectKit.isEmpty(object)) {
@@ -60,7 +71,7 @@ public class LengthMatcher implements Matcher<Object, Length> {
         } else if (object instanceof Map) {
             num = ((Map) object).keySet().size();
         } else {
-            throw new IllegalArgumentException("不支持的检查长度的对象类型:" + object.getClass());
+            throw new IllegalArgumentException("Unsupported object type for length check: " + object.getClass());
         }
         return (annotation.zeroAble() && num == 0) || (num >= annotation.min() && num <= annotation.max());
     }

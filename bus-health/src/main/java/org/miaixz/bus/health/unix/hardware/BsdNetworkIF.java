@@ -58,13 +58,19 @@ public final class BsdNetworkIF extends AbstractNetworkIF {
     private long collisions;
     private long timeStamp;
 
+    /**
+     * Constructs a new {@code BsdNetworkIF} object.
+     *
+     * @param netint The {@link NetworkInterface} object.
+     * @throws InstantiationException If the network interface cannot be properly initialized.
+     */
     public BsdNetworkIF(NetworkInterface netint) throws InstantiationException {
         super(netint);
         updateAttributes();
     }
 
     /**
-     * Gets all network interfaces on this machine
+     * Gets all network interfaces on this machine.
      *
      * @param includeLocalInterfaces include local interfaces in the result
      * @return A list of {@link NetworkIF} objects representing the interfaces

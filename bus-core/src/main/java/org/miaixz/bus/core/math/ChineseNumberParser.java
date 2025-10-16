@@ -38,7 +38,7 @@ import org.miaixz.bus.core.xyz.MathKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 中文数字或金额解析类
+ * A parser for Chinese numbers or currency amounts.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -46,7 +46,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class ChineseNumberParser {
 
     /**
-     * 汉字转阿拉伯数字的
+     * Mapping of Chinese characters to their numeric values and unit properties.
      */
     private static final ChineseUnit[] CHINESE_NAME_VALUE = { new ChineseUnit(Symbol.C_SPACE, 1, false),
             new ChineseUnit('十', 10, false), new ChineseUnit('拾', 10, false), new ChineseUnit('百', 100, false),
@@ -54,14 +54,14 @@ public class ChineseNumberParser {
             new ChineseUnit('万', 1_0000, true), new ChineseUnit('亿', 1_0000_0000, true), };
 
     /**
-     * 把中文转换为数字 如 二百二十 - 220
+     * Converts a Chinese numeral string to a BigDecimal. For example, "二百二十" becomes 220.
      * <ul>
-     * <li>一百一十二 - 112</li>
-     * <li>一千零一十二 - 1012</li>
+     * <li>"一百一十二" -> 112</li>
+     * <li>"一千零一十二" -> 1012</li>
      * </ul>
      *
-     * @param chinese 中文字符
-     * @return 数字
+     * @param chinese The Chinese numeral string.
+     * @return The corresponding BigDecimal.
      */
     public static BigDecimal parseFromChinese(final String chinese) {
         if (StringKit.containsAny(chinese, '元', '圆', '角', '分')) {
@@ -72,32 +72,32 @@ public class ChineseNumberParser {
     }
 
     /**
-     * 把中文转换为数字
+     * Converts a Chinese numeral string (including decimals) to a BigDecimal.
      * <ul>
-     * <li>一百一十二 - 112</li>
-     * <li>一千零一十二 - 1012</li>
-     * <li>十二点二三 - 12.23</li>
-     * <li>三点一四一五九二六五四 - 3.141592654</li>
+     * <li>"一百一十二" -> 112</li>
+     * <li>"一千零一十二" -> 1012</li>
+     * <li>"十二点二三" -> 12.23</li>
+     * <li>"三点一四一五九二六五四" -> 3.141592654</li>
      * </ul>
      *
-     * @param chinese 中文字符
-     * @return 数字
+     * @param chinese The Chinese numeral string.
+     * @return The corresponding BigDecimal.
      */
     public static BigDecimal parseFromChineseNumber(final String chinese) {
         Assert.notBlank(chinese, "Chinese number is blank!");
         final int dotIndex = chinese.indexOf('点');
 
-        // 整数部分
+        // Integer part
         final char[] charArray = chinese.toCharArray();
         BigDecimal result = MathKit
                 .toBigDecimal(parseLongFromChineseNumber(charArray, 0, dotIndex > 0 ? dotIndex : charArray.length));
 
-        // 小数部分
+        // Decimal part
         if (dotIndex > 0) {
             final int length = chinese.length();
             for (int i = dotIndex + 1; i < length; i++) {
-                // 保留位数取决于实际数字的位数
-                // result + (numberChar / 10^(i-dotIndex))
+                // The number of decimal places depends on the actual number of digits.
+                // result = result + (numberChar / 10^(i-dotIndex))
                 result = result.add(
                         MathKit.div(
                                 chineseToNumber(chinese.charAt(i)),
@@ -110,10 +110,11 @@ public class ChineseNumberParser {
     }
 
     /**
-     * 中文大写数字金额转换为数字，返回结果以元为单位的BigDecimal类型数字 如： “陆万柒仟伍佰伍拾陆元叁角贰分”返回“67556.32” “叁角贰分”返回“0.32”
+     * Converts a Chinese currency string to a BigDecimal, with the result in Yuan. For example: "陆万柒仟伍佰伍拾陆元叁角贰分"
+     * returns "67556.32", "叁角贰分" returns "0.32".
      *
-     * @param chineseMoneyAmount 中文大写数字金额
-     * @return 返回结果以元为单位的BigDecimal类型数字
+     * @param chineseMoneyAmount The Chinese currency string.
+     * @return A BigDecimal representing the amount in Yuan.
      */
     public static BigDecimal parseFromChineseMoney(final String chineseMoneyAmount) {
         if (StringKit.isBlank(chineseMoneyAmount)) {
@@ -126,43 +127,43 @@ public class ChineseNumberParser {
             yEnd = ArrayKit.indexOf(charArray, '圆');
         }
 
-        // 先找到单位为元的数字
+        // First, find the number part for Yuan.
         long y = 0;
         if (yEnd > 0) {
             y = parseLongFromChineseNumber(charArray, 0, yEnd);
         }
 
-        // 再找到单位为角的数字
+        // Then, find the number part for Jiao.
         long j = 0;
         final int jEnd = ArrayKit.indexOf(charArray, '角');
         if (jEnd > 0) {
             if (yEnd >= 0) {
-                // 前面有元,角肯定要在元后面
+                // If Yuan exists, Jiao must come after it.
                 if (jEnd > yEnd) {
                     j = parseLongFromChineseNumber(charArray, yEnd + 1, jEnd);
                 }
             } else {
-                // 没有元，只有角
+                // No Yuan, only Jiao.
                 j = parseLongFromChineseNumber(charArray, 0, jEnd);
             }
         }
 
-        // 再找到单位为分的数字
+        // Then, find the number part for Fen.
         long f = 0;
         final int fEnd = ArrayKit.indexOf(charArray, '分');
         if (fEnd > 0) {
             if (jEnd >= 0) {
-                // 有角，分肯定在角后面
+                // If Jiao exists, Fen must come after it.
                 if (fEnd > jEnd) {
                     f = parseLongFromChineseNumber(charArray, jEnd + 1, fEnd);
                 }
             } else if (yEnd > 0) {
-                // 没有角，有元，从元后面找
+                // No Jiao, but Yuan exists, so search after Yuan.
                 if (fEnd > yEnd) {
                     f = parseLongFromChineseNumber(charArray, yEnd + 1, fEnd);
                 }
             } else {
-                // 没有元、角，只有分
+                // No Yuan or Jiao, only Fen.
                 f = parseLongFromChineseNumber(charArray, 0, fEnd);
             }
         }
@@ -174,20 +175,22 @@ public class ChineseNumberParser {
     }
 
     /**
-     * 把中文整数转换为数字 如 二百二十 220
+     * Converts a Chinese integer string to a long. For example, "二百二十" -> 220.
      * <ul>
-     * <li>一百一十二 - 112</li>
-     * <li>一千零一十二 - 1012</li>
+     * <li>"一百一十二" -> 112</li>
+     * <li>"一千零一十二" -> 1012</li>
      * </ul>
      *
-     * @param chinese 中文字符
-     * @param toIndex 结束位置（不包括），如果提供的是整数，这个为length()，小数则是“点”的位置
-     * @return 数字
+     * @param chinese    The char array of the Chinese numeral string.
+     * @param beginIndex The start index.
+     * @param toIndex    The end index (exclusive). For an integer, this is the length; for a decimal, this is the
+     *                   position of the decimal point.
+     * @return The parsed long.
      */
     public static long parseLongFromChineseNumber(final char[] chinese, final int beginIndex, final int toIndex) {
         long result = 0;
 
-        // 节总和
+        // Section total.
         long section = 0;
         long number = 0;
         ChineseUnit unit = null;
@@ -197,38 +200,37 @@ public class ChineseNumberParser {
             final int num = chineseToNumber(c);
             if (num >= 0) {
                 if (num == 0) {
-                    // 遇到零时节结束，权位失效，比如两万二零一十
+                    // When a zero is encountered, the section ends, and the place value becomes invalid.
                     if (number > 0 && null != unit) {
                         section += number * (unit.value / 10);
                     }
                     unit = null;
                 } else if (number > 0) {
-                    // 多个数字同时出现，报错
+                    // If multiple digits appear consecutively, throw an error.
                     throw new IllegalArgumentException(
                             StringKit.format("Bad number '{}{}' at: {}", chinese[i - 1], c, i));
                 }
-                // 普通数字
+                // Normal digit.
                 number = num;
             } else {
                 unit = chineseToUnit(c);
                 if (null == unit) {
-                    // 出现非法字符
+                    // Illegal character found.
                     throw new IllegalArgumentException(StringKit.format("Unknown unit '{}' at: {}", c, i));
                 }
 
-                // 单位
+                // Unit.
                 if (unit.secUnit) {
-                    // 节单位，按照节求和
+                    // Section unit, sum by section.
                     section = (section + number) * unit.value;
                     result += section;
                     section = 0;
                 } else {
-                    // 非节单位，和单位前的单数字组合为值
+                    // Not a section unit, combine with the single digit before the unit.
                     long unitNumber = number;
                     if (0 == number && 0 == i) {
-                        // 对于单位开头的数组，默认赋予1
-                        // 十二 -> 一十二
-                        // 百二 -> 一百二
+                        // For a string starting with a unit, default to 1.
+                        // e.g., "十二" -> "一十二" (12), "百二" -> "一百二" (120)
                         unitNumber = 1;
                     }
                     section += (unitNumber * unit.value);
@@ -245,10 +247,10 @@ public class ChineseNumberParser {
     }
 
     /**
-     * 查找对应的权对象
+     * Finds the corresponding unit object for a Chinese unit character.
      *
-     * @param chinese 中文权位名
-     * @return 权对象
+     * @param chinese The Chinese unit character.
+     * @return The ChineseUnit object, or null if not found.
      */
     private static ChineseUnit chineseToUnit(final char chinese) {
         for (final ChineseUnit chineseNameValue : CHINESE_NAME_VALUE) {
@@ -260,14 +262,14 @@ public class ChineseNumberParser {
     }
 
     /**
-     * 将汉字单个数字转换为int类型数字
+     * Converts a single Chinese digit character to an int. Supports both simplified and traditional characters.
      *
-     * @param chinese 汉字数字，支持简体和繁体
-     * @return 数字，-1表示未找到
+     * @param chinese The Chinese digit character.
+     * @return The integer value, or -1 if not a valid digit.
      */
     private static int chineseToNumber(char chinese) {
         if ('两' == chinese) {
-            // 口语纠正
+            // Colloquial correction for '两' (liǎng) to '二' (èr).
             chinese = '二';
         }
         final int i = ArrayKit.indexOf(ChineseNumberFormatter.DIGITS, chinese);
@@ -278,11 +280,11 @@ public class ChineseNumberParser {
     }
 
     /**
-     * 获取对应级别的单位
+     * Gets the unit name for the corresponding level.
      *
-     * @param index            级别，0表示各位，1表示十位，2表示百位，以此类推
-     * @param isUseTraditional 是否使用繁体
-     * @return 单位
+     * @param index            The level: 0 for ones, 1 for tens, 2 for hundreds, and so on.
+     * @param isUseTraditional Whether to use traditional characters.
+     * @return The unit name.
      */
     static String getUnitName(final int index, final boolean isUseTraditional) {
         if (0 == index) {
@@ -292,29 +294,31 @@ public class ChineseNumberParser {
     }
 
     /**
-     * 权位
+     * Represents a unit in the Chinese number system.
      */
     private static class ChineseUnit {
 
         /**
-         * 中文权名称
+         * The Chinese character for the unit.
          */
         private final char name;
         /**
-         * 10的倍数值
+         * The numeric value of the unit (a power of 10).
          */
         private final int value;
         /**
-         * 是否为节权位，它不是与之相邻的数字的倍数，而是整个小节的倍数。 例如二十三万，万是节权位，与三无关，而和二十三关联
+         * Indicates if it is a section unit (e.g., 万, 亿). It's not a multiplier for the adjacent digit, but for the
+         * entire section. For example, in "二十三万" (230,000), "万" (10,000) is a section unit related to "二十三" (23), not
+         * just "三" (3).
          */
         private final boolean secUnit;
 
         /**
-         * 构造
+         * Constructor.
          *
-         * @param name    名称
-         * @param value   值，即10的倍数
-         * @param secUnit 是否为节权位
+         * @param name    The name of the unit.
+         * @param value   The value, a multiple of 10.
+         * @param secUnit Whether it is a section unit.
          */
         public ChineseUnit(final char name, final int value, final boolean secUnit) {
             this.name = name;

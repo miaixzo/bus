@@ -31,7 +31,8 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 节点简单工厂
+ * A simple factory for creating {@link Node} instances based on a given expression string. It determines the type of
+ * node (empty, range, list, or name) from the expression.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -39,10 +40,17 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class NodeFactory {
 
     /**
-     * 根据表达式创建对应的节点
+     * Creates a {@link Node} instance based on the provided expression string. It checks for specific delimiters to
+     * determine the node type:
+     * <ul>
+     * <li>If the expression is empty, an {@link EmptyNode} is returned.</li>
+     * <li>If the expression contains a colon ({@code :}), a {@link RangeNode} is created.</li>
+     * <li>If the expression contains a comma ({@code ,}), a {@link ListNode} is created.</li>
+     * <li>Otherwise, a {@link NameNode} is created.</li>
+     * </ul>
      *
-     * @param expression 表达式
-     * @return 节点
+     * @param expression The expression string representing the node.
+     * @return A {@link Node} instance corresponding to the expression.
      */
     public static Node createNode(final String expression) {
         if (StringKit.isEmpty(expression)) {

@@ -38,21 +38,21 @@ import org.miaixz.bus.mapper.Caching;
 import org.miaixz.bus.mapper.provider.FunctionProvider;
 
 /**
- * 可指定字段的操作接口，提供基于字段的更新和查询方法
+ * An interface for operations that can target specific fields, providing methods for field-based updates and queries.
  *
- * @param <T> 实体类类型
+ * @param <T> The type of the entity class.
  * @author Kimi Liu
  * @since Java 17+
  */
 public interface FunctionMapper<T> {
 
     /**
-     * 根据主键更新实体中非空字段，并强制更新指定字段
+     * Updates non-null fields of an entity by its primary key, while also forcing an update on specified fields.
      *
-     * @param entity 实体对象
-     * @param fields 强制更新的字段集合，通过 {@link Fn#of(Fn...)} 创建 {@link Fn.FnArray}
-     * @param <S>    实体类型
-     * @return 1 表示成功，0 表示失败
+     * @param entity The entity object containing the updated values.
+     * @param fields A collection of fields to be forcibly updated, created via {@link Fn#of(Fn...)}.
+     * @param <S>    The type of the entity.
+     * @return The number of affected rows (1 for success, 0 for failure).
      */
     @Lang(Caching.class)
     @UpdateProvider(type = FunctionProvider.class, method = "updateByPrimaryKeySelectiveWithForceFields")
@@ -61,22 +61,23 @@ public interface FunctionMapper<T> {
             @Param("fns") Fn.FnArray<T> fields);
 
     /**
-     * 根据实体字段条件查询唯一实体，仅返回指定字段
+     * Selects a single, unique entity based on the fields of the provided entity, returning only the specified columns.
      *
-     * @param entity       实体对象
-     * @param selectFields 查询的字段集合，通过 {@link Fn#of(Fn...)} 创建 {@link Fn.FnArray}
-     * @return 唯一实体对象，若结果多条则抛出异常，可能为空
+     * @param entity       The entity object containing the query criteria.
+     * @param selectFields A collection of fields to be selected, created via {@link Fn#of(Fn...)}.
+     * @return An {@link Optional} containing the unique entity object, or an empty Optional if not found. Throws an
+     *         exception if more than one record is found.
      */
     @Lang(Caching.class)
     @SelectProvider(type = FunctionProvider.class, method = "selectColumns")
     Optional<T> selectColumnsOne(@Param("entity") T entity, @Param("fns") Fn.FnArray<T> selectFields);
 
     /**
-     * 根据实体字段条件批量查询，仅返回指定字段
+     * Selects a list of entities based on the fields of the provided entity, returning only the specified columns.
      *
-     * @param entity       实体对象
-     * @param selectFields 查询的字段集合，通过 {@link Fn#of(Fn...)} 创建 {@link Fn.FnArray}
-     * @return 实体对象列表
+     * @param entity       The entity object containing the query criteria.
+     * @param selectFields A collection of fields to be selected, created via {@link Fn#of(Fn...)}.
+     * @return A list of entity objects.
      */
     @Lang(Caching.class)
     @SelectProvider(type = FunctionProvider.class, method = "selectColumns")

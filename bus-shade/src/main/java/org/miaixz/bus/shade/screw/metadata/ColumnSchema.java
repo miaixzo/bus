@@ -31,7 +31,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * 表列领域对象
+ * Represents the schema information for a database column. This class is a domain object that holds detailed properties
+ * of a table column.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -41,47 +42,47 @@ import lombok.Setter;
 public class ColumnSchema {
 
     /**
-     * 表中的列的索引（从 1 开始）
+     * The 1-based index of the column within the table.
      */
     private String ordinalPosition;
     /**
-     * 名称
+     * The name of the column.
      */
     private String columnName;
     /**
-     * SQL 数据类型带长度
+     * The SQL data type, including length or precision (e.g., VARCHAR(255)).
      */
     private String columnType;
     /**
-     * SQL 数据类型 名称
+     * The name of the SQL data type (e.g., VARCHAR).
      */
     private String typeName;
     /**
-     * 列长度
+     * The length of the column.
      */
     private String columnLength;
     /**
-     * 列大小
+     * The size of the column (precision for numeric types, length for character types).
      */
     private String columnSize;
     /**
-     * 小数位
+     * The number of fractional digits for numeric types.
      */
     private String decimalDigits;
     /**
-     * 可为空
+     * Indicates whether the column can contain null values.
      */
     private String nullable;
     /**
-     * 是否主键
+     * Indicates if the column is part of the primary key.
      */
     private String primaryKey;
     /**
-     * 默认值
+     * The default value of the column.
      */
     private String columnDef;
     /**
-     * 说明
+     * The comment or description of the column.
      */
     private String remarks;
 

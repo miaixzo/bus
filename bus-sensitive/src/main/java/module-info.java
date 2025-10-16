@@ -40,7 +40,6 @@ module bus.sensitive {
     requires lombok;
 
     exports org.miaixz.bus.sensitive;
-    exports org.miaixz.bus.sensitive.magic;
     exports org.miaixz.bus.sensitive.magic.annotation;
     exports org.miaixz.bus.sensitive.metric;
 

@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org sandao and other contributors.             ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -36,10 +36,10 @@ import java.util.concurrent.TimeUnit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.socket.metric.HashedWheelTimer;
 import org.miaixz.bus.socket.metric.SocketTask;
-import org.miaixz.bus.socket.metric.channels.AsynchronousSocketChannelProxy;
+import org.miaixz.bus.socket.metric.channel.AsynchronousSocketChannelProxy;
 
 /**
- * 空闲IO状态监听插件
+ * A plugin for monitoring idle I/O states.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -53,7 +53,6 @@ public final class IdleStatePlugin<T> extends AbstractPlugin<T> {
     });
 
     private final int idleTimeout;
-
     private final boolean writeMonitor;
     private final boolean readMonitor;
 
@@ -66,7 +65,7 @@ public final class IdleStatePlugin<T> extends AbstractPlugin<T> {
             throw new IllegalArgumentException("invalid idleTimeout");
         }
         if (!writeMonitor && !readMonitor) {
-            throw new IllegalArgumentException("readIdle and writeIdle both disable");
+            throw new IllegalArgumentException("readIdle and writeIdle both disabled");
         }
         this.idleTimeout = idleTimeout;
         this.writeMonitor = writeMonitor;
@@ -78,6 +77,9 @@ public final class IdleStatePlugin<T> extends AbstractPlugin<T> {
         return new IdleMonitorChannel(channel);
     }
 
+    /**
+     * A proxy channel that monitors idle time.
+     */
     class IdleMonitorChannel extends AsynchronousSocketChannelProxy {
 
         SocketTask task;
@@ -138,7 +140,9 @@ public final class IdleStatePlugin<T> extends AbstractPlugin<T> {
 
         @Override
         public void close() throws IOException {
-            task.cancel();
+            if (task != null) {
+                task.cancel();
+            }
             super.close();
         }
     }

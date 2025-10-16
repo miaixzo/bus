@@ -28,7 +28,7 @@
 package org.miaixz.bus.shade.screw.metadata;
 
 /**
- * 表列接口
+ * Represents a column in a database table.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -36,87 +36,88 @@ package org.miaixz.bus.shade.screw.metadata;
 public interface Column {
 
     /**
-     * 获取表名
+     * Retrieves the name of the table.
      *
-     * @return {@link String}
+     * @return The table name.
      */
     String getTableName();
 
     /**
-     * 表中的列的索引（从 1 开始）
+     * Retrieves the 1-based index of the column within the table.
      *
-     * @return {@link String}
+     * @return The ordinal position of the column.
      */
     String getOrdinalPosition();
 
     /**
-     * 名称
+     * Retrieves the name of the column.
      *
-     * @return {@link String}
+     * @return The column name.
      */
     String getColumnName();
 
     /**
-     * 列的数据类型名称
+     * Retrieves the data source-dependent type name for the column's data type.
      *
-     * @return {@link String}
+     * @return The type name of the column.
      */
     String getTypeName();
 
     /**
-     * 列表示给定列的指定列大小。 对于数值数据，这是最大精度。 对于字符数据，这是字符长度。 对于日期时间数据类型，这是 String 表示形式的字符长度（假定允许的最大小数秒组件的精度）。 对于二进制数据，这是字节长度。 对于
-     * ROWID 数据类型，这是字节长度。对于列大小不适用的数据类型，则返回 Null。
+     * Retrieves the column size. For numeric data, this is the maximum precision. For character data, it is the length
+     * in characters. For binary data, it is the length in bytes. For ROWID data types, this is the length in bytes.
+     * Null is returned for data types where the column size is not applicable.
      *
-     * @return {@link String}
+     * @return The size of the column.
      */
     String getColumnSize();
 
     /**
-     * 小数位
+     * Retrieves the number of fractional digits for numeric types.
      *
-     * @return {@link String}
+     * @return The number of decimal digits.
      */
     String getDecimalDigits();
 
     /**
-     * 可为空
+     * Indicates whether the column can contain null values.
      *
-     * @return {@link String}
+     * @return A string indicating nullability.
      */
     String getNullable();
 
     /**
-     * 是否主键
+     * Indicates if the column is part of the primary key.
      *
-     * @return {@link Boolean}
+     * @return A string indicating if it's a primary key (e.g., "Y" or "N").
      */
     String getPrimaryKey();
 
     /**
-     * 默认值
+     * Retrieves the default value for the column.
      *
-     * @return {@link String}
+     * @return The default value.
      */
     String getColumnDef();
 
     /**
-     * 说明
+     * Retrieves the comment describing the column.
      *
-     * @return {@link String}
+     * @return The column remarks.
      */
     String getRemarks();
 
     /**
-     * 获取列类型
+     * Retrieves the full column type definition, including length or precision.
      *
-     * @return {@link String}
+     * @return The full column type.
      */
     String getColumnType();
 
     /**
-     * 获取列长度
+     * Retrieves the length of the column.
      *
-     * @return {@link String}
+     * @return The column length.
      */
     String getColumnLength();
 

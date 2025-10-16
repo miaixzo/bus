@@ -43,6 +43,9 @@ import com.sun.jna.Native;
 import com.sun.jna.platform.mac.SystemB;
 
 /**
+ * <p>
+ * MacVirtualMemory class.
+ * </p>
  * Memory obtained by host_statistics (vm_stat) and sysctl.
  *
  * @author Kimi Liu
@@ -62,12 +65,18 @@ final class MacVirtualMemory extends AbstractVirtualMemory {
     /**
      * Constructor for MacVirtualMemory.
      *
-     * @param macGlobalMemory The parent global memory class instantiating this
+     * @param macGlobalMemory The parent global memory class instantiating this.
      */
     MacVirtualMemory(MacGlobalMemory macGlobalMemory) {
         this.global = macGlobalMemory;
     }
 
+    /**
+     * Queries swap usage statistics.
+     *
+     * @return A {@link Pair} where the left element is the swap space used and the right element is the total swap
+     *         space.
+     */
     private static Pair<Long, Long> querySwapUsage() {
         long swapUsed = 0L;
         long swapTotal = 0L;
@@ -80,6 +89,12 @@ final class MacVirtualMemory extends AbstractVirtualMemory {
         return Pair.of(swapUsed, swapTotal);
     }
 
+    /**
+     * Queries virtual memory statistics.
+     *
+     * @return A {@link Pair} where the left element is the number of swap pages in and the right element is the number
+     *         of swap pages out.
+     */
     private static Pair<Long, Long> queryVmStat() {
         long swapPagesIn = 0L;
         long swapPagesOut = 0L;
@@ -97,31 +112,49 @@ final class MacVirtualMemory extends AbstractVirtualMemory {
         return Pair.of(swapPagesIn, swapPagesOut);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public long getSwapUsed() {
         return usedTotal.get().getLeft();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public long getSwapTotal() {
         return usedTotal.get().getRight();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public long getVirtualMax() {
         return this.global.getTotal() + getSwapTotal();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public long getVirtualInUse() {
         return this.global.getTotal() - this.global.getAvailable() + getSwapUsed();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public long getSwapPagesIn() {
         return inOut.get().getLeft();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public long getSwapPagesOut() {
         return inOut.get().getRight();

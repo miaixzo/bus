@@ -35,7 +35,7 @@ import java.util.concurrent.Semaphore;
 import java.util.function.Consumer;
 
 /**
- * 包装当前会话分配到的虚拟Buffer,提供流式操作方式
+ * Wraps the virtual buffer allocated to the current session, providing a stream-based interface for writing data.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,52 +43,64 @@ import java.util.function.Consumer;
 public final class WriteBuffer extends OutputStream {
 
     /**
-     * 存储已就绪待输出的数据
+     * An array to store virtual buffers that are ready to be written.
      */
     private final VirtualBuffer[] items;
 
     /**
-     * 为当前 WriteBuffer 提供数据存放功能的缓存页
+     * The buffer page that provides the underlying memory for this WriteBuffer.
      */
     private final BufferPage bufferPage;
     /**
-     * 缓冲区数据刷新Function
+     * A consumer function that is called to flush the buffer data.
      */
     private final Consumer<VirtualBuffer> writeConsumer;
     /**
-     * 默认内存块大小
+     * The default size of memory chunks allocated from the buffer page.
      */
     private final int chunkSize;
     /**
-     * 输出信号量,防止并发write导致异常
+     * A semaphore to prevent concurrent write operations, which could lead to exceptions.
      */
     private final Semaphore semaphore = new Semaphore(1);
     /**
-     * items 读索引位
+     * The read index for the {@code items} array, used for polling buffers.
      */
     private int takeIndex;
     /**
-     * items 写索引位
+     * The write index for the {@code items} array, used for adding new buffers.
      */
     private int putIndex;
     /**
-     * items 中存放的缓冲数据数量
+     * The number of virtual buffers currently stored in the {@code items} array.
      */
     private int count;
     /**
-     * 暂存当前业务正在输出的数据,输出完毕后会存放到items中
+     * A temporary buffer to hold data currently being written by the application. It is enqueued to {@code items} when
+     * full or flushed.
      */
     private VirtualBuffer writeInBuf;
     /**
-     * 当前WriteBuffer是否已关闭
+     * A flag indicating whether this WriteBuffer has been closed.
      */
     private boolean closed = false;
     /**
-     * 辅助8字节以内输出的缓存组数
+     * A cache for writing small data types (up to 8 bytes) to avoid repeated array allocation.
      */
     private byte[] cacheByte;
+    /**
+     * A consumer that is notified upon completion of an asynchronous write operation.
+     */
     private Consumer<WriteBuffer> completionConsumer;
 
+    /**
+     * Constructs a new WriteBuffer.
+     *
+     * @param bufferPage    the buffer page for memory allocation
+     * @param writeConsumer the consumer to handle the actual writing of the buffer
+     * @param chunkSize     the default size for allocated buffer chunks
+     * @param capacity      the capacity of the internal buffer queue
+     */
     public WriteBuffer(BufferPage bufferPage, Consumer<VirtualBuffer> writeConsumer, int chunkSize, int capacity) {
         this.bufferPage = bufferPage;
         this.writeConsumer = writeConsumer;
@@ -97,10 +109,11 @@ public final class WriteBuffer extends OutputStream {
     }
 
     /**
-     * 按照{@link OutputStream#write(int)}规范：要写入的字节是参数 b 的八个低位。 b 的 24 个高位将被忽略。
-     * 而使用该接口时容易传入非byte范围内的数据，接口定义与实际使用出现歧义的可能性较大，故建议废弃该方法，选用{@link WriteBuffer#writeByte(byte)}。
+     * Writes the specified byte to this output stream. As per the {@link OutputStream#write(int)} contract, the byte to
+     * be written is the eight low-order bits of the argument {@code b}. The 24 high-order bits of {@code b} are
+     * ignored. This can be ambiguous, so it is recommended to use {@link #writeByte(byte)} instead.
      *
-     * @param b 输出字节
+     * @param b the {@code byte} to write.
      */
     @Override
     public void write(int b) {
@@ -108,10 +121,10 @@ public final class WriteBuffer extends OutputStream {
     }
 
     /**
-     * 输出一个short类型的数据
+     * Writes a short value to the output stream.
      *
-     * @param v short数值
-     * @throws IOException IO异常
+     * @param v the short value
+     * @throws IOException if an I/O error occurs
      */
     public void writeShort(short v) throws IOException {
         initCacheBytes();
@@ -121,7 +134,9 @@ public final class WriteBuffer extends OutputStream {
     }
 
     /**
-     * @param b 待输出数值
+     * Writes a single byte to the buffer.
+     *
+     * @param b the byte to be written
      * @see #write(int)
      */
     public synchronized void writeByte(byte b) {
@@ -132,6 +147,11 @@ public final class WriteBuffer extends OutputStream {
         flushWriteBuffer(false);
     }
 
+    /**
+     * Flushes the internal write buffer if it is full or if forced.
+     *
+     * @param forceFlush if true, the buffer is flushed regardless of whether it is full
+     */
     private void flushWriteBuffer(boolean forceFlush) {
         if (!forceFlush && writeInBuf.buffer().hasRemaining()) {
             return;
@@ -147,7 +167,7 @@ public final class WriteBuffer extends OutputStream {
         try {
             while (count == items.length) {
                 this.wait();
-                // 防止因close诱发内存泄露
+                // Prevent memory leaks if closed while waiting
                 if (closed) {
                     virtualBuffer.clean();
                     return;
@@ -167,10 +187,10 @@ public final class WriteBuffer extends OutputStream {
     }
 
     /**
-     * 输出int数值,占用4个字节
+     * Writes an integer value to the output stream (4 bytes).
      *
-     * @param v int数值
-     * @throws IOException IO异常
+     * @param v the integer value
+     * @throws IOException if an I/O error occurs
      */
     public void writeInt(int v) throws IOException {
         initCacheBytes();
@@ -182,10 +202,10 @@ public final class WriteBuffer extends OutputStream {
     }
 
     /**
-     * 输出long数值,占用8个字节
+     * Writes a long value to the output stream (8 bytes).
      *
-     * @param v long数值
-     * @throws IOException IO异常
+     * @param v the long value
+     * @throws IOException if an I/O error occurs
      */
     public void writeLong(long v) throws IOException {
         initCacheBytes();
@@ -232,14 +252,15 @@ public final class WriteBuffer extends OutputStream {
     }
 
     /**
-     * 执行异步输出操作 此方法会将指定的字节流异步写入，并在完成时通知提供的消费者。
+     * Performs an asynchronous write operation. This method writes the specified byte array asynchronously and notifies
+     * the provided consumer upon completion.
      *
-     * @param bytes    待输出的字节流。
-     * @param offset   字节流中开始输出的偏移量。
-     * @param len      要输出的字节数。
-     * @param consumer 完成输出后调用的消费者接口，用于处理写入完成后的缓冲区。
-     * @throws IOException           如果在写入过程中发生I/O错误。
-     * @throws WritePendingException 如果已有写入操作未完成，此时再调用此方法会抛出此异常。
+     * @param bytes    the byte array to be written
+     * @param offset   the offset within the byte array to start writing from
+     * @param len      the number of bytes to write
+     * @param consumer the consumer to be called upon completion of the write operation
+     * @throws IOException           if an I/O error occurs during the write
+     * @throws WritePendingException if another write operation is already pending
      */
     public synchronized void write(byte[] bytes, int offset, int len, Consumer<WriteBuffer> consumer)
             throws IOException {
@@ -251,13 +272,27 @@ public final class WriteBuffer extends OutputStream {
         flush();
     }
 
+    /**
+     * Performs an asynchronous write of the entire byte array.
+     *
+     * @param bytes    the byte array to write
+     * @param consumer the consumer to be called upon completion
+     * @throws IOException if an I/O error occurs
+     */
     public synchronized void write(byte[] bytes, Consumer<WriteBuffer> consumer) throws IOException {
         write(bytes, 0, bytes.length, consumer);
     }
 
+    /**
+     * Transfers data from a {@link ByteBuffer} to this WriteBuffer asynchronously.
+     *
+     * @param byteBuffer the source ByteBuffer
+     * @param consumer   the consumer to be called upon completion
+     * @throws IOException if an I/O error occurs
+     */
     public synchronized void transferFrom(ByteBuffer byteBuffer, Consumer<WriteBuffer> consumer) throws IOException {
         if (!byteBuffer.hasRemaining()) {
-            throw new IllegalStateException("none remaining byteBuffer");
+            throw new IllegalStateException("none remaining in byteBuffer");
         }
         if (writeInBuf != null && writeInBuf.buffer().position() > 0) {
             flushWriteBuffer(true);
@@ -266,7 +301,7 @@ public final class WriteBuffer extends OutputStream {
             throw new WritePendingException();
         }
         if (writeInBuf != null && writeInBuf.buffer().position() > 0) {
-            throw new IllegalStateException();
+            throw new IllegalStateException("writeInBuf should be null or empty");
         }
         this.completionConsumer = consumer;
         VirtualBuffer wrap = VirtualBuffer.wrap(byteBuffer);
@@ -277,7 +312,7 @@ public final class WriteBuffer extends OutputStream {
         try {
             while (count == items.length) {
                 this.wait();
-                // 防止因close诱发内存泄露
+                // Prevent memory leaks if closed while waiting
                 if (closed) {
                     return;
                 }
@@ -296,7 +331,7 @@ public final class WriteBuffer extends OutputStream {
     }
 
     /**
-     * 初始化8字节的缓存数值
+     * Initializes the 8-byte cache for small primitive writes.
      */
     private void initCacheBytes() {
         if (cacheByte == null) {
@@ -307,7 +342,7 @@ public final class WriteBuffer extends OutputStream {
     @Override
     public void flush() {
         if (closed) {
-            throw new RuntimeException("OutputStream has closed");
+            throw new RuntimeException("OutputStream has been closed");
         }
         if (semaphore.tryAcquire()) {
             VirtualBuffer virtualBuffer = poll();
@@ -337,18 +372,26 @@ public final class WriteBuffer extends OutputStream {
     }
 
     /**
-     * 是否存在待输出的数据
+     * Checks if there is any pending data to be written.
      *
-     * @return true:有,false:无
+     * @return {@code true} if there is no pending data, {@code false} otherwise
      */
     public boolean isEmpty() {
         return count == 0 && (writeInBuf == null || writeInBuf.buffer().position() == 0);
     }
 
+    /**
+     * Signals that a write operation has finished, releasing the semaphore to allow the next write.
+     */
     public void finishWrite() {
         semaphore.release();
     }
 
+    /**
+     * Polls a single item from the internal queue.
+     *
+     * @return the polled {@link VirtualBuffer}, or {@code null} if the queue is empty
+     */
     private VirtualBuffer pollItem() {
         if (count == 0) {
             if (completionConsumer != null) {
@@ -370,9 +413,9 @@ public final class WriteBuffer extends OutputStream {
     }
 
     /**
-     * 获取并移除当前缓冲队列中头部的VirtualBuffer
+     * Retrieves and removes the head of this buffer's queue of data to be written.
      *
-     * @return 待输出的VirtualBuffer
+     * @return the {@link VirtualBuffer} to be written, or {@code null} if there is no data
      */
     public synchronized VirtualBuffer poll() {
         VirtualBuffer item = pollItem();

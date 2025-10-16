@@ -32,7 +32,7 @@ import org.miaixz.bus.logger.magic.level.*;
 import org.miaixz.bus.logger.magic.level.Error;
 
 /**
- * 日志统一接口
+ * Unified interface for logging.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -40,81 +40,83 @@ import org.miaixz.bus.logger.magic.level.Error;
 public interface Provider extends Trace, Debug, Info, Warn, Error {
 
     /**
-     * 获取日志发出者 {@link Provider}
+     * Gets the logger provider for the specified class.
      *
-     * @param clazz 日志发出者类
-     * @return {@link Provider}
+     * @param clazz the class to get the logger for.
+     * @return the {@link Provider} instance.
      */
     static Provider get(final Class<?> clazz) {
         return Registry.get(clazz);
     }
 
     /**
-     * 获取日志发出者 {@link Provider}
+     * Gets the logger provider for the specified name.
      *
-     * @param name 自定义的日志发出者名称
-     * @return {@link Provider}
+     * @param name the custom name of the logger.
+     * @return the {@link Provider} instance.
      */
     static Provider get(final String name) {
         return Registry.get(name);
     }
 
     /**
-     * 获取日志发出者 {@link Provider}
+     * Gets the logger provider for the calling class.
      *
-     * @return {@link Provider}
+     * @return the {@link Provider} instance.
      */
     static Provider get() {
         return Registry.get(CallerKit.getCallers());
     }
 
     /**
-     * @return 日志对象的Name
+     * Gets the name of this logger.
+     *
+     * @return the name of this logger.
      */
     String getName();
 
     /**
-     * 是否开启指定日志
+     * Checks whether this logger is enabled for the specified level.
      *
-     * @param level 日志级别
-     * @return 是否开启指定级别
+     * @param level the level to check.
+     * @return {@code true} if this logger is enabled for the specified level, {@code false} otherwise.
      */
     boolean isEnabled(Level level);
 
     /**
-     * 打印指定级别的日志
+     * Logs a message at the specified level.
      *
-     * @param level  级别
-     * @param format 消息模板
-     * @param args   参数
+     * @param level  the logging level.
+     * @param format the message format.
+     * @param args   the arguments for the message format.
      */
     void log(Level level, String format, Object... args);
 
     /**
-     * 打印 指定级别的日志
+     * Logs a message with a throwable at the specified level.
      *
-     * @param level  级别
-     * @param t      错误对象
-     * @param format 消息模板
-     * @param args   参数
+     * @param level  the logging level.
+     * @param t      the throwable to log.
+     * @param format the message format.
+     * @param args   the arguments for the message format.
      */
     void log(Level level, Throwable t, String format, Object... args);
 
     /**
-     * 打印 ERROR 等级的日志
+     * Logs a message with a throwable at the specified level, providing the fully qualified class name (FQCN).
      *
-     * @param fqcn   完全限定类名(Fully Qualified Class Name)，用于定位日志位置
-     * @param level  级别
-     * @param t      错误对象
-     * @param format 消息模板
-     * @param args   参数
+     * @param fqcn   the fully qualified class name of the logger.
+     * @param level  the logging level.
+     * @param t      the throwable to log.
+     * @param format the message format.
+     * @param args   the arguments for the message format.
      */
     void log(String fqcn, Level level, Throwable t, String format, Object... args);
 
     /**
-     * 获取当前日志级别
+     * Gets the current logging level.
      *
-     * @return 当前日志级别，如果无法获取则返回 Level.OFF
+     * @return the current logging level, or {@link Level#OFF} if it cannot be determined.
      */
     default Level getLevel() {
         if (isEnabled(Level.TRACE)) {
@@ -133,13 +135,14 @@ public interface Provider extends Trace, Debug, Info, Warn, Error {
     }
 
     /**
-     * 设置日志级别
+     * Sets the logging level. Note: The default implementation is empty. Concrete implementations should override this
+     * method if they support dynamic level setting.
      *
-     * @param level 日志级别
-     * @throws UnsupportedOperationException 如果底层日志框架不支持动态级别设置
+     * @param level the logging level to set.
+     * @throws UnsupportedOperationException if the underlying logging framework does not support dynamic level setting.
      */
     default void setLevel(Level level) {
-        // 默认实现为空，具体实现类可覆盖
+        // The default implementation is empty, and the specific implementation class can be overridden
     }
 
 }

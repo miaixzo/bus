@@ -34,7 +34,8 @@ import org.miaixz.bus.core.io.timout.Timeout;
 import org.miaixz.bus.core.lang.Symbol;
 
 /**
- * 将操作转发给另一个 {@link Sink} 的抽象接收器。
+ * An abstract sink that delegates all operations to another {@link Sink}. This class provides a convenient way to wrap
+ * an existing {@link Sink} and add custom behavior without modifying the original sink.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,15 +43,15 @@ import org.miaixz.bus.core.lang.Symbol;
 public abstract class AssignSink implements Sink {
 
     /**
-     * 代理的接收器
+     * The delegate sink to which all operations are forwarded.
      */
     private final Sink delegate;
 
     /**
-     * 构造方法，初始化代理接收器。
+     * Constructs an {@code AssignSink} with the specified delegate.
      *
-     * @param delegate 代理的接收器，不能为 null
-     * @throws IllegalArgumentException 如果 delegate 为 null
+     * @param delegate The delegate sink, must not be {@code null}.
+     * @throws IllegalArgumentException If the delegate is {@code null}.
      */
     public AssignSink(Sink delegate) {
         if (null == delegate) {
@@ -60,20 +61,20 @@ public abstract class AssignSink implements Sink {
     }
 
     /**
-     * 获取代理的接收器。
+     * Returns the delegate sink.
      *
-     * @return 代理的接收器
+     * @return The delegate sink.
      */
     public final Sink delegate() {
         return delegate;
     }
 
     /**
-     * 从源缓冲区读取指定字节数并写入代理接收器。
+     * Writes {@code byteCount} bytes from {@code source} to the delegate sink.
      *
-     * @param source    数据源缓冲区
-     * @param byteCount 要读取的字节数
-     * @throws IOException 如果写入失败
+     * @param source    The buffer containing the data to write.
+     * @param byteCount The number of bytes to write.
+     * @throws IOException If an I/O error occurs during the write operation.
      */
     @Override
     public void write(Buffer source, long byteCount) throws IOException {
@@ -81,9 +82,9 @@ public abstract class AssignSink implements Sink {
     }
 
     /**
-     * 将缓冲数据刷新到代理接收器。
+     * Flushes any buffered data to the delegate sink.
      *
-     * @throws IOException 如果刷新失败
+     * @throws IOException If an I/O error occurs during the flush operation.
      */
     @Override
     public void flush() throws IOException {
@@ -91,9 +92,9 @@ public abstract class AssignSink implements Sink {
     }
 
     /**
-     * 获取代理接收器的超时配置。
+     * Returns the timeout for the delegate sink.
      *
-     * @return 超时对象
+     * @return The timeout object associated with the delegate sink.
      */
     @Override
     public Timeout timeout() {
@@ -101,9 +102,9 @@ public abstract class AssignSink implements Sink {
     }
 
     /**
-     * 关闭代理接收器并释放资源。
+     * Closes the delegate sink and releases any system resources associated with it.
      *
-     * @throws IOException 如果关闭失败
+     * @throws IOException If an I/O error occurs during the close operation.
      */
     @Override
     public void close() throws IOException {
@@ -111,9 +112,10 @@ public abstract class AssignSink implements Sink {
     }
 
     /**
-     * 返回对象的字符串表示。
+     * Returns a string representation of this {@code AssignSink}. The string representation includes the simple name of
+     * this class and the string representation of the delegate sink.
      *
-     * @return 字符串表示，包含类名和代理接收器的字符串表示
+     * @return A string representation of this object.
      */
     @Override
     public String toString() {

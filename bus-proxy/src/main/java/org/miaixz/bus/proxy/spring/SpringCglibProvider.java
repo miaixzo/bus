@@ -36,7 +36,8 @@ import org.miaixz.bus.proxy.Provider;
 import org.springframework.cglib.proxy.Enhancer;
 
 /**
- * 基于Spring-cglib的切面代理工厂
+ * A proxy provider implementation that uses Spring's bundled CGLIB to create proxy objects. This allows for proxying
+ * classes that do not implement interfaces by creating a subclass at runtime.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,26 +45,27 @@ import org.springframework.cglib.proxy.Enhancer;
 public class SpringCglibProvider implements Provider {
 
     /**
-     * 创建代理对象 某些对象存在非空参数构造，则需遍历查找需要的构造完成代理对象构建。
+     * Creates a proxy instance using the provided {@link Enhancer}. This method attempts to find a suitable constructor
+     * on the target class, iterating through them and trying to instantiate with default parameter values. This is
+     * necessary for classes that do not have a default (no-argument) constructor.
      *
-     * @param <T>         代理对象类型
-     * @param enhancer    {@link Enhancer}
-     * @param targetClass 目标类型
-     * @return 代理对象
+     * @param <T>         The type of the proxy object.
+     * @param enhancer    The CGLIB {@link Enhancer}.
+     * @param targetClass The class to be proxied.
+     * @return The created proxy instance.
+     * @throws IllegalArgumentException if no suitable constructor can be found.
      */
     private static <T> T create(final Enhancer enhancer, final Class<?> targetClass) {
         final Constructor<?>[] constructors = ReflectKit.getConstructors(targetClass);
-        Class<?>[] parameterTypes;
-        Object[] values;
         IllegalArgumentException finalException = null;
         for (final Constructor<?> constructor : constructors) {
-            parameterTypes = constructor.getParameterTypes();
-            values = ClassKit.getDefaultValues(parameterTypes);
+            final Class<?>[] parameterTypes = constructor.getParameterTypes();
+            final Object[] values = ClassKit.getDefaultValues(parameterTypes);
 
             try {
                 return (T) enhancer.create(parameterTypes, values);
             } catch (final IllegalArgumentException e) {
-                // ignore
+                // Keep the last exception to throw if all constructors fail.
                 finalException = e;
             }
         }
@@ -71,7 +73,7 @@ public class SpringCglibProvider implements Provider {
             throw finalException;
         }
 
-        throw new IllegalArgumentException("No constructor provided");
+        throw new IllegalArgumentException("No constructor could be used for creating a proxy for " + targetClass);
     }
 
     @Override

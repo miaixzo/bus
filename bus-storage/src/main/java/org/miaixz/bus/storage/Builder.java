@@ -32,17 +32,28 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 存储服务工具类
+ * Builder class for storage service operations, primarily for building object keys.
+ *
+ * @author Kimi Liu
+ * @since Java 17+
  */
 public class Builder {
 
     /**
-     * 构建对象键，拼接前缀（如果存在）与路径和文件名。
+     * Constructs a new AbstractProvider with default settings.
+     */
+    private Builder() {
+
+    }
+
+    /**
+     * Constructs an object key by concatenating a prefix (if present), path, and file name. The prefix and path are
+     * normalized to ensure correct formatting.
      *
-     * @param prefix   前缀路径
-     * @param path     路径
-     * @param fileName 文件名
-     * @return 规范化后的对象键
+     * @param prefix   The prefix path, can be null or empty.
+     * @param path     The path to the file, can be null or empty.
+     * @param fileName The name of the file.
+     * @return The normalized and concatenated object key.
      */
     public static String buildObjectKey(String prefix, String path, String fileName) {
         String normalizedPrefix = buildNormalizedPrefix(prefix);
@@ -61,10 +72,11 @@ public class Builder {
     }
 
     /**
-     * 构建规范化后的前缀路径。
+     * Builds a normalized prefix path. This method removes redundant slashes and leading/trailing slashes from the
+     * prefix.
      *
-     * @param prefix 原始前缀路径
-     * @return 规范化后的前缀路径
+     * @param prefix The original prefix path.
+     * @return The normalized prefix path.
      */
     public static String buildNormalizedPrefix(String prefix) {
         return StringKit.isBlank(prefix) ? Normal.EMPTY

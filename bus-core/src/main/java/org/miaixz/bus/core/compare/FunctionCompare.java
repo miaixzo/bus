@@ -34,9 +34,9 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.CompareKit;
 
 /**
- * 指定函数排序器
+ * A comparator that sorts objects based on a value extracted by a specified function.
  *
- * @param <T> 被比较的对象
+ * @param <T> the type of objects to be compared.
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -46,16 +46,18 @@ public class FunctionCompare<T> extends NullCompare<T> {
     private static final long serialVersionUID = 2852261525153L;
 
     /**
-     * 构造
+     * Constructs a new {@code FunctionCompare}.
      *
-     * @param nullGreater 是否{@code null}在后
-     * @param compareSelf 在字段值相同情况下，是否比较对象本身。 如果此项为{@code false}，字段值比较后为0会导致对象被认为相同，可能导致被去重。
-     * @param func        比较项获取函数
+     * @param nullGreater whether {@code null} values should be placed at the end.
+     * @param compareSelf if {@code true}, and the extracted values are equal, the objects themselves will be compared.
+     *                    This prevents objects with the same sort key from being treated as equal, which can avoid
+     *                    deduplication in sets.
+     * @param func        the function to extract the {@link Comparable} value from the object.
      */
     public FunctionCompare(final boolean nullGreater, final boolean compareSelf,
             final Function<T, Comparable<?>> func) {
         super(nullGreater, (a, b) -> {
-            // 通过给定函数转换对象为指定规则的可比较对象
+            // Extract comparable values using the provided function
             final Comparable<?> v1;
             final Comparable<?> v2;
             try {
@@ -65,11 +67,11 @@ public class FunctionCompare<T> extends NullCompare<T> {
                 throw new InternalException(e);
             }
 
-            // 首先比较用户自定义的转换结果，如果为0，根据compareSelf参数决定是否比较对象本身。
-            // compareSelf为false时，主要用于多规则比较，比如多字段比较的情况
+            // First, compare the extracted values. If they are equal, decide whether to compare the objects themselves.
+            // `compareSelf=false` is useful for multi-level comparisons, such as sorting by multiple fields.
             int result = CompareKit.compare(v1, v2, nullGreater);
             if (compareSelf && 0 == result) {
-                // 避免TreeSet / TreeMap 过滤掉排序字段相同但是对象不相同的情况
+                // Avoid filtering out objects with the same sort key in a TreeSet/TreeMap
                 result = CompareKit.compare(a, b, nullGreater);
             }
             return result;

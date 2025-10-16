@@ -34,7 +34,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.mapper.Caching;
 
 /**
- * SQL 脚本接口，对 XML 形式 SQL 进行简单封装，便于使用
+ * An interface for SQL scripts, providing a simple wrapper for XML-based SQL to facilitate usage.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,11 +42,11 @@ import org.miaixz.bus.mapper.Caching;
 public interface SqlScript {
 
     /**
-     * 创建 SQL 并缓存
+     * Creates and caches an SQL script.
      *
-     * @param providerContext 执行方法上下文
-     * @param sqlScript       XML SQL 脚本实现
-     * @return 缓存 key
+     * @param providerContext The execution method context.
+     * @param sqlScript       The XML SQL script implementation.
+     * @return The cache key.
      */
     static String caching(ProviderContext providerContext, SqlScript sqlScript) {
         TableMeta entity = MapperFactory.create(providerContext.getMapperType(), providerContext.getMapperMethod());
@@ -59,11 +59,11 @@ public interface SqlScript {
     }
 
     /**
-     * 创建 SQL 并缓存
+     * Creates and caches an SQL script using an {@link EasySqlScript}.
      *
-     * @param providerContext 执行方法上下文
-     * @param sqlScript       XML SQL 脚本实现
-     * @return 缓存 key
+     * @param providerContext The execution method context.
+     * @param sqlScript       The {@link EasySqlScript} implementation.
+     * @return The cache key.
      */
     static String caching(ProviderContext providerContext, EasySqlScript sqlScript) {
         TableMeta entity = MapperFactory.create(providerContext.getMapperType(), providerContext.getMapperMethod());
@@ -76,148 +76,148 @@ public interface SqlScript {
     }
 
     /**
-     * 生成 where 标签包装的 XML 结构
+     * Generates an XML structure wrapped in a {@code <where>} tag.
      *
-     * @param content 标签中的内容
-     * @return where 标签包装的 XML 结构
+     * @param content The content within the tag.
+     * @return The XML structure wrapped in a {@code <where>} tag.
      */
     default String where(LRSupplier content) {
         return String.format("\n<where>%s\n</where> ", content.getWithLR());
     }
 
     /**
-     * 生成对应的 SQL，支持动态标签
+     * Generates the corresponding SQL, supporting dynamic tags.
      *
-     * @param entity 实体类信息
-     * @return XML SQL 脚本
+     * @param entity The entity class information.
+     * @return The XML SQL script.
      */
     String getSql(TableMeta entity);
 
     /**
-     * 生成 choose 标签包装的 XML 结构
+     * Generates an XML structure wrapped in a {@code <choose>} tag.
      *
-     * @param content 标签中的内容
-     * @return choose 标签包装的 XML 结构
+     * @param content The content within the tag.
+     * @return The XML structure wrapped in a {@code <choose>} tag.
      */
     default String choose(LRSupplier content) {
         return String.format("\n<choose>%s\n</choose> ", content.getWithLR());
     }
 
     /**
-     * 生成 otherwise 标签包装的 XML 结构
+     * Generates an XML structure wrapped in an {@code <otherwise>} tag.
      *
-     * @param content 标签中的内容
-     * @return otherwise 标签包装的 XML 结构
+     * @param content The content within the tag.
+     * @return The XML structure wrapped in an {@code <otherwise>} tag.
      */
     default String otherwise(LRSupplier content) {
         return String.format("\n<otherwise>%s\n</otherwise> ", content.getWithLR());
     }
 
     /**
-     * 生成 set 标签包装的 XML 结构
+     * Generates an XML structure wrapped in a {@code <set>} tag.
      *
-     * @param content 标签中的内容
-     * @return set 标签包装的 XML 结构
+     * @param content The content within the tag.
+     * @return The XML structure wrapped in a {@code <set>} tag.
      */
     default String set(LRSupplier content) {
         return String.format("\n<set>%s\n</set> ", content.getWithLR());
     }
 
     /**
-     * 生成 if 标签包装的 XML 结构
+     * Generates an XML structure wrapped in an {@code <if>} tag.
      *
-     * @param test    if 的判断条件
-     * @param content 标签中的内容
-     * @return if 标签包装的 XML 结构
+     * @param test    The test condition for the {@code <if>} tag.
+     * @param content The content within the tag.
+     * @return The XML structure wrapped in an {@code <if>} tag.
      */
     default String ifTest(String test, LRSupplier content) {
         return String.format("<if test=\"%s\">%s\n</if> ", test, content.getWithLR());
     }
 
     /**
-     * 生成标签包装的 XML 结构，允许参数为空
+     * Generates an XML structure wrapped in a tag, allowing for null parameters.
      *
-     * @param content 标签中的内容
-     * @return 标签包装的 XML 结构
+     * @param content The content within the tag.
+     * @return The XML structure wrapped in a tag.
      */
     default String ifParameterNotNull(LRSupplier content) {
         return String.format("<if test=\"_parameter != null\">%s\n</if> ", content.getWithLR());
     }
 
     /**
-     * 增加参数非空校验
+     * Adds a non-null validation for a parameter.
      *
-     * @param message 提示信息
-     * @return 校验代码片段
+     * @param message The prompt message.
+     * @return The validation code snippet.
      */
     default String parameterNotNull(String message) {
         return variableNotNull("_parameter", message);
     }
 
     /**
-     * 增加参数为 true 的校验
+     * Adds a validation that a boolean parameter is true.
      *
-     * @param variable 参数，值为 boolean
-     * @param message  提示信息
-     * @return 校验代码片段
+     * @param variable The parameter (a boolean value).
+     * @param message  The prompt message.
+     * @return The validation code snippet.
      */
     default String variableIsTrue(String variable, String message) {
         return "\n${@org.miaixz.bus.core.lang.Assert@isTrue(" + variable + ", '" + message + "')}\n";
     }
 
     /**
-     * 增加参数为 false 的校验
+     * Adds a validation that a boolean parameter is false.
      *
-     * @param variable 参数，值为 boolean
-     * @param message  提示信息
-     * @return 校验代码片段
+     * @param variable The parameter (a boolean value).
+     * @param message  The prompt message.
+     * @return The validation code snippet.
      */
     default String variableIsFalse(String variable, String message) {
         return "\n${@org.miaixz.bus.core.lang.Assert@isFalse(" + variable + ", '" + message + "')}\n";
     }
 
     /**
-     * 增加参数非空的校验
+     * Adds a non-null validation for a parameter.
      *
-     * @param variable 参数
-     * @param message  提示信息
-     * @return 校验代码片段
+     * @param variable The parameter.
+     * @param message  The prompt message.
+     * @return The validation code snippet.
      */
     default String variableNotNull(String variable, String message) {
         return "\n${@org.miaixz.bus.core.lang.Assert@notNull(" + variable + ", '" + message + "')}\n";
     }
 
     /**
-     * 增加参数非空的校验
+     * Adds a non-empty validation for a parameter.
      *
-     * @param variable 参数
-     * @param message  提示信息
-     * @return 校验代码片段
+     * @param variable The parameter.
+     * @param message  The prompt message.
+     * @return The validation code snippet.
      */
     default String variableNotEmpty(String variable, String message) {
         return "\n${@org.miaixz.bus.core.lang.Assert@notEmpty(" + variable + ", '" + message + "')}\n";
     }
 
     /**
-     * 生成 when 标签包装的 XML 结构
+     * Generates an XML structure wrapped in a {@code <when>} tag.
      *
-     * @param test    when 的判断条件
-     * @param content 标签中的内容
-     * @return when 标签包装的 XML 结构
+     * @param test    The test condition for the {@code <when>} tag.
+     * @param content The content within the tag.
+     * @return The XML structure wrapped in a {@code <when>} tag.
      */
     default String whenTest(String test, LRSupplier content) {
         return String.format("\n<when test=\"%s\">%s\n</when> ", test, content.getWithLR());
     }
 
     /**
-     * 生成 trim 标签包装的 XML 结构
+     * Generates an XML structure wrapped in a {@code <trim>} tag.
      *
-     * @param prefix          前缀
-     * @param suffix          后缀
-     * @param prefixOverrides 前缀替换内容
-     * @param suffixOverrides 后缀替换内容
-     * @param content         标签中的内容
-     * @return trim 标签包装的 XML 结构
+     * @param prefix          The prefix.
+     * @param suffix          The suffix.
+     * @param prefixOverrides The content to override prefixes.
+     * @param suffixOverrides The content to override suffixes.
+     * @param content         The content within the tag.
+     * @return The XML structure wrapped in a {@code <trim>} tag.
      */
     default String trim(
             String prefix,
@@ -235,13 +235,13 @@ public interface SqlScript {
     }
 
     /**
-     * 生成 trim 标签包装的 XML 结构（仅前缀替换）
+     * Generates an XML structure wrapped in a {@code <trim>} tag (with prefix overrides only).
      *
-     * @param prefix          前缀
-     * @param suffix          后缀
-     * @param prefixOverrides 前缀替换内容
-     * @param content         标签中的内容
-     * @return trim 标签包装的 XML 结构
+     * @param prefix          The prefix.
+     * @param suffix          The suffix.
+     * @param prefixOverrides The content to override prefixes.
+     * @param content         The content within the tag.
+     * @return The XML structure wrapped in a {@code <trim>} tag.
      */
     default String trimPrefixOverrides(String prefix, String suffix, String prefixOverrides, LRSupplier content) {
         return String.format(
@@ -253,13 +253,13 @@ public interface SqlScript {
     }
 
     /**
-     * 生成 trim 标签包装的 XML 结构（仅后缀替换）
+     * Generates an XML structure wrapped in a {@code <trim>} tag (with suffix overrides only).
      *
-     * @param prefix          前缀
-     * @param suffix          后缀
-     * @param suffixOverrides 后缀替换内容
-     * @param content         标签中的内容
-     * @return trim 标签包装的 XML 结构
+     * @param prefix          The prefix.
+     * @param suffix          The suffix.
+     * @param suffixOverrides The content to override suffixes.
+     * @param content         The content within the tag.
+     * @return The XML structure wrapped in a {@code <trim>} tag.
      */
     default String trimSuffixOverrides(String prefix, String suffix, String suffixOverrides, LRSupplier content) {
         return String.format(
@@ -271,12 +271,12 @@ public interface SqlScript {
     }
 
     /**
-     * 生成 foreach 标签包装的 XML 结构
+     * Generates an XML structure wrapped in a {@code <foreach>} tag.
      *
-     * @param collection 遍历的对象
-     * @param item       对象名
-     * @param content    标签中的内容
-     * @return foreach 标签包装的 XML 结构
+     * @param collection The object to iterate over.
+     * @param item       The name of the item variable.
+     * @param content    The content within the tag.
+     * @return The XML structure wrapped in a {@code <foreach>} tag.
      */
     default String foreach(String collection, String item, LRSupplier content) {
         return String.format(
@@ -287,13 +287,13 @@ public interface SqlScript {
     }
 
     /**
-     * 生成 foreach 标签包装的 XML 结构（带分隔符）
+     * Generates an XML structure wrapped in a {@code <foreach>} tag (with a separator).
      *
-     * @param collection 遍历的对象
-     * @param item       对象名
-     * @param separator  连接符
-     * @param content    标签中的内容
-     * @return foreach 标签包装的 XML 结构
+     * @param collection The object to iterate over.
+     * @param item       The name of the item variable.
+     * @param separator  The separator to use between items.
+     * @param content    The content within the tag.
+     * @return The XML structure wrapped in a {@code <foreach>} tag.
      */
     default String foreach(String collection, String item, String separator, LRSupplier content) {
         return String.format(
@@ -305,15 +305,15 @@ public interface SqlScript {
     }
 
     /**
-     * 生成 foreach 标签包装的 XML 结构（带开闭符号）
+     * Generates an XML structure wrapped in a {@code <foreach>} tag (with opening and closing symbols).
      *
-     * @param collection 遍历的对象
-     * @param item       对象名
-     * @param separator  连接符
-     * @param open       开始符号
-     * @param close      结束符号
-     * @param content    标签中的内容
-     * @return foreach 标签包装的 XML 结构
+     * @param collection The object to iterate over.
+     * @param item       The name of the item variable.
+     * @param separator  The separator to use between items.
+     * @param open       The opening symbol.
+     * @param close      The closing symbol.
+     * @param content    The content within the tag.
+     * @return The XML structure wrapped in a {@code <foreach>} tag.
      */
     default String foreach(
             String collection,
@@ -333,16 +333,16 @@ public interface SqlScript {
     }
 
     /**
-     * 生成 foreach 标签包装的 XML 结构（带索引）
+     * Generates an XML structure wrapped in a {@code <foreach>} tag (with an index).
      *
-     * @param collection 遍历的对象
-     * @param item       对象名
-     * @param separator  连接符
-     * @param open       开始符号
-     * @param close      结束符号
-     * @param index      索引名（list 为索引，map 为 key）
-     * @param content    标签中的内容
-     * @return foreach 标签包装的 XML 结构
+     * @param collection The object to iterate over.
+     * @param item       The name of the item variable.
+     * @param separator  The separator to use between items.
+     * @param open       The opening symbol.
+     * @param close      The closing symbol.
+     * @param index      The name of the index variable (for lists, it's the index; for maps, it's the key).
+     * @param content    The content within the tag.
+     * @return The XML structure wrapped in a {@code <foreach>} tag.
      */
     default String foreach(
             String collection,
@@ -364,25 +364,25 @@ public interface SqlScript {
     }
 
     /**
-     * 生成 bind 标签包装的 XML 结构
+     * Generates an XML structure wrapped in a {@code <bind>} tag.
      *
-     * @param name  变量名
-     * @param value 变量值
-     * @return bind 标签包装的 XML 结构
+     * @param name  The variable name.
+     * @param value The variable value.
+     * @return The XML structure wrapped in a {@code <bind>} tag.
      */
     default String bind(String name, String value) {
         return String.format("\n<bind name=\"%s\" value=\"%s\"/>", name, value);
     }
 
     /**
-     * 确保字符串前有换行符的 Supplier 接口
+     * A functional interface for supplying a string, ensuring it starts with a newline character.
      */
     interface LRSupplier extends Supplier<String> {
 
         /**
-         * 获取带换行符的字符串
+         * Gets the string, ensuring it starts with a newline character.
          *
-         * @return 确保字符串前面有换行符
+         * @return The string with a leading newline if necessary.
          */
         default String getWithLR() {
             String txt = get();

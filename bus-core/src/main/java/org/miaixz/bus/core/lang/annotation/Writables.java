@@ -30,7 +30,14 @@ package org.miaixz.bus.core.lang.annotation;
 import java.lang.annotation.*;
 
 /**
- * 注解: 标记可写
+ * A marker annotation that designates a class as "writable."
+ * <p>
+ * This annotation is the counterpart to {@link Readables} and signals that an object's properties are intended to be
+ * modified. For example, a framework might use this marker to identify beans, entities, or DTOs that can be populated
+ * from external sources like HTTP requests or database query results.
+ * <p>
+ * It serves as a documentation hint and can be used by tools or frameworks to apply specific conventions for writable
+ * objects.
  *
  * @author Kimi Liu
  * @since Java 17+

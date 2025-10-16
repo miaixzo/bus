@@ -27,14 +27,14 @@
 */
 package org.miaixz.bus.validate.magic.annotation;
 
-import java.lang.annotation.*;
-
 import org.miaixz.bus.core.lang.Fields;
 import org.miaixz.bus.validate.Builder;
 import org.miaixz.bus.validate.metric.DateMatcher;
 
+import java.lang.annotation.*;
+
 /**
- * 判断是否为日期
+ * Validates that the annotated string is a valid date according to the specified format.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -46,37 +46,37 @@ import org.miaixz.bus.validate.metric.DateMatcher;
 public @interface Date {
 
     /**
-     * 日期格式
+     * The date format to be used for validation.
      *
-     * @return the string
+     * @return the date format pattern.
      */
     String format() default Fields.NORM_DATETIME;
 
     /**
-     * 默认使用的异常码
+     * The error code to be used when validation fails.
      *
-     * @return the string
+     * @return the error code.
      */
     String errcode() default Builder.DEFAULT_ERRCODE;
 
     /**
-     * 默认使用的异常信息
+     * The error message to be used when validation fails. The message can be a template with placeholders.
      *
-     * @return the string
+     * @return the error message.
      */
-    String errmsg() default "${field}格式不正确";
+    String errmsg() default "${field} is not in the correct format";
 
     /**
-     * 校验器组
+     * The validation groups this constraint belongs to.
      *
-     * @return the array
+     * @return an array of group names.
      */
     String[] group() default {};
 
     /**
-     * 被校验字段名称
+     * The name of the field being validated.
      *
-     * @return the string
+     * @return the field name.
      */
     String field() default Builder.DEFAULT_FIELD;
 

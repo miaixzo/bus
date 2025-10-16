@@ -32,36 +32,39 @@ import java.util.function.Predicate;
 
 /**
  * <p>
- * 边界对象，描述具有特定上界或下界的单侧无界的区间。
+ * Represents a boundary object that describes a single-sided unbounded range with a specific upper or lower limit.
  *
  * <p>
- * 边界的类型
- * </p>
+ * Types of Bounds:
+ *
  * <p>
- * 边界根据其{@link #getType()}所获得的类型，可用于描述基于边界值<em>t</em>的不等式:
+ * A bound, based on its type obtained via {@link #getType()}, can be used to describe inequalities based on a boundary
+ * value <em>t</em>:
  * <ul>
- * <li>{@link #noneLowerBound()}：{@code {x | x > -∞}}；</li>
- * <li>{@link #noneUpperBound()}：{@code {x | x < +∞}}；</li>
- * <li>{@link #greaterThan}：{@code {x | x > t}}；</li>
- * <li>{@link #atLeast}：{@code {x | x >= t}}；</li>
- * <li>{@link #lessThan}：{@code {x | x < t}}；</li>
- * <li>{@link #atMost}：{@code {x | x <= t}}；</li>
+ * <li>{@link #noneLowerBound()}：{@code {x | x > -∞}} (all values greater than negative infinity);</li>
+ * <li>{@link #noneUpperBound()}：{@code {x | x < +∞}} (all values less than positive infinity);</li>
+ * <li>{@link #greaterThan}：{@code {x | x > t}} (all values strictly greater than t);</li>
+ * <li>{@link #atLeast}：{@code {x | x >= t}} (all values greater than or equal to t);</li>
+ * <li>{@link #lessThan}：{@code {x | x < t}} (all values strictly less than t);</li>
+ * <li>{@link #atMost}：{@code {x | x <= t}} (all values less than or equal to t);</li>
  * </ul>
- * 当作为{@link Predicate}使用时，可用于判断入参对象是否能满足当前实例所对应的不等式。
+ * When used as a {@link Predicate}, it can determine if an input object satisfies the inequality corresponding to this
+ * instance.
  *
  * <p>
- * 边界的比较
- * </p>
+ * Comparison of Bounds:
  * <p>
- * 边界对象本身实现了{@link Comparable}接口， 当使用{@link Comparable#compareTo}比较两个边界对象时， 返回的比较值表示两个边界对象对应的点在实数轴上从左到右的先后顺序。 比如：
- * 若令当前边界点为<em>t1</em>，另一边界点为<em>t2</em>，则有
+ * The {@code Bound} object itself implements the {@link Comparable} interface. When comparing two bound objects using
+ * {@link Comparable#compareTo}, the returned comparison value indicates the relative order of the points represented by
+ * the two bounds on the real number line from left to right. For example: If the current boundary point is <em>t1</em>
+ * and another boundary point is <em>t2</em>, then:
  * <ul>
- * <li>-1：<em>t1</em>在<em>t2</em>的左侧；</li>
- * <li>0：<em>t1</em>与<em>t2</em>所表示的点彼此重合；</li>
- * <li>-1：<em>t1</em>在<em>t2</em>的右侧；</li>
+ * <li>-1: <em>t1</em> is to the left of <em>t2</em>;</li>
+ * <li>0: <em>t1</em> coincides with <em>t2</em>;</li>
+ * <li>1: <em>t1</em> is to the right of <em>t2</em>;</li>
  * </ul>
  *
- * @param <T> 边界值类型
+ * @param <T> the type of the boundary value, which must be comparable
  * @author Kimi Liu
  * @see BoundType
  * @see BoundedRange
@@ -70,143 +73,161 @@ import java.util.function.Predicate;
 public interface Bound<T extends Comparable<? super T>> extends Predicate<T>, Comparable<Bound<T>> {
 
     /**
-     * 无穷小的描述
+     * String representation for negative infinity.
      */
     String INFINITE_MIN = "-∞";
 
     /**
-     * 无穷大的藐视
+     * String representation for positive infinity.
      */
     String INFINITE_MAX = "+∞";
 
     /**
-     * {@code {x | x > -∞}}
+     * Returns a lower bound representing the range {@code {x | x > -∞}}. This signifies an unbounded lower limit.
      *
-     * @param <T> 边界值类型
-     * @return 区间
+     * @param <T> the type of the boundary value
+     * @return a {@code Bound} instance representing no lower bound
      */
     static <T extends Comparable<? super T>> Bound<T> noneLowerBound() {
         return NoneLowerBound.INSTANCE;
     }
 
     /**
-     * {@code {x | x < +∞}}
+     * Returns an upper bound representing the range {@code {x | x < +∞}}. This signifies an unbounded upper limit.
      *
-     * @param <T> 边界值类型
-     * @return 区间
+     * @param <T> the type of the boundary value
+     * @return a {@code Bound} instance representing no upper bound
      */
     static <T extends Comparable<? super T>> Bound<T> noneUpperBound() {
         return NoneUpperBound.INSTANCE;
     }
 
     /**
-     * {@code {x | x > min}}
+     * Returns a lower bound representing the range {@code {x | x > min}}. This is an open lower bound, meaning
+     * {@code min} itself is not included.
      *
-     * @param min 最小值
-     * @param <T> 边界值类型
-     * @return 区间
+     * @param min the minimum value for the bound, must not be {@code null}
+     * @param <T> the type of the boundary value
+     * @return a {@code Bound} instance representing {@code x > min}
+     * @throws NullPointerException if {@code min} is {@code null}
      */
     static <T extends Comparable<? super T>> Bound<T> greaterThan(final T min) {
         return new FiniteBound<>(Objects.requireNonNull(min), BoundType.OPEN_LOWER_BOUND);
     }
 
     /**
-     * {@code {x | x >= min}}
+     * Returns a lower bound representing the range {@code {x | x >= min}}. This is a closed lower bound, meaning
+     * {@code min} itself is included.
      *
-     * @param min 最小值
-     * @param <T> 边界值类型
-     * @return 区间
+     * @param min the minimum value for the bound, must not be {@code null}
+     * @param <T> the type of the boundary value
+     * @return a {@code Bound} instance representing {@code x >= min}
+     * @throws NullPointerException if {@code min} is {@code null}
      */
     static <T extends Comparable<? super T>> Bound<T> atLeast(final T min) {
         return new FiniteBound<>(Objects.requireNonNull(min), BoundType.CLOSE_LOWER_BOUND);
     }
 
     /**
-     * {@code {x | x < max}}
+     * Returns an upper bound representing the range {@code {x | x < max}}. This is an open upper bound, meaning
+     * {@code max} itself is not included.
      *
-     * @param max 最大值
-     * @param <T> 边界值类型
-     * @return 区间
+     * @param max the maximum value for the bound, must not be {@code null}
+     * @param <T> the type of the boundary value
+     * @return a {@code Bound} instance representing {@code x < max}
+     * @throws NullPointerException if {@code max} is {@code null}
      */
     static <T extends Comparable<? super T>> Bound<T> lessThan(final T max) {
         return new FiniteBound<>(Objects.requireNonNull(max), BoundType.OPEN_UPPER_BOUND);
     }
 
     /**
-     * {@code {x | x <= max}}
+     * Returns an upper bound representing the range {@code {x | x <= max}}. This is a closed upper bound, meaning
+     * {@code max} itself is included.
      *
-     * @param max 最大值
-     * @param <T> 边界值类型
-     * @return 区间
+     * @param max the maximum value for the bound, must not be {@code null}
+     * @param <T> the type of the boundary value
+     * @return a {@code Bound} instance representing {@code x <= max}
+     * @throws NullPointerException if {@code max} is {@code null}
      */
     static <T extends Comparable<? super T>> Bound<T> atMost(final T max) {
         return new FiniteBound<>(Objects.requireNonNull(max), BoundType.CLOSE_UPPER_BOUND);
     }
 
     /**
-     * 获取边界值
+     * Retrieves the value of this boundary. For unbounded bounds (e.g., {@link #noneLowerBound()}), this method may
+     * return {@code null}.
      *
-     * @return 边界值
+     * @return the boundary value, or {@code null} if the bound is unbounded
      */
     T getValue();
 
     /**
-     * 获取边界类型
+     * Retrieves the type of this boundary, indicating whether it's an open/closed lower/upper bound, or an unbounded
+     * type.
      *
-     * @return 边界类型
+     * @return the {@link BoundType} of this boundary
      */
     BoundType getType();
 
     /**
-     * 检验指定值是否在当前边界表示的范围内
+     * Tests if the given value satisfies the condition defined by this boundary. For example, if this bound represents
+     * {@code x > t}, it returns {@code true} if the given value is greater than {@code t}.
      *
-     * @param t 要检验的值，不允许为{@code null}
-     * @return 是否
+     * @param t the value to test, must not be {@code null}
+     * @return {@code true} if the value satisfies the boundary condition, {@code false} otherwise
+     * @throws NullPointerException if {@code t} is {@code null}
      */
     @Override
     boolean test(T t);
 
     /**
      * <p>
-     * 比较另一边界与当前边界在坐标轴上位置的先后顺序。 若令当前边界为<em>t1</em>，另一边界为<em>t2</em>，则有
+     * Compares the position of another boundary relative to this boundary on the coordinate axis. If the current
+     * boundary is <em>t1</em> and the other boundary is <em>t2</em>, then:
      * <ul>
-     * <li>-1：<em>t1</em>在<em>t2</em>的左侧；</li>
-     * <li>0：<em>t1</em>与<em>t2</em>的重合；</li>
-     * <li>-1：<em>t1</em>在<em>t2</em>的右侧；</li>
+     * <li>-1: <em>t1</em> is to the left of <em>t2</em>;</li>
+     * <li>0: <em>t1</em> coincides with <em>t2</em>;</li>
+     * <li>1: <em>t1</em> is to the right of <em>t2</em>;</li>
      * </ul>
      *
-     * @param bound 边界
-     * @return 位置
+     * @param bound the other boundary to compare with
+     * @return a negative integer, zero, or a positive integer as this object is less than, equal to, or greater than
+     *         the specified object.
      */
     @Override
     int compareTo(final Bound<T> bound);
 
     /**
-     * 获取{@code "[value"}或{@code "(value"}格式的字符串
+     * Returns a string representation of the bound in the format {@code "[value"} or {@code "(value"} for lower bounds,
+     * or {@code "value]"} or {@code "value)"} for upper bounds.
      *
-     * @return 字符串
+     * @return a string representation of the bound
      */
     String descBound();
 
     /**
-     * 对当前边界取反
+     * Returns a new {@code Bound} instance that represents the negation of this bound. For example, if this bound is
+     * {@code x > t}, its negation would be {@code x <= t}.
      *
-     * @return 取反后的边界
+     * @return a new {@code Bound} instance representing the negation of this bound
      */
     @Override
     Bound<T> negate();
 
     /**
-     * 将当前实例转为一个区间
+     * Converts this single-sided bound into a {@link BoundedRange} instance. The resulting range will be unbounded on
+     * one side and bounded by this instance on the other.
      *
-     * @return 区间
+     * @return a {@link BoundedRange} representing this bound as part of a range
      */
     BoundedRange<T> toRange();
 
     /**
-     * 获得当前实例对应的{@code {x| x >= xxx}}格式的不等式字符串
+     * Returns a string representation of the inequality corresponding to this instance, for example,
+     * {@code "x >= value"} or {@code "x < value"}.
      *
-     * @return 字符串
+     * @return a string representation of the inequality
      */
     @Override
     String toString();

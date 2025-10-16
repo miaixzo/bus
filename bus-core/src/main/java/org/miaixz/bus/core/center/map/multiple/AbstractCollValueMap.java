@@ -28,9 +28,7 @@
 package org.miaixz.bus.core.center.map.multiple;
 
 import java.io.Serial;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.Supplier;
@@ -42,10 +40,12 @@ import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 
 /**
- * {@link MultipleValueMap}的基本实现
+ * An abstract base implementation of the {@link MultipleValueMap} interface. This class provides the core logic for
+ * managing a map where each key can be associated with multiple values, stored in a {@link Collection}. Subclasses must
+ * implement {@link #createCollection()} to define the specific type of collection used for storing values.
  *
- * @param <K> 键类型
- * @param <V> 值类型
+ * @param <K> The type of keys in the map.
+ * @param <V> The type of values stored in the collections.
  * @author Kimi Liu
  * @see CollectionValueMap
  * @see SetValueMap
@@ -59,45 +59,43 @@ public abstract class AbstractCollValueMap<K, V> extends MapWrapper<K, Collectio
     private static final long serialVersionUID = 2852276903237L;
 
     /**
-     * 默认集合初始大小
+     * The default initial capacity for the collections created to hold multiple values.
      */
     protected static final int DEFAULT_COLLECTION_INITIAL_CAPACITY = 3;
 
     /**
-     * 使用{@code mapFactory}创建的集合构造一个多值映射Map集合
+     * Constructs an {@code AbstractCollValueMap} using a factory to create the underlying map.
      *
-     * @param mapFactory 生成集合的工厂方法
+     * @param mapFactory A supplier that provides a {@link Map} to store the key-collection pairs.
      */
     protected AbstractCollValueMap(final Supplier<Map<K, Collection<V>>> mapFactory) {
         super(mapFactory);
     }
 
     /**
-     * 基于{@link HashMap}构造一个多值映射集合
+     * Constructs an {@code AbstractCollValueMap} with initial data from the provided map. A new {@link HashMap} is
+     * created to store the data.
      *
-     * @param map 提供初始数据的集合
+     * @param map The map providing initial key-collection pairs.
      */
     protected AbstractCollValueMap(final Map<K, Collection<V>> map) {
         super(new HashMap<>(map));
     }
 
     /**
-     * 基于{@link HashMap}构造一个多值映射集合
+     * Constructs an empty {@code AbstractCollValueMap} with a default {@link HashMap} as its underlying storage.
      */
     protected AbstractCollValueMap() {
         super(new HashMap<>(16));
     }
 
     /**
-     * 将集合中的全部元素对追加到指定键对应的值集合中，效果等同于：
-     * 
-     * <pre>{@code
-     * coll.forEach(t -> map.putValue(data, t))
-     * }</pre>
+     * Appends all elements from the given collection to the collection of values associated with the specified key. If
+     * no collection is associated with the key, a new one is created using {@link #createCollection()}.
      *
-     * @param key  键
-     * @param coll 待添加的值集合
-     * @return 是否成功添加
+     * @param key  The key to which the values are to be added.
+     * @param coll The collection of values to add.
+     * @return {@code true} if any values were added, {@code false} otherwise.
      */
     @Override
     public boolean putAllValues(final K key, final Collection<V> coll) {
@@ -108,15 +106,12 @@ public abstract class AbstractCollValueMap<K, V> extends MapWrapper<K, Collectio
     }
 
     /**
-     * 向指定键对应的值集合追加值，效果等同于：
-     * 
-     * <pre>{@code
-     * map.computeIfAbsent(data, k -> new Collection()).add(value)
-     * }</pre>
+     * Appends a single value to the collection of values associated with the specified key. If no collection is
+     * associated with the key, a new one is created using {@link #createCollection()}.
      *
-     * @param key   键
-     * @param value 值
-     * @return 是否成功添加
+     * @param key   The key to which the value is to be added.
+     * @param value The value to add.
+     * @return {@code true} if the value was added, {@code false} otherwise.
      */
     @Override
     public boolean putValue(final K key, final V value) {
@@ -124,11 +119,12 @@ public abstract class AbstractCollValueMap<K, V> extends MapWrapper<K, Collectio
     }
 
     /**
-     * 将值从指定键下的值集合中删除
+     * Removes a single occurrence of the specified value from the collection associated with the given key. If the
+     * collection becomes empty after removal, the key-collection mapping is also removed from the map.
      *
-     * @param key   键
-     * @param value 值
-     * @return 是否成功删除
+     * @param key   The key from which the value is to be removed.
+     * @param value The value to remove.
+     * @return {@code true} if the value was removed, {@code false} otherwise.
      */
     @Override
     public boolean removeValue(final K key, final V value) {
@@ -136,11 +132,12 @@ public abstract class AbstractCollValueMap<K, V> extends MapWrapper<K, Collectio
     }
 
     /**
-     * 将一批值从指定键下的值集合中删除
+     * Removes all occurrences of the specified values from the collection associated with the given key. If the
+     * collection becomes empty after removal, the key-collection mapping is also removed from the map.
      *
-     * @param key    键
-     * @param values 值
-     * @return 是否成功删除
+     * @param key    The key from which the values are to be removed.
+     * @param values A collection of values to remove.
+     * @return {@code true} if any values were removed, {@code false} otherwise.
      */
     @Override
     public boolean removeAllValues(final K key, final Collection<V> values) {
@@ -152,10 +149,13 @@ public abstract class AbstractCollValueMap<K, V> extends MapWrapper<K, Collectio
     }
 
     /**
-     * 根据条件过滤所有值集合中的值，并以新值生成新的值集合，新集合中的值集合类型与当前实例的默认值集合类型保持一致
+     * Filters all values in the map based on a given key-value predicate and returns a new {@code MultipleValueMap}
+     * containing only the values that satisfy the predicate. The type of the value collections in the new map will be
+     * consistent with the default collection type of this instance.
      *
-     * @param filter 判断方法
-     * @return 当前实例
+     * @param filter The predicate to apply to each key-value pair. Values for which the predicate returns {@code true}
+     *               are retained.
+     * @return A new {@code MultipleValueMap} instance with filtered values.
      */
     @Override
     public MultipleValueMap<K, V> filterAllValues(final BiPredicate<K, V> filter) {
@@ -169,10 +169,12 @@ public abstract class AbstractCollValueMap<K, V> extends MapWrapper<K, Collectio
     }
 
     /**
-     * 根据条件替换所有值集合中的值，并以新值生成新的值集合，新集合中的值集合类型与当前实例的默认值集合类型保持一致
+     * Replaces all values in the map by applying a given key-value binary operator to each value. Returns a new
+     * {@code MultipleValueMap} with the transformed values. The type of the value collections in the new map will be
+     * consistent with the default collection type of this instance.
      *
-     * @param operate 替换方法
-     * @return 当前实例
+     * @param operate The binary operator to apply to each key-value pair to produce a new value.
+     * @return A new {@code MultipleValueMap} instance with replaced values.
      */
     @Override
     public MultipleValueMap<K, V> replaceAllValues(final BiFunction<K, V, V> operate) {
@@ -186,9 +188,10 @@ public abstract class AbstractCollValueMap<K, V> extends MapWrapper<K, Collectio
     }
 
     /**
-     * 创建集合 此方法用于创建在putValue后追加值所在的集合，子类实现此方法创建不同类型的集合
+     * Creates a new, empty {@link Collection} instance to hold multiple values for a key. Subclasses must implement
+     * this method to specify the concrete type of collection (e.g., {@link ArrayList}, {@link HashSet}).
      *
-     * @return {@link Collection}
+     * @return A new {@link Collection} instance.
      */
     protected abstract Collection<V> createCollection();
 

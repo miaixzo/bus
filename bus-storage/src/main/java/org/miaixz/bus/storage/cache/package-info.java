@@ -26,7 +26,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * OSS存储缓存机制
+ * Provides caching mechanisms for OSS (Object Storage Service) storage operations.
  *
  * @author Kimi Liu
  * @since Java 17+

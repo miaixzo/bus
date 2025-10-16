@@ -31,7 +31,7 @@ import java.net.Authenticator;
 import java.net.PasswordAuthentication;
 
 /**
- * 账号密码形式的{@link Authenticator} 实现
+ * An {@link Authenticator} implementation that uses a username and password.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -39,38 +39,38 @@ import java.net.PasswordAuthentication;
 public class NonAuthenticator extends Authenticator {
 
     /**
-     * 用户名和密码存储
+     * Stores the username and password.
      */
     private final PasswordAuthentication auth;
 
     /**
-     * 创建账号密码形式的{@link Authenticator} 实现。
+     * Constructs a new {@code NonAuthenticator}.
      *
-     * @param userName 用户名
-     * @param password 密码
-     * @return PassAuth
-     */
-    public static NonAuthenticator of(final String userName, final char[] password) {
-        return new NonAuthenticator(userName, password);
-    }
-
-    /**
-     * 构造
-     *
-     * @param userName 用户名
-     * @param password 密码
+     * @param userName The username.
+     * @param password The password.
      */
     public NonAuthenticator(final String userName, final char[] password) {
         this(new PasswordAuthentication(userName, password));
     }
 
     /**
-     * 构造
+     * Constructs a new {@code NonAuthenticator}.
      *
-     * @param auth 账号密码
+     * @param auth The password authentication details.
      */
     public NonAuthenticator(final PasswordAuthentication auth) {
         this.auth = auth;
+    }
+
+    /**
+     * Creates a username/password-based {@link Authenticator} implementation.
+     *
+     * @param userName The username.
+     * @param password The password.
+     * @return A new {@code NonAuthenticator} instance.
+     */
+    public static NonAuthenticator of(final String userName, final char[] password) {
+        return new NonAuthenticator(userName, password);
     }
 
     @Override

@@ -34,7 +34,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * V3 统一下单-商户门店信息
+ * Model for the Store Info object in the V3 Unified Order API.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -47,19 +47,19 @@ import lombok.experimental.SuperBuilder;
 public class StoreInfo {
 
     /**
-     * 门店编号
+     * The store ID.
      */
     private String id;
     /**
-     * 门店名称
+     * The store name.
      */
     private String name;
     /**
-     * 地区编码
+     * The area code for the store's location.
      */
     private String area_code;
     /**
-     * 详细地址
+     * The detailed address of the store.
      */
     private String address;
 

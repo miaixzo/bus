@@ -42,7 +42,7 @@ import org.miaixz.bus.core.xyz.ListKit;
 import org.miaixz.bus.core.xyz.MapKit;
 
 /**
- * Word中表格相关工具
+ * Utility class for Word table related operations.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -50,41 +50,43 @@ import org.miaixz.bus.core.xyz.MapKit;
 public class DocxTable {
 
     /**
-     * 创建空表，只有一行
+     * Creates an empty table with a single row.
      *
-     * @param doc {@link XWPFDocument}
-     * @return {@link XWPFTable}
+     * @param doc The {@link XWPFDocument} to which the table will be added.
+     * @return The newly created {@link XWPFTable}.
      */
     public static XWPFTable createTable(final XWPFDocument doc) {
         return createTable(doc, null);
     }
 
     /**
-     * 创建表格并填充数据，默认表格
+     * Creates a table and populates it with data. Uses default table settings.
      *
-     * @param doc  {@link XWPFDocument}
-     * @param data 数据
-     * @return {@link XWPFTable}
+     * @param doc  The {@link XWPFDocument} to which the table will be added.
+     * @param data The data to populate the table with. Can be an {@link Iterable} of rows.
+     * @return The newly created and populated {@link XWPFTable}.
+     * @throws NullPointerException if {@code doc} is {@code null}.
      */
     public static XWPFTable createTable(final XWPFDocument doc, final Iterable<?> data) {
         Assert.notNull(doc, "XWPFDocument must be not null !");
         final XWPFTable table = doc.createTable();
-        // 新建table的时候默认会新建一行，此处移除之
+        // A new table by default creates one row, remove it here.
         table.removeRow(0);
         return writeTable(table, data);
     }
 
     /**
-     * 为table填充数据
+     * Populates the given table with data.
      *
-     * @param table {@link XWPFTable}
-     * @param data  数据
-     * @return {@link XWPFTable}
+     * @param table The {@link XWPFTable} to populate.
+     * @param data  The data to populate the table with. Can be an {@link Iterable} of rows.
+     * @return The populated {@link XWPFTable}.
+     * @throws NullPointerException if {@code table} is {@code null}.
      */
     public static XWPFTable writeTable(final XWPFTable table, final Iterable<?> data) {
         Assert.notNull(table, "XWPFTable must be not null !");
         if (IteratorKit.isEmpty(data)) {
-            // 数据为空，返回空表
+            // If data is empty, return an empty table.
             return table;
         }
 
@@ -100,11 +102,12 @@ public class DocxTable {
     }
 
     /**
-     * 写一行数据
+     * Writes a single row of data to the table.
      *
-     * @param row              行
-     * @param rowBean          行数据
-     * @param isWriteKeyAsHead 如果为Map或者Bean，是否写标题
+     * @param row              The {@link XWPFTableRow} to write data to.
+     * @param rowBean          The data for the row. Can be an {@link Iterable}, {@link Map}, or a Bean.
+     * @param isWriteKeyAsHead If {@code rowBean} is a {@link Map} or a Bean, specifies whether to write keys as
+     *                         headers.
      */
     public static void writeRow(final XWPFTableRow row, final Object rowBean, final boolean isWriteKeyAsHead) {
         if (rowBean instanceof Iterable) {
@@ -112,13 +115,13 @@ public class DocxTable {
             return;
         }
 
-        final Map rowMap;
+        final Map<?, ?> rowMap;
         if (rowBean instanceof Map) {
-            rowMap = (Map) rowBean;
+            rowMap = (Map<?, ?>) rowBean;
         } else if (BeanKit.isWritableBean(rowBean.getClass())) {
             rowMap = BeanKit.beanToMap(rowBean, new LinkedHashMap<>(), false, false);
         } else {
-            // 其它转为字符串默认输出
+            // Other types are converted to string and output by default.
             writeRow(row, ListKit.of(rowBean), isWriteKeyAsHead);
             return;
         }
@@ -127,11 +130,11 @@ public class DocxTable {
     }
 
     /**
-     * 写行数据
+     * Writes a single row of data to the table.
      *
-     * @param row              行
-     * @param rowMap           行数据
-     * @param isWriteKeyAsHead 是否写标题
+     * @param row              The {@link XWPFTableRow} to write data to.
+     * @param rowMap           The map representing the row data.
+     * @param isWriteKeyAsHead If {@code true}, writes the map keys as a header row before writing the values.
      */
     public static void writeRow(XWPFTableRow row, final Map<?, ?> rowMap, final boolean isWriteKeyAsHead) {
         if (MapKit.isEmpty(rowMap)) {
@@ -146,10 +149,10 @@ public class DocxTable {
     }
 
     /**
-     * 写行数据
+     * Writes a single row of data to the table.
      *
-     * @param row     行
-     * @param rowData 行数据
+     * @param row     The {@link XWPFTableRow} to write data to.
+     * @param rowData The iterable collection of data for the row's cells.
      */
     public static void writeRow(final XWPFTableRow row, final Iterable<?> rowData) {
         XWPFTableCell cell;
@@ -162,11 +165,11 @@ public class DocxTable {
     }
 
     /**
-     * 获取或创建新行 存在则直接返回，不存在创建新的行
+     * Gets an existing row or creates a new one if it doesn't exist.
      *
-     * @param table {@link XWPFTable}
-     * @param index 索引（行号），从0开始
-     * @return {@link XWPFTableRow}
+     * @param table The {@link XWPFTable} to get or create the row in.
+     * @param index The index (row number) of the row, starting from 0.
+     * @return The {@link XWPFTableRow} at the specified index.
      */
     public static XWPFTableRow getOrCreateRow(final XWPFTable table, final int index) {
         XWPFTableRow row = table.getRow(index);
@@ -178,11 +181,11 @@ public class DocxTable {
     }
 
     /**
-     * 获取或创建新单元格 存在则直接返回，不存在创建新的单元格
+     * Gets an existing cell or creates a new one if it doesn't exist.
      *
-     * @param row   {@link XWPFTableRow} 行
-     * @param index index 索引（列号），从0开始
-     * @return {@link XWPFTableCell}
+     * @param row   The {@link XWPFTableRow} to get or create the cell in.
+     * @param index The index (column number) of the cell, starting from 0.
+     * @return The {@link XWPFTableCell} at the specified index.
      */
     public static XWPFTableCell getOrCreateCell(final XWPFTableRow row, final int index) {
         XWPFTableCell cell = row.getCell(index);

@@ -41,7 +41,9 @@ import org.miaixz.bus.core.lang.exception.CryptoException;
 import org.miaixz.bus.core.lang.exception.InternalException;
 
 /**
- * ASN.1 – Abstract Syntax Notation dot one，抽象记法1 工具类。 ASN.1描述了一种对数据进行表示、编码、传输和解码的数据格式。它的编码格式包括DER、BER、DL等
+ * ASN.1 (Abstract Syntax Notation One) utility class. ASN.1 describes a data format for representing, encoding,
+ * transmitting, and decoding data. Its encoding formats include DER (Distinguished Encoding Rules), BER (Basic Encoding
+ * Rules), and DL (Definite Length).
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -49,21 +51,24 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 public class ASN1 {
 
     /**
-     * 编码为DER格式
+     * Encodes ASN.1 elements into DER (Distinguished Encoding Rules) format.
      *
-     * @param elements ASN.1元素
-     * @return 编码后的bytes
+     * @param elements The ASN.1 elements to encode.
+     * @return The encoded bytes in DER format.
+     * @throws InternalException if an I/O error occurs during encoding.
      */
     public static byte[] encodeDer(final ASN1Encodable... elements) {
         return encode(ASN1Encoding.DER, elements);
     }
 
     /**
-     * 编码为指定ASN1格式
+     * Encodes ASN.1 elements into a specified ASN.1 encoding format.
      *
-     * @param asn1Encoding 编码格式，见{@link ASN1Encoding}，可选DER、BER或DL
-     * @param elements     ASN.1元素
-     * @return 编码后的bytes
+     * @param asn1Encoding The encoding format, such as DER, BER, or DL (see {@link ASN1Encoding}).
+     * @param elements     The ASN.1 elements to encode.
+     * @return The encoded bytes in the specified ASN.1 format.
+     * @throws CryptoException   if an unsupported ASN.1 encoding is provided.
+     * @throws InternalException if an I/O error occurs during encoding.
      */
     public static byte[] encode(final String asn1Encoding, final ASN1Encodable... elements) {
         final FastByteArrayOutputStream out = new FastByteArrayOutputStream();
@@ -72,11 +77,13 @@ public class ASN1 {
     }
 
     /**
-     * 编码为指定ASN1格式
+     * Encodes ASN.1 elements into a specified ASN.1 encoding format and writes them to an output stream.
      *
-     * @param asn1Encoding 编码格式，见{@link ASN1Encoding}，可选DER、BER或DL
-     * @param out          输出流
-     * @param elements     ASN.1元素
+     * @param asn1Encoding The encoding format, such as DER, BER, or DL (see {@link ASN1Encoding}).
+     * @param out          The {@link OutputStream} to write the encoded data to.
+     * @param elements     The ASN.1 elements to encode.
+     * @throws CryptoException   if an unsupported ASN.1 encoding is provided.
+     * @throws InternalException if an I/O error occurs during encoding.
      */
     public static void encodeTo(final String asn1Encoding, final OutputStream out, final ASN1Encodable... elements) {
         final ASN1Sequence sequence;
@@ -104,10 +111,11 @@ public class ASN1 {
     }
 
     /**
-     * 读取ASN.1数据流为{@link ASN1Object}
+     * Reads an ASN.1 data stream and decodes it into an {@link ASN1Object}.
      *
-     * @param in ASN.1数据
-     * @return {@link ASN1Object}
+     * @param in The {@link InputStream} containing the ASN.1 data.
+     * @return The decoded {@link ASN1Object}.
+     * @throws InternalException if an I/O error occurs during decoding.
      */
     public static ASN1Object decode(final InputStream in) {
         final ASN1InputStream asn1In = new ASN1InputStream(in);
@@ -119,26 +127,27 @@ public class ASN1 {
     }
 
     /**
-     * 获取ASN1格式的导出格式，一般用于调试
+     * Retrieves a string representation of the ASN.1 format, typically used for debugging.
      *
-     * @param in ASN.1数据
-     * @return {@link ASN1Object}的字符串表示形式
+     * @param in The {@link InputStream} containing the ASN.1 data.
+     * @return The string representation of the {@link ASN1Object}.
      * @see ASN1Dump#dumpAsString(Object)
+     * @throws InternalException if an I/O error occurs during decoding.
      */
     public static String getDumpString(final InputStream in) {
         return ASN1Dump.dumpAsString(decode(in));
     }
 
     /**
-     * 生成X500Name信息
+     * Generates an X.500 distinguished name (X500Name) from provided components.
      *
-     * @param C  Country Name (国家代号),eg: CN
-     * @param ST State or Province Name (洲或者省份),eg: Beijing
-     * @param L  Locality Name (城市名),eg: Beijing
-     * @param O  Organization Name (可以是公司名称),
-     * @param OU Organizational Unit Name (可以是单位部门名称)
-     * @param CN Common Name (服务器ip或者域名),eg: 192.168.30.71 or www.baidu.com
-     * @return X500Name
+     * @param C  Country Name (e.g., CN).
+     * @param ST State or Province Name (e.g., Beijing).
+     * @param L  Locality Name (e.g., Beijing).
+     * @param O  Organization Name (e.g., company name).
+     * @param OU Organizational Unit Name (e.g., department name).
+     * @param CN Common Name (e.g., server IP or domain name, like 192.168.30.71 or www.baidu.com).
+     * @return The constructed {@link X500Name}.
      */
     public static X500Name createX500Name(
             final String C,

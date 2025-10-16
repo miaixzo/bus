@@ -42,7 +42,8 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.xml.sax.XMLReader;
 
 /**
- * XXE漏洞修复相关工具类 参考：https://blog.spoock.com/2018/10/23/java-xxe/
+ * Utility class for fixing XXE vulnerabilities. See:
+ * <a href="https.blog.spoock.com/2018/10/23/java-xxe/">https://blog.spoock.com/2018/10/23/java-xxe/</a>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -50,16 +51,17 @@ import org.xml.sax.XMLReader;
 public class XXE {
 
     /**
-     * 关闭XXE，避免漏洞攻击 see: <a href=
-     * "https://www.owasp.org/index.php/XML_External_Entity_">https://www.owasp.org/index.php/XML_External_Entity_</a>(XXE)_Prevention_Cheat_Sheet#JAXP_DocumentBuilderFactory.2C_SAXParserFactory_and_DOM4J
+     * Disables XXE to prevent vulnerability attacks. See: <a href=
+     * "https://www.owasp.org/index.php/XML_External_Entity_(XXE)_Prevention_Cheat_Sheet#JAXP_DocumentBuilderFactory.2C_SAXParserFactory_and_DOM4J">
+     * OWASP XXE Prevention Cheat Sheet</a>
      *
-     * @param factory DocumentBuilderFactory
-     * @return DocumentBuilderFactory
+     * @param factory The {@link DocumentBuilderFactory} to configure.
+     * @return The configured {@link DocumentBuilderFactory}.
      */
     public static DocumentBuilderFactory disableXXE(final DocumentBuilderFactory factory) {
         try {
             // This is the PRIMARY defense. If DTDs (doctypes) are disallowed, almost all XML entity attacks are
-            // prevented
+            // prevented.
             // Xerces 2 only - http://xerces.apache.org/xerces2-j/features.html#disallow-doctype-decl
             factory.setFeature(XmlFeatures.DISALLOW_DOCTYPE_DECL, true);
             // If you can't completely disable DTDs, then at least do the following:
@@ -85,10 +87,10 @@ public class XXE {
     }
 
     /**
-     * 关闭XEE避免漏洞攻击
+     * Disables XXE to prevent vulnerability attacks.
      *
-     * @param factory {@link SAXParserFactory}
-     * @return {@link SAXParserFactory}
+     * @param factory The {@link SAXParserFactory} to configure.
+     * @return The configured {@link SAXParserFactory}.
      */
     public static SAXParserFactory disableXXE(final SAXParserFactory factory) {
         try {
@@ -106,10 +108,10 @@ public class XXE {
     }
 
     /**
-     * 关闭XEE避免漏洞攻击
+     * Disables XXE to prevent vulnerability attacks.
      *
-     * @param reader {@link XMLReader}
-     * @return {@link XMLReader}
+     * @param reader The {@link XMLReader} to configure.
+     * @return The configured {@link XMLReader}.
      */
     public static XMLReader disableXXE(final XMLReader reader) {
         try {
@@ -125,10 +127,10 @@ public class XXE {
     }
 
     /**
-     * 关闭XEE避免漏洞攻击
+     * Disables XXE to prevent vulnerability attacks.
      *
-     * @param factory {@link TransformerFactory }
-     * @return {@link TransformerFactory }
+     * @param factory The {@link TransformerFactory} to configure.
+     * @return The configured {@link TransformerFactory}.
      */
     public static TransformerFactory disableXXE(final TransformerFactory factory) {
         try {
@@ -142,10 +144,10 @@ public class XXE {
     }
 
     /**
-     * 关闭XEE避免漏洞攻击
+     * Disables XXE to prevent vulnerability attacks.
      *
-     * @param validator {@link Validator }
-     * @return {@link Validator }
+     * @param validator The {@link Validator} to configure.
+     * @return The configured {@link Validator}.
      */
     public static Validator disableXXE(final Validator validator) {
         try {
@@ -158,10 +160,10 @@ public class XXE {
     }
 
     /**
-     * 关闭XEE避免漏洞攻击
+     * Disables XXE to prevent vulnerability attacks.
      *
-     * @param factory {@link SAXTransformerFactory}
-     * @return {@link SAXTransformerFactory}
+     * @param factory The {@link SAXTransformerFactory} to configure.
+     * @return The configured {@link SAXTransformerFactory}.
      */
     public static SAXTransformerFactory disableXXE(final SAXTransformerFactory factory) {
         factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, Normal.EMPTY);
@@ -170,10 +172,10 @@ public class XXE {
     }
 
     /**
-     * 关闭XEE避免漏洞攻击
+     * Disables XXE to prevent vulnerability attacks.
      *
-     * @param factory {@link SchemaFactory}
-     * @return {@link SchemaFactory}
+     * @param factory The {@link SchemaFactory} to configure.
+     * @return The configured {@link SchemaFactory}.
      */
     public static SchemaFactory disableXXE(final SchemaFactory factory) {
         try {

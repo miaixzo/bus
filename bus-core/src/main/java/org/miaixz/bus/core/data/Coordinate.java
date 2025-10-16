@@ -32,16 +32,17 @@ import java.io.Serializable;
 import java.util.Objects;
 
 /**
- * 坐标系转换相关工具类，主流坐标系包括：
+ * Utility class for coordinate system transformations. Mainstream coordinate systems include:
  * <ul>
- * <li>WGS84坐标系：即地球坐标系，中国外谷歌地图</li>
- * <li>GCJ02坐标系：即火星坐标系，高德、腾讯、阿里等使用</li>
- * <li>BD09坐标系：即百度坐标系，GCJ02坐标系经加密后的坐标系。百度、搜狗等使用</li>
+ * <li>WGS84 Coordinate System: The Earth coordinate system, used by Google Maps outside of China.</li>
+ * <li>GCJ02 Coordinate System: The Mars coordinate system, used by Gaode, Tencent, Ali, etc.</li>
+ * <li>BD09 Coordinate System: The Baidu coordinate system, an encrypted version of the GCJ02 coordinate system. Used by
+ * Baidu, Sogou, etc.</li>
  * </ul>
  * <p>
- * 坐标转换相关参考: <a href="https://tool.lu/coordinate/">https://tool.lu/coordinate/</a>
- * 参考：<a href="https://github.com/JourWon/coordinate-transform">https://github.com/JourWon/coordinate-transform</a>
- * </p>
+ * For coordinate transformation references, see: <a href="https://tool.lu/coordinate/">https://tool.lu/coordinate/</a>
+ * Reference:
+ * <a href="https://github.com/JourWon/coordinate-transform">https://github.com/JourWon/coordinate-transform</a>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -49,53 +50,55 @@ import java.util.Objects;
 public class Coordinate {
 
     /**
-     * 坐标转换参数：(火星坐标系与百度坐标系转换的中间量)
+     * Coordinate transformation parameter (intermediate variable for converting between Mars and Baidu coordinate
+     * systems).
      */
     public static final double X_PI = 3.1415926535897932384626433832795 * 3000.0 / 180.0;
 
     /**
-     * 坐标转换参数：π
+     * Coordinate transformation parameter: π
      */
     public static final double PI = 3.1415926535897932384626433832795D;
 
     /**
-     * 地球半径（Krasovsky 1940）
+     * Earth radius (Krasovsky 1940).
      */
     public static final double RADIUS = 6378245.0D;
 
     /**
-     * 修正参数（偏率ee）
+     * Correction parameter (eccentricity ee).
      */
     public static final double CORRECTION_PARAM = 0.00669342162296594323D;
 
     /**
-     * 判断坐标是否在国外 火星坐标系 (GCJ-02)只对国内有效，国外无需转换
+     * Determines if the coordinates are outside of China. The Mars coordinate system (GCJ-02) is only valid within
+     * China; no conversion is needed for foreign countries.
      *
-     * @param lng 经度
-     * @param lat 纬度
-     * @return 坐标是否在国外
+     * @param lng The longitude.
+     * @param lat The latitude.
+     * @return {@code true} if the coordinates are outside of China, {@code false} otherwise.
      */
     public static boolean outOfChina(final double lng, final double lat) {
         return (lng < 72.004 || lng > 137.8347) || (lat < 0.8293 || lat > 55.8271);
     }
 
     /**
-     * WGS84 转换为 火星坐标系 (GCJ-02)
+     * Converts WGS84 to Mars coordinate system (GCJ-02).
      *
-     * @param lng 经度值
-     * @param lat 纬度值
-     * @return 火星坐标 (GCJ-02)
+     * @param lng The longitude.
+     * @param lat The latitude.
+     * @return The Mars coordinates (GCJ-02).
      */
     public static Point wgs84ToGcj02(final double lng, final double lat) {
         return new Point(lng, lat).offset(offset(lng, lat, true));
     }
 
     /**
-     * WGS84 坐标转为 百度坐标系 (BD-09) 坐标
+     * Converts WGS84 coordinates to Baidu coordinate system (BD-09) coordinates.
      *
-     * @param lng 经度值
-     * @param lat 纬度值
-     * @return bd09 坐标
+     * @param lng The longitude.
+     * @param lat The latitude.
+     * @return The BD-09 coordinates.
      */
     public static Point wgs84ToBd09(final double lng, final double lat) {
         final Point gcj02 = wgs84ToGcj02(lng, lat);
@@ -103,22 +106,22 @@ public class Coordinate {
     }
 
     /**
-     * 火星坐标系 (GCJ-02) 转换为 WGS84
+     * Converts Mars coordinate system (GCJ-02) to WGS84.
      *
-     * @param lng 经度坐标
-     * @param lat 维度坐标
-     * @return WGS84 坐标
+     * @param lng The longitude.
+     * @param lat The latitude.
+     * @return The WGS84 coordinates.
      */
     public static Point gcj02ToWgs84(final double lng, final double lat) {
         return new Point(lng, lat).offset(offset(lng, lat, false));
     }
 
     /**
-     * 火星坐标系 (GCJ-02) 与百度坐标系 (BD-09) 的转换
+     * Converts between Mars coordinate system (GCJ-02) and Baidu coordinate system (BD-09).
      *
-     * @param lng 经度值
-     * @param lat 纬度值
-     * @return BD-09 坐标
+     * @param lng The longitude.
+     * @param lat The latitude.
+     * @return The BD-09 coordinates.
      */
     public static Point gcj02ToBd09(final double lng, final double lat) {
         final double z = Math.sqrt(lng * lng + lat * lat) + 0.00002 * Math.sin(lat * X_PI);
@@ -129,11 +132,12 @@ public class Coordinate {
     }
 
     /**
-     * 百度坐标系 (BD-09) 与 火星坐标系 (GCJ-02)的转换 即 百度 转 谷歌、高德
+     * Converts between Baidu coordinate system (BD-09) and Mars coordinate system (GCJ-02). i.e., Baidu to
+     * Google/Gaode.
      *
-     * @param lng 经度值
-     * @param lat 纬度值
-     * @return GCJ-02 坐标
+     * @param lng The longitude.
+     * @param lat The latitude.
+     * @return The GCJ-02 coordinates.
      */
     public static Point bd09ToGcj02(final double lng, final double lat) {
         final double x = lng - 0.0065;
@@ -146,11 +150,11 @@ public class Coordinate {
     }
 
     /**
-     * 百度坐标系 (BD-09) 与 WGS84 的转换
+     * Converts between Baidu coordinate system (BD-09) and WGS84.
      *
-     * @param lng 经度值
-     * @param lat 纬度值
-     * @return WGS84坐标
+     * @param lng The longitude.
+     * @param lat The latitude.
+     * @return The WGS84 coordinates.
      */
     public static Point bd09toWgs84(final double lng, final double lat) {
         final Point gcj02 = bd09ToGcj02(lng, lat);
@@ -158,11 +162,11 @@ public class Coordinate {
     }
 
     /**
-     * WGS84 坐标转为 墨卡托投影
+     * Converts WGS84 coordinates to Mercator projection.
      *
-     * @param lng 经度值
-     * @param lat 纬度值
-     * @return 墨卡托投影
+     * @param lng The longitude.
+     * @param lat The latitude.
+     * @return The Mercator projection.
      */
     public static Point wgs84ToMercator(final double lng, final double lat) {
         final double x = lng * 20037508.342789244 / 180;
@@ -172,11 +176,11 @@ public class Coordinate {
     }
 
     /**
-     * 墨卡托投影 转为 WGS84 坐标
+     * Converts Mercator projection to WGS84 coordinates.
      *
-     * @param mercatorX 墨卡托X坐标
-     * @param mercatorY 墨卡托Y坐标
-     * @return WGS84 坐标
+     * @param mercatorX The Mercator X coordinate.
+     * @param mercatorY The Mercator Y coordinate.
+     * @return The WGS84 coordinates.
      */
     public static Point mercatorToWgs84(final double mercatorX, final double mercatorY) {
         final double x = mercatorX / 20037508.342789244 * 180;
@@ -186,12 +190,12 @@ public class Coordinate {
     }
 
     /**
-     * WGS84 与 火星坐标系 (GCJ-02)转换的偏移算法（非精确）
+     * The offset algorithm for converting between WGS84 and Mars coordinate system (GCJ-02) (non-precise).
      *
-     * @param lng    经度值
-     * @param lat    纬度值
-     * @param isPlus 是否正向偏移：WGS84转GCJ-02使用正向，否则使用反向
-     * @return 偏移坐标
+     * @param lng    The longitude.
+     * @param lat    The latitude.
+     * @param isPlus Whether to apply a positive offset: use positive for WGS84 to GCJ-02, otherwise use negative.
+     * @return The offset coordinates.
      */
     private static Point offset(final double lng, final double lat, final boolean isPlus) {
         double dlng = transLng(lng - 105.0, lat - 35.0);
@@ -213,11 +217,11 @@ public class Coordinate {
     }
 
     /**
-     * 计算经度坐标
+     * Calculates the longitude coordinate.
      *
-     * @param lng 经度坐标
-     * @param lat 纬度坐标
-     * @return ret 计算完成后的
+     * @param lng The longitude coordinate.
+     * @param lat The latitude coordinate.
+     * @return The calculated longitude.
      */
     private static double transLng(final double lng, final double lat) {
         double ret = 300.0 + lng + 2.0 * lat + 0.1 * lng * lng + 0.1 * lng * lat + 0.1 * Math.sqrt(Math.abs(lng));
@@ -228,11 +232,11 @@ public class Coordinate {
     }
 
     /**
-     * 计算纬度坐标
+     * Calculates the latitude coordinate.
      *
-     * @param lng 经度
-     * @param lat 纬度
-     * @return ret 计算完成后的
+     * @param lng The longitude.
+     * @param lat The latitude.
+     * @return The calculated latitude.
      */
     private static double transLat(final double lng, final double lat) {
         double ret = -100.0 + 2.0 * lng + 3.0 * lat + 0.2 * lat * lat + 0.1 * lng * lat
@@ -244,7 +248,7 @@ public class Coordinate {
     }
 
     /**
-     * 坐标经纬度
+     * Represents a point with longitude and latitude.
      */
     public static class Point implements Serializable {
 
@@ -252,19 +256,19 @@ public class Coordinate {
         private static final long serialVersionUID = 2852275287953L;
 
         /**
-         * 经度
+         * The longitude.
          */
         private double lng;
         /**
-         * 纬度
+         * The latitude.
          */
         private double lat;
 
         /**
-         * 构造
+         * Constructor.
          *
-         * @param lng 经度
-         * @param lat 纬度
+         * @param lng The longitude.
+         * @param lat The latitude.
          */
         public Point(final double lng, final double lat) {
             this.lng = lng;
@@ -272,18 +276,18 @@ public class Coordinate {
         }
 
         /**
-         * 获取经度
+         * Gets the longitude.
          *
-         * @return 经度
+         * @return The longitude.
          */
         public double getLng() {
             return lng;
         }
 
         /**
-         * 设置经度
+         * Sets the longitude.
          *
-         * @param lng 经度
+         * @param lng The longitude.
          * @return this
          */
         public Point setLng(final double lng) {
@@ -292,18 +296,18 @@ public class Coordinate {
         }
 
         /**
-         * 获取纬度
+         * Gets the latitude.
          *
-         * @return 纬度
+         * @return The latitude.
          */
         public double getLat() {
             return lat;
         }
 
         /**
-         * 设置纬度
+         * Sets the latitude.
          *
-         * @param lat 纬度
+         * @param lat The latitude.
          * @return this
          */
         public Point setLat(final double lat) {
@@ -312,9 +316,9 @@ public class Coordinate {
         }
 
         /**
-         * 当前坐标偏移指定坐标
+         * Offsets the current coordinates by the specified amount.
          *
-         * @param offset 偏移量
+         * @param offset The offset.
          * @return this
          */
         public Point offset(final Point offset) {

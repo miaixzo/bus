@@ -26,7 +26,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 提供包装对象的抽象 通过包装接口，实现装饰模式或代理模式，以增强或目标对象功能
+ * Provides an abstraction for wrapper objects. Through the wrapper interface, the decorator or proxy pattern can be
+ * implemented to enhance the functionality of the target object.
  *
  * @author Kimi Liu
  * @since Java 17+

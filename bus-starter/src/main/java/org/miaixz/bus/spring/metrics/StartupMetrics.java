@@ -34,9 +34,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 启动消耗统计组件，用于收集和统计应用程序启动过程中的各项性能指标。
+ * A component for collecting and aggregating startup consumption statistics, used to gather various performance
+ * indicators during the application startup process.
  * <p>
- * 该类提供了记录应用程序名称、启动耗时以及各阶段统计信息的功能， 可用于全面监控和分析应用程序的启动性能。
+ * This class provides functionality to record the application name, total startup elapsed time, and a list of
+ * statistics for each startup stage. It can be used for comprehensive monitoring and analysis of application startup
+ * performance.
  * </p>
  *
  * @author Kimi Liu
@@ -47,33 +50,30 @@ import java.util.List;
 public class StartupMetrics {
 
     /**
-     * 应用程序名称
+     * The name of the application.
      * <p>
-     * 记录当前启动的应用程序的名称，用于标识不同的应用程序实例
+     * Records the name of the current application instance, used for identification.
      * </p>
      */
     private String appName;
 
     /**
-     * 应用程序启动耗时（毫秒）
+     * The total elapsed time in milliseconds for the application to boot.
      * <p>
-     * 记录应用程序从开始启动到完成启动所花费的总时间
+     * Records the total time taken from the start of the application to its completion.
      * </p>
      */
     private long applicationBootElapsedTime = 0;
 
     /**
-     * 应用程序启动时间戳
-     * <p>
-     * 记录应用程序启动的时间点（毫秒级时间戳）
-     * </p>
+     * The timestamp in milliseconds when the application started.
      */
     private long applicationBootTime;
 
     /**
-     * 启动阶段统计信息列表
+     * A list of {@link BaseMetrics} objects, each representing the statistics for a specific startup stage.
      * <p>
-     * 存储应用程序启动过程中各个阶段的统计信息，每个阶段都是一个BaseMetrics对象
+     * This list stores detailed performance metrics for various phases of the application startup.
      * </p>
      */
     private List<BaseMetrics> stageStats = new ArrayList<>();

@@ -35,7 +35,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * 数据库信息
+ * Represents the schema of a database, including its name and a list of its tables.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,15 +44,18 @@ import lombok.Setter;
 @Setter
 public class DatabaseSchema implements Serializable {
 
+    /**
+     * The serial version UID for serialization.
+     */
     @Serial
     private static final long serialVersionUID = 2852277792906L;
 
     /**
-     * 数据库名称
+     * The name of the database.
      */
     private String database;
     /**
-     * 表
+     * A list of {@link TableSchema} objects representing the tables in the database.
      */
     private List<TableSchema> tables;
 

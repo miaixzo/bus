@@ -30,14 +30,21 @@ package org.miaixz.bus.core.center.iterator;
 import java.util.Iterator;
 
 /**
- * 提供合成接口，共同提供{@link Iterable}和{@link Iterator}功能
+ * Provides a composite interface that combines the functionalities of {@link Iterable} and {@link Iterator}. This
+ * allows an object to be both iterable (meaning it can be used in a for-each loop) and an iterator itself.
  *
- * @param <T> 节点类型
+ * @param <T> the type of elements returned by this iterator
  * @author Kimi Liu
  * @since Java 17+
  */
 public interface IterableIterator<T> extends Iterable<T>, Iterator<T> {
 
+    /**
+     * Returns an iterator over elements of type {@code T}. This default implementation returns {@code this}, allowing
+     * the {@code IterableIterator} itself to be used as its own iterator.
+     *
+     * @return an Iterator.
+     */
     @Override
     default Iterator<T> iterator() {
         return this;

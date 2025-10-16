@@ -30,17 +30,18 @@ package org.miaixz.bus.validate.magic.annotation;
 import java.lang.annotation.*;
 
 /**
- * 标记注解,是否校验对象内部
+ * A marker annotation that indicates whether to validate the internal fields of an object.
  * <p>
- * 在对象或字段属性上可以使用,表示遇到校验器遇到该对象时,会尝试校验对象内部的所有字段
- * </P>
+ * This annotation can be used on an object or a field. When the validator encounters an object marked with this
+ * annotation, it will attempt to validate all the fields within that object.
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE, ElementType.METHOD, ElementType.PARAMETER })
+@Target({ ElementType.TYPE, ElementType.METHOD, ElementType.PARAMETER, ElementType.FIELD })
 public @interface Inside {
 
 }

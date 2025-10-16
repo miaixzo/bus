@@ -28,24 +28,24 @@
 package org.miaixz.bus.core.center.date.culture.en;
 
 /**
- * 修改类型
+ * Enumeration for date modification types.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public enum Modify {
     /**
-     * 取指定日期短的起始值.
+     * Truncate to the beginning of the specified date field.
      */
     TRUNCATE,
 
     /**
-     * 指定日期属性按照四舍五入处理
+     * Round the specified date field to the nearest value.
      */
     ROUND,
 
     /**
-     * 指定日期属性按照进一法处理
+     * Ceil the specified date field to the next higher value.
      */
     CEILING
 

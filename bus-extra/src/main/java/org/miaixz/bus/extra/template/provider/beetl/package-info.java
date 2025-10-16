@@ -26,7 +26,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Beetl实现，模板引擎介绍见：http://ibeetl.com/
+ * Provides an implementation for the Beetl template engine. For more information about the Beetl template engine,
+ * please visit: http://ibeetl.com/
  *
  * @author Kimi Liu
  * @since Java 17+

@@ -34,20 +34,33 @@ import org.miaixz.bus.core.text.replacer.StringReplacer;
 import org.miaixz.bus.core.xyz.CharKit;
 
 /**
- * 形如&#39;的反转义器
+ * Unescaper for numeric entities, such as {@code &#123;} or {@code &#xABC;}. This class handles both decimal and
+ * hexadecimal numeric character references.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class NumericEntityUnescaper extends StringReplacer {
 
+    /**
+     * The serial version UID for serialization.
+     */
     @Serial
     private static final long serialVersionUID = 2852236101870L;
 
+    /**
+     * Replaces a numeric entity (e.g., {@code &#123;}, {@code &#xABC;}) with its corresponding character.
+     *
+     * @param text The text to be unescaped.
+     * @param pos  The current position in the text.
+     * @param out  The {@link StringBuilder} to which the unescaped character is appended.
+     * @return The number of characters consumed from the input text if a numeric entity was found and unescaped,
+     *         otherwise 0.
+     */
     @Override
     protected int replace(final CharSequence text, final int pos, final StringBuilder out) {
         final int len = text.length();
-        // 检查以确保以&#开头
+        // Check to ensure it starts with '&#'
         if (text.charAt(pos) == Symbol.C_AND && pos < len - 2 && text.charAt(pos + 1) == Symbol.C_HASH) {
             int start = pos + 2;
             boolean isHex = false;
@@ -57,7 +70,7 @@ public class NumericEntityUnescaper extends StringReplacer {
                 isHex = true;
             }
 
-            // 确保&#后还有数字
+            // Ensure there are digits after '&#'
             if (start == len) {
                 return 0;
             }

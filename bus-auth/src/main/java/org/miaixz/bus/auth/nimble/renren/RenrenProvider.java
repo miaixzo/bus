@@ -49,26 +49,49 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * 人人网 登录
+ * Renren login provider.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class RenrenProvider extends AbstractProvider {
 
+    /**
+     * Constructs a {@code RenrenProvider} with the specified context.
+     *
+     * @param context the authentication context
+     */
     public RenrenProvider(Context context) {
         super(context, Registry.RENREN);
     }
 
+    /**
+     * Constructs a {@code RenrenProvider} with the specified context and cache.
+     *
+     * @param context the authentication context
+     * @param cache   the cache implementation
+     */
     public RenrenProvider(Context context, CacheX cache) {
         super(context, Registry.RENREN, cache);
     }
 
+    /**
+     * Retrieves the access token from Renren's authorization server.
+     *
+     * @param callback the callback object containing the authorization code
+     * @return the {@link AuthToken} containing access token details
+     */
     @Override
     public AuthToken getAccessToken(Callback callback) {
         return this.getToken(accessTokenUrl(callback.getCode()));
     }
 
+    /**
+     * Retrieves user information from Renren's user info endpoint.
+     *
+     * @param authToken the {@link AuthToken} obtained after successful authorization
+     * @return {@link Material} containing the user's information
+     */
     @Override
     public Material getUserInfo(AuthToken authToken) {
         String response = doGetUserInfo(authToken);
@@ -79,12 +102,25 @@ public class RenrenProvider extends AbstractProvider {
                 .gender(getGender(userObj)).token(authToken).source(complex.toString()).build();
     }
 
+    /**
+     * Refreshes the access token (renews its validity).
+     *
+     * @param authToken the token information returned after successful login
+     * @return a {@link Message} containing the refreshed token information
+     */
     @Override
     public Message refresh(AuthToken authToken) {
         return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
                 .data(getToken(this.refreshTokenUrl(authToken.getRefreshToken()))).build();
     }
 
+    /**
+     * Retrieves an authentication token from the specified URL.
+     *
+     * @param url the URL to request the token from
+     * @return the {@link AuthToken} containing token details
+     * @throws AuthorizedException if the response indicates an error or is missing required token information
+     */
     private AuthToken getToken(String url) {
         String response = Httpx.post(url);
         Map<String, Object> jsonObject = JsonKit.toPojo(response, Map.class);
@@ -99,6 +135,12 @@ public class RenrenProvider extends AbstractProvider {
                 .openId(((Map<String, Object>) jsonObject.get("user")).get("id").toString()).build();
     }
 
+    /**
+     * Retrieves the avatar URL from the user object.
+     *
+     * @param userObj the map containing user information
+     * @return the avatar URL, or null if not found
+     */
     private String getAvatarUrl(Map<String, Object> userObj) {
         List<Map<String, Object>> jsonArray = (List<Map<String, Object>>) userObj.get("avatar");
         if (Objects.isNull(jsonArray) || jsonArray.isEmpty()) {
@@ -107,6 +149,12 @@ public class RenrenProvider extends AbstractProvider {
         return jsonArray.get(0).get("url").toString();
     }
 
+    /**
+     * Retrieves the gender from the user object.
+     *
+     * @param userObj the map containing user information
+     * @return the {@link Gender} of the user, or {@link Gender#UNKNOWN} if not found
+     */
     private Gender getGender(Map<String, Object> userObj) {
         Map<String, Object> basicInformation = (Map<String, Object>) userObj.get("basicInformation");
         if (Objects.isNull(basicInformation)) {
@@ -115,6 +163,12 @@ public class RenrenProvider extends AbstractProvider {
         return Gender.of((String) basicInformation.get("sex"));
     }
 
+    /**
+     * Retrieves the company name from the user object.
+     *
+     * @param userObj the map containing user information
+     * @return the company name, or null if not found
+     */
     private String getCompany(Map<String, Object> userObj) {
         List<Map<String, Object>> jsonArray = (List<Map<String, Object>>) userObj.get("work");
         if (Objects.isNull(jsonArray) || jsonArray.isEmpty()) {
@@ -124,10 +178,10 @@ public class RenrenProvider extends AbstractProvider {
     }
 
     /**
-     * 返回获取userInfo的url
+     * Returns the URL to obtain user information.
      *
-     * @param authToken 用户授权后的token
-     * @return 返回获取userInfo的url
+     * @param authToken the user's authorization token
+     * @return the URL to obtain user information
      */
     @Override
     protected String userInfoUrl(AuthToken authToken) {
@@ -135,6 +189,13 @@ public class RenrenProvider extends AbstractProvider {
                 .queryParam("userId", authToken.getOpenId()).build();
     }
 
+    /**
+     * Returns the authorization URL with a {@code state} parameter. The {@code state} will be included in the
+     * authorization callback.
+     *
+     * @param state the parameter to verify the authorization process, which can prevent CSRF attacks
+     * @return the authorization URL
+     */
     @Override
     public String authorize(String state) {
         return Builder.fromUrl(super.authorize(state))

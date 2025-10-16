@@ -28,7 +28,8 @@
 package org.miaixz.bus.socket.metric;
 
 /**
- * 计时器任务
+ * Represents a task that can be scheduled and managed by a timer. This interface provides methods to check the status
+ * of the task and to cancel it.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -36,14 +37,21 @@ package org.miaixz.bus.socket.metric;
 public interface SocketTask {
 
     /**
-     * 定时任务是否已执行
+     * Checks if the scheduled task has completed its execution.
+     *
+     * @return {@code true} if the task has completed, {@code false} otherwise
      */
     boolean isDone();
 
+    /**
+     * Checks if the scheduled task has been cancelled.
+     *
+     * @return {@code true} if the task has been cancelled, {@code false} otherwise
+     */
     boolean isCancelled();
 
     /**
-     * 取消定时器
+     * Cancels the scheduled task. After calling this method, the task should not be executed.
      */
     void cancel();
 

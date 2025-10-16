@@ -40,7 +40,7 @@ import org.miaixz.bus.extra.captcha.strategy.RandomStrategy;
 import org.miaixz.bus.extra.image.ImageKit;
 
 /**
- * 使用干扰线方式生成的图形验证码
+ * CAPTCHA provider that uses interfering lines.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -51,47 +51,47 @@ public class LineProvider extends AbstractProvider {
     private static final long serialVersionUID = 2852291851365L;
 
     /**
-     * 构造，默认5位验证码，150条干扰线
+     * Constructor with default 5-character code and 150 interfering lines.
      *
-     * @param width  图片宽
-     * @param height 图片高
+     * @param width  Image width.
+     * @param height Image height.
      */
     public LineProvider(final int width, final int height) {
         this(width, height, 5, 150);
     }
 
     /**
-     * 构造
+     * Constructor.
      *
-     * @param width     图片宽
-     * @param height    图片高
-     * @param codeCount 字符个数
-     * @param lineCount 干扰线条数
+     * @param width     Image width.
+     * @param height    Image height.
+     * @param codeCount Number of characters.
+     * @param lineCount Number of interfering lines.
      */
     public LineProvider(final int width, final int height, final int codeCount, final int lineCount) {
         this(width, height, new RandomStrategy(codeCount), lineCount);
     }
 
     /**
-     * 构造
+     * Constructor.
      *
-     * @param width          图片宽
-     * @param height         图片高
-     * @param generator      验证码生成器
-     * @param interfereCount 验证码干扰元素个数
+     * @param width          Image width.
+     * @param height         Image height.
+     * @param generator      CAPTCHA code generator.
+     * @param interfereCount Number of interfering elements.
      */
     public LineProvider(final int width, final int height, final CodeStrategy generator, final int interfereCount) {
         super(width, height, generator, interfereCount);
     }
 
     /**
-     * 构造
+     * Constructor.
      *
-     * @param width          图片宽
-     * @param height         图片高
-     * @param codeCount      字符个数
-     * @param interfereCount 验证码干扰元素个数
-     * @param sizeBaseHeight 字体的大小 高度的倍数
+     * @param width          Image width.
+     * @param height         Image height.
+     * @param codeCount      Number of characters.
+     * @param interfereCount Number of interfering elements.
+     * @param sizeBaseHeight Font size as a multiplier of the height.
      */
     public LineProvider(final int width, final int height, final int codeCount, final int interfereCount,
             final float sizeBaseHeight) {
@@ -100,16 +100,16 @@ public class LineProvider extends AbstractProvider {
 
     @Override
     public Image createImage(final String code) {
-        // 图像buffer
+        // Image buffer
         final BufferedImage image = new BufferedImage(width, height,
                 (null == this.background) ? BufferedImage.TYPE_4BYTE_ABGR : BufferedImage.TYPE_INT_RGB);
         final Graphics2D g = ImageKit.createGraphics(image, this.background);
 
         try {
-            // 干扰线
+            // Interfering lines
             drawInterfere(g);
 
-            // 字符串
+            // String
             drawString(g, code);
         } finally {
             g.dispose();
@@ -119,13 +119,13 @@ public class LineProvider extends AbstractProvider {
     }
 
     /**
-     * 绘制字符串
+     * Draws the string.
      *
-     * @param g    {@link Graphics}画笔
-     * @param code 验证码
+     * @param g    The {@link Graphics2D} object.
+     * @param code The CAPTCHA code.
      */
     private void drawString(final Graphics2D g, final String code) {
-        // 指定透明度
+        // Specify transparency
         if (null != this.textAlpha) {
             g.setComposite(this.textAlpha);
         }
@@ -133,13 +133,13 @@ public class LineProvider extends AbstractProvider {
     }
 
     /**
-     * 绘制干扰线
+     * Draws interfering lines.
      *
-     * @param g {@link Graphics2D}画笔
+     * @param g The {@link Graphics2D} object.
      */
     private void drawInterfere(final Graphics2D g) {
         final ThreadLocalRandom random = RandomKit.getRandom();
-        // 干扰线
+        // Interfering lines
         for (int i = 0; i < this.interfereCount; i++) {
             final int xs = random.nextInt(width);
             final int ys = random.nextInt(height);

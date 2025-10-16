@@ -31,8 +31,8 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 检测字符强度
- * 来自：<a href="https://github.com/venshine/CheckPasswordStrength">https://github.com/venshine/CheckPasswordStrength</a>
+ * Check character strength. From:
+ * <a href="https://github.com/venshine/CheckPasswordStrength">https://github.com/venshine/CheckPasswordStrength</a>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -40,20 +40,20 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class Strength {
 
     /**
-     * 简单密码字典
+     * Simple password dictionary.
      */
     private static final String[] DICTIONARY = { "password", "abc123", "iloveyou", "adobe123", "123123", "sunshine",
             "1314520", "a1b2c3", "123qwe", "aaa111", "qweasd", "admin", "passwd" };
     /**
-     * 数字长度
+     * Number length.
      */
     private static final int[] SIZE_TABLE = { 9, 99, 999, 9999, 99999, 999999, 9999999, 99999999, 999999999,
             Integer.MAX_VALUE };
 
     /**
-     * 检查密码的健壮性
+     * Check the robustness of the password.
      *
-     * @param passwd 密码
+     * @param passwd The password.
      * @return strength level
      */
     public static int check(final String passwd) {
@@ -63,19 +63,19 @@ public class Strength {
         final int len = passwd.length();
         int level = 0;
 
-        // 数字
+        // Number
         if (countLetter(passwd, CHAR_TYPE.NUM) > 0) {
             level++;
         }
-        // 小写字母
+        // Lowercase letter
         if (countLetter(passwd, CHAR_TYPE.SMALL_LETTER) > 0) {
             level++;
         }
-        // 大写字母
+        // Uppercase letter
         if (len > 4 && countLetter(passwd, CHAR_TYPE.CAPITAL_LETTER) > 0) {
             level++;
         }
-        // 特殊字符
+        // Special character
         if (len > 6 && countLetter(passwd, CHAR_TYPE.OTHER_CHAR) > 0) {
             level++;
         }
@@ -225,10 +225,10 @@ public class Strength {
     }
 
     /**
-     * Get password strength level, includes easy, midium, strong, very strong, extremely strong
+     * Get password strength level, includes easy, medium, strong, very strong, extremely strong.
      *
-     * @param passwd 密码
-     * @return 密码等级枚举
+     * @param passwd The password.
+     * @return The password strength level enum.
      */
     public static PASSWD_LEVEL getLevel(final String passwd) {
         final int level = check(passwd);
@@ -260,10 +260,10 @@ public class Strength {
     }
 
     /**
-     * Check character's type, includes num, capital letter, small letter and other character. 检查字符类型
+     * Check character's type, includes num, capital letter, small letter and other character.
      *
-     * @param c 字符
-     * @return 类型
+     * @param c The character.
+     * @return The character type.
      */
     private static CHAR_TYPE checkCharacterType(final char c) {
         if (c >= 48 && c <= 57) {
@@ -279,11 +279,11 @@ public class Strength {
     }
 
     /**
-     * 计算密码中指定字符类型的数量
+     * Count the number of specified character types in the password.
      *
-     * @param passwd 密码
-     * @param type   类型
-     * @return 数量
+     * @param passwd The password.
+     * @param type   The character type.
+     * @return The count.
      */
     private static int countLetter(final String passwd, final CHAR_TYPE type) {
         int count = 0;
@@ -301,10 +301,10 @@ public class Strength {
     }
 
     /**
-     * calculate the size of an integer number
+     * Calculate the size of an integer number.
      *
-     * @param x 值
-     * @return 数字长度
+     * @param x The value.
+     * @return The number length.
      */
     private static int sizeOfInt(final int x) {
         for (int i = 0;; i++)
@@ -314,49 +314,49 @@ public class Strength {
     }
 
     /**
-     * 密码强度等级枚举
+     * Password strength level enum.
      */
     public enum PASSWD_LEVEL {
         /**
-         * 简单
+         * Easy.
          */
         EASY,
         /**
-         * 中
+         * Medium.
          */
         MEDIUM,
         /**
-         * 强
+         * Strong.
          */
         STRONG,
         /**
-         * 很强
+         * Very strong.
          */
         VERY_STRONG,
         /**
-         * 非常强
+         * Extremely strong.
          */
         EXTREMELY_STRONG
     }
 
     /**
-     * 字符类型枚举
+     * Character type enum.
      */
     public enum CHAR_TYPE {
         /**
-         * 数字
+         * Number.
          */
         NUM,
         /**
-         * 小写字母
+         * Lowercase letter.
          */
         SMALL_LETTER,
         /**
-         * 大写字母
+         * Uppercase letter.
          */
         CAPITAL_LETTER,
         /**
-         * 特殊字符
+         * Special character.
          */
         OTHER_CHAR
     }

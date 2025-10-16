@@ -33,35 +33,39 @@ import java.util.List;
 import org.miaixz.bus.core.center.date.culture.Loops;
 
 /**
- * 公历月
+ * Represents a month in the Gregorian calendar.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class SolarMonth extends Loops {
 
+    /**
+     * Names of solar months.
+     */
     public static final String[] NAMES = { "1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月" };
 
     /**
-     * 每月天数
+     * Number of days in each month.
      */
     public static final int[] DAYS = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 
     /**
-     * 年
+     * The solar year this month belongs to.
      */
     protected SolarYear year;
 
     /**
-     * 月
+     * The month number.
      */
     protected int month;
 
     /**
-     * 初始化
+     * Constructs a {@code SolarMonth} with the given year and month.
      *
-     * @param year  年
-     * @param month 月
+     * @param year  The year.
+     * @param month The month.
+     * @throws IllegalArgumentException if the month is out of valid range (1-12).
      */
     public SolarMonth(int year, int month) {
         if (month < 1 || month > 12) {
@@ -71,48 +75,55 @@ public class SolarMonth extends Loops {
         this.month = month;
     }
 
+    /**
+     * Creates a {@code SolarMonth} instance from the given year and month.
+     *
+     * @param year  The year.
+     * @param month The month.
+     * @return A new {@link SolarMonth} instance.
+     */
     public static SolarMonth fromYm(int year, int month) {
         return new SolarMonth(year, month);
     }
 
     /**
-     * 公历年
+     * Gets the solar year this month belongs to.
      *
-     * @return 公历年
+     * @return The {@link SolarYear}.
      */
     public SolarYear getSolarYear() {
         return year;
     }
 
     /**
-     * 年
+     * Gets the year number.
      *
-     * @return 年
+     * @return The year number.
      */
     public int getYear() {
         return year.getYear();
     }
 
     /**
-     * 月
+     * Gets the month number.
      *
-     * @return 月
+     * @return The month number.
      */
     public int getMonth() {
         return month;
     }
 
     /**
-     * 天数（1582年10月只有21天)
+     * Gets the number of days in this month (October 1582 has only 21 days).
      *
-     * @return 天数
+     * @return The number of days.
      */
     public int getDayCount() {
         if (1582 == getYear() && 10 == month) {
             return 21;
         }
         int d = DAYS[getIndexInYear()];
-        // 公历闰年2月多一天
+        // Add one day for February in a leap year
         if (2 == month && year.isLeap()) {
             d++;
         }
@@ -120,34 +131,39 @@ public class SolarMonth extends Loops {
     }
 
     /**
-     * 位于当年的索引(0-11)
+     * Gets the index of this month within the year (0-11).
      *
-     * @return 索引
+     * @return The index.
      */
     public int getIndexInYear() {
         return month - 1;
     }
 
     /**
-     * 公历季度
+     * Gets the solar quarter this month belongs to.
      *
-     * @return 公历季度
+     * @return The {@link SolarQuarter}.
      */
     public SolarQuarter getQuarter() {
         return SolarQuarter.fromIndex(getYear(), getIndexInYear() / 3);
     }
 
     /**
-     * 周数
+     * Gets the number of weeks in this month.
      *
-     * @param start 起始星期，1234560分别代表星期一至星期天
-     * @return 周数
+     * @param start The starting day of the week, 1-7 (1 for Monday, 7 for Sunday).
+     * @return The number of weeks.
      */
     public int getWeekCount(int start) {
         return (int) Math.ceil(
                 (indexOf(SolarDay.fromYmd(getYear(), month, 1).getWeek().getIndex() - start, 7) + getDayCount()) / 7D);
     }
 
+    /**
+     * Gets the name of this solar month.
+     *
+     * @return The name of this solar month.
+     */
     public String getName() {
         return NAMES[getIndexInYear()];
     }
@@ -157,16 +173,22 @@ public class SolarMonth extends Loops {
         return year + getName();
     }
 
+    /**
+     * Gets the solar month after a specified number of months.
+     *
+     * @param n The number of months to add.
+     * @return The {@link SolarMonth} after {@code n} months.
+     */
     public SolarMonth next(int n) {
         int i = month - 1 + n;
         return fromYm((getYear() * 12 + i) / 12, indexOf(i, 12) + 1);
     }
 
     /**
-     * 获取本月的公历周列表
+     * Gets a list of all solar weeks in this month.
      *
-     * @param start 星期几作为一周的开始，1234560分别代表星期一至星期天
-     * @return 公历周列表
+     * @param start The starting day of the week, 1-7 (1 for Monday, 7 for Sunday).
+     * @return A list of {@link SolarWeek} objects for this month.
      */
     public List<SolarWeek> getWeeks(int start) {
         int size = getWeekCount(start);
@@ -179,9 +201,9 @@ public class SolarMonth extends Loops {
     }
 
     /**
-     * 获取本月的公历日列表
+     * Gets a list of all solar days in this month.
      *
-     * @return 公历日列表
+     * @return A list of {@link SolarDay} objects for this month.
      */
     public List<SolarDay> getDays() {
         int size = getDayCount();

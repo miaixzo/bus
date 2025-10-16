@@ -27,16 +27,15 @@
 */
 package org.miaixz.bus.starter.cors;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.spring.GeniusBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-import lombok.Getter;
-import lombok.Setter;
-
 /**
- * Core 跨域相关配置
+ * CORS (Cross-Origin Resource Sharing) configuration properties.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -47,31 +46,39 @@ import lombok.Setter;
 public class CorsProperties {
 
     /**
-     * 允许方法路径
+     * The path pattern to which this CORS configuration applies. Default is {@code /**}.
      */
     private String path = "/**";
+
     /**
-     * 允许的域名
+     * Allowed origins. A value of "*" allows all origins. Default is {@code ["*"]}.
      */
     private String[] allowedOrigins = new String[] { Symbol.STAR };
+
     /**
-     * 允许的请求头
+     * Allowed request headers. A value of "*" allows all headers. Default is {@code ["*"]}.
      */
     private String[] allowedHeaders = new String[] { Symbol.STAR };
+
     /**
-     * 允许的方法
+     * Allowed HTTP methods. Default includes GET, POST, PUT, OPTIONS, DELETE.
      */
     private String[] allowedMethods = new String[] { HTTP.GET, HTTP.POST, HTTP.PUT, HTTP.OPTIONS, HTTP.DELETE };
+
     /**
-     * 响应头信息公开
+     * Headers to be exposed in the response.
      */
     private String[] exposedHeaders;
+
     /**
-     * 是否允许用户发送、处理 cookie
+     * Whether the browser should include any cookies associated with the domain of the request. Default is
+     * {@code true}.
      */
     private Boolean allowCredentials = true;
+
     /**
-     * 预检请求的有效期,单位为秒 有效期内,不会重复发送预检请求
+     * The validity period of the pre-flight request, in seconds. During this period, the pre-flight request will not be
+     * sent again. Default is 1800 seconds (30 minutes).
      */
     private Long maxAge = 1800L;
 

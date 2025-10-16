@@ -26,17 +26,17 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Office办公相关封装实现
+ * Provides encapsulated implementations related to Office documents.
  *
  * <ul>
- * <li>HSSF － 提供读写Microsoft Excel XLS 格式文件的功能</li>
- * <li>XSSF － 提供读写Microsoft Excel OOXML XLSX 格式文件的功能</li>
- * <li>HWPF － 提供读写Microsoft Word DOC 格式文件的功能</li>
- * <li>XWPF － 提供读写Microsoft Word DOCX 格式文件的功能</li>
- * <li>HSLF － 提供读写Microsoft PowerPoint格式文件的功能</li>
- * <li>HDGF － 提供读Microsoft Visio格式文件的功能</li>
- * <li>HPBF － 提供读Microsoft Publisher格式文件的功能</li>
- * <li>HSMF － 提供读Microsoft Outlook格式文件的功能</li>
+ * <li>HSSF - Provides functionality for reading and writing Microsoft Excel XLS format files.</li>
+ * <li>XSSF - Provides functionality for reading and writing Microsoft Excel OOXML XLSX format files.</li>
+ * <li>HWPF - Provides functionality for reading and writing Microsoft Word DOC format files.</li>
+ * <li>XWPF - Provides functionality for reading and writing Microsoft Word DOCX format files.</li>
+ * <li>HSLF - Provides functionality for reading and writing Microsoft PowerPoint format files.</li>
+ * <li>HDGF - Provides functionality for reading Microsoft Visio format files.</li>
+ * <li>HPBF - Provides functionality for reading Microsoft Publisher format files.</li>
+ * <li>HSMF - Provides functionality for reading Microsoft Outlook format files.</li>
  * </ul>
  *
  * @author Kimi Liu

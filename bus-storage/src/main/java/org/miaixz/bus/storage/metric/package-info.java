@@ -26,7 +26,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * OSS存储服务具体实现
+ * Provides concrete implementations for various Object Storage Service (OSS) storage providers.
  *
  * @author Kimi Liu
  * @since Java 17+

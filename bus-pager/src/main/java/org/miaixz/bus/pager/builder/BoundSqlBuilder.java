@@ -31,7 +31,8 @@ import org.apache.ibatis.cache.CacheKey;
 import org.apache.ibatis.mapping.BoundSql;
 
 /**
- * BoundSql 处理器
+ * Interface for processing {@link BoundSql} objects within the pagination plugin. Implementations of this interface can
+ * modify the BoundSql at different stages of query processing.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -39,38 +40,54 @@ import org.apache.ibatis.mapping.BoundSql;
 public interface BoundSqlBuilder {
 
     /**
-     * boundsql 处理
+     * Processes the {@link BoundSql} for a specific type of SQL operation.
      *
-     * @param type     类型
-     * @param boundSql 当前类型的 boundSql
-     * @param cacheKey 缓存 key
-     * @param chain    处理器链，通过 chain.doBoundSql 方法继续执行后续方法，也可以直接返回 boundSql 终止后续方法的执行
-     * @return 允许修改 boundSql 并返回修改后的
+     * @param type     the type of SQL operation (e.g., ORIGINAL, COUNT_SQL, PAGE_SQL)
+     * @param boundSql the BoundSql object for the current operation
+     * @param cacheKey the CacheKey associated with the current query
+     * @param chain    the processor chain, allowing continuation to subsequent processors or termination by returning
+     *                 the modified BoundSql
+     * @return the modified BoundSql object
      */
     BoundSql boundSql(Type type, BoundSql boundSql, CacheKey cacheKey, Chain chain);
 
+    /**
+     * Enumerates the types of SQL operations that can be processed by the {@link BoundSqlBuilder}.
+     */
     enum Type {
         /**
-         * 原始SQL，分页插件执行前，先执行这个类型
+         * Original SQL, executed before the pagination plugin processes it.
          */
         ORIGINAL,
         /**
-         * count SQL，第二个执行这里
+         * Count SQL, executed second in the processing chain.
          */
         COUNT_SQL,
         /**
-         * 分页 SQL，最后执行这里
+         * Page SQL, executed last in the processing chain.
          */
         PAGE_SQL
     }
 
     /**
-     * 处理器链，可以控制是否继续执行
+     * Represents a chain of {@link BoundSqlBuilder} processors. Implementations can control whether to continue
+     * execution to the next processor in the chain.
      */
     interface Chain {
 
+        /**
+         * A default chain implementation that performs no operation and simply returns the original BoundSql.
+         */
         Chain DO_NOTHING = (type, boundSql, cacheKey) -> boundSql;
 
+        /**
+         * Executes the next processor in the chain or performs the final BoundSql processing.
+         *
+         * @param type     the type of SQL operation
+         * @param boundSql the BoundSql object for the current operation
+         * @param cacheKey the CacheKey associated with the current query
+         * @return the processed BoundSql object
+         */
         BoundSql doBoundSql(Type type, BoundSql boundSql, CacheKey cacheKey);
 
     }

@@ -27,19 +27,17 @@
 */
 package org.miaixz.bus.spring;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.miaixz.bus.core.Provider;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 import org.springframework.stereotype.Component;
 
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+
 /**
- * Spring策略模式
+ * A manager for handling the Strategy Pattern within a Spring context. It loads and caches strategy providers (beans
+ * implementing the {@link Provider} interface) from the application context.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -47,47 +45,59 @@ import org.springframework.stereotype.Component;
 @Component
 public class ProviderManager {
 
+    /**
+     * A cache for provider beans, keyed by their interface class.
+     */
     public static final Map<Class<Provider<?>>, Collection<Provider<?>>> CACHED_PROVIDERS = new ConcurrentHashMap<>();
     /**
-     * Spring的IOC容器,默认为空
+     * The Spring {@link ConfigurableApplicationContext}, which is lazily initialized.
      */
     public static ConfigurableApplicationContext context;
 
+    /**
+     * Default constructor.
+     */
     public ProviderManager() {
 
     }
 
     /**
-     * 加载 Provider
+     * Loads a specific provider that supports a given strategy type.
      *
-     * @param providerClass 给定的Class
-     * @param support       支持的策略
-     * @return 最终的支持策略的 Provider
+     * @param providerClass The interface class of the providers.
+     * @param support       The specific strategy type to look for.
+     * @param <T>           The type of the provider.
+     * @param <S>           The type of the support criteria.
+     * @return The first matching provider, or null if none is found.
      */
     public static <T extends Provider<S>, S> T load(Class<T> providerClass, S support) {
-
         Collection<T> providers = loadProvider(providerClass);
         for (Provider<?> provider : providers) {
             if (Objects.equals(provider.type(), support)) {
                 return (T) provider;
             }
         }
-
         return null;
     }
 
     /**
-     * 返回所有的 Provider
+     * Returns all registered providers for a given provider interface class, sorted by order.
      *
-     * @param providerClass 给定的Class
-     * @return 所有的 Provider
+     * @param providerClass The interface class of the providers.
+     * @param <T>           The type of the provider.
+     * @return A collection of all registered providers.
      */
     public static <T extends Provider<?>> Collection<T> all(Class<T> providerClass) {
         return loadProvider(providerClass);
     }
 
     /**
-     * 通过class获取所有的 beans
+     * Loads and caches all beans of a given provider interface type from the Spring application context. The beans are
+     * sorted based on Spring's ordering annotations.
+     *
+     * @param providerClass The provider interface class.
+     * @param <T>           The type of the provider.
+     * @return A sorted collection of provider beans.
      */
     private static <T extends Provider<?>> Collection<T> loadProvider(Class<T> providerClass) {
         return (Collection<T>) CACHED_PROVIDERS.computeIfAbsent((Class<Provider<?>>) providerClass, key -> {
@@ -95,10 +105,9 @@ public class ProviderManager {
                 context = SpringBuilder.getContext();
             }
             Map<String, T> beansOfType = context.getBeansOfType(providerClass);
-            Collection<T> values = beansOfType.values();
-            ArrayList<T> ts = new ArrayList<>(values);
-            AnnotationAwareOrderComparator.sort(ts);
-            return (Collection<Provider<?>>) ts;
+            List<T> sortedProviders = new ArrayList<>(beansOfType.values());
+            AnnotationAwareOrderComparator.sort(sortedProviders);
+            return (Collection<Provider<?>>) sortedProviders;
         });
     }
 

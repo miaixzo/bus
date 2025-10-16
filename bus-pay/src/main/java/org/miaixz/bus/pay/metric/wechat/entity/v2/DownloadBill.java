@@ -27,16 +27,15 @@
 */
 package org.miaixz.bus.pay.metric.wechat.entity.v2;
 
-import org.miaixz.bus.pay.magic.Material;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+import org.miaixz.bus.pay.magic.Material;
 
 /**
- * 下载对账单
+ * Model for the Download Bill API.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,14 +47,41 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class DownloadBill extends Material {
 
+    /**
+     * Sub-merchant App ID.
+     */
     private String sub_appid;
+    /**
+     * Merchant ID.
+     */
     private String mch_id;
+    /**
+     * Sub-merchant ID.
+     */
     private String sub_mch_id;
+    /**
+     * Random string.
+     */
     private String nonce_str;
+    /**
+     * Signature.
+     */
     private String sign;
+    /**
+     * Signature type.
+     */
     private String sign_type;
+    /**
+     * The date of the bill in YYYYMMDD format.
+     */
     private String bill_date;
+    /**
+     * The type of bill to download (e.g., ALL, SUCCESS, REFUND).
+     */
     private String bill_type;
+    /**
+     * The compression type for the bill file (e.g., GZIP).
+     */
     private String tar_type;
 
 }

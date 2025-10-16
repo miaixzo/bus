@@ -32,28 +32,37 @@ import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Symbol;
 
 /**
- * HTTP 授权工厂
+ * A factory for creating HTTP authorization credentials.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class Credentials {
+public final class Credentials {
 
+    /** Private constructor to prevent instantiation. */
     private Credentials() {
 
     }
 
     /**
-     * 返回基本方案的验证凭据
+     * Returns a credential string for Basic HTTP authentication using the ISO-8859-1 charset.
      *
-     * @param username 用户名
-     * @param password 密码
-     * @return 验证凭据
+     * @param username The username.
+     * @param password The password.
+     * @return The formatted credential string (e.g., "Basic dXNlcjpwYXNz").
      */
     public static String basic(String username, String password) {
         return basic(username, password, Charset.ISO_8859_1);
     }
 
+    /**
+     * Returns a credential string for Basic HTTP authentication using the specified charset.
+     *
+     * @param username The username.
+     * @param password The password.
+     * @param charset  The character set to use for encoding the credentials.
+     * @return The formatted credential string (e.g., "Basic dXNlcjpwYXNz").
+     */
     public static String basic(String username, String password, java.nio.charset.Charset charset) {
         String usernameAndPassword = username + Symbol.COLON + password;
         String encoded = ByteString.encodeString(usernameAndPassword, charset).base64();

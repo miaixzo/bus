@@ -43,7 +43,7 @@ import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.core.xyz.MethodKit;
 
 /**
- * 可重复注解收集器，用于从一个注解获得被它包含的可重复注解
+ * A collector for repeatable annotations, used to extract contained repeatable annotations from a given annotation.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -51,30 +51,36 @@ import org.miaixz.bus.core.xyz.MethodKit;
 public interface RepeatableAnnotationCollector {
 
     /**
-     * 空实现
+     * Returns a no-op implementation of {@code RepeatableAnnotationCollector}. This collector will not extract any
+     * repeatable annotations, returning only the original annotation.
      *
-     * @return {@code RepeatableAnnotationCollector}实例
+     * @return A {@code RepeatableAnnotationCollector} instance that performs no collection.
      */
     static RepeatableAnnotationCollector none() {
         return None.INSTANCE;
     }
 
     /**
-     * 当注解中有且仅有一个名为{@code value}的属性时， 若该属性类型为注解数组，且该数组对应的注解类型被{@link Repeatable}注解， 则收集器将返回该属性中包括的可重复注解。 eg:
+     * Returns a standard implementation of {@code RepeatableAnnotationCollector}. This collector extracts repeatable
+     * annotations when an annotation has exactly one attribute named {@code value}, whose type is an array of
+     * annotations, and the component type of that array is itself annotated with {@link Repeatable}.
+     * <p>
+     * Example:
      * 
      * <pre><code>
-     * // 容器注解
-     * {@literal @}interface Annotation {
+     * // Container annotation
+     * {@literal @}interface Annotations {
      * 	Item[] value() default {};
      * }
-     * // 可重复注解
-     * {@literal @}Repeatable(Annotation.class)
+     * // Repeatable annotation
+     * {@literal @}Repeatable(Annotations.class)
      * {@literal @}interface Item {}
      * </code></pre>
      * 
-     * 解析任意{@code Annotation}注解对象，则可以获得{@code value}属性中的{@code Item}注解对象
+     * Parsing any {@code Annotations} object will yield the {@code Item} annotation objects contained within its
+     * {@code value} attribute.
      *
-     * @return {@code RepeatableAnnotationCollector}实例
+     * @return A {@code RepeatableAnnotationCollector} instance for standard repeatable annotation patterns.
      * @see Standard
      */
     static RepeatableAnnotationCollector standard() {
@@ -82,35 +88,45 @@ public interface RepeatableAnnotationCollector {
     }
 
     /**
-     * 当解析注解属性时，将根据给定的判断条件，确定该属性中是否含有可重复注解。 收集器将返回所有匹配的属性中的可重复注解。
+     * Returns a {@code RepeatableAnnotationCollector} that uses a custom predicate to determine if an annotation
+     * attribute contains repeatable annotations. The collector will return all repeatable annotations found in matching
+     * attributes.
      *
-     * @param predicate 是否为容纳可重复注解的属性的判断条件
-     * @return {@code RepeatableAnnotationCollector}实例
+     * @param predicate A {@link BiPredicate} that tests whether an annotation and its method attribute contain
+     *                  repeatable annotations.
+     * @return A {@code RepeatableAnnotationCollector} instance based on a custom condition.
      */
     static RepeatableAnnotationCollector condition(final BiPredicate<Annotation, Method> predicate) {
         return new Condition(predicate);
     }
 
     /**
-     * 当注解中存在有属性为注解数组，且该数组对应的注解类型被{@link Repeatable}注解时， 认为该属性包含可重复注解。 收集器将返回所有符合上述条件的属性中的可重复注解。 eg:
+     * Returns a comprehensive implementation of {@code RepeatableAnnotationCollector}. This collector considers any
+     * annotation attribute whose type is an array of annotations, and whose component type is itself annotated with
+     * {@link Repeatable}, as containing repeatable annotations. The collector will return all repeatable annotations
+     * from all such matching attributes.
+     * <p>
+     * Example:
      * 
      * <pre><code>
-     * {@literal @}interface Annotation {
+     * {@literal @}interface MyAnnotations {
      * 	Item1[] items1() default {};
      * 	Item2[] items2() default {};
      * }
      * </code></pre>
      * 
-     * 解析任意{@code Annotation}注解对象， 则可以获得{@code items1}属性中的{@code Item1}注解对象， 以及{@code items2}属性中的{@code Item2}注解对象，
+     * Parsing any {@code MyAnnotations} object will yield {@code Item1} annotation objects from the {@code items1}
+     * attribute, and {@code Item2} annotation objects from the {@code items2} attribute.
      *
-     * @return {@code RepeatableAnnotationCollector}实例
+     * @return A {@code RepeatableAnnotationCollector} instance for full repeatable annotation collection.
      */
     static RepeatableAnnotationCollector full() {
         return Full.INSTANCE;
     }
 
     /**
-     * 清空单例缓存
+     * Clears all singleton caches used by the repeatable annotation collectors. This includes caches within
+     * {@link Standard} and {@link Full} implementations.
      */
     static void clearSingletonCaches() {
         Standard.INSTANCE.repeatableMethodCache.clear();
@@ -118,54 +134,73 @@ public interface RepeatableAnnotationCollector {
     }
 
     /**
-     * 若一个注解是可重复注解的容器注解，则尝试通过其属性获得获得包含的注解对象。 若包含的注解对象也是可重复注解的容器注解，则继续解析直到获得所有非容器注解为止。 eg: 若存在嵌套关系{@code a -> b -> c}，
-     * 则解析注解<em>a</em>，则将得到全部<em>c</em>注解。 如果注解不包含可重复注解，则返回<em>a</em>本身。
+     * If an annotation is a container for repeatable annotations, this method attempts to retrieve the contained
+     * annotation objects via its attributes. If the contained annotation objects are also container annotations, the
+     * process continues recursively until all non-container annotations are obtained.
+     * <p>
+     * Example: If there is a nested relationship {@code a -> b -> c}, parsing annotation {@code a} will yield all
+     * {@code c} annotations. If the annotation does not contain repeatable annotations, it returns the annotation
+     * itself.
      *
-     * @param annotation 容器注解
-     * @return 容器注解中的可重复注解，若{@code annotation}不为容器注解，则数组中仅有其本身一个对象
+     * @param annotation The container annotation.
+     * @return A list of the final (non-container) repeatable annotations contained within the given annotation. If
+     *         {@code annotation} is not a container, the list will contain only {@code annotation} itself.
      */
     List<Annotation> getFinalRepeatableAnnotations(final Annotation annotation);
 
     /**
-     * 若一个注解是可重复注解的容器注解，则尝试通过其属性获得获得包含的注解对象。 若包含的注解对象也是可重复注解的容器注解，则继续解析直到获得所有非容器注解为止。 eg:
-     * 若存在嵌套关系{@code a -> b -> c}，则解析注解<em>a</em>, 将获得全部<em>a</em>、<em>b</em>、<em>c</em>注解。
-     * 如果注解不包含可重复注解，则返回<em>a</em>本身。
+     * If an annotation is a container for repeatable annotations, this method attempts to retrieve the contained
+     * annotation objects via its attributes. If the contained annotation objects are also container annotations, the
+     * process continues recursively until all non-container annotations are obtained. If {@code accumulate} is
+     * {@code true}, the result will include all annotations in the hierarchy.
+     * <p>
+     * Example: If there is a nested relationship {@code a -> b -> c}, parsing annotation {@code a} will yield all
+     * {@code a}, {@code b}, and {@code c} annotations. If the annotation does not contain repeatable annotations, it
+     * returns the annotation itself.
      *
-     * @param annotation 容器注解
-     * @return 容器注解中的可重复注解，若{@code annotation}不为容器注解，则数组中仅有其本身一个对象
+     * @param annotation The container annotation.
+     * @return A list of all repeatable annotations (including containers) contained within the given annotation. If
+     *         {@code annotation} is not a container, the list will contain only {@code annotation} itself.
      */
     List<Annotation> getAllRepeatableAnnotations(final Annotation annotation);
 
     /**
-     * 若一个注解是可重复注解的容器注解，则尝试通过其属性获得获得包含的指定类型注解对象。 eg: 若存在嵌套关系{@code a -> b -> c}，则：
+     * If an annotation is a container for repeatable annotations, this method attempts to retrieve the contained
+     * annotation objects of a specific type via its attributes. The search is recursive through nested container
+     * annotations.
+     * <p>
+     * Example: If there is a nested relationship {@code a -> b -> c}:
      * <ul>
-     * <li>解析注解<em>a</em>：可获得<em>a</em>、<em>b</em>、<em>c</em>；</li>
-     * <li>解析注解<em>b</em>：可获得<em>b</em>、<em>c</em>；</li>
-     * <li>解析注解<em>c</em>：只可获得<em>c</em>；</li>
+     * <li>Parsing annotation {@code a} for type {@code T} can yield {@code a}, {@code b}, and {@code c} if they match
+     * type {@code T}.</li>
+     * <li>Parsing annotation {@code b} for type {@code T} can yield {@code b} and {@code c} if they match type
+     * {@code T}.</li>
+     * <li>Parsing annotation {@code c} for type {@code T} can yield only {@code c} if it matches type {@code T}.</li>
      * </ul>
      *
-     * @param annotation     容器注解
-     * @param annotationType 注解类型
-     * @param <T>            注解类型
-     * @return 容器注解中的可重复注解
+     * @param annotation     The container annotation.
+     * @param annotationType The type of the repeatable annotation to retrieve.
+     * @param <T>            The type of the annotation.
+     * @return A list of repeatable annotations of the specified type contained within the given annotation.
      */
     <T extends Annotation> List<T> getRepeatableAnnotations(final Annotation annotation, final Class<T> annotationType);
 
     /**
-     * 空实现
+     * A no-op implementation of {@code RepeatableAnnotationCollector} that returns only the original annotation.
      */
     class None implements RepeatableAnnotationCollector {
 
         /**
-         * 默认实例
+         * The singleton instance of {@code None}.
          */
         private static final None INSTANCE = new None();
 
         /**
-         * 默认返回空集合
+         * Returns a singleton list containing the original annotation, or an empty list if the annotation is
+         * {@code null}.
          *
-         * @param annotation 注解
-         * @return 空集合
+         * @param annotation The annotation.
+         * @return A list containing the annotation, or an empty list.
          */
         @Override
         public List<Annotation> getFinalRepeatableAnnotations(final Annotation annotation) {
@@ -173,10 +208,11 @@ public interface RepeatableAnnotationCollector {
         }
 
         /**
-         * 默认返回空集合
+         * Returns a singleton list containing the original annotation, or an empty list if the annotation is
+         * {@code null}.
          *
-         * @param annotation 注解
-         * @return 空集合
+         * @param annotation The annotation.
+         * @return A list containing the annotation, or an empty list.
          */
         @Override
         public List<Annotation> getAllRepeatableAnnotations(final Annotation annotation) {
@@ -184,10 +220,13 @@ public interface RepeatableAnnotationCollector {
         }
 
         /**
-         * 默认返回空集合
+         * Returns a singleton list containing the original annotation if its type matches {@code annotationType}, or an
+         * empty list otherwise. Returns an empty list if the annotation is {@code null}.
          *
-         * @param annotation 注解
-         * @return 空集合
+         * @param annotation     The annotation.
+         * @param annotationType The type of the annotation to retrieve.
+         * @param <T>            The type of the annotation.
+         * @return A list containing the annotation of the specified type, or an empty list.
          */
         @Override
         public <T extends Annotation> List<T> getRepeatableAnnotations(
@@ -204,15 +243,19 @@ public interface RepeatableAnnotationCollector {
     }
 
     /**
-     * {@code RepeatableAnnotationCollector}的基本实现
+     * An abstract base class for {@code RepeatableAnnotationCollector} implementations. Provides common logic for
+     * traversing and filtering annotations.
      */
     abstract class AbstractCollector implements RepeatableAnnotationCollector {
 
         /**
-         * 若一个注解是可重复注解的容器注解，则尝试通过其属性获得获得包含的注解对象。 若包含的注解对象也是可重复注解的容器注解，则继续解析直到获得所有非容器注解为止。
+         * If an annotation is a container for repeatable annotations, this method attempts to retrieve the contained
+         * annotation objects via its attributes. If the contained annotation objects are also container annotations,
+         * the process continues recursively until all non-container annotations are obtained.
          *
-         * @param annotation 容器注解
-         * @return 容器注解中的可重复注解，若{@code annotation}不为容器注解，则数组中仅有其本身一个对象
+         * @param annotation The container annotation.
+         * @return A list of the final (non-container) repeatable annotations contained within the given annotation. If
+         *         {@code annotation} is not a container, the list will contain only {@code annotation} itself.
          */
         @Override
         public final List<Annotation> getFinalRepeatableAnnotations(final Annotation annotation) {
@@ -220,12 +263,18 @@ public interface RepeatableAnnotationCollector {
         }
 
         /**
-         * 若一个注解是可重复注解的容器注解，则尝试通过其属性获得获得包含的注解对象。 若包含的注解对象也是可重复注解的容器注解，则继续解析直到获得所有非容器注解为止。
-         * 当{@code accumulate}为{@code true}时，返回结果为全量的注解。 eg: 若存在嵌套关系{@code a -> b -> c}，则解析注解<em>a</em>,
-         * 将获得全部<em>a</em>、<em>b</em>、<em>c</em>注解。 如果注解不包含可重复注解，则返回其本身。
+         * If an annotation is a container for repeatable annotations, this method attempts to retrieve the contained
+         * annotation objects via its attributes. If the contained annotation objects are also container annotations,
+         * the process continues recursively until all non-container annotations are obtained. If {@code accumulate} is
+         * {@code true}, the result will include all annotations in the hierarchy.
+         * <p>
+         * Example: If there is a nested relationship {@code a -> b -> c}, parsing annotation {@code a} will yield all
+         * {@code a}, {@code b}, and {@code c} annotations. If the annotation does not contain repeatable annotations,
+         * it returns the annotation itself.
          *
-         * @param annotation 容器注解
-         * @return 容器注解中的可重复注解，若{@code annotation}不为容器注解，则数组中仅有其本身一个对象
+         * @param annotation The container annotation.
+         * @return A list of all repeatable annotations (including containers) contained within the given annotation. If
+         *         {@code annotation} is not a container, the list will contain only {@code annotation} itself.
          */
         @Override
         public List<Annotation> getAllRepeatableAnnotations(final Annotation annotation) {
@@ -233,12 +282,14 @@ public interface RepeatableAnnotationCollector {
         }
 
         /**
-         * 若一个注解是可重复注解的容器注解，则尝试通过其属性获得获得包含的指定类型注解对象
+         * If an annotation is a container for repeatable annotations, this method attempts to retrieve the contained
+         * annotation objects of a specific type via its attributes. The search is recursive through nested container
+         * annotations.
          *
-         * @param annotation     容器注解
-         * @param annotationType 注解类型
-         * @param <T>            注解类型
-         * @return 容器注解中的可重复注解
+         * @param annotation     The container annotation.
+         * @param annotationType The type of the repeatable annotation to retrieve.
+         * @param <T>            The type of the annotation.
+         * @return A list of repeatable annotations of the specified type contained within the given annotation.
          */
         @Override
         public <T extends Annotation> List<T> getRepeatableAnnotations(
@@ -252,7 +303,13 @@ public interface RepeatableAnnotationCollector {
         }
 
         /**
-         * 递归遍历注解，将其平铺
+         * Recursively finds and collects repeatable annotations from a given annotation.
+         *
+         * @param annotation The starting annotation to search from.
+         * @param condition  An optional predicate to filter annotations. If {@code null}, no filtering is applied.
+         * @param accumulate If {@code true}, all annotations encountered in the hierarchy are collected; otherwise,
+         *                   only the final (non-container) annotations that satisfy the condition are collected.
+         * @return A list of collected annotations.
          */
         private List<Annotation> find(
                 final Annotation annotation,
@@ -268,13 +325,14 @@ public interface RepeatableAnnotationCollector {
             while (!deque.isEmpty()) {
                 final Annotation source = deque.removeFirst();
                 final List<Method> repeatableMethods = resolveRepeatableMethod(source);
-                // 若是累加的，则记录每一个注解
+                // If accumulating, record every annotation encountered.
                 if (accumulate) {
                     results.add(source);
                 }
                 final boolean isTarget = hasCondition && condition.test(source);
                 if (CollKit.isEmpty(repeatableMethods) || isTarget) {
-                    // 不是累加的，则仅当正在处理的注解不为可重复注解时才记录
+                    // If not accumulating, record only if the current annotation is not a repeatable container
+                    // or if it is a target annotation (matches the condition).
                     final boolean shouldProcess = !accumulate && (!hasCondition || isTarget);
                     if (shouldProcess) {
                         results.add(source);
@@ -292,63 +350,67 @@ public interface RepeatableAnnotationCollector {
         }
 
         /**
-         * 调用{@code value}方法，获得嵌套的可重复注解
+         * Invokes the specified method on the annotation object to retrieve nested repeatable annotations.
          *
-         * @param annotation 注解对象
-         * @param method     容纳可重复注解的方法
-         * @return 可重复注解
-         * @throws ClassCastException 当{@code method}调用结果无法正确转为{@link Annotation[]}类型时抛出
+         * @param annotation The annotation object.
+         * @param method     The method that returns an array of repeatable annotations.
+         * @return An array of repeatable annotations.
+         * @throws ClassCastException if the result of invoking {@code method} cannot be cast to {@link Annotation[]}.
          */
         protected Annotation[] getRepeatableAnnotationsFormAttribute(final Annotation annotation, final Method method) {
             return MethodKit.invoke(annotation, method);
         }
 
         /**
-         * 解析获得注解中存放可重复注解的属性
+         * Resolves and returns a list of methods within the given annotation that are identified as containing
+         * repeatable annotations.
          *
-         * @param annotation 注解
-         * @return 属性
+         * @param annotation The annotation to inspect.
+         * @return A list of {@link Method} objects that return repeatable annotations.
          */
         protected abstract List<Method> resolveRepeatableMethod(final Annotation annotation);
 
     }
 
     /**
-     * 标准实现，当注解中有且仅有一个名为{@code value}的属性时， 若该属性类型为注解数组，且该数组对应的注解类型被{@link Repeatable}注解， 则收集器将返回该属性中包括的可重复注解。
+     * A standard implementation of {@code RepeatableAnnotationCollector}. This collector identifies a method as
+     * containing repeatable annotations if it is named {@code value}, returns an array of annotations, and the
+     * component type of that array is itself annotated with {@link Repeatable}.
      */
     class Standard extends AbstractCollector {
 
         /**
-         * 默认的value属性
+         * The standard name for the attribute that holds repeatable annotations.
          */
         private static final String VALUE = "value";
 
         /**
-         * 默认实例
+         * The singleton instance of {@code Standard}.
          */
         private static final Standard INSTANCE = new Standard();
 
         /**
-         * 空方法缓存
+         * A sentinel object used in the cache to indicate that no repeatable method was found for an annotation type.
          */
         private static final Object NONE = new Object();
 
         /**
-         * 可重复注解对应的方法缓存
+         * A cache for methods that return repeatable annotations, keyed by annotation type.
          */
         private final Map<Class<? extends Annotation>, Object> repeatableMethodCache = new WeakConcurrentMap<>();
 
         /**
-         * 构造
+         * Constructs a new {@code Standard} collector.
          */
         Standard() {
         }
 
         /**
-         * 解析获得注解中存放可重复注解的属性
+         * Resolves and returns a list of methods within the given annotation that are identified as containing
+         * repeatable annotations. This implementation uses a cache to store the result of the resolution.
          *
-         * @param annotation 注解
-         * @return 属性
+         * @param annotation The annotation to inspect.
+         * @return A list of {@link Method} objects that return repeatable annotations.
          */
         @Override
         protected List<Method> resolveRepeatableMethod(final Annotation annotation) {
@@ -358,7 +420,11 @@ public interface RepeatableAnnotationCollector {
         }
 
         /**
-         * 从缓存中获得存放可重复注解的属性
+         * Resolves the method that returns repeatable annotations from the given annotation type. This method checks
+         * for a single attribute named "value" that returns an array of {@link Repeatable} annotations.
+         *
+         * @param annotationType The type of the annotation to inspect.
+         * @return The {@link Method} if found, or {@link #NONE} if no such method exists.
          */
         private Object resolveRepeatableMethodFromType(final Class<? extends Annotation> annotationType) {
             final Method[] attributes = AnnoKit.getAnnotationAttributes(annotationType);
@@ -369,51 +435,55 @@ public interface RepeatableAnnotationCollector {
         }
 
         /**
-         * 判断方法是否为容器注解的{@code value}方法
+         * Checks if a method is a repeatable container annotation's {@code value} method.
          *
-         * @param attribute 注解的属性
-         * @return 该属性是否为注解存放可重复注解的方法
+         * @param attribute The method (attribute) of the annotation.
+         * @return {@code true} if the attribute is a repeatable method, {@code false} otherwise.
          */
         protected boolean isRepeatableMethod(final Method attribute) {
-            // 属性名需为“value”
+            // The attribute name must be "value".
             if (!CharsBacker.equals(VALUE, attribute.getName())) {
                 return false;
             }
             final Class<?> attributeType = attribute.getReturnType();
-            // 返回值类型需为数组
+            // The return type must be an array.
             return attributeType.isArray()
-                    // 且数组元素需为注解
+                    // And the array elements must be annotations.
                     && attributeType.getComponentType().isAnnotation()
-                    // 该注解类必须被@Repeatable注解，但不要求与当前属性的声明方法一致
+                    // The component annotation class must be annotated with @Repeatable.
                     && attributeType.getComponentType().isAnnotationPresent(Repeatable.class);
         }
 
     }
 
     /**
-     * 自定义判断条件的实现，当解析注解属性时，将根据给定的判断条件， 确定该属性中是否含有可重复注解，收集器将返回所有匹配的属性中的可重复注解。
+     * An implementation of {@code RepeatableAnnotationCollector} that uses a custom predicate. When resolving
+     * annotation attributes, it determines whether an attribute contains repeatable annotations based on the provided
+     * predicate. The collector will return all repeatable annotations from all matching attributes.
      */
     class Condition extends AbstractCollector {
 
         /**
-         * 是否为容纳可重复注解的属性的判断条件
+         * The predicate used to determine if a method contains repeatable annotations.
          */
         private final BiPredicate<Annotation, Method> predicate;
 
         /**
-         * 构造
+         * Constructs a new {@code Condition} collector with the given predicate.
          *
-         * @param predicate 是否为容纳可重复注解的属性的判断条件
+         * @param predicate The predicate to use for identifying repeatable annotation methods. Must not be
+         *                  {@code null}.
          */
         Condition(final BiPredicate<Annotation, Method> predicate) {
             this.predicate = Objects.requireNonNull(predicate);
         }
 
         /**
-         * 解析获得注解中存放可重复注解的属性
+         * Resolves and returns a list of methods within the given annotation that are identified as containing
+         * repeatable annotations based on the custom predicate.
          *
-         * @param annotation 注解
-         * @return 属性
+         * @param annotation The annotation to inspect.
+         * @return A list of {@link Method} objects that return repeatable annotations.
          */
         @Override
         protected List<Method> resolveRepeatableMethod(final Annotation annotation) {
@@ -424,36 +494,40 @@ public interface RepeatableAnnotationCollector {
     }
 
     /**
-     * 全量实现，当注解中存在有属性为注解数组，且该数组对应的注解类型被{@link Repeatable}注解时， 认为该属性包含可重复注解。 收集器将返回所有符合上述条件的属性中的可重复注解。
+     * A comprehensive implementation of {@code RepeatableAnnotationCollector}. This collector identifies any annotation
+     * attribute as containing repeatable annotations if its type is an array of annotations, and the component type of
+     * that array is itself annotated with {@link Repeatable}. The collector will return all repeatable annotations from
+     * all such matching attributes.
      */
     class Full extends AbstractCollector {
 
         /**
-         * 默认实例
+         * The singleton instance of {@code Full}.
          */
         private static final Full INSTANCE = new Full();
 
         /**
-         * 空方法缓存
+         * A sentinel object used in the cache to indicate that no repeatable method was found for an annotation type.
          */
         private static final Object NONE = new Object();
 
         /**
-         * 可重复注解对应的方法缓存
+         * A cache for methods that return repeatable annotations, keyed by annotation type.
          */
         private final Map<Class<? extends Annotation>, Object> repeatableMethodCache = new WeakConcurrentMap<>();
 
         /**
-         * 构造
+         * Constructs a new {@code Full} collector.
          */
         Full() {
         }
 
         /**
-         * 解析获得注解中存放可重复注解的属性
+         * Resolves and returns a list of methods within the given annotation that are identified as containing
+         * repeatable annotations. This implementation uses a cache to store the result of the resolution.
          *
-         * @param annotation 注解
-         * @return 属性
+         * @param annotation The annotation to inspect.
+         * @return A list of {@link Method} objects that return repeatable annotations.
          */
         @Override
         protected List<Method> resolveRepeatableMethod(final Annotation annotation) {
@@ -463,7 +537,11 @@ public interface RepeatableAnnotationCollector {
         }
 
         /**
-         * 从缓存中获得存放可重复注解的属性
+         * Resolves all methods that return repeatable annotations from the given annotation type. This method checks
+         * for any attribute that returns an array of {@link Repeatable} annotations.
+         *
+         * @param annotationType The type of the annotation to inspect.
+         * @return A list of {@link Method}s if found, or {@link #NONE} if no such methods exist.
          */
         private Object resolveRepeatableMethodFromType(final Class<? extends Annotation> annotationType) {
             final List<Method> methods = Stream.of(AnnoKit.getAnnotationAttributes(annotationType))
@@ -472,18 +550,20 @@ public interface RepeatableAnnotationCollector {
         }
 
         /**
-         * 判断方法是否为容器注解的{@code value}方法
+         * Checks if a method is a repeatable container annotation's attribute method. A method is considered repeatable
+         * if its return type is an array of annotations, and the component type of that array is itself annotated with
+         * {@link Repeatable}.
          *
-         * @param attribute 注解的属性
-         * @return 该属性是否为注解存放可重复注解的方法
+         * @param attribute The method (attribute) of the annotation.
+         * @return {@code true} if the attribute is a repeatable method, {@code false} otherwise.
          */
         protected boolean isRepeatableMethod(final Method attribute) {
             final Class<?> attributeType = attribute.getReturnType();
-            // 返回值类型需为数组
+            // The return type must be an array.
             return attributeType.isArray()
-                    // 且数组元素需为注解
+                    // And the array elements must be annotations.
                     && attributeType.getComponentType().isAnnotation()
-                    // 该注解类必须被@Repeatable注解，但不要求与当前属性的声明方法一致
+                    // The component annotation class must be annotated with @Repeatable.
                     && attributeType.getComponentType().isAnnotationPresent(Repeatable.class);
         }
 

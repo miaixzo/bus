@@ -30,21 +30,27 @@ package org.miaixz.bus.core.center.date.culture.solar;
 import org.miaixz.bus.core.center.date.culture.Replenish;
 
 /**
- * 节气第几天
+ * Represents a day within a solar term.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class SolarTermDay extends Replenish {
 
+    /**
+     * Constructs a {@code SolarTermDay} with the given solar term and day index.
+     *
+     * @param solarTerm The {@link SolarTerms} this day belongs to.
+     * @param dayIndex  The index of the day within the solar term.
+     */
     public SolarTermDay(SolarTerms solarTerm, int dayIndex) {
         super(solarTerm, dayIndex);
     }
 
     /**
-     * 节气
+     * Gets the solar term this day belongs to.
      *
-     * @return 节气
+     * @return The {@link SolarTerms} of this day.
      */
     public SolarTerms getSolarTerm() {
         return (SolarTerms) tradition;

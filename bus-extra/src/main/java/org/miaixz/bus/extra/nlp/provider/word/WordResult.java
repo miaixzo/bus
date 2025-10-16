@@ -34,34 +34,56 @@ import org.miaixz.bus.extra.nlp.NLPResult;
 import org.miaixz.bus.extra.nlp.NLPWord;
 
 /**
- * Word分词结果实现 项目地址：https://github.com/ysc/word
+ * Implementation of {@link NLPResult} for Word word segmentation results. This class wraps a {@link List} of
+ * {@link org.apdplat.word.segmentation.Word} objects from the Word library and provides an iterator over
+ * {@link NLPWord} objects, adapting Word's results to the common interface. Project homepage:
+ * <a href="https://github.com/ysc/word">https://github.com/ysc/word</a>
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class WordResult implements NLPResult {
 
+    /**
+     * The iterator over the Word library's {@link org.apdplat.word.segmentation.Word} objects.
+     */
     private final Iterator<org.apdplat.word.segmentation.Word> wordIter;
 
     /**
-     * 构造
+     * Constructs a {@code WordResult} instance by wrapping a list of segmentation results from the Word library.
      *
-     * @param result 分词结果
+     * @param result A {@link List} of {@link org.apdplat.word.segmentation.Word} objects obtained from Word
+     *               segmentation.
      */
     public WordResult(final List<org.apdplat.word.segmentation.Word> result) {
         this.wordIter = result.iterator();
     }
 
+    /**
+     * Checks if there are more words in the segmentation result.
+     *
+     * @return {@code true} if there are more words; {@code false} otherwise.
+     */
     @Override
     public boolean hasNext() {
         return this.wordIter.hasNext();
     }
 
+    /**
+     * Returns the next word in the segmentation result as an {@link NLPWord}. This method wraps the
+     * {@link org.apdplat.word.segmentation.Word} into a {@link WordWord}.
+     *
+     * @return The next {@link NLPWord} in the iteration.
+     */
     @Override
     public NLPWord next() {
         return new WordWord(this.wordIter.next());
     }
 
+    /**
+     * Removes the last word returned by this iterator from the underlying collection. This operation is delegated to
+     * the underlying iterator.
+     */
     @Override
     public void remove() {
         this.wordIter.remove();

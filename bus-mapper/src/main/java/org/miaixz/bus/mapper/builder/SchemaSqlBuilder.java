@@ -39,7 +39,7 @@ import org.apache.ibatis.scripting.xmltags.DynamicContext;
 import org.miaixz.bus.mapper.parsing.SqlScriptWrapper;
 
 /**
- * 注解方式的 {@link SqlScriptWrapper}，提供基于注解的 SQL 脚本包装功能
+ * An annotation-based {@link SqlScriptWrapper} that provides SQL script wrapping functionality based on annotations.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -47,26 +47,26 @@ import org.miaixz.bus.mapper.parsing.SqlScriptWrapper;
 public abstract class SchemaSqlBuilder implements SqlScriptWrapper {
 
     /**
-     * 注解应用的目标元素类型（类、方法、参数等）
+     * The target element type for the annotation (e.g., class, method, parameter).
      */
     protected final ElementType type;
 
     /**
-     * 注解的目标对象（类、方法或参数）
+     * The target object of the annotation (e.g., class, method, or parameter).
      */
     protected final Object target;
 
     /**
-     * 注解数组
+     * The array of annotations.
      */
     protected final Annotation[] annotations;
 
     /**
-     * 构造函数，初始化注解包装器
+     * Constructs an annotation wrapper.
      *
-     * @param target      目标对象
-     * @param type        元素类型
-     * @param annotations 注解数组
+     * @param target      The target object.
+     * @param type        The element type.
+     * @param annotations The array of annotations.
      */
     public SchemaSqlBuilder(Object target, ElementType type, Annotation[] annotations) {
         this.type = type;
@@ -75,56 +75,56 @@ public abstract class SchemaSqlBuilder implements SqlScriptWrapper {
     }
 
     /**
-     * 获取注解的目标元素类型
+     * Gets the target element type of the annotation.
      *
-     * @return 元素类型
+     * @return The element type.
      */
     public ElementType getType() {
         return type;
     }
 
     /**
-     * 获取注解的目标对象
+     * Gets the target object of the annotation.
      *
-     * @return 目标对象
+     * @return The target object.
      */
     public Object getTarget() {
         return target;
     }
 
     /**
-     * 获取注解数组
+     * Gets the array of annotations.
      *
-     * @return 注解数组
+     * @return The array of annotations.
      */
     public Annotation[] getAnnotations() {
         return annotations;
     }
 
     /**
-     * 获取参数名称
+     * Gets the name of a parameter.
      *
-     * @param parameter 参数对象
-     * @return 参数名称
+     * @param parameter The parameter object.
+     * @return The name of the parameter.
      */
     public String getParameterName(Parameter parameter) {
-        // 优先使用 @Param 注解指定的值
+        // Prioritize the value specified by the @Param annotation.
         for (Annotation a : annotations) {
             if (a.annotationType() == Param.class) {
                 return ((Param) a).value();
             }
         }
         Executable executable = parameter.getDeclaringExecutable();
-        // 只有一个参数时，只能使用默认名称
+        // When there is only one parameter, use the default name.
         if (executable.getParameterCount() == 1) {
             return DynamicContext.PARAMETER_OBJECT_KEY;
         }
-        // 参数名
+        // Get the parameter name.
         String name = parameter.getName();
         if (!name.startsWith("arg")) {
             return name;
         }
-        // 获取参数顺序号
+        // Get the parameter's sequential index.
         int index = 0;
         Parameter[] parameters = executable.getParameters();
         for (; index < parameters.length; index++) {
@@ -132,7 +132,7 @@ public abstract class SchemaSqlBuilder implements SqlScriptWrapper {
                 break;
             }
         }
-        // 如果方法不是默认名，就直接使用该名称
+        // If the name is not the default "argX", use it directly.
         if (!name.equals("arg" + index)) {
             return name;
         } else {
@@ -141,10 +141,10 @@ public abstract class SchemaSqlBuilder implements SqlScriptWrapper {
     }
 
     /**
-     * 判断两个对象是否相等
+     * Checks if two objects are equal.
      *
-     * @param o 比较对象
-     * @return true 表示相等，false 表示不相等
+     * @param o The object to compare with.
+     * @return {@code true} if the objects are equal, {@code false} otherwise.
      */
     @Override
     public boolean equals(Object o) {
@@ -157,9 +157,9 @@ public abstract class SchemaSqlBuilder implements SqlScriptWrapper {
     }
 
     /**
-     * 计算对象的哈希值
+     * Computes the hash code of the object.
      *
-     * @return 哈希值
+     * @return The hash code.
      */
     @Override
     public int hashCode() {

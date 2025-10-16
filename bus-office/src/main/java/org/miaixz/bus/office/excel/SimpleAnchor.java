@@ -30,12 +30,15 @@ package org.miaixz.bus.office.excel;
 import org.apache.poi.ss.usermodel.ClientAnchor;
 
 /**
- * 简单的ClientAnchor实现，此对象表示一个图形或绘图在Excel中的位置和大小，参数表示：
+ * A simple implementation of {@link ClientAnchor}. This object represents the position and size of a graphic or drawing
+ * in Excel. The parameters indicate:
  * <ul>
- * <li>dx1和dy1表示在左上角单元格中的偏移量，col1和row1表示左上角单元格</li>
- * <li>dx2和dy2表示在右下角单元格中的偏移量，col2和row2表示右下角单元格</li>
+ * <li>{@code dx1} and {@code dy1} represent the offset within the top-left cell. {@code col1} and {@code row1}
+ * represent the top-left cell.</li>
+ * <li>{@code dx2} and {@code dy2} represent the offset within the bottom-right cell. {@code col2} and {@code row2}
+ * represent the bottom-right cell.</li>
  * </ul>
- * 图示见：https://www.cnblogs.com/sunyl/p/7527703.html
+ * For an illustration, see: <a href="https://www.cnblogs.com/sunyl/p/7527703.html">ClientAnchor Illustration</a>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -55,28 +58,30 @@ public class SimpleAnchor implements ClientAnchor {
     private AnchorType anchorType = AnchorType.MOVE_AND_RESIZE;
 
     /**
-     * 构造 通过定义左上角和右下角的单元格，创建一个ClientAnchor对象 默认偏移为0，默认type为： {@link AnchorType#MOVE_AND_RESIZE}.
+     * Constructs a {@code SimpleAnchor} object by defining the top-left and bottom-right cells. Default offsets are 0,
+     * and the default anchor type is {@link AnchorType#MOVE_AND_RESIZE}.
      *
-     * @param col1 指定起始的列，下标从0开始
-     * @param row1 指定起始的行，下标从0开始
-     * @param col2 指定结束的列，下标从0开始
-     * @param row2 指定结束的行，下标从0开始
+     * @param col1 The starting column index, 0-based.
+     * @param row1 The starting row index, 0-based.
+     * @param col2 The ending column index, 0-based.
+     * @param row2 The ending row index, 0-based.
      */
     public SimpleAnchor(final int col1, final int row1, final int col2, final int row2) {
         this(0, 0, 0, 0, col1, row1, col2, row2);
     }
 
     /**
-     * 构造 通过定义左上角和右下角的单元格，以及单元格中的偏移量，创建一个ClientAnchor对象 默认type为： {@link AnchorType#MOVE_AND_RESIZE}.
+     * Constructs a {@code SimpleAnchor} object by defining the top-left and bottom-right cells, along with offsets
+     * within the cells. The default anchor type is {@link AnchorType#MOVE_AND_RESIZE}.
      *
-     * @param dx1  起始单元格中的x偏移像素
-     * @param dy1  起始单元格中的y偏移像素
-     * @param dx2  结束单元格中的x偏移像素
-     * @param dy2  结束单元格中的y偏移像素
-     * @param col1 指定起始的列，下标从0开始
-     * @param row1 指定起始的行，下标从0开始
-     * @param col2 指定结束的列，下标从0开始
-     * @param row2 指定结束的行，下标从0开始
+     * @param dx1  The x-offset in pixels within the starting cell.
+     * @param dy1  The y-offset in pixels within the starting cell.
+     * @param dx2  The x-offset in pixels within the ending cell.
+     * @param dy2  The y-offset in pixels within the ending cell.
+     * @param col1 The starting column index, 0-based.
+     * @param row1 The starting row index, 0-based.
+     * @param col2 The ending column index, 0-based.
+     * @param row2 The ending row index, 0-based.
      */
     public SimpleAnchor(final int dx1, final int dy1, final int dx2, final int dy2, final int col1, final int row1,
             final int col2, final int row2) {
@@ -181,10 +186,10 @@ public class SimpleAnchor implements ClientAnchor {
     }
 
     /**
-     * 将当前对象中的值复制到目标对象中
+     * Copies the values from this object to a target {@link ClientAnchor} object.
      *
-     * @param clientAnchor {@link ClientAnchor}
-     * @return 目标对象
+     * @param clientAnchor The target {@link ClientAnchor} object to copy values to.
+     * @return The modified target {@link ClientAnchor} object.
      */
     public ClientAnchor copyTo(final ClientAnchor clientAnchor) {
         clientAnchor.setDx1(this.dx1);

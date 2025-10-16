@@ -27,15 +27,16 @@
 */
 package org.miaixz.bus.cron.timings;
 
+import org.miaixz.bus.cron.crontab.TimerCrontab;
+
 import java.util.concurrent.Delayed;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
 
-import org.miaixz.bus.cron.crontab.TimerCrontab;
-
 /**
- * 任务队列，任务双向链表
+ * Represents a list of tasks in a timing wheel slot, implemented as a doubly linked list. Each {@code TimerTaskList}
+ * acts as a bucket for tasks that expire within the same time range.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,49 +44,50 @@ import org.miaixz.bus.cron.crontab.TimerCrontab;
 public class TimerTaskList implements Delayed {
 
     /**
-     * 过期时间
+     * The expiration time for this task list, in milliseconds.
      */
     private final AtomicLong expire;
 
     /**
-     * 根节点
+     * The root node of the doubly linked list, which acts as a sentinel.
      */
     private final TimerCrontab root;
 
     /**
-     * 构造
+     * Constructs a new TimerTaskList.
      */
     public TimerTaskList() {
         expire = new AtomicLong(-1L);
 
+        // Initialize the root sentinel node for the circular doubly linked list.
         root = new TimerCrontab(null, -1L);
         root.prev = root;
         root.next = root;
     }
 
     /**
-     * 设置过期时间
+     * Sets the expiration time for this task list.
      *
-     * @param expire 过期时间，单位毫秒
-     * @return 是否设置成功
+     * @param expire The expiration time in milliseconds.
+     * @return {@code true} if the expiration time was successfully updated, {@code false} otherwise.
      */
     public boolean setExpiration(final long expire) {
         return this.expire.getAndSet(expire) != expire;
     }
 
     /**
-     * 获取过期时间
+     * Gets the expiration time for this task list.
      *
-     * @return 过期时间
+     * @return The expiration time in milliseconds.
      */
     public long getExpire() {
         return expire.get();
     }
 
     /**
-     * 新增任务，将任务加入到双向链表的头部
+     * Adds a task to the head of the doubly linked list.
      *
-     * @param timerCrontab 延迟任务
+     * @param timerCrontab The delayed task to add.
      */
     public void addTask(final TimerCrontab timerCrontab) {
         synchronized (this) {
@@ -101,9 +103,9 @@ public class TimerTaskList implements Delayed {
     }
 
     /**
-     * 移除任务
+     * Removes a task from this list.
      *
-     * @param timerCrontab 任务
+     * @param timerCrontab The task to remove.
      */
     public void removeTask(final TimerCrontab timerCrontab) {
         synchronized (this) {
@@ -118,9 +120,10 @@ public class TimerTaskList implements Delayed {
     }
 
     /**
-     * 重新分配，即将列表中的任务全部处理
+     * Processes all tasks in this list by passing them to the provided consumer. This is typically called when the list
+     * expires.
      *
-     * @param flush 任务处理函数
+     * @param flush The consumer function to handle each task.
      */
     public synchronized void flush(final Consumer<TimerCrontab> flush) {
         TimerCrontab timerCrontab = root.next;

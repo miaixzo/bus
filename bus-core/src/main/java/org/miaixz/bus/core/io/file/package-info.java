@@ -26,7 +26,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 对文件读写的封装，包括文件拷贝、文件读取、文件写出、行处理等
+ * Provides classes for file I/O operations, including file copying, reading, writing, and line processing.
  *
  * @author Kimi Liu
  * @since Java 17+

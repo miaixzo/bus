@@ -44,14 +44,17 @@ import org.miaixz.bus.core.lang.mutable.Mutable;
 import org.miaixz.bus.core.lang.mutable.MutableObject;
 
 /**
- * 超时和限制大小的缓存的默认实现 继承此抽象缓存需要：
+ * Abstract base class for cache implementations that support expiration and size limits.
+ * <p>
+ * Subclasses are required to:
+ *
  * <ul>
- * <li>创建一个新的Map</li>
- * <li>实现 {@code prune} 策略</li>
+ * <li>Initialize a new underlying {@code Map} for storage.</li>
+ * <li>Implement the {@link #pruneCache()} eviction strategy.</li>
  * </ul>
  *
- * @param <K> 键类型
- * @param <V> 值类型
+ * @param <K> The type of the key.
+ * @param <V> The type of the value.
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -61,38 +64,39 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
     private static final long serialVersionUID = 2852230739085L;
 
     /**
-     * 写的时候每个key一把锁，降低锁的粒度
+     * A map of locks for each key to reduce lock granularity during write operations.
      */
     protected final Map<K, Lock> keyLockMap = new ConcurrentHashMap<>();
     /**
-     * Map缓存
+     * The underlying map that stores the cache data.
      */
     protected Map<Mutable<K>, CacheObject<K, V>> cacheMap;
+
     /**
-     * 返回缓存容量，{@code 0}表示无大小限制
+     * The cache capacity. A value of {@code 0} indicates no size limit.
      */
     protected int capacity;
     /**
-     * 缓存失效时长， {@code 0} 表示无限制，单位毫秒
+     * The default cache timeout in milliseconds. A value of {@code 0} indicates no limit.
      */
     protected long timeout;
 
     /**
-     * 每个对象是否有单独的失效时长，用于决定清理过期对象是否有必要。
+     * A flag indicating whether any object has a custom timeout, which determines if pruning is necessary.
      */
     protected boolean existCustomTimeout;
 
     /**
-     * 命中数，即命中缓存计数
+     * A counter for the number of cache hits.
      */
     protected LongAdder hitCount = new LongAdder();
     /**
-     * 丢失数，即未命中缓存计数
+     * A counter for the number of cache misses.
      */
     protected LongAdder missCount = new LongAdder();
 
     /**
-     * 缓存监听
+     * The listener for cache events.
      */
     protected CacheListener<K, V> listener;
 
@@ -102,11 +106,11 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
     }
 
     /**
-     * 加入元素，无锁
+     * Puts an object into the cache without acquiring a lock.
      *
-     * @param key     键
-     * @param object  值
-     * @param timeout 超时时长
+     * @param key     The key.
+     * @param object  The value.
+     * @param timeout The timeout for the object in milliseconds.
      */
     protected void putWithoutLock(final K key, final V object, final long timeout) {
         final CacheObject<K, V> co = new CacheObject<>(key, object, timeout);
@@ -115,13 +119,14 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
         }
         final MutableObject<K> mKey = MutableObject.of(key);
 
-        // 对于替换的键值对，不做满队列检查和清除
+        // Do not check for capacity or prune when replacing an existing entry.
         final CacheObject<K, V> oldObj = this.cacheMap.get(mKey);
         if (null != oldObj) {
             onRemove(oldObj.key, oldObj.object);
-            // 存在相同key，覆盖之
+            // Replace the existing entry.
             this.cacheMap.put(mKey, co);
         } else {
+            // Prune if the cache is full before adding a new entry.
             if (isFull()) {
                 pruneCache();
             }
@@ -130,18 +135,18 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
     }
 
     /**
-     * 获取命中数
+     * Gets the total number of cache hits.
      *
-     * @return 命中数
+     * @return The hit count.
      */
     public long getHitCount() {
         return hitCount.sum();
     }
 
     /**
-     * 获取丢失数
+     * Gets the total number of cache misses.
      *
-     * @return 丢失数
+     * @return The miss count.
      */
     public long getMissCount() {
         return missCount.sum();
@@ -151,16 +156,16 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
     public V get(final K key, final boolean isUpdateLastAccess, final long timeout, final SupplierX<V> supplier) {
         V v = get(key, isUpdateLastAccess);
         if (null == v && null != supplier) {
-            // 每个key单独获取一把锁，降低锁的粒度提高并发能力，see pr#1385@Github
+            // Use a per-key lock to reduce contention and improve concurrency.
             final Lock keyLock = keyLockMap.computeIfAbsent(key, k -> new ReentrantLock());
             keyLock.lock();
             try {
-                // 双重检查锁，防止在竞争锁的过程中已经有其它线程写入
-                // 由于这个方法内的加锁是get独立锁，不和put锁互斥，而put和pruneCache会修改cacheMap，导致在pruneCache过程中get会有并发问题
-                // 因此此处需要使用带全局锁的get获取值
+                // Double-check to prevent regeneration if another thread has already written the value.
+                // This get operation needs to be globally aware as put and pruneCache can modify the map.
                 v = get(key, isUpdateLastAccess);
                 if (null == v) {
-                    // supplier的创建是一个耗时过程，此处创建与全局锁无关，而与key锁相关，这样就保证每个key只创建一个value，且互斥
+                    // The supplier call can be time-consuming, so it's done under the key-specific lock
+                    // to ensure that the value is created only once per key.
                     v = supplier.get();
                     put(key, v, timeout);
                 }
@@ -173,25 +178,25 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
     }
 
     /**
-     * 获取键对应的{@link CacheObject}
+     * Gets the {@link CacheObject} for a given key without locking.
      *
-     * @param key 键，实际使用时会被包装为{@link MutableObject}
-     * @return {@link CacheObject}
+     * @param key The key, which will be wrapped in a {@link MutableObject}.
+     * @return The {@link CacheObject}, or {@code null} if not found.
      */
     protected CacheObject<K, V> getWithoutLock(final K key) {
         return this.cacheMap.get(MutableObject.of(key));
     }
 
     /**
-     * 获得CacheObj或清除过期CacheObj，不加锁
+     * Gets a {@link CacheObject} or removes it if it has expired, without locking.
      *
-     * @param key 键
-     * @return 值或null
+     * @param key The key.
+     * @return The {@link CacheObject}, or {@code null} if not found or expired.
      */
     protected CacheObject<K, V> getOrRemoveExpiredWithoutLock(final K key) {
         CacheObject<K, V> co = getWithoutLock(key);
         if (null != co && co.isExpired()) {
-            // 过期移除
+            // Remove the expired object.
             removeWithoutLock(key);
             onRemove(co.key, co.object);
             co = null;
@@ -206,9 +211,10 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
     }
 
     /**
-     * 清理实现 子类实现此方法时无需加锁
+     * Prunes the cache to make space. The specific eviction strategy is implemented by subclasses. Implementations of
+     * this method do not need to handle locking.
      *
-     * @return 清理数
+     * @return The number of items pruned.
      */
     protected abstract int pruneCache();
 
@@ -218,7 +224,9 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
     }
 
     /**
-     * @return 默认缓存失效时长。 每个对象可以单独设置失效时长
+     * Returns the default cache timeout. Each object can also have its own specific timeout.
+     *
+     * @return The default timeout in milliseconds.
      */
     @Override
     public long timeout() {
@@ -226,9 +234,10 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
     }
 
     /**
-     * 只有设置公共缓存失效时长或每个对象单独的失效时长时清理可用
+     * Checks if pruning of expired objects is active. Pruning is active if a global timeout is set or if any object has
+     * a custom timeout.
      *
-     * @return 过期对象清理是否可用，内部使用
+     * @return {@code true} if pruning is active.
      */
     protected boolean isPruneExpiredActive() {
         return (this.timeout != 0) || this.existCustomTimeout;
@@ -255,10 +264,10 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
     }
 
     /**
-     * 设置监听
+     * Sets the cache event listener.
      *
-     * @param listener 监听
-     * @return this
+     * @param listener The listener to set.
+     * @return This cache instance.
      */
     @Override
     public AbstractCache<K, V> setListener(final CacheListener<K, V> listener) {
@@ -267,19 +276,20 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
     }
 
     /**
-     * 返回所有键
+     * Returns a set of all keys in the cache.
      *
-     * @return 所有键
+     * @return A set of keys.
      */
     public Set<K> keySet() {
         return this.cacheMap.keySet().stream().map(Mutable::get).collect(Collectors.toSet());
     }
 
     /**
-     * 对象移除回调。默认无动作 子类可重写此方法用于监听移除事件，如果重写，listener将无效
+     * Callback method invoked when an object is removed from the cache. By default, this method triggers the registered
+     * listener, if any. Subclasses can override this method to implement custom logic.
      *
-     * @param key          键
-     * @param cachedObject 被缓存的对象
+     * @param key          The key of the removed object.
+     * @param cachedObject The value of the removed object.
      */
     protected void onRemove(final K key, final V cachedObject) {
         final CacheListener<K, V> listener = this.listener;
@@ -289,19 +299,19 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
     }
 
     /**
-     * 移除key对应的对象，不加锁
+     * Removes an object from the cache by its key without locking.
      *
-     * @param key 键
-     * @return 移除的对象，无返回null
+     * @param key The key.
+     * @return The removed {@link CacheObject}, or {@code null} if not found.
      */
     protected CacheObject<K, V> removeWithoutLock(final K key) {
         return this.cacheMap.remove(MutableObject.of(key));
     }
 
     /**
-     * 获取所有{@link CacheObject}值的{@link Iterator}形式
+     * Returns an iterator over all {@link CacheObject} values.
      *
-     * @return {@link Iterator}
+     * @return An iterator.
      */
     protected Iterator<CacheObject<K, V>> cacheObjIter() {
         return this.cacheMap.values().iterator();

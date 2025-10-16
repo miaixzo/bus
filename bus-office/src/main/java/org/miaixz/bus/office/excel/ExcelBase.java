@@ -41,46 +41,52 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.office.Builder;
+import org.miaixz.bus.office.excel.reader.ExcelReader;
+import org.miaixz.bus.office.excel.writer.ExcelWriter;
 import org.miaixz.bus.office.excel.xyz.CellKit;
 import org.miaixz.bus.office.excel.xyz.RowKit;
 import org.miaixz.bus.office.excel.xyz.SheetKit;
 import org.miaixz.bus.office.excel.xyz.StyleKit;
 
 /**
- * Excel基础类，用于抽象ExcelWriter和ExcelReader中共用部分的对象和方法
+ * Base class for Excel operations, abstracting common objects and methods for {@link ExcelWriter} and
+ * {@link ExcelReader}.
  *
- * @param <T> 子类类型，用于返回this
+ * @param <T> The type of the subclass, used for returning {@code this}.
+ * @param <C> The type of the Excel configuration.
  * @author Kimi Liu
  * @since Java 17+
  */
 public class ExcelBase<T extends ExcelBase<T, C>, C extends ExcelConfig> implements Closeable {
 
     /**
-     * Excel配置，此项不为空
+     * Excel configuration, cannot be null.
      */
     protected C config;
     /**
-     * 是否被关闭
+     * Flag indicating whether the Excel workbook has been closed.
      */
     protected boolean isClosed;
     /**
-     * 目标文件，如果用户读取为流或自行创建的Workbook或Sheet,此参数为{@code null}
+     * The target file. This parameter is {@code null} if the user reads from a stream or creates their own Workbook or
+     * Sheet.
      */
     protected File targetFile;
     /**
-     * 工作簿
+     * The Excel workbook instance.
      */
     protected Workbook workbook;
     /**
-     * Excel中对应的Sheet
+     * The current Sheet in the Excel workbook.
      */
     protected Sheet sheet;
 
     /**
-     * 构造
+     * Constructs a new {@code ExcelBase} instance.
      *
-     * @param config config
-     * @param sheet  Excel中的sheet
+     * @param config The Excel configuration.
+     * @param sheet  The Excel sheet.
+     * @throws NullPointerException if {@code config} or {@code sheet} is {@code null}.
      */
     public ExcelBase(final C config, final Sheet sheet) {
         this.config = Assert.notNull(config);
@@ -89,19 +95,19 @@ public class ExcelBase<T extends ExcelBase<T, C>, C extends ExcelConfig> impleme
     }
 
     /**
-     * 获取Excel配置
+     * Gets the Excel configuration.
      *
-     * @return Excel配置
+     * @return The Excel configuration.
      */
     public C getConfig() {
         return this.config;
     }
 
     /**
-     * 设置Excel配置
+     * Sets the Excel configuration.
      *
-     * @param config Excel配置
-     * @return this
+     * @param config The Excel configuration.
+     * @return This {@code ExcelBase} instance, for chaining.
      */
     public T setConfig(final C config) {
         this.config = config;
@@ -109,27 +115,27 @@ public class ExcelBase<T extends ExcelBase<T, C>, C extends ExcelConfig> impleme
     }
 
     /**
-     * 获取Workbook
+     * Gets the underlying {@link Workbook}.
      *
-     * @return Workbook
+     * @return The {@link Workbook} instance.
      */
     public Workbook getWorkbook() {
         return this.workbook;
     }
 
     /**
-     * 返回工作簿表格数
+     * Returns the number of sheets in the workbook.
      *
-     * @return 工作簿表格数
+     * @return The total number of sheets.
      */
     public int getSheetCount() {
         return this.workbook.getNumberOfSheets();
     }
 
     /**
-     * 获取此工作簿所有Sheet表
+     * Gets all sheets in this workbook.
      *
-     * @return sheet表列表
+     * @return A list of {@link Sheet} objects.
      */
     public List<Sheet> getSheets() {
         final int totalSheet = getSheetCount();
@@ -141,9 +147,9 @@ public class ExcelBase<T extends ExcelBase<T, C>, C extends ExcelConfig> impleme
     }
 
     /**
-     * 获取表名列表
+     * Gets the names of all sheets in this workbook.
      *
-     * @return 表名列表
+     * @return A list of sheet names.
      */
     public List<String> getSheetNames() {
         final int totalSheet = workbook.getNumberOfSheets();
@@ -155,39 +161,43 @@ public class ExcelBase<T extends ExcelBase<T, C>, C extends ExcelConfig> impleme
     }
 
     /**
-     * 获取当前Sheet
+     * Gets the current active {@link Sheet}.
      *
-     * @return {@link Sheet}
+     * @return The current {@link Sheet}.
      */
     public Sheet getSheet() {
         return this.sheet;
     }
 
     /**
-     * 自定义需要读取或写出的Sheet，如果给定的sheet不存在，创建之。 在读取中，此方法用于切换读取的sheet，在写出时，此方法用于新建或者切换sheet。
+     * Sets the sheet to read from or write to. If the given sheet does not exist, it will be created. In reading, this
+     * method is used to switch the sheet to read from. In writing, this method is used to create or switch sheets.
      *
-     * @param sheetName sheet名
-     * @return this
+     * @param sheetName The name of the sheet.
+     * @return This {@code ExcelBase} instance, for chaining.
      */
     public T setSheet(final String sheetName) {
         return setSheet(SheetKit.getOrCreateSheet(this.workbook, sheetName));
     }
 
     /**
-     * 自定义需要读取或写出的Sheet，如果给定的sheet不存在，创建之（命名为默认） 在读取中，此方法用于切换读取的sheet，在写出时，此方法用于新建或者切换sheet
+     * Sets the sheet to read from or write to. If the given sheet index does not exist, it will be created (with a
+     * default name). In reading, this method is used to switch the sheet to read from. In writing, this method is used
+     * to create or switch sheets.
      *
-     * @param sheetIndex sheet序号，从0开始计数
-     * @return this
+     * @param sheetIndex The index of the sheet, starting from 0.
+     * @return This {@code ExcelBase} instance, for chaining.
      */
     public T setSheet(final int sheetIndex) {
         return setSheet(SheetKit.getOrCreateSheet(this.workbook, sheetIndex));
     }
 
     /**
-     * 设置自定义Sheet
+     * Sets the custom {@link Sheet}.
      *
-     * @param sheet 自定义sheet，可以通过{@link SheetKit#getOrCreateSheet(Workbook, String)} 创建
-     * @return this
+     * @param sheet The custom {@link Sheet} instance, which can be created using
+     *              {@link SheetKit#getOrCreateSheet(Workbook, String)}.
+     * @return This {@code ExcelBase} instance, for chaining.
      */
     public T setSheet(final Sheet sheet) {
         this.sheet = sheet;
@@ -195,10 +205,10 @@ public class ExcelBase<T extends ExcelBase<T, C>, C extends ExcelConfig> impleme
     }
 
     /**
-     * 重命名当前sheet
+     * Renames the current active sheet.
      *
-     * @param newName 新名字
-     * @return this
+     * @param newName The new name for the sheet.
+     * @return This {@code ExcelBase} instance, for chaining.
      * @see Workbook#setSheetName(int, String)
      */
     public T renameSheet(final String newName) {
@@ -207,12 +217,13 @@ public class ExcelBase<T extends ExcelBase<T, C>, C extends ExcelConfig> impleme
     }
 
     /**
-     * 复制当前sheet为新sheet
+     * Clones the current sheet to a new sheet.
      *
-     * @param sheetIndex        sheet位置
-     * @param newSheetName      新sheet名
-     * @param setAsCurrentSheet 是否切换为当前sheet
-     * @return this
+     * @param sheetIndex        The index of the sheet to clone.
+     * @param newSheetName      The name of the new sheet.
+     * @param setAsCurrentSheet {@code true} to set the cloned sheet as the current active sheet, {@code false}
+     *                          otherwise.
+     * @return This {@code ExcelBase} instance, for chaining.
      */
     public T cloneSheet(final int sheetIndex, final String newSheetName, final boolean setAsCurrentSheet) {
         final Sheet sheet;
@@ -221,7 +232,7 @@ public class ExcelBase<T extends ExcelBase<T, C>, C extends ExcelConfig> impleme
             sheet = workbook.cloneSheet(sheetIndex, newSheetName);
         } else {
             sheet = this.workbook.cloneSheet(sheetIndex);
-            // clone后的sheet的index应该重新获取
+            // The index of the cloned sheet should be re-obtained.
             this.workbook.setSheetName(workbook.getSheetIndex(sheet), newSheetName);
         }
         if (setAsCurrentSheet) {
@@ -231,10 +242,10 @@ public class ExcelBase<T extends ExcelBase<T, C>, C extends ExcelConfig> impleme
     }
 
     /**
-     * 获取指定坐标单元格，单元格不存在时返回{@code null}
+     * Gets the cell at the specified coordinates. Returns {@code null} if the cell does not exist.
      *
-     * @param locationRef 单元格地址标识符，例如A11，B5
-     * @return {@link Cell}
+     * @param locationRef The cell address identifier, e.g., A11, B5.
+     * @return The {@link Cell} at the specified location, or {@code null} if not found.
      */
     public Cell getCell(final String locationRef) {
         final CellReference cellReference = new CellReference(locationRef);
@@ -242,21 +253,21 @@ public class ExcelBase<T extends ExcelBase<T, C>, C extends ExcelConfig> impleme
     }
 
     /**
-     * 获取指定坐标单元格，单元格不存在时返回{@code null}
+     * Gets the cell at the specified coordinates. Returns {@code null} if the cell does not exist.
      *
-     * @param x X坐标，从0计数，即列号
-     * @param y Y坐标，从0计数，即行号
-     * @return {@link Cell}
+     * @param x X-coordinate (column index), starting from 0.
+     * @param y Y-coordinate (row index), starting from 0.
+     * @return The {@link Cell} at the specified coordinates, or {@code null} if not found.
      */
     public Cell getCell(final int x, final int y) {
         return getCell(x, y, false);
     }
 
     /**
-     * 获取或创建指定坐标单元格
+     * Gets or creates the cell at the specified coordinates.
      *
-     * @param locationRef 单元格地址标识符，例如A11，B5
-     * @return {@link Cell}
+     * @param locationRef The cell address identifier, e.g., A11, B5.
+     * @return The {@link Cell} at the specified location.
      */
     public Cell getOrCreateCell(final String locationRef) {
         final CellReference cellReference = new CellReference(locationRef);
@@ -264,22 +275,23 @@ public class ExcelBase<T extends ExcelBase<T, C>, C extends ExcelConfig> impleme
     }
 
     /**
-     * 获取或创建指定坐标单元格
+     * Gets or creates the cell at the specified coordinates.
      *
-     * @param x X坐标，从0计数，即列号
-     * @param y Y坐标，从0计数，即行号
-     * @return {@link Cell}
+     * @param x X-coordinate (column index), starting from 0.
+     * @param y Y-coordinate (row index), starting from 0.
+     * @return The {@link Cell} at the specified coordinates.
      */
     public Cell getOrCreateCell(final int x, final int y) {
         return getCell(x, y, true);
     }
 
     /**
-     * 获取指定坐标单元格，如果isCreateIfNotExist为false，则在单元格不存在时返回{@code null}
+     * Gets the cell at the specified coordinates. If {@code isCreateIfNotExist} is {@code false}, returns {@code null}
+     * if the cell does not exist.
      *
-     * @param locationRef        单元格地址标识符，例如A11，B5
-     * @param isCreateIfNotExist 单元格不存在时是否创建
-     * @return {@link Cell}
+     * @param locationRef        The cell address identifier, e.g., A11, B5.
+     * @param isCreateIfNotExist {@code true} to create the cell if it does not exist, {@code false} otherwise.
+     * @return The {@link Cell} at the specified location.
      */
     public Cell getCell(final String locationRef, final boolean isCreateIfNotExist) {
         final CellReference cellReference = new CellReference(locationRef);
@@ -287,58 +299,52 @@ public class ExcelBase<T extends ExcelBase<T, C>, C extends ExcelConfig> impleme
     }
 
     /**
-     * 获取指定坐标单元格，如果isCreateIfNotExist为false，则在单元格不存在时返回{@code null}
+     * Gets the cell at the specified coordinates. If {@code isCreateIfNotExist} is {@code false}, returns {@code null}
+     * if the cell does not exist.
      *
-     * @param x                  X坐标，从0计数，即列号
-     * @param y                  Y坐标，从0计数，即行号
-     * @param isCreateIfNotExist 单元格不存在时是否创建
-     * @return {@link Cell}
+     * @param x                  X-coordinate (column index), starting from 0.
+     * @param y                  Y-coordinate (row index), starting from 0.
+     * @param isCreateIfNotExist {@code true} to create the cell if it does not exist, {@code false} otherwise.
+     * @return The {@link Cell} at the specified coordinates.
      */
     public Cell getCell(final int x, final int y, final boolean isCreateIfNotExist) {
         return CellKit.getCell(this.sheet, x, y, isCreateIfNotExist);
     }
 
     /**
-     * 获取或者创建行
+     * Gets or creates a row at the specified index.
      *
-     * @param y Y坐标，从0计数，即行号
-     * @return {@link Row}
+     * @param y Y-coordinate (row index), starting from 0.
+     * @return The {@link Row} at the specified index.
      */
     public Row getOrCreateRow(final int y) {
         return RowKit.getOrCreateRow(this.sheet, y);
     }
 
     /**
-     * 获取总行数，计算方法为：
+     * Gets the total number of rows in the current sheet. The calculation method is: {@code last row index + 1}.
      *
-     * <pre>
-     * 最后一行序号 + 1
-     * </pre>
-     *
-     * @return 行数
+     * @return The total number of rows.
      */
     public int getRowCount() {
         return this.sheet.getLastRowNum() + 1;
     }
 
     /**
-     * 获取有记录的行数，计算方法为：
+     * Gets the number of physical rows (rows with content) in the current sheet. The calculation method is:
+     * {@code last row index - first row index + 1}.
      *
-     * <pre>
-     * 最后一行序号 - 第一行序号 + 1
-     * </pre>
-     *
-     * @return 行数
+     * @return The number of physical rows.
      */
     public int getPhysicalRowCount() {
         return this.sheet.getPhysicalNumberOfRows();
     }
 
     /**
-     * 为指定单元格获取或者创建样式，返回样式后可以设置样式内容
+     * Gets or creates the cell style for the specified cell. After obtaining the style, its content can be set.
      *
-     * @param locationRef 单元格地址标识符，例如A11，B5
-     * @return {@link CellStyle}
+     * @param locationRef The cell address identifier, e.g., A11, B5.
+     * @return The {@link CellStyle} for the specified cell.
      */
     public CellStyle getOrCreateCellStyle(final String locationRef) {
         final CellReference cellReference = new CellReference(locationRef);
@@ -346,11 +352,11 @@ public class ExcelBase<T extends ExcelBase<T, C>, C extends ExcelConfig> impleme
     }
 
     /**
-     * 为指定单元格获取或者创建样式，返回样式后可以设置样式内容
+     * Gets or creates the cell style for the specified cell. After obtaining the style, its content can be set.
      *
-     * @param x X坐标，从0计数，即列号
-     * @param y Y坐标，从0计数，即行号
-     * @return {@link CellStyle}
+     * @param x X-coordinate (column index), starting from 0.
+     * @param y Y-coordinate (row index), starting from 0.
+     * @return The {@link CellStyle} for the specified cell.
      */
     public CellStyle getOrCreateCellStyle(final int x, final int y) {
         final CellStyle cellStyle = getOrCreateCell(x, y).getCellStyle();
@@ -358,10 +364,10 @@ public class ExcelBase<T extends ExcelBase<T, C>, C extends ExcelConfig> impleme
     }
 
     /**
-     * 为指定单元格创建样式，返回样式后可以设置样式内容
+     * Creates a new cell style for the specified cell. After obtaining the style, its content can be set.
      *
-     * @param locationRef 单元格地址标识符，例如A11，B5
-     * @return {@link CellStyle}
+     * @param locationRef The cell address identifier, e.g., A11, B5.
+     * @return The newly created {@link CellStyle} for the specified cell.
      */
     public CellStyle createCellStyle(final String locationRef) {
         final CellReference cellReference = new CellReference(locationRef);
@@ -369,11 +375,11 @@ public class ExcelBase<T extends ExcelBase<T, C>, C extends ExcelConfig> impleme
     }
 
     /**
-     * 为指定单元格创建样式，返回样式后可以设置样式内容
+     * Creates a new cell style for the specified cell. After obtaining the style, its content can be set.
      *
-     * @param x X坐标，从0计数，即列号
-     * @param y Y坐标，从0计数，即行号
-     * @return {@link CellStyle}
+     * @param x X-coordinate (column index), starting from 0.
+     * @param y Y-coordinate (row index), starting from 0.
+     * @return The newly created {@link CellStyle} for the specified cell.
      */
     public CellStyle createCellStyle(final int x, final int y) {
         final Cell cell = getOrCreateCell(x, y);
@@ -383,9 +389,9 @@ public class ExcelBase<T extends ExcelBase<T, C>, C extends ExcelConfig> impleme
     }
 
     /**
-     * 创建单元格样式
+     * Creates a new cell style for the workbook.
      *
-     * @return {@link CellStyle}
+     * @return The newly created {@link CellStyle}.
      * @see Workbook#createCellStyle()
      */
     public CellStyle createCellStyle() {
@@ -393,10 +399,12 @@ public class ExcelBase<T extends ExcelBase<T, C>, C extends ExcelConfig> impleme
     }
 
     /**
-     * 获取或创建某一行的样式，返回样式后可以设置样式内容 需要注意，此方法返回行样式，设置背景色在单元格设置值后会被覆盖，需要单独设置其单元格的样式。
+     * Gets or creates the row style for a specific row. After obtaining the style, its content can be set. Note that
+     * setting the background color via row style might be overwritten after setting cell values; individual cell styles
+     * should be set for that.
      *
-     * @param y Y坐标，从0计数，即行号
-     * @return {@link CellStyle}
+     * @param y Y-coordinate (row index), starting from 0.
+     * @return The {@link CellStyle} for the specified row.
      */
     public CellStyle getOrCreateRowStyle(final int y) {
         final CellStyle rowStyle = getOrCreateRow(y).getRowStyle();
@@ -404,10 +412,10 @@ public class ExcelBase<T extends ExcelBase<T, C>, C extends ExcelConfig> impleme
     }
 
     /**
-     * 创建某一行的样式，返回样式后可以设置样式内容
+     * Creates a new row style for a specific row. After obtaining the style, its content can be set.
      *
-     * @param y Y坐标，从0计数，即行号
-     * @return {@link CellStyle}
+     * @param y Y-coordinate (row index), starting from 0.
+     * @return The newly created {@link CellStyle} for the specified row.
      */
     public CellStyle createRowStyle(final int y) {
         final CellStyle rowStyle = this.workbook.createCellStyle();
@@ -416,10 +424,12 @@ public class ExcelBase<T extends ExcelBase<T, C>, C extends ExcelConfig> impleme
     }
 
     /**
-     * 获取或创建某一列的样式，返回样式后可以设置样式内容 需要注意，此方法返回行样式，设置背景色在单元格设置值后会被覆盖，需要单独设置其单元格的样式。
+     * Gets or creates the column style for a specific column. After obtaining the style, its content can be set. Note
+     * that setting the background color via column style might be overwritten after setting cell values; individual
+     * cell styles should be set for that.
      *
-     * @param x X坐标，从0计数，即列号
-     * @return {@link CellStyle}
+     * @param x X-coordinate (column index), starting from 0.
+     * @return The {@link CellStyle} for the specified column.
      */
     public CellStyle getOrCreateColumnStyle(final int x) {
         final CellStyle columnStyle = this.sheet.getColumnStyle(x);
@@ -427,10 +437,10 @@ public class ExcelBase<T extends ExcelBase<T, C>, C extends ExcelConfig> impleme
     }
 
     /**
-     * 创建某一列的样式，返回样式后可以设置样式内容
+     * Creates a new column style for a specific column. After obtaining the style, its content can be set.
      *
-     * @param x X坐标，从0计数，即列号
-     * @return {@link CellStyle}
+     * @param x X-coordinate (column index), starting from 0.
+     * @return The newly created {@link CellStyle} for the specified column.
      */
     public CellStyle createColumnStyle(final int x) {
         final CellStyle columnStyle = this.workbook.createCellStyle();
@@ -439,32 +449,32 @@ public class ExcelBase<T extends ExcelBase<T, C>, C extends ExcelConfig> impleme
     }
 
     /**
-     * 创建字体
+     * Creates a new font for the workbook.
      *
-     * @return 字体
+     * @return The newly created {@link Font}.
      */
     public Font createFont() {
         return getWorkbook().createFont();
     }
 
     /**
-     * 创建 {@link Hyperlink}，默认内容（标签为链接地址本身）
+     * Creates a {@link Hyperlink} with default content (label is the link address itself).
      *
-     * @param type    链接类型
-     * @param address 链接地址
-     * @return 链接
+     * @param type    The type of the hyperlink.
+     * @param address The address of the hyperlink.
+     * @return The created {@link Hyperlink}.
      */
     public Hyperlink createHyperlink(final HyperlinkType type, final String address) {
         return createHyperlink(type, address, address);
     }
 
     /**
-     * 创建 {@link Hyperlink}，默认内容
+     * Creates a {@link Hyperlink} with specified type, address, and label.
      *
-     * @param type    链接类型
-     * @param address 链接地址
-     * @param label   标签，即单元格中显示的内容
-     * @return 链接
+     * @param type    The type of the hyperlink.
+     * @param address The address of the hyperlink.
+     * @param label   The label to display in the cell.
+     * @return The created {@link Hyperlink}.
      */
     public Hyperlink createHyperlink(final HyperlinkType type, final String address, final String label) {
         final Hyperlink hyperlink = this.workbook.getCreationHelper().createHyperlink(type);
@@ -474,61 +484,53 @@ public class ExcelBase<T extends ExcelBase<T, C>, C extends ExcelConfig> impleme
     }
 
     /**
-     * 获取第一行总列数，计算方法为：
+     * Gets the total number of columns in the first row. The calculation method is: {@code last column index + 1}.
      *
-     * <pre>
-     * 最后一列序号 + 1
-     * </pre>
-     *
-     * @return 列数
+     * @return The total number of columns.
      */
     public int getColumnCount() {
         return getColumnCount(0);
     }
 
     /**
-     * 获取总列数，计算方法为：
+     * Gets the total number of columns in the specified row. The calculation method is: {@code last column index + 1}.
      *
-     * <pre>
-     * 最后一列序号 + 1
-     * </pre>
-     *
-     * @param rowNum 行号
-     * @return 列数，-1表示获取失败
+     * @param rowNum The row number.
+     * @return The total number of columns, or -1 if the row does not exist.
      */
     public int getColumnCount(final int rowNum) {
         final Row row = this.sheet.getRow(rowNum);
         if (null != row) {
-            // getLastCellNum方法返回序号+1的值
+            // The getLastCellNum method returns the value of index + 1.
             return row.getLastCellNum();
         }
         return -1;
     }
 
     /**
-     * 判断是否为xlsx格式的Excel表（Excel07格式）
+     * Checks if the Excel file is in XLSX format (Excel 2007+ format).
      *
-     * @return 是否为xlsx格式的Excel表（Excel07格式）
+     * @return {@code true} if it is an XLSX format Excel file, {@code false} otherwise.
      */
     public boolean isXlsx() {
         return this.sheet instanceof XSSFSheet || this.sheet instanceof SXSSFSheet;
     }
 
     /**
-     * 获取Content-Type头对应的值，可以通过调用以下方法快速设置下载Excel的头信息：
+     * Gets the value for the Content-Type header. This can be used to quickly set the download header for Excel files:
      *
      * <pre>
      * response.setContentType(excelWriter.getContentType());
      * </pre>
      *
-     * @return Content-Type值
+     * @return The Content-Type value.
      */
     public String getContentType() {
         return isXlsx() ? Builder.XLSX_CONTENT_TYPE : Builder.XLS_CONTENT_TYPE;
     }
 
     /**
-     * 关闭工作簿 如果用户设定了目标文件，先写出目标文件后给关闭工作簿
+     * Closes the workbook. If a target file is set, the workbook will be flushed to it before closing.
      */
     @Override
     public void close() {
@@ -539,7 +541,7 @@ public class ExcelBase<T extends ExcelBase<T, C>, C extends ExcelConfig> impleme
     }
 
     /**
-     * 校验Excel是否已经关闭
+     * Checks if the Excel workbook has been closed. Throws an {@link Assert} exception if it is closed.
      */
     protected void checkClosed() {
         Assert.isFalse(this.isClosed, "Excel has been closed!");

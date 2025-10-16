@@ -34,7 +34,10 @@ import org.miaixz.bus.health.builtin.hardware.*;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractHardwareAbstractionLayer;
 
 /**
+ * <p>
  * MacHardwareAbstractionLayer class.
+ * </p>
+ * Hardware Abstraction Layer for macOS.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,61 +45,97 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractHardwareAbstraction
 @ThreadSafe
 public final class MacHardwareAbstractionLayer extends AbstractHardwareAbstractionLayer {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ComputerSystem createComputerSystem() {
         return new MacComputerSystem();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public GlobalMemory createMemory() {
         return new MacGlobalMemory();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public CentralProcessor createProcessor() {
         return new MacCentralProcessor();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Sensors createSensors() {
         return new MacSensors();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<PowerSource> getPowerSources() {
         return MacPowerSource.getPowerSources();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<HWDiskStore> getDiskStores() {
         return MacHWDiskStore.getDisks();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<LogicalVolumeGroup> getLogicalVolumeGroups() {
         return MacLogicalVolumeGroup.getLogicalVolumeGroups();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<Display> getDisplays() {
         return MacDisplay.getDisplays();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<NetworkIF> getNetworkIFs(boolean includeLocalInterfaces) {
         return MacNetworkIF.getNetworks(includeLocalInterfaces);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<UsbDevice> getUsbDevices(boolean tree) {
         return MacUsbDevice.getUsbDevices(tree);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<SoundCard> getSoundCards() {
         return MacSoundCard.getSoundCards();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<GraphicsCard> getGraphicsCards() {
         return MacGraphicsCard.getGraphicsCards();

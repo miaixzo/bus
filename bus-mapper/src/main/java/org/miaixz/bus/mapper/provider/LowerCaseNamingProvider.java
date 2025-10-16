@@ -32,7 +32,7 @@ import org.miaixz.bus.mapper.parsing.FieldMeta;
 import org.miaixz.bus.mapper.parsing.TableMeta;
 
 /**
- * 提供小写命名风格的表名和列名生成器。
+ * Provides a naming style generator that converts table and column names to lowercase.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -40,9 +40,9 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
 public class LowerCaseNamingProvider extends DirectNamingProvider {
 
     /**
-     * 获取命名风格，返回小写命名风格。
+     * Gets the naming style, returning the lowercase naming style identifier.
      *
-     * @return 小写命名风格标识
+     * @return The lowercase naming style identifier.
      */
     @Override
     public String type() {
@@ -50,10 +50,10 @@ public class LowerCaseNamingProvider extends DirectNamingProvider {
     }
 
     /**
-     * 获取表名，将表名转换为小写。
+     * Gets the table name, converting it to lowercase.
      *
-     * @param entityClass 实体类
-     * @return 小写的表名
+     * @param entityClass The entity class.
+     * @return The table name in lowercase.
      */
     @Override
     public String tableName(Class<?> entityClass) {
@@ -61,11 +61,11 @@ public class LowerCaseNamingProvider extends DirectNamingProvider {
     }
 
     /**
-     * 获取列名，将列名转换为小写。
+     * Gets the column name, converting it to lowercase.
      *
-     * @param entityTable 实体表信息
-     * @param field       实体字段信息
-     * @return 小写的列名
+     * @param entityTable The entity table information.
+     * @param field       The entity field information.
+     * @return The column name in lowercase.
      */
     @Override
     public String columnName(TableMeta entityTable, FieldMeta field) {

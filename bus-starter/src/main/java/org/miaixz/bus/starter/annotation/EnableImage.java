@@ -27,21 +27,24 @@
 */
 package org.miaixz.bus.starter.annotation;
 
-import java.lang.annotation.*;
-
 import org.miaixz.bus.starter.image.ImageConfiguration;
 import org.springframework.context.annotation.Import;
 
+import java.lang.annotation.*;
+
 /**
- * 启用图像解析
+ * Enables image processing and DICOM server features.
+ * <p>
+ * This annotation imports the {@link ImageConfiguration}, which sets up the necessary beans for handling DICOM files,
+ * including a Store SCP (Service Class Provider) if configured.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 @Inherited
 @Documented
-@Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE })
+@Retention(RetentionPolicy.RUNTIME)
 @Import({ ImageConfiguration.class })
 public @interface EnableImage {
 

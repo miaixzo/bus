@@ -28,10 +28,9 @@
 package org.miaixz.bus.core.text.placeholder.segment;
 
 /**
- * 字符串模板-占位符-抽象 SectionBuffer
+ * Abstract base class for placeholder segments in string templates.
  * <p>
- * 例如：{@literal "???"->"???", "{}"->"{}", "{name}"->"name"}
- * </p>
+ * For example: {@literal "???" -> "???", "{}" -> "{}", "{name}" -> "name"}
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -39,28 +38,33 @@ package org.miaixz.bus.core.text.placeholder.segment;
 public abstract class AbstractSegment implements StringSegment {
 
     /**
-     * 占位符变量，例如：{@literal "???"->"???", "{}"->"{}", "{name}"->"name"}
+     * The placeholder variable, e.g., {@literal "???" -> "???", "{}" -> "{}", "{name}" -> "name"}
      */
     private final String placeholder;
 
     /**
-     * 构造
+     * Constructs an {@code AbstractSegment} with the given placeholder.
      *
-     * @param placeholder 占位符
+     * @param placeholder The placeholder string.
      */
     protected AbstractSegment(final String placeholder) {
         this.placeholder = placeholder;
     }
 
+    /**
+     * Retrieves the text value of the segment.
+     *
+     * @return The text value, which is the placeholder itself.
+     */
     @Override
     public String getText() {
         return placeholder;
     }
 
     /**
-     * 获取占位符
+     * Retrieves the placeholder string.
      *
-     * @return 占位符
+     * @return The placeholder string.
      */
     public String getPlaceholder() {
         return placeholder;

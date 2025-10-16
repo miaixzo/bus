@@ -37,30 +37,40 @@ import org.miaixz.bus.extra.mq.Producer;
 import com.rabbitmq.client.Channel;
 
 /**
- * RabbitMQ消息生产者实现类
+ * RabbitMQ message producer implementation class. This class provides an adapter for sending messages to RabbitMQ,
+ * integrating with the internal {@link Producer} interface. It handles the publication of messages to exchanges and
+ * queues within RabbitMQ.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class RabbitMQProducer implements Producer {
 
+    /**
+     * The RabbitMQ communication channel, used for declaring queues, publishing messages, etc.
+     */
     private final Channel channel;
+    /**
+     * The name of the exchange to which messages will be published. Defaults to {@link Normal#EMPTY}, which corresponds
+     * to the default exchange in RabbitMQ (direct exchange to queue named by routing key).
+     */
     private String exchange = Normal.EMPTY;
 
     /**
-     * 构造方法
+     * Constructs a {@code RabbitMQProducer} with the specified RabbitMQ channel.
      *
-     * @param channel RabbitMQ通信通道
+     * @param channel The RabbitMQ {@link Channel} object to be used for publishing messages.
      */
     public RabbitMQProducer(final Channel channel) {
         this.channel = channel;
     }
 
     /**
-     * 设置交换器，默认为{@link Normal#EMPTY}
+     * Sets the name of the exchange to which messages will be published. If not set, the default exchange (direct
+     * exchange) will be used.
      *
-     * @param exchange 交换器名称
-     * @return 当前RabbitMQProducer实例，支持链式调用
+     * @param exchange The name of the exchange.
+     * @return This {@code RabbitMQProducer} instance, allowing for method chaining.
      */
     public RabbitMQProducer setExchange(final String exchange) {
         this.exchange = exchange;
@@ -68,14 +78,18 @@ public class RabbitMQProducer implements Producer {
     }
 
     /**
-     * 声明队列
+     * Declares a queue on the RabbitMQ broker with specified properties. This method is used to ensure the queue exists
+     * before messages are sent to it.
      *
-     * @param queue      队列名称
-     * @param durable    是否持久化队列，true表示服务器重启后队列仍然存在
-     * @param exclusive  是否排他队列，true表示仅当前连接可以使用，连接关闭后队列自动删除
-     * @param autoDelete 是否自动删除队列，true表示当没有消费者连接时自动删除队列
-     * @param arguments  队列的其他参数配置
-     * @return 当前RabbitMQProducer实例，支持链式调用
+     * @param queue      The name of the queue to declare.
+     * @param durable    {@code true} if the queue should be durable (survive broker restarts); {@code false} otherwise.
+     * @param exclusive  {@code true} if the queue should be exclusive (used by only one connection and deleted when
+     *                   that connection closes); {@code false} otherwise.
+     * @param autoDelete {@code true} if the queue should be auto-deleted when no longer in use (e.g., when the last
+     *                   consumer unsubscribes); {@code false} otherwise.
+     * @param arguments  A {@link Map} of other properties for the queue, such as message TTL, queue length limit, etc.
+     * @return This {@code RabbitMQProducer} instance, allowing for method chaining.
+     * @throws MQueueException if an I/O error occurs during queue declaration.
      */
     public RabbitMQProducer queueDeclare(
             final String queue,
@@ -92,10 +106,11 @@ public class RabbitMQProducer implements Producer {
     }
 
     /**
-     * 发送消息到指定队列
+     * Sends a {@link Message} to the configured RabbitMQ exchange with the message's topic as the routing key. The
+     * message content is published as a byte array.
      *
-     * @param message 要发送的消息对象，包含主题和内容
-     * @throws MQueueException 消息发送失败时抛出异常
+     * @param message The {@link Message} object to send, containing the topic (routing key) and content.
+     * @throws MQueueException if an I/O error occurs during message publishing.
      */
     @Override
     public void send(final Message message) {
@@ -107,7 +122,8 @@ public class RabbitMQProducer implements Producer {
     }
 
     /**
-     * 关闭生产者，释放资源
+     * Closes the underlying RabbitMQ {@link Channel} and releases any associated resources. This method ensures that
+     * the channel is properly shut down.
      */
     @Override
     public void close() {

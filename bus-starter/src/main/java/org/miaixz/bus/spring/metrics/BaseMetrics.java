@@ -34,9 +34,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 启动状态的基本模型，用于跟踪和记录启动过程中的各项指标。
+ * Base model for startup metrics, used to track and record various indicators during the startup process.
  * <p>
- * 该类提供了记录启动时间、结束时间、耗时以及自定义属性的功能， 可用于监控和分析系统启动性能。
+ * This class provides functionality to record start time, end time, elapsed time, and custom attributes, which can be
+ * used for monitoring and analyzing system startup performance.
  * </p>
  *
  * @author Kimi Liu
@@ -47,37 +48,37 @@ import java.util.Map;
 public class BaseMetrics {
 
     /**
-     * 用于存储自定义属性的键值对集合
+     * A map to store custom attributes as key-value pairs.
      */
     private final Map<String, String> attributes = new HashMap<>();
 
     /**
-     * 指标名称
+     * The name of the metric.
      */
     private String name;
 
     /**
-     * 开始时间（毫秒）
+     * The start time of the metric in milliseconds.
      */
     private long startTime;
 
     /**
-     * 结束时间（毫秒）
+     * The end time of the metric in milliseconds.
      */
     private long endTime;
 
     /**
-     * 耗时（毫秒），通过结束时间减去开始时间计算得出
+     * The elapsed time (cost) of the metric in milliseconds, calculated as {@code endTime - startTime}.
      */
     private long cost;
 
     /**
-     * 设置结束时间并自动计算耗时
+     * Sets the end time and automatically calculates the elapsed time (cost).
      * <p>
-     * 设置结束时间的同时，会自动计算并更新cost字段的值（endTime - startTime）
+     * When the end time is set, the {@code cost} field is automatically updated with {@code endTime - startTime}.
      * </p>
      *
-     * @param endTime 结束时间（毫秒）
+     * @param endTime The end time in milliseconds.
      */
     public void setEndTime(long endTime) {
         this.endTime = endTime;
@@ -85,26 +86,20 @@ public class BaseMetrics {
     }
 
     /**
-     * 添加自定义属性
-     * <p>
-     * 将指定的键值对添加到attributes集合中
-     * </p>
+     * Adds a custom attribute to the {@link #attributes} map.
      *
-     * @param key   属性键
-     * @param value 属性值
+     * @param key   The key of the attribute.
+     * @param value The value of the attribute.
      */
     public void putAttribute(String key, String value) {
         this.attributes.put(key, value);
     }
 
     /**
-     * 获取指定键的属性值
-     * <p>
-     * 从attributes集合中获取指定键对应的值
-     * </p>
+     * Retrieves the value of a custom attribute by its key.
      *
-     * @param key 属性键
-     * @return 对应的属性值，如果不存在则返回null
+     * @param key The key of the attribute to retrieve.
+     * @return The value of the attribute, or {@code null} if the key is not found.
      */
     public String getAttribute(String key) {
         return this.attributes.get(key);

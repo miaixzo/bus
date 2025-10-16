@@ -36,7 +36,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * 云闪付-下单对账单
+ * UnionPay Cloud QuickPass - Bill Download model.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,14 +48,41 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class BillDownload extends Material {
 
+    /**
+     * Service name.
+     */
     private String service;
+    /**
+     * Version number.
+     */
     private String version;
+    /**
+     * Character set.
+     */
     private String charset;
+    /**
+     * Bill date.
+     */
     private String bill_date;
+    /**
+     * Bill type.
+     */
     private String bill_type;
+    /**
+     * Signature type.
+     */
     private String sign_type;
+    /**
+     * Merchant ID.
+     */
     private String mch_id;
+    /**
+     * Random string.
+     */
     private String nonce_str;
+    /**
+     * Signature.
+     */
     private String sign;
 
 }

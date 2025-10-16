@@ -27,17 +27,17 @@
 */
 package org.miaixz.bus.validate.magic.annotation;
 
-import java.lang.annotation.*;
-
 import org.miaixz.bus.validate.Builder;
 import org.miaixz.bus.validate.metric.IntRangeMatcher;
 
+import java.lang.annotation.*;
+
 /**
- * 判断数字在int范围内
+ * Validates that a number is within a specified integer range.
  *
  * <p>
- * 默认被校验对象是null时,通过校验
- * </P>
+ * By default, if the object to be validated is null, the validation passes.
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -49,46 +49,46 @@ import org.miaixz.bus.validate.metric.IntRangeMatcher;
 public @interface IntRange {
 
     /**
-     * 小于等于
+     * The minimum value (inclusive).
      *
-     * @return the int
+     * @return the minimum value.
      */
     @Filler("min")
     int min() default Integer.MIN_VALUE;
 
     /**
-     * 大于等于
+     * The maximum value (inclusive).
      *
-     * @return the int
+     * @return the maximum value.
      */
     @Filler("max")
     int max() default Integer.MAX_VALUE;
 
     /**
-     * 默认使用的异常码
+     * The error code to be used when validation fails.
      *
-     * @return the string
+     * @return the error code.
      */
     String errcode() default Builder.DEFAULT_ERRCODE;
 
     /**
-     * 默认使用的异常信息
+     * The error message to be used when validation fails. The message can be a template with placeholders.
      *
-     * @return the string
+     * @return the error message.
      */
-    String errmsg() default "${field}必须在指定范围内, 最小: ${min}, 最大: ${max}";
+    String errmsg() default "${field} must be within the specified range, min: ${min}, max: ${max}";
 
     /**
-     * 校验器组
+     * The validation groups this constraint belongs to.
      *
-     * @return the string
+     * @return an array of group names.
      */
     String[] group() default {};
 
     /**
-     * 被校验字段名称
+     * The name of the field being validated.
      *
-     * @return the string
+     * @return the field name.
      */
     String field() default Builder.DEFAULT_FIELD;
 

@@ -28,7 +28,7 @@
 package org.miaixz.bus.office.excel.sax;
 
 /**
- * 单元格数据类型枚举
+ * Enumeration of cell data types for SAX parsing of Excel files.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -36,61 +36,61 @@ package org.miaixz.bus.office.excel.sax;
 public enum CellDataType {
 
     /**
-     * Boolean类型
+     * Boolean type.
      */
     BOOL("b"),
     /**
-     * 类型错误
+     * Error type.
      */
     ERROR("e"),
     /**
-     * 计算结果类型，此类型使用f标签辅助判断，而非属性
+     * Formula result type. This type is determined by the 'f' tag, not by an attribute.
      */
     FORMULA("formula"),
     /**
-     * 富文本类型
+     * Inline string (rich text) type.
      */
     INLINESTR("inlineStr"),
     /**
-     * 共享字符串索引类型
+     * Shared string table index type.
      */
     SSTINDEX("s"),
     /**
-     * 数字类型
+     * Numeric type.
      */
     NUMBER(""),
     /**
-     * 日期类型，此类型使用值判断，而非属性
+     * Date type. This type is determined by value, not by an attribute.
      */
     DATE("m/d/yy"),
     /**
-     * 空类型
+     * Null type.
      */
     NULL("");
 
     /**
-     * 属性值
+     * The attribute value corresponding to the cell data type.
      */
     private final String name;
 
     /**
-     * 构造
+     * Constructs a {@code CellDataType} enum with the specified attribute value.
      *
-     * @param name 类型属性值
+     * @param name The attribute value for the type.
      */
     CellDataType(final String name) {
         this.name = name;
     }
 
     /**
-     * 类型字符串转为枚举
+     * Converts a type string to its corresponding {@code CellDataType} enum.
      *
-     * @param name 类型字符串
-     * @return 类型枚举
+     * @param name The type string.
+     * @return The {@code CellDataType} enum, or {@link #NULL} if no match is found or the name is {@code null}.
      */
     public static CellDataType of(final String name) {
         if (null == name) {
-            // 默认空
+            // Default to null
             return NULL;
         }
 
@@ -110,9 +110,9 @@ public enum CellDataType {
     }
 
     /**
-     * 获取对应类型的属性值
+     * Gets the attribute value corresponding to this type.
      *
-     * @return 属性值
+     * @return The attribute value.
      */
     public String getName() {
         return name;

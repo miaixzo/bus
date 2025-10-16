@@ -26,7 +26,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Bean拷贝实现，包括拷贝选项等
+ * Provides implementations for Bean copying, including copy options and various copier types.
  *
  * @author Kimi Liu
  * @since Java 17+

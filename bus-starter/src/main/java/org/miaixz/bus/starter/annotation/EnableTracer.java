@@ -27,13 +27,16 @@
 */
 package org.miaixz.bus.starter.annotation;
 
-import java.lang.annotation.*;
-
 import org.miaixz.bus.starter.tracer.TracerConfiguration;
 import org.springframework.context.annotation.Import;
 
+import java.lang.annotation.*;
+
 /**
- * 启用链路追踪
+ * Enables distributed tracing support.
+ * <p>
+ * This annotation imports the {@link TracerConfiguration}, which serves as the entry point for configuring the
+ * distributed tracing system. It will enable the setup of tracers, reporters, and context propagation.
  *
  * @author Kimi Liu
  * @since Java 17+

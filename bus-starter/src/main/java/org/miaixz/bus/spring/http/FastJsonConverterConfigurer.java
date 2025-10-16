@@ -27,12 +27,11 @@
 */
 package org.miaixz.bus.spring.http;
 
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.util.Arrays;
-import java.util.List;
-
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONReader;
+import com.alibaba.fastjson2.JSONWriter;
+import com.alibaba.fastjson2.filter.PropertyFilter;
+import jakarta.persistence.Transient;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
@@ -50,15 +49,15 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.stereotype.Component;
 
-import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.JSONReader;
-import com.alibaba.fastjson2.JSONWriter;
-import com.alibaba.fastjson2.filter.PropertyFilter;
-
-import jakarta.persistence.Transient;
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.Arrays;
+import java.util.List;
 
 /**
- * Fastjson2 JSON 转换器配置器。 配置 Fastjson2 的 HttpMessageConverter，支持 autoType 自动类型识别。
+ * A JSON converter configurer for Fastjson2. This class configures the {@link HttpMessageConverter} for Fastjson2, with
+ * support for {@code autoType} functionality.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -67,9 +66,15 @@ import jakarta.persistence.Transient;
 @ConditionalOnClass({ JSON.class })
 public class FastJsonConverterConfigurer implements JsonConverterConfigurer {
 
+    /**
+     * The default media types supported by this converter.
+     */
     private static final List<MediaType> DEFAULT_MEDIA_TYPES = List
             .of(MediaType.APPLICATION_JSON, new MediaType(MediaType.TEXT_PLAIN, Charset.UTF_8));
 
+    /**
+     * The comma-separated string of whitelisted classes for autoType deserialization.
+     */
     private String autoType;
 
     @Override
@@ -95,18 +100,34 @@ public class FastJsonConverterConfigurer implements JsonConverterConfigurer {
     }
 
     /**
-     * 自定义 Fastjson2 的 HttpMessageConverter，使用 JSONWriter.Feature 配置序列化， JSONReader.Feature 配置反序列化，并根据构造函数参数配置 autoType。
+     * A custom {@link AbstractHttpMessageConverter} for Fastjson2. It configures serialization using
+     * {@link JSONWriter.Feature} and deserialization using {@link JSONReader.Feature}, and enables {@code autoType}
+     * based on the constructor parameter.
      */
     static class FastJson2HttpMessageConverter extends AbstractHttpMessageConverter<Object> {
 
+        /**
+         * Features to use for JSON serialization.
+         */
         private static final JSONWriter.Feature[] WRITER_FEATURES = { JSONWriter.Feature.FieldBased,
                 JSONWriter.Feature.WriteMapNullValue, JSONWriter.Feature.WriteNulls,
                 JSONWriter.Feature.IgnoreNonFieldGetter };
 
+        /**
+         * Features to use for JSON deserialization.
+         */
         private static final JSONReader.Feature[] READER_FEATURES = { JSONReader.Feature.FieldBased };
 
+        /**
+         * An array of whitelisted class names for autoType deserialization.
+         */
         private final String[] autoTypes;
 
+        /**
+         * Constructs a new converter, parsing the autoType whitelist.
+         *
+         * @param autoType A comma-separated string of whitelisted classes for autoType.
+         */
         public FastJson2HttpMessageConverter(String autoType) {
             super(Charset.UTF_8, DEFAULT_MEDIA_TYPES.toArray(new MediaType[0]));
             this.autoTypes = StringKit.isEmpty(autoType) ? null
@@ -136,21 +157,18 @@ public class FastJsonConverterConfigurer implements JsonConverterConfigurer {
                     throw new HttpMessageNotReadableException("JSON contains untrusted @type", inputMessage);
                 }
 
-                // 根据是否配置 autoType 进行反序列化
-                Object result = autoTypes == null ? JSON.parseObject(jsonString, clazz, READER_FEATURES)
+                return autoTypes == null ? JSON.parseObject(jsonString, clazz, READER_FEATURES)
                         : JSON.parseObject(jsonString, clazz, JSONReader.autoTypeFilter(autoTypes), READER_FEATURES);
-
-                return result;
             } catch (IOException e) {
                 Logger.error(
-                        "IO error occurred during JSON deserialization, class {}: {}",
+                        "IO error occurred during JSON deserialization for class {}: {}",
                         clazz.getName(),
                         e.getMessage(),
                         e);
                 throw new HttpMessageNotReadableException(
                         "IO error occurred during JSON deserialization: " + e.getMessage(), e, inputMessage);
             } catch (Exception e) {
-                Logger.error("JSON deserialization failed, class {}: {}", clazz.getName(), e.getMessage(), e);
+                Logger.error("JSON deserialization failed for class {}: {}", clazz.getName(), e.getMessage(), e);
                 throw new HttpMessageNotReadableException("JSON deserialization failed: " + e.getMessage(), e,
                         inputMessage);
             }
@@ -161,6 +179,7 @@ public class FastJsonConverterConfigurer implements JsonConverterConfigurer {
                 throws HttpMessageNotWritableException {
             try {
                 Logger.debug("<==     Result: {}", object != null ? object.getClass().getName() : "null");
+                // Filter to exclude null, empty, blank, and @Transient fields.
                 PropertyFilter filter = (source, name, value) -> {
                     if (value == null || Normal.EMPTY.equals(value) || Symbol.SPACE.equals(value)) {
                         return false;
@@ -176,7 +195,7 @@ public class FastJsonConverterConfigurer implements JsonConverterConfigurer {
                         }
                         return !Modifier.isTransient(field.getModifiers());
                     } catch (Exception e) {
-                        Logger.warn("Failed to check @Transient annotation for field {}", name, e.getMessage());
+                        Logger.warn("Failed to check @Transient annotation for field {}: {}", name, e.getMessage());
                         return true;
                     }
                 };
@@ -195,12 +214,13 @@ public class FastJsonConverterConfigurer implements JsonConverterConfigurer {
         }
 
         /**
-         * 验证 JSON 输入是否只包含白名单中的 @type
+         * Validates that the JSON input only contains {@code @type} values that are in the whitelist.
          *
-         * @param jsonString JSON 字符串
-         * @return 如果 JSON 安全返回 true，否则返回 false
+         * @param jsonString The JSON string to validate.
+         * @return {@code true} if the JSON is safe, {@code false} otherwise.
          */
         private boolean isSafeJson(String jsonString) {
+            // A simple check; more robust validation might be needed for production.
             return !jsonString.contains("@type") || Arrays.stream(autoTypes).anyMatch(jsonString::contains);
         }
     }

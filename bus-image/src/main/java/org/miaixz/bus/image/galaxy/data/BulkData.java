@@ -38,58 +38,62 @@ import org.miaixz.bus.image.galaxy.io.ImageEncodingOptions;
 import org.miaixz.bus.image.galaxy.io.ImageOutputStream;
 
 /**
- * 大数据类，用于处理DICOM中的大数据对象。 该类实现了Value接口，表示DICOM属性的大数据值，通常用于存储像素数据或其他大型二进制数据。
- * 大数据对象可以通过URI引用外部文件，也可以包含偏移量和长度信息来定位文件中的特定数据段。
- *
+ * Represents a DICOM Bulk Data object, typically used for storing large binary data such as pixel data. This class
+ * implements the {@link Value} interface and can reference external files via URI, or contain offset and length
+ * information to locate specific data segments within a file.
+ * 
  * @author Kimi Liu
  * @since Java 17+
  */
 public class BulkData implements Value, Serializable {
 
+    /**
+     * The serial version UID for serialization.
+     */
     @Serial
     private static final long serialVersionUID = 2852261350109L;
 
     /**
-     * 魔数长度
+     * Magic length constant.
      */
     public static final int MAGIC_LEN = 0xfbfb;
 
     /**
-     * UUID标识符
+     * The UUID identifier for the bulk data.
      */
     private String uuid;
 
     /**
-     * URI引用
+     * The URI reference to the bulk data.
      */
     private String uri;
 
     /**
-     * URI路径结束位置
+     * The end index of the URI path, before any query parameters.
      */
     private int uriPathEnd;
 
     /**
-     * 是否大端序
+     * Indicates if the bulk data is big-endian.
      */
     private boolean bigEndian;
 
     /**
-     * 数据偏移量
+     * The offset of the data within the referenced resource.
      */
     private long offset = 0;
 
     /**
-     * 数据长度
+     * The length of the data within the referenced resource.
      */
     private long length = -1;
 
     /**
-     * 使用UUID、URI和字节序构造大数据对象
-     *
-     * @param uuid      UUID标识符
-     * @param uri       URI引用
-     * @param bigEndian 是否大端序
+     * Constructs a {@code BulkData} object with a UUID, URI, and endianness.
+     * 
+     * @param uuid      The UUID identifier.
+     * @param uri       The URI reference to the bulk data.
+     * @param bigEndian {@code true} if the data is big-endian, {@code false} otherwise.
      */
     public BulkData(String uuid, String uri, boolean bigEndian) {
         this.uuid = uuid;
@@ -98,12 +102,12 @@ public class BulkData implements Value, Serializable {
     }
 
     /**
-     * 使用URI、偏移量、长度和字节序构造大数据对象
-     *
-     * @param uri       URI引用
-     * @param offset    数据偏移量
-     * @param length    数据长度
-     * @param bigEndian 是否大端序
+     * Constructs a {@code BulkData} object with a URI, offset, length, and endianness.
+     * 
+     * @param uri       The URI reference to the bulk data.
+     * @param offset    The offset of the data within the resource.
+     * @param length    The length of the data within the resource.
+     * @param bigEndian {@code true} if the data is big-endian, {@code false} otherwise.
      */
     public BulkData(String uri, long offset, long length, boolean bigEndian) {
         this.uuid = null;
@@ -115,27 +119,28 @@ public class BulkData implements Value, Serializable {
     }
 
     /**
-     * 获取UUID标识符
-     *
-     * @return UUID标识符
+     * Returns the UUID identifier of the bulk data.
+     * 
+     * @return The UUID identifier.
      */
     public String getUUID() {
         return uuid;
     }
 
     /**
-     * 获取URI引用
-     *
-     * @return URI引用
+     * Returns the URI reference to the bulk data.
+     * 
+     * @return The URI reference.
      */
     public String getURI() {
         return uri;
     }
 
     /**
-     * 设置URI引用
-     *
-     * @param uri URI引用
+     * Sets the URI reference for the bulk data. This method also parses any offset and length parameters from the URI
+     * query string.
+     * 
+     * @param uri The URI reference.
      */
     public void setURI(String uri) {
         this.uri = uri;
@@ -163,27 +168,28 @@ public class BulkData implements Value, Serializable {
     }
 
     /**
-     * 检查是否为大端序
-     *
-     * @return 如果是大端序则返回true，否则返回false
+     * Checks if the bulk data is big-endian.
+     * 
+     * @return {@code true} if big-endian, {@code false} otherwise.
      */
     public boolean bigEndian() {
         return bigEndian;
     }
 
     /**
-     * 获取数据长度
-     *
-     * @return 数据长度
+     * Returns the length of the bulk data as an integer. Note that this may truncate if the length exceeds
+     * {@code Integer.MAX_VALUE}.
+     * 
+     * @return The length of the data.
      */
     public int length() {
         return (int) length;
     }
 
     /**
-     * 获取数据偏移量
-     *
-     * @return 数据偏移量
+     * Returns the offset of the bulk data within its resource.
+     * 
+     * @return The offset.
      */
     public long offset() {
         return offset;
@@ -200,10 +206,10 @@ public class BulkData implements Value, Serializable {
     }
 
     /**
-     * 获取文件对象
-     *
-     * @return 文件对象
-     * @throws IllegalStateException 如果URI无效
+     * Returns the {@link File} object referenced by the URI, if it's a file URI.
+     * 
+     * @return The {@link File} object.
+     * @throws IllegalStateException if the URI is invalid or not a file URI.
      */
     public File getFile() {
         try {
@@ -214,10 +220,10 @@ public class BulkData implements Value, Serializable {
     }
 
     /**
-     * 获取不带查询参数的URI
-     *
-     * @return 不带查询参数的URI
-     * @throws IllegalStateException 如果URI为null
+     * Returns the URI without any query parameters.
+     * 
+     * @return The URI string without query parameters.
+     * @throws IllegalStateException if the URI is {@code null}.
      */
     public String uriWithoutQuery() {
         if (uri == null)
@@ -226,11 +232,11 @@ public class BulkData implements Value, Serializable {
     }
 
     /**
-     * 打开输入流
-     *
-     * @return 输入流
-     * @throws IOException           如果发生I/O错误
-     * @throws IllegalStateException 如果URI为null
+     * Opens an {@link InputStream} to the bulk data. Handles both file and URL URIs.
+     * 
+     * @return An {@link InputStream} for reading the bulk data.
+     * @throws IOException           if an I/O error occurs.
+     * @throws IllegalStateException if the URI is {@code null}.
      */
     public InputStream openStream() throws IOException {
         if (uri == null)
@@ -290,10 +296,10 @@ public class BulkData implements Value, Serializable {
     }
 
     /**
-     * 序列化写入对象
-     *
-     * @param oos 对象输出流
-     * @throws IOException 如果发生I/O错误
+     * Custom serialization method to write the object's state.
+     * 
+     * @param oos The {@link ObjectOutputStream} to write to.
+     * @throws IOException if an I/O error occurs during serialization.
      */
     private void writeObject(ObjectOutputStream oos) throws IOException {
         oos.defaultWriteObject();
@@ -303,11 +309,11 @@ public class BulkData implements Value, Serializable {
     }
 
     /**
-     * 序列化读取对象
-     *
-     * @param ois 对象输入流
-     * @throws IOException            如果发生I/O错误
-     * @throws ClassNotFoundException 如果类未找到
+     * Custom deserialization method to read the object's state.
+     * 
+     * @param ois The {@link ObjectInputStream} to read from.
+     * @throws IOException            if an I/O error occurs during deserialization.
+     * @throws ClassNotFoundException if the class of a serialized object cannot be found.
      */
     private void readObject(ObjectInputStream ois) throws IOException, ClassNotFoundException {
         ois.defaultReadObject();
@@ -349,9 +355,9 @@ public class BulkData implements Value, Serializable {
     }
 
     /**
-     * 返回段结束后的索引
-     *
-     * @return 段结束后的索引
+     * Returns the end position of the data segment, calculated as offset + length.
+     * 
+     * @return The end position of the segment, or -1 if length is -1.
      */
     public long getSegmentEnd() {
         if (length == -1)
@@ -360,18 +366,19 @@ public class BulkData implements Value, Serializable {
     }
 
     /**
-     * 获取实际长度，以long类型表示，可以表示2GB到4GB范围的长度
-     *
-     * @return 实际长度
+     * Returns the actual length of the bulk data as a long, which can represent lengths beyond
+     * {@code Integer.MAX_VALUE}.
+     * 
+     * @return The length of the data.
      */
     public long longLength() {
         return length;
     }
 
     /**
-     * 设置偏移量
-     *
-     * @param offset 偏移量
+     * Sets the offset of the bulk data within its resource. This also updates the URI string.
+     * 
+     * @param offset The new offset.
      */
     public void setOffset(long offset) {
         this.offset = offset;
@@ -379,10 +386,10 @@ public class BulkData implements Value, Serializable {
     }
 
     /**
-     * 设置长度
-     *
-     * @param length 长度
-     * @throws IllegalArgumentException 如果长度超出范围
+     * Sets the length of the bulk data. This also updates the URI string.
+     * 
+     * @param length The new length. Must be between -1 and 2^32-2 (inclusive).
+     * @throws IllegalArgumentException if the length is out of the valid range.
      */
     public void setLength(long length) {
         if (length < -1 || length > 0xFFFFFFFEL) {
@@ -393,18 +400,18 @@ public class BulkData implements Value, Serializable {
     }
 
     /**
-     * 创建者函数式接口，用于创建BulkData对象
+     * Functional interface for creating {@code BulkData} objects.
      */
     @FunctionalInterface
     public interface Creator {
 
         /**
-         * 创建BulkData对象
-         *
-         * @param uuid      UUID标识符
-         * @param uri       URI引用
-         * @param bigEndian 是否大端序
-         * @return BulkData对象
+         * Creates a {@code BulkData} object.
+         * 
+         * @param uuid      The UUID identifier.
+         * @param uri       The URI reference.
+         * @param bigEndian {@code true} if big-endian, {@code false} otherwise.
+         * @return A new {@code BulkData} instance.
          */
         BulkData create(String uuid, String uri, boolean bigEndian);
     }

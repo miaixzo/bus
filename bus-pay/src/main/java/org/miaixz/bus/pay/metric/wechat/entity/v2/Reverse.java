@@ -36,7 +36,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * 撤销订单 支持: 普通支付撤销订单、刷脸支付撤销订单
+ * Reverse order model. Supports: general payment order reversal, face payment order reversal.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,13 +48,37 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class Reverse extends Material {
 
+    /**
+     * Sub-merchant App ID.
+     */
     private String sub_appid;
+    /**
+     * Merchant ID.
+     */
     private String mch_id;
+    /**
+     * Sub-merchant ID.
+     */
     private String sub_mch_id;
+    /**
+     * WeChat transaction ID.
+     */
     private String transaction_id;
+    /**
+     * Merchant order number.
+     */
     private String out_trade_no;
+    /**
+     * Random string.
+     */
     private String nonce_str;
+    /**
+     * Signature.
+     */
     private String sign;
+    /**
+     * Signature type.
+     */
     private String sign_type;
 
 }

@@ -30,1246 +30,4956 @@ package org.miaixz.bus.image;
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
 
 /**
+ * Utility class that defines constants for DICOM Tags and provides helper methods for tag manipulation. The constants
+ * represent standard and some private DICOM tag identifiers. The integer values are constructed from the Group and
+ * Element numbers as (Group &lt;&lt; 16) | Element.
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class Tag {
 
+    /**
+     * (0000,0000) UL Command Group Length
+     */
     public static final int CommandGroupLength = 0;
+    /**
+     * (0000,0001) UL Command Length to End
+     */
     public static final int CommandLengthToEnd = 1;
+    /**
+     * (0000,0002) UI Affected SOP Class UID
+     */
     public static final int AffectedSOPClassUID = 2;
+    /**
+     * (0000,0003) UI Requested SOP Class UID
+     */
     public static final int RequestedSOPClassUID = 3;
+    /**
+     * (0000,0010) SH Command Recognition Code
+     */
     public static final int CommandRecognitionCode = 16;
+    /**
+     * (0000,0100) US Command Field
+     */
     public static final int CommandField = 256;
+    /**
+     * (0000,0110) US Message ID
+     */
     public static final int MessageID = 272;
+    /**
+     * (0000,0120) US Message ID Being Responded To
+     */
     public static final int MessageIDBeingRespondedTo = 288;
+    /**
+     * (0000,0200) AE Initiator
+     */
     public static final int Initiator = 512;
+    /**
+     * (0000,0300) AE Receiver
+     */
     public static final int Receiver = 768;
+    /**
+     * (0000,0400) AE Find Location
+     */
     public static final int FindLocation = 1024;
+    /**
+     * (0000,0600) AE Move Destination
+     */
     public static final int MoveDestination = 1536;
+    /**
+     * (0000,0700) US Priority
+     */
     public static final int Priority = 1792;
+    /**
+     * (0000,0800) US Command Data Set Type
+     */
     public static final int CommandDataSetType = 2048;
+    /**
+     * (0000,0850) US Number of Matches
+     */
     public static final int NumberOfMatches = 2128;
+    /**
+     * (0000,0860) US Response Sequence Number
+     */
     public static final int ResponseSequenceNumber = 2144;
+    /**
+     * (0000,0900) US Status
+     */
     public static final int Status = 2304;
+    /**
+     * (0000,0901) AT Offending Element
+     */
     public static final int OffendingElement = 2305;
+    /**
+     * (0000,0902) LO Error Comment
+     */
     public static final int ErrorComment = 2306;
+    /**
+     * (0000,0903) US Error ID
+     */
     public static final int ErrorID = 2307;
+    /**
+     * (0000,1000) UI Affected SOP Instance UID
+     */
     public static final int AffectedSOPInstanceUID = 4096;
+    /**
+     * (0000,1001) UI Requested SOP Instance UID
+     */
     public static final int RequestedSOPInstanceUID = 4097;
+    /**
+     * (0000,1002) US Event Type ID
+     */
     public static final int EventTypeID = 4098;
+    /**
+     * (0000,1005) AT Attribute Identifier List
+     */
     public static final int AttributeIdentifierList = 4101;
+    /**
+     * (0000,1008) US Action Type ID
+     */
     public static final int ActionTypeID = 4104;
+    /**
+     * (0000,1020) US Number of Remaining Sub-operations
+     */
     public static final int NumberOfRemainingSuboperations = 4128;
+    /**
+     * (0000,1021) US Number of Completed Sub-operations
+     */
     public static final int NumberOfCompletedSuboperations = 4129;
+    /**
+     * (0000,1022) US Number of Failed Sub-operations
+     */
     public static final int NumberOfFailedSuboperations = 4130;
+    /**
+     * (0000,1023) US Number of Warning Sub-operations
+     */
     public static final int NumberOfWarningSuboperations = 4131;
+    /**
+     * (0000,1030) AE Move Originator Application Entity Title
+     */
     public static final int MoveOriginatorApplicationEntityTitle = 4144;
+    /**
+     * (0000,1031) US Move Originator Message ID
+     */
     public static final int MoveOriginatorMessageID = 4145;
+    /**
+     * (0000,4000) AT Dialog Receiver
+     */
     public static final int DialogReceiver = 16384;
+    /**
+     * (0000,4010) CS Terminal Type
+     */
     public static final int TerminalType = 16400;
+    /**
+     * (0000,5010) SH Message Set ID
+     */
     public static final int MessageSetID = 20496;
+    /**
+     * (0000,5020) SH End Message ID
+     */
     public static final int EndMessageID = 20512;
+    /**
+     * (0000,5110) CS Display Format
+     */
     public static final int DisplayFormat = 20752;
+    /**
+     * (0000,5120) CS Page Position ID
+     */
     public static final int PagePositionID = 20768;
+    /**
+     * (0000,5130) CS Text Format ID
+     */
     public static final int TextFormatID = 20784;
+    /**
+     * (0000,5140) CS Normal/Reverse
+     */
     public static final int NormalReverse = 20800;
+    /**
+     * (0000,5150) CS Add Gray Scale
+     */
     public static final int AddGrayScale = 20816;
+    /**
+     * (0000,5160) CS Borders
+     */
     public static final int Borders = 20832;
+    /**
+     * (0000,5170) IS Copies
+     */
     public static final int Copies = 20848;
+    /**
+     * (0000,5180) CS Command Magnification Type
+     */
     public static final int CommandMagnificationType = 20864;
+    /**
+     * (0000,5190) CS Erase
+     */
     public static final int Erase = 20880;
+    /**
+     * (0000,51A0) CS Print
+     */
     public static final int Print = 20896;
+    /**
+     * (0000,51B0) US Overlays
+     */
     public static final int Overlays = 20912;
+    /**
+     * (0002,0000) UL File Meta Information Group Length
+     */
     public static final int FileMetaInformationGroupLength = 131072;
+    /**
+     * (0002,0001) OB File Meta Information Version
+     */
     public static final int FileMetaInformationVersion = 131073;
+    /**
+     * (0002,0002) UI Media Storage SOP Class UID
+     */
     public static final int MediaStorageSOPClassUID = 131074;
+    /**
+     * (0002,0003) UI Media Storage SOP Instance UID
+     */
     public static final int MediaStorageSOPInstanceUID = 131075;
+    /**
+     * (0002,0010) UI Transfer Syntax UID
+     */
     public static final int TransferSyntaxUID = 131088;
+    /**
+     * (0002,0012) UI Implementation Class UID
+     */
     public static final int ImplementationClassUID = 131090;
+    /**
+     * (0002,0013) SH Implementation Version Name
+     */
     public static final int ImplementationVersionName = 131091;
+    /**
+     * (0002,0016) AE Source Application Entity Title
+     */
     public static final int SourceApplicationEntityTitle = 131094;
+    /**
+     * (0002,0017) AE Sending Application Entity Title
+     */
     public static final int SendingApplicationEntityTitle = 131095;
+    /**
+     * (0002,0018) AE Receiving Application Entity Title
+     */
     public static final int ReceivingApplicationEntityTitle = 131096;
+    /**
+     * (0002,0026) UR Source Presentation Address
+     */
     public static final int SourcePresentationAddress = 131110;
+    /**
+     * (0002,0027) UR Sending Presentation Address
+     */
     public static final int SendingPresentationAddress = 131111;
+    /**
+     * (0002,0028) UR Receiving Presentation Address
+     */
     public static final int ReceivingPresentationAddress = 131112;
+    /**
+     * (0002,0031) OB RTV Meta Information Version
+     */
     public static final int RTVMetaInformationVersion = 131121;
+    /**
+     * (0002,0032) UI RTV Communication SOP Class UID
+     */
     public static final int RTVCommunicationSOPClassUID = 131122;
+    /**
+     * (0002,0033) UI RTV Communication SOP Instance UID
+     */
     public static final int RTVCommunicationSOPInstanceUID = 131123;
+    /**
+     * (0002,0035) ST RTV Source Identifier
+     */
     public static final int RTVSourceIdentifier = 131125;
+    /**
+     * (0002,0036) ST RTV Flow Identifier
+     */
     public static final int RTVFlowIdentifier = 131126;
+    /**
+     * (0002,0037) UL RTV Flow RTP Sampling Rate
+     */
     public static final int RTVFlowRTPSamplingRate = 131127;
+    /**
+     * (0002,0038) FD RTV Flow Actual Frame Duration
+     */
     public static final int RTVFlowActualFrameDuration = 131128;
+    /**
+     * (0002,0100) UI Private Information Creator UID
+     */
     public static final int PrivateInformationCreatorUID = 131328;
+    /**
+     * (0002,0102) OB Private Information
+     */
     public static final int PrivateInformation = 131330;
+    /**
+     * (0004,1130) CS File-set ID
+     */
     public static final int FileSetID = 266544;
+    /**
+     * (0004,1141) CS File-set Descriptor File ID
+     */
     public static final int FileSetDescriptorFileID = 266561;
+    /**
+     * (0004,1142) CS Specific Character Set of File-set Descriptor File
+     */
     public static final int SpecificCharacterSetOfFileSetDescriptorFile = 266562;
+    /**
+     * (0004,1200) UL Offset of the First Directory Record of the Root Directory Entity
+     */
     public static final int OffsetOfTheFirstDirectoryRecordOfTheRootDirectoryEntity = 266752;
+    /**
+     * (0004,1202) UL Offset of the Last Directory Record of the Root Directory Entity
+     */
     public static final int OffsetOfTheLastDirectoryRecordOfTheRootDirectoryEntity = 266754;
+    /**
+     * (0004,1212) US File-set Consistency Flag
+     */
     public static final int FileSetConsistencyFlag = 266770;
+    /**
+     * (0004,1220) SQ Directory Record Sequence
+     */
     public static final int DirectoryRecordSequence = 266784;
+    /**
+     * (0004,1400) UL Offset of the Next Directory Record
+     */
     public static final int OffsetOfTheNextDirectoryRecord = 267264;
+    /**
+     * (0004,1410) US Record In-use Flag
+     */
     public static final int RecordInUseFlag = 267280;
+    /**
+     * (0004,1420) UL Offset of Referenced Lower-Level Directory Entity
+     */
     public static final int OffsetOfReferencedLowerLevelDirectoryEntity = 267296;
+    /**
+     * (0004,1430) CS Directory Record Type
+     */
     public static final int DirectoryRecordType = 267312;
+    /**
+     * (0004,1432) UI Private Record UID
+     */
     public static final int PrivateRecordUID = 267314;
+    /**
+     * (0004,1500) CS Referenced File ID
+     */
     public static final int ReferencedFileID = 267520;
+    /**
+     * (0004,1504) UL MRDR Directory Record Offset
+     */
     public static final int MRDRDirectoryRecordOffset = 267524;
+    /**
+     * (0004,1510) UI Referenced SOP Class UID in File
+     */
     public static final int ReferencedSOPClassUIDInFile = 267536;
+    /**
+     * (0004,1511) UI Referenced SOP Instance UID in File
+     */
     public static final int ReferencedSOPInstanceUIDInFile = 267537;
+    /**
+     * (0004,1512) UI Referenced Transfer Syntax UID in File
+     */
     public static final int ReferencedTransferSyntaxUIDInFile = 267538;
+    /**
+     * (0004,151A) UI Referenced Related General SOP Class UID in File
+     */
     public static final int ReferencedRelatedGeneralSOPClassUIDInFile = 267546;
+    /**
+     * (0004,1600) UL Number of References
+     */
     public static final int NumberOfReferences = 267776;
+    /**
+     * (0008,0001) UL Length to End
+     */
     public static final int LengthToEnd = 524289;
+    /**
+     * (0008,0005) CS Specific Character Set
+     */
     public static final int SpecificCharacterSet = 524293;
+    /**
+     * (0008,0006) SQ Language Code Sequence
+     */
     public static final int LanguageCodeSequence = 524294;
+    /**
+     * (0008,0008) CS Image Type
+     */
     public static final int ImageType = 524296;
+    /**
+     * (0008,0010) SH Recognition Code
+     */
     public static final int RecognitionCode = 524304;
+    /**
+     * (0008,0012) DA Instance Creation Date
+     */
     public static final int InstanceCreationDate = 524306;
+    /**
+     * (0008,0013) TM Instance Creation Time
+     */
     public static final int InstanceCreationTime = 524307;
+    /**
+     * (0008,0014) UI Instance Creator UID
+     */
     public static final int InstanceCreatorUID = 524308;
+    /**
+     * (0008,0015) DT Instance Coercion DateTime
+     */
     public static final int InstanceCoercionDateTime = 524309;
+    /**
+     * (0008,0016) UI SOP Class UID
+     */
     public static final int SOPClassUID = 524310;
+    /**
+     * (0008,0017) UI Acquisition UID
+     */
     public static final int AcquisitionUID = 524311;
+    /**
+     * (0008,0018) UI SOP Instance UID
+     */
     public static final int SOPInstanceUID = 524312;
+    /**
+     * (0008,0019) UI Pyramid UID
+     */
     public static final int PyramidUID = 524313;
+    /**
+     * (0008,001A) UI Related General SOP Class UID
+     */
     public static final int RelatedGeneralSOPClassUID = 524314;
+    /**
+     * (0008,001B) UI Original Specialized SOP Class UID
+     */
     public static final int OriginalSpecializedSOPClassUID = 524315;
+    /**
+     * (0008,001C) CS Synthetic Data
+     */
     public static final int SyntheticData = 524316;
+    /**
+     * (0008,0020) DA Study Date
+     */
     public static final int StudyDate = 524320;
+    /**
+     * (0008,0021) DA Series Date
+     */
     public static final int SeriesDate = 524321;
+    /**
+     * (0008,0022) DA Acquisition Date
+     */
     public static final int AcquisitionDate = 524322;
+    /**
+     * (0008,0023) DA Content Date
+     */
     public static final int ContentDate = 524323;
+    /**
+     * (0008,0024) DA Overlay Date
+     */
     public static final int OverlayDate = 524324;
+    /**
+     * (0008,0025) DA Curve Date
+     */
     public static final int CurveDate = 524325;
+    /**
+     * (0008,002A) DT Acquisition DateTime
+     */
     public static final int AcquisitionDateTime = 524330;
+    /**
+     * (0008,0030) TM Study Time
+     */
     public static final int StudyTime = 524336;
+    /**
+     * (0008,0031) TM Series Time
+     */
     public static final int SeriesTime = 524337;
+    /**
+     * (0008,0032) TM Acquisition Time
+     */
     public static final int AcquisitionTime = 524338;
+    /**
+     * (0008,0033) TM Content Time
+     */
     public static final int ContentTime = 524339;
+    /**
+     * (0008,0034) TM Overlay Time
+     */
     public static final int OverlayTime = 524340;
+    /**
+     * (0008,0035) TM Curve Time
+     */
     public static final int CurveTime = 524341;
+    /**
+     * (0008,0040) US Data Set Type
+     */
     public static final int DataSetType = 524352;
+    /**
+     * (0008,0041) LO Data Set Subtype
+     */
     public static final int DataSetSubtype = 524353;
+    /**
+     * (0008,0042) CS Nuclear Medicine Series Type
+     */
     public static final int NuclearMedicineSeriesType = 524354;
+    /**
+     * (0008,0050) SH Accession Number
+     */
     public static final int AccessionNumber = 524368;
+    /**
+     * (0008,0051) SQ Issuer of Accession Number Sequence
+     */
     public static final int IssuerOfAccessionNumberSequence = 524369;
+    /**
+     * (0008,0052) CS Query/Retrieve Level
+     */
     public static final int QueryRetrieveLevel = 524370;
+    /**
+     * (0008,0053) CS Query/Retrieve View
+     */
     public static final int QueryRetrieveView = 524371;
+    /**
+     * (0008,0054) AE Retrieve AE Title
+     */
     public static final int RetrieveAETitle = 524372;
+    /**
+     * (0008,0055) AE Station AE Title
+     */
     public static final int StationAETitle = 524373;
+    /**
+     * (0008,0056) CS Instance Availability
+     */
     public static final int InstanceAvailability = 524374;
+    /**
+     * (0008,0058) UI Failed SOP Instance UID List
+     */
     public static final int FailedSOPInstanceUIDList = 524376;
+    /**
+     * (0008,0060) CS Modality
+     */
     public static final int Modality = 524384;
+    /**
+     * (0008,0061) CS Modalities in Study
+     */
     public static final int ModalitiesInStudy = 524385;
+    /**
+     * (0008,0062) UI SOP Classes in Study
+     */
     public static final int SOPClassesInStudy = 524386;
+    /**
+     * (0008,0063) SQ Anatomic Regions in Study Code Sequence
+     */
     public static final int AnatomicRegionsInStudyCodeSequence = 524387;
+    /**
+     * (0008,0064) CS Conversion Type
+     */
     public static final int ConversionType = 524388;
+    /**
+     * (0008,0068) CS Presentation Intent Type
+     */
     public static final int PresentationIntentType = 524392;
+    /**
+     * (0008,0070) LO Manufacturer
+     */
     public static final int Manufacturer = 524400;
+    /**
+     * (0008,0080) LO Institution Name
+     */
     public static final int InstitutionName = 524416;
+    /**
+     * (0008,0081) ST Institution Address
+     */
     public static final int InstitutionAddress = 524417;
+    /**
+     * (0008,0082) SQ Institution Code Sequence
+     */
     public static final int InstitutionCodeSequence = 524418;
+    /**
+     * (0008,0090) PN Referring Physician's Name
+     */
     public static final int ReferringPhysicianName = 524432;
+    /**
+     * (0008,0092) ST Referring Physician's Address
+     */
     public static final int ReferringPhysicianAddress = 524434;
+    /**
+     * (0008,0094) SH Referring Physician's Telephone Numbers
+     */
     public static final int ReferringPhysicianTelephoneNumbers = 524436;
+    /**
+     * (0008,0096) SQ Referring Physician Identification Sequence
+     */
     public static final int ReferringPhysicianIdentificationSequence = 524438;
+    /**
+     * (0008,009C) PN Consulting Physician's Name
+     */
     public static final int ConsultingPhysicianName = 524444;
+    /**
+     * (0008,009D) SQ Consulting Physician Identification Sequence
+     */
     public static final int ConsultingPhysicianIdentificationSequence = 524445;
+    /**
+     * (0008,0100) SH Code Value
+     */
     public static final int CodeValue = 524544;
+    /**
+     * (0008,0101) LO Extended Code Value
+     */
     public static final int ExtendedCodeValue = 524545;
+    /**
+     * (0008,0102) SH Coding Scheme Designator
+     */
     public static final int CodingSchemeDesignator = 524546;
+    /**
+     * (0008,0103) SH Coding Scheme Version
+     */
     public static final int CodingSchemeVersion = 524547;
+    /**
+     * (0008,0104) LO Code Meaning
+     */
     public static final int CodeMeaning = 524548;
+    /**
+     * (0008,0105) CS Mapping Resource
+     */
     public static final int MappingResource = 524549;
+    /**
+     * (0008,0106) DT Context Group Version
+     */
     public static final int ContextGroupVersion = 524550;
+    /**
+     * (0008,0107) DT Context Group Local Version
+     */
     public static final int ContextGroupLocalVersion = 524551;
+    /**
+     * (0008,0108) LT Extended Code Meaning
+     */
     public static final int ExtendedCodeMeaning = 524552;
+    /**
+     * (0008,0109) SQ Coding Scheme Resources Sequence
+     */
     public static final int CodingSchemeResourcesSequence = 524553;
+    /**
+     * (0008,010A) CS Coding Scheme URL Type
+     */
     public static final int CodingSchemeURLType = 524554;
+    /**
+     * (0008,010B) CS Context Group Extension Flag
+     */
     public static final int ContextGroupExtensionFlag = 524555;
+    /**
+     * (0008,010C) UI Coding Scheme UID
+     */
     public static final int CodingSchemeUID = 524556;
+    /**
+     * (0008,010D) UI Context Group Extension Creator UID
+     */
     public static final int ContextGroupExtensionCreatorUID = 524557;
+    /**
+     * (0008,010E) UR Coding Scheme URL
+     */
     public static final int CodingSchemeURL = 524558;
+    /**
+     * (0008,010F) CS Context Identifier
+     */
     public static final int ContextIdentifier = 524559;
+    /**
+     * (0008,0110) SQ Coding Scheme Identification Sequence
+     */
     public static final int CodingSchemeIdentificationSequence = 524560;
+    /**
+     * (0008,0112) LO Coding Scheme Registry
+     */
     public static final int CodingSchemeRegistry = 524562;
+    /**
+     * (0008,0114) ST Coding Scheme External ID
+     */
     public static final int CodingSchemeExternalID = 524564;
+    /**
+     * (0008,0115) ST Coding Scheme Name
+     */
     public static final int CodingSchemeName = 524565;
+    /**
+     * (0008,0116) ST Coding Scheme Responsible Organization
+     */
     public static final int CodingSchemeResponsibleOrganization = 524566;
+    /**
+     * (0008,0117) UI Context UID
+     */
     public static final int ContextUID = 524567;
+    /**
+     * (0008,0118) UI Mapping Resource UID
+     */
     public static final int MappingResourceUID = 524568;
+    /**
+     * (0008,0119) UC Long Code Value
+     */
     public static final int LongCodeValue = 524569;
+    /**
+     * (0008,0120) UR URN Code Value
+     */
     public static final int URNCodeValue = 524576;
+    /**
+     * (0008,0121) SQ Equivalent Code Sequence
+     */
     public static final int EquivalentCodeSequence = 524577;
+    /**
+     * (0008,0122) LO Mapping Resource Name
+     */
     public static final int MappingResourceName = 524578;
+    /**
+     * (0008,0123) SQ Context Group Identification Sequence
+     */
     public static final int ContextGroupIdentificationSequence = 524579;
+    /**
+     * (0008,0124) SQ Mapping Resource Identification Sequence
+     */
     public static final int MappingResourceIdentificationSequence = 524580;
+    /**
+     * (0008,0201) SH Timezone Offset From UTC
+     */
     public static final int TimezoneOffsetFromUTC = 524801;
+    /**
+     * (0008,0220) SQ Responsible Group Code Sequence
+     */
     public static final int ResponsibleGroupCodeSequence = 524832;
+    /**
+     * (0008,0221) CS Equipment Modality
+     */
     public static final int EquipmentModality = 524833;
+    /**
+     * (0008,0222) LO Manufacturer's Related Model Group
+     */
     public static final int ManufacturerRelatedModelGroup = 524834;
+    /**
+     * (0008,0300) SQ Private Data Element Characteristics Sequence
+     */
     public static final int PrivateDataElementCharacteristicsSequence = 525056;
+    /**
+     * (0008,0301) US Private Group Reference
+     */
     public static final int PrivateGroupReference = 525057;
+    /**
+     * (0008,0302) LO Private Creator Reference
+     */
     public static final int PrivateCreatorReference = 525058;
+    /**
+     * (0008,0303) CS Block Identifying Information Status
+     */
     public static final int BlockIdentifyingInformationStatus = 525059;
+    /**
+     * (0008,0304) US Nonidentifying Private Elements
+     */
     public static final int NonidentifyingPrivateElements = 525060;
+    /**
+     * (0008,0306) US Identifying Private Elements
+     */
     public static final int IdentifyingPrivateElements = 525062;
+    /**
+     * (0008,0305) SQ De-identification Action Sequence
+     */
     public static final int DeidentificationActionSequence = 525061;
+    /**
+     * (0008,0307) CS De-identification Action
+     */
     public static final int DeidentificationAction = 525063;
+    /**
+     * (0008,0308) US Private Data Element
+     */
     public static final int PrivateDataElement = 525064;
+    /**
+     * (0008,0309) UL Private Data Element Value Multiplicity
+     */
     public static final int PrivateDataElementValueMultiplicity = 525065;
+    /**
+     * (0008,030A) CS Private Data Element Value Representation
+     */
     public static final int PrivateDataElementValueRepresentation = 525066;
+    /**
+     * (0008,030B) UL Private Data Element Number of Items
+     */
     public static final int PrivateDataElementNumberOfItems = 525067;
+    /**
+     * (0008,030C) UC Private Data Element Name
+     */
     public static final int PrivateDataElementName = 525068;
+    /**
+     * (0008,030D) UC Private Data Element Keyword
+     */
     public static final int PrivateDataElementKeyword = 525069;
+    /**
+     * (0008,030E) UT Private Data Element Description
+     */
     public static final int PrivateDataElementDescription = 525070;
+    /**
+     * (0008,030F) UT Private Data Element Encoding
+     */
     public static final int PrivateDataElementEncoding = 525071;
+    /**
+     * (0008,0310) SQ Private Data Element Definition Sequence
+     */
     public static final int PrivateDataElementDefinitionSequence = 525072;
+    /**
+     * (0008,0400) SQ Scope of Inventory Sequence
+     */
     public static final int ScopeOfInventorySequence = 525312;
+    /**
+     * (0008,0401) CS Inventory Purpose
+     */
     public static final int InventoryPurpose = 525313;
+    /**
+     * (0008,0402) LT Inventory Instance Description
+     */
     public static final int InventoryInstanceDescription = 525314;
+    /**
+     * (0008,0403) CS Inventory Level
+     */
     public static final int InventoryLevel = 525315;
+    /**
+     * (0008,0404) DT Item Inventory DateTime
+     */
     public static final int ItemInventoryDateTime = 525316;
+    /**
+     * (0008,0405) CS Removed From Operational Use
+     */
     public static final int RemovedFromOperationalUse = 525317;
+    /**
+     * (0008,0406) SQ Reason for Removal Code Sequence
+     */
     public static final int ReasonForRemovalCodeSequence = 525318;
+    /**
+     * (0008,0407) UR Stored Instance Base URI
+     */
     public static final int StoredInstanceBaseURI = 525319;
+    /**
+     * (0008,0408) UR Folder Access URI
+     */
     public static final int FolderAccessURI = 525320;
+    /**
+     * (0008,0409) UR File Access URI
+     */
     public static final int FileAccessURI = 525321;
+    /**
+     * (0008,040A) CS Container File Type
+     */
     public static final int ContainerFileType = 525322;
+    /**
+     * (0008,040B) LO Filename in Container
+     */
     public static final int FilenameInContainer = 525323;
+    /**
+     * (0008,040C) UL File Offset in Container
+     */
     public static final int FileOffsetInContainer = 525324;
+    /**
+     * (0008,040D) UL File Length in Container
+     */
     public static final int FileLengthInContainer = 525325;
+    /**
+     * (0008,040E) UI Stored Instance Transfer Syntax UID
+     */
     public static final int StoredInstanceTransferSyntaxUID = 525326;
+    /**
+     * (0008,040F) CS Extended Matching Mechanisms
+     */
     public static final int ExtendedMatchingMechanisms = 525327;
+    /**
+     * (0008,0410) SQ Range Matching Sequence
+     */
     public static final int RangeMatchingSequence = 525328;
+    /**
+     * (0008,0411) SQ List of UID Matching Sequence
+     */
     public static final int ListOfUIDMatchingSequence = 525329;
+    /**
+     * (0008,0412) SQ Empty Value Matching Sequence
+     */
     public static final int EmptyValueMatchingSequence = 525330;
+    /**
+     * (0008,0413) SQ General Matching Sequence
+     */
     public static final int GeneralMatchingSequence = 525331;
+    /**
+     * (0008,0414) US Requested Status Interval
+     */
     public static final int RequestedStatusInterval = 525332;
+    /**
+     * (0008,0415) CS Retain Instances
+     */
     public static final int RetainInstances = 525333;
+    /**
+     * (0008,0416) DT Expiration DateTime
+     */
     public static final int ExpirationDateTime = 525334;
+    /**
+     * (0008,0417) CS Transaction Status
+     */
     public static final int TransactionStatus = 525335;
+    /**
+     * (0008,0418) LT Transaction Status Comment
+     */
     public static final int TransactionStatusComment = 525336;
+    /**
+     * (0008,0419) SQ File Set Access Sequence
+     */
     public static final int FileSetAccessSequence = 525337;
+    /**
+     * (0008,041A) SQ File Access Sequence
+     */
     public static final int FileAccessSequence = 525338;
+    /**
+     * (0008,041B) OB Record Key
+     */
     public static final int RecordKey = 525339;
+    /**
+     * (0008,041C) OB Prior Record Key
+     */
     public static final int PriorRecordKey = 525340;
+    /**
+     * (0008,041D) SQ Metadata Sequence
+     */
     public static final int MetadataSequence = 525341;
+    /**
+     * (0008,041E) SQ Updated Metadata Sequence
+     */
     public static final int UpdatedMetadataSequence = 525342;
+    /**
+     * (0008,041F) DT Study Update DateTime
+     */
     public static final int StudyUpdateDateTime = 525343;
+    /**
+     * (0008,0420) SQ Inventory Access End Points Sequence
+     */
     public static final int InventoryAccessEndPointsSequence = 525344;
+    /**
+     * (0008,0421) SQ Study Access End Points Sequence
+     */
     public static final int StudyAccessEndPointsSequence = 525345;
+    /**
+     * (0008,0422) SQ Incorporated Inventory Instance Sequence
+     */
     public static final int IncorporatedInventoryInstanceSequence = 525346;
+    /**
+     * (0008,0423) SQ Inventoried Studies Sequence
+     */
     public static final int InventoriedStudiesSequence = 525347;
+    /**
+     * (0008,0424) SQ Inventoried Series Sequence
+     */
     public static final int InventoriedSeriesSequence = 525348;
+    /**
+     * (0008,0425) SQ Inventoried Instances Sequence
+     */
     public static final int InventoriedInstancesSequence = 525349;
+    /**
+     * (0008,0426) CS Inventory Completion Status
+     */
     public static final int InventoryCompletionStatus = 525350;
+    /**
+     * (0008,0427) UL Number of Study Records in Instance
+     */
     public static final int NumberOfStudyRecordsInInstance = 525351;
+    /**
+     * (0008,0428) UL Total Number of Study Records
+     */
     public static final int TotalNumberOfStudyRecords = 525352;
+    /**
+     * (0008,0429) US Maximum Number of Records
+     */
     public static final int MaximumNumberOfRecords = 525353;
+    /**
+     * (0008,1000) LO Network ID
+     */
     public static final int NetworkID = 528384;
+    /**
+     * (0008,1010) SH Station Name
+     */
     public static final int StationName = 528400;
+    /**
+     * (0008,1030) LO Study Description
+     */
     public static final int StudyDescription = 528432;
+    /**
+     * (0008,1032) SQ Procedure Code Sequence
+     */
     public static final int ProcedureCodeSequence = 528434;
+    /**
+     * (0008,103E) LO Series Description
+     */
     public static final int SeriesDescription = 528446;
+    /**
+     * (0008,103F) SQ Series Description Code Sequence
+     */
     public static final int SeriesDescriptionCodeSequence = 528447;
+    /**
+     * (0008,1040) LO Institutional Department Name
+     */
     public static final int InstitutionalDepartmentName = 528448;
+    /**
+     * (0008,1041) SQ Institutional Department Type Code Sequence
+     */
     public static final int InstitutionalDepartmentTypeCodeSequence = 528449;
+    /**
+     * (0008,1048) PN Physician(s) of Record
+     */
     public static final int PhysiciansOfRecord = 528456;
+    /**
+     * (0008,1049) SQ Physician(s) of Record Identification Sequence
+     */
     public static final int PhysiciansOfRecordIdentificationSequence = 528457;
+    /**
+     * (0008,1050) PN Performing Physician's Name
+     */
     public static final int PerformingPhysicianName = 528464;
+    /**
+     * (0008,1052) SQ Performing Physician Identification Sequence
+     */
     public static final int PerformingPhysicianIdentificationSequence = 528466;
+    /**
+     * (0008,1060) PN Name of Physician(s) Reading Study
+     */
     public static final int NameOfPhysiciansReadingStudy = 528480;
+    /**
+     * (0008,1062) SQ Physician(s) Reading Study Identification Sequence
+     */
     public static final int PhysiciansReadingStudyIdentificationSequence = 528482;
+    /**
+     * (0008,1070) PN Operator's Name
+     */
     public static final int OperatorsName = 528496;
+    /**
+     * (0008,1072) SQ Operator Identification Sequence
+     */
     public static final int OperatorIdentificationSequence = 528498;
+    /**
+     * (0008,1080) LO Admitting Diagnoses Description
+     */
     public static final int AdmittingDiagnosesDescription = 528512;
+    /**
+     * (0008,1084) SQ Admitting Diagnoses Code Sequence
+     */
     public static final int AdmittingDiagnosesCodeSequence = 528516;
+    /**
+     * (0008,1088) LO Pyramid Description
+     */
     public static final int PyramidDescription = 528520;
+    /**
+     * (0008,1090) LO Manufacturer's Model Name
+     */
     public static final int ManufacturerModelName = 528528;
+    /**
+     * (0008,1100) SQ Referenced Results Sequence
+     */
     public static final int ReferencedResultsSequence = 528640;
+    /**
+     * (0008,1110) SQ Referenced Study Sequence
+     */
     public static final int ReferencedStudySequence = 528656;
+    /**
+     * (0008,1111) SQ Referenced Performed Procedure Step Sequence
+     */
     public static final int ReferencedPerformedProcedureStepSequence = 528657;
+    /**
+     * (0008,1112) SQ Referenced Instances by SOP Class Sequence
+     */
     public static final int ReferencedInstancesBySOPClassSequence = 528658;
+    /**
+     * (0008,1115) SQ Referenced Series Sequence
+     */
     public static final int ReferencedSeriesSequence = 528661;
+    /**
+     * (0008,1120) SQ Referenced Patient Sequence
+     */
     public static final int ReferencedPatientSequence = 528672;
+    /**
+     * (0008,1125) SQ Referenced Visit Sequence
+     */
     public static final int ReferencedVisitSequence = 528677;
+    /**
+     * (0008,1130) SQ Referenced Overlay Sequence
+     */
     public static final int ReferencedOverlaySequence = 528688;
+    /**
+     * (0008,1134) SQ Referenced Stereometric Instance Sequence
+     */
     public static final int ReferencedStereometricInstanceSequence = 528692;
+    /**
+     * (0008,113A) SQ Referenced Waveform Sequence
+     */
     public static final int ReferencedWaveformSequence = 528698;
+    /**
+     * (0008,1140) SQ Referenced Image Sequence
+     */
     public static final int ReferencedImageSequence = 528704;
+    /**
+     * (0008,1145) SQ Referenced Curve Sequence
+     */
     public static final int ReferencedCurveSequence = 528709;
+    /**
+     * (0008,114A) SQ Referenced Instance Sequence
+     */
     public static final int ReferencedInstanceSequence = 528714;
+    /**
+     * (0008,114B) SQ Referenced Real World Value Mapping Instance Sequence
+     */
     public static final int ReferencedRealWorldValueMappingInstanceSequence = 528715;
+    /**
+     * (0008,1150) UI Referenced SOP Class UID
+     */
     public static final int ReferencedSOPClassUID = 528720;
+    /**
+     * (0008,1155) UI Referenced SOP Instance UID
+     */
     public static final int ReferencedSOPInstanceUID = 528725;
+    /**
+     * (0008,1156) SQ Definition Source Sequence
+     */
     public static final int DefinitionSourceSequence = 528726;
+    /**
+     * (0008,115A) UI SOP Classes Supported
+     */
     public static final int SOPClassesSupported = 528730;
+    /**
+     * (0008,1160) IS Referenced Frame Number
+     */
     public static final int ReferencedFrameNumber = 528736;
+    /**
+     * (0008,1161) US Simple Frame List
+     */
     public static final int SimpleFrameList = 528737;
+    /**
+     * (0008,1162) UL Calculated Frame List
+     */
     public static final int CalculatedFrameList = 528738;
+    /**
+     * (0008,1163) FD Time Range
+     */
     public static final int TimeRange = 528739;
+    /**
+     * (0008,1164) SQ Frame Extraction Sequence
+     */
     public static final int FrameExtractionSequence = 528740;
+    /**
+     * (0008,1167) UI Multi-frame Source SOP Instance UID
+     */
     public static final int MultiFrameSourceSOPInstanceUID = 528743;
+    /**
+     * (0008,1190) UR Retrieve URL
+     */
     public static final int RetrieveURL = 528784;
+    /**
+     * (0008,1195) UI Transaction UID
+     */
     public static final int TransactionUID = 528789;
+    /**
+     * (0008,1196) US Warning Reason
+     */
     public static final int WarningReason = 528790;
+    /**
+     * (0008,1197) US Failure Reason
+     */
     public static final int FailureReason = 528791;
+    /**
+     * (0008,1198) SQ Failed SOP Sequence
+     */
     public static final int FailedSOPSequence = 528792;
+    /**
+     * (0008,1199) SQ Referenced SOP Sequence
+     */
     public static final int ReferencedSOPSequence = 528793;
+    /**
+     * (0008,119A) SQ Other Failures Sequence
+     */
     public static final int OtherFailuresSequence = 528794;
+    /**
+     * (0008,119B) SQ Failed Study Sequence
+     */
     public static final int FailedStudySequence = 528795;
+    /**
+     * (0008,1250) SQ Studies Containing Other Referenced Instances Sequence
+     */
     public static final int StudiesContainingOtherReferencedInstancesSequence = 528896;
+    /**
+     * (0008,1290) SQ Related Series Sequence
+     */
     public static final int RelatedSeriesSequence = 528976;
+    /**
+     * (0008,2110) CS Lossy Image Compression (Retired)
+     */
     public static final int LossyImageCompressionRetired = 532752;
+    /**
+     * (0008,2111) ST Derivation Description
+     */
     public static final int DerivationDescription = 532753;
+    /**
+     * (0008,2112) SQ Source Image Sequence
+     */
     public static final int SourceImageSequence = 532754;
+    /**
+     * (0008,2120) SH Stage Name
+     */
     public static final int StageName = 532768;
+    /**
+     * (0008,2122) IS Stage Number
+     */
     public static final int StageNumber = 532770;
+    /**
+     * (0008,2124) IS Number of Stages
+     */
     public static final int NumberOfStages = 532772;
+    /**
+     * (0008,2127) SH View Name
+     */
     public static final int ViewName = 532775;
+    /**
+     * (0008,2128) IS View Number
+     */
     public static final int ViewNumber = 532776;
+    /**
+     * (0008,2129) IS Number of Event Timers
+     */
     public static final int NumberOfEventTimers = 532777;
+    /**
+     * (0008,212A) IS Number of Views in Stage
+     */
     public static final int NumberOfViewsInStage = 532778;
+    /**
+     * (0008,2130) DS Event Elapsed Time(s)
+     */
     public static final int EventElapsedTimes = 532784;
+    /**
+     * (0008,2132) LO Event Timer Name(s)
+     */
     public static final int EventTimerNames = 532786;
+    /**
+     * (0008,2133) SQ Event Timer Sequence
+     */
     public static final int EventTimerSequence = 532787;
+    /**
+     * (0008,2134) FD Event Time Offset
+     */
     public static final int EventTimeOffset = 532788;
+    /**
+     * (0008,2135) SQ Event Code Sequence
+     */
     public static final int EventCodeSequence = 532789;
+    /**
+     * (0008,2142) IS Start Trim
+     */
     public static final int StartTrim = 532802;
+    /**
+     * (0008,2143) IS Stop Trim
+     */
     public static final int StopTrim = 532803;
+    /**
+     * (0008,2144) IS Recommended Display Frame Rate
+     */
     public static final int RecommendedDisplayFrameRate = 532804;
+    /**
+     * (0008,2200) CS Transducer Position
+     */
     public static final int TransducerPosition = 532992;
+    /**
+     * (0008,2204) CS Transducer Orientation
+     */
     public static final int TransducerOrientation = 532996;
+    /**
+     * (0008,2208) CS Anatomic Structure
+     */
     public static final int AnatomicStructure = 533000;
+    /**
+     * (0008,2218) SQ Anatomic Region Sequence
+     */
     public static final int AnatomicRegionSequence = 533016;
+    /**
+     * (0008,2220) SQ Anatomic Region Modifier Sequence
+     */
     public static final int AnatomicRegionModifierSequence = 533024;
+    /**
+     * (0008,2228) SQ Primary Anatomic Structure Sequence
+     */
     public static final int PrimaryAnatomicStructureSequence = 533032;
+    /**
+     * (0008,2229) SQ Anatomic Structure, Space or Region Sequence
+     */
     public static final int AnatomicStructureSpaceOrRegionSequence = 533033;
+    /**
+     * (0008,2230) SQ Primary Anatomic Structure Modifier Sequence
+     */
     public static final int PrimaryAnatomicStructureModifierSequence = 533040;
+    /**
+     * (0008,2240) SQ Transducer Position Sequence
+     */
     public static final int TransducerPositionSequence = 533056;
+    /**
+     * (0008,2242) SQ Transducer Position Modifier Sequence
+     */
     public static final int TransducerPositionModifierSequence = 533058;
+    /**
+     * (0008,2244) SQ Transducer Orientation Sequence
+     */
     public static final int TransducerOrientationSequence = 533060;
+    /**
+     * (0008,2246) SQ Transducer Orientation Modifier Sequence
+     */
     public static final int TransducerOrientationModifierSequence = 533062;
+    /**
+     * (0008,2251) SQ Anatomic Structure Space or Region Code Sequence (Trial)
+     */
     public static final int AnatomicStructureSpaceOrRegionCodeSequenceTrial = 533073;
+    /**
+     * (0008,2253) SQ Anatomic Portal of Entrance Code Sequence (Trial)
+     */
     public static final int AnatomicPortalOfEntranceCodeSequenceTrial = 533075;
+    /**
+     * (0008,2255) SQ Anatomic Approach Direction Code Sequence (Trial)
+     */
     public static final int AnatomicApproachDirectionCodeSequenceTrial = 533077;
+    /**
+     * (0008,2256) ST Anatomic Perspective Description (Trial)
+     */
     public static final int AnatomicPerspectiveDescriptionTrial = 533078;
+    /**
+     * (0008,2257) SQ Anatomic Perspective Code Sequence (Trial)
+     */
     public static final int AnatomicPerspectiveCodeSequenceTrial = 533079;
+    /**
+     * (0008,2258) ST Anatomic Location of Examining Instrument Description (Trial)
+     */
     public static final int AnatomicLocationOfExaminingInstrumentDescriptionTrial = 533080;
+    /**
+     * (0008,2259) SQ Anatomic Location of Examining Instrument Code Sequence (Trial)
+     */
     public static final int AnatomicLocationOfExaminingInstrumentCodeSequenceTrial = 533081;
+    /**
+     * (0008,225A) SQ Anatomic Structure Space or Region Modifier Code Sequence (Trial)
+     */
     public static final int AnatomicStructureSpaceOrRegionModifierCodeSequenceTrial = 533082;
+    /**
+     * (0008,225C) SQ On Axis Background Anatomic Structure Code Sequence (Trial)
+     */
     public static final int OnAxisBackgroundAnatomicStructureCodeSequenceTrial = 533084;
+    /**
+     * (0008,9001) SQ Alternate Representation Sequence
+     */
     public static final int AlternateRepresentationSequence = 536577;
+    /**
+     * (0008,9002) UI Available Transfer Syntax UID
+     */
     public static final int AvailableTransferSyntaxUID = 536578;
+    /**
+     * (0008,9010) UI Irradiation Event UID
+     */
     public static final int IrradiationEventUID = 536592;
+    /**
+     * (0008,9011) SQ Source Irradiation Event Sequence
+     */
     public static final int SourceIrradiationEventSequence = 536593;
+    /**
+     * (0008,9012) UI Radiopharmaceutical Administration Event UID
+     */
     public static final int RadiopharmaceuticalAdministrationEventUID = 536594;
+    /**
+     * (0008,9200) ST Identifying Comments
+     */
     public static final int IdentifyingComments = 540672;
+    /**
+     * (0008,9207) CS Frame Type
+     */
     public static final int FrameType = 561159;
+    /**
+     * (0008,9292) SQ Referenced Image Evidence Sequence
+     */
     public static final int ReferencedImageEvidenceSequence = 561298;
+    /**
+     * (0008,9401) SQ Referenced Raw Data Sequence
+     */
     public static final int ReferencedRawDataSequence = 561441;
+    /**
+     * (0008,9403) UI Creator-Version UID
+     */
     public static final int CreatorVersionUID = 561443;
+    /**
+     * (0008,9404) SQ Derivation Image Sequence
+     */
     public static final int DerivationImageSequence = 561444;
+    /**
+     * (0008,9434) SQ Source Image Evidence Sequence
+     */
     public static final int SourceImageEvidenceSequence = 561492;
+    /**
+     * (0008,9455) CS Pixel Presentation
+     */
     public static final int PixelPresentation = 561669;
+    /**
+     * (0008,9456) CS Volumetric Properties
+     */
     public static final int VolumetricProperties = 561670;
+    /**
+     * (0008,9457) CS Volume Based Calculation Technique
+     */
     public static final int VolumeBasedCalculationTechnique = 561671;
+    /**
+     * (0008,9458) CS Complex Image Component
+     */
     public static final int ComplexImageComponent = 561672;
+    /**
+     * (0008,9459) CS Acquisition Contrast
+     */
     public static final int AcquisitionContrast = 561673;
+    /**
+     * (0008,9465) SQ Derivation Code Sequence
+     */
     public static final int DerivationCodeSequence = 561685;
+    /**
+     * (0008,947F) SQ Referenced Presentation State Sequence
+     */
     public static final int ReferencedPresentationStateSequence = 561719;
+    /**
+     * (0008,9610) SQ Referenced Other Plane Sequence
+     */
     public static final int ReferencedOtherPlaneSequence = 562192;
+    /**
+     * (0008,9658) SQ Frame Display Sequence
+     */
     public static final int FrameDisplaySequence = 562264;
+    /**
+     * (0008,9659) FL Recommended Display Frame Rate in Float
+     */
     public static final int RecommendedDisplayFrameRateInFloat = 562265;
+    /**
+     * (0008,9660) CS Skip Frame Range Flag
+     */
     public static final int SkipFrameRangeFlag = 562272;
+    /**
+     * (0010,0010) PN Patient's Name
+     */
     public static final int PatientName = 1048592;
+    /**
+     * (0010,0020) LO Patient ID
+     */
     public static final int PatientID = 1048608;
+    /**
+     * (0010,0021) LO Issuer of Patient ID
+     */
     public static final int IssuerOfPatientID = 1048609;
+    /**
+     * (0010,0022) CS Type of Patient ID
+     */
     public static final int TypeOfPatientID = 1048610;
+    /**
+     * (0010,0024) SQ Issuer of Patient ID Qualifiers Sequence
+     */
     public static final int IssuerOfPatientIDQualifiersSequence = 1048612;
+    /**
+     * (0010,0026) SQ Source Patient Group Identification Sequence
+     */
     public static final int SourcePatientGroupIdentificationSequence = 1048614;
+    /**
+     * (0010,0027) SQ Group of Patients Identification Sequence
+     */
     public static final int GroupOfPatientsIdentificationSequence = 1048615;
+    /**
+     * (0010,0028) US Subject Relative Position in Image
+     */
     public static final int SubjectRelativePositionInImage = 1048616;
+    /**
+     * (0010,0030) DA Patient's Birth Date
+     */
     public static final int PatientBirthDate = 1048624;
+    /**
+     * (0010,0032) TM Patient's Birth Time
+     */
     public static final int PatientBirthTime = 1048626;
+    /**
+     * (0010,0033) LO Patient's Birth Date in Alternative Calendar
+     */
     public static final int PatientBirthDateInAlternativeCalendar = 1048627;
+    /**
+     * (0010,0034) LO Patient's Death Date in Alternative Calendar
+     */
     public static final int PatientDeathDateInAlternativeCalendar = 1048628;
+    /**
+     * (0010,0035) CS Patient's Alternative Calendar
+     */
     public static final int PatientAlternativeCalendar = 1048629;
+    /**
+     * (0010,0040) CS Patient's Sex
+     */
     public static final int PatientSex = 1048640;
+    /**
+     * (0010,0050) SQ Patient's Insurance Plan Code Sequence
+     */
     public static final int PatientInsurancePlanCodeSequence = 1048656;
+    /**
+     * (0010,0101) SQ Patient Primary Language Code Sequence
+     */
     public static final int PatientPrimaryLanguageCodeSequence = 1048833;
+    /**
+     * (0010,0102) SQ Patient Primary Language Modifier Code Sequence
+     */
     public static final int PatientPrimaryLanguageModifierCodeSequence = 1048834;
+    /**
+     * (0010,0200) CS Quality Control Subject
+     */
     public static final int QualityControlSubject = 1049088;
+    /**
+     * (0010,0201) SQ Quality Control Subject Type Code Sequence
+     */
     public static final int QualityControlSubjectTypeCodeSequence = 1049089;
+    /**
+     * (0010,0212) LO Strain Description
+     */
     public static final int StrainDescription = 1049106;
+    /**
+     * (0010,0213) LO Strain Nomenclature
+     */
     public static final int StrainNomenclature = 1049107;
+    /**
+     * (0010,0214) LO Strain Stock Number
+     */
     public static final int StrainStockNumber = 1049108;
+    /**
+     * (0010,0215) SQ Strain Source Registry Code Sequence
+     */
     public static final int StrainSourceRegistryCodeSequence = 1049109;
+    /**
+     * (0010,0216) SQ Strain Stock Sequence
+     */
     public static final int StrainStockSequence = 1049110;
+    /**
+     * (0010,0217) LO Strain Source
+     */
     public static final int StrainSource = 1049111;
+    /**
+     * (0010,0218) UT Strain Additional Information
+     */
     public static final int StrainAdditionalInformation = 1049112;
+    /**
+     * (0010,0219) SQ Strain Code Sequence
+     */
     public static final int StrainCodeSequence = 1049113;
+    /**
+     * (0010,0221) SQ Genetic Modifications Sequence
+     */
     public static final int GeneticModificationsSequence = 1049121;
+    /**
+     * (0010,0222) LO Genetic Modifications Description
+     */
     public static final int GeneticModificationsDescription = 1049122;
+    /**
+     * (0010,0223) LO Genetic Modifications Nomenclature
+     */
     public static final int GeneticModificationsNomenclature = 1049123;
+    /**
+     * (0010,0229) SQ Genetic Modifications Code Sequence
+     */
     public static final int GeneticModificationsCodeSequence = 1049129;
+    /**
+     * (0010,1000) LO Other Patient IDs
+     */
     public static final int OtherPatientIDs = 1052672;
+    /**
+     * (0010,1001) PN Other Patient Names
+     */
     public static final int OtherPatientNames = 1052673;
+    /**
+     * (0010,1002) SQ Other Patient IDs Sequence
+     */
     public static final int OtherPatientIDsSequence = 1052674;
+    /**
+     * (0010,1005) PN Patient's Birth Name
+     */
     public static final int PatientBirthName = 1052677;
+    /**
+     * (0010,1010) AS Patient's Age
+     */
     public static final int PatientAge = 1052688;
+    /**
+     * (0010,1020) DS Patient's Size
+     */
     public static final int PatientSize = 1052704;
+    /**
+     * (0010,1021) SQ Patient's Size Code Sequence
+     */
     public static final int PatientSizeCodeSequence = 1052705;
+    /**
+     * (0010,1022) DS Patient's Body Mass Index
+     */
     public static final int PatientBodyMassIndex = 1052706;
+    /**
+     * (0010,1023) DS Measured AP Dimension
+     */
     public static final int MeasuredAPDimension = 1052707;
+    /**
+     * (0010,1024) DS Measured Lateral Dimension
+     */
     public static final int MeasuredLateralDimension = 1052708;
+    /**
+     * (0010,1030) DS Patient's Weight
+     */
     public static final int PatientWeight = 1052720;
+    /**
+     * (0010,1040) LO Patient's Address
+     */
     public static final int PatientAddress = 1052736;
+    /**
+     * (0010,1050) LO Insurance Plan Identification
+     */
     public static final int InsurancePlanIdentification = 1052752;
+    /**
+     * (0010,1060) PN Patient's Mother's Birth Name
+     */
     public static final int PatientMotherBirthName = 1052768;
+    /**
+     * (0010,1080) LO Military Rank
+     */
     public static final int MilitaryRank = 1052800;
+    /**
+     * (0010,1081) LO Branch of Service
+     */
     public static final int BranchOfService = 1052801;
+    /**
+     * (0010,1090) LO Medical Record Locator
+     */
     public static final int MedicalRecordLocator = 1052816;
+    /**
+     * (0010,1100) SQ Referenced Patient Photo Sequence
+     */
     public static final int ReferencedPatientPhotoSequence = 1052928;
+    /**
+     * (0010,2000) LO Medical Alerts
+     */
     public static final int MedicalAlerts = 1056768;
+    /**
+     * (0010,2110) LO Allergies
+     */
     public static final int Allergies = 1057040;
+    /**
+     * (0010,2150) LO Country of Residence
+     */
     public static final int CountryOfResidence = 1057104;
+    /**
+     * (0010,2152) LO Region of Residence
+     */
     public static final int RegionOfResidence = 1057106;
+    /**
+     * (0010,2154) SH Patient's Telephone Numbers
+     */
     public static final int PatientTelephoneNumbers = 1057108;
+    /**
+     * (0010,2155) LT Patient's Telecom Information
+     */
     public static final int PatientTelecomInformation = 1057109;
+    /**
+     * (0010,2160) SH Ethnic Group
+     */
     public static final int EthnicGroup = 1057120;
+    /**
+     * (0010,2180) SH Occupation
+     */
     public static final int Occupation = 1057152;
+    /**
+     * (0010,21A0) CS Smoking Status
+     */
     public static final int SmokingStatus = 1057184;
+    /**
+     * (0010,21B0) LT Additional Patient History
+     */
     public static final int AdditionalPatientHistory = 1057200;
+    /**
+     * (0010,21C0) US Pregnancy Status
+     */
     public static final int PregnancyStatus = 1057216;
+    /**
+     * (0010,21D0) DA Last Menstrual Date
+     */
     public static final int LastMenstrualDate = 1057232;
+    /**
+     * (0010,21F0) LO Patient's Religious Preference
+     */
     public static final int PatientReligiousPreference = 1057264;
+    /**
+     * (0010,2201) LO Patient Species Description
+     */
     public static final int PatientSpeciesDescription = 1057281;
+    /**
+     * (0010,2202) SQ Patient Species Code Sequence
+     */
     public static final int PatientSpeciesCodeSequence = 1057282;
+    /**
+     * (0010,2203) CS Patient's Sex Neutered
+     */
     public static final int PatientSexNeutered = 1057283;
+    /**
+     * (0010,2210) CS Anatomical Orientation Type
+     */
     public static final int AnatomicalOrientationType = 1057296;
+    /**
+     * (0010,2292) LO Patient Breed Description
+     */
     public static final int PatientBreedDescription = 1057426;
+    /**
+     * (0010,2293) SQ Patient Breed Code Sequence
+     */
     public static final int PatientBreedCodeSequence = 1057427;
+    /**
+     * (0010,2294) SQ Breed Registration Sequence
+     */
     public static final int BreedRegistrationSequence = 1057428;
+    /**
+     * (0010,2295) LO Breed Registration Number
+     */
     public static final int BreedRegistrationNumber = 1057429;
+    /**
+     * (0010,2296) SQ Breed Registry Code Sequence
+     */
     public static final int BreedRegistryCodeSequence = 1057430;
+    /**
+     * (0010,2297) PN Responsible Person
+     */
     public static final int ResponsiblePerson = 1057431;
+    /**
+     * (0010,2298) CS Responsible Person Role
+     */
     public static final int ResponsiblePersonRole = 1057432;
+    /**
+     * (0010,2299) LO Responsible Organization
+     */
     public static final int ResponsibleOrganization = 1057433;
+    /**
+     * (0010,4000) LT Patient Comments
+     */
     public static final int PatientComments = 1064960;
+    /**
+     * (0010,9431) FL Examined Body Thickness
+     */
     public static final int ExaminedBodyThickness = 1086513;
+    /**
+     * (0012,0010) LO Clinical Trial Sponsor Name
+     */
     public static final int ClinicalTrialSponsorName = 1179664;
+    /**
+     * (0012,0020) LO Clinical Trial Protocol ID
+     */
     public static final int ClinicalTrialProtocolID = 1179680;
+    /**
+     * (0012,0021) LO Clinical Trial Protocol Name
+     */
     public static final int ClinicalTrialProtocolName = 1179681;
+    /**
+     * (0012,0022) LO Issuer of Clinical Trial Protocol ID
+     */
     public static final int IssuerOfClinicalTrialProtocolID = 1179682;
+    /**
+     * (0012,0023) SQ Other Clinical Trial Protocol IDs Sequence
+     */
     public static final int OtherClinicalTrialProtocolIDsSequence = 1179683;
+    /**
+     * (0012,0030) LO Clinical Trial Site ID
+     */
     public static final int ClinicalTrialSiteID = 1179696;
+    /**
+     * (0012,0031) LO Clinical Trial Site Name
+     */
     public static final int ClinicalTrialSiteName = 1179697;
+    /**
+     * (0012,0032) LO Issuer of Clinical Trial Site ID
+     */
     public static final int IssuerOfClinicalTrialSiteID = 1179698;
+    /**
+     * (0012,0040) LO Clinical Trial Subject ID
+     */
     public static final int ClinicalTrialSubjectID = 1179712;
+    /**
+     * (0012,0041) LO Issuer of Clinical Trial Subject ID
+     */
     public static final int IssuerOfClinicalTrialSubjectID = 1179713;
+    /**
+     * (0012,0042) LO Clinical Trial Subject Reading ID
+     */
     public static final int ClinicalTrialSubjectReadingID = 1179714;
+    /**
+     * (0012,0043) LO Issuer of Clinical Trial Subject Reading ID
+     */
     public static final int IssuerOfClinicalTrialSubjectReadingID = 1179715;
+    /**
+     * (0012,0050) LO Clinical Trial Time Point ID
+     */
     public static final int ClinicalTrialTimePointID = 1179728;
+    /**
+     * (0012,0051) ST Clinical Trial Time Point Description
+     */
     public static final int ClinicalTrialTimePointDescription = 1179729;
+    /**
+     * (0012,0052) FD Longitudinal Temporal Offset from Event
+     */
     public static final int LongitudinalTemporalOffsetFromEvent = 1179730;
+    /**
+     * (0012,0053) CS Longitudinal Temporal Event Type
+     */
     public static final int LongitudinalTemporalEventType = 1179731;
+    /**
+     * (0012,0054) SQ Clinical Trial Time Point Type Code Sequence
+     */
     public static final int ClinicalTrialTimePointTypeCodeSequence = 1179732;
+    /**
+     * (0012,0055) LO Issuer of Clinical Trial Time Point ID
+     */
     public static final int IssuerOfClinicalTrialTimePointID = 1179733;
+    /**
+     * (0012,0060) LO Clinical Trial Coordinating Center Name
+     */
     public static final int ClinicalTrialCoordinatingCenterName = 1179744;
+    /**
+     * (0012,0062) CS Patient Identity Removed
+     */
     public static final int PatientIdentityRemoved = 1179746;
+    /**
+     * (0012,0063) LO De-identification Method
+     */
     public static final int DeidentificationMethod = 1179747;
+    /**
+     * (0012,0064) SQ De-identification Method Code Sequence
+     */
     public static final int DeidentificationMethodCodeSequence = 1179748;
+    /**
+     * (0012,0071) LO Clinical Trial Series ID
+     */
     public static final int ClinicalTrialSeriesID = 1179761;
+    /**
+     * (0012,0072) LO Clinical Trial Series Description
+     */
     public static final int ClinicalTrialSeriesDescription = 1179762;
+    /**
+     * (0012,0073) LO Issuer of Clinical Trial Series ID
+     */
     public static final int IssuerOfClinicalTrialSeriesID = 1179763;
+    /**
+     * (0012,0081) LO Clinical Trial Protocol Ethics Committee Name
+     */
     public static final int ClinicalTrialProtocolEthicsCommitteeName = 1179777;
+    /**
+     * (0012,0082) LO Clinical Trial Protocol Ethics Committee Approval Number
+     */
     public static final int ClinicalTrialProtocolEthicsCommitteeApprovalNumber = 1179778;
+    /**
+     * (0012,0083) SQ Consent for Clinical Trial Use Sequence
+     */
     public static final int ConsentForClinicalTrialUseSequence = 1179779;
+    /**
+     * (0012,0084) CS Distribution Type
+     */
     public static final int DistributionType = 1179780;
+    /**
+     * (0012,0085) CS Consent for Distribution Flag
+     */
     public static final int ConsentForDistributionFlag = 1179781;
+    /**
+     * (0012,0086) DA Ethics Committee Approval Effectiveness Start Date
+     */
     public static final int EthicsCommitteeApprovalEffectivenessStartDate = 1179782;
+    /**
+     * (0012,0087) DA Ethics Committee Approval Effectiveness End Date
+     */
     public static final int EthicsCommitteeApprovalEffectivenessEndDate = 1179783;
+    /**
+     * (0014,0023) ST CAD File Format
+     */
     public static final int CADFileFormat = 1310755;
+    /**
+     * (0014,0024) ST Component Reference System
+     */
     public static final int ComponentReferenceSystem = 1310756;
+    /**
+     * (0014,0025) ST Component Manufacturing Procedure
+     */
     public static final int ComponentManufacturingProcedure = 1310757;
+    /**
+     * (0014,0028) ST Component Manufacturer
+     */
     public static final int ComponentManufacturer = 1310760;
+    /**
+     * (0014,0030) DS Material Thickness
+     */
     public static final int MaterialThickness = 1310768;
+    /**
+     * (0014,0032) DS Material Pipe Diameter
+     */
     public static final int MaterialPipeDiameter = 1310770;
+    /**
+     * (0014,0034) DS Material Isolation Diameter
+     */
     public static final int MaterialIsolationDiameter = 1310772;
+    /**
+     * (0014,0042) ST Material Grade
+     */
     public static final int MaterialGrade = 1310786;
+    /**
+     * (0014,0044) ST Material Properties Description
+     */
     public static final int MaterialPropertiesDescription = 1310788;
+    /**
+     * (0014,0045) ST Material Properties File Format (Retired)
+     */
     public static final int MaterialPropertiesFileFormatRetired = 1310789;
+    /**
+     * (0014,0046) LT Material Notes
+     */
     public static final int MaterialNotes = 1310790;
+    /**
+     * (0014,0050) CS Component Shape
+     */
     public static final int ComponentShape = 1310800;
+    /**
+     * (0014,0052) CS Curvature Type
+     */
     public static final int CurvatureType = 1310802;
+    /**
+     * (0014,0054) DS Outer Diameter
+     */
     public static final int OuterDiameter = 1310804;
+    /**
+     * (0014,0056) DS Inner Diameter
+     */
     public static final int InnerDiameter = 1310806;
+    /**
+     * (0014,0100) LO Component Welder IDs
+     */
     public static final int ComponentWelderIDs = 1310976;
+    /**
+     * (0014,0101) CS Secondary Approval Status
+     */
     public static final int SecondaryApprovalStatus = 1310977;
+    /**
+     * (0014,0102) DA Secondary Review Date
+     */
     public static final int SecondaryReviewDate = 1310978;
+    /**
+     * (0014,0103) TM Secondary Review Time
+     */
     public static final int SecondaryReviewTime = 1310979;
+    /**
+     * (0014,0104) PN Secondary Reviewer Name
+     */
     public static final int SecondaryReviewerName = 1310980;
+    /**
+     * (0014,0105) ST Repair ID
+     */
     public static final int RepairID = 1310981;
+    /**
+     * (0014,0106) SQ Multiple Component Approval Sequence
+     */
     public static final int MultipleComponentApprovalSequence = 1310982;
+    /**
+     * (0014,0107) CS Other Approval Status
+     */
     public static final int OtherApprovalStatus = 1310983;
+    /**
+     * (0014,0108) CS Other Secondary Approval Status
+     */
     public static final int OtherSecondaryApprovalStatus = 1310984;
+    /**
+     * (0014,0200) SQ Data Element Label Sequence
+     */
     public static final int DataElementLabelSequence = 1311232;
+    /**
+     * (0014,0201) SQ Data Element Label Item Sequence
+     */
     public static final int DataElementLabelItemSequence = 1311233;
+    /**
+     * (0014,0202) AT Data Element
+     */
     public static final int DataElement = 1311234;
+    /**
+     * (0014,0203) LO Data Element Name
+     */
     public static final int DataElementName = 1311235;
+    /**
+     * (0014,0204) UT Data Element Description
+     */
     public static final int DataElementDescription = 1311236;
+    /**
+     * (0014,0205) CS Data Element Conditionality
+     */
     public static final int DataElementConditionality = 1311237;
+    /**
+     * (0014,0206) US Data Element Minimum Characters
+     */
     public static final int DataElementMinimumCharacters = 1311238;
+    /**
+     * (0014,0207) US Data Element Maximum Characters
+     */
     public static final int DataElementMaximumCharacters = 1311239;
+    /**
+     * (0014,1010) ST Actual Environmental Conditions
+     */
     public static final int ActualEnvironmentalConditions = 1314832;
+    /**
+     * (0014,1020) DA Expiry Date
+     */
     public static final int ExpiryDate = 1314848;
+    /**
+     * (0014,1040) ST Environmental Conditions
+     */
     public static final int EnvironmentalConditions = 1314880;
+    /**
+     * (0014,2002) SQ Evaluator Sequence
+     */
     public static final int EvaluatorSequence = 1318914;
+    /**
+     * (0014,2004) IS Evaluator Number
+     */
     public static final int EvaluatorNumber = 1318916;
+    /**
+     * (0014,2006) PN Evaluator Name
+     */
     public static final int EvaluatorName = 1318918;
+    /**
+     * (0014,2008) IS Evaluation Attempt
+     */
     public static final int EvaluationAttempt = 1318920;
+    /**
+     * (0014,2012) SQ Indication Sequence
+     */
     public static final int IndicationSequence = 1318930;
+    /**
+     * (0014,2014) IS Indication Number
+     */
     public static final int IndicationNumber = 1318932;
+    /**
+     * (0014,2016) SH Indication Label
+     */
     public static final int IndicationLabel = 1318934;
+    /**
+     * (0014,2018) ST Indication Description
+     */
     public static final int IndicationDescription = 1318936;
+    /**
+     * (0014,201A) CS Indication Type
+     */
     public static final int IndicationType = 1318938;
+    /**
+     * (0014,201C) CS Indication Disposition
+     */
     public static final int IndicationDisposition = 1318940;
+    /**
+     * (0014,201E) SQ Indication ROI Sequence
+     */
     public static final int IndicationROISequence = 1318942;
+    /**
+     * (0014,2030) SQ Indication Physical Property Sequence
+     */
     public static final int IndicationPhysicalPropertySequence = 1318960;
+    /**
+     * (0014,2032) SH Property Label
+     */
     public static final int PropertyLabel = 1318962;
+    /**
+     * (0014,2202) US Coordinate System Number of Axes
+     */
     public static final int CoordinateSystemNumberOfAxes = 1319426;
+    /**
+     * (0014,2204) SQ Coordinate System Axes Sequence
+     */
     public static final int CoordinateSystemAxesSequence = 1319428;
+    /**
+     * (0014,2206) ST Coordinate System Axis Description
+     */
     public static final int CoordinateSystemAxisDescription = 1319430;
+    /**
+     * (0014,2208) CS Coordinate System Data Set Mapping
+     */
     public static final int CoordinateSystemDataSetMapping = 1319432;
+    /**
+     * (0014,220A) US Coordinate System Axis Number
+     */
     public static final int CoordinateSystemAxisNumber = 1319434;
+    /**
+     * (0014,220C) CS Coordinate System Axis Type
+     */
     public static final int CoordinateSystemAxisType = 1319436;
+    /**
+     * (0014,220E) CS Coordinate System Axis Units
+     */
     public static final int CoordinateSystemAxisUnits = 1319438;
+    /**
+     * (0014,2210) OB Coordinate System Axis Values
+     */
     public static final int CoordinateSystemAxisValues = 1319440;
+    /**
+     * (0014,2220) SQ Coordinate System Transform Sequence
+     */
     public static final int CoordinateSystemTransformSequence = 1319456;
+    /**
+     * (0014,2222) ST Transform Description
+     */
     public static final int TransformDescription = 1319458;
+    /**
+     * (0014,2224) US Transform Number of Axes
+     */
     public static final int TransformNumberOfAxes = 1319460;
+    /**
+     * (0014,2226) US Transform Order of Axes
+     */
     public static final int TransformOrderOfAxes = 1319462;
+    /**
+     * (0014,2228) CS Transformed Axis Units
+     */
     public static final int TransformedAxisUnits = 1319464;
+    /**
+     * (0014,222A) DS Coordinate System Transform Rotation and Scale Matrix
+     */
     public static final int CoordinateSystemTransformRotationAndScaleMatrix = 1319466;
+    /**
+     * (0014,222C) DS Coordinate System Transform Translation Matrix
+     */
     public static final int CoordinateSystemTransformTranslationMatrix = 1319468;
+    /**
+     * (0014,3011) DS Internal Detector Frame Time
+     */
     public static final int InternalDetectorFrameTime = 1323025;
+    /**
+     * (0014,3012) DS Number of Frames Integrated
+     */
     public static final int NumberOfFramesIntegrated = 1323026;
+    /**
+     * (0014,3020) SQ Detector Temperature Sequence
+     */
     public static final int DetectorTemperatureSequence = 1323040;
+    /**
+     * (0014,3022) ST Sensor Name
+     */
     public static final int SensorName = 1323042;
+    /**
+     * (0014,3024) DS Horizontal Offset of Sensor
+     */
     public static final int HorizontalOffsetOfSensor = 1323044;
+    /**
+     * (0014,3026) DS Vertical Offset of Sensor
+     */
     public static final int VerticalOffsetOfSensor = 1323046;
+    /**
+     * (0014,3028) DS Sensor Temperature
+     */
     public static final int SensorTemperature = 1323048;
+    /**
+     * (0014,3040) SQ Dark Current Sequence
+     */
     public static final int DarkCurrentSequence = 1323072;
+    /**
+     * (0014,3050) OB Dark Current Counts
+     */
     public static final int DarkCurrentCounts = 1323088;
+    /**
+     * (0014,3060) SQ Gain Correction Reference Sequence
+     */
     public static final int GainCorrectionReferenceSequence = 1323104;
+    /**
+     * (0014,3070) OB Air Counts
+     */
     public static final int AirCounts = 1323120;
+    /**
+     * (0014,3071) DS KV Used in Gain Calibration
+     */
     public static final int KVUsedInGainCalibration = 1323121;
+    /**
+     * (0014,3072) DS MA Used in Gain Calibration
+     */
     public static final int MAUsedInGainCalibration = 1323122;
+    /**
+     * (0014,3073) DS Number of Frames Used for Integration
+     */
     public static final int NumberOfFramesUsedForIntegration = 1323123;
+    /**
+     * (0014,3074) LO Filter Material Used in Gain Calibration
+     */
     public static final int FilterMaterialUsedInGainCalibration = 1323124;
+    /**
+     * (0014,3075) DS Filter Thickness Used in Gain Calibration
+     */
     public static final int FilterThicknessUsedInGainCalibration = 1323125;
+    /**
+     * (0014,3076) DA Date of Gain Calibration
+     */
     public static final int DateOfGainCalibration = 1323126;
+    /**
+     * (0014,3077) TM Time of Gain Calibration
+     */
     public static final int TimeOfGainCalibration = 1323127;
+    /**
+     * (0014,3080) OB Bad Pixel Image
+     */
     public static final int BadPixelImage = 1323136;
+    /**
+     * (0014,3099) LT Calibration Notes
+     */
     public static final int CalibrationNotes = 1323161;
+    /**
+     * (0014,3100) CS Linearity Correction Technique
+     */
     public static final int LinearityCorrectionTechnique = 1323264;
+    /**
+     * (0014,3101) CS Beam Hardening Correction Technique
+     */
     public static final int BeamHardeningCorrectionTechnique = 1323265;
+    /**
+     * (0014,4002) SQ Pulser Equipment Sequence
+     */
     public static final int PulserEquipmentSequence = 1327106;
+    /**
+     * (0014,4004) CS Pulser Type
+     */
     public static final int PulserType = 1327108;
+    /**
+     * (0014,4006) LT Pulser Notes
+     */
     public static final int PulserNotes = 1327110;
+    /**
+     * (0014,4008) SQ Receiver Equipment Sequence
+     */
     public static final int ReceiverEquipmentSequence = 1327112;
+    /**
+     * (0014,400A) CS Amplifier Type
+     */
     public static final int AmplifierType = 1327114;
+    /**
+     * (0014,400C) LT Receiver Notes
+     */
     public static final int ReceiverNotes = 1327116;
+    /**
+     * (0014,400E) SQ Pre-Amplifier Equipment Sequence
+     */
     public static final int PreAmplifierEquipmentSequence = 1327118;
+    /**
+     * (0014,400F) LT Pre-Amplifier Notes
+     */
     public static final int PreAmplifierNotes = 1327119;
+    /**
+     * (0014,4010) SQ Transmit Transducer Sequence
+     */
     public static final int TransmitTransducerSequence = 1327120;
+    /**
+     * (0014,4011) SQ Receive Transducer Sequence
+     */
     public static final int ReceiveTransducerSequence = 1327121;
+    /**
+     * (0014,4012) US Number of Elements
+     */
     public static final int NumberOfElements = 1327122;
+    /**
+     * (0014,4013) CS Element Shape
+     */
     public static final int ElementShape = 1327123;
+    /**
+     * (0014,4014) DS Element Dimension A
+     */
     public static final int ElementDimensionA = 1327124;
+    /**
+     * (0014,4015) DS Element Dimension B
+     */
     public static final int ElementDimensionB = 1327125;
+    /**
+     * (0014,4016) DS Element Pitch A
+     */
     public static final int ElementPitchA = 1327126;
+    /**
+     * (0014,4017) DS Measured Beam Dimension A
+     */
     public static final int MeasuredBeamDimensionA = 1327127;
+    /**
+     * (0014,4018) DS Measured Beam Dimension B
+     */
     public static final int MeasuredBeamDimensionB = 1327128;
+    /**
+     * (0014,4019) DS Location of Measured Beam Diameter
+     */
     public static final int LocationOfMeasuredBeamDiameter = 1327129;
+    /**
+     * (0014,401A) DS Nominal Frequency
+     */
     public static final int NominalFrequency = 1327130;
+    /**
+     * (0014,401B) DS Measured Center Frequency
+     */
     public static final int MeasuredCenterFrequency = 1327131;
+    /**
+     * (0014,401C) DS Measured Bandwidth
+     */
     public static final int MeasuredBandwidth = 1327132;
+    /**
+     * (0014,401D) DS Element Pitch B
+     */
     public static final int ElementPitchB = 1327133;
+    /**
+     * (0014,4020) SQ Pulser Settings Sequence
+     */
     public static final int PulserSettingsSequence = 1327136;
+    /**
+     * (0014,4022) DS Pulse Width
+     */
     public static final int PulseWidth = 1327138;
+    /**
+     * (0014,4024) DS Excitation Frequency
+     */
     public static final int ExcitationFrequency = 1327140;
+    /**
+     * (0014,4026) CS Modulation Type
+     */
     public static final int ModulationType = 1327142;
+    /**
+     * (0014,4028) DS Damping
+     */
     public static final int Damping = 1327144;
+    /**
+     * (0014,4030) SQ Receiver Settings Sequence
+     */
     public static final int ReceiverSettingsSequence = 1327152;
+    /**
+     * (0014,4031) DS Acquired Soundpath Length
+     */
     public static final int AcquiredSoundpathLength = 1327153;
+    /**
+     * DICOM Tag for AcquisitionCompressionType.
+     */
     public static final int AcquisitionCompressionType = 1327154;
+    /**
+     * DICOM Tag for AcquisitionSampleSize.
+     */
     public static final int AcquisitionSampleSize = 1327155;
+    /**
+     * DICOM Tag for RectifierSmoothing.
+     */
     public static final int RectifierSmoothing = 1327156;
+    /**
+     * DICOM Tag for DACSequence.
+     */
     public static final int DACSequence = 1327157;
+    /**
+     * DICOM Tag for DACType.
+     */
     public static final int DACType = 1327158;
+    /**
+     * DICOM Tag for DACGainPoints.
+     */
     public static final int DACGainPoints = 1327160;
+    /**
+     * DICOM Tag for DACTimePoints.
+     */
     public static final int DACTimePoints = 1327162;
+    /**
+     * DICOM Tag for DACAmplitude.
+     */
     public static final int DACAmplitude = 1327164;
+    /**
+     * DICOM Tag for PreAmplifierSettingsSequence.
+     */
     public static final int PreAmplifierSettingsSequence = 1327168;
+    /**
+     * DICOM Tag for TransmitTransducerSettingsSequence.
+     */
     public static final int TransmitTransducerSettingsSequence = 1327184;
+    /**
+     * DICOM Tag for ReceiveTransducerSettingsSequence.
+     */
     public static final int ReceiveTransducerSettingsSequence = 1327185;
+    /**
+     * DICOM Tag for IncidentAngle.
+     */
     public static final int IncidentAngle = 1327186;
+    /**
+     * DICOM Tag for CouplingTechnique.
+     */
     public static final int CouplingTechnique = 1327188;
+    /**
+     * DICOM Tag for CouplingMedium.
+     */
     public static final int CouplingMedium = 1327190;
+    /**
+     * DICOM Tag for CouplingVelocity.
+     */
     public static final int CouplingVelocity = 1327191;
+    /**
+     * DICOM Tag for ProbeCenterLocationX.
+     */
     public static final int ProbeCenterLocationX = 1327192;
+    /**
+     * DICOM Tag for ProbeCenterLocationZ.
+     */
     public static final int ProbeCenterLocationZ = 1327193;
+    /**
+     * DICOM Tag for SoundPathLength.
+     */
     public static final int SoundPathLength = 1327194;
+    /**
+     * DICOM Tag for DelayLawIdentifier.
+     */
     public static final int DelayLawIdentifier = 1327196;
+    /**
+     * DICOM Tag for GateSettingsSequence.
+     */
     public static final int GateSettingsSequence = 1327200;
+    /**
+     * DICOM Tag for GateThreshold.
+     */
     public static final int GateThreshold = 1327202;
+    /**
+     * DICOM Tag for VelocityOfSound.
+     */
     public static final int VelocityOfSound = 1327204;
+    /**
+     * DICOM Tag for CalibrationSettingsSequence.
+     */
     public static final int CalibrationSettingsSequence = 1327216;
+    /**
+     * DICOM Tag for CalibrationProcedure.
+     */
     public static final int CalibrationProcedure = 1327218;
+    /**
+     * DICOM Tag for ProcedureVersion.
+     */
     public static final int ProcedureVersion = 1327220;
+    /**
+     * DICOM Tag for ProcedureCreationDate.
+     */
     public static final int ProcedureCreationDate = 1327222;
+    /**
+     * DICOM Tag for ProcedureExpirationDate.
+     */
     public static final int ProcedureExpirationDate = 1327224;
+    /**
+     * DICOM Tag for ProcedureLastModifiedDate.
+     */
     public static final int ProcedureLastModifiedDate = 1327226;
+    /**
+     * DICOM Tag for CalibrationTime.
+     */
     public static final int CalibrationTime = 1327228;
+    /**
+     * DICOM Tag for CalibrationDate.
+     */
     public static final int CalibrationDate = 1327230;
+    /**
+     * DICOM Tag for ProbeDriveEquipmentSequence.
+     */
     public static final int ProbeDriveEquipmentSequence = 1327232;
+    /**
+     * DICOM Tag for DriveType.
+     */
     public static final int DriveType = 1327233;
+    /**
+     * DICOM Tag for ProbeDriveNotes.
+     */
     public static final int ProbeDriveNotes = 1327234;
+    /**
+     * DICOM Tag for DriveProbeSequence.
+     */
     public static final int DriveProbeSequence = 1327235;
+    /**
+     * DICOM Tag for ProbeInductance.
+     */
     public static final int ProbeInductance = 1327236;
+    /**
+     * DICOM Tag for ProbeResistance.
+     */
     public static final int ProbeResistance = 1327237;
+    /**
+     * DICOM Tag for ReceiveProbeSequence.
+     */
     public static final int ReceiveProbeSequence = 1327238;
+    /**
+     * DICOM Tag for ProbeDriveSettingsSequence.
+     */
     public static final int ProbeDriveSettingsSequence = 1327239;
+    /**
+     * DICOM Tag for BridgeResistors.
+     */
     public static final int BridgeResistors = 1327240;
+    /**
+     * DICOM Tag for ProbeOrientationAngle.
+     */
     public static final int ProbeOrientationAngle = 1327241;
+    /**
+     * DICOM Tag for UserSelectedGainY.
+     */
     public static final int UserSelectedGainY = 1327243;
+    /**
+     * DICOM Tag for UserSelectedPhase.
+     */
     public static final int UserSelectedPhase = 1327244;
+    /**
+     * DICOM Tag for UserSelectedOffsetX.
+     */
     public static final int UserSelectedOffsetX = 1327245;
+    /**
+     * DICOM Tag for UserSelectedOffsetY.
+     */
     public static final int UserSelectedOffsetY = 1327246;
+    /**
+     * DICOM Tag for ChannelSettingsSequence.
+     */
     public static final int ChannelSettingsSequence = 1327249;
+    /**
+     * DICOM Tag for ChannelThreshold.
+     */
     public static final int ChannelThreshold = 1327250;
+    /**
+     * DICOM Tag for ScannerSettingsSequence.
+     */
     public static final int ScannerSettingsSequence = 1327258;
+    /**
+     * DICOM Tag for ScanProcedure.
+     */
     public static final int ScanProcedure = 1327259;
+    /**
+     * DICOM Tag for TranslationRateX.
+     */
     public static final int TranslationRateX = 1327260;
+    /**
+     * DICOM Tag for TranslationRateY.
+     */
     public static final int TranslationRateY = 1327261;
+    /**
+     * DICOM Tag for ChannelOverlap.
+     */
     public static final int ChannelOverlap = 1327263;
+    /**
+     * DICOM Tag for ImageQualityIndicatorType.
+     */
     public static final int ImageQualityIndicatorType = 1327264;
+    /**
+     * DICOM Tag for ImageQualityIndicatorMaterial.
+     */
     public static final int ImageQualityIndicatorMaterial = 1327265;
+    /**
+     * DICOM Tag for ImageQualityIndicatorSize.
+     */
     public static final int ImageQualityIndicatorSize = 1327266;
+    /**
+     * DICOM Tag for LINACEnergy.
+     */
     public static final int LINACEnergy = 1331202;
+    /**
+     * DICOM Tag for LINACOutput.
+     */
     public static final int LINACOutput = 1331204;
+    /**
+     * DICOM Tag for ActiveAperture.
+     */
     public static final int ActiveAperture = 1331456;
+    /**
+     * DICOM Tag for TotalAperture.
+     */
     public static final int TotalAperture = 1331457;
+    /**
+     * DICOM Tag for ApertureElevation.
+     */
     public static final int ApertureElevation = 1331458;
+    /**
+     * DICOM Tag for MainLobeAngle.
+     */
     public static final int MainLobeAngle = 1331459;
+    /**
+     * DICOM Tag for MainRoofAngle.
+     */
     public static final int MainRoofAngle = 1331460;
+    /**
+     * DICOM Tag for ConnectorType.
+     */
     public static final int ConnectorType = 1331461;
+    /**
+     * DICOM Tag for WedgeModelNumber.
+     */
     public static final int WedgeModelNumber = 1331462;
+    /**
+     * DICOM Tag for WedgeAngleFloat.
+     */
     public static final int WedgeAngleFloat = 1331463;
+    /**
+     * DICOM Tag for WedgeRoofAngle.
+     */
     public static final int WedgeRoofAngle = 1331464;
+    /**
+     * DICOM Tag for WedgeElement1Position.
+     */
     public static final int WedgeElement1Position = 1331465;
+    /**
+     * DICOM Tag for WedgeMaterialVelocity.
+     */
     public static final int WedgeMaterialVelocity = 1331466;
+    /**
+     * DICOM Tag for WedgeMaterial.
+     */
     public static final int WedgeMaterial = 1331467;
+    /**
+     * DICOM Tag for WedgeOffsetZ.
+     */
     public static final int WedgeOffsetZ = 1331468;
+    /**
+     * DICOM Tag for WedgeOriginOffsetX.
+     */
     public static final int WedgeOriginOffsetX = 1331469;
+    /**
+     * DICOM Tag for WedgeTimeDelay.
+     */
     public static final int WedgeTimeDelay = 1331470;
+    /**
+     * DICOM Tag for WedgeName.
+     */
     public static final int WedgeName = 1331471;
+    /**
+     * DICOM Tag for WedgeManufacturerName.
+     */
     public static final int WedgeManufacturerName = 1331472;
+    /**
+     * DICOM Tag for WedgeDescription.
+     */
     public static final int WedgeDescription = 1331473;
+    /**
+     * DICOM Tag for NominalBeamAngle.
+     */
     public static final int NominalBeamAngle = 1331474;
+    /**
+     * DICOM Tag for WedgeOffsetX.
+     */
     public static final int WedgeOffsetX = 1331475;
+    /**
+     * DICOM Tag for WedgeOffsetY.
+     */
     public static final int WedgeOffsetY = 1331476;
+    /**
+     * DICOM Tag for WedgeTotalLength.
+     */
     public static final int WedgeTotalLength = 1331477;
+    /**
+     * DICOM Tag for WedgeInContactLength.
+     */
     public static final int WedgeInContactLength = 1331478;
+    /**
+     * DICOM Tag for WedgeFrontGap.
+     */
     public static final int WedgeFrontGap = 1331479;
+    /**
+     * DICOM Tag for WedgeTotalHeight.
+     */
     public static final int WedgeTotalHeight = 1331480;
+    /**
+     * DICOM Tag for WedgeFrontHeight.
+     */
     public static final int WedgeFrontHeight = 1331481;
+    /**
+     * DICOM Tag for WedgeRearHeight.
+     */
     public static final int WedgeRearHeight = 1331482;
+    /**
+     * DICOM Tag for WedgeTotalWidth.
+     */
     public static final int WedgeTotalWidth = 1331483;
+    /**
+     * DICOM Tag for WedgeInContactWidth.
+     */
     public static final int WedgeInContactWidth = 1331484;
+    /**
+     * DICOM Tag for WedgeChamferHeight.
+     */
     public static final int WedgeChamferHeight = 1331485;
+    /**
+     * DICOM Tag for WedgeCurve.
+     */
     public static final int WedgeCurve = 1331486;
+    /**
+     * DICOM Tag for RadiusAlongWedge.
+     */
     public static final int RadiusAlongWedge = 1331487;
+    /**
+     * DICOM Tag for WhitePoint.
+     */
     public static final int WhitePoint = 1441793;
+    /**
+     * DICOM Tag for PrimaryChromaticities.
+     */
     public static final int PrimaryChromaticities = 1441794;
+    /**
+     * DICOM Tag for BatteryLevel.
+     */
     public static final int BatteryLevel = 1441795;
+    /**
+     * DICOM Tag for ExposureTimeInSeconds.
+     */
     public static final int ExposureTimeInSeconds = 1441796;
+    /**
+     * DICOM Tag for FNumber.
+     */
     public static final int FNumber = 1441797;
+    /**
+     * DICOM Tag for OECFRows.
+     */
     public static final int OECFRows = 1441798;
+    /**
+     * DICOM Tag for OECFColumns.
+     */
     public static final int OECFColumns = 1441799;
+    /**
+     * DICOM Tag for OECFColumnNames.
+     */
     public static final int OECFColumnNames = 1441800;
+    /**
+     * DICOM Tag for OECFValues.
+     */
     public static final int OECFValues = 1441801;
+    /**
+     * DICOM Tag for SpatialFrequencyResponseRows.
+     */
     public static final int SpatialFrequencyResponseRows = 1441802;
+    /**
+     * DICOM Tag for SpatialFrequencyResponseColumns.
+     */
     public static final int SpatialFrequencyResponseColumns = 1441803;
+    /**
+     * DICOM Tag for SpatialFrequencyResponseColumnNames.
+     */
     public static final int SpatialFrequencyResponseColumnNames = 1441804;
+    /**
+     * DICOM Tag for SpatialFrequencyResponseValues.
+     */
     public static final int SpatialFrequencyResponseValues = 1441805;
+    /**
+     * DICOM Tag for ColorFilterArrayPatternRows.
+     */
     public static final int ColorFilterArrayPatternRows = 1441806;
+    /**
+     * DICOM Tag for ColorFilterArrayPatternColumns.
+     */
     public static final int ColorFilterArrayPatternColumns = 1441807;
+    /**
+     * DICOM Tag for ColorFilterArrayPatternValues.
+     */
     public static final int ColorFilterArrayPatternValues = 1441808;
+    /**
+     * DICOM Tag for FlashFiringStatus.
+     */
     public static final int FlashFiringStatus = 1441809;
+    /**
+     * DICOM Tag for FlashReturnStatus.
+     */
     public static final int FlashReturnStatus = 1441810;
+    /**
+     * DICOM Tag for FlashMode.
+     */
     public static final int FlashMode = 1441811;
+    /**
+     * DICOM Tag for FlashFunctionPresent.
+     */
     public static final int FlashFunctionPresent = 1441812;
+    /**
+     * DICOM Tag for FlashRedEyeMode.
+     */
     public static final int FlashRedEyeMode = 1441813;
+    /**
+     * DICOM Tag for ExposureProgram.
+     */
     public static final int ExposureProgram = 1441814;
+    /**
+     * DICOM Tag for SpectralSensitivity.
+     */
     public static final int SpectralSensitivity = 1441815;
+    /**
+     * DICOM Tag for PhotographicSensitivity.
+     */
     public static final int PhotographicSensitivity = 1441816;
+    /**
+     * DICOM Tag for SelfTimerMode.
+     */
     public static final int SelfTimerMode = 1441817;
+    /**
+     * DICOM Tag for SensitivityType.
+     */
     public static final int SensitivityType = 1441818;
+    /**
+     * DICOM Tag for StandardOutputSensitivity.
+     */
     public static final int StandardOutputSensitivity = 1441819;
+    /**
+     * DICOM Tag for RecommendedExposureIndex.
+     */
     public static final int RecommendedExposureIndex = 1441820;
+    /**
+     * DICOM Tag for ISOSpeed.
+     */
     public static final int ISOSpeed = 1441821;
+    /**
+     * DICOM Tag for ISOSpeedLatitudeyyy.
+     */
     public static final int ISOSpeedLatitudeyyy = 1441822;
+    /**
+     * DICOM Tag for ISOSpeedLatitudezzz.
+     */
     public static final int ISOSpeedLatitudezzz = 1441823;
+    /**
+     * DICOM Tag for EXIFVersion.
+     */
     public static final int EXIFVersion = 1441824;
+    /**
+     * DICOM Tag for ShutterSpeedValue.
+     */
     public static final int ShutterSpeedValue = 1441825;
+    /**
+     * DICOM Tag for ApertureValue.
+     */
     public static final int ApertureValue = 1441826;
+    /**
+     * DICOM Tag for BrightnessValue.
+     */
     public static final int BrightnessValue = 1441827;
+    /**
+     * DICOM Tag for ExposureBiasValue.
+     */
     public static final int ExposureBiasValue = 1441828;
+    /**
+     * DICOM Tag for MaxApertureValue.
+     */
     public static final int MaxApertureValue = 1441829;
+    /**
+     * DICOM Tag for SubjectDistance.
+     */
     public static final int SubjectDistance = 1441830;
+    /**
+     * DICOM Tag for MeteringMode.
+     */
     public static final int MeteringMode = 1441831;
+    /**
+     * DICOM Tag for LightSource.
+     */
     public static final int LightSource = 1441832;
+    /**
+     * DICOM Tag for FocalLength.
+     */
     public static final int FocalLength = 1441833;
+    /**
+     * DICOM Tag for SubjectArea.
+     */
     public static final int SubjectArea = 1441834;
+    /**
+     * DICOM Tag for MakerNote.
+     */
     public static final int MakerNote = 1441835;
+    /**
+     * DICOM Tag for Temperature.
+     */
     public static final int Temperature = 1441840;
+    /**
+     * DICOM Tag for Humidity.
+     */
     public static final int Humidity = 1441841;
+    /**
+     * DICOM Tag for Pressure.
+     */
     public static final int Pressure = 1441842;
+    /**
+     * DICOM Tag for WaterDepth.
+     */
     public static final int WaterDepth = 1441843;
+    /**
+     * DICOM Tag for Acceleration.
+     */
     public static final int Acceleration = 1441844;
+    /**
+     * DICOM Tag for CameraElevationAngle.
+     */
     public static final int CameraElevationAngle = 1441845;
+    /**
+     * DICOM Tag for FlashEnergy.
+     */
     public static final int FlashEnergy = 1441846;
+    /**
+     * DICOM Tag for SubjectLocation.
+     */
     public static final int SubjectLocation = 1441847;
+    /**
+     * DICOM Tag for PhotographicExposureIndex.
+     */
     public static final int PhotographicExposureIndex = 1441848;
+    /**
+     * DICOM Tag for SensingMethod.
+     */
     public static final int SensingMethod = 1441849;
+    /**
+     * DICOM Tag for FileSource.
+     */
     public static final int FileSource = 1441850;
+    /**
+     * DICOM Tag for SceneType.
+     */
     public static final int SceneType = 1441851;
+    /**
+     * DICOM Tag for CustomRendered.
+     */
     public static final int CustomRendered = 1441857;
+    /**
+     * DICOM Tag for ExposureMode.
+     */
     public static final int ExposureMode = 1441858;
+    /**
+     * DICOM Tag for WhiteBalance.
+     */
     public static final int WhiteBalance = 1441859;
+    /**
+     * DICOM Tag for DigitalZoomRatio.
+     */
     public static final int DigitalZoomRatio = 1441860;
+    /**
+     * DICOM Tag for FocalLengthIn35mmFilm.
+     */
     public static final int FocalLengthIn35mmFilm = 1441861;
+    /**
+     * DICOM Tag for SceneCaptureType.
+     */
     public static final int SceneCaptureType = 1441862;
+    /**
+     * DICOM Tag for GainControl.
+     */
     public static final int GainControl = 1441863;
+    /**
+     * DICOM Tag for Contrast.
+     */
     public static final int Contrast = 1441864;
+    /**
+     * DICOM Tag for Saturation.
+     */
     public static final int Saturation = 1441865;
+    /**
+     * DICOM Tag for Sharpness.
+     */
     public static final int Sharpness = 1441866;
+    /**
+     * DICOM Tag for DeviceSettingDescription.
+     */
     public static final int DeviceSettingDescription = 1441867;
+    /**
+     * DICOM Tag for SubjectDistanceRange.
+     */
     public static final int SubjectDistanceRange = 1441868;
+    /**
+     * DICOM Tag for CameraOwnerName.
+     */
     public static final int CameraOwnerName = 1441869;
+    /**
+     * DICOM Tag for LensSpecification.
+     */
     public static final int LensSpecification = 1441870;
+    /**
+     * DICOM Tag for LensMake.
+     */
     public static final int LensMake = 1441871;
+    /**
+     * DICOM Tag for LensModel.
+     */
     public static final int LensModel = 1441872;
+    /**
+     * DICOM Tag for LensSerialNumber.
+     */
     public static final int LensSerialNumber = 1441873;
+    /**
+     * DICOM Tag for InteroperabilityIndex.
+     */
     public static final int InteroperabilityIndex = 1441889;
+    /**
+     * DICOM Tag for InteroperabilityVersion.
+     */
     public static final int InteroperabilityVersion = 1441890;
+    /**
+     * DICOM Tag for GPSVersionID.
+     */
     public static final int GPSVersionID = 1441904;
+    /**
+     * DICOM Tag for GPSLatitudeRef.
+     */
     public static final int GPSLatitudeRef = 1441905;
+    /**
+     * DICOM Tag for GPSLatitude.
+     */
     public static final int GPSLatitude = 1441906;
+    /**
+     * DICOM Tag for GPSLongitudeRef.
+     */
     public static final int GPSLongitudeRef = 1441907;
+    /**
+     * DICOM Tag for GPSLongitude.
+     */
     public static final int GPSLongitude = 1441908;
+    /**
+     * DICOM Tag for GPSAltitudeRef.
+     */
     public static final int GPSAltitudeRef = 1441909;
+    /**
+     * DICOM Tag for GPSAltitude.
+     */
     public static final int GPSAltitude = 1441910;
+    /**
+     * DICOM Tag for GPSTimeStamp.
+     */
     public static final int GPSTimeStamp = 1441911;
+    /**
+     * DICOM Tag for GPSSatellites.
+     */
     public static final int GPSSatellites = 1441912;
+    /**
+     * DICOM Tag for GPSStatus.
+     */
     public static final int GPSStatus = 1441913;
+    /**
+     * DICOM Tag for GPSMeasureMode.
+     */
     public static final int GPSMeasureMode = 1441914;
+    /**
+     * DICOM Tag for GPSDOP.
+     */
     public static final int GPSDOP = 1441915;
+    /**
+     * DICOM Tag for GPSSpeedRef.
+     */
     public static final int GPSSpeedRef = 1441916;
+    /**
+     * DICOM Tag for GPSSpeed.
+     */
     public static final int GPSSpeed = 1441917;
+    /**
+     * DICOM Tag for GPSTrackRef.
+     */
     public static final int GPSTrackRef = 1441918;
+    /**
+     * DICOM Tag for GPSTrack.
+     */
     public static final int GPSTrack = 1441919;
+    /**
+     * DICOM Tag for GPSImgDirectionRef.
+     */
     public static final int GPSImgDirectionRef = 1441920;
+    /**
+     * DICOM Tag for GPSImgDirection.
+     */
     public static final int GPSImgDirection = 1441921;
+    /**
+     * DICOM Tag for GPSMapDatum.
+     */
     public static final int GPSMapDatum = 1441922;
+    /**
+     * DICOM Tag for GPSDestLatitudeRef.
+     */
     public static final int GPSDestLatitudeRef = 1441923;
+    /**
+     * DICOM Tag for GPSDestLatitude.
+     */
     public static final int GPSDestLatitude = 1441924;
+    /**
+     * DICOM Tag for GPSDestLongitudeRef.
+     */
     public static final int GPSDestLongitudeRef = 1441925;
+    /**
+     * DICOM Tag for GPSDestLongitude.
+     */
     public static final int GPSDestLongitude = 1441926;
+    /**
+     * DICOM Tag for GPSDestBearingRef.
+     */
     public static final int GPSDestBearingRef = 1441927;
+    /**
+     * DICOM Tag for GPSDestBearing.
+     */
     public static final int GPSDestBearing = 1441928;
+    /**
+     * DICOM Tag for GPSDestDistanceRef.
+     */
     public static final int GPSDestDistanceRef = 1441929;
+    /**
+     * DICOM Tag for GPSDestDistance.
+     */
     public static final int GPSDestDistance = 1441930;
+    /**
+     * DICOM Tag for GPSProcessingMethod.
+     */
     public static final int GPSProcessingMethod = 1441931;
+    /**
+     * DICOM Tag for GPSAreaInformation.
+     */
     public static final int GPSAreaInformation = 1441932;
+    /**
+     * DICOM Tag for GPSDateStamp.
+     */
     public static final int GPSDateStamp = 1441933;
+    /**
+     * DICOM Tag for GPSDifferential.
+     */
     public static final int GPSDifferential = 1441934;
+    /**
+     * DICOM Tag for LightSourcePolarization.
+     */
     public static final int LightSourcePolarization = 1445889;
+    /**
+     * DICOM Tag for EmitterColorTemperature.
+     */
     public static final int EmitterColorTemperature = 1445890;
+    /**
+     * DICOM Tag for ContactMethod.
+     */
     public static final int ContactMethod = 1445891;
+    /**
+     * DICOM Tag for ImmersionMedia.
+     */
     public static final int ImmersionMedia = 1445892;
+    /**
+     * DICOM Tag for OpticalMagnificationFactor.
+     */
     public static final int OpticalMagnificationFactor = 1445893;
+    /**
+     * DICOM Tag for ContrastBolusAgent.
+     */
     public static final int ContrastBolusAgent = 1572880;
+    /**
+     * DICOM Tag for ContrastBolusAgentSequence.
+     */
     public static final int ContrastBolusAgentSequence = 1572882;
+    /**
+     * DICOM Tag for ContrastBolusT1Relaxivity.
+     */
     public static final int ContrastBolusT1Relaxivity = 1572883;
+    /**
+     * DICOM Tag for ContrastBolusAdministrationRouteSequence.
+     */
     public static final int ContrastBolusAdministrationRouteSequence = 1572884;
+    /**
+     * DICOM Tag for BodyPartExamined.
+     */
     public static final int BodyPartExamined = 1572885;
+    /**
+     * DICOM Tag for ScanningSequence.
+     */
     public static final int ScanningSequence = 1572896;
+    /**
+     * DICOM Tag for SequenceVariant.
+     */
     public static final int SequenceVariant = 1572897;
+    /**
+     * DICOM Tag for ScanOptions.
+     */
     public static final int ScanOptions = 1572898;
+    /**
+     * DICOM Tag for MRAcquisitionType.
+     */
     public static final int MRAcquisitionType = 1572899;
+    /**
+     * DICOM Tag for SequenceName.
+     */
     public static final int SequenceName = 1572900;
+    /**
+     * DICOM Tag for AngioFlag.
+     */
     public static final int AngioFlag = 1572901;
+    /**
+     * DICOM Tag for InterventionDrugInformationSequence.
+     */
     public static final int InterventionDrugInformationSequence = 1572902;
+    /**
+     * DICOM Tag for InterventionDrugStopTime.
+     */
     public static final int InterventionDrugStopTime = 1572903;
+    /**
+     * DICOM Tag for InterventionDrugDose.
+     */
     public static final int InterventionDrugDose = 1572904;
+    /**
+     * DICOM Tag for InterventionDrugCodeSequence.
+     */
     public static final int InterventionDrugCodeSequence = 1572905;
+    /**
+     * DICOM Tag for AdditionalDrugSequence.
+     */
     public static final int AdditionalDrugSequence = 1572906;
+    /**
+     * DICOM Tag for Radionuclide.
+     */
     public static final int Radionuclide = 1572912;
+    /**
+     * DICOM Tag for Radiopharmaceutical.
+     */
     public static final int Radiopharmaceutical = 1572913;
+    /**
+     * DICOM Tag for EnergyWindowCenterline.
+     */
     public static final int EnergyWindowCenterline = 1572914;
+    /**
+     * DICOM Tag for EnergyWindowTotalWidth.
+     */
     public static final int EnergyWindowTotalWidth = 1572915;
+    /**
+     * DICOM Tag for InterventionDrugName.
+     */
     public static final int InterventionDrugName = 1572916;
+    /**
+     * DICOM Tag for InterventionDrugStartTime.
+     */
     public static final int InterventionDrugStartTime = 1572917;
+    /**
+     * DICOM Tag for InterventionSequence.
+     */
     public static final int InterventionSequence = 1572918;
+    /**
+     * DICOM Tag for TherapyType.
+     */
     public static final int TherapyType = 1572919;
+    /**
+     * DICOM Tag for InterventionStatus.
+     */
     public static final int InterventionStatus = 1572920;
+    /**
+     * DICOM Tag for TherapyDescription.
+     */
     public static final int TherapyDescription = 1572921;
+    /**
+     * DICOM Tag for InterventionDescription.
+     */
     public static final int InterventionDescription = 1572922;
+    /**
+     * DICOM Tag for CineRate.
+     */
     public static final int CineRate = 1572928;
+    /**
+     * DICOM Tag for InitialCineRunState.
+     */
     public static final int InitialCineRunState = 1572930;
+    /**
+     * DICOM Tag for SliceThickness.
+     */
     public static final int SliceThickness = 1572944;
+    /**
+     * DICOM Tag for KVP.
+     */
     public static final int KVP = 1572960;
+    /**
+     * DICOM Tag for CountsAccumulated.
+     */
     public static final int CountsAccumulated = 1572976;
+    /**
+     * DICOM Tag for AcquisitionTerminationCondition.
+     */
     public static final int AcquisitionTerminationCondition = 1572977;
+    /**
+     * DICOM Tag for EffectiveDuration.
+     */
     public static final int EffectiveDuration = 1572978;
+    /**
+     * DICOM Tag for AcquisitionStartCondition.
+     */
     public static final int AcquisitionStartCondition = 1572979;
+    /**
+     * DICOM Tag for AcquisitionStartConditionData.
+     */
     public static final int AcquisitionStartConditionData = 1572980;
+    /**
+     * DICOM Tag for AcquisitionTerminationConditionData.
+     */
     public static final int AcquisitionTerminationConditionData = 1572981;
+    /**
+     * DICOM Tag for RepetitionTime.
+     */
     public static final int RepetitionTime = 1572992;
+    /**
+     * DICOM Tag for EchoTime.
+     */
     public static final int EchoTime = 1572993;
+    /**
+     * DICOM Tag for InversionTime.
+     */
     public static final int InversionTime = 1572994;
+    /**
+     * DICOM Tag for NumberOfAverages.
+     */
     public static final int NumberOfAverages = 1572995;
+    /**
+     * DICOM Tag for ImagingFrequency.
+     */
     public static final int ImagingFrequency = 1572996;
+    /**
+     * DICOM Tag for ImagedNucleus.
+     */
     public static final int ImagedNucleus = 1572997;
+    /**
+     * DICOM Tag for EchoNumbers.
+     */
     public static final int EchoNumbers = 1572998;
+    /**
+     * DICOM Tag for MagneticFieldStrength.
+     */
     public static final int MagneticFieldStrength = 1572999;
+    /**
+     * DICOM Tag for SpacingBetweenSlices.
+     */
     public static final int SpacingBetweenSlices = 1573000;
+    /**
+     * DICOM Tag for NumberOfPhaseEncodingSteps.
+     */
     public static final int NumberOfPhaseEncodingSteps = 1573001;
+    /**
+     * DICOM Tag for DataCollectionDiameter.
+     */
     public static final int DataCollectionDiameter = 1573008;
+    /**
+     * DICOM Tag for EchoTrainLength.
+     */
     public static final int EchoTrainLength = 1573009;
+    /**
+     * DICOM Tag for PercentSampling.
+     */
     public static final int PercentSampling = 1573011;
+    /**
+     * DICOM Tag for PercentPhaseFieldOfView.
+     */
     public static final int PercentPhaseFieldOfView = 1573012;
+    /**
+     * DICOM Tag for PixelBandwidth.
+     */
     public static final int PixelBandwidth = 1573013;
+    /**
+     * DICOM Tag for DeviceSerialNumber.
+     */
     public static final int DeviceSerialNumber = 1576960;
+    /**
+     * DICOM Tag for DeviceUID.
+     */
     public static final int DeviceUID = 1576962;
+    /**
+     * DICOM Tag for DeviceID.
+     */
     public static final int DeviceID = 1576963;
+    /**
+     * DICOM Tag for PlateID.
+     */
     public static final int PlateID = 1576964;
+    /**
+     * DICOM Tag for GeneratorID.
+     */
     public static final int GeneratorID = 1576965;
+    /**
+     * DICOM Tag for GridID.
+     */
     public static final int GridID = 1576966;
+    /**
+     * DICOM Tag for CassetteID.
+     */
     public static final int CassetteID = 1576967;
+    /**
+     * DICOM Tag for GantryID.
+     */
     public static final int GantryID = 1576968;
+    /**
+     * DICOM Tag for UniqueDeviceIdentifier.
+     */
     public static final int UniqueDeviceIdentifier = 1576969;
+    /**
+     * DICOM Tag for UDISequence.
+     */
     public static final int UDISequence = 1576970;
+    /**
+     * DICOM Tag for ManufacturerDeviceClassUID.
+     */
     public static final int ManufacturerDeviceClassUID = 1576971;
+    /**
+     * DICOM Tag for SecondaryCaptureDeviceID.
+     */
     public static final int SecondaryCaptureDeviceID = 1576976;
+    /**
+     * DICOM Tag for HardcopyCreationDeviceID.
+     */
     public static final int HardcopyCreationDeviceID = 1576977;
+    /**
+     * DICOM Tag for DateOfSecondaryCapture.
+     */
     public static final int DateOfSecondaryCapture = 1576978;
+    /**
+     * DICOM Tag for TimeOfSecondaryCapture.
+     */
     public static final int TimeOfSecondaryCapture = 1576980;
+    /**
+     * DICOM Tag for SecondaryCaptureDeviceManufacturer.
+     */
     public static final int SecondaryCaptureDeviceManufacturer = 1576982;
+    /**
+     * DICOM Tag for HardcopyDeviceManufacturer.
+     */
     public static final int HardcopyDeviceManufacturer = 1576983;
+    /**
+     * DICOM Tag for SecondaryCaptureDeviceManufacturerModelName.
+     */
     public static final int SecondaryCaptureDeviceManufacturerModelName = 1576984;
+    /**
+     * DICOM Tag for SecondaryCaptureDeviceSoftwareVersions.
+     */
     public static final int SecondaryCaptureDeviceSoftwareVersions = 1576985;
+    /**
+     * DICOM Tag for HardcopyDeviceSoftwareVersion.
+     */
     public static final int HardcopyDeviceSoftwareVersion = 1576986;
+    /**
+     * DICOM Tag for HardcopyDeviceManufacturerModelName.
+     */
     public static final int HardcopyDeviceManufacturerModelName = 1576987;
+    /**
+     * DICOM Tag for SoftwareVersions.
+     */
     public static final int SoftwareVersions = 1576992;
+    /**
+     * DICOM Tag for VideoImageFormatAcquired.
+     */
     public static final int VideoImageFormatAcquired = 1576994;
+    /**
+     * DICOM Tag for DigitalImageFormatAcquired.
+     */
     public static final int DigitalImageFormatAcquired = 1576995;
+    /**
+     * DICOM Tag for ProtocolName.
+     */
     public static final int ProtocolName = 1577008;
+    /**
+     * DICOM Tag for ContrastBolusRoute.
+     */
     public static final int ContrastBolusRoute = 1577024;
+    /**
+     * DICOM Tag for ContrastBolusVolume.
+     */
     public static final int ContrastBolusVolume = 1577025;
+    /**
+     * DICOM Tag for ContrastBolusStartTime.
+     */
     public static final int ContrastBolusStartTime = 1577026;
+    /**
+     * DICOM Tag for ContrastBolusStopTime.
+     */
     public static final int ContrastBolusStopTime = 1577027;
+    /**
+     * DICOM Tag for ContrastBolusTotalDose.
+     */
     public static final int ContrastBolusTotalDose = 1577028;
+    /**
+     * DICOM Tag for SyringeCounts.
+     */
     public static final int SyringeCounts = 1577029;
+    /**
+     * DICOM Tag for ContrastFlowRate.
+     */
     public static final int ContrastFlowRate = 1577030;
+    /**
+     * DICOM Tag for ContrastFlowDuration.
+     */
     public static final int ContrastFlowDuration = 1577031;
+    /**
+     * DICOM Tag for ContrastBolusIngredient.
+     */
     public static final int ContrastBolusIngredient = 1577032;
+    /**
+     * DICOM Tag for ContrastBolusIngredientConcentration.
+     */
     public static final int ContrastBolusIngredientConcentration = 1577033;
+    /**
+     * DICOM Tag for SpatialResolution.
+     */
     public static final int SpatialResolution = 1577040;
+    /**
+     * DICOM Tag for TriggerTime.
+     */
     public static final int TriggerTime = 1577056;
+    /**
+     * DICOM Tag for TriggerSourceOrType.
+     */
     public static final int TriggerSourceOrType = 1577057;
+    /**
+     * DICOM Tag for NominalInterval.
+     */
     public static final int NominalInterval = 1577058;
+    /**
+     * DICOM Tag for FrameTime.
+     */
     public static final int FrameTime = 1577059;
+    /**
+     * DICOM Tag for CardiacFramingType.
+     */
     public static final int CardiacFramingType = 1577060;
+    /**
+     * DICOM Tag for FrameTimeVector.
+     */
     public static final int FrameTimeVector = 1577061;
+    /**
+     * DICOM Tag for FrameDelay.
+     */
     public static final int FrameDelay = 1577062;
+    /**
+     * DICOM Tag for ImageTriggerDelay.
+     */
     public static final int ImageTriggerDelay = 1577063;
+    /**
+     * DICOM Tag for MultiplexGroupTimeOffset.
+     */
     public static final int MultiplexGroupTimeOffset = 1577064;
+    /**
+     * DICOM Tag for TriggerTimeOffset.
+     */
     public static final int TriggerTimeOffset = 1577065;
+    /**
+     * DICOM Tag for SynchronizationTrigger.
+     */
     public static final int SynchronizationTrigger = 1577066;
+    /**
+     * DICOM Tag for SynchronizationChannel.
+     */
     public static final int SynchronizationChannel = 1577068;
+    /**
+     * DICOM Tag for TriggerSamplePosition.
+     */
     public static final int TriggerSamplePosition = 1577070;
+    /**
+     * DICOM Tag for RadiopharmaceuticalRoute.
+     */
     public static final int RadiopharmaceuticalRoute = 1577072;
+    /**
+     * DICOM Tag for RadiopharmaceuticalVolume.
+     */
     public static final int RadiopharmaceuticalVolume = 1577073;
+    /**
+     * DICOM Tag for RadiopharmaceuticalStartTime.
+     */
     public static final int RadiopharmaceuticalStartTime = 1577074;
+    /**
+     * DICOM Tag for RadiopharmaceuticalStopTime.
+     */
     public static final int RadiopharmaceuticalStopTime = 1577075;
+    /**
+     * DICOM Tag for RadionuclideTotalDose.
+     */
     public static final int RadionuclideTotalDose = 1577076;
+    /**
+     * DICOM Tag for RadionuclideHalfLife.
+     */
     public static final int RadionuclideHalfLife = 1577077;
+    /**
+     * DICOM Tag for RadionuclidePositronFraction.
+     */
     public static final int RadionuclidePositronFraction = 1577078;
+    /**
+     * DICOM Tag for RadiopharmaceuticalSpecificActivity.
+     */
     public static final int RadiopharmaceuticalSpecificActivity = 1577079;
+    /**
+     * DICOM Tag for RadiopharmaceuticalStartDateTime.
+     */
     public static final int RadiopharmaceuticalStartDateTime = 1577080;
+    /**
+     * DICOM Tag for RadiopharmaceuticalStopDateTime.
+     */
     public static final int RadiopharmaceuticalStopDateTime = 1577081;
+    /**
+     * DICOM Tag for BeatRejectionFlag.
+     */
     public static final int BeatRejectionFlag = 1577088;
+    /**
+     * DICOM Tag for LowRRValue.
+     */
     public static final int LowRRValue = 1577089;
+    /**
+     * DICOM Tag for HighRRValue.
+     */
     public static final int HighRRValue = 1577090;
+    /**
+     * DICOM Tag for IntervalsAcquired.
+     */
     public static final int IntervalsAcquired = 1577091;
+    /**
+     * DICOM Tag for IntervalsRejected.
+     */
     public static final int IntervalsRejected = 1577092;
+    /**
+     * DICOM Tag for PVCRejection.
+     */
     public static final int PVCRejection = 1577093;
+    /**
+     * DICOM Tag for SkipBeats.
+     */
     public static final int SkipBeats = 1577094;
+    /**
+     * DICOM Tag for HeartRate.
+     */
     public static final int HeartRate = 1577096;
+    /**
+     * DICOM Tag for CardiacNumberOfImages.
+     */
     public static final int CardiacNumberOfImages = 1577104;
+    /**
+     * DICOM Tag for TriggerWindow.
+     */
     public static final int TriggerWindow = 1577108;
+    /**
+     * DICOM Tag for ReconstructionDiameter.
+     */
     public static final int ReconstructionDiameter = 1577216;
+    /**
+     * DICOM Tag for DistanceSourceToDetector.
+     */
     public static final int DistanceSourceToDetector = 1577232;
+    /**
+     * DICOM Tag for DistanceSourceToPatient.
+     */
     public static final int DistanceSourceToPatient = 1577233;
+    /**
+     * DICOM Tag for EstimatedRadiographicMagnificationFactor.
+     */
     public static final int EstimatedRadiographicMagnificationFactor = 1577236;
+    /**
+     * DICOM Tag for GantryDetectorTilt.
+     */
     public static final int GantryDetectorTilt = 1577248;
+    /**
+     * DICOM Tag for GantryDetectorSlew.
+     */
     public static final int GantryDetectorSlew = 1577249;
+    /**
+     * DICOM Tag for TableHeight.
+     */
     public static final int TableHeight = 1577264;
+    /**
+     * DICOM Tag for TableTraverse.
+     */
     public static final int TableTraverse = 1577265;
+    /**
+     * DICOM Tag for TableMotion.
+     */
     public static final int TableMotion = 1577268;
+    /**
+     * DICOM Tag for TableVerticalIncrement.
+     */
     public static final int TableVerticalIncrement = 1577269;
+    /**
+     * DICOM Tag for TableLateralIncrement.
+     */
     public static final int TableLateralIncrement = 1577270;
+    /**
+     * DICOM Tag for TableLongitudinalIncrement.
+     */
     public static final int TableLongitudinalIncrement = 1577271;
+    /**
+     * DICOM Tag for TableAngle.
+     */
     public static final int TableAngle = 1577272;
+    /**
+     * DICOM Tag for TableType.
+     */
     public static final int TableType = 1577274;
+    /**
+     * DICOM Tag for RotationDirection.
+     */
     public static final int RotationDirection = 1577280;
+    /**
+     * DICOM Tag for AngularPosition.
+     */
     public static final int AngularPosition = 1577281;
+    /**
+     * DICOM Tag for RadialPosition.
+     */
     public static final int RadialPosition = 1577282;
+    /**
+     * DICOM Tag for ScanArc.
+     */
     public static final int ScanArc = 1577283;
+    /**
+     * DICOM Tag for AngularStep.
+     */
     public static final int AngularStep = 1577284;
+    /**
+     * DICOM Tag for CenterOfRotationOffset.
+     */
     public static final int CenterOfRotationOffset = 1577285;
+    /**
+     * DICOM Tag for RotationOffset.
+     */
     public static final int RotationOffset = 1577286;
+    /**
+     * DICOM Tag for FieldOfViewShape.
+     */
     public static final int FieldOfViewShape = 1577287;
+    /**
+     * DICOM Tag for FieldOfViewDimensions.
+     */
     public static final int FieldOfViewDimensions = 1577289;
+    /**
+     * DICOM Tag for ExposureTime.
+     */
     public static final int ExposureTime = 1577296;
+    /**
+     * DICOM Tag for XRayTubeCurrent.
+     */
     public static final int XRayTubeCurrent = 1577297;
+    /**
+     * DICOM Tag for Exposure.
+     */
     public static final int Exposure = 1577298;
+    /**
+     * DICOM Tag for ExposureInuAs.
+     */
     public static final int ExposureInuAs = 1577299;
+    /**
+     * DICOM Tag for AveragePulseWidth.
+     */
     public static final int AveragePulseWidth = 1577300;
+    /**
+     * DICOM Tag for RadiationSetting.
+     */
     public static final int RadiationSetting = 1577301;
+    /**
+     * DICOM Tag for RectificationType.
+     */
     public static final int RectificationType = 1577302;
+    /**
+     * DICOM Tag for RadiationMode.
+     */
     public static final int RadiationMode = 1577306;
+    /**
+     * DICOM Tag for ImageAndFluoroscopyAreaDoseProduct.
+     */
     public static final int ImageAndFluoroscopyAreaDoseProduct = 1577310;
+    /**
+     * DICOM Tag for FilterType.
+     */
     public static final int FilterType = 1577312;
+    /**
+     * DICOM Tag for TypeOfFilters.
+     */
     public static final int TypeOfFilters = 1577313;
+    /**
+     * DICOM Tag for IntensifierSize.
+     */
     public static final int IntensifierSize = 1577314;
+    /**
+     * DICOM Tag for ImagerPixelSpacing.
+     */
     public static final int ImagerPixelSpacing = 1577316;
+    /**
+     * DICOM Tag for Grid.
+     */
     public static final int Grid = 1577318;
+    /**
+     * DICOM Tag for GeneratorPower.
+     */
     public static final int GeneratorPower = 1577328;
+    /**
+     * DICOM Tag for CollimatorGridName.
+     */
     public static final int CollimatorGridName = 1577344;
+    /**
+     * DICOM Tag for CollimatorType.
+     */
     public static final int CollimatorType = 1577345;
+    /**
+     * DICOM Tag for FocalDistance.
+     */
     public static final int FocalDistance = 1577346;
+    /**
+     * DICOM Tag for XFocusCenter.
+     */
     public static final int XFocusCenter = 1577347;
+    /**
+     * DICOM Tag for YFocusCenter.
+     */
     public static final int YFocusCenter = 1577348;
+    /**
+     * DICOM Tag for FocalSpots.
+     */
     public static final int FocalSpots = 1577360;
+    /**
+     * DICOM Tag for AnodeTargetMaterial.
+     */
     public static final int AnodeTargetMaterial = 1577361;
+    /**
+     * DICOM Tag for BodyPartThickness.
+     */
     public static final int BodyPartThickness = 1577376;
+    /**
+     * DICOM Tag for CompressionForce.
+     */
     public static final int CompressionForce = 1577378;
+    /**
+     * DICOM Tag for CompressionPressure.
+     */
     public static final int CompressionPressure = 1577379;
+    /**
+     * DICOM Tag for PaddleDescription.
+     */
     public static final int PaddleDescription = 1577380;
+    /**
+     * DICOM Tag for CompressionContactArea.
+     */
     public static final int CompressionContactArea = 1577381;
+    /**
+     * DICOM Tag for AcquisitionMode.
+     */
     public static final int AcquisitionMode = 1577392;
+    /**
+     * DICOM Tag for DoseModeName.
+     */
     public static final int DoseModeName = 1577393;
+    /**
+     * DICOM Tag for AcquiredSubtractionMaskFlag.
+     */
     public static final int AcquiredSubtractionMaskFlag = 1577394;
+    /**
+     * DICOM Tag for FluoroscopyPersistenceFlag.
+     */
     public static final int FluoroscopyPersistenceFlag = 1577395;
+    /**
+     * DICOM Tag for FluoroscopyLastImageHoldPersistenceFlag.
+     */
     public static final int FluoroscopyLastImageHoldPersistenceFlag = 1577396;
+    /**
+     * DICOM Tag for UpperLimitNumberOfPersistentFluoroscopyFrames.
+     */
     public static final int UpperLimitNumberOfPersistentFluoroscopyFrames = 1577397;
+    /**
+     * DICOM Tag for ContrastBolusAutoInjectionTriggerFlag.
+     */
     public static final int ContrastBolusAutoInjectionTriggerFlag = 1577398;
+    /**
+     * DICOM Tag for ContrastBolusInjectionDelay.
+     */
     public static final int ContrastBolusInjectionDelay = 1577399;
+    /**
+     * DICOM Tag for XAAcquisitionPhaseDetailsSequence.
+     */
     public static final int XAAcquisitionPhaseDetailsSequence = 1577400;
+    /**
+     * DICOM Tag for XAAcquisitionFrameRate.
+     */
     public static final int XAAcquisitionFrameRate = 1577401;
+    /**
+     * DICOM Tag for XAPlaneDetailsSequence.
+     */
     public static final int XAPlaneDetailsSequence = 1577402;
+    /**
+     * DICOM Tag for AcquisitionFieldOfViewLabel.
+     */
     public static final int AcquisitionFieldOfViewLabel = 1577403;
+    /**
+     * DICOM Tag for XRayFilterDetailsSequence.
+     */
     public static final int XRayFilterDetailsSequence = 1577404;
+    /**
+     * DICOM Tag for XAAcquisitionDuration.
+     */
     public static final int XAAcquisitionDuration = 1577405;
+    /**
+     * DICOM Tag for ReconstructionPipelineType.
+     */
     public static final int ReconstructionPipelineType = 1577406;
+    /**
+     * DICOM Tag for ImageFilterDetailsSequence.
+     */
     public static final int ImageFilterDetailsSequence = 1577407;
+    /**
+     * DICOM Tag for AppliedMaskSubtractionFlag.
+     */
     public static final int AppliedMaskSubtractionFlag = 1577408;
+    /**
+     * DICOM Tag for RequestedSeriesDescriptionCodeSequence.
+     */
     public static final int RequestedSeriesDescriptionCodeSequence = 1577409;
+    /**
+     * DICOM Tag for DateOfLastCalibration.
+     */
     public static final int DateOfLastCalibration = 1577472;
+    /**
+     * DICOM Tag for TimeOfLastCalibration.
+     */
     public static final int TimeOfLastCalibration = 1577473;
+    /**
+     * DICOM Tag for DateTimeOfLastCalibration.
+     */
     public static final int DateTimeOfLastCalibration = 1577474;
+    /**
+     * DICOM Tag for CalibrationDateTime.
+     */
     public static final int CalibrationDateTime = 1577475;
+    /**
+     * DICOM Tag for DateOfManufacture.
+     */
     public static final int DateOfManufacture = 1577476;
+    /**
+     * DICOM Tag for DateOfInstallation.
+     */
     public static final int DateOfInstallation = 1577477;
+    /**
+     * DICOM Tag for ConvolutionKernel.
+     */
     public static final int ConvolutionKernel = 1577488;
+    /**
+     * DICOM Tag for UpperLowerPixelValues.
+     */
     public static final int UpperLowerPixelValues = 1577536;
+    /**
+     * DICOM Tag for ActualFrameDuration.
+     */
     public static final int ActualFrameDuration = 1577538;
+    /**
+     * DICOM Tag for CountRate.
+     */
     public static final int CountRate = 1577539;
+    /**
+     * DICOM Tag for PreferredPlaybackSequencing.
+     */
     public static final int PreferredPlaybackSequencing = 1577540;
+    /**
+     * DICOM Tag for ReceiveCoilName.
+     */
     public static final int ReceiveCoilName = 1577552;
+    /**
+     * DICOM Tag for TransmitCoilName.
+     */
     public static final int TransmitCoilName = 1577553;
+    /**
+     * DICOM Tag for PlateType.
+     */
     public static final int PlateType = 1577568;
+    /**
+     * DICOM Tag for PhosphorType.
+     */
     public static final int PhosphorType = 1577569;
+    /**
+     * DICOM Tag for WaterEquivalentDiameter.
+     */
     public static final int WaterEquivalentDiameter = 1577585;
+    /**
+     * DICOM Tag for WaterEquivalentDiameterCalculationMethodCodeSequence.
+     */
     public static final int WaterEquivalentDiameterCalculationMethodCodeSequence = 1577586;
+    /**
+     * DICOM Tag for ScanVelocity.
+     */
     public static final int ScanVelocity = 1577728;
+    /**
+     * DICOM Tag for WholeBodyTechnique.
+     */
     public static final int WholeBodyTechnique = 1577729;
+    /**
+     * DICOM Tag for ScanLength.
+     */
     public static final int ScanLength = 1577730;
+    /**
+     * DICOM Tag for AcquisitionMatrix.
+     */
     public static final int AcquisitionMatrix = 1577744;
+    /**
+     * DICOM Tag for InPlanePhaseEncodingDirection.
+     */
     public static final int InPlanePhaseEncodingDirection = 1577746;
+    /**
+     * DICOM Tag for FlipAngle.
+     */
     public static final int FlipAngle = 1577748;
+    /**
+     * DICOM Tag for VariableFlipAngleFlag.
+     */
     public static final int VariableFlipAngleFlag = 1577749;
+    /**
+     * DICOM Tag for SAR.
+     */
     public static final int SAR = 1577750;
+    /**
+     * DICOM Tag for dBdt.
+     */
     public static final int dBdt = 1577752;
+    /**
+     * DICOM Tag for B1rms.
+     */
     public static final int B1rms = 1577760;
+    /**
+     * DICOM Tag for AcquisitionDeviceProcessingDescription.
+     */
     public static final int AcquisitionDeviceProcessingDescription = 1577984;
+    /**
+     * DICOM Tag for AcquisitionDeviceProcessingCode.
+     */
     public static final int AcquisitionDeviceProcessingCode = 1577985;
+    /**
+     * DICOM Tag for CassetteOrientation.
+     */
     public static final int CassetteOrientation = 1577986;
+    /**
+     * DICOM Tag for CassetteSize.
+     */
     public static final int CassetteSize = 1577987;
+    /**
+     * DICOM Tag for ExposuresOnPlate.
+     */
     public static final int ExposuresOnPlate = 1577988;
+    /**
+     * DICOM Tag for RelativeXRayExposure.
+     */
     public static final int RelativeXRayExposure = 1577989;
+    /**
+     * DICOM Tag for ExposureIndex.
+     */
     public static final int ExposureIndex = 1578001;
+    /**
+     * DICOM Tag for TargetExposureIndex.
+     */
     public static final int TargetExposureIndex = 1578002;
+    /**
+     * DICOM Tag for DeviationIndex.
+     */
     public static final int DeviationIndex = 1578003;
+    /**
+     * DICOM Tag for ColumnAngulation.
+     */
     public static final int ColumnAngulation = 1578064;
+    /**
+     * DICOM Tag for TomoLayerHeight.
+     */
     public static final int TomoLayerHeight = 1578080;
+    /**
+     * DICOM Tag for TomoAngle.
+     */
     public static final int TomoAngle = 1578096;
+    /**
+     * DICOM Tag for TomoTime.
+     */
     public static final int TomoTime = 1578112;
+    /**
+     * DICOM Tag for TomoType.
+     */
     public static final int TomoType = 1578128;
+    /**
+     * DICOM Tag for TomoClass.
+     */
     public static final int TomoClass = 1578129;
+    /**
+     * DICOM Tag for NumberOfTomosynthesisSourceImages.
+     */
     public static final int NumberOfTomosynthesisSourceImages = 1578133;
+    /**
+     * DICOM Tag for PositionerMotion.
+     */
     public static final int PositionerMotion = 1578240;
+    /**
+     * DICOM Tag for PositionerType.
+     */
     public static final int PositionerType = 1578248;
+    /**
+     * DICOM Tag for PositionerPrimaryAngle.
+     */
     public static final int PositionerPrimaryAngle = 1578256;
+    /**
+     * DICOM Tag for PositionerSecondaryAngle.
+     */
     public static final int PositionerSecondaryAngle = 1578257;
+    /**
+     * DICOM Tag for PositionerPrimaryAngleIncrement.
+     */
     public static final int PositionerPrimaryAngleIncrement = 1578272;
+    /**
+     * DICOM Tag for PositionerSecondaryAngleIncrement.
+     */
     public static final int PositionerSecondaryAngleIncrement = 1578273;
+    /**
+     * DICOM Tag for DetectorPrimaryAngle.
+     */
     public static final int DetectorPrimaryAngle = 1578288;
+    /**
+     * DICOM Tag for DetectorSecondaryAngle.
+     */
     public static final int DetectorSecondaryAngle = 1578289;
+    /**
+     * DICOM Tag for ShutterShape.
+     */
     public static final int ShutterShape = 1578496;
+    /**
+     * DICOM Tag for ShutterLeftVerticalEdge.
+     */
     public static final int ShutterLeftVerticalEdge = 1578498;
+    /**
+     * DICOM Tag for ShutterRightVerticalEdge.
+     */
     public static final int ShutterRightVerticalEdge = 1578500;
+    /**
+     * DICOM Tag for ShutterUpperHorizontalEdge.
+     */
     public static final int ShutterUpperHorizontalEdge = 1578502;
+    /**
+     * DICOM Tag for ShutterLowerHorizontalEdge.
+     */
     public static final int ShutterLowerHorizontalEdge = 1578504;
+    /**
+     * DICOM Tag for CenterOfCircularShutter.
+     */
     public static final int CenterOfCircularShutter = 1578512;
+    /**
+     * DICOM Tag for RadiusOfCircularShutter.
+     */
     public static final int RadiusOfCircularShutter = 1578514;
+    /**
+     * DICOM Tag for VerticesOfThePolygonalShutter.
+     */
     public static final int VerticesOfThePolygonalShutter = 1578528;
+    /**
+     * DICOM Tag for ShutterPresentationValue.
+     */
     public static final int ShutterPresentationValue = 1578530;
+    /**
+     * DICOM Tag for ShutterOverlayGroup.
+     */
     public static final int ShutterOverlayGroup = 1578531;
+    /**
+     * DICOM Tag for ShutterPresentationColorCIELabValue.
+     */
     public static final int ShutterPresentationColorCIELabValue = 1578532;
+    /**
+     * DICOM Tag for OutlineShapeType.
+     */
     public static final int OutlineShapeType = 1578544;
+    /**
+     * DICOM Tag for OutlineLeftVerticalEdge.
+     */
     public static final int OutlineLeftVerticalEdge = 1578545;
+    /**
+     * DICOM Tag for OutlineRightVerticalEdge.
+     */
     public static final int OutlineRightVerticalEdge = 1578546;
+    /**
+     * DICOM Tag for OutlineUpperHorizontalEdge.
+     */
     public static final int OutlineUpperHorizontalEdge = 1578547;
+    /**
+     * DICOM Tag for OutlineLowerHorizontalEdge.
+     */
     public static final int OutlineLowerHorizontalEdge = 1578548;
+    /**
+     * DICOM Tag for CenterOfCircularOutline.
+     */
     public static final int CenterOfCircularOutline = 1578549;
+    /**
+     * DICOM Tag for DiameterOfCircularOutline.
+     */
     public static final int DiameterOfCircularOutline = 1578550;
+    /**
+     * DICOM Tag for NumberOfPolygonalVertices.
+     */
     public static final int NumberOfPolygonalVertices = 1578551;
+    /**
+     * DICOM Tag for VerticesOfThePolygonalOutline.
+     */
     public static final int VerticesOfThePolygonalOutline = 1578552;
+    /**
+     * DICOM Tag for CollimatorShape.
+     */
     public static final int CollimatorShape = 1578752;
+    /**
+     * DICOM Tag for CollimatorLeftVerticalEdge.
+     */
     public static final int CollimatorLeftVerticalEdge = 1578754;
+    /**
+     * DICOM Tag for CollimatorRightVerticalEdge.
+     */
     public static final int CollimatorRightVerticalEdge = 1578756;
+    /**
+     * DICOM Tag for CollimatorUpperHorizontalEdge.
+     */
     public static final int CollimatorUpperHorizontalEdge = 1578758;
+    /**
+     * DICOM Tag for CollimatorLowerHorizontalEdge.
+     */
     public static final int CollimatorLowerHorizontalEdge = 1578760;
+    /**
+     * DICOM Tag for CenterOfCircularCollimator.
+     */
     public static final int CenterOfCircularCollimator = 1578768;
+    /**
+     * DICOM Tag for RadiusOfCircularCollimator.
+     */
     public static final int RadiusOfCircularCollimator = 1578770;
+    /**
+     * DICOM Tag for VerticesOfThePolygonalCollimator.
+     */
     public static final int VerticesOfThePolygonalCollimator = 1578784;
+    /**
+     * DICOM Tag for AcquisitionTimeSynchronized.
+     */
     public static final int AcquisitionTimeSynchronized = 1579008;
+    /**
+     * DICOM Tag for TimeSource.
+     */
     public static final int TimeSource = 1579009;
+    /**
+     * DICOM Tag for TimeDistributionProtocol.
+     */
     public static final int TimeDistributionProtocol = 1579010;
+    /**
+     * DICOM Tag for NTPSourceAddress.
+     */
     public static final int NTPSourceAddress = 1579011;
+    /**
+     * DICOM Tag for PageNumberVector.
+     */
     public static final int PageNumberVector = 1581057;
+    /**
+     * DICOM Tag for FrameLabelVector.
+     */
     public static final int FrameLabelVector = 1581058;
+    /**
+     * DICOM Tag for FramePrimaryAngleVector.
+     */
     public static final int FramePrimaryAngleVector = 1581059;
+    /**
+     * DICOM Tag for FrameSecondaryAngleVector.
+     */
     public static final int FrameSecondaryAngleVector = 1581060;
+    /**
+     * DICOM Tag for SliceLocationVector.
+     */
     public static final int SliceLocationVector = 1581061;
+    /**
+     * DICOM Tag for DisplayWindowLabelVector.
+     */
     public static final int DisplayWindowLabelVector = 1581062;
+    /**
+     * DICOM Tag for NominalScannedPixelSpacing.
+     */
     public static final int NominalScannedPixelSpacing = 1581072;
+    /**
+     * DICOM Tag for DigitizingDeviceTransportDirection.
+     */
     public static final int DigitizingDeviceTransportDirection = 1581088;
+    /**
+     * DICOM Tag for RotationOfScannedFilm.
+     */
     public static final int RotationOfScannedFilm = 1581104;
+    /**
+     * DICOM Tag for BiopsyTargetSequence.
+     */
     public static final int BiopsyTargetSequence = 1581121;
+    /**
+     * DICOM Tag for TargetUID.
+     */
     public static final int TargetUID = 1581122;
+    /**
+     * DICOM Tag for LocalizingCursorPosition.
+     */
     public static final int LocalizingCursorPosition = 1581123;
+    /**
+     * DICOM Tag for CalculatedTargetPosition.
+     */
     public static final int CalculatedTargetPosition = 1581124;
+    /**
+     * DICOM Tag for TargetLabel.
+     */
     public static final int TargetLabel = 1581125;
+    /**
+     * DICOM Tag for DisplayedZValue.
+     */
     public static final int DisplayedZValue = 1581126;
+    /**
+     * DICOM Tag for IVUSAcquisition.
+     */
     public static final int IVUSAcquisition = 1585408;
+    /**
+     * DICOM Tag for IVUSPullbackRate.
+     */
     public static final int IVUSPullbackRate = 1585409;
+    /**
+     * DICOM Tag for IVUSGatedRate.
+     */
     public static final int IVUSGatedRate = 1585410;
+    /**
+     * DICOM Tag for IVUSPullbackStartFrameNumber.
+     */
     public static final int IVUSPullbackStartFrameNumber = 1585411;
+    /**
+     * DICOM Tag for IVUSPullbackStopFrameNumber.
+     */
     public static final int IVUSPullbackStopFrameNumber = 1585412;
+    /**
+     * DICOM Tag for LesionNumber.
+     */
     public static final int LesionNumber = 1585413;
+    /**
+     * DICOM Tag for AcquisitionComments.
+     */
     public static final int AcquisitionComments = 1589248;
+    /**
+     * DICOM Tag for OutputPower.
+     */
     public static final int OutputPower = 1593344;
+    /**
+     * DICOM Tag for TransducerData.
+     */
     public static final int TransducerData = 1593360;
+    /**
+     * DICOM Tag for TransducerIdentificationSequence.
+     */
     public static final int TransducerIdentificationSequence = 1593361;
+    /**
+     * DICOM Tag for FocusDepth.
+     */
     public static final int FocusDepth = 1593362;
+    /**
+     * DICOM Tag for ProcessingFunction.
+     */
     public static final int ProcessingFunction = 1593376;
+    /**
+     * DICOM Tag for PostprocessingFunction.
+     */
     public static final int PostprocessingFunction = 1593377;
+    /**
+     * DICOM Tag for MechanicalIndex.
+     */
     public static final int MechanicalIndex = 1593378;
+    /**
+     * DICOM Tag for BoneThermalIndex.
+     */
     public static final int BoneThermalIndex = 1593380;
+    /**
+     * DICOM Tag for CranialThermalIndex.
+     */
     public static final int CranialThermalIndex = 1593382;
+    /**
+     * DICOM Tag for SoftTissueThermalIndex.
+     */
     public static final int SoftTissueThermalIndex = 1593383;
+    /**
+     * DICOM Tag for SoftTissueFocusThermalIndex.
+     */
     public static final int SoftTissueFocusThermalIndex = 1593384;
+    /**
+     * DICOM Tag for SoftTissueSurfaceThermalIndex.
+     */
     public static final int SoftTissueSurfaceThermalIndex = 1593385;
+    /**
+     * DICOM Tag for DynamicRange.
+     */
     public static final int DynamicRange = 1593392;
+    /**
+     * DICOM Tag for TotalGain.
+     */
     public static final int TotalGain = 1593408;
+    /**
+     * DICOM Tag for DepthOfScanField.
+     */
     public static final int DepthOfScanField = 1593424;
+    /**
+     * DICOM Tag for PatientPosition.
+     */
     public static final int PatientPosition = 1593600;
+    /**
+     * DICOM Tag for ViewPosition.
+     */
     public static final int ViewPosition = 1593601;
+    /**
+     * DICOM Tag for ProjectionEponymousNameCodeSequence.
+     */
     public static final int ProjectionEponymousNameCodeSequence = 1593604;
+    /**
+     * DICOM Tag for ImageTransformationMatrix.
+     */
     public static final int ImageTransformationMatrix = 1593872;
+    /**
+     * DICOM Tag for ImageTranslationVector.
+     */
     public static final int ImageTranslationVector = 1593874;
+    /**
+     * DICOM Tag for Sensitivity.
+     */
     public static final int Sensitivity = 1597440;
+    /**
+     * DICOM Tag for SequenceOfUltrasoundRegions.
+     */
     public static final int SequenceOfUltrasoundRegions = 1597457;
+    /**
+     * DICOM Tag for RegionSpatialFormat.
+     */
     public static final int RegionSpatialFormat = 1597458;
+    /**
+     * DICOM Tag for RegionDataType.
+     */
     public static final int RegionDataType = 1597460;
+    /**
+     * DICOM Tag for RegionFlags.
+     */
     public static final int RegionFlags = 1597462;
+    /**
+     * DICOM Tag for RegionLocationMinX0.
+     */
     public static final int RegionLocationMinX0 = 1597464;
+    /**
+     * DICOM Tag for RegionLocationMinY0.
+     */
     public static final int RegionLocationMinY0 = 1597466;
+    /**
+     * DICOM Tag for RegionLocationMaxX1.
+     */
     public static final int RegionLocationMaxX1 = 1597468;
+    /**
+     * DICOM Tag for RegionLocationMaxY1.
+     */
     public static final int RegionLocationMaxY1 = 1597470;
+    /**
+     * DICOM Tag for ReferencePixelX0.
+     */
     public static final int ReferencePixelX0 = 1597472;
+    /**
+     * DICOM Tag for ReferencePixelY0.
+     */
     public static final int ReferencePixelY0 = 1597474;
+    /**
+     * DICOM Tag for PhysicalUnitsXDirection.
+     */
     public static final int PhysicalUnitsXDirection = 1597476;
+    /**
+     * DICOM Tag for PhysicalUnitsYDirection.
+     */
     public static final int PhysicalUnitsYDirection = 1597478;
+    /**
+     * DICOM Tag for ReferencePixelPhysicalValueX.
+     */
     public static final int ReferencePixelPhysicalValueX = 1597480;
+    /**
+     * DICOM Tag for ReferencePixelPhysicalValueY.
+     */
     public static final int ReferencePixelPhysicalValueY = 1597482;
+    /**
+     * DICOM Tag for PhysicalDeltaX.
+     */
     public static final int PhysicalDeltaX = 1597484;
+    /**
+     * DICOM Tag for PhysicalDeltaY.
+     */
     public static final int PhysicalDeltaY = 1597486;
+    /**
+     * DICOM Tag for TransducerFrequency.
+     */
     public static final int TransducerFrequency = 1597488;
+    /**
+     * DICOM Tag for TransducerType.
+     */
     public static final int TransducerType = 1597489;
+    /**
+     * DICOM Tag for PulseRepetitionFrequency.
+     */
     public static final int PulseRepetitionFrequency = 1597490;
+    /**
+     * DICOM Tag for DopplerCorrectionAngle.
+     */
     public static final int DopplerCorrectionAngle = 1597492;
+    /**
+     * DICOM Tag for SteeringAngle.
+     */
     public static final int SteeringAngle = 1597494;
+    /**
+     * DICOM Tag for DopplerSampleVolumeXPositionRetired.
+     */
     public static final int DopplerSampleVolumeXPositionRetired = 1597496;
+    /**
+     * DICOM Tag for DopplerSampleVolumeXPosition.
+     */
     public static final int DopplerSampleVolumeXPosition = 1597497;
+    /**
+     * DICOM Tag for DopplerSampleVolumeYPositionRetired.
+     */
     public static final int DopplerSampleVolumeYPositionRetired = 1597498;
+    /**
+     * DICOM Tag for DopplerSampleVolumeYPosition.
+     */
     public static final int DopplerSampleVolumeYPosition = 1597499;
+    /**
+     * DICOM Tag for TMLinePositionX0Retired.
+     */
     public static final int TMLinePositionX0Retired = 1597500;
+    /**
+     * DICOM Tag for TMLinePositionX0.
+     */
     public static final int TMLinePositionX0 = 1597501;
+    /**
+     * DICOM Tag for TMLinePositionY0Retired.
+     */
     public static final int TMLinePositionY0Retired = 1597502;
+    /**
+     * DICOM Tag for TMLinePositionY0.
+     */
     public static final int TMLinePositionY0 = 1597503;
+    /**
+     * DICOM Tag for TMLinePositionX1Retired.
+     */
     public static final int TMLinePositionX1Retired = 1597504;
+    /**
+     * DICOM Tag for TMLinePositionX1.
+     */
     public static final int TMLinePositionX1 = 1597505;
+    /**
+     * DICOM Tag for TMLinePositionY1Retired.
+     */
     public static final int TMLinePositionY1Retired = 1597506;
+    /**
+     * DICOM Tag for TMLinePositionY1.
+     */
     public static final int TMLinePositionY1 = 1597507;
+    /**
+     * DICOM Tag for PixelComponentOrganization.
+     */
     public static final int PixelComponentOrganization = 1597508;
+    /**
+     * DICOM Tag for PixelComponentMask.
+     */
     public static final int PixelComponentMask = 1597510;
+    /**
+     * DICOM Tag for PixelComponentRangeStart.
+     */
     public static final int PixelComponentRangeStart = 1597512;
+    /**
+     * DICOM Tag for PixelComponentRangeStop.
+     */
     public static final int PixelComponentRangeStop = 1597514;
+    /**
+     * DICOM Tag for PixelComponentPhysicalUnits.
+     */
     public static final int PixelComponentPhysicalUnits = 1597516;
+    /**
+     * DICOM Tag for PixelComponentDataType.
+     */
     public static final int PixelComponentDataType = 1597518;
+    /**
+     * DICOM Tag for NumberOfTableBreakPoints.
+     */
     public static final int NumberOfTableBreakPoints = 1597520;
+    /**
+     * DICOM Tag for TableOfXBreakPoints.
+     */
     public static final int TableOfXBreakPoints = 1597522;
+    /**
+     * DICOM Tag for TableOfYBreakPoints.
+     */
     public static final int TableOfYBreakPoints = 1597524;
+    /**
+     * DICOM Tag for NumberOfTableEntries.
+     */
     public static final int NumberOfTableEntries = 1597526;
+    /**
+     * DICOM Tag for TableOfPixelValues.
+     */
     public static final int TableOfPixelValues = 1597528;
+    /**
+     * DICOM Tag for TableOfParameterValues.
+     */
     public static final int TableOfParameterValues = 1597530;
+    /**
+     * DICOM Tag for RWaveTimeVector.
+     */
     public static final int RWaveTimeVector = 1597536;
+    /**
+     * DICOM Tag for ActiveImageAreaOverlayGroup.
+     */
     public static final int ActiveImageAreaOverlayGroup = 1597552;
+    /**
+     * DICOM Tag for DetectorConditionsNominalFlag.
+     */
     public static final int DetectorConditionsNominalFlag = 1601536;
+    /**
+     * DICOM Tag for DetectorTemperature.
+     */
     public static final int DetectorTemperature = 1601537;
+    /**
+     * DICOM Tag for DetectorType.
+     */
     public static final int DetectorType = 1601540;
+    /**
+     * DICOM Tag for DetectorConfiguration.
+     */
     public static final int DetectorConfiguration = 1601541;
+    /**
+     * DICOM Tag for DetectorDescription.
+     */
     public static final int DetectorDescription = 1601542;
+    /**
+     * DICOM Tag for DetectorMode.
+     */
     public static final int DetectorMode = 1601544;
+    /**
+     * DICOM Tag for DetectorID.
+     */
     public static final int DetectorID = 1601546;
+    /**
+     * DICOM Tag for DateOfLastDetectorCalibration.
+     */
     public static final int DateOfLastDetectorCalibration = 1601548;
+    /**
+     * DICOM Tag for TimeOfLastDetectorCalibration.
+     */
     public static final int TimeOfLastDetectorCalibration = 1601550;
+    /**
+     * DICOM Tag for ExposuresOnDetectorSinceLastCalibration.
+     */
     public static final int ExposuresOnDetectorSinceLastCalibration = 1601552;
+    /**
+     * DICOM Tag for ExposuresOnDetectorSinceManufactured.
+     */
     public static final int ExposuresOnDetectorSinceManufactured = 1601553;
+    /**
+     * DICOM Tag for DetectorTimeSinceLastExposure.
+     */
     public static final int DetectorTimeSinceLastExposure = 1601554;
+    /**
+     * DICOM Tag for DetectorActiveTime.
+     */
     public static final int DetectorActiveTime = 1601556;
+    /**
+     * DICOM Tag for DetectorActivationOffsetFromExposure.
+     */
     public static final int DetectorActivationOffsetFromExposure = 1601558;
+    /**
+     * DICOM Tag for DetectorBinning.
+     */
     public static final int DetectorBinning = 1601562;
+    /**
+     * DICOM Tag for DetectorElementPhysicalSize.
+     */
     public static final int DetectorElementPhysicalSize = 1601568;
+    /**
+     * DICOM Tag for DetectorElementSpacing.
+     */
     public static final int DetectorElementSpacing = 1601570;
+    /**
+     * DICOM Tag for DetectorActiveShape.
+     */
     public static final int DetectorActiveShape = 1601572;
+    /**
+     * DICOM Tag for DetectorActiveDimensions.
+     */
     public static final int DetectorActiveDimensions = 1601574;
+    /**
+     * DICOM Tag for DetectorActiveOrigin.
+     */
     public static final int DetectorActiveOrigin = 1601576;
+    /**
+     * DICOM Tag for DetectorManufacturerName.
+     */
     public static final int DetectorManufacturerName = 1601578;
+    /**
+     * DICOM Tag for DetectorManufacturerModelName.
+     */
     public static final int DetectorManufacturerModelName = 1601579;
+    /**
+     * DICOM Tag for FieldOfViewOrigin.
+     */
     public static final int FieldOfViewOrigin = 1601584;
+    /**
+     * DICOM Tag for FieldOfViewRotation.
+     */
     public static final int FieldOfViewRotation = 1601586;
+    /**
+     * DICOM Tag for FieldOfViewHorizontalFlip.
+     */
     public static final int FieldOfViewHorizontalFlip = 1601588;
+    /**
+     * DICOM Tag for PixelDataAreaOriginRelativeToFOV.
+     */
     public static final int PixelDataAreaOriginRelativeToFOV = 1601590;
+    /**
+     * DICOM Tag for PixelDataAreaRotationAngleRelativeToFOV.
+     */
     public static final int PixelDataAreaRotationAngleRelativeToFOV = 1601592;
+    /**
+     * DICOM Tag for GridAbsorbingMaterial.
+     */
     public static final int GridAbsorbingMaterial = 1601600;
+    /**
+     * DICOM Tag for GridSpacingMaterial.
+     */
     public static final int GridSpacingMaterial = 1601601;
+    /**
+     * DICOM Tag for GridThickness.
+     */
     public static final int GridThickness = 1601602;
+    /**
+     * DICOM Tag for GridPitch.
+     */
     public static final int GridPitch = 1601604;
+    /**
+     * DICOM Tag for GridAspectRatio.
+     */
     public static final int GridAspectRatio = 1601606;
+    /**
+     * DICOM Tag for GridPeriod.
+     */
     public static final int GridPeriod = 1601608;
+    /**
+     * DICOM Tag for GridFocalDistance.
+     */
     public static final int GridFocalDistance = 1601612;
+    /**
+     * DICOM Tag for FilterMaterial.
+     */
     public static final int FilterMaterial = 1601616;
+    /**
+     * DICOM Tag for FilterThicknessMinimum.
+     */
     public static final int FilterThicknessMinimum = 1601618;
+    /**
+     * DICOM Tag for FilterThicknessMaximum.
+     */
     public static final int FilterThicknessMaximum = 1601620;
+    /**
+     * DICOM Tag for FilterBeamPathLengthMinimum.
+     */
     public static final int FilterBeamPathLengthMinimum = 1601622;
+    /**
+     * DICOM Tag for FilterBeamPathLengthMaximum.
+     */
     public static final int FilterBeamPathLengthMaximum = 1601624;
+    /**
+     * DICOM Tag for ExposureControlMode.
+     */
     public static final int ExposureControlMode = 1601632;
+    /**
+     * DICOM Tag for ExposureControlModeDescription.
+     */
     public static final int ExposureControlModeDescription = 1601634;
+    /**
+     * DICOM Tag for ExposureStatus.
+     */
     public static final int ExposureStatus = 1601636;
+    /**
+     * DICOM Tag for PhototimerSetting.
+     */
     public static final int PhototimerSetting = 1601637;
+    /**
+     * DICOM Tag for ExposureTimeInuS.
+     */
     public static final int ExposureTimeInuS = 1605968;
+    /**
+     * DICOM Tag for XRayTubeCurrentInuA.
+     */
     public static final int XRayTubeCurrentInuA = 1605969;
+    /**
+     * DICOM Tag for ContentQualification.
+     */
     public static final int ContentQualification = 1609732;
+    /**
+     * DICOM Tag for PulseSequenceName.
+     */
     public static final int PulseSequenceName = 1609733;
+    /**
+     * DICOM Tag for MRImagingModifierSequence.
+     */
     public static final int MRImagingModifierSequence = 1609734;
+    /**
+     * DICOM Tag for EchoPulseSequence.
+     */
     public static final int EchoPulseSequence = 1609736;
+    /**
+     * DICOM Tag for InversionRecovery.
+     */
     public static final int InversionRecovery = 1609737;
+    /**
+     * DICOM Tag for FlowCompensation.
+     */
     public static final int FlowCompensation = 1609744;
+    /**
+     * DICOM Tag for MultipleSpinEcho.
+     */
     public static final int MultipleSpinEcho = 1609745;
+    /**
+     * DICOM Tag for MultiPlanarExcitation.
+     */
     public static final int MultiPlanarExcitation = 1609746;
+    /**
+     * DICOM Tag for PhaseContrast.
+     */
     public static final int PhaseContrast = 1609748;
+    /**
+     * DICOM Tag for TimeOfFlightContrast.
+     */
     public static final int TimeOfFlightContrast = 1609749;
+    /**
+     * DICOM Tag for Spoiling.
+     */
     public static final int Spoiling = 1609750;
+    /**
+     * DICOM Tag for SteadyStatePulseSequence.
+     */
     public static final int SteadyStatePulseSequence = 1609751;
+    /**
+     * DICOM Tag for EchoPlanarPulseSequence.
+     */
     public static final int EchoPlanarPulseSequence = 1609752;
+    /**
+     * DICOM Tag for TagAngleFirstAxis.
+     */
     public static final int TagAngleFirstAxis = 1609753;
+    /**
+     * DICOM Tag for MagnetizationTransfer.
+     */
     public static final int MagnetizationTransfer = 1609760;
+    /**
+     * DICOM Tag for T2Preparation.
+     */
     public static final int T2Preparation = 1609761;
+    /**
+     * DICOM Tag for BloodSignalNulling.
+     */
     public static final int BloodSignalNulling = 1609762;
+    /**
+     * DICOM Tag for SaturationRecovery.
+     */
     public static final int SaturationRecovery = 1609764;
+    /**
+     * DICOM Tag for SpectrallySelectedSuppression.
+     */
     public static final int SpectrallySelectedSuppression = 1609765;
+    /**
+     * DICOM Tag for SpectrallySelectedExcitation.
+     */
     public static final int SpectrallySelectedExcitation = 1609766;
+    /**
+     * DICOM Tag for SpatialPresaturation.
+     */
     public static final int SpatialPresaturation = 1609767;
+    /**
+     * DICOM Tag for Tagging.
+     */
     public static final int Tagging = 1609768;
+    /**
+     * DICOM Tag for OversamplingPhase.
+     */
     public static final int OversamplingPhase = 1609769;
+    /**
+     * DICOM Tag for TagSpacingFirstDimension.
+     */
     public static final int TagSpacingFirstDimension = 1609776;
+    /**
+     * DICOM Tag for GeometryOfKSpaceTraversal.
+     */
     public static final int GeometryOfKSpaceTraversal = 1609778;
+    /**
+     * DICOM Tag for SegmentedKSpaceTraversal.
+     */
     public static final int SegmentedKSpaceTraversal = 1609779;
+    /**
+     * DICOM Tag for RectilinearPhaseEncodeReordering.
+     */
     public static final int RectilinearPhaseEncodeReordering = 1609780;
+    /**
+     * DICOM Tag for TagThickness.
+     */
     public static final int TagThickness = 1609781;
+    /**
+     * DICOM Tag for PartialFourierDirection.
+     */
     public static final int PartialFourierDirection = 1609782;
+    /**
+     * DICOM Tag for CardiacSynchronizationTechnique.
+     */
     public static final int CardiacSynchronizationTechnique = 1609783;
+    /**
+     * DICOM Tag for ReceiveCoilManufacturerName.
+     */
     public static final int ReceiveCoilManufacturerName = 1609793;
+    /**
+     * DICOM Tag for MRReceiveCoilSequence.
+     */
     public static final int MRReceiveCoilSequence = 1609794;
+    /**
+     * DICOM Tag for ReceiveCoilType.
+     */
     public static final int ReceiveCoilType = 1609795;
+    /**
+     * DICOM Tag for QuadratureReceiveCoil.
+     */
     public static final int QuadratureReceiveCoil = 1609796;
+    /**
+     * DICOM Tag for MultiCoilDefinitionSequence.
+     */
     public static final int MultiCoilDefinitionSequence = 1609797;
+    /**
+     * DICOM Tag for MultiCoilConfiguration.
+     */
     public static final int MultiCoilConfiguration = 1609798;
+    /**
+     * DICOM Tag for MultiCoilElementName.
+     */
     public static final int MultiCoilElementName = 1609799;
+    /**
+     * DICOM Tag for MultiCoilElementUsed.
+     */
     public static final int MultiCoilElementUsed = 1609800;
+    /**
+     * DICOM Tag for MRTransmitCoilSequence.
+     */
     public static final int MRTransmitCoilSequence = 1609801;
+    /**
+     * DICOM Tag for TransmitCoilManufacturerName.
+     */
     public static final int TransmitCoilManufacturerName = 1609808;
+    /**
+     * DICOM Tag for TransmitCoilType.
+     */
     public static final int TransmitCoilType = 1609809;
+    /**
+     * DICOM Tag for SpectralWidth.
+     */
     public static final int SpectralWidth = 1609810;
+    /**
+     * DICOM Tag for ChemicalShiftReference.
+     */
     public static final int ChemicalShiftReference = 1609811;
+    /**
+     * DICOM Tag for VolumeLocalizationTechnique.
+     */
     public static final int VolumeLocalizationTechnique = 1609812;
+    /**
+     * DICOM Tag for MRAcquisitionFrequencyEncodingSteps.
+     */
     public static final int MRAcquisitionFrequencyEncodingSteps = 1609816;
+    /**
+     * DICOM Tag for Decoupling.
+     */
     public static final int Decoupling = 1609817;
+    /**
+     * DICOM Tag for DecoupledNucleus.
+     */
     public static final int DecoupledNucleus = 1609824;
+    /**
+     * DICOM Tag for DecouplingFrequency.
+     */
     public static final int DecouplingFrequency = 1609825;
+    /**
+     * DICOM Tag for DecouplingMethod.
+     */
     public static final int DecouplingMethod = 1609826;
+    /**
+     * DICOM Tag for DecouplingChemicalShiftReference.
+     */
     public static final int DecouplingChemicalShiftReference = 1609827;
+    /**
+     * DICOM Tag for KSpaceFiltering.
+     */
     public static final int KSpaceFiltering = 1609828;
+    /**
+     * DICOM Tag for TimeDomainFiltering.
+     */
     public static final int TimeDomainFiltering = 1609829;
+    /**
+     * DICOM Tag for NumberOfZeroFills.
+     */
     public static final int NumberOfZeroFills = 1609830;
+    /**
+     * DICOM Tag for BaselineCorrection.
+     */
     public static final int BaselineCorrection = 1609831;
+    /**
+     * DICOM Tag for ParallelReductionFactorInPlane.
+     */
     public static final int ParallelReductionFactorInPlane = 1609833;
+    /**
+     * DICOM Tag for CardiacRRIntervalSpecified.
+     */
     public static final int CardiacRRIntervalSpecified = 1609840;
+    /**
+     * DICOM Tag for AcquisitionDuration.
+     */
     public static final int AcquisitionDuration = 1609843;
+
     public static final int FrameAcquisitionDateTime = 1609844;
     public static final int DiffusionDirectionality = 1609845;
     public static final int DiffusionGradientDirectionSequence = 1609846;

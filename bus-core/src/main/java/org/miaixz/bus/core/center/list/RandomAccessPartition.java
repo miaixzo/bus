@@ -31,20 +31,26 @@ import java.util.List;
 import java.util.RandomAccess;
 
 /**
- * 列表分区或分段（可随机访问列表） 通过传入分区长度，将指定列表分区为不同的块，每块区域的长度相同（最后一块可能小于长度） 分区是在原List的基础上进行的，返回的分区是不可变的抽象列表，原列表元素变更，分区中元素也会变更。
- * 参考：Guava的Lists#RandomAccessPartition
+ * List partitioning or segmentation for {@link RandomAccess} lists. By specifying the partition length, a given list is
+ * divided into different blocks, with each block having the same length (the last block may be shorter). This class
+ * extends {@link Partition} and additionally implements {@link RandomAccess}, indicating that its sub-lists can be
+ * accessed efficiently by index. Partitioning is performed on the original list. The returned partitions are immutable
+ * abstract lists, and changes to the original list's elements will also be reflected in the partitions. Inspired by
+ * Guava's Lists#RandomAccessPartition.
  *
- * @param <T> 元素类型 , guava
+ * @param <T> the type of elements in the list
  * @author Kimi Liu
  * @since Java 17+
  */
 public class RandomAccessPartition<T> extends Partition<T> implements RandomAccess {
 
     /**
-     * 构造
+     * Constructs a {@code RandomAccessPartition} for the given list and partition size.
      *
-     * @param list 被分区的列表，必须实现{@link RandomAccess}
-     * @param size 每个分区的长度
+     * @param list the list to be partitioned, must implement {@link RandomAccess} and not be {@code null}
+     * @param size the length of each partition. Must be greater than 0.
+     * @throws NullPointerException     if {@code list} is {@code null}
+     * @throws IllegalArgumentException if {@code size} is less than or equal to 0
      */
     public RandomAccessPartition(final List<T> list, final int size) {
         super(list, size);

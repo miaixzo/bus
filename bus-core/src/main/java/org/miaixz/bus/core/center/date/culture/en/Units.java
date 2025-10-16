@@ -30,7 +30,7 @@ package org.miaixz.bus.core.center.date.culture.en;
 import java.time.temporal.ChronoUnit;
 
 /**
- * 日期时间单位，每个单位都是以毫秒为基数
+ * Date and time units, each unit is based on milliseconds.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,41 +38,49 @@ import java.time.temporal.ChronoUnit;
 public enum Units {
 
     /**
-     * 一毫秒
+     * One millisecond.
      */
     MS(1),
     /**
-     * 一秒的毫秒数
+     * Number of milliseconds in one second.
      */
     SECOND(1000),
     /**
-     * 一分钟的毫秒数
+     * Number of milliseconds in one minute.
      */
     MINUTE(SECOND.getMillis() * 60),
     /**
-     * 一小时的毫秒数
+     * Number of milliseconds in one hour.
      */
     HOUR(MINUTE.getMillis() * 60),
     /**
-     * 一天的毫秒数
+     * Number of milliseconds in one day.
      */
     DAY(HOUR.getMillis() * 24),
     /**
-     * 一周的毫秒数
+     * Number of milliseconds in one week.
      */
     WEEK(DAY.getMillis() * 7);
 
+    /**
+     * The number of milliseconds for this unit.
+     */
     private final long millis;
 
+    /**
+     * Constructor for Units enum.
+     *
+     * @param millis The number of milliseconds for this unit.
+     */
     Units(final long millis) {
         this.millis = millis;
     }
 
     /**
-     * 单位兼容转换，将{@link ChronoUnit}转换为对应的DateUnit
+     * Converts {@link ChronoUnit} to the corresponding {@link Units}.
      *
-     * @param unit {@link ChronoUnit}
-     * @return Units，null表示不支持此单位
+     * @param unit The {@link ChronoUnit} to convert.
+     * @return The corresponding {@link Units}, or {@code null} if the unit is not supported.
      */
     public static Units of(final ChronoUnit unit) {
         switch (unit) {
@@ -98,10 +106,10 @@ public enum Units {
     }
 
     /**
-     * 单位兼容转换，将DateUnit转换为对应的{@link ChronoUnit}
+     * Converts {@link Units} to the corresponding {@link ChronoUnit}.
      *
-     * @param unit Units
-     * @return {@link ChronoUnit}
+     * @param unit The {@link Units} to convert.
+     * @return The corresponding {@link ChronoUnit}.
      */
     public static ChronoUnit toChronoUnit(final Units unit) {
         switch (unit) {
@@ -127,16 +135,18 @@ public enum Units {
     }
 
     /**
-     * @return 单位对应的毫秒数
+     * Gets the number of milliseconds corresponding to this unit.
+     *
+     * @return The number of milliseconds.
      */
     public long getMillis() {
         return this.millis;
     }
 
     /**
-     * 单位兼容转换，将DateUnit转换为对应的{@link ChronoUnit}
+     * Converts this {@link Units} to the corresponding {@link ChronoUnit}.
      *
-     * @return {@link ChronoUnit}
+     * @return The corresponding {@link ChronoUnit}.
      */
     public ChronoUnit toChronoUnit() {
         return Units.toChronoUnit(this);

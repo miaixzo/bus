@@ -33,18 +33,33 @@ import java.io.Serializable;
 import org.miaixz.bus.core.lang.exception.InternalException;
 
 /**
- * 通过StackTrace方式获取调用者。此方式效率最低，不推荐使用
+ * Implementation of the {@link Caller} interface that retrieves caller information by analyzing the current thread's
+ * stack trace. This method is generally less efficient compared to other caller retrieval mechanisms and should be used
+ * with caution in performance-critical applications.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class StackTraceCaller implements Caller, Serializable {
 
+    /**
+     * The serial version UID for serialization.
+     */
     @Serial
     private static final long serialVersionUID = 2852251293153L;
 
+    /**
+     * The offset in the stack trace to account for internal method calls within this class and
+     * {@link Thread#getStackTrace()}.
+     */
     private static final int OFFSET = 2;
 
+    /**
+     * Retrieves the immediate calling class from the current thread's stack trace.
+     *
+     * @return The {@link Class} object representing the immediate caller, or {@code null} if not found.
+     * @throws InternalException if the class of the caller cannot be found.
+     */
     @Override
     public Class<?> getCaller() {
         final StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
@@ -59,6 +74,12 @@ public class StackTraceCaller implements Caller, Serializable {
         }
     }
 
+    /**
+     * Retrieves the caller of the immediate caller from the current thread's stack trace.
+     *
+     * @return The {@link Class} object representing the caller's caller, or {@code null} if not found.
+     * @throws InternalException if the class of the caller cannot be found.
+     */
     @Override
     public Class<?> getCallers() {
         final StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
@@ -73,6 +94,26 @@ public class StackTraceCaller implements Caller, Serializable {
         }
     }
 
+    /**
+     * Retrieves the calling class at a specific depth in the call stack. The depth is relative to the
+     * {@link StackTraceCaller} class itself.
+     *
+     * <p>
+     * Call stack depth explanation:
+     * 
+     * <pre>
+     * 0: {@link Thread#getStackTrace()} itself (internal)
+     * 1: {@link StackTraceCaller} method (internal)
+     * 2: The class that calls a method within {@link StackTraceCaller}
+     * 3: The caller of the class at depth 2
+     * ... and so on.
+     * </pre>
+     *
+     * @param depth The depth in the call stack, where 0 refers to the immediate caller of this method.
+     * @return The {@link Class} object at the specified call stack depth, or {@code null} if the depth is out of
+     *         bounds.
+     * @throws InternalException if the class at the specified depth cannot be found.
+     */
     @Override
     public Class<?> getCaller(final int depth) {
         final StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
@@ -87,6 +128,12 @@ public class StackTraceCaller implements Caller, Serializable {
         }
     }
 
+    /**
+     * Checks if the current method is called by a specific class by iterating through the stack trace.
+     *
+     * @param clazz The {@link Class} object to check against the call stack.
+     * @return {@code true} if the given class is found in the current call stack, {@code false} otherwise.
+     */
     @Override
     public boolean isCalledBy(final Class<?> clazz) {
         final StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();

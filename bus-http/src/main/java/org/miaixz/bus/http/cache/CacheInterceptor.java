@@ -27,9 +27,6 @@
 */
 package org.miaixz.bus.http.cache;
 
-import java.io.IOException;
-import java.util.concurrent.TimeUnit;
-
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.sink.BufferSink;
 import org.miaixz.bus.core.io.sink.Sink;
@@ -50,8 +47,11 @@ import org.miaixz.bus.http.metric.Internal;
 import org.miaixz.bus.http.metric.NewChain;
 import org.miaixz.bus.http.metric.http.HttpCodec;
 
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+
 /**
- * 服务来自缓存的请求并将响应写入缓存。
+ * An interceptor that serves requests from the cache and writes responses to the cache.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -64,16 +64,22 @@ public class CacheInterceptor implements Interceptor {
         this.cache = cache;
     }
 
+    /**
+     * Strips the body from a response.
+     *
+     * @param response The response to strip.
+     * @return A new response with a null body.
+     */
     private static Response stripBody(Response response) {
-        return null != response && null != response.body() ? response.newBuilder().body(null).build() : response;
+        return response != null && response.body() != null ? response.newBuilder().body(null).build() : response;
     }
 
     /**
-     * 将缓存的报头与RFC 7234,4.3.4定义的网络报头相结合。
+     * Combines cached headers with network headers as defined by RFC 7234, 4.3.4.
      *
-     * @param cachedHeaders  缓存header信息
-     * @param networkHeaders 请求header信息
-     * @return the header
+     * @param cachedHeaders  The cached headers.
+     * @param networkHeaders The network headers.
+     * @return The combined headers.
      */
     private static Headers combine(Headers cachedHeaders, Headers networkHeaders) {
         Headers.Builder result = new Headers.Builder();
@@ -84,7 +90,7 @@ public class CacheInterceptor implements Interceptor {
             if ("Warning".equalsIgnoreCase(fieldName) && value.startsWith(Symbol.ONE)) {
                 continue; // Drop 100-level freshness warnings.
             }
-            if (isContentSpecificHeader(fieldName) || !isEndToEnd(fieldName) || null == networkHeaders.get(fieldName)) {
+            if (isContentSpecificHeader(fieldName) || !isEndToEnd(fieldName) || networkHeaders.get(fieldName) == null) {
                 Internal.instance.addLenient(result, fieldName, value);
             }
         }
@@ -100,10 +106,10 @@ public class CacheInterceptor implements Interceptor {
     }
 
     /**
-     * 如果{@code fieldName}是RFC 2616所定义的端到端HTTP标头，则返回true。
+     * Returns true if {@code fieldName} is an end-to-end HTTP header as defined by RFC 2616.
      *
-     * @param fieldName 属性名称
-     * @return the true/false
+     * @param fieldName The field name to check.
+     * @return {@code true} if the header is end-to-end.
      */
     static boolean isEndToEnd(String fieldName) {
         return !HTTP.CONNECTION.equalsIgnoreCase(fieldName) && !HTTP.KEEP_ALIVE.equalsIgnoreCase(fieldName)
@@ -114,10 +120,10 @@ public class CacheInterceptor implements Interceptor {
     }
 
     /**
-     * 如果{@code fieldName}是特定于内容的，则返回true，因此应该始终从缓存的标头中使用
+     * Returns true if {@code fieldName} is content-specific and should always be used from the cached headers.
      *
-     * @param fieldName 属性名称
-     * @return the true/false
+     * @param fieldName The field name to check.
+     * @return {@code true} if the header is content-specific.
      */
     static boolean isContentSpecificHeader(String fieldName) {
         return HTTP.CONTENT_LENGTH.equalsIgnoreCase(fieldName) || HTTP.CONTENT_ENCODING.equalsIgnoreCase(fieldName)
@@ -126,7 +132,7 @@ public class CacheInterceptor implements Interceptor {
 
     @Override
     public Response intercept(NewChain chain) throws IOException {
-        Response cacheCandidate = null != cache ? cache.get(chain.request()) : null;
+        Response cacheCandidate = cache != null ? cache.get(chain.request()) : null;
 
         long now = System.currentTimeMillis();
 
@@ -134,24 +140,23 @@ public class CacheInterceptor implements Interceptor {
         Request networkRequest = strategy.networkRequest;
         Response cacheResponse = strategy.cacheResponse;
 
-        if (null != cache) {
+        if (cache != null) {
             cache.trackResponse(strategy);
         }
 
-        if (null != cacheCandidate && null == cacheResponse) {
-            // 缓存候选不适用关闭它
-            IoKit.close(cacheCandidate.body());
+        if (cacheCandidate != null && cacheResponse == null) {
+            IoKit.close(cacheCandidate.body()); // The cache candidate wasn't applicable. Close it.
         }
 
-        // 如果我们被禁止使用网络且缓存不足，则失败
-        if (null == networkRequest && null == cacheResponse) {
+        // If we're forbidden from using the network and the cache is insufficient, fail.
+        if (networkRequest == null && cacheResponse == null) {
             return new Response.Builder().request(chain.request()).protocol(Protocol.HTTP_1_1).code(504)
                     .message("Unsatisfiable Request (only-if-cached)").body(Builder.EMPTY_RESPONSE)
                     .sentRequestAtMillis(-1L).receivedResponseAtMillis(System.currentTimeMillis()).build();
         }
 
-        // 如果没有网络就完大了
-        if (null == networkRequest) {
+        // If we don't need the network, we're done.
+        if (networkRequest == null) {
             return cacheResponse.newBuilder().cacheResponse(stripBody(cacheResponse)).build();
         }
 
@@ -159,14 +164,14 @@ public class CacheInterceptor implements Interceptor {
         try {
             networkResponse = chain.proceed(networkRequest);
         } finally {
-            // 如果我们在I/O或其他方面崩溃，不要泄漏缓存体
-            if (null == networkResponse && null != cacheCandidate) {
+            // If we crashed on I/O or otherwise, don't leak the cache body.
+            if (networkResponse == null && cacheCandidate != null) {
                 IoKit.close(cacheCandidate.body());
             }
         }
 
-        // 如果我们也有缓存响应，那么在做一个条件get
-        if (null != cacheResponse) {
+        // If we have a cache response, we're doing a conditional GET.
+        if (cacheResponse != null) {
             if (networkResponse.code() == HTTP.HTTP_NOT_MODIFIED) {
                 Response response = cacheResponse.newBuilder()
                         .headers(combine(cacheResponse.headers(), networkResponse.headers()))
@@ -175,7 +180,7 @@ public class CacheInterceptor implements Interceptor {
                         .cacheResponse(stripBody(cacheResponse)).networkResponse(stripBody(networkResponse)).build();
                 networkResponse.body().close();
 
-                // 在合并报头之后但在剥离内容编码报头之前更新缓存(由initContentStream()执行)
+                // Update the cache after combining headers but before stripping the content-encoding header.
                 cache.trackConditionalCacheHit();
                 cache.update(cacheResponse, response);
                 return response;
@@ -187,9 +192,9 @@ public class CacheInterceptor implements Interceptor {
         Response response = networkResponse.newBuilder().cacheResponse(stripBody(cacheResponse))
                 .networkResponse(stripBody(networkResponse)).build();
 
-        if (null != cache) {
+        if (cache != null) {
             if (Headers.hasBody(response) && CacheStrategy.isCacheable(response, networkRequest)) {
-                // 将此请求提供给缓存
+                // Offer this request to the cache.
                 CacheRequest cacheRequest = cache.put(response);
                 return cacheWritingResponse(cacheRequest, response);
             }
@@ -198,7 +203,7 @@ public class CacheInterceptor implements Interceptor {
                 try {
                     cache.remove(networkRequest);
                 } catch (IOException ignored) {
-                    // 无法写入缓存
+                    // Unable to invalidates cache.
                 }
             }
         }
@@ -207,22 +212,22 @@ public class CacheInterceptor implements Interceptor {
     }
 
     /**
-     * 当源使用者读取字节时，返回一个向{@code cacheRequest}写入字节的新源。 在关闭流时，要小心地丢弃剩余的字节;否则，我们可能永远不会耗尽源流，因此无法完成缓存的响应
+     * Returns a new source that writes to {@code cacheRequest} as bytes are read by the source consumer. The returned
+     * source will be careful to discard the remaining bytes if the stream is closed before it is exhausted; otherwise
+     * we may not exhaust the source stream and therefore not complete the cached response.
      *
-     * @param cacheRequest 缓存请求
-     * @param response     相应信息
-     * @return 相应体
-     * @throws IOException 异常
+     * @param cacheRequest The cache request.
+     * @param response     The response.
+     * @return The response body.
+     * @throws IOException if an I/O error occurs.
      */
     private Response cacheWritingResponse(final CacheRequest cacheRequest, Response response) throws IOException {
-        // 一些应用程序返回一个空体;为了兼容性，我们将其视为空缓存请求
-        if (null == cacheRequest) {
+        // Some apps return a null body; for compatibility we treat that as a null cache request.
+        if (cacheRequest == null)
             return response;
-        }
         Sink cacheBodyUnbuffered = cacheRequest.body();
-        if (null == cacheBodyUnbuffered) {
+        if (cacheBodyUnbuffered == null)
             return response;
-        }
 
         final BufferSource source = response.body().source();
         final BufferSink cacheBody = IoKit.buffer(cacheBodyUnbuffered);
@@ -239,8 +244,7 @@ public class CacheInterceptor implements Interceptor {
                 } catch (IOException e) {
                     if (!cacheRequestClosed) {
                         cacheRequestClosed = true;
-                        // 未能写入完整的缓存响应
-                        cacheRequest.abort();
+                        cacheRequest.abort(); // Failed to write a complete cache response.
                     }
                     throw e;
                 }
@@ -248,8 +252,7 @@ public class CacheInterceptor implements Interceptor {
                 if (bytesRead == -1) {
                     if (!cacheRequestClosed) {
                         cacheRequestClosed = true;
-                        // 缓存响应完成
-                        cacheBody.close();
+                        cacheBody.close(); // The cache response is complete!
                     }
                     return -1;
                 }
@@ -275,11 +278,10 @@ public class CacheInterceptor implements Interceptor {
             }
         };
 
+        String contentType = response.header("Content-Type");
+        long contentLength = response.body().contentLength();
         return response.newBuilder()
-                .body(
-                        new RealResponseBody(response.header(HTTP.CONTENT_TYPE), response.body().length(),
-                                IoKit.buffer(cacheWritingSource)))
-                .build();
+                .body(new RealResponseBody(contentType, contentLength, IoKit.buffer(cacheWritingSource))).build();
     }
 
 }

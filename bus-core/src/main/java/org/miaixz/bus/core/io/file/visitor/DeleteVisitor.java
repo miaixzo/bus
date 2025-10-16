@@ -35,7 +35,7 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 
 /**
- * 删除操作的FileVisitor实现，用于递归遍历删除文件夹
+ * FileVisitor implementation for delete operations, used to recursively traverse and delete directories.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,10 +43,18 @@ import java.nio.file.attribute.BasicFileAttributes;
 public class DeleteVisitor extends SimpleFileVisitor<Path> {
 
     /**
-     * 单例对象
+     * Singleton instance of {@code DeleteVisitor}.
      */
     public static DeleteVisitor INSTANCE = new DeleteVisitor();
 
+    /**
+     * Invoked when a file is visited. Deletes the file.
+     *
+     * @param file  The file to visit.
+     * @param attrs The basic file attributes of the file.
+     * @return {@link FileVisitResult#CONTINUE} to continue the file tree traversal.
+     * @throws IOException if an I/O error occurs.
+     */
     @Override
     public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
         Files.delete(file);
@@ -54,12 +62,14 @@ public class DeleteVisitor extends SimpleFileVisitor<Path> {
     }
 
     /**
-     * 访问目录结束后删除目录，当执行此方法时，子文件或目录都已访问（删除）完毕 理论上当执行到此方法时，目录下已经被清空了
+     * Invoked after visiting a directory. Deletes the directory after all its children have been visited (and deleted).
+     * Theoretically, when this method is executed, the directory should already be empty.
      *
-     * @param dir 目录
-     * @param e   异常
-     * @return {@link FileVisitResult}
-     * @throws IOException IO异常
+     * @param dir The directory that was visited.
+     * @param e   An {@code IOException} if the iteration of the files in the directory terminated prematurely;
+     *            otherwise {@code null}.
+     * @return {@link FileVisitResult#CONTINUE} to continue the file tree traversal.
+     * @throws IOException if an I/O error occurs during deletion or if {@code e} is not {@code null}.
      */
     @Override
     public FileVisitResult postVisitDirectory(final Path dir, final IOException e) throws IOException {

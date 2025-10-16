@@ -39,10 +39,12 @@ import org.miaixz.bus.core.lang.Wrapper;
 import org.miaixz.bus.core.xyz.ObjectKit;
 
 /**
- * Map包装类，通过包装一个已有Map实现特定功能。例如自定义Key的规则或Value规则
+ * A decorator for a {@link Map} that delegates all its methods to an underlying map instance. This class serves as a
+ * base for creating customized map implementations by overriding specific methods, such as those for transforming keys
+ * or values (e.g., {@link TransMap}).
  *
- * @param <K> 键类型
- * @param <V> 值类型
+ * @param <K> The type of keys maintained by this map.
+ * @param <V> The type of mapped values.
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -52,34 +54,34 @@ public class MapWrapper<K, V>
     @Serial
     private static final long serialVersionUID = 2852267777760L;
     /**
-     * 原始集合
+     * The underlying (raw) map that all operations are delegated to.
      */
     private Map<K, V> raw;
 
     /**
-     * 构造 通过传入一个Map从而确定Map的类型，子类需创建一个空的Map，而非传入一个已有Map，否则值可能会被修改
+     * Constructs a {@code MapWrapper} using a factory to create the underlying map. This is useful for subclasses that
+     * need to initialize with a specific map type (e.g., {@code LinkedHashMap}).
      *
-     * @param mapFactory 空Map创建工厂
+     * @param mapFactory A supplier that provides an empty {@link Map} instance.
      */
     public MapWrapper(final Supplier<Map<K, V>> mapFactory) {
         this(mapFactory.get());
     }
 
     /**
-     * 构造
+     * Constructs a {@code MapWrapper} that delegates to the given raw map.
      *
-     * @param raw 被包装的Map，不允许为{@code null}
-     * @throws NullPointerException 当被包装的集合为{@code null}时抛出
+     * @param raw The underlying map to be wrapped. Must not be {@code null}.
      */
     public MapWrapper(final Map<K, V> raw) {
-        Assert.notNull(raw, "raw must not null");
+        Assert.notNull(raw, "Raw map must not be null");
         this.raw = raw;
     }
 
     /**
-     * 获取原始的Map
+     * Retrieves the underlying raw map that this wrapper delegates to.
      *
-     * @return Map
+     * @return The raw {@link Map} instance.
      */
     @Override
     public Map<K, V> getRaw() {
@@ -208,7 +210,6 @@ public class MapWrapper<K, V>
         return raw.computeIfAbsent(key, mappingFunction);
     }
 
-    // 重写默认方法的意义在于，如果被包装的Map自定义了这些默认方法，包装类就可以保持这些行为的一致性
     @Override
     public V getOrDefault(final Object key, final V defaultValue) {
         return raw.getOrDefault(key, defaultValue);
@@ -229,6 +230,13 @@ public class MapWrapper<K, V>
         return raw.merge(key, value, remappingFunction);
     }
 
+    /**
+     * Creates and returns a shallow copy of this {@code MapWrapper}. The underlying map is also cloned. The keys and
+     * values themselves are not cloned.
+     *
+     * @return A shallow copy of this instance.
+     * @throws CloneNotSupportedException If the underlying map is not cloneable.
+     */
     @Override
     public MapWrapper<K, V> clone() throws CloneNotSupportedException {
         final MapWrapper<K, V> clone = (MapWrapper<K, V>) super.clone();
@@ -237,16 +245,23 @@ public class MapWrapper<K, V>
     }
 
     /**
-     * 序列化与反序列化重写
+     * Serializes this {@code MapWrapper} instance.
      *
-     * @param out out
-     * @throws IOException
+     * @param out The {@link ObjectOutputStream} to write to.
+     * @throws IOException if an I/O error occurs.
      */
     private void writeObject(final ObjectOutputStream out) throws IOException {
         out.defaultWriteObject();
         out.writeObject(this.raw);
     }
 
+    /**
+     * Deserializes this {@code MapWrapper} instance.
+     *
+     * @param in The {@link ObjectInputStream} to read from.
+     * @throws IOException            if an I/O error occurs.
+     * @throws ClassNotFoundException if the class of a serialized object could not be found.
+     */
     private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
         raw = (Map<K, V>) in.readObject();

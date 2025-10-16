@@ -42,23 +42,54 @@ import org.miaixz.bus.image.galaxy.io.ContentHandlerAdapter;
 import org.miaixz.bus.image.galaxy.io.ImageInputStream;
 
 /**
+ * An abstract utility class for scanning DICOM files and XML representations of DICOM datasets. It provides methods to
+ * iterate through files and apply a callback function for each DICOM file found.
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
 public abstract class DicomFiles {
 
+    /**
+     * Static SAXParser instance for parsing XML files. Initialized on first use.
+     */
     private static SAXParser saxParser;
 
+    /**
+     * Scans a list of file names (which can be files or directories) for DICOM files or their XML representations. For
+     * each found file, the {@link Callback#dicomFile(File, Attributes, long, Attributes)} method is invoked. Progress
+     * is printed to the console.
+     *
+     * @param fnames The list of file names (absolute or relative paths) to scan.
+     * @param scb    The callback interface to handle each DICOM file.
+     */
     public static void scan(List<String> fnames, Callback scb) {
         scan(fnames, true, scb); // default printout = true
     }
 
+    /**
+     * Scans a list of file names (which can be files or directories) for DICOM files or their XML representations. For
+     * each found file, the {@link Callback#dicomFile(File, Attributes, long, Attributes)} method is invoked.
+     *
+     * @param fnames   The list of file names (absolute or relative paths) to scan.
+     * @param printout A boolean indicating whether to print progress to the console.
+     * @param scb      The callback interface to handle each DICOM file.
+     */
     public static void scan(List<String> fnames, boolean printout, Callback scb) {
         for (String fname : fnames) {
             scan(new File(fname), printout, scb);
         }
     }
 
+    /**
+     * Recursively scans a given file or directory for DICOM files or their XML representations. If the file is a
+     * directory, it scans its contents. If it's a file, it attempts to parse it as either a DICOM file or a DICOM XML
+     * file and invokes the callback.
+     *
+     * @param f        The {@link File} object representing the file or directory to scan.
+     * @param printout A boolean indicating whether to print progress to the console.
+     * @param scb      The callback interface to handle each DICOM file.
+     */
     private static void scan(File f, boolean printout, Callback scb) {
         if (f.isDirectory() && f.canRead()) {
             String[] fileList = f.list();
@@ -120,8 +151,21 @@ public abstract class DicomFiles {
         }
     }
 
+    /**
+     * Callback interface for processing each DICOM file found during a scan operation.
+     */
     public interface Callback {
 
+        /**
+         * Called for each DICOM file or DICOM XML file found.
+         *
+         * @param f     The {@link File} object representing the DICOM file.
+         * @param fmi   The File Meta Information {@link Attributes} of the DICOM file.
+         * @param dsPos The position of the dataset within the file, or -1 if it's an XML file.
+         * @param ds    The main dataset {@link Attributes} of the DICOM file.
+         * @return {@code true} if the file was processed successfully, {@code false} otherwise.
+         * @throws Exception if an error occurs during processing.
+         */
         boolean dicomFile(File f, Attributes fmi, long dsPos, Attributes ds) throws Exception;
     }
 

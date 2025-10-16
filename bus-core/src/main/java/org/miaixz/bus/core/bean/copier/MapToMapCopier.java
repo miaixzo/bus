@@ -34,7 +34,7 @@ import org.miaixz.bus.core.lang.mutable.MutableEntry;
 import org.miaixz.bus.core.xyz.TypeKit;
 
 /**
- * Map 到 Map 的属性拷贝器，将源 Map 的键值对复制到目标 Map。
+ * A copier that copies key-value pairs from a source Map to a target Map.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,17 +42,17 @@ import org.miaixz.bus.core.xyz.TypeKit;
 public class MapToMapCopier extends AbstractCopier<Map, Map> {
 
     /**
-     * 目标 Map 的泛型参数类型
+     * The generic parameter types of the target Map.
      */
     private final Type[] typeArguments;
 
     /**
-     * 构造方法，初始化 Map 到 Map 的拷贝器。
+     * Constructs a new {@code MapToMapCopier} instance.
      *
-     * @param source      来源 Map
-     * @param target      目标 Map 对象
-     * @param targetType  目标泛型类型
-     * @param copyOptions 拷贝选项，null 时使用默认配置
+     * @param source      The source Map. Must not be {@code null}.
+     * @param target      The target Map object. Must not be {@code null}.
+     * @param targetType  The generic type of the target Map.
+     * @param copyOptions The options to configure the copying process. If {@code null}, default options will be used.
      */
     public MapToMapCopier(final Map source, final Map target, final Type targetType, final CopyOptions copyOptions) {
         super(source, target, copyOptions);
@@ -60,9 +60,9 @@ public class MapToMapCopier extends AbstractCopier<Map, Map> {
     }
 
     /**
-     * 执行 Map 到 Map 的拷贝操作。
+     * Performs the property copying operation from the source Map to the target Map.
      *
-     * @return 目标 Map
+     * @return The target Map with copied properties.
      */
     @Override
     public Map copy() {
@@ -71,34 +71,34 @@ public class MapToMapCopier extends AbstractCopier<Map, Map> {
                 return;
             }
 
-            // 编辑键值对
+            // Edit key-value pair.
             final MutableEntry<Object, Object> entry = copyOptions.editField(sKey.toString(), sValue);
             if (null == entry) {
                 return;
             }
             sKey = entry.getKey();
-            // 键转换后为 null 则跳过
+            // If the key is null after conversion, skip.
             if (null == sKey) {
                 return;
             }
             sValue = entry.getValue();
-            // 忽略空值
+            // If ignoreNullValue is true and the value is null, skip.
             if (copyOptions.ignoreNullValue && sValue == null) {
                 return;
             }
 
             final Object targetValue = target.get(sKey);
-            // 非覆盖模式下，目标值存在则跳过
+            // In non-override mode, if the target value exists, skip.
             if (!copyOptions.override && null != targetValue) {
                 return;
             }
 
-            // 转换源值到目标值的类型
+            // Convert the source value to the target value's type.
             if (null != typeArguments) {
                 sValue = this.copyOptions.convertField(typeArguments[1], sValue);
             }
 
-            // 目标赋值
+            // Assign to target.
             target.put(sKey, sValue);
         });
         return this.target;

@@ -34,7 +34,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * 配置信息
+ * Configuration information for notification services.
  *
  * @author Justubborn
  * @since Java 17+
@@ -47,32 +47,32 @@ import lombok.experimental.SuperBuilder;
 public class Context {
 
     /**
-     * 对应各平台的appKey
+     * The application key corresponding to various platforms.
      */
     private String appKey;
 
     /**
-     * 对应各平台的appSecret
+     * The application secret corresponding to various platforms.
      */
     private String appSecret;
 
     /**
-     * 对应各平台的api地址
+     * The API endpoint address for various platforms.
      */
     private String endpoint;
 
     /**
-     * 企业ID
+     * The corporate ID.
      */
     private String corpId;
 
     /**
-     * 随机字符串
+     * A random string, typically used as a nonce.
      */
     private String nonce;
 
     /**
-     * 扩展属性
+     * Extension properties or additional data.
      */
     private String extension;
 

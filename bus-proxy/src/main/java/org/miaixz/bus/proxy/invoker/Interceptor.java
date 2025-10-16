@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.proxy.invoker;
 
+import org.miaixz.bus.proxy.Aspect;
+
 import java.io.Serial;
 import java.io.Serializable;
 
-import org.miaixz.bus.proxy.Aspect;
-
 /**
- * 简单拦截器，保存了被拦截的对象和Aspect实现
+ * A simple base class for interceptors, holding a reference to the target object and the aspect to be applied.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,14 +43,16 @@ public class Interceptor implements Serializable {
     @Serial
     private static final long serialVersionUID = 2852259600626L;
 
+    /** The original object being proxied. */
     protected final Object target;
+    /** The aspect containing the advice logic. */
     protected final Aspect aspect;
 
     /**
-     * 构造
+     * Constructs a new Interceptor.
      *
-     * @param target 被代理对象
-     * @param aspect 切面实现
+     * @param target The object to be proxied.
+     * @param aspect The aspect implementation.
      */
     public Interceptor(final Object target, final Aspect aspect) {
         this.target = target;
@@ -58,9 +60,9 @@ public class Interceptor implements Serializable {
     }
 
     /**
-     * 获取目标对象
+     * Gets the original target object that is being proxied.
      *
-     * @return 目标对象
+     * @return The target object.
      */
     public Object getTarget() {
         return this.target;

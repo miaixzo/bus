@@ -26,10 +26,10 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 基于commons-compress的解包（解压缩）封装
+ * A wrapper for unpacking (decompressing) based on commons-compress.
  *
  * <p>
- * 见：https://commons.apache.org/proper/commons-compress/
+ * See: https://commons.apache.org/proper/commons-compress/
  * </p>
  *
  * @author Kimi Liu

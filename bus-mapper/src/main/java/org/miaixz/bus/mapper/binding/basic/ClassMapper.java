@@ -35,47 +35,48 @@ import org.miaixz.bus.mapper.parsing.MapperFactory;
 import org.miaixz.bus.mapper.parsing.TableMeta;
 
 /**
- * 实体类信息接口，实现此接口可便捷获取当前接口对应的实体类类型 {@link Class} 和实体表信息 {@link TableMeta}
+ * An interface that provides information about an entity class. By implementing this interface, you can easily access
+ * the entity's {@link Class} type and its corresponding table metadata ({@link TableMeta}).
  *
- * @param <T> 实体类泛型
+ * @param <T> The generic type of the entity class.
  * @author Kimi Liu
  * @since Java 17+
  */
 public interface ClassMapper<T> {
 
     /**
-     * 获取当前接口对应的实体类类型
+     * Gets the entity class type corresponding to the current interface.
      *
-     * @return 实体类类型
+     * @return The entity class type.
      */
     default Class<T> entityClass() {
         return (Class<T>) CachingEntityClass.getEntityClass(getClass());
     }
 
     /**
-     * 获取当前接口对应的实体表信息
+     * Gets the entity table metadata corresponding to the current interface.
      *
-     * @return 实体表信息
+     * @return The entity table metadata.
      */
     default TableMeta entityTable() {
         return MapperFactory.create(entityClass());
     }
 
     /**
-     * 缓存实体类类型的工具类
+     * A utility class for caching entity class types.
      */
     class CachingEntityClass {
 
         /**
-         * 存储接口与实体类类型的映射
+         * A map to store the mapping between interface classes and their corresponding entity class types.
          */
         static Map<Class<?>, Class<?>> entityClassMap = new ConcurrentHashMap<>();
 
         /**
-         * 获取接口对应的实体类类型
+         * Gets the entity class type for a given sub-interface.
          *
-         * @param clazz 继承的子接口
-         * @return 实体类类型
+         * @param clazz The sub-interface that inherits from this mapper.
+         * @return The entity class type.
          */
         private static Class<?> getEntityClass(Class<?> clazz) {
             if (!entityClassMap.containsKey(clazz)) {

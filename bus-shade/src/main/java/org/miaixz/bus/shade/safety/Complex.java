@@ -28,18 +28,19 @@
 package org.miaixz.bus.shade.safety;
 
 /**
- * 记录加/解密规则
+ * Represents a complex rule or filter for determining if an entry requires encryption/decryption.
  *
+ * @param <E> The type of entry to be evaluated.
  * @author Kimi Liu
  * @since Java 17+
  */
 public interface Complex<E> {
 
     /**
-     * 记录是否需要加/解密
+     * Determines whether the given entry requires encryption or decryption.
      *
-     * @param entry 记录
-     * @return true: 需要 false:不需要
+     * @param entry The entry to check.
+     * @return {@code true} if the entry requires encryption/decryption; {@code false} otherwise.
      */
     boolean on(E entry);
 

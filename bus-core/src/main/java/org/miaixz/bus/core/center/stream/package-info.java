@@ -26,7 +26,9 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Java8的stream相关封装
+ * Provides enhanced Stream API functionalities and related utilities for Java 8 and beyond. This package offers various
+ * wrappers and extensions to the standard Java Stream API, facilitating more convenient and powerful data processing
+ * operations.
  *
  * @author Kimi Liu
  * @since Java 17+

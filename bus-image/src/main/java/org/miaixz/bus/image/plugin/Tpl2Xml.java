@@ -27,12 +27,8 @@
 */
 package org.miaixz.bus.image.plugin;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.*;
-import java.util.regex.Pattern;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -42,18 +38,34 @@ import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
+import java.util.regex.Pattern;
 
 /**
+ * The {@code Tpl2Xml} class converts a proprietary text-based template file for private DICOM dictionaries into
+ * standard XML dictionary files. Each private dictionary, identified by a private creator string in the template, is
+ * converted into a separate XML file.
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class Tpl2Xml {
 
+    /**
+     * Constant for XML version 1.0.
+     */
     private static final String XML_1_0 = "1.0";
+    /**
+     * Constant for XML version 1.1.
+     */
     private static final String XML_1_1 = "1.1";
+    /**
+     * The license block to be included as a comment in the generated XML files.
+     */
     private static final String licenseBlock = "/*\n"
             + " ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n"
             + " ~                                                                               ~\n"
@@ -79,13 +91,32 @@ public class Tpl2Xml {
             + " ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~\n"
             + " ~ THE SOFTWARE.                                                                 ~\n"
             + " ~                                                                               ~\n"
-            + " ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n" + " */" + "  ~";
+            + " ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n" + "*/";
+    /**
+     * The root element name for the generated XML files.
+     */
     private static final String elements = "elements";
 
+    /**
+     * Whether to format the XML output with indentation.
+     */
     private boolean indent = false;
+    /**
+     * The XML version to be used in the output.
+     */
     private String xmlVersion = XML_1_0;
+    /**
+     * The path to the output directory.
+     */
     private String outDir;
 
+    /**
+     * Reads a template file and parses it into a map of private dictionaries.
+     *
+     * @param template The path to the template file.
+     * @return A map where keys are private creator IDs and values are lists of dictionary elements.
+     * @throws IOException if an I/O error occurs reading the file.
+     */
     private static Map<String, List<DictionaryElement>> privateDictsFrom(String template) throws IOException {
         Map<String, List<DictionaryElement>> privateDictionaries = new HashMap<>();
         Files.readAllLines(Paths.get(template)).stream().filter(line -> line.length() > 0).forEach(line -> {
@@ -96,18 +127,39 @@ public class Tpl2Xml {
         return privateDictionaries;
     }
 
+    /**
+     * Sets whether to indent the XML output.
+     *
+     * @param indent {@code true} to enable indentation.
+     */
     public final void setIndent(boolean indent) {
         this.indent = indent;
     }
 
+    /**
+     * Sets the XML version for the output document.
+     *
+     * @param xmlVersion The XML version string (e.g., "1.0" or "1.1").
+     */
     public final void setXMLVersion(String xmlVersion) {
         this.xmlVersion = xmlVersion;
     }
 
+    /**
+     * Sets the output directory for the generated XML files.
+     *
+     * @param outDir The path to the output directory.
+     */
     public final void setOutDir(String outDir) {
         this.outDir = outDir;
     }
 
+    /**
+     * Converts a given template file into one or more XML dictionary files.
+     *
+     * @param template The path to the source template file.
+     * @throws Exception if an error occurs during the conversion process.
+     */
     private void convert(String template) throws Exception {
         Path dir = outputDirectory(template);
         for (Map.Entry<String, List<DictionaryElement>> entry : privateDictsFrom(template).entrySet()) {
@@ -138,6 +190,14 @@ public class Tpl2Xml {
         }
     }
 
+    /**
+     * Checks for duplicate tags or keywords within a dictionary to ensure uniqueness.
+     *
+     * @param dictElement The dictionary element to check.
+     * @param keywords    A set of keywords already encountered.
+     * @param tags        A set of tags already encountered.
+     * @return {@code true} if the element is a duplicate, {@code false} otherwise.
+     */
     private boolean duplicateTagsOrKeywords(DictionaryElement dictElement, Set<String> keywords, Set<String> tags) {
         if (keywords.add(dictElement.getKeyword()) && tags.add(dictElement.getTag()))
             return false;
@@ -149,6 +209,12 @@ public class Tpl2Xml {
         return true;
     }
 
+    /**
+     * Creates and configures a {@link Transformer} for writing the XML document to a file.
+     *
+     * @return A configured {@code Transformer}.
+     * @throws TransformerConfigurationException if a transformer cannot be created.
+     */
     private Transformer getTransformer() throws TransformerConfigurationException {
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         Transformer transformer = transformerFactory.newTransformer();
@@ -159,6 +225,13 @@ public class Tpl2Xml {
         return transformer;
     }
 
+    /**
+     * Determines the output directory, creating it if it doesn't exist.
+     *
+     * @param template The path of the source template file.
+     * @return The path to the output directory.
+     * @throws IOException if an I/O error occurs.
+     */
     private Path outputDirectory(String template) throws IOException {
         if (outDir == null)
             return Paths.get(template).getParent();
@@ -166,6 +239,9 @@ public class Tpl2Xml {
         return Files.createDirectories(Paths.get(outDir));
     }
 
+    /**
+     * Represents a single element from a private dictionary template.
+     */
     static class DictionaryElement {
 
         private final String vr;
@@ -174,6 +250,11 @@ public class Tpl2Xml {
         private String tag;
         private String keyword;
 
+        /**
+         * Constructs a DictionaryElement by parsing an array of fields from a template line.
+         *
+         * @param fields The fields parsed from a single line of the template.
+         */
         DictionaryElement(String[] fields) {
             this.vr = fields[2].substring(4);
             this.vm = fields[3].substring(4);
@@ -182,26 +263,57 @@ public class Tpl2Xml {
             setTagAndKeyword(fields[0], fields[5].substring(9));
         }
 
+        /**
+         * Gets the Value Representation (VR) of the element.
+         *
+         * @return The VR string.
+         */
         String getVr() {
             return vr;
         }
 
+        /**
+         * Gets the keyword of the element.
+         *
+         * @return The keyword string.
+         */
         String getKeyword() {
             return keyword;
         }
 
+        /**
+         * Gets the tag of the element in "GGGGxxxx" format.
+         *
+         * @return The tag string.
+         */
         String getTag() {
             return tag;
         }
 
+        /**
+         * Gets the Value Multiplicity (VM) of the element.
+         *
+         * @return The VM string.
+         */
         String getVm() {
             return vm;
         }
 
+        /**
+         * Gets the descriptive value of the element.
+         *
+         * @return The value string.
+         */
         String getValue() {
             return value;
         }
 
+        /**
+         * Sets the tag and keyword, applying cleaning logic to the keyword if necessary.
+         *
+         * @param tag     The raw tag string from the template.
+         * @param keyword The raw keyword string from the template.
+         */
         private void setTagAndKeyword(String tag, String keyword) {
             String groupTag = tag.substring(1, 5).toUpperCase();
             String elementTag = "xx" + tag.substring(8, 10).toUpperCase();
@@ -212,12 +324,24 @@ public class Tpl2Xml {
             this.tag = groupTag + elementTag;
         }
 
+        /**
+         * Cleans up an invalid keyword to conform to typical identifier standards.
+         *
+         * @param keyword The invalid keyword.
+         * @return The cleaned keyword.
+         */
         private String improveInvalidKeyword(String keyword) {
             if (Character.isDigit(keyword.charAt(0)))
                 keyword = wordForFirstDigit(keyword) + keyword.substring(1);
             return keyword.replaceAll("[^A-Za-z0-9]", "");
         }
 
+        /**
+         * Converts the first digit of a string to its English word equivalent.
+         *
+         * @param keyword The keyword starting with a digit.
+         * @return The corresponding English word for the first digit.
+         */
         private String wordForFirstDigit(String keyword) {
             switch (keyword.charAt(0)) {
                 case '0':
@@ -249,8 +373,10 @@ public class Tpl2Xml {
 
                 case '9':
                     return "Nine";
+
+                default:
+                    return null;
             }
-            return null;
         }
     }
 

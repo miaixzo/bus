@@ -31,7 +31,7 @@ import org.miaixz.bus.core.basic.normal.ErrorRegistry;
 import org.miaixz.bus.core.basic.normal.Errors;
 
 /**
- * 授权错误码: 110xxx
+ * Authorization error codes: 110xxx.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -40,173 +40,190 @@ import org.miaixz.bus.core.basic.normal.Errors;
 public class ErrorCode extends org.miaixz.bus.core.basic.normal.ErrorCode {
 
     /**
-     * 通知操作未实现。
+     * Indicates that the requested operation is not implemented.
      */
-    public static final Errors _NOT_IMPLEMENTED = ErrorRegistry.builder().key("5001").value("未实现").build();
-
-    /**
-     * 通知参数不完整。
-     */
-    public static final Errors PARAMETER_INCOMPLETE = ErrorRegistry.builder().key("5002").value("参数不完整").build();
-
-    /**
-     * 通知注册中心不能为空。
-     */
-    public static final Errors NO_AUTH_SOURCE = ErrorRegistry.builder().key("5004").value("注册中心不能为空").build();
-
-    /**
-     * 无法识别的通知平台。
-     */
-    public static final Errors UNIDENTIFIED_PLATFORM = ErrorRegistry.builder().key("5005").value("无法识别的平台").build();
-
-    /**
-     * 非法通知重定向URI。
-     */
-    public static final Errors ILLEGAL_REDIRECT_URI = ErrorRegistry.builder().key("5006").value("非法的重定向URI").build();
-
-    /**
-     * 非法通知提供者。
-     */
-    public static final Errors ILLEGAL_REQUEST = ErrorRegistry.builder().key("5007").value("非法的提供者").build();
-
-    /**
-     * 非法通知代码。
-     */
-    public static final Errors ILLEGAL_CODE = ErrorRegistry.builder().key("5008").value("非法的代码").build();
-
-    /**
-     * 非法通知状态。
-     */
-    public static final Errors ILLEGAL_STATUS = ErrorRegistry.builder().key("5009").value("非法状态").build();
-
-    /**
-     * 通知刷新令牌为必需，且不能为空。
-     */
-    public static final Errors REQUIRED_REFRESH_TOKEN = ErrorRegistry.builder().key("5010").value("刷新令牌为必需，且不能为空")
+    public static final Errors _NOT_IMPLEMENTED = ErrorRegistry.builder().key("5001").value("Operation not implemented")
             .build();
 
     /**
-     * 无效的通知令牌。
+     * Indicates that parameters are incomplete.
      */
-    public static final Errors ILLEGAL_TOKEN = ErrorRegistry.builder().key("5011").value("无效的令牌").build();
+    public static final Errors PARAMETER_INCOMPLETE = ErrorRegistry.builder().key("5002").value("Parameters incomplete")
+            .build();
 
     /**
-     * 无效的通知密钥标识符（kid）。
+     * Indicates that the registry cannot be empty.
      */
-    public static final Errors ILLEGAL_KID = ErrorRegistry.builder().key("5012").value("无效的密钥标识符(kid)").build();
+    public static final Errors NO_AUTH_SOURCE = ErrorRegistry.builder().key("5004").value("Registry cannot be empty")
+            .build();
 
     /**
-     * 无效的通知团队ID。
+     * Indicates an unidentified authorization platform.
      */
-    public static final Errors ILLEGAL_TEAM_ID = ErrorRegistry.builder().key("5013").value("无效的团队ID").build();
+    public static final Errors UNIDENTIFIED_PLATFORM = ErrorRegistry.builder().key("5005")
+            .value("Unidentified platform").build();
 
     /**
-     * 无效的通知客户端ID。
+     * Indicates an illegal redirect URI.
      */
-    public static final Errors ILLEGAL_CLIENT_ID = ErrorRegistry.builder().key("5014").value("无效的客户端ID").build();
+    public static final Errors ILLEGAL_REDIRECT_URI = ErrorRegistry.builder().key("5006").value("Illegal redirect URI")
+            .build();
 
     /**
-     * 无效的通知客户端密钥。
+     * Indicates an illegal authorization provider or request.
      */
-    public static final Errors ILLEGAL_CLIENT_SECRET = ErrorRegistry.builder().key("5015").value("无效的客户端密钥").build();
+    public static final Errors ILLEGAL_REQUEST = ErrorRegistry.builder().key("5007")
+            .value("Illegal provider or request").build();
 
     /**
-     * 非法通知微信代理ID。
+     * Indicates an illegal authorization code.
      */
-    public static final Errors ILLEGAL_WECHAT_AGENT_ID = ErrorRegistry.builder().key("5016").value("非法的微信代理ID").build();
+    public static final Errors ILLEGAL_CODE = ErrorRegistry.builder().key("5008").value("Illegal code").build();
 
     /**
-     * 今日头条授权登录时的异常状态码
+     * Indicates an illegal state parameter.
+     */
+    public static final Errors ILLEGAL_STATUS = ErrorRegistry.builder().key("5009").value("Illegal state").build();
+
+    /**
+     * Indicates that a refresh token is required and cannot be empty.
+     */
+    public static final Errors REQUIRED_REFRESH_TOKEN = ErrorRegistry.builder().key("5010")
+            .value("Refresh token is required and cannot be empty").build();
+
+    /**
+     * Indicates an invalid authorization token.
+     */
+    public static final Errors ILLEGAL_TOKEN = ErrorRegistry.builder().key("5011").value("Invalid token").build();
+
+    /**
+     * Indicates an invalid Key ID (kid).
+     */
+    public static final Errors ILLEGAL_KID = ErrorRegistry.builder().key("5012").value("Invalid Key ID (kid)").build();
+
+    /**
+     * Indicates an invalid Team ID.
+     */
+    public static final Errors ILLEGAL_TEAM_ID = ErrorRegistry.builder().key("5013").value("Invalid Team ID").build();
+
+    /**
+     * Indicates an invalid Client ID.
+     */
+    public static final Errors ILLEGAL_CLIENT_ID = ErrorRegistry.builder().key("5014").value("Invalid Client ID")
+            .build();
+
+    /**
+     * Indicates an invalid Client Secret.
+     */
+    public static final Errors ILLEGAL_CLIENT_SECRET = ErrorRegistry.builder().key("5015")
+            .value("Invalid Client Secret").build();
+
+    /**
+     * Indicates an illegal WeChat agent ID.
+     */
+    public static final Errors ILLEGAL_WECHAT_AGENT_ID = ErrorRegistry.builder().key("5016")
+            .value("Illegal WeChat agent ID").build();
+
+    /**
+     * Error codes specific to Toutiao (ByteDance) authorization login.
      */
 
-    public class Toutiao {
+    public static class Toutiao {
 
         /**
-         * 通知接口调用成功。
+         * Indicates that the API call was successful.
          */
-        public static final Errors EC0 = ErrorRegistry.builder().key("0").value("接口调用成功").build();
+        public static final Errors EC0 = ErrorRegistry.builder().key("0").value("API call successful").build();
 
         /**
-         * API配置错误，未传入Client Key。
+         * Indicates an API configuration error: Client Key is missing.
          */
-        public static final Errors EC1 = ErrorRegistry.builder().key("1").value("API配置错误，未传入Client Key").build();
+        public static final Errors EC1 = ErrorRegistry.builder().key("1")
+                .value("API configuration error: Client Key missing").build();
 
         /**
-         * API配置错误，Client Key错误，请检查是否和开放平台的ClientKey一致。
+         * Indicates an API configuration error: Client Key is incorrect. Please check if it matches the ClientKey in
+         * the open platform.
          */
-        public static final Errors EC2 = ErrorRegistry.builder().key("2")
-                .value("API配置错误，Client Key错误，请检查是否和开放平台的ClientKey一致").build();
+        public static final Errors EC2 = ErrorRegistry.builder().key("2").value(
+                "API configuration error: Client Key incorrect. Please check if it matches the ClientKey in the open platform")
+                .build();
 
         /**
-         * 通知缺少授权信息。
+         * Indicates missing authorization information.
          */
-        public static final Errors EC3 = ErrorRegistry.builder().key("3").value("没有授权信息").build();
+        public static final Errors EC3 = ErrorRegistry.builder().key("3").value("Missing authorization information")
+                .build();
 
         /**
-         * 通知响应类型错误。
+         * Indicates an incorrect response type.
          */
-        public static final Errors EC4 = ErrorRegistry.builder().key("4").value("响应类型错误").build();
+        public static final Errors EC4 = ErrorRegistry.builder().key("4").value("Incorrect response type").build();
 
         /**
-         * 通知授权类型错误。
+         * Indicates an incorrect authorization type.
          */
-        public static final Errors EC5 = ErrorRegistry.builder().key("5").value("授权类型错误").build();
+        public static final Errors EC5 = ErrorRegistry.builder().key("5").value("Incorrect authorization type").build();
 
         /**
-         * 通知client_secret错误。
+         * Indicates an incorrect client_secret.
          */
-        public static final Errors EC6 = ErrorRegistry.builder().key("6").value("client_secret错误").build();
+        public static final Errors EC6 = ErrorRegistry.builder().key("6").value("Incorrect client_secret").build();
 
         /**
-         * 通知authorize_code过期。
+         * Indicates that the authorize_code has expired.
          */
-        public static final Errors EC7 = ErrorRegistry.builder().key("7").value("authorize_code过期").build();
+        public static final Errors EC7 = ErrorRegistry.builder().key("7").value("Authorize_code expired").build();
 
         /**
-         * 通知指定url的scheme不是https。
+         * Indicates that the scheme of the specified URL is not HTTPS.
          */
-        public static final Errors EC8 = ErrorRegistry.builder().key("8").value("指定url的scheme不是https").build();
+        public static final Errors EC8 = ErrorRegistry.builder().key("8").value("Specified URL scheme is not HTTPS")
+                .build();
 
         /**
-         * 通知接口内部错误，请联系头条技术。
+         * Indicates an internal API error. Please contact Toutiao technical support.
          */
-        public static final Errors EC9 = ErrorRegistry.builder().key("9").value("接口内部错误，请联系头条技术").build();
+        public static final Errors EC9 = ErrorRegistry.builder().key("9")
+                .value("Internal API error. Please contact Toutiao technical support").build();
 
         /**
-         * 通知access_token过期。
+         * Indicates that the access_token has expired.
          */
-        public static final Errors EC10 = ErrorRegistry.builder().key("10").value("access_token过期").build();
+        public static final Errors EC10 = ErrorRegistry.builder().key("10").value("Access_token expired").build();
 
         /**
-         * 通知缺少access_token。
+         * Indicates a missing access_token.
          */
-        public static final Errors EC11 = ErrorRegistry.builder().key("11").value("缺少access_token").build();
+        public static final Errors EC11 = ErrorRegistry.builder().key("11").value("Missing access_token").build();
 
         /**
-         * 通知参数缺失。
+         * Indicates missing parameters.
          */
-        public static final Errors EC12 = ErrorRegistry.builder().key("12").value("参数缺失").build();
+        public static final Errors EC12 = ErrorRegistry.builder().key("12").value("Parameters missing").build();
 
         /**
-         * 通知url错误。
+         * Indicates an incorrect URL.
          */
-        public static final Errors EC13 = ErrorRegistry.builder().key("13").value("url错误").build();
+        public static final Errors EC13 = ErrorRegistry.builder().key("13").value("Incorrect URL").build();
 
         /**
-         * 通知域名与登记域名不匹配。
+         * Indicates that the domain does not match the registered domain.
          */
-        public static final Errors EC21 = ErrorRegistry.builder().key("21").value("域名与登记域名不匹配").build();
+        public static final Errors EC21 = ErrorRegistry.builder().key("21")
+                .value("Domain does not match registered domain").build();
 
         /**
-         * 通知未知错误，请联系头条技术。
+         * Indicates an unknown error. Please contact Toutiao technical support.
          */
-        public static final Errors EC999 = ErrorRegistry.builder().key("999").value("未知错误，请联系头条技术").build();
+        public static final Errors EC999 = ErrorRegistry.builder().key("999")
+                .value("Unknown error. Please contact Toutiao technical support").build();
 
         /**
-         * 根据错误码获取对应的错误对象。
+         * Retrieves the corresponding error object based on the error code.
          *
-         * @param errorCode 错误码
-         * @return 对应的错误对象，若无匹配则返回EC999
+         * @param errorCode the error code string
+         * @return the matching {@link Errors} object, or {@link #EC999} if no match is found
          */
         public static Errors getErrorCode(String errorCode) {
             Errors[] errorCodes = new Errors[] { EC0, EC1, EC2, EC3, EC4, EC5, EC6, EC7, EC8, EC9, EC10, EC11, EC12,

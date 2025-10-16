@@ -32,7 +32,7 @@ import org.miaixz.bus.core.center.date.culture.solar.SolarTerms;
 import org.miaixz.bus.core.center.date.culture.solar.SolarTime;
 
 /**
- * 童限计算接口
+ * Interface for calculating "Child Limit" (童限) information in Chinese astrology.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -40,11 +40,11 @@ import org.miaixz.bus.core.center.date.culture.solar.SolarTime;
 public interface ChildLimitProvider {
 
     /**
-     * 童限信息
+     * Calculates and returns the Child Limit information.
      *
-     * @param birthTime 出生公历时刻
-     * @param term      节令
-     * @return 童限信息
+     * @param birthTime The Gregorian birth time.
+     * @param term      The solar term (节令) relevant to the calculation.
+     * @return The {@link ChildLimitInfo} containing details about the Child Limit.
      */
     ChildLimitInfo getInfo(SolarTime birthTime, SolarTerms term);
 

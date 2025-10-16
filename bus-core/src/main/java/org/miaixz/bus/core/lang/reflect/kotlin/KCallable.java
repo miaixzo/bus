@@ -35,14 +35,21 @@ import org.miaixz.bus.core.xyz.ClassKit;
 import org.miaixz.bus.core.xyz.MethodKit;
 
 /**
- * kotlin.reflect.KCallable方法包装调用类
+ * Wrapper class for Kotlin's {@code kotlin.reflect.KCallable} methods. This class provides static utility methods to
+ * interact with Kotlin callable entities (classes, methods, constructors) via reflection.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class KCallable {
 
+    /**
+     * The {@link Method} object for {@code KCallable.getParameters()}.
+     */
     private static final Method METHOD_GET_PARAMETERS;
+    /**
+     * The {@link Method} object for {@code KCallable.call()}.
+     */
     private static final Method METHOD_CALL;
 
     static {
@@ -52,10 +59,10 @@ public class KCallable {
     }
 
     /**
-     * 获取参数列表
+     * Retrieves the list of parameters for a given Kotlin callable entity.
      *
-     * @param kCallable kotlin的类、方法或构造
-     * @return 参数列表
+     * @param kCallable The Kotlin callable entity (class, method, or constructor) as an {@code Object}.
+     * @return A {@link List} of {@link KParameter} objects representing the parameters of the callable.
      */
     public static List<KParameter> getParameters(final Object kCallable) {
         final List<?> parameters = MethodKit.invoke(kCallable, METHOD_GET_PARAMETERS);
@@ -67,11 +74,12 @@ public class KCallable {
     }
 
     /**
-     * 实例化对象，本质上调用KCallable.call方法
+     * Invokes the {@code call} method on a Kotlin callable entity, effectively instantiating an object or executing a
+     * function/method.
      *
-     * @param kCallable kotlin的类、方法或构造
-     * @param args      参数列表
-     * @return 参数列表
+     * @param kCallable The Kotlin callable entity (class, method, or constructor) as an {@code Object}.
+     * @param args      The arguments to be passed to the {@code call} method.
+     * @return The result of the {@code call} method invocation.
      */
     public static Object call(final Object kCallable, final Object... args) {
         return MethodKit.invoke(kCallable, METHOD_CALL, new Object[] { args });

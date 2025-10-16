@@ -42,32 +42,44 @@ import org.miaixz.bus.core.text.CharsBacker;
 import org.miaixz.bus.core.xyz.*;
 
 /**
- * 注解映射，用于包装并增强一个普通注解对象， 包装后的可以通过{@code getResolvedXXX}获得注解对象或属性值， 可以支持属性别名与属性覆写的属性解析机制
+ * An annotation mapping that wraps and enhances a regular annotation object. The wrapped annotation can be accessed via
+ * {@code getResolvedXXX} methods, which support attribute aliasing and attribute overriding mechanisms.
  *
  * <p>
- * <strong>父子注解</strong>
+ * <strong>Parent-Child Annotations</strong>
  * <p>
- * 当实例创建时，可通过{@link #source}指定当前注解的子注解，多个实例通过该引用， 可以构成一条表示父子/元注解关系的单向链表。 当{@link #source}为{@code null}时，认为当前注解即为根注解。
+ * When an instance is created, a child annotation can be specified via {@link #source}. Multiple instances can form a
+ * unidirectional linked list representing parent-child or meta-annotation relationships. If {@link #source} is
+ * {@code null}, the current annotation is considered a root annotation.
  *
  * <p>
- * <strong>属性别名</strong>
+ * <strong>Attribute Aliasing</strong>
  * <p>
- * 注解内的属性可以通过{@link Alias}互相关联，当解析时， 对绑定中的任意一个属性的赋值，会被同步给其他直接或者间接关联的属性。 eg:
- * 若注解存在{@code a <=> b <=> c}的属性别名关系，则对<em>a</em>赋值，此时<em>b</em>、<em>c</em>也会被一并赋值。
+ * Attributes within an annotation can be linked via {@link Alias}. When resolving, assigning a value to any attribute
+ * in a binding will synchronize that value to all directly or indirectly linked attributes. For example, if an
+ * annotation has an alias relationship {@code a <=> b <=> c}, assigning a value to {@code a} will also assign it to
+ * {@code b} and {@code c}.
  *
  * <p>
- * <strong>属性覆写</strong>
+ * <strong>Attribute Overriding</strong>
  * <p>
- * 当实例中{@link #source}不为{@code null}，即当前注解存在至少一个或者多个子注解时， 若在子注解中的同名、同类型的属性，则获取值时将优先获取子注解的值，若该属性存在别名，则别名属性也如此。
- * 属性覆写遵循如下机制：
+ * If {@link #source} is not {@code null} (i.e., the current annotation has one or more child annotations), and a child
+ * annotation has an attribute with the same name and type as an attribute in the current annotation, then when
+ * retrieving the value, the child annotation's value will take precedence. This also applies to aliased attributes.
+ * Attribute overriding follows these rules:
  * <ul>
- * <li>当覆写的属性存在别名属性时，别名属性也会一并被覆写； eg: 若注解存在{@code a <=> b <=> c}的属性别名关系，则覆写<em>a</em>,，属性<em>b</em>、<em>c</em>也会被覆写；
- * </li>
- * <li>当属性可被多个子注解覆写时，总是优先选择离根注解最近的子注解覆写该属性； eg：若从根注解<em>a</em>到元注解<em>b</em>有依赖关系{@code a => b => c}，
- * 此时若<em>c</em>中存在属性可同时被<em>a</em>、<em>b</em>覆写，则优先选择<em>a</em>；</li>
- * <li>当覆写属性的子注解属性也被其子注解覆写时，等同于该子注解的子注解直接覆写的当前注解的属性； eg：若从根注解<em>a</em>到元注解<em>b</em>有依赖关系{@code a => b => c}，
- * 此时若<em>b</em>中存在属性被<em>a</em>覆写，而<em>b</em>中被<em>a</em>覆写的属性又覆写<em>c</em>中属性， 则等同于<em>c</em>中被覆写的属性直接被<em>a</em>覆写。
- * </li>
+ * <li>If an overridden attribute has aliased attributes, the aliased attributes will also be overridden. For example,
+ * if an annotation has an alias relationship {@code a <=> b <=> c}, overriding {@code a} will also override attributes
+ * {@code b} and {@code c}.</li>
+ * <li>If an attribute can be overridden by multiple child annotations, the child annotation closest to the root
+ * annotation will take precedence. For example, if there is a dependency relationship {@code a => b => c} from a root
+ * annotation {@code a} to meta-annotation {@code b}, and then to {@code c}, and an attribute in {@code c} can be
+ * overridden by both {@code a} and {@code b}, then {@code a} will be chosen first.</li>
+ * <li>If a child annotation's attribute that overrides another attribute is itself overridden by its own child
+ * annotation, it is equivalent to the child's child annotation directly overriding the current annotation's attribute.
+ * For example, if there is a dependency relationship {@code a => b => c}, and an attribute in {@code b} is overridden
+ * by {@code a}, and the overridden attribute in {@code b} then overrides an attribute in {@code c}, it is equivalent to
+ * the attribute in {@code c} being directly overridden by {@code a}.</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -77,65 +89,63 @@ import org.miaixz.bus.core.xyz.*;
 public class ResolvedAnnotationMapping implements AnnotationMapping<Annotation> {
 
     /**
-     * 不存在的属性对应的默认下标
+     * Default index for attributes that are not found.
      */
     protected static final int NOT_FOUND_INDEX = -1;
 
     /**
-     * 注解属性，属性在该数组中的下标等同于属性本身
+     * The methods representing the attributes of the annotation. The index in this array corresponds to the attribute
+     * itself.
      */
     private final Method[] attributes;
 
     /**
-     * 别名属性设置
+     * An array of {@link AliasSet} objects, where each element corresponds to an attribute in {@link #attributes}. Each
+     * {@link AliasSet} groups attributes that are aliases of each other.
      */
     private final AliasSet[] aliasSets;
 
     /**
-     * 解析后的属性，下标都与{@link #attributes}相同下标的属性一一对应。 当下标对应属性下标不为{@link #NOT_FOUND_INDEX}时，说明该属性存在解析：
-     * <ul>
-     * <li>若在{@link #resolvedAttributeSources}找不到对应实例，则说明该属性是别名属性；</li>
-     * <li>若在{@link #resolvedAttributeSources}找的到对应实例，则说明该属性是覆盖属性；</li>
-     * </ul>
+     * An array storing the resolved index for each attribute. An index other than {@link #NOT_FOUND_INDEX} indicates
+     * that the attribute has been resolved. If the corresponding entry in {@link #resolvedAttributeSources} is null, it
+     * means the attribute is an alias. If it's not null, it means the attribute has been overridden.
      */
     private final int[] resolvedAttributes;
 
     /**
-     * 解析后的属性对应的数据源 当属性被覆写时，该属性对应下标位置会指向覆写该属性的注解对象
+     * An array storing the {@link ResolvedAnnotationMapping} instance that is the source of the resolved attribute. If
+     * an attribute is overridden, this array will point to the annotation object that performed the override.
      */
     private final ResolvedAnnotationMapping[] resolvedAttributeSources;
 
     /**
-     * 子注解的映射对象，当该项为{@code null}时，则认为当前注解为根注解
+     * The child annotation mapping. If this is {@code null}, the current annotation is considered a root annotation.
      */
     private final ResolvedAnnotationMapping source;
 
     /**
-     * 注解属性
+     * The original annotation object.
      */
     private final Annotation annotation;
     /**
-     * 该注解的属性是否发生了解析
+     * Indicates whether the attributes of this annotation have been resolved (aliasing and overriding applied).
      */
     private final boolean resolved;
     /**
-     * 代理对象缓存
+     * Cached proxy object for the resolved annotation, created on demand.
      */
     private volatile Annotation proxied;
 
     /**
-     * 构建一个注解映射对象
+     * Constructs a new {@code ResolvedAnnotationMapping} object.
      *
-     * @param source           当前注解的子注解
-     * @param annotation       注解对象
-     * @param resolveAttribute 是否需要解析属性
-     * @throws NullPointerException     {@code source}为{@code null}时抛出
-     * @throws IllegalArgumentException
-     *                                  <ul>
-     *                                  <li>当{@code annotation}已经被代理过时抛出；</li>
-     *                                  <li>当{@code source}包装的注解对象与{@code annotation}相同时抛出；</li>
-     *                                  <li>当{@code annotation}包装的注解对象类型为{@code ResolvedAnnotationMapping}时抛出；</li>
-     *                                  </ul>
+     * @param source           The child annotation mapping. Can be {@code null} if this is a root annotation.
+     * @param annotation       The annotation object to wrap. Must not be {@code null}.
+     * @param resolveAttribute Whether to resolve attributes (apply aliasing and overriding).
+     * @throws NullPointerException     if {@code annotation} is {@code null}.
+     * @throws IllegalArgumentException if {@code annotation} has already been proxied, or is already wrapped by
+     *                                  {@code ResolvedAnnotationMapping}, or if {@code source} wraps the same
+     *                                  annotation as {@code annotation}.
      */
     public ResolvedAnnotationMapping(final ResolvedAnnotationMapping source, final Annotation annotation,
             final boolean resolveAttribute) {
@@ -145,30 +155,31 @@ public class ResolvedAnnotationMapping implements AnnotationMapping<Annotation> 
         Assert.isFalse(
                 Objects.nonNull(source) && Objects.equals(source.annotation, annotation),
                 "source annotation can not same with target [{}]",
-                annotation);
+                annotationType());
         this.annotation = annotation;
         this.attributes = AnnoKit.getAnnotationAttributes(annotation.annotationType());
         this.source = source;
 
-        // 别名属性
+        // Initialize alias sets
         this.aliasSets = new AliasSet[this.attributes.length];
 
-        // 解析后的属性与数据源
+        // Initialize resolved attributes and their sources
         this.resolvedAttributeSources = new ResolvedAnnotationMapping[this.attributes.length];
         this.resolvedAttributes = new int[this.attributes.length];
         Arrays.fill(this.resolvedAttributes, NOT_FOUND_INDEX);
 
-        // 若有必要，解析属性
-        // TODO flag改为枚举，使得可以自行选择：1.只支持属性别名，2.只支持属性覆盖，3.两个都支持，4.两个都不支持
+        // Resolve attributes if required
+        // TODO flag should be an enum to allow choosing: 1. only attribute aliasing, 2. only attribute overriding, 3.
+        // both, 4. neither
         this.resolved = resolveAttribute && resolveAttributes();
     }
 
     /**
-     * 构建一个注解映射对象
+     * Creates a new {@code ResolvedAnnotationMapping} object for a root annotation.
      *
-     * @param annotation                 注解对象
-     * @param resolveAnnotationAttribute 是否解析注解属性，为{@code true}时获得的注解皆支持属性覆盖与属性别名机制
-     * @return 注解映射对象
+     * @param annotation                 The annotation object to wrap.
+     * @param resolveAnnotationAttribute Whether to resolve annotation attributes (apply aliasing and overriding).
+     * @return A new {@code ResolvedAnnotationMapping} instance.
      */
     public static ResolvedAnnotationMapping create(
             final Annotation annotation,
@@ -177,12 +188,14 @@ public class ResolvedAnnotationMapping implements AnnotationMapping<Annotation> 
     }
 
     /**
-     * 构建一个注解映射对象，子注解及子注解的子注解们的属性会覆写注解对象的中的同名同名同类型属性， 当一个属性被多个子注解覆写时，优先选择离根注解最接近的注解中的属性用于覆写，
+     * Creates a new {@code ResolvedAnnotationMapping} object, where attributes from child annotations (and their
+     * children) will override same-named and same-typed attributes in the current annotation. When multiple child
+     * annotations can override an attribute, the one closest to the root annotation takes precedence.
      *
-     * @param source                     子注解
-     * @param annotation                 注解对象
-     * @param resolveAnnotationAttribute 是否解析注解属性，为{@code true}时获得的注解皆支持属性覆盖与属性别名机制
-     * @return 注解映射对象
+     * @param source                     The child annotation mapping. Can be {@code null} if this is a root annotation.
+     * @param annotation                 The annotation object to wrap.
+     * @param resolveAnnotationAttribute Whether to resolve annotation attributes (apply aliasing and overriding).
+     * @return A new {@code ResolvedAnnotationMapping} instance.
      */
     public static ResolvedAnnotationMapping create(
             final ResolvedAnnotationMapping source,
@@ -192,22 +205,24 @@ public class ResolvedAnnotationMapping implements AnnotationMapping<Annotation> 
     }
 
     /**
-     * 解析属性
+     * Resolves the attributes of the annotation, applying aliasing and overriding rules.
+     *
+     * @return {@code true} if any attributes were resolved, {@code false} otherwise.
      */
     private boolean resolveAttributes() {
-        // TODO 支持处理@Ignore，被标记的属性无法被覆写，也不会被别名关联
-        // 解析同一注解中的别名
+        // TODO Support @Ignore: attributes marked with @Ignore cannot be overridden or aliased.
+        // Resolve aliases within the same annotation.
         resolveAliasAttributes();
-        // 使用子注解覆写当前注解中的属性
+        // Use child annotations to override attributes in the current annotation.
         resolveOverwriteAttributes();
-        // 注解的属性是否发生过解析
+        // Check if any attribute resolution occurred.
         return IntStream.of(resolvedAttributes).anyMatch(idx -> NOT_FOUND_INDEX != idx);
     }
 
     /**
-     * 当前注解是否为根注解
+     * Checks whether the current annotation is a root annotation (i.e., has no child annotation).
      *
-     * @return 是否
+     * @return {@code true} if this is a root annotation, {@code false} otherwise.
      */
     @Override
     public boolean isRoot() {
@@ -215,9 +230,9 @@ public class ResolvedAnnotationMapping implements AnnotationMapping<Annotation> 
     }
 
     /**
-     * 获取根注解
+     * Retrieves the root annotation mapping in the hierarchy.
      *
-     * @return 根注解的映射对象
+     * @return The {@code ResolvedAnnotationMapping} instance representing the root annotation.
      */
     public ResolvedAnnotationMapping getRoot() {
         ResolvedAnnotationMapping mapping = this;
@@ -228,9 +243,9 @@ public class ResolvedAnnotationMapping implements AnnotationMapping<Annotation> 
     }
 
     /**
-     * 获取注解属性
+     * Retrieves the methods representing the attributes of the annotation.
      *
-     * @return 注解属性
+     * @return An array of {@link Method} objects representing the annotation's attributes.
      */
     @Override
     public Method[] getAttributes() {
@@ -238,9 +253,9 @@ public class ResolvedAnnotationMapping implements AnnotationMapping<Annotation> 
     }
 
     /**
-     * 获取注解对象
+     * Retrieves the original annotation object wrapped by this mapping.
      *
-     * @return 注解对象
+     * @return The original annotation object.
      */
     @Override
     public Annotation getAnnotation() {
@@ -248,10 +263,11 @@ public class ResolvedAnnotationMapping implements AnnotationMapping<Annotation> 
     }
 
     /**
-     * 当前注解是否存在被解析的属性，当该值为{@code false}时， 通过{@code getResolvedAttributeValue}获得的值皆为注解的原始属性值，
-     * 通过{@link #getResolvedAnnotation()}获得注解对象为原始的注解对象。
+     * Indicates whether the attributes of this annotation have been resolved (i.e., aliasing and overriding applied).
+     * If this value is {@code false}, then {@code getResolvedAttributeValue} will return the original attribute values,
+     * and {@link #getResolvedAnnotation()} will return the original annotation object.
      *
-     * @return 是否
+     * @return {@code true} if annotation attributes have been resolved, {@code false} otherwise.
      */
     @Override
     public boolean isResolved() {
@@ -259,21 +275,24 @@ public class ResolvedAnnotationMapping implements AnnotationMapping<Annotation> 
     }
 
     /**
-     * 根据当前映射对象，通过动态代理生成一个类型与被包装注解对象一致的合成注解，该注解相对原生注解：
+     * Generates a synthetic annotation object via dynamic proxy, based on the current mapping object. This synthetic
+     * annotation behaves like the original but incorporates enhanced features:
      * <ul>
-     * <li>支持同注解内通过{@link Alias}构建的别名机制；</li>
-     * <li>支持子注解对元注解的同名同类型属性覆盖机制；</li>
+     * <li>Supports attribute aliasing within the same annotation via {@link Alias}.</li>
+     * <li>Supports attribute overriding where a child annotation's attribute with the same name and type overrides that
+     * of its meta-annotation.</li>
      * </ul>
-     * 当{@link #isResolved()}为{@code false}时，则该方法返回被包装的原始注解对象。
+     * If {@link #isResolved()} returns {@code false}, this method returns the original wrapped annotation object.
      *
-     * @return 所需的注解，若{@link ResolvedAnnotationMapping#isResolved()}为{@code false}则返回的是原始的注解对象
+     * @return The resolved annotation object, or the original annotation object if {@link #isResolved()} is
+     *         {@code false}.
      */
     @Override
     public Annotation getResolvedAnnotation() {
         if (!isResolved()) {
             return annotation;
         }
-        // 双重检查保证线程安全的创建代理缓存
+        // Double-checked locking to ensure thread-safe creation of the proxy cache.
         if (Objects.isNull(proxied)) {
             synchronized (this) {
                 if (Objects.isNull(proxied)) {
@@ -285,32 +304,32 @@ public class ResolvedAnnotationMapping implements AnnotationMapping<Annotation> 
     }
 
     /**
-     * 注解是否存在指定属性
+     * Checks if the annotation has a specific attribute by name and type.
      *
-     * @param attributeName 属性名称
-     * @param attributeType 属性类型
-     * @return 是否
+     * @param attributeName The name of the attribute.
+     * @param attributeType The type of the attribute.
+     * @return {@code true} if the attribute exists, {@code false} otherwise.
      */
     public boolean hasAttribute(final String attributeName, final Class<?> attributeType) {
         return getAttributeIndex(attributeName, attributeType) != NOT_FOUND_INDEX;
     }
 
     /**
-     * 该属性下标是否在注解中存在对应属性
+     * Checks if an attribute exists at the given index.
      *
-     * @param index 属性下标
-     * @return 是否
+     * @param index The index of the attribute.
+     * @return {@code true} if an attribute exists at the index, {@code false} otherwise.
      */
     public boolean hasAttribute(final int index) {
         return index != NOT_FOUND_INDEX && Objects.nonNull(ArrayKit.get(attributes, index));
     }
 
     /**
-     * 获取注解属性的下标
+     * Retrieves the index of an annotation attribute by its name and type.
      *
-     * @param attributeName 属性名称
-     * @param attributeType 属性类型
-     * @return 属性下标
+     * @param attributeName The name of the attribute.
+     * @param attributeType The type of the attribute.
+     * @return The index of the attribute, or {@link #NOT_FOUND_INDEX} if not found.
      */
     public int getAttributeIndex(final String attributeName, final Class<?> attributeType) {
         for (int i = 0; i < attributes.length; i++) {
@@ -324,22 +343,22 @@ public class ResolvedAnnotationMapping implements AnnotationMapping<Annotation> 
     }
 
     /**
-     * 根据下标获取注解属性
+     * Retrieves an annotation attribute (method) by its index.
      *
-     * @param index 属性下标
-     * @return 属性对象
+     * @param index The index of the attribute.
+     * @return The {@link Method} representing the attribute, or {@code null} if the index is out of bounds.
      */
     public Method getAttribute(final int index) {
         return ArrayKit.get(attributes, index);
     }
 
     /**
-     * 获取属性值
+     * Retrieves the value of a specific attribute from the original annotation.
      *
-     * @param attributeName 属性名称
-     * @param attributeType 属性类型
-     * @param <R>           返回值类型
-     * @return 属性值
+     * @param attributeName The name of the attribute.
+     * @param attributeType The expected type of the attribute's value.
+     * @param <R>           The return type of the attribute value.
+     * @return The attribute value, or {@code null} if the attribute is not found or its type is incompatible.
      */
     @Override
     public <R> R getAttributeValue(final String attributeName, final Class<R> attributeType) {
@@ -347,23 +366,23 @@ public class ResolvedAnnotationMapping implements AnnotationMapping<Annotation> 
     }
 
     /**
-     * 获取属性值
+     * Retrieves the value of an attribute by its index from the original annotation.
      *
-     * @param index 属性下标
-     * @param <R>   返回值类型
-     * @return 属性值
+     * @param index The index of the attribute.
+     * @param <R>   The return type of the attribute value.
+     * @return The attribute value, or {@code null} if the attribute does not exist at the given index.
      */
     public <R> R getAttributeValue(final int index) {
         return hasAttribute(index) ? MethodKit.invoke(annotation, attributes[index]) : null;
     }
 
     /**
-     * 获取解析后的属性值
+     * Retrieves the resolved value of a specific attribute, applying aliasing and overriding rules.
      *
-     * @param attributeName 属性名称
-     * @param attributeType 属性类型
-     * @param <R>           返回值类型
-     * @return 属性值
+     * @param attributeName The name of the attribute.
+     * @param attributeType The expected type of the attribute's value.
+     * @param <R>           The return type of the attribute value.
+     * @return The resolved attribute value, or {@code null} if the attribute is not found or its type is incompatible.
      */
     @Override
     public <R> R getResolvedAttributeValue(final String attributeName, final Class<R> attributeType) {
@@ -371,54 +390,58 @@ public class ResolvedAnnotationMapping implements AnnotationMapping<Annotation> 
     }
 
     /**
-     * 获取解析后的属性值
+     * Retrieves the resolved value of an attribute by its index, applying aliasing and overriding rules.
      *
-     * @param index 属性下标
-     * @param <R>   返回值类型
-     * @return 属性值
+     * @param index The index of the attribute.
+     * @param <R>   The return type of the attribute value.
+     * @return The resolved attribute value, or {@code null} if the attribute does not exist at the given index.
      */
     public <R> R getResolvedAttributeValue(final int index) {
         if (!hasAttribute(index)) {
             return null;
         }
-        // 如果该属性没有经过解析，则直接获得原始值
+        // If the attribute has not been resolved, return its original value.
         final int resolvedIndex = resolvedAttributes[index];
         if (resolvedIndex == NOT_FOUND_INDEX) {
             return getAttributeValue(index);
         }
-        // 若该属性被解析过，但是仍然还在当前实例中，则从实际属性获得值
+        // If the attribute has been resolved and its source is within the current instance (i.e., it's an alias),
+        // then get the value from the actual attribute.
         final ResolvedAnnotationMapping attributeSource = resolvedAttributeSources[index];
         if (Objects.isNull(attributeSource)) {
             return getAttributeValue(resolvedIndex);
         }
-        // 若该属性被解析过，且不在本注解中，则从其元注解获得对应的值
+        // If the attribute has been resolved and its source is a meta-annotation,
+        // then get the resolved value from that meta-annotation.
         return attributeSource.getResolvedAttributeValue(resolvedIndex);
     }
 
     /**
-     * 令{@code annotationAttributes}中属性覆写当前注解中同名同类型的属性， 该步骤必须在{@link #resolveAliasAttributes()}后进行
+     * Overrides attributes in the current annotation with attributes from a child annotation (specified by
+     * {@code annotationAttributes}) that have the same name and type. This step must be performed after
+     * {@link #resolveAliasAttributes()}.
      */
     private void resolveOverwriteAttributes() {
         if (Objects.isNull(source)) {
             return;
         }
-        // 获取除自己外的全部子注解
+        // Get all child annotations except itself.
         final Deque<ResolvedAnnotationMapping> sources = new LinkedList<>();
         final Set<Class<? extends Annotation>> accessed = new HashSet<>();
         accessed.add(this.annotationType());
         ResolvedAnnotationMapping sourceMapping = this.source;
         while (Objects.nonNull(sourceMapping)) {
-            // 检查循环依赖
+            // Check for circular dependencies.
             Assert.isFalse(
                     accessed.contains(sourceMapping.annotationType()),
                     "circular dependency between [{}] and [{}]",
                     annotationType(),
                     sourceMapping.annotationType());
             sources.addFirst(sourceMapping);
-            accessed.add(source.annotationType());
+            accessed.add(sourceMapping.annotationType());
             sourceMapping = sourceMapping.source;
         }
-        // 从根注解开始，令子注解依次覆写当前注解中的值
+        // Starting from the root annotation, child annotations successively override values in the current annotation.
         for (final ResolvedAnnotationMapping mapping : sources) {
             updateResolvedAttributesByOverwrite(mapping);
         }
@@ -446,21 +469,28 @@ public class ResolvedAnnotationMapping implements AnnotationMapping<Annotation> 
     }
 
     /**
-     * 更新需要覆写的属性的相关映射关系，若该属性存在别名，则将别名的映射关系一并覆写
+     * Overrides attributes in the current annotation with attributes from the {@code overwriteMapping} that have the
+     * same name and type and have not yet been overridden.
+     *
+     * @param overwriteMapping The annotation mapping containing attributes to override with.
+     * @param overwriteIndex   The index of the overriding attribute in {@code overwriteMapping.attributes}.
+     * @param targetIndex      The index of the target attribute in {@code this.attributes}.
+     * @param overwriteAliases {@code true} if aliases of the target attribute should also be overridden, {@code false}
+     *                         otherwise.
      */
     private void overwriteAttribute(
             final ResolvedAnnotationMapping overwriteMapping,
             final int overwriteIndex,
             final int targetIndex,
             final boolean overwriteAliases) {
-        // 若目标属性已被覆写，则不允许再次覆写
+        // If the target attribute has already been overridden, do not override it again.
         if (isOverwrittenAttribute(targetIndex)) {
             return;
         }
-        // 覆写属性
+        // Override the attribute.
         resolvedAttributes[targetIndex] = overwriteIndex;
         resolvedAttributeSources[targetIndex] = overwriteMapping;
-        // 若覆写的属性本身还存在别名，则将别名属性一并覆写
+        // If the overridden attribute itself has aliases, override the aliased attributes as well.
         if (overwriteAliases && Objects.nonNull(aliasSets[targetIndex])) {
             aliasSets[targetIndex]
                     .forEach(aliasIndex -> overwriteAttribute(overwriteMapping, overwriteIndex, aliasIndex, false));
@@ -468,38 +498,42 @@ public class ResolvedAnnotationMapping implements AnnotationMapping<Annotation> 
     }
 
     /**
-     * 判断该属性是否已被覆写
+     * Checks if the attribute at the given index has been overridden.
+     *
+     * @param index The index of the attribute.
+     * @return {@code true} if the attribute has been overridden, {@code false} otherwise.
      */
     private boolean isOverwrittenAttribute(final int index) {
-        // 若属性未发生过解析，则必然未被覆写
+        // If the attribute has not been resolved, it has not been overridden.
         return NOT_FOUND_INDEX != resolvedAttributes[index]
-                // 若属性发生过解析，且指向其他实例，则说明已被覆写
+                // If the attribute has been resolved and points to another instance, it has been overridden.
                 && Objects.nonNull(resolvedAttributeSources[index]);
     }
 
     /**
-     * 解析当前注解属性中通过{@link Alias}构成别名的属性
+     * Resolves attributes within the current annotation that are aliased via {@link Alias}.
      */
     private void resolveAliasAttributes() {
         final Map<Method, Integer> attributeIndexes = new HashMap<>(attributes.length);
 
         final Graph<Method> methodGraph = new Graph<>();
-        // 解析被作为别名的关联属性，根据节点关系构建邻接表
+        // Parse aliased attributes and build an adjacency list based on their relationships.
         for (int i = 0; i < attributes.length; i++) {
-            // 获取属性上的@Alias注解
+            // Get the @Alias annotation on the attribute.
             final Method attribute = attributes[i];
             attributeIndexes.put(attribute, i);
             final Alias attributeAnnotation = attribute.getAnnotation(Alias.class);
             if (Objects.isNull(attributeAnnotation)) {
                 continue;
             }
-            // 获取别名属性
+            // Get the aliased attribute. It must exist in the current annotation.
             final Method aliasAttribute = getAliasAttribute(attribute, attributeAnnotation);
             Objects.requireNonNull(aliasAttribute);
             methodGraph.putEdge(aliasAttribute, attribute);
         }
 
-        // 按广度优先遍历邻接表，将属于同一张图上的节点分为一组，并为其建立AliasSet
+        // Traverse the adjacency list using breadth-first search to group nodes belonging to the same graph
+        // and create an AliasSet for each group.
         final Set<Method> accessed = new HashSet<>(attributes.length);
         final Set<Method> group = new LinkedHashSet<>();
         final Deque<Method> deque = new LinkedList<>();
@@ -508,24 +542,24 @@ public class ResolvedAnnotationMapping implements AnnotationMapping<Annotation> 
             deque.addLast(target);
             while (!deque.isEmpty()) {
                 final Method curr = deque.removeFirst();
-                // 已经访问过的节点不再访问
+                // Skip already accessed nodes.
                 if (accessed.contains(curr)) {
                     continue;
                 }
                 accessed.add(curr);
-                // 将其添加到关系组
+                // Add to the relationship group.
                 group.add(curr);
                 final Collection<Method> aliases = methodGraph.getAdjacentPoints(curr);
                 if (CollKit.isNotEmpty(aliases)) {
                     deque.addAll(aliases);
                 }
             }
-            // 为同一关系组的节点构建关联关系
+            // Build alias relationships for nodes in the same group.
             final int[] groupIndexes = group.stream().mapToInt(attributeIndexes::get).toArray();
             updateAliasSetsForAliasGroup(groupIndexes);
         }
 
-        // 根据AliasSet更新关联的属性
+        // Update resolved attributes based on AliasSet.
         Stream.of(aliasSets).filter(Objects::nonNull).forEach(set -> {
             final int effectiveAttributeIndex = set.determineEffectiveAttribute();
             set.forEach(index -> resolvedAttributes[index] = effectiveAttributeIndex);
@@ -533,10 +567,16 @@ public class ResolvedAnnotationMapping implements AnnotationMapping<Annotation> 
     }
 
     /**
-     * 获取属性别名，并对其进行基本校验
+     * Retrieves and performs basic validation on an aliased attribute.
+     *
+     * @param attribute           The attribute method that has the {@link Alias} annotation.
+     * @param attributeAnnotation The {@link Alias} annotation itself.
+     * @return The {@link Method} representing the aliased attribute.
+     * @throws IllegalArgumentException if the aliased attribute cannot be found, aliases itself, or has an incompatible
+     *                                  return type.
      */
     private Method getAliasAttribute(final Method attribute, final Alias attributeAnnotation) {
-        // 获取别名属性下标，该属性必须在当前注解中存在
+        // Get the index of the aliased attribute. It must exist in the current annotation.
         final int aliasAttributeIndex = getAttributeIndex(attributeAnnotation.value(), attribute.getReturnType());
         Assert.isTrue(
                 hasAttribute(aliasAttributeIndex),
@@ -544,11 +584,11 @@ public class ResolvedAnnotationMapping implements AnnotationMapping<Annotation> 
                 attributeAnnotation.value(),
                 this.annotation.annotationType());
 
-        // 获取具体的别名属性，该属性不能是其本身
+        // Get the specific aliased attribute. It cannot be the attribute itself.
         final Method aliasAttribute = getAttribute(aliasAttributeIndex);
         Assert.notEquals(aliasAttribute, attribute, "attribute [{}] can not alias for itself", attribute);
 
-        // 互为别名的属性类型必须一致
+        // Aliased attributes must have compatible return types.
         Assert.isAssignable(
                 attribute.getReturnType(),
                 aliasAttribute.getReturnType(),
@@ -559,7 +599,9 @@ public class ResolvedAnnotationMapping implements AnnotationMapping<Annotation> 
     }
 
     /**
-     * 为具有关联关系的别名属性构建{@link AliasSet}
+     * Creates and assigns an {@link AliasSet} for a group of aliased attributes.
+     *
+     * @param groupIndexes An array of indices of attributes that form an alias group.
      */
     private void updateAliasSetsForAliasGroup(final int[] groupIndexes) {
         final AliasSet set = new AliasSet(groupIndexes);
@@ -569,10 +611,11 @@ public class ResolvedAnnotationMapping implements AnnotationMapping<Annotation> 
     }
 
     /**
-     * 比较两个实例是否相等
+     * Compares this instance with the specified object for equality. Two {@code ResolvedAnnotationMapping} instances
+     * are considered equal if their wrapped annotations and resolved status are equal.
      *
-     * @param o 对象
-     * @return 是否
+     * @param o The object to compare with.
+     * @return {@code true} if the objects are equal, {@code false} otherwise.
      */
     @Override
     public boolean equals(final Object o) {
@@ -587,9 +630,9 @@ public class ResolvedAnnotationMapping implements AnnotationMapping<Annotation> 
     }
 
     /**
-     * 获取实例哈希值
+     * Returns a hash code value for the object.
      *
-     * @return 哈希值
+     * @return A hash code value for this object.
      */
     @Override
     public int hashCode() {
@@ -597,31 +640,37 @@ public class ResolvedAnnotationMapping implements AnnotationMapping<Annotation> 
     }
 
     /**
-     * 别名设置，一组具有别名关系的属性会共用同一实例
+     * Represents a set of aliased attributes. All attributes in a group share the same instance of this class.
      */
     private class AliasSet {
 
         /**
-         * 关联的别名字段对应的属性在{@link #attributes}中的下标
+         * The indices of the aliased attributes in the {@link ResolvedAnnotationMapping#attributes} array.
          */
         final int[] indexes;
 
         /**
-         * 创建一个别名设置
+         * Constructs a new {@code AliasSet}.
          *
-         * @param indexes 互相关联的别名属性的下标
+         * @param indexes The indices of the mutually aliased attributes.
          */
         AliasSet(final int[] indexes) {
             this.indexes = indexes;
         }
 
         /**
-         * 从所有关联的别名属性中，选择出唯一个最终有效的属性：
+         * Determines the single effective attribute from all associated aliased attributes.
          * <ul>
-         * <li>若所有属性都只有默认值，则要求所有的默认值都必须相等，若符合则返回首个属性，否则报错；</li>
-         * <li>若有且仅有一个属性具有非默认值，则返回该属性；</li>
-         * <li>若有多个属性具有非默认值，则要求所有的非默认值都必须相等，若符合并返回该首个具有非默认值的属性，否则报错；</li>
+         * <li>If all attributes have only default values, all default values must be equal. If so, the first attribute
+         * is returned; otherwise, an error is thrown.</li>
+         * <li>If exactly one attribute has a non-default value, that attribute is returned.</li>
+         * <li>If multiple attributes have non-default values, all non-default values must be equal. If so, the first
+         * attribute with a non-default value is returned; otherwise, an error is thrown.</li>
          * </ul>
+         *
+         * @return The index of the effective attribute.
+         * @throws IllegalArgumentException if aliased attributes have conflicting non-default values or inconsistent
+         *                                  default values.
          */
         private int determineEffectiveAttribute() {
             int resolvedIndex = NOT_FOUND_INDEX;
@@ -630,12 +679,12 @@ public class ResolvedAnnotationMapping implements AnnotationMapping<Annotation> 
             for (final int index : indexes) {
                 final Method attribute = attributes[index];
 
-                // 获取属性的值，并确认是否为默认值
+                // Get the attribute's value and determine if it's the default value.
                 final Object def = attribute.getDefaultValue();
                 final Object undef = MethodKit.invoke(annotation, attribute);
                 final boolean isDefault = Objects.equals(def, undef);
 
-                // 若是首个属性
+                // If this is the first attribute being processed in the group.
                 if (resolvedIndex == NOT_FOUND_INDEX) {
                     resolvedIndex = index;
                     lastValue = isDefault ? def : undef;
@@ -643,9 +692,9 @@ public class ResolvedAnnotationMapping implements AnnotationMapping<Annotation> 
                     continue;
                 }
 
-                // 不是首个属性，且已存在非默认值
+                // If this is not the first attribute, and a non-default value has already been found.
                 if (hasNotDef) {
-                    // 如果当前也是非默认值，则要求两值必须相等
+                    // If the current attribute also has a non-default value, they must be equal.
                     if (!isDefault) {
                         Assert.isTrue(
                                 Objects.equals(lastValue, undef),
@@ -655,11 +704,12 @@ public class ResolvedAnnotationMapping implements AnnotationMapping<Annotation> 
                                 lastValue,
                                 undef);
                     }
-                    // 否则直接跳过，依然以上一非默认值为准
+                    // Otherwise, skip and continue to use the previous non-default value.
                     continue;
                 }
 
-                // 不是首个属性，但是还没有非默认值，而当前值恰好是非默认值，直接更新当前有效值与对应索引
+                // If this is not the first attribute, but no non-default value has been found yet,
+                // and the current value is non-default, update the effective value and index.
                 if (!isDefault) {
                     hasNotDef = true;
                     lastValue = undef;
@@ -667,7 +717,8 @@ public class ResolvedAnnotationMapping implements AnnotationMapping<Annotation> 
                     continue;
                 }
 
-                // 不是首个属性，还没有非默认值，如果当前也是默认值，则要求两值必须相等
+                // If this is not the first attribute, no non-default value has been found yet,
+                // and the current value is also a default value, then all default values must be equal.
                 Assert.isTrue(
                         Objects.equals(lastValue, def),
                         "aliased attribute [{}] and [{}] must have same default value, but is different: [{}] <==> [{}]",
@@ -684,7 +735,9 @@ public class ResolvedAnnotationMapping implements AnnotationMapping<Annotation> 
         }
 
         /**
-         * 遍历下标
+         * Performs the given action for each index in this set.
+         *
+         * @param consumer The action to be performed for each index.
          */
         void forEach(final IntConsumer consumer) {
             for (final int index : indexes) {

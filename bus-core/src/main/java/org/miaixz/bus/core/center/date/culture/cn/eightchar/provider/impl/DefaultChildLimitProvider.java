@@ -32,30 +32,38 @@ import org.miaixz.bus.core.center.date.culture.solar.SolarTerms;
 import org.miaixz.bus.core.center.date.culture.solar.SolarTime;
 
 /**
- * 默认的童限计算
+ * Default implementation for calculating "Child Limit" (童限) information.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class DefaultChildLimitProvider extends AbstractChildLimitProvider {
 
+    /**
+     * Calculates and returns the Child Limit information based on default rules.
+     *
+     * @param birthTime The Gregorian birth time.
+     * @param term      The solar term (节令) relevant to the calculation.
+     * @return The {@link ChildLimitInfo} containing details about the Child Limit.
+     */
     @Override
     public ChildLimitInfo getInfo(SolarTime birthTime, SolarTerms term) {
-        // 出生时刻和节令时刻相差的秒数
+        // Seconds difference between birth time and solar term time
         int seconds = Math.abs(term.getJulianDay().getSolarTime().subtract(birthTime));
-        // 3天 = 1年，3天=60*60*24*3秒=259200秒 = 1年
+        // 3 days = 1 year, 3 days = 60*60*24*3 seconds = 259200 seconds = 1 year
         int year = seconds / 259200;
         seconds %= 259200;
-        // 1天 = 4月，1天=60*60*24秒=86400秒 = 4月，85400秒/4=21600秒 = 1月
+        // 1 day = 4 months, 1 day = 60*60*24 seconds = 86400 seconds = 4 months, 86400 seconds / 4 = 21600 seconds = 1
+        // month
         int month = seconds / 21600;
         seconds %= 21600;
-        // 1时 = 5天，1时=60*60秒=3600秒 = 5天，3600秒/5=720秒 = 1天
+        // 1 hour = 5 days, 1 hour = 60*60 seconds = 3600 seconds = 5 days, 3600 seconds / 5 = 720 seconds = 1 day
         int day = seconds / 720;
         seconds %= 720;
-        // 1分 = 2时，60秒 = 2时，60秒/2=30秒 = 1时
+        // 1 minute = 2 hours, 60 seconds = 2 hours, 60 seconds / 2 = 30 seconds = 1 hour
         int hour = seconds / 30;
         seconds %= 30;
-        // 1秒 = 2分，1秒/2=0.5秒 = 1分
+        // 1 second = 2 minutes, 1 second / 2 = 0.5 seconds = 1 minute
         int minute = seconds * 2;
 
         return next(birthTime, year, month, day, hour, minute, 0);

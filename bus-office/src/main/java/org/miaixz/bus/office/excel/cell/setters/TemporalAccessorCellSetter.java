@@ -36,7 +36,7 @@ import java.util.Date;
 import org.apache.poi.ss.usermodel.Cell;
 
 /**
- * {@link TemporalAccessor} 值单元格设置器
+ * {@link CellSetter} for {@link TemporalAccessor} values.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -46,9 +46,9 @@ public class TemporalAccessorCellSetter implements CellSetter {
     private final TemporalAccessor value;
 
     /**
-     * 构造
+     * Constructs a {@code TemporalAccessorCellSetter} with the specified {@link TemporalAccessor} value.
      *
-     * @param value 值
+     * @param value The {@link TemporalAccessor} value to set in the cell.
      */
     TemporalAccessorCellSetter(final TemporalAccessor value) {
         this.value = value;

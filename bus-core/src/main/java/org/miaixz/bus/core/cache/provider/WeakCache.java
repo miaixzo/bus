@@ -36,10 +36,13 @@ import org.miaixz.bus.core.lang.mutable.Mutable;
 import org.miaixz.bus.core.lang.ref.Ref;
 
 /**
- * 弱引用缓存 对于一个给定的键，其映射的存在并不阻止垃圾回收器对该键的丢弃，这就使该键成为可终止的，被终止，然后被回收。 丢弃某个键时，其条目从映射中有效地移除。
+ * A cache implementation that uses weak references for its keys.
+ * <p>
+ * The presence of a mapping for a given key will not prevent the key from being reclaimed by the garbage collector.
+ * When a key is garbage-collected, its entry is effectively removed from the cache.
  *
- * @param <K> 键
- * @param <V> 值
+ * @param <K> The type of the key.
+ * @param <V> The type of the value.
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -49,20 +52,29 @@ public class WeakCache<K, V> extends TimedCache<K, V> {
     private static final long serialVersionUID = 2852232505330L;
 
     /**
-     * 构造
+     * Constructs a weak-referenced cache with a specified timeout.
      *
-     * @param timeout 超时时常，单位毫秒，-1或0表示无限制
+     * @param timeout The timeout in milliseconds. A value of -1 or 0 means no timeout.
      */
     public WeakCache(final long timeout) {
         super(timeout, new WeakConcurrentMap<>());
     }
 
+    /**
+     * Sets a listener for cache events and registers a purge listener on the underlying {@link WeakConcurrentMap}.
+     * <p>
+     * The purge listener is triggered when an entry is removed by the garbage collector. It safely extracts the key and
+     * value from the purged entry and passes them to the {@link CacheListener#onRemove(Object, Object)} method.
+     *
+     * @param listener The listener for cache events.
+     * @return This {@link WeakCache} instance.
+     */
     @Override
     public WeakCache<K, V> setListener(final CacheListener<K, V> listener) {
         super.setListener(listener);
 
         final WeakConcurrentMap<Mutable<K>, CacheObject<K, V>> map = (WeakConcurrentMap<Mutable<K>, CacheObject<K, V>>) this.cacheMap;
-        // WeakKey回收之后，key对应的值已经是null了，因此此处的key也为null
+        // When a weak key is collected, the key in the listener will be null, so we handle it safely.
         map.setPurgeListener(
                 (key, value) -> listener.onRemove(
                         Optional.ofNullable(key).map(Ref::get).map(Mutable::get).getOrNull(),

@@ -33,13 +33,21 @@ import org.miaixz.bus.sensitive.Context;
 import org.miaixz.bus.sensitive.magic.annotation.Shield;
 
 /**
- * 银行卡号脱敏 只留前四位和后四位 6227 0383 3938 3938 393 脱敏结果: 6227 **** **** ***8 393
+ * A desensitization provider for bank card numbers. It masks the middle digits, keeping only the first 4 and last 4
+ * digits visible. For example: {@code "6227038339383938"} becomes {@code "6227********3938"}.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class BandCardProvider extends AbstractProvider {
 
+    /**
+     * Applies bank card-specific desensitization logic to the provided value.
+     *
+     * @param object  The object containing the bank card number to be desensitized.
+     * @param context The current desensitization context, providing access to field annotations and other details.
+     * @return The desensitized bank card number, or null if the input is empty.
+     */
     @Override
     public String build(Object object, Context context) {
         if (ObjectKit.isEmpty(object)) {

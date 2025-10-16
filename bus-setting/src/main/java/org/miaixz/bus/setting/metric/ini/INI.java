@@ -30,56 +30,62 @@ package org.miaixz.bus.setting.metric.ini;
 import java.util.*;
 import java.util.function.Supplier;
 
+/**
+ * A builder for creating an {@link IniSetting} object programmatically. It provides a fluent API to add sections,
+ * properties, and comments.
+ */
 public class INI {
 
     /**
-     * 元素
+     * The list of INI elements (sections, properties, comments).
      */
-    private List<IniElement> elements;
+    private final List<IniElement> elements;
     /**
-     * 等待第一部分
+     * A queue for properties added before their corresponding section is defined.
      */
-    private LinkedList<Supplier<IniProperty>> waitForSections = new LinkedList<>();
+    private final LinkedList<Supplier<IniProperty>> waitForSections = new LinkedList<>();
     /**
-     * 最后一节
+     * The most recently added section.
      */
     private IniSection lastSection;
     /**
-     * 行号从1开始
+     * The current line number, starting from 1.
      */
     private int line = 1;
     /**
-     * section creator
-     *
-     * @see #sectionCreator(IniSectionCreator)
+     * The creator function for sections.
      */
     private IniSectionCreator iniSectionCreator = IniSectionCreator.DEFAULT;
     /**
-     * comment creator
-     *
-     * @see #commentCreator(IniCommentCreator)
+     * The creator function for comments.
      */
     private IniCommentCreator iniCommentCreator = IniCommentCreator.DEFAULT;
     /**
-     * property creator
-     *
-     * @see #propertyCreator(IniPropertyCreator)
+     * The creator function for properties.
      */
     private IniPropertyCreator iniPropertyCreator = IniPropertyCreator.DEFAULT;
 
+    /**
+     * Constructs a new, empty INI builder.
+     */
     public INI() {
         elements = new ArrayList<>();
     }
 
+    /**
+     * Constructs a new INI builder with a custom list supplier.
+     *
+     * @param listSupplier A supplier that provides the list to store elements in.
+     */
     public INI(Supplier<List<IniElement>> listSupplier) {
         elements = listSupplier.get();
     }
 
     /**
-     * 设置分区创建者功能
+     * Sets the creator function for sections.
      *
-     * @param iniSectionCreator {@link IniSectionCreator}
-     * @return 当前类对象信息
+     * @param iniSectionCreator The {@link IniSectionCreator} to use.
+     * @return This builder instance for chaining.
      */
     public INI sectionCreator(IniSectionCreator iniSectionCreator) {
         Objects.requireNonNull(iniSectionCreator);
@@ -88,10 +94,10 @@ public class INI {
     }
 
     /**
-     * 设置评论创建者功能
+     * Sets the creator function for comments.
      *
-     * @param iniCommentCreator {@link IniCommentCreator}
-     * @return 当前类对象信息
+     * @param iniCommentCreator The {@link IniCommentCreator} to use.
+     * @return This builder instance for chaining.
      */
     public INI commentCreator(IniCommentCreator iniCommentCreator) {
         Objects.requireNonNull(iniCommentCreator);
@@ -100,10 +106,10 @@ public class INI {
     }
 
     /**
-     * 设置属性创建器功能
+     * Sets the creator function for properties.
      *
-     * @param iniPropertyCreator {@link IniPropertyCreator}
-     * @return 当前类对象信息
+     * @param iniPropertyCreator The {@link IniPropertyCreator} to use.
+     * @return This builder instance for chaining.
      */
     public INI propertyCreator(IniPropertyCreator iniPropertyCreator) {
         Objects.requireNonNull(iniPropertyCreator);
@@ -112,10 +118,10 @@ public class INI {
     }
 
     /**
-     * 跳过线，向行添加空值
+     * Skips a specified number of lines by adding null elements, which represent empty lines.
      *
-     * @param length 跳过线
-     * @return 当前类对象信息
+     * @param length The number of lines to skip.
+     * @return This builder instance for chaining.
      */
     public INI skipLine(int length) {
         for (int i = 0; i < length; i++) {
@@ -126,10 +132,10 @@ public class INI {
     }
 
     /**
-     * Plus other builder
+     * Appends all elements from another INI builder to this one.
      *
-     * @param otherBuilder other builder
-     * @return 当前类对象信息
+     * @param otherBuilder The other builder whose elements will be appended.
+     * @return This builder instance for chaining.
      */
     public INI plus(INI otherBuilder) {
         this.elements.addAll(otherBuilder.elements);
@@ -138,10 +144,10 @@ public class INI {
     }
 
     /**
-     * Plus iniElement list
+     * Appends a list of {@link IniElement}s to this builder.
      *
-     * @param elements IniElement list
-     * @return 当前类对象信息
+     * @param elements The list of INI elements to append.
+     * @return This builder instance for chaining.
      */
     public INI plus(List<IniElement> elements) {
         this.elements.addAll(elements);
@@ -150,10 +156,10 @@ public class INI {
     }
 
     /**
-     * Plus a section
+     * Adds a new section.
      *
-     * @param value section value
-     * @return 当前类对象信息
+     * @param value The name of the section.
+     * @return This builder instance for chaining.
      */
     public INI plusSection(String value) {
         final IniSection section = iniSectionCreator.create(value, line++, null);
@@ -164,11 +170,11 @@ public class INI {
     }
 
     /**
-     * Plus a section with comment
+     * Adds a new section with a comment.
      *
-     * @param value   section value
-     * @param comment comment
-     * @return 当前类对象信息
+     * @param value   The name of the section.
+     * @param comment The comment to associate with the section.
+     * @return This builder instance for chaining.
      */
     public INI plusSection(String value, IniComment comment) {
         final IniSection section = iniSectionCreator.create(value, line++, comment);
@@ -179,11 +185,11 @@ public class INI {
     }
 
     /**
-     * Plus a section with comment
+     * Adds a new section with a comment string.
      *
-     * @param value        section value
-     * @param commentValue comment value
-     * @return 当前类对象信息
+     * @param value        The name of the section.
+     * @param commentValue The text of the comment.
+     * @return This builder instance for chaining.
      */
     public INI plusSection(String value, String commentValue) {
         final int lineNumber = line++;
@@ -196,11 +202,11 @@ public class INI {
     }
 
     /**
-     * Plus a property
+     * Adds a new property (key-value pair) to the current section.
      *
-     * @param key   key
-     * @param value value
-     * @return 当前类对象信息
+     * @param key   The property key.
+     * @param value The property value.
+     * @return This builder instance for chaining.
      */
     public INI plusProperty(String key, String value) {
         checkProps(() -> iniPropertyCreator.create(key, value, line++, null));
@@ -208,12 +214,12 @@ public class INI {
     }
 
     /**
-     * Plus a property
+     * Adds a new property to the current section with a comment.
      *
-     * @param key     key
-     * @param value   value
-     * @param comment 描述信息
-     * @return 当前类对象信息
+     * @param key     The property key.
+     * @param value   The property value.
+     * @param comment The comment to associate with the property.
+     * @return This builder instance for chaining.
      */
     public INI plusProperty(String key, String value, IniComment comment) {
         checkProps(() -> iniPropertyCreator.create(key, value, line++, comment));
@@ -221,12 +227,12 @@ public class INI {
     }
 
     /**
-     * Plus a property
+     * Adds a new property to the current section with a comment string.
      *
-     * @param key          key
-     * @param value        value
-     * @param commentValue 描述信息
-     * @return 当前类对象信息
+     * @param key          The property key.
+     * @param value        The property value.
+     * @param commentValue The text of the comment.
+     * @return This builder instance for chaining.
      */
     public INI plusProperty(String key, String value, String commentValue) {
         checkProps(() -> {
@@ -238,10 +244,10 @@ public class INI {
     }
 
     /**
-     * Plus properties
+     * Adds all properties from a {@link Properties} object to the current section.
      *
-     * @param properties properties
-     * @return 当前类对象信息
+     * @param properties The {@link Properties} object.
+     * @return This builder instance for chaining.
      */
     public INI plusProperties(Properties properties) {
         final Set<String> names = properties.stringPropertyNames();
@@ -253,11 +259,11 @@ public class INI {
     }
 
     /**
-     * Plus properties
+     * Adds all properties from a {@link Properties} object to the current section, each with the same comment.
      *
-     * @param properties properties
-     * @param comment    描述信息
-     * @return 当前类对象信息
+     * @param properties The {@link Properties} object.
+     * @param comment    The comment to associate with each property.
+     * @return This builder instance for chaining.
      */
     public INI plusProperties(Properties properties, IniComment comment) {
         final Set<String> names = properties.stringPropertyNames();
@@ -269,11 +275,11 @@ public class INI {
     }
 
     /**
-     * Plus properties
+     * Adds all properties from a {@link Properties} object to the current section, each with the same comment string.
      *
-     * @param properties   properties
-     * @param commentValue 描述信息
-     * @return 当前类对象信息
+     * @param properties   The {@link Properties} object.
+     * @param commentValue The text of the comment for each property.
+     * @return This builder instance for chaining.
      */
     public INI plusProperties(Properties properties, String commentValue) {
         final Set<String> names = properties.stringPropertyNames();
@@ -288,16 +294,30 @@ public class INI {
         return this;
     }
 
+    /**
+     * Adds a comment line.
+     *
+     * @param value The text of the comment.
+     * @return This builder instance for chaining.
+     */
     public INI plusComment(String value) {
         final IniComment comment = iniCommentCreator.create(value, line++);
         elements.add(comment);
         return this;
     }
 
+    /**
+     * Builds the final {@link IniSetting} object from the added elements.
+     *
+     * @return The constructed {@link IniSetting}.
+     */
     public IniSetting build() {
         return new IniSetting(elements);
     }
 
+    /**
+     * Checks for and processes any queued properties that were waiting for a section to be defined.
+     */
     private void checkProps() {
         if (null != this.lastSection && !waitForSections.isEmpty()) {
             while (!waitForSections.isEmpty()) {
@@ -309,6 +329,12 @@ public class INI {
         }
     }
 
+    /**
+     * Adds a property. If no section has been defined yet, the property is queued. Otherwise, it is added to the last
+     * defined section.
+     *
+     * @param propertySupplier A supplier for creating the {@link IniProperty}.
+     */
     private void checkProps(Supplier<IniProperty> propertySupplier) {
         if (null == this.lastSection) {
             this.waitForSections.addFirst(propertySupplier);

@@ -34,7 +34,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 /**
- * 天翼云短信
+ * Material for China Telecom Cloud (CTYUN) SMS service.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -47,18 +47,20 @@ import lombok.experimental.SuperBuilder;
 public class CtyunMaterial extends Material {
 
     /**
-     * 模板变量名称
+     * The name of the template variable.
      */
     private String templateName;
 
     /**
-     * 接口名称
+     * The API action to be performed, defaults to "SendSms".
      */
     @Builder.Default
     private String action = "SendSms";
 
     /**
-     * API默认请求地址 当 {@link Context} 中 endpoint 为空时使用地址
+     * Retrieves the default API request address. This address is used when the {@link Context} endpoint is empty.
+     *
+     * @return The default API request address for CTYUN SMS.
      */
     @Override
     public String getUrl() {

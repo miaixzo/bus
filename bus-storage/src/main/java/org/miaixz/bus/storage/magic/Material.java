@@ -36,7 +36,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * 附件信息
+ * Represents material information, typically for attachments or files.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -49,62 +49,62 @@ import lombok.experimental.SuperBuilder;
 public class Material {
 
     /**
-     * 标识
+     * Unique identifier for the material.
      */
     public String key;
 
     /**
-     * 名称
+     * The name of the material.
      */
     public String name;
 
     /**
-     * 别名
+     * An alias or alternative name for the material.
      */
     public String alias;
 
     /**
-     * 路径
+     * The path where the material is stored.
      */
     public String path;
 
     /**
-     * 大小
+     * The size of the material.
      */
     public String size;
 
     /**
-     * 类型
+     * The type or format of the material.
      */
     public String type;
 
     /**
-     * 状态
+     * The status of the material.
      */
     public String status;
 
     /**
-     * 所有者
+     * The owner of the material.
      */
     public String owner;
 
     /**
-     * hash值
+     * The hash value of the material, typically for integrity verification.
      */
     public String hash;
 
     /**
-     * 缩略图
+     * The URL for accessing the material, possibly a thumbnail URL.
      */
     public String url;
 
     /**
-     * 存储平台
+     * The storage platform where the material is hosted.
      */
     public String platform;
 
     /**
-     * 文件扩展字段
+     * Extended fields for the file, stored as a map.
      */
     public Map<String, Object> extend;
 

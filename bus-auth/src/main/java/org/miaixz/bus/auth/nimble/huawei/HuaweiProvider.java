@@ -53,27 +53,37 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 华为 登录
+ * Huawei login provider.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class HuaweiProvider extends AbstractProvider {
 
+    /**
+     * Constructs a {@code HuaweiProvider} with the specified context.
+     *
+     * @param context the authentication context
+     */
     public HuaweiProvider(Context context) {
         super(context, Registry.HUAWEI);
     }
 
+    /**
+     * Constructs a {@code HuaweiProvider} with the specified context and cache.
+     *
+     * @param context the authentication context
+     * @param cache   the cache implementation
+     */
     public HuaweiProvider(Context context, CacheX cache) {
         super(context, Registry.HUAWEI, cache);
     }
 
     /**
-     * 获取access token
+     * Retrieves the access token from Huawei's authorization server.
      *
-     * @param callback 授权成功后的回调参数
-     * @return token
-     * @see AbstractProvider#authorize(String)
+     * @param callback the callback object containing the authorization code
+     * @return the {@link AuthToken} containing access token details
      */
     @Override
     public AuthToken getAccessToken(Callback callback) {
@@ -99,10 +109,10 @@ public class HuaweiProvider extends AbstractProvider {
     }
 
     /**
-     * 使用token换取用户信息
+     * Retrieves user information from Huawei's user info endpoint.
      *
-     * @param authToken token信息
-     * @return 用户信息
+     * @param authToken the token information
+     * @return {@link Material} containing the user's information
      * @see AbstractProvider#getAccessToken(Callback)
      */
     @Override
@@ -161,10 +171,10 @@ public class HuaweiProvider extends AbstractProvider {
     }
 
     /**
-     * 刷新access token （续期）
+     * Refreshes the access token (renews its validity).
      *
-     * @param authToken 登录成功后返回的Token信息
-     * @return AuthResponse
+     * @param authToken the token information returned after successful login
+     * @return a {@link Message} containing the refreshed token information
      */
     @Override
     public Message refresh(AuthToken authToken) {
@@ -181,6 +191,13 @@ public class HuaweiProvider extends AbstractProvider {
         return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(getAuthToken(response)).build();
     }
 
+    /**
+     * Parses the access token response string into an {@link AuthToken} object.
+     *
+     * @param response the response string from the access token endpoint
+     * @return the parsed {@link AuthToken}
+     * @throws AuthorizedException if the response indicates an error or is missing required token information
+     */
     private AuthToken getAuthToken(String response) {
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
@@ -206,10 +223,11 @@ public class HuaweiProvider extends AbstractProvider {
     }
 
     /**
-     * 返回带{@code state}参数的授权url，授权回调时会带上这个{@code state}
+     * Returns the authorization URL with a {@code state} parameter. The {@code state} will be included in the
+     * authorization callback.
      *
-     * @param state state 验证授权流程的参数，可以防止csrf
-     * @return 返回授权地址
+     * @param state the parameter to verify the authorization process, which can prevent CSRF attacks
+     * @return the authorization URL
      */
     @Override
     public String authorize(String state) {
@@ -232,9 +250,10 @@ public class HuaweiProvider extends AbstractProvider {
     }
 
     /**
-     * 校验响应结果
+     * Checks the response content for errors.
      *
-     * @param object 接口返回的结果
+     * @param object the response map to check
+     * @throws AuthorizedException if the response contains an error or message indicating failure
      */
     private void checkResponse(Map<String, Object> object) {
         if (object.containsKey("NSP_STATUS")) {
@@ -244,7 +263,7 @@ public class HuaweiProvider extends AbstractProvider {
         if (object.containsKey("error")) {
             String subError = (String) object.get("sub_error");
             String errorDescription = (String) object.get("error_description");
-            throw new AuthorizedException((subError != null ? subError : "Unknown sub_error") + ":"
+            throw new AuthorizedException((subError != null ? subError : "Unknown sub_error") + Symbol.COLON
                     + (errorDescription != null ? errorDescription : "Unknown description"));
         }
     }

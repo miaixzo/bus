@@ -44,10 +44,11 @@ import org.miaixz.bus.mapper.binding.function.Fn;
 import org.miaixz.bus.mapper.provider.FunctionProvider;
 
 /**
- * 基础 Mapper 接口，集成常用操作方法，支持继承和方法覆盖
+ * A base mapper interface that integrates common database operations. It supports inheritance and method overriding to
+ * provide custom functionality.
  *
- * @param <T> 实体类类型
- * @param <I> 主键类型
+ * @param <T> The type of the entity class.
+ * @param <I> The type of the primary key.
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -55,21 +56,21 @@ public interface BasicMapper<T, I extends Serializable>
         extends EntityMapper<T, I>, ConditionMapper<T, Condition<T>>, CursorMapper<T, Condition<T>> {
 
     /**
-     * 创建 Condition 查询封装对象
+     * Creates a {@link ConditionWrapper} object for building complex queries.
      *
-     * @return ConditionWrapper 对象
+     * @return A new {@link ConditionWrapper} instance.
      */
     default ConditionWrapper<T, I> wrapper() {
         return new ConditionWrapper<>(this, condition());
     }
 
     /**
-     * 根据主键更新实体中非空字段，并强制更新指定字段
+     * Updates non-null fields of an entity by its primary key, while forcing an update on specified fields.
      *
-     * @param entity 实体对象
-     * @param fields 强制更新的字段集合，通过 {@link Fn#of(Fn...)} 创建 {@link Fn.FnArray}
-     * @param <S>    实体类型
-     * @return 1 表示成功，0 表示失败
+     * @param entity The entity object containing the updated values.
+     * @param fields A collection of fields to be forcibly updated, created via {@link Fn#of(Fn...)}.
+     * @param <S>    The type of the entity.
+     * @return The number of affected rows (1 for success, 0 for failure).
      */
     @Lang(Caching.class)
     @UpdateProvider(type = FunctionProvider.class, method = "updateByPrimaryKeySelectiveWithForceFields")
@@ -78,24 +79,25 @@ public interface BasicMapper<T, I extends Serializable>
             @Param("fns") Fn.FnArray<T> fields);
 
     /**
-     * 根据主键更新指定字段集合
+     * Updates a specified set of fields for an entity by its primary key.
      *
-     * @param entity 实体对象
-     * @param fields 指定更新的字段集合，通过 {@link Fn#of(Fn...)} 创建 {@link Fn.FnArray}
-     * @param <S>    实体类型
-     * @return 1 表示成功，0 表示失败
+     * @param entity The entity object containing the updated values.
+     * @param fields A collection of fields to be updated, created via {@link Fn#of(Fn...)}.
+     * @param <S>    The type of the entity.
+     * @return The number of affected rows (1 for success, 0 for failure).
      */
     @Lang(Caching.class)
     @UpdateProvider(type = FunctionProvider.class, method = "updateForFieldListByPrimaryKey")
     <S extends T> int updateForFieldListByPrimaryKey(@Param("entity") S entity, @Param("fns") Fn.FnArray<T> fields);
 
     /**
-     * 根据指定字段集合查询，条件为 field IN (fieldValueList)
+     * Selects a list of entities where the specified field is in the given list of values (i.e.,
+     * {@code field IN (fieldValueList)}).
      *
-     * @param field          字段方法引用
-     * @param fieldValueList 字段值集合
-     * @param <F>            字段类型
-     * @return 符合条件的实体对象列表
+     * @param field          A method reference to the field (e.g., {@code User::getName}).
+     * @param fieldValueList A collection of values for the specified field.
+     * @param <F>            The type of the field.
+     * @return A list of entities that match the condition.
      */
     default <F> List<T> selectByFieldList(Fn<T, F> field, Collection<F> fieldValueList) {
         Condition<T> condition = new Condition<>();
@@ -104,12 +106,13 @@ public interface BasicMapper<T, I extends Serializable>
     }
 
     /**
-     * 根据指定字段集合删除，条件为 field IN (fieldValueList)
+     * Deletes entities where the specified field is in the given list of values (i.e.,
+     * {@code field IN (fieldValueList)}).
      *
-     * @param field          字段方法引用
-     * @param fieldValueList 字段值集合
-     * @param <F>            字段类型
-     * @return 删除的记录数
+     * @param field          A method reference to the field (e.g., {@code User::getName}).
+     * @param fieldValueList A collection of values for the specified field.
+     * @param <F>            The type of the field.
+     * @return The number of deleted records.
      */
     default <F> int deleteByFieldList(Fn<T, F> field, Collection<F> fieldValueList) {
         Condition<T> condition = new Condition<>();

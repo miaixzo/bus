@@ -37,7 +37,8 @@ import org.miaixz.bus.core.lang.Gender;
 import java.io.Serializable;
 
 /**
- * 授权成功后的用户信息，根据授权平台的不同，获取的数据完整性也不同
+ * User information after successful authorization. The completeness of the data obtained varies depending on the
+ * authorization platform.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -50,60 +51,62 @@ import java.io.Serializable;
 public class Material implements Serializable {
 
     /**
-     * 用户第三方系统的唯一id。在调用方集成该组件时，可以用uuid + source唯一确定一个用户
+     * The unique ID of the user in the third-party system. When integrating this component, the user can be uniquely
+     * identified by combining uuid + source.
      */
     private String uuid;
     /**
-     * 用户名
+     * User's username.
      */
     private String username;
     /**
-     * 用户昵称
+     * User's nickname.
      */
     private String nickname;
     /**
-     * 用户头像
+     * User's avatar URL.
      */
     private String avatar;
     /**
-     * 用户网址
+     * User's blog or personal website URL.
      */
     private String blog;
     /**
-     * 所在公司
+     * User's company.
      */
     private String company;
     /**
-     * 位置
+     * User's location.
      */
     private String location;
     /**
-     * 用户邮箱
+     * User's email address.
      */
     private String email;
     /**
-     * 用户备注（各平台中的用户个人介绍）
+     * User's remarks (personal introduction from various platforms).
      */
     private String remark;
     /**
-     * 性别
+     * User's gender.
      */
     private Gender gender;
     /**
-     * 用户来源
+     * User's source platform.
      */
     private String source;
     /**
-     * 用户授权的token信息
+     * User's authorization token information.
      */
     private AuthToken token;
     /**
-     * 第三方平台返回的原始用户信息
+     * Raw user information returned by the third-party platform.
      */
     private String rawJson;
 
     /**
-     * 微信公众号 - 网页授权的登录时可用 微信针对网页授权登录，增加了一个快照页的逻辑，快照页获取到的微信用户的 uid oid 和头像昵称都是虚拟的信息
+     * WeChat Official Account - available for web authorization login. WeChat adds a snapshot page logic for web
+     * authorization login, where the uid, oid, avatar, and nickname obtained are virtual information.
      */
     private boolean snapshotUser;
 

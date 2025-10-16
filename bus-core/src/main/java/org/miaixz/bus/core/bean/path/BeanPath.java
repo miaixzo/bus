@@ -36,31 +36,42 @@ import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * Bean路径表达式，用于获取多层嵌套Bean中的字段值或Bean对象 根据给定的表达式，查找Bean中对应的属性值对象。 表达式分为两种：
+ * A bean path expression resolver, used to get or set property values in multi-level nested beans. The expression is
+ * divided into two parts:
  * <ol>
- * <li>.表达式，可以获取Bean对象中的属性（字段）值或者Map中key对应的值</li>
- * <li>[]表达式，可以获取集合等对象中对应index的值</li>
+ * <li>Dot notation (e.g., {@code user.name}), used to access properties of a bean or values in a map.</li>
+ * <li>Bracket notation (e.g., {@code users[0]}), used to access elements in a collection or array by their index.</li>
  * </ol>
  *
+ * @param <T> The type of the bean being traversed.
  * @author Kimi Liu
  * @since Java 17+
  */
 public class BeanPath<T> implements Iterator<BeanPath<T>> {
 
     /**
-     * 表达式边界符号数组
+     * An array of characters that act as delimiters in the expression.
      */
     private static final char[] EXP_CHARS = { Symbol.C_DOT, Symbol.C_BRACKET_LEFT, Symbol.C_BRACKET_RIGHT };
 
+    /**
+     * The current node (part) of the expression.
+     */
     private final Node node;
+    /**
+     * The remaining part of the expression (the child path).
+     */
     private final String child;
+    /**
+     * The factory for creating, getting, and setting bean values.
+     */
     private final NodeBeanFactory<T> beanFactory;
 
     /**
-     * 构造
+     * Constructs a new {@code BeanPath} by parsing the given expression.
      *
-     * @param expression  表达式
-     * @param beanFactory NodeBean工厂，用于Bean的值创建、获取和设置
+     * @param expression  The path expression (e.g., "user.name", "users[0]").
+     * @param beanFactory The factory for creating, getting, and setting bean values.
      */
     public BeanPath(final String expression, final NodeBeanFactory<T> beanFactory) {
         this.beanFactory = beanFactory;
@@ -68,53 +79,53 @@ public class BeanPath<T> implements Iterator<BeanPath<T>> {
         final StringBuilder builder = new StringBuilder();
 
         char c;
-        boolean isNumStart = false;// 下标标识符开始
-        boolean isInWrap = false; // 标识是否在引号内
+        boolean isBracketStart = false; // Flag for '['
+        boolean isInQuotes = false; // Flag for being inside single quotes
+
         for (int i = 0; i < length; i++) {
             c = expression.charAt(i);
             if ('\'' == c) {
-                // 结束
-                isInWrap = (!isInWrap);
+                // Toggle quote mode
+                isInQuotes = !isInQuotes;
                 continue;
             }
 
-            if (!isInWrap && ArrayKit.contains(EXP_CHARS, c)) {
-                // 处理边界符号
+            if (!isInQuotes && ArrayKit.contains(EXP_CHARS, c)) {
+                // Handle delimiter characters
                 if (Symbol.C_BRACKET_RIGHT == c) {
-                    // 中括号（数字下标）结束
-                    if (!isNumStart) {
-                        throw new IllegalArgumentException(
-                                StringKit.format("Bad expression '{}':{}, we find ']' but no '[' !", expression, i));
+                    // End of a bracketed index
+                    if (!isBracketStart) {
+                        throw new IllegalArgumentException(StringKit
+                                .format("Bad expression '{}':{}, found ']' but no preceding '['", expression, i));
                     }
-                    isNumStart = false;
-                    // 中括号结束加入下标
+                    isBracketStart = false;
                 } else {
-                    if (isNumStart) {
-                        // 非结束中括号情况下发现起始中括号报错（中括号未关闭）
-                        throw new IllegalArgumentException(
-                                StringKit.format("Bad expression '{}':{}, we find '[' but no ']' !", expression, i));
+                    if (isBracketStart) {
+                        // Found a new delimiter before the current bracket was closed
+                        throw new IllegalArgumentException(StringKit
+                                .format("Bad expression '{}':{}, found '[' but no closing ']'", expression, i));
                     } else if (Symbol.C_BRACKET_LEFT == c) {
-                        // 数字下标开始
-                        isNumStart = true;
+                        // Start of a bracketed index
+                        isBracketStart = true;
                     }
-                    // 每一个边界符之前的表达式是一个完整的KEY，开始处理KEY
                 }
-                if (builder.length() > 0) {
+                if (!builder.isEmpty()) {
                     this.node = NodeFactory.createNode(builder.toString());
-                    // 如果以[结束，表示后续还有表达式，需保留'['，如name[0]
+                    // The rest of the string is the child path.
+                    // For '[' keep it as part of the child, e.g., for "name[0]".
                     this.child = StringKit.nullIfEmpty(expression.substring(c == Symbol.C_BRACKET_LEFT ? i : i + 1));
                     return;
                 }
             } else {
-                // 非边界符号，追加字符
+                // Append non-delimiter characters
                 builder.append(c);
             }
         }
 
-        // 最后的节点
-        if (isNumStart) {
-            throw new IllegalArgumentException(
-                    StringKit.format("Bad expression '{}':{}, we find '[' but no ']' !", expression, length - 1));
+        // Handle the last node in the expression
+        if (isBracketStart) {
+            throw new IllegalArgumentException(StringKit
+                    .format("Bad expression '{}':{}, found '[' but no closing ']' at the end", expression, length - 1));
         } else {
             this.node = NodeFactory.createNode(builder.toString());
             this.child = null;
@@ -122,40 +133,40 @@ public class BeanPath<T> implements Iterator<BeanPath<T>> {
     }
 
     /**
-     * 创建Bean路径
+     * Creates a new {@code BeanPath} instance with a default bean factory.
      *
-     * @param expression 表达式
-     * @return BeanPath
+     * @param expression The path expression.
+     * @return a new {@code BeanPath} instance.
      */
     public static BeanPath<Object> of(final String expression) {
         return new BeanPath<>(expression, DefaultNodeBeanFactory.INSTANCE);
     }
 
     /**
-     * 创建Bean路径
+     * Creates a new {@code BeanPath} instance with a custom bean factory.
      *
-     * @param expression  表达式
-     * @param beanFactory NodeBean工厂，用于Bean的值创建、获取和设置
-     * @param <T>         Bean类型
-     * @return BeanPath
+     * @param expression  The path expression.
+     * @param beanFactory The factory for creating, getting, and setting bean values.
+     * @param <T>         The type of the bean.
+     * @return a new {@code BeanPath} instance.
      */
     public static <T> BeanPath<T> of(final String expression, final NodeBeanFactory<T> beanFactory) {
         return new BeanPath<>(expression, beanFactory);
     }
 
     /**
-     * 获取节点
+     * Gets the current node of the expression.
      *
-     * @return 节点
+     * @return The current {@link Node}.
      */
     public Node getNode() {
         return this.node;
     }
 
     /**
-     * 获取子表达式
+     * Gets the remaining (child) part of the expression.
      *
-     * @return 子表达式
+     * @return The child expression string, or null if this is the last node.
      */
     public String getChild() {
         return this.child;
@@ -172,10 +183,10 @@ public class BeanPath<T> implements Iterator<BeanPath<T>> {
     }
 
     /**
-     * 获取路径对应的值
+     * Recursively gets the value corresponding to this path from the given bean.
      *
-     * @param bean Bean对象
-     * @return 路径对应的值
+     * @param bean The root bean object.
+     * @return The value at the specified path, or null if not found.
      */
     public Object getValue(final T bean) {
         final Object value = beanFactory.getValue(bean, this);
@@ -189,31 +200,33 @@ public class BeanPath<T> implements Iterator<BeanPath<T>> {
     }
 
     /**
-     * 设置路径对应的值，如果路径节点为空，自动创建之
+     * Recursively sets a value for this path in the given bean. If intermediate nodes (beans, collections, etc.) are
+     * null, they will be created automatically.
      *
-     * @param bean  Bean对象
-     * @param value 设置的值
-     * @return bean 如果在原Bean对象基础上设置值，返回原Bean，否则返回新的Bean
+     * @param bean  The root bean object.
+     * @param value The value to set at the path.
+     * @return The modified bean.
      */
-    public Object setValue(final T bean, final Object value) {
-        final NodeBeanFactory<T> beanFactory = this.beanFactory;
+    public Object setValue(T bean, final Object value) {
         if (!hasNext()) {
-            // 根节点，直接赋值
+            // Reached the end of the path, set the value on the current bean.
             return beanFactory.setValue(bean, value, this);
         }
 
         final BeanPath<T> childBeanPath = next();
         Object subBean = beanFactory.getValue(bean, this);
         if (null == subBean) {
+            // Create intermediate objects if they don't exist.
             subBean = beanFactory.create(bean, this);
             beanFactory.setValue(bean, subBean, this);
-            // 如果自定义put方法修改了value，返回修改后的value，避免值丢失
+            // Re-get the value in case the setValue method modified it.
             subBean = beanFactory.getValue(bean, this);
         }
-        // 递归逐层查找子节点，赋值
+        // Recurse to the next level.
         final Object newSubBean = childBeanPath.setValue((T) subBean, value);
         if (newSubBean != subBean) {
-            // 对于数组对象，set新值后，会返回新的数组，此时将新对象再加入父bean中，覆盖旧数组
+            // If setting a value in a sub-object returned a new instance (e.g., for an array),
+            // update the reference in the parent.
             beanFactory.setValue(bean, newSubBean, this);
         }
         return bean;

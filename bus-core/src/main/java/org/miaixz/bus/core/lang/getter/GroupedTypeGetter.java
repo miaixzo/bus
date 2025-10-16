@@ -34,288 +34,289 @@ import java.math.BigInteger;
 import org.miaixz.bus.core.convert.Convert;
 
 /**
- * 基于分组的Get接口
+ * Interface for retrieving grouped type values, providing methods to get values of various types from a grouped data
+ * structure. This interface allows specifying a group key in addition to the regular key.
  *
- * @param <K> 键类型
- * @param <G> 分组键类型
+ * @param <K> The type of the key.
+ * @param <G> The type of the group key.
  * @author Kimi Liu
  * @since Java 17+
  */
 public interface GroupedTypeGetter<K, G> {
 
     /**
-     * 获取Object属性值，最原始的对象获取，没有任何转换或类型判断
+     * Retrieves an Object property value without any type conversion or validation.
      *
-     * @param key          属性名
-     * @param group        分组
-     * @param defaultValue 默认值
-     * @return 属性值
+     * @param key          The key of the property.
+     * @param group        The group key.
+     * @param defaultValue The default value to return if the property is not found or is null.
+     * @return The property value as an Object, or the default value if not found.
      */
-    Object getObjByGroup(K key, G group, Object defaultValue);
+    Object getObjectByGroup(K key, G group, Object defaultValue);
 
     /**
-     * 获取Object属性值，最原始的对象获取，没有任何转换或类型判断
+     * Retrieves an Object property value without any type conversion or validation.
      *
-     * @param key   属性名
-     * @param group 分组
-     * @return 属性值
+     * @param key   The key of the property.
+     * @param group The group key.
+     * @return The property value as an Object, or null if not found.
      */
-    default Object getObjByGroup(final K key, final G group) {
-        return getObjByGroup(key, group, null);
+    default Object getObjectByGroup(final K key, final G group) {
+        return getObjectByGroup(key, group, null);
     }
 
     /**
-     * 获取指定类型的值，默认自动转换值类型
+     * Retrieves a value of the specified type, with automatic type conversion.
      *
-     * @param <T>   目标类型
-     * @param key   键
-     * @param group 分组
-     * @param type  目标类型
-     * @return 结果值
+     * @param <T>   The target type.
+     * @param key   The key of the property.
+     * @param group The group key.
+     * @param type  The target type.
+     * @return The converted value, or null if the property is not found or conversion fails.
      */
     default <T> T getByGroup(final K key, final G group, final Type type) {
         return getByGroup(key, group, type, null);
     }
 
     /**
-     * 获取指定类型的值，默认自动转换值类型
+     * Retrieves a value of the specified type, with automatic type conversion.
      *
-     * @param <T>          目标类型
-     * @param key          键
-     * @param group        分组
-     * @param type         目标类型
-     * @param defaultValue 默认值
-     * @return 结果值
+     * @param <T>          The target type.
+     * @param key          The key of the property.
+     * @param group        The group key.
+     * @param type         The target type.
+     * @param defaultValue The default value to return if the property is not found or conversion fails.
+     * @return The converted value, or the default value if not found or conversion fails.
      */
     default <T> T getByGroup(final K key, final G group, final Type type, final T defaultValue) {
-        return Convert.convert(type, getObjByGroup(key, group), defaultValue);
+        return Convert.convert(type, getObjectByGroup(key, group), defaultValue);
     }
 
     /**
-     * 获取字符串型属性值
+     * Retrieves a String property value.
      *
-     * @param key          属性名
-     * @param group        分组
-     * @param defaultValue 默认值
-     * @return 属性值
+     * @param key          The key of the property.
+     * @param group        The group key.
+     * @param defaultValue The default value to return if the property is not found or is null.
+     * @return The property value as a String, or the default value if not found.
      */
-    default String getStrByGroup(final K key, final G group, final String defaultValue) {
+    default String getStringByGroup(final K key, final G group, final String defaultValue) {
         return getByGroup(key, group, String.class, defaultValue);
     }
 
     /**
-     * 获取字符串型属性值
+     * Retrieves a String property value.
      *
-     * @param key   属性名
-     * @param group 分组
-     * @return 属性值
+     * @param key   The key of the property.
+     * @param group The group key.
+     * @return The property value as a String, or null if not found.
      */
-    default String getStrByGroup(final K key, final G group) {
-        return getStrByGroup(key, group, null);
+    default String getStringByGroup(final K key, final G group) {
+        return getStringByGroup(key, group, null);
     }
 
     /**
-     * 获取int型属性值
+     * Retrieves an Integer property value.
      *
-     * @param key          属性名
-     * @param group        分组
-     * @param defaultValue 默认值
-     * @return 属性值
+     * @param key          The key of the property.
+     * @param group        The group key.
+     * @param defaultValue The default value to return if the property is not found or is null.
+     * @return The property value as an Integer, or the default value if not found.
      */
     default Integer getIntByGroup(final K key, final G group, final Integer defaultValue) {
         return getByGroup(key, group, Integer.class, defaultValue);
     }
 
     /**
-     * 获取int型属性值
+     * Retrieves an Integer property value.
      *
-     * @param key   属性名
-     * @param group 分组
-     * @return 属性值
+     * @param key   The key of the property.
+     * @param group The group key.
+     * @return The property value as an Integer, or null if not found.
      */
     default Integer getIntByGroup(final K key, final G group) {
         return getIntByGroup(key, group, null);
     }
 
     /**
-     * 获取short型属性值
+     * Retrieves a Short property value.
      *
-     * @param key          属性名
-     * @param group        分组
-     * @param defaultValue 默认值
-     * @return 属性值
+     * @param key          The key of the property.
+     * @param group        The group key.
+     * @param defaultValue The default value to return if the property is not found or is null.
+     * @return The property value as a Short, or the default value if not found.
      */
     default Short getShortByGroup(final K key, final G group, final Short defaultValue) {
         return getByGroup(key, group, Short.class, defaultValue);
     }
 
     /**
-     * 获取short型属性值
+     * Retrieves a Short property value.
      *
-     * @param key   属性名
-     * @param group 分组
-     * @return 属性值
+     * @param key   The key of the property.
+     * @param group The group key.
+     * @return The property value as a Short, or null if not found.
      */
     default Short getShortByGroup(final K key, final G group) {
         return getShortByGroup(key, group, null);
     }
 
     /**
-     * 获取boolean型属性值
+     * Retrieves a Boolean property value.
      *
-     * @param key          属性名
-     * @param group        分组
-     * @param defaultValue 默认值
-     * @return 属性值
+     * @param key          The key of the property.
+     * @param group        The group key.
+     * @param defaultValue The default value to return if the property is not found or is null.
+     * @return The property value as a Boolean, or the default value if not found.
      */
-    default Boolean getBoolByGroup(final K key, final G group, final Boolean defaultValue) {
+    default Boolean getBooleanByGroup(final K key, final G group, final Boolean defaultValue) {
         return getByGroup(key, group, Boolean.class, defaultValue);
     }
 
     /**
-     * 获取boolean型属性值
+     * Retrieves a Boolean property value.
      *
-     * @param key   属性名
-     * @param group 分组
-     * @return 属性值
+     * @param key   The key of the property.
+     * @param group The group key.
+     * @return The property value as a Boolean, or null if not found.
      */
-    default Boolean getBoolByGroup(final K key, final G group) {
-        return getBoolByGroup(key, group, null);
+    default Boolean getBooleanByGroup(final K key, final G group) {
+        return getBooleanByGroup(key, group, null);
     }
 
     /**
-     * 获取Long型属性值
+     * Retrieves a Long property value.
      *
-     * @param key          属性名
-     * @param group        分组
-     * @param defaultValue 默认值
-     * @return 属性值
+     * @param key          The key of the property.
+     * @param group        The group key.
+     * @param defaultValue The default value to return if the property is not found or is null.
+     * @return The property value as a Long, or the default value if not found.
      */
     default Long getLongByGroup(final K key, final G group, final Long defaultValue) {
         return getByGroup(key, group, Long.class, defaultValue);
     }
 
     /**
-     * 获取Long型属性值
+     * Retrieves a Long property value.
      *
-     * @param key   属性名
-     * @param group 分组
-     * @return 属性值
+     * @param key   The key of the property.
+     * @param group The group key.
+     * @return The property value as a Long, or null if not found.
      */
     default Long getLongByGroup(final K key, final G group) {
         return getLongByGroup(key, group, null);
     }
 
     /**
-     * 获取char型属性值
+     * Retrieves a Character property value.
      *
-     * @param key          属性名
-     * @param group        分组
-     * @param defaultValue 默认值
-     * @return 属性值
+     * @param key          The key of the property.
+     * @param group        The group key.
+     * @param defaultValue The default value to return if the property is not found or is null.
+     * @return The property value as a Character, or the default value if not found.
      */
     default Character getCharByGroup(final K key, final G group, final Character defaultValue) {
         return getByGroup(key, group, Character.class, defaultValue);
     }
 
     /**
-     * 获取char型属性值
+     * Retrieves a Character property value.
      *
-     * @param key   属性名
-     * @param group 分组
-     * @return 属性值
+     * @param key   The key of the property.
+     * @param group The group key.
+     * @return The property value as a Character, or null if not found.
      */
     default Character getCharByGroup(final K key, final G group) {
         return getCharByGroup(key, group, null);
     }
 
     /**
-     * 获取double型属性值
+     * Retrieves a Double property value.
      *
-     * @param key          属性名
-     * @param group        分组
-     * @param defaultValue 默认值
-     * @return 属性值
+     * @param key          The key of the property.
+     * @param group        The group key.
+     * @param defaultValue The default value to return if the property is not found or is null.
+     * @return The property value as a Double, or the default value if not found.
      */
     default Double getDoubleByGroup(final K key, final G group, final Double defaultValue) {
         return getByGroup(key, group, Double.class, defaultValue);
     }
 
     /**
-     * 获取double型属性值
+     * Retrieves a Double property value.
      *
-     * @param key   属性名
-     * @param group 分组
-     * @return 属性值
+     * @param key   The key of the property.
+     * @param group The group key.
+     * @return The property value as a Double, or null if not found.
      */
     default Double getDoubleByGroup(final K key, final G group) {
         return getDoubleByGroup(key, group, null);
     }
 
     /**
-     * 获取byte型属性值
+     * Retrieves a Byte property value.
      *
-     * @param key          属性名
-     * @param group        分组
-     * @param defaultValue 默认值
-     * @return 属性值
+     * @param key          The key of the property.
+     * @param group        The group key.
+     * @param defaultValue The default value to return if the property is not found or is null.
+     * @return The property value as a Byte, or the default value if not found.
      */
     default Byte getByteByGroup(final K key, final G group, final Byte defaultValue) {
         return getByGroup(key, group, Byte.class, defaultValue);
     }
 
     /**
-     * 获取byte型属性值
+     * Retrieves a Byte property value.
      *
-     * @param key   属性名
-     * @param group 分组
-     * @return 属性值
+     * @param key   The key of the property.
+     * @param group The group key.
+     * @return The property value as a Byte, or null if not found.
      */
     default Byte getByteByGroup(final K key, final G group) {
         return getByteByGroup(key, group, null);
     }
 
     /**
-     * 获取BigDecimal型属性值
+     * Retrieves a BigDecimal property value.
      *
-     * @param key          属性名
-     * @param group        分组
-     * @param defaultValue 默认值
-     * @return 属性值
+     * @param key          The key of the property.
+     * @param group        The group key.
+     * @param defaultValue The default value to return if the property is not found or is null.
+     * @return The property value as a BigDecimal, or the default value if not found.
      */
     default BigDecimal getBigDecimalByGroup(final K key, final G group, final BigDecimal defaultValue) {
         return getByGroup(key, group, BigDecimal.class, defaultValue);
     }
 
     /**
-     * 获取BigDecimal型属性值
+     * Retrieves a BigDecimal property value.
      *
-     * @param key   属性名
-     * @param group 分组
-     * @return 属性值
+     * @param key   The key of the property.
+     * @param group The group key.
+     * @return The property value as a BigDecimal, or null if not found.
      */
     default BigDecimal getBigDecimalByGroup(final K key, final G group) {
         return getBigDecimalByGroup(key, group, null);
     }
 
     /**
-     * 获取BigInteger型属性值
+     * Retrieves a BigInteger property value.
      *
-     * @param key          属性名
-     * @param group        分组
-     * @param defaultValue 默认值
-     * @return 属性值
+     * @param key          The key of the property.
+     * @param group        The group key.
+     * @param defaultValue The default value to return if the property is not found or is null.
+     * @return The property value as a BigInteger, or the default value if not found.
      */
     default BigInteger getBigIntegerByGroup(final K key, final G group, final BigInteger defaultValue) {
         return getByGroup(key, group, BigInteger.class, defaultValue);
     }
 
     /**
-     * 获取BigInteger型属性值
+     * Retrieves a BigInteger property value.
      *
-     * @param key   属性名
-     * @param group 分组
-     * @return 属性值
+     * @param key   The key of the property.
+     * @param group The group key.
+     * @return The property value as a BigInteger, or null if not found.
      */
     default BigInteger getBigIntegerByGroup(final K key, final G group) {
         return getBigIntegerByGroup(key, group, null);

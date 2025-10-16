@@ -31,7 +31,9 @@ import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadPoolExecutor;
 
 /**
- * 线程拒绝策略枚举 如果设置了maxSize, 当总线程数达到上限, 会调用RejectedExecutionHandler进行处理，此枚举为JDK预定义的几种策略枚举表示
+ * Enumeration of thread rejection policies. These policies define how a {@link ThreadPoolExecutor} handles tasks that
+ * cannot be executed, typically when the thread pool's capacity (including its work queue) is exhausted. The policies
+ * correspond to the predefined strategies in {@link ThreadPoolExecutor} and a custom {@link BlockPolicy}.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -39,36 +41,47 @@ import java.util.concurrent.ThreadPoolExecutor;
 public enum RejectPolicy {
 
     /**
-     * 处理程序遭到拒绝将抛出RejectedExecutionException
+     * A handler for rejected tasks that throws a {@code RejectedExecutionException}.
      */
     ABORT(new ThreadPoolExecutor.AbortPolicy()),
     /**
-     * 放弃当前任务
+     * A handler for rejected tasks that silently discards the rejected task.
      */
     DISCARD(new ThreadPoolExecutor.DiscardPolicy()),
     /**
-     * 如果执行程序尚未关闭，则位于工作队列头部的任务将被删除，然后重试执行程序（如果再次失败，则重复此过程）
+     * A handler for rejected tasks that discards the oldest unexecuted task in the work queue and then retries to
+     * submit the new task. If the executor is shut down, the new task is discarded.
      */
     DISCARD_OLDEST(new ThreadPoolExecutor.DiscardOldestPolicy()),
     /**
-     * 调用者线程来执行被丢弃的任务；一般可能是由主线程来直接执行
+     * A handler for rejected tasks that runs the rejected task directly in the calling thread of the {@code execute}
+     * method. This provides a simple feedback mechanism that slows down the submission of new tasks.
      */
     CALLER_RUNS(new ThreadPoolExecutor.CallerRunsPolicy()),
     /**
-     * 当任务队列过长时处于阻塞状态，直到添加到队列中，固定并发数去访问，并且不希望丢弃任务时使用此策略
+     * A handler for rejected tasks that blocks the calling thread until the task can be added to the queue. This policy
+     * is suitable when a fixed number of concurrent accesses is desired and tasks should not be discarded.
      */
     BLOCK(new BlockPolicy());
 
+    /**
+     * The {@link RejectedExecutionHandler} instance associated with this policy.
+     */
     private final RejectedExecutionHandler value;
 
+    /**
+     * Constructs a {@code RejectPolicy} enum constant with the specified {@link RejectedExecutionHandler}.
+     *
+     * @param handler The {@link RejectedExecutionHandler} instance.
+     */
     RejectPolicy(final RejectedExecutionHandler handler) {
         this.value = handler;
     }
 
     /**
-     * 获取RejectedExecutionHandler枚举值
+     * Retrieves the {@link RejectedExecutionHandler} instance associated with this policy.
      *
-     * @return RejectedExecutionHandler
+     * @return The {@link RejectedExecutionHandler} instance.
      */
     public RejectedExecutionHandler getValue() {
         return this.value;

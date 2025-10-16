@@ -36,7 +36,7 @@ import org.miaixz.bus.core.xyz.RandomKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 数字计算验证码生成策略
+ * Math calculation CAPTCHA generation strategy.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -46,34 +46,33 @@ public class MathStrategy implements CodeStrategy {
     @Serial
     private static final long serialVersionUID = 2852292238303L;
 
+    /**
+     * Operators used in the math expression.
+     */
     private static final String operators = "+-*";
 
     /**
-     * 参与计算数字最大长度
+     * The maximum length of numbers involved in the calculation.
      */
     private final int numberLength;
     /**
-     * 计算结果是否允许负数
+     * Whether the calculation result is allowed to be a negative number.
      */
     private final boolean resultHasNegativeNumber;
 
     /**
-     * 构造
+     * Constructs a new {@code MathStrategy} with default settings. Uses a number length of 2 and does not allow
+     * negative results.
      */
     public MathStrategy() {
         this(2, false);
     }
 
     /**
-     * 构造
+     * Constructs a new {@code MathStrategy} with the specified number length and negative result allowance.
      *
-     * @param numberLength 参与计算最大数字位数
-     */
-    /**
-     * 构造
-     *
-     * @param numberLength            参与计算最大数字位数
-     * @param resultHasNegativeNumber 结果是否允许负数
+     * @param numberLength            The maximum number of digits for numbers involved in the calculation.
+     * @param resultHasNegativeNumber {@code true} if the calculation result can be negative, {@code false} otherwise.
      */
     public MathStrategy(final int numberLength, final boolean resultHasNegativeNumber) {
         this.numberLength = numberLength;
@@ -87,9 +86,11 @@ public class MathStrategy implements CodeStrategy {
         final int numberInt1;
         final int numberInt2;
         numberInt1 = RandomKit.randomInt(limit);
-        // 如果禁止了结果有负数，且计算方式正好计算为减法，需要第二个数小于第一个数
+        // If negative results are forbidden and the operation is subtraction, the second number must be less than the
+        // first.
         if (!resultHasNegativeNumber && CharKit.equals(Symbol.C_MINUS, operator, false)) {
-            // 如果第一个数为0，第二个数必须为0，随机[0,0)的数字会报错
+            // If the first number is 0, the second number must be 0; generating a random number in [0,0) would cause an
+            // error.
             numberInt2 = numberInt1 == 0 ? 0 : RandomKit.randomInt(0, numberInt1);
         } else {
             numberInt2 = RandomKit.randomInt(limit);
@@ -109,7 +110,7 @@ public class MathStrategy implements CodeStrategy {
         try {
             result = Integer.parseInt(userInputCode);
         } catch (final NumberFormatException e) {
-            // 用户输入非数字
+            // User input is not a number
             return false;
         }
 
@@ -118,18 +119,18 @@ public class MathStrategy implements CodeStrategy {
     }
 
     /**
-     * 获取验证码长度
+     * Gets the length of the CAPTCHA code string (including numbers, operator, and equals sign).
      *
-     * @return 验证码长度
+     * @return The length of the CAPTCHA code.
      */
     public int getLength() {
         return this.numberLength * 2 + 2;
     }
 
     /**
-     * 根据长度获取参与计算数字最大值
+     * Gets the upper limit for the numbers involved in the calculation based on {@code numberLength}.
      *
-     * @return 最大值
+     * @return The maximum value for the numbers.
      */
     private int getLimit() {
         return Integer.parseInt("1" + StringKit.repeat('0', this.numberLength));

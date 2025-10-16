@@ -39,45 +39,53 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * 类型: 未受检异常
+ * Represents an unchecked exception, extending {@link RuntimeException}, that can carry an error code and message. This
+ * class provides various constructors for flexibility in error reporting and supports internationalization for error
+ * messages.
+ *
+ * @author Kimi Liu
+ * @since Java 17+
  */
 @Getter
 @Setter
 public class UncheckedException extends RuntimeException {
 
+    /**
+     * The serialization version identifier.
+     */
     @Serial
     private static final long serialVersionUID = 2852266759151L;
 
     /**
-     * 错误码
+     * The error code associated with this exception.
      */
     protected String errcode;
 
     /**
-     * 错误信息
+     * The error message associated with this exception.
      */
     protected String errmsg;
 
     /**
-     * 默认构造方法，创建无消息
+     * Constructs a new UncheckedException with no detail message.
      */
     protected UncheckedException() {
         super();
     }
 
     /**
-     * 构造 将抛出对象包裹成运行时异常,并增加自己的描述
+     * Constructs a new UncheckedException with the specified cause.
      *
-     * @param cause 异常原因
+     * @param cause The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
      */
     protected UncheckedException(final Throwable cause) {
         super(cause);
     }
 
     /**
-     * 构造 将抛出对象包裹成运行时异常,并增加自己的描述
+     * Constructs a new UncheckedException with the specified detail message.
      *
-     * @param errmsg 详细消息
+     * @param errmsg The detail message.
      */
     protected UncheckedException(final String errmsg) {
         super(errmsg);
@@ -85,9 +93,9 @@ public class UncheckedException extends RuntimeException {
     }
 
     /**
-     * 构造 将抛出对象包裹成运行时异常,并增加自己的描述
+     * Constructs a new UncheckedException with the specified error object.
      *
-     * @param errors 错误码对象，包含键和值
+     * @param errors The error object containing error code and message.
      */
     protected UncheckedException(final Errors errors) {
         super(errors.getValue());
@@ -96,10 +104,10 @@ public class UncheckedException extends RuntimeException {
     }
 
     /**
-     * 构造
+     * Constructs a new UncheckedException with the specified error object and detail message.
      *
-     * @param errors 错误码对象，包含键和值
-     * @param errmsg 消息
+     * @param errors The error object containing error code.
+     * @param errmsg The detail message.
      */
     public UncheckedException(final Errors errors, String errmsg) {
         super(errmsg);
@@ -108,10 +116,10 @@ public class UncheckedException extends RuntimeException {
     }
 
     /**
-     * 构造 使用指定消息和原因构造
+     * Constructs a new UncheckedException with the specified detail message and cause.
      *
-     * @param errmsg 详细消息
-     * @param cause  异常原因
+     * @param errmsg The detail message.
+     * @param cause  The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
      */
     protected UncheckedException(final String errmsg, final Throwable cause) {
         super(errmsg, cause);
@@ -119,10 +127,10 @@ public class UncheckedException extends RuntimeException {
     }
 
     /**
-     * 构造 将抛出对象包裹成运行时异常,并增加自己的描述
+     * Constructs a new UncheckedException with the specified error code and detail message.
      *
-     * @param errcode 错误码
-     * @param errmsg  错误提示
+     * @param errcode The error code.
+     * @param errmsg  The detail message.
      */
     protected UncheckedException(final String errcode, final String errmsg) {
         super(errmsg);
@@ -131,10 +139,10 @@ public class UncheckedException extends RuntimeException {
     }
 
     /**
-     * 构造 根据格式化字符串,生成运行时异常
+     * Constructs a new UncheckedException with the specified detail message format and arguments.
      *
-     * @param format 格式
-     * @param args   参数
+     * @param format The format string for the detail message.
+     * @param args   The arguments referenced by the format specifiers in the format string.
      */
     protected UncheckedException(final String format, final Object... args) {
         super(String.format(format, args));
@@ -142,11 +150,11 @@ public class UncheckedException extends RuntimeException {
     }
 
     /**
-     * 构造 将抛出对象包裹成运行时异常,并增加自己的描述
+     * Constructs a new UncheckedException with the specified cause, detail message format, and arguments.
      *
-     * @param cause  异常原因
-     * @param format 格式化字符串
-     * @param args   参数
+     * @param cause  The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
+     * @param format The format string for the detail message.
+     * @param args   The arguments referenced by the format specifiers in the format string.
      */
     protected UncheckedException(final Throwable cause, final String format, final Object... args) {
         super(String.format(format, args), cause);
@@ -154,12 +162,14 @@ public class UncheckedException extends RuntimeException {
     }
 
     /**
-     * 构造 运行时异常，其中包含指定的详细信息消息，原因，启用或禁用抑制，可写堆栈跟踪启用或禁用
+     * Constructs a new UncheckedException with the specified detail message, cause, suppression enabled or disabled,
+     * and writable stack trace enabled or disabled.
      *
-     * @param errmsg             详细消息
-     * @param cause              原因（允许为 null，表示原因未知）
-     * @param enableSuppression  是否启用抑制
-     * @param writableStackTrace 是否启用可写堆栈跟踪
+     * @param errmsg             The detail message.
+     * @param cause              The cause (which is saved for later retrieval by the {@link Throwable#getCause()}
+     *                           method).
+     * @param enableSuppression  Whether or not suppression is enabled or disabled.
+     * @param writableStackTrace Whether or not the stack trace should be writable.
      */
     protected UncheckedException(final String errmsg, final Throwable cause, final boolean enableSuppression,
             final boolean writableStackTrace) {
@@ -183,7 +193,7 @@ public class UncheckedException extends RuntimeException {
                 ResourceBundle bundle = ResourceBundle.getBundle(Keys.BUNDLE_NAME, locale);
                 return bundle.getString(this.errcode);
             } catch (Exception e) {
-                // 回退到 ERRORS_CACHE 中注册的错误信息
+                // Fallback to the error message registered in ERRORS_CACHE
                 Errors.Entry entry = Errors.require(this.errcode);
                 return entry != null ? entry.getValue() : this.getMessage();
             }

@@ -27,16 +27,16 @@
 */
 package org.miaixz.bus.http.metric;
 
-import java.io.IOException;
-import java.util.concurrent.TimeUnit;
-
 import org.miaixz.bus.http.NewCall;
 import org.miaixz.bus.http.Request;
 import org.miaixz.bus.http.Response;
 import org.miaixz.bus.http.accord.Connection;
 
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+
 /**
- * 网络调用链
+ * A chain of interceptors that can process an HTTP request and response.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,76 +44,81 @@ import org.miaixz.bus.http.accord.Connection;
 public interface NewChain {
 
     /**
-     * @return 网络请求
+     * Returns the request currently being processed.
+     *
+     * @return The network request.
      */
     Request request();
 
     /**
-     * @param request 网络请求
-     * @return {@link Response}
-     * @throws IOException 异常
+     * Proceeds with the request to the next interceptor in the chain.
+     *
+     * @param request The network request.
+     * @return The response from the next interceptor.
+     * @throws IOException if an I/O error occurs.
      */
     Response proceed(Request request) throws IOException;
 
     /**
-     * 返回将执行请求的连接。这只在网络拦截器链中可用; 对于应用程序拦截器，这总是null
+     * Returns the connection that will be used to execute the request. This is only available in the network
+     * interceptor chain; for application interceptors, this will always be null.
      *
-     * @return 连接信息
+     * @return The connection information.
      */
     Connection connection();
 
     /**
-     * 实际调用准备执行的请求
+     * Returns the actual call that is ready to execute the request.
      *
-     * @return {@link NewCall}
+     * @return The {@link NewCall} instance.
      */
     NewCall call();
 
     /**
-     * 连接超时时间
+     * Returns the connect timeout in milliseconds.
      *
-     * @return the int
+     * @return The connect timeout in milliseconds.
      */
     int connectTimeoutMillis();
 
     /**
-     * 设置连接超时时间
+     * Sets the connect timeout for this chain.
      *
-     * @param timeout 超时时间
-     * @param unit    单位
-     * @return {@link NewChain}
+     * @param timeout The timeout value.
+     * @param unit    The time unit.
+     * @return This {@link NewChain} instance.
      */
     NewChain withConnectTimeout(int timeout, TimeUnit unit);
 
     /**
-     * 读操作超时时间
+     * Returns the read timeout in milliseconds.
      *
-     * @return the int
+     * @return The read timeout in milliseconds.
      */
     int readTimeoutMillis();
 
     /**
-     * 配置读操作超时时间
+     * Configures the read timeout for this chain.
      *
-     * @param timeout 超时时间
-     * @param unit    单位
-     * @return {@link NewChain}
+     * @param timeout The timeout value.
+     * @param unit    The time unit.
+     * @return This {@link NewChain} instance.
      */
     NewChain withReadTimeout(int timeout, TimeUnit unit);
 
     /**
-     * 写操作超时时间
+     * Returns the write timeout in milliseconds.
      *
-     * @return the int
+     * @return The write timeout in milliseconds.
      */
     int writeTimeoutMillis();
 
     /**
-     * 配置写操作超时时间
+     * Configures the write timeout for this chain.
      *
-     * @param timeout 超时时间
-     * @param unit    单位
-     * @return {@link NewChain}
+     * @param timeout The timeout value.
+     * @param unit    The time unit.
+     * @return This {@link NewChain} instance.
      */
     NewChain withWriteTimeout(int timeout, TimeUnit unit);
 

@@ -30,7 +30,7 @@ package org.miaixz.bus.pay.metric.wechat.api.v3;
 import org.miaixz.bus.pay.Matcher;
 
 /**
- * 微信支付 v3 接口-消费者投诉2.0接口
+ * WeChat Pay V3 API interfaces for consumer complaints 2.0.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,59 +38,67 @@ import org.miaixz.bus.pay.Matcher;
 public enum ComplaintsApi implements Matcher {
 
     /**
-     * 查询投诉单列表
+     * Query complaint list.
      */
-    COMPLAINTS_V2("/v3/merchant-service/complaints-v2", "查询投诉单列表"),
+    COMPLAINTS_V2("/v3/merchant-service/complaints-v2", "Query complaint list"),
 
     /**
-     * 查询投诉单详情
+     * Query complaint details.
      */
-    COMPLAINTS_DETAIL("/v3/merchant-service/complaints-v2/%s", "查询投诉单详情"),
+    COMPLAINTS_DETAIL("/v3/merchant-service/complaints-v2/%s", "Query complaint details"),
 
     /**
-     * 查询投诉协商历史
+     * Query complaint negotiation history.
      */
-    COMPLAINTS_NEGOTIATION_HISTORY("/v3/merchant-service/complaints-v2/%s/negotiation-historys", "查询投诉协商历史"),
+    COMPLAINTS_NEGOTIATION_HISTORY("/v3/merchant-service/complaints-v2/%s/negotiation-historys",
+            "Query complaint negotiation history"),
 
     /**
-     * 创建/查询/更新/删除投诉通知回调
+     * Create/query/update/delete complaint notification callback.
      */
-    COMPLAINTS_NOTIFICATION("/v3/merchant-service/complaint-notifications", "创建/查询/更新/删除投诉通知回调"),
+    COMPLAINTS_NOTIFICATION("/v3/merchant-service/complaint-notifications",
+            "Create/query/update/delete complaint notification callback"),
 
     /**
-     * 提交回复
+     * Submit reply.
      */
-    COMPLAINTS_RESPONSE("/v3/merchant-service/complaints-v2/%s/response", "提交回复"),
+    COMPLAINTS_RESPONSE("/v3/merchant-service/complaints-v2/%s/response", "Submit reply"),
 
     /**
-     * 商户上传反馈图片
+     * Merchant upload feedback image.
      */
-    IMAGES_UPLOAD("/v3/merchant-service/images/upload", "商户上传反馈图片"),
+    IMAGES_UPLOAD("/v3/merchant-service/images/upload", "Merchant upload feedback image"),
 
     /**
-     * 反馈处理完成
+     * Feedback processing completed.
      */
-    COMPLAINTS_COMPLETE("/v3/merchant-service/complaints-v2/%s/complete", "反馈处理完成");
+    COMPLAINTS_COMPLETE("/v3/merchant-service/complaints-v2/%s/complete", "Feedback processing completed");
 
     /**
-     * 接口方法
+     * The API method.
      */
     private final String method;
 
     /**
-     * 接口描述
+     * The API description.
      */
     private final String desc;
 
+    /**
+     * Constructs a new ComplaintsApi enum.
+     *
+     * @param method The API method.
+     * @param desc   The API description.
+     */
     ComplaintsApi(String method, String desc) {
         this.method = method;
         this.desc = desc;
     }
 
     /**
-     * 交易类型
+     * Gets the transaction type.
      *
-     * @return the string
+     * @return The transaction type.
      */
     @Override
     public String type() {
@@ -98,9 +106,9 @@ public enum ComplaintsApi implements Matcher {
     }
 
     /**
-     * 类型描述
+     * Gets the type description.
      *
-     * @return the string
+     * @return The type description.
      */
     @Override
     public String desc() {
@@ -108,9 +116,9 @@ public enum ComplaintsApi implements Matcher {
     }
 
     /**
-     * 接口方法
+     * Gets the API method.
      *
-     * @return the string
+     * @return The API method.
      */
     @Override
     public String method() {

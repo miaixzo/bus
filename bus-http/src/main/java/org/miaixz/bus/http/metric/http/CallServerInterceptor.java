@@ -27,9 +27,6 @@
 */
 package org.miaixz.bus.http.metric.http;
 
-import java.io.IOException;
-import java.net.ProtocolException;
-
 import org.miaixz.bus.core.io.sink.BufferSink;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.IoKit;
@@ -40,20 +37,40 @@ import org.miaixz.bus.http.accord.Exchange;
 import org.miaixz.bus.http.metric.Interceptor;
 import org.miaixz.bus.http.metric.NewChain;
 
+import java.io.IOException;
+import java.net.ProtocolException;
+
 /**
- * 这是链中的最后一个拦截器 它对服务器进行网络调用
+ * This is the last interceptor in the chain. It makes a network call to the server.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class CallServerInterceptor implements Interceptor {
 
+    /**
+     * A flag indicating whether this interceptor is being used for a WebSocket connection.
+     */
     private final boolean forWebSocket;
 
+    /**
+     * Constructs a new CallServerInterceptor.
+     *
+     * @param forWebSocket true if this is for a WebSocket upgrade request.
+     */
     public CallServerInterceptor(boolean forWebSocket) {
         this.forWebSocket = forWebSocket;
     }
 
+    /**
+     * Intercepts the request to make a network call to the server. This method handles writing the request headers and
+     * body, and reading the response headers and body. It also manages special cases like "100-continue" expectations
+     * and WebSocket upgrades.
+     *
+     * @param chain The interceptor chain.
+     * @return The response from the server.
+     * @throws IOException if an I/O error occurs during the network call.
+     */
     @Override
     public Response intercept(NewChain chain) throws IOException {
         RealInterceptorChain realChain = (RealInterceptorChain) chain;
@@ -92,6 +109,7 @@ public class CallServerInterceptor implements Interceptor {
             } else {
                 exchange.noRequestBody();
                 if (!exchange.connection().isMultiplexed()) {
+                    // If the "Expect: 100-continue" expectation wasn't met, prevent the connection from being reused.
                     exchange.noNewExchangesOnConnection();
                 }
             }
@@ -116,9 +134,10 @@ public class CallServerInterceptor implements Interceptor {
 
         int code = response.code();
         if (code == 100) {
-            // server sent a 100-continue even though we did not request one.
-            // try again to read the actual response
-            response = exchange.readResponseHeaders(false).request(request).handshake(exchange.connection().handshake())
+            // A server sent a 100-continue response even though we did not request one.
+            // We must try again to read the actual response.
+            responseBuilder = exchange.readResponseHeaders(false);
+            response = responseBuilder.request(request).handshake(exchange.connection().handshake())
                     .sentRequestAtMillis(sentRequestMillis).receivedResponseAtMillis(System.currentTimeMillis())
                     .build();
 
@@ -128,7 +147,7 @@ public class CallServerInterceptor implements Interceptor {
         exchange.responseHeadersEnd(response);
 
         if (forWebSocket && code == 101) {
-            // Connection is upgrading, but we need to ensure interceptors see a non-null response body.
+            // The connection is upgrading, but we need to ensure interceptors see a non-null response body.
             response = response.newBuilder().body(Builder.EMPTY_RESPONSE).build();
         } else {
             response = response.newBuilder().body(exchange.openResponseBody(response)).build();
@@ -139,8 +158,9 @@ public class CallServerInterceptor implements Interceptor {
             exchange.noNewExchangesOnConnection();
         }
 
-        if ((code == 204 || code == 205) && response.body().length() > 0) {
-            throw new ProtocolException("HTTP " + code + " had non-zero Content-Length: " + response.body().length());
+        if ((code == 204 || code == 205) && response.body().contentLength() > 0) {
+            throw new ProtocolException(
+                    "HTTP " + code + " had non-zero Content-Length: " + response.body().contentLength());
         }
 
         return response;

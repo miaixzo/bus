@@ -26,7 +26,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * InputStream和OutputStream相关方法和类封装
+ * Provides classes and methods related to {@link java.io.InputStream} and {@link java.io.OutputStream} operations.
  *
  * @author Kimi Liu
  * @since Java 17+

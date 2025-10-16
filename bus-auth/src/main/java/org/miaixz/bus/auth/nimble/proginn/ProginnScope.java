@@ -32,7 +32,7 @@ import lombok.Getter;
 import org.miaixz.bus.auth.nimble.AuthorizeScope;
 
 /**
- * 程序员客栈 授权范围
+ * Proginn (Programmer's Inn) authorization scopes.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,17 +42,26 @@ import org.miaixz.bus.auth.nimble.AuthorizeScope;
 public enum ProginnScope implements AuthorizeScope {
 
     /**
-     * {@code scope} 含义，以{@code description} 为准
+     * Access to user's basic information. The meaning of {@code scope} is subject to {@code description}.
      */
-    BASIC("basic", "访问用户的基本信息", true),
+    BASIC("basic", "Access to user's basic information", true),
     /**
-     * 以上 scope 需要单独向程序员客栈平台申请，否则不可使用
+     * The following scopes require separate application to the Proginn platform, otherwise they cannot be used.
      */
-    email("email", "获取用户的邮箱", false), realname("realname", "获取用户的真实姓名", false),
-    cellphone("cellphone", "获取用户的手机号码", false);
+    email("email", "Get user's email", false), realname("realname", "Get user's real name", false),
+    cellphone("cellphone", "Get user's mobile number", false);
 
+    /**
+     * The scope string as defined by Proginn.
+     */
     private final String scope;
+    /**
+     * A description of what the scope grants access to.
+     */
     private final String description;
+    /**
+     * Indicates if this scope is enabled by default.
+     */
     private final boolean isDefault;
 
 }

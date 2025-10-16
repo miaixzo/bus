@@ -27,17 +27,17 @@
 */
 package org.miaixz.bus.logger.metric.jdk;
 
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.logger.magic.AbstractProvider;
+
 import java.io.Serial;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.logger.magic.AbstractProvider;
-
 /**
- * java.util.logging
+ * A logger provider implementation that wraps a {@link java.util.logging.Logger} instance.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,42 +48,42 @@ public class JdkLoggingProvider extends AbstractProvider {
     private static final long serialVersionUID = 2852287167223L;
 
     /**
-     * 日志门面
+     * The underlying {@link java.util.logging.Logger} instance.
      */
     private final transient Logger logger;
 
     /**
-     * 构造
+     * Constructs a new {@code JdkLoggingProvider} with the specified logger.
      *
-     * @param logger 日志对象
+     * @param logger the {@link Logger} instance to use.
      */
     public JdkLoggingProvider(final Logger logger) {
         this.logger = logger;
     }
 
     /**
-     * 构造
+     * Constructs a new {@code JdkLoggingProvider} for the specified class.
      *
-     * @param clazz 日志实现类
+     * @param clazz the class for which to create the logger.
      */
     public JdkLoggingProvider(final Class<?> clazz) {
         this((null == clazz) ? Normal.NULL : clazz.getName());
     }
 
     /**
-     * 构造
+     * Constructs a new {@code JdkLoggingProvider} for the specified name.
      *
-     * @param name 日志实现类名
+     * @param name the name of the logger.
      */
     public JdkLoggingProvider(final String name) {
         this(Logger.getLogger(name));
     }
 
     /**
-     * 传入调用日志类的信息
+     * Fills the {@link LogRecord} with the source class name and method name of the caller.
      *
-     * @param fqcn   调用者全限定类名
-     * @param record 要更新的记录
+     * @param fqcn   the fully qualified class name of the caller.
+     * @param record the {@link LogRecord} to update.
      */
     private static void fill(final String fqcn, final LogRecord record) {
         final StackTraceElement[] steArray = Thread.currentThread().getStackTrace();
@@ -91,7 +91,8 @@ public class JdkLoggingProvider extends AbstractProvider {
         int found = -1;
         String className;
         for (int i = steArray.length - 2; i > -1; i--) {
-            // 此处初始值为length-2，表示从倒数第二个堆栈开始检查，如果是倒数第一个，那调用者就获取不到
+            // The initial value here is length-2, which means that the check starts from the penultimate stack.
+            // If it is the last one, the caller will not be able to get it.
             className = steArray[i].getClassName();
             if (fqcn.equals(className)) {
                 found = i;
@@ -197,13 +198,13 @@ public class JdkLoggingProvider extends AbstractProvider {
     }
 
     /**
-     * 打印对应等级的日志
+     * Logs a message at the specified level if it is enabled.
      *
-     * @param fqcn      调用者的完全限定类名(Fully Qualified Class Name)
-     * @param level     等级
-     * @param throwable 异常对象
-     * @param format    消息模板
-     * @param args      参数
+     * @param fqcn      the fully qualified class name of the caller.
+     * @param level     the logging level.
+     * @param throwable the throwable to log.
+     * @param format    the message format.
+     * @param args      the arguments for the message format.
      */
     private void logIfEnabled(
             final String fqcn,

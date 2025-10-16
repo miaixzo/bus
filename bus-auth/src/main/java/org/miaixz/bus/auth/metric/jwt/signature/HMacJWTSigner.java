@@ -35,9 +35,10 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.crypto.center.HMac;
 
 /**
- * HMAC 算法 JWT 签名器。
+ * HMAC algorithm JWT signer.
  * <p>
- * 实现 {@link JWTSigner} 接口，使用 HMAC 算法（如 HS256、HS384、HS512）对 JWT 进行签名和验证。 支持自定义编码，默认使用 UTF-8。
+ * Implements the {@link JWTSigner} interface, using HMAC algorithms (e.g., HS256, HS384, HS512) for JWT signing and
+ * verification. Supports custom encoding, with UTF-8 as the default.
  * </p>
  *
  * @author Kimi Liu
@@ -46,96 +47,98 @@ import org.miaixz.bus.crypto.center.HMac;
 public class HMacJWTSigner implements JWTSigner {
 
     /**
-     * HMAC 算法实例，用于执行签名和验证。
+     * The HMAC algorithm instance, used for performing signing and verification.
      */
     private final HMac hMac;
     /**
-     * 编码方式，默认 UTF-8。
+     * The character encoding, default is UTF-8.
      */
     private java.nio.charset.Charset charset = Charset.UTF_8;
 
     /**
-     * 构造函数，初始化 HMAC 签名器。
+     * Constructor, initializes the HMAC signer.
      *
-     * @param algorithm HMAC 算法（如 HS256、HS384、HS512）
-     * @param key       密钥（字节数组）
-     * @throws IllegalArgumentException 如果算法或密钥无效
+     * @param algorithm the HMAC algorithm (e.g., HS256, HS384, HS512)
+     * @param key       the secret key (byte array)
+     * @throws IllegalArgumentException if the algorithm or key is invalid
      */
     public HMacJWTSigner(final String algorithm, final byte[] key) {
-        // 初始化 HMAC 算法实例
+        // Initialize the HMAC algorithm instance
         this.hMac = new HMac(algorithm, key);
     }
 
     /**
-     * 构造函数，初始化 HMAC 签名器。
+     * Constructor, initializes the HMAC signer.
      *
-     * @param algorithm HMAC 算法（如 HS256、HS384、HS512）
-     * @param key       密钥（Java 安全密钥对象）
-     * @throws IllegalArgumentException 如果算法或密钥无效
+     * @param algorithm the HMAC algorithm (e.g., HS256, HS384, HS512)
+     * @param key       the secret key (Java security Key object)
+     * @throws IllegalArgumentException if the algorithm or key is invalid
      */
     public HMacJWTSigner(final String algorithm, final Key key) {
-        // 初始化 HMAC 算法实例
+        // Initialize the HMAC algorithm instance
         this.hMac = new HMac(algorithm, key);
     }
 
     /**
-     * 设置编码方式。
+     * Sets the character encoding.
      *
-     * @param charset 编码方式（如 UTF-8）
-     * @return 当前对象，支持链式调用
-     * @throws IllegalArgumentException 如果编码无效
+     * @param charset the character encoding (e.g., UTF-8)
+     * @return this object, supporting method chaining
+     * @throws IllegalArgumentException if the encoding is invalid
      */
     public HMacJWTSigner setCharset(final java.nio.charset.Charset charset) {
-        // 更新编码方式
+        // Update the character encoding
         this.charset = charset;
         return this;
     }
 
     /**
-     * 对 JWT 的 header 和 payload 进行 HMAC 签名。
+     * Performs HMAC signing on the JWT header and payload.
      * <p>
-     * 将 Base64 编码的 header 和 payload 拼接为 "header.payload" 格式， 使用 HMAC 算法生成 Base64 签名。
+     * Concatenates the Base64 encoded header and payload in "header.payload" format, generates a Base64 signature using
+     * the HMAC algorithm.
      * </p>
      *
-     * @param headerBase64  Base64 编码的 JWT header
-     * @param payloadBase64 Base64 编码的 JWT payload
-     * @return Base64 编码的签名
+     * @param headerBase64  Base64 encoded JWT header
+     * @param payloadBase64 Base64 encoded JWT payload
+     * @return the Base64 encoded signature
      */
     @Override
     public String sign(final String headerBase64, final String payloadBase64) {
-        // 拼接 header 和 payload，格式为 "header.payload"
+        // Concatenate header and payload in "header.payload" format
         String data = StringKit.format("{}.{}", headerBase64, payloadBase64);
-        // 使用 HMAC 算法生成 Base64 签名
+        // Generate Base64 signature using HMAC algorithm
         return hMac.digestBase64(data, charset, true);
     }
 
     /**
-     * 验证 JWT 签名。
+     * Verifies the JWT signature.
      * <p>
-     * 使用 HMAC 算法对 header 和 payload 重新生成签名，与提供的签名进行比较。
+     * Regenerates the signature for the header and payload using the HMAC algorithm and compares it with the provided
+     * signature.
      * </p>
      *
-     * @param headerBase64  Base64 编码的 JWT header
-     * @param payloadBase64 Base64 编码的 JWT payload
-     * @param signBase64    Base64 编码的签名
-     * @return 是否验证通过
+     * @param headerBase64  Base64 encoded JWT header
+     * @param payloadBase64 Base64 encoded JWT payload
+     * @param signBase64    Base64 encoded signature to be verified
+     * @return true if the verification passes, false otherwise
      */
     @Override
     public boolean verify(final String headerBase64, final String payloadBase64, final String signBase64) {
-        // 生成预期签名
+        // Generate the expected signature
         final String sign = sign(headerBase64, payloadBase64);
-        // 比较预期签名与提供的签名
+        // Compare the expected signature with the provided signature
         return hMac.verify(ByteKit.toBytes(sign, charset), ByteKit.toBytes(signBase64, charset));
     }
 
     /**
-     * 获取签名算法名称。
+     * Retrieves the name of the signing algorithm.
      *
-     * @return 算法名称（如 HS256、HS384、HS512）
+     * @return the algorithm name (e.g., HS256, HS384, HS512)
      */
     @Override
     public String getAlgorithm() {
-        // 返回 HMAC 算法名称
+        // Returns the HMAC algorithm name
         return this.hMac.getAlgorithm();
     }
 

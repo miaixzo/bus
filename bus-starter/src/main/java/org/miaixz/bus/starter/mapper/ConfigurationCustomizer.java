@@ -30,17 +30,22 @@ package org.miaixz.bus.starter.mapper;
 import org.apache.ibatis.session.Configuration;
 
 /**
- * 自定义自动配置生成的{@link Configuration}对象的回调接口
+ * A callback interface for customizing the MyBatis {@link Configuration} object that is auto-configured by this
+ * starter.
+ * <p>
+ * Beans of this type will be automatically detected and their {@link #customize(Configuration)} method will be called
+ * before the {@link org.apache.ibatis.session.SqlSessionFactory} is created.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
+@FunctionalInterface
 public interface ConfigurationCustomizer {
 
     /**
-     * 自定义给定的{@link Configuration}对象
+     * Customizes the given {@link Configuration} object.
      *
-     * @param configuration 要自定义的配置对象
+     * @param configuration The {@link Configuration} object to be customized.
      */
     void customize(Configuration configuration);
 

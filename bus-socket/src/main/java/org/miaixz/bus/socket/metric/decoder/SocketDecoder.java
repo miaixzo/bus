@@ -30,23 +30,33 @@ package org.miaixz.bus.socket.metric.decoder;
 import java.nio.ByteBuffer;
 
 /**
+ * Interface for socket decoders.
+ * <p>
+ * Implementations of this interface define how raw byte data from a socket stream is decoded into meaningful frames or
+ * messages.
+ * </p>
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
 public interface SocketDecoder {
 
     /**
-     * 解码算法
+     * Decodes bytes from the provided {@link ByteBuffer}.
+     * <p>
+     * This method should read from the {@code byteBuffer} and process the data according to the specific decoding
+     * algorithm implemented.
+     * </p>
      *
-     * @param byteBuffer
-     * @return
+     * @param byteBuffer the buffer containing the data to decode
+     * @return {@code true} if a complete frame or message has been decoded, {@code false} otherwise
      */
     boolean decode(ByteBuffer byteBuffer);
 
     /**
-     * 获取本次解析到的完整数据
+     * Retrieves the complete data that has been parsed in the current decoding cycle.
      *
-     * @return
+     * @return a {@link ByteBuffer} containing the fully decoded data
      */
     ByteBuffer getBuffer();
 

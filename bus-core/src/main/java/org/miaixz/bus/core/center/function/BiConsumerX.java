@@ -35,10 +35,10 @@ import java.util.stream.Stream;
 import org.miaixz.bus.core.xyz.ExceptionKit;
 
 /**
- * 可序列化的BiConsumer接口，支持异常抛出和多个消费者组合。
+ * A serializable {@link BiConsumer} interface that supports throwing exceptions and combining multiple consumers.
  *
- * @param <T> 第一个参数类型
- * @param <U> 第二个参数类型
+ * @param <T> The type of the first input argument to the operation.
+ * @param <U> The type of the second input argument to the operation.
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -46,12 +46,12 @@ import org.miaixz.bus.core.xyz.ExceptionKit;
 public interface BiConsumerX<T, U> extends BiConsumer<T, U>, Serializable {
 
     /**
-     * 组合多个BiConsumerX实例，按顺序执行。
+     * Combines multiple {@code BiConsumerX} instances to be executed in sequence.
      *
-     * @param consumers 要组合的BiConsumerX实例
-     * @param <T>       第一个参数类型
-     * @param <U>       第二个参数类型
-     * @return 组合后的BiConsumerX实例
+     * @param consumers An array of {@code BiConsumerX} instances to combine.
+     * @param <T>       The type of the first input argument.
+     * @param <U>       The type of the second input argument.
+     * @return A combined {@code BiConsumerX} instance that executes the given consumers in order.
      */
     @SafeVarargs
     static <T, U> BiConsumerX<T, U> multi(final BiConsumerX<T, U>... consumers) {
@@ -60,11 +60,11 @@ public interface BiConsumerX<T, U> extends BiConsumer<T, U>, Serializable {
     }
 
     /**
-     * 返回一个空操作的BiConsumerX，用于占位。
+     * Returns a no-operation {@code BiConsumerX} that does nothing.
      *
-     * @param <T> 第一个参数类型
-     * @param <U> 第二个参数类型
-     * @return 空操作的BiConsumerX实例
+     * @param <T> The type of the first input argument.
+     * @param <U> The type of the second input argument.
+     * @return A no-operation {@code BiConsumerX} instance.
      */
     static <T, U> BiConsumerX<T, U> nothing() {
         return (l, r) -> {
@@ -72,20 +72,21 @@ public interface BiConsumerX<T, U> extends BiConsumer<T, U>, Serializable {
     }
 
     /**
-     * 对给定的两个参数执行操作，可能抛出异常。
+     * Performs this operation on the given arguments, potentially throwing an exception.
      *
-     * @param t 第一个输入参数
-     * @param u 第二个输入参数
-     * @throws Throwable 可能抛出的异常
+     * @param t The first input argument.
+     * @param u The second input argument.
+     * @throws Throwable Any throwable exception that might occur during the operation.
      */
     void accepting(T t, U u) throws Throwable;
 
     /**
-     * 对给定的两个参数执行操作，自动处理异常。
+     * Performs this operation on the given arguments, automatically handling checked exceptions by wrapping them in a
+     * {@link RuntimeException}.
      *
-     * @param t 第一个输入参数
-     * @param u 第二个输入参数
-     * @throws RuntimeException 包装后的运行时异常
+     * @param t The first input argument.
+     * @param u The second input argument.
+     * @throws RuntimeException A wrapped runtime exception if a checked exception occurs.
      */
     @Override
     default void accept(final T t, final U u) {
@@ -97,11 +98,14 @@ public interface BiConsumerX<T, U> extends BiConsumer<T, U>, Serializable {
     }
 
     /**
-     * 返回一个组合的BiConsumerX，先执行当前操作，再执行after操作。
+     * Returns a composed {@code BiConsumerX} that performs, in sequence, this operation followed by the {@code after}
+     * operation. If performing either operation throws an exception, it is relayed to the caller of the composed
+     * operation. If performing this operation throws an exception, the {@code after} operation will not be performed.
      *
-     * @param after 在当前操作后执行的操作
-     * @return 组合后的BiConsumerX实例，按顺序执行当前操作和after操作
-     * @throws NullPointerException 如果after为null
+     * @param after The operation to perform after this operation.
+     * @return A composed {@code BiConsumerX} that performs in sequence this operation followed by the {@code after}
+     *         operation.
+     * @throws NullPointerException If {@code after} is {@code null}.
      */
     default BiConsumerX<T, U> andThen(final BiConsumerX<? super T, ? super U> after) {
         Objects.requireNonNull(after);

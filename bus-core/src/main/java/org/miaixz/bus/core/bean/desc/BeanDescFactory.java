@@ -34,10 +34,12 @@ import org.miaixz.bus.core.xyz.FieldKit;
 import org.miaixz.bus.core.xyz.RecordKit;
 
 /**
- * Bean描述信息工厂类 通过不同的类和策略，生成对应的{@link BeanDesc}，策略包括：
+ * A factory for creating {@link BeanDesc} instances. It caches descriptors and selects the appropriate {@code BeanDesc}
+ * implementation based on the class type:
  * <ul>
- * <li>当类为Record时，生成{@link RecordBeanDesc}</li>
- * <li>当类为普通Bean时，生成{@link StrictBeanDesc}</li>
+ * <li>For Java Records, it creates a {@link RecordBeanDesc}.</li>
+ * <li>For proxy classes or classes without fields, it falls back to a {@link SimpleBeanDesc}.</li>
+ * <li>For standard JavaBeans, it creates a {@link StrictBeanDesc}.</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -45,29 +47,34 @@ import org.miaixz.bus.core.xyz.RecordKit;
  */
 public class BeanDescFactory {
 
+    /**
+     * A weak concurrent map for caching {@code BeanDesc} instances.
+     */
     private static final WeakConcurrentMap<Class<?>, BeanDesc> Cache = new WeakConcurrentMap<>();
 
     /**
-     * 获取{@link BeanDesc} Bean描述信息，使用Weak缓存
+     * Gets a cached {@link BeanDesc} for the given class. If the descriptor is not in the cache, a new one is created
+     * and added.
      *
-     * @param clazz Bean类
-     * @return {@link BeanDesc}
+     * @param clazz The bean class.
+     * @return The {@link BeanDesc} for the class.
      */
     public static BeanDesc getBeanDesc(final Class<?> clazz) {
-        return Cache.computeIfAbsent(clazz, (key) -> getBeanDescWithoutCache(clazz));
+        return Cache.computeIfAbsent(clazz, BeanDescFactory::getBeanDescWithoutCache);
     }
 
     /**
-     * 获取{@link BeanDesc} Bean描述信息，不使用缓存
+     * Gets a new {@link BeanDesc} for the given class without using the cache. This method selects the appropriate
+     * descriptor implementation based on the class type.
      *
-     * @param clazz Bean类
-     * @return {@link BeanDesc}
+     * @param clazz The bean class.
+     * @return A new {@link BeanDesc} instance.
      */
     public static BeanDesc getBeanDescWithoutCache(final Class<?> clazz) {
         if (RecordKit.isRecord(clazz)) {
             return new RecordBeanDesc(clazz);
         } else if (JdkProxy.isProxyClass(clazz) || ArrayKit.isEmpty(FieldKit.getFields(clazz))) {
-            // 代理类和空字段的Bean不支持属性获取，直接使用方法方式
+            // Proxies and classes without fields are better handled by method-based descriptors.
             return new SimpleBeanDesc(clazz);
         } else {
             return new StrictBeanDesc(clazz);
@@ -75,7 +82,7 @@ public class BeanDescFactory {
     }
 
     /**
-     * 清空全局的Bean属性缓存
+     * Clears the global {@code BeanDesc} cache.
      */
     public static void clearCache() {
         Cache.clear();

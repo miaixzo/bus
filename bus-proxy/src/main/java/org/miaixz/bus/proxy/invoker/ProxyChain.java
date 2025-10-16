@@ -28,7 +28,8 @@
 package org.miaixz.bus.proxy.invoker;
 
 /**
- * 拦截层
+ * Represents a chain of interceptors for a method invocation. It extends {@link Invocation} with additional
+ * capabilities, such as accessing parameter names and proceeding with modified arguments.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -36,18 +37,19 @@ package org.miaixz.bus.proxy.invoker;
 public interface ProxyChain extends Invocation {
 
     /**
-     * 获取参数名称
+     * Gets the names of the method parameters. Note: This may not be available on all platforms or without specific
+     * compiler flags.
      *
-     * @return 参数
+     * @return An array of parameter names.
      */
     Object[] getNames();
 
     /**
-     * 执行方法
+     * Proceeds with the invocation, but with a new set of arguments.
      *
-     * @param arguments 参数
-     * @return 执行结果
-     * @throws Throwable Throwable
+     * @param arguments The new arguments to use for the method invocation.
+     * @return The result of the method invocation.
+     * @throws Throwable if the underlying method throws an exception.
      */
     Object proceed(Object[] arguments) throws Throwable;
 

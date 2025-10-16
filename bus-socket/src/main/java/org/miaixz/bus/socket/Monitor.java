@@ -30,9 +30,12 @@ package org.miaixz.bus.socket;
 import java.nio.channels.AsynchronousSocketChannel;
 
 /**
- * 网络监控器，提供通讯层面监控功能的接口
+ * Network monitor interface, providing communication-level monitoring capabilities.
  * <p>
- * 并未单独提供配置监控服务的接口，用户在使用时仅需在Handler实现类中同时实现当前Monitor接口即可。 在注册消息处理器时，若服务监测到该处理器同时实现了Monitor接口，则该监视器便会生效。
+ * This interface does not provide a separate configuration interface for monitoring services. Users only need to
+ * implement this {@code Monitor} interface in their {@code Handler} implementation. When registering a message
+ * processor, if the service detects that the processor also implements the {@code Monitor} interface, then this monitor
+ * will become active.
  * </p>
  * 
  * <pre>
@@ -41,7 +44,9 @@ import java.nio.channels.AsynchronousSocketChannel;
  * }
  * </pre>
  * 
- * 注意: 实现本接口时要关注acceptMonitor接口的返回值,如无特殊需求直接返回true，若返回false会拒绝本次连接。
+ * Note: When implementing this interface, pay attention to the return value of the {@code shouldAccept} method. If
+ * there are no special requirements, return {@code true} directly; otherwise, returning {@code false} will reject the
+ * connection.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -49,40 +54,41 @@ import java.nio.channels.AsynchronousSocketChannel;
 public interface Monitor {
 
     /**
-     * 监控已接收到的连接
+     * Monitors an incoming connection.
      *
-     * @param channel 当前已经建立连接的通道对象
-     * @return 非null:接受该连接,null:拒绝该连接
+     * @param channel the {@link AsynchronousSocketChannel} object for the newly established connection
+     * @return the {@link AsynchronousSocketChannel} if the connection should be accepted, or {@code null} if it should
+     *         be rejected
      */
     AsynchronousSocketChannel shouldAccept(AsynchronousSocketChannel channel);
 
     /**
-     * 监控触发本次读回调Session的已读数据字节数
+     * Monitors the number of bytes read by the session after a read callback is triggered.
      *
-     * @param session  当前执行read的Session对象
-     * @param readSize 已读数据长度
+     * @param session  the {@link Session} object currently performing the read operation
+     * @param readSize the number of bytes read
      */
     void afterRead(Session session, int readSize);
 
     /**
-     * 即将开始读取数据
+     * Called before data is read from the session.
      *
-     * @param session 当前会话对象
+     * @param session the current {@link Session} object
      */
     void beforeRead(Session session);
 
     /**
-     * 监控触发本次写回调session的已写数据字节数
+     * Monitors the number of bytes written by the session after a write callback is triggered.
      *
-     * @param session   本次执行write回调的Session对象
-     * @param writeSize 本次输出的数据长度
+     * @param session   the {@link Session} object currently performing the write callback
+     * @param writeSize the number of bytes written in this operation
      */
     void afterWrite(Session session, int writeSize);
 
     /**
-     * 即将开始写数据
+     * Called before data is written to the session.
      *
-     * @param session 当前会话对象
+     * @param session the current {@link Session} object
      */
     void beforeWrite(Session session);
 

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <profiles version="22">
     <profile kind="CodeFormatterProfile" name="Miaixz Java Formatter" version="22">
-        <!--可变参数的... Idea没有对应的配置项，强制insert-->
+        <!--Ellipsis for varargs, no corresponding setting in IntelliJ IDEA, enforce insert-->
         <setting id="org.eclipse.jdt.core.formatter.insert_space_after_ellipsis" value="insert"/>
-        <!--枚举值之间 Idea没有对应的配置项，强制insert-->
+        <!--Between enum values, no corresponding setting in IntelliJ IDEA, enforce insert-->
         <setting id="org.eclipse.jdt.core.formatter.insert_space_after_comma_in_enum_declarations" value="insert"/>
         <setting id="org.eclipse.jdt.core.formatter.insert_space_before_comma_in_allocation_expression"
                  value="do not insert"/>
@@ -14,7 +14,7 @@
         <setting id="org.eclipse.jdt.core.formatter.comment.insert_new_line_for_parameter" value="do not insert"/>
         <setting id="org.eclipse.jdt.core.formatter.insert_new_line_after_annotation_on_package" value="insert"/>
 
-        <!--IDEA不支持配置,do not insert-->
+        <!--No corresponding setting in IntelliJ IDEA, use do not insert-->
         <setting id="org.eclipse.jdt.core.formatter.insert_space_between_empty_parens_in_enum_constant"
                  value="do not insert"/>
         <setting id="org.eclipse.jdt.core.formatter.insert_space_before_closing_paren_in_while" value="do not insert"/>
@@ -36,13 +36,13 @@
                  value="insert"/>
         <setting id="org.eclipse.jdt.core.formatter.alignment_for_arguments_in_enum_constant" value="16"/>
 
-        <!--IDEA不支持配置，使用如下值，两者对应-->
+        <!--No corresponding setting in IntelliJ IDEA, use the following values for consistency-->
         <setting
                 id="org.eclipse.jdt.core.formatter.insert_space_after_opening_angle_bracket_in_parameterized_type_reference"
                 value="do not insert"/>
         <setting id="org.eclipse.jdt.core.formatter.comment.indent_root_tags" value="false"/>
 
-        <!--IDEA无配置项，Eclipse使用对应值即可-->
+        <!--No corresponding setting in IntelliJ IDEA, use Eclipse default values-->
         <setting id="org.eclipse.jdt.core.formatter.wrap_before_or_operator_multicatch" value="true"/>
         <setting id="org.eclipse.jdt.core.formatter.enabling_tag" value="@formatter:on"/>
         <setting id="org.eclipse.jdt.core.formatter.comment.count_line_length_from_starting_position" value="true"/>
@@ -56,7 +56,7 @@
                  value="insert"/>
         <setting id="org.eclipse.jdt.core.formatter.insert_space_after_prefix_operator" value="do not insert"/>
 
-        <!--IDEA使用了对应的配置：Java:SPACE_WITHIN_ARRAY_INITIALIZER_BRACES，感觉不太好，IDEA默认不插入，Eclipse使用插入-->
+        <!--IntelliJ IDEA uses the corresponding setting: Java:SPACE_WITHIN_ARRAY_INITIALIZER_BRACES, but it feels suboptimal, IntelliJ IDEA defaults to do not insert, Eclipse uses insert-->
         <setting id="org.eclipse.jdt.core.formatter.insert_space_before_closing_brace_in_array_initializer"
                  value="insert"/>
         <setting id="org.eclipse.jdt.core.formatter.insert_space_after_opening_angle_bracket_in_type_arguments"
@@ -75,7 +75,7 @@
         <setting id="org.eclipse.jdt.core.formatter.insert_space_between_empty_parens_in_method_invocation"
                  value="do not insert"/>
 
-        <!--下面两个对应IDEA中的一个配置Java:SPACE_AROUND_ASSIGNMENT_OPERATORS，使用insert-->
+        <!--The following two correspond to IntelliJ IDEA's Java:SPACE_AROUND_ASSIGNMENT_OPERATORS, use insert-->
         <setting id="org.eclipse.jdt.core.formatter.insert_space_after_assignment_operator" value="insert"/>
         <setting id="org.eclipse.jdt.core.formatter.insert_space_before_opening_brace_in_type_declaration"
                  value="insert"/>
@@ -119,7 +119,7 @@
         <setting id="org.eclipse.jdt.core.formatter.wrap_before_switch_case_arrow_operator" value="false"/>
         <setting id="org.eclipse.jdt.core.formatter.insert_space_after_comma_in_array_initializer" value="insert"/>
 
-        <!--下面两个对应IDEA中的一个配置Java:SPACE_AROUND_UNARY_OPERATOR，使用do not insert-->
+        <!--The following two correspond to IntelliJ IDEA's Java:SPACE_AROUND_UNARY_OPERATOR, use do not insert-->
         <setting id="org.eclipse.jdt.core.formatter.insert_space_before_unary_operator" value="do not insert"/>
         <setting id="org.eclipse.jdt.core.formatter.format_line_comment_starting_on_first_column" value="false"/>
         <setting id="org.eclipse.jdt.core.formatter.parentheses_positions_in_annotation" value="common_lines"/>
@@ -163,7 +163,7 @@
         <setting id="org.eclipse.jdt.core.formatter.insert_space_before_closing_paren_in_switch" value="do not insert"/>
         <setting id="org.eclipse.jdt.core.formatter.alignment_for_method_declaration" value="0"/>
 
-        <!--下面IDEA没有对应设置，使用对应值即可-->
+        <!--No corresponding setting in IntelliJ IDEA, use Eclipse default values-->
         <setting id="org.eclipse.jdt.core.formatter.align_fields_grouping_blank_lines" value="2147483647"/>
         <setting id="org.eclipse.jdt.core.formatter.comment.new_lines_at_javadoc_boundaries" value="true"/>
         <setting id="org.eclipse.jdt.core.formatter.alignment_for_bitwise_operator" value="16"/>
@@ -173,7 +173,7 @@
         <setting id="org.eclipse.jdt.core.formatter.alignment_for_resources_in_try" value="80"/>
         <setting id="org.eclipse.jdt.core.formatter.alignment_for_selector_in_method_invocation" value="16"/>
 
-        <!--下面的没有IDEA对应项，在代码里面对IDEA中使用默认值即可,LINE_COMMENT_AT_FIRST_COLUMN BLOCK_COMMENT_AT_FIRST_COLUMN设置为false-->
+        <!--No corresponding setting in IntelliJ IDEA, use default values in code, set LINE_COMMENT_AT_FIRST_COLUMN and BLOCK_COMMENT_AT_FIRST_COLUMN to false-->
         <setting id="org.eclipse.jdt.core.formatter.never_indent_block_comments_on_first_column" value="false"/>
         <setting id="org.eclipse.jdt.core.formatter.insert_space_after_opening_paren_in_synchronized"
                  value="do not insert"/>
@@ -234,7 +234,7 @@
         <setting id="org.eclipse.jdt.core.formatter.wrap_before_bitwise_operator" value="true"/>
         <setting id="org.eclipse.jdt.core.formatter.insert_space_after_opening_paren_in_try" value="do not insert"/>
 
-        <!--下面两个对应IDEA中的一个配置Java:SPACE_AROUND_LAMBDA_ARROW，使用insert-->
+        <!--The following two correspond to IntelliJ IDEA's Java:SPACE_AROUND_LAMBDA_ARROW, use insert-->
         <setting id="org.eclipse.jdt.core.formatter.insert_space_before_lambda_arrow" value="insert"/>
         <setting id="org.eclipse.jdt.core.formatter.insert_space_after_opening_paren_in_method_declaration"
                  value="do not insert"/>
@@ -309,7 +309,7 @@
         <setting id="org.eclipse.jdt.core.formatter.insert_space_before_comma_in_for_inits" value="do not insert"/>
         <setting id="org.eclipse.jdt.core.formatter.disabling_tag" value="@formatter:off"/>
 
-        <!--下面没有对应的IDEA设置，Eclipse先使用对应值-->
+        <!--No corresponding setting in IntelliJ IDEA, use Eclipse default values-->
         <setting id="org.eclipse.jdt.core.formatter.alignment_for_enum_constants" value="16"/>
         <setting id="org.eclipse.jdt.core.formatter.blank_lines_before_imports" value="1"/>
         <setting id="org.eclipse.jdt.core.formatter.number_of_blank_lines_at_end_of_method_body" value="0"/>
@@ -327,7 +327,7 @@
         <setting id="org.eclipse.jdt.core.formatter.never_indent_line_comments_on_first_column" value="false"/>
         <setting id="org.eclipse.jdt.core.formatter.insert_space_after_comma_in_for_inits" value="insert"/>
 
-        <!--下面IDEA没有对应设置，使用对应值即可-->
+        <!--No corresponding setting in IntelliJ IDEA, use default values-->
         <setting id="org.eclipse.jdt.core.formatter.indent_statements_compare_to_block" value="true"/>
         <setting id="org.eclipse.jdt.core.formatter.brace_position_for_anonymous_type_declaration" value="end_of_line"/>
         <setting id="org.eclipse.jdt.core.formatter.insert_space_before_question_in_wildcard" value="do not insert"/>
@@ -343,7 +343,7 @@
         <setting id="org.eclipse.jdt.core.formatter.keep_loop_body_block_on_one_line" value="one_line_never"/>
         <setting id="org.eclipse.jdt.core.formatter.insert_space_before_opening_brace_in_enum_constant" value="insert"/>
 
-        <!--统一为end_of_lint，IDEA默认一致-->
+        <!--Uniformly set to end_of_line, consistent with IntelliJ IDEA default-->
         <setting id="org.eclipse.jdt.core.formatter.brace_position_for_method_declaration" value="end_of_line"/>
         <setting id="org.eclipse.jdt.core.formatter.insert_space_after_colon_in_for" value="insert"/>
         <setting id="org.eclipse.jdt.core.formatter.keep_type_declaration_on_one_line" value="one_line_never"/>
@@ -354,7 +354,7 @@
         <setting id="org.eclipse.jdt.core.formatter.insert_space_before_relational_operator" value="insert"/>
         <setting id="org.eclipse.jdt.core.formatter.insert_space_after_comma_in_superinterfaces" value="insert"/>
         <setting id="org.eclipse.jdt.core.formatter.keep_record_declaration_on_one_line" value="one_line_never"/>
-        <!--IDEA不支持配置，默认do not insert-->
+        <!--No corresponding setting in IntelliJ IDEA, default to do not insert-->
         <setting id="org.eclipse.jdt.core.formatter.insert_space_before_colon_in_default" value="do not insert"/>
         <setting id="org.eclipse.jdt.core.formatter.insert_space_after_question_in_conditional" value="insert"/>
         <setting id="org.eclipse.jdt.core.formatter.brace_position_for_constructor_declaration" value="end_of_line"/>
@@ -373,7 +373,7 @@
         <setting id="org.eclipse.jdt.core.formatter.alignment_for_relational_operator" value="0"/>
         <setting id="org.eclipse.jdt.core.formatter.alignment_for_expressions_in_array_initializer" value="16"/>
         <setting id="org.eclipse.jdt.core.formatter.number_of_empty_lines_to_preserve" value="1"/>
-        <!--这个在Eclipse也没有找到配置的地方-->
+        <!--No corresponding setting found in Eclipse-->
         <setting id="org.eclipse.jdt.core.formatter.insert_space_after_colon_in_case" value="insert"/>
         <setting id="org.eclipse.jdt.core.formatter.insert_space_after_additive_operator" value="insert"/>
         <setting id="org.eclipse.jdt.core.formatter.insert_space_before_closing_paren_in_if" value="do not insert"/>
@@ -422,7 +422,7 @@
         <setting id="org.eclipse.jdt.core.formatter.insert_space_after_opening_paren_in_record_declaration" value="do not insert"/>
         <setting id="org.eclipse.jdt.core.formatter.alignment_for_superinterfaces_in_enum_declaration" value="16"/>
 
-        <!--ASSIGNMENT_WRAP 需要设置为 WRAP_AS_NEEDED  WRAP_AS_NEEDED . Add in jdt.core-3.12，it's not work in previous version -->
+        <!--ASSIGNMENT_WRAP needs to be set to WRAP_AS_NEEDED. Added in jdt.core-3.12, not functional in previous versions-->
         <setting id="org.eclipse.jdt.core.formatter.wrap_before_assignment_operator" value="false"/>
         <setting id="org.eclipse.jdt.core.formatter.insert_space_before_colon_in_labeled_statement" value="do not insert"/>
         <setting id="org.eclipse.jdt.core.formatter.brace_position_for_switch" value="end_of_line"/>
@@ -455,7 +455,7 @@
         <setting id="org.eclipse.jdt.core.formatter.insert_space_before_opening_angle_bracket_in_type_arguments" value="do not insert"/>
         <setting id="org.eclipse.jdt.core.formatter.insert_space_after_opening_paren_in_cast" value="do not insert"/>
 
-        <!--IDEA无对应设置，所以关闭对block comment的格式化 -->
+        <!--No corresponding setting in IntelliJ IDEA, so disable block comment formatting-->
         <setting id="org.eclipse.jdt.core.formatter.comment.format_block_comments" value="true"/>
         <setting id="org.eclipse.jdt.core.formatter.alignment_for_parameters_in_method_declaration" value="48"/>
         <setting id="org.eclipse.jdt.core.formatter.insert_space_after_comma_in_method_declaration_throws" value="insert"/>
@@ -474,7 +474,7 @@
         <setting id="org.eclipse.jdt.core.formatter.keep_enum_declaration_on_one_line" value="one_line_never"/>
         <setting id="org.eclipse.jdt.core.formatter.insert_space_before_opening_paren_in_method_declaration" value="do not insert"/>
 
-        <!--Java:CLASS_BRACE_STYLE，统一使用end_of_line -->
+        <!--Java:CLASS_BRACE_STYLE, uniformly use end_of_line-->
         <setting id="org.eclipse.jdt.core.formatter.brace_position_for_enum_constant" value="end_of_line"/>
         <setting id="org.eclipse.jdt.core.formatter.brace_position_for_type_declaration" value="end_of_line"/>
         <setting id="org.eclipse.jdt.core.formatter.insert_space_before_multiplicative_operator" value="insert"/>
@@ -490,7 +490,7 @@
         <setting id="org.eclipse.jdt.core.formatter.insert_space_before_closing_angle_bracket_in_type_parameters" value="do not insert"/>
         <setting id="org.eclipse.jdt.core.formatter.insert_space_before_question_in_conditional" value="insert"/>
 
-        <!--和IDEA保持一致，注释换行-->
+        <!--Consistent with IntelliJ IDEA, comments wrap to new line-->
         <setting id="org.eclipse.jdt.core.formatter.comment.indent_parameter_description" value="false"/>
         <setting id="org.eclipse.jdt.core.formatter.number_of_blank_lines_at_beginning_of_code_block" value="0"/>
         <setting id="org.eclipse.jdt.core.formatter.insert_new_line_before_finally_in_try_statement" value="do not insert"/>

@@ -42,13 +42,17 @@ import net.sf.jsqlparser.parser.ParseException;
 import net.sf.jsqlparser.statement.Statement;
 
 /**
- * 公共方法
+ * Utility class for common operations related to pagination, such as SQL parsing and instance creation.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class Builder {
 
+    /**
+     * The SQL parser instance used for parsing SQL statements. It is initialized via ServiceLoader or defaults to
+     * {@link SqlParser#DEFAULT}.
+     */
     private static final SqlParser SQL_PARSER;
 
     static {
@@ -64,6 +68,13 @@ public class Builder {
         SQL_PARSER = temp;
     }
 
+    /**
+     * Parses a SQL statement string into a {@link Statement} object.
+     *
+     * @param statementReader the SQL statement string to parse
+     * @return the parsed Statement object
+     * @throws RuntimeException if a {@link JSQLParserException} or {@link ParseException} occurs during parsing
+     */
     public static Statement parse(String statementReader) {
         try {
             return SQL_PARSER.parse(statementReader);
@@ -73,12 +84,15 @@ public class Builder {
     }
 
     /**
-     * 支持配置和SPI，优先级：配置类 > SPI > 默认值
+     * Creates a new instance of a class, supporting configuration and Service Provider Interface (SPI). The priority
+     * for instance creation is: configured class > SPI > default value.
      *
-     * @param classStr        配置串，可空
-     * @param spi             SPI 接口
-     * @param properties      配置属性
-     * @param defaultSupplier 默认值
+     * @param classStr        the fully qualified class name string, can be null or empty
+     * @param spi             the SPI interface class
+     * @param properties      the properties to set on the instance if it implements {@link Property}
+     * @param defaultSupplier a supplier for the default instance if no other instance can be created
+     * @param <T>             the type of the instance to create
+     * @return a new instance of the specified type
      */
     public static <T> T newInstance(String classStr, Class<T> spi, Properties properties, Supplier<T> defaultSupplier) {
         if (StringKit.isNotEmpty(classStr)) {
@@ -105,6 +119,15 @@ public class Builder {
         return result;
     }
 
+    /**
+     * Creates a new instance of a class from its fully qualified name.
+     *
+     * @param classStr   the fully qualified class name string
+     * @param properties the properties to set on the instance if it implements {@link Property}
+     * @param <T>        the type of the instance to create
+     * @return a new instance of the specified type
+     * @throws PageException if an error occurs during instance creation
+     */
     public static <T> T newInstance(String classStr, Properties properties) {
         try {
             Class<?> cls = Class.forName(classStr);
@@ -114,6 +137,15 @@ public class Builder {
         }
     }
 
+    /**
+     * Creates a new instance of a class from its {@link Class} object.
+     *
+     * @param cls        the {@link Class} object of the type to instantiate
+     * @param properties the properties to set on the instance if it implements {@link Property}
+     * @param <T>        the type of the instance to create
+     * @return a new instance of the specified type
+     * @throws PageException if an error occurs during instance creation
+     */
     public static <T> T newInstance(Class<T> cls, Properties properties) {
         try {
             T instance = cls.newInstance();
@@ -127,7 +159,10 @@ public class Builder {
     }
 
     /**
-     * 当前方法堆栈信息
+     * Retrieves the current method stack trace information. This can be used to debug where a {@link Page} object was
+     * created.
+     *
+     * @return a string containing the current stack trace information
      */
     public static String current() {
         Exception exception = new Exception("Stack information when setting pagination parameters");

@@ -39,7 +39,7 @@ import com.google.zxing.BarcodeFormat;
 import com.google.zxing.common.BitMatrix;
 
 /**
- * 二维码图片渲染器
+ * QR code image renderer.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -50,10 +50,10 @@ public class ImageRender implements BitMatrixRender {
     private final String imageType;
 
     /**
-     * 构造
+     * Constructs an {@code ImageRender} with the specified QR code configuration and image type.
      *
-     * @param config    二维码配置
-     * @param imageType 图片类型
+     * @param config    The QR code configuration.
+     * @param imageType The type of the image (e.g., "png", "jpg").
      */
     public ImageRender(final QrConfig config, final String imageType) {
         this.config = config;
@@ -72,10 +72,10 @@ public class ImageRender implements BitMatrixRender {
     }
 
     /**
-     * 渲染
+     * Renders the given {@link BitMatrix} into a {@link BufferedImage}.
      *
-     * @param matrix 二维码矩阵
-     * @return 图片
+     * @param matrix The {@link BitMatrix} representing the QR code.
+     * @return The rendered {@link BufferedImage}.
      */
     public BufferedImage render(final BitMatrix matrix) {
         final BufferedImage image = getBufferedImage(matrix);
@@ -88,10 +88,10 @@ public class ImageRender implements BitMatrixRender {
     }
 
     /**
-     * 获取图片
+     * Retrieves a {@link BufferedImage} from the given {@link BitMatrix}.
      *
-     * @param matrix 二维码矩阵
-     * @return 图片
+     * @param matrix The {@link BitMatrix} to convert.
+     * @return The {@link BufferedImage} representation of the {@link BitMatrix}.
      */
     private BufferedImage getBufferedImage(final BitMatrix matrix) {
         final BufferedImage image = new BufferedImage(matrix.getWidth(), matrix.getHeight(),
@@ -114,18 +114,18 @@ public class ImageRender implements BitMatrixRender {
     }
 
     /**
-     * 贴图
+     * Presses a logo image onto the QR code image.
      *
-     * @param image   二维码图片
-     * @param logoImg logo图片
+     * @param image   The QR code image onto which the logo will be pressed.
+     * @param logoImg The logo image to press.
      */
     private void pressLogo(final BufferedImage image, final Image logoImg) {
-        // 只有二维码可以贴图
+        // Only QR codes can have logos pressed onto them
         final int qrWidth = image.getWidth();
         final int qrHeight = image.getHeight();
         final int imgWidth;
         final int imgHeight;
-        // 按照最短的边做比例缩放
+        // Scale proportionally based on the shortest side
         if (qrWidth < qrHeight) {
             imgWidth = qrWidth / config.getRatio();
             imgHeight = logoImg.getHeight(null) * imgWidth / logoImg.getWidth(null);
@@ -134,11 +134,11 @@ public class ImageRender implements BitMatrixRender {
             imgWidth = logoImg.getWidth(null) * imgHeight / logoImg.getHeight(null);
         }
 
-        // 原图片上直接绘制水印
+        // Draw watermark directly on the original image
         Images.from(image).pressImage(//
-                Images.from(logoImg).round(config.getImgRound()).getImg(), // 圆角
-                new Rectangle(imgWidth, imgHeight), // 位置
-                1// 不透明
+                Images.from(logoImg).round(config.getImgRound()).getImg(), // Rounded corners
+                new Rectangle(imgWidth, imgHeight), // Position
+                1// Opacity
         );
     }
 

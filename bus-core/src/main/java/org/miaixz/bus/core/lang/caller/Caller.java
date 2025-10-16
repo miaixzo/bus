@@ -30,7 +30,8 @@ package org.miaixz.bus.core.lang.caller;
 import org.miaixz.bus.core.xyz.CallerKit;
 
 /**
- * 调用者接口 可以通过此接口的实现类方法获取调用者、多级调用者以及判断是否被调用
+ * Interface for obtaining caller information. Implementations of this interface provide methods to retrieve the calling
+ * class, multi-level callers, and check if a specific class is in the call stack.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,39 +39,45 @@ import org.miaixz.bus.core.xyz.CallerKit;
 public interface Caller {
 
     /**
-     * 获得调用者
+     * Retrieves the immediate calling class.
      *
-     * @return 调用者
+     * @return The {@link Class} object representing the immediate caller.
      */
     Class<?> getCaller();
 
     /**
-     * 获得调用者的调用者
+     * Retrieves the caller of the immediate caller. This typically represents the class that invoked the method
+     * containing the call to {@code getCaller()}.
      *
-     * @return 调用者的调用者
+     * @return The {@link Class} object representing the caller's caller.
      */
     Class<?> getCallers();
 
     /**
-     * 获得调用者，指定第几级调用者 调用者层级关系：
+     * Retrieves the calling class at a specific depth in the call stack. The depth is relative to the {@link CallerKit}
+     * class itself.
      *
+     * <p>
+     * Call stack depth explanation:
+     * 
      * <pre>
-     * 0 {@link CallerKit}
-     * 1 调用{@link CallerKit}中方法的类
-     * 2 调用者的调用者
-     * ...
+     * 0: {@link CallerKit} itself
+     * 1: The class that calls a method within {@link CallerKit}
+     * 2: The caller of the class at depth 1
+     * ... and so on.
      * </pre>
      *
-     * @param depth 层级。0表示{@link CallerKit}本身，1表示调用{@link CallerKit}的类，2表示调用者的调用者，依次类推
-     * @return 第几级调用者
+     * @param depth The depth in the call stack. 0 for {@link CallerKit} itself, 1 for the class calling
+     *              {@link CallerKit}, 2 for the caller's caller, and so forth.
+     * @return The {@link Class} object at the specified call stack depth.
      */
     Class<?> getCaller(int depth);
 
     /**
-     * 是否被指定类调用
+     * Checks if the current method is called by a specific class.
      *
-     * @param clazz 调用者类
-     * @return 是否被调用
+     * @param clazz The {@link Class} object to check against the call stack.
+     * @return {@code true} if the current method is called by the specified class, {@code false} otherwise.
      */
     boolean isCalledBy(Class<?> clazz);
 

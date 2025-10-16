@@ -35,7 +35,9 @@ import java.lang.annotation.Target;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 注解: 将类或方法标记为异步
+ * Marks a method or all public methods in a class to be executed asynchronously. When a method is annotated with
+ * {@code @Async}, the framework will typically execute it in a separate thread, allowing the caller to proceed without
+ * waiting for the method to complete.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -45,15 +47,18 @@ import org.miaixz.bus.core.xyz.StringKit;
 public @interface Async {
 
     /**
-     * 当一个“public void”方法被注释为“@Async”时, 框架会通过添加一个新方法作为原始方法的副本(名称) 来增强类是调用原始方法的结果
+     * An internal utility class used by the framework to generate a unique name for the asynchronous method that wraps
+     * the original annotated method. When a {@code public void} method is annotated with {@code @Async}, the framework
+     * enhances the class by adding a new method that invokes the original. This class provides the naming convention
+     * for that new method.
      */
     class MethodNameTransformer {
 
         /**
-         * 根据给定名称返回新异步方法的名称
+         * Transforms the name of the original method into a new name for its asynchronous counterpart.
          *
-         * @param methodName 原始方法名
-         * @return 与原始方法配对的异步方法的名称
+         * @param methodName The name of the original method.
+         * @return The name of the asynchronous method that will be paired with the original.
          */
         public static String transform(String methodName) {
             return StringKit.concat(true, new String[] { "__act_", methodName, "_async" });

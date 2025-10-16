@@ -23,10 +23,13 @@
  ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Lucene-analysis分词抽象封装 项目地址：https://github.com/apache/lucene-solr/tree/master/lucene/analysis
+ * Provides an abstract wrapper for Lucene-analysis based word segmentation engines. This package contains classes that
+ * integrate with Lucene's analysis modules, adapting their functionalities to the common NLP interfaces. Project
+ * homepage: <a href=
+ * "https://github.com/apache/lucene-solr/tree/master/lucene/analysis">https://github.com/apache/lucene-solr/tree/master/lucene/analysis</a>
  *
  * @author Kimi Liu
  * @since Java 17+

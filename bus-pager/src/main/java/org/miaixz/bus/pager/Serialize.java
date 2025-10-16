@@ -32,37 +32,42 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * 分页信息类，用于存储分页查询的结果集和总记录数，支持序列化。
+ * Paging information class used to store the result set and total number of records for a paginated query. This class
+ * supports serialization.
  *
- * @param <T> 分页数据元素类型
+ * @param <T> the type of elements in the paginated data
  * @author Kimi Liu
  * @since Java 17+
  */
 public class Serialize<T> implements Serializable {
 
+    /**
+     * The serial version UID for serialization.
+     */
     @Serial
     private static final long serialVersionUID = 2852290178259L;
 
     /**
-     * 总记录数
+     * The total number of records.
      */
     protected long total;
     /**
-     * 分页结果集
+     * The paginated result set.
      */
     protected List<T> list;
 
     /**
-     * 默认构造函数。
+     * Default constructor for Serialize.
      */
     public Serialize() {
 
     }
 
     /**
-     * 构造函数，基于结果集初始化。
+     * Constructs a Serialize object based on a given list of results. If the list is an instance of {@link Page}, the
+     * total will be retrieved from it; otherwise, the total will be the size of the list.
      *
-     * @param list 分页结果列表
+     * @param list the list of paginated results
      */
     public Serialize(List<? extends T> list) {
         this.list = (List<T>) list;
@@ -74,56 +79,56 @@ public class Serialize<T> implements Serializable {
     }
 
     /**
-     * 静态工厂方法，创建Serialize对象。
+     * Static factory method to create a Serialize object.
      *
-     * @param list 分页结果列表
-     * @param <T>  分页数据元素类型
-     * @return Serialize对象
+     * @param list the list of paginated results
+     * @param <T>  the type of elements in the paginated data
+     * @return a new Serialize object
      */
     public static <T> Serialize<T> of(List<? extends T> list) {
         return new Serialize<>(list);
     }
 
     /**
-     * 获取总记录数。
+     * Retrieves the total number of records.
      *
-     * @return 总记录数
+     * @return the total number of records
      */
     public long getTotal() {
         return total;
     }
 
     /**
-     * 设置总记录数。
+     * Sets the total number of records.
      *
-     * @param total 总记录数
+     * @param total the total number of records to set
      */
     public void setTotal(long total) {
         this.total = total;
     }
 
     /**
-     * 获取分页结果集。
+     * Retrieves the paginated result set.
      *
-     * @return 分页结果列表
+     * @return the list of paginated results
      */
     public List<T> getList() {
         return list;
     }
 
     /**
-     * 设置分页结果集。
+     * Sets the paginated result set.
      *
-     * @param list 分页结果列表
+     * @param list the list of paginated results to set
      */
     public void setList(List<T> list) {
         this.list = list;
     }
 
     /**
-     * 返回Serialize对象的字符串表示。
+     * Returns a string representation of the Serialize object.
      *
-     * @return 字符串表示
+     * @return a string representation of the object
      */
     @Override
     public String toString() {

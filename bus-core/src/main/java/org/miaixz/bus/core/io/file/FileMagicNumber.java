@@ -36,7 +36,10 @@ import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 
 /**
- * 文件类型魔数封装
+ * Encapsulation of file type magic numbers.
+ * <p>
+ * This enum class identifies file types based on file magic numbers (header byte sequences). Each enum constant
+ * represents a file type and implements matching logic.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,7 +47,7 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 public enum FileMagicNumber {
 
     /**
-     * 未知类型
+     * Unknown type.
      */
     UNKNOWN(null, null) {
 
@@ -54,8 +57,8 @@ public enum FileMagicNumber {
         }
     },
     /**
-     * jpeg
-     * 
+     * JPEG image format.
+     *
      * <pre>
      *     prefix：FFD8FF
      * </pre>
@@ -69,8 +72,8 @@ public enum FileMagicNumber {
         }
     },
     /**
-     * jxr
-     * 
+     * JXR image format.
+     *
      * <pre>
      *     prefix：4949BC
      * </pre>
@@ -85,10 +88,10 @@ public enum FileMagicNumber {
         }
     },
     /**
-     * apng
-     * 
+     * APNG image format.
+     *
      * <pre>
-     *     prefix 8位：89504E47 0D0A1A0A
+     *     prefix 8 bits：89504E47 0D0A1A0A
      * </pre>
      */
     APNG("image/apng", "apng") {
@@ -129,8 +132,8 @@ public enum FileMagicNumber {
         }
     },
     /**
-     * png
-     * 
+     * PNG image format.
+     *
      * <pre>
      *     prefix: 89504E47
      * </pre>
@@ -143,8 +146,8 @@ public enum FileMagicNumber {
         }
     },
     /**
-     * gif
-     * 
+     * GIF image format.
+     *
      * <pre>
      *     prefix: 474946
      * </pre>
@@ -157,8 +160,8 @@ public enum FileMagicNumber {
         }
     },
     /**
-     * bmp
-     * 
+     * BMP image format.
+     *
      * <pre>
      *     prefix: 424D
      * </pre>
@@ -171,8 +174,8 @@ public enum FileMagicNumber {
         }
     },
     /**
-     * tiff
-     * 
+     * TIFF image format.
+     *
      * <pre>
      *     prefix: 49492A00 or 4D4D002A
      * </pre>
@@ -186,8 +189,8 @@ public enum FileMagicNumber {
         }
     },
     /**
-     * dwg
-     * 
+     * DWG image format.
+     *
      * <pre>
      *     prefix: 41433130
      * </pre>
@@ -200,8 +203,8 @@ public enum FileMagicNumber {
         }
     },
     /**
-     * webp
-     * 
+     * WEBP image format.
+     *
      * <pre>
      *     [8:11]: 57454250
      * </pre>
@@ -214,8 +217,8 @@ public enum FileMagicNumber {
         }
     },
     /**
-     * psd
-     * 
+     * PSD image format.
+     *
      * <pre>
      *     prefix: 38425053
      * </pre>
@@ -228,8 +231,8 @@ public enum FileMagicNumber {
         }
     },
     /**
-     * icon
-     * 
+     * ICO image format.
+     *
      * <pre>
      *     prefix: 00000100
      * </pre>
@@ -242,8 +245,8 @@ public enum FileMagicNumber {
         }
     },
     /**
-     * xcf
-     * 
+     * XCF image format.
+     *
      * <pre>
      *     prefix: 67696D70 20786366 2076
      * </pre>
@@ -268,8 +271,8 @@ public enum FileMagicNumber {
     },
 
     /**
-     * wav
-     * 
+     * WAV audio format.
+     *
      * <pre>
      *     prefix: 52494646
      *     [8:11]: 57415645
@@ -284,8 +287,8 @@ public enum FileMagicNumber {
         }
     },
     /**
-     * midi
-     * 
+     * MIDI audio format.
+     *
      * <pre>
      *     prefix: 4D546864
      * </pre>
@@ -298,8 +301,8 @@ public enum FileMagicNumber {
         }
     },
     /**
-     * mpeg-mp3
-     * 
+     * MP3 audio format.
+     *
      * <pre>
      *     prefix: 494433 or FFFB or FFF3 or FFF2
      * </pre>
@@ -315,8 +318,8 @@ public enum FileMagicNumber {
         }
     },
     /**
-     * ogg
-     * 
+     * OGG audio format.
+     *
      * <pre>
      *     prefix: 4F676753
      * </pre>
@@ -329,8 +332,8 @@ public enum FileMagicNumber {
         }
     },
     /**
-     * flac
-     * 
+     * FLAC audio format.
+     *
      * <pre>
      *    prefix: 664C6143
      * </pre>
@@ -343,7 +346,7 @@ public enum FileMagicNumber {
         }
     },
     /**
-     * mp4
+     * M4A audio format.
      */
     M4A("audio/mp4", "m4a") {
 
@@ -358,7 +361,7 @@ public enum FileMagicNumber {
         }
     },
     /**
-     * aac
+     * AAC audio format.
      */
     AAC("audio/aac", "aac") {
 
@@ -373,7 +376,7 @@ public enum FileMagicNumber {
         }
     },
     /**
-     * amr
+     * AMR audio format.
      */
     AMR("audio/amr", "amr") {
 
@@ -398,7 +401,7 @@ public enum FileMagicNumber {
         }
     },
     /**
-     * ac3
+     * AC3 audio format.
      */
     AC3("audio/ac3", "ac3") {
 
@@ -408,7 +411,7 @@ public enum FileMagicNumber {
         }
     },
     /**
-     * aiff
+     * AIFF audio format.
      */
     AIFF("audio/x-aiff", "aiff") {
 
@@ -423,7 +426,7 @@ public enum FileMagicNumber {
     },
 
     /**
-     * woff The existing registration "application/font-woff" is deprecated in favor of "font/woff".
+     * WOFF font format. The existing registration "application/font-woff" is deprecated in favor of "font/woff".
      */
     WOFF("font/woff", "woff") {
 
@@ -444,7 +447,7 @@ public enum FileMagicNumber {
         }
     },
     /**
-     * woff2
+     * WOFF2 font format.
      */
     WOFF2("font/woff2", "woff2") {
 
@@ -465,7 +468,7 @@ public enum FileMagicNumber {
         }
     },
     /**
-     * ttf
+     * TTF font format.
      */
     TTF("font/ttf", "ttf") {
 
@@ -477,7 +480,7 @@ public enum FileMagicNumber {
         }
     },
     /**
-     * otf
+     * OTF font format.
      */
     OTF("font/otf", "otf") {
 
@@ -490,7 +493,7 @@ public enum FileMagicNumber {
     },
 
     /**
-     * epub
+     * EPUB format.
      */
     EPUB("application/epub+zip", "epub") {
 
@@ -515,7 +518,7 @@ public enum FileMagicNumber {
         }
     },
     /**
-     * zip
+     * ZIP archive format.
      */
     ZIP("application/zip", "zip") {
 
@@ -533,7 +536,7 @@ public enum FileMagicNumber {
         }
     },
     /**
-     * tar
+     * TAR archive format.
      */
     TAR("application/x-tar", "tar") {
 
@@ -545,7 +548,7 @@ public enum FileMagicNumber {
         }
     },
     /**
-     * rar
+     * RAR archive format.
      */
     RAR("application/x-rar-compressed", "rar") {
 
@@ -558,7 +561,7 @@ public enum FileMagicNumber {
         }
     },
     /**
-     * gz
+     * GZ archive format.
      */
     GZ("application/gzip", "gz") {
 
@@ -569,7 +572,7 @@ public enum FileMagicNumber {
         }
     },
     /**
-     * bz2
+     * BZ2 archive format.
      */
     BZ2("application/x-bzip2", "bz2") {
 
@@ -580,7 +583,7 @@ public enum FileMagicNumber {
         }
     },
     /**
-     * 7z
+     * 7Z archive format.
      */
     SevenZ("application/x-7z-compressed", "7z") {
 
@@ -593,16 +596,16 @@ public enum FileMagicNumber {
         }
     },
     /**
-     * pdf
+     * PDF format.
      */
     PDF("application/pdf", "pdf") {
 
         @Override
         public boolean match(byte[] bytes) {
-            // 去除bom头并且跳过三个字节
+            // Remove BOM header if present and skip three bytes
             if (bytes.length > 3 && Objects.equals(bytes[0], (byte) 0xEF) && Objects.equals(bytes[1], (byte) 0xBB)
                     && Objects.equals(bytes[2], (byte) 0xBF)) {
-                // UTF8 Bom
+                // UTF8 BOM
                 bytes = Arrays.copyOfRange(bytes, 3, bytes.length);
             }
             return bytes.length > 3 && Objects.equals(bytes[0], (byte) 0x25) && Objects.equals(bytes[1], (byte) 0x50)
@@ -610,7 +613,7 @@ public enum FileMagicNumber {
         }
     },
     /**
-     * exe
+     * EXE executable format.
      */
     EXE("application/x-msdownload", "exe") {
 
@@ -620,7 +623,7 @@ public enum FileMagicNumber {
         }
     },
     /**
-     * swf
+     * SWF format.
      */
     SWF("application/x-shockwave-flash", "swf") {
 
@@ -631,7 +634,7 @@ public enum FileMagicNumber {
         }
     },
     /**
-     * rtf
+     * RTF format.
      */
     RTF("application/rtf", "rtf") {
 
@@ -643,7 +646,7 @@ public enum FileMagicNumber {
         }
     },
     /**
-     * nes
+     * NES ROM format.
      */
     NES("application/x-nintendo-nes-rom", "nes") {
 
@@ -654,7 +657,7 @@ public enum FileMagicNumber {
         }
     },
     /**
-     * crx
+     * CRX format.
      */
     CRX("application/x-google-chrome-extension", "crx") {
 
@@ -665,7 +668,7 @@ public enum FileMagicNumber {
         }
     },
     /**
-     * cab
+     * CAB format.
      */
     CAB("application/vnd.ms-cab-compressed", "cab") {
 
@@ -682,7 +685,7 @@ public enum FileMagicNumber {
         }
     },
     /**
-     * ps
+     * PS format.
      */
     PS("application/postscript", "ps") {
 
@@ -692,19 +695,19 @@ public enum FileMagicNumber {
         }
     },
     /**
-     * xz
+     * XZ archive format.
      */
     XZ("application/x-xz", "xz") {
 
         @Override
         public boolean match(final byte[] bytes) {
             return bytes.length > 5 && Objects.equals(bytes[0], (byte) 0xFD) && Objects.equals(bytes[1], (byte) 0x37)
-                    && Objects.equals(bytes[2], (byte) 0x7A) && Objects.equals(bytes[3], (byte) 0x58)
+                    && Objects.equals(bytes[2], (byte) 0x7a) && Objects.equals(bytes[3], (byte) 0x58)
                     && Objects.equals(bytes[4], (byte) 0x5A) && Objects.equals(bytes[5], (byte) 0x00);
         }
     },
     /**
-     * sqlite
+     * SQLITE format.
      */
     SQLITE("application/x-sqlite3", "sqlite") {
 
@@ -721,7 +724,7 @@ public enum FileMagicNumber {
         }
     },
     /**
-     * deb
+     * DEB format.
      */
     DEB("application/x-deb", "deb") {
 
@@ -741,7 +744,7 @@ public enum FileMagicNumber {
         }
     },
     /**
-     * ar
+     * AR archive format.
      */
     AR("application/x-unix-archive", "ar") {
 
@@ -754,7 +757,7 @@ public enum FileMagicNumber {
         }
     },
     /**
-     * lzo
+     * LZOP format.
      */
     LZOP("application/x-lzop", "lzo") {
 
@@ -767,7 +770,7 @@ public enum FileMagicNumber {
         }
     },
     /**
-     * lz
+     * LZ format.
      */
     LZ("application/x-lzip", "lz") {
 
@@ -778,7 +781,7 @@ public enum FileMagicNumber {
         }
     },
     /**
-     * elf
+     * ELF executable format.
      */
     ELF("application/x-executable", "elf") {
 
@@ -789,7 +792,7 @@ public enum FileMagicNumber {
         }
     },
     /**
-     * lz4
+     * LZ4 format.
      */
     LZ4("application/x-lz4", "lz4") {
 
@@ -800,7 +803,8 @@ public enum FileMagicNumber {
         }
     },
     /**
-     * br https://github.com/madler/brotli/blob/master/br-format-v3.txt,brotli 没有固定的file magic number,所以此处只是参考
+     * BR format. Reference: https://github.com/madler/brotli/blob/master/br-format-v3.txt, brotli does not have a fixed
+     * file magic number, so this is just a reference.
      */
     BR("application/x-brotli", "br") {
 
@@ -811,7 +815,7 @@ public enum FileMagicNumber {
         }
     },
     /**
-     * dcm
+     * DCM format.
      */
     DCM("application/x-dicom", "dcm") {
 
@@ -823,7 +827,7 @@ public enum FileMagicNumber {
         }
     },
     /**
-     * rpm
+     * RPM format.
      */
     RPM("application/x-rpm", "rpm") {
 
@@ -834,7 +838,7 @@ public enum FileMagicNumber {
         }
     },
     /**
-     * zst
+     * ZSTD format.
      */
     ZSTD("application/x-zstd", "zst") {
 
@@ -859,7 +863,7 @@ public enum FileMagicNumber {
     },
 
     /**
-     * mp4
+     * MP4 video format.
      */
     MP4("video/mp4", "mp4") {
 
@@ -880,7 +884,7 @@ public enum FileMagicNumber {
         }
     },
     /**
-     * avi
+     * AVI video format.
      */
     AVI("video/x-msvideo", "avi") {
 
@@ -893,7 +897,7 @@ public enum FileMagicNumber {
         }
     },
     /**
-     * wmv
+     * WMV video format.
      */
     WMV("video/x-ms-wmv", "wmv") {
 
@@ -907,7 +911,7 @@ public enum FileMagicNumber {
         }
     },
     /**
-     * m4v
+     * M4V video format.
      */
     M4V("video/x-m4v", "m4v") {
 
@@ -928,7 +932,7 @@ public enum FileMagicNumber {
         }
     },
     /**
-     * flv
+     * FLV video format.
      */
     FLV("video/x-flv", "flv") {
 
@@ -939,7 +943,7 @@ public enum FileMagicNumber {
         }
     },
     /**
-     * mkv
+     * MKV video format.
      */
     MKV("video/x-matroska", "mkv") {
 
@@ -951,7 +955,7 @@ public enum FileMagicNumber {
                     && Objects.equals(bytes[3], (byte) 0xa3);
 
             if (flag1) {
-                // 此处需要判断是否是'\x42\x82\x88matroska'，算法类似kmp判断
+                // Need to check if it contains '\x42\x82\x88matroska', algorithm similar to KMP
                 final byte[] bytes1 = { (byte) 0x42, (byte) 0x82, (byte) 0x88, (byte) 0x6d, (byte) 0x61, (byte) 0x74,
                         (byte) 0x72, (byte) 0x6f, (byte) 0x73, (byte) 0x6b, (byte) 0x61 };
                 final int index = FileMagicNumber.indexOf(bytes, bytes1);
@@ -961,7 +965,7 @@ public enum FileMagicNumber {
         }
     },
     /**
-     * webm
+     * WEBM video format.
      */
     WEBM("video/webm", "webm") {
 
@@ -971,7 +975,7 @@ public enum FileMagicNumber {
                     && Objects.equals(bytes[1], (byte) 0x45) && Objects.equals(bytes[2], (byte) 0xdf)
                     && Objects.equals(bytes[3], (byte) 0xa3);
             if (flag1) {
-                // 此处需要判断是否是'\x42\x82\x88webm'，算法类似kmp判断
+                // Need to check if it contains '\x42\x82\x88webm', algorithm similar to KMP
                 final byte[] bytes1 = { (byte) 0x42, (byte) 0x82, (byte) 0x88, (byte) 0x77, (byte) 0x65, (byte) 0x62,
                         (byte) 0x6d };
                 final int index = FileMagicNumber.indexOf(bytes, bytes1);
@@ -981,7 +985,7 @@ public enum FileMagicNumber {
         }
     },
     /**
-     * mov 此文件签名非常复杂，只判断常见的几种
+     * MOV video format. This file signature is very complex, only checking common ones.
      */
     MOV("video/quicktime", "mov") {
 
@@ -1010,7 +1014,7 @@ public enum FileMagicNumber {
         }
     },
     /**
-     * mpg
+     * MPEG video format.
      */
     MPEG("video/mpeg", "mpg") {
 
@@ -1021,7 +1025,7 @@ public enum FileMagicNumber {
         }
     },
     /**
-     * rmvb
+     * RMVB video format.
      */
     RMVB("video/vnd.rn-realvideo", "rmvb") {
 
@@ -1032,7 +1036,7 @@ public enum FileMagicNumber {
         }
     },
     /**
-     * 3gp
+     * 3GP video format.
      */
     M3GP("video/3gpp", "3gp") {
 
@@ -1046,7 +1050,7 @@ public enum FileMagicNumber {
     },
 
     /**
-     * doc
+     * DOC format.
      */
     DOC("application/msword", "doc") {
 
@@ -1073,7 +1077,7 @@ public enum FileMagicNumber {
         }
     },
     /**
-     * xls
+     * XLS format.
      */
     XLS("application/vnd.ms-excel", "xls") {
 
@@ -1101,7 +1105,7 @@ public enum FileMagicNumber {
 
     },
     /**
-     * ppt
+     * PPT format.
      */
     PPT("application/vnd.ms-powerpoint", "ppt") {
 
@@ -1132,7 +1136,7 @@ public enum FileMagicNumber {
         }
     },
     /**
-     * docx
+     * DOCX format.
      */
     DOCX("application/vnd.openxmlformats-officedocument.wordprocessingml.document", "docx") {
 
@@ -1142,7 +1146,7 @@ public enum FileMagicNumber {
         }
     },
     /**
-     * pptx
+     * PPTX format.
      */
     PPTX("application/vnd.openxmlformats-officedocument.presentationml.presentation", "pptx") {
 
@@ -1152,7 +1156,7 @@ public enum FileMagicNumber {
         }
     },
     /**
-     * xlsx
+     * XLSX format.
      */
     XLSX("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "xlsx") {
 
@@ -1162,7 +1166,7 @@ public enum FileMagicNumber {
         }
     },
     /**
-     * wasm
+     * WASM format.
      */
     WASM("application/wasm", "wasm") {
 
@@ -1181,7 +1185,7 @@ public enum FileMagicNumber {
         }
     },
     /**
-     * dex https://source.android.com/devices/tech/dalvik/dex-format#dex-file-magic
+     * DEX format. Reference: https://source.android.com/devices/tech/dalvik/dex-format#dex-file-magic
      */
     DEX("application/vnd.android.dex", "dex") {
 
@@ -1193,7 +1197,7 @@ public enum FileMagicNumber {
         }
     },
     /**
-     * dey
+     * DEY format.
      */
     DEY("application/vnd.android.dey", "dey") {
 
@@ -1205,7 +1209,7 @@ public enum FileMagicNumber {
         }
     },
     /**
-     * eml
+     * EML format.
      */
     EML("message/rfc822", "eml") {
 
@@ -1230,7 +1234,7 @@ public enum FileMagicNumber {
         }
     },
     /**
-     * mdb
+     * MDB format.
      */
     MDB("application/vnd.ms-access", "mdb") {
 
@@ -1243,7 +1247,7 @@ public enum FileMagicNumber {
         }
     },
     /**
-     * CHM 49 54 53 46
+     * CHM format. 49 54 53 46
      */
     CHM("application/vnd.ms-htmlhelp", "chm") {
 
@@ -1255,7 +1259,7 @@ public enum FileMagicNumber {
     },
 
     /**
-     * class CA FE BA BE
+     * CLASS format. CA FE BA BE
      */
     CLASS("application/java-vm", "class") {
 
@@ -1266,7 +1270,7 @@ public enum FileMagicNumber {
         }
     },
     /**
-     * torrent 64 38 3A 61 6E 6E 6F 75 6E 63 65
+     * TORRENT format. 64 38 3A 61 6E 6E 6F 75 6E 63 65
      */
     TORRENT("application/x-bittorrent", "torrent") {
 
@@ -1278,7 +1282,7 @@ public enum FileMagicNumber {
         }
     },
     /**
-     * wpd
+     * WPD format.
      */
     WPD("application/vnd.wordperfect", "wpd") {
 
@@ -1289,7 +1293,7 @@ public enum FileMagicNumber {
         }
     },
     /**
-     * dbx
+     * DBX format.
      */
     DBX("", "dbx") {
 
@@ -1300,7 +1304,7 @@ public enum FileMagicNumber {
         }
     },
     /**
-     * pst
+     * PST format.
      */
     PST("application/vnd.ms-outlook-pst", "pst") {
 
@@ -1311,7 +1315,7 @@ public enum FileMagicNumber {
         }
     },
     /**
-     * ram
+     * RAM format.
      */
     RAM("audio/x-pn-realaudio", "ram") {
 
@@ -1322,14 +1326,20 @@ public enum FileMagicNumber {
         }
     };
 
+    /**
+     * The MIME type of the file.
+     */
     private final String mimeType;
+    /**
+     * The file extension.
+     */
     private final String extension;
 
     /**
-     * 构造
+     * Constructs a FileMagicNumber enum constant.
      *
-     * @param mimeType  媒体类型
-     * @param extension 扩展名
+     * @param mimeType  the MIME type
+     * @param extension the file extension
      */
     FileMagicNumber(final String mimeType, final String extension) {
         this.mimeType = mimeType;
@@ -1337,10 +1347,10 @@ public enum FileMagicNumber {
     }
 
     /**
-     * 根据给定的bytes，获取对应识别到的{@code FileMagicNumber}
+     * Gets the corresponding FileMagicNumber based on the given bytes.
      *
-     * @param bytes bytes魔数
-     * @return {@code FileMagicNumber}
+     * @param bytes the magic number bytes
+     * @return the FileMagicNumber
      */
     public static FileMagicNumber getMagicNumber(final byte[] bytes) {
         if (ObjectKit.isNull(bytes)) {
@@ -1350,7 +1360,7 @@ public enum FileMagicNumber {
         final FileMagicNumber number = Arrays.stream(values()).filter(fileMagicNumber -> fileMagicNumber.match(bytes))
                 .findFirst().orElse(UNKNOWN);
 
-        // 压缩文档类型，如office或jar等
+        // For compressed document types like office or jar
         if (FileMagicNumber.ZIP.equals(number)) {
             final FileMagicNumber fn = FileMagicNumber.matchDocument(bytes);
             return fn == UNKNOWN ? ZIP : fn;
@@ -1358,6 +1368,13 @@ public enum FileMagicNumber {
         return number;
     }
 
+    /**
+     * Finds the index of the target array in the source array.
+     *
+     * @param array  the source array
+     * @param target the target array to find
+     * @return the starting index or -1 if not found
+     */
     private static int indexOf(final byte[] array, final byte[] target) {
         if (array == null || target == null || array.length < target.length) {
             return -1;
@@ -1377,7 +1394,14 @@ public enum FileMagicNumber {
         }
     }
 
-    // 处理 Open XML 类型的文件
+    /**
+     * Compares a slice of bytes from the buffer with the given slice starting at the offset.
+     *
+     * @param buf         the buffer
+     * @param slice       the slice to compare
+     * @param startOffset the starting offset in the buffer
+     * @return true if matches, false otherwise
+     */
     private static boolean compareBytes(final byte[] buf, final byte[] slice, final int startOffset) {
         final int sl = slice.length;
         if (startOffset + sl > buf.length) {
@@ -1388,11 +1412,11 @@ public enum FileMagicNumber {
     }
 
     /**
-     * 判断OpenXML文档类型
+     * Matches the Open XML mime type.
      *
-     * @param bytes  bytes魔数
-     * @param offset 偏移
-     * @return {@code FileMagicNumber}
+     * @param bytes  the bytes
+     * @param offset the offset
+     * @return the FileMagicNumber
      */
     private static FileMagicNumber matchOpenXmlMime(final byte[] bytes, final int offset) {
         final byte[] word = new byte[] { 'w', 'o', 'r', 'd', '/' };
@@ -1411,13 +1435,13 @@ public enum FileMagicNumber {
     }
 
     /**
-     * 匹配文档类型
+     * Matches the document type.
      *
-     * @param bytes bytes魔数
-     * @return 匹配到的文档类型
+     * @param bytes the bytes
+     * @return the matched FileMagicNumber
      */
     private static FileMagicNumber matchDocument(final byte[] bytes) {
-        final FileMagicNumber fileMagicNumber = FileMagicNumber.matchOpenXmlMime(bytes, (byte) 0x1e);
+        final FileMagicNumber fileMagicNumber = FileMagicNumber.matchOpenXmlMime(bytes, 0x1e);
         if (!fileMagicNumber.equals(UNKNOWN)) {
             return fileMagicNumber;
         }
@@ -1425,9 +1449,9 @@ public enum FileMagicNumber {
                 0x73, 0x5D, 0x2E, 0x78, 0x6D, 0x6C };
         final byte[] bytes2 = new byte[] { 0x5F, 0x72, 0x65, 0x6C, 0x73, 0x2F, 0x2E, 0x72, 0x65, 0x6C, 0x73 };
         final byte[] bytes3 = new byte[] { 0x64, 0x6F, 0x63, 0x50, 0x72, 0x6F, 0x70, 0x73 };
-        final boolean flag1 = FileMagicNumber.compareBytes(bytes, bytes1, (byte) 0x1e);
-        final boolean flag2 = FileMagicNumber.compareBytes(bytes, bytes2, (byte) 0x1e);
-        final boolean flag3 = FileMagicNumber.compareBytes(bytes, bytes3, (byte) 0x1e);
+        final boolean flag1 = FileMagicNumber.compareBytes(bytes, bytes1, 0x1e);
+        final boolean flag2 = FileMagicNumber.compareBytes(bytes, bytes2, 0x1e);
+        final boolean flag3 = FileMagicNumber.compareBytes(bytes, bytes3, 0x1e);
         if (!(flag1 || flag2 || flag3)) {
             return UNKNOWN;
         }
@@ -1446,12 +1470,12 @@ public enum FileMagicNumber {
     }
 
     /**
-     * 查找文档签名（文档标识）
+     * Searches for the document signature.
      *
-     * @param bytes    bytes
-     * @param start    开始位置
-     * @param rangeNum 步进长度
-     * @return 签名
+     * @param bytes    the bytes
+     * @param start    the start position
+     * @param rangeNum the step length
+     * @return the signature index
      */
     private static int searchSignature(final byte[] bytes, final int start, final int rangeNum) {
         final byte[] signature = new byte[] { 0x50, 0x4B, 0x03, 0x04 };
@@ -1465,28 +1489,28 @@ public enum FileMagicNumber {
     }
 
     /**
-     * 获取媒体类型
+     * Gets the MIME type.
      *
-     * @return 媒体类型
+     * @return the MIME type
      */
     public String getMimeType() {
         return mimeType;
     }
 
     /**
-     * 获取扩展名
+     * Gets the extension.
      *
-     * @return 扩展名
+     * @return the extension
      */
     public String getExtension() {
         return extension;
     }
 
     /**
-     * 是否匹配bytes
+     * Checks if matches the bytes.
      *
-     * @param bytes bytes
-     * @return 是否匹配
+     * @param bytes the bytes
+     * @return true if matches
      */
     public abstract boolean match(byte[] bytes);
 

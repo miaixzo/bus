@@ -30,6 +30,7 @@ package org.miaixz.bus.auth.nimble.jd;
 import org.miaixz.bus.auth.magic.AuthToken;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Message;
+import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
@@ -51,32 +52,45 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /**
- * 京东 登录
+ * JD (Jingdong) login provider.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class JdProvider extends AbstractProvider {
 
+    /**
+     * Constructs a {@code JdProvider} with the specified context.
+     *
+     * @param context the authentication context
+     */
     public JdProvider(Context context) {
         super(context, Registry.JD);
     }
 
+    /**
+     * Constructs a {@code JdProvider} with the specified context and cache.
+     *
+     * @param context the authentication context
+     * @param cache   the cache implementation
+     */
     public JdProvider(Context context, CacheX cache) {
         super(context, Registry.JD, cache);
     }
 
     /**
-     * 京东宙斯平台的签名字符串 宙斯签名规则过程如下: 将所有请求参数按照字母先后顺序排列，例如将access_token,app_key,method,timestamp,v
-     * 排序为access_token,app_key,method,timestamp,v
-     * 1.把所有参数名和参数值进行拼接，例如：access_tokenxxxapp_keyxxxmethodxxxxxxtimestampxxxxxxvx
-     * 2.把appSecret夹在字符串的两端，例如：appSecret+XXXX+appSecret 3.使用MD5进行加密，再转化成大写 link:
-     * http://open.jd.com/home/home#/doc/common?listId=890 link:
-     * https://github.com/pingjiang/jd-open-api-sdk-src/blob/master/src/main/java/com/jd/open/api/sdk/DefaultJdClient.java
+     * Generates the signature string for JD Zeus platform. The Zeus signature rule process is as follows: 1. Sort all
+     * request parameters alphabetically, e.g., access_token, app_key, method, timestamp, v. 2. Concatenate all
+     * parameter names and values, e.g., access_tokenxxxapp_keyxxxmethodxxxxxxtimestampxxxxxxvx. 3. Enclose the
+     * concatenated string with appSecret on both ends, e.g., appSecret+XXXX+appSecret. 4. Use MD5 encryption and
+     * convert to uppercase. Links: <a href="http://open.jd.com/home/home#/doc/common?listId=890">JD Open API Common
+     * Document</a> <a href=
+     * "https://github.com/pingjiang/jd-open-api-sdk-src/blob/master/src/main/java/com/jd/open/api/sdk/DefaultJdClient.java">DefaultJdClient.java
+     * Source</a>
      *
-     * @param appSecret 京东应用密钥
-     * @param params    签名参数
-     * @return 签名后的字符串
+     * @param appSecret the JD application secret
+     * @param params    the parameters for signing
+     * @return the signed string
      */
     public static String sign(String appSecret, Map<String, Object> params) {
         Map<String, Object> treeMap = new TreeMap<>(params);
@@ -92,6 +106,13 @@ public class JdProvider extends AbstractProvider {
         return org.miaixz.bus.crypto.Builder.md5Hex(signBuilder.toString()).toUpperCase();
     }
 
+    /**
+     * Retrieves the access token from JD's authorization server.
+     *
+     * @param callback the callback object containing the authorization code
+     * @return the {@link AuthToken} containing access token details
+     * @throws AuthorizedException if parsing the response fails or required token information is missing
+     */
     @Override
     public AuthToken getAccessToken(Callback callback) {
         Map<String, String> form = new HashMap<>(7);
@@ -125,10 +146,12 @@ public class JdProvider extends AbstractProvider {
     }
 
     /**
-     * 个人用户无法申请应用 暂时只能参考官网给出的返回结果解析
+     * Retrieves user data from the JSON object returned by the API. Note: Individual users cannot apply for
+     * applications. Currently, only parsing based on the official return results is supported.
      *
-     * @param object 请求返回结果
-     * @return data Map
+     * @param object the JSON object returned by the API
+     * @return a Map containing user data
+     * @throws AuthorizedException if required data fields are missing in the response
      */
     private Map<String, Object> getUserDataJsonObject(Map<String, Object> object) {
         Map<String, Object> response = (Map<String, Object>) object.get("jingdong_user_getUserInfoByOpenId_response");
@@ -139,13 +162,20 @@ public class JdProvider extends AbstractProvider {
         if (result == null) {
             throw new AuthorizedException("Missing getuserinfobyappidandopenid_result in response");
         }
-        Map<String, Object> data = (Map<String, Object>) result.get("data");
+        Map<String, Object> data = (Map<String, Object>) result.get(Consts.DATA);
         if (data == null) {
             throw new AuthorizedException("Missing data in response");
         }
         return data;
     }
 
+    /**
+     * Refreshes the access token (renews its validity).
+     *
+     * @param authToken the token information returned after successful login
+     * @return a {@link Message} containing the refreshed token information
+     * @throws AuthorizedException if parsing the response fails or an error occurs during token refresh
+     */
     @Override
     public Message refresh(AuthToken authToken) {
         Map<String, String> form = new HashMap<>(7);
@@ -181,6 +211,12 @@ public class JdProvider extends AbstractProvider {
         }
     }
 
+    /**
+     * Checks the response content for errors.
+     *
+     * @param object the response map to check
+     * @throws AuthorizedException if the response contains an error or message indicating failure
+     */
     private void checkResponse(Map<String, Object> object) {
         if (object.containsKey("error_response")) {
             Map<String, Object> errorResponse = (Map<String, Object>) object.get("error_response");
@@ -189,6 +225,13 @@ public class JdProvider extends AbstractProvider {
         }
     }
 
+    /**
+     * Retrieves user information from JD's user info endpoint.
+     *
+     * @param authToken the {@link AuthToken} obtained after successful authorization
+     * @return {@link Material} containing the user's information
+     * @throws AuthorizedException if parsing the response fails or required user information is missing
+     */
     @Override
     public Material getUserInfo(AuthToken authToken) {
         Builder urlBuilder = Builder.fromUrl(this.complex.userinfo())
@@ -223,6 +266,13 @@ public class JdProvider extends AbstractProvider {
         }
     }
 
+    /**
+     * Returns the authorization URL with a {@code state} parameter. The {@code state} will be included in the
+     * authorization callback.
+     *
+     * @param state the parameter to verify the authorization process, which can prevent CSRF attacks
+     * @return the authorization URL
+     */
     @Override
     public String authorize(String state) {
         return Builder.fromUrl(complex.authorize()).queryParam("app_key", context.getAppKey())

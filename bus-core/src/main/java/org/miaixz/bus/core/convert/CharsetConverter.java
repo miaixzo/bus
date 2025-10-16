@@ -32,16 +32,26 @@ import java.io.Serial;
 import org.miaixz.bus.core.lang.Charset;
 
 /**
- * 编码对象转换器
+ * Converts an object to a {@link java.nio.charset.Charset}.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class CharsetConverter extends AbstractConverter {
 
+    /**
+     * The serial version UID.
+     */
     @Serial
     private static final long serialVersionUID = 2852266502058L;
 
+    /**
+     * Internally converts the given value to a {@link java.nio.charset.Charset}.
+     *
+     * @param targetClass The target class, which should be {@link java.nio.charset.Charset}.
+     * @param value       The value to be converted, typically a string representing the charset name.
+     * @return The converted {@link java.nio.charset.Charset} object.
+     */
     @Override
     protected java.nio.charset.Charset convertInternal(final Class<?> targetClass, final Object value) {
         return Charset.charset(convertToString(value));

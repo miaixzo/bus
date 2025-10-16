@@ -29,6 +29,7 @@ package org.miaixz.bus.auth.nimble.facebook;
 
 import org.miaixz.bus.auth.magic.AuthToken;
 import org.miaixz.bus.cache.CacheX;
+import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
@@ -45,21 +46,39 @@ import org.miaixz.bus.auth.nimble.AbstractProvider;
 import java.util.Map;
 
 /**
- * Facebook 登录
+ * Facebook login provider.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class FacebookProvider extends AbstractProvider {
 
+    /**
+     * Constructs a {@code FacebookProvider} with the specified context.
+     *
+     * @param context the authentication context
+     */
     public FacebookProvider(Context context) {
         super(context, Registry.FACEBOOK);
     }
 
+    /**
+     * Constructs a {@code FacebookProvider} with the specified context and cache.
+     *
+     * @param context the authentication context
+     * @param cache   the cache implementation
+     */
     public FacebookProvider(Context context, CacheX cache) {
         super(context, Registry.FACEBOOK, cache);
     }
 
+    /**
+     * Retrieves the access token from Facebook's authorization server.
+     *
+     * @param callback the callback object containing the authorization code
+     * @return the {@link AuthToken} containing access token details
+     * @throws AuthorizedException if parsing the response fails or required token information is missing
+     */
     @Override
     public AuthToken getAccessToken(Callback callback) {
         String response = doPostAuthorizationCode(callback.getCode());
@@ -84,6 +103,13 @@ public class FacebookProvider extends AbstractProvider {
         }
     }
 
+    /**
+     * Retrieves user information from Facebook's user info endpoint.
+     *
+     * @param authToken the {@link AuthToken} obtained after successful authorization
+     * @return {@link Material} containing the user's information
+     * @throws AuthorizedException if parsing the response fails or required user information is missing
+     */
     @Override
     public Material getUserInfo(AuthToken authToken) {
         String userInfo = doGetUserInfo(authToken);
@@ -112,21 +138,27 @@ public class FacebookProvider extends AbstractProvider {
         }
     }
 
+    /**
+     * Checks the completeness and validity of the context configuration for Facebook authentication. Specifically, it
+     * ensures that the redirect URI uses HTTPS.
+     *
+     * @param context the authentication context
+     * @throws AuthorizedException if the redirect URI is invalid
+     */
     @Override
     protected void check(Context context) {
         super.check(context);
-        // facebook的回调地址必须为https的链接
+        // Facebook's redirect uri must use the HTTPS protocol
         if (Registry.FACEBOOK == this.complex && !Protocol.isHttps(this.context.getRedirectUri())) {
-            // Facebook's redirect uri must use the HTTPS protocol
             throw new AuthorizedException(ErrorCode.ILLEGAL_REDIRECT_URI.getKey(), this.complex);
         }
     }
 
     /**
-     * 返回获取userInfo的url
+     * Returns the URL to obtain user information.
      *
-     * @param authToken 用户token
-     * @return 返回获取userInfo的url
+     * @param authToken the user's authorization token
+     * @return the URL to obtain user information
      */
     @Override
     protected String userInfoUrl(AuthToken authToken) {
@@ -135,10 +167,11 @@ public class FacebookProvider extends AbstractProvider {
     }
 
     /**
-     * 返回带{@code state}参数的授权url，授权回调时会带上这个{@code state}
+     * Returns the authorization URL with a {@code state} parameter. The {@code state} will be included in the
+     * authorization callback.
      *
-     * @param state state 验证授权流程的参数，可以防止csrf
-     * @return 返回授权地址
+     * @param state the parameter to verify the authorization process, which can prevent CSRF attacks
+     * @return the authorization URL
      */
     @Override
     public String authorize(String state) {
@@ -148,9 +181,10 @@ public class FacebookProvider extends AbstractProvider {
     }
 
     /**
-     * 检查响应内容是否正确
+     * Checks the response content for errors.
      *
-     * @param object 请求响应内容
+     * @param object the response map to check
+     * @throws AuthorizedException if the response contains an error or message indicating failure
      */
     private void checkResponse(Map<String, Object> object) {
         if (object.containsKey("error")) {
@@ -160,12 +194,18 @@ public class FacebookProvider extends AbstractProvider {
         }
     }
 
+    /**
+     * Retrieves the user's picture URL from the response object.
+     *
+     * @param object the map containing user information
+     * @return the picture URL, or null if not found
+     */
     private String getUserPicture(Map<String, Object> object) {
         String picture = null;
         if (object.containsKey("picture")) {
             Map<String, Object> pictureObj = (Map<String, Object>) object.get("picture");
             if (pictureObj != null) {
-                Map<String, Object> dataObj = (Map<String, Object>) pictureObj.get("data");
+                Map<String, Object> dataObj = (Map<String, Object>) pictureObj.get(Consts.DATA);
                 if (dataObj != null) {
                     picture = (String) dataObj.get("url");
                 }

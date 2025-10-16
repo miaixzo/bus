@@ -34,17 +34,15 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 
 /**
- * Crockford`s Base32实现 来自：https://gist.github.com/markov/5206312
+ * An implementation of Crockford's Base32 encoding and decoding.
  *
  * <p>
- * Provides Base32 encoding and decoding as defined by <a href="http://www.ietf.org/rfc/rfc4648.txt">RFC 4648</a>.
- * However it uses a custom alphabet first coined by Douglas Crockford. Only addition to the alphabet is that 'u' and
- * 'U' characters decode as if they were 'V' to improve mistakes by human input.
- * </p>
+ * This class provides Base32 encoding and decoding as defined by <a href="http://www.ietf.org/rfc/rfc4648.txt">RFC
+ * 4648</a>, but it uses a custom alphabet first coined by Douglas Crockford. One addition to the alphabet is that 'u'
+ * and 'U' characters decode as if they were 'V' to improve tolerance for human input errors.
  *
  * <p>
  * This class operates directly on byte streams, and not character streams.
- * </p>
  *
  * @author Kimi Liu
  * @see <a href="http://www.ietf.org/rfc/rfc4648.txt">RFC 4648</a>
@@ -78,16 +76,16 @@ public class Crockford {
             'E', 'F', 'G', 'H', 'J', 'K', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'V', 'W', 'X', 'Y', 'Z' };
     /**
      * Convenience variable to help us determine when our buffer is going to run out of room and needs resizing.
-     * <code>decodeSize = {@link #BYTES_PER_ENCODED_BLOCK} - 1 + lineSeparator.length;</code>
+     * {@code decodeSize = BYTES_PER_ENCODED_BLOCK - 1;}
      */
     private final int decodeSize;
     /**
      * Convenience variable to help us determine when our buffer is going to run out of room and needs resizing.
-     * <code>encodeSize = {@link #BYTES_PER_ENCODED_BLOCK} + lineSeparator.length;</code>
+     * {@code encodeSize = BYTES_PER_ENCODED_BLOCK;}
      */
     private final int encodeSize;
     /**
-     * Wheather this encoder should use a padding character at the end of encoded Strings.
+     * Whether this encoder should use a padding character at the end of encoded Strings.
      */
     private final boolean usePaddingCharacter;
     /**
@@ -104,8 +102,8 @@ public class Crockford {
      */
     protected boolean eof;
     /**
-     * Writes to the buffer only occur after every 3/5 reads when encoding, and every 4/8 reads when decoding. This
-     * variable helps track that.
+     * Writes to the buffer only occur after every 5 reads when encoding, and every 8 reads when decoding. This variable
+     * helps track that.
      */
     protected int modulus;
     /**
@@ -115,19 +113,16 @@ public class Crockford {
     private long bitWorkArea;
 
     /**
-     * 构造
+     * Constructs a new Crockford codec with padding disabled.
      */
     public Crockford() {
         this(false);
     }
 
     /**
-     * Creates a Base32 codec used for decoding and encoding.
-     * <p>
-     * When encoding the line length is 0 (no chunking).
-     * </p>
+     * Constructs a {@code Crockford} codec with an option to enable or disable padding.
      *
-     * @param usePaddingCharacter 是否填充字符
+     * @param usePaddingCharacter If {@code true}, the padding character '=' will be used.
      */
     public Crockford(final boolean usePaddingCharacter) {
         this.usePaddingCharacter = usePaddingCharacter;
@@ -196,12 +191,12 @@ public class Crockford {
     }
 
     /**
-     * 写出Crockford`s Base32值 到buffer指定位置
+     * Writes a long value as a Crockford Base32 string to the given character buffer.
      *
-     * @param buffer buffer
-     * @param value  值
-     * @param count  字符数量
-     * @param offset 开始位置
+     * @param buffer The character buffer to write to.
+     * @param value  The long value to encode.
+     * @param count  The number of characters to write.
+     * @param offset The starting position in the buffer.
      */
     public static void writeCrockford(final char[] buffer, final long value, final int count, final int offset) {
         for (int i = 0; i < count; i++) {
@@ -211,11 +206,11 @@ public class Crockford {
     }
 
     /**
-     * 追加Crockford`s Base32值 到buffer指定位置
+     * Appends a long value as a Crockford Base32 string to the given {@link StringBuilder}.
      *
-     * @param builder {@link StringBuilder}
-     * @param value   值
-     * @param count   字符数量
+     * @param builder The {@link StringBuilder} to append to.
+     * @param value   The long value to encode.
+     * @param count   The number of characters to append.
      */
     public static void appendCrockford(final StringBuilder builder, final long value, final int count) {
         for (int i = count - 1; i >= 0; i--) {
@@ -225,10 +220,10 @@ public class Crockford {
     }
 
     /**
-     * 解析Crockford`s Base32值
+     * Parses a Crockford Base32 string into a long value.
      *
-     * @param input Crockford`s Base32值
-     * @return ID值
+     * @param input The Crockford Base32 string.
+     * @return The parsed long value.
      */
     public static long parseCrockford(final String input) {
         Objects.requireNonNull(input, "input must not be null!");
@@ -250,136 +245,41 @@ public class Crockford {
     }
 
     private static byte decode(final byte octet) {
-        switch (octet) {
-            case '0':
-            case 'O':
-            case 'o':
-                return 0;
-
-            case '1':
-            case 'I':
-            case 'i':
-            case 'L':
-            case 'l':
-                return 1;
-
-            case '2':
-                return 2;
-
-            case '3':
-                return 3;
-
-            case '4':
-                return 4;
-
-            case '5':
-                return 5;
-
-            case '6':
-                return 6;
-
-            case '7':
-                return 7;
-
-            case '8':
-                return 8;
-
-            case '9':
-                return 9;
-
-            case 'A':
-            case 'a':
-                return 10;
-
-            case 'B':
-            case 'b':
-                return 11;
-
-            case 'C':
-            case 'c':
-                return 12;
-
-            case 'D':
-            case 'd':
-                return 13;
-
-            case 'E':
-            case 'e':
-                return 14;
-
-            case 'F':
-            case 'f':
-                return 15;
-
-            case 'G':
-            case 'g':
-                return 16;
-
-            case 'H':
-            case 'h':
-                return 17;
-
-            case 'J':
-            case 'j':
-                return 18;
-
-            case 'K':
-            case 'k':
-                return 19;
-
-            case 'M':
-            case 'm':
-                return 20;
-
-            case 'N':
-            case 'n':
-                return 21;
-
-            case 'P':
-            case 'p':
-                return 22;
-
-            case 'Q':
-            case 'q':
-                return 23;
-
-            case 'R':
-            case 'r':
-                return 24;
-
-            case 'S':
-            case 's':
-                return 25;
-
-            case 'T':
-            case 't':
-                return 26;
-
-            case 'U':
-            case 'u':
-            case 'V':
-            case 'v':
-                return 27;
-
-            case 'W':
-            case 'w':
-                return 28;
-
-            case 'X':
-            case 'x':
-                return 29;
-
-            case 'Y':
-            case 'y':
-                return 30;
-
-            case 'Z':
-            case 'z':
-                return 31;
-
-            default:
-                return -1;
-        }
+        return switch (octet) {
+            case '0', 'O', 'o' -> 0;
+            case '1', 'I', 'i', 'L', 'l' -> 1;
+            case '2' -> 2;
+            case '3' -> 3;
+            case '4' -> 4;
+            case '5' -> 5;
+            case '6' -> 6;
+            case '7' -> 7;
+            case '8' -> 8;
+            case '9' -> 9;
+            case 'A', 'a' -> 10;
+            case 'B', 'b' -> 11;
+            case 'C', 'c' -> 12;
+            case 'D', 'd' -> 13;
+            case 'E', 'e' -> 14;
+            case 'F', 'f' -> 15;
+            case 'G', 'g' -> 16;
+            case 'H', 'h' -> 17;
+            case 'J', 'j' -> 18;
+            case 'K', 'k' -> 19;
+            case 'M', 'm' -> 20;
+            case 'N', 'n' -> 21;
+            case 'P', 'p' -> 22;
+            case 'Q', 'q' -> 23;
+            case 'R', 'r' -> 24;
+            case 'S', 's' -> 25;
+            case 'T', 't' -> 26;
+            case 'U', 'u', 'V', 'v' -> 27;
+            case 'W', 'w' -> 28;
+            case 'X', 'x' -> 29;
+            case 'Y', 'y' -> 30;
+            case 'Z', 'z' -> 31;
+            default -> -1;
+        };
     }
 
     /**
@@ -417,24 +317,23 @@ public class Crockford {
     }
 
     /**
-     * Extracts buffered data into the provided byte[] array, starting at position bPos, up to a maximum of bAvail
-     * bytes. Returns how many bytes were actually extracted.
+     * Extracts buffered data into the provided byte[] array. Returns how many bytes were actually extracted.
      *
      * @param b byte[] array to extract the buffered data into.
-     * @return The number of bytes successfully extracted into the provided byte[] array.
+     * @return The number of bytes successfully extracted.
      */
     int readResults(final byte[] b) { // package protected for access from I/O streams
         if (buffer != null) {
             final int len = available();
             System.arraycopy(buffer, 0, b, 0, len);
-            buffer = null; // so hasData() will return false, and this method can return -1
+            buffer = null; // so hasData() will return false
             return len;
         }
         return eof ? -1 : 0;
     }
 
     /**
-     * Resets this object to its initial newly constructed state.
+     * Resets this object to its initial state.
      */
     private void reset() {
         buffer = null;
@@ -444,27 +343,27 @@ public class Crockford {
     }
 
     /**
-     * Encodes a String containing characters in the Base32 alphabet.
+     * Encodes a String into a Base32 String.
      *
-     * @param pArray A String containing Base32 character data
-     * @return A String containing only Base32 character data
+     * @param pArray A String to be encoded.
+     * @return A String containing Base32 characters.
      */
     public String encodeToString(final String pArray) {
         return encodeToString(pArray.getBytes(DEFAULT_CHARSET));
     }
 
     /**
-     * Encodes a byte[] containing binary data, into a String containing characters in the Base-N alphabet.
+     * Encodes a byte array into a Base32 String.
      *
      * @param pArray a byte array containing binary data
-     * @return A String containing only Base32 character data
+     * @return A String containing Base32 characters.
      */
     public String encodeToString(final byte[] pArray) {
         return new String(encode(pArray), DEFAULT_CHARSET);
     }
 
     /**
-     * Encodes a String containing characters in the Base32 alphabet.
+     * Decodes a Base32 String into a UTF-8 String.
      *
      * @param pArray A String containing Base32 character data
      * @return A UTF-8 decoded String
@@ -473,14 +372,10 @@ public class Crockford {
         return decodeToString(pArray.getBytes(DEFAULT_CHARSET));
     }
 
-    // The static final fields above are used for the original static byte[] methods on Base32.
-    // The private member fields below are used with the new streaming approach, which requires
-    // some state be preserved between calls of encode() and decode().
-
     /**
-     * Decodes a byte[] containing binary data, into a String containing UTF-8 decoded String.
+     * Decodes a byte array of Base32 characters into a UTF-8 String.
      *
-     * @param pArray a byte array containing binary data
+     * @param pArray a byte array containing Base32 character data
      * @return A UTF-8 decoded String
      */
     public String decodeToString(final byte[] pArray) {
@@ -488,9 +383,9 @@ public class Crockford {
     }
 
     /**
-     * Decodes a String containing characters in the Base-N alphabet.
+     * Decodes a Base32 String into its binary representation.
      *
-     * @param pArray A String containing Base-N character data
+     * @param pArray A String containing Base32 character data
      * @return a byte array containing binary data
      */
     public byte[] decode(final String pArray) {
@@ -498,19 +393,19 @@ public class Crockford {
     }
 
     /**
-     * Encodes a String containing characters in the Base32 alphabet.
+     * Encodes a String into a Base32 byte array.
      *
-     * @param pArray A String containing Base-N character data
-     * @return a byte array containing binary data
+     * @param pArray A String to be encoded.
+     * @return a byte array containing Base32 character data
      */
     public byte[] encode(final String pArray) {
         return encode(pArray.getBytes(DEFAULT_CHARSET));
     }
 
     /**
-     * Decodes a byte[] containing characters in the Base-N alphabet.
+     * Decodes a byte array of Base32 characters into its binary representation.
      *
-     * @param pArray A byte array containing Base-N character data
+     * @param pArray A byte array containing Base32 character data
      * @return a byte array containing binary data
      */
     public byte[] decode(final byte[] pArray) {
@@ -526,10 +421,10 @@ public class Crockford {
     }
 
     /**
-     * Encodes a byte[] containing binary data, into a byte[] containing characters in the alphabet.
+     * Encodes a byte array into a Base32 byte array.
      *
      * @param pArray a byte array containing binary data
-     * @return A byte array containing only the basen alphabetic character data
+     * @return A byte array containing Base32 character data
      */
     public byte[] encode(final byte[] pArray) {
         reset();
@@ -547,34 +442,21 @@ public class Crockford {
      * Calculates the amount of space needed to encode the supplied array.
      *
      * @param pArray byte[] array which will later be encoded
-     * @return amount of space needed to encode the supplied array. Returns a long since a max-len array will require
-     *         &gt; Integer.MAX_VALUE
+     * @return amount of space needed to encode the supplied array.
      */
     public long getEncodedLength(final byte[] pArray) {
-        // Calculate non-chunked size - rounded up to allow for padding
-        // cast to long is needed to avoid possibility of overflow
         return ((pArray.length + BYTES_PER_UNENCODED_BLOCK - 1) / BYTES_PER_UNENCODED_BLOCK)
                 * (long) BYTES_PER_ENCODED_BLOCK;
     }
 
     /**
-     * <p>
-     * Decodes all of the provided data, starting at inPos, for inAvail bytes. Should be called at least twice: once
-     * with the data to decode, and once with inAvail set to "-1" to alert decoder that EOF has been reached. The "-1"
-     * call is not necessary when decoding, but it doesn't hurt, either.
-     * </p>
-     * <p>
-     * Ignores all non-Base32 characters. This is how chunked (e.g. 76 character) data is handled, since CR and LF are
-     * silently ignored, but has implications for other bytes, too. This method subscribes to the garbage-in,
-     * garbage-out philosophy: it will not check the provided data for validity.
-     * </p>
+     * Decodes a portion of the provided data.
      *
-     * @param in      byte[] array of ascii data to Base32 decode.
+     * @param in      byte[] array of Base32 data to decode.
      * @param inPos   Position to start reading data from.
-     * @param inAvail Amount of bytes available from input for encoding.Output is written to {@link #buffer} as 8-bit
-     *                octets, using {@link #pos} as the buffer position
+     * @param inAvail Amount of bytes available from input for decoding.
      */
-    void decode(final byte[] in, int inPos, final int inAvail) { // package protected for access from I/O streams
+    void decode(final byte[] in, int inPos, final int inAvail) {
         if (eof) {
             return;
         }
@@ -584,99 +466,78 @@ public class Crockford {
         for (int i = 0; i < inAvail; i++) {
             final byte b = in[inPos++];
             if (b == Symbol.C_EQUAL) {
-                // We're done.
                 eof = true;
                 break;
-            } else {
-                ensureBufferSize(decodeSize);
-                if (isInAlphabet(b)) {
-                    final int result = decode(b);
-                    modulus = (modulus + 1) % BYTES_PER_ENCODED_BLOCK;
-                    bitWorkArea = (bitWorkArea << BITS_PER_ENCODED_BYTE) + result; // collect decoded bytes
-                    if (modulus == 0) { // we can output the 5 bytes
-                        buffer[pos++] = (byte) ((bitWorkArea >> 32) & MASK_8BITS);
-                        buffer[pos++] = (byte) ((bitWorkArea >> 24) & MASK_8BITS);
-                        buffer[pos++] = (byte) ((bitWorkArea >> 16) & MASK_8BITS);
-                        buffer[pos++] = (byte) ((bitWorkArea >> 8) & MASK_8BITS);
-                        buffer[pos++] = (byte) (bitWorkArea & MASK_8BITS);
-                    }
+            }
+            ensureBufferSize(decodeSize);
+            final int result = decode(b);
+            if (result >= 0) {
+                modulus = (modulus + 1) % BYTES_PER_ENCODED_BLOCK;
+                bitWorkArea = (bitWorkArea << BITS_PER_ENCODED_BYTE) + result;
+                if (modulus == 0) { // we can output 5 bytes
+                    buffer[pos++] = (byte) ((bitWorkArea >> 32) & MASK_8BITS);
+                    buffer[pos++] = (byte) ((bitWorkArea >> 24) & MASK_8BITS);
+                    buffer[pos++] = (byte) ((bitWorkArea >> 16) & MASK_8BITS);
+                    buffer[pos++] = (byte) ((bitWorkArea >> 8) & MASK_8BITS);
+                    buffer[pos++] = (byte) (bitWorkArea & MASK_8BITS);
                 }
             }
         }
 
-        // Two forms of EOF as far as Base32 decoder is concerned: actual
-        // EOF (-1) and first time '=' character is encountered in stream.
-        // This approach makes the '=' padding characters completely optional.
-        if (eof && modulus >= 2) { // if modulus < 2, nothing to do
+        if (eof && modulus >= 2) {
             ensureBufferSize(decodeSize);
-
-            // we ignore partial bytes, i.e. only multiples of 8 count
             switch (modulus) {
-                case 2: // 10 bits, drop 2 and output one byte
-                    buffer[pos++] = (byte) ((bitWorkArea >> 2) & MASK_8BITS);
-                    break;
-
-                case 3: // 15 bits, drop 7 and output 1 byte
-                    buffer[pos++] = (byte) ((bitWorkArea >> 7) & MASK_8BITS);
-                    break;
-
-                case 4: // 20 bits = 2*8 + 4
-                    bitWorkArea = bitWorkArea >> 4; // drop 4 bits
+                case 2 -> buffer[pos++] = (byte) ((bitWorkArea >> 2) & MASK_8BITS);
+                case 3 -> buffer[pos++] = (byte) ((bitWorkArea >> 7) & MASK_8BITS);
+                case 4 -> {
+                    bitWorkArea = bitWorkArea >> 4;
                     buffer[pos++] = (byte) ((bitWorkArea >> 8) & MASK_8BITS);
                     buffer[pos++] = (byte) ((bitWorkArea) & MASK_8BITS);
-                    break;
-
-                case 5: // 25bits = 3*8 + 1
+                }
+                case 5 -> {
                     bitWorkArea = bitWorkArea >> 1;
                     buffer[pos++] = (byte) ((bitWorkArea >> 16) & MASK_8BITS);
                     buffer[pos++] = (byte) ((bitWorkArea >> 8) & MASK_8BITS);
                     buffer[pos++] = (byte) ((bitWorkArea) & MASK_8BITS);
-                    break;
-
-                case 6: // 30bits = 3*8 + 6
+                }
+                case 6 -> {
                     bitWorkArea = bitWorkArea >> 6;
                     buffer[pos++] = (byte) ((bitWorkArea >> 16) & MASK_8BITS);
                     buffer[pos++] = (byte) ((bitWorkArea >> 8) & MASK_8BITS);
                     buffer[pos++] = (byte) ((bitWorkArea) & MASK_8BITS);
-                    break;
-
-                case 7: // 35 = 4*8 +3
+                }
+                case 7 -> {
                     bitWorkArea = bitWorkArea >> 3;
                     buffer[pos++] = (byte) ((bitWorkArea >> 24) & MASK_8BITS);
                     buffer[pos++] = (byte) ((bitWorkArea >> 16) & MASK_8BITS);
                     buffer[pos++] = (byte) ((bitWorkArea >> 8) & MASK_8BITS);
                     buffer[pos++] = (byte) ((bitWorkArea) & MASK_8BITS);
-                    break;
+                }
             }
         }
     }
 
     /**
-     * Encodes all of the provided data, starting at inPos, for inAvail bytes. Must be called at least twice: once with
-     * the data to encode, and once with inAvail set to "-1" to alert encoder that EOF has been reached, so flush last
-     * remaining bytes (if not multiple of 5).
+     * Encodes a portion of the provided data.
      *
      * @param in      byte[] array of binary data to Base32 encode.
      * @param inPos   Position to start reading data from.
      * @param inAvail Amount of bytes available from input for encoding.
      */
-    void encode(final byte[] in, int inPos, final int inAvail) { // package protected for access from I/O streams
+    void encode(final byte[] in, int inPos, final int inAvail) {
         if (eof) {
             return;
         }
-        // inAvail < 0 is how we're informed of EOF in the underlying data we're
-        // encoding.
         if (inAvail < 0) {
             eof = true;
             if (0 == modulus) {
                 return; // no leftovers to process
             }
             ensureBufferSize(encodeSize);
-            final int savedPos = pos;
-            switch (modulus) { // % 5
-                case 1: // Only 1 octet; take top 5 bits then remainder
-                    buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea >> 3) & MASK_5BITS]; // 8-1*5 = 3
-                    buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea << 2) & MASK_5BITS]; // 5-3=2
+            switch (modulus) {
+                case 1 -> {
+                    buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea >> 3) & MASK_5BITS];
+                    buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea << 2) & MASK_5BITS];
                     if (usePaddingCharacter) {
                         buffer[pos++] = Symbol.C_EQUAL;
                         buffer[pos++] = Symbol.C_EQUAL;
@@ -685,46 +546,43 @@ public class Crockford {
                         buffer[pos++] = Symbol.C_EQUAL;
                         buffer[pos++] = Symbol.C_EQUAL;
                     }
-                    break;
-
-                case 2: // 2 octets = 16 bits to use
-                    buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea >> 11) & MASK_5BITS]; // 16-1*5 = 11
-                    buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea >> 6) & MASK_5BITS]; // 16-2*5 = 6
-                    buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea >> 1) & MASK_5BITS]; // 16-3*5 = 1
-                    buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea << 4) & MASK_5BITS]; // 5-1 = 4
+                }
+                case 2 -> {
+                    buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea >> 11) & MASK_5BITS];
+                    buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea >> 6) & MASK_5BITS];
+                    buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea >> 1) & MASK_5BITS];
+                    buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea << 4) & MASK_5BITS];
                     if (usePaddingCharacter) {
                         buffer[pos++] = Symbol.C_EQUAL;
                         buffer[pos++] = Symbol.C_EQUAL;
                         buffer[pos++] = Symbol.C_EQUAL;
                         buffer[pos++] = Symbol.C_EQUAL;
                     }
-                    break;
-
-                case 3: // 3 octets = 24 bits to use
-                    buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea >> 19) & MASK_5BITS]; // 24-1*5 = 19
-                    buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea >> 14) & MASK_5BITS]; // 24-2*5 = 14
-                    buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea >> 9) & MASK_5BITS]; // 24-3*5 = 9
-                    buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea >> 4) & MASK_5BITS]; // 24-4*5 = 4
-                    buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea << 1) & MASK_5BITS]; // 5-4 = 1
+                }
+                case 3 -> {
+                    buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea >> 19) & MASK_5BITS];
+                    buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea >> 14) & MASK_5BITS];
+                    buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea >> 9) & MASK_5BITS];
+                    buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea >> 4) & MASK_5BITS];
+                    buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea << 1) & MASK_5BITS];
                     if (usePaddingCharacter) {
                         buffer[pos++] = Symbol.C_EQUAL;
                         buffer[pos++] = Symbol.C_EQUAL;
                         buffer[pos++] = Symbol.C_EQUAL;
                     }
-                    break;
-
-                case 4: // 4 octets = 32 bits to use
-                    buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea >> 27) & MASK_5BITS]; // 32-1*5 = 27
-                    buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea >> 22) & MASK_5BITS]; // 32-2*5 = 22
-                    buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea >> 17) & MASK_5BITS]; // 32-3*5 = 17
-                    buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea >> 12) & MASK_5BITS]; // 32-4*5 = 12
-                    buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea >> 7) & MASK_5BITS]; // 32-5*5 = 7
-                    buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea >> 2) & MASK_5BITS]; // 32-6*5 = 2
-                    buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea << 3) & MASK_5BITS]; // 5-2 = 3
+                }
+                case 4 -> {
+                    buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea >> 27) & MASK_5BITS];
+                    buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea >> 22) & MASK_5BITS];
+                    buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea >> 17) & MASK_5BITS];
+                    buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea >> 12) & MASK_5BITS];
+                    buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea >> 7) & MASK_5BITS];
+                    buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea >> 2) & MASK_5BITS];
+                    buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea << 3) & MASK_5BITS];
                     if (usePaddingCharacter) {
                         buffer[pos++] = Symbol.C_EQUAL;
                     }
-                    break;
+                }
             }
         } else {
             for (int i = 0; i < inAvail; i++) {
@@ -734,8 +592,8 @@ public class Crockford {
                 if (b < 0) {
                     b += 256;
                 }
-                bitWorkArea = (bitWorkArea << 8) + b; // BITS_PER_BYTE
-                if (0 == modulus) { // we have enough bytes to create our output
+                bitWorkArea = (bitWorkArea << 8) + b;
+                if (0 == modulus) {
                     buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea >> 35) & MASK_5BITS];
                     buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea >> 30) & MASK_5BITS];
                     buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea >> 25) & MASK_5BITS];

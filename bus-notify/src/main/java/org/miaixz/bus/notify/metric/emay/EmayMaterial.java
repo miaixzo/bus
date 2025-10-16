@@ -36,7 +36,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * 亿美短信
+ * Material for Emay SMS service.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -49,7 +49,7 @@ import lombok.experimental.SuperBuilder;
 public class EmayMaterial extends Material {
 
     /**
-     * APP接入地址
+     * The request URL for the Emay API.
      */
     private String requestUrl;
 

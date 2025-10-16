@@ -34,11 +34,13 @@ import java.io.Serializable;
 import java.util.Arrays;
 
 /**
+ * A high-performance hash map implementation for primitive {@code int} keys, based on open addressing with linear
+ * probing. This class is designed to be a more memory and performance-efficient alternative to
+ * {@code java.util.HashMap<Integer, V>} by avoiding the overhead of key boxing/unboxing.
+ * <p>
+ * This implementation allows {@code null} values. It does not guarantee the order of iteration.
  *
- * 基于哈希表的{@code IntMap}接口实现。这个实现提供了所有可选的map操作，并允许{@code null}值。 {@link IntHashMap}
- * 类大致相当于{@link java.util.HashMap}，除了它使用{@code int}作为它的键。 这个类不保证映射的顺序;特别是，它不能保证顺序在一段时间内保持不变。
- *
- * @param <V> 值类型
+ * @param <V> The type of values in the map.
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -47,31 +49,64 @@ public class IntHashMap<V> implements Cloneable, Serializable {
     @Serial
     private static final long serialVersionUID = 2852273966013L;
 
+    /**
+     * The default initial capacity of the hash map.
+     */
     private static final int DEFAULT_CAPACITY = 32;
+    /**
+     * The minimum capacity for the hash map.
+     */
     private static final int MINIMUM_CAPACITY = 4;
+    /**
+     * The maximum capacity for the hash map.
+     */
     private static final int MAXIMUM_CAPACITY = 1 << 30;
 
+    /**
+     * Represents a free (empty) slot in the hash table.
+     */
     private static final byte FREE = 0;
+    /**
+     * Represents a full (occupied) slot in the hash table.
+     */
     private static final byte FULL = 1;
+    /**
+     * Represents a removed slot in the hash table.
+     */
     private static final byte REMOVED = -1;
 
+    /**
+     * The array storing the keys.
+     */
     private transient int[] keys;
+    /**
+     * The array storing the values.
+     */
     private transient Object[] values;
+    /**
+     * The array storing the state of each slot (FREE, FULL, REMOVED).
+     */
     private transient byte[] states;
+    /**
+     * The number of free slots available before resizing is needed.
+     */
     private transient int free;
+    /**
+     * The number of key-value mappings in this map.
+     */
     private transient int size;
 
     /**
-     * 构造
+     * Constructs an empty {@code IntHashMap} with the default initial capacity.
      */
     public IntHashMap() {
         init(DEFAULT_CAPACITY);
     }
 
     /**
-     * 构造
+     * Constructs an empty {@code IntHashMap} with an initial capacity sized for the expected number of elements.
      *
-     * @param expectedMaxSize HashMap 的初始容量
+     * @param expectedMaxSize The expected maximum number of elements this map will hold.
      */
     public IntHashMap(int expectedMaxSize) {
         if (expectedMaxSize < 0)
@@ -81,25 +116,30 @@ public class IntHashMap<V> implements Cloneable, Serializable {
     }
 
     /**
-     * @return 返回此映射中的键值映射的数量
+     * Returns the number of key-value mappings in this map.
+     *
+     * @return The number of key-value mappings.
      */
     public int size() {
         return size;
     }
 
     /**
-     * @return
+     * Returns {@code true} if this map contains no key-value mappings.
+     *
+     * @return {@code true} if this map is empty.
      */
     public boolean isEmpty() {
         return size == 0;
     }
 
     /**
-     * 返回此映射映射到指定键的值。 如果映射不包含此键的映射，则返回{@code null}。 返回值{@code null}并不一定表示映射中不包含该键的映射;也有可能映射显式地将键映射到{@code null}。
-     * {@code containsKey}操作可以用来区分这两种情况。
+     * Returns the value for the specified key, or {@code null} if the key is not found. Note: A {@code null} return
+     * value does not necessarily mean the key is absent; it could also mean the key is mapped to {@code null}. Use
+     * {@link #containsKey(int)} to distinguish these cases.
      *
-     * @param key 要返回其关联值的键
-     * @return 此映射映射到指定键的值
+     * @param key The key whose associated value is to be returned.
+     * @return The value for the key, or {@code null} if the key is not found.
      */
     public V get(int key) {
         byte[] states = this.states;
@@ -115,9 +155,10 @@ public class IntHashMap<V> implements Cloneable, Serializable {
     }
 
     /**
-     * 如果此映射包含指定键的映射，则返回{@code true}。
+     * Returns {@code true} if this map contains a mapping for the specified key.
      *
-     * @param key 判断此 Map 中是否存在的键
+     * @param key The key whose presence is to be tested.
+     * @return {@code true} if this map contains a mapping for the key.
      */
     public boolean containsKey(int key) {
         byte[] states = this.states;
@@ -133,11 +174,12 @@ public class IntHashMap<V> implements Cloneable, Serializable {
     }
 
     /**
-     * 将指定值与此映射中的指定键关联。如果此映射之前包含此键的映射，则旧值将被替换。
+     * Associates the specified value with the specified key. If the map previously contained a mapping for the key, the
+     * old value is replaced.
      *
-     * @param key   与指定值关联的键
-     * @param value 与指定键关联的值
-     * @return 与指定键关联的先前值，或如果键没有映射则返回 {@code null}。 返回 {@code null} 还可以指示 HashMap 先前将 {@code null} 与指定键关联。
+     * @param key   The key with which the value is to be associated.
+     * @param value The value to be associated with the key.
+     * @return The previous value associated with the key, or {@code null} if there was no mapping for the key.
      */
     public V put(int key, V value) {
         byte[] states = this.states;
@@ -163,22 +205,26 @@ public class IntHashMap<V> implements Cloneable, Serializable {
         return null;
     }
 
+    /**
+     * Trims the capacity of this map to be its current size. This can be used to minimize the map's storage.
+     */
     public void trimToSize() {
         resize(capacity(size));
     }
 
     /**
-     * 将此映射的内容重新哈希到具有更大容量的新 {@code HashMap} 实例中。 当此映射中的键数超出其容量和加载因子时，会自动调用此方法
+     * Rehashes the contents of this map into a new table with the same capacity. This is useful for reclaiming space
+     * left by a large number of removed entries.
      */
     public void rehash() {
         resize(keys.length);
     }
 
     /**
-     * 如果存在，则从此映射中删除此键的映射
+     * Removes the mapping for a key from this map if it is present.
      *
-     * @param key 要从映射中删除其映射的键。
-     * @return 与指定键关联的上一个值，如果键没有映射，则返回 {@code null}。 返回 {@code null} 还可以指示映射先前将 {@code null} 与指定键关联。
+     * @param key The key whose mapping is to be removed.
+     * @return The previous value associated with the key, or {@code null} if there was no mapping.
      */
     public V remove(int key) {
         byte[] states = this.states;
@@ -188,7 +234,7 @@ public class IntHashMap<V> implements Cloneable, Serializable {
         while (states[i] != FREE) {
             if (keys[i] == key) {
                 if (states[i] < FREE)
-                    return null;
+                    return null; // Already removed
 
                 states[i] = REMOVED;
                 V oldValue = (V) values[i];
@@ -202,7 +248,7 @@ public class IntHashMap<V> implements Cloneable, Serializable {
     }
 
     /**
-     * 从此映射中删除所有映射
+     * Removes all of the mappings from this map. The map will be empty after this call returns.
      */
     public void clear() {
         Arrays.fill(values, null);
@@ -211,6 +257,13 @@ public class IntHashMap<V> implements Cloneable, Serializable {
         free = keys.length >>> 1;
     }
 
+    /**
+     * Creates a shallow copy of this {@code IntHashMap}. The internal arrays are cloned, but the values themselves are
+     * not.
+     *
+     * @return A shallow copy of this map.
+     */
+    @Override
     public Object clone() {
         try {
             IntHashMap<V> m = (IntHashMap<V>) super.clone();
@@ -219,18 +272,31 @@ public class IntHashMap<V> implements Cloneable, Serializable {
             m.values = values.clone();
             return m;
         } catch (CloneNotSupportedException e) {
-            throw new InternalError();
+            // This should not happen since we are Cloneable
+            throw new InternalError(e);
         }
     }
 
+    /**
+     * Iterates over the map and applies a visitor function to each key-value pair. This is a performance-oriented
+     * alternative to creating an iterator.
+     *
+     * @param visitor The visitor function to apply.
+     * @return {@code true} if the entire map was visited, or {@code false} if the visitor stopped the iteration early.
+     */
     public boolean accept(Visitor<V> visitor) {
         for (int i = 0; i < states.length; i++)
-            if (states[i] > FREE) // states[i] == FULL
+            if (states[i] == FULL)
                 if (!visitor.visit(keys[i], (V) values[i]))
                     return false;
         return true;
     }
 
+    /**
+     * Initializes the internal arrays with the specified capacity.
+     *
+     * @param initCapacity The initial capacity for the arrays.
+     */
     private void init(int initCapacity) {
         keys = new int[initCapacity];
         values = new Object[initCapacity];
@@ -238,6 +304,12 @@ public class IntHashMap<V> implements Cloneable, Serializable {
         free = initCapacity >>> 1;
     }
 
+    /**
+     * Calculates the appropriate power-of-two capacity for the hash table.
+     *
+     * @param expectedMaxSize The expected maximum number of elements.
+     * @return The calculated capacity.
+     */
     private int capacity(int expectedMaxSize) {
         int minCapacity = expectedMaxSize << 1;
         if (minCapacity > MAXIMUM_CAPACITY)
@@ -250,6 +322,12 @@ public class IntHashMap<V> implements Cloneable, Serializable {
         return capacity;
     }
 
+    /**
+     * Resizes the hash table to a new length and rehashes all existing entries.
+     *
+     * @param newLength The new length for the internal arrays. Must be a power of 2.
+     * @throws IllegalStateException if the new length exceeds {@link #MAXIMUM_CAPACITY}.
+     */
     private void resize(int newLength) {
         if (newLength > MAXIMUM_CAPACITY)
             throw new IllegalStateException("Capacity exhausted.");
@@ -263,7 +341,7 @@ public class IntHashMap<V> implements Cloneable, Serializable {
         int mask = newLength - 1;
 
         for (int j = 0; j < oldKeys.length; j++) {
-            if (oldStates[j] > 0) {
+            if (oldStates[j] > 0) { // Is FULL
                 int key = oldKeys[j];
                 int i = key & mask;
                 while (newStates[i] != FREE)
@@ -280,6 +358,12 @@ public class IntHashMap<V> implements Cloneable, Serializable {
         free = (newLength >>> 1) - size;
     }
 
+    /**
+     * Serializes this {@code IntHashMap} instance.
+     *
+     * @param s The {@link java.io.ObjectOutputStream} to write to.
+     * @throws java.io.IOException if an I/O error occurs.
+     */
     private void writeObject(java.io.ObjectOutputStream s) throws java.io.IOException {
         s.defaultWriteObject();
 
@@ -295,6 +379,13 @@ public class IntHashMap<V> implements Cloneable, Serializable {
         }
     }
 
+    /**
+     * Deserializes this {@code IntHashMap} instance.
+     *
+     * @param in The {@link java.io.ObjectInputStream} to read from.
+     * @throws IOException            if an I/O error occurs.
+     * @throws ClassNotFoundException if the class of a serialized object could not be found.
+     */
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
 
@@ -319,8 +410,20 @@ public class IntHashMap<V> implements Cloneable, Serializable {
         }
     }
 
+    /**
+     * A functional interface for visiting key-value pairs in the {@code IntHashMap} efficiently.
+     *
+     * @param <V> The type of values in the map.
+     */
     public interface Visitor<V> {
 
+        /**
+         * Visits a key-value pair.
+         *
+         * @param key   The integer key.
+         * @param value The associated value.
+         * @return {@code true} to continue iteration, {@code false} to stop.
+         */
         boolean visit(int key, V value);
     }
 

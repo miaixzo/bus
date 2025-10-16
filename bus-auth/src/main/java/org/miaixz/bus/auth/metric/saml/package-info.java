@@ -26,7 +26,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 标准协议-SAML
+ * Provides standard SAML (Security Assertion Markup Language) protocol implementations.
  *
  * @author Kimi Liu
  * @since Java 17+

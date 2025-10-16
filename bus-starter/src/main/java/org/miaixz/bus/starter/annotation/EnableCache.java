@@ -27,21 +27,25 @@
 */
 package org.miaixz.bus.starter.annotation;
 
-import java.lang.annotation.*;
-
 import org.miaixz.bus.starter.cache.CacheConfiguration;
 import org.springframework.context.annotation.Import;
 
+import java.lang.annotation.*;
+
 /**
- * 启用缓存支持
+ * Enables caching support.
+ * <p>
+ * This annotation, when placed on a Spring {@code @Configuration} class, imports the {@link CacheConfiguration}. This
+ * configuration class is responsible for setting up the AOP-based caching mechanism, which allows for declarative
+ * caching using annotations like {@code @Cached}, {@code @CachedGet}, and {@code @Invalid}.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 @Inherited
 @Documented
-@Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE })
+@Retention(RetentionPolicy.RUNTIME)
 @Import({ CacheConfiguration.class })
 public @interface EnableCache {
 

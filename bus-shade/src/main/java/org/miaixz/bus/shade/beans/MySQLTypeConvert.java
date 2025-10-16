@@ -28,15 +28,23 @@
 package org.miaixz.bus.shade.beans;
 
 /**
- * Copyright: Copyright (c) 2019
- * <p>
- * MYSQL 数据库字段类型转换
+ * MySQL database field type converter. This class provides logic to convert MySQL column types to appropriate Java
+ * {@link ColumnType}s.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class MySQLTypeConvert implements TypeConvert {
 
+    /**
+     * Processes the type conversion from a MySQL field type string to a {@link ColumnType}. It considers the specified
+     * {@link DateType} for date and time fields.
+     *
+     * @param dateType  The strategy for converting date types (e.g., {@link DateType#ONLY_DATE},
+     *                  {@link DateType#SQL_PACK}, {@link DateType#TIME_PACK}).
+     * @param fieldType The MySQL database field type string (e.g., "varchar", "bigint", "datetime").
+     * @return The corresponding {@link ColumnType} for the given MySQL field type.
+     */
     @Override
     public ColumnType processTypeConvert(DateType dateType, String fieldType) {
         String t = fieldType.toLowerCase();

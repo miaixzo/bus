@@ -37,14 +37,23 @@ import org.miaixz.bus.core.text.CharsBacker;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 莫尔斯电码的编码和解码实现 参考：<a href="https://github.com/TakWolf/Java-MorseCoder">https://github.com/TakWolf/Java-MorseCoder</a>
+ * Implementation for Morse code encoding and decoding. Reference:
+ * <a href="https://github.com/TakWolf/Java-MorseCoder">https://github.com/TakWolf/Java-MorseCoder</a>
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class Morse {
 
+    /**
+     * Maps character code points to their Morse code representation (e.g., 'A' -> "01"). The '0' represents a dit
+     * (short mark or dot) and '1' represents a dah (longer mark or dash).
+     */
     private static final Map<Integer, String> ALPHABETS = new HashMap<>(); // code point -> morse
+    /**
+     * Maps Morse code representations to their character code points (e.g., "01" -> 'A'). The '0' represents a dit
+     * (short mark or dot) and '1' represents a dah (longer mark or dash).
+     */
     private static final Map<String, Integer> DICTIONARIES = new HashMap<>(); // morse -> code point
 
     static {
@@ -107,23 +116,33 @@ public class Morse {
         registerMorse(Symbol.C_AT, "011010");
     }
 
-    private final char dit; // short mark or dot
-    private final char dah; // longer mark or dash
+    /**
+     * The character representing a short mark or dot (dit) in Morse code.
+     */
+    private final char dit;
+    /**
+     * The character representing a longer mark or dash (dah) in Morse code.
+     */
+    private final char dah;
+    /**
+     * The character used as a separator between Morse code characters.
+     */
     private final char split;
 
     /**
-     * 构造
+     * Constructs a {@code Morse} encoder/decoder with default characters for dit, dah, and split. Default dit: '.',
+     * Default dah: '-', Default split: '/'.
      */
     public Morse() {
         this(Symbol.C_DOT, Symbol.C_MINUS, Symbol.C_SLASH);
     }
 
     /**
-     * 构造
+     * Constructs a {@code Morse} encoder/decoder with custom characters for dit, dah, and split.
      *
-     * @param dit   点表示的字符
-     * @param dah   横线表示的字符
-     * @param split 分隔符
+     * @param dit   The character to represent a short mark or dot.
+     * @param dah   The character to represent a longer mark or dash.
+     * @param split The character to use as a separator between Morse code characters.
      */
     public Morse(final char dit, final char dah, final char split) {
         this.dit = dit;
@@ -132,10 +151,11 @@ public class Morse {
     }
 
     /**
-     * 注册莫尔斯电码表
+     * Registers a character and its corresponding binary Morse code representation into the internal dictionaries. The
+     * binary representation uses '0' for dit and '1' for dah.
      *
-     * @param abc  字母和字符
-     * @param dict 二进制
+     * @param abc  The character (alphabet or symbol) to register.
+     * @param dict The binary Morse code string for the character.
      */
     private static void registerMorse(final Character abc, final String dict) {
         ALPHABETS.put((int) abc, dict);
@@ -143,10 +163,12 @@ public class Morse {
     }
 
     /**
-     * 编码
+     * Encodes the given text into Morse code. The input text is converted to uppercase before encoding. Characters not
+     * found in the predefined Morse code map will be represented by their binary Unicode code point.
      *
-     * @param text 文本
-     * @return 密文
+     * @param text The plain text to encode. Must not be null.
+     * @return The encoded Morse code string, with characters separated by the {@code split} character.
+     * @throws NullPointerException if the input text is null.
      */
     public String encode(String text) {
         Assert.notNull(text, "Text should not be null.");
@@ -166,10 +188,14 @@ public class Morse {
     }
 
     /**
-     * 解码
+     * Decodes the given Morse code string back into plain text. The Morse code string should use the configured dit,
+     * dah, and split characters.
      *
-     * @param morse 莫尔斯电码
-     * @return 明文
+     * @param morse The Morse code string to decode. Must not be null.
+     * @return The decoded plain text string.
+     * @throws NullPointerException     if the input morse string is null.
+     * @throws IllegalArgumentException if the morse string contains characters other than the configured dit, dah, or
+     *                                  split.
      */
     public String decode(final String morse) {
         Assert.notNull(morse, "Morse should not be null.");

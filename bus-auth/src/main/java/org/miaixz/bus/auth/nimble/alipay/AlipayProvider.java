@@ -50,7 +50,7 @@ import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
 
 /**
- * 支付宝 登录
+ * Alipay login provider.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -59,21 +59,34 @@ public class AlipayProvider extends AbstractProvider {
 
     private static final String GATEWAY = "https://openapi.alipay.com/gateway.do";
 
+    /**
+     * Constructs an {@code AlipayProvider} with the specified context.
+     *
+     * @param context the authentication context
+     */
     public AlipayProvider(Context context) {
         super(context, Registry.ALIPAY);
         check(context);
     }
 
+    /**
+     * Constructs an {@code AlipayProvider} with the specified context and cache.
+     *
+     * @param context the authentication context
+     * @param cache   the cache implementation
+     */
     public AlipayProvider(Context context, CacheX cache) {
         super(context, Registry.ALIPAY, cache);
         check(context);
     }
 
-    public AlipayProvider(Context context, CacheX cache, String proxyHost, Integer proxyPort) {
-        super(context, Registry.ALIPAY, cache);
-        check(context);
-    }
-
+    /**
+     * Checks the completeness and validity of the context configuration for Alipay authentication. Ensures that the
+     * unionId is not empty and the redirect URI is not a localhost address.
+     *
+     * @param context the authentication context
+     * @throws AuthorizedException if the unionId is empty or the redirect URI is invalid
+     */
     protected void check(Context context) {
         Checker.check(context, Registry.ALIPAY);
 
@@ -86,6 +99,12 @@ public class AlipayProvider extends AbstractProvider {
         }
     }
 
+    /**
+     * Checks the callback data for Alipay authentication. Ensures that the authorization code (auth_code) is not empty.
+     *
+     * @param callback the callback object containing authorization data
+     * @throws AuthorizedException if the authorization code is empty
+     */
     @Override
     protected void check(Callback callback) {
         if (StringKit.isEmpty(callback.getAuth_code())) {
@@ -93,6 +112,13 @@ public class AlipayProvider extends AbstractProvider {
         }
     }
 
+    /**
+     * Retrieves the access token from Alipay's authorization server.
+     *
+     * @param callback the callback object containing the authorization code
+     * @return the {@link AuthToken} containing access token details
+     * @throws AuthorizedException if parsing the response fails or required token information is missing
+     */
     @Override
     public AuthToken getAccessToken(Callback callback) {
         Map<String, String> params = new HashMap<>();
@@ -120,6 +146,13 @@ public class AlipayProvider extends AbstractProvider {
                 .refreshToken((String) tokenResponse.get("refresh_token")).build();
     }
 
+    /**
+     * Refreshes the access token (renews its validity).
+     *
+     * @param authToken the token information returned after successful login
+     * @return a {@link Message} containing the refreshed token information
+     * @throws AuthorizedException if parsing the response fails or an error occurs during token refresh
+     */
     @Override
     public Message refresh(AuthToken authToken) {
         Map<String, String> params = new HashMap<>();
@@ -150,6 +183,13 @@ public class AlipayProvider extends AbstractProvider {
                 .build();
     }
 
+    /**
+     * Retrieves user information from Alipay's user info endpoint.
+     *
+     * @param authToken the {@link AuthToken} obtained after successful authorization
+     * @return {@link Material} containing the user's information
+     * @throws AuthorizedException if parsing the response fails or required user information is missing
+     */
     @Override
     public Material getUserInfo(AuthToken authToken) {
         Map<String, String> params = new HashMap<>();
@@ -185,6 +225,13 @@ public class AlipayProvider extends AbstractProvider {
                 .source(complex.toString()).build();
     }
 
+    /**
+     * Returns the authorization URL with a {@code state} parameter. The {@code state} will be included in the
+     * authorization callback.
+     *
+     * @param state the parameter to verify the authorization process, which can prevent CSRF attacks
+     * @return the authorization URL
+     */
     @Override
     public String authorize(String state) {
         return Builder.fromUrl(this.complex.authorize()).queryParam("app_id", context.getAppKey())

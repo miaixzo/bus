@@ -35,7 +35,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * 数据处理
+ * Configuration for data processing, specifically for filtering tables.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -45,28 +45,30 @@ import lombok.Setter;
 @Builder
 public class ProcessConfig implements Serializable {
 
+    private static final long serialVersionUID = -1L;
+
     /**
-     * 忽略表名
+     * A list of table names to ignore during processing.
      */
     private List<String> ignoreTableName;
     /**
-     * 忽略表前缀
+     * A list of table name prefixes to ignore. Tables with these prefixes will be excluded.
      */
     private List<String> ignoreTablePrefix;
     /**
-     * 忽略表后缀
+     * A list of table name suffixes to ignore. Tables with these suffixes will be excluded.
      */
     private List<String> ignoreTableSuffix;
     /**
-     * 指定生成表名
+     * A list of specific table names to include. If specified, only these tables will be processed.
      */
     private List<String> designatedTableName;
     /**
-     * 指定生成表前缀
+     * A list of table name prefixes to include. If specified, only tables with these prefixes will be processed.
      */
     private List<String> designatedTablePrefix;
     /**
-     * 指定生成表后缀
+     * A list of table name suffixes to include. If specified, only tables with these suffixes will be processed.
      */
     private List<String> designatedTableSuffix;
 

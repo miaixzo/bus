@@ -41,60 +41,83 @@ import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 
 /**
- * {@link Reader}作为{@link InputStream}使用的实现。 参考：Apache Commons IO
+ * An {@link InputStream} implementation that reads bytes from a {@link Reader}. This class adapts a character-based
+ * input stream (Reader) to a byte-based input stream (InputStream), performing character encoding using a specified
+ * {@link CharsetEncoder}.
+ * <p>
+ * This implementation is inspired by Apache Commons IO.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class ReaderInputStream extends InputStream {
 
+    /**
+     * The underlying {@link Reader} providing character data.
+     */
     private final Reader reader;
     /**
-     * 用于将字符转换为字节的CharsetEncoder
+     * The {@link CharsetEncoder} used to convert characters to bytes.
      */
     private final CharsetEncoder encoder;
+    /**
+     * The {@link CharBuffer} used as input for the encoder.
+     */
     private final CharBuffer encoderIn;
+    /**
+     * The {@link ByteBuffer} used as output for the encoder.
+     */
     private final ByteBuffer encoderOut;
+    /**
+     * The result of the last encoding operation.
+     */
     private CoderResult lastCoderResult;
+    /**
+     * Flag indicating whether the end of the input {@link Reader} has been reached.
+     */
     private boolean endOfInput;
 
     /**
-     * 构造，使用指定的字符集和默认缓冲区大小
+     * Constructs a new {@code ReaderInputStream} with the specified {@link Reader} and
+     * {@link java.nio.charset.Charset}. Uses a default buffer size of 8192 bytes.
      *
-     * @param reader  提供字符数据的Reader
-     * @param charset 字符集，用于创建CharsetEncoder
+     * @param reader  The {@link Reader} providing character data.
+     * @param charset The {@link java.nio.charset.Charset} to use for encoding characters to bytes.
      */
     public ReaderInputStream(final Reader reader, final java.nio.charset.Charset charset) {
         this(reader, charset, Normal._8192);
     }
 
     /**
-     * 构造，使用指定的字符集和缓冲区大小
+     * Constructs a new {@code ReaderInputStream} with the specified {@link Reader}, {@link java.nio.charset.Charset},
+     * and buffer size.
      *
-     * @param reader     提供字符数据的Reader
-     * @param charset    字符集，用于创建CharsetEncoder
-     * @param bufferSize 缓冲区大小
+     * @param reader     The {@link Reader} providing character data.
+     * @param charset    The {@link java.nio.charset.Charset} to use for encoding characters to bytes.
+     * @param bufferSize The size of the internal character and byte buffers.
      */
     public ReaderInputStream(final Reader reader, final java.nio.charset.Charset charset, final int bufferSize) {
         this(reader, Charset.newEncoder(charset, CodingErrorAction.REPLACE), bufferSize);
     }
 
     /**
-     * 构造，使用默认的缓冲区大小
+     * Constructs a new {@code ReaderInputStream} with the specified {@link Reader} and {@link CharsetEncoder}. Uses a
+     * default buffer size of 8192 bytes.
      *
-     * @param reader  提供字符数据的Reader
-     * @param encoder 用于编码的CharsetEncoder
+     * @param reader  The {@link Reader} providing character data.
+     * @param encoder The {@link CharsetEncoder} to use for encoding characters to bytes.
      */
     public ReaderInputStream(final Reader reader, final CharsetEncoder encoder) {
         this(reader, encoder, Normal._8192);
     }
 
     /**
-     * 构造，允许指定缓冲区大小。
+     * Constructs a new {@code ReaderInputStream} with the specified {@link Reader}, {@link CharsetEncoder}, and buffer
+     * size.
      *
-     * @param reader     提供字符数据的Reader
-     * @param encoder    用于编码的CharsetEncoder
-     * @param bufferSize 缓冲区大小
+     * @param reader     The {@link Reader} providing character data.
+     * @param encoder    The {@link CharsetEncoder} to use for encoding characters to bytes.
+     * @param bufferSize The size of the internal character and byte buffers.
      */
     public ReaderInputStream(final Reader reader, final CharsetEncoder encoder, final int bufferSize) {
         this.reader = reader;
@@ -106,6 +129,19 @@ public class ReaderInputStream extends InputStream {
         encoderOut.flip();
     }
 
+    /**
+     * Reads up to {@code len} bytes of data from the input stream into an array of bytes. An attempt is made to read as
+     * many as {@code len} bytes, but a smaller number may be read.
+     *
+     * @param b   The buffer into which the data is read.
+     * @param off The start offset in the destination array {@code b} at which the data is written.
+     * @param len The maximum number of bytes to read.
+     * @return The total number of bytes read into the buffer, or -1 if there is no more data because the end of the
+     *         stream has been reached.
+     * @throws IOException               If an I/O error occurs.
+     * @throws IndexOutOfBoundsException If {@code off} is negative, {@code len} is negative, or {@code off+len} is
+     *                                   greater than {@code b.length}.
+     */
     @Override
     public int read(final byte[] b, int off, int len) throws IOException {
         Assert.notNull(b, "Byte array must not be null");
@@ -134,6 +170,14 @@ public class ReaderInputStream extends InputStream {
         return (read == 0) && (endOfInput) ? -1 : read;
     }
 
+    /**
+     * Reads the next byte of data from the input stream. The value byte is returned as an {@code int} in the range
+     * {@code 0} to {@code 255}. If no byte is available because the end of the stream has been reached, the value
+     * {@code -1} is returned.
+     *
+     * @return The next byte of data, or {@code -1} if the end of the stream is reached.
+     * @throws IOException If an I/O error occurs.
+     */
     @Override
     public int read() throws IOException {
         do {
@@ -145,38 +189,47 @@ public class ReaderInputStream extends InputStream {
         return -1;
     }
 
+    /**
+     * Closes this input stream and releases any system resources associated with the stream. This method closes the
+     * underlying {@link Reader}.
+     *
+     * @throws IOException If an I/O error occurs.
+     */
     @Override
     public void close() throws IOException {
         reader.close();
     }
 
     /**
-     * 填充缓冲区。 此方法用于从输入源读取数据，并将其编码后存储到输出缓冲区中。 它处理输入数据，直到达到输入的末尾或者编码过程中遇到需要停止的条件。 在这个过程中，它会更新编码器的状态以及输入输出缓冲区的状态。
+     * Fills the internal buffers by reading characters from the underlying {@link Reader} and encoding them into bytes.
+     * This method manages the state of the {@link CharsetEncoder} and the input/output buffers. It continues to read
+     * and encode data until the end of the input is reached or an encoding condition requires stopping.
      *
-     * @throws IOException 如果在读取输入数据时发生IO异常。
+     * @throws IOException If an I/O error occurs while reading from the underlying {@link Reader}.
      */
     private void fillBuffer() throws IOException {
-        // 如果输入未结束，并且上一次的编码结果是正常的（没有溢出或错误），则尝试读取更多数据
+        // If input is not yet ended and the last encoding result was normal (no overflow or error),
+        // try to read more data.
         if ((!endOfInput) && ((lastCoderResult == null) || (lastCoderResult.isUnderflow()))) {
-            encoderIn.compact(); // 准备好输入缓冲区，以便接收新的数据
-            final int position = encoderIn.position(); // 记录当前读取位置
+            encoderIn.compact(); // Prepare the input buffer to receive new data.
+            final int position = encoderIn.position(); // Record the current read position.
 
-            // 从reader中读取数据到encoderIn缓冲区
+            // Read data from the reader into the encoderIn buffer.
             final int c = reader.read(encoderIn.array(), position, encoderIn.remaining());
-            if (c == -1) // 如果读取到输入末尾
+            if (c == -1) // If end of input is reached.
                 endOfInput = true;
             else {
-                // 更新读取位置，准备处理下一批数据
+                // Update the read position, ready to process the next batch of data.
                 encoderIn.position(position + c);
             }
-            encoderIn.flip(); // 反转输入缓冲区，使其准备好进行编码
+            encoderIn.flip(); // Flip the input buffer to prepare it for encoding.
         }
 
-        // 准备输出缓冲区，以便接收编码后的数据
+        // Prepare the output buffer to receive encoded data.
         encoderOut.compact();
-        // 执行编码操作，将输入缓冲区的数据编码到输出缓冲区
+        // Perform the encoding operation, encoding data from the input buffer to the output buffer.
         lastCoderResult = encoder.encode(encoderIn, encoderOut, endOfInput);
-        // 反转输出缓冲区，使其准备好被写入到最终目的地
+        // Flip the output buffer to prepare it for being written to the final destination.
         encoderOut.flip();
     }
 

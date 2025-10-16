@@ -28,7 +28,8 @@
 package org.miaixz.bus.pay;
 
 /**
- * 金融机构 排名不分先后，以三方支付服务商给出的数据为准。
+ * Financial institutions. The ranking is not in any particular order and is based on the data provided by third-party
+ * payment service providers.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -36,201 +37,219 @@ package org.miaixz.bus.pay;
 public enum Banking {
 
     /**
-     * 招商银行
+     * China Merchants Bank
      */
     BK_1001("1001"),
     /**
-     * 工商银行
+     * Industrial and Commercial Bank of China
      */
     BK_1002("1002"),
     /**
-     * 建设银行
+     * China Construction Bank
      */
     BK_1003("1003"),
     /**
-     * 浦发银行
+     * Shanghai Pudong Development Bank
      */
     BK_1004("1004"),
     /**
-     * 农业银行
+     * Agricultural Bank of China
      */
     BK_1005("1005"),
     /**
-     * 民生银行
+     * China Minsheng Bank
      */
     BK_1006("1006"),
     /**
-     * 兴业银行
+     * Industrial Bank Co., Ltd.
      */
     BK_1009("1009"),
     /**
-     * 平安银行
+     * Ping An Bank
      */
     BK_1010("1010"),
     /**
-     * 交通银行
+     * Bank of Communications
      */
     BK_1020("1020"),
     /**
-     * 中信银行
+     * China CITIC Bank
      */
     BK_1021("1021"),
     /**
-     * 光大银行
+     * China Everbright Bank
      */
     BK_1022("1022"),
     /**
-     * 上海银行
+     * Bank of Shanghai
      */
     BK_1024("1024"),
     /**
-     * 华夏银行
+     * Huaxia Bank
      */
     BK_1025("1025"),
     /**
-     * 中国银行
+     * Bank of China
      */
     BK_1026("1026"),
 
     /**
-     * 广发银行
+     * China Guangfa Bank
      */
     BK_1027("1027"),
     /**
-     * 南京银行
+     * Bank of Nanjing
      */
     BK_1054("1054"),
     /**
-     * 宁波银行
+     * Bank of Ningbo
      */
     BK_1056("1056"),
     /**
-     * 邮储银行
+     * Postal Savings Bank of China
      */
     BK_1066("1066"),
     /**
-     * 顺德农商银行
+     * Shunde Rural Commercial Bank
      */
     BK_4036("4036"),
     /**
-     * 浙江泰隆商业银行
+     * Zhejiang Tailong Commercial Bank
      */
     BK_4051("4051"),
     /**
-     * 宁波鄞州农村商业银行
+     * Ningbo Yinzhou Rural Commercial Bank
      */
     BK_4052("4052"),
     /**
-     * 江苏紫金农村商业银行股份有限公司
+     * Jiangsu Zijin Rural Commercial Bank Co., Ltd.
      */
     BK_4072("4072"),
     /**
-     * 深圳农村商业银行
+     * Shenzhen Rural Commercial Bank
      */
     BK_4076("4076"),
     /**
-     * 陕西省农村信用社
+     * Shaanxi Rural Credit Cooperatives
      */
     BK_4108("4108"),
     /**
-     * 广西壮族自治区农村信用社
+     * Guangxi Zhuang Autonomous Region Rural Credit Cooperatives
      */
     BK_4113("4113"),
     /**
-     * 河南省农村信用社
+     * Henan Rural Credit Cooperatives
      */
     BK_4115("4115"),
     /**
-     * 宁夏黄河农村商业银行
+     * Ningxia Yellow River Rural Commercial Bank
      */
     BK_4150("4150"),
     /**
-     * 天津农村商业银行
+     * Tianjin Rural Commercial Bank
      */
     BK_4153("4153"),
     /**
-     * 山西省农村信用社
+     * Shanxi Rural Credit Cooperatives
      */
     BK_4156("4156"),
     /**
-     * 甘肃省农村信用社
+     * Gansu Rural Credit Cooperatives
      */
     BK_4157("4157"),
     /**
-     * 安徽省农村信用社
+     * Anhui Rural Credit Cooperatives
      */
     BK_4166("4166"),
     /**
-     * 长沙银行
+     * Bank of Changsha
      */
     BK_4216("4216"),
     /**
-     * 江苏省农村信用社联合社
+     * Jiangsu Rural Credit Cooperatives Union
      */
     BK_4217("4217"),
     /**
-     * 衡水银行
+     * Bank of Hengshui
      */
     BK_4752("4752"),
     /**
-     * 中原银行
+     * Zhongyuan Bank
      */
     BK_4753("4753"),
     /**
-     * 长子县融汇村镇银行
+     * Changzi County Ronghui Village Bank
      */
     BK_4755("4755"),
     /**
-     * 长治银行
+     * Bank of Changzhi
      */
     BK_4756("4756"),
     /**
-     * 海口联合农村商业银行股份有限公司
+     * Haikou Union Rural Commercial Bank Co., Ltd.
      */
     BK_4758("4758"),
     /**
-     * 企业银行（中国）
+     * Industrial Bank of Korea (China)
      */
     BK_4761("4761"),
     /**
-     * 南洋商业银行（中国）有限公司
+     * Nanyang Commercial Bank (China), Limited
      */
     BK_4763("4763"),
     /**
-     * 浙江省农村信用社联合社
+     * Zhejiang Rural Credit Cooperatives Union
      */
     BK_4764("4764"),
     /**
-     * 枣庄银行股份有限公司
+     * Bank of Zaozhuang Co., Ltd.
      */
     BK_4766("4766"),
     /**
-     * 大同银行
+     * Bank of Datong
      */
     BK_4767("4767"),
     /**
-     * 北京中关村银行股份有限公司
+     * Beijing Zhongguancun Bank Corporation Limited
      */
     BK_4769("4769"),
     /**
-     * 星展银行（中国）有限公司
+     * DBS Bank (China) Limited
      */
     BK_4778("4778"),
     /**
-     * 北京银行
+     * Bank of Beijing
      */
     BK_4836("4836");
 
+    /**
+     * The code of the financial institution.
+     */
     private final String code;
 
+    /**
+     * Constructs a new Banking enum.
+     *
+     * @param code The code of the financial institution.
+     */
     Banking(String code) {
         this.code = code;
     }
 
+    /**
+     * Gets the code of the financial institution.
+     *
+     * @return The code.
+     */
     public String getCode() {
         return code;
     }
 
+    /**
+     * Returns the code of the financial institution.
+     *
+     * @return The code.
+     */
     @Override
     public String toString() {
         return code;

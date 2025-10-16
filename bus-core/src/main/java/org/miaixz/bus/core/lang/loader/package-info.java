@@ -26,7 +26,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 加载器的抽象接口和实现，包括懒加载的实现等
+ * Provides abstract interfaces and implementations for various loaders, including lazy loading implementations.
  *
  * @author Kimi Liu
  * @since Java 17+

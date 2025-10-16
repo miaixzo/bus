@@ -27,16 +27,15 @@
 */
 package org.miaixz.bus.pay.metric.wechat.entity.v2;
 
-import org.miaixz.bus.pay.magic.Material;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+import org.miaixz.bus.pay.magic.Material;
 
 /**
- * 企业微信-查询向员工付款记录
+ * Model for the WeCom Pay - Query Payment to Employee Record API.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,9 +47,21 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class QueryTrans2Pocket extends Material {
 
+    /**
+     * Random string.
+     */
     private String nonce_str;
+    /**
+     * Signature.
+     */
     private String sign;
+    /**
+     * Merchant's payment number.
+     */
     private String partner_trade_no;
+    /**
+     * Merchant ID.
+     */
     private String mch_id;
 
 }

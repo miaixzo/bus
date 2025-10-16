@@ -53,7 +53,8 @@ import org.miaixz.bus.office.excel.sax.handler.RowHandler;
 import org.miaixz.bus.office.excel.xyz.ExcelSaxKit;
 
 /**
- * Excel2003格式的事件-用户模型方式读取器，统一将此归类为Sax读取 参考：http://www.cnblogs.com/wshsdlau/p/5643862.html
+ * Excel2003 format event-user model reader, uniformly classified as SAX reader. Reference:
+ * <a href="http://www.cnblogs.com/wshsdlau/p/5643862.html">http://www.cnblogs.com/wshsdlau/p/5643862.html</a>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -61,52 +62,53 @@ import org.miaixz.bus.office.excel.xyz.ExcelSaxKit;
 public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03SaxReader> {
 
     /**
-     * 如果为公式，true表示输出公式计算后的结果值，false表示输出公式本身
+     * If it is a formula, {@code true} means output the calculated result value, {@code false} means output the formula
+     * itself.
      */
     private final boolean isOutputFormulaValues = true;
     /**
-     * Sheet边界记录，此Record中可以获得Sheet名
+     * List of {@link BoundSheetRecord}s, which can be used to obtain sheet names.
      */
     private final List<BoundSheetRecord> boundSheetRecords = new ArrayList<>();
     /**
-     * 行处理器
+     * Row handler for processing each row.
      */
     private final RowHandler rowHandler;
     /**
-     * 用于解析公式
+     * Used to parse formulas.
      */
     private SheetRecordCollectingListener workbookBuildingListener;
     /**
-     * 子工作簿，用于公式计算
+     * Stub workbook, used for formula calculation.
      */
     private HSSFWorkbook stubWorkbook;
     /**
-     * 静态字符串表
+     * Static string table.
      */
     private SSTRecord sstRecord;
     private FormatTrackingHSSFListener formatListener;
     private boolean isOutputNextStringRecord;
     /**
-     * 存储行记录的容器
+     * Container for storing cell values of the current row.
      */
     private List<Object> rowCellList = new ArrayList<>();
     /**
-     * 自定义需要处理的sheet编号，如果-1表示处理所有sheet
+     * Custom sheet ID to process. If -1, all sheets are processed.
      */
     private int rid = -1;
     /**
-     * sheet名称，主要用于使用sheet名读取的情况
+     * Sheet name, mainly used when reading by sheet name.
      */
     private String sheetName;
     /**
-     * 当前rid索引
+     * Current rId index.
      */
     private int curRid = -1;
 
     /**
-     * 构造
+     * Constructs a new {@code Excel03SaxReader}.
      *
-     * @param rowHandler 行处理器
+     * @param rowHandler The row handler to process each row.
      */
     public Excel03SaxReader(final RowHandler rowHandler) {
         this.rowHandler = rowHandler;
@@ -132,12 +134,13 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
     }
 
     /**
-     * 读取
+     * Reads an Excel file using SAX parsing.
      *
-     * @param fs                 {@link POIFSFileSystem}
-     * @param idOrRidOrSheetName sheet id或者rid编号或sheet名称，从0开始，rid必须加rId前缀，例如rId0，如果为-1处理所有编号的sheet
-     * @return this
-     * @throws InternalException IO异常包装
+     * @param fs                 The {@link POIFSFileSystem} representing the Excel file.
+     * @param idOrRidOrSheetName The sheet identifier in Excel, which can be a sheet ID, an rId (prefixed with "rId",
+     *                           e.g., "rId0"), or a sheet name. If -1, all sheets are processed.
+     * @return This reader instance, for chaining.
+     * @throws InternalException If an I/O error occurs or a POI-related exception occurs.
      */
     public Excel03SaxReader read(final POIFSFileSystem fs, final String idOrRidOrSheetName) throws InternalException {
         this.rid = getSheetIndex(idOrRidOrSheetName);
@@ -156,7 +159,7 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
         } catch (final IOException e) {
             throw new InternalException(e);
         } catch (final TerminateException e) {
-            // 用户抛出此异常，表示强制结束读取
+            // User throws this exception to force end reading.
         } finally {
             IoKit.closeQuietly(fs);
         }
@@ -164,18 +167,20 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
     }
 
     /**
-     * 获得Sheet序号，如果处理所有sheet，获得最大的Sheet序号，从0开始
+     * Gets the sheet index to be processed. If all sheets are processed, returns the maximum sheet index. The index is
+     * 0-based.
      *
-     * @return sheet序号
+     * @return The sheet index.
      */
     public int getSheetIndex() {
         return this.rid;
     }
 
     /**
-     * 获得Sheet名，如果处理所有sheet，获得后一个Sheet名，从0开始
+     * Gets the sheet name. If all sheets are processed, returns the name of the current sheet being processed. The
+     * index is 0-based.
      *
-     * @return Sheet名
+     * @return The sheet name.
      */
     public String getSheetName() {
         if (null != this.sheetName) {
@@ -190,19 +195,19 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
     }
 
     /**
-     * HSSFListener 监听方法，处理 Record
+     * HSSFListener callback method, processes each {@link Record}.
      *
-     * @param record 记录
+     * @param record The record to process.
      */
     @Override
     public void processRecord(final Record record) {
         if (this.rid > -1 && this.curRid > this.rid) {
-            // 指定Sheet之后的数据不再处理
+            // Data after the specified sheet is no longer processed.
             return;
         }
 
         if (record instanceof BoundSheetRecord) {
-            // Sheet边界记录，此Record中可以获得Sheet名
+            // Sheet boundary record, sheet name can be obtained from this record.
             final BoundSheetRecord boundSheetRecord = (BoundSheetRecord) record;
             boundSheetRecords.add(boundSheetRecord);
             final String currentSheetName = boundSheetRecord.getSheetname();
@@ -210,12 +215,12 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
                 this.rid = this.boundSheetRecords.size() - 1;
             }
         } else if (record instanceof SSTRecord) {
-            // 静态字符串表
+            // Static string table.
             sstRecord = (SSTRecord) record;
         } else if (record instanceof BOFRecord) {
             final BOFRecord bofRecord = (BOFRecord) record;
             if (bofRecord.getType() == BOFRecord.TYPE_WORKSHEET) {
-                // 如果有需要，则建立子工作薄
+                // If needed, create a stub workbook.
                 if (workbookBuildingListener != null && stubWorkbook == null) {
                     stubWorkbook = workbookBuildingListener.getStubHSSFWorkbook();
                 }
@@ -226,19 +231,20 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
                 throw new InternalException("Sheet [{}] not exist!", this.sheetName);
             }
             if (this.curRid != -1 && isProcessCurrentSheet()) {
-                // 只有在当前指定的sheet中，才触发结束事件，且curId=-1时也不处理，避免重复调用
+                // Only trigger the end event for the currently specified sheet, and do not process when curId=-1 to
+                // avoid duplicate calls.
                 processLastCellSheet();
             }
         } else if (isProcessCurrentSheet()) {
             if (record instanceof MissingCellDummyRecord) {
-                // 空值的操作
+                // Operation for empty cells.
                 final MissingCellDummyRecord mc = (MissingCellDummyRecord) record;
                 addToRowCellList(mc);
             } else if (record instanceof LastCellOfRowDummyRecord) {
-                // 行结束
+                // End of row.
                 processLastCell((LastCellOfRowDummyRecord) record);
             } else {
-                // 处理单元格值
+                // Process cell value.
                 processCellValue(record);
             }
         }
@@ -246,34 +252,34 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
     }
 
     /**
-     * 将空数据加入到行列表中
+     * Adds an empty cell to the row list.
      *
-     * @param record MissingCellDummyRecord
+     * @param record The {@link MissingCellDummyRecord} representing the missing cell.
      */
     private void addToRowCellList(final MissingCellDummyRecord record) {
         addToRowCellList(record.getRow(), record.getColumn(), Normal.EMPTY);
     }
 
     /**
-     * 将单元格数据加入到行列表中
+     * Adds a cell value to the row list.
      *
-     * @param record 单元格
-     * @param value  值
+     * @param record The {@link CellValueRecordInterface} representing the cell.
+     * @param value  The value of the cell.
      */
     private void addToRowCellList(final CellValueRecordInterface record, final Object value) {
         addToRowCellList(record.getRow(), record.getColumn(), value);
     }
 
     /**
-     * 将单元格数据加入到行列表中
+     * Adds a cell value to the row list at the specified row and column.
      *
-     * @param row    行号
-     * @param column 单元格
-     * @param value  值
+     * @param row    The row index.
+     * @param column The column index.
+     * @param value  The value of the cell.
      */
     private void addToRowCellList(final int row, final int column, final Object value) {
         while (column > this.rowCellList.size()) {
-            // 对于中间无数据的单元格补齐空白
+            // Fill in blanks for empty cells in between.
             this.rowCellList.add(Normal.EMPTY);
             this.rowHandler.handleCell(this.curRid, row, rowCellList.size() - 1, value, null);
         }
@@ -283,27 +289,27 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
     }
 
     /**
-     * 处理单元格值
+     * Processes the value of a cell record.
      *
-     * @param record 单元格
+     * @param record The {@link Record} representing the cell.
      */
     private void processCellValue(final Record record) {
         Object value = null;
 
         switch (record.getSid()) {
             case BlankRecord.sid:
-                // 空白记录
+                // Blank record.
                 addToRowCellList(((BlankRecord) record), Normal.EMPTY);
                 break;
 
             case BoolErrRecord.sid:
-                // 布尔类型
+                // Boolean type.
                 final BoolErrRecord berec = (BoolErrRecord) record;
                 addToRowCellList(berec, berec.getBooleanValue());
                 break;
 
             case FormulaRecord.sid:
-                // 公式类型
+                // Formula type.
                 final FormulaRecord formulaRec = (FormulaRecord) record;
                 if (isOutputFormulaValues) {
                     if (Double.isNaN(formulaRec.getValue())) {
@@ -321,7 +327,7 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
                 break;
 
             case StringRecord.sid:
-                // 单元格中公式的字符串
+                // String for formula cell.
                 if (isOutputNextStringRecord) {
                     // String for formula
                     // value = ((StringRecord) record).getString();
@@ -336,7 +342,7 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
                 break;
 
             case LabelSSTRecord.sid:
-                // 字符串类型
+                // String type.
                 final LabelSSTRecord lsrec = (LabelSSTRecord) record;
                 if (null != sstRecord) {
                     value = sstRecord.getString(lsrec.getSSTIndex()).toString();
@@ -344,10 +350,10 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
                 addToRowCellList(lsrec, ObjectKit.defaultIfNull(value, Normal.EMPTY));
                 break;
 
-            case NumberRecord.sid: // 数字类型
+            case NumberRecord.sid: // Numeric type.
                 final NumberRecord numrec = (NumberRecord) record;
                 value = ExcelSaxKit.getNumberOrDateValue(numrec, numrec.getValue(), this.formatListener);
-                // 向容器加入列值
+                // Add column value to container.
                 addToRowCellList(numrec, value);
                 break;
 
@@ -357,58 +363,60 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
     }
 
     /**
-     * 处理行结束后的操作，{@link LastCellOfRowDummyRecord}是行结束的标识Record
+     * Processes operations after a row ends. {@link LastCellOfRowDummyRecord} is the indicator record for the end of a
+     * row.
      *
-     * @param lastCell 行结束的标识Record
+     * @param lastCell The {@link LastCellOfRowDummyRecord} indicating the end of the row.
      */
     private void processLastCell(final LastCellOfRowDummyRecord lastCell) {
-        // 每行结束时， 调用handle() 方法
+        // At the end of each row, call the handle() method.
         this.rowHandler.handle(curRid, lastCell.getRow(), this.rowCellList);
-        // 清空行Cache
+        // Clear row cache.
         this.rowCellList = new ArrayList<>(this.rowCellList.size());
     }
 
     /**
-     * 处理sheet结束后的操作
+     * Processes operations after a sheet ends.
      */
     private void processLastCellSheet() {
         this.rowHandler.doAfterAllAnalysed();
     }
 
     /**
-     * 是否处理当前sheet
+     * Checks if the current sheet should be processed.
      *
-     * @return 是否处理当前sheet
+     * @return {@code true} if the current sheet should be processed, {@code false} otherwise.
      */
     private boolean isProcessCurrentSheet() {
-        // rid < 0 且 sheet名称存在，说明没有匹配到sheet名称
+        // If rid < 0 and sheet name exists, it means no sheet name matched.
         return (this.rid < 0 && null == this.sheetName) || this.rid == this.curRid;
     }
 
     /**
-     * 获取sheet索引，从0开始
+     * Gets the sheet index (0-based).
      * <ul>
-     * <li>传入'rId'开头，直接去除rId前缀</li>
-     * <li>传入纯数字，表示sheetIndex，直接转换为rid</li>
+     * <li>If the input starts with 'rId', the 'rId' prefix is removed directly.</li>
+     * <li>If the input is a pure number, it is treated as a sheet index and converted to rId.</li>
      * </ul>
      *
-     * @param idOrRidOrSheetName Excel中的sheet id或者rid编号或sheet名称，从0开始，rid必须加rId前缀，例如rId0，如果为-1处理所有编号的sheet
-     * @return sheet索引，从0开始
+     * @param idOrRidOrSheetName The sheet identifier in Excel, which can be a sheet ID, an rId (prefixed with "rId",
+     *                           e.g., "rId0"), or a sheet name. If -1, all sheets are processed.
+     * @return The sheet index (0-based).
      */
     private int getSheetIndex(final String idOrRidOrSheetName) {
         Assert.notBlank(idOrRidOrSheetName, "id or rid or sheetName must be not blank!");
 
-        // rid直接处理
+        // Process rId directly.
         if (StringKit.startWithIgnoreCase(idOrRidOrSheetName, RID_PREFIX)) {
             return Integer.parseInt(StringKit.removePrefixIgnoreCase(idOrRidOrSheetName, RID_PREFIX));
         } else if (StringKit.startWithIgnoreCase(idOrRidOrSheetName, SHEET_NAME_PREFIX)) {
-            // 支持任意名称
+            // Support any name.
             this.sheetName = StringKit.removePrefixIgnoreCase(idOrRidOrSheetName, SHEET_NAME_PREFIX);
         } else {
             try {
                 return Integer.parseInt(idOrRidOrSheetName);
             } catch (final NumberFormatException ignore) {
-                // 如果用于传入非数字，按照sheet名称对待
+                // If the user enters a non-numeric value, treat it as a sheet name.
                 this.sheetName = idOrRidOrSheetName;
             }
         }

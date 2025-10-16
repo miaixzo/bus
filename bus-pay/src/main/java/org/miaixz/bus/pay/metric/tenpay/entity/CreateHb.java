@@ -36,7 +36,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * 创建现金红包
+ * Create Red Packet model.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,23 +48,77 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class CreateHb extends Material {
 
+    /**
+     * Character set.
+     */
     private String charset;
+    /**
+     * Random string.
+     */
     private String nonce_str;
+    /**
+     * Signature.
+     */
     private String sign;
+    /**
+     * Merchant bill number.
+     */
     private String mch_billno;
+    /**
+     * Merchant ID.
+     */
     private String mch_id;
+    /**
+     * Merchant name.
+     */
     private String mch_name;
+    /**
+     * QQ App ID.
+     */
     private String qqappid;
+    /**
+     * Recipient's OpenID.
+     */
     private String re_openid;
+    /**
+     * Total amount.
+     */
     private String total_amount;
+    /**
+     * Total number of red packets.
+     */
     private String total_num;
+    /**
+     * Wishing message.
+     */
     private String wishing;
+    /**
+     * Activity name.
+     */
     private String act_name;
+    /**
+     * Icon ID.
+     */
     private String icon_id;
+    /**
+     * Banner ID.
+     */
     private String banner_id;
+    /**
+     * Asynchronous notification URL.
+     */
     private String notify_url;
+    /**
+     * Do not send message flag.
+     */
     private String not_send_msg;
+    /**
+     * Minimum value of a red packet.
+     */
     private String min_value;
+    /**
+     * Maximum value of a red packet.
+     */
     private String max_value;
 
 }

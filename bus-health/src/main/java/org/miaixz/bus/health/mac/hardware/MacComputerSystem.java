@@ -44,6 +44,9 @@ import com.sun.jna.platform.mac.IOKit.IORegistryEntry;
 import com.sun.jna.platform.mac.IOKitUtil;
 
 /**
+ * <p>
+ * MacComputerSystem class.
+ * </p>
  * Hardware data obtained from ioreg.
  *
  * @author Kimi Liu
@@ -54,6 +57,12 @@ final class MacComputerSystem extends AbstractComputerSystem {
 
     private final Supplier<Tuple> manufacturerModelSerialUUID = Memoizer.memoize(MacComputerSystem::platformExpert);
 
+    /**
+     * Queries the I/O Registry for platform expert device information.
+     *
+     * @return A {@link Tuple} containing the manufacturer, model, serial number, and UUID of the computer system.
+     *         Returns {@link Normal#UNKNOWN} for any field that cannot be determined.
+     */
     private static Tuple platformExpert() {
         String manufacturer = null;
         String model = null;
@@ -79,31 +88,49 @@ final class MacComputerSystem extends AbstractComputerSystem {
                 StringKit.isBlank(uuid) ? Normal.UNKNOWN : uuid);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getManufacturer() {
         return manufacturerModelSerialUUID.get().get(0);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getModel() {
         return manufacturerModelSerialUUID.get().get(1);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getSerialNumber() {
         return manufacturerModelSerialUUID.get().get(2);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getHardwareUUID() {
         return manufacturerModelSerialUUID.get().get(3);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Firmware createFirmware() {
         return new MacFirmware();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Baseboard createBaseboard() {
         return new MacBaseboard();

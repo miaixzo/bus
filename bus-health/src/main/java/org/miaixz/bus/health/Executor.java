@@ -44,7 +44,7 @@ import org.miaixz.bus.logger.Logger;
 import com.sun.jna.Platform;
 
 /**
- * 用于在命令行上执行命令并返回执行结果的类。
+ * A class for executing commands on the command line and returning the results.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -52,13 +52,15 @@ import com.sun.jna.Platform;
 @ThreadSafe
 public final class Executor {
 
-    /** 默认环境变量设置，用于确保命令输出使用标准语言格式 */
+    /**
+     * Default environment settings to ensure command output uses standard language format.
+     */
     private static final String[] DEFAULT_ENV = getDefaultEnv();
 
     /**
-     * 获取默认环境变量设置。
+     * Retrieves the default environment settings.
      *
-     * @return Windows 系统返回 {"LANGUAGE=C"}，其他系统返回 {"LC_ALL=C"}
+     * @return {@code {"LANGUAGE=C"}} for Windows systems, and {@code {"LC_ALL=C"}} for other systems.
      */
     private static String[] getDefaultEnv() {
         if (Platform.isWindows()) {
@@ -69,11 +71,12 @@ public final class Executor {
     }
 
     /**
-     * 在本地命令行上执行命令并返回结果。这是一个便捷方法，用于调用 {@link java.lang.Runtime#exec(String)} 并捕获结果输出为字符串列表。在 Windows 上，
-     * 与可执行程序无关的内置命令可能需要在命令前添加 {@code cmd.exe /c}。
+     * Executes a command on the local command line and returns the result. This is a convenience method for calling
+     * {@link java.lang.Runtime#exec(String)} and capturing the resulting output as a list of strings. On Windows,
+     * built-in commands that are not executables may require prefixing the command with {@code cmd.exe /c}.
      *
-     * @param cmdToRun 要运行的命令
-     * @return 表示命令结果的字符串列表，如果命令失败则返回空列表
+     * @param cmdToRun The command to run.
+     * @return A list of strings representing the command's result, or an empty list if the command fails.
      */
     public static List<String> runNative(String cmdToRun) {
         String[] cmd = cmdToRun.split(Symbol.SPACE);
@@ -81,23 +84,28 @@ public final class Executor {
     }
 
     /**
-     * 在本地命令行上执行命令并逐行返回结果。这是一个便捷方法，用于调用 {@link java.lang.Runtime#exec(String[])} 并捕获结果输出为字符串列表。在 Windows 上，
-     * 与可执行程序无关的内置命令可能需要在数组前添加字符串 {@code cmd.exe} 和 {@code /c}。
+     * Executes a command on the local command line and returns the result line by line. This is a convenience method
+     * for calling {@link java.lang.Runtime#exec(String[])} and capturing the resulting output as a list of strings. On
+     * Windows, built-in commands that are not executables may require prefixing the array with the strings
+     * {@code cmd.exe} and {@code /c}.
      *
-     * @param cmdToRunWithArgs 要运行的命令及其参数，以数组形式
-     * @return 表示命令结果的字符串列表，如果命令失败则返回空列表
+     * @param cmdToRunWithArgs The command and its arguments to run, as an array.
+     * @return A list of strings representing the command's result, or an empty list if the command fails.
      */
     public static List<String> runNative(String[] cmdToRunWithArgs) {
         return runNative(cmdToRunWithArgs, DEFAULT_ENV);
     }
 
     /**
-     * 在本地命令行上执行命令并逐行返回结果。这是一个便捷方法，用于调用 {@link java.lang.Runtime#exec(String[])} 并捕获结果输出为字符串列表。在 Windows 上，
-     * 与可执行程序无关的内置命令可能需要在数组前添加字符串 {@code cmd.exe} 和 {@code /c}。
+     * Executes a command on the local command line and returns the result line by line. This is a convenience method
+     * for calling {@link java.lang.Runtime#exec(String[])} and capturing the resulting output as a list of strings. On
+     * Windows, built-in commands that are not executables may require prefixing the array with the strings
+     * {@code cmd.exe} and {@code /c}.
      *
-     * @param cmdToRunWithArgs 要运行的命令及其参数，以数组形式
-     * @param envp             环境变量设置的字符串数组，每个元素格式为 name=value， 如果为 null，则子进程继承当前进程的环境
-     * @return 表示命令结果的字符串列表，如果命令失败则返回空列表
+     * @param cmdToRunWithArgs The command and its arguments to run, as an array.
+     * @param envp             An array of strings, each element of which has the format {@code name=value}, or
+     *                         {@code null} if the subprocess should inherit the environment of the current process.
+     * @return A list of strings representing the command's result, or an empty list if the command fails.
      */
     public static List<String> runNative(String[] cmdToRunWithArgs, String[] envp) {
         Process p = null;
@@ -107,25 +115,25 @@ public final class Executor {
         } catch (SecurityException | IOException e) {
             Logger.trace("Couldn't run command {}: {}", Arrays.toString(cmdToRunWithArgs), e.getMessage());
         } finally {
-            // 确保所有资源被释放
+            // Ensure all resources are freed
             if (p != null) {
-                // Windows 和 Solaris 在 destroy 时不会关闭描述符，
-                // 因此必须单独处理
+                // Windows and Solaris don't close descriptors on destroy,
+                // so must be handled separately
                 if (Platform.isWindows() || Platform.isSolaris()) {
                     try {
                         p.getOutputStream().close();
                     } catch (IOException e) {
-                        // 失败时不做任何操作
+                        // Do nothing on failure
                     }
                     try {
                         p.getInputStream().close();
                     } catch (IOException e) {
-                        // 失败时不做任何操作
+                        // Do nothing on failure
                     }
                     try {
                         p.getErrorStream().close();
                     } catch (IOException e) {
-                        // 失败时不做任何操作
+                        // Do nothing on failure
                     }
                 }
                 p.destroy();
@@ -135,11 +143,11 @@ public final class Executor {
     }
 
     /**
-     * 从进程获取输出并存储为字符串列表。
+     * Retrieves the output from a process and stores it as a list of strings.
      *
-     * @param p   运行的进程
-     * @param cmd 执行的命令数组
-     * @return 进程输出的字符串列表
+     * @param p   The process that was run.
+     * @param cmd The command array that was executed.
+     * @return A list of strings representing the process's output.
      */
     private static List<String> getProcessOutput(Process p, String[] cmd) {
         ArrayList<String> sa = new ArrayList<>();
@@ -160,21 +168,21 @@ public final class Executor {
     }
 
     /**
-     * 返回指定命令的第一行响应。
+     * Returns the first line of response from the specified command.
      *
-     * @param cmd2launch 要启动的命令
-     * @return 响应字符串，如果命令失败则返回空字符串
+     * @param cmd2launch The command to launch.
+     * @return The response string, or an empty string if the command fails.
      */
     public static String getFirstAnswer(String cmd2launch) {
         return getAnswerAt(cmd2launch, 0);
     }
 
     /**
-     * 返回运行指定命令后指定行索引（基于 0）的响应。
+     * Returns the response at the specified line index (0-based) after running the given command.
      *
-     * @param cmd2launch 要启动的命令
-     * @param answerIdx  命令响应中的行索引
-     * @return 响应中的整行，如果索引无效或命令运行失败则返回空字符串
+     * @param cmd2launch The command to launch.
+     * @param answerIdx  The line index in the command's response.
+     * @return The full line from the response, or an empty string if the index is invalid or the command fails to run.
      */
     public static String getAnswerAt(String cmd2launch, int answerIdx) {
         List<String> sa = Executor.runNative(cmd2launch);

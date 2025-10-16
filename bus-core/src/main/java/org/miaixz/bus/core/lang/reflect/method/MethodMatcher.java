@@ -41,7 +41,7 @@ import org.miaixz.bus.core.lang.annotation.resolve.AnnotatedElements;
 import org.miaixz.bus.core.xyz.*;
 
 /**
- * 方法匹配器工具类，用于基于各种预设条件创建方法匹配器。
+ * Utility class for creating method matchers based on various predefined conditions.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -49,10 +49,10 @@ import org.miaixz.bus.core.xyz.*;
 public class MethodMatcher {
 
     /**
-     * 用于组合多个方法匹配器的方法匹配器，仅当所有方法匹配器均匹配失败时才认为方法匹配。
+     * A method matcher that combines multiple matchers, returning {@code true} only if all matchers fail to match.
      *
-     * @param matchers 方法匹配器
-     * @return 方法匹配器
+     * @param matchers An array of method predicates.
+     * @return A method predicate that returns {@code true} if none of the provided matchers match.
      * @see Stream#noneMatch
      */
     @SafeVarargs
@@ -61,10 +61,10 @@ public class MethodMatcher {
     }
 
     /**
-     * 用于组合多个方法匹配器的方法匹配器，当任意方法匹配器匹配成功时即认为方法匹配。
+     * A method matcher that combines multiple matchers, returning {@code true} if any of the matchers succeed.
      *
-     * @param matchers 方法匹配器
-     * @return 方法匹配器
+     * @param matchers An array of method predicates.
+     * @return A method predicate that returns {@code true} if any of the provided matchers match.
      * @see Stream#anyMatch
      */
     @SafeVarargs
@@ -73,10 +73,10 @@ public class MethodMatcher {
     }
 
     /**
-     * 用于组合多个方法匹配器的方法匹配器，当所有方法匹配器均匹配成功时才认为方法匹配。
+     * A method matcher that combines multiple matchers, returning {@code true} only if all matchers succeed.
      *
-     * @param matchers 方法匹配器
-     * @return 方法匹配器
+     * @param matchers An array of method predicates.
+     * @return A method predicate that returns {@code true} if all of the provided matchers match.
      * @see Stream#allMatch
      */
     @SafeVarargs
@@ -85,63 +85,63 @@ public class MethodMatcher {
     }
 
     /**
-     * 用于匹配共有方法的方法匹配器。
+     * A method matcher that matches public methods.
      *
-     * @return 方法匹配器
+     * @return A method predicate that returns {@code true} for public methods.
      */
     public static Predicate<Method> isPublic() {
         return forModifiers(Modifier.PUBLIC);
     }
 
     /**
-     * 用于匹配静态方法的方法匹配器。
+     * A method matcher that matches static methods.
      *
-     * @return 方法匹配器
+     * @return A method predicate that returns {@code true} for static methods.
      */
     public static Predicate<Method> isStatic() {
         return forModifiers(Modifier.STATIC);
     }
 
     /**
-     * <p>
-     * 用于匹配公共静态方法的方法匹配器。
+     * A method matcher that matches public static methods.
      *
-     * @return 方法匹配器
+     * @return A method predicate that returns {@code true} for public static methods.
      */
     public static Predicate<Method> isPublicStatic() {
         return forModifiers(Modifier.PUBLIC, Modifier.STATIC);
     }
 
     /**
-     * 用于具有指定修饰符的方法的方法匹配器。
+     * A method matcher that matches methods with the specified modifiers.
      *
-     * @param modifiers 修饰符
-     * @return 方法匹配器
+     * @param modifiers An array of modifiers to match (e.g., {@code Modifier.PUBLIC}, {@code Modifier.STATIC}).
+     * @return A method predicate that returns {@code true} for methods having all specified modifiers.
      */
     public static Predicate<Method> forModifiers(final int... modifiers) {
         return method -> ModifierKit.hasAll(method.getModifiers(), modifiers);
     }
 
     /**
-     * 用于匹配被指定注解标注、或注解层级结构中存在指定注解的方法的方法匹配器。 比如：指定注解为 {@code @Annotation}，则匹配直接被{@code @Annotation}标注的方法。
+     * A method matcher that matches methods directly annotated with the specified annotation type.
      *
-     * @param annotationType 注解类型
-     * @return 方法匹配器
-     * @see AnnotatedElements#isAnnotationPresent
+     * @param annotationType The annotation type to search for.
+     * @return A method predicate that returns {@code true} for methods directly annotated with the specified type.
      */
     public static Predicate<Method> hasDeclaredAnnotation(final Class<? extends Annotation> annotationType) {
         return method -> method.isAnnotationPresent(annotationType);
     }
 
     /**
-     * 用于匹配被指定注解标注、或注解层级结构中存在指定注解的方法的方法匹配器。 比如：指定注解为 {@code @Annotation}，则匹配:
+     * A method matcher that matches methods annotated with the specified annotation type, or with an annotation that is
+     * meta-annotated with the specified annotation type. For example, if the specified annotation is
+     * {@code @Annotation}, it matches:
      * <ul>
-     * <li>被{@code @Annotation}标注的方法；</li>
-     * <li>被带有{@code @Annotation}注解的派生注解标注的方法；</li>
+     * <li>Methods directly annotated with {@code @Annotation}.</li>
+     * <li>Methods annotated with a derived annotation that is itself annotated with {@code @Annotation}.</li>
      * </ul>
      *
-     * @param annotationType 注解类型
-     * @return 方法匹配器
+     * @param annotationType The annotation type to search for.
+     * @return A method predicate that returns {@code true} for methods having the specified annotation.
      * @see AnnotatedElements#isAnnotationPresent
      */
     public static Predicate<Method> hasAnnotation(final Class<? extends Annotation> annotationType) {
@@ -149,14 +149,18 @@ public class MethodMatcher {
     }
 
     /**
-     * 用于匹配声明方法的类的层级接口中，存在任意类被指定注解标注、或注解层级结构中存在指定注解的方法的方法匹配器。 比如：指定注解为 {@code @Annotation}，则匹配:
+     * A method matcher that matches methods whose declaring class is annotated with the specified annotation type, or
+     * with an annotation that is meta-annotated with the specified annotation type. For example, if the specified
+     * annotation is {@code @Annotation}, it matches:
      * <ul>
-     * <li>声明方法的类被{@code @Annotation}标注的方法；</li>
-     * <li>声明方法的类被带有{@code @Annotation}注解的派生注解标注的方法；</li>
+     * <li>Methods whose declaring class is directly annotated with {@code @Annotation}.</li>
+     * <li>Methods whose declaring class is annotated with a derived annotation that is itself annotated with
+     * {@code @Annotation}.</li>
      * </ul>
      *
-     * @param annotationType 注解类型
-     * @return 方法匹配器
+     * @param annotationType The annotation type to search for on the declaring class.
+     * @return A method predicate that returns {@code true} for methods whose declaring class has the specified
+     *         annotation.
      * @see AnnotatedElements#isAnnotationPresent
      */
     public static Predicate<Method> hasAnnotationOnDeclaringClass(final Class<? extends Annotation> annotationType) {
@@ -164,16 +168,20 @@ public class MethodMatcher {
     }
 
     /**
-     * 用于匹配方法本身或声明方法的类上，直接被指定注解标注、或注解层级结构中存在指定注解的方法的方法匹配器。 比如：指定注解为 {@code @Annotation}，则匹配:
+     * A method matcher that matches methods annotated with the specified annotation type (or meta-annotated), or whose
+     * declaring class is annotated with the specified annotation type (or meta-annotated). For example, if the
+     * specified annotation is {@code @Annotation}, it matches:
      * <ul>
-     * <li>被{@code @Annotation}标注的方法；</li>
-     * <li>被带有{@code @Annotation}注解的派生注解标注的方法；</li>
-     * <li>声明方法的类被{@code @Annotation}标注的方法；</li>
-     * <li>声明方法的类被带有{@code @Annotation}注解的派生注解标注的方法；</li>
+     * <li>Methods directly annotated with {@code @Annotation}.</li>
+     * <li>Methods annotated with a derived annotation that is itself annotated with {@code @Annotation}.</li>
+     * <li>Methods whose declaring class is directly annotated with {@code @Annotation}.</li>
+     * <li>Methods whose declaring class is annotated with a derived annotation that is itself annotated with
+     * {@code @Annotation}.</li>
      * </ul>
      *
-     * @param annotationType 注解类型
-     * @return 方法匹配器
+     * @param annotationType The annotation type to search for on the method or its declaring class.
+     * @return A method predicate that returns {@code true} if the method or its declaring class has the specified
+     *         annotation.
      */
     public static Predicate<Method> hasAnnotationOnMethodOrDeclaringClass(
             final Class<? extends Annotation> annotationType) {
@@ -182,41 +190,45 @@ public class MethodMatcher {
     }
 
     /**
-     * 用于获得指定属性的getter方法的匹配器
+     * A method matcher for finding getter methods of a specified field.
      * <ul>
-     * <li>查找方法名为{@code get + 首字母大写的属性名}的无参数方法；</li>
-     * <li>查找方法名为属性名的无参数方法；</li>
-     * <li>若{@code fieldType}为{@code boolean}或{@code Boolean}，则同时查找方法名为{@code is + 首字母大写的属性}的无参数方法;</li>
+     * <li>Looks for parameterless methods named {@code getXxx} where {@code Xxx} is the capitalized field name.</li>
+     * <li>Looks for parameterless methods named after the field name.</li>
+     * <li>If {@code fieldType} is {@code boolean} or {@code Boolean}, it also looks for parameterless methods named
+     * {@code isXxx}.</li>
      * </ul>
      *
-     * @param fieldName 属性名
-     * @param fieldType 属性类型
-     * @return 方法匹配器
+     * @param fieldName The name of the field. Must not be {@code null}.
+     * @param fieldType The type of the field. Must not be {@code null}.
+     * @return A method predicate that returns {@code true} for getter methods of the specified field.
+     * @throws NullPointerException if {@code fieldName} or {@code fieldType} is {@code null}.
      */
     public static Predicate<Method> forGetterMethod(final String fieldName, final Class<?> fieldType) {
         Objects.requireNonNull(fieldName);
         Objects.requireNonNull(fieldType);
-        // 匹配方法名为 get + 首字母大写的属性名的无参数方法
+        // Match methods named get + capitalized field name
         Predicate<Method> nameMatcher = forName(StringKit.upperFirstAndAddPre(fieldName, Normal.GET));
-        // 查找方法名为属性名的无参数方法
+        // Also match methods named after the field name
         nameMatcher = nameMatcher.or(forName(fieldName));
         if (Objects.equals(boolean.class, fieldType) || Objects.equals(Boolean.class, fieldType)) {
-            // 匹配方法名为 get + 首字母大写的属性名的无参数方法
+            // For boolean fields, also match methods named is + capitalized field name
             nameMatcher = nameMatcher.or(forName(StringKit.upperFirstAndAddPre(fieldName, Normal.IS)));
         }
         return allMatch(nameMatcher, forReturnType(fieldType), forNoneParameter());
     }
 
     /**
-     * 用于获得指定属性的getter方法的匹配器
+     * A method matcher for finding getter methods of a specified field.
      * <ul>
-     * <li>查找方法名为{@code get + 首字母大写的属性名}的无参数方法；</li>
-     * <li>查找方法名为属性名的无参数方法；</li>
-     * <li>若{@code fieldType}为{@code boolean}或{@code Boolean}，则同时查找方法名为{@code is + 首字母大写的属性}的无参数方法;</li>
+     * <li>Looks for parameterless methods named {@code getXxx} where {@code Xxx} is the capitalized field name.</li>
+     * <li>Looks for parameterless methods named after the field name.</li>
+     * <li>If the field's type is {@code boolean} or {@code Boolean}, it also looks for parameterless methods named
+     * {@code isXxx}.</li>
      * </ul>
      *
-     * @param field 属性
-     * @return 方法匹配器
+     * @param field The field for which to find the getter method. Must not be {@code null}.
+     * @return A method predicate that returns {@code true} for getter methods of the specified field.
+     * @throws NullPointerException if {@code field} is {@code null}.
      */
     public static Predicate<Method> forGetterMethod(final Field field) {
         Objects.requireNonNull(field);
@@ -224,15 +236,17 @@ public class MethodMatcher {
     }
 
     /**
-     * 用于获得指定属性的setter方法的匹配器，默认查找方法名为{@code set + 首字母大写的属性}的单参数方法。
+     * A method matcher for finding setter methods of a specified field. By default, it looks for single-parameter
+     * methods named {@code setXxx} where {@code Xxx} is the capitalized field name.
      * <ul>
-     * <li>查找方法名为{@code set + 首字母大写的属性名}的单参数方法；</li>
-     * <li>查找方法名为属性名的单参数方法；</li>
+     * <li>Looks for single-parameter methods named {@code setXxx} where {@code Xxx} is the capitalized field name.</li>
+     * <li>Looks for single-parameter methods named after the field name.</li>
      * </ul>
      *
-     * @param fieldName 属性名
-     * @param fieldType 属性类型
-     * @return 方法匹配器
+     * @param fieldName The name of the field. Must not be {@code null}.
+     * @param fieldType The type of the field. Must not be {@code null}.
+     * @return A method predicate that returns {@code true} for setter methods of the specified field.
+     * @throws NullPointerException if {@code fieldName} or {@code fieldType} is {@code null}.
      */
     public static Predicate<Method> forSetterMethod(final String fieldName, final Class<?> fieldType) {
         Objects.requireNonNull(fieldName);
@@ -243,14 +257,16 @@ public class MethodMatcher {
     }
 
     /**
-     * 用于获得指定属性的setter方法的匹配器，默认查找方法名为{@code set + 首字母大写的属性}的单参数方法。
+     * A method matcher for finding setter methods of a specified field. By default, it looks for single-parameter
+     * methods named {@code setXxx} where {@code Xxx} is the capitalized field name.
      * <ul>
-     * <li>查找方法名为{@code set + 首字母大写的属性名}的单参数方法；</li>
-     * <li>查找方法名为属性名的单参数方法；</li>
+     * <li>Looks for single-parameter methods named {@code setXxx} where {@code Xxx} is the capitalized field name.</li>
+     * <li>Looks for single-parameter methods named after the field name.</li>
      * </ul>
      *
-     * @param field 属性
-     * @return 方法匹配器
+     * @param field The field for which to find the setter method. Must not be {@code null}.
+     * @return A method predicate that returns {@code true} for setter methods of the specified field.
+     * @throws NullPointerException if {@code field} is {@code null}.
      */
     public static Predicate<Method> forSetterMethod(final Field field) {
         Objects.requireNonNull(field);
@@ -258,11 +274,14 @@ public class MethodMatcher {
     }
 
     /**
-     * 用于同时匹配方法名和参数类型的方法匹配器，其中，参数类型匹配时允许参数类型为方法参数类型的子类。
+     * A method matcher that matches both method name and parameter types. Parameter type matching allows the argument
+     * type to be a subclass of the method's parameter type.
      *
-     * @param methodName     方法名
-     * @param parameterTypes 参数类型
-     * @return 方法匹配器
+     * @param methodName     The name of the method. Must not be {@code null}.
+     * @param parameterTypes An array of parameter types. Must not be {@code null}.
+     * @return A method predicate that returns {@code true} for methods matching the name and assignable parameter
+     *         types.
+     * @throws NullPointerException if {@code methodName} or {@code parameterTypes} is {@code null}.
      */
     public static Predicate<Method> forNameAndParameterTypes(
             final String methodName,
@@ -273,11 +292,14 @@ public class MethodMatcher {
     }
 
     /**
-     * 用于同时匹配方法名和参数类型的方法匹配器，其中，参数类型匹配时要求参数类型与方法参数类型完全一致。
+     * A method matcher that matches both method name and parameter types. Parameter type matching requires the argument
+     * types to exactly match the method's parameter types.
      *
-     * @param methodName     方法名
-     * @param parameterTypes 参数类型
-     * @return 方法匹配器
+     * @param methodName     The name of the method. Must not be {@code null}.
+     * @param parameterTypes An array of parameter types. Must not be {@code null}.
+     * @return A method predicate that returns {@code true} for methods matching the name and strictly matching
+     *         parameter types.
+     * @throws NullPointerException if {@code methodName} or {@code parameterTypes} is {@code null}.
      */
     public static Predicate<Method> forNameAndStrictParameterTypes(
             final String methodName,
@@ -288,11 +310,14 @@ public class MethodMatcher {
     }
 
     /**
-     * 用于同时匹配方法名和参数类型的方法匹配器，其中，参数类型匹配时允许参数类型为方法参数类型的子类，且方法名忽略大小写。
+     * A method matcher that matches both method name (case-insensitive) and parameter types. Parameter type matching
+     * allows the argument type to be a subclass of the method's parameter type.
      *
-     * @param methodName     方法名
-     * @param parameterTypes 参数类型
-     * @return 方法匹配器
+     * @param methodName     The name of the method. Must not be {@code null}.
+     * @param parameterTypes An array of parameter types. Must not be {@code null}.
+     * @return A method predicate that returns {@code true} for methods matching the name (case-insensitive) and
+     *         assignable parameter types.
+     * @throws NullPointerException if {@code methodName} or {@code parameterTypes} is {@code null}.
      */
     public static Predicate<Method> forNameIgnoreCaseAndParameterTypes(
             final String methodName,
@@ -303,11 +328,14 @@ public class MethodMatcher {
     }
 
     /**
-     * 用于同时匹配方法名和参数类型的方法匹配器，其中，参数类型匹配时要求参数类型与方法参数类型完全一致，且方法名忽略大小写。
+     * A method matcher that matches both method name (case-insensitive) and parameter types. Parameter type matching
+     * requires the argument types to exactly match the method's parameter types.
      *
-     * @param methodName     方法名
-     * @param parameterTypes 参数类型
-     * @return 方法匹配器
+     * @param methodName     The name of the method. Must not be {@code null}.
+     * @param parameterTypes An array of parameter types. Must not be {@code null}.
+     * @return A method predicate that returns {@code true} for methods matching the name (case-insensitive) and
+     *         strictly matching parameter types.
+     * @throws NullPointerException if {@code methodName} or {@code parameterTypes} is {@code null}.
      */
     public static Predicate<Method> forNameIgnoreCaseAndStrictParameterTypes(
             final String methodName,
@@ -318,15 +346,17 @@ public class MethodMatcher {
     }
 
     /**
-     * 用于匹配方法签名的方法匹配器，检查的内容包括：
+     * A method matcher that matches a method's signature, including:
      * <ul>
-     * <li>方法名是否完全一致；</li>
-     * <li>返回值类型是否匹配，允许返回值类型为方法返回值类型的子类；</li>
-     * <li>参数类型是否匹配，允许参数类型为方法参数类型的子类；</li>
+     * <li>Exact method name match.</li>
+     * <li>Return type matching, allowing the actual return type to be a subclass of the expected return type.</li>
+     * <li>Parameter type matching, allowing the actual parameter types to be subclasses of the expected parameter
+     * types.</li>
      * </ul>
      *
-     * @param method 方法
-     * @return 方法匹配器
+     * @param method The method whose signature to match against. Must not be {@code null}.
+     * @return A method predicate that returns {@code true} for methods matching the given method's signature.
+     * @throws NullPointerException if {@code method} is {@code null}.
      */
     public static Predicate<Method> forMethodSignature(final Method method) {
         Objects.requireNonNull(method);
@@ -334,17 +364,20 @@ public class MethodMatcher {
     }
 
     /**
-     * 用于匹配方法签名的方法匹配器，检查的内容包括：
+     * A method matcher that matches a method's signature, including:
      * <ul>
-     * <li>方法名是否完全一致；</li>
-     * <li>返回值类型是否匹配，允许返回值类型为方法返回值类型的子类，若返回值类型为{@code null}则表示匹配无返回值的方法；</li>
-     * <li>参数类型是否匹配，允许参数类型为方法参数类型的子类，若参数类型为{@code null}则表示匹配无参数的方法；</li>
+     * <li>Exact method name match.</li>
+     * <li>Return type matching, allowing the actual return type to be a subclass of the expected return type. If
+     * {@code returnType} is {@code null}, it matches methods with a {@code void} return type.</li>
+     * <li>Parameter type matching, allowing the actual parameter types to be subclasses of the expected parameter
+     * types. If {@code parameterTypes} is {@code null}, it matches methods with no parameters.</li>
      * </ul>
      *
-     * @param methodName     方法名
-     * @param returnType     返回值类型，若为{@code null}则表示匹配无返回值的方法
-     * @param parameterTypes 参数类型，若为{@code null}则表示匹配无参数的方法
-     * @return 方法匹配器
+     * @param methodName     The name of the method. Must not be {@code null}.
+     * @param returnType     The expected return type. If {@code null}, matches methods with {@code void} return type.
+     * @param parameterTypes An array of expected parameter types. If {@code null}, matches methods with no parameters.
+     * @return A method predicate that returns {@code true} for methods matching the given signature.
+     * @throws NullPointerException if {@code methodName} is {@code null}.
      */
     public static Predicate<Method> forMethodSignature(
             final String methodName,
@@ -359,17 +392,20 @@ public class MethodMatcher {
     }
 
     /**
-     * 用于匹配方法签名的方法匹配器，检查的内容包括：
+     * A method matcher that strictly matches a method's signature, including:
      * <ul>
-     * <li>方法名是否完全一致；</li>
-     * <li>返回值类型是否匹配，要求返回值类型与方法返回值类型完全一致，若返回值类型为{@code null}则表示匹配无返回值的方法；</li>
-     * <li>参数类型是否匹配，要求参数类型与方法参数类型完全一致，若参数类型为{@code null}则表示匹配无参数的方法；</li>
+     * <li>Exact method name match.</li>
+     * <li>Strict return type matching, requiring the actual return type to exactly match the expected return type. If
+     * {@code returnType} is {@code null}, it matches methods with a {@code void} return type.</li>
+     * <li>Strict parameter type matching, requiring the actual parameter types to exactly match the expected parameter
+     * types. If {@code parameterTypes} is {@code null}, it matches methods with no parameters.</li>
      * </ul>
      *
-     * @param methodName     方法名
-     * @param returnType     返回值类型，若为{@code null}则表示匹配无返回值的方法
-     * @param parameterTypes 参数类型，若为{@code null}则表示匹配无参数的方法
-     * @return 方法匹配器
+     * @param methodName     The name of the method. Must not be {@code null}.
+     * @param returnType     The expected return type. If {@code null}, matches methods with {@code void} return type.
+     * @param parameterTypes An array of expected parameter types. If {@code null}, matches methods with no parameters.
+     * @return A method predicate that returns {@code true} for methods strictly matching the given signature.
+     * @throws NullPointerException if {@code methodName} is {@code null}.
      */
     public static Predicate<Method> forStrictMethodSignature(
             final String methodName,
@@ -384,15 +420,17 @@ public class MethodMatcher {
     }
 
     /**
-     * 用于匹配方法签名的方法匹配器，检查的内容包括：
+     * A method matcher that strictly matches a method's signature, including:
      * <ul>
-     * <li>方法名是否完全一致；</li>
-     * <li>返回值类型是否匹配，要求返回值类型与方法返回值类型完全一致；</li>
-     * <li>参数类型是否匹配，要求参数类型与方法参数类型完全一致；</li>
+     * <li>Exact method name match.</li>
+     * <li>Strict return type matching, requiring the actual return type to exactly match the expected return type.</li>
+     * <li>Strict parameter type matching, requiring the actual parameter types to exactly match the expected parameter
+     * types.</li>
      * </ul>
      *
-     * @param method 方法
-     * @return 方法匹配器
+     * @param method The method whose signature to strictly match against. Must not be {@code null}.
+     * @return A method predicate that returns {@code true} for methods strictly matching the given method's signature.
+     * @throws NullPointerException if {@code method} is {@code null}.
      */
     public static Predicate<Method> forStrictMethodSignature(final Method method) {
         Objects.requireNonNull(method);
@@ -400,79 +438,89 @@ public class MethodMatcher {
     }
 
     /**
-     * 用于根据方法名匹配方法的方法匹配器。
+     * A method matcher that matches methods by their exact name.
      *
-     * @param methodName 方法名
-     * @return 方法匹配器
+     * @param methodName The exact name of the method to match. Must not be {@code null}.
+     * @return A method predicate that returns {@code true} for methods with the specified name.
+     * @throws NullPointerException if {@code methodName} is {@code null}.
      */
     public static Predicate<Method> forName(final String methodName) {
         return method -> Objects.equals(method.getName(), methodName);
     }
 
     /**
-     * 用于根据方法名匹配方法的方法匹配器，忽略方法名大小写。
+     * A method matcher that matches methods by their name, ignoring case.
      *
-     * @param methodName 方法名
-     * @return 方法匹配器
+     * @param methodName The name of the method to match (case-insensitive). Must not be {@code null}.
+     * @return A method predicate that returns {@code true} for methods with the specified name (case-insensitive).
+     * @throws NullPointerException if {@code methodName} is {@code null}.
      */
     public static Predicate<Method> forNameIgnoreCase(final String methodName) {
         return method -> StringKit.endWithIgnoreCase(method.getName(), methodName);
     }
 
     /**
-     * 用于匹配无返回值的方法的方法匹配器。
+     * A method matcher that matches methods with a {@code void} return type.
      *
-     * @return 方法匹配器
+     * @return A method predicate that returns {@code true} for methods with a {@code void} return type.
      */
     public static Predicate<Method> forNoneReturnType() {
         return method -> Objects.equals(method.getReturnType(), Void.TYPE);
     }
 
     /**
-     * 用于匹配指定参数类型的方法的方法匹配器，只要参数类型可以赋值给方法参数类型。
+     * A method matcher that matches methods based on their return type. It returns {@code true} if the method's return
+     * type is assignable from the specified {@code returnType}.
      *
-     * @param returnType 返回值类型
-     * @return 方法匹配器
+     * @param returnType The expected return type.
+     * @return A method predicate that returns {@code true} for methods whose return type is assignable from the
+     *         specified type.
      */
     public static Predicate<Method> forReturnType(final Class<?> returnType) {
         return method -> ClassKit.isAssignable(returnType, method.getReturnType());
     }
 
     /**
-     * 用于匹配指定返回值类型的方法的方法匹配器，要求返回值类型与指定类型完全一致。
+     * A method matcher that strictly matches methods based on their return type. It returns {@code true} only if the
+     * method's return type exactly matches the specified {@code returnType}.
      *
-     * @param returnType 返回值类型
-     * @return 方法匹配器
+     * @param returnType The expected return type.
+     * @return A method predicate that returns {@code true} for methods whose return type exactly matches the specified
+     *         type.
      */
     public static Predicate<Method> forStrictReturnType(final Class<?> returnType) {
         return method -> Objects.equals(method.getReturnType(), returnType);
     }
 
     /**
-     * 用于匹配无参数方法的方法匹配器。
+     * A method matcher that matches methods with no parameters.
      *
-     * @return 方法匹配器
+     * @return A method predicate that returns {@code true} for methods with no parameters.
      */
     public static Predicate<Method> forNoneParameter() {
         return method -> method.getParameterCount() == 0;
     }
 
     /**
-     * 用于匹配指定参数个数的方法的方法匹配器。
+     * A method matcher that matches methods with a specific number of parameters.
      *
-     * @param count 参数个数
-     * @return 方法匹配器
+     * @param count The expected number of parameters.
+     * @return A method predicate that returns {@code true} for methods with the specified parameter count.
      */
     public static Predicate<Method> forParameterCount(final int count) {
         return method -> method.getParameterCount() == count;
     }
 
     /**
-     * 用于匹配指定参数类型的方法的方法匹配器，只要参数类型可以赋值给方法参数类型即认为匹配成功。
-     * 比如：参数类型为{@link java.util.ArrayList}，则方法参数类型可以为{@link java.util.List}、{@link java.util.Collection}等。
+     * A method matcher that matches methods based on their parameter types. It returns {@code true} if all specified
+     * {@code parameterTypes} are assignable to the method's actual parameter types. For example, if
+     * {@code parameterTypes} contains {@code ArrayList.class}, it matches methods where the corresponding parameter
+     * type is {@code List.class}, {@code Collection.class}, etc.
      *
-     * @param parameterTypes 参数类型
-     * @return 方法匹配器
+     * @param parameterTypes An array of parameter types to match. Must not be {@code null}.
+     * @return A method predicate that returns {@code true} for methods whose parameter types are assignable from the
+     *         specified types.
+     * @throws NullPointerException if {@code parameterTypes} is {@code null}.
      */
     public static Predicate<Method> forParameterTypes(final Class<?>... parameterTypes) {
         Objects.requireNonNull(parameterTypes);
@@ -480,18 +528,22 @@ public class MethodMatcher {
     }
 
     /**
-     * 用于匹配指定参数类型的方法的方法匹配器，与{@link #forParameterTypes}不同的是，该方法仅用于尽量可能最匹配的方法
+     * A method matcher that finds the most specific method based on parameter types. This matcher is more flexible than
+     * {@link #forParameterTypes} and allows for partial matching.
      * <ul>
-     * <li>若参数为空，则表示匹配无参数方法；</li>
-     * <li>若参数不为空：
+     * <li>If {@code parameterTypes} is empty, it matches methods with no parameters.</li>
+     * <li>If {@code parameterTypes} is not empty:
      * <ul>
-     * <li>仅匹配{@code parameterTypes}中不为{@code null}的参数类型，若参数类型为{@code null}则表示匹配任意类型的参数；</li>
-     * <li>若N为{@code parameterTypes}长度，则仅要求{@code parameterTypes}不为{@code null}的类型与方法前N个参数类型匹配即可；</li>
-     * <li>若{@code parameterTypes}长度大于参数列表长度，则直接返回{@code false}；</li>
+     * <li>Only non-{@code null} parameter types in {@code parameterTypes} are matched. A {@code null} entry in
+     * {@code parameterTypes} means it matches any type for that position.</li>
+     * <li>If N is the length of {@code parameterTypes}, it only requires that the non-{@code null} types in
+     * {@code parameterTypes} match the first N parameter types of the method.</li>
+     * <li>If the length of {@code parameterTypes} is greater than the method's parameter list length, it returns
+     * {@code false}.</li>
      * </ul>
      * </li>
      * </ul>
-     * 比如： 若存在三参数方法{@code method(String, Integer, Object)}，支持以下匹配：
+     * For example, for a method {@code method(String, Integer, Object)}, the following matches are supported:
      * <ul>
      * <li>{@code forMostSpecificParameterTypes(CharSequence.class, Number.class, Object.class)}</li>
      * <li>{@code forMostSpecificParameterTypes(String.class, Integer.class, Object.class)}</li>
@@ -502,62 +554,77 @@ public class MethodMatcher {
      * <li>{@code forMostSpecificParameterTypes(String.class)}</li>
      * </ul>
      *
-     * @param parameterTypes 参数类型
-     * @return 方法匹配器
+     * @param parameterTypes An array of parameter types to match. Can contain {@code null} for any type.
+     * @return A method predicate that returns {@code true} for the most specific matching methods.
      */
     public static Predicate<Method> forMostSpecificParameterTypes(final Class<?>... parameterTypes) {
         return mostSpecificStrictParameterTypesMatcher(parameterTypes, ClassKit::isAssignable);
     }
 
     /**
-     * 用于匹配指定参数类型的方法的方法匹配器，与{@link #forParameterTypes}不同的是，该方法仅用于尽量可能最匹配的方法
+     * A method matcher that finds the most specific method based on parameter types, requiring strict type equality.
+     * This matcher is more flexible than {@link #forStrictParameterTypes} and allows for partial matching.
      * <ul>
-     * <li>若参数为空，则表示匹配无参数方法；</li>
-     * <li>若参数不为空：
+     * <li>If {@code parameterTypes} is empty, it matches methods with no parameters.</li>
+     * <li>If {@code parameterTypes} is not empty:
      * <ul>
-     * <li>仅匹配{@code parameterTypes}中不为{@code null}的参数类型，若参数类型为{@code null}则表示匹配任意类型的参数；</li>
-     * <li>若N为{@code parameterTypes}长度，则仅要求{@code parameterTypes}不为{@code null}的类型与方法前N个参数类型匹配即可；</li>
-     * <li>若{@code parameterTypes}长度大于参数列表长度，则直接返回{@code false}；</li>
+     * <li>Only non-{@code null} parameter types in {@code parameterTypes} are matched. A {@code null} entry in
+     * {@code parameterTypes} means it matches any type for that position.</li>
+     * <li>If N is the length of {@code parameterTypes}, it only requires that the non-{@code null} types in
+     * {@code parameterTypes} strictly match the first N parameter types of the method.</li>
+     * <li>If the length of {@code parameterTypes} is greater than the method's parameter list length, it returns
+     * {@code false}.</li>
      * </ul>
      * </li>
      * </ul>
-     * 比如： 若存在三参数方法{@code method(String, Integer, Object)}，支持以下匹配：
+     * For example, for a method {@code method(String, Integer, Object)}, the following matches are supported:
      * <ul>
-     * <li>{@code forMostSpecificParameterTypes(String.class, Integer.class, Object.class)}</li>
-     * <li>{@code forMostSpecificParameterTypes(String.class, Integer.class, null)}</li>
-     * <li>{@code forMostSpecificParameterTypes(String.class, null, null)}</li>
-     * <li>{@code forMostSpecificParameterTypes(null, null, null)}</li>
-     * <li>{@code forMostSpecificParameterTypes(String.class, Integer.class)}</li>
-     * <li>{@code forMostSpecificParameterTypes(String.class)}</li>
+     * <li>{@code forMostSpecificStrictParameterTypes(String.class, Integer.class, Object.class)}</li>
+     * <li>{@code forMostSpecificStrictParameterTypes(String.class, Integer.class, null)}</li>
+     * <li>{@code forMostSpecificStrictParameterTypes(String.class, null, null)}</li>
+     * <li>{@code forMostSpecificStrictParameterTypes(null, null, null)}</li>
+     * <li>{@code forMostSpecificStrictParameterTypes(String.class, Integer.class)}</li>
+     * <li>{@code forMostSpecificStrictParameterTypes(String.class)}</li>
      * </ul>
      *
-     * @param parameterTypes 参数类型
-     * @return 方法匹配器
+     * @param parameterTypes An array of parameter types to match. Can contain {@code null} for any type.
+     * @return A method predicate that returns {@code true} for the most specific strictly matching methods.
      */
     public static Predicate<Method> forMostSpecificStrictParameterTypes(final Class<?>... parameterTypes) {
         return mostSpecificStrictParameterTypesMatcher(parameterTypes, Objects::equals);
     }
 
     /**
-     * 用于匹配指定参数类型的方法的方法匹配器，只有参数类型完全匹配才认为匹配成功
+     * A method matcher that strictly matches methods based on their parameter types. It returns {@code true} only if
+     * the method's parameter types exactly match the specified {@code parameterTypes}.
      *
-     * @param parameterTypes 参数类型
-     * @return 方法匹配器
+     * @param parameterTypes An array of parameter types to match. Must not be {@code null}.
+     * @return A method predicate that returns {@code true} for methods whose parameter types exactly match the
+     *         specified types.
+     * @throws NullPointerException if {@code parameterTypes} is {@code null}.
      */
     public static Predicate<Method> forStrictParameterTypes(final Class<?>... parameterTypes) {
         Objects.requireNonNull(parameterTypes);
         return method -> ArrayKit.equals(method.getParameterTypes(), parameterTypes);
     }
 
+    /**
+     * Internal helper method for creating most specific parameter type matchers.
+     *
+     * @param parameterTypes The array of parameter types to match against.
+     * @param typeMatcher    A {@link BiPredicate} to compare individual parameter types (e.g.,
+     *                       {@code ClassKit::isAssignable} or {@code Objects::equals}).
+     * @return A method predicate.
+     */
     private static Predicate<Method> mostSpecificStrictParameterTypesMatcher(
             final Class<?>[] parameterTypes,
             final BiPredicate<Class<?>, Class<?>> typeMatcher) {
         Objects.requireNonNull(parameterTypes);
-        // 若参数为空，则表示匹配无参数方法
+        // If parameters are empty, match methods with no parameters.
         if (parameterTypes.length == 0) {
             return forNoneParameter();
         }
-        // 若参数不为空，则表示匹配指定参数类型的方法
+        // If parameters are not empty, match methods with specified parameter types.
         return method -> {
             final Class<?>[] methodParameterTypes = method.getParameterTypes();
             if (parameterTypes.length > methodParameterTypes.length) {
@@ -565,11 +632,11 @@ public class MethodMatcher {
             }
             for (int i = 0; i < parameterTypes.length; i++) {
                 final Class<?> parameterType = parameterTypes[i];
-                // 若参数类型为null，则表示匹配任意类型的参数
+                // If the parameter type is null, it means match any type for this position.
                 if (Objects.isNull(parameterType)) {
                     continue;
                 }
-                // 若参数类型不为null，则要求参数类型可以赋值给方法参数类型
+                // If the parameter type is not null, require it to be assignable to the method's parameter type.
                 if (typeMatcher.negate().test(parameterType, methodParameterTypes[i])) {
                     return false;
                 }

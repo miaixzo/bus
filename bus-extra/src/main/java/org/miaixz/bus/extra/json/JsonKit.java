@@ -32,7 +32,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * json工具类,通过SPI自动识别
+ * A utility class for JSON operations, which automatically identifies the underlying JSON provider via SPI. This class
+ * acts as a facade, providing static methods for common JSON serialization and deserialization tasks.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -40,130 +41,130 @@ import java.util.Map;
 public class JsonKit {
 
     /**
-     * 获得全局单例的json映射器
+     * Retrieves the globally available singleton JSON provider instance.
      *
-     * @return 全局单例的json映射器
+     * @return The singleton {@link JsonProvider} instance.
      */
     public static JsonProvider getProvider() {
         return JsonFactory.get();
     }
 
     /**
-     * 解析对象为Json字符串
+     * Converts an object into its JSON string representation.
      *
-     * @param object 要转换的对象
-     * @return 返回对象的json字符串
+     * @param object The object to be converted.
+     * @return The JSON string representation of the object.
      */
     public static String toJsonString(Object object) {
         return getProvider().toJsonString(object);
     }
 
     /**
-     * 解析对象为Json字符串
+     * Converts an object into its JSON string representation, with a specified date format.
      *
-     * @param object 要转换的对象
-     * @param format 日期格式，如"yyyy年MM月dd日 HH时mm分ss秒"
-     * @return 返回对象的json字符串
+     * @param object The object to be converted.
+     * @param format The date format string, e.g., "yyyy-MM-dd HH:mm:ss".
+     * @return The JSON string representation of the object.
      */
     public static String toJsonString(Object object, String format) {
         return getProvider().toJsonString(object, format);
     }
 
     /**
-     * 解析json字符串到指定类型的对象
+     * Parses a JSON string into an object of the specified class.
      *
-     * @param json  要解析的json字符串
-     * @param clazz 类对象class
-     * @param <T>   泛型参数类型
-     * @return 返回解析后的对象
+     * @param <T>   The type of the target object.
+     * @param json  The JSON string to be parsed.
+     * @param clazz The class of the target object.
+     * @return The parsed object.
      */
     public static <T> T toPojo(String json, Class<T> clazz) {
         return getProvider().toPojo(json, clazz);
     }
 
     /**
-     * 从Map转换到对象
+     * Converts a {@link Map} into an object of the specified class.
      *
-     * @param map   Map对象
-     * @param clazz 与Map可兼容的对象类型
-     * @param <T>   泛型参数类型
-     * @return 返回Map转换得到的对象
+     * @param <T>   The type of the target object.
+     * @param map   The source map.
+     * @param clazz The class of the target object.
+     * @return The object converted from the map.
      */
     public static <T> T toPojo(Map map, Class<T> clazz) {
         return getProvider().toPojo(map, clazz);
     }
 
     /**
-     * 解析json字符串到List
+     * Parses a JSON string into a {@link List}.
      *
-     * @param json 要解析的json字符串
-     * @return 返回List
+     * @param json The JSON string to be parsed.
+     * @return The resulting {@link List}.
      */
     public static List toList(String json) {
         return getProvider().toList(json);
     }
 
     /**
-     * 按指定的Type解析json字符串到List
+     * Parses a JSON string into a {@link List} of a specific generic type.
      *
-     * @param json 要解析的json字符串
-     * @param type {@link Type}
-     * @param <T>  泛型参数类型
-     * @return 返回List
+     * @param <T>  The generic type of the elements in the list.
+     * @param json The JSON string to be parsed.
+     * @param type The {@link Type} representing the list's generic type.
+     * @return The resulting {@link List}.
      */
     public static <T> List<T> toList(String json, final Type type) {
         return getProvider().toList(json, type);
     }
 
     /**
-     * 按指定的Type解析json字符串到List
+     * Parses a JSON string into a {@link List} of objects of the specified class.
      *
-     * @param json  要解析的json字符串
-     * @param clazz 类对象class
-     * @param <T>   泛型参数类型
-     * @return 返回List
+     * @param <T>   The type of the elements in the list.
+     * @param json  The JSON string to be parsed.
+     * @param clazz The class of the elements in the list.
+     * @return The resulting {@link List}.
      */
     public static <T> List<T> toList(String json, final Class<T> clazz) {
         return getProvider().toList(json, clazz);
     }
 
     /**
-     * 解析json字符串到Map
+     * Parses a JSON string into a {@link Map}.
      *
-     * @param json 要解析的json字符串
-     * @return 返回Map
+     * @param json The JSON string to be parsed.
+     * @return The resulting {@link Map}.
      */
     public static Map toMap(String json) {
         return getProvider().toMap(json);
     }
 
     /**
-     * 转换对象到Map
+     * Converts an object into a {@link Map}.
      *
-     * @param object 与Map可兼容的对象
-     * @return 返回Map对象
+     * @param object The object to be converted.
+     * @return The resulting {@link Map}.
      */
     public static Map toMap(Object object) {
         return getProvider().toMap(object);
     }
 
     /**
-     * 获取json字符串指定属性值
+     * Extracts the value of a specific field from a JSON string.
      *
-     * @param json  要解析的json字符串
-     * @param field 属性名称
-     * @param <T>   泛型参数类型
-     * @return 返回解析后的属性值
+     * @param <T>   The type of the value to be returned.
+     * @param json  The JSON string to be parsed.
+     * @param field The name of the field whose value is to be extracted.
+     * @return The value of the specified field.
      */
     public static <T> T getValue(String json, String field) {
         return getProvider().getValue(json, field);
     }
 
     /**
-     * 判断是否为标准json
+     * Checks if a given string is a valid JSON string.
      *
-     * @param json 字符串
-     * @return the true/false
+     * @param json The string to be checked.
+     * @return {@code true} if the string is a valid JSON, {@code false} otherwise.
      */
     public static boolean isJson(String json) {
         return getProvider().isJson(json);

@@ -28,7 +28,7 @@
 package org.miaixz.bus.core.basic.service;
 
 /**
- * Service 接口
+ * A marker interface for services.
  *
  * @author Kimi Liu
  * @since Java 17+

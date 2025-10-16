@@ -34,7 +34,8 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 
 /**
- * 快速字符串读取，相比jdk的StringReader非线程安全，速度更快。
+ * A fast {@link Reader} implementation for {@link CharSequence} that is not thread-safe but offers better performance
+ * compared to JDK's {@code StringReader}.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,32 +43,34 @@ import org.miaixz.bus.core.lang.Normal;
 public class CharSequenceReader extends Reader {
 
     /**
-     * 开始位置
+     * The starting position (inclusive) for reading.
      */
     private final int start;
     /**
-     * 结束位置
+     * The ending position (exclusive) for reading.
      */
     private final int end;
     /**
-     * 读取字符
+     * The character sequence to read from.
      */
     private final CharSequence text;
     /**
-     * 读取到的位置
+     * The current reading position.
      */
     private int next;
     /**
-     * 读取标记位置
+     * The marked position.
      */
     private int mark;
 
     /**
-     * 构造
+     * Constructs a new {@code CharSequenceReader}.
      *
-     * @param text         {@link CharSequence}
-     * @param startInclude 开始位置（包含）
-     * @param endExclude   结束位置（不包含）
+     * @param text         The {@link CharSequence} to read from.
+     * @param startInclude The starting position (inclusive).
+     * @param endExclude   The ending position (exclusive).
+     * @throws IllegalArgumentException if {@code startInclude} is negative or {@code endExclude} is less than or equal
+     *                                  to {@code startInclude}.
      */
     public CharSequenceReader(CharSequence text, final int startInclude, final int endExclude) {
         Assert.isTrue(startInclude >= 0, "Start index is less than zero: {}", startInclude);
@@ -85,21 +88,40 @@ public class CharSequenceReader extends Reader {
         this.mark = startInclude;
     }
 
+    /**
+     * Tells whether this stream supports the mark operation.
+     *
+     * @return True, as this stream supports the mark operation.
+     */
     @Override
     public boolean markSupported() {
         return true;
     }
 
+    /**
+     * Marks the present position in the stream.
+     *
+     * @param readAheadLimit The maximum limit of characters that can be read before the mark position becomes invalid.
+     *                       This parameter is ignored in this implementation.
+     */
     @Override
     public void mark(final int readAheadLimit) {
         mark = next;
     }
 
+    /**
+     * Resets the stream to the most recent mark.
+     */
     @Override
     public void reset() {
         next = mark;
     }
 
+    /**
+     * Reads a single character.
+     *
+     * @return The character read, or -1 if the end of the stream has been reached.
+     */
     @Override
     public int read() {
         if (next >= end) {
@@ -108,6 +130,17 @@ public class CharSequenceReader extends Reader {
         return text.charAt(next++);
     }
 
+    /**
+     * Reads characters into a portion of an array.
+     *
+     * @param array  The array to transfer characters into.
+     * @param offset The offset at which to start writing characters.
+     * @param length The maximum number of characters to read.
+     * @return The number of characters read, or -1 if the end of the stream has been reached.
+     * @throws NullPointerException      if {@code array} is null.
+     * @throws IndexOutOfBoundsException if {@code offset} is negative, {@code length} is negative, or
+     *                                   {@code offset + length} is greater than {@code array.length}.
+     */
     @Override
     public int read(final char[] array, final int offset, final int length) {
         if (next >= end) {
@@ -150,6 +183,13 @@ public class CharSequenceReader extends Reader {
         return count;
     }
 
+    /**
+     * Skips characters.
+     *
+     * @param n The number of characters to skip.
+     * @return The number of characters actually skipped.
+     * @throws IllegalArgumentException if {@code n} is negative.
+     */
     @Override
     public long skip(final long n) {
         if (n < 0) {
@@ -164,17 +204,30 @@ public class CharSequenceReader extends Reader {
         return count;
     }
 
+    /**
+     * Tells whether this stream is ready to be read.
+     *
+     * @return True if the next read() is guaranteed not to block for input, false otherwise.
+     */
     @Override
     public boolean ready() {
         return next < end;
     }
 
+    /**
+     * Closes the stream. This implementation resets the internal pointers to the beginning of the character sequence.
+     */
     @Override
     public void close() {
         next = start;
         mark = start;
     }
 
+    /**
+     * Returns a string representation of the portion of the character sequence being read.
+     *
+     * @return A string representation of the character sequence.
+     */
     @Override
     public String toString() {
         return text.subSequence(start, end).toString();

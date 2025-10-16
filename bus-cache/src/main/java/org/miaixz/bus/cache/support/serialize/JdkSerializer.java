@@ -30,12 +30,13 @@ package org.miaixz.bus.cache.support.serialize;
 import java.io.*;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.logger.Logger;
 
 /**
- * JDK原生序列化器
+ * A serializer that uses standard Java serialization.
  * <p>
- * 基于Java原生序列化机制实现的序列化器，使用ObjectOutputStream和ObjectInputStream 进行对象的序列化和反序列化操作。要求被序列化的对象必须实现Serializable接口。
+ * This implementation is based on Java's native serialization mechanism, using {@link ObjectOutputStream} and
+ * {@link ObjectInputStream} to serialize and deserialize objects. It requires that the objects to be serialized
+ * implement the {@link Serializable} interface.
  * </p>
  *
  * @author Kimi Liu
@@ -44,74 +45,47 @@ import org.miaixz.bus.logger.Logger;
 public class JdkSerializer extends AbstractSerializer {
 
     /**
-     * 序列化对象到输出流
+     * Serializes a {@link Serializable} object to an {@link OutputStream}.
      *
-     * @param object       要序列化的对象，必须实现Serializable接口
-     * @param outputStream 输出流
-     * @throws InternalException 如果序列化过程中发生I/O错误
+     * @param object       The object to serialize. Must implement {@link Serializable}.
+     * @param outputStream The stream to write to. Must not be null.
+     * @throws InternalException if an I/O error occurs during serialization.
      */
     private static void serialize(Serializable object, OutputStream outputStream) {
         if (null == outputStream) {
             throw new IllegalArgumentException("The OutputStream must not be null");
-        } else {
-            ObjectOutputStream out = null;
-            try {
-                out = new ObjectOutputStream(outputStream);
-                out.writeObject(object);
-            } catch (IOException e) {
-                throw new InternalException(e);
-            } finally {
-                try {
-                    if (null != out) {
-                        out.close();
-                    }
-                } catch (IOException var10) {
-                    // 忽略关闭流时的异常
-                }
-            }
+        }
+        try (ObjectOutputStream out = new ObjectOutputStream(outputStream)) {
+            out.writeObject(object);
+        } catch (IOException e) {
+            throw new InternalException(e);
         }
     }
 
     /**
-     * 从输入流反序列化对象
+     * Deserializes an object from an {@link InputStream}.
      *
-     * @param inputStream 输入流
-     * @return 反序列化后的对象
-     * @throws InternalException 如果反序列化过程中发生I/O错误或类未找到错误
+     * @param inputStream The stream to read from. Must not be null.
+     * @return The deserialized object.
+     * @throws InternalException if an I/O, class loading, or casting error occurs during deserialization.
      */
     private static Object deserialize(InputStream inputStream) {
         if (null == inputStream) {
             throw new IllegalArgumentException("The InputStream must not be null");
-        } else {
-            ObjectInputStream in = null;
-            Object result;
-            try {
-                in = new ObjectInputStream(inputStream);
-                result = in.readObject();
-            } catch (ClassCastException | IOException | ClassNotFoundException ce) {
-                throw new InternalException(ce);
-            } finally {
-                try {
-                    if (null != in) {
-                        in.close();
-                    }
-                } catch (IOException e) {
-                    Logger.error(e, "close stream failed when deserialize error: ", e.getMessage());
-                }
-            }
-            return result;
+        }
+        try (ObjectInputStream in = new ObjectInputStream(inputStream)) {
+            return in.readObject();
+        } catch (ClassCastException | IOException | ClassNotFoundException e) {
+            throw new InternalException(e);
         }
     }
 
     /**
-     * 执行序列化操作
-     * <p>
-     * 使用JDK原生序列化将对象转换为字节数组
-     * </p>
+     * Performs the serialization of the object using Java's native serialization.
      *
-     * @param object 要序列化的对象，必须实现Serializable接口
-     * @return 序列化后的字节数组
-     * @throws InternalException 如果序列化过程中发生错误
+     * @param object The object to be serialized, which must implement {@link Serializable}.
+     * @return The resulting byte array.
+     * @throws InternalException if an error occurs during serialization.
      */
     @Override
     protected byte[] doSerialize(Object object) {
@@ -121,23 +95,19 @@ public class JdkSerializer extends AbstractSerializer {
     }
 
     /**
-     * 执行反序列化操作
-     * <p>
-     * 使用JDK原生反序列化将字节数组转换为对象
-     * </p>
+     * Performs the deserialization of the byte array using Java's native deserialization.
      *
-     * @param bytes 要反序列化的字节数组
-     * @return 反序列化后的对象
-     * @throws IllegalArgumentException 如果字节数组为null
-     * @throws InternalException        如果反序列化过程中发生错误
+     * @param bytes The byte array to be deserialized.
+     * @return The deserialized object.
+     * @throws IllegalArgumentException if the byte array is null.
+     * @throws InternalException        if an error occurs during deserialization.
      */
     @Override
     protected Object doDeserialize(byte[] bytes) {
         if (null == bytes) {
             throw new IllegalArgumentException("The byte[] must not be null");
-        } else {
-            return deserialize(new ByteArrayInputStream(bytes));
         }
+        return deserialize(new ByteArrayInputStream(bytes));
     }
 
 }

@@ -26,10 +26,11 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 
- * 
- * {@link java.util.concurrent.ConcurrentMap} 数据结构 {@link org.miaixz.bus.core.center.map.concurrent.Weigher}
- * 是一个简单的接口，用于确定一个条目消耗多少个单位。 {@link org.miaixz.bus.core.center.map.concurrent.Weighers} 类提供用于获取最常见类型的实现的实用方法。
+ * This package provides concurrent map implementations and related utilities for managing cache capacity. It includes
+ * interfaces like {@link org.miaixz.bus.core.center.map.concurrent.Weigher} and
+ * {@link org.miaixz.bus.core.center.map.concurrent.EntryWeigher} to determine the "weight" or cost of map entries,
+ * enabling fine-grained control over cache eviction policies. The
+ * {@link org.miaixz.bus.core.center.map.concurrent.Weighers} class offers common implementations for these interfaces.
  *
  * @author Kimi Liu
  * @since Java 17+

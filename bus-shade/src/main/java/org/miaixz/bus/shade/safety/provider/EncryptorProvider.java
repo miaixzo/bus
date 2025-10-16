@@ -35,7 +35,7 @@ import java.io.OutputStream;
 import org.miaixz.bus.shade.safety.algorithm.Key;
 
 /**
- * 加密器
+ * Defines the contract for an encryptor, which provides methods for encrypting files and streams.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,42 +43,42 @@ import org.miaixz.bus.shade.safety.algorithm.Key;
 public interface EncryptorProvider {
 
     /**
-     * 加密,将目标文件加密输出至目标文件
+     * Encrypts a source file and writes the result to a destination file.
      *
-     * @param key  密钥
-     * @param src  源文件
-     * @param dest 目标文件
-     * @throws IOException I/O 异常
+     * @param key  The encryption key.
+     * @param src  The source file to encrypt.
+     * @param dest The destination file to write the encrypted content to.
+     * @throws IOException If an I/O error occurs during encryption.
      */
     void encrypt(Key key, File src, File dest) throws IOException;
 
     /**
-     * 加密,将输入流加密输出至输出流
+     * Encrypts an input stream and writes the result to an output stream.
      *
-     * @param key 密钥
-     * @param in  输入流
-     * @param out 输出流
-     * @throws IOException I/O 异常
+     * @param key The encryption key.
+     * @param in  The input stream containing the plaintext data.
+     * @param out The output stream to write the encrypted data to.
+     * @throws IOException If an I/O error occurs during encryption.
      */
     void encrypt(Key key, InputStream in, OutputStream out) throws IOException;
 
     /**
-     * 加密,将输入流包装成加密的输入流
+     * Wraps an input stream with an encrypting input stream.
      *
-     * @param key 密钥
-     * @param in  输入流
-     * @return 加密后的输入流
-     * @throws IOException I/O 异常
+     * @param key The encryption key.
+     * @param in  The input stream to wrap.
+     * @return A new input stream that encrypts the data from the original stream.
+     * @throws IOException If an I/O error occurs.
      */
     InputStream encrypt(Key key, InputStream in) throws IOException;
 
     /**
-     * 加密,将输入流包装成加密的输出流
+     * Wraps an output stream with an encrypting output stream.
      *
-     * @param key 密钥
-     * @param out 输出流
-     * @return 加密后的输出流
-     * @throws IOException I/O 异常
+     * @param key The encryption key.
+     * @param out The output stream to wrap.
+     * @return A new output stream that encrypts data before writing it to the original stream.
+     * @throws IOException If an I/O error occurs.
      */
     OutputStream encrypt(Key key, OutputStream out) throws IOException;
 

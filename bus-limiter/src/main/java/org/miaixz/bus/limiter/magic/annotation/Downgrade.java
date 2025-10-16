@@ -32,7 +32,9 @@ import java.lang.annotation.*;
 import org.miaixz.bus.limiter.magic.FlowGrade;
 
 /**
- * 降级服务请求
+ * Annotation for marking methods that require service request degradation (downgrade). This annotation is used to apply
+ * flow control rules that trigger a fallback mechanism when certain conditions are met, such as exceeding a defined
+ * threshold.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,8 +45,20 @@ import org.miaixz.bus.limiter.magic.FlowGrade;
 @Target(ElementType.METHOD)
 public @interface Downgrade {
 
+    /**
+     * Specifies the flow grade for the downgrade rule. This determines the type of metric used for limiting, e.g., QPS
+     * or thread count.
+     *
+     * @return The {@link FlowGrade} for the downgrade rule.
+     */
     FlowGrade grade();
 
+    /**
+     * Specifies the threshold count for the downgrade rule. When the resource usage exceeds this count, the downgrade
+     * mechanism is triggered.
+     *
+     * @return The count threshold for the downgrade rule.
+     */
     int count();
 
 }

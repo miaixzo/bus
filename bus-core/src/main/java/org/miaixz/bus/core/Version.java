@@ -39,7 +39,18 @@ import org.miaixz.bus.core.xyz.CharKit;
 import org.miaixz.bus.core.xyz.CompareKit;
 
 /**
- * 字符串版本表示，用于解析版本号的不同部分并比较大小。 来自：java.lang.module.ModuleDescriptor.Version
+ * Represents a version string, providing functionality to parse, compare, and manage version numbers. This class is
+ * inspired by {@code java.lang.module.ModuleDescriptor.Version} and is designed to handle complex version strings that
+ * may include pre-release identifiers and build metadata, loosely following semantic versioning principles.
+ * <p>
+ * Version components are parsed into three main parts:
+ * <ol>
+ * <li>A sequence of numbers and strings for the main version (e.g., {@code [8, 3, 0]} for '8.3.0').</li>
+ * <li>A pre-release part (e.g., {@code ['alpha', 1]} for '-alpha.1').</li>
+ * <li>A build metadata part (e.g., {@code ['build', 123]} for '+build.123').</li>
+ * </ol>
+ * Comparison logic prioritizes the main version sequence, followed by the pre-release identifiers, and finally the
+ * build metadata.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -50,25 +61,33 @@ public class Version implements Comparable<Version>, Serializable {
     private static final long serialVersionUID = 2852290508230L;
 
     /**
-     * 版本信息
+     * The current version of the bus-core library.
      */
-    public static final String _VERSION = "8.3.1";
+    public static final String _VERSION = "8.3.2";
 
+    /**
+     * The original, unparsed version string.
+     */
     private final String version;
+    /**
+     * A list of numeric or string components representing the main version number.
+     */
     private final List<Object> sequence;
+    /**
+     * A list of numeric or string components representing the pre-release identifier.
+     */
     private final List<Object> pre;
+    /**
+     * A list of numeric or string components representing the build metadata.
+     */
     private final List<Object> build;
 
     /**
-     * 版本对象，格式：tok+ ( '-' tok+)? ( '+' tok+)?，版本之间使用'.'或'-'分隔，版本号可能包含'+' 数字部分按照大小比较，字符串按照字典顺序比较。
+     * Constructs a {@code Version} object by parsing a version string. The format is defined as
+     * {@code tok+ ( '-' tok+)? ( '+' tok+)?}, where tokens are separated by '.' or '-'. Numeric parts are compared by
+     * value, while string parts are compared lexicographically.
      *
-     * <ol>
-     * <li>sequence: 主版本号</li>
-     * <li>pre: 次版本号</li>
-     * <li>build: 构建版本</li>
-     * </ol>
-     *
-     * @param v 版本字符串
+     * @param v The version string to parse. Must not be null.
      */
     public Version(final String v) {
         Assert.notNull(v, "Null version string");
@@ -87,13 +106,12 @@ public class Version implements Comparable<Version>, Serializable {
 
         int i = 0;
         char c = v.charAt(i);
-        // 不检查开头字符为数字，字母按照字典顺序的数字对待
 
         final List<Object> sequence = this.sequence;
         final List<Object> pre = this.pre;
         final List<Object> build = this.build;
 
-        // 解析主版本
+        // Parse main version
         i = takeNumber(v, i, sequence);
 
         while (i < n) {
@@ -117,7 +135,7 @@ public class Version implements Comparable<Version>, Serializable {
             return;
         }
 
-        // 解析次版本
+        // Parse pre-release version
         while (i < n) {
             c = v.charAt(i);
             if (c >= '0' && c <= '9')
@@ -142,7 +160,7 @@ public class Version implements Comparable<Version>, Serializable {
             return;
         }
 
-        // 解析build版本
+        // Parse build version
         while (i < n) {
             c = v.charAt(i);
             if (c >= '0' && c <= '9') {
@@ -161,48 +179,32 @@ public class Version implements Comparable<Version>, Serializable {
     }
 
     /**
-     * 解析版本字符串为Version对象
+     * Parses a version string into a {@code Version} object.
      *
-     * @param v 版本字符串
-     * @return The resulting {@code Version}
-     * @throws IllegalArgumentException 如果 {@code v} 为 {@code null}或 ""或无法解析的字符串，抛出此异常
+     * @param v The version string to parse.
+     * @return The resulting {@code Version} object.
+     * @throws IllegalArgumentException if {@code v} is {@code null}, empty, or cannot be parsed.
      */
     public static Version of(final String v) {
         return new Version(v);
     }
 
     /**
-     * 获取 Version 的版本号,版本号的命名规范
+     * Returns the complete version string of the current library.
      *
-     * <pre>
-     * [大版本].[小版本].[发布流水号]
-     * </pre>
-     * 
-     * 这里有点说明
-     * <ul>
-     * <li>大版本 - 表示API的版本,如果没有重大变化,基本上同样的大版本号,使用方式是一致的
-     * <li>质量号 - alpha内部测试,beta 公测品质,RELEASE 生产品质
-     * <li>小版本 - 每次发布增加1
-     * </ul>
-     *
-     * @return 项目的版本号
-     */
-    /**
-     * 完整版本号
-     *
-     * @return the agent
+     * @return The current library version string.
      */
     public static String all() {
         return _VERSION;
     }
 
     /**
-     * 获取字符串中从位置i开始的数字，并加入到acc中 如 a123b，则从1开始，解析到acc中为[1, 2, 3]
+     * Parses a sequence of digits from the string starting at a given index and adds the resulting integer to the list.
      *
-     * @param s   字符串
-     * @param i   位置
-     * @param acc 数字列表
-     * @return 结束位置（不包含）
+     * @param s   The string to parse.
+     * @param i   The starting index.
+     * @param acc The list to which the parsed number is added.
+     * @return The index of the first character not consumed.
      */
     private static int takeNumber(final String s, int i, final List<Object> acc) {
         char c = s.charAt(i);
@@ -221,12 +223,13 @@ public class Version implements Comparable<Version>, Serializable {
     }
 
     /**
-     * 获取字符串中从位置i开始的字符串，并加入到acc中 字符串结束的位置为'.'、'-'、'+'和数字
+     * Parses a sequence of non-digit, non-separator characters from the string and adds it to the list. The sequence
+     * ends at the next '.', '-', '+', or digit.
      *
-     * @param s   版本字符串
-     * @param i   开始位置
-     * @param acc 字符串列表
-     * @return 结束位置（不包含）
+     * @param s   The string to parse.
+     * @param i   The starting index.
+     * @param acc The list to which the parsed string is added.
+     * @return The index of the first character not consumed.
      */
     private static int takeString(final String s, int i, final List<Object> acc) {
         final int b = i;
@@ -242,6 +245,15 @@ public class Version implements Comparable<Version>, Serializable {
         return i;
     }
 
+    /**
+     * Compares this version to another. The comparison is performed by comparing the main version sequences, then the
+     * pre-release identifiers, and finally the build metadata. A version with a pre-release identifier is considered
+     * older than one without.
+     *
+     * @param that The other {@code Version} to compare to.
+     * @return A negative integer, zero, or a positive integer as this version is less than, equal to, or greater than
+     *         the specified version.
+     */
     @Override
     public int compareTo(final Version that) {
         int c = compareTokens(this.sequence, that.sequence);
@@ -264,6 +276,13 @@ public class Version implements Comparable<Version>, Serializable {
         return compareTokens(this.build, that.build);
     }
 
+    /**
+     * Checks if this version is equal to another object. Two versions are considered equal if their {@code compareTo}
+     * method returns 0.
+     *
+     * @param ob The object to compare with.
+     * @return {@code true} if the objects are equal, {@code false} otherwise.
+     */
     @Override
     public boolean equals(final Object ob) {
         if (!(ob instanceof Version)) {
@@ -272,28 +291,33 @@ public class Version implements Comparable<Version>, Serializable {
         return compareTo((Version) ob) == 0;
     }
 
+    /**
+     * Computes the hash code for this version. The hash code is based on the original version string.
+     *
+     * @return The hash code for this version.
+     */
     @Override
     public int hashCode() {
         return version.hashCode();
     }
 
-    // Take a string token starting at position i
-    // Append it to the given list
-    // Return the index of the first character not taken
-    // Requires: s.charAt(i) is not '.'
-    //
-
+    /**
+     * Returns the original string representation of this version.
+     *
+     * @return The original version string.
+     */
     @Override
     public String toString() {
         return version;
     }
 
     /**
-     * 比较节点
+     * Compares two lists of version tokens (which can be Integers or Strings).
      *
-     * @param ts1 节点1
-     * @param ts2 节点2
-     * @return 比较结果
+     * @param ts1 The first list of tokens.
+     * @param ts2 The second list of tokens.
+     * @return A negative integer, zero, or a positive integer as the first list is less than, equal to, or greater than
+     *         the second.
      */
     private int compareTokens(final List<Object> ts1, final List<Object> ts2) {
         final int n = Math.min(ts1.size(), ts2.size());

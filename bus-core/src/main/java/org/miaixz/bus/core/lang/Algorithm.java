@@ -30,371 +30,382 @@ package org.miaixz.bus.core.lang;
 import javax.crypto.Cipher;
 
 /**
- * 签名算法类型 see: https://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#Signature
+ * Enumeration for various cryptographic algorithm types, including asymmetric, digest, HMAC, symmetric, and national
+ * algorithms. See:
+ * <a href="https://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#Signature"> Standard
+ * Names for Java Cryptography Architecture</a>
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public enum Algorithm {
 
-    /****************************** 非对称-算法类型 *****************************/
+    /****************************** Asymmetric - Algorithm Types ******************************/
 
     /**
-     * RSA算法
+     * RSA algorithm.
      */
     RSA("RSA"),
     /**
-     * RSA2算法
+     * RSA2 algorithm.
      */
     RSA2("RSA2"),
     /**
-     * RSA算法，此算法用了默认补位方式为RSA/ECB/PKCS1Padding
+     * RSA algorithm with default padding: RSA/ECB/PKCS1Padding.
      */
     RSA_ECB_PKCS1("RSA/ECB/PKCS1Padding"),
     /**
-     * RSA算法，此算法用了默认补位方式为RSA/ECB/NoPadding
+     * RSA algorithm with no padding: RSA/ECB/NoPadding.
      */
     RSA_ECB("RSA/ECB/NoPadding"),
     /**
-     * RSA算法，此算法用了RSA/None/NoPadding
+     * RSA algorithm with no padding and no mode: RSA/None/NoPadding.
      */
     RSA_NONE("RSA/None/NoPadding"),
     /**
-     * EC算法
+     * Elliptic Curve (EC) algorithm.
      */
     EC("EC"),
     /**
-     * ECDSA
+     * Elliptic Curve Digital Signature Algorithm (ECDSA).
      */
     ECDSA("ECDSA"),
 
-    /***************************** 非对称-签名算法 *****************************/
+    /***************************** Asymmetric - Signature Algorithms *****************************/
 
     /**
-     * RSA签名算法
+     * RSA signature algorithm with no digest.
      */
     NONEWITHRSA("NONEwithRSA"),
     /**
-     * MD2/MD5带有RSA加密签名算法
+     * MD2 with RSA encryption signature algorithm.
      */
     MD2WITHRSA("MD2withRSA"),
     /**
-     * MD5withRSA
+     * MD5 with RSA signature algorithm.
      */
     MD5WITHRSA("MD5withRSA"),
 
     /**
-     * 使用SHA-*和RSA的签名算法
+     * SHA-1 with RSA signature algorithm.
      */
     SHA1WITHRSA("SHA1withRSA"),
     /**
-     * SHA256withRSA
+     * SHA-256 with RSA signature algorithm.
      */
     SHA256WITHRSA("SHA256withRSA"),
     /**
-     * SHA384withRSA
+     * SHA-384 with RSA signature algorithm.
      */
     SHA384WITHRSA("SHA384withRSA"),
     /**
-     * SHA512withRSA
+     * SHA-512 with RSA signature algorithm.
      */
     SHA512WITHRSA("SHA512withRSA"),
 
     /**
-     * 数字签名算法
+     * Digital Signature Algorithm (DSA) with no digest.
      */
     NONEWITHDSA("NONEwithDSA"),
     /**
-     * 采用SHA-1签名算法的DSA
+     * DSA with SHA-1 signature algorithm.
      */
     SHA1WITHDSA("SHA1withDSA"),
     /**
-     * ECDSA签名算法
+     * ECDSA signature algorithm with no digest.
      */
     NONEWITHECDSA("NONEwithECDSA"),
     /**
-     * SHA1withECDSA
+     * SHA-1 with ECDSA signature algorithm.
      */
     SHA1WITHECDSA("SHA1withECDSA"),
     /**
-     * SHA256withECDSA
+     * SHA-256 with ECDSA signature algorithm.
      */
     SHA256WITHECDSA("SHA256withECDSA"),
     /**
-     * SHA384withECDSA
+     * SHA-384 with ECDSA signature algorithm.
      */
     SHA384WITHECDSA("SHA384withECDSA"),
     /**
-     * SHA512withECDSA
+     * SHA-512 with ECDSA signature algorithm.
      */
     SHA512WITHECDSA("SHA512withECDSA"),
 
     /**
-     * SHA256WithRSA/PSS
+     * SHA256WithRSA/PSS signature algorithm.
      */
     SHA256WITHRSA_PSS("SHA256WithRSA/PSS"),
     /**
-     * SHA384WithRSA/PSS
+     * SHA384WithRSA/PSS signature algorithm.
      */
     SHA384WITHRSA_PSS("SHA384WithRSA/PSS"),
     /**
-     * SHA512WithRSA/PSS
+     * SHA512WithRSA/PSS signature algorithm.
      */
     SHA512WITHRSA_PSS("SHA512WithRSA/PSS"),
 
-    /****************************** 摘要-算法类型 *****************************/
+    /****************************** Digest - Algorithm Types *****************************/
 
     /**
-     * MD2
+     * MD2 message digest algorithm.
      */
     MD2("MD2"),
     /**
-     * MD5
+     * MD5 message digest algorithm.
      */
     MD5("MD5"),
     /**
-     * SHA-1
+     * SHA-1 message digest algorithm.
      */
     SHA1("SHA-1"),
     /**
-     * SHA-256
+     * SHA-256 message digest algorithm.
      */
     SHA256("SHA-256"),
     /**
-     * SHA-384
+     * SHA-384 message digest algorithm.
      */
     SHA384("SHA-384"),
     /**
-     * SHA-512
+     * SHA-512 message digest algorithm.
      */
     SHA512("SHA-512"),
     /**
-     * SHA1PRNG
+     * SHA1PRNG pseudo-random number generator algorithm.
      */
     SHA1PRNG("SHA1PRNG"),
 
-    /***************************** 摘要-HMAC算法 *****************************/
+    /***************************** Digest - HMAC Algorithms *****************************/
 
     /**
-     * HmacMD5
+     * HmacMD5 algorithm.
      */
     HMACMD5("HmacMD5"),
     /**
-     * HmacSHA1
+     * HmacSHA1 algorithm.
      */
     HMACSHA1("HmacSHA1"),
     /**
-     * HmacSHA256
+     * HmacSHA256 algorithm.
      */
     HMACSHA256("HmacSHA256"),
     /**
-     * HmacSHA384
+     * HmacSHA384 algorithm.
      */
     HMACSHA384("HmacSHA384"),
     /**
-     * HmacSHA512
+     * HmacSHA512 algorithm.
      */
     HMACSHA512("HmacSHA512"),
     /**
-     * HmacSM3算法实现，需要BouncyCastle库支持
+     * HmacSM3 algorithm implementation, requires BouncyCastle library support.
      */
     HMACSM3("HmacSM3"),
     /**
-     * SM4 CMAC模式实现，需要BouncyCastle库支持
+     * SM4 CMAC mode implementation, requires BouncyCastle library support.
      */
     SM4CMAC("SM4CMAC"),
 
-    /***************************** 对称-算法类型 *****************************/
+    /***************************** Symmetric - Algorithm Types *****************************/
 
     /**
-     * 默认的AES加密方式：AES/ECB/PKCS5Padding
+     * Default AES encryption mode: AES/ECB/PKCS5Padding.
      */
     AES("AES"),
     /**
-     * ARCFOUR
+     * ARCFOUR algorithm.
      */
     ARCFOUR("ARCFOUR"),
     /**
-     * Blowfish
+     * Blowfish algorithm.
      */
     BLOWFISH("Blowfish"),
     /**
-     * 默认的DES加密方式：DES/ECB/PKCS5Padding
+     * Default DES encryption mode: DES/ECB/PKCS5Padding.
      */
     DES("DES"),
     /**
-     * 3DES算法，默认实现为：DESede/ECB/PKCS5Padding
+     * 3DES algorithm, default implementation: DESede/ECB/PKCS5Padding.
      */
     DESEDE("DESede"),
     /**
-     * 分组加密算法 RC2加密算法的执行速度是DES算法的两倍
+     * Block cipher algorithm RC2. RC2 encryption is twice as fast as DES.
      */
     RC2("RC2"),
     /**
-     * 流加密算法，密钥长度可变
+     * Stream cipher algorithm RC4, with variable key length.
      */
     RC4("RC4"),
 
     /**
-     * PBEWithMD5AndDES
+     * PBEWithMD5AndDES algorithm.
      */
     PBEWITHMD5ANDDES("PBEWithMD5AndDES"),
     /**
-     * PBEWithSHA1AndDESede
+     * PBEWithSHA1AndDESede algorithm.
      */
     PBEWITHSHA1ANDDESEDE("PBEWithSHA1AndDESede"),
     /**
-     * PBEWithSHA1AndRC2_40
+     * PBEWithSHA1AndRC2_40 algorithm.
      */
     PBEWITHSHA1ANDRC2_40("PBEWithSHA1AndRC2_40"),
 
-    /******************************* 国密算法 *******************************/
+    /******************************* National Algorithms *******************************/
 
     /**
-     * 对称算法
+     * SM1 symmetric algorithm.
      */
     SM1("SM1"),
     /**
-     * 公钥密码算法
+     * SM2 public key cryptography algorithm.
      */
     SM2("SM2"),
     /**
-     * 主要用于数字签名及验证、消息认证码生成及验证、随机数生成等 其安全性及效率与SHA-256相当
+     * SM3 hash algorithm, primarily used for digital signatures and verification, message authentication code
+     * generation and verification, random number generation, etc. Its security and efficiency are comparable to
+     * SHA-256.
      */
     SM3("SM3"),
     /**
-     * 迭代分组密码算法
+     * SM4 iterative block cipher algorithm.
      */
     SM4("SM4"),
 
-    /******************************* 其他算法 *******************************/
+    /******************************* Other Algorithms *******************************/
 
     /**
-     * 祖冲之算法-ZUC算法 ZUC-128
+     * ZUC algorithm - ZUC-128.
      */
     ZUC_128("ZUC-128"),
     /**
-     * 祖冲之算法-ZUC算法 ZUC-256
+     * ZUC algorithm - ZUC-256.
      */
     ZUC_256("ZUC-256"),
     /**
-     * ECIES（集成加密方案，elliptic curve integrate encrypt scheme）
+     * ECIES (Elliptic Curve Integrated Encryption Scheme).
      */
     ECIES("ECIES"),
     /**
-     * PBKDF2应用一个伪随机函数以导出密钥，PBKDF2简单而言就是将salted hash进行多次重复计算
+     * PBKDF2 applies a pseudo-random function to derive a key. PBKDF2 simply involves repeatedly calculating a salted
+     * hash.
      */
     PBKDF2WITHHMACSHA1("PBKDF2WithHmacSHA1"),
     /**
-     * ChaCha20
+     * ChaCha20 stream cipher algorithm.
      */
     CHACHA20("ChaCha20");
 
     /**
-     * 算法
+     * The string representation of the algorithm.
      */
     private final String value;
 
     /**
-     * 构造
+     * Constructs an {@code Algorithm} enum constant.
      *
-     * @param value 算法字符表示，区分大小写
+     * @param value The string representation of the algorithm, case-sensitive.
      */
     Algorithm(final String value) {
         this.value = value;
     }
 
     /**
-     * 获取算法字符串表示，区分大小写
+     * Returns the string representation of the algorithm, which is case-sensitive.
      *
-     * @return 算法字符串表示
+     * @return The string representation of the algorithm.
      */
     public String getValue() {
         return this.value;
     }
 
     /**
-     * 模式 加密算法模式，是用来描述加密算法（此处特指分组密码，不包括流密码）在加密时对明文分组的模式，它代表了不同的分组方式
+     * Enumeration for cryptographic algorithm modes. These modes describe how block ciphers (not stream ciphers)
+     * process plaintext in blocks during encryption.
      *
-     * @see <a href="https://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#Cipher">
-     *      Cipher章节</a>
+     * @see <a href="https://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#Cipher"> Cipher
+     *      section in Standard Names for Java Cryptography Architecture</a>
      */
     public enum Mode {
         /**
-         * 无模式
+         * No mode specified.
          */
         NONE,
         /**
-         * 密码分组连接模式（Ciphers Block Chaining）
+         * Cipher Block Chaining (CBC) mode.
          */
         CBC,
         /**
-         * 密文反馈模式（Ciphers Feedback）
+         * Cipher Feedback (CFB) mode.
          */
         CFB,
         /**
-         * 计数器模式（A simplification of OFB）
+         * Counter (CTR) mode (a simplification of OFB).
          */
         CTR,
         /**
-         * Ciphers Text Stealing
+         * Ciphertext Stealing (CTS) mode.
          */
         CTS,
         /**
-         * 电子密码本模式（Electronic CodeBook）
+         * Electronic Codebook (ECB) mode.
          */
         ECB,
         /**
-         * 输出反馈模式（Output Feedback）
+         * Output Feedback (OFB) mode.
          */
         OFB,
         /**
-         * Propagating Ciphers Block
+         * Propagating Cipher Block Chaining (PCBC) mode.
          */
         PCBC,
         /**
-         * GCM 全称为 Galois/Counter AnsiStyle。G是指GMAC，C是指CTR。 它在 CTR 加密的基础上增加 GMAC 的特性，解决了 CTR 不能对加密消息进行完整性校验的问题。
+         * Galois/Counter Mode (GCM). It adds GMAC features on top of CTR encryption, addressing the issue that CTR
+         * cannot perform integrity checks on encrypted messages.
          */
         GCM
     }
 
     /**
-     * Cipher模式的枚举封装
+     * Enumeration for Cipher operation types.
      */
     public enum Type {
 
         /**
-         * 加密模式
+         * Encryption mode.
          */
         ENCRYPT(javax.crypto.Cipher.ENCRYPT_MODE),
         /**
-         * 解密模式
+         * Decryption mode.
          */
         DECRYPT(javax.crypto.Cipher.DECRYPT_MODE),
         /**
-         * 包装模式
+         * Key wrapping mode.
          */
         WRAP(javax.crypto.Cipher.WRAP_MODE),
         /**
-         * 拆包模式
+         * Key unwrapping mode.
          */
         UNWRAP(javax.crypto.Cipher.UNWRAP_MODE);
 
+        /**
+         * The integer value representing the cipher operation type.
+         */
         private final int value;
 
         /**
-         * 构造
+         * Constructs a {@code Type} enum constant.
          *
-         * @param value 见{@link Cipher}
+         * @param value The integer value as defined in {@link Cipher}.
          */
         Type(final int value) {
             this.value = value;
         }
 
         /**
-         * 获取枚举值对应的int表示
+         * Returns the integer value corresponding to this cipher operation type.
          *
-         * @return 枚举值对应的int表示
+         * @return The integer value.
          */
         public int getValue() {
             return this.value;

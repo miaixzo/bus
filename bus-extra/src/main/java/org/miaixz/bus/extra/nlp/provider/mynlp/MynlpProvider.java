@@ -36,34 +36,47 @@ import com.mayabot.nlp.segment.Lexer;
 import com.mayabot.nlp.segment.Sentence;
 
 /**
- * MYNLP 中文NLP工具包分词实现 项目地址：https://github.com/mayabot/mynlp/ {@link Lexer} 线程安全
+ * Mynlp word segmentation engine implementation. This class serves as a concrete {@link NLPProvider} for the Mynlp NLP
+ * library, adapting its word segmentation capabilities to the common NLP interface. The underlying {@link Lexer} is
+ * thread-safe. Project homepage: <a href="https://github.com/mayabot/mynlp/">https://github.com/mayabot/mynlp/</a>
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class MynlpProvider implements NLPProvider {
 
+    /**
+     * The underlying Mynlp {@link Lexer} instance used for performing word segmentation.
+     */
     private final Lexer lexer;
 
     /**
-     * 构造
+     * Constructs a new {@code MynlpProvider} instance with a default Mynlp lexer. The default lexer is a bigram lexer
+     * with part-of-speech tagging and person name recognition enabled.
      */
     public MynlpProvider() {
-        // CORE分词器构建器
-        // 开启词性标注功能
-        // 开启人名识别功能
+        // CORE tokenizer builder
+        // Enable part-of-speech tagging
+        // Enable person name recognition
         this.lexer = Mynlp.instance().bigramLexer();
     }
 
     /**
-     * 构造
+     * Constructs a new {@code MynlpProvider} instance with a custom Mynlp {@link Lexer} implementation.
      *
-     * @param lexer 分词器接口{@link Lexer}
+     * @param lexer The custom {@link Lexer} object to use for word segmentation.
      */
     public MynlpProvider(final Lexer lexer) {
         this.lexer = lexer;
     }
 
+    /**
+     * Performs word segmentation on the given text using the configured Mynlp {@link Lexer} instance. The result is
+     * wrapped in a {@link MynlpResult} to conform to the {@link NLPResult} interface.
+     *
+     * @param text The input text {@link CharSequence} to be segmented.
+     * @return An {@link NLPResult} object containing the segmented words from Mynlp.
+     */
     @Override
     public NLPResult parse(final CharSequence text) {
         final Sentence sentence = this.lexer.scan(StringKit.toStringOrEmpty(text));

@@ -53,6 +53,12 @@ final class MacFirmware extends AbstractFirmware {
 
     private final Supplier<Tuple> manufNameDescVersRelease = Memoizer.memoize(MacFirmware::queryEfi);
 
+    /**
+     * Queries the EFI (Extensible Firmware Interface) information from the I/O Registry.
+     *
+     * @return A {@link Tuple} containing the manufacturer, name, description, version, and release date of the EFI.
+     *         Returns {@link Normal#UNKNOWN} for any field that cannot be determined.
+     */
     private static Tuple queryEfi() {
         String manufacturer = null;
         String name = null;
@@ -135,26 +141,41 @@ final class MacFirmware extends AbstractFirmware {
                 StringKit.isBlank(releaseDate) ? Normal.UNKNOWN : releaseDate);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getManufacturer() {
         return manufNameDescVersRelease.get().get(0);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getName() {
         return manufNameDescVersRelease.get().get(1);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getDescription() {
         return manufNameDescVersRelease.get().get(2);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getVersion() {
         return manufNameDescVersRelease.get().get(3);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getReleaseDate() {
         return manufNameDescVersRelease.get().get(4);

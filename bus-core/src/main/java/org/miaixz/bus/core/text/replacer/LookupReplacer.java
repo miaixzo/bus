@@ -34,25 +34,42 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * 查找替换器，通过查找指定关键字，替换对应的值
+ * A replacer that performs replacements based on a lookup map. It searches for specific keywords and replaces them with
+ * their corresponding values.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class LookupReplacer extends StringReplacer {
 
+    /**
+     * The serial version UID.
+     */
     @Serial
     private static final long serialVersionUID = 2852239213366L;
 
+    /**
+     * The map containing lookup keys and their replacement values.
+     */
     private final Map<String, String> lookupMap;
+    /**
+     * A set of characters representing the first character of each lookup key, used for quick pre-filtering.
+     */
     private final Set<Character> keyPrefixSkeyet;
+    /**
+     * The minimum length of a lookup key.
+     */
     private final int minLength;
+    /**
+     * The maximum length of a lookup key.
+     */
     private final int maxLength;
 
     /**
-     * 构造
+     * Constructs a new {@code LookupReplacer} with the given lookup key-value pairs.
      *
-     * @param lookup 被查找的键值对，每个String[]表示一个键值对
+     * @param lookup An array of String arrays, where each inner array represents a key-value pair (e.g., {@code new
+     *               String[]{"key", "value"}}).
      */
     public LookupReplacer(final String[]... lookup) {
         this.lookupMap = new HashMap<>(lookup.length, 1);
@@ -78,6 +95,16 @@ public class LookupReplacer extends StringReplacer {
         this.minLength = minLength;
     }
 
+    /**
+     * Replaces a portion of the text based on the lookup map. It checks if the character at the current position
+     * matches any key's first character. If so, it attempts to find the longest matching key and replaces it with its
+     * corresponding value.
+     *
+     * @param text The text to be processed.
+     * @param pos  The current position in the text.
+     * @param out  The {@code StringBuilder} to which the replaced text is appended.
+     * @return The number of characters consumed by the replacement, or 0 if no replacement occurred.
+     */
     @Override
     protected int replace(final CharSequence text, final int pos, final StringBuilder out) {
         if (keyPrefixSkeyet.contains(text.charAt(pos))) {

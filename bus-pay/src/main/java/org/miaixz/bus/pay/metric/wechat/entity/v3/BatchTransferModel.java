@@ -27,16 +27,16 @@
 */
 package org.miaixz.bus.pay.metric.wechat.entity.v3;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+import java.util.List;
+
 /**
- * 发起商家转账
+ * Model for the Initiate Batch Transfer API.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -49,33 +49,36 @@ import lombok.experimental.SuperBuilder;
 public class BatchTransferModel {
 
     /**
-     * 商户系统内部的商家批次单号，要求此参数只能由数字、大小写字母组成，在商户系统内部唯一
+     * The merchant's internal batch number. It must be unique within the merchant's system and can only consist of
+     * numbers and uppercase/lowercase letters.
      */
     private String out_batch_no;
 
     /**
-     * 该笔批量转账的名称
+     * The name of this batch transfer.
      */
     private String batch_name;
     /**
-     * 转账说明，UTF8编码，最多允许32个字符
+     * A description for the transfer, UTF-8 encoded, up to 32 characters.
      */
     private String batch_remark;
     /**
-     * 转账金额单位为“分”。转账总金额必须与批次内所有明细转账金额之和保持一致，否则无法发起转账操作
+     * The total transfer amount in cents. This must be equal to the sum of all individual transfer amounts in the
+     * batch.
      */
     private Integer total_amount;
     /**
-     * 一个转账批次单最多发起一千笔转账。转账总笔数必须与批次内所有明细之和保持一致，否则无法发起转账操作
+     * The total number of transfers in this batch, up to 1000. This must match the number of items in the transfer
+     * detail list.
      */
     private Integer total_num;
     /**
-     * 发起批量转账的明细列表，最多一千笔
+     * The list of individual transfer details for this batch, up to 1000 items.
      */
     private List<TransferDetailInput> transfer_detail_list;
 
     /**
-     * 指定该笔转账使用的转账场景ID
+     * The scene ID specifying the use case for this transfer.
      */
     private String transfer_scene_id;
 

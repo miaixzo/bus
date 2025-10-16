@@ -40,7 +40,8 @@ import jakarta.jms.MessageProducer;
 import jakarta.jms.Session;
 
 /**
- * JMS消息生产者实现类
+ * JMS (Java Message Service) message producer implementation. This class acts as an adapter for sending messages to a
+ * JMS provider, converting the internal {@link Message} format into a JMS {@link BytesMessage} for transmission.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,20 +49,20 @@ import jakarta.jms.Session;
 public class JmsProducer implements Producer {
 
     /**
-     * JMS会话对象
+     * The underlying Jakarta Messaging {@link Session} object used to create messages and producers.
      */
     private final Session session;
 
     /**
-     * JMS消息生产者对象
+     * The underlying Jakarta Messaging {@link MessageProducer} object responsible for sending messages.
      */
     private final MessageProducer producer;
 
     /**
-     * 构造方法
+     * Constructs a {@code JmsProducer} with the specified JMS session and message producer.
      *
-     * @param session  JMS会话对象
-     * @param producer JMS消息生产者对象
+     * @param session  The JMS {@link Session} object to be used for message creation.
+     * @param producer The JMS {@link MessageProducer} object responsible for sending messages.
      */
     public JmsProducer(final Session session, final MessageProducer producer) {
         this.session = session;
@@ -69,33 +70,36 @@ public class JmsProducer implements Producer {
     }
 
     /**
-     * 发送消息到目标队列或主题
+     * Sends a {@link Message} to the configured JMS destination (queue or topic). The content of the {@link Message} is
+     * converted into a JMS {@link BytesMessage}.
      *
-     * @param message 要发送的消息对象，包含主题和内容
-     * @throws MQueueException 消息发送失败时抛出异常
+     * @param message The {@link Message} object to send, containing the topic and content.
+     * @throws MQueueException if a JMS error occurs during message creation or sending.
      */
     @Override
     public void send(final Message message) {
         final BytesMessage bytesMessage;
         try {
-            // 创建字节消息
+            // Create a new BytesMessage from the JMS session
             bytesMessage = this.session.createBytesMessage();
-            // 写入消息内容
+            // Write the content of the bus.extra.mq.Message into the BytesMessage
             bytesMessage.writeBytes(message.content());
-            // 发送消息
+            // Send the BytesMessage using the JMS MessageProducer
             this.producer.send(bytesMessage);
         } catch (final JMSException e) {
+            // Wrap any JMSException in an MQueueException for consistent error handling
             throw new MQueueException(e);
         }
     }
 
     /**
-     * 关闭生产者，释放资源
+     * Closes the underlying JMS {@link MessageProducer} and releases any associated resources.
      *
-     * @throws IOException 关闭过程中发生IO异常时抛出
+     * @throws IOException if an I/O error occurs during the closing process.
      */
     @Override
     public void close() throws IOException {
+        // Safely close the JMS producer, suppressing any exceptions
         IoKit.closeQuietly(this.producer);
     }
 

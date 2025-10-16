@@ -35,31 +35,45 @@ import com.hankcs.hanlp.HanLP;
 import com.hankcs.hanlp.seg.Segment;
 
 /**
- * HanLP分词引擎实现 项目地址：https://github.com/hankcs/HanLP {@link Segment#seg(String)}方法线程安全
+ * HanLP word segmentation engine implementation. This class serves as a concrete {@link NLPProvider} for the HanLP NLP
+ * library, adapting its word segmentation capabilities to the common NLP interface. The underlying
+ * {@link Segment#seg(String)} method is thread-safe. Project homepage:
+ * <a href="https://github.com/hankcs/HanLP">https://github.com/hankcs/HanLP</a>
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class HanLPProvider implements NLPProvider {
 
+    /**
+     * The underlying HanLP {@link Segment} instance used for performing word segmentation.
+     */
     private final Segment seg;
 
     /**
-     * 构造
+     * Constructs a new {@code HanLPProvider} instance with a default HanLP segmenter, created via
+     * {@link HanLP#newSegment()}.
      */
     public HanLPProvider() {
         this(HanLP.newSegment());
     }
 
     /**
-     * 构造
+     * Constructs a new {@code HanLPProvider} instance with a custom HanLP {@link Segment} implementation.
      *
-     * @param seg {@link Segment}
+     * @param seg The custom {@link Segment} object to use for word segmentation.
      */
     public HanLPProvider(final Segment seg) {
         this.seg = seg;
     }
 
+    /**
+     * Performs word segmentation on the given text using the configured HanLP {@link Segment} instance. The result is
+     * wrapped in a {@link HanLPResult} to conform to the {@link NLPResult} interface.
+     *
+     * @param text The input text {@link CharSequence} to be segmented.
+     * @return An {@link NLPResult} object containing the segmented words from HanLP.
+     */
     @Override
     public NLPResult parse(final CharSequence text) {
         return new HanLPResult(this.seg.seg(StringKit.toStringOrEmpty(text)));

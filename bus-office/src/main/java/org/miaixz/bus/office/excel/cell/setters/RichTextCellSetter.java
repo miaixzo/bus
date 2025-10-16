@@ -31,7 +31,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.RichTextString;
 
 /**
- * {@link RichTextString} 值单元格设置器
+ * {@link CellSetter} for {@link RichTextString} values.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -41,9 +41,9 @@ public class RichTextCellSetter implements CellSetter {
     private final RichTextString value;
 
     /**
-     * 构造
+     * Constructs a {@code RichTextCellSetter} with the specified {@link RichTextString} value.
      *
-     * @param value 值
+     * @param value The {@link RichTextString} value to set in the cell.
      */
     RichTextCellSetter(final RichTextString value) {
         this.value = value;

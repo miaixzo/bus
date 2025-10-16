@@ -37,23 +37,54 @@ import org.miaixz.bus.image.galaxy.data.ItemPointer;
 import org.miaixz.bus.image.galaxy.data.VR;
 
 /**
+ * Basic implementation of {@link BulkDataDescriptor} that allows configuring which attributes should be treated as bulk
+ * data. It supports selection by attribute tag, tag path, and value length thresholds for specific Value
+ * Representations (VRs).
+ * 
  * @author Kimi Liu
  * @since Java 17+
  */
 public class BasicBulkDataDescriptor implements BulkDataDescriptor {
 
+    /**
+     * A list of {@link AttributeSelector} objects used to identify attributes that should be treated as bulk data.
+     */
     private final List<AttributeSelector> selectors = new ArrayList<>();
+    /**
+     * A map storing length thresholds for different Value Representations (VRs). If an attribute's value length exceeds
+     * the threshold for its VR, it will be considered bulk data.
+     */
     private final EnumMap<VR, Integer> lengthsThresholdByVR = new EnumMap<>(VR.class);
+    /**
+     * An optional ID for this bulk data descriptor.
+     */
     private String bulkDataDescriptorID;
+    /**
+     * A flag indicating whether default bulk data attributes should be excluded.
+     */
     private boolean excludeDefaults;
 
+    /**
+     * Constructs a new {@code BasicBulkDataDescriptor} with default settings.
+     */
     public BasicBulkDataDescriptor() {
     }
 
+    /**
+     * Constructs a new {@code BasicBulkDataDescriptor} with the specified bulk data descriptor ID.
+     * 
+     * @param bulkDataDescriptorID The ID for this bulk data descriptor.
+     */
     public BasicBulkDataDescriptor(String bulkDataDescriptorID) {
         this.bulkDataDescriptorID = bulkDataDescriptorID;
     }
 
+    /**
+     * Converts an array of tag paths into a list of {@link ItemPointer} objects.
+     * 
+     * @param tagPaths An array of integers representing the tag path.
+     * @return A list of {@link ItemPointer} objects.
+     */
     private static List<ItemPointer> toItemPointers(int[] tagPaths) {
         int level = tagPaths.length - 1;
         if (level == 0)
@@ -67,6 +98,14 @@ public class BasicBulkDataDescriptor implements BulkDataDescriptor {
         return itemPointers;
     }
 
+    /**
+     * Checks if a given tag, potentially within a sequence specified by item pointers, corresponds to a standard DICOM
+     * bulk data element.
+     * 
+     * @param itemPointer A list of {@link ItemPointer} objects indicating the path to the attribute.
+     * @param tag         The DICOM tag of the attribute.
+     * @return {@code true} if the attribute is a standard bulk data element, {@code false} otherwise.
+     */
     static boolean isStandardBulkData(List<ItemPointer> itemPointer, int tag) {
         switch (Tag.normalizeRepeatingGroup(tag)) {
             case Tag.PixelDataProviderURL:
@@ -97,31 +136,71 @@ public class BasicBulkDataDescriptor implements BulkDataDescriptor {
         return false;
     }
 
+    /**
+     * Checks if the given length exceeds the specified length threshold.
+     * 
+     * @param length          The length to check.
+     * @param lengthThreshold The threshold to compare against.
+     * @return {@code true} if the length exceeds the threshold, {@code false} otherwise.
+     */
     private static boolean exeeds(int length, Integer lengthThreshold) {
         return lengthThreshold != null && length > lengthThreshold;
     }
 
+    /**
+     * Returns the bulk data descriptor ID.
+     * 
+     * @return The bulk data descriptor ID.
+     */
     public String getBulkDataDescriptorID() {
         return bulkDataDescriptorID;
     }
 
+    /**
+     * Sets the bulk data descriptor ID.
+     * 
+     * @param bulkDataDescriptorID The ID to set.
+     */
     public void setBulkDataDescriptorID(String bulkDataDescriptorID) {
         this.bulkDataDescriptorID = bulkDataDescriptorID;
     }
 
+    /**
+     * Checks if default bulk data attributes are excluded.
+     * 
+     * @return {@code true} if default bulk data attributes are excluded, {@code false} otherwise.
+     */
     public boolean isExcludeDefaults() {
         return excludeDefaults;
     }
 
+    /**
+     * Excludes default bulk data attributes.
+     * 
+     * @return This {@code BasicBulkDataDescriptor} instance.
+     */
     public BasicBulkDataDescriptor excludeDefaults() {
         return excludeDefaults(true);
     }
 
+    /**
+     * Sets whether to exclude default bulk data attributes.
+     * 
+     * @param excludeDefaults {@code true} to exclude defaults, {@code false} otherwise.
+     * @return This {@code BasicBulkDataDescriptor} instance.
+     */
     public BasicBulkDataDescriptor excludeDefaults(boolean excludeDefaults) {
         this.excludeDefaults = excludeDefaults;
         return this;
     }
 
+    /**
+     * Adds one or more {@link AttributeSelector}s to this descriptor. These selectors define which attributes should be
+     * considered bulk data.
+     * 
+     * @param selectors An array of {@link AttributeSelector} objects.
+     * @return This {@code BasicBulkDataDescriptor} instance.
+     */
     public BasicBulkDataDescriptor addAttributeSelector(AttributeSelector... selectors) {
         for (AttributeSelector selector : selectors) {
             this.selectors.add(Objects.requireNonNull(selector));
@@ -129,10 +208,21 @@ public class BasicBulkDataDescriptor implements BulkDataDescriptor {
         return this;
     }
 
+    /**
+     * Returns all configured {@link AttributeSelector}s.
+     * 
+     * @return An array of {@link AttributeSelector} objects.
+     */
     public AttributeSelector[] getAttributeSelectors() {
         return selectors.toArray(new AttributeSelector[0]);
     }
 
+    /**
+     * Sets the {@link AttributeSelector}s for this descriptor from an array of their string representations.
+     * 
+     * @param ss An array of string representations of {@link AttributeSelector}s.
+     * @throws IllegalArgumentException if any string cannot be parsed into a valid {@link AttributeSelector}.
+     */
     public void setAttributeSelectorsFromStrings(String[] ss) {
         List<AttributeSelector> tmp = new ArrayList<>(ss.length);
         for (String s : ss) {
@@ -142,6 +232,12 @@ public class BasicBulkDataDescriptor implements BulkDataDescriptor {
         selectors.addAll(tmp);
     }
 
+    /**
+     * Adds one or more DICOM tags to be considered bulk data. These tags will be wrapped in {@link AttributeSelector}s.
+     * 
+     * @param tags An array of DICOM tags.
+     * @return This {@code BasicBulkDataDescriptor} instance.
+     */
     public BasicBulkDataDescriptor addTag(int... tags) {
         for (int tag : tags) {
             this.selectors.add(new AttributeSelector(tag));
@@ -149,6 +245,14 @@ public class BasicBulkDataDescriptor implements BulkDataDescriptor {
         return this;
     }
 
+    /**
+     * Adds a DICOM tag path to be considered bulk data. The last tag in the path is the target attribute, and the
+     * preceding tags define the sequence path.
+     * 
+     * @param tagPaths An array of integers representing the tag path.
+     * @return This {@code BasicBulkDataDescriptor} instance.
+     * @throws IllegalArgumentException if {@code tagPaths} is empty.
+     */
     public BasicBulkDataDescriptor addTagPath(int... tagPaths) {
         if (tagPaths.length == 0)
             throw new IllegalArgumentException("tagPaths.length == 0");
@@ -156,6 +260,15 @@ public class BasicBulkDataDescriptor implements BulkDataDescriptor {
         return this;
     }
 
+    /**
+     * Adds length thresholds for specified Value Representations (VRs). If an attribute's value length exceeds the
+     * threshold for its VR, it will be considered bulk data.
+     * 
+     * @param threshold The length threshold.
+     * @param vrs       An array of {@link VR}s to apply the threshold to.
+     * @return This {@code BasicBulkDataDescriptor} instance.
+     * @throws IllegalArgumentException if no VRs are provided.
+     */
     public BasicBulkDataDescriptor addLengthsThreshold(int threshold, VR... vrs) {
         if (vrs.length == 0)
             throw new IllegalArgumentException("Missing VR");
@@ -166,6 +279,12 @@ public class BasicBulkDataDescriptor implements BulkDataDescriptor {
         return this;
     }
 
+    /**
+     * Returns the configured length thresholds as an array of strings. Each string represents a VR or a comma-separated
+     * list of VRs with their associated threshold, e.g., "OB,OW=1024".
+     * 
+     * @return An array of strings representing the length thresholds.
+     */
     public String[] getLengthsThresholdsAsStrings() {
         if (lengthsThresholdByVR.isEmpty())
             return Normal.EMPTY_STRING_ARRAY;
@@ -186,10 +305,18 @@ public class BasicBulkDataDescriptor implements BulkDataDescriptor {
             while (vr.hasNext())
                 sb.append(',').append(vr.next());
             ss[i] = sb.append('=').append(entry.getKey()).toString();
+            i++;
         }
         return ss;
     }
 
+    /**
+     * Sets the length thresholds for this descriptor from an array of strings. Each string should be in the format
+     * "VR1,VR2=threshold", where VR1, VR2 are Value Representations and threshold is an integer.
+     * 
+     * @param ss An array of strings representing the length thresholds.
+     * @throws IllegalArgumentException if any string cannot be parsed into a valid VR and threshold.
+     */
     public void setLengthsThresholdsFromStrings(String... ss) {
         EnumMap<VR, Integer> tmp = new EnumMap<>(VR.class);
         for (String s : ss) {
@@ -209,12 +336,31 @@ public class BasicBulkDataDescriptor implements BulkDataDescriptor {
         lengthsThresholdByVR.putAll(tmp);
     }
 
+    /**
+     * Determines if a given attribute should be treated as bulk data based on the configured selectors and thresholds.
+     * 
+     * @param itemPointers   A list of {@link ItemPointer} objects indicating the path to the attribute.
+     * @param privateCreator The private creator of the attribute, or {@code null}.
+     * @param tag            The DICOM tag of the attribute.
+     * @param vr             The Value Representation (VR) of the attribute.
+     * @param length         The value length of the attribute.
+     * @return {@code true} if the attribute is considered bulk data, {@code false} otherwise.
+     */
     @Override
     public boolean isBulkData(List<ItemPointer> itemPointers, String privateCreator, int tag, VR vr, int length) {
         return !excludeDefaults && isStandardBulkData(itemPointers, tag) || selected(itemPointers, privateCreator, tag)
                 || exeeds(length, lengthsThresholdByVR.get(vr));
     }
 
+    /**
+     * Checks if the attribute specified by the item pointers, private creator, and tag matches any of the configured
+     * {@link AttributeSelector}s.
+     * 
+     * @param itemPointers   A list of {@link ItemPointer} objects indicating the path to the attribute.
+     * @param privateCreator The private creator of the attribute, or {@code null}.
+     * @param tag            The DICOM tag of the attribute.
+     * @return {@code true} if the attribute matches a selector, {@code false} otherwise.
+     */
     private boolean selected(List<ItemPointer> itemPointers, String privateCreator, int tag) {
         for (AttributeSelector selector : selectors) {
             if (selector.matches(itemPointers, privateCreator, tag))

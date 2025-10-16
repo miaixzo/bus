@@ -33,7 +33,8 @@ import org.miaixz.bus.core.xyz.RandomKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 随机字符验证码生成策略 可以通过传入的基础集合和长度随机生成验证码字符
+ * Random character CAPTCHA generation strategy. Generates a random CAPTCHA string from a given base character set and
+ * length.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,19 +45,19 @@ public class RandomStrategy extends AbstractStrategy {
     private static final long serialVersionUID = 2852292312392L;
 
     /**
-     * 构造，使用字母+数字做为基础
+     * Constructs a new {@code RandomStrategy} using letters and numbers as the base character set.
      *
-     * @param count 生成验证码长度
+     * @param count The length of the CAPTCHA code to generate.
      */
     public RandomStrategy(final int count) {
         super(count);
     }
 
     /**
-     * 构造
+     * Constructs a new {@code RandomStrategy} with a custom base character set and length.
      *
-     * @param baseStr 基础字符集合，用于随机获取字符串的字符集合
-     * @param length  生成验证码长度
+     * @param baseStr The base character set from which to randomly select characters.
+     * @param length  The length of the CAPTCHA code to generate.
      */
     public RandomStrategy(final String baseStr, final int length) {
         super(baseStr, length);

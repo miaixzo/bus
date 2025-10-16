@@ -75,8 +75,14 @@ import org.miaixz.bus.crypto.builtin.symmetric.Crypto;
 import org.miaixz.bus.crypto.center.*;
 
 /**
- * 安全相关工具类 加密分为三种： 1、对称加密（symmetric），例如：AES、DES等 2、非对称加密（asymmetric），例如：RSA、DSA等
- * 3、摘要加密（digest），例如：MD5、SHA-1、SHA-256、HMAC等
+ * Security-related utility class.
+ * <p>
+ * This class provides various methods for cryptographic operations, categorized into three main types:
+ * <ul>
+ * <li>Symmetric encryption (e.g., AES, DES)</li>
+ * <li>Asymmetric encryption (e.g., RSA, DSA)</li>
+ * <li>Digest encryption (e.g., MD5, SHA-1, SHA-256, HMAC)</li>
+ * </ul>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -84,33 +90,36 @@ import org.miaixz.bus.crypto.center.*;
 public class Builder {
 
     /**
-     * SM2默认曲线
+     * The default curve name for SM2 algorithm.
      */
     public static final String SM2_CURVE_NAME = "sm2p256v1";
     /**
-     * SM2椭圆曲线参数类
+     * The elliptic curve parameters for SM2 algorithm.
      */
     public static final ECParameterSpec SM2_EC_SPEC = ECNamedCurveTable.getParameterSpec(SM2_CURVE_NAME);
     /**
-     * SM2推荐曲线参数（来自https://github.com/ZZMarquis/gmhelper）
+     * Recommended SM2 curve parameters (from https://github.com/ZZMarquis/gmhelper).
      */
     public static final ECDomainParameters SM2_DOMAIN_PARAMS = toDomainParams(SM2_EC_SPEC);
     /**
-     * SM2国密算法公钥参数的Oid标识
+     * OID identifier for the SM2 national cryptographic algorithm public key parameters.
      */
     public static final ASN1ObjectIdentifier ID_SM2_PUBLIC_KEY_PARAM = new ASN1ObjectIdentifier("1.2.156.10197.1.301");
+    /**
+     * The length of R and S components in a signature.
+     */
     private static final int RS_LEN = 32;
     /**
-     * 自定义系统属性：是否解码Hex字符
+     * System property to control whether to decode Hex strings. Defaults to true.
      */
     public static String CRYPTO_DECODE_HEX = "bus.crypto.decodeHex";
 
     /**
-     * 生成算法，格式为XXXwithXXX
+     * Generates an algorithm string in the format "XXXwithXXX".
      *
-     * @param asymmetricAlgorithm 非对称算法
-     * @param digestAlgorithm     摘要算法
-     * @return 算法
+     * @param asymmetricAlgorithm The asymmetric algorithm (e.g., RSA, DSA).
+     * @param digestAlgorithm     The digest algorithm (e.g., SHA1, MD5). Can be {@code null} for "NONE".
+     * @return The generated algorithm string.
      */
     public static String generateAlgorithm(final Algorithm asymmetricAlgorithm, final Algorithm digestAlgorithm) {
         final String digestPart = (null == digestAlgorithm) ? "NONE" : digestAlgorithm.name();
@@ -118,404 +127,528 @@ public class Builder {
     }
 
     /**
-     * AES加密，生成随机KEY。注意解密时必须使用相同 {@link AES}对象或者使用相同KEY 例：
-     * 
-     * <pre>
-     * AES加密：aes().encrypt(data)
-     * AES解密：aes().decrypt(data)
-     * </pre>
+     * Creates an AES encryptor/decryptor with a randomly generated key. Note: The same {@link AES} object or the same
+     * key must be used for decryption.
+     * <p>
+     * Example:
      *
-     * @return {@link AES}
+     * <pre>
+     * AES encryption: aes().encrypt(data)
+     * AES decryption: aes().decrypt(data)
+     * </pre>
+     * 
+     *
+     * @return A new {@link AES} instance.
      */
     public static AES aes() {
         return new AES();
     }
 
     /**
-     * AES加密 例：
-     * 
-     * <pre>
-     * AES加密：aes(data).encrypt(data)
-     * AES解密：aes(data).decrypt(data)
-     * </pre>
+     * Creates an AES encryptor/decryptor with the given key.
+     * <p>
+     * Example:
      *
-     * @param key 密钥
-     * @return {@link Crypto}
+     * <pre>
+     * AES encryption: aes(key).encrypt(data)
+     * AES decryption: aes(key).decrypt(data)
+     * </pre>
+     * 
+     *
+     * @param key The AES key.
+     * @return A new {@link AES} instance.
      */
     public static AES aes(final byte[] key) {
         return new AES(key);
     }
 
     /**
-     * DES加密，生成随机KEY。注意解密时必须使用相同 {@link DES}对象或者使用相同KEY 例：
-     * 
-     * <pre>
-     * DES加密：des().encrypt(data)
-     * DES解密：des().decrypt(data)
-     * </pre>
+     * Creates a DES encryptor/decryptor with a randomly generated key. Note: The same {@link DES} object or the same
+     * key must be used for decryption.
+     * <p>
+     * Example:
      *
-     * @return {@link DES}
+     * <pre>
+     * DES encryption: des().encrypt(data)
+     * DES decryption: des().decrypt(data)
+     * </pre>
+     * 
+     *
+     * @return A new {@link DES} instance.
      */
     public static DES des() {
         return new DES();
     }
 
     /**
-     * DES加密 例：
-     * 
-     * <pre>
-     * DES加密：des(data).encrypt(data)
-     * DES解密：des(data).decrypt(data)
-     * </pre>
+     * Creates a DES encryptor/decryptor with the given key.
+     * <p>
+     * Example:
      *
-     * @param key 密钥
-     * @return {@link DES}
+     * <pre>
+     * DES encryption: des(key).encrypt(data)
+     * DES decryption: des(key).decrypt(data)
+     * </pre>
+     * 
+     *
+     * @param key The DES key.
+     * @return A new {@link DES} instance.
      */
     public static DES des(final byte[] key) {
         return new DES(key);
     }
 
     /**
-     * 三重数据加密算法,缩写为TDEA（又名3DES、TripleDES），生成随机KEY。 注意解密时必须使用相同 {@link TDEA}对象或者使用相同KEY
-     * Java中默认实现为：DESede/ECB/PKCS5Padding 例：
-     * 
-     * <pre>
-     * DESede加密：tdea().encrypt(data)
-     * DESede解密：tdea().decrypt(data)
-     * </pre>
+     * Creates a TDEA (Triple DES) encryptor/decryptor with a randomly generated key. Note: The same {@link TDEA} object
+     * or the same key must be used for decryption. The default implementation in Java is DESede/ECB/PKCS5Padding.
+     * <p>
+     * Example:
      *
-     * @return {@link TDEA}
+     * <pre>
+     * DESede encryption: tdea().encrypt(data)
+     * DESede decryption: tdea().decrypt(data)
+     * </pre>
+     * 
+     *
+     * @return A new {@link TDEA} instance.
      */
     public static TDEA tdea() {
         return new TDEA();
     }
 
     /**
-     * 三重数据加密算法,缩写为TDEA（又名3DES、TripleDES），生成随机KEY。 注意解密时必须使用相同 {@link TDEA}对象或者使用相同KEY
-     * Java中默认实现为：DESede/ECB/PKCS5Padding 例：
-     * 
-     * <pre>
-     * DESede加密：tdea(data).encrypt(data)
-     * DESede解密：tdea(data).decrypt(data)
-     * </pre>
+     * Creates a TDEA (Triple DES) encryptor/decryptor with the given key. Note: The same {@link TDEA} object or the
+     * same key must be used for decryption. The default implementation in Java is DESede/ECB/PKCS5Padding.
+     * <p>
+     * Example:
      *
-     * @param key 密钥
-     * @return {@link TDEA}
+     * <pre>
+     * DESede encryption: tdea(key).encrypt(data)
+     * DESede decryption: tdea(key).decrypt(data)
+     * </pre>
+     * 
+     *
+     * @param key The TDEA key.
+     * @return A new {@link TDEA} instance.
      */
     public static TDEA tdea(final byte[] key) {
         return new TDEA(key);
     }
 
     /**
-     * MD5加密 例：
-     * 
-     * <pre>
-     * MD5加密：md5().digest(data)
-     * MD5加密并转为16进制字符串：md5().digestHex(data)
-     * </pre>
+     * Creates an MD5 digester.
+     * <p>
+     * Example:
      *
-     * @return {@link Digester}
+     * <pre>
+     * MD5 digest: md5().digest(data)
+     * MD5 digest to hexadecimal string: md5().digestHex(data)
+     * </pre>
+     * 
+     *
+     * @return A new {@link MD5} instance.
      */
     public static MD5 md5() {
         return MD5.of();
     }
 
     /**
-     * MD5加密，生成16进制MD5字符串
+     * Performs MD5 encryption and returns the hexadecimal MD5 string.
      *
-     * @param data 数据
-     * @return MD5字符串
+     * @param data The data to be digested.
+     * @return The hexadecimal MD5 string.
      */
     public static String md5(final String data) {
         return MD5.of().digestHex(data);
     }
 
     /**
-     * MD5加密，生成16进制MD5字符串
+     * Performs MD5 encryption on an input stream and returns the hexadecimal MD5 string.
      *
-     * @param data 数据
-     * @return MD5字符串
+     * @param data The input stream containing the data to be digested.
+     * @return The hexadecimal MD5 string.
      */
     public static String md5(final InputStream data) {
         return MD5.of().digestHex(data);
     }
 
     /**
-     * MD5加密文件，生成16进制MD5字符串
+     * Performs MD5 encryption on a file and returns the hexadecimal MD5 string.
      *
-     * @param dataFile 被加密文件
-     * @return MD5字符串
+     * @param dataFile The file to be digested.
+     * @return The hexadecimal MD5 string.
      */
     public static String md5(final File dataFile) {
         return MD5.of().digestHex(dataFile);
     }
 
     /**
-     * SHA1加密 例： SHA1加密：sha1().digest(data) SHA1加密并转为16进制字符串：sha1().digestHex(data)
+     * Creates a SHA1 digester.
+     * <p>
+     * Example:
      *
-     * @return {@link Digester}
+     * <pre>
+     * SHA1 digest: sha1().digest(data)
+     * SHA1 digest to hexadecimal string: sha1().digestHex(data)
+     * </pre>
+     * 
+     *
+     * @return A new {@link Digester} instance for SHA1.
      */
     public static Digester sha1() {
         return new Digester(Algorithm.SHA1);
     }
 
     /**
-     * SHA1加密，生成16进制SHA1字符串
+     * Performs SHA1 encryption and returns the hexadecimal SHA1 string.
      *
-     * @param data 数据
-     * @return SHA1字符串
+     * @param data The data to be digested.
+     * @return The hexadecimal SHA1 string.
      */
     public static String sha1(final String data) {
         return new Digester(Algorithm.SHA1).digestHex(data);
     }
 
     /**
-     * SHA1加密，生成16进制SHA1字符串
+     * Performs SHA1 encryption on an input stream and returns the hexadecimal SHA1 string.
      *
-     * @param data 数据
-     * @return SHA1字符串
+     * @param data The input stream containing the data to be digested.
+     * @return The hexadecimal SHA1 string.
      */
     public static String sha1(final InputStream data) {
         return new Digester(Algorithm.SHA1).digestHex(data);
     }
 
     /**
-     * SHA1加密文件，生成16进制SHA1字符串
+     * Performs SHA1 encryption on a file and returns the hexadecimal SHA1 string.
      *
-     * @param dataFile 被加密文件
-     * @return SHA1字符串
+     * @param dataFile The file to be digested.
+     * @return The hexadecimal SHA1 string.
      */
     public static String sha1(final File dataFile) {
         return new Digester(Algorithm.SHA1).digestHex(dataFile);
     }
 
     /**
-     * SHA256加密 例： SHA256加密：sha256().digest(data) SHA256加密并转为16进制字符串：sha256().digestHex(data)
+     * Creates a SHA256 digester.
+     * <p>
+     * Example:
      *
-     * @return {@link Digester}
+     * <pre>
+     * SHA256 digest: sha256().digest(data)
+     * SHA256 digest to hexadecimal string: sha256().digestHex(data)
+     * </pre>
+     * 
+     *
+     * @return A new {@link Digester} instance for SHA256.
      */
     public static Digester sha256() {
         return new Digester(Algorithm.SHA256);
     }
 
     /**
-     * SHA256加密，生成16进制SHA256字符串
+     * Performs SHA256 encryption and returns the hexadecimal SHA256 string.
      *
-     * @param data 数据
-     * @return SHA256字符串
+     * @param data The data to be digested.
+     * @return The hexadecimal SHA256 string.
      */
     public static String sha256(final String data) {
         return new Digester(Algorithm.SHA256).digestHex(data);
     }
 
     /**
-     * SHA256加密，生成16进制SHA256字符串
+     * Performs SHA256 encryption on an input stream and returns the hexadecimal SHA256 string.
      *
-     * @param data 数据
-     * @return SHA1字符串
+     * @param data The input stream containing the data to be digested.
+     * @return The hexadecimal SHA256 string.
      */
     public static String sha256(final InputStream data) {
         return new Digester(Algorithm.SHA256).digestHex(data);
     }
 
     /**
-     * SHA256加密文件，生成16进制SHA256字符串
+     * Performs SHA256 encryption on a file and returns the hexadecimal SHA256 string.
      *
-     * @param dataFile 被加密文件
-     * @return SHA256字符串
+     * @param dataFile The file to be digested.
+     * @return The hexadecimal SHA256 string.
      */
     public static String sha256(final File dataFile) {
         return new Digester(Algorithm.SHA256).digestHex(dataFile);
     }
 
     /**
-     * 创建HMac对象，调用digest方法可获得hmac值
+     * Creates an HMac object with the specified algorithm and key. Calling the {@code digest} method on the returned
+     * object will yield the HMAC value.
      *
-     * @param algorithm {@link Algorithm}
-     * @param key       密钥，如果为{@code null}生成随机密钥
-     * @return {@link HMac}
+     * @param algorithm The {@link Algorithm} for HMAC.
+     * @param key       The key as a string. If {@code null}, a random key is generated.
+     * @return A new {@link HMac} instance.
      */
     public static HMac hmac(final Algorithm algorithm, final String key) {
         return new HMac(algorithm, ByteKit.toBytes(key));
     }
 
     /**
-     * 创建HMac对象，调用digest方法可获得hmac值
+     * Creates an HMac object with the specified algorithm and key. Calling the {@code digest} method on the returned
+     * object will yield the HMAC value.
      *
-     * @param algorithm {@link Algorithm}
-     * @param key       密钥，如果为{@code null}生成随机密钥
-     * @return {@link HMac}
+     * @param algorithm The {@link Algorithm} for HMAC.
+     * @param key       The key as a byte array. If {@code null}, a random key is generated.
+     * @return A new {@link HMac} instance.
      */
     public static HMac hmac(final Algorithm algorithm, final byte[] key) {
         return new HMac(algorithm, key);
     }
 
     /**
-     * 创建HMac对象，调用digest方法可获得hmac值
+     * Creates an HMac object with the specified algorithm and {@link SecretKey}. Calling the {@code digest} method on
+     * the returned object will yield the HMAC value.
      *
-     * @param algorithm {@link Algorithm}
-     * @param key       密钥{@link SecretKey}，如果为{@code null}生成随机密钥
-     * @return {@link HMac}
+     * @param algorithm The {@link Algorithm} for HMAC.
+     * @param key       The {@link SecretKey}. If {@code null}, a random key is generated.
+     * @return A new {@link HMac} instance.
      */
     public static HMac hmac(final Algorithm algorithm, final SecretKey key) {
         return new HMac(algorithm, key);
     }
 
     /**
-     * HmacMD5加密器 例： HmacMD5加密：hmacMd5(data).digest(data) HmacMD5加密并转为16进制字符串：hmacMd5(data).digestHex(data)
+     * Creates an HmacMD5 encryptor.
+     * <p>
+     * Example:
      *
-     * @param key 加密密钥，如果为{@code null}生成随机密钥
-     * @return {@link HMac}
+     * <pre>
+     * HmacMD5 digest: hmacMd5(key).digest(data)
+     * HmacMD5 digest to hexadecimal string: hmacMd5(key).digestHex(data)
+     * </pre>
+     * 
+     *
+     * @param key The encryption key as a string. If {@code null}, a random key is generated.
+     * @return A new {@link HMac} instance for HmacMD5.
      */
     public static HMac hmacMd5(final String key) {
         return hmacMd5(ByteKit.toBytes(key));
     }
 
     /**
-     * HmacMD5加密器 例： HmacMD5加密：hmacMd5(data).digest(data) HmacMD5加密并转为16进制字符串：hmacMd5(data).digestHex(data)
+     * Creates an HmacMD5 encryptor.
+     * <p>
+     * Example:
      *
-     * @param key 加密密钥，如果为{@code null}生成随机密钥
-     * @return {@link HMac}
+     * <pre>
+     * HmacMD5 digest: hmacMd5(key).digest(data)
+     * HmacMD5 digest to hexadecimal string: hmacMd5(key).digestHex(data)
+     * </pre>
+     * 
+     *
+     * @param key The encryption key as a byte array. If {@code null}, a random key is generated.
+     * @return A new {@link HMac} instance for HmacMD5.
      */
     public static HMac hmacMd5(final byte[] key) {
         return new HMac(Algorithm.HMACMD5, key);
     }
 
     /**
-     * HmacMD5加密器，生成随机KEY 例： HmacMD5加密：hmacMd5().digest(data) HmacMD5加密并转为16进制字符串：hmacMd5().digestHex(data)
+     * Creates an HmacMD5 encryptor with a randomly generated key.
+     * <p>
+     * Example:
      *
-     * @return {@link HMac}
+     * <pre>
+     * HmacMD5 digest: hmacMd5().digest(data)
+     * HmacMD5 digest to hexadecimal string: hmacMd5().digestHex(data)
+     * </pre>
+     * 
+     *
+     * @return A new {@link HMac} instance for HmacMD5.
      */
     public static HMac hmacMd5() {
         return new HMac(Algorithm.HMACMD5);
     }
 
     /**
-     * HmacSHA1加密器 例： HmacSHA1加密：hmacSha1(data).digest(data) HmacSHA1加密并转为16进制字符串：hmacSha1(data).digestHex(data)
+     * Creates an HmacSHA1 encryptor.
+     * <p>
+     * Example:
      *
-     * @param key 加密密钥，如果为{@code null}生成随机密钥
-     * @return {@link HMac}
+     * <pre>
+     * HmacSHA1 digest: hmacSha1(key).digest(data)
+     * HmacSHA1 digest to hexadecimal string: hmacSha1(key).digestHex(data)
+     * </pre>
+     * 
+     *
+     * @param key The encryption key as a string. If {@code null}, a random key is generated.
+     * @return A new {@link HMac} instance for HmacSHA1.
      */
     public static HMac hmacSha1(final String key) {
         return hmacSha1(ByteKit.toBytes(key));
     }
 
     /**
-     * HmacSHA1加密器 例： HmacSHA1加密：hmacSha1(data).digest(data) HmacSHA1加密并转为16进制字符串：hmacSha1(data).digestHex(data)
+     * Creates an HmacSHA1 encryptor.
+     * <p>
+     * Example:
      *
-     * @param key 加密密钥，如果为{@code null}生成随机密钥
-     * @return {@link HMac}
+     * <pre>
+     * HmacSHA1 digest: hmacSha1(key).digest(data)
+     * HmacSHA1 digest to hexadecimal string: hmacSha1(key).digestHex(data)
+     * </pre>
+     * 
+     *
+     * @param key The encryption key as a byte array. If {@code null}, a random key is generated.
+     * @return A new {@link HMac} instance for HmacSHA1.
      */
     public static HMac hmacSha1(final byte[] key) {
         return new HMac(Algorithm.HMACSHA1, key);
     }
 
     /**
-     * HmacSHA1加密器，生成随机KEY 例： HmacSHA1加密：hmacSha1().digest(data) HmacSHA1加密并转为16进制字符串：hmacSha1().digestHex(data)
+     * Creates an HmacSHA1 encryptor with a randomly generated key.
+     * <p>
+     * Example:
      *
-     * @return {@link HMac}
+     * <pre>
+     * HmacSHA1 digest: hmacSha1().digest(data)
+     * HmacSHA1 digest to hexadecimal string: hmacSha1().digestHex(data)
+     * </pre>
+     * 
+     *
+     * @return A new {@link HMac} instance for HmacSHA1.
      */
     public static HMac hmacSha1() {
         return new HMac(Algorithm.HMACSHA1);
     }
 
     /**
-     * HmacSHA256加密器 例： HmacSHA256加密：hmacSha256(data).digest(data)
-     * HmacSHA256加密并转为16进制字符串：hmacSha256(data).digestHex(data)
+     * Creates an HmacSHA256 encryptor.
+     * <p>
+     * Example:
      *
-     * @param key 加密密钥，如果为{@code null}生成随机密钥
-     * @return {@link HMac}
+     * <pre>
+     * HmacSHA256 digest: hmacSha256(key).digest(data)
+     * HmacSHA256 digest to hexadecimal string: hmacSha256(key).digestHex(data)
+     * </pre>
+     * 
+     *
+     * @param key The encryption key as a string. If {@code null}, a random key is generated.
+     * @return A new {@link HMac} instance for HmacSHA256.
      */
     public static HMac hmacSha256(final String key) {
         return hmacSha256(ByteKit.toBytes(key));
     }
 
     /**
-     * HmacSHA256加密器 例： HmacSHA256加密：hmacSha256(data).digest(data)
-     * HmacSHA256加密并转为16进制字符串：hmacSha256(data).digestHex(data)
+     * Creates an HmacSHA256 encryptor.
+     * <p>
+     * Example:
      *
-     * @param key 加密密钥，如果为{@code null}生成随机密钥
-     * @return {@link HMac}
+     * <pre>
+     * HmacSHA256 digest: hmacSha256(key).digest(data)
+     * HmacSHA256 digest to hexadecimal string: hmacSha256(key).digestHex(data)
+     * </pre>
+     * 
+     *
+     * @param key The encryption key as a byte array. If {@code null}, a random key is generated.
+     * @return A new {@link HMac} instance for HmacSHA256.
      */
     public static HMac hmacSha256(final byte[] key) {
         return new HMac(Algorithm.HMACSHA256, key);
     }
 
     /**
-     * HmacSHA256加密器，生成随机KEY 例： HmacSHA256加密：hmacSha256().digest(data)
-     * HmacSHA256加密并转为16进制字符串：hmacSha256().digestHex(data)
+     * Creates an HmacSHA256 encryptor with a randomly generated key.
+     * <p>
+     * Example:
      *
-     * @return {@link HMac}
+     * <pre>
+     * HmacSHA256 digest: hmacSha256().digest(data)
+     * HmacSHA256 digest to hexadecimal string: hmacSha256().digestHex(data)
+     * </pre>
+     * 
+     *
+     * @return A new {@link HMac} instance for HmacSHA256.
      */
     public static HMac hmacSha256() {
         return new HMac(Algorithm.HMACSHA256);
     }
 
     /**
-     * 创建RSA算法对象 生成新的私钥公钥对
+     * Creates an RSA algorithm object, generating a new public-private key pair.
      *
-     * @return {@link RSA}
+     * @return A new {@link RSA} instance.
      */
     public static RSA rsa() {
         return new RSA();
     }
 
     /**
-     * 创建RSA算法对象 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
+     * Creates an RSA algorithm object with the given private and public keys (Base64 encoded). If both private and
+     * public keys are {@code null}, a new key pair will be generated. If only one key is provided, the RSA object can
+     * only be used for operations corresponding to that key (e.g., encryption with public key, decryption with private
+     * key).
      *
-     * @param privateKeyBase64 私钥Base64
-     * @param publicKeyBase64  公钥Base64
-     * @return {@link RSA}
+     * @param privateKeyBase64 The Base64 encoded private key string.
+     * @param publicKeyBase64  The Base64 encoded public key string.
+     * @return A new {@link RSA} instance.
      */
     public static RSA rsa(final String privateKeyBase64, final String publicKeyBase64) {
         return new RSA(privateKeyBase64, publicKeyBase64);
     }
 
     /**
-     * 创建RSA算法对象 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
+     * Creates an RSA algorithm object with the given private and public keys (byte arrays). If both private and public
+     * keys are {@code null}, a new key pair will be generated. If only one key is provided, the RSA object can only be
+     * used for operations corresponding to that key (e.g., encryption with public key, decryption with private key).
      *
-     * @param privateKey 私钥
-     * @param publicKey  公钥
-     * @return {@link RSA}
+     * @param privateKey The private key as a byte array.
+     * @param publicKey  The public key as a byte array.
+     * @return A new {@link RSA} instance.
      */
     public static RSA rsa(final byte[] privateKey, final byte[] publicKey) {
         return new RSA(privateKey, publicKey);
     }
 
     /**
-     * 增加加密解密的算法提供者，默认优先使用，例如：
+     * Adds a cryptographic algorithm provider. Providers added this way will be prioritized.
+     * <p>
+     * Example:
      *
      * <pre>
      * addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
      * </pre>
+     * 
      *
-     * @param provider 算法提供者
+     * @param provider The {@link java.security.Provider} to add.
      */
     public static void addProvider(final java.security.Provider provider) {
         if (ArrayKit.contains(Security.getProviders(), provider)) {
-            // 如果已经注册过Provider，不再重新注册
+            // If the provider is already registered, do not re-register
             return;
         }
         Security.insertProviderAt(provider, 0);
     }
 
     /**
-     * 解码字符串密钥，可支持的编码如下：
+     * Decodes a string key, supporting the following encodings:
+     * <ul>
+     * <li>Hexadecimal encoding</li>
+     * <li>Base64 encoding</li>
+     * </ul>
+     * <p>
+     * Note: For some special strings, it might be difficult to distinguish between Hex and Base64. The system property
+     * {@link #CRYPTO_DECODE_HEX} can be used to force disable Hex parsing.
+     * 
      *
-     * <pre>
-     * 1. Hex（16进制）编码
-     * 1. Base64编码
-     * </pre>
-     *
-     * @param key 被解码的密钥字符串
-     * @return 密钥
+     * @param key The key string to be decoded.
+     * @return The decoded key as a byte array.
+     * @throws IllegalArgumentException if the value is neither hex nor base64, or if the key is null.
      */
     public static byte[] decode(final String key) {
         if (Objects.isNull(key)) {
             return null;
         }
 
-        // 某些特殊字符串会无法区分Hex还是Base64，此处使用系统属性强制关闭Hex解析
+        // Some special strings cannot distinguish between Hex and Base64. Here, use system properties to force disable
+        // Hex parsing.
         final boolean decodeHex = Keys.getBoolean(CRYPTO_DECODE_HEX, true);
         if (decodeHex && Validator.isHex(key)) {
             return Hex.decode(key);
@@ -526,10 +659,12 @@ public class Builder {
     }
 
     /**
-     * 创建{@link Cipher} 当provider为{@code null}时，使用{@link Holder}查找提供方，找不到使用JDK默认提供方。
+     * Creates a {@link Cipher} instance for the given algorithm. If the provider is {@code null}, it attempts to find a
+     * provider using {@link Holder}; if no provider is found, the JDK's default provider is used.
      *
-     * @param algorithm 算法
-     * @return {@link Cipher}
+     * @param algorithm The algorithm name.
+     * @return A new {@link Cipher} instance.
+     * @throws CryptoException if the algorithm is not found or cipher creation fails.
      */
     public static Cipher createCipher(final String algorithm) {
         final java.security.Provider provider = Holder.getProvider();
@@ -545,11 +680,14 @@ public class Builder {
     }
 
     /**
-     * 创建{@link MessageDigest} 当provider为{@code null}时，使用{@link Holder}查找提供方，找不到使用JDK默认提供方。
+     * Creates a {@link MessageDigest} instance for the given algorithm. If the provided {@code provider} is
+     * {@code null}, it attempts to find a provider using {@link Holder}; if no provider is found, the JDK's default
+     * provider is used.
      *
-     * @param algorithm 算法
-     * @param provider  算法提供方，{@code null}表示使用{@link Holder}找到的提供方。
-     * @return {@link MessageDigest}
+     * @param algorithm The algorithm name.
+     * @param provider  The {@link java.security.Provider} to use. If {@code null}, {@link Holder} is used to find one.
+     * @return A new {@link MessageDigest} instance.
+     * @throws CryptoException if the algorithm is not found.
      */
     public static MessageDigest createMessageDigest(final String algorithm, java.security.Provider provider) {
         if (null == provider) {
@@ -568,10 +706,11 @@ public class Builder {
     }
 
     /**
-     * 创建{@link MessageDigest}，使用JDK默认的Provider
+     * Creates a {@link MessageDigest} instance for the given algorithm using the JDK's default provider.
      *
-     * @param algorithm 算法
-     * @return {@link MessageDigest}
+     * @param algorithm The algorithm name.
+     * @return A new {@link MessageDigest} instance.
+     * @throws CryptoException if the algorithm is not found.
      */
     public static MessageDigest createJdkMessageDigest(final String algorithm) {
         try {
@@ -582,10 +721,12 @@ public class Builder {
     }
 
     /**
-     * 创建{@link javax.crypto.Mac}
+     * Creates a {@link javax.crypto.Mac} instance for the given algorithm. If the provider is {@code null}, it attempts
+     * to find a provider using {@link Holder}; if no provider is found, the JDK's default provider is used.
      *
-     * @param algorithm 算法
-     * @return {@link javax.crypto.Mac}
+     * @param algorithm The algorithm name.
+     * @return A new {@link javax.crypto.Mac} instance.
+     * @throws CryptoException if the algorithm is not found.
      */
     public static javax.crypto.Mac createMac(final String algorithm) {
         final java.security.Provider provider = Holder.getProvider();
@@ -602,208 +743,236 @@ public class Builder {
     }
 
     /**
-     * RC4算法
+     * Creates an RC4 encryptor/decryptor with the given key.
      *
-     * @param key 密钥
-     * @return {@link Crypto}
+     * @param key The RC4 key.
+     * @return A new {@link Crypto} instance configured for RC4.
      */
     public static Crypto rc4(final byte[] key) {
         return new Crypto(Algorithm.RC4, key);
     }
 
     /**
-     * 强制关闭自定义{@link Provider}的使用，如Bouncy Castle库，全局有效
+     * Forcibly disables the use of custom {@link java.security.Provider}s, such as Bouncy Castle. This setting is
+     * global and affects all subsequent cryptographic operations.
      */
     public static void disableCustomProvider() {
         Holder.setUseCustomProvider(false);
     }
 
     /**
-     * PBKDF2加密密码
+     * Performs PBKDF2 password encryption.
      *
-     * @param password 密码
-     * @param salt     盐
-     * @return 盐，一般为16位
+     * @param password The plaintext password as a character array.
+     * @param salt     The salt as a byte array, typically 16 bytes long.
+     * @return The encrypted password as a hexadecimal string.
      */
     public static String pbkdf2(final char[] password, final byte[] salt) {
         return new PBKDF2().encryptHex(password, salt);
     }
 
     /**
-     * FPE(Format Preserving Encryption)实现，支持FF1和FF3-1模式。
+     * Creates an FPE (Format Preserving Encryption) instance, supporting FF1 and FF3-1 modes.
      *
-     * @param mode   FPE模式枚举，可选FF1或FF3-1
-     * @param key    密钥，{@code null}表示随机密钥，长度必须是16bit、24bit或32bit
-     * @param mapper Alphabet字典映射，被加密的字符范围和这个映射必须一致，例如手机号、银行卡号等字段可以采用数字字母字典表
-     * @param tweak  Tweak是为了解决因局部加密而导致结果冲突问题，通常情况下将数据的不可变部分作为Tweak
-     * @return {@link FPE}
+     * @param mode   The FPE mode enumeration, either FF1 or FF3-1.
+     * @param key    The encryption key. If {@code null}, a random key is generated. The key length must be 16, 24, or
+     *               32 bits.
+     * @param mapper The {@link AlphabetMapper} defining the character set for encryption. The characters to be
+     *               encrypted must match this mapping (e.g., digits for phone numbers, bank card numbers).
+     * @param tweak  The tweak value, used to prevent collisions in partial encryption. Typically, immutable parts of
+     *               the data are used as the tweak.
+     * @return A new {@link FPE} instance.
      */
     public static FPE fpe(final FPE.FPEMode mode, final byte[] key, final AlphabetMapper mapper, final byte[] tweak) {
         return new FPE(mode, key, mapper, tweak);
     }
 
     /**
-     * 祖冲之算法集（ZUC-128算法）实现，基于BouncyCastle实现。
+     * Creates a ZUC-128 algorithm implementation (based on BouncyCastle).
      *
-     * @param key 密钥
-     * @param iv  加盐，长度16bytes，{@code null}是随机加盐
-     * @return {@link ZUC}
+     * @param key The encryption key.
+     * @param iv  The initialization vector (IV) or salt, 16 bytes long. If {@code null}, a random IV is generated.
+     * @return A new {@link ZUC} instance configured for ZUC-128.
      */
     public static ZUC zuc128(final byte[] key, final byte[] iv) {
         return new ZUC(Algorithm.ZUC_128, key, iv);
     }
 
     /**
-     * 祖冲之算法集（ZUC-256算法）实现，基于BouncyCastle实现。
+     * Creates a ZUC-256 algorithm implementation (based on BouncyCastle).
      *
-     * @param key 密钥
-     * @param iv  加盐，长度25bytes，{@code null}是随机加盐
-     * @return {@link ZUC}
+     * @param key The encryption key.
+     * @param iv  The initialization vector (IV) or salt, 25 bytes long. If {@code null}, a random IV is generated.
+     * @return A new {@link ZUC} instance configured for ZUC-256.
      */
     public static ZUC zuc256(final byte[] key, final byte[] iv) {
         return new ZUC(Algorithm.ZUC_256, key, iv);
     }
 
     /**
-     * 创建SM2算法对象 生成新的私钥公钥对
+     * Creates an SM2 algorithm object, generating a new public-private key pair.
      *
-     * @return {@link SM2}
+     * @return A new {@link SM2} instance.
      */
     public static SM2 sm2() {
         return new SM2();
     }
 
     /**
-     * 创建SM2算法对象 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
+     * Creates an SM2 algorithm object with the given private and public keys (Hex or Base64 encoded). If both private
+     * and public keys are {@code null}, a new key pair will be generated. If only one key is provided, the SM2 object
+     * can only be used for operations corresponding to that key.
      *
-     * @param privateKey 私钥Hex或Base64表示
-     * @param publicKey  公钥Hex或Base64表示
-     * @return {@link SM2}
+     * @param privateKey The private key string (Hex or Base64 encoded).
+     * @param publicKey  The public key string (Hex or Base64 encoded).
+     * @return A new {@link SM2} instance.
      */
     public static SM2 sm2(final String privateKey, final String publicKey) {
         return new SM2(privateKey, publicKey);
     }
 
     /**
-     * 创建SM2算法对象 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
+     * Creates an SM2 algorithm object with the given private and public keys (byte arrays). If both private and public
+     * keys are {@code null}, a new key pair will be generated. If only one key is provided, the SM2 object can only be
+     * used for operations corresponding to that key.
      *
-     * @param privateKey 私钥，必须使用PKCS#8规范
-     * @param publicKey  公钥，必须使用X509规范
-     * @return {@link SM2}
+     * @param privateKey The private key as a byte array, expected in PKCS#8 format.
+     * @param publicKey  The public key as a byte array, expected in X.509 format.
+     * @return A new {@link SM2} instance.
      */
     public static SM2 sm2(final byte[] privateKey, final byte[] publicKey) {
         return new SM2(privateKey, publicKey);
     }
 
     /**
-     * 创建SM2算法对象 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
+     * Creates an SM2 algorithm object with the given private and public keys. If both private and public keys are
+     * {@code null}, a new key pair will be generated. If only one key is provided, the SM2 object can only be used for
+     * operations corresponding to that key.
      *
-     * @param privateKey 私钥
-     * @param publicKey  公钥
-     * @return {@link SM2}
+     * @param privateKey The {@link PrivateKey}.
+     * @param publicKey  The {@link PublicKey}.
+     * @return A new {@link SM2} instance.
      */
     public static SM2 sm2(final PrivateKey privateKey, final PublicKey publicKey) {
         return new SM2(privateKey, publicKey);
     }
 
     /**
-     * 创建SM2算法对象 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
+     * Creates an SM2 algorithm object with the given private and public key parameters. If both private and public key
+     * parameters are {@code null}, a new key pair will be generated. If only one key parameter is provided, the SM2
+     * object can only be used for operations corresponding to that key.
      *
-     * @param privateKeyParams 私钥参数
-     * @param publicKeyParams  公钥参数
-     * @return {@link SM2}
+     * @param privateKeyParams The {@link ECPrivateKeyParameters}.
+     * @param publicKeyParams  The {@link ECPublicKeyParameters}.
+     * @return A new {@link SM2} instance.
      */
     public static SM2 sm2(final ECPrivateKeyParameters privateKeyParams, final ECPublicKeyParameters publicKeyParams) {
         return new SM2(privateKeyParams, publicKeyParams);
     }
 
     /**
-     * SM3加密 例： SM3加密：sm3().digest(data) SM3加密并转为16进制字符串：sm3().digestHex(data)
+     * Creates an SM3 digester.
+     * <p>
+     * Example:
      *
-     * @return {@link SM3}
+     * <pre>
+     * SM3 digest: sm3().digest(data)
+     * SM3 digest to hexadecimal string: sm3().digestHex(data)
+     * </pre>
+     * 
+     *
+     * @return A new {@link SM3} instance.
      */
     public static SM3 sm3() {
         return new SM3();
     }
 
     /**
-     * SM3加密，可以传入盐
+     * Creates an SM3 digester with a specified salt.
      *
-     * @param salt 加密盐
-     * @return {@link SM3}
+     * @param salt The salt to be used for SM3 digestion.
+     * @return A new {@link SM3} instance with the given salt.
      */
     public static SM3 sm3WithSalt(final byte[] salt) {
         return new SM3(salt);
     }
 
     /**
-     * SM3加密，生成16进制SM3字符串
+     * Performs SM3 encryption and returns the hexadecimal SM3 string.
      *
-     * @param data 数据
-     * @return SM3字符串
+     * @param data The data to be digested.
+     * @return The hexadecimal SM3 string.
      */
     public static String sm3(final String data) {
         return sm3().digestHex(data);
     }
 
     /**
-     * SM3加密，生成16进制SM3字符串
+     * Performs SM3 encryption on an input stream and returns the hexadecimal SM3 string.
      *
-     * @param data 数据
-     * @return SM3字符串
+     * @param data The input stream containing the data to be digested.
+     * @return The hexadecimal SM3 string.
      */
     public static String sm3(final InputStream data) {
         return sm3().digestHex(data);
     }
 
     /**
-     * SM3加密文件，生成16进制SM3字符串
+     * Performs SM3 encryption on a file and returns the hexadecimal SM3 string.
      *
-     * @param dataFile 被加密文件
-     * @return SM3字符串
+     * @param dataFile The file to be digested.
+     * @return The hexadecimal SM3 string.
      */
     public static String sm3(final File dataFile) {
         return sm3().digestHex(dataFile);
     }
 
     /**
-     * SM4加密，生成随机KEY。注意解密时必须使用相同 {@link Crypto}对象或者使用相同KEY 例：
+     * Creates an SM4 encryptor/decryptor with a randomly generated key. Note: The same {@link Crypto} object or the
+     * same key must be used for decryption.
+     * <p>
+     * Example:
      *
      * <pre>
-     * SM4加密：sm4().encrypt(data)
-     * SM4解密：sm4().decrypt(data)
+     * SM4 encryption: sm4().encrypt(data)
+     * SM4 decryption: sm4().decrypt(data)
      * </pre>
+     * 
      *
-     * @return {@link Crypto}
+     * @return A new {@link SM4} instance.
      */
     public static SM4 sm4() {
         return new SM4();
     }
 
     /**
-     * SM4加密 例：
+     * Creates an SM4 encryptor/decryptor with the given key.
+     * <p>
+     * Example:
      *
      * <pre>
-     * SM4加密：sm4(data).encrypt(data)
-     * SM4解密：sm4(data).decrypt(data)
+     * SM4 encryption: sm4(key).encrypt(data)
+     * SM4 decryption: sm4(key).decrypt(data)
      * </pre>
+     * 
      *
-     * @param key 密钥
-     * @return {@link SM4}
+     * @param key The SM4 key.
+     * @return A new {@link SM4} instance.
      */
     public static SM4 sm4(final byte[] key) {
         return new SM4(key);
     }
 
     /**
-     * bc加解密使用旧标c1||c2||c3，此方法在加密后调用，将结果转化为c1||c3||c2
+     * Converts the SM2 encrypted data from C1C2C3 order to C1C3C2 order. This method is called after encryption when
+     * using BouncyCastle's old standard (C1C2C3).
      *
-     * @param c1c2c3             加密后的bytes，顺序为C1C2C3
-     * @param ecDomainParameters {@link ECDomainParameters}
-     * @return 加密后的bytes，顺序为C1C3C2
+     * @param c1c2c3             The encrypted bytes in C1C2C3 order.
+     * @param ecDomainParameters The {@link ECDomainParameters} of the elliptic curve.
+     * @return The encrypted bytes in C1C3C2 order.
      */
     public static byte[] changeC1C2C3ToC1C3C2(final byte[] c1c2c3, final ECDomainParameters ecDomainParameters) {
-        // sm2p256v1的这个固定65。可看GMNamedCurves、ECCurve代码。
+        // For sm2p256v1, this is fixed at 65. See GMNamedCurves, ECCurve code.
         final int c1Len = (ecDomainParameters.getCurve().getFieldSize() + 7) / 8 * 2 + 1;
         final int c3Len = 32; // new SM3Digest().getDigestSize();
         final byte[] result = new byte[c1c2c3.length];
@@ -814,14 +983,15 @@ public class Builder {
     }
 
     /**
-     * bc加解密使用旧标c1||c3||c2，此方法在解密前调用，将密文转化为c1||c2||c3再去解密
+     * Converts the SM2 encrypted data from C1C3C2 order to C1C2C3 order before decryption. This method is called before
+     * decryption when using BouncyCastle's old standard (C1C3C2).
      *
-     * @param c1c3c2             加密后的bytes，顺序为C1C3C2
-     * @param ecDomainParameters {@link ECDomainParameters}
-     * @return c1c2c3 加密后的bytes，顺序为C1C2C3
+     * @param c1c3c2             The encrypted bytes in C1C3C2 order.
+     * @param ecDomainParameters The {@link ECDomainParameters} of the elliptic curve.
+     * @return The encrypted bytes in C1C2C3 order.
      */
     public static byte[] changeC1C3C2ToC1C2C3(final byte[] c1c3c2, final ECDomainParameters ecDomainParameters) {
-        // sm2p256v1的这个固定65。可看GMNamedCurves、ECCurve代码。
+        // For sm2p256v1, this is fixed at 65. See GMNamedCurves, ECCurve code.
         final int c1Len = (ecDomainParameters.getCurve().getFieldSize() + 7) / 8 * 2 + 1;
         final int c3Len = 32; // new SM3Digest().getDigestSize();
         final byte[] result = new byte[c1c3c2.length];
@@ -832,10 +1002,11 @@ public class Builder {
     }
 
     /**
-     * BC的SM3withSM2签名得到的结果的rs是asn1格式的，这个方法转化成直接拼接r||s
+     * Converts an SM3withSM2 signature result from ASN.1 format to a plain R||S byte array.
      *
-     * @param rsDer rs in asn1 format
-     * @return sign result in plain byte array
+     * @param rsDer The signature result in ASN.1 format.
+     * @return The signature result as a plain byte array (R concatenated with S).
+     * @throws InternalException if an I/O error occurs during decoding.
      */
     public static byte[] rsAsn1ToPlain(final byte[] rsDer) {
         final BigInteger[] decode;
@@ -852,10 +1023,13 @@ public class Builder {
     }
 
     /**
-     * BC的SM3withSM2验签需要的rs是asn1格式的，这个方法将直接拼接r||s的字节数组转化成asn1格式
+     * Converts a plain R||S byte array to an SM3withSM2 signature result in ASN.1 format. This method is used before
+     * signature verification when the input is a plain R||S byte array.
      *
-     * @param sign in plain byte array
-     * @return rs result in asn1 format
+     * @param sign The signature result as a plain byte array (R concatenated with S).
+     * @return The signature result in ASN.1 format.
+     * @throws CryptoException   if the input signature length is not 2 * {@link #RS_LEN}.
+     * @throws InternalException if an I/O error occurs during encoding.
      */
     public static byte[] rsPlainToAsn1(final byte[] sign) {
         if (sign.length != RS_LEN * 2) {
@@ -871,30 +1045,34 @@ public class Builder {
     }
 
     /**
-     * 创建HmacSM3算法的{@link Mac}
+     * Creates an HmacSM3 algorithm {@link Mac} instance.
      *
-     * @param key 密钥
-     * @return {@link Mac}
+     * @param key The key for HmacSM3.
+     * @return A new {@link Mac} instance for HmacSM3.
      */
     public static Mac createHmacSm3Engine(final byte[] key) {
         return new BCHMac(new SM3Digest(), key);
     }
 
     /**
-     * HmacSM3算法实现
+     * Creates an HmacSM3 algorithm {@link HMac} object. Call {@code digestXXX} methods on the returned object to get
+     * the HMAC-SM3 value.
      *
-     * @param key 密钥
-     * @return {@link HMac} 对象，调用digestXXX即可
+     * @param key The key for HmacSM3.
+     * @return A new {@link HMac} instance for HmacSM3.
      */
     public static HMac hmacSm3(final byte[] key) {
         return new HMac(Algorithm.HMACSM3, key);
     }
 
     /**
-     * BigInteger转固定长度bytes
+     * Converts a {@link BigInteger} to a fixed-length byte array. For SM2p256v1, the 'n' value is
+     * 00fffffffeffffffffffffffffffffffff7203df6b21c6052b53bbf40939d54123, and 'r' and 's' are results of modulo 'n', so
+     * their length should be less than or equal to 32 bytes.
      *
-     * @param rOrS {@link BigInteger}
-     * @return 固定长度bytes
+     * @param rOrS The {@link BigInteger} representing 'r' or 's'.
+     * @return A fixed-length byte array (32 bytes) representing the BigInteger.
+     * @throws CryptoException if the length of the BigInteger is invalid.
      */
     private static byte[] toFixedLengthBytes(final BigInteger rOrS) {
         // for sm2p256v1, n is 00fffffffeffffffffffffffffffffffff7203df6b21c6052b53bbf40939d54123,
@@ -915,21 +1093,23 @@ public class Builder {
     }
 
     /**
-     * 生成签名对象，仅用于非对称加密
+     * Generates a {@link Signature} object for asymmetric encryption.
      *
-     * @param asymmetricAlgorithm {@link Algorithm} 非对称加密算法
-     * @param digestAlgorithm     {@link Algorithm} 摘要算法
-     * @return {@link Signature}
+     * @param asymmetricAlgorithm The asymmetric encryption {@link Algorithm}.
+     * @param digestAlgorithm     The digest {@link Algorithm}.
+     * @return A new {@link Signature} instance.
+     * @throws CryptoException if the algorithm is not found.
      */
     public static Signature createSignature(final Algorithm asymmetricAlgorithm, final Algorithm digestAlgorithm) {
         return createSignature(generateAlgorithm(asymmetricAlgorithm, digestAlgorithm));
     }
 
     /**
-     * 创建{@link Signature}签名对象
+     * Creates a {@link Signature} object for the given algorithm.
      *
-     * @param algorithm 算法
-     * @return {@link Signature}
+     * @param algorithm The algorithm name.
+     * @return A new {@link Signature} instance.
+     * @throws CryptoException if the algorithm is not found.
      */
     public static Signature createSignature(final String algorithm) {
         final java.security.Provider provider = Holder.getProvider();
@@ -946,61 +1126,68 @@ public class Builder {
     }
 
     /**
-     * 创建签名算法对象 生成新的私钥公钥对
+     * Creates a {@link Sign} algorithm object, generating a new public-private key pair.
      *
-     * @param algorithm 签名算法
-     * @return {@link Sign}
+     * @param algorithm The signing algorithm.
+     * @return A new {@link Sign} instance.
      */
     public static Sign sign(final Algorithm algorithm) {
         return new Sign(algorithm);
     }
 
     /**
-     * 创建签名算法对象 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做签名或验证
+     * Creates a {@link Sign} algorithm object with the given private and public keys (Base64 encoded). If both private
+     * and public keys are {@code null}, a new key pair will be generated. If only one key is provided, the Sign object
+     * can only be used for operations corresponding to that key.
      *
-     * @param algorithm        签名算法
-     * @param privateKeyBase64 私钥Base64
-     * @param publicKeyBase64  公钥Base64
-     * @return {@link Sign}
+     * @param algorithm        The signing algorithm.
+     * @param privateKeyBase64 The Base64 encoded private key string.
+     * @param publicKeyBase64  The Base64 encoded public key string.
+     * @return A new {@link Sign} instance.
      */
     public static Sign sign(final Algorithm algorithm, final String privateKeyBase64, final String publicKeyBase64) {
         return new Sign(algorithm, privateKeyBase64, publicKeyBase64);
     }
 
     /**
-     * 创建Sign算法对象 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做签名或验证
+     * Creates a {@link Sign} algorithm object with the given private and public keys (byte arrays). If both private and
+     * public keys are {@code null}, a new key pair will be generated. If only one key is provided, the Sign object can
+     * only be used for operations corresponding to that key.
      *
-     * @param algorithm  算法枚举
-     * @param privateKey 私钥
-     * @param publicKey  公钥
-     * @return {@link Sign}
+     * @param algorithm  The algorithm enumeration.
+     * @param privateKey The private key as a byte array.
+     * @param publicKey  The public key as a byte array.
+     * @return A new {@link Sign} instance.
      */
     public static Sign sign(final Algorithm algorithm, final byte[] privateKey, final byte[] publicKey) {
         return new Sign(algorithm, privateKey, publicKey);
     }
 
     /**
-     * 对参数做签名 参数签名为对Map参数按照key的顺序排序后拼接为字符串，然后根据提供的签名算法生成签名字符串 拼接后的字符串键值对之间无符号，键值对之间无符号，忽略null值
+     * Signs parameters by sorting them by key, concatenating them into a string, and then encrypting the string using
+     * the provided symmetric encryption algorithm. Key-value pairs are concatenated without separators, and null values
+     * are ignored.
      *
-     * @param crypto      对称加密算法
-     * @param params      参数
-     * @param otherParams 其它附加参数字符串（例如密钥）
-     * @return 签名
+     * @param crypto      The symmetric encryption algorithm to use for signing.
+     * @param params      The map of parameters to sign.
+     * @param otherParams Additional parameter strings (e.g., a secret key) to append to the concatenated string.
+     * @return The generated signature string.
      */
     public static String signParams(final Crypto crypto, final Map<?, ?> params, final String... otherParams) {
         return signParams(crypto, params, Normal.EMPTY, Normal.EMPTY, true, otherParams);
     }
 
     /**
-     * 对参数做签名 参数签名为对Map参数按照key的顺序排序后拼接为字符串，然后根据提供的签名算法生成签名字符串
+     * Signs parameters by sorting them by key, concatenating them into a string, and then encrypting the string using
+     * the provided symmetric encryption algorithm.
      *
-     * @param crypto            对称加密算法
-     * @param params            参数
-     * @param separator         entry之间的连接符
-     * @param keyValueSeparator kv之间的连接符
-     * @param isIgnoreNull      是否忽略null的键和值
-     * @param otherParams       其它附加参数字符串（例如密钥）
-     * @return 签名
+     * @param crypto            The symmetric encryption algorithm to use for signing.
+     * @param params            The map of parameters to sign.
+     * @param separator         The separator string to use between key-value entries.
+     * @param keyValueSeparator The separator string to use between keys and values.
+     * @param isIgnoreNull      Whether to ignore null keys and values during concatenation.
+     * @param otherParams       Additional parameter strings (e.g., a secret key) to append to the concatenated string.
+     * @return The generated signature string.
      */
     public static String signParams(
             final Crypto crypto,
@@ -1013,45 +1200,49 @@ public class Builder {
     }
 
     /**
-     * 对参数做md5签名 参数签名为对Map参数按照key的顺序排序后拼接为字符串，然后根据提供的签名算法生成签名字符串 拼接后的字符串键值对之间无符号，键值对之间无符号，忽略null值
+     * Performs MD5 signing on parameters. Parameters are sorted by key, concatenated into a string (without separators
+     * between key-value pairs), and then the MD5 hash is generated. Null values are ignored.
      *
-     * @param params      参数
-     * @param otherParams 其它附加参数字符串（例如密钥）
-     * @return 签名
+     * @param params      The map of parameters to sign.
+     * @param otherParams Additional parameter strings (e.g., a secret key) to append.
+     * @return The generated MD5 signature string.
      */
     public static String signParamsMd5(final Map<?, ?> params, final String... otherParams) {
         return signParams(Algorithm.MD5, params, otherParams);
     }
 
     /**
-     * 对参数做Sha1签名 参数签名为对Map参数按照key的顺序排序后拼接为字符串，然后根据提供的签名算法生成签名字符串 拼接后的字符串键值对之间无符号，键值对之间无符号，忽略null值
+     * Performs SHA1 signing on parameters. Parameters are sorted by key, concatenated into a string (without separators
+     * between key-value pairs), and then the SHA1 hash is generated. Null values are ignored.
      *
-     * @param params      参数
-     * @param otherParams 其它附加参数字符串（例如密钥）
-     * @return 签名
+     * @param params      The map of parameters to sign.
+     * @param otherParams Additional parameter strings (e.g., a secret key) to append.
+     * @return The generated SHA1 signature string.
      */
     public static String signParamsSha1(final Map<?, ?> params, final String... otherParams) {
         return signParams(Algorithm.SHA1, params, otherParams);
     }
 
     /**
-     * 对参数做Sha256签名 参数签名为对Map参数按照key的顺序排序后拼接为字符串，然后根据提供的签名算法生成签名字符串 拼接后的字符串键值对之间无符号，键值对之间无符号，忽略null值
+     * Performs SHA256 signing on parameters. Parameters are sorted by key, concatenated into a string (without
+     * separators between key-value pairs), and then the SHA256 hash is generated. Null values are ignored.
      *
-     * @param params      参数
-     * @param otherParams 其它附加参数字符串（例如密钥）
-     * @return 签名
+     * @param params      The map of parameters to sign.
+     * @param otherParams Additional parameter strings (e.g., a secret key) to append.
+     * @return The generated SHA256 signature string.
      */
     public static String signParamsSha256(final Map<?, ?> params, final String... otherParams) {
         return signParams(Algorithm.SHA256, params, otherParams);
     }
 
     /**
-     * 对参数做签名 参数签名为对Map参数按照key的顺序排序后拼接为字符串，然后根据提供的签名算法生成签名字符串 拼接后的字符串键值对之间无符号，键值对之间无符号，忽略null值
+     * Signs parameters using the specified digest algorithm. Parameters are sorted by key, concatenated into a string
+     * (without separators between key-value pairs), and then the digest hash is generated. Null values are ignored.
      *
-     * @param digestAlgorithm 摘要算法
-     * @param params          参数
-     * @param otherParams     其它附加参数字符串（例如密钥）
-     * @return 签名
+     * @param digestAlgorithm The digest algorithm to use for signing.
+     * @param params          The map of parameters to sign.
+     * @param otherParams     Additional parameter strings (e.g., a secret key) to append.
+     * @return The generated signature string.
      */
     public static String signParams(
             final Algorithm digestAlgorithm,
@@ -1061,15 +1252,16 @@ public class Builder {
     }
 
     /**
-     * 对参数做签名 参数签名为对Map参数按照key的顺序排序后拼接为字符串，然后根据提供的签名算法生成签名字符串
+     * Signs parameters using the specified digest algorithm. Parameters are sorted by key, concatenated into a string,
+     * and then the digest hash is generated.
      *
-     * @param digestAlgorithm   摘要算法
-     * @param params            参数
-     * @param separator         entry之间的连接符
-     * @param keyValueSeparator kv之间的连接符
-     * @param isIgnoreNull      是否忽略null的键和值
-     * @param otherParams       其它附加参数字符串（例如密钥）
-     * @return 签名
+     * @param digestAlgorithm   The digest algorithm to use for signing.
+     * @param params            The map of parameters to sign.
+     * @param separator         The separator string to use between key-value entries.
+     * @param keyValueSeparator The separator string to use between keys and values.
+     * @param isIgnoreNull      Whether to ignore null keys and values during concatenation.
+     * @param otherParams       Additional parameter strings (e.g., a secret key) to append.
+     * @return The generated signature string.
      */
     public static String signParams(
             final Algorithm digestAlgorithm,
@@ -1083,419 +1275,423 @@ public class Builder {
     }
 
     /**
-     * 计算32位MD5摘要值
+     * Computes the 32-bit MD5 digest of the given data.
      *
-     * @param data 被摘要数据
-     * @return MD5摘要
+     * @param data The data to be digested.
+     * @return The MD5 digest as a byte array.
      */
     public static byte[] md5(final byte[] data) {
         return MD5.of().digest(data);
     }
 
     /**
-     * 计算32位MD5摘要值
+     * Computes the 32-bit MD5 digest of the given string using the specified charset.
      *
-     * @param data    被摘要数据
-     * @param charset 编码
-     * @return MD5摘要
+     * @param data    The string data to be digested.
+     * @param charset The character set to use for encoding the string.
+     * @return The MD5 digest as a byte array.
      */
     public static byte[] md5(final String data, final java.nio.charset.Charset charset) {
         return MD5.of().digest(data, charset);
     }
 
     /**
-     * 计算32位MD5摘要值，并转为16进制字符串
+     * Computes the 32-bit MD5 digest of the given data and returns it as a hexadecimal string.
      *
-     * @param data 被摘要数据
-     * @return MD5摘要的16进制表示
+     * @param data The data to be digested.
+     * @return The hexadecimal representation of the MD5 digest.
      */
     public static String md5Hex(final byte[] data) {
         return MD5.of().digestHex(data);
     }
 
     /**
-     * 计算32位MD5摘要值，并转为16进制字符串
+     * Computes the 32-bit MD5 digest of the given string using the specified charset and returns it as a hexadecimal
+     * string.
      *
-     * @param data    被摘要数据
-     * @param charset 编码
-     * @return MD5摘要的16进制表示
+     * @param data    The string data to be digested.
+     * @param charset The character set to use for encoding the string.
+     * @return The hexadecimal representation of the MD5 digest.
      */
     public static String md5Hex(final String data, final java.nio.charset.Charset charset) {
         return MD5.of().digestHex(data, charset);
     }
 
     /**
-     * 计算32位MD5摘要值，并转为16进制字符串
+     * Computes the 32-bit MD5 digest of the given string using UTF-8 encoding and returns it as a hexadecimal string.
      *
-     * @param data 被摘要数据
-     * @return MD5摘要的16进制表示
+     * @param data The string data to be digested.
+     * @return The hexadecimal representation of the MD5 digest.
      */
     public static String md5Hex(final String data) {
         return md5Hex(data, Charset.UTF_8);
     }
 
     /**
-     * 计算32位MD5摘要值，并转为16进制字符串
+     * Computes the 32-bit MD5 digest of the data from the given input stream and returns it as a hexadecimal string.
      *
-     * @param data 被摘要数据
-     * @return MD5摘要的16进制表示
+     * @param data The input stream containing the data to be digested.
+     * @return The hexadecimal representation of the MD5 digest.
      */
     public static String md5Hex(final InputStream data) {
         return MD5.of().digestHex(data);
     }
 
     /**
-     * 计算32位MD5摘要值，并转为16进制字符串
+     * Computes the 32-bit MD5 digest of the given file and returns it as a hexadecimal string.
      *
-     * @param file 被摘要文件
-     * @return MD5摘要的16进制表示
+     * @param file The file to be digested.
+     * @return The hexadecimal representation of the MD5 digest.
      */
     public static String md5Hex(final File file) {
         return MD5.of().digestHex(file);
     }
 
     /**
-     * 计算16位MD5摘要值，并转为16进制字符串
+     * Computes the 16-bit MD5 digest of the given data and returns it as a hexadecimal string.
      *
-     * @param data 被摘要数据
-     * @return MD5摘要的16进制表示
+     * @param data The data to be digested.
+     * @return The hexadecimal representation of the 16-bit MD5 digest.
      */
     public static String md5Hex16(final byte[] data) {
         return MD5.of().digestHex16(data);
     }
 
     /**
-     * 计算16位MD5摘要值，并转为16进制字符串
+     * Computes the 16-bit MD5 digest of the given string using the specified charset and returns it as a hexadecimal
+     * string.
      *
-     * @param data    被摘要数据
-     * @param charset 编码
-     * @return MD5摘要的16进制表示
+     * @param data    The string data to be digested.
+     * @param charset The character set to use for encoding the string.
+     * @return The hexadecimal representation of the 16-bit MD5 digest.
      */
     public static String md5Hex16(final String data, final java.nio.charset.Charset charset) {
         return MD5.of().digestHex16(data, charset);
     }
 
     /**
-     * 计算16位MD5摘要值，并转为16进制字符串
+     * Computes the 16-bit MD5 digest of the given string using UTF-8 encoding and returns it as a hexadecimal string.
      *
-     * @param data 被摘要数据
-     * @return MD5摘要的16进制表示
+     * @param data The string data to be digested.
+     * @return The hexadecimal representation of the 16-bit MD5 digest.
      */
     public static String md5Hex16(final String data) {
         return md5Hex16(data, Charset.UTF_8);
     }
 
     /**
-     * 计算16位MD5摘要值，并转为16进制字符串
+     * Computes the 16-bit MD5 digest of the data from the given input stream and returns it as a hexadecimal string.
      *
-     * @param data 被摘要数据
-     * @return MD5摘要的16进制表示
+     * @param data The input stream containing the data to be digested.
+     * @return The hexadecimal representation of the 16-bit MD5 digest.
      */
     public static String md5Hex16(final InputStream data) {
         return MD5.of().digestHex16(data);
     }
 
     /**
-     * 计算16位MD5摘要值，并转为16进制字符串
+     * Computes the 16-bit MD5 digest of the given file and returns it as a hexadecimal string.
      *
-     * @param file 被摘要文件
-     * @return MD5摘要的16进制表示
+     * @param file The file to be digested.
+     * @return The hexadecimal representation of the 16-bit MD5 digest.
      */
     public static String md5Hex16(final File file) {
         return MD5.of().digestHex16(file);
     }
 
     /**
-     * 32位MD5转16位MD5
+     * Converts a 32-bit MD5 hexadecimal string to a 16-bit MD5 hexadecimal string.
      *
-     * @param md5Hex 32位MD5
-     * @return 16位MD5
+     * @param md5Hex The 32-bit MD5 hexadecimal string.
+     * @return The 16-bit MD5 hexadecimal string.
      */
     public static String md5HexTo16(final String md5Hex) {
         return md5Hex.substring(8, 24);
     }
 
     /**
-     * 计算SHA-1摘要值
+     * Computes the SHA-1 digest of the given data.
      *
-     * @param data 被摘要数据
-     * @return SHA-1摘要
+     * @param data The data to be digested.
+     * @return The SHA-1 digest as a byte array.
      */
     public static byte[] sha1(final byte[] data) {
         return digester(Algorithm.SHA1).digest(data);
     }
 
     /**
-     * 计算SHA-1摘要值
+     * Computes the SHA-1 digest of the given string using the specified charset.
      *
-     * @param data    被摘要数据
-     * @param charset 编码
-     * @return SHA-1摘要
+     * @param data    The string data to be digested.
+     * @param charset The character set to use for encoding the string.
+     * @return The SHA-1 digest as a byte array.
      */
     public static byte[] sha1(final String data, final java.nio.charset.Charset charset) {
         return digester(Algorithm.SHA1).digest(data, charset);
     }
 
     /**
-     * 计算SHA-1摘要值，并转为16进制字符串
+     * Computes the SHA-1 digest of the given data and returns it as a hexadecimal string.
      *
-     * @param data 被摘要数据
-     * @return SHA-1摘要的16进制表示
+     * @param data The data to be digested.
+     * @return The hexadecimal representation of the SHA-1 digest.
      */
     public static String sha1Hex(final byte[] data) {
         return digester(Algorithm.SHA1).digestHex(data);
     }
 
     /**
-     * 计算SHA-1摘要值，并转为16进制字符串
+     * Computes the SHA-1 digest of the given string using the specified charset and returns it as a hexadecimal string.
      *
-     * @param data    被摘要数据
-     * @param charset 编码
-     * @return SHA-1摘要的16进制表示
+     * @param data    The string data to be digested.
+     * @param charset The character set to use for encoding the string.
+     * @return The hexadecimal representation of the SHA-1 digest.
      */
     public static String sha1Hex(final String data, final java.nio.charset.Charset charset) {
         return digester(Algorithm.SHA1).digestHex(data, charset);
     }
 
     /**
-     * 计算SHA-1摘要值，并转为16进制字符串
+     * Computes the SHA-1 digest of the given string using UTF-8 encoding and returns it as a hexadecimal string.
      *
-     * @param data 被摘要数据
-     * @return SHA-1摘要的16进制表示
+     * @param data The string data to be digested.
+     * @return The hexadecimal representation of the SHA-1 digest.
      */
     public static String sha1Hex(final String data) {
         return sha1Hex(data, Charset.UTF_8);
     }
 
     /**
-     * 计算SHA-1摘要值，并转为16进制字符串
+     * Computes the SHA-1 digest of the data from the given input stream and returns it as a hexadecimal string.
      *
-     * @param data 被摘要数据
-     * @return SHA-1摘要的16进制表示
+     * @param data The input stream containing the data to be digested.
+     * @return The hexadecimal representation of the SHA-1 digest.
      */
     public static String sha1Hex(final InputStream data) {
         return digester(Algorithm.SHA1).digestHex(data);
     }
 
     /**
-     * 计算SHA-1摘要值，并转为16进制字符串
+     * Computes the SHA-1 digest of the given file and returns it as a hexadecimal string.
      *
-     * @param file 被摘要文件
-     * @return SHA-1摘要的16进制表示
+     * @param file The file to be digested.
+     * @return The hexadecimal representation of the SHA-1 digest.
      */
     public static String sha1Hex(final File file) {
         return digester(Algorithm.SHA1).digestHex(file);
     }
 
     /**
-     * 计算SHA-256摘要值
+     * Computes the SHA-256 digest of the given data.
      *
-     * @param data 被摘要数据
-     * @return SHA-256摘要
+     * @param data The data to be digested.
+     * @return The SHA-256 digest as a byte array.
      */
     public static byte[] sha256(final byte[] data) {
         return digester(Algorithm.SHA256).digest(data);
     }
 
     /**
-     * 计算SHA-1摘要值，并转为16进制字符串
+     * Computes the SHA-256 digest of the given data and returns it as a hexadecimal string.
      *
-     * @param data 被摘要数据
-     * @return SHA-256摘要的16进制表示
+     * @param data The data to be digested.
+     * @return The hexadecimal representation of the SHA-256 digest.
      */
     public static String sha256Hex(final byte[] data) {
         return digester(Algorithm.SHA256).digestHex(data);
     }
 
     /**
-     * 计算SHA-256摘要值，并转为16进制字符串
+     * Computes the SHA-256 digest of the given string using the specified charset and returns it as a hexadecimal
+     * string.
      *
-     * @param data    被摘要数据
-     * @param charset 编码
-     * @return SHA-256摘要的16进制表示
+     * @param data    The string data to be digested.
+     * @param charset The character set to use for encoding the string.
+     * @return The hexadecimal representation of the SHA-256 digest.
      */
     public static String sha256Hex(final String data, final java.nio.charset.Charset charset) {
         return digester(Algorithm.SHA256).digestHex(data, charset);
     }
 
     /**
-     * 计算SHA-256摘要值，并转为16进制字符串
+     * Computes the SHA-256 digest of the given string using UTF-8 encoding and returns it as a hexadecimal string.
      *
-     * @param data 被摘要数据
-     * @return SHA-256摘要的16进制表示
+     * @param data The string data to be digested.
+     * @return The hexadecimal representation of the SHA-256 digest.
      */
     public static String sha256Hex(final String data) {
         return sha256Hex(data, Charset.UTF_8);
     }
 
     /**
-     * 计算SHA-256摘要值，并转为16进制字符串
+     * Computes the SHA-256 digest of the data from the given input stream and returns it as a hexadecimal string.
      *
-     * @param data 被摘要数据
-     * @return SHA-256摘要的16进制表示
+     * @param data The input stream containing the data to be digested.
+     * @return The hexadecimal representation of the SHA-256 digest.
      */
     public static String sha256Hex(final InputStream data) {
         return digester(Algorithm.SHA256).digestHex(data);
     }
 
     /**
-     * 计算SHA-256摘要值，并转为16进制字符串
+     * Computes the SHA-256 digest of the given file and returns it as a hexadecimal string.
      *
-     * @param file 被摘要文件
-     * @return SHA-256摘要的16进制表示
+     * @param file The file to be digested.
+     * @return The hexadecimal representation of the SHA-256 digest.
      */
     public static String sha256Hex(final File file) {
         return digester(Algorithm.SHA256).digestHex(file);
     }
 
     /**
-     * 计算SHA-512摘要值
+     * Computes the SHA-512 digest of the given data.
      *
-     * @param data 被摘要数据
-     * @return SHA-512摘要
+     * @param data The data to be digested.
+     * @return The SHA-512 digest as a byte array.
      */
     public static byte[] sha512(final byte[] data) {
         return digester(Algorithm.SHA512).digest(data);
     }
 
     /**
-     * 计算SHA-512摘要值
+     * Computes the SHA-512 digest of the given string using the specified charset.
      *
-     * @param data    被摘要数据
-     * @param charset 编码
-     * @return SHA-512摘要
+     * @param data    The string data to be digested.
+     * @param charset The character set to use for encoding the string.
+     * @return The SHA-512 digest as a byte array.
      */
     public static byte[] sha512(final String data, final java.nio.charset.Charset charset) {
         return digester(Algorithm.SHA512).digest(data, charset);
     }
 
     /**
-     * 计算sha512摘要值，使用UTF-8编码
+     * Computes the SHA-512 digest of the given string using UTF-8 encoding.
      *
-     * @param data 被摘要数据
-     * @return MD5摘要
+     * @param data The string data to be digested.
+     * @return The SHA-512 digest as a byte array.
      */
     public static byte[] sha512(final String data) {
         return sha512(data, Charset.UTF_8);
     }
 
     /**
-     * 计算SHA-512摘要值
+     * Computes the SHA-512 digest of the data from the given input stream.
      *
-     * @param data 被摘要数据
-     * @return SHA-512摘要
+     * @param data The input stream containing the data to be digested.
+     * @return The SHA-512 digest as a byte array.
      */
     public static byte[] sha512(final InputStream data) {
         return digester(Algorithm.SHA512).digest(data);
     }
 
     /**
-     * 计算SHA-512摘要值
+     * Computes the SHA-512 digest of the given file.
      *
-     * @param file 被摘要文件
-     * @return SHA-512摘要
+     * @param file The file to be digested.
+     * @return The SHA-512 digest as a byte array.
      */
     public static byte[] sha512(final File file) {
         return digester(Algorithm.SHA512).digest(file);
     }
 
     /**
-     * 计算SHA-1摘要值，并转为16进制字符串
+     * Computes the SHA-512 digest of the given data and returns it as a hexadecimal string.
      *
-     * @param data 被摘要数据
-     * @return SHA-512摘要的16进制表示
+     * @param data The data to be digested.
+     * @return The hexadecimal representation of the SHA-512 digest.
      */
     public static String sha512Hex(final byte[] data) {
         return digester(Algorithm.SHA512).digestHex(data);
     }
 
     /**
-     * 计算SHA-512摘要值，并转为16进制字符串
+     * Computes the SHA-512 digest of the given string using the specified charset and returns it as a hexadecimal
+     * string.
      *
-     * @param data    被摘要数据
-     * @param charset 编码
-     * @return SHA-512摘要的16进制表示
+     * @param data    The string data to be digested.
+     * @param charset The character set to use for encoding the string.
+     * @return The hexadecimal representation of the SHA-512 digest.
      */
     public static String sha512Hex(final String data, final java.nio.charset.Charset charset) {
         return digester(Algorithm.SHA512).digestHex(data, charset);
     }
 
     /**
-     * 计算SHA-512摘要值，并转为16进制字符串
+     * Computes the SHA-512 digest of the given string using UTF-8 encoding and returns it as a hexadecimal string.
      *
-     * @param data 被摘要数据
-     * @return SHA-512摘要的16进制表示
+     * @param data The string data to be digested.
+     * @return The hexadecimal representation of the SHA-512 digest.
      */
     public static String sha512Hex(final String data) {
         return sha512Hex(data, Charset.UTF_8);
     }
 
     /**
-     * 计算SHA-512摘要值，并转为16进制字符串
+     * Computes the SHA-512 digest of the data from the given input stream and returns it as a hexadecimal string.
      *
-     * @param data 被摘要数据
-     * @return SHA-512摘要的16进制表示
+     * @param data The input stream containing the data to be digested.
+     * @return The hexadecimal representation of the SHA-512 digest.
      */
     public static String sha512Hex(final InputStream data) {
         return digester(Algorithm.SHA512).digestHex(data);
     }
 
     /**
-     * 计算SHA-512摘要值，并转为16进制字符串
+     * Computes the SHA-512 digest of the given file and returns it as a hexadecimal string.
      *
-     * @param file 被摘要文件
-     * @return SHA-512摘要的16进制表示
+     * @param file The file to be digested.
+     * @return The hexadecimal representation of the SHA-512 digest.
      */
     public static String sha512Hex(final File file) {
         return digester(Algorithm.SHA512).digestHex(file);
     }
 
     /**
-     * 新建摘要器
+     * Creates a new {@link Digester} instance for the specified signing algorithm.
      *
-     * @param algorithm 签名算法
-     * @return Digester
+     * @param algorithm The signing {@link Algorithm}.
+     * @return A new {@link Digester} instance.
      */
     public static Digester digester(final Algorithm algorithm) {
         return digester(algorithm.getValue());
     }
 
     /**
-     * 新建摘要器
+     * Creates a new {@link Digester} instance for the specified signing algorithm name.
      *
-     * @param algorithm 签名算法
-     * @return Digester
+     * @param algorithm The name of the signing algorithm.
+     * @return A new {@link Digester} instance.
      */
     public static Digester digester(final String algorithm) {
         return new Digester(algorithm);
     }
 
     /**
-     * 生成Bcrypt加密后的密文
+     * Generates a Bcrypt hashed password from a plaintext password.
      *
-     * @param password 明文密码
-     * @return 加密后的密文
+     * @param password The plaintext password.
+     * @return The Bcrypt hashed password.
      */
     public static String hashpw(final String password) {
         return BCrypt.hashpw(password);
     }
 
     /**
-     * 验证密码是否与Bcrypt加密后的密文匹配
+     * Verifies if a plaintext password matches a Bcrypt hashed password.
      *
-     * @param password 明文密码
-     * @param hashed   hash值（加密后的值）
-     * @return 是否匹配
+     * @param password The plaintext password.
+     * @param hashed   The Bcrypt hashed password.
+     * @return {@code true} if the password matches, {@code false} otherwise.
      */
     public static boolean checkpw(final String password, final String hashed) {
         return BCrypt.checkpw(password, hashed);
     }
 
     /**
-     * 构建ECDomainParameters对象
+     * Builds an {@link ECDomainParameters} object from an {@link ECParameterSpec}.
      *
-     * @param parameterSpec ECParameterSpec
-     * @return {@link ECDomainParameters}
+     * @param parameterSpec The {@link ECParameterSpec}.
+     * @return A new {@link ECDomainParameters} instance.
      */
     public static ECDomainParameters toDomainParams(final ECParameterSpec parameterSpec) {
         return new ECDomainParameters(parameterSpec.getCurve(), parameterSpec.getG(), parameterSpec.getN(),
@@ -1503,20 +1699,20 @@ public class Builder {
     }
 
     /**
-     * 构建ECDomainParameters对象
+     * Builds an {@link ECDomainParameters} object from a curve name.
      *
-     * @param curveName Curve名称
-     * @return {@link ECDomainParameters}
+     * @param curveName The name of the elliptic curve.
+     * @return A new {@link ECDomainParameters} instance.
      */
     public static ECDomainParameters toDomainParams(final String curveName) {
         return toDomainParams(ECUtil.getNamedCurveByName(curveName));
     }
 
     /**
-     * 构建ECDomainParameters对象
+     * Builds an {@link ECDomainParameters} object from {@link X9ECParameters}.
      *
-     * @param x9ECParameters {@link X9ECParameters}
-     * @return {@link ECDomainParameters}
+     * @param x9ECParameters The {@link X9ECParameters}.
+     * @return A new {@link ECDomainParameters} instance.
      */
     public static ECDomainParameters toDomainParams(final X9ECParameters x9ECParameters) {
         return new ECDomainParameters(x9ECParameters.getCurve(), x9ECParameters.getG(), x9ECParameters.getN(),
@@ -1524,10 +1720,11 @@ public class Builder {
     }
 
     /**
-     * Java中的PKCS#8格式私钥转换为OpenSSL支持的PKCS#1格式
+     * Converts a Java PKCS#8 format private key to OpenSSL-supported PKCS#1 format.
      *
-     * @param privateKey PKCS#8格式私钥
-     * @return PKCS#1格式私钥
+     * @param privateKey The private key in PKCS#8 format.
+     * @return The private key in PKCS#1 format as a byte array.
+     * @throws InternalException if an I/O error occurs during encoding.
      */
     public static byte[] toPkcs1(final PrivateKey privateKey) {
         final PrivateKeyInfo pkInfo = PrivateKeyInfo.getInstance(privateKey.getEncoded());
@@ -1539,10 +1736,11 @@ public class Builder {
     }
 
     /**
-     * Java中的X.509格式公钥转换为OpenSSL支持的PKCS#1格式
+     * Converts a Java X.509 format public key to OpenSSL-supported PKCS#1 format.
      *
-     * @param publicKey X.509格式公钥
-     * @return PKCS#1格式公钥
+     * @param publicKey The public key in X.509 format.
+     * @return The public key in PKCS#1 format as a byte array.
+     * @throws InternalException if an I/O error occurs during encoding.
      */
     public static byte[] toPkcs1(final PublicKey publicKey) {
         final SubjectPublicKeyInfo spkInfo = SubjectPublicKeyInfo.getInstance(publicKey.getEncoded());
@@ -1554,12 +1752,13 @@ public class Builder {
     }
 
     /**
-     * 将{@link BlockCipher}包装为指定mode和padding的{@link BufferedBlockCipher}
+     * Wraps a {@link BlockCipher} with a specified mode and padding into a {@link BufferedBlockCipher}.
      *
-     * @param cipher  {@link BlockCipher}
-     * @param mode    模式
-     * @param padding 补码方式
-     * @return {@link BufferedBlockCipher}，无对应Cipher返回{@code null}
+     * @param cipher  The {@link BlockCipher} to wrap.
+     * @param mode    The cipher mode (e.g., CBC, CFB, CTR, OFB, CTS).
+     * @param padding The padding scheme (e.g., NoPadding, PKCS5Padding, ZeroPadding, ISO10126Padding).
+     * @return A new {@link BufferedBlockCipher} instance, or {@code null} if the mode/padding combination is not
+     *         supported.
      */
     public static BufferedBlockCipher wrap(BlockCipher cipher, final Algorithm.Mode mode, final Padding padding) {
         switch (mode) {
@@ -1599,16 +1798,17 @@ public class Builder {
     }
 
     /**
-     * 根据算法创建{@link KeySpec}
+     * Creates a {@link KeySpec} based on the specified algorithm and key material.
      * <ul>
-     * <li>DESede: {@link DESedeKeySpec}</li>
-     * <li>DES : {@link DESedeKeySpec}</li>
-     * <li>其它 : {@link SecretKeySpec}</li>
+     * <li>For DESede: {@link DESedeKeySpec} is used. If key is null, a random 24-byte key is generated.</li>
+     * <li>For DES: {@link DESKeySpec} is used. If key is null, a random 8-byte key is generated.</li>
+     * <li>For others: {@link SecretKeySpec} is used.</li>
      * </ul>
      *
-     * @param algorithm 算法
-     * @param key       密钥
-     * @return {@link KeySpec}
+     * @param algorithm The algorithm name (e.g., "DESede", "DES").
+     * @param key       The key material as a byte array. Can be {@code null} for random key generation.
+     * @return A new {@link KeySpec} instance.
+     * @throws CryptoException if an invalid key is provided for DES/DESede.
      */
     public static KeySpec createKeySpec(final String algorithm, byte[] key) {
         try {
@@ -1616,7 +1816,7 @@ public class Builder {
                 if (null == key) {
                     key = RandomKit.randomBytes(24);
                 }
-                // DESede兼容
+                // DESede compatibility
                 return new DESedeKeySpec(key);
             } else if (algorithm.startsWith("DES")) {
                 if (null == key) {
@@ -1632,10 +1832,12 @@ public class Builder {
     }
 
     /**
-     * 创建{@link PBEKeySpec} PBE算法没有密钥的概念，密钥在其它对称加密算法中是经过算法计算得出来的，PBE算法则是使用口令替代了密钥。
+     * Creates a {@link PBEKeySpec} from a password. PBE algorithms do not have a traditional key; instead, they derive
+     * a key from a password. If the password is {@code null}, a random 32-character lowercase string is generated as
+     * the password.
      *
-     * @param password 口令
-     * @return {@link PBEKeySpec}
+     * @param password The password as a character array. Can be {@code null} for random password generation.
+     * @return A new {@link PBEKeySpec} instance.
      */
     public static PBEKeySpec createPBEKeySpec(char[] password) {
         if (null == password) {
@@ -1645,87 +1847,99 @@ public class Builder {
     }
 
     /**
-     * 创建{@link PBEParameterSpec}
+     * Creates a {@link PBEParameterSpec} with the given salt and iteration count.
      *
-     * @param salt           加盐值
-     * @param iterationCount 摘要次数
-     * @return {@link PBEParameterSpec}
+     * @param salt           The salt value as a byte array.
+     * @param iterationCount The number of iterations for the digest algorithm.
+     * @return A new {@link PBEParameterSpec} instance.
      */
     public static PBEParameterSpec createPBEParameterSpec(final byte[] salt, final int iterationCount) {
         return new PBEParameterSpec(salt, iterationCount);
     }
 
     /**
-     * 数据加密
+     * Encrypts data using the specified algorithm and key. The key string should be comma-separated, e.g.,
+     * "privateKey,publicKey,type".
      *
-     * @param algorithm 加密算法
-     * @param key       密钥, 字符串使用,分割 格式: 私钥,公钥,类型
-     * @param content   需要加密的内容
-     * @return 加密结果
+     * @param algorithm The encryption algorithm.
+     * @param key       The key string (e.g., "privateKey,publicKey,type").
+     * @param content   The data to be encrypted.
+     * @return The encrypted data as a byte array.
+     * @throws CryptoException if encryption fails.
      */
     public static byte[] encrypt(String algorithm, String key, byte[] content) {
-        final Provider provider = Registry.require(algorithm);
+        final org.miaixz.bus.crypto.Provider provider = Registry.require(algorithm);
         return provider.encrypt(key, content);
     }
 
     /**
-     * 数据加密
+     * Encrypts data using the specified algorithm and key, returning the result as a hexadecimal string. The key string
+     * should be comma-separated, e.g., "privateKey,publicKey,type".
      *
-     * @param algorithm 解密算法
-     * @param key       密钥, 字符串使用,分割 格式: 私钥,公钥,类型
-     * @param content   需要加密的内容
-     * @param charset   字符集
-     * @return 加密结果
+     * @param algorithm The encryption algorithm.
+     * @param key       The key string (e.g., "privateKey,publicKey,type").
+     * @param content   The string content to be encrypted.
+     * @param charset   The character set to use for encoding the content.
+     * @return The encrypted data as a hexadecimal string.
+     * @throws CryptoException if encryption fails.
      */
     public static String encrypt(String algorithm, String key, String content, java.nio.charset.Charset charset) {
         return HexKit.encodeString(encrypt(algorithm, key, content.getBytes(charset)));
     }
 
     /**
-     * 数据加密
+     * Encrypts data from an input stream using the specified algorithm and key. The key string should be
+     * comma-separated, e.g., "privateKey,publicKey,type".
      *
-     * @param algorithm   加密算法
-     * @param key         密钥, 字符串使用,分割 格式: 私钥,公钥,类型
-     * @param inputStream 需要加密的内容
-     * @return 加密结果
+     * @param algorithm   The encryption algorithm.
+     * @param key         The key string (e.g., "privateKey,publicKey,type").
+     * @param inputStream The input stream containing the data to be encrypted.
+     * @return An {@link InputStream} containing the encrypted data.
+     * @throws CryptoException if encryption fails.
      */
     public static InputStream encrypt(String algorithm, String key, InputStream inputStream) {
-        final Provider provider = Registry.require(algorithm);
+        final org.miaixz.bus.crypto.Provider provider = Registry.require(algorithm);
         return new ByteArrayInputStream(provider.encrypt(key, IoKit.readBytes(inputStream)));
     }
 
     /**
-     * 数据解密
+     * Decrypts data using the specified algorithm and key. The key string should be comma-separated, e.g.,
+     * "privateKey,publicKey,type".
      *
-     * @param algorithm 加密算法
-     * @param key       密钥, 字符串使用,分割 格式: 私钥,公钥,类型
-     * @param content   需要解密的内容
-     * @return 解密结果
+     * @param algorithm The decryption algorithm.
+     * @param key       The key string (e.g., "privateKey,publicKey,type").
+     * @param content   The data to be decrypted.
+     * @return The decrypted data as a byte array.
+     * @throws CryptoException if decryption fails.
      */
     public static byte[] decrypt(String algorithm, String key, byte[] content) {
         return Registry.require(algorithm).decrypt(key, content);
     }
 
     /**
-     * 数据解密
+     * Decrypts data using the specified algorithm and key, returning the result as a string. The key string should be
+     * comma-separated, e.g., "privateKey,publicKey,type". The input content is expected to be a hexadecimal string.
      *
-     * @param algorithm 解密算法
-     * @param key       密钥, 字符串使用,分割 格式: 私钥,公钥,类型
-     * @param content   需要解密的内容
-     * @param charset   字符集
-     * @return 解密结果
+     * @param algorithm The decryption algorithm.
+     * @param key       The key string (e.g., "privateKey,publicKey,type").
+     * @param content   The hexadecimal string content to be decrypted.
+     * @param charset   The character set to use for decoding the decrypted content.
+     * @return The decrypted data as a string.
+     * @throws CryptoException if decryption fails.
      */
     public static String decrypt(String algorithm, String key, String content, java.nio.charset.Charset charset) {
         return new String(decrypt(algorithm, key, HexKit.decode(content)), charset);
     }
 
     /**
-     * 数据解密
+     * Decrypts data from an input stream using the specified algorithm and key. The key string should be
+     * comma-separated, e.g., "privateKey,publicKey,type".
      *
-     * @param algorithm   解密算法
-     * @param key         密钥, 字符串使用,分割 格式: 私钥,公钥,类型
-     * @param inputStream 需要解密的内容
-     * @return 解密结果
+     * @param algorithm   The decryption algorithm.
+     * @param key         The key string (e.g., "privateKey,publicKey,type").
+     * @param inputStream The input stream containing the data to be decrypted.
+     * @return An {@link InputStream} containing the decrypted data.
+     * @throws CryptoException if decryption fails.
      */
     public static InputStream decrypt(String algorithm, String key, InputStream inputStream) {
         return new ByteArrayInputStream(Registry.require(algorithm).decrypt(key, IoKit.readBytes(inputStream)));

@@ -36,7 +36,8 @@ import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.extra.template.Template;
 
 /**
- * Freemarker模板实现
+ * Freemarker template implementation. This class wraps a FreeMarker {@link freemarker.template.Template} object,
+ * providing a unified interface for rendering templates.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -46,25 +47,29 @@ public class FreemarkerTemplate implements Template, Serializable {
     @Serial
     private static final long serialVersionUID = 2852288838528L;
 
+    /**
+     * The raw FreeMarker template object.
+     */
     freemarker.template.Template rawTemplate;
 
     /**
-     * 构造
+     * Constructs a new {@code FreemarkerTemplate} instance.
      *
-     * @param freemarkerTemplate Beetl的模板对象 {@link freemarker.template.Template}
+     * @param freemarkerTemplate The raw FreeMarker template object to be wrapped. Must not be {@code null}.
      */
     public FreemarkerTemplate(final freemarker.template.Template freemarkerTemplate) {
         this.rawTemplate = freemarkerTemplate;
     }
 
     /**
-     * 包装Freemarker模板
+     * Wraps a FreeMarker template object into a {@code FreemarkerTemplate} instance.
      *
-     * @param beetlTemplate Beetl的模板对象 {@link freemarker.template.Template}
-     * @return this
+     * @param freemarkerTemplate The raw FreeMarker template object ({@link freemarker.template.Template}).
+     * @return A new {@code FreemarkerTemplate} instance, or {@code null} if the input {@code freemarkerTemplate} is
+     *         {@code null}.
      */
-    public static FreemarkerTemplate wrap(final freemarker.template.Template beetlTemplate) {
-        return (null == beetlTemplate) ? null : new FreemarkerTemplate(beetlTemplate);
+    public static FreemarkerTemplate wrap(final freemarker.template.Template freemarkerTemplate) {
+        return (null == freemarkerTemplate) ? null : new FreemarkerTemplate(freemarkerTemplate);
     }
 
     @Override

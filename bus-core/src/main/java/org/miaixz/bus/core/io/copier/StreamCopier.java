@@ -37,7 +37,8 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
 
 /**
- * {@link InputStream} 向 {@link OutputStream} 拷贝
+ * Copies data from an {@link InputStream} to an {@link OutputStream}. This class extends {@link IoCopier} to provide
+ * byte-stream-specific copying functionality.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -45,42 +46,51 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 public class StreamCopier extends IoCopier<InputStream, OutputStream> {
 
     /**
-     * 构造
+     * Constructs a {@code StreamCopier} with a default buffer size of 8192 bytes.
      */
     public StreamCopier() {
         this(Normal._8192);
     }
 
     /**
-     * 构造
+     * Constructs a {@code StreamCopier} with the specified buffer size.
      *
-     * @param bufferSize 缓存大小
+     * @param bufferSize The size of the byte buffer to use for copying.
      */
     public StreamCopier(final int bufferSize) {
         this(bufferSize, -1);
     }
 
     /**
-     * 构造
+     * Constructs a {@code StreamCopier} with the specified buffer size and total count of bytes to copy.
      *
-     * @param bufferSize 缓存大小
-     * @param count      拷贝总数，-1表示无限制
+     * @param bufferSize The size of the byte buffer to use for copying.
+     * @param count      The total number of bytes to copy. A value of -1 indicates no limit.
      */
     public StreamCopier(final int bufferSize, final long count) {
         this(bufferSize, count, null);
     }
 
     /**
-     * 构造
+     * Constructs a {@code StreamCopier} with the specified buffer size, total count of bytes to copy, and a progress
+     * listener.
      *
-     * @param bufferSize 缓存大小
-     * @param count      拷贝总数，-1表示无限制
-     * @param progress   进度条
+     * @param bufferSize The size of the byte buffer to use for copying.
+     * @param count      The total number of bytes to copy. A value of -1 indicates no limit.
+     * @param progress   The progress listener to report copy progress.
      */
     public StreamCopier(final int bufferSize, final long count, final StreamProgress progress) {
         super(bufferSize, count, progress);
     }
 
+    /**
+     * Copies data from the source {@link InputStream} to the target {@link OutputStream}.
+     *
+     * @param source The source {@link InputStream}.
+     * @param target The target {@link OutputStream}.
+     * @return The total number of bytes copied.
+     * @throws InternalException if an {@link IOException} occurs during the copy operation.
+     */
     @Override
     public long copy(final InputStream source, final OutputStream target) {
         Assert.notNull(source, "InputStream is null !");
@@ -106,14 +116,15 @@ public class StreamCopier extends IoCopier<InputStream, OutputStream> {
     }
 
     /**
-     * 执行拷贝，如果限制最大长度，则按照最大长度读取，否则一直读取直到遇到-1
+     * Performs the actual copy operation. If a maximum length is specified, it reads up to that length; otherwise, it
+     * reads until the end of the source (when -1 is encountered).
      *
-     * @param source   {@link InputStream}
-     * @param target   {@link OutputStream}
-     * @param buffer   缓存
-     * @param progress 进度条
-     * @return 拷贝总长度
-     * @throws IOException IO异常
+     * @param source   The {@link InputStream} to read from.
+     * @param target   The {@link OutputStream} to write to.
+     * @param buffer   The byte array buffer used for copying.
+     * @param progress The progress listener to report copy progress, can be {@code null}.
+     * @return The total number of bytes copied.
+     * @throws IOException If an I/O error occurs during the copy.
      */
     private long doCopy(
             final InputStream source,
@@ -127,7 +138,7 @@ public class StreamCopier extends IoCopier<InputStream, OutputStream> {
         while (numToRead > 0) {
             read = source.read(buffer, 0, bufferSize(numToRead));
             if (read < 0) {
-                // 提前读取到末尾
+                // Reached end of stream prematurely
                 break;
             }
             target.write(buffer, 0, read);

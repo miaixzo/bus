@@ -34,8 +34,9 @@ import org.miaixz.bus.core.Version;
 import org.miaixz.bus.core.xyz.CompareKit;
 
 /**
- * 版本比较器 比较两个版本的大小 排序时版本从小到大排序，即比较时小版本在前，大版本在后 支持如：1.3.20.8，6.82.20160101，8.5a/8.5c等版本形式
- * 参考：java.lang.module.ModuleDescriptor.Version
+ * A comparator for version strings. It sorts versions from smallest to largest, with smaller versions appearing first.
+ * Supports version formats like {@code 1.3.20.8}, {@code 6.82.20160101}, and {@code 8.5a}/{@code 8.5c}. Inspired by
+ * {@code java.lang.module.ModuleDescriptor.Version}.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -46,28 +47,28 @@ public class VersionCompare extends NullCompare<String> implements Serializable 
     private static final long serialVersionUID = 2852262966591L;
 
     /**
-     * 单例
+     * Singleton instance of {@code VersionCompare}.
      */
     public static final VersionCompare INSTANCE = new VersionCompare();
 
     /**
-     * 默认构造
+     * Default constructor.
      */
     public VersionCompare() {
         this(false);
     }
 
     /**
-     * 默认构造
+     * Constructs a new {@code VersionCompare}.
      *
-     * @param nullGreater 是否{@code null}最大，排在最后
+     * @param nullGreater whether {@code null} values should be considered the largest and placed at the end.
      */
     public VersionCompare(final boolean nullGreater) {
         super(nullGreater, (VersionCompare::compareVersion));
     }
 
     /**
-     * 比较两个版本 null版本排在最小：即：
+     * Compares two version strings. {@code null} versions are considered the smallest.
      * 
      * <pre>
      * compare(null, "v1") &lt; 0
@@ -80,8 +81,10 @@ public class VersionCompare extends NullCompare<String> implements Serializable 
      * compare("V0.0.20170102", "V0.0.20170101") &gt; 0
      * </pre>
      *
-     * @param version1 版本1
-     * @param version2 版本2
+     * @param version1 the first version string.
+     * @param version2 the second version string.
+     * @return a negative integer, zero, or a positive integer as the first argument is less than, equal to, or greater
+     *         than the second.
      */
     private static int compareVersion(final String version1, final String version2) {
         return CompareKit.compare(Version.of(version1), Version.of(version2));

@@ -27,12 +27,6 @@
 */
 package org.miaixz.bus.spring.env;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
 import org.miaixz.bus.core.xyz.SetKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
@@ -48,14 +42,34 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.io.support.SpringFactoriesLoader;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
 /**
- * 实现{@link EnvironmentPostProcessor}按场景加载配置。
+ * An {@link EnvironmentPostProcessor} implementation that loads configuration properties based on defined scenes.
+ * <p>
+ * This post-processor allows for dynamic loading of configuration files (e.g., {@code application-dev.yml}) based on a
+ * {@code bus.scenes} property in the environment. It searches for scene-specific configuration files in the
+ * {@code classpath:/bus-scenes/} directory.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class ScenesEnvironmentPostProcessor implements EnvironmentPostProcessor, Ordered {
 
+    /**
+     * Post-processes the environment to load scene-specific configuration properties.
+     * <p>
+     * It retrieves the {@code bus.scenes} property, and if present, loads corresponding configuration files (e.g.,
+     * {@code classpath:/bus-scenes/sceneName.yml}) and adds them to the environment's property sources.
+     * </p>
+     *
+     * @param environment The configurable environment.
+     * @param application The Spring application instance.
+     */
     @Override
     public void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication application) {
         ResourceLoader resourceLoader = application.getResourceLoader();
@@ -77,11 +91,28 @@ public class ScenesEnvironmentPostProcessor implements EnvironmentPostProcessor,
 
     }
 
+    /**
+     * Returns the order value for this post-processor.
+     * <p>
+     * This ensures that scene-specific configurations are loaded with a higher precedence than default configurations
+     * but after other core environment post-processors.
+     * </p>
+     *
+     * @return The order value.
+     */
     @Override
     public int getOrder() {
         return Ordered.LOWEST_PRECEDENCE - 100;
     }
 
+    /**
+     * Locates scene-specific configuration resources.
+     *
+     * @param resourceLoader        The resource loader to use.
+     * @param propertySourceLoaders A list of property source loaders.
+     * @param scenes                A set of scene names.
+     * @return A list of {@link SceneConfigDataReference} objects for found resources.
+     */
     private List<SceneConfigDataReference> scenesResources(
             ResourceLoader resourceLoader,
             List<PropertySourceLoader> propertySourceLoaders,
@@ -103,10 +134,11 @@ public class ScenesEnvironmentPostProcessor implements EnvironmentPostProcessor,
     }
 
     /**
-     * 将所有场景配置属性源处理到{@link org.springframework.core.env.Environment}。
+     * Processes and applies all scene configuration property sources to the {@link ConfigurableEnvironment}.
      *
-     * @param sceneConfigDataReferences 场景配置数据
-     * @param environment               环境资源信息
+     * @param sceneConfigDataReferences A list of scene configuration data references.
+     * @param environment               The configurable environment to which properties will be added.
+     * @throws IllegalStateException if an I/O error occurs while loading scene config data.
      */
     private void processAndApply(
             List<SceneConfigDataReference> sceneConfigDataReferences,
@@ -125,12 +157,23 @@ public class ScenesEnvironmentPostProcessor implements EnvironmentPostProcessor,
         }
     }
 
+    /**
+     * A simple data class to hold a reference to a scene-specific configuration resource along with its name and the
+     * {@link PropertySourceLoader} capable of loading it.
+     */
     private static class SceneConfigDataReference {
 
         private String name;
         private Resource resource;
         private PropertySourceLoader propertySourceLoader;
 
+        /**
+         * Constructs a new {@code SceneConfigDataReference}.
+         *
+         * @param name                 The name of the configuration resource.
+         * @param resource             The {@link Resource} object pointing to the configuration file.
+         * @param propertySourceLoader The {@link PropertySourceLoader} to use for this resource.
+         */
         public SceneConfigDataReference(String name, Resource resource, PropertySourceLoader propertySourceLoader) {
             this.name = name;
             this.resource = resource;
@@ -138,54 +181,54 @@ public class ScenesEnvironmentPostProcessor implements EnvironmentPostProcessor,
         }
 
         /**
-         * 属性的获取方法
+         * Gets the resource object.
          *
-         * @return 资源属性值
+         * @return The {@link Resource} object.
          */
         public Resource getResource() {
             return resource;
         }
 
         /**
-         * 属性的设置方法
+         * Sets the resource object.
          *
-         * @param resource 要分配给属性资源的值
+         * @param resource The {@link Resource} object to set.
          */
         public void setResource(Resource resource) {
             this.resource = resource;
         }
 
         /**
-         * 属性propertySourceLoader的getter方法
+         * Gets the property source loader.
          *
-         * @return roperty的属性值
+         * @return The {@link PropertySourceLoader} instance.
          */
         public PropertySourceLoader getPropertySourceLoader() {
             return propertySourceLoader;
         }
 
         /**
-         * 属性propertySourceLoader的setter方法
+         * Sets the property source loader.
          *
-         * @param propertySourceLoader 属性propertySourceLoader的值
+         * @param propertySourceLoader The {@link PropertySourceLoader} instance to set.
          */
         public void setPropertySourceLoader(PropertySourceLoader propertySourceLoader) {
             this.propertySourceLoader = propertySourceLoader;
         }
 
         /**
-         * 属性名的getter方法
+         * Gets the name of the configuration resource.
          *
-         * @return 名称的属性值
+         * @return The name of the resource.
          */
         public String getName() {
             return name;
         }
 
         /**
-         * 属性名的setter方法
+         * Sets the name of the configuration resource.
          *
-         * @param name 分配给属性名称的值
+         * @param name The name to set.
          */
         public void setName(String name) {
             this.name = name;

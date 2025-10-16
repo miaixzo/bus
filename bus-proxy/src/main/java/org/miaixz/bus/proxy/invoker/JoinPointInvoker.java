@@ -30,15 +30,30 @@ package org.miaixz.bus.proxy.invoker;
 import java.lang.reflect.Method;
 
 /**
+ * An implementation of {@link ProxyChain} that adapts a generic {@link Invocation}. This class acts as a bridge,
+ * allowing different invocation contexts to be used within the proxy chain framework.
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class JoinPointInvoker implements ProxyChain {
 
-    private Object target;
+    /**
+     * The target object of the invocation.
+     */
+    private final Object target;
 
-    private Invocation invocation;
+    /**
+     * The underlying invocation context.
+     */
+    private final Invocation invocation;
 
+    /**
+     * Constructs a new JoinPointInvoker.
+     *
+     * @param target     The target object.
+     * @param invocation The invocation context.
+     */
     public JoinPointInvoker(Object target, Invocation invocation) {
         this.target = target;
         this.invocation = invocation;
@@ -66,6 +81,7 @@ public class JoinPointInvoker implements ProxyChain {
 
     @Override
     public Object[] getNames() {
+        // This implementation returns the argument values, not their names.
         return getArguments();
     }
 

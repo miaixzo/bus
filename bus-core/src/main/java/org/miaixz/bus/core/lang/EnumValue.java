@@ -28,66 +28,72 @@
 package org.miaixz.bus.core.lang;
 
 import java.awt.*;
+import java.util.Map;
+import java.util.Set;
+
+import org.miaixz.bus.core.center.map.BiMap;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * 枚举元素通用接口，在自定义枚举上实现此接口可以用于数据转换 数据库保存时建议保存 intVal()而非ordinal()防备需求变更
+ * Generic interface for enum elements, allowing custom enums to implement this interface for data conversion. It is
+ * recommended to save {@code code()} values rather than {@code ordinal()} when persisting to a database, to guard
+ * against future requirement changes.
  *
- * @param <E> Enum类型
+ * @param <E> The type of the enum implementing this interface.
  * @author Kimi Liu
  * @since Java 17+
  */
 public interface EnumValue<E extends EnumValue<E>> extends Enumers {
 
     /**
-     * 操作类型
+     * Enumeration of action types.
      */
     @Getter
     @AllArgsConstructor
     enum Action {
 
         /**
-         * 新增
+         * Represents an insertion operation.
          */
         INSERT,
         /**
-         * 删除
+         * Represents a deletion operation.
          */
         DELETE,
         /**
-         * 修改
+         * Represents an update operation.
          */
         UPDATE,
         /**
-         * 授权
+         * Represents a selection or query operation.
          */
         SELECT,
         /**
-         * 导入
+         * Represents an import operation.
          */
         IMPORT,
         /**
-         * 导出
+         * Represents an export operation.
          */
         EXPORT,
         /**
-         * 授权
+         * Represents a grant or authorization operation.
          */
         GRANT,
         /**
-         * 清空数据
+         * Represents a data clearing operation.
          */
         CLEAN,
         /**
-         * 其它
+         * Represents any other unspecified operation.
          */
         OTHER,
     }
 
     /**
-     * 对齐方式枚举
+     * Enumeration for text alignment options.
      *
      * @author Kimi Liu
      * @since Java 17+
@@ -96,97 +102,116 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
     @AllArgsConstructor
     enum Align {
         /**
-         * 左对齐
+         * Left alignment.
          */
         LEFT,
         /**
-         * 右对齐
+         * Right alignment.
          */
         RIGHT,
         /**
-         * 居中
+         * Center alignment.
          */
         CENTER
     }
 
     /**
-     * 追加模式
-     *
+     * Enumeration for append modes.
      */
     enum AppendMode {
 
         /**
-         * 追加至首位
+         * Append to the beginning.
          */
         FIRST,
 
         /**
-         * 追加至末尾
+         * Append to the end.
          */
         LAST
 
     }
 
     /**
-     * 比较模式
+     * Enumeration for comparison operators.
      */
     @Getter
     @AllArgsConstructor
     enum Compare {
 
         /**
-         * 等于（equal to）
+         * Equal to.
          */
         EQ("="),
         /**
-         * 不等于（not equal to）
+         * Not equal to.
          */
         NE("!="),
         /**
-         * 小于（less than）
+         * Less than.
          */
         LT("<"),
         /**
-         * 小于等于（less than or equal to）
+         * Less than or equal to.
          */
         LE("<="),
         /**
-         * 大于（greater than）
+         * Greater than.
          */
         GT(">"),
         /**
-         * 大于等于（greater than or equal to）
+         * Greater than or equal to.
          */
         GE(">="),
 
+        /**
+         * LIKE operator for pattern matching.
+         */
         LIKE("LIKE");
 
         /**
-         * 代码值
+         * The string representation of the comparison operator.
          */
         String code;
 
     }
 
     /**
-     * 节日类型
+     * Enumeration for festival types.
      */
     @Getter
     @AllArgsConstructor
     enum Festival {
 
-        DAY(0, "日期"), TERM(1, "节气"), EVE(2, "除夕");
+        /**
+         * Represents a regular day.
+         */
+        DAY(0, "日期"),
+        /**
+         * Represents a solar term (节气).
+         */
+        TERM(1, "节气"),
+        /**
+         * Represents New Year's Eve (除夕).
+         */
+        EVE(2, "除夕");
 
         /**
-         * 代码
+         * The code of the festival type.
          */
         private final int code;
 
         /**
-         * 名称
+         * The Chinese name of the festival type.
          */
         private final String name;
 
+        /**
+         * Returns the {@code Festival} enum constant corresponding to the given code.
+         *
+         * @param code The integer code to search for.
+         * @return The {@code Festival} enum constant, or {@code null} if no match is found.
+         */
         public static Festival fromCode(Integer code) {
             if (null == code) {
                 return null;
@@ -199,6 +224,12 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
             return null;
         }
 
+        /**
+         * Returns the {@code Festival} enum constant corresponding to the given name.
+         *
+         * @param name The string name to search for.
+         * @return The {@code Festival} enum constant, or {@code null} if no match is found.
+         */
         public static Festival fromName(String name) {
             if (null == name) {
                 return null;
@@ -211,6 +242,11 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
             return null;
         }
 
+        /**
+         * Returns the Chinese name of the festival.
+         *
+         * @return The Chinese name.
+         */
         @Override
         public String toString() {
             return getName();
@@ -219,7 +255,8 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
     }
 
     /**
-     * FTP连接模式 见：https://www.cnblogs.com/huhaoshida/p/5412615.html
+     * Enumeration for FTP connection modes. See: <a href="https://www.cnblogs.com/huhaoshida/p/5412615.html">FTP
+     * Connection Modes</a>
      *
      * @author Kimi Liu
      * @since Java 17+
@@ -229,184 +266,255 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
     enum FtpMode {
 
         /**
-         * 主动模式
+         * Active mode for FTP connections.
          */
         Active,
         /**
-         * 被动模式
+         * Passive mode for FTP connections.
          */
         Passive
     }
 
     /**
-     * 渐变方向
+     * Enumeration for gradient directions.
      */
     @Getter
     @AllArgsConstructor
     enum Gradient {
         /**
-         * 上到下
+         * Gradient from top to bottom.
          */
         TOP_BOTTOM,
         /**
-         * 左到右
+         * Gradient from left to right.
          */
         LEFT_RIGHT,
         /**
-         * 左上到右下
+         * Gradient from top-left to bottom-right.
          */
         LEFT_TOP_TO_RIGHT_BOTTOM,
         /**
-         * 右上到左下
+         * Gradient from top-right to bottom-left.
          */
         RIGHT_TOP_TO_LEFT_BOTTOM
     }
 
     /**
-     * 脱敏类型
+     * Enum for load balancing strategies.
+     */
+    @Getter
+    @AllArgsConstructor
+    enum Balance {
+        /**
+         * Round-robin strategy.
+         */
+        ROUND_ROBIN,
+        /**
+         * Random selection strategy.
+         */
+        RANDOM,
+        /**
+         * Weighted selection strategy.
+         */
+        WEIGHT
+    }
+
+    /**
+     * Enumeration of desensitization types.
      */
     @Getter
     @AllArgsConstructor
     enum Masking {
         /**
-         * 完全脱敏
+         * Full masking. Replaces the entire string with masking characters.
          */
         FULL,
+        /**
+         * No desensitization.
+         */
+        NONE,
+        /**
+         * Default desensitization strategy.
+         */
+        DEFAUL,
 
         /**
-         * 部分脱敏
+         * Partial masking. Masks a portion of the string, typically the middle.
          */
         PARTIAL,
-
         /**
-         * 替换脱敏
+         * For names.
          */
-        REPLACE,
+        NAME,
         /**
-         * 用户id
+         * For citizen ID numbers.
          */
-        USER_ID,
+        CITIZENID,
         /**
-         * 中文名
+         * For landline phone numbers.
          */
-        CHINESE_NAME,
+        PHONE,
         /**
-         * 身份证号
+         * For mobile phone numbers.
          */
-        ID_CARD,
+        MOBILE,
         /**
-         * 座机号
-         */
-        FIXED_PHONE,
-        /**
-         * 手机号
-         */
-        MOBILE_PHONE,
-        /**
-         * 地址
+         * For addresses.
          */
         ADDRESS,
         /**
-         * 电子邮件
+         * For email addresses.
          */
         EMAIL,
         /**
-         * 密码
-         */
-        PASSWORD,
-        /**
-         * 中国大陆车牌，包含普通车辆、新能源车辆
-         */
-        CAR_LICENSE,
-        /**
-         * 银行卡
+         * For bank card numbers.
          */
         BANK_CARD,
         /**
-         * IPv4地址
+         * For CNAPS (China National Advanced Payment System) codes.
+         */
+        CNAPS_CODE,
+        /**
+         * For payment agreement numbers.
+         */
+        PAY_SIGN_NO,
+        /**
+         * For passwords (typically replaces with an empty string).
+         */
+        PASSWORD,
+        /**
+         * For generic numbers or codes.
+         */
+        GENERIC,
+        /**
+         * Replacement masking. Replaces the string with a fixed replacement string.
+         */
+        REPLACE,
+        /**
+         * For user IDs.
+         */
+        USER_ID,
+        /**
+         * For Chinese names.
+         */
+        CHINESE_NAME,
+        /**
+         * For Mainland China car license plates, including standard and new energy vehicles.
+         */
+        CAR_LICENSE,
+        /**
+         * For IPv4 addresses.
          */
         IPV4,
         /**
-         * IPv6地址
+         * For IPv6 addresses.
          */
         IPV6,
         /**
-         * 定义了一个first_mask的规则，只显示第一个字符。
+         * A rule that masks all but the first character.
          */
         FIRST_MASK,
         /**
-         * 清空为null
+         * Clears the value to {@code null}.
          */
         CLEAR_TO_NULL,
         /**
-         * 清空为""
+         * Clears the value to an empty string ("").
          */
         CLEAR_TO_EMPTY
+
     }
 
     /**
-     * 修饰符
+     * Defines the masking mode for desensitization.
+     */
+    @Getter
+    @AllArgsConstructor
+    enum Mode {
+        /**
+         * Masks the beginning of the string.
+         */
+        HEAD,
+        /**
+         * Masks the end of the string.
+         */
+        TAIL,
+        /**
+         * Masks the middle of the string.
+         */
+        MIDDLE
+    }
+
+    /**
+     * Enumeration for Java reflection modifiers.
      */
     @Getter
     @AllArgsConstructor
     enum Modifier {
 
         /**
-         * public修饰符，所有类都能访问
+         * Public modifier, accessible by all classes.
          */
         PUBLIC(java.lang.reflect.Modifier.PUBLIC),
         /**
-         * private修饰符，只能被自己访问和修改
+         * Private modifier, accessible and modifiable only by the declaring class.
          */
         PRIVATE(java.lang.reflect.Modifier.PRIVATE),
         /**
-         * protected修饰符，自身、子类及同一个包中类可以访问
+         * Protected modifier, accessible by the declaring class, subclasses, and classes within the same package.
          */
         PROTECTED(java.lang.reflect.Modifier.PROTECTED),
         /**
-         * static修饰符，（静态修饰符）指定变量被所有对象共享，即所有实例都可以使用该变量。变量属于这个类
+         * Static modifier, indicating that a variable is shared by all objects of the class. The variable belongs to
+         * the class.
          */
         STATIC(java.lang.reflect.Modifier.STATIC),
         /**
-         * final修饰符，最终修饰符，指定此变量的值不能变，使用在方法上表示不能被重载
+         * Final modifier, indicating that the value of a variable cannot be changed. When applied to a method, it means
+         * the method cannot be overridden.
          */
         FINAL(java.lang.reflect.Modifier.FINAL),
         /**
-         * synchronized，同步修饰符，在多个线程中，该修饰符用于在运行前，对他所属的方法加锁，以防止其他线程的访问，运行结束后解锁。
+         * Synchronized modifier, used in multi-threaded environments to lock a method before execution to prevent
+         * access from other threads, and unlock it after execution.
          */
         SYNCHRONIZED(java.lang.reflect.Modifier.SYNCHRONIZED),
         /**
-         * （易失修饰符）指定该变量可以同时被几个线程控制和修改
+         * Volatile modifier, indicating that a variable can be controlled and modified by several threads
+         * simultaneously.
          */
         VOLATILE(java.lang.reflect.Modifier.VOLATILE),
         /**
-         * （过度修饰符）指定该变量是系统保留，暂无特别作用的临时性变量，序列化时忽略
+         * Transient modifier, indicating that a variable is system-reserved, has no special temporary purpose, and is
+         * ignored during serialization.
          */
         TRANSIENT(java.lang.reflect.Modifier.TRANSIENT),
         /**
-         * native，本地修饰符。指定此方法的方法体是用其他语言在程序外部编写的。
+         * Native modifier, indicating that the method body is written in another language outside the program.
          */
         NATIVE(java.lang.reflect.Modifier.NATIVE),
 
         /**
-         * abstract，将一个类声明为抽象类，没有实现的方法，需要子类提供方法实现。
+         * Abstract modifier, declaring a class as abstract, with unimplemented methods that need to be provided by
+         * subclasses.
          */
         ABSTRACT(java.lang.reflect.Modifier.ABSTRACT),
         /**
-         * strictfp，一旦使用了关键字strictfp来声明某个类、接口或者方法时，那么在这个关键字所声明的范围内所有浮点运算都是精确的，符合IEEE-754规范的。
+         * Strictfp modifier. When used to declare a class, interface, or method, all floating-point operations within
+         * that scope are precise and conform to the IEEE-754 standard.
          */
         STRICT(java.lang.reflect.Modifier.STRICT);
 
         /**
-         * 修饰符枚举对应的int修饰符值
+         * The integer value of the modifier enum.
          */
         private final int code;
 
         /**
-         * 多个修饰符做“或”操作，表示存在任意一个修饰符
+         * Performs a bitwise OR operation on multiple modifier types to combine them.
          *
-         * @param modifierTypes 修饰符列表，元素不能为空
-         * @return “或”之后的修饰符
+         * @param modifierTypes An array of {@code Modifier} enums. Must not be empty.
+         * @return The combined integer modifier value.
          */
         public static int orToInt(final Modifier... modifierTypes) {
             int modifier = modifierTypes[0].getCode();
@@ -417,10 +525,10 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
         }
 
         /**
-         * 多个修饰符做“或”操作，表示存在任意一个修饰符
+         * Performs a bitwise OR operation on multiple integer modifier values to combine them.
          *
-         * @param modifierTypes 修饰符列表，元素不能为空
-         * @return “或”之后的修饰符
+         * @param modifierTypes An array of integer modifier values. Must not be empty.
+         * @return The combined integer modifier value.
          */
         public static int orToInt(final int... modifierTypes) {
             int modifier = modifierTypes[0];
@@ -433,192 +541,193 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
     }
 
     /**
-     * 命名模式
+     * Enumeration for naming conventions or patterns.
      */
     @Getter
     @AllArgsConstructor
     enum Naming {
 
         /**
-         * 默认/正常
+         * Default or normal naming convention.
          */
         NORMAL(0, "默认"),
 
         /**
-         * 粗体或增加强度
+         * Bold or intensified style.
          */
         BOLD(1, "粗体"),
 
         /**
-         * 弱化（降低强度）
+         * Faint or de-emphasized style.
          */
         FAINT(2, "弱化"),
         /**
-         * 斜体
+         * Italic style.
          */
         ITALIC(3, "斜体"),
         /**
-         * 转换为大写
+         * Convert to uppercase.
          */
         UPPER_CASE(4, "大写"),
         /**
-         * 转换为小写
+         * Convert to lowercase.
          */
         LOWER_CASE(5, "小写"),
         /**
-         * 驼峰形式
+         * Camel case naming convention.
          */
         CAMEL(6, "驼峰"),
         /**
-         * 驼峰转下划线大写形式
+         * Convert camel case to uppercase with underscores.
          */
         CAMEL_UNDERLINE_UPPER_CASE(7, "驼峰转下划线大写"),
         /**
-         * 驼峰转下划线小写形式
+         * Convert camel case to lowercase with underscores.
          */
         CAMEL_UNDERLINE_LOWER_CASE(8, "驼峰转下划线小写");
 
         /**
-         * 编码
+         * The code associated with the naming convention.
          */
         private final long code;
         /**
-         * 名称
+         * The Chinese name of the naming convention.
          */
         private final String name;
 
     }
 
     /**
-     * 参数来源枚举
+     * Enumeration for parameter sources in a request.
      */
     enum Params {
         /**
-         * 请求头
+         * Parameter from request header.
          */
         HEADER,
         /**
-         * 请求参数（包括表单和 URL 参数）
+         * Parameter from request (including form and URL parameters).
          */
         PARAMETER,
         /**
-         * JSON 请求体
+         * Parameter from JSON request body.
          */
         JSON_BODY,
         /**
-         * Cookie
+         * Parameter from Cookie.
          */
         COOKIE,
         /**
-         * 路径变量
+         * Parameter from path variable.
          */
         PATH_VARIABLE,
         /**
-         * 文件上传参数
+         * Parameter from multipart file upload.
          */
         MULTIPART,
         /**
-         * 线程上下文
+         * Parameter from thread context.
          */
         CONTEXT,
         /**
-         * 所有来源（按优先级：Header > Parameter > Path Variable > JSON Body > Cookie > Multipart > Context）
+         * Parameter from all sources (priority: Header > Parameter > Path Variable > JSON Body > Cookie > Multipart >
+         * Context).
          */
         ALL
     }
 
     /**
-     * 策略模式枚举
+     * Enumeration for strategy patterns.
      */
     @Getter
     @AllArgsConstructor
     enum Povider {
 
         /**
-         * 加解密
+         * Encryption and decryption strategy.
          */
         CRYPTO("CRYPTO"),
         /**
-         * 验证码
+         * Captcha strategy.
          */
         CAPTCHA("CAPTCHA"),
         /**
-         * 自然语言
+         * Natural Language Processing (NLP) strategy.
          */
         NLP("NLP"),
         /**
-         * 拼音
+         * Pinyin conversion strategy.
          */
         PINYIN("PINYIN"),
         /**
-         * 模版
+         * Template processing strategy.
          */
         TEMPLATE("TEMPLATE"),
         /**
-         * JSON
+         * JSON processing strategy.
          */
         JSON("JSON"),
         /**
-         * 日志
+         * Logging strategy.
          */
         LOGGING("LOGGING"),
         /**
-         * 热点/降级
+         * Hotspot/Degradation strategy.
          */
         LIMITER("LIMITER"),
         /**
-         * 消息
+         * Notification strategy.
          */
         NOTIFY("NOTIFY"),
         /**
-         * 授权
+         * Authorization strategy.
          */
         AUTH("AUTH"),
         /**
-         * 支付
+         * Payment strategy.
          */
         PAY("PAY"),
         /**
-         * 托名
+         * Data anonymization/desensitization strategy.
          */
         SENSITIVE("SENSITIVE"),
         /**
-         * 存储
+         * Storage strategy.
          */
         STORAGE("STORAGE"),
         /**
-         * 数据
+         * Validation strategy.
          */
         VALIDATE("VALIDATE");
 
         /**
-         * 代码值
+         * The code value of the provider.
          */
         String code;
 
     }
 
     /**
-     * 排序方式
+     * Enumeration for probe statuses, often used in health checks or traffic management.
      */
     @Getter
     @AllArgsConstructor
     enum Probe {
 
         /**
-         * 拒绝流量
+         * Indicates that traffic is refused.
          */
         REFUSE("refuse"),
         /**
-         * 接受流量
+         * Indicates that traffic is accepted.
          */
         ACCEPT("accept"),
         /**
-         * 存活正常
+         * Indicates a correct or healthy status.
          */
         CORRECT("correct"),
         /**
-         * 存活异常
+         * Indicates a broken or unhealthy status.
          */
         BROKEN("broken");
 
@@ -627,68 +736,68 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
     }
 
     /**
-     * 排序方式
+     * Enumeration for sorting orders.
      */
     @Getter
     @AllArgsConstructor
     enum Sort {
 
         /**
-         * 升序
+         * Ascending order.
          */
         ASC("ASC"),
         /**
-         * 降序
+         * Descending order.
          */
         DESC("DESC");
 
         /**
-         * 代码值
+         * The code value representing the sort order.
          */
         String code;
 
     }
 
     /**
-     * 开关枚举
+     * Enumeration for switch states.
      */
     enum Switch {
         /**
-         * 开启状态
+         * On state.
          */
         ON,
 
         /**
-         * 关闭状态
+         * Off state.
          */
         OFF
     }
 
     /**
-     * 图片缩略
+     * Enumeration for image thumbnail scaling methods.
      */
     @Getter
     @AllArgsConstructor
     enum Thumb {
 
         /**
-         * 默认
+         * Default scaling algorithm.
          */
         DEFAULT(Image.SCALE_DEFAULT),
         /**
-         * 快速
+         * Fast scaling algorithm.
          */
         FAST(Image.SCALE_FAST),
         /**
-         * 平滑
+         * Smooth scaling algorithm.
          */
         SMOOTH(Image.SCALE_SMOOTH),
         /**
-         * 使用 ReplicateScaleFilter 类中包含的图像缩放算法
+         * Image scaling algorithm using ReplicateScaleFilter class.
          */
         REPLICATE(Image.SCALE_REPLICATE),
         /**
-         * Area Averaging算法
+         * Area Averaging scaling algorithm.
          */
         AREA_AVERAGING(Image.SCALE_AREA_AVERAGING);
 
@@ -697,25 +806,175 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
     }
 
     /**
-     * 图片缩略模式
+     * Enum of basic variable types. Basic type enums include primitive types and wrapper types.
+     */
+    enum Type {
+
+        /**
+         * byte primitive type.
+         */
+        BYTE,
+        /**
+         * short primitive type.
+         */
+        SHORT,
+        /**
+         * int primitive type.
+         */
+        INT,
+        /**
+         * {@link Integer} wrapper type.
+         */
+        INTEGER,
+        /**
+         * long primitive type.
+         */
+        LONG,
+        /**
+         * double primitive type.
+         */
+        DOUBLE,
+        /**
+         * float primitive type.
+         */
+        FLOAT,
+        /**
+         * boolean primitive type.
+         */
+        BOOLEAN,
+        /**
+         * char primitive type.
+         */
+        CHAR,
+        /**
+         * {@link Character} wrapper type.
+         */
+        CHARACTER,
+        /**
+         * {@link String} type.
+         */
+        STRING;
+
+        /**
+         * A bidirectional map storing the mapping between wrapper types and their corresponding primitive types. For
+         * example: Integer.class => int.class. This map is initialized directly using a factory method, making it
+         * immutable and thread-safe by construction.
+         */
+        private static final BiMap<Class<?>, Class<?>> PRIMITIVE_MAP = new BiMap<>(Map.of(
+                Boolean.class,
+                boolean.class,
+                Byte.class,
+                byte.class,
+                Character.class,
+                char.class,
+                Double.class,
+                double.class,
+                Float.class,
+                float.class,
+                Integer.class,
+                int.class,
+                Long.class,
+                long.class,
+                Short.class,
+                short.class));
+
+        /**
+         * Converts a primitive class to its corresponding wrapper class. If the provided class is not a primitive type,
+         * the original class is returned.
+         *
+         * @param clazz The primitive class to wrap.
+         * @return The wrapper class.
+         */
+        public static Class<?> wrap(final Class<?> clazz) {
+            return wrap(clazz, false);
+        }
+
+        /**
+         * Converts a primitive class to its corresponding wrapper class. If the provided class is not a primitive type,
+         * the original class is returned. If {@code errorReturnNull} is {@code true} and no corresponding primitive
+         * type is found, {@code null} is returned.
+         *
+         * @param clazz           The primitive class to wrap.
+         * @param errorReturnNull If {@code true}, returns {@code null} if no corresponding primitive type is found;
+         *                        otherwise, returns the original class.
+         * @return The wrapper class, or {@code null} if {@code errorReturnNull} is {@code true} and no match is found.
+         */
+        public static Class<?> wrap(final Class<?> clazz, final boolean errorReturnNull) {
+            if (null == clazz || !clazz.isPrimitive()) {
+                return clazz;
+            }
+            final Class<?> result = PRIMITIVE_MAP.getInverse().get(clazz);
+            return (null == result) ? errorReturnNull ? null : clazz : result;
+        }
+
+        /**
+         * Converts a wrapper class to its corresponding primitive class. If the provided class is not a wrapper type,
+         * the original class is returned.
+         *
+         * @param clazz The wrapper class to unwrap.
+         * @return The primitive class.
+         */
+        public static Class<?> unWrap(final Class<?> clazz) {
+            if (null == clazz || clazz.isPrimitive()) {
+                return clazz;
+            }
+            final Class<?> result = PRIMITIVE_MAP.get(clazz);
+            return (null == result) ? clazz : result;
+        }
+
+        /**
+         * Checks if the given class is a primitive wrapper type (e.g., {@code Integer.class}, {@code Boolean.class}).
+         *
+         * @param clazz The class to check.
+         * @return {@code true} if the class is a primitive wrapper type, {@code false} otherwise.
+         */
+        public static boolean isPrimitiveWrapper(final Class<?> clazz) {
+            if (null == clazz) {
+                return false;
+            }
+            return PRIMITIVE_MAP.containsKey(clazz);
+        }
+
+        /**
+         * Returns a set of all primitive types (e.g., {@code int.class}, {@code boolean.class}).
+         *
+         * @return A {@link Set} containing all primitive types.
+         */
+        public static Set<Class<?>> getPrimitiveSet() {
+            return PRIMITIVE_MAP.getInverse().keySet();
+        }
+
+        /**
+         * Returns a set of all wrapper types (e.g., {@code Integer.class}, {@code Boolean.class}).
+         *
+         * @return A {@link Set} containing all wrapper types.
+         */
+        public static Set<Class<?>> getWrapperSet() {
+            return PRIMITIVE_MAP.keySet();
+        }
+
+    }
+
+    /**
+     * Enumeration for image zooming/scaling modes.
      */
     @Getter
     @AllArgsConstructor
     enum Zoom {
         /**
-         * 原始比例，不缩放
+         * Original ratio, no scaling.
          */
         ORIGIN,
         /**
-         * 指定宽度，高度按比例
+         * Specify width, height scales proportionally.
          */
         WIDTH,
         /**
-         * 指定高度，宽度按比例
+         * Specify height, width scales proportionally.
          */
         HEIGHT,
         /**
-         * 自定义高度和宽度，强制缩放
+         * Custom height and width, forced scaling.
          */
         OPTIONAL
     }

@@ -36,28 +36,41 @@ import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 同步流，可将包装的流同步为ByteArrayInputStream，以便持有内容并关闭原流
+ * A synchronous input stream wrapper that can convert the wrapped stream into a {@link ByteArrayInputStream}, allowing
+ * its content to be held in memory and the original stream to be closed.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class SyncInputStream extends FilterInputStream {
 
+    /**
+     * The length of the stream content. A value of -1 indicates an unknown length.
+     */
     private final long length;
+    /**
+     * Flag indicating whether EOF (End-Of-File) errors should be ignored. In HTTP, for Transfer-Encoding: Chunked, a
+     * zero-length chunk usually signals the end. If the server does not follow this specification or the response does
+     * not end normally, an EOF exception may occur. This option determines whether to ignore such exceptions.
+     */
     private final boolean isIgnoreEOFError;
     /**
-     * 是否异步，异步下只持有流，否则将在初始化时直接读取body内容
+     * Flag indicating whether the stream is handled asynchronously. If {@code true}, the original stream is held. If
+     * {@code false}, the entire body content is read into a {@link ByteArrayInputStream} during initialization.
      */
     private volatile boolean asyncFlag = true;
 
     /**
-     * 构造 如果isAsync为{@code true}，则直接持有原有流，{@code false}，则将流中内容，按照给定length读到{@link ByteArrayInputStream}中备用
+     * Constructs a new {@code SyncInputStream}. If {@code isAsync} is {@code true}, the original stream is held
+     * directly. If {@code isAsync} is {@code false}, the stream content up to the given {@code length} is read into a
+     * {@link ByteArrayInputStream} for later use.
      *
-     * @param in               数据流
-     * @param length           限定长度，-1表示未知长度
-     * @param isAsync          是否异步
-     * @param isIgnoreEOFError 是否忽略EOF错误，在Http协议中，对于Transfer-Encoding: Chunked在正常情况下末尾会写入一个Length为0的的chunk标识完整结束
-     *                         如果服务端未遵循这个规范或响应没有正常结束，会报EOF异常，此选项用于是否忽略这个异常。
+     * @param in               The input stream to wrap.
+     * @param length           The expected length of the stream content. Use -1 for unknown length.
+     * @param isAsync          {@code true} to hold the original stream (asynchronous), {@code false} to read content
+     *                         into memory (synchronous).
+     * @param isIgnoreEOFError {@code true} to ignore EOF errors that may occur due to malformed stream endings,
+     *                         {@code false} otherwise.
      */
     public SyncInputStream(final InputStream in, final long length, final boolean isAsync,
             final boolean isIgnoreEOFError) {
@@ -70,27 +83,29 @@ public class SyncInputStream extends FilterInputStream {
     }
 
     /**
-     * 是否为EOF异常，包括
+     * Checks if the given {@link Throwable} is an EOF (End-Of-File) related exception. This includes:
      * <ul>
-     * <li>FileNotFoundException：服务端无返回内容</li>
-     * <li>EOFException：EOF异常</li>
+     * <li>{@link FileNotFoundException}: Indicates no content returned from the server.</li>
+     * <li>{@link EOFException}: Standard EOF exception.</li>
+     * <li>Exceptions whose message contains "Premature EOF" (case-insensitive).</li>
      * </ul>
      *
-     * @param e 异常
-     * @return 是否EOF异常
+     * @param e The {@link Throwable} to check.
+     * @return {@code true} if the exception is an EOF-related exception, {@code false} otherwise.
      */
     private static boolean isEOFException(final Throwable e) {
         if (e instanceof FileNotFoundException) {
-            // 服务器无返回内容，忽略之
+            // No content returned from the server, ignore it.
             return true;
         }
         return e instanceof EOFException || StringKit.containsIgnoreCase(e.getMessage(), "Premature EOF");
     }
 
     /**
-     * 同步数据到内存，同步后关闭原流
+     * Synchronizes the stream data into memory by reading all content into a {@link ByteArrayInputStream}. After
+     * synchronization, the original underlying stream is closed.
      *
-     * @return this
+     * @return This {@code SyncInputStream} instance for method chaining.
      */
     public SyncInputStream sync() {
         if (asyncFlag) {
@@ -102,9 +117,10 @@ public class SyncInputStream extends FilterInputStream {
     }
 
     /**
-     * 读取流中所有bytes
+     * Reads all available bytes from the input stream into a byte array.
      *
-     * @return bytes
+     * @return A byte array containing all bytes read from the stream. Returns an empty array if no bytes are read.
+     * @throws InternalException If an I/O error occurs during reading, unless it's an ignorable EOF error.
      */
     public byte[] readBytes() {
         final FastByteArrayOutputStream bytesOut = new FastByteArrayOutputStream(length > 0 ? (int) length : 1024);
@@ -113,11 +129,14 @@ public class SyncInputStream extends FilterInputStream {
     }
 
     /**
-     * 将流的内容拷贝到输出流，拷贝结束后关闭输入流
+     * Copies the content of this input stream to the specified output stream. The input stream is closed after the copy
+     * operation.
      *
-     * @param out            输出流
-     * @param streamProgress 进度条
-     * @return 拷贝长度
+     * @param out            The {@link OutputStream} to copy the content to.
+     * @param streamProgress An optional {@link StreamProgress} listener to monitor the copy progress. Can be
+     *                       {@code null}.
+     * @return The total number of bytes copied.
+     * @throws InternalException If an I/O error occurs during copying, unless it's an ignorable EOF error.
      */
     public long copyTo(final OutputStream out, final StreamProgress streamProgress) {
         long copyLength = -1;
@@ -127,9 +146,9 @@ public class SyncInputStream extends FilterInputStream {
             if (!(isIgnoreEOFError && isEOFException(e.getCause()))) {
                 throw e;
             }
-            // 忽略读取流中的EOF错误
+            // Ignore EOF errors in the stream.
         } finally {
-            // 读取结束
+            // Close the input stream after reading.
             IoKit.closeQuietly(in);
         }
         return copyLength;

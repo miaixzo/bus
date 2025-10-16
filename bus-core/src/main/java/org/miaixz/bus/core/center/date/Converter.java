@@ -44,7 +44,7 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.ZoneKit;
 
 /**
- * 日期转换
+ * Date conversion utility.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -52,10 +52,11 @@ import org.miaixz.bus.core.xyz.ZoneKit;
 public class Converter extends Formatter {
 
     /**
-     * {@link Calendar}类型时间转为{@link DateTime} 始终根据已有{@link Calendar} 产生新的{@link DateTime}对象
+     * Converts a {@link Calendar} type time to a {@link DateTime} object. Always creates a new {@link DateTime} object
+     * based on the existing {@link Calendar}.
      *
-     * @param calendar {@link Calendar}，如果传入{@code null}，返回{@code null}
-     * @return 时间对象
+     * @param calendar The {@link Calendar} object; if {@code null} is passed, {@code null} is returned.
+     * @return The {@link DateTime} object.
      */
     public static DateTime date(final Calendar calendar) {
         if (calendar == null) {
@@ -65,11 +66,12 @@ public class Converter extends Formatter {
     }
 
     /**
-     * {@link TemporalAccessor}类型时间转为{@link DateTime} 始终根据已有{@link TemporalAccessor} 产生新的{@link DateTime}对象
+     * Converts a {@link TemporalAccessor} type time to a {@link DateTime} object. Always creates a new {@link DateTime}
+     * object based on the existing {@link TemporalAccessor}.
      *
-     * @param temporalAccessor {@link TemporalAccessor},常用子类： {@link LocalDateTime}、
-     *                         LocalDate，如果传入{@code null}，返回{@code null}
-     * @return 时间对象
+     * @param temporalAccessor The {@link TemporalAccessor} object; common subclasses include {@link LocalDateTime},
+     *                         {@link LocalDate}. If {@code null} is passed, {@code null} is returned.
+     * @return The {@link DateTime} object.
      */
     public static DateTime date(final TemporalAccessor temporalAccessor) {
         if (temporalAccessor == null) {
@@ -79,12 +81,13 @@ public class Converter extends Formatter {
     }
 
     /**
-     * 安全获取时间的某个属性，属性不存在返回最小值，一般为0
-     * 注意请谨慎使用此方法，某些{@link TemporalAccessor#isSupported(TemporalField)}为{@code false}的方法返回最小值
+     * Safely retrieves a specific property of a time object. If the property does not exist, the minimum value (usually
+     * 0) is returned. Caution: Use this method carefully, as some methods where
+     * {@link TemporalAccessor#isSupported(TemporalField)} is {@code false} will return the minimum value.
      *
-     * @param temporalAccessor 需要获取的时间对象
-     * @param field            需要获取的属性
-     * @return 时间的值，如果无法获取则获取最小值，一般为0
+     * @param temporalAccessor The time object from which to retrieve the property.
+     * @param field            The property to retrieve.
+     * @return The value of the time property; if it cannot be retrieved, the minimum value (usually 0) is returned.
      */
     public static int get(final TemporalAccessor temporalAccessor, final TemporalField field) {
         if (temporalAccessor.isSupported(field)) {
@@ -95,11 +98,12 @@ public class Converter extends Formatter {
     }
 
     /**
-     * {@link TemporalAccessor}转换为 时间戳（从1970-01-01T00:00:00Z开始的毫秒数） 如果为{@link Month}，调用{@link Month#getValue()}
-     * 如果为{@link DayOfWeek}，调用{@link DayOfWeek#getValue()} 如果为{@link Era}，调用{@link Era#getValue()}
+     * Converts a {@link TemporalAccessor} to an epoch millisecond timestamp (milliseconds since 1970-01-01T00:00:00Z).
+     * If it's a {@link Month}, {@link Month#getValue()} is called. If it's a {@link DayOfWeek},
+     * {@link DayOfWeek#getValue()} is called. If it's an {@link Era}, {@link Era#getValue()} is called.
      *
-     * @param temporalAccessor Date对象
-     * @return {@link Instant}对象
+     * @param temporalAccessor The date object.
+     * @return The epoch millisecond timestamp.
      */
     public static long toEpochMilli(final TemporalAccessor temporalAccessor) {
         if (temporalAccessor instanceof Month) {
@@ -113,10 +117,10 @@ public class Converter extends Formatter {
     }
 
     /**
-     * {@link TemporalAccessor}转换为 {@link Instant}对象
+     * Converts a {@link TemporalAccessor} to an {@link Instant} object.
      *
-     * @param temporalAccessor Date对象
-     * @return {@link Instant}对象
+     * @param temporalAccessor The date object.
+     * @return The {@link Instant} object.
      */
     public static Instant toInstant(final TemporalAccessor temporalAccessor) {
         if (null == temporalAccessor) {
@@ -135,10 +139,10 @@ public class Converter extends Formatter {
         } else if (temporalAccessor instanceof LocalDate) {
             result = ((LocalDate) temporalAccessor).atStartOfDay(ZoneId.systemDefault()).toInstant();
         } else if (temporalAccessor instanceof LocalTime) {
-            // 指定本地时间转换 为Instant，取当天日期
+            // Convert local time to Instant, using today's date
             result = ((LocalTime) temporalAccessor).atDate(LocalDate.now()).atZone(ZoneId.systemDefault()).toInstant();
         } else if (temporalAccessor instanceof OffsetTime) {
-            // 指定本地时间转换 为Instant，取当天日期
+            // Convert local time to Instant, using today's date
             result = ((OffsetTime) temporalAccessor).atDate(LocalDate.now()).toInstant();
         } else {
             result = toInstant(of(temporalAccessor));
@@ -148,10 +152,11 @@ public class Converter extends Formatter {
     }
 
     /**
-     * 将 {@link TimeUnit} 转换为 {@link ChronoUnit}.
+     * Converts {@link TimeUnit} to {@link ChronoUnit}.
      *
-     * @param unit 被转换的{@link TimeUnit}单位，如果为{@code null}返回{@code null}
-     * @return {@link ChronoUnit}
+     * @param unit The {@link TimeUnit} to convert; if {@code null}, {@code null} is returned.
+     * @return The {@link ChronoUnit}.
+     * @throws IllegalArgumentException if the {@link TimeUnit} constant is unknown.
      */
     public static ChronoUnit toChronoUnit(final TimeUnit unit) throws IllegalArgumentException {
         if (null == unit) {
@@ -185,11 +190,11 @@ public class Converter extends Formatter {
     }
 
     /**
-     * 转换 {@link ChronoUnit} 到 {@link TimeUnit}.
+     * Converts {@link ChronoUnit} to {@link TimeUnit}.
      *
-     * @param unit {@link ChronoUnit}，如果为{@code null}返回{@code null}
-     * @return {@link TimeUnit}
-     * @throws IllegalArgumentException 如果{@link TimeUnit}没有对应单位抛出
+     * @param unit The {@link ChronoUnit}; if {@code null}, {@code null} is returned.
+     * @return The {@link TimeUnit}.
+     * @throws IllegalArgumentException if there is no corresponding unit in {@link TimeUnit}.
      */
     public static TimeUnit toTimeUnit(final ChronoUnit unit) throws IllegalArgumentException {
         if (null == unit) {
@@ -223,21 +228,25 @@ public class Converter extends Formatter {
     }
 
     /**
-     * {@link Instant}转{@link LocalDateTime}，使用UTC时区 此方法自动将一个UTC时间转换为本地时间，如传入00:00，则结果为08:00
+     * Converts {@link Instant} to {@link LocalDateTime}, using UTC time zone. This method automatically converts a UTC
+     * time to local time; for example, if 00:00 is passed, the result will be 08:00.
      *
-     * @param instant {@link Instant}
-     * @return {@link LocalDateTime}
+     * @param instant The {@link Instant} object.
+     * @return The {@link LocalDateTime} object.
      */
     public static LocalDateTime ofUTC(final Instant instant) {
         return of(instant, ZoneKit.ZONE_ID_UTC);
     }
 
     /**
-     * {@link Instant}转{@link LocalDateTime} instant是一个无时区的时间戳，在转换为本地时间时，需指定这个时间戳所在时区 如果所在时区与当前时区不同，会转换时间
+     * Converts {@link Instant} to {@link LocalDateTime}. An instant is a time stamp without a time zone. When
+     * converting to local time, the time zone of this timestamp needs to be specified. If the specified time zone is
+     * different from the current time zone, the time will be converted.
      *
-     * @param instant {@link Instant}
-     * @param zoneId  时区，如果给定的时区与当前时区不同，会转换时间
-     * @return {@link LocalDateTime}
+     * @param instant The {@link Instant} object.
+     * @param zoneId  The time zone; if the given time zone is different from the current time zone, the time will be
+     *                converted.
+     * @return The {@link LocalDateTime} object.
      */
     public static LocalDateTime of(final Instant instant, final ZoneId zoneId) {
         if (null == instant) {
@@ -248,11 +257,14 @@ public class Converter extends Formatter {
     }
 
     /**
-     * {@link Instant}转{@link LocalDateTime} instant是一个无时区的时间戳，在转换为本地时间时，需指定这个时间戳所在时区 如果所在时区与当前时区不同，会转换时间
+     * Converts {@link Instant} to {@link LocalDateTime}. An instant is a time stamp without a time zone. When
+     * converting to local time, the time zone of this timestamp needs to be specified. If the specified time zone is
+     * different from the current time zone, the time will be converted.
      *
-     * @param instant  {@link Instant}
-     * @param timeZone 时区，如果给定的时区与当前时区不同，会转换时间
-     * @return {@link LocalDateTime}
+     * @param instant  The {@link Instant} object.
+     * @param timeZone The time zone; if the given time zone is different from the current time zone, the time will be
+     *                 converted.
+     * @return The {@link LocalDateTime} object.
      */
     public static LocalDateTime of(final Instant instant, final TimeZone timeZone) {
         if (null == instant) {
@@ -263,34 +275,35 @@ public class Converter extends Formatter {
     }
 
     /**
-     * 毫秒转{@link LocalDateTime}，使用默认时区
+     * Converts milliseconds to {@link LocalDateTime}, using the default time zone.
      *
      * <p>
-     * 注意：此方法使用默认时区，如果非UTC，会产生时间偏移
-     * </p>
+     * Note: This method uses the default time zone, which may cause a time offset if it's not UTC.
+     * 
      *
-     * @param epochMilli 从1970-01-01T00:00:00Z开始计数的毫秒数
-     * @return {@link LocalDateTime}
+     * @param epochMilli Milliseconds counted from 1970-01-01T00:00:00Z.
+     * @return The {@link LocalDateTime} object.
      */
     public static LocalDateTime of(final long epochMilli) {
         return of(Instant.ofEpochMilli(epochMilli));
     }
 
     /**
-     * 毫秒转{@link LocalDateTime}，使用UTC时区
+     * Converts milliseconds to {@link LocalDateTime}, using the UTC time zone.
      *
-     * @param epochMilli 从1970-01-01T00:00:00Z开始计数的毫秒数
-     * @return {@link LocalDateTime}
+     * @param epochMilli Milliseconds counted from 1970-01-01T00:00:00Z.
+     * @return The {@link LocalDateTime} object.
      */
     public static LocalDateTime ofUTC(final long epochMilli) {
         return ofUTC(Instant.ofEpochMilli(epochMilli));
     }
 
     /**
-     * {@link Date}转{@link LocalDateTime}，使用默认时区 如果为{@link DateTime}且提供了时区信息，则按照给定的时区转换为默认时区
+     * Converts {@link Date} to {@link LocalDateTime}, using the default time zone. If it's a {@link DateTime} and time
+     * zone information is provided, it will be converted to the default time zone according to the given time zone.
      *
-     * @param date Date对象
-     * @return {@link LocalDateTime}
+     * @param date The Date object.
+     * @return The {@link LocalDateTime} object.
      */
     public static LocalDateTime of(final Date date) {
         if (null == date) {
@@ -304,32 +317,32 @@ public class Converter extends Formatter {
     }
 
     /**
-     * 毫秒转{@link LocalDateTime}，根据时区不同，结果会产生时间偏移
+     * Converts milliseconds to {@link LocalDateTime}. The result may have a time offset depending on the time zone.
      *
-     * @param epochMilli 从1970-01-01T00:00:00Z开始计数的毫秒数
-     * @param zoneId     时区
-     * @return {@link LocalDateTime}
+     * @param epochMilli Milliseconds counted from 1970-01-01T00:00:00Z.
+     * @param zoneId     The time zone.
+     * @return The {@link LocalDateTime} object.
      */
     public static LocalDateTime of(final long epochMilli, final ZoneId zoneId) {
         return of(Instant.ofEpochMilli(epochMilli), zoneId);
     }
 
     /**
-     * 毫秒转{@link LocalDateTime}，结果会产生时间偏移
+     * Converts milliseconds to {@link LocalDateTime}. The result may have a time offset.
      *
-     * @param epochMilli 从1970-01-01T00:00:00Z开始计数的毫秒数
-     * @param timeZone   时区
-     * @return {@link LocalDateTime}
+     * @param epochMilli Milliseconds counted from 1970-01-01T00:00:00Z.
+     * @param timeZone   The time zone.
+     * @return The {@link LocalDateTime} object.
      */
     public static LocalDateTime of(final long epochMilli, final TimeZone timeZone) {
         return of(Instant.ofEpochMilli(epochMilli), timeZone);
     }
 
     /**
-     * {@link TemporalAccessor}转{@link LocalDateTime}，使用默认时区
+     * Converts {@link TemporalAccessor} to {@link LocalDateTime}, using the default time zone.
      *
-     * @param temporalAccessor {@link TemporalAccessor}
-     * @return {@link LocalDateTime}
+     * @param temporalAccessor The {@link TemporalAccessor} object.
+     * @return The {@link LocalDateTime} object.
      */
     public static LocalDateTime of(final TemporalAccessor temporalAccessor) {
         if (null == temporalAccessor) {
@@ -371,10 +384,10 @@ public class Converter extends Formatter {
     }
 
     /**
-     * {@link TemporalAccessor}转{@link LocalDate}，使用默认时区
+     * Converts {@link TemporalAccessor} to {@link LocalDate}, using the default time zone.
      *
-     * @param temporalAccessor {@link TemporalAccessor}
-     * @return {@link LocalDate}
+     * @param temporalAccessor The {@link TemporalAccessor} object.
+     * @return The {@link LocalDate} object.
      */
     public static LocalDate ofDate(final TemporalAccessor temporalAccessor) {
         if (null == temporalAccessor) {
@@ -400,11 +413,11 @@ public class Converter extends Formatter {
     }
 
     /**
-     * {@link TemporalAccessor}转{@link ZonedDateTime}
+     * Converts {@link TemporalAccessor} to {@link ZonedDateTime}.
      *
-     * @param temporalAccessor {@link TemporalAccessor}
-     * @param zoneId           时区ID
-     * @return {@link ZonedDateTime}
+     * @param temporalAccessor The {@link TemporalAccessor} object.
+     * @param zoneId           The time zone ID.
+     * @return The {@link ZonedDateTime} object.
      */
     public static ZonedDateTime ofZoned(final TemporalAccessor temporalAccessor, ZoneId zoneId) {
         if (null == temporalAccessor) {
@@ -436,10 +449,10 @@ public class Converter extends Formatter {
     }
 
     /**
-     * 通过日期时间字符串构建{@link DateTimeFormatter}
+     * Constructs a {@link DateTimeFormatter} from a date-time pattern string.
      *
-     * @param pattern 格式，如yyyy-MM-dd
-     * @return {@link DateTimeFormatter}
+     * @param pattern The format pattern, e.g., "yyyy-MM-dd".
+     * @return The {@link DateTimeFormatter} object.
      */
     public static DateTimeFormatter ofPattern(final String pattern) {
         return new DateTimeFormatterBuilder().appendPattern(pattern).parseDefaulting(ChronoField.HOUR_OF_DAY, 0)

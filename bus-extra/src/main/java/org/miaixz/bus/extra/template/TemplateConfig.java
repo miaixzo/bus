@@ -34,7 +34,8 @@ import java.util.Objects;
 import org.miaixz.bus.core.lang.Charset;
 
 /**
- * 模板配置
+ * Configuration class for template engines. This class holds various settings required for initializing and using
+ * template engines, such as character encoding, template paths, resource loading mode, and custom template providers.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -45,64 +46,70 @@ public class TemplateConfig implements Serializable {
     private static final long serialVersionUID = 2852288273095L;
 
     /**
-     * 默认配置
+     * Default template configuration instance. Uses UTF-8 encoding and {@link ResourceMode#STRING} as the default
+     * resource loading mode.
      */
     public static final TemplateConfig DEFAULT = new TemplateConfig();
 
     /**
-     * 编码
+     * Character set for template files.
      */
     private java.nio.charset.Charset charset;
     /**
-     * 模板路径，如果ClassPath或者WebRoot模式，则表示相对路径
+     * Path to the template files. This can be a relative path if {@link ResourceMode#CLASSPATH} or
+     * {@link ResourceMode#WEB_ROOT} is used.
      */
     private String path;
     /**
-     * 模板资源加载方式
+     * Resource loading mode for templates. Defines how template resources are located and loaded.
      */
     private ResourceMode resourceMode;
     /**
-     * 自定义引擎，当多个jar包引入时，可以自定使用的默认引擎
+     * Custom template provider class. Allows specifying a particular template engine implementation when multiple are
+     * available.
      */
     private Class<? extends TemplateProvider> provider;
 
     /**
-     * 默认构造，使用UTF8编码，默认从ClassPath获取模板
+     * Indicates whether template caching is enabled.
+     */
+    private boolean useCache = true;
+
+    /**
+     * Default constructor. Initializes with UTF-8 encoding and {@link ResourceMode#STRING} as the default resource
+     * loading mode.
      */
     public TemplateConfig() {
         this(null);
     }
 
     /**
-     * 构造，默认UTF-8编码
+     * Constructs a new TemplateConfig with the specified template path. Uses UTF-8 encoding and
+     * {@link ResourceMode#STRING} as the default resource loading mode.
      *
-     * @param path 模板路径，如果ClassPath或者WebRoot模式，则表示相对路径
+     * @param path The path to the template files. Can be a relative path depending on the resource mode.
      */
     public TemplateConfig(final String path) {
         this(path, ResourceMode.STRING);
     }
 
     /**
-     * 是否使用缓存
-     */
-    private boolean useCache = true;
-
-    /**
-     * 构造，默认UTF-8编码
+     * Constructs a new TemplateConfig with the specified template path and resource loading mode. Uses UTF-8 encoding
+     * by default.
      *
-     * @param path         模板路径，如果ClassPath或者WebRoot模式，则表示相对路径
-     * @param resourceMode 模板资源加载方式
+     * @param path         The path to the template files. Can be a relative path depending on the resource mode.
+     * @param resourceMode The resource loading mode for templates.
      */
     public TemplateConfig(final String path, final ResourceMode resourceMode) {
         this(Charset.UTF_8, path, resourceMode);
     }
 
     /**
-     * 构造
+     * Constructs a new TemplateConfig with the specified character set, template path, and resource loading mode.
      *
-     * @param charset      编码
-     * @param path         模板路径，如果ClassPath或者WebRoot模式，则表示相对路径
-     * @param resourceMode 模板资源加载方式
+     * @param charset      The character set for template files.
+     * @param path         The path to the template files. Can be a relative path depending on the resource mode.
+     * @param resourceMode The resource loading mode for templates.
      */
     public TemplateConfig(final java.nio.charset.Charset charset, final String path, final ResourceMode resourceMode) {
         this.charset = charset;
@@ -111,27 +118,27 @@ public class TemplateConfig implements Serializable {
     }
 
     /**
-     * 获取编码
+     * Retrieves the character set used for template files.
      *
-     * @return 编码
+     * @return The character set.
      */
     public java.nio.charset.Charset getCharset() {
         return charset;
     }
 
     /**
-     * 设置编码
+     * Sets the character set for template files.
      *
-     * @param charset 编码
+     * @param charset The character set to set.
      */
     public void setCharset(final java.nio.charset.Charset charset) {
         this.charset = charset;
     }
 
     /**
-     * 获取编码
+     * Retrieves the character set name as a string.
      *
-     * @return 编码
+     * @return The name of the character set, or {@code null} if not set.
      */
     public String getCharsetString() {
         if (null == this.charset) {
@@ -141,55 +148,59 @@ public class TemplateConfig implements Serializable {
     }
 
     /**
-     * 获取模板路径，如果ClassPath或者WebRoot模式，则表示相对路径
+     * Retrieves the path to the template files. This can be a relative path depending on the configured
+     * {@link ResourceMode}.
      *
-     * @return 模板路径
+     * @return The template path.
      */
     public String getPath() {
         return path;
     }
 
     /**
-     * 设置模板路径，如果ClassPath或者WebRoot模式，则表示相对路径
+     * Sets the path to the template files. This can be a relative path if {@link ResourceMode#CLASSPATH} or
+     * {@link ResourceMode#WEB_ROOT} is used.
      *
-     * @param path 模板路径
+     * @param path The template path to set.
      */
     public void setPath(final String path) {
         this.path = path;
     }
 
     /**
-     * 获取模板资源加载方式
+     * Retrieves the resource loading mode for templates.
      *
-     * @return 模板资源加载方式
+     * @return The resource loading mode.
      */
     public ResourceMode getResourceMode() {
         return resourceMode;
     }
 
     /**
-     * 设置模板资源加载方式
+     * Sets the resource loading mode for templates.
      *
-     * @param resourceMode 模板资源加载方式
+     * @param resourceMode The resource loading mode to set.
      */
     public void setResourceMode(final ResourceMode resourceMode) {
         this.resourceMode = resourceMode;
     }
 
     /**
-     * 获取自定义引擎，null表示系统自动判断
+     * Retrieves the custom template provider class. If {@code null}, the system will automatically determine the
+     * appropriate engine.
      *
-     * @return 自定义引擎，null表示系统自动判断
+     * @return The custom template provider class, or {@code null} for automatic detection.
      */
     public Class<? extends TemplateProvider> getProvider() {
         return provider;
     }
 
     /**
-     * 设置自定义引擎，null表示系统自动判断
+     * Sets the custom template provider class. If {@code null}, the system will automatically determine the appropriate
+     * engine.
      *
-     * @param provider 自定义引擎，null表示系统自动判断
-     * @return this
+     * @param provider The custom template provider class to set, or {@code null} for automatic detection.
+     * @return This TemplateConfig instance for method chaining.
      */
     public TemplateConfig setProvider(final Class<? extends TemplateProvider> provider) {
         this.provider = provider;
@@ -197,19 +208,19 @@ public class TemplateConfig implements Serializable {
     }
 
     /**
-     * 是否使用缓存
+     * Checks if template caching is enabled.
      *
-     * @return 是否使用缓存
+     * @return {@code true} if caching is enabled, {@code false} otherwise.
      */
     public boolean isUseCache() {
         return useCache;
     }
 
     /**
-     * 设置是否使用缓存
+     * Sets whether template caching should be enabled.
      *
-     * @param useCache 是否使用缓存
-     * @return this
+     * @param useCache {@code true} to enable caching, {@code false} to disable.
+     * @return This TemplateConfig instance for method chaining.
      */
     public TemplateConfig setUseCache(boolean useCache) {
         this.useCache = useCache;
@@ -235,27 +246,28 @@ public class TemplateConfig implements Serializable {
     }
 
     /**
-     * 资源加载方式枚举
+     * Enumeration defining different modes for loading template resources.
      */
     public enum ResourceMode {
         /**
-         * 从ClassPath加载模板
+         * Loads templates from the ClassPath.
          */
         CLASSPATH,
         /**
-         * 从File目录加载模板
+         * Loads templates from a file system directory.
          */
         FILE,
         /**
-         * 从WebRoot目录加载模板
+         * Loads templates from the WebRoot directory (e.g., in a web application).
          */
         WEB_ROOT,
         /**
-         * 从模板文本加载模板
+         * Treats the template content as a direct string.
          */
         STRING,
         /**
-         * 复合加载模板（分别从File、ClassPath、Web-root、String方式尝试查找模板）
+         * Attempts to load templates using a composite strategy, trying File, ClassPath, WebRoot, and String modes in
+         * sequence.
          */
         COMPOSITE
     }

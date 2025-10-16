@@ -34,12 +34,15 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
- * 统计模型持有的子模块，用于构建具有层级结构的指标体系。
+ * A metrics model that holds child metrics, used to build a hierarchical metrics system.
  * <p>
- * 该类继承自BaseMetrics，并添加了对子指标的管理功能。 通过使用线程安全的CopyOnWriteArrayList存储子指标，确保在多线程环境下的安全性。 这种设计允许构建树状结构的指标体系，便于组织和展示复杂的监控数据。
+ * This class extends {@link BaseMetrics} and adds the functionality to manage child metrics. By using a thread-safe
+ * {@link CopyOnWriteArrayList} for storing child metrics, it ensures thread safety in a multi-threaded environment
+ * while maintaining read performance. This design allows for building a tree-like structure of metrics, facilitating
+ * the organization and display of complex monitoring data.
  * </p>
  *
- * @param <T> 子指标的类型，必须继承自BaseMetrics
+ * @param <T> The type of the child metrics, which must extend {@link BaseMetrics}.
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -48,20 +51,18 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class ChildrenMetrics<T extends BaseMetrics> extends BaseMetrics {
 
     /**
-     * 子指标列表，使用线程安全的CopyOnWriteArrayList实现
+     * A list of child metrics, implemented using a thread-safe {@link CopyOnWriteArrayList}.
      * <p>
-     * CopyOnWriteArrayList适用于读多写少的并发场景，提供线程安全的同时保证读取性能
+     * {@code CopyOnWriteArrayList} is suitable for concurrent scenarios where reads far outnumber writes, providing
+     * thread safety while ensuring good read performance.
      * </p>
      */
     private List<T> children = new CopyOnWriteArrayList<>();
 
     /**
-     * 添加子指标
-     * <p>
-     * 将指定的子指标添加到children列表中
-     * </p>
+     * Adds a specified child metric to the {@link #children} list.
      *
-     * @param child 要添加的子指标，不能为null
+     * @param child The child metric to add (must not be null).
      */
     public void addChild(T child) {
         this.children.add(child);

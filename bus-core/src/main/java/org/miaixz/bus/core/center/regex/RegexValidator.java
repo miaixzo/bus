@@ -30,11 +30,8 @@ package org.miaixz.bus.core.center.regex;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 对象检查工具类，提供字对象的blank和empty等检查
- * <ul>
- * <li>empty定义：{@code null} or 空字对象：{@code ""}</li>
- * <li>blank定义：{@code null} or 空字对象：{@code ""} or 空格、全角空格、制表符、换行符，等不可见字符</li>
- * </ul>
+ * Regular expression validation utility class. This class provides methods to check if a given content matches a
+ * regular expression or if it contains any substring that matches a regular expression.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,20 +39,21 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class RegexValidator {
 
     /**
-     * 给定内容是否匹配正则
+     * Checks if the given content matches the regular expression.
      *
-     * @param regex   正则
-     * @param content 内容
-     * @return 正则为null或者""则不检查，返回true，内容为null返回false
+     * @param regex   The regular expression string.
+     * @param content The content to be checked.
+     * @return {@code true} if the content matches the regex, {@code false} otherwise. Returns {@code true} if the regex
+     *         is {@code null} or empty (no check performed). Returns {@code false} if the content is {@code null}.
      */
     public static boolean isMatch(final String regex, final CharSequence content) {
         if (content == null) {
-            // 提供null的字符串为不匹配
+            // A null string is considered not matching.
             return false;
         }
 
         if (StringKit.isEmpty(regex)) {
-            // 正则不存在则为全匹配
+            // If regex is null or empty, it's considered a full match (no restriction).
             return true;
         }
 
@@ -64,26 +62,28 @@ public class RegexValidator {
     }
 
     /**
-     * 给定内容是否匹配正则
+     * Checks if the given content matches the compiled regular expression pattern.
      *
-     * @param pattern 模式
-     * @param content 内容
-     * @return 正则为null或者""则不检查，返回true，内容为null返回false
+     * @param pattern The compiled regular expression pattern.
+     * @param content The content to be checked.
+     * @return {@code true} if the content matches the pattern, {@code false} otherwise. Returns {@code false} if the
+     *         content or pattern is {@code null}.
      */
     public static boolean isMatch(final java.util.regex.Pattern pattern, final CharSequence content) {
         if (content == null || pattern == null) {
-            // 提供null的字符串为不匹配
+            // A null string or null pattern is considered not matching.
             return false;
         }
         return pattern.matcher(content).matches();
     }
 
     /**
-     * 指定内容中是否有表达式匹配的内容
+     * Checks if the given content contains any substring that matches the regular expression.
      *
-     * @param regex   正则表达式
-     * @param content 被查找的内容
-     * @return 指定内容中是否有表达式匹配的内容
+     * @param regex   The regular expression string.
+     * @param content The content to be searched.
+     * @return {@code true} if the content contains a match, {@code false} otherwise. Returns {@code false} if regex or
+     *         content is {@code null}.
      */
     public static boolean contains(final String regex, final CharSequence content) {
         if (null == regex || null == content) {
@@ -95,11 +95,12 @@ public class RegexValidator {
     }
 
     /**
-     * 指定内容中是否有表达式匹配的内容
+     * Checks if the given content contains any substring that matches the compiled regular expression pattern.
      *
-     * @param pattern 编译后的正则模式
-     * @param content 被查找的内容
-     * @return 指定内容中是否有表达式匹配的内容
+     * @param pattern The compiled regular expression pattern.
+     * @param content The content to be searched.
+     * @return {@code true} if the content contains a match, {@code false} otherwise. Returns {@code false} if pattern
+     *         or content is {@code null}.
      */
     public static boolean contains(final java.util.regex.Pattern pattern, final CharSequence content) {
         if (null == pattern || null == content) {

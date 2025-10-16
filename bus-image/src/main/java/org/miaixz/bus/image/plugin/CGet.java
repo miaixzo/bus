@@ -27,13 +27,6 @@
 */
 package org.miaixz.bus.image.plugin;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.text.MessageFormat;
-import java.util.Map.Entry;
-import java.util.Properties;
-
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.ResourceKit;
@@ -45,19 +38,31 @@ import org.miaixz.bus.image.metric.Connection;
 import org.miaixz.bus.image.metric.QueryOption;
 import org.miaixz.bus.logger.Logger;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.text.MessageFormat;
+import java.util.Map.Entry;
+import java.util.Properties;
+
 /**
+ * The {@code CGet} class provides a simple way to perform a DICOM C-GET operation. It encapsulates the setup and
+ * execution of a {@link GetSCU} instance.
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class CGet {
 
     /**
-     * @param callingNode 调用DICOM节点的配置
-     * @param calledNode  被调用的DICOM节点配置
-     * @param progress    处理的进度
-     * @param outputDir   文件输出路径
-     * @param keys        匹配和返回键。没有值的Args是返回键
-     * @return Status实例，其中包含DICOM响应，DICOM状态，错误消息和进度
+     * Performs a DICOM C-GET operation.
+     *
+     * @param callingNode the configuration of the calling DICOM node.
+     * @param calledNode  the configuration of the called DICOM node.
+     * @param progress    the progress handler for the operation.
+     * @param outputDir   the directory to store the retrieved files.
+     * @param keys        the matching and return keys. Keys without values are treated as return keys.
+     * @return a {@link Status} instance containing the DICOM response, status, error message, and progress.
      */
     public static Status process(
             Node callingNode,
@@ -69,13 +74,15 @@ public class CGet {
     }
 
     /**
-     * @param args        可选的高级参数(代理、身份验证、连接和TLS)
-     * @param callingNode 调用DICOM节点的配置
-     * @param calledNode  被调用的DICOM节点配置
-     * @param progress    处理的进度
-     * @param outputDir   文件输出路径
-     * @param keys        匹配和返回键。没有值的keys是返回键
-     * @return Status实例，其中包含DICOM响应，DICOM状态，错误消息和进度
+     * Performs a DICOM C-GET operation with advanced options.
+     *
+     * @param args        optional advanced parameters (proxy, authentication, connection, and TLS).
+     * @param callingNode the configuration of the calling DICOM node.
+     * @param calledNode  the configuration of the called DICOM node.
+     * @param progress    the progress handler for the operation.
+     * @param outputDir   the directory to store the retrieved files.
+     * @param keys        the matching and return keys. Keys without values are treated as return keys.
+     * @return a {@link Status} instance containing the DICOM response, status, error message, and progress.
      */
     public static Status process(
             Args args,
@@ -88,14 +95,16 @@ public class CGet {
     }
 
     /**
-     * @param args        可选的高级参数(代理、身份验证、连接和TLS)
-     * @param callingNode 调用DICOM节点的配置
-     * @param calledNode  被调用的DICOM节点配置
-     * @param progress    处理的进度
-     * @param outputDir   文件输出路径
-     * @param sopClassURL the url
-     * @param keys        匹配和返回键。没有值的keys是返回键
-     * @return Status实例，其中包含DICOM响应，DICOM状态，错误消息和进度
+     * Performs a DICOM C-GET operation with advanced options and a specific SOP class URL.
+     *
+     * @param args        optional advanced parameters (proxy, authentication, connection, and TLS).
+     * @param callingNode the configuration of the calling DICOM node.
+     * @param calledNode  the configuration of the called DICOM node.
+     * @param progress    the progress handler for the operation.
+     * @param outputDir   the directory to store the retrieved files.
+     * @param sopClassURL the URL to a properties file defining supported SOP classes.
+     * @param keys        the matching and return keys. Keys without values are treated as return keys.
+     * @return a {@link Status} instance containing the DICOM response, status, error message, and progress.
      */
     public static Status process(
             Args args,
@@ -182,6 +191,12 @@ public class CGet {
         }
     }
 
+    /**
+     * Configures the related SOP classes for the C-GET operation from a properties file.
+     *
+     * @param getSCU the {@link GetSCU} instance to configure.
+     * @param url    the URL to the properties file. If null, a default resource is used.
+     */
     private static void configureRelatedSOPClass(GetSCU getSCU, URL url) {
         Properties p = new Properties();
         try {
@@ -200,6 +215,13 @@ public class CGet {
         }
     }
 
+    /**
+     * Configures a single storage SOP class with its transfer syntaxes.
+     *
+     * @param getSCU the {@link GetSCU} instance to configure.
+     * @param cuid   the SOP Class UID.
+     * @param tsuids a semicolon-separated string of Transfer Syntax UIDs.
+     */
     private static void configureStorageSOPClass(GetSCU getSCU, String cuid, String tsuids) {
         String[] ts = StringKit.splitToArray(tsuids, ";");
         for (int i = 0; i < ts.length; i++) {
@@ -208,6 +230,12 @@ public class CGet {
         getSCU.addOfferedStorageSOPClass(UID.toUID(cuid), ts);
     }
 
+    /**
+     * Retrieves the information model from the given options.
+     *
+     * @param options the command-line arguments or options.
+     * @return the {@link GetSCU.InformationModel}, defaulting to {@code StudyRoot}.
+     */
     private static GetSCU.InformationModel getInformationModel(Args options) {
         Object model = options.getInformationModel();
         if (model instanceof GetSCU.InformationModel) {

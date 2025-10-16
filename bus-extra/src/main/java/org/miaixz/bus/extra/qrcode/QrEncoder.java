@@ -36,17 +36,20 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 
 /**
- * 二维码（条形码等）编码器，用于将文本内容转换为二维码
+ * Encoder for QR codes (and other barcodes), used to convert text content into a BitMatrix.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class QrEncoder implements Encoder<CharSequence, BitMatrix> {
 
+    /**
+     * QR code configuration.
+     */
     private final QrConfig config;
 
     /**
-     * 构造
+     * Constructor.
      *
      * @param config {@link QrConfig}
      */
@@ -55,7 +58,7 @@ public class QrEncoder implements Encoder<CharSequence, BitMatrix> {
     }
 
     /**
-     * 创建QrEncoder
+     * Creates a QrEncoder.
      *
      * @param config {@link QrConfig}
      * @return QrEncoder
@@ -64,6 +67,13 @@ public class QrEncoder implements Encoder<CharSequence, BitMatrix> {
         return new QrEncoder(config);
     }
 
+    /**
+     * Encodes the given content into a {@link BitMatrix}.
+     *
+     * @param content The content to encode.
+     * @return The encoded {@link BitMatrix}.
+     * @throws QrCodeException if a {@link WriterException} occurs during encoding.
+     */
     @Override
     public BitMatrix encode(final CharSequence content) {
         final MultiFormatWriter multiFormatWriter = new MultiFormatWriter();

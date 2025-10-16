@@ -43,7 +43,8 @@ import org.miaixz.bus.crypto.Builder;
 import org.miaixz.bus.crypto.Cipher;
 
 /**
- * 提供{@link javax.crypto.Cipher}的方法包装
+ * Provides a wrapper for {@link javax.crypto.Cipher} methods, simplifying its usage. This class allows for consistent
+ * handling of JCE (Java Cryptography Extension) ciphers.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -51,18 +52,19 @@ import org.miaixz.bus.crypto.Cipher;
 public class JceCipher extends SimpleWrapper<javax.crypto.Cipher> implements Cipher {
 
     /**
-     * 构造
+     * Constructs a {@code JceCipher} instance for the specified algorithm.
      *
-     * @param algorithm 算法名称
+     * @param algorithm The name of the algorithm (e.g., "AES/ECB/PKCS5Padding").
      */
     public JceCipher(final String algorithm) {
         this(Builder.createCipher(algorithm));
     }
 
     /**
-     * 构造
+     * Constructs a {@code JceCipher} instance using an existing {@link javax.crypto.Cipher} object.
      *
-     * @param cipher {@link javax.crypto.Cipher}，可以通过{@link javax.crypto.Cipher#getInstance(String)}创建
+     * @param cipher The {@link javax.crypto.Cipher} instance, which can be created via
+     *               {@link javax.crypto.Cipher#getInstance(String)}.
      */
     public JceCipher(final javax.crypto.Cipher cipher) {
         super(Assert.notNull(cipher));
@@ -95,25 +97,31 @@ public class JceCipher extends SimpleWrapper<javax.crypto.Cipher> implements Cip
     }
 
     /**
-     * 继续多部分加密或解密操作（取决于此密码的初始化方式），处理另一个数据部分。 第一inputLen字节在input缓冲区中，从inputOffset以下，被处理，并且结果被存储在output缓冲器。
+     * Continues a multi-part encryption or decryption operation (depending on how this cipher was initialized),
+     * processing another data part. The first {@code inputLen} bytes in the {@code input} buffer, starting at
+     * {@code inputOffset}, are processed, and the result is stored in the output buffer.
      *
-     * @param in    输入缓冲区
-     * @param inOff 输入开始的 input中的偏移量
-     * @param len   输入长度
-     * @return 带有结果的新缓冲区，如果底层密码是块密码且输入数据太短而不能产生新块，则返回null。
+     * @param in    The input buffer.
+     * @param inOff The offset in the input buffer where the data begins.
+     * @param len   The length of the data to process.
+     * @return A new buffer containing the result. Returns {@code null} if the underlying cipher is a block cipher and
+     *         the input data is too short to produce a new block.
      */
     public byte[] process(final byte[] in, final int inOff, final int len) {
         return this.raw.update(in, inOff, len);
     }
 
     /**
-     * 继续多部分加密或解密操作（取决于此密码的初始化方式），处理另一个数据部分。 第一inputLen字节在input缓冲区中，从inputOffset以下，被处理，并且结果被存储在output缓冲器。
+     * Continues a multi-part encryption or decryption operation (depending on how this cipher was initialized),
+     * processing another data part. The first {@code inputLen} bytes in the {@code input} buffer, starting at
+     * {@code inputOffset}, are processed, and the result is stored in the {@code output} buffer.
      *
-     * @param in    输入缓冲区
-     * @param inOff 输入开始的 input中的偏移量
-     * @param len   输入长度
-     * @param out   结果的缓冲区
-     * @return 存储在 output的字节数
+     * @param in    The input buffer.
+     * @param inOff The offset in the input buffer where the data begins.
+     * @param len   The length of the data to process.
+     * @param out   The output buffer where the result should be stored.
+     * @return The number of bytes stored in the {@code out} buffer.
+     * @throws CryptoException if a {@link ShortBufferException} occurs.
      */
     public int process(final byte[] in, final int inOff, final int len, final byte[] out) {
         try {
@@ -124,21 +132,24 @@ public class JceCipher extends SimpleWrapper<javax.crypto.Cipher> implements Cip
     }
 
     /**
-     * 返回新缓冲区中的初始化向量（IV） 这在创建随机IV的情况下，或在基于密码的加密或解密的上下文中是有用的，其中IV是从用户提供的密码导出的。
+     * Returns the initialization vector (IV) in a new buffer. This is useful when a random IV is created, or in the
+     * context of password-based encryption or decryption where the IV is derived from the user-provided password.
      *
-     * @return 新缓冲区中的初始化向量，如果基础算法不使用IV，或者尚未设置IV，则为null。
+     * @return The initialization vector in a new buffer, or {@code null} if the underlying algorithm does not use an
+     *         IV, or if the IV has not been set.
      */
     public byte[] getIV() {
         return this.raw.getIV();
     }
 
     /**
-     * 执行初始化参数操作
+     * Performs the initialization operation for the underlying {@link javax.crypto.Cipher}.
      *
-     * @param mode          模式
-     * @param jceParameters {@link JceParameters}
-     * @throws InvalidAlgorithmParameterException 无效算法参数
-     * @throws InvalidKeyException                无效key
+     * @param mode          The operation mode (e.g., {@link javax.crypto.Cipher#ENCRYPT_MODE},
+     *                      {@link javax.crypto.Cipher#DECRYPT_MODE}).
+     * @param jceParameters The {@link JceParameters} containing the key, algorithm parameters, and random source.
+     * @throws InvalidAlgorithmParameterException if the algorithm parameters are invalid.
+     * @throws InvalidKeyException                if the key is invalid.
      */
     public void init(final int mode, final JceParameters jceParameters)
             throws InvalidAlgorithmParameterException, InvalidKeyException {
@@ -186,26 +197,31 @@ public class JceCipher extends SimpleWrapper<javax.crypto.Cipher> implements Cip
     }
 
     /**
-     * JCE的{@link AlgorithmParameterSpec} 参数包装
+     * A wrapper class for JCE's {@link AlgorithmParameterSpec} and related parameters. This class holds the key,
+     * algorithm parameter specification, and secure random generator required for initializing a JCE cipher.
      */
     public static class JceParameters implements Parameters {
 
+        /**
+         * The cryptographic key.
+         */
         private final Key key;
         /**
-         * 算法参数
+         * The algorithm-specific parameter specification.
          */
         private final AlgorithmParameterSpec parameterSpec;
         /**
-         * 随机数生成器，可自定义随机数种子
+         * The secure random number generator, which can be customized with a seed.
          */
         private final SecureRandom random;
 
         /**
-         * 构造
+         * Constructs a {@code JceParameters} instance with the specified key, algorithm parameter specification, and
+         * secure random generator.
          *
-         * @param key           密钥
-         * @param parameterSpec {@link AlgorithmParameterSpec}
-         * @param random        自定义随机数生成器
+         * @param key           The cryptographic key.
+         * @param parameterSpec The algorithm-specific parameter specification.
+         * @param random        The secure random number generator.
          */
         public JceParameters(final Key key, final AlgorithmParameterSpec parameterSpec, final SecureRandom random) {
             this.key = key;

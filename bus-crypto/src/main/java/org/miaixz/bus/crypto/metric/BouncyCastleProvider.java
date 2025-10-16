@@ -28,8 +28,12 @@
 package org.miaixz.bus.crypto.metric;
 
 /**
- * Provider对象生产工厂类 通过SPI方式加载可用的{@link BouncyCastleProvider}，并创建对应的{@link java.security.Provider}
- * spi定义在：META-INF/services/org.miaixz.bus.crypto.Provider
+ * Factory interface for creating {@link java.security.Provider} objects, specifically for Bouncy Castle. This interface
+ * is designed to be loaded via SPI (Service Provider Interface) to allow for dynamic loading of Bouncy Castle
+ * providers.
+ * <p>
+ * SPI definition is located in: `META-INF/services/org.miaixz.bus.crypto.Provider`
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -37,9 +41,9 @@ package org.miaixz.bus.crypto.metric;
 public interface BouncyCastleProvider {
 
     /**
-     * 创建{@link java.security.Provider}
+     * Creates and returns a {@link java.security.Provider} instance, typically a Bouncy Castle provider.
      *
-     * @return {@link java.security.Provider}
+     * @return A {@link java.security.Provider} instance.
      */
     java.security.Provider create();
 

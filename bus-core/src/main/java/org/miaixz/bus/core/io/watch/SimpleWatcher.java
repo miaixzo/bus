@@ -33,7 +33,8 @@ import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 
 /**
- * 空白WatchListener 用户继承此类后实现需要监听的方法
+ * A no-op implementation of the {@link Watcher} interface. Users can extend this class and override only the methods
+ * they need to implement specific file system event handling logic.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,24 +44,48 @@ public class SimpleWatcher implements Watcher, Serializable {
     @Serial
     private static final long serialVersionUID = 2852236259796L;
 
+    /**
+     * Called when a file or directory is created. This default implementation does nothing.
+     *
+     * @param event The {@link WatchEvent} that occurred.
+     * @param key   The {@link WatchKey} on which the event occurred.
+     */
     @Override
     public void onCreate(final WatchEvent<?> event, final WatchKey key) {
-
+        // No-op
     }
 
+    /**
+     * Called when a file or directory is modified. This default implementation does nothing.
+     *
+     * @param event The {@link WatchEvent} that occurred.
+     * @param key   The {@link WatchKey} on which the event occurred.
+     */
     @Override
     public void onModify(final WatchEvent<?> event, final WatchKey key) {
-
+        // No-op
     }
 
+    /**
+     * Called when a file or directory is deleted. This default implementation does nothing.
+     *
+     * @param event The {@link WatchEvent} that occurred.
+     * @param key   The {@link WatchKey} on which the event occurred.
+     */
     @Override
     public void onDelete(final WatchEvent<?> event, final WatchKey key) {
-
+        // No-op
     }
 
+    /**
+     * Called when events are lost or an error occurs. This default implementation does nothing.
+     *
+     * @param event The {@link WatchEvent} that occurred.
+     * @param key   The {@link WatchKey} on which the event occurred.
+     */
     @Override
     public void onOverflow(final WatchEvent<?> event, final WatchKey key) {
-
+        // No-op
     }
 
 }

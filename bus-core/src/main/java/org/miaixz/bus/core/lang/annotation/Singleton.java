@@ -33,7 +33,14 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 注解: 当您希望仅对该绑定的所有注入重用一个实例时,将此应用于实现类
+ * Marks a component to be managed as a singleton, ensuring that only one instance of the class is created and reused
+ * for all injection requests within a given container or scope.
+ * <p>
+ * When applied to a class or a factory method (e.g., a {@code @Bean} method), it instructs the dependency injection
+ * framework to maintain a single, shared instance of the component. This is the default scope in many DI frameworks but
+ * can be made explicit for clarity.
+ * <p>
+ * This annotation is itself annotated with {@link Scope}, identifying it as a scope-defining annotation.
  *
  * @author Kimi Liu
  * @since Java 17+

@@ -27,13 +27,18 @@
 */
 package org.miaixz.bus.starter.annotation;
 
-import java.lang.annotation.*;
-
 import org.miaixz.bus.starter.limiter.LimiterConfiguration;
 import org.springframework.context.annotation.Import;
 
+import java.lang.annotation.*;
+
 /**
- * 启用限流降级
+ * Enables rate limiting and circuit breaking (downgrade) features.
+ * <p>
+ * This annotation imports the {@link LimiterConfiguration}, which sets up the necessary beans for applying rate
+ * limiting and circuit breaking strategies to methods annotated with
+ * {@link org.miaixz.bus.limiter.magic.annotation.Limiting}, {@link org.miaixz.bus.limiter.magic.annotation.Hotspot}, or
+ * {@link org.miaixz.bus.limiter.magic.annotation.Downgrade}.
  *
  * @author Kimi Liu
  * @since Java 17+

@@ -27,13 +27,16 @@
 */
 package org.miaixz.bus.starter.annotation;
 
-import java.lang.annotation.*;
-
 import org.miaixz.bus.starter.office.OfficeConfiguration;
 import org.springframework.context.annotation.Import;
 
+import java.lang.annotation.*;
+
 /**
- * 启用在线预览
+ * Enables office document online preview and conversion features.
+ * <p>
+ * This annotation imports the {@link OfficeConfiguration}, which sets up the necessary beans for document conversion,
+ * such as providers for local (e.g., LibreOffice) and online conversions.
  *
  * @author Kimi Liu
  * @since Java 17+

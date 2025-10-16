@@ -36,21 +36,28 @@ import org.miaixz.bus.crypto.Keeper;
 import org.miaixz.bus.crypto.Padding;
 
 /**
- * FPE(Format Preserving Encryption)实现，支持FF1和FF3-1模式。 相关介绍见：https://anquan.baidu.com/article/193
+ * FPE (Format Preserving Encryption) implementation, supporting FF1 and FF3-1 modes. For a related introduction, see:
+ * https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-38G.pdf
  *
  * <p>
- * FPE是一种格式保持与明文相同的加密方式，通常用于数据脱敏中，因为它需要保持明密文的格式相同， 例如社保号经过加密之后并不是固定长度的杂文，而是相同格式、打乱的号码，依然是社保号的格式。
+ * FPE is a type of encryption that preserves the format of the plaintext, commonly used in data masking because it
+ * needs to maintain the same format for both plaintext and ciphertext. For example, a social security number, after
+ * encryption, is not a fixed-length string of random characters, but a shuffled number in the same format, still
+ * resembling a social security number.
  * </p>
  * <p>
- * FPE算法可以保证：
+ * The FPE algorithm guarantees:
  *
  * <ul>
- * <li>数据长度不变。加密前长度是N，加密后长度仍然是N</li>
- * <li>数据类型不变，加密前是数字类型，加密后仍然是数字类型</li>
- * <li>加密过程可逆，加密后的数据可以通过密钥解密还原原始数据</li>
+ * <li>The data length remains unchanged. If the length before encryption is N, the length after encryption is still
+ * N.</li>
+ * <li>The data type remains unchanged. If it was a numeric type before encryption, it remains a numeric type after
+ * encryption.</li>
+ * <li>The encryption process is reversible. The encrypted data can be decrypted back to the original data using the
+ * key.</li>
  * </ul>
  * <p>
- * 此类基于BouncyCastle实现
+ * This class is implemented based on BouncyCastle.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -61,32 +68,38 @@ public class FPE implements Serializable {
     private static final long serialVersionUID = 2852289932187L;
 
     /**
-     * 映射字符表，规定了明文和密文的字符范围
+     * The AES cipher instance.
      */
     private final AES aes;
     /**
-     * 映射器
+     * The alphabet mapper.
      */
     private final AlphabetMapper mapper;
 
     /**
-     * 构造，使用空的Tweak
+     * Constructor, uses an empty Tweak.
      *
-     * @param mode   FPE模式枚举，可选FF1或FF3-1
-     * @param key    密钥，{@code null}表示随机密钥，长度必须是16bit、24bit或32bit
-     * @param mapper Alphabet字典映射，被加密的字符范围和这个映射必须一致，例如手机号、银行卡号等字段可以采用数字字母字典表
+     * @param mode   FPE mode enum, can be FF1 or FF3-1.
+     * @param key    The secret key. {@code null} indicates a random key. The length must be 16, 24, or 32 bytes.
+     * @param mapper The alphabet mapping. The character range of the data to be encrypted must be consistent with this
+     *               mapping. For example, fields like phone numbers or bank card numbers can use a numeric alphabet
+     *               table.
      */
     public FPE(final FPEMode mode, final byte[] key, final AlphabetMapper mapper) {
         this(mode, key, mapper, null);
     }
 
     /**
-     * 构造
+     * Constructor.
      *
-     * @param mode   FPE模式枚举，可选FF1或FF3-1
-     * @param key    密钥，{@code null}表示随机密钥，长度必须是16bit、24bit或32bit
-     * @param mapper Alphabet字典映射，被加密的字符范围和这个映射必须一致，例如手机号、银行卡号等字段可以采用数字字母字典表
-     * @param tweak  Tweak是为了解决因局部加密而导致结果冲突问题，通常情况下将数据的不可变部分作为Tweak，{@code null}使用默认长度全是0的bytes
+     * @param mode   FPE mode enum, can be FF1 or FF3-1.
+     * @param key    The secret key. {@code null} indicates a random key. The length must be 16, 24, or 32 bytes.
+     * @param mapper The alphabet mapping. The character range of the data to be encrypted must be consistent with this
+     *               mapping. For example, fields like phone numbers or bank card numbers can use a numeric alphabet
+     *               table.
+     * @param tweak  The Tweak is used to solve result collision problems caused by partial encryption. Typically, the
+     *               immutable part of the data is used as the Tweak. {@code null} uses a default-length byte array of
+     *               all zeros.
      */
     public FPE(FPEMode mode, final byte[] key, final AlphabetMapper mapper, byte[] tweak) {
         if (null == mode) {
@@ -100,8 +113,9 @@ public class FPE implements Serializable {
                     break;
 
                 case FF3_1:
-                    // FF3-1要求必须为56 bits
+                    // FF3-1 requires the tweak to be 56 bits (7 bytes)
                     tweak = new byte[7];
+                    break;
             }
         }
         this.aes = new AES(mode.value, Padding.NoPadding.name(), Keeper.generateKey(mode.value, key),
@@ -110,10 +124,11 @@ public class FPE implements Serializable {
     }
 
     /**
-     * 加密
+     * Encrypts data.
      *
-     * @param data 数据，数据必须在构造传入的{@link AlphabetMapper}中定义的范围
-     * @return 密文结果
+     * @param data The data, which must be within the range defined in the {@link AlphabetMapper} passed to the
+     *             constructor.
+     * @return The ciphertext result.
      */
     public String encrypt(final String data) {
         if (null == data) {
@@ -123,24 +138,26 @@ public class FPE implements Serializable {
     }
 
     /**
-     * 加密
+     * Encrypts data.
      *
-     * @param data 数据，数据必须在构造传入的{@link AlphabetMapper}中定义的范围
-     * @return 密文结果
+     * @param data The data, which must be within the range defined in the {@link AlphabetMapper} passed to the
+     *             constructor.
+     * @return The ciphertext result.
      */
     public char[] encrypt(final char[] data) {
         if (null == data) {
             return null;
         }
-        // 通过 mapper 将密文输出处理为原始格式
+        // Use the mapper to convert the ciphertext output back to the original format
         return mapper.convertToChars(aes.encrypt(mapper.convertToIndexes(data)));
     }
 
     /**
-     * 解密
+     * Decrypts data.
      *
-     * @param data 密文数据，数据必须在构造传入的{@link AlphabetMapper}中定义的范围
-     * @return 明文结果
+     * @param data The ciphertext data, which must be within the range defined in the {@link AlphabetMapper} passed to
+     *             the constructor.
+     * @return The plaintext result.
      */
     public String decrypt(final String data) {
         if (null == data) {
@@ -150,30 +167,31 @@ public class FPE implements Serializable {
     }
 
     /**
-     * 加密
+     * Decrypts data.
      *
-     * @param data 密文数据，数据必须在构造传入的{@link AlphabetMapper}中定义的范围
-     * @return 明文结果
+     * @param data The ciphertext data, which must be within the range defined in the {@link AlphabetMapper} passed to
+     *             the constructor.
+     * @return The plaintext result.
      */
     public char[] decrypt(final char[] data) {
         if (null == data) {
             return null;
         }
-        // 通过 mapper 将密文输出处理为原始格式
+        // Use the mapper to convert the ciphertext output back to the original format
         return mapper.convertToChars(aes.decrypt(mapper.convertToIndexes(data)));
     }
 
     /**
-     * FPE模式 FPE包括两种模式：FF1和FF3（FF2弃用），核心均为Feistel网络结构。
+     * FPE Mode. FPE includes two modes: FF1 and FF3 (FF2 is deprecated). Both are based on a Feistel network structure.
      */
     public enum FPEMode {
 
         /**
-         * FF1模式
+         * FF1 Mode.
          */
         FF1("FF1"),
         /**
-         * FF3-1 模式
+         * FF3-1 Mode.
          */
         FF3_1("FF3-1");
 
@@ -184,9 +202,9 @@ public class FPE implements Serializable {
         }
 
         /**
-         * 获取模式名
+         * Gets the mode name.
          *
-         * @return 模式名
+         * @return The mode name.
          */
         public String getValue() {
             return value;

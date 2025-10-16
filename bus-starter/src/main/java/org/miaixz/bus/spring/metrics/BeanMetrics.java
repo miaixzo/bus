@@ -31,9 +31,11 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * 记录bean初始化的状态模型，用于跟踪和记录Spring Bean初始化过程中的各项指标。
+ * A metrics model for recording Spring Bean initialization status, used to track and record various indicators during
+ * the Spring Bean initialization process.
  * <p>
- * 该类继承自ChildrenMetrics，可以记录Bean的类型信息和实际刷新耗时， 用于监控和分析Bean初始化性能。
+ * This class extends {@link ChildrenMetrics} and can record the bean's type information and actual refresh elapsed
+ * time, used for monitoring and analyzing bean initialization performance.
  * </p>
  *
  * @author Kimi Liu
@@ -44,12 +46,12 @@ import lombok.Setter;
 public class BeanMetrics extends ChildrenMetrics<BeanMetrics> {
 
     /**
-     * Bean的类型信息，记录Bean的类名或类型标识
+     * The type information of the Bean, recording the bean's class name or type identifier.
      */
     private String type;
 
     /**
-     * 实际刷新耗时（毫秒），记录Bean实际刷新操作所花费的时间
+     * The actual elapsed time in milliseconds for the bean's refresh operation.
      */
     private long realRefreshElapsedTime;
 

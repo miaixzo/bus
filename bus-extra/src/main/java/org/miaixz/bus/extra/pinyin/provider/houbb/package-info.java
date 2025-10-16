@@ -26,14 +26,14 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 封装了 Pinyin 的引擎。
+ * Encapsulates the houbb Pinyin engine.
  *
  * <p>
- * pinyin(https://github.com/houbb/pinyin)封装。
+ * houbb pinyin (<a href="https://github.com/houbb/pinyin">https://github.com/houbb/pinyin</a>) encapsulation.
  * </p>
  *
  * <p>
- * 引入：
+ * To introduce (dependency):
  * 
  * <pre>
  * &lt;dependency&gt;

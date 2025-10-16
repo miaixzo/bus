@@ -35,19 +35,34 @@ import com.sun.jna.Structure.FieldOrder;
 import com.sun.jna.ptr.NativeLongByReference;
 
 /**
- * C library. This class should be considered non-API as it may be removed if/when its code is incorporated into the JNA
- * project.
+ * C library for FreeBSD. This class should be considered non-API as it may be removed if/when its code is incorporated
+ * into the JNA project.
  */
 public interface FreeBsdLibc extends CLibrary {
 
+    /**
+     * Singleton instance of the FreeBsdLibc library.
+     */
     FreeBsdLibc INSTANCE = Native.load("libc", FreeBsdLibc.class);
 
+    /**
+     * Size of the ut_user field in a utmpx structure.
+     */
     int UTX_USERSIZE = 32;
+    /**
+     * Size of the ut_line field in a utmpx structure.
+     */
     int UTX_LINESIZE = 16;
+    /**
+     * Size of the ut_id field in a utmpx structure.
+     */
     int UTX_IDSIZE = 8;
+    /**
+     * Size of the ut_host field in a utmpx structure.
+     */
     int UTX_HOSTSIZE = 128;
     /**
-     * Constant <code>UINT64_SIZE=Native.getNativeSize(long.class)</code>
+     * Size of a 64-bit unsigned integer.
      */
     int UINT64_SIZE = Native.getNativeSize(long.class);
 
@@ -55,11 +70,11 @@ public interface FreeBsdLibc extends CLibrary {
      * Data size
      */
     /**
-     * Constant <code>INT_SIZE=Native.getNativeSize(int.class)</code>
+     * Size of an integer.
      */
     int INT_SIZE = Native.getNativeSize(int.class);
     /**
-     * Constant <code>CPUSTATES=5</code>
+     * Number of CPU states.
      */
     int CPUSTATES = 5;
 
@@ -67,23 +82,23 @@ public interface FreeBsdLibc extends CLibrary {
      * CPU state indices
      */
     /**
-     * Constant <code>CP_USER=0</code>
+     * CPU user state index.
      */
     int CP_USER = 0;
     /**
-     * Constant <code>CP_NICE=1</code>
+     * CPU nice state index.
      */
     int CP_NICE = 1;
     /**
-     * Constant <code>CP_SYS=2</code>
+     * CPU system state index.
      */
     int CP_SYS = 2;
     /**
-     * Constant <code>CP_INTR=3</code>
+     * CPU interrupt state index.
      */
     int CP_INTR = 3;
     /**
-     * Constant <code>CP_IDLE=4</code>
+     * CPU idle state index.
      */
     int CP_IDLE = 4;
 
@@ -113,13 +128,37 @@ public interface FreeBsdLibc extends CLibrary {
     @FieldOrder({ "ut_type", "ut_tv", "ut_id", "ut_pid", "ut_user", "ut_line", "ut_host", "ut_spare" })
     class FreeBsdUtmpx extends Structure {
 
-        public short ut_type; // type of entry
-        public Timeval ut_tv; // time entry was made
-        public byte[] ut_id = new byte[UTX_IDSIZE]; // etc/inittab id (usually line #)
-        public int ut_pid; // process id
-        public byte[] ut_user = new byte[UTX_USERSIZE]; // user login name
-        public byte[] ut_line = new byte[UTX_LINESIZE]; // device name
-        public byte[] ut_host = new byte[UTX_HOSTSIZE]; // host name
+        /**
+         * Type of entry.
+         */
+        public short ut_type;
+        /**
+         * Time entry was made.
+         */
+        public Timeval ut_tv;
+        /**
+         * etc/inittab id (usually line #).
+         */
+        public byte[] ut_id = new byte[UTX_IDSIZE];
+        /**
+         * Process id.
+         */
+        public int ut_pid;
+        /**
+         * User login name.
+         */
+        public byte[] ut_user = new byte[UTX_USERSIZE];
+        /**
+         * Device name.
+         */
+        public byte[] ut_line = new byte[UTX_LINESIZE];
+        /**
+         * Host name.
+         */
+        public byte[] ut_host = new byte[UTX_HOSTSIZE];
+        /**
+         * Spare bytes.
+         */
         public byte[] ut_spare = new byte[64];
     }
 
@@ -129,8 +168,14 @@ public interface FreeBsdLibc extends CLibrary {
     @FieldOrder({ "tv_sec", "tv_usec" })
     class Timeval extends Structure {
 
-        public long tv_sec; // seconds
-        public long tv_usec; // microseconds
+        /**
+         * Seconds.
+         */
+        public long tv_sec;
+        /**
+         * Microseconds.
+         */
+        public long tv_usec;
     }
 
     /**
@@ -139,8 +184,14 @@ public interface FreeBsdLibc extends CLibrary {
     @FieldOrder({ "cpu_ticks" })
     class CpTime extends Structure implements AutoCloseable {
 
+        /**
+         * CPU ticks.
+         */
         public long[] cpu_ticks = new long[CPUSTATES];
 
+        /**
+         * Closes the memory associated with this structure.
+         */
         @Override
         public void close() {
             Pointer p = this.getPointer();

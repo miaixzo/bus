@@ -28,7 +28,8 @@
 package org.miaixz.bus.extra.nlp;
 
 /**
- * 分词工具类
+ * Utility class for Natural Language Processing (NLP) word segmentation. This class provides a facade for accessing
+ * various NLP segmentation engines, allowing for easy text parsing and word extraction.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -36,29 +37,31 @@ package org.miaixz.bus.extra.nlp;
 public class NLPKit {
 
     /**
-     * 分词处理
+     * Performs word segmentation on the given text using the default NLP engine.
      *
-     * @param text 文本
-     * @return 分词结果
+     * @param text The input text {@link String} to be segmented.
+     * @return An {@link NLPResult} object containing the segmented words and other NLP analysis results.
      */
     public static NLPResult parse(final String text) {
         return getEngine().parse(text);
     }
 
     /**
-     * 根据用户引入的分词引擎jar，自动创建对应的分词引擎对象
+     * Automatically creates and retrieves the corresponding word segmentation engine object. The engine is determined
+     * based on the NLP engine JARs introduced by the user via SPI mechanism.
      *
-     * @return {@link NLPProvider}
+     * @return An {@link NLPProvider} instance, representing the chosen NLP segmentation engine.
      */
     public static NLPProvider getEngine() {
         return NLPFactory.getEngine();
     }
 
     /**
-     * 创建对应名称的分词引擎对象
+     * Creates a word segmentation engine object with the specified engine name. This allows for explicit selection of
+     * an NLP provider when multiple are available.
      *
-     * @param engineName 引擎名称
-     * @return {@link NLPProvider}
+     * @param engineName The name of the NLP engine to create (e.g., "Ansj", "HanLP").
+     * @return An {@link NLPProvider} instance corresponding to the given engine name.
      */
     public static NLPProvider createEngine(final String engineName) {
         return NLPFactory.createEngine(engineName);

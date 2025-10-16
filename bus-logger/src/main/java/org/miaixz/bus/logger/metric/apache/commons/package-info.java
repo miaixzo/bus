@@ -26,7 +26,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * apache commons logging 日志库实现封装
+ * This package provides an implementation of the logging facade for Apache Commons Logging.
  *
  * @author Kimi Liu
  * @since Java 17+

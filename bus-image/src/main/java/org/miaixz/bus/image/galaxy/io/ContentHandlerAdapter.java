@@ -44,36 +44,111 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
+ * A SAX {@link org.xml.sax.ContentHandler} adapter that parses DICOM XML representations into an {@link Attributes}
+ * object structure. This class handles the conversion of XML elements and attributes into DICOM tags, VRs, and values,
+ * including nested sequences and bulk data.
+ * 
  * @author Kimi Liu
  * @since Java 17+
  */
 public class ContentHandlerAdapter extends DefaultHandler {
 
+    /**
+     * Flag indicating whether parsing should be lenient, ignoring certain errors.
+     */
     private final boolean lenient;
+    /**
+     * Stack of {@link Attributes} objects, representing the current nesting level in DICOM sequences.
+     */
     private final LinkedList<Attributes> items = new LinkedList<>();
+    /**
+     * Stack of {@link Sequence} objects, representing the current sequence being parsed.
+     */
     private final LinkedList<Sequence> seqs = new LinkedList<>();
+    /**
+     * Output stream used to collect binary data from inline binary elements.
+     */
     private final ByteArrayOutputStream bout = new ByteArrayOutputStream(64);
+    /**
+     * Buffer for handling partial character data when decoding inline binary.
+     */
     private final char[] carry = new char[4];
+    /**
+     * String builder for collecting character data for string values.
+     */
     private final StringBuilder sb = new StringBuilder(64);
+    /**
+     * List to store multiple values for a multi-valued DICOM attribute.
+     */
     private final ArrayList<String> values = new ArrayList<>();
+    /**
+     * Creator for {@link BulkData} objects, allowing custom handling of bulk data storage.
+     */
     private BulkData.Creator bulkDataCreator = BulkData::new;
+    /**
+     * Stores File Meta Information attributes.
+     */
     private Attributes fmi;
+    /**
+     * Flag indicating the endianness of the current dataset.
+     */
     private boolean bigEndian;
+    /**
+     * Length of the {@code carry} buffer currently in use.
+     */
     private int carryLen;
+    /**
+     * Current {@link PersonName} object being parsed.
+     */
     private PersonName pn;
+    /**
+     * Current {@link PersonName.Group} being parsed.
+     */
     private PersonName.Group pnGroup;
+    /**
+     * The DICOM tag of the attribute currently being parsed.
+     */
     private int tag;
+    /**
+     * The private creator of the attribute currently being parsed.
+     */
     private String privateCreator;
+    /**
+     * The Value Representation (VR) of the attribute currently being parsed.
+     */
     private VR vr;
+    /**
+     * Current {@link BulkData} object being parsed.
+     */
     private BulkData bulkData;
+    /**
+     * Current {@link Fragments} object being parsed.
+     */
     private Fragments dataFragments;
+    /**
+     * Flag indicating whether character data should be processed.
+     */
     private boolean processCharacters;
+    /**
+     * Flag indicating whether the current element is an inline binary element.
+     */
     private boolean inlineBinary;
 
+    /**
+     * Constructs a {@code ContentHandlerAdapter} with a given initial {@link Attributes} object.
+     * 
+     * @param attrs The initial {@link Attributes} object to populate.
+     */
     public ContentHandlerAdapter(Attributes attrs) {
         this(attrs, false);
     }
 
+    /**
+     * Constructs a {@code ContentHandlerAdapter} with a given initial {@link Attributes} object and leniency setting.
+     * 
+     * @param attrs   The initial {@link Attributes} object to populate.
+     * @param lenient {@code true} if parsing should be lenient, {@code false} otherwise.
+     */
     public ContentHandlerAdapter(Attributes attrs, boolean lenient) {
         if (attrs != null) {
             items.add(attrs);
@@ -82,10 +157,24 @@ public class ContentHandlerAdapter extends DefaultHandler {
         this.lenient = lenient;
     }
 
+    /**
+     * Determines the endianness from the File Meta Information. If the Transfer Syntax UID is Explicit VR Big Endian,
+     * then big-endian is assumed.
+     * 
+     * @param fmi The File Meta Information attributes.
+     * @return {@code true} if big-endian, {@code false} otherwise.
+     */
     private static boolean bigEndian(Attributes fmi) {
         return fmi != null && UID.ExplicitVRBigEndian.equals(fmi.getString(Tag.TransferSyntaxUID));
     }
 
+    /**
+     * Generates a prefix string for logging or display based on the private creator and nesting level.
+     * 
+     * @param privateCreator The private creator string.
+     * @param level          The current nesting level.
+     * @return A prefix string.
+     */
     private static String prefix(String privateCreator, int level) {
         if (privateCreator == null && level == 0) {
             return "";
@@ -100,14 +189,29 @@ public class ContentHandlerAdapter extends DefaultHandler {
         return sb.toString();
     }
 
+    /**
+     * Sets the {@link BulkData.Creator} to be used for creating {@link BulkData} objects.
+     * 
+     * @param bulkDataCreator The {@link BulkData.Creator} instance.
+     */
     public void setBulkDataCreator(BulkData.Creator bulkDataCreator) {
         this.bulkDataCreator = Objects.requireNonNull(bulkDataCreator);
     }
 
+    /**
+     * Returns the parsed File Meta Information attributes.
+     * 
+     * @return The {@link Attributes} object containing File Meta Information.
+     */
     public Attributes getFileMetaInformation() {
         return fmi;
     }
 
+    /**
+     * Returns the root dataset (the top-level {@link Attributes} object).
+     * 
+     * @return The root {@link Attributes} object.
+     */
     public Attributes getDataset() {
         return items.getFirst();
     }
@@ -173,10 +277,19 @@ public class ContentHandlerAdapter extends DefaultHandler {
         }
     }
 
+    /**
+     * Handles the start of a &lt;BulkData&gt; element, creating a {@link BulkData} object.
+     * 
+     * @param uuid The UUID attribute from the XML.
+     * @param uri  The URI attribute from the XML.
+     */
     private void bulkData(String uuid, String uri) {
         bulkData = bulkDataCreator.create(uuid, uri, items.getLast().bigEndian());
     }
 
+    /**
+     * Handles the start of an &lt;InlineBinary&gt; element, preparing to read binary data.
+     */
     private void startInlineBinary() {
         processCharacters = true;
         inlineBinary = true;
@@ -184,12 +297,23 @@ public class ContentHandlerAdapter extends DefaultHandler {
         bout.reset();
     }
 
+    /**
+     * Prepares to read character data for a text-based element.
+     */
     private void startText() {
         processCharacters = true;
         inlineBinary = false;
         sb.setLength(0);
     }
 
+    /**
+     * Handles the start of a &lt;DicomAttribute&gt; element, setting the current tag, private creator, and VR. If the
+     * VR is SQ (Sequence), a new sequence is created.
+     * 
+     * @param tag            The DICOM tag.
+     * @param privateCreator The private creator string.
+     * @param vr             The VR string.
+     */
     private void startDicomAttribute(int tag, String privateCreator, String vr) {
         this.tag = tag;
         this.privateCreator = privateCreator;
@@ -198,6 +322,11 @@ public class ContentHandlerAdapter extends DefaultHandler {
             seqs.add(items.getLast().newSequence(privateCreator, tag, 10));
     }
 
+    /**
+     * Handles the start of a &lt;DataFragment&gt; element, initializing data fragments if necessary.
+     * 
+     * @param number The fragment number.
+     */
     private void startDataFragment(int number) {
         if (dataFragments == null)
             dataFragments = items.getLast().newFragments(privateCreator, tag, vr, 10);
@@ -205,6 +334,11 @@ public class ContentHandlerAdapter extends DefaultHandler {
             dataFragments.add(new byte[] {});
     }
 
+    /**
+     * Handles the start of an &lt;Item&gt; element, adding a new {@link Attributes} object to the current sequence.
+     * 
+     * @param number The item number.
+     */
     private void startItem(int number) {
         Sequence seq = seqs.getLast();
         while (seq.size() < number - 1)
@@ -214,16 +348,31 @@ public class ContentHandlerAdapter extends DefaultHandler {
         items.add(item);
     }
 
+    /**
+     * Prepares to read a multi-valued attribute by ensuring enough slots in the {@code values} list.
+     * 
+     * @param number The value number.
+     */
     private void startValue(int number) {
         while (values.size() < number - 1)
             values.add(null);
     }
 
+    /**
+     * Handles the start of a &lt;PersonName&gt; element, initializing a new {@link PersonName} object.
+     * 
+     * @param number The value number for the Person Name.
+     */
     private void startPersonName(int number) {
         startValue(number);
         pn = new PersonName();
     }
 
+    /**
+     * Handles the start of a Person Name group element (Alphabetic, Ideographic, Phonetic).
+     * 
+     * @param pnGroup The {@link PersonName.Group} being started.
+     */
     private void startPNGroup(PersonName.Group pnGroup) {
         this.pnGroup = pnGroup;
     }
@@ -309,6 +458,9 @@ public class ContentHandlerAdapter extends DefaultHandler {
         items.getFirst().trimToSize();
     }
 
+    /**
+     * Handles the end of a &lt;DataFragment&gt; element, adding the collected data to {@code dataFragments}.
+     */
     private void endDataFragment() {
         if (bulkData != null) {
             dataFragments.add(bulkData);
@@ -318,6 +470,11 @@ public class ContentHandlerAdapter extends DefaultHandler {
         }
     }
 
+    /**
+     * Handles the end of a &lt;DicomAttribute&gt; element, setting the value of the attribute.
+     * 
+     * @throws SAXException if an error occurs during value conversion or if parsing is not lenient.
+     */
     private void endDicomAttribute() throws SAXException {
         if (vr == VR.SQ) {
             seqs.removeLast().trimToSize();
@@ -356,6 +513,12 @@ public class ContentHandlerAdapter extends DefaultHandler {
         }
     }
 
+    /**
+     * Returns the current {@link Attributes} object to which attributes should be added. This method handles the
+     * creation of File Meta Information attributes if necessary.
+     * 
+     * @return The current {@link Attributes} object.
+     */
     private Attributes attrs() {
         if (Tag.isFileMetaInformation(tag)) {
             if (fmi == null) {
@@ -369,33 +532,63 @@ public class ContentHandlerAdapter extends DefaultHandler {
         return items.getLast();
     }
 
+    /**
+     * Handles the end of an &lt;Item&gt; element, removing the current item from the stack.
+     */
     private void endItem() {
         items.removeLast().trimToSize();
         vr = VR.SQ;
     }
 
+    /**
+     * Handles the end of a &lt;PersonName&gt; element, adding the parsed Person Name to the values list.
+     */
     private void endPersonName() {
         values.add(pn.toString());
         pn = null;
     }
 
+    /**
+     * Handles the end of a &lt;Value&gt; element, adding the collected string to the values list.
+     */
     private void endValue() {
         values.add(getString());
     }
 
+    /**
+     * Handles the end of a Person Name component element (e.g., FamilyName, GivenName).
+     * 
+     * @param pnComp The {@link PersonName.Component} being ended.
+     */
     private void endPNComponent(PersonName.Component pnComp) {
         pn.set(pnGroup, pnComp, getString());
     }
 
+    /**
+     * Returns the string collected by the {@code StringBuilder}.
+     * 
+     * @return The collected string.
+     */
     private String getString() {
         return sb.toString();
     }
 
+    /**
+     * Returns the byte array collected by the {@code ByteArrayOutputStream}, applying endianness correction if
+     * necessary.
+     * 
+     * @return The collected byte array.
+     */
     private byte[] getBytes() {
         byte[] b = bout.toByteArray();
         return bigEndian ? vr.toggleEndian(b, false) : b;
     }
 
+    /**
+     * Returns the collected string values as an array and clears the internal list.
+     * 
+     * @return An array of string values.
+     */
     private String[] getStrings() {
         try {
             return values.toArray(Normal.EMPTY_STRING_ARRAY);

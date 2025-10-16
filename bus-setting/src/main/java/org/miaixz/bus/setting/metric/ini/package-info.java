@@ -26,7 +26,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * ini配置文件实现封装
+ * Provides classes that model the structure of an INI configuration file, including sections, properties, and comments.
  *
  * @author Kimi Liu
  * @since Java 17+

@@ -30,7 +30,7 @@ package org.miaixz.bus.pay.metric.wechat.api.v3;
 import org.miaixz.bus.pay.Matcher;
 
 /**
- * 微信支付 v3 接口-微信支付分接口
+ * WeChat Pay V3 API interfaces related to WeChat Pay Score.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,75 +38,83 @@ import org.miaixz.bus.pay.Matcher;
 public enum PayScoreApi implements Matcher {
 
     /**
-     * 创建/查询支付分订单
+     * Create/query Pay Score order.
      */
-    PAY_SCORE_SERVICE_ORDER("/v3/payscore/serviceorder", "创建/查询支付分订单"),
+    PAY_SCORE_SERVICE_ORDER("/v3/payscore/serviceorder", "Create/query Pay Score order"),
 
     /**
-     * 取消支付分订单
+     * Cancel Pay Score order.
      */
-    PAY_SCORE_SERVICE_ORDER_CANCEL("/v3/payscore/serviceorder/%s/cancel", "取消支付分订单"),
+    PAY_SCORE_SERVICE_ORDER_CANCEL("/v3/payscore/serviceorder/%s/cancel", "Cancel Pay Score order"),
 
     /**
-     * 修改订单金额
+     * Modify order amount.
      */
-    PAY_SCORE_SERVICE_ORDER_MODIFY("/v3/payscore/serviceorder/%s/modify", "修改订单金额"),
+    PAY_SCORE_SERVICE_ORDER_MODIFY("/v3/payscore/serviceorder/%s/modify", "Modify order amount"),
 
     /**
-     * 完结支付分订单
+     * Complete Pay Score order.
      */
-    PAY_SCORE_SERVICE_ORDER_COMPLETE("/v3/payscore/serviceorder/%s/complete", "完结支付分订单"),
+    PAY_SCORE_SERVICE_ORDER_COMPLETE("/v3/payscore/serviceorder/%s/complete", "Complete Pay Score order"),
 
     /**
-     * 同步服务订单信息
+     * Synchronize service order information.
      */
-    PAY_SCORE_SERVICE_ORDER_SYNC("/v3/payscore/serviceorder/%s/sync", "同步服务订单信息"),
+    PAY_SCORE_SERVICE_ORDER_SYNC("/v3/payscore/serviceorder/%s/sync", "Synchronize service order information"),
 
     /**
-     * 商户预授权
+     * Merchant pre-authorization.
      */
-    PAY_SCORE_PERMISSIONS("/v3/payscore/permissions", "商户预授权"),
+    PAY_SCORE_PERMISSIONS("/v3/payscore/permissions", "Merchant pre-authorization"),
 
     /**
-     * 查询与用户授权记录（授权协议号）
+     * Query user authorization record (authorization agreement number).
      */
-    PAY_SCORE_PERMISSIONS_AUTHORIZATION_CODE("/v3/payscore/permissions/authorization-code/%s", "查询与用户授权记录（授权协议号）"),
+    PAY_SCORE_PERMISSIONS_AUTHORIZATION_CODE("/v3/payscore/permissions/authorization-code/%s",
+            "Query user authorization record (authorization agreement number)"),
 
     /**
-     * 解除用户授权关系（授权协议号）
+     * Terminate user authorization relationship (authorization agreement number).
      */
     PAY_SCORE_PERMISSIONS_AUTHORIZATION_CODE_TERMINATE("/v3/payscore/permissions/authorization-code/%s/terminate",
-            "解除用户授权关系（授权协议号）"),
+            "Terminate user authorization relationship (authorization agreement number)"),
 
     /**
-     * 查询与用户授权记录（openid）
+     * Query user authorization record (openid).
      */
-    PAY_SCORE_PERMISSIONS_OPENID("/v3/payscore/permissions/openid/%s", "查询与用户授权记录（openid）"),
+    PAY_SCORE_PERMISSIONS_OPENID("/v3/payscore/permissions/openid/%s", "Query user authorization record (openid)"),
 
     /**
-     * 解除用户授权关系（openid）
+     * Terminate user authorization relationship (openid).
      */
-    PAY_SCORE_PERMISSIONS_OPENID_TERMINATE("/v3/payscore/permissions/openid/%s/terminate", "解除用户授权关系（openid）");
+    PAY_SCORE_PERMISSIONS_OPENID_TERMINATE("/v3/payscore/permissions/openid/%s/terminate",
+            "Terminate user authorization relationship (openid)");
 
     /**
-     * 接口方法
+     * The API method.
      */
     private final String method;
 
     /**
-     * 接口描述
+     * The API description.
      */
     private final String desc;
 
+    /**
+     * Constructs a new PayScoreApi enum.
+     *
+     * @param method The API method.
+     * @param desc   The API description.
+     */
     PayScoreApi(String method, String desc) {
         this.method = method;
         this.desc = desc;
     }
 
     /**
-     * 交易类型
+     * Gets the transaction type.
      *
-     * @return the string
+     * @return The transaction type.
      */
     @Override
     public String type() {
@@ -114,9 +122,9 @@ public enum PayScoreApi implements Matcher {
     }
 
     /**
-     * 类型描述
+     * Gets the type description.
      *
-     * @return the string
+     * @return The type description.
      */
     @Override
     public String desc() {
@@ -124,9 +132,9 @@ public enum PayScoreApi implements Matcher {
     }
 
     /**
-     * 接口方法
+     * Gets the API method.
      *
-     * @return the string
+     * @return The API method.
      */
     @Override
     public String method() {

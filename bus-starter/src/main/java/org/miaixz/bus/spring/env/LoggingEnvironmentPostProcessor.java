@@ -27,9 +27,6 @@
 */
 package org.miaixz.bus.spring.env;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.miaixz.bus.core.lang.Keys;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.spring.GeniusBuilder;
@@ -39,8 +36,14 @@ import org.springframework.boot.env.EnvironmentPostProcessor;
 import org.springframework.core.Ordered;
 import org.springframework.core.env.ConfigurableEnvironment;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
- * 通过 {@link EnvironmentPostProcessor} 实现日志配置检测，初始化等
+ * An {@link EnvironmentPostProcessor} implementation for logging configuration detection and initialization.
+ * <p>
+ * This post-processor ensures that certain logging-related system properties are set, maintaining compatibility and
+ * providing default values if not explicitly configured.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,31 +51,32 @@ import org.springframework.core.env.ConfigurableEnvironment;
 public class LoggingEnvironmentPostProcessor implements EnvironmentPostProcessor, Ordered {
 
     /**
-     * 保持版本兼容，设置以下系统属性:
+     * Ensures compatibility by setting specific system properties for logging.
+     * <p>
+     * The following system properties are set:
+     * <ol>
+     * <li>{@code spring.output.ansi.enabled}</li>
+     * <li>{@code logging.path}</li>
+     * <li>{@code file.encoding}</li>
+     * <li>{@code logging.pattern.console}</li>
+     * <li>{@code logging.pattern.file}</li>
+     * </ol>
      *
-     * <pre>
-     *  1、spring.output.ansi.enabled
-     *  2、logging.path
-     *  3、file.encoding
-     *  4、logging.pattern.console
-     *  5、logging.pattern.file
-     * </pre>
-     *
-     * @param context 缓存信息
-     * @param keep    是否跳过
+     * @param context A map containing logging configuration properties.
+     * @param keep    A boolean flag indicating whether to apply compatibility settings.
      */
     public static void keepCompatible(Map<String, String> context, boolean keep) {
         if (!keep) {
             return;
         }
-        // 日志路径
+        // Logging path
         String loggingPath = System.getProperty(GeniusBuilder.LOGGING_PATH, context.get(GeniusBuilder.LOGGING_PATH));
         System.setProperty(GeniusBuilder.LOGGING_PATH, loggingPath);
-        // 日志编码
+        // File encoding
         String fileEncoding = System.getProperty(Keys.FILE_ENCODING, context.get(Keys.FILE_ENCODING));
         System.setProperty(Keys.FILE_ENCODING, fileEncoding);
 
-        // 控制台日志
+        // Console logging pattern
         String patternConsole = System
                 .getProperty(GeniusBuilder.LOGGING_PATTERN_CONSOLE, context.get(GeniusBuilder.LOGGING_PATTERN_CONSOLE));
         if (StringKit.isEmpty(patternConsole)) {
@@ -80,7 +84,7 @@ public class LoggingEnvironmentPostProcessor implements EnvironmentPostProcessor
         }
         System.setProperty(GeniusBuilder.LOGGING_PATTERN_CONSOLE, patternConsole);
 
-        // 文件日志
+        // File logging pattern
         String patternFile = System
                 .getProperty(GeniusBuilder.LOGGING_PATTERN_FILE, context.get(GeniusBuilder.LOGGING_PATTERN_FILE));
         if (StringKit.isEmpty(patternFile)) {
@@ -90,6 +94,16 @@ public class LoggingEnvironmentPostProcessor implements EnvironmentPostProcessor
 
     }
 
+    /**
+     * Post-processes the environment to detect and initialize logging configurations.
+     * <p>
+     * This method loads logging-related properties from the environment and applies compatibility settings using
+     * {@link #keepCompatible(Map, boolean)}.
+     * </p>
+     *
+     * @param environment The configurable environment.
+     * @param application The Spring application instance.
+     */
     @Override
     public void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication application) {
         Map<String, String> context = new HashMap<>();
@@ -115,18 +129,26 @@ public class LoggingEnvironmentPostProcessor implements EnvironmentPostProcessor
         keepCompatible(context, true);
     }
 
+    /**
+     * Returns the order value for this post-processor.
+     * <p>
+     * This ensures that logging configurations are processed after {@link ConfigDataEnvironmentPostProcessor}.
+     * </p>
+     *
+     * @return The order value.
+     */
     @Override
     public int getOrder() {
         return ConfigDataEnvironmentPostProcessor.ORDER + 1;
     }
 
     /**
-     * 加载配置信息
+     * Loads a logging configuration property into the context map.
      *
-     * @param key          属性Key
-     * @param value        属性Key对应值
-     * @param context      缓存信息
-     * @param defaultValue 默认值
+     * @param key          The property key.
+     * @param value        The property value from the environment.
+     * @param context      The map to store the property in.
+     * @param defaultValue A default value to use if the property is not found in the environment.
      */
     public void loadLogConfiguration(String key, String value, Map<String, String> context, String defaultValue) {
         if (StringKit.hasText(value)) {

@@ -28,7 +28,7 @@
 package org.miaixz.bus.storage;
 
 /**
- * 平台类型
+ * Enumerates the supported storage platform types.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -36,67 +36,91 @@ package org.miaixz.bus.storage;
 public enum Registry {
 
     /**
-     * 阿里云 OSS
+     * Alibaba Cloud Object Storage Service (OSS).
      */
     ALIYUN,
     /**
-     * 亚马逊 S3
+     * Amazon Simple Storage Service (S3).
      */
     AMAZON,
     /**
-     * 百度云 BOS
+     * Microsoft Azure Blob Storage Service (S3).
+     */
+    AZURE,
+    /**
+     * Backblaze B2 Cloud Storage (S3 Compatible).
+     */
+    BACKBLAZE_B2,
+    /**
+     * Baidu Object Storage (BOS).
      */
     BAIDU,
     /**
-     * FTP
+     * Cloudflare R2 Object Storage (S3 Compatible).
+     */
+    CLOUDFLARE_R2,
+    /**
+     * File Transfer Protocol (FTP).
      */
     FTP,
     /**
-     * Gitlab
+     * generic S3-compatible.
+     */
+    S3,
+    /**
+     * Gitlab file storage.
      */
     GITLAB,
     /**
-     * Google CS
+     * Google Cloud Storage (CS).
      */
     GOOGLE,
     /**
-     * 华为云 OBS
+     * Huawei Cloud Object Storage Service (OBS).
      */
     HUAWEI,
     /**
-     * 京东云 OBS
+     * JD Cloud Object Storage Service (OBS).
      */
     JD,
     /**
-     * 本地 file
+     * Local file system storage.
      */
     LOCAL,
     /**
-     * MINIO OSS
+     * MinIO Object Storage Service.
      */
     MINIO,
     /**
-     * 七牛云 OSS
+     * MinIO Object Storage Service.
+     */
+    ONEDRIVE,
+    /**
+     * Qiniu Cloud Object Storage Service (OSS).
      */
     QINIU,
     /**
-     * Sftp
+     * Secure File Transfer Protocol (SFTP).
      */
     SFTP,
     /**
-     * SMB
+     * Server Message Block (SMB) protocol for file sharing.
      */
     SMB,
     /**
-     * 腾讯云 COS
+     * Tencent Cloud Object Storage (COS).
      */
     TENCENT,
     /**
-     * 又拍云 OSS
+     * Upyun Object Storage Service (OSS).
      */
     UPYUN,
     /**
-     * WEBDAV
+     * Wasabi Cloud Storage (S3 Compatible).
+     */
+    WASABI,
+    /**
+     * Web Distributed Authoring and Versioning (WebDAV).
      */
     WEBDAV
 

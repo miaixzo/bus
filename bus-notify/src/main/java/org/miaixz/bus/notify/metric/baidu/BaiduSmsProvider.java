@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.miaixz.bus.core.basic.entity.Message;
+import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.notify.Context;
@@ -38,28 +39,44 @@ import org.miaixz.bus.notify.magic.ErrorCode;
 import org.miaixz.bus.notify.metric.AbstractProvider;
 
 /**
- * 百度云短信
+ * Baidu Cloud SMS service provider.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class BaiduSmsProvider extends AbstractProvider<BaiduMaterial, Context> {
 
+    /**
+     * Constructs a {@code BaiduSmsProvider} with the given context.
+     *
+     * @param context The context containing configuration information for the provider.
+     */
     public BaiduSmsProvider(Context context) {
         super(context);
     }
 
+    /**
+     * Sends an SMS notification using Baidu Cloud SMS service.
+     *
+     * @param entity The {@link BaiduMaterial} containing SMS details like recipient, template, signature, and
+     *               parameters.
+     * @return A {@link Message} indicating the result of the SMS sending operation.
+     */
     @Override
     public Message send(BaiduMaterial entity) {
         Map<String, String> bodys = new HashMap<>();
+        // The recipient's mobile number.
         bodys.put("mobile", entity.getReceive());
+        // The SMS template ID.
         bodys.put("template", entity.getTemplate());
+        // The signature ID for the SMS.
         bodys.put("signatureId", entity.getSignature());
+        // The parameters for the SMS template in JSON format.
         bodys.put("contentVar", entity.getParams());
         String response = Httpx.post(this.getUrl(entity), bodys);
-        String errcode = JsonKit.getValue(response, "errcode");
+        String errcode = JsonKit.getValue(response, Consts.ERRCODE);
         return Message.builder().errcode("200".equals(errcode) ? ErrorCode._SUCCESS.getKey() : errcode)
-                .errmsg(JsonKit.getValue(response, "errmsg")).build();
+                .errmsg(JsonKit.getValue(response, Consts.ERRMSG)).build();
     }
 
 }

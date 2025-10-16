@@ -31,32 +31,37 @@ import org.miaixz.bus.core.instance.Instances;
 import org.miaixz.bus.setting.Setting;
 
 /**
- * 全局的Profile配置中心
+ * A global center for managing {@link Profile} configurations. It provides static access to a singleton {@code Profile}
+ * instance, allowing different parts of an application to retrieve profile-specific settings.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class GlobalProfile {
 
+    /**
+     * Private constructor to prevent instantiation.
+     */
     private GlobalProfile() {
-
     }
 
     /**
-     * 设置全局环境
+     * Sets the active global profile and returns the corresponding {@link Profile} instance. If an instance for this
+     * profile name already exists, it is returned; otherwise, a new one is created and cached.
      *
-     * @param profile 环境
-     * @return {@link Profile}
+     * @param profile The name of the environment profile (e.g., "dev", "prod").
+     * @return The singleton {@link Profile} instance for the given profile name.
      */
     public static Profile setProfile(final String profile) {
         return Instances.get(Profile.class, profile);
     }
 
     /**
-     * 获得全局的当前环境下对应的配置文件
+     * Gets a {@link Setting} instance for the specified configuration file name under the currently active global
+     * profile.
      *
-     * @param settingName 配置文件名，可以忽略默认后者（.setting）
-     * @return {@link Setting}
+     * @param settingName The name of the configuration file (e.g., "db.setting").
+     * @return The {@link Setting} instance.
      */
     public static Setting getSetting(final String settingName) {
         return Instances.get(Profile.class).getSetting(settingName);

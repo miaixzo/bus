@@ -1,7 +1,6 @@
 /*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- ~                                                                               ~
- ~ The MIT License (MIT)                                                         ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ '
+ ' The MIT License (MIT)                                                         ~
  ~                                                                               ~
  ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
@@ -26,11 +25,12 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 基于commons-compress的压缩解压封装 支持包括：gzip, bzip2, xz, lzma, Pack200, DEFLATE, Brotli, DEFLATE64, ZStandard and Z, the
- * archiver formats are 7z, ar, arj, cpio, dump, tar and zip等格式。
+ * A wrapper for compression and decompression based on commons-compress. It supports formats including: gzip, bzip2,
+ * xz, lzma, Pack200, DEFLATE, Brotli, DEFLATE64, ZStandard and Z, and the archiver formats are 7z, ar, arj, cpio, dump,
+ * tar and zip.
  *
  * <p>
- * 见：https://commons.apache.org/proper/commons-compress/
+ * See: https://commons.apache.org/proper/commons-compress/
  * </p>
  *
  * @author Kimi Liu

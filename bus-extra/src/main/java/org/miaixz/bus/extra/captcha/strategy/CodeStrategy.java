@@ -30,7 +30,7 @@ package org.miaixz.bus.extra.captcha.strategy;
 import java.io.Serializable;
 
 /**
- * 验证码文字生成策略
+ * CAPTCHA code generation strategy.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,18 +38,19 @@ import java.io.Serializable;
 public interface CodeStrategy extends Serializable {
 
     /**
-     * 生成验证码
+     * Generates the CAPTCHA code.
      *
-     * @return 验证码
+     * @return The CAPTCHA code.
      */
     String generate();
 
     /**
-     * 验证用户输入的字符串是否与生成的验证码匹配 用户通过实现此方法定义验证码匹配方式
+     * Verifies if the user's input string matches the generated CAPTCHA code. Users can define their own matching logic
+     * by implementing this method.
      *
-     * @param code          生成的随机验证码
-     * @param userInputCode 用户输入的验证码
-     * @return 是否验证通过
+     * @param code          The randomly generated CAPTCHA code.
+     * @param userInputCode The CAPTCHA code entered by the user.
+     * @return Whether the verification is successful.
      */
     boolean verify(String code, String userInputCode);
 

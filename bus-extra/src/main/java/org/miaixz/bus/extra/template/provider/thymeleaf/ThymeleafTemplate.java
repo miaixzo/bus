@@ -44,7 +44,8 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 /**
- * Thymeleaf模板实现
+ * Thymeleaf template implementation. This class wraps a Thymeleaf {@link TemplateEngine} object, providing a unified
+ * interface for rendering templates.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -54,16 +55,25 @@ public class ThymeleafTemplate implements Template, Serializable {
     @Serial
     private static final long serialVersionUID = 2852289111659L;
 
+    /**
+     * The raw Thymeleaf template engine object.
+     */
     private final TemplateEngine engine;
+    /**
+     * The template path or content.
+     */
     private final String template;
+    /**
+     * The character set for the template.
+     */
     private final java.nio.charset.Charset charset;
 
     /**
-     * 构造
+     * Constructs a new {@code ThymeleafTemplate} instance.
      *
-     * @param engine   Thymeleaf的模板对象 {@link TemplateEngine}
-     * @param template 模板路径或模板内容
-     * @param charset  编码
+     * @param engine   The Thymeleaf template engine object ({@link TemplateEngine}).
+     * @param template The template path or template content.
+     * @param charset  The character set for the template. If {@code null}, UTF-8 will be used.
      */
     public ThymeleafTemplate(final TemplateEngine engine, final String template,
             final java.nio.charset.Charset charset) {
@@ -73,12 +83,12 @@ public class ThymeleafTemplate implements Template, Serializable {
     }
 
     /**
-     * 包装Thymeleaf模板
+     * Wraps a Thymeleaf template engine and template into a {@code ThymeleafTemplate} instance.
      *
-     * @param engine   Thymeleaf的模板引擎对象 {@link TemplateEngine}
-     * @param template 模板路径或模板内容
-     * @param charset  编码
-     * @return {@code ThymeleafTemplate}
+     * @param engine   The Thymeleaf template engine object ({@link TemplateEngine}).
+     * @param template The template path or template content.
+     * @param charset  The character set for the template.
+     * @return A new {@code ThymeleafTemplate} instance, or {@code null} if the input {@code engine} is {@code null}.
      */
     public static ThymeleafTemplate wrap(
             final TemplateEngine engine,

@@ -58,7 +58,9 @@ import net.sf.jsqlparser.statement.update.Update;
 import net.sf.jsqlparser.statement.update.UpdateSet;
 
 /**
- * 多租户处理器，负责在 SQL 中添加租户条件。
+ * Multi-tenancy handler, responsible for adding tenant conditions to SQL statements. This handler intercepts various
+ * SQL operations (SELECT, INSERT, UPDATE, DELETE) and modifies them to include tenant-specific filtering or data
+ * manipulation based on the configured {@link TenantProvider}.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -66,20 +68,21 @@ import net.sf.jsqlparser.statement.update.UpdateSet;
 public class TenantHandler extends ConditionHandler implements MapperHandler {
 
     /**
-     * 租户服务接口，用于获取租户相关信息
+     * The tenant service provider, used to obtain tenant-related information.
      */
     private TenantProvider provider;
 
     /**
-     * 处理查询操作，在 SELECT 语句中添加租户条件。
+     * Handles query operations by adding tenant conditions to SELECT statements. The SQL is parsed and modified to
+     * include tenant-specific WHERE clauses.
      *
-     * @param object          结果对象（未使用）
-     * @param executor        MyBatis 执行器
-     * @param mappedStatement 映射语句
-     * @param parameter       查询参数
-     * @param rowBounds       分页参数
-     * @param resultHandler   结果处理器
-     * @param boundSql        绑定 SQL
+     * @param object          The result object (unused).
+     * @param executor        The MyBatis executor.
+     * @param mappedStatement The MappedStatement.
+     * @param parameter       The query parameters.
+     * @param rowBounds       The pagination parameters.
+     * @param resultHandler   The result handler.
+     * @param boundSql        The BoundSql object.
      */
     @Override
     public void query(
@@ -90,116 +93,116 @@ public class TenantHandler extends ConditionHandler implements MapperHandler {
             RowBounds rowBounds,
             ResultHandler resultHandler,
             BoundSql boundSql) {
-        // 获取 MapperBoundSql 对象
+        // Get MapperBoundSql object
         MapperBoundSql mbs = mapperBoundSql(boundSql);
-        // 解析并添加租户条件
+        // Parse and add tenant conditions
         mbs.sql(parserSingle(mbs.sql(), null));
     }
 
     /**
-     * 预处理 INSERT、UPDATE、DELETE 语句，添加租户条件。
+     * Pre-processes INSERT, UPDATE, and DELETE statements to add tenant conditions. This method is called before the
+     * statement is executed.
      *
-     * @param statementHandler 语句处理器
+     * @param statementHandler The StatementHandler.
      */
     @Override
     public void prepare(StatementHandler statementHandler) {
-        // 获取 MapperStatementHandler 对象
+        // Get MapperStatementHandler object
         MapperStatementHandler msh = mapperStatementHandler(statementHandler);
-        // 获取 MapperBoundSql 对象
+        // Get MapperBoundSql object
         MapperBoundSql mbs = msh.mapperBoundSql();
-        // 解析并添加租户条件
+        // Parse and add tenant conditions
         mbs.sql(parserMulti(mbs.sql(), null));
     }
 
     /**
-     * 处理 SELECT 语句，添加租户条件到 WHERE 子句。
+     * Processes a SELECT statement, adding tenant conditions to its WHERE clause.
      *
-     * @param select SELECT 语句
-     * @param index  语句索引（未使用）
-     * @param sql    原始 SQL
-     * @param object WHERE 片段（字符串形式）
+     * @param select The SELECT statement.
+     * @param index  The statement index (unused).
+     * @param sql    The original SQL string.
+     * @param object The WHERE clause segment (as a string).
      */
     @Override
     protected void processSelect(Select select, int index, String sql, Object object) {
-        // 获取 WHERE 片段
+        // Get WHERE clause segment
         final String whereSegment = (String) object;
-        // 处理 SELECT 语句体
+        // Process SELECT statement body
         processSelectBody(select, whereSegment);
-        // 获取 WITH 子句列表
+        // Get WITH clause list
         List<WithItem<?>> withItemsList = select.getWithItemsList();
-        // 处理 WITH 子句中的 SELECT
+        // Process SELECT in WITH clause
         if (!CollKit.isEmpty(withItemsList)) {
             withItemsList.forEach(withItem -> processSelectBody(withItem.getSelect(), whereSegment));
         }
     }
 
     /**
-     * 处理 INSERT 语句，添加租户列和值。
+     * Processes an INSERT statement, adding tenant columns and values.
      *
-     * @param insert INSERT 语句
-     * @param index  语句索引（未使用）
-     * @param sql    原始 SQL
-     * @param object WHERE 片段（未使用）
+     * @param insert The INSERT statement.
+     * @param index  The statement index (unused).
+     * @param sql    The original SQL string.
+     * @param object The WHERE clause segment (unused).
+     * @throws InternalException if multi-table update is attempted without proper exclusion.
      */
     @Override
     protected void processInsert(Insert insert, int index, String sql, Object object) {
-        // 忽略租户条件的表
+        // Ignore tables that are exempt from tenant conditions
         if (this.provider.ignore(insert.getTable().getName())) {
             return;
         }
-        // 获取 INSERT 的列列表
+        // Get the list of columns for the INSERT
         List<Column> columns = insert.getColumns();
-        // 无列名的 INSERT 不处理
+        // Do not process INSERT statements without column names
         if (CollKit.isEmpty(columns)) {
             return;
         }
-        // 获取租户列名
+        // Get the tenant column name
         String tenantIdColumn = this.provider.getColumn();
-        // 已包含租户列的 INSERT 不处理
+        // Do not process INSERT if the tenant column is already included
         if (this.provider.ignore(columns, tenantIdColumn)) {
             return;
         }
-        // 添加租户列
+        // Add the tenant column
         columns.add(new Column(tenantIdColumn));
-        // 获取租户 ID
+        // Get the tenant ID expression
         Expression tenantId = this.provider.getTenantId();
-        // 获取 ON DUPLICATE KEY UPDATE 的列
+        // Get the columns for ON DUPLICATE KEY UPDATE
         List<UpdateSet> duplicateUpdateColumns = insert.getDuplicateUpdateSets();
-        // 处理 ON DUPLICATE KEY UPDATE
+        // Process ON DUPLICATE KEY UPDATE
         if (CollKit.isNotEmpty(duplicateUpdateColumns)) {
             duplicateUpdateColumns.add(new UpdateSet(new Column(tenantIdColumn), tenantId));
         }
 
-        // 获取 INSERT 的 SELECT 子查询
+        // Get the SELECT subquery of the INSERT
         Select select = insert.getSelect();
-        // 处理 INSERT INTO ... SELECT
+        // Process INSERT INTO ... SELECT
         if (select instanceof PlainSelect) {
             this.processInsertSelect(select, (String) object);
-            // 处理 INSERT 的 VALUES 子句
+            // Process the VALUES clause of the INSERT
         } else if (insert.getValues() != null) {
             Values values = insert.getValues();
             ExpressionList<Expression> expressions = (ExpressionList<Expression>) values.getExpressions();
-            // 处理括号表达式
+            // Handle parenthesized expressions
             if (expressions instanceof ParenthesedExpressionList) {
                 expressions.addExpression(tenantId);
             } else {
-                // 处理非空表达式列表
+                // Handle non-empty expression lists
                 if (CollKit.isNotEmpty(expressions)) {
-                    int len = expressions.size();
-                    for (int i = 0; i < len; i++) {
-                        Expression expression = expressions.get(i);
+                    for (Expression expression : expressions) {
                         if (expression instanceof ParenthesedExpressionList) {
                             ((ParenthesedExpressionList<Expression>) expression).addExpression(tenantId);
                         } else {
                             expressions.add(tenantId);
                         }
                     }
-                    // 添加租户 ID
+                    // Add tenant ID if the list is empty
                 } else {
                     expressions.add(tenantId);
                 }
             }
-            // 抛出异常，提示不支持多表更新
+            // Throw an exception for unsupported multi-table updates
         } else {
             throw new InternalException(
                     "Failed to process multiple-table update, please exclude the tableName or statementId");
@@ -207,24 +210,24 @@ public class TenantHandler extends ConditionHandler implements MapperHandler {
     }
 
     /**
-     * 处理 UPDATE 语句，添加租户条件到 WHERE 子句。
+     * Processes an UPDATE statement, adding tenant conditions to its WHERE clause.
      *
-     * @param update UPDATE 语句
-     * @param index  语句索引（未使用）
-     * @param sql    原始 SQL
-     * @param object WHERE 片段（字符串形式）
+     * @param update The UPDATE statement.
+     * @param index  The statement index (unused).
+     * @param sql    The original SQL string.
+     * @param object The WHERE clause segment (as a string).
      */
     @Override
     protected void processUpdate(Update update, int index, String sql, Object object) {
-        // 获取表对象
+        // Get the table object
         final Table table = update.getTable();
-        // 忽略租户条件的表
+        // Ignore tables that are exempt from tenant conditions
         if (this.provider.ignore(table.getName())) {
             return;
         }
-        // 获取 UPDATE 的 SET 子句
+        // Get the SET clause of the UPDATE
         List<UpdateSet> sets = update.getUpdateSets();
-        // 处理 SET 中的 SELECT 子查询
+        // Process SELECT subqueries in the SET clause
         if (!CollKit.isEmpty(sets)) {
             sets.forEach(us -> us.getValues().forEach(ex -> {
                 if (ex instanceof Select) {
@@ -232,49 +235,49 @@ public class TenantHandler extends ConditionHandler implements MapperHandler {
                 }
             }));
         }
-        // 添加租户条件到 WHERE
+        // Add tenant condition to the WHERE clause
         update.setWhere(this.andExpression(table, update.getWhere(), (String) object));
     }
 
     /**
-     * 处理 DELETE 语句，添加租户条件到 WHERE 子句。
+     * Processes a DELETE statement, adding tenant conditions to its WHERE clause.
      *
-     * @param delete DELETE 语句
-     * @param index  语句索引（未使用）
-     * @param sql    原始 SQL
-     * @param object WHERE 片段（字符串形式）
+     * @param delete The DELETE statement.
+     * @param index  The statement index (unused).
+     * @param sql    The original SQL string.
+     * @param object The WHERE clause segment (as a string).
      */
     @Override
     protected void processDelete(Delete delete, int index, String sql, Object object) {
-        // 忽略租户条件的表
+        // Ignore tables that are exempt from tenant conditions
         if (this.provider.ignore(delete.getTable().getName())) {
             return;
         }
-        // 添加租户条件到 WHERE
+        // Add tenant condition to the WHERE clause
         delete.setWhere(this.andExpression(delete.getTable(), delete.getWhere(), (String) object));
     }
 
     /**
-     * 处理 INSERT INTO ... SELECT 语句，确保 SELECT 子查询包含租户条件。
+     * Processes an INSERT INTO ... SELECT statement, ensuring the SELECT subquery includes tenant conditions.
      *
-     * @param select  SELECT 语句体
-     * @param segment WHERE 片段（字符串形式）
+     * @param select  The SELECT statement body.
+     * @param segment The WHERE clause segment (as a string).
      */
     protected void processInsertSelect(Select select, final String segment) {
-        // 处理简单 SELECT
+        // Process simple SELECT
         if (select instanceof PlainSelect) {
             PlainSelect plainSelect = (PlainSelect) select;
             FromItem fromItem = plainSelect.getFromItem();
             if (fromItem instanceof Table) {
                 processPlainSelect(plainSelect, segment);
                 appendSelectItem(plainSelect.getSelectItems());
-                // 递归处理子查询
+                // Recursively process subqueries
             } else if (fromItem instanceof Select) {
                 Select subSelect = (Select) fromItem;
                 appendSelectItem(plainSelect.getSelectItems());
                 processInsertSelect(subSelect, segment);
             }
-            // 处理括号内的 SELECT
+            // Process SELECT within parentheses
         } else if (select instanceof ParenthesedSelect) {
             ParenthesedSelect parenthesedSelect = (ParenthesedSelect) select;
             processInsertSelect(parenthesedSelect.getSelect(), segment);
@@ -282,16 +285,16 @@ public class TenantHandler extends ConditionHandler implements MapperHandler {
     }
 
     /**
-     * 追加租户列到 SELECT 语句的 SELECT 子句。
+     * Appends the tenant column to the SELECT clause of a SELECT statement.
      *
-     * @param selectItems SELECT 子句的列列表
+     * @param selectItems The list of select items in the SELECT clause.
      */
     protected void appendSelectItem(List<SelectItem<?>> selectItems) {
-        // 空列表不处理
+        // Do not process empty lists
         if (CollKit.isEmpty(selectItems)) {
             return;
         }
-        // SELECT * 不追加
+        // Do not append if SELECT * is used
         if (selectItems.size() == 1) {
             SelectItem<?> item = selectItems.get(0);
             Expression expression = item.getExpression();
@@ -299,74 +302,74 @@ public class TenantHandler extends ConditionHandler implements MapperHandler {
                 return;
             }
         }
-        // 添加租户列
+        // Add the tenant column
         selectItems.add(new SelectItem<>(new Column(this.provider.getColumn())));
     }
 
     /**
-     * 获取租户列名，带表别名（若存在）。
+     * Retrieves the tenant column name, optionally prefixed with the table alias.
      *
-     * @param table 表对象
-     * @return 租户列名（如 tenantId 或 tableAlias.tenantId）
+     * @param table The Table object.
+     * @return The tenant column as a {@link Column} object (e.g., tenantId or tableAlias.tenantId).
      */
     protected Column getAliasColumn(Table table) {
-        // 构建列名
+        // Build the column name
         StringBuilder column = new StringBuilder();
-        // 添加表别名（如果存在）
+        // Add table alias if it exists
         if (table.getAlias() != null) {
             column.append(table.getAlias().getName()).append(Symbol.DOT);
         }
-        // 添加租户列名
+        // Add the tenant column name
         column.append(this.provider.getColumn());
-        // 返回列对象
+        // Return the Column object
         return new Column(column.toString());
     }
 
     /**
-     * 设置处理器属性，初始化租户服务。
+     * Sets the properties for the handler, initializing the tenant service provider.
      *
-     * @param properties 配置属性
-     * @return 是否设置成功
+     * @param properties The configuration properties.
+     * @return {@code true} if properties were set successfully.
      */
     @Override
     public boolean setProperties(Properties properties) {
-        // 初始化租户服务
+        // Initialize the tenant service
         Context.newInstance(properties).whenNotBlank("provider", ReflectKit::newInstance, this::setProvider);
-        // 返回设置成功
+        // Return true for successful setup
         return true;
     }
 
     /**
-     * 构建租户条件表达式（如 tenant_id = ?）。
+     * Builds the tenant condition expression (e.g., `tenant_id = ?`).
      *
-     * @param table   表对象
-     * @param where   当前 WHERE 条件
-     * @param segment Mapper 全路径（未使用）
-     * @return 租户条件表达式
+     * @param table   The Table object.
+     * @param where   The current WHERE condition.
+     * @param segment The full Mapper path (unused).
+     * @return The tenant condition expression, or {@code null} if the table is ignored.
      */
     @Override
     public Expression buildTableExpression(final Table table, final Expression where, final String segment) {
-        // 忽略租户条件的表
+        // Ignore tables that are exempt from tenant conditions
         if (this.provider.ignore(table.getName())) {
             return null;
         }
-        // 构建 tenant_id = ? 条件
+        // Build the tenant_id = ? condition
         return new EqualsTo(getAliasColumn(table), this.provider.getTenantId());
     }
 
     /**
-     * 获取租户服务。
+     * Retrieves the tenant service provider.
      *
-     * @return 租户服务
+     * @return The {@link TenantProvider} instance.
      */
     public TenantProvider getProvider() {
         return this.provider;
     }
 
     /**
-     * 设置租户服务。
+     * Sets the tenant service provider.
      *
-     * @param provider 租户服务
+     * @param provider The {@link TenantProvider} instance to set.
      */
     public void setProvider(TenantProvider provider) {
         this.provider = provider;

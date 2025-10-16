@@ -27,9 +27,6 @@
 */
 package org.miaixz.bus.http.plugin.httpz;
 
-import java.util.List;
-import java.util.Map;
-
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.HTTP;
@@ -41,30 +38,66 @@ import org.miaixz.bus.http.bodys.FormBody;
 import org.miaixz.bus.http.bodys.MultipartBody;
 import org.miaixz.bus.http.bodys.RequestBody;
 
+import java.util.List;
+import java.util.Map;
+
 /**
- * POST请求处理
+ * Represents an HTTP POST request. This class encapsulates parameters and builds the appropriate {@link RequestBody},
+ * handling URL-encoded forms, multipart file uploads, and raw body content.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class PostRequest extends HttpRequest {
 
+    /**
+     * Constructs a new {@code PostRequest}.
+     *
+     * @param url           The request URL.
+     * @param tag           A tag for this request.
+     * @param params        The form parameters.
+     * @param headers       The request headers.
+     * @param list          A list of files for multipart upload.
+     * @param body          A raw string for the request body.
+     * @param multipartBody A pre-built multipart body.
+     * @param id            A unique identifier for this request.
+     */
     public PostRequest(String url, Object tag, Map<String, String> params, Map<String, String> headers,
             List<MultipartFile> list, String body, MultipartBody multipartBody, String id) {
         super(url, tag, params, headers, list, body, multipartBody, id);
     }
 
+    /**
+     * Constructs a new {@code PostRequest} with both standard and pre-encoded parameters.
+     *
+     * @param url           The request URL.
+     * @param tag           A tag for this request.
+     * @param params        The standard form parameters.
+     * @param encoded       The pre-encoded form parameters.
+     * @param headers       The request headers.
+     * @param list          A list of files for multipart upload.
+     * @param body          A raw string for the request body.
+     * @param multipartBody A pre-built multipart body.
+     * @param id            A unique identifier for this request.
+     */
     public PostRequest(String url, Object tag, Map<String, String> params, Map<String, String> encoded,
             Map<String, String> headers, List<MultipartFile> list, String body, MultipartBody multipartBody,
             String id) {
         super(url, tag, params, encoded, headers, list, body, multipartBody, id);
     }
 
+    /**
+     * Builds the request body based on the provided parameters. The priority is as follows: 1. A pre-built
+     * {@link MultipartBody} if provided. 2. A new {@link MultipartBody} if files are added. 3. A raw string body if
+     * provided. 4. A URL-encoded {@link FormBody} as the default.
+     *
+     * @return The constructed {@link RequestBody}.
+     */
     @Override
     protected RequestBody buildRequestBody() {
         if (null != multipartBody) {
             return multipartBody;
-        } else if (null != list && list.size() > 0) {
+        } else if (null != list && !list.isEmpty()) {
             MultipartBody.Builder builder = new MultipartBody.Builder().setType(MediaType.MULTIPART_FORM_DATA_TYPE);
             addParam(builder);
             list.forEach(file -> {
@@ -83,11 +116,11 @@ public class PostRequest extends HttpRequest {
                 }
                 builder.addFormDataPart(file.part, file.name, fileBody);
             });
-            if (null != body && body.length() > 0) {
+            if (null != body && !body.isEmpty()) {
                 builder.addPart(RequestBody.create(MediaType.MULTIPART_FORM_DATA_TYPE, body));
             }
             return builder.build();
-        } else if (null != body && body.length() > 0) {
+        } else if (null != body && !body.isEmpty()) {
             MediaType contentType;
             if (headers.containsKey(HTTP.CONTENT_TYPE)) {
                 contentType = MediaType.valueOf(headers.get(HTTP.CONTENT_TYPE));
@@ -107,15 +140,25 @@ public class PostRequest extends HttpRequest {
         return builder.post(requestBody).build();
     }
 
+    /**
+     * Adds standard and encoded parameters to a {@link FormBody.Builder}.
+     *
+     * @param builder The form body builder.
+     */
     private void addParam(FormBody.Builder builder) {
         if (null != params) {
-            params.forEach((k, v) -> builder.add(k, v));
+            params.forEach(builder::add);
         }
         if (null != encodedParams) {
-            encodedParams.forEach((k, v) -> builder.addEncoded(k, v));
+            encodedParams.forEach(builder::addEncoded);
         }
     }
 
+    /**
+     * Adds form parameters as parts to a {@link MultipartBody.Builder}.
+     *
+     * @param builder The multipart body builder.
+     */
     private void addParam(MultipartBody.Builder builder) {
         if (null != params && !params.isEmpty()) {
             params.forEach(

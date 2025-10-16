@@ -27,14 +27,14 @@
 */
 package org.miaixz.bus.http.metric.anget;
 
-import java.util.List;
-
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.core.xyz.ListKit;
 
+import java.util.List;
+
 /**
- * 设备信息
+ * Represents a device type, such as a phone, tablet, or desktop, parsed from a User-Agent string.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,43 +42,43 @@ import org.miaixz.bus.core.xyz.ListKit;
 public class Device extends UserAgent {
 
     /**
-     * 未知
+     * Represents an unknown device.
      */
     public static final Device UNKNOWN = new Device(Normal.UNKNOWN, null);
 
     /**
-     * Iphone
+     * Represents an iPhone device.
      */
     public static final Device IPHONE = new Device("iPhone", "iphone");
     /**
-     * ipod
+     * Represents an iPod device.
      */
     public static final Device IPOD = new Device("iPod", "ipod");
     /**
-     * ipad
+     * Represents an iPad device.
      */
     public static final Device IPAD = new Device("iPad", "ipad");
 
     /**
-     * android
+     * Represents an Android device.
      */
     public static final Device ANDROID = new Device("Android", "android");
     /**
-     * harmony
+     * Represents a HarmonyOS device.
      */
     public static final Device HARMONY = new Device("Harmony", "OpenHarmony");
     /**
-     * googletv
+     * Represents a Google TV device.
      */
     public static final Device GOOGLE_TV = new Device("GoogleTV", "googletv");
 
     /**
-     * Windows Phone
+     * Represents a Windows Phone device.
      */
     public static final Device WINDOWS_PHONE = new Device("Windows Phone", "windows (ce|phone|mobile)( os)?");
 
     /**
-     * 支持的移动平台类型
+     * A list of supported mobile device types.
      */
     public static final List<Device> MOBILE_DEVICE = ListKit.of(
             WINDOWS_PHONE, //
@@ -94,7 +94,7 @@ public class Device extends UserAgent {
             new Device("Blackberry", "blackberry") //
     );
     /**
-     * 支持的桌面平台类型
+     * A list of supported desktop device types.
      */
     public static final List<Device> DESKTOP_DEVICE = ListKit.of(
             new Device("Windows", "windows"), //
@@ -106,69 +106,69 @@ public class Device extends UserAgent {
     );
 
     /**
-     * 支持的平台类型
+     * A combined list of all supported device types.
      */
     public static final List<Device> ALL_DEVICE = (List<Device>) CollKit.union(MOBILE_DEVICE, DESKTOP_DEVICE);
 
     /**
-     * 构造
+     * Constructs a new {@code Device} instance.
      *
-     * @param name 平台名称
-     * @param rule 关键字或表达式
+     * @param name The name of the device.
+     * @param rule The keyword or expression to match in the User-Agent string.
      */
     public Device(final String name, final String rule) {
         super(name, rule);
     }
 
     /**
-     * 是否为移动平台
+     * Returns whether this device is a mobile device.
      *
-     * @return 是否为移动平台
+     * @return {@code true} if this is a mobile device, {@code false} otherwise.
      */
     public boolean isMobile() {
         return MOBILE_DEVICE.contains(this);
     }
 
     /**
-     * 是否为Iphone或者iPod设备
+     * Returns whether this device is an iPhone or iPod.
      *
-     * @return 是否为Iphone或者iPod设备
+     * @return {@code true} if this is an iPhone or iPod, {@code false} otherwise.
      */
     public boolean isIPhoneOrIPod() {
         return this.equals(IPHONE) || this.equals(IPOD);
     }
 
     /**
-     * 是否为Iphone或者iPod设备
+     * Returns whether this device is an iPad.
      *
-     * @return 是否为Iphone或者iPod设备
+     * @return {@code true} if this is an iPad, {@code false} otherwise.
      */
     public boolean isIPad() {
         return this.equals(IPAD);
     }
 
     /**
-     * 是否为IOS平台，包括IPhone、IPod、IPad
+     * Returns whether this device is an iOS device (iPhone, iPod, or iPad).
      *
-     * @return 是否为IOS平台，包括IPhone、IPod、IPad
+     * @return {@code true} if this is an iOS device, {@code false} otherwise.
      */
     public boolean isIos() {
         return isIPhoneOrIPod() || isIPad();
     }
 
     /**
-     * 是否为Android平台，包括Android和Google TV
+     * Returns whether this device is an Android device (including Google TV).
      *
-     * @return 是否为Android平台，包括Android和Google TV
+     * @return {@code true} if this is an Android device, {@code false} otherwise.
      */
     public boolean isAndroid() {
         return this.equals(ANDROID) || this.equals(GOOGLE_TV);
     }
 
     /**
-     * 是否为Harmony平台
+     * Returns whether this device is a HarmonyOS device.
      *
-     * @return 是否为Harmony平台
+     * @return {@code true} if this is a HarmonyOS device, {@code false} otherwise.
      */
     public boolean isHarmony() {
         return this.equals(HARMONY);

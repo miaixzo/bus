@@ -35,7 +35,8 @@ import org.miaixz.bus.crypto.builtin.asymmetric.KeyType;
 import org.miaixz.bus.crypto.center.RSA;
 
 /**
- * RSA 加密解密算法
+ * Provides an implementation for RSA (Rivest–Shamir–Adleman) encryption and decryption algorithms. This provider
+ * handles the encryption and decryption operations using RSA keys.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,11 +44,15 @@ import org.miaixz.bus.crypto.center.RSA;
 public class RSAProvider implements Provider {
 
     /**
-     * 加密
+     * Encrypts the given content using RSA with the provided key. The key string is expected to be a comma-separated
+     * string containing the private key, public key, and key type. Example:
+     * "privateKeyBase64,publicKeyBase64,PrivateKey" or "privateKeyBase64,publicKeyBase64,PublicKey".
      *
-     * @param key     密钥
-     * @param content 需要加密的内容
-     * @return 加密结果
+     * @param key     The encryption key string.
+     * @param content The content to be encrypted as a byte array.
+     * @return The encrypted content as a byte array.
+     * @throws InternalException        if the key string is null or empty.
+     * @throws IllegalArgumentException if the key string format is invalid or KeyType is not recognized.
      */
     @Override
     public byte[] encrypt(String key, byte[] content) {
@@ -60,11 +65,15 @@ public class RSAProvider implements Provider {
     }
 
     /**
-     * 解密
+     * Decrypts the given content using RSA with the provided key. The key string is expected to be a comma-separated
+     * string containing the private key, public key, and key type. Example:
+     * "privateKeyBase64,publicKeyBase64,PrivateKey" or "privateKeyBase64,publicKeyBase64,PublicKey".
      *
-     * @param key     密钥
-     * @param content 需要解密的内容
-     * @return 解密结果
+     * @param key     The decryption key string.
+     * @param content The content to be decrypted as a byte array.
+     * @return The decrypted content as a byte array.
+     * @throws InternalException        if the key string is null or empty.
+     * @throws IllegalArgumentException if the key string format is invalid or KeyType is not recognized.
      */
     @Override
     public byte[] decrypt(String key, byte[] content) {

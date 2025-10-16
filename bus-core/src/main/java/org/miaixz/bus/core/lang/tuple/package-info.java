@@ -23,14 +23,19 @@
  ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 's/Umnia/Works/Miaixz.org/bus/bus-core/src/main/java/org/miaixz/bus/core/lang/tuple/package-info.java' is a file, not a directory~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 元组相关封装，包括：
+ * Provides classes for creating and working with tuples.
+ * <p>
+ * This package includes:
  * <ul>
- * <li>类似Python元组的{@link org.miaixz.bus.core.lang.tuple.Tuple}</li>
- * <li>三元组{@link org.miaixz.bus.core.lang.tuple.Triplet}</li>
+ * <li>{@link org.miaixz.bus.core.lang.tuple.Tuple}: A general-purpose, immutable tuple, similar to Python's
+ * tuples.</li>
+ * <li>{@link org.miaixz.bus.core.lang.tuple.Pair}: An immutable pair of two elements.</li>
+ * <li>{@link org.miaixz.bus.core.lang.tuple.Triplet}: An immutable triplet of three elements.</li>
  * </ul>
+ * These classes are useful for returning multiple values from a method.
  *
  * @author Kimi Liu
  * @since Java 17+

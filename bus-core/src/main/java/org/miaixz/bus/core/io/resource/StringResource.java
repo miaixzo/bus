@@ -32,7 +32,8 @@ import java.io.Serial;
 import org.miaixz.bus.core.lang.Charset;
 
 /**
- * 字符串资源，字符串做为资源
+ * String resource, treating a string as a resource. This class extends {@link CharSequenceResource} to specifically
+ * handle {@link String} objects as resources.
  *
  * @author Kimi Liu
  * @see CharSequenceResource
@@ -40,34 +41,37 @@ import org.miaixz.bus.core.lang.Charset;
  */
 public class StringResource extends CharSequenceResource {
 
+    /**
+     * The serial version UID for serialization.
+     */
     @Serial
     private static final long serialVersionUID = 2852232676563L;
 
     /**
-     * 构造，使用UTF8编码
+     * Constructs a {@code StringResource} with the given string data, using UTF-8 encoding.
      *
-     * @param data 资源数据
+     * @param data The string data to be used as the resource.
      */
     public StringResource(final String data) {
         super(data, null);
     }
 
     /**
-     * 构造，使用UTF8编码
+     * Constructs a {@code StringResource} with the given string data and resource name, using UTF-8 encoding.
      *
-     * @param data 资源数据
-     * @param name 资源名称
+     * @param data The string data to be used as the resource.
+     * @param name The name of the resource.
      */
     public StringResource(final String data, final String name) {
         super(data, name, Charset.UTF_8);
     }
 
     /**
-     * 构造
+     * Constructs a {@code StringResource} with the given string data, resource name, and character set.
      *
-     * @param data    资源数据
-     * @param name    资源名称
-     * @param charset 编码
+     * @param data    The string data to be used as the resource.
+     * @param name    The name of the resource.
+     * @param charset The {@link java.nio.charset.Charset} to use for encoding the string data.
      */
     public StringResource(final String data, final String name, final java.nio.charset.Charset charset) {
         super(data, name, charset);

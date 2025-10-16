@@ -32,14 +32,15 @@ import java.util.function.*;
 import java.util.stream.*;
 
 /**
- * {@link Stream}实例的包装器，用于增强原始的{@link Stream}，提供一些额外的中间与终端操作。 默认提供两个可用实现：
+ * A wrapper for {@link Stream} instances, used to enhance the original {@link Stream} by providing additional
+ * intermediate and terminal operations. Two primary implementations are provided:
  * <ul>
- * <li>{@link EasyStream}：针对单元素的通用增强流实现；</li>
- * <li>{@link EntryStream}：针对键值对类型元素的增强流实现；</li>
+ * <li>{@link EasyStream}: A general-purpose enhanced stream implementation for single elements;</li>
+ * <li>{@link EntryStream}: An enhanced stream implementation for key-value pair elements;</li>
  * </ul>
  *
- * @param <T> 流中的元素类型
- * @param <S> {@link WrappedStream}的实现类类型
+ * @param <T> the type of the elements in the stream
+ * @param <S> the type of the {@link WrappedStream} implementation itself
  * @author Kimi Liu
  * @see TerminableWrappedStream
  * @see TransformableWrappedStream
@@ -51,30 +52,35 @@ import java.util.stream.*;
 public interface WrappedStream<T, S extends WrappedStream<T, S>> extends Stream<T>, Iterable<T> {
 
     /**
-     * 代表不存在的下标, 或者未找到元素时的下标
+     * Represents a non-existent index or an index when an element is not found.
      */
     int NOT_FOUND_ELEMENT_INDEX = -1;
 
     /**
-     * 获取被当前实例包装的流对象
+     * Retrieves the underlying {@link Stream} object wrapped by this instance.
      *
-     * @return 被当前实例包装的流对象
+     * @return the {@link Stream} object wrapped by this instance
      */
     Stream<T> unwrap();
 
     /**
-     * 将一个原始流包装为指定类型的增强流 若{@code source}于当前实例包装的流并不相同，则该增强流与当前实例无关联关系
+     * Wraps a source {@link Stream} into a new enhanced stream of the specified type. If the {@code source} stream is
+     * different from the stream wrapped by the current instance, the new enhanced stream will not be associated with
+     * the current instance.
      *
-     * @param source 被包装的流
-     * @return 包装后的流
+     * @param source the {@link Stream} to be wrapped
+     * @return the wrapped stream instance of type {@code S}
      */
     S wrap(final Stream<T> source);
 
     /**
-     * 过滤元素，返回与指定断言匹配的元素组成的流 这是一个无状态中间操作
+     * Returns a stream consisting of the elements of this stream that match the given predicate. This is a stateless
+     * intermediate operation.
      *
-     * @param predicate 断言
-     * @return 返回叠加过滤操作后的流
+     * @param predicate a <a href="package-summary.html#NonInterference">non-interfering</a>,
+     *                  <a href="package-summary.html#Statelessness">stateless</a> predicate to apply to each element to
+     *                  determine if it should be included
+     * @return the new stream
      */
     @Override
     default S filter(final Predicate<? super T> predicate) {
@@ -83,10 +89,13 @@ public interface WrappedStream<T, S extends WrappedStream<T, S>> extends Stream<
     }
 
     /**
-     * 和{@link EasyStream#map(Function)}一样，只不过函数的返回值必须为int类型 这是一个无状态中间操作
+     * Returns an {@link IntStream} consisting of the results of applying the given function to the elements of this
+     * stream. This is a stateless intermediate operation.
      *
-     * @param mapper 返回值为int类型的函数
-     * @return 叠加操作后元素类型全为int的流
+     * @param mapper a <a href="package-summary.html#NonInterference">non-interfering</a>,
+     *               <a href="package-summary.html#Statelessness">stateless</a> function to apply to each element to
+     *               produce an {@code int} value
+     * @return the new {@link IntStream}
      */
     @Override
     default IntStream mapToInt(final ToIntFunction<? super T> mapper) {
@@ -95,10 +104,13 @@ public interface WrappedStream<T, S extends WrappedStream<T, S>> extends Stream<
     }
 
     /**
-     * 和{@link EasyStream#map(Function)}一样，只不过函数的返回值必须为long类型 这是一个无状态中间操作
+     * Returns a {@link LongStream} consisting of the results of applying the given function to the elements of this
+     * stream. This is a stateless intermediate operation.
      *
-     * @param mapper 返回值为long类型的函数
-     * @return 叠加操作后元素类型全为long的流
+     * @param mapper a <a href="package-summary.html#NonInterference">non-interfering</a>,
+     *               <a href="package-summary.html#Statelessness">stateless</a> function to apply to each element to
+     *               produce a {@code long} value
+     * @return the new {@link LongStream}
      */
     @Override
     default LongStream mapToLong(final ToLongFunction<? super T> mapper) {
@@ -107,10 +119,13 @@ public interface WrappedStream<T, S extends WrappedStream<T, S>> extends Stream<
     }
 
     /**
-     * 和{@link EasyStream#map(Function)}一样，只不过函数的返回值必须为double类型 这是一个无状态中间操作
+     * Returns a {@link DoubleStream} consisting of the results of applying the given function to the elements of this
+     * stream. This is a stateless intermediate operation.
      *
-     * @param mapper 返回值为double类型的函数
-     * @return 叠加操作后元素类型全为double的流
+     * @param mapper a <a href="package-summary.html#NonInterference">non-interfering</a>,
+     *               <a href="package-summary.html#Statelessness">stateless</a> function to apply to each element to
+     *               produce a {@code double} value
+     * @return the new {@link DoubleStream}
      */
     @Override
     default DoubleStream mapToDouble(final ToDoubleFunction<? super T> mapper) {
@@ -119,10 +134,15 @@ public interface WrappedStream<T, S extends WrappedStream<T, S>> extends Stream<
     }
 
     /**
-     * 扩散流操作，可能影响流元素个数，将原有流元素执行mapper操作，返回多个流所有元素组成的流 这是一个无状态中间操作
+     * Returns an {@link IntStream} consisting of the results of replacing each element of this stream with the contents
+     * of a mapped {@link IntStream} produced by applying the provided mapping function to each element. Each mapped
+     * stream is closed after its contents have been placed into this stream. This is a stateless intermediate
+     * operation.
      *
-     * @param mapper 操作，返回IntStream
-     * @return 返回叠加拆分操作后的IntStream
+     * @param mapper a <a href="package-summary.html#NonInterference">non-interfering</a>,
+     *               <a href="package-summary.html#Statelessness">stateless</a> function to apply to each element which
+     *               produces an {@link IntStream} of new values
+     * @return the new {@link IntStream}
      */
     @Override
     default IntStream flatMapToInt(final Function<? super T, ? extends IntStream> mapper) {
@@ -131,10 +151,15 @@ public interface WrappedStream<T, S extends WrappedStream<T, S>> extends Stream<
     }
 
     /**
-     * 扩散流操作，可能影响流元素个数，将原有流元素执行mapper操作，返回多个流所有元素组成的流 这是一个无状态中间操作
+     * Returns a {@link LongStream} consisting of the results of replacing each element of this stream with the contents
+     * of a mapped {@link LongStream} produced by applying the provided mapping function to each element. Each mapped
+     * stream is closed after its contents have been placed into this stream. This is a stateless intermediate
+     * operation.
      *
-     * @param mapper 操作，返回LongStream
-     * @return 返回叠加拆分操作后的LongStream
+     * @param mapper a <a href="package-summary.html#NonInterference">non-interfering</a>,
+     *               <a href="package-summary.html#Statelessness">stateless</a> function to apply to each element which
+     *               produces a {@link LongStream} of new values
+     * @return the new {@link LongStream}
      */
     @Override
     default LongStream flatMapToLong(final Function<? super T, ? extends LongStream> mapper) {
@@ -143,10 +168,15 @@ public interface WrappedStream<T, S extends WrappedStream<T, S>> extends Stream<
     }
 
     /**
-     * 扩散流操作，可能影响流元素个数，将原有流元素执行mapper操作，返回多个流所有元素组成的流 这是一个无状态中间操作
+     * Returns a {@link DoubleStream} consisting of the results of replacing each element of this stream with the
+     * contents of a mapped {@link DoubleStream} produced by applying the provided mapping function to each element.
+     * Each mapped stream is closed after its contents have been placed into this stream. This is a stateless
+     * intermediate operation.
      *
-     * @param mapper 操作，返回DoubleStream
-     * @return 返回叠加拆分操作后的DoubleStream
+     * @param mapper a <a href="package-summary.html#NonInterference">non-interfering</a>,
+     *               <a href="package-summary.html#Statelessness">stateless</a> function to apply to each element which
+     *               produces a {@link DoubleStream} of new values
+     * @return the new {@link DoubleStream}
      */
     @Override
     default DoubleStream flatMapToDouble(final Function<? super T, ? extends DoubleStream> mapper) {
@@ -155,9 +185,11 @@ public interface WrappedStream<T, S extends WrappedStream<T, S>> extends Stream<
     }
 
     /**
-     * 返回一个具有去重特征的流 非并行流(顺序流)下对于重复元素，保留遇到顺序中最先出现的元素，并行流情况下不能保证具体保留哪一个 这是一个有状态中间操作
+     * Returns a stream consisting of the distinct elements of this stream. For non-parallel (sequential) streams, in
+     * case of duplicate elements, the first encountered element is retained. For parallel streams, there is no
+     * guarantee which specific duplicate element will be retained. This is a stateful intermediate operation.
      *
-     * @return 一个具有去重特征的流
+     * @return a stream consisting of the distinct elements of this stream
      */
     @Override
     default S distinct() {
@@ -165,10 +197,12 @@ public interface WrappedStream<T, S extends WrappedStream<T, S>> extends Stream<
     }
 
     /**
-     * 返回一个元素按自然顺序排序的流 如果此流的元素不是{@code Comparable} ，则在执行终端操作时可能会抛出 {@code java.lang.ClassCastException} 对于顺序流，排序是稳定的。
-     * 对于无序流，没有稳定性保证。 这是一个有状态中间操作
+     * Returns a stream consisting of the elements of this stream, sorted according to natural order. If the elements of
+     * this stream are not {@code Comparable}, a {@code java.lang.ClassCastException} may be thrown when a terminal
+     * operation is executed. For sequential streams, the sort is stable. For unordered streams, no stability guarantees
+     * are made. This is a stateful intermediate operation.
      *
-     * @return 一个元素按自然顺序排序的流
+     * @return a stream consisting of the elements of this stream, sorted according to natural order
      */
     @Override
     default S sorted() {
@@ -176,11 +210,15 @@ public interface WrappedStream<T, S extends WrappedStream<T, S>> extends Stream<
     }
 
     /**
-     * 返回一个元素按指定的{@link Comparator}排序的流 如果此流的元素不是{@code Comparable} ，则在执行终端操作时可能会抛出{@code java.lang.ClassCastException}
-     * 对于顺序流，排序是稳定的。 对于无序流，没有稳定性保证。 这是一个有状态中间操作
+     * Returns a stream consisting of the elements of this stream, sorted according to the provided {@link Comparator}.
+     * If the elements of this stream are not {@code Comparable}, a {@code java.lang.ClassCastException} may be thrown
+     * when a terminal operation is executed. For sequential streams, the sort is stable. For unordered streams, no
+     * stability guarantees are made. This is a stateful intermediate operation.
      *
-     * @param comparator 排序规则
-     * @return 一个元素按指定的Comparator排序的流
+     * @param comparator a <a href="package-summary.html#NonInterference">non-interfering</a>,
+     *                   <a href="package-summary.html#Statelessness">stateless</a> {@link Comparator} to be used to
+     *                   compare elements in this stream
+     * @return a stream consisting of the elements of this stream, sorted according to the provided {@link Comparator}
      */
     @Override
     default S sorted(final Comparator<? super T> comparator) {
@@ -189,8 +227,10 @@ public interface WrappedStream<T, S extends WrappedStream<T, S>> extends Stream<
     }
 
     /**
-     * 返回与指定函数将元素作为参数执行后组成的流。 这是一个无状态中间操作
-     *
+     * Performs an action for each element of this stream. This is a stateless intermediate operation.
+     * <p>
+     * For example, to observe elements at various points in a pipeline:
+     * 
      * <pre>{@code
      *     .of("one", "two", "three", "four")
      *         .filter(e -> e.length() > 3)
@@ -200,8 +240,10 @@ public interface WrappedStream<T, S extends WrappedStream<T, S>> extends Stream<
      *         .collect(Collectors.toList());
      * }</pre>
      *
-     * @param action 指定的函数
-     * @return 返回叠加操作后的FastStream 当你需要查看经过操作管道某处的元素，可以执行以下操作:
+     * @param action a <a href="package-summary.html#NonInterference">non-interfering</a>,
+     *               <a href="package-summary.html#Statelessness">stateless</a> action to perform on the elements as
+     *               they are consumed from the stream
+     * @return the new stream
      */
     @Override
     default S peek(final Consumer<? super T> action) {
@@ -210,10 +252,11 @@ public interface WrappedStream<T, S extends WrappedStream<T, S>> extends Stream<
     }
 
     /**
-     * 返回截取后面一些元素的流 这是一个短路状态中间操作
+     * Returns a stream consisting of the elements of this stream, truncated to be no longer than {@code maxSize} in
+     * length. This is a short-circuiting intermediate operation.
      *
-     * @param maxSize 元素截取后的个数
-     * @return 截取后的流
+     * @param maxSize the maximum number of elements to be returned in the new stream
+     * @return the new stream
      */
     @Override
     default S limit(final long maxSize) {
@@ -221,10 +264,12 @@ public interface WrappedStream<T, S extends WrappedStream<T, S>> extends Stream<
     }
 
     /**
-     * 返回丢弃前面n个元素后的剩余元素组成的流，如果当前元素个数小于n，则返回一个元素为空的流 这是一个有状态中间操作
+     * Returns a stream consisting of the remaining elements of this stream after discarding the first {@code n}
+     * elements. If this stream contains fewer than {@code n} elements then an empty stream will be returned. This is a
+     * stateful intermediate operation.
      *
-     * @param n 需要丢弃的元素个数
-     * @return 丢弃前面n个元素后的剩余元素组成的流
+     * @param n the number of leading elements to skip
+     * @return the new stream
      */
     @Override
     default S skip(final long n) {
@@ -232,9 +277,10 @@ public interface WrappedStream<T, S extends WrappedStream<T, S>> extends Stream<
     }
 
     /**
-     * 对流里面的每一个元素执行一个操作 这是一个终端操作
+     * Performs an action for each element of this stream. This is a terminal operation.
      *
-     * @param action 操作
+     * @param action a <a href="package-summary.html#NonInterference">non-interfering</a> action to perform on the
+     *               elements
      */
     @Override
     default void forEach(final Consumer<? super T> action) {
@@ -243,9 +289,10 @@ public interface WrappedStream<T, S extends WrappedStream<T, S>> extends Stream<
     }
 
     /**
-     * 对流里面的每一个元素按照顺序执行一个操作 这是一个终端操作
+     * Performs an action for each element of this stream, in encounter order. This is a terminal operation.
      *
-     * @param action 操作
+     * @param action a <a href="package-summary.html#NonInterference">non-interfering</a> action to perform on the
+     *               elements
      */
     @Override
     default void forEachOrdered(final Consumer<? super T> action) {
@@ -254,9 +301,9 @@ public interface WrappedStream<T, S extends WrappedStream<T, S>> extends Stream<
     }
 
     /**
-     * 返回一个包含此流元素的数组 这是一个终端操作
+     * Returns an array containing the elements of this stream. This is a terminal operation.
      *
-     * @return 包含此流元素的数组
+     * @return an array containing the elements of this stream
      */
     @Override
     default Object[] toArray() {
@@ -264,17 +311,23 @@ public interface WrappedStream<T, S extends WrappedStream<T, S>> extends Stream<
     }
 
     /**
-     * 返回一个包含此流元素的指定的数组，例如以下代码编译正常，但运行时会抛出 {@link ArrayStoreException}
+     * Returns an array containing the elements of this stream, using the provided {@code generator} function to
+     * allocate the returned array, as well as any additional arrays that might be required for computation or buffering
+     * during the operation. This is a terminal operation.
+     * <p>
+     * For example, the following code compiles but throws an {@link ArrayStoreException} at runtime:
      * 
      * <pre>{@code
-     * 
+     *
      * String[] strings = Stream.<Integer>builder().add(1).build().toArray(String[]::new);
      * }</pre>
      *
-     * @param generator 这里的IntFunction的参数是元素的个数，返回值为数组类型
-     * @param <A>       给定的数组类型
-     * @return 包含此流元素的指定的数组
-     * @throws ArrayStoreException 如果元素转换失败，例如不是该元素类型及其父类，则抛出该异常
+     * @param generator a function which produces a new array of the desired type and the provided length (for example
+     *                  {@code MyClass[]::new})
+     * @param <A>       the type of the elements of the array
+     * @return an array containing the elements of this stream
+     * @throws ArrayStoreException if the runtime type of the array returned by the array supplier is not a supertype of
+     *                             the runtime type of every element in this stream
      */
     @Override
     default <A> A[] toArray(final IntFunction<A[]> generator) {
@@ -283,23 +336,29 @@ public interface WrappedStream<T, S extends WrappedStream<T, S>> extends Stream<
     }
 
     /**
-     * 对元素进行聚合，并返回聚合后的值，相当于在for循环里写sum=sum+ints[i] 这是一个终端操作 求和、最小值、最大值、平均值和转换成一个String字符串均为聚合操作 例如这里对int进行求和可以写成：
-     *
-     * <pre>{@code
+     * Performs a <a href="package-summary.html#Reduction">reduction</a> on the elements of this stream, using the
+     * provided identity value and an <a href="package-summary.html#Associativity">associative</a> accumulation
+     * function, and returns the reduced value. This is a terminal operation.
+     * <p>
+     * For example, to sum integers:
      * 
+     * <pre>{@code
+     *
      * Integer sum = integers.reduce(0, (a, b) -> a + b);
      * }</pre>
      * <p>
-     * 或者写成:
-     *
-     * <pre>{@code
+     * Or equivalently:
      * 
+     * <pre>{@code
+     *
      * Integer sum = integers.reduce(0, Integer::sum);
      * }</pre>
      *
-     * @param identity    初始值，还用于限定泛型
-     * @param accumulator 你想要的聚合操作
-     * @return 聚合计算后的值
+     * @param identity    the identity value for the accumulating function
+     * @param accumulator an <a href="package-summary.html#Associativity">associative</a>,
+     *                    <a href="package-summary.html#NonInterference">non-interfering</a>,
+     *                    <a href="package-summary.html#Statelessness">stateless</a> function for combining two values
+     * @return the result of the reduction
      */
     @Override
     default T reduce(final T identity, final BinaryOperator<T> accumulator) {
@@ -308,7 +367,11 @@ public interface WrappedStream<T, S extends WrappedStream<T, S>> extends Stream<
     }
 
     /**
-     * 对元素进行聚合，并返回聚合后用 {@link Optional}包裹的值，相当于在for循环里写sum=sum+ints[i] 该操作相当于：
+     * Performs a <a href="package-summary.html#Reduction">reduction</a> on the elements of this stream, using an
+     * <a href="package-summary.html#Associativity">associative</a> accumulation function, and returns an
+     * {@link Optional} describing the reduced value, if any. This is a terminal operation.
+     * <p>
+     * This is equivalent to:
      * 
      * <pre>{@code
      *     boolean foundAny = false;
@@ -323,17 +386,22 @@ public interface WrappedStream<T, S extends WrappedStream<T, S>> extends Stream<
      *     }
      *     return foundAny ? Optional.of(result) : Optional.empty();
      * }</pre>
-     * 
-     * 但它不局限于顺序执行，例如并行流等情况下 这是一个终端操作 例如以下场景抛出 NPE ：
+     * <p>
+     * However, it is not limited to sequential execution, for example, in parallel streams.
+     * <p>
+     * An example scenario where {@link NullPointerException} might be thrown:
      * 
      * <pre>{@code
-     * 
+     *
      * Optional<Integer> reduce = Stream.<Integer>builder().add(1).add(1).build().reduce((a, b) -> null);
      * }</pre>
      *
-     * @param accumulator 你想要的聚合操作
-     * @return 聚合后用 {@link Optional}包裹的值
-     * @throws NullPointerException 如果给定的聚合操作中执行后结果为空，并用于下一次执行，则抛出该异常
+     * @param accumulator an <a href="package-summary.html#Associativity">associative</a>,
+     *                    <a href="package-summary.html#NonInterference">non-interfering</a>,
+     *                    <a href="package-summary.html#Statelessness">stateless</a> function for combining two values
+     * @return an {@link Optional} describing the result of the reduction
+     * @throws NullPointerException if the result of the accumulator function is {@code null} and used for the next
+     *                              operation
      * @see #reduce(Object, BinaryOperator)
      * @see #min(Comparator)
      * @see #max(Comparator)
@@ -345,13 +413,22 @@ public interface WrappedStream<T, S extends WrappedStream<T, S>> extends Stream<
     }
 
     /**
-     * 对元素进行聚合，并返回聚合后的值，并行流时聚合拿到的初始值不稳定 这是一个终端操作
+     * Performs a <a href="package-summary.html#Reduction">reduction</a> on the elements of this stream, using the
+     * provided identity, accumulation and combining functions. This is a terminal operation.
+     * <p>
+     * When executed in parallel, the initial value obtained from the accumulator might be unstable.
      *
-     * @param identity    初始值
-     * @param accumulator 累加器，具体为你要的聚合操作
-     * @param combiner    用于并行流时组合多个结果
-     * @param <U>         初始值
-     * @return 聚合操作的结果
+     * @param identity    the identity value for the accumulating function
+     * @param accumulator an <a href="package-summary.html#Associativity">associative</a>,
+     *                    <a href="package-summary.html#NonInterference">non-interfering</a>,
+     *                    <a href="package-summary.html#Statelessness">stateless</a> function for combining an
+     *                    accumulated result and an element
+     * @param combiner    an <a href="package-summary.html#Associativity">associative</a>,
+     *                    <a href="package-summary.html#NonInterference">non-interfering</a>,
+     *                    <a href="package-summary.html#Statelessness">stateless</a> function for combining two
+     *                    accumulated results
+     * @param <U>         the type of the result
+     * @return the result of the reduction
      * @see #reduce(BinaryOperator)
      * @see #reduce(Object, BinaryOperator)
      */
@@ -366,13 +443,21 @@ public interface WrappedStream<T, S extends WrappedStream<T, S>> extends Stream<
     }
 
     /**
-     * 对元素进行收集，并返回收集后的容器 这是一个终端操作
+     * Performs a <a href="package-summary.html#MutableReduction">mutable reduction</a> operation on the elements of
+     * this stream using a {@link Collector}. This is a terminal operation.
      *
-     * @param supplier    提供初始值的函数式接口，一般可以传入构造参数
-     * @param accumulator 具体收集操作
-     * @param combiner    用于并行流时组合多个结果
-     * @param <R>         用于收集元素的容器，大多是集合
-     * @return 收集后的容器
+     * @param supplier    a function that creates a new mutable result container. For a parallel execution, this
+     *                    function may be called multiple times, and must return a fresh value each time.
+     * @param accumulator an <a href="package-summary.html#Associativity">associative</a>,
+     *                    <a href="package-summary.html#NonInterference">non-interfering</a>,
+     *                    <a href="package-summary.html#Statelessness">stateless</a> function for incorporating an
+     *                    additional element into a result
+     * @param combiner    an <a href="package-summary.html#Associativity">associative</a>,
+     *                    <a href="package-summary.html#NonInterference">non-interfering</a>,
+     *                    <a href="package-summary.html#Statelessness">stateless</a> function for combining two partial
+     *                    results
+     * @param <R>         the type of the result
+     * @return the result of the mutable reduction
      * 
      *         <pre>{@code
      *  List<Integer> collect = Stream.iterate(1, i -> ++i).limit(10).collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
@@ -390,12 +475,13 @@ public interface WrappedStream<T, S extends WrappedStream<T, S>> extends Stream<
     }
 
     /**
-     * 对元素进行收集，并返回收集后的元素 这是一个终端操作
+     * Performs a <a href="package-summary.html#MutableReduction">mutable reduction</a> operation on the elements of
+     * this stream using a {@link Collector}. This is a terminal operation.
      *
-     * @param collector 收集器
-     * @param <R>       容器类型
-     * @param <A>       具体操作时容器类型，例如 {@code List::add} 时它为 {@code List}
-     * @return 收集后的容器
+     * @param collector the {@link Collector} describing the reduction
+     * @param <R>       the type of the result
+     * @param <A>       the intermediate accumulation type of the {@link Collector}
+     * @return the result of the reduction
      */
     @Override
     default <R, A> R collect(final Collector<? super T, A, R> collector) {
@@ -404,10 +490,14 @@ public interface WrappedStream<T, S extends WrappedStream<T, S>> extends Stream<
     }
 
     /**
-     * 获取最小值
+     * Returns an {@link Optional} describing the minimum element of this stream according to the provided
+     * {@link Comparator}. This is a terminal operation.
      *
-     * @param comparator 一个用来比较大小的比较器{@link Comparator}
-     * @return 最小值
+     * @param comparator a <a href="package-summary.html#NonInterference">non-interfering</a>,
+     *                   <a href="package-summary.html#Statelessness">stateless</a> {@link Comparator} to compare
+     *                   elements of this stream
+     * @return an {@link Optional} describing the minimum element of this stream, or an empty {@link Optional} if the
+     *         stream is empty
      */
     @Override
     default Optional<T> min(final Comparator<? super T> comparator) {
@@ -416,10 +506,14 @@ public interface WrappedStream<T, S extends WrappedStream<T, S>> extends Stream<
     }
 
     /**
-     * 获取最大值
+     * Returns an {@link Optional} describing the maximum element of this stream according to the provided
+     * {@link Comparator}. This is a terminal operation.
      *
-     * @param comparator 一个用来比较大小的比较器{@link Comparator}
-     * @return 最大值
+     * @param comparator a <a href="package-summary.html#NonInterference">non-interfering</a>,
+     *                   <a href="package-summary.html#Statelessness">stateless</a> {@link Comparator} to compare
+     *                   elements of this stream
+     * @return an {@link Optional} describing the maximum element of this stream, or an empty {@link Optional} if the
+     *         stream is empty
      */
     @Override
     default Optional<T> max(final Comparator<? super T> comparator) {
@@ -428,9 +522,9 @@ public interface WrappedStream<T, S extends WrappedStream<T, S>> extends Stream<
     }
 
     /**
-     * 返回流元素个数
+     * Returns the count of elements in this stream. This is a terminal operation.
      *
-     * @return 流元素个数
+     * @return the count of elements in this stream
      */
     @Override
     default long count() {
@@ -438,10 +532,13 @@ public interface WrappedStream<T, S extends WrappedStream<T, S>> extends Stream<
     }
 
     /**
-     * 判断是否有任何一个元素满足给定断言
+     * Returns whether any elements of this stream match the provided predicate. This is a short-circuiting terminal
+     * operation.
      *
-     * @param predicate 断言
-     * @return 是否有任何一个元素满足给定断言
+     * @param predicate a <a href="package-summary.html#NonInterference">non-interfering</a>,
+     *                  <a href="package-summary.html#Statelessness">stateless</a> predicate to apply to elements of
+     *                  this stream
+     * @return {@code true} if any elements of the stream match the provided predicate, otherwise {@code false}
      */
     @Override
     default boolean anyMatch(final Predicate<? super T> predicate) {
@@ -450,10 +547,13 @@ public interface WrappedStream<T, S extends WrappedStream<T, S>> extends Stream<
     }
 
     /**
-     * 判断是否所有元素满足给定断言
+     * Returns whether all elements of this stream match the provided predicate. This is a short-circuiting terminal
+     * operation.
      *
-     * @param predicate 断言
-     * @return 是否所有元素满足给定断言
+     * @param predicate a <a href="package-summary.html#NonInterference">non-interfering</a>,
+     *                  <a href="package-summary.html#Statelessness">stateless</a> predicate to apply to elements of
+     *                  this stream
+     * @return {@code true} if all elements of the stream match the provided predicate, otherwise {@code false}
      */
     @Override
     default boolean allMatch(final Predicate<? super T> predicate) {
@@ -462,10 +562,13 @@ public interface WrappedStream<T, S extends WrappedStream<T, S>> extends Stream<
     }
 
     /**
-     * 判断是否没有元素满足给定断言
+     * Returns whether no elements of this stream match the provided predicate. This is a short-circuiting terminal
+     * operation.
      *
-     * @param predicate 断言
-     * @return 是否没有元素满足给定断言
+     * @param predicate a <a href="package-summary.html#NonInterference">non-interfering</a>,
+     *                  <a href="package-summary.html#Statelessness">stateless</a> predicate to apply to elements of
+     *                  this stream
+     * @return {@code true} if no elements of the stream match the provided predicate, otherwise {@code false}
      */
     @Override
     default boolean noneMatch(final Predicate<? super T> predicate) {
@@ -474,9 +577,12 @@ public interface WrappedStream<T, S extends WrappedStream<T, S>> extends Stream<
     }
 
     /**
-     * 获取第一个元素
+     * Returns an {@link Optional} describing the first element of this stream, or an empty {@link Optional} if the
+     * stream is empty. If the stream has no encounter order, then any element may be returned. This is a
+     * short-circuiting terminal operation.
      *
-     * @return 第一个元素
+     * @return an {@link Optional} describing the first element of this stream, or an empty {@link Optional} if the
+     *         stream is empty
      */
     @Override
     default Optional<T> findFirst() {
@@ -484,9 +590,15 @@ public interface WrappedStream<T, S extends WrappedStream<T, S>> extends Stream<
     }
 
     /**
-     * 考虑性能，随便取一个，这里不是随机取一个，是随便取一个
+     * Returns an {@link Optional} describing some element of the stream, or an empty {@link Optional} if the stream is
+     * empty. This is a short-circuiting terminal operation.
+     * <p>
+     * The behavior of this operation is explicitly nondeterministic; it is free to select any element in the stream.
+     * This is to allow for maximal performance in parallel operations; the cost of obtaining a first element is often
+     * higher in a parallel stream than obtaining an arbitrary element.
      *
-     * @return 随便取一个
+     * @return an {@link Optional} describing some element of this stream, or an empty {@link Optional} if the stream is
+     *         empty
      */
     @Override
     default Optional<T> findAny() {
@@ -494,9 +606,9 @@ public interface WrappedStream<T, S extends WrappedStream<T, S>> extends Stream<
     }
 
     /**
-     * 返回流的迭代器
+     * Returns an {@link Iterator} for the elements of this stream.
      *
-     * @return 流的迭代器
+     * @return an {@link Iterator} for the elements of this stream
      */
     @Override
     default Iterator<T> iterator() {
@@ -504,9 +616,9 @@ public interface WrappedStream<T, S extends WrappedStream<T, S>> extends Stream<
     }
 
     /**
-     * 返回流的拆分器
+     * Returns a {@link Spliterator} for the elements of this stream.
      *
-     * @return 流的拆分器
+     * @return a {@link Spliterator} for the elements of this stream
      */
     @Override
     default Spliterator<T> spliterator() {
@@ -514,9 +626,9 @@ public interface WrappedStream<T, S extends WrappedStream<T, S>> extends Stream<
     }
 
     /**
-     * 返回流的并行状态
+     * Returns {@code true} if this stream is parallel, {@code false} otherwise.
      *
-     * @return 流的并行状态
+     * @return {@code true} if this stream is parallel, {@code false} otherwise
      */
     @Override
     default boolean isParallel() {
@@ -524,9 +636,10 @@ public interface WrappedStream<T, S extends WrappedStream<T, S>> extends Stream<
     }
 
     /**
-     * 返回一个串行流，该方法可以将并行流转换为串行流
+     * Returns an equivalent sequential stream. This method can be used to convert a parallel stream to a sequential
+     * stream.
      *
-     * @return 串行流
+     * @return a sequential stream
      */
     @Override
     default S sequential() {
@@ -534,9 +647,9 @@ public interface WrappedStream<T, S extends WrappedStream<T, S>> extends Stream<
     }
 
     /**
-     * 将流转换为并行
+     * Returns an equivalent parallel stream.
      *
-     * @return 并行流
+     * @return a parallel stream
      */
     @Override
     default S parallel() {
@@ -544,12 +657,13 @@ public interface WrappedStream<T, S extends WrappedStream<T, S>> extends Stream<
     }
 
     /**
-     * 返回一个无序流(无手动排序)
+     * Returns an equivalent stream that is unordered.
      * <p>
-     * 标记一个流是不在意元素顺序的, 在并行流的某些情况下可以提高性能
-     * </p>
+     * A stream that is unordered does not have an encounter order. This can sometimes improve the performance of
+     * parallel operations.
+     * 
      *
-     * @return 无序流
+     * @return an unordered stream
      */
     @Override
     default S unordered() {
@@ -557,10 +671,11 @@ public interface WrappedStream<T, S extends WrappedStream<T, S>> extends Stream<
     }
 
     /**
-     * 在流关闭时执行操作
+     * Returns an equivalent stream with an additional close-handler. Close handlers are run when the {@link #close()}
+     * method is called on the stream.
      *
-     * @param closeHandler 在流关闭时执行的操作
-     * @return 流
+     * @param closeHandler a {@link Runnable} to execute when the stream is closed
+     * @return a stream with an additional close-handler
      */
     @Override
     default S onClose(final Runnable closeHandler) {
@@ -568,7 +683,7 @@ public interface WrappedStream<T, S extends WrappedStream<T, S>> extends Stream<
     }
 
     /**
-     * 关闭流
+     * Closes this stream, causing all close handlers for this stream pipeline to be called.
      *
      * @see AutoCloseable#close()
      */
@@ -578,34 +693,34 @@ public interface WrappedStream<T, S extends WrappedStream<T, S>> extends Stream<
     }
 
     /**
-     * 获取当前实例的哈希值
+     * Returns a hash code value for the object.
      *
-     * @return 哈希值
+     * @return a hash code value for this object
      */
     @Override
     int hashCode();
 
     /**
-     * 比较实例是否相等
+     * Indicates whether some other object is "equal to" this one.
      *
-     * @param object 对象
-     * @return 是否相等
+     * @param object the reference object with which to compare
+     * @return {@code true} if this object is the same as the obj argument; {@code false} otherwise
      */
     @Override
     boolean equals(final Object object);
 
     /**
-     * 将当前实例转为字符串
+     * Returns a string representation of the object.
      *
-     * @return 字符串
+     * @return a string representation of the object
      */
     @Override
     String toString();
 
     /**
-     * 转换为EasyStream
+     * Converts the current instance to an {@link EasyStream}.
      *
-     * @return 转换后的EasyStream
+     * @return the converted {@link EasyStream}
      */
     default EasyStream<T> easyStream() {
         if (this instanceof EasyStream) {

@@ -27,17 +27,17 @@
 */
 package org.miaixz.bus.validate.magic.annotation;
 
-import java.lang.annotation.*;
-
 import org.miaixz.bus.validate.Builder;
 import org.miaixz.bus.validate.metric.LengthMatcher;
 
+import java.lang.annotation.*;
+
 /**
- * 字符串、数组、集合的长度校验
+ * Validates the length of a String, array, or collection.
  *
  * <p>
- * 默认被校验对象是null时,通过校验
- * </P>
+ * By default, if the object to be validated is null, the validation passes.
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -49,53 +49,54 @@ import org.miaixz.bus.validate.metric.LengthMatcher;
 public @interface Length {
 
     /**
-     * 最小长度, 小于等于
+     * The minimum length (inclusive).
      *
-     * @return the int
+     * @return the minimum allowed length.
      */
     @Filler("min")
     int min() default Integer.MIN_VALUE;
 
     /**
-     * 最大长度,大于等于
+     * The maximum length (inclusive).
      *
-     * @return the int
+     * @return the maximum allowed length.
      */
     @Filler("max")
     int max() default Integer.MAX_VALUE;
 
     /**
-     * 如果长度为0,判断能否通过校验 默认为false true：表示长度为零,默认通过校验；false：表示长度为0,仍然要进行长度验证
+     * Specifies whether a length of zero is permissible. Defaults to {@code false}. If {@code true}, a length of zero
+     * will pass validation. If {@code false}, a length of zero is still subject to the length validation rules.
      *
-     * @return the boolean
+     * @return {@code true} if a length of zero is allowed, {@code false} otherwise.
      */
     boolean zeroAble() default false;
 
     /**
-     * 默认使用的异常码
+     * The error code to be used when validation fails.
      *
-     * @return the string
+     * @return the error code.
      */
     String errcode() default Builder.DEFAULT_ERRCODE;
 
     /**
-     * 默认使用的异常信息
+     * The error message to be used when validation fails. The message can be a template with placeholders.
      *
-     * @return the string
+     * @return the error message.
      */
-    String errmsg() default "${field}长度必须在规定范围内, 最小: ${min}, 最大: ${max}";
+    String errmsg() default "The length of ${field} must be within the specified range. Min: ${min}, Max: ${max}";
 
     /**
-     * 校验器组
+     * The validation groups this constraint belongs to.
      *
-     * @return the array
+     * @return an array of group names.
      */
     String[] group() default {};
 
     /**
-     * 被校验字段名称
+     * The name of the field being validated.
      *
-     * @return the string
+     * @return the field name.
      */
     String field() default Builder.DEFAULT_FIELD;
 

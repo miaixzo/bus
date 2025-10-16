@@ -40,7 +40,9 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.loader.Loaders;
 
 /**
- * 框架注入器
+ * Injects framework-specific classes and resources into a JAR archive. This class is responsible for adding necessary
+ * components for the framework's operation into the target JAR, ensuring proper functionality after shading or
+ * packaging.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,10 +50,12 @@ import org.miaixz.bus.core.lang.loader.Loaders;
 public class Injector {
 
     /**
-     * 往JAR包中注入框架的classes
+     * Injects framework classes and resources into the provided JAR output stream. It scans for resources within the
+     * {@link Builder#XJAR_SRC_DIR} and adds them as entries to the JAR archive, creating necessary directory entries
+     * along the way.
      *
-     * @param zos jar包输出流
-     * @throws IOException I/O 异常
+     * @param zos The {@link JarArchiveOutputStream} to which the framework's classes and resources will be injected.
+     * @throws IOException If an I/O error occurs during the injection process.
      */
     public static void inject(JarArchiveOutputStream zos) throws IOException {
         Set<String> directories = new HashSet<>();

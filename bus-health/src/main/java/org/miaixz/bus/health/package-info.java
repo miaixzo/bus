@@ -26,7 +26,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 提供跨平台实现以检索操作系统和硬件信息，例如操作系统版本、内存、CPU、磁盘、设备、传感器等
+ * Provides a cross-platform implementation to retrieve operating system and hardware information, such as OS version,
+ * memory, CPU, disk, devices, sensors, and more.
  *
  * @author Kimi Liu
  * @since Java 17+

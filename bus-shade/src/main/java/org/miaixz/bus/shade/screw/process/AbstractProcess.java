@@ -42,7 +42,7 @@ import org.miaixz.bus.shade.screw.engine.EngineFileType;
 import org.miaixz.bus.shade.screw.metadata.*;
 
 /**
- * AbstractBuilder
+ * Abstract base class for data processing.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -50,28 +50,31 @@ import org.miaixz.bus.shade.screw.metadata.*;
 public abstract class AbstractProcess implements Process {
 
     /**
-     * 配置
+     * Configuration object.
      */
     protected Config config;
     /**
-     * 表信息缓存
+     * Cache for table information.
      */
     volatile Map<String, List<? extends Table>> tablesCaching = new ConcurrentHashMap<>();
     /**
-     * 列信息缓存
+     * Cache for column information.
      */
     volatile Map<String, List<Column>> columnsCaching = new ConcurrentHashMap<>();
     /**
-     * 主键信息缓存
+     * Cache for primary key information.
      */
     volatile Map<String, List<PrimaryKey>> primaryKeysCaching = new ConcurrentHashMap<>();
 
+    /**
+     * Default constructor.
+     */
     protected AbstractProcess() {
 
     }
 
     /**
-     * 构造方法
+     * Constructor with configuration.
      *
      * @param config {@link Config}
      */
@@ -81,23 +84,23 @@ public abstract class AbstractProcess implements Process {
     }
 
     /**
-     * 过滤表 存在指定生成和指定不生成，优先级为：如果指定生成，只会生成指定的表，未指定的不会生成，也不会处理忽略表
+     * Filters tables based on the configuration. If 'designated' rules are present, only specified tables are included.
+     * Otherwise, 'ignore' rules are applied.
      *
-     * @param tables {@link List} 处理前数据
-     * @return {@link List} 处理过后的数据
+     * @param tables The list of tables to be filtered.
+     * @return The filtered list of tables.
      */
     protected List<TableSchema> filterTables(List<TableSchema> tables) {
         ProcessConfig produceConfig = config.getProduceConfig();
         if (!Objects.isNull(config) && !Objects.isNull(config.getProduceConfig())) {
-            // 指定生成的表名、前缀、后缀任意不为空，按照指定表生成，其余不生成，不会在处理忽略表
+            // If any 'designated' rules (by name, prefix, or suffix) are set, apply them.
+            // Ignore rules are skipped if designation rules are active.
             if (CollKit.isNotEmpty(produceConfig.getDesignatedTableName())
-                    // 前缀
                     || CollKit.isNotEmpty(produceConfig.getDesignatedTablePrefix())
-                    // 后缀
                     || CollKit.isNotEmpty(produceConfig.getDesignatedTableSuffix())) {
                 return handleDesignated(tables);
             }
-            // 处理忽略表
+            // Otherwise, apply ignore rules.
             else {
                 return handleIgnore(tables);
             }
@@ -106,16 +109,16 @@ public abstract class AbstractProcess implements Process {
     }
 
     /**
-     * 处理指定表
+     * Handles table filtering based on 'designated' (inclusion) rules.
      *
-     * @param tables {@link List} 处理前数据
-     * @return {@link List} 处理过后的数据
+     * @param tables The original list of tables.
+     * @return A new list containing only the designated tables.
      */
     private List<TableSchema> handleDesignated(List<TableSchema> tables) {
         List<TableSchema> tableSchemas = new ArrayList<>();
         ProcessConfig produceConfig = this.config.getProduceConfig();
         if (!Objects.isNull(config) && !Objects.isNull(produceConfig)) {
-            // 指定表名
+            // By designated table name
             if (CollKit.isNotEmpty(produceConfig.getDesignatedTableName())) {
                 List<String> list = produceConfig.getDesignatedTableName();
                 for (String name : list) {
@@ -123,7 +126,7 @@ public abstract class AbstractProcess implements Process {
                             tables.stream().filter(j -> j.getTableName().equals(name)).collect(Collectors.toList()));
                 }
             }
-            // 指定表名前缀
+            // By designated table prefix
             if (CollKit.isNotEmpty(produceConfig.getDesignatedTablePrefix())) {
                 List<String> list = produceConfig.getDesignatedTablePrefix();
                 for (String prefix : list) {
@@ -132,7 +135,7 @@ public abstract class AbstractProcess implements Process {
                                     .collect(Collectors.toList()));
                 }
             }
-            // 指定表名后缀
+            // By designated table suffix
             if (CollKit.isNotEmpty(produceConfig.getDesignatedTableSuffix())) {
                 List<String> list = produceConfig.getDesignatedTableSuffix();
                 for (String suffix : list) {
@@ -147,22 +150,22 @@ public abstract class AbstractProcess implements Process {
     }
 
     /**
-     * 处理忽略
+     * Handles table filtering based on 'ignore' (exclusion) rules.
      *
-     * @param tables {@link List} 处理前数据
-     * @return {@link List} 处理过后的数据
+     * @param tables The original list of tables.
+     * @return A new list with ignored tables removed.
      */
     private List<TableSchema> handleIgnore(List<TableSchema> tables) {
         ProcessConfig produceConfig = this.config.getProduceConfig();
         if (!Objects.isNull(this.config) && !Objects.isNull(produceConfig)) {
-            // 处理忽略表名
+            // Ignore by table name
             if (CollKit.isNotEmpty(produceConfig.getIgnoreTableName())) {
                 List<String> list = produceConfig.getIgnoreTableName();
                 for (String name : list) {
                     tables = tables.stream().filter(j -> !j.getTableName().equals(name)).collect(Collectors.toList());
                 }
             }
-            // 忽略表名前缀
+            // Ignore by table prefix
             if (CollKit.isNotEmpty(produceConfig.getIgnoreTablePrefix())) {
                 List<String> list = produceConfig.getIgnoreTablePrefix();
                 for (String prefix : list) {
@@ -170,7 +173,7 @@ public abstract class AbstractProcess implements Process {
                             .collect(Collectors.toList());
                 }
             }
-            // 忽略表名后缀
+            // Ignore by table suffix
             if (CollKit.isNotEmpty(produceConfig.getIgnoreTableSuffix())) {
                 List<String> list = produceConfig.getIgnoreTableSuffix();
                 for (String suffix : list) {
@@ -184,46 +187,38 @@ public abstract class AbstractProcess implements Process {
     }
 
     /**
-     * 优化数据
+     * Optimizes the data model, such as trimming string fields.
      *
      * @param dataModel {@link DataSchema}
      */
     public void optimizeData(DataSchema dataModel) {
-        // trim
+        // Trim string fields in the main data model
         BeanKit.trimStringField(dataModel);
         // tables
         List<TableSchema> tables = dataModel.getTables();
         // columns
         tables.forEach(i -> {
-            // table escape xml
+            // Trim string fields in the table object
             BeanKit.trimStringField(i);
             List<ColumnSchema> columns = i.getColumns();
-            // columns escape xml
+            // Trim string fields in column objects
             columns.forEach(BeanKit::trimStringField);
         });
-        // if file type is word
+        // Special handling if file type is Word
         if (config.getEngineConfig().getFileType().equals(EngineFileType.WORD)) {
-            // escape xml
             BeanKit.trimStringField(dataModel);
-            // tables
             tables.forEach(i -> {
-                // table escape xml
                 BeanKit.trimStringField(i);
                 List<ColumnSchema> columns = i.getColumns();
-                // columns escape xml
                 columns.forEach(BeanKit::trimStringField);
             });
         }
-        // if file type is markdown
+        // Special handling if file type is Markdown
         if (config.getEngineConfig().getFileType().equals(EngineFileType.MD)) {
-            // escape xml
             BeanKit.trimStringField(dataModel);
-            // columns
             tables.forEach(i -> {
-                // table escape xml
                 BeanKit.trimStringField(i);
                 List<ColumnSchema> columns = i.getColumns();
-                // columns escape xml
                 columns.forEach(BeanKit::trimStringField);
             });
         }

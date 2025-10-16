@@ -34,15 +34,18 @@ import org.miaixz.bus.auth.nimble.AbstractProvider;
 import org.miaixz.bus.core.net.Protocol;
 
 /**
- * OAuth 及其他协议平台的 API 配置接口。 为 OAuth2、SAML、LDAP 等协议提供特定配置和提供者类，实现统一认证框架。 实现类需提供以下功能：
+ * API configuration interface for OAuth and other protocol platforms. Provides specific configurations and provider
+ * classes for protocols like OAuth2, SAML, LDAP, etc., to achieve a unified authentication framework. Implementations
+ * of this interface should provide the following functionalities:
  * 
  * <pre>
- * 1) getConfig(): 返回协议特定的配置（如 OAuth2 的端点、LDAP 的服务器信息、SAML 的 SSO 端点）。
- * 2) getProtocol(): 返回协议类型（如 OAUTH2、SAML、LDAP）。
- * 3) getTargetClass(): 返回对应的提供者实现类。
+ * 1) {@link #endpoint()}: Returns protocol-specific configurations (e.g., OAuth2 endpoints, LDAP server information, SAML SSO endpoints).
+ * 2) {@link #getProtocol()}: Returns the protocol type (e.g., OAUTH2, SAML, LDAP).
+ * 3) {@link #getTargetClass()}: Returns the corresponding provider implementation class.
  * </pre>
  * 
- * 注意事项： - 扩展第三方授权时，需实现此接口并在 Registry 枚举中注册。
+ * Note: When extending third-party authorization, this interface must be implemented and registered in the
+ * {@link Registry} enum.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -50,79 +53,82 @@ import org.miaixz.bus.core.net.Protocol;
 public interface Complex {
 
     /**
-     * 获取协议特定配置。 配置内容根据协议类型定义，例如： - OAuth2：包含 AUTHORIZE、ACCESSTOKEN、USERINFO 等端点 URL。 - SAML：包含 ssoEndpoint、metadataUrl
-     * 等。 - LDAP：通常返回空映射，使用 Context 配置。
+     * Retrieves protocol-specific endpoint configurations. The content of the configuration is defined according to the
+     * protocol type, for example: - OAuth2: Contains endpoint URLs such as AUTHORIZE, ACCESSTOKEN, USERINFO. - SAML:
+     * Contains ssoEndpoint, metadataUrl, etc. - LDAP: Usually returns an empty map, using {@link Context} for
+     * configuration.
      *
-     * @return 配置键值对映射，默认返回空映射
+     * @return a map of configuration key-value pairs, an empty map by default
      */
     default Map<Endpoint, String> endpoint() {
         return new HashMap<>();
     }
 
     /**
-     * 获取协议特定配置。 配置内容根据协议类型定义，例如： - OAuth2：包含 AUTHORIZE、ACCESSTOKEN、USERINFO 等端点 URL。 - SAML：包含 ssoEndpoint、metadataUrl
-     * 等。 - LDAP：通常返回空映射，使用 Context 配置。
+     * Retrieves the authorization endpoint URL from the protocol-specific configurations.
      *
-     * @return 配置键值对映射，默认返回空映射
+     * @return the authorization endpoint URL
      */
     default String authorize() {
         return this.endpoint().get(Endpoint.AUTHORIZE);
     }
 
     /**
-     * 获取协议特定配置: authorize
+     * Retrieves the access token endpoint URL from the protocol-specific configurations.
      *
-     * @return 配置键值对映射，默认返回空映射
+     * @return the access token endpoint URL
      */
     default String accessToken() {
-        return this.endpoint().get(Endpoint.AUTHORIZE);
+        return this.endpoint().get(Endpoint.ACCESS_TOKEN);
     }
 
     /**
-     * 获取协议特定配置: userinfo
+     * Retrieves the user info endpoint URL from the protocol-specific configurations.
      *
-     * @return 配置键值对映射，默认返回空映射
+     * @return the user info endpoint URL
      */
     default String userinfo() {
         return this.endpoint().get(Endpoint.USERINFO);
     }
 
     /**
-     * 获取协议特定配置:refresh
+     * Retrieves the refresh token endpoint URL from the protocol-specific configurations.
      *
-     * @return 配置键值对映射，默认返回空映射
+     * @return the refresh token endpoint URL
      */
     default String refresh() {
         return this.endpoint().get(Endpoint.REFRESH);
     }
 
     /**
-     * 获取协议特定配置: revoke
+     * Retrieves the revoke token endpoint URL from the protocol-specific configurations.
      *
-     * @return 配置键值对映射，默认返回空映射
+     * @return the revoke token endpoint URL
      */
     default String revoke() {
         return this.endpoint().get(Endpoint.REVOKE);
     }
 
     /**
-     * 获取协议类型。 用于标识认证协议，例如 OAUTH2、SAML、LDAP。
+     * Retrieves the protocol type. Used to identify the authentication protocol, such as OAUTH2, SAML, LDAP.
      *
-     * @return 协议类型
+     * @return the protocol type
      */
     Protocol getProtocol();
 
     /**
-     * 获取对应的提供者实现类。 提供者类必须继承自 AbstractProvider，用于处理协议特定的认证逻辑。
+     * Retrieves the corresponding provider implementation class. The provider class must extend
+     * {@link AbstractProvider} and handle protocol-specific authentication logic.
      *
-     * @return 提供者类
+     * @return the provider class
      */
     Class<? extends AbstractProvider> getTargetClass();
 
     /**
-     * 获取 Source 的字符串名称。 通常为枚举名称，用于标识认证来源（如 TWITTER、SAML_EXAMPLE）。 若非枚举实现，则返回类简单名称。
+     * Retrieves the string name of the source. Typically the enum name, used to identify the authentication source
+     * (e.g., TWITTER, SAML_EXAMPLE). If it's not an enum implementation, it returns the simple class name.
      *
-     * @return 来源名称
+     * @return the source name
      */
     default String getName() {
         if (this instanceof Enum) {

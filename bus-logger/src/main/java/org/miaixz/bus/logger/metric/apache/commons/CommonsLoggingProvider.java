@@ -27,18 +27,17 @@
 */
 package org.miaixz.bus.logger.metric.apache.commons;
 
-import java.io.Serial;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.logging.log4j.Logger;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Level;
 import org.miaixz.bus.logger.magic.AbstractProvider;
 
+import java.io.Serial;
+
 /**
- * apache commons logging
+ * A logger provider implementation that wraps an {@link org.apache.commons.logging.Log} instance.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -49,33 +48,33 @@ public class CommonsLoggingProvider extends AbstractProvider {
     private static final long serialVersionUID = 2852286531003L;
 
     /**
-     * 日志门面
+     * The underlying Apache Commons Logging logger instance.
      */
     private final transient Log logger;
 
     /**
-     * 构造
+     * Constructs a new {@code CommonsLoggingProvider} for the specified name.
      *
-     * @param name 名称
+     * @param name the name of the logger.
      */
     public CommonsLoggingProvider(final String name) {
         this(LogFactory.getLog(name), name);
     }
 
     /**
-     * 构造
+     * Constructs a new {@code CommonsLoggingProvider} for the specified class.
      *
-     * @param clazz 日志实现类
+     * @param clazz the class for which to create the logger.
      */
     public CommonsLoggingProvider(final Class<?> clazz) {
         this(LogFactory.getLog(clazz), null == clazz ? Normal.NULL : clazz.getName());
     }
 
     /**
-     * 构造
+     * Constructs a new {@code CommonsLoggingProvider} with the specified logger and name.
      *
-     * @param logger 日志对象
-     * @param name   名称
+     * @param logger the {@link Log} instance to use.
+     * @param name   the name of the logger.
      */
     public CommonsLoggingProvider(final Log logger, final String name) {
         this.logger = logger;
@@ -196,22 +195,21 @@ public class CommonsLoggingProvider extends AbstractProvider {
 
     @Override
     public Level getLevel() {
-        // 尝试检查底层日志框架（如 Log4j 或 Logback）
-        if (logger instanceof Logger) { // Log4j 2.x
-            org.apache.logging.log4j.Level log4jLevel = ((Logger) logger).getLevel();
+        // Try to check the underlying logging framework (e.g., Log4j or Logback)
+        if (logger instanceof org.apache.logging.log4j.Logger log4jLogger) { // Log4j 2.x
+            org.apache.logging.log4j.Level log4jLevel = log4jLogger.getLevel();
             if (log4jLevel != null) {
-                return switch (log4jLevel.getStandardLevel().toString()) {
-                    case "TRACE" -> Level.TRACE;
-                    case "DEBUG" -> Level.DEBUG;
-                    case "INFO" -> Level.INFO;
-                    case "WARN" -> Level.WARN;
-                    case "ERROR" -> Level.ERROR;
-                    case "FATAL" -> Level.ERROR; // 映射 FATAL 到 ERROR
+                return switch (log4jLevel.getStandardLevel()) {
+                    case TRACE -> Level.TRACE;
+                    case DEBUG -> Level.DEBUG;
+                    case INFO -> Level.INFO;
+                    case WARN -> Level.WARN;
+                    case ERROR, FATAL -> Level.ERROR; // Map FATAL to ERROR
                     default -> Level.OFF;
                 };
             }
         }
-        // 回退到默认实现
+        // Fallback to the default implementation
         return super.getLevel();
     }
 

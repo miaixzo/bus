@@ -34,7 +34,9 @@ import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.timout.Timeout;
 
 /**
- * 提供一个字节流 使用此接口从任何地方读取数据 它的位置:来自网络、存储或内存中的缓冲区 来源可能 分层以转换提供的数据,例如解压、解密或移除协议框架
+ * Provides a byte stream. Use this interface to read data from various locations, such as networks, storage, or
+ * in-memory buffers. Sources can be layered to transform the provided data, for example, to decompress, decrypt, or
+ * remove protocol framing.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,26 +44,28 @@ import org.miaixz.bus.core.io.timout.Timeout;
 public interface Source extends Closeable {
 
     /**
-     * 从中删除至少1个字节，最多为{@code byteCount}字节， 并将它们 附加到{@code sink}。返回读取的字节数，如果该源已耗尽，则返回-1
+     * Removes at least 1 byte and at most {@code byteCount} bytes from this source and appends them to {@code sink}.
+     * Returns the number of bytes read, or -1 if this source has been exhausted.
      *
-     * @param sink      缓冲
-     * @param byteCount 长度大小
-     * @return the long
-     * @throws IOException 异常
+     * @param sink      The buffer to which bytes will be appended.
+     * @param byteCount The maximum number of bytes to read.
+     * @return The number of bytes read, or -1 if the source is exhausted.
+     * @throws IOException If an I/O error occurs.
      */
     long read(Buffer sink, long byteCount) throws IOException;
 
     /**
-     * 返回此源的超时时间.
+     * Returns the timeout for this source.
      *
-     * @return 超时时间
+     * @return The timeout instance.
      */
     Timeout timeout();
 
     /**
-     * 关闭此源并释放此源持有的资源. 读取闭源是一个错误。多次关闭源是安全的.
+     * Closes this source and releases any resources held by it. It is an error to read from a closed source. It is safe
+     * to close a source multiple times.
      *
-     * @throws IOException 异常
+     * @throws IOException If an I/O error occurs.
      */
     @Override
     void close() throws IOException;

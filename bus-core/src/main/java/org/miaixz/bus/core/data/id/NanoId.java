@@ -33,17 +33,18 @@ import java.util.Random;
 import org.miaixz.bus.core.xyz.RandomKit;
 
 /**
- * NanoId，一个小型、安全、对 URL友好的唯一字符串 ID 生成器，特点：
+ * NanoId, a small, secure, URL-friendly unique string ID generator.
  *
+ * Features:
  * <ul>
- * <li>安全：它使用加密、强大的随机 API，并保证符号的正确分配</li>
- * <li>体积小：只有 258 bytes 大小（压缩后）、无依赖</li>
- * <li>紧凑：它使用比 UUID (A-Za-z0-9_~)更多的符号</li>
+ * <li><b>Secure:</b> It uses a cryptographically strong random API and guarantees proper symbol distribution.</li>
+ * <li><b>Small:</b> Only 258 bytes in size (minified and gzipped), with no dependencies.</li>
+ * <li><b>Compact:</b> It uses more symbols than UUID (A-Za-z0-9_~).</li>
  * </ul>
  *
  * <p>
- * 此实现的逻辑基于JavaScript的NanoId实现，见：<a href="https://github.com/ai/nanoid">https://github.com/ai/nanoid</a>
- * </p>
+ * The logic of this implementation is based on the JavaScript NanoId implementation, see:
+ * <a href="https://github.com/ai/nanoid">https://github.com/ai/nanoid</a>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -51,45 +52,46 @@ import org.miaixz.bus.core.xyz.RandomKit;
 public class NanoId {
 
     /**
-     * 默认长度
+     * The default length of the ID.
      */
     public static final int DEFAULT_SIZE = 21;
     /**
-     * 默认随机数生成器，使用{@link SecureRandom}确保健壮性
+     * The default random number generator, using {@link SecureRandom} for robustness.
      */
     private static final SecureRandom DEFAULT_NUMBER_GENERATOR = RandomKit.getSecureRandom();
     /**
-     * 默认随机字母表，使用URL安全的Base64字符
+     * The default alphabet, using URL-safe Base64 characters.
      */
     private static final char[] DEFAULT_ALPHABET = "_-0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
             .toCharArray();
 
     /**
-     * 生成伪随机的NanoId字符串，长度为默认的{@link #DEFAULT_SIZE}，使用密码安全的伪随机生成器
+     * Generates a pseudo-random NanoId string of the default length {@link #DEFAULT_SIZE}, using a cryptographically
+     * secure pseudo-random number generator.
      *
-     * @return 伪随机的NanoId字符串
+     * @return A pseudo-random NanoId string.
      */
     public static String randomNanoId() {
         return randomNanoId(DEFAULT_SIZE);
     }
 
     /**
-     * 生成伪随机的NanoId字符串
+     * Generates a pseudo-random NanoId string.
      *
-     * @param size ID长度
-     * @return 伪随机的NanoId字符串
+     * @param size The length of the ID.
+     * @return A pseudo-random NanoId string.
      */
     public static String randomNanoId(final int size) {
         return randomNanoId(null, null, size);
     }
 
     /**
-     * 生成伪随机的NanoId字符串
+     * Generates a pseudo-random NanoId string.
      *
-     * @param random   随机数生成器
-     * @param alphabet 随机字母表
-     * @param size     ID长度
-     * @return 伪随机的NanoId字符串
+     * @param random   The random number generator to use.
+     * @param alphabet The alphabet to use for generating the ID.
+     * @param size     The length of the ID.
+     * @return A pseudo-random NanoId string.
      */
     public static String randomNanoId(Random random, char[] alphabet, final int size) {
         if (random == null) {

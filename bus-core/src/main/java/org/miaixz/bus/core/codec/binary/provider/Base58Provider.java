@@ -36,7 +36,7 @@ import org.miaixz.bus.core.codec.binary.decoder.Base58Decoder;
 import org.miaixz.bus.core.codec.binary.encoder.Base58Encoder;
 
 /**
- * Base58编码器 此编码器不包括校验码、版本等信息
+ * Provides Base58 encoding and decoding functionality. This implementation does not include checksums or version bytes.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -47,21 +47,23 @@ public class Base58Provider implements Encoder<byte[], String>, Decoder<CharSequ
     private static final long serialVersionUID = 2852258919299L;
 
     /**
-     * 单例
+     * Singleton instance of the Base58Provider.
      */
     public static Base58Provider INSTANCE = new Base58Provider();
 
     /**
-     * 将一个数字（表示为一个字节数组，每个字节包含指定基数的一位数字）除以给定的除数。 给定的数字被修改以包含商，返回值为余数。
+     * Divides a number, represented as a byte array of digits in a given base, by a divisor. The input array is
+     * modified in-place to contain the quotient, and the remainder is returned.
      *
-     * @param number     要除的数
-     * @param firstDigit 数组中第一个非零数字的索引（用于通过跳过前导零进行优化）
-     * @param base       数字的位数表示基数（最多256）
-     * @param divisor    要除以的数字（最多 256）
-     * @return 除法运算的余数
+     * @param number     The number to be divided. This array will be modified to store the quotient.
+     * @param firstDigit The index of the first non-zero digit in the number array (an optimization to skip leading
+     *                   zeros).
+     * @param base       The base of the number's digits (up to 256).
+     * @param divisor    The number to divide by (up to 256).
+     * @return The remainder of the division.
      */
     public static byte divmod(final byte[] number, final int firstDigit, final int base, final int divisor) {
-        // this is just long division which accounts for the base of the input digits
+        // This is just long division that accounts for the base of the input digits.
         int remainder = 0;
         for (int i = firstDigit; i < number.length; i++) {
             final int digit = (int) number[i] & 0xFF;
@@ -73,10 +75,10 @@ public class Base58Provider implements Encoder<byte[], String>, Decoder<CharSequ
     }
 
     /**
-     * Base58编码
+     * Encodes a byte array into a Base58 string.
      *
-     * @param data 被编码的数据，不带校验和。
-     * @return 编码后的字符串
+     * @param data The data to be encoded, without a checksum.
+     * @return The Base58 encoded string.
      */
     @Override
     public String encode(final byte[] data) {
@@ -84,11 +86,11 @@ public class Base58Provider implements Encoder<byte[], String>, Decoder<CharSequ
     }
 
     /**
-     * 解码给定的Base58字符串
+     * Decodes a Base58 encoded string into a byte array.
      *
-     * @param encoded Base58编码字符串
-     * @return 解码后的bytes
-     * @throws IllegalArgumentException 非标准Base58字符串
+     * @param encoded The Base58 encoded string.
+     * @return The decoded byte array.
+     * @throws IllegalArgumentException if the input string is not a valid Base58 string.
      */
     @Override
     public byte[] decode(final CharSequence encoded) throws IllegalArgumentException {

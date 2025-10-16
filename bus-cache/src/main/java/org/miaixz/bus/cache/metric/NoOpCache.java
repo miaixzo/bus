@@ -33,26 +33,25 @@ import java.util.Map;
 import org.miaixz.bus.cache.CacheX;
 
 /**
- * 无缓存实现，用于快速关闭缓存
+ * A no-operation (No-Op) implementation of the {@link CacheX} interface, used to effectively disable caching.
  * <p>
- * 空操作缓存实现，所有方法都是空操作，不执行任何实际缓存功能。 主要用于需要快速关闭缓存功能的场景，避免修改大量代码。
+ * This implementation performs no actual caching. All read operations return {@code null} or empty collections, and all
+ * write/delete operations do nothing. It is useful for disabling caching in certain environments or for testing
+ * purposes without changing application code.
  * </p>
  *
- * @param <K> 键类型
- * @param <V> 值类型
+ * @param <K> The type of keys.
+ * @param <V> The type of values.
  * @author Kimi Liu
  * @since Java 17+
  */
 public class NoOpCache<K, V> implements CacheX<K, V> {
 
     /**
-     * 读取缓存值
-     * <p>
-     * 空操作，始终返回null
-     * </p>
+     * Performs no operation and always returns {@code null}.
      *
-     * @param key 缓存键
-     * @return 始终返回null
+     * @param key The cache key.
+     * @return Always {@code null}.
      */
     @Override
     public V read(K key) {
@@ -60,28 +59,22 @@ public class NoOpCache<K, V> implements CacheX<K, V> {
     }
 
     /**
-     * 写入缓存值
-     * <p>
-     * 空操作，不执行任何操作
-     * </p>
+     * Performs no operation.
      *
-     * @param key    缓存键
-     * @param value  缓存值
-     * @param expire 过期时间（毫秒）
+     * @param key    The cache key.
+     * @param value  The cache value.
+     * @param expire The expiration time in milliseconds.
      */
     @Override
     public void write(K key, V value, long expire) {
-        // 空操作
+        // No-op
     }
 
     /**
-     * 批量读取缓存值
-     * <p>
-     * 空操作，始终返回空Map
-     * </p>
+     * Performs no operation and always returns an empty map.
      *
-     * @param keys 缓存键集合
-     * @return 始终返回空Map
+     * @param keys A collection of cache keys.
+     * @return Always an empty, unmodifiable map.
      */
     @Override
     public Map<K, V> read(Collection<K> keys) {
@@ -89,41 +82,32 @@ public class NoOpCache<K, V> implements CacheX<K, V> {
     }
 
     /**
-     * 批量写入缓存值
-     * <p>
-     * 空操作，不执行任何操作
-     * </p>
+     * Performs no operation.
      *
-     * @param keyValueMap 键值映射
-     * @param expire      过期时间（毫秒）
+     * @param keyValueMap A map of key-value pairs.
+     * @param expire      The expiration time in milliseconds.
      */
     @Override
     public void write(Map<K, V> keyValueMap, long expire) {
-        // 空操作
+        // No-op
     }
 
     /**
-     * 移除缓存
-     * <p>
-     * 空操作，不执行任何操作
-     * </p>
+     * Performs no operation.
      *
-     * @param keys 要移除的缓存键
+     * @param keys The keys to be removed.
      */
     @Override
     public void remove(K... keys) {
-        // 空操作
+        // No-op
     }
 
     /**
-     * 清空缓存
-     * <p>
-     * 空操作，不执行任何操作
-     * </p>
+     * Performs no operation.
      */
     @Override
     public void clear() {
-        // 空操作
+        // No-op
     }
 
 }

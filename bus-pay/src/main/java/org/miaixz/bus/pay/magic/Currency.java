@@ -28,31 +28,72 @@
 package org.miaixz.bus.pay.magic;
 
 /**
- * 基础货币
+ * Represents a basic currency.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public enum Currency {
 
-    CNY("人民币"), USD("美元"), HKD("港币"), MOP("澳门元"), EUR("欧元"), TWD("新台币"), KRW("韩元"), JPY("日元"), SGD("新加坡元"),
+    /**
+     * Chinese Yuan.
+     */
+    CNY("人民币"),
+    /**
+     * United States Dollar.
+     */
+    USD("美元"),
+    /**
+     * Hong Kong Dollar.
+     */
+    HKD("港币"),
+    /**
+     * Macanese Pataca.
+     */
+    MOP("澳门元"),
+    /**
+     * Euro.
+     */
+    EUR("欧元"),
+    /**
+     * New Taiwan Dollar.
+     */
+    TWD("新台币"),
+    /**
+     * South Korean Won.
+     */
+    KRW("韩元"),
+    /**
+     * Japanese Yen.
+     */
+    JPY("日元"),
+    /**
+     * Singapore Dollar.
+     */
+    SGD("新加坡元"),
+    /**
+     * Australian Dollar.
+     */
     AUD("澳大利亚元");
 
-    private String name;
+    /**
+     * The name of the currency.
+     */
+    private final String name;
 
     /**
-     * 构造函数
+     * Constructs a new Currency.
      *
-     * @param name
+     * @param name The name of the currency.
      */
     Currency(String name) {
         this.name = name;
     }
 
     /**
-     * 货币名称
+     * Gets the name of the currency.
      *
-     * @return 货币名称
+     * @return The name of the currency.
      */
     public String getName() {
         return name;

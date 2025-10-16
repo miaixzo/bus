@@ -34,47 +34,60 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.xyz.ArrayKit;
 
 /**
- * 字段反射类 此类持有类中字段的缓存，如果字段在类中修改，则需要手动调用clearCaches方法清除缓存。
+ * Field reflection class. This class holds a cache of fields within a class. If fields are modified in the class, the
+ * {@link #clearCaches()} method must be manually called to clear the cache.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class FieldReflect {
 
+    /**
+     * The class for which fields are being reflected.
+     */
     private final Class<?> clazz;
+    /**
+     * Cached array of declared fields for the current class (excluding inherited fields). This cache is volatile to
+     * ensure visibility across threads.
+     */
     private volatile Field[] declaredFields;
+    /**
+     * Cached array of all fields (declared and inherited) for the current class. This cache is volatile to ensure
+     * visibility across threads.
+     */
     private volatile Field[] allFields;
 
     /**
-     * 构造
+     * Constructs a new {@code FieldReflect} instance for the given class.
      *
-     * @param clazz 类
+     * @param clazz The class to reflect. Must not be {@code null}.
+     * @throws IllegalArgumentException if {@code clazz} is {@code null}.
      */
     public FieldReflect(final Class<?> clazz) {
         this.clazz = Assert.notNull(clazz);
     }
 
     /**
-     * 创建FieldReflect
+     * Creates a new {@code FieldReflect} instance for the given class.
      *
-     * @param clazz 类
-     * @return FieldReflect
+     * @param clazz The class to reflect.
+     * @return A new {@code FieldReflect} instance.
      */
     public static FieldReflect of(final Class<?> clazz) {
         return new FieldReflect(clazz);
     }
 
     /**
-     * 获取当前类
+     * Retrieves the class associated with this {@code FieldReflect} instance.
      *
-     * @return 当前类
+     * @return The reflected class.
      */
     public Class<?> getClazz() {
         return clazz;
     }
 
     /**
-     * 清空缓存
+     * Clears all cached field arrays. This method should be called if the class structure (fields) changes dynamically.
      */
     synchronized public void clearCaches() {
         declaredFields = null;
@@ -82,11 +95,12 @@ public class FieldReflect {
     }
 
     /**
-     * 获得当前类声明的所有字段（包括非public字段），但不包括父类的字段
+     * Retrieves all declared fields of the current class (excluding inherited fields), filtered by the given predicate.
+     * The result is cached after the first call.
      *
-     * @param predicate 过滤器
-     * @return 字段数组
-     * @throws SecurityException 安全检查异常
+     * @param predicate The filter to apply to the fields. Can be {@code null} to accept all fields.
+     * @return An array of declared fields that satisfy the predicate.
+     * @throws SecurityException If a security manager exists and its {@code checkMemberAccess} method denies access.
      */
     public Field[] getDeclaredFields(final Predicate<Field> predicate) {
         if (null == declaredFields) {
@@ -100,11 +114,12 @@ public class FieldReflect {
     }
 
     /**
-     * 获得当前类和父类声明的所有字段（包括非public字段）
+     * Retrieves all fields (declared and inherited) of the current class, filtered by the given predicate. The result
+     * is cached after the first call.
      *
-     * @param predicate 过滤器
-     * @return 字段数组
-     * @throws SecurityException 安全检查异常
+     * @param predicate The filter to apply to the fields. Can be {@code null} to accept all fields.
+     * @return An array of all fields that satisfy the predicate.
+     * @throws SecurityException If a security manager exists and its {@code checkMemberAccess} method denies access.
      */
     public Field[] getAllFields(final Predicate<Field> predicate) {
         if (null == allFields) {
@@ -118,11 +133,13 @@ public class FieldReflect {
     }
 
     /**
-     * 获得一个类中所有字段列表，直接反射获取，无缓存 如果子类与父类中存在同名字段，则这两个字段同时存在，子类字段在前，父类字段在后。
+     * Retrieves a list of all fields in a class, directly using reflection without caching. If a subclass and
+     * superclass have fields with the same name, both fields will be present, with the subclass's field appearing
+     * before the superclass's field.
      *
-     * @param withSuperClassFields 是否包括父类的字段列表
-     * @return 字段列表
-     * @throws SecurityException 安全检查异常
+     * @param withSuperClassFields Whether to include fields from superclasses.
+     * @return An array of fields.
+     * @throws SecurityException If a security manager exists and its {@code checkMemberAccess} method denies access.
      */
     public Field[] getFieldsDirectly(final boolean withSuperClassFields) throws SecurityException {
         Field[] allFields = null;

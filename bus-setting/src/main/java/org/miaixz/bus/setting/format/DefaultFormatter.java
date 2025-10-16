@@ -37,31 +37,46 @@ import org.miaixz.bus.setting.metric.ini.IniProperty;
 import org.miaixz.bus.setting.metric.ini.IniSection;
 
 /**
- * 默认的ini行格式器 需要三种格式器之一 {@link IniComment }, {@link IniSection }, {@link IniProperty }
+ * The default line formatter for INI files. It uses a chain of responsibility pattern, attempting to parse a line as a
+ * comment, a section, or a property, in that order.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class DefaultFormatter implements Format {
 
-    protected final ElementFormatter<IniComment> commentElementFormatter;
-    protected final ElementFormatter<IniSection> sectionElementFormatter;
-    protected final ElementFormatter<IniProperty> propertyElementFormatter;
-
     /**
-     * last section
+     * Formatter for comment lines.
+     */
+    protected final ElementFormatter<IniComment> commentElementFormatter;
+    /**
+     * Formatter for section headers.
+     */
+    protected final ElementFormatter<IniSection> sectionElementFormatter;
+    /**
+     * Formatter for property lines (key-value pairs).
+     */
+    protected final ElementFormatter<IniProperty> propertyElementFormatter;
+    /**
+     * The most recently parsed section, used to associate properties with it.
      */
     protected IniSection lastSection;
-
     /**
-     * line number of read
+     * The current physical line number being read.
      */
     private int lineNumber = 0;
     /**
-     * line number of effective. empty line will not added.
+     * The current effective line number, excluding empty lines.
      */
     private int effectiveLineNumber = 0;
 
+    /**
+     * Constructs a new DefaultFormatter with the specified element formatters.
+     *
+     * @param commentElementFormatter  The formatter for comments.
+     * @param sectionElementFormatter  The formatter for sections.
+     * @param propertyElementFormatter The formatter for properties.
+     */
     public DefaultFormatter(ElementFormatter<IniComment> commentElementFormatter,
             ElementFormatter<IniSection> sectionElementFormatter,
             ElementFormatter<IniProperty> propertyElementFormatter) {
@@ -71,62 +86,49 @@ public class DefaultFormatter implements Format {
     }
 
     /**
-     * format line as element. if empty line, return null.
+     * Formats a raw line from an INI file into an {@link IniElement}. Empty lines are ignored and return null.
      *
-     * @param raw line data
-     * @return {@link IniElement}
+     * @param raw The raw string data for the line.
+     * @return The parsed {@link IniElement}, or null for an empty line.
+     * @throws InternalException if the line cannot be parsed as a comment, section, or property.
      */
     @Override
     public IniElement formatLine(String raw) {
         Objects.requireNonNull(raw);
-        // line number + 1
         lineNumber++;
         String line = raw.trim();
-        // if empty line, return null
-        if (line.length() == 0) {
+        if (line.isEmpty()) {
             return null;
         }
 
-        // format line.
         IniElement element;
-        // pre effective line number, preEff = eff + 1
         int preEffectiveLineNumber = effectiveLineNumber + 1;
 
-        // comment?
         if (commentElementFormatter.check(line)) {
             element = commentElementFormatter.format(line, preEffectiveLineNumber);
-        } else
-        // section?
-        if (sectionElementFormatter.check(line)) {
+        } else if (sectionElementFormatter.check(line)) {
             IniSection section = sectionElementFormatter.format(line, preEffectiveLineNumber);
-            // save last section
             lastSection = section;
             element = section;
-        } else
-        // property ?
-        if (propertyElementFormatter.check(line)) {
+        } else if (propertyElementFormatter.check(line)) {
             IniProperty property = propertyElementFormatter.format(line, preEffectiveLineNumber);
-            // set section if exists
-            // In general it should be there, unless it's incorrectly formatted. If not, an exception is thrown.
             if (null == lastSection) {
-                throw new InternalException("Cannot found section for property line " + lineNumber + " : " + line);
+                throw new InternalException("Cannot find section for property on line " + lineNumber + ": " + line);
             }
-            // set section for property
             property.setSection(lastSection);
             lastSection.add(property);
             element = property;
         } else {
-            // None of them
-            throw new InternalException("No matching element type found for line " + lineNumber + " : " + line);
+            throw new InternalException("No matching element type found for line " + lineNumber + ": " + line);
         }
 
-        // if no throw, update effective line number.
         effectiveLineNumber = preEffectiveLineNumber;
         return element;
     }
 
     /**
-     * Back to the initial state
+     * Resets the formatter to its initial state, clearing the line counters and the last seen section. This should be
+     * called before parsing a new file.
      */
     @Override
     public synchronized void init() {

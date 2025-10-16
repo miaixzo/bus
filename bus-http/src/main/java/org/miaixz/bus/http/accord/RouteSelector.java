@@ -27,6 +27,10 @@
 */
 package org.miaixz.bus.http.accord;
 
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.http.*;
+import org.miaixz.bus.http.metric.EventListener;
+
 import java.io.IOException;
 import java.net.*;
 import java.util.ArrayList;
@@ -34,12 +38,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.http.*;
-import org.miaixz.bus.http.metric.EventListener;
-
 /**
- * 选择连接到源服务器的路由。每个连接都需要选择代理 服务器、IP地址和TLS模式。连接也可以循环使用
+ * Selects routes to connect to an origin server. Each connection requires a choice of proxy server, IP address, and TLS
+ * mode. Connections may also be recycled.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -51,16 +52,16 @@ public class RouteSelector {
     private final NewCall call;
     private final EventListener eventListener;
     /**
-     * 失败路线的状态
+     * The state of the failed routes.
      */
     private final List<Route> postponedRoutes = new ArrayList<>();
     /**
-     * 用于协商下一个要使用的代理的状态
+     * The state for negotiating the next proxy to use.
      */
     private List<Proxy> proxies = Collections.emptyList();
     private int nextProxyIndex;
     /**
-     * 状态，用于协商下一个要使用的套接字地址
+     * The state for negotiating the next socket address to use.
      */
     private List<InetSocketAddress> inetSocketAddresses = Collections.emptyList();
 
@@ -74,44 +75,51 @@ public class RouteSelector {
     }
 
     /**
-     * 从{@link InetSocketAddress}获取“主机” 这将返回一个包含实际主机名或数字IP地址的字符串。
+     * Gets the host string from an {@link InetSocketAddress}. This will return a string containing either the actual
+     * hostname or the numeric IP address.
      *
-     * @param socketAddress 套接字通信地址
-     * @return 主机名或者host
+     * @param socketAddress The socket address.
+     * @return The hostname or host address.
      */
     static String getHostString(InetSocketAddress socketAddress) {
         InetAddress address = socketAddress.getAddress();
-        if (null == address) {
-            // InetSocketAddress是用字符串(数字IP或主机名)指定的。
-            // 如果它是一个名称，那么应该尝试该名称的所有ip。
-            // 如果它是一个IP地址，那么应该只尝试该IP地址
+        if (address == null) {
+            // The InetSocketAddress was specified with a string (either a numeric IP or a hostname).
+            // If it is a name, all IPs for that name should be tried.
+            // If it is an IP address, only that IP address should be tried.
             return socketAddress.getHostName();
         }
-        // InetSocketAddress有一个特定的地址:我们应该只尝试该地址。
-        // 因此，我们返回地址并忽略任何可用的主机名
+        // The InetSocketAddress has a specific address: we should only try that address.
+        // Therefore, we return the address and ignore any available hostname.
         return address.getHostAddress();
     }
 
     /**
-     * 如果要尝试另一组路由，则返回true。每个地址至少有一条路由
+     * Returns true if there is another set of routes to attempt. Every address has at least one route.
      *
-     * @return the true/false
+     * @return {@code true} if there is another route to attempt.
      */
     public boolean hasNext() {
         return hasNextProxy() || !postponedRoutes.isEmpty();
     }
 
+    /**
+     * Returns the next selection of routes to attempt.
+     *
+     * @return The next selection of routes.
+     * @throws IOException if an I/O error occurs.
+     */
     public Selection next() throws IOException {
         if (!hasNext()) {
             throw new NoSuchElementException();
         }
 
-        // 计算要尝试的下一组路由
+        // Compute the next set of routes to attempt.
         List<Route> routes = new ArrayList<>();
         while (hasNextProxy()) {
-            // 推迟的路线总是最后尝试。例如，如果我们有两个代理，
-            // 并且proxy1的所有路由都应该延迟，那么我们将转移到proxy2
-            // 只有在我们用尽了所有的好路线后，我们才会尝试推迟的路线
+            // Postponed routes are always tried last. For example, if we have 2 proxies and all of the routes for
+            // proxy1 should be postponed, we'll move to proxy2. Only after we've exhausted all good routes will we
+            // fall back to the postponed routes.
             Proxy proxy = nextProxy();
             for (int i = 0, size = inetSocketAddresses.size(); i < size; i++) {
                 Route route = new Route(address, proxy, inetSocketAddresses.get(i));
@@ -128,6 +136,7 @@ public class RouteSelector {
         }
 
         if (routes.isEmpty()) {
+            // We've exhausted all good routes. Fall back to the postponed routes.
             routes.addAll(postponedRoutes);
             postponedRoutes.clear();
         }
@@ -136,17 +145,17 @@ public class RouteSelector {
     }
 
     /**
-     * 准备代理服务器进行尝试
+     * Prepares the proxy servers to be attempted.
      *
-     * @param url   url信息
-     * @param proxy 代理
+     * @param url   The URL to connect to.
+     * @param proxy The explicit proxy to use, or null to use the proxy selector.
      */
     private void resetNextProxy(UnoUrl url, Proxy proxy) {
         if (proxy != null) {
-            // 如果用户指定了代理，则尝试该操作，且仅尝试该操作
+            // If the user specifies a proxy, try that and only that.
             proxies = Collections.singletonList(proxy);
         } else {
-            // 尝试每一个ProxySelector选项，直到有一个连接成功
+            // Try each of the ProxySelector choices until one connection succeeds.
             List<Proxy> proxiesOrNull = address.proxySelector().select(url.uri());
             proxies = proxiesOrNull != null && !proxiesOrNull.isEmpty() ? Builder.immutableList(proxiesOrNull)
                     : Builder.immutableList(Proxy.NO_PROXY);
@@ -155,19 +164,19 @@ public class RouteSelector {
     }
 
     /**
-     * 如果要尝试另一个代理，则返回true
+     * Returns true if there is another proxy to attempt.
      *
-     * @return the true/false
+     * @return {@code true} if there is another proxy to attempt.
      */
     private boolean hasNextProxy() {
         return nextProxyIndex < proxies.size();
     }
 
     /**
-     * 返回要尝试的下一个代理。可能是代理NO_PROXY，但不能为null
+     * Returns the next proxy to attempt. This may be {@link Proxy#NO_PROXY}, but will not be null.
      *
-     * @return 代理信息
-     * @throws IOException 异常
+     * @return The next proxy.
+     * @throws IOException if an I/O error occurs.
      */
     private Proxy nextProxy() throws IOException {
         if (!hasNextProxy()) {
@@ -180,10 +189,10 @@ public class RouteSelector {
     }
 
     /**
-     * 为当前代理或主机准备套接字地址
+     * Prepares the socket addresses for the current proxy or host.
      *
-     * @return 代理信息
-     * @throws IOException 异常
+     * @param proxy The proxy to prepare socket addresses for.
+     * @throws IOException if an I/O error occurs.
      */
     private void resetNextInetSocketAddress(Proxy proxy) throws IOException {
         inetSocketAddresses = new ArrayList<>();
@@ -197,7 +206,7 @@ public class RouteSelector {
             SocketAddress proxyAddress = proxy.address();
             if (!(proxyAddress instanceof InetSocketAddress)) {
                 throw new IllegalArgumentException(
-                        "Proxy.address() is not an " + "InetSocketAddress: " + proxyAddress.getClass());
+                        "Proxy.address() is not an InetSocketAddress: " + proxyAddress.getClass());
             }
             InetSocketAddress proxySocketAddress = (InetSocketAddress) proxyAddress;
             socketHost = getHostString(proxySocketAddress);
@@ -214,7 +223,7 @@ public class RouteSelector {
         } else {
             eventListener.dnsStart(call, socketHost);
 
-            // 在IPv4/IPv6混合环境中尝试每个地址以获得最佳性能
+            // In mixed IPv4/IPv6 environments, try each address for best performance.
             List<InetAddress> addresses = address.dns().lookup(socketHost);
             if (addresses.isEmpty()) {
                 throw new UnknownHostException(address.dns() + " returned no addresses for " + socketHost);
@@ -230,7 +239,7 @@ public class RouteSelector {
     }
 
     /**
-     * 选定的路由
+     * A selection of routes to try.
      */
     public static class Selection {
 
@@ -241,10 +250,20 @@ public class RouteSelector {
             this.routes = routes;
         }
 
+        /**
+         * Returns true if there is another route to attempt.
+         *
+         * @return {@code true} if there is another route.
+         */
         public boolean hasNext() {
             return nextRouteIndex < routes.size();
         }
 
+        /**
+         * Returns the next route to attempt.
+         *
+         * @return The next route.
+         */
         public Route next() {
             if (!hasNext()) {
                 throw new NoSuchElementException();
@@ -252,6 +271,11 @@ public class RouteSelector {
             return routes.get(nextRouteIndex++);
         }
 
+        /**
+         * Returns a list of all routes in this selection.
+         *
+         * @return A new list containing all routes.
+         */
         public List<Route> getAll() {
             return new ArrayList<>(routes);
         }

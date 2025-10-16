@@ -39,241 +39,254 @@ import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * Base62工具类，提供Base62的编码和解码方案
+ * A utility class for Base62 encoding and decoding.
+ * <p>
+ * Base62 is a binary-to-text encoding scheme that represents binary data in an ASCII string format by using a
+ * 62-character set (typically {@code 0-9}, {@code a-z}, {@code A-Z}). It is commonly used in applications like URL
+ * shorteners where a compact, human-readable representation of data is desired.
+ *
+ * <p>
+ * This class provides methods for both standard and inverted alphabet encoding. The standard alphabet is
+ * {@code 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz}. The inverted alphabet is
+ * {@code 0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ}.
  *
  * @author Kimi Liu
+ * @see Base62Provider
  * @since Java 17+
  */
 public class Base62 {
 
-    private static final java.nio.charset.Charset DEFAULT_CHARSET = Charset.UTF_8;
-
     /**
-     * Base62编码
+     * Encodes a string into a Base62 string using the standard alphabet and default UTF-8 charset.
      *
-     * @param source 被编码的Base62字符串
-     * @return 被加密后的字符串
+     * @param source The string to be encoded.
+     * @return The Base62-encoded string.
      */
     public static String encode(final CharSequence source) {
-        return encode(source, DEFAULT_CHARSET);
+        return encode(source, Charset.UTF_8);
     }
 
     /**
-     * Base62编码
+     * Encodes a string into a Base62 string using the standard alphabet and the specified charset.
      *
-     * @param source  被编码的Base62字符串
-     * @param charset 字符集
-     * @return 被加密后的字符串
+     * @param source  The string to be encoded.
+     * @param charset The character set to use.
+     * @return The Base62-encoded string.
      */
     public static String encode(final CharSequence source, final java.nio.charset.Charset charset) {
         return encode(ByteKit.toBytes(source, charset));
     }
 
     /**
-     * Base62编码
+     * Encodes a byte array into a Base62 string using the standard alphabet.
      *
-     * @param source 被编码的Base62字符串
-     * @return 被加密后的字符串
+     * @param source The byte array to be encoded.
+     * @return The Base62-encoded string.
      */
     public static String encode(final byte[] source) {
         return new String(Base62Provider.INSTANCE.encode(source));
     }
 
     /**
-     * Base62编码
+     * Encodes the content of an {@link InputStream} into a Base62 string using the standard alphabet.
      *
-     * @param in 被编码Base62的流（一般为图片流或者文件流）
-     * @return 被加密后的字符串
+     * @param in The input stream to be encoded (e.g., an image or file stream).
+     * @return The Base62-encoded string.
      */
     public static String encode(final InputStream in) {
         return encode(IoKit.readBytes(in));
     }
 
     /**
-     * Base62编码
+     * Encodes the content of a file into a Base62 string using the standard alphabet.
      *
-     * @param file 被编码Base62的文件
-     * @return 被加密后的字符串
+     * @param file The file to be encoded.
+     * @return The Base62-encoded string.
      */
     public static String encode(final File file) {
         return encode(FileKit.readBytes(file));
     }
 
     /**
-     * Base62编码（反转字母表模式）
+     * Encodes a string into a Base62 string using the inverted alphabet and the default UTF-8 charset.
      *
-     * @param source 被编码的Base62字符串
-     * @return 被加密后的字符串
+     * @param source The string to be encoded.
+     * @return The Base62-encoded string.
      */
     public static String encodeInverted(final CharSequence source) {
-        return encodeInverted(source, DEFAULT_CHARSET);
+        return encodeInverted(source, Charset.UTF_8);
     }
 
     /**
-     * Base62编码（反转字母表模式）
+     * Encodes a string into a Base62 string using the inverted alphabet and the specified charset.
      *
-     * @param source  被编码的Base62字符串
-     * @param charset 字符集
-     * @return 被加密后的字符串
+     * @param source  The string to be encoded.
+     * @param charset The character set to use.
+     * @return The Base62-encoded string.
      */
     public static String encodeInverted(final CharSequence source, final java.nio.charset.Charset charset) {
         return encodeInverted(ByteKit.toBytes(source, charset));
     }
 
     /**
-     * Base62编码（反转字母表模式）
+     * Encodes a byte array into a Base62 string using the inverted alphabet.
      *
-     * @param source 被编码的Base62字符串
-     * @return 被加密后的字符串
+     * @param source The byte array to be encoded.
+     * @return The Base62-encoded string.
      */
     public static String encodeInverted(final byte[] source) {
         return new String(Base62Provider.INSTANCE.encode(source, true));
     }
 
     /**
-     * Base62编码
+     * Encodes the content of an {@link InputStream} into a Base62 string using the inverted alphabet.
      *
-     * @param in 被编码Base62的流（一般为图片流或者文件流）
-     * @return 被加密后的字符串
+     * @param in The input stream to be encoded.
+     * @return The Base62-encoded string.
      */
     public static String encodeInverted(final InputStream in) {
         return encodeInverted(IoKit.readBytes(in));
     }
 
     /**
-     * Base62编码（反转字母表模式）
+     * Encodes the content of a file into a Base62 string using the inverted alphabet.
      *
-     * @param file 被编码Base62的文件
-     * @return 被加密后的字符串
+     * @param file The file to be encoded.
+     * @return The Base62-encoded string.
      */
     public static String encodeInverted(final File file) {
         return encodeInverted(FileKit.readBytes(file));
     }
 
     /**
-     * Base62解码
+     * Decodes a Base62 string into a string using the default UTF-8 charset. The decoder is case-sensitive and
+     * automatically detects the alphabet (standard or inverted).
      *
-     * @param source 被解码的Base62字符串
-     * @return 密文解密的结果
+     * @param source The Base62 string to be decoded.
+     * @return The decoded string.
      */
     public static String decodeString(final CharSequence source) {
-        return decodeString(source, DEFAULT_CHARSET);
+        return decodeString(source, Charset.UTF_8);
     }
 
     /**
-     * Base62解码
+     * Decodes a Base62 string into a string using the specified charset. The decoder is case-sensitive and
+     * automatically detects the alphabet (standard or inverted).
      *
-     * @param source  被解码的Base62字符串
-     * @param charset 字符集
-     * @return 密文解密的结果
+     * @param source  The Base62 string to be decoded.
+     * @param charset The character set to use.
+     * @return The decoded string.
      */
     public static String decodeString(final CharSequence source, final java.nio.charset.Charset charset) {
         return StringKit.toString(decode(source), charset);
     }
 
     /**
-     * Base62解码
+     * Decodes a Base62 string and writes the result to a file. The decoder is case-sensitive and automatically detects
+     * the alphabet.
      *
-     * @param Base62   被解码的Base62字符串
-     * @param destFile 目标文件
-     * @return 目标文件
+     * @param base62   The Base62 string to be decoded.
+     * @param destFile The destination file.
+     * @return The destination file.
      */
-    public static File decodeToFile(final CharSequence Base62, final File destFile) {
-        return FileKit.writeBytes(decode(Base62), destFile);
+    public static File decodeToFile(final CharSequence base62, final File destFile) {
+        return FileKit.writeBytes(decode(base62), destFile);
     }
 
     /**
-     * Base62解码
+     * Decodes a Base62 string and writes the result to an {@link OutputStream}. The decoder is case-sensitive and
+     * automatically detects the alphabet.
      *
-     * @param base62Str  被解码的Base62字符串
-     * @param out        写出到的流
-     * @param isCloseOut 是否关闭输出流
+     * @param base62Str  The Base62 string to be decoded.
+     * @param out        The output stream to write to.
+     * @param isCloseOut Whether to close the output stream after writing.
      */
     public static void decodeToStream(final CharSequence base62Str, final OutputStream out, final boolean isCloseOut) {
         IoKit.write(out, isCloseOut, decode(base62Str));
     }
 
     /**
-     * Base62解码
+     * Decodes a Base62 string into a byte array. The decoder is case-sensitive and automatically detects the alphabet.
      *
-     * @param base62Str 被解码的Base62字符串
-     * @return 被加密后的字符串
+     * @param base62Str The Base62 string to be decoded.
+     * @return The decoded byte array.
      */
     public static byte[] decode(final CharSequence base62Str) {
-        return decode(ByteKit.toBytes(base62Str, DEFAULT_CHARSET));
+        return decode(ByteKit.toBytes(base62Str, Charset.UTF_8));
     }
 
     /**
-     * 解码Base62
+     * Decodes a Base62 byte array into a byte array. The decoder is case-sensitive and automatically detects the
+     * alphabet.
      *
-     * @param base62bytes Base62输入
-     * @return 解码后的bytes
+     * @param base62bytes The Base62 input as a byte array.
+     * @return The decoded byte array.
      */
     public static byte[] decode(final byte[] base62bytes) {
         return Base62Provider.INSTANCE.decode(base62bytes);
     }
 
     /**
-     * Base62解码（反转字母表模式）
+     * Decodes a Base62 string (using the inverted alphabet) into a string using the default UTF-8 charset.
      *
-     * @param source 被解码的Base62字符串
-     * @return 被加密后的字符串
+     * @param source The Base62 string to be decoded.
+     * @return The decoded string.
      */
     public static String decodeStrInverted(final CharSequence source) {
-        return decodeStrInverted(source, DEFAULT_CHARSET);
+        return decodeStrInverted(source, Charset.UTF_8);
     }
 
     /**
-     * Base62解码（反转字母表模式）
+     * Decodes a Base62 string (using the inverted alphabet) into a string using the specified charset.
      *
-     * @param source  被解码的Base62字符串
-     * @param charset 字符集
-     * @return 被加密后的字符串
+     * @param source  The Base62 string to be decoded.
+     * @param charset The character set to use.
+     * @return The decoded string.
      */
     public static String decodeStrInverted(final CharSequence source, final java.nio.charset.Charset charset) {
         return StringKit.toString(decodeInverted(source), charset);
     }
 
     /**
-     * Base62解码（反转字母表模式）
+     * Decodes a Base62 string (using the inverted alphabet) and writes the result to a file.
      *
-     * @param Base62   被解码的Base62字符串
-     * @param destFile 目标文件
-     * @return 目标文件
+     * @param base62   The Base62 string to be decoded.
+     * @param destFile The destination file.
+     * @return The destination file.
      */
-    public static File decodeToFileInverted(final CharSequence Base62, final File destFile) {
-        return FileKit.writeBytes(decodeInverted(Base62), destFile);
+    public static File decodeToFileInverted(final CharSequence base62, final File destFile) {
+        return FileKit.writeBytes(decodeInverted(base62), destFile);
     }
 
     /**
-     * Base62解码（反转字母表模式）
+     * Decodes a Base62 string (using the inverted alphabet) and writes the result to an {@link OutputStream}.
      *
-     * @param base62Str  被解码的Base62字符串
-     * @param out        写出到的流
-     * @param isCloseOut 是否关闭输出流
+     * @param base62     The Base62 string to be decoded.
+     * @param out        The output stream to write to.
+     * @param isCloseOut Whether to close the output stream after writing.
      */
     public static void decodeToStreamInverted(
-            final CharSequence base62Str,
+            final CharSequence base62,
             final OutputStream out,
             final boolean isCloseOut) {
-        IoKit.write(out, isCloseOut, decodeInverted(base62Str));
+        IoKit.write(out, isCloseOut, decodeInverted(base62));
     }
 
     /**
-     * Base62解码（反转字母表模式）
+     * Decodes a Base62 string (using the inverted alphabet) into a byte array.
      *
-     * @param base62Str 被解码的Base62字符串
-     * @return 被加密后的字符串
+     * @param base62 The Base62 string to be decoded.
+     * @return The decoded byte array.
      */
-    public static byte[] decodeInverted(final CharSequence base62Str) {
-        return decodeInverted(ByteKit.toBytes(base62Str, DEFAULT_CHARSET));
+    public static byte[] decodeInverted(final CharSequence base62) {
+        return decodeInverted(ByteKit.toBytes(base62, Charset.UTF_8));
     }
 
     /**
-     * 解码Base62（反转字母表模式）
+     * Decodes a Base62 byte array (using the inverted alphabet) into a byte array.
      *
-     * @param base62bytes Base62输入
-     * @return 解码后的bytes
+     * @param base62bytes The Base62 input as a byte array.
+     * @return The decoded byte array.
      */
     public static byte[] decodeInverted(final byte[] base62bytes) {
         return Base62Provider.INSTANCE.decode(base62bytes, true);

@@ -58,9 +58,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * S3 HTTP客户端实现
+ * S3 HTTP client implementation.
  * <p>
- * 通用S3协议兼容，不依赖特定存储服务类型
+ * This client is compatible with the generic S3 protocol and does not depend on a specific storage service type.
  * </p>
  *
  * @author Kimi Liu
@@ -69,18 +69,18 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class ClientX implements SdkHttpClient {
 
     /**
-     * HTTP客户端实例
+     * HTTP client instance.
      */
     private final Httpd httpd;
     /**
-     * 线程池执行器
+     * Thread pool executor for asynchronous operations.
      */
     private final ExecutorService executor;
 
     /**
-     * 构造函数
+     * Constructs a {@code ClientX} instance with the provided builder.
      *
-     * @param clientBuilder 构建器
+     * @param clientBuilder The builder used to configure the client.
      */
     private ClientX(ClientBuilder clientBuilder) {
         this.httpd = clientBuilder.httpdBuilder.build();
@@ -88,10 +88,10 @@ public class ClientX implements SdkHttpClient {
     }
 
     /**
-     * 准备执行请求
+     * Prepares an executable HTTP request from an {@link HttpExecuteRequest}.
      *
-     * @param request HTTP执行请求
-     * @return 可执行HTTP请求
+     * @param request The HTTP execution request to prepare.
+     * @return An {@link ExecutableHttpRequest} that can be called.
      */
     @Override
     public ExecutableHttpRequest prepareRequest(HttpExecuteRequest request) {
@@ -99,9 +99,9 @@ public class ClientX implements SdkHttpClient {
     }
 
     /**
-     * 获取客户端名称
+     * Returns the name of this client.
      *
-     * @return 客户端名称
+     * @return The client name.
      */
     @Override
     public String clientName() {
@@ -109,11 +109,12 @@ public class ClientX implements SdkHttpClient {
     }
 
     /**
-     * 关闭客户端，释放资源
+     * Closes the client and releases all associated resources. This method shuts down the executor services and evicts
+     * connections from the connection pool.
      */
     @Override
     public void close() {
-        // 清理资源
+        // Clean up resources
         httpd.dispatcher().executorService().shutdown();
         httpd.connectionPool().evictAll();
         executor.shutdown();
@@ -128,21 +129,21 @@ public class ClientX implements SdkHttpClient {
     }
 
     /**
-     * 执行异步请求
+     * Executes an asynchronous request.
      * <p>
-     * 注意：这不是重写接口方法，而是自定义的异步请求处理方法
+     * Note: This is a custom asynchronous request handling method, not an overridden interface method.
      * </p>
      *
-     * @param asyncRequest 异步执行请求
-     * @return 异步执行结果
+     * @param asyncRequest The asynchronous execution request.
+     * @return A {@link CompletableFuture} that completes when the request is finished.
      */
     public CompletableFuture<Void> executeAsync(AsyncExecuteRequest asyncRequest) {
         SdkHttpRequest sdkRequest = asyncRequest.request();
-        // 构建请求
+        // Build the request
         Request.Builder requestBuilder = new Request.Builder().url(sdkRequest.getUri().toString())
                 .method(sdkRequest.method().name(), createRequestBodyFromAsync(asyncRequest));
 
-        // 添加请求头
+        // Add request headers
         sdkRequest.headers().forEach((name, values) -> {
             for (String value : values) {
                 requestBuilder.addHeader(name, value);
@@ -151,12 +152,12 @@ public class ClientX implements SdkHttpClient {
 
         CompletableFuture<Void> future = new CompletableFuture<>();
 
-        // 异步执行请求
+        // Execute the request asynchronously
         httpd.newCall(requestBuilder.build()).enqueue(new Callback() {
 
             @Override
             public void onFailure(NewCall call, IOException e) {
-                // 通知处理器错误
+                // Notify the handler of the error
                 asyncRequest.responseHandler().onError(e);
                 future.completeExceptionally(e);
             }
@@ -164,22 +165,22 @@ public class ClientX implements SdkHttpClient {
             @Override
             public void onResponse(NewCall call, Response response) {
                 try {
-                    // 构建AWS SDK响应
+                    // Build AWS SDK response
                     SdkHttpResponse sdkResponse = buildSdkHttpResponse(response);
 
-                    // 通知响应处理器头部信息
+                    // Notify the response handler of headers
                     asyncRequest.responseHandler().onHeaders(sdkResponse);
 
                     if (response.body() != null) {
-                        // 创建ByteBuffer发布者
+                        // Create ByteBuffer publisher
                         Publisher<ByteBuffer> publisher = new ByteBufferPublisher(response.body().byteStream());
                         asyncRequest.responseHandler().onStream(publisher);
                     }
 
-                    // 请求处理完成
+                    // Request processing completed
                     future.complete(null);
                 } catch (Exception e) {
-                    // 通知处理器错误
+                    // Notify the handler of the error
                     asyncRequest.responseHandler().onError(e);
                     future.completeExceptionally(e);
                 } finally {
@@ -192,20 +193,20 @@ public class ClientX implements SdkHttpClient {
     }
 
     /**
-     * 构建AWS SDK HTTP响应
+     * Builds an AWS SDK HTTP response from an {@link Response}.
      *
-     * @param response HTTP响应
-     * @return AWS SDK HTTP响应
+     * @param response The HTTP response from the underlying client.
+     * @return The constructed {@link SdkHttpResponse}.
      */
     private SdkHttpResponse buildSdkHttpResponse(Response response) {
-        // 使用SdkHttpResponse.builder()创建响应构建器
+        // Use SdkHttpResponse.builder() to create a response builder
         SdkHttpResponse.Builder responseBuilder = SdkHttpResponse.builder().statusCode(response.code());
 
-        // 设置状态文本（如果存在）
+        // Set status text (if present)
         Optional<String> statusText = Optional.ofNullable(response.message());
         statusText.ifPresent(responseBuilder::statusText);
 
-        // 添加响应头
+        // Add response headers
         for (Map.Entry<String, java.util.List<String>> entry : response.headers().toMultimap().entrySet()) {
             responseBuilder.putHeader(entry.getKey(), entry.getValue());
         }
@@ -214,49 +215,49 @@ public class ClientX implements SdkHttpClient {
     }
 
     /**
-     * 创建请求体（异步请求）
+     * Creates a {@link RequestBody} from an {@link AsyncExecuteRequest}.
      *
-     * @param asyncRequest 异步执行请求
-     * @return 请求体，如果没有请求体则返回null
+     * @param asyncRequest The asynchronous execution request.
+     * @return The {@link RequestBody} if content is present, otherwise {@code null}.
      */
     private RequestBody createRequestBodyFromAsync(AsyncExecuteRequest asyncRequest) {
-        // 使用asyncRequest.request()获取SdkHttpRequest
+        // Use asyncRequest.request() to get SdkHttpRequest
         SdkHttpRequest sdkRequest = asyncRequest.request();
 
-        // 检查是否有请求内容发布者
+        // Check if there is a request content publisher
         SdkHttpContentPublisher contentPublisher = asyncRequest.requestContentPublisher();
 
         if (contentPublisher != null) {
-            // 创建自定义异步RequestBody
+            // Create a custom asynchronous RequestBody
             return new AsyncContentPublisherWrapper(contentPublisher, sdkRequest);
         }
 
-        // 如果没有请求体，返回null
+        // If no request body, return null
         return null;
     }
 
     /**
-     * 可执行请求实现
+     * Implementation of {@link ExecutableHttpRequest} for this client.
      */
     private class HttpExecutableHttpRequest implements ExecutableHttpRequest {
 
-        /** HTTP调用实例 */
+        /** The HTTP call instance. */
         private final NewCall call;
-        /** 请求是否已中止的标志 */
+        /** Flag indicating if the request has been aborted. */
         private final AtomicBoolean aborted = new AtomicBoolean(false);
 
         /**
-         * 构造函数
+         * Constructs an {@code HttpExecutableHttpRequest}.
          *
-         * @param request HTTP执行请求
+         * @param request The HTTP execution request.
          */
         HttpExecutableHttpRequest(HttpExecuteRequest request) {
-            // 预构建请求但不立即执行
+            // Pre-build the request but do not execute immediately
             SdkHttpRequest sdkRequest = request.httpRequest();
             Request.Builder requestBuilder = new Request.Builder().url(sdkRequest.getUri().toString())
                     .method(sdkRequest.method().name(), createRequestBody(request));
 
-            // 添加请求头
+            // Add request headers
             sdkRequest.headers().forEach((name, values) -> {
                 for (String value : values) {
                     requestBuilder.addHeader(name, value);
@@ -267,10 +268,10 @@ public class ClientX implements SdkHttpClient {
         }
 
         /**
-         * 执行请求
+         * Executes the HTTP request.
          *
-         * @return HTTP执行响应
-         * @throws IOException 如果请求执行失败
+         * @return The HTTP execution response.
+         * @throws IOException If the request execution fails.
          */
         @Override
         public HttpExecuteResponse call() throws IOException {
@@ -280,20 +281,20 @@ public class ClientX implements SdkHttpClient {
 
             Response response = call.execute();
 
-            // 构建AWS SDK响应
+            // Build AWS SDK response
             SdkHttpResponse sdkResponse = buildSdkHttpResponse(response);
 
-            // 创建响应体
+            // Create response body
             AbortableInputStream responseBody = response.body() != null
                     ? AbortableInputStream.create(response.body().byteStream())
                     : null;
 
-            // 返回HttpExecuteResponse
+            // Return HttpExecuteResponse
             return HttpExecuteResponse.builder().response(sdkResponse).responseBody(responseBody).build();
         }
 
         /**
-         * 中止请求
+         * Aborts the HTTP request.
          */
         @Override
         public void abort() {
@@ -303,17 +304,17 @@ public class ClientX implements SdkHttpClient {
         }
 
         /**
-         * 创建请求体
+         * Creates a {@link RequestBody} from an {@link HttpExecuteRequest}.
          *
-         * @param request HTTP执行请求
-         * @return 请求体，如果没有请求体则返回null
+         * @param request The HTTP execution request.
+         * @return The {@link RequestBody} if content is present, otherwise {@code null}.
          */
         private RequestBody createRequestBody(HttpExecuteRequest request) {
-            // 使用request.contentStreamProvider()获取请求内容
+            // Use request.contentStreamProvider() to get request content
             Optional<ContentStreamProvider> contentStreamProviderOpt = request.contentStreamProvider();
             if (contentStreamProviderOpt.isPresent()) {
                 ContentStreamProvider contentStreamProvider = contentStreamProviderOpt.get();
-                // 创建自定义RequestBody，确保正确处理内容长度
+                // Create a custom RequestBody to ensure correct content length handling
                 return new CustomRequestBody(contentStreamProvider, request.httpRequest());
             }
             return null;
@@ -321,55 +322,55 @@ public class ClientX implements SdkHttpClient {
     }
 
     /**
-     * 自定义RequestBody，确保正确处理内容长度和Content-Type
+     * Custom {@link RequestBody} implementation to ensure correct content length and Content-Type handling.
      * <p>
-     * 优化性能：减少内存分配，使用流式处理
+     * Optimizes performance by reducing memory allocation and using streaming.
      * </p>
      */
     private static class CustomRequestBody extends RequestBody {
 
-        /** 内容流提供者 */
+        /** The content stream provider. */
         private final ContentStreamProvider contentStreamProvider;
-        /** HTTP请求 */
+        /** The HTTP request. */
         private final SdkHttpRequest httpRequest;
-        /** 内容长度，延迟计算 */
+        /** The content length, calculated lazily. */
         private volatile Long contentLength;
 
         /**
-         * 构造函数
+         * Constructs a {@code CustomRequestBody}.
          *
-         * @param contentStreamProvider 内容流提供者
-         * @param httpRequest           HTTP请求
+         * @param contentStreamProvider The content stream provider.
+         * @param httpRequest           The HTTP request.
          */
         CustomRequestBody(ContentStreamProvider contentStreamProvider, SdkHttpRequest httpRequest) {
             this.contentStreamProvider = contentStreamProvider;
             this.httpRequest = httpRequest;
-            // 延迟计算内容长度，只在需要时计算
+            // Content length is calculated lazily, only when needed.
         }
 
         /**
-         * 获取内容类型
+         * Returns the media type of the request body.
          *
-         * @return 内容类型
+         * @return The {@link MediaType} of the content.
          */
         @Override
         public MediaType contentType() {
-            // 从请求头获取Content-Type，如果没有则使用默认值
+            // Get Content-Type from request headers, or use a default value if not present.
             Optional<String> contentTypeOpt = httpRequest.firstMatchingHeader("Content-Type");
             return contentTypeOpt.map(MediaType::valueOf).orElse(MediaType.valueOf("application/octet-stream"));
         }
 
         /**
-         * 将请求体写入输出流
+         * Writes the request body to the provided {@link BufferSink}.
          *
-         * @param sink 输出流
-         * @throws IOException 如果写入失败
+         * @param sink The buffer sink to write to.
+         * @throws IOException If an I/O error occurs during writing.
          */
         @Override
         public void writeTo(BufferSink sink) throws IOException {
-            // 使用流式处理，避免将整个文件加载到内存
+            // Use streaming to avoid loading the entire file into memory.
             try (InputStream inputStream = contentStreamProvider.newStream()) {
-                byte[] buffer = new byte[8192]; // 8KB缓冲区
+                byte[] buffer = new byte[8192]; // 8KB buffer
                 int bytesRead;
                 while ((bytesRead = inputStream.read(buffer)) != -1) {
                     sink.write(buffer, 0, bytesRead);
@@ -378,17 +379,17 @@ public class ClientX implements SdkHttpClient {
         }
 
         /**
-         * 获取内容长度
+         * Returns the content length of the request body.
          *
-         * @return 内容长度
-         * @throws IOException 如果获取内容长度失败
+         * @return The content length, or -1 if unknown.
+         * @throws IOException If an I/O error occurs while calculating the content length.
          */
         @Override
-        public long length() throws IOException {
+        public long contentLength() throws IOException {
             if (contentLength == null) {
                 synchronized (this) {
                     if (contentLength == null) {
-                        // 只计算一次，然后缓存结果
+                        // Calculate only once, then cache the result.
                         contentLength = calculateContentLength();
                     }
                 }
@@ -397,23 +398,23 @@ public class ClientX implements SdkHttpClient {
         }
 
         /**
-         * 计算内容长度
+         * Calculates the content length of the request body.
          *
-         * @return 内容长度
-         * @throws IOException 如果计算失败
+         * @return The calculated content length.
+         * @throws IOException If an I/O error occurs during calculation.
          */
         private long calculateContentLength() throws IOException {
-            // 尝试从请求头获取内容长度
+            // Attempt to get content length from request headers
             Optional<String> contentLengthOpt = httpRequest.firstMatchingHeader("Content-Length");
             if (contentLengthOpt.isPresent()) {
                 try {
                     return Long.parseLong(contentLengthOpt.get());
                 } catch (NumberFormatException e) {
-                    // 如果解析失败，继续计算
+                    // If parsing fails, continue to calculate
                 }
             }
 
-            // 如果无法从请求头获取，则计算实际内容长度
+            // If unable to get from headers, calculate actual content length
             try (InputStream inputStream = contentStreamProvider.newStream()) {
                 long length = 0;
                 byte[] buffer = new byte[8192];
@@ -427,22 +428,23 @@ public class ClientX implements SdkHttpClient {
     }
 
     /**
-     * 异步内容发布者包装器，将AWS SDK的SdkHttpContentPublisher转换为OkHttp的RequestBody
+     * An asynchronous content publisher wrapper that converts AWS SDK's {@link SdkHttpContentPublisher} to
+     * {@link RequestBody}.
      */
     private static class AsyncContentPublisherWrapper extends RequestBody {
 
-        /** 内容发布者 */
+        /** The content publisher. */
         private final SdkHttpContentPublisher contentPublisher;
-        /** HTTP请求 */
+        /** The HTTP request. */
         private final SdkHttpRequest httpRequest;
-        /** 内容长度，延迟计算 */
+        /** The content length, calculated lazily. */
         private volatile Long contentLength;
 
         /**
-         * 构造函数
+         * Constructs an {@code AsyncContentPublisherWrapper}.
          *
-         * @param contentPublisher 内容发布者
-         * @param httpRequest      HTTP请求
+         * @param contentPublisher The content publisher.
+         * @param httpRequest      The HTTP request.
          */
         AsyncContentPublisherWrapper(SdkHttpContentPublisher contentPublisher, SdkHttpRequest httpRequest) {
             this.contentPublisher = contentPublisher;
@@ -450,48 +452,48 @@ public class ClientX implements SdkHttpClient {
         }
 
         /**
-         * 获取内容类型
+         * Returns the media type of the request body.
          *
-         * @return 内容类型
+         * @return The {@link MediaType} of the content.
          */
         @Override
         public MediaType contentType() {
-            // 从请求头获取Content-Type，如果没有则使用默认值
+            // Get Content-Type from request headers, or use a default value if not present.
             Optional<String> contentTypeOpt = httpRequest.firstMatchingHeader("Content-Type");
             return contentTypeOpt.map(MediaType::valueOf).orElse(MediaType.valueOf("application/octet-stream"));
         }
 
         /**
-         * 将请求体写入输出流
+         * Writes the request body to the provided {@link BufferSink}.
          *
-         * @param sink 输出流
-         * @throws IOException 如果写入失败
+         * @param sink The buffer sink to write to.
+         * @throws IOException If an I/O error occurs during writing.
          */
         @Override
         public void writeTo(BufferSink sink) throws IOException {
             try {
-                // 将SdkHttpContentPublisher的内容写入BufferSink
+                // Write the content from SdkHttpContentPublisher to BufferSink
                 CompletableFuture<Void> future = new CompletableFuture<>();
 
-                // 创建订阅者来接收数据
+                // Create a subscriber to receive data
                 Subscriber<ByteBuffer> subscriber = new Subscriber<>() {
 
                     /**
-                     * 订阅关系
+                     * The subscription to the publisher.
                      */
                     private Subscription subscription;
 
                     @Override
                     public void onSubscribe(Subscription s) {
                         this.subscription = s;
-                        // 请求第一个数据块
+                        // Request the first data block
                         s.request(1);
                     }
 
                     @Override
                     public void onNext(ByteBuffer buffer) {
                         try {
-                            // 将ByteBuffer写入sink
+                            // Write ByteBuffer to sink
                             if (buffer.hasArray()) {
                                 sink.write(buffer.array(), buffer.arrayOffset(), buffer.remaining());
                             } else {
@@ -499,7 +501,7 @@ public class ClientX implements SdkHttpClient {
                                 buffer.get(bytes);
                                 sink.write(bytes);
                             }
-                            // 请求下一个数据块
+                            // Request the next data block
                             subscription.request(1);
                         } catch (IOException e) {
                             subscription.cancel();
@@ -518,10 +520,10 @@ public class ClientX implements SdkHttpClient {
                     }
                 };
 
-                // 订阅SdkHttpContentPublisher的发布者
+                // Subscribe to the SdkHttpContentPublisher
                 contentPublisher.subscribe(subscriber);
 
-                // 等待写入完成
+                // Wait for writing to complete
                 future.get();
             } catch (Exception e) {
                 if (e instanceof IOException) {
@@ -532,28 +534,27 @@ public class ClientX implements SdkHttpClient {
         }
 
         /**
-         * 获取内容长度
+         * Returns the content length of the request body.
          *
-         * @return 内容长度
-         * @throws IOException 如果获取内容长度失败
+         * @return The content length, or -1 if unknown.
          */
         @Override
-        public long length() throws IOException {
+        public long contentLength() {
             if (contentLength == null) {
                 synchronized (this) {
                     if (contentLength == null) {
-                        // 尝试从请求头获取内容长度
+                        // Attempt to get content length from request headers
                         Optional<String> contentLengthOpt = httpRequest.firstMatchingHeader("Content-Length");
                         if (contentLengthOpt.isPresent()) {
                             try {
                                 contentLength = Long.parseLong(contentLengthOpt.get());
                                 return contentLength;
                             } catch (NumberFormatException e) {
-                                // 如果解析失败，继续计算
+                                // If parsing fails, continue to calculate
                             }
                         }
 
-                        // 如果无法从请求头获取，尝试从SdkHttpContentPublisher获取
+                        // If unable to get from headers, try to get from SdkHttpContentPublisher
                         try {
                             Optional<Long> publisherContentLength = contentPublisher.contentLength();
                             if (publisherContentLength.isPresent()) {
@@ -561,7 +562,7 @@ public class ClientX implements SdkHttpClient {
                                 return contentLength;
                             }
                         } catch (Exception e) {
-                            // 如果获取失败，返回-1表示未知长度
+                            // If fetching fails, return -1 for unknown length
                             contentLength = -1L;
                         }
                     }
@@ -572,34 +573,35 @@ public class ClientX implements SdkHttpClient {
     }
 
     /**
-     * ByteBuffer发布者实现，用于将InputStream转换为Publisher<ByteBuffer>
+     * {@link Publisher} implementation for {@link ByteBuffer} that converts an {@link InputStream} into a stream of
+     * {@link ByteBuffer}s.
      * <p>
-     * 优化性能：减少内存分配，使用更高效的缓冲区管理
+     * Optimizes performance by reducing memory allocation and using efficient buffer management.
      * </p>
      */
     private static class ByteBufferPublisher implements Publisher<ByteBuffer> {
 
-        /** 输入流 */
+        /** The input stream to read from. */
         private final InputStream inputStream;
-        /** 缓冲区大小 */
+        /** The size of the buffer to use for reading. */
         private final int bufferSize;
-        /** 执行器服务 */
+        /** The executor service for emitting data. */
         private final ExecutorService executorService;
 
         /**
-         * 构造函数，使用默认缓冲区大小
+         * Constructs a {@code ByteBufferPublisher} with a default buffer size.
          *
-         * @param inputStream 输入流
+         * @param inputStream The input stream.
          */
         ByteBufferPublisher(InputStream inputStream) {
             this(inputStream, 8192);
         }
 
         /**
-         * 构造函数
+         * Constructs a {@code ByteBufferPublisher} with a specified buffer size.
          *
-         * @param inputStream 输入流
-         * @param bufferSize  缓冲区大小
+         * @param inputStream The input stream.
+         * @param bufferSize  The size of the buffer.
          */
         ByteBufferPublisher(InputStream inputStream, int bufferSize) {
             this.inputStream = inputStream;
@@ -608,19 +610,19 @@ public class ClientX implements SdkHttpClient {
         }
 
         /**
-         * 订阅发布者
+         * Subscribes the given {@link Subscriber} to this publisher.
          *
-         * @param subscriber 订阅者
+         * @param subscriber The subscriber to subscribe.
          */
         @Override
         public void subscribe(Subscriber<? super ByteBuffer> subscriber) {
             subscriber.onSubscribe(new Subscription() {
 
-                /** 是否已取消 */
+                /** Flag indicating if the subscription has been cancelled. */
                 private volatile boolean cancelled = false;
-                /** 已请求数据量 */
+                /** The amount of data requested by the subscriber. */
                 private volatile long requested = 0;
-                /** 锁对象，用于同步请求计数 */
+                /** Lock object for synchronizing the requested count. */
                 private final Object lock = new Object();
 
                 @Override
@@ -632,7 +634,7 @@ public class ClientX implements SdkHttpClient {
                     synchronized (lock) {
                         requested += n;
                         if (requested > 0) {
-                            // 使用单独的线程执行数据发送，避免阻塞调用线程
+                            // Execute data emission in a separate thread to avoid blocking the calling thread.
                             executorService.submit(this::emitData);
                         }
                     }
@@ -645,14 +647,14 @@ public class ClientX implements SdkHttpClient {
                         try {
                             inputStream.close();
                         } catch (IOException e) {
-                            // 忽略关闭异常
+                            // Ignore close exceptions
                         }
                         executorService.shutdown();
                     }
                 }
 
                 /**
-                 * 发送数据
+                 * Emits data from the input stream to the subscriber.
                  */
                 private void emitData() {
                     try {
@@ -660,7 +662,7 @@ public class ClientX implements SdkHttpClient {
                         while (!cancelled && requested > 0) {
                             int bytesRead = inputStream.read(buffer);
                             if (bytesRead == -1) {
-                                // 流结束，通知完成
+                                // End of stream, notify completion
                                 subscriber.onComplete();
                                 executorService.shutdown();
                                 return;
@@ -671,7 +673,7 @@ public class ClientX implements SdkHttpClient {
                                     requested--;
                                     subscriber.onNext(ByteBuffer.wrap(buffer, 0, bytesRead));
                                 } else {
-                                    // 如果没有请求更多数据，停止发送
+                                    // If no more data is requested, stop sending
                                     break;
                                 }
                             }
@@ -686,33 +688,33 @@ public class ClientX implements SdkHttpClient {
     }
 
     /**
-     * 构建器模式
+     * Builder pattern for {@code ClientX}.
      */
     public static class ClientBuilder implements SdkHttpClient.Builder<ClientBuilder> {
 
-        /** HTTP客户端构建器 */
+        /** The HTTP client builder. */
         private Httpd.Builder httpdBuilder;
-        /** 回调执行器 */
+        /** The executor service for callbacks. */
         private ExecutorService executor;
 
         /**
-         * 构造函数
+         * Constructs a new {@code ClientBuilder} with default settings.
          */
         public ClientBuilder() {
             this.httpdBuilder = new Httpd.Builder().connectTimeout(Duration.ofSeconds(10))
                     .readTimeout(Duration.ofSeconds(30)).writeTimeout(Duration.ofSeconds(30))
                     .retryOnConnectionFailure(true)
-                    // 优化连接池配置
+                    // Optimize connection pool configuration
                     .connectionPool(new ConnectionPool(20, 5, TimeUnit.MINUTES))
-                    // 添加通用S3协议兼容性配置
+                    // Add generic S3 protocol compatibility configuration
                     .addInterceptor(new S3CompatibilityInterceptor());
         }
 
         /**
-         * 设置连接超时时间
+         * Sets the connection timeout for the HTTP client.
          *
-         * @param timeout 超时时间
-         * @return 构建器
+         * @param timeout The connection timeout duration.
+         * @return This builder instance.
          */
         public ClientBuilder connectTimeout(Duration timeout) {
             httpdBuilder.connectTimeout(timeout);
@@ -720,10 +722,10 @@ public class ClientX implements SdkHttpClient {
         }
 
         /**
-         * 设置读取超时时间
+         * Sets the read timeout for the HTTP client.
          *
-         * @param timeout 超时时间
-         * @return 构建器
+         * @param timeout The read timeout duration.
+         * @return This builder instance.
          */
         public ClientBuilder readTimeout(Duration timeout) {
             httpdBuilder.readTimeout(timeout);
@@ -731,10 +733,10 @@ public class ClientX implements SdkHttpClient {
         }
 
         /**
-         * 设置写入超时时间
+         * Sets the write timeout for the HTTP client.
          *
-         * @param timeout 超时时间
-         * @return 构建器
+         * @param timeout The write timeout duration.
+         * @return This builder instance.
          */
         public ClientBuilder writeTimeout(Duration timeout) {
             httpdBuilder.writeTimeout(timeout);
@@ -742,10 +744,10 @@ public class ClientX implements SdkHttpClient {
         }
 
         /**
-         * 设置调用超时时间
+         * Sets the call timeout for the HTTP client.
          *
-         * @param timeout 超时时间
-         * @return 构建器
+         * @param timeout The call timeout duration.
+         * @return This builder instance.
          */
         public ClientBuilder callTimeout(Duration timeout) {
             httpdBuilder.callTimeout(timeout);
@@ -753,10 +755,10 @@ public class ClientX implements SdkHttpClient {
         }
 
         /**
-         * 添加拦截器
+         * Adds an interceptor to the HTTP client.
          *
-         * @param interceptor 拦截器
-         * @return 构建器
+         * @param interceptor The interceptor to add.
+         * @return This builder instance.
          */
         public ClientBuilder addInterceptor(Interceptor interceptor) {
             httpdBuilder.addInterceptor(interceptor);
@@ -764,10 +766,10 @@ public class ClientX implements SdkHttpClient {
         }
 
         /**
-         * 添加网络拦截器
+         * Adds a network interceptor to the HTTP client.
          *
-         * @param interceptor 拦截器
-         * @return 构建器
+         * @param interceptor The network interceptor to add.
+         * @return This builder instance.
          */
         public ClientBuilder addNetworkInterceptor(Interceptor interceptor) {
             httpdBuilder.addNetworkInterceptor(interceptor);
@@ -775,10 +777,10 @@ public class ClientX implements SdkHttpClient {
         }
 
         /**
-         * 设置连接池
+         * Sets the connection pool for the HTTP client.
          *
-         * @param connectionPool 连接池
-         * @return 构建器
+         * @param connectionPool The connection pool to use.
+         * @return This builder instance.
          */
         public ClientBuilder connectionPool(ConnectionPool connectionPool) {
             httpdBuilder.connectionPool(connectionPool);
@@ -786,10 +788,10 @@ public class ClientX implements SdkHttpClient {
         }
 
         /**
-         * 设置连接失败时是否重试
+         * Sets whether the HTTP client should retry on connection failure.
          *
-         * @param retry 是否重试
-         * @return 构建器
+         * @param retry {@code true} to retry on connection failure, {@code false} otherwise.
+         * @return This builder instance.
          */
         public ClientBuilder retryOnConnectionFailure(boolean retry) {
             httpdBuilder.retryOnConnectionFailure(retry);
@@ -797,10 +799,10 @@ public class ClientX implements SdkHttpClient {
         }
 
         /**
-         * 设置回调执行器
+         * Sets the executor service for callbacks.
          *
-         * @param callbackExecutor 回调执行器
-         * @return 构建器
+         * @param callbackExecutor The executor service for callbacks.
+         * @return This builder instance.
          */
         public ClientBuilder callbackExecutor(ExecutorService callbackExecutor) {
             this.executor = callbackExecutor;
@@ -808,10 +810,10 @@ public class ClientX implements SdkHttpClient {
         }
 
         /**
-         * 使用默认属性构建客户端
+         * Builds a {@code ClientX} instance with default attributes.
          *
-         * @param attributeMap 属性映射
-         * @return 存储客户端
+         * @param attributeMap The attribute map.
+         * @return A new {@code ClientX} instance.
          */
         @Override
         public ClientX buildWithDefaults(AttributeMap attributeMap) {
@@ -819,127 +821,128 @@ public class ClientX implements SdkHttpClient {
         }
 
         /**
-         * 构建客户端
+         * Builds a {@code ClientX} instance.
          *
-         * @return 存储客户端
+         * @return A new {@code ClientX} instance.
          */
-        // 添加一个便捷的build方法
         public ClientX build() {
             return new ClientX(this);
         }
     }
 
     /**
-     * S3协议兼容性拦截器
+     * S3 protocol compatibility interceptor.
      * <p>
-     * 通用S3协议兼容，不依赖特定存储服务类型检测
+     * This interceptor ensures generic S3 protocol compatibility and does not depend on specific storage service type
+     * detection.
      * </p>
      */
     private static class S3CompatibilityInterceptor implements Interceptor {
 
         /**
-         * 拦截请求，添加S3协议兼容性头信息
+         * Intercepts the request to add S3 protocol compatibility headers.
          *
-         * @param chain 请求链
-         * @return 响应
-         * @throws IOException 如果请求处理失败
+         * @param chain The request chain.
+         * @return The response from the next interceptor in the chain.
+         * @throws IOException If an I/O error occurs during request processing.
          */
         @Override
         public Response intercept(NewChain chain) throws IOException {
             Request request = chain.request();
 
-            // 获取原始请求构建器
+            // Get the original request builder
             Request.Builder requestBuilder = request.newBuilder();
 
-            // 确保Content-Type头存在
+            // Ensure Content-Type header exists
             if (request.header("Content-Type") == null) {
                 requestBuilder.addHeader("Content-Type", "application/octet-stream");
             }
 
-            // 确保Content-Length头存在
+            // Ensure Content-Length header exists
             if (request.body() != null && request.header("Content-Length") == null) {
                 try {
-                    // 对于自定义RequestBody，我们已经实现了length()方法
-                    long length = request.body().length();
+                    // For custom RequestBody, we have already implemented the contentLength() method
+                    long length = request.body().contentLength();
                     if (length != -1) {
                         requestBuilder.addHeader("Content-Length", String.valueOf(length));
                     }
                 } catch (IOException e) {
-                    // 如果无法获取内容长度，忽略错误
+                    // If content length cannot be obtained, ignore the error
                 }
             }
 
-            // 添加通用的S3协议头信息
+            // Add generic S3 protocol headers
             addS3ProtocolHeaders(requestBuilder, request);
 
-            // 构建新请求
+            // Build the new request
             Request newRequest = requestBuilder.build();
 
-            // 继续请求链
+            // Proceed with the request chain
             return chain.proceed(newRequest);
         }
 
         /**
-         * 添加通用的S3协议头信息
+         * Adds generic S3 protocol headers to the request.
          *
-         * @param requestBuilder 请求构建器
-         * @param request        原始请求
+         * @param requestBuilder The request builder.
+         * @param request        The original request.
          */
         private void addS3ProtocolHeaders(Request.Builder requestBuilder, Request request) {
-            // 确保Host头正确
+            // Ensure Host header is correct
             if (request.header("Host") == null) {
                 requestBuilder.addHeader("Host", request.url().host());
             }
 
-            // 确保Date头存在
+            // Ensure Date header exists
             if (request.header("Date") == null) {
                 requestBuilder.addHeader(
                         "Date",
                         DateTimeFormatter.RFC_1123_DATE_TIME.format(ZonedDateTime.now(ZoneOffset.UTC)));
             }
 
-            // 添加通用的内容SHA256头信息
-            // 这里使用AWS S3格式作为默认，因为大多数S3兼容服务都支持这种格式
+            // Add generic Content-SHA256 header
+            // AWS S3 format is used as default here, as most S3 compatible services support this format
             if (request.header("x-amz-content-sha256") == null) {
                 requestBuilder.addHeader("x-amz-content-sha256", "UNSIGNED-PAYLOAD");
             }
 
-            // 检查是否需要覆盖文件
+            // Check if file overwrite is allowed
             boolean shouldOverwrite = shouldAllowOverwrite(request);
 
-            // 如果不允许覆盖，添加禁止覆盖头
-            // 注意：不是所有S3兼容服务都支持这个头，但对于那些支持的服务，这是有用的
+            // If overwrite is not allowed, add a header to forbid it
+            // Note: Not all S3 compatible services support this header, but it is useful for those that do.
             if (!shouldOverwrite && request.header("x-oss-forbid-overwrite") == null) {
                 requestBuilder.addHeader("x-oss-forbid-overwrite", "true");
             }
         }
 
         /**
-         * 判断是否允许覆盖文件
+         * Determines whether overwriting a file is allowed based on the request.
          *
-         * @param request HTTP请求
-         * @return 是否允许覆盖
+         * @param request The HTTP request.
+         * @return {@code true} if overwriting is allowed, {@code false} otherwise.
          */
         private boolean shouldAllowOverwrite(Request request) {
-            // 检查请求方法，如果是PUT请求，通常表示上传或更新操作，应该允许覆盖
+            // If the request method is PUT, it usually indicates an upload or update operation, so overwriting should
+            // be allowed.
             if ("PUT".equals(request.method())) {
                 return true;
             }
 
-            // 检查URL中是否包含特定的参数或路径模式
+            // Check if the URL contains specific parameters or path patterns
             String url = request.url().toString();
 
-            // 如果URL中包含"overwrite=true"参数，允许覆盖
+            // If the URL contains "overwrite=true" parameter, allow overwriting
             if (url.contains("overwrite=true")) {
                 return true;
             }
 
-            // 如果URL中包含特定的路径模式，允许覆盖
+            // If the URL contains specific path patterns, allow overwriting
             if (url.contains("/update/") || url.contains("/replace/")) {
                 return true;
             }
 
-            // 默认不允许覆盖
+            // By default, overwriting is not allowed
             return false;
         }
     }

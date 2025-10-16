@@ -37,7 +37,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * 助通短信
+ * Material for Zhutong SMS service.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -50,12 +50,15 @@ import lombok.experimental.SuperBuilder;
 public class ZhutongMaterial extends Material {
 
     /**
-     * 模板变量名称 查看地址：https://mix2.zthysms.com/index.html#/TemplateManagement 允许为空，为空，使用无模板形式，发送短信
+     * The name of the template variable. View address: https://mix2.zthysms.com/index.html#/TemplateManagement. Can be
+     * empty, in which case a non-template form is used to send SMS.
      */
     private String templateName;
 
     /**
-     * API默认请求地址 当 {@link Context} 中 endpoint 为空时使用地址
+     * Retrieves the default API request address. This address is used when the {@link Context} endpoint is empty.
+     *
+     * @return The default API request address for Zhutong SMS.
      */
     @Override
     public String getUrl() {

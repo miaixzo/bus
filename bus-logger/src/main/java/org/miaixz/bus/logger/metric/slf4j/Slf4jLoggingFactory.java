@@ -27,17 +27,18 @@
 */
 package org.miaixz.bus.logger.metric.slf4j;
 
-import java.io.OutputStream;
-import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
-
 import org.miaixz.bus.logger.Provider;
 import org.miaixz.bus.logger.magic.AbstractFactory;
 import org.slf4j.LoggerFactory;
 import org.slf4j.helpers.NOPLoggerFactory;
 
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
+
 /**
- * slf4j and logback
+ * A factory for creating {@link org.slf4j.Logger} instances. This factory detects the presence of an SLF4J binding and
+ * creates loggers accordingly.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -45,16 +46,17 @@ import org.slf4j.helpers.NOPLoggerFactory;
 public class Slf4jLoggingFactory extends AbstractFactory {
 
     /**
-     * 构造
+     * Constructs a new {@code Slf4jLoggingFactory}. This constructor will throw a {@link NoClassDefFoundError} if no
+     * SLF4J binding is found.
      */
     public Slf4jLoggingFactory() {
         this(true);
     }
 
     /**
-     * 构造
+     * Constructs a new {@code Slf4jLoggingFactory}.
      *
-     * @param fail 如果未找到桥接包是否报错
+     * @param fail whether to throw an error if no SLF4J binding is found.
      */
     public Slf4jLoggingFactory(final boolean fail) {
         super("org.slf4j.Logger");
@@ -62,6 +64,8 @@ public class Slf4jLoggingFactory extends AbstractFactory {
         if (!fail) {
             return;
         }
+
+        // Redirect System.err to capture the "no binding" message from SLF4J.
         final StringBuilder buf = new StringBuilder();
         final PrintStream err = System.err;
         try {
@@ -77,13 +81,17 @@ public class Slf4jLoggingFactory extends AbstractFactory {
         }
 
         try {
+            // Check if the underlying logger factory is a no-operation factory.
             if (LoggerFactory.getILoggerFactory() instanceof NOPLoggerFactory) {
+                // If it is, throw an error with the captured message.
                 throw new NoClassDefFoundError(buf.toString());
             } else {
+                // Otherwise, print any captured output to the original System.err.
                 err.print(buf);
                 err.flush();
             }
         } finally {
+            // Restore the original System.err.
             System.setErr(err);
         }
     }

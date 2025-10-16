@@ -27,20 +27,20 @@
 */
 package org.miaixz.bus.validate;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
+import lombok.Getter;
+import lombok.Setter;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.validate.magic.Checker;
 
-import lombok.Getter;
-import lombok.Setter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
- * 当前校验的上下文信息
+ * Represents the context of the current validation operation. This class holds configuration and state for a validation
+ * process.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -50,53 +50,60 @@ import lombok.Setter;
 public class Context {
 
     /**
-     * 全局定义的错误码, 如果校验注解使用了-1 作为错误码,默认替换为该全局错误码
+     * The global error code. If a validation annotation uses -1 as its error code, it will be replaced by this global
+     * error code by default.
      */
     private String errcode = Builder.DEFAULT_ERRCODE;
 
     /**
-     * 当前被激活的校验组
+     * The currently active validation groups.
      */
     private List<String> group = new ArrayList<>();
 
     /**
-     * 全局校验异常 当校验失败时,如果定义了全局校验异常,则抛出全局校验异常； 然后判断如果定义了字段异常,则抛出字段异常； 最后判断如果定义了校验器注解异常,则抛出校验器注解上定义的异常;
-     * 如果都没定义,则抛出{@link ValidateException}
+     * The global validation exception. When a validation fails, if this global exception is defined, it will be thrown.
+     * Otherwise, it checks for a field-specific exception, and then a validator-specific exception. If none are
+     * defined, a {@link ValidateException} is thrown.
      */
     private Class<? extends ValidateException> exception;
 
     /**
-     * 当前被激活的属性
+     * The fields that are currently activated for validation.
      */
     private String[] field;
 
     /**
-     * 当前需跳过的属性
+     * The fields to be skipped during the current validation.
      */
     private String[] skip;
 
     /**
-     * 校验检查器
+     * The validation checker responsible for performing the validation logic.
      */
     private Checker checker;
 
     /**
-     * 快速失败, 默认：true true: 表示如果参数一旦校验,立刻抛出校验失败异常 false: 即使存在参数校验失败,也必须等到该参数所有的校验器执行后,才会抛出异常
+     * Fast-fail mode. Default is {@code true}. If {@code true}, the validation process will throw an exception
+     * immediately upon the first failure. If {@code false}, all validators for a field will be executed even if one
+     * fails, and the exception will be thrown at the end.
      */
     private boolean fast = true;
 
     /**
-     * 是否校验对象内部, 默认：false
+     * Whether to validate the internal fields of an object. Default is {@code false}.
      */
     private boolean inside = false;
 
+    /**
+     * Default constructor for creating a new validation context.
+     */
     public Context() {
     }
 
     /**
-     * 提供一个包含默认校验器注册中心的校验器上下文
+     * Creates a new validation context instance with a default checker registry.
      *
-     * @return 校验器上下文对象
+     * @return a new {@code Context} object.
      */
     public static Context newInstance() {
         Context context = new Context();
@@ -105,9 +112,9 @@ public class Context {
     }
 
     /**
-     * 添加校验组
+     * Adds validation groups to the current context.
      *
-     * @param groups 校验组
+     * @param groups The validation groups to add.
      */
     public void addGroups(String... groups) {
         if (ObjectKit.isEmpty(groups) || groups.length == 0) {

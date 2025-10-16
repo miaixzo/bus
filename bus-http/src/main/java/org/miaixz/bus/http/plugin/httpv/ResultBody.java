@@ -45,23 +45,67 @@ import org.miaixz.bus.http.Response;
 import org.miaixz.bus.http.bodys.ResponseBody;
 
 /**
+ * An implementation of {@link CoverResult.Body} that wraps an HTTP {@link Response}. It provides a rich API for
+ * consuming the response body in various formats (e.g., String, byte array, deserialized objects) and supports download
+ * progress monitoring.
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class ResultBody implements CoverResult.Body {
 
+    /**
+     * The underlying Httpd response.
+     */
     private final Response response;
+    /**
+     * The executor for handling callbacks and data conversions.
+     */
     protected CoverTasks.Executor executor;
+    /**
+     * The character set of the response body.
+     */
     protected java.nio.charset.Charset charset;
+    /**
+     * Flag to determine if the next callback should be executed on an I/O thread.
+     */
     private boolean onIO = false;
+    /**
+     * The callback for download progress updates.
+     */
     private Callback<Progress> onProcess;
+    /**
+     * The progress update interval in bytes.
+     */
     private long stepBytes = 0;
+    /**
+     * The progress update interval as a percentage of the total size (0.0 to 1.0).
+     */
     private double stepRate = -1;
+    /**
+     * Flag to ignore the HTTP Range header when calculating total download size.
+     */
     private boolean rangeIgnored = false;
+    /**
+     * The original HTTP task that produced this result.
+     */
     private CoverHttp<?> coverHttp;
+    /**
+     * Flag indicating if the response body should be cached in memory after the first read.
+     */
     private boolean cached = false;
+    /**
+     * The byte array used to cache the response body.
+     */
     private byte[] data;
 
+    /**
+     * Constructs a new ResultBody.
+     *
+     * @param coverHttp The HTTP task that received the response.
+     * @param response  The raw HTTP response.
+     * @param executor  The task executor.
+     */
     public ResultBody(CoverHttp<?> coverHttp, Response response, CoverTasks.Executor executor) {
         this.executor = executor;
         this.charset = coverHttp.charset(response);
@@ -114,7 +158,7 @@ public class ResultBody implements CoverResult.Body {
     public long getLength() {
         ResponseBody body = response.body();
         if (null != body) {
-            return body.length();
+            return body.contentLength();
         }
         return 0;
     }
@@ -241,7 +285,7 @@ public class ResultBody implements CoverResult.Body {
         if (!file.exists()) {
             try {
                 File parent = file.getParentFile();
-                if (!parent.exists()) {
+                if (parent != null && !parent.exists()) {
                     parent.mkdirs();
                 }
                 file.createNewFile();
@@ -283,8 +327,7 @@ public class ResultBody implements CoverResult.Body {
     @Override
     public CoverResult.Body cache() {
         if (null != onProcess) {
-            throw new IllegalStateException(
-                    "After the cache is turned on, you cannot set a download progress callback!");
+            throw new IllegalStateException("Cannot set a download progress callback after enabling cache!");
         }
         cached = true;
         return this;
@@ -297,6 +340,11 @@ public class ResultBody implements CoverResult.Body {
         return this;
     }
 
+    /**
+     * Reads the entire response body into a byte array and caches it. Subsequent calls will return the cached data.
+     *
+     * @return The cached byte array of the response body.
+     */
     private byte[] cacheBytes() {
         synchronized (response) {
             if (null == data) {
@@ -306,6 +354,11 @@ public class ResultBody implements CoverResult.Body {
         return data;
     }
 
+    /**
+     * Reads the response body into a byte array. This method consumes the body.
+     *
+     * @return The byte array of the response body.
+     */
     private byte[] bodyToBytes() {
         if (null != onProcess) {
             try (Buffer buffer = new Buffer()) {
@@ -327,6 +380,11 @@ public class ResultBody implements CoverResult.Body {
         return new byte[0];
     }
 
+    /**
+     * Parses the 'Content-Range' header to determine the starting byte of a partial response.
+     *
+     * @return The starting byte offset, or 0 if not a partial response.
+     */
     private long getRangeStart() {
         long rangeStart = 0;
         if (response.code() != HttpURLConnection.HTTP_PARTIAL) {
@@ -340,19 +398,34 @@ public class ResultBody implements CoverResult.Body {
                 try {
                     rangeStart = Long.parseLong(start);
                 } catch (Exception ignore) {
+                    // Ignore parsing errors
                 }
             }
         }
         return rangeStart;
     }
 
+    /**
+     * Joins a directory path and a file name into a full file path.
+     *
+     * @param dirPath  The directory path.
+     * @param fileName The file name.
+     * @return The resolved full file path.
+     */
     private String resolveFilePath(String dirPath, String fileName) {
         if (dirPath.endsWith(Symbol.BACKSLASH) || dirPath.endsWith(Symbol.SLASH)) {
             return dirPath + fileName;
         }
-        return dirPath + Symbol.BACKSLASH + fileName;
+        return dirPath + File.separator + fileName;
     }
 
+    /**
+     * Appends an index to a filename to avoid conflicts, e.g., "file.txt" -> "file(1).txt".
+     *
+     * @param fileName The original file name.
+     * @param index    The index to append.
+     * @return The new, indexed file name.
+     */
     private String indexFileName(String fileName, int index) {
         int i = fileName.lastIndexOf(Symbol.C_DOT);
         if (i < 0) {
@@ -366,20 +439,26 @@ public class ResultBody implements CoverResult.Body {
         return Symbol.PARENTHESE_LEFT + index + Symbol.PARENTHESE_RIGHT + ext;
     }
 
+    /**
+     * Resolves the download filename from the 'Content-Disposition' header or the request URL.
+     *
+     * @return The resolved filename.
+     */
     private String resolveFileName() {
         String fileName = response.header("Content-Disposition");
-        // 通过Content-Disposition获取文件名
+        // Try to get filename from Content-Disposition
         if (null == fileName || fileName.length() < 1) {
             fileName = response.request().url().encodedPath();
             fileName = fileName.substring(fileName.lastIndexOf(Symbol.SLASH) + 1);
         } else {
             try {
+                // Example: attachment; filename="filename.jpg"
                 fileName = URLDecoder
                         .decode(fileName.substring(fileName.indexOf("filename=") + 9), Charset.DEFAULT_UTF_8);
             } catch (UnsupportedEncodingException e) {
                 throw new InternalException("Failed to decode file name", e);
             }
-            // 去掉文件名会被包含""，不然无法读取文件后缀
+            // The filename might be enclosed in quotes
             fileName = fileName.replaceAll("\"", Normal.EMPTY);
         }
         return fileName;

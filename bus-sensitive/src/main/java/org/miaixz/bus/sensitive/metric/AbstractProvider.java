@@ -27,11 +27,12 @@
 */
 package org.miaixz.bus.sensitive.metric;
 
+import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.sensitive.Builder;
 
 /**
- * 脱敏策略
+ * An abstract base class for desensitization strategy providers. It provides static helper methods for common masking
+ * patterns.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -39,20 +40,21 @@ import org.miaixz.bus.sensitive.Builder;
 public abstract class AbstractProvider implements StrategyProvider {
 
     /**
-     * 自动模式
+     * Builds a masked string in automatic mode, where the number of masked characters is calculated based on the
+     * string's length, typically masking the middle part.
      *
-     * @param mode   脱敏模型
-     * @param rawVal 源字符
-     * @param shadow 遮挡字符
+     * @param mode   The desensitization mode (e.g., HEAD, TAIL, MIDDLE).
+     * @param rawVal The original string to be masked.
+     * @param shadow The character to use for masking.
      * @return the string
      */
-    public static String build(Builder.Mode mode, String rawVal, String shadow) {
+    public static String build(EnumValue.Mode mode, String rawVal, String shadow) {
         StringBuilder resultBuilder = new StringBuilder();
         int length = rawVal.length();
-        if (mode == Builder.Mode.TAIL || mode == Builder.Mode.HEAD) {
-            // 以1/2作为遮挡范围
+        if (mode == EnumValue.Mode.TAIL || mode == EnumValue.Mode.HEAD) {
+            // Mask approximately half of the string.
             int half = (int) Math.ceil(length / 2.0);
-            boolean head = mode == Builder.Mode.HEAD;
+            boolean head = mode == EnumValue.Mode.HEAD;
             if (head) {
                 resultBuilder.append(StringKit.repeat(shadow, half)).append(rawVal, half, length);
             } else {
@@ -60,15 +62,15 @@ public abstract class AbstractProvider implements StrategyProvider {
             }
             return resultBuilder.toString();
         }
-        // 仅有两个字符,不能采用遮挡中间的做法
+        // For MIDDLE mode, if only two characters, mask the second one.
         if (length == 2) {
             return resultBuilder.append(rawVal, 0, 1).append(shadow).toString();
         }
-        // 以一半字符被mask作为目标
+        // Aim to mask about half the characters in the middle.
         int middle = Math.max((int) Math.ceil(length / 2.0), 1);
-        // 计算首尾字符长度
+        // Calculate the length of the visible side parts.
         int side = Math.max((int) Math.floor((length - middle) / 2.0), 1);
-        // 修正中间被mask的长度
+        // Adjust the middle part to fill the rest.
         middle = length - side * 2;
         resultBuilder.append(rawVal, 0, side).append(StringKit.repeat(shadow, middle))
                 .append(rawVal, side + middle, length);
@@ -76,17 +78,17 @@ public abstract class AbstractProvider implements StrategyProvider {
     }
 
     /**
-     * 手动模式
+     * Builds a masked string in manual mode, using fixed sizes for the unmasked header and trailer.
      *
-     * @param mode            脱敏模型
-     * @param fixedHeaderSize 固定头部长度
-     * @param fixedTailorSize 固定尾部长度
-     * @param rawVal          源字符
-     * @param shadow          遮挡字符
+     * @param mode            The desensitization mode (e.g., HEAD, TAIL, MIDDLE).
+     * @param fixedHeaderSize The number of characters to keep visible at the beginning.
+     * @param fixedTailorSize The number of characters to keep visible at the end.
+     * @param rawVal          The original string to be masked.
+     * @param shadow          The character to use for masking.
      * @return the string
      */
     public static String build(
-            Builder.Mode mode,
+            EnumValue.Mode mode,
             int fixedHeaderSize,
             int fixedTailorSize,
             String rawVal,

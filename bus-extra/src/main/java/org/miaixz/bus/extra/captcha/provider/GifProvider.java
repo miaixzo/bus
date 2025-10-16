@@ -40,7 +40,7 @@ import org.miaixz.bus.extra.image.ImageKit;
 import org.miaixz.bus.extra.image.gif.AnimatedGifEncoder;
 
 /**
- * Gif验证码
+ * Gif CAPTCHA Provider.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -51,71 +51,75 @@ public class GifProvider extends AbstractProvider {
     private static final long serialVersionUID = 2852291762232L;
 
     /**
-     * 量化器取样间隔 - 默认是10ms
+     * Quantizer sampling interval - default is 10ms.
      */
     private int quality = 10;
     /**
-     * 帧循环次数
+     * Frame loop count.
      */
     private int repeat = 0;
     /**
-     * 设置随机颜色时，最小的取色范围
+     * Minimum color range for random colors.
      */
     private int minColor = 0;
     /**
-     * 设置随机颜色时，最大的取色范围
+     * Maximum color range for random colors.
      */
     private int maxColor = 255;
 
     /**
-     * 可以设置验证码宽度，高度的构造函数
+     * Constructor to set CAPTCHA width and height.
      *
-     * @param width  验证码宽度
-     * @param height 验证码高度
+     * @param width  CAPTCHA width.
+     * @param height CAPTCHA height.
      */
     public GifProvider(final int width, final int height) {
         this(width, height, 5);
     }
 
     /**
-     * @param width     验证码宽度
-     * @param height    验证码高度
-     * @param codeCount 验证码个数
+     * Constructor.
+     *
+     * @param width     CAPTCHA width.
+     * @param height    CAPTCHA height.
+     * @param codeCount Number of characters.
      */
     public GifProvider(final int width, final int height, final int codeCount) {
         this(width, height, codeCount, 10);
     }
 
     /**
-     * @param width          验证码宽度
-     * @param height         验证码高度
-     * @param codeCount      验证码个数
-     * @param interfereCount 干扰个数
+     * Constructor.
+     *
+     * @param width          CAPTCHA width.
+     * @param height         CAPTCHA height.
+     * @param codeCount      Number of characters.
+     * @param interfereCount Number of interfering elements.
      */
     public GifProvider(final int width, final int height, final int codeCount, final int interfereCount) {
         this(width, height, new RandomStrategy(codeCount), interfereCount);
     }
 
     /**
-     * 构造
+     * Constructor.
      *
-     * @param width          图片宽
-     * @param height         图片高
-     * @param generator      验证码生成器
-     * @param interfereCount 验证码干扰元素个数
+     * @param width          Image width.
+     * @param height         Image height.
+     * @param generator      CAPTCHA code generator.
+     * @param interfereCount Number of interfering elements.
      */
     public GifProvider(final int width, final int height, final CodeStrategy generator, final int interfereCount) {
         super(width, height, generator, interfereCount);
     }
 
     /**
-     * 构造
+     * Constructor.
      *
-     * @param width          图片宽
-     * @param height         图片高
-     * @param codeCount      验证码个数
-     * @param interfereCount 验证码干扰元素个数
-     * @param sizeBaseHeight 字体的大小 高度的倍数
+     * @param width          Image width.
+     * @param height         Image height.
+     * @param codeCount      Number of characters.
+     * @param interfereCount Number of interfering elements.
+     * @param sizeBaseHeight Font size as a multiplier of the height.
      */
     public GifProvider(final int width, final int height, final int codeCount, final int interfereCount,
             final float sizeBaseHeight) {
@@ -123,9 +127,12 @@ public class GifProvider extends AbstractProvider {
     }
 
     /**
-     * 设置图像的颜色量化(转换质量 由GIF规范允许的最大256种颜色)。 低的值(最小值= 1)产生更好的颜色,但处理显著缓慢。 10是默认,并产生良好的颜色而且有以合理的速度。 值更大(大于20)不产生显著的改善速度
+     * Sets the image's color quantization (conversion quality to the maximum 256 colors allowed by the GIF
+     * specification). Lower values (minimum = 1) produce better colors but are significantly slower to process. 10 is
+     * the default and produces good colors at a reasonable speed. Values greater than 20 do not produce significant
+     * improvements in speed.
      *
-     * @param quality 大于1
+     * @param quality greater than 1.
      * @return this
      */
     public GifProvider setQuality(int quality) {
@@ -137,9 +144,10 @@ public class GifProvider extends AbstractProvider {
     }
 
     /**
-     * 设置GIF帧应该播放的次数。 默认是 0; 0意味着无限循环。 必须在添加的第一个图像之前被调用。
+     * Sets the number of times the GIF frames should be played. The default is 0, which means an infinite loop. Must be
+     * called before the first image is added.
      *
-     * @param repeat 必须大于等于0
+     * @param repeat must be greater than or equal to 0.
      * @return this
      */
     public GifProvider setRepeat(final int repeat) {
@@ -150,9 +158,9 @@ public class GifProvider extends AbstractProvider {
     }
 
     /**
-     * 设置最大取色范围
+     * Sets the maximum color range.
      *
-     * @param maxColor 颜色
+     * @param maxColor the color.
      * @return this
      */
     public GifProvider setMaxColor(final int maxColor) {
@@ -161,9 +169,9 @@ public class GifProvider extends AbstractProvider {
     }
 
     /**
-     * 设置最小取色范围
+     * Sets the minimum color range.
      *
-     * @param minColor 颜色
+     * @param minColor the color.
      * @return this
      */
     public GifProvider setMinColor(final int minColor) {
@@ -176,14 +184,14 @@ public class GifProvider extends AbstractProvider {
         generateCode();
         final ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-        final AnimatedGifEncoder gifEncoder = new AnimatedGifEncoder();// gif编码类
-        // 生成字符
+        final AnimatedGifEncoder gifEncoder = new AnimatedGifEncoder(); // gif encoding class
+        // generate characters
         gifEncoder.start(out);
-        gifEncoder.setQuality(quality);// 设置量化器取样间隔
-        // 帧延迟 (默认100)
+        gifEncoder.setQuality(quality); // Set quantizer sampling interval
+        // frame delay (default 100)
         final int delay = 100;
-        gifEncoder.setDelay(delay);// 设置帧延迟
-        gifEncoder.setRepeat(repeat);// 帧循环次数
+        gifEncoder.setDelay(delay); // Set frame delay
+        gifEncoder.setRepeat(repeat); // Frame loop count
         BufferedImage frame;
         final char[] chars = code.toCharArray();
         final Color[] fontColor = new Color[chars.length];
@@ -199,15 +207,17 @@ public class GifProvider extends AbstractProvider {
 
     @Override
     protected Image createImage(final String code) {
+        // This method is not used in the GIF provider as the image is created in the create() method.
         return null;
     }
 
     /**
-     * 画随机码图
+     * Draws the random code image.
      *
-     * @param fontColor 随机字体颜色
-     * @param words     字符数组
-     * @param flag      透明度使用
+     * @param chars     The character array.
+     * @param fontColor Random font color.
+     * @param words     The character array.
+     * @param flag      Used for transparency.
      * @return BufferedImage
      */
     private BufferedImage graphicsImage(
@@ -217,17 +227,17 @@ public class GifProvider extends AbstractProvider {
             final int flag) {
         final BufferedImage image = new BufferedImage(width, height,
                 (null == this.background) ? BufferedImage.TYPE_4BYTE_ABGR : BufferedImage.TYPE_INT_RGB);
-        // 利用指定颜色填充背景
+        // Fill background with specified color
         final Graphics2D g2d = ImageKit.createGraphics(image, this.background);
         try {
             AlphaComposite ac;
-            // 字符的y坐标
+            // y-coordinate of the characters
             final float y = (height >> 1) + (font.getSize() >> 1);
             final float m = 1.0f * (width - (chars.length * font.getSize())) / chars.length;
-            // 字符的x坐标
+            // x-coordinate of the characters
             final float x = Math.max(m / 2.0f, 2);
             g2d.setFont(font);
-            // 指定透明度
+            // Specify transparency
             if (null != this.textAlpha) {
                 g2d.setComposite(this.textAlpha);
             }
@@ -239,7 +249,7 @@ public class GifProvider extends AbstractProvider {
                         RandomKit.randomInt(width),
                         RandomKit.randomInt(height),
                         RandomKit.randomInt(5, 30),
-                        5 + RandomKit.randomInt(5, 30));// 绘制椭圆边框
+                        5 + RandomKit.randomInt(5, 30)); // Draw oval border
                 g2d.drawString(words[i] + "", x + (font.getSize() + m) * i, y);
             }
         } finally {
@@ -249,9 +259,12 @@ public class GifProvider extends AbstractProvider {
     }
 
     /**
-     * 获取透明度,从0到1,自动计算步长
+     * Gets the transparency, from 0 to 1, and automatically calculates the step.
      *
-     * @return float 透明度
+     * @param v The total number of characters.
+     * @param i The current frame index.
+     * @param j The current character index.
+     * @return float transparency
      */
     private float getAlpha(final int v, final int i, final int j) {
         final int num = i + j;
@@ -261,9 +274,11 @@ public class GifProvider extends AbstractProvider {
     }
 
     /**
-     * 通过给定范围获得随机的颜色
+     * Gets a random color within a given range.
      *
-     * @return Ansi4BitColor 获得随机的颜色
+     * @param min The minimum color value.
+     * @param max The maximum color value.
+     * @return A random color.
      */
     private Color getRandomColor(int min, int max) {
         if (min > 255) {

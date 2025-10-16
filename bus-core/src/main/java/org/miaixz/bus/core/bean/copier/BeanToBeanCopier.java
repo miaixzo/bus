@@ -39,39 +39,45 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.TypeKit;
 
 /**
- * Bean属性拷贝到Bean中的拷贝器
+ * A copier that copies properties from one Bean to another Bean.
  *
- * @param <S> 源Bean类型
- * @param <T> 目标Bean类型
+ * @param <S> The type of the source Bean.
+ * @param <T> The type of the target Bean.
  * @author Kimi Liu
  * @since Java 17+
  */
 public class BeanToBeanCopier<S, T> extends AbstractCopier<S, T> {
 
     /**
-     * 目标的类型（用于泛型类注入）
+     * The generic type of the target (used for injecting generic parameters into the Bean).
      */
     private final Type targetType;
 
     /**
-     * 构造
+     * Constructs a new {@code BeanToBeanCopier} instance.
      *
-     * @param source      来源Map
-     * @param target      目标Bean对象
-     * @param targetType  目标泛型类型
-     * @param copyOptions 拷贝选项
+     * @param source      The source Bean object. Must not be {@code null}.
+     * @param target      The target Bean object. Must not be {@code null}.
+     * @param targetType  The generic type of the target, used for beans with generic parameters.
+     * @param copyOptions The options to configure the copying process.
      */
     public BeanToBeanCopier(final S source, final T target, final Type targetType, final CopyOptions copyOptions) {
         super(source, target, copyOptions);
         this.targetType = targetType;
     }
 
+    /**
+     * Performs the property copying operation from the source Bean to the target Bean.
+     *
+     * @return The target object with copied properties.
+     * @throws BeanException If the source or target bean has no properties, and {@code ignoreError} is {@code false}.
+     */
     @Override
     public T copy() {
         final CopyOptions copyOptions = this.copyOptions;
         Class<?> actualEditable = target.getClass();
         if (null != copyOptions.editable) {
-            // 检查限制类是否为target的父类或接口
+            // Check if the restricted class is a superclass or interface of the target.
             Assert.isTrue(
                     copyOptions.editable.isInstance(target),
                     "Target class [{}] not assignable to Editable class [{}]",
@@ -97,41 +103,41 @@ public class BeanToBeanCopier<S, T> extends AbstractCopier<S, T> {
         }
         sourcePropDescMap.forEach((sFieldName, sDesc) -> {
             if (null == sFieldName || !sDesc.isReadable(copyOptions.transientSupport)) {
-                // 字段空或不可读，跳过
+                // Field is null or not readable, skip.
                 return;
             }
 
-            // 检查源对象属性是否过滤属性
+            // Check if the source object property is filtered.
             Object sValue = sDesc.getValue(this.source, copyOptions.ignoreError);
             if (!this.copyOptions.testPropertyFilter(sDesc.getField(), sValue)) {
                 return;
             }
 
-            // 编辑键值对
+            // Edit key-value pair.
             final MutableEntry<Object, Object> entry = copyOptions.editField(sFieldName, sValue);
             if (null == entry) {
                 return;
             }
             sFieldName = StringKit.toStringOrNull(entry.getKey());
-            // 对key做转换，转换后为null的跳过
+            // If the key is null after conversion, skip.
             if (null == sFieldName) {
                 return;
             }
             sValue = entry.getValue();
 
-            // 检查目标字段可写性
-            // 目标字段检查放在键值对编辑之后，因为键可能被编辑修改
+            // Check target field writability.
+            // Target field check is performed after key-value pair editing, because the key might be modified.
             final PropDesc tDesc = copyOptions.findPropDesc(targetPropDescMap, sFieldName);
             if (null == tDesc || !tDesc.isWritable(copyOptions.transientSupport)) {
-                // 字段不可写，跳过之
+                // Field is not writable, skip.
                 return;
             }
 
-            // 获取目标字段真实类型并转换源值
+            // Get the actual type of the target field and convert the source value.
             final Type fieldType = TypeKit.getActualType(this.targetType, tDesc.getFieldType());
             sValue = copyOptions.convertField(fieldType, sValue);
 
-            // 目标赋值
+            // Assign to target.
             tDesc.setValue(
                     this.target,
                     sValue,

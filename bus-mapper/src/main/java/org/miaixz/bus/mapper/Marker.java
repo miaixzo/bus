@@ -28,7 +28,8 @@
 package org.miaixz.bus.mapper;
 
 /**
- * 标记接口,继承该接口的接口,在 ClassPathMapperScanner#setMarkerInterface 时,会自动注册到通用Mapper
+ * A marker interface. Interfaces that extend this interface will be automatically registered with the generic Mapper
+ * when {@code ClassPathMapperScanner#setMarkerInterface} is called.
  *
  * @author Kimi Liu
  * @since Java 17+

@@ -37,7 +37,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.office.excel.style.CellBorderStyle;
 
 /**
- * Excel样式工具类
+ * Utility class for Excel cell styles.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -45,10 +45,10 @@ import org.miaixz.bus.office.excel.style.CellBorderStyle;
 public class StyleKit {
 
     /**
-     * 创建单元格样式
+     * Creates a new cell style for the workbook.
      *
-     * @param workbook {@link Workbook} 工作簿
-     * @return {@link CellStyle}
+     * @param workbook The {@link Workbook} to create the style for.
+     * @return A new {@link CellStyle}.
      * @see Workbook#createCellStyle()
      */
     public static CellStyle createCellStyle(final Workbook workbook) {
@@ -59,15 +59,15 @@ public class StyleKit {
     }
 
     /**
-     * 创建默认普通单元格样式
+     * Creates a default normal cell style.
      *
      * <pre>
-     * 1. 文字上下左右居中
-     * 2. 细边框，黑色
+     * 1. Text is centered horizontally and vertically.
+     * 2. Thin border, black color.
      * </pre>
      *
-     * @param workbook {@link Workbook} 工作簿
-     * @return {@link CellStyle}
+     * @param workbook The {@link Workbook} to create the style for.
+     * @return A new {@link CellStyle}.
      */
     public static CellStyle createDefaultCellStyle(final Workbook workbook) {
         final CellStyle cellStyle = createCellStyle(workbook);
@@ -77,10 +77,10 @@ public class StyleKit {
     }
 
     /**
-     * 创建默认头部样式
+     * Creates a default header style.
      *
-     * @param workbook {@link Workbook} 工作簿
-     * @return {@link CellStyle}
+     * @param workbook The {@link Workbook} to create the style for.
+     * @return A new {@link CellStyle}.
      */
     public static CellStyle createHeadCellStyle(final Workbook workbook) {
         final CellStyle cellStyle = createCellStyle(workbook);
@@ -91,33 +91,34 @@ public class StyleKit {
     }
 
     /**
-     * 给定样式是否为null（无样式）或默认样式，默认样式为{@code workbook.getCellStyleAt(0)}
+     * Checks if the given style is {@code null} (no style) or the default style. The default style is considered to be
+     * {@code workbook.getCellStyleAt(0)}.
      *
-     * @param workbook 工作簿
-     * @param style    被检查的样式
-     * @return 是否为null（无样式）或默认样式
+     * @param workbook The workbook.
+     * @param style    The style to check.
+     * @return {@code true} if the style is {@code null} or the default style, {@code false} otherwise.
      */
     public static boolean isNullOrDefaultStyle(final Workbook workbook, final CellStyle style) {
         return (null == style) || style.equals(workbook.getCellStyleAt(0));
     }
 
     /**
-     * 克隆新的{@link CellStyle}
+     * Clones an existing {@link CellStyle} to a new one for the given cell.
      *
-     * @param cell      单元格
-     * @param cellStyle 被复制的样式
-     * @return {@link CellStyle}
+     * @param cell      The cell for which to clone the style.
+     * @param cellStyle The {@link CellStyle} to be cloned.
+     * @return The new cloned {@link CellStyle}.
      */
     public static CellStyle cloneCellStyle(final Cell cell, final CellStyle cellStyle) {
         return cloneCellStyle(cell.getSheet().getWorkbook(), cellStyle);
     }
 
     /**
-     * 克隆新的{@link CellStyle}
+     * Clones an existing {@link CellStyle} to a new one for the given workbook.
      *
-     * @param workbook  工作簿
-     * @param cellStyle 被复制的样式
-     * @return {@link CellStyle}
+     * @param workbook  The workbook to create the new style in.
+     * @param cellStyle The {@link CellStyle} to be cloned.
+     * @return The new cloned {@link CellStyle}.
      */
     public static CellStyle cloneCellStyle(final Workbook workbook, final CellStyle cellStyle) {
         final CellStyle newCellStyle = createCellStyle(workbook);
@@ -126,12 +127,12 @@ public class StyleKit {
     }
 
     /**
-     * 设置cell文本对齐样式
+     * Sets the text alignment for a cell style.
      *
-     * @param cellStyle {@link CellStyle}
-     * @param halign    横向位置
-     * @param valign    纵向位置
-     * @return {@link CellStyle}
+     * @param cellStyle The {@link CellStyle} to modify.
+     * @param halign    The horizontal alignment.
+     * @param valign    The vertical alignment.
+     * @return The modified {@link CellStyle}.
      */
     public static CellStyle setAlign(
             final CellStyle cellStyle,
@@ -143,12 +144,12 @@ public class StyleKit {
     }
 
     /**
-     * 设置cell的四个边框粗细和颜色
+     * Sets the border style and color for all four borders of a cell.
      *
-     * @param cellStyle  {@link CellStyle}
-     * @param borderSize 边框粗细{@link BorderStyle}枚举
-     * @param colorIndex 预定义颜色的short值，见{@link IndexedColors}枚举
-     * @return {@link CellStyle}
+     * @param cellStyle  The {@link CellStyle} to modify.
+     * @param borderSize The border thickness, represented by {@link BorderStyle} enum.
+     * @param colorIndex The short value of the predefined color, see {@link IndexedColors} enum.
+     * @return The modified {@link CellStyle}.
      */
     public static CellStyle setBorder(
             final CellStyle cellStyle,
@@ -158,22 +159,22 @@ public class StyleKit {
     }
 
     /**
-     * 设置cell的四个边框粗细和颜色
+     * Sets the border style and color for all four borders of a cell.
      *
-     * @param cellStyle       {@link CellStyle}
-     * @param cellBorderStyle {@link CellBorderStyle}单元格边框样式和颜色 }
-     * @return {@link CellStyle}
+     * @param cellStyle       The {@link CellStyle} to modify.
+     * @param cellBorderStyle The {@link CellBorderStyle} object containing border style and color information.
+     * @return The modified {@link CellStyle}.
      */
     public static CellStyle setBorder(final CellStyle cellStyle, final CellBorderStyle cellBorderStyle) {
         return cellBorderStyle.setTo(cellStyle);
     }
 
     /**
-     * 根据{@link CellStyle}设置指定范围边框样式
+     * Sets the border style for a specified range of cells based on a {@link CellStyle}.
      *
-     * @param sheet            {@link Sheet}
-     * @param cellRangeAddress 边框样式范围
-     * @param cellBorderStyle  边框风格，包括边框样式、颜色
+     * @param sheet            The {@link Sheet}.
+     * @param cellRangeAddress The range of cells for which to set the border style.
+     * @param cellBorderStyle  The border style, including border style and color.
      */
     public static void setBorderStyle(
             final Sheet sheet,
@@ -193,11 +194,11 @@ public class StyleKit {
     }
 
     /**
-     * 根据{@link CellStyle}设置指定范围边框样式
+     * Sets the border style for a specified range of cells based on a {@link CellStyle}.
      *
-     * @param sheet            {@link Sheet}
-     * @param cellRangeAddress {@link CellRangeAddress}
-     * @param cellStyle        {@link CellStyle}
+     * @param sheet            The {@link Sheet}.
+     * @param cellRangeAddress The {@link CellRangeAddress}.
+     * @param cellStyle        The {@link CellStyle}.
      */
     public static void setBorderStyle(
             final Sheet sheet,
@@ -210,12 +211,12 @@ public class StyleKit {
     }
 
     /**
-     * 给cell设置颜色
+     * Sets the color for a cell (i.e., cell background color).
      *
-     * @param cellStyle   {@link CellStyle}
-     * @param color       预定义的背景颜色，见{@link IndexedColors}枚举
-     * @param fillPattern 填充方式 {@link FillPatternType}枚举
-     * @return {@link CellStyle}
+     * @param cellStyle   The {@link CellStyle} to modify.
+     * @param color       The predefined background color, see {@link IndexedColors} enum.
+     * @param fillPattern The fill pattern, see {@link FillPatternType} enum.
+     * @return The modified {@link CellStyle}.
      */
     public static CellStyle setColor(
             final CellStyle cellStyle,
@@ -225,12 +226,12 @@ public class StyleKit {
     }
 
     /**
-     * 给cell设置颜色（即单元格背景色）
+     * Sets the color for a cell (i.e., cell background color).
      *
-     * @param cellStyle   {@link CellStyle}
-     * @param color       预定义的背景颜色，见{@link IndexedColors}枚举
-     * @param fillPattern 填充方式 {@link FillPatternType}枚举
-     * @return {@link CellStyle}
+     * @param cellStyle   The {@link CellStyle} to modify.
+     * @param color       The predefined background color, see {@link IndexedColors} enum.
+     * @param fillPattern The fill pattern, see {@link FillPatternType} enum.
+     * @return The modified {@link CellStyle}.
      */
     public static CellStyle setColor(final CellStyle cellStyle, final short color, final FillPatternType fillPattern) {
         cellStyle.setFillForegroundColor(color);
@@ -239,12 +240,12 @@ public class StyleKit {
     }
 
     /**
-     * 给cell设置颜色（即单元格背景色）
+     * Sets the color for a cell (i.e., cell background color).
      *
-     * @param cellStyle   {@link CellStyle}
-     * @param color       背景颜色
-     * @param fillPattern 填充方式 {@link FillPatternType}枚举
-     * @return {@link CellStyle}
+     * @param cellStyle   The {@link XSSFCellStyle} to modify.
+     * @param color       The background color.
+     * @param fillPattern The fill pattern, see {@link FillPatternType} enum.
+     * @return The modified {@link XSSFCellStyle}.
      */
     public static CellStyle setColor(
             final XSSFCellStyle cellStyle,
@@ -256,13 +257,13 @@ public class StyleKit {
     }
 
     /**
-     * 创建字体
+     * Creates a new font for the workbook.
      *
-     * @param workbook {@link Workbook}
-     * @param color    字体颜色
-     * @param fontSize 字体大小
-     * @param fontName 字体名称，可以为null使用默认字体
-     * @return {@link Font}
+     * @param workbook The {@link Workbook}.
+     * @param color    The font color.
+     * @param fontSize The font size.
+     * @param fontName The font name. May be {@code null} to use the default font.
+     * @return A new {@link Font}.
      */
     public static Font createFont(
             final Workbook workbook,
@@ -274,13 +275,13 @@ public class StyleKit {
     }
 
     /**
-     * 设置字体样式
+     * Sets the font style.
      *
-     * @param font     字体{@link Font}
-     * @param color    字体颜色
-     * @param fontSize 字体大小
-     * @param fontName 字体名称，可以为null使用默认字体
-     * @return {@link Font}
+     * @param font     The font {@link Font} to modify.
+     * @param color    The font color.
+     * @param fontSize The font size.
+     * @param fontName The font name. May be {@code null} to use the default font.
+     * @return The modified {@link Font}.
      */
     public static Font setFontStyle(final Font font, final short color, final short fontSize, final String fontName) {
         if (color > 0) {
@@ -296,11 +297,11 @@ public class StyleKit {
     }
 
     /**
-     * 创建数据格式并获取格式
+     * Creates a data format and retrieves the format index.
      *
-     * @param workbook {@link Workbook}
-     * @param format   数据格式
-     * @return 数据格式
+     * @param workbook The {@link Workbook}.
+     * @param format   The data format string.
+     * @return The format index.
      */
     public static Short getFormat(final Workbook workbook, final String format) {
         final DataFormat dataFormat = workbook.createDataFormat();

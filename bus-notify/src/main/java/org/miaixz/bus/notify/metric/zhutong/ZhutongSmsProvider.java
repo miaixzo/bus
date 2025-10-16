@@ -48,10 +48,10 @@ import org.miaixz.bus.notify.magic.ErrorCode;
 import org.miaixz.bus.notify.metric.AbstractProvider;
 
 /**
- * 助通短信发送 1. 自定义短信发送 无需定义模板 https://doc.zthysms.com/web/#/1/14 2. 模板短信发送 需定义模板 https://doc.zthysms.com/web/#/1/13 appKey
- * ：username 助通终端用户管理的用户名，非登录账号密码 appSecret ：password 终端用户管理的密码 signature ：短信签名可以为空，为空发送【自定义短信】无需要提前创建短信模板; 不为空发送:【模板短信】
- * templateId ：模板id可以为空，为空发送【自定义短信】无需要提前创建短信模板; 不为空发送:【模板短信】 templateName ：模板变量名称可以为空，为空发送【自定义短信】无需要提前创建短信模板;
- * 不为空发送:【模板短信】
+ * Zhutong SMS service provider implementation. Platform official website: https://www.ztinfo.cn/products/sms
+ * Documentation address: https://doc.zthysms.com/web/#/1/236 Management backend address (requires verification code):
+ * http://mix2.zthysms.com/login The interfaces used here are: custom SMS sending (sendSms) and template SMS sending
+ * (sendSmsTp).
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -59,15 +59,24 @@ import org.miaixz.bus.notify.metric.AbstractProvider;
 public class ZhutongSmsProvider extends AbstractProvider<ZhutongMaterial, Context> {
 
     /**
-     * 构造器，用于构造短信实现模块
+     * Constructor for building the SMS implementation module.
+     *
+     * @param context The context containing configuration information for the provider.
      */
     public ZhutongSmsProvider(Context context) {
         super(context);
     }
 
+    /**
+     * Sends an SMS notification using Zhutong SMS service. It determines whether to send a custom SMS or a template SMS
+     * based on the provided material.
+     *
+     * @param entity The {@link ZhutongMaterial} containing SMS details.
+     * @return A {@link Message} indicating the result of the SMS sending operation.
+     */
     @Override
     public Message send(ZhutongMaterial entity) {
-        // 如果模板id为空 or 模板变量名称为空，使用无模板的自定义短信发送
+        // If template ID or template variable name is empty, use custom SMS sending without a template
         if (ArrayKit.hasBlank(entity.getSignature(), entity.getTemplate(), entity.getTemplateName())) {
             return sendForCustom(entity);
         }
@@ -76,7 +85,11 @@ public class ZhutongSmsProvider extends AbstractProvider<ZhutongMaterial, Contex
     }
 
     /**
-     * 发送 自定义短信：https://doc.zthysms.com/web/#/1/14
+     * Sends a custom SMS message. Documentation: https://doc.zthysms.com/web/#/1/14
+     *
+     * @param entity The {@link ZhutongMaterial} containing custom SMS details.
+     * @return A {@link Message} indicating the result of the SMS sending operation.
+     * @throws ValidateException if requestUrl, username, password, mobile, or content is invalid.
      */
     protected Message sendForCustom(ZhutongMaterial entity) {
         String requestUrl = this.getUrl(entity);
@@ -85,33 +98,34 @@ public class ZhutongSmsProvider extends AbstractProvider<ZhutongMaterial, Contex
 
         validator(requestUrl, username, password);
         if (StringKit.isEmpty(entity.getReceive())) {
-            throw new ValidateException("助通短信：手机号不能为空！");
+            throw new ValidateException("Zhutong SMS: Mobile number cannot be empty!");
         }
         if (entity.getReceive().length() >= 20000) {
-            throw new ValidateException("助通短信：手机号码最多支持2000个！");
+            throw new ValidateException("Zhutong SMS: Up to 2000 mobile numbers are supported!");
         }
         if (StringKit.isBlank(entity.getContent())) {
-            throw new ValidateException("助通短信：发送内容不能为空！");
+            throw new ValidateException("Zhutong SMS: Content cannot be empty!");
         }
         if (entity.getContent().length() >= 1000) {
-            throw new ValidateException("助通短信：发送内容不能超过1000个字符！");
+            throw new ValidateException("Zhutong SMS: Content cannot exceed 1000 characters!");
         }
         if (!entity.getContent().contains("【")) {
-            throw new ValidateException("助通短信：自定义短信发送内容必须包含签名信息，如：【助通科技】您的验证码是8888！");
+            throw new ValidateException(
+                    "Zhutong SMS: Custom SMS content must include signature information, e.g., [Zhutong Technology] Your verification code is 8888!");
         }
 
         String url = this.getUrl(entity) + "v2/sendSms";
         long tKey = System.currentTimeMillis() / 1000;
         Map<String, String> bodys = new HashMap<>(5);
-        // 账号
+        // Account
         bodys.put("username", username);
-        // 密码
+        // Password
         bodys.put("password", Builder.md5(Builder.md5(password) + tKey));
         // tKey
         bodys.put("tKey", tKey + "");
-        // 手机号
+        // Mobile number
         bodys.put("mobile", entity.getReceive());
-        // 内容
+        // Content
         bodys.put("content", entity.getContent());
 
         Map<String, String> headers = MapKit.newHashMap(1, true);
@@ -120,50 +134,54 @@ public class ZhutongSmsProvider extends AbstractProvider<ZhutongMaterial, Contex
         String response = Httpx.post(url, bodys, headers);
 
         boolean succeed = Objects.equals(JsonKit.getValue(response, "code"), 0);
-        String errcode = succeed ? ErrorCode._SUCCESS.getKey() : ErrorCode._FAILURE.getKey();
-        String errmsg = succeed ? ErrorCode._SUCCESS.getValue() : ErrorCode._FAILURE.getValue();
+        String errcode = succeed ? ErrorCode._SUCCESS.getKey() : JsonKit.getValue(response, "code");
+        String errmsg = succeed ? ErrorCode._SUCCESS.getValue() : JsonKit.getValue(response, "message");
 
         return Message.builder().errcode(errcode).errmsg(errmsg).build();
     }
 
     /**
-     * 发送 模板短信：https://doc.zthysms.com/web/#/1/13
+     * Sends a template SMS message. Documentation: https://doc.zthysms.com/web/#/1/13
+     *
+     * @param entity The {@link ZhutongMaterial} containing template SMS details.
+     * @return A {@link Message} indicating the result of the SMS sending operation.
+     * @throws InternalException if the signature or template ID is empty.
      */
     protected Message sendForTemplate(ZhutongMaterial entity) {
         validator(this.getUrl(entity), this.context.getAppKey(), this.context.getAppSecret());
         if (StringKit.isBlank(entity.getSignature())) {
-            throw new InternalException("助通短信：模板短信中已报备的签名signature不能为空！");
+            throw new InternalException("Zhutong SMS: The reported signature in template SMS cannot be empty!");
         }
 
         if (StringKit.isBlank(entity.getTemplate())) {
-            throw new InternalException("助通短信：模板短信模板id不能为空！！");
+            throw new InternalException("Zhutong SMS: Template ID for template SMS cannot be empty!");
         }
 
-        // 地址
+        // Address
         String url = this.getUrl(entity) + "v2/sendSmsTp";
-        // 请求入参
+        // Request parameters
         Map<String, String> bodys = new HashMap<>();
-        // 账号
+        // Account
         bodys.put("username", this.context.getAppKey());
         // tKey
         long tKey = System.currentTimeMillis() / 1000;
         bodys.put("tKey", String.valueOf(tKey));
-        // 明文密码
+        // Plaintext password
         bodys.put("password", Builder.md5(Builder.md5(this.context.getAppSecret()) + tKey));
-        // 模板ID
+        // Template ID
         bodys.put("tpId", entity.getTemplate());
-        // 签名
+        // Signature
         bodys.put("signature", entity.getSignature());
-        // 扩展号
+        // Extension number
         bodys.put("ext", "");
-        // 自定义参数
+        // Custom parameters
         bodys.put("extend", "");
-        // 发送记录集合
-        Map records = new HashMap<>();
+        // Send record collection
+        Map<String, String> records = new HashMap<>();
 
         for (String mobile : StringKit.split(entity.getReceive(), Symbol.COMMA)) {
             Map<String, String> record = new HashMap<>();
-            // 手机号
+            // Mobile number
             record.put("mobile", mobile);
             record.put("tpContent", entity.getContent());
             records.putAll(record);
@@ -176,21 +194,29 @@ public class ZhutongSmsProvider extends AbstractProvider<ZhutongMaterial, Contex
         String response = Httpx.post(url, bodys, headers);
 
         boolean succeed = Objects.equals(JsonKit.getValue(response, "code"), 0);
-        String errcode = succeed ? ErrorCode._SUCCESS.getKey() : ErrorCode._FAILURE.getKey();
-        String errmsg = succeed ? ErrorCode._SUCCESS.getValue() : ErrorCode._FAILURE.getValue();
+        String errcode = succeed ? ErrorCode._SUCCESS.getKey() : JsonKit.getValue(response, "code");
+        String errmsg = succeed ? ErrorCode._SUCCESS.getValue() : JsonKit.getValue(response, "message");
 
         return Message.builder().errcode(errcode).errmsg(errmsg).build();
     }
 
+    /**
+     * Validates the request URL, username, and password.
+     *
+     * @param requestUrl The request URL.
+     * @param username   The username.
+     * @param password   The password.
+     * @throws ValidateException if any of the validation checks fail.
+     */
     private void validator(String requestUrl, String username, String password) {
         if (StringKit.isBlank(requestUrl)) {
-            throw new ValidateException("助通短信：requestUrl不能为空！");
+            throw new ValidateException("Zhutong SMS: requestUrl cannot be empty!");
         }
         if (!requestUrl.endsWith("/")) {
-            throw new ValidateException("助通短信：requestUrl必须以'/'结尾!");
+            throw new ValidateException("Zhutong SMS: requestUrl must end with '/'!");
         }
         if (ArrayKit.hasBlank(username, password)) {
-            throw new ValidateException("助通短信：账号username、密码password不能为空！");
+            throw new ValidateException("Zhutong SMS: Account username and password cannot be empty!");
         }
     }
 

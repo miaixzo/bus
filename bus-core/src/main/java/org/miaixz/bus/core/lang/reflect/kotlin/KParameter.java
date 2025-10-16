@@ -34,15 +34,25 @@ import org.miaixz.bus.core.xyz.ClassKit;
 import org.miaixz.bus.core.xyz.MethodKit;
 
 /**
- * kotlin.reflect.KParameter实例表示类 通过反射获取Kotlin中KParameter相关属性值
+ * Represents a Kotlin {@code kotlin.reflect.KParameter} instance. This class provides a wrapper to access properties of
+ * a Kotlin KParameter using reflection, such as its name and type.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class KParameter {
 
+    /**
+     * The {@link Method} object for {@code KParameter.getName()}.
+     */
     private static final Method METHOD_GET_NAME;
+    /**
+     * The {@link Method} object for {@code KParameter.getType()}.
+     */
     private static final Method METHOD_GET_TYPE;
+    /**
+     * The {@link Method} object for {@code KTypeImpl.getJavaType()}.
+     */
     private static final Method METHOD_GET_JAVA_TYPE;
 
     static {
@@ -54,13 +64,19 @@ public class KParameter {
         METHOD_GET_JAVA_TYPE = MethodKit.getMethod(kTypeClass, "getJavaType");
     }
 
+    /**
+     * The name of the Kotlin parameter.
+     */
     private final String name;
+    /**
+     * The Java {@link Class} representing the type of the Kotlin parameter.
+     */
     private final Class<?> type;
 
     /**
-     * 构造
+     * Constructs a new {@code KParameter} instance from a Kotlin {@code kotlin.reflect.KParameter} object.
      *
-     * @param kParameterInstance kotlin.reflect.KParameter实例对象
+     * @param kParameterInstance The instance of {@code kotlin.reflect.KParameter}.
      */
     public KParameter(final Object kParameterInstance) {
         this.name = MethodKit.invoke(kParameterInstance, METHOD_GET_NAME);
@@ -69,23 +85,31 @@ public class KParameter {
     }
 
     /**
-     * 获取参数名
+     * Retrieves the name of the parameter.
      *
-     * @return 参数名
+     * @return The parameter name as a {@code String}.
      */
     public String getName() {
         return name;
     }
 
     /**
-     * 获取参数类型
+     * Retrieves the Java {@link Class} representing the type of the parameter.
      *
-     * @return 参数类型
+     * @return The parameter type as a {@link Class} object.
      */
     public Class<?> getType() {
         return type;
     }
 
+    /**
+     * Compares this {@code KParameter} to the specified object. The result is {@code true} if and only if the argument
+     * is not {@code null} and is a {@code KParameter} object that has the same name and type as this object.
+     *
+     * @param o The object to compare this {@code KParameter} against.
+     * @return {@code true} if the given object represents a {@code KParameter} equivalent to this {@code KParameter},
+     *         {@code false} otherwise.
+     */
     @Override
     public boolean equals(final Object o) {
         if (this == o) {
@@ -98,11 +122,22 @@ public class KParameter {
         return Objects.equals(name, that.name) && Objects.equals(type, that.type);
     }
 
+    /**
+     * Returns a hash code value for this {@code KParameter}.
+     *
+     * @return A hash code value for this object.
+     */
     @Override
     public int hashCode() {
         return Objects.hash(name, type);
     }
 
+    /**
+     * Returns a string representation of this {@code KParameter}. The string representation includes the parameter's
+     * name and type.
+     *
+     * @return A string representation of this {@code KParameter}.
+     */
     @Override
     public String toString() {
         return "KotlinParameter{" + "name='" + name + '\'' + ", type=" + type + '}';

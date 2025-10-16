@@ -33,34 +33,37 @@ import java.io.Serializable;
 import org.miaixz.bus.core.lang.Assert;
 
 /**
- * 文本查找抽象类
+ * Abstract class for text searching.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public abstract class TextFinder implements Finder, Serializable {
 
+    /**
+     * The serial version UID.
+     */
     @Serial
     private static final long serialVersionUID = 2852237708637L;
 
     /**
-     * 文本
+     * The text to be searched.
      */
     protected CharSequence text;
     /**
-     * 结束位置
+     * The end position for the search.
      */
     protected int endIndex = -1;
     /**
-     * 是否反向查找
+     * Flag indicating whether to search in reverse (from end to start).
      */
     protected boolean negative;
 
     /**
-     * 设置被查找的文本
+     * Sets the text to be searched.
      *
-     * @param text 文本
-     * @return this
+     * @param text The text to search within.
+     * @return This TextFinder instance.
      */
     public TextFinder setText(final CharSequence text) {
         this.text = Assert.notNull(text, "Text must be not null!");
@@ -68,10 +71,11 @@ public abstract class TextFinder implements Finder, Serializable {
     }
 
     /**
-     * 设置查找的结束位置 如果从前向后查找，结束位置最大为text.length() 如果从后向前，结束位置为-1
+     * Sets the end position for the search. If searching forwards, the end position is at most {@code text.length()}.
+     * If searching backwards, the end position is -1.
      *
-     * @param endIndex 结束位置（不包括）
-     * @return this
+     * @param endIndex The end position (exclusive).
+     * @return This TextFinder instance.
      */
     public TextFinder setEndIndex(final int endIndex) {
         this.endIndex = endIndex;
@@ -79,10 +83,10 @@ public abstract class TextFinder implements Finder, Serializable {
     }
 
     /**
-     * 设置是否反向查找，{@code true}表示从后向前查找
+     * Sets whether to search in reverse. {@code true} indicates searching from end to start.
      *
-     * @param negative 结束位置（不包括）
-     * @return this
+     * @param negative {@code true} to search in reverse, {@code false} otherwise.
+     * @return This TextFinder instance.
      */
     public TextFinder setNegative(final boolean negative) {
         this.negative = negative;
@@ -90,13 +94,14 @@ public abstract class TextFinder implements Finder, Serializable {
     }
 
     /**
-     * 获取有效结束位置 如果{@link #endIndex}小于0，在反向模式下是开头（-1），正向模式是结尾（text.length()）
+     * Gets the valid end index for the search. If {@link #endIndex} is less than 0, it represents the beginning (-1) in
+     * reverse mode, and the end ({@code text.length()}) in forward mode.
      *
-     * @return 有效结束位置
+     * @return The valid end index.
      */
     protected int getValidEndIndex() {
         if (negative && -1 == endIndex) {
-            // 反向查找模式下，-1表示0前面的位置，即字符串反向末尾的位置
+            // In reverse search mode, -1 means the position before 0, i.e., the end of the string in reverse.
             return -1;
         }
         final int limit;

@@ -26,7 +26,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 基础信息
+ * Provides core data structures and magical constants for the Vortex module. This package contains fundamental classes
+ * such as error codes, delegation objects, and rate limiters, which are essential for the module's operation.
  *
  * @author Kimi Liu
  * @since Java 17+

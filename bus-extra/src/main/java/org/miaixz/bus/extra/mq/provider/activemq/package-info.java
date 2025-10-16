@@ -27,7 +27,9 @@
 */
 
 /**
- * ActiveMQ消息队列引擎
+ * Provides the Apache ActiveMQ implementation for the Message Queue (MQ) engine. This package contains classes that
+ * enable integration with ActiveMQ message brokers, offering functionalities for sending and receiving messages using
+ * ActiveMQ client APIs.
  *
  * @author Kimi Liu
  * @since Java 17+

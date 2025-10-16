@@ -30,28 +30,35 @@ package org.miaixz.bus.core.bean.copier;
 import java.lang.reflect.Type;
 
 /**
- * 值提供者，用于提供Bean注入时参数对应值得抽象接口 继承或匿名实例化此接口 在Bean注入过程中，Bean获得字段名，通过外部方式根据这个字段名查找相应的字段值，然后注入Bean
+ * An abstract interface for value providers, used to supply corresponding values during Bean injection. Implement or
+ * anonymously instantiate this interface. During the Bean injection process, the Bean obtains a field name, and an
+ * external mechanism uses this field name to find the corresponding field value, which is then injected into the Bean.
  *
- * @param <K> KEY类型，一般情况下为 {@link String}
+ * @param <K> The type of the key, typically {@link String}.
  * @author Kimi Liu
  * @since Java 17+
  */
 public interface ValueProvider<K> {
 
     /**
-     * 获取值 返回值一般需要匹配被注入类型，如果不匹配会调用默认转换 Convert#convert(Type, Object)实现转换
+     * Retrieves the value associated with the given key. The returned value generally needs to match the type being
+     * injected. If it does not match, a default conversion will be attempted using
+     * {@code Convert#convert(Type, Object)}.
      *
-     * @param key       Bean对象中参数名
-     * @param valueType 被注入的值的类型
-     * @return 对应参数名的值
+     * @param key       The parameter name in the Bean object.
+     * @param valueType The type of the value being injected.
+     * @return The value corresponding to the parameter name.
      */
     Object value(K key, Type valueType);
 
     /**
-     * 是否包含指定KEY，如果不包含则忽略注入 此接口方法单独需要实现的意义在于：有些值提供者（比如Map）key是存在的，但是value为null，此时如果需要注入这个null，需要根据此方法判断
+     * Checks if the value provider contains the specified key. If it does not contain the key, injection is ignored.
+     * The significance of this method is that for some value providers (e.g., Map), a key might exist but its value is
+     * {@code null}. If this {@code null} value needs to be injected, this method is used to determine if the key is
+     * present.
      *
-     * @param key Bean对象中参数名
-     * @return 是否包含指定KEY
+     * @param key The parameter name in the Bean object.
+     * @return {@code true} if the specified key is contained, {@code false} otherwise.
      */
     boolean containsKey(K key);
 

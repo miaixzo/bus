@@ -36,11 +36,12 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 脱敏管理器，用于管理所有脱敏处理器，使用方式有三种：
+ * Masking manager, used to manage all masking processors. There are three ways to use it:
  * <ul>
- * <li>全局默认：使用{@link MaskingManager#getInstance()}，带有预定义的脱敏方法</li>
- * <li>自定义默认：使用{@link MaskingManager#ofDefault(char)}，可以自定义脱敏字符，带有预定义的脱敏方法</li>
- * <li>自定义：使用{@link #MaskingManager(Map, char)}构造，不带有默认规则</li>
+ * <li>Global default: Use {@link MaskingManager#getInstance()}, which comes with predefined masking methods.</li>
+ * <li>Custom default: Use {@link MaskingManager#ofDefault(char)}, which allows you to customize the masking character
+ * and comes with predefined masking methods.</li>
+ * <li>Custom: Use the {@link #MaskingManager(Map, char)} constructor, which does not come with default rules.</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -49,27 +50,33 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class MaskingManager {
 
     /**
-     * 空脱敏管理器，用于不处理任何数据的情况
+     * An empty masking manager that does not process any data.
      */
     public static final MaskingManager EMPTY = new MaskingManager(null);
 
+    /**
+     * The map of masking handlers.
+     */
     private final Map<String, MaskingHandler> handlerMap;
+    /**
+     * The character used for masking.
+     */
     private final char maskChar;
 
     /**
-     * 构造
+     * Constructs a new masking manager.
      *
-     * @param handlerMap 脱敏处理器Map，如果应用于单例，则需要传入线程安全的Map
+     * @param handlerMap The map of masking handlers. If used in a singleton, a thread-safe map should be provided.
      */
     public MaskingManager(final Map<String, MaskingHandler> handlerMap) {
         this(handlerMap, Symbol.C_STAR);
     }
 
     /**
-     * 构造
+     * Constructs a new masking manager.
      *
-     * @param handlerMap 脱敏处理器Map，如果应用于单例，则需要传入线程安全的Map
-     * @param maskChar   默认的脱敏字符，默认为*
+     * @param handlerMap The map of masking handlers. If used in a singleton, a thread-safe map should be provided.
+     * @param maskChar   The default masking character, which is '*' by default.
      */
     public MaskingManager(final Map<String, MaskingHandler> handlerMap, final char maskChar) {
         this.handlerMap = handlerMap;
@@ -77,38 +84,38 @@ public class MaskingManager {
     }
 
     /**
-     * 获得单例的 MaskingManager
+     * Gets the singleton instance of the masking manager.
      *
-     * @return MaskingManager
+     * @return The masking manager instance.
      */
     public static MaskingManager getInstance() {
         return SingletonHolder.INSTANCE;
     }
 
     /**
-     * 创建默认的脱敏管理器，通过给定的脱敏字符，提供默认的脱敏规则
+     * Creates a default masking manager with the given masking character and default masking rules.
      *
-     * @param maskChar 脱敏字符，默认为*
-     * @return 默认的脱敏管理器
+     * @param maskChar The masking character, which is '*' by default.
+     * @return The default masking manager.
      */
     public static MaskingManager ofDefault(final char maskChar) {
         return registerDefault(maskChar);
     }
 
     /**
-     * 默认的脱敏处理器注册
+     * Registers the default masking handlers.
      *
-     * @param maskChar 默认的脱敏字符，默认为*
-     * @return 默认的脱敏处理器注册
+     * @param maskChar The default masking character, which is '*' by default.
+     * @return The default masking manager.
      */
     private static MaskingManager registerDefault(final char maskChar) {
         final MaskingManager manager = new MaskingManager(new ConcurrentHashMap<>(15, 1), maskChar);
 
         manager.register(EnumValue.Masking.USER_ID.name(), (str) -> "0");
         manager.register(EnumValue.Masking.CHINESE_NAME.name(), manager::firstMask);
-        manager.register(EnumValue.Masking.ID_CARD.name(), (str) -> manager.idCardNum(str, 1, 2));
-        manager.register(EnumValue.Masking.FIXED_PHONE.name(), manager::fixedPhone);
-        manager.register(EnumValue.Masking.MOBILE_PHONE.name(), manager::mobilePhone);
+        manager.register(EnumValue.Masking.CITIZENID.name(), (str) -> manager.idCardNum(str, 1, 2));
+        manager.register(EnumValue.Masking.PHONE.name(), manager::fixedPhone);
+        manager.register(EnumValue.Masking.MOBILE.name(), manager::mobilePhone);
         manager.register(EnumValue.Masking.ADDRESS.name(), (str) -> manager.address(str, 8));
         manager.register(EnumValue.Masking.EMAIL.name(), manager::email);
         manager.register(EnumValue.Masking.PASSWORD.name(), manager::password);
@@ -124,11 +131,11 @@ public class MaskingManager {
     }
 
     /**
-     * 注册一个脱敏处理器
+     * Registers a masking handler.
      *
-     * @param type    类型
-     * @param handler 脱敏处理器
-     * @return this
+     * @param type    The type of the handler.
+     * @param handler The masking handler.
+     * @return This masking manager.
      */
     public MaskingManager register(final String type, final MaskingHandler handler) {
         this.handlerMap.put(type, handler);
@@ -136,11 +143,11 @@ public class MaskingManager {
     }
 
     /**
-     * 脱敏处理 如果没有指定的脱敏处理器，则返回{@code null}
+     * Masks the given value. If no handler is found for the given type, returns {@code null}.
      *
-     * @param type  类型
-     * @param value 待脱敏值
-     * @return 脱敏后的值
+     * @param type  The type of the masking.
+     * @param value The value to be masked.
+     * @return The masked value.
      */
     public String masking(String type, final CharSequence value) {
         if (StringKit.isEmpty(type)) {
@@ -151,10 +158,11 @@ public class MaskingManager {
     }
 
     /**
-     * 定义了一个first_mask的规则，只显示第一个字符。 脱敏前：123456789；脱敏后：1********。
+     * Defines a "first_mask" rule that only displays the first character. Before masking: 123456789; After masking:
+     * 1********.
      *
-     * @param str 字符串
-     * @return 脱敏后的字符串
+     * @param str The string to be masked.
+     * @return The masked string.
      */
     public String firstMask(final CharSequence str) {
         if (StringKit.isBlank(str)) {
@@ -164,23 +172,23 @@ public class MaskingManager {
     }
 
     /**
-     * 【身份证号】前1位 和后2位
+     * Masks an ID card number, showing the first and last few digits.
      *
-     * @param idCardNum 身份证
-     * @param front     保留：前面的front位数；从1开始
-     * @param end       保留：后面的end位数；从1开始
-     * @return 脱敏后的身份证
+     * @param idCardNum The ID card number.
+     * @param front     The number of digits to keep at the beginning (from 1).
+     * @param end       The number of digits to keep at the end (from 1).
+     * @return The masked ID card number.
      */
     public String idCardNum(final CharSequence idCardNum, final int front, final int end) {
-        // 身份证不能为空
+        // ID card number cannot be blank.
         if (StringKit.isBlank(idCardNum)) {
             return Normal.EMPTY;
         }
-        // 需要截取的长度不能大于身份证号长度
+        // The length to be truncated cannot be greater than the ID card number length.
         if ((front + end) > idCardNum.length()) {
             return Normal.EMPTY;
         }
-        // 需要截取的不能小于0
+        // The length to be truncated cannot be less than 0.
         if (front < 0 || end < 0) {
             return Normal.EMPTY;
         }
@@ -188,10 +196,10 @@ public class MaskingManager {
     }
 
     /**
-     * 【固定电话 前四位，后两位
+     * Masks a fixed-line phone number, showing the first four and last two digits.
      *
-     * @param num 固定电话
-     * @return 脱敏后的固定电话；
+     * @param num The fixed-line phone number.
+     * @return The masked fixed-line phone number.
      */
     public String fixedPhone(final CharSequence num) {
         if (StringKit.isBlank(num)) {
@@ -201,10 +209,10 @@ public class MaskingManager {
     }
 
     /**
-     * 【手机号码】前三位，后4位，其他隐藏，比如135****2210
+     * Masks a mobile phone number, showing the first three and last four digits, e.g., 135****2210.
      *
-     * @param num 移动电话；
-     * @return 脱敏后的移动电话；
+     * @param num The mobile phone number.
+     * @return The masked mobile phone number.
      */
     public String mobilePhone(final CharSequence num) {
         if (StringKit.isBlank(num)) {
@@ -214,11 +222,11 @@ public class MaskingManager {
     }
 
     /**
-     * 【地址】只显示到地区，不显示详细地址，比如：北京市海淀区****
+     * Masks an address, showing only the district and not the detailed address, e.g., Beijing Haidian District****.
      *
-     * @param address       家庭住址
-     * @param sensitiveSize 敏感信息长度
-     * @return 脱敏后的家庭地址
+     * @param address       The home address.
+     * @param sensitiveSize The length of the sensitive information.
+     * @return The masked home address.
      */
     public String address(final CharSequence address, final int sensitiveSize) {
         if (StringKit.isBlank(address)) {
@@ -229,10 +237,11 @@ public class MaskingManager {
     }
 
     /**
-     * 【电子邮箱】邮箱前缀仅显示第一个字母，前缀其他隐藏，用星号代替，@及后面的地址显示，比如：d**@126.com
+     * Masks an email address, showing only the first letter of the prefix and hiding the rest with asterisks, while
+     * showing the @ and the domain, e.g., d**@126.com.
      *
-     * @param email 邮箱
-     * @return 脱敏后的邮箱
+     * @param email The email address.
+     * @return The masked email address.
      */
     public String email(final CharSequence email) {
         if (StringKit.isBlank(email)) {
@@ -246,45 +255,47 @@ public class MaskingManager {
     }
 
     /**
-     * 【密码】密码的全部字符都用定义的脱敏字符（如*）代替，比如：****** 密码位数不能被猜测，因此固定10位
+     * Masks a password by replacing all characters with the defined masking character (e.g., *), e.g., ******. The
+     * password length cannot be guessed, so it is fixed at 10 characters.
      *
-     * @param password 密码
-     * @return 脱敏后的密码
+     * @param password The password.
+     * @return The masked password.
      */
     public String password(final CharSequence password) {
         if (StringKit.isBlank(password)) {
             return Normal.EMPTY;
         }
-        // 密码位数不能被猜测，因此固定10位
+        // The password length cannot be guessed, so it is fixed at 10 characters.
         return StringKit.repeat(maskChar, 10);
     }
 
     /**
-     * 【中国车牌】车牌中间用脱敏字符（如*)代替 eg1：null - "" eg1："" - "" eg3：苏D40000 - 苏A2***0 eg2：陕V12345A - 陕A1****D eg5：京A123 - 京A123
-     * 如果是错误的车牌，不处理
+     * Masks a Chinese car license plate by replacing the middle part with the masking character (e.g., *). e.g.1: null
+     * - "" e.g.2: "" - "" e.g.3: 苏D40000 - 苏D4***0 e.g.4: 陕V12345A - 陕V1****A e.g.5: 京A123 - 京A123 If the car license
+     * plate is invalid, it is not processed.
      *
-     * @param carLicense 完整的车牌号
-     * @return 脱敏后的车牌
+     * @param carLicense The full car license plate number.
+     * @return The masked car license plate.
      */
     public String carLicense(CharSequence carLicense) {
         if (StringKit.isBlank(carLicense)) {
             return Normal.EMPTY;
         }
-        // 普通车牌
+        // Regular car license plate
         if (carLicense.length() == 7) {
             carLicense = StringKit.replaceByCodePoint(carLicense, 3, 6, maskChar);
         } else if (carLicense.length() == 8) {
-            // 新能源车牌
+            // New energy car license plate
             carLicense = StringKit.replaceByCodePoint(carLicense, 3, 7, maskChar);
         }
         return carLicense.toString();
     }
 
     /**
-     * 银行卡号脱敏 eg: 1102 **** **** **** 3201
+     * Masks a bank card number, e.g., 1102 **** **** **** 3201.
      *
-     * @param bankCardNo 银行卡号
-     * @return 脱敏之后的银行卡号
+     * @param bankCardNo The bank card number.
+     * @return The masked bank card number.
      */
     public String bankCard(CharSequence bankCardNo) {
         if (StringKit.isBlank(bankCardNo)) {
@@ -312,32 +323,33 @@ public class MaskingManager {
     }
 
     /**
-     * IPv4脱敏，如：脱敏前：192.0.2.1；脱敏后：192.*.*.*。
+     * Masks an IPv4 address, e.g., Before: 192.0.2.1; After: 192.*.*.*.
      *
-     * @param ipv4 IPv4地址
-     * @return 脱敏后的地址
+     * @param ipv4 The IPv4 address.
+     * @return The masked address.
      */
     public String ipv4(final CharSequence ipv4) {
         return StringKit.subBefore(ipv4, '.', false) + StringKit.repeat("." + maskChar, 3);
     }
 
     /**
-     * IPv6脱敏，如：脱敏前：2001:0db8:86a3:08d3:1319:8a2e:0370:7344；脱敏后：2001:*:*:*:*:*:*:*
+     * Masks an IPv6 address, e.g., Before: 2001:0db8:86a3:08d3:1319:8a2e:0370:7344; After: 2001:*:*:*:*:*:*:*.
      *
-     * @param ipv6 IPv6地址
-     * @return 脱敏后的地址
+     * @param ipv6 The IPv6 address.
+     * @return The masked address.
      */
     public String ipv6(final CharSequence ipv6) {
         return StringKit.subBefore(ipv6, ':', false) + StringKit.repeat(":" + maskChar, 7);
     }
 
     /**
-     * 类级的内部类，也就是静态的成员式内部类，该内部类的实例与外部类的实例 没有绑定关系，而且只有被调用到才会装载，从而实现了延迟加载
+     * A static nested class, which is a static member inner class. The instance of this inner class is not bound to the
+     * instance of the outer class, and it is loaded only when it is called, thus achieving lazy loading.
      */
     private static class SingletonHolder {
 
         /**
-         * 静态初始化器，由JVM来保证线程安全
+         * The static initializer is guaranteed to be thread-safe by the JVM.
          */
         private static final MaskingManager INSTANCE = registerDefault(Symbol.C_STAR);
     }

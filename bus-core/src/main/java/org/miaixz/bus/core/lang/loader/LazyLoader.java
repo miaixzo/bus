@@ -33,10 +33,12 @@ import java.io.Serializable;
 import org.miaixz.bus.core.Loader;
 
 /**
- * 懒加载加载器 在load方法被调用前，对象未被加载，直到被调用后才开始加载 此加载器常用于对象比较庞大而不一定被使用的情况，用于减少启动时资源占用问题
- * 此加载器使用双重检查（Double-Check）方式检查对象是否被加载，避免多线程下重复加载或加载丢失问题
+ * A lazy loader that defers object loading until the {@code get()} method is called. This loader is typically used for
+ * objects that are large and may not always be used, helping to reduce resource consumption during startup. It uses a
+ * double-checked locking mechanism to ensure thread-safe initialization and prevent duplicate or lost loading in a
+ * multi-threaded environment.
  *
- * @param <T> 被加载对象类型
+ * @param <T> The type of the object to be loaded lazily.
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -46,12 +48,15 @@ public abstract class LazyLoader<T> implements Loader<T>, Serializable {
     private static final long serialVersionUID = 2852267795270L;
 
     /**
-     * 被加载对象
+     * The lazily loaded object. It is volatile to ensure visibility across threads.
      */
     private volatile T object;
 
     /**
-     * 获取一个对象，第一次调用此方法时初始化对象然后返回，之后调用此方法直接返回原对象
+     * Retrieves the lazily loaded object. The first time this method is called, the object is initialized and then
+     * returned. Subsequent calls directly return the already initialized object.
+     *
+     * @return The lazily loaded object.
      */
     @Override
     public T get() {
@@ -67,15 +72,20 @@ public abstract class LazyLoader<T> implements Loader<T>, Serializable {
         return result;
     }
 
+    /**
+     * Checks if the object has been initialized.
+     *
+     * @return {@code true} if the object has been initialized, {@code false} otherwise.
+     */
     @Override
     public boolean isInitialized() {
         return null != object;
     }
 
     /**
-     * 初始化被加载的对象 如果对象从未被加载过，调用此方法初始化加载对象，此方法只被调用一次
+     * Initializes the object to be loaded. This method is called only once when the object is first accessed.
      *
-     * @return 被加载的对象
+     * @return The initialized object.
      */
     protected abstract T init();
 

@@ -33,6 +33,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.miaixz.bus.core.basic.entity.Message;
+import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.net.HTTP;
@@ -47,20 +48,34 @@ import org.miaixz.bus.notify.magic.ErrorCode;
 import org.miaixz.bus.notify.metric.AbstractProvider;
 
 /**
- * 亿美短信实现
+ * Emay SMS Provider implementation.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class EmaySmsProvider extends AbstractProvider<EmayMaterial, Context> {
 
+    /**
+     * Constructs an {@code EmaySmsProvider} with the given context.
+     *
+     * @param context The context containing configuration information for the provider.
+     */
     public EmaySmsProvider(Context context) {
         super(context);
     }
 
+    /**
+     * Prepares the parameters map for the Emay SMS API request.
+     *
+     * @param appId     The application ID.
+     * @param secretKey The secret key for signing.
+     * @param phone     The recipient's phone number.
+     * @param message   The content of the SMS message.
+     * @return A map of parameters for the request.
+     */
     private static Map<String, String> getParamsMap(String appId, String secretKey, String phone, String message) {
         Map<String, String> params = new HashMap<>();
-        // 时间戳(必填) 格式：yyyyMMddHHmmss
+        // Timestamp (required), format: yyyyMMddHHmmss
         String timestamp = DateKit.format(new Date(), DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
         String sign = Builder.md5(appId + secretKey + timestamp);
         params.put("appId", appId);
@@ -71,6 +86,12 @@ public class EmaySmsProvider extends AbstractProvider<EmayMaterial, Context> {
         return params;
     }
 
+    /**
+     * Sends an SMS notification using the Emay SMS service.
+     *
+     * @param entity The {@link EmayMaterial} containing the SMS details like recipient and content.
+     * @return A {@link Message} indicating the result of the SMS sending operation.
+     */
     @Override
     public Message send(EmayMaterial entity) {
         Map<String, String> bodys = getParamsMap(
@@ -82,10 +103,10 @@ public class EmaySmsProvider extends AbstractProvider<EmayMaterial, Context> {
         headers.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
 
         String response = Httpx.post(this.getUrl(entity), bodys, headers);
-        String errcode = JsonKit.getValue(response, "errcode");
+        String errcode = JsonKit.getValue(response, Consts.ERRCODE);
         return Message.builder()
                 .errcode(String.valueOf(HTTP.HTTP_OK).equals(errcode) ? ErrorCode._SUCCESS.getKey() : errcode)
-                .errmsg(JsonKit.getValue(response, "errmsg")).build();
+                .errmsg(JsonKit.getValue(response, Consts.ERRMSG)).build();
     }
 
 }

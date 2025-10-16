@@ -27,25 +27,27 @@
 */
 package org.miaixz.bus.http.accord.platform;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.List;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.net.Protocol;
 
 import javax.net.ssl.SSLParameters;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.X509TrustManager;
-
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.net.Protocol;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.List;
 
 /**
- * OpenJDK 9+
+ * A platform-specific implementation for OpenJDK 9 and later.
+ * <p>
+ * This class handles TLS extensions like ALPN using the standard APIs available in modern JDKs.
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class JdkPlatform extends Platform {
+final class JdkPlatform extends Platform {
 
     final Method setProtocolMethod;
     final Method getProtocolMethod;
@@ -55,6 +57,11 @@ public class JdkPlatform extends Platform {
         this.getProtocolMethod = getProtocolMethod;
     }
 
+    /**
+     * Builds a {@code JdkPlatform} instance if the current runtime is OpenJDK 9 or later.
+     *
+     * @return A new {@code JdkPlatform} instance, or null if not supported.
+     */
     public static JdkPlatform buildIfSupported() {
         try {
             Method setProtocolMethod = SSLParameters.class.getMethod("setApplicationProtocols", String[].class);
@@ -62,7 +69,7 @@ public class JdkPlatform extends Platform {
 
             return new JdkPlatform(setProtocolMethod, getProtocolMethod);
         } catch (NoSuchMethodException ignored) {
-
+            // This is not an OpenJDK 9+ runtime.
         }
 
         return null;
@@ -75,7 +82,7 @@ public class JdkPlatform extends Platform {
 
             List<String> names = alpnProtocolNames(protocols);
 
-            setProtocolMethod.invoke(sslParameters, new Object[] { names.toArray(new String[names.size()]) });
+            setProtocolMethod.invoke(sslParameters, (Object) names.toArray(new String[0]));
 
             sslSocket.setSSLParameters(sslParameters);
         } catch (IllegalAccessException | InvocationTargetException e) {
@@ -88,9 +95,9 @@ public class JdkPlatform extends Platform {
         try {
             String protocol = (String) getProtocolMethod.invoke(socket);
 
-            // SSLSocket.getApplicationProtocol 返回 "" 如果应用程序协议值不被使用
-            // 没有指定SSLParameters.setApplicationProtocols时观察到的
-            if (null == protocol || Normal.EMPTY.equals(protocol)) {
+            // SSLSocket.getApplicationProtocol returns "" if no application protocol value is used.
+            // This is observed when SSLParameters.setApplicationProtocols is not specified.
+            if (protocol == null || Normal.EMPTY.equals(protocol)) {
                 return null;
             }
 

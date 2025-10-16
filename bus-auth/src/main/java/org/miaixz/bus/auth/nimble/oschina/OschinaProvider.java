@@ -42,21 +42,39 @@ import org.miaixz.bus.auth.nimble.AbstractProvider;
 import java.util.Map;
 
 /**
- * OSchina 登录
+ * OSChina login provider.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class OschinaProvider extends AbstractProvider {
 
+    /**
+     * Constructs an {@code OschinaProvider} with the specified context.
+     *
+     * @param context the authentication context
+     */
     public OschinaProvider(Context context) {
         super(context, Registry.OSCHINA);
     }
 
+    /**
+     * Constructs an {@code OschinaProvider} with the specified context and cache.
+     *
+     * @param context the authentication context
+     * @param cache   the cache implementation
+     */
     public OschinaProvider(Context context, CacheX cache) {
         super(context, Registry.OSCHINA, cache);
     }
 
+    /**
+     * Retrieves the access token from OSChina's authorization server.
+     *
+     * @param callback the callback object containing the authorization code
+     * @return the {@link AuthToken} containing access token details
+     * @throws AuthorizedException if parsing the response fails or required token information is missing
+     */
     @Override
     public AuthToken getAccessToken(Callback callback) {
         String response = doPostAuthorizationCode(callback.getCode());
@@ -84,6 +102,13 @@ public class OschinaProvider extends AbstractProvider {
         }
     }
 
+    /**
+     * Retrieves user information from OSChina's user info endpoint.
+     *
+     * @param authToken the {@link AuthToken} obtained after successful authorization
+     * @return {@link Material} containing the user's information
+     * @throws AuthorizedException if parsing the response fails or required user information is missing
+     */
     @Override
     public Material getUserInfo(AuthToken authToken) {
         String response = doGetUserInfo(authToken);
@@ -115,10 +140,10 @@ public class OschinaProvider extends AbstractProvider {
     }
 
     /**
-     * 返回获取accessToken的url
+     * Returns the URL to obtain the access token.
      *
-     * @param code 授权回调时带回的授权码
-     * @return 返回获取accessToken的url
+     * @param code the authorization code returned during the callback
+     * @return the URL to obtain the access token
      */
     @Override
     protected String accessTokenUrl(String code) {
@@ -129,10 +154,10 @@ public class OschinaProvider extends AbstractProvider {
     }
 
     /**
-     * 返回获取userInfo的url
+     * Returns the URL to obtain user information.
      *
-     * @param authToken 用户授权后的token
-     * @return 返回获取userInfo的url
+     * @param authToken the user's authorization token
+     * @return the URL to obtain user information
      */
     @Override
     protected String userInfoUrl(AuthToken authToken) {
@@ -141,9 +166,10 @@ public class OschinaProvider extends AbstractProvider {
     }
 
     /**
-     * 检查响应内容是否正确
+     * Checks the response content for errors.
      *
-     * @param object 请求响应内容
+     * @param object the response map to check
+     * @throws AuthorizedException if the response contains an error or message indicating failure
      */
     private void checkResponse(Map<String, Object> object) {
         if (object.containsKey("error")) {

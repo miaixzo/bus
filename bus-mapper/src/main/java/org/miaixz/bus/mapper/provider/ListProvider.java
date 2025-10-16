@@ -38,7 +38,7 @@ import org.miaixz.bus.mapper.parsing.SqlScript;
 import org.miaixz.bus.mapper.parsing.TableMeta;
 
 /**
- * 提供批量操作的动态 SQL 生成方法。
+ * Provides dynamic SQL generation methods for batch operations.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -46,12 +46,12 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
 public class ListProvider {
 
     /**
-     * 批量插入实体列表。
+     * Batch inserts a list of entities.
      *
-     * @param providerContext 提供者上下文，包含方法和接口信息
-     * @param entityList      实体列表，需使用 @Param("entityList") 注解
-     * @return 缓存键
-     * @throws NullPointerException 如果 entityList 为 null 或空
+     * @param providerContext The provider context, containing method and interface information.
+     * @param entityList      The list of entities, which must be annotated with {@code @Param("entityList")}.
+     * @return The cache key.
+     * @throws NullPointerException if entityList is null or empty.
      */
     public static String insertList(ProviderContext providerContext, @Param("entityList") List<?> entityList) {
         if (entityList == null || entityList.size() == 0) {
@@ -77,12 +77,12 @@ public class ListProvider {
     }
 
     /**
-     * 批量更新实体列表。
+     * Batch updates a list of entities.
      *
-     * @param providerContext 提供者上下文，包含方法和接口信息
-     * @param entityList      实体列表，需使用 @Param("entityList") 注解
-     * @return 缓存键
-     * @throws NullPointerException 如果 entityList 为 null 或空
+     * @param providerContext The provider context, containing method and interface information.
+     * @param entityList      The list of entities, which must be annotated with {@code @Param("entityList")}.
+     * @return The cache key.
+     * @throws NullPointerException if entityList is null or empty.
      */
     public static String updateList(ProviderContext providerContext, @Param("entityList") List<?> entityList) {
         if (entityList == null || entityList.size() == 0) {
@@ -133,12 +133,12 @@ public class ListProvider {
     }
 
     /**
-     * 批量更新实体列表中非空字段。
+     * Batch updates non-null fields of a list of entities.
      *
-     * @param providerContext 提供者上下文，包含方法和接口信息
-     * @param entityList      实体列表，需使用 @Param("entityList") 注解
-     * @return 缓存键
-     * @throws NullPointerException 如果 entityList 为 null 或空
+     * @param providerContext The provider context, containing method and interface information.
+     * @param entityList      The list of entities, which must be annotated with {@code @Param("entityList")}.
+     * @return The cache key.
+     * @throws NullPointerException if entityList is null or empty.
      */
     public static String updateListSelective(ProviderContext providerContext, @Param("entityList") List<?> entityList) {
         if (entityList == null || entityList.size() == 0) {

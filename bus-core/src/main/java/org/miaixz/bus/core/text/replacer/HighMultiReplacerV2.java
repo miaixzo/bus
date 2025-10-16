@@ -33,44 +33,77 @@ import java.util.Map;
 import org.miaixz.bus.core.text.finder.MultiStringFinder;
 
 /**
- * 高效替换器，通过查找指定关键字，替换对应的值 基于AC自动机算法实现，需要被替换的原字符串越大，替换的键值对越多，效率提升越明显 注意: 如果需要被替换的关键字出现交叉,最先匹配中的关键字会被替换 1、"abc","ab"
- * 会优先替换"ab" 2、"abed","be" 会优先替换"abed" 3、"abc", "bc" 会优先替换"abc"
+ * An efficient replacer that finds and replaces specified keywords with corresponding values. This implementation is
+ * based on the Aho-Corasick automaton algorithm, which significantly improves efficiency when the original string to be
+ * replaced is large and the number of key-value pairs for replacement is high.
+ * <p>
+ * Note: If overlapping keywords are present, the first matched keyword will be replaced. For example:
+ * <ol>
+ * <li>"abc", "ab" will prioritize replacing "ab".</li>
+ * <li>"abed", "be" will prioritize replacing "abed".</li>
+ * <li>"abc", "bc" will prioritize replacing "abc".</li>
+ * </ol>
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class HighMultiReplacerV2 extends StringReplacer {
 
+    /**
+     * The serial version UID.
+     */
     @Serial
     private static final long serialVersionUID = 2852238992618L;
 
+    /**
+     * The Aho-Corasick automaton used for efficient keyword searching and replacement.
+     */
     private final AhoCorasickAutomaton ahoCorasickAutomaton;
 
     /**
-     * 构造
+     * Constructs a new {@code HighMultiReplacerV2} and initializes the Aho-Corasick automaton.
      *
-     * @param map key为需要被查找的字符串，value为对应的替换的值
+     * @param map A map where keys are the strings to be searched for, and values are their corresponding replacement
+     *            values.
      */
     public HighMultiReplacerV2(final Map<String, Object> map) {
         ahoCorasickAutomaton = new AhoCorasickAutomaton(map);
     }
 
     /**
-     * 生成一个HighMultiReplacer对象
+     * Creates a new {@code HighMultiReplacer} instance.
      *
-     * @param map key为需要被查找的字符串，value为对应的替换的值
-     * @return this
+     * @param map A map where keys are the strings to be searched for, and values are their corresponding replacement
+     *            values.
+     * @return A new {@code HighMultiReplacer} instance.
      */
     public static HighMultiReplacer of(final Map<String, Object> map) {
         return new HighMultiReplacer(map);
     }
 
+    /**
+     * Performs string replacement starting from a specified position, appending the result to the output buffer. This
+     * method delegates the actual replacement to the Aho-Corasick automaton.
+     *
+     * @param text The string to be processed.
+     * @param pos  The starting position for replacement (inclusive).
+     * @param out  The {@code StringBuilder} to which the replacement result is appended.
+     * @return The number of characters consumed by the replacement, which is the length of the input text since the
+     *         Aho-Corasick automaton processes the entire text.
+     */
     @Override
     protected int replace(final CharSequence text, final int pos, final StringBuilder out) {
         ahoCorasickAutomaton.replace(text, out);
         return text.length();
     }
 
+    /**
+     * Applies the replacement rules to the given character sequence and returns the replaced string. This method
+     * processes the entire input text using the Aho-Corasick automaton.
+     *
+     * @param text The character sequence to be processed.
+     * @return The character sequence after all replacements have been applied.
+     */
     @Override
     public CharSequence apply(final CharSequence text) {
         final StringBuilder builder = new StringBuilder();
@@ -79,65 +112,84 @@ public class HighMultiReplacerV2 extends StringReplacer {
     }
 
     /**
-     * AC 自动机
+     * Inner class implementing the Aho-Corasick automaton for efficient multi-string searching and replacement.
      */
     protected static class AhoCorasickAutomaton extends MultiStringFinder {
 
+        /**
+         * The map containing keywords to be searched for and their corresponding replacement values.
+         */
         protected final Map<String, Object> replaceMap;
 
+        /**
+         * Constructs a new {@code AhoCorasickAutomaton} with the given replacement map.
+         *
+         * @param replaceMap A map where keys are the strings to be searched for, and values are their corresponding
+         *                   replacement values.
+         */
         public AhoCorasickAutomaton(final Map<String, Object> replaceMap) {
             super(replaceMap.keySet());
             this.replaceMap = replaceMap;
         }
 
+        /**
+         * Executes string replacement, replacing matched keywords with their target values.
+         *
+         * @param text          The string to be processed for replacement.
+         * @param stringBuilder The output buffer where the replacement result is stored.
+         */
         public void replace(final CharSequence text, final StringBuilder stringBuilder) {
             Node currentNode = root;
-            // 临时字符串存储空间
+            // Temporary storage for characters that might be part of a match
             final StringBuilder temp = new StringBuilder();
             for (int i = 0; i < text.length(); i++) {
                 final char ch = text.charAt(i);
                 final Integer index = charIndexMap.get(ch);
-                // 下一个字符在候选转换字符串中都不存在 ch字符一定不会被替换
+                // If the next character is not in the candidate transition strings, 'ch' will definitely not be
+                // replaced.
                 if (index == null || index < 0) {
-                    // 临时缓存空间中的数据写入到输出的 StringBuilder
+                    // Write data from the temporary buffer to the output StringBuilder
                     if (temp.length() > 0) {
                         stringBuilder.append(temp);
-                        // 数据写入后清空临时空间
+                        // Clear the temporary buffer after writing
                         temp.delete(0, temp.length());
                     }
-                    // 将一个一定不会替换的字符 ch 写入输出
+                    // Append the character 'ch' that will not be replaced to the output
                     stringBuilder.append(ch);
-                    // 匹配失败 将当前节点重新指向根节点
+                    // Reset the current node to the root as the match is broken
                     currentNode = root;
                     continue;
                 }
 
-                // 这个逻辑分支表示 已经匹配到了下一跳
+                // This logic branch indicates that a transition to the next state has occurred.
                 currentNode = currentNode.directRouter[index];
 
-                // 当前是root节点表示匹配中断 清理临时空间 写入到输出
+                // If the current node is the root, it means the match was interrupted. Clear the temporary buffer and
+                // write to output.
                 if (currentNode.nodeIndex == 0) {
                     if (temp.length() > 0) {
                         stringBuilder.append(temp);
-                        // 数据写入后清空临时空间
+                        // Clear the temporary buffer after writing
                         temp.delete(0, temp.length());
-                        // 当前情况表示该字符存在在候选转换字符中 但是前一个字符到这里是不存在路径
+                        // In this case, the character exists in the candidate transition characters, but there was no
+                        // path from the previous character.
                         stringBuilder.append(ch);
                         continue;
                     }
                 }
 
-                // 表示匹配到 现在进行字符串替换工作
+                // A match is found, proceed with string replacement.
                 if (currentNode.isEnd) {
                     final int length = currentNode.tagetString.length();
-                    // 先清理匹配到的字符 最后一个字符未加入临时空间
+                    // Clear the matched characters from the temporary buffer. The last character was not yet added to
+                    // temp.
                     temp.delete(temp.length() - length + 1, length - 1);
                     if (temp.length() > 0) {
                         stringBuilder.append(temp);
                     }
-                    // 写入被替换的字符串
+                    // Append the replacement string.
                     stringBuilder.append(replaceMap.get(currentNode.tagetString));
-                    // 因为字符串被替换过了 所以当前节点重新指向 root
+                    // Since the string was replaced, reset the current node to the root.
                     currentNode = root;
                     continue;
                 }

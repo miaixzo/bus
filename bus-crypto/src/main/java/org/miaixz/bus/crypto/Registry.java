@@ -36,7 +36,9 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.crypto.metric.*;
 
 /**
- * 系统中内置的策略映射 注解和实现之间映射
+ * A registry for cryptographic service providers, mapping algorithm names to their respective {@link Provider}
+ * implementations. This class manages the built-in strategy mappings between cryptographic algorithms and their
+ * concrete implementations.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,7 +46,7 @@ import org.miaixz.bus.crypto.metric.*;
 public final class Registry {
 
     /**
-     * 组件信息
+     * Cache for cryptographic algorithm providers, mapping algorithm names to {@link Provider} instances.
      */
     private static Map<String, Provider> ALGORITHM_CACHE = new ConcurrentHashMap<>();
 
@@ -58,10 +60,12 @@ public final class Registry {
     }
 
     /**
-     * 注册组件
+     * Registers a cryptographic service provider with a given name. If a provider with the same name or the same class
+     * simple name is already registered, an {@link InternalException} is thrown.
      *
-     * @param name   组件名称
-     * @param object 组件对象
+     * @param name   The name of the algorithm or component to register.
+     * @param object The {@link Provider} instance to register.
+     * @throws InternalException if a component with the same name or class simple name is already registered.
      */
     public static void register(String name, Provider object) {
         if (ALGORITHM_CACHE.containsKey(name)) {
@@ -75,10 +79,11 @@ public final class Registry {
     }
 
     /**
-     * 生成脱敏工具
+     * Retrieves a cryptographic service provider by its name.
      *
-     * @param name 模型
-     * @return the object
+     * @param name The name of the algorithm or component to retrieve.
+     * @return The {@link Provider} instance associated with the given name.
+     * @throws IllegalArgumentException if no provider is found for the specified name.
      */
     public static Provider require(String name) {
         Provider object = ALGORITHM_CACHE.get(name);
@@ -89,10 +94,10 @@ public final class Registry {
     }
 
     /**
-     * 是否包含指定名称算法
+     * Checks if a cryptographic service provider with the specified name is registered.
      *
-     * @param name 组件名称
-     * @return true：包含, false：不包含
+     * @param name The name of the algorithm or component to check.
+     * @return {@code true} if a provider with the given name is registered, {@code false} otherwise.
      */
     public boolean contains(String name) {
         return ALGORITHM_CACHE.containsKey(name);

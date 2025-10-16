@@ -27,9 +27,6 @@
 */
 package org.miaixz.bus.starter.notify;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.notify.Context;
@@ -55,127 +52,151 @@ import org.miaixz.bus.notify.metric.wechat.WechatMiniProvider;
 import org.miaixz.bus.notify.metric.wechat.WechatMpProvider;
 import org.miaixz.bus.notify.metric.yunpian.YunpianSmsProvider;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 /**
- * 通知服务提供类，用于管理和创建各种消息通知服务提供者实例。 该类维护了一个通知组件的缓存，支持通过配置或手动注册方式添加通知组件。
- *
+ * A service provider class for managing and creating various message notification provider instances. This class
+ * maintains a cache of notification components and supports adding them through configuration or manual registration.
  * <p>
- * 该类支持多种消息通知方式，包括但不限于：
- * </p>
+ * It supports a variety of notification methods, including but not limited to:
+ *
  * <ul>
- * <li>短信服务：阿里云、腾讯云、华为云、百度云、网易云、七牛云等</li>
- * <li>邮件服务：阿里云邮件、通用邮件</li>
- * <li>企业通讯：钉钉、企业微信</li>
- * <li>微信通知：公众号、小程序、客服消息等</li>
+ * <li>SMS Services: Aliyun, Tencent Cloud, Huawei Cloud, Baidu Cloud, Netease Cloud, Qiniu Cloud, etc.</li>
+ * <li>Email Services: Aliyun Email, Generic Email</li>
+ * <li>Enterprise Communication: DingTalk, WeChat Work</li>
+ * <li>WeChat Notifications: Official Accounts, Mini Programs, Customer Service Messages, etc.</li>
  * </ul>
  *
  * <p>
- * 使用示例：
- * </p>
+ * <strong>Usage Example:</strong>
  * 
- * <pre>
- * // 创建配置
+ * <pre>{@code
+ * // Create configuration
  * NotifyProperties properties = new NotifyProperties();
- * // 创建服务
- * NotifyProviderService service = new NotifyProviderService(properties);
- * // 获取阿里云短信服务提供者
+ * // Create the service
+ * NotifyService service = new NotifyService(properties);
+ * // Get the Aliyun SMS service provider
  * Provider smsProvider = service.require(Registry.ALIYUN_SMS);
- * // 发送短信
- * smsProvider.send("手机号", "短信内容");
- * </pre>
+ * // Send an SMS
+ * smsProvider.send("phoneNumber", "messageContent");
+ * }</pre>
  *
- * @author Justubborn
+ * @author Kimi Liu
  * @since Java 17+
  */
 public class NotifyService {
 
     /**
-     * 通知组件缓存，用于存储已注册的通知组件。 使用ConcurrentHashMap保证线程安全。
+     * Cache for storing registered notification components. Uses {@link ConcurrentHashMap} for thread safety.
      */
-    private static Map<Registry, Context> CACHE = new ConcurrentHashMap<>();
+    private static final Map<Registry, Context> CACHE = new ConcurrentHashMap<>();
 
     /**
-     * 通知配置属性，包含各种通知组件的配置信息。
+     * Notification configuration properties, containing settings for various notification components.
      */
     public NotifyProperties properties;
 
     /**
-     * 使用指定的配置属性创建通知服务提供者实例。
+     * Constructs an instance of the notification service provider with the specified configuration properties.
      *
-     * @param properties 通知配置属性，不能为null
+     * @param properties The notification configuration properties (must not be null).
      */
     public NotifyService(NotifyProperties properties) {
         this.properties = properties;
     }
 
     /**
-     * 注册通知组件到缓存中。 如果已存在相同类型的组件，则抛出异常。
+     * Registers a notification component in the cache. Throws an exception if a component of the same type is already
+     * registered.
      *
-     * @param registry 通知组件类型，不能为null
-     * @param context  通知组件上下文，不能为null
-     * @throws InternalException 如果已存在相同类型的组件
+     * @param registry The type of the notification component (must not be null).
+     * @param context  The context of the notification component (must not be null).
+     * @throws InternalException if a component of the same type already exists.
      */
     public static void register(Registry registry, Context context) {
         if (CACHE.containsKey(registry)) {
-            throw new InternalException("重复注册同名称的组件：" + registry.name());
+            throw new InternalException("A component with the same name is already registered: " + registry.name());
         }
         CACHE.putIfAbsent(registry, context);
     }
 
     /**
-     * 根据通知组件类型获取对应的通知服务提供者实例。 首先从缓存中查找，如果不存在则从配置中获取。
+     * Retrieves the corresponding notification service provider instance based on the component type. It first searches
+     * the cache; if not found, it retrieves from the configuration.
      *
-     * @param registry 通知组件类型，不能为null
-     * @return 对应的通知服务提供者实例
-     * @throws InternalException 如果找不到对应的通知组件
+     * @param registry The type of the notification component (must not be null).
+     * @return The corresponding notification service provider instance.
+     * @throws InternalException if the corresponding notification component cannot be found.
      */
     public Provider require(Registry registry) {
-        // 从缓存中获取通知组件上下文
+        // Get the notification component context from the cache
         Context context = CACHE.get(registry);
-        // 如果缓存中不存在，则从配置中获取
+        // If not in the cache, get it from the properties
         if (ObjectKit.isEmpty(context)) {
             context = this.properties.getType().get(registry);
         }
 
-        // 根据不同的通知类型创建对应的通知服务提供者实例
-        if (Registry.ALIYUN_SMS.equals(registry)) {
-            return new AliyunSmsProvider(context);
-        } else if (Registry.ALIYUN_VMS.equals(registry)) {
-            return new AliyunVmsProvider(context);
-        } else if (Registry.ALIYUN_EDM.equals(registry)) {
-            return new AliyunEmailProvider(context);
-        } else if (Registry.BAIDU_SMS.equals(registry)) {
-            return new BaiduSmsProvider(context);
-        } else if (Registry.DINGTALK.equals(registry)) {
-            return new DingTalkProvider(context);
-        } else if (Registry.GENERIC_EDM.equals(registry)) {
-            return new GenericEmailProvider(context);
-        } else if (Registry.HUAWEI_SMS.equals(registry)) {
-            return new HuaweiSmsProvider(context);
-        } else if (Registry.JDCLOUD_SMS.equals(registry)) {
-            return new JdcloudSmsProvider(context);
-        } else if (Registry.JPUSH_SMS.equals(registry)) {
-            return new JpushSmsProvider(context);
-        } else if (Registry.NETEASE_SMS.equals(registry)) {
-            return new NeteaseSmsProvider(context);
-        } else if (Registry.QINIU_SMS.equals(registry)) {
-            return new QiniuSmsProvider(context);
-        } else if (Registry.TENCENT_SMS.equals(registry)) {
-            return new TencentSmsProvider(context);
-        } else if (Registry.UPYUN_SMS.equals(registry)) {
-            return new UpyunSmsProvider(context);
-        } else if (Registry.WECHAT_CP.equals(registry)) {
-            return new WechatCpProvider(context);
-        } else if (Registry.WECHAT_KF.equals(registry)) {
-            return new WechatKfProvider(context);
-        } else if (Registry.WECHAT_MINI.equals(registry)) {
-            return new WechatMiniProvider(context);
-        } else if (Registry.WECHAT_MP.equals(registry)) {
-            return new WechatMpProvider(context);
-        } else if (Registry.YUNPIAN_SMS.equals(registry)) {
-            return new YunpianSmsProvider(context);
+        // Create the corresponding provider instance based on the notification type
+        switch (registry) {
+            case ALIYUN_SMS:
+                return new AliyunSmsProvider(context);
+
+            case ALIYUN_VMS:
+                return new AliyunVmsProvider(context);
+
+            case ALIYUN_EDM:
+                return new AliyunEmailProvider(context);
+
+            case BAIDU_SMS:
+                return new BaiduSmsProvider(context);
+
+            case DINGTALK:
+                return new DingTalkProvider(context);
+
+            case GENERIC_EDM:
+                return new GenericEmailProvider(context);
+
+            case HUAWEI_SMS:
+                return new HuaweiSmsProvider(context);
+
+            case JDCLOUD_SMS:
+                return new JdcloudSmsProvider(context);
+
+            case JPUSH_SMS:
+                return new JpushSmsProvider(context);
+
+            case NETEASE_SMS:
+                return new NeteaseSmsProvider(context);
+
+            case QINIU_SMS:
+                return new QiniuSmsProvider(context);
+
+            case TENCENT_SMS:
+                return new TencentSmsProvider(context);
+
+            case UPYUN_SMS:
+                return new UpyunSmsProvider(context);
+
+            case WECHAT_CP:
+                return new WechatCpProvider(context);
+
+            case WECHAT_KF:
+                return new WechatKfProvider(context);
+
+            case WECHAT_MINI:
+                return new WechatMiniProvider(context);
+
+            case WECHAT_MP:
+                return new WechatMpProvider(context);
+
+            case YUNPIAN_SMS:
+                return new YunpianSmsProvider(context);
+
+            default:
+                // If no matching notification type is found, throw an exception
+                throw new InternalException(ErrorCode._100803.getValue());
         }
-        // 如果没有匹配的通知类型，抛出异常
-        throw new InternalException(ErrorCode._100803.getValue());
     }
 
 }

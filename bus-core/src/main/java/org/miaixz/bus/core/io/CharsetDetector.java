@@ -43,7 +43,7 @@ import org.miaixz.bus.core.xyz.FileKit;
 import org.miaixz.bus.core.xyz.IoKit;
 
 /**
- * 编码探测器
+ * Charset detector for files and input streams.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -51,7 +51,7 @@ import org.miaixz.bus.core.xyz.IoKit;
 public class CharsetDetector {
 
     /**
-     * 默认的参与测试的编码
+     * Default charsets to participate in the detection test.
      */
     private static final Charset[] DEFAULT_CHARSETS;
 
@@ -62,34 +62,39 @@ public class CharsetDetector {
     }
 
     /**
-     * 探测文件编码
+     * Detects the charset of a given file.
      *
-     * @param file     文件
-     * @param charsets 需要测试用的编码，null或空使用默认的编码数组
-     * @return 编码
+     * @param file     The file to detect the charset from.
+     * @param charsets The charsets to test. If null or empty, {@link #DEFAULT_CHARSETS} will be used.
+     * @return The detected {@link Charset}, or null if no charset could be reliably detected.
      */
     public static Charset detect(final File file, final Charset... charsets) {
         return detect(FileKit.getInputStream(file), charsets);
     }
 
     /**
-     * 探测编码 注意：此方法会读取流的一部分，然后关闭流，如重复使用流，请使用支持reset方法的流
+     * Detects the charset of a given input stream. Note: This method reads a portion of the stream and then closes it.
+     * If the stream needs to be reused, please use a stream that supports the {@code reset()} method.
      *
-     * @param in       流，使用后关闭此流
-     * @param charsets 需要测试用的编码，null或空使用默认的编码数组
-     * @return 编码
+     * @param in       The input stream to detect the charset from. This stream will be closed after detection.
+     * @param charsets The charsets to test. If null or empty, {@link #DEFAULT_CHARSETS} will be used.
+     * @return The detected {@link Charset}, or null if no charset could be reliably detected.
+     * @throws InternalException if an {@link IOException} occurs during stream reading.
      */
     public static Charset detect(final InputStream in, final Charset... charsets) {
         return detect(Normal._8192, in, charsets);
     }
 
     /**
-     * 探测编码 注意：此方法会读取流的一部分，然后关闭流，如重复使用流，请使用支持reset方法的流
+     * Detects the charset of a given input stream with a specified buffer size. Note: This method reads a portion of
+     * the stream and then closes it. If the stream needs to be reused, please use a stream that supports the
+     * {@code reset()} method.
      *
-     * @param bufferSize 自定义缓存大小，即每次检查的长度
-     * @param in         流，使用后关闭此流
-     * @param charsets   需要测试用的编码，null或空使用默认的编码数组
-     * @return 编码
+     * @param bufferSize The custom buffer size, i.e., the length checked each time.
+     * @param in         The input stream to detect the charset from. This stream will be closed after detection.
+     * @param charsets   The charsets to test. If null or empty, {@link #DEFAULT_CHARSETS} will be used.
+     * @return The detected {@link Charset}, or null if no charset could be reliably detected.
+     * @throws InternalException if an {@link IOException} occurs during stream reading.
      */
     public static Charset detect(final int bufferSize, final InputStream in, Charset... charsets) {
         if (ArrayKit.isEmpty(charsets)) {
@@ -115,11 +120,11 @@ public class CharsetDetector {
     }
 
     /**
-     * 通过try的方式测试指定bytes是否可以被解码，从而判断是否为指定编码
+     * Attempts to identify if the given bytes can be decoded by the provided {@link CharsetDecoder}.
      *
-     * @param bytes   测试的bytes
-     * @param decoder 解码器
-     * @return 是否是指定编码
+     * @param bytes   The bytes to test.
+     * @param decoder The {@link CharsetDecoder} to use for identification.
+     * @return True if the bytes can be decoded by the decoder, false otherwise.
      */
     private static boolean identify(final byte[] bytes, final CharsetDecoder decoder) {
         try {

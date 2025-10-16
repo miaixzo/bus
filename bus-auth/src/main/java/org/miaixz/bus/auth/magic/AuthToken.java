@@ -36,7 +36,8 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * 授权所需的token
+ * Authentication token required for authorization. This class encapsulates various token-related information obtained
+ * during the authentication process.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,53 +49,100 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class AuthToken implements Serializable {
 
+    /**
+     * The access token issued by the authorization server.
+     */
     private String accessToken;
+    /**
+     * The lifetime in seconds of the access token.
+     */
     private int expireIn;
+    /**
+     * The refresh token, which can be used to obtain new access tokens.
+     */
     private String refreshToken;
+    /**
+     * The lifetime in seconds of the refresh token.
+     */
     private int refreshTokenExpireIn;
+    /**
+     * User ID, typically from the third-party platform.
+     */
     private String uid;
+    /**
+     * Open ID, typically from the third-party platform.
+     */
     private String openId;
+    /**
+     * Access code, sometimes used interchangeably with accessToken or as a separate authorization code.
+     */
     private String accessCode;
+    /**
+     * Union ID, a unique identifier across multiple applications of the same platform (e.g., WeChat).
+     */
     private String unionId;
 
     /**
-     * Google附带属性
+     * Google-specific additional property: scope of the granted access.
      */
     private String scope;
+    /**
+     * Google-specific additional property: type of the token issued.
+     */
     private String tokenType;
+    /**
+     * Google-specific additional property: ID Token, a JSON Web Token (JWT) that contains claims about the
+     * authentication of an end-user.
+     */
     private String idToken;
 
     /**
-     * 小米附带属性
+     * Xiaomi-specific additional property: MAC algorithm used for signing.
      */
     private String macAlgorithm;
+    /**
+     * Xiaomi-specific additional property: MAC key used for signing.
+     */
     private String macKey;
 
     /**
-     * 企业微信附带属性
+     * WeChat Work-specific additional property: authorization code.
      */
     private String code;
     /**
-     * 微信公众号 - 网页授权的登录时可用 微信针对网页授权登录，增加了一个快照页的逻辑，快照页获取到的微信用户的 uid oid 和头像昵称都是虚拟的信息
+     * WeChat Official Account - available for web authorization login. WeChat adds a snapshot page logic for web
+     * authorization login, where the uid, oid, avatar, and nickname obtained are virtual information.
      */
     private boolean snapshotUser;
 
     /**
-     * Twitter附带属性
+     * Twitter-specific additional property: OAuth token.
      */
     private String oauthToken;
+    /**
+     * Twitter-specific additional property: OAuth token secret.
+     */
     private String oauthTokenSecret;
+    /**
+     * Twitter-specific additional property: user ID.
+     */
     private String userId;
+    /**
+     * Twitter-specific additional property: screen name.
+     */
     private String screenName;
+    /**
+     * Twitter-specific additional property: indicates if the OAuth callback was confirmed.
+     */
     private Boolean oauthCallbackConfirmed;
 
     /**
-     * Apple附带属性
+     * Apple-specific additional property: username.
      */
     private String username;
 
     /**
-     * VK 附带属性
+     * VK-specific additional property: device ID.
      */
     private String deviceId;
 

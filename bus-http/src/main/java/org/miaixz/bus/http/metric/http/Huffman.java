@@ -35,7 +35,8 @@ import org.miaixz.bus.core.io.sink.BufferSink;
 import org.miaixz.bus.core.lang.Normal;
 
 /**
- * 这个类最初是由以下类组成的<a href="https://github.com/twitter/hpack">Twitter Hpack</a>.
+ * This class was originally composed of the following classes from <a href="https://github.com/twitter/hpack">Twitter
+ * Hpack</a>.
  *
  * <ul>
  * <li>{@code com.twitter.hpack.HuffmanEncoder}</li>
@@ -48,6 +49,9 @@ import org.miaixz.bus.core.lang.Normal;
  */
 public class Huffman {
 
+    /**
+     * The Huffman codes for each symbol.
+     */
     private static final int[] CODES = { 0x1ff8, 0x7fffd8, 0xfffffe2, 0xfffffe3, 0xfffffe4, 0xfffffe5, 0xfffffe6,
             0xfffffe7, 0xfffffe8, 0xffffea, 0x3ffffffc, 0xfffffe9, 0xfffffea, 0x3ffffffd, 0xfffffeb, 0xfffffec,
             0xfffffed, 0xfffffee, 0xfffffef, 0xffffff0, 0xffffff1, 0xffffff2, 0x3ffffffe, 0xffffff3, 0xffffff4,
@@ -72,6 +76,9 @@ public class Huffman {
             0x7ffffe9, 0x7ffffea, 0x7ffffeb, 0xffffffe, 0x7ffffec, 0x7ffffed, 0x7ffffee, 0x7ffffef, 0x7fffff0,
             0x3ffffee };
 
+    /**
+     * The bit lengths of the Huffman codes for each symbol.
+     */
     private static final byte[] CODE_LENGTHS = { 13, 23, 28, 28, 28, 28, 28, 28, 28, 24, 30, 28, 28, 30, 28, 28, 28, 28,
             28, 28, 28, 28, 30, 28, 28, 28, 28, 28, 28, 28, 28, 28, 6, 10, 10, 12, 13, 6, 8, 11, 10, 10, 8, 11, 8, 6, 6,
             6, 5, 5, 5, 6, 6, 6, 6, 6, 6, 6, 7, 8, 15, 6, 12, 10, 13, 6, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
@@ -83,17 +90,38 @@ public class Huffman {
             20, 21, 22, 21, 21, 23, 22, 22, 25, 25, 24, 24, 26, 23, 26, 27, 26, 26, 27, 27, 27, 27, 27, 28, 27, 27, 27,
             27, 27, 26 };
 
+    /**
+     * The singleton instance of the Huffman codec.
+     */
     private static final Huffman INSTANCE = new Huffman();
+    /**
+     * The root of the Huffman decoding tree.
+     */
     private final Node root = new Node();
 
+    /**
+     * Private constructor to build the Huffman tree.
+     */
     private Huffman() {
         buildTree();
     }
 
+    /**
+     * Gets the singleton instance of the Huffman codec.
+     *
+     * @return The Huffman codec instance.
+     */
     public static Huffman get() {
         return INSTANCE;
     }
 
+    /**
+     * Encodes the given data using Huffman coding and writes it to the sink.
+     *
+     * @param data The data to encode.
+     * @param sink The sink to write the encoded data to.
+     * @throws IOException if an I/O error occurs.
+     */
     void encode(ByteString data, BufferSink sink) throws IOException {
         long current = 0;
         int n = 0;
@@ -120,6 +148,12 @@ public class Huffman {
         }
     }
 
+    /**
+     * Calculates the length of the Huffman-encoded representation of the given bytes.
+     *
+     * @param bytes The data to measure.
+     * @return The encoded length in bytes.
+     */
     int encodedLength(ByteString bytes) {
         long len = 0;
 
@@ -131,6 +165,12 @@ public class Huffman {
         return (int) ((len + 7) >> 3);
     }
 
+    /**
+     * Decodes the given Huffman-encoded data.
+     *
+     * @param buf The Huffman-encoded data.
+     * @return The decoded data.
+     */
     byte[] decode(byte[] buf) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         Node node = root;
@@ -144,12 +184,12 @@ public class Huffman {
                 int c = (current >>> (nbits - 8)) & 0xFF;
                 node = node.children[c];
                 if (null == node.children) {
-                    // 终端节点
+                    // Terminal node
                     baos.write(node.symbol);
                     nbits -= node.terminalBits;
                     node = root;
                 } else {
-                    // 非终结符节点
+                    // Non-terminal node
                     nbits -= 8;
                 }
             }
@@ -169,12 +209,22 @@ public class Huffman {
         return baos.toByteArray();
     }
 
+    /**
+     * Builds the Huffman decoding tree from the static code tables.
+     */
     private void buildTree() {
         for (int i = 0; i < CODE_LENGTHS.length; i++) {
             addCode(i, CODES[i], CODE_LENGTHS[i]);
         }
     }
 
+    /**
+     * Adds a code to the Huffman decoding tree.
+     *
+     * @param sym  The symbol to add.
+     * @param code The Huffman code.
+     * @param len  The length of the Huffman code in bits.
+     */
     private void addCode(int sym, int code, byte len) {
         Node terminal = new Node(sym, len);
 
@@ -199,23 +249,29 @@ public class Huffman {
         }
     }
 
+    /**
+     * A node in the Huffman decoding tree.
+     */
     private static class Node {
 
         /**
-         * 终端节点
+         * The children of this node, or null if this is a terminal node.
          */
         final Node[] children;
 
         /**
-         * 终端节点符号
+         * The symbol for this terminal node.
          */
         final int symbol;
 
         /**
-         * 终端节点中表示的位数
+         * The number of bits in this terminal node.
          */
         final int terminalBits;
 
+        /**
+         * Constructs a new internal node.
+         */
         Node() {
             this.children = new Node[Normal._256];
             this.symbol = 0;
@@ -223,10 +279,10 @@ public class Huffman {
         }
 
         /**
-         * 构造一个终端节点
+         * Constructs a new terminal node.
          *
-         * @param symbol 节点表示
-         * @param bits   bits类型的Huffman长度
+         * @param symbol The symbol represented by this node.
+         * @param bits   The length of the Huffman code in bits.
          */
         Node(int symbol, int bits) {
             this.children = null;

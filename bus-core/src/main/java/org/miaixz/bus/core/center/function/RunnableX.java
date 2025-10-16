@@ -33,7 +33,7 @@ import java.util.stream.Stream;
 import org.miaixz.bus.core.xyz.ExceptionKit;
 
 /**
- * 可序列化的Runnable接口，支持异常抛出和多个Runnable组合。
+ * A serializable {@link Runnable} interface that supports throwing exceptions and combining multiple runnables.
  *
  * @author Kimi Liu
  * @see Runnable
@@ -43,27 +43,28 @@ import org.miaixz.bus.core.xyz.ExceptionKit;
 public interface RunnableX extends Runnable, Serializable {
 
     /**
-     * 组合多个RunnableX实例，按顺序执行。
+     * Combines multiple {@code RunnableX} instances to be executed in sequence.
      *
-     * @param serRunnableArray 要组合的RunnableX实例
-     * @return 组合后的RunnableX实例
+     * @param serRunnableArray An array of {@code RunnableX} instances to combine.
+     * @return A combined {@code RunnableX} instance that executes the given runnables in order.
      */
     static RunnableX multi(final RunnableX... serRunnableArray) {
         return () -> Stream.of(serRunnableArray).forEach(RunnableX::run);
     }
 
     /**
-     * 执行Runnable操作，可能抛出异常。
+     * Performs the runnable operation, potentially throwing an exception.
      *
-     * @throws Throwable 可能抛出的异常
+     * @throws Throwable Any throwable exception that might occur during the operation.
      * @see Thread#run()
      */
     void running() throws Throwable;
 
     /**
-     * 执行Runnable操作，自动处理异常。
+     * Performs the runnable operation, automatically handling checked exceptions by wrapping them in a
+     * {@link RuntimeException}.
      *
-     * @throws RuntimeException 包装后的运行时异常
+     * @throws RuntimeException A wrapped runtime exception if a checked exception occurs.
      * @see Thread#run()
      */
     @Override

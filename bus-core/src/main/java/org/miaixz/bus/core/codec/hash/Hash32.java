@@ -30,9 +30,10 @@ package org.miaixz.bus.core.codec.hash;
 import org.miaixz.bus.core.codec.Encoder;
 
 /**
- * Hash计算接口
+ * Interface for 32-bit hash calculation. This functional interface defines a contract for classes that compute a 32-bit
+ * hash value for a given object.
  *
- * @param <T> 被计算hash的对象类型
+ * @param <T> The type of the object for which the hash is to be computed.
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -40,13 +41,20 @@ import org.miaixz.bus.core.codec.Encoder;
 public interface Hash32<T> extends Encoder<T, Number> {
 
     /**
-     * 计算Hash值
+     * Computes the 32-bit hash value for the given object.
      *
-     * @param t 对象
-     * @return hash
+     * @param t The object for which to compute the hash.
+     * @return The 32-bit hash value.
      */
     int hash32(T t);
 
+    /**
+     * Encodes the given object by computing its 32-bit hash value. This is a default method that delegates to
+     * {@link #hash32(Object)}.
+     *
+     * @param t The object to encode (hash).
+     * @return The 32-bit hash value as a {@link Number}.
+     */
     @Override
     default Number encode(final T t) {
         return hash32(t);

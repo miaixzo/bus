@@ -30,7 +30,8 @@ package org.miaixz.bus.office.excel.cell.setters;
 import org.apache.poi.ss.usermodel.Cell;
 
 /**
- * 单元格值自定义设置器，主要用于Excel数据导出，用户通过自定义此接口，实现可定制化的单元格值设定
+ * Custom cell value setter interface, primarily used for Excel data export. Users can implement this interface to
+ * achieve customizable cell value settings.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -39,9 +40,9 @@ import org.apache.poi.ss.usermodel.Cell;
 public interface CellSetter {
 
     /**
-     * 自定义单元格值设置，同时可以设置单元格样式、格式等信息
+     * Customizes the cell value setting, and can also set cell styles, formats, and other information.
      *
-     * @param cell 单元格
+     * @param cell The cell to set the value for.
      */
     void setValue(Cell cell);
 

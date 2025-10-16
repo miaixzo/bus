@@ -6,7 +6,7 @@
  ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
- ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ of this software and associated associated documentation files (the "Software"), to deal ~
  ~ in the Software without restriction, including without limitation the rights  ~
  ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
  ~ copies of the Software, and to permit persons to whom the Software is         ~
@@ -26,14 +26,18 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 定义用户进行通信开发所需实现的接口
+ * Defines interfaces required for communication development.
  * <p>
- * 用户进行通信开发时需要实现该package中的接口，通常情况下仅需实现{@link org.miaixz.bus.socket.Message}/{@link org.miaixz.bus.socket.Handler}即可。
- * 如需仅需通讯层面的监控，本项目提供了接口{@link org.miaixz.bus.socket.Monitor}以供使用。
+ * To develop communication features, users typically only need to implement the {@link org.miaixz.bus.socket.Message}
+ * and {@link org.miaixz.bus.socket.Handler} interfaces within this package. For communication-level monitoring, the
+ * {@link org.miaixz.bus.socket.Monitor} interface is provided.
  * </p>
  * <p>
- * 完成本package的接口开发后，便可使用{@link org.miaixz.bus.socket.accord.AioClient}/{@link org.miaixz.bus.socket.accord.AioServer}提供AIO的客户端/服务端通信服务。
+ * After implementing the interfaces in this package, users can utilize {@link org.miaixz.bus.socket.accord.AioClient}
+ * and {@link org.miaixz.bus.socket.accord.AioServer} to provide AIO client/server communication services.
  * </p>
  *
+ * @author Kimi Liu
+ * @since Java 17+
  */
 package org.miaixz.bus.socket;

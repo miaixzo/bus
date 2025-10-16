@@ -29,16 +29,20 @@ package org.miaixz.bus;
 
 /**
  * <p>
- * Bus (应用/服务总线) 是一个微服务套件、基础框架，它基于Java8编写，参考、借鉴了大量已有 框架、组件的设计，可以作为后端服务的开发基础中间件。代码简洁，架构清晰，非常适合学习使用
- * </p>
+ * Version (Application/Service Bus) is a microservice suite and foundational framework. It is written based on Java 8,
+ * referencing and drawing inspiration from the design of many existing frameworks and components. It can serve as a
+ * foundational middleware for backend service development. The code is concise and the architecture is clear, making it
+ * very suitable for learning purposes.
  *
  * <p>
- * 目标期望能努力打造一套从 基础框架 - 分布式微服务架构 - 持续集成 - 自动化部署 -系统监测 等，快速实现业务需求的全栈式技术解决方案
- * </p>
+ * The goal is to strive to create a full-stack technical solution that enables the rapid implementation of business
+ * requirements, covering everything from the foundational framework - distributed microservice architecture -
+ * continuous integration - automated deployment - system monitoring, and more. Additionally, the encapsulated utilities
+ * cover strings, numbers, collections, encoding, dates, files, IO, encryption/decryption, JSON, HTTP clients, etc.
  *
  * <p>
- * 欢迎各种形式的贡献，包括但不限于优化，添加功能，文档 代码的改进，问题和 bugs 的报告
- * </p>
+ * Contributions in all forms are welcome, including but not limited to optimizations, feature additions, improvements
+ * to documentation and code, and reporting of issues and bugs.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -46,15 +50,17 @@ package org.miaixz.bus;
 public class Version extends org.miaixz.bus.core.Version {
 
     /**
-     * 版本对象，格式：tok+ ( '-' tok+)? ( '+' tok+)?，版本之间使用'.'或'-'分隔，版本号可能包含'+' 数字部分按照大小比较，字符串按照字典顺序比较。
+     * Version object, format: tok+ ( '-' tok+)? ( '+' tok+)? Versions are separated by '.' or '-', and the version
+     * number may contain '+'. The numeric parts are compared by magnitude, and the string parts are compared
+     * lexicographically.
      *
      * <ol>
-     * <li>sequence: 主版本号</li>
-     * <li>pre: 次版本号</li>
-     * <li>build: 构建版本</li>
+     * <li>sequence: Major version number</li>
+     * <li>pre: Pre-release version number</li>
+     * <li>build: Build version</li>
      * </ol>
      *
-     * @param v 版本字符串
+     * @param v The version string.
      */
     public Version(String v) {
         super(v);

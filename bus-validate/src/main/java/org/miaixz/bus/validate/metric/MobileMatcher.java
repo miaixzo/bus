@@ -34,13 +34,22 @@ import org.miaixz.bus.validate.magic.Matcher;
 import org.miaixz.bus.validate.magic.annotation.Mobile;
 
 /**
- * 移动电话校验
+ * Validator for mobile phone numbers.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class MobileMatcher implements Matcher<Object, Mobile> {
 
+    /**
+     * Checks if the given object, when converted to a string, is a valid mobile phone number.
+     *
+     * @param object     The object to validate.
+     * @param annotation The {@link Mobile} annotation instance (ignored).
+     * @param context    The validation context (ignored).
+     * @return {@code true} if the object is a valid mobile phone number, {@code false} otherwise. Returns {@code true}
+     *         if the object is null or empty.
+     */
     @Override
     public boolean on(Object object, Mobile annotation, Context context) {
         if (ObjectKit.isEmpty(object)) {

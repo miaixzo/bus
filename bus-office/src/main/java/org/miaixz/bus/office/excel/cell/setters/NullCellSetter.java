@@ -31,7 +31,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.miaixz.bus.core.lang.Normal;
 
 /**
- * {@code null} 值单元格设置器
+ * {@link CellSetter} for {@code null} values.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -39,7 +39,7 @@ import org.miaixz.bus.core.lang.Normal;
 public class NullCellSetter implements CellSetter {
 
     /**
-     * 默认单例
+     * Singleton instance of {@code NullCellSetter}.
      */
     public static final NullCellSetter INSTANCE = new NullCellSetter();
 

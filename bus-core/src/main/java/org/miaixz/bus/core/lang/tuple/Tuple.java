@@ -39,7 +39,8 @@ import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.ListKit;
 
 /**
- * 不可变数组类型（元组），用于多值返回 多值可以支持每个元素值类型不同
+ * An immutable, array-based tuple that can hold multiple values of different types. This is useful for returning
+ * multiple values from a method.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -50,71 +51,74 @@ public class Tuple implements Iterable<Object>, Serializable, Cloneable {
     private static final long serialVersionUID = 2852281275597L;
 
     /**
-     * 多值信息
+     * The elements of this tuple.
      */
     private final Object[] members;
     /**
-     * 多值hash
+     * The cached hash code.
      */
     private int hashCode;
     /**
-     * 缓存hash
+     * Whether the hash code is cached.
      */
     private boolean cacheHash;
 
     /**
-     * 构造
+     * Constructs a new tuple with the specified members.
      *
-     * @param members 成员数组
+     * @param members the elements of this tuple.
      */
     public Tuple(final Object... members) {
         this.members = members;
     }
 
     /**
-     * 构建Tuple对象
+     * Creates a new tuple instance.
      *
-     * @param members 成员数组
-     * @return Tuple
+     * @param members the elements of the tuple.
+     * @return a new {@code Tuple} instance.
      */
     public static Tuple of(final Object... members) {
         return new Tuple(members);
     }
 
     /**
-     * 获取指定位置元素
+     * Gets the element at the specified index.
      *
-     * @param <T>   返回对象类型
-     * @param index 位置
-     * @return 元素
+     * @param <T>   the type of the element.
+     * @param index the index of the element to retrieve.
+     * @return the element at the specified index.
+     * @throws ArrayIndexOutOfBoundsException if the index is out of range.
      */
     public <T> T get(final int index) {
         return (T) members[index];
     }
 
     /**
-     * 获得所有元素
+     * Gets all elements of this tuple as an array.
      *
-     * @return 获得所有元素
+     * @return an array containing all elements of this tuple.
      */
     public Object[] getMembers() {
         return this.members;
     }
 
     /**
-     * 将元组转换成列表
+     * Converts this tuple to a {@link List}.
      *
-     * @return 转换得到的列表
+     * @return a new {@link List} containing the elements of this tuple.
      */
     public final List<Object> toList() {
         return ListKit.of(this.members);
     }
 
     /**
-     * 缓存Hash值，当为true时，此对象的hash值只被计算一次，常用于Tuple中的值不变时使用。 注意：当为true时，member变更对象后，hash值不会变更。
+     * Enables or disables hash code caching. When enabled, the hash code is computed only once and cached for future
+     * use. This is useful when the tuple's members are immutable. Note: If caching is enabled and a member object is
+     * mutated, the cached hash code will not be updated.
      *
-     * @param cacheHash 是否缓存hash值
-     * @return this
+     * @param cacheHash {@code true} to cache the hash code, {@code false} otherwise.
+     * @return this {@code Tuple} instance.
      */
     public Tuple setCacheHash(final boolean cacheHash) {
         this.cacheHash = cacheHash;
@@ -122,53 +126,58 @@ public class Tuple implements Iterable<Object>, Serializable, Cloneable {
     }
 
     /**
-     * 得到元组的大小
+     * Returns the number of elements in this tuple.
      *
-     * @return 元组的大小
+     * @return the size of this tuple.
      */
     public int size() {
         return this.members.length;
     }
 
     /**
-     * 判断元组中是否包含某元素
+     * Checks if this tuple contains the specified element.
      *
-     * @param value 需要判定的元素
-     * @return 是否包含
+     * @param value the element to check for.
+     * @return {@code true} if this tuple contains the element, {@code false} otherwise.
      */
     public boolean contains(final Object value) {
         return ArrayKit.contains(this.members, value);
     }
 
     /**
-     * 将元组转成流
+     * Returns a sequential {@link Stream} with this tuple's elements as its source.
      *
-     * @return 流
+     * @return a sequential {@link Stream} over the elements in this tuple.
      */
     public final Stream<Object> stream() {
         return Arrays.stream(this.members);
     }
 
     /**
-     * 将元组转成并行流
+     * Returns a parallel {@link Stream} with this tuple's elements as its source.
      *
-     * @return 流
+     * @return a parallel {@link Stream} over the elements in this tuple.
      */
     public final Stream<Object> parallelStream() {
         return StreamSupport.stream(spliterator(), true);
     }
 
     /**
-     * 截取元组指定部分
+     * Returns a new tuple containing the specified sub-range of elements from this tuple.
      *
-     * @param start 起始位置（包括）
-     * @param end   终止位置（不包括）
-     * @return 截取得到的元组
+     * @param start the starting index (inclusive).
+     * @param end   the ending index (exclusive).
+     * @return a new {@code Tuple} containing the specified sub-range.
      */
     public final Tuple sub(final int start, final int end) {
         return new Tuple(ArrayKit.sub(this.members, start, end));
     }
 
+    /**
+     * Returns the hash code for this tuple. If hash code caching is enabled, this method returns the cached hash code.
+     *
+     * @return the hash code for this tuple.
+     */
     @Override
     public int hashCode() {
         if (this.cacheHash && 0 != this.hashCode) {
@@ -183,6 +192,13 @@ public class Tuple implements Iterable<Object>, Serializable, Cloneable {
         return result;
     }
 
+    /**
+     * Compares this tuple to another object for equality. Two tuples are equal if they have the same class and their
+     * corresponding elements are deeply equal.
+     *
+     * @param object the object to compare with.
+     * @return {@code true} if the objects are equal, {@code false} otherwise.
+     */
     @Override
     public boolean equals(final Object object) {
         if (this == object) {
@@ -195,28 +211,51 @@ public class Tuple implements Iterable<Object>, Serializable, Cloneable {
             return false;
         }
         final Tuple other = (Tuple) object;
-        return false != Arrays.deepEquals(members, other.members);
+        return Arrays.deepEquals(members, other.members);
     }
 
+    /**
+     * Returns a string representation of this tuple. The string representation is the result of calling
+     * {@link Arrays#toString(Object[])} on the elements.
+     *
+     * @return a string representation of this tuple.
+     */
     @Override
     public String toString() {
         return Arrays.toString(members);
     }
 
+    /**
+     * Returns an iterator over the elements in this tuple.
+     *
+     * @return an {@link Iterator} over the elements in this tuple.
+     */
     @Override
     public Iterator<Object> iterator() {
         return new ArrayIterator<>(members);
     }
 
+    /**
+     * Creates a {@link Spliterator} over the elements in this tuple.
+     *
+     * @return a {@code Spliterator} over the elements in this tuple.
+     */
     @Override
     public final Spliterator<Object> spliterator() {
         return Spliterators.spliterator(this.members, Spliterator.ORDERED);
     }
 
+    /**
+     * Creates and returns a clone of this object.
+     *
+     * @return a clone of this instance.
+     * @throws CloneException if the object's class does not support the {@code Cloneable} interface.
+     */
     @Override
     public Tuple clone() {
         try {
-            return (Tuple) super.clone();
+            final Tuple clone = (Tuple) super.clone();
+            return clone;
         } catch (final CloneNotSupportedException e) {
             throw new CloneException(e);
         }

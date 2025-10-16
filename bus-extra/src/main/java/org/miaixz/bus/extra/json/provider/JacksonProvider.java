@@ -42,17 +42,22 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
 /**
- * Jackson 解析器
+ * A {@link org.miaixz.bus.extra.json.JsonProvider} implementation based on the Jackson library. This class provides
+ * JSON serialization and deserialization functionalities using Jackson's {@link ObjectMapper}.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class JacksonProvider extends AbstractJsonProvider {
 
+    /**
+     * The underlying Jackson {@link ObjectMapper} used for JSON operations.
+     */
     public static ObjectMapper objectMapper;
 
     /**
-     * 构造
+     * Constructs a new {@code JacksonProvider} instance. Initializes an {@link ObjectMapper} with module auto-detection
+     * and disables writing dates as timestamps.
      */
     public JacksonProvider() {
         objectMapper = new ObjectMapper().findAndRegisterModules()

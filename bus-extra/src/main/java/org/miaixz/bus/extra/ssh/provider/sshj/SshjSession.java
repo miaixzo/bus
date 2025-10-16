@@ -50,31 +50,42 @@ import net.schmizz.sshj.connection.channel.forwarded.RemotePortForwarder;
 import net.schmizz.sshj.connection.channel.forwarded.SocketForwardingConnectListener;
 
 /**
- * 基于SSHJ（https://github.com/hierynomus/sshj）的Session封装
+ * SSHJ-based Session implementation. This class provides a wrapper around the SSHJ library's session handling, offering
+ * functionalities for command execution, port forwarding, and SFTP integration. Project homepage:
+ * <a href="https://github.com/hierynomus/sshj">https://github.com/hierynomus/sshj</a>
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class SshjSession implements Session {
 
+    /**
+     * The underlying SSHJ client.
+     */
     private final SSHClient ssh;
+    /**
+     * The underlying raw SSHJ session.
+     */
     private final net.schmizz.sshj.connection.channel.direct.Session raw;
 
+    /**
+     * A map to keep track of local port forwarding server sockets.
+     */
     private Map<String, ServerSocket> localPortForwarderMap;
 
     /**
-     * 构造
+     * Constructs a {@code SshjSession} with the given {@link Connector}.
      *
-     * @param connector {@link Connector}，保存连接和验证信息等
+     * @param connector The {@link Connector} holding connection and authentication information.
      */
     public SshjSession(final Connector connector) {
         this(SshjKit.openClient(connector));
     }
 
     /**
-     * 构造
+     * Constructs a {@code SshjSession} with a given {@link SSHClient}.
      *
-     * @param ssh {@link SSHClient}
+     * @param ssh The {@link SSHClient} instance.
      */
     public SshjSession(final SSHClient ssh) {
         this.ssh = ssh;
@@ -102,10 +113,10 @@ public class SshjSession implements Session {
     }
 
     /**
-     * 打开SFTP会话
+     * Opens an SFTP session.
      *
-     * @param charset 编码
-     * @return {@link SshjSftp}
+     * @param charset The character set for file names.
+     * @return A {@link SshjSftp} instance.
      */
     public SshjSftp openSftp(final java.nio.charset.Charset charset) {
         return new SshjSftp(this.ssh, charset);
@@ -130,7 +141,6 @@ public class SshjSession implements Session {
             this.localPortForwarderMap = new HashMap<>();
         }
 
-        // 加入记录
         this.localPortForwarderMap.put(localAddress.toString(), ss);
     }
 
@@ -166,7 +176,6 @@ public class SshjSession implements Session {
             if (port == activeForward.getPort()) {
                 final String activeAddress = activeForward.getAddress();
                 if (StringKit.isNotBlank(activeAddress) && !StringKit.equalsIgnoreCase(hostName, activeAddress)) {
-                    // 对于用于已经定义的host，做对比，否则跳过
                     continue;
                 }
 
@@ -181,15 +190,13 @@ public class SshjSession implements Session {
     }
 
     /**
-     * 执行Shell命令（使用EXEC方式）
-     * <p>
-     * 此方法单次发送一个命令到服务端，不读取环境变量，不会产生阻塞。
-     * </p>
+     * Executes a command using the 'exec' channel. This method sends a single command, does not read environment
+     * variables, and is non-blocking.
      *
-     * @param cmd       命令
-     * @param charset   发送和读取内容的编码
-     * @param errStream 错误信息输出到的位置
-     * @return 执行返回结果
+     * @param cmd       The command to execute.
+     * @param charset   The character set for sending and reading content.
+     * @param errStream The output stream for error messages.
+     * @return The execution result.
      */
     public String exec(final String cmd, java.nio.charset.Charset charset, final OutputStream errStream) {
         if (null == charset) {
@@ -198,33 +205,27 @@ public class SshjSession implements Session {
 
         final net.schmizz.sshj.connection.channel.direct.Session.Command command;
 
-        // 发送命令
         try {
             command = this.raw.exec(cmd);
-            // command.join();
         } catch (final IOException e) {
             throw new InternalException(e);
         }
 
-        // 错误输出
         if (null != errStream) {
             IoKit.copy(command.getErrorStream(), errStream);
         }
 
-        // 结果输出
         return IoKit.read(command.getInputStream(), charset);
     }
 
     /**
-     * 执行Shell命令
-     * <p>
-     * 此方法单次发送一个命令到服务端，自动读取环境变量，可能产生阻塞。
-     * </p>
+     * Executes a command within an interactive 'shell' channel. This method loads environment variables and may be
+     * blocking.
      *
-     * @param cmd       命令
-     * @param charset   发送和读取内容的编码
-     * @param errStream 错误信息输出到的位置
-     * @return 执行返回结果
+     * @param cmd       The command to execute.
+     * @param charset   The character set for sending and reading content.
+     * @param errStream The output stream for error messages.
+     * @return The execution result.
      */
     public String execByShell(final String cmd, java.nio.charset.Charset charset, final OutputStream errStream) {
         if (null == charset) {
@@ -238,15 +239,12 @@ public class SshjSession implements Session {
             throw new InternalException(e);
         }
 
-        // 发送命令
         IoKit.write(shell.getOutputStream(), charset, true, cmd);
 
-        // 错误输出
         if (null != errStream) {
             IoKit.copy(shell.getErrorStream(), errStream);
         }
 
-        // 结果输出
         return IoKit.read(shell.getInputStream(), charset);
     }
 

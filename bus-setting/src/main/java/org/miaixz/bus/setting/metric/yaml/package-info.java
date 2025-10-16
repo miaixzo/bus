@@ -26,7 +26,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * yaml文件的读写封装
+ * Provides a utility class for reading and writing YAML files, based on the SnakeYAML library.
  *
  * @author Kimi Liu
  * @since Java 17+

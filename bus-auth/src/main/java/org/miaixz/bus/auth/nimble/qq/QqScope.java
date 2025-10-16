@@ -32,7 +32,7 @@ import lombok.Getter;
 import org.miaixz.bus.auth.nimble.AuthorizeScope;
 
 /**
- * QQ 授权范围
+ * QQ authorization scopes.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,18 +42,31 @@ import org.miaixz.bus.auth.nimble.AuthorizeScope;
 public enum QqScope implements AuthorizeScope {
 
     /**
-     * {@code scope} 含义，以{@code description} 为准
+     * Retrieves the user's nickname, avatar, and gender. The meaning of {@code scope} is subject to
+     * {@code description}.
      */
-    GET_USER_INFO("get_user_info", "获取登录用户的昵称、头像、性别", true),
+    GET_USER_INFO("get_user_info", "Retrieves the user's nickname, avatar, and gender", true),
     /**
-     * 以下 scope 需要申请：http://wiki.connect.qq.com/openapi%e6%9d%83%e9%99%90%e7%94%b3%e8%af%b7
+     * The following scopes require application: http://wiki.connect.qq.com/openapi%e6%9d%83%e9%99%90%e7%94%b3%e8%af%b7
      */
-    GET_VIP_INFO("get_vip_info", "获取QQ会员的基本信息", false), GET_VIP_RICH_INFO("get_vip_rich_info", "获取QQ会员的高级信息", false),
-    LIST_ALBUM("list_album", "获取用户QQ空间相册列表", false), UPLOAD_PIC("upload_pic", "上传一张照片到QQ空间相册", false),
-    ADD_ALBUM("add_album", "在用户的空间相册里，创建一个新的个人相册", false), LIST_PHOTO("list_photo", "获取用户QQ空间相册中的照片列表", false);
+    GET_VIP_INFO("get_vip_info", "Retrieves basic QQ VIP information", false),
+    GET_VIP_RICH_INFO("get_vip_rich_info", "Retrieves advanced QQ VIP information", false),
+    LIST_ALBUM("list_album", "Retrieves the user's QQ Zone album list", false),
+    UPLOAD_PIC("upload_pic", "Uploads a photo to the QQ Zone album", false),
+    ADD_ALBUM("add_album", "Creates a new personal album in the user's QQ Zone", false),
+    LIST_PHOTO("list_photo", "Retrieves the photo list in the user's QQ Zone album", false);
 
+    /**
+     * The scope string as defined by QQ.
+     */
     private final String scope;
+    /**
+     * A description of what the scope grants access to.
+     */
     private final String description;
+    /**
+     * Indicates if this scope is enabled by default.
+     */
     private final boolean isDefault;
 
 }

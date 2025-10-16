@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org sandao and other contributors.             ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -35,7 +35,7 @@ import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * 哈希计时器
+ * A Hashed Wheel Timer for scheduling tasks.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -47,29 +47,30 @@ public class HashedWheelTimer implements SocketTimer, Runnable {
         thread.setDaemon(true);
         return thread;
     });
+
     /**
-     * 指针波动频率
+     * The duration between ticks.
      */
     private final long tickDuration;
     /**
-     * 时间轮槽位数
+     * The buckets of the hashed wheel.
      */
     private final HashedWheelBucket[] wheel;
     private final int mask;
     /**
-     * 新注册的定时任务
+     * Queue for newly scheduled tasks.
      */
     private final Queue<HashedWheelSocketTask> newTimeouts = new ConcurrentLinkedQueue<>();
     /**
-     * 已取消的定时任务
+     * Queue for cancelled tasks.
      */
     private final Queue<HashedWheelSocketTask> cancelledTimeouts = new ConcurrentLinkedQueue<>();
     /**
-     * 待处理任务数
+     * Number of pending timeouts.
      */
     private final AtomicLong pendingTimeouts = new AtomicLong(0);
     /**
-     * 定时器启动时间
+     * The start time of the timer.
      */
     private volatile long startTime;
     private boolean running = true;
@@ -80,12 +81,14 @@ public class HashedWheelTimer implements SocketTimer, Runnable {
     }
 
     /**
-     * @param threadFactory
-     * @param tickDuration  波动周期,单位：毫秒
-     * @param ticksPerWheel 时间轮大小,自适应成 2^n
+     * Constructor for HashedWheelTimer.
+     *
+     * @param threadFactory a {@link ThreadFactory} that creates a background {@link Thread} which drives this timer.
+     * @param tickDuration  the duration between ticks in milliseconds.
+     * @param ticksPerWheel the size of the wheel, rounded up to the next power of 2.
      */
     public HashedWheelTimer(ThreadFactory threadFactory, long tickDuration, int ticksPerWheel) {
-        // 创建长度为2^n大小的时间轮
+        // Create a wheel of size 2^n
         wheel = createWheel(ticksPerWheel);
         mask = wheel.length - 1;
         this.tickDuration = tickDuration;
@@ -164,9 +167,9 @@ public class HashedWheelTimer implements SocketTimer, Runnable {
         startTime = System.currentTimeMillis();
         while (running) {
             final long deadline = waitForNextTick();
-            // 移除已取消的任务
+            // Process cancelled tasks
             processCancelledTasks();
-            // 将新任务分配至各分桶
+            // Transfer new timeouts to their respective buckets
             transferTimeoutsToBuckets();
             wheel[(int) (tick & mask)].execute(deadline, tickDuration);
             tick++;
@@ -174,7 +177,7 @@ public class HashedWheelTimer implements SocketTimer, Runnable {
     }
 
     private void transferTimeoutsToBuckets() {
-        // 限制注册的个数，防止因此导致其他任务延迟
+        // Limit the number of registrations per tick to prevent delaying other tasks
         for (int i = 0; i < 100000; i++) {
             HashedWheelSocketTask timeout = newTimeouts.poll();
             if (timeout == null) {
@@ -194,7 +197,7 @@ public class HashedWheelTimer implements SocketTimer, Runnable {
     }
 
     /**
-     * 移除已取消的任务
+     * Process tasks that have been cancelled.
      */
     private void processCancelledTasks() {
         HashedWheelSocketTask timeout;
@@ -205,14 +208,12 @@ public class HashedWheelTimer implements SocketTimer, Runnable {
 
     private long waitForNextTick() {
         long deadline = startTime + tickDuration * (tick + 1);
-
         while (true) {
-            // 时间对齐
+            // Align with the next tick
             long currentTime = System.currentTimeMillis();
             if (deadline <= currentTime) {
                 return currentTime;
             }
-
             try {
                 Thread.sleep(deadline - currentTime);
             } catch (InterruptedException e) {
@@ -231,14 +232,10 @@ public class HashedWheelTimer implements SocketTimer, Runnable {
 
         private final HashedWheelTimer timer;
         private Runnable runnable;
-
         private long deadline;
-
         private volatile int state = ST_INIT;
-
         private HashedWheelSocketTask next;
         private HashedWheelSocketTask prev;
-
         private HashedWheelBucket bucket;
 
         HashedWheelSocketTask(HashedWheelTimer timer, Runnable runnable, long deadline) {
@@ -284,7 +281,6 @@ public class HashedWheelTimer implements SocketTimer, Runnable {
             if (!compareAndSetState(ST_INIT, ST_EXPIRED)) {
                 return;
             }
-
             try {
                 runnable.run();
             } catch (Throwable t) {
@@ -316,7 +312,7 @@ public class HashedWheelTimer implements SocketTimer, Runnable {
     }
 
     /**
-     * 定时器分桶
+     * A bucket in the hashed wheel timer, which holds a linked list of tasks.
      */
     private static final class HashedWheelBucket {
 

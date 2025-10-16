@@ -27,29 +27,35 @@
 */
 package org.miaixz.bus.socket.plugin;
 
-import java.nio.channels.AsynchronousSocketChannel;
-
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.socket.Plugin;
 import org.miaixz.bus.socket.Session;
 import org.miaixz.bus.socket.Status;
 
+import java.nio.channels.AsynchronousSocketChannel;
+
 /**
- * 抽象插件
+ * An abstract base class for plugins, providing default implementations for the {@link Plugin} and
+ * {@link org.miaixz.bus.socket.Monitor} interfaces. This class also includes utility methods for hexadecimal string
+ * conversion.
  *
+ * @param <T> the type of message object entity handled by this plugin
  * @author Kimi Liu
  * @since Java 17+
  */
 public abstract class AbstractPlugin<T> implements Plugin<T> {
 
+    /**
+     * Hexadecimal digits for conversion.
+     */
     private final static char[] DIGITS = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e',
             'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z' };
 
     /**
-     * 将字节转换成16进制显示
+     * Converts a single byte to its hexadecimal string representation.
      *
-     * @param b byte
-     * @return String
+     * @param b the byte to convert
+     * @return the hexadecimal string representation of the byte
      */
     public static String toHex(byte b) {
         final char[] buf = new char[Normal._2];
@@ -61,9 +67,10 @@ public abstract class AbstractPlugin<T> implements Plugin<T> {
     }
 
     /**
-     * 以16进制 打印字节数组
+     * Converts a byte array to its hexadecimal string representation, formatted for display.
      *
-     * @param bytes byte[]
+     * @param bytes the byte array to convert
+     * @return a formatted hexadecimal string representation of the byte array
      */
     public static String toHexString(final byte[] bytes) {
         final StringBuilder buffer = new StringBuilder(bytes.length);
@@ -104,12 +111,12 @@ public abstract class AbstractPlugin<T> implements Plugin<T> {
     }
 
     /**
-     * 过滤掉字节数组中0x0 - 0x1F的控制字符，生成字符串
+     * Filters out control characters (0x0 - 0x1F) from a byte array and converts it to a string.
      *
-     * @param bytes  byte[]
-     * @param offset int
-     * @param count  int
-     * @return String
+     * @param bytes  the byte array to filter
+     * @param offset the starting offset in the byte array
+     * @param count  the number of bytes to filter
+     * @return a string with control characters replaced by periods
      */
     private static String filterString(final byte[] bytes, final int offset, final int count) {
         final byte[] buffer = new byte[count];
@@ -123,10 +130,11 @@ public abstract class AbstractPlugin<T> implements Plugin<T> {
     }
 
     /**
-     * 将hexStr格式化成length长度16进制数，并在后边加上h
+     * Formats a hexadecimal string to a specified length, padding with leading zeros if necessary, and appends 'h'.
      *
-     * @param hexStr String
-     * @return String
+     * @param hexStr the hexadecimal string to format
+     * @param length the desired length of the formatted string (excluding 'h')
+     * @return the formatted hexadecimal string
      */
     private static String fixHexString(final String hexStr, final int length) {
         if (hexStr == null || hexStr.length() == 0) {

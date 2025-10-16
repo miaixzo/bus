@@ -32,11 +32,15 @@ import org.miaixz.bus.core.xyz.PatternKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * Luhn算法，也称为“模10”算法，是一种简单的校验和（Checksum）算法，在ISO/IEC 7812-1中定义，校验步骤如下：
+ * The Luhn algorithm, also known as the "mod 10" algorithm, is a simple checksum formula used to validate a variety of
+ * identification numbers, such as credit card numbers, IMEI numbers, and National Provider Identifier numbers. The
+ * validation steps are as follows:
  * <ol>
- * <li>从右边第1个数字（校验数字）开始偶数位乘以2，如果小于10，直接返回，否则将个位数和十位数相加</li>
- * <li>把步骤1种获得的乘积的各位数字与原号码中未乘2的各位数字相加</li>
- * <li>如果步骤2得到的总和模10为0，则校验通过</li>
+ * <li>Starting from the rightmost digit (the check digit), double the value of every second digit. If the result of
+ * this doubling is greater than 9 (e.g., 7 * 2 = 14), sum the digits of the result (e.g., 1 + 4 = 5).</li>
+ * <li>Sum all the digits obtained in step 1 (the doubled digits, after summing their own digits if necessary) and the
+ * undoubled digits from the original number.</li>
+ * <li>If the total sum modulo 10 is equal to 0, then the number is valid according to the Luhn algorithm.</li>
  * </ol>
  *
  * @author Kimi Liu
@@ -45,29 +49,31 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class Luhn {
 
     /**
-     * 校验字符串
+     * Checks if the given string is valid according to the Luhn algorithm.
      *
-     * @param text 含校验数字的字符串
-     * @return true - 校验通过，false-校验不通过
-     * @throws IllegalArgumentException 如果字符串为空或不是8~19位的数字
+     * @param text The string containing the number to be checked.
+     * @return {@code true} if the string is valid, {@code false} otherwise.
+     * @throws IllegalArgumentException If the string is empty or not an 8-19 digit number.
      */
     public static boolean check(final String text) {
         if (StringKit.isBlank(text)) {
             return false;
         }
         if (!PatternKit.isMatch(Pattern.NUMBERS_PATTERN, text)) {
-            // 必须为全数字
+            // Must be all digits
             return false;
         }
         return sum(text) % 10 == 0;
     }
 
     /**
-     * 计算校验位数字 忽略已有的校验位数字，根据前N位计算最后一位校验位数字
+     * Calculates the check digit for a given number string. This method ignores any existing check digit and calculates
+     * the last check digit based on the preceding N digits.
      *
-     * @param text           被检查的数字
-     * @param withCheckDigit 是否含有校验位
-     * @return 校验位数字
+     * @param text           The number string to calculate the check digit for.
+     * @param withCheckDigit A boolean indicating whether the input {@code text} already includes a check digit. If
+     *                       {@code true}, the last digit is removed before calculation.
+     * @return The calculated check digit.
      */
     public static int getCheckDigit(String text, final boolean withCheckDigit) {
         if (withCheckDigit) {
@@ -77,23 +83,23 @@ public class Luhn {
     }
 
     /**
-     * 根据Luhn算法计算字符串各位数字之和
+     * Calculates the sum of digits according to the Luhn algorithm. This private helper method performs the core
+     * summation logic of the Luhn algorithm.
      *
-     * @param text 需要校验的数字字符串
-     * @return 数字之和
+     * @param text The number string for which to calculate the sum.
+     * @return The sum of digits as per the Luhn algorithm.
      */
     private static int sum(final String text) {
         final char[] strArray = text.toCharArray();
         final int n = strArray.length;
         int sum = strArray[n - 1] - '0';
-        ;
         for (int i = 2; i <= n; i++) {
             int a = strArray[n - i] - '0';
-            // 偶数位乘以2
+            // Double every second digit starting from the right
             if ((i & 1) == 0) {
                 a *= 2;
             }
-            // 十位数和个位数相加，如果不是偶数位，不乘以2，则十位数为0
+            // Add the digits of the doubled number (if > 9) or the number itself
             sum += a / 10 + a % 10;
         }
         return sum;

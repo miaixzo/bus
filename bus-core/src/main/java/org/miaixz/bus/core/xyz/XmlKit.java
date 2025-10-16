@@ -47,10 +47,10 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
-import org.xml.sax.helpers.DefaultHandler;
 
 /**
- * XML工具类 此工具使用w3c dom工具，不需要依赖第三方包。 工具类封装了XML文档的创建、读取、写出和部分XML操作
+ * XML utility class. This utility uses the W3C DOM tools and does not require third-party libraries. It encapsulates
+ * the creation, reading, writing, and some operations of XML documents.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -58,19 +58,19 @@ import org.xml.sax.helpers.DefaultHandler;
 public class XmlKit {
 
     /**
-     * 在XML中无效的字符 正则
+     * Regex for invalid characters in XML.
      */
     public static final Pattern INVALID_PATTERN = Pattern.compile("[\\x00-\\x08\\x0b-\\x0c\\x0e-\\x1f]");
     /**
-     * 在XML中注释的内容 正则
+     * Regex for comments in XML.
      */
-    public static final Pattern COMMENT_PATTERN = Pattern.compile("(?s)<!--.+?-->");
+    public static final Pattern COMMENT_PATTERN = Pattern.compile("(?s)");
 
     /**
-     * 读取解析XML文件 如果给定内容以“&lt;”开头，表示这是一个XML内容，直接读取，否则按照路径处理 路径可以为相对路径，也可以是绝对路径，相对路径相对于ClassPath
+     * Reads and parses an XML file from a path or content string.
      *
-     * @param pathOrContent 内容或路径
-     * @return XML文档对象
+     * @param pathOrContent The content string or the file path.
+     * @return The XML `Document` object.
      */
     public static Document readXml(String pathOrContent) {
         pathOrContent = StringKit.trim(pathOrContent);
@@ -81,10 +81,10 @@ public class XmlKit {
     }
 
     /**
-     * 读取解析XML文件
+     * Reads and parses an XML file.
      *
-     * @param file XML文件
-     * @return XML文档对象
+     * @param file The XML file.
+     * @return The XML `Document` object.
      */
     public static Document readXml(final File file) {
         Assert.notNull(file, "Xml file is null !");
@@ -103,33 +103,33 @@ public class XmlKit {
     }
 
     /**
-     * 读取解析XML文件 编码在XML中定义
+     * Reads and parses XML from an `InputStream`.
      *
-     * @param inputStream XML流
-     * @return XML文档对象
-     * @throws InternalException IO异常或转换异常
+     * @param inputStream The XML stream.
+     * @return The XML `Document` object.
+     * @throws InternalException for IO or parsing errors.
      */
     public static Document readXml(final InputStream inputStream) throws InternalException {
         return readXml(new InputSource(inputStream), true);
     }
 
     /**
-     * 读取解析XML文件
+     * Reads and parses XML from a `Reader`.
      *
-     * @param reader XML流
-     * @return XML文档对象
-     * @throws InternalException IO异常或转换异常
+     * @param reader The XML reader.
+     * @return The XML `Document` object.
+     * @throws InternalException for IO or parsing errors.
      */
     public static Document readXml(final Reader reader) throws InternalException {
         return readXml(new InputSource(reader), true);
     }
 
     /**
-     * 读取解析XML文件 编码在XML中定义
+     * Reads and parses XML from an `InputSource`.
      *
-     * @param namespaceAware 是否打开命名空间支持
-     * @param source         {@link InputSource}
-     * @return XML文档对象
+     * @param source         The `InputSource`.
+     * @param namespaceAware Whether to enable namespace support.
+     * @return The XML `Document` object.
      */
     public static Document readXml(final InputSource source, final boolean namespaceAware) {
         final javax.xml.parsers.DocumentBuilder builder = DocumentBuilder.createDocumentBuilder(namespaceAware);
@@ -141,10 +141,10 @@ public class XmlKit {
     }
 
     /**
-     * 将String类型的XML转换为XML文档
+     * Parses an XML string into a DOM `Document`.
      *
-     * @param xmlStr XML字符串
-     * @return XML文档
+     * @param xmlStr The XML string.
+     * @return The XML `Document`.
      */
     public static Document parseXml(final String xmlStr) {
         if (StringKit.isBlank(xmlStr)) {
@@ -154,26 +154,24 @@ public class XmlKit {
     }
 
     /**
-     * 使用Sax方式读取指定的XML 如果用户传入的contentHandler为{@link DefaultHandler}，则其接口都会被处理
+     * Reads the specified XML using a SAX parser.
      *
-     * @param file           XML源文件,使用后自动关闭
-     * @param contentHandler XML流处理器，用于按照Element处理xml
+     * @param file           The XML source file.
+     * @param contentHandler The content handler.
      */
     public static void readBySax(final File file, final ContentHandler contentHandler) {
-        InputStream in = null;
-        try {
-            in = FileKit.getInputStream(file);
+        try (InputStream in = FileKit.getInputStream(file)) {
             readBySax(new InputSource(in), contentHandler);
-        } finally {
-            IoKit.closeQuietly(in);
+        } catch (IOException e) {
+            throw new InternalException(e);
         }
     }
 
     /**
-     * 使用Sax方式读取指定的XML 如果用户传入的contentHandler为{@link DefaultHandler}，则其接口都会被处理
+     * Reads the specified XML using a SAX parser.
      *
-     * @param reader         XML源Reader,使用后自动关闭
-     * @param contentHandler XML流处理器，用于按照Element处理xml
+     * @param reader         The XML source reader.
+     * @param contentHandler The content handler.
      */
     public static void readBySax(final Reader reader, final ContentHandler contentHandler) {
         try {
@@ -184,10 +182,10 @@ public class XmlKit {
     }
 
     /**
-     * 使用Sax方式读取指定的XML 如果用户传入的contentHandler为{@link DefaultHandler}，则其接口都会被处理
+     * Reads the specified XML using a SAX parser.
      *
-     * @param source         XML源流,使用后自动关闭
-     * @param contentHandler XML流处理器，用于按照Element处理xml
+     * @param source         The XML source stream.
+     * @param contentHandler The content handler.
      */
     public static void readBySax(final InputStream source, final ContentHandler contentHandler) {
         try {
@@ -198,60 +196,56 @@ public class XmlKit {
     }
 
     /**
-     * 使用Sax方式读取指定的XML 如果用户传入的contentHandler为{@link DefaultHandler}，则其接口都会被处理
+     * Reads the specified XML using a SAX parser.
      *
-     * @param source         XML源，可以是文件、流、路径等
-     * @param contentHandler XML流处理器，用于按照Element处理xml
+     * @param source         The `InputSource`.
+     * @param contentHandler The content handler.
      */
     public static void readBySax(final InputSource source, final ContentHandler contentHandler) {
         XmlSaxReader.of(source).read(contentHandler);
     }
 
     /**
-     * 将XML文档转换为String 字符编码使用XML文档中的编码，获取不到则使用UTF-8 默认非格式化输出，若想格式化请使用{@link #format(Document)}
+     * Converts an XML `Document` to a string.
      *
-     * @param doc XML文档
-     * @return XML字符串
+     * @param doc The XML `Document` or `Node`.
+     * @return The XML string.
      */
     public static String toString(final Node doc) {
         return toString(doc, false);
     }
 
     /**
-     * 将XML文档转换为String 字符编码使用XML文档中的编码，获取不到则使用UTF-8
+     * Converts an XML `Document` to a string.
      *
-     * @param doc      XML文档
-     * @param isPretty 是否格式化输出
-     * @return XML字符串
+     * @param doc      The XML `Document` or `Node`.
+     * @param isPretty If `true`, formats the output with indentation.
+     * @return The XML string.
      */
     public static String toString(final Node doc, final boolean isPretty) {
         return toString(doc, Charset.UTF_8, isPretty);
     }
 
     /**
-     * 将XML文档转换为String 字符编码使用XML文档中的编码，获取不到则使用UTF-8
+     * Converts an XML `Document` to a string.
      *
-     * @param doc      XML文档
-     * @param charset  编码
-     * @param isPretty 是否格式化输出
-     * @return XML字符串
+     * @param doc      The XML `Document` or `Node`.
+     * @param charset  The character set.
+     * @param isPretty If `true`, formats the output.
+     * @return The XML string.
      */
     public static String toString(final Node doc, final java.nio.charset.Charset charset, final boolean isPretty) {
         return toString(doc, charset, isPretty, false);
     }
 
     /**
-     * 将XML文档转换为String 字符编码使用XML文档中的编码，获取不到则使用UTF-8 当{@code omitXmlDeclaration}为{@code true}时，表示忽略xml Declaration，即删掉
-     * 
-     * <pre>{@code
-     *     <?xml version="1.0" encoding="utf-8"?>
-     * }</pre>
+     * Converts an XML `Document` to a string.
      *
-     * @param doc                XML文档
-     * @param charset            编码
-     * @param isPretty           是否格式化输出
-     * @param omitXmlDeclaration 是否忽略 xml Declaration
-     * @return XML字符串
+     * @param doc                The XML `Document` or `Node`.
+     * @param charset            The character set.
+     * @param isPretty           If `true`, formats the output.
+     * @param omitXmlDeclaration If `true`, omits the XML declaration.
+     * @return The XML string.
      */
     public static String toString(
             final Node doc,
@@ -264,43 +258,43 @@ public class XmlKit {
     }
 
     /**
-     * 格式化XML输出
+     * Formats an XML document for pretty printing.
      *
-     * @param doc {@link Document} XML文档
-     * @return 格式化后的XML字符串
+     * @param doc The XML `Document`.
+     * @return The formatted XML string.
      */
     public static String format(final Document doc) {
         return toString(doc, true);
     }
 
     /**
-     * 格式化XML输出
+     * Formats an XML string for pretty printing.
      *
-     * @param xmlStr XML字符串
-     * @return 格式化后的XML字符串
+     * @param xmlStr The XML string.
+     * @return The formatted XML string.
      */
     public static String format(final String xmlStr) {
         return format(parseXml(xmlStr));
     }
 
     /**
-     * 将XML文档写入到文件 使用Document中的编码
+     * Writes an XML `Document` to a file.
      *
-     * @param doc     XML文档
-     * @param file    文件
-     * @param charset 编码
+     * @param doc     The XML `Document`.
+     * @param file    The destination file.
+     * @param charset The character set.
      */
     public static void write(final Document doc, final File file, final java.nio.charset.Charset charset) {
         XmlWriter.of(doc).setCharset(charset).setIndent(Normal._2).setOmitXmlDeclaration(false).write(file);
     }
 
     /**
-     * 将XML文档写出
+     * Writes an XML `Node` to a `Writer`.
      *
-     * @param node    {@link Node} XML文档节点或文档本身
-     * @param writer  写出的Writer，Writer决定了输出XML的编码
-     * @param charset 编码
-     * @param indent  格式化输出中缩进量，小于1表示不格式化输出
+     * @param node    The `Node`.
+     * @param writer  The `Writer`.
+     * @param charset The character set.
+     * @param indent  The indentation level (less than 1 means no formatting).
      */
     public static void write(
             final Node node,
@@ -311,17 +305,13 @@ public class XmlKit {
     }
 
     /**
-     * 将XML文档写出 当{@code omitXmlDeclaration}为{@code true}时，表示忽略xml Declaration，即删掉
-     * 
-     * <pre>{@code
-     *     <?xml version="1.0" encoding="utf-8"?>
-     * }</pre>
+     * Writes an XML `Node` to a `Writer`.
      *
-     * @param node               {@link Node} XML文档节点或文档本身
-     * @param writer             写出的Writer，Writer决定了输出XML的编码
-     * @param charset            编码
-     * @param indent             格式化输出中缩进量，小于1表示不格式化输出
-     * @param omitXmlDeclaration 是否忽略 xml Declaration
+     * @param node               The `Node`.
+     * @param writer             The `Writer`.
+     * @param charset            The character set.
+     * @param indent             The indentation level.
+     * @param omitXmlDeclaration If `true`, omits the XML declaration.
      */
     public static void write(
             final Node node,
@@ -334,12 +324,12 @@ public class XmlKit {
     }
 
     /**
-     * 将XML文档写出
+     * Writes an XML `Node` to an `OutputStream`.
      *
-     * @param node    {@link Node} XML文档节点或文档本身
-     * @param out     写出的Writer，Writer决定了输出XML的编码
-     * @param charset 编码
-     * @param indent  格式化输出中缩进量，小于1表示不格式化输出
+     * @param node    The `Node`.
+     * @param out     The `OutputStream`.
+     * @param charset The character set.
+     * @param indent  The indentation level.
      */
     public static void write(
             final Node node,
@@ -350,17 +340,13 @@ public class XmlKit {
     }
 
     /**
-     * 将XML文档写出 当{@code omitXmlDeclaration}为{@code true}时，表示忽略xml Declaration，即删掉
-     * 
-     * <pre>{@code
-     *     <?xml version="1.0" encoding="utf-8"?>
-     * }</pre>
+     * Writes an XML `Node` to an `OutputStream`.
      *
-     * @param node               {@link Node} XML文档节点或文档本身
-     * @param out                写出的Writer，Writer决定了输出XML的编码
-     * @param charset            编码
-     * @param indent             格式化输出中缩进量，小于1表示不格式化输出
-     * @param omitXmlDeclaration 是否忽略 xml Declaration
+     * @param node               The `Node`.
+     * @param out                The `OutputStream`.
+     * @param charset            The character set.
+     * @param indent             The indentation level.
+     * @param omitXmlDeclaration If `true`, omits the XML declaration.
      */
     public static void write(
             final Node node,
@@ -372,30 +358,30 @@ public class XmlKit {
     }
 
     /**
-     * 创建XML文档 创建的XML默认是utf8编码，修改编码的过程是在toStr和toFile方法里，即XML在转为文本的时候才定义编码
+     * Creates a new XML `Document`.
      *
-     * @return XML文档
+     * @return The XML `Document`.
      */
     public static Document createXml() {
         return DocumentBuilder.createDocumentBuilder(true).newDocument();
     }
 
     /**
-     * 创建XML文档 创建的XML默认是utf8编码，修改编码的过程是在toStr和toFile方法里，即XML在转为文本的时候才定义编码
+     * Creates a new XML `Document` with a specified root element.
      *
-     * @param rootElementName 根节点名称
-     * @return XML文档
+     * @param rootElementName The name of the root element.
+     * @return The XML `Document`.
      */
     public static Document createXml(final String rootElementName) {
         return createXml(rootElementName, null);
     }
 
     /**
-     * 创建XML文档 创建的XML默认是utf8编码，修改编码的过程是在toStr和toFile方法里，即XML在转为文本的时候才定义编码
+     * Creates a new XML `Document` with a specified root element and namespace.
      *
-     * @param rootElementName 根节点名称
-     * @param namespace       命名空间，无则传null
-     * @return XML文档
+     * @param rootElementName The name of the root element.
+     * @param namespace       The namespace URI.
+     * @return The XML `Document`.
      */
     public static Document createXml(final String rootElementName, final String namespace) {
         final Document doc = createXml();
@@ -406,45 +392,43 @@ public class XmlKit {
     }
 
     /**
-     * 获得XML文档根节点
+     * Gets the root element of an XML `Document`.
      *
-     * @param doc {@link Document}
-     * @return 根节点
-     * @see Document#getDocumentElement()
+     * @param doc The `Document`.
+     * @return The root element.
      */
     public static Element getRootElement(final Document doc) {
         return (null == doc) ? null : doc.getDocumentElement();
     }
 
     /**
-     * 获取节点所在的Document
+     * Gets the owner `Document` of a `Node`.
      *
-     * @param node 节点
-     * @return {@link Document}
+     * @param node The node.
+     * @return The `Document`.
      */
     public static Document getOwnerDocument(final Node node) {
         return (node instanceof Document) ? (Document) node : node.getOwnerDocument();
     }
 
     /**
-     * 去除XML文本中的无效字符
+     * Removes invalid XML characters from a string.
      *
-     * @param xmlContent XML文本
-     * @return 当传入为null时返回null
+     * @param xmlContent The XML content.
+     * @return The cleaned string.
      */
     public static String cleanInvalid(final String xmlContent) {
         if (xmlContent == null) {
             return null;
         }
-
         return PatternKit.replaceAll(xmlContent, INVALID_PATTERN, Normal.EMPTY);
     }
 
     /**
-     * 去除XML文本中的注释内容
+     * Removes XML comments from a string.
      *
-     * @param xmlContent XML文本
-     * @return 当传入为null时返回null
+     * @param xmlContent The XML content.
+     * @return The content without comments.
      */
     public static String cleanComment(final String xmlContent) {
         if (xmlContent == null) {
@@ -454,11 +438,11 @@ public class XmlKit {
     }
 
     /**
-     * 根据节点名获得子节点列表
+     * Gets a list of child elements by tag name.
      *
-     * @param element 节点
-     * @param tagName 节点名，如果节点名为空（null或blank），返回所有子节点
-     * @return 节点列表
+     * @param element The parent element.
+     * @param tagName The tag name (if blank, returns all child elements).
+     * @return A list of elements.
      */
     public static List<Element> getElements(final Element element, final String tagName) {
         final NodeList nodeList = StringKit.isBlank(tagName) ? element.getChildNodes()
@@ -467,11 +451,11 @@ public class XmlKit {
     }
 
     /**
-     * 根据节点名获得第一个子节点
+     * Gets the first child element with a given tag name.
      *
-     * @param element 节点
-     * @param tagName 节点名
-     * @return 节点
+     * @param element The parent element.
+     * @param tagName The tag name.
+     * @return The child element, or `null`.
      */
     public static Element getElement(final Element element, final String tagName) {
         final NodeList nodeList = element.getElementsByTagName(tagName);
@@ -489,11 +473,11 @@ public class XmlKit {
     }
 
     /**
-     * 根据节点名获得第一个子节点
+     * Gets the text content of the first child element with a given tag name.
      *
-     * @param element 节点
-     * @param tagName 节点名
-     * @return 节点中的值
+     * @param element The parent element.
+     * @param tagName The tag name.
+     * @return The text content.
      */
     public static String elementText(final Element element, final String tagName) {
         final Element child = getElement(element, tagName);
@@ -501,12 +485,12 @@ public class XmlKit {
     }
 
     /**
-     * 根据节点名获得第一个子节点
+     * Gets the text content of the first child element with a given tag name, or a default value.
      *
-     * @param element      节点
-     * @param tagName      节点名
-     * @param defaultValue 默认值
-     * @return 节点中的值
+     * @param element      The parent element.
+     * @param tagName      The tag name.
+     * @param defaultValue The default value.
+     * @return The text content.
      */
     public static String elementText(final Element element, final String tagName, final String defaultValue) {
         final Element child = getElement(element, tagName);
@@ -514,21 +498,21 @@ public class XmlKit {
     }
 
     /**
-     * 将NodeList转换为Element列表
+     * Converts a `NodeList` to a `List` of `Element`s.
      *
-     * @param nodeList NodeList
-     * @return Element列表
+     * @param nodeList The `NodeList`.
+     * @return A list of elements.
      */
     public static List<Element> transElements(final NodeList nodeList) {
         return transElements(null, nodeList);
     }
 
     /**
-     * 将NodeList转换为Element列表 非Element节点将被忽略
+     * Converts a `NodeList` to a `List` of `Element`s.
      *
-     * @param parentEle 父节点，如果指定将返回此节点的所有直接子节点，null返回所有就节点
-     * @param nodeList  NodeList
-     * @return Element列表
+     * @param parentEle The parent element.
+     * @param nodeList  The `NodeList`.
+     * @return A list of elements.
      */
     public static List<Element> transElements(final Element parentEle, final NodeList nodeList) {
         final int length = nodeList.getLength();
@@ -544,93 +528,86 @@ public class XmlKit {
                 }
             }
         }
-
         return elements;
     }
 
     /**
-     * 将可序列化的对象转换为XML写入文件，已经存在的文件将被覆盖 Writes serializable object to a XML file. Existing file will be overwritten
+     * Writes a serializable object to an XML file.
      *
-     * @param dest 目标文件
-     * @param bean 对象
+     * @param dest The destination file.
+     * @param bean The object.
      */
     public static void writeObjectAsXml(final File dest, final Object bean) {
-        XMLEncoder xmlenc = null;
-        try {
-            xmlenc = new XMLEncoder(FileKit.getOutputStream(dest));
+        try (XMLEncoder xmlenc = new XMLEncoder(FileKit.getOutputStream(dest))) {
             xmlenc.writeObject(bean);
-        } finally {
-            // 关闭XMLEncoder会相应关闭OutputStream
-            IoKit.closeQuietly(xmlenc);
         }
     }
 
     /**
-     * XML转Java Bean 如果XML根节点只有一个，且节点名和Bean的名称一致，则直接转换子节点
+     * Converts an XML node to a JavaBean.
      *
-     * @param <T>       bean类型
-     * @param node      XML节点
-     * @param beanClass bean类
-     * @return beans
+     * @param <T>       The bean type.
+     * @param node      The XML node.
+     * @param beanClass The bean class.
+     * @return The bean instance.
      */
     public static <T> T xmlToBean(final Node node, final Class<T> beanClass) {
         return xmlToBean(node, beanClass, null);
     }
 
     /**
-     * XML转Java Bean 如果XML根节点只有一个，且节点名和Bean的名称一致，则直接转换子节点
+     * Converts an XML node to a JavaBean.
      *
-     * @param <T>         bean类型
-     * @param node        XML节点
-     * @param beanClass   bean类
-     * @param copyOptions 拷贝选线，可选是否忽略错误等
-     * @return bean
+     * @param <T>         The bean type.
+     * @param node        The XML node.
+     * @param beanClass   The bean class.
+     * @param copyOptions Copy options.
+     * @return The bean instance.
      */
     public static <T> T xmlToBean(final Node node, final Class<T> beanClass, final CopyOptions copyOptions) {
         return XmlMapper.of(node).toBean(beanClass, copyOptions);
     }
 
     /**
-     * XML格式字符串转换为Map
+     * Converts an XML string to a `Map`.
      *
-     * @param xmlStr XML字符串
-     * @return XML数据转换后的Map
+     * @param xmlStr The XML string.
+     * @return The resulting map.
      */
     public static Map<String, Object> xmlToMap(final String xmlStr) {
         return xmlToMap(xmlStr, new LinkedHashMap<>());
     }
 
     /**
-     * XML格式字符串转换为Map 只支持第一级别的XML，不支持多级XML
+     * Converts an XML string to a `Map`.
      *
-     * @param xmlStr XML字符串
-     * @param result 结果Map类型
-     * @return XML数据转换后的Map
+     * @param xmlStr The XML string.
+     * @param result The map to populate.
+     * @return The resulting map.
      */
     public static Map<String, Object> xmlToMap(final String xmlStr, final Map<String, Object> result) {
         final Document doc = parseXml(xmlStr);
         final Element root = getRootElement(doc);
         root.normalize();
-
         return xmlToMap(root, result);
     }
 
     /**
-     * XML格式字符串转换为Map
+     * Converts an XML node to a `Map`.
      *
-     * @param node XML节点
-     * @return XML数据转换后的Map
+     * @param node The XML node.
+     * @return The resulting map.
      */
     public static Map<String, Object> xmlToMap(final Node node) {
         return xmlToMap(node, new LinkedHashMap<>());
     }
 
     /**
-     * XML节点转换为Map
+     * Converts an XML node to a `Map`.
      *
-     * @param node   XML节点
-     * @param result 结果Map类型
-     * @return XML数据转换后的Map
+     * @param node   The XML node.
+     * @param result The map to populate.
+     * @return The resulting map.
      */
     public static Map<String, Object> xmlToMap(final Node node, final Map<String, Object> result) {
         XmlMapper.of(node).toMap(result);
@@ -638,65 +615,57 @@ public class XmlKit {
     }
 
     /**
-     * 将Map转换为XML格式的字符串
+     * Converts a `Map` to an XML string.
      *
-     * @param data Map类型数据
-     * @return XML格式的字符串
+     * @param data The map data.
+     * @return The XML string.
      */
     public static String mapToXmlString(final Map<?, ?> data) {
         return toString(mapToXml(data, "xml"));
     }
 
     /**
-     * 将Map转换为XML格式的字符串 当{@code omitXmlDeclaration}为{@code true}时，表示忽略xml Declaration，即
-     * 
-     * <pre>{@code
-     *     <?xml version="1.0" encoding="utf-8"?>
-     * }</pre>
+     * Converts a `Map` to an XML string.
      *
-     * @param data               Map类型数据
-     * @param omitXmlDeclaration 是否忽略 xml Declaration
-     * @return XML格式的字符串
+     * @param data               The map data.
+     * @param omitXmlDeclaration If `true`, omits the XML declaration.
+     * @return The XML string.
      */
     public static String mapToXmlString(final Map<?, ?> data, final boolean omitXmlDeclaration) {
         return toString(mapToXml(data, "xml"), Charset.UTF_8, false, omitXmlDeclaration);
     }
 
     /**
-     * 将Map转换为XML格式的字符串
+     * Converts a `Map` to an XML string with a specified root name.
      *
-     * @param data     Map类型数据
-     * @param rootName 根节点名
-     * @return XML格式的字符串
+     * @param data     The map data.
+     * @param rootName The root element name.
+     * @return The XML string.
      */
     public static String mapToXmlString(final Map<?, ?> data, final String rootName) {
         return toString(mapToXml(data, rootName));
     }
 
     /**
-     * 将Map转换为XML格式的字符串
+     * Converts a `Map` to an XML string with a specified root name and namespace.
      *
-     * @param data      Map类型数据
-     * @param rootName  根节点名
-     * @param namespace 命名空间，可以为null
-     * @return XML格式的字符串
+     * @param data      The map data.
+     * @param rootName  The root element name.
+     * @param namespace The namespace URI.
+     * @return The XML string.
      */
     public static String mapToXmlString(final Map<?, ?> data, final String rootName, final String namespace) {
         return toString(mapToXml(data, rootName, namespace));
     }
 
     /**
-     * 将Map转换为XML格式的字符串 当{@code omitXmlDeclaration}为{@code true}时，表示忽略xml Declaration，即删掉
-     * 
-     * <pre>{@code
-     *     <?xml version="1.0" encoding="utf-8"?>
-     * }</pre>
+     * Converts a `Map` to an XML string.
      *
-     * @param data               Map类型数据
-     * @param rootName           根节点名
-     * @param namespace          命名空间，可以为null
-     * @param omitXmlDeclaration 是否忽略 xml Declaration
-     * @return XML格式的字符串
+     * @param data               The map data.
+     * @param rootName           The root element name.
+     * @param namespace          The namespace URI.
+     * @param omitXmlDeclaration If `true`, omits the XML declaration.
+     * @return The XML string.
      */
     public static String mapToXmlString(
             final Map<?, ?> data,
@@ -707,18 +676,14 @@ public class XmlKit {
     }
 
     /**
-     * 将Map转换为XML格式的字符串 当{@code omitXmlDeclaration}为{@code true}时，表示忽略xml Declaration，即删掉
-     * 
-     * <pre>{@code
-     *     <?xml version="1.0" encoding="utf-8"?>
-     * }</pre>
+     * Converts a `Map` to an XML string.
      *
-     * @param data               Map类型数据
-     * @param rootName           根节点名
-     * @param namespace          命名空间，可以为null
-     * @param isPretty           是否格式化输出
-     * @param omitXmlDeclaration 是否忽略 xml Declaration
-     * @return XML格式的字符串
+     * @param data               The map data.
+     * @param rootName           The root element name.
+     * @param namespace          The namespace URI.
+     * @param isPretty           If `true`, formats the output.
+     * @param omitXmlDeclaration If `true`, omits the XML declaration.
+     * @return The XML string.
      */
     public static String mapToXmlString(
             final Map<?, ?> data,
@@ -730,19 +695,15 @@ public class XmlKit {
     }
 
     /**
-     * 将Map转换为XML格式的字符串 当{@code omitXmlDeclaration}为{@code true}时，表示忽略xml Declaration，即删掉
-     * 
-     * <pre>{@code
-     *     <?xml version="1.0" encoding="utf-8"?>
-     * }</pre>
+     * Converts a `Map` to an XML string.
      *
-     * @param data               Map类型数据
-     * @param rootName           根节点名
-     * @param namespace          命名空间，可以为null
-     * @param charset            编码
-     * @param isPretty           是否格式化输出
-     * @param omitXmlDeclaration 是否忽略 xml Declaration
-     * @return XML格式的字符串
+     * @param data               The map data.
+     * @param rootName           The root element name.
+     * @param namespace          The namespace URI.
+     * @param charset            The character set.
+     * @param isPretty           If `true`, formats the output.
+     * @param omitXmlDeclaration If `true`, omits the XML declaration.
+     * @return The XML string.
      */
     public static String mapToXmlString(
             final Map<?, ?> data,
@@ -755,60 +716,59 @@ public class XmlKit {
     }
 
     /**
-     * 将Map转换为XML
+     * Converts a `Map` to an XML `Document`.
      *
-     * @param data     Map类型数据
-     * @param rootName 根节点名
-     * @return XML
+     * @param data     The map data.
+     * @param rootName The root element name.
+     * @return The XML `Document`.
      */
     public static Document mapToXml(final Map<?, ?> data, final String rootName) {
         return mapToXml(data, rootName, null);
     }
 
     /**
-     * 将Map转换为XML
+     * Converts a `Map` to an XML `Document`.
      *
-     * @param data      Map类型数据
-     * @param rootName  根节点名
-     * @param namespace 命名空间，可以为null
-     * @return XML
+     * @param data      The map data.
+     * @param rootName  The root element name.
+     * @param namespace The namespace URI.
+     * @return The XML `Document`.
      */
     public static Document mapToXml(final Map<?, ?> data, final String rootName, final String namespace) {
         final Document doc = createXml();
         final Element root = appendChild(doc, rootName, namespace);
-
         appendMap(doc, root, data);
         return doc;
     }
 
     /**
-     * 将Bean转换为XML
+     * Converts a JavaBean to an XML `Document`.
      *
-     * @param bean Bean对象
-     * @return XML
+     * @param bean The bean object.
+     * @return The XML `Document`.
      */
     public static Document beanToXml(final Object bean) {
         return beanToXml(bean, null);
     }
 
     /**
-     * 将Bean转换为XML
+     * Converts a JavaBean to an XML `Document`.
      *
-     * @param bean      Bean对象
-     * @param namespace 命名空间，可以为null
-     * @return XML
+     * @param bean      The bean object.
+     * @param namespace The namespace URI.
+     * @return The XML `Document`.
      */
     public static Document beanToXml(final Object bean, final String namespace) {
         return beanToXml(bean, namespace, false);
     }
 
     /**
-     * 将Bean转换为XML
+     * Converts a JavaBean to an XML `Document`.
      *
-     * @param bean       Bean对象
-     * @param namespace  命名空间，可以为null
-     * @param ignoreNull 忽略值为{@code null}的属性
-     * @return XML
+     * @param bean       The bean object.
+     * @param namespace  The namespace URI.
+     * @param ignoreNull If `true`, ignores `null` properties.
+     * @return The XML `Document`.
      */
     public static Document beanToXml(final Object bean, final String namespace, final boolean ignoreNull) {
         if (null == bean) {
@@ -818,33 +778,33 @@ public class XmlKit {
     }
 
     /**
-     * 给定节点是否为{@link Element} 类型节点
+     * Checks if a `Node` is an `Element`.
      *
-     * @param node 节点
-     * @return 是否为 {@link Element} 类型节点
+     * @param node The node.
+     * @return `true` if it is an `Element`.
      */
     public static boolean isElement(final Node node) {
         return (null != node) && Node.ELEMENT_NODE == node.getNodeType();
     }
 
     /**
-     * 在已有节点上创建子节点
+     * Appends a child element to a node.
      *
-     * @param node    节点
-     * @param tagName 标签名
-     * @return 子节点
+     * @param node    The parent node.
+     * @param tagName The tag name of the new element.
+     * @return The new child element.
      */
     public static Element appendChild(final Node node, final String tagName) {
         return appendChild(node, tagName, null);
     }
 
     /**
-     * 在已有节点上创建子节点
+     * Appends a child element with a namespace to a node.
      *
-     * @param node      节点
-     * @param tagName   标签名
-     * @param namespace 命名空间，无传null
-     * @return 子节点
+     * @param node      The parent node.
+     * @param tagName   The tag name.
+     * @param namespace The namespace URI.
+     * @return The new child element.
      */
     public static Element appendChild(final Node node, final String tagName, final String namespace) {
         final Document doc = getOwnerDocument(node);
@@ -855,42 +815,39 @@ public class XmlKit {
     }
 
     /**
-     * 创建文本子节点
+     * Appends a text node to a parent node.
      *
-     * @param node 节点
-     * @param text 文本
-     * @return 子节点
+     * @param node The parent node.
+     * @param text The text content.
+     * @return The new text node.
      */
     public static Node appendText(final Node node, final CharSequence text) {
         return appendText(getOwnerDocument(node), node, text);
     }
 
     /**
-     * 追加数据子节点，可以是Map、集合、文本
+     * Appends data (Map, Collection, or text) as child nodes.
      *
-     * @param node 节点
-     * @param data 数据
+     * @param node The parent node.
+     * @param data The data to append.
      */
     public static void append(final Node node, final Object data) {
         append(getOwnerDocument(node), node, data);
     }
 
     /**
-     * 追加数据子节点，可以是Map、集合、文本
+     * Appends data as child nodes.
      *
-     * @param doc  {@link Document}
-     * @param node 节点
-     * @param data 数据
+     * @param doc  The owner `Document`.
+     * @param node The parent node.
+     * @param data The data.
      */
     private static void append(final Document doc, final Node node, final Object data) {
         if (data instanceof Map) {
-            // 如果值依旧为map，递归继续
             appendMap(doc, node, (Map) data);
         } else if (data instanceof Iterator) {
-            // 如果值依旧为map，递归继续
             appendIterator(doc, node, (Iterator) data);
         } else if (data instanceof Iterable) {
-            // 如果值依旧为map，递归继续
             appendIterator(doc, node, ((Iterable) data).iterator());
         } else {
             appendText(doc, node, data.toString());
@@ -898,11 +855,11 @@ public class XmlKit {
     }
 
     /**
-     * 追加Map数据子节点
+     * Appends map data as child elements.
      *
-     * @param doc  {@link Document}
-     * @param node 当前节点
-     * @param data Map类型数据
+     * @param doc  The owner `Document`.
+     * @param node The parent node.
+     * @param data The map data.
      */
     private static void appendMap(final Document doc, final Node node, final Map data) {
         data.forEach((key, value) -> {
@@ -916,11 +873,11 @@ public class XmlKit {
     }
 
     /**
-     * 追加集合节点
+     * Appends collection data as child nodes.
      *
-     * @param doc  {@link Document}
-     * @param node 节点
-     * @param data 数据
+     * @param doc  The owner `Document`.
+     * @param node The parent node.
+     * @param data The iterator data.
      */
     private static void appendIterator(final Document doc, final Node node, final Iterator data) {
         final Node parentNode = node.getParentNode();
@@ -940,12 +897,12 @@ public class XmlKit {
     }
 
     /**
-     * 追加文本节点
+     * Appends a text node.
      *
-     * @param doc  {@link Document}
-     * @param node 节点
-     * @param text 文本内容
-     * @return 增加的子节点，即Text节点
+     * @param doc  The owner `Document`.
+     * @param node The parent node.
+     * @param text The text content.
+     * @return The new text node.
      */
     private static Node appendText(final Document doc, final Node node, final CharSequence text) {
         return node.appendChild(doc.createTextNode(StringKit.toStringOrEmpty(text)));

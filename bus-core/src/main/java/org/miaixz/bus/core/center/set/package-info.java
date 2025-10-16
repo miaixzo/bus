@@ -26,7 +26,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * {@link java.util.Set}相关封装
+ * Provides various encapsulations and utility classes related to {@link java.util.Set}.
  *
  * @author Kimi Liu
  * @since Java 17+

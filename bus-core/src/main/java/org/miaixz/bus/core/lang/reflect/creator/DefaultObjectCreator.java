@@ -35,22 +35,31 @@ import org.miaixz.bus.core.xyz.ClassKit;
 import org.miaixz.bus.core.xyz.LookupKit;
 
 /**
- * 默认对象实例化器 通过传入对象类型和构造函数的参数，调用对应的构造方法创建对象。
+ * Default object instantiator. This class creates objects by calling the corresponding constructor based on the object
+ * type and constructor parameters.
  *
- * @param <T> 对象类型
+ * @param <T> The type of the object to be created.
  * @author Kimi Liu
  * @since Java 17+
  */
 public class DefaultObjectCreator<T> implements ObjectCreator<T> {
 
+    /**
+     * The method handle for the constructor to be invoked.
+     */
     final MethodHandle constructor;
+    /**
+     * The arguments to be passed to the constructor.
+     */
     final Object[] args;
 
     /**
-     * 构造
+     * Constructs a new {@code DefaultObjectCreator}.
      *
-     * @param clazz 实例化的类
-     * @param args  构造参数，无参数空
+     * @param clazz The class to be instantiated. Must not be {@code null}.
+     * @param args  The constructor arguments. Can be empty if no-arg constructor is used.
+     * @throws IllegalArgumentException if {@code clazz} is {@code null}.
+     * @throws NullPointerException     if a suitable constructor is not found for the given class and arguments.
      */
     public DefaultObjectCreator(final Class<T> clazz, final Object... args) {
         final Class<?>[] paramTypes = ClassKit.getClasses(args);
@@ -60,28 +69,33 @@ public class DefaultObjectCreator<T> implements ObjectCreator<T> {
     }
 
     /**
-     * 创建默认的对象实例化器
+     * Creates a default object instantiator for a class specified by its full class name.
      *
-     * @param fullClassName 类名全程
-     * @param <T>           对象类型
-     * @return DefaultObjectCreator
+     * @param fullClassName The fully qualified name of the class to instantiate.
+     * @param <T>           The type of the object to be created.
+     * @return A new {@code DefaultObjectCreator} instance.
      */
     public static <T> DefaultObjectCreator<T> of(final String fullClassName) {
         return of(ClassKit.loadClass(fullClassName));
     }
 
     /**
-     * 创建默认的对象实例化器
+     * Creates a default object instantiator for the given class and constructor arguments.
      *
-     * @param clazz 实例化的类
-     * @param args  构造参数，无参数空
-     * @param <T>   对象类型
-     * @return DefaultObjectCreator
+     * @param clazz The class to be instantiated.
+     * @param args  The constructor arguments. Can be empty if no-arg constructor is used.
+     * @param <T>   The type of the object to be created.
+     * @return A new {@code DefaultObjectCreator} instance.
      */
     public static <T> DefaultObjectCreator<T> of(final Class<T> clazz, final Object... args) {
         return new DefaultObjectCreator<>(clazz, args);
     }
 
+    /**
+     * Creates a new instance of the object using the configured constructor and arguments.
+     *
+     * @return A new instance of type {@code T}.
+     */
     @Override
     public T create() {
         return MethodInvoker.invokeHandle(constructor, args);

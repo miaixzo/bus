@@ -30,7 +30,7 @@ package org.miaixz.bus.pay.metric.wechat.api.v3;
 import org.miaixz.bus.pay.Matcher;
 
 /**
- * 微信支付 v3 接口-支付有礼接口
+ * WeChat Pay V3 API interfaces for "Pay Gift Activity".
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,64 +38,74 @@ import org.miaixz.bus.pay.Matcher;
 public enum PayGiftActivityApi implements Matcher {
 
     /**
-     * 创建全场满额送活动
+     * Create a full-amount gift activity.
      */
-    PAY_GIFT_ACTIVITY("/v3/marketing/paygiftactivity/unique-threshold-activity", "创建全场满额送活动"),
+    PAY_GIFT_ACTIVITY("/v3/marketing/paygiftactivity/unique-threshold-activity", "Create a full-amount gift activity"),
 
     /**
-     * 查询活动详情接口
+     * Query activity details interface.
      */
-    PAY_GIFT_ACTIVITY_INFO("/v3/marketing/paygiftactivity/activities/%s", "查询活动详情接口"),
+    PAY_GIFT_ACTIVITY_INFO("/v3/marketing/paygiftactivity/activities/%s", "Query activity details interface"),
 
     /**
-     * 查询活动发券商户号
+     * Query activity coupon issuing merchants.
      */
-    PAY_GIFT_ACTIVITY_QUERY_MERCHANTS("/v3/marketing/paygiftactivity/activities/%s/merchants", "查询活动发券商户号"),
+    PAY_GIFT_ACTIVITY_QUERY_MERCHANTS("/v3/marketing/paygiftactivity/activities/%s/merchants",
+            "Query activity coupon issuing merchants"),
 
     /**
-     * 查询活动指定商品列表
+     * Query activity designated product list.
      */
-    PAY_GIFT_ACTIVITY_QUERY_GOODS("/v3/marketing/paygiftactivity/activities/%s/goods", "查询活动指定商品列表"),
+    PAY_GIFT_ACTIVITY_QUERY_GOODS("/v3/marketing/paygiftactivity/activities/%s/goods",
+            "Query activity designated product list"),
 
     /**
-     * 终止活动
+     * Terminate activity.
      */
-    PAY_GIFT_ACTIVITY_TERMINATE("/v3/marketing/paygiftactivity/activities/%s/terminate", "终止活动"),
+    PAY_GIFT_ACTIVITY_TERMINATE("/v3/marketing/paygiftactivity/activities/%s/terminate", "Terminate activity"),
 
     /**
-     * 新增活动发券商户号
+     * Add activity coupon issuing merchants.
      */
-    PAY_GIFT_ACTIVITY_ADD_MERCHANTS("/v3/marketing/paygiftactivity/activities/%s/merchants/add", "新增活动发券商户号"),
+    PAY_GIFT_ACTIVITY_ADD_MERCHANTS("/v3/marketing/paygiftactivity/activities/%s/merchants/add",
+            "Add activity coupon issuing merchants"),
 
     /**
-     * 获取支付有礼活动列表
+     * Get pay gift activity list.
      */
-    PAY_GIFT_ACTIVITY_LIST("/v3/marketing/paygiftactivity/activities", "获取支付有礼活动列表"),
+    PAY_GIFT_ACTIVITY_LIST("/v3/marketing/paygiftactivity/activities", "Get pay gift activity list"),
 
     /**
-     * 删除活动发券商户号
+     * Delete activity coupon issuing merchants.
      */
-    PAY_GIFT_ACTIVITY_DELETE_MERCHANTS("/v3/marketing/paygiftactivity/activities/%s/merchants/delete", "删除活动发券商户号");
+    PAY_GIFT_ACTIVITY_DELETE_MERCHANTS("/v3/marketing/paygiftactivity/activities/%s/merchants/delete",
+            "Delete activity coupon issuing merchants");
 
     /**
-     * 接口方法
+     * The API method.
      */
     private final String method;
 
     /**
-     * 接口描述
+     * The API description.
      */
     private final String desc;
 
+    /**
+     * Constructs a new PayGiftActivityApi enum.
+     *
+     * @param method The API method.
+     * @param desc   The API description.
+     */
     PayGiftActivityApi(String method, String desc) {
         this.method = method;
         this.desc = desc;
     }
 
     /**
-     * 交易类型
+     * Gets the transaction type.
      *
-     * @return the string
+     * @return The transaction type.
      */
     @Override
     public String type() {
@@ -103,9 +113,9 @@ public enum PayGiftActivityApi implements Matcher {
     }
 
     /**
-     * 类型描述
+     * Gets the type description.
      *
-     * @return the string
+     * @return The type description.
      */
     @Override
     public String desc() {
@@ -113,9 +123,9 @@ public enum PayGiftActivityApi implements Matcher {
     }
 
     /**
-     * 接口方法
+     * Gets the API method.
      *
-     * @return the string
+     * @return The API method.
      */
     @Override
     public String method() {

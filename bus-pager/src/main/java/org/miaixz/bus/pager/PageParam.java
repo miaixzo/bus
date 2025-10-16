@@ -28,7 +28,7 @@
 package org.miaixz.bus.pager;
 
 /**
- * 分页参数基类，继承该类以便更直接地控制分页参数。
+ * Base class for pagination parameters. Extend this class to directly control pagination parameters.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -36,29 +36,29 @@ package org.miaixz.bus.pager;
 public class PageParam implements Paging {
 
     /**
-     * 页码
+     * The current page number.
      */
     private Integer pageNo;
     /**
-     * 每页记录数
+     * The number of records per page.
      */
     private Integer pageSize;
     /**
-     * 排序字段
+     * The order by clause for sorting.
      */
     private String orderBy;
 
     /**
-     * 默认构造函数。
+     * Default constructor for PageParam.
      */
     public PageParam() {
     }
 
     /**
-     * 构造函数，指定页码和每页记录数。
+     * Constructs a PageParam with a specified page number and page size.
      *
-     * @param pageNo   页码（从1开始）
-     * @param pageSize 每页记录数
+     * @param pageNo   the page number (starts from 1)
+     * @param pageSize the number of records per page
      */
     public PageParam(Integer pageNo, Integer pageSize) {
         this.pageNo = pageNo;
@@ -66,11 +66,11 @@ public class PageParam implements Paging {
     }
 
     /**
-     * 构造函数，指定页码、每页记录数和排序字段。
+     * Constructs a PageParam with a specified page number, page size, and order by clause.
      *
-     * @param pageNo   页码（从1开始）
-     * @param pageSize 每页记录数
-     * @param orderBy  排序字段
+     * @param pageNo   the page number (starts from 1)
+     * @param pageSize the number of records per page
+     * @param orderBy  the order by clause for sorting
      */
     public PageParam(Integer pageNo, Integer pageSize, String orderBy) {
         this.pageNo = pageNo;
@@ -79,9 +79,9 @@ public class PageParam implements Paging {
     }
 
     /**
-     * 获取页码。
+     * Retrieves the current page number.
      *
-     * @return 页码
+     * @return the page number
      */
     @Override
     public Integer getPageNo() {
@@ -89,18 +89,18 @@ public class PageParam implements Paging {
     }
 
     /**
-     * 设置页码。
+     * Sets the current page number.
      *
-     * @param pageNo 页码
+     * @param pageNo the page number to set
      */
     public void setPageNo(Integer pageNo) {
         this.pageNo = pageNo;
     }
 
     /**
-     * 获取每页记录数。
+     * Retrieves the number of records per page.
      *
-     * @return 每页记录数
+     * @return the page size
      */
     @Override
     public Integer getPageSize() {
@@ -108,18 +108,18 @@ public class PageParam implements Paging {
     }
 
     /**
-     * 设置每页记录数。
+     * Sets the number of records per page.
      *
-     * @param pageSize 每页记录数
+     * @param pageSize the page size to set
      */
     public void setPageSize(Integer pageSize) {
         this.pageSize = pageSize;
     }
 
     /**
-     * 获取排序字段。
+     * Retrieves the order by clause.
      *
-     * @return 排序字段
+     * @return the order by clause
      */
     @Override
     public String getOrderBy() {
@@ -127,9 +127,9 @@ public class PageParam implements Paging {
     }
 
     /**
-     * 设置排序字段。
+     * Sets the order by clause.
      *
-     * @param orderBy 排序字段
+     * @param orderBy the order by clause to set
      */
     public void setOrderBy(String orderBy) {
         this.orderBy = orderBy;

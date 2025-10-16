@@ -31,10 +31,10 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.miaixz.bus.core.lang.exception.AlreadyExistsException;
-import org.miaixz.bus.core.lang.exception.InternalException;
 
 /**
- * 错误码接口，定义错误码和错误信息的获取与注册方法，用于统一管理系统中的错误码。
+ * An interface for defining error codes and their corresponding messages. It provides methods for retrieving,
+ * registering, and managing error codes in a unified manner.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,28 +42,30 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 public interface Errors {
 
     /**
-     * 全局错误码缓存，使用并发安全的ConcurrentHashMap存储所有注册的错误码条目。 键为错误码（String），值为错误码条目（Entry）。
+     * A global cache for storing all registered error code entries. It uses a thread-safe {@link ConcurrentHashMap}
+     * where the key is the error code (String) and the value is the {@link Entry} object.
      */
     Map<String, Entry> ERRORS_CACHE = new ConcurrentHashMap<>();
 
     /**
-     * 获取错误码。
+     * Gets the unique error code.
      *
-     * @return 错误码字符串，用于唯一标识一个错误
+     * @return The error code string, used to uniquely identify an error.
      */
     String getKey();
 
     /**
-     * 获取错误信息。
+     * Gets the detailed error message.
      *
-     * @return 错误信息字符串，描述错误的详细信息
+     * @return The error message string, describing the error in detail.
      */
     String getValue();
 
     /**
-     * 将错误码注册到全局缓存中。 如果错误码已存在于缓存中，直接退出，防止重复注册。
+     * Registers the error code into the global cache. If the error code already exists in the cache, this method will
+     * throw an exception to prevent duplicates.
      *
-     * @throws InternalException 如果尝试注册重复的错误码
+     * @throws AlreadyExistsException if attempting to register a duplicate error code.
      */
     default void register() {
         if (ERRORS_CACHE.containsKey(getKey())) {
@@ -73,40 +75,45 @@ public interface Errors {
     }
 
     /**
-     * 检查全局缓存中是否包含指定的错误码。
+     * Checks if the global cache contains the specified error code.
      *
-     * @param code 待检查的错误码
-     * @return true 表示缓存中包含该错误码，false 表示不包含
+     * @param code The error code to check.
+     * @return {@code true} if the cache contains the error code, {@code false} otherwise.
      */
     static boolean contains(String code) {
         return ERRORS_CACHE.containsKey(code);
     }
 
     /**
-     * 从全局缓存中获取指定错误码的条目。
+     * Retrieves the error code entry for the specified key from the global cache.
      *
-     * @param key 错误码
-     * @return 对应的错误码条目（Entry），若不存在则返回 null
+     * @param key The error code.
+     * @return The corresponding {@link Entry} object, or {@code null} if it does not exist.
      */
     static Entry require(String key) {
         return ERRORS_CACHE.get(key);
     }
 
     /**
-     * 错误码条目内部类，存储错误码和错误信息，实现ErrorCode接口。
+     * An inner class representing an error code entry, which stores the error code and message. This class implements
+     * the {@link Errors} interface.
      */
     class Entry implements Errors {
 
-        /** 错误码 */
+        /**
+         * The unique error code.
+         */
         private final String key;
-        /** 错误信息 */
+        /**
+         * The detailed error message.
+         */
         private final String value;
 
         /**
-         * 构造错误码条目。
+         * Constructs a new error code entry.
          *
-         * @param key   错误码
-         * @param value 错误信息
+         * @param key   The error code.
+         * @param value The error message.
          */
         public Entry(String key, String value) {
             this.key = key;
@@ -114,9 +121,9 @@ public interface Errors {
         }
 
         /**
-         * 获取错误码。
+         * Gets the unique error code.
          *
-         * @return 错误码字符串
+         * @return The error code string.
          */
         @Override
         public String getKey() {
@@ -124,9 +131,9 @@ public interface Errors {
         }
 
         /**
-         * 获取错误信息。
+         * Gets the detailed error message.
          *
-         * @return 错误信息字符串
+         * @return The error message string.
          */
         @Override
         public String getValue() {

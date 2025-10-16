@@ -30,21 +30,28 @@ package org.miaixz.bus.core.center.date.culture.cn.climate;
 import org.miaixz.bus.core.center.date.culture.Replenish;
 
 /**
- * 七十二候
+ * Represents a specific day within a "Hou" (候) or Pentad period, part of the Seventy-Two Pentads (七十二候). This class
+ * extends {@link Replenish} to associate a specific day index with a {@link Climate} instance.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class ClimateDay extends Replenish {
 
+    /**
+     * Constructs a {@code ClimateDay} instance with the specified {@link Climate} and day index.
+     *
+     * @param climate  The {@link Climate} instance representing the Pentad.
+     * @param dayIndex The index of the day within the Pentad.
+     */
     public ClimateDay(Climate climate, int dayIndex) {
         super(climate, dayIndex);
     }
 
     /**
-     * 候
+     * Gets the {@link Climate} instance associated with this Climate Day.
      *
-     * @return 候
+     * @return The {@link Climate} instance.
      */
     public Climate getClimate() {
         return (Climate) tradition;

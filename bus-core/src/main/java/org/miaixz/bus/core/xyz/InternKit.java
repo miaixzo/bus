@@ -32,7 +32,7 @@ import org.miaixz.bus.core.lang.intern.StringIntern;
 import org.miaixz.bus.core.lang.intern.WeakIntern;
 
 /**
- * 规范化对象生成工具
+ * Utility class for creating canonical object generators (Interners).
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -40,19 +40,19 @@ import org.miaixz.bus.core.lang.intern.WeakIntern;
 public class InternKit {
 
     /**
-     * 创建WeakHshMap实现的字符串规范化器
+     * Creates an interner implemented with `WeakHashMap`.
      *
-     * @param <T> 规范对象的类型
-     * @return {@link Intern}
+     * @param <T> The type of the object to intern.
+     * @return A new {@link Intern} instance.
      */
     public static <T> Intern<T> ofWeak() {
         return new WeakIntern<>();
     }
 
     /**
-     * 创建JDK默认实现的字符串规范化器
+     * Creates an interner that uses the default JDK `String.intern()` method.
      *
-     * @return {@link Intern}
+     * @return A new {@link Intern} instance for strings.
      * @see String#intern()
      */
     public static Intern<String> ofString() {
@@ -60,10 +60,10 @@ public class InternKit {
     }
 
     /**
-     * 创建字符串规范化器
+     * Creates a string interner.
      *
-     * @param isWeak 是否创建使用WeakHashMap实现的Interner
-     * @return {@link Intern}
+     * @param isWeak If `true`, creates an interner implemented with `WeakHashMap`.
+     * @return A new {@link Intern} instance.
      */
     public static Intern<String> of(final boolean isWeak) {
         return isWeak ? ofWeak() : ofString();

@@ -27,16 +27,6 @@
 */
 package org.miaixz.bus.image.plugin;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.UID;
@@ -52,21 +42,64 @@ import org.miaixz.bus.image.nimble.codec.Decompressor;
 import org.miaixz.bus.image.nimble.codec.Transcoder;
 import org.miaixz.bus.image.nimble.codec.TransferSyntaxType;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 /**
+ * The {@code Dcm2Dcm} class provides functionality to transcode DICOM files from one transfer syntax to another. It
+ * supports both modern transcoding via {@link Transcoder} and a legacy approach.
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class Dcm2Dcm {
 
+    /**
+     * List of compression parameters.
+     */
     private final List<Property> params = new ArrayList<>();
+    /**
+     * The target Transfer Syntax UID.
+     */
     private String tsuid;
+    /**
+     * The target Transfer Syntax type.
+     */
     private TransferSyntaxType tstype;
+    /**
+     * Flag to retain the original File Meta Information.
+     */
     private boolean retainfmi;
+    /**
+     * Flag to exclude the File Meta Information from the output.
+     */
     private boolean nofmi;
+    /**
+     * Flag to use the legacy transcoding method.
+     */
     private boolean legacy;
+    /**
+     * Encoding options for writing the DICOM file.
+     */
     private ImageEncodingOptions encOpts = ImageEncodingOptions.DEFAULT;
+    /**
+     * The maximum number of threads to use for transcoding.
+     */
     private int maxThreads = 1;
 
+    /**
+     * Converts a string to a more specific type (Double, Boolean, or String).
+     *
+     * @param s the input string.
+     * @return the converted value.
+     */
     private static Object toValue(String s) {
         try {
             return Double.valueOf(s);
@@ -75,6 +108,12 @@ public class Dcm2Dcm {
         }
     }
 
+    /**
+     * Sets the destination Transfer Syntax UID.
+     *
+     * @param uid the Transfer Syntax UID string.
+     * @throws IllegalArgumentException if the UID is not a supported Transfer Syntax.
+     */
     public final void setTransferSyntax(String uid) {
         this.tsuid = uid;
         this.tstype = TransferSyntaxType.forUID(uid);
@@ -83,32 +122,71 @@ public class Dcm2Dcm {
         }
     }
 
+    /**
+     * Sets whether to retain the original File Meta Information. If true, the FMI is updated with the new Transfer
+     * Syntax.
+     *
+     * @param retainfmi true to retain and update FMI, false otherwise.
+     */
     public final void setRetainFileMetaInformation(boolean retainfmi) {
         this.retainfmi = retainfmi;
     }
 
+    /**
+     * Sets whether to write the output DICOM file without File Meta Information.
+     *
+     * @param nofmi true to exclude FMI, false otherwise.
+     */
     public final void setWithoutFileMetaInformation(boolean nofmi) {
         this.nofmi = nofmi;
     }
 
+    /**
+     * Sets whether to use the legacy transcoding implementation.
+     *
+     * @param legacy true to use the legacy method, false to use the modern {@link Transcoder}.
+     */
     public void setLegacy(boolean legacy) {
         this.legacy = legacy;
     }
 
+    /**
+     * Sets the encoding options for writing the DICOM file.
+     *
+     * @param encOpts the encoding options.
+     */
     public final void setEncodingOptions(ImageEncodingOptions encOpts) {
         this.encOpts = encOpts;
     }
 
+    /**
+     * Adds a compression parameter.
+     *
+     * @param name  the parameter name.
+     * @param value the parameter value.
+     */
     public void addCompressionParam(String name, Object value) {
         params.add(new Property(name, value));
     }
 
+    /**
+     * Sets the maximum number of threads to use for concurrent transcoding.
+     *
+     * @param maxThreads the number of threads. Must be greater than 0.
+     * @throws IllegalArgumentException if maxThreads is not positive.
+     */
     public void setMaxThreads(int maxThreads) {
         if (maxThreads <= 0)
             throw new IllegalArgumentException("max-threads: " + maxThreads);
         this.maxThreads = maxThreads;
     }
 
+    /**
+     * Transcodes a list of source files or directories into a destination directory.
+     *
+     * @param srcList a list of source file/directory paths.
+     * @param dest    the destination directory.
+     */
     private void mtranscode(List<String> srcList, File dest) {
         ExecutorService executorService = maxThreads > 1 ? Executors.newFixedThreadPool(maxThreads) : null;
         for (String src : srcList) {
@@ -119,6 +197,13 @@ public class Dcm2Dcm {
         }
     }
 
+    /**
+     * Recursively transcodes a source file or directory.
+     *
+     * @param src      the source file or directory.
+     * @param dest     the destination file or directory.
+     * @param executer the executor service for concurrent processing.
+     */
     private void mtranscode(final File src, File dest, Executor executer) {
         if (src.isDirectory()) {
             dest.mkdir();
@@ -134,6 +219,12 @@ public class Dcm2Dcm {
         }
     }
 
+    /**
+     * Transcodes a single source file to a destination file.
+     *
+     * @param src  the source file.
+     * @param dest the destination file.
+     */
     private void transcode(File src, File dest) {
         try {
             if (legacy)
@@ -145,6 +236,13 @@ public class Dcm2Dcm {
         }
     }
 
+    /**
+     * Transcodes a DICOM file using a legacy approach involving manual decompression and compression.
+     *
+     * @param src  the source file.
+     * @param dest the destination file.
+     * @throws IOException if an I/O error occurs.
+     */
     public void transcodeLegacy(File src, File dest) throws IOException {
         Attributes fmi;
         Attributes dataset;
@@ -184,6 +282,13 @@ public class Dcm2Dcm {
         }
     }
 
+    /**
+     * Transcodes a DICOM file using the {@link Transcoder} class.
+     *
+     * @param src  the source file.
+     * @param dest the destination file.
+     * @throws IOException if an I/O error occurs or transcoding fails.
+     */
     public void transcodeWithTranscoder(File src, final File dest) throws IOException {
         try (Transcoder transcoder = new Transcoder(src)) {
             transcoder.setIncludeFileMetaInformation(!nofmi);
@@ -198,6 +303,13 @@ public class Dcm2Dcm {
         }
     }
 
+    /**
+     * Adjusts the JPEG Transfer Syntax based on the bits stored value.
+     *
+     * @param tsuid      the proposed Transfer Syntax UID.
+     * @param bitsStored the value of the Bits Stored (0028,0101) tag.
+     * @return the adjusted or original Transfer Syntax UID.
+     */
     private String adjustTransferSyntax(String tsuid, int bitsStored) {
         switch (tstype) {
             case JPEG_BASELINE:

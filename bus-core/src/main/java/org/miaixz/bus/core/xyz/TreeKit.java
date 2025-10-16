@@ -41,7 +41,7 @@ import org.miaixz.bus.core.tree.parser.DefaultNodeParser;
 import org.miaixz.bus.core.tree.parser.NodeParser;
 
 /**
- * 树工具类
+ * Tree utility class.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -49,58 +49,59 @@ import org.miaixz.bus.core.tree.parser.NodeParser;
 public class TreeKit {
 
     /**
-     * 构建单root节点树
+     * Builds a tree with a single root node.
      *
-     * @param list 源数据集合
-     * @return {@link MapTree}
+     * @param list The source data collection.
+     * @return A {@link MapTree}.
      */
     public static MapTree<Integer> buildSingle(final Iterable<TreeNode<Integer>> list) {
         return buildSingle(list, 0);
     }
 
     /**
-     * 树构建
+     * Builds a tree structure.
      *
-     * @param list 源数据集合
-     * @return List
+     * @param list The source data collection.
+     * @return A list of root nodes.
      */
     public static List<MapTree<Integer>> build(final Iterable<TreeNode<Integer>> list) {
         return build(list, 0);
     }
 
     /**
-     * 构建单root节点树 它会生成一个以指定ID为ID的空的节点，然后逐级增加子节点。
+     * Builds a tree with a single root node. It creates an empty node with the specified parent ID and then adds child
+     * nodes recursively.
      *
-     * @param <E>      ID类型
-     * @param list     源数据集合
-     * @param parentId 最顶层父id值 一般为 0 之类
-     * @return {@link MapTree}
+     * @param <E>      The type of the ID.
+     * @param list     The source data collection.
+     * @param parentId The ID of the parent for the top-level nodes (e.g., 0).
+     * @return A {@link MapTree}.
      */
     public static <E> MapTree<E> buildSingle(final Iterable<TreeNode<E>> list, final E parentId) {
         return buildSingle(list, parentId, NodeConfig.DEFAULT_CONFIG, new DefaultNodeParser<>());
     }
 
     /**
-     * 树构建
+     * Builds a tree structure.
      *
-     * @param <E>      ID类型
-     * @param list     源数据集合
-     * @param parentId 最顶层父id值 一般为 0 之类
-     * @return List
+     * @param <E>      The type of the ID.
+     * @param list     The source data collection.
+     * @param parentId The ID of the parent for the top-level nodes.
+     * @return A list of root nodes.
      */
     public static <E> List<MapTree<E>> build(final Iterable<TreeNode<E>> list, final E parentId) {
         return build(list, parentId, NodeConfig.DEFAULT_CONFIG, new DefaultNodeParser<>());
     }
 
     /**
-     * 构建单root节点树 它会将指定Id的节点作为根节点，如果这个节点不存在，则创建一个空节点，然后逐级增加子节点。
+     * Builds a tree with a single root node.
      *
-     * @param <T>        转换的实体 为数据源里的对象类型
-     * @param <E>        ID类型
-     * @param list       源数据集合
-     * @param parentId   最顶层父id值 一般为 0 之类
-     * @param nodeParser 转换器
-     * @return {@link MapTree}
+     * @param <T>        The type of the source data object.
+     * @param <E>        The type of the ID.
+     * @param list       The source data collection.
+     * @param parentId   The ID of the parent for the top-level nodes.
+     * @param nodeParser The parser to convert a data object to a tree node.
+     * @return A {@link MapTree}.
      */
     public static <T, E> MapTree<E> buildSingle(
             final Iterable<T> list,
@@ -110,14 +111,14 @@ public class TreeKit {
     }
 
     /**
-     * 树构建 你所有节点的ID都不应该重复，那你要构建一个列表形式的树结构，指定的这个rootId应该是首层节点的parentId，而非某个节点的id
+     * Builds a tree structure.
      *
-     * @param <T>        转换的实体 为数据源里的对象类型
-     * @param <E>        ID类型
-     * @param list       源数据集合
-     * @param parentId   最顶层父id值 一般为 0 之类
-     * @param nodeParser 转换器
-     * @return List
+     * @param <T>        The type of the source data object.
+     * @param <E>        The type of the ID.
+     * @param list       The source data collection.
+     * @param parentId   The ID of the parent for the top-level nodes.
+     * @param nodeParser The parser to convert a data object to a tree node.
+     * @return A list of root nodes.
      */
     public static <T, E> List<MapTree<E>> build(
             final Iterable<T> list,
@@ -127,62 +128,62 @@ public class TreeKit {
     }
 
     /**
-     * 树构建 你所有节点的ID都不应该重复，那你要构建一个列表形式的树结构，指定的这个rootId应该是首层节点的parentId，而非某个节点的id
+     * Builds a tree structure.
      *
-     * @param <T>        转换的实体 为数据源里的对象类型
-     * @param <E>        ID类型
-     * @param list       源数据集合
-     * @param rootId     最顶层父id值 一般为 0 之类
-     * @param NodeConfig 配置
-     * @param nodeParser 转换器
-     * @return List
+     * @param <T>        The type of the source data object.
+     * @param <E>        The type of the ID.
+     * @param list       The source data collection.
+     * @param rootId     The ID of the parent for the top-level nodes.
+     * @param nodeConfig The configuration for the tree nodes.
+     * @param nodeParser The parser to convert a data object to a tree node.
+     * @return A list of root nodes.
      */
     public static <T, E> List<MapTree<E>> build(
             final Iterable<T> list,
             final E rootId,
-            final NodeConfig NodeConfig,
+            final NodeConfig nodeConfig,
             final NodeParser<T, E> nodeParser) {
-        return buildSingle(list, rootId, NodeConfig, nodeParser).getChildren();
+        return buildSingle(list, rootId, nodeConfig, nodeParser).getChildren();
     }
 
     /**
-     * 构建单root节点树 它会生成一个以指定ID为ID的空的节点，然后逐级增加子节点。
+     * Builds a tree with a single root node.
      *
-     * @param <T>        转换的实体 为数据源里的对象类型
-     * @param <E>        ID类型
-     * @param list       源数据集合
-     * @param rootId     最顶层父id值 一般为 0 之类
-     * @param NodeConfig 配置
-     * @param nodeParser 转换器
-     * @return {@link MapTree}
+     * @param <T>        The type of the source data object.
+     * @param <E>        The type of the ID.
+     * @param list       The source data collection.
+     * @param rootId     The ID of the parent for the top-level nodes.
+     * @param nodeConfig The configuration for the tree nodes.
+     * @param nodeParser The parser to convert a data object to a tree node.
+     * @return A {@link MapTree}.
      */
     public static <T, E> MapTree<E> buildSingle(
             final Iterable<T> list,
             final E rootId,
-            final NodeConfig NodeConfig,
+            final NodeConfig nodeConfig,
             final NodeParser<T, E> nodeParser) {
-        return TreeBuilder.of(rootId, NodeConfig).append(list, nodeParser).build();
+        return TreeBuilder.of(rootId, nodeConfig).append(list, nodeParser).build();
     }
 
     /**
-     * 树构建，按照权重排序
+     * Builds a tree structure from a map of pre-constructed tree nodes.
      *
-     * @param <E>    ID类型
-     * @param map    源数据Map
-     * @param rootId 最顶层父id值 一般为 0 之类
-     * @return List
+     * @param <E>    The type of the ID.
+     * @param map    The map of source data (ID -> MapTree).
+     * @param rootId The ID of the parent for the top-level nodes.
+     * @return A list of root nodes.
      */
     public static <E> List<MapTree<E>> build(final Map<E, MapTree<E>> map, final E rootId) {
         return buildSingle(map, rootId).getChildren();
     }
 
     /**
-     * 单点树构建，按照权重排序 它会生成一个以指定ID为ID的空的节点，然后逐级增加子节点。
+     * Builds a tree with a single root node from a map of pre-constructed tree nodes.
      *
-     * @param <E>    ID类型
-     * @param map    源数据Map
-     * @param rootId 根节点id值 一般为 0 之类
-     * @return {@link MapTree}
+     * @param <E>    The type of the ID.
+     * @param map    The map of source data (ID -> MapTree).
+     * @param rootId The ID of the root node.
+     * @return A {@link MapTree}.
      */
     public static <E> MapTree<E> buildSingle(final Map<E, MapTree<E>> map, final E rootId) {
         final MapTree<E> tree = CollKit.getFirstNoneNull(map.values());
@@ -190,17 +191,16 @@ public class TreeKit {
             final NodeConfig config = tree.getConfig();
             return TreeBuilder.of(rootId, config).append(map).build();
         }
-
         return createEmptyNode(rootId);
     }
 
     /**
-     * 获取ID对应的节点，如果有多个ID相同的节点，只返回第一个。 此方法只查找此节点及子节点，采用递归深度优先遍历。
+     * Gets a node by its ID using a depth-first search.
      *
-     * @param <T>  ID类型
-     * @param node 节点
-     * @param id   ID
-     * @return 节点
+     * @param <T>  The type of the ID.
+     * @param node The starting node.
+     * @param id   The ID to find.
+     * @return The found node, or `null`.
      */
     public static <T> MapTree<T> getNode(final MapTree<T> node, final T id) {
         if (ObjectKit.equals(id, node.getId())) {
@@ -212,7 +212,6 @@ public class TreeKit {
             return null;
         }
 
-        // 查找子节点
         MapTree<T> childNode;
         for (final MapTree<T> child : children) {
             childNode = child.getNode(id);
@@ -220,44 +219,42 @@ public class TreeKit {
                 return childNode;
             }
         }
-
-        // 未找到节点
         return null;
     }
 
     /**
-     * 获取所有父节点名称列表 比如有个人在研发1部，他上面有研发部，接着上面有技术中心 返回结果就是：[研发一部, 研发中心, 技术中心]
+     * Gets a list of names of all parent nodes.
      *
-     * @param <T>                节点ID类型
-     * @param node               节点
-     * @param includeCurrentNode 是否包含当前节点的名称
-     * @return 所有父节点名称列表，node为null返回空List
+     * @param <T>                The type of the node ID.
+     * @param node               The node.
+     * @param includeCurrentNode If `true`, includes the name of the current node.
+     * @return A list of all parent node names.
      */
     public static <T> List<CharSequence> getParentsName(final MapTree<T> node, final boolean includeCurrentNode) {
         return getParents(node, includeCurrentNode, MapTree::getName);
     }
 
     /**
-     * 获取所有父节点ID列表 比如有个人在研发1部，他上面有研发部，接着上面有技术中心 返回结果就是：[研发部, 技术中心]
+     * Gets a list of IDs of all parent nodes.
      *
-     * @param <T>                节点ID类型
-     * @param node               节点
-     * @param includeCurrentNode 是否包含当前节点的名称
-     * @return 所有父节点ID列表，node为null返回空List
+     * @param <T>                The type of the node ID.
+     * @param node               The node.
+     * @param includeCurrentNode If `true`, includes the ID of the current node.
+     * @return A list of all parent node IDs.
      */
     public static <T> List<T> getParentsId(final MapTree<T> node, final boolean includeCurrentNode) {
         return getParents(node, includeCurrentNode, MapTree::getId);
     }
 
     /**
-     * 获取所有父节点指定函数结果列表
+     * Gets a list of a specific field's value from all parent nodes.
      *
-     * @param <T>                节点ID类型
-     * @param <E>                字段值类型
-     * @param node               节点
-     * @param includeCurrentNode 是否包含当前节点的名称
-     * @param fieldFunc          获取父节点名称的函数
-     * @return 所有父节点字段值列表，node为null返回空List
+     * @param <T>                The type of the node ID.
+     * @param <E>                The type of the field value.
+     * @param node               The node.
+     * @param includeCurrentNode If `true`, includes the value from the current node.
+     * @param fieldFunc          The function to extract the field value.
+     * @return A list of field values from all parent nodes.
      */
     public static <T, E> List<E> getParents(
             final MapTree<T> node,
@@ -278,7 +275,6 @@ public class TreeKit {
             fieldValue = fieldFunc.apply(parent);
             parent = parent.getParent();
             if (null != fieldValue || null != parent) {
-                // 根节点的null不加入
                 result.add(fieldValue);
             }
         }
@@ -286,23 +282,23 @@ public class TreeKit {
     }
 
     /**
-     * 获取所有父节点ID列表 创建空Tree的节点
+     * Creates an empty tree node with a given ID.
      *
-     * @param id  节点ID
-     * @param <E> 节点ID类型
-     * @return {@link MapTree}
+     * @param id  The node ID.
+     * @param <E> The type of the node ID.
+     * @return A {@link MapTree}.
      */
     public static <E> MapTree<E> createEmptyNode(final E id) {
         return new MapTree<E>().setId(id);
     }
 
     /**
-     * 深度优先,遍历树,将树换为数组
+     * Flattens a tree into a list.
      *
-     * @param root       树的根节点
-     * @param broadFirst 是否广度优先遍历
-     * @param <E>        节点ID类型
-     * @return 树所有节点列表
+     * @param root       The root node of the tree.
+     * @param broadFirst If `true`, uses breadth-first traversal; otherwise, depth-first.
+     * @param <E>        The type of the node ID.
+     * @return A list of all nodes in the tree.
      */
     public static <E> List<MapTree<E>> toList(final MapTree<E> root, final boolean broadFirst) {
         if (Objects.isNull(root)) {

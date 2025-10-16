@@ -31,9 +31,11 @@ import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.extra.json.JsonKit;
 
 /**
- * FastJson序列化器
+ * A serializer that uses the FastJson library.
  * <p>
- * 基于FastJson实现的序列化器，将对象序列化为JSON字符串，然后再转换为字节数组。 反序列化时，将字节数组转换为JSON字符串，然后再转换为对象。 这种序列化方式具有良好的可读性和跨语言兼容性，但性能相对二进制序列化较低。
+ * This implementation serializes objects to a JSON string, which is then converted to a byte array. During
+ * deserialization, the process is reversed. This approach offers good readability and cross-language compatibility but
+ * may have lower performance compared to binary serialization formats.
  * </p>
  *
  * @author Kimi Liu
@@ -42,28 +44,25 @@ import org.miaixz.bus.extra.json.JsonKit;
 public class FastJsonSerializer extends AbstractSerializer {
 
     /**
-     * 目标类型，用于反序列化时确定对象类型
+     * The target class type for deserialization.
      */
-    private Class<?> type;
+    private final Class<?> type;
 
     /**
-     * 构造方法
+     * Constructs a new {@code FastJsonSerializer}.
      *
-     * @param type 目标类型，用于反序列化时确定对象类型
+     * @param type The target class type, which is required for deserializing the JSON string back into an object.
      */
     public FastJsonSerializer(Class<?> type) {
         this.type = type;
     }
 
     /**
-     * 执行序列化操作
-     * <p>
-     * 将对象序列化为JSON字符串，然后转换为字节数组
-     * </p>
+     * Performs serialization by converting the object to a JSON string and then to a UTF-8 byte array.
      *
-     * @param object 要序列化的对象
-     * @return 序列化后的字节数组
-     * @throws Throwable 可能抛出的异常
+     * @param object The object to be serialized.
+     * @return The serialized byte array.
+     * @throws Throwable if an error occurs during serialization.
      */
     @Override
     protected byte[] doSerialize(Object object) throws Throwable {
@@ -72,14 +71,11 @@ public class FastJsonSerializer extends AbstractSerializer {
     }
 
     /**
-     * 执行反序列化操作
-     * <p>
-     * 将字节数组转换为JSON字符串，然后反序列化为对象
-     * </p>
+     * Performs deserialization by converting the byte array to a JSON string and then to an object of the target type.
      *
-     * @param bytes 要反序列化的字节数组
-     * @return 反序列化后的对象
-     * @throws Throwable 可能抛出的异常
+     * @param bytes The byte array to be deserialized.
+     * @return The deserialized object.
+     * @throws Throwable if an error occurs during deserialization.
      */
     @Override
     protected Object doDeserialize(byte[] bytes) throws Throwable {

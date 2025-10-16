@@ -27,21 +27,25 @@
 */
 package org.miaixz.bus.vortex;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
-import lombok.*;
-import lombok.experimental.SuperBuilder;
 import org.miaixz.bus.core.basic.entity.Tracer;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.codec.multipart.Part;
-import org.springframework.web.reactive.function.server.ServerRequest;
-import org.springframework.web.server.ServerWebExchange;
+
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 /**
- * 上下文传参类，用于存储和传递请求相关的上下文信息
+ * Represents the request context, a stateful object that is created at the beginning of a request and enriched as it
+ * passes through the strategy chain.
+ * <p>
+ * This class acts as a central data carrier for a single request, holding everything from request parameters and
+ * headers to authorization details and matched API asset information. It is created once per request in the
+ * {@link org.miaixz.bus.vortex.filter.PrimaryFilter} and shared across all components via the Reactor context.
  *
- * @author Justubborn
+ * @author Kimi Liu
  * @since Java 17+
  */
 @Getter
@@ -52,106 +56,69 @@ import org.springframework.web.server.ServerWebExchange;
 public class Context extends Tracer {
 
     /**
-     * 上下文在 ServerWebExchange 或 ServerRequest 属性中的键名
+     * The key used to store and retrieve this Context object from the attributes of a {@code ServerWebExchange}.
      */
-    private static final String $ = "_context";
+    public static final String $ = "X.CONTEXT";
 
     /**
-     * 请求参数，存储键值对形式的参数
+     * A map of the HTTP request headers. This map is a direct, single-value representation of the incoming request's
+     * headers.
      */
-    private Map<String, String> requestMap;
+    @Builder.Default
+    private Map<String, String> headers = new HashMap<>();
 
     /**
-     * 请求参数，存储键值对形式的参数
+     * A map of the request's business parameters. This map aggregates parameters from the URL query, the request body
+     * (form or JSON), and any additional parameters derived during processing.
      */
-    private Map<String, String> headerMap;
+    @Builder.Default
+    private Map<String, String> parameters = new HashMap<>();
 
     /**
-     * 文件上传参数，存储文件部分的映射
+     * A map of uploaded files for multipart/form-data requests. The key is the form field name, and the value is the
+     * {@link Part} object representing the uploaded file.
      */
-    private Map<String, Part> filePartMap;
+    @Builder.Default
+    private Map<String, Part> fileParts = new HashMap<>();
 
     /**
-     * 数据格式，默认使用 JSON 格式
+     * The requested data format for the response, such as JSON or XML. This is determined from the request parameters.
      */
-    private Format format = Format.JSON;
+    @Builder.Default
+    private Formats format = Formats.JSON;
 
     /**
-     * 请求渠道，默认使用 web 渠道
+     * The channel through which the request was made, e.g., WEB, APP, etc. This is determined from the request
+     * parameters or headers.
      */
+    @Builder.Default
     private Channel channel = Channel.WEB;
 
     /**
-     * 请求类型
-     */
-    private HttpMethod httpMethod;
-
-    /**
-     * 资产信息，具体内容由 Assets 类定义
-     */
-    private Assets assets;
-
-    /**
-     * 令牌，用于身份验证或会话管理
-     */
-    private String token;
-
-    /**
-     * 数据是否加密签名
+     * A flag indicating the security mode of the request, typically used to enable or disable features like
+     * encryption/decryption.
      */
     private Integer sign;
 
     /**
-     * 请求开始时间，用于性能监控或日志记录
+     * The access token extracted from the request headers, used for authentication and authorization.
+     */
+    private String bearer;
+
+    /**
+     * The resolved API asset that matches the incoming request's method and version. This object contains all
+     * configuration for the requested API endpoint.
+     */
+    private Assets assets;
+
+    /**
+     * The timestamp in milliseconds when the request processing started. This is used for calculating total execution
+     * time.
      */
     private long timestamp;
 
     /**
-     * 从 ServerWebExchange 获取或初始化上下文对象 会自动从请求中提取header信息并设置到headerMap中
-     *
-     * @param exchange 当前的 ServerWebExchange 对象
-     * @return 上下文对象，若不存在则创建新的空上下文并设置header信息
+     * The HTTP method of the incoming request (e.g., GET, POST).
      */
-    public static Context get(ServerWebExchange exchange) {
-        Context context = exchange.getAttribute(Context.$);
-        if (context == null) {
-            context = new Context();
-            // 从请求中提取header信息
-            Map<String, String> headers = exchange.getRequest().getHeaders().toSingleValueMap().entrySet().stream()
-                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-            context.setHeaderMap(headers);
-            exchange.getAttributes().put(Context.$, context);
-        } else if (context.getHeaderMap() == null) {
-            // 如果context存在但headerMap为null，也设置header信息
-            Map<String, String> headers = exchange.getRequest().getHeaders().toSingleValueMap().entrySet().stream()
-                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-            context.setHeaderMap(headers);
-        }
-        return context;
-    }
-
-    /**
-     * 从 ServerRequest 获取或初始化上下文对象 会自动从请求中提取header信息并设置到headerMap中
-     *
-     * @param request 当前的 ServerRequest 对象
-     * @return 上下文对象，若不存在则创建新的空上下文并设置header信息
-     */
-    public static Context get(ServerRequest request) {
-        Context context = (Context) request.attribute(Context.$).orElse(null);
-        if (context == null) {
-            context = new Context();
-            // 从请求中提取header信息
-            Map<String, String> headers = request.headers().asHttpHeaders().toSingleValueMap().entrySet().stream()
-                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-            context.setHeaderMap(headers);
-            request.attributes().put(Context.$, context);
-        } else if (context.getHeaderMap() == null) {
-            // 如果context存在但headerMap为null，也设置header信息
-            Map<String, String> headers = request.headers().asHttpHeaders().toSingleValueMap().entrySet().stream()
-                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-            context.setHeaderMap(headers);
-        }
-        return context;
-    }
-
+    private HttpMethod httpMethod;
 }

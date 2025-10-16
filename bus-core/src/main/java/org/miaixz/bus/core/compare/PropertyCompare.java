@@ -32,9 +32,9 @@ import java.io.Serial;
 import org.miaixz.bus.core.xyz.BeanKit;
 
 /**
- * Bean属性排序器 支持读取Bean多层次下的属性
+ * A comparator for sorting beans by a specified property. Supports reading properties from multiple levels of a bean.
  *
- * @param <T> 被比较的Bean
+ * @param <T> the type of the bean to be compared.
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -44,33 +44,35 @@ public class PropertyCompare<T> extends FunctionCompare<T> {
     private static final long serialVersionUID = 2852262713689L;
 
     /**
-     * 构造，默认{@code null}排在后（从小到大排序）
+     * Constructs a new {@code PropertyCompare}, with {@code null} values placed at the end (ascending order).
      *
-     * @param property 属性名
+     * @param property the name of the property to compare by.
      */
     public PropertyCompare(final String property) {
         this(property, true);
     }
 
     /**
-     * 构造
+     * Constructs a new {@code PropertyCompare}.
      *
-     * @param property      属性名
-     * @param isNullGreater null值是否排在后（从小到大排序）
+     * @param property      the name of the property to compare by.
+     * @param isNullGreater whether {@code null} values should be placed at the end (for ascending order).
      */
     public PropertyCompare(final String property, final boolean isNullGreater) {
         this(property, true, isNullGreater);
     }
 
     /**
-     * 构造
+     * Constructs a new {@code PropertyCompare}.
      *
-     * @param property      属性名
-     * @param compareSelf   在字段值相同情况下，是否比较对象本身。 如果此项为{@code false}，字段值比较后为0会导致对象被认为相同，可能导致被去重。
-     * @param isNullGreater null值是否排在后（从小到大排序）
+     * @param property      the name of the property to compare by.
+     * @param compareSelf   if {@code true}, and the property values are equal, the objects themselves will be compared.
+     *                      This prevents objects with the same sort key from being treated as equal, which can avoid
+     *                      deduplication.
+     * @param isNullGreater whether {@code null} values should be placed at the end (for ascending order).
      */
     public PropertyCompare(final String property, final boolean compareSelf, final boolean isNullGreater) {
-        super(isNullGreater, compareSelf, (bean) -> BeanKit.getProperty(bean, property));
+        super(isNullGreater, compareSelf, (bean) -> (Comparable<?>) BeanKit.getProperty(bean, property));
     }
 
 }

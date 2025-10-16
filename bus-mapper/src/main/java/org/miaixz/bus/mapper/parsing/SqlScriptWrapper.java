@@ -34,7 +34,7 @@ import org.miaixz.bus.core.lang.loader.spi.NormalSpiLoader;
 import org.miaixz.bus.mapper.ORDER;
 
 /**
- * SPI 接口：对最终的 SQL 进行处理
+ * SPI interface for processing the final SQL script.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,12 +42,12 @@ import org.miaixz.bus.mapper.ORDER;
 public interface SqlScriptWrapper extends ORDER {
 
     /**
-     * 包装 SQL 脚本，依次应用所有 {@link SqlScriptWrapper} 实现
+     * Wraps an SQL script by applying all {@link SqlScriptWrapper} implementations.
      *
-     * @param context   当前接口和方法信息
-     * @param entity    实体类信息
-     * @param sqlScript SQL 脚本
-     * @return 包装后的 SQL 脚本
+     * @param context   The current interface and method information.
+     * @param entity    The entity class information.
+     * @param sqlScript The SQL script to be wrapped.
+     * @return The wrapped SQL script.
      */
     static SqlScript wrapSqlScript(ProviderContext context, TableMeta entity, SqlScript sqlScript) {
         for (SqlScriptWrapper wrapper : Holder.sqlScriptWrappers) {
@@ -57,22 +57,22 @@ public interface SqlScriptWrapper extends ORDER {
     }
 
     /**
-     * 对 SQL 脚本进行加工处理
+     * Processes and modifies the SQL script.
      *
-     * @param context   当前接口和方法信息
-     * @param entity    实体类信息
-     * @param sqlScript SQL 脚本
-     * @return 加工后的 SQL 脚本
+     * @param context   The current interface and method information.
+     * @param entity    The entity class information.
+     * @param sqlScript The SQL script.
+     * @return The processed SQL script.
      */
     SqlScript wrap(ProviderContext context, TableMeta entity, SqlScript sqlScript);
 
     /**
-     * 实例持有类，管理 {@link SqlScriptWrapper} 的 SPI 实现
+     * A holder class that manages {@link SqlScriptWrapper} SPI implementations.
      */
     class Holder {
 
         /**
-         * 通过 SPI 加载的 {@link SqlScriptWrapper} 实现列表
+         * A list of {@link SqlScriptWrapper} implementations loaded via SPI.
          */
         static final List<SqlScriptWrapper> sqlScriptWrappers = NormalSpiLoader.loadList(false, SqlScriptWrapper.class);
     }

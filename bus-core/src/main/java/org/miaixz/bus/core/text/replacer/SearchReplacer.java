@@ -34,29 +34,48 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 查找替换器 查找给定的字符串，并全部替换为新的字符串，其它字符不变
+ * A replacer that searches for a given string and replaces all occurrences with a new string. Other characters remain
+ * unchanged.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class SearchReplacer extends StringReplacer {
 
+    /**
+     * The serial version UID.
+     */
     @Serial
     private static final long serialVersionUID = 2852239556681L;
 
+    /**
+     * The starting index (inclusive) for the search operation.
+     */
     private final int fromIndex;
+    /**
+     * The character sequence to search for.
+     */
     private final CharSequence searchText;
+    /**
+     * The length of the search text.
+     */
     private final int searchTextLength;
+    /**
+     * The character sequence to replace the search text with.
+     */
     private final CharSequence replacement;
+    /**
+     * Indicates whether the search should ignore case.
+     */
     private final boolean ignoreCase;
 
     /**
-     * 构造
+     * Constructs a new {@code SearchReplacer}.
      *
-     * @param fromIndex   开始位置（包括）
-     * @param searchText  被查找的字符串
-     * @param replacement 被替换的字符串
-     * @param ignoreCase  是否忽略大小写
+     * @param fromIndex   The starting position (inclusive) for the search.
+     * @param searchText  The string to be searched for.
+     * @param replacement The string to replace the found text with.
+     * @param ignoreCase  {@code true} if the search should ignore case, {@code false} otherwise.
      */
     public SearchReplacer(final int fromIndex, final CharSequence searchText, final CharSequence replacement,
             final boolean ignoreCase) {
@@ -67,6 +86,13 @@ public class SearchReplacer extends StringReplacer {
         this.ignoreCase = ignoreCase;
     }
 
+    /**
+     * Applies the replacement logic to the given text. This method performs a full replacement operation on the input
+     * text.
+     *
+     * @param text The text to which the replacement logic will be applied.
+     * @return The text with all occurrences of {@code searchText} replaced by {@code replacement}.
+     */
     @Override
     public String apply(final CharSequence text) {
         if (StringKit.isEmpty(text)) {
@@ -80,44 +106,53 @@ public class SearchReplacer extends StringReplacer {
 
         final int fromIndex = this.fromIndex;
         if (fromIndex > strLength) {
-            // 越界截断
+            // Out of bounds truncation
             return Normal.EMPTY;
         }
 
         final StringBuilder result = new StringBuilder(strLength - this.searchTextLength + this.replacement.length());
         if (0 != fromIndex) {
-            // 开始部分
+            // Initial part
             result.append(text.subSequence(0, fromIndex));
         }
 
-        // 替换部分
+        // Replacement part
         int pos = fromIndex;
-        int consumed;// 处理过的字符数
+        int consumed;// Number of characters processed
         while ((consumed = replace(text, pos, result)) > 0) {
             pos += consumed;
         }
 
         if (pos < strLength) {
-            // 结尾部分
+            // Trailing part
             result.append(text.subSequence(pos, strLength));
         }
         return result.toString();
     }
 
+    /**
+     * Replaces a portion of the text if {@code searchText} is found at or after the given position.
+     *
+     * @param text The text to be processed.
+     * @param pos  The current position in the text.
+     * @param out  The {@code StringBuilder} to which the replaced text is appended.
+     * @return The number of characters consumed by the replacement, or {@code Normal.__1} if no replacement occurred.
+     */
     @Override
     protected int replace(final CharSequence text, final int pos, final StringBuilder out) {
         final int index = StringKit.indexOf(text, this.searchText, pos, this.ignoreCase);
         if (index > Normal.__1) {
-            // 无需替换的部分
+            // Part that does not need replacement
             out.append(text.subSequence(pos, index));
-            // 替换的部分
+            // Part to be replaced
             out.append(replacement);
 
-            // 已经处理的长度 = 无需替换的长度（查找字符串位置 - 开始的位置） + 替换的长度
+            // Length processed = length not replaced (position of search string - start position) + length of
+            // replacement
             return index - pos + searchTextLength;
         }
 
-        // 未找到
+        // Not found
         return Normal.__1;
     }
 

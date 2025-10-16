@@ -33,36 +33,40 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 字符串或字符重复器 用于将给定字符串或字符赋值count次，然后拼接
+ * String or character repeater. Used to repeat a given string or character a specified number of times and then
+ * concatenate them.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class StringRepeater {
 
+    /**
+     * The number of repetitions or the fixed length.
+     */
     private final int countOrLength;
 
     /**
-     * 构造
+     * Constructs a new {@code StringRepeater} with the specified count or length.
      *
-     * @param countOrLength 重复次数或固定长度
+     * @param countOrLength The number of repetitions or the fixed length.
      */
     public StringRepeater(final int countOrLength) {
         this.countOrLength = countOrLength;
     }
 
     /**
-     * 创建StrRepeater
+     * Creates a {@code StringRepeater} instance.
      *
-     * @param countOrLength 重复次数或固定长度
-     * @return StringRepeater
+     * @param countOrLength The number of repetitions or the fixed length.
+     * @return A new {@code StringRepeater} instance.
      */
     public static StringRepeater of(final int countOrLength) {
         return new StringRepeater(countOrLength);
     }
 
     /**
-     * 重复某个字符
+     * Repeats a character a specified number of times.
      *
      * <pre>
      * repeat('e', 0)  = ""
@@ -70,8 +74,8 @@ public class StringRepeater {
      * repeat('e', -2) = ""
      * </pre>
      *
-     * @param c 被重复的字符
-     * @return 重复字符字符串
+     * @param c The character to repeat.
+     * @return The string consisting of the repeated character.
      */
     public String repeat(final char c) {
         final int count = this.countOrLength;
@@ -85,10 +89,11 @@ public class StringRepeater {
     }
 
     /**
-     * 重复某个字符串
+     * Repeats a string a specified number of times.
      *
-     * @param text 被重复的字符
-     * @return 重复字符字符串
+     * @param text The string to repeat.
+     * @return The string consisting of the repeated string.
+     * @throws ArrayIndexOutOfBoundsException if the required string length is too large.
      */
     public String repeat(final CharSequence text) {
         if (null == text) {
@@ -103,7 +108,7 @@ public class StringRepeater {
             return text.toString();
         }
 
-        // 检查
+        // Check for overflow
         final int len = text.length();
         final long longSize = (long) len * (long) count;
         final int size = (int) longSize;
@@ -111,11 +116,11 @@ public class StringRepeater {
             throw new ArrayIndexOutOfBoundsException("Required String length is too large: " + longSize);
         }
 
-        // 相比使用StringBuilder更高效
+        // More efficient than using StringBuilder
         final char[] array = new char[size];
         text.toString().getChars(0, len, array, 0);
         int n;
-        for (n = len; n < size - n; n <<= 1) {// n <<= 1相当于n *2
+        for (n = len; n < size - n; n <<= 1) {// n <<= 1 is equivalent to n * 2
             System.arraycopy(array, 0, array, n, n);
         }
         System.arraycopy(array, 0, array, n, size - n);
@@ -123,14 +128,15 @@ public class StringRepeater {
     }
 
     /**
-     * 重复某个字符串到指定长度
+     * Repeats a string to a specified total length.
      * <ul>
-     * <li>如果指定长度非指定字符串的整数倍，截断到固定长度</li>
-     * <li>如果指定长度小于字符串本身的长度，截断之</li>
+     * <li>If the specified length is not an integer multiple of the string's length, it is truncated to the fixed
+     * length.</li>
+     * <li>If the specified length is less than the string's own length, it is truncated.</li>
      * </ul>
      *
-     * @param text 被重复的字符
-     * @return 重复字符字符串
+     * @param text The string to repeat.
+     * @return The string repeated to the specified length.
      */
     public String repeatByLength(final CharSequence text) {
         if (null == text) {
@@ -148,7 +154,7 @@ public class StringRepeater {
             return StringKit.subPre(text, padLen);
         }
 
-        // 重复，直到达到指定长度
+        // Repeat until the specified length is reached
         final char[] padding = new char[padLen];
         for (int i = 0; i < padLen; i++) {
             padding[i] = text.charAt(i % strLen);
@@ -157,7 +163,7 @@ public class StringRepeater {
     }
 
     /**
-     * 重复某个字符串并通过分界符连接
+     * Repeats a string and joins the repetitions with a delimiter.
      *
      * <pre>
      * repeatAndJoin("?", 5, ",")   = "?,?,?,?,?"
@@ -165,9 +171,9 @@ public class StringRepeater {
      * repeatAndJoin("?", 5, null) = "?????"
      * </pre>
      *
-     * @param text      被重复的字符串
-     * @param delimiter 分界符
-     * @return 连接后的字符串
+     * @param text      The string to repeat.
+     * @param delimiter The delimiter to use between repetitions.
+     * @return The joined string.
      */
     public String repeatAndJoin(final CharSequence text, final CharSequence delimiter) {
         int count = this.countOrLength;
@@ -178,7 +184,7 @@ public class StringRepeater {
             return repeat(text);
         }
 
-        // 初始大小 = 所有重复字符串长度 + 分界符总长度
+        // Initial size = total length of all repeated strings + total length of delimiters
         final StringBuilder builder = new StringBuilder(text.length() * count + delimiter.length() * (count - 1));
         builder.append(text);
         count--;

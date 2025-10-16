@@ -39,14 +39,12 @@ import java.io.*;
 import java.net.URL;
 import java.nio.file.Path;
 
-import javax.imageio.ImageIO;
 import javax.imageio.stream.ImageInputStream;
 import javax.imageio.stream.ImageOutputStream;
 
 import org.miaixz.bus.core.io.file.FileName;
 import org.miaixz.bus.core.io.resource.Resource;
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.ansi.Ansi4BitColor;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.MathKit;
@@ -54,7 +52,8 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 图像编辑器
+ * An image editor for performing various image manipulations. This class provides a fluent API for chaining operations
+ * like scaling, cutting, watermarking, and more.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -66,37 +65,26 @@ public class Images implements Flushable, Serializable {
 
     private final BufferedImage srcImage;
     private Image targetImage;
-    /**
-     * 目标图片文件格式，用于写出
-     */
     private String targetImageType;
-    /**
-     * 计算x,y坐标的时候是否从中心做为原始坐标开始计算
-     */
     private boolean positionBaseCentre = true;
-    /**
-     * 图片输出质量，用于压缩
-     */
     private float quality = -1;
-    /**
-     * 图片背景色
-     */
     private Color backgroundColor;
 
     /**
-     * 构造，目标图片类型取决于来源图片类型
+     * Constructs a new {@code Images} instance from a {@link BufferedImage}. The target image type is determined by the
+     * source image type.
      *
-     * @param srcImage 来源图片
+     * @param srcImage The source {@link BufferedImage}.
      */
     public Images(final BufferedImage srcImage) {
         this(srcImage, null);
     }
 
     /**
-     * 构造
+     * Constructs a new {@code Images} instance.
      *
-     * @param srcImage        来源图片
-     * @param targetImageType 目标图片类型，null则读取来源图片类型
+     * @param srcImage        The source {@link BufferedImage}.
+     * @param targetImageType The target image type (e.g., "jpg", "png"). If null, it is inferred from the source image.
      */
     public Images(final BufferedImage srcImage, String targetImageType) {
         this.srcImage = srcImage;
@@ -114,92 +102,90 @@ public class Images implements Flushable, Serializable {
     }
 
     /**
-     * 从Path读取图片并开始处理
+     * Creates an {@code Images} instance from an image file path.
      *
-     * @param imagePath 图片文件路径
-     * @return Img
+     * @param imagePath The path to the image file.
+     * @return A new {@code Images} instance.
      */
     public static Images from(final Path imagePath) {
         return from(imagePath.toFile());
     }
 
     /**
-     * 从文件读取图片并开始处理
+     * Creates an {@code Images} instance from an image file.
      *
-     * @param imageFile 图片文件
-     * @return Img
+     * @param imageFile The image file.
+     * @return A new {@code Images} instance.
      */
     public static Images from(final File imageFile) {
         return new Images(ImageKit.read(imageFile));
     }
 
     /**
-     * 从资源对象中读取图片并开始处理
+     * Creates an {@code Images} instance from a resource.
      *
-     * @param resource 图片资源对象
-     * @return Img
+     * @param resource The image resource.
+     * @return A new {@code Images} instance.
      */
     public static Images from(final Resource resource) {
         return from(resource.getStream());
     }
 
     /**
-     * 从流读取图片并开始处理
+     * Creates an {@code Images} instance from an input stream.
      *
-     * @param in 图片流
-     * @return Img
+     * @param in The input stream of the image.
+     * @return A new {@code Images} instance.
      */
     public static Images from(final InputStream in) {
         return new Images(ImageKit.read(in));
     }
 
     /**
-     * 从ImageInputStream取图片并开始处理
+     * Creates an {@code Images} instance from an {@link ImageInputStream}.
      *
-     * @param imageStream 图片流
-     * @return Img
+     * @param imageStream The image input stream.
+     * @return A new {@code Images} instance.
      */
     public static Images from(final ImageInputStream imageStream) {
         return new Images(ImageKit.read(imageStream));
     }
 
     /**
-     * 从URL取图片并开始处理
+     * Creates an {@code Images} instance from a URL.
      *
-     * @param imageUrl 图片URL
-     * @return Img
+     * @param imageUrl The URL of the image.
+     * @return A new {@code Images} instance.
      */
     public static Images from(final URL imageUrl) {
         return new Images(ImageKit.read(imageUrl));
     }
 
     /**
-     * 从Image取图片并开始处理
+     * Creates an {@code Images} instance from an {@link Image}.
      *
-     * @param image 图片
-     * @return Img
+     * @param image The image.
+     * @return A new {@code Images} instance.
      */
     public static Images from(final Image image) {
         return new Images(ImageKit.castToBufferedImage(image, ImageKit.IMAGE_TYPE_JPG));
     }
 
     /**
-     * 计算旋转后的图片尺寸
+     * Calculates the dimensions of an image after rotation.
      *
-     * @param width  宽度
-     * @param height 高度
-     * @param degree 旋转角度
-     * @return 计算后目标尺寸
+     * @param width  The original width.
+     * @param height The original height.
+     * @param degree The rotation angle in degrees.
+     * @return A {@link Rectangle} representing the new dimensions.
      */
     private static Rectangle calcRotatedSize(int width, int height, int degree) {
         if (degree < 0) {
-            // 负数角度转换为正数角度
             degree += 360;
         }
         if (degree >= 90) {
             if (degree / 90 % 2 == 1) {
                 final int temp = height;
-                // noinspection SuspiciousNameCombination
                 height = width;
                 width = temp;
             }
@@ -219,12 +205,10 @@ public class Images implements Flushable, Serializable {
     }
 
     /**
-     * 设置目标图片文件格式，用于写出
+     * Sets the target image file format for writing.
      *
-     * @param imgType 图片格式
-     * @return this
-     * @see ImageKit#IMAGE_TYPE_JPG
-     * @see ImageKit#IMAGE_TYPE_PNG
+     * @param imgType The image format (e.g., "jpg", "png").
+     * @return This {@code Images} instance for method chaining.
      */
     public Images setTargetImageType(final String imgType) {
         this.targetImageType = imgType;
@@ -232,10 +216,10 @@ public class Images implements Flushable, Serializable {
     }
 
     /**
-     * 计算x,y坐标的时候是否从中心做为原始坐标开始计算
+     * Sets whether to calculate x, y coordinates from the center as the origin.
      *
-     * @param positionBaseCentre 是否从中心做为原始坐标开始计算
-     * @return this
+     * @param positionBaseCentre {@code true} to use the center as the origin, {@code false} for the top-left corner.
+     * @return This {@code Images} instance for method chaining.
      */
     public Images setPositionBaseCentre(final boolean positionBaseCentre) {
         this.positionBaseCentre = positionBaseCentre;
@@ -243,20 +227,20 @@ public class Images implements Flushable, Serializable {
     }
 
     /**
-     * 设置图片输出质量，数字为0~1（不包括0和1）表示质量压缩比，除此数字外设置表示不压缩
+     * Sets the image output quality for compression (0.0 to 1.0).
      *
-     * @param quality 质量，数字为0~1（不包括0和1）表示质量压缩比，除此数字外设置表示不压缩
-     * @return this
+     * @param quality The quality, a float between 0.0 and 1.0.
+     * @return This {@code Images} instance for method chaining.
      */
     public Images setQuality(final double quality) {
         return setQuality((float) quality);
     }
 
     /**
-     * 设置图片输出质量，数字为0~1（不包括0和1）表示质量压缩比，除此数字外设置表示不压缩
+     * Sets the image output quality for compression (0.0 to 1.0).
      *
-     * @param quality 质量，数字为0~1（不包括0和1）表示质量压缩比，除此数字外设置表示不压缩
-     * @return this
+     * @param quality The quality, a float between 0.0 and 1.0.
+     * @return This {@code Images} instance for method chaining.
      */
     public Images setQuality(final float quality) {
         if (quality > 0 && quality < 1) {
@@ -268,10 +252,10 @@ public class Images implements Flushable, Serializable {
     }
 
     /**
-     * 设置图片的背景色
+     * Sets the background color of the image.
      *
-     * @param backgroundColor {@link Ansi4BitColor} 背景色
-     * @return this
+     * @param backgroundColor The background color.
+     * @return This {@code Images} instance for method chaining.
      */
     public Images setBackgroundColor(final Color backgroundColor) {
         this.backgroundColor = backgroundColor;
@@ -279,29 +263,24 @@ public class Images implements Flushable, Serializable {
     }
 
     /**
-     * 缩放图像（按比例缩放）
+     * Scales the image by a given ratio.
      *
-     * @param scale 缩放比例。比例大于1时为放大，小于1大于0为缩小
-     * @return this
+     * @param scale The scaling ratio. Greater than 1 for enlargement, between 0 and 1 for reduction.
+     * @return This {@code Images} instance for method chaining.
      */
     public Images scale(float scale) {
         if (scale < 0) {
-            // 自动修正负数
             scale = -scale;
         }
         final Image srcImg = getValidSrcImg();
 
-        // PNG图片特殊处理
         if (ImageKit.IMAGE_TYPE_PNG.equals(this.targetImageType)) {
-            // 修正float转double导致的精度丢失
             final double scaleDouble = MathKit.toDouble(scale);
             this.targetImage = ImageKit.transform(
                     AffineTransform.getScaleInstance(scaleDouble, scaleDouble),
                     ImageKit.toBufferedImage(srcImg, this.targetImageType));
         } else {
-            // 缩放后的图片宽
             final int width = MathKit.mul(srcImg.getWidth(null), scale).intValue();
-            // 缩放后的图片高
             final int height = MathKit.mul(srcImg.getHeight(null), scale).intValue();
             scale(width, height);
         }
@@ -309,23 +288,23 @@ public class Images implements Flushable, Serializable {
     }
 
     /**
-     * 缩放图像（按长宽缩放） 注意：目标长宽与原图不成比例会变形
+     * Scales the image to the specified width and height. This may cause distortion.
      *
-     * @param width  目标宽度
-     * @param height 目标高度
-     * @return this
+     * @param width  The target width.
+     * @param height The target height.
+     * @return This {@code Images} instance for method chaining.
      */
     public Images scale(final int width, final int height) {
         return scale(width, height, Image.SCALE_SMOOTH);
     }
 
     /**
-     * 缩放图像（按长宽缩放） 注意：目标长宽与原图不成比例会变形
+     * Scales the image to the specified width and height with a specific scaling algorithm.
      *
-     * @param width     目标宽度
-     * @param height    目标高度
-     * @param scaleType 缩放类型，可选{@link Image#SCALE_SMOOTH}平滑模式或{@link Image#SCALE_DEFAULT}默认模式
-     * @return this
+     * @param width     The target width.
+     * @param height    The target height.
+     * @param scaleType The scaling algorithm (e.g., {@link Image#SCALE_SMOOTH}).
+     * @return This {@code Images} instance for method chaining.
      */
     public Images scale(final int width, final int height, final int scaleType) {
         final Image srcImg = getValidSrcImg();
@@ -333,15 +312,13 @@ public class Images implements Flushable, Serializable {
         final int srcHeight = srcImg.getHeight(null);
         final int srcWidth = srcImg.getWidth(null);
         if (srcHeight == height && srcWidth == width) {
-            // 源与目标长宽一致返回原图
             this.targetImage = srcImg;
             return this;
         }
 
         if (ImageKit.IMAGE_TYPE_PNG.equals(this.targetImageType)) {
-            // png特殊处理，借助AffineTransform可以实现透明度保留
-            final double sx = MathKit.div(width, srcWidth).doubleValue();// 宽度缩放比
-            final double sy = MathKit.div(height, srcHeight).doubleValue(); // 高度缩放比
+            final double sx = MathKit.div(width, srcWidth).doubleValue();
+            final double sy = MathKit.div(height, srcHeight).doubleValue();
             this.targetImage = ImageKit.transform(
                     AffineTransform.getScaleInstance(sx, sy),
                     ImageKit.toBufferedImage(srcImg, this.targetImageType));
@@ -353,12 +330,12 @@ public class Images implements Flushable, Serializable {
     }
 
     /**
-     * 等比缩放图像，此方法按照按照给定的长宽等比缩放图片，按照长宽缩放比最多的一边等比缩放，空白部分填充背景色 缩放后默认为jpeg格式
+     * Scales the image proportionally to fit within the given dimensions, filling blank space with a fixed color.
      *
-     * @param width      缩放后的宽度
-     * @param height     缩放后的高度
-     * @param fixedColor 比例不对时补充的颜色，不补充为{@code null}
-     * @return this
+     * @param width      The target width.
+     * @param height     The target height.
+     * @param fixedColor The color to fill the blank space, or null for no fill.
+     * @return This {@code Images} instance for method chaining.
      */
     public Images scale(final int width, final int height, final Color fixedColor) {
         Image srcImage = getValidSrcImg();
@@ -367,19 +344,14 @@ public class Images implements Flushable, Serializable {
         final double heightRatio = MathKit.div(height, srcHeight).doubleValue();
         final double widthRatio = MathKit.div(width, srcWidth).doubleValue();
 
-        // 浮点数之间的等值判断,基本数据类型不能用==比较,包装数据类型不能用equals来判断。
         if (MathKit.equals(heightRatio, widthRatio)) {
-            // 长宽都按照相同比例缩放时，返回缩放后的图片
             scale(width, height);
         } else if (widthRatio < heightRatio) {
-            // 宽缩放比例多就按照宽缩放
             scale(width, (int) (srcHeight * widthRatio));
         } else {
-            // 否则按照高缩放
             scale((int) (srcWidth * heightRatio), height);
         }
 
-        // 获取缩放后的新的宽和高
         srcImage = getValidSrcImg();
         srcHeight = srcImage.getHeight(null);
         srcWidth = srcImage.getWidth(null);
@@ -387,13 +359,11 @@ public class Images implements Flushable, Serializable {
         final BufferedImage image = new BufferedImage(width, height, getTypeInt());
         final Graphics2D g = image.createGraphics();
 
-        // 设置背景
         if (null != fixedColor) {
             g.setBackground(fixedColor);
             g.clearRect(0, 0, width, height);
         }
 
-        // 在中间贴图
         g.drawImage(srcImage, (width - srcWidth) / 2, (height - srcHeight) / 2, srcWidth, srcHeight, fixedColor, null);
 
         g.dispose();
@@ -402,10 +372,10 @@ public class Images implements Flushable, Serializable {
     }
 
     /**
-     * 图像切割(按指定起点坐标和宽高切割)
+     * Crops the image to the specified rectangle.
      *
-     * @param rectangle 矩形对象，表示矩形区域的x，y，width，height
-     * @return this
+     * @param rectangle The {@link Rectangle} defining the crop area.
+     * @return This {@code Images} instance for method chaining.
      */
     public Images cut(final Rectangle rectangle) {
         final Image srcImage = getValidSrcImg();
@@ -417,30 +387,30 @@ public class Images implements Flushable, Serializable {
     }
 
     /**
-     * 图像切割为圆形(按指定起点坐标和半径切割)，填充满整个图片（直径取长宽最小值）
+     * Cuts a circular area from the image, with the diameter being the smaller of the image's width and height.
      *
-     * @param x 原图的x坐标起始位置
-     * @param y 原图的y坐标起始位置
-     * @return this
+     * @param x The starting x-coordinate.
+     * @param y The starting y-coordinate.
+     * @return This {@code Images} instance for method chaining.
      */
     public Images cut(final int x, final int y) {
         return cut(x, y, -1);
     }
 
     /**
-     * 图像切割为圆形(按指定起点坐标和半径切割)
+     * Cuts a circular area from the image with a specified radius.
      *
-     * @param x      原图的x坐标起始位置
-     * @param y      原图的y坐标起始位置
-     * @param radius 半径，小于0表示填充满整个图片（直径取长宽最小值）
-     * @return this
+     * @param x      The starting x-coordinate.
+     * @param y      The starting y-coordinate.
+     * @param radius The radius of the circle. If less than 0, the diameter is the smaller of the image's width and
+     *               height.
+     * @return This {@code Images} instance for method chaining.
      */
     public Images cut(int x, int y, final int radius) {
         final Image srcImage = getValidSrcImg();
         final int width = srcImage.getWidth(null);
         final int height = srcImage.getHeight(null);
 
-        // 计算直径
         final int diameter = radius > 0 ? radius * 2 : Math.min(width, height);
         final BufferedImage targetImage = new BufferedImage(diameter, diameter, BufferedImage.TYPE_INT_ARGB);
         final Graphics2D g = targetImage.createGraphics();
@@ -457,23 +427,21 @@ public class Images implements Flushable, Serializable {
     }
 
     /**
-     * 图片圆角处理
+     * Applies rounded corners to the image.
      *
-     * @param arc 圆角弧度，0~1，为长宽占比
-     * @return this
+     * @param arc The arc ratio for the corners (0.0 to 1.0), relative to the smaller of the image's width and height.
+     * @return This {@code Images} instance for method chaining.
      */
     public Images round(double arc) {
         final Image srcImage = getValidSrcImg();
         final int width = srcImage.getWidth(null);
         final int height = srcImage.getHeight(null);
 
-        // 通过弧度占比计算弧度
         arc = MathKit.mul(arc, Math.min(width, height)).doubleValue();
 
         final BufferedImage targetImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         final Graphics2D g2 = targetImage.createGraphics();
         g2.setComposite(AlphaComposite.Src);
-        // 抗锯齿
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2.fill(new RoundRectangle2D.Double(0, 0, width, height, arc, arc));
         g2.setComposite(AlphaComposite.SrcAtop);
@@ -484,9 +452,9 @@ public class Images implements Flushable, Serializable {
     }
 
     /**
-     * 彩色转为灰度
+     * Converts the image to grayscale.
      *
-     * @return this
+     * @return This {@code Images} instance for method chaining.
      */
     public Images gray() {
         this.targetImage = ImageKit.colorConvert(ColorSpace.getInstance(ColorSpace.CS_GRAY), getValidSrcBufferedImg());
@@ -494,9 +462,9 @@ public class Images implements Flushable, Serializable {
     }
 
     /**
-     * 彩色转为黑白二值化图片
+     * Converts the image to a binary (black and white) image.
      *
-     * @return this
+     * @return This {@code Images} instance for method chaining.
      */
     public Images binary() {
         this.targetImage = ImageKit.copyImage(getValidSrcImg(), BufferedImage.TYPE_BYTE_BINARY);
@@ -504,15 +472,15 @@ public class Images implements Flushable, Serializable {
     }
 
     /**
-     * 给图片添加文字水印 此方法只在给定位置写出一个水印字符串
+     * Adds a text watermark to the image.
      *
-     * @param pressText 水印文字
-     * @param color     水印的字体颜色
-     * @param font      {@link Font} 字体相关信息
-     * @param x         修正值。 默认在中间，偏移量相对于中间偏移
-     * @param y         修正值。 默认在中间，偏移量相对于中间偏移
-     * @param alpha     透明度：alpha 必须是范围 [0.0, 1.0] 之内（包含边界值）的一个浮点数字
-     * @return 处理后的图像
+     * @param pressText The watermark text.
+     * @param color     The color of the text.
+     * @param font      The font of the text.
+     * @param x         The x-coordinate offset.
+     * @param y         The y-coordinate offset.
+     * @param alpha     The opacity of the text (0.0 to 1.0).
+     * @return This {@code Images} instance for method chaining.
      */
     public Images pressText(
             final String pressText,
@@ -525,28 +493,24 @@ public class Images implements Flushable, Serializable {
     }
 
     /**
-     * 给图片添加文字水印 此方法只在给定位置写出一个水印字符串
+     * Adds a text watermark to the image using an {@link ImageText} object.
      *
-     * @param imageText 显示的文本信息
-     * @return 处理后的图像
+     * @param imageText The {@link ImageText} object containing all text watermark information.
+     * @return This {@code Images} instance for method chaining.
      */
     public Images pressText(final ImageText imageText) {
         final BufferedImage targetImage = ImageKit.toBufferedImage(getValidSrcImg(), this.targetImageType);
 
         Font font = imageText.getFont();
         if (null == font) {
-            // 默认字体
             font = ImageKit.createSansSerifFont((int) (targetImage.getHeight() * 0.75));
         }
 
         final Graphics2D g = targetImage.createGraphics();
-        // 透明度
         g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, imageText.getAlpha()));
 
         final Point point = imageText.getPoint();
-        // 绘制
         if (positionBaseCentre) {
-            // 基于中心绘制
             ImageKit.drawString(
                     g,
                     imageText.getPressText(),
@@ -554,11 +518,9 @@ public class Images implements Flushable, Serializable {
                     imageText.getColor(),
                     new Rectangle(point.x, point.y, targetImage.getWidth(), targetImage.getHeight()));
         } else {
-            // 基于左上角绘制
             ImageKit.drawString(g, imageText.getPressText(), font, imageText.getColor(), point);
         }
 
-        // 收笔
         g.dispose();
         this.targetImage = targetImage;
 
@@ -566,15 +528,15 @@ public class Images implements Flushable, Serializable {
     }
 
     /**
-     * 给图片添加全屏文字水印
+     * Adds a full-screen text watermark to the image.
      *
-     * @param pressText  水印文字，文件间的间隔使用尾部添加空格方式实现
-     * @param color      水印的字体颜色
-     * @param font       {@link Font} 字体相关信息
-     * @param lineHeight 行高
-     * @param degree     旋转角度，（单位：弧度），以圆点（0,0）为圆心，正代表顺时针，负代表逆时针
-     * @param alpha      透明度：alpha 必须是范围 [0.0, 1.0] 之内（包含边界值）的一个浮点数字
-     * @return 处理后的图像
+     * @param pressText  The watermark text.
+     * @param color      The color of the text.
+     * @param font       The font of the text.
+     * @param lineHeight The line height.
+     * @param degree     The rotation angle in degrees.
+     * @param alpha      The opacity of the text (0.0 to 1.0).
+     * @return This {@code Images} instance for method chaining.
      */
     public Images pressTextFull(
             final String pressText,
@@ -586,29 +548,23 @@ public class Images implements Flushable, Serializable {
         final BufferedImage targetImage = ImageKit.toBufferedImage(getValidSrcImg(), this.targetImageType);
 
         if (null == font) {
-            // 默认字体
             font = ImageKit.createSansSerifFont((int) (targetImage.getHeight() * 0.75));
         }
         final int targetHeight = targetImage.getHeight();
         final int targetWidth = targetImage.getWidth();
 
-        // 创建画笔，并设置透明度和角度
         final Graphics2D g = targetImage.createGraphics();
         g.setColor(color);
-        // 基于图片中心旋转
         g.rotate(Math.toRadians(degree), targetWidth >> 1, targetHeight >> 1);
         g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, alpha));
 
-        // 获取字符串本身的长宽
         Dimension dimension;
         try {
             dimension = ImageKit.getDimension(g.getFontMetrics(font), pressText);
         } catch (final Exception e) {
-            // 此处报告bug某些情况下会抛出IndexOutOfBoundsException，在此做容错处理
             dimension = new Dimension(targetWidth / 3, targetHeight / 3);
         }
         final int intervalHeight = dimension.height * lineHeight;
-        // 在画笔按照画布中心旋转后，达到45度时，上下左右会出现空白区，此处各延申长款的1.5倍实现全覆盖
         int y = -targetHeight >> 1;
         while (y < targetHeight * 1.5) {
             int x = -targetWidth >> 1;
@@ -625,13 +581,13 @@ public class Images implements Flushable, Serializable {
     }
 
     /**
-     * 给图片添加图片水印
+     * Adds an image watermark to the image.
      *
-     * @param pressImg 水印图片，可以使用{@link ImageIO#read(File)}方法读取文件
-     * @param x        修正值。 默认在中间，偏移量相对于中间偏移
-     * @param y        修正值。 默认在中间，偏移量相对于中间偏移
-     * @param alpha    透明度：alpha 必须是范围 [0.0, 1.0] 之内（包含边界值）的一个浮点数字
-     * @return this
+     * @param pressImg The watermark image.
+     * @param x        The x-coordinate offset.
+     * @param y        The y-coordinate offset.
+     * @param alpha    The opacity of the watermark (0.0 to 1.0).
+     * @return This {@code Images} instance for method chaining.
      */
     public Images pressImage(final Image pressImg, final int x, final int y, final float alpha) {
         final int pressImgWidth = pressImg.getWidth(null);
@@ -640,12 +596,12 @@ public class Images implements Flushable, Serializable {
     }
 
     /**
-     * 给图片添加图片水印 如果源图片对象为 {@link BufferedImage}，则绘制在源图片上，否则创建新的图片
+     * Adds an image watermark to the image within a specified rectangle.
      *
-     * @param pressImg  水印图片，可以使用{@link ImageIO#read(File)}方法读取文件
-     * @param rectangle 矩形对象，表示矩形区域的x，y，width，height，x,y从背景图片中心计算
-     * @param alpha     透明度：alpha 必须是范围 [0.0, 1.0] 之内（包含边界值）的一个浮点数字
-     * @return this
+     * @param pressImg  The watermark image.
+     * @param rectangle The {@link Rectangle} defining the position and size of the watermark.
+     * @param alpha     The opacity of the watermark (0.0 to 1.0).
+     * @return This {@code Images} instance for method chaining.
      */
     public Images pressImage(final Image pressImg, final Rectangle rectangle, final float alpha) {
         final Image targetImg = getValidSrcImg();
@@ -655,13 +611,13 @@ public class Images implements Flushable, Serializable {
     }
 
     /**
-     * 给图片添加全屏图片水印
+     * Adds a full-screen image watermark to the image.
      *
-     * @param pressImage 水印图片
-     * @param lineHeight 行高
-     * @param degree     旋转角度，（单位：弧度），以圆点（0,0）为圆心，正代表顺时针，负代表逆时针
-     * @param alpha      透明度：alpha 必须是范围 [0.0, 1.0] 之内（包含边界值）的一个浮点数字
-     * @return this imashimaro
+     * @param pressImage The watermark image.
+     * @param lineHeight The line height.
+     * @param degree     The rotation angle in degrees.
+     * @param alpha      The opacity of the watermark (0.0 to 1.0).
+     * @return This {@code Images} instance for method chaining.
      */
     public Images pressImageFull(final Image pressImage, final int lineHeight, final int degree, final float alpha) {
         final BufferedImage targetImage = ImageKit.toBufferedImage(getValidSrcImg(), this.targetImageType);
@@ -669,18 +625,14 @@ public class Images implements Flushable, Serializable {
         final int targetHeight = targetImage.getHeight();
         final int targetWidth = targetImage.getWidth();
 
-        // 创建画笔，并设置透明度和角度
         final Graphics2D g = targetImage.createGraphics();
-        // 基于图片中心旋转
         g.rotate(Math.toRadians(degree), targetWidth >> 1, targetHeight >> 1);
         g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, alpha));
 
-        // 获取水印图片本身的长宽
         final int pressImageWidth = pressImage.getWidth(null);
         final int pressImageHeight = pressImage.getHeight(null);
         final Dimension dimension = new Dimension(pressImageWidth, pressImageHeight);
         final int intervalHeight = dimension.height * lineHeight;
-        // 在画笔按照画布中心旋转后，达到45度时，上下左右会出现空白区，此处各延伸长款的1.5倍实现全覆盖
         int y = -targetHeight >> 1;
         while (y < targetHeight * 1.5) {
             int x = -targetWidth >> 1;
@@ -696,14 +648,13 @@ public class Images implements Flushable, Serializable {
     }
 
     /**
-     * 旋转图片为指定角度 来自：<a href="http://blog.51cto.com/cping1982/130066">http://blog.51cto.com/cping1982/130066</a>
+     * Rotates the image by a specified angle.
      *
-     * @param degree 旋转角度
-     * @return 旋转后的图片
+     * @param degree The rotation angle in degrees.
+     * @return This {@code Images} instance for method chaining.
      */
     public Images rotate(final int degree) {
         if (0 == degree) {
-            // 不旋转
             return this;
         }
         final Image image = getValidSrcImg();
@@ -711,19 +662,13 @@ public class Images implements Flushable, Serializable {
         final int height = image.getHeight(null);
         final Rectangle rectangle = calcRotatedSize(width, height, degree);
 
-        // 目标图像
         final BufferedImage targetImg = new BufferedImage(rectangle.width, rectangle.height, getTypeInt());
-        // 创建画笔并填充背景色
         final Graphics2D graphics2d = ImageKit.createGraphics(targetImg, this.backgroundColor);
 
         graphics2d.setRenderingHints(
-                RenderingHintsBuilder.of()
-                        // 抗锯齿
-                        .setAntialiasing(RenderingHintsBuilder.Antialias.ON)
-                        // 双线性插值
-                        .setInterpolation(RenderingHintsBuilder.Interpolation.BILINEAR).build());
+                RenderHintsBuilder.of().setAntialiasing(RenderHintsBuilder.Antialias.ON)
+                        .setInterpolation(RenderHintsBuilder.Interpolation.BILINEAR).build());
 
-        // 从中心旋转
         graphics2d.translate((rectangle.width - width) / 2D, (rectangle.height - height) / 2D);
         graphics2d.rotate(Math.toRadians(degree), width / 2D, height / 2D);
 
@@ -734,9 +679,9 @@ public class Images implements Flushable, Serializable {
     }
 
     /**
-     * 水平翻转图像
+     * Flips the image horizontally.
      *
-     * @return this
+     * @return This {@code Images} instance for method chaining.
      */
     public Images flip() {
         final Image image = getValidSrcImg();
@@ -752,22 +697,22 @@ public class Images implements Flushable, Serializable {
     }
 
     /**
-     * 描边，此方法为向内描边，会覆盖图片相应的位置
+     * Adds a stroke (border) to the image.
      *
-     * @param color 描边颜色，默认黑色
-     * @param width 边框粗细
-     * @return this
+     * @param color The color of the stroke.
+     * @param width The width of the stroke.
+     * @return This {@code Images} instance for method chaining.
      */
     public Images stroke(final Color color, final float width) {
         return stroke(color, new BasicStroke(width));
     }
 
     /**
-     * 描边，此方法为向内描边，会覆盖图片相应的位置
+     * Adds a stroke (border) to the image with a specified {@link Stroke} object.
      *
-     * @param color  描边颜色，默认黑色
-     * @param stroke 描边属性，包括粗细、线条类型等，见{@link BasicStroke}
-     * @return this
+     * @param color  The color of the stroke.
+     * @param stroke The {@link Stroke} object defining the border properties.
+     * @return This {@code Images} instance for method chaining.
      */
     public Images stroke(final Color color, final Stroke stroke) {
         final BufferedImage image = ImageKit.toBufferedImage(getValidSrcImg(), this.targetImageType);
@@ -789,33 +734,32 @@ public class Images implements Flushable, Serializable {
     }
 
     /**
-     * 获取处理过的图片
+     * Retrieves the processed image.
      *
-     * @return 处理过的图片
+     * @return The processed {@link Image}.
      */
     public Image getImg() {
         return getValidSrcImg();
     }
 
     /**
-     * 写出图像为结果设置格式 结果类型设定见{@link #setTargetImageType(String)}
+     * Writes the processed image to an {@link OutputStream}.
      *
-     * @param out 写出到的目标流
-     * @return this
-     * @throws InternalException IO异常
+     * @param out The output stream to write to.
+     * @return This {@code Images} instance for method chaining.
+     * @throws InternalException if an I/O error occurs.
      */
     public Images write(final OutputStream out) throws InternalException {
         write(ImageKit.getImageOutputStream(out));
-
         return this;
     }
 
     /**
-     * 写出图像为结果设置格式 结果类型设定见{@link #setTargetImageType(String)}
+     * Writes the processed image to an {@link ImageOutputStream}.
      *
-     * @param targetImageStream 写出到的目标流
-     * @return this
-     * @throws InternalException IO异常
+     * @param targetImageStream The target image output stream.
+     * @return This {@code Images} instance for method chaining.
+     * @throws InternalException if an I/O error occurs.
      */
     public Images write(final ImageOutputStream targetImageStream) throws InternalException {
         Assert.notBlank(this.targetImageType, "Target image type is blank !");
@@ -830,11 +774,11 @@ public class Images implements Flushable, Serializable {
     }
 
     /**
-     * 写出图像为目标文件扩展名对应的格式
+     * Writes the processed image to a file.
      *
-     * @param destFile 目标文件
-     * @return this
-     * @throws InternalException IO异常
+     * @param destFile The destination file.
+     * @return This {@code Images} instance for method chaining.
+     * @throws InternalException if an I/O error occurs.
      */
     public Images write(final File destFile) throws InternalException {
         final String formatName = FileName.extName(destFile);
@@ -863,13 +807,13 @@ public class Images implements Flushable, Serializable {
     }
 
     /**
-     * 将图片绘制在背景上
+     * Draws an image onto a background image.
      *
-     * @param backgroundImg 背景图片
-     * @param img           要绘制的图片
-     * @param rectangle     矩形对象，表示矩形区域的x，y，width，height，x,y从背景图片中心计算（如果positionBaseCentre为true）
-     * @param alpha         透明度：alpha 必须是范围 [0.0, 1.0] 之内（包含边界值）的一个浮点数字
-     * @return 绘制后的背景
+     * @param backgroundImg The background image.
+     * @param img           The image to draw.
+     * @param rectangle     The position and size of the image to draw.
+     * @param alpha         The opacity of the image.
+     * @return The resulting image.
      */
     private BufferedImage draw(
             final BufferedImage backgroundImg,
@@ -887,14 +831,11 @@ public class Images implements Flushable, Serializable {
     }
 
     /**
-     * 获取int类型的图片类型
+     * Gets the integer representation of the image type.
      *
-     * @return 图片类型
-     * @see BufferedImage#TYPE_INT_ARGB
-     * @see BufferedImage#TYPE_INT_RGB
+     * @return The image type as an integer.
      */
     private int getTypeInt() {
-        // noinspection SwitchStatementWithTooFewBranches
         switch (this.targetImageType) {
             case ImageKit.IMAGE_TYPE_PNG:
                 return BufferedImage.TYPE_INT_ARGB;
@@ -905,35 +846,34 @@ public class Images implements Flushable, Serializable {
     }
 
     /**
-     * 获取有效的源图片，首先检查上一次处理的结果图片，如无则使用用户传入的源图片
+     * Gets the valid source image, which is the result of the previous operation or the original source image.
      *
-     * @return 有效的源图片
+     * @return The valid source image.
      */
     private Image getValidSrcImg() {
         return ObjectKit.defaultIfNull(this.targetImage, this.srcImage);
     }
 
     /**
-     * 获取有效的源{@link BufferedImage}图片，首先检查上一次处理的结果图片，如无则使用用户传入的源图片
+     * Gets the valid source image as a {@link BufferedImage}.
      *
-     * @return 有效的源图片
+     * @return The valid source image as a {@link BufferedImage}.
      */
     private BufferedImage getValidSrcBufferedImg() {
         return ImageKit.toBufferedImage(getValidSrcImg(), this.targetImageType);
     }
 
     /**
-     * 修正矩形框位置，如果{@link Images#setPositionBaseCentre(boolean)} 设为{@code true}， 则坐标修正为基于图形中心，否则基于左上角
+     * Adjusts the rectangle's position based on whether the coordinate system is center-based.
      *
-     * @param rectangle  矩形
-     * @param baseWidth  参考宽
-     * @param baseHeight 参考高
-     * @return 修正后的{@link Rectangle}
+     * @param rectangle  The rectangle to adjust.
+     * @param baseWidth  The reference width.
+     * @param baseHeight The reference height.
+     * @return The adjusted {@link Rectangle}.
      */
     private Rectangle fixRectangle(final Rectangle rectangle, final int baseWidth, final int baseHeight) {
         if (this.positionBaseCentre) {
             final Point pointBaseCentre = ImageKit.getPointBaseCentre(rectangle, baseWidth, baseHeight);
-            // 修正图片位置从背景的中心计算
             rectangle.setLocation(pointBaseCentre.x, pointBaseCentre.y);
         }
         return rectangle;

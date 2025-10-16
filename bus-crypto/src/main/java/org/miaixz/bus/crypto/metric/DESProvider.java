@@ -33,7 +33,8 @@ import org.miaixz.bus.crypto.Provider;
 import org.miaixz.bus.crypto.center.DES;
 
 /**
- * 数据加密标准,速度较快,适用于加密大量数据的场合
+ * Provides an implementation for the Data Encryption Standard (DES) algorithm. DES is a relatively fast encryption
+ * standard, suitable for scenarios requiring the encryption of large amounts of data.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -41,10 +42,13 @@ import org.miaixz.bus.crypto.center.DES;
 public class DESProvider implements Provider {
 
     /**
-     * 加密
+     * Encrypts the given content using DES with the provided key.
      *
-     * @param key     密钥
-     * @param content 需要加密的内容
+     * @param key     The encryption key as a string. It will be converted to bytes using the platform's default
+     *                charset.
+     * @param content The content to be encrypted as a byte array.
+     * @return The encrypted content as a byte array.
+     * @throws InternalException if the key is null or empty.
      */
     @Override
     public byte[] encrypt(String key, byte[] content) {
@@ -56,10 +60,13 @@ public class DESProvider implements Provider {
     }
 
     /**
-     * 解密
+     * Decrypts the given content using DES with the provided key.
      *
-     * @param key     密钥
-     * @param content 需要解密的内容
+     * @param key     The decryption key as a string. It will be converted to bytes using the platform's default
+     *                charset.
+     * @param content The content to be decrypted as a byte array.
+     * @return The decrypted content as a byte array.
+     * @throws InternalException if the key is null or empty.
      */
     @Override
     public byte[] decrypt(String key, byte[] content) {

@@ -36,7 +36,8 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * Base16（Hex）编码解码器 十六进制（简写为hex或下标16）在数学中是一种逢16进1的进位制，一般用数字0到9和字母A到F表示（其中:A~F即10~15）。 例如十进制数57，在二进制写作111001，在16进制写作39。
+ * Base16 (Hex) encoder and decoder. Hexadecimal is a base-16 numeral system, using 16 symbols: 0-9 and A-F. For
+ * example, the decimal number 57 is represented as 111001 in binary and 39 in hexadecimal.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -47,34 +48,34 @@ public class Base16Provider implements Encoder<byte[], char[]>, Decoder<CharSequ
     private static final long serialVersionUID = 2852258525806L;
 
     /**
-     * 编码解码器：小写
+     * The lowercase Base16 codec.
      */
     public static final Base16Provider CODEC_LOWER = new Base16Provider(true);
     /**
-     * 编码解码器：大写
+     * The uppercase Base16 codec.
      */
     public static final Base16Provider CODEC_UPPER = new Base16Provider(false);
     /**
-     * 创建Base16编码器
+     * The character alphabet used for encoding.
      */
     private final char[] alphabets;
 
     /**
-     * 构造
+     * Constructs a new Base16Provider.
      *
-     * @param lowerCase 是否小写
+     * @param lowerCase {@code true} for lowercase output, {@code false} for uppercase.
      */
     public Base16Provider(final boolean lowerCase) {
         this.alphabets = (lowerCase ? "0123456789abcdef" : "0123456789ABCDEF").toCharArray();
     }
 
     /**
-     * 将十六进制字符转换成一个整数
+     * Converts a hexadecimal character to an integer.
      *
-     * @param ch    十六进制char
-     * @param index 十六进制字符在字符数组中的位置
-     * @return 一个整数
-     * @throws InternalException 当ch不是一个合法的十六进制字符时，抛出运行时异常
+     * @param ch    The hexadecimal character.
+     * @param index The index of the character in the input sequence.
+     * @return The integer value.
+     * @throws InternalException if the character is not a valid hexadecimal digit.
      */
     private static int toDigit(final char ch, final int index) {
         final int digit = Character.digit(ch, 16);
@@ -84,20 +85,32 @@ public class Base16Provider implements Encoder<byte[], char[]>, Decoder<CharSequ
         return digit;
     }
 
+    /**
+     * Encodes a byte array into a hexadecimal character array.
+     *
+     * @param data The byte array to encode.
+     * @return The resulting hexadecimal character array.
+     */
     @Override
     public char[] encode(final byte[] data) {
         final int len = data.length;
-        final char[] out = new char[len << 1];// len*2
-        // 十六进制值中的两个字符
+        final char[] out = new char[len << 1]; // len * 2
+        // Two characters for each byte
         for (int i = 0, j = 0; i < len; i++) {
-            // 高位
+            // High nibble
             out[j++] = hexDigit(data[i] >> 4);
-            // 低位
+            // Low nibble
             out[j++] = hexDigit(data[i]);
         }
         return out;
     }
 
+    /**
+     * Decodes a hexadecimal character sequence into a byte array.
+     *
+     * @param encoded The hexadecimal character sequence to decode.
+     * @return The decoded byte array, or {@code null} if the input is empty.
+     */
     @Override
     public byte[] decode(CharSequence encoded) {
         if (StringKit.isEmpty(encoded)) {
@@ -108,14 +121,14 @@ public class Base16Provider implements Encoder<byte[], char[]>, Decoder<CharSequ
         int len = encoded.length();
 
         if ((len & 0x01) != 0) {
-            // 如果提供的数据是奇数长度，则前面补0凑偶数
+            // If the input has an odd length, pad with a leading zero.
             encoded = "0" + encoded;
             len = encoded.length();
         }
 
         final byte[] out = new byte[len >> 1];
 
-        // 十六进制值中的两个字符
+        // Two characters for each byte
         for (int i = 0, j = 0; j < len; i++) {
             int f = toDigit(encoded.charAt(j), j) << 4;
             j++;
@@ -128,37 +141,38 @@ public class Base16Provider implements Encoder<byte[], char[]>, Decoder<CharSequ
     }
 
     /**
-     * 将指定char值转换为Unicode字符串形式，常用于特殊字符（例如汉字）转Unicode形式 转换的字符串如果u后不足4位，则前面用0填充，例如：
-     *
+     * Converts a character to its Unicode string representation (e.g., {@code \u4f60}). The resulting string is padded
+     * with leading zeros if necessary to ensure a 4-digit hex value.
+     * 
      * <pre>
-     * 你 = &#92;u4f60
+     * toUnicodeHex('你') = "\\u4f60"
      * </pre>
      *
-     * @param ch char值
-     * @return Unicode表现形式
+     * @param ch The character to convert.
+     * @return The Unicode string representation.
      */
     public String toUnicodeHex(final char ch) {
         return "\\u" + hexDigit(ch >> 12) + hexDigit(ch >> 8) + hexDigit(ch >> 4) + hexDigit(ch);
     }
 
     /**
-     * 将byte值转为16进制并添加到{@link StringBuilder}中
+     * Appends the hexadecimal representation of a byte to a {@link StringBuilder}.
      *
-     * @param builder {@link StringBuilder}
-     * @param b       byte
+     * @param builder The {@link StringBuilder} to append to.
+     * @param b       The byte to convert.
      */
     public void appendHex(final StringBuilder builder, final byte b) {
-        // 高位
+        // High nibble
         builder.append(hexDigit(b >> 4));
-        // 低位
+        // Low nibble
         builder.append(hexDigit(b));
     }
 
     /**
-     * 将byte值转为16进制
+     * Converts a 4-bit value (nibble) to its hexadecimal character representation.
      *
-     * @param b byte
-     * @return the hex char
+     * @param b The integer value (only the lower 4 bits are used).
+     * @return The corresponding hexadecimal character.
      */
     public char hexDigit(final int b) {
         return alphabets[b & 0x0f];

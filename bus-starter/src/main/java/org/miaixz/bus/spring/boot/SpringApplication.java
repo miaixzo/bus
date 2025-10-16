@@ -39,11 +39,12 @@ import org.springframework.core.GenericTypeResolver;
 import org.springframework.core.io.ResourceLoader;
 
 /**
- * 扩展 {@link org.springframework.boot.SpringApplication}，计算 {@link ApplicationContextInitializer} 初始化时间。
+ * An extension of {@link org.springframework.boot.SpringApplication} that calculates the initialization time of each
+ * {@link ApplicationContextInitializer}.
  * <p>
- * 该类继承自Spring Boot的SpringApplication，增加了对ApplicationContextInitializer初始化时间的统计功能。
- * 通过记录每个初始化器的开始和结束时间，计算初始化耗时，并将统计信息存储在列表中，便于后续分析。
- * </p>
+ * This class inherits from Spring Boot's {@code SpringApplication} and adds functionality to track the startup time of
+ * {@code ApplicationContextInitializer} instances. By recording the start and end times for each initializer, it
+ * calculates the time taken and stores the statistics for later analysis.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -51,65 +52,57 @@ import org.springframework.core.io.ResourceLoader;
 public class SpringApplication extends org.springframework.boot.SpringApplication {
 
     /**
-     * 存储所有ApplicationContextInitializer的初始化统计信息列表
+     * A list that stores the startup statistics for all {@link ApplicationContextInitializer} instances.
      */
     private final List<BaseMetrics> initializerStartupStatList = new ArrayList<>();
 
     /**
-     * 使用主源类创建一个新的SpringApplication实例
+     * Creates a new {@code SpringApplication} instance from the specified primary source classes.
      *
-     * @param primarySources 主源类数组
+     * @param primarySources the primary source classes.
      */
     public SpringApplication(Class<?>... primarySources) {
         super(primarySources);
     }
 
     /**
-     * 使用资源加载器和主源类创建一个新的SpringApplication实例
+     * Creates a new {@code SpringApplication} instance with a specific {@link ResourceLoader} and primary source
+     * classes.
      *
-     * @param resourceLoader 资源加载器
-     * @param primarySources 主源类数组
+     * @param resourceLoader the resource loader to use.
+     * @param primarySources the primary source classes.
      */
     public SpringApplication(ResourceLoader resourceLoader, Class<?>... primarySources) {
         super(resourceLoader, primarySources);
     }
 
     /**
-     * 使用主源类和参数运行Spring应用程序
-     * <p>
-     * 这是一个静态工厂方法，用于创建并运行SpringApplication实例
-     * </p>
+     * A static helper that can be used to run a {@code SpringApplication} from a single primary source class.
      *
-     * @param primarySource 主源类
-     * @param args          命令行参数
-     * @return 可配置的应用程序上下文
+     * @param primarySource the primary source class.
+     * @param args          the command line arguments.
+     * @return the running {@link ConfigurableApplicationContext}.
      */
     public static ConfigurableApplicationContext run(Class<?> primarySource, String... args) {
         return run(new Class<?>[] { primarySource }, args);
     }
 
     /**
-     * 使用主源类数组和参数运行Spring应用程序
-     * <p>
-     * 这是一个静态工厂方法，用于创建并运行SpringApplication实例
-     * </p>
+     * A static helper that can be used to run a {@code SpringApplication} from the specified primary source classes.
      *
-     * @param primarySources 主源类数组
-     * @param args           命令行参数
-     * @return 可配置的应用程序上下文
+     * @param primarySources the primary source classes.
+     * @param args           the command line arguments.
+     * @return the running {@link ConfigurableApplicationContext}.
      */
     public static ConfigurableApplicationContext run(Class<?>[] primarySources, String[] args) {
         return new SpringApplication(primarySources).run(args);
     }
 
     /**
-     * 运行Spring应用程序
-     * <p>
-     * 重写父类的run方法，保持原有功能不变
-     * </p>
+     * Runs the Spring application, creating and refreshing a new {@link ConfigurableApplicationContext}.
      *
-     * @param args 命令行参数
-     * @return 可配置的应用程序上下文
+     * @param args the command line arguments.
+     * @return the running {@link ConfigurableApplicationContext}.
      */
     @Override
     public ConfigurableApplicationContext run(String... args) {
@@ -117,51 +110,53 @@ public class SpringApplication extends org.springframework.boot.SpringApplicatio
     }
 
     /**
-     * 应用所有已注册的ApplicationContextInitializer
+     * Applies all registered {@link ApplicationContextInitializer} instances to the given context.
      * <p>
-     * 重写父类的applyInitializers方法，增加了对初始化器执行时间的统计功能。 在执行每个初始化器之前记录开始时间，执行完成后记录结束时间，计算耗时并保存统计信息。
+     * This method overrides the parent implementation to add timing statistics for each initializer. It records the
+     * start time before an initializer is executed and the end time after it completes, calculating the duration and
+     * storing the information.
      * </p>
      *
-     * @param context 可配置的应用程序上下文
+     * @param context the application context to initialize.
      */
     @Override
     protected void applyInitializers(ConfigurableApplicationContext context) {
         for (ApplicationContextInitializer initializer : getInitializers()) {
             try {
-                // 解析初始化器所需的上下文类型
+                // Resolve the context type required by the initializer.
                 Class<?> requiredType = GenericTypeResolver
                         .resolveTypeArgument(initializer.getClass(), ApplicationContextInitializer.class);
-                // 验证上下文类型是否匹配
+                // Verify that the context is of the required type.
                 Assert.isInstanceOf(
                         requiredType,
                         context,
                         "Unable to call initializer: " + initializer.getClass().getName());
 
-                // 创建统计对象并记录开始时间
+                // Create a statistics object and record the start time.
                 BaseMetrics stat = new BaseMetrics();
                 stat.setName(initializer.getClass().getName());
                 stat.setStartTime(System.currentTimeMillis());
 
-                // 执行初始化
+                // Execute the initializer.
                 initializer.initialize(context);
 
-                // 记录结束时间并计算耗时
+                // Record the end time and calculate the duration.
                 stat.setEndTime(System.currentTimeMillis());
                 initializerStartupStatList.add(stat);
 
-                // 输出调试日志
+                // Log the initialization time.
                 Logger.debug("Initialized {} in {} ms", stat.getName(), stat.getCost());
             } catch (Exception e) {
-                // 输出警告日志
+                // Log any exceptions that occur during initialization.
                 Logger.warn("Failed to initialize {}: {}", initializer.getClass().getName(), e.getMessage());
             }
         }
     }
 
     /**
-     * 获取所有ApplicationContextInitializer的初始化统计信息列表
+     * Gets the list of startup statistics for all applied {@link ApplicationContextInitializer} instances.
      *
-     * @return 初始化统计信息列表
+     * @return a list of initialization statistics.
      */
     public List<BaseMetrics> getInitializerStartupStatList() {
         return initializerStartupStatList;

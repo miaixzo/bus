@@ -35,8 +35,10 @@ import org.miaixz.bus.http.plugin.sse.EventSourceListener;
 import java.io.IOException;
 
 /**
- * 实现服务器推送事件（Server-Sent Events, SSE）的核心类，负责与服务器建立连接并处理事件流。 实现 {@link EventSource} 接口以提供请求和取消功能，实现
- * {@link ServerSentEventReader.Callback} 接口以处理事件数据，实现 {@link Callback} 接口以处理 HTTP 响应。
+ * The core implementation for Server-Sent Events (SSE), responsible for establishing a connection with the server and
+ * processing the event stream. It implements the {@link EventSource} interface to provide request and cancellation
+ * functionality, the {@link ServerSentEventReader.Callback} interface to handle event data, and the {@link Callback}
+ * interface to process HTTP responses.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,30 +46,30 @@ import java.io.IOException;
 public final class RealEventSource implements EventSource, ServerSentEventReader.Callback, Callback {
 
     /**
-     * 发起事件源的原始 HTTP 请求
+     * The original HTTP request that initiated the event source.
      */
     private final Request request;
 
     /**
-     * 监听事件源生命周期和事件的监听器
+     * The listener for event source lifecycle and events.
      */
     private final EventSourceListener listener;
 
     /**
-     * 用于执行 HTTP 请求的调用对象，可能为 null
+     * The HTTP call object used to execute the request, may be null.
      */
     private NewCall call;
 
     /**
-     * 标记事件源是否已被取消
+     * A flag indicating whether the event source has been canceled.
      */
     private boolean canceled;
 
     /**
-     * 构造一个新的 {@code RealEventSource} 实例。
+     * Constructs a new {@code RealEventSource} instance.
      *
-     * @param request  发起事件源的 HTTP 请求
-     * @param listener 事件源监听器，用于接收事件和状态更新
+     * @param request  The HTTP request that initiates the event source.
+     * @param listener The event source listener to receive events and status updates.
      */
     public RealEventSource(Request request, EventSourceListener listener) {
         this.request = request;
@@ -77,9 +79,10 @@ public final class RealEventSource implements EventSource, ServerSentEventReader
     }
 
     /**
-     * 使用指定的调用工厂建立事件源连接。 创建一个新的 HTTP 调用并异步执行，触发 {@link Callback} 的回调方法。
+     * Establishes the event source connection using the specified call factory. Creates a new HTTP call and executes it
+     * asynchronously, triggering the callback methods.
      *
-     * @param callFactory 用于创建 HTTP 调用的工厂
+     * @param callFactory The factory used to create HTTP calls.
      */
     public void connect(NewCall.Factory callFactory) {
         call = callFactory.newCall(request);
@@ -87,10 +90,10 @@ public final class RealEventSource implements EventSource, ServerSentEventReader
     }
 
     /**
-     * 处理 HTTP 响应，调用 {@link #processResponse(Response)} 方法进行具体处理。
+     * Handles the HTTP response, delegating to {@link #processResponse(Response)} for detailed processing.
      *
-     * @param call     发起请求的调用对象
-     * @param response 服务器返回的 HTTP 响应
+     * @param call     The call that initiated the request.
+     * @param response The HTTP response from the server.
      */
     @Override
     public void onResponse(NewCall call, Response response) {
@@ -98,9 +101,10 @@ public final class RealEventSource implements EventSource, ServerSentEventReader
     }
 
     /**
-     * 处理服务器推送事件的响应，解析事件流并触发监听器回调。 验证响应状态和内容类型，处理事件流数据，并在完成后关闭连接。
+     * Processes the server-sent event response, parses the event stream, and triggers listener callbacks. Validates the
+     * response status and content type, handles event stream data, and closes the connection upon completion.
      *
-     * @param response 服务器返回的 HTTP 响应
+     * @param response The HTTP response from the server.
      */
     public void processResponse(Response response) {
         try (Response ignored = response) {
@@ -123,19 +127,19 @@ public final class RealEventSource implements EventSource, ServerSentEventReader
                 return;
             }
 
-            // 这是一个长期连接的响应，取消整个调用的超时
+            // This is a long-lived response, so cancel the timeout for the entire call.
             if (call instanceof RealCall) {
                 ((RealCall) call).timeoutEarlyExit();
             }
 
-            // 用空响应体替换原始响应体，防止回调访问实际数据
+            // Replace the original response body with an empty one to prevent callbacks from accessing actual data.
             Response modifiedResponse = response.newBuilder().body(Builder.EMPTY_RESPONSE).build();
 
             ServerSentEventReader reader = new ServerSentEventReader(body.source(), this);
             try {
                 listener.onOpen(this, modifiedResponse);
                 while (reader.processNextEvent()) {
-                    // 持续处理事件
+                    // Continue processing events.
                 }
             } catch (Exception e) {
                 listener.onFailure(this, e, modifiedResponse);
@@ -146,10 +150,10 @@ public final class RealEventSource implements EventSource, ServerSentEventReader
     }
 
     /**
-     * 检查响应体是否为服务器推送事件流（Content-Type: text/event-stream）。
+     * Checks if the response body's content type is {@code text/event-stream}.
      *
-     * @param body 响应体
-     * @return 如果是事件流返回 true，否则返回 false
+     * @param body The response body.
+     * @return {@code true} if the content type is {@code text/event-stream}, {@code false} otherwise.
      */
     private boolean isEventStream(ResponseBody body) {
         if (body.contentType() == null) {
@@ -159,10 +163,10 @@ public final class RealEventSource implements EventSource, ServerSentEventReader
     }
 
     /**
-     * 处理 HTTP 请求失败的情况，通知监听器。
+     * Handles HTTP request failures, notifying the listener.
      *
-     * @param call 发起请求的调用对象
-     * @param e    发生的 I/O 异常
+     * @param call The call that initiated the request.
+     * @param e    The I/O exception that occurred.
      */
     @Override
     public void onFailure(NewCall call, IOException e) {
@@ -170,9 +174,9 @@ public final class RealEventSource implements EventSource, ServerSentEventReader
     }
 
     /**
-     * 返回发起事件源的原始请求。
+     * Returns the original request that initiated the event source.
      *
-     * @return 原始 HTTP 请求
+     * @return The original HTTP request.
      */
     @Override
     public Request request() {
@@ -180,7 +184,8 @@ public final class RealEventSource implements EventSource, ServerSentEventReader
     }
 
     /**
-     * 取消事件源连接，仅在未取消且调用对象存在时执行。
+     * Cancels the event source connection. This operation is performed only if the event source has not already been
+     * canceled and a call object exists.
      */
     @Override
     public void cancel() {
@@ -191,11 +196,11 @@ public final class RealEventSource implements EventSource, ServerSentEventReader
     }
 
     /**
-     * 处理接收到的事件数据，通知监听器。
+     * Processes received event data, notifying the listener.
      *
-     * @param id   事件 ID，可能为 null
-     * @param type 事件类型，可能为 null
-     * @param data 事件数据
+     * @param id   The event ID, which may be null.
+     * @param type The event type, which may be null.
+     * @param data The event data.
      */
     @Override
     public void onEvent(String id, String type, String data) {
@@ -203,13 +208,13 @@ public final class RealEventSource implements EventSource, ServerSentEventReader
     }
 
     /**
-     * 处理重试时间的变化（retry 字段），当前实现忽略自动重试。
+     * Handles changes in retry time (from the 'retry' field). The current implementation ignores automatic retries.
      *
-     * @param timeMs 重试时间（毫秒）
+     * @param timeMs The retry time in milliseconds.
      */
     @Override
     public void onRetryChange(long timeMs) {
-        // 忽略，不执行自动重试
+        // Ignored, no automatic retries are performed.
     }
 
 }

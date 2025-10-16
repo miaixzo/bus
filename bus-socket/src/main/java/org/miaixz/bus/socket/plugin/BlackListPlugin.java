@@ -27,21 +27,25 @@
 */
 package org.miaixz.bus.socket.plugin;
 
+import org.miaixz.bus.logger.Logger;
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import org.miaixz.bus.logger.Logger;
-
 /**
- * 黑名单插件,会拒绝与黑名单中的IP建立连接
+ * A plugin that rejects connections from IP addresses on a blacklist.
  *
+ * @param <T> the type of message object entity handled by this plugin
  * @author Kimi Liu
  * @since Java 17+
  */
 public final class BlackListPlugin<T> extends AbstractPlugin<T> {
 
+    /**
+     * A queue of {@link BlackListRule} instances that define which IP addresses are blacklisted.
+     */
     private ConcurrentLinkedQueue<BlackListRule> ipBlackList = new ConcurrentLinkedQueue<>();
 
     @Override
@@ -50,13 +54,16 @@ public final class BlackListPlugin<T> extends AbstractPlugin<T> {
         try {
             inetSocketAddress = (InetSocketAddress) channel.getRemoteAddress();
         } catch (IOException e) {
-            Logger.error("get remote address error.", e);
+            Logger.error("Failed to get remote address for channel.", e);
         }
         if (inetSocketAddress == null) {
             return channel;
         }
         for (BlackListRule rule : ipBlackList) {
             if (!rule.access(inetSocketAddress)) {
+                Logger.warn(
+                        "Connection from blacklisted IP: " + inetSocketAddress.getAddress().getHostAddress()
+                                + " rejected.");
                 return null;
             }
         }
@@ -64,33 +71,33 @@ public final class BlackListPlugin<T> extends AbstractPlugin<T> {
     }
 
     /**
-     * 添加黑名单失败规则
+     * Adds a blacklist rule to this plugin.
      *
-     * @param rule 规则
+     * @param rule the {@link BlackListRule} to add
      */
     public void addRule(BlackListRule rule) {
         ipBlackList.add(rule);
     }
 
     /**
-     * 移除黑名单规则
+     * Removes a blacklist rule from this plugin.
      *
-     * @param rule 规则
+     * @param rule the {@link BlackListRule} to remove
      */
     public void removeRule(BlackListRule rule) {
         ipBlackList.remove(rule);
     }
 
     /**
-     * 黑名单规则定义
+     * Defines a rule for blacklisting IP addresses.
      */
     public interface BlackListRule {
 
         /**
-         * 是否允许建立连接
+         * Determines whether a connection from the given address should be allowed.
          *
-         * @param address 地址
-         * @return the true/false
+         * @param address the {@link InetSocketAddress} of the remote client
+         * @return {@code true} if the connection is allowed, {@code false} if it should be rejected
          */
         boolean access(InetSocketAddress address);
     }

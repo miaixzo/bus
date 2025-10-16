@@ -40,36 +40,44 @@ import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.xyz.*;
 
 /**
- * 单元素的扩展流实现。基于原生Stream进行了封装和增强。 作者经对比了vavr、eclipse-collection、stream-ex以及其他语言的api，结合日常使用习惯，进行封装和拓展
- * Stream为集合提供了一些易用api，它让开发人员能使用声明式编程的方式去编写代码。
+ * An extended stream implementation for single elements. It encapsulates and enhances the native Stream API. This
+ * implementation is inspired by comparisons with vavr, eclipse-collections, stream-ex, and other language APIs,
+ * combining daily usage habits for encapsulation and extension. Stream provides easy-to-use APIs for collections,
+ * allowing developers to write code in a declarative programming style.
  *
  * <p>
- * 中间操作和结束操作
- * </p>
+ * Intermediate Operations and Terminal Operations
+ * 
  * <p>
- * 针对流的操作分为分为<em>中间操作</em>和<em>结束操作</em>, 流只有在<em>结束操作</em>时才会真正触发执行以往的<em>中间操作</em>。 <strong>中间操作</strong>：
+ * Stream operations are divided into <em>intermediate operations</em> and <em>terminal operations</em>. A stream only
+ * truly executes its previous <em>intermediate operations</em> when a <em>terminal operation</em> is performed.
+ * <strong>Intermediate Operations</strong>:
  * <ul>
- * <li>无状态中间操作: 表示不用等待 所有元素的当前操作执行完 就可以执行的操作，不依赖之前历史操作的流的状态；</li>
- * <li>有状态中间操作: 表示需要等待 所有元素的当前操作执行完 才能执行的操作,依赖之前历史操作的流的状态；</li>
+ * <li>Stateless Intermediate Operations: Operations that do not require all elements to complete their current
+ * operation before proceeding, and do not depend on the state of previous stream operations.</li>
+ * <li>Stateful Intermediate Operations: Operations that require all elements to complete their current operation before
+ * proceeding, and depend on the state of previous stream operations.</li>
  * </ul>
- * <strong>结束操作</strong>：
+ * <strong>Terminal Operations</strong>:
  * <ul>
- * <li>短路结束操作: 表示不用等待 所有元素的当前操作执行完 就可以执行的操作；</li>
- * <li>非短路结束操作: 表示需要等待 所有元素的当前操作执行完 才能执行的操作；</li>
+ * <li>Short-circuiting Terminal Operations: Operations that do not require all elements to complete their current
+ * operation before returning a result.</li>
+ * <li>Non-short-circuiting Terminal Operations: Operations that require all elements to complete their current
+ * operation before returning a result.</li>
  * </ul>
  *
  * <p>
- * 串行流与并行流
- * </p>
- * 流分为<em>串行流</em>和<em>并行流</em>两类：
+ * Sequential Streams and Parallel Streams
+ * 
+ * Streams are divided into two types: <em>sequential streams</em> and <em>parallel streams</em>:
  * <ul>
- * <li>串行流：针对流的所有操作都会通过当前线程完成；</li>
- * <li>并行流：针对流的操作会通过拆分器{@link Spliterator}拆分为多个异步任务{@link java.util.concurrent.ForkJoinTask}执行，
- * 这些异步任务默认使用{@link java.util.concurrent.ForkJoinPool}线程池进行管理；</li>
+ * <li>Sequential Streams: All operations on the stream are performed by the current thread.</li>
+ * <li>Parallel Streams: Operations on the stream are split into multiple asynchronous tasks by a {@link Spliterator},
+ * and these asynchronous tasks are managed by a default {@link java.util.concurrent.ForkJoinPool} thread pool.</li>
  * </ul>
- * 不同类型的流可以通过{@link #sequential()}或{@link #parallel()}互相转换。
+ * Different types of streams can be converted to each other using {@link #sequential()} or {@link #parallel()}.
  *
- * @param <T> 对象类型
+ * @param <T> the type of the elements in the stream
  * @author Kimi Liu
  * @see java.util.stream.Stream
  * @since Java 17+
@@ -77,33 +85,47 @@ import org.miaixz.bus.core.xyz.*;
 public class EasyStream<T> extends EnhancedWrappedStream<T, EasyStream<T>> {
 
     /**
-     * 构造
+     * Constructs an {@code EasyStream} from a given {@link Stream}. If the provided stream is {@code null}, an empty
+     * stream will be used.
      *
-     * @param stream {@link Stream}
+     * @param stream the {@link Stream} to wrap
      */
     EasyStream(final Stream<T> stream) {
         super(ObjectKit.isNull(stream) ? Stream.empty() : stream);
     }
 
     /**
-     * 返回{@code FastStream}的建造器
+     * Returns a builder for {@code EasyStream}.
      *
-     * @param <T> 元素的类型
-     * @return a unwrap builder
+     * @param <T> the type of the elements
+     * @return a new {@link Builder} instance
      */
     public static <T> Builder<T> builder() {
         return new Builder<>() {
 
+            /**
+             * The serial version UID.
+             */
             @Serial
             private static final long serialVersionUID = 2852271123932L;
 
             private final Stream.Builder<T> streamBuilder = Stream.builder();
 
+            /**
+             * Adds an element to the stream being built.
+             *
+             * @param t the element to add
+             */
             @Override
             public void accept(final T t) {
                 streamBuilder.accept(t);
             }
 
+            /**
+             * Builds the {@code EasyStream}.
+             *
+             * @return the built {@code EasyStream}
+             */
             @Override
             public EasyStream<T> build() {
                 return new EasyStream<>(streamBuilder.build());
@@ -112,32 +134,33 @@ public class EasyStream<T> extends EnhancedWrappedStream<T, EasyStream<T>> {
     }
 
     /**
-     * 返回空的串行流
+     * Returns an empty sequential {@code EasyStream}.
      *
-     * @param <T> 元素类型
-     * @return 一个空的串行流
+     * @param <T> the type of the elements
+     * @return an empty sequential {@code EasyStream}
      */
     public static <T> EasyStream<T> empty() {
         return new EasyStream<>(Stream.empty());
     }
 
     /**
-     * 返回包含单个元素的串行流
+     * Returns a sequential {@code EasyStream} containing a single element.
      *
-     * @param t   单个元素
-     * @param <T> 元素类型
-     * @return 包含单个元素的串行流
+     * @param t   the single element
+     * @param <T> the type of the element
+     * @return a sequential {@code EasyStream} containing a single element
      */
     public static <T> EasyStream<T> of(final T t) {
         return new EasyStream<>(Stream.of(t));
     }
 
     /**
-     * 返回包含指定元素的串行流，若输入数组为{@code null}或空，则返回一个空的串行流
+     * Returns a sequential {@code EasyStream} containing the specified elements. If the input array is {@code null} or
+     * empty, an empty sequential {@code EasyStream} is returned.
      *
-     * @param values 指定元素
-     * @param <T>    元素类型
-     * @return 包含指定元素的串行流 从一个安全数组中创建流
+     * @param values the elements to be contained in the stream
+     * @param <T>    the type of the elements
+     * @return a sequential {@code EasyStream} containing the specified elements
      */
     @SafeVarargs
     public static <T> EasyStream<T> of(final T... values) {
@@ -145,23 +168,25 @@ public class EasyStream<T> extends EnhancedWrappedStream<T, EasyStream<T>> {
     }
 
     /**
-     * 通过实现了{@link Iterable}接口的对象创建串行流，若输入对象为{@code null}，则返回一个空的串行流
+     * Creates a sequential {@code EasyStream} from an object implementing the {@link Iterable} interface. If the input
+     * object is {@code null}, an empty sequential {@code EasyStream} is returned.
      *
-     * @param iterable 实现了{@link Iterable}接口的对象
-     * @param <T>      元素类型
-     * @return 流
+     * @param iterable the object implementing the {@link Iterable} interface
+     * @param <T>      the type of the elements
+     * @return an {@code EasyStream}
      */
     public static <T> EasyStream<T> of(final Iterable<T> iterable) {
         return of(iterable, false);
     }
 
     /**
-     * 通过传入的{@link Iterable}创建流，若输入对象为{@code null}，则返回一个空的串行流
+     * Creates an {@code EasyStream} from the given {@link Iterable}. If the input object is {@code null}, an empty
+     * sequential {@code EasyStream} is returned.
      *
-     * @param iterable {@link Iterable}
-     * @param parallel 是否并行
-     * @param <T>      元素类型
-     * @return 流
+     * @param iterable the {@link Iterable} to create the stream from
+     * @param parallel {@code true} if the stream should be parallel, {@code false} otherwise
+     * @param <T>      the type of the elements
+     * @return an {@code EasyStream}
      */
     public static <T> EasyStream<T> of(final Iterable<T> iterable, final boolean parallel) {
         return Optional.ofNullable(iterable).map(Iterable::spliterator)
@@ -170,42 +195,48 @@ public class EasyStream<T> extends EnhancedWrappedStream<T, EasyStream<T>> {
     }
 
     /**
-     * 通过传入的{@link Stream}创建流，若输入对象为{@code null}，则返回一个空的串行流
+     * Creates an {@code EasyStream} from the given {@link Stream}. If the input object is {@code null}, an empty
+     * sequential {@code EasyStream} is returned.
      *
-     * @param stream {@link Stream}
-     * @param <T>    元素类型
-     * @return 流
+     * @param stream the {@link Stream} to create the {@code EasyStream} from
+     * @param <T>    the type of the elements
+     * @return an {@code EasyStream}
      */
     public static <T> EasyStream<T> of(final Stream<T> stream) {
         return new EasyStream<>(stream);
     }
 
     /**
-     * 返回无限有序流 该流由 初始值 以及执行 迭代函数 进行迭代获取到元素
+     * Returns an infinite sequential ordered {@code EasyStream}. This stream is generated by an initial element and a
+     * unary operator function that is applied to the previous element to produce a new element.
      * <p>
-     * 例如 {@code FastStream.iterate(0, i -> i + 1)} 就可以创建从0开始，每次+1的无限流，使用{@link EasyStream#limit(long)}可以限制元素个数
-     * </p>
+     * For example, {@code FastStream.iterate(0, i -> i + 1)} can create an infinite stream starting from 0 and
+     * incrementing by 1. Use {@link EasyStream#limit(long)} to limit the number of elements.
+     * 
      *
-     * @param <T>  元素类型
-     * @param seed 初始值
-     * @param f    用上一个元素作为参数执行并返回一个新的元素
-     * @return 无限有序流
+     * @param <T>  the type of the elements
+     * @param seed the initial element
+     * @param f    a function that applies to the previous element to produce a new element
+     * @return an infinite sequential ordered {@code EasyStream}
      */
     public static <T> EasyStream<T> iterate(final T seed, final UnaryOperator<T> f) {
         return new EasyStream<>(Stream.iterate(seed, f));
     }
 
     /**
-     * 返回无限有序流 该流由 初始值 然后判断条件 以及执行 迭代函数 进行迭代获取到元素
+     * Returns an infinite sequential ordered {@code EasyStream}. This stream is generated by an initial element, a
+     * predicate to determine if there are more elements, and a unary operator function that is applied to the previous
+     * element to produce a new element.
      * <p>
-     * 例如 {@code FastStream.iterate(0, i -> i < 3, i -> ++i)} 就可以创建包含元素0,1,2的流，使用{@link EasyStream#limit(long)}可以限制元素个数
-     * </p>
+     * For example, {@code FastStream.iterate(0, i -> i < 3, i -> ++i)} can create a stream containing elements 0, 1, 2.
+     * Use {@link EasyStream#limit(long)} to limit the number of elements.
+     * 
      *
-     * @param <T>     元素类型
-     * @param seed    初始值
-     * @param hasNext 条件值
-     * @param next    用上一个元素作为参数执行并返回一个新的元素
-     * @return 无限有序流
+     * @param <T>     the type of the elements
+     * @param seed    the initial element
+     * @param hasNext a predicate to apply to elements to determine if the iteration should continue
+     * @param next    a function that applies to the previous element to produce a new element
+     * @return an infinite sequential ordered {@code EasyStream}
      */
     public static <T> EasyStream<T> iterate(
             final T seed,
@@ -217,24 +248,26 @@ public class EasyStream<T> extends EnhancedWrappedStream<T, EasyStream<T>> {
     }
 
     /**
-     * 指定一个层级结构的根节点（通常是树或图）， 然后获取包含根节点在内，根节点所有层级结构中的节点组成的流。 该方法用于以平铺的方式对图或树节点进行访问，可以使用并行流提高效率。
+     * Specifies a root node of a hierarchical structure (typically a tree or graph), and then obtains a stream
+     * consisting of all nodes in the hierarchical structure, including the root node. This method is used to access
+     * graph or tree nodes in a flattened manner, and parallel streams can be used to improve efficiency.
      * <p>
-     * eg:
+     * Example:
      * 
      * <pre>{@code
-     * Tree root = // 构建树结构
-     * // 搜索树结构中所有级别为3的节点，并按权重排序
-     * List<Tree> thirdLevelNodes = StreamKit.iterateHierarchies(root, Tree:getChildren)
+     * Tree root = // Build tree structure
+     * // Search for all nodes at level 3 in the tree structure and sort by weight
+     * List<Tree> thirdLevelNodes = StreamKit.iterateHierarchies(root, Tree::getChildren)
      * 	.filter(node -> node.getLevel() == 3)
      * 	.sorted(Comparator.comparing(Tree::getWeight))
      * 	.toList();
      * }</pre>
      *
-     * @param root       根节点
-     * @param discoverer 下一层级节点的获取方法
-     * @param filter     节点过滤器，不匹配的节点与以其作为根节点的子树将将会被忽略
-     * @param <T>        对象类型
-     * @return 包含根节点在内，根节点所有层级结构中的节点组成的流
+     * @param root       the root node
+     * @param discoverer a function to get the next level of nodes
+     * @param filter     a node filter; nodes that do not match and their subtrees will be ignored
+     * @param <T>        the type of the object
+     * @return a stream consisting of all nodes in the hierarchical structure, including the root node
      */
     public static <T> EasyStream<T> iterateHierarchies(
             final T root,
@@ -244,61 +277,68 @@ public class EasyStream<T> extends EnhancedWrappedStream<T, EasyStream<T>> {
     }
 
     /**
-     * 指定一个层级结构的根节点（通常是树或图）， 然后获取包含根节点在内，根节点所有层级结构中的节点组成的流。 该方法用于以平铺的方式对图或树节点进行访问，可以使用并行流提高效率。
+     * Specifies a root node of a hierarchical structure (typically a tree or graph), and then obtains a stream
+     * consisting of all nodes in the hierarchical structure, including the root node. This method is used to access
+     * graph or tree nodes in a flattened manner, and parallel streams can be used to improve efficiency.
      * <p>
-     * eg:
+     * Example:
      * 
      * <pre>{@code
-     * Tree root = // 构建树结构
-     * // 搜索树结构中所有级别为3的节点，并按权重排序
-     * List<Tree> thirdLevelNodes = StreamKit.iterateHierarchies(root, Tree:getChildren)
+     * Tree root = // Build tree structure
+     * // Search for all nodes at level 3 in the tree structure and sort by weight
+     * List<Tree> thirdLevelNodes = StreamKit.iterateHierarchies(root, Tree::getChildren)
      * 	.filter(node -> node.getLevel() == 3)
      * 	.sorted(Comparator.comparing(Tree::getWeight))
      * 	.toList();
      * }</pre>
      *
-     * @param root       根节点
-     * @param discoverer 下一层级节点的获取方法
-     * @param <T>        对象类型
-     * @return 包含根节点在内，根节点所有层级结构中的节点组成的流
+     * @param root       the root node
+     * @param discoverer a function to get the next level of nodes
+     * @param <T>        the type of the object
+     * @return a stream consisting of all nodes in the hierarchical structure, including the root node
      */
     public static <T> EasyStream<T> iterateHierarchies(final T root, final Function<T, Collection<T>> discoverer) {
         return of(StreamKit.iterateHierarchies(root, discoverer));
     }
 
     /**
-     * 返回无限串行无序流 其中每一个元素都由给定的{@link Supplier}生成 适用场景在一些生成常量流、随机元素等
+     * Returns an infinite sequential unordered {@code EasyStream} where each element is generated by the given
+     * {@link Supplier}. This is suitable for scenarios like generating constant streams or random elements.
      *
-     * @param <T> 元素类型
-     * @param s   用来生成元素的 {@link Supplier}
-     * @return 无限串行无序流
+     * @param <T> the type of the elements
+     * @param s   the {@link Supplier} to generate elements
+     * @return an infinite sequential unordered {@code EasyStream}
      */
     public static <T> EasyStream<T> generate(final Supplier<T> s) {
         return new EasyStream<>(Stream.generate(s));
     }
 
     /**
-     * 创建一个惰性拼接流，其元素是第一个流的所有元素，然后是第二个流的所有元素。 如果两个输入流都是有序的，则结果流是有序的，如果任一输入流是并行的，则结果流是并行的。 当结果流关闭时，两个输入流的关闭处理程序都会被调用。
+     * Creates a lazily concatenated stream whose elements are all the elements of the first stream, followed by all the
+     * elements of the second stream. If both input streams are ordered, the result stream is ordered. If either input
+     * stream is parallel, the result stream is parallel. When the result stream is closed, the close handlers of both
+     * input streams are invoked.
      *
      * <p>
-     * 从重复串行流进行拼接时可能会导致深度调用链甚至抛出 {@code StackOverflowException}
-     * </p>
+     * Concatenating from repetitive sequential streams may lead to deep call chains or even
+     * {@code StackOverflowException}.
+     * 
      *
-     * @param <T> 元素类型
-     * @param a   第一个流
-     * @param b   第二个流
-     * @return 拼接两个流之后的流
+     * @param <T> the type of the elements
+     * @param a   the first stream
+     * @param b   the second stream
+     * @return a stream that concatenates the two input streams
      */
     public static <T> EasyStream<T> concat(final Stream<? extends T> a, final Stream<? extends T> b) {
         return new EasyStream<>(Stream.concat(a, b));
     }
 
     /**
-     * 拆分字符串，转换为串行流
+     * Splits a character sequence into a sequential {@code EasyStream} of strings.
      *
-     * @param text  字符串
-     * @param regex 正则
-     * @return 拆分后元素组成的流
+     * @param text  the character sequence to split
+     * @param regex the regular expression to use for splitting
+     * @return an {@code EasyStream} of strings resulting from the split
      */
     public static EasyStream<String> split(final CharSequence text, final String regex) {
         return Optional.ofBlankAble(text).map(CharSequence::toString).map(s -> s.split(regex)).map(EasyStream::of)
@@ -306,11 +346,14 @@ public class EasyStream<T> extends EnhancedWrappedStream<T, EasyStream<T>> {
     }
 
     /**
-     * 返回与指定函数将元素作为参数执行的结果组成的流 这是一个无状态中间操作
+     * Returns an {@code EasyStream} consisting of the results of applying the given function to the elements of this
+     * stream. This is a stateless intermediate operation.
      *
-     * @param mapper 指定的函数
-     * @param <R>    函数执行后返回的类型
-     * @return 返回叠加操作后的流
+     * @param mapper a <a href="package-summary.html#NonInterference">non-interfering</a>,
+     *               <a href="package-summary.html#Statelessness">stateless</a> function to apply to each element to
+     *               produce a new element
+     * @param <R>    the element type of the new stream
+     * @return the new {@code EasyStream}
      */
     @Override
     public <R> EasyStream<R> map(final Function<? super T, ? extends R> mapper) {
@@ -319,10 +362,10 @@ public class EasyStream<T> extends EnhancedWrappedStream<T, EasyStream<T>> {
     }
 
     /**
-     * 根据一个原始的流，返回一个新包装类实例
+     * Wraps a given {@link Stream} into a new {@code EasyStream} instance.
      *
-     * @param stream 流
-     * @return 实现类
+     * @param stream the {@link Stream} to wrap
+     * @return a new {@code EasyStream} instance wrapping the provided stream
      */
     @Override
     public EasyStream<T> wrap(final Stream<T> stream) {
@@ -330,80 +373,84 @@ public class EasyStream<T> extends EnhancedWrappedStream<T, EasyStream<T>> {
     }
 
     /**
-     * 计算int类型的总和
+     * Calculates the sum of {@code int} values.
      *
-     * @param mapper 将对象转换为int的 {@link Function}
-     * @return int 总和
+     * @param mapper a {@link Function} to convert objects to {@code int}
+     * @return the sum of {@code int} values
      */
     public int sum(final ToIntFunction<? super T> mapper) {
         return stream.mapToInt(mapper).sum();
     }
 
     /**
-     * 计算long类型的总和
+     * Calculates the sum of {@code long} values.
      *
-     * @param mapper 将对象转换为long的 {@link Function}
-     * @return long 总和
+     * @param mapper a {@link Function} to convert objects to {@code long}
+     * @return the sum of {@code long} values
      */
     public long sum(final ToLongFunction<? super T> mapper) {
         return stream.mapToLong(mapper).sum();
     }
 
     /**
-     * 计算double类型的总和
+     * Calculates the sum of {@code double} values.
      *
-     * @param mapper 将对象转换为double的 {@link Function}
-     * @return double 总和
+     * @param mapper a {@link Function} to convert objects to {@code double}
+     * @return the sum of {@code double} values
      */
     public double sum(final ToDoubleFunction<? super T> mapper) {
         return stream.mapToDouble(mapper).sum();
     }
 
     /**
-     * 计算 {@link Number} 类型的总和
+     * Calculates the sum of {@link Number} values.
      *
-     * @param <R>    数字
-     * @param mapper 将对象转换为{@link Number} 的 {@link Function}
-     * @return {@link BigDecimal} , 如果流为空, 返回 {@link BigDecimal#ZERO}
+     * @param <R>    the type of {@link Number}
+     * @param mapper a {@link Function} to convert objects to {@link Number}
+     * @return the sum as {@link BigDecimal}. If the stream is empty, returns {@link BigDecimal#ZERO}.
      */
     public <R extends Number> BigDecimal sum(final Function<? super T, R> mapper) {
         return stream.map(mapper).reduce(BigDecimal.ZERO, MathKit::add, MathKit::add);
     }
 
     /**
-     * 计算 {@link BigDecimal} 类型的平均值 并以四舍五入的方式保留2位精度
+     * Calculates the average of {@link BigDecimal} values, retaining 2 decimal places with half-up rounding.
      *
-     * @param mapper 将对象转换为{@link BigDecimal}的 {@link Function}
-     * @return 计算后的平均值 如果流的长度为0, 返回 {@link Optional#empty()}
+     * @param mapper a {@link Function} to convert objects to {@link BigDecimal}
+     * @return an {@link Optional} containing the calculated average. If the stream is empty, returns
+     *         {@link Optional#empty()}.
      */
     public Optional<BigDecimal> avg(final Function<? super T, BigDecimal> mapper) {
         return avg(mapper, 2);
     }
 
     /**
-     * {@link BigDecimal} 类型的平均值 并以四舍五入的方式保留小数点后scale位
+     * Calculates the average of {@link BigDecimal} values, retaining a specified number of decimal places with half-up
+     * rounding.
      *
-     * @param mapper 将对象转换为{@link BigDecimal} 的 {@link Function}
-     * @param scale  保留精度
-     * @return 计算后的平均值 如果流的长度为0, 返回 {@link Optional#empty()}
+     * @param mapper a {@link Function} to convert objects to {@link BigDecimal}
+     * @param scale  the number of decimal places to retain
+     * @return an {@link Optional} containing the calculated average. If the stream is empty, returns
+     *         {@link Optional#empty()}.
      */
     public Optional<BigDecimal> avg(final Function<? super T, BigDecimal> mapper, final int scale) {
         return avg(mapper, scale, RoundingMode.HALF_UP);
     }
 
     /**
-     * 计算 {@link BigDecimal} 类型的平均值
+     * Calculates the average of {@link BigDecimal} values with specified scale and rounding mode.
      *
-     * @param mapper       将对象转换为{@link BigDecimal} 的 {@link Function}
-     * @param scale        保留精度
-     * @param roundingMode 舍入模式
-     * @return 计算后的平均值 如果元素的长度为0 那么会返回 {@link Optional#empty()}
+     * @param mapper       a {@link Function} to convert objects to {@link BigDecimal}
+     * @param scale        the number of decimal places to retain
+     * @param roundingMode the rounding mode to apply
+     * @return an {@link Optional} containing the calculated average. If the stream is empty, returns
+     *         {@link Optional#empty()}.
      */
     public Optional<BigDecimal> avg(
             final Function<? super T, BigDecimal> mapper,
             final int scale,
             final RoundingMode roundingMode) {
-        // 元素列表
+        // List of elements
         final List<BigDecimal> bigDecimalList = stream.map(mapper).collect(Collectors.toList());
         if (CollKit.isEmpty(bigDecimalList)) {
             return Optional.empty();
@@ -414,48 +461,51 @@ public class EasyStream<T> extends EnhancedWrappedStream<T, EasyStream<T>> {
     }
 
     /**
-     * 计算int类型的平均值
+     * Calculates the average of {@code int} values.
      *
-     * @param mapper 将对象转换为int 的 {@link Function}
-     * @return {@link OptionalDouble} 如果流的长度为0 那么会返回{@link OptionalDouble#empty()}
+     * @param mapper a {@link Function} to convert objects to {@code int}
+     * @return an {@link OptionalDouble} containing the calculated average. If the stream is empty, returns
+     *         {@link OptionalDouble#empty()}.
      */
     public OptionalDouble avg(final ToIntFunction<? super T> mapper) {
         return stream.mapToInt(mapper).average();
     }
 
     /**
-     * 计算double类型的平均值
+     * Calculates the average of {@code double} values.
      *
-     * @param mapper 将对象转换为double 的 {@link Function}
-     * @return {@link OptionalDouble} 如果流的长度为0 那么会返回{@link OptionalDouble#empty()}
+     * @param mapper a {@link Function} to convert objects to {@code double}
+     * @return an {@link OptionalDouble} containing the calculated average. If the stream is empty, returns
+     *         {@link OptionalDouble#empty()}.
      */
     public OptionalDouble avg(final ToDoubleFunction<? super T> mapper) {
         return stream.mapToDouble(mapper).average();
     }
 
     /**
-     * 计算double平均值
+     * Calculates the average of {@code long} values.
      *
-     * @param mapper 将对象转换为long 的 {@link Function}
-     * @return {@link OptionalDouble} 如果流的长度为0 那么会返回{@link OptionalDouble#empty()}
+     * @param mapper a {@link Function} to convert objects to {@code long}
+     * @return an {@link OptionalDouble} containing the calculated average. If the stream is empty, returns
+     *         {@link OptionalDouble#empty()}.
      */
     public OptionalDouble avg(final ToLongFunction<? super T> mapper) {
         return stream.mapToLong(mapper).average();
     }
 
     /**
-     * 建造者
+     * A builder for {@code EasyStream} instances.
      *
-     * @param <T> 对象类型
+     * @param <T> the type of the elements
      */
     public interface Builder<T> extends Consumer<T>, org.miaixz.bus.core.Builder<EasyStream<T>> {
 
         /**
-         * 将元素添加到正在构建的对象中
+         * Adds an element to the object being built.
          *
-         * @param t 要添加的元素
-         * @return {@code this} builder
-         * @throws IllegalStateException 如果构建器已经转换到构建状态
+         * @param t the element to add
+         * @return this builder
+         * @throws IllegalStateException if the builder has already transitioned to the built state
          */
         default Builder<T> add(final T t) {
             accept(t);

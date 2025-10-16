@@ -27,8 +27,6 @@
 */
 package org.miaixz.bus.starter.annotation;
 
-import java.lang.annotation.*;
-
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.starter.jdbc.JdbcConfiguration;
 import org.miaixz.bus.starter.mapper.MapperConfiguration;
@@ -37,8 +35,15 @@ import org.miaixz.bus.starter.mapper.MapperScannerRegistrar;
 import org.springframework.beans.factory.support.BeanNameGenerator;
 import org.springframework.context.annotation.Import;
 
+import java.lang.annotation.*;
+
 /**
- * 开启 Mybatis/Mapper
+ * Enables MyBatis and Mapper framework support.
+ * <p>
+ * This annotation is the primary entry point for configuring the persistence layer. It imports the necessary
+ * configurations for both JDBC data sources and the MyBatis Mapper framework, and it triggers the scanning of mapper
+ * interfaces.
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -51,79 +56,92 @@ import org.springframework.context.annotation.Import;
 public @interface EnableMapper {
 
     /**
-     * {@link #basePackage()} 属性的别名，与basePackage有相同效果
+     * Alias for the {@link #basePackage()} attribute. Allows for more concise annotation usage.
      *
-     * @return the array
+     * @return An array of base packages to scan.
      */
     String[] value() default {};
 
     /**
-     * 扫描MyBatis接口的基本包
+     * Base packages to scan for MyBatis interfaces.
      *
-     * @return the string
+     * @return An array of base packages.
      */
     String[] basePackage() default {};
 
     /**
-     * 类型安全的替代{@link #basePackage()} 用于指定要扫描的包以查找带注释的组件,每个指定类的包将被扫描 考虑在每个包中创建一个特殊的无操作标记类或接口，它除了被该属性引用之外没有其他用途。
+     * Type-safe alternative to {@link #basePackage()} for specifying packages to scan. The package of each class
+     * specified will be scanned.
+     * <p>
+     * Consider creating a special no-op marker class or interface in each package that serves no purpose other than
+     * being referenced by this attribute.
      *
-     * @return the class
+     * @return An array of classes whose packages will be scanned.
      */
     Class<?>[] basePackageClasses() default {};
 
     /**
-     * 用于命名Spring容器中检测到的组件的{@link BeanNameGenerator}类
+     * The {@link BeanNameGenerator} class to be used for naming detected components in the Spring container.
      *
-     * @return the class
+     * @return The {@link BeanNameGenerator} class.
      */
     Class<? extends BeanNameGenerator> nameGenerator() default BeanNameGenerator.class;
 
     /**
-     * 此属性指定扫描器将搜索的注释 扫描器将在基本包中注册所有同样具有指定注释的接口 注意，这可以与markerInterface结合使用
+     * This property specifies the annotation that the scanner will search for.
+     * <p>
+     * The scanner will register all interfaces in the base package that have this annotation. Note that this can be
+     * combined with {@code markerInterface}.
      *
-     * @return the class
+     * @return The annotation class to scan for.
      */
     Class<? extends Annotation> annotationClass() default Annotation.class;
 
     /**
-     * 此属性指定扫描程序将搜索的父程序 扫描器将注册基包中所有同样具有指定接口类作为父类的接口 注意，这可以与annotationClass结合使用
+     * This property specifies the parent interface that the scanner will search for.
+     * <p>
+     * The scanner will register all interfaces in the base package that have this interface as a parent. Note that this
+     * can be combined with {@code annotationClass}.
      *
-     * @return the class
+     * @return The marker interface to scan for.
      */
     Class<?> markerInterface() default Class.class;
 
     /**
-     * 指定在spring上下文中有多个SqlSessionTemplate时使用哪个{@code SqlSessionTemplate} 通常只有当您有多个数据源时才需要这样做
+     * Specifies which {@code SqlSessionTemplate} to use when there are multiple in the Spring context. Usually, this is
+     * only needed when you have multiple data sources.
      *
-     * @return the string
+     * @return The bean name of the {@code SqlSessionTemplate}.
      */
     String sqlSessionTemplateRef() default Normal.EMPTY;
 
     /**
-     * 指定在spring上下文中有多个SqlSessionFactory时使用哪个{@code SqlSessionFactory} 通常只有当您有多个数据源时才需要这样做
+     * Specifies which {@code SqlSessionFactory} to use when there are multiple in the Spring context. Usually, this is
+     * only needed when you have multiple data sources.
      *
-     * @return the string
+     * @return The bean name of the {@code SqlSessionFactory}.
      */
     String sqlSessionFactoryRef() default Normal.EMPTY;
 
     /**
-     * 指定一个自定义的MapperFactoryBean来返回一个mybatis代理作为spring bean
+     * Specifies a custom {@link MapperFactoryBean} to return a MyBatis proxy as a Spring bean.
      *
-     * @return the class
+     * @return The custom {@link MapperFactoryBean} class.
      */
     Class<? extends MapperFactoryBean> factoryBean() default MapperFactoryBean.class;
 
     /**
-     * 通用 Mapper 的配置，一行一个配置
+     * Configuration properties for the generic Mapper, with one property per line. This is often used to configure
+     * plugins like PageHelper.
      *
-     * @return the array
+     * @return An array of property strings.
      */
     String[] properties() default {};
 
     /**
-     * 还可以直接配置一个 MapperBuilder bean
+     * Allows for the direct configuration of a MapperBuilder bean by reference.
      *
-     * @return the string
+     * @return The bean name of the {@code MapperBuilder}.
      */
     String mapperBuilderRef() default Normal.EMPTY;
 

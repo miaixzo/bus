@@ -30,7 +30,7 @@ package org.miaixz.bus.logger;
 import org.miaixz.bus.core.instance.Instances;
 
 /**
- * 日志工厂接口
+ * An interface for logger factories.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,43 +38,43 @@ import org.miaixz.bus.core.instance.Instances;
 public interface Factory {
 
     /**
-     * 获取日志框架名，用于打印当前所用日志框架
+     * Gets the name of the logging framework. This is used to identify the current logging implementation.
      *
-     * @return 日志框架名
+     * @return the name of the logging framework.
      */
     String getName();
 
     /**
-     * 创建日志对象
+     * Creates a new logger instance with the specified name.
      *
-     * @param name 日志对象名
-     * @return 日志对象
+     * @param name the name of the logger.
+     * @return a new {@link Provider} instance.
      */
     Provider create(String name);
 
     /**
-     * 创建日志对象
+     * Creates a new logger instance for the specified class.
      *
-     * @param clazz 日志对应类
-     * @return 日志对象
+     * @param clazz the class for which to create the logger.
+     * @return a new {@link Provider} instance.
      */
     Provider create(Class<?> clazz);
 
     /**
-     * 获得日志对象（单例）
+     * Gets a singleton logger instance with the specified name.
      *
-     * @param name 日志对象名
-     * @return 日志对象
+     * @param name the name of the logger.
+     * @return a singleton {@link Provider} instance.
      */
     default Provider getProvider(final String name) {
         return Instances.get(getName() + name, () -> create(name));
     }
 
     /**
-     * 获得日志对象（单例）
+     * Gets a singleton logger instance for the specified class.
      *
-     * @param clazz 日志对应类
-     * @return 日志对象
+     * @param clazz the class for which to get the logger.
+     * @return a singleton {@link Provider} instance.
      */
     default Provider getProvider(final Class<?> clazz) {
         return Instances.get(getName() + clazz.getName(), () -> create(clazz));

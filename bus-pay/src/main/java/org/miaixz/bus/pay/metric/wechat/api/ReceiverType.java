@@ -28,7 +28,7 @@
 package org.miaixz.bus.pay.metric.wechat.api;
 
 /**
- * 分账接收方类型
+ * Enumerates the types of receivers for profit sharing in WeChat Pay.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -36,35 +36,50 @@ package org.miaixz.bus.pay.metric.wechat.api;
 public enum ReceiverType {
 
     /**
-     * 商户ID
+     * Merchant ID.
      */
     MERCHANT("MERCHANT_ID"),
     /**
-     * 个人微信号
+     * Personal WeChat ID.
      */
     WECHATID("PERSONAL_WECHATID"),
     /**
-     * 个人 openId（由父商户 appId 转换得到）
+     * Personal OpenID (converted from parent merchant appId).
      */
     OPENID("PERSONAL_OPENID"),
     /**
-     * 个人 sub_openid（由子商户 appId 转换得到）
+     * Personal sub_openid (converted from sub-merchant appId).
      */
     SUB_OPENID("PERSONAL_SUB_OPENID");
 
     /**
-     * 类型
+     * The type identifier string.
      */
     private final String type;
 
+    /**
+     * Constructs a new ReceiverType.
+     *
+     * @param type The type identifier string.
+     */
     ReceiverType(String type) {
         this.type = type;
     }
 
+    /**
+     * Gets the type identifier string.
+     *
+     * @return The type identifier string.
+     */
     public String getType() {
         return type;
     }
 
+    /**
+     * Returns the type identifier string.
+     *
+     * @return The type identifier string.
+     */
     @Override
     public String toString() {
         return type;

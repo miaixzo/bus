@@ -27,15 +27,16 @@
 */
 package org.miaixz.bus.setting.metric.setting;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.miaixz.bus.core.io.file.FileName;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.StringKit;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 /**
- * Setting工具类 提供静态方法获取配置文件
+ * A utility class that provides static methods for accessing {@link org.miaixz.bus.setting.Setting} configuration
+ * files, with caching support.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,15 +44,16 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class Setting {
 
     /**
-     * 配置文件缓存
+     * A cache for {@code Setting} instances, keyed by file path.
      */
     private static final Map<String, org.miaixz.bus.setting.Setting> CACHE_SETTING = new ConcurrentHashMap<>();
 
     /**
-     * 获取当前环境下的配置文件 name可以为不包括扩展名的文件名（默认.setting为结尾），也可以是文件名全称
+     * Gets a cached {@code Setting} instance for the given resource name. If the name has no extension,
+     * {@code .setting} is assumed. The file is loaded from the classpath.
      *
-     * @param name 文件名，如果没有扩展名，默认为.setting
-     * @return 当前环境下配置文件
+     * @param name The name of the settings file.
+     * @return The cached or newly loaded {@code Setting} instance.
      */
     public static org.miaixz.bus.setting.Setting get(final String name) {
         return CACHE_SETTING.computeIfAbsent(name, (filePath) -> {
@@ -64,17 +66,18 @@ public class Setting {
     }
 
     /**
-     * 获取给定路径找到的第一个配置文件 name可以为不包括扩展名的文件名（默认.setting为结尾），也可以是文件名全称
+     * Gets the first {@code Setting} instance that can be successfully loaded from a list of resource names. It tries
+     * each name in order until one is found.
      *
-     * @param names 文件名，如果没有扩展名，默认为.setting
-     * @return 当前环境下配置文件
+     * @param names The resource names to try. If a name has no extension, {@code .setting} is assumed.
+     * @return The first found {@code Setting} instance, or null if none are found.
      */
     public static org.miaixz.bus.setting.Setting getFirstFound(final String... names) {
         for (final String name : names) {
             try {
                 return get(name);
             } catch (final InternalException e) {
-                // ignore
+                // Ignore and try the next name
             }
         }
         return null;

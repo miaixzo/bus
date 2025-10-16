@@ -35,9 +35,9 @@ import java.util.stream.Stream;
 import org.miaixz.bus.core.xyz.ExceptionKit;
 
 /**
- * 可序列化的Predicate接口，支持异常抛出和逻辑组合操作。
+ * A serializable {@link Predicate} interface that supports throwing exceptions and logical combination operations.
  *
- * @param <T> 参数类型
+ * @param <T> The type of the input to the predicate.
  * @author Kimi Liu
  * @see Predicate
  * @since Java 17+
@@ -46,11 +46,11 @@ import org.miaixz.bus.core.xyz.ExceptionKit;
 public interface PredicateX<T> extends Predicate<T>, Serializable {
 
     /**
-     * 组合多个PredicateX实例，执行短路逻辑与操作。
+     * Combines multiple {@code PredicateX} instances to perform a short-circuiting logical AND operation.
      *
-     * @param predicates 要组合的PredicateX实例
-     * @param <T>        参数类型
-     * @return 组合后的PredicateX实例
+     * @param predicates An array of {@code PredicateX} instances to combine.
+     * @param <T>        The type of the input to the predicate.
+     * @return A combined {@code PredicateX} instance that performs a short-circuiting logical AND.
      */
     @SafeVarargs
     static <T> PredicateX<T> multiAnd(final PredicateX<T>... predicates) {
@@ -58,11 +58,11 @@ public interface PredicateX<T> extends Predicate<T>, Serializable {
     }
 
     /**
-     * 组合多个PredicateX实例，执行短路逻辑或操作。
+     * Combines multiple {@code PredicateX} instances to perform a short-circuiting logical OR operation.
      *
-     * @param predicates 要组合的PredicateX实例
-     * @param <T>        参数类型
-     * @return 组合后的PredicateX实例
+     * @param predicates An array of {@code PredicateX} instances to combine.
+     * @param <T>        The type of the input to the predicate.
+     * @return A combined {@code PredicateX} instance that performs a short-circuiting logical OR.
      */
     @SafeVarargs
     static <T> PredicateX<T> multiOr(final PredicateX<T>... predicates) {
@@ -70,11 +70,11 @@ public interface PredicateX<T> extends Predicate<T>, Serializable {
     }
 
     /**
-     * 返回一个谓词，判断输入参数是否与目标对象相等。
+     * Returns a predicate that tests if the input argument is equal to the target object.
      *
-     * @param <T>       参数类型
-     * @param targetRef 用于比较的目标对象引用，可能为null
-     * @return PredicateX，判断输入参数是否与目标对象相等
+     * @param <T>       The type of the input to the predicate.
+     * @param targetRef The target object reference for comparison, which may be null.
+     * @return A {@code PredicateX} that tests if the input argument is equal to the target object.
      */
     static <T> PredicateX<T> isEqual(final Object... targetRef) {
         return (null == targetRef) ? Objects::isNull
@@ -82,20 +82,21 @@ public interface PredicateX<T> extends Predicate<T>, Serializable {
     }
 
     /**
-     * 对给定参数评估此谓词，可能抛出异常。
+     * Evaluates this predicate on the given argument, potentially throwing an exception.
      *
-     * @param t 输入参数
-     * @return 如果参数匹配谓词返回true，否则返回false
-     * @throws Throwable 可能抛出的异常
+     * @param t The input argument.
+     * @return {@code true} if the input argument matches the predicate, otherwise {@code false}.
+     * @throws Throwable Any throwable exception that might occur during the evaluation.
      */
     boolean testing(T t) throws Throwable;
 
     /**
-     * 对给定参数评估此谓词，自动处理异常。
+     * Evaluates this predicate on the given argument, automatically handling checked exceptions by wrapping them in a
+     * {@link RuntimeException}.
      *
-     * @param t 输入参数
-     * @return 如果参数匹配谓词返回true，否则返回false
-     * @throws RuntimeException 包装后的运行时异常
+     * @param t The input argument.
+     * @return {@code true} if the input argument matches the predicate, otherwise {@code false}.
+     * @throws RuntimeException A wrapped runtime exception if a checked exception occurs.
      */
     @Override
     default boolean test(final T t) {
@@ -107,11 +108,13 @@ public interface PredicateX<T> extends Predicate<T>, Serializable {
     }
 
     /**
-     * 返回一个组合谓词，表示此谓词与另一个谓词的短路逻辑与。如果此谓词为false，则不评估另一个谓词。
+     * Returns a composed predicate that represents a short-circuiting logical AND of this predicate and another. If
+     * this predicate is {@code false}, the other predicate is not evaluated.
      *
-     * @param other 与此谓词进行逻辑与的谓词
-     * @return 组合谓词，表示此谓词与other谓词的短路逻辑与
-     * @throws NullPointerException 如果other为null
+     * @param other A predicate that will be logically ANDed with this predicate.
+     * @return A composed predicate that represents a short-circuiting logical AND of this predicate and the
+     *         {@code other} predicate.
+     * @throws NullPointerException If {@code other} is {@code null}.
      */
     default PredicateX<T> and(final PredicateX<? super T> other) {
         Objects.requireNonNull(other);
@@ -119,9 +122,9 @@ public interface PredicateX<T> extends Predicate<T>, Serializable {
     }
 
     /**
-     * 返回一个表示此谓词逻辑非的谓词。
+     * Returns a predicate that represents the logical negation of this predicate.
      *
-     * @return 表示此谓词逻辑非的谓词
+     * @return A predicate that represents the logical negation of this predicate.
      */
     @Override
     default PredicateX<T> negate() {
@@ -129,11 +132,13 @@ public interface PredicateX<T> extends Predicate<T>, Serializable {
     }
 
     /**
-     * 返回一个组合谓词，表示此谓词与另一个谓词的短路逻辑或。如果此谓词为true，则不评估另一个谓词。
+     * Returns a composed predicate that represents a short-circuiting logical OR of this predicate and another. If this
+     * predicate is {@code true}, the other predicate is not evaluated.
      *
-     * @param other 与此谓词进行逻辑或的谓词
-     * @return 组合谓词，表示此谓词与other谓词的短路逻辑或
-     * @throws NullPointerException 如果other为null
+     * @param other A predicate that will be logically ORed with this predicate.
+     * @return A composed predicate that represents a short-circuiting logical OR of this predicate and the
+     *         {@code other} predicate.
+     * @throws NullPointerException If {@code other} is {@code null}.
      */
     default PredicateX<T> or(final PredicateX<? super T> other) {
         Objects.requireNonNull(other);

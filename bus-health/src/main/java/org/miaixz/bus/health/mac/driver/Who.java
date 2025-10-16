@@ -40,7 +40,7 @@ import org.miaixz.bus.health.unix.jna.CLibrary;
 import com.sun.jna.Native;
 
 /**
- * Utility to query logged in users.
+ * Utility to query logged in users on macOS.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,12 +48,15 @@ import com.sun.jna.Native;
 @ThreadSafe
 public final class Who {
 
+    /**
+     * Singleton instance of the SystemB library.
+     */
     private static final SystemB SYS = SystemB.INSTANCE;
 
     /**
-     * Query {@code getutxent} to get logged in users.
+     * Queries {@code getutxent} to get logged in users.
      *
-     * @return A list of logged in user sessions
+     * @return A list of logged in user sessions.
      */
     public static synchronized List<OSSession> queryUtxent() {
         List<OSSession> whoList = new ArrayList<>();

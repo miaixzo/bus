@@ -36,7 +36,8 @@ import org.apache.poi.ss.usermodel.Hyperlink;
 import org.apache.poi.ss.usermodel.RichTextString;
 
 /**
- * {@link CellSetter} 简单静态工厂类，用于根据值类型创建对应的{@link CellSetter}
+ * A simple static factory class for {@link CellSetter}, used to create corresponding {@link CellSetter} based on value
+ * type.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,10 +45,10 @@ import org.apache.poi.ss.usermodel.RichTextString;
 public class CellSetterFactory {
 
     /**
-     * 创建值对应类型的{@link CellSetter}
+     * Creates a {@link CellSetter} for the given value's type.
      *
-     * @param value 值
-     * @return {@link CellSetter}
+     * @param value The value to be set in the cell.
+     * @return A {@link CellSetter} instance corresponding to the value's type.
      */
     public static CellSetter createCellSetter(final Object value) {
         if (null == value) {
@@ -69,7 +70,7 @@ public class CellSetterFactory {
         } else if (value instanceof Hyperlink) {
             return new HyperlinkCellSetter((Hyperlink) value);
         } else if (value instanceof byte[]) {
-            // 二进制理解为图片
+            // Binary data is interpreted as an image.
             return new PictureCellSetter((byte[]) value);
         } else if (value instanceof File) {
             return new PictureCellSetter((File) value);

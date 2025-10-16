@@ -32,7 +32,9 @@ import java.util.Iterator;
 import org.miaixz.bus.core.center.iterator.ComputeIterator;
 
 /**
- * 对于未实现{@link Iterator}接口的普通结果类，装饰为{@link NLPResult} 普通的结果类只需实现{@link #nextWord()} 即可
+ * Abstract base class that decorates a regular result class (one that does not inherently implement {@link Iterator})
+ * as an {@link NLPResult}. This class simplifies the implementation of {@link NLPResult} by requiring subclasses to
+ * only implement the {@link #nextWord()} method to provide the next segmented word.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -40,12 +42,20 @@ import org.miaixz.bus.core.center.iterator.ComputeIterator;
 public abstract class AbstractResult extends ComputeIterator<NLPWord> implements NLPResult {
 
     /**
-     * 下一个单词，通过实现此方法获取下一个单词，null表示无下一个结果。
+     * Retrieves the next word from the word segmentation result. This method should be implemented by subclasses to
+     * provide the logic for fetching the next {@link NLPWord}. Returns {@code null} when there are no more words to be
+     * processed.
      *
-     * @return 下一个单词或null
+     * @return The next {@link NLPWord} in the sequence, or {@code null} if the iteration has no more elements.
      */
     protected abstract NLPWord nextWord();
 
+    /**
+     * Computes the next element in the iteration. This method is called by {@link ComputeIterator} to get the next
+     * word. It delegates to the abstract {@link #nextWord()} method.
+     *
+     * @return The next {@link NLPWord} or {@code null} if the iteration is complete.
+     */
     @Override
     protected NLPWord computeNext() {
         return nextWord();

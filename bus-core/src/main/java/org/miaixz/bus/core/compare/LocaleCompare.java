@@ -32,7 +32,8 @@ import java.text.Collator;
 import java.util.Locale;
 
 /**
- * 自定义语言环境 String 比较，可为自然语言文本构建搜索和排序例程。
+ * A {@code Comparator} for {@link String} that considers a specific {@link Locale}. This is useful for building search
+ * and sorting routines for natural language text.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,10 +44,10 @@ public class LocaleCompare extends NullCompare<String> {
     private static final long serialVersionUID = 2852261895676L;
 
     /**
-     * 构造
+     * Constructs a new {@code LocaleCompare}.
      *
-     * @param nullGreater   是否{@code null}在后
-     * @param desiredLocale 语言环境
+     * @param nullGreater   whether {@code null} values should be placed at the end.
+     * @param desiredLocale the {@link Locale} to use for comparison.
      */
     public LocaleCompare(final boolean nullGreater, final Locale desiredLocale) {
         super(nullGreater, Collator.getInstance(desiredLocale));

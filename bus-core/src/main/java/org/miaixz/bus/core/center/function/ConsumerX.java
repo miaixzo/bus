@@ -35,9 +35,9 @@ import java.util.stream.Stream;
 import org.miaixz.bus.core.xyz.ExceptionKit;
 
 /**
- * 可序列化的Consumer接口，支持异常抛出和多个消费者组合。
+ * A serializable {@link Consumer} interface that supports throwing exceptions and combining multiple consumers.
  *
- * @param <T> 参数类型
+ * @param <T> The type of the input argument to the operation.
  * @author Kimi Liu
  * @see Consumer
  * @since Java 17+
@@ -46,11 +46,11 @@ import org.miaixz.bus.core.xyz.ExceptionKit;
 public interface ConsumerX<T> extends Consumer<T>, Serializable {
 
     /**
-     * 组合多个ConsumerX实例，按顺序执行。
+     * Combines multiple {@code ConsumerX} instances to be executed in sequence.
      *
-     * @param consumers 要组合的ConsumerX实例
-     * @param <T>       参数类型
-     * @return 组合后的ConsumerX实例
+     * @param consumers An array of {@code ConsumerX} instances to combine.
+     * @param <T>       The type of the input argument to the operation.
+     * @return A combined {@code ConsumerX} instance that executes the given consumers in order.
      */
     @SafeVarargs
     static <T> ConsumerX<T> multi(final ConsumerX<T>... consumers) {
@@ -59,10 +59,10 @@ public interface ConsumerX<T> extends Consumer<T>, Serializable {
     }
 
     /**
-     * 返回一个空操作的ConsumerX，用于占位。
+     * Returns a no-operation {@code ConsumerX} that does nothing.
      *
-     * @param <T> 参数类型
-     * @return 空操作的ConsumerX实例
+     * @param <T> The type of the input argument to the operation.
+     * @return A no-operation {@code ConsumerX} instance.
      */
     static <T> ConsumerX<T> nothing() {
         return t -> {
@@ -70,18 +70,19 @@ public interface ConsumerX<T> extends Consumer<T>, Serializable {
     }
 
     /**
-     * 对给定参数执行操作，可能抛出异常。
+     * Performs this operation on the given argument, potentially throwing an exception.
      *
-     * @param t 输入参数
-     * @throws Throwable 可能抛出的异常
+     * @param t The input argument.
+     * @throws Throwable Any throwable exception that might occur during the operation.
      */
     void accepting(T t) throws Throwable;
 
     /**
-     * 对给定参数执行操作，自动处理异常。
+     * Performs this operation on the given argument, handling checked exceptions by wrapping them in a
+     * {@link RuntimeException}.
      *
-     * @param t 输入参数
-     * @throws RuntimeException 包装后的运行时异常
+     * @param t The input argument.
+     * @throws RuntimeException A wrapped runtime exception if a checked exception occurs.
      */
     @Override
     default void accept(final T t) {
@@ -93,11 +94,14 @@ public interface ConsumerX<T> extends Consumer<T>, Serializable {
     }
 
     /**
-     * 返回一个组合的ConsumerX，先执行当前操作，再执行after操作。
+     * Returns a composed {@code ConsumerX} that performs, in sequence, this operation followed by the {@code after}
+     * operation. If performing either operation throws an exception, it is relayed to the caller of the composed
+     * operation. If performing this operation throws an exception, the {@code after} operation will not be performed.
      *
-     * @param after 在当前操作后执行的操作
-     * @return 组合后的ConsumerX实例，按顺序执行当前操作和after操作
-     * @throws NullPointerException 如果after为null
+     * @param after The operation to perform after this operation.
+     * @return A composed {@code ConsumerX} that performs in sequence this operation followed by the {@code after}
+     *         operation.
+     * @throws NullPointerException If {@code after} is {@code null}.
      */
     default ConsumerX<T> andThen(final ConsumerX<? super T> after) {
         Objects.requireNonNull(after);

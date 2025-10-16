@@ -49,7 +49,8 @@ import net.sf.jsqlparser.statement.select.WithItem;
 import net.sf.jsqlparser.statement.update.Update;
 
 /**
- * 数据权限处理器 用于处理SQL语句中的数据权限控制，动态添加权限条件
+ * Data permission handler for processing data permission controls in SQL statements. This handler dynamically adds
+ * permission conditions to SQL queries.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -57,14 +58,14 @@ import net.sf.jsqlparser.statement.update.Update;
 public class PermissionHandler extends ConditionHandler implements MapperHandler {
 
     /**
-     * 数据权限提供者，用于生成权限相关的SQL片段
+     * The data permission provider, used to generate permission-related SQL segments.
      */
     private PermissionProvider provider;
 
     /**
-     * 预处理SQL语句，针对UPDATE和DELETE语句动态添加权限条件
+     * Pre-processes SQL statements, dynamically adding permission conditions to UPDATE and DELETE statements.
      *
-     * @param statementHandler MyBatis的语句处理器
+     * @param statementHandler the MyBatis StatementHandler
      */
     @Override
     public void prepare(StatementHandler statementHandler) {
@@ -78,15 +79,15 @@ public class PermissionHandler extends ConditionHandler implements MapperHandler
     }
 
     /**
-     * 查询处理，针对SELECT语句动态添加权限条件
+     * Handles query processing, dynamically adding permission conditions to SELECT statements.
      *
-     * @param result          查询结果
-     * @param executor        MyBatis执行器
-     * @param mappedStatement 映射语句
-     * @param parameter       查询参数
-     * @param rowBounds       分页参数
-     * @param resultHandler   结果处理器
-     * @param boundSql        绑定SQL
+     * @param result          the query result
+     * @param executor        the MyBatis executor
+     * @param mappedStatement the MappedStatement
+     * @param parameter       the query parameters
+     * @param rowBounds       the pagination parameters
+     * @param resultHandler   the result handler
+     * @param boundSql        the bound SQL
      */
     @Override
     public void query(
@@ -102,12 +103,12 @@ public class PermissionHandler extends ConditionHandler implements MapperHandler
     }
 
     /**
-     * 处理UPDATE语句，添加权限条件
+     * Processes an UPDATE statement, adding permission conditions.
      *
-     * @param update UPDATE语句对象
-     * @param index  SQL索引
-     * @param sql    原始SQL
-     * @param obj    附加参数（通常为映射ID）
+     * @param update the UPDATE statement object
+     * @param index  the SQL index
+     * @param sql    the original SQL
+     * @param obj    additional parameters (usually the mapping ID)
      */
     @Override
     protected void processUpdate(Update update, int index, String sql, Object obj) {
@@ -118,12 +119,12 @@ public class PermissionHandler extends ConditionHandler implements MapperHandler
     }
 
     /**
-     * 处理DELETE语句，添加权限条件
+     * Processes a DELETE statement, adding permission conditions.
      *
-     * @param delete DELETE语句对象
-     * @param index  SQL索引
-     * @param sql    原始SQL
-     * @param obj    附加参数（通常为映射ID）
+     * @param delete the DELETE statement object
+     * @param index  the SQL index
+     * @param sql    the original SQL
+     * @param obj    additional parameters (usually the mapping ID)
      */
     @Override
     protected void processDelete(Delete delete, int index, String sql, Object obj) {
@@ -134,12 +135,12 @@ public class PermissionHandler extends ConditionHandler implements MapperHandler
     }
 
     /**
-     * 处理SELECT语句，添加权限条件
+     * Processes a SELECT statement, adding permission conditions.
      *
-     * @param select SELECT语句对象
-     * @param index  SQL索引
-     * @param sql    原始SQL
-     * @param obj    附加参数（通常为映射ID）
+     * @param select the SELECT statement object
+     * @param index  the SQL index
+     * @param sql    the original SQL
+     * @param obj    additional parameters (usually the mapping ID)
      */
     @Override
     protected void processSelect(Select select, int index, String sql, Object obj) {
@@ -157,12 +158,12 @@ public class PermissionHandler extends ConditionHandler implements MapperHandler
     }
 
     /**
-     * 构建表级权限表达式
+     * Builds a table-level permission expression.
      *
-     * @param table        表对象
-     * @param where        原始WHERE条件
-     * @param whereSegment 权限条件片段
-     * @return 组合后的权限表达式
+     * @param table        the table object
+     * @param where        the original WHERE condition
+     * @param whereSegment the permission condition segment
+     * @return the combined permission expression
      */
     @Override
     public Expression buildTableExpression(final Table table, final Expression where, final String whereSegment) {
@@ -173,30 +174,30 @@ public class PermissionHandler extends ConditionHandler implements MapperHandler
     }
 
     /**
-     * 获取数据权限提供者
+     * Retrieves the data permission provider.
      *
-     * @return 数据权限提供者
+     * @return the data permission provider
      */
     public PermissionProvider getProvider() {
         return this.provider;
     }
 
     /**
-     * 设置数据权限提供者
+     * Sets the data permission provider.
      *
-     * @param provider 数据权限提供者
+     * @param provider the data permission provider
      */
     public void setProvider(PermissionProvider provider) {
         this.provider = provider;
     }
 
     /**
-     * 获取UPDATE或DELETE语句的权限表达式
+     * Retrieves the permission expression for an UPDATE or DELETE statement.
      *
-     * @param table        表对象
-     * @param where        原始WHERE条件
-     * @param whereSegment 权限条件片段
-     * @return 组合后的权限表达式
+     * @param table        the table object
+     * @param where        the original WHERE condition
+     * @param whereSegment the permission condition segment
+     * @return the combined permission expression
      */
     protected Expression getUpdateOrDeleteExpression(
             final Table table,

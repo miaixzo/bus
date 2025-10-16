@@ -30,7 +30,8 @@ package org.miaixz.bus.core.lang.ansi;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * ANSI标准颜色
+ * Represents standard 4-bit ANSI colors, including foreground and background colors. These colors are commonly used in
+ * terminal applications for text styling.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,141 +39,150 @@ import org.miaixz.bus.core.xyz.StringKit;
 public enum Ansi4BitColor implements AnsiElement {
 
     /**
-     * 默认前景色
+     * Default foreground color.
      */
     DEFAULT(39),
 
     /**
-     * 黑
+     * Black foreground color.
      */
     BLACK(30),
 
     /**
-     * 红
+     * Red foreground color.
      */
     RED(31),
 
     /**
-     * 绿
+     * Green foreground color.
      */
     GREEN(32),
 
     /**
-     * 黄
+     * Yellow foreground color.
      */
     YELLOW(33),
 
     /**
-     * 蓝
+     * Blue foreground color.
      */
     BLUE(34),
 
     /**
-     * 品红
+     * Magenta foreground color.
      */
     MAGENTA(35),
 
     /**
-     * 青
+     * Cyan foreground color.
      */
     CYAN(36),
 
     /**
-     * 白
+     * White foreground color.
      */
     WHITE(37),
 
     /**
-     * 亮黑
+     * Bright black foreground color.
      */
     BRIGHT_BLACK(90),
 
     /**
-     * 亮红
+     * Bright red foreground color.
      */
     BRIGHT_RED(91),
 
     /**
-     * 亮绿
+     * Bright green foreground color.
      */
     BRIGHT_GREEN(92),
 
     /**
-     * 亮黄
+     * Bright yellow foreground color.
      */
     BRIGHT_YELLOW(93),
 
     /**
-     * 亮蓝
+     * Bright blue foreground color.
      */
     BRIGHT_BLUE(94),
 
     /**
-     * 亮品红
+     * Bright magenta foreground color.
      */
     BRIGHT_MAGENTA(95),
 
     /**
-     * 亮青
+     * Bright cyan foreground color.
      */
     BRIGHT_CYAN(96),
 
     /**
-     * 亮白
+     * Bright white foreground color.
      */
     BRIGHT_WHITE(97),
 
     /**
-     * 默认背景色
+     * Default background color.
      */
     BG_DEFAULT(49),
 
     /**
-     * 黑色
+     * Black background color.
      */
     BG_BLACK(40),
 
     /**
-     * 红
+     * Red background color.
      */
     BG_RED(41),
 
     /**
-     * 绿
+     * Green background color.
      */
     BG_GREEN(42),
 
     /**
-     * 黄
+     * Yellow background color.
      */
     BG_YELLOW(43),
 
     /**
-     * 蓝
+     * Blue background color.
      */
     BG_BLUE(44),
 
     /**
-     * 品红
+     * Magenta background color.
      */
     BG_MAGENTA(45),
 
     /**
-     * 青
+     * Cyan background color.
      */
     BG_CYAN(46);
 
+    /**
+     * The ANSI code associated with this color.
+     */
     private final int code;
 
+    /**
+     * Constructs an {@code Ansi4BitColor} enum constant with the specified ANSI code.
+     *
+     * @param code The ANSI code for the color.
+     */
     Ansi4BitColor(int code) {
         this.code = code;
     }
 
     /**
-     * 根据code查找对应的AnsiColor
+     * Retrieves the {@code Ansi4BitColor} enum constant corresponding to the given ANSI code.
      *
-     * @param code AnsiEncoder 4bit 颜色代码
-     * @return Color4Bit
+     * @param code The 4-bit ANSI color code.
+     * @return The {@code Ansi4BitColor} enum constant.
+     * @throws IllegalArgumentException if no matching {@code Ansi4BitColor} instance is found for the given code.
      */
     public static Ansi4BitColor of(int code) {
         for (Ansi4BitColor item : Ansi4BitColor.values()) {
@@ -180,37 +190,46 @@ public enum Ansi4BitColor implements AnsiElement {
                 return item;
             }
         }
-        throw new IllegalArgumentException(StringKit.format("No matched Color4Bit instance,code={}", code));
+        throw new IllegalArgumentException(StringKit.format("No matched Ansi4BitColor instance, code={}", code));
     }
 
     /**
-     * 获取ANSI颜色代码（前景色）
+     * Retrieves the ANSI code for this color, assuming it's a foreground color.
      *
-     * @return 颜色代码
+     * @return The ANSI code for the foreground color.
      */
+    @Override
     public int getCode() {
         return getCode(false);
     }
 
     /**
-     * 获取ANSI颜色代码
+     * Retrieves the ANSI code for this color, optionally converting it to a background color code. Foreground color
+     * codes are typically in the range 30-37 or 90-97. Background color codes are typically in the range 40-47 or
+     * 100-107. The conversion adds 10 to the foreground code to get the corresponding background code.
      *
-     * @param isBackground 是否背景色
-     * @return 颜色代码
+     * @param isBackground {@code true} to get the background color code, {@code false} for foreground.
+     * @return The ANSI code for the color (foreground or background).
      */
     public int getCode(boolean isBackground) {
         return isBackground ? this.code + 10 : this.code;
     }
 
     /**
-     * 获取前景色对应的背景色
+     * Returns the corresponding background color for this foreground color. If this enum constant already represents a
+     * background color, it returns itself.
      *
-     * @return 背景色
+     * @return An {@code Ansi4BitColor} representing the background version of this color.
      */
     public Ansi4BitColor asBackground() {
         return Ansi4BitColor.of(getCode(true));
     }
 
+    /**
+     * Returns the string representation of the ANSI code for this color.
+     *
+     * @return The ANSI code as a string.
+     */
     @Override
     public String toString() {
         return StringKit.toString(this.code);

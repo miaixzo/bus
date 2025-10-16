@@ -32,7 +32,7 @@ import lombok.Getter;
 import org.miaixz.bus.auth.nimble.AuthorizeScope;
 
 /**
- * Gitee 授权范围
+ * Gitee authorization scopes.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,17 +42,62 @@ import org.miaixz.bus.auth.nimble.AuthorizeScope;
 public enum GiteeScope implements AuthorizeScope {
 
     /**
-     * {@code scope} 含义，以{@code description} 为准
+     * Access to user's personal information, recent activities, etc. The meaning of {@code scope} is subject to
+     * {@code description}.
      */
-    USER_INFO("user_info", "访问用户的个人信息、最新动态等", true), PROJECTS("projects", "查看、创建、更新用户的项目", false),
-    PULL_REQUESTS("pull_requests", "查看、发布、更新用户的 Pull Request", false), ISSUES("issues", "查看、发布、更新用户的 Issue", false),
-    NOTES("notes", "查看、发布、管理用户在项目、代码片段中的评论", false), KEYS("keys", "查看、部署、删除用户的公钥", false),
-    HOOK("hook", "查看、部署、更新用户的 Webhook", false), GROUPS("groups", "查看、管理用户的组织以及成员", false),
-    GISTS("gists", "查看、删除、更新用户的代码片段", false), ENTERPRISES("enterprises", "查看、管理用户的企业以及成员", false),
-    EMAILS("emails", "查看用户的个人邮箱信息", false);
+    USER_INFO("user_info", "Access to user's personal information, recent activities, etc.", true),
+    /**
+     * View, create, and update user's projects.
+     */
+    PROJECTS("projects", "View, create, and update user's projects", false),
+    /**
+     * View, publish, and update user's Pull Requests.
+     */
+    PULL_REQUESTS("pull_requests", "View, publish, and update user's Pull Request", false),
+    /**
+     * View, publish, and update user's Issues.
+     */
+    ISSUES("issues", "View, publish, and update user's Issue", false),
+    /**
+     * View, publish, and manage user's comments in projects and code snippets.
+     */
+    NOTES("notes", "View, publish, and manage user's comments in projects, code snippets", false),
+    /**
+     * View, deploy, and delete user's public keys.
+     */
+    KEYS("keys", "View, deploy, and delete user's public keys", false),
+    /**
+     * View, deploy, and update user's Webhooks.
+     */
+    HOOK("hook", "View, deploy, and update user's Webhook", false),
+    /**
+     * View and manage user's organizations and members.
+     */
+    GROUPS("groups", "View and manage user's organizations and members", false),
+    /**
+     * View, delete, and update user's code snippets.
+     */
+    GISTS("gists", "View, delete, and update user's code snippets", false),
+    /**
+     * View and manage user's enterprises and members.
+     */
+    ENTERPRISES("enterprises", "View and manage user's enterprises and members", false),
+    /**
+     * View user's personal email information.
+     */
+    EMAILS("emails", "View user's personal email information", false);
 
+    /**
+     * The scope string as defined by Gitee.
+     */
     private final String scope;
+    /**
+     * A description of what the scope grants access to.
+     */
     private final String description;
+    /**
+     * Indicates if this scope is enabled by default.
+     */
     private final boolean isDefault;
 
 }

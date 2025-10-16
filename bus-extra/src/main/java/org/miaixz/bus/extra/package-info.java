@@ -26,7 +26,9 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 扩展第三方插件等功能
+ * Provides extended functionality and integrations for various third-party plugins and features. This package includes
+ * utilities and components that enhance the core capabilities of the bus framework by offering specialized support for
+ * external services and common tasks.
  *
  * @author Kimi Liu
  * @since Java 17+

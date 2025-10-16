@@ -30,43 +30,63 @@ package org.miaixz.bus.core.center.date.culture.cn.plumrain;
 import org.miaixz.bus.core.center.date.culture.Samsara;
 
 /**
- * 梅雨
+ * Represents the "Plum Rain" (梅雨) season, a period of continuous rain in East Asia. This class extends {@link Samsara}
+ * to manage a cyclical list of these entities.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class PlumRain extends Samsara {
 
+    /**
+     * Array of names for the Plum Rain periods: "入梅" (Entering Plum Rain) and "出梅" (Exiting Plum Rain).
+     */
     public static final String[] NAMES = { "入梅", "出梅" };
 
+    /**
+     * Constructs a {@code PlumRain} instance with the specified name.
+     *
+     * @param name The name of the Plum Rain period.
+     */
     public PlumRain(String name) {
         super(NAMES, name);
     }
 
+    /**
+     * Constructs a {@code PlumRain} instance with the specified index.
+     *
+     * @param index The index of the Plum Rain period in the {@link #NAMES} array.
+     */
     public PlumRain(int index) {
         super(NAMES, index);
     }
 
     /**
-     * 从名称初始化
+     * Creates a {@code PlumRain} instance from its name.
      *
-     * @param name 名称
-     * @return 梅雨
+     * @param name The name of the Plum Rain period.
+     * @return A new {@code PlumRain} instance.
      */
     public static PlumRain fromName(String name) {
         return new PlumRain(name);
     }
 
     /**
-     * 从索引初始化
+     * Creates a {@code PlumRain} instance from its index.
      *
-     * @param index 索引
-     * @return 梅雨
+     * @param index The index of the Plum Rain period.
+     * @return A new {@code PlumRain} instance.
      */
     public static PlumRain fromIndex(int index) {
         return new PlumRain(index);
     }
 
+    /**
+     * Gets the next {@code PlumRain} in the cycle.
+     *
+     * @param n The number of steps to move forward or backward in the cycle.
+     * @return The next {@code PlumRain} instance.
+     */
     public PlumRain next(int n) {
         return fromIndex(nextIndex(n));
     }

@@ -34,13 +34,21 @@ import org.miaixz.bus.extra.emoji.EmojiKit;
 import org.miaixz.bus.sensitive.Context;
 
 /**
- * 默认脱敏处理类
+ * A default, generic desensitization provider. It applies a general-purpose masking logic that attempts to hide the
+ * middle part of a string while keeping the head and tail visible, with special handling for short strings.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class DafaultProvider extends AbstractProvider {
 
+    /**
+     * Applies a default desensitization logic to the provided value.
+     *
+     * @param object  The object containing the string to be desensitized.
+     * @param context The current desensitization context.
+     * @return The desensitized string, or null if the input is empty.
+     */
     @Override
     public Object build(Object object, Context context) {
         if (ObjectKit.isEmpty(object)) {
@@ -70,29 +78,29 @@ public class DafaultProvider extends AbstractProvider {
             stringBuilder.append(value.charAt(len - 1));
         } else {
             if (pamatwo <= 0) {
-                stringBuilder.append(value.substring(0, 1));
+                stringBuilder.append(value, 0, 1);
                 stringBuilder.append(SYMBOL);
-                stringBuilder.append(value.substring(len - 1, len));
+                stringBuilder.append(value, len - 1, len);
 
             } else if (pamatwo >= SIZE / TWO && SIZE + 1 != len) {
                 int pamafive = (len - SIZE) / 2;
-                stringBuilder.append(value.substring(0, pamafive));
+                stringBuilder.append(value, 0, pamafive);
                 for (int i = 0; i < SIZE; i++) {
                     stringBuilder.append(SYMBOL);
                 }
 
                 if ((pamathree == 0 && SIZE / 2 == 0) || (pamathree != 0 && SIZE % 2 != 0)) {
-                    stringBuilder.append(value.substring(len - pamafive, len));
+                    stringBuilder.append(value, len - pamafive, len);
                 } else {
-                    stringBuilder.append(value.substring(len - (pamafive + 1), len));
+                    stringBuilder.append(value, len - (pamafive + 1), len);
                 }
             } else {
                 int pamafour = len - 2;
-                stringBuilder.append(value.substring(0, 1));
+                stringBuilder.append(value, 0, 1);
                 for (int i = 0; i < pamafour; i++) {
                     stringBuilder.append(SYMBOL);
                 }
-                stringBuilder.append(value.substring(len - 1, len));
+                stringBuilder.append(value, len - 1, len);
             }
         }
         return stringBuilder.toString();

@@ -31,7 +31,8 @@ import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.util.CellReference;
 
 /**
- * 样式集合接口 通过自定义样式集合，可根据单元格不同、值的不同设置不同的样式
+ * Interface for a style set. Through a custom style set, different styles can be applied based on different cells and
+ * values.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -39,16 +40,18 @@ import org.apache.poi.ss.util.CellReference;
 public interface StyleSet {
 
     /**
-     * 获取单元格样式，可以：
+     * Gets the cell style. This can be used to:
      * <ul>
-     * <li>根据单元格位置获取定义不同的样式，如首行、首列、偶数行、偶数列等</li>
-     * <li>根据单元格值获取定义不同的样式，如数字、日期等，也可根据是否为标题行定义独立的样式</li>
+     * <li>Define different styles based on cell location, such as first row, first column, even rows, even columns,
+     * etc.</li>
+     * <li>Define different styles based on cell values, such as numbers, dates, etc., and also define independent
+     * styles for header rows.</li>
      * </ul>
      *
-     * @param reference 单元格引用，包含单元格位置等信息
-     * @param cellValue 单元格值
-     * @param isHeader  是否为表头，表头定义的特殊样式
-     * @return 单元格样式
+     * @param reference The cell reference, containing cell location information.
+     * @param cellValue The cell value.
+     * @param isHeader  {@code true} if it is a header row, {@code false} otherwise.
+     * @return The cell style.
      */
     CellStyle getStyleFor(CellReference reference, Object cellValue, boolean isHeader);
 

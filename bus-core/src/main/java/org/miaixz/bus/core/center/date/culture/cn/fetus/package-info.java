@@ -26,7 +26,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 胎神
+ * Provides classes related to the Fetus God (胎神), a concept in Chinese traditional culture related to pregnancy and
+ * auspicious locations/directions.
  *
  * @author Kimi Liu
  * @since Java 17+

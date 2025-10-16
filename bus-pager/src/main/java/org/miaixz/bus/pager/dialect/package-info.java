@@ -26,7 +26,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 数据库分页方言
+ * Provides interfaces and abstract classes for database pagination dialects. This package defines the contract for
+ * different database-specific pagination implementations.
  *
  * @author Kimi Liu
  * @since Java 17+

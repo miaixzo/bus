@@ -48,20 +48,21 @@ import jakarta.mail.internet.MimeUtility;
 import jakarta.mail.util.ByteArrayDataSource;
 
 /**
- * SMTP消息封装
- * 
+ * Represents an SMTP message, extending {@link MimeMessage} to provide a fluent builder pattern for creating and
+ * sending emails. This class simplifies the process of setting headers, content, and attachments.
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class SMTPMessage extends MimeMessage {
 
     /**
-     * 创建SMTP消息
+     * Creates a new {@code SMTPMessage} instance.
      *
-     * @param mailAccount      邮件账户
-     * @param useGlobalSession 是否使用全局Session
-     * @param debugOutput      输出调试信息
-     * @return this
+     * @param mailAccount      The mail account configuration.
+     * @param useGlobalSession If {@code true}, uses a globally shared session; otherwise, creates a new session.
+     * @param debugOutput      The {@link PrintStream} for debug output. If null, no debug information is printed.
+     * @return A new {@code SMTPMessage} instance.
      */
     public static SMTPMessage of(
             final MailAccount mailAccount,
@@ -75,19 +76,19 @@ public class SMTPMessage extends MimeMessage {
     }
 
     /**
-     * 邮件账户
+     * The mail account configuration.
      */
     private final MailAccount mailAccount;
     /**
-     * 正文、附件和图片的混合部分
+     * The multipart content of the email, holding the body, attachments, and images.
      */
     private final Multipart multipart;
 
     /**
-     * 构造
+     * Constructs a new {@code SMTPMessage} with the specified mail account and session.
      *
-     * @param mailAccount 邮件账户
-     * @param session     Session
+     * @param mailAccount The mail account configuration.
+     * @param session     The Jakarta Mail {@link Session}.
      */
     public SMTPMessage(final MailAccount mailAccount, final Session session) {
         super(session);
@@ -97,31 +98,27 @@ public class SMTPMessage extends MimeMessage {
     }
 
     /**
-     * 初始化
+     * Initializes the message with default values, such as the sender and sent date.
      */
     private void init() {
-        // 发件人
         final String from = this.mailAccount.getFrom();
         try {
             if (StringKit.isEmpty(from)) {
-                // 用户未提供发送方，则从Session中自动获取
                 super.setFrom();
             } else {
                 super.setFrom(InternalMail.parseFirstAddress(from, this.mailAccount.getCharset()));
             }
-            // 默认发送时间
             super.setSentDate(DateKit.now());
         } catch (final MessagingException e) {
             throw new InternalException(e);
         }
-
     }
 
     /**
-     * 设置标题
+     * Sets the email subject.
      *
-     * @param title 标题
-     * @return this
+     * @param title The subject of the email.
+     * @return This {@code SMTPMessage} instance for method chaining.
      */
     public SMTPMessage setTitle(final String title) {
         try {
@@ -133,41 +130,41 @@ public class SMTPMessage extends MimeMessage {
     }
 
     /**
-     * 设置收件人
+     * Sets the recipient email addresses.
      *
-     * @param tos 收件人列表
-     * @return this
+     * @param tos An array of recipient email addresses.
+     * @return This {@code SMTPMessage} instance for method chaining.
      */
     public SMTPMessage setTos(final String... tos) {
         return this.setRecipients(Message.RecipientType.TO, tos);
     }
 
     /**
-     * 设置抄送
+     * Sets the carbon copy (CC) recipient email addresses.
      *
-     * @param ccs 抄送列表
-     * @return this
+     * @param ccs An array of CC recipient email addresses.
+     * @return This {@code SMTPMessage} instance for method chaining.
      */
     public SMTPMessage setCcs(final String... ccs) {
         return this.setRecipients(Message.RecipientType.CC, ccs);
     }
 
     /**
-     * 设置密送
+     * Sets the blind carbon copy (BCC) recipient email addresses.
      *
-     * @param bccs 密送列表
-     * @return this
+     * @param bccs An array of BCC recipient email addresses.
+     * @return This {@code SMTPMessage} instance for method chaining.
      */
     public SMTPMessage setBccs(final String... bccs) {
         return this.setRecipients(Message.RecipientType.BCC, bccs);
     }
 
     /**
-     * 设置收件人，支持收件人、密送、抄送
+     * Sets the recipients for a given recipient type (TO, CC, BCC).
      *
-     * @param type      收件人类型
-     * @param addresses 收件人列表
-     * @return this
+     * @param type      The recipient type.
+     * @param addresses An array of recipient email addresses.
+     * @return This {@code SMTPMessage} instance for method chaining.
      */
     public SMTPMessage setRecipients(final Message.RecipientType type, final String... addresses) {
         try {
@@ -179,10 +176,10 @@ public class SMTPMessage extends MimeMessage {
     }
 
     /**
-     * 设置回复地址
+     * Sets the 'Reply-To' email addresses.
      *
-     * @param reply 回复地址列表
-     * @return this
+     * @param reply An array of 'Reply-To' email addresses.
+     * @return This {@code SMTPMessage} instance for method chaining.
      */
     public SMTPMessage setReply(final String... reply) {
         try {
@@ -194,11 +191,11 @@ public class SMTPMessage extends MimeMessage {
     }
 
     /**
-     * 设置邮件内容
+     * Sets the email body content.
      *
-     * @param content 内容
-     * @param isHtml  是否为HTML
-     * @return this
+     * @param content The email body.
+     * @param isHtml  {@code true} if the content is HTML, {@code false} for plain text.
+     * @return This {@code SMTPMessage} instance for method chaining.
      */
     public SMTPMessage setContent(final String content, final boolean isHtml) {
         try {
@@ -210,22 +207,22 @@ public class SMTPMessage extends MimeMessage {
     }
 
     /**
-     * 增加图片，图片的键对应到邮件模板中的占位字符串，图片类型默认为"image/jpeg"
+     * Adds an embedded image to the email.
      *
-     * @param cid         图片与占位符，占位符格式为cid:${cid}
-     * @param imageStream 图片文件
-     * @return this
+     * @param cid         The Content-ID for embedding the image.
+     * @param imageStream The {@link InputStream} of the image.
+     * @return This {@code SMTPMessage} instance for method chaining.
      */
     public SMTPMessage addImage(final String cid, final InputStream imageStream) {
         return addImage(cid, imageStream, null);
     }
 
     /**
-     * 增加图片，图片的键对应到邮件模板中的占位字符串
+     * Adds an embedded image from a file to the email.
      *
-     * @param cid       图片与占位符，占位符格式为cid:${cid}
-     * @param imageFile 图片文件
-     * @return this
+     * @param cid       The Content-ID for embedding the image.
+     * @param imageFile The image file.
+     * @return This {@code SMTPMessage} instance for method chaining.
      */
     public SMTPMessage addImage(final String cid, final File imageFile) {
         InputStream in = null;
@@ -238,12 +235,12 @@ public class SMTPMessage extends MimeMessage {
     }
 
     /**
-     * 增加图片，图片的键对应到邮件模板中的占位字符串
+     * Adds an embedded image to the email with a specified content type.
      *
-     * @param cid         图片与占位符，占位符格式为cid:${cid}
-     * @param imageStream 图片流，不关闭
-     * @param contentType 图片类型，null赋值默认的"image/jpeg"
-     * @return this
+     * @param cid         The Content-ID for embedding the image.
+     * @param imageStream The {@link InputStream} of the image.
+     * @param contentType The MIME type of the image.
+     * @return This {@code SMTPMessage} instance for method chaining.
      */
     public SMTPMessage addImage(final String cid, final InputStream imageStream, final String contentType) {
         final ByteArrayDataSource imgSource;
@@ -257,10 +254,10 @@ public class SMTPMessage extends MimeMessage {
     }
 
     /**
-     * 设置文件类型附件，文件可以是图片文件，此时自动设置cid（正文中引用图片），默认cid为文件名
+     * Adds file attachments to the email.
      *
-     * @param files 附件文件列表
-     * @return this
+     * @param files An array of files to be attached.
+     * @return This {@code SMTPMessage} instance for method chaining.
      */
     public SMTPMessage addFiles(final File... files) {
         if (ArrayKit.isEmpty(files)) {
@@ -275,10 +272,10 @@ public class SMTPMessage extends MimeMessage {
     }
 
     /**
-     * 增加附件或图片，附件使用{@link DataSource} 形式表示，可以使用{@link FileDataSource}包装文件表示文件附件
+     * Adds attachments to the email, represented by {@link DataSource} objects.
      *
-     * @param attachments 附件列表
-     * @return this
+     * @param attachments An array of {@link DataSource} objects to attach.
+     * @return This {@code SMTPMessage} instance for method chaining.
      */
     public SMTPMessage addAttachments(final DataSource... attachments) {
         if (ArrayKit.isNotEmpty(attachments)) {
@@ -291,10 +288,10 @@ public class SMTPMessage extends MimeMessage {
     }
 
     /**
-     * 添加邮件信息主体
+     * Adds a {@link BodyPart} to the email's multipart content.
      *
-     * @param bodyPart 邮件信息主体
-     * @return this
+     * @param bodyPart The {@link BodyPart} to add.
+     * @return This {@code SMTPMessage} instance for method chaining.
      */
     public SMTPMessage addBodyPart(final BodyPart bodyPart) {
         try {
@@ -306,11 +303,11 @@ public class SMTPMessage extends MimeMessage {
     }
 
     /**
-     * 添加邮件信息主体
+     * Adds a {@link BodyPart} to the email's multipart content at a specific index.
      *
-     * @param bodyPart 邮件信息主体
-     * @param index    插入位置，0表示插入到开头
-     * @return this
+     * @param bodyPart The {@link BodyPart} to add.
+     * @param index    The index at which to insert the body part.
+     * @return This {@code SMTPMessage} instance for method chaining.
      */
     public SMTPMessage addBodyPart(final BodyPart bodyPart, final int index) {
         try {
@@ -322,16 +319,16 @@ public class SMTPMessage extends MimeMessage {
     }
 
     /**
-     * 发送
+     * Sends the email.
      *
-     * @throws InternalException 邮件发送异常
+     * @return The unique message-id of the sent email.
+     * @throws InternalException if sending the email fails.
      */
     public String send() throws InternalException {
         try {
             return doSend();
         } catch (final MessagingException e) {
             if (e instanceof SendFailedException) {
-                // 当地址无效时，显示更加详细的无效地址信息
                 final Address[] invalidAddresses = ((SendFailedException) e).getInvalidAddresses();
                 final String msg = StringKit.format("Invalid Addresses: {}", ArrayKit.toString(invalidAddresses));
                 throw new InternalException(msg, e);
@@ -341,16 +338,15 @@ public class SMTPMessage extends MimeMessage {
     }
 
     /**
-     * 构建邮件信息主体
+     * Builds the email's main content part.
      *
-     * @param charset 编码，{@code null}则使用{@link MimeUtility#getDefaultJavaCharset()}
-     * @param isHtml  是否为HTML
-     * @return 邮件信息主体
-     * @throws MessagingException 消息异常
+     * @param charset The character set for encoding.
+     * @param isHtml  {@code true} if the content is HTML, {@code false} for plain text.
+     * @return The multipart content.
+     * @throws MessagingException if an error occurs while building the content.
      */
     private Multipart buildContent(final Charset charset, final boolean isHtml) throws MessagingException {
         final String charsetStr = null != charset ? charset.name() : MimeUtility.getDefaultJavaCharset();
-        // 正文
         final MimeBodyPart body = new MimeBodyPart();
         body.setContent(content, StringKit.format("text/{}; charset={}", isHtml ? "html" : "plain", charsetStr));
         addBodyPart(body, 0);
@@ -358,9 +354,10 @@ public class SMTPMessage extends MimeMessage {
     }
 
     /**
-     * 执行发送
+     * Executes the send operation.
      *
-     * @throws MessagingException 发送异常
+     * @return The message-id of the sent email.
+     * @throws MessagingException if an error occurs during sending.
      */
     private String doSend() throws MessagingException {
         Transport.send(this);
@@ -368,11 +365,11 @@ public class SMTPMessage extends MimeMessage {
     }
 
     /**
-     * 构建邮件信息主体
+     * Builds a {@link MimeBodyPart} for an attachment.
      *
-     * @param attachment 附件
-     * @param charset    编码
-     * @return 邮件信息主体
+     * @param attachment The attachment data source.
+     * @param charset    The character set for encoding the filename.
+     * @return A {@link MimeBodyPart} for the attachment.
      */
     private MimeBodyPart buildBodyPart(final DataSource attachment, final Charset charset) {
         final MimeBodyPart bodyPart = new MimeBodyPart();
@@ -383,10 +380,8 @@ public class SMTPMessage extends MimeMessage {
             if (this.mailAccount.isEncodefilename()) {
                 nameEncoded = InternalMail.encodeText(nameEncoded, charset);
             }
-            // 普通附件文件名
             bodyPart.setFileName(nameEncoded);
             if (StringKit.startWith(attachment.getContentType(), "image/")) {
-                // 图片附件，用于正文中引用图片
                 bodyPart.setContentID(nameEncoded);
                 bodyPart.setDisposition(MimeBodyPart.INLINE);
             }

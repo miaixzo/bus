@@ -41,7 +41,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * 配置入口
+ * Main configuration class for the documentation generation process.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -52,49 +52,53 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Config implements Serializable {
 
+    private static final long serialVersionUID = -1L;
+
     /**
-     * 组织
+     * The name of the organization.
      */
     private String organization;
     /**
-     * url
+     * The URL of the organization.
      */
     private String organizationUrl;
     /**
-     * 标题
+     * The title of the generated document.
      */
     private String title;
     /**
-     * 版本号
+     * The version number of the document.
      */
     private String version;
     /**
-     * 描述
+     * A description for the document.
      */
     private String description;
     /**
-     * 数据源，这里直接使用@see{@link DataSource}接口，好处就，可以使用任何数据源
+     * The data source for connecting to the database. Using the {@link DataSource} interface allows for flexibility
+     * with any data source implementation.
      */
     private DataSource dataSource;
     /**
-     * 生成配置
+     * Configuration for data processing.
      */
     private ProcessConfig produceConfig;
     /**
-     * 引擎配置，关于数据库文档生成相关配置
+     * Configuration for the documentation generation engine.
      */
     private EngineConfig engineConfig;
 
     /**
-     * 构造函数
+     * Constructs a new {@code Config} instance.
      *
-     * @param title         {@link String} 标题
-     * @param organization  {@link String} 机构
-     * @param version       {@link String} 版本
-     * @param description   {@link String} 描述
-     * @param dataSource    {@link DataSource} 数据源
-     * @param produceConfig {@link ProcessConfig} 生成配置
-     * @param engineConfig  {@link EngineConfig} 生成配置
+     * @param organization    The name of the organization.
+     * @param organizationUrl The URL of the organization.
+     * @param title           The title of the document.
+     * @param version         The version of the document.
+     * @param description     A description for the document.
+     * @param dataSource      The JDBC data source. Must not be null.
+     * @param produceConfig   The configuration for data processing.
+     * @param engineConfig    The configuration for the documentation engine. Must not be null.
      */
     private Config(String organization, String organizationUrl, String title, String version, String description,
             DataSource dataSource, ProcessConfig produceConfig, EngineConfig engineConfig) {

@@ -41,9 +41,9 @@ import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 
 /**
- * 树构建器
+ * A builder for creating tree structures from a flat list of nodes.
  *
- * @param <E> ID类型
+ * @param <E> The type of the node identifier.
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -57,9 +57,9 @@ public class TreeBuilder<E> implements Builder<MapTree<E>> {
     private MapTree<E> root;
 
     /**
-     * 构造
+     * Constructs a new TreeBuilder with a specified root node.
      *
-     * @param root 根节点
+     * @param root The root node of the tree.
      */
     public TreeBuilder(final MapTree<E> root) {
         this.root = root;
@@ -67,42 +67,42 @@ public class TreeBuilder<E> implements Builder<MapTree<E>> {
     }
 
     /**
-     * 构造
+     * Constructs a new TreeBuilder with a specified root ID and configuration.
      *
-     * @param rootId 根节点ID
-     * @param config 配置
+     * @param rootId The ID of the root node.
+     * @param config The configuration for the tree nodes.
      */
     public TreeBuilder(final E rootId, final NodeConfig config) {
         this(new MapTree<E>(config).setId(rootId));
     }
 
     /**
-     * 创建Tree构建器
+     * Creates a new {@code TreeBuilder} with a specified root ID.
      *
-     * @param rootId 根节点ID
-     * @param <T>    ID类型
-     * @return TreeBuilder
+     * @param <T>    The type of the node identifier.
+     * @param rootId The ID of the root node.
+     * @return A new {@code TreeBuilder} instance.
      */
     public static <T> TreeBuilder<T> of(final T rootId) {
         return of(rootId, null);
     }
 
     /**
-     * 创建Tree构建器
+     * Creates a new {@code TreeBuilder} with a specified root ID and configuration.
      *
-     * @param rootId 根节点ID
-     * @param config 配置
-     * @param <T>    ID类型
-     * @return TreeBuilder
+     * @param <T>    The type of the node identifier.
+     * @param rootId The ID of the root node.
+     * @param config The configuration for the tree nodes.
+     * @return A new {@code TreeBuilder} instance.
      */
     public static <T> TreeBuilder<T> of(final T rootId, final NodeConfig config) {
         return new TreeBuilder<>(rootId, config);
     }
 
     /**
-     * 设置ID
+     * Sets the ID of the root node.
      *
-     * @param id ID
+     * @param id The ID to set.
      * @return this
      */
     public TreeBuilder<E> setId(final E id) {
@@ -111,9 +111,9 @@ public class TreeBuilder<E> implements Builder<MapTree<E>> {
     }
 
     /**
-     * 设置父节点ID
+     * Sets the parent ID of the root node.
      *
-     * @param parentId 父节点ID
+     * @param parentId The parent ID to set.
      * @return this
      */
     public TreeBuilder<E> setParentId(final E parentId) {
@@ -122,9 +122,9 @@ public class TreeBuilder<E> implements Builder<MapTree<E>> {
     }
 
     /**
-     * 设置节点标签名称
+     * Sets the name of the root node.
      *
-     * @param name 节点标签名称
+     * @param name The name to set.
      * @return this
      */
     public TreeBuilder<E> setName(final CharSequence name) {
@@ -133,9 +133,9 @@ public class TreeBuilder<E> implements Builder<MapTree<E>> {
     }
 
     /**
-     * 设置权重
+     * Sets the weight of the root node.
      *
-     * @param weight 权重
+     * @param weight The weight to set.
      * @return this
      */
     public TreeBuilder<E> setWeight(final Comparable<?> weight) {
@@ -144,10 +144,10 @@ public class TreeBuilder<E> implements Builder<MapTree<E>> {
     }
 
     /**
-     * 扩展属性
+     * Adds an extra property to the root node.
      *
-     * @param key   键
-     * @param value 扩展值
+     * @param key   The property key.
+     * @param value The property value.
      * @return this
      */
     public TreeBuilder<E> putExtra(final String key, final Object value) {
@@ -157,9 +157,9 @@ public class TreeBuilder<E> implements Builder<MapTree<E>> {
     }
 
     /**
-     * 增加节点列表，增加的节点是不带子节点的
+     * Appends a map of nodes to be included in the tree.
      *
-     * @param map 节点列表
+     * @param map A map where the key is the node ID and the value is the node itself.
      * @return this
      */
     public TreeBuilder<E> append(final Map<E, MapTree<E>> map) {
@@ -170,9 +170,9 @@ public class TreeBuilder<E> implements Builder<MapTree<E>> {
     }
 
     /**
-     * 增加节点列表，增加的节点是不带子节点的
+     * Appends an iterable collection of nodes to be included in the tree.
      *
-     * @param trees 节点列表
+     * @param trees The iterable collection of nodes.
      * @return this
      */
     public TreeBuilder<E> append(final Iterable<MapTree<E>> trees) {
@@ -184,9 +184,9 @@ public class TreeBuilder<E> implements Builder<MapTree<E>> {
     }
 
     /**
-     * 增加节点列表，增加的节点是不带子节点的
+     * Appends nodes from an iterator to be included in the tree.
      *
-     * @param iterator 节点列表
+     * @param iterator The iterator providing the nodes.
      * @return this
      */
     public TreeBuilder<E> append(final Iterator<MapTree<E>> iterator) {
@@ -204,11 +204,11 @@ public class TreeBuilder<E> implements Builder<MapTree<E>> {
     }
 
     /**
-     * 增加节点列表，增加的节点是不带子节点的
+     * Appends a list of beans, converting them to tree nodes using a parser.
      *
-     * @param list       Bean列表
-     * @param <T>        Bean类型
-     * @param nodeParser 节点转换器，用于定义一个Bean如何转换为Tree节点
+     * @param <T>        The type of the bean.
+     * @param list       The list of beans.
+     * @param nodeParser The parser to convert a bean to a {@link MapTree} node.
      * @return this
      */
     public <T> TreeBuilder<E> append(final Iterable<T> list, final NodeParser<T, E> nodeParser) {
@@ -229,7 +229,7 @@ public class TreeBuilder<E> implements Builder<MapTree<E>> {
                 nodeParser.parse(iterator.next(), node);
 
                 if (ObjectKit.equals(node.getId(), root.getId())) {
-                    // 如果指定根节点存在，直接复用
+                    // If the provided list contains the root node, reuse it.
                     TreeBuilder.this.root = node;
                     return null;
                 }
@@ -240,7 +240,7 @@ public class TreeBuilder<E> implements Builder<MapTree<E>> {
     }
 
     /**
-     * 重置Builder，实现复用
+     * Resets the builder to its initial state, allowing it to be reused.
      *
      * @return this
      */
@@ -251,6 +251,11 @@ public class TreeBuilder<E> implements Builder<MapTree<E>> {
         return this;
     }
 
+    /**
+     * Builds the tree structure.
+     *
+     * @return The root node of the built tree.
+     */
     @Override
     public MapTree<E> build() {
         checkBuilt();
@@ -265,24 +270,29 @@ public class TreeBuilder<E> implements Builder<MapTree<E>> {
     }
 
     /**
-     * 构建树列表，没有顶层节点，例如：
-     *
+     * Builds a list of top-level trees (forest). This is useful when there is no single root node. For example:
+     * 
      * <pre>
-     * -用户管理 - 用户管理 + 用户添加 - 部门管理 - 部门管理 + 部门添加
+     * - User Management
+     *   - User List
+     *   - Add User
+     * - Department Management
+     *   - Department List
+     *   - Add Department
      * </pre>
      *
-     * @return 树列表
+     * @return A list of root nodes for the forest.
      */
     public List<MapTree<E>> buildList() {
         if (isBuild) {
-            // 已经构建过了
+            // Already built
             return this.root.getChildren();
         }
         return build().getChildren();
     }
 
     /**
-     * 开始构建
+     * Builds the tree from the internal map of nodes.
      */
     private void buildFromMap() {
         if (MapKit.isEmpty(this.idTreeMap)) {
@@ -309,7 +319,7 @@ public class TreeBuilder<E> implements Builder<MapTree<E>> {
     }
 
     /**
-     * 树剪枝
+     * Prunes the tree to a specified depth.
      */
     private void cutTree() {
         final NodeConfig config = this.root.getConfig();
@@ -321,18 +331,18 @@ public class TreeBuilder<E> implements Builder<MapTree<E>> {
     }
 
     /**
-     * 树剪枝叶
+     * Recursively prunes the tree branches.
      *
-     * @param tree        节点
-     * @param currentDepp 当前层级
-     * @param maxDeep     最大层级
+     * @param tree        The current node.
+     * @param currentDeep The current depth.
+     * @param maxDeep     The maximum allowed depth.
      */
-    private void cutTree(final MapTree<E> tree, final int currentDepp, final int maxDeep) {
+    private void cutTree(final MapTree<E> tree, final int currentDeep, final int maxDeep) {
         if (null == tree) {
             return;
         }
-        if (currentDepp == maxDeep) {
-            // 剪枝
+        if (currentDeep == maxDeep) {
+            // Prune children
             tree.setChildren(null);
             return;
         }
@@ -340,13 +350,13 @@ public class TreeBuilder<E> implements Builder<MapTree<E>> {
         final List<MapTree<E>> children = tree.getChildren();
         if (CollKit.isNotEmpty(children)) {
             for (final MapTree<E> child : children) {
-                cutTree(child, currentDepp + 1, maxDeep);
+                cutTree(child, currentDeep + 1, maxDeep);
             }
         }
     }
 
     /**
-     * 检查是否已经构建
+     * Checks if the tree has already been built. Throws an {@link IllegalStateException} if it has.
      */
     private void checkBuilt() {
         Assert.isFalse(isBuild, "Current tree has been built.");

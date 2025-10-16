@@ -30,7 +30,7 @@ package org.miaixz.bus.office.excel.cell.setters;
 import org.apache.poi.ss.usermodel.Cell;
 
 /**
- * {@link Boolean} 值单元格设置器
+ * {@link CellSetter} for {@link Boolean} values.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -40,9 +40,9 @@ public class BooleanCellSetter implements CellSetter {
     private final Boolean value;
 
     /**
-     * 构造
+     * Constructs a {@code BooleanCellSetter} with the specified {@link Boolean} value.
      *
-     * @param value 值
+     * @param value The {@link Boolean} value to set in the cell.
      */
     BooleanCellSetter(final Boolean value) {
         this.value = value;

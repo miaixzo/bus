@@ -28,9 +28,10 @@
 package org.miaixz.bus.core.lang.annotation;
 
 /**
- * 注解: 设置返回元素的类型
+ * Defines a contract for objects that can create a copy of themselves. This functional interface provides a generic way
+ * to implement a copy mechanism, serving as an alternative to {@link Cloneable}.
  *
- * @param <T> 对象泛型
+ * @param <T> The type of the object that can be copied.
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -38,7 +39,10 @@ package org.miaixz.bus.core.lang.annotation;
 public interface Copyable<T> {
 
     /**
-     * @return 具有相同值的新实例
+     * Creates and returns a copy of this object. The precise meaning of "copy" (i.e., deep or shallow) may depend on
+     * the class of the object.
+     *
+     * @return A new instance that is a copy of this instance.
      */
     T copy();
 

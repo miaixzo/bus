@@ -27,15 +27,16 @@
 */
 package org.miaixz.bus.http.cache;
 
-import java.util.concurrent.TimeUnit;
-
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.http.Headers;
 
+import java.util.concurrent.TimeUnit;
+
 /**
- * 缓存控制头，带有来自服务器或客户端的缓存指令。 这些指令设置了哪些响应可以存储，以及哪些请求可以由存储的响应来满足的策略
+ * A cache control header with caching directives from a server or client. These directives set the policy for which
+ * responses can be stored, and which requests can be satisfied by a stored response.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,30 +44,33 @@ import org.miaixz.bus.http.Headers;
 public class CacheControl {
 
     /**
-     * 需要对响应进行网络验证的缓存控制请求指令。请注意，缓存可以通过有条件的GET请求来辅助这些请求.
+     * A cache control request directive that requires a network validation for the response. Note that the cache may
+     * assist these requests with conditional GET requests.
      */
     public static final CacheControl FORCE_NETWORK = new Builder().noCache().build();
 
     /**
-     * 仅使用缓存的缓存控制请求指令，即使缓存的响应已过期。如果响应在缓存中不可用， 或者需要服务器验证，调用将失败
+     * A cache control request directive that uses only the cache, even if the cached response is stale. If the response
+     * is not available in the cache or requires server validation, the call will fail.
      */
     public static final CacheControl FORCE_CACHE = new Builder().onlyIfCached()
             .maxStale(Integer.MAX_VALUE, TimeUnit.SECONDS).build();
 
     /**
-     * 在请求中，它意味着不使用缓存来满足请求
+     * In a request, this means that a cache should not be used to satisfy the request.
      */
     private final boolean noCache;
     /**
-     * 如果为真，则不应缓存此响应
+     * If true, this response should not be cached.
      */
     private final boolean noStore;
     /**
-     * 响应服务日期之后的持续时间，可以在不进行验证的情况下提供该响应
+     * The duration past the response's served date that it can be served without validation.
      */
     private final int maxAgeSeconds;
     /**
-     * "s-maxage"指令是共享缓存的最大年龄。不要和非共享缓存的"max-age"混淆， 就像在Firefox和Chrome中一样，这个指令在这个缓存中不受重视
+     * The "s-maxage" directive is the max age for shared caches. Not to be confused with "max-age" for non-shared
+     * caches, this directive is not honored by this cache.
      */
     private final int sMaxAgeSeconds;
     private final boolean isPrivate;
@@ -75,7 +79,9 @@ public class CacheControl {
     private final int maxStaleSeconds;
     private final int minFreshSeconds;
     /**
-     * 这个字段的名称“only-if-cached”具有误导性。它的实际意思是“不要使用网络” 它是由客户端设置的，客户端只希望请求能够被缓存完全满足。缓存的响应将需要 验证(即。如果设置了此标头，则不允许使用条件获取
+     * The "only-if-cached" directive is misleading. It actually means "do not use the network". It is set by a client
+     * who only wants to be served from the cache. Cached responses will require validation (i.e. conditional GETs are
+     * not permitted if this header is set).
      */
     private final boolean onlyIfCached;
     private final boolean noTransform;
@@ -117,10 +123,11 @@ public class CacheControl {
     }
 
     /**
-     * 返回{@code headers}的缓存指令。 如果存在Cache-Control和Pragma头文件，则会同时显示它们
+     * Returns the cache directives of {@code headers}. If both Cache-Control and Pragma headers are present, they are
+     * merged.
      *
-     * @param headers headers
-     * @return 缓存控制头
+     * @param headers The headers to parse.
+     * @return The cache control header.
      */
     public static CacheControl parse(Headers headers) {
         boolean noCache = false;
@@ -144,14 +151,14 @@ public class CacheControl {
             String value = headers.value(i);
 
             if (name.equalsIgnoreCase(HTTP.CACHE_CONTROL)) {
-                if (null != headerValue) {
-                    // 多个cache-control头文件意味着不能使用原始值
+                if (headerValue != null) {
+                    // Multiple Cache-Control headers means we can't use the raw value.
                     canUseHeaderValue = false;
                 } else {
                     headerValue = value;
                 }
             } else if (name.equalsIgnoreCase("Pragma")) {
-                // 可以指定额外的缓存控制参数。只是以防万一
+                // Might specify additional cache-control parameters. We invalidate the raw header value.
                 canUseHeaderValue = false;
             } else {
                 continue;
@@ -166,22 +173,21 @@ public class CacheControl {
 
                 if (pos == value.length() || value.charAt(pos) == Symbol.C_COMMA
                         || value.charAt(pos) == Symbol.C_SEMICOLON) {
-                    pos++; // consume ',' or ';' (if necessary)
+                    pos++; // Consume ',' or ';' (if necessary).
                     parameter = null;
                 } else {
-                    pos++; // consume '='
+                    pos++; // Consume '='.
                     pos = Headers.skipWhitespace(value, pos);
 
-                    // quoted string
+                    // Quoted string.
                     if (pos < value.length() && value.charAt(pos) == '\"') {
-                        pos++; // consume '"' open quote
+                        pos++; // Consume '"' open quote.
                         int parameterStart = pos;
                         pos = Headers.skipUntil(value, pos, "\"");
                         parameter = value.substring(parameterStart, pos);
-                        pos++; // consume '"' close quote (if necessary)
-
-                        // unquoted string
+                        pos++; // Consume '"' close quote (if necessary).
                     } else {
+                        // Unquoted string.
                         int parameterStart = pos;
                         pos = Headers.skipUntil(value, pos, ",;");
                         parameter = value.substring(parameterStart, pos).trim();
@@ -223,50 +229,110 @@ public class CacheControl {
                 maxStaleSeconds, minFreshSeconds, onlyIfCached, noTransform, immutable, headerValue);
     }
 
+    /**
+     * Returns true if this cache control forbids caching of any kind.
+     *
+     * @return {@code true} if caching is forbidden.
+     */
     public boolean noCache() {
         return noCache;
     }
 
+    /**
+     * Returns true if this cache control forbids storing the response in any cache.
+     *
+     * @return {@code true} if storing is forbidden.
+     */
     public boolean noStore() {
         return noStore;
     }
 
+    /**
+     * Returns the maximum age of a cached response in seconds.
+     *
+     * @return The max age in seconds.
+     */
     public int maxAgeSeconds() {
         return maxAgeSeconds;
     }
 
+    /**
+     * Returns the "s-maxage" directive, which is the max age for shared caches.
+     *
+     * @return The s-maxage in seconds.
+     */
     public int sMaxAgeSeconds() {
         return sMaxAgeSeconds;
     }
 
+    /**
+     * Returns true if this response should not be cached by a shared cache.
+     *
+     * @return {@code true} if this response is private.
+     */
     public boolean isPrivate() {
         return isPrivate;
     }
 
+    /**
+     * Returns true if this response may be cached by any cache.
+     *
+     * @return {@code true} if this response is public.
+     */
     public boolean isPublic() {
         return isPublic;
     }
 
+    /**
+     * Returns true if the cache must revalidate the response with the origin server before using it.
+     *
+     * @return {@code true} if revalidation is required.
+     */
     public boolean mustRevalidate() {
         return mustRevalidate;
     }
 
+    /**
+     * Returns the maximum staleness of a cached response in seconds.
+     *
+     * @return The max stale in seconds.
+     */
     public int maxStaleSeconds() {
         return maxStaleSeconds;
     }
 
+    /**
+     * Returns the minimum freshness of a cached response in seconds.
+     *
+     * @return The min fresh in seconds.
+     */
     public int minFreshSeconds() {
         return minFreshSeconds;
     }
 
+    /**
+     * Returns true if the cache should only use the cached response and not use the network.
+     *
+     * @return {@code true} if only cached responses should be used.
+     */
     public boolean onlyIfCached() {
         return onlyIfCached;
     }
 
+    /**
+     * Returns true if the cache should not transform the response.
+     *
+     * @return {@code true} if transformations are forbidden.
+     */
     public boolean noTransform() {
         return noTransform;
     }
 
+    /**
+     * Returns true if the response is immutable.
+     *
+     * @return {@code true} if the response is immutable.
+     */
     public boolean immutable() {
         return immutable;
     }
@@ -303,17 +369,16 @@ public class CacheControl {
             result.append("no-transform, ");
         if (immutable)
             result.append("immutable, ");
-        if (result.length() == 0) {
+        if (result.length() == 0)
             return Normal.EMPTY;
-        }
         result.delete(result.length() - 2, result.length());
         return result.toString();
     }
 
     /**
-     * 构建一个{@code Cache-Control}请求头
+     * A builder for creating {@code Cache-Control} request headers.
      */
-    public static class Builder {
+    public static final class Builder {
 
         boolean noCache;
         boolean noStore;
@@ -325,7 +390,9 @@ public class CacheControl {
         boolean immutable;
 
         /**
-         * @return 不要接受未经验证的缓存响应
+         * Do not accept a cached response without validation.
+         *
+         * @return this builder.
          */
         public Builder noCache() {
             this.noCache = true;
@@ -333,7 +400,9 @@ public class CacheControl {
         }
 
         /**
-         * @return 不要将服务器的响应存储在任何缓存中
+         * Do not store the server's response in any cache.
+         *
+         * @return this builder.
          */
         public Builder noStore() {
             this.noStore = true;
@@ -341,11 +410,13 @@ public class CacheControl {
         }
 
         /**
-         * 设置缓存响应的最大时间。如果缓存响应的时间超过{@code maxAge}，则将不使用它，并发出网络请求
+         * Sets the maximum age of a cached response. If the cached response is older than {@code maxAge}, it will not
+         * be used and a network request will be made.
          *
-         * @param maxAge   一个非负整数。它以{@link TimeUnit#SECONDS}精度存储和传输;精度会降低
-         * @param timeUnit 单位
-         * @return the builder
+         * @param maxAge   a non-negative integer. It is stored and transmitted with {@link TimeUnit#SECONDS} precision;
+         *                 finer precision will be lost.
+         * @param timeUnit the unit of {@code maxAge}.
+         * @return this builder.
          */
         public Builder maxAge(int maxAge, TimeUnit timeUnit) {
             if (maxAge < 0)
@@ -356,11 +427,13 @@ public class CacheControl {
         }
 
         /**
-         * 接受超过新鲜度生存期的缓存响应，最多接受{@code maxStale}。如果未指定，则不使用陈旧的缓存响应
+         * Accept cached responses that have exceeded their freshness lifetime by at most {@code maxStale}. If
+         * unspecified, stale cached responses will not be used.
          *
-         * @param maxStale 一个非负整数。它以{@link TimeUnit#SECONDS}精度存储和传输;精度会降低
-         * @param timeUnit 单位
-         * @return the builder
+         * @param maxStale a non-negative integer. It is stored and transmitted with {@link TimeUnit#SECONDS} precision;
+         *                 finer precision will be lost.
+         * @param timeUnit the unit of {@code maxStale}.
+         * @return this builder.
          */
         public Builder maxStale(int maxStale, TimeUnit timeUnit) {
             if (maxStale < 0)
@@ -372,11 +445,13 @@ public class CacheControl {
         }
 
         /**
-         * 设置一个响应持续刷新的最小秒数。如果响应在{@code minFresh}过期后失效，则将不使用缓存的响应，并发出网络请求
+         * Sets the minimum number of seconds that a response will continue to be fresh for. If the response will be
+         * stale by the time it is received, a network request will be made.
          *
-         * @param minFresh 一个非负整数。它以{@link TimeUnit#SECONDS}精度存储和传输;精度会降低
-         * @param timeUnit 单位
-         * @return the builder
+         * @param minFresh a non-negative integer. It is stored and transmitted with {@link TimeUnit#SECONDS} precision;
+         *                 finer precision will be lost.
+         * @param timeUnit the unit of {@code minFresh}.
+         * @return this builder.
          */
         public Builder minFresh(int minFresh, TimeUnit timeUnit) {
             if (minFresh < 0)
@@ -388,7 +463,9 @@ public class CacheControl {
         }
 
         /**
-         * @return 只接受缓存中的响应
+         * Only accept the response from the cache.
+         *
+         * @return this builder.
          */
         public Builder onlyIfCached() {
             this.onlyIfCached = true;
@@ -396,18 +473,30 @@ public class CacheControl {
         }
 
         /**
-         * @return 不要接受改变的回应
+         * Do not accept a transformed response.
+         *
+         * @return this builder.
          */
         public Builder noTransform() {
             this.noTransform = true;
             return this;
         }
 
+        /**
+         * Indicates that the response will not be updated while it's fresh.
+         *
+         * @return this builder.
+         */
         public Builder immutable() {
             this.immutable = true;
             return this;
         }
 
+        /**
+         * Builds a new {@link CacheControl} instance.
+         *
+         * @return a new {@link CacheControl} instance.
+         */
         public CacheControl build() {
             return new CacheControl(this);
         }

@@ -42,27 +42,43 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * Jar包资源加载器
+ * A loader for native libraries (e.g., .dll, .so files) embedded within a JAR package. This loader extracts the native
+ * library from the JAR to a temporary location and then loads it.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class NatLoader extends StdLoader implements Loader {
 
+    /**
+     * Constructs a new {@code NatLoader}.
+     */
     public NatLoader() {
 
     }
 
+    /**
+     * Loads a native library from the specified path within the JAR. The library file is extracted to a temporary
+     * directory and then loaded using {@code System.load()}. The temporary file is deleted upon exit.
+     *
+     * @param path  The absolute path to the native library within the JAR (must start with '/').
+     * @param clazz The context class to use for getting the resource stream. If {@code null}, {@code Loaders.class} is
+     *              used.
+     * @return An empty enumeration, as native libraries are loaded directly and not enumerated as resources.
+     * @throws IOException              If an I/O error occurs during extraction or if the file is not found.
+     * @throws IllegalArgumentException If the path is not absolute or the filename is too short.
+     */
+    @Override
     public Enumeration<Resource> load(String path, Class<?> clazz) throws IOException {
         if (null == path || !path.startsWith(Symbol.SLASH)) {
             throw new IllegalArgumentException("The path has to be absolute (start with '/').");
         }
 
-        // 从路径获取文件名
+        // Get filename from path
         String[] parts = path.split(Symbol.SLASH);
         String filename = (parts.length > 1) ? parts[parts.length - 1] : null;
 
-        // 检查文件名是否正确
+        // Check if the filename is valid
         if (null == filename || filename.length() < 3) {
             throw new IllegalArgumentException("The filename has to be at least 3 characters long.");
         }

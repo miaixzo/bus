@@ -32,80 +32,85 @@ import java.io.Serial;
 import org.miaixz.bus.core.basic.normal.Errors;
 
 /**
- * Bean异常
+ * Represents an exception that occurs during bean operations, such as property access, instantiation, or manipulation.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class BeanException extends InternalException {
 
+    /**
+     * The serialization version identifier.
+     */
     @Serial
     private static final long serialVersionUID = 2852252098698L;
 
     /**
-     * 构造
+     * Constructs a new BeanException with the specified cause.
      *
-     * @param e 异常
+     * @param e The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
      */
     public BeanException(final Throwable e) {
         super(e);
     }
 
     /**
-     * 构造
+     * Constructs a new BeanException with the specified detail message.
      *
-     * @param errmsg 消息
+     * @param errmsg The detail message.
      */
     public BeanException(final String errmsg) {
         super(errmsg);
     }
 
     /**
-     * 构造
+     * Constructs a new BeanException with the specified error object.
      *
-     * @param errors 错误码对象，包含键和值
+     * @param errors The error object containing error code and message.
      */
     public BeanException(final Errors errors) {
         super(errors);
     }
 
     /**
-     * 构造
+     * Constructs a new BeanException with the specified error object and detail message.
      *
-     * @param errors 错误码对象，包含键和值
-     * @param errmsg 消息
+     * @param errors The error object containing error code.
+     * @param errmsg The detail message.
      */
     public BeanException(final Errors errors, String errmsg) {
         super(errors.getKey(), errmsg);
     }
 
     /**
-     * 构造
+     * Constructs a new BeanException with the specified detail message and arguments for formatting.
      *
-     * @param format 消息模板
-     * @param args   参数
+     * @param format The format string for the detail message.
+     * @param args   The arguments referenced by the format specifiers in the format string.
      */
     public BeanException(final String format, final Object... args) {
         super(format, args);
     }
 
     /**
-     * 构造
+     * Constructs a new BeanException with the specified detail message and cause.
      *
-     * @param errmsg 消息
-     * @param cause  被包装的子异常
+     * @param errmsg The detail message.
+     * @param cause  The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
      */
     public BeanException(final String errmsg, final Throwable cause) {
         super(errmsg, cause);
     }
 
     /**
-     * 构造
+     * Constructs a new BeanException with the specified detail message, cause, suppression enabled or disabled, and
+     * writable stack trace enabled or disabled.
      *
-     * @param errmsg             消息
-     * @param cause              被包装的子异常
-     * @param enableSuppression  是否启用抑制
-     * @param writableStackTrace 堆栈跟踪是否应该是可写的
+     * @param errmsg             The detail message.
+     * @param cause              The cause (which is saved for later retrieval by the {@link Throwable#getCause()}
+     *                           method).
+     * @param enableSuppression  Whether or not suppression is enabled or disabled.
+     * @param writableStackTrace Whether or not the stack trace should be writable.
      */
     public BeanException(final String errmsg, final Throwable cause, final boolean enableSuppression,
             final boolean writableStackTrace) {
@@ -113,11 +118,11 @@ public class BeanException extends InternalException {
     }
 
     /**
-     * 构造
+     * Constructs a new BeanException with the specified cause, detail message, and arguments for formatting.
      *
-     * @param cause  被包装的子异常
-     * @param format 消息模板
-     * @param args   参数
+     * @param cause  The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
+     * @param format The format string for the detail message.
+     * @param args   The arguments referenced by the format specifiers in the format string.
      */
     public BeanException(final Throwable cause, final String format, final Object... args) {
         super(cause, format, args);

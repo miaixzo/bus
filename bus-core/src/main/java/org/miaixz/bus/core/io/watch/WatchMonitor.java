@@ -40,7 +40,9 @@ import org.miaixz.bus.core.xyz.FileKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 路径监听器 监听器可监听目录或文件 如果监听的Path不存在，则递归创建空目录然后监听此空目录 递归监听目录时，并不会监听新创建的目录
+ * Path monitor for file system events. This monitor can observe directories or individual files. If the monitored path
+ * does not exist, it will recursively create empty directories and then monitor the created directory. When recursively
+ * monitoring a directory, newly created subdirectories are not automatically monitored.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -50,48 +52,57 @@ public class WatchMonitor extends Thread implements Closeable, Serializable {
     @Serial
     private static final long serialVersionUID = 2852236557339L;
 
+    /**
+     * The wrapper around the {@link java.nio.file.WatchService} that handles the actual watching mechanism.
+     */
     private final WatchServiceWrapper watchService;
 
     /**
-     * 监听路径，必须为目录
+     * The path being monitored. This must be a directory. If a file is provided, its parent directory will be
+     * monitored.
      */
     private Path dir;
     /**
-     * 监听的文件，对于单文件监听不为空
+     * The specific file being monitored. This is non-null only when monitoring a single file.
      */
     private Path file;
 
     /**
-     * 递归目录的最大深度，当小于1时不递归下层目录
+     * The maximum depth for recursive directory monitoring. If less than 1, only the current directory is monitored.
      */
     private int maxDepth;
     /**
-     * 监听器
+     * The {@link Watcher} instance that will be notified of file system events.
      */
     private Watcher watcher;
 
     /**
-     * 构造
+     * Constructs a new {@code WatchMonitor} for the given directory and specified event kinds. This constructor sets
+     * the maximum depth for recursive monitoring to 0, meaning only the immediate directory is monitored.
      *
-     * @param dir    字符串路径
-     * @param events 监听事件列表，如创建、修改和删除等
+     * @param dir    The path to the directory or file to monitor.
+     * @param events An array of {@link WatchEvent.Kind} representing the types of events to listen for (e.g., create,
+     *               modify, delete).
      */
     public WatchMonitor(final Path dir, final WatchEvent.Kind<?>... events) {
         this(dir, 0, events);
     }
 
     /**
-     * 构造 例如设置：
+     * Constructs a new {@code WatchMonitor} for the given directory, maximum recursion depth, and specified event
+     * kinds. Examples for {@code maxDepth}:
      * 
      * <pre>
-     * maxDepth &lt;= 1 表示只监听当前目录
-     * maxDepth = 2 表示监听当前目录以及下层目录
-     * maxDepth = 3 表示监听当前目录以及下两层
+     * maxDepth &lt;= 1: Only monitors the current directory.
+     * maxDepth = 2: Monitors the current directory and its immediate subdirectories.
+     * maxDepth = 3: Monitors the current directory and its subdirectories up to two levels deep.
      * </pre>
      *
-     * @param dir      路径
-     * @param maxDepth 递归目录的最大深度，当小于2时不递归下层目录
-     * @param events   监听事件列表，如创建、修改和删除等
+     * @param dir      The path to the directory or file to monitor.
+     * @param maxDepth The maximum depth for recursive directory monitoring. If less than 1, only the current directory
+     *                 is monitored. To monitor all subdirectories recursively, use {@link Integer#MAX_VALUE}.
+     * @param events   An array of {@link WatchEvent.Kind} representing the types of events to listen for (e.g., create,
+     *                 modify, delete).
      */
     public WatchMonitor(final Path dir, final int maxDepth, final WatchEvent.Kind<?>... events) {
         this.watchService = WatchServiceWrapper.of(events);
@@ -101,40 +112,47 @@ public class WatchMonitor extends Thread implements Closeable, Serializable {
     }
 
     /**
-     * 设置监听 多个监听请使用{@link WatcherChain}
+     * Sets the {@link Watcher} for this monitor. If multiple watchers are needed, use {@link WatcherChain}.
      *
-     * @param watcher 监听
-     * @return WatchMonitor
+     * @param watcher The {@link Watcher} instance to be notified of events.
+     * @return This {@code WatchMonitor} instance, allowing for method chaining.
      */
     public WatchMonitor setWatcher(final Watcher watcher) {
         this.watcher = watcher;
         return this;
     }
 
+    /**
+     * Starts the monitoring process. This method runs in a separate thread and blocks until the monitor is closed.
+     */
     @Override
     public void run() {
         watch();
     }
 
     /**
-     * 开始监听事件，阻塞当前进程
+     * Starts the monitoring process. This method blocks the current thread and continuously watches for file system
+     * events. The events are handled by the {@link Watcher} set via {@link #setWatcher(Watcher)}.
+     *
+     * @throws InternalException If the monitor is closed before or during the watching process.
      */
     public void watch() {
         watch(this.watcher);
     }
 
     /**
-     * 开始监听事件，阻塞当前进程
+     * Starts the monitoring process with a specific {@link Watcher}. This method blocks the current thread and
+     * continuously watches for file system events. The events are handled by the provided {@code watcher}.
      *
-     * @param watcher 监听
-     * @throws InternalException 监听异常，如果监听关闭抛出此异常
+     * @param watcher The {@link Watcher} instance to be notified of events.
+     * @throws InternalException If the monitor is closed before or during the watching process.
      */
     public void watch(final Watcher watcher) throws InternalException {
         if (this.watchService.isClosed()) {
             throw new InternalException("Watch Monitor is closed !");
         }
 
-        // 按照层级注册路径及其子路径
+        // Register the path and its sub-paths according to the specified depth.
         registerPath();
 
         while (!this.watchService.isClosed()) {
@@ -143,44 +161,51 @@ public class WatchMonitor extends Thread implements Closeable, Serializable {
     }
 
     /**
-     * 当监听目录时，监听目录的最大深度 当设置值为1（或小于1）时，表示不递归监听子目录 例如设置：
+     * Sets the maximum depth for recursive directory monitoring. When the value is 1 (or less than 1), it means only
+     * the current directory is monitored. Examples:
      * 
      * <pre>
-     * maxDepth &lt;= 1 表示只监听当前目录
-     * maxDepth = 2 表示监听当前目录以及下层目录
-     * maxDepth = 3 表示监听当前目录以及下层
+     * maxDepth &lt;= 1: Only monitors the current directory.
+     * maxDepth = 2: Monitors the current directory and its immediate subdirectories.
+     * maxDepth = 3: Monitors the current directory and its subdirectories up to two levels deep.
      * </pre>
      *
-     * @param maxDepth 最大深度，当设置值为1（或小于1）时，表示不递归监听子目录，监听所有子目录请传{@link Integer#MAX_VALUE}
-     * @return this
+     * @param maxDepth The maximum depth for recursive directory monitoring. Use {@link Integer#MAX_VALUE} to monitor
+     *                 all subdirectories.
+     * @return This {@code WatchMonitor} instance, allowing for method chaining.
      */
     public WatchMonitor setMaxDepth(final int maxDepth) {
         this.maxDepth = maxDepth;
         return this;
     }
 
+    /**
+     * Closes the underlying {@link java.nio.file.WatchService}, releasing any resources associated with it. Once
+     * closed, the monitor can no longer watch for events.
+     */
     @Override
     public void close() {
         this.watchService.close();
     }
 
     /**
-     * 初始化 初始化包括：
-     * 
-     * <pre>
-     * 1、解析传入的路径，判断其为目录还是文件
-     * </pre>
+     * Initializes the monitor. This includes:
+     * <ol>
+     * <li>Resolving the input path to determine if it's a directory or a file.</li>
+     * <li>If the path does not exist, it attempts to create the necessary directories.</li>
+     * </ol>
      *
-     * @throws InternalException 监听异常，IO异常时抛出此异常
+     * @throws InternalException If an I/O error occurs during path resolution or directory creation.
      */
     private void init() throws InternalException {
-        // 获取目录或文件路径
+        // Get the directory or file path.
         if (!PathResolve.exists(this.dir, false)) {
-            // 不存在的路径
+            // Path does not exist.
             final Path lastPathEle = FileKit.getLastPathEle(this.dir);
             if (null != lastPathEle) {
                 final String lastPathEleStr = lastPathEle.toString();
-                // 带有点表示有扩展名，按照未创建的文件对待。Linux下.d的为目录，排除之
+                // If the path contains a dot and is not a .d directory (Linux convention),
+                // treat it as an uncreated file. Otherwise, it's a directory.
                 if (StringKit.contains(lastPathEleStr, Symbol.C_DOT)
                         && !StringKit.endWithIgnoreCase(lastPathEleStr, ".d")) {
                     this.file = this.dir;
@@ -188,29 +213,31 @@ public class WatchMonitor extends Thread implements Closeable, Serializable {
                 }
             }
 
-            // 创建不存在的目录或父目录
+            // Create non-existent directory or parent directory.
             PathResolve.mkdir(this.dir);
         } else if (PathResolve.isFile(this.dir, false)) {
-            // 文件路径
+            // If the provided path is a file, set it as the file to monitor and monitor its parent directory.
             this.file = this.dir;
             this.dir = this.file.getParent();
         }
     }
 
     /**
-     * 执行事件获取并处理
+     * Executes the event retrieval and processing loop. This method takes events from the
+     * {@link java.nio.file.WatchService} and dispatches them to the provided {@link Watcher}.
      *
-     * @param watcher {@link Watcher}
+     * @param watcher The {@link Watcher} to which events are dispatched.
      */
     private void doTakeAndWatch(final Watcher watcher) {
         this.watchService.watch(
                 watcher,
-                // 对于文件监听，忽略目录下其他文件和目录的事件
+                // For file monitoring, ignore events for other files and directories within the monitored directory.
                 watchEvent -> null == file || file.endsWith(watchEvent.context().toString()));
     }
 
     /**
-     * 注册监听路径
+     * Registers the monitoring path (directory) with the {@link java.nio.file.WatchService}. If monitoring a single
+     * file, the depth is set to 0. Otherwise, the specified {@code maxDepth} is used.
      */
     private void registerPath() {
         this.watchService.registerPath(this.dir, (null != this.file) ? 0 : this.maxDepth);

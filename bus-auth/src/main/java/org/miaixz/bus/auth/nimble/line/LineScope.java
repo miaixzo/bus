@@ -32,7 +32,7 @@ import lombok.Getter;
 import org.miaixz.bus.auth.nimble.AuthorizeScope;
 
 /**
- * Line 授权范围
+ * LINE authorization scopes.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,14 +42,29 @@ import org.miaixz.bus.auth.nimble.AuthorizeScope;
 public enum LineScope implements AuthorizeScope {
 
     /**
-     * {@code scope} 含义，以{@code description} 为准
+     * Get profile details. The meaning of {@code scope} is subject to {@code description}.
      */
-
-    PROFILE("profile", "Get profile details", true), OPENID("openid", "Get id token", true),
+    PROFILE("profile", "Get profile details", true),
+    /**
+     * Get ID token.
+     */
+    OPENID("openid", "Get id token", true),
+    /**
+     * Get email (separate authorization required).
+     */
     EMAIL("email", "Get email (separate authorization required)", false);
 
+    /**
+     * The scope string as defined by LINE.
+     */
     private final String scope;
+    /**
+     * A description of what the scope grants access to.
+     */
     private final String description;
+    /**
+     * Indicates if this scope is enabled by default.
+     */
     private final boolean isDefault;
 
 }

@@ -30,7 +30,15 @@ package org.miaixz.bus.core.lang.annotation.env;
 import java.lang.annotation.*;
 
 /**
- * 注解: 开发环境，表示当前方法禁止用于生产环境,仅可用于开发测试。
+ * A marker annotation indicating that a class or method is intended for use only in a <strong>development
+ * environment</strong>.
+ * <p>
+ * This annotation serves as a warning that the annotated component is not suitable for production use. It can be
+ * applied to test utilities, mock objects, experimental features, or any other code that should be excluded from a
+ * production build.
+ * <p>
+ * While it is primarily for documentation, it can also be used by build scripts or static analysis tools to enforce
+ * environment-specific rules.
  *
  * @author Kimi Liu
  * @since Java 17+

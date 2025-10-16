@@ -36,7 +36,6 @@ import javax.sql.DataSource;
 import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.crypto.Builder;
@@ -62,7 +61,10 @@ import com.zaxxer.hikari.HikariDataSource;
 import jakarta.annotation.Resource;
 
 /**
- * 数据源配置
+ * Auto-configuration for data sources.
+ * <p>
+ * This class configures the primary data source and any additional data sources, setting up a {@link DynamicDataSource}
+ * to handle routing. It also provides support for encrypted credentials and configures a transaction manager.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -73,9 +75,15 @@ import jakarta.annotation.Resource;
 @Import(AspectjJdbcProxy.class)
 public class JdbcConfiguration {
 
+    /**
+     * Injected JDBC configuration properties.
+     */
     @Resource
     JdbcProperties properties;
 
+    /**
+     * Aliases for mapping common data source properties.
+     */
     private static final ConfigurationPropertyNameAliases aliases;
 
     static {
@@ -85,44 +93,53 @@ public class JdbcConfiguration {
     }
 
     /**
-     * 初始化数据源/多数据源
+     * Creates and configures the dynamic data source bean.
+     * <p>
+     * This method initializes the default data source and any additional data sources defined in the configuration. It
+     * then sets up the {@link DynamicDataSource} to manage them.
+     * </p>
      *
-     * @return 数据源
+     * @return The configured {@link DynamicDataSource} instance.
      */
     @Bean
     @Primary
     public DynamicDataSource dataSource() {
-        Map defaultConfig = beanToMap(this.properties);
+        Map<String, Object> defaultConfig = beanToMap(this.properties);
         DataSource defaultDatasource = bind(defaultConfig);
-        Map<Object, Object> sourceMap = MapKit.of(this.properties.getName(), defaultDatasource);
+        Map<Object, Object> sourceMap = new HashMap<>();
+        sourceMap.put(this.properties.getName(), defaultDatasource);
         DataSourceHolder.setKey(this.properties.getName());
+
         if (ObjectKit.isNotEmpty(this.properties.getMulti())) {
             Logger.info("Enable support for multiple data sources");
             List<JdbcProperties> list = this.properties.getMulti();
-            for (int i = 0; i < list.size(); i++) {
-                Map config = beanToMap(list.get(i));
+            for (JdbcProperties prop : list) {
+                Map<String, Object> config = beanToMap(prop);
                 if ((boolean) config.getOrDefault("extend", Boolean.TRUE)) {
-                    Map properties = new HashMap(defaultConfig);
-                    properties.putAll(config);
+                    Map<String, Object> mergedConfig = new HashMap<>(defaultConfig);
+                    mergedConfig.putAll(config);
+                    config = mergedConfig;
                 }
                 sourceMap.put(config.get("name").toString(), bind(config));
             }
         }
-        DynamicDataSource dataSource = new DynamicDataSource();
+
+        DynamicDataSource dataSource = DynamicDataSource.getInstance();
         dataSource.setDefaultTargetDataSource(defaultDatasource);
         dataSource.setTargetDataSources(sourceMap);
         dataSource.afterPropertiesSet();
-        // 在上下文中设置默认数据源名称
+
+        // Set the default data source name in the context holder
         DataSourceHolder.setDefault(this.properties.getName());
 
         return dataSource;
     }
 
     /**
-     * 事务支持
+     * Creates the transaction manager bean.
      *
-     * @param dataSource 数据源
-     * @return 事务信息
+     * @param dataSource The {@link DataSource} to be used by the transaction manager.
+     * @return A {@link DataSourceTransactionManager} instance.
      */
     @Bean
     public DataSourceTransactionManager transactionManager(DataSource dataSource) {
@@ -130,10 +147,12 @@ public class JdbcConfiguration {
     }
 
     /**
-     * 绑定数据源信息
+     * Binds a map of properties to a new {@link DataSource} instance.
      *
-     * @param map 数据库信息
-     * @return 数据库连接
+     * @param map A map containing the data source properties.
+     * @return A configured {@link DataSource} instance.
+     * @throws InternalException        if the data source type is not specified.
+     * @throws IllegalArgumentException if the specified data source class cannot be found.
      */
     private DataSource bind(Map<String, Object> map) {
         String type = StringKit.toString(map.get("type"));
@@ -143,15 +162,20 @@ public class JdbcConfiguration {
         try {
             return bind((Class<? extends DataSource>) Class.forName(type), map);
         } catch (Exception e) {
-            throw new IllegalArgumentException("Cannot resolve class with type: " + type);
+            throw new IllegalArgumentException("Cannot resolve class with type: " + type, e);
         }
     }
 
     /**
-     * 将对象装换为map
+     * Converts a bean to a map of its properties.
+     * <p>
+     * This method also handles the decryption of sensitive properties like url, username, and password if a private key
+     * is configured.
+     * </p>
      *
-     * @param bean 对象
-     * @return the object
+     * @param bean The bean to convert.
+     * @param <T>  The type of the bean.
+     * @return A map representation of the bean's properties.
      */
     private <T> Map<String, Object> beanToMap(T bean) {
         Map<String, Object> map = new HashMap<>();
@@ -161,27 +185,13 @@ public class JdbcConfiguration {
                 Object value = beanMap.get(key);
                 if (StringKit.isNotEmpty(this.properties.getPrivateKey())) {
                     Logger.info("The database connection is securely enabled");
-                    if ("url".equals(key)) {
+                    if ("url".equals(key) || "username".equals(key) || "password".equals(key)) {
                         value = Builder.decrypt(
                                 Algorithm.AES.getValue(),
                                 this.properties.getPrivateKey(),
                                 value.toString(),
                                 Charset.UTF_8);
-                        beanMap.put("url", value);
-                    } else if ("username".equals(key)) {
-                        value = Builder.decrypt(
-                                Algorithm.AES.getValue(),
-                                this.properties.getPrivateKey(),
-                                value.toString(),
-                                Charset.UTF_8);
-                        beanMap.put("username", value);
-                    } else if ("password".equals(key)) {
-                        value = Builder.decrypt(
-                                Algorithm.AES.getValue(),
-                                this.properties.getPrivateKey(),
-                                value.toString(),
-                                Charset.UTF_8);
-                        beanMap.put("password", value);
+                        beanMap.put(key, value);
                     }
                 }
                 map.put(StringKit.toString(key), value);
@@ -191,24 +201,28 @@ public class JdbcConfiguration {
     }
 
     /**
-     * 绑定参数:以下三个方法都是参考DataSourceBuilder的bind方法实现的， 目的是尽量保证我们自己添加的数据源构造过程与springboot保持一致
+     * Binds properties to an existing {@link DataSource} instance. This method is inspired by Spring Boot's
+     * {@code DataSourceBuilder.bind} to ensure consistent data source configuration.
      *
-     * @param result     数据源
-     * @param properties 配置信息
+     * @param result     The {@link DataSource} instance to configure.
+     * @param properties A map of properties to bind.
      */
-    private void bind(DataSource result, Map properties) {
+    private void bind(DataSource result, Map<String, Object> properties) {
         ConfigurationPropertySource source = new MapConfigurationPropertySource(properties);
         Binder binder = new Binder(source.withAliases(aliases));
         binder.bind(ConfigurationPropertyName.EMPTY, Bindable.ofInstance(result));
     }
 
     /**
-     * 绑定参数:以下三个方法都是参考DataSourceBuilder的bind方法实现的， 目的是尽量保证我们自己添加的数据源构造过程与springboot保持一致
+     * Creates and binds a new {@link DataSource} instance of the specified class. This method is inspired by Spring
+     * Boot's {@code DataSourceBuilder.bind} to ensure consistent data source creation.
      *
-     * @param clazz      连接池信息
-     * @param properties 配置信息
+     * @param clazz      The class of the {@link DataSource} to create.
+     * @param properties A map of properties to bind.
+     * @param <T>        The type of the data source.
+     * @return A new, configured {@link DataSource} instance.
      */
-    private <T extends DataSource> T bind(Class<T> clazz, Map properties) {
+    private <T extends DataSource> T bind(Class<T> clazz, Map<String, Object> properties) {
         ConfigurationPropertySource source = new MapConfigurationPropertySource(properties);
         Binder binder = new Binder(source.withAliases(aliases));
         return binder.bind(ConfigurationPropertyName.EMPTY, Bindable.of(clazz)).get();

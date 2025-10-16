@@ -1,12 +1,39 @@
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+*/
 package org.miaixz.bus.health.builtin;
 
 import java.util.Arrays;
 import java.util.List;
 
 /**
- * 健康状态监控类型标识常量类。
+ * Health status monitoring type identifier constants class.
  * <p>
- * 定义了系统和硬件信息监控的类型标识符（Type Identifiers）。
+ * Defines the Type Identifiers for system and hardware information monitoring.
  * </p>
  *
  * @author Kimi Liu
@@ -15,82 +42,82 @@ import java.util.List;
 public final class TID {
 
     /**
-     * 主机信息
+     * Host information
      */
     public static final String HOST = "host";
 
     /**
-     * CPU 信息
+     * CPU information
      */
     public static final String CPU = "cpu";
 
     /**
-     * 磁盘信息
+     * Disk information
      */
     public static final String DISK = "disk";
 
     /**
-     * JVM 虚拟机信息
+     * JVM virtual machine information
      */
     public static final String JVM = "jvm";
 
     /**
-     * 内存信息
+     * Memory information
      */
     public static final String MEMORY = "memory";
 
     /**
-     * 所有磁盘使用率信息
+     * All disk usage information
      */
     public static final String ALL_DISK = "alldisk";
 
     /**
-     * 系统进程信息
+     * System process information
      */
     public static final String PROCESS = "process";
 
     /**
-     * 系统信息
+     * System information
      */
     public static final String SYSTEM = "system";
 
     /**
-     * 处理器信息
+     * Processor information
      */
     public static final String PROCESSOR = "processor";
 
     /**
-     * 硬件信息
+     * Hardware information
      */
     public static final String HARDWARE = "hardware";
 
     /**
-     * 存活状态
+     * Liveness status
      */
     public static final String LIVENESS = "liveness";
 
     /**
-     * 就绪状态
+     * Readiness status
      */
     public static final String READINESS = "readiness";
 
     /**
-     * 就绪状态
+     * Power sources information
      */
     public static final String POWERSOURCES = "powerSources";
 
     /**
-     * 就绪状态
+     * Network interfaces information
      */
     public static final String NETWORKIFS = "networkIFs";
 
     /**
-     * 所有监控类型
+     * All monitoring types
      */
     public static final String ALL = "all";
 
     /**
-     * 所有监控类型的列表
+     * List of all monitoring types
      */
     public static final List<String> ALL_TID = Arrays.asList(
             HOST,

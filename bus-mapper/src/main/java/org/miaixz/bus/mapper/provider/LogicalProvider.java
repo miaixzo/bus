@@ -40,9 +40,9 @@ import org.miaixz.bus.mapper.parsing.SqlScript;
 import org.miaixz.bus.mapper.parsing.TableMeta;
 
 /**
- * 支持逻辑删除的动态 SQL 操作实现。
+ * Provides dynamic SQL operations with logical deletion support.
  * <p>
- * 注意：使用时需在实体类字段上声明 @Logical 注解。
+ * Note: When using, the entity class field must be annotated with {@code @Logical}.
  * </p>
  *
  * @author Kimi Liu
@@ -51,10 +51,10 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
 public class LogicalProvider {
 
     /**
-     * 根据实体字段条件查询未逻辑删除的记录。
+     * Selects records that are not logically deleted based on entity field conditions.
      *
-     * @param providerContext 提供者上下文，包含方法和接口信息
-     * @return 缓存键
+     * @param providerContext The provider context, containing method and interface information.
+     * @return The cache key.
      */
     public static String select(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new LogicalSqlScript() {
@@ -72,10 +72,11 @@ public class LogicalProvider {
     }
 
     /**
-     * 根据实体字段条件查询未逻辑删除的记录，支持动态选择查询字段，结果数量由方法定义。
+     * Selects records that are not logically deleted based on entity field conditions, with dynamic selection of query
+     * fields.
      *
-     * @param providerContext 提供者上下文，包含方法和接口信息
-     * @return 缓存键
+     * @param providerContext The provider context, containing method and interface information.
+     * @return The cache key.
      */
     public static String selectColumns(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new LogicalSqlScript() {
@@ -106,10 +107,10 @@ public class LogicalProvider {
     }
 
     /**
-     * 根据 Condition 条件批量查询未逻辑删除的记录，结果数量由方法定义。
+     * Selects records that are not logically deleted based on a Condition object.
      *
-     * @param providerContext 提供者上下文，包含方法和接口信息
-     * @return 缓存键
+     * @param providerContext The provider context, containing method and interface information.
+     * @return The cache key.
      */
     public static String selectByCondition(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new LogicalSqlScript() {
@@ -136,10 +137,10 @@ public class LogicalProvider {
     }
 
     /**
-     * 根据 Condition 条件查询未逻辑删除记录的总数。
+     * Counts the total number of records that are not logically deleted based on a Condition object.
      *
-     * @param providerContext 提供者上下文，包含方法和接口信息
-     * @return 缓存键
+     * @param providerContext The provider context, containing method and interface information.
+     * @return The cache key.
      */
     public static String countByCondition(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new LogicalSqlScript() {
@@ -166,10 +167,10 @@ public class LogicalProvider {
     }
 
     /**
-     * 根据主键查询未逻辑删除的记录。
+     * Selects a record that is not logically deleted by its primary key.
      *
-     * @param providerContext 提供者上下文，包含方法和接口信息
-     * @return 缓存键
+     * @param providerContext The provider context, containing method and interface information.
+     * @return The cache key.
      */
     public static String selectByPrimaryKey(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new LogicalSqlScript() {
@@ -186,10 +187,10 @@ public class LogicalProvider {
     }
 
     /**
-     * 根据实体字段条件查询未逻辑删除记录的总数。
+     * Counts the total number of records that are not logically deleted based on entity field conditions.
      *
-     * @param providerContext 提供者上下文，包含方法和接口信息
-     * @return 缓存键
+     * @param providerContext The provider context, containing method and interface information.
+     * @return The cache key.
      */
     public static String selectCount(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new LogicalSqlScript() {
@@ -205,10 +206,10 @@ public class LogicalProvider {
     }
 
     /**
-     * 根据 Condition 条件批量更新未逻辑删除的实体信息，更新所有字段。
+     * Batch updates non-logically deleted entity information based on a Condition object, updating all fields.
      *
-     * @param providerContext 提供者上下文，包含方法和接口信息
-     * @return 缓存键
+     * @param providerContext The provider context, containing method and interface information.
+     * @return The cache key.
      */
     public static String updateByCondition(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new LogicalSqlScript() {
@@ -236,10 +237,10 @@ public class LogicalProvider {
     }
 
     /**
-     * 根据 Condition 条件批量更新未逻辑删除的实体非空字段。
+     * Batch updates non-logically deleted entity non-null fields based on a Condition object.
      *
-     * @param providerContext 提供者上下文，包含方法和接口信息
-     * @return 缓存键
+     * @param providerContext The provider context, containing method and interface information.
+     * @return The cache key.
      */
     public static String updateByConditionSelective(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new LogicalSqlScript() {
@@ -270,10 +271,10 @@ public class LogicalProvider {
     }
 
     /**
-     * 根据 Condition 条件批量更新未逻辑删除的实体信息，使用指定的设置值。
+     * Batch updates non-logically deleted entity information based on a Condition object, using specified set values.
      *
-     * @param providerContext 提供者上下文，包含方法和接口信息
-     * @return 缓存键
+     * @param providerContext The provider context, containing method and interface information.
+     * @return The cache key.
      */
     public static String updateByConditionSetValues(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new LogicalSqlScript() {
@@ -298,10 +299,10 @@ public class LogicalProvider {
     }
 
     /**
-     * 根据主键更新未逻辑删除的实体所有字段。
+     * Updates all fields of a non-logically deleted entity by its primary key.
      *
-     * @param providerContext 提供者上下文，包含方法和接口信息
-     * @return 缓存键
+     * @param providerContext The provider context, containing method and interface information.
+     * @return The cache key.
      */
     public static String updateByPrimaryKey(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new LogicalSqlScript() {
@@ -320,10 +321,10 @@ public class LogicalProvider {
     }
 
     /**
-     * 根据主键更新未逻辑删除的实体非空字段。
+     * Updates non-null fields of a non-logically deleted entity by its primary key.
      *
-     * @param providerContext 提供者上下文，包含方法和接口信息
-     * @return 缓存键
+     * @param providerContext The provider context, containing method and interface information.
+     * @return The cache key.
      */
     public static String updateByPrimaryKeySelective(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new LogicalSqlScript() {
@@ -347,10 +348,11 @@ public class LogicalProvider {
     }
 
     /**
-     * 根据主键更新未逻辑删除的实体非空字段，强制更新指定字段（不区分是否为 null）。
+     * Updates non-null fields of a non-logically deleted entity by its primary key, and forcibly updates specified
+     * fields (regardless of nullness).
      *
-     * @param providerContext 提供者上下文，包含方法和接口信息
-     * @return 缓存键
+     * @param providerContext The provider context, containing method and interface information.
+     * @return The cache key.
      */
     public static String updateByPrimaryKeySelectiveWithForceFields(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new LogicalSqlScript() {
@@ -377,10 +379,10 @@ public class LogicalProvider {
     }
 
     /**
-     * 根据实体字段条件批量逻辑删除记录。
+     * Logically deletes records in batch based on entity field conditions.
      *
-     * @param providerContext 提供者上下文，包含方法和接口信息
-     * @return 缓存键
+     * @param providerContext The provider context, containing method and interface information.
+     * @return The cache key.
      */
     public static String delete(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new LogicalSqlScript() {
@@ -403,10 +405,10 @@ public class LogicalProvider {
     }
 
     /**
-     * 根据主键逻辑删除记录。
+     * Logically deletes a record by its primary key.
      *
-     * @param providerContext 提供者上下文，包含方法和接口信息
-     * @return 缓存键
+     * @param providerContext The provider context, containing method and interface information.
+     * @return The cache key.
      */
     public static String deleteByPrimaryKey(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new LogicalSqlScript() {
@@ -423,10 +425,10 @@ public class LogicalProvider {
     }
 
     /**
-     * 根据 Condition 条件批量逻辑删除记录。
+     * Logically deletes records in batch based on a Condition object.
      *
-     * @param providerContext 提供者上下文，包含方法和接口信息
-     * @return 缓存键
+     * @param providerContext The provider context, containing method and interface information.
+     * @return The cache key.
      */
     public static String deleteByCondition(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new LogicalSqlScript() {
@@ -446,11 +448,11 @@ public class LogicalProvider {
     }
 
     /**
-     * 获取标记为 @Logical 的字段，确保有且仅有一个逻辑删除字段。
+     * Gets the column marked with {@code @Logical}, ensuring there is exactly one such field.
      *
-     * @param entity 实体表信息
-     * @return 逻辑删除字段
-     * @throws IllegalStateException 如果没有或存在多个 @Logical 注解字段
+     * @param entity The entity table information.
+     * @return The logical deletion column.
+     * @throws IllegalStateException if there are no or multiple fields annotated with {@code @Logical}.
      */
     private static ColumnMeta getLogical(TableMeta entity) {
         List<ColumnMeta> logicColumns = entity.columns().stream()
@@ -460,73 +462,73 @@ public class LogicalProvider {
     }
 
     /**
-     * 获取逻辑删除字段的删除值。
+     * Gets the deletion value for the logical deletion column.
      *
-     * @param logicColumn 逻辑删除字段
-     * @return 删除值
+     * @param logicColumn The logical deletion column.
+     * @return The deletion value.
      */
     private static String deleteValue(ColumnMeta logicColumn) {
         return logicColumn.fieldMeta().getAnnotation(Logical.class).value();
     }
 
     /**
-     * 获取逻辑删除字段的有效状态值。
+     * Gets the valid status value for the logical deletion column.
      *
-     * @param logicColumn 逻辑删除字段
-     * @return 有效状态值
+     * @param logicColumn The logical deletion column.
+     * @return The valid status value.
      */
     private static String validValue(ColumnMeta logicColumn) {
         return logicColumn.fieldMeta().getAnnotation(Logical.class).valid();
     }
 
     /**
-     * 检查是否使用等于条件。
+     * Checks if an equality condition should be used for the logical deletion column.
      *
-     * @param logicColumn 逻辑删除字段
-     * @return 是否使用等于条件
+     * @param logicColumn The logical deletion column.
+     * @return {@code true} if an equality condition should be used, {@code false} otherwise.
      */
     private static boolean useEqualsCondition(ColumnMeta logicColumn) {
         return logicColumn.fieldMeta().getAnnotation(Logical.class).useEqualsCondition();
     }
 
     /**
-     * 生成字段等于指定值的条件。
+     * Generates a condition string for a column equal to a specified value.
      *
-     * @param c     字段
-     * @param value 值
-     * @return 条件字符串
+     * @param c     The column.
+     * @param value The value.
+     * @return The condition string.
      */
     private static String columnEqualsValueCondition(ColumnMeta c, String value) {
         return Symbol.SPACE + c.column() + choiceEqualsOperator(value) + value + Symbol.SPACE;
     }
 
     /**
-     * 生成字段等于指定值的 SET 子句。
+     * Generates a SET clause string for a column equal to a specified value.
      *
-     * @param c     字段
-     * @param value 值
-     * @return SET 子句字符串
+     * @param c     The column.
+     * @param value The value.
+     * @return The SET clause string.
      */
     private static String columnEqualsValue(ColumnMeta c, String value) {
         return Symbol.SPACE + c.column() + " = " + value + Symbol.SPACE;
     }
 
     /**
-     * 生成字段不等于指定值的条件。
+     * Generates a condition string for a column not equal to a specified value.
      *
-     * @param c     字段
-     * @param value 值
-     * @return 条件字符串
+     * @param c     The column.
+     * @param value The value.
+     * @return The condition string.
      */
     private static String columnNotEqualsValueCondition(ColumnMeta c, String value) {
         return Symbol.SPACE + c.column() + choiceNotEqualsOperator(value) + value;
     }
 
     /**
-     * 选择等于操作符，处理 null 值情况。
+     * Selects the appropriate equality operator, handling null values.
      *
-     * @param value 值
-     * @return 等于操作符（" = " 或 " IS "）
+     * @param value The value.
+     * @return The equality operator (" = " or " IS ").
      */
     private static String choiceEqualsOperator(String value) {
         if ("null".compareToIgnoreCase(value) == 0) {
@@ -536,10 +538,10 @@ public class LogicalProvider {
     }
 
     /**
-     * 选择不等于操作符，处理 null 值情况。
+     * Selects the appropriate inequality operator, handling null values.
      *
-     * @param value 值
-     * @return 不等于操作符（" != " 或 " IS NOT "）
+     * @param value The value.
+     * @return The inequality operator (" != " or " IS NOT ").
      */
     private static String choiceNotEqualsOperator(String value) {
         if ("null".compareToIgnoreCase(value) == 0) {
@@ -549,31 +551,34 @@ public class LogicalProvider {
     }
 
     /**
-     * 逻辑删除 SQL 脚本接口，添加逻辑删除条件。
+     * An SQL script interface that adds logical deletion conditions.
      */
     private interface LogicalSqlScript extends SqlScript {
 
         /**
-         * 生成逻辑删除条件的 SQL 片段。 根据配置使用等于条件或不等于条件。
+         * Generates the SQL fragment for logical deletion conditions. Uses an equality condition or inequality
+         * condition based on configuration.
          *
-         * @param entity            实体表信息
-         * @param isDeleteOperation 是否为删除操作，删除操作总是使用不等于条件
-         * @return 逻辑删除条件
+         * @param entity            The entity table information.
+         * @param isDeleteOperation Whether it is a delete operation. Delete operations always use an inequality
+         *                          condition.
+         * @return The logical deletion condition.
          */
         default String logicalCondition(TableMeta entity, boolean isDeleteOperation) {
             ColumnMeta logicalColumn = getLogical(entity);
 
-            // 删除操作总是使用不等于条件，确保只删除未逻辑删除的记录
+            // Delete operations always use an inequality condition to ensure only non-logically deleted records are
+            // affected.
             if (isDeleteOperation) {
                 return columnNotEqualsValueCondition(logicalColumn, deleteValue(logicalColumn)) + Symbol.LF;
             }
 
-            // 查询和更新操作根据配置使用等于条件或不等于条件
+            // Query and update operations use an equality or inequality condition based on configuration.
             if (useEqualsCondition(logicalColumn)) {
-                // 使用等于条件：status = 1
+                // Use equality condition: status = 1
                 return " AND " + columnEqualsValueCondition(logicalColumn, validValue(logicalColumn)) + Symbol.LF;
             } else {
-                // 使用不等于条件：status != -1（原有逻辑）
+                // Use inequality condition: status != -1 (original logic)
                 return " AND " + columnNotEqualsValueCondition(logicalColumn, deleteValue(logicalColumn)) + Symbol.LF;
             }
         }

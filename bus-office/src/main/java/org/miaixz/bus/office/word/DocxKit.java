@@ -39,7 +39,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.FileKit;
 
 /**
- * Word Document工具
+ * Utility class for Word Document (DOCX) operations.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -47,10 +47,12 @@ import org.miaixz.bus.core.xyz.FileKit;
 public class DocxKit {
 
     /**
-     * 创建{@link XWPFDocument}，如果文件已存在则读取之，否则创建新的
+     * Creates an {@link XWPFDocument} instance. If the file already exists, it will be opened; otherwise, a new
+     * document will be created.
      *
-     * @param file docx文件
-     * @return {@link XWPFDocument}
+     * @param file The DOCX file.
+     * @return A new or existing {@link XWPFDocument}.
+     * @throws InternalException if an {@link InvalidFormatException} or {@link IOException} occurs.
      */
     public static XWPFDocument create(final File file) {
         try {
@@ -61,10 +63,10 @@ public class DocxKit {
     }
 
     /**
-     * 获取图片类型枚举
+     * Gets the {@link PictureType} enum for a given file name.
      *
-     * @param fileName 文件名称
-     * @return 图片类型枚举
+     * @param fileName The name of the file.
+     * @return The corresponding {@link PictureType} enum. Defaults to {@link PictureType#JPEG} if the type is unknown.
      */
     public static PictureType getType(final String fileName) {
         String extName = FileName.extName(fileName).toUpperCase();
@@ -76,26 +78,26 @@ public class DocxKit {
         try {
             picType = PictureType.valueOf(extName);
         } catch (final IllegalArgumentException e) {
-            // 默认值
+            // Default value
             picType = PictureType.JPEG;
         }
         return picType;
     }
 
     /**
-     * 创建Word 07格式的生成器
+     * Creates a Word 07 format writer.
      *
-     * @return {@link Word07Writer}
+     * @return A new {@link Word07Writer} instance.
      */
     public static Word07Writer getWriter() {
         return new Word07Writer();
     }
 
     /**
-     * 创建Word 07格式的生成器
+     * Creates a Word 07 format writer for a specific destination file.
      *
-     * @param destFile 目标文件
-     * @return {@link Word07Writer}
+     * @param destFile The destination file for the Word document.
+     * @return A new {@link Word07Writer} instance.
      */
     public static Word07Writer getWriter(final File destFile) {
         return new Word07Writer(destFile);

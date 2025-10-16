@@ -27,8 +27,6 @@
 */
 package org.miaixz.bus.logger.metric.console;
 
-import java.io.Serial;
-
 import org.miaixz.bus.core.center.map.Dictionary;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Console;
@@ -38,8 +36,10 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Level;
 import org.miaixz.bus.logger.magic.AbstractProvider;
 
+import java.io.Serial;
+
 /**
- * 利用 System.out.println 打印日志
+ * A logger provider that prints messages to the console using {@code System.out.println}.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -50,32 +50,32 @@ public class NormalLoggingProvider extends AbstractProvider {
     private static final long serialVersionUID = 2852287011503L;
 
     /**
-     * 日志级别
+     * The current logging level.
      */
     private static Level _level = Level.DEBUG;
 
     /**
-     * 构造
+     * Constructs a new {@code NormalLoggingProvider} for the specified class.
      *
-     * @param clazz 类
+     * @param clazz the class for which to create the logger.
      */
     public NormalLoggingProvider(final Class<?> clazz) {
         this.name = (null == clazz) ? Normal.NULL : clazz.getName();
     }
 
     /**
-     * 构造
+     * Constructs a new {@code NormalLoggingProvider} for the specified name.
      *
-     * @param name 类名
+     * @param name the name of the logger (usually the class name).
      */
     public NormalLoggingProvider(final String name) {
         this.name = name;
     }
 
     /**
-     * 设置自定义的日志显示级别
+     * Sets the logging level.
      *
-     * @param level 自定义级别
+     * @param level the logging level to set.
      */
     public void setLevel(final Level level) {
         Assert.notNull(level);
@@ -147,15 +147,19 @@ public class NormalLoggingProvider extends AbstractProvider {
         if (!isEnabled(level)) {
             return;
         }
+
+        // Create a dictionary to hold log message components.
         final Dictionary dict = Dictionary.of().set("date", DateKit.formatNow()).set("level", level.toString())
                 .set("name", this.name).set("msg", StringKit.format(format, args));
 
+        // Format the log message using the dictionary.
         final String logMsg = StringKit.formatByMap("[{date}] [{level}] {name}: {msg}", dict);
 
-        // WARN以上级别打印至System.err
+        // Print messages of WARN level or higher to System.err.
         if (level.ordinal() >= Level.WARN.ordinal()) {
             Console.error(t, logMsg);
         } else {
+            // Print messages of lower levels to System.out.
             Console.log(t, logMsg);
         }
     }

@@ -49,7 +49,7 @@ import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
 
 /**
- * VK 登录提供者
+ * VK login provider.
  * 
  * @author Kimi Liu
  * @since Java 17+
@@ -57,29 +57,29 @@ import org.miaixz.bus.http.Httpx;
 public class VKProvider extends AbstractProvider {
 
     /**
-     * 使用默认缓存构造 Twitter 提供者。
+     * Constructs a {@code VKProvider} with the specified context.
      *
-     * @param context 上下文配置
+     * @param context the authentication context
      */
     public VKProvider(Context context) {
-        super(context, Registry.TWITTER);
+        super(context, Registry.VK);
     }
 
     /**
-     * 使用指定缓存构造 Twitter 提供者。
+     * Constructs a {@code VKProvider} with the specified context and cache.
      *
-     * @param context 上下文配置
-     * @param cache   缓存实现
+     * @param context the authentication context
+     * @param cache   the cache implementation
      */
     public VKProvider(Context context, CacheX cache) {
-        super(context, Registry.TWITTER, cache);
+        super(context, Registry.VK, cache);
     }
 
     /**
-     * 获取授权 URL，附带 state 参数，防止 CSRF 攻击
+     * Retrieves the authorization URL, with a state parameter to prevent CSRF attacks.
      *
-     * @param state 用于验证授权流程的参数
-     * @return 授权 URL
+     * @param state the parameter to verify the authorization process
+     * @return the authorization URL
      */
     @Override
     public String authorize(String state) {
@@ -94,51 +94,51 @@ public class VKProvider extends AbstractProvider {
             String codeChallenge = Builder.codeChallenge(codeChallengeMethod, codeVerifier);
             builder.queryParam("code_challenge", codeChallenge)
                     .queryParam("code_challenge_method", codeChallengeMethod);
-            // 缓存 codeVerifier 十分钟
+            // Cache codeVerifier for ten minutes
             this.cache.write(cacheKey, codeVerifier, TimeUnit.MINUTES.toMillis(10));
         }
         return builder.build();
     }
 
     /**
-     * 获取授权后的 access token
+     * Retrieves the access token after authorization.
      * 
-     * @param callback 回调数据
-     * @return 访问令牌对象
+     * @param callback the callback data
+     * @return the access token object
      */
     @Override
     public AuthToken getAccessToken(Callback callback) {
-        // 使用授权码获取access_token
+        // Use the authorization code to get the access_token
         String response = doPostAuthorizationCode(callback);
         Map<String, String> object = JsonKit.toMap(response);
-        // 验证响应结果
+        // Validate the response result
         this.checkResponse(object);
 
-        // 返回 token
+        // Return token
         return AuthToken.builder().idToken(object.get("id_token")).accessToken(object.get("access_token"))
                 .refreshToken(object.get("refresh_token")).tokenType(object.get("token_type"))
                 .scope(object.get("scope")).deviceId(callback.getDevice_id()).userId(object.get("user_id")).build();
     }
 
     /**
-     * 获取用户信息。
+     * Retrieves user information.
      *
-     * @param authToken 访问令牌
-     * @return 用户信息对象
-     * @throws IllegalArgumentException 如果解析用户信息失败
+     * @param authToken the access token
+     * @return the user information object
+     * @throws IllegalArgumentException if parsing user information fails
      */
     @Override
     public Material getUserInfo(AuthToken authToken) {
         String body = doGetUserInfo(authToken);
         Map<String, String> object = JsonKit.toMap(body);
 
-        // 验证响应结果
+        // Validate the response result
         this.checkResponse(object);
 
-        // 提取嵌套的user对象
+        // Extract nested user object
         Map<String, String> userObj = JsonKit.toMap(object.get("user"));
 
-        // 提取用户信息
+        // Extract user information
         return Material.builder().uuid(userObj.get("user_id")).username(userObj.get("first_name"))
                 .nickname(userObj.get("first_name") + " " + userObj.get("last_name")).avatar(userObj.get("avatar"))
                 .email(userObj.get("email")).token(authToken).rawJson(JsonKit.toJsonString(userObj))
@@ -164,16 +164,17 @@ public class VKProvider extends AbstractProvider {
         String response = doPostRevoke(authToken);
         Map<String, String> object = JsonKit.toMap(response);
         this.checkResponse(object);
-        // 返回1表示取消授权成功，否则失败
+        // Return 1 indicates successful authorization cancellation, otherwise failed
 
         Errors errors = object.get("response").equals("1") ? ErrorCode._SUCCESS : ErrorCode._FAILURE;
         return Message.builder().errcode(errors.getKey()).errmsg(errors.getValue()).build();
     }
 
     /**
-     * 使用授权码获取 access_token 的 POST 请求
+     * Performs a POST request to obtain the access token using the authorization code.
      *
-     * @return 获取的响应体
+     * @param callback the callback object containing the authorization code
+     * @return the obtained response body
      */
     protected String doPostAuthorizationCode(Callback callback) {
         Map<String, String> form = new HashMap<>(7);
@@ -193,6 +194,13 @@ public class VKProvider extends AbstractProvider {
         return Httpx.post(this.complex.accessToken(), form, this.buildHeader());
     }
 
+    /**
+     * Retrieves an authentication token from the specified URL with given parameters.
+     *
+     * @param param a map of parameters for the token request
+     * @param url   the URL to request the token from
+     * @return the {@link AuthToken} containing token details
+     */
     private AuthToken getToken(Map<String, String> param, String url) {
         String response = Httpx.post(url, param, this.buildHeader());
         Map<String, String> object = JsonKit.toMap(response);
@@ -203,10 +211,10 @@ public class VKProvider extends AbstractProvider {
     }
 
     /**
-     * 获取用户信息的 POST 请求
+     * Performs a POST request to obtain user information.
      *
-     * @param authToken access token
-     * @return 获取的响应体
+     * @param authToken the access token
+     * @return the obtained response body
      */
     protected String doGetUserInfo(AuthToken authToken) {
         Map<String, String> form = new HashMap<>(7);
@@ -215,21 +223,38 @@ public class VKProvider extends AbstractProvider {
         return Httpx.post(this.complex.userinfo(), form, this.buildHeader());
     }
 
+    /**
+     * Checks the response content for errors.
+     *
+     * @param object the response map to check
+     * @throws AuthorizedException if the response contains an error or message indicating failure
+     */
     private void checkResponse(Map<String, String> object) {
-        // 如果响应包含 error，说明出现问题
+        // If the response contains an error, it indicates a problem
         if (object.containsKey("error")) {
             throw new AuthorizedException(object.get("error_description"));
         }
-        // 如果响应包含 message，说明用户信息获取失败
+        // If the response contains a message, it indicates user information acquisition failed
         if (object.containsKey("message")) {
             throw new AuthorizedException(object.get("message"));
         }
     }
 
+    /**
+     * Builds the common HTTP headers for requests.
+     *
+     * @return a map of HTTP headers
+     */
     private Map<String, String> buildHeader() {
         return Map.of("Content-Type", MediaType.APPLICATION_FORM_URLENCODED);
     }
 
+    /**
+     * Performs a POST request to revoke OAuth2 authorization.
+     *
+     * @param authToken the access token
+     * @return the response content
+     */
     protected String doPostRevoke(AuthToken authToken) {
         Map<String, String> form = new HashMap<>(7);
         form.put("access_token", authToken.getAccessToken());

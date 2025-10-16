@@ -26,8 +26,9 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 定时任务中作业的抽象封装和实现，包括Runnable实现和反射实现
- * {@link org.miaixz.bus.cron.crontab.Crontab}表示一个具体的任务，当满足时间匹配要求时，会执行{@link org.miaixz.bus.cron.crontab.Crontab#execute()}方法。
+ * Provides classes for creating and managing timing wheels for delayed tasks. A
+ * {@link org.miaixz.bus.cron.crontab.Crontab} represents a specific task that is executed when its scheduled time is
+ * met via the {@link org.miaixz.bus.cron.crontab.Crontab#execute()} method.
  *
  * @author Kimi Liu
  * @since Java 17+

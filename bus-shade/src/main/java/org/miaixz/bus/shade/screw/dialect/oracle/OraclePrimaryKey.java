@@ -34,7 +34,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * Oracle table primary
+ * Represents primary key information for an Oracle table.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,27 +44,27 @@ import lombok.Setter;
 public class OraclePrimaryKey implements PrimaryKey {
 
     /**
-     * 表名
+     * The name of the table.
      */
     @MappingField(value = "TABLE_NAME")
     private String tableName;
     /**
-     * pk name
+     * The name of the primary key constraint.
      */
     @MappingField(value = "PK_NAME")
     private String pkName;
     /**
-     * 表模式
+     * The schema of the table.
      */
     @MappingField(value = "TABLE_SCHEM")
     private String tableSchem;
     /**
-     * 列名
+     * The name of the column in the primary key.
      */
     @MappingField(value = "COLUMN_NAME")
     private String columnName;
     /**
-     * 键序列
+     * The sequence number of the column within the primary key (for composite keys).
      */
     @MappingField(value = "KEY_SEQ")
     private String keySeq;

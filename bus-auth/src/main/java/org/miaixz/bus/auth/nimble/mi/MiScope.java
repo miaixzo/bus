@@ -32,7 +32,7 @@ import lombok.Getter;
 import org.miaixz.bus.auth.nimble.AuthorizeScope;
 
 /**
- * 小米 授权范围
+ * Xiaomi (Mi) authorization scopes.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,13 +42,29 @@ import org.miaixz.bus.auth.nimble.AuthorizeScope;
 public enum MiScope implements AuthorizeScope {
 
     /**
-     * {@code scope} 含义，以{@code description} 为准
+     * Retrieves the user's basic information. The meaning of {@code scope} is subject to {@code description}.
      */
-    profile("user/profile", "获取用户的基本信息", true), OPENID("user/openIdV2", "获取用户的OpenID", true),
-    PHONE_EMAIL("user/phoneAndEmail", "获取用户的手机号和邮箱", true);
+    profile("user/profile", "Retrieves the user's basic information", true),
+    /**
+     * Retrieves the user's OpenID.
+     */
+    OPENID("user/openIdV2", "Retrieves the user's OpenID", true),
+    /**
+     * Retrieves the user's phone number and email.
+     */
+    PHONE_EMAIL("user/phoneAndEmail", "Retrieves the user's phone number and email", true);
 
+    /**
+     * The scope string as defined by Xiaomi.
+     */
     private final String scope;
+    /**
+     * A description of what the scope grants access to.
+     */
     private final String description;
+    /**
+     * Indicates if this scope is enabled by default.
+     */
     private final boolean isDefault;
 
 }

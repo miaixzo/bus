@@ -35,7 +35,7 @@ import java.lang.annotation.Target;
 import org.miaixz.bus.core.lang.Normal;
 
 /**
- * 数据结构属性注解
+ * Annotation used to map a field in a data structure to a source field, such as a column in a database result set.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -45,9 +45,9 @@ import org.miaixz.bus.core.lang.Normal;
 public @interface MappingField {
 
     /**
-     * 属性映射名称
+     * The name of the source field to map to this annotated field.
      *
-     * @return {@link String}
+     * @return The name of the mapping.
      */
     String value() default Normal.EMPTY;
 

@@ -40,8 +40,11 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.*;
 
 /**
- * Base64工具类，提供Base64的编码和解码方案 base64编码是用64（2的6次方）个ASCII字符来表示256（2的8次方）个ASCII字符，
- * 也就是三位二进制数组经过编码后变为四位的ASCII字符显示，长度比原来增加1/3。
+ * A utility class for Base64 encoding and decoding.
+ * <p>
+ * Base64 encoding uses a 64-character set to represent binary data. This means that a 3-byte binary array is encoded
+ * into a 4-character ASCII string, increasing the length by a third. This class provides methods for both standard and
+ * URL-safe Base64 operations, following the specifications in RFC 4648.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -49,11 +52,11 @@ import org.miaixz.bus.core.xyz.*;
 public class Base64 {
 
     /**
-     * 编码为Base64，非URL安全的
+     * Encodes a byte array into a Base64 byte array.
      *
-     * @param arr     被编码的数组
-     * @param lineSep 在76个char之后是CRLF还是EOF
-     * @return 编码后的bytes
+     * @param arr     The byte array to be encoded.
+     * @param lineSep If {@code true}, a CRLF line separator is inserted after every 76 characters (MIME-style).
+     * @return The Base64-encoded byte array, or {@code null} if the input is {@code null}.
      */
     public static byte[] encode(final byte[] arr, final boolean lineSep) {
         if (arr == null) {
@@ -63,52 +66,54 @@ public class Base64 {
     }
 
     /**
-     * base64编码
+     * Encodes a string into a Base64 string using the default UTF-8 charset.
      *
-     * @param source 被编码的base64字符串
-     * @return 被加密后的字符串
+     * @param source The string to be encoded.
+     * @return The Base64-encoded string.
      */
     public static String encode(final CharSequence source) {
         return encode(source, Charset.UTF_8);
     }
 
     /**
-     * base64编码，URL安全
+     * Encodes a string into a URL-safe Base64 string using the default UTF-8 charset. The resulting string does not
+     * contain padding.
      *
-     * @param source 被编码的base64字符串
-     * @return 被加密后的字符串
+     * @param source The string to be encoded.
+     * @return The URL-safe Base64-encoded string.
      */
     public static String encodeUrlSafe(final CharSequence source) {
         return encodeUrlSafe(source, Charset.UTF_8);
     }
 
     /**
-     * base64编码
+     * Encodes a string into a Base64 string using the specified charset.
      *
-     * @param source  被编码的base64字符串
-     * @param charset 字符集
-     * @return 被编码后的字符串
+     * @param source  The string to be encoded.
+     * @param charset The character set to use.
+     * @return The Base64-encoded string.
      */
     public static String encode(final CharSequence source, final java.nio.charset.Charset charset) {
         return encode(ByteKit.toBytes(source, charset));
     }
 
     /**
-     * base64编码，URL安全的
+     * Encodes a string into a URL-safe Base64 string using the specified charset. The resulting string does not contain
+     * padding.
      *
-     * @param source  被编码的base64字符串
-     * @param charset 字符集
-     * @return 被加密后的字符串
+     * @param source  The string to be encoded.
+     * @param charset The character set to use.
+     * @return The URL-safe Base64-encoded string.
      */
     public static String encodeUrlSafe(final CharSequence source, final java.nio.charset.Charset charset) {
         return encodeUrlSafe(ByteKit.toBytes(source, charset));
     }
 
     /**
-     * base64编码
+     * Encodes a byte array into a Base64 string.
      *
-     * @param source 被编码的base64字符串
-     * @return 被加密后的字符串
+     * @param source The byte array to be encoded.
+     * @return The Base64-encoded string, or {@code null} if the input is {@code null}.
      */
     public static String encode(final byte[] source) {
         if (source == null) {
@@ -118,10 +123,10 @@ public class Base64 {
     }
 
     /**
-     * base64编码，不进行padding(末尾不会填充'=')
+     * Encodes a byte array into a Base64 string without padding (the trailing '=' characters).
      *
-     * @param source 被编码的base64字符串
-     * @return 被加密后的字符串
+     * @param source The byte array to be encoded.
+     * @return The Base64-encoded string without padding, or {@code null} if the input is {@code null}.
      */
     public static String encodeWithoutPadding(final byte[] source) {
         if (source == null) {
@@ -131,10 +136,10 @@ public class Base64 {
     }
 
     /**
-     * base64编码,URL安全的
+     * Encodes a byte array into a URL-safe Base64 string without padding.
      *
-     * @param source 被编码的base64字符串
-     * @return 被加密后的字符串
+     * @param source The byte array to be encoded.
+     * @return The URL-safe Base64-encoded string, or {@code null} if the input is {@code null}.
      */
     public static String encodeUrlSafe(final byte[] source) {
         if (source == null) {
@@ -144,10 +149,10 @@ public class Base64 {
     }
 
     /**
-     * base64编码
+     * Encodes the content of an {@link InputStream} into a Base64 string.
      *
-     * @param in 被编码base64的流（一般为图片流或者文件流）
-     * @return 被加密后的字符串
+     * @param in The input stream to be encoded (e.g., an image or file stream).
+     * @return The Base64-encoded string, or {@code null} if the input is {@code null}.
      */
     public static String encode(final InputStream in) {
         if (in == null) {
@@ -157,10 +162,10 @@ public class Base64 {
     }
 
     /**
-     * base64编码,URL安全的
+     * Encodes the content of an {@link InputStream} into a URL-safe Base64 string.
      *
-     * @param in 被编码base64的流（一般为图片流或者文件流）
-     * @return 被加密后的字符串
+     * @param in The input stream to be encoded.
+     * @return The URL-safe Base64-encoded string, or {@code null} if the input is {@code null}.
      */
     public static String encodeUrlSafe(final InputStream in) {
         if (in == null) {
@@ -170,40 +175,41 @@ public class Base64 {
     }
 
     /**
-     * base64编码
+     * Encodes the content of a file into a Base64 string.
      *
-     * @param file 被编码base64的文件
-     * @return 被加密后的字符串
+     * @param file The file to be encoded.
+     * @return The Base64-encoded string.
      */
     public static String encode(final File file) {
         return encode(FileKit.readBytes(file));
     }
 
     /**
-     * base64编码,URL安全的
+     * Encodes the content of a file into a URL-safe Base64 string.
      *
-     * @param file 被编码base64的文件
-     * @return 被加密后的字符串
+     * @param file The file to be encoded.
+     * @return The URL-safe Base64-encoded string.
      */
     public static String encodeUrlSafe(final File file) {
         return encodeUrlSafe(FileKit.readBytes(file));
     }
 
     /**
-     * 编码为Base64
+     * Encodes a portion of a byte array into a Base64 character array.
      *
-     * @param src     源字符信息
-     * @param srcPos  开始位置
-     * @param srcLen  长度
-     * @param dest    字符信息
-     * @param destPos 开始位置
+     * @param src     The source byte array.
+     * @param srcPos  The starting position in the source array.
+     * @param srcLen  The number of bytes to encode.
+     * @param dest    The destination character array.
+     * @param destPos The starting position in the destination array.
+     * @throws IndexOutOfBoundsException if the positions or lengths are invalid.
      */
     public static void encode(byte[] src, int srcPos, int srcLen, char[] dest, int destPos) {
         if (srcPos < 0 || srcLen < 0 || srcLen > src.length - srcPos)
-            throw new IndexOutOfBoundsException();
+            throw new IndexOutOfBoundsException("Invalid source bounds");
         int destLen = (srcLen * 4 / 3 + 3) & ~3;
         if (destPos < 0 || destLen > dest.length - destPos)
-            throw new IndexOutOfBoundsException();
+            throw new IndexOutOfBoundsException("Invalid destination bounds");
         byte b1, b2, b3;
         int n = srcLen / 3;
         int r = srcLen - 3 * n;
@@ -215,91 +221,93 @@ public class Base64 {
                     | (((b3 = src[srcPos++]) >>> 6) & 0x03)];
             dest[destPos++] = CharKit.getChars(Normal.ENCODE_64_TABLE)[b3 & 0x3F];
         }
-        if (r > 0)
+        if (r > 0) {
             if (r == 1) {
                 dest[destPos++] = CharKit.getChars(Normal.ENCODE_64_TABLE)[((b1 = src[srcPos]) >>> 2) & 0x3F];
                 dest[destPos++] = CharKit.getChars(Normal.ENCODE_64_TABLE)[((b1 & 0x03) << 4)];
                 dest[destPos++] = Symbol.C_EQUAL;
-                dest[destPos++] = Symbol.C_EQUAL;
+                dest[destPos] = Symbol.C_EQUAL;
             } else {
                 dest[destPos++] = CharKit.getChars(Normal.ENCODE_64_TABLE)[((b1 = src[srcPos++]) >>> 2) & 0x3F];
                 dest[destPos++] = CharKit.getChars(Normal.ENCODE_64_TABLE)[((b1 & 0x03) << 4)
                         | (((b2 = src[srcPos]) >>> 4) & 0x0F)];
                 dest[destPos++] = CharKit.getChars(Normal.ENCODE_64_TABLE)[(b2 & 0x0F) << 2];
-                dest[destPos++] = Symbol.C_EQUAL;
+                dest[destPos] = Symbol.C_EQUAL;
             }
+        }
     }
 
     /**
-     * base64解码
+     * Decodes a Base64 string into a string using the default UTF-8 charset.
      *
-     * @param source 被解码的base64字符串
-     * @return 被加密后的字符串
+     * @param source The Base64 string to be decoded.
+     * @return The decoded string.
      */
     public static String decodeString(final CharSequence source) {
         return decodeString(source, Charset.UTF_8);
     }
 
     /**
-     * base64解码
+     * Decodes a Base64 string into a string using the specified charset.
      *
-     * @param source  被解码的base64字符串
-     * @param charset 字符集
-     * @return 被加密后的字符串
+     * @param source  The Base64 string to be decoded.
+     * @param charset The character set to use.
+     * @return The decoded string.
      */
     public static String decodeString(final CharSequence source, final java.nio.charset.Charset charset) {
         return StringKit.toString(decode(source), charset);
     }
 
     /**
-     * base64解码
+     * Decodes a Base64 string and writes the result to a file.
      *
-     * @param base64   被解码的base64字符串
-     * @param destFile 目标文件
-     * @return 目标文件
+     * @param base64   The Base64 string to be decoded.
+     * @param destFile The destination file.
+     * @return The destination file.
      */
     public static File decodeToFile(final CharSequence base64, final File destFile) {
         return FileKit.writeBytes(decode(base64), destFile);
     }
 
     /**
-     * base64解码
+     * Decodes a Base64 string and writes the result to an {@link OutputStream}.
      *
-     * @param base64     被解码的base64字符串
-     * @param out        写出到的流
-     * @param isCloseOut 是否关闭输出流
+     * @param base64     The Base64 string to be decoded.
+     * @param out        The output stream to write to.
+     * @param isCloseOut Whether to close the output stream after writing.
      */
     public static void decodeToStream(final CharSequence base64, final OutputStream out, final boolean isCloseOut) {
         IoKit.write(out, isCloseOut, decode(base64));
     }
 
     /**
-     * base64解码
+     * Decodes a Base64 string into a byte array. Handles both standard and URL-safe Base64 strings.
      *
-     * @param base64 被解码的base64字符串
-     * @return 解码后的bytes
+     * @param base64 The Base64 string to be decoded.
+     * @return The decoded byte array.
      */
     public static byte[] decode(final CharSequence base64) {
         return decode(ByteKit.toBytes(base64, Charset.UTF_8));
     }
 
     /**
-     * 解码Base64
+     * Decodes a Base64 byte array. Handles both standard and URL-safe Base64 data.
      *
-     * @param in 输入
-     * @return 解码后的bytes
+     * @param in The Base64 byte array to decode.
+     * @return The decoded byte array.
      */
     public static byte[] decode(final byte[] in) {
         return Base64Decoder.INSTANCE.decode(in);
     }
 
     /**
-     * 解码Base64
+     * Decodes a portion of a Base64 character array and writes the result to an {@link OutputStream}.
      *
-     * @param ch  字符信息
-     * @param off 结束为止
-     * @param len 长度
-     * @param out 输出流
+     * @param ch  The character array containing Base64 data.
+     * @param off The starting offset in the character array.
+     * @param len The number of characters to decode.
+     * @param out The output stream to write the decoded bytes to.
+     * @throws InternalException if an {@link IOException} occurs during writing.
      */
     public static void decode(char[] ch, int off, int len, OutputStream out) {
         try {
@@ -321,10 +329,10 @@ public class Base64 {
     }
 
     /**
-     * 检查是否为Base64
+     * Checks if a given string is a valid Base64-encoded string.
      *
-     * @param base64 Base64的bytes
-     * @return 是否为Base64
+     * @param base64 The string to check.
+     * @return {@code true} if the string is a valid Base64 string, {@code false} otherwise.
      */
     public static boolean isTypeBase64(final CharSequence base64) {
         if (base64 == null || base64.length() < 2) {
@@ -334,7 +342,7 @@ public class Base64 {
         final byte[] bytes = ByteKit.toBytes(base64);
 
         if (bytes.length != base64.length()) {
-            // 如果长度不相等，说明存在双字节字符，肯定不是Base64，直接返回false
+            // If lengths are not equal, it means there are multi-byte characters, so it's not Base64.
             return false;
         }
 
@@ -342,10 +350,10 @@ public class Base64 {
     }
 
     /**
-     * 检查是否为Base64格式
+     * Checks if a given byte array is valid Base64 data.
      *
-     * @param base64Bytes Base64的bytes
-     * @return 是否为Base64
+     * @param base64Bytes The byte array to check.
+     * @return {@code true} if the byte array is valid Base64 data, {@code false} otherwise.
      */
     public static boolean isTypeBase64(final byte[] base64Bytes) {
         if (base64Bytes == null || base64Bytes.length < 3) {
@@ -356,11 +364,11 @@ public class Base64 {
         for (final byte base64Byte : base64Bytes) {
             if (hasPadding) {
                 if (Symbol.C_EQUAL != base64Byte) {
-                    // 前一个字符是'='，则后边的字符都必须是'='，即'='只能都位于结尾
+                    // If the previous character was padding, all subsequent characters must also be padding.
                     return false;
                 }
             } else if (Symbol.C_EQUAL == base64Byte) {
-                // 发现'=' 标记之
+                // Found padding character.
                 hasPadding = true;
             } else if (!(Base64Decoder.INSTANCE.isBase64Code(base64Byte) || isWhiteSpace(base64Byte))) {
                 return false;
@@ -369,6 +377,12 @@ public class Base64 {
         return true;
     }
 
+    /**
+     * Checks if a byte is a whitespace character (space, newline, carriage return, or tab).
+     *
+     * @param byteToCheck The byte to check.
+     * @return {@code true} if the byte is a whitespace character, {@code false} otherwise.
+     */
     private static boolean isWhiteSpace(final byte byteToCheck) {
         switch (byteToCheck) {
             case Symbol.C_SPACE:

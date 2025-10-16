@@ -35,96 +35,102 @@ import org.miaixz.bus.core.xyz.ListKit;
 import org.miaixz.bus.core.xyz.MapKit;
 
 /**
- * 表格数据结构定义 此结构类似于Guava的Table接口，使用两个键映射到一个值，类似于表格结构。
+ * Defines a table data structure that maps an ordered pair of keys (row and column) to a single value. This interface
+ * is inspired by Guava's Table and provides methods for accessing, modifying, and querying data in a two-dimensional
+ * fashion.
  *
- * @param <R> 行键类型
- * @param <C> 列键类型
- * @param <V> 值类型
+ * @param <R> The type of the row key.
+ * @param <C> The type of the column key.
+ * @param <V> The type of the value stored in the table.
  * @author Kimi Liu
  * @since Java 17+
  */
 public interface Table<R, C, V> extends Iterable<Table.Cell<R, C, V>> {
 
     /**
-     * 是否包含指定行列的映射 行和列任意一个不存在都会返回{@code false}，如果行和列都存在，值为{@code null}，也会返回{@code true}
+     * Checks if the table contains a mapping for the specified row and column keys.
      *
-     * @param rowKey    行键
-     * @param columnKey 列键
-     * @return 是否包含映射
+     * @param rowKey    The row key.
+     * @param columnKey The column key.
+     * @return {@code true} if a mapping exists for the specified row and column, {@code false} otherwise.
      */
     default boolean contains(final R rowKey, final C columnKey) {
         return Optional.ofNullable(getRow(rowKey)).map((map) -> map.containsKey(columnKey)).orElse(false);
     }
 
     /**
-     * 行是否存在
+     * Checks if the table contains the specified row key.
      *
-     * @param rowKey 行键
-     * @return 行是否存在
+     * @param rowKey The row key to check for.
+     * @return {@code true} if the row key exists in the table, {@code false} otherwise.
      */
     default boolean containsRow(final R rowKey) {
-        return Optional.ofNullable(rowMap()).map((map) -> map.containsKey(rowKey)).getOrNull();
+        return Optional.ofNullable(rowMap()).map((map) -> map.containsKey(rowKey)).orElse(false);
     }
 
     /**
-     * 获取行
+     * Retrieves the row corresponding to the specified row key.
      *
-     * @param rowKey 行键
-     * @return 行映射，返回的键为列键，值为表格的值
+     * @param rowKey The row key.
+     * @return A {@link Map} where keys are column keys and values are the table's values for that row, or {@code null}
+     *         if the row key does not exist.
      */
     default Map<C, V> getRow(final R rowKey) {
-        return Optional.ofNullable(rowMap()).map((map) -> map.get(rowKey)).getOrNull();
+        return Optional.ofNullable(rowMap()).map((map) -> map.get(rowKey)).orElse(null);
     }
 
     /**
-     * 返回所有行的key，行的key不可重复
+     * Returns a {@link Set} of all unique row keys contained in this table.
      *
-     * @return 行键
+     * @return A set of row keys.
      */
     default Set<R> rowKeySet() {
-        return Optional.ofNullable(rowMap()).map(Map::keySet).getOrNull();
+        return Optional.ofNullable(rowMap()).map(Map::keySet).orElse(Collections.emptySet());
     }
 
     /**
-     * 返回行列对应的Map
+     * Returns a view of this table as a map from row keys to maps of column keys to values.
      *
-     * @return map，键为行键，值为列和值的对应map
+     * @return A map where keys are row keys, and values are maps from column keys to table values.
      */
     Map<R, Map<C, V>> rowMap();
 
     /**
-     * 列是否存在
+     * Checks if the table contains the specified column key.
      *
-     * @param columnKey 列键
-     * @return 列是否存在
+     * @param columnKey The column key to check for.
+     * @return {@code true} if the column key exists in the table, {@code false} otherwise.
      */
     default boolean containsColumn(final C columnKey) {
-        return Optional.ofNullable(columnMap()).map((map) -> map.containsKey(columnKey)).getOrNull();
+        return Optional.ofNullable(columnMap()).map((map) -> map.containsKey(columnKey)).orElse(false);
     }
 
     /**
-     * 获取列
+     * Retrieves the column corresponding to the specified column key.
      *
-     * @param columnKey 列键
-     * @return 列映射，返回的键为行键，值为表格的值
+     * @param columnKey The column key.
+     * @return A {@link Map} where keys are row keys and values are the table's values for that column, or {@code null}
+     *         if the column key does not exist.
      */
     default Map<R, V> getColumn(final C columnKey) {
-        return Optional.ofNullable(columnMap()).map((map) -> map.get(columnKey)).getOrNull();
+        return Optional.ofNullable(columnMap()).map((map) -> map.get(columnKey)).orElse(null);
     }
 
     /**
-     * 返回所有列的key，列的key不可重复
+     * Returns a {@link Set} of all unique column keys contained in this table.
      *
-     * @return 列set
+     * @return A set of column keys.
      */
     default Set<C> columnKeySet() {
-        return Optional.ofNullable(columnMap()).map(Map::keySet).getOrNull();
+        return Optional.ofNullable(columnMap()).map(Map::keySet).orElse(Collections.emptySet());
     }
 
     /**
-     * 返回所有列的key，列的key如果实现Map是可重复key，则返回对应不去重的List。
+     * Returns a {@link List} of all column keys contained in this table. If the underlying map implementation allows
+     * duplicate keys, this list will reflect those duplicates. This method is useful when the order of column keys
+     * matters or when dealing with non-unique column keys.
      *
-     * @return 列set
+     * @return A list of column keys.
      */
     default List<C> columnKeys() {
         final Map<C, Map<R, V>> columnMap = columnMap();
@@ -140,17 +146,17 @@ public interface Table<R, C, V> extends Iterable<Table.Cell<R, C, V>> {
     }
 
     /**
-     * 返回列-行对应的map
+     * Returns a view of this table as a map from column keys to maps of row keys to values.
      *
-     * @return map，键为列键，值为行和值的对应map
+     * @return A map where keys are column keys, and values are maps from row keys to table values.
      */
     Map<C, Map<R, V>> columnMap();
 
     /**
-     * 指定值是否存在
+     * Checks if the table contains the specified value anywhere within its cells.
      *
-     * @param value 值
-     * @return 值
+     * @param value The value to check for.
+     * @return {@code true} if the value is found in the table, {@code false} otherwise.
      */
     default boolean containsValue(final V value) {
         final Collection<Map<C, V>> rows = Optional.ofNullable(rowMap()).map(Map::values).getOrNull();
@@ -165,44 +171,47 @@ public interface Table<R, C, V> extends Iterable<Table.Cell<R, C, V>> {
     }
 
     /**
-     * 获取指定值
+     * Retrieves the value at the specified row and column intersection.
      *
-     * @param rowKey    行键
-     * @param columnKey 列键
-     * @return 值，如果值不存在，返回{@code null}
+     * @param rowKey    The row key.
+     * @param columnKey The column key.
+     * @return The value at the specified cell, or {@code null} if no such value exists.
      */
     default V get(final R rowKey, final C columnKey) {
-        return Optional.ofNullable(getRow(rowKey)).map((map) -> map.get(columnKey)).getOrNull();
+        return Optional.ofNullable(getRow(rowKey)).map((map) -> map.get(columnKey)).orElse(null);
     }
 
     /**
-     * 所有行列值的集合
+     * Returns a {@link Collection} view of all values contained in this table.
      *
-     * @return 值的集合
+     * @return A collection view of the values contained in this table.
      */
     Collection<V> values();
 
     /**
-     * 所有单元格集合
+     * Returns a {@link Set} view of all cell entries contained in this table. Each element in the returned set is a
+     * {@link Table.Cell}.
      *
-     * @return 单元格集合
+     * @return A set view of the cells contained in this table.
      */
     Set<Cell<R, C, V>> cellSet();
 
     /**
-     * 为表格指定行列赋值，如果不存在，创建之，存在则替换之，返回原值
+     * Associates the specified value with the specified row and column keys in this table. If the table previously
+     * contained a mapping for the keys, the old value is replaced.
      *
-     * @param rowKey    行键
-     * @param columnKey 列键
-     * @param value     值
-     * @return 原值，不存在返回{@code null}
+     * @param rowKey    The row key with which the specified value is to be associated.
+     * @param columnKey The column key with which the specified value is to be associated.
+     * @param value     The value to be associated with the specified keys.
+     * @return The previous value associated with the keys, or {@code null} if there was no mapping for the keys.
      */
     V put(R rowKey, C columnKey, V value);
 
     /**
-     * 批量加入
+     * Copies all of the mappings from the specified table to this table. These mappings will replace any mappings that
+     * this table had for any of the keys currently in the specified table.
      *
-     * @param table 其他table
+     * @param table The table whose mappings are to be placed in this table.
      */
     default void putAll(final Table<? extends R, ? extends C, ? extends V> table) {
         if (null != table) {
@@ -213,25 +222,25 @@ public interface Table<R, C, V> extends Iterable<Table.Cell<R, C, V>> {
     }
 
     /**
-     * 移除指定值
+     * Removes the mapping for a row and column key from this table if it is present.
      *
-     * @param rowKey    行键
-     * @param columnKey 列键
-     * @return 移除的值，如果值不存在，返回{@code null}
+     * @param rowKey    The row key whose mapping is to be removed from the table.
+     * @param columnKey The column key whose mapping is to be removed from the table.
+     * @return The previous value associated with the keys, or {@code null} if there was no mapping for the keys.
      */
     V remove(R rowKey, C columnKey);
 
     /**
-     * 表格是否为空
+     * Returns {@code true} if this table contains no cell entries.
      *
-     * @return 是否为空
+     * @return {@code true} if this table contains no cell entries.
      */
     boolean isEmpty();
 
     /**
-     * 表格大小，一般为单元格的个数
+     * Returns the number of cell entries in this table.
      *
-     * @return 表格大小
+     * @return The number of cell entries in this table.
      */
     default int size() {
         final Map<R, Map<C, V>> rowMap = rowMap();
@@ -246,14 +255,16 @@ public interface Table<R, C, V> extends Iterable<Table.Cell<R, C, V>> {
     }
 
     /**
-     * 清空表格
+     * Removes all of the mappings from this table. The table will be empty after this call returns.
      */
     void clear();
 
     /**
-     * 遍历表格的单元格，处理值
+     * Performs the given action for each cell in this table until all cells have been processed or the action throws an
+     * exception.
      *
-     * @param consumer 单元格值处理器
+     * @param consumer The action to be performed for each cell. It receives the row key, column key, and value of each
+     *                 cell.
      */
     default void forEach(final Consumer3X<? super R, ? super C, ? super V> consumer) {
         for (final Cell<R, C, V> cell : this) {
@@ -262,32 +273,32 @@ public interface Table<R, C, V> extends Iterable<Table.Cell<R, C, V>> {
     }
 
     /**
-     * 单元格，用于表示一个单元格的行、列和值
+     * Represents a single cell in the table, containing its row key, column key, and value.
      *
-     * @param <R> 行键类型
-     * @param <C> 列键类型
-     * @param <V> 值类型
+     * @param <R> The type of the row key.
+     * @param <C> The type of the column key.
+     * @param <V> The type of the value.
      */
     interface Cell<R, C, V> {
 
         /**
-         * 获取行键
+         * Retrieves the row key of this cell.
          *
-         * @return 行键
+         * @return The row key.
          */
         R getRowKey();
 
         /**
-         * 获取列键
+         * Retrieves the column key of this cell.
          *
-         * @return 列键
+         * @return The column key.
          */
         C getColumnKey();
 
         /**
-         * 获取值
+         * Retrieves the value of this cell.
          *
-         * @return 值
+         * @return The value.
          */
         V getValue();
     }

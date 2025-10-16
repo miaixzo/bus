@@ -23,7 +23,7 @@
  ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ a ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 package org.miaixz.bus.health.builtin;
 
@@ -32,8 +32,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * 系统内存信息
- * 
+ * System Memory Information
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -43,22 +43,22 @@ import lombok.Setter;
 public class Memory {
 
     /**
-     * 总内存 (MemTotal in /proc/meminfo)
+     * Total memory (MemTotal in /proc/meminfo)
      */
     private String total;
 
     /**
-     * 已用内存 (MemTotal - MemFree - Buffers - Cached)
+     * Used memory (MemTotal - MemFree - Buffers - Cached)
      */
     private String used;
 
     /**
-     * 空闲内存 (MemFree in /proc/meminfo)
+     * Free memory (MemFree in /proc/meminfo)
      */
     private String free;
 
     /**
-     * 内存使用率 (used / total * 100)
+     * Memory usage percentage (used / total * 100)
      */
     private double usage;
 

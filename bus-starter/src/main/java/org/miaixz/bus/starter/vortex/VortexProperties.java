@@ -28,7 +28,7 @@
 package org.miaixz.bus.starter.vortex;
 
 import org.miaixz.bus.spring.GeniusBuilder;
-import org.miaixz.bus.vortex.Config;
+import org.miaixz.bus.vortex.Args;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.server.adapter.ForwardedHeaderTransformer;
@@ -37,7 +37,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * 路由配置
+ * Configuration properties for the Vortex routing gateway.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,21 +48,49 @@ import lombok.Setter;
 public class VortexProperties {
 
     /**
-     * 默认配置
+     * The service port, specifying the port number the server listens on.
      */
-    private final Config server = new Config();
+    private int port;
+
     /**
-     * 自定义Spring MVC配置处理
+     * The service path, specifying the access path for the server.
+     */
+    private String path;
+
+    /**
+     * A condition to enable or disable custom Spring MVC configuration handling.
      */
     private boolean condition;
 
     /**
-     * 注册 ForwardedHeaderTransformer Bean。
+     * Encryption configuration, initialized by default.
+     */
+    private Args.Encrypt encrypt = new Args.Encrypt();
+
+    /**
+     * Decryption configuration, initialized by default.
+     */
+    private Args.Decrypt decrypt = new Args.Decrypt();
+
+    /**
+     * Rate limiting configuration, initialized by default.
+     */
+    private Args.Limit limit = new Args.Limit();
+
+    /**
+     * Security configuration, initialized by default.
+     */
+    private Args.Security security = new Args.Security();
+
+    /**
+     * Registers a {@link ForwardedHeaderTransformer} bean.
      * <p>
-     * 这个 Bean 是 Spring WebFlux 用来处理代理转发头的核心组件。 一旦注册，它会自动包装 ServerHttpRequest，使得后续的过滤器和控制器 调用 request.getURI()
-     * 等方法时，能够透明地获取到原始客户端信息。
+     * This bean is a core component in Spring WebFlux for handling forwarded headers from proxies (e.g.,
+     * X-Forwarded-For, X-Forwarded-Host). Once registered, it automatically wraps the {@code ServerHttpRequest},
+     * allowing subsequent filters and controllers to transparently access the original client information.
+     * </p>
      *
-     * @return ForwardedHeaderTransformer 实例
+     * @return A new {@link ForwardedHeaderTransformer} instance.
      */
     @Bean
     public ForwardedHeaderTransformer forwardedHeaderTransformer() {

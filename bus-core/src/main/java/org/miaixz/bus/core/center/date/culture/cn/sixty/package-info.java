@@ -26,7 +26,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 六十周期
+ * Provides classes related to the Chinese Sexagenary Cycle (六十甲子), including Heavenly Stems, Earthly Branches, and
+ * their combinations.
  *
  * @author Kimi Liu
  * @since Java 17+

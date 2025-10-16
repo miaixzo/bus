@@ -27,14 +27,17 @@
 */
 package org.miaixz.bus.starter.office;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.miaixz.bus.spring.GeniusBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-import lombok.Getter;
-import lombok.Setter;
-
 /**
- * 文档预览配置类
+ * Configuration properties for office document preview and conversion.
+ * <p>
+ * This class is intended to hold all settings related to the office functionality. While currently a placeholder, it
+ * can be extended to include properties such as LibreOffice/OpenOffice installation paths, conversion timeouts, thread
+ * pool sizes, and other operational parameters.
  *
  * @author Kimi Liu
  * @since Java 17+

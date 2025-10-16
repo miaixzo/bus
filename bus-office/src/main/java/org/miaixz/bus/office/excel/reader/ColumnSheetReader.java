@@ -36,7 +36,7 @@ import org.miaixz.bus.office.excel.cell.editors.CellEditor;
 import org.miaixz.bus.office.excel.xyz.CellKit;
 
 /**
- * 读取单独一列
+ * Reads a single column from an Excel sheet.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,11 +44,11 @@ import org.miaixz.bus.office.excel.xyz.CellKit;
 public class ColumnSheetReader extends AbstractSheetReader<List<Object>> {
 
     /**
-     * 构造
+     * Constructs a new {@code ColumnSheetReader}.
      *
-     * @param columnIndex   列号，从0开始计数
-     * @param startRowIndex 起始行（包含，从0开始计数）
-     * @param endRowIndex   结束行（包含，从0开始计数）
+     * @param columnIndex   The column index (0-based).
+     * @param startRowIndex The starting row index (inclusive, 0-based).
+     * @param endRowIndex   The ending row index (inclusive, 0-based).
      */
     public ColumnSheetReader(final int columnIndex, final int startRowIndex, final int endRowIndex) {
         super(new CellRangeAddress(startRowIndex, endRowIndex, columnIndex, columnIndex));
@@ -58,8 +58,11 @@ public class ColumnSheetReader extends AbstractSheetReader<List<Object>> {
     public List<Object> read(final Sheet sheet) {
         final List<Object> resultList = new ArrayList<>();
 
-        final int startRowIndex = Math.max(this.cellRangeAddress.getFirstRow(), sheet.getFirstRowNum());// 读取起始行（包含）
-        final int endRowIndex = Math.min(this.cellRangeAddress.getLastRow(), sheet.getLastRowNum());// 读取结束行（包含）
+        final int startRowIndex = Math.max(this.cellRangeAddress.getFirstRow(), sheet.getFirstRowNum());// Read starting
+                                                                                                        // row
+                                                                                                        // (inclusive).
+        final int endRowIndex = Math.min(this.cellRangeAddress.getLastRow(), sheet.getLastRowNum());// Read ending row
+                                                                                                    // (inclusive).
         final int columnIndex = this.cellRangeAddress.getFirstColumn();
 
         final CellEditor cellEditor = this.config.getCellEditor();

@@ -26,7 +26,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 增删改查等实现
+ * Provides dynamic SQL generation for various CRUD and custom operations. These providers are responsible for
+ * constructing SQL statements based on entity metadata and conditions.
  *
  * @author Kimi Liu
  * @since Java 17+

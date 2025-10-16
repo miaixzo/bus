@@ -36,7 +36,9 @@ import org.miaixz.bus.core.lang.exception.DateException;
 import org.miaixz.bus.core.xyz.ListKit;
 
 /**
- * 基于注册的日期解析器，通过遍历注册的解析器列表，找到适合的解析器并解析为日期。 默认可使用单例 {@link #INSTANCE}，或通过构造创建自定义的解析器实例。
+ * A registered date parser that iterates through a list of registered parsers to find a suitable one and parse the
+ * date. A default singleton instance {@link #INSTANCE} can be used, or custom parser instances can be created via the
+ * constructor.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -47,32 +49,32 @@ public class RegisterDateParser implements DateParser, Serializable {
     private static final long serialVersionUID = 2852256978098L;
 
     /**
-     * 单例实例
+     * Singleton instance of {@code RegisterDateParser}.
      */
     public static final RegisterDateParser INSTANCE = new RegisterDateParser();
 
     /**
-     * 日期解析器列表
+     * List of date parsers.
      */
     private final List<PredicateDateParser> list;
 
     /**
-     * 构造，初始化默认解析器列表。
+     * Constructs a {@code RegisterDateParser} instance, initializing with a default list of parsers.
      */
     public RegisterDateParser() {
         list = ListKit.of(
-                // HH:mm:ss 或 HH:mm 时间格式解析器
+                // HH:mm:ss or HH:mm time format parser
                 TimeParser.INSTANCE,
-                // 默认正则解析器
+                // Default regex parser
                 NormalDateParser.INSTANCE);
     }
 
     /**
-     * 解析日期字符串。
+     * Parses a date string.
      *
-     * @param source 日期字符串
-     * @return 解析后的日期对象
-     * @throws DateException 如果解析失败
+     * @param source The date string to parse.
+     * @return The parsed date object.
+     * @throws DateException if parsing fails.
      */
     @Override
     public Date parse(final CharSequence source) throws DateException {
@@ -81,10 +83,10 @@ public class RegisterDateParser implements DateParser, Serializable {
     }
 
     /**
-     * 注册自定义日期解析器，优先级高于默认解析器。
+     * Registers a custom date parser. Custom parsers have higher priority than default parsers.
      *
-     * @param parser 自定义日期解析器
-     * @return 当前实例
+     * @param parser The custom date parser.
+     * @return This instance.
      */
     public RegisterDateParser register(final PredicateDateParser parser) {
         this.list.add(0, parser);

@@ -26,7 +26,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * POI中对Excel读写的封装，入口为ExcelKit
+ * Provides encapsulated operations for Excel reading and writing using POI, with {@code ExcelKit} as the entry point.
  *
  * @author Kimi Liu
  * @since Java 17+

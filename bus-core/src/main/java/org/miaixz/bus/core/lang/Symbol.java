@@ -28,7 +28,7 @@
 package org.miaixz.bus.core.lang;
 
 /**
- * 标点符号常量
+ * Defines common punctuation and special character constants.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -36,481 +36,831 @@ package org.miaixz.bus.core.lang;
 public class Symbol {
 
     /**
-     * 符号: 0
+     * Character: '0'
      */
     public static final char C_ZERO = '0';
-    public static final String ZERO = Normal.EMPTY + C_ZERO;
-    public static final char C_UL_ZERO = '零';
-    public static final String UL_ZERO = Normal.EMPTY + C_UL_ZERO;
-
     /**
-     * 符号: 1
+     * String: "0"
+     */
+    public static final String ZERO = Normal.EMPTY + C_ZERO;
+    /**
+     * Character: Chinese numeral '零' (zero)
+     */
+    public static final char C_UL_ZERO = '零';
+    /**
+     * String: Chinese numeral "零" (zero)
+     */
+    public static final String UL_ZERO = Normal.EMPTY + C_UL_ZERO;
+    /**
+     * Character: '1'
      */
     public static final char C_ONE = '1';
+    /**
+     * String: "1"
+     */
     public static final String ONE = Normal.EMPTY + C_ONE;
+    /**
+     * Character: Chinese numeral '一' (one, simplified)
+     */
     public static final char C_L_ONE = '一';
+    /**
+     * String: Chinese numeral "一" (one, simplified)
+     */
     public static final String L_ONE = Normal.EMPTY + C_L_ONE;
+    /**
+     * Character: Chinese numeral '壹' (one, traditional/financial)
+     */
     public static final char C_U_ONE = '壹';
+    /**
+     * String: Chinese numeral "壹" (one, traditional/financial)
+     */
     public static final String U_ONE = Normal.EMPTY + C_U_ONE;
 
     /**
-     * 符号: 2
+     * Character: '2'
      */
     public static final char C_TWO = '2';
+    /**
+     * String: "2"
+     */
     public static final String TWO = Normal.EMPTY + C_TWO;
+    /**
+     * Character: Chinese numeral '二' (two, simplified)
+     */
     public static final char C_L_TWO = '二';
+    /**
+     * String: Chinese numeral "二" (two, simplified)
+     */
     public static final String S_TWO = Normal.EMPTY + C_L_TWO;
+    /**
+     * Character: Chinese numeral '贰' (two, traditional/financial)
+     */
     public static final char C_U_TWO = '贰';
+    /**
+     * String: Chinese numeral "贰" (two, traditional/financial)
+     */
     public static final String T_TWO = Normal.EMPTY + C_U_TWO;
     /**
-     * 符号: 3
+     * Character: '3'
      */
     public static final char C_THREE = '3';
+    /**
+     * String: "3"
+     */
     public static final String THREE = Normal.EMPTY + C_THREE;
+    /**
+     * Character: Chinese numeral '三' (three, simplified)
+     */
     public static final char C_L_THREE = '三';
+    /**
+     * String: Chinese numeral "三" (three, simplified)
+     */
     public static final String S_THREE = Normal.EMPTY + C_L_THREE;
+    /**
+     * Character: Chinese numeral '叁' (three, traditional/financial)
+     */
     public static final char C_U_THREE = '叁';
+    /**
+     * String: Chinese numeral "叁" (three, traditional/financial)
+     */
     public static final String T_THREE = Normal.EMPTY + C_U_THREE;
 
     /**
-     * 符号: 4
+     * Character: '4'
      */
     public static final char C_FOUR = '4';
+    /**
+     * String: "4"
+     */
     public static final String FOUR = Normal.EMPTY + C_FOUR;
+    /**
+     * Character: Chinese numeral '四' (four, simplified)
+     */
     public static final char C_L_FOUR = '四';
+    /**
+     * String: Chinese numeral "四" (four, simplified)
+     */
     public static final String S_FOUR = Normal.EMPTY + C_L_FOUR;
+    /**
+     * Character: Chinese numeral '肆' (four, traditional/financial)
+     */
     public static final char C_U_FOUR = '肆';
+    /**
+     * String: Chinese numeral "肆" (four, traditional/financial)
+     */
     public static final String T_FOUR = Normal.EMPTY + C_U_FOUR;
 
     /**
-     * 符号: 5
+     * Character: '5'
      */
     public static final char C_FIVE = '5';
+    /**
+     * String: "5"
+     */
     public static final String FIVE = Normal.EMPTY + C_FIVE;
+    /**
+     * Character: Chinese numeral '五' (five, simplified)
+     */
     public static final char C_L_FIVE = '五';
+    /**
+     * String: Chinese numeral "五" (five, simplified)
+     */
     public static final String S_FIVE = Normal.EMPTY + C_L_FIVE;
+    /**
+     * Character: Chinese numeral '伍' (five, traditional/financial)
+     */
     public static final char C_U_FIVE = '伍';
+    /**
+     * String: Chinese numeral "伍" (five, traditional/financial)
+     */
     public static final String T_FIVE = Normal.EMPTY + C_U_FIVE;
     /**
-     * 符号: 6
+     * Character: '6'
      */
     public static final char C_SIX = '6';
+    /**
+     * String: "6"
+     */
     public static final String SIX = Normal.EMPTY + C_SIX;
+    /**
+     * Character: Chinese numeral '六' (six, simplified)
+     */
     public static final char C_L_SIX = '六';
+    /**
+     * String: Chinese numeral "六" (six, simplified)
+     */
     public static final String L_SIX = Normal.EMPTY + C_L_SIX;
+    /**
+     * Character: Chinese numeral '陆' (six, traditional/financial)
+     */
     public static final char C_U_SIX = '陆';
+    /**
+     * String: Chinese numeral "陆" (six, traditional/financial)
+     */
     public static final String U_SIX = Normal.EMPTY + C_U_SIX;
 
     /**
-     * 符号: 7
+     * Character: '7'
      */
     public static final char C_SEVEN = '7';
+    /**
+     * String: "7"
+     */
     public static final String SEVEN = Normal.EMPTY + C_SEVEN;
+    /**
+     * Character: Chinese numeral '七' (seven, simplified)
+     */
     public static final char C_L_SEVEN = '七';
+    /**
+     * String: Chinese numeral "七" (seven, simplified)
+     */
     public static final String L_SEVEN = Normal.EMPTY + C_L_SEVEN;
+    /**
+     * Character: Chinese numeral '柒' (seven, traditional/financial)
+     */
     public static final char C_U_SEVEN = '柒';
+    /**
+     * String: Chinese numeral "柒" (seven, traditional/financial)
+     */
     public static final String U_SEVEN = Normal.EMPTY + C_U_SEVEN;
 
     /**
-     * 符号: 8
+     * Character: '8'
      */
     public static final char C_EIGHT = '8';
+    /**
+     * String: "8"
+     */
     public static final String EIGHT = Normal.EMPTY + C_EIGHT;
+    /**
+     * Character: Chinese numeral '八' (eight, simplified)
+     */
     public static final char C_L_EIGHT = '八';
+    /**
+     * String: Chinese numeral "八" (eight, simplified)
+     */
     public static final String L_EIGHT = Normal.EMPTY + C_L_EIGHT;
+    /**
+     * Character: Chinese numeral '捌' (eight, traditional/financial)
+     */
     public static final char C_U_EIGHT = '捌';
+    /**
+     * String: Chinese numeral "捌" (eight, traditional/financial)
+     */
     public static final String U_EIGHT = Normal.EMPTY + C_U_EIGHT;
 
     /**
-     * 符号: 9
+     * Character: '9'
      */
     public static final char C_NINE = '9';
+    /**
+     * String: "9"
+     */
     public static final String NINE = Normal.EMPTY + C_NINE;
+    /**
+     * Character: Chinese numeral '九' (nine, simplified)
+     */
     public static final char C_L_NINE = '九';
+    /**
+     * String: Chinese numeral "九" (nine, simplified)
+     */
     public static final String L_NINE = Normal.EMPTY + C_L_NINE;
+    /**
+     * Character: Chinese numeral '玖' (nine, traditional/financial)
+     */
     public static final char C_U_NINE = '玖';
+    /**
+     * String: Chinese numeral "玖" (nine, traditional/financial)
+     */
     public static final String U_NINE = Normal.EMPTY + C_U_NINE;
 
     /**
-     * 符号: 10
+     * Integer: 10
      */
     public static final int C_TEN = 10;
+    /**
+     * String: "10"
+     */
     public static final String TEN = Normal.EMPTY + C_TEN;
+    /**
+     * Character: Chinese numeral '十' (ten, simplified)
+     */
     public static final char C_L_TEN = '十';
+    /**
+     * String: Chinese numeral "十" (ten, simplified)
+     */
     public static final String L_TEN = Normal.EMPTY + C_L_TEN;
+    /**
+     * Character: Chinese numeral '拾' (ten, traditional/financial)
+     */
     public static final char C_U_TEN = '拾';
+    /**
+     * String: Chinese numeral "拾" (ten, traditional/financial)
+     */
     public static final String U_TEN = Normal.EMPTY + C_U_TEN;
 
     /**
-     * 符号: 100
+     * Integer: 100
      */
     public static final int C_ONE_HUNDRED = 100;
+    /**
+     * String: "100"
+     */
     public static final String ONE_HUNDRED = Normal.EMPTY + C_ONE_HUNDRED;
+    /**
+     * Character: Chinese numeral '百' (hundred, simplified)
+     */
     public static final char C_L_ONE_HUNDRED = '百';
+    /**
+     * String: Chinese numeral "百" (hundred, simplified)
+     */
     public static final String L_ONE_HUNDRED = Normal.EMPTY + C_L_ONE_HUNDRED;
+    /**
+     * Character: Chinese numeral '佰' (hundred, traditional/financial)
+     */
     public static final char C_U_ONE_HUNDRED = '佰';
+    /**
+     * String: Chinese numeral "佰" (hundred, traditional/financial)
+     */
     public static final String U_ONE_HUNDRED = Normal.EMPTY + C_U_ONE_HUNDRED;
 
     /**
-     * 符号: 1000
+     * Integer: 1000
      */
     public static final int C_ONE_THOUSAND = 1000;
+    /**
+     * String: "1000"
+     */
     public static final String ONE_THOUSAND = Normal.EMPTY + C_ONE_THOUSAND;
+    /**
+     * Character: Chinese numeral '千' (thousand, simplified)
+     */
     public static final char C_L_ONE_THOUSAND = '千';
+    /**
+     * String: Chinese numeral "千" (thousand, simplified)
+     */
     public static final String L_ONE_THOUSAND = Normal.EMPTY + C_L_ONE_THOUSAND;
+    /**
+     * Character: Chinese numeral '仟' (thousand, traditional/financial)
+     */
     public static final char C_U_ONE_THOUSAND = '仟';
+    /**
+     * String: Chinese numeral "仟" (thousand, traditional/financial)
+     */
     public static final String U_ONE_THOUSAND = Normal.EMPTY + C_U_ONE_THOUSAND;
 
     /**
-     * 符号: 100,00
+     * Character: '万' (ten thousand)
      */
     public static final char C_TEN_THOUSAND = 10000;
+    /**
+     * String: "10000"
+     */
     public static final String TEN_THOUSAND = Normal.EMPTY + C_TEN_THOUSAND;
+    /**
+     * Character: Chinese numeral '万' (ten thousand, simplified)
+     */
     public static final char C_L_TEN_THOUSAND = '万';
+    /**
+     * String: Chinese numeral "万" (ten thousand, simplified)
+     */
     public static final String L_TEN_THOUSAND = Normal.EMPTY + C_L_TEN_THOUSAND;
+    /**
+     * Character: Chinese numeral '萬' (ten thousand, traditional)
+     */
     public static final char C_U_TEN_THOUSAND = '萬';
+    /**
+     * String: Chinese numeral "萬" (ten thousand, traditional)
+     */
     public static final String U_TEN_THOUSAND = Normal.EMPTY + C_U_TEN_THOUSAND;
 
     /**
-     * 符号: 1000,00000
+     * Integer: 100,000,000
      */
     public static final int C_ONE_HUNDRED_MILLION = 100000000;
+    /**
+     * String: "100000000"
+     */
     public static final String ONE_HUNDRED_MILLION = Normal.EMPTY + C_ONE_HUNDRED_MILLION;
+    /**
+     * Character: Chinese numeral '亿' (hundred million, simplified)
+     */
     public static final char C_L_ONE_HUNDRED_MILLION = '亿';
+    /**
+     * String: Chinese numeral "亿" (hundred million, simplified)
+     */
     public static final String L_ONE_HUNDRED_MILLION = Normal.EMPTY + C_L_ONE_HUNDRED_MILLION;
+    /**
+     * Character: Chinese numeral '億' (hundred million, traditional)
+     */
     public static final char C_U_ONE_HUNDRED_MILLION = '億';
+    /**
+     * String: Chinese numeral "億" (hundred million, traditional)
+     */
     public static final String U_ONE_HUNDRED_MILLION = Normal.EMPTY + C_U_ONE_HUNDRED_MILLION;
 
     /**
-     * 符号: X
+     * Character: 'X'
      */
     public static final char C_X = 'X';
+    /**
+     * String: "X"
+     */
     public static final String X = Normal.EMPTY + C_X;
 
     /**
-     * 符号: 逗号
+     * Character: comma ','
      */
     public static final char C_COMMA = ',';
+    /**
+     * String: ","
+     */
     public static final String COMMA = Normal.EMPTY + C_COMMA;
 
     /**
-     * 符号: 冒号
+     * Character: colon ':'
      */
     public static final char C_COLON = ':';
+    /**
+     * String: ":"
+     */
     public static final String COLON = Normal.EMPTY + C_COLON;
 
     /**
-     * 符号: 波浪符
+     * Character: tilde '~'
      */
     public static final char C_TILDE = '~';
+    /**
+     * String: "~"
+     */
     public static final String TILDE = Normal.EMPTY + C_TILDE;
 
     /**
-     * 符号: 空格
+     * Character: space ' '
      */
     public static final char C_SPACE = ' ';
+    /**
+     * String: " "
+     */
     public static final String SPACE = Normal.EMPTY + C_SPACE;
 
     /**
-     * 符号: TAB
+     * Character: tab '\t'
      */
     public static final char C_TAB = '	';
+    /**
+     * String: "\t"
+     */
     public static final String TAB = Normal.EMPTY + C_TAB;
 
     /**
-     * 符号: 小数点
+     * Character: dot '.'
      */
     public static final char C_DOT = '.';
+    /**
+     * String: "."
+     */
     public static final String DOT = Normal.EMPTY + C_DOT;
+    /**
+     * String: ".."
+     */
     public static final String DOUBLE_DOT = Normal.EMPTY + C_DOT + C_DOT;
 
     /**
-     * 符号: 分号
+     * Character: semicolon ';'
      */
     public static final char C_SEMICOLON = ';';
+    /**
+     * String: ";"
+     */
     public static final String SEMICOLON = Normal.EMPTY + C_SEMICOLON;
 
     /**
-     * 符号: 下划线
+     * Character: underscore '_'
      */
     public static final char C_UNDERLINE = '_';
+    /**
+     * String: "_"
+     */
     public static final String UNDERLINE = Normal.EMPTY + C_UNDERLINE;
 
     /**
-     * 符号: 单引号
+     * Character: single quote '\''
      */
     public static final char C_SINGLE_QUOTE = '\'';
+    /**
+     * String: "'"
+     */
     public static final String SINGLE_QUOTE = Normal.EMPTY + C_SINGLE_QUOTE;
 
     /**
-     * 符号: 双引号
+     * Character: double quotes '"'
      */
     public static final char C_DOUBLE_QUOTES = '"';
+    /**
+     * String: '"'
+     */
     public static final String DOUBLE_QUOTES = Normal.EMPTY + C_DOUBLE_QUOTES;
 
     /**
-     * 符号: 非
+     * Character: exclamation mark '!'
      */
     public static final char C_NOT = '!';
+    /**
+     * String: "!"
+     */
     public static final String NOT = Normal.EMPTY + C_NOT;
 
     /**
-     * 符号: 与
+     * Character: ampersand 'amp;'
      */
     public static final char C_AND = '&';
+    /**
+     * String: "amp;"
+     */
     public static final String AND = Normal.EMPTY + C_AND;
 
     /**
-     * 符号: 或
+     * Character: pipe '|'
      */
     public static final char C_OR = '|';
+    /**
+     * String: "|"
+     */
     public static final String OR = Normal.EMPTY + C_OR;
 
     /**
-     * 符号: @
+     * Character: at symbol '@'
      */
     public static final char C_AT = '@';
+    /**
+     * String: "@"
+     */
     public static final String AT = Normal.EMPTY + C_AT;
 
     /**
-     * 符号: 星号
+     * Character: asterisk '*'
      */
     public static final char C_STAR = '*';
+    /**
+     * String: "*"
+     */
     public static final String STAR = Normal.EMPTY + C_STAR;
 
     /**
-     * 符号: 人民币
+     * Character: Chinese Yuan symbol '¥'
      */
     public static final char C_CNY = '¥';
+    /**
+     * String: "¥"
+     */
     public static final String CNY = Normal.EMPTY + C_CNY;
 
     /**
-     * 符号: 元
+     * Character: Chinese character for Yuan '元'
      */
     public static final char C_CNY_YUAN = '元';
+    /**
+     * String: "元"
+     */
     public static final String CNY_YUAN = Normal.EMPTY + C_CNY_YUAN;
 
     /**
-     * 符号: 角
+     * Character: Chinese character for Jiao (ten cents) '角'
      */
     public static final char C_CNY_JIAO = '角';
+    /**
+     * String: "角"
+     */
     public static final String CNY_JIAO = Normal.EMPTY + C_CNY_JIAO;
 
     /**
-     * 符号: 分
+     * Character: Chinese character for Fen (cent) '分'
      */
     public static final char C_CNY_FEN = '分';
+    /**
+     * String: "分"
+     */
     public static final String CNY_FEN = Normal.EMPTY + C_CNY_FEN;
 
     /**
-     * 符号: 整
+     * Character: Chinese character for "exact" or "integer" '整'
      */
     public static final char C_CNY_ZHENG = '整';
+    /**
+     * String: "整"
+     */
     public static final String CNY_ZHENG = Normal.EMPTY + C_CNY_ZHENG;
 
     /**
-     * 符号: 美元
+     * Character: dollar sign '$'
      */
     public static final char C_DOLLAR = '$';
+    /**
+     * String: "$"
+     */
     public static final String DOLLAR = Normal.EMPTY + C_DOLLAR;
 
     /**
-     * 符号: 井号
+     * Character: hash sign '#'
      */
     public static final char C_HASH = '#';
+    /**
+     * String: "#"
+     */
     public static final String HASH = Normal.EMPTY + C_HASH;
 
     /**
-     * 符号: 百分比
+     * Character: percent sign '%'
      */
     public static final char C_PERCENT = '%';
+    /**
+     * String: "%"
+     */
     public static final String PERCENT = Normal.EMPTY + C_PERCENT;
 
     /**
-     * 符号: 幂
+     * Character: caret '^'
      */
     public static final char C_CARET = '^';
+    /**
+     * String: "^"
+     */
     public static final String CARET = Normal.EMPTY + C_CARET;
 
     /**
-     * 符号: 减号
+     * Character: minus sign '-'
      */
     public static final char C_MINUS = '-';
+    /**
+     * String: "-"
+     */
     public static final String MINUS = Normal.EMPTY + C_MINUS;
 
     /**
-     * 符号: 加号
+     * Character: plus sign '+'
      */
     public static final char C_PLUS = '+';
+    /**
+     * String: "+"
+     */
     public static final String PLUS = Normal.EMPTY + C_PLUS;
 
     /**
-     * 符号: 等于号
+     * Character: equals sign '='
      */
     public static final char C_EQUAL = '=';
+    /**
+     * String: "="
+     */
     public static final String EQUAL = Normal.EMPTY + C_EQUAL;
 
     /**
-     * 符号: 大于号
+     * Character: greater than sign '&gt;'
      */
     public static final char C_GT = '>';
+    /**
+     * String: "&gt;"
+     */
     public static final String GT = Normal.EMPTY + C_GT;
 
     /**
-     * 符号: 小于号
+     * Character: less than sign '&lt;'
      */
     public static final char C_LT = '<';
+    /**
+     * String: "&lt;"
+     */
     public static final String LT = Normal.EMPTY + C_LT;
 
     /**
-     * 符号: 大于等于
+     * String: greater than or equal to "&gt;="
      */
     public static final String GE = ">=";
     /**
-     * 符号: 小于等于
+     * String: less than or equal to "&lt;="
      */
     public static final String LE = "<=";
 
     /**
-     * 符号: 圆括号-左
+     * Character: left parenthesis '('
      */
     public static final char C_PARENTHESE_LEFT = '(';
+    /**
+     * String: "("
+     */
     public static final String PARENTHESE_LEFT = Normal.EMPTY + C_PARENTHESE_LEFT;
 
     /**
-     * 符号: 圆括号-右
+     * Character: right parenthesis ')'
      */
     public static final char C_PARENTHESE_RIGHT = ')';
+    /**
+     * String: ")"
+     */
     public static final String PARENTHESE_RIGHT = Normal.EMPTY + C_PARENTHESE_RIGHT;
 
     /**
-     * 符号: 大括号-左
+     * Character: left curly brace '{'
      */
     public static final char C_BRACE_LEFT = '{';
+    /**
+     * String: "{"
+     */
     public static final String BRACE_LEFT = Normal.EMPTY + C_BRACE_LEFT;
 
     /**
-     * 符号: 大括号-右
+     * Character: right curly brace '}'
      */
     public static final char C_BRACE_RIGHT = '}';
+    /**
+     * String: "}"
+     */
     public static final String BRACE_RIGHT = Normal.EMPTY + C_BRACE_RIGHT;
 
     /**
-     * 符号: 方括号-左
+     * Character: left square bracket '['
      */
     public static final char C_BRACKET_LEFT = '[';
+    /**
+     * String: "["
+     */
     public static final String BRACKET_LEFT = Normal.EMPTY + C_BRACKET_LEFT;
 
     /**
-     * 符号: 方括号-右
+     * Character: right square bracket ']'
      */
     public static final char C_BRACKET_RIGHT = ']';
+    /**
+     * String: "]"
+     */
     public static final String BRACKET_RIGHT = Normal.EMPTY + C_BRACKET_RIGHT;
 
     /**
-     * 符号: 问号
+     * Character: question mark '?'
      */
     public static final char C_QUESTION_MARK = '?';
+    /**
+     * String: "?"
+     */
     public static final String QUESTION_MARK = Normal.EMPTY + C_QUESTION_MARK;
 
     /**
-     * 符号: /和//
+     * Character: slash '/'
      */
     public static final char C_SLASH = '/';
+    /**
+     * String: "/"
+     */
     public static final String SLASH = Normal.EMPTY + C_SLASH;
+    /**
+     * String: double slash "//"
+     */
     public static final String FORWARDSLASH = SLASH + SLASH;
 
     /**
-     * 符号: 反斜杠
+     * Character: backslash '\'
      */
     public static final char C_BACKSLASH = '\\';
+    /**
+     * String: "\" (backslash)
+     */
     public static final String BACKSLASH = Normal.EMPTY + C_BACKSLASH;
 
     /**
-     * 符号: 回车
+     * Character: carriage return '\r'
      */
     public static final char C_CR = '\r';
+    /**
+     * String: "\r"
+     */
     public static final String CR = Normal.EMPTY + C_CR;
 
     /**
-     * 符号: 换行
+     * Character: line feed '\n'
      */
     public static final char C_LF = '\n';
+    /**
+     * String: "\n"
+     */
     public static final String LF = Normal.EMPTY + C_LF;
 
     /**
-     * 符号: 水平制表
+     * Character: horizontal tab '\t'
      */
-    public static final char C_HT = '\t';
+    public static final char C_HT = '	';
+    /**
+     * String: "\t"
+     */
     public static final String HT = Normal.EMPTY + C_HT;
 
     /**
-     * 符号: 回车换行
+     * String: carriage return and line feed "\r\n"
      */
     public static final String CRLF = "\r\n";
 
     /**
-     * 符号: 回车换行
+     * String: newline ",\n"
      */
     public static final String NEWLINE = ",\n";
 
     /**
-     * 符号: {}
+     * String: empty curly braces "{}"
      */
     public static final String DELIM = "{}";
 
     /**
-     * 符号: []
+     * String: empty square brackets "[]"
      */
     public static final String BRACKET = "[]";
 
     /**
-     * 符号: [L
+     * String: "[L"
      */
     public static final String NON_PREFIX = "[L";
 
     /**
-     * ${
+     * String: "${"
      */
     public static final String DOLLAR_LEFT_BRACE = "${";
 
     /**
-     * #{
+     * String: "#{"
      */
     public static final String HASH_LEFT_BRACE = "#{";
 
     /**
-     * HTML: 空格
+     * HTML entity: non-breaking space "&nbsp;"
      */
     public static final String HTML_NBSP = "&nbsp;";
 
     /**
-     * HTML: 与
+     * HTML entity: ampersand "&amp;"
      */
     public static final String HTML_AMP = "&amp;";
 
     /**
-     * HTML: ＂
+     * HTML entity: double quote "&quot;"
      */
     public static final String HTML_QUOTE = "&quot;";
 
     /**
-     * HTML: '
+     * HTML entity: apostrophe "&apos;"
      */
     public static final String HTML_APOS = "&apos;";
 
     /**
-     * HTML: 小于号
+     * HTML entity: less than sign "&lt;"
      */
     public static final String HTML_LT = "&lt;";
 
     /**
-     * HTML: 大于号
+     * HTML entity: greater than sign "&gt;"
      */
     public static final String HTML_GT = "&gt;";
 
     /**
-     * Unicode编码开始符
+     * Unicode escape sequence start string: "\\u"
      */
     public static final String UNICODE_START_CHAR = "\\u";
 

@@ -30,7 +30,7 @@ package org.miaixz.bus.pay.metric.wechat.api.v2;
 import org.miaixz.bus.pay.Matcher;
 
 /**
- * 微信支付 v2 版本-扣款服务接口
+ * WeChat Pay V2 API interfaces related to deduction services.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,87 +38,95 @@ import org.miaixz.bus.pay.Matcher;
 public enum EntrustPayApi implements Matcher {
 
     /**
-     * 公众号纯签约
+     * Official Account pure contract signing.
      */
-    ENTRUST_WEB("/papay/entrustweb", "公众号纯签约"),
+    ENTRUST_WEB("/papay/entrustweb", "Official Account pure contract signing"),
 
     /**
-     * 公众号纯签约（服务商模式）
+     * Official Account pure contract signing (service provider mode).
      */
-    PARTNER_ENTRUST_WEB("/papay/partner/entrustweb", "公众号纯签约（服务商模式）"),
+    PARTNER_ENTRUST_WEB("/papay/partner/entrustweb", "Official Account pure contract signing (service provider mode)"),
 
     /**
-     * APP纯签约
+     * APP pure contract signing.
      */
-    PRE_ENTRUST_WEB("/papay/preentrustweb", "APP纯签约"),
+    PRE_ENTRUST_WEB("/papay/preentrustweb", "APP pure contract signing"),
 
     /**
-     * APP纯签约（服务商模式）
+     * APP pure contract signing (service provider mode).
      */
-    PARTNER_PRE_ENTRUST_WEB("/papay/partner/preentrustweb", "APP纯签约（服务商模式）"),
+    PARTNER_PRE_ENTRUST_WEB("/papay/partner/preentrustweb", "APP pure contract signing (service provider mode)"),
 
     /**
-     * H5纯签约
+     * H5 pure contract signing.
      */
-    H5_ENTRUST_WEB("/papay/h5entrustweb", "H5纯签约"),
+    H5_ENTRUST_WEB("/papay/h5entrustweb", "H5 pure contract signing"),
     /**
-     * H5纯签约（服务商模式）
+     * H5 pure contract signing (service provider mode).
      */
-    PARTNER_H5_ENTRUST_WEB("/papay/partner/h5entrustweb", "H5纯签约（服务商模式"),
+    PARTNER_H5_ENTRUST_WEB("/papay/partner/h5entrustweb", "H5 pure contract signing (service provider mode)"),
 
     /**
-     * 支付中签约
+     * Contract signing during payment.
      */
-    PAY_CONTRACT_ORDER("/pay/contractorder", "支付中签约"),
+    PAY_CONTRACT_ORDER("/pay/contractorder", "Contract signing during payment"),
 
     /**
-     * 查询签约关系
+     * Query contract relationship.
      */
-    QUERY_ENTRUST_CONTRACT("/papay/querycontract", "查询签约关系"),
+    QUERY_ENTRUST_CONTRACT("/papay/querycontract", "Query contract relationship"),
 
     /**
-     * 查询签约关系（服务商模式）
+     * Query contract relationship (service provider mode).
      */
-    PARTNER_QUERY_ENTRUST_CONTRACT("/papay/partner/querycontract", "查询签约关系（服务商模式）"),
+    PARTNER_QUERY_ENTRUST_CONTRACT("/papay/partner/querycontract",
+            "Query contract relationship (service provider mode)"),
 
     /**
-     * 申请扣款
+     * Apply for deduction.
      */
-    PAP_PAY_APPLY("/pay/pappayapply", "申请扣款"),
+    PAP_PAY_APPLY("/pay/pappayapply", "Apply for deduction"),
 
     /**
-     * 申请扣款（服务商模式）
+     * Apply for deduction (service provider mode).
      */
-    PARTNER_PAP_PAY_APPLY("/pay/partner/pappayapply", "申请扣款（服务商模式）"),
+    PARTNER_PAP_PAY_APPLY("/pay/partner/pappayapply", "Apply for deduction (service provider mode)"),
 
     /**
-     * 代扣申请解约
+     * Apply to terminate a contract.
      */
-    DELETE_ENTRUST_CONTRACT("/papay/deletecontract", "代扣申请解约"),
+    DELETE_ENTRUST_CONTRACT("/papay/deletecontract", "Apply to terminate a contract"),
     /**
-     * 代扣申请解约（服务商模式）
+     * Apply to terminate a contract (service provider mode).
      */
-    PARTNER_DELETE_ENTRUST_CONTRACT("/papay/partner/deletecontract", "代扣申请解约（服务商模式）");
+    PARTNER_DELETE_ENTRUST_CONTRACT("/papay/partner/deletecontract",
+            "Apply to terminate a contract (service provider mode)");
 
     /**
-     * 接口方法
+     * The API method.
      */
     private final String method;
 
     /**
-     * 接口描述
+     * The API description.
      */
     private final String desc;
 
+    /**
+     * Constructs a new EntrustPayApi enum.
+     *
+     * @param method The API method.
+     * @param desc   The API description.
+     */
     EntrustPayApi(String method, String desc) {
         this.method = method;
         this.desc = desc;
     }
 
     /**
-     * 交易类型
+     * Gets the transaction type.
      *
-     * @return the string
+     * @return The transaction type.
      */
     @Override
     public String type() {
@@ -126,9 +134,9 @@ public enum EntrustPayApi implements Matcher {
     }
 
     /**
-     * 类型描述
+     * Gets the type description.
      *
-     * @return the string
+     * @return The type description.
      */
     @Override
     public String desc() {
@@ -136,9 +144,9 @@ public enum EntrustPayApi implements Matcher {
     }
 
     /**
-     * 接口方法
+     * Gets the API method.
      *
-     * @return the string
+     * @return The API method.
      */
     @Override
     public String method() {

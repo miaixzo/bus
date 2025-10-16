@@ -27,12 +27,15 @@
 */
 package org.miaixz.bus.starter.dubbo;
 
+import jakarta.annotation.Resource;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
-import jakarta.annotation.Resource;
-
 /**
- * Dubbo自动配置
+ * Auto-configuration for Apache Dubbo.
+ * <p>
+ * This class enables the {@link DubboProperties}, which in turn configures the necessary Dubbo beans for the
+ * application context.
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -40,6 +43,9 @@ import jakarta.annotation.Resource;
 @EnableConfigurationProperties(value = { DubboProperties.class })
 public class DubboConfiguration {
 
+    /**
+     * Injected Dubbo configuration properties.
+     */
     @Resource
     DubboProperties properties;
 

@@ -39,7 +39,9 @@ import org.miaixz.bus.core.center.date.culture.solar.SolarTerms;
 import org.miaixz.bus.core.center.date.culture.solar.SolarTime;
 
 /**
- * 八字
+ * Represents the Eight Characters (八字), also known as Bazi or Four Pillars of Destiny, in Chinese astrology. It
+ * consists of four pairs of Heavenly Stems and Earthly Branches, representing the year, month, day, and hour of birth.
+ * This class extends {@link Tradition} to encapsulate these four pillars.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -47,32 +49,32 @@ import org.miaixz.bus.core.center.date.culture.solar.SolarTime;
 public class EightChar extends Tradition {
 
     /**
-     * 年柱
+     * The Sixty-Year Cycle for the year (年柱).
      */
     protected SixtyCycle year;
 
     /**
-     * 月柱
+     * The Sixty-Year Cycle for the month (月柱).
      */
     protected SixtyCycle month;
 
     /**
-     * 日柱
+     * The Sixty-Year Cycle for the day (日柱).
      */
     protected SixtyCycle day;
 
     /**
-     * 时柱
+     * The Sixty-Year Cycle for the hour (时柱).
      */
     protected SixtyCycle hour;
 
     /**
-     * 初始化
+     * Constructs an {@code EightChar} instance with the specified year, month, day, and hour pillars.
      *
-     * @param year  年柱
-     * @param month 月柱
-     * @param day   日柱
-     * @param hour  时柱
+     * @param year  The {@link SixtyCycle} for the year.
+     * @param month The {@link SixtyCycle} for the month.
+     * @param day   The {@link SixtyCycle} for the day.
+     * @param hour  The {@link SixtyCycle} for the hour.
      */
     public EightChar(SixtyCycle year, SixtyCycle month, SixtyCycle day, SixtyCycle hour) {
         this.year = year;
@@ -82,12 +84,12 @@ public class EightChar extends Tradition {
     }
 
     /**
-     * 初始化
+     * Constructs an {@code EightChar} instance with the specified year, month, day, and hour pillar names.
      *
-     * @param year  年柱
-     * @param month 月柱
-     * @param day   日柱
-     * @param hour  时柱
+     * @param year  The name of the Sixty-Year Cycle for the year.
+     * @param month The name of the Sixty-Year Cycle for the month.
+     * @param day   The name of the Sixty-Year Cycle for the day.
+     * @param hour  The name of the Sixty-Year Cycle for the hour.
      */
     public EightChar(String year, String month, String day, String hour) {
         this(SixtyCycle.fromName(year), SixtyCycle.fromName(month), SixtyCycle.fromName(day),
@@ -95,54 +97,54 @@ public class EightChar extends Tradition {
     }
 
     /**
-     * 年柱
+     * Gets the Sixty-Year Cycle for the year (年柱).
      *
-     * @return 年柱
+     * @return The {@link SixtyCycle} instance representing the year pillar.
      */
     public SixtyCycle getYear() {
         return year;
     }
 
     /**
-     * 月柱
+     * Gets the Sixty-Year Cycle for the month (月柱).
      *
-     * @return 月柱
+     * @return The {@link SixtyCycle} instance representing the month pillar.
      */
     public SixtyCycle getMonth() {
         return month;
     }
 
     /**
-     * 日柱
+     * Gets the Sixty-Year Cycle for the day (日柱).
      *
-     * @return 日柱
+     * @return The {@link SixtyCycle} instance representing the day pillar.
      */
     public SixtyCycle getDay() {
         return day;
     }
 
     /**
-     * 时柱
+     * Gets the Sixty-Year Cycle for the hour (时柱).
      *
-     * @return 时柱
+     * @return The {@link SixtyCycle} instance representing the hour pillar.
      */
     public SixtyCycle getHour() {
         return hour;
     }
 
     /**
-     * 胎元
+     * Gets the Fetal Origin (胎元) for this Eight Char.
      *
-     * @return 胎元
+     * @return The {@link SixtyCycle} instance representing the Fetal Origin.
      */
     public SixtyCycle getFetalOrigin() {
         return SixtyCycle.fromName(month.getHeavenStem().next(1).getName() + month.getEarthBranch().next(3).getName());
     }
 
     /**
-     * 胎息
+     * Gets the Fetal Breath (胎息) for this Eight Char.
      *
-     * @return 胎息
+     * @return The {@link SixtyCycle} instance representing the Fetal Breath.
      */
     public SixtyCycle getFetalBreath() {
         return SixtyCycle.fromName(
@@ -151,9 +153,9 @@ public class EightChar extends Tradition {
     }
 
     /**
-     * 命宫
+     * Gets the Life Palace (命宫) for this Eight Char.
      *
-     * @return 命宫
+     * @return The {@link SixtyCycle} instance representing the Life Palace.
      */
     public SixtyCycle getOwnSign() {
         int m = month.getEarthBranch().getIndex() - 1;
@@ -172,9 +174,9 @@ public class EightChar extends Tradition {
     }
 
     /**
-     * 身宫
+     * Gets the Body Palace (身宫) for this Eight Char.
      *
-     * @return 身宫
+     * @return The {@link SixtyCycle} instance representing the Body Palace.
      */
     public SixtyCycle getBodySign() {
         int offset = month.getEarthBranch().getIndex() - 1;
@@ -191,52 +193,52 @@ public class EightChar extends Tradition {
     }
 
     /**
-     * 公历时刻列表
+     * Gets a list of Gregorian times that correspond to this Eight Char.
      *
-     * @param startYear 开始年(含)，支持1-9999年
-     * @param endYear   结束年(含)，支持1-9999年
-     * @return 公历时刻列表
+     * @param startYear The start year (inclusive), supporting years from 1 to 9999.
+     * @param endYear   The end year (inclusive), supporting years from 1 to 9999.
+     * @return A list of {@link SolarTime} objects matching this Eight Char.
      */
     public List<SolarTime> getSolarTimes(int startYear, int endYear) {
         List<SolarTime> l = new ArrayList<>();
-        // 月地支距寅月的偏移值
+        // Offset of the month's Earthly Branch from Yin month (寅月)
         int m = month.getEarthBranch().next(-2).getIndex();
-        // 月天干要一致
+        // The Heavenly Stem of the month must match
         if (!HeavenStem.fromIndex((year.getHeavenStem().getIndex() + 1) * 2 + m).equals(month.getHeavenStem())) {
             return l;
         }
-        // 1年的立春是辛酉，序号57
+        // The first year's Start of Spring (立春) is Xinyou (辛酉), index 57
         int y = year.next(-57).getIndex() + 1;
-        // 节令偏移值
+        // Solar term offset
         m *= 2;
-        // 时辰地支转时刻
+        // Convert hour's Earthly Branch to hour
         int h = hour.getEarthBranch().getIndex() * 2;
-        // 兼容子时多流派
+        // Handle different schools of thought for Zi hour (子时)
         int[] hours = h == 0 ? new int[] { 0, 23 } : new int[] { h };
         int baseYear = startYear - 1;
         if (baseYear > y) {
             y += 60 * (int) Math.ceil((baseYear - y) / 60D);
         }
         while (y <= endYear) {
-            // 立春为寅月的开始
+            // Start of Spring (立春) is the beginning of Yin month (寅月)
             SolarTerms term = SolarTerms.fromIndex(y, 3);
-            // 节令推移，年干支和月干支就都匹配上了
+            // Adjust solar term, then year and month pillars will match
             if (m > 0) {
                 term = term.next(m);
             }
             SolarTime solarTime = term.getJulianDay().getSolarTime();
             if (solarTime.getYear() >= startYear) {
-                // 日干支和节令干支的偏移值
+                // Offset between day pillar and solar term pillar
                 SolarDay solarDay = solarTime.getSolarDay();
                 int d = day.next(-solarDay.getLunarDay().getSixtyCycle().getIndex()).getIndex();
                 if (d > 0) {
-                    // 从节令推移天数
+                    // Advance days from solar term
                     solarDay = solarDay.next(d);
                 }
                 for (int hour : hours) {
                     int mi = 0;
                     int s = 0;
-                    // 如果正好是节令当天，且小时和节令的小时数相等的极端情况，把分钟和秒钟带上
+                    // In extreme cases where it's the solar term day and the hour matches, include minutes and seconds
                     if (d == 0 && hour == solarTime.getHour()) {
                         mi = solarTime.getMinute();
                         s = solarTime.getSecond();
@@ -246,7 +248,7 @@ public class EightChar extends Tradition {
                     if (d == 30) {
                         time = time.next(-3600);
                     }
-                    // 验证一下
+                    // Verify the result
                     if (time.getLunarHour().getEightChar().equals(this)) {
                         l.add(time);
                     }
@@ -257,6 +259,11 @@ public class EightChar extends Tradition {
         return l;
     }
 
+    /**
+     * Gets the string representation of the Eight Characters.
+     *
+     * @return The Eight Characters as a formatted string.
+     */
     public String getName() {
         return String.format("%s %s %s %s", year, month, day, hour);
     }

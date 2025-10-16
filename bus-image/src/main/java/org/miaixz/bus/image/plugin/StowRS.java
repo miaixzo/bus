@@ -27,30 +27,12 @@
 */
 package org.miaixz.bus.image.plugin;
 
-import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLConnection;
-import java.nio.channels.SeekableByteChannel;
-import java.nio.file.*;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.security.GeneralSecurityException;
-import java.security.cert.X509Certificate;
-import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
-
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
-import javax.xml.transform.stream.StreamResult;
-
+import jakarta.json.Json;
+import jakarta.json.stream.JsonGenerator;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.IoKit;
-import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.UID;
 import org.miaixz.bus.image.galaxy.data.Attributes;
@@ -69,50 +51,176 @@ import org.miaixz.bus.image.nimble.codec.mp4.MP4Parser;
 import org.miaixz.bus.image.nimble.codec.mpeg.MPEG2Parser;
 import org.miaixz.bus.logger.Logger;
 
-import jakarta.json.Json;
-import jakarta.json.stream.JsonGenerator;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+import javax.xml.transform.stream.StreamResult;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.channels.SeekableByteChannel;
+import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.security.GeneralSecurityException;
+import java.security.cert.X509Certificate;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 /**
+ * The {@code StowRS} class provides a client for the DICOMweb STOW-RS (Store Over the Web by RESTful Services)
+ * standard. It can send DICOM objects, or encapsulate other file types (like JPEG, PDF, etc.) into DICOM and send them
+ * to a STOW-RS server.
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class StowRS {
 
+    /**
+     * The boundary string for the multipart request.
+     */
     private static final String boundary = "myboundary";
+    /**
+     * A counter for the number of files processed.
+     */
     private static final AtomicInteger fileCount = new AtomicInteger();
+    /**
+     * A map to store bulk data objects, keyed by their content location.
+     */
     private static final Map<String, StowRSBulkdata> contentLocBulkdata = new HashMap<>();
+    /**
+     * An array of DICOM tags for Study and Series Instance UIDs.
+     */
     private static final int[] IUIDS_TAGS = { Tag.StudyInstanceUID, Tag.SeriesInstanceUID };
+    /**
+     * An array of Type 2 DICOM tags that should be present in the metadata.
+     */
     private static final int[] TYPE2_TAGS = { Tag.ContentDate, Tag.ContentTime };
+    /**
+     * The standard DICOM element dictionary.
+     */
     private static final ElementDictionary DICT = ElementDictionary.getStandardElementDictionary();
+    /**
+     * The URL of the STOW-RS service.
+     */
     private static String url;
+    /**
+     * A flag to indicate if the content is a VL Photographic Image.
+     */
     private static boolean vlPhotographicImage;
+    /**
+     * A flag to indicate if the content is a Video Photographic Image.
+     */
     private static boolean videoPhotographicImage;
+    /**
+     * The desired Accept header for the HTTP request.
+     */
     private static String requestAccept;
+    /**
+     * The Content-Type of the request body.
+     */
     private static String requestContentType;
+    /**
+     * The path to a metadata file to be merged.
+     */
     private static String metadataFilePathStr;
+    /**
+     * The metadata file object.
+     */
     private static File metadataFile;
+    /**
+     * A flag to allow connections to any HTTPS host, regardless of certificate validation.
+     */
     private static boolean allowAnyHost;
+    /**
+     * A flag to disable the default SSL trust manager.
+     */
     private static boolean disableTM;
+    /**
+     * A flag to include the Encapsulated Document Length tag.
+     */
     private static boolean encapsulatedDocLength;
+    /**
+     * The value for the HTTP Authorization header.
+     */
     private static String authorization;
+    /**
+     * The maximum number of files to include in a single request.
+     */
     private static int limit;
+    /**
+     * The file content type specified from the command line.
+     */
     private static FileContentType fileContentTypeFromCL;
+    /**
+     * The content type of the first bulk data file processed.
+     */
     private static FileContentType firstBulkdataFileContentType;
+    /**
+     * The content type of the current bulk data file being processed.
+     */
     private static FileContentType bulkdataFileContentType;
+    /**
+     * The DICOM attributes for the current operation.
+     */
     private final Attributes attrs = new Attributes();
+    /**
+     * A list of chunks of data to be sent in separate requests.
+     */
     private final List<StowChunk> stowChunks = new ArrayList<>();
+    /**
+     * A flag to exclude APPn segments from JPEG streams.
+     */
     private boolean noApp;
+    /**
+     * A flag to include pixel data header information.
+     */
     private boolean pixelHeader;
+    /**
+     * A flag related to the Transfer Syntax UID.
+     */
     private boolean tsuid;
+    /**
+     * A suffix for generated UIDs.
+     */
     private String uidSuffix;
+    /**
+     * The prefix for temporary file names.
+     */
     private String tmpPrefix;
+    /**
+     * The suffix for temporary file names.
+     */
     private String tmpSuffix;
+    /**
+     * The directory for temporary files.
+     */
     private File tmpDir;
+    /**
+     * The total number of files scanned.
+     */
     private int filesScanned;
+    /**
+     * The total number of files successfully sent.
+     */
     private int filesSent;
+    /**
+     * The total size in bytes of all successfully sent files.
+     */
     private long totalSize;
+    /**
+     * A map of custom HTTP request properties.
+     */
     private Map<String, String> requestProperties;
 
+    /**
+     * Logs performance metrics for a single sent chunk.
+     *
+     * @param stowChunk The chunk that was sent.
+     * @param t1        The start time of the operation.
+     */
     private static void logSentPerChunk(StowChunk stowChunk, long t1) {
         if (stowChunk.sent == 0)
             return;
@@ -120,8 +228,15 @@ public class StowRS {
         long t2 = System.currentTimeMillis();
         float s = (t2 - t1) / 1000F;
         float mb = stowChunk.getSize() / 1048576F;
+        Logger.info("Sent {} files, total size {:.2f} MB in {:.2f}s ({:.2f} MB/s)", stowChunk.sent, mb, s, mb / s);
     }
 
+    /**
+     * Logs the overall performance metrics for the entire STOW-RS operation.
+     *
+     * @param stowRS The {@code StowRS} instance.
+     * @param t1     The start time of the operation.
+     */
     private static void logSent(StowRS stowRS, long t1) {
         if (stowRS.filesSent == 0 || limit == 0)
             return;
@@ -129,8 +244,16 @@ public class StowRS {
         long t2 = System.currentTimeMillis();
         float s = (t2 - t1) / 1000F;
         float mb = stowRS.totalSize / 1048576F;
+        Logger.info("Sent {} files, total size {:.2f} MB in {:.2f}s ({:.2f} MB/s)", stowRS.filesSent, mb, s, mb / s);
     }
 
+    /**
+     * Determines the {@link FileContentType} from a string identifier (MIME type or file extension).
+     *
+     * @param s The string identifier.
+     * @return The corresponding {@code FileContentType}.
+     * @throws IllegalArgumentException if the type is not supported.
+     */
     private static FileContentType fileContentType(String s) {
         switch (s.toLowerCase(Locale.ENGLISH)) {
             case "stl":
@@ -221,6 +344,12 @@ public class StowRS {
         }
     }
 
+    /**
+     * Adds attributes from a specified metadata file to the given dataset.
+     *
+     * @param metadata The dataset to which attributes will be added.
+     * @throws Exception if an error occurs while parsing the metadata file.
+     */
     private static void addAttributesFromFile(Attributes metadata) throws Exception {
         if (metadataFilePathStr == null)
             return;
@@ -228,28 +357,56 @@ public class StowRS {
         metadata.addAll(SAXReader.parse(metadataFilePathStr, metadata));
     }
 
+    /**
+     * Supplements the metadata with UIDs for Study and Series if they are missing.
+     *
+     * @param metadata The attributes to supplement.
+     */
     private static void supplementMissingUIDs(Attributes metadata) {
         for (int tag : IUIDS_TAGS)
             if (!metadata.containsValue(tag))
                 metadata.setString(tag, VR.UI, UID.createUID());
     }
 
+    /**
+     * Supplements a missing UID in the metadata.
+     *
+     * @param metadata The attributes to supplement.
+     * @param tag      The tag of the UID attribute.
+     */
     private static void supplementMissingUID(Attributes metadata, int tag) {
         if (!metadata.containsValue(tag))
             metadata.setString(tag, VR.UI, UID.createUID());
     }
 
+    /**
+     * Supplements the SOP Class UID if it is missing.
+     *
+     * @param metadata The attributes to supplement.
+     * @param value    The SOP Class UID to set.
+     */
     private static void supplementSOPClass(Attributes metadata, String value) {
         if (!metadata.containsValue(Tag.SOPClassUID))
             metadata.setString(Tag.SOPClassUID, VR.UI, value);
     }
 
+    /**
+     * Ensures that all Type 2 tags are present in the metadata, setting them to null if absent.
+     *
+     * @param metadata The attributes to supplement.
+     */
     private static void supplementType2Tags(Attributes metadata) {
         for (int tag : TYPE2_TAGS)
             if (!metadata.contains(tag))
                 metadata.setNull(tag, DICT.vrOf(tag));
     }
 
+    /**
+     * Supplements attributes specific to encapsulated documents.
+     *
+     * @param metadata       The attributes to supplement.
+     * @param stowRSBulkdata The bulk data object containing file information.
+     */
     private static void supplementEncapsulatedDocAttrs(Attributes metadata, StowRSBulkdata stowRSBulkdata) {
         if (!metadata.contains(Tag.AcquisitionDateTime))
             metadata.setNull(Tag.AcquisitionDateTime, VR.DT);
@@ -257,10 +414,24 @@ public class StowRS {
             metadata.setLong(Tag.EncapsulatedDocumentLength, VR.UL, stowRSBulkdata.getFileLength());
     }
 
+    /**
+     * Reads an entire InputStream and converts it to a string.
+     *
+     * @param inputStream The input stream to read.
+     * @return The content of the stream as a string.
+     * @throws IOException if an I/O error occurs.
+     */
     private static String readFullyAsString(InputStream inputStream) throws IOException {
-        return readFully(inputStream).toString(Charset.UTF_8);
+        return readFully(inputStream).toString(Charset.UTF_8.name());
     }
 
+    /**
+     * Reads an entire InputStream into a ByteArrayOutputStream.
+     *
+     * @param inputStream The input stream to read.
+     * @return A ByteArrayOutputStream containing the stream's content.
+     * @throws IOException if an I/O error occurs.
+     */
     private static ByteArrayOutputStream readFully(InputStream inputStream) throws IOException {
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             byte[] buffer = new byte[16384];
@@ -272,6 +443,14 @@ public class StowRS {
         }
     }
 
+    /**
+     * Writes the headers for a new part in a multipart message.
+     *
+     * @param out             The output stream.
+     * @param contentType     The Content-Type of the part.
+     * @param contentLocation The Content-Location of the part.
+     * @throws IOException if an I/O error occurs.
+     */
     private static void writePartHeaders(OutputStream out, String contentType, String contentLocation)
             throws IOException {
         out.write(("\r\n--" + boundary + "\r\n").getBytes());
@@ -281,32 +460,60 @@ public class StowRS {
         out.write("\r\n".getBytes());
     }
 
+    /**
+     * Sets custom HTTP request properties.
+     *
+     * @param requestProperties A map of header names to values.
+     */
     public final void setRequestProperties(Map<String, String> requestProperties) {
         this.requestProperties = requestProperties;
     }
 
+    /**
+     * Sets the prefix for temporary file names.
+     *
+     * @param prefix The file prefix.
+     */
     public final void setTmpFilePrefix(String prefix) {
         this.tmpPrefix = prefix;
     }
 
+    /**
+     * Sets the suffix for temporary file names.
+     *
+     * @param suffix The file suffix.
+     */
     public final void setTmpFileSuffix(String suffix) {
         this.tmpSuffix = suffix;
     }
 
+    /**
+     * Sets the directory for temporary files.
+     *
+     * @param tmpDir The temporary directory.
+     */
     public final void setTmpFileDirectory(File tmpDir) {
         this.tmpDir = tmpDir;
     }
 
+    /**
+     * Scans a list of files and prepares them for sending.
+     *
+     * @param files A list of file paths.
+     */
     private void scan(List<String> files) {
-        long t1, t2;
-        t1 = System.currentTimeMillis();
+        long t1 = System.currentTimeMillis();
         scanFiles(files);
-        t2 = System.currentTimeMillis();
-        System.out.println("..");
-        if (filesScanned == 0) {
-        }
+        long t2 = System.currentTimeMillis();
+        Logger.info("Scanned {} files in {}s", filesScanned, (t2 - t1) / 1000f);
     }
 
+    /**
+     * Creates a new metadata dataset, populating it with static metadata and supplementing missing values.
+     *
+     * @param staticMetadata The static metadata to include.
+     * @return The new metadata dataset.
+     */
     private Attributes createMetadata(Attributes staticMetadata) {
         Attributes metadata = new Attributes(staticMetadata);
         supplementMissingUID(metadata, Tag.SOPInstanceUID);
@@ -314,6 +521,13 @@ public class StowRS {
         return metadata;
     }
 
+    /**
+     * Supplements a metadata dataset with information derived from a bulk data file.
+     *
+     * @param bulkdataFilePath The path to the bulk data file.
+     * @param metadata         The metadata to supplement.
+     * @return The supplemented metadata.
+     */
     private Attributes supplementMetadataFromFile(Path bulkdataFilePath, Attributes metadata) {
         String contentLoc = "bulk" + UID.createUID();
         metadata.setValue(bulkdataFileContentType.getBulkdataTypeTag(), VR.OB, new BulkData(null, contentLoc, false));
@@ -350,6 +564,13 @@ public class StowRS {
         return metadata;
     }
 
+    /**
+     * Extracts metadata from compressed pixel data (e.g., JPEG, MPEG).
+     *
+     * @param contentLoc     The content location identifier.
+     * @param stowRSBulkdata The bulk data object.
+     * @param metadata       The metadata to supplement.
+     */
     private void pixelMetadata(String contentLoc, StowRSBulkdata stowRSBulkdata, Attributes metadata) {
         File bulkdataFile = stowRSBulkdata.getBulkdataFile();
         if (pixelHeader || tsuid || noApp) {
@@ -367,6 +588,12 @@ public class StowRS {
         contentLocBulkdata.put(contentLoc, stowRSBulkdata);
     }
 
+    /**
+     * Creates the initial static metadata by loading a template and merging command-line attributes.
+     *
+     * @return The static metadata dataset.
+     * @throws Exception if an error occurs.
+     */
     private Attributes createStaticMetadata() throws Exception {
         Logger.info("Creating static metadata. Set defaults, if essential attributes are not present.");
         Attributes metadata;
@@ -380,6 +607,11 @@ public class StowRS {
         return metadata;
     }
 
+    /**
+     * Scans files and groups them into chunks based on the specified limit.
+     *
+     * @param files A list of file paths.
+     */
     private void scanFiles(List<String> files) {
         if (limit == 0) {
             scanFilesNoLimit(files);
@@ -405,6 +637,11 @@ public class StowRS {
         });
     }
 
+    /**
+     * Scans all files into a single chunk when no limit is specified.
+     *
+     * @param files A list of file paths.
+     */
     private void scanFilesNoLimit(List<String> files) {
         try {
             File tmpFile = File.createTempFile("stowrs-", null, null);
@@ -423,6 +660,11 @@ public class StowRS {
         }
     }
 
+    /**
+     * Processes a list of files intended for a single STOW-RS request.
+     *
+     * @param fPR A list of file paths for one request.
+     */
     private void processFilesPerRequest(List<String> fPR) {
         if (fPR.isEmpty())
             return;
@@ -450,6 +692,12 @@ public class StowRS {
         }
     }
 
+    /**
+     * Creates a map of HTTP request properties (headers).
+     *
+     * @param httpHeaders An array of custom headers in "Name:Value" format.
+     * @return A map of request properties.
+     */
     private Map<String, String> requestProperties(String[] httpHeaders) {
         Map<String, String> requestProperties = new HashMap<>();
         requestProperties.put(
@@ -462,11 +710,18 @@ public class StowRS {
         if (httpHeaders != null)
             for (String httpHeader : httpHeaders) {
                 int delim = httpHeader.indexOf(':');
-                requestProperties.put(httpHeader.substring(0, delim), httpHeader.substring(delim + 1));
+                requestProperties.put(httpHeader.substring(0, delim), httpHeader.substring(delim + 1).trim());
             }
         return requestProperties;
     }
 
+    /**
+     * Sends a STOW-RS request over a standard HTTP connection.
+     *
+     * @param connection The HTTP connection.
+     * @param stowChunk  The chunk of data to send.
+     * @throws Exception if an error occurs.
+     */
     private void stow(final HttpURLConnection connection, StowChunk stowChunk) throws Exception {
         File tmpFile = stowChunk.getTmpFile();
         connection.setDoOutput(true);
@@ -475,8 +730,7 @@ public class StowRS {
         connection.setRequestProperty("Content-Length", String.valueOf(tmpFile.length()));
         requestProperties.forEach(connection::setRequestProperty);
         logOutgoing(connection.getURL(), connection.getRequestProperties());
-        OutputStream out = connection.getOutputStream();
-        try {
+        try (OutputStream out = connection.getOutputStream()) {
             IoKit.copy(new FileInputStream(tmpFile), out);
             out.write(("\r\n--" + boundary + "--\r\n").getBytes());
             out.flush();
@@ -488,28 +742,36 @@ public class StowRS {
             connection.disconnect();
             filesSent += stowChunk.sent();
             totalSize += stowChunk.getSize();
-        } finally {
-            out.close();
         }
     }
 
+    /**
+     * Opens a standard HTTP connection.
+     *
+     * @return The opened HttpURLConnection.
+     * @throws Exception if an error occurs.
+     */
     private HttpURLConnection open() throws Exception {
-        long t1, t2;
-        t1 = System.currentTimeMillis();
-        URLConnection urlConnection = new URL(url).openConnection();
-        final HttpURLConnection connection = (HttpURLConnection) urlConnection;
-        t2 = System.currentTimeMillis();
-        return connection;
+        return (HttpURLConnection) new URL(url).openConnection();
     }
 
+    /**
+     * Opens an HTTPS connection.
+     *
+     * @return The opened HttpsURLConnection.
+     * @throws Exception if an error occurs.
+     */
     private HttpsURLConnection openTLS() throws Exception {
-        long t1, t2;
-        t1 = System.currentTimeMillis();
-        final HttpsURLConnection connection = (HttpsURLConnection) new URL(url).openConnection();
-        t2 = System.currentTimeMillis();
-        return connection;
+        return (HttpsURLConnection) new URL(url).openConnection();
     }
 
+    /**
+     * Sends a STOW-RS request over an HTTPS connection.
+     *
+     * @param connection The HTTPS connection.
+     * @param stowChunk  The chunk of data to send.
+     * @throws Exception if an error occurs.
+     */
     private void stowHttps(final HttpsURLConnection connection, StowChunk stowChunk) throws Exception {
         File tmpFile = stowChunk.getTmpFile();
         connection.setDoOutput(true);
@@ -536,17 +798,28 @@ public class StowRS {
         }
     }
 
+    /**
+     * Creates an SSLContext that trusts all certificates.
+     *
+     * @return The configured SSLContext.
+     * @throws GeneralSecurityException if a security error occurs.
+     */
     SSLContext sslContext() throws GeneralSecurityException {
         SSLContext ctx = SSLContext.getInstance("TLS");
         ctx.init(null, trustManagers(), new java.security.SecureRandom());
         return ctx;
     }
 
+    /**
+     * Creates an array of TrustManagers that do not validate certificate chains.
+     *
+     * @return An array containing a permissive X509TrustManager.
+     */
     TrustManager[] trustManagers() {
         return new TrustManager[] { new X509TrustManager() {
 
             public X509Certificate[] getAcceptedIssuers() {
-                return null;
+                return new X509Certificate[0];
             }
 
             public void checkClientTrusted(X509Certificate[] certs, String authType) {
@@ -557,19 +830,36 @@ public class StowRS {
         } };
     }
 
+    /**
+     * Creates a Basic Authentication header value.
+     *
+     * @param user The username and password in "username:password" format.
+     * @return The Base64 encoded "Basic" authorization string.
+     */
     private String basicAuth(String user) {
         byte[] userPswdBytes = user.getBytes();
-        int len = (userPswdBytes.length * 4 / 3 + 3) & ~3;
-        char[] ch = new char[len];
-        Builder.encode(userPswdBytes, 0, userPswdBytes.length, ch, 0);
-        return "Basic " + new String(ch);
+        return "Basic " + Base64.getEncoder().encodeToString(userPswdBytes);
     }
 
+    /**
+     * Logs the outgoing HTTP request headers.
+     *
+     * @param url          The request URL.
+     * @param headerFields The map of request headers.
+     */
     private void logOutgoing(URL url, Map<String, List<String>> headerFields) {
         Logger.info("> POST " + url.toString());
         headerFields.forEach((k, v) -> Logger.info("> " + k + " : " + String.join(Symbol.COMMA, v)));
     }
 
+    /**
+     * Logs the incoming HTTP response.
+     *
+     * @param respCode     The HTTP response code.
+     * @param respMsg      The HTTP response message.
+     * @param headerFields The map of response headers.
+     * @param is           The input stream of the response body.
+     */
     private void logIncoming(int respCode, String respMsg, Map<String, List<String>> headerFields, InputStream is) {
         Logger.info("< HTTP/1.1 Response: " + respCode + Symbol.SPACE + respMsg);
         for (Map.Entry<String, List<String>> header : headerFields.entrySet())
@@ -584,6 +874,14 @@ public class StowRS {
         }
     }
 
+    /**
+     * Writes a DICOM file to the multipart output stream.
+     *
+     * @param out       The output stream.
+     * @param path      The path to the DICOM file.
+     * @param stowChunk The current data chunk.
+     * @throws IOException if an I/O error occurs.
+     */
     private void writeDicomFile(OutputStream out, Path path, StowChunk stowChunk) throws IOException {
         if (Files.probeContentType(path) == null) {
             return;
@@ -593,6 +891,12 @@ public class StowRS {
         stowChunk.setAttributes(path.toFile().length());
     }
 
+    /**
+     * Updates the attributes of a DICOM file if necessary.
+     *
+     * @param path The path to the DICOM file.
+     * @return The path to the (potentially modified) DICOM file.
+     */
     private Path updateAttrs(Path path) {
         if (attrs.isEmpty() && uidSuffix == null)
             return path;
@@ -602,12 +906,11 @@ public class StowRS {
             File tmpFile = File.createTempFile("stowrs-", null, null);
             tmpFile.deleteOnExit();
             Attributes fmi = in.readFileMetaInformation();
-            Attributes data = in.readDataset();
             String tsuid = in.getTransferSyntax();
             try (ImageOutputStream dos = new ImageOutputStream(new BufferedOutputStream(new FileOutputStream(tmpFile)),
                     fmi != null ? UID.ExplicitVRLittleEndian.uid
                             : tsuid != null ? tsuid : UID.ImplicitVRLittleEndian.uid)) {
-                dos.writeDataset(fmi, data);
+                dos.writeDataset(fmi, in.readDataset());
                 dos.finish();
                 dos.flush();
             }
@@ -618,6 +921,15 @@ public class StowRS {
         return path;
     }
 
+    /**
+     * Writes the metadata and bulk data parts of a multipart request.
+     *
+     * @param out            The output stream.
+     * @param files          A list of bulk data file paths.
+     * @param staticMetadata The static metadata to use.
+     * @param stowChunk      The current data chunk.
+     * @throws Exception if an error occurs.
+     */
     private void writeMetadataAndBulkData(
             OutputStream out,
             List<String> files,
@@ -625,7 +937,6 @@ public class StowRS {
             StowChunk stowChunk) throws Exception {
         if (requestContentType.equals(MediaType.APPLICATION_DICOM_XML))
             writeXMLMetadataAndBulkdata(out, files, staticMetadata, stowChunk);
-
         else {
             try (ByteArrayOutputStream bOut = new ByteArrayOutputStream()) {
                 try (JsonGenerator gen = Json.createGenerator(bOut)) {
@@ -643,7 +954,6 @@ public class StowRS {
                         });
 
                     gen.writeEnd();
-                    gen.flush();
                 }
                 writeMetadata(out, bOut);
 
@@ -654,6 +964,15 @@ public class StowRS {
         contentLocBulkdata.clear();
     }
 
+    /**
+     * Writes the metadata and bulk data for XML content type.
+     *
+     * @param out            The output stream.
+     * @param files          A list of bulk data file paths.
+     * @param staticMetadata The static metadata.
+     * @param stowChunk      The current data chunk.
+     * @throws Exception if an error occurs.
+     */
     private void writeXMLMetadataAndBulkdata(
             final OutputStream out,
             List<String> files,
@@ -668,6 +987,14 @@ public class StowRS {
             applyFunctionToFile(file, true, path -> writeXMLMetadataAndBulkdata(out, staticMetadata, path, stowChunk));
     }
 
+    /**
+     * Writes the XML metadata and corresponding bulk data for a single file.
+     *
+     * @param out              The output stream.
+     * @param staticMetadata   The static metadata.
+     * @param bulkdataFilePath The path to the bulk data file.
+     * @param stowChunk        The current data chunk.
+     */
     private void writeXMLMetadataAndBulkdata(
             OutputStream out,
             Attributes staticMetadata,
@@ -691,6 +1018,13 @@ public class StowRS {
         }
     }
 
+    /**
+     * Checks if a file's content type should be ignored based on the first file's type.
+     *
+     * @param path The path to the file.
+     * @return {@code true} if the file should be ignored.
+     * @throws IOException if an I/O error occurs.
+     */
     private boolean ignoreNonMatchingFileContentTypes(Path path) throws IOException {
         if (fileCount.incrementAndGet() > 1) {
             if (fileContentTypeFromCL == null) {
@@ -702,6 +1036,12 @@ public class StowRS {
         return false;
     }
 
+    /**
+     * Writes XML metadata to the output stream.
+     *
+     * @param out            The output stream.
+     * @param staticMetadata The static metadata.
+     */
     private void writeXMLMetadata(OutputStream out, Attributes staticMetadata) {
         Attributes metadata = createMetadata(staticMetadata);
         try (ByteArrayOutputStream bOut = new ByteArrayOutputStream()) {
@@ -712,6 +1052,13 @@ public class StowRS {
         }
     }
 
+    /**
+     * Writes the metadata part to the multipart output stream.
+     *
+     * @param out  The main output stream.
+     * @param bOut A stream containing the metadata content.
+     * @throws IOException if an I/O error occurs.
+     */
     private void writeMetadata(OutputStream out, ByteArrayOutputStream bOut) throws IOException {
         Logger.info("> Metadata Content Type: " + requestContentType);
         writePartHeaders(out, requestContentType, null);
@@ -719,6 +1066,14 @@ public class StowRS {
         out.write(bOut.toByteArray());
     }
 
+    /**
+     * Writes a bulk data file to the multipart output stream.
+     *
+     * @param contentLocation The content location identifier.
+     * @param out             The output stream.
+     * @param stowChunk       The current data chunk.
+     * @throws Exception if an error occurs.
+     */
     private void writeFile(String contentLocation, OutputStream out, StowChunk stowChunk) throws Exception {
         String bulkdataContentType1 = bulkdataFileContentType.getMediaType();
         StowRSBulkdata stowRSBulkdata = contentLocBulkdata.get(contentLocation);
@@ -741,6 +1096,14 @@ public class StowRS {
         stowChunk.setAttributes(stowRSBulkdata.bulkdataFile.length());
     }
 
+    /**
+     * Applies a function to a file or all files in a directory.
+     *
+     * @param file          The file or directory path.
+     * @param continueVisit A flag to continue visiting files in a directory even after an error.
+     * @param function      The function to apply to each file.
+     * @throws IOException if an I/O error occurs.
+     */
     private void applyFunctionToFile(String file, boolean continueVisit, final StowRSFileFunction<Path> function)
             throws IOException {
         Path path = Paths.get(file);
@@ -750,6 +1113,9 @@ public class StowRS {
             function.apply(path);
     }
 
+    /**
+     * An enumeration of supported file content types for encapsulation.
+     */
     enum FileContentType {
 
         PDF(UID.EncapsulatedPDFStorage.uid, Tag.EncapsulatedDocument, MediaType.APPLICATION_PDF,
@@ -810,8 +1176,8 @@ public class StowRS {
         FileContentType(String cuid, int bulkdataTypeTag, String mediaType, String sampleMetadataFile) {
             this.cuid = cuid;
             this.bulkdataTypeTag = bulkdataTypeTag;
-            this.sampleMetadataFile = sampleMetadataFile;
             this.mediaType = mediaType;
+            this.sampleMetadataFile = sampleMetadataFile;
         }
 
         static FileContentType valueOf(String contentType, Path path) {
@@ -837,6 +1203,9 @@ public class StowRS {
         }
     }
 
+    /**
+     * An enumeration to handle parsing of different compressed pixel data formats.
+     */
     private enum CompressedPixelData {
 
         JPEG {
@@ -882,16 +1251,29 @@ public class StowRS {
         }
     }
 
+    /**
+     * A functional interface for consuming a file path, allowing for exceptions.
+     *
+     * @param <Path> The type of the path.
+     */
     interface StowRSFileConsumer<Path> {
 
         void accept(Path path) throws IOException;
     }
 
+    /**
+     * A functional interface for applying a function to a file path, allowing for exceptions.
+     *
+     * @param <Path> The type of the path.
+     */
     interface StowRSFileFunction<Path> {
 
         void apply(Path path) throws IOException;
     }
 
+    /**
+     * A container class representing a chunk of data to be sent in a single STOW-RS request.
+     */
     static class StowChunk {
 
         private final File tmpFile;
@@ -926,6 +1308,9 @@ public class StowRS {
         }
     }
 
+    /**
+     * A container class for information about a bulk data file.
+     */
     static class StowRSBulkdata {
 
         Path bulkdataFilePath;
@@ -960,6 +1345,9 @@ public class StowRS {
         }
     }
 
+    /**
+     * A file visitor for traversing directories and applying a function to each file.
+     */
     static class StowRSFileVisitor extends SimpleFileVisitor<Path> {
 
         private final StowRSFileConsumer<Path> consumer;

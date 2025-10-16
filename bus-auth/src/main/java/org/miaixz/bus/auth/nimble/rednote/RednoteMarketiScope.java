@@ -33,7 +33,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * 小红书商业平台 OAuth 授权范围
+ * Xiaohongshu Commercial Platform OAuth authorization scopes.
  * 
  * @author Kimi Liu
  * @since Java 17+
@@ -43,13 +43,33 @@ import lombok.Getter;
 public enum RednoteMarketiScope implements AuthorizeScope {
 
     /**
-     * {@code scope} 含义，以{@code description} 为准
+     * Get account report information. The meaning of {@code scope} is subject to {@code description}.
      */
-    report_service("report_service", "获取账户报表信息", true), ad_query("ad_query", "获取推广计划、推广单元、推广创意信息", false),
-    ad_manage("ad_manage", "创建&修改推广计划、推广单元、推广创意", false), account_manage("account_manage", "账户管理", false);
+    report_service("report_service", "Get account report information", true),
+    /**
+     * Get promotion plan, promotion unit, and promotion creative information.
+     */
+    ad_query("ad_query", "Get promotion plan, promotion unit, and promotion creative information", false),
+    /**
+     * Create & modify promotion plans, promotion units, and promotion creatives.
+     */
+    ad_manage("ad_manage", "Create & modify promotion plans, promotion units, and promotion creatives", false),
+    /**
+     * Account management.
+     */
+    account_manage("account_manage", "Account management", false);
 
+    /**
+     * The scope string as defined by Xiaohongshu.
+     */
     private final String scope;
+    /**
+     * A description of what the scope grants access to.
+     */
     private final String description;
+    /**
+     * Indicates if this scope is enabled by default.
+     */
     private final boolean isDefault;
 
 }

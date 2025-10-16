@@ -28,7 +28,7 @@
 package org.miaixz.bus.logger.magic.level;
 
 /**
- * DEBUG 级别日志
+ * This interface defines methods for logging at the DEBUG level.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -36,43 +36,43 @@ package org.miaixz.bus.logger.magic.level;
 public interface Debug {
 
     /**
-     * DEBUG 等级是否开启
+     * Checks if logging at the DEBUG level is enabled.
      *
-     * @return the true/false
+     * @return {@code true} if DEBUG level is enabled, {@code false} otherwise.
      */
     boolean isDebugEnabled();
 
     /**
-     * 打印 DEBUG 等级的日志
+     * Logs a throwable at the DEBUG level.
      *
-     * @param t 错误对象
+     * @param t the throwable to log.
      */
     void debug(Throwable t);
 
     /**
-     * 打印 DEBUG 等级的日志
+     * Logs a formatted message at the DEBUG level.
      *
-     * @param format 消息模板
-     * @param args   参数
+     * @param format the message format.
+     * @param args   the arguments for the message format.
      */
     void debug(String format, Object... args);
 
     /**
-     * 打印 DEBUG 等级的日志
+     * Logs a formatted message with a throwable at the DEBUG level.
      *
-     * @param t      错误对象
-     * @param format 消息模板
-     * @param args   参数
+     * @param t      the throwable to log.
+     * @param format the message format.
+     * @param args   the arguments for the message format.
      */
     void debug(Throwable t, String format, Object... args);
 
     /**
-     * 打印 DEBUG 等级的日志
+     * Logs a formatted message with a throwable at the DEBUG level, specifying the fully qualified class name (FQCN).
      *
-     * @param fqcn   完全限定类名(Fully Qualified Class Name)，用于定位日志位置
-     * @param t      错误对象
-     * @param format 消息模板
-     * @param args   参数
+     * @param fqcn   the fully qualified class name of the logger.
+     * @param t      the throwable to log.
+     * @param format the message format.
+     * @param args   the arguments for the message format.
      */
     void debug(String fqcn, Throwable t, String format, Object... args);
 

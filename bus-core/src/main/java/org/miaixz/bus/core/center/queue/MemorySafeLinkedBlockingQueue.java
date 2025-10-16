@@ -37,15 +37,15 @@ import org.miaixz.bus.core.lang.thread.SimpleScheduler;
 import org.miaixz.bus.core.xyz.RuntimeKit;
 
 /**
- * 内存安全的{@link LinkedBlockingQueue}，可以解决OOM问题。 原理是通过Runtime#freeMemory()获取剩余内存，当剩余内存低于指定的阈值时，不再加入。
- *
+ * A memory-safe {@link LinkedBlockingQueue} that helps prevent `OutOfMemoryError`. It works by checking the available
+ * free memory via `Runtime.getRuntime().freeMemory()`. When the free memory drops below a specified threshold, it stops
+ * accepting new elements.
  * <p>
- * 此类来自于：<a href=
+ * This class is inspired by: <a href=
  * "https://github.com/apache/incubator-shenyu/blob/master/shenyu-common/src/main/java/org/apache/shenyu/common/concurrent/MemorySafeLinkedBlockingQueue.java">
- * MemorySafeLinkedBlockingQueue</a>
- * </p>
+ * Apache ShenYu's MemorySafeLinkedBlockingQueue</a>
  *
- * @param <E> 元素类型
+ * @param <E> The type of elements held in this collection.
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -55,55 +55,67 @@ public class MemorySafeLinkedBlockingQueue<E> extends CheckedLinkedBlockingQueue
     private static final long serialVersionUID = 2852279836896L;
 
     /**
-     * 构造
+     * Constructor.
      *
-     * @param maxFreeMemory 最大剩余内存大小，当实际内存小于这个值时，不再加入元素
+     * @param maxFreeMemory The minimum free memory threshold in bytes. The queue will stop accepting new elements if
+     *                      the available free memory is below this value.
      */
     public MemorySafeLinkedBlockingQueue(final long maxFreeMemory) {
         super(new MemoryChecker<>(maxFreeMemory));
     }
 
     /**
-     * 构造
+     * Constructor.
      *
-     * @param c             初始集合
-     * @param maxFreeMemory 最大剩余内存大小，当实际内存小于这个值时，不再加入元素
+     * @param c             The initial collection of elements.
+     * @param maxFreeMemory The minimum free memory threshold in bytes.
      */
     public MemorySafeLinkedBlockingQueue(final Collection<? extends E> c, final long maxFreeMemory) {
         super(c, new MemoryChecker<>(maxFreeMemory));
     }
 
     /**
-     * 获得最大可用内存
+     * Gets the minimum free memory threshold.
      *
-     * @return 最大可用内存限制
+     * @return The minimum free memory threshold in bytes.
      */
     public long getMaxFreeMemory() {
         return ((MemoryChecker<E>) this.checker).maxFreeMemory;
     }
 
     /**
-     * 设置最大可用内存
+     * Sets the minimum free memory threshold.
      *
-     * @param maxFreeMemory 最大可用内存
+     * @param maxFreeMemory The minimum free memory threshold in bytes.
      */
     public void setMaxFreeMemory(final int maxFreeMemory) {
         ((MemoryChecker<E>) this.checker).maxFreeMemory = maxFreeMemory;
     }
 
     /**
-     * 根据剩余内存判定的检查器
+     * A `Predicate` that checks if there is sufficient free memory.
      *
-     * @param <E> 元素类型
+     * @param <E> The element type.
      */
     private static class MemoryChecker<E> implements Predicate<E> {
 
         private long maxFreeMemory;
 
+        /**
+         * Constructor for MemoryChecker.
+         * 
+         * @param maxFreeMemory The minimum free memory threshold.
+         */
         private MemoryChecker(final long maxFreeMemory) {
             this.maxFreeMemory = maxFreeMemory;
         }
 
+        /**
+         * Tests if the available memory is greater than the configured threshold.
+         * 
+         * @param e The element being offered to the queue (not used in the check).
+         * @return `true` if there is enough memory, `false` otherwise.
+         */
         @Override
         public boolean test(final E e) {
             Console.log(FreeMemoryCalculator.INSTANCE.getResult());
@@ -112,12 +124,19 @@ public class MemorySafeLinkedBlockingQueue<E> extends CheckedLinkedBlockingQueue
     }
 
     /**
-     * 获取内存剩余大小的定时任务
+     * A scheduled task that periodically calculates the available free memory. This avoids calling
+     * `Runtime.getRuntime().freeMemory()` on every single queue operation.
      */
     private static class FreeMemoryCalculator extends SimpleScheduler<Long> {
 
+        /**
+         * Singleton instance of the calculator.
+         */
         private static final FreeMemoryCalculator INSTANCE = new FreeMemoryCalculator();
 
+        /**
+         * Private constructor to initialize the scheduled job.
+         */
         FreeMemoryCalculator() {
             super(new SimpleScheduler.Job<>() {
 
@@ -132,7 +151,7 @@ public class MemorySafeLinkedBlockingQueue<E> extends CheckedLinkedBlockingQueue
                 public void run() {
                     this.maxAvailable = RuntimeKit.getFreeMemory();
                 }
-            }, 50);
+            }, 50); // Updates every 50 milliseconds
         }
     }
 

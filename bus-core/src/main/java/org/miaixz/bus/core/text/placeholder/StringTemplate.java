@@ -48,7 +48,8 @@ import org.miaixz.bus.core.xyz.ListKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 字符串模板 格式化 和 反解析 抽象父类
+ * An abstract base class for string templates that support formatting (placeholder substitution) and parsing
+ * (extracting values from a formatted string).
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -56,77 +57,62 @@ import org.miaixz.bus.core.xyz.StringKit;
 public abstract class StringTemplate {
 
     /**
-     * 全局默认策略，一旦修改，对所有模板对象都生效
-     * <p>
-     * 该值 是每个模板对象创建时的 策略初始值，因此，修改全局默认策略，不影响已经创建的模板对象
-     * </p>
+     * Global default features. These are used as the initial features for any new template object. Modifying this value
+     * will not affect already created template instances.
      */
     protected static int globalFeatures = Feature.of(
-            StringTemplate.Feature.FORMAT_MISSING_KEY_PRINT_WHOLE_PLACEHOLDER,
-            StringTemplate.Feature.FORMAT_NULL_VALUE_TO_STR,
-            StringTemplate.Feature.MATCH_KEEP_DEFAULT_VALUE,
-            StringTemplate.Feature.MATCH_EMPTY_VALUE_TO_NULL,
-            StringTemplate.Feature.MATCH_NULL_STR_TO_NULL);
+            Feature.FORMAT_MISSING_KEY_PRINT_WHOLE_PLACEHOLDER,
+            Feature.FORMAT_NULL_VALUE_TO_STR,
+            Feature.MATCH_KEEP_DEFAULT_VALUE,
+            Feature.MATCH_EMPTY_VALUE_TO_NULL,
+            Feature.MATCH_NULL_STR_TO_NULL);
 
     /**
-     * 全局默认值处理器，一旦修改，对所有模板对象都生效
-     * <p>
-     * 根据 占位符变量 返回 默认值
-     * </p>
+     * Global default value handler. This is used to provide a default value for a placeholder variable when no other
+     * default is specified.
      */
     protected static UnaryOperator<String> globalDefaultValueHandler;
     /**
-     * 转义符，默认为: {@link Symbol#C_BACKSLASH}
-     *
-     * <p>
-     * 转义符如果标记在 占位符的开始或者结束 之前，则该占位符无效，属于普通字符串的一部分 例如，转义符为 {@literal '/'}，占位符为 "{}"： 当字符串模板为 {@literal "I am /{}"}
-     * 时，该模板中没有任何需要替换的占位符，格式化结果为 {@literal "I am {}"}
-     * </p>
-     *
-     * <p>
-     * 如果要打印转义符，使用双转义符即可，例如，转义符为 {@literal '/'}，占位符为 "{}"： 当字符串模板为 {@literal "I am //{}"} ，格式化参数为 {@literal "student"},
-     * 格式化结果为 {@literal "I am /student"}
-     * </p>
+     * The escape character, default is '\'.
      */
     protected final char escape;
     /**
-     * 占位符 没有找到 对应的填充值时 使用的默认值，如果没有，则使用 {@link #defaultValueHandler} 提供默认值, 如果也没有，使用
-     * {@link #globalDefaultValueHandler}，还是没有，则抛出异常
+     * A fixed default value to use when a placeholder's corresponding value is not found.
      */
     protected final String defaultValue;
     /**
-     * 当前模板的默认值处理器，根据 占位变量 返回 默认值
+     * The default value handler for this specific template instance.
      */
     protected final UnaryOperator<String> defaultValueHandler;
     /**
-     * 字符串模板
+     * The raw template string.
      */
     private final String template;
     /**
-     * 当前模板的策略值
+     * The feature flags for this specific template instance.
      */
     private final int features;
     /**
-     * 模板中的所有固定文本和占位符
+     * A list of all segments (both literal text and placeholders) parsed from the template.
      */
     protected List<StringSegment> segments;
     /**
-     * 所有占位符
+     * A list of all placeholder segments.
      */
     protected List<AbstractSegment> placeholderSegments;
     /**
-     * 模板中的固定文本长度，序列化时用于计算最终文本长度
+     * The total length of all literal (fixed) text segments.
      */
     protected int fixedTextTotalLength;
 
     /**
-     * 构造
+     * Constructs a new {@code StringTemplate}.
      *
-     * @param template            字符串模板
-     * @param escape              转义符
-     * @param defaultValue        默认值
-     * @param defaultValueHandler 默认值处理器
-     * @param features            策略值
+     * @param template            The string template.
+     * @param escape              The escape character.
+     * @param defaultValue        The default value for missing keys.
+     * @param defaultValueHandler A handler for providing default values.
+     * @param features            The feature flags.
      */
     protected StringTemplate(final String template, final char escape, final String defaultValue,
             final UnaryOperator<String> defaultValueHandler, final int features) {
@@ -139,298 +125,244 @@ public abstract class StringTemplate {
     }
 
     /**
-     * 创建 单占位符模板对象的 Builder
-     * <p>
-     * 例如，"{}", "?", "$$$"
-     * </p>
+     * Creates a builder for a template with single, unnamed placeholders (e.g., "{}", "?").
      *
-     * @param template 字符串模板
-     * @return 单占位符 模板对象的 Builder
+     * @param template The string template.
+     * @return a builder for a {@link SinglePlaceholderString}.
      */
     public static SinglePlaceholderString.Builder of(final String template) {
         return SinglePlaceholderString.builder(template);
     }
 
     /**
-     * 创建 有前缀和后缀的占位符模板对象的 Builder
-     * <p>
-     * 例如，"{0}", "{name}", "#{name}"
-     * </p>
+     * Creates a builder for a template with named placeholders (e.g., "{name}", "#{name}").
      *
-     * @param template 字符串模板
-     * @return 有前缀和后缀的占位符模板对象的 Builder
+     * @param template The string template.
+     * @return a builder for a {@link NamedPlaceholderString}.
      */
     public static NamedPlaceholderString.Builder ofNamed(final String template) {
         return NamedPlaceholderString.builder(template);
     }
 
     /**
-     * 设置 全局默认策略，一旦修改，对所有模板对象都生效
-     * <p>
-     * 该值 是每个模板对象创建时的 策略初始值，因此，修改全局默认策略，不影响已经创建的模板对象
-     * </p>
+     * Sets the global default features for all new template objects.
      *
-     * @param globalFeatures 全局默认策略
+     * @param globalFeatures The global default features.
      */
     public static void setGlobalFeatures(final Feature... globalFeatures) {
         StringTemplate.globalFeatures = Feature.of(globalFeatures);
     }
 
     /**
-     * 设置 全局默认值处理器，一旦修改，对所有模板对象都生效
+     * Sets the global default value handler for all new template objects.
      *
-     * @param globalDefaultValueHandler 全局默认处理器，根据 占位符变量 返回 默认值
+     * @param globalDefaultValueHandler The global default value handler.
      */
     public static void setGlobalDefaultValue(final UnaryOperator<String> globalDefaultValueHandler) {
         StringTemplate.globalDefaultValueHandler = Objects.requireNonNull(globalDefaultValueHandler);
     }
 
     /**
-     * 获取 模板字符串
+     * Gets the raw template string.
      *
-     * @return 模板字符串
+     * @return The template string.
      */
     public String getTemplate() {
         return template;
     }
 
     /**
-     * 获取 当前模板的 策略值
+     * Gets the feature flags for this template.
      *
-     * @return 策略值
+     * @return The feature flags as an integer.
      */
     public int getFeatures() {
         return features;
     }
 
     /**
-     * 校验 传入的字符串 是否和模板匹配
+     * Checks if a given string structurally matches this template.
      *
-     * @param text 校验字符串，应该是由格式化方法生成的字符串
-     * @return 是否和模板匹配
+     * @param text The string to check, which should have been generated by a format method.
+     * @return {@code true} if the string matches the template structure.
      */
     public boolean isMatches(final String text) {
         if (StringKit.isEmpty(text)) {
             return false;
         }
-        int startIdx = 0, findIdx;
+        int startIdx = 0;
         boolean hasPlaceholder = false;
-        String newText;
         for (final StringSegment segment : segments) {
             if (segment instanceof LiteralSegment) {
-                newText = segment.getText();
-                findIdx = text.indexOf(newText, startIdx);
-                // 没有找到固定文本，匹配失败
+                String literalText = segment.getText();
+                int findIdx = text.indexOf(literalText, startIdx);
                 if (findIdx == -1) {
                     return false;
                 }
-                // 出现 未匹配 的文本，但是这里却没有占位符，匹配失败
-                else if (findIdx != startIdx && !hasPlaceholder) {
+                if (findIdx != startIdx && !hasPlaceholder) {
                     return false;
                 }
-                startIdx = findIdx + newText.length();
+                startIdx = findIdx + literalText.length();
                 hasPlaceholder = false;
             } else {
-                // 有两个紧密相连的占位符，无法正确地拆分变量值
                 if (hasPlaceholder) {
-                    throw new InternalException(
-                            "There are two closely related placeholders that cannot be split properly!");
+                    throw new InternalException("Two adjacent placeholders cannot be reliably parsed.");
                 }
                 hasPlaceholder = true;
             }
         }
-
         return true;
     }
 
     /**
-     * 获取 所有占位变量名称列表
-     * <p>
-     * 例如，{@literal "{}"->"{}"、"{name}"->"name"}
-     * </p>
+     * Gets a list of all placeholder variable names (e.g., "{}" -> "{}", "{name}" -> "name").
      *
-     * @return 所有占位变量名称列表
+     * @return A list of placeholder variable names.
      */
     public List<String> getPlaceholderVariableNames() {
         return this.placeholderSegments.stream().map(AbstractSegment::getPlaceholder).collect(Collectors.toList());
     }
 
     /**
-     * 获取 所有占位符的完整文本列表
-     * <p>
-     * 例如，{@literal "{}"->"{}"、"{name}"->"{name}"}
-     * </p>
+     * Gets a list of the full text of all placeholders (e.g., "{}" -> "{}", "{name}" -> "{name}").
      *
-     * @return 所有占位符的完整文本列表
+     * @return A list of placeholder texts.
      */
     public List<String> getPlaceholderTexts() {
         return this.placeholderSegments.stream().map(AbstractSegment::getText).collect(Collectors.toList());
     }
 
     /**
-     * 根据 原始数据 生成 格式化字符串
-     * <p>
-     * 依次遍历模板中的 占位符，根据 占位符 返回 需要序列化的值
-     * </p>
-     * <p>
-     * 不对 占位符 和 参数值 做任何处理，由用户抉择
-     * </p>
+     * Formats the template using raw string values provided by a key-based supplier function, without applying any
+     * special feature handling.
      *
-     * @param valueSupplier 根据 占位符 返回 需要序列化的值的字符串形式，例如： {@code data -> map.get(data)}
-     * @return 模板格式化之后的结果
+     * @param valueSupplier A function that provides a string value for a given placeholder variable name.
+     * @return The formatted string.
      */
     public String formatRawByKey(final Function<String, String> valueSupplier) {
         return formatRawBySegment(segment -> valueSupplier.apply(segment.getPlaceholder()));
     }
 
     /**
-     * 根据 原始数据 生成 格式化字符串
-     * <p>
-     * 依次遍历模板中的 占位符，根据 占位符 返回 需要序列化的值
-     * </p>
-     * <p>
-     * 不对 占位符 和 参数值 做任何处理，由用户抉择
-     * </p>
+     * Formats the template using raw string values provided by a segment-based supplier function, without applying any
+     * special feature handling.
      *
-     * @param valueSupplier 根据 占位符 返回 需要序列化的值的字符串形式，例如： {@code segment -> map.get(segment.getPlaceholder())}
-     * @return 模板格式化之后的结果
+     * @param valueSupplier A function that provides a string value for a given placeholder segment.
+     * @return The formatted string.
      */
     public String formatRawBySegment(final Function<AbstractSegment, String> valueSupplier) {
-        // 保存 参数转为字符串的结果
-        final List<String> list = new ArrayList<>(placeholderSegments.size());
-        // 先统计 固定文本 + 需要格式化的参数的字符串 的总字符数量
+        final List<String> values = new ArrayList<>(placeholderSegments.size());
         int totalTextLength = this.fixedTextTotalLength;
 
-        String values;
         for (final AbstractSegment segment : placeholderSegments) {
-            // 根据 占位符 返回 需要序列化的值
-            values = valueSupplier.apply(segment);
-            if (values == null) {
-                values = "null";
+            String value = valueSupplier.apply(segment);
+            if (value == null) {
+                value = "null";
             }
-            totalTextLength += values.length();
-            list.add(values);
+            totalTextLength += value.length();
+            values.add(value);
         }
 
         final StringBuilder sb = new StringBuilder(totalTextLength);
         int index = 0;
-        // 构造格式化结果字符串
         for (final StringSegment segment : segments) {
             if (segment instanceof LiteralSegment) {
                 sb.append(segment.getText());
-            }
-            // 当前是 占位符，直接 替换为 参数值
-            else {
-                sb.append(list.get(index++));
+            } else {
+                sb.append(values.get(index++));
             }
         }
         return sb.toString();
     }
 
     /**
-     * 按顺序使用 迭代器元素 替换 占位符
+     * Formats the template by replacing placeholders sequentially with elements from an iterable.
      *
-     * @param iterable iterable
-     * @return 格式化字符串
+     * @param iterable The iterable providing the values.
+     * @return The formatted string.
      */
     protected String formatSequence(final Iterable<?> iterable) {
         if (iterable == null) {
             return getTemplate();
         }
-
         final Iterator<?> iterator = iterable.iterator();
-        return formatBySegment(segment -> {
-            if (iterator.hasNext()) {
-                return iterator.next();
-            } else {
-                return formatMissingKey(segment);
-            }
-        });
+        return formatBySegment(segment -> iterator.hasNext() ? iterator.next() : formatMissingKey(segment));
     }
 
     /**
-     * 根据 策略 和 默认值 处理需要序列化的值, 生成 格式化字符串
-     * <p>
-     * 依次遍历模板中的 占位符，根据 占位符 返回 需要序列化的值
-     * </p>
+     * Formats the template by resolving values for each placeholder segment and applying feature-based logic (e.g.,
+     * null handling).
      *
-     * @param valueSupplier 根据 占位符 返回 需要序列化的值，如果返回值不是 {@link String}，则使用 {@link StringKit#toString(Object)} 方法转为字符串
-     * @return 模板格式化之后的结果
+     * @param valueSupplier A function that provides a value for a given placeholder segment.
+     * @return The formatted string.
      */
     protected String formatBySegment(final Function<AbstractSegment, ?> valueSupplier) {
         return formatRawBySegment(segment -> {
-            // 根据 占位符 返回 需要序列化的值
             final Object value = valueSupplier.apply(segment);
-            if (value != null) {
-                if (value instanceof String) {
-                    return (String) value;
-                } else {
-                    return StringKit.toString(value);
-                }
-            } else {
-                // 处理null值
-                return formatNullValue(segment);
-            }
+            return (value != null) ? StringKit.toString(value) : formatNullValue(segment);
         });
     }
 
     /**
-     * 根据 策略 返回 格式化参数中 找不到 占位符 时的默认值
-     * <p>
-     * 例如，map中没有 占位符变量 这个key；基于下标的参数中，找不到 占位符下标 对应的 列表元素
-     * </p>
+     * Handles the case where a value for a placeholder is missing, based on the configured features.
      *
-     * @param segment 占位符
-     * @return 参数中找不到占位符时的默认值
+     * @param segment The placeholder segment for which a value is missing.
+     * @return The string to use for the missing value.
      */
     protected String formatMissingKey(final AbstractSegment segment) {
         final int features = getFeatures();
-        if (StringTemplate.Feature.FORMAT_MISSING_KEY_PRINT_WHOLE_PLACEHOLDER.contains(features)) {
+        if (Feature.FORMAT_MISSING_KEY_PRINT_WHOLE_PLACEHOLDER.contains(features)) {
             return segment.getText();
-        } else if (StringTemplate.Feature.FORMAT_MISSING_KEY_PRINT_DEFAULT_VALUE.contains(features)) {
-            return getDefaultValue(segment);
-        } else if (StringTemplate.Feature.FORMAT_MISSING_KEY_PRINT_NULL.contains(features)) {
-            return "null";
-        } else if (StringTemplate.Feature.FORMAT_MISSING_KEY_PRINT_EMPTY.contains(features)) {
-            return "";
-        } else if (StringTemplate.Feature.FORMAT_MISSING_KEY_PRINT_VARIABLE_NAME.contains(features)) {
-            return segment.getPlaceholder();
-        } else if (StringTemplate.Feature.FORMAT_MISSING_KEY_THROWS.contains(features)) {
-            throw new InternalException("There is no value associated with data: '" + segment.getPlaceholder() + "'");
         }
-        throw new InternalException("There is no value associated with data: '" + segment.getPlaceholder()
-                + "'. You should define some Feature for missing data when building.");
+        if (Feature.FORMAT_MISSING_KEY_PRINT_DEFAULT_VALUE.contains(features)) {
+            return getDefaultValue(segment);
+        }
+        if (Feature.FORMAT_MISSING_KEY_PRINT_NULL.contains(features)) {
+            return "null";
+        }
+        if (Feature.FORMAT_MISSING_KEY_PRINT_EMPTY.contains(features)) {
+            return "";
+        }
+        if (Feature.FORMAT_MISSING_KEY_PRINT_VARIABLE_NAME.contains(features)) {
+            return segment.getPlaceholder();
+        }
+        if (Feature.FORMAT_MISSING_KEY_THROWS.contains(features)) {
+            throw new InternalException("No value associated with placeholder: '{}'", segment.getPlaceholder());
+        }
+        throw new InternalException("No value for placeholder '{}' and no 'missing key' feature defined.",
+                segment.getPlaceholder());
     }
 
     /**
-     * 根据 策略 返回 占位符 对应的值为 {@code null} 时的返回值
+     * Handles the case where the resolved value for a placeholder is null, based on the configured features.
      *
-     * @param segment 占位符
-     * @return 占位符对应的值为 {@code null} 时的返回值
+     * @param segment The placeholder segment.
+     * @return The string to use for the null value.
      */
     protected String formatNullValue(final AbstractSegment segment) {
         final int features = getFeatures();
-        if (StringTemplate.Feature.FORMAT_NULL_VALUE_TO_STR.contains(features)) {
+        if (Feature.FORMAT_NULL_VALUE_TO_STR.contains(features)) {
             return "null";
-        } else if (StringTemplate.Feature.FORMAT_NULL_VALUE_TO_EMPTY.contains(features)) {
+        }
+        if (Feature.FORMAT_NULL_VALUE_TO_EMPTY.contains(features)) {
             return "";
-        } else if (StringTemplate.Feature.FORMAT_NULL_VALUE_TO_WHOLE_PLACEHOLDER.contains(features)) {
+        }
+        if (Feature.FORMAT_NULL_VALUE_TO_WHOLE_PLACEHOLDER.contains(features)) {
             return segment.getText();
-        } else if (StringTemplate.Feature.FORMAT_NULL_VALUE_TO_DEFAULT_VALUE.contains(features)) {
+        }
+        if (Feature.FORMAT_NULL_VALUE_TO_DEFAULT_VALUE.contains(features)) {
             return getDefaultValue(segment);
         }
         throw new InternalException(
-                "There is a NULL value cannot resolve. You should define a Feature for null value when building or filter null value.");
+                "A null value cannot be resolved for placeholder '{}'. Define a 'null value' feature.",
+                segment.getPlaceholder());
     }
 
     /**
-     * 原始数据的解析方法
-     * <p>
-     * 不对 占位符 和 解析得到的值 做任何处理，由用户抉择
-     * </p>
+     * Parses a formatted string, consuming the raw string values for each placeholder.
      *
-     * @param text             待解析的字符串
-     * @param keyValueConsumer 消费 占位符变量名称 和 占位符对应的解析得到的字符串值，例如：{@code (data, value) -> map.put(data, value)}
+     * @param text             The string to parse.
+     * @param keyValueConsumer A consumer for the placeholder variable name and its corresponding raw value.
      */
     public void matchesRawByKey(final String text, final BiConsumer<String, String> keyValueConsumer) {
         if (text == null || keyValueConsumer == null || CollKit.isEmpty(placeholderSegments)) {
@@ -440,77 +372,64 @@ public abstract class StringTemplate {
     }
 
     /**
-     * 原始数据的解析方法
-     * <p>
-     * 不对 占位符 和 解析得到的值 做任何处理，由用户抉择
-     * </p>
+     * Parses a formatted string, consuming the raw string values for each placeholder.
      *
-     * @param text             待解析的字符串
-     * @param keyValueConsumer 消费 占位符 和 占位符对应的解析得到的字符串值，例如：{@code (data, value) -> map.put(data, value)}
+     * @param text             The string to parse.
+     * @param keyValueConsumer A consumer for the placeholder segment and its corresponding raw value.
      */
     public void matchesRawBySegment(final String text, final BiConsumer<AbstractSegment, String> keyValueConsumer) {
         if (text == null || keyValueConsumer == null || CollKit.isEmpty(placeholderSegments)) {
             return;
         }
 
-        int startIdx = 0, findIdx;
+        int startIdx = 0;
         AbstractSegment placeholderSegment = null;
-        String newText;
         for (final StringSegment segment : segments) {
             if (segment instanceof LiteralSegment) {
-                newText = segment.getText();
-                // 查找固定文本
-                findIdx = text.indexOf(newText, startIdx);
-                // 没有找到固定文本，匹配失败
+                String literalText = segment.getText();
+                int findIdx = text.indexOf(literalText, startIdx);
                 if (findIdx == -1) {
-                    return;
-                } else if (placeholderSegment != null) {
-                    // 处理 占位符 和 解析得到的字符串值原始值
+                    return; // Mismatch
+                }
+                if (placeholderSegment != null) {
                     keyValueConsumer.accept(placeholderSegment, text.substring(startIdx, findIdx));
+                } else if (findIdx != startIdx) {
+                    return; // Mismatch
                 }
-                // 中间出现 未匹配 的文本，同时还没有占位变量，匹配失败
-                else if (findIdx != startIdx) {
-                    return;
-                }
-                startIdx = findIdx + newText.length();
+                startIdx = findIdx + literalText.length();
                 placeholderSegment = null;
             } else {
-                // 有两个紧密相连的占位符，无法正确地拆分变量值
                 if (placeholderSegment != null) {
-                    throw new InternalException(
-                            "There are two closely related placeholders that cannot be split properly!");
+                    throw new InternalException("Two adjacent placeholders cannot be reliably parsed.");
                 }
                 placeholderSegment = (AbstractSegment) segment;
             }
         }
-
-        // 结尾有未匹配的 占位变量
         if (placeholderSegment != null) {
             keyValueConsumer.accept(placeholderSegment, text.substring(startIdx));
         }
     }
 
     /**
-     * 将 占位符位置的值 按顺序解析为 字符串列表
+     * Parses a formatted string and returns a list of the values corresponding to each placeholder in sequence.
      *
-     * @param text 待解析的字符串，一般是格式化方法的返回值
-     * @return 字符串列表
+     * @param text The string to parse, typically a result of the format methods.
+     * @return A list of extracted values.
      */
     protected List<String> matchesSequence(final String text) {
         if (text == null || placeholderSegments.isEmpty() || !isMatches(text)) {
             return ListKit.zero();
         }
-
         final List<String> list = new ArrayList<>(placeholderSegments.size());
         matchesByKey(text, (segment, value) -> list.add(value));
         return list;
     }
 
     /**
-     * 根据 策略 和 默认值 获得最终的 value，由消费者处理该 value
+     * Parses a formatted string, applying feature-based logic to the extracted values before consuming them.
      *
-     * @param text             待解析的字符串
-     * @param keyValueConsumer 按占位符顺序 消费 占位符变量 和 最终的value，例如：{@code (data, value) -> map.put(data, value)}
+     * @param text             The string to parse.
+     * @param keyValueConsumer A consumer for the placeholder variable and its final processed value.
      */
     public void matchesByKey(final String text, final BiConsumer<String, String> keyValueConsumer) {
         if (hasDefaultValue()) {
@@ -521,12 +440,12 @@ public abstract class StringTemplate {
     }
 
     /**
-     * 根据 策略 和 默认值 获得最终的 value，由消费者处理该 value
+     * Parses a formatted string, applying feature-based logic to the extracted values.
      *
-     * @param text                 待解析的字符串
-     * @param keyValueConsumer     按占位符顺序 消费 占位符变量 和 最终的value，例如：{@code (data, value) -> map.put(data, value)}
-     * @param hasDefaultValue      是否有默认值
-     * @param defaultValueSupplier 默认值提供者，根据 占位符 返回 默认值
+     * @param text                 The string to parse.
+     * @param keyValueConsumer     A consumer for the placeholder variable and its final processed value.
+     * @param hasDefaultValue      Whether a default value is available.
+     * @param defaultValueSupplier A supplier for the default value.
      */
     protected void matchesByKey(
             final String text,
@@ -543,18 +462,17 @@ public abstract class StringTemplate {
                         segment.getPlaceholder(),
                         value,
                         hasDefaultValue,
-                        // 默认值
                         () -> hasDefaultValue ? StringKit.toString(defaultValueSupplier.apply(segment)) : null));
     }
 
     /**
-     * 根据 策略 和 默认值 获得最终的 value，由消费者处理该 value
+     * A helper method to process a single matched key-value pair according to the configured features.
      *
-     * @param keyValueConsumer     按占位符顺序 消费 占位符变量 和 最终的value，例如：{@code (data, value) -> map.put(data, value)}
-     * @param key                  占位符变量
-     * @param value                解析得到的值，原始值
-     * @param hasDefaultValue      是否有默认值
-     * @param defaultValueSupplier 默认值提供者
+     * @param keyValueConsumer     The consumer for the final key-value pair.
+     * @param key                  The placeholder variable.
+     * @param value                The raw parsed value.
+     * @param hasDefaultValue      Whether a default value is available.
+     * @param defaultValueSupplier A supplier for the default value.
      */
     private void matchByKey(
             final BiConsumer<String, String> keyValueConsumer,
@@ -564,104 +482,90 @@ public abstract class StringTemplate {
             final Supplier<String> defaultValueSupplier) {
         final int features = getFeatures();
 
-        // 存在默认值
-        if (hasDefaultValue) {
-            // 保留默认值，则跳过默认值策略处理，由后续策略决定 最终的值
-            if (!StringTemplate.Feature.MATCH_KEEP_DEFAULT_VALUE.contains(features)) {
-                // 解析到的参数值 是 默认值
-                if (value.equals(defaultValueSupplier.get())) {
-                    // 校验 默认值策略
-                    if (StringTemplate.Feature.MATCH_IGNORE_DEFAULT_VALUE.contains(features)) {
-                        return;
-                    } else if (StringTemplate.Feature.MATCH_DEFAULT_VALUE_TO_NULL.contains(features)) {
-                        keyValueConsumer.accept(key, null);
-                        return;
-                    }
+        if (hasDefaultValue && !Feature.MATCH_KEEP_DEFAULT_VALUE.contains(features)) {
+            if (value.equals(defaultValueSupplier.get())) {
+                if (Feature.MATCH_IGNORE_DEFAULT_VALUE.contains(features)) {
+                    return;
+                }
+                if (Feature.MATCH_DEFAULT_VALUE_TO_NULL.contains(features)) {
+                    keyValueConsumer.accept(key, null);
+                    return;
                 }
             }
         }
 
-        // 解析到的参数值 是 空字符串
         if ("".equals(value)) {
-            if (StringTemplate.Feature.MATCH_EMPTY_VALUE_TO_NULL.contains(features)) {
+            if (Feature.MATCH_EMPTY_VALUE_TO_NULL.contains(features)) {
                 keyValueConsumer.accept(key, null);
-            } else if (StringTemplate.Feature.MATCH_EMPTY_VALUE_TO_DEFAULT_VALUE.contains(features)) {
+            } else if (Feature.MATCH_EMPTY_VALUE_TO_DEFAULT_VALUE.contains(features)) {
                 keyValueConsumer.accept(key, defaultValueSupplier.get());
-            } else if (StringTemplate.Feature.MATCH_IGNORE_EMPTY_VALUE.contains(features)) {
-                return;
-            } else if (StringTemplate.Feature.MATCH_KEEP_VALUE_EMPTY.contains(features)) {
+            } else if (Feature.MATCH_IGNORE_EMPTY_VALUE.contains(features)) {
+                // do nothing
+            } else { // MATCH_KEEP_VALUE_EMPTY is the default
                 keyValueConsumer.accept(key, value);
             }
             return;
         }
 
-        // 解析到的参数值 是 null字符串
         if ("null".equals(value)) {
-            if (StringTemplate.Feature.MATCH_NULL_STR_TO_NULL.contains(features)) {
+            if (Feature.MATCH_NULL_STR_TO_NULL.contains(features)) {
                 keyValueConsumer.accept(key, null);
-            } else if (StringTemplate.Feature.MATCH_KEEP_NULL_STR.contains(features)) {
+            } else if (Feature.MATCH_KEEP_NULL_STR.contains(features)) {
                 keyValueConsumer.accept(key, value);
-            } else if (StringTemplate.Feature.MATCH_IGNORE_NULL_STR.contains(features)) {
-                return;
-            }
+            } // else MATCH_IGNORE_NULL_STR, do nothing
             return;
         }
 
-        // 普通参数值
         keyValueConsumer.accept(key, value);
     }
 
     /**
-     * 是否有默认值
+     * Checks if any default value mechanism (fixed, handler, or global handler) is configured.
      *
-     * @return 是否有默认值
+     * @return {@code true} if a default value mechanism exists.
      */
     protected boolean hasDefaultValue() {
         return defaultValue != null || defaultValueHandler != null || globalDefaultValueHandler != null;
     }
 
     /**
-     * 根据 占位符 返回默认值
-     * <p>
-     * 根据定义的默认值、默认值提供者、全局默认值提供者，返回默认值
-     * </p>
+     * Gets the default value for a given placeholder segment, checking instance-level, handler, and global handler
+     * defaults in that order.
      *
-     * @param segment 占位符
-     * @return 默认值
+     * @param segment The placeholder segment.
+     * @return The default value.
+     * @throws InternalException if no default value mechanism is configured.
      */
     protected String getDefaultValue(final AbstractSegment segment) {
         if (defaultValue != null) {
             return defaultValue;
-        } else if (defaultValueHandler != null) {
+        }
+        if (defaultValueHandler != null) {
             return StringKit.toString(defaultValueHandler.apply(segment.getPlaceholder()));
-        } else if (globalDefaultValueHandler != null) {
+        }
+        if (globalDefaultValueHandler != null) {
             return StringKit.toString(globalDefaultValueHandler.apply(segment.getPlaceholder()));
         }
-        throw new InternalException("There is no default value for data: '" + segment.getPlaceholder()
-                + "'. You should define a 'defaultValue' or 'defaultValueHandler' or 'globalDefaultValueHandler' when building.");
+        throw new InternalException("No default value for placeholder: '{}'. Configure a default value mechanism.",
+                segment.getPlaceholder());
     }
 
     /**
-     * 一些公共的初始化代码
-     * <p>
-     * 由于此时子类还没构造完成，所以只能由子类构造方法调用
-     * </p>
+     * Performs common initialization tasks after the subclass constructor has finished.
      */
     protected void afterInit() {
-        // 释放空闲的列表元素
         this.segments = new ArrayList<>(parseSegments(template));
 
-        // 计算 固定文本segment 的 数量 和 文本总长度
-        int literalSegmentSize = 0, fixedTextTotalLength = 0;
+        int literalSegmentSize = 0;
+        int fixedTextLength = 0;
         for (final StringSegment segment : this.segments) {
             if (segment instanceof LiteralSegment) {
                 ++literalSegmentSize;
-                fixedTextTotalLength += segment.getText().length();
+                fixedTextLength += segment.getText().length();
             }
         }
-        this.fixedTextTotalLength = fixedTextTotalLength;
+        this.fixedTextTotalLength = fixedTextLength;
 
-        // 获取 占位符segment 列表
         final int placeholderSegmentsSize = segments.size() - literalSegmentSize;
         if (placeholderSegmentsSize == 0) {
             this.placeholderSegments = Collections.emptyList();
@@ -677,11 +581,11 @@ public abstract class StringTemplate {
     }
 
     /**
-     * 添加 固定文本segment，过滤 空字符串 并 合并相邻的固定文本
+     * Adds a literal text segment to the list, merging with the previous segment if it was also a literal.
      *
-     * @param isLastLiteralSegment 上一个新增的segment是否是固定文本
-     * @param list                 已保存的segment列表
-     * @param newText              新的固定文本
+     * @param isLastLiteralSegment Whether the previously added segment was a literal.
+     * @param list                 The list of segments.
+     * @param newText              The new literal text to add.
      */
     protected void addLiteralSegment(
             final boolean isLastLiteralSegment,
@@ -691,7 +595,6 @@ public abstract class StringTemplate {
             return;
         }
         if (isLastLiteralSegment) {
-            // 最后的固定文本segment 和 新固定文本 合并为一个
             final int lastIdx = list.size() - 1;
             final StringSegment lastLiteralSegment = list.get(lastIdx);
             list.set(lastIdx, new LiteralSegment(lastLiteralSegment.getText() + newText));
@@ -701,307 +604,257 @@ public abstract class StringTemplate {
     }
 
     /**
-     * 将 模板 解析为 SectionBuffer 列表
+     * Parses the template string into a list of segments. Must be implemented by subclasses.
      *
-     * @param template 字符串模板
-     * @return Segment列表
+     * @param template The string template.
+     * @return A list of {@link StringSegment}s.
      */
     protected abstract List<StringSegment> parseSegments(String template);
 
     /**
-     * 获取 模板中 所有segment
+     * Gets the list of all segments in the template.
      *
-     * @return segment列表
+     * @return The list of segments.
      */
     protected List<StringSegment> getSegments() {
         return segments;
     }
 
     /**
-     * 获取 模板中的 占位符 segment
+     * Gets the list of placeholder segments in the template.
      *
-     * @return 占位符列表
+     * @return The list of placeholder segments.
      */
     protected List<AbstractSegment> getPlaceholderSegments() {
         return placeholderSegments;
     }
 
     /**
-     * 格式化 和 解析 策略
-     * <p>
-     * 同组内的策略是互斥的，一但设置为组内的某个新策略，就会清除之前的同组策略，仅保留新策略
-     * </p>
+     * Features for controlling formatting and parsing behavior.
      */
     public enum Feature {
 
         /**
-         * 格式化时，如果 占位符 没有 对应的值，则打印完整占位符 对于 变量占位符，例如"${name}"，原样打印"${name}"
-         * <p>
-         * 默认策略
-         * </p>
+         * When formatting, if a value for a placeholder is missing, print the entire placeholder (e.g., "${name}").
          */
         FORMAT_MISSING_KEY_PRINT_WHOLE_PLACEHOLDER(0, 0, 6),
         /**
-         * 格式化时，如果 占位符 没有 对应的值，则打印 默认值，如果 没有默认值，则抛出异常
+         * When formatting, if a value is missing, use the default value. Throws an exception if no default is
+         * configured.
          */
         FORMAT_MISSING_KEY_PRINT_DEFAULT_VALUE(1, 0, 6),
         /**
-         * 格式化时，如果 占位符 没有 对应的值，且没有默认值，则打印 {@code "null"}字符串
+         * When formatting, if a value is missing and no default is configured, print the string "null".
          */
         FORMAT_MISSING_KEY_PRINT_NULL(2, 0, 6),
         /**
-         * 格式化时，如果 占位符 没有 对应的值，则打印 空字符串
-         * <p>
-         * 该策略意味着 模板存在默认值，且为 空字符串
-         * </p>
+         * When formatting, if a value is missing, print an empty string.
          */
         FORMAT_MISSING_KEY_PRINT_EMPTY(3, 0, 6),
         /**
-         * 格式化时，如果 占位符 没有 对应的值： 对于 单个占位符，例如"?"，打印完整占位符"?"; 对于 变量占位符，则只打印占位变量，例如"${name}"，只打印"name";
+         * When formatting, if a value is missing, print only the variable name (e.g., "name" from "${name}").
          */
         FORMAT_MISSING_KEY_PRINT_VARIABLE_NAME(4, 0, 6),
         /**
-         * 格式化时，如果 占位符 没有 对应的值，则抛出异常
+         * When formatting, if a value is missing, throw an exception.
          */
         FORMAT_MISSING_KEY_THROWS(5, 0, 6),
+
         /**
-         * 格式化时，如果 占位符 对应的值为 {@code null}，则打印 {@code "null"} 字符串
-         * <p>
-         * 默认策略
-         * </p>
+         * When formatting, if a resolved value is {@code null}, print the string "null".
          */
         FORMAT_NULL_VALUE_TO_STR(6, 6, 4),
         /**
-         * 格式化时，如果 占位符 对应的值为 {@code null}，则打印 {@code ""} 空字符串
+         * When formatting, if a resolved value is {@code null}, print an empty string.
          */
         FORMAT_NULL_VALUE_TO_EMPTY(7, 6, 4),
         /**
-         * 格式化时，如果 占位符 对应的值为 {@code null}，则原样打印占位符 对于 变量占位符，输出完整占位符，例如"${name}"，打印"${name}"
+         * When formatting, if a resolved value is {@code null}, print the entire placeholder (e.g., "${name}").
          */
         FORMAT_NULL_VALUE_TO_WHOLE_PLACEHOLDER(8, 6, 4),
         /**
-         * 格式化时，如果 占位符 对应的值为 {@code null}，则使用 默认值，如果 没有默认值，则抛出异常
+         * When formatting, if a resolved value is {@code null}, use the default value.
          */
         FORMAT_NULL_VALUE_TO_DEFAULT_VALUE(9, 6, 4),
+
         /**
-         * 解析时，结果中 包含 默认值，原样返回
-         * <p>
-         * 默认策略
-         * </p>
+         * When parsing, if a parsed value matches the default value, keep it.
          */
         MATCH_KEEP_DEFAULT_VALUE(16, 16, 3),
         /**
-         * 解析时，结果中 不包含 默认值，只要等于默认值，都忽略
-         * <p>
-         * 即，返回的结果 map 中 不会包含 这个key
-         * </p>
-         * <p>
-         * 在 基于下标的解析方法中 不生效，基于下标的解析结果只区分是否为 {@code null}，元素数量是固定的
-         * </p>
+         * When parsing, if a parsed value matches the default value, ignore it (do not include it in the result map).
          */
         MATCH_IGNORE_DEFAULT_VALUE(17, 16, 3),
         /**
-         * 解析时，在 结果中 将 默认值 转为 {@code null}
-         * <p>
-         * 返回的结果 map 中 包含 这个key
-         * </p>
+         * When parsing, if a parsed value matches the default value, convert it to {@code null}.
          */
         MATCH_DEFAULT_VALUE_TO_NULL(18, 16, 3),
+
         /**
-         * 解析时，占位符 对应的值为 空字符串，将 这个空字符串 转为 {@code null}
-         * <p>
-         * 默认策略
-         * </p>
+         * When parsing, if a value is an empty string, convert it to {@code null}.
          */
         MATCH_EMPTY_VALUE_TO_NULL(19, 19, 4),
         /**
-         * 解析时，占位符 对应的值为 空字符串，将 这个空字符串 转为 默认值，如果 没有默认值，则转为 {@code null}
+         * When parsing, if a value is an empty string, convert it to the default value.
          */
         MATCH_EMPTY_VALUE_TO_DEFAULT_VALUE(20, 19, 4),
         /**
-         * 解析时，占位符 对应的值为 空字符串，结果中 不包含 这个空字符串
-         * <p>
-         * 即，返回的结果 map 中 不会包含 这个key
-         * </p>
-         * <p>
-         * 在 基于下标的解析方法中 不生效，基于下标的解析结果只区分是否为 {@code null}，元素数量是固定的
-         * </p>
+         * When parsing, if a value is an empty string, ignore it.
          */
         MATCH_IGNORE_EMPTY_VALUE(21, 19, 4),
         /**
-         * 解析时，占位符 对应的值为 空字符串，结果中 依然保留 这个空字符串
+         * When parsing, if a value is an empty string, keep it as an empty string.
          */
         MATCH_KEEP_VALUE_EMPTY(22, 19, 4),
+
         /**
-         * 解析时，占位符 对应的值为 {@code "null"} 字符串，在 结果中 转为 {@code null}
-         * <p>
-         * 默认策略
-         * </p>
+         * When parsing, if a value is the string "null", convert it to {@code null}.
          */
         MATCH_NULL_STR_TO_NULL(23, 23, 3),
         /**
-         * 解析时，占位符 对应的值为 {@code "null"} 字符串，在 结果中 保留字符串形式 {@code "null"}
+         * When parsing, if a value is the string "null", keep it as the string "null".
          */
         MATCH_KEEP_NULL_STR(24, 23, 3),
         /**
-         * 解析时，占位符 对应的值为 {@code "null"} 字符串，结果中 不包含 这个值
-         * <p>
-         * 即，返回的结果 map 中 不会包含 这个key
-         * </p>
-         * <p>
-         * 在 基于下标的解析方法中 不生效，基于下标的解析结果只区分是否为 {@code null}，元素数量是固定的
-         * </p>
+         * When parsing, if a value is the string "null", ignore it.
          */
         MATCH_IGNORE_NULL_STR(25, 23, 3);
 
         /**
-         * 掩码
+         * The bitmask for this feature.
          */
         private final int mask;
         /**
-         * 清除掩码的二进制值
+         * The bitmask to clear other features in the same group.
          */
         private final int clearMask;
 
-        /**
-         * 策略构造方法
-         *
-         * @param bitPos   位数，掩码中哪一位需要置为1，从0开始
-         * @param bitStart 同组第一个策略的掩码位数
-         * @param bitLen   同组策略数量
-         */
         Feature(final int bitPos, final int bitStart, final int bitLen) {
             this.mask = 1 << bitPos;
             this.clearMask = (-1 << (bitStart + bitLen)) | ((1 << bitStart) - 1);
         }
 
         /**
-         * 计算 总的策略值
+         * Combines multiple features into a single integer flag.
          *
-         * @param features 策略枚举数组
-         * @return 总的策略值
+         * @param features The features to combine.
+         * @return The combined feature flag.
          */
         public static int of(final Feature... features) {
             if (features == null) {
                 return 0;
             }
-
             int value = 0;
             for (final Feature feature : features) {
                 value = feature.set(value);
             }
-
             return value;
         }
 
         /**
-         * 是否为当前策略
+         * Checks if this feature is present in the given feature flag.
          *
-         * @param features 外部的策略值
-         * @return 是否为当前策略
+         * @param features The feature flag to check.
+         * @return {@code true} if this feature is present.
          */
         public boolean contains(final int features) {
             return (features & mask) != 0;
         }
 
         /**
-         * 在 策略值 中添加 当前策略
+         * Adds this feature to a feature flag, clearing any conflicting features in the same group.
          *
-         * @param features 外部的策略值
-         * @return 添加后的策略值
+         * @param features The existing feature flag.
+         * @return The updated feature flag.
          */
         public int set(final int features) {
             return (features & clearMask) | mask;
         }
 
         /**
-         * 在 策略值 中移除 当前策略
+         * Removes this feature from a feature flag.
          *
-         * @param features 外部的策略值
-         * @return 移除后的策略值
+         * @param features The existing feature flag.
+         * @return The updated feature flag.
          */
         public int clear(final int features) {
-            return (features & clearMask);
+            return (features & ~mask);
         }
     }
 
     /**
-     * 抽象Builder
+     * An abstract builder for creating {@link StringTemplate} instances.
      *
-     * @param <BuilderChild>  Builder子类
-     * @param <TemplateChild> 模板子类
+     * @param <B> The type of the concrete builder subclass.
+     * @param <T> The type of the concrete template subclass.
      */
-    protected static abstract class AbstractBuilder<BuilderChild extends AbstractBuilder<BuilderChild, TemplateChild>, TemplateChild extends StringTemplate> {
+    protected static abstract class AbstractBuilder<B extends AbstractBuilder<B, T>, T extends StringTemplate> {
 
         /**
-         * 字符串模板
+         * The raw template string.
          */
         protected final String template;
         /**
-         * 默认值
+         * The default value for missing placeholders.
          */
         protected String defaultValue;
         /**
-         * 默认值处理器
+         * A handler for providing default values dynamically.
          */
         protected UnaryOperator<String> defaultValueHandler;
         /**
-         * 用户是否设置了 转义符
+         * Whether the escape character has been explicitly set.
          */
         protected boolean escape$set;
         /**
-         * 转义符
+         * The escape character.
          */
         protected char escape;
         /**
-         * 策略值
+         * The feature flags for the template.
          */
         protected int features;
 
         /**
-         * 构造
+         * Constructs a new builder.
          *
-         * @param template 字符串模板
+         * @param template The string template.
          */
         protected AbstractBuilder(final String template) {
             this.template = Objects.requireNonNull(template);
-            // 策略值 初始为 全局默认策略
             this.features = StringTemplate.globalFeatures;
         }
 
         /**
-         * 设置 转义符
+         * Sets the escape character.
          *
-         * @param escape 转义符
-         * @return builder子对象
+         * @param escape The escape character.
+         * @return this builder instance for chaining.
          */
-        public BuilderChild escape(final char escape) {
+        public B escape(final char escape) {
             this.escape = escape;
             this.escape$set = true;
             return self();
         }
 
         /**
-         * 设置 新的策略值，完全覆盖旧的策略值
+         * Sets new features, completely overwriting any existing ones.
          *
-         * @param newFeatures 新策略枚举
-         * @return builder子对象
+         * @param newFeatures The new features.
+         * @return this builder instance for chaining.
          */
-        public BuilderChild features(final Feature... newFeatures) {
+        public B features(final Feature... newFeatures) {
             this.features = Feature.of(newFeatures);
             return self();
         }
 
         /**
-         * 向 策略值 中 添加策略
-         * <p>
-         * 同组内的策略是互斥的，一但设置为组内的某个新策略，就会清除之前的同组策略，仅保留新策略
-         * </p>
+         * Adds new features to the existing set.
          *
-         * @param appendFeatures 需要新增的策略
-         * @return builder子对象
+         * @param appendFeatures The features to add.
+         * @return this builder instance for chaining.
          */
-        public BuilderChild addFeatures(final Feature... appendFeatures) {
+        public B addFeatures(final Feature... appendFeatures) {
             if (ArrayKit.isNotEmpty(appendFeatures)) {
                 for (final Feature feature : appendFeatures) {
                     this.features = feature.set(this.features);
@@ -1011,15 +864,12 @@ public abstract class StringTemplate {
         }
 
         /**
-         * 从 策略值 中 删除策略
-         * <p>
-         * 删除的策略 可以 不存在
-         * </p>
+         * Removes features from the existing set.
          *
-         * @param removeFeatures 需要删除的策略
-         * @return builder子对象
+         * @param removeFeatures The features to remove.
+         * @return this builder instance for chaining.
          */
-        public BuilderChild removeFeatures(final Feature... removeFeatures) {
+        public B removeFeatures(final Feature... removeFeatures) {
             if (ArrayKit.isNotEmpty(removeFeatures)) {
                 for (final Feature feature : removeFeatures) {
                     this.features = feature.clear(this.features);
@@ -1029,36 +879,33 @@ public abstract class StringTemplate {
         }
 
         /**
-         * 设置 默认值
-         * <p>
-         * 不可能为 {@code null}，可以为 {@code "null"}
-         * </p>
+         * Sets a fixed default value for missing placeholders.
          *
-         * @param defaultValue 默认值
-         * @return builder子对象
+         * @param defaultValue The default value.
+         * @return this builder instance for chaining.
          */
-        public BuilderChild defaultValue(final String defaultValue) {
+        public B defaultValue(final String defaultValue) {
             this.defaultValue = Objects.requireNonNull(defaultValue);
             return self();
         }
 
         /**
-         * 设置 默认值处理器
+         * Sets a handler for providing default values dynamically.
          *
-         * @param defaultValueHandler 默认值处理器，根据 占位变量 返回 默认值
-         * @return builder子对象
+         * @param defaultValueHandler A function that takes a placeholder variable name and returns a default value.
+         * @return this builder instance for chaining.
          */
-        public BuilderChild defaultValue(final UnaryOperator<String> defaultValueHandler) {
+        public B defaultValue(final UnaryOperator<String> defaultValueHandler) {
             this.defaultValueHandler = Objects.requireNonNull(defaultValueHandler);
             return self();
         }
 
         /**
-         * 创建 模板对象
+         * Builds the final template object.
          *
-         * @return 模板对象
+         * @return The new template instance.
          */
-        public TemplateChild build() {
+        public T build() {
             if (!this.escape$set) {
                 this.escape = Symbol.C_BACKSLASH;
             }
@@ -1066,18 +913,18 @@ public abstract class StringTemplate {
         }
 
         /**
-         * 设置 转义符
+         * Returns this builder instance, cast to the concrete subclass type.
          *
-         * @return builder子对象
+         * @return this builder instance.
          */
-        protected abstract BuilderChild self();
+        protected abstract B self();
 
         /**
-         * 子类Builder 返回 创建的 模板对象
+         * Creates and returns the final template instance.
          *
-         * @return 模板对象
+         * @return The new template instance.
          */
-        protected abstract TemplateChild buildInstance();
+        protected abstract T buildInstance();
     }
 
 }

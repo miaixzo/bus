@@ -30,7 +30,7 @@ package org.miaixz.bus.office.excel.style;
 import org.apache.poi.hssf.usermodel.HSSFShape;
 
 /**
- * SimpleShape中的线条风格枚举
+ * Enumeration of line styles for {@code SimpleShape} in Excel.
  *
  * @see HSSFShape
  * @author Kimi Liu
@@ -39,69 +39,69 @@ import org.apache.poi.hssf.usermodel.HSSFShape;
 public enum LineStyle {
 
     /**
-     * Solid (continuous) pen
+     * Solid (continuous) pen.
      */
     SOLID(HSSFShape.LINESTYLE_SOLID),
     /**
-     * PS_DASH system dash style
+     * PS_DASH system dash style.
      */
     DASHSYS(HSSFShape.LINESTYLE_DASHSYS),
     /**
-     * PS_DOT system dash style
+     * PS_DOT system dash style.
      */
     DOTSYS(HSSFShape.LINESTYLE_DOTSYS),
     /**
-     * PS_DASHDOT system dash style
+     * PS_DASHDOT system dash style.
      */
     DASHDOTSYS(HSSFShape.LINESTYLE_DASHDOTSYS),
     /**
-     * PS_DASHDOTDOT system dash style
+     * PS_DASHDOTDOT system dash style.
      */
     DASHDOTDOTSYS(HSSFShape.LINESTYLE_DASHDOTDOTSYS),
     /**
-     * square dot style
+     * Square dot style.
      */
     DOTGEL(HSSFShape.LINESTYLE_DOTGEL),
     /**
-     * dash style
+     * Dash style.
      */
     DASHGEL(HSSFShape.LINESTYLE_DASHGEL),
     /**
-     * long dash style
+     * Long dash style.
      */
     LONGDASHGEL(HSSFShape.LINESTYLE_LONGDASHGEL),
     /**
-     * dash short dash
+     * Dash short dash style.
      */
     DASHDOTGEL(HSSFShape.LINESTYLE_DASHDOTGEL),
     /**
-     * long dash short dash
+     * Long dash short dash style.
      */
     LONGDASHDOTGEL(HSSFShape.LINESTYLE_LONGDASHDOTGEL),
     /**
-     * long dash short dash short dash
+     * Long dash short dash short dash style.
      */
     LONGDASHDOTDOTGEL(HSSFShape.LINESTYLE_LONGDASHDOTDOTGEL),
     /**
-     * 无
+     * No line style.
      */
     NONE(HSSFShape.LINESTYLE_NONE);
 
     private final int value;
 
     /**
-     * 构造
+     * Constructs a {@code LineStyle} enum with the specified style code.
      *
-     * @param value 样式编码
+     * @param value The integer code representing the line style.
      */
     LineStyle(final int value) {
         this.value = value;
     }
 
     /**
-     * 获取样式编码
+     * Gets the integer code representing this line style.
      *
-     * @return 样式编码
+     * @return The style code.
      */
     public int getValue() {
         return value;

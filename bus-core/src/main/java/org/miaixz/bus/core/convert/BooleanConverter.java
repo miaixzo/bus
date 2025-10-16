@@ -32,37 +32,43 @@ import java.io.Serial;
 import org.miaixz.bus.core.xyz.BooleanKit;
 
 /**
- * 布尔转换器
- *
+ * Converts an object to a {@link Boolean}.
  * <p>
- * 对象转为boolean，规则如下：
- * </p>
- * 
- * <pre>
- *     1、数字0为false，其它数字为true
- *     2、转换为字符串，形如"true", "yes", "y", "t", "ok", "1", "on", "是", "对", "真", "對", "√"为true，其它字符串为false.
- * </pre>
+ * The conversion rules are as follows:
+ * <ul>
+ * <li>A numeric value of 0 is treated as {@code false}, while any other number is {@code true}.</li>
+ * <li>For string values, the conversion is delegated to {@link BooleanKit#toBoolean(String)}.</li>
+ * </ul>
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class BooleanConverter extends AbstractConverter {
 
+    /**
+     * Singleton instance.
+     */
+    public static final BooleanConverter INSTANCE = new BooleanConverter();
+    /**
+     * The serial version UID.
+     */
     @Serial
     private static final long serialVersionUID = 2852265810501L;
 
     /**
-     * 单例
+     * Internally converts the given value to a {@link Boolean}.
+     *
+     * @param targetClass The target class, which should be {@link Boolean}.
+     * @param value       The value to be converted.
+     * @return The converted {@link Boolean} object.
      */
-    public static final BooleanConverter INSTANCE = new BooleanConverter();
-
     @Override
     protected Boolean convertInternal(final Class<?> targetClass, final Object value) {
         if (value instanceof Number) {
-            // 0为false，其它数字为true
+            // A value of 0 is false, other numbers are true.
             return 0 != ((Number) value).doubleValue();
         }
-        // Object不可能出现Primitive类型，故忽略
+        // For other types, convert to a string and then to a boolean.
         return BooleanKit.toBoolean(convertToString(value));
     }
 

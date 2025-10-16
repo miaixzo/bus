@@ -31,7 +31,8 @@ import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 
 /**
- * 观察者（监视器）
+ * Observer interface for file system events. Implementations of this interface can react to file creation,
+ * modification, deletion, and overflow events.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -39,34 +40,43 @@ import java.nio.file.WatchKey;
 public interface Watcher {
 
     /**
-     * 文件创建时执行的方法
+     * Called when a file or directory is created.
      *
-     * @param event 事件，可通过{@link WatchEvent#context()}获取创建的文件或目录名称
-     * @param key   事件发生的{@link WatchKey}，可以通过{@link WatchKey#watchable()}获取监听的Path路径
+     * @param event The {@link WatchEvent} that occurred. The created file or directory name can be obtained via
+     *              {@link WatchEvent#context()}.
+     * @param key   The {@link WatchKey} on which the event occurred. The monitored path can be obtained via
+     *              {@link WatchKey#watchable()}.
      */
     void onCreate(WatchEvent<?> event, WatchKey key);
 
     /**
-     * 文件修改时执行的方法 文件修改可能触发多次
+     * Called when a file or directory is modified. Note that file modification events may be triggered multiple times
+     * for a single change.
      *
-     * @param event 事件，可通过{@link WatchEvent#context()}获取创建的文件或目录名称
-     * @param key   事件发生的{@link WatchKey}，可以通过{@link WatchKey#watchable()}获取监听的Path路径
+     * @param event The {@link WatchEvent} that occurred. The modified file or directory name can be obtained via
+     *              {@link WatchEvent#context()}.
+     * @param key   The {@link WatchKey} on which the event occurred. The monitored path can be obtained via
+     *              {@link WatchKey#watchable()}.
      */
     void onModify(WatchEvent<?> event, WatchKey key);
 
     /**
-     * 文件删除时执行的方法
+     * Called when a file or directory is deleted.
      *
-     * @param event 事件，可通过{@link WatchEvent#context()}获取创建的文件或目录名称
-     * @param key   事件发生的{@link WatchKey}，可以通过{@link WatchKey#watchable()}获取监听的Path路径
+     * @param event The {@link WatchEvent} that occurred. The deleted file or directory name can be obtained via
+     *              {@link WatchEvent#context()}.
+     * @param key   The {@link WatchKey} on which the event occurred. The monitored path can be obtained via
+     *              {@link WatchKey#watchable()}.
      */
     void onDelete(WatchEvent<?> event, WatchKey key);
 
     /**
-     * 事件丢失或出错时执行的方法
+     * Called when events are lost or an error occurs (e.g., the event queue overflows).
      *
-     * @param event 事件，可通过{@link WatchEvent#context()}获取创建的文件或目录名称
-     * @param key   事件发生的{@link WatchKey}，可以通过{@link WatchKey#watchable()}获取监听的Path路径
+     * @param event The {@link WatchEvent} that occurred. The context of the overflow event can be obtained via
+     *              {@link WatchEvent#context()}.
+     * @param key   The {@link WatchKey} on which the event occurred. The monitored path can be obtained via
+     *              {@link WatchKey#watchable()}.
      */
     void onOverflow(WatchEvent<?> event, WatchKey key);
 

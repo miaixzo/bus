@@ -27,14 +27,18 @@
 */
 package org.miaixz.bus.http.metric;
 
-import java.util.Collections;
-import java.util.List;
-
 import org.miaixz.bus.http.Cookie;
 import org.miaixz.bus.http.UnoUrl;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
- * 为HTTP cookie提供策略和持久性 作为策略，此接口的实现负责选择接受和拒绝哪些cookie。一个合理的策略是拒绝所有cookie， 尽管这可能会干扰需要cookie的基于会话的身份验证方案
+ * Provides a policy and persistence for HTTP cookies.
+ * <p>
+ * As a policy, implementations of this interface are responsible for selecting which cookies to accept and reject. A
+ * reasonable policy is to reject all cookies, though this may interfere with session-based authentication schemes that
+ * require cookies.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,7 +46,7 @@ import org.miaixz.bus.http.UnoUrl;
 public interface CookieJar {
 
     /**
-     * 从不接受任何cookie的设置
+     * A cookie jar that never accepts any cookies.
      */
     CookieJar NO_COOKIES = new CookieJar() {
 
@@ -57,20 +61,22 @@ public interface CookieJar {
     };
 
     /**
-     * 据这个jar's的策略将HTTP响应中的{@code cookies}保存到这个存储中 请注意，对于单个HTTP响应，如果响应包含一个拖车，则可以第二次调用此方法
-     * 对于这个模糊的HTTP特性，{@code cookie}只包含预告片的cookie
+     * Saves {@code cookies} from an HTTP response to this store, according to this jar's policy. Note that this method
+     * may be called a second time for a single HTTP response if that response includes a trailer. For this obscure HTTP
+     * feature, {@code cookies} contains only the trailer's cookies.
      *
-     * @param url     url信息
-     * @param cookies cookie
+     * @param url     The URL of the response.
+     * @param cookies The list of cookies to save.
      */
     void saveFromResponse(UnoUrl url, List<Cookie> cookies);
 
     /**
-     * 将HTTP请求的cookie从jar加载到{@code url} 此方法为网络请求返回一个可能为空的cookie列表 简单的实现将返回尚未过期的已接受的Cookie，
-     * 并返回{@linkplain Cookie#matches} {@code url}
+     * Loads cookies from this jar for an HTTP request to {@code url}. This method returns a possibly empty list of
+     * cookies for the network request. A simple implementation will return accepted cookies that have not yet expired
+     * and that {@linkplain Cookie#matches match} {@code url}.
      *
-     * @param url url信息
-     * @return the cookies
+     * @param url The URL of the request.
+     * @return The list of cookies to include in the request.
      */
     List<Cookie> loadForRequest(UnoUrl url);
 

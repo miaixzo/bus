@@ -26,7 +26,9 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Word分词引擎实现 项目地址：https://github.com/ysc/word
+ * Provides the Word word segmentation engine implementation. This package contains classes that integrate with the Word
+ * NLP library for Chinese word segmentation, adapting its functionalities to the common NLP interfaces. Project
+ * homepage: <a href="https://github.com/ysc/word">https://github.com/ysc/word</a>
  *
  * @author Kimi Liu
  * @since Java 17+

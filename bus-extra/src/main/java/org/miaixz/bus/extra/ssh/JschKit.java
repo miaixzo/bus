@@ -29,7 +29,6 @@ package org.miaixz.bus.extra.ssh;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.extra.ssh.provider.jsch.ChannelType;
-import org.miaixz.bus.extra.ssh.provider.jsch.JschSession;
 
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.JSch;
@@ -37,7 +36,9 @@ import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 
 /**
- * Jsch工具类 Jsch是Java Secure Channel的缩写。 JSch是一个SSH2的纯Java实现。 它允许你连接到一个SSH服务器，并且可以使用端口转发，X11转发，文件传输等。
+ * Jsch (Java Secure Channel) utility class. JSch is a pure Java implementation of the SSH2 protocol, enabling
+ * connections to SSH servers for operations like port forwarding, X11 forwarding, file transfers, and remote command
+ * execution.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -45,10 +46,14 @@ import com.jcraft.jsch.Session;
 public class JschKit {
 
     /**
-     * 打开Session会话
+     * Opens an SSH session with the specified connection details. This method configures the session with the host,
+     * port, user, password, and timeout from the provided {@link Connector}. It also sets default configurations for
+     * host key checking and authentication methods.
      *
-     * @param connector 连接信息
-     * @return {@link JschSession}
+     * @param connector The {@link Connector} object containing connection information (host, port, user, password,
+     *                  timeout).
+     * @return An initialized JSch {@link Session} object, not yet connected.
+     * @throws InternalException if a {@link JSchException} occurs during session creation.
      */
     public static Session openSession(final Connector connector) {
         final JSch jsch = new JSch();
@@ -61,22 +66,24 @@ public class JschKit {
         }
 
         session.setPassword(connector.getPassword());
-        // 设置第一次登录的时候提示，可选值：(ask | yes | no)
+        // Set prompt for first login, possible values: (ask | yes | no)
         session.setConfig("StrictHostKeyChecking", "no");
 
-        // 设置登录认证方式，跳过Kerberos身份验证
+        // Set preferred authentication methods, skipping Kerberos authentication for broader compatibility
         session.setConfig("PreferredAuthentications", "publickey,keyboard-interactive,password");
 
         return session;
     }
 
     /**
-     * 打开Channel连接
+     * Opens and connects an SSH channel of a specified type. This method first creates the channel and then connects it
+     * with the given timeout.
      *
-     * @param session     Session会话
-     * @param channelType 通道类型，可以是shell或sftp等，见{@link ChannelType}
-     * @param timeout     连接超时时长，单位毫秒
-     * @return {@link Channel}
+     * @param session     The active SSH {@link Session}.
+     * @param channelType The type of channel to open (e.g., shell, sftp), as defined in {@link ChannelType}.
+     * @param timeout     The connection timeout duration in milliseconds.
+     * @return A connected JSch {@link Channel} object.
+     * @throws InternalException if a {@link JSchException} occurs during channel connection.
      */
     public static Channel openChannel(final Session session, final ChannelType channelType, final long timeout) {
         final Channel channel = createChannel(session, channelType, timeout);
@@ -89,12 +96,15 @@ public class JschKit {
     }
 
     /**
-     * 创建Channel连接
+     * Creates an SSH channel but does not connect it. If the session is not already connected, this method will connect
+     * it first.
      *
-     * @param session     Session会话
-     * @param channelType 通道类型，可以是shell或sftp等，见{@link ChannelType}
-     * @param timeout     session超时时常，单位：毫秒
-     * @return {@link Channel}
+     * @param session     The SSH {@link Session}.
+     * @param channelType The type of channel to create (e.g., shell, sftp), as defined in {@link ChannelType}.
+     * @param timeout     The session connection timeout duration in milliseconds, used if the session is not yet
+     *                    connected.
+     * @return An unconnected JSch {@link Channel} object.
+     * @throws InternalException if a {@link JSchException} occurs during session connection or channel creation.
      */
     public static Channel createChannel(final Session session, final ChannelType channelType, final long timeout) {
         final Channel channel;
@@ -110,9 +120,9 @@ public class JschKit {
     }
 
     /**
-     * 关闭SSH连接会话
+     * Closes the specified SSH session if it is not null and is currently connected.
      *
-     * @param session SSH会话
+     * @param session The SSH {@link Session} to close.
      */
     public static void close(final Session session) {
         if (session != null && session.isConnected()) {
@@ -121,9 +131,9 @@ public class JschKit {
     }
 
     /**
-     * 关闭会话通道
+     * Closes the specified SSH channel if it is not null and is currently connected.
      *
-     * @param channel 会话通道
+     * @param channel The SSH {@link Channel} to close.
      */
     public static void close(final Channel channel) {
         if (channel != null && channel.isConnected()) {

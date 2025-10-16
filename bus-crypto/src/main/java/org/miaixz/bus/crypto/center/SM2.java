@@ -62,14 +62,16 @@ import org.miaixz.bus.crypto.builtin.asymmetric.AbstractCrypto;
 import org.miaixz.bus.crypto.builtin.asymmetric.KeyType;
 
 /**
- * 国密SM2非对称算法实现，基于BC库 SM2算法只支持公钥加密，私钥解密 参考：https://blog.csdn.net/pridas/article/details/86118774
+ * Implementation of the Chinese National Standard SM2 asymmetric algorithm, based on the Bouncy Castle library. The SM2
+ * algorithm only supports public key encryption and private key decryption. Reference:
+ * https://blog.csdn.net/pridas/article/details/86118774
  *
  * <p>
- * 国密算法包括：
+ * Chinese National Standard (Guomi) algorithms include:
  * <ol>
- * <li>非对称加密和签名：SM2，asymmetric</li>
- * <li>摘要签名算法：SM3，digest</li>
- * <li>对称加密：SM4，symmetric</li>
+ * <li>Asymmetric encryption and signature: SM2</li>
+ * <li>Digest signature algorithm: SM3</li>
+ * <li>Symmetric encryption: SM4</li>
  * </ol>
  *
  * @author Kimi Liu
@@ -81,96 +83,101 @@ public class SM2 extends AbstractCrypto<SM2> {
     private static final long serialVersionUID = 2852290382583L;
 
     /**
-     * SM2引擎
+     * SM2 Engine.
      */
     protected SM2Engine engine;
     /**
-     * 签名
+     * Signer.
      */
     protected SM2Signer signer;
     /**
-     * EC私有参数
+     * EC private key parameters.
      */
     private ECPrivateKeyParameters privateKeyParams;
     /**
-     * EC公共参数
+     * EC public key parameters.
      */
     private ECPublicKeyParameters publicKeyParams;
     /**
-     * DSA编码
+     * DSA encoding.
      */
     private DSAEncoding encoding = StandardDSAEncoding.INSTANCE;
     /**
-     * SM3摘要
+     * SM3 digest.
      */
     private Digest digest = new SM3Digest();
     /**
-     * C1C2C3
+     * C1C3C2 mode.
      */
     private SM2Engine.Mode mode = SM2Engine.Mode.C1C3C2;
     /**
-     * 自定义随机数
+     * Custom random number generator.
      */
     private SecureRandom random;
     /**
-     * 是否去除压缩04压缩标识
+     * Whether to remove the 04 uncompressed flag.
      */
     private boolean removeCompressedFlag;
 
     /**
-     * 构造，生成新的随机私钥公钥对
+     * Constructor, generates a new random private/public key pair.
      */
     public SM2() {
         this(null, (byte[]) null);
     }
 
     /**
-     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
+     * Constructor. If both private and public keys are null, a new key pair is generated. A single key (private or
+     * public) can be passed, in which case it can only be used for encryption or decryption with that key.
      *
-     * @param privateKey 私钥Hex或Base64表示，必须使用PKCS#8规范
-     * @param publicKey  公钥Hex或Base64表示，必须使用X509规范
+     * @param privateKey The private key in Hex or Base64 representation, must follow PKCS#8 specification.
+     * @param publicKey  The public key in Hex or Base64 representation, must follow X509 specification.
      */
     public SM2(final String privateKey, final String publicKey) {
         this(Builder.decode(privateKey), Builder.decode(publicKey));
     }
 
     /**
-     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
+     * Constructor. If both private and public keys are null, a new key pair is generated. A single key (private or
+     * public) can be passed, in which case it can only be used for encryption or decryption with that key.
      *
-     * @param privateKey 私钥，可以使用PKCS#8、D值或PKCS#1规范
-     * @param publicKey  公钥，可以使用X509、Q值或PKCS#1规范
+     * @param privateKey The private key, can be in PKCS#8, D value, or PKCS#1 format.
+     * @param publicKey  The public key, can be in X509, Q value, or PKCS#1 format.
      */
     public SM2(final byte[] privateKey, final byte[] publicKey) {
         this(Keeper.generateSm2PrivateKey(privateKey), Keeper.generateSm2PublicKey(publicKey));
     }
 
     /**
-     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
+     * Constructor. If both private and public keys are null, a new key pair is generated. A single key (private or
+     * public) can be passed, in which case it can only be used for encryption or decryption with that key.
      *
-     * @param privateKey  私钥16进制（私钥D值）
-     * @param privateKeyX 公钥X16进制
-     * @param privateKeyY 公钥Y16进制
+     * @param privateKey  The private key in hex (D value).
+     * @param privateKeyX The public key X coordinate in hex.
+     * @param privateKeyY The public key Y coordinate in hex.
      */
     public SM2(final String privateKey, final String privateKeyX, final String privateKeyY) {
         this(Builder.decode(privateKey), Builder.decode(privateKeyX), Builder.decode(privateKeyY));
     }
 
     /**
-     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
+     * Constructor. If both private and public keys are null, a new key pair is generated. A single key (private or
+     * public) can be passed, in which case it can only be used for encryption or decryption with that key.
      *
-     * @param privateKey 私钥（D值）
-     * @param publicKeyX 公钥X
-     * @param publicKeyY 公钥Y
+     * @param privateKey The private key (D value).
+     * @param publicKeyX The public key X coordinate.
+     * @param publicKeyY The public key Y coordinate.
      */
     public SM2(final byte[] privateKey, final byte[] publicKeyX, final byte[] publicKeyY) {
         this(Keeper.generateSm2PrivateKey(privateKey), Keeper.generateSm2PublicKey(publicKeyX, publicKeyY));
     }
 
     /**
-     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
+     * Constructor. If both private and public keys are null, a new key pair is generated. A single key (private or
+     * public) can be passed, in which case it can only be used for encryption or decryption with that key.
      *
-     * @param privateKey 私钥
-     * @param publicKey  公钥
+     * @param privateKey The private key.
+     * @param publicKey  The public key.
      */
     public SM2(final PrivateKey privateKey, final PublicKey publicKey) {
         super(Algorithm.SM2.getValue(), new KeyPair(publicKey, privateKey));
@@ -180,10 +187,11 @@ public class SM2 extends AbstractCrypto<SM2> {
     }
 
     /**
-     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
+     * Constructor. If both private and public keys are null, a new key pair is generated. A single key (private or
+     * public) can be passed, in which case it can only be used for encryption or decryption with that key.
      *
-     * @param privateKey 私钥，可以为null
-     * @param publicKey  公钥，可以为null
+     * @param privateKey The private key, can be null.
+     * @param publicKey  The public key, can be null.
      */
     public SM2(final ECPrivateKeyParameters privateKey, final ECPublicKeyParameters publicKey) {
         super(Algorithm.SM2.getValue(), null);
@@ -193,10 +201,11 @@ public class SM2 extends AbstractCrypto<SM2> {
     }
 
     /**
-     * 去除04压缩标识 gmssl等库生成的密文不包含04前缀，此处兼容
+     * Removes the 04 uncompressed flag. Ciphertext generated by libraries like gmssl does not include the 04 prefix,
+     * this provides compatibility.
      *
-     * @param data 密文数据
-     * @return 处理后的数据
+     * @param data The ciphertext data.
+     * @return The processed data.
      */
     private static byte[] removeCompressedFlag(final byte[] data) {
         if (data[0] != 0x04) {
@@ -208,23 +217,28 @@ public class SM2 extends AbstractCrypto<SM2> {
     }
 
     /**
-     * 追加压缩标识 检查数据，gmssl等库生成的密文不包含04前缀（非压缩数据标识），此处检查并补充 参考：https://blog.csdn.net/softt/article/details/139978608
-     * 根据公钥压缩形态不同，密文分为两种压缩形式： C1( 03 + X ) + C3（32个字节）+ C2 C1( 02 + X ) + C3（32个字节）+ C2 非压缩公钥正常形态为04 + X +
-     * Y，由于各个算法库差异，04有时候会省略 非压缩密文正常形态为04 + C1 + C3 + C2
+     * Prepends the compression flag. Checks the data, as ciphertext generated by libraries like gmssl does not include
+     * the 04 prefix (uncompressed data flag), this method checks and adds it if necessary. Reference:
+     * https://blog.csdn.net/softt/article/details/139978608 Depending on the public key's compression form, the
+     * ciphertext can have two compressed forms: C1( 03 + X ) + C3 (32 bytes) + C2 C1( 02 + X ) + C3 (32 bytes) + C2 The
+     * normal form for an uncompressed public key is 04 + X + Y. Due to differences in crypto libraries, the 04 is
+     * sometimes omitted. The normal form for uncompressed ciphertext is 04 + C1 + C3 + C2.
      *
-     * @param data 待解密数据
-     * @return 增加压缩标识后的数据
+     * @param data The data to be decrypted.
+     * @return The data with the compression flag added.
      */
     private static byte[] prependCompressedFlag(byte[] data) {
         if (data[0] != 0x04 && data[0] != 0x02 && data[0] != 0x03) {
-            // 默认非压缩形态
+            // Default to uncompressed form
             data = ArrayKit.insert(data, 0, 0x04);
         }
         return data;
     }
 
     /**
-     * 初始化 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密（签名）或者解密（校验）
+     * Initializes the object. If both private and public keys are null, a new key pair is generated. A single key
+     * (private or public) can be passed, in which case it can only be used for encryption (signing) or decryption
+     * (verification).
      *
      * @return this
      */
@@ -239,90 +253,96 @@ public class SM2 extends AbstractCrypto<SM2> {
 
     @Override
     public SM2 initKeys() {
-        // 阻断父类中自动生成密钥对的操作，此操作由本类中进行。
-        // 由于用户可能传入Params而非key，因此此时key必定为null，故此不再生成
+        // Prevents the superclass from automatically generating a key pair.
+        // This operation is handled by this class. Since the user might pass
+        // Parameters instead of a Key, the key will be null at this point,
+        // so no new key is generated.
         return this;
     }
 
     /**
-     * 使用公钥加密，SM2非对称加密的结果由C1,C3,C2三部分组成，其中：
+     * Encrypts using the public key. The result of SM2 asymmetric encryption consists of three parts: C1, C3, and C2,
+     * where:
      *
      * <pre>
-     * C1 生成随机数的计算出的椭圆曲线点
-     * C3 SM3的摘要值
-     * C2 密文数据
+     * C1 is the elliptic curve point calculated from a random number.
+     * C3 is the SM3 digest value.
+     * C2 is the ciphertext data.
      * </pre>
      *
-     * @param data 被加密的字符串，UTF8编码
-     * @return 加密后的Base64
-     * @throws CryptoException 包括InvalidKeyException和InvalidCipherTextException的包装异常
+     * @param data The string to be encrypted, in UTF8 encoding.
+     * @return The encrypted Base64 string.
+     * @throws CryptoException A wrapper exception for InvalidKeyException and InvalidCipherTextException.
      */
     public String encryptBase64(final String data) {
         return encryptBase64(data, KeyType.PublicKey);
     }
 
     /**
-     * 使用公钥加密，SM2非对称加密的结果由C1,C3,C2三部分组成，其中：
+     * Encrypts using the public key. The result of SM2 asymmetric encryption consists of three parts: C1, C3, and C2,
+     * where:
      *
      * <pre>
-     * C1 生成随机数的计算出的椭圆曲线点
-     * C3 SM3的摘要值
-     * C2 密文数据
+     * C1 is the elliptic curve point calculated from a random number.
+     * C3 is the SM3 digest value.
+     * C2 is the ciphertext data.
      * </pre>
      *
-     * @param in 被加密的数据流
-     * @return 加密后的Base64
+     * @param in The input stream of data to be encrypted.
+     * @return The encrypted Base64 string.
      */
     public String encryptBase64(final InputStream in) {
         return encryptBase64(in, KeyType.PublicKey);
     }
 
     /**
-     * 使用公钥加密，SM2非对称加密的结果由C1,C3,C2三部分组成，其中：
+     * Encrypts using the public key. The result of SM2 asymmetric encryption consists of three parts: C1, C3, and C2,
+     * where:
      *
      * <pre>
-     * C1 生成随机数的计算出的椭圆曲线点
-     * C3 SM3的摘要值
-     * C2 密文数据
+     * C1 is the elliptic curve point calculated from a random number.
+     * C3 is the SM3 digest value.
+     * C2 is the ciphertext data.
      * </pre>
      *
-     * @param data 被加密的bytes
-     * @return 加密后的Base64
+     * @param data The bytes to be encrypted.
+     * @return The encrypted Base64 string.
      */
     public String encryptBase64(final byte[] data) {
         return encryptBase64(data, KeyType.PublicKey);
     }
 
     /**
-     * 使用公钥加密，SM2非对称加密的结果由C1,C3,C2三部分组成，其中：
+     * Encrypts using the public key. The result of SM2 asymmetric encryption consists of three parts: C1, C3, and C2,
+     * where:
      *
      * <pre>
-     * C1 生成随机数的计算出的椭圆曲线点
-     * C3 SM3的摘要值
-     * C2 密文数据
+     * C1 is the elliptic curve point calculated from a random number.
+     * C3 is the SM3 digest value.
+     * C2 is the ciphertext data.
      * </pre>
      *
-     * @param data 被加密的bytes
-     * @return 加密后的bytes
-     * @throws CryptoException 包括InvalidKeyException和InvalidCipherTextException的包装异常
+     * @param data The bytes to be encrypted.
+     * @return The encrypted bytes.
+     * @throws CryptoException A wrapper exception for InvalidKeyException and InvalidCipherTextException.
      */
     public byte[] encrypt(final byte[] data) throws CryptoException {
         return encrypt(data, KeyType.PublicKey);
     }
 
     /**
-     * 加密，SM2非对称加密的结果由C1,C3,C2三部分组成，其中：
+     * Encrypts. The result of SM2 asymmetric encryption consists of three parts: C1, C3, and C2, where:
      *
      * <pre>
-     * C1 生成随机数的计算出的椭圆曲线点
-     * C3 SM3的摘要值
-     * C2 密文数据
+     * C1 is the elliptic curve point calculated from a random number.
+     * C3 is the SM3 digest value.
+     * C2 is the ciphertext data.
      * </pre>
      *
-     * @param data    被加密的bytes
-     * @param keyType 私钥或公钥 {@link KeyType}
-     * @return 加密后的bytes
-     * @throws CryptoException 包括InvalidKeyException和InvalidCipherTextException的包装异常
+     * @param data    The bytes to be encrypted.
+     * @param keyType The key type (private or public) {@link KeyType}.
+     * @return The encrypted bytes.
+     * @throws CryptoException A wrapper exception for InvalidKeyException and InvalidCipherTextException.
      */
     @Override
     public byte[] encrypt(final byte[] data, final KeyType keyType) throws CryptoException {
@@ -333,51 +353,53 @@ public class SM2 extends AbstractCrypto<SM2> {
     }
 
     /**
-     * 使用公钥加密，SM2非对称加密的结果由C1,C3,C2三部分组成，其中：
+     * Encrypts using the public key. The result of SM2 asymmetric encryption consists of three parts: C1, C3, and C2,
+     * where:
      *
      * <pre>
-     * C1 生成随机数的计算出的椭圆曲线点
-     * C3 SM3的摘要值
-     * C2 密文数据
+     * C1 is the elliptic curve point calculated from a random number.
+     * C3 is the SM3 digest value.
+     * C2 is the ciphertext data.
      * </pre>
      *
-     * @param data 被加密的字符串，UTF8编码
-     * @return 加密后的bytes
-     * @throws CryptoException 包括InvalidKeyException和InvalidCipherTextException的包装异常
+     * @param data The string to be encrypted, in UTF8 encoding.
+     * @return The encrypted bytes.
+     * @throws CryptoException A wrapper exception for InvalidKeyException and InvalidCipherTextException.
      */
     public byte[] encrypt(final String data) {
         return encrypt(data, KeyType.PublicKey);
     }
 
     /**
-     * 使用公钥加密，SM2非对称加密的结果由C1,C3,C2三部分组成，其中：
+     * Encrypts using the public key. The result of SM2 asymmetric encryption consists of three parts: C1, C3, and C2,
+     * where:
      *
      * <pre>
-     * C1 生成随机数的计算出的椭圆曲线点
-     * C3 SM3的摘要值
-     * C2 密文数据
+     * C1 is the elliptic curve point calculated from a random number.
+     * C3 is the SM3 digest value.
+     * C2 is the ciphertext data.
      * </pre>
      *
-     * @param in 被加密的数据流
-     * @return 加密后的bytes
+     * @param in The input stream of data to be encrypted.
+     * @return The encrypted bytes.
      */
     public byte[] encrypt(final InputStream in) {
         return encrypt(in, KeyType.PublicKey);
     }
 
     /**
-     * 加密，SM2非对称加密的结果由C1,C2,C3三部分组成，其中：
+     * Encrypts. The result of SM2 asymmetric encryption consists of three parts: C1, C2, and C3, where:
      *
      * <pre>
-     * C1 生成随机数的计算出的椭圆曲线点
-     * C2 密文数据
-     * C3 SM3的摘要值
+     * C1 is the elliptic curve point calculated from a random number.
+     * C2 is the ciphertext data.
+     * C3 is the SM3 digest value.
      * </pre>
      *
-     * @param data             被加密的bytes
-     * @param pubKeyParameters 公钥参数
-     * @return 加密后的bytes
-     * @throws CryptoException 包括InvalidKeyException和InvalidCipherTextException的包装异常
+     * @param data             The bytes to be encrypted.
+     * @param pubKeyParameters The public key parameters.
+     * @return The encrypted bytes.
+     * @throws CryptoException A wrapper exception for InvalidKeyException and InvalidCipherTextException.
      */
     public byte[] encrypt(final byte[] data, final CipherParameters pubKeyParameters) throws CryptoException {
         lock.lock();
@@ -394,45 +416,47 @@ public class SM2 extends AbstractCrypto<SM2> {
     }
 
     /**
-     * 使用私钥解密
+     * Decrypts using the private key.
      *
-     * @param data SM2密文数据，Hex（16进制）或Base64字符串
-     * @return 解密后的字符串，UTF-8 编码
+     * @param data The SM2 ciphertext, as a Hex or Base64 string.
+     * @return The decrypted string, in UTF-8 encoding.
      */
     public String decryptString(final String data) {
         return decryptString(data, KeyType.PrivateKey);
     }
 
     /**
-     * 使用私钥解密
+     * Decrypts using the private key.
      *
-     * @param data    SM2密文数据，Hex（16进制）或Base64字符串
-     * @param charset 编码
-     * @return 解密后的bytes
-     * @throws CryptoException 包括InvalidKeyException和InvalidCipherTextException的包装异常
+     * @param data    The SM2 ciphertext, as a Hex or Base64 string.
+     * @param charset The character set.
+     * @return The decrypted bytes.
+     * @throws CryptoException A wrapper exception for InvalidKeyException and InvalidCipherTextException.
      */
     public String decryptString(final String data, final Charset charset) {
         return decryptString(data, KeyType.PrivateKey, charset);
     }
 
     /**
-     * 使用私钥解密
+     * Decrypts using the private key.
      *
-     * @param data SM2密文，实际包含三部分：ECC公钥、真正的密文、公钥和原文的SM3-HASH值
-     * @return 加密后的bytes
-     * @throws CryptoException 包括InvalidKeyException和InvalidCipherTextException的包装异常
+     * @param data The SM2 ciphertext, which actually contains three parts: the ECC public key, the real ciphertext, and
+     *             the SM3-HASH of the public key and original text.
+     * @return The encrypted bytes.
+     * @throws CryptoException A wrapper exception for InvalidKeyException and InvalidCipherTextException.
      */
     public byte[] decrypt(final byte[] data) throws CryptoException {
         return decrypt(data, KeyType.PrivateKey);
     }
 
     /**
-     * 解密
+     * Decrypts.
      *
-     * @param data    SM2密文，实际包含三部分：ECC公钥、真正的密文、公钥和原文的SM3-HASH值
-     * @param keyType 私钥或公钥 {@link KeyType}
-     * @return 加密后的bytes
-     * @throws CryptoException 包括InvalidKeyException和InvalidCipherTextException的包装异常
+     * @param data    The SM2 ciphertext, which actually contains three parts: the ECC public key, the real ciphertext,
+     *                and the SM3-HASH of the public key and original text.
+     * @param keyType The key type (private or public) {@link KeyType}.
+     * @return The decrypted bytes.
+     * @throws CryptoException A wrapper exception for InvalidKeyException and InvalidCipherTextException.
      */
     @Override
     public byte[] decrypt(final byte[] data, final KeyType keyType) throws CryptoException {
@@ -443,73 +467,77 @@ public class SM2 extends AbstractCrypto<SM2> {
     }
 
     /**
-     * 使用私钥解密
+     * Decrypts using the private key.
      *
-     * @param in 密文数据流
-     * @return 解密后的bytes
+     * @param in The ciphertext input stream.
+     * @return The decrypted bytes.
      */
     public byte[] decrypt(final InputStream in) {
         return super.decrypt(in, KeyType.PrivateKey);
     }
 
     /**
-     * 用私钥对信息生成数字签名
+     * Generates a digital signature for the information using the private key.
      *
-     * @param dataHex 被签名的数据（Hex格式）
-     * @return 签名
+     * @param dataHex The data to be signed (in Hex format).
+     * @return The signature.
      */
     public String signHexFromHex(final String dataHex) {
         return signHexFromHex(dataHex, null);
     }
 
     /**
-     * 用私钥对信息生成数字签名
+     * Generates a digital signature for the information using the private key.
      *
-     * @param dataHex 被签名的数据（Hex格式）
-     * @param idHex   可以为null，若为null，则默认withId为字节数组:"1234567812345678".getBytes()
-     * @return 签名
+     * @param dataHex The data to be signed (in Hex format).
+     * @param idHex   Can be null. If null, the default ID is the byte array "1234567812345678".getBytes().
+     * @return The signature.
      */
     public String signHexFromHex(final String dataHex, final String idHex) {
         return HexKit.encodeString(sign(HexKit.decode(dataHex), HexKit.decode(idHex)));
     }
 
     /**
-     * 用私钥对信息生成数字签名
+     * Generates a digital signature for the information using the private key.
      *
-     * @param data 被签名的数据
-     * @return 签名
+     * @param data The data to be signed.
+     * @return The signature.
      */
     public String signHex(final byte[] data) {
         return signHex(data, null);
     }
 
     /**
-     * 用私钥对信息生成数字签名
+     * Generates a digital signature for the information using the private key.
      *
-     * @param data 被签名的数据
-     * @param id   可以为null，若为null，则默认withId为字节数组:"1234567812345678".getBytes()
-     * @return 签名
+     * @param data The data to be signed.
+     * @param id   Can be null. If null, the default ID is the byte array "1234567812345678".getBytes().
+     * @return The signature.
      */
     public String signHex(final byte[] data, final byte[] id) {
         return HexKit.encodeString(sign(data, id));
     }
 
     /**
-     * 用私钥对信息生成数字签名，签名格式为ASN1 * 在硬件签名中，返回结果为R+S，可以通过调用{@link Builder#rsAsn1ToPlain(byte[])}方法转换之。
+     * Generates a digital signature for the information using the private key. The signature format is ASN.1. In
+     * hardware signing, the result is R+S, which can be converted by calling the {@link Builder#rsAsn1ToPlain(byte[])}
+     * method.
      *
-     * @param data 加密数据
-     * @return 签名
+     * @param data The data to be encrypted.
+     * @return The signature.
      */
     public byte[] sign(final byte[] data) {
         return sign(data, null);
     }
 
     /**
-     * 用私钥对信息生成数字签名，签名格式为ASN1 在硬件签名中，返回结果为R+S，可以通过调用{@link Builder#rsAsn1ToPlain(byte[])}方法转换之。
+     * Generates a digital signature for the information using the private key. The signature format is ASN.1. In
+     * hardware signing, the result is R+S, which can be converted by calling the {@link Builder#rsAsn1ToPlain(byte[])}
+     * method.
      *
-     * @param data 被签名的数据
-     * @param id   可以为null，若为null，则默认withId为字节数组:"1234567812345678".getBytes()
-     * @return 签名
+     * @param data The data to be signed.
+     * @param id   Can be null. If null, the default ID is the byte array "1234567812345678".getBytes().
+     * @return The signature.
      */
     public byte[] sign(final byte[] data, final byte[] id) {
         lock.lock();
@@ -530,46 +558,46 @@ public class SM2 extends AbstractCrypto<SM2> {
     }
 
     /**
-     * 用公钥检验数字签名的合法性
+     * Verifies the validity of a digital signature using the public key.
      *
-     * @param dataHex 后的数据
-     * @param signHex 签名
-     * @return 是否验证通过
+     * @param dataHex The data in Hex format.
+     * @param signHex The signature in Hex format.
+     * @return Whether the verification passes.
      */
     public boolean verifyHex(final String dataHex, final String signHex) {
         return verifyHex(dataHex, signHex, null);
     }
 
     /**
-     * 用公钥检验数字签名的合法性
+     * Verifies the validity of a digital signature using the public key.
      *
-     * @param data 数据
-     * @param sign 签名
-     * @return 是否验证通过
+     * @param data The data.
+     * @param sign The signature.
+     * @return Whether the verification passes.
      */
     public boolean verify(final byte[] data, final byte[] sign) {
         return verify(data, sign, null);
     }
 
     /**
-     * 用公钥检验数字签名的合法性
+     * Verifies the validity of a digital signature using the public key.
      *
-     * @param dataHex 数据的Hex值
-     * @param signHex 签名的Hex值
-     * @param idHex   ID的Hex值
-     * @return 是否验证通过
+     * @param dataHex The Hex value of the data.
+     * @param signHex The Hex value of the signature.
+     * @param idHex   The Hex value of the ID.
+     * @return Whether the verification passes.
      */
     public boolean verifyHex(final String dataHex, final String signHex, final String idHex) {
         return verify(HexKit.decode(dataHex), HexKit.decode(signHex), HexKit.decode(idHex));
     }
 
     /**
-     * 用公钥检验数字签名的合法性
+     * Verifies the validity of a digital signature using the public key.
      *
-     * @param data 数据
-     * @param sign 签名
-     * @param id   可以为null，若为null，则默认withId为字节数组:"1234567812345678".getBytes()
-     * @return 是否验证通过
+     * @param data The data.
+     * @param sign The signature.
+     * @param id   Can be null. If null, the default ID is the byte array "1234567812345678".getBytes().
+     * @return Whether the verification passes.
      */
     public boolean verify(final byte[] data, final byte[] sign, final byte[] id) {
         lock.lock();
@@ -591,16 +619,16 @@ public class SM2 extends AbstractCrypto<SM2> {
     public SM2 setPrivateKey(final PrivateKey privateKey) {
         super.setPrivateKey(privateKey);
 
-        // 重新初始化密钥参数，防止重新设置密钥时导致密钥无法更新
+        // Re-initialize key parameters to prevent update failure when resetting the key.
         this.privateKeyParams = Keeper.toPrivateParams(privateKey);
 
         return this;
     }
 
     /**
-     * 设置私钥参数
+     * Sets the private key parameters.
      *
-     * @param privateKeyParams 私钥参数
+     * @param privateKeyParams The private key parameters.
      * @return this
      */
     public SM2 setPrivateKeyParams(final ECPrivateKeyParameters privateKeyParams) {
@@ -609,9 +637,9 @@ public class SM2 extends AbstractCrypto<SM2> {
     }
 
     /**
-     * 设置随机数生成器，可自定义随机数种子
+     * Sets the random number generator. A custom random seed can be used.
      *
-     * @param random 随机数生成器，可自定义随机数种子
+     * @param random The random number generator.
      * @return this
      */
     public SM2 setRandom(final SecureRandom random) {
@@ -623,16 +651,16 @@ public class SM2 extends AbstractCrypto<SM2> {
     public SM2 setPublicKey(final PublicKey publicKey) {
         super.setPublicKey(publicKey);
 
-        // 重新初始化密钥参数，防止重新设置密钥时导致密钥无法更新
+        // Re-initialize key parameters to prevent update failure when resetting the key.
         this.publicKeyParams = Keeper.toPublicParams(publicKey);
 
         return this;
     }
 
     /**
-     * 设置公钥参数
+     * Sets the public key parameters.
      *
-     * @param publicKeyParams 公钥参数
+     * @param publicKeyParams The public key parameters.
      * @return this
      */
     public SM2 setPublicKeyParams(final ECPublicKeyParameters publicKeyParams) {
@@ -641,17 +669,18 @@ public class SM2 extends AbstractCrypto<SM2> {
     }
 
     /**
-     * 使用私钥解密
+     * Decrypts using the private key.
      *
-     * @param data SM2密文，实际包含三部分：ECC公钥、真正的密文、公钥和原文的SM3-HASH值
-     * @return 解密后的bytes
+     * @param data The SM2 ciphertext, which actually contains three parts: the ECC public key, the real ciphertext, and
+     *             the SM3-HASH of the public key and original text.
+     * @return The decrypted bytes.
      */
     public byte[] decrypt(final String data) {
         return super.decrypt(data, KeyType.PrivateKey);
     }
 
     /**
-     * 设置DSA signatures的编码为PlainDSAEncoding
+     * Sets the encoding for DSA signatures to PlainDSAEncoding.
      *
      * @return this
      */
@@ -660,9 +689,9 @@ public class SM2 extends AbstractCrypto<SM2> {
     }
 
     /**
-     * 设置DSA signatures的编码
+     * Sets the encoding for DSA signatures.
      *
-     * @param encoding {@link DSAEncoding}实现
+     * @param encoding An implementation of {@link DSAEncoding}.
      * @return this
      */
     public SM2 setEncoding(final DSAEncoding encoding) {
@@ -672,9 +701,9 @@ public class SM2 extends AbstractCrypto<SM2> {
     }
 
     /**
-     * 设置Hash算法
+     * Sets the Hash algorithm.
      *
-     * @param digest {@link Digest}实现
+     * @param digest An implementation of {@link Digest}.
      * @return this
      */
     public SM2 setDigest(final Digest digest) {
@@ -685,7 +714,7 @@ public class SM2 extends AbstractCrypto<SM2> {
     }
 
     /**
-     * 设置SM2模式，旧版是C1C2C3，新版本是C1C3C2
+     * Sets the SM2 mode. The old version is C1C2C3, the new version is C1C3C2.
      *
      * @param mode {@link SM2Engine.Mode}
      * @return this
@@ -697,46 +726,46 @@ public class SM2 extends AbstractCrypto<SM2> {
     }
 
     /**
-     * 获得私钥D值（编码后的私钥）
+     * Gets the private key D value (encoded private key).
      *
-     * @return D值
+     * @return The D value.
      */
     public byte[] getD() {
         return BigIntegers.asUnsignedByteArray(32, getDBigInteger());
     }
 
     /**
-     * 获得私钥D值（编码后的私钥）
+     * Gets the private key D value (encoded private key) as a hex string.
      *
-     * @return D值
+     * @return The D value in hex.
      */
     public String getDHex() {
         return new String(Hex.encode(getD()));
     }
 
     /**
-     * 获得私钥D值
+     * Gets the private key D value.
      *
-     * @return D值
+     * @return The D value.
      */
     public BigInteger getDBigInteger() {
         return this.privateKeyParams.getD();
     }
 
     /**
-     * 获得公钥Q值（编码后的公钥）
+     * Gets the public key Q value (encoded public key).
      *
-     * @param isCompressed 是否压缩
-     * @return Q值
+     * @param isCompressed Whether to compress the key.
+     * @return The Q value.
      */
     public byte[] getQ(final boolean isCompressed) {
         return this.publicKeyParams.getQ().getEncoded(isCompressed);
     }
 
     /**
-     * 获取密钥类型对应的加密参数对象{@link CipherParameters}
+     * Gets the {@link CipherParameters} object corresponding to the key type.
      *
-     * @param keyType Key类型枚举，包括私钥或公钥
+     * @param keyType The key type enum, including private or public key.
      * @return {@link CipherParameters}
      */
     private CipherParameters getCipherParameters(final KeyType keyType) {
@@ -754,7 +783,7 @@ public class SM2 extends AbstractCrypto<SM2> {
     }
 
     /**
-     * 获取{@link SM2Engine}，此对象为懒加载模式
+     * Gets the {@link SM2Engine}, which is lazily loaded.
      *
      * @return {@link SM2Engine}
      */
@@ -768,7 +797,7 @@ public class SM2 extends AbstractCrypto<SM2> {
     }
 
     /**
-     * 获取{@link SM2Signer}，此对象为懒加载模式
+     * Gets the {@link SM2Signer}, which is lazily loaded.
      *
      * @return {@link SM2Signer}
      */
@@ -782,12 +811,13 @@ public class SM2 extends AbstractCrypto<SM2> {
     }
 
     /**
-     * 解密
+     * Decrypts.
      *
-     * @param data                 SM2密文，实际包含三部分：ECC公钥、真正的密文、公钥和原文的SM3-HASH值
-     * @param privateKeyParameters 私钥参数
-     * @return 加密后的bytes
-     * @throws CryptoException 包括InvalidKeyException和InvalidCipherTextException的包装异常
+     * @param data                 The SM2 ciphertext, which actually contains three parts: the ECC public key, the real
+     *                             ciphertext, and the SM3-HASH of the public key and original text.
+     * @param privateKeyParameters The private key parameters.
+     * @return The decrypted bytes.
+     * @throws CryptoException A wrapper exception for InvalidKeyException and InvalidCipherTextException.
      */
     public byte[] decrypt(byte[] data, final CipherParameters privateKeyParameters) throws CryptoException {
         Assert.isTrue(data.length > 1, "Invalid SM2 cipher text, must be at least 1 byte long");
@@ -806,9 +836,10 @@ public class SM2 extends AbstractCrypto<SM2> {
     }
 
     /**
-     * 设置是否移除压缩标记，默认为false 移除后的密文兼容gmssl等库
+     * Sets whether to remove the compression flag, default is false. After removal, the ciphertext is compatible with
+     * libraries like gmssl.
      *
-     * @param removeCompressedFlag 是否移除压缩标记
+     * @param removeCompressedFlag Whether to remove the compression flag.
      * @return this
      */
     public SM2 setRemoveCompressedFlag(final boolean removeCompressedFlag) {

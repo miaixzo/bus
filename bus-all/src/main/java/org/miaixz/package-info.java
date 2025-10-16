@@ -26,7 +26,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Version (应用/服务总线) 是一个基础框架、服务套件
+ * Version (Application/Service Bus) is a foundational framework and service suite.
  *
  * @author Kimi Liu
  * @since Java 17+

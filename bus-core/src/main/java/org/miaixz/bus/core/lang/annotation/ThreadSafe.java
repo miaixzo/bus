@@ -30,11 +30,23 @@ package org.miaixz.bus.core.lang.annotation;
 import java.lang.annotation.*;
 
 /**
- * 注解: 线程安全注解 1.此注解放在类上,标识当前类为线程安全的 2.此注解放在方法上,标识方法是线程安全的
+ * A marker annotation that indicates a class or method is thread-safe.
  * <p>
- * 注意：目前此注解仅供内部使用,用来标识类是否线程安全 (表示作者的预期) 真正效果需要验证
+ * This annotation serves as a form of documentation to communicate the author's intent regarding the concurrency
+ * properties of a component.
+ * <ul>
+ * <li>When applied to a <strong>class</strong>, it signifies that instances of the class are designed to be safely used
+ * by multiple threads concurrently.</li>
+ * <li>When applied to a <strong>method</strong>, it signifies that the specific method is thread-safe, even if the
+ * class as a whole is not.</li>
+ * </ul>
  * <p>
- * 后期用途：可能会直接基于 class 进行反射创建,要求有些类需要显示指定这个注解
+ * <strong>Note:</strong> This annotation is a marker and does not, by itself, enforce thread safety. Its primary
+ * purpose is for documentation and to be leveraged by static analysis tools. The actual thread safety of the component
+ * must be verified through code review and testing.
+ * <p>
+ * It may also be used by frameworks that perform reflection-based instantiation, where thread-safe components might be
+ * handled differently.
  *
  * @author Kimi Liu
  * @since Java 17+

@@ -26,7 +26,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 阿里云短信、邮、件语音等支持
+ * Provides support for Alibaba Cloud notification services, including SMS, email, and voice.
  *
  * @author Kimi Liu
  * @since Java 17+

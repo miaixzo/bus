@@ -48,7 +48,7 @@ import org.miaixz.bus.http.metric.NamedRunnable;
 import org.miaixz.bus.logger.Logger;
 
 /**
- * 到远程对等点的套接字连接。连接主机可以发送和接收数据流.
+ * A socket connection to a remote peer. Connections host streams which can send and receive data.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -75,29 +75,31 @@ public class Http2Connection implements Closeable {
     static final long DEGRADED_PONG_TIMEOUT_NS = 1_000_000_000L; // 1 second.
 
     /**
-     * 共享执行程序来发送传入流的通知。这个执行器需要多个线程，因为侦听器不需要立即返回.
+     * A shared executor to notify listeners of incoming streams. This executor requires multiple threads because
+     * listeners don't need to return immediately.
      */
     private static final ExecutorService listenerExecutor = new ThreadPoolExecutor(0, Integer.MAX_VALUE, 60,
             TimeUnit.SECONDS, new SynchronousQueue<>(),
             org.miaixz.bus.http.Builder.threadFactory("Http Http2Connection", true));
 
     /**
-     * 如果该对等点发起连接，则为True.
+     * True if this peer initiated the connection.
      */
     final boolean client;
 
     /**
-     * 响应传入流或设置而运行的用户代码。对它的调用总是在{@link #listenerExecutor}上调用
+     * User code that runs in response to an incoming stream or settings. Calls to this are always invoked on
+     * {@link #listenerExecutor}.
      */
     final Listener listener;
     final Map<Integer, Http2Stream> streams = new LinkedHashMap<>();
     final String connectionName;
     /**
-     * 为响应推送承诺事件而运行的用户代码
+     * User code that runs in response to push promise events.
      */
     final PushObserver pushObserver;
     /**
-     * 我们从对等点接收设置.
+     * Settings we communicate to the peer.
      */
     final Http2Settings peerSettings = new Http2Settings();
     final Socket socket;
@@ -106,29 +108,30 @@ public class Http2Connection implements Closeable {
 
     final Set<Integer> currentPushRequests = new LinkedHashSet<>();
     /**
-     * 异步地将帧写入传出套接字
+     * Asynchronously writes frames to the outgoing socket.
      */
     private final ScheduledExecutorService writerExecutor;
     /**
-     * 确保推送承诺回调事件按顺序发送到每个流
+     * Ensures push promise callback events are sent in order for each stream.
      */
     private final ExecutorService pushExecutor;
     int lastGoodStreamId;
     int nextStreamId;
     /**
-     * 应用程序消耗的总字节数，但尚未通过在此连接上发送{@code WINDOW_UPDATE}帧来确认.
+     * The total number of bytes consumed by the application, but not yet acknowledged by sending a
+     * {@code WINDOW_UPDATE} frame on this connection.
      */
     long unacknowledgedBytesRead = 0;
     /**
-     * 在接收窗口更新之前，可以在连接上写入的字节数.
+     * The number of bytes that can be written on this connection before receiving a window update.
      */
     long bytesLeftInWriteWindow;
     /**
-     * 设置我们与对等点通信
+     * Settings we receive from the peer.
      */
     Http2Settings settings = new Http2Settings();
     private boolean shutdown;
-    // Total number of pings send and received of the corresponding types. All guarded by this.
+    // Total number of pings sent and received of the corresponding types. All guarded by this.
     private long intervalPingsSent = 0L;
     private long intervalPongsReceived = 0L;
     private long degradedPingsSent = 0L;
@@ -185,25 +188,49 @@ public class Http2Connection implements Closeable {
 
     /**
      * Returns the number of {@link Http2Stream#isOpen() open streams} on this connection.
+     * 
+     * @return the number of open streams.
      */
     public synchronized int openStreamCount() {
         return streams.size();
     }
 
+    /**
+     * Gets the stream with the specified ID.
+     * 
+     * @param id The stream ID.
+     * @return The stream, or null if it does not exist.
+     */
     synchronized Http2Stream getStream(int id) {
         return streams.get(id);
     }
 
+    /**
+     * Removes the stream with the specified ID.
+     * 
+     * @param streamId The stream ID.
+     * @return The removed stream, or null if it did not exist.
+     */
     synchronized Http2Stream removeStream(int streamId) {
         Http2Stream stream = streams.remove(streamId);
         notifyAll();
         return stream;
     }
 
+    /**
+     * Returns the maximum number of concurrent streams that the remote peer is willing to accept.
+     * 
+     * @return the maximum number of concurrent streams.
+     */
     public synchronized int maxConcurrentStreams() {
         return peerSettings.getMaxConcurrentStreams(Integer.MAX_VALUE);
     }
 
+    /**
+     * Updates the connection flow control window by the number of bytes read.
+     * 
+     * @param read the number of bytes read.
+     */
     synchronized void updateConnectionFlowControl(long read) {
         unacknowledgedBytesRead += read;
         if (unacknowledgedBytesRead >= settings.getInitialWindowSize() / 2) {
@@ -213,13 +240,14 @@ public class Http2Connection implements Closeable {
     }
 
     /**
-     * 返回一个新的服务器发起的流.
+     * Returns a new server-initiated stream.
      *
-     * @param associatedStreamId 触发发送方创建此流的流.
-     * @param requestHeaders     请求头信息
-     * @param out                创建一个输出流，我们可以使用它将数据发送到远程对等端。对应{@code FLAG_FIN}
-     * @return http请求流
-     * @throws IOException 异常
+     * @param associatedStreamId The stream that triggered the sender to create this stream.
+     * @param requestHeaders     The request headers.
+     * @param out                True to create an output stream that we can use to send data to the remote peer.
+     *                           Corresponds to {@code FLAG_FIN}.
+     * @return an HTTP/2 stream.
+     * @throws IOException if an I/O error occurs.
      */
     public Http2Stream pushStream(int associatedStreamId, List<Http2Header> requestHeaders, boolean out)
             throws IOException {
@@ -231,8 +259,11 @@ public class Http2Connection implements Closeable {
     /**
      * Returns a new locally-initiated stream.
      *
-     * @param out true to create an output stream that we can use to send data to the remote peer. Corresponds to
-     *            {@code FLAG_FIN}.
+     * @param requestHeaders The request headers.
+     * @param out            true to create an output stream that we can use to send data to the remote peer.
+     *                       Corresponds to {@code FLAG_FIN}.
+     * @return an HTTP/2 stream.
+     * @throws IOException if an I/O error occurs.
      */
     public Http2Stream newStream(List<Http2Header> requestHeaders, boolean out) throws IOException {
         return newStream(0, requestHeaders, out);
@@ -278,19 +309,30 @@ public class Http2Connection implements Closeable {
         return stream;
     }
 
+    /**
+     * Writes headers for the given stream.
+     * 
+     * @param streamId    The stream ID.
+     * @param outFinished Whether this is the last frame to be sent on this stream.
+     * @param alternating The list of header name-value pairs.
+     * @throws IOException if an I/O error occurs.
+     */
     void writeHeaders(int streamId, boolean outFinished, List<Http2Header> alternating) throws IOException {
         writer.headers(outFinished, streamId, alternating);
     }
 
     /**
-     * 此方法的调用程序不是线程安全的，有时在应用程序线程上也是如此。 通常，将调用此方法将数据的缓冲区发送给对等方. 写取决于流和连接的写窗口。在有足够的窗口发送{@code byteCount}之前，
-     * 调用者将阻塞。例如，{@code HttpURLConnection}的用户向输出流刷新的 字节比连接的写窗口多，就会阻塞
+     * The caller of this method is not thread-safe and may be on an application thread. Typically, this method is
+     * called to send a buffer of data to the peer. The write is subject to the write window of the stream and the
+     * connection. Callers will block until there is enough window to send {@code byteCount}. For example, a user of
+     * {@code HttpURLConnection} who flushes more bytes to the output stream than the connection's write window will
+     * block.
      *
-     * @param streamId    是否streamId
-     * @param outFinished 是否结束
-     * @param buffer      缓冲
-     * @param byteCount   字节流大小
-     * @throws IOException 异常
+     * @param streamId    The stream ID.
+     * @param outFinished Whether this is the last frame to be sent on this stream.
+     * @param buffer      The buffer containing the data.
+     * @param byteCount   The number of bytes to write.
+     * @throws IOException if an I/O error occurs.
      */
     public void writeData(int streamId, boolean outFinished, Buffer buffer, long byteCount) throws IOException {
         if (byteCount == 0) {
@@ -323,6 +365,12 @@ public class Http2Connection implements Closeable {
         }
     }
 
+    /**
+     * Schedules a {@code RST_STREAM} frame to be sent to the peer.
+     * 
+     * @param streamId  The stream ID.
+     * @param errorCode The error code.
+     */
     void writeSynResetLater(final int streamId, final Http2ErrorCode errorCode) {
         try {
             writerExecutor.execute(new NamedRunnable("Http %s stream %d", connectionName, streamId) {
@@ -341,10 +389,23 @@ public class Http2Connection implements Closeable {
         }
     }
 
+    /**
+     * Writes a {@code RST_STREAM} frame to the peer.
+     * 
+     * @param streamId   The stream ID.
+     * @param statusCode The status code.
+     * @throws IOException if an I/O error occurs.
+     */
     void writeSynReset(int streamId, Http2ErrorCode statusCode) throws IOException {
         writer.rstStream(streamId, statusCode);
     }
 
+    /**
+     * Schedules a {@code WINDOW_UPDATE} frame to be sent to the peer.
+     * 
+     * @param streamId                The stream ID.
+     * @param unacknowledgedBytesRead The number of bytes read but not yet acknowledged.
+     */
     void writeWindowUpdateLater(final int streamId, final long unacknowledgedBytesRead) {
         try {
             writerExecutor.execute(new NamedRunnable("Http Window Update %s stream %d", connectionName, streamId) {
@@ -363,6 +424,13 @@ public class Http2Connection implements Closeable {
         }
     }
 
+    /**
+     * Writes a {@code PING} frame to the peer.
+     * 
+     * @param reply    Whether this is a reply to a ping from the peer.
+     * @param payload1 The first payload integer.
+     * @param payload2 The second payload integer.
+     */
     void writePing(boolean reply, int payload1, int payload2) {
         try {
             writer.ping(reply, payload1, payload2);
@@ -373,6 +441,8 @@ public class Http2Connection implements Closeable {
 
     /**
      * For testing: sends a ping and waits for a pong.
+     * 
+     * @throws InterruptedException if the thread is interrupted.
      */
     void writePingAndAwaitPong() throws InterruptedException {
         writePing();
@@ -391,6 +461,8 @@ public class Http2Connection implements Closeable {
 
     /**
      * For testing: awaits a pong.
+     * 
+     * @throws InterruptedException if the thread is interrupted.
      */
     synchronized void awaitPong() throws InterruptedException {
         while (awaitPongsReceived < awaitPingsSent) {
@@ -398,6 +470,11 @@ public class Http2Connection implements Closeable {
         }
     }
 
+    /**
+     * Flushes all buffered data on the underlying writer.
+     * 
+     * @throws IOException if an I/O error occurs.
+     */
     public void flush() throws IOException {
         writer.flush();
     }
@@ -406,6 +483,9 @@ public class Http2Connection implements Closeable {
      * Degrades this connection such that new streams can neither be created locally, nor accepted from the remote peer.
      * Existing streams are not impacted. This is intended to permit an endpoint to gracefully stop accepting new
      * requests without harming previously established streams.
+     * 
+     * @param statusCode The error code to send in the GOAWAY frame.
+     * @throws IOException if an I/O error occurs.
      */
     public void shutdown(Http2ErrorCode statusCode) throws IOException {
         synchronized (writer) {
@@ -430,6 +510,13 @@ public class Http2Connection implements Closeable {
         close(Http2ErrorCode.NO_ERROR, Http2ErrorCode.CANCEL, null);
     }
 
+    /**
+     * Closes this connection with the specified error codes.
+     * 
+     * @param connectionCode The error code for the connection.
+     * @param streamCode     The error code for the streams.
+     * @param cause          The cause of the closure.
+     */
     void close(Http2ErrorCode connectionCode, Http2ErrorCode streamCode, IOException cause) {
         assert (!Thread.holdsLock(this));
         try {
@@ -471,6 +558,11 @@ public class Http2Connection implements Closeable {
         pushExecutor.shutdown();
     }
 
+    /**
+     * Fails the connection with a protocol error.
+     * 
+     * @param e The exception that caused the failure.
+     */
     private void failConnection(IOException e) {
         close(Http2ErrorCode.PROTOCOL_ERROR, Http2ErrorCode.PROTOCOL_ERROR, e);
     }
@@ -478,14 +570,19 @@ public class Http2Connection implements Closeable {
     /**
      * Sends any initial frames and starts reading frames from the remote peer. This should be called after
      * {@link Builder#build} for all new connections.
+     * 
+     * @throws IOException if an I/O error occurs.
      */
     public void start() throws IOException {
         start(true);
     }
 
     /**
+     * Starts the connection.
+     * 
      * @param sendConnectionPreface true to send connection preface frames. This should always be true except for in
      *                              tests that don't check for a connection preface.
+     * @throws IOException if an I/O error occurs.
      */
     void start(boolean sendConnectionPreface) throws IOException {
         if (sendConnectionPreface) {
@@ -501,6 +598,9 @@ public class Http2Connection implements Closeable {
 
     /**
      * Merges {@code settings} into this peer's settings and sends them to the remote peer.
+     * 
+     * @param settings The settings to apply.
+     * @throws IOException if an I/O error occurs.
      */
     public void setSettings(Http2Settings settings) throws IOException {
         synchronized (writer) {
@@ -514,6 +614,13 @@ public class Http2Connection implements Closeable {
         }
     }
 
+    /**
+     * Returns true if this connection is healthy. A connection is unhealthy if it has been shut down or if a degraded
+     * pong is overdue.
+     * 
+     * @param nowNs The current time in nanoseconds.
+     * @return true if the connection is healthy.
+     */
     public synchronized boolean isHealthy(long nowNs) {
         if (shutdown)
             return false;
@@ -557,11 +664,20 @@ public class Http2Connection implements Closeable {
 
     /**
      * Even, positive numbered streams are pushed streams in HTTP/2.
+     * 
+     * @param streamId The stream ID.
+     * @return true if the stream is a pushed stream.
      */
     boolean pushedStream(int streamId) {
         return streamId != 0 && (streamId & 1) == 0;
     }
 
+    /**
+     * Schedules a PUSH_PROMISE frame to be sent to the client.
+     * 
+     * @param streamId       The stream ID.
+     * @param requestHeaders The request headers.
+     */
     void pushRequestLater(final int streamId, final List<Http2Header> requestHeaders) {
         synchronized (this) {
             if (currentPushRequests.contains(streamId)) {
@@ -592,6 +708,13 @@ public class Http2Connection implements Closeable {
         }
     }
 
+    /**
+     * Schedules headers to be sent to the client for a pushed stream.
+     * 
+     * @param streamId       The stream ID.
+     * @param requestHeaders The request headers.
+     * @param inFinished     Whether this is the last frame to be sent on this stream.
+     */
     void pushHeadersLater(final int streamId, final List<Http2Header> requestHeaders, final boolean inFinished) {
         try {
             pushExecutorExecute(new NamedRunnable("Http %s Push Headers[%s]", connectionName, streamId) {
@@ -619,6 +742,12 @@ public class Http2Connection implements Closeable {
     /**
      * Eagerly reads {@code byteCount} bytes from the source before launching a background task to process the data.
      * This avoids corrupting the stream.
+     * 
+     * @param streamId   The stream ID.
+     * @param source     The source of the data.
+     * @param byteCount  The number of bytes to read.
+     * @param inFinished Whether this is the last frame to be sent on this stream.
+     * @throws IOException if an I/O error occurs.
      */
     void pushDataLater(final int streamId, final BufferSource source, final int byteCount, final boolean inFinished)
             throws IOException {
@@ -646,6 +775,12 @@ public class Http2Connection implements Closeable {
         });
     }
 
+    /**
+     * Schedules a {@code RST_STREAM} frame to be sent to the client for a pushed stream.
+     * 
+     * @param streamId  The stream ID.
+     * @param errorCode The error code.
+     */
     void pushResetLater(final int streamId, final Http2ErrorCode errorCode) {
         pushExecutorExecute(new NamedRunnable("Http %s Push Reset[%s]", connectionName, streamId) {
 
@@ -659,6 +794,11 @@ public class Http2Connection implements Closeable {
         });
     }
 
+    /**
+     * Executes a runnable on the push executor if the connection is not shut down.
+     * 
+     * @param namedRunnable The runnable to execute.
+     */
     private synchronized void pushExecutorExecute(NamedRunnable namedRunnable) {
         if (!shutdown) {
             pushExecutor.execute(namedRunnable);
@@ -736,6 +876,9 @@ public class Http2Connection implements Closeable {
          * Handle a new stream from this connection's peer. Implementations should respond by either
          * {@linkplain Http2Stream#writeHeaders replying to the stream} or {@linkplain Http2Stream#close closing it}.
          * This response does not need to be synchronous.
+         * 
+         * @param stream The new stream.
+         * @throws IOException if an I/O error occurs.
          */
         public abstract void onStream(Http2Stream stream) throws IOException;
 
@@ -744,6 +887,8 @@ public class Http2Connection implements Closeable {
          * action to handle the updated settings. It is the implementation's responsibility to handle concurrent calls
          * to this method. A remote peer that sends multiple settings frames will trigger multiple calls to this method,
          * and those calls are not necessarily serialized.
+         * 
+         * @param connection The connection with the updated settings.
          */
         public void onSettings(Http2Connection connection) {
         }
@@ -965,7 +1110,7 @@ public class Http2Connection implements Closeable {
 
         @Override
         public void ackSettings() {
-
+            // TODO: If we don't get this callback in a timely fashion, our settings aren't working.
         }
 
         @Override
@@ -1030,6 +1175,7 @@ public class Http2Connection implements Closeable {
 
         @Override
         public void priority(int streamId, int streamDependency, int weight, boolean exclusive) {
+            // TODO: handle priority.
         }
 
         @Override
@@ -1045,6 +1191,7 @@ public class Http2Connection implements Closeable {
                 String host,
                 int port,
                 long maxAge) {
+
         }
     }
 

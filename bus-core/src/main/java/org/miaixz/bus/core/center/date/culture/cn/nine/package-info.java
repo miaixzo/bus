@@ -26,7 +26,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 数九
+ * Provides classes related to the "Shu Jiu" (数九) or Counting Nine periods, which are nine nine-day periods following
+ * the Winter Solstice.
  *
  * @author Kimi Liu
  * @since Java 17+

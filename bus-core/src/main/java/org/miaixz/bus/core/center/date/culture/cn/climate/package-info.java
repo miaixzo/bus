@@ -26,7 +26,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 物候
+ * Provides classes related to "Hou" (候) or Pentads, which are five-day periods in the Chinese traditional calendar,
+ * often associated with natural phenomena.
  *
  * @author Kimi Liu
  * @since Java 17+

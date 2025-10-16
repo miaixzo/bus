@@ -31,9 +31,12 @@ import java.lang.annotation.*;
 import org.miaixz.bus.core.lang.Normal;
 
 /**
- * 缓存获取注解
+ * Enables read-only caching for a method.
  * <p>
- * 用于标记方法使用只读缓存功能。当方法被调用时，会先从缓存中查找结果， 如果缓存中没有，则执行方法但不会将结果存入缓存。
+ * When a method annotated with {@code @CachedGet} is invoked, the framework will first attempt to retrieve the result
+ * from the cache. If the result is not found (a cache miss), the original method is executed, but its return value is
+ * <strong>not</strong> stored in the cache. This is in contrast to {@link Cached}, which writes the result to the cache
+ * on a miss.
  * </p>
  *
  * @author Kimi Liu
@@ -45,32 +48,32 @@ import org.miaixz.bus.core.lang.Normal;
 public @interface CachedGet {
 
     /**
-     * 指定使用的缓存实现
+     * The name of the cache to read from.
      * <p>
-     * 默认使用在CacheAspect中配置的第一个caches
+     * If not specified, the default cache (the first one configured in the cache manager) will be used.
      * </p>
      *
-     * @return 缓存实现名称
+     * @return The name of the cache implementation.
      */
     String value() default Normal.EMPTY;
 
     /**
-     * 指定每个键的前缀
+     * A static prefix for the generated cache key.
      * <p>
-     * 如果方法没有参数，prefix将作为该方法使用的常量键
+     * If the annotated method has no parameters, this prefix can serve as the complete cache key.
      * </p>
      *
-     * @return 键前缀
+     * @return The prefix for the cache key.
      */
     String prefix() default Normal.EMPTY;
 
     /**
-     * 使用SpEL表达式
+     * A SpEL (Spring Expression Language) expression for conditional caching.
      * <p>
-     * 当这个SpEL表达式为true时，该方法会使用缓存
+     * The method will only attempt to read from the cache if this expression evaluates to {@code true}.
      * </p>
      *
-     * @return SpEL条件表达式
+     * @return The SpEL condition.
      */
     String condition() default Normal.EMPTY;
 

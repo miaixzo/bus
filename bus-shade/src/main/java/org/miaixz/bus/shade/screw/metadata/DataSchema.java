@@ -32,7 +32,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * DataModel
+ * Represents the complete data model for generating the documentation, extending {@link DatabaseSchema} with additional
+ * metadata for the document itself.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,23 +44,23 @@ import lombok.Setter;
 public class DataSchema extends DatabaseSchema {
 
     /**
-     * 标题
+     * The title of the generated document.
      */
     private String title;
     /**
-     * 组织
+     * The name of the organization.
      */
     private String organization;
     /**
-     * url
+     * The URL of the organization.
      */
     private String organizationUrl;
     /**
-     * 版本号
+     * The version number of the document.
      */
     private String version;
     /**
-     * 描述
+     * A description for the document.
      */
     private String description;
 

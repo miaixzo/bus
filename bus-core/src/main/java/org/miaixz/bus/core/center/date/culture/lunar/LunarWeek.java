@@ -34,7 +34,7 @@ import org.miaixz.bus.core.center.date.culture.Loops;
 import org.miaixz.bus.core.center.date.culture.cn.Week;
 
 /**
- * 农历周
+ * Represents a week in the Lunar calendar.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,27 +42,28 @@ import org.miaixz.bus.core.center.date.culture.cn.Week;
 public class LunarWeek extends Loops {
 
     /**
-     * 月
+     * The lunar month this week belongs to.
      */
     protected LunarMonth month;
 
     /**
-     * 索引，0-5
+     * The index of the week within the month, 0-5.
      */
     protected int index;
 
     /**
-     * 起始星期
+     * The starting day of the week.
      */
     protected Week start;
 
     /**
-     * 初始化
+     * Initializes a new LunarWeek instance.
      *
-     * @param year  年
-     * @param month 月
-     * @param index 索引，0-5
-     * @param start 起始星期，1234560分别代表星期一至星期天
+     * @param year  The year.
+     * @param month The month.
+     * @param index The index of the week, 0-5.
+     * @param start The starting day of the week, 1-7 (1 for Monday, 7 for Sunday).
+     * @throws IllegalArgumentException if the index or start day is out of valid range.
      */
     public LunarWeek(int year, int month, int index, int start) {
         if (index < 0 || index > 5) {
@@ -80,55 +81,69 @@ public class LunarWeek extends Loops {
         this.start = Week.fromIndex(start);
     }
 
+    /**
+     * Creates a new LunarWeek instance from year, month, week index, and start day.
+     *
+     * @param year  The year.
+     * @param month The month.
+     * @param index The index of the week, 0-5.
+     * @param start The starting day of the week, 1-7 (1 for Monday, 7 for Sunday).
+     * @return A new {@link LunarWeek} instance.
+     */
     public static LunarWeek fromYm(int year, int month, int index, int start) {
         return new LunarWeek(year, month, index, start);
     }
 
     /**
-     * 农历月
+     * Gets the lunar month this week belongs to.
      *
-     * @return 农历月
+     * @return The {@link LunarMonth}.
      */
     public LunarMonth getLunarMonth() {
         return month;
     }
 
     /**
-     * 年
+     * Gets the year of this lunar week.
      *
-     * @return 年
+     * @return The year.
      */
     public int getYear() {
         return month.getYear();
     }
 
     /**
-     * 月
+     * Gets the month of this lunar week, with negative value indicating a leap month.
      *
-     * @return 月
+     * @return The month.
      */
     public int getMonth() {
         return month.getMonthWithLeap();
     }
 
     /**
-     * 索引
+     * Gets the index of the week within the month, 0-5.
      *
-     * @return 索引，0-5
+     * @return The index.
      */
     public int getIndex() {
         return index;
     }
 
     /**
-     * 起始星期
+     * Gets the starting day of the week.
      *
-     * @return 星期
+     * @return The {@link Week} representing the start day.
      */
     public Week getStart() {
         return start;
     }
 
+    /**
+     * Gets the Chinese name of the week.
+     *
+     * @return The name of the week.
+     */
     public String getName() {
         return Week.WHICH[index];
     }
@@ -138,6 +153,12 @@ public class LunarWeek extends Loops {
         return month + getName();
     }
 
+    /**
+     * Gets the lunar week after a specified number of weeks.
+     *
+     * @param n The number of weeks to add.
+     * @return The {@link LunarWeek} after {@code n} weeks.
+     */
     public LunarWeek next(int n) {
         int startIndex = start.getIndex();
         if (n == 0) {
@@ -168,9 +189,9 @@ public class LunarWeek extends Loops {
     }
 
     /**
-     * 本周第1天
+     * Gets the first day of this week.
      *
-     * @return 农历日
+     * @return The first {@link LunarDay} of this week.
      */
     public LunarDay getFirstDay() {
         LunarDay firstDay = LunarDay.fromYmd(getYear(), getMonth(), 1);
@@ -178,9 +199,9 @@ public class LunarWeek extends Loops {
     }
 
     /**
-     * 本周农历日列表
+     * Gets a list of lunar days in this week.
      *
-     * @return 农历日列表
+     * @return A list of {@link LunarDay} objects for this week.
      */
     public List<LunarDay> getDays() {
         List<LunarDay> l = new ArrayList<>(7);

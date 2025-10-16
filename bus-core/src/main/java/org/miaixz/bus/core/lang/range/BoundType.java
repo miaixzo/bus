@@ -28,7 +28,8 @@
 package org.miaixz.bus.core.lang.range;
 
 /**
- * 边界类型枚举
+ * Enumeration representing the type of a boundary in a range. This defines whether a bound is open or closed, and
+ * whether it's a lower or upper bound.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -36,46 +37,49 @@ package org.miaixz.bus.core.lang.range;
 public enum BoundType {
 
     /**
-     * 表示一个左闭区间，等同于{@code {x | x >= a}}
+     * Represents a closed lower bound, equivalent to {@code {x | x >= a}}. The boundary value is included in the range.
      */
     CLOSE_LOWER_BOUND("[", ">=", -2),
 
     /**
-     * 表示一个左开区间，等同于{@code {x | x > a}}
+     * Represents an open lower bound, equivalent to {@code {x | x > a}}. The boundary value is not included in the
+     * range.
      */
     OPEN_LOWER_BOUND("(", ">", -1),
 
     /**
-     * 表示一个右开区间，等同于{@code {x | x < a}}
+     * Represents an open upper bound, equivalent to {@code {x | x < a}}. The boundary value is not included in the
+     * range.
      */
     OPEN_UPPER_BOUND(")", "<", 1),
 
     /**
-     * 表示一个右闭区间，等同于{@code {x | x <= a}}
+     * Represents a closed upper bound, equivalent to {@code {x | x <= a}}. The boundary value is included in the range.
      */
     CLOSE_UPPER_BOUND("]", "<=", 2);
 
     /**
-     * 符号
+     * The symbol representing the bound type (e.g., '[' for closed lower bound, '(' for open lower bound).
      */
     private final String symbol;
 
     /**
-     * 运算符
+     * The operator representing the inequality (e.g., ">=" for closed lower bound, ">" for open lower bound).
      */
     private final String operator;
 
     /**
-     * 是否为开区间
+     * An integer code indicating the type of bound. Negative values for lower bounds, positive for upper bounds. Even
+     * values for closed bounds, odd values for open bounds.
      */
     private final int code;
 
     /**
-     * 构造
+     * Constructs a {@code BoundType} enum constant.
      *
-     * @param symbol   符号，如`[`或`(`等
-     * @param operator 运算符，如`<`等
-     * @param code     是否为开区间
+     * @param symbol   the string symbol for the bound (e.g., "[", "(")
+     * @param operator the string operator for the inequality (e.g., ">=", ">")
+     * @param code     an integer code representing the bound type
      */
     BoundType(final String symbol, final String operator, final int code) {
         this.symbol = symbol;
@@ -84,82 +88,83 @@ public enum BoundType {
     }
 
     /**
-     * 获取符号
+     * Retrieves the symbol associated with this bound type.
      *
-     * @return 符号
+     * @return the symbol string
      */
     public String getSymbol() {
         return symbol;
     }
 
     /**
-     * 获取code
+     * Retrieves the integer code associated with this bound type.
      *
-     * @return code
+     * @return the integer code
      */
     public int getCode() {
         return code;
     }
 
     /**
-     * 获取运算符
+     * Retrieves the operator string associated with this bound type.
      *
-     * @return 运算符
+     * @return the operator string
      */
     public String getOperator() {
         return operator;
     }
 
     /**
-     * 该边界类型是否与当前边界错位，即一个的左边界，一个是右边界
+     * Checks if this bound type is dislocated with another bound type. Dislocated means one is a lower bound and the
+     * other is an upper bound.
      *
-     * @param boundType 另一边界类型
-     * @return 是否
+     * @param boundType the other bound type to compare with
+     * @return {@code true} if the bound types are dislocated, {@code false} otherwise
      */
     public boolean isDislocated(final BoundType boundType) {
         return code * boundType.code < 0;
     }
 
     /**
-     * 是下界
+     * Checks if this bound type represents a lower bound.
      *
-     * @return 是否
+     * @return {@code true} if it is a lower bound, {@code false} otherwise
      */
     public boolean isLowerBound() {
         return code < 0;
     }
 
     /**
-     * 是上界
+     * Checks if this bound type represents an upper bound.
      *
-     * @return 是否
+     * @return {@code true} if it is an upper bound, {@code false} otherwise
      */
     public boolean isUpperBound() {
         return code > 0;
     }
 
     /**
-     * 是闭区间
+     * Checks if this bound type represents a closed interval (inclusive).
      *
-     * @return 是否
+     * @return {@code true} if it is a closed bound, {@code false} otherwise
      */
     public boolean isClose() {
         return (code & 1) == 0;
     }
 
     /**
-     * 是开区间
+     * Checks if this bound type represents an open interval (exclusive).
      *
-     * @return 是否
+     * @return {@code true} if it is an open bound, {@code false} otherwise
      */
     public boolean isOpen() {
         return (code & 1) == 1;
     }
 
     /**
-     * 对边界类型取反
+     * Returns the negated bound type.
      *
-     * @return 取反后的边界类型
+     * @return the {@code BoundType} that is the negation of this bound type
      */
     public BoundType negate() {
         if (isLowerBound()) {

@@ -30,7 +30,7 @@ package org.miaixz.bus.core.lang.loader;
 import org.miaixz.bus.core.lang.Symbol;
 
 /**
- * ANT风格路径过滤器
+ * An ANT-style path filter that extends {@link RegexFilter} to provide filtering based on ANT-style path expressions.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,26 +38,26 @@ import org.miaixz.bus.core.lang.Symbol;
 public class AntFilter extends RegexFilter implements Filter {
 
     /**
-     * 符号
+     * Special characters in ANT-style paths that need to be escaped when converting to regular expressions.
      */
     public static final String[] SYMBOLS = { Symbol.BACKSLASH, Symbol.DOLLAR, Symbol.PARENTHESE_LEFT,
             Symbol.PARENTHESE_RIGHT, Symbol.PLUS, Symbol.DOT, Symbol.BRACKET_LEFT, Symbol.BRACKET_RIGHT, Symbol.CARET,
             Symbol.BRACE_LEFT, Symbol.BRACE_RIGHT, Symbol.OR };
 
     /**
-     * 构造
+     * Constructs an {@code AntFilter} with the given ANT-style path expression.
      *
-     * @param ant ANT风格路径表达式
+     * @param ant The ANT-style path expression.
      */
     public AntFilter(String ant) {
         super(convert(ant));
     }
 
     /**
-     * 将ANT风格路径表达式转换成正则表达式
+     * Converts an ANT-style path expression into a regular expression.
      *
-     * @param ant ANT风格路径表达式
-     * @return 正则表达式
+     * @param ant The ANT-style path expression to convert.
+     * @return The corresponding regular expression string.
      */
     private static String convert(String ant) {
         String regex = ant;

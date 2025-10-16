@@ -30,7 +30,8 @@ package org.miaixz.bus.proxy;
 import org.miaixz.bus.core.xyz.ReflectKit;
 
 /**
- * 动态代理引擎接口
+ * An interface for a dynamic proxy provider. Implementations of this interface define the mechanism for creating proxy
+ * objects, such as using JDK proxies or CGLIB.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,22 +39,22 @@ import org.miaixz.bus.core.xyz.ReflectKit;
 public interface Provider {
 
     /**
-     * 创建代理
+     * Creates a proxy object for the given target, applying the specified aspect.
      *
-     * @param <T>    代理对象类型
-     * @param target 被代理对象
-     * @param aspect 切面实现
-     * @return 代理对象
+     * @param <T>    The type of the target object.
+     * @param target The object to be proxied.
+     * @param aspect The aspect implementation containing the advice logic.
+     * @return The proxied object.
      */
     <T> T proxy(T target, Aspect aspect);
 
     /**
-     * 创建代理
+     * Creates a proxy object for the given target, automatically instantiating the aspect class.
      *
-     * @param <T>         代理对象类型
-     * @param target      被代理对象
-     * @param aspectClass 切面实现类，自动实例化
-     * @return 代理对象
+     * @param <T>         The type of the target object.
+     * @param target      The object to be proxied.
+     * @param aspectClass The class of the aspect to be instantiated and applied.
+     * @return The proxied object.
      */
     default <T> T proxy(final T target, final Class<? extends Aspect> aspectClass) {
         return proxy(target, ReflectKit.newInstanceIfPossible(aspectClass));

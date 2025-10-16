@@ -31,7 +31,8 @@ import java.io.File;
 import java.io.InputStream;
 
 /**
- * 文档转换器的默认实现。此实现将使用提供的office manager执行文档转换. 必须启动所提供的office管理器才能被此转换器使用.
+ * Default implementation of a document converter. This implementation uses the provided office manager to perform
+ * document conversions. The provided office manager must be started for this converter to be used.
  *
  * @author Kimi Liu
  * @since Java 17+

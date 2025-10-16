@@ -33,28 +33,37 @@ import java.util.Enumeration;
 import org.miaixz.bus.core.io.resource.Resource;
 
 /**
- * 模式匹配资源加载器
+ * An abstract resource loader that supports pattern matching for resource paths. This loader delegates the actual
+ * resource loading to another {@link Loader} instance after interpreting the pattern to determine the base path,
+ * recursion, and filtering logic.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public abstract class PatternLoader extends DelegateLoader implements Loader {
 
+    /**
+     * Constructs a new {@code PatternLoader} with a specified delegate {@link Loader}.
+     *
+     * @param delegate The delegate loader to use for actual resource loading.
+     */
     protected PatternLoader(Loader delegate) {
         super(delegate);
     }
 
     /**
-     * 加载匹配模式表达式的所有资源,由于模式表达式中有可能表达了是否递归加载的含义,
-     * 所以缺省情况下recursively参数会被忽略,取而代之的是{@link PatternLoader#recursively(String)}的返回值,
-     * 如果字类实现的模式表达式并不能表达是否递归加载的含义,需要重写该方法以满足更多定制化的需求
-     * 另外当filter参数不为null时,由模式表达式推导出的过滤器将会和filter参数混合成一个{@link AllFilter}混合过滤器
+     * Loads all resources that match the given pattern expression. The {@code recursively} parameter might be ignored
+     * if the pattern itself implies recursion. Its behavior is determined by the return value of
+     * {@link PatternLoader#recursively(String)}. If the subclass's pattern expression cannot express recursion, this
+     * method should be overridden to meet more customized requirements. Additionally, if the {@code filter} parameter
+     * is not {@code null}, the filter derived from the pattern will be combined with the {@code filter} parameter into
+     * an {@link AllFilter} composite filter.
      *
-     * @param pattern     模式表达式
-     * @param recursively 递归加载
-     * @param filter      过滤器
-     * @return 所有匹配模式表达式的资源
-     * @throws IOException I/O 异常
+     * @param pattern     The pattern expression for resources.
+     * @param recursively Whether to load resources recursively (may be overridden by pattern interpretation).
+     * @param filter      An additional filter to apply to resources, or {@code null} if no additional filter is needed.
+     * @return An enumeration of all resources matching the pattern expression.
+     * @throws IOException If an I/O error occurs during resource loading.
      */
     @Override
     public Enumeration<Resource> load(String pattern, boolean recursively, Filter filter) throws IOException {
@@ -70,26 +79,26 @@ public abstract class PatternLoader extends DelegateLoader implements Loader {
     }
 
     /**
-     * 根据资源表达式推导出资源根路径
+     * Derives the root path for resources based on the pattern expression.
      *
-     * @param pattern 资源表达式
-     * @return 资源根路径
+     * @param pattern The pattern expression.
+     * @return The root path for resources.
      */
     protected abstract String path(String pattern);
 
     /**
-     * 根据资源表达式推导出是否从根路径开始递归加载
+     * Determines whether to recursively load resources starting from the root path, based on the pattern expression.
      *
-     * @param pattern 资源表达式
-     * @return 是否从根路径开始递归加载
+     * @param pattern The pattern expression.
+     * @return {@code true} if resources should be loaded recursively, {@code false} otherwise.
      */
     protected abstract boolean recursively(String pattern);
 
     /**
-     * 根据资源表达式推导出资源过滤器
+     * Derives a resource filter based on the pattern expression.
      *
-     * @param pattern 资源表达式
-     * @return 出资源过滤器
+     * @param pattern The pattern expression.
+     * @return A {@link Filter} instance derived from the pattern.
      */
     protected abstract Filter filter(String pattern);
 

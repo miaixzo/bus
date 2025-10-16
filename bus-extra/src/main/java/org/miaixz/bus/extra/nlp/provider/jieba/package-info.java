@@ -26,7 +26,9 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Jieba分词引擎实现 项目地址：https://github.com/huaban/jieba-analysis
+ * Provides the Jieba word segmentation engine implementation. This package contains classes that integrate with the
+ * Jieba NLP library for Chinese word segmentation, adapting its functionalities to the common NLP interfaces. Project
+ * homepage: <a href="https://github.com/huaban/jieba-analysis">https://github.com/huaban/jieba-analysis</a>
  *
  * @author Kimi Liu
  * @since Java 17+

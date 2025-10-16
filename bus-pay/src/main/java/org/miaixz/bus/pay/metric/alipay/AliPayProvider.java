@@ -55,8 +55,6 @@ import org.miaixz.bus.pay.metric.AbstractProvider;
  */
 public class AliPayProvider extends AbstractProvider<Material, Context> {
 
-    private static final String CHARSET_UTF8 = "UTF-8";
-
     public AliPayProvider(Context context) {
         this(context, null);
     }
@@ -1475,7 +1473,7 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
         params.put("method", method);
         params.put("app_id", context.getAppId());
         params.put("timestamp", DateKit.format(new Date(), "yyyy-MM-dd HH:mm:ss"));
-        params.put("charset", CHARSET_UTF8);
+        params.put("charset", Charset.DEFAULT_UTF_8);
         params.put("version", "1.0");
         if (!StringKit.isEmpty(notifyUrl)) {
             params.put("notify_url", notifyUrl);
@@ -1541,7 +1539,7 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
             boolean isValid = AliPayBuilder.rsaCertCheckV1ByContent(
                     verifyParams,
                     context.getPublicKey(),
-                    CHARSET_UTF8,
+                    Charset.DEFAULT_UTF_8,
                     Algorithm.RSA2.getValue());
             if (!isValid) {
                 throw new RuntimeException("Signature verification failed");

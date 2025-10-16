@@ -36,8 +36,12 @@ import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.exception.InternalException;
 
 /**
- * 读取带BOM头的流内容，{@code getCharset()}方法调用后会得到BOM头的编码，且会去除BOM头
- * BOM定义：<a href="http://www.unicode.org/unicode/faq/utf_bom.html">http://www.unicode.org/unicode/faq/utf_bom.html</a>
+ * An {@link InputStream} wrapper that detects and skips a Byte Order Mark (BOM) from the beginning of the stream. After
+ * calling {@code getCharset()}, the detected character set (if a BOM is present) will be returned, and the BOM bytes
+ * will be effectively removed from the stream.
+ * <p>
+ * BOM definitions:
+ * <a href="http://www.unicode.org/unicode/faq/utf_bom.html">http://www.unicode.org/unicode/faq/utf_bom.html</a>
  * <ul>
  * <li>00 00 FE FF = UTF-32, big-endian</li>
  * <li>FF FE 00 00 = UTF-32, little-endian</li>
@@ -45,42 +49,59 @@ import org.miaixz.bus.core.lang.exception.InternalException;
  * <li>FE FF = UTF-16, big-endian</li>
  * <li>FF FE = UTF-16, little-endian</li>
  * </ul>
- * 使用： <code>
+ * <p>
+ * Example usage:
+ * 
+ * <pre>{@code
  * String enc = "UTF-8"; // or NULL to use systemdefault
  * FileInputStream fis = new FileInputStream(file);
  * BOMInputStream uin = new BOMInputStream(fis, enc);
  * enc = uin.getCharset(); // check and skip possible BOM bytes
- * </code>
+ * }</pre>
  * <p>
- * 参考： <a href=
- * "http://akini.mbnet.fi/java/unicodereader/UnicodeInputStream.java.txt">http://www.unicode.org/unicode/faq/utf_bom.html</a>
- * </p>
+ * Reference: <a href="http://akini.mbnet.fi/java/unicodereader/UnicodeInputStream.java.txt">
+ * http://akini.mbnet.fi/java/unicodereader/UnicodeInputStream.java.txt</a>
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class BOMInputStream extends InputStream {
 
+    /**
+     * The maximum number of bytes to check for a BOM.
+     */
     private static final int BOM_SIZE = 4;
+    /**
+     * The underlying {@link PushbackInputStream} used for reading and pushing back bytes.
+     */
     private final PushbackInputStream in;
+    /**
+     * The default character set to use if no BOM is detected.
+     */
     private final String defaultCharset;
+    /**
+     * A flag indicating whether the BOM detection and charset initialization has been performed.
+     */
     private boolean initialized = false;
+    /**
+     * The detected character set, or the default character set if no BOM is found.
+     */
     private String charset;
 
     /**
-     * 构造
+     * Constructs a new {@code BOMInputStream} with the given input stream and a default character set of UTF-8.
      *
-     * @param in 流
+     * @param in The input stream to wrap.
      */
     public BOMInputStream(final InputStream in) {
         this(in, Charset.DEFAULT_UTF_8);
     }
 
     /**
-     * 构造
+     * Constructs a new {@code BOMInputStream} with the given input stream and a specified default character set.
      *
-     * @param in             流
-     * @param defaultCharset 默认编码
+     * @param in             The input stream to wrap.
+     * @param defaultCharset The default character set to use if no BOM is detected.
      */
     public BOMInputStream(final InputStream in, final String defaultCharset) {
         this.in = new PushbackInputStream(in, BOM_SIZE);
@@ -88,18 +109,20 @@ public class BOMInputStream extends InputStream {
     }
 
     /**
-     * 获取默认编码
+     * Returns the default character set used by this stream.
      *
-     * @return 默认编码
+     * @return The default character set.
      */
     public String getDefaultCharset() {
         return this.defaultCharset;
     }
 
     /**
-     * 获取BOM头中的编码
+     * Returns the character set detected from the BOM, or the default character set if no BOM is present. This method
+     * triggers the BOM detection and removal if it hasn't been performed yet.
      *
-     * @return 编码
+     * @return The detected or default character set.
+     * @throws InternalException If an {@link IOException} occurs during BOM detection.
      */
     public String getCharset() {
         if (!this.initialized) {
@@ -112,12 +135,25 @@ public class BOMInputStream extends InputStream {
         return this.charset;
     }
 
+    /**
+     * Closes the underlying input stream.
+     *
+     * @throws IOException If an I/O error occurs.
+     */
     @Override
     public void close() throws IOException {
         this.initialized = true;
         in.close();
     }
 
+    /**
+     * Reads the next byte of data from the input stream. The value byte is returned as an {@code int} in the range
+     * {@code 0} to {@code 255}. If no byte is available because the end of the stream has been reached, the value
+     * {@code -1} is returned. This method triggers the BOM detection and removal if it hasn't been performed yet.
+     *
+     * @return The next byte of data, or {@code -1} if the end of the stream is reached.
+     * @throws IOException If an I/O error occurs.
+     */
     @Override
     public int read() throws IOException {
         this.initialized = true;
@@ -125,10 +161,10 @@ public class BOMInputStream extends InputStream {
     }
 
     /**
-     * Read-ahead four bytes and check for BOM marks. Extra bytes are unread back to the stream, only BOM bytes are
-     * skipped.
+     * Reads ahead a few bytes and checks for BOM marks. If a BOM is found, its bytes are skipped, and the corresponding
+     * character set is determined. Any non-BOM bytes read are pushed back to the stream.
      *
-     * @throws IOException 读取引起的异常
+     * @throws IOException If an I/O error occurs during reading or pushing back bytes.
      */
     protected void init() throws IOException {
         if (this.initialized) {

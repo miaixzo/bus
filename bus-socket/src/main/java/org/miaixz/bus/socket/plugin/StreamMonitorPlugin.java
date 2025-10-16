@@ -27,6 +27,12 @@
 */
 package org.miaixz.bus.socket.plugin;
 
+import org.miaixz.bus.core.center.date.Formatter;
+import org.miaixz.bus.core.xyz.ByteKit;
+import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.socket.metric.channel.AsynchronousSocketChannelProxy;
+import org.miaixz.bus.socket.metric.channel.UnsupportedAsynchronousSocketChannel;
+
 import java.io.IOException;
 import java.net.SocketAddress;
 import java.nio.ByteBuffer;
@@ -37,20 +43,23 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 
-import org.miaixz.bus.core.center.date.Formatter;
-import org.miaixz.bus.core.xyz.ByteKit;
-import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.socket.metric.channels.AsynchronousSocketChannelProxy;
-import org.miaixz.bus.socket.metric.channels.UnsupportedAsynchronousSocketChannel;
-
 /**
- * 传输层码流监控插件
+ * A plugin for monitoring the byte stream at the transport layer.
+ * <p>
+ * This plugin intercepts read and write operations on {@link AsynchronousSocketChannel}s and logs the transmitted data,
+ * providing visibility into the raw communication stream.
+ * </p>
  *
+ * @param <T> the type of message object entity handled by this plugin
  * @author Kimi Liu
  * @since Java 17+
  */
 public class StreamMonitorPlugin<T> extends AbstractPlugin<T> {
 
+    /**
+     * A {@link BiConsumer} that logs incoming byte streams in blue hexadecimal format. It displays the timestamp,
+     * remote and local addresses, and the byte content.
+     */
     public static final BiConsumer<AsynchronousSocketChannel, byte[]> BLUE_HEX_INPUT_STREAM = (channel, bytes) -> {
         try {
             Logger.info(
@@ -61,6 +70,10 @@ public class StreamMonitorPlugin<T> extends AbstractPlugin<T> {
             e.printStackTrace();
         }
     };
+    /**
+     * A {@link BiConsumer} that logs outgoing byte streams in red hexadecimal format. It displays the timestamp, local
+     * and remote addresses, and the byte content.
+     */
     public static final BiConsumer<AsynchronousSocketChannel, byte[]> RED_HEX_OUTPUT_STREAM = (channel, bytes) -> {
         try {
             Logger.info(
@@ -72,6 +85,10 @@ public class StreamMonitorPlugin<T> extends AbstractPlugin<T> {
         }
     };
 
+    /**
+     * A {@link BiConsumer} that logs incoming byte streams in blue text format. It displays the timestamp, remote and
+     * local addresses, and the byte content as a string.
+     */
     public static final BiConsumer<AsynchronousSocketChannel, byte[]> BLUE_TEXT_INPUT_STREAM = (channel, bytes) -> {
         try {
             Logger.info(
@@ -82,6 +99,10 @@ public class StreamMonitorPlugin<T> extends AbstractPlugin<T> {
             e.printStackTrace();
         }
     };
+    /**
+     * A {@link BiConsumer} that logs outgoing byte streams in red text format. It displays the timestamp, local and
+     * remote addresses, and the byte content as a string.
+     */
     public static final BiConsumer<AsynchronousSocketChannel, byte[]> RED_TEXT_OUTPUT_STREAM = (channel, bytes) -> {
         try {
             Logger.info(
@@ -92,13 +113,28 @@ public class StreamMonitorPlugin<T> extends AbstractPlugin<T> {
             e.printStackTrace();
         }
     };
+    /**
+     * The consumer for processing and logging incoming byte streams.
+     */
     private final BiConsumer<AsynchronousSocketChannel, byte[]> inputStreamConsumer;
+    /**
+     * The consumer for processing and logging outgoing byte streams.
+     */
     private final BiConsumer<AsynchronousSocketChannel, byte[]> outputStreamConsumer;
 
+    /**
+     * Constructs a {@code StreamMonitorPlugin} with default hexadecimal stream consumers.
+     */
     public StreamMonitorPlugin() {
         this(BLUE_HEX_INPUT_STREAM, RED_HEX_OUTPUT_STREAM);
     }
 
+    /**
+     * Constructs a {@code StreamMonitorPlugin} with custom input and output stream consumers.
+     *
+     * @param inputStreamConsumer  the consumer for incoming byte streams
+     * @param outputStreamConsumer the consumer for outgoing byte streams
+     */
     public StreamMonitorPlugin(BiConsumer<AsynchronousSocketChannel, byte[]> inputStreamConsumer,
             BiConsumer<AsynchronousSocketChannel, byte[]> outputStreamConsumer) {
         this.inputStreamConsumer = Objects.requireNonNull(inputStreamConsumer);
@@ -110,13 +146,38 @@ public class StreamMonitorPlugin<T> extends AbstractPlugin<T> {
         return new StreamMonitorAsynchronousSocketChannel(channel);
     }
 
+    /**
+     * A {@link CompletionHandler} wrapper that logs the read/written data before delegating to the original handler.
+     *
+     * @param <A> the type of the attachment object
+     */
     static class MonitorCompletionHandler<A> implements CompletionHandler<Integer, A> {
 
+        /**
+         * The original completion handler to delegate to.
+         */
         CompletionHandler<Integer, A> handler;
+        /**
+         * The consumer to log the byte stream.
+         */
         BiConsumer<AsynchronousSocketChannel, byte[]> consumer;
+        /**
+         * The buffer containing the data.
+         */
         ByteBuffer buffer;
+        /**
+         * The asynchronous socket channel being monitored.
+         */
         AsynchronousSocketChannel channel;
 
+        /**
+         * Constructs a {@code MonitorCompletionHandler}.
+         *
+         * @param channel  the asynchronous socket channel
+         * @param handler  the original completion handler
+         * @param consumer the consumer for logging the stream
+         * @param buffer   the ByteBuffer involved in the operation
+         */
         public MonitorCompletionHandler(AsynchronousSocketChannel channel, CompletionHandler<Integer, A> handler,
                 BiConsumer<AsynchronousSocketChannel, byte[]> consumer, ByteBuffer buffer) {
             this.channel = new UnsupportedAsynchronousSocketChannel(channel) {
@@ -153,26 +214,38 @@ public class StreamMonitorPlugin<T> extends AbstractPlugin<T> {
         }
     }
 
+    /**
+     * Utility class for console color codes.
+     */
     static class ConsoleColors {
 
         /**
-         * 重置颜色
+         * ANSI escape code to reset console colors.
          */
         public static final String RESET = "\033[0m";
         /**
-         * 蓝色
+         * ANSI escape code for blue text.
          */
         public static final String BLUE = "\033[34m";
 
         /**
-         * 红色
+         * ANSI escape code for red text.
          */
         public static final String RED = "\033[31m";
 
     }
 
+    /**
+     * An internal {@link AsynchronousSocketChannelProxy} that intercepts read and write operations to log the byte
+     * streams using the configured consumers.
+     */
     class StreamMonitorAsynchronousSocketChannel extends AsynchronousSocketChannelProxy {
 
+        /**
+         * Constructs a {@code StreamMonitorAsynchronousSocketChannel}.
+         *
+         * @param asynchronousSocketChannel the underlying {@link AsynchronousSocketChannel} to proxy
+         */
         public StreamMonitorAsynchronousSocketChannel(AsynchronousSocketChannel asynchronousSocketChannel) {
             super(asynchronousSocketChannel);
         }

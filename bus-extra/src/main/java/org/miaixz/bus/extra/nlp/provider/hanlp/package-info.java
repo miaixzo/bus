@@ -26,7 +26,9 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * HanLP分词引擎实现 项目地址：https://github.com/hankcs/HanLP
+ * Provides the HanLP word segmentation engine implementation. This package contains classes that integrate with the
+ * HanLP NLP library for Chinese word segmentation, adapting its functionalities to the common NLP interfaces. Project
+ * homepage: <a href="https://github.com/hankcs/HanLP">https://github.com/hankcs/HanLP</a>
  *
  * @author Kimi Liu
  * @since Java 17+

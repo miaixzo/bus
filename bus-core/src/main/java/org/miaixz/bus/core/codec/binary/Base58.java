@@ -36,60 +36,73 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 
 /**
- * Base58工具类，提供Base58的编码和解码方案 参考：
- * <a href="https://github.com/Anujraval24/Base58Encoding">https://github.com/Anujraval24/Base58Encoding</a>
- * 规范见：<a href="https://en.bitcoin.it/wiki/Base58Check_encoding">https://en.bitcoin.it/wiki/Base58Check_encoding</a>
+ * A utility class for Base58 encoding and decoding.
+ * <p>
+ * Base58 is a binary-to-text encoding scheme used in Bitcoin and other cryptocurrencies. It is similar to Base64 but
+ * avoids non-alphanumeric characters and letters that might look ambiguous when printed (0, O, I, l).
+ *
+ * <p>
+ * This implementation includes support for Base58Check, which adds a checksum to the data to prevent transcription
+ * errors. For the specification, see <a href="https://en.bitcoin.it/wiki/Base58Check_encoding">Base58Check
+ * encoding</a>. The core encoding/decoding logic is based on the implementation from
+ * <a href="https://github.com/Anujraval24/Base58Encoding">https://github.com/Anujraval24/Base58Encoding</a>.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class Base58 {
 
+    /**
+     * The size of the checksum in bytes.
+     */
     private static final int CHECKSUM_SIZE = 4;
 
     /**
-     * Base58编码 包含版本位和校验位
+     * Encodes the given data using Base58Check, including a version byte and a checksum.
      *
-     * @param version 编码版本，{@code null}表示不包含版本位
-     * @param data    被编码的数组，添加校验和。
-     * @return 编码后的字符串
+     * @param version The version byte. If {@code null}, no version byte is prepended.
+     * @param data    The data to be encoded.
+     * @return The Base58Check-encoded string.
      */
     public static String encodeChecked(final Integer version, final byte[] data) {
         return encode(addChecksum(version, data));
     }
 
     /**
-     * Base58编码
+     * Encodes the given data into a Base58 string without a checksum.
      *
-     * @param data 被编码的数据，不带校验和。
-     * @return 编码后的字符串
+     * @param data The data to be encoded.
+     * @return The Base58-encoded string.
      */
     public static String encode(final byte[] data) {
         return Base58Provider.INSTANCE.encode(data);
     }
 
     /**
-     * Base58解码 解码包含标志位验证和版本呢位去除
+     * Decodes a Base58Check-encoded string, verifies the checksum, and removes the version byte. It automatically
+     * detects whether a version byte is present.
      *
-     * @param encoded 被解码的base58字符串
-     * @return 解码后的bytes
-     * @throws ValidateException 标志位验证错误抛出此异常
+     * @param encoded The Base58Check-encoded string to decode.
+     * @return The decoded byte array (payload).
+     * @throws ValidateException If the checksum is invalid.
      */
     public static byte[] decodeChecked(final CharSequence encoded) throws ValidateException {
         try {
+            // Try decoding with a version byte first.
             return decodeChecked(encoded, true);
         } catch (final ValidateException ignore) {
+            // If that fails, try decoding without a version byte.
             return decodeChecked(encoded, false);
         }
     }
 
     /**
-     * Base58解码 解码包含标志位验证和版本呢位去除
+     * Decodes a Base58Check-encoded string, verifies the checksum, and optionally removes the version byte.
      *
-     * @param encoded     被解码的base58字符串
-     * @param withVersion 是否包含版本位
-     * @return 解码后的bytes
-     * @throws ValidateException 标志位验证错误抛出此异常
+     * @param encoded     The Base58Check-encoded string to decode.
+     * @param withVersion {@code true} if the encoded data includes a version byte.
+     * @return The decoded byte array (payload).
+     * @throws ValidateException If the checksum is invalid.
      */
     public static byte[] decodeChecked(final CharSequence encoded, final boolean withVersion) throws ValidateException {
         final byte[] valueWithChecksum = decode(encoded);
@@ -97,24 +110,26 @@ public class Base58 {
     }
 
     /**
-     * Base58解码
+     * Decodes a standard Base58-encoded string into a byte array.
      *
-     * @param encoded 被编码的base58字符串
-     * @return 解码后的bytes
+     * @param encoded The Base58-encoded string.
+     * @return The decoded byte array.
      */
     public static byte[] decode(final CharSequence encoded) {
         return Base58Provider.INSTANCE.decode(encoded);
     }
 
     /**
-     * 验证并去除验证位和版本位
+     * Verifies the checksum and removes both the checksum and the version byte from the data.
      *
-     * @param data        编码的数据
-     * @param withVersion 是否包含版本位
-     * @return 载荷数据
+     * @param data        The encoded data including checksum and optional version byte.
+     * @param withVersion {@code true} if a version byte is present.
+     * @return The original payload data.
+     * @throws ValidateException if the checksum does not match.
      */
     private static byte[] verifyAndRemoveChecksum(final byte[] data, final boolean withVersion) {
-        final byte[] payload = Arrays.copyOfRange(data, withVersion ? 1 : 0, data.length - CHECKSUM_SIZE);
+        final int payloadStart = withVersion ? 1 : 0;
+        final byte[] payload = Arrays.copyOfRange(data, payloadStart, data.length - CHECKSUM_SIZE);
         final byte[] checksum = Arrays.copyOfRange(data, data.length - CHECKSUM_SIZE, data.length);
         final byte[] expectedChecksum = checksum(payload);
         if (!Arrays.equals(checksum, expectedChecksum)) {
@@ -124,48 +139,53 @@ public class Base58 {
     }
 
     /**
-     * 数据 + 校验码
+     * Prepends a version byte (if provided) and appends a checksum to the payload.
      *
-     * @param version 版本，{@code null}表示不添加版本位
-     * @param payload Base58数据（不含校验码）
-     * @return Base58数据
+     * @param version The version byte. If {@code null}, no version byte is added.
+     * @param payload The data to which the checksum will be appended.
+     * @return The data with version and checksum.
      */
     private static byte[] addChecksum(final Integer version, final byte[] payload) {
         final byte[] addressBytes;
+        int payloadOffset = 0;
         if (null != version) {
             addressBytes = new byte[1 + payload.length + CHECKSUM_SIZE];
             addressBytes[0] = (byte) version.intValue();
-            System.arraycopy(payload, 0, addressBytes, 1, payload.length);
+            payloadOffset = 1;
         } else {
             addressBytes = new byte[payload.length + CHECKSUM_SIZE];
-            System.arraycopy(payload, 0, addressBytes, 0, payload.length);
         }
+        System.arraycopy(payload, 0, addressBytes, payloadOffset, payload.length);
         final byte[] checksum = checksum(payload);
         System.arraycopy(checksum, 0, addressBytes, addressBytes.length - CHECKSUM_SIZE, CHECKSUM_SIZE);
         return addressBytes;
     }
 
     /**
-     * 获取校验码 计算规则为对数据进行两次sha256计算，然后取{@link #CHECKSUM_SIZE}长度
+     * Calculates the checksum for the given data. The checksum is the first {@link #CHECKSUM_SIZE} bytes of a double
+     * SHA-256 hash of the data.
      *
-     * @param data 数据
-     * @return 校验码
+     * @param data The data to checksum.
+     * @return The checksum.
      */
     private static byte[] checksum(final byte[] data) {
+        // The checksum is the first 4 bytes of the double-SHA-256 hash.
         final byte[] hash = hash256(hash256(data));
         return Arrays.copyOfRange(hash, 0, CHECKSUM_SIZE);
     }
 
     /**
-     * 计算数据的SHA-256值
+     * Calculates the SHA-256 hash of the given data.
      *
-     * @param data 数据
-     * @return sha-256值
+     * @param data The data to hash.
+     * @return The SHA-256 hash.
+     * @throws InternalException if the SHA-256 algorithm is not available.
      */
     private static byte[] hash256(final byte[] data) {
         try {
             return MessageDigest.getInstance("SHA-256").digest(data);
         } catch (final NoSuchAlgorithmException e) {
+            // Should not happen, SHA-256 is a standard algorithm.
             throw new InternalException(e);
         }
     }

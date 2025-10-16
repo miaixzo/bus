@@ -55,7 +55,8 @@ import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.setting.Setting;
 
 /**
- * Properties文件读取封装类
+ * A wrapper class for reading and handling {@code .properties} files. It extends {@code java.util.Properties} with
+ * additional convenience methods for typed data retrieval, automatic reloading, and bean mapping.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -66,44 +67,45 @@ public final class Props extends java.util.Properties implements TypeGetter<Char
     private static final long serialVersionUID = 2852230820065L;
 
     /**
-     * 配置文件缓存
+     * A cache for {@code Props} instances, keyed by file path.
      */
     private static final Map<String, Props> CACHE_PROPS = new ConcurrentHashMap<>();
     /**
-     * 属性文件的Resource
+     * The {@link Resource} object representing the properties file.
      */
     private Resource resource;
-
+    /**
+     * A monitor for watching file changes to support auto-reloading.
+     */
     private WatchMonitor watchMonitor;
     /**
-     * properties文件编码 此属性不能被序列化，故忽略序列化
+     * The character set used for reading the properties file.
      */
     private transient java.nio.charset.Charset charset = Charset.ISO_8859_1;
 
     /**
-     * 构造
+     * Constructs a new, empty {@code Props} object.
      */
     public Props() {
-
     }
 
     /**
-     * 构造，使用相对于Class文件根目录的相对路径
+     * Constructs a {@code Props} object by loading a properties file from the classpath.
      *
-     * @param path 配置文件路径，相对于ClassPath，或者使用绝对路径
+     * @param path The path to the properties file, relative to the classpath root, or an absolute path.
      */
     public Props(final String path) {
         this(path, null);
     }
 
     /**
-     * 构造，使用相对于Class文件根目录的相对路径
+     * Constructs a {@code Props} object by loading a properties file with a specified charset.
      *
-     * @param path    相对或绝对路径
-     * @param charset 自定义编码
+     * @param path    The path to the properties file (relative or absolute).
+     * @param charset The character set to use for reading the file.
      */
     public Props(final String path, final java.nio.charset.Charset charset) {
-        Assert.notBlank(path, "Blank properties file path !");
+        Assert.notBlank(path, "Blank properties file path!");
         if (null != charset) {
             this.charset = charset;
         }
@@ -111,19 +113,19 @@ public final class Props extends java.util.Properties implements TypeGetter<Char
     }
 
     /**
-     * 构造
+     * Constructs a {@code Props} object from a {@link File}.
      *
-     * @param propertiesFile 配置文件对象
+     * @param propertiesFile The properties file.
      */
     public Props(final File propertiesFile) {
         this(propertiesFile, null);
     }
 
     /**
-     * 构造
+     * Constructs a {@code Props} object from a {@link File} with a specified charset.
      *
-     * @param propertiesFile 配置文件对象
-     * @param charset        自定义编码
+     * @param propertiesFile The properties file.
+     * @param charset        The character set to use.
      */
     public Props(final File propertiesFile, final java.nio.charset.Charset charset) {
         Assert.notNull(propertiesFile, "Null properties file!");
@@ -134,13 +136,13 @@ public final class Props extends java.util.Properties implements TypeGetter<Char
     }
 
     /**
-     * 构造，使用URL读取
+     * Constructs a {@code Props} object from a {@link Resource} with a specified charset.
      *
-     * @param resource {@link Resource}
-     * @param charset  自定义编码
+     * @param resource The resource representing the properties file.
+     * @param charset  The character set to use.
      */
     public Props(final Resource resource, final java.nio.charset.Charset charset) {
-        Assert.notNull(resource, "Null properties URL !");
+        Assert.notNull(resource, "Null properties resource!");
         if (null != charset) {
             this.charset = charset;
         }
@@ -148,9 +150,9 @@ public final class Props extends java.util.Properties implements TypeGetter<Char
     }
 
     /**
-     * 构造，使用URL读取
+     * Constructs a {@code Props} object from an existing {@link java.util.Properties} object.
      *
-     * @param properties 属性文件路径
+     * @param properties The properties to copy.
      */
     public Props(final java.util.Properties properties) {
         if (MapKit.isNotEmpty(properties)) {
@@ -159,50 +161,51 @@ public final class Props extends java.util.Properties implements TypeGetter<Char
     }
 
     /**
-     * 构建一个空的Props，用于手动加入参数
+     * Creates a new, empty {@code Props} object.
      *
-     * @return Setting
+     * @return A new {@code Props} instance.
      */
     public static Props of() {
         return new Props();
     }
 
     /**
-     * 获得Classpath下的Properties文件
+     * Creates a {@code Props} object by loading a file from the classpath.
      *
-     * @param resource 资源（相对Classpath的路径）
-     * @return Properties
+     * @param resource The path to the resource, relative to the classpath root.
+     * @return A new {@code Props} instance.
      */
     public static Props of(final String resource) {
         return new Props(resource);
     }
 
     /**
-     * 获得Classpath下的Properties文件
+     * Creates a {@code Props} object by loading a file from the classpath with a specified charset.
      *
-     * @param resource 资源（相对Classpath的路径）
-     * @param charset  自定义编码
-     * @return Properties
+     * @param resource The path to the resource.
+     * @param charset  The character set to use.
+     * @return A new {@code Props} instance.
      */
     public static Props of(final String resource, final java.nio.charset.Charset charset) {
         return new Props(resource, charset);
     }
 
     /**
-     * {@link Props}转为Props
+     * Creates a copy of an existing {@code Props} object.
      *
-     * @param properties {@link Props}
-     * @return Properties
+     * @param properties The {@code Props} object to copy.
+     * @return A new {@code Props} instance.
      */
     public static Props of(final Props properties) {
         return new Props(properties);
     }
 
     /**
-     * 获取当前环境下的配置文件 name可以为不包括扩展名的文件名（默认.properties），也可以是文件名全称
+     * Gets a cached {@code Props} instance for a given resource name. If the name has no extension, {@code .properties}
+     * is assumed.
      *
-     * @param name 文件名，如果没有扩展名，默认为.properties
-     * @return 当前环境下配置文件
+     * @param name The name of the properties file.
+     * @return A cached or new {@code Props} instance.
      */
     public static Props get(final String name) {
         return CACHE_PROPS.computeIfAbsent(name, (filePath) -> {
@@ -215,18 +218,17 @@ public final class Props extends java.util.Properties implements TypeGetter<Char
     }
 
     /**
-     * 解析PROPS
+     * Parses a string content in {@code .properties} format and populates a map.
      *
-     * @param result  数据结果
-     * @param content 数据内容
+     * @param result  The map to populate with the parsed key-value pairs.
+     * @param content The string content to parse.
      */
     public static void parse(Map<String, Object> result, String content) {
         String[] lines = content.split("\n");
         for (String line : lines) {
-            if (StringKit.isBlank(line) || line.startsWith(Symbol.HASH) || line.indexOf(Symbol.EQUAL) < 0) {
+            if (StringKit.isBlank(line) || line.startsWith(Symbol.HASH) || !line.contains(Symbol.EQUAL)) {
                 continue;
             }
-            // 考虑 value包含=的情况
             String key = line.substring(0, line.indexOf(Symbol.EQUAL)).trim();
             String value = line.substring(line.indexOf(Symbol.EQUAL) + 1).trim();
             if (StringKit.isNotBlank(value)) {
@@ -236,44 +238,44 @@ public final class Props extends java.util.Properties implements TypeGetter<Char
     }
 
     /**
-     * 获取给定路径找到的第一个配置文件 * name可以为不包括扩展名的文件名（默认.properties为结尾），也可以是文件名全称
+     * Gets the first {@code Props} instance that can be successfully loaded from a list of resource names.
      *
-     * @param names 文件名，如果没有扩展名，默认为.properties
-     * @return 当前环境下配置文件
+     * @param names The resource names to try.
+     * @return The first found {@code Props} instance, or null if none are found.
      */
     public static Props getFirstFound(final String... names) {
         for (final String name : names) {
             try {
                 return get(name);
             } catch (final InternalException e) {
-                // ignore
+                // Ignore and try the next name.
             }
         }
         return null;
     }
 
     /**
-     * 获取系统参数，例如用户在执行java命令时定义的 -Duse=bus
+     * Gets a {@code Props} instance containing the current system properties.
      *
-     * @return 系统参数Props
+     * @return A new {@code Props} instance with system properties.
      */
     public static Props getProperties() {
         return new Props(System.getProperties());
     }
 
     /**
-     * 初始化配置文件
+     * Initializes this {@code Props} object by loading from the given {@link URL}.
      *
-     * @param url {@link URL}
+     * @param url The URL of the properties file.
      */
     public void load(final URL url) {
         load(ResourceKit.getResource(url));
     }
 
     /**
-     * 初始化配置文件
+     * Initializes this {@code Props} object by loading from the given {@link Resource}.
      *
-     * @param resource {@link Resource}
+     * @param resource The resource to load.
      */
     public void load(final Resource resource) {
         Assert.notNull(resource, "Properties resource must be not null!");
@@ -282,22 +284,21 @@ public final class Props extends java.util.Properties implements TypeGetter<Char
     }
 
     /**
-     * 重新加载配置文件
+     * Reloads the properties from the original resource.
      */
     public void load() {
         this.load(this.resource);
     }
 
     /**
-     * 在配置文件变更时自动加载
+     * Enables or disables automatic reloading of the properties file when it changes on the filesystem.
      *
-     * @param autoReload 是否自动加载
+     * @param autoReload {@code true} to enable auto-reloading, {@code false} to disable it.
      */
     public void autoLoad(final boolean autoReload) {
         if (autoReload) {
-            Assert.notNull(this.resource, "Properties resource must be not null!");
-            // 先关闭之前的监听
-            IoKit.closeQuietly(this.watchMonitor);
+            Assert.notNull(this.resource, "Properties resource must be not null for auto-reloading!");
+            IoKit.closeQuietly(this.watchMonitor); // Close any existing monitor.
             this.watchMonitor = WatchKit.ofModify(this.resource.getUrl(), new SimpleWatcher() {
 
                 @Serial
@@ -322,12 +323,12 @@ public final class Props extends java.util.Properties implements TypeGetter<Char
     }
 
     /**
-     * 根据lambda的方法引用，获取
+     * Gets a value using a lambda method reference to resolve the property name and return type.
      *
-     * @param func 方法引用
-     * @param <P>  参数类型
-     * @param <T>  返回值类型
-     * @return 获取表达式对应属性和返回的对象
+     * @param func The method reference (e.g., {@code Config::getUsername}).
+     * @param <P>  The type of the class containing the method.
+     * @param <T>  The return type of the method.
+     * @return The property value converted to the specified type.
      */
     public <P, T> T get(final FunctionX<P, T> func) {
         final LambdaX lambdaX = LambdaKit.resolve(func);
@@ -335,10 +336,11 @@ public final class Props extends java.util.Properties implements TypeGetter<Char
     }
 
     /**
-     * 获取并删除键值对，当指定键对应值非空时，返回并删除这个值，后边的键对应的值不再查找
+     * Gets and removes a property value. It tries each key in the provided list until a non-null value is found, which
+     * is then returned and removed.
      *
-     * @param keys 键列表，常用于别名
-     * @return 字符串值
+     * @param keys A list of keys to try, often used for aliases.
+     * @return The string value, or null if no key is found.
      */
     public String getAndRemoveString(final String... keys) {
         Object value = null;
@@ -352,23 +354,26 @@ public final class Props extends java.util.Properties implements TypeGetter<Char
     }
 
     /**
-     * 获取一个新的子属性，子属性键值对拥有公共前缀，以.分隔。
+     * Extracts a subset of properties that share a common prefix. The prefix is removed from the keys in the resulting
+     * {@code Props} object.
+     * <p>
+     * Example:
      * 
      * <pre>
-     *     a.b
-     *     a.c
-     *     b.a
+     * a.b = 1
+     * a.c = 2
+     * b.a = 3
      * </pre>
      * 
-     * 则调用getSubProps("a");得到
+     * Calling {@code getSubProps("a")} would return a {@code Props} object containing:
      * 
      * <pre>
-     *     a.b
-     *     a.c
+     * b = 1
+     * c = 2
      * </pre>
      *
-     * @param prefix 前缀，可以不以.结尾
-     * @return 子属性
+     * @param prefix The prefix to match. A dot is automatically appended if not present.
+     * @return A new {@code Props} object containing the subset of properties.
      */
     public Props getSubProps(final String prefix) {
         final Props subProps = new Props();
@@ -386,9 +391,9 @@ public final class Props extends java.util.Properties implements TypeGetter<Char
     }
 
     /**
-     * 转换为标准的{@link Props}对象
+     * Creates a new {@code Props} instance containing all the properties from this one.
      *
-     * @return {@link Props}对象
+     * @return A new {@code Props} instance.
      */
     public Props toProperties() {
         final Props properties = new Props();
@@ -397,39 +402,23 @@ public final class Props extends java.util.Properties implements TypeGetter<Char
     }
 
     /**
-     * 将配置文件转换为Bean，支持嵌套Bean 支持的表达式：
+     * Maps the properties to a new Java Bean object. Supports nested properties.
      *
-     * <pre>
-     * persion
-     * persion.name
-     * persons[3]
-     * person.friends[5].name
-     * ['person']['friends'][5]['name']
-     * </pre>
-     *
-     * @param <T>       Bean类型
-     * @param beanClass Bean类
-     * @return Bean对象
+     * @param <T>       The type of the bean.
+     * @param beanClass The class of the Java Bean to create and populate.
+     * @return The newly created and populated bean object.
      */
     public <T> T toBean(final Class<T> beanClass) {
         return toBean(beanClass, null);
     }
 
     /**
-     * 将配置文件转换为Bean，支持嵌套Bean 支持的表达式：
+     * Maps a subset of properties (filtered by a prefix) to a new Java Bean object.
      *
-     * <pre>
-     * persion
-     * persion.name
-     * persons[3]
-     * person.friends[5].name
-     * ['person']['friends'][5]['name']
-     * </pre>
-     *
-     * @param <T>       Bean类型
-     * @param beanClass Bean类
-     * @param prefix    公共前缀，不指定前缀传null，当指定前缀后非此前缀的属性被忽略
-     * @return Bean对象
+     * @param <T>       The type of the bean.
+     * @param beanClass The class of the Java Bean to create and populate.
+     * @param prefix    The prefix to filter properties by. Only properties starting with this prefix will be mapped.
+     * @return The newly created and populated bean object.
      */
     public <T> T toBean(final Class<T> beanClass, final String prefix) {
         final T bean = ReflectKit.newInstanceIfPossible(beanClass);
@@ -437,55 +426,37 @@ public final class Props extends java.util.Properties implements TypeGetter<Char
     }
 
     /**
-     * 将配置文件转换为Bean，支持嵌套Bean 支持的表达式：
+     * Maps the properties to an existing Java Bean object.
      *
-     * <pre>
-     * persion
-     * persion.name
-     * persons[3]
-     * person.friends[5].name
-     * ['person']['friends'][5]['name']
-     * </pre>
-     *
-     * @param <T>  Bean类型
-     * @param bean Bean对象
-     * @return Bean对象
+     * @param <T>  The type of the bean.
+     * @param bean The Java Bean object to populate.
+     * @return The populated bean object.
      */
     public <T> T toBean(final T bean) {
         return toBean(bean, null);
     }
 
     /**
-     * 将配置文件转换为Bean，支持嵌套Bean 支持的表达式：
+     * Maps a subset of properties (filtered by a prefix) to an existing Java Bean object.
      *
-     * <pre>
-     * persion
-     * persion.name
-     * persons[3]
-     * person.friends[5].name
-     * ['person']['friends'][5]['name']
-     * </pre>
-     *
-     * @param <T>    Bean类型
-     * @param bean   Bean对象
-     * @param prefix 公共前缀，不指定前缀传null，当指定前缀后非此前缀的属性被忽略
-     * @return Bean对象
+     * @param <T>    The type of the bean.
+     * @param bean   The Java Bean object to populate.
+     * @param prefix The prefix to filter properties by.
+     * @return The populated bean object.
      */
     public <T> T toBean(final T bean, String prefix) {
         prefix = StringKit.toStringOrEmpty(StringKit.addSuffixIfNot(prefix, Symbol.DOT));
 
-        String key;
         for (final java.util.Map.Entry<Object, Object> entry : this.entrySet()) {
-            key = (String) entry.getKey();
+            String key = (String) entry.getKey();
             if (!StringKit.startWith(key, prefix)) {
-                // 非指定开头的属性忽略掉
-                continue;
+                continue; // Ignore properties that don't match the prefix
             }
             try {
                 BeanKit.setProperty(bean, StringKit.subSuf(key, prefix.length()), entry.getValue());
             } catch (final Exception e) {
-                // 忽略注入失败的字段（这些字段可能用于其它配置）
-                Logger.debug("Ignore property: [{}],because of: {}", key, e);
+                // Ignore fields that fail to set (they might be for other configurations)
+                Logger.debug("Ignore property: [{}], because of: {}", key, e.getMessage());
             }
         }
 
@@ -493,25 +464,29 @@ public final class Props extends java.util.Properties implements TypeGetter<Char
     }
 
     /**
-     * 设置值，无给定键创建之。设置后未持久化
+     * Sets a property value. If the key does not exist, it is created. This change is not persisted to the file until
+     * {@link #store(String)} is called.
      *
-     * @param key   属性键
-     * @param value 属性值
+     * @param key   The property key.
+     * @param value The property value.
      */
     public void set(final String key, final Object value) {
         super.setProperty(key, value.toString());
     }
 
     /**
-     * 通过lambda批量设置值 实际使用时，可以使用getXXX的方法引用来完成键值对的赋值：
+     * Sets multiple properties using an array of lambda method reference suppliers. This is useful for setting
+     * properties from a bean's getters.
+     * <p>
+     * Example:
      * 
      * <pre>
-     * User user = GenericBuilder.of(User::new).with(User::setUsername, "bus").build();
-     * Setting.of().setFields(user::getNickname, user::getUsername);
+     * User user = new User("test", "Test User");
+     * Props.of().setFields(user::getUsername, user::getNickname);
      * </pre>
      *
-     * @param fields lambda,不能为空
-     * @return this
+     * @param fields An array of suppliers, where each supplier returns a property value.
+     * @return This {@code Props} instance for chaining.
      */
     public Props setFields(final SupplierX<?>... fields) {
         Arrays.stream(fields).forEach(f -> set(LambdaKit.getFieldName(f), f.get()));
@@ -519,28 +494,24 @@ public final class Props extends java.util.Properties implements TypeGetter<Char
     }
 
     /**
-     * 持久化当前设置，会覆盖掉之前的设置
+     * Stores the current properties to a file at the specified absolute path, overwriting its previous content.
      *
-     * @param absolutePath 设置文件的绝对路径
-     * @throws InternalException IO异常，可能为文件未找到
+     * @param absolutePath The absolute path to the destination file.
+     * @throws InternalException if an I/O error occurs.
      */
     public void store(final String absolutePath) throws InternalException {
-        Writer writer = null;
-        try {
-            writer = FileKit.getWriter(absolutePath, charset, false);
+        try (Writer writer = FileKit.getWriter(absolutePath, charset, false)) {
             super.store(writer, null);
         } catch (final IOException e) {
             throw new InternalException(e, "Store properties to [{}] error!", absolutePath);
-        } finally {
-            IoKit.closeQuietly(writer);
         }
     }
 
     /**
-     * 存储当前设置，会覆盖掉以前的设置
+     * Stores the current properties to a file path relative to a given class.
      *
-     * @param path  相对路径
-     * @param clazz 相对的类
+     * @param path  The path relative to the class.
+     * @param clazz The class to which the path is relative.
      */
     public void store(final String path, final Class<?> clazz) {
         this.store(FileKit.getAbsolutePath(path, clazz));

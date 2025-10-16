@@ -30,7 +30,7 @@ package org.miaixz.bus.http.secure;
 import java.security.cert.X509Certificate;
 
 /**
- * 签名证书索引
+ * An index of trusted root certificates.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,10 +38,10 @@ import java.security.cert.X509Certificate;
 public interface TrustRootIndex {
 
     /**
-     * 返回签名为{@code cert}的受信任CA证书
+     * Finds a trusted CA certificate that is an issuer of {@code cert} and has a valid signature.
      *
-     * @param cert 证书信息
-     * @return 签名证书
+     * @param cert The certificate for which to find the issuer.
+     * @return The signing CA certificate, or {@code null} if no trusted issuer is found.
      */
     X509Certificate findByIssuerAndSignature(X509Certificate cert);
 

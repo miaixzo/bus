@@ -36,7 +36,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * 查询企业付款
+ * Query Enterprise Payment model.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,10 +48,25 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class GetTransferInfo extends Material {
 
+    /**
+     * Merchant ID.
+     */
     private String mch_id;
+    /**
+     * Random string.
+     */
     private String nonce_str;
+    /**
+     * Signature.
+     */
     private String sign;
+    /**
+     * Merchant order number.
+     */
     private String out_trade_no;
+    /**
+     * Transaction ID.
+     */
     private String transaction_id;
 
 }

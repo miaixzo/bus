@@ -53,7 +53,7 @@ import org.miaixz.bus.extra.json.JsonKit;
 import lombok.Data;
 
 /**
- * Apple 登录
+ * Apple login provider.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -64,14 +64,32 @@ public class AppleProvider extends AbstractProvider {
 
     private volatile PrivateKey privateKey;
 
+    /**
+     * Constructs an {@code AppleProvider} with the specified context.
+     *
+     * @param context the authentication context
+     */
     public AppleProvider(Context context) {
         super(context, Registry.APPLE);
     }
 
+    /**
+     * Constructs an {@code AppleProvider} with the specified context and cache.
+     *
+     * @param context   the authentication context
+     * @param authCache the cache implementation
+     */
     public AppleProvider(Context context, AuthCache authCache) {
         super(context, Registry.APPLE, authCache);
     }
 
+    /**
+     * Returns the authorization URL with a {@code state} parameter. The {@code state} will be included in the
+     * authorization callback.
+     *
+     * @param state the parameter to verify the authorization process, which can prevent CSRF attacks
+     * @return the authorization URL
+     */
     @Override
     public String authorize(String state) {
         return Builder.fromUrl(super.authorize(state)).queryParam("response_mode", "form_post")
@@ -79,13 +97,20 @@ public class AppleProvider extends AbstractProvider {
                 .build();
     }
 
+    /**
+     * Retrieves the access token from Apple's authorization server.
+     *
+     * @param callback the callback object containing the authorization code
+     * @return the {@link AuthToken} containing access token details
+     * @throws AuthorizedException if parsing the response fails or an error is returned by Apple
+     */
     @Override
     public AuthToken getAccessToken(Callback callback) {
         if (!StringKit.isEmpty(callback.getError())) {
             throw new AuthorizedException(callback.getError());
         }
         this.context.setAppSecret(this.getToken());
-        // 如果失败将抛出 AuthorizedException
+        // If it fails, an AuthorizedException will be thrown
         String response = doPostAuthorizationCode(callback.getCode());
         try {
             Map<String, Object> accessTokenObject = JsonKit.toPojo(response, Map.class);
@@ -120,7 +145,7 @@ public class AppleProvider extends AbstractProvider {
                         }
                     }
                 } catch (Exception ignored) {
-                    // 忽略用户信息的解析错误，继续返回 token
+                    // Ignore parsing errors for user information, continue to return token
                 }
             }
             return builder.build();
@@ -129,6 +154,13 @@ public class AppleProvider extends AbstractProvider {
         }
     }
 
+    /**
+     * Retrieves user information from Apple's ID token payload.
+     *
+     * @param authToken the {@link AuthToken} obtained after successful authorization, containing the ID token
+     * @return {@link Material} containing the user's information
+     * @throws AuthorizedException if parsing the ID token payload fails or required user information is missing
+     */
     @Override
     public Material getUserInfo(AuthToken authToken) {
         Base64.Decoder urlDecoder = Base64.getUrlDecoder();
@@ -153,6 +185,13 @@ public class AppleProvider extends AbstractProvider {
         }
     }
 
+    /**
+     * Checks the completeness of the context configuration for Apple authentication. Ensures that appKey, appSecret,
+     * kid, and teamId are not empty.
+     *
+     * @param context the authentication context
+     * @throws AuthorizedException if any required configuration field is empty
+     */
     @Override
     protected void check(Context context) {
         super.check(context);
@@ -171,9 +210,9 @@ public class AppleProvider extends AbstractProvider {
     }
 
     /**
-     * 获取token
+     * Retrieves the client secret token for Apple authentication.
      *
-     * @return string
+     * @return the client secret token string
      * @see <a href=
      *      "https://developer.apple.com/documentation/accountorganizationaldatasharing/creating-a-client-secret">creating-a-client-secret</a>
      */
@@ -187,6 +226,13 @@ public class AppleProvider extends AbstractProvider {
         return null;
     }
 
+    /**
+     * Retrieves the private key from the application secret (PEM format). The private key is used for signing the
+     * client secret.
+     *
+     * @return the {@link PrivateKey} instance
+     * @throws AuthorizedException if there is an error reading or converting the private key
+     */
     private PrivateKey getPrivateKey() {
         if (this.privateKey == null) {
             synchronized (this) {
@@ -204,6 +250,9 @@ public class AppleProvider extends AbstractProvider {
         return this.privateKey;
     }
 
+    /**
+     * Data class for Apple user name information.
+     */
     @Data
     static class AppleUserInfo {
 
@@ -211,6 +260,9 @@ public class AppleProvider extends AbstractProvider {
         private String email;
     }
 
+    /**
+     * Data class for Apple username components.
+     */
     @Data
     static class AppleUsername {
 

@@ -36,21 +36,46 @@ import org.miaixz.bus.shade.safety.provider.DecryptorProvider;
 import org.miaixz.bus.shade.safety.provider.EntryDecryptorProvider;
 
 /**
- * 文件夹解密器
+ * A {@link DecryptorProvider} implementation for decrypting files and directories. This provider can recursively
+ * decrypt files within a directory, applying a filter to determine which files should be decrypted.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class DirDecryptorProvider extends EntryDecryptorProvider<File> implements DecryptorProvider {
 
+    /**
+     * Constructs a {@code DirDecryptorProvider} with a given delegate decryptor. No specific filter is applied, meaning
+     * all files will be considered for decryption by the delegate.
+     *
+     * @param xEncryptor The delegate decryptor provider that performs the actual decryption.
+     */
     public DirDecryptorProvider(DecryptorProvider xEncryptor) {
         this(xEncryptor, null);
     }
 
+    /**
+     * Constructs a {@code DirDecryptorProvider} with a given delegate decryptor and a filter. The filter determines
+     * which files should be decrypted by the delegate.
+     *
+     * @param decryptorProvider The delegate decryptor provider that performs the actual decryption.
+     * @param filter            The {@link Complex} filter to apply to files. Only files matching the filter will be
+     *                          decrypted.
+     */
     public DirDecryptorProvider(DecryptorProvider decryptorProvider, Complex<File> filter) {
         super(decryptorProvider, filter);
     }
 
+    /**
+     * Decrypts a source file or directory to a destination file or directory. If the source is a file, it decrypts it
+     * using the configured decryptor (or a no-op decryptor if filtered). If the source is a directory, it recursively
+     * decrypts its contents.
+     *
+     * @param key  The {@link Key} used for decryption.
+     * @param src  The source file or directory to decrypt.
+     * @param dest The destination file or directory where the decrypted content will be written.
+     * @throws IOException If an I/O error occurs during decryption.
+     */
     @Override
     public void decrypt(Key key, File src, File dest) throws IOException {
         if (src.isFile()) {
@@ -58,8 +83,10 @@ public class DirDecryptorProvider extends EntryDecryptorProvider<File> implement
             decryptor.decrypt(key, src, dest);
         } else if (src.isDirectory()) {
             File[] files = src.listFiles();
-            for (int i = 0; null != files && i < files.length; i++) {
-                decrypt(key, files[i], new File(dest, files[i].getName()));
+            if (files != null) {
+                for (File file : files) {
+                    decrypt(key, file, new File(dest, file.getName()));
+                }
             }
         }
     }

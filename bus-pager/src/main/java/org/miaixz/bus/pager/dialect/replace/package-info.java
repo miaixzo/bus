@@ -26,7 +26,9 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 正则处理with(nolock)
+ * Provides implementations for replacing and restoring SQL parts, particularly for handling `with(nolock)` clauses.
+ * This package contains utility classes that use regular expressions or simple string manipulation for SQL
+ * modification.
  *
  * @author Kimi Liu
  * @since Java 17+

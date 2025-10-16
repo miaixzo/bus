@@ -27,16 +27,15 @@
 */
 package org.miaixz.bus.starter.jdbc;
 
-import java.util.List;
-
+import lombok.Getter;
+import lombok.Setter;
 import org.miaixz.bus.spring.GeniusBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-import lombok.Getter;
-import lombok.Setter;
+import java.util.List;
 
 /**
- * Druid 配置项
+ * Configuration properties for Druid DataSource.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -47,95 +46,118 @@ import lombok.Setter;
 public class JdbcProperties {
 
     /**
-     * 数据源名称
+     * The name of the data source.
      */
     private String name;
+
     /**
-     * 数据源连接url
+     * The connection URL for the data source.
      */
     private String url;
+
     /**
-     * 数据库账号
+     * The username for the database.
      */
     private String username;
+
     /**
-     * 数据库密码
+     * The password for the database.
      */
     private String password;
+
     /**
-     * 连接池类型
+     * The type of the connection pool (e.g., com.alibaba.druid.pool.DruidDataSource).
      */
     private String type;
+
     /**
-     * 数据库连接池驱动
+     * The fully qualified name of the JDBC driver.
      */
     private String driverClassName;
+
     /**
-     * 配置监控统计拦截的
+     * Filters for monitoring and statistics (e.g., stat, wall, log4j).
      */
     private String filters;
+
     /**
-     * 连接池中的最小空闲连接数
+     * The minimum number of idle connections in the pool.
      */
     private String minIdle;
+
     /**
-     * 最小空闲时间，默认30分钟
+     * The minimum time a connection can be idle before it is eligible for eviction (default: 30 minutes).
      */
     private String minEvictableIdleTimeMillis;
+
     /**
-     * 最大空闲时间，默认7小时
+     * The maximum time a connection can be idle before it is eligible for eviction (default: 7 hours).
      */
     private String maxEvictableIdleTimeMillis;
+
     /**
-     * 测试连接是否可用的SQL语句
+     * The SQL query used to validate connections.
      */
     private String validationQuery;
+
     /**
-     * 是否缓存preparedStatement
+     * Whether to cache PreparedStatements.
      */
     private boolean poolPreparedStatements;
+
     /**
-     * 要启用PSCache
+     * The maximum number of open PreparedStatements to cache.
      */
     private String maxOpenPreparedStatements;
+
     /**
-     * 检测需要关闭的空闲连接周期
+     * The interval in milliseconds for the evictor thread to run and check for idle connections.
      */
     private String timeBetweenEvictionRunsMillis;
+
     /**
-     * 最大连接池数量
+     * The maximum number of active connections in the pool.
      */
     private int maxActive;
+
     /**
-     * 初始化时建立连接的个数
+     * The initial number of connections to create when the pool is started.
      */
     private int initialSize;
+
     /**
-     * 获取连接等待超时的时间
+     * The maximum time in milliseconds to wait for a connection when the pool is full.
      */
     private int maxWait;
+
     /**
-     * 建议配置为true，不影响性能，并且保证安全性。申请连接的时候检测 如果空闲时间大于timeBetweenEvictionRunsMillis，执行validationQuery检测连接是否有效
+     * Recommended to be true for security and reliability. It checks if a connection is valid before borrowing it if it
+     * has been idle for longer than timeBetweenEvictionRunsMillis.
      */
     private boolean testWhileIdle;
+
     /**
-     * 申请连接时执行validationQuery检测连接是否有效，做了这个配置会降低性能
+     * Whether to validate the connection with validationQuery when borrowing it from the pool. Can impact performance.
      */
     private boolean testOnBorrow;
+
     /**
-     * 归还连接时执行validationQuery检测连接是否有效，做了这个配置会降低性能
+     * Whether to validate the connection with validationQuery when returning it to the pool. Can impact performance.
      */
     private boolean testOnReturn;
+
     /**
-     * 数据源加解密信息
+     * The private key for decrypting data source information.
      */
     private String privateKey;
+
     /**
-     * 多数据源唯一标识
+     * A unique key to identify this data source in a multi-data-source configuration.
      */
     private String key;
+
     /**
-     * 多数据源支持
+     * A list of properties for configuring multiple data sources.
      */
     private List<JdbcProperties> multi;
 

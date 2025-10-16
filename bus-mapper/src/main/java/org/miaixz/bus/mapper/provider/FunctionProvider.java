@@ -35,7 +35,7 @@ import org.miaixz.bus.mapper.parsing.SqlScript;
 import org.miaixz.bus.mapper.parsing.TableMeta;
 
 /**
- * 提供基于指定字段的动态 SQL 操作。
+ * Provides dynamic SQL operations based on specified fields.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,10 +43,11 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
 public class FunctionProvider {
 
     /**
-     * 根据主键更新实体中不为空的字段，强制更新指定字段（不区分是否为 null）。
+     * Updates non-null fields of an entity by its primary key, and forcibly updates specified fields (regardless of
+     * nullness).
      *
-     * @param providerContext 提供者上下文，包含方法和接口信息
-     * @return 缓存键
+     * @param providerContext The provider context, containing method and interface information.
+     * @return The cache key.
      */
     public static String updateByPrimaryKeySelectiveWithForceFields(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new SqlScript() {
@@ -72,10 +73,10 @@ public class FunctionProvider {
     }
 
     /**
-     * 根据主键更新指定的字段列表。
+     * Updates a specified list of fields by the primary key.
      *
-     * @param providerContext 提供者上下文，包含方法和接口信息
-     * @return 缓存键
+     * @param providerContext The provider context, containing method and interface information.
+     * @return The cache key.
      */
     public static String updateForFieldListByPrimaryKey(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new SqlScript() {
@@ -99,10 +100,11 @@ public class FunctionProvider {
     }
 
     /**
-     * 根据实体字段条件查询唯一实体或批量查询，支持动态选择查询字段，结果数量由方法定义。
+     * Selects a single entity or a batch of entities based on entity field conditions, with support for dynamic
+     * selection of query fields. The number of results is defined by the method.
      *
-     * @param providerContext 提供者上下文，包含方法和接口信息
-     * @return 缓存键
+     * @param providerContext The provider context, containing method and interface information.
+     * @return The cache key.
      */
     public static String selectColumns(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new SqlScript() {

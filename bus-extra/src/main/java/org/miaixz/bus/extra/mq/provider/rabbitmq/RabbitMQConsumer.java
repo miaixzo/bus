@@ -40,7 +40,9 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.DeliverCallback;
 
 /**
- * RabbitMQ消费者实现类
+ * RabbitMQ consumer implementation class. This class provides an adapter for consuming messages from RabbitMQ,
+ * integrating with the internal {@link Consumer} interface. It handles the subscription to queues and the processing of
+ * delivered messages.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,29 +50,29 @@ import com.rabbitmq.client.DeliverCallback;
 public class RabbitMQConsumer implements Consumer {
 
     /**
-     * RabbitMQ通信通道
+     * The RabbitMQ communication channel, used for declaring queues, consuming messages, etc.
      */
     private final Channel channel;
 
     /**
-     * 队列名称（主题）
+     * The name of the queue (topic) from which messages will be consumed.
      */
     private String topic;
 
     /**
-     * 构造方法
+     * Constructs a {@code RabbitMQConsumer} with the specified RabbitMQ channel.
      *
-     * @param channel RabbitMQ通信通道
+     * @param channel The RabbitMQ {@link Channel} object to be used for consuming messages.
      */
     public RabbitMQConsumer(final Channel channel) {
         this.channel = channel;
     }
 
     /**
-     * 设置队列（主题）
+     * Sets the name of the queue (topic) from which this consumer will receive messages.
      *
-     * @param topic 队列名称
-     * @return 当前RabbitMQConsumer实例，支持链式调用
+     * @param topic The name of the queue.
+     * @return This {@code RabbitMQConsumer} instance, allowing for method chaining.
      */
     public RabbitMQConsumer setTopic(final String topic) {
         this.topic = topic;
@@ -78,24 +80,28 @@ public class RabbitMQConsumer implements Consumer {
     }
 
     /**
-     * 订阅消息并注册消息处理器
+     * Subscribes to messages from the configured RabbitMQ queue and registers a {@link MessageHandler} to process
+     * incoming messages. This method declares a queue (if it doesn't exist) and sets up a {@link DeliverCallback} to
+     * handle message delivery.
      *
-     * @param messageHandler 消息处理器，用于处理接收到的消息
+     * @param messageHandler The {@link MessageHandler} to be used for processing received messages.
+     * @throws MQueueException if an I/O error occurs during queue declaration or message consumption.
      */
     @Override
     public void subscribe(final MessageHandler messageHandler) {
-        // 默认声明非持久化、非排他、非自动删除的队列
+        // Declare a non-durable, non-exclusive, non-auto-delete queue by default
         queueDeclare(false, false, false, null);
 
-        // 创建消息投递回调
+        // Create a message delivery callback that wraps the RabbitMQ delivery into an internal Message
         final DeliverCallback deliverCallback = (consumerTag, delivery) -> {
-            // 创建消息对象并交给处理器处理
+            // Create an anonymous Message implementation to wrap the RabbitMQ delivery
             messageHandler.handle(new Message() {
 
                 /**
-                 * 获取消息主题（消费者标签）
+                 * Retrieves the message topic, which is represented by the consumer tag in this RabbitMQ consumer
+                 * implementation.
                  *
-                 * @return 消费者标签作为主题
+                 * @return The consumer tag as the topic of the message.
                  */
                 @Override
                 public String topic() {
@@ -103,9 +109,9 @@ public class RabbitMQConsumer implements Consumer {
                 }
 
                 /**
-                 * 获取消息内容
+                 * Retrieves the message content as a byte array from the RabbitMQ delivery.
                  *
-                 * @return 消息内容的字节数组
+                 * @return The message content as a {@code byte[]}.
                  */
                 @Override
                 public byte[] content() {
@@ -115,9 +121,9 @@ public class RabbitMQConsumer implements Consumer {
         };
 
         try {
-            // 开始消费消息，自动确认消息
+            // Start consuming messages from the queue, with automatic acknowledgment
             this.channel.basicConsume(this.topic, true, deliverCallback, consumerTag -> {
-                // 取消消费时的回调处理（空实现）
+                // Callback for when consumption is cancelled (empty implementation as per original code)
             });
         } catch (final IOException e) {
             throw new MQueueException(e);
@@ -125,7 +131,8 @@ public class RabbitMQConsumer implements Consumer {
     }
 
     /**
-     * 关闭消费者，释放资源
+     * Closes the underlying RabbitMQ {@link Channel} and releases any associated resources. This method ensures that
+     * the channel is properly shut down.
      */
     @Override
     public void close() {
@@ -133,12 +140,16 @@ public class RabbitMQConsumer implements Consumer {
     }
 
     /**
-     * 声明队列
+     * Declares a queue on the RabbitMQ broker with specified properties. This method is used internally to ensure the
+     * queue exists before consuming or producing messages.
      *
-     * @param durable    是否持久化队列，true表示服务器重启后队列仍然存在
-     * @param exclusive  是否排他队列，true表示仅当前连接可以使用，连接关闭后队列自动删除
-     * @param autoDelete 是否自动删除队列，true表示当没有消费者连接时自动删除队列
-     * @param arguments  队列的其他参数配置
+     * @param durable    {@code true} if the queue should be durable (survive broker restarts); {@code false} otherwise.
+     * @param exclusive  {@code true} if the queue should be exclusive (used by only one connection and deleted when
+     *                   that connection closes); {@code false} otherwise.
+     * @param autoDelete {@code true} if the queue should be auto-deleted when no longer in use (e.g., when the last
+     *                   consumer unsubscribes); {@code false} otherwise.
+     * @param arguments  A {@link Map} of other properties for the queue, such as message TTL, queue length limit, etc.
+     * @throws MQueueException if an I/O error occurs during queue declaration.
      */
     private void queueDeclare(
             final boolean durable,

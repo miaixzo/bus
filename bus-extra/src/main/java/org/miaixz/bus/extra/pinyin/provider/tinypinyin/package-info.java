@@ -26,14 +26,15 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 封装了TinyPinyin的引擎。
+ * Encapsulates the TinyPinyin engine.
  *
  * <p>
- * TinyPinyin(https://github.com/promeG/TinyPinyin)提供者未提交Maven中央库， 因此使用 https://github.com/biezhi/TinyPinyin打包的版本
+ * The TinyPinyin (https://github.com/promeG/TinyPinyin) provider has not been submitted to Maven Central. Therefore,
+ * the version packaged by https://github.com/biezhi/TinyPinyin is used.
  * </p>
  *
  * <p>
- * 引入：
+ * To introduce (dependency):
  * 
  * <pre>
  * &lt;dependency&gt;

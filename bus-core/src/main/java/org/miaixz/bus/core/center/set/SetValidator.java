@@ -28,10 +28,11 @@
 package org.miaixz.bus.core.center.set;
 
 /**
- * 对象检查工具类，提供字对象的blank和empty等检查
+ * Utility class for validating objects, providing checks for blank and empty states.
  * <ul>
- * <li>empty定义：{@code null} or 空字对象：{@code ""}</li>
- * <li>blank定义：{@code null} or 空字对象：{@code ""} or 空格、全角空格、制表符、换行符，等不可见字符</li>
+ * <li>Empty definition: {@code null} or an empty string ({@code ""}).</li>
+ * <li>Blank definition: {@code null} or an empty string ({@code ""}) or invisible characters like spaces, full-width
+ * spaces, tabs, newlines, etc.</li>
  * </ul>
  *
  * @author Kimi Liu

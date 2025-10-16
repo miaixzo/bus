@@ -34,7 +34,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * V3 统一下单-支付者
+ * Model for the Payer object in the V3 Unified Order API.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -47,20 +47,19 @@ import lombok.experimental.SuperBuilder;
 public class Payer {
 
     /**
-     * 用户标识
+     * The user's unique identifier under the merchant's AppID.
      */
     private String openid;
     /**
-     * 用户服务标识
+     * The user's unique identifier under the service provider's AppID.
      */
     private String sp_openid;
     /**
-     * 用户子标识
+     * The user's unique identifier under the sub-merchant's AppID.
      */
     private String sub_openid;
-
     /**
-     *
+     * The authorization code from the user's payment screen (for micropay).
      */
     private String auth_code;
 

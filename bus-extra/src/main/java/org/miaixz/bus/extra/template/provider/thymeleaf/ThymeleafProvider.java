@@ -38,47 +38,57 @@ import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.*;
 
 /**
- * Thymeleaf模板引擎实现
+ * Thymeleaf template engine implementation. This class provides an implementation of {@link TemplateProvider} for the
+ * Thymeleaf template engine, allowing for configuration and retrieval of Thymeleaf templates. For more information,
+ * see: https://www.thymeleaf.org/
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class ThymeleafProvider implements TemplateProvider {
 
+    /**
+     * The underlying Thymeleaf template engine object.
+     */
     TemplateEngine engine;
+    /**
+     * The template configuration.
+     */
     TemplateConfig config;
 
     /**
-     * 默认构造
+     * Default constructor for ThymeleafProvider. Checks if the Thymeleaf library is available (via
+     * {@link org.thymeleaf.TemplateEngine} class).
      */
     public ThymeleafProvider() {
-        // SPI方式加载时检查库是否引入
+        // Check if the library is introduced when loading via SPI
         Assert.notNull(org.thymeleaf.TemplateEngine.class);
     }
 
     /**
-     * 构造
+     * Constructs a new ThymeleafProvider with the given template configuration.
      *
-     * @param config 模板配置
+     * @param config The {@link TemplateConfig} for initializing the Thymeleaf engine.
      */
     public ThymeleafProvider(final TemplateConfig config) {
         init(config);
     }
 
     /**
-     * 构造
+     * Constructs a new ThymeleafProvider with an existing Thymeleaf {@link TemplateEngine} instance.
      *
-     * @param engine {@link TemplateEngine}
+     * @param engine The pre-initialized {@link TemplateEngine} instance.
      */
     public ThymeleafProvider(final TemplateEngine engine) {
         init(engine);
     }
 
     /**
-     * 创建引擎
+     * Creates a new Thymeleaf {@link TemplateEngine} instance based on the provided {@link TemplateConfig}. This method
+     * sets up the appropriate {@link ITemplateResolver} based on the resource mode in the config.
      *
-     * @param config 模板配置
-     * @return {@link TemplateProvider}
+     * @param config The {@link TemplateConfig} containing settings for the template engine.
+     * @return A new {@link TemplateEngine} instance.
      */
     private static TemplateEngine create(TemplateConfig config) {
         if (null == config) {
@@ -142,9 +152,9 @@ public class ThymeleafProvider implements TemplateProvider {
     }
 
     /**
-     * 初始化引擎
+     * Initializes the Thymeleaf engine with a pre-configured {@link TemplateEngine}.
      *
-     * @param engine 引擎
+     * @param engine The {@link TemplateEngine} instance to use.
      */
     private void init(final TemplateEngine engine) {
         this.engine = engine;
@@ -159,9 +169,10 @@ public class ThymeleafProvider implements TemplateProvider {
     }
 
     /**
-     * 获取原始引擎的钩子方法，用于自定义特殊属性，如插件等
+     * Provides a hook to access the raw Thymeleaf {@link TemplateEngine} engine. This can be used for custom
+     * configurations or accessing specific Thymeleaf functionalities, such as plugins.
      *
-     * @return {@link TemplateEngine}
+     * @return The raw {@link TemplateEngine} instance.
      */
     @Override
     public TemplateEngine getRaw() {

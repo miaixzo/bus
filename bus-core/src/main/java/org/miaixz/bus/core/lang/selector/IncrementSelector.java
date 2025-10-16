@@ -29,11 +29,12 @@ package org.miaixz.bus.core.lang.selector;
 
 import java.io.Serial;
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * 简单的轮询选择器
+ * A simple round-robin selector.
  *
- * @param <T> 元素类型
+ * @param <T> the type of the elements
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -42,19 +43,22 @@ public class IncrementSelector<T> extends ArrayList<T> implements Selector<T> {
     @Serial
     private static final long serialVersionUID = 2852277613270L;
 
-    private int position;
+    /**
+     * The current position in the list.
+     */
+    private final AtomicInteger position = new AtomicInteger();
 
     /**
-     * 构造
+     * Constructs an empty {@code IncrementSelector}.
      */
     public IncrementSelector() {
         super();
     }
 
     /**
-     * 构造
+     * Constructs a new {@code IncrementSelector} and initializes it with the elements from the given iterable.
      *
-     * @param objList 对象列表
+     * @param objList the iterable of objects to add
      */
     public IncrementSelector(final Iterable<T> objList) {
         this();
@@ -63,13 +67,19 @@ public class IncrementSelector<T> extends ArrayList<T> implements Selector<T> {
         }
     }
 
+    /**
+     * Selects the next element in a round-robin fashion.
+     *
+     * @return the next element in the sequence
+     * @throws IndexOutOfBoundsException if the selector is empty
+     */
     @Override
     public T select() {
-        final T result = get(position);
-        if (position >= size()) {
-            position = 0;
+        final int size = size();
+        if (size == 0) {
+            throw new IndexOutOfBoundsException("Cannot select from an empty list.");
         }
-        return result;
+        return get(position.getAndIncrement() % size);
     }
 
 }

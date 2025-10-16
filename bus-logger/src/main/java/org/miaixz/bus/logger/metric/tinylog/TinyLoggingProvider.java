@@ -27,8 +27,6 @@
 */
 package org.miaixz.bus.logger.metric.tinylog;
 
-import java.io.Serial;
-
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -40,8 +38,10 @@ import org.tinylog.format.MessageFormatter;
 import org.tinylog.provider.LoggingProvider;
 import org.tinylog.provider.ProviderRegistry;
 
+import java.io.Serial;
+
 /**
- * tinylog
+ * A logger provider implementation that wraps the tinylog logging framework.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -52,33 +52,37 @@ public class TinyLoggingProvider extends AbstractProvider {
     private static final long serialVersionUID = 2852287656777L;
 
     /**
-     * 堆栈增加层数，因为封装因此多了两层，此值用于正确获取当前类名
+     * The stack depth, which is increased by two layers due to encapsulation. This value is used to correctly obtain
+     * the current class name.
      */
     private static final int DEPTH = 5;
+    /**
+     * The underlying tinylog logging provider.
+     */
     private static final LoggingProvider provider = ProviderRegistry.getLoggingProvider();
     /**
-     * 文本消息格式化程序
+     * The message formatter for formatting log messages.
      */
     private static final MessageFormatter formatter = new AdvancedMessageFormatter(Configuration.getLocale(),
             Configuration.isEscapingEnabled());
     /**
-     * 日志级别
+     * The minimum logging level.
      */
     private final int level;
 
     /**
-     * 构造
+     * Constructs a new {@code TinyLoggingProvider} for the specified class.
      *
-     * @param clazz 日志实现类
+     * @param clazz the class for which to create the logger.
      */
     public TinyLoggingProvider(final Class<?> clazz) {
         this(null == clazz ? Normal.NULL : clazz.getName());
     }
 
     /**
-     * 构造
+     * Constructs a new {@code TinyLoggingProvider} for the specified name.
      *
-     * @param name 名称
+     * @param name the name of the logger.
      */
     public TinyLoggingProvider(final String name) {
         this.name = name;
@@ -86,10 +90,10 @@ public class TinyLoggingProvider extends AbstractProvider {
     }
 
     /**
-     * 如果最后一个参数为异常参数，则获取之，否则返回null
+     * Gets the last argument if it is a throwable, otherwise returns null.
      *
-     * @param args 参数
-     * @return 最后一个异常参数
+     * @param args the arguments.
+     * @return the last throwable argument, or {@code null} if none is found.
      */
     private static Throwable getLastArgumentIfThrowable(final Object... args) {
         if (ArrayKit.isNotEmpty(args) && args[args.length - 1] instanceof Throwable) {
@@ -170,13 +174,13 @@ public class TinyLoggingProvider extends AbstractProvider {
     }
 
     /**
-     * 在对应日志级别打开情况下打印日志
+     * Logs a message if the specified level is enabled.
      *
-     * @param fqcn   完全限定类名(Fully Qualified Class Name)，用于定位日志位置
-     * @param level  日志级别
-     * @param t      异常，null则检查最后一个参数是否为Throwable类型，是则取之，否则不打印堆栈
-     * @param format 日志消息模板
-     * @param args   日志消息参数
+     * @param fqcn   the fully qualified class name of the caller.
+     * @param level  the logging level.
+     * @param t      the throwable to log. If null, it checks if the last argument is a throwable.
+     * @param format the message format.
+     * @param args   the arguments for the message format.
      */
     private void logIfEnabled(
             final String fqcn,
@@ -191,42 +195,21 @@ public class TinyLoggingProvider extends AbstractProvider {
     }
 
     /**
-     * 将Level等级转换为Tinylog的Level等级
+     * Converts a {@link org.miaixz.bus.logger.Level} to a {@link org.tinylog.Level}.
      *
-     * @param level Level等级
-     * @return the level
+     * @param level the level to convert.
+     * @return the corresponding tinylog level.
      */
     private Level toTinyLevel(final org.miaixz.bus.logger.Level level) {
-        final Level tinyLevel;
-        switch (level) {
-            case TRACE:
-                tinyLevel = Level.TRACE;
-                break;
-
-            case DEBUG:
-                tinyLevel = Level.DEBUG;
-                break;
-
-            case INFO:
-                tinyLevel = Level.INFO;
-                break;
-
-            case WARN:
-                tinyLevel = Level.WARN;
-                break;
-
-            case ERROR:
-                tinyLevel = Level.ERROR;
-                break;
-
-            case OFF:
-                tinyLevel = Level.OFF;
-                break;
-
-            default:
-                throw new Error(StringKit.format("Can not identify level: {}", level));
-        }
-        return tinyLevel;
+        return switch (level) {
+            case TRACE -> Level.TRACE;
+            case DEBUG -> Level.DEBUG;
+            case INFO -> Level.INFO;
+            case WARN -> Level.WARN;
+            case ERROR, FATAL -> Level.ERROR;
+            case OFF -> Level.OFF;
+            default -> throw new Error(StringKit.format("Can not identify level: {}", level));
+        };
     }
 
     @Override

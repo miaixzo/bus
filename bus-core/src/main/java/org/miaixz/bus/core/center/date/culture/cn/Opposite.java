@@ -28,30 +28,50 @@
 package org.miaixz.bus.core.center.date.culture.cn;
 
 /**
- * 阴阳
+ * Represents the concept of Yin and Yang (阴阳) in Chinese philosophy.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public enum Opposite {
 
-    YIN(0, "阴"), YANG(1, "阳");
+    /**
+     * Yin (阴)
+     */
+    YIN(0, "阴"),
 
     /**
-     * 代码
+     * Yang (阳)
+     */
+    YANG(1, "阳");
+
+    /**
+     * The code representing the Yin or Yang.
      */
     private final int code;
 
     /**
-     * 名称
+     * The name of the Yin or Yang.
      */
     private final String name;
 
+    /**
+     * Constructs an {@code Opposite} enum entry.
+     *
+     * @param code The integer code for the Yin or Yang.
+     * @param name The Chinese character name for the Yin or Yang.
+     */
     Opposite(int code, String name) {
         this.code = code;
         this.name = name;
     }
 
+    /**
+     * Retrieves an {@code Opposite} enum entry by its code.
+     *
+     * @param code The code of the Yin or Yang to retrieve.
+     * @return The {@code Opposite} enum entry, or {@code null} if not found.
+     */
     public static Opposite fromCode(Integer code) {
         if (null == code) {
             return null;
@@ -64,6 +84,12 @@ public enum Opposite {
         return null;
     }
 
+    /**
+     * Retrieves an {@code Opposite} enum entry by its name.
+     *
+     * @param name The name of the Yin or Yang to retrieve.
+     * @return The {@code Opposite} enum entry, or {@code null} if not found.
+     */
     public static Opposite fromName(String name) {
         if (null == name) {
             return null;
@@ -76,14 +102,29 @@ public enum Opposite {
         return null;
     }
 
+    /**
+     * Gets the code of this Yin or Yang.
+     *
+     * @return The integer code.
+     */
     public int getCode() {
         return code;
     }
 
+    /**
+     * Gets the name of this Yin or Yang.
+     *
+     * @return The Chinese character name.
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Returns the name of this Yin or Yang.
+     *
+     * @return The name of this Yin or Yang.
+     */
     @Override
     public String toString() {
         return getName();

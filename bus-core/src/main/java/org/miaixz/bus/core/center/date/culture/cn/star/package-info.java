@@ -26,7 +26,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 中国传统文化/日历相关
+ * Provides classes related to various star systems and constellations in Chinese traditional culture and calendar.
  *
  * @author Kimi Liu
  * @since Java 17+

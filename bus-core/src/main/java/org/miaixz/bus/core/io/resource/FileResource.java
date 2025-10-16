@@ -41,52 +41,68 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.UrlKit;
 
 /**
- * 文件资源访问对象，支持{@link Path} 和 {@link File} 访问
+ * File resource access object, supporting {@link Path} and {@link File} access. This class provides an implementation
+ * of the {@link Resource} interface for file-system based resources.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class FileResource implements Resource, Serializable {
 
+    /**
+     * The serial version UID for serialization.
+     */
     @Serial
     private static final long serialVersionUID = 2852230925613L;
 
+    /**
+     * The underlying {@link File} object.
+     */
     private final File file;
+    /**
+     * The last modified timestamp of the file at the time of creation.
+     */
     private final long lastModified;
+    /**
+     * The name of the resource.
+     */
     private final String name;
 
     /**
-     * 构造
+     * Constructs a {@code FileResource} from a given file path. The path can be an absolute path or a path relative to
+     * the ClassPath, but it cannot point to a file within a JAR package.
      *
-     * @param path 文件绝对路径或相对ClassPath路径，但是这个路径不能指向一个jar包中的文件
+     * @param path The absolute or relative path to the file.
      */
     public FileResource(final String path) {
         this(FileKit.file(path));
     }
 
     /**
-     * 构造，文件名使用文件本身的名字，带扩展名
+     * Constructs a {@code FileResource} from a given {@link Path}. The resource name will be the file's own name,
+     * including the extension.
      *
-     * @param path 文件
+     * @param path The {@link Path} to the file.
      */
     public FileResource(final Path path) {
         this(path.toFile());
     }
 
     /**
-     * 构造，文件名使用文件本身的名字，带扩展名
+     * Constructs a {@code FileResource} from a given {@link File}. The resource name will be the file's own name,
+     * including the extension.
      *
-     * @param file 文件
+     * @param file The {@link File} object.
      */
     public FileResource(final File file) {
         this(file, null);
     }
 
     /**
-     * 构造
+     * Constructs a {@code FileResource} from a given {@link File} and a specified file name.
      *
-     * @param file     文件
-     * @param fileName 文件名，带扩展名，如果为null获取文件本身的文件名
+     * @param file     The {@link File} object.
+     * @param fileName The name of the file, including the extension. If {@code null}, the file's own name will be used.
      */
     public FileResource(final File file, final String fileName) {
         this.file = Assert.notNull(file, "File must be not null !");
@@ -118,18 +134,18 @@ public class FileResource implements Resource, Serializable {
     }
 
     /**
-     * 获取文件
+     * Retrieves the underlying {@link File} object.
      *
-     * @return 文件
+     * @return The {@link File} object.
      */
     public File getFile() {
         return this.file;
     }
 
     /**
-     * 文件是否存在
+     * Checks if the file represented by this resource exists.
      *
-     * @return 是否存在
+     * @return {@code true} if the file exists, {@code false} otherwise.
      */
     public boolean exists() {
         return this.file.exists();
@@ -141,9 +157,9 @@ public class FileResource implements Resource, Serializable {
     }
 
     /**
-     * 返回路径
+     * Returns the string representation of the file path.
      *
-     * @return 返回URL路径
+     * @return The file path as a string.
      */
     @Override
     public String toString() {

@@ -32,7 +32,8 @@ import org.miaixz.bus.mapper.parsing.FieldMeta;
 import org.miaixz.bus.mapper.parsing.TableMeta;
 
 /**
- * 提供大写下划线命名风格的表名和列名生成器，将驼峰命名转换为大写下划线命名。
+ * Provides an uppercase snake_case naming style generator for table and column names, converting camelCase names to
+ * uppercase with underscores.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -40,9 +41,9 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
 public class UpperSnakeNamingProvider extends SnakeCaseNamingProvider {
 
     /**
-     * 获取命名风格，返回大写下划线命名风格。
+     * Gets the naming style, returning the uppercase snake_case naming style identifier.
      *
-     * @return 大写下划线命名风格标识
+     * @return The uppercase snake_case naming style identifier.
      */
     @Override
     public String type() {
@@ -50,10 +51,10 @@ public class UpperSnakeNamingProvider extends SnakeCaseNamingProvider {
     }
 
     /**
-     * 获取表名，将驼峰风格的表名转换为大写下划线风格。
+     * Gets the table name, converting it from camelCase to uppercase snake_case.
      *
-     * @param entityClass 实体类
-     * @return 大写下划线风格的表名
+     * @param entityClass The entity class.
+     * @return The table name in uppercase snake_case.
      */
     @Override
     public String tableName(Class<?> entityClass) {
@@ -61,11 +62,11 @@ public class UpperSnakeNamingProvider extends SnakeCaseNamingProvider {
     }
 
     /**
-     * 获取列名，将驼峰风格的列名转换为大写下划线风格。
+     * Gets the column name, converting it from camelCase to uppercase snake_case.
      *
-     * @param entityTable 实体表信息
-     * @param field       实体字段信息
-     * @return 大写下划线风格的列名
+     * @param entityTable The entity table information.
+     * @param field       The entity field information.
+     * @return The column name in uppercase snake_case.
      */
     @Override
     public String columnName(TableMeta entityTable, FieldMeta field) {

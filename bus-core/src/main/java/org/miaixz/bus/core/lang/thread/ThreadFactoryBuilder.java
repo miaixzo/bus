@@ -37,7 +37,7 @@ import org.miaixz.bus.core.Builder;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * ThreadFactory创建器 参考：Guava的ThreadFactoryBuilder
+ * A builder for creating {@link ThreadFactory} instances. Inspired by Guava's ThreadFactoryBuilder.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,40 +48,40 @@ public class ThreadFactoryBuilder implements Builder<ThreadFactory> {
     private static final long serialVersionUID = 2852280056509L;
 
     /**
-     * 用于线程创建的线程工厂类
+     * The backing `ThreadFactory` to be used for thread creation.
      */
     private ThreadFactory backingThreadFactory;
     /**
-     * 线程名的前缀
+     * The prefix for thread names.
      */
     private String namePrefix;
     /**
-     * 是否守护线程，默认false
+     * Whether the threads should be daemon threads.
      */
     private Boolean daemon;
     /**
-     * 线程优先级
+     * The priority for created threads.
      */
     private Integer priority;
     /**
-     * 未捕获异常处理器
+     * The handler for uncaught exceptions.
      */
     private UncaughtExceptionHandler uncaughtExceptionHandler;
 
     /**
-     * 创建{@code ThreadFactoryBuilder}
+     * Creates a new {@code ThreadFactoryBuilder}.
      *
-     * @return {@code ThreadFactoryBuilder}
+     * @return a new {@code ThreadFactoryBuilder}.
      */
     public static ThreadFactoryBuilder of() {
         return new ThreadFactoryBuilder();
     }
 
     /**
-     * 构建
+     * Builds a {@link ThreadFactory} from the builder settings.
      *
-     * @param builder {@code ThreadFactoryBuilder}
-     * @return {@link ThreadFactory}
+     * @param builder The {@code ThreadFactoryBuilder}.
+     * @return a new {@link ThreadFactory}.
      */
     private static ThreadFactory build(final ThreadFactoryBuilder builder) {
         final ThreadFactory backingThreadFactory = (null != builder.backingThreadFactory) ? builder.backingThreadFactory
@@ -110,10 +110,10 @@ public class ThreadFactoryBuilder implements Builder<ThreadFactory> {
     }
 
     /**
-     * 设置用于创建基础线程的线程工厂
+     * Sets the backing {@link ThreadFactory} to be used for creating new threads.
      *
-     * @param backingThreadFactory 用于创建基础线程的线程工厂
-     * @return this
+     * @param backingThreadFactory The backing `ThreadFactory`.
+     * @return this builder instance.
      */
     public ThreadFactoryBuilder setThreadFactory(final ThreadFactory backingThreadFactory) {
         this.backingThreadFactory = backingThreadFactory;
@@ -121,10 +121,11 @@ public class ThreadFactoryBuilder implements Builder<ThreadFactory> {
     }
 
     /**
-     * 设置线程名前缀，例如设置前缀为x-thread-，则线程名为x-thread-1之类。
+     * Sets the prefix for thread names. For example, with a prefix of "my-thread-", threads will be named
+     * "my-thread-0", "my-thread-1", etc.
      *
-     * @param namePrefix 线程名前缀
-     * @return this
+     * @param namePrefix The thread name prefix.
+     * @return this builder instance.
      */
     public ThreadFactoryBuilder setNamePrefix(final String namePrefix) {
         this.namePrefix = namePrefix;
@@ -132,10 +133,10 @@ public class ThreadFactoryBuilder implements Builder<ThreadFactory> {
     }
 
     /**
-     * 设置是否守护线程
+     * Sets whether the created threads should be daemon threads.
      *
-     * @param daemon 是否守护线程
-     * @return this
+     * @param daemon `true` for daemon threads, `false` otherwise.
+     * @return this builder instance.
      */
     public ThreadFactoryBuilder setDaemon(final boolean daemon) {
         this.daemon = daemon;
@@ -143,10 +144,10 @@ public class ThreadFactoryBuilder implements Builder<ThreadFactory> {
     }
 
     /**
-     * 设置线程优先级
+     * Sets the priority for created threads.
      *
-     * @param priority 优先级
-     * @return this
+     * @param priority The thread priority.
+     * @return this builder instance.
      * @see Thread#MIN_PRIORITY
      * @see Thread#NORM_PRIORITY
      * @see Thread#MAX_PRIORITY
@@ -165,10 +166,10 @@ public class ThreadFactoryBuilder implements Builder<ThreadFactory> {
     }
 
     /**
-     * 设置未捕获异常的处理方式
+     * Sets the handler for uncaught exceptions.
      *
-     * @param uncaughtExceptionHandler {@link UncaughtExceptionHandler}
-     * @return this
+     * @param uncaughtExceptionHandler The {@link UncaughtExceptionHandler}.
+     * @return this builder instance.
      */
     public ThreadFactoryBuilder setUncaughtExceptionHandler(final UncaughtExceptionHandler uncaughtExceptionHandler) {
         this.uncaughtExceptionHandler = uncaughtExceptionHandler;
@@ -176,9 +177,9 @@ public class ThreadFactoryBuilder implements Builder<ThreadFactory> {
     }
 
     /**
-     * 构建{@link ThreadFactory}
+     * Builds a new {@link ThreadFactory} with the configured settings.
      *
-     * @return {@link ThreadFactory}
+     * @return a new {@link ThreadFactory}.
      */
     @Override
     public ThreadFactory build() {

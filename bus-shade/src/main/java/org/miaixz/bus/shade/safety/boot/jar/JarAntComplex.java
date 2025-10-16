@@ -32,17 +32,30 @@ import org.miaixz.bus.shade.safety.Complex;
 import org.miaixz.bus.shade.safety.complex.AntComplex;
 
 /**
- * Jar记录Ant表达式规则
+ * A {@link Complex} implementation that filters {@link JarArchiveEntry} entries based on Ant-style path matching. This
+ * class extends {@link AntComplex} and provides a way to apply Ant patterns to the names of JAR archive entries.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class JarAntComplex extends AntComplex<JarArchiveEntry> implements Complex<JarArchiveEntry> {
 
+    /**
+     * Constructs a new {@code JarAntComplex} with the specified Ant pattern.
+     *
+     * @param ant The Ant-style pattern to use for filtering.
+     */
     public JarAntComplex(String ant) {
         super(ant);
     }
 
+    /**
+     * Converts a {@link JarArchiveEntry} into a string representation for pattern matching. This implementation returns
+     * the name of the JAR entry.
+     *
+     * @param entry The {@link JarArchiveEntry} to convert.
+     * @return The name of the JAR archive entry.
+     */
     @Override
     protected String toText(JarArchiveEntry entry) {
         return entry.getName();

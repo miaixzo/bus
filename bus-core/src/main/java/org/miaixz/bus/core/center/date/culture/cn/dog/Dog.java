@@ -30,43 +30,64 @@ package org.miaixz.bus.core.center.date.culture.cn.dog;
 import org.miaixz.bus.core.center.date.culture.Samsara;
 
 /**
- * 三伏
+ * Represents the "Sanfu" (三伏), also known as Dog Days, which are three periods of hot weather in the Chinese calendar.
+ * This class extends {@link Samsara} to manage a cyclical list of these entities.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class Dog extends Samsara {
 
+    /**
+     * Array of names for the Sanfu periods: "初伏" (Chufu - initial fu), "中伏" (Zhongfu - middle fu), "末伏" (Mofu - final
+     * fu).
+     */
     public static final String[] NAMES = { "初伏", "中伏", "末伏" };
 
+    /**
+     * Constructs a {@code Dog} instance with the specified name.
+     *
+     * @param name The name of the Sanfu period.
+     */
     public Dog(String name) {
         super(NAMES, name);
     }
 
+    /**
+     * Constructs a {@code Dog} instance with the specified index.
+     *
+     * @param index The index of the Sanfu period in the {@link #NAMES} array.
+     */
     public Dog(int index) {
         super(NAMES, index);
     }
 
     /**
-     * 从名称初始化
+     * Creates a {@code Dog} instance from its name.
      *
-     * @param name 名称
-     * @return 伏
+     * @param name The name of the Sanfu period.
+     * @return A new {@code Dog} instance.
      */
     public static Dog fromName(String name) {
         return new Dog(name);
     }
 
     /**
-     * 从索引初始化
+     * Creates a {@code Dog} instance from its index.
      *
-     * @param index 索引
-     * @return 伏
+     * @param index The index of the Sanfu period.
+     * @return A new {@code Dog} instance.
      */
     public static Dog fromIndex(int index) {
         return new Dog(index);
     }
 
+    /**
+     * Gets the next {@code Dog} in the cycle.
+     *
+     * @param n The number of steps to move forward or backward in the cycle.
+     * @return The next {@code Dog} instance.
+     */
     public Dog next(int n) {
         return fromIndex(nextIndex(n));
     }

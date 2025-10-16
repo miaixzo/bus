@@ -37,7 +37,9 @@ import com.github.stuxuhai.jpinyin.PinyinFormat;
 import com.github.stuxuhai.jpinyin.PinyinHelper;
 
 /**
- * 封装了Jpinyin的引擎。 引入：
+ * Encapsulates the Jpinyin engine.
+ * <p>
+ * To introduce (dependency):
  * 
  * <pre>
  * &lt;dependency&gt;
@@ -53,10 +55,11 @@ import com.github.stuxuhai.jpinyin.PinyinHelper;
 public class JPinyinProvider implements PinyinProvider {
 
     /**
-     * 构造
+     * Constructs a new JPinyinProvider instance. Checks if the Jpinyin library is available (via {@link PinyinHelper}
+     * class).
      */
     public JPinyinProvider() {
-        // SPI方式加载时检查库是否引入
+        // Check if the library is introduced when loading via SPI
         Assert.notNull(PinyinHelper.class);
     }
 

@@ -34,21 +34,28 @@ import org.miaixz.bus.crypto.Builder;
 import org.miaixz.bus.crypto.Holder;
 
 /**
- * {@link Digester}创建简单工厂，用于生产{@link Digester}对象
- * 参考Guava方式，工厂负责持有一个原始的{@link MessageDigest}对象，使用时优先通过clone方式创建对象，提高初始化性能。
+ * A simple factory for creating {@link Digester} objects. Inspired by Guava, this factory holds a prototype
+ * {@link MessageDigest} object and prioritizes creating new {@link Digester} instances by cloning the prototype to
+ * improve initialization performance.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class DigesterFactory {
 
+    /**
+     * The prototype {@link MessageDigest} instance used for cloning.
+     */
     private final MessageDigest prototype;
+    /**
+     * Indicates whether the prototype {@link MessageDigest} supports cloning.
+     */
     private final boolean cloneSupport;
 
     /**
-     * 构造
+     * Constructs a {@code DigesterFactory} with the given prototype {@link MessageDigest}.
      *
-     * @param messageDigest {@link MessageDigest}模板
+     * @param messageDigest The prototype {@link MessageDigest} instance.
      */
     private DigesterFactory(final MessageDigest messageDigest) {
         this.prototype = messageDigest;
@@ -56,40 +63,41 @@ public class DigesterFactory {
     }
 
     /**
-     * 创建工厂，只使用JDK提供的算法
+     * Creates a {@code DigesterFactory} that uses only JDK-provided algorithms.
      *
-     * @param algorithm 算法
-     * @return DigesterFactory
+     * @param algorithm The algorithm name (e.g., "MD5", "SHA-256").
+     * @return A new {@code DigesterFactory} instance.
      */
     public static DigesterFactory ofJdk(final String algorithm) {
         return of(Builder.createJdkMessageDigest(algorithm));
     }
 
     /**
-     * 创建工厂，使用{@link Holder}找到的提供方。
+     * Creates a {@code DigesterFactory} that uses a provider found by {@link Holder}.
      *
-     * @param algorithm 算法
-     * @return DigesterFactory
+     * @param algorithm The algorithm name (e.g., "MD5", "SHA-256").
+     * @return A new {@code DigesterFactory} instance.
      */
     public static DigesterFactory of(final String algorithm) {
         return of(Builder.createMessageDigest(algorithm, null));
     }
 
     /**
-     * 创建工厂
+     * Creates a {@code DigesterFactory} with the given {@link MessageDigest} instance.
      *
-     * @param messageDigest {@link MessageDigest}，可以通过{@link Builder#createMessageDigest(String, Provider)} 创建
-     * @return DigesterFactory
+     * @param messageDigest The {@link MessageDigest} instance, which can be created using
+     *                      {@link Builder#createMessageDigest(String, Provider)}.
+     * @return A new {@code DigesterFactory} instance.
      */
     public static DigesterFactory of(final MessageDigest messageDigest) {
         return new DigesterFactory(messageDigest);
     }
 
     /**
-     * 检查{@link MessageDigest}对象是否支持clone方法
+     * Checks if the given {@link MessageDigest} object supports cloning.
      *
-     * @param messageDigest {@link MessageDigest}
-     * @return 是否支持clone方法
+     * @param messageDigest The {@link MessageDigest} to check.
+     * @return {@code true} if cloning is supported, {@code false} otherwise.
      */
     private static boolean checkCloneSupport(final MessageDigest messageDigest) {
         try {
@@ -101,18 +109,20 @@ public class DigesterFactory {
     }
 
     /**
-     * 创建{@link Digester}
+     * Creates a new {@link Digester} instance. This method attempts to clone the prototype {@link MessageDigest} for
+     * better performance.
      *
-     * @return {@link Digester}
+     * @return A new {@link Digester} instance.
      */
     public Digester createDigester() {
         return new Digester(createMessageDigester());
     }
 
     /**
-     * 创建{@link MessageDigest}
+     * Creates a new {@link MessageDigest} instance. If cloning is supported, a clone of the prototype is returned.
+     * Otherwise, a new instance is created using {@link Builder#createJdkMessageDigest(String)}.
      *
-     * @return {@link MessageDigest}
+     * @return A new {@link MessageDigest} instance.
      */
     public MessageDigest createMessageDigester() {
         if (cloneSupport) {

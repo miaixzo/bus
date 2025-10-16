@@ -30,48 +30,80 @@ package org.miaixz.bus.core.center.date.culture.cn;
 import org.miaixz.bus.core.center.date.culture.Samsara;
 
 /**
- * 宫
+ * Represents a cardinal direction or "Zone" (宫) in Chinese traditional culture. This class extends {@link Samsara} to
+ * manage a cyclical list of these entities.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class Zone extends Samsara {
 
+    /**
+     * Array of names for the cardinal directions/zones.
+     */
     public static final String[] NAMES = { "东", "北", "西", "南" };
 
+    /**
+     * Constructs a {@code Zone} instance with the specified index.
+     *
+     * @param index The index of the Zone in the {@link #NAMES} array.
+     */
     public Zone(int index) {
         super(NAMES, index);
     }
 
+    /**
+     * Constructs a {@code Zone} instance with the specified name.
+     *
+     * @param name The name of the Zone.
+     */
     public Zone(String name) {
         super(NAMES, name);
     }
 
+    /**
+     * Creates a {@code Zone} instance from its index.
+     *
+     * @param index The index of the Zone.
+     * @return A new {@code Zone} instance.
+     */
     public static Zone fromIndex(int index) {
         return new Zone(index);
     }
 
+    /**
+     * Creates a {@code Zone} instance from its name.
+     *
+     * @param name The name of the Zone.
+     * @return A new {@code Zone} instance.
+     */
     public static Zone fromName(String name) {
         return new Zone(name);
     }
 
+    /**
+     * Gets the next {@code Zone} in the cycle.
+     *
+     * @param n The number of steps to move forward or backward in the cycle.
+     * @return The next {@code Zone} instance.
+     */
     public Zone next(int n) {
         return fromIndex(nextIndex(n));
     }
 
     /**
-     * 方位
+     * Gets the corresponding {@link Direction} for this Zone.
      *
-     * @return 方位
+     * @return The {@link Direction} associated with this Zone.
      */
     public Direction getDirection() {
         return Direction.fromName(getName());
     }
 
     /**
-     * 神兽
+     * Gets the corresponding {@link Beast} (神兽) for this Zone.
      *
-     * @return 神兽
+     * @return The {@link Beast} associated with this Zone.
      */
     public Beast getBeast() {
         return Beast.fromIndex(index);

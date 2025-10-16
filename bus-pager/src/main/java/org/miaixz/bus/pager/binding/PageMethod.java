@@ -33,7 +33,9 @@ import org.miaixz.bus.pager.Page;
 import org.miaixz.bus.pager.Querying;
 
 /**
- * 提供基础分页方法，用于配置和管理MyBatis分页查询。
+ * Provides basic pagination methods for configuring and managing MyBatis paginated queries. This class uses a
+ * {@link ThreadLocal} to store and retrieve {@link Page} objects, allowing for easy management of pagination parameters
+ * within a thread's execution context.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -41,45 +43,45 @@ import org.miaixz.bus.pager.Querying;
 public abstract class PageMethod {
 
     /**
-     * 存储当前线程的分页参数
+     * Stores the pagination parameters for the current thread.
      */
     protected static final ThreadLocal<Page> LOCAL_PAGE = new ThreadLocal<>();
     /**
-     * 默认是否执行count查询
+     * Default setting for whether to execute a count query. Defaults to true.
      */
     protected static boolean DEFAULT_COUNT = true;
 
     /**
-     * 获取当前线程的分页参数。
+     * Retrieves the {@link Page} object associated with the current thread.
      *
-     * @param <T> 分页数据元素类型
-     * @return 当前分页对象
+     * @param <T> the type of elements in the paginated data
+     * @return the current Page object, or null if none is set for the current thread
      */
     public static <T> Page<T> getLocalPage() {
         return LOCAL_PAGE.get();
     }
 
     /**
-     * 设置当前线程的分页参数。
+     * Sets the {@link Page} object for the current thread.
      *
-     * @param page 分页对象
+     * @param page the Page object to set
      */
     public static void setLocalPage(Page page) {
         LOCAL_PAGE.set(page);
     }
 
     /**
-     * 清除当前线程的分页参数。
+     * Clears the {@link Page} object from the current thread's context.
      */
     public static void clearPage() {
         LOCAL_PAGE.remove();
     }
 
     /**
-     * 获取任意查询的count总数。
+     * Executes a query to get the total count of records without actual pagination.
      *
-     * @param select 查询对象
-     * @return 总记录数
+     * @param select the {@link Querying} object representing the query to be executed
+     * @return the total number of records
      */
     public static long count(Querying select) {
         Page<?> page = startPage(1, -1, true).disableAsyncCount();
@@ -88,11 +90,12 @@ public abstract class PageMethod {
     }
 
     /**
-     * 从参数对象开始分页。
+     * Starts pagination based on the properties of a given parameter object. The parameter object is analyzed to
+     * extract page number, page size, and order by information.
      *
-     * @param params 参数对象
-     * @param <E>    分页数据元素类型
-     * @return 分页对象
+     * @param params the parameter object containing pagination details
+     * @param <E>    the type of elements in the paginated data
+     * @return a new {@link Page} object configured with the extracted parameters
      */
     public static <E> Page<E> startPage(Object params) {
         Page<E> page = PageObject.getPageFromObject(params, true);
@@ -105,38 +108,38 @@ public abstract class PageMethod {
     }
 
     /**
-     * 开始分页，指定页码和页面大小。
+     * Starts pagination with a specified page number and page size. A count query will be executed by default.
      *
-     * @param pageNo   页码（从1开始）
-     * @param pageSize 每页记录数
-     * @param <E>      分页数据元素类型
-     * @return 分页对象
+     * @param pageNo   the page number (starts from 1)
+     * @param pageSize the number of records per page
+     * @param <E>      the type of elements in the paginated data
+     * @return a new {@link Page} object configured for pagination
      */
     public static <E> Page<E> startPage(int pageNo, int pageSize) {
         return startPage(pageNo, pageSize, DEFAULT_COUNT);
     }
 
     /**
-     * 开始分页，指定页码、页面大小和是否执行count查询。
+     * Starts pagination with a specified page number, page size, and whether to execute a count query.
      *
-     * @param pageNo   页码（从1开始）
-     * @param pageSize 每页记录数
-     * @param count    是否执行count查询
-     * @param <E>      分页数据元素类型
-     * @return 分页对象
+     * @param pageNo   the page number (starts from 1)
+     * @param pageSize the number of records per page
+     * @param count    true to execute a count query, false otherwise
+     * @param <E>      the type of elements in the paginated data
+     * @return a new {@link Page} object configured for pagination
      */
     public static <E> Page<E> startPage(int pageNo, int pageSize, boolean count) {
         return startPage(pageNo, pageSize, count, null, null);
     }
 
     /**
-     * 开始分页，指定页码、页面大小和排序字段。
+     * Starts pagination with a specified page number, page size, and order by clause.
      *
-     * @param pageNo   页码（从1开始）
-     * @param pageSize 每页记录数
-     * @param orderBy  排序字段
-     * @param <E>      分页数据元素类型
-     * @return 分页对象
+     * @param pageNo   the page number (starts from 1)
+     * @param pageSize the number of records per page
+     * @param orderBy  the order by clause for sorting
+     * @param <E>      the type of elements in the paginated data
+     * @return a new {@link Page} object configured for pagination and sorting
      */
     public static <E> Page<E> startPage(int pageNo, int pageSize, String orderBy) {
         Page<E> page = startPage(pageNo, pageSize);
@@ -145,15 +148,16 @@ public abstract class PageMethod {
     }
 
     /**
-     * 开始分页，指定页码、页面大小、count查询、分页合理化和零页大小处理。
+     * Starts pagination with comprehensive control over page number, page size, count query execution, pagination
+     * reasonableness, and zero page size handling.
      *
-     * @param pageNo       页码（从1开始）
-     * @param pageSize     每页记录数
-     * @param count        是否执行count查询
-     * @param reasonable   分页合理化开关，null时使用默认配置
-     * @param pageSizeZero 当为true且pageSize=0时返回全部结果，null时使用默认配置
-     * @param <E>          分页数据元素类型
-     * @return 分页对象
+     * @param pageNo       the page number (starts from 1)
+     * @param pageSize     the number of records per page
+     * @param count        true to execute a count query, false otherwise
+     * @param reasonable   the reasonableness switch for pagination; if null, uses default configuration
+     * @param pageSizeZero if true and pageSize is 0, all results are returned; if null, uses default configuration
+     * @param <E>          the type of elements in the paginated data
+     * @return a new {@link Page} object configured for pagination
      */
     public static <E> Page<E> startPage(
             int pageNo,
@@ -173,25 +177,26 @@ public abstract class PageMethod {
     }
 
     /**
-     * 开始分页，基于偏移量和限制数。
+     * Starts pagination based on an offset and limit, similar to {@link org.apache.ibatis.session.RowBounds}. A count
+     * query will be executed by default.
      *
-     * @param offset 起始偏移量
-     * @param limit  每页记录数
-     * @param <E>    分页数据元素类型
-     * @return 分页对象
+     * @param offset the starting offset
+     * @param limit  the maximum number of records to return
+     * @param <E>    the type of elements in the paginated data
+     * @return a new {@link Page} object configured for pagination
      */
     public static <E> Page<E> offsetPage(int offset, int limit) {
         return offsetPage(offset, limit, DEFAULT_COUNT);
     }
 
     /**
-     * 开始分页，基于偏移量、限制数和是否执行count查询。
+     * Starts pagination based on an offset, limit, and whether to execute a count query.
      *
-     * @param offset 起始偏移量
-     * @param limit  每页记录数
-     * @param count  是否执行count查询
-     * @param <E>    分页数据元素类型
-     * @return 分页对象
+     * @param offset the starting offset
+     * @param limit  the maximum number of records to return
+     * @param count  true to execute a count query, false otherwise
+     * @param <E>    the type of elements in the paginated data
+     * @return a new {@link Page} object configured for pagination
      */
     public static <E> Page<E> offsetPage(int offset, int limit, boolean count) {
         Page<E> page = new Page<>(new int[] { offset, limit }, count);
@@ -204,9 +209,11 @@ public abstract class PageMethod {
     }
 
     /**
-     * 设置排序字段。
+     * Sets the order by clause for the current pagination context. If a {@link Page} object is already present in the
+     * {@link ThreadLocal}, its order by property is updated. Otherwise, a new {@link Page} object is created with only
+     * the order by clause set.
      *
-     * @param orderBy 排序字段
+     * @param orderBy the order by clause for sorting
      */
     public static void orderBy(String orderBy) {
         Page<?> page = getLocalPage();
@@ -224,9 +231,10 @@ public abstract class PageMethod {
     }
 
     /**
-     * 设置全局静态属性。
+     * Sets global static properties for the pagination plugin. This method is typically called during plugin
+     * initialization to configure default behaviors.
      *
-     * @param properties 插件配置属性
+     * @param properties the plugin configuration properties
      */
     protected static void setStaticProperties(Properties properties) {
         if (properties != null) {

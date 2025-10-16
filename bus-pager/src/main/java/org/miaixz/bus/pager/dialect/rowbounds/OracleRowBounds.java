@@ -32,13 +32,23 @@ import org.apache.ibatis.session.RowBounds;
 import org.miaixz.bus.pager.dialect.AbstractRowBounds;
 
 /**
- * oracle 基于 RowBounds 的分页
+ * Oracle dialect for pagination based on {@link RowBounds}. This class provides Oracle-specific SQL generation for
+ * pagination using ROWNUM.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class OracleRowBounds extends AbstractRowBounds {
 
+    /**
+     * Generates the Oracle-specific pagination SQL using {@link RowBounds}. It wraps the original SQL with a subquery
+     * that uses {@code ROWNUM} to achieve pagination.
+     *
+     * @param sql       the original SQL string
+     * @param rowBounds the {@link RowBounds} object containing offset and limit
+     * @param pageKey   the CacheKey for the paginated query
+     * @return the Oracle-specific paginated SQL string
+     */
     @Override
     public String getPageSql(String sql, RowBounds rowBounds, CacheKey pageKey) {
         int startRow = rowBounds.getOffset();

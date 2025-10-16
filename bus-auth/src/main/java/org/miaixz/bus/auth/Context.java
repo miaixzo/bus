@@ -36,10 +36,8 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * 上下文配置类，支持OAuth2、SAML、LDAP等协议
- *
- * @author Kimi Liu
- * @since Java 17+
+ * * Context configuration class, supporting protocols such as OAuth2, SAML, and LDAP. * This class holds various
+ * configuration parameters required for authentication processes. * * @author Kimi Liu * @since Java 17+
  */
 @Getter
 @Setter
@@ -49,93 +47,120 @@ import lombok.experimental.SuperBuilder;
 public class Context {
 
     /**
-     * 对应各平台的appKey (OAuth2: Client ID)
+     * Corresponds to the appKey of various platforms (OAuth2: Client ID).
      */
     private String appKey;
 
     /**
-     * 对应各平台的appSecret (OAuth2: Client Secret)
+     * Corresponds to the appSecret of various platforms (OAuth2: Client Secret).
      */
     private String appSecret;
 
     /**
-     * 1. 支付宝 publicKey 2. 企业微信，授权方的网页应用agentId 3. OktaScope 授权服务器的 ID，默认为 default 4. MicrosoftScope Entra
-     * ID（原微软AAD）中的租户 ID 5. 喜马拉雅客户端包名，如果 {@link Context#type} 为1或2时必填。1-对Android客户端是包名，2-对IOS客户端是Bundle ID
+     * *
+     * <p>
+     * Specific identifier for different platforms:
+     * </p>
+     * *
+     * <ul>
+     * *
+     * <li>1. Alipay publicKey</li> *
+     * <li>2. WeChat Work, agentId of the authorized web application</li> *
+     * <li>3. OktaScope Authorization server ID, defaults to 'default'</li> *
+     * <li>4. MicrosoftScope Tenant ID in Entra ID (formerly Microsoft AAD)</li> *
+     * <li>5. Ximalaya client package name, required if {@link Context#type} is 1 or 2.</li> *
+     * <ul>
+     * *
+     * <li>1 - package name for Android clients</li> *
+     * <li>2 - Bundle ID for iOS clients</li> *
+     * </ul>
+     * *
+     * </ul>
      */
     private String unionId;
 
     /**
-     * 扩展ID
+     * Extended ID.
      */
     private String extId;
 
     /**
-     * 设备ID, 设备唯一标识ID
+     * Device ID, a unique identifier for the device.
      */
     private String deviceId;
 
     /**
-     * 类型 1. 企业微信第三方授权用户类型，member|admin 2. 喜马拉雅客户端操作系统，1-iOS系统，2-Android系统，3-Web
+     * *
+     * <p>
+     * Type identifier for different platforms:
+     * </p>
+     * *
+     * <ul>
+     * *
+     * <li>1. WeChat Work third-party authorization user type: member | admin</li> *
+     * <li>2. Ximalaya client operating system: 1-iOS, 2-Android, 3-Web</li> *
+     * </ul>
      */
     private String type;
 
     /**
-     * 目前只针对QQ登录
+     * Currently only for QQ login. Indicates a specific flag for QQ authentication.
      */
     private boolean flag;
 
     /**
-     * PKCE 模式 (OAuth2)
+     * 
+     * PKCE (Proof Key for Code Exchange) mode for OAuth2.
      */
     private boolean pkce;
 
     /**
-     * 域名前缀 (CodingScope, OktaScope)
+     * Domain prefix (for CodingScope, OktaScope).
      */
     private String prefix;
 
     /**
-     * 回调地址 (OAuth2)
+     * Callback address (for OAuth2).
      */
     private String redirectUri;
 
     /**
-     * 自定义授权平台的 scope 内容 (OAuth2)
+     * Custom authorization platform scope content (for OAuth2).
      */
     private List<String> scopes;
 
     /**
-     * 忽略校验 {@code state}
+     * Flag to ignore {@code state} validation.
      */
     private boolean ignoreState;
 
     /**
-     * 忽略校验 {@code redirectUri}
+     * Flag to ignore {@code redirectUri} validation.
      */
     private boolean ignoreRedirectUri;
 
     /**
-     * 苹果开发者账号中的密钥标识符
+     * Key identifier in Apple Developer account.
      */
     private String kid;
 
     /**
-     * 苹果开发者账号中的团队ID
+     * Team ID in Apple Developer account.
      */
     private String teamId;
 
     /**
-     * 新版企业微信 Web 登录时的参数
+     * Parameter for the new version of WeChat Work web login.
      */
     private String loginType = "CorpApp";
 
     /**
-     * 企业微信平台的语言编码
+     * Language code for WeChat Work platform.
      */
     private String lang = "zh";
 
     /**
-     * 扩展属性
+     * Extension properties.
      */
     private String extension;
 

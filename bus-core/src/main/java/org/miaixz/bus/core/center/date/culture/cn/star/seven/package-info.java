@@ -26,7 +26,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 七曜
+ * Provides classes related to the Seven Luminaries (七曜), also known as Qizheng (七政) or Qiwei (七纬), which correspond to
+ * the days of the week.
  *
  * @author Kimi Liu
  * @since Java 17+

@@ -30,13 +30,21 @@ package org.miaixz.bus.socket.metric.message;
 import org.miaixz.bus.socket.Session;
 
 /**
- * 字节数组模式
+ * A message implementation that treats the entire received data as a byte array. This class extends
+ * {@link FixedLengthBytesMessage} and simply returns the raw byte array as the decoded message.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class ByteArrayMessage extends FixedLengthBytesMessage<byte[]> {
 
+    /**
+     * Decodes the given byte array into a message. In this implementation, the byte array itself is the message.
+     *
+     * @param bytes   the byte array to decode
+     * @param session the session associated with the message
+     * @return the input byte array as the decoded message
+     */
     @Override
     protected byte[] decode(byte[] bytes, Session session) {
         return bytes;

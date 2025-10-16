@@ -28,7 +28,8 @@
 package org.miaixz.bus.core.bean.path.node;
 
 /**
- * 空节点
+ * Represents an empty node in a Bean path expression. This is typically used to signify the end of a path or a
+ * non-existent segment.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -36,7 +37,7 @@ package org.miaixz.bus.core.bean.path.node;
 public class EmptyNode implements Node {
 
     /**
-     * 单例
+     * The singleton instance of {@code EmptyNode}.
      */
     public static EmptyNode INSTANCE = new EmptyNode();
 

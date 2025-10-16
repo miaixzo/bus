@@ -32,7 +32,8 @@ import java.util.function.Predicate;
 import org.miaixz.bus.mapper.parsing.ColumnMeta;
 
 /**
- * 记录字段对应的类和字段名，用于匹配实体类字段与数据库列的属性。
+ * Records the class and field name corresponding to a field, used to match entity class fields with database column
+ * properties.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -40,20 +41,20 @@ import org.miaixz.bus.mapper.parsing.ColumnMeta;
 public class ClassField implements Predicate<ColumnMeta> {
 
     /**
-     * 实体类
+     * The entity class.
      */
     private final Class<?> clazz;
 
     /**
-     * 字段名称
+     * The field name.
      */
     private final String field;
 
     /**
-     * 构造函数，初始化类和字段信息。
+     * Constructs a new ClassField, initializing the class and field information.
      *
-     * @param clazz 实体类
-     * @param field 字段名称
+     * @param clazz The entity class.
+     * @param field The field name.
      */
     public ClassField(Class<?> clazz, String field) {
         this.clazz = clazz;
@@ -61,10 +62,10 @@ public class ClassField implements Predicate<ColumnMeta> {
     }
 
     /**
-     * 判断指定列的属性名是否与当前字段名匹配（忽略大小写）。
+     * Tests if the property name of the specified column matches the current field name (case-insensitive).
      *
-     * @param column 数据库列信息
-     * @return 如果属性名匹配则返回 true，否则返回 false
+     * @param column The database column metadata.
+     * @return {@code true} if the property names match, {@code false} otherwise.
      */
     @Override
     public boolean test(ColumnMeta column) {
@@ -72,18 +73,18 @@ public class ClassField implements Predicate<ColumnMeta> {
     }
 
     /**
-     * 获取实体类。
+     * Gets the entity class.
      *
-     * @return 实体类
+     * @return The entity class.
      */
     public Class<?> getClazz() {
         return clazz;
     }
 
     /**
-     * 获取字段名称。
+     * Gets the field name.
      *
-     * @return 字段名称
+     * @return The field name.
      */
     public String getField() {
         return field;

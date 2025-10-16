@@ -43,7 +43,6 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.NotFoundException;
 import org.miaixz.bus.core.text.CharsBacker;
 import org.miaixz.bus.core.xyz.FileKit;
-import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.PatternKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
@@ -52,7 +51,8 @@ import org.miaixz.bus.setting.magic.GroupedMap;
 import org.miaixz.bus.setting.metric.ini.*;
 
 /**
- * Setting文件加载器
+ * A loader for {@code .setting} files. This class handles the parsing of INI-style configuration files, including
+ * support for sections (groups), variable substitution, and custom line formatters.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -60,54 +60,67 @@ import org.miaixz.bus.setting.metric.ini.*;
 public class Loader {
 
     /**
-     * 注释符号（当有此符号在行首，表示此行为注释）
+     * The character that indicates the beginning of a comment line.
      */
-    private static char COMMENT_FLAG_PRE = Symbol.C_HASH;
+    private static final char COMMENT_FLAG_PRE = Symbol.C_HASH;
     /**
-     * 赋值分隔符（用于分隔键值对）
+     * The character used to separate keys from values.
      */
     private char assignFlag = Symbol.C_EQUAL;
     /**
-     * 本设置对象的字符集
+     * The character set used to read the settings file.
      */
     private java.nio.charset.Charset charset;
     /**
-     * 是否使用变量
+     * Whether to enable variable substitution.
      */
     private boolean isUseVariable;
-
     /**
-     * 变量名称的正则
+     * The regular expression for identifying variables.
      */
     private String varRegex = "\\$\\{(.*?)\\}";
-
     /**
-     * 值编辑器
+     * An editor for modifying values as they are being loaded.
      */
     private ValueEditor valueEditor;
-
     /**
-     * ini line data formatter factory
+     * A factory for creating the line formatter.
      */
     private Factory formatterFactory;
-
+    /**
+     * A supplier for the comment formatter.
+     */
     private Supplier<ElementFormatter<IniComment>> commentElementFormatterSupplier = CommentFormatter::new;
+    /**
+     * A supplier for the section formatter.
+     */
     private Supplier<ElementFormatter<IniSection>> sectionElementFormatterSupplier = SectionFormatter::new;
+    /**
+     * A supplier for the property formatter.
+     */
     private Supplier<ElementFormatter<IniProperty>> propertyElementFormatterSupplier = PropertyFormatter::new;
 
+    /**
+     * Constructs a new Loader with a default formatter factory.
+     */
     public Loader() {
         this.formatterFactory = DefaultFormatter::new;
     }
 
+    /**
+     * Constructs a new Loader with a custom formatter factory.
+     * 
+     * @param formatterFactory The factory to create the line formatter.
+     */
     public Loader(Factory formatterFactory) {
         this.formatterFactory = formatterFactory;
     }
 
     /**
-     * 构造
+     * Constructs a new Loader with specified settings.
      *
-     * @param charset       编码
-     * @param isUseVariable 是否使用变量
+     * @param charset       The character set to use.
+     * @param isUseVariable {@code true} to enable variable substitution.
      */
     public Loader(final java.nio.charset.Charset charset, final boolean isUseVariable) {
         this.charset = charset;
@@ -115,59 +128,44 @@ public class Loader {
     }
 
     /**
-     * 加载设置文件
+     * Loads a settings file from the given resource.
      *
-     * @param resource 配置文件URL
-     * @return 加载是否成功
-     * @throws NotFoundException 如果资源不存在，抛出此异常
+     * @param resource The resource representing the configuration file.
+     * @return The loaded settings as a {@link GroupedMap}.
+     * @throws NotFoundException if the resource cannot be found or read.
      */
     public GroupedMap load(final Resource resource) throws NotFoundException {
-        Assert.notNull(resource, "Null setting url define!");
+        Assert.notNull(resource, "Null setting resource define!");
 
         GroupedMap groupedMap;
-        InputStream settingStream = null;
-        try {
-            settingStream = resource.getStream();
+        try (InputStream settingStream = resource.getStream()) {
             groupedMap = load(settingStream);
         } catch (final Exception e) {
             if (e instanceof NotFoundException) {
                 throw (NotFoundException) e;
             }
             throw new NotFoundException(e);
-        } finally {
-            IoKit.closeQuietly(settingStream);
         }
         return groupedMap;
     }
 
     /**
-     * 加载设置文件。 此方法不会关闭流对象
+     * Loads settings from an {@link InputStream}. This method does not close the stream.
      *
-     * @param inputStream 文件流
-     * @return {@link GroupedMap}
-     * @throws IOException IO异常
+     * @param inputStream The input stream to read from.
+     * @return The loaded settings as a {@link GroupedMap}.
+     * @throws IOException if an I/O error occurs.
      */
-    synchronized public GroupedMap load(final InputStream inputStream) throws IOException {
+    public synchronized GroupedMap load(final InputStream inputStream) throws IOException {
         final GroupedMap groupedMap = new GroupedMap();
-        LineReader reader = null;
-        try {
-            reader = new LineReader(inputStream, this.charset);
-            // 分组
+        try (LineReader reader = new LineReader(inputStream, this.charset)) {
             String group = null;
-
             String line;
-            while (true) {
-                line = reader.readLine();
-                if (line == null) {
-                    break;
-                }
+            while ((line = reader.readLine()) != null) {
                 line = StringKit.trim(line);
-                // 跳过注释行和空行
                 if (StringKit.isBlank(line) || StringKit.startWith(line, COMMENT_FLAG_PRE)) {
                     continue;
                 }
-
-                // 记录分组名
                 if (StringKit.isWrap(line, Symbol.C_BRACKET_LEFT, Symbol.C_BRACKET_RIGHT)) {
                     group = StringKit.trim(line.substring(1, line.length() - 1));
                     continue;
@@ -175,7 +173,6 @@ public class Loader {
 
                 final String[] keyValue = CharsBacker.split(line, String.valueOf(this.assignFlag), 2, true, false)
                         .toArray(new String[0]);
-                // 跳过不符合键值规范的行
                 if (keyValue.length < 2) {
                     continue;
                 }
@@ -185,53 +182,44 @@ public class Loader {
                 if (null != this.valueEditor) {
                     value = this.valueEditor.edit(group, key, value);
                 }
-
-                // 替换值中的所有变量变量（变量必须是此行之前定义的变量，否则无法找到）
                 if (this.isUseVariable) {
                     value = replaceVar(groupedMap, group, value);
                 }
                 groupedMap.put(group, key, value);
             }
-        } finally {
-            IoKit.closeQuietly(reader);
         }
-
         return groupedMap;
     }
 
     /**
-     * 持久化当前设置，会覆盖掉之前的设置 持久化会不会保留之前的分组
+     * Stores the current settings to a file at the specified absolute path, overwriting its content.
      *
-     * @param groupedMap   分组map
-     * @param absolutePath 设置文件的绝对路径
+     * @param groupedMap   The map of grouped settings to store.
+     * @param absolutePath The absolute path to the destination file.
      */
     public void store(final GroupedMap groupedMap, final String absolutePath) {
         store(groupedMap, FileKit.touch(absolutePath));
     }
 
     /**
-     * 持久化当前设置，会覆盖掉之前的设置 持久化会不会保留之前的分组
+     * Stores the current settings to a file, overwriting its content.
      *
-     * @param groupedMap 分组map
-     * @param file       设置文件
+     * @param groupedMap The map of grouped settings to store.
+     * @param file       The destination file.
      */
     public void store(final GroupedMap groupedMap, final File file) {
         Assert.notNull(file, "File to store must be not null !");
         Logger.debug("Store Setting to [{}]...", file.getAbsolutePath());
-        PrintWriter writer = null;
-        try {
-            writer = FileKit.getPrintWriter(file, charset, false);
+        try (PrintWriter writer = FileKit.getPrintWriter(file, charset, false)) {
             store(groupedMap, writer);
-        } finally {
-            IoKit.closeQuietly(writer);
         }
     }
 
     /**
-     * 设置变量的正则 正则只能有一个group表示变量本身，剩余为字符 例如 \$\{(name)\}表示${name}变量名为name的一个变量表示
+     * Sets the regular expression for identifying variables (e.g., {@code "\\$\\{(.*?)\\}"}).
      *
-     * @param regex 正则
-     * @return this
+     * @param regex The regular expression.
+     * @return this {@code Loader} instance for chaining.
      */
     public Loader setVarRegex(final String regex) {
         this.varRegex = regex;
@@ -239,10 +227,10 @@ public class Loader {
     }
 
     /**
-     * 赋值分隔符（用于分隔键值对）
+     * Sets the character used to separate keys from values.
      *
-     * @param assignFlag 正则
-     * @return this
+     * @param assignFlag The assignment character.
+     * @return this {@code Loader} instance for chaining.
      */
     public Loader setAssignFlag(final char assignFlag) {
         this.assignFlag = assignFlag;
@@ -250,10 +238,11 @@ public class Loader {
     }
 
     /**
-     * 设置值编辑器，用于在获取值后编辑返回值，例如解密等 编辑器函数接受一个参数，此参数为待编辑的值，函数返回编辑后的值 注意：此函数调用在变量替换前
+     * Sets a custom value editor, which can be used to modify values (e.g., for decryption) as they are being loaded.
+     * This is called before variable substitution.
      *
-     * @param valueEditor 编辑器函数
-     * @return this
+     * @param valueEditor The value editor function.
+     * @return this {@code Loader} instance for chaining.
      */
     public Loader setValueEditor(final ValueEditor valueEditor) {
         this.valueEditor = valueEditor;
@@ -261,12 +250,12 @@ public class Loader {
     }
 
     /**
-     * 存储到Writer
+     * Stores the {@link GroupedMap} content to the given {@link PrintWriter}.
      *
-     * @param groupedMap 分组Map
-     * @param writer     Writer
+     * @param groupedMap The map of grouped settings.
+     * @param writer     The writer to use.
      */
-    synchronized private void store(final GroupedMap groupedMap, final PrintWriter writer) {
+    private synchronized void store(final GroupedMap groupedMap, final PrintWriter writer) {
         for (final Entry<String, LinkedHashMap<String, String>> groupEntry : groupedMap.entrySet()) {
             writer.println(
                     StringKit.format("{}{}{}", Symbol.C_BRACKET_LEFT, groupEntry.getKey(), Symbol.C_BRACKET_RIGHT));
@@ -277,35 +266,30 @@ public class Loader {
     }
 
     /**
-     * 替换给定值中的变量标识
+     * Replaces variable placeholders (e.g., {@code ${var}}) in a given string with their resolved values.
      *
-     * @param group 所在分组
-     * @param value 值
-     * @return 替换后的字符串
+     * @param groupedMap The map to look up variable values.
+     * @param group      The current group context.
+     * @param value      The string containing placeholders.
+     * @return The string with variables replaced.
      */
     private String replaceVar(final GroupedMap groupedMap, final String group, String value) {
-        // 找到所有变量标识
         final Set<String> vars = PatternKit.findAll(varRegex, value, 0, new HashSet<>());
-        String key;
         for (final String var : vars) {
-            key = PatternKit.get(varRegex, var, 1);
+            String key = PatternKit.get(varRegex, var, 1);
             if (StringKit.isNotBlank(key)) {
-                // 本分组中查找变量名对应的值
-                String varValue = groupedMap.get(group, key);
-                // 跨分组查找
-                if (null == varValue) {
+                String varValue = groupedMap.get(group, key); // Look in current group.
+                if (null == varValue) { // Look in other groups.
                     final List<String> groupAndKey = CharsBacker.split(key, Symbol.DOT, 2, true, false);
                     if (groupAndKey.size() > 1) {
                         varValue = groupedMap.get(groupAndKey.get(0), groupAndKey.get(1));
                     }
                 }
-                // 系统参数和环境变量中查找
-                if (null == varValue) {
+                if (null == varValue) { // Look in system properties and environment variables.
                     varValue = Keys.get(key);
                 }
 
                 if (null != varValue) {
-                    // 替换标识
                     value = value.replace(var, varValue);
                 }
             }
@@ -314,9 +298,9 @@ public class Loader {
     }
 
     /**
-     * get a default formatter by factory
+     * Gets a default formatter using the configured factory and suppliers.
      *
-     * @return {@link Format}
+     * @return A new {@link Format} instance.
      */
     protected Format getFormatter() {
         return formatterFactory.apply(
@@ -326,24 +310,22 @@ public class Loader {
     }
 
     /**
-     * read ini data from an inputStream
+     * Reads INI data from an {@link InputStream}.
      *
-     * @param in an ini data inputStream
-     * @return ini bean
-     * @throws IOException io exception
-     * @see #read(java.io.Reader)
+     * @param in an INI data input stream.
+     * @return The parsed INI data as an {@link IniSetting}.
+     * @throws IOException if an I/O error occurs.
      */
     public IniSetting read(InputStream in) throws IOException {
         return read(new InputStreamReader(in));
     }
 
     /**
-     * read ini file to bean
+     * Reads an INI file.
      *
-     * @param file ini file
-     * @return ini bean
-     * @throws IOException io exception
-     * @see #read(java.io.Reader)
+     * @param file The INI file.
+     * @return The parsed INI data as an {@link IniSetting}.
+     * @throws IOException if an I/O error occurs.
      */
     public IniSetting read(File file) throws IOException {
         try (java.io.Reader reader = new FileReader(file)) {
@@ -352,12 +334,11 @@ public class Loader {
     }
 
     /**
-     * read ini file to bean
+     * Reads an INI file from a {@link Path}.
      *
-     * @param path ini path(file)
-     * @return ini bean
-     * @throws IOException io exception
-     * @see #read(java.io.Reader)
+     * @param path The path to the INI file.
+     * @return The parsed INI data as an {@link IniSetting}.
+     * @throws IOException if an I/O error occurs.
      */
     public IniSetting read(Path path) throws IOException {
         try (java.io.Reader reader = Files.newBufferedReader(path)) {
@@ -366,46 +347,40 @@ public class Loader {
     }
 
     /**
-     * to buffered and read
+     * Reads and parses INI data from a {@link Reader}.
      *
-     * @param reader ini data reader
-     * @return the object
-     * @throws IOException io exception
+     * @param reader The reader containing the INI data.
+     * @return The parsed INI data as an {@link IniSetting}.
+     * @throws IOException if an I/O error occurs.
      */
     public IniSetting read(Reader reader) throws IOException {
-        BufferedReader bufReader;
-        if (reader instanceof BufferedReader) {
-            bufReader = (BufferedReader) reader;
-        } else {
-            bufReader = new BufferedReader(reader);
-        }
+        final BufferedReader bufReader = (reader instanceof BufferedReader) ? (BufferedReader) reader
+                : new BufferedReader(reader);
         return bufferedRead(bufReader);
     }
 
     /**
-     * format reader to ini bean
+     * Parses the content from a reader line by line using the default format.
      *
-     * @param reader reader
-     * @return {@link IniSetting} bean
-     * @throws IOException io exception
-     * @see #defaultFormat(java.io.Reader, int)
+     * @param reader The reader to parse.
+     * @return The parsed INI data as an {@link IniSetting}.
+     * @throws IOException if an I/O error occurs.
      */
     protected IniSetting defaultFormat(java.io.Reader reader) throws IOException {
         return defaultFormat(reader, Normal._16);
     }
 
     /**
-     * format reader to ini bean
+     * Parses the content from a reader line by line.
      *
-     * @param reader          reader
-     * @param builderCapacity {@link StringBuilder} init param
-     * @return {@link IniSetting} bean
-     * @throws IOException io exception
+     * @param reader          The reader to parse.
+     * @param builderCapacity The initial capacity for the line buffer.
+     * @return The parsed INI data as an {@link IniSetting}.
+     * @throws IOException if an I/O error occurs.
      */
     protected IniSetting defaultFormat(java.io.Reader reader, int builderCapacity) throws IOException {
         Format format = getFormatter();
         List<IniElement> iniElements = new ArrayList<>();
-        // new line split
         String newLineSplit = System.getProperty(Keys.LINE_SEPARATOR, Symbol.LF);
         StringBuilder line = new StringBuilder(builderCapacity);
 
@@ -413,20 +388,15 @@ public class Loader {
         while ((ch = reader.read()) != -1) {
             line.append((char) ch);
             String nowStr = line.toString();
-            // if new line
             if (nowStr.endsWith(newLineSplit)) {
-                // format and add
                 IniElement element = format.formatLine(nowStr);
                 if (null != element) {
                     iniElements.add(element);
                 }
-                // init stringBuilder
-                line.delete(0, line.length());
+                line.setLength(0);
             }
         }
-        // the end of files, format again
-        if (line.length() > 0) {
-            // format and add
+        if (!line.isEmpty()) {
             iniElements.add(format.formatLine(line.toString()));
         }
 
@@ -434,57 +404,81 @@ public class Loader {
     }
 
     /**
-     * read buffered reader and parse to ini.
+     * Reads from a {@link BufferedReader} and parses the content into an {@link IniSetting}.
      *
-     * @param reader BufferedReader
-     * @return Ini
-     * @throws IOException io exception
+     * @param reader The buffered reader.
+     * @return The parsed {@link IniSetting}.
+     * @throws IOException if an I/O error occurs.
      */
     private IniSetting bufferedRead(BufferedReader reader) throws IOException {
         return defaultFormat(reader);
     }
 
+    /**
+     * @return The supplier for the comment formatter.
+     */
     public Supplier<ElementFormatter<IniComment>> getCommentElementFormatterSupplier() {
         return commentElementFormatterSupplier;
     }
 
+    /**
+     * Sets the supplier for the comment formatter.
+     * 
+     * @param commentElementFormatterSupplier The new supplier.
+     */
     public void setCommentElementFormatterSupplier(
             Supplier<ElementFormatter<IniComment>> commentElementFormatterSupplier) {
         this.commentElementFormatterSupplier = commentElementFormatterSupplier;
     }
 
+    /**
+     * @return The supplier for the section formatter.
+     */
     public Supplier<ElementFormatter<IniSection>> getSectionElementFormatterSupplier() {
         return sectionElementFormatterSupplier;
     }
 
+    /**
+     * Sets the supplier for the section formatter.
+     * 
+     * @param sectionElementFormatterSupplier The new supplier.
+     */
     public void setSectionElementFormatterSupplier(
             Supplier<ElementFormatter<IniSection>> sectionElementFormatterSupplier) {
         this.sectionElementFormatterSupplier = sectionElementFormatterSupplier;
     }
 
+    /**
+     * @return The supplier for the property formatter.
+     */
     public Supplier<ElementFormatter<IniProperty>> getPropertyElementFormatterSupplier() {
         return propertyElementFormatterSupplier;
     }
 
+    /**
+     * Sets the supplier for the property formatter.
+     * 
+     * @param propertyElementFormatterSupplier The new supplier.
+     */
     public void setPropertyElementFormatterSupplier(
             Supplier<ElementFormatter<IniProperty>> propertyElementFormatterSupplier) {
         this.propertyElementFormatterSupplier = propertyElementFormatterSupplier;
     }
 
     /**
-     * 值编辑器，用于在加载配置文件时对值进行编辑，例如解密等 此接口用于在加载配置文件时，编辑值，例如解密等，从而加载出明文的配置值
-     *
+     * A functional interface for editing a property value during the loading process. This can be used for tasks like
+     * decrypting encrypted values.
      */
     @FunctionalInterface
     public interface ValueEditor {
 
         /**
-         * 编辑值
+         * Edits the given value.
          *
-         * @param group 分组
-         * @param key   键
-         * @param value 值
-         * @return 编辑后的值
+         * @param group The group the property belongs to.
+         * @param key   The property key.
+         * @param value The original property value.
+         * @return The edited value.
          */
         String edit(String group, String key, String value);
     }

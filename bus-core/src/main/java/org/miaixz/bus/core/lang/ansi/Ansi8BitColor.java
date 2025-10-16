@@ -31,12 +31,13 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.xyz.ObjectKit;
 
 /**
- * ANSI 8-bit前景或背景色（即8位编码，共256种颜色（2^8） ）
+ * Represents an ANSI 8-bit foreground or background color. These colors are part of the 256-color palette available in
+ * many terminal emulators. The 256 colors are categorized as follows:
  * <ul>
- * <li>0-7： 标准颜色（同ESC [ 30–37 m）</li>
- * <li>8-15： 高强度颜色（同ESC [ 90–97 m）</li>
- * <li>16-231（6 × 6 × 6 共 216色）： 16 + 36 × r + 6 × g + b (0 ≤ r, g, b ≤ 5)</li>
- * <li>232-255： 从黑到白的24阶灰度色</li>
+ * <li>0-7: Standard colors (equivalent to ESC [ 30–37 m)</li>
+ * <li>8-15: High-intensity colors (equivalent to ESC [ 90–97 m)</li>
+ * <li>16-231: 6x6x6 color cube (216 colors), calculated as 16 + 36 * r + 6 * g + b (where 0 &lt;= r, g, b &lt;= 5)</li>
+ * <li>232-255: 24 grayscale shades from black to white</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -44,17 +45,29 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  */
 public class Ansi8BitColor implements AnsiElement {
 
+    /**
+     * The prefix for 8-bit foreground color ANSI escape sequences.
+     */
     private static final String PREFIX_FORE = "38;5;";
+    /**
+     * The prefix for 8-bit background color ANSI escape sequences.
+     */
     private static final String PREFIX_BACK = "48;5;";
+    /**
+     * The prefix indicating whether it's a foreground or background color.
+     */
     private final String prefix;
+    /**
+     * The 8-bit color code (0-255).
+     */
     private final int code;
 
     /**
-     * 构造
+     * Constructs an {@code Ansi8BitColor} instance with the specified prefix and color code.
      *
-     * @param prefix 前缀
-     * @param code   颜色代码(0-255)
-     * @throws IllegalArgumentException 颜色代码不在0~255范围内
+     * @param prefix The prefix for the ANSI escape sequence (e.g., {@link #PREFIX_FORE} or {@link #PREFIX_BACK}).
+     * @param code   The 8-bit color code (0-255).
+     * @throws IllegalArgumentException if the color code is not within the range 0-255.
      */
     private Ansi8BitColor(String prefix, int code) {
         Assert.isTrue(code >= 0 && code <= 255, "Code must be between 0 and 255");
@@ -63,38 +76,40 @@ public class Ansi8BitColor implements AnsiElement {
     }
 
     /**
-     * 前景色ANSI颜色实例
+     * Creates an {@code Ansi8BitColor} instance representing a foreground color.
      *
-     * @param code 颜色代码(0-255)
-     * @return 前景色ANSI颜色实例
+     * @param code The 8-bit color code (0-255).
+     * @return A new {@code Ansi8BitColor} instance for a foreground color.
      */
     public static Ansi8BitColor foreground(int code) {
         return new Ansi8BitColor(PREFIX_FORE, code);
     }
 
     /**
-     * 背景色ANSI颜色实例
+     * Creates an {@code Ansi8BitColor} instance representing a background color.
      *
-     * @param code 颜色代码(0-255)
-     * @return 背景色ANSI颜色实例
+     * @param code The 8-bit color code (0-255).
+     * @return A new {@code Ansi8BitColor} instance for a background color.
      */
     public static Ansi8BitColor background(int code) {
         return new Ansi8BitColor(PREFIX_BACK, code);
     }
 
     /**
-     * 获取颜色代码(0-255)
+     * Retrieves the 8-bit color code (0-255) of this ANSI color.
      *
-     * @return 颜色代码(0 - 255)
+     * @return The color code (0-255).
      */
+    @Override
     public int getCode() {
         return this.code;
     }
 
     /**
-     * 转换为前景色
+     * Converts this {@code Ansi8BitColor} to its foreground representation. If this instance is already a foreground
+     * color, it returns itself.
      *
-     * @return 前景色
+     * @return An {@code Ansi8BitColor} instance representing the foreground version of this color.
      */
     public Ansi8BitColor asForeground() {
         if (PREFIX_FORE.equals(this.prefix)) {
@@ -104,9 +119,10 @@ public class Ansi8BitColor implements AnsiElement {
     }
 
     /**
-     * 转换为背景色
+     * Converts this {@code Ansi8BitColor} to its background representation. If this instance is already a background
+     * color, it returns itself.
      *
-     * @return 背景色
+     * @return An {@code Ansi8BitColor} instance representing the background version of this color.
      */
     public Ansi8BitColor asBackground() {
         if (PREFIX_BACK.equals(this.prefix)) {
@@ -115,6 +131,15 @@ public class Ansi8BitColor implements AnsiElement {
         return Ansi8BitColor.background(this.code);
     }
 
+    /**
+     * Compares this {@code Ansi8BitColor} to the specified object. The result is {@code true} if and only if the
+     * argument is not {@code null} and is an {@code Ansi8BitColor} object that has the same prefix and code as this
+     * object.
+     *
+     * @param object The object to compare this {@code Ansi8BitColor} against.
+     * @return {@code true} if the given object represents an {@code Ansi8BitColor} equivalent to this ANSI color,
+     *         {@code false} otherwise.
+     */
     @Override
     public boolean equals(Object object) {
         if (this == object) {
@@ -127,11 +152,21 @@ public class Ansi8BitColor implements AnsiElement {
         return ObjectKit.equals(this.prefix, other.prefix) && this.code == other.code;
     }
 
+    /**
+     * Returns a hash code for this {@code Ansi8BitColor} object.
+     *
+     * @return A hash code value for this object.
+     */
     @Override
     public int hashCode() {
         return this.prefix.hashCode() * 31 + this.code;
     }
 
+    /**
+     * Returns the string representation of this ANSI 8-bit color, which is its ANSI escape sequence part.
+     *
+     * @return The ANSI escape sequence part (e.g., "38;5;255" for white foreground).
+     */
     @Override
     public String toString() {
         return this.prefix + this.code;

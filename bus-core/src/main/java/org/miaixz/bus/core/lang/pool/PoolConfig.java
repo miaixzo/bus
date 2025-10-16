@@ -31,12 +31,12 @@ import java.io.Serial;
 import java.io.Serializable;
 
 /**
- * 对象池配置，提供基本的配置项，包括：
+ * Configuration class for object pools, providing essential parameters for pool management. This includes:
  * <ul>
- * <li>最小池大小（初始大小）</li>
- * <li>最大池大小</li>
- * <li>最长等待时间</li>
- * <li>最长空闲时间</li>
+ * <li>Minimum pool size (initial size)</li>
+ * <li>Maximum pool size</li>
+ * <li>Maximum wait time for borrowing an object</li>
+ * <li>Maximum idle time for objects in the pool</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -47,45 +47,48 @@ public class PoolConfig implements Serializable {
     @Serial
     private static final long serialVersionUID = 2852272106223L;
     /**
-     * 最小（初始）池大小
+     * The minimum (initial) size of the object pool. This defines the number of objects the pool will start with or try
+     * to maintain as a minimum.
      */
     private int minSize = 5;
     /**
-     * 最大池大小
+     * The maximum size of the object pool. The pool will not create more objects than this limit.
      */
     private int maxSize = 20;
     /**
-     * 最长等待时间，用于在借出对象时，等待最长时间（默认5秒）。
+     * The maximum time in milliseconds to wait for an object to become available when borrowing from the pool. The
+     * default wait time is 5 seconds.
      */
     private long maxWait = 5000;
     /**
-     * 最长空闲时间（在池中时间）
+     * The maximum idle time in milliseconds for an object in the pool. If an object remains idle for longer than this
+     * duration, it may be evicted from the pool.
      */
     private long maxIdle;
 
     /**
-     * 创建{@code PoolConfig}
+     * Creates a new {@code PoolConfig} instance with default settings.
      *
-     * @return {@code PoolConfig}
+     * @return a new {@code PoolConfig} instance
      */
     public static PoolConfig of() {
         return new PoolConfig();
     }
 
     /**
-     * 获取最小（初始）池大小
+     * Retrieves the minimum (initial) size of the object pool.
      *
-     * @return 最小（初始）池大小
+     * @return the minimum (initial) pool size
      */
     public int getMinSize() {
         return minSize;
     }
 
     /**
-     * 设置最小（初始）池大小
+     * Sets the minimum (initial) size of the object pool.
      *
-     * @param minSize 最小（初始）池大小
-     * @return this
+     * @param minSize the new minimum (initial) pool size
+     * @return this {@code PoolConfig} instance for method chaining
      */
     public PoolConfig setMinSize(final int minSize) {
         this.minSize = minSize;
@@ -93,19 +96,19 @@ public class PoolConfig implements Serializable {
     }
 
     /**
-     * 获取最大池大小
+     * Retrieves the maximum size of the object pool.
      *
-     * @return 最大池大小
+     * @return the maximum pool size
      */
     public int getMaxSize() {
         return maxSize;
     }
 
     /**
-     * 设置最大池大小
+     * Sets the maximum size of the object pool.
      *
-     * @param maxSize 最大池大小
-     * @return this
+     * @param maxSize the new maximum pool size
+     * @return this {@code PoolConfig} instance for method chaining
      */
     public PoolConfig setMaxSize(final int maxSize) {
         this.maxSize = maxSize;
@@ -113,19 +116,19 @@ public class PoolConfig implements Serializable {
     }
 
     /**
-     * 获取最长等待时间，用于在借出对象时，等待最长时间。
+     * Retrieves the maximum wait time in milliseconds for borrowing an object from the pool.
      *
-     * @return 最长等待时间，用于在借出对象时，等待最长时间。
+     * @return the maximum wait time in milliseconds
      */
     public long getMaxWait() {
         return maxWait;
     }
 
     /**
-     * 设置最长等待时间，用于在借出对象时，等待最长时间。
+     * Sets the maximum wait time in milliseconds for borrowing an object from the pool.
      *
-     * @param maxWait 最长等待时间，用于在借出对象时，等待最长时间。
-     * @return this
+     * @param maxWait the new maximum wait time in milliseconds
+     * @return this {@code PoolConfig} instance for method chaining
      */
     public PoolConfig setMaxWait(final long maxWait) {
         this.maxWait = maxWait;
@@ -133,19 +136,20 @@ public class PoolConfig implements Serializable {
     }
 
     /**
-     * 获取最长空闲时间（在池中时间）
+     * Retrieves the maximum idle time in milliseconds for an object in the pool.
      *
-     * @return 最长空闲时间（在池中时间）,小于等于0表示不限制
+     * @return the maximum idle time in milliseconds. A value less than or equal to 0 indicates no idle time limit.
      */
     public long getMaxIdle() {
         return maxIdle;
     }
 
     /**
-     * 设置最长空闲时间（在池中时间）
+     * Sets the maximum idle time in milliseconds for an object in the pool.
      *
-     * @param maxIdle 最长空闲时间（在池中时间）,小于等于0表示不限制
-     * @return this
+     * @param maxIdle the new maximum idle time in milliseconds. A value less than or equal to 0 indicates no idle time
+     *                limit.
+     * @return this {@code PoolConfig} instance for method chaining
      */
     public PoolConfig setMaxIdle(final long maxIdle) {
         this.maxIdle = maxIdle;

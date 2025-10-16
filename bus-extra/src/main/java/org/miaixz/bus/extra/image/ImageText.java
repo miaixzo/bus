@@ -33,7 +33,8 @@ import java.io.Serializable;
 import java.util.Objects;
 
 /**
- * 显示文本，用于保存在图片上绘图的文本信息，包括内容、字体、大小、位置和透明度等
+ * Represents text to be displayed, used for storing text information for drawing on an image, including content, font,
+ * size, position, and transparency.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,20 +43,36 @@ public class ImageText implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 2852293077169L;
+
+    /**
+     * The text content.
+     */
     private String pressText;
+    /**
+     * The color of the text.
+     */
     private Color color;
+    /**
+     * The font used to render the text.
+     */
     private Font font;
+    /**
+     * The starting position (top-left) of the text.
+     */
     private Point point;
+    /**
+     * The transparency of the text (0.0f to 1.0f).
+     */
     private float alpha;
 
     /**
-     * 构造
+     * Constructor.
      *
-     * @param text  文本
-     * @param color 文本颜色
-     * @param font  文本显示字体
-     * @param point 起始左边位置
-     * @param alpha 透明度
+     * @param text  The text content.
+     * @param color The color of the text.
+     * @param font  The font for displaying the text.
+     * @param point The top-left starting position.
+     * @param alpha The transparency.
      */
     public ImageText(final String text, final Color color, final Font font, final Point point, final float alpha) {
         this.pressText = text;
@@ -66,14 +83,14 @@ public class ImageText implements Serializable {
     }
 
     /**
-     * 构建DisplayText
+     * Builds an ImageText object.
      *
-     * @param text  文本
-     * @param color 文本颜色
-     * @param font  文本显示字体
-     * @param point 起始左边位置
-     * @param alpha 透明度
-     * @return DisplayText
+     * @param text  The text content.
+     * @param color The color of the text.
+     * @param font  The font for displaying the text.
+     * @param point The top-left starting position.
+     * @param alpha The transparency.
+     * @return An ImageText object.
      */
     public static ImageText of(
             final String text,
@@ -85,90 +102,90 @@ public class ImageText implements Serializable {
     }
 
     /**
-     * 获取文本
+     * Gets the text content.
      *
-     * @return 获取文本
+     * @return The text content.
      */
     public String getPressText() {
         return pressText;
     }
 
     /**
-     * 设置文本
+     * Sets the text content.
      *
-     * @param pressText 文本
+     * @param pressText The text content.
      */
     public void setPressText(final String pressText) {
         this.pressText = pressText;
     }
 
     /**
-     * 获取文本颜色
+     * Gets the text color.
      *
-     * @return 文本颜色
+     * @return The text color.
      */
     public Color getColor() {
         return color;
     }
 
     /**
-     * 设置文本颜色
+     * Sets the text color.
      *
-     * @param color 文本颜色
+     * @param color The text color.
      */
     public void setColor(final Color color) {
         this.color = color;
     }
 
     /**
-     * 获取字体
+     * Gets the font.
      *
-     * @return 字体
+     * @return The font.
      */
     public Font getFont() {
         return font;
     }
 
     /**
-     * 设置字体
+     * Sets the font.
      *
-     * @param font 字体
+     * @param font The font.
      */
     public void setFont(final Font font) {
         this.font = font;
     }
 
     /**
-     * 获取二维坐标点
+     * Gets the 2D coordinate point.
      *
-     * @return 二维坐标点
+     * @return The 2D coordinate point.
      */
     public Point getPoint() {
         return point;
     }
 
     /**
-     * 设置二维坐标点
+     * Sets the 2D coordinate point.
      *
-     * @param point 二维坐标点
+     * @param point The 2D coordinate point.
      */
     public void setPoint(final Point point) {
         this.point = point;
     }
 
     /**
-     * 获取透明度
+     * Gets the transparency.
      *
-     * @return 透明度
+     * @return The transparency.
      */
     public float getAlpha() {
         return alpha;
     }
 
     /**
-     * 设置透明度
+     * Sets the transparency.
      *
-     * @param alpha 透明度
+     * @param alpha The transparency.
      */
     public void setAlpha(final float alpha) {
         this.alpha = alpha;

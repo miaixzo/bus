@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.starter.pay;
 
+import jakarta.annotation.Resource;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.pay.Complex;
 import org.miaixz.bus.pay.cache.PayCache;
@@ -36,10 +37,9 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
-import jakarta.annotation.Resource;
-
 /**
- * 集合支付配置
+ * Auto-configuration for the integrated payment service. This class sets up the necessary beans for the payment
+ * functionality based on the provided properties.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -47,14 +47,30 @@ import jakarta.annotation.Resource;
 @EnableConfigurationProperties(value = { PayProperties.class })
 public class PayConfiguration {
 
+    /**
+     * Injected payment configuration properties.
+     */
     @Resource
-    PayProperties properties;
+    private PayProperties properties;
 
+    /**
+     * Creates the {@link PayService} bean.
+     *
+     * @param complex The complex payment parameters.
+     * @param cache   The cache instance.
+     * @return A new instance of {@link PayService}.
+     */
     @Bean
     public PayService payProviderFactory(Complex complex, CacheX cache) {
         return new PayService(this.properties, complex, cache);
     }
 
+    /**
+     * Creates a default {@link CacheX} bean if no other bean of the same type is present. This bean is only created if
+     * the property `bus.pay.cache.type` is set to `default` or is missing.
+     *
+     * @return The default {@link CacheX} instance for payment caching.
+     */
     @Bean
     @ConditionalOnMissingBean(CacheX.class)
     @ConditionalOnProperty(name = GeniusBuilder.PAY + ".cache.type", havingValue = "default", matchIfMissing = true)

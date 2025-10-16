@@ -26,7 +26,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Spring Boot JAR 安全加密运行工具, 同时支持的原生JAR
+ * Provides custom stream implementations for handling encrypted JARs, including streams that prevent closing.
  *
  * @author Kimi Liu
  * @since Java 17+

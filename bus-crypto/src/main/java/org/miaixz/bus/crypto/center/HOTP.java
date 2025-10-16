@@ -32,14 +32,16 @@ import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.xyz.RandomKit;
 
 /**
- * HMAC-based one-time passwords (HOTP) 基于HMAC算法一次性密码生成器， 规范见：<a href="https://tools.ietf.org/html/rfc4226">RFC 4226</a>
+ * HMAC-based one-time passwords (HOTP) generator. Specification: <a href="https://tools.ietf.org/html/rfc4226">RFC
+ * 4226</a>
  *
  * <p>
- * 基于事件同步，通过某一特定的事件次序及相同的种子值作为输入，通过HASH算法运算出一致的密码。
+ * It is based on event synchronization, using a specific event sequence and the same seed value as input to compute a
+ * consistent password through a HASH algorithm.
  * </p>
  *
  * <p>
- * 参考：https://github.com/jchambers/java-otp
+ * Reference: https://github.com/jchambers/java-otp
  * </p>
  *
  * @author Kimi Liu
@@ -48,45 +50,56 @@ import org.miaixz.bus.core.xyz.RandomKit;
 public class HOTP {
 
     /**
-     * 默认密码长度.
+     * Default password length.
      */
     public static final int DEFAULT_PASSWORD_LENGTH = 6;
 
     /**
-     * 数子量级
+     * Divisors for truncation.
      */
     private static final int[] MOD_DIVISORS = { 1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000 };
+    /**
+     * The HMAC algorithm implementation.
+     */
     private final HMac mac;
+    /**
+     * The length of the password.
+     */
     private final int passwordLength;
+    /**
+     * The divisor for the truncation calculation.
+     */
     private final int modDivisor;
-
+    /**
+     * Buffer for the counter.
+     */
     private final byte[] buffer;
 
     /**
-     * 构造，使用默认密码长度和默认HMAC算法(HmacSHA1)
+     * Constructor, using default password length and default HMAC algorithm (HmacSHA1).
      *
-     * @param key 共享密码，RFC 4226要求最少128位
+     * @param key Shared secret, RFC 4226 requires at least 128 bits.
      */
     public HOTP(final byte[] key) {
         this(DEFAULT_PASSWORD_LENGTH, key);
     }
 
     /**
-     * 构造，使用默认HMAC算法(HmacSHA1)
+     * Constructor, using default HMAC algorithm (HmacSHA1).
      *
-     * @param passwordLength 密码长度，可以是6,7,8
-     * @param key            共享密码，RFC 4226要求最少128位
+     * @param passwordLength Password length, can be 6, 7, or 8.
+     * @param key            Shared secret, RFC 4226 requires at least 128 bits.
      */
     public HOTP(final int passwordLength, final byte[] key) {
         this(passwordLength, Algorithm.HMACSHA1, key);
     }
 
     /**
-     * 构造
+     * Constructor.
      *
-     * @param passwordLength 密码长度，可以是6,7,8
-     * @param algorithm      HMAC算法枚举
-     * @param key            共享密码，RFC 4226要求最少128位
+     * @param passwordLength Password length, can be 6, 7, or 8.
+     * @param algorithm      HMAC algorithm enum.
+     * @param key            Shared secret, RFC 4226 requires at least 128 bits.
      */
     public HOTP(final int passwordLength, final Algorithm algorithm, final byte[] key) {
         if (passwordLength >= MOD_DIVISORS.length) {
@@ -99,24 +112,25 @@ public class HOTP {
     }
 
     /**
-     * 生成共享密钥的Base32表示形式
+     * Generate a Base32 representation of a secret key.
      *
-     * @param numBytes 将生成的种子字节数量。
-     * @return 共享密钥
+     * @param numBytes The number of seed bytes to generate.
+     * @return The secret key.
      */
     public static String generateSecretKey(final int numBytes) {
         return Base32.encode(RandomKit.getSHA1PRNGRandom(RandomKit.randomBytes(256)).generateSeed(numBytes));
     }
 
     /**
-     * 生成一次性密码
+     * Generate a one-time password.
      *
-     * @param counter 事件计数的值，8 字节的整数，称为移动因子（moving factor）， 可以是基于计次的动移动因子，也可以是计时移动因子
-     * @return 一次性密码的int值
+     * @param counter The value of the event counter, an 8-byte integer, called the moving factor. It can be a
+     *                count-based or time-based moving factor.
+     * @return The integer value of the one-time password.
      */
     public synchronized int generate(final long counter) {
-        // C 的整数值需要用二进制的字符串表达，比如某个事件计数为 3，
-        // 则C是 "11"（此处省略了前面的二进制的数字0）
+        // The integer value of C needs to be expressed as a binary string. For example, if an event count is 3,
+        // C is "11" (omitting the preceding binary zeros).
         this.buffer[0] = (byte) ((counter & 0xff00000000000000L) >>> 56);
         this.buffer[1] = (byte) ((counter & 0x00ff000000000000L) >>> 48);
         this.buffer[2] = (byte) ((counter & 0x0000ff0000000000L) >>> 40);
@@ -132,28 +146,28 @@ public class HOTP {
     }
 
     /**
-     * 获取密码长度，可以是6,7,8
+     * Gets the password length, which can be 6, 7, or 8.
      *
-     * @return 密码长度，可以是6,7,8
+     * @return The password length.
      */
     public int getPasswordLength() {
         return this.passwordLength;
     }
 
     /**
-     * 获取HMAC算法
+     * Gets the HMAC algorithm.
      *
-     * @return HMAC算法
+     * @return The HMAC algorithm.
      */
     public String getAlgorithm() {
         return this.mac.getAlgorithm();
     }
 
     /**
-     * 截断
+     * Truncate.
      *
-     * @param digest HMAC的hash值
-     * @return 截断值
+     * @param digest The HMAC hash value.
+     * @return The truncated value.
      */
     private int truncate(final byte[] digest) {
         final int offset = digest[digest.length - 1] & 0x0f;

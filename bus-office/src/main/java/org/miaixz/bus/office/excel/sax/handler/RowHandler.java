@@ -33,7 +33,7 @@ import org.apache.poi.ss.usermodel.CellStyle;
 import org.miaixz.bus.core.lang.exception.TerminateException;
 
 /**
- * Sax方式读取Excel行处理器
+ * SAX-based Excel row handler.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,22 +42,22 @@ import org.miaixz.bus.core.lang.exception.TerminateException;
 public interface RowHandler {
 
     /**
-     * 处理一行数据， 如果想结束读取，抛出 {@link TerminateException} 即可
+     * Handles a row of data. If you want to stop reading, just throw {@link TerminateException}.
      *
-     * @param sheetIndex 当前Sheet序号
-     * @param rowIndex   当前行号，从0开始计数
-     * @param rowCells   行数据，每个Object表示一个单元格的值
+     * @param sheetIndex The 0-based index of the current sheet.
+     * @param rowIndex   The 0-based row number of the current row.
+     * @param rowCells   The row data, where each {@link Object} represents a cell value.
      */
     void handle(int sheetIndex, long rowIndex, List<Object> rowCells);
 
     /**
-     * 处理一个单元格的数据，如果想结束读取，抛出 {@link TerminateException} 即可
+     * Handles a single cell's data. If you want to stop reading, just throw {@link TerminateException}.
      *
-     * @param sheetIndex    当前Sheet序号
-     * @param rowIndex      当前行号
-     * @param cellIndex     当前列号
-     * @param value         单元格的值
-     * @param xssfCellStyle 单元格样式
+     * @param sheetIndex    The 0-based index of the current sheet.
+     * @param rowIndex      The row number of the current cell.
+     * @param cellIndex     The column number of the current cell.
+     * @param value         The value of the cell.
+     * @param xssfCellStyle The cell style. This parameter is specific to XSSF (Excel 2007+).
      */
     default void handleCell(
             final int sheetIndex,
@@ -69,7 +69,7 @@ public interface RowHandler {
     }
 
     /**
-     * 处理一个sheet页完成的操作
+     * Performs operations after a sheet has been completely analyzed.
      */
     default void doAfterAllAnalysed() {
         // pass

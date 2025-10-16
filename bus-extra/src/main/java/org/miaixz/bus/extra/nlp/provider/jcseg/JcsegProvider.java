@@ -40,38 +40,56 @@ import org.miaixz.bus.extra.nlp.NLPProvider;
 import org.miaixz.bus.extra.nlp.NLPResult;
 
 /**
- * Jcseg分词引擎实现 项目地址：https://gitee.com/lionsoul/jcseg {@link ISegment}非线程安全，每次单独创建
+ * Jcseg word segmentation engine implementation. This class serves as a concrete {@link NLPProvider} for the Jcseg NLP
+ * library. Note that {@link ISegment} is not thread-safe, so a new instance is created for each segmentation request.
+ * Project homepage: <a href="https://gitee.com/lionsoul/jcseg">https://gitee.com/lionsoul/jcseg</a>
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class JcsegProvider implements NLPProvider {
 
+    /**
+     * The Jcseg segmenter configuration.
+     */
     private final SegmenterConfig config;
+    /**
+     * The Jcseg dictionary.
+     */
     private final ADictionary dic;
 
     /**
-     * 构造
+     * Constructs a new {@code JcsegProvider} instance with a default configuration. It automatically finds and loads
+     * the `jcseg.properties` configuration file.
      */
     public JcsegProvider() {
-        // 创建SegmenterConfig分词配置实例，自动查找加载jcseg.properties配置项来初始化
+        // Create a SegmenterConfig instance, automatically finding and loading jcseg.properties
         this(new SegmenterConfig(true));
     }
 
     /**
-     * 构造
+     * Constructs a new {@code JcsegProvider} instance with a custom {@link SegmenterConfig}.
      *
-     * @param config {@link SegmenterConfig}
+     * @param config The custom {@link SegmenterConfig} to use for word segmentation.
      */
     public JcsegProvider(final SegmenterConfig config) {
         this.config = config;
-        // 创建默认单例词库实现，并且按照config配置加载词库
+        // Create a default singleton dictionary instance and load the dictionary according to the config
         this.dic = DictionaryFactory.createSingletonDictionary(config);
     }
 
+    /**
+     * Performs word segmentation on the given text using the Jcseg engine. A new {@link ISegment} instance is created
+     * for each call to ensure thread safety. The result is wrapped in a {@link JcsegResult} to conform to the
+     * {@link NLPResult} interface.
+     *
+     * @param text The input text {@link CharSequence} to be segmented.
+     * @return An {@link NLPResult} object containing the segmented words from Jcseg.
+     * @throws InternalException if an {@link IOException} occurs during the operation.
+     */
     @Override
     public NLPResult parse(final CharSequence text) {
-        // 依据给定的ADictionary和SegmenterConfig来创建ISegment
+        // Create an ISegment instance based on the given ADictionary and SegmenterConfig
         final ISegment segment = ISegment.COMPLEX.factory.create(config, dic);
         try {
             segment.reset(new StringReader(StringKit.toStringOrEmpty(text)));

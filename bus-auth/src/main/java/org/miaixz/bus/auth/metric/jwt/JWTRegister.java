@@ -30,78 +30,82 @@ package org.miaixz.bus.auth.metric.jwt;
 import java.util.Date;
 
 /**
- * 注册的标准载荷（Payload）声明
+ * Interface for registering standard JWT (JSON Web Token) claims (Payload). This interface defines common claims used
+ * in JWT payloads and provides default methods for setting them.
  *
- * @param <T> 实现此接口的类的类型
+ * @param <T> the type of the class implementing this interface
  * @author Kimi Liu
  * @since Java 17+
  */
 public interface JWTRegister<T extends JWTRegister<T>> {
 
     /**
-     * jwt签发者
+     * The "iss" (issuer) claim identifies the principal that issued the JWT.
      */
     String ISSUER = "iss";
     /**
-     * jwt所面向的用户
+     * The "sub" (subject) claim identifies the principal that is the subject of the JWT.
      */
     String SUBJECT = "sub";
     /**
-     * 接收jwt的一方
+     * The "aud" (audience) claim identifies the recipients that the JWT is intended for.
      */
     String AUDIENCE = "aud";
     /**
-     * jwt的过期时间，这个过期时间必须要大于签发时间
+     * The "exp" (expiration time) claim identifies the expiration time on or after which the JWT MUST NOT be accepted
+     * for processing. This expiration time must be after the issued at time.
      */
     String EXPIRES_AT = "exp";
     /**
-     * 生效时间，定义在什么时间之前，该jwt都是不可用的.
+     * The "nbf" (not before) claim identifies the time before which the JWT MUST NOT be accepted for processing.
      */
     String NOT_BEFORE = "nbf";
     /**
-     * jwt的签发时间
+     * The "iat" (issued at time) claim identifies the time at which the JWT was issued.
      */
     String ISSUED_AT = "iat";
     /**
-     * jwt的唯一身份标识，主要用来作为一次性token,从而回避重放攻击。
+     * The "jti" (JWT ID) claim provides a unique identifier for the JWT. Primarily used as a one-time token to prevent
+     * replay attacks.
      */
     String JWT_ID = "jti";
 
     /**
-     * 设置 jwt签发者("iss")的Payload值
+     * Sets the "iss" (issuer) claim value in the Payload.
      *
-     * @param issuer jwt签发者
-     * @return this
+     * @param issuer the issuer of the JWT
+     * @return this instance for method chaining
      */
     default T setIssuer(final String issuer) {
         return setPayload(ISSUER, issuer);
     }
 
     /**
-     * 设置jwt所面向的用户("sub")的Payload值
+     * Sets the "sub" (subject) claim value in the Payload.
      *
-     * @param subject jwt所面向的用户
-     * @return this
+     * @param subject the subject of the JWT
+     * @return this instance for method chaining
      */
     default T setSubject(final String subject) {
         return setPayload(SUBJECT, subject);
     }
 
     /**
-     * 设置接收jwt的一方("aud")的Payload值
+     * Sets the "aud" (audience) claim value in the Payload.
      *
-     * @param audience 接收jwt的一方
-     * @return this
+     * @param audience the recipients that the JWT is intended for
+     * @return this instance for method chaining
      */
     default T setAudience(final String... audience) {
         return setPayload(AUDIENCE, audience);
     }
 
     /**
-     * 设置jwt的过期时间("exp")的Payload值，这个过期时间必须要大于签发时间
+     * Sets the "exp" (expiration time) claim value in the Payload. This expiration time must be after the issued at
+     * time.
      *
-     * @param expiresAt jwt的过期时间
-     * @return this
+     * @param expiresAt the expiration time of the JWT
+     * @return this instance for method chaining
      * @see #setIssuedAt(Date)
      */
     default T setExpiresAt(final Date expiresAt) {
@@ -109,41 +113,41 @@ public interface JWTRegister<T extends JWTRegister<T>> {
     }
 
     /**
-     * 设置不可用时间点界限("nbf")的Payload值
+     * Sets the "nbf" (not before) claim value in the Payload.
      *
-     * @param notBefore 不可用时间点界限，在这个时间点之前，jwt不可用
-     * @return this
+     * @param notBefore the time before which the JWT MUST NOT be accepted for processing
+     * @return this instance for method chaining
      */
     default T setNotBefore(final Date notBefore) {
         return setPayload(NOT_BEFORE, notBefore);
     }
 
     /**
-     * 设置jwt的签发时间("iat")
+     * Sets the "iat" (issued at time) claim value in the Payload.
      *
-     * @param issuedAt 签发时间
-     * @return this
+     * @param issuedAt the time at which the JWT was issued
+     * @return this instance for method chaining
      */
     default T setIssuedAt(final Date issuedAt) {
         return setPayload(ISSUED_AT, issuedAt);
     }
 
     /**
-     * 设置jwt的唯一身份标识("jti")
+     * Sets the "jti" (JWT ID) claim value in the Payload.
      *
-     * @param jwtId 唯一身份标识
-     * @return this
+     * @param jwtId the unique identifier for the JWT
+     * @return this instance for method chaining
      */
     default T setJWTId(final String jwtId) {
         return setPayload(JWT_ID, jwtId);
     }
 
     /**
-     * 设置Payload值
+     * Sets a custom Payload value.
      *
-     * @param name  payload名
-     * @param value payload值
-     * @return this
+     * @param name  the name of the payload claim
+     * @param value the value of the payload claim
+     * @return this instance for method chaining
      */
     T setPayload(String name, Object value);
 

@@ -30,10 +30,10 @@ package org.miaixz.bus.core.tree.parser;
 import org.miaixz.bus.core.tree.MapTree;
 
 /**
- * 树节点解析器 可以参考{@link DefaultNodeParser}
+ * A parser for converting a data object into a tree node. See {@link DefaultNodeParser} for a default implementation.
  *
- * @param <T> 转换的实体 为数据源里的对象类型
- * @param <E> ID类型
+ * @param <T> The type of the source data object.
+ * @param <E> The type of the node's identifier.
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -41,8 +41,10 @@ import org.miaixz.bus.core.tree.MapTree;
 public interface NodeParser<T, E> {
 
     /**
-     * @param object   源数据实体
-     * @param treeNode 树节点实体
+     * Converts a source data object to a {@link MapTree} node by mapping its properties.
+     *
+     * @param object   The source data object.
+     * @param treeNode The target tree node to populate.
      */
     void parse(T object, MapTree<E> treeNode);
 

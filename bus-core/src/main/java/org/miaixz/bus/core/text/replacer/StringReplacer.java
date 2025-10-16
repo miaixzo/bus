@@ -34,31 +34,40 @@ import java.util.function.UnaryOperator;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 抽象字符串替换类 通过实现replace方法实现局部替换逻辑
+ * Abstract string replacer class. Subclasses implement the {@link #replace(CharSequence, int, StringBuilder)} method to
+ * define specific replacement logic.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public abstract class StringReplacer implements UnaryOperator<CharSequence>, Serializable {
 
+    /**
+     * The serial version UID.
+     */
     @Serial
     private static final long serialVersionUID = 2852239827580L;
 
     /**
-     * 抽象的字符串替换方法，通过传入原字符串和当前位置，执行替换逻辑，返回处理或替换的字符串长度部分。
+     * Abstract method to perform a partial string replacement. This method defines the logic for replacing a portion of
+     * the input text.
      *
-     * @param text 被处理的字符串
-     * @param pos  当前位置
-     * @param out  输出
-     * @return 处理的原字符串长度，0表示跳过此字符
+     * @param text The character sequence being processed.
+     * @param pos  The current position in the character sequence.
+     * @param out  The {@code StringBuilder} to which the replaced or original characters are appended.
+     * @return The number of characters consumed from the input {@code text} by this replacement operation. Return 0 to
+     *         indicate that no replacement occurred at the current position, and the original character at {@code pos}
+     *         should be appended.
      */
     protected abstract int replace(CharSequence text, int pos, StringBuilder out);
 
     /**
-     * 执行替换，按照{@link #replace(CharSequence, int, StringBuilder)}逻辑替换对应部分，其它部分保持原样
+     * Executes the replacement operation on the given character sequence. It iterates through the input text, applying
+     * the replacement logic defined in {@link #replace(CharSequence, int, StringBuilder)} to relevant parts, and
+     * keeping other parts unchanged.
      *
-     * @param text 被处理的字符串
-     * @return 替换后的字符串
+     * @param text The character sequence to be processed.
+     * @return The character sequence after all replacements have been applied.
      */
     @Override
     public CharSequence apply(final CharSequence text) {
@@ -67,12 +76,13 @@ public abstract class StringReplacer implements UnaryOperator<CharSequence>, Ser
         }
         final int len = text.length();
         final StringBuilder builder = new StringBuilder(len);
-        int pos = 0;// 当前位置
-        int consumed;// 处理过的字符数
+        int pos = 0;// Current position
+        int consumed;// Number of characters processed
         while (pos < len) {
             consumed = replace(text, pos, builder);
             if (0 == consumed) {
-                // 0表示未处理或替换任何字符，原样输出本字符并从下一个字符继续
+                // If 0 characters are consumed, it means no replacement occurred at this position.
+                // Append the original character and move to the next position.
                 builder.append(text.charAt(pos));
                 pos++;
             }

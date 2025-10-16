@@ -32,7 +32,7 @@ import java.io.Serial;
 import org.miaixz.bus.core.xyz.CompareKit;
 
 /**
- * 可变 {@code int} 类型
+ * A mutable {@code int} wrapper.
  *
  * @author Kimi Liu
  * @see Integer
@@ -43,38 +43,41 @@ public class MutableInt extends Number implements Comparable<MutableInt>, Mutabl
     @Serial
     private static final long serialVersionUID = 2852270595187L;
 
+    /**
+     * The mutable value.
+     */
     private int value;
 
     /**
-     * 构造，默认值0
+     * Constructs a new MutableInt with a default value of 0.
      */
     public MutableInt() {
 
     }
 
     /**
-     * 构造
+     * Constructs a new MutableInt with the specified value.
      *
-     * @param value 值
+     * @param value The initial value.
      */
     public MutableInt(final int value) {
         this.value = value;
     }
 
     /**
-     * 构造
+     * Constructs a new MutableInt with the value from the specified Number.
      *
-     * @param value 值
+     * @param value The initial value as a Number.
      */
     public MutableInt(final Number value) {
         this(value.intValue());
     }
 
     /**
-     * 构造
+     * Constructs a new MutableInt with the value parsed from the specified String.
      *
-     * @param value String值
-     * @throws NumberFormatException 数字转换错误
+     * @param value The initial value as a String.
+     * @throws NumberFormatException if the String cannot be parsed to an int.
      */
     public MutableInt(final String value) throws NumberFormatException {
         this.value = Integer.parseInt(value);
@@ -86,9 +89,9 @@ public class MutableInt extends Number implements Comparable<MutableInt>, Mutabl
     }
 
     /**
-     * 设置值
+     * Sets the value.
      *
-     * @param value 值
+     * @param value The new value.
      */
     public void set(final int value) {
         this.value = value;
@@ -100,9 +103,9 @@ public class MutableInt extends Number implements Comparable<MutableInt>, Mutabl
     }
 
     /**
-     * 值+1
+     * Increments the value by one.
      *
-     * @return this
+     * @return This MutableInt instance.
      */
     public MutableInt increment() {
         value++;
@@ -110,9 +113,9 @@ public class MutableInt extends Number implements Comparable<MutableInt>, Mutabl
     }
 
     /**
-     * 值减一
+     * Decrements the value by one.
      *
-     * @return this
+     * @return This MutableInt instance.
      */
     public MutableInt decrement() {
         value--;
@@ -120,46 +123,46 @@ public class MutableInt extends Number implements Comparable<MutableInt>, Mutabl
     }
 
     /**
-     * 先加1, 再获取值
+     * Increments the value by one and then returns the new value.
      *
-     * @return +1后的值
+     * @return The value after incrementing.
      */
     public int incrementAndGet() {
         return ++value;
     }
 
     /**
-     * 先获取原来的值, 再加1
+     * Returns the current value and then increments it by one.
      *
-     * @return 原始值
+     * @return The original value before incrementing.
      */
     public int getAndIncrement() {
         return value++;
     }
 
     /**
-     * 先减1, 再获取值
+     * Decrements the value by one and then returns the new value.
      *
-     * @return -1后的值
+     * @return The value after decrementing.
      */
     public int decrementAndGet() {
         return --value;
     }
 
     /**
-     * 先获取原来的值, 再减1
+     * Returns the current value and then decrements it by one.
      *
-     * @return 原始值
+     * @return The original value before decrementing.
      */
     public int getAndDecrement() {
         return value--;
     }
 
     /**
-     * 增加值
+     * Adds the specified value to this MutableInt.
      *
-     * @param operand 被增加的值
-     * @return this
+     * @param operand The value to add.
+     * @return This MutableInt instance.
      */
     public MutableInt add(final int operand) {
         this.value += operand;
@@ -167,11 +170,11 @@ public class MutableInt extends Number implements Comparable<MutableInt>, Mutabl
     }
 
     /**
-     * 增加值
+     * Adds the value of the specified Number to this MutableInt.
      *
-     * @param operand 被增加的值，非空
-     * @return this
-     * @throws NullPointerException if the object is null
+     * @param operand The value to add, must not be null.
+     * @return This MutableInt instance.
+     * @throws NullPointerException if the operand is null.
      */
     public MutableInt add(final Number operand) {
         this.value += operand.intValue();
@@ -179,10 +182,10 @@ public class MutableInt extends Number implements Comparable<MutableInt>, Mutabl
     }
 
     /**
-     * 减去值
+     * Subtracts the specified value from this MutableInt.
      *
-     * @param operand 被减的值
-     * @return this
+     * @param operand The value to subtract.
+     * @return This MutableInt instance.
      */
     public MutableInt subtract(final int operand) {
         this.value -= operand;
@@ -190,11 +193,11 @@ public class MutableInt extends Number implements Comparable<MutableInt>, Mutabl
     }
 
     /**
-     * 减去值
+     * Subtracts the value of the specified Number from this MutableInt.
      *
-     * @param operand 被减的值，非空
-     * @return this
-     * @throws NullPointerException if the object is null
+     * @param operand The value to subtract, must not be null.
+     * @return This MutableInt instance.
+     * @throws NullPointerException if the operand is null.
      */
     public MutableInt subtract(final Number operand) {
         this.value -= operand.intValue();
@@ -222,15 +225,16 @@ public class MutableInt extends Number implements Comparable<MutableInt>, Mutabl
     }
 
     /**
-     * 相等需同时满足如下条件：
+     * Compares this object to the specified object. The objects are considered equal if all of the following conditions
+     * are met:
      * <ol>
-     * <li>非空</li>
-     * <li>类型为 MutableInt</li>
-     * <li>值相等</li>
+     * <li>The other object is not null.</li>
+     * <li>The other object is an instance of {@code MutableInt}.</li>
+     * <li>The integer value of the other object is equal to this object's value.</li>
      * </ol>
      *
-     * @param object 比对的对象
-     * @return 相同返回<code>true</code>，否则 {@code false}
+     * @param object The object to compare against.
+     * @return {@code true} if the objects are equal, {@code false} otherwise.
      */
     @Override
     public boolean equals(final Object object) {
@@ -246,10 +250,11 @@ public class MutableInt extends Number implements Comparable<MutableInt>, Mutabl
     }
 
     /**
-     * 比较
+     * Compares this {@code MutableInt} object with the specified {@code MutableInt} object.
      *
-     * @param other 其它 MutableInt 对象
-     * @return x==y返回0，x&lt;y返回-1，x&gt;y返回1
+     * @param other The other {@code MutableInt} object to compare against.
+     * @return 0 if the values are equal, a negative integer if this value is less than the other value, or a positive
+     *         integer if this value is greater than the other value.
      */
     @Override
     public int compareTo(final MutableInt other) {

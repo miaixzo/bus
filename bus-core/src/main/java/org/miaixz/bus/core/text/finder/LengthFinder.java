@@ -32,7 +32,8 @@ import java.io.Serial;
 import org.miaixz.bus.core.lang.Assert;
 
 /**
- * 固定长度查找器 给定一个长度，查找的位置为from + length，一般用于分段截取
+ * A {@link TextFinder} that finds a position at a fixed-length offset from the starting point. This is typically used
+ * for segmenting a string into fixed-size chunks.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,21 +43,24 @@ public class LengthFinder extends TextFinder {
     @Serial
     private static final long serialVersionUID = 2852236815139L;
 
+    /**
+     * The fixed length of the segment.
+     */
     private final int length;
 
     /**
-     * 构造
+     * Constructs a new {@code LengthFinder}.
      *
-     * @param length 长度，必须大于0
+     * @param length The fixed length, which must be greater than 0.
      */
     public LengthFinder(final int length) {
-        Assert.isTrue(length > 0, "Length must be great than 0");
+        Assert.isTrue(length > 0, "Length must be greater than 0");
         this.length = length;
     }
 
     @Override
     public int start(final int from) {
-        Assert.notNull(this.text, "Text to find must be not null!");
+        Assert.notNull(this.text, "Text to find must not be null!");
         final int limit = getValidEndIndex();
         final int result;
         if (negative) {

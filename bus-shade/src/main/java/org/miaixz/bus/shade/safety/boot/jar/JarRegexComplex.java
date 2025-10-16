@@ -34,21 +34,40 @@ import org.miaixz.bus.shade.safety.Complex;
 import org.miaixz.bus.shade.safety.complex.RegexComplex;
 
 /**
- * Jar记录正则表达式规则
+ * A {@link Complex} implementation that filters {@link JarArchiveEntry} entries based on regular expression matching.
+ * This class extends {@link RegexComplex} and provides a way to apply regex patterns to the names of JAR archive
+ * entries.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class JarRegexComplex extends RegexComplex<JarArchiveEntry> implements Complex<JarArchiveEntry> {
 
+    /**
+     * Constructs a new {@code JarRegexComplex} with the specified regular expression string.
+     *
+     * @param regex The regular expression string to use for filtering.
+     */
     public JarRegexComplex(String regex) {
         super(regex);
     }
 
+    /**
+     * Constructs a new {@code JarRegexComplex} with the specified compiled {@link Pattern}.
+     *
+     * @param pattern The compiled {@link Pattern} to use for filtering.
+     */
     public JarRegexComplex(Pattern pattern) {
         super(pattern);
     }
 
+    /**
+     * Converts a {@link JarArchiveEntry} into a string representation for pattern matching. This implementation returns
+     * the name of the JAR archive entry.
+     *
+     * @param entry The {@link JarArchiveEntry} to convert.
+     * @return The name of the JAR archive entry.
+     */
     @Override
     protected String toText(JarArchiveEntry entry) {
         return entry.getName();

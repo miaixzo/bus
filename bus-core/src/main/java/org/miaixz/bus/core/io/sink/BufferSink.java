@@ -37,7 +37,9 @@ import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.source.Source;
 
 /**
- * 缓冲接收器接口，提供高效的写操作，内部维护缓冲区以减少性能开销。
+ * A {@code BufferSink} provides efficient write operations by maintaining an internal buffer to reduce the overhead of
+ * frequent I/O calls. It extends both {@link Sink} and {@link WritableByteChannel} to offer a comprehensive set of
+ * methods for writing various data types.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -45,220 +47,222 @@ import org.miaixz.bus.core.io.source.Source;
 public interface BufferSink extends Sink, WritableByteChannel {
 
     /**
-     * 获取内部缓冲区。
+     * Returns the internal buffer of this sink.
      *
-     * @return 内部缓冲区对象
+     * @return The internal {@link Buffer} object.
      */
     Buffer buffer();
 
     /**
-     * 写入字节字符串。
+     * Writes a {@link ByteString} to this sink.
      *
-     * @param byteString 字节字符串
-     * @return 当前接收器
-     * @throws IOException 如果写入失败
+     * @param byteString The {@link ByteString} to write.
+     * @return This {@code BufferSink} instance.
+     * @throws IOException If an I/O error occurs during the write operation.
      */
     BufferSink write(ByteString byteString) throws IOException;
 
     /**
-     * 写入完整的字节数组。
+     * Writes an entire byte array to this sink.
      *
-     * @param source 字节数组
-     * @return 当前接收器
-     * @throws IOException 如果写入失败
+     * @param source The byte array to write.
+     * @return This {@code BufferSink} instance.
+     * @throws IOException If an I/O error occurs during the write operation.
      */
     BufferSink write(byte[] source) throws IOException;
 
     /**
-     * 写入字节数组的指定部分。
+     * Writes a portion of a byte array to this sink.
      *
-     * @param source    字节数组
-     * @param offset    起始偏移量
-     * @param byteCount 写入字节数
-     * @return 当前接收器
-     * @throws IOException 如果写入失败
+     * @param source    The byte array to write from.
+     * @param offset    The starting offset in the byte array.
+     * @param byteCount The number of bytes to write.
+     * @return This {@code BufferSink} instance.
+     * @throws IOException If an I/O error occurs during the write operation.
      */
     BufferSink write(byte[] source, int offset, int byteCount) throws IOException;
 
     /**
-     * 从源读取所有字节并写入接收器。
+     * Reads all bytes from the given {@link Source} and writes them to this sink.
      *
-     * @param source 数据源
-     * @return 读取的字节数，源耗尽时返回 0
-     * @throws IOException 如果读取或写入失败
+     * @param source The {@link Source} to read from.
+     * @return The number of bytes read and written. Returns 0 if the source is exhausted.
+     * @throws IOException If an I/O error occurs during the read or write operation.
      */
     long writeAll(Source source) throws IOException;
 
     /**
-     * 从源读取指定字节数并写入接收器。
+     * Reads a specified number of bytes from the given {@link Source} and writes them to this sink.
      *
-     * @param source    数据源
-     * @param byteCount 要读取的字节数
-     * @return 当前接收器
-     * @throws IOException 如果读取或写入失败
+     * @param source    The {@link Source} to read from.
+     * @param byteCount The number of bytes to read and write.
+     * @return This {@code BufferSink} instance.
+     * @throws IOException If an I/O error occurs during the read or write operation.
      */
     BufferSink write(Source source, long byteCount) throws IOException;
 
     /**
-     * 使用 UTF-8 编码写入字符串。
+     * Writes a string to this sink using UTF-8 encoding.
      *
-     * @param string 输入字符串
-     * @return 当前接收器
-     * @throws IOException 如果写入失败
+     * @param string The string to write.
+     * @return This {@code BufferSink} instance.
+     * @throws IOException If an I/O error occurs during the write operation.
      */
     BufferSink writeUtf8(String string) throws IOException;
 
     /**
-     * 使用 UTF-8 编码写入字符串的指定部分。
+     * Writes a portion of a string to this sink using UTF-8 encoding.
      *
-     * @param string     输入字符串
-     * @param beginIndex 起始索引
-     * @param endIndex   结束索引
-     * @return 当前接收器
-     * @throws IOException 如果写入失败
+     * @param string     The string to write from.
+     * @param beginIndex The starting index of the substring to write.
+     * @param endIndex   The ending index (exclusive) of the substring to write.
+     * @return This {@code BufferSink} instance.
+     * @throws IOException If an I/O error occurs during the write operation.
      */
     BufferSink writeUtf8(String string, int beginIndex, int endIndex) throws IOException;
 
     /**
-     * 使用 UTF-8 编码写入 Unicode 码点。
+     * Writes a Unicode code point to this sink using UTF-8 encoding.
      *
-     * @param codePoint Unicode 码点
-     * @return 当前接收器
-     * @throws IOException 如果写入失败
+     * @param codePoint The Unicode code point to write.
+     * @return This {@code BufferSink} instance.
+     * @throws IOException If an I/O error occurs during the write operation.
      */
     BufferSink writeUtf8CodePoint(int codePoint) throws IOException;
 
     /**
-     * 使用指定字符集编码写入字符串。
+     * Writes a string to this sink using the specified character set.
      *
-     * @param string  输入字符串
-     * @param charset 字符集
-     * @return 当前接收器
-     * @throws IOException 如果写入失败
+     * @param string  The string to write.
+     * @param charset The character set to use for encoding the string.
+     * @return This {@code BufferSink} instance.
+     * @throws IOException If an I/O error occurs during the write operation.
      */
     BufferSink writeString(String string, Charset charset) throws IOException;
 
     /**
-     * 使用指定字符集编码写入字符串的指定部分。
+     * Writes a portion of a string to this sink using the specified character set.
      *
-     * @param string     输入字符串
-     * @param beginIndex 起始索引
-     * @param endIndex   结束索引
-     * @param charset    字符集
-     * @return 当前接收器
-     * @throws IOException 如果写入失败
+     * @param string     The string to write from.
+     * @param beginIndex The starting index of the substring to write.
+     * @param endIndex   The ending index (exclusive) of the substring to write.
+     * @param charset    The character set to use for encoding the string.
+     * @return This {@code BufferSink} instance.
+     * @throws IOException If an I/O error occurs during the write operation.
      */
     BufferSink writeString(String string, int beginIndex, int endIndex, Charset charset) throws IOException;
 
     /**
-     * 写入单个字节。
+     * Writes a single byte to this sink.
      *
-     * @param b 字节值
-     * @return 当前接收器
-     * @throws IOException 如果写入失败
+     * @param b The byte value to write.
+     * @return This {@code BufferSink} instance.
+     * @throws IOException If an I/O error occurs during the write operation.
      */
     BufferSink writeByte(int b) throws IOException;
 
     /**
-     * 使用大端序写入短整型（2 字节）。
+     * Writes a 2-byte short integer to this sink using big-endian byte order.
      *
-     * @param s 短整型值
-     * @return 当前接收器
-     * @throws IOException 如果写入失败
+     * @param s The short integer value to write.
+     * @return This {@code BufferSink} instance.
+     * @throws IOException If an I/O error occurs during the write operation.
      */
     BufferSink writeShort(int s) throws IOException;
 
     /**
-     * 使用小端序写入短整型（2 字节）。
+     * Writes a 2-byte short integer to this sink using little-endian byte order.
      *
-     * @param s 短整型值
-     * @return 当前接收器
-     * @throws IOException 如果写入失败
+     * @param s The short integer value to write.
+     * @return This {@code BufferSink} instance.
+     * @throws IOException If an I/O error occurs during the write operation.
      */
     BufferSink writeShortLe(int s) throws IOException;
 
     /**
-     * 使用大端序写入整型（4 字节）。
+     * Writes a 4-byte integer to this sink using big-endian byte order.
      *
-     * @param i 整型值
-     * @return 当前接收器
-     * @throws IOException 如果写入失败
+     * @param i The integer value to write.
+     * @return This {@code BufferSink} instance.
+     * @throws IOException If an I/O error occurs during the write operation.
      */
     BufferSink writeInt(int i) throws IOException;
 
     /**
-     * 使用小端序写入整型（4 字节）。
+     * Writes a 4-byte integer to this sink using little-endian byte order.
      *
-     * @param i 整型值
-     * @return 当前接收器
-     * @throws IOException 如果写入失败
+     * @param i The integer value to write.
+     * @return This {@code BufferSink} instance.
+     * @throws IOException If an I/O error occurs during the write operation.
      */
     BufferSink writeIntLe(int i) throws IOException;
 
     /**
-     * 使用大端序写入长整型（8 字节）。
+     * Writes an 8-byte long integer to this sink using big-endian byte order.
      *
-     * @param v 长整型值
-     * @return 当前接收器
-     * @throws IOException 如果写入失败
+     * @param v The long integer value to write.
+     * @return This {@code BufferSink} instance.
+     * @throws IOException If an I/O error occurs during the write operation.
      */
     BufferSink writeLong(long v) throws IOException;
 
     /**
-     * 使用小端序写入长整型（8 字节）。
+     * Writes an 8-byte long integer to this sink using little-endian byte order.
      *
-     * @param v 长整型值
-     * @return 当前接收器
-     * @throws IOException 如果写入失败
+     * @param v The long integer value to write.
+     * @return This {@code BufferSink} instance.
+     * @throws IOException If an I/O error occurs during the write operation.
      */
     BufferSink writeLongLe(long v) throws IOException;
 
     /**
-     * 以十进制形式写入长整型。
+     * Writes a long integer to this sink in decimal form.
      *
-     * @param v 长整型值
-     * @return 当前接收器
-     * @throws IOException 如果写入失败
+     * @param v The long integer value to write.
+     * @return This {@code BufferSink} instance.
+     * @throws IOException If an I/O error occurs during the write operation.
      */
     BufferSink writeDecimalLong(long v) throws IOException;
 
     /**
-     * 以十六进制形式写入无符号长整型。
+     * Writes an unsigned long integer to this sink in hexadecimal form.
      *
-     * @param v 长整型值
-     * @return 当前接收器
-     * @throws IOException 如果写入失败
+     * @param v The long integer value to write.
+     * @return This {@code BufferSink} instance.
+     * @throws IOException If an I/O error occurs during the write operation.
      */
     BufferSink writeHexadecimalUnsignedLong(long v) throws IOException;
 
     /**
-     * 将缓冲数据写入底层接收器，并递归刷新以推送数据到最终目标。
+     * Flushes any buffered data to the underlying sink, recursively flushing to push data towards the ultimate
+     * destination.
      *
-     * @throws IOException 如果写入或刷新失败
+     * @throws IOException If an I/O error occurs during the write or flush operation.
      */
     @Override
     void flush() throws IOException;
 
     /**
-     * 将缓冲数据写入底层接收器，较弱的刷新操作，确保数据向目标移动。
+     * Emits buffered data to the underlying sink. This is a weaker flush operation that ensures data is moved towards
+     * the destination but does not guarantee that it is fully written to the underlying output.
      *
-     * @return 当前接收器
-     * @throws IOException 如果写入失败
+     * @return This {@code BufferSink} instance.
+     * @throws IOException If an I/O error occurs during the write operation.
      */
     BufferSink emit() throws IOException;
 
     /**
-     * 将完整的缓冲段写入底层接收器，限制缓冲区内存占用。
+     * Emits complete buffered segments to the underlying sink, limiting buffer memory usage.
      *
-     * @return 当前接收器
-     * @throws IOException 如果写入失败
+     * @return This {@code BufferSink} instance.
+     * @throws IOException If an I/O error occurs during the write operation.
      */
     BufferSink emitCompleteSegments() throws IOException;
 
     /**
-     * 获取写入此接收器的输出流。
+     * Returns an {@link OutputStream} that writes to this sink.
      *
-     * @return 输出流
+     * @return An {@link OutputStream} for this sink.
      */
     OutputStream outputStream();
 

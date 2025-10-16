@@ -28,7 +28,7 @@
 package org.miaixz.bus.core.text.placeholder.segment;
 
 /**
- * 字符串模板-固定文本 SectionBuffer
+ * Represents a literal text segment in a string template.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -36,19 +36,24 @@ package org.miaixz.bus.core.text.placeholder.segment;
 public class LiteralSegment implements StringSegment {
 
     /**
-     * 模板中固定的一段文本
+     * The fixed text content of this segment.
      */
     private final String text;
 
     /**
-     * 构造
+     * Constructs a {@code LiteralSegment} with the given text.
      *
-     * @param text 文本
+     * @param text The literal text content.
      */
     public LiteralSegment(final String text) {
         this.text = text;
     }
 
+    /**
+     * Retrieves the literal text content of this segment.
+     *
+     * @return The literal text.
+     */
     @Override
     public String getText() {
         return text;

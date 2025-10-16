@@ -30,16 +30,17 @@ package org.miaixz.bus.core.center.iterator;
 import java.util.Iterator;
 
 /**
- * 支持重置的{@link Iterator} 接口 通过实现{@link #reset()}，重置此{@link Iterator}后可实现复用重新遍历
+ * An {@link Iterator} interface that supports resetting. By implementing the {@link #reset()} method, this
+ * {@link Iterator} can be reused to iterate over its elements again from the beginning.
  *
- * @param <E> 元素类型
+ * @param <E> the type of elements returned by this iterator
  * @author Kimi Liu
  * @since Java 17+
  */
 public interface ResettableIterator<E> extends Iterator<E> {
 
     /**
-     * 重置，重置后可重新遍历
+     * Resets the iterator to its initial state, allowing it to iterate from the beginning again.
      */
     void reset();
 

@@ -35,6 +35,11 @@ import org.miaixz.bus.health.builtin.hardware.LogicalVolumeGroup;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractLogicalVolumeGroup;
 
 /**
+ * <p>
+ * MacLogicalVolumeGroup class.
+ * </p>
+ * Logical Volume Group data obtained from `diskutil cs list` command on macOS.
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -45,10 +50,24 @@ final class MacLogicalVolumeGroup extends AbstractLogicalVolumeGroup {
     private static final String PHYSICAL_VOLUME = "Physical Volume";
     private static final String LOGICAL_VOLUME = "Logical Volume";
 
+    /**
+     * Constructs a {@code MacLogicalVolumeGroup} object.
+     *
+     * @param name  The name of the logical volume group.
+     * @param lvMap A map of logical volumes within this group, where keys are logical volume names and values are sets
+     *              of physical volumes they span.
+     * @param pvSet A set of physical volumes belonging to this group.
+     */
     MacLogicalVolumeGroup(String name, Map<String, Set<String>> lvMap, Set<String> pvSet) {
         super(name, lvMap, pvSet);
     }
 
+    /**
+     * Retrieves a list of {@link LogicalVolumeGroup} objects representing the logical volume groups on macOS. This
+     * method parses the output of the `diskutil cs list` command.
+     *
+     * @return A list of {@link LogicalVolumeGroup} objects.
+     */
     static List<LogicalVolumeGroup> getLogicalVolumeGroups() {
         Map<String, Map<String, Set<String>>> logicalVolumesMap = new HashMap<>();
         Map<String, Set<String>> physicalVolumesMap = new HashMap<>();

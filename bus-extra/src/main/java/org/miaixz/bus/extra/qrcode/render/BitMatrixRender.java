@@ -32,7 +32,7 @@ import java.io.OutputStream;
 import com.google.zxing.common.BitMatrix;
 
 /**
- * BitMatrix渲染接口
+ * Interface for rendering a {@link BitMatrix}.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -40,10 +40,10 @@ import com.google.zxing.common.BitMatrix;
 public interface BitMatrixRender {
 
     /**
-     * 渲染
+     * Renders the given {@link BitMatrix} to the specified {@link OutputStream}.
      *
-     * @param matrix 二维码矩阵
-     * @param out    输出流
+     * @param matrix The {@link BitMatrix} to render.
+     * @param out    The {@link OutputStream} to write the rendered output to.
      */
     void render(BitMatrix matrix, OutputStream out);
 

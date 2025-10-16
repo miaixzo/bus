@@ -35,21 +35,22 @@ import java.util.TreeMap;
 import org.miaixz.bus.core.xyz.CollKit;
 
 /**
- * 权重随机选择算法实现
+ * An implementation of a weighted random selection algorithm.
  * <p>
- * 平时，经常会遇到权重随机算法，从不同权重的N个元素中随机选择一个，并使得总体选择结果是按照权重分布的。如广告投放、负载均衡等。
- * </p>
- * <p>
- * 如有4个元素A、B、C、D，权重分别为1、2、3、4，随机结果中A:B:C:D的比例要为1:2:3:4。
- * </p>
- * 总体思路：累加每个元素的权重A(1)-B(3)-C(6)-D(10)，则4个元素的的权重管辖区间分别为[0,1)、[1,3)、[3,6)、[6,10)。
- * 然后随机出一个[0,10)之间的随机数。落在哪个区间，则该区间之后的元素即为按权重命中的元素。
+ * This is often used in scenarios like ad serving or load balancing, where we need to randomly select an item from a
+ * collection of N items with different weights, ensuring that the overall selection results follow the weight
+ * distribution.
  *
  * <p>
- * 参考博客：https://www.cnblogs.com/waterystone/p/5708063.html
- * </p>
+ * For example, if there are four elements A, B, C, and D with weights 1, 2, 3, and 4 respectively, the random selection
+ * should result in a ratio of A:B:C:D close to 1:2:3:4.
  *
- * @param <T> 权重随机获取的对象类型
+ * <p>
+ * The general idea is to accumulate the weights of each element: A(1)-B(3)-C(6)-D(10). This creates weight ranges for
+ * each element: [0,1), [1,3), [3,6), and [6,10). Then, a random number is generated between [0, 10). The element whose
+ * range contains the random number is the one selected according to its weight.
+ *
+ * @param <T> the type of the object to be selected
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -58,19 +59,22 @@ public class WeightRandomSelector<T> implements Selector<T>, Serializable {
     @Serial
     private static final long serialVersionUID = 2852278757903L;
 
+    /**
+     * A map where the key is the cumulative weight and the value is the object.
+     */
     private final TreeMap<Integer, T> weightMap;
 
     /**
-     * 构造
+     * Constructs an empty {@code WeightRandomSelector}.
      */
     public WeightRandomSelector() {
         weightMap = new TreeMap<>();
     }
 
     /**
-     * 构造
+     * Constructs a new {@code WeightRandomSelector} and adds a single weighted object.
      *
-     * @param weightObj 带有权重的对象
+     * @param weightObj the weighted object to add
      */
     public WeightRandomSelector(final WeightObject<T> weightObj) {
         this();
@@ -80,9 +84,9 @@ public class WeightRandomSelector<T> implements Selector<T>, Serializable {
     }
 
     /**
-     * 构造
+     * Constructs a new {@code WeightRandomSelector} and adds all objects from the given iterable.
      *
-     * @param weightObjs 带有权重的对象
+     * @param weightObjs an iterable of weighted objects
      */
     public WeightRandomSelector(final Iterable<WeightObject<T>> weightObjs) {
         this();
@@ -94,9 +98,9 @@ public class WeightRandomSelector<T> implements Selector<T>, Serializable {
     }
 
     /**
-     * 构造
+     * Constructs a new {@code WeightRandomSelector} and adds all objects from the given array.
      *
-     * @param weightObjs 带有权重的对象
+     * @param weightObjs an array of weighted objects
      */
     public WeightRandomSelector(final WeightObject<T>[] weightObjs) {
         this();
@@ -106,47 +110,47 @@ public class WeightRandomSelector<T> implements Selector<T>, Serializable {
     }
 
     /**
-     * 创建权重随机获取器
+     * Creates a new, empty {@code WeightRandomSelector}.
      *
-     * @param <T> 权重随机获取的对象类型
-     * @return WeightRandomSelector
+     * @param <T> the type of the object to be selected
+     * @return a new {@code WeightRandomSelector} instance
      */
     public static <T> WeightRandomSelector<T> of() {
         return new WeightRandomSelector<>();
     }
 
     /**
-     * 增加对象
+     * Adds an object with a specified weight to the selector.
      *
-     * @param object 对象
-     * @param weight 权重
-     * @return this
+     * @param object the object to add
+     * @param weight the weight of the object (must be > 0)
+     * @return this {@code WeightRandomSelector} instance
      */
     public WeightRandomSelector<T> add(final T object, final int weight) {
         return add(new WeightObject<>(object, weight));
     }
 
     /**
-     * 增加对象权重
+     * Adds a weighted object to the selector. The weight is accumulated to form a range.
      *
-     * @param weightObj 权重对象
-     * @return this
+     * @param weightObj the weighted object to add
+     * @return this {@code WeightRandomSelector} instance
      */
     public WeightRandomSelector<T> add(final WeightObject<T> weightObj) {
         if (null != weightObj) {
             final int weight = weightObj.getWeight();
             if (weight > 0) {
                 final int lastWeight = this.weightMap.isEmpty() ? 0 : this.weightMap.lastKey();
-                this.weightMap.put(weight + lastWeight, weightObj.getObject());// 权重累加
+                this.weightMap.put(weight + lastWeight, weightObj.getObject()); // Accumulate weight
             }
         }
         return this;
     }
 
     /**
-     * 清空权重表
+     * Clears the weight map.
      *
-     * @return this
+     * @return this {@code WeightRandomSelector} instance
      */
     public WeightRandomSelector<T> clear() {
         if (null != this.weightMap) {
@@ -156,9 +160,10 @@ public class WeightRandomSelector<T> implements Selector<T>, Serializable {
     }
 
     /**
-     * 下一个随机对象
+     * Selects a random object based on its weight.
      *
-     * @return 随机对象
+     * @return the selected random object
+     * @throws java.util.NoSuchElementException if the selector is empty
      */
     @Override
     public T select() {

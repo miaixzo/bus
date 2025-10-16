@@ -28,7 +28,7 @@
 package org.miaixz.bus.shade.safety.algorithm;
 
 /**
- * 非对称密钥
+ * Represents an asymmetric encryption key, providing access to both the public and private key components.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -36,12 +36,16 @@ package org.miaixz.bus.shade.safety.algorithm;
 public interface AsymmetricKey extends Key {
 
     /**
-     * @return 公钥
+     * Retrieves the public key component of this asymmetric key.
+     *
+     * @return The public key as a byte array.
      */
     byte[] getPublicKey();
 
     /**
-     * @return 私钥
+     * Retrieves the private key component of this asymmetric key.
+     *
+     * @return The private key as a byte array.
      */
     byte[] getPrivateKey();
 

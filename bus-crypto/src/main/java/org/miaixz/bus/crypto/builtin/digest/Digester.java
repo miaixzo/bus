@@ -42,7 +42,11 @@ import org.miaixz.bus.crypto.Builder;
 import org.miaixz.bus.crypto.Holder;
 
 /**
- * 摘要算法 注意：此对象实例化后为非线程安全！
+ * Abstract base class for digest algorithms. This class provides common functionality for computing message digests,
+ * including support for salting and repeated hashing.
+ * <p>
+ * Note: Instances of this object are not thread-safe after instantiation.
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -53,70 +57,70 @@ public class Digester extends SimpleWrapper<MessageDigest> implements Serializab
     private static final long serialVersionUID = 2852288992512L;
 
     /**
-     * 盐值
+     * The salt value used in the digest process.
      */
     protected byte[] salt;
     /**
-     * 加盐位置，即将盐值字符串放置在数据的index数，默认0
+     * The position at which the salt is inserted into the data before digestion. Defaults to 0 (beginning).
      */
     protected int saltPosition;
     /**
-     * 散列次数
+     * The number of times the digest algorithm is applied. If less than or equal to 1, it defaults to 1.
      */
     protected int digestCount;
 
     /**
-     * 构造
+     * Constructs a Digester with the specified algorithm.
      *
-     * @param algorithm 算法枚举
+     * @param algorithm The {@link Algorithm} enumeration.
      */
     public Digester(final Algorithm algorithm) {
         this(algorithm.getValue());
     }
 
     /**
-     * 构造
+     * Constructs a Digester with the specified algorithm name.
      *
-     * @param algorithm 算法枚举
+     * @param algorithm The algorithm name (e.g., "MD5", "SHA-256").
      */
     public Digester(final String algorithm) {
         this(algorithm, null);
     }
 
     /**
-     * 构造
+     * Constructs a Digester with the specified algorithm and security provider.
      *
-     * @param algorithm 算法
-     * @param provider  算法提供者，{@code null}表示使用{@link Holder}找到的提供方。
+     * @param algorithm The {@link Algorithm} enumeration.
+     * @param provider  The {@link Provider} to use. If {@code null}, {@link Holder} is used to find one.
      */
     public Digester(final Algorithm algorithm, final Provider provider) {
         this(algorithm.getValue(), provider);
     }
 
     /**
-     * 构造
+     * Constructs a Digester with the specified algorithm name and security provider.
      *
-     * @param algorithm 算法
-     * @param provider  算法提供者，{@code null}表示使用{@link Holder}找到的提供方。
+     * @param algorithm The algorithm name.
+     * @param provider  The {@link Provider} to use. If {@code null}, {@link Holder} is used to find one.
      */
     public Digester(final String algorithm, final Provider provider) {
         this(Builder.createMessageDigest(algorithm, provider));
     }
 
     /**
-     * 构造
+     * Constructs a Digester with an existing {@link MessageDigest} instance.
      *
-     * @param messageDigest {@link MessageDigest}
+     * @param messageDigest The {@link MessageDigest} instance.
      */
     public Digester(final MessageDigest messageDigest) {
         super(messageDigest);
     }
 
     /**
-     * 设置加盐内容
+     * Sets the salt content for the digester.
      *
-     * @param salt 盐值
-     * @return this
+     * @param salt The salt value as a byte array.
+     * @return This Digester instance.
      */
     public Digester setSalt(final byte[] salt) {
         this.salt = salt;
@@ -124,20 +128,21 @@ public class Digester extends SimpleWrapper<MessageDigest> implements Serializab
     }
 
     /**
-     * 设置加盐的位置，只有盐值存在时有效 加盐的位置指盐位于数据byte数组中的位置，例如：
-     *
+     * Sets the position at which the salt is inserted into the data. This is only effective if a salt is present. The
+     * salt position refers to the index within the data byte array where the salt is inserted. For example:
+     * 
      * <pre>
      * data: 0123456
      * </pre>
-     * <p>
-     * 则当saltPosition = 2时，盐位于data的1和2中间，即第二个空隙，即：
-     *
+     * 
+     * If {@code saltPosition = 2}, the salt is inserted between '1' and '2', resulting in:
+     * 
      * <pre>
      * data: 01[salt]23456
      * </pre>
      *
-     * @param saltPosition 盐的位置
-     * @return this
+     * @param saltPosition The position to insert the salt.
+     * @return This Digester instance.
      */
     public Digester setSaltPosition(final int saltPosition) {
         this.saltPosition = saltPosition;
@@ -145,10 +150,10 @@ public class Digester extends SimpleWrapper<MessageDigest> implements Serializab
     }
 
     /**
-     * 设置重复计算摘要值次数
+     * Sets the number of times the digest value should be computed (repeated hashing).
      *
-     * @param digestCount 摘要值次数
-     * @return this
+     * @param digestCount The number of digest computations.
+     * @return This Digester instance.
      */
     public Digester setDigestCount(final int digestCount) {
         this.digestCount = digestCount;
@@ -156,9 +161,9 @@ public class Digester extends SimpleWrapper<MessageDigest> implements Serializab
     }
 
     /**
-     * 重置{@link MessageDigest}
+     * Resets the underlying {@link MessageDigest} to its initial state.
      *
-     * @return this
+     * @return This Digester instance.
      */
     public Digester reset() {
         this.raw.reset();
@@ -166,53 +171,54 @@ public class Digester extends SimpleWrapper<MessageDigest> implements Serializab
     }
 
     /**
-     * 生成文件摘要
+     * Generates a message digest for the given string data using the specified charset.
      *
-     * @param data    被摘要数据
-     * @param charset 编码
-     * @return 摘要
+     * @param data    The string data to be digested.
+     * @param charset The character set to use for encoding the string.
+     * @return The message digest as a byte array.
      */
     public byte[] digest(final String data, final java.nio.charset.Charset charset) {
         return digest(ByteKit.toBytes(data, charset));
     }
 
     /**
-     * 生成文件摘要
+     * Generates a message digest for the given string data using UTF-8 encoding.
      *
-     * @param data 被摘要数据
-     * @return 摘要
+     * @param data The string data to be digested.
+     * @return The message digest as a byte array.
      */
     public byte[] digest(final String data) {
         return digest(data, Charset.UTF_8);
     }
 
     /**
-     * 生成文件摘要，并转为16进制字符串
+     * Generates a message digest for the given string data using the specified charset and returns it as a hexadecimal
+     * string.
      *
-     * @param data    被摘要数据
-     * @param charset 编码
-     * @return 摘要
+     * @param data    The string data to be digested.
+     * @param charset The character set to use for encoding the string.
+     * @return The hexadecimal string representation of the message digest.
      */
     public String digestHex(final String data, final java.nio.charset.Charset charset) {
         return HexKit.encodeString(digest(data, charset));
     }
 
     /**
-     * 生成文件摘要
+     * Generates a message digest for the given string data using UTF-8 encoding and returns it as a hexadecimal string.
      *
-     * @param data 被摘要数据
-     * @return 摘要
+     * @param data The string data to be digested.
+     * @return The hexadecimal string representation of the message digest.
      */
     public String digestHex(final String data) {
         return digestHex(data, Charset.UTF_8);
     }
 
     /**
-     * 生成文件摘要 使用默认缓存大小，见 {@link Normal#_8192}
+     * Generates a message digest for the given file. Uses a default buffer size of {@link Normal#_8192}.
      *
-     * @param file 被摘要文件
-     * @return 摘要bytes
-     * @throws CryptoException Cause by IOException
+     * @param file The file to be digested.
+     * @return The message digest as a byte array.
+     * @throws CryptoException if an I/O error occurs during file reading.
      */
     public byte[] digest(final File file) throws CryptoException {
         InputStream in = null;
@@ -225,38 +231,40 @@ public class Digester extends SimpleWrapper<MessageDigest> implements Serializab
     }
 
     /**
-     * 生成文件摘要，并转为16进制字符串 使用默认缓存大小，见 {@link Normal#_8192}
+     * Generates a message digest for the given file and returns it as a hexadecimal string. Uses a default buffer size
+     * of {@link Normal#_8192}.
      *
-     * @param file 被摘要文件
-     * @return 摘要
+     * @param file The file to be digested.
+     * @return The hexadecimal string representation of the message digest.
+     * @throws CryptoException if an I/O error occurs during file reading.
      */
     public String digestHex(final File file) {
         return HexKit.encodeString(digest(file));
     }
 
     /**
-     * 生成摘要，考虑加盐和重复摘要次数
+     * Generates a message digest for the given byte array data, considering salt and repeated hashing.
      *
-     * @param data 数据bytes
-     * @return 摘要bytes
+     * @param data The byte array data to be digested.
+     * @return The message digest as a byte array.
      */
     public byte[] digest(final byte[] data) {
         final byte[] result;
         if (this.saltPosition <= 0) {
-            // 加盐在开头，自动忽略空盐值
+            // Salt at the beginning, automatically ignore empty salt
             result = doDigest(this.salt, data);
         } else if (this.saltPosition >= data.length) {
-            // 加盐在末尾，自动忽略空盐值
+            // Salt at the end, automatically ignore empty salt
             result = doDigest(data, this.salt);
         } else if (ArrayKit.isNotEmpty(this.salt)) {
             final MessageDigest digest = this.raw;
-            // 加盐在中间
+            // Salt in the middle
             digest.update(data, 0, this.saltPosition);
             digest.update(this.salt);
             digest.update(data, this.saltPosition, data.length - this.saltPosition);
             result = digest.digest();
         } else {
-            // 无加盐
+            // No salt
             result = doDigest(data);
         }
 
@@ -264,42 +272,47 @@ public class Digester extends SimpleWrapper<MessageDigest> implements Serializab
     }
 
     /**
-     * 生成摘要，并转为16进制字符串
+     * Generates a message digest for the given byte array data and returns it as a hexadecimal string.
      *
-     * @param data 被摘要数据
-     * @return 摘要
+     * @param data The byte array data to be digested.
+     * @return The hexadecimal string representation of the message digest.
      */
     public String digestHex(final byte[] data) {
         return HexKit.encodeString(digest(data));
     }
 
     /**
-     * 生成摘要，使用默认缓存大小，见 {@link Normal#_8192}
+     * Generates a message digest for the data from the given input stream. Uses a default buffer size of
+     * {@link Normal#_8192}.
      *
-     * @param data {@link InputStream} 数据流
-     * @return 摘要bytes
+     * @param data The {@link InputStream} containing the data to be digested.
+     * @return The message digest as a byte array.
+     * @throws InternalException if an I/O error occurs during stream reading.
      */
     public byte[] digest(final InputStream data) {
         return digest(data, Normal._8192);
     }
 
     /**
-     * 生成摘要，并转为16进制字符串 使用默认缓存大小，见 {@link Normal#_8192}
+     * Generates a message digest for the data from the given input stream and returns it as a hexadecimal string. Uses
+     * a default buffer size of {@link Normal#_8192}.
      *
-     * @param data 被摘要数据
-     * @return 摘要
+     * @param data The {@link InputStream} containing the data to be digested.
+     * @return The hexadecimal string representation of the message digest.
+     * @throws InternalException if an I/O error occurs during stream reading.
      */
     public String digestHex(final InputStream data) {
         return HexKit.encodeString(digest(data));
     }
 
     /**
-     * 生成摘要
+     * Generates a message digest for the data from the given input stream with a specified buffer length.
      *
-     * @param data         {@link InputStream} 数据流
-     * @param bufferLength 缓存长度，不足1使用 {@link Normal#_8192} 做为默认值
-     * @return 摘要bytes
-     * @throws InternalException IO异常
+     * @param data         The {@link InputStream} containing the data to be digested.
+     * @param bufferLength The buffer length to use for reading the stream. If less than 1, {@link Normal#_8192} is used
+     *                     as default.
+     * @return The message digest as a byte array.
+     * @throws InternalException if an I/O error occurs during stream reading.
      */
     public byte[] digest(final InputStream data, int bufferLength) throws InternalException {
         if (bufferLength < 1) {
@@ -321,32 +334,35 @@ public class Digester extends SimpleWrapper<MessageDigest> implements Serializab
     }
 
     /**
-     * 生成摘要，并转为16进制字符串 使用默认缓存大小，见 {@link Normal#_8192}
+     * Generates a message digest for the data from the given input stream with a specified buffer length and returns it
+     * as a hexadecimal string.
      *
-     * @param data         被摘要数据
-     * @param bufferLength 缓存长度，不足1使用 {@link Normal#_8192} 做为默认值
-     * @return 摘要
+     * @param data         The {@link InputStream} containing the data to be digested.
+     * @param bufferLength The buffer length to use for reading the stream. If less than 1, {@link Normal#_8192} is used
+     *                     as default.
+     * @return The hexadecimal string representation of the message digest.
+     * @throws InternalException if an I/O error occurs during stream reading.
      */
     public String digestHex(final InputStream data, final int bufferLength) {
         return HexKit.encodeString(digest(data, bufferLength));
     }
 
     /**
-     * 获取散列长度，0表示不支持此方法
+     * Retrieves the length of the digest in bytes.
      *
-     * @return 散列长度，0表示不支持此方法
+     * @return The digest length in bytes, or 0 if this method is not supported by the underlying {@link MessageDigest}.
      */
     public int getDigestLength() {
         return this.raw.getDigestLength();
     }
 
     /**
-     * 生成摘要
+     * Generates a message digest for the data from the given input stream without using salt.
      *
-     * @param data         {@link InputStream} 数据流
-     * @param bufferLength 缓存长度，不足1使用 {@link Normal#_8192} 做为默认值
-     * @return 摘要bytes
-     * @throws IOException 从流中读取数据引发的IO异常
+     * @param data         The {@link InputStream} containing the data to be digested.
+     * @param bufferLength The buffer length to use for reading the stream.
+     * @return The message digest as a byte array.
+     * @throws IOException if an I/O error occurs during stream reading.
      */
     private byte[] digestWithoutSalt(final InputStream data, final int bufferLength) throws IOException {
         final MessageDigest digest = this.raw;
@@ -359,17 +375,18 @@ public class Digester extends SimpleWrapper<MessageDigest> implements Serializab
     }
 
     /**
-     * 生成摘要
+     * Generates a message digest for the data from the given input stream with salt. The salt is inserted at the
+     * {@link #saltPosition}.
      *
-     * @param data         {@link InputStream} 数据流
-     * @param bufferLength 缓存长度，不足1使用 {@link Normal#_8192} 做为默认值
-     * @return 摘要bytes
-     * @throws IOException 从流中读取数据引发的IO异常
+     * @param data         The {@link InputStream} containing the data to be digested.
+     * @param bufferLength The buffer length to use for reading the stream.
+     * @return The message digest as a byte array.
+     * @throws IOException if an I/O error occurs during stream reading.
      */
     private byte[] digestWithSalt(final InputStream data, final int bufferLength) throws IOException {
         final MessageDigest digest = this.raw;
         if (this.saltPosition <= 0) {
-            // 加盐在开头
+            // Salt at the beginning
             digest.update(this.salt);
         }
 
@@ -382,7 +399,7 @@ public class Digester extends SimpleWrapper<MessageDigest> implements Serializab
                 if (total != this.saltPosition) {
                     digest.update(buffer, 0, total - this.saltPosition);
                 }
-                // 加盐在中间
+                // Salt in the middle
                 digest.update(this.salt);
                 digest.update(buffer, total - this.saltPosition, read);
             } else {
@@ -391,7 +408,7 @@ public class Digester extends SimpleWrapper<MessageDigest> implements Serializab
         }
 
         if (total < this.saltPosition) {
-            // 加盐在末尾
+            // Salt at the end
             digest.update(this.salt);
         }
 
@@ -399,10 +416,10 @@ public class Digester extends SimpleWrapper<MessageDigest> implements Serializab
     }
 
     /**
-     * 生成摘要
+     * Performs the actual digest operation on one or more byte arrays.
      *
-     * @param datas 数据bytes
-     * @return 摘要bytes
+     * @param datas One or more byte arrays to be digested.
+     * @return The message digest as a byte array.
      */
     private byte[] doDigest(final byte[]... datas) {
         final MessageDigest digest = this.raw;
@@ -415,10 +432,11 @@ public class Digester extends SimpleWrapper<MessageDigest> implements Serializab
     }
 
     /**
-     * 重复计算摘要，取决于{@link #digestCount} 值 每次计算摘要前都会重置{@link #digest}
+     * Resets the digester and repeats the digest operation {@link #digestCount} times. The digester is reset before
+     * each repeated digest calculation.
      *
-     * @param digestData 第一次摘要过的数据
-     * @return 摘要
+     * @param digestData The data that has been digested once.
+     * @return The final message digest after repeated hashing.
      */
     private byte[] resetAndRepeatDigest(byte[] digestData) {
         final int digestCount = Math.max(1, this.digestCount);

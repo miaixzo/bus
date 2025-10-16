@@ -47,10 +47,9 @@ import org.miaixz.bus.core.xyz.HexKit;
 import org.miaixz.bus.crypto.Builder;
 import org.miaixz.bus.crypto.Keeper;
 import org.miaixz.bus.crypto.builtin.asymmetric.Asymmetric;
-import org.miaixz.bus.crypto.builtin.asymmetric.Crypto;
 
 /**
- * 签名包装，{@link Signature} 包装类
+ * Signature wrapper class for {@link Signature}.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -61,65 +60,75 @@ public class Sign extends Asymmetric<Sign> {
     private static final long serialVersionUID = 2852290831738L;
 
     /**
-     * 签名，用于签名和验证
+     * The {@link Signature} object used for signing and verification.
      */
     protected Signature signature;
 
     /**
-     * 构造，创建新的私钥公钥对
+     * Constructs a {@code Sign} instance, generating a new private-public key pair.
      *
-     * @param algorithm {@link Algorithm}
+     * @param algorithm The {@link Algorithm} to use for signing.
      */
     public Sign(final Algorithm algorithm) {
         this(algorithm, null, (byte[]) null);
     }
 
     /**
-     * 构造，创建新的私钥公钥对
+     * Constructs a {@code Sign} instance, generating a new private-public key pair.
      *
-     * @param algorithm 算法
+     * @param algorithm The name of the algorithm to use for signing.
      */
     public Sign(final String algorithm) {
         this(algorithm, null, (byte[]) null);
     }
 
     /**
-     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做签名或验证
+     * Constructs a {@code Sign} instance with the specified algorithm and key pair. If both private and public keys
+     * within the {@code keyPair} are {@code null}, a new key pair will be generated. If only one key is provided, the
+     * object can only be used for signing or verification corresponding to that key.
      *
-     * @param algorithm 算法，见{@link Algorithm}
-     * @param keyPair   密钥对，{@code null}表示随机生成
+     * @param algorithm The algorithm name, see {@link Algorithm}.
+     * @param keyPair   The {@link KeyPair} containing the private and public keys. If {@code null}, a new random key
+     *                  pair is generated.
      */
     public Sign(final String algorithm, final KeyPair keyPair) {
         super(algorithm, keyPair);
     }
 
     /**
-     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做签名或验证
+     * Constructs a {@code Sign} instance with the specified algorithm and key pair. If both private and public keys
+     * within the {@code keyPair} are {@code null}, a new key pair will be generated. If only one key is provided, the
+     * object can only be used for signing or verification corresponding to that key.
      *
-     * @param algorithm {@link Algorithm}
-     * @param keyPair   密钥对，{@code null}表示随机生成
+     * @param algorithm The {@link Algorithm} to use for signing.
+     * @param keyPair   The {@link KeyPair} containing the private and public keys. If {@code null}, a new random key
+     *                  pair is generated.
      */
     public Sign(final Algorithm algorithm, final KeyPair keyPair) {
         this(algorithm.getValue(), keyPair);
     }
 
     /**
-     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做签名或验证
+     * Constructs a {@code Sign} instance with the specified algorithm and private/public keys provided as Base64
+     * encoded strings. If both private and public keys are {@code null}, a new key pair will be generated. If only one
+     * key is provided, the object can only be used for signing or verification corresponding to that key.
      *
-     * @param algorithm  非对称加密算法
-     * @param privateKey 私钥Base64
-     * @param publicKey  公钥Base64
+     * @param algorithm  The asymmetric encryption algorithm name.
+     * @param privateKey The private key as a Base64 encoded string.
+     * @param publicKey  The public key as a Base64 encoded string.
      */
     public Sign(final String algorithm, final String privateKey, final String publicKey) {
         this(algorithm, Base64.decode(privateKey), Base64.decode(publicKey));
     }
 
     /**
-     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做签名或验证
+     * Constructs a {@code Sign} instance with the specified algorithm and private/public keys provided as byte arrays.
+     * If both private and public keys are {@code null}, a new key pair will be generated. If only one key is provided,
+     * the object can only be used for signing or verification corresponding to that key.
      *
-     * @param algorithm  算法
-     * @param privateKey 私钥
-     * @param publicKey  公钥
+     * @param algorithm  The algorithm name.
+     * @param privateKey The private key as a byte array.
+     * @param publicKey  The public key as a byte array.
      */
     public Sign(final String algorithm, final byte[] privateKey, final byte[] publicKey) {
         this(algorithm, new KeyPair(Keeper.generatePublicKey(algorithm, publicKey),
@@ -127,33 +136,39 @@ public class Sign extends Asymmetric<Sign> {
     }
 
     /**
-     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做签名或验证
+     * Constructs a {@code Sign} instance with the specified algorithm and private/public keys provided as Hex or Base64
+     * encoded strings. If both private and public keys are {@code null}, a new key pair will be generated. If only one
+     * key is provided, the object can only be used for signing or verification corresponding to that key.
      *
-     * @param algorithm  {@link Algorithm}
-     * @param privateKey 私钥Hex或Base64表示
-     * @param publicKey  公钥Hex或Base64表示
+     * @param algorithm  The {@link Algorithm} to use for signing.
+     * @param privateKey The private key as a Hex or Base64 encoded string.
+     * @param publicKey  The public key as a Hex or Base64 encoded string.
      */
     public Sign(final Algorithm algorithm, final String privateKey, final String publicKey) {
         this(algorithm.getValue(), Builder.decode(privateKey), Builder.decode(publicKey));
     }
 
     /**
-     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做签名或验证
+     * Constructs a {@code Sign} instance with the specified algorithm and private/public keys provided as byte arrays.
+     * If both private and public keys are {@code null}, a new key pair will be generated. If only one key is provided,
+     * the object can only be used for signing or verification corresponding to that key.
      *
-     * @param algorithm  {@link Algorithm}
-     * @param privateKey 私钥
-     * @param publicKey  公钥
+     * @param algorithm  The {@link Algorithm} to use for signing.
+     * @param privateKey The private key as a byte array.
+     * @param publicKey  The public key as a byte array.
      */
     public Sign(final Algorithm algorithm, final byte[] privateKey, final byte[] publicKey) {
         this(algorithm.getValue(), privateKey, publicKey);
     }
 
     /**
-     * 初始化
+     * Initializes the {@code Sign} instance with the specified algorithm and key pair. If {@code keyPair} is
+     * {@code null}, a new key pair will be randomly generated.
      *
-     * @param algorithm 算法
-     * @param keyPair   密钥对，{@code null}表示随机生成
-     * @return this
+     * @param algorithm The algorithm name.
+     * @param keyPair   The {@link KeyPair} containing the private and public keys. If {@code null}, a new random key
+     *                  pair is generated.
+     * @return This {@code Sign} instance.
      */
     @Override
     public Sign init(final String algorithm, final KeyPair keyPair) {
@@ -163,10 +178,11 @@ public class Sign extends Asymmetric<Sign> {
     }
 
     /**
-     * 设置签名的参数
+     * Sets the algorithm parameters for the signature operation.
      *
-     * @param params {@link AlgorithmParameterSpec}
-     * @return this
+     * @param params The {@link AlgorithmParameterSpec} to set.
+     * @return This {@code Sign} instance.
+     * @throws CryptoException if setting the parameters fails.
      */
     public Sign setParameter(final AlgorithmParameterSpec params) {
         try {
@@ -178,62 +194,67 @@ public class Sign extends Asymmetric<Sign> {
     }
 
     /**
-     * 生成签名，并转为16进制字符串
+     * Generates a digital signature for the given data and returns it as a hexadecimal string.
      *
-     * @param data 被签名数据
-     * @return 签名
+     * @param data The data to be signed.
+     * @return The generated signature as a hexadecimal string.
      */
     public String signHex(final byte[] data) {
         return HexKit.encodeString(sign(data));
     }
 
     /**
-     * 生成签名，并转为16进制字符串 使用默认缓存大小，见 {@link Normal#_8192}
+     * Generates a digital signature for the data from an input stream and returns it as a hexadecimal string. Uses a
+     * default buffer size of {@link Normal#_8192}.
      *
-     * @param data 被签名数据
-     * @return 签名
+     * @param data The input stream containing the data to be signed.
+     * @return The generated signature as a hexadecimal string.
      */
     public String signHex(final InputStream data) {
         return signHex(data, -1);
     }
 
     /**
-     * 生成签名，并转为16进制字符串 使用默认缓存大小，见 {@link Normal#_8192}
+     * Generates a digital signature for the data from an input stream with a specified buffer length and returns it as
+     * a hexadecimal string. If {@code bufferLength} is less than 1, {@link Normal#_8192} is used as default.
      *
-     * @param data         被签名数据
-     * @param bufferLength 缓存长度，不足1使用 {@link Normal#_8192} 做为默认值
-     * @return 签名
+     * @param data         The input stream containing the data to be signed.
+     * @param bufferLength The buffer length to use for reading the stream.
+     * @return The generated signature as a hexadecimal string.
      */
     public String signHex(final InputStream data, final int bufferLength) {
         return HexKit.encodeString(sign(data, bufferLength));
     }
 
     /**
-     * 用私钥对信息生成数字签名
+     * Generates a digital signature for the given data using the private key.
      *
-     * @param data 加密数据
-     * @return 签名
+     * @param data The data to be signed.
+     * @return The generated signature as a byte array.
      */
     public byte[] sign(final byte[] data) {
         return sign(new ByteArrayInputStream(data), -1);
     }
 
     /**
-     * 生成签名，使用默认缓存大小，见 {@link Normal#_8192}
+     * Generates a digital signature for the data from an input stream using the private key. Uses a default buffer size
+     * of {@link Normal#_8192}.
      *
-     * @param data {@link InputStream} 数据流
-     * @return 签名bytes
+     * @param data The {@link InputStream} containing the data to be signed.
+     * @return The generated signature as a byte array.
      */
     public byte[] sign(final InputStream data) {
         return sign(data, -1);
     }
 
     /**
-     * 生成签名
+     * Generates a digital signature for the data from an input stream with a specified buffer length using the private
+     * key. If {@code bufferLength} is less than 1, {@link Normal#_8192} is used as default.
      *
-     * @param data         {@link InputStream} 数据流
-     * @param bufferLength 缓存长度，不足1使用 {@link Normal#_8192} 做为默认值
-     * @return 签名bytes
+     * @param data         The {@link InputStream} containing the data to be signed.
+     * @param bufferLength The buffer length to use for reading the stream.
+     * @return The generated signature as a byte array.
+     * @throws CryptoException if the signing operation fails.
      */
     public byte[] sign(final InputStream data, int bufferLength) {
         if (bufferLength < 1) {
@@ -264,11 +285,12 @@ public class Sign extends Asymmetric<Sign> {
     }
 
     /**
-     * 用公钥检验数字签名的合法性
+     * Verifies the digital signature of the given data using the public key.
      *
-     * @param data 数据
-     * @param sign 签名
-     * @return 是否验证通过
+     * @param data The original data that was signed.
+     * @param sign The digital signature to verify.
+     * @return {@code true} if the signature is valid, {@code false} otherwise.
+     * @throws CryptoException if the verification operation fails.
      */
     public boolean verify(final byte[] data, final byte[] sign) {
         lock.lock();
@@ -284,19 +306,19 @@ public class Sign extends Asymmetric<Sign> {
     }
 
     /**
-     * 获得签名对象
+     * Retrieves the underlying {@link Signature} object.
      *
-     * @return {@link Signature}
+     * @return The {@link Signature} instance.
      */
     public Signature getSignature() {
         return signature;
     }
 
     /**
-     * 设置签名
+     * Sets the {@link Signature} object to be used.
      *
-     * @param signature 签名对象 {@link Signature}
-     * @return 自身 {@link Crypto}
+     * @param signature The {@link Signature} object.
+     * @return This {@code Sign} instance.
      */
     public Sign setSignature(final Signature signature) {
         this.signature = signature;
@@ -304,10 +326,12 @@ public class Sign extends Asymmetric<Sign> {
     }
 
     /**
-     * 设置{@link Certificate} 为PublicKey 如果Certificate是X509Certificate，我们需要检查是否有密钥扩展
+     * Sets the public key from a {@link Certificate}. If the certificate is an {@link X509Certificate}, it checks for
+     * critical Key Usage extensions.
      *
-     * @param certificate {@link Certificate}
-     * @return this
+     * @param certificate The {@link Certificate} containing the public key.
+     * @return This {@code Sign} instance.
+     * @throws CryptoException if the certificate has a critical Key Usage extension that disallows digital signatures.
      */
     public Sign setCertificate(final Certificate certificate) {
         // If the certificate is of type X509Certificate,

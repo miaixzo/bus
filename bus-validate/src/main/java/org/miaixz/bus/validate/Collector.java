@@ -27,17 +27,16 @@
 */
 package org.miaixz.bus.validate;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import lombok.Getter;
+import lombok.Setter;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.validate.magic.Material;
 
-import lombok.Getter;
-import lombok.Setter;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * 校验结果收集器
+ * Validation result collector.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -47,30 +46,53 @@ import lombok.Setter;
 public class Collector {
 
     /**
-     * 被校验对象
+     * The object being validated.
      */
     private Verified target;
 
     /**
-     * 校验结果
+     * The list of validation results.
      */
     private List<Collector> result;
 
+    /**
+     * The validation material associated with this result.
+     */
     private Material material;
 
+    /**
+     * The pass/fail status of this validation result.
+     */
     private boolean pass;
 
+    /**
+     * Constructs a new Collector for a validation target.
+     *
+     * @param target the object being validated.
+     */
     public Collector(Verified target) {
         this.target = target;
         this.result = new ArrayList<>();
     }
 
+    /**
+     * Constructs a new Collector that wraps another collector.
+     *
+     * @param collector the existing collector.
+     */
     public Collector(Collector collector) {
         this.target = collector.getTarget();
         this.result = new ArrayList<>();
         this.result.add(collector);
     }
 
+    /**
+     * Constructs a new Collector representing a single validation result.
+     *
+     * @param target   the object being validated.
+     * @param material the validation material.
+     * @param pass     whether the validation passed.
+     */
     public Collector(Verified target, Material material, boolean pass) {
         this.target = target;
         this.material = material;
@@ -78,18 +100,18 @@ public class Collector {
     }
 
     /**
-     * 收集校验结果
+     * Adds a validation result to this collector.
      *
-     * @param collector 校验结果
+     * @param collector the validation result to collect.
      */
     public void collect(Collector collector) {
         this.result.add(collector);
     }
 
     /**
-     * 获取所有的基础校验结果
+     * Recursively retrieves all validation results from this collector and its sub-collectors.
      *
-     * @return 基础校验结果集合
+     * @return a flattened list of all validation results.
      */
     public List<Collector> getResult() {
         List<Collector> list = new ArrayList<>(Normal._16);
@@ -103,10 +125,20 @@ public class Collector {
         return list;
     }
 
+    /**
+     * Gets the target object of this validation.
+     *
+     * @return the {@link Verified} target object.
+     */
     public Verified getTarget() {
         return target;
     }
 
+    /**
+     * Checks if this validation and all its sub-validations passed.
+     *
+     * @return {@code true} if all validations passed, {@code false} otherwise.
+     */
     public boolean isPass() {
         return this.result.stream().allMatch(Collector::isPass);
     }

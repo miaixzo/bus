@@ -3,7 +3,7 @@
 </p>
 <p align="center">
   <a target="_blank" href="https://search.maven.org/search?q=org.miaixz">
-    <img src="https://img.shields.io/badge/maven--central-v8.3.1-blue.svg?label=Maven%20Central" />
+    <img src="https://img.shields.io/badge/maven--central-v8.3.2-blue.svg?label=Maven%20Central" />
   </a>
   <a target="_blank" href="https://jdk.java.net/">
     <img src="https://img.shields.io/badge/Java-21+-green.svg">
@@ -25,80 +25,85 @@
   </a>
 </p>
 
+<p align="center">
+    <a target="_blank" href="README.md">EN</a> ｜  <a target="_blank" href="README_CN.md">CN</a>
+</p>
+
+
 ---
 
-### ✨ 项目说明
+### ✨ Project Description
 
-Bus (企业级应用/服务总线) 是一个基础框架、服务套件；基于Java 17+构建的轻量级企业级应用/服务框架，提供标准化服务套件与分布式中间件解决方案。
+Bus (Enterprise Application/Service Bus) is a foundational framework and service suite; a lightweight enterprise-level application/service framework built on Java 17+, providing standardized service suites and distributed middleware solutions.
 
-欢迎大家来 这里 踩踩,生命有限！少写重复代码！给颗星奖励下呗~
+Everyone is welcome to visit and explore. Life is short! Write less repetitive code! Please give us a star as a reward~
 
-目标期望能努力打造一套从 基础框架 - 分布式微服务架构 - 持续集成 - 自动化部署 -系统监测等，快速实现业务需求的全栈式技术解决方案。
-
-
-### ✨ 版本选择
-
-Bus主要版本 3.x、5.x、6.x、8.x，具体如下：
-
-| 版本  | jdk    | Maven仓库                                                                            | 主要特点                                |
-|-----|--------|------------------------------------------------------------------------------------|-------------------------------------|
-| 3.x | jdk1.8 | [org.aoju/bus-all/3.x](https://mvnrepository.com/artifact/org.aoju/bus-all/3.6.9)  | jdk1.8编译                            |
-| 5.x | jdk1.8 | [org.aoju/bus-all/5.x ](https://mvnrepository.com/artifact/org.aoju/bus-all/5.9.9) | jdk1.8编译                            |
-| 6.x | jdk 17 | [org.aoju/bus-all/6.x ](https://mvnrepository.com/artifact/org.aoju/bus-all/6.6.0) | jdk 17编译,使用Jakarta EE,适配JDK11、17    |
-| 8.x | jdk 21 | [org.miaixz/bus-all/8.x ](https://mvnrepository.com/artifact/org.miaixz/bus-all)   | jdk 21编译,使用Jakarta EE,适配JDK11、17、21 |
+The goal is to create a comprehensive full-stack technical solution that rapidly implements business requirements, covering foundational frameworks - distributed microservices architecture - continuous integration - automated deployment - system monitoring, and more.
 
 
-### ✨ 组件信息
+### ✨ Version Selection
 
-| 完成 | 模块                             | 描述信息                                           |
-|------|--------------------------------|------------------------------------------------|
-| [√]  | [bus-all](bus-all)             | 微服务全量聚合模块，包含所有业务组件及通用功能                        |
-| [√]  | [bus-auth](bus-auth)           | 统一认证中心，支持OIDC/OAuth2/SAML等协议，集成国内外15+主流第三方登录平台 |
-| [√]  | [bus-base](bus-base)           | 基础架构层，提供实体/服务/控制器基类及通用业务接口                     |
-| [√]  | [bus-bom](bus-bom)             | 依赖管理模块，统一版本控制，支持按需加载组件                         |
-| [√]  | [bus-cache](bus-cache)         | 分布式缓存服务，支持Redis/Memcached/Hessian等多级缓存方案       |
-| [√]  | [bus-core](bus-core)           | 核心工具库，包含并发/反射/日期/集合等20+常用工具类                   |
-| [√]  | [bus-cron](bus-cron)           | 分布式任务调度，支持CRON表达式及集群任务协调                       |
-| [√]  | [bus-crypto](bus-crypto)       | 加密解密组件，支持AES/DES/SM4/MD5等算法及国密套件               |
-| [√]  | [bus-extra](bus-extra)         | 扩展功能包，集成FTP/二维码/MQ/文件处理等外围服务                   |
-| [√]  | [bus-gitlab](bus-gitlab)       | GitLab深度集成，提供CI/CD/仓库/问题等全生命周期管理               |
-| [√]  | [bus-health](bus-health)       | 健康监控中心，实时采集JVM/OS/容器/中间件监控指标                   |
-| [√]  | [bus-http](bus-http)           | HTTP客户端封装，提供同步/异步/响应式三种调用模式                    |
-| [√]  | [bus-image](bus-image)         | 图像处理引擎，支持格式转换/缩略图生成/OCR识别等功能                   |
-| [√]  | [bus-limiter](bus-limiter)     | 高性能限流组件，支持令牌桶/滑动窗口/分布式限流策略                     |
-| [√]  | [bus-logger](bus-logger)       | 日志增强模块，支持动态日志级别/链路追踪ID/敏感数据过滤                  |
-| [√]  | [bus-mapper](bus-mapper)       | MyBatis增强工具，提供代码生成/多租户/逻辑删除等扩展功能               |
-| [√]  | [bus-notify](bus-notify)       | 多通道通知中心，支持邮件/短信/钉钉/企业微信等推送方式                   |
-| [√]  | [bus-office](bus-office)       | Office文档处理引擎，基于POI实现Excel/Word/PPT操作           |
-| [√]  | [bus-opencv](bus-opencv)       | 计算机视觉库，封装OpenCV提供图像识别/人脸检测/视频分析能力              |
-| [√]  | [bus-pager](bus-pager)         | 分页查询增强，支持物理分页/多数据源/动态排序                        |
-| [√]  | [bus-parent](bus-parent)       | 父级POM，统一管理依赖版本/构建配置/编码规范                       |
-| [√]  | [bus-pay](bus-pay)             | 支付聚合服务，集成微信/支付宝/银联等20+支付渠道                     |
-| [√]  | [bus-proxy](bus-proxy)         | 动态代理工具，简化JDK/CGLIB代理实现                         |
-| [√]  | [bus-sensitive](bus-sensitive) | 敏感数据脱敏，提供注解式/规则式数据遮蔽方案                         |
-| [√]  | [bus-setting](bus-setting)     | 配置管理工具，支持多环境配置/动态刷新/加密存储                       |
-| [√]  | [bus-shade](bus-shade)         | 代码生成器，一键生成Entity/Service/Mapper等基础代码           |
-| [√]  | [bus-socket](bus-socket)       | 网络通信框架，封装NIO/AIO实现TCP/UDP/WebSocket通信          |
-| [√]  | [bus-starter](bus-starter)     | SpringBoot启动器，自动装配核心组件及配置                      |
-| [√]  | [bus-storage](bus-storage)     | 对象存储服务，支持阿里云OSS/腾讯云COS/MinIO等存储方案              |
-| [×]  | [bus-tracer](bus-tracer)       | 分布式链路追踪，集成Zipkin/Pinpoint实现全链路监控（开发中）          |
-| [√]  | [bus-validate](bus-validate)   | 参数校验框架，扩展JSR-303注解支持自定义校验规则                    |
-| [√]  | [bus-vortex](bus-vortex)       | 响应式网关，基于WebFlux构建的高性能API网关                     |
+Bus primarily has versions 3.x, 5.x, 6.x, and 8.x, as detailed below:
+
+| Version | JDK    | Maven Repository                                                                        | Main Features                                |
+|---------|--------|----------------------------------------------------------------------------------------|---------------------------------------------|
+| 3.x     | jdk1.8 | [org.aoju/bus-all/3.x](https://mvnrepository.com/artifact/org.aoju/bus-all/3.6.9)    | Compiled with jdk1.8                        |
+| 5.x     | jdk1.8 | [org.aoju/bus-all/5.x](https://mvnrepository.com/artifact/org.aoju/bus-all/5.9.9)    | Compiled with jdk1.8                        |
+| 6.x     | jdk 17 | [org.aoju/bus-all/6.x](https://mvnrepository.com/artifact/org.aoju/bus-all/6.6.0)    | Compiled with jdk 17, uses Jakarta EE, compatible with JDK 11, 17 |
+| 8.x     | jdk 21 | [org.miaixz/bus-all/8.x](https://mvnrepository.com/artifact/org.miaixz/bus-all)      | Compiled with jdk 21, uses Jakarta EE, compatible with JDK 11, 17, 21 |
 
 
-### ✨ 功能概述
+### ✨ Component Information
 
-1. Java基础工具类，对文件、流、加密解密、转码、正则、线程、XML等JDK方法进行封装，组成各种工具类；
-   以及结合springboot封装常用工具按需加载例如mybatis、xss、i18n、sensitive、validate等框架
+| Status | Module                        | Description                                                                 |
+|--------|-------------------------------|-----------------------------------------------------------------------------|
+| [√]    | [bus-all](bus-all)            | Microservice full aggregation module, containing all business components and common functionalities |
+| [√]    | [bus-auth](bus-auth)          | Unified authentication center, supporting OIDC/OAuth2/SAML protocols, integrated with 15+ mainstream third-party login platforms |
+| [√]    | [bus-base](bus-base)          | Basic architecture layer, providing entity/service/controller base classes and common business interfaces |
+| [√]    | [bus-bom](bus-bom)            | Dependency management module, unified version control, supporting on-demand component loading |
+| [√]    | [bus-cache](bus-cache)        | Distributed caching service, supporting Redis/Memcached/Hessian multi-level caching solutions |
+| [√]    | [bus-core](bus-core)          | Core utility library, containing 20+ common utility classes for concurrency/reflection/date/collections |
+| [√]    | [bus-cron](bus-cron)          | Distributed task scheduling, supporting CRON expressions and cluster task coordination |
+| [√]    | [bus-crypto](bus-crypto)      | Encryption/decryption component, supporting AES/DES/SM4/MD5 algorithms and national cipher suites |
+| [√]    | [bus-extra](bus-extra)        | Extended functionality package, integrating peripheral services like FTP/QR code/MQ/file processing |
+| [√]    | [bus-gitlab](bus-gitlab)      | Deep GitLab integration, providing full lifecycle management for CI/CD/repositories/issues |
+| [√]    | [bus-health](bus-health)      | Health monitoring center, real-time collection of JVM/OS/container/middleware monitoring metrics |
+| [√]    | [bus-http](bus-http)          | HTTP client wrapper, providing synchronous/asynchronous/reactive three calling modes |
+| [√]    | [bus-image](bus-image)        | Image processing engine, supporting format conversion/thumbnail generation/OCR recognition |
+| [√]    | [bus-limiter](bus-limiter)    | High-performance rate limiting component, supporting token bucket/sliding window/distributed rate limiting strategies |
+| [√]    | [bus-logger](bus-logger)      | Log enhancement module, supporting dynamic log levels/trace ID/sensitive data filtering |
+| [√]    | [bus-mapper](bus-mapper)      | MyBatis enhancement tool, providing code generation/multi-tenancy/logical deletion extensions |
+| [√]    | [bus-notify](bus-notify)      | Multi-channel notification center, supporting push methods like email/SMS/DingTalk/WeChat Work |
+| [√]    | [bus-office](bus-office)      | Office document processing engine, implementing Excel/Word/PPT operations based on POI |
+| [√]    | [bus-opencv](bus-opencv)      | Computer vision library, wrapping OpenCV to provide image recognition/face detection/video analysis capabilities |
+| [√]    | [bus-pager](bus-pager)        | Pagination query enhancement, supporting physical pagination/multiple data sources/dynamic sorting |
+| [√]    | [bus-parent](bus-parent)      | Parent POM, unified management of dependency versions/build configurations/coding standards |
+| [√]    | [bus-pay](bus-pay)            | Payment aggregation service, integrating 20+ payment channels including WeChat Pay/Alipay/UnionPay |
+| [√]    | [bus-proxy](bus-proxy)        | Dynamic proxy tool, simplifying JDK/CGLIB proxy implementation |
+| [√]    | [bus-sensitive](bus-sensitive)| Sensitive data masking, providing annotation-based/rule-based data obfuscation solutions |
+| [√]    | [bus-setting](bus-setting)    | Configuration management tool, supporting multi-environment configuration/dynamic refresh/encrypted storage |
+| [√]    | [bus-shade](bus-shade)        | Code generator, one-click generation of basic code like Entity/Service/Mapper |
+| [√]    | [bus-socket](bus-socket)      | Network communication framework, wrapping NIO/AIO to implement TCP/UDP/WebSocket communication |
+| [√]    | [bus-starter](bus-starter)    | SpringBoot starter, auto-assembly of core components and configurations |
+| [√]    | [bus-storage](bus-storage)    | Object storage service, supporting storage solutions like Alibaba Cloud OSS/Tencent Cloud COS/MinIO |
+| [×]    | [bus-tracer](bus-tracer)      | Distributed tracing, integrating Zipkin/Pinpoint for full-link monitoring (in development) |
+| [√]    | [bus-validate](bus-validate)  | Parameter validation framework, extending JSR-303 annotations to support custom validation rules |
+| [√]    | [bus-vortex](bus-vortex)      | Reactive gateway, high-performance API gateway built on WebFlux |
 
-2. 详细说明以及使用姿势请参考每个模块下README介绍
+
+### ✨ Function Overview
+
+1. Java basic utility classes that encapsulate JDK methods for files, streams, encryption/decryption, transcoding, regular expressions, threading, XML, etc., forming various utility classes;
+   Combined with SpringBoot, it encapsulates commonly used tools for on-demand loading, such as mybatis, xss, i18n, sensitive, validate, and other frameworks.
+
+2. For detailed instructions and usage, please refer to the README in each module.
 
 
-### ✨ 安装使用
+### ✨ Installation & Usage
 
 #### Maven
 
-```
+```xml
 <dependency>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-all</artifactId>
@@ -106,9 +111,9 @@ Bus主要版本 3.x、5.x、6.x、8.x，具体如下：
 </dependency>
 ```
 
-或者单独使用某个组件
+Or use a single component
 
-```
+```xml
 <dependency>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-xxx</artifactId>
@@ -118,42 +123,41 @@ Bus主要版本 3.x、5.x、6.x、8.x，具体如下：
 
 #### Gradle
 
-```
+```groovy
 implementation 'org.miaixz:bus-all:x.x.x'
 ```
 
-#### Downlad
+#### Download
 
-点击以下任一链接，下载`bus-*-x.x.x.jar`即可：
+Click any of the following links to download `bus-*-x.x.x.jar`:
 
-- [Maven中央库](https://repo1.maven.org/maven2/org/miaixz)
-
-
-### ✨ 测试使用
-
-为确保项目编译效率及相关规则，本项目所有单元测试及使用请参考`abarth`项目：
-
-- 地址: [https://github.com/818000/abarth](https://github.com/818000/abarth)
-
-> 注意
-> Bus项目支持Java 17+，对Android平台部分模块没有测试，不能保证所有工具类或工具方法可用。
+- [Maven Central Repository](https://repo1.maven.org/maven2/org/miaixz)
 
 
-### ✨ 意见建议
+### ✨ Testing
 
-All kinds of contributions (enhancements, new features, documentation & code improvements, issues & bugs reporting) are
-welcome.
+To ensure project compilation efficiency and related rules, please refer to the `abarth` project for all unit tests and usage:
 
-欢迎各种形式的贡献，包括但不限于优化，添加功能，文档 & 代码的改进，问题和 BUG 的报告。
+- Address: [https://github.com/818000/abarth](https://github.com/818000/abarth)
+
+> Note
+> The Bus project supports Java 17+. Some modules have not been tested on the Android platform, and we cannot guarantee that all utility classes or methods will work.
 
 
-### ✨ 设计理念
+### ✨ Feedback & Suggestions
 
-源码永远是最好的教程，善于读源码和DEBUG朋友掌握完全是轻而易举的事。源码是作者设计理念最直观的展现，这也是开源的魅力所在。
+All kinds of contributions (enhancements, new features, documentation & code improvements, issues & bugs reporting) are welcome.
+
+We welcome various forms of contributions, including but not limited to optimizations, feature additions, documentation & code improvements, and reporting of issues and BUGs.
+
+
+### ✨ Design Philosophy
+
+Source code is always the best tutorial. For those who are good at reading source code and debugging, mastering it is effortless. Source code is the most intuitive display of the author's design philosophy, which is also the charm of open source.
 "Talk is cheap, Show me the code."
-，开源让技术难题的探讨变得更加务实，在您看完源码后心中对它都会有一个定论。在作者看来，Bus切切实实降低了开发学习门槛，也保障了服务的高性能、高可用。如果读者朋友对源码中某些部分的设计存在疑虑，也欢迎与作者保持沟通。
+Open source makes discussions about technical problems more practical. After reading the source code, you will have your own conclusion about it. In the author's view, Bus genuinely reduces the development learning threshold while ensuring high performance and high availability of services. If readers have doubts about the design of certain parts in the source code, you are welcome to communicate with the author.
 
 
-### ✨ 项目状态
+### ✨ Project Status
 
 ![Alt](https://repobeats.axiom.co/api/embed/52a2707cd51eecee830f6d596187122ba3ca8810.svg "Repobeats analytics image")

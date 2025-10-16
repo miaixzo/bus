@@ -37,8 +37,8 @@ import org.miaixz.bus.core.center.object.ObjectValidator;
 import org.miaixz.bus.core.lang.exception.InternalException;
 
 /**
- * 对象工具类，包括判空、克隆、序列化等操作
- * 原数组相关操作见：{@link ArrayKit#hasBlank(CharSequence...)}、{@link ArrayKit#isAllBlank(CharSequence...)}等等
+ * Object utility class, including null checks, cloning, serialization, etc. For array-related operations, see:
+ * {@link ArrayKit}.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -46,18 +46,18 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 public class ObjectKit extends ObjectValidator {
 
     /**
-     * 计算对象长度，支持类型包括：
+     * Calculates the length of an object. Supported types include:
      * <ul>
-     * <li>{@code null}：默认返回{@code 0}；</li>
-     * <li>数组：返回数组长度；</li>
-     * <li>{@link CharSequence}：返回{@link CharSequence#length()}；</li>
-     * <li>{@link Collection}：返回{@link Collection#size()}；</li>
-     * <li>{@link Iterator}或{@link Iterable}：可迭代的元素数量；</li>
-     * <li>{@link Enumeration}：返回可迭代的元素数量；</li>
+     * <li>{@code null}: returns {@code 0}.</li>
+     * <li>Array: returns the array length.</li>
+     * <li>{@link CharSequence}: returns {@link CharSequence#length()}.</li>
+     * <li>{@link Collection}: returns {@link Collection#size()}.</li>
+     * <li>{@link Iterator} or {@link Iterable}: returns the number of iterable elements.</li>
+     * <li>{@link Enumeration}: returns the number of iterable elements.</li>
      * </ul>
      *
-     * @param object 被计算长度的对象
-     * @return 长度
+     * @param object The object whose length is to be calculated.
+     * @return The length of the object.
      */
     public static int length(final Object object) {
         if (object == null) {
@@ -97,18 +97,18 @@ public class ObjectKit extends ObjectValidator {
     }
 
     /**
-     * 检查{@code object}中是否包含{@code element}，若{@code object}为{@code null}，则直接返回{@code false}。 支持类型包括：
+     * Checks if `object` contains `element`. Supported types include:
      * <ul>
-     * <li>{@code null}：默认返回{@code false}；</li>
-     * <li>{@link String}：等同{@link String#contains(CharSequence)}；</li>
-     * <li>{@link Collection}：等同{@link Collection#contains(Object)}；</li>
-     * <li>{@link Map}：等同{@link Map#containsValue(Object)}；</li>
-     * <li>{@link Iterator}、{@link Iterable}、{@link Enumeration}或数组： 等同于遍历后对其元素调用{@link #equals(Object, Object)}方法；</li>
+     * <li>{@code null}: always returns {@code false}.</li>
+     * <li>{@link String}: equivalent to {@link String#contains(CharSequence)}.</li>
+     * <li>{@link Collection}: equivalent to {@link Collection#contains(Object)}.</li>
+     * <li>{@link Map}: equivalent to {@link Map#containsValue(Object)}.</li>
+     * <li>{@link Iterator}, {@link Iterable}, {@link Enumeration}, or Array: iterates and checks for equality.</li>
      * </ul>
      *
-     * @param object  对象
-     * @param element 元素
-     * @return 是否包含
+     * @param object  The object to check within.
+     * @param element The element to find.
+     * @return `true` if the object contains the element.
      */
     public static boolean contains(final Object object, final Object element) {
         if (object == null) {
@@ -160,24 +160,25 @@ public class ObjectKit extends ObjectValidator {
     }
 
     /**
-     * 如果指定的对象不为 {@code null},则应用提供的映射函数并返回结果,否则返回 {@code null}。
+     * If the specified object is not `null`, applies the provided mapping function and returns the result, otherwise
+     * returns `null`.
      *
-     * @param source  要检查的对象
-     * @param handler 要应用的映射函数
-     * @param <T>     输入对象的类型
-     * @param <R>     映射函数的返回类型
-     * @return 映射函数的结果, 如果输入对象为 null,则返回 null
+     * @param source  The object to check.
+     * @param handler The mapping function to apply.
+     * @param <T>     The type of the input object.
+     * @param <R>     The return type of the mapping function.
+     * @return The result of the mapping function, or `null` if the input object is `null`.
      */
     public static <T, R> R apply(final T source, final Function<T, R> handler) {
         return defaultIfNull(source, handler, (R) null);
     }
 
     /**
-     * 如果指定的对象不为 {@code null},则执行{@link Consumer}处理source，否则不进行操作
+     * If the specified object is not `null`, executes the {@link Consumer} on it.
      *
-     * @param source   要检查的对象
-     * @param consumer source处理逻辑
-     * @param <T>      输入对象的类型
+     * @param source   The object to check.
+     * @param consumer The logic to execute on the source object.
+     * @param <T>      The type of the input object.
      */
     public static <T> void accept(final T source, final Consumer<T> consumer) {
         if (null != source) {
@@ -186,25 +187,22 @@ public class ObjectKit extends ObjectValidator {
     }
 
     /**
-     * 克隆对象
+     * Clones an object.
      * <ol>
-     * <li>如果对象是数组，则等同于{@link ArrayKit#clone(Object)}；</li>
-     * <li>如果对象实现了{@link Cloneable}接口，调用 {@link Object#clone()}方法；</li>
-     * <li>如果对象实现了{@link Serializable}接口，执行深度克隆；</li>
-     * <li>不符合上述任意情况则返回{@code null}；</li>
+     * <li>If the object is an array, it is cloned using {@link ArrayKit#clone(Object)}.</li>
+     * <li>If the object implements {@link Cloneable}, `Object.clone()` is called.</li>
+     * <li>If the object implements {@link Serializable}, a deep clone is performed via serialization.</li>
+     * <li>Otherwise, returns `null`.</li>
      * </ol>
      *
-     * @param <T>    对象类型
-     * @param object 被克隆对象
-     * @return 克隆后的对象
-     * @see ArrayKit#clone(Object)
-     * @see Object#clone()
-     * @see #cloneByStream(Object)
+     * @param <T>    The type of the object.
+     * @param object The object to be cloned.
+     * @return The cloned object.
      */
     public static <T> T clone(final T object) {
         final T result = ArrayKit.clone(object);
         if (null != result) {
-            // 数组
+            // Array
             return result;
         }
 
@@ -212,8 +210,8 @@ public class ObjectKit extends ObjectValidator {
             try {
                 return MethodKit.invoke(object, "clone");
             } catch (final InternalException e) {
+                // In JDK9+, access may be denied.
                 if (e.getCause() instanceof IllegalAccessException) {
-                    // JDK9+下可能无权限
                     return cloneByStream(object);
                 } else {
                     throw e;
@@ -225,11 +223,11 @@ public class ObjectKit extends ObjectValidator {
     }
 
     /**
-     * 返回克隆后的对象，如果克隆失败，返回原对象
+     * Returns a clone of the object if possible, otherwise returns the original object.
      *
-     * @param <T>    对象类型
-     * @param object 对象
-     * @return 克隆对象或原对象
+     * @param <T>    The type of the object.
+     * @param object The object.
+     * @return The cloned object or the original object if cloning fails.
      * @see #clone(Object)
      */
     public static <T> T cloneIfPossible(final T object) {
@@ -243,12 +241,12 @@ public class ObjectKit extends ObjectValidator {
     }
 
     /**
-     * 序列化后拷贝流的方式克隆 若对象未实现{@link Serializable}接口，则返回{@code null}
+     * Clones an object via serialization. Returns `null` if the object does not implement {@link Serializable}.
      *
-     * @param <T>    对象类型
-     * @param object 被克隆对象
-     * @return 克隆后的对象
-     * @throws InternalException IO异常和ClassNotFoundException封装
+     * @param <T>    The type of the object.
+     * @param object The object to be cloned.
+     * @return The cloned object.
+     * @throws InternalException wrapping IOExceptions and ClassNotFoundExceptions.
      * @see SerializeKit#clone(Object)
      */
     public static <T> T cloneByStream(final T object) {
@@ -256,21 +254,21 @@ public class ObjectKit extends ObjectValidator {
     }
 
     /**
-     * 获得给定类的第一个泛型参数
+     * Gets the first generic type argument of the given object's class.
      *
-     * @param object 被检查的实体对象
-     * @return {@link Class}
+     * @param object The object to inspect.
+     * @return The {@link Class} of the generic type argument.
      */
     public static Class<?> getTypeArgument(final Object object) {
         return getTypeArgument(object, 0);
     }
 
     /**
-     * 获得给定类指定下标的泛型参数
+     * Gets the generic type argument of the given object's class at a specified index.
      *
-     * @param object 被检查的实体对象
-     * @param index  泛型类型的索引号，即第几个泛型类型
-     * @return {@link Class}
+     * @param object The object to inspect.
+     * @param index  The index of the generic type argument.
+     * @return The {@link Class} of the generic type argument.
      * @see ClassKit#getTypeArgument(Class, int)
      */
     public static Class<?> getTypeArgument(final Object object, final int index) {
@@ -278,11 +276,11 @@ public class ObjectKit extends ObjectValidator {
     }
 
     /**
-     * 确定给定的对象是否相等，如果两个对象都是{@code null}， 则返回{@code true};如果只有一个对象是{@code null}， 则返回{@code false}
+     * Determines if two objects are equal, handling `null`s safely.
      *
-     * @param o1 第一个比较对象
-     * @param o2 第二个比较对象
-     * @return 给定对象是否相等
+     * @param o1 The first object to compare.
+     * @param o2 The second object to compare.
+     * @return `true` if the given objects are equal.
      * @see Object#equals(Object)
      * @see Arrays#equals
      */

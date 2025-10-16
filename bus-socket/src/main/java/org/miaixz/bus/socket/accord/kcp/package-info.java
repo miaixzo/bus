@@ -26,7 +26,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * KCP相关实现
+ * Provides KCP (A Fast and Reliable ARQ Protocol) related implementations.
  *
  * @author Kimi Liu
  * @since Java 17+

@@ -34,10 +34,13 @@ import java.util.Map;
 import org.miaixz.bus.core.lang.Normal;
 
 /**
- * 驼峰Key风格的LinkedHashMap 对KEY转换为驼峰，get("int_value")和get("intValue")获得的值相同，put进入的值也会被覆盖
+ * A {@link LinkedHashMap} implementation that automatically converts keys to camel case. This map preserves insertion
+ * order while allowing flexible key access, where keys like "int_value" and "intValue" can refer to the same entry.
+ * When a value is {@code put} into the map, its key is converted to camel case. If a camel case version of the key
+ * already exists, its value will be overwritten.
  *
- * @param <K> 键类型
- * @param <V> 值类型
+ * @param <K> The type of keys in the map (typically {@code String}).
+ * @param <V> The type of values in the map.
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -47,35 +50,38 @@ public class CamelCaseLinkedMap<K, V> extends CamelCaseMap<K, V> {
     private static final long serialVersionUID = 2852268579885L;
 
     /**
-     * 构造
+     * Constructs an empty {@code CamelCaseLinkedMap} with the default initial capacity (16).
      */
     public CamelCaseLinkedMap() {
         this(Normal._16);
     }
 
     /**
-     * 构造
+     * Constructs an empty {@code CamelCaseLinkedMap} with the specified initial capacity.
      *
-     * @param initialCapacity 初始大小
+     * @param initialCapacity The initial capacity of the map.
      */
     public CamelCaseLinkedMap(final int initialCapacity) {
         this(initialCapacity, Normal.DEFAULT_LOAD_FACTOR);
     }
 
     /**
-     * 构造
+     * Constructs a new {@code CamelCaseLinkedMap} with the same mappings as the specified map. Keys from the input map
+     * will be converted to camel case upon insertion.
      *
-     * @param m Map
+     * @param m The map whose mappings are to be placed in this map.
      */
     public CamelCaseLinkedMap(final Map<? extends K, ? extends V> m) {
         this(Normal.DEFAULT_LOAD_FACTOR, m);
     }
 
     /**
-     * 构造
+     * Constructs a new {@code CamelCaseLinkedMap} with the specified load factor and the same mappings as the specified
+     * map. Keys from the input map will be converted to camel case upon insertion.
      *
-     * @param loadFactor 加载因子
-     * @param m          Map，数据会被默认拷贝到一个新的LinkedHashMap中
+     * @param loadFactor The load factor for the map.
+     * @param m          The map whose mappings are to be placed in this map. Its data will be copied into a new
+     *                   {@link LinkedHashMap}.
      */
     public CamelCaseLinkedMap(final float loadFactor, final Map<? extends K, ? extends V> m) {
         this(m.size(), loadFactor);
@@ -83,10 +89,10 @@ public class CamelCaseLinkedMap<K, V> extends CamelCaseMap<K, V> {
     }
 
     /**
-     * 构造
+     * Constructs an empty {@link CamelCaseLinkedMap} with the specified initial capacity and load factor.
      *
-     * @param initialCapacity 初始大小
-     * @param loadFactor      加载因子
+     * @param initialCapacity The initial capacity of the map.
+     * @param loadFactor      The load factor for the map.
      */
     public CamelCaseLinkedMap(final int initialCapacity, final float loadFactor) {
         super(new LinkedHashMap<>(initialCapacity, loadFactor));

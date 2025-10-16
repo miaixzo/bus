@@ -49,26 +49,50 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 领英 登录
+ * LinkedIn login provider.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class LinkedinProvider extends AbstractProvider {
 
+    /**
+     * Constructs a {@code LinkedinProvider} with the specified context.
+     *
+     * @param context the authentication context
+     */
     public LinkedinProvider(Context context) {
         super(context, Registry.LINKEDIN);
     }
 
+    /**
+     * Constructs a {@code LinkedinProvider} with the specified context and cache.
+     *
+     * @param context the authentication context
+     * @param cache   the cache implementation
+     */
     public LinkedinProvider(Context context, CacheX cache) {
         super(context, Registry.LINKEDIN, cache);
     }
 
+    /**
+     * Retrieves the access token from LinkedIn's authorization server.
+     *
+     * @param callback the callback object containing the authorization code
+     * @return the {@link AuthToken} containing access token details
+     */
     @Override
     public AuthToken getAccessToken(Callback callback) {
         return this.getToken(accessTokenUrl(callback.getCode()));
     }
 
+    /**
+     * Retrieves user information from LinkedIn's user info endpoint.
+     *
+     * @param authToken the {@link AuthToken} obtained after successful authorization
+     * @return {@link Material} containing the user's information
+     * @throws AuthorizedException if parsing the response fails or required user information is missing
+     */
     @Override
     public Material getUserInfo(AuthToken authToken) {
         String accessToken = authToken.getAccessToken();
@@ -103,20 +127,20 @@ public class LinkedinProvider extends AbstractProvider {
     }
 
     /**
-     * 获取用户的真实名
+     * Retrieves the user's full name from the user data map.
      *
-     * @param data 用户json对象
-     * @return 用户名
+     * @param data the user data map
+     * @return the user's full name
      */
     private String getUserName(Map<String, Object> data) {
         String firstName, lastName;
-        // 获取firstName
+        // Get firstName
         if (data.containsKey("localizedFirstName")) {
             firstName = (String) data.get("localizedFirstName");
         } else {
             firstName = getUserName(data, "firstName");
         }
-        // 获取lastName
+        // Get lastName
         if (data.containsKey("localizedLastName")) {
             lastName = (String) data.get("localizedLastName");
         } else {
@@ -126,10 +150,10 @@ public class LinkedinProvider extends AbstractProvider {
     }
 
     /**
-     * 获取用户的头像
+     * Retrieves the user's avatar URL from the user data map.
      *
-     * @param data 用户json对象
-     * @return 用户的头像地址
+     * @param data the user data map
+     * @return the user's avatar URL, or null if not found
      */
     private String getAvatar(Map<String, Object> data) {
         Map<String, Object> profilePictureObject = (Map<String, Object>) data.get("profilePicture");
@@ -158,10 +182,11 @@ public class LinkedinProvider extends AbstractProvider {
     }
 
     /**
-     * 获取用户的email
+     * Retrieves the user's email address using a separate API call.
      *
-     * @param accessToken 用户授权后返回的token
-     * @return 用户的邮箱地址
+     * @param accessToken the user's access token
+     * @return the user's email address
+     * @throws AuthorizedException if parsing the email response fails
      */
     private String getUserEmail(String accessToken) {
         Map<String, String> header = new HashMap<>();
@@ -193,6 +218,13 @@ public class LinkedinProvider extends AbstractProvider {
         }
     }
 
+    /**
+     * Retrieves a specific part of the user's name (e.g., firstName, lastName) from the data map.
+     *
+     * @param data    the user data map
+     * @param nameKey the key for the name component (e.g., "firstName", "lastName")
+     * @return the name component, or an empty string if not found
+     */
     private String getUserName(Map<String, Object> data, String nameKey) {
         Map<String, Object> nameObj = (Map<String, Object>) data.get(nameKey);
         if (nameObj == null) {
@@ -212,9 +244,10 @@ public class LinkedinProvider extends AbstractProvider {
     }
 
     /**
-     * 检查响应内容是否正确
+     * Checks the response content for errors.
      *
-     * @param object 请求响应内容
+     * @param object the response map to check
+     * @throws AuthorizedException if the response indicates an error or message indicating failure
      */
     private void checkResponse(Map<String, Object> object) {
         if (object.containsKey("error")) {
@@ -225,10 +258,11 @@ public class LinkedinProvider extends AbstractProvider {
     }
 
     /**
-     * 获取token，适用于获取access_token和刷新token
+     * Retrieves the token, applicable for both obtaining access tokens and refreshing tokens.
      *
-     * @param accessTokenUrl 实际请求token的地址
-     * @return token对象
+     * @param accessTokenUrl the actual URL to request the token from
+     * @return the {@link AuthToken} object
+     * @throws AuthorizedException if parsing the response fails or required token information is missing
      */
     private AuthToken getToken(String accessTokenUrl) {
         Map<String, String> header = new HashMap<>();
@@ -259,10 +293,11 @@ public class LinkedinProvider extends AbstractProvider {
     }
 
     /**
-     * 返回带{@code state}参数的授权url，授权回调时会带上这个{@code state}
+     * Returns the authorization URL with a {@code state} parameter. The {@code state} will be included in the
+     * authorization callback.
      *
-     * @param state state 验证授权流程的参数，可以防止csrf
-     * @return 返回授权地址
+     * @param state the parameter to verify the authorization process, which can prevent CSRF attacks
+     * @return the authorization URL
      */
     @Override
     public String authorize(String state) {
@@ -272,10 +307,10 @@ public class LinkedinProvider extends AbstractProvider {
     }
 
     /**
-     * 返回获取userInfo的url
+     * Returns the URL to obtain user information.
      *
-     * @param authToken 用户授权后的token
-     * @return 返回获取userInfo的url
+     * @param authToken the user's authorization token
+     * @return the URL to obtain user information
      */
     @Override
     protected String userInfoUrl(AuthToken authToken) {

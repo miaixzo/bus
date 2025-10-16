@@ -27,14 +27,13 @@
 */
 package org.miaixz.bus.starter.zookeeper;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.miaixz.bus.spring.GeniusBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-import lombok.Getter;
-import lombok.Setter;
-
 /**
- * Zookeeper配置信息
+ * Configuration properties for the ZooKeeper client.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -45,27 +44,35 @@ import lombok.Setter;
 public class ZookeeperProperties {
 
     /**
-     * server地址，多个server之间使用英⽂逗号分隔开
+     * The connection string for the ZooKeeper server(s). Multiple servers can be specified, separated by commas (e.g.,
+     * "host1:port1,host2:port2").
      */
     private String connectString;
+
     /**
-     * 隔离命名空间
+     * The namespace to be used, which acts as a root path for all znodes created by this client. This provides a form
+     * of multi-tenancy.
      */
     private String namespace;
+
     /**
-     * 连接超时时间， 默认是15000毫秒
+     * The connection timeout in milliseconds. Default is 15000 ms.
      */
     private int connectionTimeoutMs = 15000;
+
     /**
-     * 会话超时时间， 默认是60000毫秒
+     * The session timeout in milliseconds. Default is 60000 ms.
      */
     private int sessionTimeoutMs = 60000;
+
     /**
-     * 初始的sleep时间，用于计算之后的每次重试的sleep时间, 默认 1000 毫秒
+     * The initial sleep time in milliseconds for the retry policy. This is used to calculate the wait time for
+     * subsequent retries. Default is 1000 ms.
      */
     private int baseSleepTimeMs = 1000;
+
     /**
-     * 最⼤重试次数
+     * The maximum number of retries for transient connection errors. Default is 3.
      */
     private int maxRetries = 3;
 

@@ -27,14 +27,16 @@
 */
 package org.miaixz.bus.starter.bridge;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.miaixz.bus.spring.GeniusBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-import lombok.Getter;
-import lombok.Setter;
-
 /**
- * 配置中心相关配置
+ * Configuration properties for the configuration center bridge.
+ * <p>
+ * These properties are used to configure both the server and client aspects of the configuration bridge.
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -45,32 +47,37 @@ import lombok.Setter;
 public class BridgeProperties {
 
     /**
-     * 服务端-端口
+     * The port for the configuration server.
      */
     private int port;
 
     /**
-     * 客户端-应用标识
+     * The application key for the client, used for identification.
      */
     private String appKey;
+
     /**
-     * 客户端-启动环境
+     * The active profile for the client (e.g., dev, test, prod).
      */
     private String profile;
+
     /**
-     * 客户端-请求地址
+     * The URL of the configuration server that the client connects to.
      */
     private String url;
+
     /**
-     * 客户端-请求方法
+     * The HTTP method to use when the client requests configuration from the server.
      */
     private String method;
+
     /**
-     * 客户端-输出类型
+     * The expected response format from the server (e.g., json, properties).
      */
     private String format;
+
     /**
-     * 客户端-版本信息
+     * The version of the configuration to be requested by the client.
      */
     private String version;
 

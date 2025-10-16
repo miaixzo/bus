@@ -42,10 +42,9 @@ import org.miaixz.bus.core.text.placeholder.segment.StringSegment;
 import org.miaixz.bus.core.xyz.ArrayKit;
 
 /**
- * 单占位符字符串模板
+ * Single placeholder string template.
  * <p>
- * 例如，"?", "{}", "$$$"
- * </p>
+ * For example, "?", "{}", "$$$"
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -53,14 +52,25 @@ import org.miaixz.bus.core.xyz.ArrayKit;
 public class SinglePlaceholderString extends StringTemplate {
 
     /**
-     * 默认的占位符
+     * The default placeholder.
      */
     public static final String DEFAULT_PLACEHOLDER = Symbol.DELIM;
     /**
-     * 占位符，默认为: {@link Symbol#DELIM}
+     * The placeholder, defaults to {@link Symbol#DELIM}
      */
     protected String placeholder;
 
+    /**
+     * Constructs a {@code SinglePlaceholderString} with the specified template, features, placeholder, escape
+     * character, default value, and default value handler.
+     *
+     * @param template            The string template, cannot be {@code null}.
+     * @param features            The features to enable for this template.
+     * @param placeholder         The placeholder string.
+     * @param escape              The escape character.
+     * @param defaultValue        The default value to use when a placeholder cannot be resolved.
+     * @param defaultValueHandler The handler for default values.
+     */
     protected SinglePlaceholderString(final String template, final int features, final String placeholder,
             final char escape, final String defaultValue, final UnaryOperator<String> defaultValueHandler) {
         super(template, escape, defaultValue, defaultValueHandler, features);
@@ -68,41 +78,47 @@ public class SinglePlaceholderString extends StringTemplate {
         Assert.notEmpty(placeholder);
         this.placeholder = placeholder;
 
-        // 初始化Segment列表
+        // Initialize segment list
         afterInit();
     }
 
     /**
-     * 创建 builder
+     * Creates a builder for {@code SinglePlaceholderString}.
      *
-     * @param template 字符串模板，不能为 {@code null}
-     * @return builder实例
+     * @param template The string template, cannot be {@code null}.
+     * @return A builder instance.
      */
     public static Builder builder(final String template) {
         return new Builder(template);
     }
 
+    /**
+     * Parses the template string into a list of segments.
+     *
+     * @param template The template string to parse.
+     * @return A list of {@link StringSegment} representing the parsed template.
+     */
     @Override
     protected List<StringSegment> parseSegments(final String template) {
         final int placeholderLength = placeholder.length();
         final int strPatternLength = template.length();
-        // 记录已经处理到的位置
+        // Record the position already processed
         int handledPosition = 0;
-        // 占位符所在位置
+        // Placeholder position
         int delimIndex;
-        // 上一个解析的segment是否是固定文本，如果是，则需要和当前新的文本部分合并
+        // Whether the last parsed segment was a literal text, if so, it needs to be merged with the new text part
         boolean lastIsLiteralSegment = false;
-        // 复用的占位符变量
+        // Reused placeholder variable
         final SingleSegment singlePlaceholderSegment = SingleSegment.of(placeholder);
         List<StringSegment> segments = null;
         while (true) {
             delimIndex = template.indexOf(placeholder, handledPosition);
             if (delimIndex == -1) {
-                // 整个模板都不带占位符
+                // The entire template does not contain placeholders
                 if (handledPosition == 0) {
                     return Collections.singletonList(new LiteralSegment(template));
                 }
-                // 字符串模板剩余部分不再包含占位符
+                // The remaining part of the string template no longer contains placeholders
                 if (handledPosition < strPatternLength) {
                     addLiteralSegment(lastIsLiteralSegment, segments, template.substring(handledPosition));
                 }
@@ -111,11 +127,12 @@ public class SinglePlaceholderString extends StringTemplate {
                 segments = new ArrayList<>();
             }
 
-            // 存在 转义符
+            // There is an escape character
             if (delimIndex > 0 && template.charAt(delimIndex - 1) == escape) {
-                // 存在 双转义符
+                // There is a double escape character
                 if (delimIndex > 1 && template.charAt(delimIndex - 2) == escape) {
-                    // 转义符之前还有一个转义符，形如："//{"，占位符依旧有效
+                    // There is another escape character before the escape character, like: "//{", the placeholder is
+                    // still valid
                     addLiteralSegment(
                             lastIsLiteralSegment,
                             segments,
@@ -124,7 +141,8 @@ public class SinglePlaceholderString extends StringTemplate {
                     lastIsLiteralSegment = false;
                     handledPosition = delimIndex + placeholderLength;
                 } else {
-                    // 占位符被转义，形如："/{"，当前字符并不是一个真正的占位符，而是普通字符串的一部分
+                    // The placeholder is escaped, like: "/{", the current character is not a real placeholder, but part
+                    // of a normal string
                     addLiteralSegment(
                             lastIsLiteralSegment,
                             segments,
@@ -133,7 +151,7 @@ public class SinglePlaceholderString extends StringTemplate {
                     handledPosition = delimIndex + 1;
                 }
             } else {
-                // 正常占位符
+                // Normal placeholder
                 addLiteralSegment(lastIsLiteralSegment, segments, template.substring(handledPosition, delimIndex));
                 segments.add(singlePlaceholderSegment);
                 lastIsLiteralSegment = false;
@@ -143,30 +161,30 @@ public class SinglePlaceholderString extends StringTemplate {
     }
 
     /**
-     * 按顺序使用 数组元素 替换 占位符
+     * Replaces placeholders with array elements in sequence.
      *
-     * @param args 可变参数
-     * @return 格式化字符串
+     * @param args Variable arguments.
+     * @return The formatted string.
      */
     public String format(final Object... args) {
         return formatArray(args);
     }
 
     /**
-     * 按顺序使用 原始数组元素 替换 占位符
+     * Replaces placeholders with raw array elements in sequence.
      *
-     * @param array 原始类型数组，例如: {@code int[]}
-     * @return 格式化字符串
+     * @param array A raw type array, e.g., {@code int[]}.
+     * @return The formatted string.
      */
     public String formatArray(final Object array) {
         return formatArray(ArrayKit.wrap(array));
     }
 
     /**
-     * 按顺序使用 数组元素 替换 占位符
+     * Replaces placeholders with array elements in sequence.
      *
-     * @param array 数组
-     * @return 格式化字符串
+     * @param array The array.
+     * @return The formatted string.
      */
     public String formatArray(final Object[] array) {
         if (array == null) {
@@ -176,66 +194,75 @@ public class SinglePlaceholderString extends StringTemplate {
     }
 
     /**
-     * 按顺序使用 迭代器元素 替换 占位符
+     * Replaces placeholders with iterable elements in sequence.
      *
-     * @param iterable iterable
-     * @return 格式化字符串
+     * @param iterable The iterable.
+     * @return The formatted string.
      */
     public String format(final Iterable<?> iterable) {
         return super.formatSequence(iterable);
     }
 
     /**
-     * 将 占位符位置的值 按顺序解析为 字符串数组
+     * Parses the values at placeholder positions into a string array in sequence.
      *
-     * @param text 待解析的字符串，一般是格式化方法的返回值
-     * @return 参数值数组
+     * @param text The string to be parsed, typically the return value of a formatting method.
+     * @return A string array of parameter values.
      */
     public String[] matchesToArray(final String text) {
         return matches(text).toArray(new String[0]);
     }
 
     /**
-     * 将 占位符位置的值 按顺序解析为 字符串列表
+     * Parses the values at placeholder positions into a string list in sequence.
      *
-     * @param text 待解析的字符串，一般是格式化方法的返回值
-     * @return 参数值列表
+     * @param text The string to be parsed, typically the return value of a formatting method.
+     * @return A string list of parameter values.
      */
     public List<String> matches(final String text) {
         return super.matchesSequence(text);
     }
 
     /**
-     * 构造器
+     * Builder for {@link SinglePlaceholderString}.
      */
     public static class Builder extends AbstractBuilder<Builder, SinglePlaceholderString> {
 
         /**
-         * 单占位符
+         * Single placeholder.
          * <p>
-         * 例如："?"、"{}"
-         * </p>
+         * For example: "?", "{}"
+         *
          * <p>
-         * 默认为 {@link SinglePlaceholderString#DEFAULT_PLACEHOLDER}
-         * </p>
+         * Defaults to {@link SinglePlaceholderString#DEFAULT_PLACEHOLDER}
          */
         protected String placeholder;
 
+        /**
+         * Constructs a new Builder.
+         *
+         * @param template The template string.
+         */
         protected Builder(final String template) {
             super(template);
         }
 
         /**
-         * 设置 占位符
+         * Sets the placeholder.
          *
-         * @param placeholder 占位符，不能为 {@code null} 和 {@code ""}
-         * @return builder
+         * @param placeholder The placeholder, cannot be {@code null} or an empty string.
+         * @return This builder instance.
          */
         public Builder placeholder(final String placeholder) {
             this.placeholder = placeholder;
             return this;
         }
 
+        /**
+         * Builds a new {@link SinglePlaceholderString} instance.
+         *
+         * @return A new {@link SinglePlaceholderString} instance.
+         */
         @Override
         protected SinglePlaceholderString buildInstance() {
             if (this.placeholder == null) {
@@ -245,6 +272,11 @@ public class SinglePlaceholderString extends StringTemplate {
                     this.defaultValue, this.defaultValueHandler);
         }
 
+        /**
+         * Returns this builder instance.
+         *
+         * @return This builder instance.
+         */
         @Override
         protected Builder self() {
             return this;

@@ -30,7 +30,7 @@ package org.miaixz.bus.pay.metric.unionpay.api;
 import org.miaixz.bus.pay.Matcher;
 
 /**
- * 云闪付API
+ * UnionPay Cloud QuickPass APIs.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,88 +38,95 @@ import org.miaixz.bus.pay.Matcher;
 public enum UnionPayApi implements Matcher {
 
     /**
-     * 刷卡支付
+     * Micropay.
      */
-    MICRO_PAY("unified.trade.micropay", "刷卡支付"),
+    MICRO_PAY("unified.trade.micropay", "Micropay"),
     /**
-     * 扫码支付
+     * Native Pay.
      */
-    NATIVE("unified.trade.native", "扫码支付"),
+    NATIVE("unified.trade.native", "Native Pay"),
     /**
-     * 微信公众号、小程序支付统一下单
+     * WeChat Official Account/Mini Program JS Pay.
      */
-    WEI_XIN_JS_PAY("pay.weixin.jspay", "微信公众号、小程序支付统一下单"),
+    WEI_XIN_JS_PAY("pay.weixin.jspay", "WeChat Official Account/Mini Program JS Pay"),
     /**
-     * 微信 App 支付
+     * WeChat App Pay.
      */
-    WEI_XIN_APP_PAY("pay.weixin.raw.app", "微信 App 支付"),
+    WEI_XIN_APP_PAY("pay.weixin.raw.app", "WeChat App Pay"),
     /**
-     * 查询订单
+     * Query Order.
      */
-    QUERY("unified.trade.query", "查询订单"),
+    QUERY("unified.trade.query", "Query Order"),
     /**
-     * 申请退款
+     * Apply for Refund.
      */
-    REFUND("unified.trade.refund", "申请退款"),
+    REFUND("unified.trade.refund", "Apply for Refund"),
     /**
-     * 退款查询
+     * Query Refund.
      */
-    REFUND_QUERY("unified.trade.refundquery", "退款查询"),
+    REFUND_QUERY("unified.trade.refundquery", "Query Refund"),
     /**
-     * 关闭订单
+     * Close Order.
      */
-    CLOSE("unified.trade.close", "关闭订单"),
+    CLOSE("unified.trade.close", "Close Order"),
     /**
-     * 撤销订单
+     * Reverse Micropay.
      */
-    MICRO_PAY_REVERSE("unified.micropay.reverse", "撤销订单"),
+    MICRO_PAY_REVERSE("unified.micropay.reverse", "Reverse Micropay"),
     /**
-     * 授权码查询 openid
+     * Query OpenID by Auth Code.
      */
-    AUTH_CODE_TO_OPENID("unified.tools.authcodetoopenid", "授权码查询 openid"),
+    AUTH_CODE_TO_OPENID("unified.tools.authcodetoopenid", "Query OpenID by Auth Code"),
     /**
-     * 银联 JS 支付获取 userId
+     * Get UserID for UnionPay JS Pay.
      */
-    UNION_PAY_USER_ID("pay.unionpay.userid", "银联 JS 支付获取 userId"),
+    UNION_PAY_USER_ID("pay.unionpay.userid", "Get UserID for UnionPay JS Pay"),
     /**
-     * 银联 JS 支付下单
+     * UnionPay JS Pay Order.
      */
-    UNION_JS_PAY("pay.unionpay.jspay", "银联 JS 支付下单"),
+    UNION_JS_PAY("pay.unionpay.jspay", "UnionPay JS Pay Order"),
     /**
-     * 支付宝服务窗口支付
+     * Alipay Service Window Pay.
      */
-    ALI_PAY_JS_PAY("pay.alipay.jspay", "支付宝服务窗口支付"),
+    ALI_PAY_JS_PAY("pay.alipay.jspay", "Alipay Service Window Pay"),
     /**
-     * 下载单个商户时的对账单
+     * Download bill for a single merchant.
      */
-    BILL_MERCHANT("pay.bill.merchant", "下载单个商户时的对账单"),
+    BILL_MERCHANT("pay.bill.merchant", "Download bill for a single merchant"),
     /**
-     * 下载连锁商户下所有门店的对账单
+     * Download bill for all stores of a chain merchant.
      */
-    BILL_BIG_MERCHANT("pay.bill.bigMerchant", "下载连锁商户下所有门店的对账单"),
+    BILL_BIG_MERCHANT("pay.bill.bigMerchant", "Download bill for all stores of a chain merchant"),
     /**
-     * 下载某内部机构/外包服务机构下所有商户的对账单
+     * Download bill for all merchants under an internal institution/outsourcing service provider.
      */
-    BILL_AGENT("pay.bill.agent", "下载某内部机构/外包服务机构下所有商户的对账单");
+    BILL_AGENT("pay.bill.agent",
+            "Download bill for all merchants under an internal institution/outsourcing service provider");
 
     /**
-     * 接口方法
+     * The API endpoint.
      */
     private final String method;
     /**
-     * 描述
+     * The description of the API.
      */
     private final String desc;
 
+    /**
+     * Constructs a new UnionPayApi.
+     *
+     * @param method The API endpoint.
+     * @param desc   The description of the API.
+     */
     UnionPayApi(String method, String desc) {
         this.method = method;
         this.desc = desc;
     }
 
     /**
-     * 交易类型
+     * Gets the transaction type.
      *
-     * @return the string
+     * @return The transaction type.
      */
     @Override
     public String type() {
@@ -127,9 +134,9 @@ public enum UnionPayApi implements Matcher {
     }
 
     /**
-     * 类型描述
+     * Gets the description of the transaction type.
      *
-     * @return the string
+     * @return The description of the transaction type.
      */
     @Override
     public String desc() {
@@ -137,9 +144,9 @@ public enum UnionPayApi implements Matcher {
     }
 
     /**
-     * 接口方法
+     * Gets the API endpoint.
      *
-     * @return the string
+     * @return The API endpoint.
      */
     @Override
     public String method() {

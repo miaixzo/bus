@@ -40,14 +40,15 @@ import net.sourceforge.pinyin4j.format.HanyuPinyinVCharType;
 import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombination;
 
 /**
- * 封装了Pinyin4j的引擎。
+ * Encapsulates the Pinyin4j engine.
  *
  * <p>
- * pinyin4j(<a href="http://sourceforge.net/projects/pinyin4j">http://sourceforge.net/projects/pinyin4j</a>)封装。
+ * Pinyin4j (<a href="http://sourceforge.net/projects/pinyin4j">http://sourceforge.net/projects/pinyin4j</a>)
+ * encapsulation.
  * </p>
  *
  * <p>
- * 引入：
+ * To introduce (dependency):
  * 
  * <pre>
  * &lt;dependency&gt;
@@ -62,29 +63,38 @@ import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombi
  */
 public class Pinyin4JProvider implements PinyinProvider {
 
+    /**
+     * HanyuPinyinOutputFormat instance for Pinyin with tone marks. Configured for lowercase, 'v' for 'ü', and tone
+     * marks.
+     */
     private static final HanyuPinyinOutputFormat WITH_TONE_MARK;
+    /**
+     * HanyuPinyinOutputFormat instance for Pinyin without tone marks. Configured for lowercase, 'v' for 'ü', and no
+     * tone marks.
+     */
     private static final HanyuPinyinOutputFormat WITHOUT_TONE;
     static {
         WITH_TONE_MARK = new HanyuPinyinOutputFormat();
-        // 小写
+        // lowercase
         WITH_TONE_MARK.setCaseType(HanyuPinyinCaseType.LOWERCASE);
-        // 'ü' 使用 "v" 代替
+        // 'ü' uses "v" instead
         WITH_TONE_MARK.setVCharType(HanyuPinyinVCharType.WITH_V);
         WITH_TONE_MARK.setToneType(HanyuPinyinToneType.WITH_TONE_MARK);
 
         WITHOUT_TONE = new HanyuPinyinOutputFormat();
-        // 小写
+        // lowercase
         WITHOUT_TONE.setCaseType(HanyuPinyinCaseType.LOWERCASE);
-        // 'ü' 使用 "v" 代替
+        // 'ü' uses "v" instead
         WITHOUT_TONE.setVCharType(HanyuPinyinVCharType.WITH_V);
         WITHOUT_TONE.setToneType(HanyuPinyinToneType.WITHOUT_TONE);
     }
 
     /**
-     * 构造
+     * Constructs a new Pinyin4JProvider instance. Checks if the Pinyin4j library is available (via {@link PinyinHelper}
+     * class).
      */
     public Pinyin4JProvider() {
-        // SPI方式加载时检查库是否引入
+        // Check if the library is introduced when loading via SPI
         Assert.notNull(PinyinHelper.class);
     }
 

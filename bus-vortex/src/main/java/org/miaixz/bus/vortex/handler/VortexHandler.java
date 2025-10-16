@@ -31,27 +31,31 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Protocol;
-import org.miaixz.bus.vortex.*;
+import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.vortex.Assets;
+import org.miaixz.bus.vortex.Context;
+import org.miaixz.bus.vortex.Handler;
+import org.miaixz.bus.vortex.Router;
 import org.miaixz.bus.vortex.magic.ErrorCode;
-import org.miaixz.bus.vortex.support.HttpRequestRouter;
-import org.miaixz.bus.vortex.support.MqRequestRouter;
-import org.miaixz.bus.vortex.support.McpRequestRouter;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import org.springframework.web.server.ServerWebExchange;
+
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.annotation.NonNull;
 
 /**
- * 请求处理入口类，负责路由请求并异步调用多个拦截器逻辑。
+ * Request handling entry class, responsible for routing requests and asynchronously invoking multiple interceptor
+ * logics.
  * <p>
- * 该类实现了请求处理的控制流程，包括请求验证、路由策略选择、拦截器执行和响应处理。 具体协议处理逻辑完全委托给各自的策略实现者（HTTP、MQ、MCP）。
- * </p>
+ * This class implements the control flow for request processing, including request validation, routing strategy
+ * selection, interceptor execution, and response handling. The specific protocol handling logic is entirely delegated
+ * to their respective strategy implementers (HTTP, MQ, MCP).
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -59,160 +63,177 @@ import reactor.util.annotation.NonNull;
 public class VortexHandler {
 
     /**
-     * 线程安全的策略映射，存储按协议名称索引的策略实现。
+     * A thread-safe map of strategies, storing strategy implementations indexed by protocol name.
      * <p>
-     * 该映射允许根据协议动态选择路由策略，支持HTTP、MQ和MCP协议。 使用ConcurrentHashMap保证线程安全。
+     * This map allows dynamic selection of routing strategies based on the protocol, supporting HTTP, MQ, and MCP
+     * protocols. {@code ConcurrentHashMap} is used to ensure thread safety.
      * </p>
      */
-    private final Map<String, Router> strategies = new ConcurrentHashMap<>();
+    private final Map<String, Router> routers;
 
     /**
-     * 默认策略，当未提供或未找到特定策略时使用。
+     * A list of ordered interceptors, used to process requests in a specific sequence.
      * <p>
-     * 默认使用HTTP策略作为回退行为。
-     * </p>
-     */
-    private final Router defaultRouter;
-
-    /**
-     * 按顺序排序的拦截器列表，用于按特定顺序处理请求。
-     * <p>
-     * 拦截器在请求处理的不同阶段（如前置处理、后置处理）被调用。 拦截器按照order属性排序，确保执行顺序。
+     * Interceptors are invoked at different stages of request processing (e.g., pre-processing, post-processing).
+     * Interceptors are sorted by their order property to ensure execution sequence.
      * </p>
      */
     private final List<Handler> handlers;
 
     /**
-     * 构造函数，初始化策略映射和拦截器列表。
+     * Constructs a {@code VortexHandler}, initializing the strategy map and the interceptor list.
      *
-     * @param handlers 异步拦截器实例列表，用于处理请求的各个阶段
-     * @throws NullPointerException 如果handlers或默认策略为null
+     * @param handlers A list of asynchronous interceptor instances, used to handle various stages of a request.
+     * @param routers  A list of asynchronous interceptor instances, used to handle various stages of a request.
+     * @throws NullPointerException If handlers or the default strategy is null.
      */
-    public VortexHandler(List<Handler> handlers) {
-        strategies.put(Protocol.HTTP.name, new HttpRequestRouter());
-        strategies.put(Protocol.MQ.name, new MqRequestRouter());
-        strategies.put(Protocol.MCP.name, new McpRequestRouter());
-        defaultRouter = strategies.get(Protocol.HTTP.name);
-        Objects.requireNonNull(defaultRouter, "Default strategy cannot be null");
-        // 如果handlers为空，使用默认AccessHandler
+    public VortexHandler(List<Handler> handlers, Map<String, Router> routers) {
+        this.routers = routers;
+        Objects.requireNonNull(this.routers, "Default router cannot be null");
+        // If handlers is empty, use the default AccessHandler
         this.handlers = handlers.isEmpty() ? List.of(new AccessHandler())
                 : handlers.stream().sorted(Comparator.comparingInt(Handler::getOrder)).collect(Collectors.toList());
     }
 
     /**
-     * 处理客户端请求，执行控制流程并返回响应。
+     * Handles client requests, executes the control flow, and returns a response.
      * <p>
-     * 该方法是请求处理的入口点，负责整个请求处理流程的协调。 处理流程包括：
+     * This method is the entry point for request processing, coordinating the entire request handling flow. The
+     * processing flow includes:
      * <ol>
-     * <li>初始化和验证请求上下文</li>
-     * <li>验证配置资产</li>
-     * <li>选择路由策略</li>
-     * <li>执行前置处理</li>
-     * <li>委托给策略实现者处理请求</li>
-     * <li>执行后置处理</li>
+     * <li>Initialization and validation of the request context.</li>
+     * <li>Validation of configured assets.</li>
+     * <li>Selection of the routing strategy.</li>
+     * <li>Execution of pre-processing handlers.</li>
+     * <li>Delegation to the strategy implementer to handle the request.</li>
+     * <li>Execution of post-processing handlers.</li>
      * </ol>
      *
-     * @param request 客户端的ServerRequest对象，包含请求的所有信息
-     * @return {@link Mono<ServerResponse>} 包含目标服务的响应，以响应式方式返回
+     * @param request The client's {@link ServerRequest} object, containing all request information.
+     * @return {@link Mono<ServerResponse>} containing the response from the target service, returned reactively.
      */
     @NonNull
     public Mono<ServerResponse> handle(ServerRequest request) {
-        return Mono.defer(() -> {
-            // 1. 初始化和验证请求上下文
-            Context context = Context.get(request);
+        return Mono.deferContextual(contextView -> {
+            // Get request method and path for logging
+            String method = request.methodName();
+            String path = request.path();
+
+            // 1. Initialize and validate the request context
+            final Context context = contextView.get(Context.class);
             if (context == null) {
-                Format.error(null, "CONTEXT_NULL", "Request context is null for path: " + request.path());
+                Logger.info("==>    Handler: [N/A] [{}] [{}] [CONTEXT_ERROR] - Request context is null", method, path);
                 throw new ValidateException(ErrorCode._116000);
             }
             ServerWebExchange exchange = request.exchange();
-            Format.requestStart(exchange);
+            Logger.info("==>    Handler: [N/A] [{}] [{}] [REQUEST_START] - Request started", method, path);
 
-            // 2. 验证配置资产
+            // 2. Validate configured assets
             Assets assets = context.getAssets();
             if (assets == null) {
-                Format.error(exchange, "ASSETS_NULL", "Assets is null in request context");
+                Logger.info(
+                        "==>    Handler: [N/A] [{}] [{}] [ASSETS_ERROR] - Assets is null in request context",
+                        method,
+                        path);
                 throw new ValidateException(ErrorCode._100800);
             }
 
-            // 3. 选择路由策略
+            // 3. Select the routing strategy
             String mode = switch (assets.getMode()) {
-                case 1 -> Protocol.HTTP.name();
-                case 2 -> Protocol.MQ.name();
-                case 3 -> Protocol.MCP.name();
-                default -> Protocol.HTTP.name();
+                case 1 -> Protocol.HTTP.getName();
+                case 2 -> Protocol.MQ.getName();
+                case 3 -> Protocol.MCP.getName();
+                default -> Protocol.HTTP.getName();
             };
 
-            Router router = strategies.getOrDefault(mode, defaultRouter);
-            Format.info(exchange, "STRATEGY_SELECTED", "Using route strategy: " + router.getClass().getSimpleName());
+            Router router = routers.get(mode);
+            Logger.info(
+                    "==>    Handler: [N/A] [{}] [{}] [ROUTER_SELECT] - Using route strategy: {}",
+                    method,
+                    path,
+                    router.getClass().getSimpleName());
 
-            // 4. 执行前置处理
+            // 4. Execute pre-processing
             return executePreHandle(exchange, router).flatMap(preHandleResult -> {
                 if (!preHandleResult) {
+                    Logger.info(
+                            "==>    Handler: [N/A] [{}] [{}] [PREHANDLE_ERROR] - Pre-handle validation failed",
+                            method,
+                            path);
                     throw new ValidateException(ErrorCode._100800);
                 }
 
-                // 5. 委托给策略实现者处理请求
-                return router.route(request, context, assets)
-                        .flatMap(response -> executePostHandlers(exchange, router, response)).doOnSuccess(response -> {
+                // 5. Delegate to the strategy implementer to handle the request
+                return router.route(request).flatMap(response -> executePostHandlers(exchange, router, response))
+                        .doOnSuccess(response -> {
                             long duration = System.currentTimeMillis() - context.getTimestamp();
-                            Format.info(
-                                    exchange,
-                                    "REQUEST_DURATION",
-                                    "Method: " + assets.getMethod() + ", Duration: " + duration + "ms");
+                            Logger.info(
+                                    "==>    Handler: [N A] [{}] [{}] [REQUEST_SUCCESS] - Method: {}, Duration: {}ms",
+                                    method,
+                                    path,
+                                    assets.getMethod(),
+                                    duration);
+                            Logger.info(
+                                    "==>    Handler: [N/A] [{}] [{}] [REQUEST_COMPLETE] - Request completed with status: {}",
+                                    method,
+                                    path,
+                                    response.statusCode().value());
                         }).onErrorResume(error -> {
-                            Format.error(exchange, "REQUEST_ERROR", "Error processing request: " + error.getMessage());
-                            return Mono.whenDelayError(
-                                    handlers.stream().map(
-                                            handler -> handler.afterCompletion(exchange, router, null, null, error))
-                                            .collect(Collectors.toList()))
+                            Logger.info(
+                                    "==>    Handler: [N/A] [{}] [{}] [REQUEST_ERROR] - Error processing request: {}",
+                                    method,
+                                    path,
+                                    error.getMessage());
+                            // Sequentially run afterCompletion for all handlers before re-throwing the error
+                            return Flux.fromIterable(handlers)
+                                    .concatMap(handler -> handler.afterCompletion(exchange, router, null, null, error))
                                     .then(Mono.error(error));
                         });
             });
-        }).doOnSuccess(response -> Format.requestEnd(request.exchange(), response.statusCode().value()));
+        });
     }
 
     /**
-     * 执行所有拦截器的前置处理逻辑。
+     * Executes the pre-processing logic of all interceptors sequentially.
      * <p>
-     * 该方法会并行调用所有拦截器的preHandle方法，并收集处理结果。 只有所有拦截器都返回true时，该方法才返回true，表示所有前置处理都通过。
+     * This method calls the {@code preHandle} method of all interceptors in a sequential chain. If any interceptor
+     * returns {@code false}, the chain is immediately terminated, and the method returns {@code Mono<Boolean>} with a
+     * value of {@code false}, effectively "short-circuiting" the execution.
      * </p>
      *
-     * @param exchange 服务器Web交换对象，包含请求和响应的上下文信息
-     * @param router   路由策略，用于确定如何路由请求
-     * @return Mono<Boolean> 表示所有前置处理是否都通过，true表示全部通过，false表示有拦截器阻止了请求
+     * @param exchange The {@link ServerWebExchange} object, containing request and response context information.
+     * @param router   The routing strategy, used to determine how to route the request.
+     * @return {@code Mono<Boolean>} indicating whether all pre-processing steps passed ({@code true}) or if any
+     *         interceptor blocked the request ({@code false}).
      */
     private Mono<Boolean> executePreHandle(ServerWebExchange exchange, Router router) {
-        return Mono.zip(
-                handlers.stream().map(handler -> handler.preHandle(exchange, router, null))
-                        .collect(Collectors.toList()),
-                results -> results.length > 0 && java.util.Arrays.stream(results).allMatch(Boolean.class::cast));
+        return Flux.fromIterable(handlers).concatMap(handler -> handler.preHandle(exchange, router, null))
+                .all(result -> result);
     }
 
     /**
-     * 执行所有拦截器的后置处理逻辑。
+     * Executes the post-processing logic of all interceptors sequentially.
      * <p>
-     * 该方法会并行调用所有拦截器的postHandle方法和afterCompletion方法。 postHandle方法在响应返回给客户端之前执行，afterCompletion方法在请求完全处理完成后执行。
+     * This method first calls the {@code postHandle} method of all interceptors in sequence. After that completes, it
+     * calls the {@code afterCompletion} method of all interceptors, also in sequence.
      * </p>
      *
-     * @param exchange 服务器Web交换对象，包含请求和响应的上下文信息
-     * @param router   路由策略，用于确定如何路由请求
-     * @param response 服务器响应，包含响应状态、头和体
-     * @return Mono<ServerResponse> 处理后的响应，可能被拦截器修改
+     * @param exchange The {@link ServerWebExchange} object, containing request and response context information.
+     * @param router   The routing strategy, used to determine how to route the request.
+     * @param response The {@link ServerResponse} object, containing the response status, headers, and body.
+     * @return {@code Mono<ServerResponse>} The original response, after all interceptors have been processed.
      */
     private Mono<ServerResponse> executePostHandlers(
             ServerWebExchange exchange,
             Router router,
             ServerResponse response) {
-        return Mono
-                .whenDelayError(
-                        handlers.stream().map(handler -> handler.postHandle(exchange, router, null, response))
-                                .collect(Collectors.toList()))
-                .thenReturn(response).flatMap(
-                        res -> Mono.whenDelayError(
-                                handlers.stream()
-                                        .map(handler -> handler.afterCompletion(exchange, router, null, res, null))
-                                        .collect(Collectors.toList()))
-                                .thenReturn(res));
+        Mono<Void> postHandleChain = Flux.fromIterable(handlers)
+                .concatMap(handler -> handler.postHandle(exchange, router, null, response)).then();
+
+        Mono<Void> afterCompletionChain = Flux.fromIterable(handlers)
+                .concatMap(handler -> handler.afterCompletion(exchange, router, null, response, null)).then();
+
+        return postHandleChain.then(afterCompletionChain).thenReturn(response);
     }
 
 }

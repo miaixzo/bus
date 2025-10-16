@@ -35,7 +35,7 @@ import org.miaixz.bus.office.excel.cell.editors.CellEditor;
 import org.miaixz.bus.office.excel.xyz.CellKit;
 
 /**
- * 读取Excel的Sheet，使用Consumer方式处理单元格
+ * Reads an Excel {@link Sheet} and processes cells using a {@link BiConsumerX}.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -45,11 +45,11 @@ public class WalkSheetReader extends AbstractSheetReader<Void> {
     private final BiConsumerX<Cell, Object> cellHandler;
 
     /**
-     * 构造
+     * Constructs a new {@code WalkSheetReader}.
      *
-     * @param startRowIndex 起始行（包含，从0开始计数）
-     * @param endRowIndex   结束行（包含，从0开始计数）
-     * @param cellHandler   单元格处理器，用于处理读到的单元格及其数据
+     * @param startRowIndex The starting row index (inclusive, 0-based).
+     * @param endRowIndex   The ending row index (inclusive, 0-based).
+     * @param cellHandler   The cell handler, used to process the read cell and its data.
      */
     public WalkSheetReader(final int startRowIndex, final int endRowIndex,
             final BiConsumerX<Cell, Object> cellHandler) {
@@ -59,8 +59,11 @@ public class WalkSheetReader extends AbstractSheetReader<Void> {
 
     @Override
     public Void read(final Sheet sheet) {
-        final int startRowIndex = Math.max(this.cellRangeAddress.getFirstRow(), sheet.getFirstRowNum());// 读取起始行（包含）
-        final int endRowIndex = Math.min(this.cellRangeAddress.getLastRow(), sheet.getLastRowNum());// 读取结束行（包含）
+        final int startRowIndex = Math.max(this.cellRangeAddress.getFirstRow(), sheet.getFirstRowNum());// Read starting
+                                                                                                        // row
+                                                                                                        // (inclusive).
+        final int endRowIndex = Math.min(this.cellRangeAddress.getLastRow(), sheet.getLastRowNum());// Read ending row
+                                                                                                    // (inclusive).
         final CellEditor cellEditor = this.config.getCellEditor();
 
         Row row;

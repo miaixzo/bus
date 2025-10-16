@@ -27,18 +27,18 @@
 */
 package org.miaixz.bus.pay.metric.wechat.entity.v3;
 
-import java.io.Serial;
-import java.io.Serializable;
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+import java.io.Serial;
+import java.io.Serializable;
+import java.util.List;
+
 /**
- * 证书响应参数
+ * Model for the response of the V3 Get Platform Certificates API.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -53,6 +53,9 @@ public class Certificate implements Serializable {
     @Serial
     private static final long serialVersionUID = 2852258093511L;
 
+    /**
+     * A list of certificate information objects.
+     */
     private List<CertificateInfo> data;
 
 }

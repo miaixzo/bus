@@ -37,8 +37,15 @@ import org.miaixz.bus.auth.magic.Material;
 import org.miaixz.bus.auth.nimble.AbstractProvider;
 
 /**
- * {@code Provider}公共接口，所有平台的{@code Provider}都需要实现该接口 {@link Provider#authorize(String)}
- * {@link Provider#login(Callback)} {@link Provider#revoke(AuthToken)} {@link Provider#refresh(AuthToken)}
+ * Common interface for all authentication providers. All platform providers must implement this interface. This
+ * interface defines core authentication operations such as authorization, login, token revocation, and token
+ * refreshing. Methods include:
+ * <ul>
+ * <li>{@link Provider#authorize(String)}</li>
+ * <li>{@link Provider#login(Callback)}</li>
+ * <li>{@link Provider#revoke(AuthToken)}</li>
+ * <li>{@link Provider#refresh(AuthToken)}</li>
+ * </ul>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -46,59 +53,64 @@ import org.miaixz.bus.auth.nimble.AbstractProvider;
 public interface Provider extends org.miaixz.bus.core.Provider {
 
     /**
-     * 返回带{@code state}参数的授权url，授权回调时会带上这个{@code state}
+     * Returns the authorization URL with a {@code state} parameter. The {@code state} will be included in the
+     * authorization callback.
      *
-     * @param state state 验证授权流程的参数，可以防止csrf
-     * @return 返回授权地址
+     * @param state the parameter to verify the authorization process, which can prevent CSRF attacks
+     * @return the authorization URL
+     * @throws AuthorizedException if the method is not implemented by the specific provider
      */
     default String authorize(String state) {
         throw new AuthorizedException(ErrorCode._NOT_IMPLEMENTED.getKey());
     }
 
     /**
-     * 第三方登录
+     * Performs third-party login.
      *
-     * @param callback 用于接收回调参数的实体
-     * @return 返回登录成功后的用户信息
+     * @param callback the entity used to receive callback parameters after authorization
+     * @return a {@link Message} containing the user information upon successful login
+     * @throws AuthorizedException if the method is not implemented by the specific provider
      */
     default Message login(Callback callback) {
         throw new AuthorizedException(ErrorCode._NOT_IMPLEMENTED.getKey());
     }
 
     /**
-     * 撤销授权
+     * Revokes the authorization.
      *
-     * @param authToken 登录成功后返回的Token信息
-     * @return Message
+     * @param authToken the token information returned after successful login
+     * @return a {@link Message} indicating the result of the revocation
+     * @throws AuthorizedException if the method is not implemented by the specific provider
      */
     default Message revoke(AuthToken authToken) {
         throw new AuthorizedException(ErrorCode._NOT_IMPLEMENTED.getKey());
     }
 
     /**
-     * 刷新access token （续期）
+     * Refreshes the access token (renews its validity).
      *
-     * @param authToken 登录成功后返回的Token信息
-     * @return Message
+     * @param authToken the token information returned after successful login
+     * @return a {@link Message} containing the refreshed token information
+     * @throws AuthorizedException if the method is not implemented by the specific provider
      */
     default Message refresh(AuthToken authToken) {
         throw new AuthorizedException(ErrorCode._NOT_IMPLEMENTED.getKey());
     }
 
     /**
-     * 获取access token
+     * Retrieves the access token.
      *
-     * @param callback 授权成功后的回调参数
-     * @return token
+     * @param callback the callback parameters after successful authorization
+     * @return the {@link AuthToken} containing access token details
      * @see AbstractProvider#authorize(String)
      */
     AuthToken getAccessToken(Callback callback);
 
     /**
-     * 使用token换取用户信息
+     * Exchanges the token for user information.
      *
-     * @param authToken token信息
-     * @return 用户信息
+     * @param authToken the token information
+     * @return {@link Material} containing the user's information
      * @see AbstractProvider#getAccessToken(Callback)
      */
     Material getUserInfo(AuthToken authToken);

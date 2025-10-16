@@ -28,6 +28,12 @@
 package org.miaixz.bus.socket.accord.kcp;
 
 /**
+ * Represents a KCP data packet.
+ * <p>
+ * This class serves as a placeholder for KCP packets. It can be extended to include specific fields and data relevant
+ * to the KCP protocol implementation.
+ * </p>
+ *
  * @author Kimi Liu
  * @since Java 17+
  */

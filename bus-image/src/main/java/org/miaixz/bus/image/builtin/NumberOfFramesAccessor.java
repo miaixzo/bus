@@ -28,11 +28,23 @@
 package org.miaixz.bus.image.builtin;
 
 /**
+ * This class provides a mechanism to access the number of frames associated with a DICOM instance. By default, it
+ * assumes a single frame, but can be extended or configured to retrieve the actual number of frames from a data source
+ * based on the instance UID.
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class NumberOfFramesAccessor {
 
+    /**
+     * Retrieves the number of frames for a given DICOM instance UID. By default, this implementation returns 1,
+     * assuming a single-frame image. Subclasses or configurations may override this behavior to provide actual frame
+     * counts based on external information or by parsing the DICOM data itself.
+     *
+     * @param iuid The instance UID of the DICOM image.
+     * @return The number of frames for the specified instance UID. Defaults to 1.
+     */
     public int getNumberOfFrames(String iuid) {
         return 1;
     }

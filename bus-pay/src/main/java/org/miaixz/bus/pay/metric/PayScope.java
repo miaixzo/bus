@@ -28,7 +28,7 @@
 package org.miaixz.bus.pay.metric;
 
 /**
- * 各个平台 scope 类的统一接口
+ * Unified interface for scope classes of various platforms.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -36,16 +36,16 @@ package org.miaixz.bus.pay.metric;
 public interface PayScope {
 
     /**
-     * 获取字符串 {@code scope}，对应为各平台实际使用的 {@code scope}
+     * Gets the string {@code scope}, which corresponds to the {@code scope} actually used by each platform.
      *
-     * @return String
+     * @return The scope string.
      */
     String getScope();
 
     /**
-     * 判断当前 {@code scope} 是否为各平台默认启用的
+     * Determines whether the current {@code scope} is enabled by default for each platform.
      *
-     * @return boolean
+     * @return {@code true} if it is enabled by default, {@code false} otherwise.
      */
     boolean isDefault();
 

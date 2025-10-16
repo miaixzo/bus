@@ -45,26 +45,38 @@ import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
 
 /**
- * 小红书商业平台
+ * Xiaohongshu Commercial Platform login provider.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class RednoteMarketiProvider extends AbstractProvider {
 
+    /**
+     * Constructs a {@code RednoteMarketiProvider} with the specified context.
+     *
+     * @param context the authentication context
+     */
     public RednoteMarketiProvider(Context context) {
         super(context, Registry.REDNOTE_MARKET);
     }
 
+    /**
+     * Constructs a {@code RednoteMarketiProvider} with the specified context and cache.
+     *
+     * @param context the authentication context
+     * @param cache   the cache implementation
+     */
     public RednoteMarketiProvider(Context context, CacheX cache) {
         super(context, Registry.REDNOTE_MARKET, cache);
     }
 
     /**
-     * 返回带{@code state}参数的授权url，授权回调时会带上这个{@code state}
+     * Returns the authorization URL with a {@code state} parameter. The {@code state} will be included in the
+     * authorization callback.
      *
-     * @param state state 验证授权流程的参数，可以防止csrf
-     * @return 返回授权地址
+     * @param state the parameter to verify the authorization process, which can prevent CSRF attacks
+     * @return the authorization URL
      */
     @Override
     public String authorize(String state) {
@@ -74,6 +86,13 @@ public class RednoteMarketiProvider extends AbstractProvider {
                 .build();
     }
 
+    /**
+     * Retrieves the access token from Xiaohongshu Commercial Platform's authorization server.
+     *
+     * @param callback the callback object containing the authorization code
+     * @return the {@link AuthToken} containing access token details
+     * @throws AuthorizedException if parsing the response fails or required token information is missing
+     */
     @Override
     public AuthToken getAccessToken(Callback callback) {
         Map<String, String> form = new HashMap<>(7);
@@ -99,11 +118,26 @@ public class RednoteMarketiProvider extends AbstractProvider {
         }
     }
 
+    /**
+     * Retrieves user information from Xiaohongshu Commercial Platform's user info endpoint. Note: This platform does
+     * not support direct user info retrieval via a dedicated URL.
+     *
+     * @param authToken the {@link AuthToken} obtained after successful authorization
+     * @return {@link Material} containing the user's information
+     * @throws UnsupportedOperationException if this operation is not supported by the platform
+     */
     @Override
     public Material getUserInfo(AuthToken authToken) {
-        throw new UnsupportedOperationException("不支持获取用户信息 url");
+        throw new UnsupportedOperationException("User info URL is not supported");
     }
 
+    /**
+     * Refreshes the access token (renews its validity).
+     *
+     * @param authToken the token information returned after successful login
+     * @return a {@link Message} containing the refreshed token information
+     * @throws AuthorizedException if parsing the response fails or an error occurs during token refresh
+     */
     @Override
     public Message refresh(AuthToken authToken) {
         Map<String, String> form = new HashMap<>(7);
@@ -133,9 +167,10 @@ public class RednoteMarketiProvider extends AbstractProvider {
     }
 
     /**
-     * 校验响应结果
+     * Checks the response content for errors.
      *
-     * @param object 接口返回的结果
+     * @param object the response map to check
+     * @throws AuthorizedException if the response indicates an error or message indicating failure
      */
     private void checkResponse(Map<String, Object> object) {
         if ((Integer) object.get("code") != 0) {

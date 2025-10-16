@@ -35,7 +35,7 @@ import com.sun.jna.platform.mac.CoreFoundation.CFStringRef;
 import com.sun.jna.platform.mac.CoreFoundation.CFTypeRef;
 
 /**
- * Allow applications to access a device’s network configuration settings. Determine the reachability of the device,
+ * Allows applications to access a device’s network configuration settings. Determine the reachability of the device,
  * such as whether Wi-Fi or cell connectivity are active.
  *
  * @author Kimi Liu
@@ -43,20 +43,55 @@ import com.sun.jna.platform.mac.CoreFoundation.CFTypeRef;
  */
 public interface SystemConfiguration extends Library {
 
+    /**
+     * Singleton instance of the SystemConfiguration library.
+     */
     SystemConfiguration INSTANCE = Native.load("SystemConfiguration", SystemConfiguration.class);
 
+    /**
+     * Returns an array of all network interfaces known to the System Configuration framework.
+     *
+     * @return A CFArrayRef containing SCNetworkInterfaceRef objects, each representing a network interface. This
+     *         reference must be released with {@link com.sun.jna.platform.mac.CoreFoundation#CFRelease} to avoid
+     *         leaking references.
+     */
     CFArrayRef SCNetworkInterfaceCopyAll();
 
+    /**
+     * Returns the BSD name of a network interface.
+     *
+     * @param netint The network interface.
+     * @return A CFStringRef containing the BSD name of the network interface. This reference must be released with
+     *         {@link com.sun.jna.platform.mac.CoreFoundation#CFRelease} to avoid leaking references.
+     */
     CFStringRef SCNetworkInterfaceGetBSDName(SCNetworkInterfaceRef netint);
 
+    /**
+     * Returns the localized display name of a network interface.
+     *
+     * @param netint The network interface.
+     * @return A CFStringRef containing the localized display name of the network interface. This reference must be
+     *         released with {@link com.sun.jna.platform.mac.CoreFoundation#CFRelease} to avoid leaking references.
+     */
     CFStringRef SCNetworkInterfaceGetLocalizedDisplayName(SCNetworkInterfaceRef netint);
 
+    /**
+     * A reference to an SCNetworkInterface object.
+     */
     class SCNetworkInterfaceRef extends CFTypeRef {
 
+        /**
+         * Constructs an SCNetworkInterfaceRef with a null pointer.
+         */
         public SCNetworkInterfaceRef() {
             super();
         }
 
+        /**
+         * Constructs an SCNetworkInterfaceRef with the given pointer.
+         *
+         * @param p The pointer to the SCNetworkInterface object.
+         */
         public SCNetworkInterfaceRef(Pointer p) {
             super(p);
         }

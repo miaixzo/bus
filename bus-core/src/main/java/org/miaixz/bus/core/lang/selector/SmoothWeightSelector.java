@@ -33,44 +33,50 @@ import java.util.List;
 import org.miaixz.bus.core.xyz.CollKit;
 
 /**
- * 平滑加权轮询选择器 思路: 比如 A : 5 , B : 3 , C : 2 (服务器 A,B,C 对应权重分别是 5,3,2) ip: A,B,C weight: 5,3,2 (计算得到 totalWeight = 10)
- * currentWeight: 0,0,0 (当前ip的初始权重都为0)
+ * A selector that implements the smooth weighted round-robin algorithm.
+ * <p>
+ * The algorithm is as follows: For a set of servers with weights (e.g., A:5, B:3, C:2), the total weight is 10. Each
+ * server maintains a `currentWeight`, initialized to 0.
  * 
  * <pre>
- * 请求次数: |  currentWeight = currentWeight + weight  |  最大权重为  |  返回的ip为 |  最大的权重 - totalWeight,其余不变
- *      1   |           5,3,2    (0,0,0 + 5,3,2)       |     5      |      A     |      -5,3,2
- *      2   |           0,6,4    (-5,3,2 + 5,3,2)      |     6      |      B     |       0,-4,4
- *      3   |           5,-1,6    (0,-4,4 + 5,3,2)     |     6      |     C      |       5,-1,-4
- *      4   |          10,2,-2    (5,-1,-4 + 5,3,2)    |     10     |     A      |       0,2,-2
- *      5   |           5,5,0                          |     5      |     A      |       -5,5,0
- *      6   |           0,8,2                          |     8      |     B      |       0,-2,2
- *      7   |           5,1,4                          |     5      |     A      |       -5,1,4
- *      8   |           0,4,6                          |     6      |     C      |       0,4,-4
- *      9   |           5,7,-2                         |     7      |     B      |       5,-3,-2
- *      10  |           10,0,0                         |     10     |     A      |        0,0,0
+ * Request | currentWeight = currentWeight + weight | Max Weight | Selected | Update: max_weight - totalWeight, others unchanged
+ * ----------------------------------------------------------------------------------------------------------------------------
+ *    1    |           5, 3, 2 (0,0,0 + 5,3,2)       |      5     |     A    |     -5, 3, 2
+ *    2    |           0, 6, 4 (-5,3,2 + 5,3,2)      |      6     |     B    |      0,-4, 4
+ *    3    |           5,-1, 6 (0,-4,4 + 5,3,2)      |      6     |     C    |      5,-1,-4
+ *    4    |          10, 2,-2 (5,-1,-4 + 5,3,2)      |     10     |     A    |      0, 2,-2
+ *    5    |           5, 5, 0                      |      5     |     A    |     -5, 5, 0
+ *    6    |           0, 8, 2                      |      8     |     B    |      0,-2, 2
+ *    7    |           5, 1, 4                      |      5     |     A    |     -5, 1, 4
+ *    8    |           0, 4, 6                      |      6     |     C    |      0, 4,-4
+ *    9    |           5, 7,-2                      |      7     |     B    |      5,-3,-2
+ *   10    |          10, 0, 0                      |     10     |     A    |      0, 0, 0
  * </pre>
- * 
- * 至此结束: 可以看到负载轮询的策略是: A,B,C,A,A,B,A,C,B,A,
+ * <p>
+ * The resulting selection sequence is: A, B, C, A, A, B, A, C, B, A.
  *
- * @param <T> 对象类型
+ * @param <T> the type of the object to select
  * @author Kimi Liu
  * @since Java 17+
  */
 public class SmoothWeightSelector<T> implements Selector<T> {
 
+    /**
+     * The list of smooth weighted objects.
+     */
     private final List<SmoothWeightObject<T>> objList;
 
     /**
-     * 构造
+     * Constructs an empty {@code SmoothWeightSelector}.
      */
     public SmoothWeightSelector() {
         this.objList = new ArrayList<>();
     }
 
     /**
-     * 构造
+     * Constructs a new {@code SmoothWeightSelector} and initializes it with the given weighted objects.
      *
-     * @param weightObjList 权重对象列表
+     * @param weightObjList an iterable of {@link WeightObject} instances
      */
     public SmoothWeightSelector(final Iterable<? extends WeightObject<T>> weightObjList) {
         this();
@@ -80,31 +86,31 @@ public class SmoothWeightSelector<T> implements Selector<T> {
     }
 
     /**
-     * 创建平滑加权获取器
+     * Creates a new, empty {@code SmoothWeightSelector}.
      *
-     * @param <T> 对象类型
-     * @return SmoothSelector
+     * @param <T> the type of the object
+     * @return a new {@code SmoothWeightSelector} instance
      */
     public static <T> SmoothWeightSelector<T> of() {
         return new SmoothWeightSelector<>();
     }
 
     /**
-     * 增加对象
+     * Adds an object with a specified weight to the selector.
      *
-     * @param object 对象
-     * @param weight 权重
-     * @return this
+     * @param object the object to add
+     * @param weight the weight of the object
+     * @return this {@code SmoothWeightSelector} instance
      */
     public SmoothWeightSelector<T> add(final T object, final int weight) {
         return add(new SmoothWeightObject<>(object, weight));
     }
 
     /**
-     * 增加权重对象
+     * Adds a weighted object to the selector.
      *
-     * @param weightObj 权重对象
-     * @return this
+     * @param weightObj the {@link WeightObject} to add
+     * @return this {@code SmoothWeightSelector} instance
      */
     public SmoothWeightSelector<T> add(final WeightObject<T> weightObj) {
         final SmoothWeightObject<T> smoothWeightObj;
@@ -118,9 +124,9 @@ public class SmoothWeightSelector<T> implements Selector<T> {
     }
 
     /**
-     * 通过平滑加权方法获取列表中的当前对象
+     * Selects an object using the smooth weighted round-robin algorithm.
      *
-     * @return 选中的对象
+     * @return the selected object, or {@code null} if the selector is empty
      */
     @Override
     public T select() {
@@ -140,10 +146,11 @@ public class SmoothWeightSelector<T> implements Selector<T> {
         }
 
         if (null == selected) {
+            // Should not happen if list is not empty
             return null;
         }
 
-        // 更新选择的对象的当前权重，并返回其地址
+        // Update the current weight of the selected object
         selected.setCurrentWeight(selected.getCurrentWeight() - totalWeight);
 
         return selected.getObject();

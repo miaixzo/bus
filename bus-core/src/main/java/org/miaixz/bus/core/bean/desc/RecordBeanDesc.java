@@ -37,7 +37,8 @@ import org.miaixz.bus.core.xyz.MethodKit;
 import org.miaixz.bus.core.xyz.ModifierKit;
 
 /**
- * Bean描述 包括Record自定义字段及对应方法，getter方法与字段名同名，不支持setter
+ * Bean description for Java Record classes. This class handles the specific characteristics of Record components, where
+ * getter methods are named identically to their corresponding fields, and setters are not supported.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,9 +49,9 @@ public class RecordBeanDesc extends AbstractBeanDesc {
     private static final long serialVersionUID = 2852227223863L;
 
     /**
-     * 构造
+     * Constructs a {@code RecordBeanDesc} for the given Record class.
      *
-     * @param beanClass Bean类
+     * @param beanClass The class of the Record. Must not be {@code null}.
      */
     public RecordBeanDesc(final Class<?> beanClass) {
         super(beanClass);
@@ -58,20 +59,22 @@ public class RecordBeanDesc extends AbstractBeanDesc {
     }
 
     /**
-     * 针对Record类的反射初始化
+     * Initializes the property descriptors specifically for Record classes. It identifies fields and their
+     * corresponding getter methods (which have the same name as the field).
      */
     private void initForRecord() {
         final Class<?> beanClass = this.beanClass;
         final Map<String, PropDesc> propMap = this.propMap;
 
+        // Get all public methods with no parameters, which are typically getters for Record components.
         final Method[] getters = MethodKit.getPublicMethods(beanClass, method -> 0 == method.getParameterCount());
-        // 排除静态属性和对象子类
+        // Exclude static fields and outer class fields.
         final Field[] fields = FieldKit
                 .getFields(beanClass, field -> !ModifierKit.isStatic(field) && !FieldKit.isOuterClassField(field));
         for (final Field field : fields) {
             for (final Method getter : getters) {
                 if (field.getName().equals(getter.getName())) {
-                    // record对象，getter方法与字段同名
+                    // For Record objects, the getter method has the same name as the field.
                     final PropDesc prop = new PropDesc(field, getter, null);
                     propMap.putIfAbsent(prop.getFieldName(), prop);
                 }

@@ -26,7 +26,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 布隆过滤，提供一些Hash算法的布隆过滤
+ * Provides Bloom filter implementations, including various hash algorithms for Bloom filtering.
  *
  * @author Kimi Liu
  * @since Java 17+

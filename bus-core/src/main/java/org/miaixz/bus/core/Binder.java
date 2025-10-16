@@ -44,7 +44,8 @@ import org.miaixz.bus.core.xyz.StringKit;
 import lombok.RequiredArgsConstructor;
 
 /**
- * 属性绑定器
+ * A utility for binding properties from a {@link PropertySource} to an object or class. It can also resolve
+ * placeholders in string values.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -53,25 +54,28 @@ import lombok.RequiredArgsConstructor;
 public class Binder {
 
     /**
-     * 默认占位符前缀: {@value}
+     * The default placeholder prefix: "${".
      */
     public static final String DEFAULT_PLACEHOLDER_PREFIX = Symbol.DOLLAR + Symbol.BRACE_LEFT;
 
     /**
-     * 默认占位符后缀: {@value}
+     * The default placeholder suffix: "}".
      */
     public static final String DEFAULT_PLACEHOLDER_SUFFIX = Symbol.BRACE_RIGHT;
 
     /**
-     * 默认占位值分隔符: {@value}
+     * The default value separator: ":".
      */
     public static final String DEFAULT_VALUE_SEPARATOR = Symbol.COLON;
 
     /**
-     * 默认实例
+     * A default instance of the binder with standard configurations.
      */
     public static final Binder DEFAULT_HELPER;
 
+    /**
+     * A map of simple prefixes for handling nested placeholders.
+     */
     private static final Map<String, String> SIMPLE_PREFIXES = new HashMap<>(4);
 
     static {
@@ -83,30 +87,49 @@ public class Binder {
                 true);
     }
 
+    /**
+     * The prefix for placeholders.
+     */
     private final String placeholderPrefix;
+    /**
+     * The suffix for placeholders.
+     */
     private final String placeholderSuffix;
+    /**
+     * The simple prefix for nested placeholders.
+     */
     private final String simplePrefix;
+    /**
+     * The separator for default values in placeholders.
+     */
     private final String valueSeparator;
+    /**
+     * A flag to indicate whether to ignore unresolvable placeholders.
+     */
     private final boolean ignoreUnresolvablePlaceholders;
+    /**
+     * The source of properties.
+     */
     private PropertySource source;
 
     /**
-     * 构造
+     * Constructs a new binder with the specified placeholder prefix and suffix.
      *
-     * @param placeholderPrefix 占位符前缀
-     * @param placeholderSuffix 占位符后缀
+     * @param placeholderPrefix The prefix for placeholders (e.g., "${").
+     * @param placeholderSuffix The suffix for placeholders (e.g., "}").
      */
     public Binder(String placeholderPrefix, String placeholderSuffix) {
         this(placeholderPrefix, placeholderSuffix, null, true);
     }
 
     /**
-     * 构造
+     * Constructs a new binder with detailed configuration.
      *
-     * @param placeholderPrefix              占位符前缀
-     * @param placeholderSuffix              占位符后缀
-     * @param valueSeparator                 值分隔符
-     * @param ignoreUnresolvablePlaceholders 忽略不可解析的占位符
+     * @param placeholderPrefix              The prefix for placeholders.
+     * @param placeholderSuffix              The suffix for placeholders.
+     * @param valueSeparator                 The separator for default values.
+     * @param ignoreUnresolvablePlaceholders {@code true} to ignore unresolvable placeholders, {@code false} to throw an
+     *                                       exception.
      */
     public Binder(String placeholderPrefix, String placeholderSuffix, String valueSeparator,
             boolean ignoreUnresolvablePlaceholders) {
@@ -125,6 +148,14 @@ public class Binder {
         this.ignoreUnresolvablePlaceholders = ignoreUnresolvablePlaceholders;
     }
 
+    /**
+     * Checks if a substring matches the text at a given index.
+     *
+     * @param text      The text to check.
+     * @param index     The starting index.
+     * @param substring The substring to match.
+     * @return {@code true} if it matches, {@code false} otherwise.
+     */
     private static boolean substringMatch(CharSequence text, int index, CharSequence substring) {
         if (index + substring.length() > text.length()) {
             return false;
@@ -138,23 +169,23 @@ public class Binder {
     }
 
     /**
-     * 绑定属性到类
+     * Binds properties to a new instance of the specified class.
      *
-     * @param clazz 类型
-     * @param <T>   泛型
-     * @return the object
+     * @param clazz The class to instantiate and bind.
+     * @param <T>   The type of the object.
+     * @return The newly created and bound object.
      */
     public <T> T bind(Class<T> clazz) {
         return bind(clazz, Symbol.DOT);
     }
 
     /**
-     * 绑定指定前缀属性到类
+     * Binds properties with a specific prefix to a new instance of the specified class.
      *
-     * @param clazz  类型
-     * @param prefix 前缀
-     * @param <T>    泛型
-     * @return the object
+     * @param clazz  The class to instantiate and bind.
+     * @param prefix The prefix for the properties to bind.
+     * @param <T>    The type of the object.
+     * @return The newly created and bound object.
      */
     public <T> T bind(Class<T> clazz, String prefix) {
         T object;
@@ -173,12 +204,12 @@ public class Binder {
     }
 
     /**
-     * 绑定属性到对象实例
+     * Binds properties with a specific prefix to an existing object instance.
      *
-     * @param object 对象实例
-     * @param prefix 属性前缀
-     * @param <T>    泛型
-     * @return the object
+     * @param object The object instance to bind properties to.
+     * @param prefix The prefix for the properties to bind.
+     * @param <T>    The type of the object.
+     * @return The bound object.
      */
     public <T> T bind(T object, String prefix) {
         if (!StringKit.hasText(prefix) || Symbol.DOT.equals(prefix)) {
@@ -190,6 +221,13 @@ public class Binder {
         return object;
     }
 
+    /**
+     * Binds a property to a specific field of an object.
+     *
+     * @param object The target object.
+     * @param field  The field to bind.
+     * @param prefix The property prefix.
+     */
     private void bindField(Object object, Field field, String prefix) {
         if (field.isAnnotationPresent(Ignore.class)) {
             return;
@@ -218,6 +256,14 @@ public class Binder {
         }
     }
 
+    /**
+     * Gets a property from the source and converts it to the specified type.
+     *
+     * @param key  The property key.
+     * @param type The target type.
+     * @param wrap Whether the property is wrapped.
+     * @return The converted property value, or {@code null} if not found.
+     */
     private Object getProperty(String key, Class<?> type, boolean wrap) {
         String value;
         if (wrap) {
@@ -232,11 +278,12 @@ public class Binder {
     }
 
     /**
-     * 替换所有占位格式 {@code ${name}}
+     * Replaces all placeholders of the form {@code ${name}} in the given value.
      *
-     * @param value      需要转换的属性
-     * @param properties 配置集合
-     * @return 替换后的字符串
+     * @param value      The string to resolve.
+     * @param properties The properties to use for replacement.
+     * @return The resolved string.
+     * @throws IllegalArgumentException if a circular placeholder reference is detected.
      */
     public String replacePlaceholders(String value, final Properties properties) {
         Assert.notNull(properties, "'properties' must not be null");
@@ -245,12 +292,13 @@ public class Binder {
     }
 
     /**
-     * 替换字符串
+     * Parses the given string value, replacing placeholders with their corresponding values from the properties.
      *
-     * @param value               字符串
-     * @param properties          属性
-     * @param visitedPlaceholders 参数占位符
-     * @return 替换后的字符串
+     * @param value               The string to parse.
+     * @param properties          The properties to use for replacement.
+     * @param visitedPlaceholders A set of already visited placeholders to detect circular references.
+     * @return The parsed string with placeholders replaced.
+     * @throws IllegalArgumentException if a circular placeholder reference is detected.
      */
     protected String parseStringValue(String value, Properties properties, Set<String> visitedPlaceholders) {
         StringBuilder result = new StringBuilder(value);
@@ -264,18 +312,18 @@ public class Binder {
                     throw new IllegalArgumentException(
                             "Circular placeholder reference '" + originalPlaceholder + "' in property definitions");
                 }
-                // 递归
+                // Recursively parse the placeholder.
                 placeholder = parseStringValue(placeholder, properties, visitedPlaceholders);
-                // 获取没有占位的属性值
+                // Get the property value without placeholders.
                 String propVal = properties.getProperty(placeholder);
                 propVal = getCommonVal(properties, placeholder, propVal);
                 if (null != propVal) {
-                    // 递归 表达式中含有表达式
+                    // Recursively parse expressions within expressions.
                     propVal = parseStringValue(propVal, properties, visitedPlaceholders);
                     result.replace(startIndex, endIndex + this.placeholderSuffix.length(), propVal);
                     startIndex = result.indexOf(this.placeholderPrefix, startIndex + propVal.length());
                 } else if (this.ignoreUnresolvablePlaceholders) {
-                    // 继续解析
+                    // Continue parsing.
                     startIndex = result.indexOf(this.placeholderPrefix, endIndex + this.placeholderSuffix.length());
                 } else {
                     throw new IllegalArgumentException(
@@ -289,6 +337,14 @@ public class Binder {
         return result.toString();
     }
 
+    /**
+     * Gets a common value, handling default values in placeholders.
+     *
+     * @param properties  The properties.
+     * @param placeholder The placeholder.
+     * @param propVal     The property value.
+     * @return The resolved property value.
+     */
     private String getCommonVal(Properties properties, String placeholder, String propVal) {
         if (null == propVal && null != this.valueSeparator) {
             int separatorIndex = placeholder.indexOf(this.valueSeparator);
@@ -304,6 +360,13 @@ public class Binder {
         return propVal;
     }
 
+    /**
+     * Finds the end index of a placeholder, handling nested placeholders.
+     *
+     * @param buf        The buffer to search in.
+     * @param startIndex The starting index.
+     * @return The end index, or -1 if not found.
+     */
     private int findPlaceholderEndIndex(CharSequence buf, int startIndex) {
         int index = startIndex + this.placeholderPrefix.length();
         int withinNestedPlaceholder = 0;

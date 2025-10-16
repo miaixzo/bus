@@ -26,7 +26,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 通用处理
+ * Provides fundamental interfaces for entity-based data access, forming the building blocks for more specialized mapper
+ * functionalities.
  *
  * @author Kimi Liu
  * @since Java 17+

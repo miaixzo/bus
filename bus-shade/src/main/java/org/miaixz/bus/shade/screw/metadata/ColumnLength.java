@@ -30,7 +30,7 @@ package org.miaixz.bus.shade.screw.metadata;
 import java.io.Serializable;
 
 /**
- * 列长度
+ * Represents the length of a database column.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,23 +38,23 @@ import java.io.Serializable;
 public interface ColumnLength extends Serializable {
 
     /**
-     * 表名
+     * Retrieves the name of the table.
      *
-     * @return {@link String}
+     * @return The table name.
      */
     String getTableName();
 
     /**
-     * 列名
+     * Retrieves the name of the column.
      *
-     * @return {@link String}
+     * @return The column name.
      */
     String getColumnName();
 
     /**
-     * 列长度
+     * Retrieves the length of the column.
      *
-     * @return {@link String}
+     * @return The column length.
      */
     String getColumnLength();
 

@@ -45,6 +45,9 @@ import com.sun.jna.platform.mac.IOKitUtil;
 import com.sun.jna.platform.mac.CoreFoundation.*;
 
 /**
+ * <p>
+ * MacPowerSource class.
+ * </p>
  * A Power Source
  *
  * @author Kimi Liu
@@ -53,9 +56,40 @@ import com.sun.jna.platform.mac.CoreFoundation.*;
 @ThreadSafe
 public final class MacPowerSource extends AbstractPowerSource {
 
+    /**
+     * CoreFoundation instance for JNA calls.
+     */
     private static final CoreFoundation CF = CoreFoundation.INSTANCE;
+    /**
+     * IOKit instance for JNA calls.
+     */
     private static final IOKit IO = IOKit.INSTANCE;
 
+    /**
+     * Constructs a new {@code MacPowerSource} object.
+     *
+     * @param psName                     The name of the power source.
+     * @param psDeviceName               The device name of the power source.
+     * @param psRemainingCapacityPercent The remaining capacity of the power source, as a percentage (0.0-1.0).
+     * @param psTimeRemainingEstimated   The estimated time remaining on the power source, in seconds.
+     * @param psTimeRemainingInstant     The instantaneous time remaining on the power source, in seconds.
+     * @param psPowerUsageRate           The current power usage rate, in watts.
+     * @param psVoltage                  The current voltage of the power source, in volts.
+     * @param psAmperage                 The current amperage of the power source, in amperes.
+     * @param psPowerOnLine              True if the power source is online (connected to AC power).
+     * @param psCharging                 True if the power source is currently charging.
+     * @param psDischarging              True if the power source is currently discharging.
+     * @param psCapacityUnits            The units of capacity (e.g., MAH, WH).
+     * @param psCurrentCapacity          The current capacity of the power source.
+     * @param psMaxCapacity              The maximum capacity of the power source.
+     * @param psDesignCapacity           The design capacity of the power source.
+     * @param psCycleCount               The cycle count of the power source.
+     * @param psChemistry                The chemistry of the power source (e.g., "Li-ion").
+     * @param psManufactureDate          The manufacture date of the power source.
+     * @param psManufacturer             The manufacturer of the power source.
+     * @param psSerialNumber             The serial number of the power source.
+     * @param psTemperature              The temperature of the power source, in Celsius.
+     */
     public MacPowerSource(String psName, String psDeviceName, double psRemainingCapacityPercent,
             double psTimeRemainingEstimated, double psTimeRemainingInstant, double psPowerUsageRate, double psVoltage,
             double psAmperage, boolean psPowerOnLine, boolean psCharging, boolean psDischarging,
@@ -69,9 +103,9 @@ public final class MacPowerSource extends AbstractPowerSource {
     }
 
     /**
-     * Gets Battery Information.
+     * Retrieves a list of {@link PowerSource} objects representing the power sources (batteries) on this machine.
      *
-     * @return An array of PowerSource objects representing batteries, etc.
+     * @return A list of {@link PowerSource} objects.
      */
     public static List<PowerSource> getPowerSources() {
         String psDeviceName = Normal.UNKNOWN;

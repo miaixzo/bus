@@ -32,7 +32,8 @@ import org.miaixz.bus.mapper.OGNL;
 import jakarta.persistence.Table;
 
 /**
- * 默认实体类查找器，支持识别带有 @jakarta.persistence.Table 的实体类或不带任何注解的 POJO
+ * The default entity class finder, which supports identifying entity classes with the
+ * {@code @jakarta.persistence.Table} annotation or POJOs without any annotations.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -40,14 +41,15 @@ import jakarta.persistence.Table;
 public class SchemaClassParser extends SchemaTypeParser {
 
     /**
-     * 判断指定类是否为实体类
+     * Determines if the specified class is an entity class.
      *
-     * @param clazz 要检查的类
-     * @return true 表示是实体类，false 表示不是
+     * @param clazz The class to check.
+     * @return {@code true} if it is an entity class, {@code false} otherwise.
      */
     @Override
     public boolean isClass(Class<?> clazz) {
-        // 带 @Table 注解或不是简单类型、接口、数组、注解、枚举的类都视为实体类
+        // A class is considered an entity if it has the @Table annotation or if it is not a simple type,
+        // interface, array, annotation, or enum.
         return clazz.isAnnotationPresent(Table.class) || (!clazz.isPrimitive() && !clazz.isInterface()
                 && !clazz.isArray() && !clazz.isAnnotation() && !clazz.isEnum() && !OGNL.isSimpleType(clazz));
     }

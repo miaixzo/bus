@@ -27,17 +27,31 @@
 */
 package org.miaixz.bus.socket.accord.kcp;
 
-import java.nio.ByteBuffer;
-
 import org.miaixz.bus.socket.Message;
 import org.miaixz.bus.socket.Session;
 
+import java.nio.ByteBuffer;
+
 /**
+ * Represents a KCP message for protocol decoding. This class is a basic implementation of the {@link Message} interface
+ * for KCP packets.
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class KcpMessage implements Message<KcpPacket> {
 
+    /**
+     * Decodes a {@link KcpPacket} from the given {@link ByteBuffer}.
+     * <p>
+     * This implementation creates a new {@link KcpPacket} if the buffer has remaining data. It does not perform any
+     * actual data decoding from the buffer into the packet.
+     * </p>
+     *
+     * @param readBuffer the buffer containing the incoming data
+     * @param session    the current session
+     * @return a new {@link KcpPacket} if the buffer is not empty, otherwise {@code null}
+     */
     @Override
     public KcpPacket decode(ByteBuffer readBuffer, Session session) {
         if (!readBuffer.hasRemaining()) {

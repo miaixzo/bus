@@ -27,9 +27,6 @@
 */
 package org.miaixz.bus.cron.pattern;
 
-import java.time.LocalDateTime;
-import java.util.*;
-
 import org.miaixz.bus.core.center.date.Calendar;
 import org.miaixz.bus.core.center.date.culture.en.Week;
 import org.miaixz.bus.core.lang.Assert;
@@ -38,60 +35,53 @@ import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.cron.pattern.matcher.PatternMatcher;
 import org.miaixz.bus.cron.pattern.parser.PatternParser;
 
+import java.time.LocalDateTime;
+import java.util.*;
+
 /**
- * 定时任务表达式 表达式类似于Linux的crontab表达式，表达式使用空格分成5个部分，按顺序依次为：
+ * Represents a cron pattern, inspired by the Linux crontab format. The expression is a string of 5, 6, or 7 fields
+ * separated by spaces.
+ * <p>
+ * The standard 5-field format is:
  * <ol>
- * <li><strong>分</strong> ：范围：0~59</li>
- * <li><strong>时</strong> ：范围：0~23</li>
- * <li><strong>日</strong> ：范围：1~31，<strong>"L"</strong> 表示月的最后一天</li>
- * <li><strong>月</strong> ：范围：1~12，同时支持不区分大小写的别名："jan","feb", "mar", "apr", "may","jun", "jul", "aug", "sep","oct",
- * "nov", "dec"</li>
- * <li><strong>周</strong> ：范围：0 (Sunday)~6(Saturday)，7也可以表示周日，同时支持不区分大小写的别名："sun","mon", "tue", "wed", "thu","fri",
- * "sat"，<strong>"L"</strong> 表示周六</li>
+ * <li><strong>Minute:</strong> 0-59</li>
+ * <li><strong>Hour:</strong> 0-23</li>
+ * <li><strong>Day of Month:</strong> 1-31. 'L' represents the last day of the month.</li>
+ * <li><strong>Month:</strong> 1-12. Case-insensitive aliases are supported (e.g., "jan", "feb", "mar").</li>
+ * <li><strong>Day of Week:</strong> 0-6 (Sunday=0 or 7). Case-insensitive aliases are supported (e.g., "sun", "mon").
+ * 'L' can be used to mean the last day of the week (Saturday).</li>
  * </ol>
  * <p>
- * 为了兼容Quartz表达式，同时支持6位和7位表达式，其中：
- *
- * <pre>
- * 当为6位时，第一位表示<strong>秒</strong> ，范围0~59，但是第一位不做匹配
- * 当为7位时，最后一位表示<strong>年</strong> ，范围1970~2099，但是第7位不做解析，也不做匹配
- * </pre>
- * <p>
- * 当定时任务运行到的时间匹配这些表达式后，任务被启动。 注意：
- *
- * <pre>
- * 当isMatchSecond为{@code
- * true
- * }时才会匹配秒部分
- * 默认都是关闭的
- * </pre>
- * <p>
- * 对于每一个子表达式，同样支持以下形式：
+ * For compatibility with Quartz, 6-field and 7-field formats are also supported:
  * <ul>
- * <li><strong>*</strong> ：表示匹配这个位置所有的时间</li>
- * <li><strong>?</strong> ：表示匹配这个位置任意的时间（与"*"作用一致）</li>
- * <li><strong>*&#47;2</strong> ：表示间隔时间，例如在分上，表示每两分钟，同样*可以使用数字列表代替，逗号分隔</li>
- * <li><strong>2-8</strong> ：表示连续区间，例如在分上，表示2,3,4,5,6,7,8分</li>
- * <li><strong>2,3,5,8</strong> ：表示列表</li>
- * <li><strong>cronA | cronB</strong> ：表示多个定时表达式</li>
+ * <li>A 6-field expression includes a <strong>Second</strong> field (0-59) at the beginning.</li>
+ * <li>A 7-field expression adds a <strong>Year</strong> field (1970-2099) at the end.</li>
  * </ul>
- * 注意：在每一个子表达式中优先级：
- *
- * <pre>
- * 间隔（/） &gt; 区间（-） &gt; 列表（,）
- * </pre>
  * <p>
- * 例如 2,3,6/3中，由于“/”优先级高，因此相当于2,3,(6/3)，结果与 2,3,6等价
- *
+ * A task is triggered when the current time matches the pattern. <strong>Note:</strong> The second field is only
+ * matched if the scheduler's `isMatchSecond` property is set to {@code true}. By default, second matching is disabled.
  * <p>
- * 一些示例：
+ * Each field can have the following formats:
  * <ul>
- * <li><strong>5 * * * *</strong> ：每个点钟的5分执行，00:05,01:05……</li>
- * <li><strong>* * * * *</strong> ：每分钟执行</li>
- * <li><strong>*&#47;2 * * * *</strong> ：每两分钟执行</li>
- * <li><strong>* 12 * * *</strong> ：12点的每分钟执行</li>
- * <li><strong>59 11 * * 1,2</strong> ：每周一和周二的11:59执行</li>
- * <li><strong>3-18&#47;5 * * * *</strong> ：3~18分，每5分钟执行一次，即0:03, 0:08, 0:13, 0:18, 1:03, 1:08……</li>
+ * <li><strong>*</strong>: Matches all possible values for the field.</li>
+ * <li><strong>?</strong>: (Question mark) Same as '*', it matches any value. Used for Day of Month or Day of Week.</li>
+ * <li><strong>*&#47;2</strong>: An interval. For example, in the minute field, it means every 2 minutes.</li>
+ * <li><strong>2-8</strong>: A range. For example, in the minute field, it means minutes 2, 3, 4, 5, 6, 7, and 8.</li>
+ * <li><strong>2,3,5,8</strong>: A list of specific values.</li>
+ * <li><strong>cronA | cronB</strong>: Multiple cron expressions can be combined with a pipe symbol.</li>
+ * </ul>
+ * <p>
+ * Operator precedence within a field is: Interval (/) > Range (-) > List (,). For example, in {@code 2,3,6/3}, the '/'
+ * has higher precedence, so it's interpreted as {@code 2,3,(6/3)}, which is equivalent to {@code 2,3,6}.
+ * <p>
+ * <strong>Examples:</strong>
+ * <ul>
+ * <li>{@code 5 * * * *}: At minute 5 of every hour (e.g., 00:05, 01:05).</li>
+ * <li>{@code * * * * *}: Every minute.</li>
+ * <li>{@code *&#47;2 * * * *}: Every 2 minutes.</li>
+ * <li>{@code * 12 * * *}: Every minute during the 12th hour (12:00, 12:01, etc.).</li>
+ * <li>{@code 59 11 * * 1,2}: At 11:59 on every Monday and Tuesday.</li>
+ * <li>{@code 3-18&#47;5 * * * *}: Every 5 minutes between minute 3 and 18 (e.g., 0:03, 0:08, 0:13, 0:18).</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -103,9 +93,9 @@ public class CronPattern {
     private final List<PatternMatcher> matchers;
 
     /**
-     * 构造
+     * Constructs a new CronPattern by parsing the given expression.
      *
-     * @param pattern 表达式
+     * @param pattern The cron expression string.
      */
     public CronPattern(final String pattern) {
         this.pattern = pattern;
@@ -113,72 +103,73 @@ public class CronPattern {
     }
 
     /**
-     * 解析表达式为 CronPattern
+     * Parses a cron expression string into a {@link CronPattern} object.
      *
-     * @param pattern 表达式
-     * @return CronPattern
+     * @param pattern The cron expression string.
+     * @return A new {@link CronPattern} instance.
      */
     public static CronPattern of(final String pattern) {
         return new CronPattern(pattern);
     }
 
     /**
-     * 列举指定日期之后（到开始日期对应年年底）内第一个匹配表达式的日期
+     * Finds the first matching date after a given start date.
      *
-     * @param pattern 表达式
-     * @param start   起始时间
-     * @return 日期
+     * @param pattern The cron pattern.
+     * @param start   The start date.
+     * @return The first matching {@link Date}.
      */
     public static Date nextDateAfter(final CronPattern pattern, final Date start) {
         return DateKit.date(pattern.nextMatchAfter(Calendar.calendar(start)));
     }
 
     /**
-     * 列举指定日期之后（到开始日期对应年年底）内所有匹配表达式的日期
+     * Finds all dates matching the cron expression after a given start date, up to a specified count. The search is
+     * limited to the year of the start date.
      *
-     * @param patternStr 表达式字符串
-     * @param start      起始时间
-     * @param count      列举数量
-     * @return 日期列表
+     * @param patternStr The cron expression string.
+     * @param start      The start date.
+     * @param count      The maximum number of matching dates to find.
+     * @return A list of matching dates.
      */
     public static List<Date> matchedDates(final String patternStr, final Date start, final int count) {
         return matchedDates(patternStr, start, DateKit.endOfYear(start, false), count);
     }
 
     /**
-     * 列举指定日期范围内所有匹配表达式的日期
+     * Finds all dates matching the cron expression within a given date range.
      *
-     * @param patternStr 表达式字符串
-     * @param start      起始时间
-     * @param end        结束时间
-     * @param count      列举数量
-     * @return 日期列表
+     * @param patternStr The cron expression string.
+     * @param start      The start of the date range.
+     * @param end        The end of the date range.
+     * @param count      The maximum number of matching dates to find.
+     * @return A list of matching dates.
      */
     public static List<Date> matchedDates(final String patternStr, final Date start, final Date end, final int count) {
         return matchedDates(patternStr, start.getTime(), end.getTime(), count);
     }
 
     /**
-     * 列举指定日期范围内所有匹配表达式的日期
+     * Finds all dates matching the cron expression within a given time range.
      *
-     * @param patternStr 表达式字符串
-     * @param start      起始时间
-     * @param end        结束时间
-     * @param count      列举数量
-     * @return 日期列表
+     * @param patternStr The cron expression string.
+     * @param start      The start of the time range in milliseconds.
+     * @param end        The end of the time range in milliseconds.
+     * @param count      The maximum number of matching dates to find.
+     * @return A list of matching dates.
      */
     public static List<Date> matchedDates(final String patternStr, final long start, final long end, final int count) {
         return matchedDates(new CronPattern(patternStr), start, end, count);
     }
 
     /**
-     * 列举指定日期范围内所有匹配表达式的日期
+     * Finds all dates matching the cron pattern within a given time range.
      *
-     * @param pattern 表达式
-     * @param start   起始时间
-     * @param end     结束时间
-     * @param count   列举数量
-     * @return 日期列表
+     * @param pattern The cron pattern.
+     * @param start   The start of the time range in milliseconds.
+     * @param end     The end of the time range in milliseconds.
+     * @param count   The maximum number of matching dates to find.
+     * @return A list of matching dates.
      */
     public static List<Date> matchedDates(
             final CronPattern pattern,
@@ -202,59 +193,60 @@ public class CronPattern {
     }
 
     /**
-     * 获取处理后的字段列表 月份从1开始，周从0开始
+     * Gets the time fields from a {@link LocalDateTime} object.
      *
-     * @param dateTime      {@link java.util.Calendar}
-     * @param isMatchSecond 是否匹配秒，{@link false}则秒返回-1
-     * @return 字段值列表
+     * @param dateTime      The {@link LocalDateTime} instance.
+     * @param isMatchSecond Whether to include the second field. If {@code false}, the second value will be -1.
+     * @return An array of time fields: {second, minute, hour, dayOfMonth, month, dayOfWeek, year}.
      */
     static int[] getFields(final LocalDateTime dateTime, final boolean isMatchSecond) {
         final int second = isMatchSecond ? dateTime.getSecond() : -1;
         final int minute = dateTime.getMinute();
         final int hour = dateTime.getHour();
         final int dayOfMonth = dateTime.getDayOfMonth();
-        final int month = dateTime.getMonthValue();// 月份从1开始
-        final int dayOfWeek = Week.of(dateTime.getDayOfWeek()).getCode() - 1; // 星期从0开始，0和7都表示周日
+        final int month = dateTime.getMonthValue(); // Month is 1-based
+        final int dayOfWeek = Week.of(dateTime.getDayOfWeek()).getCode() - 1; // Day of week is 0-based (0=Sunday)
         final int year = dateTime.getYear();
         return new int[] { second, minute, hour, dayOfMonth, month, dayOfWeek, year };
     }
 
     /**
-     * 获取处理后的字段列表 月份从1开始，周从0开始
+     * Gets the time fields from a {@link java.util.Calendar} object.
      *
-     * @param calendar      {@link java.util.Calendar}
-     * @param isMatchSecond 是否匹配秒，{@link false}则秒返回-1
-     * @return 字段值列表
+     * @param calendar      The {@link java.util.Calendar} instance.
+     * @param isMatchSecond Whether to include the second field. If {@code false}, the second value will be -1.
+     * @return An array of time fields: {second, minute, hour, dayOfMonth, month, dayOfWeek, year}.
      */
     static int[] getFields(final java.util.Calendar calendar, final boolean isMatchSecond) {
         final int second = isMatchSecond ? calendar.get(java.util.Calendar.SECOND) : -1;
         final int minute = calendar.get(java.util.Calendar.MINUTE);
         final int hour = calendar.get(java.util.Calendar.HOUR_OF_DAY);
         final int dayOfMonth = calendar.get(java.util.Calendar.DAY_OF_MONTH);
-        final int monthBase1 = calendar.get(java.util.Calendar.MONTH) + 1;// 月份从1开始
-        final int dayOfWeekBase0 = calendar.get(java.util.Calendar.DAY_OF_WEEK) - 1; // 星期从0开始，0和7都表示周日
+        final int monthBase1 = calendar.get(java.util.Calendar.MONTH) + 1; // Month is 1-based
+        final int dayOfWeekBase0 = calendar.get(java.util.Calendar.DAY_OF_WEEK) - 1; // Day of week is 0-based
+                                                                                     // (0=Sunday)
         final int year = calendar.get(java.util.Calendar.YEAR);
         return new int[] { second, minute, hour, dayOfMonth, monthBase1, dayOfWeekBase0, year };
     }
 
     /**
-     * 给定时间是否匹配定时任务表达式
+     * Checks if a given time matches the cron expression.
      *
-     * @param millis        时间毫秒数
-     * @param isMatchSecond 是否匹配秒
-     * @return 如果匹配返回 {@code true}, 否则返回 {@code false}
+     * @param millis        The time in milliseconds.
+     * @param isMatchSecond Whether to match the second field.
+     * @return {@code true} if the time matches, {@code false} otherwise.
      */
     public boolean match(final long millis, final boolean isMatchSecond) {
         return match(TimeZone.getDefault(), millis, isMatchSecond);
     }
 
     /**
-     * 给定时间是否匹配定时任务表达式
+     * Checks if a given time in a specific time zone matches the cron expression.
      *
-     * @param timezone      时区 {@link TimeZone}
-     * @param millis        时间毫秒数
-     * @param isMatchSecond 是否匹配秒
-     * @return 如果匹配返回 {@code true}, 否则返回 {@code false}
+     * @param timezone      The time zone.
+     * @param millis        The time in milliseconds.
+     * @param isMatchSecond Whether to match the second field.
+     * @return {@code true} if the time matches, {@code false} otherwise.
      */
     public boolean match(final TimeZone timezone, final long millis, final boolean isMatchSecond) {
         final GregorianCalendar calendar = new GregorianCalendar(timezone);
@@ -263,35 +255,36 @@ public class CronPattern {
     }
 
     /**
-     * 给定时间是否匹配定时任务表达式
+     * Checks if a given {@link java.util.Calendar} instance matches the cron expression.
      *
-     * @param calendar      时间
-     * @param isMatchSecond 是否匹配秒
-     * @return 如果匹配返回 {@code true}, 否则返回 {@code false}
+     * @param calendar      The calendar instance.
+     * @param isMatchSecond Whether to match the second field.
+     * @return {@code true} if the time matches, {@code false} otherwise.
      */
     public boolean match(final java.util.Calendar calendar, final boolean isMatchSecond) {
         return match(getFields(calendar, isMatchSecond));
     }
 
     /**
-     * 给定时间是否匹配定时任务表达式
+     * Checks if a given {@link LocalDateTime} instance matches the cron expression.
      *
-     * @param dateTime      时间
-     * @param isMatchSecond 是否匹配秒
-     * @return 如果匹配返回 {@code true}, 否则返回 {@code false}
+     * @param dateTime      The {@link LocalDateTime} instance.
+     * @param isMatchSecond Whether to match the second field.
+     * @return {@code true} if the time matches, {@code false} otherwise.
      */
     public boolean match(final LocalDateTime dateTime, final boolean isMatchSecond) {
         return match(getFields(dateTime, isMatchSecond));
     }
 
     /**
-     * 返回匹配到的下一个时间
+     * Returns the next matching time after the given calendar time. If the given time already matches, it will find the
+     * next occurrence.
      *
-     * @param calendar 时间
-     * @return 匹配到的下一个时间
+     * @param calendar The calendar instance representing the start time.
+     * @return A new {@link java.util.Calendar} instance for the next matching time.
      */
     public java.util.Calendar nextMatchAfter(java.util.Calendar calendar) {
-        // 当提供的时间已经匹配表达式时，增加1秒以匹配下一个时间
+        // If the provided time already matches, add one second to find the *next* match.
         if (match(calendar, true)) {
             final java.util.Calendar newCalendar = java.util.Calendar.getInstance(calendar.getTimeZone());
             newCalendar.setTimeInMillis(calendar.getTimeInMillis() + 1000);
@@ -302,10 +295,10 @@ public class CronPattern {
     }
 
     /**
-     * 返回匹配到的下一个时间，如果给定时间匹配，直接返回
+     * Returns the next matching time. If the given time matches the pattern, the time itself is returned.
      *
-     * @param calendar 时间
-     * @return 匹配到的下一个时间
+     * @param calendar The calendar instance representing the start time.
+     * @return A new {@link java.util.Calendar} instance for the next matching time.
      */
     public java.util.Calendar nextMatch(final java.util.Calendar calendar) {
         java.util.Calendar next = nextMatchAfter(getFields(calendar, true), calendar.getTimeZone());
@@ -313,6 +306,7 @@ public class CronPattern {
             return next;
         }
 
+        // If no match is found, advance to the beginning of the next day and try again.
         next.set(java.util.Calendar.DAY_OF_MONTH, next.get(java.util.Calendar.DAY_OF_MONTH) + 1);
         next = Calendar.beginOfDay(next);
         return nextMatch(next);
@@ -341,10 +335,10 @@ public class CronPattern {
     }
 
     /**
-     * 给定时间是否匹配定时任务表达式
+     * Checks if the given time fields match any of the sub-patterns.
      *
-     * @param fields 时间字段值，{second, minute, hour, dayOfMonth, monthBase1, dayOfWeekBase0, year}
-     * @return 如果匹配返回 {@code true}, 否则返回 {@code false}
+     * @param fields The time fields: {second, minute, hour, dayOfMonth, month, dayOfWeek, year}.
+     * @return {@code true} if a match is found, {@code false} otherwise.
      */
     private boolean match(final int[] fields) {
         for (final PatternMatcher matcher : matchers) {
@@ -356,22 +350,23 @@ public class CronPattern {
     }
 
     /**
-     * 获取下一个最近的匹配日期时间
+     * Gets the next earliest matching date and time from all sub-patterns.
      *
-     * @param values 时间字段值，{second, minute, hour, dayOfMonth, monthBase1, dayOfWeekBase0, year}
-     * @param zone   时区
-     * @return {@link java.util.Calendar}，毫秒数为0
+     * @param values The time fields: {second, minute, hour, dayOfMonth, month, dayOfWeek, year}.
+     * @param zone   The time zone.
+     * @return A {@link java.util.Calendar} instance for the earliest next match, with milliseconds set to 0.
      */
     private java.util.Calendar nextMatchAfter(final int[] values, final TimeZone zone) {
         java.util.Calendar minMatch = null;
         for (final PatternMatcher matcher : matchers) {
+            final java.util.Calendar nextMatch = matcher.nextMatchAfter(values, zone);
             if (null == minMatch) {
-                minMatch = matcher.nextMatchAfter(values, zone);
+                minMatch = nextMatch;
             } else {
-                minMatch = CompareKit.min(minMatch, matcher.nextMatchAfter(values, zone));
+                minMatch = CompareKit.min(minMatch, nextMatch);
             }
         }
-        // 返回匹配到的最早日期
+        // Return the earliest match found.
         return minMatch;
     }
 

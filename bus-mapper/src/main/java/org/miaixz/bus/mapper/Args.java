@@ -40,7 +40,7 @@ import java.util.regex.Pattern;
 import org.miaixz.bus.core.lang.EnumValue;
 
 /**
- * 常量信息类，定义 MyBatis 相关配置和 SQL 片段。
+ * This class defines constants for MyBatis configuration and SQL fragments.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,103 +48,103 @@ import org.miaixz.bus.core.lang.EnumValue;
 public class Args {
 
     /**
-     * Getter 方法正则表达式
+     * Regular expression for getter methods.
      */
     public static final Pattern GET_PATTERN = Pattern.compile("^get[A-Z].*");
 
     /**
-     * is 方法正则表达式
+     * Regular expression for is-methods (for boolean getters).
      */
     public static final Pattern IS_PATTERN = Pattern.compile("^is[A-Z].*");
 
     /**
-     * 实例化类正则表达式
+     * Regular expression to extract class names from lambda expressions.
      */
     public static final Pattern CLASS_PATTERN = Pattern.compile("\\(L(?<cls>.+);\\).+");
 
     /**
-     * 字段分隔符正则表达式
+     * Regular expression to remove potential delimiters (like backticks or brackets) from field names.
      */
     public static final Pattern DELIMITER = Pattern.compile("^[`\\[\"]?(.*?)[`\\]\"]?$");
 
     /**
-     * 默认名转换
+     * Represents the 'normal' naming convention (no change).
      */
     public static final String NORMAL = EnumValue.Naming.NORMAL.name().toLowerCase();
 
     /**
-     * 转换为小写
+     * Represents the 'lower case' naming convention.
      */
     public static final String LOWER_CASE = EnumValue.Naming.LOWER_CASE.name().toLowerCase();
 
     /**
-     * 转换为大写
+     * Represents the 'upper case' naming convention.
      */
     public static final String UPPER_CASE = EnumValue.Naming.UPPER_CASE.name().toLowerCase();
 
     /**
-     * 驼峰转小写下划线
+     * Represents the 'camel case to lower case with underscore' naming convention.
      */
     public static final String CAMEL_UNDERLINE_LOWER_CASE = EnumValue.Naming.CAMEL_UNDERLINE_LOWER_CASE.name()
             .toLowerCase();
 
     /**
-     * 驼峰转大写下划线
+     * Represents the 'camel case to upper case with underscore' naming convention.
      */
     public static final String CAMEL_UNDERLINE_UPPER_CASE = EnumValue.Naming.CAMEL_UNDERLINE_UPPER_CASE.name()
             .toLowerCase();
 
     /**
-     * 表前缀
+     * Configuration key for table prefix.
      */
     public static final String TABLE_PREFIX_KEY = "table.prefix";
 
     /**
-     * 租户-忽略表
+     * Configuration key for tables to ignore for multi-tenancy.
      */
     public static final String TENANT_IGNORE_KEY = "tenant.ignore";
     /**
-     * 租户-忽略表
+     * The name of the tenant table to be ignored.
      */
     public static final String TENANT_IGNORE_TABLE = "tenant";
 
     /**
-     * 租户-字段名
+     * Configuration key for the tenant ID column name.
      */
     public static final String TENANT_COLUMN_KEY = "tenant.column";
 
     /**
-     * 租户-默认字段名
+     * Default column name for the tenant ID.
      */
     public static final String TENANT_TABLE_COLUMN = "tenant_id";
 
     /**
-     * 命名规则
+     * Configuration key for the naming convention.
      */
     public static final String NAMING_KEY = "provider.naming";
 
     /**
-     * 是否一次缓存
+     * Configuration key for enabling/disabling one-time caching.
      */
     public static final String USEONCE_KEY = "provider.useOnce";
 
     /**
-     * 缓存初始大小
+     * Configuration key for the initial size of the cache.
      */
     public static final String INITSIZE_KEY = "provider.initSize";
 
     /**
-     * 主键生成并发
+     * Configuration key for concurrency level of primary key generation.
      */
     public static final String CONCURRENCY_KEY = "provider.concurrency";
 
     /**
-     * 默认结果映射名称
+     * Default name for the base result map.
      */
     public static final String RESULT_MAP_NAME = "SuperResultMap";
 
     /**
-     * Condition 结构动态 SET 子句 SQL 片段
+     * Dynamic SQL fragment for the SET clause in a Condition object.
      */
     public static final String CONDITION_SET_CLAUSE_INNER_WHEN = "<set>"
             + "  <foreach collection=\"condition.setValues\" item=\"setValue\">\n" + "    <choose>\n"
@@ -154,7 +154,7 @@ public class Args {
             + "    </choose>\n" + "  </foreach>\n" + "</set>";
 
     /**
-     * Condition 结构动态 WHERE 子句条件 SQL 片段
+     * Dynamic SQL fragment for the inner 'when' conditions within a WHERE clause for a Condition object.
      */
     public static final String CONDITION_WHERE_CLAUSE_INNER_WHEN = "              <when test=\"criterion.noValue\">\n"
             + "              AND ${criterion.condition}\n" + "            </when>\n"
@@ -169,7 +169,8 @@ public class Args {
             + "              </foreach>\n" + "            </when>\n";
 
     /**
-     * Condition 结构的动态 SQL WHERE 子句，用于多个参数时，Condition 使用 @Param("condition") 注解。
+     * Dynamic SQL WHERE clause for a Condition object, used when the Condition is passed as a parameter annotated with
+     * {@code @Param("condition")}.
      */
     public static final String UPDATE_BY_CONDITION_WHERE_CLAUSE = "<where>\n"
             + "  <foreach collection=\"condition.oredCriteria\" item=\"criteria\"\n separator=\" OR \">\n"
@@ -187,7 +188,7 @@ public class Args {
             + "</where>\n";
 
     /**
-     * Condition 结构的动态 SQL WHERE 子句，用于接口参数仅包含一个 Condition 对象的情况。
+     * Dynamic SQL WHERE clause for a Condition object, used when the interface method has only one Condition parameter.
      */
     public static final String CONDITION_WHERE_CLAUSE = "<where>\n"
             + "  <foreach collection=\"oredCriteria\" item=\"criteria\" separator=\" OR \">\n"
@@ -205,9 +206,10 @@ public class Args {
             + "</where>\n";
 
     /**
-     * 简单类型集合，包含基本类型及其包装类、日期类型等。
+     * A set of simple types, including primitives, their wrapper classes, date/time types, etc.
      * <p>
-     * 注意：由于基本类型有默认值，建议在实体类中避免使用基本类型作为数据库字段类型。
+     * Note: It is recommended to avoid using primitive types for database fields in entity classes, as they have
+     * default values.
      * </p>
      */
     public static final Set<Class<?>> SIMPLE_TYPE_SET = new HashSet<>(Arrays.asList(

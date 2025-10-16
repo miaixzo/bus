@@ -32,7 +32,7 @@ import org.apache.poi.ss.usermodel.FormulaError;
 import org.miaixz.bus.core.lang.Normal;
 
 /**
- * ERROR类型单元格值
+ * Represents an ERROR type cell value.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,9 +42,9 @@ public class ErrorCellValue implements CellValue<String> {
     private final Cell cell;
 
     /**
-     * 构造
+     * Constructs an {@code ErrorCellValue} instance.
      *
-     * @param cell {@link Cell}
+     * @param cell The {@link Cell} object representing the error cell.
      */
     public ErrorCellValue(final Cell cell) {
         this.cell = cell;

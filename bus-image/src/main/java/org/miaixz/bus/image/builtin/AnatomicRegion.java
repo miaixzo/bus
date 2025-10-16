@@ -33,342 +33,1290 @@ import java.util.Map;
 import org.miaixz.bus.image.galaxy.data.Code;
 
 /**
+ * This class defines various DICOM anatomic regions as {@link Code} objects. Each region is represented by a code value
+ * and a descriptive name. It provides methods to retrieve, add, and remove anatomic region codes.
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class AnatomicRegion {
 
+    /**
+     * Abdomen anatomic region.
+     */
     public static final Code Abdomen = new Code("818981001", "SCT", null, "Abdomen");
+    /**
+     * Abdomen and Pelvis anatomic region.
+     */
     public static final Code AbdomenPelvis = new Code("818982008", "SCT", null, "Abdomen and Pelvis");
+    /**
+     * Abdominal aorta anatomic region.
+     */
     public static final Code AbdominalAorta = new Code("7832008", "SCT", null, "Abdomen aorta");
+    /**
+     * Acromioclavicular joint anatomic region.
+     */
     public static final Code AcromioclavicularJoint = new Code("85856004", "SCT", null, "Acromioclavicular joint");
+    /**
+     * Adrenal gland anatomic region.
+     */
     public static final Code AdrenalGland = new Code("23451007", "SCT", null, "Adrenal gland");
+    /**
+     * Amniotic fluid anatomic region.
+     */
     public static final Code AmnioticFluid = new Code("77012006", "SCT", null, "Amniotic fluid");
+    /**
+     * Ankle joint anatomic region.
+     */
     public static final Code AnkleJoint = new Code("70258002", "SCT", null, "Ankle joint");
+    /**
+     * Antecubital vein anatomic region.
+     */
     public static final Code AntecubitalVein = new Code("128553008", "SCT", null, "Antecubital vein");
+    /**
+     * Anterior cardiac vein anatomic region.
+     */
     public static final Code AnteriorCardiacVein = new Code("194996006", "SCT", null, "Anterior cardiac vein");
+    /**
+     * Anterior cerebral artery anatomic region.
+     */
     public static final Code AnteriorCerebralArtery = new Code("60176003", "SCT", null, "Anterior cerebral artery");
+    /**
+     * Anterior communicating artery anatomic region.
+     */
     public static final Code AnteriorCommunicatingArtery = new Code("8012006", "SCT", null,
             "Anterior communicating artery");
+    /**
+     * Anterior spinal artery anatomic region.
+     */
     public static final Code AnteriorSpinalArtery = new Code("17388009", "SCT", null, "Anterior spinal artery");
+    /**
+     * Anterior tibial artery anatomic region.
+     */
     public static final Code AnteriorTibialArtery = new Code("68053000", "SCT", null, "Anterior tibial artery");
+    /**
+     * Anus, rectum and sigmoid colon anatomic region.
+     */
     public static final Code AnusRectumSigmoidColon = new Code("110612005", "SCT", null,
             "Anus, rectum and sigmoid colon");
+    /**
+     * Aorta anatomic region.
+     */
     public static final Code Aorta = new Code("15825003", "SCT", null, "Aorta");
+    /**
+     * Aortic arch anatomic region.
+     */
     public static final Code AorticArch = new Code("57034009", "SCT", null, "Aortic arch");
+    /**
+     * Appendix anatomic region.
+     */
     public static final Code Appendix = new Code("66754008", "SCT", null, "Appendix");
+    /**
+     * Artery anatomic region.
+     */
     public static final Code Artery = new Code("51114001", "SCT", null, "Artery");
+    /**
+     * Ascending aorta anatomic region.
+     */
     public static final Code AscendingAorta = new Code("54247002", "SCT", null, "Ascending aorta");
+    /**
+     * Ascending colon anatomic region.
+     */
     public static final Code AscendingColon = new Code("9040008", "SCT", null, "Ascending colon");
+    /**
+     * Axilla anatomic region.
+     */
     public static final Code Axilla = new Code("91470000", "SCT", null, "Axilla");
+    /**
+     * Axillary Artery anatomic region.
+     */
     public static final Code AxillaryArtery = new Code("67937003", "SCT", null, "Axillary Artery");
+    /**
+     * Axillary vein anatomic region.
+     */
     public static final Code AxillaryVein = new Code("68705008", "SCT", null, "Axillary vein");
+    /**
+     * Azygos vein anatomic region.
+     */
     public static final Code AzygosVein = new Code("72107004", "SCT", null, "Azygos vein");
+    /**
+     * Back anatomic region.
+     */
     public static final Code Back = new Code("77568009", "SCT", null, "Back");
+    /**
+     * Basilar artery anatomic region.
+     */
     public static final Code BasilarArtery = new Code("59011009", "SCT", null, "Basilar artery");
+    /**
+     * Bile Duct anatomic region.
+     */
     public static final Code BileDuct = new Code("28273000", "SCT", null, "Bile Duct");
+    /**
+     * Biliary tract anatomic region.
+     */
     public static final Code BiliaryTract = new Code("34707002", "SCT", null, "Biliary tract");
+    /**
+     * Bladder anatomic region.
+     */
     public static final Code Bladder = new Code("89837001", "SCT", null, "Bladder");
+    /**
+     * Bladder and urethra anatomic region.
+     */
     public static final Code BladderUrethra = new Code("110837003", "SCT", null, "Bladder and urethra");
+    /**
+     * Brachial artery anatomic region.
+     */
     public static final Code BrachialArtery = new Code("17137000", "SCT", null, "Brachial artery");
+    /**
+     * Brachial vein anatomic region.
+     */
     public static final Code BrachialVein = new Code("20115005", "SCT", null, "Brachial vein");
+    /**
+     * Brain anatomic region.
+     */
     public static final Code Brain = new Code("12738006", "SCT", null, "Brain");
+    /**
+     * Breast anatomic region.
+     */
     public static final Code Breast = new Code("76752008", "SCT", null, "Breast");
+    /**
+     * Bronchus anatomic region.
+     */
     public static final Code Bronchus = new Code("955009", "SCT", null, "Bronchus");
+    /**
+     * Buttock anatomic region.
+     */
     public static final Code Buttock = new Code("46862004", "SCT", null, "Buttock");
+    /**
+     * Calcaneus anatomic region.
+     */
     public static final Code Calcaneus = new Code("80144004", "SCT", null, "Calcaneus");
+    /**
+     * Calf of leg anatomic region.
+     */
     public static final Code CalfOfLeg = new Code("53840002", "SCT", null, "Calf of leg");
+    /**
+     * Carotid Artery anatomic region.
+     */
     public static final Code CarotidArtery = new Code("69105007", "SCT", null, "Carotid Artery");
+    /**
+     * Carotid Bulb anatomic region.
+     */
     public static final Code CarotidBulb = new Code("21479005", "SCT", null, "Carotid Bulb");
+    /**
+     * Celiac artery anatomic region.
+     */
     public static final Code CeliacArtery = new Code("57850000", "SCT", null, "Celiac artery");
+    /**
+     * Cephalic vein anatomic region.
+     */
     public static final Code CephalicVein = new Code("20699002", "SCT", null, "Cephalic vein");
+    /**
+     * Cerebellum anatomic region.
+     */
     public static final Code Cerebellum = new Code("113305005", "SCT", null, "Cerebellum");
+    /**
+     * Cerebral artery anatomic region.
+     */
     public static final Code CerebralArtery = new Code("88556005", "SCT", null, "Cerebral artery");
+    /**
+     * Cerebral hemisphere anatomic region.
+     */
     public static final Code CerebralHemisphere = new Code("372073000", "SCT", null, "Cerebral hemisphere");
+    /**
+     * Cervical spine anatomic region.
+     */
     public static final Code CervicalSpine = new Code("122494005", "SCT", null, "Cervical spine");
+    /**
+     * Cervico-thoracic spine anatomic region.
+     */
     public static final Code CervicoThoracicSpine = new Code("1217257000", "SCT", null, "Cervico-thoracic spine");
+    /**
+     * Cervix anatomic region.
+     */
     public static final Code Cervix = new Code("71252005", "SCT", null, "Cervix");
+    /**
+     * Cheek anatomic region.
+     */
     public static final Code Cheek = new Code("60819002", "SCT", null, "Cheek");
+    /**
+     * Chest anatomic region.
+     */
     public static final Code Chest = new Code("43799004", "SCT", null, "Chest");
+    /**
+     * Chest and Abdomen anatomic region.
+     */
     public static final Code ChestAbdomen = new Code("416550000", "SCT", null, "Chest and Abdomen");
+    /**
+     * Chest, Abdomen and Pelvis anatomic region.
+     */
     public static final Code ChestAbdomenPelvis = new Code("416775004", "SCT", null, "Chest, Abdomen and Pelvis");
+    /**
+     * Choroid plexus anatomic region.
+     */
     public static final Code ChoroidPlexus = new Code("80621003", "SCT", null, "Choroid plexus");
+    /**
+     * Circle of Willis anatomic region.
+     */
     public static final Code CircleOfWillis = new Code("11279006", "SCT", null, "Circle of Willis");
+    /**
+     * Clavicle anatomic region.
+     */
     public static final Code Clavicle = new Code("51299004", "SCT", null, "Clavicle");
+    /**
+     * Coccyx anatomic region.
+     */
     public static final Code Coccyx = new Code("64688005", "SCT", null, "Coccyx");
+    /**
+     * Colon anatomic region.
+     */
     public static final Code Colon = new Code("71854001", "SCT", null, "Colon");
+    /**
+     * Common bile duct anatomic region.
+     */
     public static final Code CommonBileDuct = new Code("79741001", "SCT", null, "Common bile duct");
+    /**
+     * Common carotid artery anatomic region.
+     */
     public static final Code CommonCarotidArtery = new Code("32062004", "SCT", null, "Common carotid artery");
+    /**
+     * Common femoral artery anatomic region.
+     */
     public static final Code CommonFemoralArtery = new Code("181347005", "SCT", null, "Common femoral artery");
+    /**
+     * Common femoral vein anatomic region.
+     */
     public static final Code CommonFemoralVein = new Code("397363009", "SCT", null, "Common femoral vein");
+    /**
+     * Common iliac artery anatomic region.
+     */
     public static final Code CommonIliacArtery = new Code("73634005", "SCT", null, "Common iliac artery");
+    /**
+     * Common iliac vein anatomic region.
+     */
     public static final Code CommonIliacVein = new Code("46027005", "SCT", null, "Common iliac vein");
+    /**
+     * Cornea anatomic region.
+     */
     public static final Code Cornea = new Code("28726007", "SCT", null, "Cornea");
+    /**
+     * Coronary artery anatomic region.
+     */
     public static final Code CoronaryArtery = new Code("41801008", "SCT", null, "Coronary artery");
+    /**
+     * Coronary sinus anatomic region.
+     */
     public static final Code CoronarySinus = new Code("90219004", "SCT", null, "Coronary sinus");
+    /**
+     * Descending aorta anatomic region.
+     */
     public static final Code DescendingAorta = new Code("32672002", "SCT", null, "Descending aorta");
+    /**
+     * Descending colon anatomic region.
+     */
     public static final Code DescendingColon = new Code("32622004", "SCT", null, "Descending colon");
+    /**
+     * Duodenum anatomic region.
+     */
     public static final Code Duodenum = new Code("38848004", "SCT", null, "Duodenum");
+    /**
+     * Ear anatomic region.
+     */
     public static final Code Ear = new Code("117590005", "SCT", null, "Ear");
+    /**
+     * Elbow joint anatomic region.
+     */
     public static final Code ElbowJoint = new Code("16953009", "SCT", null, "Elbow joint");
+    /**
+     * Endo-arterial anatomic region.
+     */
     public static final Code EndoArterial = new Code("51114001", "SCT", null, "Endo-arterial");
+    /**
+     * Endo-cardiac anatomic region.
+     */
     public static final Code EndoCardiac = new Code("80891009", "SCT", null, "Endo-cardiac");
+    /**
+     * Endo-esophageal anatomic region.
+     */
     public static final Code EndoEsophageal = new Code("32849002", "SCT", null, "Endo-esophageal");
+    /**
+     * Endometrium anatomic region.
+     */
     public static final Code Endometrium = new Code("2739003", "SCT", null, "Endometrium");
+    /**
+     * Endo-nasal anatomic region.
+     */
     public static final Code EndoNasal = new Code("53342003", "SCT", null, "Endo-nasal");
+    /**
+     * Endo-nasopharyngeal anatomic region.
+     */
     public static final Code EndoNasopharyngeal = new Code("18962004", "SCT", null, "Endo-nasopharyngeal");
+    /**
+     * Endo-rectal anatomic region.
+     */
     public static final Code EndoRectal = new Code("34402009", "SCT", null, "Endo-rectal");
+    /**
+     * Endo-renal anatomic region.
+     */
     public static final Code EndoRenal = new Code("64033007", "SCT", null, "Endo-renal");
+    /**
+     * Endo-ureteric anatomic region.
+     */
     public static final Code EndoUreteric = new Code("87953007", "SCT", null, "Endo-ureteric");
+    /**
+     * Endo-urethral anatomic region.
+     */
     public static final Code EndoUrethral = new Code("13648007", "SCT", null, "Endo-urethral");
+    /**
+     * Endo-vaginal anatomic region.
+     */
     public static final Code EndoVaginal = new Code("76784001", "SCT", null, "Endo-vaginal");
+    /**
+     * Endo-vascular anatomic region.
+     */
     public static final Code EndoVascular = new Code("59820001", "SCT", null, "Endo-vascular");
+    /**
+     * Endo-venous anatomic region.
+     */
     public static final Code EndoVenous = new Code("29092000", "SCT", null, "Endo-venous");
+    /**
+     * Endo-vesical anatomic region.
+     */
     public static final Code EndoVesical = new Code("48367006", "SCT", null, "Endo-vesical");
+    /**
+     * Entire body anatomic region.
+     */
     public static final Code EntireBody = new Code("38266002", "SCT", null, "Entire body");
+    /**
+     * Epididymis anatomic region.
+     */
     public static final Code Epididymis = new Code("87644002", "SCT", null, "Epididymis");
+    /**
+     * Epigastric region anatomic region.
+     */
     public static final Code EpigastricRegion = new Code("27947004", "SCT", null, "Epigastric region");
+    /**
+     * Esophagus anatomic region.
+     */
     public static final Code Esophagus = new Code("32849002", "SCT", null, "Esophagus");
+    /**
+     * External auditory canal anatomic region.
+     */
     public static final Code ExternalAuditoryCanal = new Code("84301002", "SCT", null, "External auditory canal");
+    /**
+     * External carotid artery anatomic region.
+     */
     public static final Code ExternalCarotidArtery = new Code("22286001", "SCT", null, "External carotid artery");
+    /**
+     * External iliac artery anatomic region.
+     */
     public static final Code ExternalIliacArtery = new Code("113269004", "SCT", null, "External iliac artery");
+    /**
+     * External iliac vein anatomic region.
+     */
     public static final Code ExternalIliacVein = new Code("63507001", "SCT", null, "External iliac vein");
+    /**
+     * External jugular vein anatomic region.
+     */
     public static final Code ExternalJugularVein = new Code("71585003", "SCT", null, "External jugular vein");
+    /**
+     * Extremity anatomic region.
+     */
     public static final Code Extremity = new Code("66019005", "SCT", null, "Extremity");
+    /**
+     * Eye anatomic region.
+     */
     public static final Code Eye = new Code("81745001", "SCT", null, "Eye");
+    /**
+     * Eyelid anatomic region.
+     */
     public static final Code Eyelid = new Code("80243003", "SCT", null, "Eyelid");
+    /**
+     * Face anatomic region.
+     */
     public static final Code Face = new Code("89545001", "SCT", null, "Face");
+    /**
+     * Facial artery anatomic region.
+     */
     public static final Code FacialArtery = new Code("23074001", "SCT", null, "Facial artery");
+    /**
+     * Femoral artery anatomic region.
+     */
     public static final Code FemoralArtery = new Code("7657000", "SCT", null, "Femoral artery");
+    /**
+     * Femoral vein anatomic region.
+     */
     public static final Code FemoralVein = new Code("83419000", "SCT", null, "Femoral vein");
+    /**
+     * Femur anatomic region.
+     */
     public static final Code Femur = new Code("71341001", "SCT", null, "Femur");
+    /**
+     * Fibula anatomic region.
+     */
     public static final Code Fibula = new Code("87342007", "SCT", null, "Fibula");
+    /**
+     * Finger anatomic region.
+     */
     public static final Code Finger = new Code("7569003", "SCT", null, "Finger");
+    /**
+     * Flank anatomic region.
+     */
     public static final Code Flank = new Code("58602004", "SCT", null, "Flank");
+    /**
+     * Fontanel of skull anatomic region.
+     */
     public static final Code FontanelSkull = new Code("79361005", "SCT", null, "Fontanel of skull");
+    /**
+     * Foot anatomic region.
+     */
     public static final Code Foot = new Code("56459004", "SCT", null, "Foot");
+    /**
+     * Forearm anatomic region.
+     */
     public static final Code Forearm = new Code("14975008", "SCT", null, "Forearm");
+    /**
+     * Fourth Ventricle anatomic region.
+     */
     public static final Code FourthVentricle = new Code("35918002", "SCT", null, "Fourth Ventricle");
+    /**
+     * Gallbladder anatomic region.
+     */
     public static final Code Gallbladder = new Code("28231008", "SCT", null, "Gallbladder");
+    /**
+     * Gastric vein anatomic region.
+     */
     public static final Code GastricVein = new Code("110568007", "SCT", null, "Gastric vein");
+    /**
+     * Genicular artery anatomic region.
+     */
     public static final Code GenicularArtery = new Code("128559007", "SCT", null, "Genicular artery");
+    /**
+     * Gestational sac anatomic region.
+     */
     public static final Code GestationalSac = new Code("300571009", "SCT", null, "Gestational sac");
+    /**
+     * Gluteal region anatomic region.
+     */
     public static final Code GlutealRegion = new Code("46862004", "SCT", null, "Gluteal region");
+    /**
+     * Great saphenous vein anatomic region.
+     */
     public static final Code GreatSaphenousVein = new Code("60734001", "SCT", null, "Great saphenous vein");
+    /**
+     * Hand anatomic region.
+     */
     public static final Code Hand = new Code("85562004", "SCT", null, "Hand");
+    /**
+     * Head anatomic region.
+     */
     public static final Code Head = new Code("69536005", "SCT", null, "Head");
+    /**
+     * Head and Neck anatomic region.
+     */
     public static final Code HeadNeck = new Code("774007", "SCT", null, "Head and Neck");
+    /**
+     * Heart anatomic region.
+     */
     public static final Code Heart = new Code("80891009", "SCT", null, "Heart");
+    /**
+     * Hepatic artery anatomic region.
+     */
     public static final Code HepaticArtery = new Code("76015000", "SCT", null, "Hepatic artery");
+    /**
+     * Hepatic vein anatomic region.
+     */
     public static final Code HepaticVein = new Code("8993003", "SCT", null, "Hepatic vein");
+    /**
+     * Hip joint anatomic region.
+     */
     public static final Code HipJoint = new Code("24136001", "SCT", null, "Hip joint");
+    /**
+     * Humerus anatomic region.
+     */
     public static final Code Humerus = new Code("85050009", "SCT", null, "Humerus");
+    /**
+     * Hypogastric region anatomic region.
+     */
     public static final Code HypogastricRegion = new Code("11708003", "SCT", null, "Hypogastric region");
+    /**
+     * Hypopharynx anatomic region.
+     */
     public static final Code Hypopharynx = new Code("81502006", "SCT", null, "Hypopharynx");
+    /**
+     * Ileum anatomic region.
+     */
     public static final Code Ileum = new Code("34516001", "SCT", null, "Ileum");
+    /**
+     * Iliac artery anatomic region.
+     */
     public static final Code IliacArtery = new Code("10293006", "SCT", null, "Iliac artery");
+    /**
+     * Iliac vein anatomic region.
+     */
     public static final Code IliacVein = new Code("244411005", "SCT", null, "Iliac vein");
+    /**
+     * Ilium anatomic region.
+     */
     public static final Code Ilium = new Code("22356005", "SCT", null, "Ilium");
+    /**
+     * Inferior mesenteric artery anatomic region.
+     */
     public static final Code InferiorMesentricArtery = new Code("33795007", "SCT", null, "Inferior mesenteric artery");
+    /**
+     * Inferior vena cava anatomic region.
+     */
     public static final Code InferiorVenaCava = new Code("64131007", "SCT", null, "Inferior vena cava");
+    /**
+     * Inguinal region anatomic region.
+     */
     public static final Code InguinalRegion = new Code("26893007", "SCT", null, "Inguinal region");
+    /**
+     * Innominate artery anatomic region.
+     */
     public static final Code InnominateArtery = new Code("12691009", "SCT", null, "Innominate artery");
+    /**
+     * Innominate vein anatomic region.
+     */
     public static final Code InnominateVein = new Code("8887007", "SCT", null, "Innominate vein");
+    /**
+     * Internal Auditory Canal anatomic region.
+     */
     public static final Code InternalAuditoryCanal = new Code("361078006", "SCT", null, "Internal Auditory Canal");
+    /**
+     * Internal carotid artery anatomic region.
+     */
     public static final Code InternalCarotidArtery = new Code("86117002", "SCT", null, "Internal carotid artery");
+    /**
+     * Internal iliac artery anatomic region.
+     */
     public static final Code InternalIliacArtery = new Code("90024005", "SCT", null, "Internal iliac artery");
+    /**
+     * Internal jugular vein anatomic region.
+     */
     public static final Code InternalJugularVein = new Code("12123001", "SCT", null, "Internal jugular vein");
+    /**
+     * Internal mammary artery anatomic region.
+     */
     public static final Code InternalMammaryArtery = new Code("86117002", "SCT", null, "Internal mammary artery");
+    /**
+     * Intracranial anatomic region.
+     */
     public static final Code Intracranial = new Code("1101003", "SCT", null, "Intracranial");
+    /**
+     * Jaw region anatomic region.
+     */
     public static final Code JawRegion = new Code("661005", "SCT", null, "Jaw region");
+    /**
+     * Jejunum anatomic region.
+     */
     public static final Code Jejunum = new Code("21306003", "SCT", null, "Jejunum");
+    /**
+     * Joint anatomic region.
+     */
     public static final Code Joint = new Code("39352004", "SCT", null, "Joint");
+    /**
+     * Kidney anatomic region.
+     */
     public static final Code Kidney = new Code("64033007", "SCT", null, "Kidney");
+    /**
+     * Knee anatomic region.
+     */
     public static final Code Knee = new Code("72696002", "SCT", null, "Knee");
+    /**
+     * Lacrimal artery anatomic region.
+     */
     public static final Code LacrimalArtery = new Code("59749000", "SCT", null, "Lacrimal artery");
+    /**
+     * Large intestine anatomic region.
+     */
     public static final Code LargeIntestine = new Code("14742008", "SCT", null, "Large intestine");
+    /**
+     * Larynx anatomic region.
+     */
     public static final Code Larynx = new Code("4596009", "SCT", null, "Larynx");
+    /**
+     * Lateral Ventricle anatomic region.
+     */
     public static final Code LateralVentricle = new Code("66720007", "SCT", null, "Lateral Ventricle");
+    /**
+     * Left atrium anatomic region.
+     */
     public static final Code LeftAtrium = new Code("82471001", "SCT", null, "Left atrium");
+    /**
+     * Left femoral artery anatomic region.
+     */
     public static final Code LeftFemoralArtery = new Code("113270003", "SCT", null, "Left femoral artery");
+    /**
+     * Left hepatic vein anatomic region.
+     */
     public static final Code LeftHepaticVein = new Code("273202007", "SCT", null, "Left hepatic vein");
+    /**
+     * Left hypochondriac region anatomic region.
+     */
     public static final Code LeftHypochondriacRegion = new Code("133945003", "SCT", null, "Left hypochondriac region");
+    /**
+     * Left inguinal region anatomic region.
+     */
     public static final Code LeftInguinalRegion = new Code("85119005", "SCT", null, "Left inguinal region");
+    /**
+     * Left lower quadrant of abdomen anatomic region.
+     */
     public static final Code LeftLowerQuadrantAbdomen = new Code("68505006", "SCT", null,
             "Left lower quadrant of abdomen");
+    /**
+     * Left lumbar region anatomic region.
+     */
     public static final Code LeftLumbarRegion = new Code("1017210004", "SCT", null, "Left lumbar region");
+    /**
+     * Left portal vein anatomic region.
+     */
     public static final Code LeftPortalVein = new Code("70253006", "SCT", null, "Left portal vein");
+    /**
+     * Left pulmonary artery anatomic region.
+     */
     public static final Code LeftPulmonaryArtery = new Code("50408007", "SCT", null, "Left pulmonary artery");
+    /**
+     * Left upper quadrant of abdomen anatomic region.
+     */
     public static final Code LeftUpperQuadrantAbdomen = new Code("86367003", "SCT", null,
             "Left upper quadrant of abdomen");
+    /**
+     * Left ventricle anatomic region.
+     */
     public static final Code LeftVentricle = new Code("87878005", "SCT", null, "Left ventricle");
+    /**
+     * Lingual artery anatomic region.
+     */
     public static final Code LingualArtery = new Code("113264009", "SCT", null, "Lingual artery");
+    /**
+     * Liver anatomic region.
+     */
     public static final Code Liver = new Code("10200004", "SCT", null, "Liver");
+    /**
+     * Lower leg anatomic region.
+     */
     public static final Code LowerLeg = new Code("30021000", "SCT", null, "Lower leg");
+    /**
+     * Lower limb anatomic region.
+     */
     public static final Code LowerLimb = new Code("61685007", "SCT", null, "Lower limb");
+    /**
+     * Lumbar artery anatomic region.
+     */
     public static final Code LumbarArtery = new Code("34635009", "SCT", null, "Lumbar artery");
+    /**
+     * Lumbar region anatomic region.
+     */
     public static final Code LumbarRegion = new Code("52612000", "SCT", null, "Lumbar region");
+    /**
+     * Lumbar spine anatomic region.
+     */
     public static final Code LumbarSpine = new Code("122496007", "SCT", null, "Lumbar spine");
+    /**
+     * Lumbo-sacral spine anatomic region.
+     */
     public static final Code LumboSacralSpine = new Code("1217253001", "SCT", null, "Lumbo-sacral spine");
+    /**
+     * Lumen of blood vessel anatomic region.
+     */
     public static final Code LumenBloodVessel = new Code("91747007", "SCT", null, "Lumen of blood vessel");
+    /**
+     * Lung anatomic region.
+     */
     public static final Code Lung = new Code("39607008", "SCT", null, "Lung");
+    /**
+     * Mandible anatomic region.
+     */
     public static final Code Mandible = new Code("91609006", "SCT", null, "Mandible");
+    /**
+     * Mastoid Bone anatomic region.
+     */
     public static final Code MastoidBone = new Code("59066005", "SCT", null, "Mastoid Bone");
+    /**
+     * Maxilla anatomic region.
+     */
     public static final Code Maxilla = new Code("70925003", "SCT", null, "Maxilla");
+    /**
+     * Mediastinum anatomic region.
+     */
     public static final Code Mediastinum = new Code("72410000", "SCT", null, "Mediastinum");
+    /**
+     * Mesenteric artery anatomic region.
+     */
     public static final Code MesentericArtery = new Code("86570000", "SCT", null, "Mesenteric artery");
+    /**
+     * Mesenteric vein anatomic region.
+     */
     public static final Code MesentericVein = new Code("128583004", "SCT", null, "Mesenteric vein");
+    /**
+     * Middle cerebral artery anatomic region.
+     */
     public static final Code MiddleCerebralArtery = new Code("17232002", "SCT", null, "Middle cerebral artery");
+    /**
+     * Middle hepatic vein anatomic region.
+     */
     public static final Code MiddleHepaticVein = new Code("273099000", "SCT", null, "Middle hepatic vein");
+    /**
+     * Morisons Pouch anatomic region.
+     */
     public static final Code MorisonsPouch = new Code("243977002", "SCT", null, "Morisons Pouch");
+    /**
+     * Mouth anatomic region.
+     */
     public static final Code Mouth = new Code("123851003", "SCT", null, "Mouth");
+    /**
+     * Nasopharynx anatomic region.
+     */
     public static final Code Nasopharynx = new Code("360955006", "SCT", null, "Nasopharynx");
+    /**
+     * Neck anatomic region.
+     */
     public static final Code Neck = new Code("45048000", "SCT", null, "Neck");
+    /**
+     * Neck and Chest anatomic region.
+     */
     public static final Code NeckChest = new Code("417437006", "SCT", null, "Neck and Chest");
+    /**
+     * Neck, Chest and Abdomen anatomic region.
+     */
     public static final Code NeckChestAbdomen = new Code("416152001", "SCT", null, "Neck, Chest and Abdomen");
+    /**
+     * Neck, Chest, Abdomen and Pelvis anatomic region.
+     */
     public static final Code NeckChestAbdomenPelvis = new Code("416319003", "SCT", null,
             "Neck, Chest, Abdomen and Pelvis");
+    /**
+     * Nose anatomic region.
+     */
     public static final Code Nose = new Code("45206002", "SCT", null, "Nose");
+    /**
+     * Occipital artery anatomic region.
+     */
     public static final Code OccipitalArtery = new Code("31145008", "SCT", null, "Occipital artery");
+    /**
+     * Occipital vein anatomic region.
+     */
     public static final Code OccipitalVein = new Code("32114007", "SCT", null, "Occipital vein");
+    /**
+     * Ophthalmic artery anatomic region.
+     */
     public static final Code OphthalmicArtery = new Code("53549008", "SCT", null, "Ophthalmic artery");
+    /**
+     * Optic canal anatomic region.
+     */
     public static final Code OpticCanal = new Code("55024004", "SCT", null, "Optic canal");
+    /**
+     * Orbital structure anatomic region.
+     */
     public static final Code OrbitalStructure = new Code("363654007", "SCT", null, "Orbital structure");
+    /**
+     * Ovary anatomic region.
+     */
     public static final Code Ovary = new Code("15497006", "SCT", null, "Ovary");
+    /**
+     * Pancreas anatomic region.
+     */
     public static final Code Pancreas = new Code("15776009", "SCT", null, "Pancreas");
+    /**
+     * Pancreatic duct anatomic region.
+     */
     public static final Code PancreaticDuct = new Code("69930009", "SCT", null, "Pancreatic duct");
+    /**
+     * Pancreatic duct and bile duct systems anatomic region.
+     */
     public static final Code PancreaticDuctBileDuctSystems = new Code("110621006", "SCT", null,
             "Pancreatic duct and bile duct systems");
+    /**
+     * Parasternal anatomic region.
+     */
     public static final Code Parasternal = new Code("91691001", "SCT", null, "Parasternal");
+    /**
+     * Parathyroid anatomic region.
+     */
     public static final Code Parathyroid = new Code("111002", "SCT", null, "Parathyroid");
+    /**
+     * Parotid gland anatomic region.
+     */
     public static final Code ParotidGland = new Code("45289007", "SCT", null, "Parotid gland");
+    /**
+     * Patella anatomic region.
+     */
     public static final Code Patella = new Code("64234005", "SCT", null, "Patella");
+    /**
+     * Pelvis anatomic region.
+     */
     public static final Code Pelvis = new Code("816092008", "SCT", null, "Pelvis");
+    /**
+     * Pelvis and lower extremities anatomic region.
+     */
     public static final Code PelvisLowerExtremities = new Code("1231522001", "SCT", null,
             "Pelvis and lower extremities");
+    /**
+     * Penile artery anatomic region.
+     */
     public static final Code PenileArtery = new Code("282044005", "SCT", null, "Penile artery");
+    /**
+     * Penis anatomic region.
+     */
     public static final Code Penis = new Code("18911002", "SCT", null, "Penis");
+    /**
+     * Perineum anatomic region.
+     */
     public static final Code Perineum = new Code("38864007", "SCT", null, "Perineum");
+    /**
+     * Peroneal artery anatomic region.
+     */
     public static final Code PeronealArtery = new Code("8821006", "SCT", null, "Peroneal artery");
+    /**
+     * Phantom anatomic region.
+     */
     public static final Code Phantom = new Code("706342009", "SCT", null, "Phantom");
+    /**
+     * Pharynx anatomic region.
+     */
     public static final Code Pharynx = new Code("54066008", "SCT", null, "Pharynx");
+    /**
+     * Pharynx and Larynx anatomic region.
+     */
     public static final Code PharynxLarynx = new Code("312535008", "SCT", null, "Pharynx and Larynx");
+    /**
+     * Placenta anatomic region.
+     */
     public static final Code Placenta = new Code("78067005", "SCT", null, "Placenta");
+    /**
+     * Popliteal artery anatomic region.
+     */
     public static final Code PoplitealArtery = new Code("43899006", "SCT", null, "Popliteal artery");
+    /**
+     * Popliteal fossa anatomic region.
+     */
     public static final Code PoplitealFossa = new Code("32361000", "SCT", null, "Popliteal fossa");
+    /**
+     * Popliteal vein anatomic region.
+     */
     public static final Code PoplitealVein = new Code("56849005", "SCT", null, "Popliteal vein");
+    /**
+     * Portal vein anatomic region.
+     */
     public static final Code PortalVein = new Code("32764006", "SCT", null, "Portal vein");
+    /**
+     * Posterior cerebral artery anatomic region.
+     */
     public static final Code PosteriorCerebralArtery = new Code("70382005", "SCT", null, "Posterior cerebral artery");
+    /**
+     * Posterior communicating artery anatomic region.
+     */
     public static final Code PosteriorCommunicatingArtery = new Code("43119007", "SCT", null,
             "Posterior communicating artery");
+    /**
+     * Posterior tibial artery anatomic region.
+     */
     public static final Code PosteriorTibialArtery = new Code("13363002", "SCT", null, "Posterior tibial artery");
+    /**
+     * Profunda femoris artery anatomic region.
+     */
     public static final Code ProfundaFemorisArtery = new Code("31677005", "SCT", null, "Profunda femoris artery");
+    /**
+     * Profunda femoris vein anatomic region.
+     */
     public static final Code ProfundaFemorisVein = new Code("23438002", "SCT", null, "Profunda femoris vein");
+    /**
+     * Prostate anatomic region.
+     */
     public static final Code Prostate = new Code("41216001", "SCT", null, "Prostate");
+    /**
+     * Pulmonary artery anatomic region.
+     */
     public static final Code PulmonaryArtery = new Code("81040000", "SCT", null, "Pulmonary artery");
+    /**
+     * Pulmonary vein anatomic region.
+     */
     public static final Code PulmonaryVein = new Code("122972007", "SCT", null, "Pulmonary vein");
+    /**
+     * Radial artery anatomic region.
+     */
     public static final Code RadialArtery = new Code("45631007", "SCT", null, "Radial artery");
+    /**
+     * Radius anatomic region.
+     */
     public static final Code Radius = new Code("62413002", "SCT", null, "Radius");
+    /**
+     * Radius and ulna anatomic region.
+     */
     public static final Code RadiusUlna = new Code("110535000", "SCT", null, "Radius and ulna");
+    /**
+     * Rectouterine pouch anatomic region.
+     */
     public static final Code RectouterinePouch = new Code("53843000", "SCT", null, "Rectouterine pouch");
+    /**
+     * Rectum anatomic region.
+     */
     public static final Code Rectum = new Code("34402009", "SCT", null, "Rectum");
+    /**
+     * Renal artery anatomic region.
+     */
     public static final Code RenalArtery = new Code("2841007", "SCT", null, "Renal artery");
+    /**
+     * Renal vein anatomic region.
+     */
     public static final Code RenalVein = new Code("56400007", "SCT", null, "Renal vein");
+    /**
+     * Retroperitoneum anatomic region.
+     */
     public static final Code Retroperitoneum = new Code("82849001", "SCT", null, "Retroperitoneum");
+    /**
+     * Rib anatomic region.
+     */
     public static final Code Rib = new Code("113197003", "SCT", null, "Rib");
+    /**
+     * Right atrium anatomic region.
+     */
     public static final Code RightAtrium = new Code("73829009", "SCT", null, "Right atrium");
+    /**
+     * Right femoral artery anatomic region.
+     */
     public static final Code RightFemoralArtery = new Code("69833005", "SCT", null, "Right femoral artery");
+    /**
+     * Right hepatic vein anatomic region.
+     */
     public static final Code RightHepaticVein = new Code("272998002", "SCT", null, "Right hepatic vein");
+    /**
+     * Right hypochondriac region anatomic region.
+     */
     public static final Code RightHypochondriacRegion = new Code("133946002", "SCT", null,
             "Right hypochondriac region");
+    /**
+     * Right inguinal region anatomic region.
+     */
     public static final Code RightInguinalRegion = new Code("37117007", "SCT", null, "Right inguinal region");
+    /**
+     * Right lower quadrant of abdomen anatomic region.
+     */
     public static final Code RightLowerQuadrantAbdomen = new Code("48544008", "SCT", null,
             "Right lower quadrant of abdomen");
+    /**
+     * Right lumbar region anatomic region.
+     */
     public static final Code RightLumbarRegion = new Code("1017211000", "SCT", null, "Right lumbar region");
+    /**
+     * Right portal vein anatomic region.
+     */
     public static final Code RightPortalVein = new Code("73931004", "SCT", null, "Right portal vein");
+    /**
+     * Right pulmonary artery anatomic region.
+     */
     public static final Code RightPulmonaryArtery = new Code("78480002", "SCT", null, "Right pulmonary artery");
+    /**
+     * Right upper quadrant of abdomen anatomic region.
+     */
     public static final Code RightUpperQuadrantAbdomen = new Code("50519007", "SCT", null,
             "Right upper quadrant of abdomen");
+    /**
+     * Right ventricle anatomic region.
+     */
     public static final Code RightVentricle = new Code("53085002", "SCT", null, "Right ventricle");
+    /**
+     * Sacroiliac joint anatomic region.
+     */
     public static final Code SacroiliacJoint = new Code("39723000", "SCT", null, "Sacroiliac joint");
+    /**
+     * Sacrum anatomic region.
+     */
     public static final Code Sacrum = new Code("54735007", "SCT", null, "Sacrum");
+    /**
+     * Saphenofemoral junction anatomic region.
+     */
     public static final Code SaphenofemoralJunction = new Code("128587003", "SCT", null, "Saphenofemoral junction");
+    /**
+     * Saphenous vein anatomic region.
+     */
     public static final Code SaphenousVein = new Code("362072009", "SCT", null, "Saphenous vein");
+    /**
+     * Scalp anatomic region.
+     */
     public static final Code Scalp = new Code("41695006", "SCT", null, "Scalp");
+    /**
+     * Scapula anatomic region.
+     */
     public static final Code Scapula = new Code("79601000", "SCT", null, "Scapula");
+    /**
+     * Sclera anatomic region.
+     */
     public static final Code Sclera = new Code("18619003", "SCT", null, "Sclera");
+    /**
+     * Scrotum anatomic region.
+     */
     public static final Code Scrotum = new Code("20233005", "SCT", null, "Scrotum");
+    /**
+     * Sella turcica anatomic region.
+     */
     public static final Code SellaTurcica = new Code("42575006", "SCT", null, "Sella turcica");
+    /**
+     * Seminal vesicle anatomic region.
+     */
     public static final Code SeminalVesicle = new Code("64739004", "SCT", null, "Seminal vesicle");
+    /**
+     * Sesamoid bones of foot anatomic region.
+     */
     public static final Code SesamoidBonesFoot = new Code("58742003", "SCT", null, "Sesamoid bones of foot");
+    /**
+     * Shoulder anatomic region.
+     */
     public static final Code Shoulder = new Code("16982005", "SCT", null, "Shoulder");
+    /**
+     * Sigmoid Colon anatomic region.
+     */
     public static final Code SigmoidColon = new Code("60184004", "SCT", null, "Sigmoid Colon");
+    /**
+     * Skull anatomic region.
+     */
     public static final Code Skull = new Code("89546000", "SCT", null, "Skull");
+    /**
+     * Small Intestine anatomic region.
+     */
     public static final Code SmallIntestine = new Code("30315005", "SCT", null, "Small Intestine");
+    /**
+     * Spinal Cord anatomic region.
+     */
     public static final Code SpinalCord = new Code("2748008", "SCT", null, "Spinal Cord");
+    /**
+     * Spine anatomic region.
+     */
     public static final Code Spine = new Code("421060004", "SCT", null, "Spine");
+    /**
+     * Spleen anatomic region.
+     */
     public static final Code Spleen = new Code("78961009", "SCT", null, "Spleen");
+    /**
+     * Splenic artery anatomic region.
+     */
     public static final Code SplenicArtery = new Code("22083002", "SCT", null, "Splenic artery");
+    /**
+     * Splenic vein anatomic region.
+     */
     public static final Code SplenicVein = new Code("35819009", "SCT", null, "Splenic vein");
+    /**
+     * Sternoclavicular joint anatomic region.
+     */
     public static final Code SternoclavicularJoint = new Code("7844006", "SCT", null, "Sternoclavicular joint");
+    /**
+     * Sternum anatomic region.
+     */
     public static final Code Sternum = new Code("56873002", "SCT", null, "Sternum");
+    /**
+     * Stomach anatomic region.
+     */
     public static final Code Stomach = new Code("69695003", "SCT", null, "Stomach");
+    /**
+     * Subclavian artery anatomic region.
+     */
     public static final Code SubclavianArtery = new Code("36765005", "SCT", null, "Subclavian artery");
+    /**
+     * Subclavian vein anatomic region.
+     */
     public static final Code SubclavianVein = new Code("9454009", "SCT", null, "Subclavian vein");
+    /**
+     * Subcostal anatomic region.
+     */
     public static final Code Subcostal = new Code("19695001", "SCT", null, "Subcostal");
+    /**
+     * Submandibular gland anatomic region.
+     */
     public static final Code SubmandibularGland = new Code("54019009", "SCT", null, "Submandibular gland");
+    /**
+     * Superficial femoral artery anatomic region.
+     */
     public static final Code SuperficialFemoralArtery = new Code("181349008", "SCT", null,
             "Superficial femoral artery");
+    /**
+     * Superficial femoral vein anatomic region.
+     */
     public static final Code SuperficialFemoralVein = new Code("397364003", "SCT", null, "Superficial femoral vein");
+    /**
+     * Superior left pulmonary vein anatomic region.
+     */
     public static final Code SuperiorLeftPulmonaryVein = new Code("43863001", "SCT", null,
             "Superior left pulmonary vein");
+    /**
+     * Superior mesenteric artery anatomic region.
+     */
     public static final Code SuperiorMesentericArtery = new Code("42258001", "SCT", null, "Superior mesenteric artery");
+    /**
+     * Superior right pulmonary vein anatomic region.
+     */
     public static final Code SuperiorRightPulmonaryVein = new Code("8629005", "SCT", null,
             "Superior right pulmonary vein");
+    /**
+     * Superior thyroid artery anatomic region.
+     */
     public static final Code SuperiorThyroidArtery = new Code("72021004", "SCT", null, "Superior thyroid artery");
+    /**
+     * Superior vena cava anatomic region.
+     */
     public static final Code SuperiorVenaCava = new Code("48345005", "SCT", null, "Superior vena cava");
+    /**
+     * Supraclavicular region of neck anatomic region.
+     */
     public static final Code SupraclavicularRegionNeck = new Code("77621008", "SCT", null,
             "Supraclavicular region of neck");
+    /**
+     * Suprapubic region anatomic region.
+     */
     public static final Code SuprapubicRegion = new Code("11708003", "SCT", null, "Suprapubic region");
+    /**
+     * Temporomandibular joint anatomic region.
+     */
     public static final Code TemporomandibularJoint = new Code("53620006", "SCT", null, "Temporomandibular joint");
+    /**
+     * Testis anatomic region.
+     */
     public static final Code Testis = new Code("40689003", "SCT", null, "Testis");
+    /**
+     * Thalamus anatomic region.
+     */
     public static final Code Thalamus = new Code("42695009", "SCT", null, "Thalamus");
+    /**
+     * Thigh anatomic region.
+     */
     public static final Code Thigh = new Code("68367000", "SCT", null, "Thigh");
+    /**
+     * Third ventricle anatomic region.
+     */
     public static final Code ThirdVentricle = new Code("49841001", "SCT", null, "Third ventricle");
+    /**
+     * Thoracic aorta anatomic region.
+     */
     public static final Code ThoracicAorta = new Code("113262008", "SCT", null, "Thoracic aorta");
+    /**
+     * Thoracic spine anatomic region.
+     */
     public static final Code ThoracicSpine = new Code("122495006", "SCT", null, "Thoracic spine");
+    /**
+     * Thoraco-lumbar spine anatomic region.
+     */
     public static final Code ThoracoLumbarSpine = new Code("1217256009", "SCT", null, "Thoraco-lumbar spine");
+    /**
+     * Thorax anatomic region.
+     */
     public static final Code Thorax = new Code("43799004", "SCT", null, "Thorax");
+    /**
+     * Thumb anatomic region.
+     */
     public static final Code Thumb = new Code("76505004", "SCT", null, "Thumb");
+    /**
+     * Thymus anatomic region.
+     */
     public static final Code Thymus = new Code("9875009", "SCT", null, "Thymus");
+    /**
+     * Thyroid anatomic region.
+     */
     public static final Code Thyroid = new Code("69748006", "SCT", null, "Thyroid");
+    /**
+     * Tibia anatomic region.
+     */
     public static final Code Tibia = new Code("12611008", "SCT", null, "Tibia");
+    /**
+     * Tibia and fibula anatomic region.
+     */
     public static final Code TibiaFibula = new Code("110536004", "SCT", null, "Tibia and fibula");
+    /**
+     * Toe anatomic region.
+     */
     public static final Code Toe = new Code("29707007", "SCT", null, "Toe");
+    /**
+     * Tongue anatomic region.
+     */
     public static final Code Tongue = new Code("21974007", "SCT", null, "Tongue");
+    /**
+     * Trachea anatomic region.
+     */
     public static final Code Trachea = new Code("44567001", "SCT", null, "Trachea");
+    /**
+     * Trachea and bronchus anatomic region.
+     */
     public static final Code TracheaBronchus = new Code("110726009", "SCT", null, "Trachea and bronchus");
+    /**
+     * Transverse colon anatomic region.
+     */
     public static final Code TransverseColon = new Code("485005", "SCT", null, "Transverse colon");
+    /**
+     * Ulna anatomic region.
+     */
     public static final Code Ulna = new Code("23416004", "SCT", null, "Ulna");
+    /**
+     * Ulnar artery anatomic region.
+     */
     public static final Code UlnarArtery = new Code("44984001", "SCT", null, "Ulnar artery");
+    /**
+     * Umbilical artery anatomic region.
+     */
     public static final Code UmbilicalArtery = new Code("50536004", "SCT", null, "Umbilical artery");
+    /**
+     * Umbilical region anatomic region.
+     */
     public static final Code UmbilicalRegion = new Code("90290004", "SCT", null, "Umbilical region");
+    /**
+     * Umbilical vein anatomic region.
+     */
     public static final Code UmbilicalVein = new Code("284639000", "SCT", null, "Umbilical vein");
+    /**
+     * Upper arm anatomic region.
+     */
     public static final Code UpperArm = new Code("40983000", "SCT", null, "Upper arm");
+    /**
+     * Upper limb anatomic region.
+     */
     public static final Code UpperLimb = new Code("53120007", "SCT", null, "Upper limb");
+    /**
+     * Upper urinary tract anatomic region.
+     */
     public static final Code UpperUrinaryTract = new Code("431491007", "SCT", null, "Upper urinary tract");
+    /**
+     * Ureter anatomic region.
+     */
     public static final Code Ureter = new Code("87953007", "SCT", null, "Ureter");
+    /**
+     * Urethra anatomic region.
+     */
     public static final Code Urethra = new Code("13648007", "SCT", null, "Urethra");
+    /**
+     * Uterus anatomic region.
+     */
     public static final Code Uterus = new Code("35039007", "SCT", null, "Uterus");
+    /**
+     * Vagina anatomic region.
+     */
     public static final Code Vagina = new Code("76784001", "SCT", null, "Vagina");
+    /**
+     * Vein anatomic region.
+     */
     public static final Code Vein = new Code("29092000", "SCT", null, "Vein");
+    /**
+     * Vertebral Artery anatomic region.
+     */
     public static final Code VertebralArtery = new Code("85234005", "SCT", null, "Vertebral Artery");
+    /**
+     * Vulva anatomic region.
+     */
     public static final Code Vulva = new Code("45292006", "SCT", null, "Vulva");
+    /**
+     * Wrist joint anatomic region.
+     */
     public static final Code WristJoint = new Code("74670003", "SCT", null, "Wrist joint");
+    /**
+     * Zygoma anatomic region.
+     */
     public static final Code Zygoma = new Code("13881006", "SCT", null, "Zygoma");
 
+    /**
+     * A map holding all defined anatomic regions, keyed by their string representation.
+     */
     private static final Map<String, Code> BODY_PART_EXAMINED = new HashMap<>();
 
+    /**
+     * Static initializer block to populate the {@link #BODY_PART_EXAMINED} map with predefined anatomic regions.
+     */
     static {
         BODY_PART_EXAMINED.put("ABDOMEN", Abdomen);
         BODY_PART_EXAMINED.put("ABDOMENPELVIS", AbdomenPelvis);
@@ -685,14 +1633,36 @@ public class AnatomicRegion {
         BODY_PART_EXAMINED.put("ZYGOMA", Zygoma);
     }
 
+    /**
+     * Retrieves the {@link Code} object for a given anatomic region string.
+     *
+     * @param bodyPartExamined The string representation of the anatomic region code value.
+     * @return The {@link Code} object corresponding to the anatomic region, or {@code null} if not found.
+     */
     public static Code codeOf(String bodyPartExamined) {
         return BODY_PART_EXAMINED.get(bodyPartExamined);
     }
 
+    /**
+     * Adds a new {@link Code} object representing an anatomic region to the internal map. If a code with the same
+     * string representation already exists, it will be replaced.
+     *
+     * @param code             The {@link Code} object to add.
+     * @param bodyPartExamined The string representation of the anatomic region to associate with the code.
+     * @return The previous {@link Code} associated with the specified string, or {@code null} if there was no mapping
+     *         for the string.
+     */
     public static Code addCode(Code code, String bodyPartExamined) {
         return BODY_PART_EXAMINED.put(bodyPartExamined, code);
     }
 
+    /**
+     * Removes the {@link Code} object associated with the specified anatomic region string from the internal map.
+     *
+     * @param bodyPartExamined The string representation of the anatomic region code value to remove.
+     * @return The {@link Code} object that was removed, or {@code null} if no code was associated with the anatomic
+     *         region.
+     */
     public static Code removeCode(String bodyPartExamined) {
         return BODY_PART_EXAMINED.remove(bodyPartExamined);
     }

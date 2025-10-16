@@ -20,13 +20,27 @@
  ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
  ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
  ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
- ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ OUT of OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 缓存实现
+ * Provides concrete implementations of the {@link org.miaixz.bus.cache.CacheX} interface.
+ * <p>
+ * This package contains various cache implementations that can be plugged into the framework. It includes support for
+ * popular in-memory and distributed caching solutions:
+ * </p>
+ * <ul>
+ * <li>{@link org.miaixz.bus.cache.metric.MemoryCache}: A simple, thread-safe in-memory cache.</li>
+ * <li>{@link org.miaixz.bus.cache.metric.GuavaCache}: An implementation backed by Google's Guava Cache.</li>
+ * <li>{@link org.miaixz.bus.cache.metric.CaffeineCache}: An implementation backed by the high-performance Caffeine
+ * cache.</li>
+ * <li>{@link org.miaixz.bus.cache.metric.RedisCache}: A distributed cache using a single Redis instance.</li>
+ * <li>{@link org.miaixz.bus.cache.metric.RedisClusterCache}: A distributed cache for a Redis Cluster setup.</li>
+ * <li>{@link org.miaixz.bus.cache.metric.MemcachedCache}: A distributed cache using Memcached.</li>
+ * <li>{@link org.miaixz.bus.cache.metric.NoOpCache}: A null implementation that disables caching.</li>
+ * </ul>
  *
  * @author Kimi Liu
  * @since Java 17+

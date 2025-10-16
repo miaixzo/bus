@@ -36,14 +36,17 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.IoKit;
 
 /**
- * {@link FileChannel} 数据拷贝封装
+ * Encapsulates data copying between {@link FileChannel} instances.
  *
  * <pre>{@code
- * FileChannel#transferTo 或 FileChannel#transferFrom 的实现是平台相关的，需要确保低版本平台的兼容性
- * 例如 android 7以下平台在使用 ZipInputStream 解压文件的过程中，
- * 通过 FileChannel#transferFrom 传输到文件时，其返回值可能小于 totalBytes，不处理将导致文件内容缺失
+ * The implementation of FileChannel#transferTo or FileChannel#transferFrom is platform-specific,
+ * and compatibility with lower-version platforms needs to be ensured.
+ * For example, on Android platforms below version 7, when decompressing files using ZipInputStream,
+ * if FileChannel#transferFrom is used to transfer to a file, its return value may be less than totalBytes,
+ * which will lead to file content loss if not handled.
  *
- * // 错误写法，dstChannel.transferFrom 返回值小于 zipEntry.getSize()，导致解压后文件内容缺失
+ * // Incorrect usage: dstChannel.transferFrom returns a value less than zipEntry.getSize(),
+ * // resulting in missing file content after decompression.
  * try (InputStream srcStream = zipFile.getInputStream(zipEntry);
  *     ReadableByteChannel srcChannel = Channels.newChannel(srcStream);
  *     FileOutputStream fos = new FileOutputStream(saveFile);
@@ -58,40 +61,40 @@ import org.miaixz.bus.core.xyz.IoKit;
 public class FileChannelCopier extends IoCopier<FileChannel, FileChannel> {
 
     /**
-     * 构造
+     * Constructs a {@code FileChannelCopier} with the specified total count of bytes to copy.
      *
-     * @param count 拷贝总数，-1表示无限制
+     * @param count The total number of bytes to copy. A value of -1 indicates no limit.
      */
     public FileChannelCopier(final long count) {
         super(-1, count, null);
     }
 
     /**
-     * 创建{@link FileChannel} 拷贝器
+     * Creates a {@link FileChannel} copier with no limit on the number of bytes to copy.
      *
-     * @return FileChannelCopier
+     * @return A new {@code FileChannelCopier} instance.
      */
     public static FileChannelCopier of() {
         return of(-1);
     }
 
     /**
-     * 创建{@link FileChannel} 拷贝器
+     * Creates a {@link FileChannel} copier with the specified total count of bytes to copy.
      *
-     * @param count 拷贝总数，-1表示无限制
-     * @return FileChannelCopier
+     * @param count The total number of bytes to copy. A value of -1 indicates no limit.
+     * @return A new {@code FileChannelCopier} instance.
      */
     public static FileChannelCopier of(final long count) {
         return new FileChannelCopier(count);
     }
 
     /**
-     * 拷贝文件流，使用NIO
+     * Copies data from a {@link FileInputStream} to a {@link FileOutputStream} using NIO {@link FileChannel}.
      *
-     * @param in  输入
-     * @param out 输出
-     * @return 拷贝的字节数
-     * @throws InternalException IO异常
+     * @param in  The input {@link FileInputStream}.
+     * @param out The output {@link FileOutputStream}.
+     * @return The number of bytes copied.
+     * @throws InternalException if an I/O error occurs during the copy operation.
      */
     public long copy(final FileInputStream in, final FileOutputStream out) throws InternalException {
         FileChannel inChannel = null;
@@ -106,6 +109,14 @@ public class FileChannelCopier extends IoCopier<FileChannel, FileChannel> {
         }
     }
 
+    /**
+     * Copies data from the source {@link FileChannel} to the target {@link FileChannel}.
+     *
+     * @param source The source {@link FileChannel}.
+     * @param target The target {@link FileChannel}.
+     * @return The total number of bytes copied.
+     * @throws InternalException if an {@link IOException} occurs during the copy operation.
+     */
     @Override
     public long copy(final FileChannel source, final FileChannel target) {
         try {
@@ -116,14 +127,18 @@ public class FileChannelCopier extends IoCopier<FileChannel, FileChannel> {
     }
 
     /**
-     * 文件拷贝实现
+     * Implements file copying safely, addressing platform-specific behaviors of {@code FileChannel#transferTo} or
+     * {@code FileChannel#transferFrom}.
      *
      * <pre>
-     * FileChannel#transferTo 或 FileChannel#transferFrom 的实现是平台相关的，需要确保低版本平台的兼容性
-     * 例如 android 7以下平台在使用 ZipInputStream 解压文件的过程中，
-     * 通过 FileChannel#transferFrom 传输到文件时，其返回值可能小于 totalBytes，不处理将导致文件内容缺失
+     * The implementation of FileChannel#transferTo or FileChannel#transferFrom is platform-specific,
+     * and compatibility with lower-version platforms needs to be ensured.
+     * For example, on Android platforms below version 7, when decompressing files using ZipInputStream,
+     * if FileChannel#transferFrom is used to transfer to a file, its return value may be less than totalBytes,
+     * which will lead to file content loss if not handled.
      *
-     * // 错误写法，dstChannel.transferFrom 返回值小于 zipEntry.getSize()，导致解压后文件内容缺失
+     * // Incorrect usage: dstChannel.transferFrom returns a value less than zipEntry.getSize(),
+     * // resulting in missing file content after decompression.
      * try (InputStream srcStream = zipFile.getInputStream(zipEntry);
      * 		ReadableByteChannel srcChannel = Channels.newChannel(srcStream);
      * 		FileOutputStream fos = new FileOutputStream(saveFile);
@@ -132,22 +147,28 @@ public class FileChannelCopier extends IoCopier<FileChannel, FileChannel> {
      *  }
      * </pre>
      *
-     * @param inChannel  输入通道
-     * @param outChannel 输出通道
-     * @return 输入通道的字节数
-     * @throws IOException 发生IO错误
-     * @link http://androidxref.com/6.0.1_r10/xref/libcore/luni/src/main/java/java/nio/FileChannelImpl.java
-     * @link http://androidxref.com/7.0.0_r1/xref/libcore/ojluni/src/main/java/sun/nio/ch/FileChannelImpl.java
-     * @link http://androidxref.com/7.0.0_r1/xref/libcore/ojluni/src/main/native/FileChannelImpl.c
+     * @param inChannel  The input {@link FileChannel}.
+     * @param outChannel The output {@link FileChannel}.
+     * @return The number of bytes transferred from the input channel.
+     * @throws IOException If an I/O error occurs.
+     * @see <a href=
+     *      "http://androidxref.com/6.0.1_r10/xref/libcore/luni/src/main/java/java/nio/FileChannelImpl.java">FileChannelImpl.java
+     *      (Android 6.0.1)</a>
+     * @see <a href=
+     *      "http://androidxref.com/7.0.0_r1/xref/libcore/ojluni/src/main/java/sun/nio/ch/FileChannelImpl.java">FileChannelImpl.java
+     *      (Android 7.0.0)</a>
+     * @see <a href=
+     *      "http://androidxref.com/7.0.0_r1/xref/libcore/ojluni/src/main/native/FileChannelImpl.c">FileChannelImpl.c
+     *      (Android 7.0.0)</a>
      */
     private long doCopySafely(final FileChannel inChannel, final FileChannel outChannel) throws IOException {
         long totalBytes = inChannel.size();
         if (this.count > 0 && this.count < totalBytes) {
-            // 限制拷贝总数
+            // Limit the total number of bytes to copy
             totalBytes = count;
         }
-        for (long pos = 0, remaining = totalBytes; remaining > 0;) { // 确保文件内容不会缺失
-            final long writeBytes = inChannel.transferTo(pos, remaining, outChannel); // 实际传输的字节数
+        for (long pos = 0, remaining = totalBytes; remaining > 0;) { // Ensure no file content is lost
+            final long writeBytes = inChannel.transferTo(pos, remaining, outChannel); // Actual bytes transferred
             pos += writeBytes;
             remaining -= writeBytes;
         }

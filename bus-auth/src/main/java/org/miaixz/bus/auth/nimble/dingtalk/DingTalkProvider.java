@@ -43,21 +43,39 @@ import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
 
 /**
- * 钉钉 二维码登录
+ * DingTalk QR code login provider.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class DingTalkProvider extends AbstractDingtalkProvider {
 
+    /**
+     * Constructs a {@code DingTalkProvider} with the specified context.
+     *
+     * @param context the authentication context
+     */
     public DingTalkProvider(Context context) {
         super(context, Registry.DINGTALK);
     }
 
+    /**
+     * Constructs a {@code DingTalkProvider} with the specified context and cache.
+     *
+     * @param context the authentication context
+     * @param cache   the cache implementation
+     */
     public DingTalkProvider(Context context, CacheX cache) {
         super(context, Registry.DINGTALK, cache);
     }
 
+    /**
+     * Returns the authorization URL with a {@code state} parameter. The {@code state} will be included in the
+     * authorization callback.
+     *
+     * @param state the parameter to verify the authorization process, which can prevent CSRF attacks
+     * @return the authorization URL
+     */
     @Override
     public String authorize(String state) {
         return Builder.fromUrl(this.complex.authorize()).queryParam("response_type", "code")
@@ -69,6 +87,13 @@ public class DingTalkProvider extends AbstractDingtalkProvider {
                 .queryParam("state", getRealState(state)).build();
     }
 
+    /**
+     * Retrieves the access token from DingTalk's authorization server.
+     *
+     * @param callback the callback object containing the authorization code
+     * @return the {@link AuthToken} containing access token details
+     * @throws AuthorizedException if parsing the response fails or required token information is missing
+     */
     @Override
     public AuthToken getAccessToken(Callback callback) {
         Map<String, String> params = new HashMap<>();
@@ -100,6 +125,13 @@ public class DingTalkProvider extends AbstractDingtalkProvider {
         }
     }
 
+    /**
+     * Retrieves user information from DingTalk's user info endpoint.
+     *
+     * @param authToken the {@link AuthToken} obtained after successful authorization
+     * @return {@link Material} containing the user's information
+     * @throws AuthorizedException if parsing the response fails or required user information is missing
+     */
     @Override
     public Material getUserInfo(AuthToken authToken) {
         Map<String, String> header = new HashMap<>();
@@ -133,11 +165,12 @@ public class DingTalkProvider extends AbstractDingtalkProvider {
     }
 
     /**
-     * 返回获取accessToken的url
+     * Returns the URL to obtain the access token.
      *
-     * @param code 授权码
-     * @return 返回获取accessToken的url
+     * @param code the authorization code
+     * @return the URL to obtain the access token
      */
+    @Override
     protected String accessTokenUrl(String code) {
         return Builder.fromUrl(this.complex.accessToken()).queryParam("code", code)
                 .queryParam("clientId", context.getAppKey()).queryParam("clientSecret", context.getAppSecret())

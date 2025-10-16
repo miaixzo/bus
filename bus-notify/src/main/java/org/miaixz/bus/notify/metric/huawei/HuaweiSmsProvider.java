@@ -45,7 +45,7 @@ import org.miaixz.bus.notify.magic.ErrorCode;
 import org.miaixz.bus.notify.metric.AbstractProvider;
 
 /**
- * 华为云短信实现
+ * Huawei Cloud SMS service provider implementation.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -53,23 +53,36 @@ import org.miaixz.bus.notify.metric.AbstractProvider;
 public class HuaweiSmsProvider extends AbstractProvider<HuaweiMaterial, Context> {
 
     /**
-     * 成功代码.
+     * Success code for Huawei Cloud SMS API responses.
      */
     public static final String SUCCESS_CODE = "000000";
     /**
-     * 无需修改,用于格式化鉴权头域,给"X-WSSE"参数赋值.
+     * Used to format the authentication header field, assigning a value to the "X-WSSE" parameter. No modification
+     * required.
      */
     private static final String WSSE_HEADER_FORMAT = "UsernameToken Username=\"%s\",PasswordDigest=\"%s\",Nonce=\"%s\",Created=\"%s\"";
 
     /**
-     * 无需修改,用于格式化鉴权头域,给"Authorization"参数赋值.
+     * Used to format the authentication header field, assigning a value to the "Authorization" parameter. No
+     * modification required.
      */
     private static final String AUTH_HEADER_VALUE = "WSSE realm=\"SDP\",profile=\"UsernameToken\",type=\"Appkey\"";
 
+    /**
+     * Constructs a {@code HuaweiSmsProvider} with the given context.
+     *
+     * @param context The context containing configuration information for the provider.
+     */
     public HuaweiSmsProvider(Context context) {
         super(context);
     }
 
+    /**
+     * Converts a byte array to its hexadecimal string representation.
+     *
+     * @param bytes The byte array to convert.
+     * @return The hexadecimal string representation.
+     */
     private static String byte2Hex(byte[] bytes) {
         StringBuilder sb = new StringBuilder();
         String temp;
@@ -83,13 +96,25 @@ public class HuaweiSmsProvider extends AbstractProvider<HuaweiMaterial, Context>
         return sb.toString();
     }
 
+    /**
+     * Sends an SMS notification using Huawei Cloud SMS service.
+     *
+     * @param entity The {@link HuaweiMaterial} containing SMS details like sender, recipient, template ID, template
+     *               parameters, and signature.
+     * @return A {@link Message} indicating the result of the SMS sending operation.
+     */
     @Override
     public Message send(HuaweiMaterial entity) {
         Map<String, String> bodys = new HashMap<>();
+        // The sender's number.
         bodys.put("from", entity.getSender());
+        // The recipient's mobile number.
         bodys.put("to", entity.getReceive());
+        // The SMS template ID.
         bodys.put("templateId", entity.getTemplate());
+        // The parameters for the SMS template in JSON format.
         bodys.put("templateParas", entity.getParams());
+        // The SMS signature.
         bodys.put("signature", entity.getSignature());
 
         Map<String, String> headers = new HashMap<>();
@@ -104,9 +129,11 @@ public class HuaweiSmsProvider extends AbstractProvider<HuaweiMaterial, Context>
     }
 
     /**
-     * 构造X-WSSE参数值.
+     * Constructs the X-WSSE header value for authentication.
      *
-     * @return X-WSSE参数值
+     * @return The X-WSSE header value.
+     * @throws InternalException if a security algorithm is not found or other exceptions occur during header
+     *                           construction.
      */
     private String buildWsseHeader() {
         try {

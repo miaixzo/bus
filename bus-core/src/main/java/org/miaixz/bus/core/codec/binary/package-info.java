@@ -15,7 +15,7 @@
  ~ The above copyright notice and this permission notice shall be included in    ~
  ~ all copies or substantial portions of the Software.                           ~
  ~                                                                               ~
- ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY, EXPRESS OR    ~
  ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
  ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
  ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
@@ -26,9 +26,9 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * BaseN编码解码，提供将bytes和baseN的编码转换功能。
+ * Provides implementations for various Base-N encoding and decoding schemes.
  * <ul>
- * <li>Base16</li>
+ * <li>Base16 (Hex)</li>
  * <li>Base32</li>
  * <li>Base58</li>
  * <li>Base62</li>

@@ -31,7 +31,7 @@ import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.vortex.Provider;
 
 /**
- * JSON 序列化提供者，实现对象到 JSON 字符串的转换
+ * JSON serialization provider, implementing the conversion of objects to JSON strings.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -39,10 +39,10 @@ import org.miaixz.bus.vortex.Provider;
 public class JsonProvider implements Provider {
 
     /**
-     * 将对象序列化为 JSON 字符串
+     * Serializes an object into a JSON string.
      *
-     * @param object 要序列化的对象
-     * @return 序列化后的 JSON 字符串
+     * @param object The object to be serialized.
+     * @return The serialized JSON string.
      */
     @Override
     public String serialize(Object object) {

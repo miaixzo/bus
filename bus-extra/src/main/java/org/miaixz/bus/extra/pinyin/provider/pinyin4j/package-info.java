@@ -26,14 +26,14 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 封装了Pinyin4j的引擎。
+ * Encapsulates the Pinyin4j engine.
  *
  * <p>
- * pinyin4j(http://sourceforge.net/projects/pinyin4j)封装。
+ * Pinyin4j (http://sourceforge.net/projects/pinyin4j) encapsulation.
  * </p>
  *
  * <p>
- * 引入：
+ * To introduce (dependency):
  * 
  * <pre>
  * &lt;dependency&gt;

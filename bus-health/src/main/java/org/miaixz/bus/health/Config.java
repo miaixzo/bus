@@ -35,12 +35,14 @@ import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.setting.metric.props.Props;
 
 /**
- * 全局配置工具类。默认值请参见 {@code META-INF/health/bus.health.properties}。
+ * Global configuration utility class. Default values can be found in {@code META-INF/health/bus.health.properties}.
  * <p>
- * 使用 {@link System#setProperty(String, String)} 设置的 Java 系统属性将覆盖 {@code bus.health.properties} 文件中的值， 但随后可以通过
- * {@link #set(String, Object)} 或 {@link #remove(String)} 进行更改。
+ * Java system properties set using {@link System#setProperty(String, String)} will override values in the
+ * {@code bus.health.properties} file, but can subsequently be changed via {@link #set(String, Object)} or
+ * {@link #remove(String)}.
  * <p>
- * 如果使用操作配置的方法，此类在多线程环境下不是线程安全的。这些方法旨在在启动时由单一线程使用， 在实例化任何其他 OSHI 类之前。
+ * This class is not thread-safe in a multi-threaded environment if methods that manipulate configuration are used.
+ * These methods are intended to be used by a single thread at startup, before any other OSHI classes are instantiated.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -49,279 +51,279 @@ import org.miaixz.bus.setting.metric.props.Props;
 public final class Config {
 
     /**
-     * 全局配置文件路径，指定健康相关的属性文件
+     * Global configuration file path, specifying health-related properties.
      */
     public static final String _HEALTH_PROPERTIES = "bus.health.properties";
 
     /**
-     * 系统架构配置文件路径
+     * System architecture configuration file path.
      */
     public static final String _ARCHITECTURE_PROPERTIES = "bus.health.architecture.properties";
 
     /**
-     * Linux 文件名配置文件路径
+     * Linux filename configuration file path.
      */
     public static final String _LINUX_FILENAME_PROPERTIES = "bus.health.linux.filename.properties";
 
     /**
-     * macOS 版本配置文件路径
+     * macOS version configuration file path.
      */
     public static final String _MACOS_VERSIONS_PROPERTIES = "bus.health.macos.version.properties";
 
     /**
-     * 虚拟机 MAC 地址配置文件路径
+     * Virtual machine MAC address configuration file path.
      */
     public static final String _VM_MAC_ADDR_PROPERTIES = "bus.health.vmmacaddr.properties";
 
     /**
-     * 通用配置：进程路径
+     * General configuration: process path.
      */
     public static final String _UTIL_PROC_PATH = "bus.health.proc.path";
 
     /**
-     * 通用配置：系统路径
+     * General configuration: system path.
      */
     public static final String _UTIL_SYS_PATH = "bus.health.sys.path";
 
     /**
-     * 通用配置：设备路径
+     * General configuration: device path.
      */
     public static final String _UTIL_DEV_PATH = "bus.health.dev.path";
 
     /**
-     * 通用配置：WMI 超时时间
+     * General configuration: WMI timeout.
      */
     public static final String _UTIL_WMI_TIMEOUT = "bus.health.wmi.timeout";
 
     /**
-     * 通用配置：记忆化器过期时间
+     * General configuration: memoizer expiration time.
      */
     public static final String _UTIL_MEMOIZER_EXPIRATION = "bus.health.memoizer.expiration";
 
     /**
-     * 通用配置：伪文件系统类型
+     * General configuration: pseudo filesystem types.
      */
     public static final String _PSEUDO_FILESYSTEM_TYPES = "bus.health.pseudo.filesystem.types";
 
     /**
-     * 通用配置：网络文件系统类型
+     * General configuration: network filesystem types.
      */
     public static final String _NETWORK_FILESYSTEM_TYPES = "bus.health.network.filesystem.types";
 
     /**
-     * Linux 配置：是否允许使用 udev
+     * Linux configuration: whether to allow udev.
      */
     public static final String _LINUX_ALLOWUDEV = "bus.health.linux.allowudev";
 
     /**
-     * Linux 配置：是否记录 procfs 警告日志
+     * Linux configuration: whether to log procfs warnings.
      */
     public static final String _LINUX_PROCFS_LOGWARNING = "bus.health.linux.procfs.logwarning";
 
     /**
-     * Linux 配置：是否记录 mac sysctl 警告日志
+     * Linux configuration: whether to log mac sysctl warnings.
      */
     public static final String _MAC_SYSCTL_LOGWARNING = "bus.health.mac.sysctl.logwarning";
 
     /**
-     * Linux 配置：文件系统路径排除列表
+     * Linux configuration: filesystem path exclusion list.
      */
     public static final String _LINUX_FS_PATH_EXCLUDES = "bus.health.linux.filesystem.path.excludes";
 
     /**
-     * Linux 配置：文件系统路径包含列表
+     * Linux configuration: filesystem path inclusion list.
      */
     public static final String _LINUX_FS_PATH_INCLUDES = "bus.health.linux.filesystem.path.includes";
 
     /**
-     * Linux 配置：文件系统卷排除列表
+     * Linux configuration: filesystem volume exclusion list.
      */
     public static final String _LINUX_FS_VOLUME_EXCLUDES = "bus.health.linux.filesystem.volume.excludes";
 
     /**
-     * Linux 配置：文件系统卷包含列表
+     * Linux configuration: filesystem volume inclusion list.
      */
     public static final String _LINUX_FS_VOLUME_INCLUDES = "bus.health.linux.filesystem.volume.includes";
 
     /**
-     * Linux 配置：CPU 温度传感器类型的优先级
+     * Linux configuration: priority of CPU temperature sensor types.
      */
     public static final String _LINUX_THERMAL_ZONE_TYPE_PRIORITY = "bus.health.linux.sensors.cpuTemperature.types";
 
     /**
-     * macOS 配置：文件系统路径排除列表
+     * macOS configuration: filesystem path exclusion list.
      */
     public static final String _MAC_FS_PATH_EXCLUDES = "bus.health.mac.filesystem.path.excludes";
 
     /**
-     * macOS 配置：文件系统路径包含列表
+     * macOS configuration: filesystem path inclusion list.
      */
     public static final String _MAC_FS_PATH_INCLUDES = "bus.health.mac.filesystem.path.includes";
 
     /**
-     * macOS 配置：文件系统卷排除列表
+     * macOS configuration: filesystem volume exclusion list.
      */
     public static final String _MAC_FS_VOLUME_EXCLUDES = "bus.health.mac.filesystem.volume.excludes";
 
     /**
-     * macOS 配置：文件系统卷包含列表
+     * macOS configuration: filesystem volume inclusion list.
      */
     public static final String _MAC_FS_VOLUME_INCLUDES = "bus.health.mac.filesystem.volume.includes";
 
     /**
-     * Unix 配置：who 命令路径
+     * Unix configuration: path to the 'who' command.
      */
     public static final String _UNIX_WHOCOMMAND = "bus.health.unix.whoCommand";
 
     /**
-     * OpenBSD 配置：文件系统路径排除列表
+     * OpenBSD configuration: filesystem path exclusion list.
      */
     public static final String _UNIX_OPENBSD_FS_PATH_EXCLUDES = "bus.health.unix.openbsd.filesystem.path.excludes";
 
     /**
-     * OpenBSD 配置：文件系统路径包含列表
+     * OpenBSD configuration: filesystem path inclusion list.
      */
     public static final String _UNIX_OPENBSD_FS_PATH_INCLUDES = "bus.health.unix.openbsd.filesystem.path.includes";
 
     /**
-     * OpenBSD 配置：文件系统卷排除列表
+     * OpenBSD configuration: filesystem volume exclusion list.
      */
     public static final String _UNIX_OPENBSD_FS_VOLUME_EXCLUDES = "bus.health.unix.openbsd.filesystem.volume.excludes";
 
     /**
-     * OpenBSD 配置：文件系统卷包含列表
+     * OpenBSD configuration: filesystem volume inclusion list.
      */
     public static final String _UNIX_OPENBSD_FS_VOLUME_INCLUDES = "bus.health.unix.openbsd.filesystem.volume.includes";
 
     /**
-     * AIX 配置：文件系统路径排除列表
+     * AIX configuration: filesystem path exclusion list.
      */
     public static final String _UNIX_AIX_FS_PATH_EXCLUDES = "bus.health.unix.aix.filesystem.path.excludes";
 
     /**
-     * AIX 配置：文件系统路径包含列表
+     * AIX configuration: filesystem path inclusion list.
      */
     public static final String _UNIX_AIX_FS_PATH_INCLUDES = "bus.health.unix.aix.filesystem.path.includes";
 
     /**
-     * AIX 配置：文件系统卷排除列表
+     * AIX configuration: filesystem volume exclusion list.
      */
     public static final String _UNIX_AIX_FS_VOLUME_EXCLUDES = "bus.health.unix.aix.filesystem.volume.excludes";
 
     /**
-     * AIX 配置：文件系统卷包含列表
+     * AIX configuration: filesystem volume inclusion list.
      */
     public static final String _UNIX_AIX_FS_VOLUME_INCLUDES = "bus.health.unix.aix.filesystem.volume.includes";
 
     /**
-     * Solaris 配置：是否允许使用 kstat2
+     * Solaris configuration: whether to allow kstat2.
      */
     public static final String _UNIX_SOLARIS_ALLOWKSTAT2 = "bus.health.unix.solaris.allowKstat2";
 
     /**
-     * Solaris 配置：文件系统路径排除列表
+     * Solaris configuration: filesystem path exclusion list.
      */
     public static final String _UNIX_SOLARIS_FS_PATH_EXCLUDES = "bus.health.unix.solaris.filesystem.path.excludes";
 
     /**
-     * Solaris 配置：文件系统路径包含列表
+     * Solaris configuration: filesystem path inclusion list.
      */
     public static final String _UNIX_SOLARIS_FS_PATH_INCLUDES = "bus.health.unix.solaris.filesystem.path.includes";
 
     /**
-     * Solaris 配置：文件系统卷排除列表
+     * Solaris configuration: filesystem volume exclusion list.
      */
     public static final String _UNIX_SOLARIS_FS_VOLUME_EXCLUDES = "bus.health.unix.solaris.filesystem.volume.excludes";
 
     /**
-     * Solaris 配置：文件系统卷包含列表
+     * Solaris configuration: filesystem volume inclusion list.
      */
     public static final String _UNIX_SOLARIS_FS_VOLUME_INCLUDES = "bus.health.unix.solaris.filesystem.volume.includes";
 
     /**
-     * FreeBSD 配置：文件系统路径排除列表
+     * FreeBSD configuration: filesystem path exclusion list.
      */
     public static final String _UNIX_FREEBSD_FS_PATH_EXCLUDES = "bus.health.unix.freebsd.filesystem.path.excludes";
 
     /**
-     * FreeBSD 配置：文件系统路径包含列表
+     * FreeBSD configuration: filesystem path inclusion list.
      */
     public static final String _UNIX_FREEBSD_FS_PATH_INCLUDES = "bus.health.unix.freebsd.filesystem.path.includes";
 
     /**
-     * FreeBSD 配置：文件系统卷排除列表
+     * FreeBSD configuration: filesystem volume exclusion list.
      */
     public static final String _UNIX_FREEBSD_FS_VOLUME_EXCLUDES = "bus.health.unix.freebsd.filesystem.volume.excludes";
 
     /**
-     * FreeBSD 配置：文件系统卷包含列表
+     * FreeBSD configuration: filesystem volume inclusion list.
      */
     public static final String _UNIX_FREEBSD_FS_VOLUME_INCLUDES = "bus.health.unix.freebsd.filesystem.volume.includes";
 
     /**
-     * Windows 配置：事件日志设置
+     * Windows configuration: event log settings.
      */
     public static final String _WINDOWS_EVENTLOG = "bus.health.windows.eventlog";
 
     /**
-     * Windows 配置：是否将进程状态视为挂起
+     * Windows configuration: whether to consider process state as suspended.
      */
     public static final String _WINDOWS_PROCSTATE_SUSPENDED = "bus.health.windows.procstate.suspended";
 
     /**
-     * Windows 配置：是否使用批处理命令行
+     * Windows configuration: whether to use batch command line.
      */
     public static final String _WINDOWS_COMMANDLINE_BATCH = "bus.health.windows.commandline.batch";
 
     /**
-     * Windows 配置：HKEY 性能数据设置
+     * Windows configuration: HKEY performance data settings.
      */
     public static final String _WINDOWS_HKEYPERFDATA = "bus.health.windows.hkeyperfdata";
 
     /**
-     * Windows 配置：是否使用旧版系统计数器
+     * Windows configuration: whether to use legacy system counters.
      */
     public static final String _WINDOWS_LEGACY_SYSTEM_COUNTERS = "bus.health.windows.legacy.system.counters";
 
     /**
-     * Windows 配置：是否启用负载平均值
+     * Windows configuration: whether to enable load average.
      */
     public static final String _WINDOWS_LOADAVERAGE = "bus.health.windows.loadaverage";
 
     /**
-     * Windows 配置：CPU 实用工具设置
+     * Windows configuration: CPU utility settings.
      */
     public static final String _WINDOWS_CPU_UTILITY = "bus.health.windows.cpu.utility";
 
     /**
-     * Windows 配置：是否禁用性能磁盘计数器
+     * Windows configuration: whether to disable performance disk counters.
      */
     public static final String _WINDOWS_PERFDISK_DIABLED = "bus.health.windows.perfdisk.disabled";
 
     /**
-     * Windows 配置：是否禁用性能操作系统计数器
+     * Windows configuration: whether to disable performance OS counters.
      */
     public static final String _WINDOWS_PERFOS_DIABLED = "bus.health.windows.perfos.disabled";
 
     /**
-     * Windows 配置：是否禁用性能进程计数器
+     * Windows configuration: whether to disable performance process counters.
      */
     public static final String _WINDOWS_PERFPROC_DIABLED = "bus.health.windows.perfproc.disabled";
 
     /**
-     * Windows 配置：是否在性能计数器失败时禁用所有计数器
+     * Windows configuration: whether to disable all counters on performance counter failure.
      */
     public static final String _WINDOWS_PERF_DISABLE_ALL_ON_FAILURE = "bus.health.windows.perf.disable.all.on.failure";
 
     /**
-     * 配置属性，延迟初始化
+     * Configuration properties, lazily initialized.
      */
     private static Properties CONFIG;
 
     /**
-     * 获取全局配置属性，延迟加载
+     * Retrieves the global configuration properties, lazily loaded.
      *
-     * @return 配置属性
+     * @return The configuration properties.
      */
     private static synchronized Properties getConfig() {
         if (CONFIG == null) {
@@ -337,32 +339,32 @@ public final class Config {
     }
 
     /**
-     * 获取与指定键关联的属性值。
+     * Retrieves the property value associated with the specified key.
      *
-     * @param key 属性键
-     * @return 如果属性存在，返回属性值；否则返回 null
+     * @param key The property key.
+     * @return The property value if it exists; otherwise, {@code null}.
      */
     public static String get(String key) {
         return getConfig().getProperty(key);
     }
 
     /**
-     * 获取与指定键关联的字符串属性值。
+     * Retrieves the string property value associated with the specified key.
      *
-     * @param key 属性键
-     * @param def 默认值
-     * @return 属性值，如果未找到则返回默认值
+     * @param key The property key.
+     * @param def The default value.
+     * @return The property value, or the default value if not found.
      */
     public static String get(String key, String def) {
         return getConfig().getProperty(key, def);
     }
 
     /**
-     * 获取与指定键关联的整数属性值。
+     * Retrieves the integer property value associated with the specified key.
      *
-     * @param key 属性键
-     * @param def 默认值
-     * @return 属性值，如果未找到则返回默认值
+     * @param key The property key.
+     * @param def The default value.
+     * @return The property value, or the default value if not found.
      */
     public static int get(String key, int def) {
         String value = getConfig().getProperty(key);
@@ -370,11 +372,11 @@ public final class Config {
     }
 
     /**
-     * 获取与指定键关联的双精度浮点数属性值。
+     * Retrieves the double property value associated with the specified key.
      *
-     * @param key 属性键
-     * @param def 默认值
-     * @return 属性值，如果未找到则返回默认值
+     * @param key The property key.
+     * @param def The default value.
+     * @return The property value, or the default value if not found.
      */
     public static double get(String key, double def) {
         String value = getConfig().getProperty(key);
@@ -382,11 +384,11 @@ public final class Config {
     }
 
     /**
-     * 获取与指定键关联的布尔属性值。
+     * Retrieves the boolean property value associated with the specified key.
      *
-     * @param key 属性键
-     * @param def 默认值
-     * @return 属性值，如果未找到则返回默认值
+     * @param key The property key.
+     * @param def The default value.
+     * @return The property value, or the default value if not found.
      */
     public static boolean get(String key, boolean def) {
         String value = getConfig().getProperty(key);
@@ -394,10 +396,11 @@ public final class Config {
     }
 
     /**
-     * 设置指定属性，覆盖任何现有值。如果给定值为 {@code null}，则移除该属性。
+     * Sets the specified property, overriding any existing value. If the given value is {@code null}, the property is
+     * removed.
      *
-     * @param key 属性键
-     * @param val 新值
+     * @param key The property key.
+     * @param val The new value.
      */
     public static void set(String key, Object val) {
         if (val == null) {
@@ -408,35 +411,35 @@ public final class Config {
     }
 
     /**
-     * 将指定属性重置为其默认值。
+     * Resets the specified property to its default value.
      *
-     * @param key 属性键
+     * @param key The property key.
      */
     public static void remove(String key) {
         getConfig().remove(key);
     }
 
     /**
-     * 清空配置。
+     * Clears the configuration.
      */
     public static void clear() {
         getConfig().clear();
     }
 
     /**
-     * 将给定的 {@link java.util.Properties} 加载到全局配置中。
+     * Loads the given {@link java.util.Properties} into the global configuration.
      *
-     * @param properties 新属性
+     * @param properties The new properties to load.
      */
     public static void load(Properties properties) {
         getConfig().putAll(properties);
     }
 
     /**
-     * 从类路径读取配置文件并返回其属性。
+     * Reads a configuration file from the classpath and returns its properties.
      *
-     * @param fileName 文件名
-     * @return 包含属性的 {@link java.util.Properties} 对象
+     * @param fileName The name of the file.
+     * @return A {@link java.util.Properties} object containing the properties.
      */
     public static Properties readProperties(String fileName) {
         return new Props(Normal.META_INF + "/health/" + fileName);

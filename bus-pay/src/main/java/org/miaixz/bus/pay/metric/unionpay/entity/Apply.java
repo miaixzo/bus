@@ -36,7 +36,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * 云闪付-商户进件
+ * UnionPay Cloud QuickPass - Merchant Application model.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -49,31 +49,31 @@ import lombok.experimental.SuperBuilder;
 public class Apply extends Material {
 
     /**
-     * 合作伙伴 ID 即机构号
+     * Partner ID, i.e., the institution number.
      */
     private String partner;
     /**
-     * 服务名称
+     * Service name.
      */
     private String serviceName;
     /**
-     * 支持 MD5 和RSA，默认为MD5
+     * Signature type. Supports MD5 and RSA, defaults to MD5.
      */
     private String signType;
     /**
-     * 字符集，默认为UTF-8
+     * Character set, defaults to UTF-8.
      */
     private String charset;
     /**
-     * 请求数据
+     * Request data.
      */
     private String data;
     /**
-     * 数据类型
+     * Data type.
      */
     private String dataType;
     /**
-     * 数据签名
+     * Data signature.
      */
     private String dataSign;
 

@@ -30,7 +30,7 @@ package org.miaixz.bus.http.plugin.httpv;
 import java.util.Set;
 
 /**
- * 可以是 xml、yml、protobuf 等任何一种格式的数据
+ * Represents data that can be in any format, such as XML, YAML, Protobuf, etc., structured as a key-value map.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,71 +38,71 @@ import java.util.Set;
 public interface CoverWapper {
 
     /**
-     * @return JSON 的键值对数量
+     * @return The number of key-value pairs.
      */
     int size();
 
     /**
-     * @return 是否为空
+     * @return True if the map is empty.
      */
     boolean isEmpty();
 
     /**
-     * @param key 键名
-     * @return 子 JsonObj
+     * @param key The key name.
+     * @return The sub-object as a CoverWapper.
      */
     CoverWapper getWappers(String key);
 
     /**
-     * @param key 键名
-     * @return 子 JsonArr
+     * @param key The key name.
+     * @return The sub-array as a CoverArray.
      */
     CoverArray getArray(String key);
 
     /**
-     * @param key 键名
-     * @return boolean 值
+     * @param key The key name.
+     * @return The boolean value.
      */
     boolean getBool(String key);
 
     /**
-     * @param key 键名
-     * @return int 值
+     * @param key The key name.
+     * @return The int value.
      */
     int getInt(String key);
 
     /**
-     * @param key 键名
-     * @return long 值
+     * @param key The key name.
+     * @return The long value.
      */
     long getLong(String key);
 
     /**
-     * @param key 键名
-     * @return float 值
+     * @param key The key name.
+     * @return The float value.
      */
     float getFloat(String key);
 
     /**
-     * @param key 键名
-     * @return double 值
+     * @param key The key name.
+     * @return The double value.
      */
     double getDouble(String key);
 
     /**
-     * @param key 键名
-     * @return String 值
+     * @param key The key name.
+     * @return The String value.
      */
     String getString(String key);
 
     /**
-     * @param key 键名
-     * @return 是否有该键
+     * @param key The key name.
+     * @return True if the key exists.
      */
     boolean has(String key);
 
     /**
-     * @return JSON 的键集合
+     * @return The set of keys.
      */
     Set<String> keySet();
 

@@ -32,7 +32,7 @@ import org.miaixz.bus.core.xyz.CharKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 命名规则封装，主要是针对驼峰风格命名、连接符命名等的封装
+ * Naming convention encapsulation, mainly for camel case naming, connector naming, etc.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -40,53 +40,56 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class NamingCase {
 
     /**
-     * 将驼峰式命名的字符串转换为下划线方式，又称SnakeCase、underScoreCase。 如果转换前的驼峰式命名的字符串为空，则返回空字符串。 规则为：
+     * Converts a camel case string to an underscore case (SnakeCase, underScoreCase). If the input camel case string is
+     * empty, an empty string is returned. Rules:
      * <ul>
-     * <li>单字之间以下划线隔开</li>
-     * <li>每个单字的首字母亦用小写字母</li>
+     * <li>Words are separated by underscores.</li>
+     * <li>The first letter of each word is lowercase.</li>
      * </ul>
-     * 例如：
-     *
+     * Examples:
+     * 
      * <pre>
-     * HelloWorld =hello_world
+     * HelloWorld = hello_world
      * Hello_World = hello_world
      * HelloWorld_test = hello_world_test
      * </pre>
      *
-     * @param text 转换前的驼峰式命名的字符串，也可以为下划线形式
-     * @return 转换后下划线方式命名的字符串
+     * @param text The camel case string to convert, can also be in underscore format.
+     * @return The converted string in underscore case.
      */
     public static String toUnderlineCase(final CharSequence text) {
         return toSymbolCase(text, Symbol.C_UNDERLINE);
     }
 
     /**
-     * 将驼峰式命名的字符串转换为短横连接方式。 如果转换前的驼峰式命名的字符串为空，则返回空字符串。 规则为：
+     * Converts a camel case string to a kebab case (hyphen-separated). If the input camel case string is empty, an
+     * empty string is returned. Rules:
      * <ul>
-     * <li>单字之间横线线隔开</li>
-     * <li>每个单字的首字母亦用小写字母</li>
+     * <li>Words are separated by hyphens.</li>
+     * <li>The first letter of each word is lowercase.</li>
      * </ul>
-     * 例如：
-     *
+     * Examples:
+     * 
      * <pre>
      * HelloWorld = hello-world
      * Hello_World = hello-world
      * HelloWorld_test = hello-world-test
      * </pre>
      *
-     * @param text 转换前的驼峰式命名的字符串，也可以为下划线形式
-     * @return 转换后下划线方式命名的字符串
+     * @param text The camel case string to convert, can also be in underscore format.
+     * @return The converted string in kebab case.
      */
     public static String toKebabCase(final CharSequence text) {
         return toSymbolCase(text, Symbol.C_MINUS);
     }
 
     /**
-     * 将驼峰式命名的字符串转换为使用符号连接方式。如果转换前的驼峰式命名的字符串为空，则返回空字符串。
+     * Converts a camel case string to a symbol-separated string. If the input camel case string is empty, an empty
+     * string is returned.
      *
-     * @param text   转换前的驼峰式命名的字符串，也可以为符号连接形式
-     * @param symbol 连接符
-     * @return 转换后符号连接方式命名的字符串
+     * @param text   The camel case string to convert, can also be in symbol-separated format.
+     * @param symbol The separator character.
+     * @return The converted string in symbol-separated format.
      */
     public static String toSymbolCase(final CharSequence text, final char symbol) {
         if (text == null) {
@@ -104,36 +107,36 @@ public class NamingCase {
 
                 if (null != preChar) {
                     if (symbol == preChar) {
-                        // 前一个为分隔符
+                        // Previous character is a separator
                         if (null == nextChar || Character.isLowerCase(nextChar)) {
-                            // 普通首字母大写，如_Abb -> _abb
+                            // Normal uppercase first letter, e.g., _Abb -> _abb
                             c = Character.toLowerCase(c);
                         }
-                        // 后一个为大写，按照专有名词对待，如_AB -> _AB
+                        // Next character is uppercase, treat as proper noun, e.g., _AB -> _AB
                     } else if (Character.isLowerCase(preChar)) {
-                        // 前一个为小写
+                        // Previous character is lowercase
                         sb.append(symbol);
                         if (null == nextChar || Character.isLowerCase(nextChar) || CharKit.isNumber(nextChar)) {
-                            // 普通首字母大写，如aBcc -> a_bcc
+                            // Normal uppercase first letter, e.g., aBcc -> a_bcc
                             c = Character.toLowerCase(c);
                         }
-                        // 后一个为大写，按照专有名词对待，如aBC -> a_BC
+                        // Next character is uppercase, treat as proper noun, e.g., aBC -> a_BC
                     } else {
-                        // 前一个为大写
+                        // Previous character is uppercase
                         if (null != nextChar && Character.isLowerCase(nextChar)) {
-                            // 普通首字母大写，如ABcc -> A_bcc
+                            // Normal uppercase first letter, e.g., ABcc -> A_bcc
                             sb.append(symbol);
                             c = Character.toLowerCase(c);
                         }
-                        // 后一个为大写，按照专有名词对待，如ABC -> ABC
+                        // Next character is uppercase, treat as proper noun, e.g., ABC -> ABC
                     }
                 } else {
-                    // 首字母，需要根据后一个判断是否转为小写
+                    // First character, need to determine whether to convert to lowercase based on the next character
                     if (null == nextChar || Character.isLowerCase(nextChar)) {
-                        // 普通首字母大写，如Abc -> abc
+                        // Normal uppercase first letter, e.g., Abc -> abc
                         c = Character.toLowerCase(c);
                     }
-                    // 后一个为大写，按照专有名词对待，如ABC -> ABC
+                    // Next character is uppercase, treat as proper noun, e.g., ABC -> ABC
                 }
             }
             sb.append(c);
@@ -142,59 +145,63 @@ public class NamingCase {
     }
 
     /**
-     * 将下划线方式命名的字符串转换为帕斯卡式。 规则为：
+     * Converts an underscore-separated string to PascalCase. Rules:
      * <ul>
-     * <li>单字之间不以空格或任何连接符断开</li>
-     * <li>第一个单字首字母采用大写字母</li>
-     * <li>后续单字的首字母亦用大写字母</li>
+     * <li>Words are not separated by spaces or any connectors.</li>
+     * <li>The first letter of the first word is uppercase.</li>
+     * <li>The first letter of subsequent words is also uppercase.</li>
      * </ul>
-     * 如果转换前的下划线大写方式命名的字符串为空，则返回空字符串。 例如：hello_world = HelloWorld
+     * If the input underscore-separated string is empty, an empty string is returned. Example: hello_world = HelloWorld
      *
-     * @param name 转换前的下划线大写方式命名的字符串
-     * @return 转换后的驼峰式命名的字符串
+     * @param name The underscore-separated string to convert.
+     * @return The converted string in PascalCase.
      */
     public static String toPascalCase(final CharSequence name) {
         return StringKit.upperFirst(toCamelCase(name));
     }
 
     /**
-     * 将下划线方式命名的字符串转换为驼峰式。如果转换前的下划线大写方式命名的字符串为空，则返回空字符串。 规则为：
+     * Converts an underscore-separated string to camelCase. If the input underscore-separated string is empty, an empty
+     * string is returned. Rules:
      * <ul>
-     * <li>单字之间不以空格或任何连接符断开</li>
-     * <li>第一个单字首字母采用小写字母</li>
-     * <li>后续单字的首字母亦用大写字母</li>
+     * <li>Words are not separated by spaces or any connectors.</li>
+     * <li>The first letter of the first word is lowercase.</li>
+     * <li>The first letter of subsequent words is uppercase.</li>
      * </ul>
-     * 例如：hello_world = helloWorld
+     * Example: hello_world = helloWorld
      *
-     * @param name 转换前的下划线大写方式命名的字符串
-     * @return 转换后的驼峰式命名的字符串
+     * @param name The underscore-separated string to convert.
+     * @return The converted string in camelCase.
      */
     public static String toCamelCase(final CharSequence name) {
         return toCamelCase(name, Symbol.C_UNDERLINE);
     }
 
     /**
-     * 将连接符方式命名的字符串转换为驼峰式。如果转换前的下划线大写方式命名的字符串为空，则返回空字符串。
+     * Converts a symbol-separated string to camelCase. If the input symbol-separated string is empty, an empty string
+     * is returned.
      *
-     * @param name   转换前的自定义方式命名的字符串
-     * @param symbol 原字符串中的连接符连接符
-     * @return 转换后的驼峰式命名的字符串
+     * @param name   The custom symbol-separated string to convert.
+     * @param symbol The separator character in the original string.
+     * @return The converted string in camelCase.
      */
     public static String toCamelCase(final CharSequence name, final char symbol) {
         return toCamelCase(name, symbol, true);
     }
 
     /**
-     * 将连接符方式命名的字符串转换为驼峰式。如果转换前的下划线大写方式命名的字符串为空，则返回空字符串。 当otherCharToLower为{@code true}时，分为以下情况：
+     * Converts a symbol-separated string to camelCase. If the input symbol-separated string is empty, an empty string
+     * is returned. When {@code otherCharToLower} is {@code true}, the following cases apply:
      * <ul>
-     * <li>如果给定字符串全部为大写，转换为小写，如NAME转为name。</li>
-     * <li>如果给定字符串大小写混合，认定为字符串已经是驼峰模式，只小写首字母，如TableName转换为tableName。</li>
+     * <li>If the given string is all uppercase, it is converted to lowercase, e.g., NAME becomes name.</li>
+     * <li>If the given string is mixed case, it is assumed to be already in camel case, and only the first letter is
+     * lowercased, e.g., TableName becomes tableName.</li>
      * </ul>
      *
-     * @param name             转换前的自定义方式命名的字符串
-     * @param symbol           原字符串中的连接符连接符
-     * @param otherCharToLower 其他非连接符后的字符是否需要转为小写
-     * @return 转换后的驼峰式命名的字符串
+     * @param name             The custom symbol-separated string to convert.
+     * @param symbol           The separator character in the original string.
+     * @param otherCharToLower Whether other characters after the separator need to be converted to lowercase.
+     * @return The converted string in camelCase.
      */
     public static String toCamelCase(final CharSequence name, final char symbol, final boolean otherCharToLower) {
         if (null == name) {
@@ -232,15 +239,15 @@ public class NamingCase {
     }
 
     /**
-     * 给定字符串中的字母是否全部为大写，判断依据如下：
-     *
+     * Checks if all letters in the given string are uppercase. The criteria are as follows:
+     * 
      * <pre>
-     * 1. 大写字母包括A-Z
-     * 2. 其它非字母的Unicode符都算作大写
+     * 1. Uppercase letters include A-Z.
+     * 2. Other non-letter Unicode characters are also considered uppercase.
      * </pre>
      *
-     * @param text 被检查的字符串
-     * @return 是否全部为大写
+     * @param text The string to check.
+     * @return {@code true} if all letters are uppercase, {@code false} otherwise.
      */
     public static boolean isUpperCase(final CharSequence text) {
         if (null == text) {
@@ -256,15 +263,15 @@ public class NamingCase {
     }
 
     /**
-     * 给定字符串中的字母是否全部为小写，判断依据如下：
-     *
+     * Checks if all letters in the given string are lowercase. The criteria are as follows:
+     * 
      * <pre>
-     * 1. 小写字母包括a-z
-     * 2. 其它非字母的Unicode符都算作小写
+     * 1. Lowercase letters include a-z.
+     * 2. Other non-letter Unicode characters are also considered lowercase.
      * </pre>
      *
-     * @param text 被检查的字符串
-     * @return 是否全部为小写
+     * @param text The string to check.
+     * @return {@code true} if all letters are lowercase, {@code false} otherwise.
      */
     public static boolean isLowerCase(final CharSequence text) {
         if (null == text) {
@@ -280,7 +287,7 @@ public class NamingCase {
     }
 
     /**
-     * 切换给定字符串中的大小写。大写转小写，小写转大写。
+     * Swaps the case of letters in the given string. Uppercase becomes lowercase, and lowercase becomes uppercase.
      *
      * <pre>
      * StringKit.swapCase(null)                 = null
@@ -288,8 +295,8 @@ public class NamingCase {
      * StringKit.swapCase("The dog has a BONE") = "tHE DOG HAS A bone"
      * </pre>
      *
-     * @param text 字符串
-     * @return 交换后的字符串
+     * @param text The string to swap case.
+     * @return The string with swapped case.
      */
     public static String swapCase(final String text) {
         if (StringKit.isEmpty(text)) {

@@ -31,12 +31,12 @@ import org.miaixz.bus.core.center.date.culture.en.Modify;
 import org.miaixz.bus.core.xyz.ArrayKit;
 
 /**
- * 日期修改器 用于实现自定义某个日期字段的调整，包括：
+ * Date modifier for adjusting specific date fields. This class provides methods to:
  *
  * <pre>
- * 1. 获取指定字段的起始时间
- * 2. 获取指定字段的四舍五入时间
- * 3. 获取指定字段的结束时间
+ * 1. Get the start time of a specified field.
+ * 2. Get the rounded time of a specified field.
+ * 3. Get the end time of a specified field.
  * </pre>
  *
  * @author Kimi Liu
@@ -45,23 +45,24 @@ import org.miaixz.bus.core.xyz.ArrayKit;
 public class Modifier {
 
     /**
-     * 忽略的计算的字段
+     * Fields to be ignored during calculation.
      */
-    private static final int[] IGNORE_FIELDS = new int[] { java.util.Calendar.HOUR_OF_DAY, // 与HOUR同名
-            java.util.Calendar.AM_PM, // 此字段单独处理，不参与计算起始和结束
-            java.util.Calendar.DAY_OF_WEEK_IN_MONTH, // 不参与计算
-            java.util.Calendar.DAY_OF_YEAR, // DAY_OF_MONTH体现
-            java.util.Calendar.WEEK_OF_MONTH, // 特殊处理
-            java.util.Calendar.WEEK_OF_YEAR // WEEK_OF_MONTH体现
+    private static final int[] IGNORE_FIELDS = new int[] { java.util.Calendar.HOUR_OF_DAY, // Same as HOUR
+            java.util.Calendar.AM_PM, // This field is handled separately and does not participate in start/end
+                                      // calculations
+            java.util.Calendar.DAY_OF_WEEK_IN_MONTH, // Not involved in calculation
+            java.util.Calendar.DAY_OF_YEAR, // Represented by DAY_OF_MONTH
+            java.util.Calendar.WEEK_OF_MONTH, // Special handling
+            java.util.Calendar.WEEK_OF_YEAR // Represented by WEEK_OF_MONTH
     };
 
     /**
-     * 修改日期
+     * Modifies the date based on the specified field and modification type.
      *
-     * @param calendar  {@link java.util.Calendar}
-     * @param dateField 日期字段，即保留到哪个日期字段
-     * @param modify    修改类型，包括舍去、四舍五入、进一等
-     * @return 修改后的{@link Calendar}
+     * @param calendar  The {@link java.util.Calendar} object to modify.
+     * @param dateField The date field to retain, e.g., {@link java.util.Calendar#DAY_OF_MONTH}.
+     * @param modify    The modification type, including truncate, round, and ceiling.
+     * @return The modified {@link java.util.Calendar} object.
      */
     public static java.util.Calendar modify(
             final java.util.Calendar calendar,
@@ -71,25 +72,26 @@ public class Modifier {
     }
 
     /**
-     * 修改日期，取起始值或者结束值 可选是否归零毫秒
+     * Modifies the date, taking the start or end value. Optionally, milliseconds can be truncated to zero.
      *
      * <p>
-     * 在{@link Modify#TRUNCATE}模式下，毫秒始终要归零, 但是在{@link Modify#CEILING}和{@link Modify#ROUND}模式下，
-     * 有时候由于毫秒部分必须为0（如MySQL数据库中），因此在此加上选项。
-     * </p>
+     * In {@link Modify#TRUNCATE} mode, milliseconds are always truncated to zero. However, in {@link Modify#CEILING}
+     * and {@link Modify#ROUND} modes, sometimes the millisecond part must be zero (e.g., in MySQL databases), so this
+     * option is added.
+     * 
      *
-     * @param calendar  {@link java.util.Calendar}
-     * @param dateField 日期字段，即保留到哪个日期字段
-     * @param modify    修改类型，包括舍去、四舍五入、进一等
-     * @param truncate  是否归零毫秒
-     * @return 修改后的{@link Calendar}
+     * @param calendar  The {@link java.util.Calendar} object to modify.
+     * @param dateField The date field to retain, e.g., {@link java.util.Calendar#DAY_OF_MONTH}.
+     * @param modify    The modification type, including truncate, round, and ceiling.
+     * @param truncate  {@code true} to truncate milliseconds to zero, {@code false} otherwise.
+     * @return The modified {@link java.util.Calendar} object.
      */
     public static java.util.Calendar modify(
             final java.util.Calendar calendar,
             final int dateField,
             final Modify modify,
             final boolean truncate) {
-        // AM_PM上下午特殊处理
+        // Special handling for AM_PM
         if (java.util.Calendar.AM_PM == dateField) {
             final boolean isAM = Calendar.isAM(calendar);
             switch (modify) {
@@ -109,25 +111,25 @@ public class Modifier {
                     calendar.set(java.util.Calendar.HOUR_OF_DAY, (value < href) ? min : max);
                     break;
             }
-            // 处理下一级别字段
+            // Process the next level field
             return modify(calendar, dateField + 1, modify, truncate);
         }
 
         final int endField = truncate ? java.util.Calendar.SECOND : java.util.Calendar.MILLISECOND;
-        // 循环处理各级字段，精确到毫秒字段
+        // Loop through and process each field level, accurate to milliseconds
         for (int i = dateField + 1; i <= endField; i++) {
             if (ArrayKit.contains(IGNORE_FIELDS, i)) {
-                // 忽略无关字段（WEEK_OF_MONTH）始终不做修改
+                // Ignore irrelevant fields (WEEK_OF_MONTH) and do not modify them
                 continue;
             }
 
-            // 在计算本周的起始和结束日时，月相关的字段忽略。
+            // When calculating the start and end days of the week, month-related fields are ignored.
             if (java.util.Calendar.WEEK_OF_MONTH == dateField || java.util.Calendar.WEEK_OF_YEAR == dateField) {
                 if (java.util.Calendar.DAY_OF_MONTH == i) {
                     continue;
                 }
             } else {
-                // 其它情况忽略周相关字段计算
+                // In other cases, ignore week-related field calculations
                 if (java.util.Calendar.DAY_OF_WEEK == i) {
                     continue;
                 }
@@ -144,15 +146,15 @@ public class Modifier {
     }
 
     /**
-     * 修改日期字段值
+     * Modifies the value of a specific date field.
      *
-     * @param calendar {@link java.util.Calendar}
-     * @param field    字段，见{@link java.util.Calendar}
-     * @param modify   {@link Modify}
+     * @param calendar The {@link java.util.Calendar} object.
+     * @param field    The field to modify, see {@link java.util.Calendar}.
+     * @param modify   The {@link Modify} type.
      */
     private static void modifyField(final java.util.Calendar calendar, int field, final Modify modify) {
         if (java.util.Calendar.HOUR == field) {
-            // 修正小时。HOUR为12小时制，上午的结束时间为12:00，此处改为HOUR_OF_DAY: 23:59
+            // Correct hour. HOUR is 12-hour format, the end time of AM is 12:00, here changed to HOUR_OF_DAY: 23:59
             field = java.util.Calendar.HOUR_OF_DAY;
         }
 
@@ -170,7 +172,7 @@ public class Modifier {
                 final int max = Calendar.getEndValue(calendar, field);
                 final int href;
                 if (java.util.Calendar.DAY_OF_WEEK == field) {
-                    // 星期特殊处理，假设周一是第一天，中间的为周四
+                    // Special handling for week, assuming Monday is the first day, the middle is Thursday
                     href = (min + 3) % 7;
                 } else {
                     href = (max - min) / 2 + 1;

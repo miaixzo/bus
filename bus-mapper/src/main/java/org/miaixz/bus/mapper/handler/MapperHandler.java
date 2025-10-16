@@ -36,55 +36,60 @@ import org.apache.ibatis.session.RowBounds;
 import org.miaixz.bus.core.Handler;
 
 /**
- * SQL 拦截处理器
+ * An interface for SQL interception handlers.
  *
+ * @param <T> The type of the object being handled.
  * @author Kimi Liu
  * @since Java 17+
  */
 public interface MapperHandler<T> extends Handler<T> {
 
     /**
-     * 在 StatementHandler 的 prepare 方法执行前的预处理 可用于修改 SQL 或连接配置
+     * Pre-processes before the `prepare` method of a {@link StatementHandler} is executed. This can be used to modify
+     * the SQL or connection configuration.
      *
-     * @param statementHandler 语句处理器，可能为代理对象
+     * @param statementHandler The statement handler, which may be a proxy object.
      */
     default void prepare(StatementHandler statementHandler) {
 
     }
 
     /**
-     * 判断是否执行 Executor 的 update 方法 如果返回 false，则 update 操作不执行，影响行数返回 -1
+     * Determines whether to execute the `update` method of an {@link Executor}. If this returns false, the update
+     * operation will not be executed, and the number of affected rows will be -1.
      *
-     * @param executor        MyBatis 执行器，可能为代理对象
-     * @param mappedStatement 映射语句，包含 SQL 配置
-     * @param parameter       更新参数
-     * @return 返回 true 表示继续执行更新，返回 false 表示终止更新
+     * @param executor        The MyBatis executor, which may be a proxy object.
+     * @param mappedStatement The mapped statement, containing SQL configuration.
+     * @param parameter       The update parameters.
+     * @return {@code true} to continue with the update, {@code false} to terminate it.
      */
     default boolean isUpdate(Executor executor, MappedStatement mappedStatement, Object parameter) {
         return true;
     }
 
     /**
-     * 在 Executor 的 update 方法执行前的预处理 可用于修改 SQL 或参数
+     * Pre-processes before the `update` method of an {@link Executor} is executed. This can be used to modify the SQL
+     * or parameters.
      *
-     * @param executor        MyBatis 执行器，可能为代理对象
-     * @param mappedStatement 映射语句，包含 SQL 配置
-     * @param parameter       更新参数
+     * @param executor        The MyBatis executor, which may be a proxy object.
+     * @param mappedStatement The mapped statement, containing SQL configuration.
+     * @param parameter       The update parameters.
      */
     default void update(Executor executor, MappedStatement mappedStatement, Object parameter) {
 
     }
 
     /**
-     * 判断是否执行 Executor 的 query 方法 如果返回 false，则不执行查询操作，直接返回空列表
+     * Determines whether to execute the `query` method of an {@link Executor}. If this returns false, the query
+     * operation will not be executed, and an empty list will be returned.
      *
-     * @param executor        MyBatis 执行器，可能为代理对象
-     * @param mappedStatement 映射语句，包含 SQL 配置
-     * @param parameter       查询参数
-     * @param rowBounds       分页参数
-     * @param resultHandler   结果处理器
-     * @param boundSql        绑定的 SQL 对象
-     * @return 返回 true 表示继续执行查询，返回 false 表示终止查询
+     * @param executor        The MyBatis executor, which may be a proxy object.
+     * @param mappedStatement The mapped statement, containing SQL configuration.
+     * @param parameter       The query parameters.
+     * @param rowBounds       The pagination parameters.
+     * @param resultHandler   The result handler.
+     * @param boundSql        The bound SQL object.
+     * @return {@code true} to continue with the query, {@code false} to terminate it.
      */
     default boolean isQuery(
             Executor executor,
@@ -97,14 +102,16 @@ public interface MapperHandler<T> extends Handler<T> {
     }
 
     /**
-     * 在 Executor 的 query 方法执行前的预处理 可用于修改 SQL、参数或记录日志
+     * Pre-processes before the `query` method of an {@link Executor} is executed. This can be used to modify the SQL,
+     * parameters, or log information.
      *
-     * @param executor        MyBatis 执行器，可能为代理对象
-     * @param mappedStatement 映射语句，包含 SQL 配置
-     * @param parameter       查询参数
-     * @param rowBounds       分页参数
-     * @param resultHandler   结果处理器
-     * @param boundSql        绑定的 SQL 对象
+     * @param result          The query result.
+     * @param executor        The MyBatis executor, which may be a proxy object.
+     * @param mappedStatement The mapped statement, containing SQL configuration.
+     * @param parameter       The query parameters.
+     * @param rowBounds       The pagination parameters.
+     * @param resultHandler   The result handler.
+     * @param boundSql        The bound SQL object.
      */
     default void query(
             Object result,
@@ -118,9 +125,10 @@ public interface MapperHandler<T> extends Handler<T> {
     }
 
     /**
-     * 在 StatementHandler 的 getBoundSql 方法执行前的预处理 仅在 BatchExecutor 和 ReuseExecutor 中调用 可用于修改绑定的 SQL
+     * Pre-processes before the `getBoundSql` method of a {@link StatementHandler} is executed. This is only called in
+     * `BatchExecutor` and `ReuseExecutor` and can be used to modify the bound SQL.
      *
-     * @param statementHandler 语句处理器，可能为代理对象
+     * @param statementHandler The statement handler, which may be a proxy object.
      */
     default void getBoundSql(StatementHandler statementHandler) {
 

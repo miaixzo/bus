@@ -34,34 +34,49 @@ import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * time-based one-time passwords (TOTP) 基于时间戳算法的一次性密码生成器
+ * Time-based one-time passwords (TOTP) generator based on a timestamp algorithm.
  *
  * <p>
- * 规范见：<a href="https://tools.ietf.org/html/rfc6238">RFC&nbsp;6238</a>
+ * Specification: <a href="https://tools.ietf.org/html/rfc6238">RFC&nbsp;6238</a>
  * </p>
  *
  *
  * <p>
- * 时间同步，基于客户端的动态口令和动态口令验证服务器的时间比对，一般每30秒产生一个新口令， 要求客户端和服务器能够十分精确的保持正确的时钟，客户端和服务端基于时间计算的动态口令才能一致。
+ * Time synchronization is required. It's based on a comparison between the client's dynamic password and the dynamic
+ * password verification server's time. A new password is typically generated every 30 seconds. It requires that the
+ * client and server clocks be precisely synchronized for the time-based dynamic passwords to match.
  * </p>
  * <p>
- * 参考：https://github.com/jchambers/java-otp
- * </p>
- *
- * <p>
- * OTP基于具有时间戳计数器的OTP。 通过定义纪元（T0）的开始并以时间间隔（TI）为单位计数，将当前时间戳变为整数时间计数器（TC）。 例如： TC = floor, TOTP = HOTP（SecretKey，TC），
- * TOTP-Value = TOTP mod 10d，其中d是一次性密码的所需位数。 像google auth的二步认证使用了这种方式。
+ * Reference: https://github.com/jchambers/java-otp
  * </p>
  *
  * <p>
- * 认证过程 生成二维码,带有otpauth链接的google地址 生成公用密钥 返回给app，同时用户户和服务名也会返回,这时密钥是被base32加密过的,app存储,以后用这个密钥来生成6位校验码
- * 服务端同时存储这个密钥和用户名，你可以把用户名当key，把密钥当value进行存储 app每30秒生成一个6位校验码,用户使用这个码来网站进行登陆 服务器使用存储的密钥+fmac算法生成6位随机数,与客户端传来的数进行对比
- * 两个码相等,授权成功,反之,失败.（注意，服务端可以根据当前登陆的用户名拿到它的密钥，有了密钥，再进行totp的算法生成校验码）
+ * TOTP is based on HOTP with a timestamp-based counter. By defining the start of an epoch (T0) and counting in time
+ * intervals (TI), the current timestamp is converted into an integer time counter (TC). For example: TC =
+ * floor((unixtime(now) - unixtime(T0)) / TI), TOTP = HOTP(SecretKey, TC), TOTP-Value = TOTP mod 10^d, where d is the
+ * desired number of digits for the one-time password. Services like Google Authenticator's two-factor authentication
+ * use this method.
  * </p>
  *
  * <p>
- * 登陆的过程整理 用户和密码先登陆 session里存储了用户名等信息 产生二维码及密钥，密钥存储到服务器的k/v介质里，k使用session里的用户名，v使用刚才的密钥 客户使用app扫二维码，产生新的6位数字
- * 客户在用户名和密码登陆后，进行验证码页面，输入刚才的6位数字 提交到服务端，服务端根据用户名取出对应的密钥，然后使用totp算法生成6位数字 如果服务端与客户端数字相同，表示登陆成功！
+ * Authentication process: A QR code is generated with a Google otpauth link. A shared secret key is generated. This key
+ * is returned to the app, along with the user account and service name. The key is Base32 encoded. The app stores this
+ * key to generate 6-digit verification codes in the future. The server also stores this key and the username. You can
+ * store it as a key-value pair where the username is the key and the secret is the value. The app generates a new
+ * 6-digit code every 30 seconds, which the user uses to log in to the website. The server uses the stored secret key
+ * and the TOTP algorithm to generate a 6-digit code and compares it with the code sent from the client. If the two
+ * codes are equal, authorization is successful; otherwise, it fails. (Note: The server can retrieve the secret key
+ * based on the currently logged-in username and then use the TOTP algorithm to generate the verification code).
+ * </p>
+ *
+ * <p>
+ * Login Process Summary: The user first logs in with a username and password. The session stores information like the
+ * username. A QR code and secret key are generated. The key is stored in the server's key-value store, using the
+ * username from the session as the key and the generated secret as the value. The user scans the QR code with their
+ * app, which starts generating new 6-digit codes. After logging in with username and password, the user is directed to
+ * a verification page to enter the current 6-digit code. The code is submitted to the server. The server retrieves the
+ * corresponding secret key based on the username and then uses the TOTP algorithm to generate its own 6-digit code. If
+ * the server's code and the client's code match, the login is successful!
  * </p>
  *
  * @author Kimi Liu
@@ -72,42 +87,42 @@ public class TOTP extends HOTP {
     private final Duration timeStep;
 
     /**
-     * 构造，使用默认HMAC算法(HmacSHA1)
+     * Constructor, uses the default HMAC algorithm (HmacSHA1).
      *
-     * @param key 共享密码，RFC 4226要求最少128位
+     * @param key The shared secret, RFC 4226 recommends at least 128 bits.
      */
     public TOTP(final byte[] key) {
         this(Duration.ofSeconds(30), key);
     }
 
     /**
-     * 构造，使用默认HMAC算法(HmacSHA1)
+     * Constructor, uses the default HMAC algorithm (HmacSHA1).
      *
-     * @param timeStep 日期步进 用于生成移动因子（moving factor）,默认步进 (30秒)
-     * @param key      共享密码，RFC 4226要求最少128位
+     * @param timeStep The time step used to generate the moving factor, default is 30 seconds.
+     * @param key      The shared secret, RFC 4226 recommends at least 128 bits.
      */
     public TOTP(final Duration timeStep, final byte[] key) {
         this(timeStep, DEFAULT_PASSWORD_LENGTH, key);
     }
 
     /**
-     * 构造，使用默认HMAC算法(HmacSHA1)
+     * Constructor, uses the default HMAC algorithm (HmacSHA1).
      *
-     * @param timeStep       日期步进，用于生成移动因子（moving factor）
-     * @param passwordLength 密码长度，可以是6,7,8
-     * @param key            共享密码，RFC 4226要求最少128位
+     * @param timeStep       The time step used to generate the moving factor.
+     * @param passwordLength The password length, can be 6, 7, or 8.
+     * @param key            The shared secret, RFC 4226 recommends at least 128 bits.
      */
     public TOTP(final Duration timeStep, final int passwordLength, final byte[] key) {
         this(timeStep, passwordLength, Algorithm.HMACSHA1, key);
     }
 
     /**
-     * 构造
+     * Constructor.
      *
-     * @param timeStep       日期步进，用于生成移动因子（moving factor）
-     * @param passwordLength 密码长度，可以是6,7,8
-     * @param algorithm      HMAC算法枚举
-     * @param key            共享密码，RFC 4226要求最少128位
+     * @param timeStep       The time step used to generate the moving factor.
+     * @param passwordLength The password length, can be 6, 7, or 8.
+     * @param algorithm      The HMAC algorithm enum.
+     * @param key            The shared secret, RFC 4226 recommends at least 128 bits.
      */
     public TOTP(final Duration timeStep, final int passwordLength, final Algorithm algorithm, final byte[] key) {
         super(passwordLength, algorithm, key);
@@ -115,33 +130,33 @@ public class TOTP extends HOTP {
     }
 
     /**
-     * 生成谷歌认证器的字符串（扫码字符串） 基于时间的，计数器不适合
+     * Generates a Google Authenticator compatible key URI (for QR codes). Time-based, not suitable for counters.
      *
-     * @param account  账户名。
-     * @param numBytes 将生成的种子字节数量。
-     * @return 共享密钥
+     * @param account  The account name.
+     * @param numBytes The number of seed bytes to generate.
+     * @return The shared secret key as a URI string.
      */
     public static String generateGoogleSecretKey(final String account, final int numBytes) {
         return StringKit.format("otpauth://totp/{}?secret={}", account, generateSecretKey(numBytes));
     }
 
     /**
-     * 使用给定的时间戳生成一次性密码.
+     * Generates a one-time password using the given timestamp.
      *
-     * @param timestamp 用于生成密码的时间戳
-     * @return 一次性密码的int形式
+     * @param timestamp The timestamp used to generate the password.
+     * @return The one-time password as an int.
      */
     public int generate(final Instant timestamp) {
         return this.generate(timestamp.toEpochMilli() / this.timeStep.toMillis());
     }
 
     /**
-     * 用于验证code是否正确
+     * Used to validate if a code is correct.
      *
-     * @param timestamp  验证时间戳
-     * @param offsetSize 误差范围
-     * @param code       code
-     * @return 是否通过
+     * @param timestamp  The validation timestamp.
+     * @param offsetSize The time step tolerance window (number of steps before and after).
+     * @param code       The code to validate.
+     * @return Whether the validation passes.
      */
     public boolean validate(final Instant timestamp, final int offsetSize, final int code) {
         if (offsetSize == 0) {
@@ -156,9 +171,9 @@ public class TOTP extends HOTP {
     }
 
     /**
-     * 获取步进
+     * Gets the time step.
      *
-     * @return 步进
+     * @return The time step.
      */
     public Duration getTimeStep() {
         return this.timeStep;

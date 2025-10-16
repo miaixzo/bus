@@ -27,8 +27,6 @@
 */
 package org.miaixz.bus.image.plugin;
 
-import java.text.MessageFormat;
-
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.image.*;
 import org.miaixz.bus.image.galaxy.data.Attributes;
@@ -36,35 +34,46 @@ import org.miaixz.bus.image.metric.Connection;
 import org.miaixz.bus.image.metric.net.ApplicationEntity;
 import org.miaixz.bus.logger.Logger;
 
+import java.text.MessageFormat;
+
 /**
+ * The {@code Echo} class provides a simple way to perform a DICOM C-ECHO verification. It encapsulates the setup and
+ * execution of the echo process.
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class Echo {
 
     /**
-     * @param callingAET 调用DICOM节点的AET
-     * @param calledNode 被调用的DICOM节点配置
-     * @return Status实例，其中包含DICOM响应，DICOM状态，错误消息和进度信息
+     * Performs a DICOM C-ECHO verification.
+     *
+     * @param callingAET the AET of the calling DICOM node.
+     * @param calledNode the configuration of the called DICOM node.
+     * @return a {@link Status} instance containing the DICOM response, status, error message, and timing information.
      */
     public static Status process(String callingAET, Node calledNode) {
         return process(new Node(callingAET), calledNode);
     }
 
     /**
-     * @param callingNode 调用DICOM节点的配置
-     * @param calledNode  被调用的DICOM节点配置
-     * @return Status实例，其中包含DICOM响应，DICOM状态，错误消息和进度信息
+     * Performs a DICOM C-ECHO verification.
+     *
+     * @param callingNode the configuration of the calling DICOM node.
+     * @param calledNode  the configuration of the called DICOM node.
+     * @return a {@link Status} instance containing the DICOM response, status, error message, and timing information.
      */
     public static Status process(Node callingNode, Node calledNode) {
         return process(null, callingNode, calledNode);
     }
 
     /**
-     * @param args        可选的高级参数(代理、身份验证、连接和TLS)
-     * @param callingNode 调用DICOM节点的配置
-     * @param calledNode  被调用的DICOM节点配置
-     * @return Status实例，其中包含DICOM响应，DICOM状态，错误消息和进度信息
+     * Performs a DICOM C-ECHO verification with advanced options.
+     *
+     * @param args        optional advanced parameters (proxy, authentication, connection, and TLS).
+     * @param callingNode the configuration of the calling DICOM node.
+     * @param calledNode  the configuration of the called DICOM node.
+     * @return a {@link Status} instance containing the DICOM response, status, error message, and timing information.
      */
     public static Status process(Args args, Node callingNode, Node calledNode) {
         if (callingNode == null || calledNode == null) {

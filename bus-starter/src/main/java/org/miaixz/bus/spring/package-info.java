@@ -26,8 +26,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Spring 相关封装
- * 
+ * Provides Spring-related utility classes and integrations.
+ *
  * @author Kimi Liu
  * @since Java 17+
  */

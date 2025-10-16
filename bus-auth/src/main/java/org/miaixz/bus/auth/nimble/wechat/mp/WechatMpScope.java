@@ -32,7 +32,7 @@ import lombok.Getter;
 import org.miaixz.bus.auth.nimble.AuthorizeScope;
 
 /**
- * 微信公众平台 授权范围
+ * WeChat Official Account (MP) authorization scopes.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,13 +42,30 @@ import org.miaixz.bus.auth.nimble.AuthorizeScope;
 public enum WechatMpScope implements AuthorizeScope {
 
     /**
-     * {@code scope} 含义，以{@code description} 为准
+     * Pop up the authorization page, through which the nickname, gender, and location of the user can be obtained. Even
+     * if the user is not followed, their information can be obtained as long as they authorize. The meaning of
+     * {@code scope} is subject to {@code description}.
      */
-    SNSAPI_USERINFO("snsapi_userinfo", "弹出授权页面，可通过openid拿到昵称、性别、所在地。并且， 即使在未关注的情况下，只要用户授权，也能获取其信息", true),
-    SNSAPI_BASE("snsapi_base", "不弹出授权页面，直接跳转，只能获取用户openid", false);
+    SNSAPI_USERINFO("snsapi_userinfo",
+            "Pop up the authorization page, through which the nickname, gender, and location of the user can be obtained. Even if the user is not followed, their information can be obtained as long as they authorize",
+            true),
+    /**
+     * Do not pop up the authorization page, directly jump, only the user's openid can be obtained.
+     */
+    SNSAPI_BASE("snsapi_base",
+            "Do not pop up the authorization page, directly jump, only the user's openid can be obtained", false);
 
+    /**
+     * The scope string as defined by WeChat Official Account.
+     */
     private final String scope;
+    /**
+     * A description of what the scope grants access to.
+     */
     private final String description;
+    /**
+     * Indicates if this scope is enabled by default.
+     */
     private final boolean isDefault;
 
 }

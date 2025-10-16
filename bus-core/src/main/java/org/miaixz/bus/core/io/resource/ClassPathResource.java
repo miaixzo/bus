@@ -38,55 +38,70 @@ import org.miaixz.bus.core.lang.exception.NotFoundException;
 import org.miaixz.bus.core.xyz.*;
 
 /**
- * ClassPath单一资源访问类 传入路径path必须为相对路径，如果传入绝对路径，Linux路径会去掉开头的“/”，而Windows路径会直接报错。 传入的path所指向的资源必须存在，否则报错
+ * ClassPath single resource access class. The input path must be a relative path. If an absolute path is provided, a
+ * Linux path will have the leading "/" removed, while a Windows path will directly cause an error. The resource pointed
+ * to by the input path must exist, otherwise an error will be reported.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class ClassPathResource extends UrlResource {
 
+    /**
+     * The serial version UID for serialization.
+     */
     @Serial
     private static final long serialVersionUID = 2852230779720L;
 
+    /**
+     * The path of the resource relative to the ClassPath.
+     */
     private final String path;
+    /**
+     * The ClassLoader used to load the resource.
+     */
     private final ClassLoader classLoader;
+    /**
+     * The Class used to locate the resource.
+     */
     private final Class<?> clazz;
 
     /**
-     * 构造
+     * Constructs a {@code ClassPathResource} with the given path relative to the ClassPath.
      *
-     * @param path 相对于ClassPath的路径
+     * @param path The path relative to the ClassPath.
      */
     public ClassPathResource(final String path) {
         this(path, null, null);
     }
 
     /**
-     * 构造
+     * Constructs a {@code ClassPathResource} with the given path and {@link ClassLoader}.
      *
-     * @param path        相对于ClassPath的路径
-     * @param classLoader {@link ClassLoader}
+     * @param path        The path relative to the ClassPath.
+     * @param classLoader The {@link ClassLoader} to use for loading the resource.
      */
     public ClassPathResource(final String path, final ClassLoader classLoader) {
         this(path, classLoader, null);
     }
 
     /**
-     * 构造
+     * Constructs a {@code ClassPathResource} with the given path relative to the specified {@link Class}.
      *
-     * @param path  相对于给定Class的路径
-     * @param clazz {@link Class} 用于定位路径
+     * @param path  The path relative to the given {@link Class}.
+     * @param clazz The {@link Class} used to locate the path.
      */
     public ClassPathResource(final String path, final Class<?> clazz) {
         this(path, null, clazz);
     }
 
     /**
-     * 构造
+     * Constructs a {@code ClassPathResource} with the given path, {@link ClassLoader}, and {@link Class}.
      *
-     * @param pathBaseClassLoader 相对路径
-     * @param classLoader         {@link ClassLoader}
-     * @param clazz               {@link Class} 用于定位路径
+     * @param pathBaseClassLoader The path relative to the ClassLoader or Class.
+     * @param classLoader         The {@link ClassLoader} to use. If {@code null}, the default ClassLoader is used.
+     * @param clazz               The {@link Class} to use for locating the path. If {@code null}, the ClassLoader is
+     *                            used.
      */
     public ClassPathResource(final String pathBaseClassLoader, final ClassLoader classLoader, final Class<?> clazz) {
         super((URL) null);
@@ -102,38 +117,40 @@ public class ClassPathResource extends UrlResource {
     }
 
     /**
-     * 获得Path
+     * Retrieves the path of the resource.
      *
-     * @return path
+     * @return The path of the resource.
      */
     public final String getPath() {
         return this.path;
     }
 
     /**
-     * 获得绝对路径Path 对于不存在的资源，返回拼接后的绝对路径
+     * Retrieves the absolute path of the resource. For non-existent resources, the concatenated absolute path is
+     * returned.
      *
-     * @return 绝对路径path
+     * @return The absolute path of the resource.
      */
     public final String getAbsolutePath() {
         if (FileKit.isAbsolutePath(this.path)) {
             return this.path;
         }
-        // url在初始化的时候已经断言，此处始终不为null
+        // The URL is asserted to be non-null during initialization.
         return FileKit.normalize(UrlKit.getDecodedPath(this.url));
     }
 
     /**
-     * 获得 {@link ClassLoader}
+     * Retrieves the {@link ClassLoader} used by this resource.
      *
-     * @return {@link ClassLoader}
+     * @return The {@link ClassLoader}.
      */
     public final ClassLoader getClassLoader() {
         return this.classLoader;
     }
 
     /**
-     * 根据给定资源初始化URL
+     * Initializes the URL of the resource based on the given resource path. Throws {@link NotFoundException} if the
+     * resource does not exist.
      */
     private void initUrl() throws NotFoundException {
         if (null != this.clazz) {
@@ -154,13 +171,14 @@ public class ClassPathResource extends UrlResource {
     }
 
     /**
-     * 标准化Path格式
+     * Normalizes the given path format.
      *
-     * @param path Path
-     * @return 标准化后的path
+     * @param path The path to normalize.
+     * @return The normalized path.
+     * @throws IllegalArgumentException if the path is an absolute path.
      */
     private String normalizePath(String path) {
-        // 标准化路径
+        // Normalize the path
         path = FileKit.normalize(path);
         path = StringKit.removePrefix(path, Symbol.SLASH);
 

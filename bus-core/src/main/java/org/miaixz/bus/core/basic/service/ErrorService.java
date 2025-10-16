@@ -28,11 +28,22 @@
 package org.miaixz.bus.core.basic.service;
 
 /**
- * 异常信息处理 此类未找到实现的情况下，采用默认实现 可以根据不同业务需求，重写方法实现对应业务逻辑即可 项目中可通过SPI形式接入
- * 例：META-INF/services/org.miaixz.bus.core.basics.service.ErrorService <code>
+ * An interface for handling exceptions. If no implementations are found, a default implementation is used.
+ * <p>
+ * This interface can be implemented to define custom business logic for exception handling. Implementations are
+ * discovered using the Service Provider Interface (SPI) mechanism. To add a custom implementation, create a file named
+ * {@code org.miaixz.bus.core.basic.service.ErrorService} in the {@code META-INF/services} directory, and add the fully
+ * qualified name of your implementation class to it.
+ *
+ * <p>
+ * Example: in {@code META-INF/services/org.miaixz.bus.core.basic.service.ErrorService}
+ * 
+ * <pre>
+ * <code>
  * org.miaixz.bus.xxx.BusinessErrorService
- * ......
+ * ...
  * </code>
+ * </pre>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -40,20 +51,20 @@ package org.miaixz.bus.core.basic.service;
 public interface ErrorService {
 
     /**
-     * 完成请求处理前调用
+     * Called before the main request processing.
      *
-     * @param ex 对象参数
-     * @return 如果执行链应该继续执行, 则为:true 否则:false
+     * @param ex The exception object.
+     * @return {@code true} if the execution chain should continue, {@code false} otherwise.
      */
     default boolean before(Exception ex) {
         return true;
     }
 
     /**
-     * 完成请求处理后回调
+     * Callback invoked after the main request processing is complete.
      *
-     * @param ex 对象参数
-     * @return 如果执行链应该继续执行, 则为:true 否则:false
+     * @param ex The exception object.
+     * @return {@code true} if the execution chain should continue, {@code false} otherwise.
      */
     default boolean after(Exception ex) {
         return true;

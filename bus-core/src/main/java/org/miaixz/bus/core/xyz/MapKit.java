@@ -35,12 +35,11 @@ import java.util.stream.Collectors;
 import org.miaixz.bus.core.center.function.Consumer3X;
 import org.miaixz.bus.core.center.iterator.ArrayIterator;
 import org.miaixz.bus.core.center.map.*;
-import org.miaixz.bus.core.center.map.Dictionary;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 
 /**
- * Map相关工具类
+ * Map related utility class.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,38 +47,40 @@ import org.miaixz.bus.core.lang.Normal;
 public class MapKit extends MapGets {
 
     /**
-     * 如果给定Map为空，返回默认Map
+     * Returns the given map if it is not empty, otherwise returns the default map.
      *
-     * @param <T>        集合类型
-     * @param <K>        键类型
-     * @param <V>        值类型
-     * @param map        Map
-     * @param defaultMap 默认Map
-     * @return 非空（empty）的原Map或默认Map
+     * @param <T>        The type of the map.
+     * @param <K>        The type of keys in the map.
+     * @param <V>        The type of values in the map.
+     * @param map        The map to check.
+     * @param defaultMap The default map to return if the given map is empty.
+     * @return The non-empty original map or the default map.
      */
     public static <T extends Map<K, V>, K, V> T defaultIfEmpty(final T map, final T defaultMap) {
         return isEmpty(map) ? defaultMap : map;
     }
 
     /**
-     * 新建一个HashMap
+     * Creates a new empty {@link HashMap}.
      *
-     * @param <K> Key类型
-     * @param <V> Value类型
-     * @return HashMap对象
+     * @param <K> The type of keys in the map.
+     * @param <V> The type of values in the map.
+     * @return A new {@link HashMap} object.
      */
     public static <K, V> HashMap<K, V> newHashMap() {
         return new HashMap<>();
     }
 
     /**
-     * 新建一个HashMap
+     * Creates a new {@link HashMap} with a specified initial size and order preference.
      *
-     * @param <K>      Key类型
-     * @param <V>      Value类型
-     * @param size     初始大小，由于默认负载因子0.75，传入的size会实际初始大小为size / 0.75 + 1
-     * @param isLinked Map的Key是否有序，有序返回 {@link LinkedHashMap}，否则返回 {@link HashMap}
-     * @return HashMap对象
+     * @param <K>      The type of keys in the map.
+     * @param <V>      The type of values in the map.
+     * @param size     The initial desired size. The actual initial capacity will be calculated as
+     *                 {@code size / 0.75 + 1}.
+     * @param isLinked If {@code true}, a {@link LinkedHashMap} is returned (keys maintain insertion order); otherwise,
+     *                 a {@link HashMap} is returned.
+     * @return A new {@link HashMap} or {@link LinkedHashMap} object.
      */
     public static <K, V> HashMap<K, V> newHashMap(final int size, final boolean isLinked) {
         final int initialCapacity = (int) (size / Normal.DEFAULT_LOAD_FACTOR) + 1;
@@ -87,49 +88,50 @@ public class MapKit extends MapGets {
     }
 
     /**
-     * 新建一个HashMap
+     * Creates a new {@link HashMap} with a specified initial size.
      *
-     * @param <K>  Key类型
-     * @param <V>  Value类型
-     * @param size 初始大小，由于默认负载因子0.75，传入的size会实际初始大小为size / 0.75 + 1
-     * @return HashMap对象
+     * @param <K>  The type of keys in the map.
+     * @param <V>  The type of values in the map.
+     * @param size The initial desired size. The actual initial capacity will be calculated as {@code size / 0.75 + 1}.
+     * @return A new {@link HashMap} object.
      */
     public static <K, V> HashMap<K, V> newHashMap(final int size) {
         return newHashMap(size, false);
     }
 
     /**
-     * 新建一个HashMap
+     * Creates a new {@link HashMap} with a default initial capacity and order preference.
      *
-     * @param <K>      Key类型
-     * @param <V>      Value类型
-     * @param isLinked Map的Key是否有序，有序返回 {@link LinkedHashMap}，否则返回 {@link HashMap}
-     * @return HashMap对象
+     * @param <K>      The type of keys in the map.
+     * @param <V>      The type of values in the map.
+     * @param isLinked If {@code true}, a {@link LinkedHashMap} is returned (keys maintain insertion order); otherwise,
+     *                 a {@link HashMap} is returned.
+     * @return A new {@link HashMap} or {@link LinkedHashMap} object.
      */
     public static <K, V> HashMap<K, V> newHashMap(final boolean isLinked) {
         return newHashMap(Normal._16, isLinked);
     }
 
     /**
-     * 新建TreeMap，Key有序的Map
+     * Creates a new {@link TreeMap} with keys ordered by the given comparator.
      *
-     * @param <K>        key的类型
-     * @param <V>        value的类型
-     * @param comparator Key比较器
-     * @return TreeMap
+     * @param <K>        The type of keys in the map.
+     * @param <V>        The type of values in the map.
+     * @param comparator The comparator to order the keys.
+     * @return A new {@link TreeMap}.
      */
     public static <K, V> TreeMap<K, V> newTreeMap(final Comparator<? super K> comparator) {
         return new TreeMap<>(comparator);
     }
 
     /**
-     * 新建TreeMap，Key有序的Map
+     * Creates a new {@link TreeMap} initialized with the given map and ordered by the given comparator.
      *
-     * @param <K>        key的类型
-     * @param <V>        value的类型
-     * @param map        Map
-     * @param comparator Key比较器
-     * @return TreeMap
+     * @param <K>        The type of keys in the map.
+     * @param <V>        The type of values in the map.
+     * @param map        The map to initialize the new TreeMap with.
+     * @param comparator The comparator to order the keys.
+     * @return A new {@link TreeMap}.
      */
     public static <K, V> TreeMap<K, V> newTreeMap(final Map<K, V> map, final Comparator<? super K> comparator) {
         final TreeMap<K, V> treeMap = new TreeMap<>(comparator);
@@ -140,37 +142,40 @@ public class MapKit extends MapGets {
     }
 
     /**
-     * 创建键不重复Map
+     * Creates a new {@link IdentityHashMap} with a specified initial capacity. In an {@link IdentityHashMap}, key
+     * equality is determined by reference equality ({@code ==}) instead of object equality ({@code equals()}).
      *
-     * @param <K>  key的类型
-     * @param <V>  value的类型
-     * @param size 初始容量
-     * @return {@link IdentityHashMap}
+     * @param <K>  The type of keys in the map.
+     * @param <V>  The type of values in the map.
+     * @param size The initial capacity.
+     * @return A new {@link IdentityHashMap}.
      */
     public static <K, V> Map<K, V> newIdentityMap(final int size) {
         return new IdentityHashMap<>(size);
     }
 
     /**
-     * 创建Map 传入抽象Map{@link AbstractMap}和{@link Map}类将默认创建{@link HashMap}
+     * Creates a new {@link Map} instance based on the provided map type. If an abstract map type like
+     * {@link AbstractMap} or {@link Map} is provided, a {@link HashMap} will be created by default.
      *
-     * @param <K>     map键类型
-     * @param <V>     map值类型
-     * @param mapType map类型
-     * @return {@link Map}实例
+     * @param <K>     The type of keys in the map.
+     * @param <V>     The type of values in the map.
+     * @param mapType The class of the map type to create.
+     * @return A new {@link Map} instance.
      */
     public static <K, V> Map<K, V> createMap(final Class<?> mapType) {
         return createMap(mapType, HashMap::new);
     }
 
     /**
-     * 创建Map 传入抽象Map{@link AbstractMap}和{@link Map}类将默认创建{@link HashMap}
+     * Creates a new {@link Map} instance based on the provided map type. If creation via reflection fails or an
+     * abstract map type is provided, the {@code defaultMap} supplier is used.
      *
-     * @param <K>        map键类型
-     * @param <V>        map值类型
-     * @param mapType    map类型
-     * @param defaultMap 如果通过反射创建失败或提供的是抽象Map，则创建的默认Map
-     * @return {@link Map}实例
+     * @param <K>        The type of keys in the map.
+     * @param <V>        The type of values in the map.
+     * @param mapType    The class of the map type to create.
+     * @param defaultMap A supplier for a default map to use if reflection creation fails or the type is abstract.
+     * @return A new {@link Map} instance.
      */
     public static <K, V> Map<K, V> createMap(final Class<?> mapType, final Supplier<Map<K, V>> defaultMap) {
         Map<K, V> result = null;
@@ -178,8 +183,8 @@ public class MapKit extends MapGets {
             try {
                 result = (Map<K, V>) ReflectKit.newInstanceIfPossible(mapType);
             } catch (final Exception ignore) {
-                // JDK9+抛出java.lang.reflect.InaccessibleObjectException
-                // 跳过
+                // JDK9+ may throw java.lang.reflect.InaccessibleObjectException
+                // Skip and use default map
             }
         }
 
@@ -188,7 +193,7 @@ public class MapKit extends MapGets {
         }
 
         if (!result.isEmpty()) {
-            // 在构造中put值，会导致新建map带有值内容，此处清空
+            // If the constructor puts values, clear them to ensure an empty map is returned.
             result.clear();
         }
 
@@ -196,27 +201,27 @@ public class MapKit extends MapGets {
     }
 
     /**
-     * 将单一键值对转换为Map
+     * Converts a single key-value pair into a {@link HashMap}.
      *
-     * @param <K>   键类型
-     * @param <V>   值类型
-     * @param key   键
-     * @param value 值
-     * @return {@link HashMap}
+     * @param <K>   The type of the key.
+     * @param <V>   The type of the value.
+     * @param key   The key.
+     * @param value The value.
+     * @return A new {@link HashMap} containing the single key-value pair.
      */
     public static <K, V> HashMap<K, V> of(final K key, final V value) {
         return of(key, value, false);
     }
 
     /**
-     * 将单一键值对转换为Map
+     * Converts a single key-value pair into a {@link HashMap}, with an option for ordered keys.
      *
-     * @param <K>     键类型
-     * @param <V>     值类型
-     * @param key     键
-     * @param value   值
-     * @param isOrder 是否有序
-     * @return {@link HashMap}
+     * @param <K>     The type of the key.
+     * @param <V>     The type of the value.
+     * @param key     The key.
+     * @param value   The value.
+     * @param isOrder If {@code true}, a {@link LinkedHashMap} is created; otherwise, a {@link HashMap}.
+     * @return A new {@link HashMap} or {@link LinkedHashMap} containing the single key-value pair.
      */
     public static <K, V> HashMap<K, V> of(final K key, final V value, final boolean isOrder) {
         final HashMap<K, V> map = newHashMap(isOrder);
@@ -225,27 +230,23 @@ public class MapKit extends MapGets {
     }
 
     /**
-     * 根据给定的键值对数组创建HashMap对象，传入参数必须为key,value,data,value...
-     *
+     * Creates a {@link Map} object from an array of key-value pairs. The input array must consist of alternating keys
+     * and values (e.g., key1, value1, key2, value2, ...). Keys will be cast to type K, and values to type V.
      * <p>
-     * 奇数参数必须为key，key最后会转换为String类型。
-     * </p>
-     * <p>
-     * 偶数参数必须为value，可以为任意类型。
-     * </p>
-     *
+     * Example:
+     * 
      * <pre>
      * 
      * LinkedHashMap map = MapKit.ofKvs(false, "RED", "#FF0000", "GREEN", "#00FF00", "BLUE", "#0000FF");
      * </pre>
      *
-     * @param isLinked      是否使用{@link LinkedHashMap}
-     * @param keysAndValues 键值对列表，必须奇数参数为key，偶数参数为value
-     * @param <K>           键类型
-     * @param <V>           值类型
-     * @return LinkedHashMap
+     * @param isLinked      If {@code true}, a {@link LinkedHashMap} is created; otherwise, a {@link HashMap}.
+     * @param keysAndValues An array of alternating keys and values. Must have an even number of elements.
+     * @param <K>           The type of keys in the map.
+     * @param <V>           The type of values in the map.
+     * @return A new {@link Map} containing the provided key-value pairs.
+     * @throws IllegalArgumentException if the number of elements in {@code keysAndValues} is odd.
      * @see org.miaixz.bus.core.center.map.Dictionary#ofKvs(Object...)
-     * @see Dictionary#ofKvs(Object...)
      */
     public static <K, V> Map<K, V> ofKvs(final boolean isLinked, final Object... keysAndValues) {
         if (ArrayKit.isEmpty(keysAndValues)) {
@@ -262,12 +263,12 @@ public class MapKit extends MapGets {
     }
 
     /**
-     * 根据给定的Pair数组创建Map对象
+     * Creates a {@link Map} object from an array of {@link Map.Entry} objects.
      *
-     * @param <K>     键类型
-     * @param <V>     值类型
-     * @param entries 键值对
-     * @return Map
+     * @param <K>     The type of keys in the map.
+     * @param <V>     The type of values in the map.
+     * @param entries An array of {@link Map.Entry} objects.
+     * @return A new {@link Map} containing the provided entries.
      * @see #entry(Object, Object)
      */
     @SafeVarargs
@@ -276,24 +277,24 @@ public class MapKit extends MapGets {
     }
 
     /**
-     * 将Entry集合转换为HashMap
+     * Converts an iterable of {@link Map.Entry} objects into a {@link HashMap}.
      *
-     * @param <K>       键类型
-     * @param <V>       值类型
-     * @param entryIter entry集合
-     * @return Map
+     * @param <K>       The type of keys in the map.
+     * @param <V>       The type of values in the map.
+     * @param entryIter An iterable of {@link Map.Entry} objects.
+     * @return A new {@link HashMap} containing the entries from the iterable.
      */
     public static <K, V> HashMap<K, V> ofEntries(final Iterable<Entry<K, V>> entryIter) {
         return ofEntries(IteratorKit.getIter(entryIter));
     }
 
     /**
-     * 将Entry集合转换为HashMap
+     * Converts an iterator of {@link Map.Entry} objects into a {@link HashMap}.
      *
-     * @param <K>       键类型
-     * @param <V>       值类型
-     * @param entryIter entry集合
-     * @return Map
+     * @param <K>       The type of keys in the map.
+     * @param <V>       The type of values in the map.
+     * @param entryIter An iterator of {@link Map.Entry} objects.
+     * @return A new {@link HashMap} containing the entries from the iterator.
      */
     public static <K, V> HashMap<K, V> ofEntries(final Iterator<Entry<K, V>> entryIter) {
         final HashMap<K, V> map = new HashMap<>();
@@ -308,25 +309,30 @@ public class MapKit extends MapGets {
     }
 
     /**
-     * 将数组转换为Map（HashMap），支持数组元素类型为：
-     *
-     * <pre>
-     * Map.Entry
-     * 长度大于1的数组（取前两个值），如果不满足跳过此元素
-     * Iterable 长度也必须大于1（取前两个值），如果不满足跳过此元素
-     * Iterator 长度也必须大于1（取前两个值），如果不满足跳过此元素
-     * </pre>
-     *
+     * Converts an array into a {@link HashMap}. Supported array element types are:
+     * <ul>
+     * <li>{@link Map.Entry}</li>
+     * <li>Arrays of length greater than 1 (takes the first two elements as key and value). Elements not meeting this
+     * condition are skipped.</li>
+     * <li>{@link Iterable} with length greater than 1 (takes the first two elements as key and value). Elements not
+     * meeting this condition are skipped.</li>
+     * <li>{@link Iterator} with length greater than 1 (takes the first two elements as key and value). Elements not
+     * meeting this condition are skipped.</li>
+     * </ul>
+     * <p>
+     * Example:
+     * 
      * <pre>
      * 
      * Map&lt;Object, Object&gt; colorMap = MapKit
      *         .of(new String[][] { { "RED", "#FF0000" }, { "GREEN", "#00FF00" }, { "BLUE", "#0000FF" } });
      * </pre>
      * <p>
-     * 参考：commons-lang
+     * Reference: commons-lang
      *
-     * @param array 数组。元素类型为Map.Entry、数组、Iterable、Iterator
-     * @return {@link HashMap}
+     * @param array The array. Element types can be {@link Map.Entry}, array, {@link Iterable}, or {@link Iterator}.
+     * @return A new {@link HashMap} created from the array, or {@code null} if the input array is {@code null}.
+     * @throws IllegalArgumentException if an array element is not a supported type or does not have enough elements.
      */
     public static HashMap<Object, Object> of(final Object[] array) {
         if (array == null) {
@@ -369,8 +375,11 @@ public class MapKit extends MapGets {
     }
 
     /**
-     * 行转列，合并相同的键，值合并为列表 将Map列表中相同key的值组成列表做为Map的value 是{@link #toMapList(Map)}的逆方法 比如传入数据：
-     *
+     * Transforms a list of maps into a single map where common keys have their values merged into a list. This is the
+     * inverse operation of {@link #toMapList(Map)}.
+     * <p>
+     * For example, given the input data:
+     * 
      * <pre>
      * [
      *  {a: 1, b: 1, c: 1}
@@ -379,9 +388,9 @@ public class MapKit extends MapGets {
      *  {a: 4}
      * ]
      * </pre>
-     * <p>
-     * 结果是：
-     *
+     * 
+     * The result will be:
+     * 
      * <pre>
      * {
      *   a: [1,2,3,4]
@@ -390,10 +399,10 @@ public class MapKit extends MapGets {
      * }
      * </pre>
      *
-     * @param <K>     键类型
-     * @param <V>     值类型
-     * @param mapList Map列表
-     * @return Map
+     * @param <K>     The type of keys in the maps.
+     * @param <V>     The type of values in the maps.
+     * @param mapList An iterable of maps.
+     * @return A new map where keys map to lists of values, or an empty map if the input list is empty.
      */
     public static <K, V> Map<K, List<V>> toListMap(final Iterable<? extends Map<K, V>> mapList) {
         final Map<K, List<V>> resultMap = new HashMap<>();
@@ -411,8 +420,12 @@ public class MapKit extends MapGets {
     }
 
     /**
-     * 列转行。将Map中值列表分别按照其位置与key组成新的map。 是{@link #toListMap(Iterable)}的逆方法 比如传入数据：
-     *
+     * Transforms a map with list values into a list of maps. Each element in the value lists, along with its
+     * corresponding key, forms a new map in the resulting list. This is the inverse operation of
+     * {@link #toListMap(Iterable)}.
+     * <p>
+     * For example, given the input data:
+     * 
      * <pre>
      * {
      *   a: [1,2,3,4]
@@ -420,9 +433,9 @@ public class MapKit extends MapGets {
      *   c: [1]
      * }
      * </pre>
-     * <p>
-     * 结果是：
-     *
+     * 
+     * The result will be:
+     * 
      * <pre>
      * [
      *  {a: 1, b: 1, c: 1}
@@ -432,10 +445,10 @@ public class MapKit extends MapGets {
      * ]
      * </pre>
      *
-     * @param <K>     键类型
-     * @param <V>     值类型
-     * @param listMap 列表Map
-     * @return Map列表
+     * @param <K>     The type of keys in the map.
+     * @param <V>     The type of values in the lists.
+     * @param listMap The map where values are iterables of type V.
+     * @return A list of maps, or an empty list if the input map is empty.
      */
     public static <K, V> List<Map<K, V>> toMapList(final Map<K, ? extends Iterable<V>> listMap) {
         if (isEmpty(listMap)) {
@@ -449,16 +462,16 @@ public class MapKit extends MapGets {
                 continue;
             }
             final K key = entry.getKey();
-            // 对已经存在的map添加元素
+            // Add elements to existing maps
             for (final Map<K, V> map : resultList) {
-                // 还可以继续添加元素
+                // If there are more elements to add
                 if (iterator.hasNext()) {
                     map.put(key, iterator.next());
                 } else {
                     break;
                 }
             }
-            // entry的value的个数 大于 当前列表的size, 直接新增map
+            // If there are more values in the entry's list than existing maps, create new maps
             while (iterator.hasNext()) {
                 resultList.add(MapKit.of(key, iterator.next()));
             }
@@ -468,22 +481,24 @@ public class MapKit extends MapGets {
     }
 
     /**
-     * 将已知Map转换为key为驼峰风格的Map 如果KEY为非String类型，保留原值
+     * Converts a given map into a new map where keys are in camel case style. If a key is not a String type, its
+     * original value is retained.
      *
-     * @param <K> key的类型
-     * @param <V> value的类型
-     * @param map 原Map
-     * @return 驼峰风格Map
+     * @param <K> The type of keys in the map.
+     * @param <V> The type of values in the map.
+     * @param map The original map.
+     * @return A new map with camel case keys.
      */
     public static <K, V> Map<K, V> toCamelCaseMap(final Map<K, V> map) {
         return (map instanceof LinkedHashMap) ? new CamelCaseLinkedMap<>(map) : new CamelCaseMap<>(map);
     }
 
     /**
-     * 将键值对转换为二维数组，第一维是key，第二维是value
+     * Converts a map into a two-dimensional array, where the first dimension represents keys and the second represents
+     * values.
      *
-     * @param map map
-     * @return 数组
+     * @param map The map to convert.
+     * @return A two-dimensional array of objects, or {@code null} if the input map is {@code null}.
      */
     public static Object[][] toObjectArray(final Map<?, ?> map) {
         if (map == null) {
@@ -503,15 +518,15 @@ public class MapKit extends MapGets {
     }
 
     /**
-     * 将map转成字符串
+     * Joins the entries of a map into a single string.
      *
-     * @param <K>               键类型
-     * @param <V>               值类型
-     * @param map               Map
-     * @param separator         entry之间的连接符
-     * @param keyValueSeparator kv之间的连接符
-     * @param args              其它附加参数字符串（例如密钥）
-     * @return 连接字符串
+     * @param <K>               The type of keys in the map.
+     * @param <V>               The type of values in the map.
+     * @param map               The map to join.
+     * @param separator         The separator string between entries.
+     * @param keyValueSeparator The separator string between keys and values.
+     * @param args              Additional parameter strings (e.g., a secret key) to append.
+     * @return The joined string.
      */
     public static <K, V> String join(
             final Map<K, V> map,
@@ -522,14 +537,15 @@ public class MapKit extends MapGets {
     }
 
     /**
-     * 根据参数排序后拼接为字符串，常用于签名
+     * Joins the entries of a map into a single string after sorting them by key. Commonly used for generating
+     * signatures.
      *
-     * @param params            参数
-     * @param separator         entry之间的连接符
-     * @param keyValueSeparator kv之间的连接符
-     * @param isIgnoreNull      是否忽略null的键和值
-     * @param args              其它附加参数字符串（例如密钥）
-     * @return 签名字符串
+     * @param params            The map of parameters.
+     * @param separator         The separator string between entries.
+     * @param keyValueSeparator The separator string between keys and values.
+     * @param isIgnoreNull      If {@code true}, null keys and values are ignored.
+     * @param args              Additional parameter strings (e.g., a secret key) to append.
+     * @return The signature string.
      */
     public static String sortJoin(
             final Map<?, ?> params,
@@ -541,15 +557,15 @@ public class MapKit extends MapGets {
     }
 
     /**
-     * 将map转成字符串，忽略null的键和值
+     * Joins the entries of a map into a single string, ignoring null keys and values.
      *
-     * @param <K>               键类型
-     * @param <V>               值类型
-     * @param map               Map
-     * @param separator         entry之间的连接符
-     * @param keyValueSeparator kv之间的连接符
-     * @param args              其它附加参数字符串（例如密钥）
-     * @return 连接后的字符串
+     * @param <K>               The type of keys in the map.
+     * @param <V>               The type of values in the map.
+     * @param map               The map to join.
+     * @param separator         The separator string between entries.
+     * @param keyValueSeparator The separator string between keys and values.
+     * @param args              Additional parameter strings (e.g., a secret key) to append.
+     * @return The joined string.
      */
     public static <K, V> String joinIgnoreNull(
             final Map<K, V> map,
@@ -560,16 +576,16 @@ public class MapKit extends MapGets {
     }
 
     /**
-     * 将map转成字符串
+     * Joins the entries of a map into a single string.
      *
-     * @param <K>               键类型
-     * @param <V>               值类型
-     * @param map               Map，为空返回args拼接
-     * @param separator         entry之间的连接符
-     * @param keyValueSeparator kv之间的连接符
-     * @param isIgnoreNull      是否忽略null的键和值
-     * @param args              其它附加参数字符串（例如密钥）
-     * @return 连接后的字符串，map和args为空返回""
+     * @param <K>               The type of keys in the map.
+     * @param <V>               The type of values in the map.
+     * @param map               The map to join. If empty, only {@code args} are joined.
+     * @param separator         The separator string between entries.
+     * @param keyValueSeparator The separator string between keys and values.
+     * @param isIgnoreNull      If {@code true}, null keys and values are ignored.
+     * @param args              Additional parameter strings (e.g., a secret key) to append.
+     * @return The joined string. Returns an empty string if both map and args are empty.
      */
     public static <K, V> String join(
             final Map<K, V> map,
@@ -586,16 +602,17 @@ public class MapKit extends MapGets {
     }
 
     /**
-     * 将map转成字符串
+     * Joins the entries of a map into a single string, applying a predicate to filter entries.
      *
-     * @param <K>               键类型
-     * @param <V>               值类型
-     * @param map               Map，为空返回args拼接
-     * @param separator         entry之间的连接符
-     * @param keyValueSeparator kv之间的连接符
-     * @param predicate         键值对过滤
-     * @param args              其它附加参数字符串（例如密钥）
-     * @return 连接后的字符串，map和args为空返回""
+     * @param <K>               The type of keys in the map.
+     * @param <V>               The type of values in the map.
+     * @param map               The map to join. If empty, only {@code args} are joined.
+     * @param separator         The separator string between entries.
+     * @param keyValueSeparator The separator string between keys and values.
+     * @param predicate         A predicate to filter map entries. Entries for which {@link Predicate#test(Object)}
+     *                          returns {@code true} are included.
+     * @param args              Additional parameter strings (e.g., a secret key) to append.
+     * @return The joined string. Returns an empty string if both map and args are empty.
      */
     public static <K, V> String join(
             final Map<K, V> map,
@@ -607,20 +624,14 @@ public class MapKit extends MapGets {
     }
 
     /**
-     * 编辑Map 编辑过程通过传入的Editor实现来返回需要的元素内容，这个Editor实现可以实现以下功能：
+     * Edits the entries of a map using a provided {@link UnaryOperator}. The editor can filter out entries (by
+     * returning {@code null}) or modify them.
      *
-     * <pre>
-     * 1、过滤出需要的对象，如果返回{@code
-     * null
-     * }表示这个元素对象抛弃
-     * 2、修改元素对象，返回集合中为修改后的对象
-     * </pre>
-     *
-     * @param <K>    Key类型
-     * @param <V>    Value类型
-     * @param map    Map
-     * @param editor 编辑器接口
-     * @return 编辑后的Map
+     * @param <K>    The type of keys in the map.
+     * @param <V>    The type of values in the map.
+     * @param map    The original map.
+     * @param editor The editor function that transforms each entry. If it returns {@code null}, the entry is discarded.
+     * @return A new map with the edited entries.
      */
     public static <K, V> Map<K, V> edit(final Map<K, V> map, final UnaryOperator<Entry<K, V>> editor) {
         if (null == map || null == editor) {
@@ -643,17 +654,14 @@ public class MapKit extends MapGets {
     }
 
     /**
-     * 过滤 过滤过程通过传入的Editor实现来返回需要的元素内容，这个Filter实现可以实现以下功能：
+     * Filters the entries of a map using a provided {@link Predicate}.
      *
-     * <pre>
-     * 1、过滤出需要的对象，如果返回null表示这个元素对象抛弃
-     * </pre>
-     *
-     * @param <K>       Key类型
-     * @param <V>       Value类型
-     * @param map       Map
-     * @param predicate 过滤器接口，{@link Predicate#test(Object)}为{@code true}保留，{@code null}返回原Map
-     * @return 过滤后的Map
+     * @param <K>       The type of keys in the map.
+     * @param <V>       The type of values in the map.
+     * @param map       The original map.
+     * @param predicate The filter predicate. Entries for which {@link Predicate#test(Object)} returns {@code true} are
+     *                  retained. If {@code null}, the original map is returned.
+     * @return A new map containing only the filtered entries.
      */
     public static <K, V> Map<K, V> filter(final Map<K, V> map, final Predicate<Entry<K, V>> predicate) {
         if (null == map || null == predicate) {
@@ -663,14 +671,16 @@ public class MapKit extends MapGets {
     }
 
     /**
-     * 通过biFunction自定义一个规则，此规则将原Map中的元素转换成新的元素，生成新的Map返回 变更过程通过传入的 {@link BiFunction} 实现来返回一个值可以为不同类型的 {@link Map}
+     * Transforms the values of a map using a provided {@link BiFunction} to create a new map with potentially different
+     * value types.
      *
-     * @param map        原有的map
-     * @param biFunction {@code lambda}，参数包含{@code data},{@code value}，返回值会作为新的{@code value}
-     * @param <K>        {@code data}的类型
-     * @param <V>        {@code value}的类型
-     * @param <R>        新的，修改后的{@code value}的类型
-     * @return 值可以为不同类型的 {@link Map}
+     * @param map        The original map.
+     * @param biFunction The {@link BiFunction} that takes a key and a value from the original map and returns a new
+     *                   value for the resulting map.
+     * @param <K>        The type of keys in the map.
+     * @param <V>        The type of values in the original map.
+     * @param <R>        The type of values in the resulting map.
+     * @return A new map with transformed values, or an empty map if the input map or function is null.
      */
     public static <K, V, R> Map<K, R> map(final Map<K, V> map, final BiFunction<K, V, R> biFunction) {
         if (null == map || null == biFunction) {
@@ -681,13 +691,14 @@ public class MapKit extends MapGets {
     }
 
     /**
-     * 过滤Map保留指定键值对，如果键不存在跳过
+     * Filters a map to retain only the entries whose keys are present in the given key list.
      *
-     * @param <K>  Key类型
-     * @param <V>  Value类型
-     * @param map  原始Map
-     * @param keys 键列表，{@code null}返回原Map
-     * @return Map 结果，结果的Map类型与原Map保持一致
+     * @param <K>  The type of keys in the map.
+     * @param <V>  The type of values in the map.
+     * @param map  The original map.
+     * @param keys The list of keys to retain. If {@code null}, the original map is returned.
+     * @return A new map containing only the entries with the specified keys. The type of the resulting map matches the
+     *         original map.
      */
     public static <K, V> Map<K, V> filter(final Map<K, V> map, final K... keys) {
         if (null == map || null == keys) {
@@ -708,15 +719,17 @@ public class MapKit extends MapGets {
     }
 
     /**
-     * Map的键和值互换 互换键值对不检查值是否有重复，如果有则后加入的元素替换先加入的元素 值的顺序在HashMap中不确定，所以谁覆盖谁也不确定，在有序的Map中按照先后顺序覆盖，保留最后的值
+     * Swaps the keys and values of a map. The resulting map will have values as keys and keys as values. If there are
+     * duplicate values in the original map, the last encountered key for that value will overwrite previous ones. The
+     * order of overwriting in a {@link HashMap} is not guaranteed, but in ordered maps, it follows insertion order.
      *
-     * @param <T> 键和值类型
-     * @param map Map对象，键值类型必须一致
-     * @return 互换后的Map
+     * @param <T> The common type of keys and values in the original map.
+     * @param map The map object whose keys and values are to be swapped. Keys and values must be of the same type.
+     * @return A new map with keys and values swapped.
      * @see #inverse(Map)
      */
     public static <T> Map<T, T> reverse(final Map<T, T> map) {
-        return edit(map, t -> new Entry<T, T>() {
+        return edit(map, t -> new Entry<>() {
 
             @Override
             public T getKey() {
@@ -736,12 +749,14 @@ public class MapKit extends MapGets {
     }
 
     /**
-     * Map的键和值互换 互换键值对不检查值是否有重复，如果有则后加入的元素替换先加入的元素 值的顺序在HashMap中不确定，所以谁覆盖谁也不确定，在有序的Map中按照先后顺序覆盖，保留最后的值
+     * Swaps the keys and values of a map. The resulting map will have values as keys and keys as values. If there are
+     * duplicate values in the original map, the last encountered key for that value will overwrite previous ones. The
+     * order of overwriting in a {@link HashMap} is not guaranteed, but in ordered maps, it follows insertion order.
      *
-     * @param <K> 键和值类型
-     * @param <V> 键和值类型
-     * @param map Map对象
-     * @return 互换后的Map
+     * @param <K> The type of keys in the original map.
+     * @param <V> The type of values in the original map.
+     * @param map The map object whose keys and values are to be swapped.
+     * @return A new map with keys and values swapped.
      */
     public static <K, V> Map<V, K> inverse(final Map<K, V> map) {
         final Map<V, K> result = createMap(map.getClass());
@@ -750,12 +765,12 @@ public class MapKit extends MapGets {
     }
 
     /**
-     * 排序已有Map，Key有序的Map，使用默认Key排序方式（字母顺序）
+     * Sorts an existing map by its keys using the default natural ordering (alphabetical order).
      *
-     * @param <K> key的类型
-     * @param <V> value的类型
-     * @param map Map
-     * @return TreeMap
+     * @param <K> The type of keys in the map.
+     * @param <V> The type of values in the map.
+     * @param map The map to sort.
+     * @return A new {@link TreeMap} with sorted keys, or {@code null} if the input map is {@code null}.
      * @see #newTreeMap(Map, Comparator)
      */
     public static <K, V> TreeMap<K, V> sort(final Map<K, V> map) {
@@ -763,13 +778,13 @@ public class MapKit extends MapGets {
     }
 
     /**
-     * 排序已有Map，Key有序的Map
+     * Sorts an existing map by its keys using a custom comparator.
      *
-     * @param <K>        key的类型
-     * @param <V>        value的类型
-     * @param map        Map，为null返回null
-     * @param comparator Key比较器
-     * @return TreeMap，map为null返回null
+     * @param <K>        The type of keys in the map.
+     * @param <V>        The type of values in the map.
+     * @param map        The map to sort. If {@code null}, returns {@code null}.
+     * @param comparator The comparator to order the keys. If {@code null}, natural ordering is used.
+     * @return A new {@link TreeMap} with sorted keys, or {@code null} if the input map is {@code null}.
      * @see #newTreeMap(Map, Comparator)
      */
     public static <K, V> TreeMap<K, V> sort(final Map<K, V> map, final Comparator<? super K> comparator) {
@@ -778,7 +793,7 @@ public class MapKit extends MapGets {
         }
 
         if (map instanceof final TreeMap<K, V> result) {
-            // 已经是可排序Map，此时只有比较器一致才返回原map
+            // If it's already a sortable map, return the original only if the comparator is consistent.
             if (null == comparator || comparator.equals(result.comparator())) {
                 return result;
             }
@@ -788,13 +803,13 @@ public class MapKit extends MapGets {
     }
 
     /**
-     * 按照值排序，可选是否倒序
+     * Sorts a map by its values, with an option for descending order.
      *
-     * @param map    需要对值排序的map
-     * @param <K>    键类型
-     * @param <V>    值类型
-     * @param isDesc 是否倒序
-     * @return 排序后新的Map
+     * @param map    The map whose values are to be sorted.
+     * @param <K>    The type of keys in the map.
+     * @param <V>    The type of values in the map, which must be comparable.
+     * @param isDesc If {@code true}, values are sorted in descending order; otherwise, ascending order.
+     * @return A new {@link LinkedHashMap} with entries sorted by value.
      */
     public static <K, V extends Comparable<? super V>> Map<K, V> sortByValue(
             final Map<K, V> map,
@@ -809,97 +824,99 @@ public class MapKit extends MapGets {
     }
 
     /**
-     * 创建代理Map {@link MapProxy}对Map做一次包装，提供各种getXXX方法
+     * Creates a {@link MapProxy} to wrap a given map, providing various {@code getXXX} methods for convenient access.
      *
-     * @param map 被代理的Map
-     * @return {@link MapProxy}
+     * @param map The map to be proxied.
+     * @return A new {@link MapProxy} instance.
      */
     public static MapProxy createProxy(final Map<?, ?> map) {
         return MapProxy.of(map);
     }
 
     /**
-     * 创建Map包装类MapWrapper {@link MapWrapper}对Map做一次包装
+     * Creates a {@link MapWrapper} to wrap a given map.
      *
-     * @param <K> key的类型
-     * @param <V> value的类型
-     * @param map 被代理的Map
-     * @return {@link MapWrapper}
+     * @param <K> The type of keys in the map.
+     * @param <V> The type of values in the map.
+     * @param map The map to be wrapped.
+     * @return A new {@link MapWrapper} instance.
      */
     public static <K, V> MapWrapper<K, V> wrap(final Map<K, V> map) {
         return new MapWrapper<>(map);
     }
 
     /**
-     * 将对应Map转换为不可修改的Map
+     * Returns an unmodifiable view of the given map.
      *
-     * @param map Map
-     * @param <K> 键类型
-     * @param <V> 值类型
-     * @return 不修改Map
+     * @param map The map to make unmodifiable.
+     * @param <K> The type of keys in the map.
+     * @param <V> The type of values in the map.
+     * @return An unmodifiable {@link Map}.
      */
     public static <K, V> Map<K, V> view(final Map<K, V> map) {
         return Collections.unmodifiableMap(map);
     }
 
     /**
-     * 创建链接调用map
+     * Creates a new {@link MapBuilder} for building maps with a fluent API.
      *
-     * @param <K> Key类型
-     * @param <V> Value类型
-     * @return map创建类
+     * @param <K> The type of keys in the map.
+     * @param <V> The type of values in the map.
+     * @return A new {@link MapBuilder} instance, initialized with a {@link HashMap}.
      */
     public static <K, V> MapBuilder<K, V> builder() {
         return builder(new HashMap<>());
     }
 
     /**
-     * 创建链接调用map
+     * Creates a new {@link MapBuilder} for building maps with a fluent API, using a provided map as the underlying
+     * storage.
      *
-     * @param <K> Key类型
-     * @param <V> Value类型
-     * @param map 实际使用的map
-     * @return map创建类
+     * @param <K> The type of keys in the map.
+     * @param <V> The type of values in the map.
+     * @param map The actual map to be used by the builder.
+     * @return A new {@link MapBuilder} instance.
      */
     public static <K, V> MapBuilder<K, V> builder(final Map<K, V> map) {
         return new MapBuilder<>(map);
     }
 
     /**
-     * 创建链接调用map
+     * Creates a new {@link MapBuilder} initialized with a single key-value pair.
      *
-     * @param <K> Key类型
-     * @param <V> Value类型
-     * @param k   data
-     * @param v   value
-     * @return map创建类
+     * @param <K> The type of the key.
+     * @param <V> The type of the value.
+     * @param k   The key.
+     * @param v   The value.
+     * @return A new {@link MapBuilder} instance, initialized with a {@link HashMap} containing the given key-value
+     *         pair.
      */
     public static <K, V> MapBuilder<K, V> builder(final K k, final V v) {
         return (builder(new HashMap<K, V>())).put(k, v);
     }
 
     /**
-     * 获取Map的部分key生成新的Map
+     * Retrieves a new map containing only the entries whose keys are present in the given key list.
      *
-     * @param <K>  Key类型
-     * @param <V>  Value类型
-     * @param map  Map
-     * @param keys 键列表
-     * @return 新Map，只包含指定的key
+     * @param <K>  The type of keys in the map.
+     * @param <V>  The type of values in the map.
+     * @param map  The original map.
+     * @param keys The list of keys to retrieve.
+     * @return A new map containing only the specified keys and their corresponding values.
      */
     public static <K, V> Map<K, V> getAny(final Map<K, V> map, final K... keys) {
         return filter(map, entry -> ArrayKit.contains(keys, entry.getKey()));
     }
 
     /**
-     * 去掉Map中指定key的键值对，修改原Map
+     * Removes key-value pairs from the given map based on a list of keys. The original map is modified.
      *
-     * @param <K>  Key类型
-     * @param <V>  Value类型
-     * @param <T>  Map类型
-     * @param map  Map
-     * @param keys 键列表
-     * @return 修改后的key
+     * @param <K>  The type of keys in the map.
+     * @param <V>  The type of values in the map.
+     * @param <T>  The concrete type of the map.
+     * @param map  The map from which to remove entries.
+     * @param keys The list of keys to remove.
+     * @return The modified map.
      */
     public static <K, V, T extends Map<K, V>> T removeAny(final T map, final K... keys) {
         for (final K key : keys) {
@@ -909,15 +926,17 @@ public class MapKit extends MapGets {
     }
 
     /**
-     * 重命名键 实现方式为移除然后重新put，当旧的key不存在直接返回 当新的key存在，抛出{@link IllegalArgumentException} 异常
+     * Renames a key in the map. This is achieved by removing the old key and re-inserting the value with the new key.
+     * If the old key does not exist, the map remains unchanged. If the new key already exists, an
+     * {@link IllegalArgumentException} is thrown.
      *
-     * @param <K>    key的类型
-     * @param <V>    value的类型
-     * @param map    Map
-     * @param oldKey 原键
-     * @param newKey 新键
-     * @return map
-     * @throws IllegalArgumentException 新key存在抛出此异常
+     * @param <K>    The type of keys in the map.
+     * @param <V>    The type of values in the map.
+     * @param map    The map to modify.
+     * @param oldKey The existing key to rename.
+     * @param newKey The new key name.
+     * @return The modified map.
+     * @throws IllegalArgumentException If the new key already exists in the map.
      */
     public static <K, V> Map<K, V> renameKey(final Map<K, V> map, final K oldKey, final K newKey) {
         if (isNotEmpty(map) && map.containsKey(oldKey)) {
@@ -930,38 +949,40 @@ public class MapKit extends MapGets {
     }
 
     /**
-     * 去除Map中值为{@code null}的键值对 注意：此方法在传入的Map上直接修改。
+     * Removes all key-value pairs from the map where the value is {@code null}. The original map is modified directly.
      *
-     * @param <K> key的类型
-     * @param <V> value的类型
-     * @param map Map
-     * @return map
+     * @param <K> The type of keys in the map.
+     * @param <V> The type of values in the map.
+     * @param map The map to modify.
+     * @return The modified map.
      */
     public static <K, V> Map<K, V> removeNullValue(final Map<K, V> map) {
         return removeIf(map, entry -> null == entry.getValue());
     }
 
     /**
-     * 去除Map中值为指定值的键值对 注意：此方法在传入的Map上直接修改。
+     * Removes all key-value pairs from the map where the value matches the given value. The original map is modified
+     * directly.
      *
-     * @param <K>   key的类型
-     * @param <V>   value的类型
-     * @param map   Map
-     * @param value 给定值
-     * @return map
+     * @param <K>   The type of keys in the map.
+     * @param <V>   The type of values in the map.
+     * @param map   The map to modify.
+     * @param value The value to match for removal.
+     * @return The modified map.
      */
     public static <K, V> Map<K, V> removeByValue(final Map<K, V> map, final V value) {
         return removeIf(map, entry -> ObjectKit.equals(value, entry.getValue()));
     }
 
     /**
-     * 去除Map中值为{@code null}的键值对 注意：此方法在传入的Map上直接修改。
+     * Removes key-value pairs from the map based on a provided predicate. The original map is modified directly.
      *
-     * @param <K>       key的类型
-     * @param <V>       value的类型
-     * @param map       Map
-     * @param predicate 移除条件，当{@link Predicate#test(Object)}为{@code true}时移除
-     * @return map
+     * @param <K>       The type of keys in the map.
+     * @param <V>       The type of values in the map.
+     * @param map       The map to modify.
+     * @param predicate The removal condition. Entries for which {@link Predicate#test(Object)} returns {@code true} are
+     *                  removed.
+     * @return The modified map.
      */
     public static <K, V> Map<K, V> removeIf(final Map<K, V> map, final Predicate<Entry<K, V>> predicate) {
         if (isEmpty(map)) {
@@ -972,11 +993,11 @@ public class MapKit extends MapGets {
     }
 
     /**
-     * 返回一个空Map
+     * Returns an empty, unmodifiable map.
      *
-     * @param <K> 键类型
-     * @param <V> 值类型
-     * @return 空Map
+     * @param <K> The type of keys in the map.
+     * @param <V> The type of values in the map.
+     * @return An empty, unmodifiable {@link Map}.
      * @see Collections#emptyMap()
      */
     public static <K, V> Map<K, V> empty() {
@@ -984,43 +1005,39 @@ public class MapKit extends MapGets {
     }
 
     /**
-     * 返回一个初始大小为0的HashMap(初始为0，可加入元素)
+     * Returns a new {@link HashMap} with an initial capacity of 0. This map can have elements added to it.
      *
-     * @param <K> 键类型
-     * @param <V> 值类型
-     * @return 初始大小为0的HashMap
+     * @param <K> The type of keys in the map.
+     * @param <V> The type of values in the map.
+     * @return A new {@link HashMap} with an initial capacity of 0.
      */
     public static <K, V> Map<K, V> zero() {
         return new HashMap<>(0, 1);
     }
 
     /**
-     * 返回一个只包含一个键值对的Map，不可变
+     * Returns an unmodifiable map containing only a single key-value pair.
      *
-     * @param key   键
-     * @param value 值
-     * @param <K>   键类型
-     * @param <V>   值类型
-     * @return Map
+     * @param key   The key.
+     * @param value The value.
+     * @param <K>   The type of the key.
+     * @param <V>   The type of the value.
+     * @return An unmodifiable {@link Map} with a single entry.
      */
     public static <K, V> Map<K, V> singleton(final K key, final V value) {
         return Collections.singletonMap(key, value);
     }
 
     /**
-     * 根据传入的Map类型不同，返回对应类型的空Map，支持类型包括：
+     * Returns an empty map of the specified type. Supported types include {@link NavigableMap}, {@link SortedMap}, and
+     * {@link Map}.
      *
-     * <pre>
-     *     1. NavigableMap
-     *     2. SortedMap
-     *     3. Map
-     * </pre>
-     *
-     * @param <K>      键类型
-     * @param <V>      值类型
-     * @param <T>      Map类型
-     * @param mapClass Map类型，null返回默认的Map
-     * @return 空Map
+     * @param <K>      The type of keys in the map.
+     * @param <V>      The type of values in the map.
+     * @param <T>      The concrete type of the map.
+     * @param mapClass The class of the map type. If {@code null}, a default empty {@link Map} is returned.
+     * @return An empty map of the specified type.
+     * @throws IllegalArgumentException if the provided map type is not supported for empty collections.
      */
     public static <K, V, T extends Map<K, V>> T empty(final Class<?> mapClass) {
         if (null == mapClass) {
@@ -1034,14 +1051,14 @@ public class MapKit extends MapGets {
             return (T) Collections.emptyMap();
         }
 
-        // 不支持空集合的集合类型
+        // Unsupported collection type for empty collections
         throw new IllegalArgumentException(StringKit.format("[{}] is not support to get empty!", mapClass));
     }
 
     /**
-     * 清除一个或多个Map集合内的元素，每个Map调用clear()方法
+     * Clears the elements of one or more map collections by calling the {@code clear()} method on each.
      *
-     * @param maps 一个或多个Map
+     * @param maps One or more maps to clear.
      */
     public static void clear(final Map<?, ?>... maps) {
         for (final Map<?, ?> map : maps) {
@@ -1052,39 +1069,45 @@ public class MapKit extends MapGets {
     }
 
     /**
-     * 从Map中获取指定键列表对应的值列表 如果key在map中不存在或key对应值为null，则返回值列表对应位置的值也为null
+     * Retrieves a list of values from a map corresponding to the given list of keys. If a key does not exist in the map
+     * or its corresponding value is {@code null}, the value at that position in the result list will also be
+     * {@code null}.
      *
-     * @param <K>  键类型
-     * @param <V>  值类型
-     * @param map  {@link Map}
-     * @param keys 键列表
-     * @return 值列表
+     * @param <K>  The type of keys in the map.
+     * @param <V>  The type of values in the map.
+     * @param map  The {@link Map} to retrieve values from.
+     * @param keys The array of keys.
+     * @return A {@link List} of values corresponding to the provided keys.
      */
     public static <K, V> List<V> valuesOfKeys(final Map<K, V> map, final K... keys) {
         return valuesOfKeys(map, (Iterator<K>) new ArrayIterator<>(keys));
     }
 
     /**
-     * 从Map中获取指定键列表对应的值列表 如果key在map中不存在或key对应值为null，则返回值列表对应位置的值也为null
+     * Retrieves a list of values from a map corresponding to the given iterable of keys. If a key does not exist in the
+     * map or its corresponding value is {@code null}, the value at that position in the result list will also be
+     * {@code null}.
      *
-     * @param <K>  键类型
-     * @param <V>  值类型
-     * @param map  {@link Map}
-     * @param keys 键列表
-     * @return 值列表
+     * @param <K>  The type of keys in the map.
+     * @param <V>  The type of values in the map.
+     * @param map  The {@link Map} to retrieve values from.
+     * @param keys The iterable of keys.
+     * @return A {@link List} of values corresponding to the provided keys.
      */
     public static <K, V> List<V> valuesOfKeys(final Map<K, V> map, final Iterable<K> keys) {
         return valuesOfKeys(map, keys.iterator());
     }
 
     /**
-     * 从Map中获取指定键列表对应的值列表 如果key在map中不存在或key对应值为null，则返回值列表对应位置的值也为null
+     * Retrieves a list of values from a map corresponding to the given iterator of keys. If a key does not exist in the
+     * map or its corresponding value is {@code null}, the value at that position in the result list will also be
+     * {@code null}.
      *
-     * @param <K>  键类型
-     * @param <V>  值类型
-     * @param map  {@link Map}
-     * @param keys 键列表
-     * @return 值列表
+     * @param <K>  The type of keys in the map.
+     * @param <V>  The type of values in the map.
+     * @param map  The {@link Map} to retrieve values from.
+     * @param keys The iterator of keys.
+     * @return A {@link List} of values corresponding to the provided keys.
      */
     public static <K, V> List<V> valuesOfKeys(final Map<K, V> map, final Iterator<K> keys) {
         final List<V> list = new ArrayList<>();
@@ -1095,27 +1118,29 @@ public class MapKit extends MapGets {
     }
 
     /**
-     * 将键和值转换为{@link AbstractMap.SimpleImmutableEntry} 返回的Entry不可变
+     * Converts a key and a value into an unmodifiable {@link AbstractMap.SimpleImmutableEntry}.
      *
-     * @param key   键
-     * @param value 值
-     * @param <K>   键类型
-     * @param <V>   值类型
-     * @return {@link AbstractMap.SimpleImmutableEntry}
+     * @param key   The key.
+     * @param value The value.
+     * @param <K>   The type of the key.
+     * @param <V>   The type of the value.
+     * @return An unmodifiable {@link AbstractMap.SimpleImmutableEntry}.
      */
     public static <K, V> Map.Entry<K, V> entry(final K key, final V value) {
         return entry(key, value, true);
     }
 
     /**
-     * 将键和值转换为{@link AbstractMap.SimpleEntry} 或者 {@link AbstractMap.SimpleImmutableEntry}
+     * Converts a key and a value into either an {@link AbstractMap.SimpleEntry} or an
+     * {@link AbstractMap.SimpleImmutableEntry}.
      *
-     * @param key         键
-     * @param value       值
-     * @param <K>         键类型
-     * @param <V>         值类型
-     * @param isImmutable 是否不可变Entry
-     * @return {@link AbstractMap.SimpleEntry} 或者 {@link AbstractMap.SimpleImmutableEntry}
+     * @param key         The key.
+     * @param value       The value.
+     * @param <K>         The type of the key.
+     * @param <V>         The type of the value.
+     * @param isImmutable If {@code true}, an unmodifiable {@link AbstractMap.SimpleImmutableEntry} is returned;
+     *                    otherwise, a modifiable {@link AbstractMap.SimpleEntry} is returned.
+     * @return An {@link AbstractMap.SimpleEntry} or {@link AbstractMap.SimpleImmutableEntry}.
      */
     public static <K, V> Map.Entry<K, V> entry(final K key, final V value, final boolean isImmutable) {
         return isImmutable ? new AbstractMap.SimpleImmutableEntry<>(key, value)
@@ -1123,14 +1148,14 @@ public class MapKit extends MapGets {
     }
 
     /**
-     * 将列表按照给定的键生成器规则和值生成器规则，加入到给定的Map中
+     * Populates a map with entries generated from an iterable of values, using a key mapper function.
      *
-     * @param resultMap 结果Map，通过传入map对象决定结果的Map类型，如果为{@code null}，默认使用HashMap
-     * @param iterable  值列表
-     * @param keyMapper Map的键映射
-     * @param <K>       键类型
-     * @param <V>       值类型
-     * @return HashMap
+     * @param resultMap The map to populate. If {@code null}, a new {@link HashMap} is used.
+     * @param iterable  The iterable of values.
+     * @param keyMapper A function that maps each value to its corresponding key.
+     * @param <K>       The type of keys in the map.
+     * @param <V>       The type of values in the map.
+     * @return The populated map.
      */
     public static <K, V> Map<K, V> putAll(
             final Map<K, V> resultMap,
@@ -1140,16 +1165,16 @@ public class MapKit extends MapGets {
     }
 
     /**
-     * 将列表按照给定的键生成器规则和值生成器规则，加入到给定的Map中
+     * Populates a map with entries generated from an iterable of objects, using key and value mapper functions.
      *
-     * @param resultMap   结果Map，通过传入map对象决定结果的Map类型
-     * @param iterable    值列表
-     * @param keyMapper   Map的键映射
-     * @param valueMapper Map的值映射
-     * @param <T>         列表值类型
-     * @param <K>         键类型
-     * @param <V>         值类型
-     * @return HashMap
+     * @param resultMap   The map to populate. The type of this map determines the type of the result.
+     * @param iterable    The iterable of objects.
+     * @param keyMapper   A function that maps each object to its corresponding key.
+     * @param valueMapper A function that maps each object to its corresponding value.
+     * @param <T>         The type of objects in the iterable.
+     * @param <K>         The type of keys in the map.
+     * @param <V>         The type of values in the map.
+     * @return The populated map.
      */
     public static <T, K, V> Map<K, V> putAll(
             final Map<K, V> resultMap,
@@ -1160,14 +1185,14 @@ public class MapKit extends MapGets {
     }
 
     /**
-     * 将列表按照给定的键生成器规则和值生成器规则，加入到给定的Map中
+     * Populates a map with entries generated from an iterator of values, using a key mapper function.
      *
-     * @param resultMap 结果Map，通过传入map对象决定结果的Map类型，如果为{@code null}，默认使用HashMap
-     * @param iterator  值列表
-     * @param keyMapper Map的键映射
-     * @param <K>       键类型
-     * @param <V>       值类型
-     * @return HashMap
+     * @param resultMap The map to populate. If {@code null}, a new {@link HashMap} is used.
+     * @param iterator  The iterator of values.
+     * @param keyMapper A function that maps each value to its corresponding key.
+     * @param <K>       The type of keys in the map.
+     * @param <V>       The type of values in the map.
+     * @return The populated map.
      */
     public static <K, V> Map<K, V> putAll(
             final Map<K, V> resultMap,
@@ -1177,16 +1202,16 @@ public class MapKit extends MapGets {
     }
 
     /**
-     * 将列表按照给定的键生成器规则和值生成器规则，加入到给定的Map中
+     * Populates a map with entries generated from an iterator of objects, using key and value mapper functions.
      *
-     * @param resultMap   结果Map，通过传入map对象决定结果的Map类型，如果为{@code null}，默认使用HashMap
-     * @param iterator    值列表
-     * @param keyMapper   Map的键映射
-     * @param valueMapper Map的值映射
-     * @param <T>         列表值类型
-     * @param <K>         键类型
-     * @param <V>         值类型
-     * @return HashMap
+     * @param resultMap   The map to populate. If {@code null}, a new {@link HashMap} is used.
+     * @param iterator    The iterator of objects.
+     * @param keyMapper   A function that maps each object to its corresponding key.
+     * @param valueMapper A function that maps each object to its corresponding value.
+     * @param <T>         The type of objects in the iterator.
+     * @param <K>         The type of keys in the map.
+     * @param <V>         The type of values in the map.
+     * @return The populated map.
      */
     public static <T, K, V> Map<K, V> putAll(
             Map<K, V> resultMap,
@@ -1209,12 +1234,12 @@ public class MapKit extends MapGets {
     }
 
     /**
-     * 根据给定的entry列表，根据entry的key进行分组;
+     * Groups a list of map entries by their keys.
      *
-     * @param <K>     键类型
-     * @param <V>     值类型
-     * @param entries entry列表
-     * @return entries
+     * @param <K>     The type of keys in the entries.
+     * @param <V>     The type of values in the entries.
+     * @param entries The iterable of map entries to group.
+     * @return A new map where each key maps to a list of its corresponding values.
      */
     public static <K, V> Map<K, List<V>> grouping(final Iterable<Map.Entry<K, V>> entries) {
         if (CollKit.isEmpty(entries)) {
@@ -1230,13 +1255,15 @@ public class MapKit extends MapGets {
     }
 
     /**
-     * 将一个Map按照固定大小拆分成多个子Map
+     * Partitions a map into a list of sub-maps, each with a maximum specified size.
      *
-     * @param <K>  键类型
-     * @param <V>  值类型
-     * @param map  Map
-     * @param size 子Map的大小
-     * @return 子Map列表
+     * @param <K>  The type of keys in the map.
+     * @param <V>  The type of values in the map.
+     * @param map  The map to partition.
+     * @param size The maximum size of each sub-map. Must be greater than 0.
+     * @return A list of sub-maps.
+     * @throws IllegalArgumentException if {@code size} is less than or equal to 0.
+     * @throws NullPointerException     if {@code map} is {@code null}.
      */
     public static <K, V> List<Map<K, V>> partition(final Map<K, V> map, final int size) {
         Assert.notNull(map);
@@ -1257,13 +1284,13 @@ public class MapKit extends MapGets {
     }
 
     /**
-     * 遍历Map，返回第一个匹配的value值
+     * Iterates through the map and returns the value of the first entry that matches the given predicate.
      *
-     * @param map       map
-     * @param predicate 匹配条件
-     * @param <K>       键类型
-     * @param <V>       值类型
-     * @return value值
+     * @param map       The map to iterate.
+     * @param predicate The predicate to test each entry.
+     * @param <K>       The type of keys in the map.
+     * @param <V>       The type of values in the map.
+     * @return The value of the first matching entry, or {@code null} if no match is found or the map is empty.
      */
     public static <K, V> V firstMatchValue(final Map<K, V> map, final Predicate<Entry<K, V>> predicate) {
         final Entry<K, V> kvEntry = firstMatch(map, predicate);
@@ -1274,13 +1301,13 @@ public class MapKit extends MapGets {
     }
 
     /**
-     * 遍历Map，返回第一个匹配的entry值
+     * Iterates through the map and returns the first entry that matches the given predicate.
      *
-     * @param map       map
-     * @param predicate 匹配条件
-     * @param <K>       键类型
-     * @param <V>       值类型
-     * @return entry
+     * @param map       The map to iterate.
+     * @param predicate The predicate to test each entry.
+     * @param <K>       The type of keys in the map.
+     * @param <V>       The type of values in the map.
+     * @return The first matching entry, or {@code null} if no match is found or the map is empty.
      */
     public static <K, V> Entry<K, V> firstMatch(final Map<K, V> map, final Predicate<Entry<K, V>> predicate) {
         if (isNotEmpty(map)) {
@@ -1294,12 +1321,13 @@ public class MapKit extends MapGets {
     }
 
     /**
-     * 循环遍历Map，使用{@link Consumer3X} 接受遍历的每条数据，并针对每条数据做处理, 和JDK8中的map.forEach不同的是，此方法支持index
+     * Iterates over the entries of a map, providing the index, key, and value to a {@link Consumer3X}. Unlike
+     * {@link Map#forEach(BiConsumer)}, this method provides an index for each entry.
      *
-     * @param <K>        Key类型
-     * @param <V>        Value类型
-     * @param map        {@link Map}
-     * @param kvConsumer {@link Consumer3X} 遍历的每条数据处理器
+     * @param <K>        The type of keys in the map.
+     * @param <V>        The type of values in the map.
+     * @param map        The {@link Map} to iterate.
+     * @param kvConsumer The {@link Consumer3X} to process each entry, receiving the index, key, and value.
      */
     public static <K, V> void forEach(final Map<K, V> map, final Consumer3X<Integer, K, V> kvConsumer) {
         if (map == null) {
@@ -1313,25 +1341,26 @@ public class MapKit extends MapGets {
     }
 
     /**
-     * 将多层级Map处理为一个层级Map类型
+     * Flattens a multi-level map into a single-level map.
      *
-     * @param map 入参Map
-     * @return 单层级Map返回值
-     * @param <K> 键类型
-     * @param <V> 值类型
+     * @param map The input multi-level map.
+     * @param <K> The type of keys in the map.
+     * @param <V> The type of values in the map.
+     * @return A new single-level map containing all entries from the multi-level map.
      */
     public static <K, V> Map<K, V> flatten(final Map<K, V> map) {
         return flatten(map, new HashMap<>());
     }
 
     /**
-     * 递归调用将多层级Map处理为一个层级Map类型
+     * Recursively flattens a multi-level map into a single-level map.
      *
-     * @param map     入参Map
-     * @param flatMap 单层级Map返回值
-     * @param <K>     键类型
-     * @param <V>     值类型
-     * @return 单层级Map返回值
+     * @param map     The input multi-level map.
+     * @param flatMap The map to store the flattened result. If {@code null}, a new {@link HashMap} is created.
+     * @param <K>     The type of keys in the map.
+     * @param <V>     The type of values in the map.
+     * @return The single-level map containing all entries from the multi-level map.
+     * @throws NullPointerException if the input {@code map} is {@code null}.
      */
     public static <K, V> Map<K, V> flatten(final Map<K, V> map, Map<K, V> flatMap) {
         Assert.notNull(map);
@@ -1341,7 +1370,7 @@ public class MapKit extends MapGets {
 
         final Map<K, V> finalFlatMap = flatMap;
         map.forEach((k, v) -> {
-            // 避免嵌套循环
+            // Avoid nested loops
             if (v instanceof Map && v != map) {
                 flatten((Map<K, V>) v, finalFlatMap);
             } else {
@@ -1353,35 +1382,36 @@ public class MapKit extends MapGets {
     }
 
     /**
-     * 从Map中获取第一个非null值
+     * Retrieves the first non-null value from a map based on a prioritized list of keys.
      * <p>
-     * 该方法按优先级顺序检查Map中的多个键，返回第一个非null值。 根据键的数量自动选择顺序流或并行流以优化性能。
-     * </p>
+     * This method checks multiple keys in the map in the specified order of priority, returning the value associated
+     * with the first key that has a non-null value. It automatically optimizes for performance by choosing between
+     * sequential or parallel streams based on the number of keys.
      *
-     * @param <K>  键的类型
-     * @param <V>  值的类型
-     * @param map  参数Map，可以为null
-     * @param keys 要检查的键列表，按优先级顺序，可以为null
-     * @return 第一个非null值，如果没有找到或参数无效则返回null
+     * @param <K>  The type of keys in the map.
+     * @param <V>  The type of values in the map.
+     * @param map  The parameter map, can be {@code null}.
+     * @param keys The list of keys to check, in order of priority, can be {@code null}.
+     * @return The first non-null value found, or {@code null} if no non-null value is found or parameters are invalid.
      */
     public static <K, V> V getFirstNonNull(final Map<K, V> map, final K... keys) {
-        // 快速失败：如果map为null或keys为null或空，直接返回null
+        // Fail fast: if map is null or keys are null/empty, return null directly.
         if (map == null || keys == null || keys.length == 0) {
             return null;
         }
 
-        // 优化：如果map为空，直接返回null
+        // Optimization: if map is empty, return null directly.
         if (map.isEmpty()) {
             return null;
         }
 
-        // 对于少量键，使用顺序流更高效
+        // For a small number of keys, a sequential stream is more efficient.
         if (keys.length < 10) {
             return Arrays.stream(keys).filter(Objects::nonNull).map(map::get).filter(Objects::nonNull).findFirst()
                     .orElse(null);
         }
 
-        // 对于大量键，使用并行流
+        // For a large number of keys, a parallel stream can be more efficient.
         return Arrays.stream(keys).parallel().filter(Objects::nonNull).map(map::get).filter(Objects::nonNull)
                 .findFirst().orElse(null);
     }

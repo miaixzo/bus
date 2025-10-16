@@ -38,7 +38,8 @@ import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRuleManager;
 
 /**
- * 管控规则
+ * Manages the registration of various limiting and protection rules, such as downgrade, hotspot, and request limiting.
+ * This class interacts with Sentinel's {@link FlowRuleManager} to configure flow control rules dynamically.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -46,10 +47,12 @@ import com.alibaba.csp.sentinel.slots.block.flow.FlowRuleManager;
 public class Registry {
 
     /**
-     * 请求降级
+     * Registers a downgrade rule based on the provided {@link Downgrade} annotation. If a flow rule for the given
+     * resource key does not already exist, a new {@link FlowRule} is created with the specified grade and count, and
+     * then loaded into Sentinel's {@link FlowRuleManager}.
      *
-     * @param downgrade   降级注解
-     * @param resourceKey 资源标识
+     * @param downgrade   The {@link Downgrade} annotation containing the downgrade configuration.
+     * @param resourceKey The unique identifier for the resource to which the downgrade rule applies.
      */
     public static void register(Downgrade downgrade, String resourceKey) {
         if (!FlowRuleManager.hasConfig(resourceKey)) {
@@ -65,10 +68,13 @@ public class Registry {
     }
 
     /**
-     * 提升热点
+     * Registers a hotspot rule based on the provided {@link Hotspot} annotation. If a flow rule for the given resource
+     * key does not already exist, a new {@link FlowRule} is created with the specified grade and count. Note that
+     * Sentinel versions like 1.8.8 might not fully support hotspot parameter flow control directly, and it might be
+     * simplified to a regular flow control rule.
      *
-     * @param hotspot     热点注解
-     * @param resourceKey 资源标识
+     * @param hotspot     The {@link Hotspot} annotation containing the hotspot configuration.
+     * @param resourceKey The unique identifier for the resource to which the hotspot rule applies.
      */
     public static void register(Hotspot hotspot, String resourceKey) {
         if (!FlowRuleManager.hasConfig(resourceKey)) {
@@ -77,8 +83,9 @@ public class Registry {
             rule.setGrade(hotspot.grade().getGrade());
             rule.setCount(hotspot.count());
             rule.setLimitApp("default");
-            // 注意：sentinel-core 1.8.8 不支持热点参数流控，简化为普通流控规则
-            // 若需热点功能，需扩展 Sentinel 或使用其他框架
+            // Note: sentinel-core 1.8.8 does not support hotspot parameter flow control, simplified to a normal flow
+            // control rule
+            // If hotspot functionality is needed, Sentinel needs to be extended or another framework used
 
             FlowRuleManager.loadRules(ListKit.of(rule));
             Logger.info("Add Hot Rule [{}]", rule.getResource());
@@ -86,16 +93,18 @@ public class Registry {
     }
 
     /**
-     * 请求限流
+     * Registers a request limiting rule based on the provided {@link Limiting} annotation. If a flow rule for the given
+     * resource key does not already exist, a new {@link FlowRule} is created with a default QPS grade and the specified
+     * count, then loaded into Sentinel's {@link FlowRuleManager}.
      *
-     * @param limiting    限流注解
-     * @param resourceKey 资源标识
+     * @param limiting    The {@link Limiting} annotation containing the limiting configuration.
+     * @param resourceKey The unique identifier for the resource to which the limiting rule applies.
      */
     public static void register(Limiting limiting, String resourceKey) {
         if (!FlowRuleManager.hasConfig(resourceKey)) {
             FlowRule rule = new FlowRule();
             rule.setResource(resourceKey);
-            rule.setGrade(RuleConstant.FLOW_GRADE_QPS); // 默认 QPS 限流
+            rule.setGrade(RuleConstant.FLOW_GRADE_QPS); // Default QPS limiting
             rule.setCount(limiting.count());
             rule.setLimitApp("default");
 
