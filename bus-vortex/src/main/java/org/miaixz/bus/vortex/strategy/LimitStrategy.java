@@ -93,7 +93,7 @@ public class LimitStrategy extends AbstractStrategy {
      * @return A {@code Mono<Void>} that signals the completion of this strategy.
      */
     @Override
-    public Mono<Void> apply(ServerWebExchange exchange, StrategyChain chain) {
+    public Mono<Void> apply(ServerWebExchange exchange, Chain chain) {
         return Mono.deferContextual(contextView -> {
             final Context context = contextView.get(Context.class);
 

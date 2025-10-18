@@ -30,18 +30,17 @@ package org.miaixz.bus.vortex;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.vortex.provider.JsonProvider;
 import org.miaixz.bus.vortex.provider.XmlProvider;
 import org.springframework.http.MediaType;
 
 /**
- * Enumeration of data formats, defining supported response data formats and their associated properties, along with
- * logging functionalities.
+ * Enumerates the supported data formats for API responses, associating each format with a specific serialization
+ * provider and media type.
  * <p>
- * This enum class identifies the format of response data (e.g., XML, JSON, PDF, binary stream). Each format is
- * associated with a specific data provider and media type. It also provides static methods for logging at different
- * levels (error, warn, debug, info, trace) and for logging the start and end of requests.
- * </p>
+ * This enum plays a key role in content negotiation and response formatting. It allows strategies like
+ * {@link org.miaixz.bus.vortex.strategy.FormatStrategy} to dynamically handle different data formats.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -52,42 +51,53 @@ import org.springframework.http.MediaType;
 public enum Formats {
 
     /**
-     * XML format, indicating that response data is output in XML format.
+     * Represents the XML data format. Uses {@link XmlProvider} for serialization.
      */
-    XML(new XmlProvider(), MediaType.parseMediaType(MediaType.APPLICATION_XML_VALUE + ";charset=UTF-8")),
+    XML(new XmlProvider(), MediaType.APPLICATION_XML),
 
     /**
-     * JSON format, indicating that response data is output in JSON format.
+     * Represents the JSON data format. This is the default format for the gateway. Uses {@link JsonProvider} for
+     * serialization.
      */
     JSON(new JsonProvider(), MediaType.APPLICATION_JSON),
 
     /**
-     * PDF format, indicating that response data is output in PDF format.
+     * Represents PDF documents. This format does not have a default provider and is typically handled by streaming raw
+     * bytes directly.
      */
-    PDF,
+    PDF(null, MediaType.APPLICATION_PDF),
 
     /**
-     * Binary file stream, indicating that response data is output as a file stream.
+     * Represents a generic binary file stream. This format does not have a default provider and is handled by streaming
+     * raw bytes.
      */
-    BINARY;
+    BINARY(null, MediaType.APPLICATION_OCTET_STREAM);
 
     /**
-     * The data format provider, used for serialization or deserialization of specific formats.
-     * <p>
-     * For example, XML format uses {@link XmlProvider}, and JSON format uses {@link JsonProvider}. For {@link #PDF} and
-     * {@link #BINARY}, this field is {@code null}.
-     * </p>
+     * The data format provider, responsible for serializing response objects into the specific format.
      */
     private Provider provider;
 
     /**
-     * The corresponding HTTP media type.
-     * <p>
-     * Defines the MIME type of the response content, e.g., XML corresponds to {@code application/xml;charset=UTF-8},
-     * and JSON corresponds to {@code application/json}. For {@link #PDF} and {@link #BINARY}, this field is
-     * {@code null}.
-     * </p>
+     * The corresponding HTTP {@link MediaType}, used to set the {@code Content-Type} header in the response.
      */
     private MediaType mediaType;
+
+    /**
+     * Safely retrieves a {@code Formats} enum instance from a string name, ignoring case.
+     *
+     * @param name The name of the format (e.g., "JSON", "xml").
+     * @return The corresponding {@link Formats} instance, or {@link #JSON} if the name is invalid or null.
+     */
+    public static Formats get(String name) {
+        if (StringKit.isBlank(name)) {
+            return JSON;
+        }
+        try {
+            return Formats.valueOf(name.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            return JSON; // Default to JSON if the format is unknown
+        }
+    }
 
 }

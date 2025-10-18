@@ -25,25 +25,32 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.vortex.support.mcp;
+package org.miaixz.bus.vortex.support.mcp.client;
 
 import org.miaixz.bus.vortex.Assets;
 
 /**
- * MCP Client implementation for the SSE (Server-Sent Events) protocol. It extends HttpClient and uses WebClient for
- * communication.
+ * An {@link McpClient} implementation for services that provide responses over a generic, streamable HTTP connection.
+ * <p>
+ * This client extends {@link HttpClient} and is intended for services that stream data using mechanisms like chunked
+ * transfer encoding, but do not follow the formal Server-Sent Events (SSE) protocol. The base implementation assumes a
+ * simple request-response pattern.
+ * <p>
+ * <strong>Note:</strong> To handle actual streaming responses, the {@link #callTool} method would need to be overridden
+ * to process a {@code Flux<String>} or a similar reactive stream from the {@code WebClient} response.
+ *
+ * @author Kimi Liu
+ * @since Java 17+
  */
-public class SseClient extends HttpClient {
+public class StreamableHttpClient extends HttpClient {
 
     /**
-     * Constructs a new SseClient.
-     * 
-     * @param assets The Assets configuration for this client.
+     * Constructs a new {@code StreamableHttpClient}.
+     *
+     * @param assets The {@link Assets} configuration for this client, containing the base URL of the remote service.
      */
-    public SseClient(Assets assets) {
+    public StreamableHttpClient(Assets assets) {
         super(assets);
-        // In a real implementation, this might use WebClient's exchangeToFlux method to handle SSE event streams.
-        // For listTools and callTool's single request-response pattern, the parent's implementation is sufficient.
     }
 
 }

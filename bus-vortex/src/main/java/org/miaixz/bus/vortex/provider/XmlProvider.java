@@ -35,7 +35,11 @@ import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.vortex.Provider;
 
 /**
- * XML serialization provider, implementing the conversion of objects to XML strings.
+ * An implementation of {@link Provider} for serializing objects into XML strings.
+ * <p>
+ * This provider uses a two-step process: it first converts the Java object into a generic {@code Map} using
+ * {@link JsonKit}, and then serializes that map into an XML string. This means the resulting XML structure will mirror
+ * the object's JSON representation.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,35 +47,20 @@ import org.miaixz.bus.vortex.Provider;
 public class XmlProvider implements Provider {
 
     /**
-     * Serializes an object into an XML string.
+     * Serializes the given Java object into its XML string representation.
      * <p>
-     * This method first constructs a standard XML header. It then attempts to convert the input object into a Map
-     * structure using {@link JsonKit#getProvider()} and {@code toMap(Object)}, and subsequently serializes this Map
-     * into an XML string using {@link XmlKit#mapToXmlString(Map)}. If any error occurs during serialization, it prints
-     * the stack trace and returns an empty string.
-     * </p>
+     * This method first constructs a standard XML header. It then converts the input object into a {@code Map} and
+     * subsequently serializes this map into an XML string. Any exceptions during serialization will bubble up as
+     * runtime exceptions and be handled by the global error handler.
      *
-     * @param object The object to be serialized.
-     * @return The serialized XML string, or an empty string if serialization fails.
+     * @param bean The object to be serialized.
+     * @return The serialized XML string.
      */
     @Override
-    public String serialize(Object object) {
-        try {
-            // Create XML header
-            StringBuffer buffer = new StringBuffer();
-            buffer.append("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
-
-            // Convert the object to a Map structure and serialize to XML
-            Map<String, Object> map = JsonKit.toMap(object);
-            buffer.append(XmlKit.mapToXmlString(map));
-
-            return buffer.toString();
-        } catch (Exception e) {
-            // Catch exception and print stack trace
-            e.printStackTrace();
-        }
-        // Return an empty string if serialization fails
-        return Normal.EMPTY;
+    public String serialize(Object bean) {
+        Map<String, Object> map = JsonKit.toMap(bean);
+        String buffer = XmlKit.mapToXmlString(map, "response");
+        return buffer.replaceFirst(" standalone=\"[^\"]*\"", Normal.EMPTY);
     }
 
 }

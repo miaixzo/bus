@@ -27,21 +27,26 @@
 */
 package org.miaixz.bus.vortex.magic;
 
-import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.SuperBuilder;
-import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.basic.entity.Authorize;
+import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.basic.normal.Consts;
+import org.miaixz.bus.logger.Logger;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 /**
- * Authentication and delegation processing class, used to encapsulate authentication results and OAuth2 authorization
- * information.
+ * A standard response wrapper for service providers, encapsulating the result of an operation like authorization.
+ * <p>
+ * This class acts as a container that holds either the successful result data (in the {@link #authorize} field) or an
+ * error message (in the {@link #message} field). It provides a consistent return type for provider methods, simplifying
+ * error handling for the caller.
  *
- * @author Justubborn
+ * @author Kimi Liu
+ * @see org.miaixz.bus.vortex.provider.AuthorizeProvider
  * @since Java 17+
  */
 @Getter
@@ -52,23 +57,32 @@ import lombok.Setter;
 public class Delegate {
 
     /**
-     * The authentication result message, containing error code and error message.
+     * The message object containing the result status. On failure, it holds the error code and error message. On
+     * success, it typically holds a success code (e.g., "0").
      */
     private Message message;
 
     /**
-     * OAuth2 authorization information, containing detailed authentication-related information.
+     * The detailed authorization information, populated only on successful authentication. This contains data about the
+     * authenticated principal, such as user ID, roles, and permissions.
      */
     private Authorize authorize;
 
     /**
-     * Checks if the authentication was successful.
+     * A convenience method to check if the operation was successful.
      *
-     * @return {@code true} if the message error code is {@link Consts#ZERO} (typically indicating success),
+     * @return {@code true} if the message's error code is {@link Consts#ZERO} (the convention for success),
      *         {@code false} otherwise.
      */
     public boolean isOk() {
-        return Consts.ZERO.equals(message.getErrcode());
+        if (Consts.ZERO.equals(message.getErrcode())) {
+            Logger.error(message.getErrmsg());
+        }
+        if (String.valueOf(Consts.ZERO).equals(message.getErrcode())) {
+            Logger.error(message.getErrmsg());
+        }
+
+        return message != null && Consts.ZERO.equals(message.getErrcode());
     }
 
 }

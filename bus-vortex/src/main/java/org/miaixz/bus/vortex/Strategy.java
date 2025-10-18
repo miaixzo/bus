@@ -27,7 +27,6 @@
 */
 package org.miaixz.bus.vortex;
 
-import org.miaixz.bus.vortex.strategy.StrategyChain;
 import org.springframework.web.server.ServerWebExchange;
 
 import reactor.core.publisher.Mono;
@@ -45,9 +44,6 @@ import reactor.core.publisher.Mono;
  * {@link org.miaixz.bus.vortex.filter.PrimaryFilter}.
  *
  * @author Kimi Liu
- * @see StrategyChain
- * @see Context
- * @see org.miaixz.bus.vortex.filter.PrimaryFilter
  * @since Java 17+
  */
 public interface Strategy {
@@ -57,7 +53,7 @@ public interface Strategy {
      * <p>
      * An implementation of this method should perform its specific task. To access the request-specific state, it must
      * retrieve the {@link Context} object from the Reactor context, like so:
-     * 
+     *
      * <pre>{@code
      * return Mono.deferContextual(contextView -> {
      *     Context context = contextView.get(Context.class);
@@ -65,7 +61,7 @@ public interface Strategy {
      *     return chain.apply(exchange);
      * });
      * }</pre>
-     * 
+     *
      * After completing its work, the strategy **must** call {@code chain.apply(exchange)} to delegate control to the
      * next strategy in the chain. Failure to do so will halt the request processing.
      *
@@ -74,6 +70,31 @@ public interface Strategy {
      * @param chain    The next link in the strategy chain, which must be invoked to continue processing.
      * @return A {@code Mono<Void>} that signals the completion of this strategy's execution.
      */
-    Mono<Void> apply(ServerWebExchange exchange, StrategyChain chain);
+    Mono<Void> apply(ServerWebExchange exchange, Chain chain);
+
+    /**
+     * Represents the ongoing execution of the strategy chain, implementing the Chain of Responsibility pattern.
+     * <p>
+     * An instance of this interface is passed to each {@link Strategy#apply(ServerWebExchange, Chain)} method, allowing
+     * a strategy to delegate control to the next strategy in the chain. The final link in the chain, delegates control
+     * back to the main Spring WebFlux {@code WebFilterChain}.
+     *
+     * @author Kimi Liu
+     * @since Java 17+
+     */
+    interface Chain {
+
+        /**
+         * Delegates control to the next strategy in the chain.
+         * <p>
+         * A {@link Strategy} must invoke this method to continue the processing of the request. Failure to do so will
+         * effectively halt the request handling pipeline.
+         *
+         * @param exchange The current server exchange, which may have been mutated by the calling strategy.
+         * @return A {@code Mono<Void>} that signals the completion of the rest of the chain.
+         */
+        Mono<Void> apply(ServerWebExchange exchange);
+
+    }
 
 }

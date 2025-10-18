@@ -25,12 +25,12 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.vortex.support.http;
+package org.miaixz.bus.vortex.support.rest;
 
 import java.time.Duration;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
+import io.netty.handler.timeout.ReadTimeoutHandler;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.NonNull;
@@ -43,6 +43,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.http.codec.multipart.Part;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -55,73 +56,89 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.netty.http.client.HttpClientRequest;
+import reactor.netty.http.client.HttpClient;
+import reactor.netty.resources.ConnectionProvider;
 
 /**
- * HTTP 请求的实际执行器。 封装了所有使用 WebClient 与下游服务交互的逻辑。
+ * The core executor for forwarding requests to downstream RESTful HTTP services.
+ * <p>
+ * This service encapsulates all the logic for using Spring's {@link WebClient} to act as a reverse proxy. It builds the
+ * downstream request based on the provided {@link Assets} and {@link Context}, sends it, and then transforms the
+ * downstream response back into a {@link ServerResponse} for the original client.
+ *
+ * @author Kimi Liu
+ * @since Java 17+
  */
-public class HttpService {
+public class RestService {
 
     /**
-     * Pre-defined {@link ExchangeStrategies} instance for WebClient configuration.
+     * A cached, pre-configured {@link ExchangeStrategies} instance for the {@link WebClient}.
      * <p>
-     * This instance is initialized and cached when the class is loaded to avoid redundant creation and improve
-     * performance. It is configured with a maximum in-memory size limit to prevent out-of-memory errors for large
-     * requests.
+     * This is initialized statically to avoid redundant object creation. It sets a generous memory limit for codecs to
+     * prevent errors when handling moderately large response bodies.
      */
     private static final ExchangeStrategies CACHED_EXCHANGE_STRATEGIES = ExchangeStrategies.builder()
             .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(Math.toIntExact(Normal.MEBI_128))).build();
 
     /**
-     * A thread-safe cache of {@link WebClient} instances, stored by their base URL.
-     * <p>
-     * This map ensures that a {@link WebClient} instance is reused for a given base URL, optimizing resource usage and
-     * performance.
+     * A shared, reusable Connection Provider (Connection Pool) for all requests.
      */
-    private final Map<String, WebClient> clients = new ConcurrentHashMap<>();
+    private static final ConnectionProvider SHARED_CONNECTION_PROVIDER = ConnectionProvider.create("vortex-http-pool");
 
     /**
-     * Processes client requests, constructs and forwards them to the target service, and returns the response.
+     * Executes the full reverse-proxy logic for an HTTP request.
      * <p>
-     * This method orchestrates the forwarding of an incoming {@link ServerRequest} to an external HTTP service. It
-     * involves building the target URL, configuring the {@link WebClient} with appropriate headers and body, sending
-     * the request, and processing the received response.
+     * This method orchestrates the entire process of forwarding an incoming {@link ServerRequest} to an external HTTP
+     * service. It involves building the target URL, dynamically configuring an
+     * {@link reactor.netty.http.client.HttpClient} with the correct timeout strategy, creating a {@link WebClient}
+     * instance, and then sending the request.
      *
-     * @param request The client's {@link ServerRequest} object.
-     * @param context The request context, containing request parameters and configuration information.
-     * @return {@link Mono<ServerResponse>} containing the response from the target service.
+     * @param request The original incoming {@link ServerRequest}.
+     * @param context The request context, containing parameters and resolved configuration.
+     * @param assets  The API asset configuration, containing details about the downstream service.
+     * @return A {@link Mono<ServerResponse>} containing the response from the downstream service.
      */
     @NonNull
-    public Mono<ServerResponse> execute(ServerRequest request, Context context) {
-        // Get request method and path for logging
+    public Mono<ServerResponse> execute(ServerRequest request, Context context, Assets assets) {
         String method = request.methodName();
         String path = request.path();
 
-        Assets assets = context.getAssets();
-
-        // 1. Build the base URL for the target service
+        // 1. Build the base URL for the target service.
         String baseUrl = buildBaseUrl(assets);
         Logger.info("==>       HTTP: [N/A] [{}] [{}] [HTTP_ROUTER_BASEURL] - Base URL: {}", method, path, baseUrl);
 
-        // 2. Get or create a WebClient instance for the base URL
-        WebClient webClient = clients.computeIfAbsent(
-                baseUrl,
-                client -> WebClient.builder().exchangeStrategies(CACHED_EXCHANGE_STRATEGIES).baseUrl(baseUrl).build());
-        Logger.info("==>       HTTP: [N/A] [{}] [{}] [HTTP_ROUTER_CLIENT] - WebClient created/retrieved", method, path);
+        // 1. Dynamically configure an HttpClient for THIS request.
+        HttpClient configuredClient;
+        if (assets.getMode() == 3) { // 3 represents SSE (Streaming)
+            Logger.info(
+                    "==>       HTTP: Applying IDLE timeout of {} seconds for streaming request.",
+                    assets.getTimeout());
+            configuredClient = HttpClient.create(SHARED_CONNECTION_PROVIDER)
+                    .doOnConnected(conn -> conn.addHandlerLast(new ReadTimeoutHandler(assets.getTimeout())));
+        } else { // Unary request
+            Logger.info(
+                    "==>       HTTP: Applying RESPONSE timeout of {} seconds for unary request.",
+                    assets.getTimeout());
+            configuredClient = HttpClient.create(SHARED_CONNECTION_PROVIDER)
+                    .responseTimeout(Duration.ofSeconds(assets.getTimeout()));
+        }
 
-        // 3. Build the target URI for the request
+        // 2. Build a WebClient ON TOP of the dynamically configured HttpClient.
+        WebClient webClient = WebClient.builder().clientConnector(new ReactorClientHttpConnector(configuredClient))
+                .exchangeStrategies(CACHED_EXCHANGE_STRATEGIES).baseUrl(baseUrl).build();
+
+        // 3. Build and execute the request.
         String targetUri = buildTargetUri(assets, context);
-        Logger.info("==>       HTTP: [N/A] [{}] [{}] [HTTP_ROUTER_URI] - Target URI: {}", method, path, targetUri);
+        Logger.info("==>       HTTP: [{}] [{}] [HTTP_ROUTER_URI] - Target URI: {}", method, path, targetUri);
 
-        // 4. Configure the request with the appropriate HTTP method
         WebClient.RequestBodySpec bodySpec = webClient.method(context.getHttpMethod()).uri(targetUri);
         Logger.info(
-                "==>       HTTP: [N/A] [{}] [{}] [HTTP_ROUTER_METHOD] - HTTP method: {}",
+                "==>       HTTP: [{}] [{}] [HTTP_ROUTER_METHOD] - HTTP method: {}",
                 method,
                 path,
                 context.getHttpMethod());
 
-        // 5. Configure request headers, copying from the incoming request and removing/clearing specific ones
+        // 5. Configure request headers, copying from the original request and cleaning up as needed.
         bodySpec.headers(headers -> {
             headers.addAll(request.headers().asHttpHeaders());
             headers.remove(HttpHeaders.HOST);
@@ -129,34 +146,15 @@ public class HttpService {
         });
         Logger.info("==>       HTTP: [N/A] [{}] [{}] [HTTP_ROUTER_HEADERS] - Headers configured", method, path);
 
-        // 6. Handle the request body (only for non-GET requests)
+        // 6. Handle the request body, if applicable (i.e., for non-GET requests).
         if (!HttpMethod.GET.equals(context.getHttpMethod())) {
             MediaType mediaType = request.headers().contentType().orElse(null);
             if (mediaType != null) {
                 if (MediaType.MULTIPART_FORM_DATA.isCompatibleWith(mediaType)) {
-                    // Handle multipart request body
-                    Map<String, Part> fileParts = context.getFileParts();
-                    Map<String, String> params = context.getParameters();
-                    if (!fileParts.isEmpty() || !params.isEmpty()) {
-                        MultiValueMap<String, Part> partMap = new LinkedMultiValueMap<>(fileParts.size());
-                        partMap.setAll(fileParts);
-                        BodyInserters.MultipartInserter multipartInserter = BodyInserters.fromMultipartData(partMap);
-                        if (!params.isEmpty()) {
-                            params.forEach(multipartInserter::with);
-                        }
-                        bodySpec.body(multipartInserter);
-                        Logger.info(
-                                "==>       HTTP: [N/A] [{}] [{}] [HTTP_ROUTER_MULTIPART] - Multipart body configured with {} files and {} params",
-                                method,
-                                path,
-                                fileParts.size(),
-                                params.size());
-                    }
+                    handleMultipartBody(bodySpec, context, method, path);
                 } else if (MediaType.APPLICATION_JSON.isCompatibleWith(mediaType)) {
-                    // Handle JSON request body
                     handleJsonRequestBody(bodySpec, context, method, path);
                 } else if (MediaType.APPLICATION_FORM_URLENCODED.isCompatibleWith(mediaType)) {
-                    // Handle form-urlencoded request body
                     handleFormRequestBody(bodySpec, context, method, path);
                 } else {
                     Logger.info(
@@ -167,7 +165,6 @@ public class HttpService {
                     handleFormRequestBody(bodySpec, context, method, path);
                 }
             } else {
-                // No Content-Type header, default to form data processing
                 Logger.info(
                         "==>       HTTP: [N/A] [{}] [{}] [HTTP_ROUTER_DEFAULT] - No Content-Type header, defaulting to form data",
                         method,
@@ -181,26 +178,20 @@ public class HttpService {
                     path);
         }
 
-        // 7. Send the request and process the response
+        // 7. Send the request and process the response.
         Logger.info(
                 "==>       HTTP: [N/A] [{}] [{}] [HTTP_ROUTER_SEND] - Sending request with timeout: {}ms",
                 method,
                 path,
                 assets.getTimeout());
-        return bodySpec.httpRequest(clientHttpRequest -> {
-            HttpClientRequest reactorRequest = clientHttpRequest.getNativeRequest();
-            reactorRequest.responseTimeout(Duration.ofMillis(assets.getTimeout()));
-        }).retrieve().toEntity(DataBuffer.class).flatMap(this::processResponse);
+        return bodySpec.retrieve().toEntity(DataBuffer.class).flatMap(this::processResponse);
     }
 
     /**
-     * Handles the JSON request body.
-     * <p>
-     * This method converts the parameters from the request context into a JSON string and sets it as the request body.
-     * If the parameters map is empty, no request body is set.
+     * Handles a JSON request body.
      *
-     * @param bodySpec The request body specification, used to configure the request body.
-     * @param context  The request context, containing request parameters.
+     * @param bodySpec The request body specification.
+     * @param context  The request context.
      * @param method   The HTTP method for logging.
      * @param path     The request path for logging.
      */
@@ -209,32 +200,29 @@ public class HttpService {
             Context context,
             String method,
             String path) {
-        Map<String, String> params = context.getParameters();
+        Map<String, Object> params = context.getParameters();
         if (!params.isEmpty()) {
             String jsonBody = JsonKit.toJsonString(params);
             bodySpec.contentType(MediaType.APPLICATION_JSON).bodyValue(jsonBody);
             Logger.info(
-                    "==>       HTTP: [N''A] [{}] [{}] [HTTP_ROUTER_JSON] - JSON body configured with {} parameters, size: {}",
+                    "==>       HTTP: [N/A] [{}] [{}] [HTTP_ROUTER_JSON] - JSON body configured with {} parameters, size: {}",
                     method,
                     path,
                     params.size(),
                     jsonBody.length());
         } else {
             Logger.info(
-                    "==>       HTTP: [N''A] [{}] [{}] [HTTP_ROUTER_JSON] - No JSON parameters to configure",
+                    "==>       HTTP: [N/A] [{}] [{}] [HTTP_ROUTER_JSON] - No JSON parameters to configure",
                     method,
                     path);
         }
     }
 
     /**
-     * Handles the form request body.
-     * <p>
-     * This method converts the parameters from the request context into a {@link MultiValueMap} and sets it as the
-     * request body. If the parameters map is empty, no request body is set.
+     * Handles a form-urlencoded request body.
      *
-     * @param bodySpec The request body specification, used to configure the request body.
-     * @param context  The request context, containing request parameters.
+     * @param bodySpec The request body specification.
+     * @param context  The request context.
      * @param method   The HTTP method for logging.
      * @param path     The request path for logging.
      */
@@ -243,10 +231,10 @@ public class HttpService {
             Context context,
             String method,
             String path) {
-        Map<String, String> params = context.getParameters();
+        Map<String, Object> params = context.getParameters();
         if (!params.isEmpty()) {
             MultiValueMap<String, String> multiValueMap = new LinkedMultiValueMap<>(params.size());
-            params.forEach(multiValueMap::add);
+            params.forEach((k, v) -> multiValueMap.add(k, String.valueOf(v)));
             bodySpec.contentType(MediaType.APPLICATION_FORM_URLENCODED).bodyValue(multiValueMap);
             Logger.info(
                     "==>       HTTP: [N/A] [{}] [{}] [HTTP_ROUTER_FORM] - Form body configured with {} parameters",
@@ -262,17 +250,39 @@ public class HttpService {
     }
 
     /**
-     * Builds the base URL for the target service.
-     * <p>
-     * This method constructs the base URL using the host, port, and path information from the configured assets. The
-     * port and path are optional and are included only if present.
+     * Handles a multipart/form-data request body.
      *
-     * @param assets The configured assets, containing the host, port, and path information for the target service.
-     * @return The constructed base URL string.
+     * @param bodySpec The request body specification.
+     * @param context  The request context.
+     * @param method   The HTTP method for logging.
+     * @param path     The request path for logging.
+     */
+    private void handleMultipartBody(WebClient.RequestBodySpec bodySpec, Context context, String method, String path) {
+        Map<String, Part> fileParts = context.getFileParts();
+        Map<String, Object> params = context.getParameters();
+        if (!fileParts.isEmpty() || !params.isEmpty()) {
+            MultiValueMap<String, Object> multipartData = new LinkedMultiValueMap<>();
+            fileParts.forEach(multipartData::add);
+            params.forEach((k, v) -> multipartData.add(k, String.valueOf(v)));
+            bodySpec.body(BodyInserters.fromMultipartData(multipartData));
+            Logger.info(
+                    "==>       HTTP: [N/A] [{}] [{}] [HTTP_ROUTER_MULTIPART] - Multipart body configured with {} files and {} params",
+                    method,
+                    path,
+                    fileParts.size(),
+                    params.size());
+        }
+    }
+
+    /**
+     * Builds the base URL for the downstream service from the asset configuration.
+     *
+     * @param assets The configured assets for the target service.
+     * @return The constructed base URL string (e.g., "http://api.example.com:8080/v1").
      */
     private String buildBaseUrl(Assets assets) {
         StringBuilder baseUrlBuilder = new StringBuilder(assets.getHost());
-        if (assets.getPort() > 0) {
+        if (assets.getPort() != null && assets.getPort() > 0) {
             baseUrlBuilder.append(Symbol.COLON).append(assets.getPort());
         }
         if (assets.getPath() != null && !assets.getPath().isEmpty()) {
@@ -285,22 +295,19 @@ public class HttpService {
     }
 
     /**
-     * Builds the target URI for the request.
-     * <p>
-     * This method constructs the target URI using the URL from the configured assets and parameters from the request
-     * context. For GET requests, parameters are appended to the URI as query strings.
+     * Builds the target URI for the downstream request.
      *
-     * @param assets  The configured assets, containing the URL information for the target service.
-     * @param context The request context, containing request parameters.
-     * @return The constructed target URI string.
+     * @param assets  The configured assets for the target service.
+     * @param context The request context.
+     * @return The constructed target URI string, including query parameters for GET requests.
      */
     private String buildTargetUri(Assets assets, Context context) {
         UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(assets.getUrl());
         if (HttpMethod.GET.equals(context.getHttpMethod())) {
-            Map<String, String> params = context.getParameters();
+            Map<String, Object> params = context.getParameters();
             if (!params.isEmpty()) {
                 MultiValueMap<String, String> multiValueMap = new LinkedMultiValueMap<>(params.size());
-                params.forEach(multiValueMap::add);
+                params.forEach((k, v) -> multiValueMap.add(k, String.valueOf(v)));
                 builder.queryParams(multiValueMap);
             }
         }
@@ -308,17 +315,13 @@ public class HttpService {
     }
 
     /**
-     * Processes the response data.
-     * <p>
-     * This method converts the {@link ResponseEntity} received from the target service into a {@link ServerResponse}
-     * object. It copies the response headers but removes the {@code CONTENT_LENGTH} header to avoid conflicts. If the
-     * response body is empty, an empty response body is returned.
+     * Processes the response from the downstream service and transforms it into a {@link ServerResponse}.
      *
-     * @param responseEntity The {@link ResponseEntity} containing the response headers and body.
-     * @return {@link Mono<ServerResponse>} representing the processed response.
+     * @param responseEntity The {@link ResponseEntity} received from the downstream service.
+     * @return A {@code Mono<ServerResponse>} to be sent back to the original client.
      */
     private Mono<ServerResponse> processResponse(ResponseEntity<DataBuffer> responseEntity) {
-        return ServerResponse.ok().headers(headers -> {
+        return ServerResponse.status(responseEntity.getStatusCode()).headers(headers -> {
             headers.addAll(responseEntity.getHeaders());
             headers.remove(HttpHeaders.CONTENT_LENGTH);
         }).body(

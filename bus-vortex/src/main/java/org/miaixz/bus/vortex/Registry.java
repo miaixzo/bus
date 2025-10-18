@@ -27,69 +27,93 @@
 */
 package org.miaixz.bus.vortex;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
- * Generic registry interface for managing and operating key-value pair data (e.g., routes, rate limiting
- * configurations).
+ * A generic contract for an in-memory registry that stores and manages objects of type {@code T}.
+ * <p>
+ * This interface defines the basic CRUD (Create, Read, Update, Delete) operations for a thread-safe, key-value based
+ * registry. Concrete implementations, like {@link org.miaixz.bus.vortex.registry.AbstractRegistry}, provide the
+ * underlying storage mechanism.
  *
- * @param <T> The type of value stored in the registry.
- * @author Justubborn
+ * @param <T> The type of objects to be stored in the registry.
+ * @author Kimi Liu
  * @since Java 17+
  */
 public interface Registry<T> {
 
     /**
-     * Initializes the registry, loading initial data or configurations.
+     * A hook for subclasses to perform initialization logic, typically called after the registry is constructed or
+     * refreshed.
      */
     default void init() {
 
     }
 
     /**
-     * Adds a key-value pair to the registry.
+     * Registers an item in the registry using a key derived from the item itself by the registry's key generation
+     * strategy.
      *
-     * @param key The unique identifier key.
-     * @param reg The object to be registered.
-     * @return {@code true} if the addition was successful, {@code false} otherwise.
+     * @param item The item to register.
      */
-    boolean add(String key, T reg);
+    void register(T item);
 
     /**
-     * Removes a record with the specified key from the registry.
+     * Registers an item in the registry with a specific key.
      *
-     * @param key The unique identifier key.
-     * @return {@code true} if the removal was successful, {@code false} otherwise.
+     * @param key  The unique key to associate with the item.
+     * @param item The item to register.
      */
-    boolean remove(String key);
+    void register(String key, T item);
 
     /**
-     * Modifies a key-value pair in the registry.
+     * Removes an item from the registry using its key.
      *
-     * @param key The unique identifier key.
-     * @param reg The new value.
-     * @return {@code true} if the modification was successful, {@code false} otherwise.
+     * @param key The key of the item to remove.
      */
-    boolean amend(String key, T reg);
+    void destroy(String key);
 
     /**
-     * Refreshes the registry, reloading data or clearing and reinitializing.
+     * Removes an item from the registry using a key derived from the item itself.
+     *
+     * @param item The item to remove.
+     */
+    void destroy(T item);
+
+    /**
+     * Updates an item in the registry using a key derived from the item itself. If the item does not exist, it will be
+     * registered.
+     *
+     * @param item The item to update.
+     */
+    void update(T item);
+
+    /**
+     * Updates an item in the registry for a specific key. If the key does not exist, a new entry will be created.
+     *
+     * @param key  The key of the item to update.
+     * @param item The new item.
+     */
+    void update(String key, T item);
+
+    /**
+     * Clears all items from the registry and re-initializes it by calling {@link #init()}.
      */
     void refresh();
 
     /**
-     * Retrieves the value corresponding to the specified key.
+     * Retrieves an item from the registry by its key.
      *
-     * @param id The unique identifier key.
-     * @return The corresponding value, or {@code null} if not found.
+     * @param key The key of the item to retrieve.
+     * @return The item associated with the key, or {@code null} if not found.
      */
-    T get(String id);
+    T get(String key);
 
     /**
-     * Initializes the registry. This is an empty default implementation, intended for subclasses to extend as needed.
+     * Retrieves a collection of all items currently in the registry.
+     *
+     * @return An unmodifiable {@link Collection} of all registered items.
      */
-    default List<T> getAll() {
-        return List.of();
-    }
+    Collection<T> getAll();
 
 }

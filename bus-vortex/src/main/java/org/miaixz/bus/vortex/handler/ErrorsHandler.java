@@ -37,10 +37,10 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Context;
+import org.miaixz.bus.vortex.Formats;
 import org.miaixz.bus.vortex.magic.ErrorCode;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.web.reactive.function.client.WebClientException;
@@ -68,8 +68,7 @@ public class ErrorsHandler implements WebExceptionHandler {
      * <p>
      * This method is invoked when an exception occurs during request processing. It sets the response status to
      * {@code HttpStatus.OK} and content type to {@code MediaType.APPLICATION_JSON}. It then builds an error message
-     * based on the exception type and writes the serialized JSON message to the response body. Finally, it logs the
-     * error handling process.
+     * based on the exception type and writes the serialized JSON message to the response body.
      * </p>
      *
      * @param exchange The current {@link ServerWebExchange} object, containing the request and response.
@@ -79,21 +78,24 @@ public class ErrorsHandler implements WebExceptionHandler {
     @NonNull
     @Override
     public Mono<Void> handle(ServerWebExchange exchange, Throwable ex) {
-        // Get the response object and set the status code and content type
+        // Get the response object and set the status code
         ServerHttpResponse response = exchange.getResponse();
         response.setStatusCode(HttpStatus.OK);
-        response.getHeaders().setContentType(MediaType.APPLICATION_JSON);
 
         // Get the request context from the exchange attributes
         Context context = exchange.getAttribute(Context.$);
+
+        // Log the format from the context for debugging
+        if (context != null) {
+            Logger.info("==>    Handler: Context format is: {}", context.getFormat());
+        } else {
+            Logger.info("==>    Handler: Context is null, defaulting to JSON format.");
+        }
 
         // Get request information for logging
         ServerHttpRequest request = exchange.getRequest();
         String path = request.getPath().value();
         String method = request.getMethod() != null ? request.getMethod().name() : "UNKNOWN";
-
-        // Generate an error message based on the exception type
-        Message message = buildErrorMessage(ex);
 
         // Direct log output without creating methods
         if (ex instanceof WebClientException) {
@@ -134,13 +136,13 @@ public class ErrorsHandler implements WebExceptionHandler {
                     ex.getMessage());
         }
 
-        // If context is available, use its format provider; otherwise, default to a simple JSON representation.
-        String formatBody;
-        if (context != null) {
-            formatBody = context.getFormat().getProvider().serialize(message);
-        } else {
-            formatBody = "{\"errcode\":\"" + message.getErrcode() + "\",\"errmsg\":\"" + message.getErrmsg() + "\"}";
-        }
+        // Determine the format and content type based on the context, defaulting to JSON
+        Formats responseFormat = (context != null) ? context.getFormat() : Formats.JSON;
+        response.getHeaders().setContentType(responseFormat.getMediaType());
+
+        // Generate an error message based on the exception type
+        Message message = buildErrorMessage(ex);
+        String formatBody = responseFormat.getProvider().serialize(message);
 
         // Wrap the formatted response into a DataBuffer
         DataBuffer db = response.bufferFactory().wrap(formatBody.getBytes(Charset.UTF_8));

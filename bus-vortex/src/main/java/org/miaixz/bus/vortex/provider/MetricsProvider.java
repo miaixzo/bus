@@ -25,49 +25,31 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.vortex.support;
+package org.miaixz.bus.vortex.provider;
 
-import org.miaixz.bus.vortex.Context;
-import org.miaixz.bus.vortex.Router;
-import org.miaixz.bus.vortex.support.http.HttpService;
-import org.springframework.web.reactive.function.server.ServerRequest;
-import org.springframework.web.reactive.function.server.ServerResponse;
-
+import org.miaixz.bus.vortex.magic.Metrics;
 import reactor.core.publisher.Mono;
-import reactor.util.annotation.NonNull;
 
 /**
- * HTTP 协议的请求路由器。 它的职责是协调请求处理，并将实际的 HTTP 执行工作委托给 HttpExecutor。
+ * A Service Provider Interface (SPI) for monitoring the performance of a running service process.
+ * <p>
+ * Implementations of this interface are responsible for fetching performance metrics, such as CPU and memory usage, for
+ * a given service process. This allows the core logic to remain agnostic of the underlying monitoring mechanism (e.g.,
+ * system commands, JMX, or a library like OSHI).
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class HttpRouter implements Router {
+public interface MetricsProvider {
 
     /**
-     * 在一个完整的Spring应用中，HttpExecutor 可能会被声明为@Component并在这里注入。
-     * <p>
-     * 在当前 VortexHandler 的设计中，每次请求都创建一个新的执行器实例是可行的。
-     */
-    private final HttpService service;
-
-    public HttpRouter(HttpService service) {
-        this.service = service;
-    }
-
-    /**
-     * 将 HTTP 请求路由到下游服务。 此方法仅作为协调者，将所有实际工作委托给 HttpExecutor。
+     * Retrieves performance metrics for a given service process.
      *
-     * @param request The client's {@link ServerRequest} object.
-     * @return {@link Mono<ServerResponse>} containing the response from the target service.
+     * @param serviceId A unique identifier for the service.
+     * @return A {@code Mono} emitting the {@link Metrics} for the service. If the process is not found or metrics are
+     *         unavailable, it is recommended to emit a {@code Mono} with a zero-value {@code ProcessMetrics} object
+     *         rather than an empty or error signal, to simplify downstream processing.
      */
-    @NonNull
-    @Override
-    public Mono<ServerResponse> route(ServerRequest request) {
-        return Mono.deferContextual(contextView -> {
-            final Context context = contextView.get(Context.class);
-            return this.service.execute(request, context);
-        });
-    }
+    Mono<Metrics> getMetrics(String serviceId);
 
 }

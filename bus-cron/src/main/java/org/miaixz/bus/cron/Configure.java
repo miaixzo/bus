@@ -38,13 +38,17 @@ import java.util.TimeZone;
 public class Configure {
 
     /**
-     * The time zone for the scheduler.
+     * Time zone
      */
-    protected TimeZone timezone = TimeZone.getDefault();
+    private TimeZone timezone = TimeZone.getDefault();
     /**
-     * Whether to match the seconds field in a cron expression.
+     * Whether to support second matching
      */
-    protected boolean matchSecond;
+    private boolean matchSecond;
+    /**
+     * Whether to use daemon thread
+     */
+    private boolean daemon;
 
     /**
      * Default constructor.
@@ -90,6 +94,26 @@ public class Configure {
      */
     public Configure setMatchSecond(final boolean isMatchSecond) {
         this.matchSecond = isMatchSecond;
+        return this;
+    }
+
+    /**
+     * Checks if the thread is a daemon thread.
+     *
+     * @return {@code true} if daemon thread, {@code false} if non-daemon thread
+     */
+    public boolean isDaemon() {
+        return this.daemon;
+    }
+
+    /**
+     * Sets whether to use a daemon thread.
+     *
+     * @param daemon {@code true} for daemon thread, {@code false} for non-daemon thread
+     * @return this {@link Configure} instance for chaining.
+     */
+    public Configure setDaemon(final boolean daemon) {
+        this.daemon = daemon;
         return this;
     }
 

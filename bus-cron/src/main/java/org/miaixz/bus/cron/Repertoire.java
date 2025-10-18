@@ -27,19 +27,19 @@
 */
 package org.miaixz.bus.cron;
 
-import org.miaixz.bus.core.center.map.TripleTable;
-import org.miaixz.bus.core.lang.exception.CrontabException;
-import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.cron.crontab.CronCrontab;
-import org.miaixz.bus.cron.crontab.Crontab;
-import org.miaixz.bus.cron.pattern.CronPattern;
-
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+
+import org.miaixz.bus.core.center.map.TripleTable;
+import org.miaixz.bus.core.lang.exception.CrontabException;
+import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.cron.crontab.CronCrontab;
+import org.miaixz.bus.cron.crontab.Crontab;
+import org.miaixz.bus.cron.pattern.CronPattern;
 
 /**
  * Task table for cron jobs. This class holds a mapping between task IDs, cron patterns, and the tasks themselves. The
@@ -311,7 +311,8 @@ public class Repertoire implements Serializable {
     protected void executeTaskIfMatchInternal(final Scheduler scheduler, final long millis) {
         final int size = size();
         for (int i = 0; i < size; i++) {
-            if (this.table.getMiddle(i).match(scheduler.config.timezone, millis, scheduler.config.matchSecond)) {
+            if (this.table.getMiddle(i)
+                    .match(scheduler.config.getTimeZone(), millis, scheduler.config.isMatchSecond())) {
                 scheduler.manager.spawnExecutor(
                         new CronCrontab(this.table.getLeft(i), this.table.getMiddle(i), this.table.getRight(i)));
             }

@@ -27,30 +27,25 @@
 */
 package org.miaixz.bus.vortex.magic;
 
-import org.miaixz.bus.vortex.Assets;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.vortex.Context;
+import org.miaixz.bus.vortex.provider.AuthorizeProvider;
 
 /**
- * Represents an authenticated principal with authentication credentials and request context.
+ * Represents a unified security principal, encapsulating the credential to be validated by an
+ * {@link AuthorizeProvider}.
  * <p>
- * This class encapsulates authentication information for multi-tenant API gateway scenarios, including credential type,
- * tenant identifier, source channel, and associated request context. Used in OAuth 2.0, API Key, and license key
- * authentication flows.
- * <p>
- * <b>Thread Safety:</b> Immutable after construction (channel and context are final).
- * <p>
- * <b>Serialization:</b> Key field is transient to exclude runtime tenant context from persistent storage.
+ * This class acts as a standard data transfer object for passing different types of credentials (e.g., bearer tokens,
+ * API keys) along with their context to the authorization service. It allows the core authorization logic to be
+ * agnostic of the specific credential type.
  *
- * @author Justubborn
+ * @author Kimi Liu
  * @since Java 17+
- * @see Context Request context information
- * @see Assets Resource configuration and permissions
  */
 @Getter
 @Setter
@@ -60,28 +55,12 @@ import org.miaixz.bus.vortex.Context;
 public class Principal {
 
     /**
-     * Authentication credential type identifier.
-     * <p>
-     * Defines the type of authentication credential for validation and processing:
+     * The type of the credential being presented.
      * <ul>
-     * <li>{@code 1} = Access Token (OAuth 2.0 Bearer Token, JWT, Opaque Token)</li>
-     * <li>{@code 2} = API Key (Static service credentials)</li>
+     * <li>{@link Consts#ONE} (1): Represents a bearer token (e.g., JWT, Opaque Token).</li>
+     * <li>{@link Consts#TWO} (2): Represents a static API Key.</li>
      * </ul>
-     * <p>
-     * Determines:
-     * <ul>
-     * <li>Token validation strategy and issuer verification</li>
-     * <li>Header extraction method (Authorization vs custom headers)</li>
-     * <li>Expiration, refresh, and revocation policies</li>
-     * <li>JWT signature verification or API key lookup</li>
-     * </ul>
-     * <p>
-     * <b>Standards:</b>
-     * <ul>
-     * <li>RFC 6749 (OAuth 2.0 Framework) - Access Tokens</li>
-     * <li>RFC 6750 (Bearer Token Usage)</li>
-     * <li>RFC 7519 (JSON Web Token - JWT)</li>
-     * </ul>
+     * This type is used by the {@link AuthorizeProvider} to dispatch to the correct validation logic.
      */
     protected Integer type;
 
@@ -91,25 +70,18 @@ public class Principal {
      * Contains the actual credential string based on {@code type}:
      * <ul>
      * <li><b>Type 1 (Token):</b> Complete bearer token including prefix
-     * 
+     *
      * <pre>
      * Authorization: Bearer eyJhbGciOiJSUzI1NiJ9...
      * </pre>
-     * 
+     *
      * </li>
      * <li><b>Type 2 (API Key):</b> Static API secret
-     * 
+     *
      * <pre>
      * X-API-Key: sk_live_51ABC123xyz...
      * </pre>
-     * 
-     * </li>
-     * <li><b>Type 3 (License):</b> Product activation key
-     * 
-     * <pre>
-     * License: LIC-2025-PRO-001-ABCDEF
-     * </pre>
-     * 
+     *
      * </li>
      * </ul>
      * <p>

@@ -238,8 +238,8 @@ public abstract class AbstractStrategy implements Strategy {
      * @throws ValidateException if any standard parameter is missing or invalid.
      */
     protected void validateParameters(ServerWebExchange exchange, Context context) {
-        Map<String, String> params = context.getParameters();
-        for (Map.Entry<String, String> entry : params.entrySet()) {
+        Map<String, Object> params = context.getParameters();
+        for (Map.Entry<String, Object> entry : params.entrySet()) {
             // Check for "undefined" string values, which can be sent by some clients.
             if (entry.getKey() != null && Normal.UNDEFINED.equals(entry.getKey().toLowerCase())) {
                 throw new ValidateException(ErrorCode._100101);
@@ -249,17 +249,18 @@ public abstract class AbstractStrategy implements Strategy {
             }
         }
         // Validate presence of core gateway parameters.
-        if (StringKit.isBlank(params.get(Args.METHOD))) {
+        if (StringKit.isBlank(Optional.ofNullable(params.get(Args.METHOD)).map(Object::toString).orElse(null))) {
             throw new ValidateException(ErrorCode._100108);
         }
-        if (StringKit.isBlank(params.get(Args.VERSION))) {
+        if (StringKit.isBlank(Optional.ofNullable(params.get(Args.VERSION)).map(Object::toString).orElse(null))) {
             throw new ValidateException(ErrorCode._100107);
         }
-        if (StringKit.isBlank(params.get(Args.FORMAT))) {
+        if (StringKit.isBlank(Optional.ofNullable(params.get(Args.FORMAT)).map(Object::toString).orElse(null))) {
             throw new ValidateException(ErrorCode._100111);
         }
-        if (StringKit.isNotBlank(params.get(Args.SIGN))) {
-            context.setSign(Integer.valueOf(params.get(Args.SIGN)));
+        String sign = Optional.ofNullable(params.get(Args.SIGN)).map(Object::toString).orElse(null);
+        if (StringKit.isNotBlank(sign)) {
+            context.setSign(Integer.valueOf(sign));
         }
 
         // Add additional derived parameters to the context.
@@ -279,6 +280,7 @@ public abstract class AbstractStrategy implements Strategy {
      * @param context  The request context to be enriched.
      */
     protected void enrich(ServerWebExchange exchange, Context context) {
+        context.getParameters().put("x_request_id", exchange.getRequest().getId());
         // Extract the client's IP address, respecting proxy headers.
         String clientIp = Optional.ofNullable(exchange.getRequest().getHeaders().getFirst("x_request_ip")).orElseGet(
                 () -> Optional.ofNullable(exchange.getRequest().getHeaders().getFirst("X-Forwarded-For")).orElseGet(

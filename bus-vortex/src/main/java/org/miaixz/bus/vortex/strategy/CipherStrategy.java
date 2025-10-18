@@ -48,7 +48,6 @@ import org.reactivestreams.Publisher;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.io.buffer.DataBuffer;
-import org.springframework.core.io.buffer.DataBufferFactory;
 import org.springframework.http.server.reactive.ServerHttpResponseDecorator;
 import org.springframework.web.server.ServerWebExchange;
 
@@ -127,7 +126,7 @@ public class CipherStrategy extends AbstractStrategy {
      * @return A {@code Mono<Void>} that signals the completion of this strategy.
      */
     @Override
-    public Mono<Void> apply(ServerWebExchange exchange, StrategyChain chain) {
+    public Mono<Void> apply(ServerWebExchange exchange, Chain chain) {
         return Mono.deferContextual(contextView -> {
             final Context context = contextView.get(Context.class);
             ServerWebExchange newExchange = exchange;
@@ -157,14 +156,16 @@ public class CipherStrategy extends AbstractStrategy {
      *
      * @param parameters The map of request parameters from the {@link Context}.
      */
-    private void doDecrypt(Map<String, String> parameters) {
+    private void doDecrypt(Map<String, Object> parameters) {
         if (null == decryptCrypto) {
             Logger.warn("==> Strategy: Decrypt crypto instance not initialized, skipping decryption.");
             return;
         }
         parameters.forEach((k, v) -> {
-            if (StringKit.isNotBlank(v)) {
-                parameters.put(k, decryptCrypto.decryptString(v.replaceAll(Symbol.SPACE, Symbol.PLUS), Charset.UTF_8));
+            if (v instanceof String && StringKit.isNotBlank((String) v)) {
+                parameters.put(
+                        k,
+                        decryptCrypto.decryptString(((String) v).replaceAll(Symbol.SPACE, Symbol.PLUS), Charset.UTF_8));
             }
         });
     }
@@ -224,8 +225,7 @@ public class CipherStrategy extends AbstractStrategy {
                         Logger.info(
                                 "==> Strategy: Encryption performed for path: {}",
                                 exchange.getRequest().getURI().getPath());
-                        DataBufferFactory bufferFactory = bufferFactory();
-                        DataBuffer encryptedBuffer = bufferFactory.wrap(result.getBytes(Charset.UTF_8));
+                        DataBuffer encryptedBuffer = bufferFactory().wrap(result.getBytes(Charset.UTF_8));
                         return super.writeWith(Mono.just(encryptedBuffer));
                     });
                 }

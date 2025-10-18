@@ -29,19 +29,16 @@ package org.miaixz.bus.vortex;
 
 import java.util.Objects;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 /**
- * Represents a configured API endpoint, acting as a blueprint for routing and processing requests in the Vortex
+ * Represents a configured API resource, acting as a blueprint for routing and processing requests in the Vortex
  * gateway.
  * <p>
- * This class encapsulates all the necessary information for the gateway to handle an incoming request and forward it to
- * the appropriate downstream service. It includes details for service discovery, network addressing, request
- * transformation, security policies, and load balancing.
+ * This class is a data object that encapsulates all necessary metadata for the gateway to handle an incoming request
+ * and forward it to the appropriate downstream service. It includes details for service discovery, network addressing,
+ * security policies, and protocol selection.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -54,27 +51,29 @@ import lombok.experimental.SuperBuilder;
 public class Assets {
 
     /**
-     * A unique identifier for this API asset, used for caching and equality checks.
+     * The unique identifier for this asset. Used for internal caching, management, and equality checks.
      */
     private String id;
 
     /**
-     * A human-readable name for the API asset, used for display and logging purposes.
+     * The human-readable name of this asset, primarily used for display in user interfaces and for logging.
      */
     private String name;
 
     /**
-     * An optional URL or identifier for an icon representing this asset, typically for use in administrative UIs.
+     * An optional URL or identifier for an icon associated with this asset, intended for use in administrative UIs.
      */
     private String icon;
 
     /**
-     * The hostname or IP address of the downstream service. Example: {@code api.downstream.com} or {@code 10.0.0.5}.
+     * The hostname or IP address of the downstream service to which requests for this asset will be routed. Example:
+     * {@code "api.downstream.com"} or {@code "10.0.0.5"}.
      */
     private String host;
 
     /**
-     * The base path on the downstream service, which is prefixed to the final request URI. Example: {@code /v2/api}.
+     * The base path on the downstream service. This path segment is prefixed to the final request URI. Example:
+     * {@code "/v2/api"}.
      */
     private String path;
 
@@ -84,32 +83,30 @@ public class Assets {
     private Integer port;
 
     /**
-     * The specific endpoint path on the downstream service. This is combined with the host, port, and base path to form
-     * the final target URL. Example: {@code /users/{id}}.
+     * The specific endpoint path on the downstream service. This is combined with other fields to form the final target
+     * URL. Example: {@code "/users/{id}"}.
      */
     private String url;
 
     /**
-     * The logical API method name defined by the gateway's contract (e.g., {@code user.getProfile}). This is distinct
-     * from the HTTP method ({@code type}).
+     * The logical API method name defined by the gateway's contract (e.g., {@code "user.getProfile"}). This is used for
+     * service lookup and is distinct from the HTTP method.
      */
     private String method;
 
     /**
-     * Defines the routing mechanism or protocol used to forward the request.
+     * Defines the routing mechanism or protocol to be used for this asset.
      * <ul>
-     * <li>{@code 1}: HTTP/HTTPS</li>
-     * <li>{@code 2}: Message Queue (e.g., RabbitMQ, Kafka)</li>
-     * <li>{@code 3}: Server-Sent Events (SSE)</li>
-     * <li>{@code 4}: Standard I/O (STDIO) - for invoking local command-line tools</li>
-     * <li>{@code 5}: OpenAPI discovery</li>
-     * <li>{@code 6}: Streamable HTTP (for large data streaming)</li>
+     * <li>{@code 1}: HTTP/HTTPS - Standard reverse proxying.</li>
+     * <li>{@code 2}: Message Queue - Forwards the request as a message to a broker.</li>
+     * <li>{@code 3}: Server-Sent Events (SSE) - Forwards to a streaming endpoint.</li>
+     * <li>{@code 4}: Standard I/O (STDIO) - Invokes a local command-line tool.</li>
      * </ul>
      */
     private Integer mode;
 
     /**
-     * Specifies the HTTP method to be used when forwarding the request (if applicable).
+     * Specifies the HTTP method (verb) required to access this asset (e.g., GET, POST).
      * <ul>
      * <li>{@code 1}: GET</li>
      * <li>{@code 2}: POST</li>
@@ -124,39 +121,42 @@ public class Assets {
     private Integer type;
 
     /**
-     * Specifies whether an authentication token is required for this API call.
+     * A flag indicating whether an authentication token is required to access this asset.
      * <ul>
-     * <li>{@code 0}: No validation required.</li>
-     * <li>{@code 1}: Authentication token is required.</li>
+     * <li>{@code 0}: No token required (public access).</li>
+     * <li>{@code 1}: A valid token is required.</li>
      * </ul>
      */
     private Integer token;
 
     /**
-     * Specifies whether the request must be cryptographically signed and which signature validation scheme to apply.
+     * A flag indicating whether the request and response for this asset are expected to be cryptographically signed.
+     * This is used to enable or disable strategies like {@link org.miaixz.bus.vortex.strategy.CipherStrategy}.
      */
     private Integer sign;
 
     /**
-     * Defines the required authorization scope (e.g., OAuth2 scope like {@code read:profile}) that the provided token
-     * must possess to access this API.
+     * Defines the required authorization scope (e.g., an OAuth2 scope like {@code "read:profile"}) that the provided
+     * credential must possess to access this asset.
      */
     private Integer scope;
 
     /**
-     * The number of automatic retry attempts if the initial request to the downstream service fails with a transient
-     * error.
+     * The number of automatic retry attempts to be made if the initial request to the downstream service fails with a
+     * transient error.
      */
     private Integer retries;
 
     /**
-     * The maximum time in milliseconds to wait for a response from the downstream service before timing out.
+     * The maximum time in milliseconds to wait for a response from the downstream service before the request is
+     * considered timed out.
      */
-    private Integer timeout;
+    @Builder.Default
+    private Integer timeout = 60;
 
     /**
-     * The load balancing strategy to use when multiple downstream service instances are available (e.g., round-robin,
-     * least-connections).
+     * The load balancing strategy to use when multiple downstream service instances are available for this asset (e.g.,
+     * round-robin, least-connections).
      */
     private Integer balance;
 
@@ -167,40 +167,48 @@ public class Assets {
     private Integer weight;
 
     /**
-     * For non-HTTP routing modes (e.g., {@code STDIO}), this field can hold command-line arguments for the target
-     * process.
-     */
-    private String args;
-
-    /**
-     * For {@code STDIO} routing mode, this specifies the executable command or script to be run.
+     * A space-separated string representing the command and its arguments to be executed when this asset is started in
+     * STDIO mode (mode 4). Example: {@code "python /path/to/script.py --port 8000"}
      */
     private String command;
 
     /**
-     * A flexible JSON string for storing any additional, custom configuration or metadata related to this asset.
+     * A JSON string representing a map of environment variables to be set for the process when this asset is started in
+     * STDIO mode (mode 4). This is the recommended way to pass sensitive information. Example:
+     * {@code "{\"API_KEY\":\"your-secret-key\",\"DB_HOST\":\"localhost\"}"}
+     */
+    private String env;
+
+    /**
+     * A flexible JSON string for storing any additional, custom configuration or metadata related to this asset that is
+     * not covered by other fields.
      */
     private String metadata;
 
     /**
-     * Defines a set of firewall rules or policies to be applied to this request, such as rate limiting or IP
-     * blacklisting.
+     * Defines the security policy or firewall level to be applied to this asset.
+     * <ul>
+     * <li>{@code 0}: Public - No authentication or special checks required.</li>
+     * <li>{@code 1}: Secure - Requires authentication (e.g., token or API key).</li>
+     * <li>{@code 2}: Licensed - Requires both authentication and a valid license check.</li>
+     * </ul>
      */
     private Integer firewall;
 
     /**
-     * The specific version of the API endpoint (e.g., {@code v1}, {@code 2.5.0}), used for version-based routing.
+     * The specific version of the API endpoint (e.g., {@code "v1"}, {@code "2.5.0"}), used for version-based routing
+     * and asset lookup.
      */
     private String version;
 
     /**
-     * A detailed, human-readable description of what this API asset does.
+     * A detailed, human-readable description of what this API asset does, intended for display in UIs or documentation.
      */
     private String description;
 
     /**
-     * Compares this Assets object with the specified object for equality. The comparison is based on the {@code id}
-     * field.
+     * Compares this Assets object with the specified object for equality. The comparison is based solely on the
+     * {@code id} field.
      *
      * @param o The object to compare with.
      * @return {@code true} if the objects are equal (have the same id), {@code false} otherwise.
@@ -209,14 +217,14 @@ public class Assets {
     public boolean equals(Object o) {
         if (this == o)
             return true;
-        if (null == o || getClass() != o.getClass())
+        if (o == null || getClass() != o.getClass())
             return false;
         Assets assets = (Assets) o;
-        return id.equals(assets.id);
+        return Objects.equals(id, assets.id);
     }
 
     /**
-     * Returns a hash code value for the object. This hash code is based on the {@code id} field.
+     * Returns a hash code value for the object. This hash code is based solely on the {@code id} field.
      *
      * @return A hash code value for this object.
      */

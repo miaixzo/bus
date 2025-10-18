@@ -32,29 +32,22 @@ import java.util.Map;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.net.PORT;
-import org.miaixz.bus.vortex.Filter;
-import org.miaixz.bus.vortex.Handler;
-import org.miaixz.bus.vortex.Router;
-import org.miaixz.bus.vortex.Vortex;
+import org.miaixz.bus.vortex.*;
 import org.miaixz.bus.vortex.filter.PrimaryFilter;
 import org.miaixz.bus.vortex.handler.ErrorsHandler;
 import org.miaixz.bus.vortex.handler.VortexHandler;
 import org.miaixz.bus.vortex.provider.AuthorizeProvider;
+import org.miaixz.bus.vortex.provider.ProcessProvider;
 import org.miaixz.bus.vortex.registry.AssetsRegistry;
 import org.miaixz.bus.vortex.registry.LimiterRegistry;
-import org.miaixz.bus.vortex.strategy.AuthorizeStrategy;
-import org.miaixz.bus.vortex.strategy.CipherStrategy;
-import org.miaixz.bus.vortex.strategy.FormatStrategy;
-import org.miaixz.bus.vortex.strategy.LimitStrategy;
-import org.miaixz.bus.vortex.strategy.RequestStrategy;
-import org.miaixz.bus.vortex.Strategy;
-import org.miaixz.bus.vortex.strategy.StrategyFactory;
-import org.miaixz.bus.vortex.support.HttpRouter;
+import org.miaixz.bus.vortex.strategy.*;
 import org.miaixz.bus.vortex.support.McpRouter;
 import org.miaixz.bus.vortex.support.MqRouter;
-import org.miaixz.bus.vortex.support.http.HttpService;
+import org.miaixz.bus.vortex.support.RestRouter;
 import org.miaixz.bus.vortex.support.mcp.McpService;
+import org.miaixz.bus.vortex.support.mcp.server.ManageProvider;
 import org.miaixz.bus.vortex.support.mq.MqService;
+import org.miaixz.bus.vortex.support.rest.RestService;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.codec.ServerCodecConfigurer;
@@ -90,8 +83,8 @@ public class VortexConfiguration {
      * @return A new instance of HttpRouter.
      */
     @Bean(name = "http")
-    public Router http(HttpService service) {
-        return new HttpRouter(service);
+    public Router http(RestService service) {
+        return new RestRouter(service);
     }
 
     /**
@@ -124,8 +117,8 @@ public class VortexConfiguration {
      * @return A new instance of HttpService.
      */
     @Bean
-    public HttpService httpService() {
-        return new HttpService();
+    public RestService httpService() {
+        return new RestService();
     }
 
     /**
@@ -135,8 +128,8 @@ public class VortexConfiguration {
      * @return A new instance of McpService.
      */
     @Bean
-    public McpService mcpService(AssetsRegistry assetsRegistry) {
-        return new McpService(assetsRegistry);
+    public McpService mcpService(AssetsRegistry assetsRegistry, ProcessProvider processProvider) {
+        return new McpService(assetsRegistry, processProvider);
     }
 
     /**
@@ -147,6 +140,11 @@ public class VortexConfiguration {
     @Bean
     public MqService mqService() {
         return new MqService();
+    }
+
+    @Bean
+    public ProcessProvider processProvider() {
+        return new ManageProvider();
     }
 
     /**
@@ -243,7 +241,7 @@ public class VortexConfiguration {
      * @param routers  A map of all available {@link Router} beans, injected by Spring.
      * @return A {@link Vortex} core component instance, including the HTTP server.
      */
-    @Bean(initMethod = "init", destroyMethod = "destroy")
+    @Bean(initMethod = "start", destroyMethod = "stop")
     public Vortex vortex(List<Filter> filters, List<Handler> handlers, Map<String, Router> routers) {
         // Create the main Vortex handler with all injected Handler instances.
         VortexHandler vortexHandler = new VortexHandler(handlers, routers);

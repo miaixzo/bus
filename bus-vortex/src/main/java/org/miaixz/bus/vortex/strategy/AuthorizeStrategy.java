@@ -30,6 +30,7 @@ package org.miaixz.bus.vortex.strategy;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.core.basic.normal.Errors;
@@ -108,25 +109,28 @@ public class AuthorizeStrategy extends AbstractStrategy {
      * </ol>
      *
      * @param exchange The {@link ServerWebExchange} representing the current request and response.
-     * @param chain    The {@link StrategyChain} to invoke the next strategy in the chain.
+     * @param chain    The {@link Chain} to invoke the next strategy in the chain.
      * @return A {@link Mono<Void>} signaling the completion of this strategy's processing.
      * @throws ValidateException If the assets are not found (error code {@link ErrorCode#_100800}) or if the HTTP
      *                           method does not match.
      */
     @Override
-    public Mono<Void> apply(ServerWebExchange exchange, StrategyChain chain) {
+    public Mono<Void> apply(ServerWebExchange exchange, Chain chain) {
         return Mono.deferContextual(contextView -> {
             final Context context = contextView.get(Context.class);
 
-            Map<String, String> params = context.getParameters();
+            Map<String, Object> params = context.getParameters();
 
             // Extract and set context parameters
-            context.setFormat(Formats.valueOf(StringKit.toUpperCase(params.get(Args.FORMAT))));
-            context.setChannel(Channel.get(params.get(Args.X_REMOTE_CHANNEL)));
+            context.setFormat(
+                    Formats.get(Optional.ofNullable(params.get(Args.FORMAT)).map(Object::toString).orElse(null)));
+            context.setChannel(
+                    Channel.get(
+                            Optional.ofNullable(params.get(Args.X_REMOTE_CHANNEL)).map(Object::toString).orElse(null)));
 
             // Retrieve API asset configuration
-            String method = params.get(Args.METHOD);
-            String version = params.get(Args.VERSION);
+            String method = Optional.ofNullable(params.get(Args.METHOD)).map(Object::toString).orElse(null);
+            String version = Optional.ofNullable(params.get(Args.VERSION)).map(Object::toString).orElse(null);
             Assets assets = this.registry.get(method, version);
             if (null == assets) {
                 Logger.warn("==>     Filter: Assets not found for method: {}, version: {}", method, version);
@@ -205,6 +209,10 @@ public class AuthorizeStrategy extends AbstractStrategy {
      * @throws ValidateException if no credentials are found or if the provider reports a validation failure.
      */
     protected void authorize(Context context) {
+        if (Consts.ZERO == context.getAssets().getToken()) {
+            return;
+        }
+
         Principal principal;
         // 1. Prioritize finding a token.
         String accessToken = findAccessTokenInRequest(context);
@@ -237,7 +245,7 @@ public class AuthorizeStrategy extends AbstractStrategy {
                     delegate.getAuthorize(),
                     authMap,
                     CopyOptions.of().setTransientSupport(false).setIgnoreCase(true));
-            authMap.forEach((k, v) -> context.getParameters().put(k, String.valueOf(v)));
+            context.getParameters().putAll(authMap);
             Logger.info("==>     Filter: Authentication successful.");
             return;
         }
@@ -268,9 +276,10 @@ public class AuthorizeStrategy extends AbstractStrategy {
             return accessToken;
         }
 
-        // If not found, search in request headers.
+        // If not found, search in request parameters.
         if (StringKit.isBlank(accessToken)) {
-            accessToken = MapKit.getFirstNonNull(context.getParameters(), keys);
+            accessToken = Optional.ofNullable(MapKit.getFirstNonNull(context.getParameters(), keys))
+                    .map(Object::toString).orElse(null);
         }
 
         return accessToken;
@@ -287,7 +296,8 @@ public class AuthorizeStrategy extends AbstractStrategy {
                 "API-KEY", "API-ID" };
 
         // First, search in request parameters.
-        String apiKey = MapKit.getFirstNonNull(context.getParameters(), keys);
+        String apiKey = Optional.ofNullable(MapKit.getFirstNonNull(context.getParameters(), keys)).map(Object::toString)
+                .orElse(null);
 
         // If not found, search in request headers.
         if (StringKit.isBlank(apiKey)) {

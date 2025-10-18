@@ -25,25 +25,44 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.vortex.support.mcp;
+package org.miaixz.bus.vortex.magic;
 
-import org.miaixz.bus.vortex.Assets;
+import org.miaixz.bus.core.lang.EnumValue;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
- * MCP Client implementation for the Streamable HTTP protocol. It extends HttpClient and uses WebClient for
- * communication.
+ * A data transfer object (DTO) that provides a consolidated view of a single managed service, including its status and
+ * performance metrics.
+ * <p>
+ * This object is typically constructed by the {@link org.miaixz.bus.vortex.registry.ServerRegistry} and returned by
+ * management APIs to be consumed by a UI dashboard.
+ *
+ * @author Kimi Liu
+ * @since Java 17+
  */
-public class StreamableHttpClient extends HttpClient {
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class Transmit {
 
     /**
-     * Constructs a new StreamableHttpClient.
-     * 
-     * @param assets The Assets configuration for this client.
+     * The unique name or ID of the service, derived from {@link org.miaixz.bus.vortex.Assets#getName()}.
      */
-    public StreamableHttpClient(Assets assets) {
-        super(assets);
-        // In a real implementation, this might handle streaming request and response bodies,
-        // but for listTools and callTool's single request-response pattern, the parent's implementation is sufficient.
-    }
+    private String name;
+
+    /**
+     * The current lifecycle status of the service process (e.g., RUNNING, STOPPED).
+     */
+    private EnumValue.Lifecycle lifecycle;
+
+    /**
+     * The latest performance metrics for the service process (e.g., CPU and memory usage).
+     */
+    private Metrics metrics;
 
 }

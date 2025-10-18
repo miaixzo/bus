@@ -25,35 +25,61 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.vortex.strategy;
+package org.miaixz.bus.vortex.provider;
 
-import org.miaixz.bus.vortex.Strategy;
-import org.springframework.web.server.ServerWebExchange;
-
+import org.miaixz.bus.core.lang.EnumValue;
+import org.miaixz.bus.vortex.Assets;
 import reactor.core.publisher.Mono;
 
 /**
- * Represents the ongoing execution of the strategy chain, implementing the Chain of Responsibility pattern.
+ * A Service Provider Interface (SPI) for managing the lifecycle of external service processes.
  * <p>
- * An instance of this interface is passed to each {@link Strategy#apply(ServerWebExchange, StrategyChain)} method,
- * allowing a strategy to delegate control to the next strategy in the chain. The final link in the chain, implemented
- * in {@link org.miaixz.bus.vortex.filter.PrimaryChain}, delegates control back to the main Spring WebFlux
- * {@code WebFilterChain}.
+ * Implementations of this interface are responsible for handling the operational logic of a service defined by its
+ * {@link Assets}, such as starting, stopping, and checking its status. This abstraction allows the gateway to manage
+ * services running as local processes, Docker containers, or on remote machines via different providers.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public interface StrategyChain {
+public interface ProcessProvider {
 
     /**
-     * Delegates control to the next strategy in the chain.
+     * Starts the service defined by the given assets and returns a handle to the running process.
      * <p>
-     * A {@link Strategy} must invoke this method to continue the processing of the request. Failure to do so will
-     * effectively halt the request handling pipeline.
+     * This method should be idempotent; calling it on an already running service should not cause an error and should
+     * return a handle to the existing process.
      *
-     * @param exchange The current server exchange, which may have been mutated by the calling strategy.
-     * @return A {@code Mono<Void>} that signals the completion of the rest of the chain.
+     * @param assets The configuration of the service to start.
+     * @return A {@code Mono} emitting the {@link Process} handle upon successful start.
      */
-    Mono<Void> apply(ServerWebExchange exchange);
+    Mono<Process> start(Assets assets);
+
+    /**
+     * Stops the service defined by the given assets.
+     * <p>
+     * This method should be idempotent; calling it on an already stopped service should not cause an error.
+     *
+     * @param assets The configuration of the service to stop.
+     * @return A {@code Mono<Void>} that completes when the stop signal has been successfully sent.
+     */
+    Mono<Void> stop(Assets assets);
+
+    /**
+     * Restarts the service defined by the given assets.
+     * <p>
+     * This is typically equivalent to calling {@code stop()} followed by {@code start()}.
+     *
+     * @param assets The configuration of the service to restart.
+     * @return A {@code Mono} emitting the new {@link Process} handle upon successful restart.
+     */
+    Mono<Process> restart(Assets assets);
+
+    /**
+     * Retrieves the current status of the service.
+     *
+     * @param assets The configuration of the service to check.
+     * @return A {@code Mono} emitting the current {@link EnumValue.Lifecycle}.
+     */
+    Mono<EnumValue.Lifecycle> getStatus(Assets assets);
 
 }

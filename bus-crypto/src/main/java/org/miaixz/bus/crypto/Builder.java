@@ -34,6 +34,7 @@ import java.io.InputStream;
 import java.math.BigInteger;
 import java.security.*;
 import java.security.spec.KeySpec;
+import java.security.spec.RSAPrivateCrtKeySpec;
 import java.util.Map;
 import java.util.Objects;
 
@@ -73,6 +74,7 @@ import org.miaixz.bus.crypto.builtin.digest.mac.BCHMac;
 import org.miaixz.bus.crypto.builtin.digest.mac.Mac;
 import org.miaixz.bus.crypto.builtin.symmetric.Crypto;
 import org.miaixz.bus.crypto.center.*;
+import org.w3c.dom.Element;
 
 /**
  * Security-related utility class.
@@ -1855,6 +1857,56 @@ public class Builder {
      */
     public static PBEParameterSpec createPBEParameterSpec(final byte[] salt, final int iterationCount) {
         return new PBEParameterSpec(salt, iterationCount);
+    }
+
+    /**
+     * 将XML格式的密钥参数转化为{@link RSAPrivateCrtKeySpec}，XML为C#生成格式，类似于：
+     * 
+     * <pre>{@code
+     * <RSAKeyValue>
+     *     <Modulus>xx</Modulus>
+     *     <Exponent>xx</Exponent>
+     *     <P>xxxxxxxxx</P>
+     *     <Q>xxxxxxxxx</Q>
+     *     <DP>xxxxxxxx</DP>
+     *     <DQ>xxxxxxxx</DQ>
+     *     <InverseQ>xx</InverseQ>
+     *     <D>xxxxxxxxx</D>
+     * </RSAKeyValue>
+     * }</pre>
+     *
+     * @param xml xml格式密钥字符串
+     * @return {@link RSAPrivateCrtKeySpec}
+     */
+    public static RSAPrivateCrtKeySpec xmlToRSAPrivateCrtKeySpec(final String xml) {
+        // 1. 解析XML
+        final Element rootElement = XmlKit.getRootElement(XmlKit.parseXml(xml));
+
+        // 2. 提取各个字段
+        final String modulusB64 = XmlKit.elementText(rootElement, "Modulus");
+        final String exponentB64 = XmlKit.elementText(rootElement, "Exponent");
+        final String pB64 = XmlKit.elementText(rootElement, "P");
+        final String qB64 = XmlKit.elementText(rootElement, "Q");
+        final String dpB64 = XmlKit.elementText(rootElement, "DP");
+        final String dqB64 = XmlKit.elementText(rootElement, "DQ");
+        final String inverseQB64 = XmlKit.elementText(rootElement, "InverseQ");
+        final String dB64 = XmlKit.elementText(rootElement, "D");
+
+        // 3. Base64解码
+        final byte[] modulus = Base64.decode(modulusB64);
+        final byte[] publicExponent = Base64.decode(exponentB64);
+        final byte[] privateExponent = Base64.decode(dB64);
+        final byte[] primeP = Base64.decode(pB64);
+        final byte[] primeQ = Base64.decode(qB64);
+        final byte[] primeExponentP = Base64.decode(dpB64);
+        final byte[] primeExponentQ = Base64.decode(dqB64);
+        final byte[] crtCoefficient = Base64.decode(inverseQB64);
+
+        // 4. 创建RSAPrivateCrtKeySpec
+        return new RSAPrivateCrtKeySpec(new BigInteger(1, modulus), new BigInteger(1, publicExponent),
+                new BigInteger(1, privateExponent), new BigInteger(1, primeP), new BigInteger(1, primeQ),
+                new BigInteger(1, primeExponentP), new BigInteger(1, primeExponentQ),
+                new BigInteger(1, crtCoefficient));
     }
 
     /**

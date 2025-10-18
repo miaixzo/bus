@@ -27,148 +27,109 @@
 */
 package org.miaixz.bus.vortex.registry;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.miaixz.bus.vortex.Registry;
 import org.springframework.beans.factory.InitializingBean;
 
+import java.util.Collection;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+
 /**
- * Abstract registry class, providing generic registry functionality for managing and storing key-value pair data.
+ * An abstract, generic, thread-safe base class for creating in-memory registries.
+ * <p>
+ * This class provides the core functionality for a key-value store, using a {@link ConcurrentHashMap} for thread-safe
+ * operations. It is designed to be extended by concrete registry implementations (e.g., {@link AssetsRegistry}), which
+ * must provide a key generation strategy.
  *
- * @param <T> The type of value stored in the registry.
- * @author Justubborn
+ * @param <T> The type of objects to be stored in the registry.
+ * @author Kimi Liu
  * @since Java 17+
  */
 public abstract class AbstractRegistry<T> implements Registry<T>, InitializingBean {
 
     /**
-     * A thread-safe cache, used to store key-value pair data.
+     * The underlying thread-safe map that stores the registered items.
      */
-    private final Map<String, T> cache = new ConcurrentHashMap<>();
+    private final Map<String, T> registry = new ConcurrentHashMap<>();
 
     /**
-     * The key generation strategy.
+     * The function used to generate a unique key for each item stored in the registry.
      */
-    protected RegistryKey<T> registryKey;
+    protected Function<T, String> keyGenerator;
 
     /**
-     * Sets the key generation strategy.
+     * Sets the key generation strategy for this registry. This method must be called by subclasses in their constructor
+     * to define how items are indexed.
      *
-     * @param registryKey The key generation strategy.
+     * @param keyGenerator A {@link Function} that takes an item of type {@code T} and returns its unique string key.
      */
-    protected void setKeyGenerator(RegistryKey<T> registryKey) {
-        this.registryKey = registryKey;
+    protected void setKeyGenerator(Function<T, String> keyGenerator) {
+        this.keyGenerator = keyGenerator;
     }
 
-    /**
-     * Adds a key-value pair to the registry.
-     *
-     * @param key The key.
-     * @param reg The value to register.
-     * @return {@code true} if the key did not previously exist and the addition was successful, {@code false}
-     *         otherwise.
-     */
     @Override
-    public boolean add(String key, T reg) {
-        if (null != cache.get(key)) {
-            return false;
+    public void register(T item) {
+        if (keyGenerator == null) {
+            throw new IllegalStateException("Key generator has not been set. Call setKeyGenerator in the constructor.");
         }
-        cache.put(key, reg);
-        return true;
+        register(keyGenerator.apply(item), item);
     }
 
-    /**
-     * Adds an object to the registry, using the key generation strategy to generate the key.
-     *
-     * @param item The object to add.
-     * @return {@code true} if the addition was successful, {@code false} otherwise.
-     * @throws IllegalStateException if the key generator is not set.
-     */
-    public boolean add(T item) {
-        if (registryKey == null) {
-            throw new IllegalStateException("Key generator not set");
+    @Override
+    public void register(String key, T item) {
+        this.registry.put(key, item);
+    }
+
+    @Override
+    public void destroy(String key) {
+        this.registry.remove(key);
+    }
+
+    @Override
+    public void destroy(T item) {
+        if (keyGenerator == null) {
+            throw new IllegalStateException("Key generator has not been set.");
         }
-        return add(registryKey.keys(item), item);
+        destroy(keyGenerator.apply(item));
     }
 
-    /**
-     * Removes a record with the specified key from the registry.
-     *
-     * @param id The key.
-     * @return {@code true} if the removal was successful, {@code false} otherwise.
-     */
-    public boolean remove(String id) {
-        return null != this.cache.remove(id);
-    }
-
-    /**
-     * Modifies a key-value pair in the registry by first removing and then adding it.
-     *
-     * @param key The key.
-     * @param reg The new value.
-     * @return {@code true} if the modification was successful, {@code false} otherwise.
-     */
-    public boolean amend(String key, T reg) {
-        cache.remove(key);
-        return add(key, reg);
-    }
-
-    /**
-     * Updates an object in the registry, using the key generation strategy to generate the key.
-     *
-     * @param item The object to update.
-     * @return {@code true} if the update was successful, {@code false} otherwise.
-     * @throws IllegalStateException if the key generator is not set.
-     */
-    public boolean amend(T item) {
-        if (registryKey == null) {
-            throw new IllegalStateException("Key generator not set");
+    @Override
+    public void update(T item) {
+        if (keyGenerator == null) {
+            throw new IllegalStateException("Key generator has not been set.");
         }
-        return amend(registryKey.keys(item), item);
+        update(keyGenerator.apply(item), item);
     }
 
-    /**
-     * Refreshes the registry by clearing the cache and reinitializing it.
-     */
+    @Override
+    public void update(String key, T item) {
+        this.registry.put(key, item);
+    }
+
+    @Override
     public void refresh() {
-        cache.clear();
+        this.registry.clear();
         init();
     }
 
-    /**
-     * Retrieves the value corresponding to the specified key.
-     *
-     * @param key The key.
-     * @return The corresponding value, or {@code null} if not found.
-     */
+    @Override
     public T get(String key) {
-        return cache.get(key);
+        return this.registry.get(key);
+    }
+
+    @Override
+    public Collection<T> getAll() {
+        return this.registry.values();
     }
 
     /**
-     * Spring initialization callback, invoked after bean properties are set, triggering a registry refresh.
+     * Integrates with the Spring lifecycle. After all bean properties are set, this method is called, which in turn
+     * triggers the initial {@link #refresh()} of the registry.
      */
     @Override
     public void afterPropertiesSet() {
         refresh();
-    }
-
-    /**
-     * Interface for key generation strategy.
-     *
-     * @param <T> The type of object.
-     */
-    @FunctionalInterface
-    public interface RegistryKey<T> {
-
-        /**
-         * Generates a key based on the given object.
-         *
-         * @param item The object.
-         * @return The generated key.
-         */
-        String keys(T item);
     }
 
 }

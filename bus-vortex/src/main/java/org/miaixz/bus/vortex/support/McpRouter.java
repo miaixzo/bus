@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.vortex.Router;
-import org.miaixz.bus.vortex.support.mcp.McpClient;
+import org.miaixz.bus.vortex.support.mcp.client.McpClient;
 import org.miaixz.bus.vortex.support.mcp.McpService;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;

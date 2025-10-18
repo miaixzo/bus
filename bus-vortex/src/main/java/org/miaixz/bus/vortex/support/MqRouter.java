@@ -27,8 +27,6 @@
 */
 package org.miaixz.bus.vortex.support;
 
-import java.time.Duration;
-
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Assets;
 import org.miaixz.bus.vortex.Context;
@@ -41,38 +39,42 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 /**
- * MQ strategy router, responsible for forwarding requests to a message queue. This class acts as a coordinator,
- * delegating the actual message sending to the MqProducerService.
+ * A {@link Router} implementation for forwarding requests to a message queue (MQ).
+ * <p>
+ * This class acts as a coordinator for asynchronous messaging. It extracts the request body and uses an
+ * {@link MqService} to send the payload to a message broker. It immediately returns a success response to the client,
+ * acknowledging that the message has been accepted for processing, without waiting for the downstream consumer to
+ * finish.
  *
  * @author Kimi Liu
+ * @see MqService
  * @since Java 17+
  */
 public class MqRouter implements Router {
 
     /**
-     * The service responsible for sending messages to the message queue. In a full Spring application, this would
-     * typically be injected.
+     * The service responsible for sending messages to the message queue.
      */
     private final MqService service;
 
     /**
-     * Constructs a new MqRequestRouter. It initializes the MqProducerService with the provided properties. Note: In a
-     * Spring context, it's better to inject the service directly.
+     * Constructs a new {@code MqRouter}.
+     *
+     * @param service The service that will perform the message sending.
      */
     public MqRouter(MqService service) {
-        // This is a fallback for non-Spring environments.
-        // A better approach is to have Spring manage the lifecycle of MqProducerService.
-        // For now, we create it here, but it won't be able to use @Resource for properties.
-        // The properties would need to be loaded manually.
         this.service = service;
     }
 
     /**
-     * Routes a client request to the message queue. This method reads the request body and delegates the sending
-     * operation to the MqProducerService.
+     * Routes a client request by sending its body as a message to a message queue.
+     * <p>
+     * This method retrieves the {@link Context} and {@link Assets} to determine the target MQ topic and timeout. It
+     * then reads the request body and delegates the sending operation to the {@link MqService}. It provides an
+     * immediate acknowledgment to the client.
      *
-     * @param request The client's {@link ServerRequest} object, containing request information.
-     * @return A {@link Mono<ServerResponse>} indicating the status of the message forwarding.
+     * @param request The current {@link ServerRequest}.
+     * @return A {@code Mono<ServerResponse>} indicating that the message has been successfully forwarded to the MQ.
      */
     @Override
     public Mono<ServerResponse> route(ServerRequest request) {
@@ -83,8 +85,7 @@ public class MqRouter implements Router {
             long startTime = System.currentTimeMillis();
             Logger.info("MQ Router: Routing request for topic: {}", assets.getMethod());
 
-            return request.bodyToMono(String.class).flatMap(
-                    payload -> this.service.send(assets.getMethod(), payload, Duration.ofMillis(assets.getTimeout())))
+            return request.bodyToMono(String.class).flatMap(payload -> this.service.send(assets, payload))
                     .then(Mono.defer(() -> {
                         long duration = System.currentTimeMillis() - startTime;
                         Logger.info(

@@ -41,6 +41,7 @@ module bus.crypto {
     requires lombok;
     requires org.bouncycastle.provider;
     requires org.bouncycastle.pkix;
+    requires java.xml;
 
     exports org.miaixz.bus.crypto;
     exports org.miaixz.bus.crypto.builtin;

@@ -27,8 +27,6 @@
 */
 package org.miaixz.bus.vortex.filter;
 
-import java.util.List;
-
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.vortex.Context;
 import org.miaixz.bus.vortex.Strategy;
@@ -38,8 +36,9 @@ import org.springframework.core.annotation.Order;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
-
 import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 /**
  * The primary {@link WebFilter} that acts as the main entry point and orchestrator for the Vortex gateway.
@@ -84,8 +83,8 @@ public class PrimaryFilter extends AbstractFilter {
      * {@code ServerWebExchange} attributes. This serves as a "black box" fallback, ensuring the context is accessible
      * to the global {@link org.miaixz.bus.vortex.handler.ErrorsHandler} even if the reactive stream is disrupted by an
      * error.</li>
-     * <li><b>Chain Execution:</b> It creates a new {@link PrimaryChain} and initiates its execution. Crucially, it also
-     * uses {@code .contextWrite()} to inject the {@code Context} into the Reactor context, making it available to all
+     * <li><b>Chain Execution:</b> It creates a new {@link Chain} and initiates its execution. Crucially, it also uses
+     * {@code .contextWrite()} to inject the {@code Context} into the Reactor context, making it available to all
      * downstream reactive operators in a clean, functional way.</li>
      * </ol>
      *
@@ -108,7 +107,80 @@ public class PrimaryFilter extends AbstractFilter {
 
         // 4. Create a new strategy chain for this request and execute it.
         // The context is written to the Reactor context for all downstream strategies and handlers.
-        return new PrimaryChain(strategies, chain).apply(exchange).contextWrite(ctx -> ctx.put(Context.class, context));
+        return new Chain(strategies, chain).apply(exchange).contextWrite(ctx -> ctx.put(Context.class, context));
+    }
+
+    /**
+     * The private, inner implementation of {@link Strategy.Chain} used by {@link PrimaryFilter}.
+     * <p>
+     * This class implements the Chain of Responsibility pattern using a recursive-like delegation model. Each instance
+     * of {@code PrimaryChain} represents one link in the chain, holding the complete list of strategies and the current
+     * execution index.
+     * <p>
+     * When its {@link #apply} method is called, it executes the strategy at the current index and passes a <em>new</em>
+     * {@code PrimaryChain} instance (with an incremented index) to it. This process continues until the end of the
+     * strategy list is reached, at which point it delegates control back to the main Spring WebFlux
+     * {@link WebFilterChain}.
+     */
+    public class Chain implements Strategy.Chain {
+
+        /**
+         * The current position in the strategy list that this chain link is responsible for executing.
+         */
+        private final int index;
+        /**
+         * The complete, ordered list of strategies to be executed for the current request.
+         */
+        private final List<Strategy> list;
+        /**
+         * The original WebFlux filter chain, to be invoked after all strategies in this primary chain have been
+         * executed.
+         */
+        private final WebFilterChain chain;
+
+        /**
+         * The initial constructor for creating the first link in the strategy chain.
+         *
+         * @param list  The complete, ordered list of strategies to execute for the current request.
+         * @param chain The original WebFlux filter chain.
+         */
+        Chain(List<Strategy> list, WebFilterChain chain) {
+            this.list = list;
+            this.chain = chain;
+            this.index = 0;
+        }
+
+        /**
+         * A private constructor used by a chain link to create the next link in the chain.
+         *
+         * @param parent The instance of the previous link in the chain.
+         * @param index  The new index, pointing to the next strategy to be executed.
+         */
+        private Chain(Chain parent, int index) {
+            this.list = parent.list;
+            this.chain = parent.chain;
+            this.index = index;
+        }
+
+        /**
+         * Executes the current strategy in the chain or delegates to the main {@code WebFilterChain} if all strategies
+         * are complete.
+         *
+         * @param exchange The current server exchange.
+         * @return A {@code Mono<Void>} that signals the completion of asynchronous processing.
+         */
+        @Override
+        public Mono<Void> apply(ServerWebExchange exchange) {
+            if (this.index < this.list.size()) {
+                Strategy strategy = this.list.get(this.index);
+                // Create the next link in the chain and pass it to the current strategy.
+                Chain next = new Chain(this, this.index + 1);
+                return strategy.apply(exchange, next);
+            }
+            // If all strategies in the inner chain have been executed, invoke the original WebFlux filter chain
+            // to proceed to the next WebFilter or, eventually, the VortexHandler.
+            return this.chain.filter(exchange);
+        }
     }
 
 }

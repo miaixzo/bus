@@ -6,7 +6,7 @@
  * determined by the API's configuration. Each router encapsulates the details of communicating with a specific
  * protocol.
  * <ul>
- * <li>{@link org.miaixz.bus.vortex.support.HttpRouter}: Forwards requests to standard HTTP/HTTPS endpoints.</li>
+ * <li>{@link org.miaixz.bus.vortex.support.RestRouter}: Forwards requests to standard HTTP/HTTPS endpoints.</li>
  * <li>{@link org.miaixz.bus.vortex.support.McpRouter}: Forwards requests to services implementing the Miaixz
  * Communication Protocol.</li>
  * <li>{@link org.miaixz.bus.vortex.support.MqRouter}: Sends requests as messages to a message queue.</li>

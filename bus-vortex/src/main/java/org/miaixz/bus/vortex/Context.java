@@ -57,6 +57,9 @@ public class Context extends Tracer {
 
     /**
      * The key used to store and retrieve this Context object from the attributes of a {@code ServerWebExchange}.
+     * <p>
+     * This provides a fallback mechanism for accessing the context, especially in components like
+     * {@link org.miaixz.bus.vortex.handler.ErrorsHandler} where the Reactor context may no longer be available.
      */
     public static final String $ = "X.CONTEXT";
 
@@ -72,7 +75,7 @@ public class Context extends Tracer {
      * (form or JSON), and any additional parameters derived during processing.
      */
     @Builder.Default
-    private Map<String, String> parameters = new HashMap<>();
+    private Map<String, Object> parameters = new HashMap<>();
 
     /**
      * A map of uploaded files for multipart/form-data requests. The key is the form field name, and the value is the
@@ -101,7 +104,7 @@ public class Context extends Tracer {
     private Integer sign;
 
     /**
-     * The access token extracted from the request headers, used for authentication and authorization.
+     * The access token / api key extracted from the request headers, used for authentication and authorization.
      */
     private String bearer;
 
@@ -121,4 +124,5 @@ public class Context extends Tracer {
      * The HTTP method of the incoming request (e.g., GET, POST).
      */
     private HttpMethod httpMethod;
+
 }

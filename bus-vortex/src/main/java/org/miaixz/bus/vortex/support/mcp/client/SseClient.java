@@ -25,51 +25,25 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.vortex.support.mcp;
+package org.miaixz.bus.vortex.support.mcp.client;
 
-import java.util.List;
-import java.util.Map;
-
-import reactor.core.publisher.Mono;
+import org.miaixz.bus.vortex.Assets;
 
 /**
- * The unified interface for an MCP client. It defines the core behaviors for interacting with any type of MCP service.
+ * MCP Client implementation for the SSE (Server-Sent Events) protocol. It extends HttpClient and uses WebClient for
+ * communication.
  */
-public interface McpClient {
+public class SseClient extends HttpClient {
 
     /**
-     * Asynchronously initializes the client and connects to the backend service.
+     * Constructs a new SseClient.
      * 
-     * @return A Mono that completes upon successful initialization and connection.
+     * @param assets The Assets configuration for this client.
      */
-    Mono<Void> initialize();
-
-    /**
-     * Closes the client and releases all associated resources (e.g., subprocesses, network connections).
-     */
-    void close();
-
-    /**
-     * Retrieves the list of tools provided by the service this client is connected to.
-     * 
-     * @return A list of Tool objects.
-     */
-    List<Tool> getTools();
-
-    /**
-     * Calls a specific tool provided by the service.
-     * 
-     * @param toolName  The name of the tool to call.
-     * @param arguments The arguments required by the tool.
-     * @return A Mono containing the execution result as a JSON string.
-     */
-    Mono<String> callTool(String toolName, Map<String, Object> arguments);
-
-    /**
-     * Asynchronously checks the health of the underlying connection or process.
-     * 
-     * @return A Mono that emits true if the client is healthy, false otherwise.
-     */
-    Mono<Boolean> isHealthy();
+    public SseClient(Assets assets) {
+        super(assets);
+        // In a real implementation, this might use WebClient's exchangeToFlux method to handle SSE event streams.
+        // For listTools and callTool's single request-response pattern, the parent's implementation is sufficient.
+    }
 
 }

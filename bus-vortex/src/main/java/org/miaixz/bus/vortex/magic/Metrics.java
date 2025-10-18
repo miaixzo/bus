@@ -25,40 +25,34 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.vortex.strategy;
+package org.miaixz.bus.vortex.magic;
 
-import org.springframework.core.Ordered;
-import org.springframework.web.server.ServerWebExchange;
-
-import reactor.core.publisher.Mono;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
- * Represents a single, reusable filtering logic step (a "Strategy").
- * <p>
- * This is the core interface for the Strategy Pattern implementation within the filter chain. Each strategy
- * encapsulates a specific concern, such as request parsing, decryption, authorization, or rate limiting. Strategies are
- * composed into a dynamic chain by the {@code StrategyFactory} and executed by the {@code PrimaryFilter}.
- *
- * <p>
- * Implementations of this interface must also implement {@link Ordered} (usually by using the
- * {@link org.springframework.core.annotation.Order} annotation) to specify their execution priority within the chain.
+ * A data transfer object (DTO) that holds performance metrics for a single service process. This class is typically
+ * populated by a {@link org.miaixz.bus.vortex.provider.MetricsProvider} and used in management APIs.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public interface Strategy {
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class Metrics {
 
     /**
-     * Applies the filtering logic to the request.
-     * <p>
-     * An implementation of this method should perform its specific task and then delegate to the next strategy in the
-     * chain by calling {@code chain.apply(exchange)}.
-     * </p>
-     *
-     * @param exchange The current server exchange, which can be mutated by the strategy.
-     * @param chain    The chain of remaining strategies to be executed.
-     * @return A {@code Mono<Void>} that signals the completion of this strategy's execution.
+     * The CPU usage of the process, represented as a percentage (e.g., 15.5 for 15.5%).
      */
-    Mono<Void> apply(ServerWebExchange exchange, StrategyChain chain);
+    private double cpu;
+
+    /**
+     * The memory usage of the process, represented in bytes.
+     */
+    private long memory;
 
 }

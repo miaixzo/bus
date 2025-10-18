@@ -856,7 +856,7 @@ public class PatternKit extends RegexValidator {
                     replacementTemplate,
                     1,
                     new TreeSet<>(LengthCompare.INSTANCE.reversed()));
-            final StringBuffer sb = new StringBuffer();
+            final StringBuilder sb = new StringBuilder();
             do {
                 String replacement = replacementTemplate;
                 for (final String var : varNums) {
@@ -909,7 +909,7 @@ public class PatternKit extends RegexValidator {
         }
 
         final Matcher matcher = pattern.matcher(text);
-        final StringBuffer buffer = new StringBuffer();
+        final StringBuilder buffer = new StringBuilder();
         while (matcher.find()) {
             matcher.appendReplacement(buffer, replaceFun.apply(matcher));
         }

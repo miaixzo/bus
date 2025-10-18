@@ -41,7 +41,6 @@ import org.miaixz.bus.vortex.magic.ErrorCode;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.io.buffer.DataBuffer;
-import org.springframework.core.io.buffer.DataBufferFactory;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.multipart.FilePart;
@@ -112,7 +111,7 @@ public class RequestStrategy extends AbstractStrategy {
      * @return A {@code Mono<Void>} that signals the completion of this strategy.
      */
     @Override
-    public Mono<Void> apply(ServerWebExchange exchange, StrategyChain chain) {
+    public Mono<Void> apply(ServerWebExchange exchange, Chain chain) {
         return Mono.deferContextual(contextView -> {
             final Context context = contextView.get(Context.class);
 
@@ -166,7 +165,7 @@ public class RequestStrategy extends AbstractStrategy {
      * @param context  The request context to be populated.
      * @return A {@code Mono<Void>} that signals the completion of processing.
      */
-    private Mono<Void> handleGetRequest(ServerWebExchange exchange, StrategyChain chain, Context context) {
+    private Mono<Void> handleGetRequest(ServerWebExchange exchange, Chain chain, Context context) {
         context.getParameters().putAll(exchange.getRequest().getQueryParams().toSingleValueMap());
         this.validateParameters(exchange, context);
         Logger.info(
@@ -183,7 +182,7 @@ public class RequestStrategy extends AbstractStrategy {
 
     /**
      * Handles {@code application/json} requests. It reads the request body and delegates to
-     * {@link #processJsonData(ServerWebExchange, StrategyChain, Context, List)}.
+     * {@link #processJsonData(ServerWebExchange, Chain, Context, List)}.
      * <p>
      * This process is wrapped in a retry mechanism to handle transient network or parsing errors.
      *
@@ -192,7 +191,7 @@ public class RequestStrategy extends AbstractStrategy {
      * @param context  The request context.
      * @return A {@code Mono<Void>} that signals the completion of processing.
      */
-    private Mono<Void> handleJsonRequest(ServerWebExchange exchange, StrategyChain chain, Context context) {
+    private Mono<Void> handleJsonRequest(ServerWebExchange exchange, Chain chain, Context context) {
         return exchange.getRequest().getBody().collectList()
                 .flatMap(dataBuffers -> processJsonData(exchange, chain, context, dataBuffers)).retryWhen(
                         Retry.backoff(MAX_RETRY_ATTEMPTS, java.time.Duration.ofMillis(RETRY_DELAY_MS))
@@ -225,26 +224,21 @@ public class RequestStrategy extends AbstractStrategy {
      */
     private Mono<Void> processJsonData(
             ServerWebExchange exchange,
-            StrategyChain chain,
+            Chain chain,
             Context context,
             List<DataBuffer> dataBuffers) {
         try {
             byte[] bytes = readBodyToBytes(dataBuffers);
 
             String jsonBody = new String(bytes, Charset.UTF_8);
-            Map<String, String> jsonMap = new HashMap<>();
-            Map<String, Object> rawMap = JsonKit.toMap(jsonBody);
-            if (rawMap != null) {
-                rawMap.forEach((k, v) -> jsonMap.put(k, String.valueOf(v)));
-            }
+            Map<String, Object> jsonMap = JsonKit.toMap(jsonBody);
             context.getParameters().putAll(jsonMap);
 
             ServerHttpRequest newRequest = new ServerHttpRequestDecorator(exchange.getRequest()) {
 
                 @Override
                 public Flux<DataBuffer> getBody() {
-                    DataBufferFactory bufferFactory = exchange.getResponse().bufferFactory();
-                    return Flux.just(bufferFactory.wrap(bytes));
+                    return Flux.just(exchange.getResponse().bufferFactory().wrap(bytes));
                 }
             };
 
@@ -268,7 +262,7 @@ public class RequestStrategy extends AbstractStrategy {
 
     /**
      * Handles {@code application/x-www-form-urlencoded} requests. It reads the request body and delegates to
-     * {@link #processFormData(ServerWebExchange, StrategyChain, Context, List)}.
+     * {@link #processFormData(ServerWebExchange, Chain, Context, List)}.
      * <p>
      * This process is wrapped in a retry mechanism.
      *
@@ -277,7 +271,7 @@ public class RequestStrategy extends AbstractStrategy {
      * @param context  The request context.
      * @return A {@code Mono<Void>} that signals the completion of processing.
      */
-    private Mono<Void> handleFormRequest(ServerWebExchange exchange, StrategyChain chain, Context context) {
+    private Mono<Void> handleFormRequest(ServerWebExchange exchange, Chain chain, Context context) {
         return exchange.getRequest().getBody().collectList()
                 .flatMap(dataBuffers -> processFormData(exchange, chain, context, dataBuffers)).retryWhen(
                         Retry.backoff(MAX_RETRY_ATTEMPTS, java.time.Duration.ofMillis(RETRY_DELAY_MS))
@@ -310,7 +304,7 @@ public class RequestStrategy extends AbstractStrategy {
      */
     private Mono<Void> processFormData(
             ServerWebExchange exchange,
-            StrategyChain chain,
+            Chain chain,
             Context context,
             List<DataBuffer> dataBuffers) {
         try {
@@ -320,8 +314,7 @@ public class RequestStrategy extends AbstractStrategy {
 
                 @Override
                 public Flux<DataBuffer> getBody() {
-                    DataBufferFactory bufferFactory = exchange.getResponse().bufferFactory();
-                    return Flux.just(bufferFactory.wrap(bytes));
+                    return Flux.just(exchange.getResponse().bufferFactory().wrap(bytes));
                 }
             };
 
@@ -349,16 +342,15 @@ public class RequestStrategy extends AbstractStrategy {
     /**
      * Handles {@code multipart/form-data} requests, typically used for file uploads.
      * <p>
-     * This method delegates directly to
-     * {@link #processMultipartData(ServerWebExchange, StrategyChain, Context, MultiValueMap)} after using the built-in
-     * {@link ServerWebExchange#getMultipartData()} parser.
+     * This method delegates directly to {@link #processMultipartData(ServerWebExchange, Chain, Context, MultiValueMap)}
+     * after using the built-in {@link ServerWebExchange#getMultipartData()} parser.
      *
      * @param exchange The current server exchange.
      * @param chain    The next strategy in the chain.
      * @param context  The request context.
      * @return A {@code Mono<Void>} that signals the completion of processing.
      */
-    private Mono<Void> handleMultipartRequest(ServerWebExchange exchange, StrategyChain chain, Context context) {
+    private Mono<Void> handleMultipartRequest(ServerWebExchange exchange, Chain chain, Context context) {
         return exchange.getMultipartData().flatMap(params -> processMultipartData(exchange, chain, context, params))
                 .retryWhen(
                         Retry.backoff(MAX_RETRY_ATTEMPTS, java.time.Duration.ofMillis(RETRY_DELAY_MS))
@@ -396,7 +388,7 @@ public class RequestStrategy extends AbstractStrategy {
      */
     private Mono<Void> processMultipartData(
             ServerWebExchange exchange,
-            StrategyChain chain,
+            Chain chain,
             Context context,
             MultiValueMap<String, Part> params) {
         try {
