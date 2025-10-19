@@ -173,9 +173,9 @@ public class AuthorizeStrategy extends AbstractStrategy {
         final HttpMethod expectedMethod = this.valueOf(assets.getType());
 
         if (!Objects.equals(request.getMethod(), expectedMethod)) {
-            String errorMessage = "HTTP method mismatch, expected: " + expectedMethod + ", actual: "
-                    + request.getMethod();
-            Logger.warn("==>     Filter: {}", errorMessage);
+            Logger.warn(
+                    "==>     Filter: {}",
+                    "HTTP method mismatch, expected: " + expectedMethod + ", actual: " + request.getMethod());
 
             final Errors error = switch (expectedMethod.name()) {
                 case HTTP.GET -> ErrorCode._100200;

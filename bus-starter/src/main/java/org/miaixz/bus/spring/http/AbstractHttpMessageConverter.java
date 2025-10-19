@@ -1,0 +1,159 @@
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+*/
+package org.miaixz.bus.spring.http;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.annotation.Include;
+
+import jakarta.persistence.Transient;
+
+/**
+ * An abstract base class for HTTP message converters that provides a unified and reusable logic for determining which
+ * fields and classes should be skipped during JSON serialization.
+ * <p>
+ * This class encapsulates the common rules for handling annotations such as {@link Include} and {@link Transient}, as
+ * well as Java's {@code transient} keyword and null/empty values. It is designed to be used by concrete converter
+ * implementations for libraries like Fastjson, GSON, and Jackson to ensure consistent behavior.
+ * </p>
+ *
+ * @author Kimi Liu
+ * @since Java 17+
+ */
+public abstract class AbstractHttpMessageConverter implements HttpMessageConverter {
+
+    /**
+     * Determines if a field should be skipped during serialization based solely on its metadata (annotations and
+     * modifiers). This method does not consider the field's actual value.
+     * <p>
+     * The logic is as follows, with priority given in order:
+     * </p>
+     * <ol>
+     * <li>If a field is annotated with {@link Include}, it is <strong>never skipped</strong>, overriding all other
+     * rules.</li>
+     * <li>If a field is annotated with {@link Transient} OR has the {@code transient} modifier, it is <strong>always
+     * skipped</strong>.</li>
+     * <li>All other fields are <strong>not skipped</strong> by default.</li>
+     * </ol>
+     *
+     * @param field The field to inspect. Can be {@code null}.
+     * @return {@code true} if the field should be skipped, {@code false} otherwise.
+     */
+    protected static boolean shouldSkipField(Field field) {
+        if (field == null) {
+            return false; // Default to not skipping if the field is unknown
+        }
+
+        // Rule 1: @Include has the highest priority and forces inclusion.
+        if (field.isAnnotationPresent(Include.class)) {
+            return false; // Do NOT skip
+        }
+
+        // Rule 2: @Transient and the 'transient' keyword force exclusion.
+        if (field.isAnnotationPresent(Transient.class) || Modifier.isTransient(field.getModifiers())) {
+            return true; // DO skip
+        }
+
+        // Rule 3: Default behavior is to not skip the field.
+        return false;
+    }
+
+    /**
+     * Determines if a field should be skipped during serialization by considering both its metadata (annotations,
+     * modifiers) and its actual value.
+     * <p>
+     * This method first applies the annotation-based rules from {@link #shouldSkipField(Field)}. If the field is not
+     * skipped by those rules, it then checks the field's value.
+     * </p>
+     *
+     * @param field The field to inspect. Can be {@code null}.
+     * @param value The current value of the field. Can be {@code null}.
+     * @return {@code true} if the field should be skipped, {@code false} otherwise.
+     */
+    protected static boolean shouldSkipField(Field field, Object value) {
+        // First, apply the annotation and modifier checks.
+        if (shouldSkipField(field)) {
+            return true;
+        }
+
+        // If not skipped by metadata, check the value.
+        if (isValueEmpty(value)) {
+            return true; // Skip fields with null, empty, or blank values.
+        }
+
+        // If not skipped by metadata or value, do not skip.
+        return false;
+    }
+
+    /**
+     * Determines if an entire class should be skipped during serialization.
+     * <p>
+     * This is a safeguard to prevent serialization of framework-generated or internal classes that are not part of the
+     * user's domain model. By default, it skips synthetic classes (like proxies) and classes generated by frameworks
+     * like CGLIB or Spring AOP.
+     * </p>
+     *
+     * @param clazz The class to inspect. Can be {@code null}.
+     * @return {@code true} if the class should be skipped, {@code false} otherwise.
+     */
+    public boolean shouldSkipClass(Class<?> clazz) {
+        if (clazz == null) {
+            return false;
+        }
+
+        // Skip synthetic classes, which are often generated by the JVM or frameworks.
+        if (clazz.isSynthetic()) {
+            return true;
+        }
+
+        // Skip common proxy class patterns to avoid serializing framework internals.
+        String className = clazz.getName();
+        if (className.contains("$$EnhancerBySpringCGLIB$$") || className.contains("$Proxy")
+                || className.contains("CGLIB$$")) {
+            return true;
+        }
+
+        // By default, do not skip the class.
+        return false;
+    }
+
+    /**
+     * A private helper method to check if a value is considered "empty" for serialization purposes. An empty value is
+     * defined as {@code null}, an empty string, or a string containing only whitespace.
+     *
+     * @param value The value to check.
+     * @return {@code true} if the value is null, empty, or blank; {@code false} otherwise.
+     */
+    private static boolean isValueEmpty(Object value) {
+        return value == null || Normal.EMPTY.equals(value) || Symbol.SPACE.equals(value);
+    }
+
+}

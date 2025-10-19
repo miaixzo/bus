@@ -27,13 +27,12 @@
 */
 package org.miaixz.bus.spring.http;
 
-import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.JSONReader;
-import com.alibaba.fastjson2.JSONWriter;
-import com.alibaba.fastjson2.filter.PropertyFilter;
-import jakarta.persistence.Transient;
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.List;
+
 import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.FieldKit;
 import org.miaixz.bus.core.xyz.IoKit;
@@ -43,28 +42,26 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpOutputMessage;
 import org.springframework.http.MediaType;
-import org.springframework.http.converter.AbstractHttpMessageConverter;
-import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.util.Arrays;
-import java.util.List;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONReader;
+import com.alibaba.fastjson2.JSONWriter;
+import com.alibaba.fastjson2.filter.PropertyFilter;
 
 /**
- * A JSON converter configurer for Fastjson2. This class configures the {@link HttpMessageConverter} for Fastjson2, with
- * support for {@code autoType} functionality.
+ * A JSON converter configurer for Fastjson2. This class configures the
+ * {@link org.springframework.http.converter.HttpMessageConverter} for Fastjson2, with support for {@code autoType}
+ * functionality.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 @Component
 @ConditionalOnClass({ JSON.class })
-public class FastJsonConverterConfigurer implements JsonConverterConfigurer {
+public class FastjsonMessageConverter extends AbstractHttpMessageConverter {
 
     /**
      * The default media types supported by this converter.
@@ -88,7 +85,7 @@ public class FastJsonConverterConfigurer implements JsonConverterConfigurer {
     }
 
     @Override
-    public void configure(List<HttpMessageConverter<?>> converters) {
+    public void configure(List<org.springframework.http.converter.HttpMessageConverter<?>> converters) {
         Logger.debug("Configuring FastJson2HttpMessageConverter for Fastjson2");
         converters.add(order(), new FastJson2HttpMessageConverter(this.autoType));
         Logger.debug("FastJson2HttpMessageConverter configured with media types: {}", DEFAULT_MEDIA_TYPES);
@@ -100,11 +97,12 @@ public class FastJsonConverterConfigurer implements JsonConverterConfigurer {
     }
 
     /**
-     * A custom {@link AbstractHttpMessageConverter} for Fastjson2. It configures serialization using
-     * {@link JSONWriter.Feature} and deserialization using {@link JSONReader.Feature}, and enables {@code autoType}
-     * based on the constructor parameter.
+     * A custom {@link org.springframework.http.converter.AbstractHttpMessageConverter} for Fastjson2. It configures
+     * serialization using {@link JSONWriter.Feature} and deserialization using {@link JSONReader.Feature}, and enables
+     * {@code autoType} based on the constructor parameter.
      */
-    static class FastJson2HttpMessageConverter extends AbstractHttpMessageConverter<Object> {
+    static class FastJson2HttpMessageConverter
+            extends org.springframework.http.converter.AbstractHttpMessageConverter<Object> {
 
         /**
          * Features to use for JSON serialization.
@@ -179,24 +177,19 @@ public class FastJsonConverterConfigurer implements JsonConverterConfigurer {
                 throws HttpMessageNotWritableException {
             try {
                 Logger.debug("<==     Result: {}", object != null ? object.getClass().getName() : "null");
-                // Filter to exclude null, empty, blank, and @Transient fields.
+
+                // The PropertyFilter now delegates all logic to the shouldSkipField method.
                 PropertyFilter filter = (source, name, value) -> {
-                    if (value == null || Normal.EMPTY.equals(value) || Symbol.SPACE.equals(value)) {
-                        return false;
-                    }
                     try {
                         Field field = FieldKit.getField(source.getClass(), name);
-                        if (field == null) {
-                            return true;
-                        }
-                        if (Arrays.stream(field.getAnnotations())
-                                .anyMatch(annotation -> annotation.annotationType().equals(Transient.class))) {
-                            return false;
-                        }
-                        return !Modifier.isTransient(field.getModifiers());
+                        // CORRECTED: Invert the result from shouldSkipField.
+                        // shouldSkipField returns true to SKIP, but PropertyFilter expects true to INCLUDE.
+                        return !shouldSkipField(field, value);
                     } catch (Exception e) {
-                        Logger.warn("Failed to check @Transient annotation for field {}: {}", name, e.getMessage());
-                        return true;
+                        Logger.warn("Failed to get field for annotation check: {}, error: {}", name, e.getMessage());
+                        // If an error occurs, default to including the field to be safe.
+                        // shouldSkipField(null) returns false (don't skip), so !false is true (include).
+                        return !shouldSkipField(null, null);
                     }
                 };
 

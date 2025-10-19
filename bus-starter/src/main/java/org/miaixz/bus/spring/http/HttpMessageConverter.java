@@ -27,19 +27,21 @@
 */
 package org.miaixz.bus.spring.http;
 
-import org.springframework.http.converter.HttpMessageConverter;
-
 import java.util.List;
 
 /**
- * An interface for configuring JSON {@link HttpMessageConverter}s in Spring MVC. Implementations provide a name, an
- * order of precedence, and the logic to configure the list of converters. It also supports an {@code autoType} property
- * for serialization/deserialization features like Fastjson's type recognition.
+ * An interface for configuring JSON {@link org.springframework.http.converter.HttpMessageConverter}s in Spring MVC.
+ * Implementations provide a name, an order of precedence, and the logic to configure the list of converters. It also
+ * supports an {@code autoType} property for serialization/deserialization features like Fastjson's type recognition.
+ * <p>
+ * This interface provides methods to handle field filtering based on annotations like {@code @Transient} and
+ * {@code @Include} across different JSON libraries (Fastjson, GSON, and Jackson).
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public interface JsonConverterConfigurer {
+public interface HttpMessageConverter {
 
     /**
      * Returns the name of the converter, used for logging and debugging.
@@ -56,12 +58,12 @@ public interface JsonConverterConfigurer {
     int order();
 
     /**
-     * Configures the list of {@link HttpMessageConverter}s. Implementations should add their custom converter to this
-     * list.
+     * Configures the list of {@link org.springframework.http.converter.HttpMessageConverter}s. Implementations should
+     * add their custom converter to this list.
      *
      * @param converters The list of message converters to configure.
      */
-    void configure(List<HttpMessageConverter<?>> converters);
+    void configure(List<org.springframework.http.converter.HttpMessageConverter<?>> converters);
 
     /**
      * Sets the {@code autoType} property for serialization/deserialization configuration. The default implementation is
