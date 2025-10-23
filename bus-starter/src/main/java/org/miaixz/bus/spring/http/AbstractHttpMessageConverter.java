@@ -32,6 +32,7 @@ import java.lang.reflect.Modifier;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.annotation.Ignore;
 import org.miaixz.bus.core.lang.annotation.Include;
 
 import jakarta.persistence.Transient;
@@ -75,6 +76,10 @@ public abstract class AbstractHttpMessageConverter implements HttpMessageConvert
         // Rule 1: @Include has the highest priority and forces inclusion.
         if (field.isAnnotationPresent(Include.class)) {
             return false; // Do NOT skip
+        }
+
+        if (field.isAnnotationPresent(Ignore.class)) {
+            return true; // DO skip
         }
 
         // Rule 2: @Transient and the 'transient' keyword force exclusion.

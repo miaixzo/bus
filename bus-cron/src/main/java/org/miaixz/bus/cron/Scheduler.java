@@ -123,8 +123,6 @@ public class Scheduler implements Serializable {
 
     /**
      * Sets the configure.
-     *
-     * @return The time zone.
      */
     public Scheduler() {
         this(new Configure());
@@ -134,7 +132,6 @@ public class Scheduler implements Serializable {
      * Sets the configure.
      *
      * @param config The Configure.
-     * @return this {@link Scheduler} instance.
      */
     public Scheduler(final Configure config) {
         this.config = config;

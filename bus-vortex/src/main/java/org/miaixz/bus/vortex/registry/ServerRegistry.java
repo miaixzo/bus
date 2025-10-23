@@ -33,7 +33,6 @@ import org.miaixz.bus.vortex.magic.Metrics;
 import org.miaixz.bus.vortex.magic.Transmit;
 import org.miaixz.bus.vortex.provider.MetricsProvider;
 import org.miaixz.bus.vortex.provider.ProcessProvider;
-import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -48,7 +47,6 @@ import reactor.core.publisher.Mono;
  * @author Kimi Liu
  * @since Java 17+
  */
-@Service
 public class ServerRegistry {
 
     private final AssetsRegistry assetsRegistry;
