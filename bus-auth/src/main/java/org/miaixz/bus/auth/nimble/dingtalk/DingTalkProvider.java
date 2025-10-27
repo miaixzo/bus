@@ -33,10 +33,12 @@ import java.util.Map;
 import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Registry;
-import org.miaixz.bus.auth.magic.AuthToken;
+import org.miaixz.bus.auth.magic.Authorization;
 import org.miaixz.bus.auth.magic.Callback;
+import org.miaixz.bus.auth.magic.ErrorCode;
 import org.miaixz.bus.auth.magic.Material;
 import org.miaixz.bus.cache.CacheX;
+import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.extra.json.JsonKit;
@@ -77,49 +79,52 @@ public class DingTalkProvider extends AbstractDingtalkProvider {
      * @return the authorization URL
      */
     @Override
-    public String authorize(String state) {
-        return Builder.fromUrl(this.complex.authorize()).queryParam("response_type", "code")
-                .queryParam("client_id", context.getAppKey())
-                .queryParam("scope", this.getScopes(Symbol.COMMA, true, getDefaultScopes(DingTalkScope.values())))
-                .queryParam("redirect_uri", context.getRedirectUri()).queryParam("prompt", "consent")
-                .queryParam("org_type", context.getType()).queryParam("corpId", context.getUnionId())
-                .queryParam("exclusiveLogin", context.getLoginType()).queryParam("exclusiveCorpId", context.getExtId())
-                .queryParam("state", getRealState(state)).build();
+    public Message build(String state) {
+        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+                Builder.fromUrl(this.complex.authorize()).queryParam("response_type", "code")
+                        .queryParam("client_id", context.getClientId())
+                        .queryParam("scope", this.getScopes(Symbol.COMMA, true, getScopes(DingTalkScope.values())))
+                        .queryParam("redirect_uri", context.getRedirectUri()).queryParam("prompt", "consent")
+                        .queryParam("org_type", context.getType()).queryParam("corpId", context.getUnionId())
+                        .queryParam("exclusiveLogin", context.getLoginType())
+                        .queryParam("exclusiveCorpId", context.getExtId()).queryParam("state", getRealState(state))
+                        .build())
+                .build();
     }
 
     /**
      * Retrieves the access token from DingTalk's authorization server.
      *
      * @param callback the callback object containing the authorization code
-     * @return the {@link AuthToken} containing access token details
+     * @return the {@link Authorization} containing access token details
      * @throws AuthorizedException if parsing the response fails or required token information is missing
      */
     @Override
-    public AuthToken getAccessToken(Callback callback) {
+    public Message token(Callback callback) {
         Map<String, String> params = new HashMap<>();
         params.put("grantType", "authorization_code");
-        params.put("clientId", context.getAppKey());
-        params.put("clientSecret", context.getAppSecret());
+        params.put("clientId", context.getClientId());
+        params.put("clientSecret", context.getClientSecret());
         params.put("code", callback.getCode());
-        String response = Httpx.get(this.complex.accessToken(), JsonKit.toJsonString(params));
+        String response = Httpx.get(this.complex.token(), JsonKit.toJsonString(params));
         try {
-            Map<String, Object> accessTokenObject = JsonKit.toPojo(response, Map.class);
-            if (accessTokenObject == null) {
+            Map<String, Object> object = JsonKit.toPojo(response, Map.class);
+            if (object == null) {
                 throw new AuthorizedException("Failed to parse access token response: empty response");
             }
-            if (!accessTokenObject.containsKey("accessToken")) {
-                throw new AuthorizedException(
-                        "Missing accessToken in response: " + JsonKit.toJsonString(accessTokenObject));
+            if (!object.containsKey("accessToken")) {
+                throw new AuthorizedException("Missing token in response: " + JsonKit.toJsonString(object));
             }
 
-            String accessToken = (String) accessTokenObject.get("accessToken");
-            String refreshToken = (String) accessTokenObject.get("refreshToken");
-            Object expireInObj = accessTokenObject.get("expireIn");
+            String token = (String) object.get("accessToken");
+            String refresh = (String) object.get("refreshToken");
+            Object expireInObj = object.get("expireIn");
             int expireIn = expireInObj instanceof Number ? ((Number) expireInObj).intValue() : 0;
-            String corpId = (String) accessTokenObject.get("corpId");
+            String corpId = (String) object.get("corpId");
 
-            return AuthToken.builder().accessToken(accessToken).refreshToken(refreshToken).expireIn(expireIn)
-                    .unionId(corpId).build();
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+                    Authorization.builder().token(token).refresh(refresh).expireIn(expireIn).unionId(corpId).build())
+                    .build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse access token response: " + e.getMessage());
         }
@@ -128,14 +133,14 @@ public class DingTalkProvider extends AbstractDingtalkProvider {
     /**
      * Retrieves user information from DingTalk's user info endpoint.
      *
-     * @param authToken the {@link AuthToken} obtained after successful authorization
+     * @param authorization the {@link Authorization} obtained after successful authorization
      * @return {@link Material} containing the user's information
      * @throws AuthorizedException if parsing the response fails or required user information is missing
      */
     @Override
-    public Material getUserInfo(AuthToken authToken) {
+    public Message userInfo(Authorization authorization) {
         Map<String, String> header = new HashMap<>();
-        header.put("x-acs-dingtalk-access-token", authToken.getAccessToken());
+        header.put("x-acs-dingtalk-access-token", authorization.getToken());
         String response = Httpx.get(this.complex.userinfo(), new HashMap<>(0), header);
 
         try {
@@ -154,11 +159,15 @@ public class DingTalkProvider extends AbstractDingtalkProvider {
             Object visitorObj = object.get("visitor");
             boolean visitor = visitorObj instanceof Boolean ? (Boolean) visitorObj : false;
 
-            authToken.setOpenId(openId);
-            authToken.setUnionId(unionId);
+            authorization.setOpenId(openId);
+            authorization.setUnionId(unionId);
 
-            return Material.builder().rawJson(JsonKit.toJsonString(object)).uuid(unionId).username(nick).nickname(nick)
-                    .avatar(avatarUrl).snapshotUser(visitor).token(authToken).source(complex.toString()).build();
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+                    .data(
+                            Material.builder().rawJson(JsonKit.toJsonString(object)).uuid(unionId).username(nick)
+                                    .nickname(nick).avatar(avatarUrl).snapshotUser(visitor).token(authorization)
+                                    .source(complex.toString()).build())
+                    .build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
         }
@@ -171,9 +180,9 @@ public class DingTalkProvider extends AbstractDingtalkProvider {
      * @return the URL to obtain the access token
      */
     @Override
-    protected String accessTokenUrl(String code) {
-        return Builder.fromUrl(this.complex.accessToken()).queryParam("code", code)
-                .queryParam("clientId", context.getAppKey()).queryParam("clientSecret", context.getAppSecret())
+    protected String tokenUrl(String code) {
+        return Builder.fromUrl(this.complex.token()).queryParam("code", code)
+                .queryParam("clientId", context.getClientId()).queryParam("clientSecret", context.getClientSecret())
                 .queryParam("grantType", "authorization_code").build();
     }
 

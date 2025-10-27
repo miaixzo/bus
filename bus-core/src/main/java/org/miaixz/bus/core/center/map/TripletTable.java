@@ -30,6 +30,7 @@ package org.miaixz.bus.core.center.map;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -49,7 +50,7 @@ import org.miaixz.bus.core.xyz.ListKit;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class TripleTable<L, M, R> implements Serializable {
+public class TripletTable<L, M, R> implements Iterable<Triplet<L, M, R>>, Serializable {
 
     @Serial
     private static final long serialVersionUID = 2852276252739L;
@@ -72,7 +73,7 @@ public class TripleTable<L, M, R> implements Serializable {
      *
      * @param triples A list of {@link Triplet} objects to populate the table. Must not be {@code null}.
      */
-    public TripleTable(final List<Triplet<L, M, R>> triples) {
+    public TripletTable(final List<Triplet<L, M, R>> triples) {
         this(Assert.notNull(triples, "Triplets list must not be null").size());
         for (final Triplet<L, M, R> triplet : triples) {
             put(triplet.getLeft(), triplet.getMiddle(), triplet.getRight());
@@ -84,7 +85,7 @@ public class TripleTable<L, M, R> implements Serializable {
      *
      * @param size The initial capacity for the internal lists.
      */
-    public TripleTable(final int size) {
+    public TripletTable(final int size) {
         this(new ArrayList<>(size), new ArrayList<>(size), new ArrayList<>(size));
     }
 
@@ -97,7 +98,7 @@ public class TripleTable<L, M, R> implements Serializable {
      * @param rights  The list of right values. Must not be {@code null}.
      * @throws IllegalArgumentException if the sizes of the provided lists are not equal.
      */
-    public TripleTable(final List<L> lefts, final List<M> middles, final List<R> rights) {
+    public TripletTable(final List<L> lefts, final List<M> middles, final List<R> rights) {
         Assert.notNull(lefts, "Lefts list must not be null");
         Assert.notNull(middles, "Middles list must not be null");
         Assert.notNull(rights, "Rights list must not be null");
@@ -377,7 +378,7 @@ public class TripleTable<L, M, R> implements Serializable {
      * @param rValue The right value.
      * @return This {@code TripleTable} instance for method chaining.
      */
-    public TripleTable<L, M, R> put(final L lValue, final M mValue, final R rValue) {
+    public TripletTable<L, M, R> put(final L lValue, final M mValue, final R rValue) {
         this.lefts.add(lValue);
         this.middles.add(mValue);
         this.rights.add(rValue);
@@ -392,7 +393,7 @@ public class TripleTable<L, M, R> implements Serializable {
      * @return This {@code TripleTable} instance for method chaining.
      * @throws IndexOutOfBoundsException if the index is out of range.
      */
-    public TripleTable<L, M, R> setLeft(final int index, final L lValue) {
+    public TripletTable<L, M, R> setLeft(final int index, final L lValue) {
         this.lefts.set(index, lValue);
         return this;
     }
@@ -405,7 +406,7 @@ public class TripleTable<L, M, R> implements Serializable {
      * @return This {@code TripleTable} instance for method chaining.
      * @throws IndexOutOfBoundsException if the index is out of range.
      */
-    public TripleTable<L, M, R> setMiddle(final int index, final M mValue) {
+    public TripletTable<L, M, R> setMiddle(final int index, final M mValue) {
         this.middles.set(index, mValue);
         return this;
     }
@@ -418,7 +419,7 @@ public class TripleTable<L, M, R> implements Serializable {
      * @return This {@code TripleTable} instance for method chaining.
      * @throws IndexOutOfBoundsException if the index is out of range.
      */
-    public TripleTable<L, M, R> setRight(final int index, final R rValue) {
+    public TripletTable<L, M, R> setRight(final int index, final R rValue) {
         this.rights.set(index, rValue);
         return this;
     }
@@ -428,7 +429,7 @@ public class TripleTable<L, M, R> implements Serializable {
      *
      * @return This {@code TripleTable} instance for method chaining.
      */
-    public TripleTable<L, M, R> clear() {
+    public TripletTable<L, M, R> clear() {
         this.lefts.clear();
         this.middles.clear();
         this.rights.clear();
@@ -442,11 +443,31 @@ public class TripleTable<L, M, R> implements Serializable {
      * @return This {@code TripleTable} instance for method chaining.
      * @throws IndexOutOfBoundsException if the index is out of range.
      */
-    public TripleTable<L, M, R> remove(final int index) {
+    public TripletTable<L, M, R> remove(final int index) {
         this.lefts.remove(index);
         this.middles.remove(index);
         this.rights.remove(index);
         return this;
+    }
+
+    @Override
+    public Iterator<Triplet<L, M, R>> iterator() {
+        final int size = this.size();
+        return new Iterator<>() {
+
+            private int index = -1;
+
+            @Override
+            public boolean hasNext() {
+                return index + 1 < size;
+            }
+
+            @Override
+            public Triplet<L, M, R> next() {
+                index++;
+                return new Triplet<>(getLeft(index), getMiddle(index), getRight(index));
+            }
+        };
     }
 
 }

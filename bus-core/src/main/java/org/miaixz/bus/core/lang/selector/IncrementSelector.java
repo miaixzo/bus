@@ -29,7 +29,6 @@ package org.miaixz.bus.core.lang.selector;
 
 import java.io.Serial;
 import java.util.ArrayList;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * A simple round-robin selector.
@@ -44,9 +43,9 @@ public class IncrementSelector<T> extends ArrayList<T> implements Selector<T> {
     private static final long serialVersionUID = 2852277613270L;
 
     /**
-     * The current position in the list.
+     * Index position
      */
-    private final AtomicInteger position = new AtomicInteger();
+    private int position;
 
     /**
      * Constructs an empty {@code IncrementSelector}.
@@ -71,15 +70,14 @@ public class IncrementSelector<T> extends ArrayList<T> implements Selector<T> {
      * Selects the next element in a round-robin fashion.
      *
      * @return the next element in the sequence
-     * @throws IndexOutOfBoundsException if the selector is empty
      */
     @Override
     public T select() {
-        final int size = size();
-        if (size == 0) {
-            throw new IndexOutOfBoundsException("Cannot select from an empty list.");
+        final T result = get(position);
+        if (++position >= size()) {
+            position = 0;
         }
-        return get(position.getAndIncrement() % size);
+        return result;
     }
 
 }

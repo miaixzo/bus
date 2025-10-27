@@ -158,6 +158,23 @@ public class BaseAdvice extends Controller {
     }
 
     /**
+     * Authorize exception handler for {@link ValidateException}. This handles exceptions related to parameter Authorize
+     * failures.
+     *
+     * @param e the validation exception information
+     * @return a unified error response object
+     */
+    @ResponseBody
+    @ExceptionHandler(value = AuthorizedException.class)
+    public Object authorizedException(AuthorizedException e) {
+        this.defaultExceptionHandler(e);
+        if (StringKit.isBlank(e.getErrcode())) {
+            return write(ErrorCode._100806);
+        }
+        return write(e.getErrcode(), e.getErrmsg());
+    }
+
+    /**
      * Global handler for unchecked (runtime) exceptions.
      *
      * @param e the exception information

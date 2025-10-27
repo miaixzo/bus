@@ -50,7 +50,8 @@ public class Checker {
      * @return true if third-party login is supported, false otherwise
      */
     public static boolean isSupportedAuth(Context context, Complex complex) {
-        boolean isSupported = StringKit.isNotEmpty(context.getAppKey()) && StringKit.isNotEmpty(context.getAppSecret());
+        boolean isSupported = StringKit.isNotEmpty(context.getClientId())
+                && StringKit.isNotEmpty(context.getClientSecret());
         if (isSupported && Registry.STACK_OVERFLOW == complex) {
             isSupported = StringKit.isNotEmpty(context.getUnionId());
         }
@@ -84,10 +85,10 @@ public class Checker {
             return;
         }
         if (StringKit.isEmpty(redirectUri)) {
-            throw new AuthorizedException(ErrorCode.ILLEGAL_REDIRECT_URI.getKey(), complex);
+            throw new AuthorizedException(ErrorCode._110005.getKey(), complex);
         }
         if (!Protocol.isHttp(redirectUri) && !Protocol.isHttps(redirectUri)) {
-            throw new AuthorizedException(ErrorCode.ILLEGAL_REDIRECT_URI.getKey(), complex);
+            throw new AuthorizedException(ErrorCode._110005.getKey(), complex);
         }
     }
 
@@ -110,7 +111,7 @@ public class Checker {
             code = callback.getAuthorization_code();
         }
         if (StringKit.isEmpty(code)) {
-            throw new AuthorizedException(ErrorCode.ILLEGAL_CODE.getKey(), complex);
+            throw new AuthorizedException(ErrorCode._110007.getKey(), complex);
         }
     }
 
@@ -130,7 +131,7 @@ public class Checker {
             return;
         }
         if (StringKit.isEmpty(state) || !cache.containsKey(state)) {
-            throw new AuthorizedException(ErrorCode.ILLEGAL_STATUS.getKey(), complex);
+            throw new AuthorizedException(ErrorCode._110008.getKey(), complex);
         }
     }
 

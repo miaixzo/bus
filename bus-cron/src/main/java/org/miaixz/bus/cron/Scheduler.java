@@ -43,6 +43,7 @@ import org.miaixz.bus.core.lang.thread.ThreadFactoryBuilder;
 import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.cron.crontab.Crontab;
+import org.miaixz.bus.cron.crontab.CrontabFactory;
 import org.miaixz.bus.cron.crontab.InvokeCrontab;
 import org.miaixz.bus.cron.crontab.RunnableCrontab;
 import org.miaixz.bus.cron.listener.TaskListener;
@@ -88,18 +89,9 @@ public class Scheduler implements Serializable {
     private static final long serialVersionUID = 2852287508206L;
 
     /**
-     * Lock for scheduled tasks, used to synchronize add and delete operations
-     */
-    private final Lock lock;
-    /**
      * Scheduled task configuration
      */
-    protected final Configure config;
-
-    /**
-     * Whether it has been started
-     */
-    private boolean started;
+    public final Configure config;
     /**
      * Timer
      */
@@ -107,25 +99,35 @@ public class Scheduler implements Serializable {
     /**
      * Scheduled task table
      */
-    protected Repertoire repertoire;
+    public Repertoire repertoire;
     /**
      * Thread pool for executing TaskLauncher and TaskExecutor
      */
-    protected ExecutorService threadExecutor;
+    public ExecutorService threadExecutor;
     /**
      * Task manager
      */
-    protected Manager manager;
+    public Manager manager;
     /**
      * Listener manager list
      */
-    protected TaskListenerManager listenerManager;
+    public TaskListenerManager listenerManager;
+
+    /**
+     * Lock for scheduled tasks, used to synchronize add and delete operations
+     */
+    private final Lock lock;
+
+    /**
+     * Whether it has been started
+     */
+    private boolean started;
 
     /**
      * Sets the configure.
      */
     public Scheduler() {
-        this(new Configure());
+        this(Configure.of());
     }
 
     /**
@@ -136,8 +138,8 @@ public class Scheduler implements Serializable {
     public Scheduler(final Configure config) {
         this.config = config;
         this.lock = new ReentrantLock();
-        this.repertoire = new Repertoire();
         this.listenerManager = new TaskListenerManager();
+        this.clear();
     }
 
     /**
@@ -380,7 +382,7 @@ public class Scheduler implements Serializable {
      * @return this {@link Scheduler} instance.
      */
     public Scheduler clear() {
-        this.repertoire = new Repertoire();
+        this.repertoire = CrontabFactory.create(this.config);
         return this;
     }
 
@@ -481,6 +483,15 @@ public class Scheduler implements Serializable {
             lock.unlock();
         }
         return this;
+    }
+
+    /**
+     * Executes scheduled tasks from the task table that match the timestamp
+     *
+     * @param millis Millisecond timestamp
+     */
+    public void execute(final long millis) {
+        this.repertoire.execute(this, millis);
     }
 
     /**

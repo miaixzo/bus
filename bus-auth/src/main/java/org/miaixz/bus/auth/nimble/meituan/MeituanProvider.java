@@ -30,7 +30,7 @@ package org.miaixz.bus.auth.nimble.meituan;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.miaixz.bus.auth.magic.AuthToken;
+import org.miaixz.bus.auth.magic.Authorization;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Gender;
@@ -76,18 +76,18 @@ public class MeituanProvider extends AbstractProvider {
      * Retrieves the access token from Meituan's authorization server.
      *
      * @param callback the callback object containing the authorization code
-     * @return the {@link AuthToken} containing access token details
+     * @return the {@link Authorization} containing access token details
      * @throws AuthorizedException if parsing the response fails or required token information is missing
      */
     @Override
-    public AuthToken getAccessToken(Callback callback) {
+    public Message token(Callback callback) {
         Map<String, String> form = new HashMap<>(7);
-        form.put("app_id", context.getAppKey());
-        form.put("secret", context.getAppSecret());
+        form.put("app_id", context.getClientId());
+        form.put("secret", context.getClientSecret());
         form.put("code", callback.getCode());
         form.put("grant_type", "authorization_code");
 
-        String response = Httpx.post(this.complex.accessToken(), form);
+        String response = Httpx.post(this.complex.token(), form);
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
             if (object == null) {
@@ -96,15 +96,16 @@ public class MeituanProvider extends AbstractProvider {
 
             this.checkResponse(object);
 
-            String accessToken = (String) object.get("access_token");
-            if (accessToken == null) {
+            String token = (String) object.get("access_token");
+            if (token == null) {
                 throw new AuthorizedException("Missing access_token in response");
             }
-            String refreshToken = (String) object.get("refresh_token");
+            String refresh = (String) object.get("refresh_token");
             Object expiresInObj = object.get("expires_in");
             int expiresIn = expiresInObj instanceof Number ? ((Number) expiresInObj).intValue() : 0;
 
-            return AuthToken.builder().accessToken(accessToken).refreshToken(refreshToken).expireIn(expiresIn).build();
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+                    .data(Authorization.builder().token(token).refresh(refresh).expireIn(expiresIn).build()).build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse access token response: " + e.getMessage());
         }
@@ -113,16 +114,16 @@ public class MeituanProvider extends AbstractProvider {
     /**
      * Retrieves user information from Meituan's user info endpoint.
      *
-     * @param authToken the {@link AuthToken} obtained after successful authorization
+     * @param authorization the {@link Authorization} obtained after successful authorization
      * @return {@link Material} containing the user's information
      * @throws AuthorizedException if parsing the response fails or required user information is missing
      */
     @Override
-    public Material getUserInfo(AuthToken authToken) {
+    public Message userInfo(Authorization authorization) {
         Map<String, String> form = new HashMap<>(5);
-        form.put("app_id", context.getAppKey());
-        form.put("secret", context.getAppSecret());
-        form.put("access_token", authToken.getAccessToken());
+        form.put("app_id", context.getClientId());
+        form.put("secret", context.getClientSecret());
+        form.put("access_token", authorization.getToken());
 
         String response = Httpx.post(this.complex.userinfo(), form);
         try {
@@ -140,9 +141,12 @@ public class MeituanProvider extends AbstractProvider {
             String nickname = (String) object.get("nickname");
             String avatar = (String) object.get("avatar");
 
-            return Material.builder().rawJson(JsonKit.toJsonString(object)).uuid(openid).username(nickname)
-                    .nickname(nickname).avatar(avatar).gender(Gender.UNKNOWN).token(authToken)
-                    .source(complex.toString()).build();
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+                    .data(
+                            Material.builder().rawJson(JsonKit.toJsonString(object)).uuid(openid).username(nickname)
+                                    .nickname(nickname).avatar(avatar).gender(Gender.UNKNOWN).token(authorization)
+                                    .source(complex.toString()).build())
+                    .build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
         }
@@ -151,16 +155,16 @@ public class MeituanProvider extends AbstractProvider {
     /**
      * Refreshes the access token (renews its validity).
      *
-     * @param authToken the token information returned after successful login
+     * @param authorization the token information returned after successful login
      * @return a {@link Message} containing the refreshed token information
      * @throws AuthorizedException if parsing the response fails or an error occurs during token refresh
      */
     @Override
-    public Message refresh(AuthToken authToken) {
+    public Message refresh(Authorization authorization) {
         Map<String, String> form = new HashMap<>(7);
-        form.put("app_id", context.getAppKey());
-        form.put("secret", context.getAppSecret());
-        form.put("refresh_token", authToken.getRefreshToken());
+        form.put("app_id", context.getClientId());
+        form.put("secret", context.getClientSecret());
+        form.put("refresh_token", authorization.getRefresh());
         form.put("grant_type", "refresh_token");
 
         String response = Httpx.post(this.complex.refresh(), form);
@@ -172,17 +176,16 @@ public class MeituanProvider extends AbstractProvider {
 
             this.checkResponse(object);
 
-            String accessToken = (String) object.get("access_token");
-            if (accessToken == null) {
+            String token = (String) object.get("access_token");
+            if (token == null) {
                 throw new AuthorizedException("Missing access_token in refresh response");
             }
-            String refreshToken = (String) object.get("refresh_token");
+            String refresh = (String) object.get("refresh_token");
             Object expiresInObj = object.get("expires_in");
             int expiresIn = expiresInObj instanceof Number ? ((Number) expiresInObj).intValue() : 0;
 
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
-                    AuthToken.builder().accessToken(accessToken).refreshToken(refreshToken).expireIn(expiresIn).build())
-                    .build();
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+                    .data(Authorization.builder().token(token).refresh(refresh).expireIn(expiresIn).build()).build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse refresh token response: " + e.getMessage());
         }
@@ -209,8 +212,9 @@ public class MeituanProvider extends AbstractProvider {
      * @return the authorization URL
      */
     @Override
-    public String authorize(String state) {
-        return Builder.fromUrl(super.authorize(state)).queryParam("scope", "").build();
+    public Message build(String state) {
+        return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+                .data(Builder.fromUrl((String) super.build(state).getData()).queryParam("scope", "").build()).build();
     }
 
 }

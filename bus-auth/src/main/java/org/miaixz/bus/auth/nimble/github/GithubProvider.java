@@ -27,8 +27,10 @@
 */
 package org.miaixz.bus.auth.nimble.github;
 
-import org.miaixz.bus.auth.magic.AuthToken;
+import org.miaixz.bus.auth.magic.Authorization;
+import org.miaixz.bus.auth.magic.ErrorCode;
 import org.miaixz.bus.cache.CacheX;
+import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
@@ -75,36 +77,37 @@ public class GithubProvider extends AbstractProvider {
      * Retrieves the access token from GitHub's authorization server.
      *
      * @param callback the callback object containing the authorization code
-     * @return the {@link AuthToken} containing access token details
+     * @return the {@link Authorization} containing access token details
      * @throws AuthorizedException if parsing the response fails or required token information is missing
      */
     @Override
-    public AuthToken getAccessToken(Callback callback) {
-        String response = doPostAuthorizationCode(callback.getCode());
+    public Message token(Callback callback) {
+        String response = doGetToken(callback.getCode());
         Map<String, String> res = Builder.parseStringToMap(response);
 
         this.checkResponse(res.containsKey("error"), res.get("error_description"));
 
-        String accessToken = res.get("access_token");
-        if (accessToken == null) {
+        String token = res.get("access_token");
+        if (token == null) {
             throw new AuthorizedException("Missing access_token in response");
         }
 
-        return AuthToken.builder().accessToken(accessToken).scope(res.get("scope")).tokenType(res.get("token_type"))
+        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+                Authorization.builder().token(token).scope(res.get("scope")).token_type(res.get("token_type")).build())
                 .build();
     }
 
     /**
      * Retrieves user information from GitHub's user info endpoint.
      *
-     * @param authToken the {@link AuthToken} obtained after successful authorization
+     * @param authorization the {@link Authorization} obtained after successful authorization
      * @return {@link Material} containing the user's information
      * @throws AuthorizedException if parsing the response fails or required user information is missing
      */
     @Override
-    public Material getUserInfo(AuthToken authToken) {
+    public Message userInfo(Authorization authorization) {
         Map<String, String> header = new HashMap<>();
-        header.put("Authorization", "token " + authToken.getAccessToken());
+        header.put("Authorization", "token " + authorization.getToken());
         String response = Httpx.get(Builder.fromUrl(this.complex.userinfo()).build(), null, header);
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
@@ -127,9 +130,11 @@ public class GithubProvider extends AbstractProvider {
             String email = (String) object.get("email");
             String bio = (String) object.get("bio");
 
-            return Material.builder().rawJson(JsonKit.toJsonString(object)).uuid(id).username(login).avatar(avatarUrl)
-                    .blog(blog).nickname(name).company(company).location(location).email(email).remark(bio)
-                    .gender(Gender.UNKNOWN).token(authToken).source(complex.toString()).build();
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+                    Material.builder().rawJson(JsonKit.toJsonString(object)).uuid(id).username(login).avatar(avatarUrl)
+                            .blog(blog).nickname(name).company(company).location(location).email(email).remark(bio)
+                            .gender(Gender.UNKNOWN).token(authorization).source(complex.toString()).build())
+                    .build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
         }
@@ -156,9 +161,11 @@ public class GithubProvider extends AbstractProvider {
      * @return the authorization URL
      */
     @Override
-    public String authorize(String state) {
-        return Builder.fromUrl(super.authorize(state))
-                .queryParam("scope", this.getScopes(Symbol.SPACE, true, this.getDefaultScopes(GithubScope.values())))
+    public Message build(String state) {
+        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+                Builder.fromUrl((String) super.build(state).getData())
+                        .queryParam("scope", this.getScopes(Symbol.SPACE, true, this.getScopes(GithubScope.values())))
+                        .build())
                 .build();
     }
 

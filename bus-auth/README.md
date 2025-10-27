@@ -25,22 +25,75 @@
 
 - 调用api
 
+#### 普通方式
+
 ```java
-// 创建授权request
-Provider provider = new GiteeProvider(Context.builder()
+    Provider provider = Authorizer.builder()
+        .source("github")
+        .context(Context.builder()
                 .clientId("clientId")
                 .clientSecret("clientSecret")
                 .redirectUri("redirectUri")
-                .build());
+                .build())
+        .build();
+    // 生成授权页面
+    provider.authorize("state");
+    // 授权登录后会返回code（auth_code（仅限支付宝））、state，可以用Callback类作为回调接口的参数
+    // 注：默认保存state的时效为3分钟，3分钟内未使用则会自动清除过期的state
+    provider.login(callback);
+```
+
+#### Builder 方式一
+
+静态配置 `Context`
+
+```java
+    Provider provider = Authorizer.builder()
+        .source("github")
+        .context(Context.builder()
+                .clientId("clientId")
+                .clientSecret("clientSecret")
+                .redirectUri("redirectUri")
+                .build())
+        .build();
 // 生成授权页面
-        provider.
-
-authorize("state");
-// 授权登录后会返回code(auth_code(仅限支付宝))、state，1.8.0版本后，可以用Callback类作为回调接口的参数
+    provider.authorize("state");
+// 授权登录后会返回code（auth_code（仅限支付宝））、state可以用Callback类作为回调接口的参数
 // 注：默认保存state的时效为3分钟，3分钟内未使用则会自动清除过期的state
-        provider.
+    provider.login(callback);
+```
 
-login(callback);
+#### Builder 方式二
+
+动态获取并配置 `Context`
+
+```java
+    Provider provider = Authorizer.builder()
+    .source("gitee")
+    .context((source) -> {
+        // 通过 source 动态获取 Context
+        // 此处可以灵活的从 sql 中取配置也可以从配置文件中取配置
+        return context.builder()
+                .clientId("clientId")
+                .clientSecret("clientSecret")
+                .redirectUri("redirectUri")
+                .build();
+    })
+    .build();
+    Assert.isTrue(provider instanceof GiteeProvider);
+    System.out.println(provider.authorize(ID.objectId()));
+```
+
+#### Builder 方式自定义平台
+
+```java
+    Provider provider = Authorizer.builder()
+        // 关键点：将自定义实现的 Complex 配置上
+        .complex(Registry.values())
+        // source 对应 Registry 中的枚举 name ,忽略大小些
+        .source("other")
+        // ... 其他内容不变，参考上面的示例
+        .build();
 ```
 
 ### 获取授权链接
@@ -59,7 +112,7 @@ String authorizeUrl = shooting.authorize("state");
 provider.login(callback);
 ```
 
-授权登录后会返回code(auth_code(仅限支付宝)、authorization_code(仅限华为))、state，1.8.0版本后，用`AuthCallback`类作为回调接口的入参
+授权登录后会返回code(auth_code(仅限支付宝)、authorization_code(仅限华为))、state，1.8.0版本后，用`Callback`类作为回调接口的入参
 
 **注：第三方平台中配置的授权回调地址，以本文为例，在创建授权应用时的回调地址应为：`[host]/callback/gitee`**
 
@@ -68,7 +121,7 @@ provider.login(callback);
 注：`refresh`功能，并不是每个平台都支持
 
 ```
-provider.refresh(AuthToken.builder().refreshToken(principal).build());
+provider.refresh(AuthToken.builder().refresh(principal).build());
 ```
 
 ### 取消授权
@@ -76,7 +129,7 @@ provider.refresh(AuthToken.builder().refreshToken(principal).build());
 注：`revoke`功能，并不是每个平台都支持
 
 ```
-provider.revoke(AuthToken.builder().accessToken(principal).build());
+provider.revoke(AuthToken.builder().token(principal).build());
 ```
 
 #### API列表

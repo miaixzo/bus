@@ -86,6 +86,7 @@ module bus.auth {
     exports org.miaixz.bus.auth.nimble.meituan;
     exports org.miaixz.bus.auth.nimble.mi;
     exports org.miaixz.bus.auth.nimble.microsoft;
+    exports org.miaixz.bus.auth.nimble.oidc;
     exports org.miaixz.bus.auth.nimble.okta;
     exports org.miaixz.bus.auth.nimble.oschina;
     exports org.miaixz.bus.auth.nimble.pinterest;

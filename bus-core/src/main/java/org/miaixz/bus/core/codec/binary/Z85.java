@@ -132,11 +132,7 @@ public class Z85 implements Encoder<byte[], String>, Decoder<String, byte[]>, Se
     public byte[] decode(String encoded) {
         final int remainder = encoded.length() % 5;
         final int padding = 5 - (remainder == 0 ? 5 : remainder);
-        final StringBuilder encodedBuilder = new StringBuilder(encoded);
-        for (int p = 0; p < padding; ++p) {
-            encodedBuilder.append(ENCODE_TABLE[ENCODE_TABLE.length - 1]);
-        }
-        encoded = encodedBuilder.toString();
+        encoded = encoded + String.valueOf(ENCODE_TABLE[ENCODE_TABLE.length - 1]).repeat(padding);
         final int length = encoded.length();
         final byte[] bytes = new byte[((length << 2) / 5) - padding];
         long value = 0;

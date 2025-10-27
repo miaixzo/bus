@@ -27,8 +27,9 @@
 */
 package org.miaixz.bus.auth.nimble.linkedin;
 
-import org.miaixz.bus.auth.magic.AuthToken;
+import org.miaixz.bus.auth.magic.Authorization;
 import org.miaixz.bus.cache.CacheX;
+import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Symbol;
@@ -79,29 +80,30 @@ public class LinkedinProvider extends AbstractProvider {
      * Retrieves the access token from LinkedIn's authorization server.
      *
      * @param callback the callback object containing the authorization code
-     * @return the {@link AuthToken} containing access token details
+     * @return the {@link Authorization} containing access token details
      */
     @Override
-    public AuthToken getAccessToken(Callback callback) {
-        return this.getToken(accessTokenUrl(callback.getCode()));
+    public Message token(Callback callback) {
+        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(this.getToken(tokenUrl(callback.getCode())))
+                .build();
     }
 
     /**
      * Retrieves user information from LinkedIn's user info endpoint.
      *
-     * @param authToken the {@link AuthToken} obtained after successful authorization
+     * @param authorization the {@link Authorization} obtained after successful authorization
      * @return {@link Material} containing the user's information
      * @throws AuthorizedException if parsing the response fails or required user information is missing
      */
     @Override
-    public Material getUserInfo(AuthToken authToken) {
-        String accessToken = authToken.getAccessToken();
+    public Message userInfo(Authorization authorization) {
+        String token = authorization.getToken();
         Map<String, String> header = new HashMap<>();
         header.put("Host", "api.linkedin.com");
         header.put("Connection", "Keep-Alive");
-        header.put("Authorization", "Bearer " + accessToken);
+        header.put("Authorization", "Bearer " + token);
 
-        String response = Httpx.get(userInfoUrl(authToken), null, header);
+        String response = Httpx.get(userInfoUrl(authorization), null, header);
         try {
             Map<String, Object> data = JsonKit.toPojo(response, Map.class);
             if (data == null) {
@@ -116,10 +118,13 @@ public class LinkedinProvider extends AbstractProvider {
             }
             String userName = getUserName(data);
             String avatar = this.getAvatar(data);
-            String email = this.getUserEmail(accessToken);
+            String email = this.getUserEmail(token);
 
-            return Material.builder().rawJson(JsonKit.toJsonString(data)).uuid(id).username(userName).nickname(userName)
-                    .avatar(avatar).email(email).token(authToken).gender(Gender.UNKNOWN).source(complex.toString())
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+                    .data(
+                            Material.builder().rawJson(JsonKit.toJsonString(data)).uuid(id).username(userName)
+                                    .nickname(userName).avatar(avatar).email(email).token(authorization)
+                                    .gender(Gender.UNKNOWN).source(complex.toString()).build())
                     .build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
@@ -184,15 +189,15 @@ public class LinkedinProvider extends AbstractProvider {
     /**
      * Retrieves the user's email address using a separate API call.
      *
-     * @param accessToken the user's access token
+     * @param token the user's access token
      * @return the user's email address
      * @throws AuthorizedException if parsing the email response fails
      */
-    private String getUserEmail(String accessToken) {
+    private String getUserEmail(String token) {
         Map<String, String> header = new HashMap<>();
         header.put("Host", "api.linkedin.com");
         header.put("Connection", "Keep-Alive");
-        header.put("Authorization", "Bearer " + accessToken);
+        header.put("Authorization", "Bearer " + token);
 
         String emailResponse = Httpx.get(
                 "https://api.linkedin.com/v2/emailAddress?q=members&projection=(elements*(handle~))",
@@ -260,33 +265,33 @@ public class LinkedinProvider extends AbstractProvider {
     /**
      * Retrieves the token, applicable for both obtaining access tokens and refreshing tokens.
      *
-     * @param accessTokenUrl the actual URL to request the token from
-     * @return the {@link AuthToken} object
+     * @param tokenUrl the actual URL to request the token from
+     * @return the {@link Authorization} object
      * @throws AuthorizedException if parsing the response fails or required token information is missing
      */
-    private AuthToken getToken(String accessTokenUrl) {
+    private Authorization getToken(String tokenUrl) {
         Map<String, String> header = new HashMap<>();
         header.put("Host", "www.linkedin.com");
         header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
 
-        String response = Httpx.post(accessTokenUrl, null, header);
+        String response = Httpx.post(tokenUrl, null, header);
         try {
-            Map<String, Object> accessTokenObject = JsonKit.toPojo(response, Map.class);
-            if (accessTokenObject == null) {
+            Map<String, Object> object = JsonKit.toPojo(response, Map.class);
+            if (object == null) {
                 throw new AuthorizedException("Failed to parse access token response: empty response");
             }
 
-            this.checkResponse(accessTokenObject);
+            this.checkResponse(object);
 
-            String accessToken = (String) accessTokenObject.get("access_token");
-            if (accessToken == null) {
+            String token = (String) object.get("access_token");
+            if (token == null) {
                 throw new AuthorizedException("Missing access_token in response");
             }
-            Object expiresInObj = accessTokenObject.get("expires_in");
+            Object expiresInObj = object.get("expires_in");
             int expiresIn = expiresInObj instanceof Number ? ((Number) expiresInObj).intValue() : 0;
-            String refreshToken = (String) accessTokenObject.get("refresh_token");
+            String refresh = (String) object.get("refresh_token");
 
-            return AuthToken.builder().accessToken(accessToken).expireIn(expiresIn).refreshToken(refreshToken).build();
+            return Authorization.builder().token(token).expireIn(expiresIn).refresh(refresh).build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse access token response: " + e.getMessage());
         }
@@ -300,20 +305,24 @@ public class LinkedinProvider extends AbstractProvider {
      * @return the authorization URL
      */
     @Override
-    public String authorize(String state) {
-        return Builder.fromUrl(super.authorize(state))
-                .queryParam("scope", this.getScopes(Symbol.SPACE, false, this.getDefaultScopes(LinkedinScope.values())))
+    public Message build(String state) {
+        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+                Builder.fromUrl((String) super.build(state).getData())
+                        .queryParam(
+                                "scope",
+                                this.getScopes(Symbol.SPACE, false, this.getScopes(LinkedinScope.values())))
+                        .build())
                 .build();
     }
 
     /**
      * Returns the URL to obtain user information.
      *
-     * @param authToken the user's authorization token
+     * @param authorization the user's authorization token
      * @return the URL to obtain user information
      */
     @Override
-    protected String userInfoUrl(AuthToken authToken) {
+    protected String userInfoUrl(Authorization authorization) {
         return Builder.fromUrl(this.complex.userinfo())
                 .queryParam("projection", "(id,firstName,lastName,profilePicture(displayImage~:playableStreams))")
                 .build();

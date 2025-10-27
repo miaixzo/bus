@@ -31,6 +31,7 @@ import java.security.Key;
 import java.security.spec.AlgorithmParameterSpec;
 
 import org.miaixz.bus.core.lang.Algorithm;
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.crypto.Builder;
 
 /**
@@ -62,6 +63,7 @@ public class MacFactory {
      * @return A new {@link Mac} instance.
      */
     public static Mac createEngine(final String algorithm, final Key key, final AlgorithmParameterSpec spec) {
+        Assert.notBlank(algorithm, "Algorithm must be not blank!");
         if (algorithm.equalsIgnoreCase(Algorithm.HMACSM3.getValue())) {
             // HmacSM3 algorithm is implemented by BC library, ignore salt
             return Builder.createHmacSm3Engine(key.getEncoded());

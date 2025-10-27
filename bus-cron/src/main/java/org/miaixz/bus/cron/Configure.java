@@ -49,12 +49,25 @@ public class Configure {
      * Whether to use daemon thread
      */
     private boolean daemon;
+    /**
+     * Whether to use trigger queue
+     */
+    private boolean useTriggerQueue;
 
     /**
      * Default constructor.
      */
     public Configure() {
 
+    }
+
+    /**
+     * Creates Cron configuration
+     *
+     * @return Cron configuration
+     */
+    public static Configure of() {
+        return new Configure();
     }
 
     /**
@@ -114,6 +127,31 @@ public class Configure {
      */
     public Configure setDaemon(final boolean daemon) {
         this.daemon = daemon;
+        return this;
+    }
+
+    /**
+     * Whether to use trigger queue
+     *
+     * @return {@code true} if used, {@code false} if not used
+     */
+    public boolean isUseTriggerQueue() {
+        return this.useTriggerQueue;
+    }
+
+    /**
+     * Sets whether to use trigger queue<br>
+     * {@code true} uses the trigger queue method, which pre-adds the next trigger time of tasks to the queue. When the
+     * trigger time of tasks in the queue is less than the current time, they are taken out of the queue and
+     * executed.<br>
+     * {@code false} uses the normal trigger method, which checks the task table. When the expression in the task table
+     * matches the specified time, the corresponding Task is executed.
+     *
+     * @param useTriggerQueue {@code true} to use, {@code false} not to use
+     * @return this
+     */
+    public Configure setUseTriggerQueue(final boolean useTriggerQueue) {
+        this.useTriggerQueue = useTriggerQueue;
         return this;
     }
 

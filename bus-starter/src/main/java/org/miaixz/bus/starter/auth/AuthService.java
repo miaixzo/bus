@@ -59,6 +59,7 @@ import org.miaixz.bus.auth.nimble.meituan.MeituanProvider;
 import org.miaixz.bus.auth.nimble.mi.MiProvider;
 import org.miaixz.bus.auth.nimble.microsoft.MicrosoftCnProvider;
 import org.miaixz.bus.auth.nimble.microsoft.MicrosoftProvider;
+import org.miaixz.bus.auth.nimble.oidc.OidcProvider;
 import org.miaixz.bus.auth.nimble.okta.OktaProvider;
 import org.miaixz.bus.auth.nimble.oschina.OschinaProvider;
 import org.miaixz.bus.auth.nimble.pinterest.PinterestProvider;
@@ -251,6 +252,9 @@ public class AuthService {
 
             case MICROSOFT:
                 return new MicrosoftProvider(context, cache);
+
+            case OIDC:
+                return new OidcProvider(context, cache);
 
             case OKTA:
                 return new OktaProvider(context, cache);

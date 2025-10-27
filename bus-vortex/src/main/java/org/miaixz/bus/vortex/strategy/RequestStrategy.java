@@ -35,7 +35,6 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.vortex.Args;
 import org.miaixz.bus.vortex.Context;
 import org.miaixz.bus.vortex.magic.ErrorCode;
 import org.springframework.core.Ordered;
@@ -74,32 +73,6 @@ import reactor.util.retry.Retry;
 public class RequestStrategy extends AbstractStrategy {
 
     /**
-     * A whitelist of URI paths that are allowed to be processed by the gateway.
-     */
-    private static final List<String> ALLOW_PATHS = Arrays
-            .asList(Args.REST_PATH_PREFIX, Args.MCP_PATH_PREFIX, Args.MQ_PATH_PREFIX);
-    /**
-     * The maximum number of automatic retry attempts allowed when processing a request body fails.
-     */
-    private static final int MAX_RETRY_ATTEMPTS = 3;
-
-    /**
-     * The base delay in milliseconds between automatic retry attempts for request body processing.
-     */
-    private static final long RETRY_DELAY_MS = 1000;
-
-    /**
-     * The maximum allowed size in bytes for a non-multipart request body (e.g., JSON, form-urlencoded). This is a
-     * crucial defense against Denial-of-Service (DoS) attacks via memory exhaustion.
-     */
-    private static final int MAX_REQUEST_SIZE = 100 * 1024 * 1024;
-
-    /**
-     * The maximum allowed size in bytes for a multipart/form-data request, typically used for file uploads.
-     */
-    private static final long MAX_MULTIPART_REQUEST_SIZE = 512 * 1024 * 1024;
-
-    /**
      * Applies the request parsing and validation logic.
      * <p>
      * This is the main entry point for the strategy. It performs initial path validation and then dispatches the
@@ -115,24 +88,12 @@ public class RequestStrategy extends AbstractStrategy {
         return Mono.deferContextual(contextView -> {
             final Context context = contextView.get(Context.class);
 
-            String path = exchange.getRequest().getPath().value();
-            // 1. Check if the request path is in the whitelist.
-            if (!ALLOW_PATHS.contains(path)) {
-                Logger.warn("==>     Filter: Blocked request to path: {}", path);
-                throw new ValidateException(ErrorCode._BLOCKED);
-            }
-            // 2. Check for path traversal attack patterns.
-            if (isPathTraversalAttempt(path)) {
-                Logger.warn("==>     Filter: Path traversal attempt detected: {}", path);
-                throw new ValidateException(ErrorCode._LIMITER);
-            }
-
-            // 3. Set default Content-Type if missing and record the request start time.
+            // 1. Set default Content-Type if missing and record the request start time.
             ServerWebExchange mutate = setContentType(exchange);
             context.setTimestamp(DateKit.current());
             ServerHttpRequest request = mutate.getRequest();
 
-            // 4. Dispatch to the appropriate handler based on method and Content-Type.
+            // 2. Dispatch to the appropriate handler based on method and Content-Type.
             if (Objects.equals(request.getMethod(), HttpMethod.GET)) {
                 return handleGetRequest(mutate, chain, context);
             } else {
@@ -422,18 +383,6 @@ public class RequestStrategy extends AbstractStrategy {
             Logger.error("==>     Filter: Failed to process multipart: {}", e.getMessage());
             return Mono.error(e);
         }
-    }
-
-    /**
-     * Checks if the given URL path contains patterns indicative of a path traversal attack.
-     *
-     * @param path The URL path string to check.
-     * @return {@code true} if a potential traversal attempt is detected, {@code false} otherwise.
-     */
-    private boolean isPathTraversalAttempt(String path) {
-        // Check for various characteristics of path traversal attacks, including plain text and URL-encoded forms.
-        return path.contains("../") || path.contains("..\\") || path.contains("%2e%2e%2f") || path.contains("%2e%2e\\")
-                || path.contains("..%2f") || path.contains("..%5c");
     }
 
     /**

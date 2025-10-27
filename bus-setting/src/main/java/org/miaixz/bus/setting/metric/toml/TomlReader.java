@@ -238,47 +238,46 @@ public class TomlReader {
     }
 
     private Object nextValue(final char firstChar) {
-        switch (firstChar) {
-            case Symbol.C_PLUS:
-            case Symbol.C_MINUS:
-            case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
-                return nextNumberOrDate(firstChar);
-
-            case '"':
-                if (pos + 1 < data.length() && data.charAt(pos) == '"' && data.charAt(pos + 1) == '"') {
-                    pos += 2;
-                    return nextBasicMultilineString();
+        return switch (firstChar) {
+            case '+', '-', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' -> nextNumberOrDate(firstChar);
+            case '"' -> {
+                if (pos + 1 < data.length()) {
+                    final char c2 = data.charAt(pos);
+                    final char c3 = data.charAt(pos + 1);
+                    if (c2 == '"' && c3 == '"') {
+                        pos += 2;
+                        yield nextBasicMultilineString();
+                    }
                 }
-                return nextBasicString();
-
-            case '\'':
-                if (pos + 1 < data.length() && data.charAt(pos) == '\'' && data.charAt(pos + 1) == '\'') {
-                    pos += 2;
-                    return nextLiteralMultilineString();
+                yield nextBasicString();
+            }
+            case '\'' -> {
+                if (pos + 1 < data.length()) {
+                    final char c2 = data.charAt(pos);
+                    final char c3 = data.charAt(pos + 1);
+                    if (c2 == '\'' && c3 == '\'') {
+                        pos += 2;
+                        yield nextLiteralMultilineString();
+                    }
                 }
-                return nextLiteralString();
-
-            case '[':
-                return nextArray();
-
-            case '{':
-                return nextInlineTable();
-
-            case 't': // "true"
+                yield nextLiteralString();
+            }
+            case '[' -> nextArray();
+            case '{' -> nextInlineTable();
+            case 't' -> {
                 if (pos + 3 > data.length() || next() != 'r' || next() != 'u' || next() != 'e') {
                     throw new InternalException("Invalid value at line " + line);
                 }
-                return true;
-
-            case 'f': // "false"
+                yield true;
+            }
+            case 'f' -> {
                 if (pos + 4 > data.length() || next() != 'a' || next() != 'l' || next() != 's' || next() != 'e') {
                     throw new InternalException("Invalid value at line " + line);
                 }
-                return false;
-
-            default:
-                throw new InternalException("Invalid character '" + toString(firstChar) + "' at line " + line);
-        }
+                yield false;
+            }
+            default -> throw new InternalException("Invalid character '" + toString(firstChar) + "' at line " + line);
+        };
     }
 
     private List<Object> nextArray() {
@@ -652,25 +651,14 @@ public class TomlReader {
      * @return The string representation.
      */
     private String toString(final char c) {
-        switch (c) {
-            case '\b':
-                return "\\b";
-
-            case '\t':
-                return "\\t";
-
-            case '\n':
-                return "\\n";
-
-            case '\r':
-                return "\\r";
-
-            case '\f':
-                return "\\f";
-
-            default:
-                return String.valueOf(c);
-        }
+        return switch (c) {
+            case '\b' -> "\\b";
+            case '\t' -> "\\t";
+            case '\n' -> "\\n";
+            case '\r' -> "\\r";
+            case '\f' -> "\\f";
+            default -> String.valueOf(c);
+        };
     }
 
 }

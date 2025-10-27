@@ -164,6 +164,12 @@ public class ErrorCode {
     public static final Errors _100117 = ErrorRegistry.builder().key("100117").value("Invalid ApiKey").build();
 
     /**
+     * Request: Invalid verification code.
+     */
+    public static final Errors _100118 = ErrorRegistry.builder().key("100118").value("Invalid verification code")
+            .build();
+
+    /**
      * Request: Please use GET request.
      */
     public static final Errors _100200 = ErrorRegistry.builder().key("100200").value("Please use GET request").build();

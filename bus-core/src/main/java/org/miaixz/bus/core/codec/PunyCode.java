@@ -91,7 +91,7 @@ public class PunyCode {
         final List<String> split = CharsBacker.split(domain, Symbol.DOT);
         final StringBuilder result = new StringBuilder(domain.length() * 4);
         for (final String text : split) {
-            if (result.length() != 0) {
+            if (!result.isEmpty()) {
                 result.append(Symbol.C_DOT);
             }
             result.append(encode(text, true));
@@ -212,7 +212,7 @@ public class PunyCode {
         final List<String> split = CharsBacker.split(domain, Symbol.DOT);
         final StringBuilder result = new StringBuilder(domain.length() / 4 + 1);
         for (final String text : split) {
-            if (result.length() != 0) {
+            if (!result.isEmpty()) {
                 result.append(Symbol.C_DOT);
             }
             result.append(StringKit.startWithIgnoreEquals(text, PUNY_CODE_PREFIX) ? decode(text) : text);

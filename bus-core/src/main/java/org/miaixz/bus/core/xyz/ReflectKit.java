@@ -35,7 +35,7 @@ import java.net.URL;
 import java.security.CodeSource;
 import java.security.ProtectionDomain;
 
-import org.miaixz.bus.core.center.map.TripleTable;
+import org.miaixz.bus.core.center.map.TripletTable;
 import org.miaixz.bus.core.center.map.reference.WeakConcurrentMap;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
@@ -116,7 +116,7 @@ public class ReflectKit {
     /**
      * A table mapping the 9 primitive types to their descriptors and names.
      */
-    private static final TripleTable<Class<?>, Character, String> PRIMITIVE_TABLE = new TripleTable<>(9);
+    private static final TripletTable<Class<?>, Character, String> PRIMITIVE_TABLE = new TripletTable<>(9);
     /**
      * Constructor cache.
      */

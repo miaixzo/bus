@@ -32,7 +32,7 @@ import java.util.Map;
 import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Registry;
-import org.miaixz.bus.auth.magic.AuthToken;
+import org.miaixz.bus.auth.magic.Authorization;
 import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.ErrorCode;
 import org.miaixz.bus.auth.magic.Material;
@@ -77,23 +77,24 @@ public class DouyinProvider extends AbstractProvider {
      * Retrieves the access token from Douyin's authorization server.
      *
      * @param callback the callback object containing the authorization code
-     * @return the {@link AuthToken} containing access token details
+     * @return the {@link Authorization} containing access token details
      */
     @Override
-    public AuthToken getAccessToken(Callback callback) {
-        return this.getToken(accessTokenUrl(callback.getCode()));
+    public Message token(Callback callback) {
+        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(this.getToken(tokenUrl(callback.getCode())))
+                .build();
     }
 
     /**
      * Retrieves user information from Douyin's user info endpoint.
      *
-     * @param authToken the {@link AuthToken} obtained after successful authorization
+     * @param authorization the {@link Authorization} obtained after successful authorization
      * @return {@link Material} containing the user's information
      * @throws AuthorizedException if parsing the response fails or required user information is missing
      */
     @Override
-    public Material getUserInfo(AuthToken authToken) {
-        String response = doGetUserInfo(authToken);
+    public Message userInfo(Authorization authorization) {
+        String response = doGetUserInfo(authorization);
         try {
             Map<String, Object> userInfoObject = JsonKit.toPojo(response, Map.class);
             if (userInfoObject == null) {
@@ -118,12 +119,15 @@ public class DouyinProvider extends AbstractProvider {
             String province = (String) data.get("province");
             String city = (String) data.get("city");
 
-            authToken.setUnionId(unionId);
+            authorization.setUnionId(unionId);
 
-            return Material.builder().rawJson(JsonKit.toJsonString(data)).uuid(unionId).username(nickname)
-                    .nickname(nickname).avatar(avatar).remark(description).gender(Gender.of(gender))
-                    .location(String.format("%s %s %s", country, province, city)).token(authToken)
-                    .source(complex.toString()).build();
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+                    .data(
+                            Material.builder().rawJson(JsonKit.toJsonString(data)).uuid(unionId).username(nickname)
+                                    .nickname(nickname).avatar(avatar).remark(description).gender(Gender.of(gender))
+                                    .location(String.format("%s %s %s", country, province, city)).token(authorization)
+                                    .source(complex.toString()).build())
+                    .build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
         }
@@ -132,13 +136,13 @@ public class DouyinProvider extends AbstractProvider {
     /**
      * Refreshes the access token (renews its validity).
      *
-     * @param authToken the token information returned after successful login
+     * @param authorization the token information returned after successful login
      * @return a {@link Message} containing the refreshed token information
      */
     @Override
-    public Message refresh(AuthToken authToken) {
+    public Message refresh(Authorization authorization) {
         return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
-                .data(getToken(refreshTokenUrl(authToken.getRefreshToken()))).build();
+                .data(getToken(refreshUrl(authorization.getRefresh()))).build();
     }
 
     /**
@@ -164,12 +168,12 @@ public class DouyinProvider extends AbstractProvider {
     /**
      * Retrieves the token, applicable for both obtaining access tokens and refreshing tokens.
      *
-     * @param accessTokenUrl the actual URL to request the token from
-     * @return the {@link AuthToken} object
+     * @param tokenUrl the actual URL to request the token from
+     * @return the {@link Authorization} object
      * @throws AuthorizedException if parsing the response fails or required token information is missing
      */
-    private AuthToken getToken(String accessTokenUrl) {
-        String response = Httpx.post(accessTokenUrl);
+    private Authorization getToken(String tokenUrl) {
+        String response = Httpx.post(tokenUrl);
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
             if (object == null) {
@@ -177,26 +181,26 @@ public class DouyinProvider extends AbstractProvider {
             }
             this.checkResponse(object);
 
-            Map<String, Object> dataObj = (Map<String, Object>) object.get(Consts.DATA);
-            if (dataObj == null) {
+            object = (Map<String, Object>) object.get(Consts.DATA);
+            if (object == null) {
                 throw new AuthorizedException("Missing data field in token response");
             }
 
-            String accessToken = (String) dataObj.get("access_token");
-            if (accessToken == null) {
+            String token = (String) object.get("access_token");
+            if (token == null) {
                 throw new AuthorizedException("Missing access_token in response");
             }
-            String openId = (String) dataObj.get("open_id");
-            Object expiresInObj = dataObj.get("expires_in");
+            String openId = (String) object.get("open_id");
+            Object expiresInObj = object.get("expires_in");
             int expiresIn = expiresInObj instanceof Number ? ((Number) expiresInObj).intValue() : 0;
-            String refreshToken = (String) dataObj.get("refresh_token");
-            Object refreshExpiresInObj = dataObj.get("refresh_expires_in");
+            String refresh = (String) object.get("refresh_token");
+            Object refreshExpiresInObj = object.get("refresh_expires_in");
             int refreshExpiresIn = refreshExpiresInObj instanceof Number ? ((Number) refreshExpiresInObj).intValue()
                     : 0;
-            String scope = (String) dataObj.get("scope");
+            String scope = (String) object.get("scope");
 
-            return AuthToken.builder().accessToken(accessToken).openId(openId).expireIn(expiresIn)
-                    .refreshToken(refreshToken).refreshTokenExpireIn(refreshExpiresIn).scope(scope).build();
+            return Authorization.builder().token(token).openId(openId).expireIn(expiresIn).refresh(refresh)
+                    .refreshExpireIn(refreshExpiresIn).scope(scope).build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse token response: " + e.getMessage());
         }
@@ -210,11 +214,14 @@ public class DouyinProvider extends AbstractProvider {
      * @return the authorization URL
      */
     @Override
-    public String authorize(String state) {
-        return Builder.fromUrl(this.complex.authorize()).queryParam("response_type", "code")
-                .queryParam("client_key", context.getAppKey()).queryParam("redirect_uri", context.getRedirectUri())
-                .queryParam("scope", this.getScopes(Symbol.COMMA, true, this.getDefaultScopes(DouyinScope.values())))
-                .queryParam("state", getRealState(state)).build();
+    public Message build(String state) {
+        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+                Builder.fromUrl(this.complex.authorize()).queryParam("response_type", "code")
+                        .queryParam("client_key", context.getClientId())
+                        .queryParam("redirect_uri", context.getRedirectUri())
+                        .queryParam("scope", this.getScopes(Symbol.COMMA, true, this.getScopes(DouyinScope.values())))
+                        .queryParam("state", getRealState(state)).build())
+                .build();
     }
 
     /**
@@ -224,9 +231,9 @@ public class DouyinProvider extends AbstractProvider {
      * @return the URL to obtain the access token
      */
     @Override
-    protected String accessTokenUrl(String code) {
-        return Builder.fromUrl(this.complex.accessToken()).queryParam("code", code)
-                .queryParam("client_key", context.getAppKey()).queryParam("client_secret", context.getAppSecret())
+    protected String tokenUrl(String code) {
+        return Builder.fromUrl(this.complex.token()).queryParam("code", code)
+                .queryParam("client_key", context.getClientId()).queryParam("client_secret", context.getClientSecret())
                 .queryParam("grant_type", "authorization_code").queryParam("redirect_uri", context.getRedirectUri())
                 .build();
     }
@@ -234,25 +241,25 @@ public class DouyinProvider extends AbstractProvider {
     /**
      * Returns the URL to obtain user information.
      *
-     * @param authToken the OAuth token returned
+     * @param authorization the OAuth token returned
      * @return the URL to obtain user information
      */
     @Override
-    protected String userInfoUrl(AuthToken authToken) {
-        return Builder.fromUrl(this.complex.userinfo()).queryParam("access_token", authToken.getAccessToken())
-                .queryParam("open_id", authToken.getOpenId()).build();
+    protected String userInfoUrl(Authorization authorization) {
+        return Builder.fromUrl(this.complex.userinfo()).queryParam("access_token", authorization.getToken())
+                .queryParam("open_id", authorization.getOpenId()).build();
     }
 
     /**
      * Returns the URL to refresh the access token.
      *
-     * @param refreshToken the OAuth refresh token returned
+     * @param refresh the OAuth refresh token returned
      * @return the URL to refresh the access token
      */
     @Override
-    protected String refreshTokenUrl(String refreshToken) {
-        return Builder.fromUrl(this.complex.refresh()).queryParam("client_key", context.getAppKey())
-                .queryParam("refresh_token", refreshToken).queryParam("grant_type", "refresh_token").build();
+    protected String refreshUrl(String refresh) {
+        return Builder.fromUrl(this.complex.refresh()).queryParam("client_key", context.getClientId())
+                .queryParam("refresh_token", refresh).queryParam("grant_type", "refresh_token").build();
     }
 
 }

@@ -33,7 +33,7 @@ import java.util.Map;
 import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Registry;
-import org.miaixz.bus.auth.magic.AuthToken;
+import org.miaixz.bus.auth.magic.Authorization;
 import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.ErrorCode;
 import org.miaixz.bus.auth.magic.Material;
@@ -87,65 +87,67 @@ public class FeishuProvider extends AbstractProvider {
      * @return the application access token
      * @throws AuthorizedException if parsing the response fails or required token information is missing
      */
-    private String getAppAccessToken() {
-        String cacheKey = this.complex.getName().concat(":app_access_token:").concat(context.getAppKey());
-        String cacheAppAccessToken = String.valueOf(this.cache.read(cacheKey));
-        if (StringKit.isNotEmpty(cacheAppAccessToken)) {
-            return cacheAppAccessToken;
+    private String getToken() {
+        String cacheKey = this.complex.getName().concat(":app_access_token:").concat(context.getClientId());
+        String cacheToken = String.valueOf(this.cache.read(cacheKey));
+        if (StringKit.isNotEmpty(cacheToken)) {
+            return cacheToken;
         }
         String url = "https://open.feishu.cn/open-apis/auth/v3/app_access_token/internal/";
-        Map<String, Object> requestObject = new HashMap<>();
-        requestObject.put("app_id", context.getAppKey());
-        requestObject.put("app_secret", context.getAppSecret());
+        Map<String, Object> object = new HashMap<>();
+        object.put("app_id", context.getClientId());
+        object.put("app_secret", context.getClientSecret());
 
         Map<String, String> header = new HashMap<>();
         header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON);
 
-        String response = Httpx.post(url, JsonKit.toJsonString(requestObject), header, MediaType.APPLICATION_JSON);
-        Map<String, Object> jsonObject = JsonKit.toPojo(response, Map.class);
-        if (jsonObject == null) {
+        String response = Httpx.post(url, JsonKit.toJsonString(object), header, MediaType.APPLICATION_JSON);
+        object = JsonKit.toPojo(response, Map.class);
+        if (object == null) {
             throw new AuthorizedException("Failed to parse app access token response: empty response");
         }
-        this.checkResponse(jsonObject);
-        String appAccessToken = (String) jsonObject.get("app_access_token");
-        if (appAccessToken == null) {
+        this.checkResponse(object);
+        String token = (String) object.get("app_access_token");
+        if (token == null) {
             throw new AuthorizedException("Missing app_access_token in response");
         }
-        Object expireObj = jsonObject.get("expire");
+        Object expireObj = object.get("expire");
         long expire = expireObj instanceof Number ? ((Number) expireObj).longValue() : 0;
         // Cache app access token
-        this.cache.write(cacheKey, appAccessToken, expire * 1000);
-        return appAccessToken;
+        this.cache.write(cacheKey, token, expire * 1000);
+        return token;
     }
 
     /**
      * Retrieves the access token from Feishu's authorization server.
      *
      * @param callback the callback object containing the authorization code
-     * @return the {@link AuthToken} containing access token details
+     * @return the {@link Authorization} containing access token details
      */
     @Override
-    public AuthToken getAccessToken(Callback callback) {
+    public Message token(Callback callback) {
         Map<String, Object> requestObject = new HashMap<>();
-        requestObject.put("app_access_token", this.getAppAccessToken());
+        requestObject.put("app_access_token", this.getToken());
         requestObject.put("grant_type", "authorization_code");
         requestObject.put("code", callback.getCode());
-        return getToken(requestObject, this.complex.accessToken());
+
+        return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+                .data(this.getToken(requestObject, this.complex.token())).build();
     }
 
     /**
      * Retrieves user information from Feishu's user info endpoint.
      *
-     * @param authToken the {@link AuthToken} obtained after successful authorization
-     * @return {@link Material} containing the user's information
+     * @param authorization the {@link Authorization} obtained after successful authorization
+     * @return {@link Message} containing the user's information
      * @throws AuthorizedException if parsing the response fails or required user information is missing
      */
     @Override
-    public Material getUserInfo(AuthToken authToken) {
-        String accessToken = authToken.getAccessToken();
+    public Message userInfo(Authorization authorization) {
+        String token = authorization.getToken();
         Map<String, String> header = new HashMap<>();
         header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON);
-        header.put("Authorization", "Bearer " + accessToken);
+        header.put("Authorization", "Bearer " + token);
         String response = Httpx.get(this.complex.userinfo(), null, header);
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
@@ -163,8 +165,11 @@ public class FeishuProvider extends AbstractProvider {
             String avatarUrl = (String) data.get("avatar_url");
             String email = (String) data.get("email");
 
-            return Material.builder().rawJson(JsonKit.toJsonString(object)).uuid(unionId).username(name).nickname(name)
-                    .avatar(avatarUrl).email(email).gender(Gender.UNKNOWN).token(authToken).source(complex.toString())
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+                    .data(
+                            Material.builder().rawJson(JsonKit.toJsonString(object)).uuid(unionId).username(name)
+                                    .nickname(name).avatar(avatarUrl).email(email).gender(Gender.UNKNOWN)
+                                    .token(authorization).source(complex.toString()).build())
                     .build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
@@ -174,17 +179,17 @@ public class FeishuProvider extends AbstractProvider {
     /**
      * Refreshes the access token (renews its validity).
      *
-     * @param authToken the token information returned after successful login
+     * @param authorization the token information returned after successful login
      * @return a {@link Message} containing the refreshed token information
      */
     @Override
-    public Message refresh(AuthToken authToken) {
+    public Message refresh(Authorization authorization) {
         Map<String, Object> requestObject = new HashMap<>();
-        requestObject.put("app_access_token", this.getAppAccessToken());
+        requestObject.put("app_access_token", this.getToken());
         requestObject.put("grant_type", "refresh_token");
-        requestObject.put("refresh_token", authToken.getRefreshToken());
+        requestObject.put("refresh_token", authorization.getRefresh());
         return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
-                .data(getToken(requestObject, this.complex.refresh())).build();
+                .data(this.getToken(requestObject, this.complex.refresh())).build();
     }
 
     /**
@@ -192,36 +197,36 @@ public class FeishuProvider extends AbstractProvider {
      *
      * @param param a map of parameters for the token request
      * @param url   the URL to request the token from
-     * @return the {@link AuthToken} containing token details
+     * @return the {@link Authorization} containing token details
      * @throws AuthorizedException if parsing the response fails or required token information is missing
      */
-    private AuthToken getToken(Map<String, Object> param, String url) {
+    private Authorization getToken(Map<String, Object> param, String url) {
         Map<String, String> header = new HashMap<>();
         header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON);
         String response = Httpx.post(url, JsonKit.toJsonString(param), header, MediaType.APPLICATION_JSON);
         try {
-            Map<String, Object> jsonObject = JsonKit.toPojo(response, Map.class);
-            if (jsonObject == null) {
+            Map<String, Object> object = JsonKit.toPojo(response, Map.class);
+            if (object == null) {
                 throw new AuthorizedException("Failed to parse token response: empty response");
             }
-            this.checkResponse(jsonObject);
-            Map<String, Object> data = (Map<String, Object>) jsonObject.get(Consts.DATA);
-            if (data == null) {
+            this.checkResponse(object);
+            object = (Map<String, Object>) object.get(Consts.DATA);
+            if (object == null) {
                 throw new AuthorizedException("Missing data in token response");
             }
 
-            String accessToken = (String) data.get("access_token");
-            if (accessToken == null) {
+            String token = (String) object.get("access_token");
+            if (token == null) {
                 throw new AuthorizedException("Missing access_token in response");
             }
-            String refreshToken = (String) data.get("refresh_token");
-            Object expiresInObj = data.get("expires_in");
+            String refresh = (String) object.get("refresh_token");
+            Object expiresInObj = object.get("expires_in");
             int expiresIn = expiresInObj instanceof Number ? ((Number) expiresInObj).intValue() : 0;
-            String tokenType = (String) data.get("token_type");
-            String openId = (String) data.get("open_id");
+            String tokenType = (String) object.get("token_type");
+            String openId = (String) object.get("open_id");
 
-            return AuthToken.builder().accessToken(accessToken).refreshToken(refreshToken).expireIn(expiresIn)
-                    .tokenType(tokenType).openId(openId).build();
+            return Authorization.builder().token(token).refresh(refresh).expireIn(expiresIn).token_type(tokenType)
+                    .openId(openId).build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse token response: " + e.getMessage());
         }
@@ -235,10 +240,13 @@ public class FeishuProvider extends AbstractProvider {
      * @return the authorization URL
      */
     @Override
-    public String authorize(String state) {
-        return Builder.fromUrl(complex.authorize()).queryParam("app_id", context.getAppKey())
-                .queryParam("redirect_uri", UrlEncoder.encodeAll(context.getRedirectUri()))
-                .queryParam("state", getRealState(state)).build();
+    public Message build(String state) {
+        return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+                .data(
+                        Builder.fromUrl(complex.authorize()).queryParam("app_id", context.getClientId())
+                                .queryParam("redirect_uri", UrlEncoder.encodeAll(context.getRedirectUri()))
+                                .queryParam("state", getRealState(state)).build())
+                .build();
     }
 
     /**

@@ -224,7 +224,7 @@ public class CronPattern {
         final int dayOfMonth = calendar.get(java.util.Calendar.DAY_OF_MONTH);
         final int monthBase1 = calendar.get(java.util.Calendar.MONTH) + 1; // Month is 1-based
         final int dayOfWeekBase0 = calendar.get(java.util.Calendar.DAY_OF_WEEK) - 1; // Day of week is 0-based
-                                                                                     // (0=Sunday)
+        // (0=Sunday)
         final int year = calendar.get(java.util.Calendar.YEAR);
         return new int[] { second, minute, hour, dayOfMonth, monthBase1, dayOfWeekBase0, year };
     }
@@ -277,6 +277,15 @@ public class CronPattern {
     }
 
     /**
+     * Starting from the current time, returns the next matching time. If the current time matches, returns directly.
+     *
+     * @return Timestamp of the next matching time
+     */
+    public long nextMatchFromNow() {
+        return nextMatch(java.util.Calendar.getInstance()).getTimeInMillis();
+    }
+
+    /**
      * Returns the next matching time after the given calendar time. If the given time already matches, it will find the
      * next occurrence.
      *
@@ -292,6 +301,17 @@ public class CronPattern {
         }
 
         return nextMatch(calendar);
+    }
+
+    /**
+     * Starting from the specified timestamp, returns the next matching time. If the current time matches, returns
+     * directly.
+     *
+     * @param millis Timestamp
+     * @return Timestamp of the next matching time
+     */
+    public long nextMatch(long millis) {
+        return nextMatch(Calendar.calendar(millis)).getTimeInMillis();
     }
 
     /**

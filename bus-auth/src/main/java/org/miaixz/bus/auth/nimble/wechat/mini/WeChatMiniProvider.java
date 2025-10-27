@@ -28,7 +28,9 @@
 package org.miaixz.bus.auth.nimble.wechat.mini;
 
 import lombok.Data;
+import org.miaixz.bus.auth.magic.ErrorCode;
 import org.miaixz.bus.cache.CacheX;
+import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.extra.json.JsonKit;
@@ -36,7 +38,7 @@ import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Registry;
-import org.miaixz.bus.auth.magic.AuthToken;
+import org.miaixz.bus.auth.magic.Authorization;
 import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.Material;
 import org.miaixz.bus.auth.nimble.AbstractProvider;
@@ -74,21 +76,24 @@ public class WeChatMiniProvider extends AbstractProvider {
      * Uses the authorization code to obtain the openId, unionId, and session_key.
      *
      * @param authCallback the callback object containing the authorization code
-     * @return the {@link AuthToken} containing access token details
+     * @return the {@link Authorization} containing access token details
      * @throws AuthorizedException if the response indicates an error or is missing required token information
      */
     @Override
-    public AuthToken getAccessToken(Callback authCallback) {
+    public Message token(Callback authCallback) {
         // See https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/login/auth.code2Session.html
         // documentation
         // Use the code to get the corresponding openId, unionId, etc.
-        String response = Httpx.get(accessTokenUrl(authCallback.getCode()));
-        JSCode2SessionResponse accessTokenObject = JsonKit.toPojo(response, JSCode2SessionResponse.class);
-        assert accessTokenObject != null;
-        checkResponse(accessTokenObject);
+        String response = Httpx.get(tokenUrl(authCallback.getCode()));
+        JSCode2SessionResponse object = JsonKit.toPojo(response, JSCode2SessionResponse.class);
+        assert object != null;
+        checkResponse(object);
         // Assemble the result
-        return AuthToken.builder().openId(accessTokenObject.getOpenid()).unionId(accessTokenObject.getUnionid())
-                .accessToken(accessTokenObject.getSession_key()).build();
+        return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+                .data(
+                        Authorization.builder().openId(object.getOpenid()).unionId(object.getUnionid())
+                                .token(object.getSession_key()).build())
+                .build();
     }
 
     /**
@@ -97,16 +102,19 @@ public class WeChatMiniProvider extends AbstractProvider {
      * Note: If user information is required, it needs to be passed to the backend after the Mini Program calls a
      * function.
      *
-     * @param authToken the {@link AuthToken} obtained after successful authorization
+     * @param authorization the {@link Authorization} obtained after successful authorization
      * @return {@link Material} containing the user's information
      */
     @Override
-    public Material getUserInfo(AuthToken authToken) {
+    public Message userInfo(Authorization authorization) {
         // See https://developers.weixin.qq.com/miniprogram/dev/api/open-api/user-info/wx.getUserProfile.html
         // documentation
         // If user information is required, it needs to be passed to the backend after the Mini Program calls a function
-        return Material.builder().username("").nickname("").avatar("").uuid(authToken.getOpenId()).token(authToken)
-                .source(complex.toString()).build();
+        return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+                .data(
+                        Material.builder().username("").nickname("").avatar("").uuid(authorization.getOpenId())
+                                .token(authorization).source(complex.toString()).build())
+                .build();
     }
 
     /**
@@ -128,9 +136,9 @@ public class WeChatMiniProvider extends AbstractProvider {
      * @return the access token URL
      */
     @Override
-    protected String accessTokenUrl(String code) {
-        return Builder.fromUrl(this.complex.accessToken()).queryParam("appid", context.getAppKey())
-                .queryParam("secret", context.getAppSecret()).queryParam("js_code", code)
+    protected String tokenUrl(String code) {
+        return Builder.fromUrl(this.complex.token()).queryParam("appid", context.getClientId())
+                .queryParam("secret", context.getClientSecret()).queryParam("js_code", code)
                 .queryParam("grant_type", "authorization_code").build();
     }
 

@@ -27,7 +27,7 @@
 */
 package org.miaixz.bus.auth.nimble.kujiale;
 
-import org.miaixz.bus.auth.magic.AuthToken;
+import org.miaixz.bus.auth.magic.Authorization;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Symbol;
@@ -79,9 +79,11 @@ public class KujialeProvider extends AbstractProvider {
      * @return the authorization URL
      */
     @Override
-    public String authorize(String state) {
-        return Builder.fromUrl(super.authorize(state))
-                .queryParam("scope", this.getScopes(Symbol.COMMA, false, this.getDefaultScopes(KujialeScope.values())))
+    public Message build(String state) {
+        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+                Builder.fromUrl((String) super.build(state).getData())
+                        .queryParam("scope", this.getScopes(Symbol.COMMA, false, this.getScopes(KujialeScope.values())))
+                        .build())
                 .build();
     }
 
@@ -89,37 +91,37 @@ public class KujialeProvider extends AbstractProvider {
      * Retrieves the access token from Kujiale's authorization server.
      *
      * @param callback the callback object containing the authorization code
-     * @return the {@link AuthToken} containing access token details
+     * @return the {@link Authorization} containing access token details
      */
     @Override
-    public AuthToken getAccessToken(Callback callback) {
-        String response = doPostAuthorizationCode(callback.getCode());
-        return getAuthToken(response);
+    public Message token(Callback callback) {
+        String response = doPostToken(callback.getCode());
+        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(getAuthToken(response)).build();
     }
 
     /**
-     * Parses the access token response string into an {@link AuthToken} object.
+     * Parses the access token response string into an {@link Authorization} object.
      *
      * @param response the response string from the access token endpoint
-     * @return the parsed {@link AuthToken}
+     * @return the parsed {@link Authorization}
      * @throws AuthorizedException if the response indicates an error or is missing required token information
      */
-    private AuthToken getAuthToken(String response) {
-        Map<String, Object> accessTokenObject = checkResponse(response);
-        Map<String, Object> resultObject = (Map<String, Object>) accessTokenObject.get("d");
-        if (resultObject == null) {
+    private Authorization getAuthToken(String response) {
+        Map<String, Object> map = checkResponse(response);
+        Map<String, Object> object = (Map<String, Object>) map.get("d");
+        if (object == null) {
             throw new AuthorizedException("Missing d in access token response");
         }
 
-        String accessToken = (String) resultObject.get("accessToken");
-        if (accessToken == null) {
-            throw new AuthorizedException("Missing accessToken in response");
+        String token = (String) object.get("accessToken");
+        if (token == null) {
+            throw new AuthorizedException("Missing token in response");
         }
-        String refreshToken = (String) resultObject.get("refreshToken");
-        Object expiresInObj = resultObject.get("expiresIn");
+        String refresh = (String) object.get("refreshToken");
+        Object expiresInObj = object.get("expiresIn");
         int expiresIn = expiresInObj instanceof Number ? ((Number) expiresInObj).intValue() : 0;
 
-        return AuthToken.builder().accessToken(accessToken).refreshToken(refreshToken).expireIn(expiresIn).build();
+        return Authorization.builder().token(token).refresh(refresh).expireIn(expiresIn).build();
     }
 
     /**
@@ -131,16 +133,16 @@ public class KujialeProvider extends AbstractProvider {
      */
     private Map<String, Object> checkResponse(String response) {
         try {
-            Map<String, Object> accessTokenObject = JsonKit.toPojo(response, Map.class);
-            if (accessTokenObject == null) {
+            Map<String, Object> object = JsonKit.toPojo(response, Map.class);
+            if (object == null) {
                 throw new AuthorizedException("Failed to parse response: empty response");
             }
-            String code = (String) accessTokenObject.get("c");
+            String code = (String) object.get("c");
             if (!"0".equals(code)) {
-                String message = (String) accessTokenObject.get("m");
+                String message = (String) object.get("m");
                 throw new AuthorizedException(message != null ? message : "Unknown error");
             }
-            return accessTokenObject;
+            return object;
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse response: " + e.getMessage());
         }
@@ -149,15 +151,15 @@ public class KujialeProvider extends AbstractProvider {
     /**
      * Retrieves user information from Kujiale's user info endpoint.
      *
-     * @param authToken the {@link AuthToken} obtained after successful authorization
+     * @param authorization the {@link Authorization} obtained after successful authorization
      * @return {@link Material} containing the user's information
      * @throws AuthorizedException if parsing the response fails or required user information is missing
      */
     @Override
-    public Material getUserInfo(AuthToken authToken) {
-        String openId = this.getOpenId(authToken);
+    public Message userInfo(Authorization authorization) {
+        String openId = this.getOpenId(authorization);
         String response = Httpx.get(
-                Builder.fromUrl(this.complex.userinfo()).queryParam("access_token", authToken.getAccessToken())
+                Builder.fromUrl(this.complex.userinfo()).queryParam("access_token", authorization.getToken())
                         .queryParam("open_id", openId).build());
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
@@ -182,8 +184,12 @@ public class KujialeProvider extends AbstractProvider {
             String avatar = (String) resultObject.get("avatar");
             String openIdFromResponse = (String) resultObject.get("openId");
 
-            return Material.builder().rawJson(JsonKit.toJsonString(resultObject)).username(userName).nickname(userName)
-                    .avatar(avatar).uuid(openIdFromResponse).token(authToken).source(complex.toString()).build();
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+                    .data(
+                            Material.builder().rawJson(JsonKit.toJsonString(resultObject)).username(userName)
+                                    .nickname(userName).avatar(avatar).uuid(openIdFromResponse).token(authorization)
+                                    .source(complex.toString()).build())
+                    .build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
         }
@@ -192,16 +198,16 @@ public class KujialeProvider extends AbstractProvider {
     /**
      * Retrieves the Kujiale OpenId. This ID can uniquely identify the authorized user within the current client scope.
      *
-     * @param authToken the {@code accessToken} obtained via {@link KujialeProvider#getAccessToken(Callback)}
+     * @param authorization the {@code token} obtained via {@link KujialeProvider#token(Callback)}
      * @return the OpenId
      * @throws AuthorizedException if the response indicates an error or is missing the OpenId
      */
-    private String getOpenId(AuthToken authToken) {
+    private String getOpenId(Authorization authorization) {
         String response = Httpx.get(
                 Builder.fromUrl("https://oauth.kujiale.com/oauth2/auth/user")
-                        .queryParam("access_token", authToken.getAccessToken()).build());
-        Map<String, Object> accessTokenObject = checkResponse(response);
-        String openId = (String) accessTokenObject.get("d");
+                        .queryParam("access_token", authorization.getToken()).build());
+        Map<String, Object> object = checkResponse(response);
+        String openId = (String) object.get("d");
         if (openId == null) {
             throw new AuthorizedException("Missing openId in response");
         }
@@ -211,12 +217,12 @@ public class KujialeProvider extends AbstractProvider {
     /**
      * Refreshes the access token (renews its validity).
      *
-     * @param authToken the token information returned after successful login
+     * @param authorization the token information returned after successful login
      * @return a {@link Message} containing the refreshed token information
      */
     @Override
-    public Message refresh(AuthToken authToken) {
-        String response = Httpx.post(refreshTokenUrl(authToken.getRefreshToken()));
+    public Message refresh(Authorization authorization) {
+        String response = Httpx.post(refreshUrl(authorization.getRefresh()));
         return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(getAuthToken(response)).build();
     }
 

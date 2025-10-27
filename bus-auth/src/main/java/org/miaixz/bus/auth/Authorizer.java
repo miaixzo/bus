@@ -144,7 +144,7 @@ public class Authorizer {
     public Provider build() {
         // Validate if source and context are set
         if (StringKit.isEmpty(this.source) || null == this.context) {
-            throw new AuthorizedException(ErrorCode._NOT_IMPLEMENTED.getKey());
+            throw new AuthorizedException(ErrorCode._110001.getKey());
         }
 
         // Merge default Registry and custom Complex configurations
@@ -153,12 +153,12 @@ public class Authorizer {
         // Filter for the Complex that matches the source
         Complex complex = Arrays.stream(complexes).distinct()
                 .filter(authSource -> authSource.getName().equalsIgnoreCase(this.source)).findAny()
-                .orElseThrow(() -> new AuthorizedException(ErrorCode._NOT_IMPLEMENTED.getKey()));
+                .orElseThrow(() -> new AuthorizedException(ErrorCode._110001.getKey()));
 
         // Get the provider class
         Class<? extends AbstractProvider> targetClass = complex.getTargetClass();
         if (null == targetClass) {
-            throw new AuthorizedException(ErrorCode._NOT_IMPLEMENTED.getKey());
+            throw new AuthorizedException(ErrorCode._110001.getKey());
         }
 
         // Dynamically create the provider instance
@@ -171,7 +171,7 @@ public class Authorizer {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            throw new AuthorizedException(ErrorCode._NOT_IMPLEMENTED.getKey());
+            throw new AuthorizedException(ErrorCode._110001.getKey());
         }
     }
 

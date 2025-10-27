@@ -27,13 +27,12 @@
 */
 package org.miaixz.bus.auth.nimble.ximalaya;
 
+import org.miaixz.bus.auth.magic.ErrorCode;
 import org.miaixz.bus.cache.CacheX;
+import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.core.codec.binary.Base64;
-import org.miaixz.bus.core.lang.Algorithm;
-import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.lang.Gender;
-import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.*;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.extra.json.JsonKit;
@@ -41,7 +40,7 @@ import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Registry;
-import org.miaixz.bus.auth.magic.AuthToken;
+import org.miaixz.bus.auth.magic.Authorization;
 import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.Material;
 import org.miaixz.bus.auth.nimble.AbstractProvider;
@@ -112,37 +111,38 @@ public class XimalayaProvider extends AbstractProvider {
      * Retrieves the access token from Ximalaya's authorization server.
      *
      * @param callback the callback object containing the authorization code
-     * @return the {@link AuthToken} containing access token details
-     * @see AbstractProvider#authorize(String)
+     * @return the {@link Authorization} containing access token details
+     * @see AbstractProvider#build(String)
      * @throws AuthorizedException if parsing the response fails or required token information is missing
      */
     @Override
-    public AuthToken getAccessToken(Callback callback) {
+    public Message token(Callback callback) {
         Map<String, String> map = new HashMap<>(9);
         map.put("code", callback.getCode());
-        map.put("client_id", context.getAppKey());
-        map.put("client_secret", context.getAppSecret());
+        map.put("client_id", context.getClientId());
+        map.put("client_secret", context.getClientSecret());
         map.put("device_id", context.getDeviceId());
         map.put("grant_type", "authorization_code");
         map.put("redirect_uri", context.getRedirectUri());
-        String response = Httpx.post(this.complex.accessToken(), map);
+        String response = Httpx.post(this.complex.token(), map);
         try {
-            Map<String, Object> accessTokenObject = JsonKit.toPojo(response, Map.class);
-            if (accessTokenObject == null) {
+            Map<String, Object> object = JsonKit.toPojo(response, Map.class);
+            if (object == null) {
                 throw new AuthorizedException("Failed to parse access token response: empty response");
             }
-            this.checkResponse(accessTokenObject);
+            this.checkResponse(object);
 
-            String accessToken = (String) accessTokenObject.get("access_token");
-            if (accessToken == null) {
+            String token = (String) object.get("access_token");
+            if (token == null) {
                 throw new AuthorizedException("Missing access_token in response");
             }
-            String refreshToken = (String) accessTokenObject.get("refresh_token");
-            Object expiresInObj = accessTokenObject.get("expires_in");
+            String refresh = (String) object.get("refresh_token");
+            Object expiresInObj = object.get("expires_in");
             int expiresIn = expiresInObj instanceof Number ? ((Number) expiresInObj).intValue() : 0;
-            String uid = (String) accessTokenObject.get("uid");
+            String uid = (String) object.get("uid");
 
-            return AuthToken.builder().accessToken(accessToken).refreshToken(refreshToken).expireIn(expiresIn).uid(uid)
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+                    .data(Authorization.builder().token(token).refresh(refresh).expireIn(expiresIn).uid(uid).build())
                     .build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse access token response: " + e.getMessage());
@@ -157,11 +157,13 @@ public class XimalayaProvider extends AbstractProvider {
      * @return the authorization URL
      */
     @Override
-    public String authorize(String state) {
-        return Builder.fromUrl(complex.authorize()).queryParam("response_type", "code")
-                .queryParam("client_id", context.getAppKey()).queryParam("redirect_uri", context.getRedirectUri())
-                .queryParam("state", getRealState(state)).queryParam("client_os_type", "3")
-                .queryParam("device_id", context.getDeviceId()).build();
+    public Message build(String state) {
+        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+                Builder.fromUrl(complex.authorize()).queryParam("response_type", "code")
+                        .queryParam("client_id", context.getClientId())
+                        .queryParam("redirect_uri", context.getRedirectUri()).queryParam("state", getRealState(state))
+                        .queryParam("client_os_type", "3").queryParam("device_id", context.getDeviceId()).build())
+                .build();
     }
 
     /**
@@ -181,20 +183,20 @@ public class XimalayaProvider extends AbstractProvider {
     /**
      * Retrieves user information from Ximalaya's user info endpoint.
      *
-     * @param authToken the token information
+     * @param authorization the token information
      * @return {@link Material} containing the user's information
-     * @see AbstractProvider#getAccessToken(Callback)
+     * @see AbstractProvider#token(Callback)
      * @throws AuthorizedException if parsing the response fails or required user information is missing
      */
     @Override
-    public Material getUserInfo(AuthToken authToken) {
+    public Message userInfo(Authorization authorization) {
         Map<String, String> map = new TreeMap<>();
-        map.put("app_key", context.getAppKey());
+        map.put("app_key", context.getClientId());
         map.put("client_os_type", (String) ObjectKit.defaultIfNull(context.getType(), Normal._3));
         map.put("device_id", context.getDeviceId());
         map.put("pack_id", context.getUnionId());
-        map.put("access_token", authToken.getAccessToken());
-        map.put("sig", sign(map, context.getAppSecret()));
+        map.put("access_token", authorization.getToken());
+        map.put("sig", sign(map, context.getClientSecret()));
         String rawUserInfo = Httpx.get(this.complex.userinfo(), map);
         try {
             Map<String, Object> object = JsonKit.toPojo(rawUserInfo, Map.class);
@@ -210,9 +212,12 @@ public class XimalayaProvider extends AbstractProvider {
             String nickname = (String) object.get("nickname");
             String avatarUrl = (String) object.get("avatar_url");
 
-            return Material.builder().uuid(id).nickname(nickname).avatar(avatarUrl)
-                    .rawJson(JsonKit.toJsonString(object)).source(complex.toString()).token(authToken)
-                    .gender(Gender.UNKNOWN).build();
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+                    .data(
+                            Material.builder().uuid(id).nickname(nickname).avatar(avatarUrl)
+                                    .rawJson(JsonKit.toJsonString(object)).source(complex.toString())
+                                    .token(authorization).gender(Gender.UNKNOWN).build())
+                    .build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
         }

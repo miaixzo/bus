@@ -27,8 +27,10 @@
 */
 package org.miaixz.bus.auth.nimble.stackoverflow;
 
-import org.miaixz.bus.auth.magic.AuthToken;
+import org.miaixz.bus.auth.magic.Authorization;
+import org.miaixz.bus.auth.magic.ErrorCode;
 import org.miaixz.bus.cache.CacheX;
+import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.MediaType;
@@ -80,47 +82,52 @@ public class StackOverflowProvider extends AbstractProvider {
      * Retrieves the access token from Stack Overflow's authorization server.
      *
      * @param callback the callback object containing the authorization code
-     * @return the {@link AuthToken} containing access token details
+     * @return the {@link Authorization} containing access token details
      * @throws AuthorizedException if parsing the response fails or required token information is missing
      */
     @Override
-    public AuthToken getAccessToken(Callback callback) {
-        String accessTokenUrl = accessTokenUrl(callback.getCode());
+    public Message token(Callback callback) {
+        String tokenUrl = tokenUrl(callback.getCode());
         Map<String, String> form = new HashMap<>();
-        UrlDecoder.decodeMap(accessTokenUrl, Charset.DEFAULT_UTF_8).forEach(form::put);
+        UrlDecoder.decodeMap(tokenUrl, Charset.DEFAULT_UTF_8).forEach(form::put);
 
         Map<String, String> header = new HashMap<>();
         header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
-        String response = Httpx.post(accessTokenUrl, form, header);
+        String response = Httpx.post(tokenUrl, form, header);
 
-        Map<String, Object> accessTokenObject = JsonKit.toPojo(response, Map.class);
-        this.checkResponse(accessTokenObject);
+        Map<String, Object> object = JsonKit.toPojo(response, Map.class);
+        this.checkResponse(object);
 
-        return AuthToken.builder().accessToken((String) accessTokenObject.get("access_token"))
-                .expireIn(((Number) accessTokenObject.get("expires")).intValue()).build();
+        return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+                .data(
+                        Authorization.builder().token((String) object.get("access_token"))
+                                .expireIn(((Number) object.get("expires")).intValue()).build())
+                .build();
     }
 
     /**
      * Retrieves user information from Stack Overflow's user info endpoint.
      *
-     * @param authToken the {@link AuthToken} obtained after successful authorization
+     * @param authorization the {@link Authorization} obtained after successful authorization
      * @return {@link Material} containing the user's information
      * @throws AuthorizedException if parsing the response fails or required user information is missing
      */
     @Override
-    public Material getUserInfo(AuthToken authToken) {
+    public Message userInfo(Authorization authorization) {
         String userInfoUrl = Builder.fromUrl(this.complex.userinfo())
-                .queryParam("access_token", authToken.getAccessToken()).queryParam("site", "stackoverflow")
+                .queryParam("access_token", authorization.getToken()).queryParam("site", "stackoverflow")
                 .queryParam("key", this.context.getUnionId()).build();
         String response = Httpx.get(userInfoUrl);
         Map<String, Object> object = JsonKit.toPojo(response, Map.class);
         this.checkResponse(object);
         Map<String, Object> userObj = (Map<String, Object>) ((List<Object>) object.get("items")).get(0);
 
-        return Material.builder().rawJson(JsonKit.toJsonString(userObj)).uuid((String) userObj.get("user_id"))
-                .avatar((String) userObj.get("profile_image")).location((String) userObj.get("location"))
-                .nickname((String) userObj.get("display_name")).blog((String) userObj.get("website_url"))
-                .gender(Gender.UNKNOWN).token(authToken).source(complex.toString()).build();
+        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+                Material.builder().rawJson(JsonKit.toJsonString(userObj)).uuid((String) userObj.get("user_id"))
+                        .avatar((String) userObj.get("profile_image")).location((String) userObj.get("location"))
+                        .nickname((String) userObj.get("display_name")).blog((String) userObj.get("website_url"))
+                        .gender(Gender.UNKNOWN).token(authorization).source(complex.toString()).build())
+                .build();
     }
 
     /**
@@ -131,11 +138,13 @@ public class StackOverflowProvider extends AbstractProvider {
      * @return the authorization URL
      */
     @Override
-    public String authorize(String state) {
-        return Builder.fromUrl(super.authorize(state))
-                .queryParam(
-                        "scope",
-                        this.getScopes(Symbol.COMMA, false, this.getDefaultScopes(StackoverflowScope.values())))
+    public Message build(String state) {
+        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+                Builder.fromUrl((String) super.build(state).getData())
+                        .queryParam(
+                                "scope",
+                                this.getScopes(Symbol.COMMA, false, this.getScopes(StackoverflowScope.values())))
+                        .build())
                 .build();
     }
 

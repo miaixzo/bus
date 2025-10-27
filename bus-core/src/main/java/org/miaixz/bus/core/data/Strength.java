@@ -57,7 +57,7 @@ public class Strength {
      * @return strength level
      */
     public static int check(final String passwd) {
-        if (null == passwd) {
+        if (StringKit.isEmpty(passwd)) {
             throw new IllegalArgumentException("password is empty");
         }
         final int len = passwd.length();
@@ -149,13 +149,13 @@ public class Strength {
         }
 
         // decrease points
-        if (Normal.ALPHABET.indexOf(passwd) > 0 || Normal.ALPHABET.indexOf(passwd) > 0) {
+        if (Normal.ALPHABET.contains(passwd) || Normal.ALPHABET.contains(passwd)) {
             level--;
         }
-        if ("qwertyuiop".indexOf(passwd) > 0 || "asdfghjkl".indexOf(passwd) > 0 || "zxcvbnm".indexOf(passwd) > 0) {
+        if ("qwertyuiop".contains(passwd) || "asdfghjkl".contains(passwd) || "zxcvbnm".contains(passwd)) {
             level--;
         }
-        if (StringKit.isNumeric(passwd) && ("01234567890".indexOf(passwd) > 0 || "09876543210".indexOf(passwd) > 0)) {
+        if (StringKit.isNumeric(passwd) && ("01234567890".contains(passwd) || "09876543210".contains(passwd))) {
             level--;
         }
 
@@ -232,31 +232,13 @@ public class Strength {
      */
     public static PASSWD_LEVEL getLevel(final String passwd) {
         final int level = check(passwd);
-        switch (level) {
-            case 0:
-            case 1:
-            case 2:
-            case 3:
-                return PASSWD_LEVEL.EASY;
-
-            case 4:
-            case 5:
-            case 6:
-                return PASSWD_LEVEL.MEDIUM;
-
-            case 7:
-            case 8:
-            case 9:
-                return PASSWD_LEVEL.STRONG;
-
-            case 10:
-            case 11:
-            case 12:
-                return PASSWD_LEVEL.VERY_STRONG;
-
-            default:
-                return PASSWD_LEVEL.EXTREMELY_STRONG;
-        }
+        return switch (level) {
+            case 0, 1, 2, 3 -> PASSWD_LEVEL.EASY;
+            case 4, 5, 6 -> PASSWD_LEVEL.MEDIUM;
+            case 7, 8, 9 -> PASSWD_LEVEL.STRONG;
+            case 10, 11, 12 -> PASSWD_LEVEL.VERY_STRONG;
+            default -> PASSWD_LEVEL.EXTREMELY_STRONG;
+        };
     }
 
     /**

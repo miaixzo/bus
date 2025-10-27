@@ -69,11 +69,11 @@ public class MicrosoftCnProvider extends AbstractMicrosoftProvider {
      * @throws AuthorizedException if the redirect URI is invalid
      */
     @Override
-    protected void check(Context context) {
-        super.check(context);
+    protected void validate(Context context) {
+        super.validate(context);
         // Microsoft China's redirect uri must use the HTTPS or localhost
         if (Registry.MICROSOFT_CN == this.complex && !Protocol.isHttpsOrLocalHost(context.getRedirectUri())) {
-            throw new AuthorizedException(ErrorCode.ILLEGAL_REDIRECT_URI.getKey(), this.complex);
+            throw new AuthorizedException(ErrorCode._110005.getKey(), this.complex);
         }
     }
 
