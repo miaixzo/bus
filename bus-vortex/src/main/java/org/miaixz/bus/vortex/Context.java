@@ -98,12 +98,6 @@ public class Context extends Tracer {
     private Channel channel = Channel.WEB;
 
     /**
-     * A flag indicating the security mode of the request, typically used to enable or disable features like
-     * encryption/decryption.
-     */
-    private Integer sign;
-
-    /**
      * The access token / api key extracted from the request headers, used for authentication and authorization.
      */
     private String bearer;

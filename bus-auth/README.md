@@ -60,7 +60,7 @@
     provider.authorize("state");
 // 授权登录后会返回code（auth_code（仅限支付宝））、state可以用Callback类作为回调接口的参数
 // 注：默认保存state的时效为3分钟，3分钟内未使用则会自动清除过期的state
-    provider.login(callback);
+    provider.authorize(callback);
 ```
 
 #### Builder 方式二
@@ -81,7 +81,7 @@
     })
     .build();
     Assert.isTrue(provider instanceof GiteeProvider);
-    System.out.println(provider.authorize(ID.objectId()));
+    System.out.println(provider.build("state"));
 ```
 
 #### Builder 方式自定义平台
@@ -99,7 +99,7 @@
 ### 获取授权链接
 
 ```
-String authorizeUrl = shooting.authorize("state");
+String authorizeUrl = shooting.build("state");
 ```
 
 获取到`authorizeUrl`后，可以手动实现redirect到`authorizeUrl`上
@@ -109,7 +109,7 @@ String authorizeUrl = shooting.authorize("state");
 ### 登录(获取用户信息)
 
 ```
-provider.login(callback);
+provider.authorize(callback);
 ```
 
 授权登录后会返回code(auth_code(仅限支付宝)、authorization_code(仅限华为))、state，1.8.0版本后，用`Callback`类作为回调接口的入参

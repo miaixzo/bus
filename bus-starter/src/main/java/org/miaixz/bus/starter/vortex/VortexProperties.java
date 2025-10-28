@@ -63,16 +63,6 @@ public class VortexProperties {
     private boolean condition;
 
     /**
-     * Encryption configuration, initialized by default.
-     */
-    private Args.Encrypt encrypt = new Args.Encrypt();
-
-    /**
-     * Decryption configuration, initialized by default.
-     */
-    private Args.Decrypt decrypt = new Args.Decrypt();
-
-    /**
      * Rate limiting configuration, initialized by default.
      */
     private Args.Limit limit = new Args.Limit();
@@ -80,7 +70,7 @@ public class VortexProperties {
     /**
      * Security configuration, initialized by default.
      */
-    private Args.Security security = new Args.Security();
+    private Args.Mock mock = new Args.Mock();
 
     /**
      * Registers a {@link ForwardedHeaderTransformer} bean.

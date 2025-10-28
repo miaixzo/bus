@@ -71,10 +71,22 @@ public class Args {
     public static final String VERSION = "v";
     /**
      * The parameter name for the request signature, used for validation and to indicate encryption status.
-     * 
-     * @see org.miaixz.bus.vortex.strategy.CipherStrategy
+     *
+     * @see org.miaixz.bus.vortex.strategy.RequestStrategy
      */
     public static final String SIGN = "sign";
+    /**
+     * The parameter name for the request signature, used for validation and to indicate encryption status.
+     *
+     * @see org.miaixz.bus.vortex.strategy.RequestStrategy
+     */
+    public static final String TIMESTAMP = "timestamp";
+    /**
+     * The parameter name for the request signature, used for validation and to indicate encryption status.
+     *
+     * @see org.miaixz.bus.vortex.strategy.RequestStrategy
+     */
+    public static final String APIKEY = "apiKey";
     /**
      * The HTTP header name for the bearer access token (e.g., JWT).
      * 
@@ -110,64 +122,6 @@ public class Args {
     public static final String MQ_PATH_PREFIX = "/router/mq";
 
     /**
-     * A configuration properties model for encryption settings, typically bound from application properties under a
-     * prefix like {@code vortex.encrypt}.
-     */
-    @Getter
-    @Setter
-    public static class Encrypt {
-
-        /**
-         * Whether response encryption is enabled.
-         */
-        private boolean enabled;
-
-        /**
-         * The secret key used for encryption.
-         */
-        private String key;
-
-        /**
-         * The type of encryption algorithm (e.g., "AES").
-         */
-        private String type;
-
-        /**
-         * The initialization vector or offset for the encryption algorithm, if applicable.
-         */
-        private String offset;
-    }
-
-    /**
-     * A configuration properties model for decryption settings, typically bound from application properties under a
-     * prefix like {@code vortex.decrypt}.
-     */
-    @Getter
-    @Setter
-    public static class Decrypt {
-
-        /**
-         * Whether request decryption is enabled.
-         */
-        private boolean enabled;
-
-        /**
-         * The secret key used for decryption.
-         */
-        private String key;
-
-        /**
-         * The type of decryption algorithm (e.g., "AES").
-         */
-        private String type;
-
-        /**
-         * The initialization vector or offset for the decryption algorithm, if applicable.
-         */
-        private String offset;
-    }
-
-    /**
      * A configuration properties model for rate limiting settings, typically bound from application properties under a
      * prefix like {@code vortex.limit}.
      */
@@ -187,17 +141,13 @@ public class Args {
      */
     @Getter
     @Setter
-    public static class Security {
+    public static class Mock {
 
         /**
          * Whether general security features are enabled.
          */
         private boolean enabled;
 
-        /**
-         * Whether to enable mock mode, which might bypass certain security checks for testing or debugging purposes.
-         */
-        private boolean mock;
     }
 
 }

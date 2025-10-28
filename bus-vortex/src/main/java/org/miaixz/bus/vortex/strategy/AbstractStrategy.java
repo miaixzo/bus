@@ -27,17 +27,25 @@
 */
 package org.miaixz.bus.vortex.strategy;
 
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 import org.miaixz.bus.core.basic.normal.Consts;
+import org.miaixz.bus.core.codec.binary.Base64;
+import org.miaixz.bus.core.lang.Algorithm;
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.exception.SignatureException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.PORT;
 import org.miaixz.bus.core.net.Protocol;
+import org.miaixz.bus.core.net.url.UrlEncoder;
+import org.miaixz.bus.core.xyz.DateKit;
+import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.crypto.Builder;
+import org.miaixz.bus.crypto.center.HMac;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Args;
 import org.miaixz.bus.vortex.Context;
@@ -179,30 +187,13 @@ public abstract class AbstractStrategy implements Strategy {
     }
 
     /**
-     * Appends a default port to a given authority (host) if the port is missing.
-     *
-     * @param authority The host information, e.g., "example.com" or "example.com:8080".
-     * @param protocol  The protocol, either "http" or "https".
-     * @return The authority string, guaranteed to include a port (e.g., "example.com:443").
-     */
-    private static String appendPortIfMissing(String authority, String protocol) {
-        if (authority.contains(Symbol.COLON)) {
-            return authority; // Port already exists
-        }
-        if (Protocol.HTTPS.name.equalsIgnoreCase(protocol)) {
-            return authority + Symbol.COLON + PORT._443;
-        }
-        return authority + Symbol.COLON + PORT._80;
-    }
-
-    /**
      * Converts an integer representation of an HTTP method to the corresponding {@link HttpMethod} enum.
      *
      * @param type The integer representation of the request method (e.g., 1 for GET, 2 for POST).
      * @return The matching {@link HttpMethod} enum.
      * @throws ValidateException if the type is not a valid or supported HTTP method.
      */
-    public HttpMethod valueOf(int type) {
+    protected HttpMethod valueOf(int type) {
         return switch (type) {
             case 1 -> HttpMethod.GET;
             case 2 -> HttpMethod.POST;
@@ -257,7 +248,8 @@ public abstract class AbstractStrategy implements Strategy {
      *
      * @param exchange The current server exchange.
      * @param context  The request context to be validated and enriched.
-     * @throws ValidateException if any standard parameter is missing or invalid.
+     * @throws ValidateException  if any standard parameter is missing or invalid.
+     * @throws SignatureException if the request signature is invalid.
      */
     protected void validateParameters(ServerWebExchange exchange, Context context) {
         Map<String, Object> params = context.getParameters();
@@ -272,21 +264,124 @@ public abstract class AbstractStrategy implements Strategy {
         }
         // Validate presence of core gateway parameters.
         if (StringKit.isBlank(Optional.ofNullable(params.get(Args.METHOD)).map(Object::toString).orElse(null))) {
-            throw new ValidateException(ErrorCode._100108);
+            throw new ValidateException(ErrorCode._100110);
         }
         if (StringKit.isBlank(Optional.ofNullable(params.get(Args.VERSION)).map(Object::toString).orElse(null))) {
-            throw new ValidateException(ErrorCode._100107);
+            throw new ValidateException(ErrorCode._100109);
         }
         if (StringKit.isBlank(Optional.ofNullable(params.get(Args.FORMAT)).map(Object::toString).orElse(null))) {
-            throw new ValidateException(ErrorCode._100111);
+            throw new ValidateException(ErrorCode._100113);
         }
-        String sign = Optional.ofNullable(params.get(Args.SIGN)).map(Object::toString).orElse(null);
-        if (StringKit.isNotBlank(sign)) {
-            context.setSign(Integer.valueOf(sign));
+        if (StringKit.isBlank(Optional.ofNullable(params.get(Args.SIGN)).map(Object::toString).orElse(null))) {
+            throw new ValidateException(ErrorCode._100114);
+        }
+        if (StringKit.isBlank(Optional.ofNullable(params.get(Args.TIMESTAMP)).map(Object::toString).orElse(null))) {
+            throw new ValidateException(ErrorCode._100115);
         }
 
+        // Validates if the provided client timestamp is within a 10-minute window of the current server time
+        String timestamp = String.valueOf(params.get(Args.TIMESTAMP));
+        this.isTimestampValid(timestamp);
+
+        // Validate the request signature to ensure integrity and authenticity.
+        String key = ObjectKit.isNotEmpty(params.get(Args.APIKEY)) ? String.valueOf(params.get(Args.APIKEY))
+                : String.valueOf(params.get(Args.METHOD));
+        if (!this.validateSign(
+                key + timestamp,
+                context.getHttpMethod().name(),
+                exchange.getRequest().getURI().getPath(),
+                context.getParameters())) {
+            throw new SignatureException(ErrorCode._100106);
+        }
         // Add additional derived parameters to the context.
         this.enrich(exchange, context);
+    }
+
+    /**
+     * Validates if a given timestamp string is within an acceptable time window.
+     * <p>
+     * The timestamp is expected to be a string representation of milliseconds since the Unix epoch. A valid timestamp
+     * must not be null, empty, non-numeric, or differ from the server's current time by more than a 10-minute window.
+     * </p>
+     *
+     * @param timestamp The timestamp string to validate.
+     * @throws ValidateException if the timestamp is null, empty, non-numeric, or outside the allowed time window.
+     */
+    public static void isTimestampValid(String timestamp) {
+        try {
+            // 1. Parse the client timestamp string to a long value
+            long clientTimestampMs = Long.parseLong(timestamp);
+
+            // 2. Get the current server time in milliseconds
+            long currentTimestampMs = DateKit.current();
+
+            // 3. Calculate the absolute difference in milliseconds
+            long absoluteDifferenceMs = Math.abs(currentTimestampMs - clientTimestampMs);
+
+            // 4. Check if the difference exceeds the 10-minute window
+            if (absoluteDifferenceMs > TimeUnit.MINUTES.toMillis(10)) {
+
+                // --- Aligned log output for debugging ---
+
+                // 1. Define the total width for the log box.
+                final int total_width = 49;
+                // 2. Calculate the inner content width.
+                final int inner_width = total_width - 2; // 47
+
+                // 3. Create a printf-style format string for left-alignment.
+                // "%-" pads the string on the right to achieve left-alignment.
+                // inner_width specifies the total width. "s" specifies the type (String).
+                String contentFormat = "%-" + inner_width + "s";
+
+                // 4. Create the content lines to be logged.
+                String srvContent = "  Server Time (ms): " + currentTimestampMs;
+                String cliContent = "  Client Time (ms): " + clientTimestampMs;
+                String difContent = "  Difference (ms) : " + absoluteDifferenceMs;
+
+                // 5. Log the formatted messages.
+                Logger.info("*************************************************");
+                // Use String.format to pad the content to 47 chars, then add `*`
+                Logger.info("| *" + String.format(contentFormat, cliContent) + "*");
+                Logger.info("| *" + String.format(contentFormat, srvContent) + "*");
+                Logger.info("| *" + String.format(contentFormat, difContent) + "*");
+                Logger.info("| *************************************************");
+
+                // --- End of log block ---
+                throw new ValidateException(ErrorCode._100107);
+            }
+        } catch (NumberFormatException e) {
+            // Failed: The timestamp string was not a valid long.
+            Logger.error("Validation failed: Timestamp format is not a valid millisecond long: " + timestamp);
+            throw new ValidateException(ErrorCode._100107);
+        }
+    }
+
+    /**
+     * Verifies if the signature of an API request is valid by recalculating it and comparing.
+     *
+     * @param key        The application secret key.
+     * @param httpMethod The HTTP request method (e.g., GET, POST).
+     * @param requestUrl The API request URL, without query parameters.
+     * @param params     All parameters received from the client as a Map, must include the 'sign' parameter.
+     * @return {@code true} if the signature is valid, {@code false} otherwise.
+     */
+    protected boolean validateSign(String key, String httpMethod, String requestUrl, Map<String, Object> params) {
+        if (params == null || !params.containsKey("sign")) {
+            return false; // Parameters are null or missing 'sign', verification fails.
+        }
+
+        // 1. Get the signature sent by the client
+        String clientSign = String.valueOf(params.get("sign"));
+
+        // 2. Prepare parameters for re-calculation (remove the 'sign' key)
+        Map<String, Object> paramsForSign = new TreeMap<>(params);
+        paramsForSign.remove("sign");
+
+        // 3. Re-calculate the signature using the server-side secret key
+        String serverSign = sign(key, httpMethod, requestUrl, paramsForSign);
+
+        // 4. Compare the signatures
+        return Objects.equals(clientSign, serverSign);
     }
 
     /**
@@ -327,6 +422,69 @@ public abstract class AbstractStrategy implements Strategy {
 
         context.setX_request_domain(domain);
         context.getParameters().put("x_request_domain", domain);
+    }
+
+    /**
+     * Generates an API signature using the HMAC-SHA256 algorithm.
+     *
+     * @param key        The application secret key.
+     * @param httpMethod The HTTP request method (e.g., GET, POST).
+     * @param requestUrl The API request URL, without query parameters.
+     * @param params     All request parameters as a Map, should not include the 'sign' parameter.
+     * @return The Base64 encoded signature string.
+     */
+    protected String sign(String key, String httpMethod, String requestUrl, Map<String, Object> params) {
+        // 1. Validate core parameters
+        if (key == null || key.isEmpty()) {
+            throw new IllegalArgumentException("App secret cannot be null or empty.");
+        }
+        if (httpMethod == null || requestUrl == null || params == null) {
+            throw new IllegalArgumentException("Http method, request url, and params cannot be null.");
+        }
+
+        // 2. Filter out empty parameters, URL Encode them, and sort them lexicographically
+        Map<String, String> sortedParams = new TreeMap<>();
+
+        for (Map.Entry<String, Object> entry : params.entrySet()) {
+            String value = String.valueOf(entry.getValue());
+            if (value != null && !value.isEmpty()) {
+                String encodedKey = UrlEncoder.encodeAll(entry.getKey(), Charset.UTF_8);
+                String encodedValue = UrlEncoder.encodeAll(value, Charset.UTF_8);
+                sortedParams.put(encodedKey, encodedValue);
+            }
+        }
+
+        // 3. Concatenate the parameter string
+        StringBuilder paramBuilder = new StringBuilder();
+        for (Map.Entry<String, String> entry : sortedParams.entrySet()) {
+            paramBuilder.append(entry.getKey()).append(entry.getValue());
+        }
+        String paramString = paramBuilder.toString();
+
+        // 4. Construct the final string to be signed
+        String stringToSign = httpMethod + "\n" + requestUrl + "\n" + paramString;
+
+        // 5. Use bus-crypto's HMac for HMAC-SHA256 signing and Base64 encoding
+        HMac hmac = Builder.hmac(Algorithm.HMACSHA256, key.getBytes(Charset.UTF_8));
+        byte[] signBytes = hmac.digest(stringToSign.getBytes(Charset.UTF_8));
+        return Base64.encode(signBytes);
+    }
+
+    /**
+     * Appends a default port to a given authority (host) if the port is missing.
+     *
+     * @param authority The host information, e.g., "example.com" or "example.com:8080".
+     * @param protocol  The protocol, either "http" or "https".
+     * @return The authority string, guaranteed to include a port (e.g., "example.com:443").
+     */
+    private static String appendPortIfMissing(String authority, String protocol) {
+        if (authority.contains(Symbol.COLON)) {
+            return authority; // Port already exists
+        }
+        if (Protocol.HTTPS.name.equalsIgnoreCase(protocol)) {
+            return authority + Symbol.COLON + PORT._443;
+        }
+        return authority + Symbol.COLON + PORT._80;
     }
 
 }

@@ -163,7 +163,7 @@ public class CompositeArgumentResolver implements HandlerMethodArgumentResolver 
 
         if (mpvs.isEmpty() && !methodParameter.hasParameterAnnotation(ModelAttribute.class)
                 && methodParameter.hasParameterAnnotation(Valid.class)) {
-            throw new ValidateException(ErrorCode._100116);
+            throw new ValidateException(ErrorCode._100117);
         }
 
         binder.bind(mpvs);

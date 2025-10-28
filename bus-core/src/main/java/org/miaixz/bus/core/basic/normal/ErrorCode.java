@@ -104,69 +104,74 @@ public class ErrorCode {
     public static final Errors _100105 = ErrorRegistry.builder().key("100105").value("Invalid format type").build();
 
     /**
+     * Request: Invalid sign.
+     */
+    public static final Errors _100106 = ErrorRegistry.builder().key("100106").value("Invalid sign").build();
+
+    /**
+     * Request: Invalid sign.
+     */
+    public static final Errors _100107 = ErrorRegistry.builder().key("100107").value("Invalid timestamp").build();
+
+    /**
      * Request: Missing token.
      */
-    public static final Errors _100106 = ErrorRegistry.builder().key("100106").value("Missing token").build();
+    public static final Errors _100108 = ErrorRegistry.builder().key("100108").value("Missing token").build();
 
     /**
      * Request: Missing version.
      */
-    public static final Errors _100107 = ErrorRegistry.builder().key("100107").value("Missing version").build();
+    public static final Errors _100109 = ErrorRegistry.builder().key("100109").value("Missing version").build();
 
     /**
      * Request: Missing method.
      */
-    public static final Errors _100108 = ErrorRegistry.builder().key("100108").value("Missing method").build();
+    public static final Errors _100110 = ErrorRegistry.builder().key("100110").value("Missing method").build();
 
     /**
      * Request: Missing language.
      */
-    public static final Errors _100109 = ErrorRegistry.builder().key("100109").value("Missing language").build();
+    public static final Errors _100111 = ErrorRegistry.builder().key("100111").value("Missing language").build();
 
     /**
      * Request: Missing fields.
      */
-    public static final Errors _100110 = ErrorRegistry.builder().key("100110").value("Missing fields").build();
+    public static final Errors _100112 = ErrorRegistry.builder().key("100112").value("Missing fields").build();
 
     /**
      * Request: Missing format.
      */
-    public static final Errors _100111 = ErrorRegistry.builder().key("100111").value("Missing format").build();
+    public static final Errors _100113 = ErrorRegistry.builder().key("100113").value("Missing format").build();
 
     /**
      * Request: Missing sign.
      */
-    public static final Errors _100112 = ErrorRegistry.builder().key("100112").value("Missing sign").build();
-
-    /**
-     * Request: Missing nonce.
-     */
-    public static final Errors _100113 = ErrorRegistry.builder().key("100113").value("Missing nonce").build();
+    public static final Errors _100114 = ErrorRegistry.builder().key("100114").value("Missing sign").build();
 
     /**
      * Request: Missing timestamp.
      */
-    public static final Errors _100114 = ErrorRegistry.builder().key("100114").value("Missing timestamp").build();
+    public static final Errors _100115 = ErrorRegistry.builder().key("100115").value("Missing timestamp").build();
 
     /**
      * Request: Missing sign (duplicate of 100112, should be reviewed).
      */
-    public static final Errors _100115 = ErrorRegistry.builder().key("100115").value("Missing sign").build();
+    public static final Errors _100116 = ErrorRegistry.builder().key("100116").value("Missing sign").build();
 
     /**
      * Request: Missing sign (duplicate of 100112, should be reviewed).
      */
-    public static final Errors _100116 = ErrorRegistry.builder().key("100116").value("Missing parameters").build();
+    public static final Errors _100117 = ErrorRegistry.builder().key("100117").value("Missing parameters").build();
 
     /**
      * Request: Invalid ApiKey.
      */
-    public static final Errors _100117 = ErrorRegistry.builder().key("100117").value("Invalid ApiKey").build();
+    public static final Errors _100118 = ErrorRegistry.builder().key("100118").value("Invalid ApiKey").build();
 
     /**
      * Request: Invalid verification code.
      */
-    public static final Errors _100118 = ErrorRegistry.builder().key("100118").value("Invalid verification code")
+    public static final Errors _100119 = ErrorRegistry.builder().key("100119").value("Invalid verification code")
             .build();
 
     /**
@@ -489,5 +494,11 @@ public class ErrorCode {
      * Request: Request timed out.
      */
     public static final Errors _100811 = ErrorRegistry.builder().key("100811").value("Request timed out").build();
+
+    /**
+     * Request: Abnormal tenant information processing.
+     */
+    public static final Errors _100812 = ErrorRegistry.builder().key("100812")
+            .value("Abnormal tenant information processing").build();
 
 }

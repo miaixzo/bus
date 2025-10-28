@@ -50,14 +50,14 @@ import java.util.*;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class OidcProvider extends AbstractProvider {
+public class OIDCProvider extends AbstractProvider {
 
     /**
      * Constructs a {@code MicrosoftCnProvider} with the specified context.
      *
      * @param context the authentication context
      */
-    public OidcProvider(Context context) {
+    public OIDCProvider(Context context) {
         super(context, Registry.OIDC);
     }
 
@@ -67,7 +67,7 @@ public class OidcProvider extends AbstractProvider {
      * @param context the authentication context
      * @param cache   the cache implementation
      */
-    public OidcProvider(Context context, CacheX cache) {
+    public OIDCProvider(Context context, CacheX cache) {
         super(context, Registry.OIDC, cache);
     }
 

@@ -45,8 +45,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
 /**
- * Global exception handling advice class. This class unifies the handling of various exceptions thrown in the
- * application and returns a consistent error response.
+ * Global exception handling advice class.
+ * <p>
+ * This class centralizes exception handling across the entire application, intercepting exceptions thrown by
+ * controllers and returning a consistent, structured error response to the client. It improves user experience and
+ * simplifies debugging by providing a unified error handling mechanism.
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -57,31 +61,42 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 public class BaseAdvice extends Controller {
 
     /**
-     * Initializes the data binder for all methods annotated with @RequestMapping. This method is executed before
-     * any @RequestMapping method.
+     * Initializes a data binder for all controller methods.
+     * <p>
+     * This method is called before any @RequestMapping method to allow for custom property editors, validators, etc.,
+     * to be registered. Currently, it is empty but can be implemented as needed.
+     * </p>
      *
      * @param binder the data binder to initialize
      */
     @InitBinder
     public void initBinder(WebDataBinder binder) {
-
+        // Can be used to register custom formatters, e.g., binder.registerCustomEditor(Date.class, new
+        // CustomDateEditor(...));
     }
 
     /**
-     * Binds values to the Model, making them accessible to all @RequestMapping methods globally.
+     * Adds attributes to the model that will be available to all @RequestMapping methods globally.
+     * <p>
+     * This method can be used to populate the model with common data, such as user information or application settings.
+     * Currently, it is empty but can be implemented as needed.
+     * </p>
      *
      * @param model the Model object to add attributes to
      */
     @ModelAttribute
     public void addAttributes(Model model) {
-
+        // Can be used to add global attributes, e.g., model.addAttribute("currentUser", getCurrentUser());
     }
 
     /**
-     * Global exception handler for all uncaught exceptions. This method processes any {@link Exception} that is not
-     * specifically handled by other exception handlers.
+     * Handles all uncaught exceptions that are not specifically handled by other methods in this class.
+     * <p>
+     * This is the fallback handler, ensuring that any unexpected exception results in a generic error response rather
+     * than a server error page.
+     * </p>
      *
-     * @param e the exception information
+     * @param e the caught exception
      * @return a unified error response object
      */
     @ResponseBody
@@ -92,14 +107,14 @@ public class BaseAdvice extends Controller {
     }
 
     /**
-     * Internal exception handler for {@link InternalException}.
+     * Handles {@link InternalException}, which typically indicates a system-level or internal logic error.
      *
-     * @param e the internal exception information
+     * @param e the caught InternalException
      * @return a unified error response object
      */
     @ResponseBody
     @ExceptionHandler(value = InternalException.class)
-    public Object InternalException(InternalException e) {
+    public Object internalException(InternalException e) {
         this.defaultExceptionHandler(e);
         if (StringKit.isBlank(e.getErrcode())) {
             return write(ErrorCode._100805);
@@ -108,9 +123,12 @@ public class BaseAdvice extends Controller {
     }
 
     /**
-     * Business exception handler for {@link BusinessException}. This handler typically triggers transaction rollback.
+     * Handles {@link BusinessException}, which represents errors in business logic.
+     * <p>
+     * This exception typically triggers a transaction rollback.
+     * </p>
      *
-     * @param e the business exception information
+     * @param e the caught BusinessException
      * @return a unified error response object
      */
     @ResponseBody
@@ -124,10 +142,9 @@ public class BaseAdvice extends Controller {
     }
 
     /**
-     * Crontab exception handler for {@link CrontabException}. This handles exceptions that occur during scheduled task
-     * execution.
+     * Handles {@link CrontabException}, which occurs during the execution of scheduled tasks.
      *
-     * @param e the crontab exception information
+     * @param e the caught CrontabException
      * @return a unified error response object
      */
     @ResponseBody
@@ -141,10 +158,9 @@ public class BaseAdvice extends Controller {
     }
 
     /**
-     * Validation exception handler for {@link ValidateException}. This handles exceptions related to parameter
-     * validation failures.
+     * Handles {@link ValidateException}, which is thrown when data validation fails.
      *
-     * @param e the validation exception information
+     * @param e the caught ValidateException
      * @return a unified error response object
      */
     @ResponseBody
@@ -158,10 +174,9 @@ public class BaseAdvice extends Controller {
     }
 
     /**
-     * Authorize exception handler for {@link ValidateException}. This handles exceptions related to parameter Authorize
-     * failures.
+     * Handles {@link AuthorizedException}, which is thrown when an authorization check fails.
      *
-     * @param e the validation exception information
+     * @param e the caught AuthorizedException
      * @return a unified error response object
      */
     @ResponseBody
@@ -175,9 +190,25 @@ public class BaseAdvice extends Controller {
     }
 
     /**
-     * Global handler for unchecked (runtime) exceptions.
+     * Handles {@link SignatureException}, which is thrown when a request signature (e.g., API signature) is invalid.
      *
-     * @param e the exception information
+     * @param e the caught SignatureException
+     * @return a unified error response object
+     */
+    @ResponseBody
+    @ExceptionHandler(value = SignatureException.class)
+    public Object signatureException(SignatureException e) {
+        this.defaultExceptionHandler(e);
+        if (StringKit.isBlank(e.getErrcode())) {
+            return write(ErrorCode._100106);
+        }
+        return write(e.getErrcode(), e.getErrmsg());
+    }
+
+    /**
+     * Handles {@link UncheckedException}, a wrapper for runtime exceptions that need to be handled in a specific way.
+     *
+     * @param e the caught UncheckedException
      * @return a unified error response object
      */
     @ResponseBody
@@ -191,9 +222,9 @@ public class BaseAdvice extends Controller {
     }
 
     /**
-     * Global handler for I/O or other relevant exceptions.
+     * Handles {@link RelevantException}, often used for I/O or other external system-related errors.
      *
-     * @param e the exception information
+     * @param e the caught RelevantException
      * @return a unified error response object
      */
     @ResponseBody
@@ -207,10 +238,10 @@ public class BaseAdvice extends Controller {
     }
 
     /**
-     * HTTP request method not supported exception handler for {@link HttpRequestMethodNotSupportedException}. This
-     * handles cases where the client uses an unsupported HTTP method for a given endpoint.
+     * Handles {@link HttpRequestMethodNotSupportedException}, which occurs when the HTTP method is not supported for
+     * the requested endpoint.
      *
-     * @param e the HTTP request method not supported exception information
+     * @param e the caught HttpRequestMethodNotSupportedException
      * @return a unified error response object
      */
     @ResponseBody
@@ -221,10 +252,10 @@ public class BaseAdvice extends Controller {
     }
 
     /**
-     * HTTP media type not supported exception handler for {@link HttpMediaTypeNotSupportedException}. This handles
-     * cases where the client sends a request with an unsupported media type.
+     * Handles {@link HttpMediaTypeNotSupportedException}, which occurs when the request's Content-Type is not
+     * supported.
      *
-     * @param e the HTTP media type not supported exception information
+     * @param e the caught HttpMediaTypeNotSupportedException
      * @return a unified error response object
      */
     @ResponseBody
@@ -235,10 +266,9 @@ public class BaseAdvice extends Controller {
     }
 
     /**
-     * No handler found exception handler for {@link NoHandlerFoundException}. This handles cases where no handler
-     * (e.g., controller method) is found for a given request.
+     * Handles {@link NoHandlerFoundException}, which occurs when no controller method is found for the requested URL.
      *
-     * @param e the no handler found exception information
+     * @param e the caught NoHandlerFoundException
      * @return a unified error response object
      */
     @ResponseBody
@@ -252,7 +282,7 @@ public class BaseAdvice extends Controller {
      * Parameter binding exception handler for {@link MethodArgumentNotValidException} and {@link BindException}. This
      * handles exceptions that occur during parameter binding and validation.
      *
-     * @param e the parameter binding exception information
+     * @param e the caught validation exception
      * @return a unified error response object
      */
     @ResponseBody
@@ -263,18 +293,22 @@ public class BaseAdvice extends Controller {
     }
 
     /**
-     * Default exception handler for logging and delegating to an external error handling service. This method is called
-     * before the business processor handles the request. It can be used for login verification, permission
-     * interception, request throttling, etc.
+     * A default exception handler that logs the exception and delegates to a custom {@link ErrorAdvice} service.
+     * <p>
+     * This method is called by all specific exception handlers to ensure consistent logging and to allow for pluggable
+     * error handling logic. It is wrapped in a try-catch block to prevent failures in the error handling logic itself
+     * from causing a cascade of errors.
+     * </p>
      *
-     * @param ex the exception object
+     * @param ex the exception to handle
      */
     public void defaultExceptionHandler(Exception ex) {
         try {
-            Logger.error("<==     Errors: " + ex.getMessage());
+            Logger.error("<==     Errors: " + ex.getMessage(), ex);
             Instances.singletion(ErrorAdvice.class).handler(ex);
         } catch (RuntimeException ignore) {
-            // ignore
+            // Prevents the exception handler itself from crashing the application.
+            Logger.error("Exception occurred in the defaultExceptionHandler itself.", ignore);
         }
     }
 

@@ -58,7 +58,7 @@ import org.miaixz.bus.auth.nimble.meituan.MeituanProvider;
 import org.miaixz.bus.auth.nimble.mi.MiProvider;
 import org.miaixz.bus.auth.nimble.microsoft.MicrosoftCnProvider;
 import org.miaixz.bus.auth.nimble.microsoft.MicrosoftProvider;
-import org.miaixz.bus.auth.nimble.oidc.OidcProvider;
+import org.miaixz.bus.auth.nimble.oidc.OIDCProvider;
 import org.miaixz.bus.auth.nimble.okta.OktaProvider;
 import org.miaixz.bus.auth.nimble.oschina.OschinaProvider;
 import org.miaixz.bus.auth.nimble.pinterest.PinterestProvider;
@@ -806,7 +806,7 @@ public enum Registry implements Complex {
 
         @Override
         public Class<? extends AbstractProvider> getTargetClass() {
-            return OidcProvider.class;
+            return OIDCProvider.class;
         }
     },
     /**

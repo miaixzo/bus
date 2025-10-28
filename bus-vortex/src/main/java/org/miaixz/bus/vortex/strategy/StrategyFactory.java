@@ -131,8 +131,7 @@ public class StrategyFactory {
      */
     public boolean isApplicableToMcp(Strategy strategy) {
         // MCP requests are simple proxies; they don't need complex validation like authorization or licensing.
-        return !(strategy instanceof AuthorizeStrategy || strategy instanceof CipherStrategy
-                || strategy instanceof LimitStrategy);
+        return !(strategy instanceof AuthorizeStrategy || strategy instanceof LimitStrategy);
     }
 
     /**

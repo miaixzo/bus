@@ -51,7 +51,7 @@ import reactor.core.publisher.Mono;
  * @author Kimi Liu
  * @since Java 17+
  */
-@Order(Ordered.HIGHEST_PRECEDENCE + 11)
+@Order(Ordered.HIGHEST_PRECEDENCE + 7)
 public class FormatStrategy extends AbstractStrategy {
 
     @Override

@@ -159,18 +159,6 @@ public class VortexConfiguration {
     }
 
     /**
-     * Provides the CipherStrategy bean. This strategy handles request decryption and response encryption based on
-     * configured properties.
-     *
-     * @param vortexProperties The Vortex configuration properties, containing decryption and encryption settings.
-     * @return A new instance of CipherStrategy.
-     */
-    @Bean
-    public CipherStrategy cipherStrategy(VortexProperties vortexProperties) {
-        return new CipherStrategy(vortexProperties.getDecrypt(), vortexProperties.getEncrypt());
-    }
-
-    /**
      * Provides the AuthorizeStrategy bean. This strategy performs access authorization based on tokens, API keys, and
      * asset configurations.
      *
