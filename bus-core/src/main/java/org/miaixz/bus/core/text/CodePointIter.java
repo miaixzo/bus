@@ -35,22 +35,9 @@ import java.util.Iterator;
  *
  * @author Kimi Liu
  * @since Java 17+
+ * @param text The string to iterate over.
  */
-public class CodePointIter implements Iterable<Integer> {
-
-    /**
-     * The string to iterate over.
-     */
-    final String text;
-
-    /**
-     * Constructs a new {@code CodePointIter} with the specified string.
-     *
-     * @param text The string to iterate over.
-     */
-    public CodePointIter(final String text) {
-        this.text = text;
-    }
+public record CodePointIter(String text) implements Iterable<Integer> {
 
     @Override
     public Iterator<Integer> iterator() {

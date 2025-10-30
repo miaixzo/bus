@@ -42,6 +42,7 @@ import org.miaixz.bus.core.net.PORT;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.net.url.UrlEncoder;
 import org.miaixz.bus.core.xyz.DateKit;
+import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.crypto.Builder;
@@ -187,6 +188,74 @@ public abstract class AbstractStrategy implements Strategy {
     }
 
     /**
+     * Extracts the authentication token from the incoming request.
+     *
+     * <p>
+     * The token extraction follows a specific order of precedence to ensure compatibility with both standard and legacy
+     * authentication methods:
+     * </p>
+     *
+     * <ol>
+     * <li><b>Standard Authorization Header:</b> It first checks for the standard {@code Authorization: Bearer <token>}
+     * header. This is the preferred and most secure method.</li>
+     * <li><b>Custom Header for Backward Compatibility:</b> If the standard header is not found, it searches for a
+     * custom header, {@code X-Access-Token}. This check is performed against a list of common case variations (e.g.,
+     * {@code X_ACCESS_TOKEN}, {@code x_access_token}) to accommodate different client implementations.</li>
+     * <li><b>Request Parameter as Fallback:</b> As a final fallback, if no token is found in the headers, the method
+     * searches for the token in the request parameters (query string) using the same set of keys as the custom header.
+     * </li>
+     * </ol>
+     *
+     * @param context The incoming {@link ServerHttpRequest} context containing headers and parameters.
+     * @return The extracted token string, or {@code null} if no token is found in any of the checked locations.
+     */
+    protected String getToken(Context context) {
+        // 1. Prioritize the standard `Authorization` header with the `Bearer` scheme.
+        String authorization = context.getHeaders().get("Authorization");
+        if (StringKit.isNotEmpty(authorization) && authorization.startsWith("Bearer ")) {
+            return authorization.substring(7);
+        }
+
+        // 2. Check for a custom `X-Access-Token` header for backward compatibility.
+        final String[] keys = { Args.X_ACCESS_TOKEN, Args.X_ACCESS_TOKEN.toUpperCase(),
+                Args.X_ACCESS_TOKEN.toLowerCase(), "X_Access_Token", "X_ACCESS_TOKEN", "x_access_token" };
+        String token = MapKit.getFirstNonNull(context.getHeaders(), keys);
+        if (StringKit.isNotEmpty(token)) {
+            return token;
+        }
+
+        // 3. If not found in headers, search in request parameters as a fallback.
+        if (StringKit.isBlank(token)) {
+            token = Optional.ofNullable(MapKit.getFirstNonNull(context.getParameters(), keys)).map(Object::toString)
+                    .orElse(null);
+        }
+
+        return token;
+    }
+
+    /**
+     * Searches for an API key in a predefined list of request parameters and headers.
+     *
+     * @param context The request context.
+     * @return The found API key, or {@code null} if not present.
+     */
+    protected String getApiKey(Context context) {
+        final String[] keys = { "apiKey", "apikey", "api_key", "x_api_key", "api_id", "x_api_id", "X-API-ID",
+                "X-API-KEY", "API-KEY", "API-ID" };
+
+        // First, search in request parameters.
+        String apiKey = Optional.ofNullable(MapKit.getFirstNonNull(context.getParameters(), keys)).map(Object::toString)
+                .orElse(null);
+
+        // If not found, search in request headers.
+        if (StringKit.isBlank(apiKey)) {
+            apiKey = MapKit.getFirstNonNull(context.getHeaders(), keys);
+        }
+
+        return apiKey;
+    }
+
+    /**
      * Converts an integer representation of an HTTP method to the corresponding {@link HttpMethod} enum.
      *
      * @param type The integer representation of the request method (e.g., 1 for GET, 2 for POST).
@@ -286,11 +355,7 @@ public abstract class AbstractStrategy implements Strategy {
         // Validate the request signature to ensure integrity and authenticity.
         String key = ObjectKit.isNotEmpty(params.get(Args.APIKEY)) ? String.valueOf(params.get(Args.APIKEY))
                 : String.valueOf(params.get(Args.METHOD));
-        if (!this.validateSign(
-                key + timestamp,
-                context.getHttpMethod().name(),
-                exchange.getRequest().getURI().getPath(),
-                context.getParameters())) {
+        if (!this.validateSign(key + timestamp, context.getHttpMethod().name(), context.getParameters())) {
             throw new SignatureException(ErrorCode._100106);
         }
         // Add additional derived parameters to the context.
@@ -341,10 +406,10 @@ public abstract class AbstractStrategy implements Strategy {
                 // 5. Log the formatted messages.
                 Logger.info("*************************************************");
                 // Use String.format to pad the content to 47 chars, then add `*`
-                Logger.info("| *" + String.format(contentFormat, cliContent) + "*");
-                Logger.info("| *" + String.format(contentFormat, srvContent) + "*");
-                Logger.info("| *" + String.format(contentFormat, difContent) + "*");
-                Logger.info("| *************************************************");
+                Logger.info("*" + String.format(contentFormat, cliContent) + "*");
+                Logger.info("*" + String.format(contentFormat, srvContent) + "*");
+                Logger.info("*" + String.format(contentFormat, difContent) + "*");
+                Logger.info("*************************************************");
 
                 // --- End of log block ---
                 throw new ValidateException(ErrorCode._100107);
@@ -361,24 +426,25 @@ public abstract class AbstractStrategy implements Strategy {
      *
      * @param key        The application secret key.
      * @param httpMethod The HTTP request method (e.g., GET, POST).
-     * @param requestUrl The API request URL, without query parameters.
      * @param params     All parameters received from the client as a Map, must include the 'sign' parameter.
      * @return {@code true} if the signature is valid, {@code false} otherwise.
      */
-    protected boolean validateSign(String key, String httpMethod, String requestUrl, Map<String, Object> params) {
+    protected boolean validateSign(String key, String httpMethod, Map<String, Object> params) {
         if (params == null || !params.containsKey("sign")) {
             return false; // Parameters are null or missing 'sign', verification fails.
         }
 
         // 1. Get the signature sent by the client
         String clientSign = String.valueOf(params.get("sign"));
+        Logger.info("==>Client Sign:" + clientSign);
 
         // 2. Prepare parameters for re-calculation (remove the 'sign' key)
         Map<String, Object> paramsForSign = new TreeMap<>(params);
         paramsForSign.remove("sign");
 
         // 3. Re-calculate the signature using the server-side secret key
-        String serverSign = sign(key, httpMethod, requestUrl, paramsForSign);
+        String serverSign = sign(key, httpMethod, paramsForSign);
+        Logger.info("==>Server Sign:" + serverSign);
 
         // 4. Compare the signatures
         return Objects.equals(clientSign, serverSign);
@@ -429,16 +495,15 @@ public abstract class AbstractStrategy implements Strategy {
      *
      * @param key        The application secret key.
      * @param httpMethod The HTTP request method (e.g., GET, POST).
-     * @param requestUrl The API request URL, without query parameters.
      * @param params     All request parameters as a Map, should not include the 'sign' parameter.
      * @return The Base64 encoded signature string.
      */
-    protected String sign(String key, String httpMethod, String requestUrl, Map<String, Object> params) {
+    protected String sign(String key, String httpMethod, Map<String, Object> params) {
         // 1. Validate core parameters
         if (key == null || key.isEmpty()) {
             throw new IllegalArgumentException("App secret cannot be null or empty.");
         }
-        if (httpMethod == null || requestUrl == null || params == null) {
+        if (httpMethod == null || params == null) {
             throw new IllegalArgumentException("Http method, request url, and params cannot be null.");
         }
 
@@ -459,10 +524,9 @@ public abstract class AbstractStrategy implements Strategy {
         for (Map.Entry<String, String> entry : sortedParams.entrySet()) {
             paramBuilder.append(entry.getKey()).append(entry.getValue());
         }
-        String paramString = paramBuilder.toString();
 
         // 4. Construct the final string to be signed
-        String stringToSign = httpMethod + "\n" + requestUrl + "\n" + paramString;
+        String stringToSign = httpMethod + "\n" + paramBuilder;
 
         // 5. Use bus-crypto's HMac for HMAC-SHA256 signing and Base64 encoding
         HMac hmac = Builder.hmac(Algorithm.HMACSHA256, key.getBytes(Charset.UTF_8));
