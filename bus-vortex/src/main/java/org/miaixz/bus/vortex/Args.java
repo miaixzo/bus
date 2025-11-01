@@ -31,6 +31,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+import org.miaixz.bus.vortex.strategy.QualiferStrategy;
+import org.miaixz.bus.vortex.strategy.RequestStrategy;
+import org.miaixz.bus.vortex.strategy.VettingStrategy;
+import org.springframework.http.server.reactive.ServerHttpRequest;
 
 /**
  * A central repository for constants defining the gateway's public API contract and for binding configuration
@@ -41,8 +45,9 @@ import lombok.experimental.SuperBuilder;
  * binding from application properties (e.g., YAML or .properties files) using {@code @ConfigurationProperties}.
  *
  * @author Kimi Liu
- * @see org.miaixz.bus.vortex.strategy.AuthorizeStrategy
- * @see org.miaixz.bus.vortex.strategy.RequestStrategy
+ * @see QualiferStrategy
+ * @see VettingStrategy
+ * @see RequestStrategy
  * @since Java 17+
  */
 @Getter
@@ -53,73 +58,118 @@ public class Args {
 
     /**
      * The mandatory parameter name for the logical API method to be invoked (e.g., "user.getProfile").
-     * 
-     * @see org.miaixz.bus.vortex.strategy.AuthorizeStrategy
+     *
+     * @see QualiferStrategy
      */
     public static final String METHOD = "method";
     /**
      * The parameter name for specifying the desired response format (e.g., "json", "xml").
-     * 
-     * @see org.miaixz.bus.vortex.strategy.AuthorizeStrategy
+     *
+     * @see QualiferStrategy
      */
     public static final String FORMAT = "format";
     /**
      * The parameter name for specifying the version of the requested API method (e.g., "v1", "1.0.0").
-     * 
-     * @see org.miaixz.bus.vortex.strategy.AuthorizeStrategy
+     *
+     * @see QualiferStrategy
      */
     public static final String VERSION = "v";
     /**
-     * The parameter name for the request signature, used for validation and to indicate encryption status.
+     * The parameter name for the request signature, used for validation and integrity checks.
      *
-     * @see org.miaixz.bus.vortex.strategy.RequestStrategy
+     * @see VettingStrategy
      */
     public static final String SIGN = "sign";
     /**
-     * The parameter name for the request signature, used for validation and to indicate encryption status.
+     * The parameter name for the request timestamp (milliseconds since epoch), used for replay attack prevention.
      *
-     * @see org.miaixz.bus.vortex.strategy.RequestStrategy
+     * @see VettingStrategy
      */
     public static final String TIMESTAMP = "timestamp";
     /**
-     * The parameter name for the request signature, used for validation and to indicate encryption status.
+     * The parameter name for the client's API key, used for identification and signature validation.
      *
-     * @see org.miaixz.bus.vortex.strategy.RequestStrategy
+     * @see VettingStrategy
      */
     public static final String APIKEY = "apiKey";
     /**
      * The HTTP header name for the bearer access token (e.g., JWT).
-     * 
-     * @see org.miaixz.bus.vortex.strategy.AuthorizeStrategy
+     *
+     * @see QualiferStrategy
      */
     public static final String X_ACCESS_TOKEN = "X-Access-Token";
     /**
      * The HTTP header name for identifying the client channel (e.g., "web", "app", "mobile").
-     * 
-     * @see org.miaixz.bus.vortex.strategy.AuthorizeStrategy
+     *
+     * @see QualiferStrategy
      */
     public static final String X_REMOTE_CHANNEL = "x_remote_channel";
 
     /**
      * The base URI path for standard RESTful API requests.
-     * 
+     *
      * @see org.miaixz.bus.vortex.strategy.RequestStrategy
      */
     public static final String REST_PATH_PREFIX = "/router/rest";
 
     /**
      * The base URI path for requests to the MCP (Miaixz Communication Protocol) hub.
-     * 
+     *
      * @see org.miaixz.bus.vortex.strategy.RequestStrategy
      */
     public static final String MCP_PATH_PREFIX = "/router/mcp";
 
     /**
      * The base URI path for requests to be forwarded to a Message Queue.
-     * 
+     *
      * @see org.miaixz.bus.vortex.strategy.RequestStrategy
      */
     public static final String MQ_PATH_PREFIX = "/router/mq";
+
+    /**
+     * A constant for a default API version, e.g., "1.0".
+     */
+    public static final String DEFAULT_VERSION = "1.0";
+
+    /**
+     * Checks if the given request is a RESTful API proxy request based on its path.
+     *
+     * @param request The incoming server request.
+     * @return {@code true} if the request path starts with the REST prefix, {@code false} otherwise.
+     */
+    public static boolean isRestRequest(ServerHttpRequest request) {
+        return request.getURI().getPath().startsWith(Args.REST_PATH_PREFIX);
+    }
+
+    /**
+     * Checks if the given request is an MCP (Miaixz Communication Protocol) proxy request based on its path.
+     *
+     * @param request The incoming server request.
+     * @return {@code true} if the request path starts with the MCP prefix, {@code false} otherwise.
+     */
+    public static boolean isMcpRequest(ServerHttpRequest request) {
+        return request.getURI().getPath().startsWith(Args.MCP_PATH_PREFIX);
+    }
+
+    /**
+     * Checks if the given request is a Message Queue (MQ) proxy request based on its path.
+     *
+     * @param request The incoming server request.
+     * @return {@code true} if the request path starts with the MQ prefix, {@code false} otherwise.
+     */
+    public static boolean isMqRequest(ServerHttpRequest request) {
+        return request.getURI().getPath().startsWith(Args.MQ_PATH_PREFIX);
+    }
+
+    /**
+     * Checks if the given request is a non-standard gateway request (i.e., not REST, MCP, or MQ).
+     *
+     * @param request The incoming server request.
+     * @return {@code true} if the request path does not match any known router prefix, {@code false} otherwise.
+     */
+    public static boolean isUrlRequest(ServerHttpRequest request) {
+        return !isRestRequest(request) && !isMcpRequest(request) && !isMqRequest(request);
+    }
 
     /**
      * A configuration properties model for rate limiting settings, typically bound from application properties under a
@@ -136,15 +186,15 @@ public class Args {
     }
 
     /**
-     * A configuration properties model for general security settings, typically bound from application properties under
-     * a prefix like {@code vortex.security}.
+     * A configuration properties model for mocking settings, typically bound from application properties under a prefix
+     * like {@code vortex.mock}.
      */
     @Getter
     @Setter
     public static class Mock {
 
         /**
-         * Whether general security features are enabled.
+         * Whether mocking is globally enabled (e.g., to return dummy data instead of calling downstream services).
          */
         private boolean enabled;
 

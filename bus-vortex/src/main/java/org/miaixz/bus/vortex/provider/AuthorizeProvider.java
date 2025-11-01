@@ -36,14 +36,14 @@ import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.magic.Delegate;
 import org.miaixz.bus.vortex.magic.ErrorCode;
 import org.miaixz.bus.vortex.magic.Principal;
-import org.miaixz.bus.vortex.strategy.AuthorizeStrategy;
+import org.miaixz.bus.vortex.strategy.QualiferStrategy;
 
 /**
  * A Service Provider Interface (SPI) for performing authentication and authorization.
  * <p>
  * This interface defines the contract for validating credentials. Implementations of this interface should contain the
  * actual business logic for checking tokens or API keys against a database, an authentication server, or any other
- * identity provider. An instance of this provider is injected into the {@link AuthorizeStrategy}.
+ * identity provider. An instance of this provider is injected into the {@link QualiferStrategy}.
  *
  * @author Kimi Liu
  * @since Java 17+

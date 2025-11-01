@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.PORT;
 import org.miaixz.bus.vortex.*;
 import org.miaixz.bus.vortex.filter.PrimaryFilter;
@@ -159,7 +160,19 @@ public class VortexConfiguration {
     }
 
     /**
-     * Provides the AuthorizeStrategy bean. This strategy performs access authorization based on tokens, API keys, and
+     * Provides the VettingStrategy bean. This strategy performs access authorization based on tokens, API keys, and
+     * asset configurations.
+     *
+     * 
+     * @return A new instance of VettingStrategy.
+     */
+    @Bean
+    public VettingStrategy vettingStrategy() {
+        return new VettingStrategy();
+    }
+
+    /**
+     * Provides the QualiferStrategy bean. This strategy performs access authorization based on tokens, API keys, and
      * asset configurations.
      *
      * @param authorizeProvider The AuthorizeProvider for handling authorization logic.
@@ -167,8 +180,8 @@ public class VortexConfiguration {
      * @return A new instance of AuthorizeStrategy.
      */
     @Bean
-    public AuthorizeStrategy authorizeStrategy(AuthorizeProvider authorizeProvider, AssetsRegistry assetsRegistry) {
-        return new AuthorizeStrategy(authorizeProvider, assetsRegistry);
+    public QualiferStrategy qualiferStrategy(AuthorizeProvider authorizeProvider, AssetsRegistry assetsRegistry) {
+        return new QualiferStrategy(authorizeProvider, assetsRegistry);
     }
 
     /**
@@ -235,8 +248,9 @@ public class VortexConfiguration {
         VortexHandler vortexHandler = new VortexHandler(handlers, routers);
 
         // Configure the router to handle requests at the specified path.
-        RouterFunction<ServerResponse> routerFunction = RouterFunctions
-                .route(RequestPredicates.path(this.properties.getPath() + "/**"), vortexHandler::handle);
+        RouterFunction<ServerResponse> routerFunction = RouterFunctions.route(
+                RequestPredicates.path(this.properties.getPath() + Symbol.SLASH + Symbol.STAR + Symbol.STAR),
+                vortexHandler::handle);
 
         // Configure codecs, setting the maximum in-memory size.
         ServerCodecConfigurer configurer = ServerCodecConfigurer.create();

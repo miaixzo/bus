@@ -33,7 +33,6 @@ import java.util.stream.Collectors;
 import org.miaixz.bus.vortex.Args;
 import org.miaixz.bus.vortex.Strategy;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
-import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.web.server.ServerWebExchange;
 
 /**
@@ -66,36 +65,6 @@ public class StrategyFactory {
     }
 
     /**
-     * Checks if the given request is an MCP (Miaixz Communication Protocol) proxy request based on its path.
-     *
-     * @param request The incoming server request.
-     * @return {@code true} if the request path starts with the MCP prefix, {@code false} otherwise.
-     */
-    public static boolean isRestRequest(ServerHttpRequest request) {
-        return request.getURI().getPath().startsWith(Args.REST_PATH_PREFIX);
-    }
-
-    /**
-     * Checks if the given request is an MCP (Miaixz Communication Protocol) proxy request based on its path.
-     *
-     * @param request The incoming server request.
-     * @return {@code true} if the request path starts with the MCP prefix, {@code false} otherwise.
-     */
-    public static boolean isMcpRequest(ServerHttpRequest request) {
-        return request.getURI().getPath().startsWith(Args.MCP_PATH_PREFIX);
-    }
-
-    /**
-     * Checks if the given request is an MCP (Miaixz Communication Protocol) proxy request based on its path.
-     *
-     * @param request The incoming server request.
-     * @return {@code true} if the request path starts with the MCP prefix, {@code false} otherwise.
-     */
-    public static boolean isMqRequest(ServerHttpRequest request) {
-        return request.getURI().getPath().startsWith(Args.MQ_PATH_PREFIX);
-    }
-
-    /**
      * Returns the appropriate, pre-calculated list of strategies for the given request.
      * <p>
      * This method efficiently selects a strategy chain by checking the request's path. It does not perform any
@@ -105,17 +74,22 @@ public class StrategyFactory {
      * @return An ordered, unmodifiable list of {@link Strategy} instances to be executed.
      */
     public List<Strategy> getStrategiesFor(ServerWebExchange exchange) {
-        // 1. MCP requests are identified by a unique path prefix and have a minimal, specialized chain.
-        if (isMcpRequest(exchange.getRequest())) {
+        // 1. Url requests are identified by a unique path segment and have a minimal, specialized chain.
+        if (Args.isUrlRequest(exchange.getRequest())) {
+            return this.strategies.stream().filter(this::isApplicableToUrl).collect(Collectors.toUnmodifiableList());
+        }
+
+        // 2. MCP requests are identified by a unique path prefix and have a minimal, specialized chain.
+        if (Args.isMcpRequest(exchange.getRequest())) {
             return this.strategies.stream().filter(this::isApplicableToMcp).collect(Collectors.toUnmodifiableList());
         }
 
-        // 2. Currently, MQ requests are not distinguished by path and fall through to the default.
-        if (isMqRequest(exchange.getRequest())) {
+        // 3. Currently, MQ requests are not distinguished by path and fall through to the default.
+        if (Args.isMqRequest(exchange.getRequest())) {
             return this.strategies.stream().filter(this::isApplicableToMq).collect(Collectors.toUnmodifiableList());
         }
 
-        // 3. For all other requests (e.g., REST), apply the full, default strategy chain.
+        // 4. For all other requests (e.g., REST), apply the full, default strategy chain.
         return this.strategies;
     }
 
@@ -131,7 +105,7 @@ public class StrategyFactory {
      */
     public boolean isApplicableToMcp(Strategy strategy) {
         // MCP requests are simple proxies; they don't need complex validation like authorization or licensing.
-        return !(strategy instanceof AuthorizeStrategy || strategy instanceof LimitStrategy);
+        return !(strategy instanceof QualiferStrategy || strategy instanceof LimitStrategy);
     }
 
     /**
@@ -147,6 +121,21 @@ public class StrategyFactory {
         // Example: MQ requests might have their own authorization logic but share others.
         // For now, we assume all strategies apply to MQ, but this can be customized.
         return true;
+    }
+
+    /**
+     * Determines if a strategy is applicable to MCP requests.
+     * <p>
+     * MCP requests are typically simple, stateless proxies and should bypass most business-logic-heavy strategies to
+     * remain lightweight and fast.
+     *
+     * @param strategy The strategy to check.
+     * @return {@code false} if the strategy is one of the business-logic strategies to be skipped for MCP, {@code true}
+     *         otherwise.
+     */
+    public boolean isApplicableToUrl(Strategy strategy) {
+        // MCP requests are simple proxies; they don't need complex validation like authorization or licensing.
+        return !(strategy instanceof QualiferStrategy || strategy instanceof LimitStrategy);
     }
 
 }

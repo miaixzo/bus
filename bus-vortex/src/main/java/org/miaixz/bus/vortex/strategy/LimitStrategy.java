@@ -56,7 +56,7 @@ import reactor.core.publisher.Mono;
  * @see LimiterRegistry
  * @since Java 17+
  */
-@Order(Ordered.HIGHEST_PRECEDENCE + 5)
+@Order(Ordered.HIGHEST_PRECEDENCE + 4)
 public class LimitStrategy extends AbstractStrategy {
 
     /**

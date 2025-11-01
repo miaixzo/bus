@@ -51,7 +51,7 @@ import reactor.core.publisher.Mono;
  * @author Kimi Liu
  * @since Java 17+
  */
-@Order(Ordered.HIGHEST_PRECEDENCE + 7)
+@Order(Ordered.HIGHEST_PRECEDENCE + 5)
 public class FormatStrategy extends AbstractStrategy {
 
     @Override
@@ -105,8 +105,8 @@ public class FormatStrategy extends AbstractStrategy {
                     String bodyString = new String(allBytes, Charset.UTF_8);
 
                     // Explicitly use XML provider and media type
-                    Provider xmlProvider = Formats.XML.getProvider();
-                    String xmlBody = xmlProvider.serialize(bodyString);
+                    Provider provider = Formats.XML.getProvider();
+                    String xmlBody = provider.serialize(bodyString);
                     getDelegate().getHeaders().setContentType(Formats.XML.getMediaType());
 
                     // Log TRACE (if enabled)

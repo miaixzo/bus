@@ -780,6 +780,17 @@ public class ContextBuilder extends WebUtils {
         }
     }
 
+    public static Authorize setAuthorize(String id) {
+        ContextBuilder.setProvider(new ContextProvider() {
+
+            @Override
+            public Authorize getAuthorize() {
+                return Authorize.builder().x_tenant_id(id).build();
+            }
+        });
+        return getAuthorize();
+    }
+
     /**
      * Gets the tenant ID from various sources with a defined priority: custom provider > user authorization object >
      * header &gt; parameter &gt; JSON body.
