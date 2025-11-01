@@ -74,18 +74,19 @@ public class StrategyFactory {
      * @return An ordered, unmodifiable list of {@link Strategy} instances to be executed.
      */
     public List<Strategy> getStrategiesFor(ServerWebExchange exchange) {
+        String path = exchange.getRequest().getPath().value();
         // 1. Url requests are identified by a unique path segment and have a minimal, specialized chain.
-        if (Args.isUrlRequest(exchange.getRequest())) {
-            return this.strategies.stream().filter(this::isApplicableToUrl).collect(Collectors.toUnmodifiableList());
+        if (Args.isCstRequest(path)) {
+            return this.strategies.stream().filter(this::isApplicableToCst).collect(Collectors.toUnmodifiableList());
         }
 
         // 2. MCP requests are identified by a unique path prefix and have a minimal, specialized chain.
-        if (Args.isMcpRequest(exchange.getRequest())) {
+        if (Args.isMcpRequest(path)) {
             return this.strategies.stream().filter(this::isApplicableToMcp).collect(Collectors.toUnmodifiableList());
         }
 
         // 3. Currently, MQ requests are not distinguished by path and fall through to the default.
-        if (Args.isMqRequest(exchange.getRequest())) {
+        if (Args.isMqRequest(path)) {
             return this.strategies.stream().filter(this::isApplicableToMq).collect(Collectors.toUnmodifiableList());
         }
 
@@ -133,9 +134,9 @@ public class StrategyFactory {
      * @return {@code false} if the strategy is one of the business-logic strategies to be skipped for MCP, {@code true}
      *         otherwise.
      */
-    public boolean isApplicableToUrl(Strategy strategy) {
+    public boolean isApplicableToCst(Strategy strategy) {
         // MCP requests are simple proxies; they don't need complex validation like authorization or licensing.
-        return !(strategy instanceof QualiferStrategy || strategy instanceof LimitStrategy);
+        return true;
     }
 
 }

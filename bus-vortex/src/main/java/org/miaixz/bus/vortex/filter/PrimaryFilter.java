@@ -30,6 +30,7 @@ package org.miaixz.bus.vortex.filter;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.vortex.Args;
 import org.miaixz.bus.vortex.Context;
 import org.miaixz.bus.vortex.Strategy;
 import org.miaixz.bus.vortex.magic.ErrorCode;
@@ -92,18 +93,14 @@ public class PrimaryFilter extends AbstractFilter {
      */
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-        // Get the request path. This method automatically excludes query parameters (?page=1).
+        // 1. Get the request path. This method automatically excludes query parameters (?page=1).
         String path = exchange.getRequest().getPath().value();
+        Logger.info("==>     Filter: Request to path: {} ", path);
 
-        // 1. Remove trailing slash to treat /router/rest and /router/rest/ as the same.
-        if (path.endsWith("/") && path.length() > 1) {
-            path = path.substring(0, path.length() - 1);
-        }
-
-        // 2. Check if the normalized request path is in the whitelist.
-        // This ensures only exact matches are allowed, e.g., '/router/rest', while '/router/rest/v1' will be blocked.
-        if (!ALLOW_PATHS.contains(path)) {
-            Logger.warn("==>     Filter: Blocked request to path: {} (original: {})", path, path);
+        // 2. Check if the request path matches any known gateway prefixes (e.g., /router/rest, /router/cst).
+        // This allows both exact matches (e.g., '/router/rest') and sub-paths (e.g., '/router/rest/v1/users').
+        if (!Args.isKnownRequest(path)) {
+            Logger.warn("==>     Filter: Blocked request to unknown path: {}", path);
             throw new ValidateException(ErrorCode._BLOCKED);
         }
 

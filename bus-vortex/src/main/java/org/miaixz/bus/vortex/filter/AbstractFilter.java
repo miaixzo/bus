@@ -27,15 +27,10 @@
 */
 package org.miaixz.bus.vortex.filter;
 
-import org.miaixz.bus.vortex.Args;
 import org.miaixz.bus.vortex.Filter;
 import org.miaixz.bus.vortex.strategy.StrategyFactory;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilterChain;
-
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Abstract base class for filters, providing common methods and implementing the template method pattern. All concrete
@@ -45,12 +40,6 @@ import java.util.Set;
  * @since Java 17+
  */
 public abstract class AbstractFilter implements Filter {
-
-    /**
-     * A whitelist of URI paths that are allowed to be processed by the gateway.
-     */
-    public static final Set<String> ALLOW_PATHS = new HashSet<>(
-            Arrays.asList(Args.REST_PATH_PREFIX, Args.MCP_PATH_PREFIX, Args.MQ_PATH_PREFIX));
 
     /**
      * The factory used to dynamically select the appropriate strategy chain for the current request.

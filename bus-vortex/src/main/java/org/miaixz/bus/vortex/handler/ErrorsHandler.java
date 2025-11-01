@@ -83,9 +83,9 @@ public class ErrorsHandler implements WebExceptionHandler {
         // 2. Get context and log format (Inlined)
         Context context = exchange.getAttribute(Context.$);
         if (context != null) {
-            Logger.info("==>    Handler: Context format is: {}", context.getFormat());
+            Logger.error("==>    Handler: Context format is: {}", context.getFormat());
         } else {
-            Logger.info("==>    Handler: Context is null, defaulting to JSON format.");
+            Logger.error("==>    Handler: Context is null, defaulting to JSON format.");
         }
 
         // 3. Get request information
@@ -106,14 +106,14 @@ public class ErrorsHandler implements WebExceptionHandler {
             String exceptionName = ex.getClass().getSimpleName();
             if (context != null) {
                 long executionTime = System.currentTimeMillis() - context.getTimestamp();
-                Logger.info(
+                Logger.error(
                         "==>    Handler: [N/A] [{}] [{}] [ERROR_COMPLETION] - Error handled, execution time: {}ms, exception: {}",
                         method,
                         path,
                         executionTime,
                         exceptionName);
             } else {
-                Logger.info(
+                Logger.error(
                         "==>    Handler: [N/A] [{}] [{}] [ERROR_COMPLETION] - Error handled, exception: {}",
                         method,
                         path,
@@ -134,7 +134,7 @@ public class ErrorsHandler implements WebExceptionHandler {
         // 1. Handle WebClientException
         if (ex instanceof WebClientException) {
             if (ex.getCause() instanceof UnknownHostException) {
-                Logger.info(
+                Logger.error(
                         "==>    Handler: [N/A] [{}] [{}] [ERROR_WEBCLIENT] - UnknownHostException: {}",
                         method,
                         path,
@@ -142,7 +142,7 @@ public class ErrorsHandler implements WebExceptionHandler {
                 return Message.builder().errcode(ErrorCode._100811.getKey()).errmsg(ErrorCode._100811.getValue())
                         .build();
             } else {
-                Logger.info(
+                Logger.error(
                         "==>    Handler: [N/A] [{}] [{}] [ERROR_WEBCLIENT] - WebClientException: {}",
                         method,
                         path,
@@ -157,7 +157,7 @@ public class ErrorsHandler implements WebExceptionHandler {
             String errcode = uEx.getErrcode();
             String errmsg = uEx.getErrmsg();
             if (StringKit.isNotBlank(errcode)) {
-                Logger.info(
+                Logger.error(
                         "==>    Handler: [N/A] [{}] [{}] [ERROR_UNCHECKED] - ErrorCode: {}, Message: {}",
                         method,
                         path,
@@ -169,7 +169,7 @@ public class ErrorsHandler implements WebExceptionHandler {
         }
 
         // 3. Handle all other unknown exceptions
-        Logger.info(
+        Logger.error(
                 "==>    Handler: [N/A] [{}] [{}] [ERROR_UNKNOWN] - Unknown exception type: {}, Message: {}",
                 method,
                 path,

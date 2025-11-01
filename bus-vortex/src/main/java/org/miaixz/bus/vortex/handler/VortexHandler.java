@@ -143,6 +143,7 @@ public class VortexHandler {
                 case 1 -> Protocol.HTTP.getName();
                 case 2 -> Protocol.MQ.getName();
                 case 3 -> Protocol.MCP.getName();
+                case 4 -> Protocol.WS.getName();
                 default -> Protocol.HTTP.getName();
             };
 

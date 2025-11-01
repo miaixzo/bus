@@ -34,7 +34,6 @@ import lombok.experimental.SuperBuilder;
 import org.miaixz.bus.vortex.strategy.QualiferStrategy;
 import org.miaixz.bus.vortex.strategy.RequestStrategy;
 import org.miaixz.bus.vortex.strategy.VettingStrategy;
-import org.springframework.http.server.reactive.ServerHttpRequest;
 
 /**
  * A central repository for constants defining the gateway's public API contract and for binding configuration
@@ -127,48 +126,84 @@ public class Args {
     public static final String MQ_PATH_PREFIX = "/router/mq";
 
     /**
+     * The base URI path for WebSocket connections.
+     *
+     * @see org.miaixz.bus.vortex.strategy.RequestStrategy
+     */
+    public static final String WS_PATH_PREFIX = "/router/ws";
+
+    /**
+     * The base URI path for custom (CST) requests.
+     *
+     * @see org.miaixz.bus.vortex.strategy.RequestStrategy
+     */
+    public static final String CST_PATH_PREFIX = "/router/cst";
+
+    /**
      * A constant for a default API version, e.g., "1.0".
      */
     public static final String DEFAULT_VERSION = "1.0";
 
     /**
-     * Checks if the given request is a RESTful API proxy request based on its path.
+     * Checks if the given path is a RESTful API proxy request path.
      *
-     * @param request The incoming server request.
-     * @return {@code true} if the request path starts with the REST prefix, {@code false} otherwise.
+     * @param path The URL path string to check.
+     * @return {@code true} if the path starts with the REST prefix, {@code false} otherwise.
      */
-    public static boolean isRestRequest(ServerHttpRequest request) {
-        return request.getURI().getPath().startsWith(Args.REST_PATH_PREFIX);
+    public static boolean isRestRequest(String path) {
+        return path.startsWith(Args.REST_PATH_PREFIX);
     }
 
     /**
-     * Checks if the given request is an MCP (Miaixz Communication Protocol) proxy request based on its path.
+     * Checks if the given path is an MCP (Miaixz Communication Protocol) proxy request path.
      *
-     * @param request The incoming server request.
-     * @return {@code true} if the request path starts with the MCP prefix, {@code false} otherwise.
+     * @param path The URL path string to check.
+     * @return {@code true} if the path starts with the MCP prefix, {@code false} otherwise.
      */
-    public static boolean isMcpRequest(ServerHttpRequest request) {
-        return request.getURI().getPath().startsWith(Args.MCP_PATH_PREFIX);
+    public static boolean isMcpRequest(String path) {
+        return path.startsWith(Args.MCP_PATH_PREFIX);
     }
 
     /**
-     * Checks if the given request is a Message Queue (MQ) proxy request based on its path.
+     * Checks if the given path is a Message Queue (MQ) proxy request path.
      *
-     * @param request The incoming server request.
-     * @return {@code true} if the request path starts with the MQ prefix, {@code false} otherwise.
+     * @param path The URL path string to check.
+     * @return {@code true} if the path starts with the MQ prefix, {@code false} otherwise.
      */
-    public static boolean isMqRequest(ServerHttpRequest request) {
-        return request.getURI().getPath().startsWith(Args.MQ_PATH_PREFIX);
+    public static boolean isMqRequest(String path) {
+        return path.startsWith(Args.MQ_PATH_PREFIX);
     }
 
     /**
-     * Checks if the given request is a non-standard gateway request (i.e., not REST, MCP, or MQ).
+     * Checks if the given path is a WebSocket connection request path.
      *
-     * @param request The incoming server request.
-     * @return {@code true} if the request path does not match any known router prefix, {@code false} otherwise.
+     * @param path The URL path string to check.
+     * @return {@code true} if the path starts with the WebSocket prefix, {@code false} otherwise.
      */
-    public static boolean isUrlRequest(ServerHttpRequest request) {
-        return !isRestRequest(request) && !isMcpRequest(request) && !isMqRequest(request);
+    public static boolean isWsRequest(String path) {
+        return path.startsWith(Args.WS_PATH_PREFIX);
+    }
+
+    /**
+     * Checks if the given path is a custom (CST) request path.
+     *
+     * @param path The URL path string to check.
+     * @return {@code true} if the path starts with the CST prefix, {@code false} otherwise.
+     */
+    public static boolean isCstRequest(String path) {
+        return path.startsWith(Args.CST_PATH_PREFIX);
+    }
+
+    /**
+     * Checks if the given path matches any of the known gateway prefixes (REST, MCP, MQ, WS or CST). This method
+     * combines the individual check methods for convenience.
+     *
+     * @param path The URL path string to check.
+     * @return {@code true} if the path is a REST, MCP, MQ, WS, or CST path, {@code false} otherwise.
+     */
+    public static boolean isKnownRequest(String path) {
+        return isRestRequest(path) || isMcpRequest(path) || isMqRequest(path) || isWsRequest(path)
+                || isCstRequest(path);
     }
 
     /**

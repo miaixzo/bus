@@ -82,7 +82,7 @@ public class VettingStrategy extends AbstractStrategy {
     public Mono<Void> apply(ServerWebExchange exchange, Chain chain) {
         return Mono.deferContextual(contextView -> {
             final Context context = contextView.get(Context.class);
-            if (Args.isUrlRequest(exchange.getRequest())) {
+            if (Args.isCstRequest(exchange.getRequest().getPath().value())) {
                 validateAndEnrichUrlRequest(exchange, context);
             } else {
                 validateAndEnrich(exchange, context);
@@ -118,7 +118,6 @@ public class VettingStrategy extends AbstractStrategy {
         if (ObjectKit.isEmpty(context.getParameters().get(Args.VERSION))) {
             context.getParameters().put(Args.VERSION, Args.DEFAULT_VERSION);
         }
-        this.validateTimestamp(context);
         this.enrich(exchange, context);
     }
 
