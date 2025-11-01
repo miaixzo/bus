@@ -85,10 +85,14 @@ public class RequestStrategy extends AbstractStrategy {
      */
     @Override
     public Mono<Void> apply(ServerWebExchange exchange, Chain chain) {
+        // deferContextual ensures this logic runs at subscription time,
+        // allowing access to the Reactor context.
         return Mono.deferContextual(contextView -> {
             final Context context = contextView.get(Context.class);
 
             // 1. Set default Content-Type if missing and record the request start time.
+            // This setup logic is synchronous but acceptable as it's part of
+            // building the reactive chain, not executing it.
             ServerWebExchange mutate = setContentType(exchange);
             context.setTimestamp(DateKit.current());
             ServerHttpRequest request = mutate.getRequest();
@@ -105,6 +109,8 @@ public class RequestStrategy extends AbstractStrategy {
                 } else if (MediaType.MULTIPART_FORM_DATA.isCompatibleWith(contentType)) {
                     long contentLength = request.getHeaders().getContentLength();
                     if (contentLength > MAX_MULTIPART_REQUEST_SIZE) {
+                        // Throwing here is acceptable as it's a pre-condition check
+                        // before any async body processing.
                         throw new ValidateException(ErrorCode._100530);
                     }
                     return handleMultipartRequest(mutate, chain, context);
@@ -127,17 +133,23 @@ public class RequestStrategy extends AbstractStrategy {
      * @return A {@code Mono<Void>} that signals the completion of processing.
      */
     private Mono<Void> handleGetRequest(ServerWebExchange exchange, Chain chain, Context context) {
-        context.getParameters().putAll(exchange.getRequest().getQueryParams().toSingleValueMap());
-        Logger.info(
-                "==>     Filter: GET request processed - Path: {}, Params: {}",
-                exchange.getRequest().getURI().getPath(),
-                JsonKit.toJsonString(context.getParameters()));
-
-        return chain.apply(exchange).doOnSuccess(
-                v -> Logger.info(
-                        "==>     Filter: Request processed - Path: {}, ExecutionTime: {}ms",
-                        exchange.getRequest().getURI().getPath(),
-                        (System.currentTimeMillis() - context.getTimestamp())));
+        // Wrap synchronous context mutation and logging in fromRunnable
+        // to defer execution until subscription.
+        return Mono.fromRunnable(() -> {
+            context.getParameters().putAll(exchange.getRequest().getQueryParams().toSingleValueMap());
+            Logger.info(
+                    "==>     Filter: GET request processed - Path: {}, Params: {}",
+                    exchange.getRequest().getURI().getPath(),
+                    JsonKit.toJsonString(context.getParameters()));
+        })
+                // Use .then() to execute the next chain link after the runnable completes.
+                .then(chain.apply(exchange))
+                // Use doFinally for robust logging on any termination signal (complete, error, cancel).
+                .doFinally(
+                        signalType -> Logger.info(
+                                "==>     Filter: Request processed - Path: {}, ExecutionTime: {}ms",
+                                exchange.getRequest().getURI().getPath(),
+                                (System.currentTimeMillis() - context.getTimestamp())));
     }
 
     /**
@@ -152,6 +164,7 @@ public class RequestStrategy extends AbstractStrategy {
      * @return A {@code Mono<Void>} that signals the completion of processing.
      */
     private Mono<Void> handleJsonRequest(ServerWebExchange exchange, Chain chain, Context context) {
+        // collectList() asynchronously buffers the body.
         return exchange.getRequest().getBody().collectList()
                 .flatMap(dataBuffers -> processJsonData(exchange, chain, context, dataBuffers)).retryWhen(
                         Retry.backoff(MAX_RETRY_ATTEMPTS, java.time.Duration.ofMillis(RETRY_DELAY_MS))
@@ -187,13 +200,20 @@ public class RequestStrategy extends AbstractStrategy {
             Chain chain,
             Context context,
             List<DataBuffer> dataBuffers) {
-        try {
+
+        // Use fromCallable to wrap all synchronous, potentially-throwing logic.
+        // Any exception (from readBodyToBytes or JsonKit.toMap) will be
+        // captured and emitted as Mono.error(), triggering the retry logic.
+        return Mono.fromCallable(() -> {
+            // 1. Synchronous byte copy (can throw ValidateException)
             byte[] bytes = readBodyToBytes(dataBuffers);
 
+            // 2. Synchronous JSON parsing (can throw parsing exception)
             String jsonBody = new String(bytes, Charset.UTF_8);
             Map<String, Object> jsonMap = JsonKit.toMap(jsonBody);
             context.getParameters().putAll(jsonMap);
 
+            // 3. Create the decorator to cache the body
             ServerHttpRequest newRequest = new ServerHttpRequestDecorator(exchange.getRequest()) {
 
                 @Override
@@ -202,21 +222,26 @@ public class RequestStrategy extends AbstractStrategy {
                 }
             };
 
-            ServerWebExchange newExchange = exchange.mutate().request(newRequest).build();
-
             Logger.info(
                     "==>     Filter: JSON request processed - Path: {}, Params: {}",
-                    newExchange.getRequest().getURI().getPath(),
+                    exchange.getRequest().getURI().getPath(),
                     JsonKit.toJsonString(jsonMap));
-            return chain.apply(newExchange).doOnTerminate(
-                    () -> Logger.info(
-                            "==>     Filter: Request processed - Path: {}, ExecutionTime: {}ms",
-                            newExchange.getRequest().getURI().getPath(),
-                            (System.currentTimeMillis() - context.getTimestamp())));
-        } catch (Exception e) {
-            Logger.error("==>     Filter: Failed to process JSON: {}", e.getMessage());
-            return Mono.error(e);
-        }
+
+            // 4. Return the new exchange for the next chain link
+            return exchange.mutate().request(newRequest).build();
+        })
+                // flatMap to the next chain link using the new exchange
+                .flatMap(chain::apply)
+                .doFinally(
+                        signalType -> Logger.info(
+                                "==>     Filter: Request processed - Path: {}, ExecutionTime: {}ms",
+                                exchange.getRequest().getURI().getPath(),
+                                (System.currentTimeMillis() - context.getTimestamp())))
+                // Add explicit error logging for failures within this stage
+                .onErrorResume(e -> {
+                    Logger.error("==>     Filter: Failed to process JSON: {}", e.getMessage());
+                    return Mono.error(e); // Re-throw the original exception
+                });
     }
 
     /**
@@ -266,8 +291,10 @@ public class RequestStrategy extends AbstractStrategy {
             Chain chain,
             Context context,
             List<DataBuffer> dataBuffers) {
-        try {
-            byte[] bytes = readBodyToBytes(dataBuffers);
+
+        // 1. Wrap the synchronous byte reading and request decoration in fromCallable.
+        return Mono.fromCallable(() -> {
+            byte[] bytes = readBodyToBytes(dataBuffers); // Can throw ValidateException
 
             ServerHttpRequest newRequest = new ServerHttpRequestDecorator(exchange.getRequest()) {
 
@@ -276,25 +303,34 @@ public class RequestStrategy extends AbstractStrategy {
                     return Flux.just(exchange.getResponse().bufferFactory().wrap(bytes));
                 }
             };
-
-            ServerWebExchange newExchange = exchange.mutate().request(newRequest).build();
-
-            return newExchange.getFormData().flatMap(params -> {
-                context.getParameters().putAll(params.toSingleValueMap());
-                Logger.info(
-                        "==>     Filter: Form request processed - Path: {}, Params: {}",
-                        newExchange.getRequest().getURI().getPath(),
-                        JsonKit.toJsonString(context.getParameters()));
-                return chain.apply(newExchange).doOnTerminate(
-                        () -> Logger.info(
+            // Return the new exchange, which now has the cached body
+            return exchange.mutate().request(newRequest).build();
+        })
+                // 2. flatMap to the *asynchronous* getFormData() call.
+                // This call will consume the cached body from our newExchange.
+                .flatMap(
+                        newExchange -> newExchange.getFormData()
+                                // 3. Once form data is parsed, flatMap again to:
+                                // a) update the context (sync)
+                                // b) call the next link in the chain (async)
+                                .flatMap(params -> {
+                                    context.getParameters().putAll(params.toSingleValueMap());
+                                    Logger.info(
+                                            "==>     Filter: Form request processed - Path: {}, Params: {}",
+                                            newExchange.getRequest().getURI().getPath(),
+                                            JsonKit.toJsonString(context.getParameters()));
+                                    // Apply the chain using the newExchange
+                                    return chain.apply(newExchange);
+                                }))
+                .doFinally(
+                        signalType -> Logger.info(
                                 "==>     Filter: Request processed - Path: {}, ExecutionTime: {}ms",
-                                newExchange.getRequest().getURI().getPath(),
-                                (System.currentTimeMillis() - context.getTimestamp())));
-            });
-        } catch (Exception e) {
-            Logger.error("==>     Filter: Failed to process form: {}", e.getMessage());
-            return Mono.error(e);
-        }
+                                exchange.getRequest().getURI().getPath(),
+                                (System.currentTimeMillis() - context.getTimestamp())))
+                .onErrorResume(e -> {
+                    Logger.error("==>     Filter: Failed to process form: {}", e.getMessage());
+                    return Mono.error(e);
+                });
     }
 
     /**
@@ -309,6 +345,7 @@ public class RequestStrategy extends AbstractStrategy {
      * @return A {@code Mono<Void>} that signals the completion of processing.
      */
     private Mono<Void> handleMultipartRequest(ServerWebExchange exchange, Chain chain, Context context) {
+        // getMultipartData() is already fully asynchronous and reactive.
         return exchange.getMultipartData().flatMap(params -> processMultipartData(exchange, chain, context, params))
                 .retryWhen(
                         Retry.backoff(MAX_RETRY_ATTEMPTS, java.time.Duration.ofMillis(RETRY_DELAY_MS))
@@ -349,7 +386,10 @@ public class RequestStrategy extends AbstractStrategy {
             Chain chain,
             Context context,
             MultiValueMap<String, Part> params) {
-        try {
+
+        // The logic here is synchronous (map iteration and population).
+        // Wrap it in fromRunnable to defer execution and catch potential errors.
+        return Mono.fromRunnable(() -> {
             Map<String, String> formMap = new LinkedHashMap<>();
             Map<String, Part> fileMap = new LinkedHashMap<>();
 
@@ -368,20 +408,25 @@ public class RequestStrategy extends AbstractStrategy {
                     "==>     Filter: Multipart request processed - Path: {}, Params: {}",
                     exchange.getRequest().getURI().getPath(),
                     JsonKit.toJsonString(formMap));
-
-            return chain.apply(exchange).doOnTerminate(
-                    () -> Logger.info(
-                            "==>     Filter: Request processed - Path: {}, ExecutionTime: {}ms",
-                            exchange.getRequest().getURI().getPath(),
-                            (System.currentTimeMillis() - context.getTimestamp())));
-        } catch (Exception e) {
-            Logger.error("==>     Filter: Failed to process multipart: {}", e.getMessage());
-            return Mono.error(e);
-        }
+        })
+                // After the sync work, apply the rest of the chain.
+                .then(chain.apply(exchange))
+                .doFinally(
+                        signalType -> Logger.info(
+                                "==>     Filter: Request processed - Path: {}, ExecutionTime: {}ms",
+                                exchange.getRequest().getURI().getPath(),
+                                (System.currentTimeMillis() - context.getTimestamp())))
+                .onErrorResume(e -> {
+                    Logger.error("==>     Filter: Failed to process multipart: {}", e.getMessage());
+                    return Mono.error(e);
+                });
     }
 
     /**
      * Reads a list of {@link DataBuffer}s into a single byte array, while enforcing a maximum size limit.
+     * <p>
+     * This is a synchronous, in-memory operation. It is intended to be called from within a {@code Mono.fromCallable}
+     * to prevent blocking and to ensure exceptions are captured by the reactive stream.
      *
      * @param dataBuffers The list of {@link DataBuffer}s to read.
      * @return A byte array containing the merged data from all buffers.
@@ -390,6 +435,7 @@ public class RequestStrategy extends AbstractStrategy {
     private byte[] readBodyToBytes(List<DataBuffer> dataBuffers) {
         int totalSize = dataBuffers.stream().mapToInt(DataBuffer::readableByteCount).sum();
         if (totalSize > MAX_REQUEST_SIZE) {
+            // This exception will be caught by the calling fromCallable
             throw new ValidateException(ErrorCode._100530);
         }
 
@@ -398,6 +444,8 @@ public class RequestStrategy extends AbstractStrategy {
         for (DataBuffer buffer : dataBuffers) {
             int length = buffer.readableByteCount();
             buffer.read(bytes, pos, length);
+            // Note: In a production scenario, you might want to release buffers here
+            // if they are pooled, e.g., DataBufferUtils.release(buffer);
             pos += length;
         }
         return bytes;

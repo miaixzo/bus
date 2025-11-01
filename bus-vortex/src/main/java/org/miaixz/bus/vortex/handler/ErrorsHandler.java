@@ -31,6 +31,7 @@ import java.net.UnknownHostException;
 
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.exception.UncheckedException;
+import org.miaixz.bus.core.xyz.ExceptionKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Context;
@@ -44,7 +45,11 @@ import org.springframework.web.reactive.function.client.WebClientException;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebExceptionHandler;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.Builder;
 import reactor.core.publisher.Mono;
 import reactor.util.annotation.NonNull;
 
@@ -54,6 +59,9 @@ import reactor.util.annotation.NonNull;
  * This handler implements {@link WebExceptionHandler} to catch various exceptions that occur during request processing.
  * It sets the HTTP status to OK (200) and the content type to JSON, then constructs a {@link Message} object based on
  * the exception type. The message is then serialized to JSON and written to the response body.
+ * <p>
+ * This version is enhanced to correctly identify wrapped exceptions by checking the root cause before determining the
+ * error code.
  *
  * @author Justubborn
  * @since Java 17+
@@ -75,12 +83,12 @@ public class ErrorsHandler implements WebExceptionHandler {
     @NonNull
     @Override
     public Mono<Void> handle(ServerWebExchange exchange, Throwable ex) {
-        // 1. Get request/response objects
+        // 1. Get request/response objects and set status
         ServerHttpResponse response = exchange.getResponse();
         ServerHttpRequest request = exchange.getRequest();
         response.setStatusCode(HttpStatus.OK);
 
-        // 2. Get context and log format (Inlined)
+        // 2. Get context and log format
         Context context = exchange.getAttribute(Context.$);
         if (context != null) {
             Logger.error("==>    Handler: Context format is: {}", context.getFormat());
@@ -92,17 +100,22 @@ public class ErrorsHandler implements WebExceptionHandler {
         String path = request.getPath().value();
         String method = request.getMethod() != null ? request.getMethod().name() : "UNKNOWN";
 
-        // 4. Build the standardized error message based on the exception
-        Message message = buildErrorMessage(ex, method, path);
-
-        // 5. Determine format, set content type, and serialize
+        // 4. Determine format and set content type
         Formats formats = (context != null) ? context.getFormat() : Formats.JSON;
         response.getHeaders().setContentType(formats.getMediaType());
-        String formatBody = formats.getProvider().serialize(message);
-        DataBuffer db = response.bufferFactory().wrap(formatBody.getBytes(Charset.UTF_8));
 
-        // 6. Write response and log completion (Inlined)
-        return response.writeWith(Mono.just(db)).doOnTerminate(() -> {
+        // 5. Build the standardized error message *reactively*
+        Mono<Message> messageMono = Mono.fromCallable(() -> buildErrorMessage(ex, method, path));
+
+        // 6. Asynchronously serialize the message and get a DataBuffer
+        Mono<DataBuffer> dataBufferMono = messageMono.flatMap(message ->
+        // Call the new asynchronous serialize method
+        formats.getProvider().serialize(message)).map(formatBody ->
+        // This runs after the async serialization is complete
+        response.bufferFactory().wrap(formatBody.getBytes(Charset.UTF_8)));
+
+        // 7. Write response and log completion
+        return response.writeWith(dataBufferMono).doOnTerminate(() -> {
             String exceptionName = ex.getClass().getSimpleName();
             if (context != null) {
                 long executionTime = System.currentTimeMillis() - context.getTimestamp();
@@ -131,31 +144,14 @@ public class ErrorsHandler implements WebExceptionHandler {
      * @return A populated Message object
      */
     private Message buildErrorMessage(Throwable ex, String method, String path) {
-        // 1. Handle WebClientException
-        if (ex instanceof WebClientException) {
-            if (ex.getCause() instanceof UnknownHostException) {
-                Logger.error(
-                        "==>    Handler: [N/A] [{}] [{}] [ERROR_WEBCLIENT] - UnknownHostException: {}",
-                        method,
-                        path,
-                        ex.getCause().getMessage());
-                return Message.builder().errcode(ErrorCode._100811.getKey()).errmsg(ErrorCode._100811.getValue())
-                        .build();
-            } else {
-                Logger.error(
-                        "==>    Handler: [N/A] [{}] [{}] [ERROR_WEBCLIENT] - WebClientException: {}",
-                        method,
-                        path,
-                        ex.getMessage());
-                return Message.builder().errcode(ErrorCode._116000.getKey()).errmsg(ErrorCode._116000.getValue())
-                        .build();
-            }
-        }
-        // 2. Handle UncheckedException
-        else if (ex instanceof UncheckedException) {
-            UncheckedException uEx = (UncheckedException) ex;
-            String errcode = uEx.getErrcode();
-            String errmsg = uEx.getErrmsg();
+        // This logic is fast, synchronous, and non-blocking.
+        Throwable target = ExceptionKit.getRootCause(ex);
+
+        // 1. Handle UncheckedException
+        if (target instanceof UncheckedException) {
+            UncheckedException ue = (UncheckedException) target;
+            String errcode = ue.getErrcode();
+            String errmsg = ue.getErrmsg();
             if (StringKit.isNotBlank(errcode)) {
                 Logger.error(
                         "==>    Handler: [N/A] [{}] [{}] [ERROR_UNCHECKED] - ErrorCode: {}, Message: {}",
@@ -167,14 +163,32 @@ public class ErrorsHandler implements WebExceptionHandler {
             }
             // If errcode is blank, fall through to the default unknown error (preserves original logic)
         }
-
-        // 3. Handle all other unknown exceptions
+        // 2. Handle WebClientException
+        else if (target instanceof WebClientException) {
+            if (target.getCause() instanceof UnknownHostException) {
+                Logger.error(
+                        "==>    Handler: [N/A] [{}] [{}] [ERROR_WEBCLIENT] - UnknownHostException: {}",
+                        method,
+                        path,
+                        target.getCause().getMessage());
+                return Message.builder().errcode(ErrorCode._100811.getKey()).errmsg(ErrorCode._100811.getValue())
+                        .build();
+            } else {
+                Logger.error(
+                        "==>    Handler: [N/A] [{}] [{}] [ERROR_WEBCLIENT] - WebClientException: {}",
+                        method,
+                        path,
+                        target.getMessage());
+                return Message.builder().errcode(ErrorCode._116000.getKey()).errmsg(ErrorCode._116000.getValue())
+                        .build();
+            }
+        }
         Logger.error(
                 "==>    Handler: [N/A] [{}] [{}] [ERROR_UNKNOWN] - Unknown exception type: {}, Message: {}",
                 method,
                 path,
-                ex.getClass().getName(),
-                ex.getMessage());
+                target.getClass().getName(),
+                target.getMessage());
         return Message.builder().errcode(ErrorCode._100807.getKey()).errmsg(ErrorCode._100807.getValue()).build();
     }
 

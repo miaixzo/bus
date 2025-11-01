@@ -41,6 +41,7 @@ import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 import java.util.List;
 
@@ -93,14 +94,14 @@ public class PrimaryFilter extends AbstractFilter {
      */
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-        // 1. Get the request path. This method automatically excludes query parameters (?page=1).
+        // 1. Run fast, non-blocking pre-checks synchronously.
         String path = exchange.getRequest().getPath().value();
         Logger.info("==>     Filter: Request to path: {} ", path);
 
-        // 2. Check if the request path matches any known gateway prefixes (e.g., /router/rest, /router/cst).
-        // This allows both exact matches (e.g., '/router/rest') and sub-paths (e.g., '/router/rest/v1/users').
+        // 2. Check if the request path matches any known gateway prefixes.
         if (!Args.isKnownRequest(path)) {
             Logger.warn("==>     Filter: Blocked request to unknown path: {}", path);
+            // Throwing is acceptable here as it's a synchronous, definitive rejection.
             throw new ValidateException(ErrorCode._BLOCKED);
         }
 
@@ -110,20 +111,24 @@ public class PrimaryFilter extends AbstractFilter {
             throw new ValidateException(ErrorCode._LIMITER);
         }
 
-        // 4. Get the specific list of strategies for the current request from the factory.
-        List<Strategy> strategies = factory.getStrategiesFor(exchange);
+        // 4. Get the strategies. This is a *potentially blocking* call.
+        // We wrap it in fromCallable and offload it from the event loop.
+        return Mono.fromCallable(() -> factory.getStrategiesFor(exchange)).subscribeOn(Schedulers.boundedElastic())
+                .flatMap(strategies -> {
+                    // 5. Create and initialize the context. This logic now runs *after*
+                    // the blocking call has completed on another thread.
+                    Context context = new Context();
+                    context.setHeaders(exchange.getRequest().getHeaders().toSingleValueMap());
+                    context.setHttpMethod(exchange.getRequest().getMethod());
 
-        // 5. Create and initialize the context with essential request information.
-        Context context = new Context();
-        context.setHeaders(exchange.getRequest().getHeaders().toSingleValueMap());
-        context.setHttpMethod(exchange.getRequest().getMethod());
+                    // 6. Store the context in the exchange attributes for fallback access.
+                    exchange.getAttributes().put(Context.$, context);
 
-        // 6. Store the context in the exchange attributes for fallback access (e.g., in error handlers).
-        exchange.getAttributes().put(Context.$, context);
-
-        // 7. Create a new strategy chain for this request and execute it.
-        // The context is written to the Reactor context for all downstream strategies and handlers.
-        return new Chain(strategies, chain).apply(exchange).contextWrite(ctx -> ctx.put(Context.class, context));
+                    // 7. Create a new strategy chain and execute it.
+                    // The context is written to the Reactor context.
+                    return new Chain(strategies, chain).apply(exchange)
+                            .contextWrite(ctx -> ctx.put(Context.class, context));
+                });
     }
 
     /**

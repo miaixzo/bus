@@ -81,8 +81,9 @@ public class FormatStrategy extends AbstractStrategy {
     /**
      * Creates a response decorator to serialize the response body to XML.
      * <p>
-     * This method wraps the original response and overrides the write method to intercept the response body. It assumes
-     * the original body is a JSON string, converts it to XML, and sets the Content-Type header to 'application/xml'.
+     * This method wraps the original response and overrides the writeWith method to intercept the response body. It
+     * assumes the original body is a JSON string, converts it to XML, and sets the Content-Type header to
+     * 'application/xml'.
      * </p>
      *
      * @param exchange The {@link ServerWebExchange} object.
@@ -96,28 +97,36 @@ public class FormatStrategy extends AbstractStrategy {
                 // Convert response data stream to Flux
                 Flux<? extends DataBuffer> flux = Flux.from(body);
 
-                // Collect all data buffers
-                return flux.collectList().flatMap(dataBuffers -> {
-                    // Merge all data buffers
-                    byte[] allBytes = merge(dataBuffers);
+                // Collect all data buffers (necessary for non-streaming provider.serialize())
+                Mono<List<? extends DataBuffer>> collectedBuffers = flux.collectList().map(list -> list);
 
-                    // Convert byte array to string (assuming original body is UTF-8 string, e.g., JSON)
+                // Chain the transformation
+                Mono<DataBuffer> formattedBufferMono = collectedBuffers.flatMap(dataBuffers -> {
+                    // 1. Synchronously merge buffers and convert to string.
+                    // This is fast, in-memory work.
+                    byte[] allBytes = merge(dataBuffers);
                     String bodyString = new String(allBytes, Charset.UTF_8);
 
-                    // Explicitly use XML provider and media type
+                    // 2. Explicitly use XML provider and media type
                     Provider provider = Formats.XML.getProvider();
-                    String xmlBody = provider.serialize(bodyString);
-                    getDelegate().getHeaders().setContentType(Formats.XML.getMediaType());
 
-                    // Log TRACE (if enabled)
-                    Logger.trace("==>     Filter: Response formatted to XML: {}", xmlBody);
-
-                    // Wrap the formatted data into a new data buffer
-                    DataBuffer formattedBuffer = bufferFactory().wrap(xmlBody.getBytes(Charset.UTF_8));
-
-                    // Write the formatted response
-                    return super.writeWith(Mono.just(formattedBuffer));
+                    // 3. Call the *asynchronous* serialize method, which returns a Mono<String>
+                    // and handles its own thread scheduling.
+                    return provider.serialize(bodyString).map(xmlBody -> {
+                        // 4. This logic now runs after the async serialization is complete
+                        Logger.trace("==>     Filter: Response formatted to XML: {}", xmlBody);
+                        // Wrap the formatted data into a new data buffer
+                        return bufferFactory().wrap(xmlBody.getBytes(Charset.UTF_8));
+                    });
                 });
+                // The Mono.fromCallable and .subscribeOn are no longer needed here,
+                // as the Provider handles its own asynchronicity.
+
+                // Set headers *before* writing
+                getDelegate().getHeaders().setContentType(Formats.XML.getMediaType());
+
+                // Write the formatted response. super.writeWith subscribes to the Mono.
+                return super.writeWith(formattedBufferMono);
             }
         };
     }
@@ -141,6 +150,8 @@ public class FormatStrategy extends AbstractStrategy {
             int length = buffer.readableByteCount();
             buffer.read(result, position, length);
             position += length;
+            // Consider releasing pooled buffers here if applicable,
+            // e.g., DataBufferUtils.release(buffer);
         }
 
         return result;

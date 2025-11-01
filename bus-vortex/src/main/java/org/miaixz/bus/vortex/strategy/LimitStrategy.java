@@ -27,8 +27,11 @@
 */
 package org.miaixz.bus.vortex.strategy;
 
-import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.logger.Logger;
@@ -39,7 +42,9 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.web.server.ServerWebExchange;
 
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 /**
  * A strategy that applies rate limiting to incoming requests.
@@ -82,9 +87,9 @@ public class LimitStrategy extends AbstractStrategy {
      * <li>Asserts that the context and its nested {@code Assets} have been populated by preceding strategies.</li>
      * <li>Extracts the API method, version, and client IP address from the context.</li>
      * <li>Calls {@link #getLimiter} to find all applicable limiters (e.g., global and per-IP).</li>
-     * <li>For each applicable limiter, it calls the {@link Limiter#acquire()} method. If a limiter has no available
-     * tokens, this call will throw an exception, which is caught by the global error handler to produce a "Too Many
-     * Requests" response.</li>
+     * <li>For each applicable limiter, it asynchronously calls the {@link Limiter#acquire()} method. If a limiter has
+     * no available tokens, this call will throw an exception, which is caught by the global error handler to produce a
+     * "Too Many Requests" response.</li>
      * <li>If all limiters are successfully acquired, it proceeds to the next strategy in the chain.</li>
      * </ol>
      *
@@ -95,57 +100,74 @@ public class LimitStrategy extends AbstractStrategy {
     @Override
     public Mono<Void> apply(ServerWebExchange exchange, Chain chain) {
         return Mono.deferContextual(contextView -> {
+            // --- This initial setup is synchronous, non-blocking, and fast ---
             final Context context = contextView.get(Context.class);
 
             Assert.notNull(context, "Context must be initialized by a preceding strategy.");
             Assert.notNull(context.getAssets(), "Assets must be resolved by a preceding strategy.");
 
             String methodVersion = context.getAssets().getMethod() + context.getAssets().getVersion();
-            String clientIp = context.getX_request_ipv4(); // Populated by RequestStrategy
+            String clientIp = context.getX_request_ipv4(); // Populated by a preceding strategy
+            // --- End of sync setup ---
 
-            Set<Limiter> limiters = getLimiter(methodVersion, clientIp);
-            for (Limiter limiter : limiters) {
-                limiter.acquire();
-            }
+            // 1. Asynchronously fetch all applicable limiters in parallel
+            return getLimiter(methodVersion, clientIp).flatMap(limiters -> {
+                if (limiters.isEmpty()) {
+                    // No limiters to apply, proceed immediately
+                    return chain.apply(exchange);
+                }
 
-            if (!limiters.isEmpty()) {
-                Logger.info(
-                        "==>     Strategy: Rate limit applied - Path: {}, Method: {}",
-                        exchange.getRequest().getURI().getPath(),
-                        methodVersion);
-            }
+                // 2. Create a list of async tasks for acquiring each limiter
+                // Each acquire() call is blocking and must be offloaded
+                List<Mono<Void>> acquireMonos = limiters.stream()
+                        .map(
+                                limiter -> Mono.fromRunnable(() -> limiter.acquire())
+                                        // Offload the blocking acquire() call
+                                        .subscribeOn(Schedulers.boundedElastic()).then() // <-- **FIXED:** Add .then()
+                                                                                         // to resolve generics error
+                ).collect(Collectors.toList());
 
-            return chain.apply(exchange);
+                // 3. Wait for all limiters to be acquired in parallel
+                return Mono.when(acquireMonos).then(Mono.fromRunnable(() -> {
+                    // This logging runs after all acquisitions are successful
+                    Logger.info(
+                            "==>     Strategy: Rate limit applied - Path: {}, Method: {}",
+                            exchange.getRequest().getURI().getPath(),
+                            methodVersion);
+                }))
+                        // 4. Proceed to the next strategy in the chain
+                        .then(chain.apply(exchange));
+            });
         });
     }
 
     /**
-     * Finds all applicable limiters for a given request based on a layered key structure.
+     * Asynchronously finds all applicable limiters for a given request.
      * <p>
      * This method implements a two-layer lookup:
      * <ol>
-     * <li><b>Global API Limit:</b> It first looks for a limiter keyed by the method and version (e.g.,
-     * "api.user.get:1.0"). This applies a global rate limit to the specific API.</li>
-     * <li><b>Per-IP API Limit:</b> It then looks for a limiter keyed by the IP address plus the method and version
-     * (e.g., "192.168.1.100:api.user.get:1.0"). This applies a stricter limit for a single user on that API.</li>
+     * <li><b>Global API Limit:</b> "api.user.get:1.0"</li>
+     * <li><b>Per-IP API Limit:</b> "192.168.1.100:api.user.get:1.0"</li>
      * </ol>
-     * This allows for flexible rules like, "Limit the user-get API to 1000 requests/minute globally, but only allow 10
-     * requests/minute from any single IP address."
+     * It fetches all potential limiters in parallel from the registry, assuming the {@code registry.get()} call might
+     * be blocking I/O (e.g., a cache or DB lookup).
      *
      * @param methodVersion The combined method and version string for the API.
      * @param ip            The client's IP address.
-     * @return A {@link Set} of all {@link Limiter} instances that should be applied to this request.
+     * @return A {@code Mono<Set<Limiter>>} that emits the set of all found {@link Limiter} instances.
      */
-    private Set<Limiter> getLimiter(String methodVersion, String ip) {
-        String[] limitKeys = { methodVersion, ip + methodVersion };
-        Set<Limiter> limiters = new HashSet<>();
-        for (String limitKey : limitKeys) {
-            Limiter limiter = registry.get(limitKey);
-            if (null != limiter) {
-                limiters.add(limiter);
-            }
-        }
-        return limiters;
+    private Mono<Set<Limiter>> getLimiter(String methodVersion, String ip) {
+        // Create a stream of keys to check
+        Stream<String> limitKeys = Stream.of(methodVersion, ip + methodVersion);
+
+        // For each key, create a Mono that fetches the limiter, offloading the
+        // blocking registry.get() call to the boundedElastic scheduler.
+        List<Mono<Limiter>> limiterMonos = limitKeys
+                .map(key -> Mono.fromCallable(() -> registry.get(key)).subscribeOn(Schedulers.boundedElastic()))
+                .collect(Collectors.toList());
+
+        // Run all fetches in parallel and collect non-null results into a Set
+        return Flux.merge(limiterMonos).filter(Objects::nonNull).collect(Collectors.toSet());
     }
 
 }

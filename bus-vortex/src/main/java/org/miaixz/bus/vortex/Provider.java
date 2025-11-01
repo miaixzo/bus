@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.vortex;
 
+import reactor.core.publisher.Mono;
+
 /**
  * Data serialization interface, defining a common method for serializing objects into strings.
  *
@@ -36,11 +38,11 @@ package org.miaixz.bus.vortex;
 public interface Provider {
 
     /**
-     * Serializes an object into a string.
+     * Asynchronously serializes an object into a string.
      *
      * @param object The object to be serialized.
-     * @return The serialized string result.
+     * @return A {@code Mono} emitting the serialized string result.
      */
-    String serialize(Object object);
+    Mono<String> serialize(Object object);
 
 }

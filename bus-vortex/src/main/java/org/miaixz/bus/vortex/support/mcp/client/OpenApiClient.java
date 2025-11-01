@@ -32,6 +32,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
@@ -44,21 +45,44 @@ import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Mono;
 
 /**
- * A client that adapts manually configured REST API endpoints to function as MCP tools. It does not parse an OpenAPI
- * spec, but instead relies on tool definitions provided in its configuration.
+ * A client that adapts manually configured REST API endpoints to function as MCP (Model Context Protocol) tools.
+ * <p>
+ * This client does not parse an OpenAPI specification file. Instead, it relies on a set of tool definitions provided
+ * directly in its configuration (typically within the {@code metadata} field of an {@link Assets} object). Each tool
+ * definition specifies an HTTP endpoint, method, and an input schema, which this client uses to translate MCP tool
+ * calls into HTTP requests.
+ *
+ * 
+ * @author Kimi Liu
+ * @since Java 17+
  */
 public class OpenApiClient implements McpClient {
 
+    /**
+     * The configuration asset for this client, containing the base URL and tool definitions.
+     */
     private final Assets assets;
-    private final WebClient webClient;
+    /**
+     * The {@link WebClient} used to make HTTP requests to the target API.
+     */
+    private final WebClient client;
+    /**
+     * The base URL for all API endpoints configured for this client.
+     */
     private final String baseUrl;
-    private final Map<String, Tool> adaptedTools;
+    /**
+     * A map of available tools, keyed by their unique name for quick lookup.
+     */
+    private final Map<String, Tool> tools;
 
     /**
-     * Constructs a new OpenApiClient.
-     * 
-     * @param assets The Assets configuration, which must contain a "url" for baseUrl and a JSON string in its 'config'
-     *               field containing a "tools" list.
+     * Constructs a new {@code OpenApiClient}.
+     * <p>
+     * The provided {@link Assets} must contain a {@code url} for the base API URL and a {@code metadata} field. The
+     * {@code metadata} should be a JSON string containing a top-level {@code "tools"} array, where each element defines
+     * a tool.
+     *
+     * @param assets The configuration asset for this client. It must not be {@code null} and must contain a valid URL.
      */
     public OpenApiClient(Assets assets) {
         this.assets = assets;
@@ -66,33 +90,52 @@ public class OpenApiClient implements McpClient {
         if (StringKit.isEmpty(this.baseUrl)) {
             throw new IllegalArgumentException("OpenAPI assets must contain a 'url' for baseUrl");
         }
-        this.webClient = WebClient.builder().baseUrl(this.baseUrl).build();
-        this.adaptedTools = initializeTools();
+        this.client = WebClient.builder().baseUrl(this.baseUrl).build();
+        this.tools = initializeTools();
     }
 
     /**
-     * Initializes the client by parsing the manually defined tools from the configuration.
-     * 
-     * @return A Mono that completes immediately, as initialization is synchronous.
+     * Initializes the client.
+     * <p>
+     * The actual tool parsing is performed synchronously in the constructor. This method exists to comply with the
+     * {@link McpClient} interface and simply logs a confirmation message.
+     *
+     * @return A {@link Mono} that completes immediately after logging the initialization status.
      */
     @Override
     public Mono<Void> initialize() {
         return Mono.fromRunnable(() -> {
-            Logger.info(
-                    "OpenApiClient initialized for baseUrl: {}. Found {} tools.",
-                    this.baseUrl,
-                    adaptedTools.size());
+            Logger.info("OpenApiClient initialized for baseUrl: {}. Found {} tools.", this.baseUrl, this.tools.size());
         });
     }
 
     /**
-     * Parses the "tools" list from the Assets' config field.
+     * Parses the tool definitions from the {@code metadata} of the {@link Assets} object.
+     * <p>
+     * The expected JSON structure in {@code assets.getMetadata()} is:
      * 
-     * @return A map of tools, keyed by their name.
+     * <pre>
+     * {
+     *   "tools": [
+     *     {
+     *       "name": "getUser",
+     *       "description": "Retrieves a user by ID.",
+     *       "endpoint": "/users/{id}",
+     *       "method": "GET",
+     *       "inputSchema": {
+     *         "path": { "id": "string" },
+     *         "query": { "details": "boolean" }
+     *       }
+     *     }
+     *   ]
+     * }
+     * </pre>
+     *
+     * @return A map of {@link Tool} objects, keyed by their name.
      */
     private Map<String, Tool> initializeTools() {
         if (StringKit.isEmpty(assets.getMetadata())) {
-            Logger.warn("OpenAPI asset '{}' has no config field. No tools will be loaded.", assets.getName());
+            Logger.warn("OpenAPI asset '{}' has no metadata field. No tools will be loaded.", assets.getName());
             return Collections.emptyMap();
         }
 
@@ -100,21 +143,23 @@ public class OpenApiClient implements McpClient {
         List<Map<String, Object>> toolConfigs = (List<Map<String, Object>>) rawConfig.get("tools");
 
         if (toolConfigs == null || toolConfigs.isEmpty()) {
-            Logger.warn("OpenAPI asset '{}' config has no 'tools' list. No tools will be loaded.", assets.getName());
+            Logger.warn("OpenAPI asset '{}' metadata has no 'tools' list. No tools will be loaded.", assets.getName());
             return Collections.emptyMap();
         }
 
         return toolConfigs.stream().map(toolConfig -> {
             String name = (String) toolConfig.get("name");
             String description = (String) toolConfig.get("description");
+            // The inputSchema defines the parameters for the tool.
             Map<String, Object> schema = (Map<String, Object>) toolConfig.get("inputSchema");
             if (schema == null) {
-                schema = new HashMap<>(); // 确保是一个可变的Map
+                schema = new HashMap<>(); // Ensure it's a mutable map
             } else {
-                // 如果schema不是null，也需要确保它是可变的，因为JsonKit.toMap可能返回不可变的Map
+                // JsonKit might return an immutable map, so we create a new mutable one.
                 schema = new HashMap<>(schema);
             }
-            // Store the raw config map in the schema for later use in callTool
+            // Store the entire raw configuration map for later use in callTool.
+            // This is a practical way to access endpoint and method without defining more fields.
             schema.put("_rawConfig", toolConfig);
             return new Tool(name, description, schema);
         }).collect(Collectors.toMap(Tool::getName, Function.identity()));
@@ -127,41 +172,63 @@ public class OpenApiClient implements McpClient {
 
     @Override
     public List<Tool> getTools() {
-        return adaptedTools != null ? new ArrayList<>(adaptedTools.values()) : Collections.emptyList();
+        return tools != null ? new ArrayList<>(tools.values()) : Collections.emptyList();
     }
 
+    /**
+     * Executes a tool call by translating it into an HTTP request.
+     * <p>
+     * This method performs the following steps:
+     * <ol>
+     * <li>Looks up the tool by {@code toolName}.</li>
+     * <li>Extracts the {@code endpoint} and {@code httpMethod} from the tool's raw configuration.</li>
+     * <li>Separates the provided {@code arguments} into path, query, and body parameters based on the tool's
+     * {@code inputSchema}.</li>
+     * <li>Constructs the final request URI, substituting path variables.</li>
+     * <li>Executes the HTTP request and returns the response body as a {@code String}.</li>
+     * </ol>
+     * 
+     * @param toolName  The name of the tool to execute.
+     * @param arguments A map of arguments for the tool, keyed by parameter name.
+     * @return A {@link Mono} emitting the response body as a {@code String}, or an error if the tool is not found or
+     *         the request fails.
+     */
     @Override
     public Mono<String> callTool(String toolName, Map<String, Object> arguments) {
-        Tool tool = adaptedTools.get(toolName);
+        // 1. Look up the tool definition.
+        Tool tool = tools.get(toolName);
         if (tool == null) {
-            return Mono.error(new UnsupportedOperationException("Tool '" + toolName + "' not found."));
+            return Mono.error(new ValidateException("Tool '" + toolName + "' not found."));
         }
 
+        // 2. Extract raw configuration details (endpoint, method).
         Map<String, Object> rawConfig = (Map<String, Object>) tool.getInputSchema().get("_rawConfig");
         String endpoint = (String) rawConfig.get("endpoint");
         String httpMethod = ((String) rawConfig.get("method")).toUpperCase();
 
+        // 3. Start building the URI.
         UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromPath(endpoint);
 
-        // Separate arguments into path, query, and body
+        // 4. Separate arguments into path, query, and body based on the schema.
         Map<String, Object> pathParamsSchema = (Map<String, Object>) tool.getInputSchema()
                 .getOrDefault("path", Collections.emptyMap());
         Map<String, Object> queryParamsSchema = (Map<String, Object>) tool.getInputSchema()
                 .getOrDefault("query", Collections.emptyMap());
 
-        // Populate query parameters
+        // 5. Populate query parameters from arguments.
         queryParamsSchema.keySet().forEach(key -> {
             if (arguments.containsKey(key)) {
                 uriBuilder.queryParam(key, arguments.get(key));
             }
         });
 
-        // Build the final URI, substituting path variables
+        // 6. Build the final URI, substituting path variables from arguments.
         String finalUri = uriBuilder.buildAndExpand(arguments).toUriString();
 
-        WebClient.RequestBodySpec requestSpec = webClient.method(HttpMethod.valueOf(httpMethod)).uri(finalUri);
+        // 7. Create the request specification.
+        WebClient.RequestBodySpec requestSpec = client.method(HttpMethod.valueOf(httpMethod)).uri(finalUri);
 
-        // Handle request body
+        // 8. Handle the request body if the schema defines one.
         if (tool.getInputSchema().containsKey("body")) {
             Object bodyValue = arguments.get("body");
             if (bodyValue != null) {
@@ -171,23 +238,31 @@ public class OpenApiClient implements McpClient {
 
         Logger.info("Executing OpenAPI tool '{}': {} {}", toolName, httpMethod, finalUri);
 
+        // 9. Execute the request and return the response body.
         return requestSpec.retrieve().bodyToMono(String.class)
                 .doOnSuccess(response -> Logger.info("Received response for tool '{}'", toolName));
     }
 
     /**
-     * Checks the health of the remote API by sending a lightweight OPTIONS request to its base URL.
+     * Checks the health of the remote API by sending a lightweight {@code OPTIONS} request to its base URL.
+     * <p>
+     * An {@code OPTIONS} request is used as it is typically a low-overhead operation. The API is considered healthy if
+     * the request completes without an error and does not return a 5xx server error status. The operation includes a
+     * 5-second timeout to prevent the client from waiting indefinitely on an unresponsive host.
      * 
-     * @return A Mono emitting true if the API is reachable, false otherwise.
+     * @return A {@link Mono} emitting {@code true} if the API is reachable and returns a non-5xx status, {@code false}
+     *         otherwise.
      */
     @Override
     public Mono<Boolean> isHealthy() {
-        return this.webClient.options().uri("") // Check the base URL
-                .retrieve().toBodilessEntity().map(response -> !response.getStatusCode().is5xxServerError()) // Consider
-                                                                                                             // any
+        return this.client.options().uri("") // Check the base URL
+                .retrieve().toBodilessEntity().map(response -> !response.getStatusCode().is5xxServerError()) // Any
                                                                                                              // non-5xx
-                                                                                                             // code as
-                                                                                                             // healthy/reachable
-                .timeout(Duration.ofSeconds(5), Mono.just(false)).onErrorReturn(false);
+                                                                                                             // is
+                                                                                                             // considered
+                                                                                                             // healthy
+                .timeout(Duration.ofSeconds(5), Mono.just(false)) // Fallback to false on timeout
+                .onErrorReturn(false); // Fallback to false on any other error
     }
+
 }

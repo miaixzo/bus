@@ -37,6 +37,7 @@ import org.miaixz.bus.vortex.magic.Delegate;
 import org.miaixz.bus.vortex.magic.ErrorCode;
 import org.miaixz.bus.vortex.magic.Principal;
 import org.miaixz.bus.vortex.strategy.QualiferStrategy;
+import reactor.core.publisher.Mono;
 
 /**
  * A Service Provider Interface (SPI) for performing authentication and authorization.
@@ -51,72 +52,82 @@ import org.miaixz.bus.vortex.strategy.QualiferStrategy;
 public interface AuthorizeProvider {
 
     /**
-     * Validates the provided principal and performs the authorization process. This default method acts as a template,
-     * dispatching to the appropriate specific validation method (e.g., {@link #token(Principal)} or
+     * Asynchronously validates the provided principal and performs the authorization process. This default method acts
+     * as a template, dispatching to the appropriate specific validation method (e.g., {@link #token(Principal)} or
      * {@link #apiKey(Principal)}) based on the principal's type.
      * <p>
      * This method can be overridden to handle custom credential types or more complex dispatching logic.
      *
      * @param principal The {@link Principal} object containing the credential to be validated.
-     * @return A {@link Delegate} object encapsulating the authorization result.
-     * @throws ValidateException if the principal is null or empty.
+     * @return A {@code Mono<Delegate>} emitting the authorization result.
      */
-    default Delegate authorize(Principal principal) {
+    default Mono<Delegate> authorize(Principal principal) {
         if (ObjectKit.isEmpty(principal)) {
             Logger.warn("Authorization failed: The principal entity is null or empty.");
-            throw new ValidateException(ErrorCode._100806);
+            // Return a Mono that signals an error immediately.
+            return Mono.error(new ValidateException(ErrorCode._100806));
         }
 
         // Dispatch based on the credential type using an if-else if chain,
         // as case labels in a switch must be compile-time constants.
         if (Consts.ONE.equals(principal.getType())) {
-            return this.token(principal);
+            return this.token(principal); // Now returns Mono<Delegate>
         } else if (Consts.TWO.equals(principal.getType())) {
-            return this.apiKey(principal);
+            return this.apiKey(principal); // Now returns Mono<Delegate>
         } else {
             Logger.warn(
                     "==> Provider: Unsupported principal type: {}. Override the 'authorize' method to handle it.",
                     principal.getType());
-            return Delegate.builder()
-                    .message(
-                            Message.builder().errcode(ErrorCode._100802.getKey())
-                                    .errmsg("Unsupported credential type: " + principal.getType()).build())
-                    .build();
+            // Return a Mono emitting a Delegate with the error information.
+            return Mono.just(
+                    Delegate.builder()
+                            .message(
+                                    Message.builder().errcode(ErrorCode._100802.getKey())
+                                            .errmsg("Unsupported credential type: " + principal.getType()).build())
+                            .build());
         }
     }
 
     /**
-     * Validates a token-based principal (e.g., JWT, Opaque Token).
+     * Asynchronously validates a token-based principal (e.g., JWT, Opaque Token).
      * <p>
      * <strong>Warning:</strong> The default implementation of this method provides no security and always returns a
      * successful result. It is a placeholder and **must be overridden** with actual validation logic, such as JWT
      * signature verification, introspection against an OAuth2 server, or a database/cache lookup.
      *
      * @param principal The {@link Principal} object containing the token.
-     * @return A {@link Delegate} object containing the authorization result.
+     * @return A {@code Mono<Delegate>} emitting the authorization result.
      */
-    default Delegate token(Principal principal) {
+    default Mono<Delegate> token(Principal principal) {
         Logger.debug("Executing default `token` method. This provides no security and should be overridden.");
-        return Delegate.builder().message(
-                Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build())
-                .authorize(Authorize.builder().build()).build();
+        // Wrap the synchronous default result in Mono.just()
+        return Mono.just(
+                Delegate.builder()
+                        .message(
+                                Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+                                        .errmsg(ErrorCode._SUCCESS.getValue()).build())
+                        .authorize(Authorize.builder().build()).build());
     }
 
     /**
-     * Validates an API key-based principal.
+     * Asynchronously validates an API key-based principal.
      * <p>
      * <strong>Warning:</strong> The default implementation of this method provides no security and always returns a
      * successful result. It is a placeholder and **must be overridden** with actual validation logic, such as looking
      * up the API key in a database and checking its permissions.
      *
      * @param principal The {@link Principal} object containing the API key.
-     * @return A {@link Delegate} object containing the authorization result.
+     * @return A {@code Mono<Delegate>} emitting the authorization result.
      */
-    default Delegate apiKey(Principal principal) {
+    default Mono<Delegate> apiKey(Principal principal) {
         Logger.debug("Executing default `apiKey` method. This provides no security and should be overridden.");
-        return Delegate.builder().message(
-                Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build())
-                .authorize(Authorize.builder().build()).build();
+        // Wrap the synchronous default result in Mono.just()
+        return Mono.just(
+                Delegate.builder()
+                        .message(
+                                Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+                                        .errmsg(ErrorCode._SUCCESS.getValue()).build())
+                        .authorize(Authorize.builder().build()).build());
     }
 
 }

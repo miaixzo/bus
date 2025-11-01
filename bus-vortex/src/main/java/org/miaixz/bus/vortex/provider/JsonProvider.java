@@ -29,12 +29,14 @@ package org.miaixz.bus.vortex.provider;
 
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.vortex.Provider;
+import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 /**
  * An implementation of {@link Provider} for serializing objects into JSON strings.
  * <p>
  * This class acts as a bridge between the gateway's format abstraction and the centralized {@link JsonKit} utility. It
- * ensures that all JSON serialization within the gateway is performed consistently.
+ * ensures that all JSON serialization within the gateway is performed consistently and asynchronously.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,16 +44,21 @@ import org.miaixz.bus.vortex.Provider;
 public class JsonProvider implements Provider {
 
     /**
-     * Serializes the given Java object into its JSON string representation.
+     * Asynchronously serializes the given Java object into its JSON string representation.
      * <p>
-     * This implementation delegates the serialization directly to {@link JsonKit#toJsonString(Object)}.
+     * This implementation delegates the synchronous, CPU-bound serialization to {@link JsonKit#toJsonString(Object)}
+     * and wraps it in a {@link Mono}. The work is executed on the {@code Schedulers.boundedElastic()} pool to avoid
+     * blocking the event loop.
      *
      * @param bean The object to be serialized.
-     * @return The serialized JSON string.
+     * @return A {@code Mono} emitting the serialized JSON string.
      */
     @Override
-    public String serialize(Object bean) {
-        return JsonKit.toJsonString(bean);
+    public Mono<String> serialize(Object bean) {
+        // 1. Wrap the synchronous, blocking (CPU-bound) call in fromCallable.
+        return Mono.fromCallable(() -> JsonKit.toJsonString(bean))
+                // 2. Offload the execution from the event loop to a safer thread pool.
+                .subscribeOn(Schedulers.boundedElastic());
     }
 
 }

@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.vortex.support;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Assets;
 import org.miaixz.bus.vortex.Context;
@@ -85,7 +86,9 @@ public class MqRouter implements Router {
             long startTime = System.currentTimeMillis();
             Logger.info("MQ Router: Routing request for topic: {}", assets.getMethod());
 
-            return request.bodyToMono(String.class).flatMap(payload -> this.service.send(assets, payload))
+            return request.bodyToMono(String.class)
+                    // .switchIfEmpty() handles cases where the body might be empty
+                    .switchIfEmpty(Mono.just(Normal.EMPTY)).flatMap(payload -> this.service.send(assets, payload))
                     .then(Mono.defer(() -> {
                         long duration = System.currentTimeMillis() - startTime;
                         Logger.info(

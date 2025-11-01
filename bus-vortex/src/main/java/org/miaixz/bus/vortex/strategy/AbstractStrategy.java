@@ -108,7 +108,7 @@ public abstract class AbstractStrategy implements Strategy {
                     .filter(part -> part.toLowerCase().startsWith("host="))
                     .map(part -> part.substring(5).trim().replace("\"", Normal.EMPTY)).findFirst();
             if (authority.isPresent()) {
-                Logger.debug("Authority '{}' found in 'Forwarded' header", authority.get());
+                Logger.debug("==>  Authority: '{}' found in 'Forwarded' header", authority.get());
                 return authority.map(host -> appendPortIfMissing(host, protocol));
             }
         }
@@ -119,25 +119,27 @@ public abstract class AbstractStrategy implements Strategy {
             // In multi-level proxies, this header may contain multiple domain names; the first one is the original
             // domain.
             String authority = forwardedHostHeader.split(Symbol.COMMA)[0].trim();
-            Logger.debug("Authority '{}' found in 'X-Forwarded-Host' header", authority);
+            Logger.debug("==>  Authority: '{}' found in 'X-Forwarded-Host' header", authority);
             return Optional.of(appendPortIfMissing(authority, protocol));
         }
 
         // Priority 3: Try to parse 'Host'
         String hostHeader = headers.getFirst("Host");
         if (StringKit.hasText(hostHeader)) {
-            Logger.debug("Authority '{}' found in 'Host' header", hostHeader);
+            Logger.debug("==>  Authority: '{}' found in 'Host' header", hostHeader);
             return Optional.of(appendPortIfMissing(hostHeader, protocol));
         }
 
         // Priority 4: Use getURI().getHost() as a last fallback
         String uriHost = request.getURI().getHost();
         if (StringKit.hasText(uriHost)) {
-            Logger.debug("Authority host '{}' found via request.getURI().getHost() as fallback", uriHost);
+            Logger.debug("==>  Authority: '{}' found via request.getURI().getHost() as fallback", uriHost);
             return Optional.of(appendPortIfMissing(uriHost, protocol));
         }
 
-        Logger.warn("Could not determine a valid authority from any source for request: {}", request.getPath());
+        Logger.debug(
+                "==>  Authority: Could not determine a valid authority from any source for request: {}",
+                request.getPath());
         return Optional.empty();
     }
 

@@ -36,6 +36,7 @@ import org.miaixz.bus.vortex.support.mcp.client.StdioClient;
 import org.springframework.context.SmartLifecycle;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 import java.util.Collection;
 import java.util.List;
@@ -66,11 +67,26 @@ import java.util.stream.Collectors;
  */
 public class McpService implements SmartLifecycle {
 
+    /**
+     * The separator used to prefix tool names with their service ID for uniqueness.
+     */
     private static final String TOOL_NAME_SEPARATOR = "::";
 
+    /**
+     * An atomic flag to track the running state of the service, ensuring idempotent start/stop.
+     */
     private final AtomicBoolean running = new AtomicBoolean(false);
+    /**
+     * The registry providing access to all API asset configurations (e.g., from database or files).
+     */
     private final AssetsRegistry assetsRegistry;
+    /**
+     * The provider responsible for starting, stopping, and managing external system processes.
+     */
     private final ProcessProvider processProvider;
+    /**
+     * A thread-safe cache holding all active and initialized MCP clients, keyed by their service ID (asset ID).
+     */
     private final Map<String, McpClient> clientCache = new ConcurrentHashMap<>();
 
     /**
@@ -88,15 +104,19 @@ public class McpService implements SmartLifecycle {
     public void start() {
         if (running.compareAndSet(false, true)) {
             Logger.info("MCP Service is starting...");
-            List<Assets> mcpAssets = this.assetsRegistry.getAll().stream().filter(a -> a.getMode() >= 3) // Modes 3, 4,
-                                                                                                         // 5, 6 are MCP
-                                                                                                         // related
-                    .toList();
 
-            Logger.info("Found {} MCP assets to initialize.", mcpAssets.size());
-
-            Flux.fromIterable(mcpAssets).flatMap(this::startAndRegisterClient)
-                    .doOnError(e -> Logger.error("Error during MCP service startup.", e)).subscribe();
+            // 1. Asynchronously get assets, offloading the potentially blocking registry call
+            Mono.fromCallable(
+                    () -> this.assetsRegistry.getAll().stream().filter(a -> a.getMode() >= 3) // Modes 3, 4, 5, 6 are
+                                                                                              // MCP related
+                            .toList())
+                    .subscribeOn(Schedulers.boundedElastic()) // Offload the registry I/O
+                    .flatMapMany(Flux::fromIterable) // Convert the List<Assets> to a Flux<Assets>
+                    .flatMap(this::startAndRegisterClient) // 2. Start each client in parallel
+                    .doOnError(e -> Logger.error("Error during MCP service startup.", e)).subscribe(); // 3.
+                                                                                                       // Fire-and-forget
+                                                                                                       // (startup is
+                                                                                                       // async)
 
             Logger.info("MCP Service startup process initiated for all clients.");
         }
@@ -107,20 +127,30 @@ public class McpService implements SmartLifecycle {
         if (running.compareAndSet(true, false)) {
             Logger.info("MCP Service is stopping...");
 
-            // Stop all underlying processes via the provider
-            Flux.fromIterable(assetsRegistry.getAll().stream().filter(a -> a.getMode() >= 3).toList())
-                    .flatMap(processProvider::stop)
-                    .doOnError(e -> Logger.error("Error during MCP service shutdown.", e)).blockLast(); // Block to
-                                                                                                        // ensure
-                                                                                                        // processes are
-                                                                                                        // stopped
-                                                                                                        // before the
-                                                                                                        // app exits
+            // 1. Asynchronously get assets, offloading the potentially blocking registry call
+            Mono<List<Assets>> mcpAssets = Mono
+                    .fromCallable(() -> this.assetsRegistry.getAll().stream().filter(a -> a.getMode() >= 3).toList())
+                    .subscribeOn(Schedulers.boundedElastic());
 
-            // Close all client connections
-            clientCache.values().forEach(McpClient::close);
+            // 2. Create a Mono to stop all processes (assumes provider.stop() is reactive)
+            Mono<Void> stopProcesses = mcpAssets.flatMapMany(Flux::fromIterable).flatMap(processProvider::stop)
+                    .doOnError(e -> Logger.error("Error stopping MCP process.", e)).then();
+
+            // 3. Create a Mono to close all clients in parallel
+            Mono<Void> closeClients = Flux.fromIterable(clientCache.values())
+                    .flatMap(
+                            client -> Mono.fromRunnable(client::close) // Wrap blocking I/O
+                                    .subscribeOn(Schedulers.boundedElastic()) // Offload each close
+                                    .doOnError(e -> Logger.error("Error closing MCP client.", e)))
+                    .then();
+
+            // 4. Run both stop/close operations in parallel and block until all are complete
+            // (Blocking is acceptable in SmartLifecycle.stop())
+            Mono.when(stopProcesses, closeClients).doOnError(e -> Logger.error("Error during MCP service shutdown.", e))
+                    .block();
+
+            // 5. Clear cache after all resources are released
             clientCache.clear();
-
             Logger.info("MCP Service stopped.");
         }
     }
@@ -130,6 +160,10 @@ public class McpService implements SmartLifecycle {
         return running.get();
     }
 
+    /**
+     * Assumes processProvider.start() and client.initialize() are already reactive (return Mono). If not, they must
+     * also be wrapped in Mono.fromCallable().subscribeOn().
+     */
     private Mono<Void> startAndRegisterClient(Assets asset) {
         return processProvider.start(asset).flatMap(process -> {
             McpClient client = createClientForAsset(asset, process);
@@ -151,7 +185,7 @@ public class McpService implements SmartLifecycle {
     }
 
     /**
-     * Retrieves an initialized MCP client instance by its service ID.
+     * Retrieves an initialized MCP client instance by its service ID. This is a non-blocking in-memory cache lookup.
      *
      * @param serviceId The unique ID.
      * @return The {@link McpClient} instance, or {@code null} if not found or not ready.
@@ -161,7 +195,7 @@ public class McpService implements SmartLifecycle {
     }
 
     /**
-     * Retrieves all active and initialized MCP client instances.
+     * Retrieves all active and initialized MCP client instances. This is a non-blocking in-memory operation.
      *
      * @return A collection of all active {@link McpClient} instances.
      */
@@ -170,21 +204,37 @@ public class McpService implements SmartLifecycle {
     }
 
     /**
-     * Aggregates and returns a list of all tools from all active MCP clients.
+     * Asynchronously aggregates and returns a list of all tools from all active MCP clients.
      * <p>
      * Each tool's name is prefixed with its service name and a separator (e.g., "serviceName::toolName") to ensure
      * uniqueness across all services.
+     * <p>
+     * This method fetches tools from all clients in parallel, assuming {@code client.getTools()} is a blocking I/O
+     * call.
      *
      * @return A {@code Mono} emitting a List of all available {@link Tool}s.
      */
     public Mono<List<Tool>> getTools() {
-        return Mono.fromCallable(() -> clientCache.entrySet().stream().flatMap(entry -> {
-            String serviceName = entry.getKey();
-            McpClient client = entry.getValue();
-            return client.getTools().stream().map(
-                    tool -> new Tool(serviceName + TOOL_NAME_SEPARATOR + tool.getName(), tool.getDescription(),
-                            tool.getInputSchema()));
-        }).collect(Collectors.toList()));
+        // 1. Get all client entries from the cache (non-blocking)
+        return Flux.fromIterable(clientCache.entrySet())
+                // 2. For each client, fetch its tools in parallel.
+                .flatMap(entry ->
+                // 3. Wrap the blocking client.getTools() call
+                Mono.fromCallable(() -> {
+                    String serviceName = entry.getKey();
+                    McpClient client = entry.getValue();
+                    // This is the blocking call. It's now wrapped and will be offloaded.
+                    return client.getTools().stream()
+                            .map(
+                                    tool -> new Tool(serviceName + TOOL_NAME_SEPARATOR + tool.getName(),
+                                            tool.getDescription(), tool.getInputSchema()))
+                            .collect(Collectors.toList());
+                }).subscribeOn(Schedulers.boundedElastic()) // 4. Offload the blocking call
+                )
+                // 5. We now have a Flux<List<Tool>>. Flatten it to a Flux<Tool>.
+                .flatMap(Flux::fromIterable)
+                // 6. Collect all tools from all clients into a single list.
+                .collectList();
     }
 
 }

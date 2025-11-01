@@ -42,7 +42,6 @@ import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.http.codec.multipart.Part;
 import org.springframework.util.LinkedMultiValueMap;
@@ -54,8 +53,8 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 import reactor.netty.http.client.HttpClient;
 import reactor.netty.resources.ConnectionProvider;
 
@@ -107,7 +106,7 @@ public class RestService {
         String baseUrl = buildBaseUrl(assets);
         Logger.info("==>       HTTP: [N/A] [{}] [{}] [HTTP_ROUTER_BASEURL] - Base URL: {}", method, path, baseUrl);
 
-        // 1. Dynamically configure an HttpClient for THIS request.
+        // 2. Dynamically configure an HttpClient for THIS request.
         HttpClient configuredClient;
         if (assets.getMode() == 3) { // 3 represents SSE (Streaming)
             Logger.info(
@@ -123,11 +122,11 @@ public class RestService {
                     .responseTimeout(Duration.ofSeconds(assets.getTimeout()));
         }
 
-        // 2. Build a WebClient ON TOP of the dynamically configured HttpClient.
+        // 3. Build a WebClient ON TOP of the dynamically configured HttpClient.
         WebClient webClient = WebClient.builder().clientConnector(new ReactorClientHttpConnector(configuredClient))
                 .exchangeStrategies(CACHED_EXCHANGE_STRATEGIES).baseUrl(baseUrl).build();
 
-        // 3. Build and execute the request.
+        // 4. Build and execute the request.
         String targetUri = buildTargetUri(assets, context);
         Logger.info("==>       HTTP: [{}] [{}] [HTTP_ROUTER_URI] - Target URI: {}", method, path, targetUri);
 
@@ -180,11 +179,28 @@ public class RestService {
 
         // 7. Send the request and process the response.
         Logger.info(
-                "==>       HTTP: [N/A] [{}] [{}] [HTTP_ROUTER_SEND] - Sending request with timeout: {}ms",
+                "==>       HTTP: [N/A] [{}] [{}] [HTTP_ROUTER_SEND] - Sending request with timeout: {}s",
                 method,
                 path,
                 assets.getTimeout());
-        return bodySpec.retrieve().toEntity(DataBuffer.class).flatMap(this::processResponse);
+
+        // **OPTIMIZATION:** Use exchangeToMono to STREAM the response, not retrieve().toEntity()
+        // This avoids buffering the entire downstream response in memory.
+        return bodySpec.exchangeToMono(clientResponse -> {
+            ServerResponse.BodyBuilder responseBuilder = ServerResponse.status(clientResponse.statusCode());
+
+            // Copy all headers from the downstream response to the upstream response
+            responseBuilder.headers(headers -> {
+                headers.addAll(clientResponse.headers().asHttpHeaders());
+                headers.remove(HttpHeaders.HOST);
+                // Let the container manage transfer-encoding and content-length
+                headers.remove(HttpHeaders.TRANSFER_ENCODING);
+                headers.remove(HttpHeaders.CONTENT_LENGTH);
+            });
+
+            // Stream the response body directly
+            return responseBuilder.body(clientResponse.bodyToFlux(DataBuffer.class), DataBuffer.class);
+        });
     }
 
     /**
@@ -202,14 +218,18 @@ public class RestService {
             String path) {
         Map<String, Object> params = context.getParameters();
         if (!params.isEmpty()) {
-            String jsonBody = JsonKit.toJsonString(params);
-            bodySpec.contentType(MediaType.APPLICATION_JSON).bodyValue(jsonBody);
+            // **OPTIMIZATION:** Wrap synchronous, CPU-bound JSON serialization
+            // in fromCallable and offload it from the event loop.
+            Mono<String> jsonBodyMono = Mono.fromCallable(() -> JsonKit.toJsonString(params))
+                    .subscribeOn(Schedulers.boundedElastic());
+
+            bodySpec.contentType(MediaType.APPLICATION_JSON).body(jsonBodyMono, String.class);
+
             Logger.info(
-                    "==>       HTTP: [N/A] [{}] [{}] [HTTP_ROUTER_JSON] - JSON body configured with {} parameters, size: {}",
+                    "==>       HTTP: [N/A] [{}] [{}] [HTTP_ROUTER_JSON] - JSON body configured with {} parameters (async generation)",
                     method,
                     path,
-                    params.size(),
-                    jsonBody.length());
+                    params.size());
         } else {
             Logger.info(
                     "==>       HTTP: [N/A] [{}] [{}] [HTTP_ROUTER_JSON] - No JSON parameters to configure",
@@ -235,6 +255,7 @@ public class RestService {
         if (!params.isEmpty()) {
             MultiValueMap<String, String> multiValueMap = new LinkedMultiValueMap<>(params.size());
             params.forEach((k, v) -> multiValueMap.add(k, String.valueOf(v)));
+            // bodyValue is fine for MultiValueMap, WebClient handles it efficiently.
             bodySpec.contentType(MediaType.APPLICATION_FORM_URLENCODED).bodyValue(multiValueMap);
             Logger.info(
                     "==>       HTTP: [N/A] [{}] [{}] [HTTP_ROUTER_FORM] - Form body configured with {} parameters",
@@ -264,6 +285,7 @@ public class RestService {
             MultiValueMap<String, Object> multipartData = new LinkedMultiValueMap<>();
             fileParts.forEach(multipartData::add);
             params.forEach((k, v) -> multipartData.add(k, String.valueOf(v)));
+            // fromMultipartData is non-blocking and supports streaming.
             bodySpec.body(BodyInserters.fromMultipartData(multipartData));
             Logger.info(
                     "==>       HTTP: [N/A] [{}] [{}] [HTTP_ROUTER_MULTIPART] - Multipart body configured with {} files and {} params",
@@ -281,6 +303,7 @@ public class RestService {
      * @return The constructed base URL string (e.g., "http://api.example.com:8080/v1").
      */
     private String buildBaseUrl(Assets assets) {
+        // This is fast, non-blocking string building.
         StringBuilder baseUrlBuilder = new StringBuilder(assets.getHost());
         if (assets.getPort() != null && assets.getPort() > 0) {
             baseUrlBuilder.append(Symbol.COLON).append(assets.getPort());
@@ -302,6 +325,7 @@ public class RestService {
      * @return The constructed target URI string, including query parameters for GET requests.
      */
     private String buildTargetUri(Assets assets, Context context) {
+        // This is fast, non-blocking URI building.
         UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(assets.getUrl());
         if (HttpMethod.GET.equals(context.getHttpMethod())) {
             Map<String, Object> params = context.getParameters();
@@ -312,21 +336,6 @@ public class RestService {
             }
         }
         return builder.build().toUriString();
-    }
-
-    /**
-     * Processes the response from the downstream service and transforms it into a {@link ServerResponse}.
-     *
-     * @param responseEntity The {@link ResponseEntity} received from the downstream service.
-     * @return A {@code Mono<ServerResponse>} to be sent back to the original client.
-     */
-    private Mono<ServerResponse> processResponse(ResponseEntity<DataBuffer> responseEntity) {
-        return ServerResponse.status(responseEntity.getStatusCode()).headers(headers -> {
-            headers.addAll(responseEntity.getHeaders());
-            headers.remove(HttpHeaders.CONTENT_LENGTH);
-        }).body(
-                responseEntity.getBody() == null ? BodyInserters.empty()
-                        : BodyInserters.fromDataBuffers(Flux.just(responseEntity.getBody())));
     }
 
 }

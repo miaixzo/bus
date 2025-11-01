@@ -53,6 +53,7 @@ import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.web.server.ServerWebExchange;
 
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 /**
  * The strategy responsible for "vetting" incoming requests by performing critical validations.
@@ -74,66 +75,81 @@ import reactor.core.publisher.Mono;
 public class VettingStrategy extends AbstractStrategy {
 
     /**
-     * Applies the request parsing and validation logic.
+     * Applies the request parsing and validation logic in a fully reactive, non-blocking manner.
      * <p>
-     * It differentiates between a standard, fully-parameterized gateway request and a simple URL-based request.
+     * It differentiates between a standard, fully-parameterized gateway request and a simple URL-based request. The
+     * validation steps are composed into a single {@link Mono} that completes successfully only if all checks pass. If
+     * any validation fails, the chain is terminated with an error signal.
      */
     @Override
     public Mono<Void> apply(ServerWebExchange exchange, Chain chain) {
         return Mono.deferContextual(contextView -> {
             final Context context = contextView.get(Context.class);
+
+            // Compose all validation and enrichment steps into a single reactive pipeline.
+            Mono<Void> validationMono;
             if (Args.isCstRequest(exchange.getRequest().getPath().value())) {
-                validateAndEnrichUrlRequest(exchange, context);
+                validationMono = validateAndEnrichUrlRequest(exchange, context);
             } else {
-                validateAndEnrich(exchange, context);
+                validationMono = validateAndEnrich(exchange, context);
             }
-            return chain.apply(exchange);
+
+            // Proceed with the rest of the chain only after all validations are successful.
+            return validationMono.then(chain.apply(exchange));
         });
     }
 
     /**
-     * Orchestrates the entire validation and enrichment process for a standard gateway request.
+     * Orchestrates the entire validation and enrichment process for a standard gateway request. Each step returns a
+     * {@link Mono}, allowing them to be chained together reactively.
      *
      * @param exchange The current server exchange.
      * @param context  The request context to be validated and enriched.
+     * @return A {@link Mono} that completes on success or signals an error on validation failure.
      */
-    protected void validateAndEnrich(ServerWebExchange exchange, Context context) {
-        this.validateParameters(context);
-        this.validateTimestamp(context);
-        this.validateSignature(context);
-        this.enrich(exchange, context);
+    protected Mono<Void> validateAndEnrich(ServerWebExchange exchange, Context context) {
+        return validateParameters(context).then(Mono.defer(() -> validateTimestamp(context)))
+                .then(Mono.defer(() -> validateSignature(context)))
+                .then(Mono.fromRunnable(() -> enrich(exchange, context)));
     }
 
     /**
      * Validates and enriches a simple URL-based request that does not follow the standard gateway parameter protocol.
      * <p>
-     * This method hardcodes the 'method' (from the path) and 'version' and only performs timestamp validation and
-     * context enrichment.
+     * This method hardcodes the 'method' (from the path) and 'version' and only performs context enrichment.
      *
      * @param exchange The current server exchange.
      * @param context  The request context to be enriched.
+     * @return A {@link Mono} that completes after enrichment.
      */
-    protected void validateAndEnrichUrlRequest(ServerWebExchange exchange, Context context) {
-        context.getParameters().put(Args.METHOD, exchange.getRequest().getPath().value());
-        if (ObjectKit.isEmpty(context.getParameters().get(Args.VERSION))) {
-            context.getParameters().put(Args.VERSION, Args.DEFAULT_VERSION);
-        }
-        this.enrich(exchange, context);
+    protected Mono<Void> validateAndEnrichUrlRequest(ServerWebExchange exchange, Context context) {
+        return Mono.fromRunnable(() -> {
+            context.getParameters().put(Args.METHOD, exchange.getRequest().getPath().value());
+            if (ObjectKit.isEmpty(context.getParameters().get(Args.VERSION))) {
+                context.getParameters().put(Args.VERSION, Args.DEFAULT_VERSION);
+            }
+        }).then(Mono.fromRunnable(() -> enrich(exchange, context)));
     }
 
     /**
-     * Validates the presence and basic integrity of standard gateway parameters.
+     * Validates the presence and basic integrity of standard gateway parameters. This method is wrapped in
+     * {@link Mono#fromRunnable} to ensure the synchronous, exception-throwing logic is captured reactively.
      *
      * @param context The request context.
+     * @return A {@link Mono} that completes on success or signals a {@link ValidateException}.
      */
-    protected void validateParameters(Context context) {
-        Map<String, Object> params = context.getParameters();
-        this.checkForUndefinedValues(params);
-        this.requireParameter(params, Args.METHOD, ErrorCode._100110);
-        this.requireParameter(params, Args.VERSION, ErrorCode._100109);
-        this.requireParameter(params, Args.FORMAT, ErrorCode._100113);
-        this.requireParameter(params, Args.SIGN, ErrorCode._100114);
-        this.requireParameter(params, Args.TIMESTAMP, ErrorCode._100115);
+    protected Mono<Void> validateParameters(Context context) {
+        // Use fromRunnable to wrap synchronous code that can throw exceptions.
+        // This is semantically clearer than defer + return Mono.empty().
+        return Mono.fromRunnable(() -> {
+            Map<String, Object> params = context.getParameters();
+            checkForUndefinedValues(params);
+            requireParameter(params, Args.METHOD, ErrorCode._100110);
+            requireParameter(params, Args.VERSION, ErrorCode._100109);
+            requireParameter(params, Args.FORMAT, ErrorCode._100113);
+            requireParameter(params, Args.SIGN, ErrorCode._100114);
+            requireParameter(params, Args.TIMESTAMP, ErrorCode._100115);
+        });
     }
 
     /**
@@ -167,24 +183,27 @@ public class VettingStrategy extends AbstractStrategy {
     /**
      * Validates the request timestamp to ensure it's within an acceptable time window (e.g., 10 minutes) to prevent
      * replay attacks.
+     * <p>
+     * Uses {@link Mono#fromCallable} to wrap the potentially blocking parsing logic and
+     * {@link reactor.core.publisher.Mono#onErrorMap} to translate {@link NumberFormatException} into a domain-specific
+     * {@link ValidateException}.
      *
      * @param context The request context.
+     * @return A {@link Mono} that completes on success or signals a {@link ValidateException}.
      */
-    protected void validateTimestamp(Context context) {
-        String timestampStr = String.valueOf(context.getParameters().get(Args.TIMESTAMP));
-        try {
+    protected Mono<Void> validateTimestamp(Context context) {
+        return Mono.fromCallable(() -> {
+            String timestampStr = String.valueOf(context.getParameters().get(Args.TIMESTAMP));
             long clientTimestampMs = Long.parseLong(timestampStr);
             long currentTimestampMs = DateKit.current();
             long absoluteDifferenceMs = Math.abs(currentTimestampMs - clientTimestampMs);
 
             if (absoluteDifferenceMs > TimeUnit.MINUTES.toMillis(10)) {
-                this.logTimestampMismatch(clientTimestampMs, currentTimestampMs, absoluteDifferenceMs);
+                logTimestampMismatch(clientTimestampMs, currentTimestampMs, absoluteDifferenceMs);
                 throw new ValidateException(ErrorCode._100107);
             }
-        } catch (NumberFormatException e) {
-            Logger.error("Validation failed: Timestamp format is not a valid millisecond long: {}", timestampStr);
-            throw new ValidateException(ErrorCode._100107);
-        }
+            return (Void) null; // fromCallable requires a return value
+        }).onErrorMap(NumberFormatException.class, ex -> new ValidateException(ErrorCode._100107));
     }
 
     /**
@@ -204,17 +223,25 @@ public class VettingStrategy extends AbstractStrategy {
 
     /**
      * Validates the request signature to ensure authenticity and integrity.
+     * <p>
+     * The signature generation is a blocking operation. This method wraps it in {@link Mono#fromCallable} and
+     * subscribes on {@code Schedulers.boundedElastic()} to offload the work from the event loop, preventing the server
+     * from blocking.
      *
      * @param context The request context.
+     * @return A {@link Mono} that completes on success or signals a {@link SignatureException}.
      */
-    protected void validateSignature(Context context) {
-        Map<String, Object> params = context.getParameters();
-        String key = ObjectKit.isNotEmpty(params.get(Args.APIKEY)) ? String.valueOf(params.get(Args.APIKEY))
-                : String.valueOf(params.get(Args.METHOD));
+    protected Mono<Void> validateSignature(Context context) {
+        return Mono.fromCallable(() -> {
+            Map<String, Object> params = context.getParameters();
+            String key = ObjectKit.isNotEmpty(params.get(Args.APIKEY)) ? String.valueOf(params.get(Args.APIKEY))
+                    : String.valueOf(params.get(Args.METHOD));
 
-        if (!this.validateSign(key + params.get(Args.TIMESTAMP), context.getHttpMethod().name(), params)) {
-            throw new SignatureException(ErrorCode._100106);
-        }
+            if (!validateSign(key + params.get(Args.TIMESTAMP), context.getHttpMethod().name(), params)) {
+                throw new SignatureException(ErrorCode._100106);
+            }
+            return (Void) null;
+        }).subscribeOn(Schedulers.boundedElastic()); // Offload blocking signature validation
     }
 
     /**
@@ -313,7 +340,7 @@ public class VettingStrategy extends AbstractStrategy {
     }
 
     /**
-     * _ * Determines the request domain (host:port) from headers.
+     * Determines the request domain (host:port) from headers.
      *
      * @param request The server HTTP request.
      * @return The determined domain or "unknown:0" as a fallback.

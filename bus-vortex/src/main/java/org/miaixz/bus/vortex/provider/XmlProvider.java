@@ -33,6 +33,8 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.XmlKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.vortex.Provider;
+import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 /**
  * An implementation of {@link Provider} for serializing objects into XML strings.
@@ -47,20 +49,27 @@ import org.miaixz.bus.vortex.Provider;
 public class XmlProvider implements Provider {
 
     /**
-     * Serializes the given Java object into its XML string representation.
+     * Asynchronously serializes the given Java object into its XML string representation.
      * <p>
      * This method first constructs a standard XML header. It then converts the input object into a {@code Map} and
-     * subsequently serializes this map into an XML string. Any exceptions during serialization will bubble up as
-     * runtime exceptions and be handled by the global error handler.
+     * subsequently serializes this map into an XML string.
+     * <p>
+     * The entire synchronous, CPU-bound operation is wrapped in a {@link Mono} and executed on the
+     * {@code Schedulers.boundedElastic()} pool to avoid blocking the event loop.
      *
      * @param bean The object to be serialized.
-     * @return The serialized XML string.
+     * @return A {@code Mono} emitting the serialized XML string.
      */
     @Override
-    public String serialize(Object bean) {
-        Map<String, Object> map = JsonKit.toMap(bean);
-        String buffer = XmlKit.mapToXmlString(map, "response");
-        return buffer.replaceFirst(" standalone=\"[^\"]*\"", Normal.EMPTY);
+    public Mono<String> serialize(Object bean) {
+        // 1. Wrap the synchronous, blocking (CPU-bound) logic in fromCallable.
+        return Mono.fromCallable(() -> {
+            Map<String, Object> map = JsonKit.toMap(bean);
+            String buffer = XmlKit.mapToXmlString(map, "response");
+            return buffer.replaceFirst(" standalone=\"[^\"]*\"", Normal.EMPTY);
+        })
+                // 2. Offload the execution from the event loop to a safer thread pool.
+                .subscribeOn(Schedulers.boundedElastic());
     }
 
 }

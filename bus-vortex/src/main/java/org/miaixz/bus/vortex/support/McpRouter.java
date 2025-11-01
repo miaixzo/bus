@@ -32,12 +32,12 @@ import java.util.stream.Collectors;
 
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.vortex.Router;
-import org.miaixz.bus.vortex.support.mcp.client.McpClient;
 import org.miaixz.bus.vortex.support.mcp.McpService;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 /**
  * MCP protocol request router, acting as a pure request coordinator. It delegates all MCP asset lifecycle management to
@@ -76,6 +76,7 @@ public class McpRouter implements Router {
      */
     @Override
     public Mono<ServerResponse> route(ServerRequest request) {
+        // This logic is synchronous, fast, and non-blocking.
         String action = request.queryParam("action").orElse("listTools");
         if ("listTools".equalsIgnoreCase(action)) {
             return listTools();
@@ -93,7 +94,8 @@ public class McpRouter implements Router {
      * @return A {@link Mono<ServerResponse>} containing a list of all available tools.
      */
     private Mono<ServerResponse> listTools() {
-        // Now uses the new getAllTools() method from McpLifecycleService
+        // This assumes service.getTools() is already asynchronous and returns a Mono,
+        // which is implied by the original code's use of flatMap.
         return this.service.getTools().flatMap(tools -> ServerResponse.ok().bodyValue(tools));
     }
 
@@ -105,6 +107,7 @@ public class McpRouter implements Router {
      * @return A {@link Mono<ServerResponse>} with the result from the tool execution.
      */
     private Mono<ServerResponse> callTool(ServerRequest request) {
+        // --- All this setup is fast, in-memory, and non-blocking ---
         String prefixedToolName = request.queryParam("toolName").orElse(null);
         if (StringKit.isEmpty(prefixedToolName)) {
             return ServerResponse.badRequest().bodyValue("Missing required parameter: toolName");
@@ -118,21 +121,28 @@ public class McpRouter implements Router {
         String serviceName = parts[0];
         String actualToolName = parts[1];
 
-        McpClient client = this.service.getMcp(serviceName);
-        if (client == null) {
-            return ServerResponse.status(503).bodyValue("Service '" + serviceName + "' is not available or not found.");
-        }
-
         // Extract all query parameters as arguments, excluding action and toolName.
         Map<String, Object> arguments = request.queryParams().toSingleValueMap().entrySet().stream()
                 .filter(entry -> !entry.getKey().equals("action") && !entry.getKey().equals("toolName"))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        // --- End of non-blocking setup ---
 
-        Mono<String> resultMono = client.callTool(actualToolName, arguments);
+        // 1. Wrap the potentially blocking call `service.getMcp()` in fromCallable
+        // and offload it from the event loop.
+        return Mono.fromCallable(() -> this.service.getMcp(serviceName)).subscribeOn(Schedulers.boundedElastic())
+                .flatMap(client -> {
+                    // 2. This logic now runs after the client has been fetched asynchronously.
+                    if (client == null) {
+                        return ServerResponse.status(503)
+                                .bodyValue("Service '" + serviceName + "' is not available or not found.");
+                    }
 
-        return resultMono.flatMap(result -> ServerResponse.ok().bodyValue(result)).onErrorResume(
-                e -> ServerResponse.status(500)
-                        .bodyValue("{\"error\": \"Error calling tool: " + e.getMessage() + "\"}"));
+                    // 3. The rest of the chain is already reactive.
+                    return client.callTool(actualToolName, arguments)
+                            .flatMap(result -> ServerResponse.ok().bodyValue(result)).onErrorResume(
+                                    e -> ServerResponse.status(500)
+                                            .bodyValue("{\"error\": \"Error calling tool: " + e.getMessage() + "\"}"));
+                });
     }
 
 }

@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.vortex;
 
+import reactor.core.publisher.Mono;
 import java.util.Collection;
 
 /**
@@ -43,23 +44,25 @@ import java.util.Collection;
 public interface Registry<T> {
 
     /**
-     * A hook for subclasses to perform initialization logic, typically called after the registry is constructed or
-     * refreshed.
+     * A hook for subclasses to perform asynchronous initialization logic, such as loading data from a database or
+     * remote service.
+     *
+     * @return A {@code Mono<Void>} that completes when initialization is finished.
      */
-    default void init() {
-
+    default Mono<Void> init() {
+        return Mono.empty();
     }
 
     /**
      * Registers an item in the registry using a key derived from the item itself by the registry's key generation
-     * strategy.
+     * strategy. (This is a fast, non-blocking in-memory operation).
      *
      * @param item The item to register.
      */
     void register(T item);
 
     /**
-     * Registers an item in the registry with a specific key.
+     * Registers an item in the registry with a specific key. (This is a fast, non-blocking in-memory operation).
      *
      * @param key  The unique key to associate with the item.
      * @param item The item to register.
@@ -67,14 +70,15 @@ public interface Registry<T> {
     void register(String key, T item);
 
     /**
-     * Removes an item from the registry using its key.
+     * Removes an item from the registry using its key. (This is a fast, non-blocking in-memory operation).
      *
      * @param key The key of the item to remove.
      */
     void destroy(String key);
 
     /**
-     * Removes an item from the registry using a key derived from the item itself.
+     * Removes an item from the registry using a key derived from the item itself. (This is a fast, non-blocking
+     * in-memory operation).
      *
      * @param item The item to remove.
      */
@@ -82,14 +86,15 @@ public interface Registry<T> {
 
     /**
      * Updates an item in the registry using a key derived from the item itself. If the item does not exist, it will be
-     * registered.
+     * registered. (This is a fast, non-blocking in-memory operation).
      *
      * @param item The item to update.
      */
     void update(T item);
 
     /**
-     * Updates an item in the registry for a specific key. If the key does not exist, a new entry will be created.
+     * Updates an item in the registry for a specific key. If the key does not exist, a new entry will be created. (This
+     * is a fast, non-blocking in-memory operation).
      *
      * @param key  The key of the item to update.
      * @param item The new item.
@@ -97,12 +102,15 @@ public interface Registry<T> {
     void update(String key, T item);
 
     /**
-     * Clears all items from the registry and re-initializes it by calling {@link #init()}.
+     * Clears all items from the registry and re-initializes it by calling {@link #init()}. This operation is now
+     * asynchronous.
+     *
+     * @return A {@code Mono<Void>} that completes when the registry is cleared and re-initialized.
      */
-    void refresh();
+    Mono<Void> refresh();
 
     /**
-     * Retrieves an item from the registry by its key.
+     * Retrieves an item from the registry by its key. (This is a fast, non-blocking in-memory operation).
      *
      * @param key The key of the item to retrieve.
      * @return The item associated with the key, or {@code null} if not found.
@@ -110,7 +118,8 @@ public interface Registry<T> {
     T get(String key);
 
     /**
-     * Retrieves a collection of all items currently in the registry.
+     * Retrieves a collection of all items currently in the registry. (This is a fast, non-blocking in-memory
+     * operation).
      *
      * @return An unmodifiable {@link Collection} of all registered items.
      */

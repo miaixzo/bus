@@ -29,6 +29,7 @@ package org.miaixz.bus.vortex.registry;
 
 import org.miaixz.bus.vortex.Registry;
 import org.springframework.beans.factory.InitializingBean;
+import reactor.core.publisher.Mono;
 
 import java.util.Collection;
 import java.util.Map;
@@ -107,10 +108,14 @@ public abstract class AbstractRegistry<T> implements Registry<T>, InitializingBe
         this.registry.put(key, item);
     }
 
+    /**
+     * Asynchronously clears the registry and then calls the asynchronous {@link #init()} method.
+     *
+     * @return A {@code Mono<Void>} that completes when the registry is cleared and re-initialized.
+     */
     @Override
-    public void refresh() {
-        this.registry.clear();
-        init();
+    public Mono<Void> refresh() {
+        return Mono.fromRunnable(() -> this.registry.clear()).then(init()); // Chain to the async init() method
     }
 
     @Override
@@ -126,10 +131,15 @@ public abstract class AbstractRegistry<T> implements Registry<T>, InitializingBe
     /**
      * Integrates with the Spring lifecycle. After all bean properties are set, this method is called, which in turn
      * triggers the initial {@link #refresh()} of the registry.
+     * <p>
+     * This method will **block** the startup thread until the asynchronous {@code refresh()} completes. This is
+     * acceptable behavior during application startup to ensure the registry is populated before use.
      */
     @Override
     public void afterPropertiesSet() {
-        refresh();
+        // Bridge the synchronous Spring lifecycle with our async refresh.
+        // This is acceptable on startup but should be avoided at runtime.
+        refresh().block();
     }
 
 }

@@ -42,7 +42,6 @@ import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.*;
-import org.miaixz.bus.vortex.magic.Delegate;
 import org.miaixz.bus.vortex.magic.ErrorCode;
 import org.miaixz.bus.vortex.magic.Principal;
 import org.miaixz.bus.vortex.provider.AuthorizeProvider;
@@ -54,6 +53,7 @@ import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.web.server.ServerWebExchange;
 
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 /**
  * A strategy that qualifies incoming requests by validating API metadata and orchestrating authorization.
@@ -121,7 +121,6 @@ public class QualiferStrategy extends AbstractStrategy {
     public Mono<Void> apply(ServerWebExchange exchange, Chain chain) {
         return Mono.deferContextual(contextView -> {
             final Context context = contextView.get(Context.class);
-
             Map<String, Object> params = context.getParameters();
 
             // Extract and set context parameters
@@ -134,32 +133,41 @@ public class QualiferStrategy extends AbstractStrategy {
             // Retrieve API asset configuration
             String method = Optional.ofNullable(params.get(Args.METHOD)).map(Object::toString).orElse(null);
             String version = Optional.ofNullable(params.get(Args.VERSION)).map(Object::toString).orElse(null);
-            Assets assets = this.registry.get(method, version);
-            if (null == assets) {
-                Logger.warn("==>     Filter: Assets not found for method: {}, version: {}", method, version);
-                return Mono.error(new ValidateException(ErrorCode._100800));
-            }
 
-            // Set assets in context for downstream strategies
-            context.setAssets(assets);
+            // 1. Asynchronously retrieve API asset configuration, offloading if blocking.
+            // (Assuming registry.get() is a fast in-memory lookup, but keeping
+            // .subscribeOn() for consistency if it *could* be I/O).
+            return Mono.fromCallable(() -> this.registry.get(method, version)).subscribeOn(Schedulers.boundedElastic()) // Offload
+                                                                                                                        // potential
+                                                                                                                        // I/O
+                    .switchIfEmpty(Mono.defer(() -> {
+                        // switchIfEmpty defers the error creation
+                        Logger.warn("==>     Filter: Assets not found for method: {}, version: {}", method, version);
+                        return Mono.error(new ValidateException(ErrorCode._100800));
+                    })).flatMap(assets -> {
+                        // 2. Set assets in context
+                        context.setAssets(assets);
 
-            // Validate HTTP method
-            this.method(exchange, assets);
+                        // 3. Chain HTTP method validation
+                        Mono<Void> validationMono = this.method(exchange, assets);
 
-            // If the API is protected, orchestrate the authorization process.
-            if (Consts.ONE != assets.getFirewall()) {
-                this.authorize(context);
-            }
+                        // 4. Chain authorization if the API is protected
+                        Mono<Void> authMono = (Consts.ONE != assets.getFirewall()) ? this.authorize(context)
+                                : Mono.empty();
 
-            // Remove internal gateway parameters before forwarding
-            params.remove(Args.METHOD);
-            params.remove(Args.FORMAT);
-            params.remove(Args.VERSION);
-            params.remove(Args.SIGN);
-
-            Logger.info("==>     Filter: Method: {}, Version: {} validated successfully", method, version);
-
-            return chain.apply(exchange);
+                        // 5. Execute validation then authorization sequentially
+                        return validationMono.then(authMono);
+                    })
+                    // 6. After all validations, remove internal parameters
+                    .then(Mono.fromRunnable(() -> {
+                        params.remove(Args.METHOD);
+                        params.remove(Args.FORMAT);
+                        params.remove(Args.VERSION);
+                        params.remove(Args.SIGN);
+                        Logger.info("==>     Filter: Method: {}, Version: {} validated successfully", method, version);
+                    }))
+                    // 7. Proceed to the next strategy in the chain
+                    .then(chain.apply(exchange));
         });
     }
 
@@ -168,56 +176,50 @@ public class QualiferStrategy extends AbstractStrategy {
      *
      * @param exchange The {@link ServerWebExchange} containing the current request.
      * @param assets   The {@link Assets} configuration for the requested API.
-     * @throws ValidateException If the HTTP method does not match the expected method, with an appropriate error code
-     *                           (e.g., {@link ErrorCode#_100200} for GET, {@link ErrorCode#_100201} for POST, etc.).
+     * @return A {@link Mono<Void>} that completes if valid, or signals an error if mismatched.
      */
-    protected void method(ServerWebExchange exchange, Assets assets) {
-        ServerHttpRequest request = exchange.getRequest();
-        final HttpMethod expectedMethod = this.valueOf(assets.getType());
+    protected Mono<Void> method(ServerWebExchange exchange, Assets assets) {
+        // Wrap synchronous logic that can throw an exception
+        return Mono.fromRunnable(() -> {
+            ServerHttpRequest request = exchange.getRequest();
+            final HttpMethod expectedMethod = this.valueOf(assets.getType());
 
-        if (!Objects.equals(request.getMethod(), expectedMethod)) {
-            Logger.warn(
-                    "==>     Filter: HTTP method mismatch, expected: {}, actual: {}",
-                    expectedMethod,
-                    request.getMethod());
+            if (!Objects.equals(request.getMethod(), expectedMethod)) {
+                Logger.warn(
+                        "==>     Filter: HTTP method mismatch, expected: {}, actual: {}",
+                        expectedMethod,
+                        request.getMethod());
 
-            final Errors error = switch (expectedMethod.name()) {
-                case HTTP.GET -> ErrorCode._100200;
-                case HTTP.POST -> ErrorCode._100201;
-                case HTTP.PUT -> ErrorCode._100202;
-                case HTTP.DELETE -> ErrorCode._100203;
-                case HTTP.OPTIONS -> ErrorCode._100204;
-                case HTTP.HEAD -> ErrorCode._100205;
-                case HTTP.PATCH -> ErrorCode._100206;
-                case HTTP.TRACE -> ErrorCode._100207;
-                default -> ErrorCode._100802;
-            };
-            throw new ValidateException(error);
-        }
+                final Errors error = switch (expectedMethod.name()) {
+                    case HTTP.GET -> ErrorCode._100200;
+                    case HTTP.POST -> ErrorCode._100201;
+                    case HTTP.PUT -> ErrorCode._100202;
+                    case HTTP.DELETE -> ErrorCode._100203;
+                    case HTTP.OPTIONS -> ErrorCode._100204;
+                    case HTTP.HEAD -> ErrorCode._100205;
+                    case HTTP.PATCH -> ErrorCode._100206;
+                    case HTTP.TRACE -> ErrorCode._100207;
+                    default -> ErrorCode._100802;
+                };
+                // This exception will be caught by fromRunnable and emitted as Mono.error()
+                throw new ValidateException(error);
+            }
+        });
     }
 
     /**
      * Orchestrates the authorization process by finding credentials and delegating validation to the
      * {@link AuthorizeProvider}.
      * <p>
-     * This method is only invoked for protected APIs. It includes an override mechanism where an API asset can be
-     * marked as not requiring a token ({@code getToken() == 0}), allowing it to bypass credential checks.
-     * <p>
-     * The credential discovery logic is as follows:
-     * <ol>
-     * <li>Searches for a bearer token in the request.</li>
-     * <li>If no token is found, falls back to searching for an API key.</li>
-     * <li>Packages the found credential into a {@link Principal} object for the provider.</li>
-     * <li>Delegates the final validation decision to the {@link AuthorizeProvider#authorize(Principal)} method.</li>
-     * </ol>
+     * This method is only invoked for protected APIs.
      *
      * @param context The request context.
-     * @throws ValidateException if required credentials are not found or if the provider reports a validation failure.
+     * @return A {@link Mono<Void>} that completes on success, or signals an error on failure.
      */
-    protected void authorize(Context context) {
+    protected Mono<Void> authorize(Context context) {
         // If the asset is configured to not require a token, skip authorization.
         if (Consts.ZERO == context.getAssets().getToken()) {
-            return;
+            return Mono.empty();
         }
 
         // Create a pre-configured builder for the Principal object.
@@ -238,33 +240,38 @@ public class QualiferStrategy extends AbstractStrategy {
             if (StringKit.isBlank(apiKey)) {
                 // 3. No credentials found for a protected resource that requires them.
                 Logger.warn("==>     Filter: No valid credentials (Token or API Key) were provided.");
-                throw new ValidateException(ErrorCode._100806);
+                // Return an error signal instead of throwing
+                return Mono.error(new ValidateException(ErrorCode._100806));
             }
             // Type 2: API Key-based authentication
             principalBuilder.type(Consts.TWO).value(apiKey);
             Logger.info("==>     Filter: No token found. Attempting authentication with API Key.");
         }
 
-        // 4. Delegate the entire validation process to the provider.
-        Delegate delegate = this.provider.authorize(principalBuilder.build());
+        // 4. Delegate the validation to the provider.
+        // **OPTIMIZATION:** Call the asynchronous provider.authorize() directly
+        // and use .flatMap() to process the result.
+        // No fromCallable() or subscribeOn() is needed.
+        return this.provider.authorize(principalBuilder.build()).flatMap(delegate -> {
+            // 5. Process the final result from the provider.
+            if (delegate.isOk()) {
+                Map<String, Object> authMap = new HashMap<>();
+                BeanKit.beanToMap(
+                        delegate.getAuthorize(),
+                        authMap,
+                        CopyOptions.of().setTransientSupport(false).setIgnoreCase(true));
+                context.getParameters().putAll(authMap);
+                Logger.info("==>     Filter: Authentication successful.");
+                return Mono.empty(); // Signal success
+            }
 
-        // 5. Process the final result from the provider.
-        if (delegate.isOk()) {
-            Map<String, Object> authMap = new HashMap<>();
-            BeanKit.beanToMap(
-                    delegate.getAuthorize(),
-                    authMap,
-                    CopyOptions.of().setTransientSupport(false).setIgnoreCase(true));
-            context.getParameters().putAll(authMap);
-            Logger.info("==>     Filter: Authentication successful.");
-            return;
-        }
-
-        Logger.error(
-                "==>     Filter: Authentication failed - Error code: {}, message: {}",
-                delegate.getMessage().errcode,
-                delegate.getMessage().errmsg);
-        throw new ValidateException(delegate.getMessage().errcode, delegate.getMessage().errmsg);
+            Logger.error(
+                    "==>     Filter: Authentication failed - Error code: {}, message: {}",
+                    delegate.getMessage().errcode,
+                    delegate.getMessage().errmsg);
+            // Signal failure
+            return Mono.error(new ValidateException(delegate.getMessage().errcode, delegate.getMessage().errmsg));
+        });
     }
 
     /**

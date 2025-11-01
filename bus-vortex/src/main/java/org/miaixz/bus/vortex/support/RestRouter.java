@@ -77,8 +77,7 @@ public class RestRouter implements Router {
     public Mono<ServerResponse> route(ServerRequest request) {
         return Mono.deferContextual(contextView -> {
             final Context context = contextView.get(Context.class);
-            final Assets assets = context.getAssets();
-            return this.service.execute(request, context, assets);
+            return this.service.execute(request, context, context.getAssets());
         });
     }
 
