@@ -214,11 +214,11 @@ public class VettingStrategy extends AbstractStrategy {
      * @param difference The difference in milliseconds.
      */
     private void logTimestampMismatch(long clientTime, long serverTime, long difference) {
-        Logger.info("*************************************************");
-        Logger.info("*" + String.format("%-" + 47 + "s", "  Client Time (ms): " + clientTime) + "*");
-        Logger.info("*" + String.format("%-" + 47 + "s", "  Server Time (ms): " + serverTime) + "*");
-        Logger.info("*" + String.format("%-" + 47 + "s", "  Difference (ms) : " + difference) + "*");
-        Logger.info("*************************************************");
+        Logger.info(true, "Vetting", "*************************************************");
+        Logger.info(true, "Vetting", "*" + String.format("%-" + 47 + "s", "  Client Time (ms): " + clientTime) + "*");
+        Logger.info(true, "Vetting", "*" + String.format("%-" + 47 + "s", "  Server Time (ms): " + serverTime) + "*");
+        Logger.info(true, "Vetting", "*" + String.format("%-" + 47 + "s", "  Difference  (ms): " + difference) + "*");
+        Logger.info(true, "Vetting", "*************************************************");
     }
 
     /**
@@ -259,13 +259,13 @@ public class VettingStrategy extends AbstractStrategy {
         }
 
         String clientSign = String.valueOf(params.get(Args.SIGN));
-        Logger.info("==>Client Sign: {}", clientSign);
+        Logger.info(true, "Vetting", "Client Sign: {}", clientSign);
 
         Map<String, Object> paramsForSign = new TreeMap<>(params);
         paramsForSign.remove(Args.SIGN);
 
         String serverSign = this.generateSignature(key, httpMethod, paramsForSign);
-        Logger.info("==>Server Sign: {}", serverSign);
+        Logger.info(true, "Vetting", "Server Sign: {}", serverSign);
 
         return Objects.equals(clientSign, serverSign);
     }
@@ -315,28 +315,28 @@ public class VettingStrategy extends AbstractStrategy {
      */
     protected void enrich(ServerWebExchange exchange, Context context) {
         Map<String, Object> params = context.getParameters();
-        params.put("x_request_id", exchange.getRequest().getId());
 
-        String clientIp = this.determineClientIp(exchange.getRequest());
-        context.setX_request_ipv4(clientIp);
-        params.put("x_request_ipv4", clientIp);
+        String x_request_id = context.getX_request_id();
+        if (StringKit.isEmpty(x_request_id)) {
+            x_request_id = context.getX_request_id();
+            context.setX_request_id(x_request_id);
+        }
+        params.put("x_request_id", x_request_id);
 
-        String domain = this.determineRequestDomain(exchange.getRequest());
-        context.setX_request_domain(domain);
-        params.put("x_request_domain", domain);
-    }
+        String x_request_ipv4 = context.getX_request_ipv4();
+        if (StringKit.isEmpty(x_request_ipv4)) {
+            x_request_ipv4 = this.getClientIp(exchange.getRequest());
+            context.setX_request_ipv4(x_request_ipv4);
+        }
+        params.put("x_request_ipv4", x_request_ipv4);
 
-    /**
-     * Determines the client IP address from request headers, checking common proxy headers first.
-     *
-     * @param request The server HTTP request.
-     * @return The determined client IP address or "unknown".
-     */
-    private String determineClientIp(ServerHttpRequest request) {
-        return Optional.ofNullable(request.getHeaders().getFirst("x_request_ip")).orElseGet(
-                () -> Optional.ofNullable(request.getHeaders().getFirst("X-Forwarded-For")).orElseGet(
-                        () -> Optional.ofNullable(request.getRemoteAddress())
-                                .map(address -> address.getAddress().getHostAddress()).orElse("unknown")));
+        String x_request_domain = context.getX_request_domain();
+        if (StringKit.isEmpty(x_request_domain)) {
+            // Pass the IP (which we just ensured is populated) to the domain determination method for logging
+            x_request_domain = this.determineRequestDomain(exchange.getRequest());
+            context.setX_request_domain(x_request_domain);
+        }
+        params.put("x_request_domain", x_request_domain);
     }
 
     /**
@@ -348,8 +348,10 @@ public class VettingStrategy extends AbstractStrategy {
     private String determineRequestDomain(ServerHttpRequest request) {
         return getAuthority(request).orElseGet(() -> {
             Logger.warn(
-                    "==> Filter: Unable to determine the request domain (host:port). Using default value: {}",
-                    Normal.UNKNOWN + Symbol.COLON + Symbol.ZERO);
+                    true,
+                    "Vetting",
+                    "Unable to determine request domain (host:port). Using default value: {}",
+                    (Normal.UNKNOWN + Symbol.COLON + Symbol.ZERO));
             return Normal.UNKNOWN + Symbol.COLON + Symbol.ZERO;
         });
     }

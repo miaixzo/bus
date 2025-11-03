@@ -53,6 +53,7 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 import reactor.netty.http.client.HttpClient;
@@ -99,24 +100,31 @@ public class RestService {
      */
     @NonNull
     public Mono<ServerResponse> execute(ServerRequest request, Context context, Assets assets) {
-        String method = request.methodName();
-        String path = request.path();
+        final String method = request.methodName();
+        final String path = request.path();
+        final String ip = context.getX_request_ipv4();
 
         // 1. Build the base URL for the target service.
         String baseUrl = buildBaseUrl(assets);
-        Logger.info("==>       HTTP: [N/A] [{}] [{}] [HTTP_ROUTER_BASEURL] - Base URL: {}", method, path, baseUrl);
+        Logger.info(true, "Http", "[{}] [{}] [{}] [HTTP_ROUTER_BASEURL] - Base URL: {}", ip, method, path, baseUrl);
 
         // 2. Dynamically configure an HttpClient for THIS request.
         HttpClient configuredClient;
         if (assets.getMode() == 3) { // 3 represents SSE (Streaming)
             Logger.info(
-                    "==>       HTTP: Applying IDLE timeout of {} seconds for streaming request.",
+                    true,
+                    "Http",
+                    "[{}] Applying IDLE timeout of {} seconds for streaming request.",
+                    ip,
                     assets.getTimeout());
             configuredClient = HttpClient.create(SHARED_CONNECTION_PROVIDER)
                     .doOnConnected(conn -> conn.addHandlerLast(new ReadTimeoutHandler(assets.getTimeout())));
         } else { // Unary request
             Logger.info(
-                    "==>       HTTP: Applying RESPONSE timeout of {} seconds for unary request.",
+                    true,
+                    "Http",
+                    "[{}] Applying RESPONSE timeout of {} seconds for unary request.",
+                    ip,
                     assets.getTimeout());
             configuredClient = HttpClient.create(SHARED_CONNECTION_PROVIDER)
                     .responseTimeout(Duration.ofSeconds(assets.getTimeout()));
@@ -128,11 +136,14 @@ public class RestService {
 
         // 4. Build and execute the request.
         String targetUri = buildTargetUri(assets, context);
-        Logger.info("==>       HTTP: [{}] [{}] [HTTP_ROUTER_URI] - Target URI: {}", method, path, targetUri);
+        Logger.info(true, "Http", "[{}] [{}] [{}] [HTTP_ROUTER_URI] - Target URI: {}", ip, method, path, targetUri);
 
         WebClient.RequestBodySpec bodySpec = webClient.method(context.getHttpMethod()).uri(targetUri);
         Logger.info(
-                "==>       HTTP: [{}] [{}] [HTTP_ROUTER_METHOD] - HTTP method: {}",
+                true,
+                "Http",
+                "[{}] [{}] [{}] [HTTP_ROUTER_METHOD] - HTTP method: {}",
+                ip,
                 method,
                 path,
                 context.getHttpMethod());
@@ -143,64 +154,83 @@ public class RestService {
             headers.remove(HttpHeaders.HOST);
             headers.clearContentHeaders();
         });
-        Logger.info("==>       HTTP: [N/A] [{}] [{}] [HTTP_ROUTER_HEADERS] - Headers configured", method, path);
+        Logger.info(true, "Http", "[{}] [{}] [{}] [HTTP_ROUTER_HEADERS] - Headers configured", ip, method, path);
 
         // 6. Handle the request body, if applicable (i.e., for non-GET requests).
         if (!HttpMethod.GET.equals(context.getHttpMethod())) {
             MediaType mediaType = request.headers().contentType().orElse(null);
             if (mediaType != null) {
                 if (MediaType.MULTIPART_FORM_DATA.isCompatibleWith(mediaType)) {
-                    handleMultipartBody(bodySpec, context, method, path);
+                    handleMultipartBody(bodySpec, context, ip, method, path);
                 } else if (MediaType.APPLICATION_JSON.isCompatibleWith(mediaType)) {
-                    handleJsonRequestBody(bodySpec, context, method, path);
+                    handleJsonRequestBody(bodySpec, context, ip, method, path);
                 } else if (MediaType.APPLICATION_FORM_URLENCODED.isCompatibleWith(mediaType)) {
-                    handleFormRequestBody(bodySpec, context, method, path);
+                    handleFormRequestBody(bodySpec, context, ip, method, path);
                 } else {
                     Logger.info(
-                            "==>       HTTP: [N/A] [{}] [{}] [HTTP_ROUTER_UNSUPPORTED] - Unsupported media type: {}",
+                            true,
+                            "Http",
+                            "[{}] [{}] [{}] [HTTP_ROUTER_UNSUPPORTED] - Unsupported media type: {}",
+                            ip,
                             method,
                             path,
                             mediaType);
-                    handleFormRequestBody(bodySpec, context, method, path);
+                    handleFormRequestBody(bodySpec, context, ip, method, path);
                 }
             } else {
                 Logger.info(
-                        "==>       HTTP: [N/A] [{}] [{}] [HTTP_ROUTER_DEFAULT] - No Content-Type header, defaulting to form data",
+                        true,
+                        "Http",
+                        "[{}] [{}] [{}] [HTTP_ROUTER_DEFAULT] - No Content-Type header, defaulting to form data",
+                        ip,
                         method,
                         path);
-                handleFormRequestBody(bodySpec, context, method, path);
+                handleFormRequestBody(bodySpec, context, ip, method, path);
             }
         } else {
             Logger.info(
-                    "==>       HTTP: [N/A] [{}] [{}] [HTTP_ROUTER_GET] - GET request, no body processing",
+                    true,
+                    "Http",
+                    "[{}] [{}] [{}] [HTTP_ROUTER_GET] - GET request, no body processing",
+                    ip,
                     method,
                     path);
         }
 
         // 7. Send the request and process the response.
         Logger.info(
-                "==>       HTTP: [N/A] [{}] [{}] [HTTP_ROUTER_SEND] - Sending request with timeout: {}s",
+                true,
+                "Http",
+                "[{}] [{}] [{}] [HTTP_ROUTER_SEND] - Sending request with timeout: {}s",
+                ip,
                 method,
                 path,
                 assets.getTimeout());
 
-        // **OPTIMIZATION:** Use exchangeToMono to STREAM the response, not retrieve().toEntity()
-        // This avoids buffering the entire downstream response in memory.
-        return bodySpec.exchangeToMono(clientResponse -> {
-            ServerResponse.BodyBuilder responseBuilder = ServerResponse.status(clientResponse.statusCode());
-
-            // Copy all headers from the downstream response to the upstream response
-            responseBuilder.headers(headers -> {
-                headers.addAll(clientResponse.headers().asHttpHeaders());
-                headers.remove(HttpHeaders.HOST);
-                // Let the container manage transfer-encoding and content-length
-                headers.remove(HttpHeaders.TRANSFER_ENCODING);
-                headers.remove(HttpHeaders.CONTENT_LENGTH);
-            });
-
-            // Stream the response body directly
-            return responseBuilder.body(clientResponse.bodyToFlux(DataBuffer.class), DataBuffer.class);
-        });
+        // This is the refactored logic. We choose the execution strategy based on the asset's mode.
+        if (assets.getMode() == 3) {
+            // ** STRATEGY 1: STREAMING (for SSE / Reactive) **
+            // Use the low-memory exchangeToMono. This is your provided code.
+            Logger.info(
+                    true,
+                    "Http",
+                    "[{}] [{}] [{}] [HTTP_ROUTER_STRATEGY] - Using STREAMING mode (exchangeToMono)",
+                    ip,
+                    method,
+                    path);
+            return executeStreaming(bodySpec, ip, method, path);
+        } else {
+            // ** STRATEGY 2: BUFFERING (for Unary / Servlet) **
+            // Use the compatible retrieve().toEntity() mode. This is the fix.
+            Logger.info(
+                    true,
+                    "Http",
+                    "[{}] [{}] [{}] [HTTP_ROUTER_STRATEGY] - Using BUFFERING mode (retrieve.toEntity)",
+                    ip,
+                    method,
+                    path);
+            return executeBuffering(bodySpec, ip, method, path);
+        }
     }
 
     /**
@@ -208,12 +238,14 @@ public class RestService {
      *
      * @param bodySpec The request body specification.
      * @param context  The request context.
+     * @param ip       The client IP for logging.
      * @param method   The HTTP method for logging.
      * @param path     The request path for logging.
      */
     private void handleJsonRequestBody(
             WebClient.RequestBodySpec bodySpec,
             Context context,
+            String ip,
             String method,
             String path) {
         Map<String, Object> params = context.getParameters();
@@ -226,13 +258,19 @@ public class RestService {
             bodySpec.contentType(MediaType.APPLICATION_JSON).body(jsonBodyMono, String.class);
 
             Logger.info(
-                    "==>       HTTP: [N/A] [{}] [{}] [HTTP_ROUTER_JSON] - JSON body configured with {} parameters (async generation)",
+                    true,
+                    "Http",
+                    "[{}] [{}] [{}] [HTTP_ROUTER_JSON] - JSON body configured with {} parameters (async generation)",
+                    ip,
                     method,
                     path,
                     params.size());
         } else {
             Logger.info(
-                    "==>       HTTP: [N/A] [{}] [{}] [HTTP_ROUTER_JSON] - No JSON parameters to configure",
+                    true,
+                    "Http",
+                    "[{}] [{}] [{}] [HTTP_ROUTER_JSON] - No JSON parameters to configure",
+                    ip,
                     method,
                     path);
         }
@@ -243,12 +281,14 @@ public class RestService {
      *
      * @param bodySpec The request body specification.
      * @param context  The request context.
+     * @param ip       The client IP for logging.
      * @param method   The HTTP method for logging.
      * @param path     The request path for logging.
      */
     private void handleFormRequestBody(
             WebClient.RequestBodySpec bodySpec,
             Context context,
+            String ip,
             String method,
             String path) {
         Map<String, Object> params = context.getParameters();
@@ -258,13 +298,19 @@ public class RestService {
             // bodyValue is fine for MultiValueMap, WebClient handles it efficiently.
             bodySpec.contentType(MediaType.APPLICATION_FORM_URLENCODED).bodyValue(multiValueMap);
             Logger.info(
-                    "==>       HTTP: [N/A] [{}] [{}] [HTTP_ROUTER_FORM] - Form body configured with {} parameters",
+                    true,
+                    "Http",
+                    "[{}] [{}] [{}] [HTTP_ROUTER_FORM] - Form body configured with {} parameters",
+                    ip,
                     method,
                     path,
                     params.size());
         } else {
             Logger.info(
-                    "==>       HTTP: [N/A] [{}] [{}] [HTTP_ROUTER_FORM] - No form parameters to configure",
+                    true,
+                    "Http",
+                    "[{}] [{}] [{}] [HTTP_ROUTER_FORM] - No form parameters to configure",
+                    ip,
                     method,
                     path);
         }
@@ -275,10 +321,16 @@ public class RestService {
      *
      * @param bodySpec The request body specification.
      * @param context  The request context.
+     * @param ip       The client IP for logging.
      * @param method   The HTTP method for logging.
      * @param path     The request path for logging.
      */
-    private void handleMultipartBody(WebClient.RequestBodySpec bodySpec, Context context, String method, String path) {
+    private void handleMultipartBody(
+            WebClient.RequestBodySpec bodySpec,
+            Context context,
+            String ip,
+            String method,
+            String path) {
         Map<String, Part> fileParts = context.getFileParts();
         Map<String, Object> params = context.getParameters();
         if (!fileParts.isEmpty() || !params.isEmpty()) {
@@ -288,7 +340,10 @@ public class RestService {
             // fromMultipartData is non-blocking and supports streaming.
             bodySpec.body(BodyInserters.fromMultipartData(multipartData));
             Logger.info(
-                    "==>       HTTP: [N/A] [{}] [{}] [HTTP_ROUTER_MULTIPART] - Multipart body configured with {} files and {} params",
+                    true,
+                    "Http",
+                    "[{}] [{}] [{}] [HTTP_ROUTER_MULTIPART] - Multipart body configured with {} files and {} params",
+                    ip,
                     method,
                     path,
                     fileParts.size(),
@@ -336,6 +391,171 @@ public class RestService {
             }
         }
         return builder.build().toUriString();
+    }
+
+    /**
+     * **New private method.** Handles the execution for a STREAMING request (e.g., SSE). This uses the low-memory
+     * `exchangeToMono` method.
+     */
+    private Mono<ServerResponse> executeStreaming(
+            WebClient.RequestBodySpec bodySpec,
+            String ip,
+            String method,
+            String path) {
+        // This is your provided code block (streaming).
+        return bodySpec.exchangeToMono(clientResponse -> {
+            ServerResponse.BodyBuilder responseBuilder = ServerResponse.status(clientResponse.statusCode());
+
+            responseBuilder.headers(headers -> {
+                headers.addAll(clientResponse.headers().asHttpHeaders());
+                headers.remove(HttpHeaders.HOST);
+                headers.remove(HttpHeaders.TRANSFER_ENCODING);
+                headers.remove(HttpHeaders.CONTENT_LENGTH);
+            });
+
+            // Stream the response body directly, with logging
+            Flux<DataBuffer> bodyFlux = clientResponse.bodyToFlux(DataBuffer.class).doOnNext(dataBuffer -> {
+                Logger.info(
+                        false,
+                        "Http",
+                        "[{}] [{}] [{}] [HTTP_ROUTER_RECV_STREAM_CHUNK] - Received data chunk, size: {} bytes",
+                        ip,
+                        method,
+                        path,
+                        dataBuffer.readableByteCount());
+            });
+
+            return responseBuilder.body(bodyFlux, DataBuffer.class);
+        }).doOnSubscribe(
+                subscription -> Logger.info(
+                        true,
+                        "Http",
+                        "[{}] [{}] [{}] [HTTP_ROUTER_SUBSCRIBE] - Request subscribed (Streaming).",
+                        ip,
+                        method,
+                        path))
+                .doOnSuccess(
+                        serverResponse -> Logger.info(
+                                false,
+                                "Http",
+                                "[{}] [{}] [{}] [HTTP_ROUTER_SUCCESS] - Successfully built ServerResponse with status: {} (Streaming)",
+                                ip,
+                                method,
+                                path,
+                                serverResponse.statusCode()))
+                .doOnError(
+                        error -> Logger.error(
+                                false,
+                                "Http",
+                                "[{}] [{}] [{}] [HTTP_ROUTER_ERROR] - Request FAILED (Streaming): {}",
+                                ip,
+                                method,
+                                path,
+                                error.getMessage(),
+                                error))
+                .doOnCancel(
+                        () -> Logger.warn(
+                                false,
+                                "Http",
+                                "[{}] [{}] [{}] [HTTP_ROUTER_CANCEL] - Request was cancelled by client (Streaming).",
+                                ip,
+                                method,
+                                path));
+    }
+
+    /**
+     * **New private method.** Handles the execution for a UNARY request (e.g., Servlet API). This uses the compatible
+     * `retrieve().toEntity()` buffering method.
+     */
+    private Mono<ServerResponse> executeBuffering(
+            WebClient.RequestBodySpec bodySpec,
+            String ip,
+            String method,
+            String path) {
+        // This is the "buffering" fix that works with traditional Servlet backends.
+        return bodySpec.retrieve().toEntity(DataBuffer.class) // <-- Buffers the *entire* response
+                .flatMap(responseEntity -> {
+                    // responseEntity is a ResponseEntity<DataBuffer>
+                    Logger.info(
+                            false,
+                            "Http",
+                            "[{}] [{}] [{}] [HTTP_ROUTER_RECV_BUFFERED] - Received buffered status: {}",
+                            ip,
+                            method,
+                            path,
+                            responseEntity.getStatusCode());
+
+                    DataBuffer body = responseEntity.getBody();
+                    if (body != null && body.readableByteCount() > 0) {
+                        Logger.info(
+                                false,
+                                "Http",
+                                "[{}] [{}] [{}] [HTTP_ROUTER_RECV_BODY_BUFFERED] - Received buffered body, size: {} bytes",
+                                ip,
+                                method,
+                                path,
+                                body.readableByteCount());
+                    } else {
+                        Logger.warn(
+                                false,
+                                "Http",
+                                "[{}] [{}] [{}] [HTTP_ROUTER_RECV_BODY_BUFFERED] - Received buffered body, but it is NULL or EMPTY",
+                                ip,
+                                method,
+                                path);
+                    }
+
+                    ServerResponse.BodyBuilder responseBuilder = ServerResponse.status(responseEntity.getStatusCode());
+                    responseBuilder.headers(headers -> {
+                        headers.addAll(responseEntity.getHeaders());
+                        headers.remove(HttpHeaders.HOST);
+                        headers.remove(HttpHeaders.TRANSFER_ENCODING);
+                        headers.remove(HttpHeaders.CONTENT_LENGTH);
+                    });
+
+                    if (body != null && body.readableByteCount() > 0) {
+                        // Send the buffered body
+                        return responseBuilder.body(Mono.just(body), DataBuffer.class);
+                    } else {
+                        // Send an empty response
+                        return responseBuilder.build();
+                    }
+                })
+                .doOnSubscribe(
+                        subscription -> Logger.info(
+                                true,
+                                "Http",
+                                "[{}] [{}] [{}] [HTTP_ROUTER_SUBSCRIBE] - Request subscribed (Buffering).",
+                                ip,
+                                method,
+                                path))
+                .doOnSuccess(
+                        serverResponse -> Logger.info(
+                                false,
+                                "Http",
+                                "[{}] [{}] [{}] [HTTP_ROUTER_SUCCESS] - Successfully built ServerResponse with status: {} (Buffering)",
+                                ip,
+                                method,
+                                path,
+                                serverResponse.statusCode()))
+                .doOnError(
+                        error -> Logger.error(
+                                false,
+                                "Http",
+                                "[{}] [{}] [{}] [HTTP_ROOVER_ERROR] - Request FAILED (Buffering): {}",
+                                ip,
+                                method,
+                                path,
+                                error.getMessage(),
+                                error))
+                .doOnCancel(
+                        () -> Logger.warn(
+                                false,
+                                "Http",
+                                "[{}] [{}] [{}] [HTTP_ROUTER_CANCEL] - Request was cancelled by client (Buffering).",
+                                ip,
+                                method,
+                                path));
     }
 
 }

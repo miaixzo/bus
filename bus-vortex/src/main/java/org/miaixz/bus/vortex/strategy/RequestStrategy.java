@@ -32,7 +32,6 @@ import java.util.*;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Context;
@@ -89,12 +88,11 @@ public class RequestStrategy extends AbstractStrategy {
         // allowing access to the Reactor context.
         return Mono.deferContextual(contextView -> {
             final Context context = contextView.get(Context.class);
-
+            context.setX_request_ipv4(this.getClientIp(exchange.getRequest()));
             // 1. Set default Content-Type if missing and record the request start time.
             // This setup logic is synchronous but acceptable as it's part of
             // building the reactive chain, not executing it.
             ServerWebExchange mutate = setContentType(exchange);
-            context.setTimestamp(DateKit.current());
             ServerHttpRequest request = mutate.getRequest();
 
             // 2. Dispatch to the appropriate handler based on method and Content-Type.
@@ -138,7 +136,10 @@ public class RequestStrategy extends AbstractStrategy {
         return Mono.fromRunnable(() -> {
             context.getParameters().putAll(exchange.getRequest().getQueryParams().toSingleValueMap());
             Logger.info(
-                    "==>     Filter: GET request processed - Path: {}, Params: {}",
+                    true,
+                    "Request",
+                    "[{}] GET request processed - Path: {}, Params: {}",
+                    context.getX_request_ipv4(),
                     exchange.getRequest().getURI().getPath(),
                     JsonKit.toJsonString(context.getParameters()));
         })
@@ -147,7 +148,10 @@ public class RequestStrategy extends AbstractStrategy {
                 // Use doFinally for robust logging on any termination signal (complete, error, cancel).
                 .doFinally(
                         signalType -> Logger.info(
-                                "==>     Filter: Request processed - Path: {}, ExecutionTime: {}ms",
+                                false,
+                                "Request",
+                                "[{}] Request processed - Path: {}, ExecutionTime: {}ms",
+                                context.getX_request_ipv4(),
                                 exchange.getRequest().getURI().getPath(),
                                 (System.currentTimeMillis() - context.getTimestamp())));
     }
@@ -171,12 +175,18 @@ public class RequestStrategy extends AbstractStrategy {
                                 .maxBackoff(java.time.Duration.ofMillis(500)).jitter(0.75)
                                 .doBeforeRetry(
                                         retrySignal -> Logger.warn(
-                                                "==>     Filter: Retrying JSON request processing, attempt: {}, error: {}",
+                                                true,
+                                                "Request",
+                                                "[{}] Retrying JSON request processing, attempt: {}, error: {}",
+                                                context.getX_request_ipv4(),
                                                 (retrySignal.totalRetries() + 1),
                                                 retrySignal.failure().getMessage()))
                                 .onRetryExhaustedThrow((retryBackoffSpec, retrySignal) -> {
                                     Logger.error(
-                                            "==>     Filter: JSON request processing failed after {} attempts, error: {}",
+                                            true,
+                                            "Request",
+                                            "[{}] JSON request processing failed after {} attempts, error: {}",
+                                            context.getX_request_ipv4(),
                                             MAX_RETRY_ATTEMPTS,
                                             retrySignal.failure().getMessage());
                                     return new InternalException(ErrorCode._116000);
@@ -223,7 +233,10 @@ public class RequestStrategy extends AbstractStrategy {
             };
 
             Logger.info(
-                    "==>     Filter: JSON request processed - Path: {}, Params: {}",
+                    true,
+                    "Request",
+                    "[{}] JSON request processed - Path: {}, Params: {}",
+                    context.getX_request_ipv4(),
                     exchange.getRequest().getURI().getPath(),
                     JsonKit.toJsonString(jsonMap));
 
@@ -234,12 +247,20 @@ public class RequestStrategy extends AbstractStrategy {
                 .flatMap(chain::apply)
                 .doFinally(
                         signalType -> Logger.info(
-                                "==>     Filter: Request processed - Path: {}, ExecutionTime: {}ms",
+                                false,
+                                "Request",
+                                "[{}] Request processed - Path: {}, ExecutionTime: {}ms",
+                                context.getX_request_ipv4(),
                                 exchange.getRequest().getURI().getPath(),
                                 (System.currentTimeMillis() - context.getTimestamp())))
                 // Add explicit error logging for failures within this stage
                 .onErrorResume(e -> {
-                    Logger.error("==>     Filter: Failed to process JSON: {}", e.getMessage());
+                    Logger.error(
+                            false,
+                            "Request",
+                            "[{}] Failed to process JSON: {}",
+                            context.getX_request_ipv4(),
+                            e.getMessage());
                     return Mono.error(e); // Re-throw the original exception
                 });
     }
@@ -262,12 +283,18 @@ public class RequestStrategy extends AbstractStrategy {
                                 .maxBackoff(java.time.Duration.ofMillis(500)).jitter(0.75)
                                 .doBeforeRetry(
                                         retrySignal -> Logger.warn(
-                                                "==>     Filter: Retrying form request processing, attempt: {}, error: {}",
+                                                true,
+                                                "Request",
+                                                "[{}] Retrying form request processing, attempt: {}, error: {}",
+                                                context.getX_request_ipv4(),
                                                 (retrySignal.totalRetries() + 1),
                                                 retrySignal.failure().getMessage()))
                                 .onRetryExhaustedThrow((retryBackoffSpec, retrySignal) -> {
                                     Logger.error(
-                                            "==>     Filter: Form request processing failed after {} attempts, error: {}",
+                                            true,
+                                            "Request",
+                                            "[{}] Form request processing failed after {} attempts, error: {}",
+                                            context.getX_request_ipv4(),
                                             MAX_RETRY_ATTEMPTS,
                                             retrySignal.failure().getMessage());
                                     return new InternalException(ErrorCode._116000);
@@ -316,7 +343,10 @@ public class RequestStrategy extends AbstractStrategy {
                                 .flatMap(params -> {
                                     context.getParameters().putAll(params.toSingleValueMap());
                                     Logger.info(
-                                            "==>     Filter: Form request processed - Path: {}, Params: {}",
+                                            true,
+                                            "Request",
+                                            "[{}] Form request processed - Path: {}, Params: {}",
+                                            getClientIp(newExchange.getRequest()),
                                             newExchange.getRequest().getURI().getPath(),
                                             JsonKit.toJsonString(context.getParameters()));
                                     // Apply the chain using the newExchange
@@ -324,11 +354,19 @@ public class RequestStrategy extends AbstractStrategy {
                                 }))
                 .doFinally(
                         signalType -> Logger.info(
-                                "==>     Filter: Request processed - Path: {}, ExecutionTime: {}ms",
+                                false,
+                                "Request",
+                                "[{}] Request processed - Path: {}, ExecutionTime: {}ms",
+                                context.getX_request_ipv4(),
                                 exchange.getRequest().getURI().getPath(),
                                 (System.currentTimeMillis() - context.getTimestamp())))
                 .onErrorResume(e -> {
-                    Logger.error("==>     Filter: Failed to process form: {}", e.getMessage());
+                    Logger.error(
+                            false,
+                            "Request",
+                            "[{}] Failed to process form: {}",
+                            context.getX_request_ipv4(),
+                            e.getMessage());
                     return Mono.error(e);
                 });
     }
@@ -352,12 +390,18 @@ public class RequestStrategy extends AbstractStrategy {
                                 .maxBackoff(java.time.Duration.ofMillis(500)).jitter(0.75)
                                 .doBeforeRetry(
                                         retrySignal -> Logger.warn(
-                                                "==>     Filter: Retrying multipart request processing, attempt: {}, error: {}",
+                                                true,
+                                                "Request",
+                                                "[{}] Retrying multipart request processing, attempt: {}, error: {}",
+                                                context.getX_request_ipv4(),
                                                 (retrySignal.totalRetries() + 1),
                                                 retrySignal.failure().getMessage()))
                                 .onRetryExhaustedThrow((retryBackoffSpec, retrySignal) -> {
                                     Logger.error(
-                                            "==>     Filter: Multipart request processing failed after {} attempts, error: {}",
+                                            true,
+                                            "Request",
+                                            "[{}] Multipart request processing failed after {} attempts, error: {}",
+                                            context.getX_request_ipv4(),
                                             MAX_RETRY_ATTEMPTS,
                                             retrySignal.failure().getMessage());
 
@@ -405,7 +449,10 @@ public class RequestStrategy extends AbstractStrategy {
             context.setFileParts(fileMap);
 
             Logger.info(
-                    "==>     Filter: Multipart request processed - Path: {}, Params: {}",
+                    true,
+                    "Request",
+                    "[{}] Multipart request processed - Path: {}, Params: {}",
+                    context.getX_request_ipv4(),
                     exchange.getRequest().getURI().getPath(),
                     JsonKit.toJsonString(formMap));
         })
@@ -413,11 +460,19 @@ public class RequestStrategy extends AbstractStrategy {
                 .then(chain.apply(exchange))
                 .doFinally(
                         signalType -> Logger.info(
-                                "==>     Filter: Request processed - Path: {}, ExecutionTime: {}ms",
+                                false,
+                                "Request",
+                                "[{}] Request processed - Path: {}, ExecutionTime: {}ms",
+                                context.getX_request_ipv4(),
                                 exchange.getRequest().getURI().getPath(),
                                 (System.currentTimeMillis() - context.getTimestamp())))
                 .onErrorResume(e -> {
-                    Logger.error("==>     Filter: Failed to process multipart: {}", e.getMessage());
+                    Logger.error(
+                            false,
+                            "Request",
+                            "[{}] Failed to process multipart: {}",
+                            context.getX_request_ipv4(),
+                            e.getMessage());
                     return Mono.error(e);
                 });
     }

@@ -34,6 +34,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.vortex.strategy.LimiterStrategy;
 
 /**
  * A rate limiter that encapsulates Google Guava's {@link RateLimiter} to provide a non-blocking, fail-fast mechanism
@@ -46,7 +47,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  *
  * @author Kimi Liu
  * @see com.google.common.util.concurrent.RateLimiter
- * @see org.miaixz.bus.vortex.strategy.LimitStrategy
+ * @see LimiterStrategy
  * @since Java 17+
  */
 @Getter

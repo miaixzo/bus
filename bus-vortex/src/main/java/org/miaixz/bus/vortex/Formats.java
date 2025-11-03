@@ -33,6 +33,7 @@ import lombok.NoArgsConstructor;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.vortex.provider.JsonProvider;
 import org.miaixz.bus.vortex.provider.XmlProvider;
+import org.miaixz.bus.vortex.strategy.ResponseStrategy;
 import org.springframework.http.MediaType;
 
 /**
@@ -40,7 +41,7 @@ import org.springframework.http.MediaType;
  * provider and media type.
  * <p>
  * This enum plays a key role in content negotiation and response formatting. It allows strategies like
- * {@link org.miaixz.bus.vortex.strategy.FormatStrategy} to dynamically handle different data formats.
+ * {@link ResponseStrategy} to dynamically handle different data formats.
  *
  * @author Kimi Liu
  * @since Java 17+

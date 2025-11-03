@@ -180,8 +180,8 @@ public class VortexConfiguration {
      * @return A new instance of AuthorizeStrategy.
      */
     @Bean
-    public QualiferStrategy qualiferStrategy(AuthorizeProvider authorizeProvider, AssetsRegistry assetsRegistry) {
-        return new QualiferStrategy(authorizeProvider, assetsRegistry);
+    public QualifierStrategy qualiferStrategy(AuthorizeProvider authorizeProvider, AssetsRegistry assetsRegistry) {
+        return new QualifierStrategy(authorizeProvider, assetsRegistry);
     }
 
     /**
@@ -191,8 +191,8 @@ public class VortexConfiguration {
      * @return A new instance of LimitStrategy.
      */
     @Bean
-    public LimitStrategy limitStrategy(LimiterRegistry limiterRegistry) {
-        return new LimitStrategy(limiterRegistry);
+    public LimiterStrategy limitStrategy(LimiterRegistry limiterRegistry) {
+        return new LimiterStrategy(limiterRegistry);
     }
 
     /**
@@ -202,8 +202,8 @@ public class VortexConfiguration {
      * @return A new instance of FormatStrategy.
      */
     @Bean
-    public FormatStrategy formatStrategy() {
-        return new FormatStrategy();
+    public ResponseStrategy formatStrategy() {
+        return new ResponseStrategy();
     }
 
     /**

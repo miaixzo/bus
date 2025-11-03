@@ -36,7 +36,7 @@ import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.magic.Delegate;
 import org.miaixz.bus.vortex.magic.ErrorCode;
 import org.miaixz.bus.vortex.magic.Principal;
-import org.miaixz.bus.vortex.strategy.QualiferStrategy;
+import org.miaixz.bus.vortex.strategy.QualifierStrategy;
 import reactor.core.publisher.Mono;
 
 /**
@@ -44,7 +44,7 @@ import reactor.core.publisher.Mono;
  * <p>
  * This interface defines the contract for validating credentials. Implementations of this interface should contain the
  * actual business logic for checking tokens or API keys against a database, an authentication server, or any other
- * identity provider. An instance of this provider is injected into the {@link QualiferStrategy}.
+ * identity provider. An instance of this provider is injected into the {@link QualifierStrategy}.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -63,7 +63,7 @@ public interface AuthorizeProvider {
      */
     default Mono<Delegate> authorize(Principal principal) {
         if (ObjectKit.isEmpty(principal)) {
-            Logger.warn("Authorization failed: The principal entity is null or empty.");
+            Logger.warn(false, "Authorize", "Authorization failed: The principal entity is null or empty.");
             // Return a Mono that signals an error immediately.
             return Mono.error(new ValidateException(ErrorCode._100806));
         }
@@ -76,7 +76,9 @@ public interface AuthorizeProvider {
             return this.apiKey(principal); // Now returns Mono<Delegate>
         } else {
             Logger.warn(
-                    "==> Provider: Unsupported principal type: {}. Override the 'authorize' method to handle it.",
+                    false,
+                    "Authorize",
+                    "Unsupported principal type: {}. Override the 'authorize' method to handle it.",
                     principal.getType());
             // Return a Mono emitting a Delegate with the error information.
             return Mono.just(
@@ -99,7 +101,10 @@ public interface AuthorizeProvider {
      * @return A {@code Mono<Delegate>} emitting the authorization result.
      */
     default Mono<Delegate> token(Principal principal) {
-        Logger.debug("Executing default `token` method. This provides no security and should be overridden.");
+        Logger.debug(
+                true,
+                "Authorize",
+                "Executing default `token` method. This provides no security and should be overridden.");
         // Wrap the synchronous default result in Mono.just()
         return Mono.just(
                 Delegate.builder()
@@ -120,7 +125,10 @@ public interface AuthorizeProvider {
      * @return A {@code Mono<Delegate>} emitting the authorization result.
      */
     default Mono<Delegate> apiKey(Principal principal) {
-        Logger.debug("Executing default `apiKey` method. This provides no security and should be overridden.");
+        Logger.debug(
+                true,
+                "Authorize",
+                "Executing default `apiKey` method. This provides no security and should be overridden.");
         // Wrap the synchronous default result in Mono.just()
         return Mono.just(
                 Delegate.builder()

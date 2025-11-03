@@ -176,7 +176,7 @@ public class FastjsonMessageConverter extends AbstractHttpMessageConverter {
         protected void writeInternal(Object object, HttpOutputMessage outputMessage)
                 throws HttpMessageNotWritableException {
             try {
-                Logger.debug("<==     Result: {}", object != null ? object.getClass().getName() : "null");
+                Logger.debug(false, "Result", "{}", object != null ? object.getClass().getName() : "null");
 
                 // The PropertyFilter now delegates all logic to the shouldSkipField method.
                 PropertyFilter filter = (source, name, value) -> {
@@ -195,13 +195,13 @@ public class FastjsonMessageConverter extends AbstractHttpMessageConverter {
 
                 String jsonString = JSON.toJSONString(object, filter, WRITER_FEATURES);
                 outputMessage.getBody().write(jsonString.getBytes(Charset.UTF_8));
-                Logger.info("<==     Length: {}", jsonString.length());
+                Logger.info(false, "Fastjson", "{}", jsonString.length());
             } catch (IOException e) {
-                Logger.error("IO error occurred during JSON serialization: {}", e.getMessage(), e);
+                Logger.error(false, "Fastjson", "IO error occurred during JSON serialization: {}", e.getMessage());
                 throw new HttpMessageNotWritableException(
                         "IO error occurred during JSON serialization: " + e.getMessage(), e);
             } catch (Exception e) {
-                Logger.error("JSON serialization failed: {}", e.getMessage(), e);
+                Logger.error(false, "Fastjson", "JSON serialization failed: {}", e.getMessage());
                 throw new HttpMessageNotWritableException("JSON serialization failed: " + e.getMessage(), e);
             }
         }

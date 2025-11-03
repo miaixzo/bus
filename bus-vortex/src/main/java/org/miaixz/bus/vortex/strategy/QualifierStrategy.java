@@ -73,7 +73,7 @@ import reactor.core.scheduler.Schedulers;
  * @since Java 17+
  */
 @Order(Ordered.HIGHEST_PRECEDENCE + 3)
-public class QualiferStrategy extends AbstractStrategy {
+public class QualifierStrategy extends AbstractStrategy {
 
     /**
      * The provider responsible for validating credentials and fetching permissions.
@@ -91,7 +91,7 @@ public class QualiferStrategy extends AbstractStrategy {
      * @param provider The {@link AuthorizeProvider} used for credential validation.
      * @param registry The {@link AssetsRegistry} used to retrieve API asset configurations.
      */
-    public QualiferStrategy(AuthorizeProvider provider, AssetsRegistry registry) {
+    public QualifierStrategy(AuthorizeProvider provider, AssetsRegistry registry) {
         this.provider = provider;
         this.registry = registry;
     }
@@ -138,18 +138,24 @@ public class QualiferStrategy extends AbstractStrategy {
             // (Assuming registry.get() is a fast in-memory lookup, but keeping
             // .subscribeOn() for consistency if it *could* be I/O).
             return Mono.fromCallable(() -> this.registry.get(method, version)).subscribeOn(Schedulers.boundedElastic()) // Offload
-                                                                                                                        // potential
-                                                                                                                        // I/O
+                    // potential
+                    // I/O
                     .switchIfEmpty(Mono.defer(() -> {
                         // switchIfEmpty defers the error creation
-                        Logger.warn("==>     Filter: Assets not found for method: {}, version: {}", method, version);
+                        Logger.warn(
+                                false,
+                                "Qualifier",
+                                "[{}] Assets not found for method: {}, version: {}",
+                                context.getX_request_ipv4(),
+                                method,
+                                version);
                         return Mono.error(new ValidateException(ErrorCode._100800));
                     })).flatMap(assets -> {
                         // 2. Set assets in context
                         context.setAssets(assets);
 
                         // 3. Chain HTTP method validation
-                        Mono<Void> validationMono = this.method(exchange, assets);
+                        Mono<Void> validationMono = this.method(exchange, context, assets);
 
                         // 4. Chain authorization if the API is protected
                         Mono<Void> authMono = (Consts.ONE != assets.getFirewall()) ? this.authorize(context)
@@ -164,7 +170,13 @@ public class QualiferStrategy extends AbstractStrategy {
                         params.remove(Args.FORMAT);
                         params.remove(Args.VERSION);
                         params.remove(Args.SIGN);
-                        Logger.info("==>     Filter: Method: {}, Version: {} validated successfully", method, version);
+                        Logger.info(
+                                true,
+                                "Qualifier",
+                                "[{}] Method: {}, Version: {} validated successfully",
+                                context.getX_request_ipv4(),
+                                method,
+                                version);
                     }))
                     // 7. Proceed to the next strategy in the chain
                     .then(chain.apply(exchange));
@@ -175,10 +187,11 @@ public class QualiferStrategy extends AbstractStrategy {
      * Validates whether the request's HTTP method matches the expected method defined in the API asset configuration.
      *
      * @param exchange The {@link ServerWebExchange} containing the current request.
+     * @param context  The request context (for logging).
      * @param assets   The {@link Assets} configuration for the requested API.
      * @return A {@link Mono<Void>} that completes if valid, or signals an error if mismatched.
      */
-    protected Mono<Void> method(ServerWebExchange exchange, Assets assets) {
+    protected Mono<Void> method(ServerWebExchange exchange, Context context, Assets assets) {
         // Wrap synchronous logic that can throw an exception
         return Mono.fromRunnable(() -> {
             ServerHttpRequest request = exchange.getRequest();
@@ -186,7 +199,10 @@ public class QualiferStrategy extends AbstractStrategy {
 
             if (!Objects.equals(request.getMethod(), expectedMethod)) {
                 Logger.warn(
-                        "==>     Filter: HTTP method mismatch, expected: {}, actual: {}",
+                        false,
+                        "Qualifier",
+                        "[{}] HTTP method mismatch, expected: {}, actual: {}",
+                        context.getX_request_ipv4(),
                         expectedMethod,
                         request.getMethod());
 
@@ -232,20 +248,28 @@ public class QualiferStrategy extends AbstractStrategy {
             context.setBearer(token);
             // Type 1: Token-based authentication
             principalBuilder.type(Consts.ONE).value(context.getBearer());
-            Logger.info("==>     Filter: Attempting authentication with Token.");
+            Logger.info(true, "Qualifier", "[{}] Attempting authentication with Token.", context.getX_request_ipv4());
         }
         // 2. If no token, search for an API key as a fallback.
         else {
             String apiKey = this.getApiKey(context);
             if (StringKit.isBlank(apiKey)) {
                 // 3. No credentials found for a protected resource that requires them.
-                Logger.warn("==>     Filter: No valid credentials (Token or API Key) were provided.");
+                Logger.warn(
+                        false,
+                        "Qualifier",
+                        "[{}] No valid credentials (Token or API Key) were provided.",
+                        context.getX_request_ipv4());
                 // Return an error signal instead of throwing
                 return Mono.error(new ValidateException(ErrorCode._100806));
             }
             // Type 2: API Key-based authentication
             principalBuilder.type(Consts.TWO).value(apiKey);
-            Logger.info("==>     Filter: No token found. Attempting authentication with API Key.");
+            Logger.info(
+                    true,
+                    "Qualifier",
+                    "[{}] No token found. Attempting authentication with API Key.",
+                    context.getX_request_ipv4());
         }
 
         // 4. Delegate the validation to the provider.
@@ -261,12 +285,15 @@ public class QualiferStrategy extends AbstractStrategy {
                         authMap,
                         CopyOptions.of().setTransientSupport(false).setIgnoreCase(true));
                 context.getParameters().putAll(authMap);
-                Logger.info("==>     Filter: Authentication successful.");
+                Logger.info(true, "Qualifier", "[{}] Authentication successful.", context.getX_request_ipv4());
                 return Mono.empty(); // Signal success
             }
 
             Logger.error(
-                    "==>     Filter: Authentication failed - Error code: {}, message: {}",
+                    false,
+                    "Qualifier",
+                    "[{}] Authentication failed - Error code: {}, message: {}",
+                    context.getX_request_ipv4(),
                     delegate.getMessage().errcode,
                     delegate.getMessage().errmsg);
             // Signal failure

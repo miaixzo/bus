@@ -62,7 +62,7 @@ import reactor.core.scheduler.Schedulers;
  * @since Java 17+
  */
 @Order(Ordered.HIGHEST_PRECEDENCE + 4)
-public class LimitStrategy extends AbstractStrategy {
+public class LimiterStrategy extends AbstractStrategy {
 
     /**
      * The registry that holds all configured rate limiter instances.
@@ -74,7 +74,7 @@ public class LimitStrategy extends AbstractStrategy {
      *
      * @param registry The registry containing all available {@link Limiter}s.
      */
-    public LimitStrategy(LimiterRegistry registry) {
+    public LimiterStrategy(LimiterRegistry registry) {
         this.registry = registry;
     }
 
@@ -108,14 +108,29 @@ public class LimitStrategy extends AbstractStrategy {
 
             String methodVersion = context.getAssets().getMethod() + context.getAssets().getVersion();
             String clientIp = context.getX_request_ipv4(); // Populated by a preceding strategy
+
+            Logger.debug(true, "Limiter", "[{}] Applying rate limits for: {}", clientIp, methodVersion);
             // --- End of sync setup ---
 
             // 1. Asynchronously fetch all applicable limiters in parallel
             return getLimiter(methodVersion, clientIp).flatMap(limiters -> {
                 if (limiters.isEmpty()) {
                     // No limiters to apply, proceed immediately
+                    Logger.debug(
+                            true,
+                            "Limiter",
+                            "[{}] No specific limiters found for {}. Bypassing.",
+                            clientIp,
+                            methodVersion);
                     return chain.apply(exchange);
                 }
+
+                Logger.debug(
+                        true,
+                        "Limiter",
+                        "[{}] Found {} limiter(s). Attempting to acquire...",
+                        clientIp,
+                        limiters.size());
 
                 // 2. Create a list of async tasks for acquiring each limiter
                 // Each acquire() call is blocking and must be offloaded
@@ -123,15 +138,26 @@ public class LimitStrategy extends AbstractStrategy {
                         .map(
                                 limiter -> Mono.fromRunnable(() -> limiter.acquire())
                                         // Offload the blocking acquire() call
-                                        .subscribeOn(Schedulers.boundedElastic()).then() // <-- **FIXED:** Add .then()
-                                                                                         // to resolve generics error
-                ).collect(Collectors.toList());
+                                        .subscribeOn(Schedulers.boundedElastic()).then())
+                        .collect(Collectors.toList());
 
                 // 3. Wait for all limiters to be acquired in parallel
-                return Mono.when(acquireMonos).then(Mono.fromRunnable(() -> {
+                return Mono.when(acquireMonos).doOnError(ex -> {
+                    // Log the rate limit failure specifically
+                    Logger.warn(
+                            false,
+                            "Limiter",
+                            "[{}] Rate limit EXCEEDED for {}. Error: {}",
+                            clientIp,
+                            methodVersion,
+                            ex.getMessage());
+                }).then(Mono.fromRunnable(() -> {
                     // This logging runs after all acquisitions are successful
                     Logger.info(
-                            "==>     Strategy: Rate limit applied - Path: {}, Method: {}",
+                            true,
+                            "Limiter",
+                            "[{}] Rate limit(s) acquired successfully - Path: {}, Method: {}",
+                            clientIp,
                             exchange.getRequest().getURI().getPath(),
                             methodVersion);
                 }))
@@ -159,6 +185,8 @@ public class LimitStrategy extends AbstractStrategy {
     private Mono<Set<Limiter>> getLimiter(String methodVersion, String ip) {
         // Create a stream of keys to check
         Stream<String> limitKeys = Stream.of(methodVersion, ip + methodVersion);
+
+        Logger.debug(true, "Limiter", "[{}] Searching for limiter keys: [{}]", ip, methodVersion);
 
         // For each key, create a Mono that fetches the limiter, offloading the
         // blocking registry.get() call to the boundedElastic scheduler.

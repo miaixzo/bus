@@ -28,6 +28,7 @@
 package org.miaixz.bus.vortex.handler;
 
 import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.vortex.Context;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.server.reactive.ServerHttpRequest;
@@ -63,14 +64,19 @@ public class AccessHandler extends AbstractHandler {
     @Override
     public Mono<Boolean> preHandle(ServerWebExchange exchange, Object service, Object args) {
         return Mono.fromCallable(() -> {
-            // We need to log basic information, not try to get exchange
+            // Get context and IP
+            Context context = exchange.getAttribute(Context.$);
+            String ip = (context != null) ? context.getX_request_ipv4() : "N/A";
+
             ServerHttpRequest request = exchange.getRequest();
             String path = request.getPath().value();
             String method = request.getMethod() != null ? request.getMethod().name() : "UNKNOWN";
 
-            // Use Logger directly, not VortexLogger
             Logger.info(
-                    "==>    Handler: [N/A] [{}] [{}] [ACCESS_PREHANDLE] - Performing async preHandle validation for request",
+                    true,
+                    "Access",
+                    "[{}] [{}] [{}] [ACCESS_PREHANDLE] - Performing async preHandle validation for request",
+                    ip,
                     method,
                     path);
 
@@ -93,14 +99,19 @@ public class AccessHandler extends AbstractHandler {
     @Override
     public Mono<Void> postHandle(ServerWebExchange exchange, Object service, Object args, Object result) {
         return Mono.fromRunnable(() -> {
-            // We need to log basic information, not try to get exchange
+            // Get context and IP
+            Context context = exchange.getAttribute(Context.$);
+            String ip = (context != null) ? context.getX_request_ipv4() : "N/A";
+
             ServerHttpRequest request = exchange.getRequest();
             String path = request.getPath().value();
             String method = request.getMethod() != null ? request.getMethod().name() : "UNKNOWN";
 
-            // Use Logger directly, not VortexLogger
             Logger.info(
-                    "==>    Handler: [N/A] [{}] [{}] [ACCESS_POSTHANDLE] - Post-processing response for request",
+                    false,
+                    "Access",
+                    "[{}] [{}] [{}] [ACCESS_POSTHANDLE] - Post-processing response for request",
+                    ip,
                     method,
                     path);
         });
@@ -129,15 +140,20 @@ public class AccessHandler extends AbstractHandler {
             Object result,
             Throwable exception) {
         return Mono.fromRunnable(() -> {
-            // We need to log basic information, not try to get exchange
+            // Get context and IP
+            Context context = exchange.getAttribute(Context.$);
+            String ip = (context != null) ? context.getX_request_ipv4() : "N/A";
+
             ServerHttpRequest request = exchange.getRequest();
             String path = request.getPath().value();
             String method = request.getMethod() != null ? request.getMethod().name() : "UNKNOWN";
             String exceptionMsg = exception != null ? exception.getMessage() : "none";
 
-            // Use Logger directly
             Logger.info(
-                    "==>    Handler: [N/A] [{}] [{}] [ACCESS_COMPLETION] - Request completed, exception: {}",
+                    false,
+                    "Access",
+                    "[{}] [{}] [{}] [ACCESS_COMPLETION] - Request completed, exception: {}",
+                    ip,
                     method,
                     path,
                     exceptionMsg);

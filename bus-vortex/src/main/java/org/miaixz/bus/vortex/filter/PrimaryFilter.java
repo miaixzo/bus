@@ -29,6 +29,7 @@ package org.miaixz.bus.vortex.filter;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Args;
 import org.miaixz.bus.vortex.Context;
@@ -96,18 +97,19 @@ public class PrimaryFilter extends AbstractFilter {
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
         // 1. Run fast, non-blocking pre-checks synchronously.
         String path = exchange.getRequest().getPath().value();
-        Logger.info("==>     Filter: Request to path: {} ", path);
+        // Note: IP is not available yet, as context is not created.
+        Logger.info(true, "Filter", "[N/A] Request to path: {} ", path);
 
         // 2. Check if the request path matches any known gateway prefixes.
         if (!Args.isKnownRequest(path)) {
-            Logger.warn("==>     Filter: Blocked request to unknown path: {}", path);
+            Logger.warn(false, "Filter", "[N/A] Blocked request to unknown path: {}", path);
             // Throwing is acceptable here as it's a synchronous, definitive rejection.
             throw new ValidateException(ErrorCode._BLOCKED);
         }
 
         // 3. Check for path traversal attack patterns.
         if (isPathTraversalAttempt(path)) {
-            Logger.warn("==>     Filter: Path traversal attempt detected: {}", path);
+            Logger.warn(false, "Filter", "[N/A] Path traversal attempt detected: {}", path);
             throw new ValidateException(ErrorCode._LIMITER);
         }
 
@@ -118,8 +120,11 @@ public class PrimaryFilter extends AbstractFilter {
                     // 5. Create and initialize the context. This logic now runs *after*
                     // the blocking call has completed on another thread.
                     Context context = new Context();
+                    context.setX_request_id(exchange.getRequest().getId());
+                    context.setTimestamp(DateKit.current());
                     context.setHeaders(exchange.getRequest().getHeaders().toSingleValueMap());
                     context.setHttpMethod(exchange.getRequest().getMethod());
+                    // IP is not set here; it's set by the *first* strategy (RequestStrategy)
 
                     // 6. Store the context in the exchange attributes for fallback access.
                     exchange.getAttributes().put(Context.$, context);

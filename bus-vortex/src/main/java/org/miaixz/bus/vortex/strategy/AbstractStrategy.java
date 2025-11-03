@@ -27,8 +27,6 @@
 */
 package org.miaixz.bus.vortex.strategy;
 
-import java.util.*;
-
 import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
@@ -45,6 +43,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpRequestDecorator;
 import org.springframework.web.server.ServerWebExchange;
+
+import java.net.InetSocketAddress;
+import java.util.*;
 
 /**
  * An abstract base class for {@link Strategy} implementations, providing a collection of common utility methods.
@@ -97,7 +98,7 @@ public abstract class AbstractStrategy implements Strategy {
      * @return An {@link Optional} containing the authority string (e.g., "example.com:443"), or
      *         {@link Optional#empty()} if no valid host can be found.
      */
-    public static Optional<String> getAuthority(ServerHttpRequest request) {
+    protected Optional<String> getAuthority(ServerHttpRequest request) {
         HttpHeaders headers = request.getHeaders();
         String protocol = getProtocol(request);
 
@@ -108,7 +109,7 @@ public abstract class AbstractStrategy implements Strategy {
                     .filter(part -> part.toLowerCase().startsWith("host="))
                     .map(part -> part.substring(5).trim().replace("\"", Normal.EMPTY)).findFirst();
             if (authority.isPresent()) {
-                Logger.debug("==>  Authority: '{}' found in 'Forwarded' header", authority.get());
+                Logger.debug(true, "Strategy", "{} found in 'Forwarded' header", authority.get());
                 return authority.map(host -> appendPortIfMissing(host, protocol));
             }
         }
@@ -119,28 +120,101 @@ public abstract class AbstractStrategy implements Strategy {
             // In multi-level proxies, this header may contain multiple domain names; the first one is the original
             // domain.
             String authority = forwardedHostHeader.split(Symbol.COMMA)[0].trim();
-            Logger.debug("==>  Authority: '{}' found in 'X-Forwarded-Host' header", authority);
+            Logger.debug(true, "Strategy", "{} found in 'X-Forwarded-Host' header", authority);
             return Optional.of(appendPortIfMissing(authority, protocol));
         }
 
         // Priority 3: Try to parse 'Host'
         String hostHeader = headers.getFirst("Host");
         if (StringKit.hasText(hostHeader)) {
-            Logger.debug("==>  Authority: '{}' found in 'Host' header", hostHeader);
+            Logger.debug(true, "Strategy", "{} found in 'Host' header", hostHeader);
             return Optional.of(appendPortIfMissing(hostHeader, protocol));
         }
 
         // Priority 4: Use getURI().getHost() as a last fallback
         String uriHost = request.getURI().getHost();
         if (StringKit.hasText(uriHost)) {
-            Logger.debug("==>  Authority: '{}' found via request.getURI().getHost() as fallback", uriHost);
+            Logger.debug(true, "Strategy", "{} found via request.getURI().getHost() as fallback", uriHost);
             return Optional.of(appendPortIfMissing(uriHost, protocol));
         }
 
         Logger.debug(
-                "==>  Authority: Could not determine a valid authority from any source for request: {}",
+                true,
+                "Strategy",
+                "Could not determine a valid authority from any source for request: {}",
                 request.getPath());
         return Optional.empty();
+    }
+
+    /**
+     * Safely retrieves the original client IP address, even in a reverse-proxy environment.
+     * <p>
+     * This method searches for the client IP in the following priority order:
+     * <ol>
+     * <li><b>X-Forwarded-For Header:</b> The standard header for identifying the originating IP address. If it contains
+     * multiple IPs, the first one in the list is used.</li>
+     * <li><b>X-Real-IP Header:</b> A common header used by proxies like Nginx.</li>
+     * <li><b>Proxy-Client-IP / WL-Proxy-Client-IP:</b> Headers used by other proxies.</li>
+     * <li><b>{@code request.getRemoteAddress()}:</b> The direct remote address, used as a last fallback.</li>
+     * </ol>
+     *
+     * @param request The {@link ServerHttpRequest} object.
+     * @return The client IP address as a String, or "unknown" if it cannot be determined.
+     */
+    protected String getClientIp(ServerHttpRequest request) {
+        HttpHeaders headers = request.getHeaders();
+
+        // Priority 1: X-Forwarded-For
+        String ip = headers.getFirst("X-Forwarded-For");
+        if (StringKit.hasText(ip) && !Normal.UNKNOWN.equalsIgnoreCase(ip)) {
+            String source = "X-Forwarded-For";
+            // 'X-Forwarded-For' might be a comma-separated list (e.g., "client, proxy1, proxy2")
+            if (ip.contains(Symbol.COMMA)) {
+                String[] ips = ip.split(Symbol.COMMA);
+                for (String ipSegment : ips) {
+                    String trimmedIp = ipSegment.trim();
+                    if (StringKit.hasText(trimmedIp) && !Normal.UNKNOWN.equalsIgnoreCase(trimmedIp)) {
+                        Logger.debug(true, "Strategy", "Client IP: '{}' found in {} (list)", trimmedIp, source);
+                        return trimmedIp;
+                    }
+                }
+            }
+            // If not a list or list parsing fails, return the trimmed original
+            Logger.debug(true, "Strategy", "Client IP: '{}' found in {}", ip.trim(), source);
+            return ip.trim();
+        }
+
+        // Priority 2: X-Real-IP
+        ip = headers.getFirst("X-Real-IP");
+        if (StringKit.hasText(ip) && !Normal.UNKNOWN.equalsIgnoreCase(ip)) {
+            Logger.debug(true, "Strategy", "Client IP: '{}' found in X-Real-IP", ip.trim());
+            return ip.trim();
+        }
+
+        // Priority 3: Other common proxy headers
+        ip = headers.getFirst("Proxy-Client-IP");
+        if (StringKit.hasText(ip) && !Normal.UNKNOWN.equalsIgnoreCase(ip)) {
+            Logger.debug(true, "Strategy", "Client IP: '{}' found in Proxy-Client-IP", ip.trim());
+            return ip.trim();
+        }
+
+        ip = headers.getFirst("WL-Proxy-Client-IP");
+        if (StringKit.hasText(ip) && !Normal.UNKNOWN.equalsIgnoreCase(ip)) {
+            Logger.debug(true, "Strategy", "Client IP: '{}' found in WL-Proxy-Client-IP", ip.trim());
+            return ip.trim();
+        }
+
+        // Priority 4: Fallback to getRemoteAddress
+        InetSocketAddress remoteAddress = request.getRemoteAddress();
+        if (remoteAddress != null) {
+            String hostString = remoteAddress.getHostString();
+            Logger.debug(true, "Strategy", "Client IP: '{}' found via fallback getRemoteAddress()", hostString);
+            // .getHostString() is preferred over .getHostName() to avoid DNS lookup
+            return hostString;
+        }
+
+        Logger.warn(true, "Strategy", "Client IP could not be determined. Falling back to 'unknown'.");
+        return Normal.UNKNOWN;
     }
 
     /**
@@ -152,7 +226,7 @@ public abstract class AbstractStrategy implements Strategy {
      * @param request The {@link ServerHttpRequest} object.
      * @return The protocol string, either "https" or "http".
      */
-    protected static String getProtocol(ServerHttpRequest request) {
+    protected String getProtocol(ServerHttpRequest request) {
         HttpHeaders headers = request.getHeaders();
 
         // Priority 1: Try to parse from 'Forwarded' header (RFC 7239)
@@ -162,18 +236,24 @@ public abstract class AbstractStrategy implements Strategy {
                     .filter(part -> part.toLowerCase().startsWith("proto="))
                     .map(part -> part.substring(6).trim().replace("\"", Normal.EMPTY)).findFirst();
             if (proto.isPresent()) {
-                return proto.get();
+                String protocol = proto.get();
+                Logger.debug(true, "Strategy", "Protocol: '{}' found in 'Forwarded' header", protocol);
+                return protocol;
             }
         }
 
         // Priority 2: Try to parse from 'X-Forwarded-Proto' header
         String forwardedProtoHeader = headers.getFirst("X-Forwarded-Proto");
         if (StringKit.hasText(forwardedProtoHeader)) {
-            return forwardedProtoHeader.split(Symbol.COMMA)[0].trim();
+            String protocol = forwardedProtoHeader.split(Symbol.COMMA)[0].trim();
+            Logger.debug(true, "Strategy", "Protocol: '{}' found in 'X-Forwarded-Proto' header", protocol);
+            return protocol;
         }
 
         // Priority 3: Use URI scheme as a last fallback
-        return request.getURI().getScheme();
+        String protocol = request.getURI().getScheme();
+        Logger.debug(true, "Strategy", "Protocol: '{}' found via fallback getURI().getScheme()", protocol);
+        return protocol;
     }
 
     /**
@@ -209,6 +289,8 @@ public abstract class AbstractStrategy implements Strategy {
         MediaType mediaType = request.getHeaders().getContentType();
         if (null == mediaType) {
             mediaType = MediaType.APPLICATION_FORM_URLENCODED;
+            Logger.debug(true, "Strategy", "Content-Type is missing. Defaulting to: {}", mediaType);
+
             HttpHeaders headers = new HttpHeaders();
             headers.putAll(exchange.getRequest().getHeaders());
             headers.setContentType(mediaType);
@@ -231,7 +313,7 @@ public abstract class AbstractStrategy implements Strategy {
      * @param protocol  The protocol, either "http" or "https".
      * @return The authority string, guaranteed to include a port (e.g., "example.com:443").
      */
-    private static String appendPortIfMissing(String authority, String protocol) {
+    private String appendPortIfMissing(String authority, String protocol) {
         if (authority.contains(Symbol.COLON)) {
             return authority; // Port already exists
         }

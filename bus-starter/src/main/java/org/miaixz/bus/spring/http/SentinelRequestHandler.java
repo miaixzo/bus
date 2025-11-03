@@ -107,7 +107,7 @@ public class SentinelRequestHandler implements HandlerInterceptor {
             if (request instanceof MutableRequestWrapper) {
                 String requestBody = new String(((MutableRequestWrapper) request).getBody())
                         .replaceAll("\\s+", Normal.EMPTY);
-                Logger.info("==>       Body: {}", requestBody);
+                Logger.info(true, "Sentinel", "Body: {}", requestBody);
             } else {
                 // If not wrapped, log the request parameters.
                 requestParameters(request);
@@ -141,9 +141,14 @@ public class SentinelRequestHandler implements HandlerInterceptor {
             String logBody = responseBody.length() > 150
                     ? responseBody.substring(0, 150) + "... [truncated, total length: " + responseBody.length() + "]"
                     : responseBody;
-            Logger.info("<==   Response: (length: {}): {}", mutableResponseWrapper.getBody().length, logBody);
+            Logger.info(
+                    false,
+                    "Sentinel",
+                    "Response (length: {}): {}",
+                    mutableResponseWrapper.getBody().length,
+                    logBody);
         } else {
-            Logger.info("<==     Status: {}", response.getStatus());
+            Logger.info(false, "Sentinel", "Status: {}", response.getStatus());
         }
         // Clean up the cache at the end of the request.
         ContextBuilder.clear();
@@ -164,7 +169,7 @@ public class SentinelRequestHandler implements HandlerInterceptor {
             HttpServletResponse response,
             Object handler,
             ModelAndView modelAndView) {
-        Logger.info("<==        URI: {}", request.getRequestURI());
+        Logger.info(false, "Sentinel", "URI: {}", request.getRequestURI());
     }
 
     /**
@@ -182,7 +187,7 @@ public class SentinelRequestHandler implements HandlerInterceptor {
                     params.put(entry.getKey(), StringKit.join(Symbol.COMMA, values));
                 }
             }
-            Logger.info("==>       Body: {}", params);
+            Logger.info(true, "Sentinel", "Body: {}", params);
         }
 
         // Log request headers.
@@ -193,7 +198,7 @@ public class SentinelRequestHandler implements HandlerInterceptor {
                 String headerName = headerNames.nextElement();
                 headers.put(headerName, request.getHeader(headerName));
             }
-            Logger.debug("==>    Headers: {}", headers);
+            Logger.debug(true, "Sentinel", "Headers: {}", headers);
         }
     }
 
@@ -268,7 +273,9 @@ public class SentinelRequestHandler implements HandlerInterceptor {
         String requestMethod = AnsiEncoder.encode(color, method);
         // Log the request information.
         Logger.info(
-                "==>    Request: {ip={}, method={}, url={}}",
+                true,
+                "Sentinel",
+                "Request: {ip={}, method={}, url={}}",
                 getClientIP(request),
                 requestMethod,
                 request.getRequestURL().toString());

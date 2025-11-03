@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.logger;
 
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.CallerKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
@@ -44,6 +46,11 @@ public class Logger {
     private static final String FQCN = Logger.class.getName();
 
     /**
+     * The default width for the aligned log prefix.
+     */
+    private static final int WIDTH = Normal._10 + Normal._5;
+
+    /**
      * Default constructor.
      */
     public Logger() {
@@ -51,8 +58,7 @@ public class Logger {
     }
 
     /**
-     * Logs a message at the TRACE level. Due to the dynamic acquisition of the log, the efficiency is low. It is
-     * recommended to use it in the case of infrequent calls!
+     * Logs a message at the TRACE level.
      *
      * @param format the format string
      * @param args   the arguments to be substituted into the format string
@@ -62,7 +68,7 @@ public class Logger {
     }
 
     /**
-     * Logs a message at the TRACE level.
+     * Logs a message at the TRACE level. (Provider-specific)
      *
      * @param provider the logger provider
      * @param format   the format string
@@ -73,8 +79,35 @@ public class Logger {
     }
 
     /**
-     * Logs a message at the DEBUG level. Due to the dynamic acquisition of the log, the efficiency is low. It is
-     * recommended to use it in the case of infrequent calls!
+     * Logs an aligned message at the TRACE level using the default prefix width.
+     *
+     * @param isEntry The direction: true (==&gt;) for entry/inbound, false (&lt;==) for exit/outbound.
+     * @param tag     The log tag (e.g., "Vetting").
+     * @param message The log message with SLF4J placeholders ({}).
+     * @param args    The arguments for the placeholders.
+     */
+    public static void trace(boolean isEntry, String tag, String message, Object... args) {
+        // Must NOT call the other overload to avoid breaking the stack trace
+        String formattedMessage = build(WIDTH, tag, isEntry) + Symbol.SPACE + message;
+        trace(Registry.get(CallerKit.getCallers()), formattedMessage, args);
+    }
+
+    /**
+     * Logs an aligned message at the TRACE level.
+     *
+     * @param isEntry The direction: true (==&gt;) for entry/inbound, false (&lt;==) for exit/outbound.
+     * @param tag     The log tag (e.g., "Vetting").
+     * @param width   The desired total width of the prefix.
+     * @param message The log message with SLF4J placeholders ({}).
+     * @param args    The arguments for the placeholders.
+     */
+    public static void trace(boolean isEntry, String tag, int width, String message, Object... args) {
+        String formattedMessage = build(width, tag, isEntry) + Symbol.SPACE + message;
+        trace(Registry.get(CallerKit.getCallers()), formattedMessage, args);
+    }
+
+    /**
+     * Logs a message at the DEBUG level.
      *
      * @param format the format string
      * @param args   the arguments to be substituted into the format string
@@ -84,7 +117,7 @@ public class Logger {
     }
 
     /**
-     * Logs a message at the DEBUG level.
+     * Logs a message at the DEBUG level. (Provider-specific)
      *
      * @param provider the logger provider
      * @param format   the format string
@@ -95,8 +128,35 @@ public class Logger {
     }
 
     /**
-     * Logs a message at the INFO level. Due to the dynamic acquisition of the log, the efficiency is low. It is
-     * recommended to use it in the case of infrequent calls!
+     * Logs an aligned message at the DEBUG level using the default prefix width.
+     *
+     * @param isEntry The direction: true (==&gt;) for entry/inbound, false (&lt;==) for exit/outbound.
+     * @param tag     The log tag (e.g., "Vetting").
+     * @param message The log message with SLF4J placeholders ({}).
+     * @param args    The arguments for the placeholders.
+     */
+    public static void debug(boolean isEntry, String tag, String message, Object... args) {
+        // Must NOT call the other overload to avoid breaking the stack trace
+        String formattedMessage = build(WIDTH, tag, isEntry) + Symbol.SPACE + message;
+        debug(Registry.get(CallerKit.getCallers()), formattedMessage, args);
+    }
+
+    /**
+     * Logs an aligned message at the DEBUG level.
+     *
+     * @param isEntry The direction: true (==&gt;) for entry/inbound, false (&lt;==) for exit/outbound.
+     * @param tag     The log tag (e.g., "Vetting").
+     * @param width   The desired total width of the prefix.
+     * @param message The log message with SLF4J placeholders ({}).
+     * @param args    The arguments for the placeholders.
+     */
+    public static void debug(boolean isEntry, String tag, int width, String message, Object... args) {
+        String formattedMessage = build(width, tag, isEntry) + Symbol.SPACE + message;
+        debug(Registry.get(CallerKit.getCallers()), formattedMessage, args);
+    }
+
+    /**
+     * Logs a message at the INFO level.
      *
      * @param format the format string
      * @param args   the arguments to be substituted into the format string
@@ -106,7 +166,7 @@ public class Logger {
     }
 
     /**
-     * Logs a message at the INFO level.
+     * Logs a message at the INFO level. (Provider-specific)
      *
      * @param provider the logger provider
      * @param format   the format string
@@ -117,8 +177,35 @@ public class Logger {
     }
 
     /**
-     * Logs a message at the WARN level. Due to the dynamic acquisition of the log, the efficiency is low. It is
-     * recommended to use it in the case of infrequent calls!
+     * Logs an aligned message at the INFO level using the default prefix width.
+     *
+     * @param isEntry The direction: true (==&gt;) for entry/inbound, false (&lt;==) for exit/outbound.
+     * @param tag     The log tag (e.g., "Vetting").
+     * @param message The log message with SLF4J placeholders ({}).
+     * @param args    The arguments for the placeholders.
+     */
+    public static void info(boolean isEntry, String tag, String message, Object... args) {
+        // Must NOT call the other overload to avoid breaking the stack trace
+        String formattedMessage = build(WIDTH, tag, isEntry) + Symbol.SPACE + message;
+        info(Registry.get(CallerKit.getCallers()), formattedMessage, args);
+    }
+
+    /**
+     * Logs an aligned message at the INFO level.
+     *
+     * @param isEntry The direction: true (==&gt;) for entry/inbound, false (&lt;==) for exit/outbound.
+     * @param tag     The log tag (e.g., "Vetting").
+     * @param width   The desired total width of the prefix.
+     * @param message The log message with SLF4J placeholders ({}).
+     * @param args    The arguments for the placeholders.
+     */
+    public static void info(boolean isEntry, String tag, int width, String message, Object... args) {
+        String formattedMessage = build(width, tag, isEntry) + Symbol.SPACE + message;
+        info(Registry.get(CallerKit.getCallers()), formattedMessage, args);
+    }
+
+    /**
+     * Logs a message at the WARN level.
      *
      * @param format the format string
      * @param args   the arguments to be substituted into the format string
@@ -128,8 +215,7 @@ public class Logger {
     }
 
     /**
-     * Logs a message at the WARN level. Due to the dynamic acquisition of the log, the efficiency is low. It is
-     * recommended to use it in the case of infrequent calls!
+     * Logs a message at the WARN level.
      *
      * @param e      the exception to log
      * @param format the format string
@@ -140,7 +226,7 @@ public class Logger {
     }
 
     /**
-     * Logs a message at the WARN level.
+     * Logs a message at the WARN level. (Provider-specific)
      *
      * @param provider the logger provider
      * @param format   the format string
@@ -151,7 +237,7 @@ public class Logger {
     }
 
     /**
-     * Logs a message at the WARN level.
+     * Logs a message at the WARN level. (Provider-specific)
      *
      * @param provider the logger provider
      * @param e        the exception to log
@@ -163,8 +249,35 @@ public class Logger {
     }
 
     /**
-     * Logs a message at the ERROR level. Due to the dynamic acquisition of the log, the efficiency is low. It is
-     * recommended to use it in the case of infrequent calls!
+     * Logs an aligned message at the WARN level using the default prefix width.
+     *
+     * @param isEntry The direction: true (==&gt;) for entry/inbound, false (&lt;==) for exit/outbound.
+     * @param tag     The log tag (e.g., "Vetting").
+     * @param message The log message with SLF4J placeholders ({}).
+     * @param args    The arguments for the placeholders.
+     */
+    public static void warn(boolean isEntry, String tag, String message, Object... args) {
+        // Must NOT call the other overload to avoid breaking the stack trace
+        String formattedMessage = build(WIDTH, tag, isEntry) + Symbol.SPACE + message;
+        warn(Registry.get(CallerKit.getCallers()), formattedMessage, args);
+    }
+
+    /**
+     * Logs an aligned message at the WARN level.
+     *
+     * @param isEntry The direction: true (==&gt;) for entry/inbound, false (&lt;==) for exit/outbound.
+     * @param tag     The log tag (e.g., "Vetting").
+     * @param width   The desired total width of the prefix.
+     * @param message The log message with SLF4J placeholders ({}).
+     * @param args    The arguments for the placeholders.
+     */
+    public static void warn(boolean isEntry, String tag, int width, String message, Object... args) {
+        String formattedMessage = build(width, tag, isEntry) + Symbol.SPACE + message;
+        warn(Registry.get(CallerKit.getCallers()), formattedMessage, args);
+    }
+
+    /**
+     * Logs a message at the ERROR level.
      *
      * @param e the exception to log
      */
@@ -173,8 +286,7 @@ public class Logger {
     }
 
     /**
-     * Logs a message at the ERROR level. Due to the dynamic acquisition of the log, the efficiency is low. It is
-     * recommended to use it in the case of infrequent calls!
+     * Logs a message at the ERROR level.
      *
      * @param format the format string
      * @param args   the arguments to be substituted into the format string
@@ -184,8 +296,7 @@ public class Logger {
     }
 
     /**
-     * Logs a message at the ERROR level. Due to the dynamic acquisition of the log, the efficiency is low. It is
-     * recommended to use it in the case of infrequent calls!
+     * Logs a message at the ERROR level.
      *
      * @param e      the exception to log
      * @param format the format string
@@ -196,7 +307,7 @@ public class Logger {
     }
 
     /**
-     * Logs a message at the ERROR level.
+     * Logs a message at the ERROR level. (Provider-specific)
      *
      * @param provider the logger provider
      * @param e        the exception to log
@@ -206,7 +317,7 @@ public class Logger {
     }
 
     /**
-     * Logs a message at the ERROR level.
+     * Logs a message at the ERROR level. (Provider-specific)
      *
      * @param provider the logger provider
      * @param format   the format string
@@ -217,7 +328,7 @@ public class Logger {
     }
 
     /**
-     * Logs a message at the ERROR level.
+     * Logs a message at the ERROR level. (Provider-specific)
      *
      * @param provider the logger provider
      * @param e        the exception to log
@@ -226,6 +337,34 @@ public class Logger {
      */
     public static void error(final Provider provider, final Throwable e, final String format, final Object... args) {
         provider.error(FQCN, e, format, args);
+    }
+
+    /**
+     * Logs an aligned message at the ERROR level using the default prefix width.
+     *
+     * @param isEntry The direction: true (==&gt;) for entry/inbound, false (&lt;==) for exit/outbound.
+     * @param tag     The log tag (e.g., "Vetting").
+     * @param message The log message with SLF4J placeholders ({}).
+     * @param args    The arguments for the placeholders.
+     */
+    public static void error(boolean isEntry, String tag, String message, Object... args) {
+        // Must NOT call the other overload to avoid breaking the stack trace
+        String formattedMessage = build(WIDTH, tag, isEntry) + Symbol.SPACE + message;
+        error(Registry.get(CallerKit.getCallers()), formattedMessage, args);
+    }
+
+    /**
+     * Logs an aligned message at the ERROR level.
+     *
+     * @param isEntry The direction: true (==&gt;) for entry/inbound, false (&lt;==) for exit/outbound.
+     * @param tag     The log tag (e.g., "Vetting").
+     * @param width   The desired total width of the prefix.
+     * @param message The log message with SLF4J placeholders ({}).
+     * @param args    The arguments for the placeholders.
+     */
+    public static void error(boolean isEntry, String tag, int width, String message, Object... args) {
+        String formattedMessage = build(width, tag, isEntry) + Symbol.SPACE + message;
+        error(Registry.get(CallerKit.getCallers()), formattedMessage, args);
     }
 
     /**
@@ -380,6 +519,39 @@ public class Logger {
      */
     public static boolean isErrorEnabled() {
         return getProvider().isErrorEnabled();
+    }
+
+    /**
+     * Builds a standardized, padded log prefix.
+     *
+     * @param width   The desired total width of the prefix (e.g., 20).
+     * @param tag     The log tag (e.g., "Vetting", "Limiter").
+     * @param isEntry The direction: true for '==&gt;' (entry), false for '&lt;==' (exit).
+     * @return The formatted prefix string, e.g., "==&gt; Vetting:"
+     */
+    private static String build(int width, String tag, boolean isEntry) {
+        String arrow = isEntry ? Symbol.EQUAL + Symbol.EQUAL + Symbol.GT : Symbol.LT + Symbol.EQUAL + Symbol.EQUAL;
+
+        // Calculate the length of non-padded content: "==>" + " " (space between arrow and tag) + "Tag" + ":"
+        int fixedContentLength = arrow.length() + 1 + tag.length() + 1;
+
+        int paddingSize = width - fixedContentLength;
+
+        if (paddingSize <= 0) {
+            // If the total length is insufficient, ensure at least one space
+            //
+            // *** FIX: Use {} placeholders for StringKit.format ***
+            return StringKit.format("{} {}:", arrow, tag);
+        }
+
+        // " ".repeat(paddingSize) will create the required number of spaces
+        String padding = Symbol.SPACE.repeat(paddingSize);
+
+        // Format as: "==>" + "[...padding...]" + " " + "Tag" + ":"
+        // Note: Padding is placed between the arrow and the tag to align the colons
+        //
+        // *** FIX: Use {} placeholders for StringKit.format ***
+        return StringKit.format("{}{} {}:", arrow, padding, tag);
     }
 
 }

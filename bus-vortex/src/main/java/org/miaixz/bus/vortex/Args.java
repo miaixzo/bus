@@ -31,7 +31,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import org.miaixz.bus.vortex.strategy.QualiferStrategy;
+import org.miaixz.bus.vortex.strategy.QualifierStrategy;
 import org.miaixz.bus.vortex.strategy.RequestStrategy;
 import org.miaixz.bus.vortex.strategy.VettingStrategy;
 
@@ -44,7 +44,7 @@ import org.miaixz.bus.vortex.strategy.VettingStrategy;
  * binding from application properties (e.g., YAML or .properties files) using {@code @ConfigurationProperties}.
  *
  * @author Kimi Liu
- * @see QualiferStrategy
+ * @see QualifierStrategy
  * @see VettingStrategy
  * @see RequestStrategy
  * @since Java 17+
@@ -58,19 +58,19 @@ public class Args {
     /**
      * The mandatory parameter name for the logical API method to be invoked (e.g., "user.getProfile").
      *
-     * @see QualiferStrategy
+     * @see QualifierStrategy
      */
     public static final String METHOD = "method";
     /**
      * The parameter name for specifying the desired response format (e.g., "json", "xml").
      *
-     * @see QualiferStrategy
+     * @see QualifierStrategy
      */
     public static final String FORMAT = "format";
     /**
      * The parameter name for specifying the version of the requested API method (e.g., "v1", "1.0.0").
      *
-     * @see QualiferStrategy
+     * @see QualifierStrategy
      */
     public static final String VERSION = "v";
     /**
@@ -94,13 +94,13 @@ public class Args {
     /**
      * The HTTP header name for the bearer access token (e.g., JWT).
      *
-     * @see QualiferStrategy
+     * @see QualifierStrategy
      */
     public static final String X_ACCESS_TOKEN = "X-Access-Token";
     /**
      * The HTTP header name for identifying the client channel (e.g., "web", "app", "mobile").
      *
-     * @see QualiferStrategy
+     * @see QualifierStrategy
      */
     public static final String X_REMOTE_CHANNEL = "x_remote_channel";
 

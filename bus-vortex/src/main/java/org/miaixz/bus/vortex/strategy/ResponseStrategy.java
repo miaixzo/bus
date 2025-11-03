@@ -52,26 +52,21 @@ import reactor.core.publisher.Mono;
  * @since Java 17+
  */
 @Order(Ordered.HIGHEST_PRECEDENCE + 5)
-public class FormatStrategy extends AbstractStrategy {
+public class ResponseStrategy extends AbstractStrategy {
 
     @Override
     public Mono<Void> apply(ServerWebExchange exchange, Chain chain) {
         return Mono.deferContextual(contextView -> {
             final Context context = contextView.get(Context.class);
             ServerWebExchange newExchange = exchange;
+            final String ip = context.getX_request_ipv4();
 
-            Logger.info(
-                    "==>     Filter: Request started - Method: {}, Path: {}, Query: {}",
-                    exchange.getRequest().getMethod(),
-                    exchange.getRequest().getPath().value(),
-                    exchange.getRequest().getQueryParams());
-
-            Logger.info("==>     Filter: Current context format: {}", context.getFormat());
+            Logger.debug(true, "Response", "[{}] Strategy applying for format: {}", ip, context.getFormat());
 
             // If the request asks for XML format, apply the transformation.
             if (Formats.XML.equals(context.getFormat())) {
-                Logger.info("==>     Filter: Response format is XML, applying XML transformation.");
-                newExchange = exchange.mutate().response(processXml(exchange)).build();
+                Logger.debug(true, "Response", "[{}] Format is XML, applying response transformation.", ip);
+                newExchange = exchange.mutate().response(processXml(exchange, context)).build();
             }
 
             return chain.apply(newExchange);
@@ -87,9 +82,10 @@ public class FormatStrategy extends AbstractStrategy {
      * </p>
      *
      * @param exchange The {@link ServerWebExchange} object.
+     * @param context  The request context (for logging).
      * @return The decorated {@link ServerHttpResponseDecorator}.
      */
-    private ServerHttpResponseDecorator processXml(ServerWebExchange exchange) {
+    private ServerHttpResponseDecorator processXml(ServerWebExchange exchange, Context context) {
         return new ServerHttpResponseDecorator(exchange.getResponse()) {
 
             @Override
@@ -114,7 +110,12 @@ public class FormatStrategy extends AbstractStrategy {
                     // and handles its own thread scheduling.
                     return provider.serialize(bodyString).map(xmlBody -> {
                         // 4. This logic now runs after the async serialization is complete
-                        Logger.trace("==>     Filter: Response formatted to XML: {}", xmlBody);
+                        Logger.trace(
+                                false,
+                                "Response",
+                                "[{}] Response formatted to XML: {}",
+                                context.getX_request_ipv4(),
+                                xmlBody);
                         // Wrap the formatted data into a new data buffer
                         return bufferFactory().wrap(xmlBody.getBytes(Charset.UTF_8));
                     });

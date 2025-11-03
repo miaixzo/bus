@@ -142,7 +142,7 @@ public class MutableRequestWrapper extends HttpServletRequestWrapper {
             logOut = UrlKit.decodeQuery(((String) logOut).replaceAll("\\s+", Normal.EMPTY), Charset.UTF_8);
         }
 
-        Logger.info("==> Parameters: {}", JsonKit.toJsonString(logOut));
+        Logger.info(true, "Request", "Parameters: {}", JsonKit.toJsonString(logOut));
 
         // Initialize custom input stream
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(this.body);
@@ -287,7 +287,7 @@ public class MutableRequestWrapper extends HttpServletRequestWrapper {
             try {
                 return inputStream.available() == 0;
             } catch (IOException e) {
-                Logger.error("Error checking if input stream is finished", e);
+                Logger.error(false, "Request", "Error checking if input stream is finished", e);
                 return true; // Assume finished on error
             }
         }

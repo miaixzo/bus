@@ -30,6 +30,7 @@ package org.miaixz.bus.vortex.strategy;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Args;
 import org.miaixz.bus.vortex.Strategy;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
@@ -49,19 +50,70 @@ import org.springframework.web.server.ServerWebExchange;
 public class StrategyFactory {
 
     /**
-     * The default, complete list of all strategies, sorted by order.
+     * The default, complete list of all strategies, sorted by order. (e.g., for REST)
      */
-    private final List<Strategy> strategies;
+    private final List<Strategy> chain;
+
+    /**
+     * A specialized, minimal chain for CST (Url-based) requests.
+     */
+    private final List<Strategy> cstChain;
+
+    /**
+     * A specialized, minimal chain for MCP (proxy) requests.
+     */
+    private final List<Strategy> mcpChain;
+
+    /**
+     * A specialized chain for MQ (message queue) requests.
+     */
+    private final List<Strategy> mqChain;
 
     /**
      * Constructs a new {@code StrategyFactory} and pre-calculates the strategy chains.
      *
-     * @param strategies A list of all available {@link Strategy} beans, injected by the Spring container.
+     * @param chain A list of all available {@link Strategy} beans, injected by the Spring container.
      */
-    public StrategyFactory(List<Strategy> strategies) {
+    public StrategyFactory(List<Strategy> chain) {
+        Logger.info(true, "Chain", "Initializing StrategyFactory...");
         // Sort all strategies by their @Order annotation to establish a definitive execution order.
-        strategies.sort(AnnotationAwareOrderComparator.INSTANCE);
-        this.strategies = strategies;
+        chain.sort(AnnotationAwareOrderComparator.INSTANCE);
+        Logger.info(true, "Chain", "Found {} total strategies, sorting and caching chains...", chain.size());
+
+        // Pre-calculate and cache all strategy chains.
+        this.chain = List.copyOf(chain);
+        Logger.info(
+                true,
+                "Chain",
+                "Default Chain ({} strategies): {}",
+                this.chain.size(),
+                getStrategyNames(this.chain));
+
+        this.cstChain = chain.stream().filter(this::isApplicableToCst).collect(Collectors.toUnmodifiableList());
+        Logger.info(
+                true,
+                "Chain",
+                "CST Chain     ({} strategies): {}",
+                this.cstChain.size(),
+                getStrategyNames(this.cstChain));
+
+        this.mcpChain = chain.stream().filter(this::isApplicableToMcp).collect(Collectors.toUnmodifiableList());
+        Logger.info(
+                true,
+                "Chain",
+                "MCP Chain     ({} strategies): {}",
+                this.mcpChain.size(),
+                getStrategyNames(this.mcpChain));
+
+        this.mqChain = chain.stream().filter(this::isApplicableToMq).collect(Collectors.toUnmodifiableList());
+        Logger.info(
+                true,
+                "Chain",
+                "MQ Chain      ({} strategies): {}",
+                this.mqChain.size(),
+                getStrategyNames(this.mqChain));
+
+        Logger.info(true, "Chain", "StrategyFactory initialization complete.");
     }
 
     /**
@@ -75,23 +127,55 @@ public class StrategyFactory {
      */
     public List<Strategy> getStrategiesFor(ServerWebExchange exchange) {
         String path = exchange.getRequest().getPath().value();
-        // 1. Url requests are identified by a unique path segment and have a minimal, specialized chain.
+
+        // 此方法在创建 Context 和 IP 之前被调用, 因此使用 [N/A]
+        final String ipTag = "[N/A]";
+
+        if (Logger.isDebugEnabled()) {
+            Logger.debug(true, "Chain", "{} Selecting strategy chain for path: {}", ipTag, path);
+        }
+
+        // 1. Url requests are identified by a unique path segment.
         if (Args.isCstRequest(path)) {
-            return this.strategies.stream().filter(this::isApplicableToCst).collect(Collectors.toUnmodifiableList());
+            Logger.debug(
+                    true,
+                    "Chain",
+                    "{} Path matched CST. Selected CST Chain ({} strategies).",
+                    ipTag,
+                    this.cstChain.size());
+            return this.cstChain;
         }
 
-        // 2. MCP requests are identified by a unique path prefix and have a minimal, specialized chain.
+        // 2. MCP requests are identified by a unique path prefix.
         if (Args.isMcpRequest(path)) {
-            return this.strategies.stream().filter(this::isApplicableToMcp).collect(Collectors.toUnmodifiableList());
+            Logger.debug(
+                    true,
+                    "Chain",
+                    "{} Path matched MCP. Selected MCP Chain ({} strategies).",
+                    ipTag,
+                    this.mcpChain.size());
+            return this.mcpChain;
         }
 
-        // 3. Currently, MQ requests are not distinguished by path and fall through to the default.
+        // 3. MQ requests.
         if (Args.isMqRequest(path)) {
-            return this.strategies.stream().filter(this::isApplicableToMq).collect(Collectors.toUnmodifiableList());
+            Logger.debug(
+                    true,
+                    "Chain",
+                    "{} Path matched MQ. Selected MQ Chain ({} strategies).",
+                    ipTag,
+                    this.mqChain.size());
+            return this.mqChain;
         }
 
         // 4. For all other requests (e.g., REST), apply the full, default strategy chain.
-        return this.strategies;
+        Logger.debug(
+                true,
+                "Chain",
+                "{} Path matched no specific profile. Selected Default Chain ({} strategies).",
+                ipTag,
+                this.chain.size());
+        return this.chain;
     }
 
     /**
@@ -106,7 +190,7 @@ public class StrategyFactory {
      */
     public boolean isApplicableToMcp(Strategy strategy) {
         // MCP requests are simple proxies; they don't need complex validation like authorization or licensing.
-        return !(strategy instanceof QualiferStrategy || strategy instanceof LimitStrategy);
+        return !(strategy instanceof QualifierStrategy || strategy instanceof LimiterStrategy);
     }
 
     /**
@@ -121,22 +205,35 @@ public class StrategyFactory {
     public boolean isApplicableToMq(Strategy strategy) {
         // Example: MQ requests might have their own authorization logic but share others.
         // For now, we assume all strategies apply to MQ, but this can be customized.
+        // This logic is identical to default, but is kept separate for future customization.
         return true;
     }
 
     /**
-     * Determines if a strategy is applicable to MCP requests.
+     * Determines if a strategy is applicable to CST (Url-based) requests.
      * <p>
-     * MCP requests are typically simple, stateless proxies and should bypass most business-logic-heavy strategies to
-     * remain lightweight and fast.
+     * This method provides a hook to define a custom strategy chain for simple URL-based requests.
      *
      * @param strategy The strategy to check.
-     * @return {@code false} if the strategy is one of the business-logic strategies to be skipped for MCP, {@code true}
-     *         otherwise.
+     * @return {@code true} if the strategy should be part of the CST chain, {@code false} otherwise.
      */
     public boolean isApplicableToCst(Strategy strategy) {
-        // MCP requests are simple proxies; they don't need complex validation like authorization or licensing.
+        // For now, we assume all strategies apply to CST.
+        // This logic is identical to default, but is kept separate for future customization.
         return true;
+    }
+
+    /**
+     * Helper method to get a clean list of class names for logging.
+     *
+     * @param strategies The list of strategies.
+     * @return A comma-separated string of simple class names.
+     */
+    private String getStrategyNames(List<Strategy> strategies) {
+        if (strategies == null || strategies.isEmpty()) {
+            return "[]";
+        }
+        return strategies.stream().map(s -> s.getClass().getSimpleName()).collect(Collectors.joining(", "));
     }
 
 }
