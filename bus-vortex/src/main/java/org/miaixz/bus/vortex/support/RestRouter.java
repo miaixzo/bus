@@ -25,52 +25,60 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.spring.http;
+package org.miaixz.bus.vortex.support;
 
-import org.springframework.http.converter.HttpMessageConverter;
-
-import java.util.List;
+import org.miaixz.bus.vortex.Assets;
+import org.miaixz.bus.vortex.Context;
+import org.miaixz.bus.vortex.Router;
+import org.miaixz.bus.vortex.support.rest.RestService;
+import org.springframework.web.reactive.function.server.ServerRequest;
+import org.springframework.web.reactive.function.server.ServerResponse;
+import reactor.core.publisher.Mono;
+import reactor.util.annotation.NonNull;
 
 /**
- * An interface for configuring JSON {@link HttpMessageConverter}s in Spring MVC. Implementations provide a name, an
- * order of precedence, and the logic to configure the list of converters. It also supports an {@code autoType} property
- * for serialization/deserialization features like Fastjson's type recognition.
+ * A {@link Router} implementation for forwarding requests to standard RESTful HTTP/HTTPS downstream services.
+ * <p>
+ * This class acts as a simple coordinator. Its sole responsibility is to retrieve the necessary context and asset
+ * information for the current request and delegate the actual execution of the HTTP reverse proxy logic to the
+ * {@link RestService}.
  *
  * @author Kimi Liu
+ * @see RestService
  * @since Java 17+
  */
-public interface JsonConverterConfigurer {
+public class RestRouter implements Router {
 
     /**
-     * Returns the name of the converter, used for logging and debugging.
-     *
-     * @return The converter's name.
+     * The service responsible for executing the downstream HTTP request.
      */
-    String name();
+    private final RestService service;
 
     /**
-     * Returns the order of precedence for the converter (lower values have higher priority).
+     * Constructs a new {@code RestRouter}.
      *
-     * @return The order value.
+     * @param service The service that will perform the HTTP request execution.
      */
-    int order();
+    public RestRouter(RestService service) {
+        this.service = service;
+    }
 
     /**
-     * Configures the list of {@link HttpMessageConverter}s. Implementations should add their custom converter to this
-     * list.
+     * Routes the request to a downstream HTTP service.
+     * <p>
+     * This method retrieves the {@link Context} and its contained {@link Assets} from the reactive stream, then
+     * delegates the execution to the {@link RestService}.
      *
-     * @param converters The list of message converters to configure.
+     * @param request The current {@link ServerRequest}.
+     * @return A {@code Mono<ServerResponse>} containing the response from the downstream service.
      */
-    void configure(List<HttpMessageConverter<?>> converters);
-
-    /**
-     * Sets the {@code autoType} property for serialization/deserialization configuration. The default implementation is
-     * empty, allowing subclasses to override it if they support this feature.
-     *
-     * @param autoType The configuration string for automatic type handling.
-     */
-    default void autoType(String autoType) {
-        // Default implementation is a no-op to support implementations that do not use autoType.
+    @NonNull
+    @Override
+    public Mono<ServerResponse> route(ServerRequest request) {
+        return Mono.deferContextual(contextView -> {
+            final Context context = contextView.get(Context.class);
+            return this.service.execute(request, context, context.getAssets());
+        });
     }
 
 }

@@ -25,7 +25,34 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.vortex.support;
+package org.miaixz.bus.vortex.magic;
 
-public class ProService {
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+/**
+ * A data transfer object (DTO) that holds performance metrics for a single service process. This class is typically
+ * populated by a {@link org.miaixz.bus.vortex.provider.MetricsProvider} and used in management APIs.
+ *
+ * @author Kimi Liu
+ * @since Java 17+
+ */
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class Metrics {
+
+    /**
+     * The CPU usage of the process, represented as a percentage (e.g., 15.5 for 15.5%).
+     */
+    private double cpu;
+
+    /**
+     * The memory usage of the process, represented in bytes.
+     */
+    private long memory;
+
 }

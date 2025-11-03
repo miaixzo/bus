@@ -30,8 +30,12 @@ package org.miaixz.bus.vortex.handler;
 import org.miaixz.bus.vortex.Handler;
 
 /**
- * Abstract API handler class, providing a base for asynchronous interceptor implementations. Subclasses can optionally
- * override the default implementations of the {@link Handler} interface.
+ * An abstract adapter class for the {@link Handler} interface, providing empty default implementations for all methods.
+ * <p>
+ * This class serves as a convenience for creating custom handlers. Developers can extend this class and override only
+ * the methods they are interested in, without being forced to implement every method from the {@code Handler}
+ * interface. This is useful for creating simple interceptors that only need to act at one specific stage of the request
+ * lifecycle (e.g., only in {@code preHandle}).
  *
  * @author Kimi Liu
  * @since Java 17+

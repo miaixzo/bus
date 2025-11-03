@@ -33,6 +33,7 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
+import org.miaixz.bus.core.center.map.BeanMap;
 import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -50,7 +51,6 @@ import org.springframework.boot.context.properties.source.ConfigurationPropertyN
 import org.springframework.boot.context.properties.source.ConfigurationPropertyNameAliases;
 import org.springframework.boot.context.properties.source.ConfigurationPropertySource;
 import org.springframework.boot.context.properties.source.MapConfigurationPropertySource;
-import org.springframework.cglib.beans.BeanMap;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
@@ -180,8 +180,8 @@ public class JdbcConfiguration {
     private <T> Map<String, Object> beanToMap(T bean) {
         Map<String, Object> map = new HashMap<>();
         if (null != bean) {
-            BeanMap beanMap = BeanMap.create(bean);
-            for (Object key : beanMap.keySet()) {
+            BeanMap beanMap = BeanMap.of(bean);
+            for (String key : beanMap.keySet()) {
                 Object value = beanMap.get(key);
                 if (StringKit.isNotEmpty(this.properties.getPrivateKey())) {
                     Logger.info("The database connection is securely enabled");

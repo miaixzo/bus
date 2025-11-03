@@ -36,7 +36,13 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * MCP 工具的数据模型。 描述了一个可被 AI 调用的工具（或功能）。
+ * A data model representing a single tool provided by an MCP (Model Context Protocol) service.
+ * <p>
+ * A "tool" is a function or capability that an AI model can invoke. This class defines the standard structure for
+ * describing such a tool, including its name, a human-readable description, and a schema for its input parameters.
+ *
+ * @author Kimi Liu
+ * @since Java 17+
  */
 @Getter
 @Setter
@@ -45,8 +51,40 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class Tool {
 
+    /**
+     * The unique name of the tool (e.g., "getCurrentWeather", "sendEmail"). This name is used to invoke the tool.
+     */
     private String name;
+
+    /**
+     * A detailed, human-readable description of what the tool does, what its parameters are, and what it returns. This
+     * description is crucial for AI models to understand when and how to use the tool.
+     */
     private String description;
+
+    /**
+     * The schema for the tool's input parameters, typically represented as a JSON Schema object. This map defines the
+     * expected arguments, their types, and whether they are required.
+     * <p>
+     * Example:
+     * 
+     * <pre>{@code
+     * {
+     *   "type": "object",
+     *   "properties": {
+     *     "location": {
+     *       "type": "string",
+     *       "description": "The city and state, e.g., San Francisco, CA"
+     *     },
+     *     "unit": {
+     *       "type": "string",
+     *       "enum": ["celsius", "fahrenheit"]
+     *     }
+     *   },
+     *   "required": ["location"]
+     * }
+     * }</pre>
+     */
     private Map<String, Object> inputSchema;
 
 }

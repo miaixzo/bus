@@ -99,9 +99,9 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
     protected Object determineCurrentLookupKey() {
         String key = DataSourceHolder.getKey();
         if (!keySet.contains(key)) {
-            Logger.info("==> DataSource: Unable to locate datasource by key '{}'. Default will be used.", key);
+            Logger.warn(true, "DataSource", "Unable to locate datasource by key '{}'. Default will be used.", key);
         }
-        Logger.debug("==> DataSource: [{}]", key);
+        Logger.debug(true, "DataSource", "[{}]", key);
         return key;
     }
 
@@ -147,7 +147,7 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
             targetDataSourcesField.setAccessible(true);
             return (Map<Object, Object>) targetDataSourcesField.get(this);
         } catch (Exception e) {
-            Logger.error("==> DataSource: Failed to get all datasources", e);
+            Logger.error(false, "DataSource", "Failed to get all datasources", e);
             return new HashMap<>();
         }
     }

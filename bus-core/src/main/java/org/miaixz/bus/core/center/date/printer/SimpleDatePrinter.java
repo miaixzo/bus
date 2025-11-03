@@ -111,10 +111,9 @@ public class SimpleDatePrinter implements DatePrinter, Serializable {
      */
     @Override
     public boolean equals(final Object object) {
-        if (!(object instanceof SimpleDatePrinter)) {
+        if (!(object instanceof FastDatePrinter other)) {
             return false;
         }
-        final SimpleDatePrinter other = (SimpleDatePrinter) object;
         return pattern.equals(other.pattern) && timeZone.equals(other.timeZone) && locale.equals(other.locale);
     }
 

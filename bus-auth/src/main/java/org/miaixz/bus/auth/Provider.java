@@ -27,7 +27,7 @@
 */
 package org.miaixz.bus.auth;
 
-import org.miaixz.bus.auth.magic.AuthToken;
+import org.miaixz.bus.auth.magic.Authorization;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
@@ -41,10 +41,10 @@ import org.miaixz.bus.auth.nimble.AbstractProvider;
  * interface defines core authentication operations such as authorization, login, token revocation, and token
  * refreshing. Methods include:
  * <ul>
- * <li>{@link Provider#authorize(String)}</li>
- * <li>{@link Provider#login(Callback)}</li>
- * <li>{@link Provider#revoke(AuthToken)}</li>
- * <li>{@link Provider#refresh(AuthToken)}</li>
+ * <li>{@link Provider#build(String)}</li>
+ * <li>{@link Provider#authorize(Callback)}</li>
+ * <li>{@link Provider#revoke(Authorization)}</li>
+ * <li>{@link Provider#refresh(Authorization)}</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -60,8 +60,8 @@ public interface Provider extends org.miaixz.bus.core.Provider {
      * @return the authorization URL
      * @throws AuthorizedException if the method is not implemented by the specific provider
      */
-    default String authorize(String state) {
-        throw new AuthorizedException(ErrorCode._NOT_IMPLEMENTED.getKey());
+    default Message build(String state) {
+        throw new AuthorizedException(ErrorCode._110001.getKey());
     }
 
     /**
@@ -71,49 +71,49 @@ public interface Provider extends org.miaixz.bus.core.Provider {
      * @return a {@link Message} containing the user information upon successful login
      * @throws AuthorizedException if the method is not implemented by the specific provider
      */
-    default Message login(Callback callback) {
-        throw new AuthorizedException(ErrorCode._NOT_IMPLEMENTED.getKey());
-    }
-
-    /**
-     * Revokes the authorization.
-     *
-     * @param authToken the token information returned after successful login
-     * @return a {@link Message} indicating the result of the revocation
-     * @throws AuthorizedException if the method is not implemented by the specific provider
-     */
-    default Message revoke(AuthToken authToken) {
-        throw new AuthorizedException(ErrorCode._NOT_IMPLEMENTED.getKey());
-    }
-
-    /**
-     * Refreshes the access token (renews its validity).
-     *
-     * @param authToken the token information returned after successful login
-     * @return a {@link Message} containing the refreshed token information
-     * @throws AuthorizedException if the method is not implemented by the specific provider
-     */
-    default Message refresh(AuthToken authToken) {
-        throw new AuthorizedException(ErrorCode._NOT_IMPLEMENTED.getKey());
+    default Message authorize(Callback callback) {
+        throw new AuthorizedException(ErrorCode._110001.getKey());
     }
 
     /**
      * Retrieves the access token.
      *
      * @param callback the callback parameters after successful authorization
-     * @return the {@link AuthToken} containing access token details
-     * @see AbstractProvider#authorize(String)
+     * @return the {@link Authorization} containing access token details
+     * @see AbstractProvider#build(String)
      */
-    AuthToken getAccessToken(Callback callback);
+    Message token(Callback callback);
 
     /**
      * Exchanges the token for user information.
      *
-     * @param authToken the token information
+     * @param authorization the token information
      * @return {@link Material} containing the user's information
-     * @see AbstractProvider#getAccessToken(Callback)
+     * @see AbstractProvider#token(Callback)
      */
-    Material getUserInfo(AuthToken authToken);
+    Message userInfo(Authorization authorization);
+
+    /**
+     * Refreshes the access token (renews its validity).
+     *
+     * @param authorization the token information returned after successful login
+     * @return a {@link Message} containing the refreshed token information
+     * @throws AuthorizedException if the method is not implemented by the specific provider
+     */
+    default Message refresh(Authorization authorization) {
+        throw new AuthorizedException(ErrorCode._110001.getKey());
+    }
+
+    /**
+     * Revokes the authorization.
+     *
+     * @param authorization the token information returned after successful login
+     * @return a {@link Message} indicating the result of the revocation
+     * @throws AuthorizedException if the method is not implemented by the specific provider
+     */
+    default Message revoke(Authorization authorization) {
+        throw new AuthorizedException(ErrorCode._110001.getKey());
+    }
 
     @Override
     default Object type() {

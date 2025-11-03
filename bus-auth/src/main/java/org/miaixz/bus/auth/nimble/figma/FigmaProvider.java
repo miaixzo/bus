@@ -30,7 +30,7 @@ package org.miaixz.bus.auth.nimble.figma;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.miaixz.bus.auth.magic.AuthToken;
+import org.miaixz.bus.auth.magic.Authorization;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.codec.binary.Base64;
@@ -84,48 +84,55 @@ public class FigmaProvider extends AbstractProvider {
      * @return the authorization URL
      */
     @Override
-    public String authorize(String state) {
-        return Builder.fromUrl(super.authorize(state))
-                .queryParam("scope", this.getScopes(Symbol.COMMA, true, getDefaultScopes(FigmaScope.values()))).build();
+    public Message build(String state) {
+        return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+                .data(
+                        Builder.fromUrl((String) super.build(state).getData())
+                                .queryParam("scope", this.getScopes(Symbol.COMMA, true, getScopes(FigmaScope.values())))
+                                .build())
+                .build();
     }
 
     /**
      * Retrieves the access token from Figma's authorization server.
      *
      * @param callback the callback object containing the authorization code
-     * @return the {@link AuthToken} containing access token details
+     * @return the {@link Authorization} containing access token details
      * @throws AuthorizedException if parsing the response fails or required token information is missing
      */
     @Override
-    public AuthToken getAccessToken(Callback callback) {
+    public Message token(Callback callback) {
         Map<String, String> headers = new HashMap<>(3);
         headers.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
         headers.put(
                 "Authorization",
                 "Basic ".concat(
                         Base64.encode(
-                                (this.context.getAppKey().concat(":").concat(this.context.getAppSecret()))
+                                (this.context.getClientId().concat(":").concat(this.context.getClientSecret()))
                                         .getBytes(Charset.UTF_8))));
-        String response = Httpx.post(super.accessTokenUrl(callback.getCode()), headers);
+        String response = Httpx.post(super.tokenUrl(callback.getCode()), headers);
         try {
-            Map<String, Object> accessTokenObject = JsonKit.toPojo(response, Map.class);
-            if (accessTokenObject == null) {
+            Map<String, Object> object = JsonKit.toPojo(response, Map.class);
+            if (object == null) {
                 throw new AuthorizedException("Failed to parse access token response: empty response");
             }
-            this.checkResponse(accessTokenObject);
+            this.checkResponse(object);
 
-            String accessToken = (String) accessTokenObject.get("access_token");
-            if (accessToken == null) {
+            String token = (String) object.get("access_token");
+            if (token == null) {
                 throw new AuthorizedException("Missing access_token in response");
             }
-            String refreshToken = (String) accessTokenObject.get("refresh_token");
-            String scope = (String) accessTokenObject.get("scope");
-            String userId = (String) accessTokenObject.get("user_id");
-            Object expiresInObj = accessTokenObject.get("expires_in");
+            String refresh = (String) object.get("refresh_token");
+            String scope = (String) object.get("scope");
+            String userId = (String) object.get("user_id");
+            Object expiresInObj = object.get("expires_in");
             int expiresIn = expiresInObj instanceof Number ? ((Number) expiresInObj).intValue() : 0;
 
-            return AuthToken.builder().accessToken(accessToken).refreshToken(refreshToken).scope(scope).userId(userId)
-                    .expireIn(expiresIn).build();
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+                    .data(
+                            Authorization.builder().token(token).refresh(refresh).scope(scope).userId(userId)
+                                    .expireIn(expiresIn).build())
+                    .build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse access token response: " + e.getMessage());
         }
@@ -134,36 +141,36 @@ public class FigmaProvider extends AbstractProvider {
     /**
      * Refreshes the access token (renews its validity).
      *
-     * @param authToken the token information returned after successful login
+     * @param authorization the token information returned after successful login
      * @return a {@link Message} containing the refreshed token information
      * @throws AuthorizedException if parsing the response fails or an error occurs during token refresh
      */
     @Override
-    public Message refresh(AuthToken authToken) {
+    public Message refresh(Authorization authorization) {
         Map<String, String> headers = new HashMap<>(3);
         headers.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
-        String response = Httpx.post(refreshTokenUrl(authToken.getRefreshToken()), headers);
+        String response = Httpx.post(refreshUrl(authorization.getRefresh()), headers);
         try {
-            Map<String, Object> dataObj = JsonKit.toPojo(response, Map.class);
-            if (dataObj == null) {
+            Map<String, Object> object = JsonKit.toPojo(response, Map.class);
+            if (object == null) {
                 throw new AuthorizedException("Failed to parse refresh token response: empty response");
             }
-            this.checkResponse(dataObj);
+            this.checkResponse(object);
 
-            String accessToken = (String) dataObj.get("access_token");
-            if (accessToken == null) {
+            String token = (String) object.get("access_token");
+            if (token == null) {
                 throw new AuthorizedException("Missing access_token in refresh response");
             }
-            String openId = (String) dataObj.get("open_id");
-            Object expiresInObj = dataObj.get("expires_in");
+            String openId = (String) object.get("open_id");
+            Object expiresInObj = object.get("expires_in");
             int expiresIn = expiresInObj instanceof Number ? ((Number) expiresInObj).intValue() : 0;
-            String refreshToken = (String) dataObj.get("refresh_token");
-            String scope = (String) dataObj.get("scope");
+            String refresh = (String) object.get("refresh_token");
+            String scope = (String) object.get("scope");
 
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
                     .data(
-                            AuthToken.builder().accessToken(accessToken).openId(openId).expireIn(expiresIn)
-                                    .refreshToken(refreshToken).scope(scope).build())
+                            Authorization.builder().token(token).openId(openId).expireIn(expiresIn).refresh(refresh)
+                                    .scope(scope).build())
                     .build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse refresh token response: " + e.getMessage());
@@ -173,27 +180,27 @@ public class FigmaProvider extends AbstractProvider {
     /**
      * Constructs the refresh token URL for Figma.
      *
-     * @param refreshToken the refresh token
+     * @param refresh the refresh token
      * @return the refresh token URL
      */
     @Override
-    protected String refreshTokenUrl(String refreshToken) {
-        return Builder.fromUrl(this.complex.refresh()).queryParam("client_id", context.getAppKey())
-                .queryParam("client_secret", context.getAppSecret()).queryParam("refresh_token", refreshToken).build();
+    protected String refreshUrl(String refresh) {
+        return Builder.fromUrl(this.complex.refresh()).queryParam("client_id", context.getClientId())
+                .queryParam("client_secret", context.getClientSecret()).queryParam("refresh_token", refresh).build();
     }
 
     /**
      * Retrieves user information from Figma's user info endpoint.
      *
-     * @param authToken the {@link AuthToken} obtained after successful authorization
+     * @param authorization the {@link Authorization} obtained after successful authorization
      * @return {@link Material} containing the user's information
      * @throws AuthorizedException if parsing the response fails or required user information is missing
      */
     @Override
-    public Material getUserInfo(AuthToken authToken) {
+    public Message userInfo(Authorization authorization) {
         Map<String, String> headers = new HashMap<>(3);
         headers.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
-        headers.put("Authorization", "Bearer " + authToken.getAccessToken());
+        headers.put("Authorization", "Bearer " + authorization.getToken());
         String response = Httpx.get(this.complex.userinfo(), null, headers);
         try {
             Map<String, Object> data = JsonKit.toPojo(response, Map.class);
@@ -210,8 +217,10 @@ public class FigmaProvider extends AbstractProvider {
             String imgUrl = (String) data.get("img_url");
             String email = (String) data.get("email");
 
-            return Material.builder().rawJson(JsonKit.toJsonString(data)).uuid(id).username(handle).avatar(imgUrl)
-                    .email(email).token(authToken).source(complex.toString()).build();
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+                    Material.builder().rawJson(JsonKit.toJsonString(data)).uuid(id).username(handle).avatar(imgUrl)
+                            .email(email).token(authorization).source(complex.toString()).build())
+                    .build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
         }

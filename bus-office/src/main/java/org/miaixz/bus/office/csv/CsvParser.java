@@ -248,7 +248,7 @@ public final class CsvParser extends ComputeIterator<CsvRow> implements Closeabl
         while (true) {
             c = tokener.next();
             if (c < 0) {
-                if (currentField.length() > 0 || preChar == config.fieldSeparator) {
+                if (!currentField.isEmpty() || preChar == config.fieldSeparator) {
                     if (this.inQuotes) {
                         // Unclosed text delimiter, append delimiter at the end.
                         currentField.append(config.textDelimiter);

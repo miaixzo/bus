@@ -28,6 +28,7 @@
 package org.miaixz.bus.vortex.filter;
 
 import org.miaixz.bus.vortex.Filter;
+import org.miaixz.bus.vortex.strategy.StrategyFactory;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilterChain;
 
@@ -39,5 +40,10 @@ import org.springframework.web.server.WebFilterChain;
  * @since Java 17+
  */
 public abstract class AbstractFilter implements Filter {
+
+    /**
+     * The factory used to dynamically select the appropriate strategy chain for the current request.
+     */
+    public StrategyFactory factory;
 
 }

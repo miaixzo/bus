@@ -65,13 +65,17 @@ public class AspectjJdbcProxy {
         String dataSourceName = dataSource.value();
         if (dataSourceName.isEmpty()) {
             Logger.debug(
-                    "==>     Method: [{}.{}] No datasource specified, will use default datasource",
+                    true,
+                    "AOP",
+                    "[{}.{}] No datasource specified, will use default datasource",
                     className,
                     methodName);
             return;
         }
         Logger.info(
-                "==>     Method: [{}.{}] starts execution, switching to datasource: [{}]",
+                true,
+                "AOP",
+                "[{}.{}] starts execution, switching to datasource: [{}]",
                 className,
                 methodName,
                 dataSourceName);
@@ -96,19 +100,23 @@ public class AspectjJdbcProxy {
         String methodName = joinPoint.getSignature().getName();
         String dataSourceName = dataSource.value();
         if (dataSourceName.isEmpty()) {
-            Logger.debug("==>     Method: [{}.{}] execution completed, no datasource switched", className, methodName);
+            Logger.debug(false, "AOP", "[{}.{}] execution completed, no datasource switched", className, methodName);
             return;
         }
         if (dataSource.clear()) {
             Logger.info(
-                    "==>     Method: [{}.{}] execution completed, clearing datasource setting: [{}]",
+                    false,
+                    "AOP",
+                    "[{}.{}] execution completed, clearing datasource setting: [{}]",
                     className,
                     methodName,
                     dataSourceName);
             DataSourceHolder.remove();
         } else {
             Logger.info(
-                    "==>     Method: [{}.{}] execution completed, keeping datasource setting: [{}]",
+                    false,
+                    "AOP",
+                    "[{}.{}] execution completed, keeping datasource setting: [{}]",
                     className,
                     methodName,
                     dataSourceName);

@@ -27,7 +27,7 @@
 */
 package org.miaixz.bus.auth.nimble.baidu;
 
-import org.miaixz.bus.auth.magic.AuthToken;
+import org.miaixz.bus.auth.magic.Authorization;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.basic.normal.Errors;
@@ -78,12 +78,12 @@ public class BaiduProvider extends AbstractProvider {
      * Retrieves the access token from Baidu's authorization server.
      *
      * @param callback the callback object containing the authorization code
-     * @return the {@link AuthToken} containing access token details
+     * @return the {@link Authorization} containing access token details
      */
     @Override
-    public AuthToken getAccessToken(Callback callback) {
-        String response = doPostAuthorizationCode(callback.getCode());
-        return getAuthToken(response);
+    public Message token(Callback callback) {
+        String response = doPostToken(callback.getCode());
+        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(getAuthToken(response)).build();
     }
 
     /**
@@ -96,13 +96,13 @@ public class BaiduProvider extends AbstractProvider {
      * <li>https://openapi.baidu.com/rest/2.0/passport/users/getInfo?access_token=...</li>
      * </ul>
      *
-     * @param authToken the token information
+     * @param authorization the token information
      * @return {@link Material} containing the user's information
      * @throws AuthorizedException if parsing the response fails or required user information is missing
      */
     @Override
-    public Material getUserInfo(AuthToken authToken) {
-        String userInfo = doGetUserInfo(authToken);
+    public Message userInfo(Authorization authorization) {
+        String userInfo = doGetUserInfo(authorization);
         try {
             Map<String, Object> object = JsonKit.toPojo(userInfo, Map.class);
             if (object == null) {
@@ -119,10 +119,15 @@ public class BaiduProvider extends AbstractProvider {
             String userDetail = (String) object.get("userdetail");
             String sex = (String) object.get("sex");
 
-            return Material.builder().rawJson(JsonKit.toJsonString(object)).uuid(userId).username(username)
-                    .nickname(username).avatar(getAvatar(object)).remark(userDetail).gender(Gender.of(sex))
-                    .token(authToken).source(complex.toString()).build();
-        } catch (Exception e) {
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+                    .data(
+                            Material.builder().rawJson(JsonKit.toJsonString(object)).uuid(userId).username(username)
+                                    .nickname(username).avatar(getAvatar(object)).remark(userDetail)
+                                    .gender(Gender.of(sex)).token(authorization).source(complex.toString()).build())
+                    .build();
+        } catch (
+
+        Exception e) {
             throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
         }
     }
@@ -142,13 +147,13 @@ public class BaiduProvider extends AbstractProvider {
     /**
      * Revokes the authorization for the given access token.
      *
-     * @param authToken the token information to revoke
+     * @param authorization the token information to revoke
      * @return a {@link Message} indicating the result of the revocation
      * @throws AuthorizedException if parsing the response fails or an error occurs during revocation
      */
     @Override
-    public Message revoke(AuthToken authToken) {
-        String response = doGetRevoke(authToken);
+    public Message revoke(Authorization authorization) {
+        String response = doGetRevoke(authorization);
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
             if (object == null) {
@@ -169,15 +174,15 @@ public class BaiduProvider extends AbstractProvider {
     /**
      * Refreshes the access token (renews its validity).
      *
-     * @param authToken the token information returned after successful login
+     * @param authorization the token information returned after successful login
      * @return a {@link Message} containing the refreshed token information
      */
     @Override
-    public Message refresh(AuthToken authToken) {
+    public Message refresh(Authorization authorization) {
         String refreshUrl = Builder.fromUrl(this.complex.refresh()).queryParam("grant_type", "refresh_token")
-                .queryParam("refresh_token", authToken.getRefreshToken())
-                .queryParam("client_id", this.context.getAppKey())
-                .queryParam("client_secret", this.context.getAppSecret()).build();
+                .queryParam("refresh_token", authorization.getRefresh())
+                .queryParam("client_id", this.context.getClientId())
+                .queryParam("client_secret", this.context.getClientSecret()).build();
         String response = Httpx.get(refreshUrl);
         return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(this.getAuthToken(response)).build();
     }
@@ -190,9 +195,11 @@ public class BaiduProvider extends AbstractProvider {
      * @return the authorization URL
      */
     @Override
-    public String authorize(String state) {
-        return Builder.fromUrl(super.authorize(state)).queryParam("display", "popup")
-                .queryParam("scope", this.getScopes(Symbol.SPACE, true, this.getDefaultScopes(BaiduScope.values())))
+    public Message build(String state) {
+        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+                Builder.fromUrl((String) super.build(state).getData()).queryParam("display", "popup")
+                        .queryParam("scope", this.getScopes(Symbol.SPACE, true, this.getScopes(BaiduScope.values())))
+                        .build())
                 .build();
     }
 
@@ -211,31 +218,30 @@ public class BaiduProvider extends AbstractProvider {
     }
 
     /**
-     * Parses the access token response string into an {@link AuthToken} object.
+     * Parses the access token response string into an {@link Authorization} object.
      *
      * @param response the response string from the access token endpoint
-     * @return the parsed {@link AuthToken}
+     * @return the parsed {@link Authorization}
      * @throws AuthorizedException if the response indicates an error or is missing required token information
      */
-    private AuthToken getAuthToken(String response) {
+    private Authorization getAuthToken(String response) {
         try {
-            Map<String, Object> accessTokenObject = JsonKit.toPojo(response, Map.class);
-            if (accessTokenObject == null) {
+            Map<String, Object> object = JsonKit.toPojo(response, Map.class);
+            if (object == null) {
                 throw new AuthorizedException("Failed to parse access token response: empty response");
             }
-            this.checkResponse(accessTokenObject);
+            this.checkResponse(object);
 
-            String accessToken = (String) accessTokenObject.get("access_token");
-            if (accessToken == null) {
+            String token = (String) object.get("access_token");
+            if (token == null) {
                 throw new AuthorizedException("Missing access_token in response");
             }
-            String refreshToken = (String) accessTokenObject.get("refresh_token");
-            String scope = (String) accessTokenObject.get("scope");
-            Object expiresInObj = accessTokenObject.get("expires_in");
+            String refresh = (String) object.get("refresh_token");
+            String scope = (String) object.get("scope");
+            Object expiresInObj = object.get("expires_in");
             int expiresIn = expiresInObj instanceof Number ? ((Number) expiresInObj).intValue() : 0;
 
-            return AuthToken.builder().accessToken(accessToken).refreshToken(refreshToken).scope(scope)
-                    .expireIn(expiresIn).build();
+            return Authorization.builder().token(token).refresh(refresh).scope(scope).expireIn(expiresIn).build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse access token response: " + e.getMessage());
         }

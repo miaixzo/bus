@@ -48,7 +48,7 @@ import lombok.Getter;
 public interface EnumValue<E extends EnumValue<E>> extends Enumers {
 
     /**
-     * Enumeration of action types.
+     * Enumeration for action types.
      */
     @Getter
     @AllArgsConstructor
@@ -93,6 +93,23 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
     }
 
     /**
+     * Enumeration for append modes.
+     */
+    enum Append {
+
+        /**
+         * Append to the beginning.
+         */
+        FIRST,
+
+        /**
+         * Append to the end.
+         */
+        LAST
+
+    }
+
+    /**
      * Enumeration for text alignment options.
      *
      * @author Kimi Liu
@@ -116,20 +133,23 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
     }
 
     /**
-     * Enumeration for append modes.
+     * Enumeration for load balancing strategies.
      */
-    enum AppendMode {
-
+    @Getter
+    @AllArgsConstructor
+    enum Balance {
         /**
-         * Append to the beginning.
+         * Round-robin strategy.
          */
-        FIRST,
-
+        ROUND_ROBIN,
         /**
-         * Append to the end.
+         * Random selection strategy.
          */
-        LAST
-
+        RANDOM,
+        /**
+         * Weighted selection strategy.
+         */
+        WEIGHT
     }
 
     /**
@@ -255,27 +275,6 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
     }
 
     /**
-     * Enumeration for FTP connection modes. See: <a href="https://www.cnblogs.com/huhaoshida/p/5412615.html">FTP
-     * Connection Modes</a>
-     *
-     * @author Kimi Liu
-     * @since Java 17+
-     */
-    @Getter
-    @AllArgsConstructor
-    enum FtpMode {
-
-        /**
-         * Active mode for FTP connections.
-         */
-        Active,
-        /**
-         * Passive mode for FTP connections.
-         */
-        Passive
-    }
-
-    /**
      * Enumeration for gradient directions.
      */
     @Getter
@@ -300,23 +299,51 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
     }
 
     /**
-     * Enum for load balancing strategies.
+     * Represents the lifecycle status of a managed service process.
+     *
+     * @author Kimi Liu
+     * @since Java 17+
      */
-    @Getter
-    @AllArgsConstructor
-    enum Balance {
+    enum Lifecycle {
+
         /**
-         * Round-robin strategy.
+         * The service is currently running and operational.
          */
-        ROUND_ROBIN,
+        RUNNING,
+
         /**
-         * Random selection strategy.
+         * The service is not running.
          */
-        RANDOM,
+        STOPPED,
+
         /**
-         * Weighted selection strategy.
+         * The service is in an error state or has crashed.
          */
-        WEIGHT
+        ERROR,
+
+        /**
+         * The service is in the process of starting up.
+         */
+        STARTING,
+
+        /**
+         * The service is in the process of shutting down.
+         */
+        STOPPING,
+
+        /**
+         * ACTIVE mode for FTP connections.
+         */
+        ACTIVE,
+        /**
+         * PASSIVE mode for FTP connections.
+         */
+        PASSIVE,
+        /**
+         * The status of the service is unknown.
+         */
+        UNKNOWN
+
     }
 
     /**

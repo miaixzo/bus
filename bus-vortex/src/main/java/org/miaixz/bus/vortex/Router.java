@@ -27,13 +27,17 @@
 */
 package org.miaixz.bus.vortex;
 
+import org.miaixz.bus.vortex.handler.VortexHandler;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
-
 import reactor.core.publisher.Mono;
 
 /**
- * A routing interface that defines the basic behavior for request routing.
+ * Defines the contract for routing a request to a specific downstream protocol (e.g., HTTP, MCP, MQ).
+ * <p>
+ * A {@code Router} is the final step in the request processing pipeline, invoked by the {@link VortexHandler}. Its sole
+ * responsibility is to take the fully processed request and translate it into an interaction with a specific backend
+ * protocol, as defined by the matched {@link Assets}.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,9 +46,20 @@ public interface Router {
 
     /**
      * Routes the request to the target service.
+     * <p>
+     * Implementations of this method must retrieve the {@link Context} and {@link Assets} from the reactive stream to
+     * get the necessary routing information. A typical implementation will look like this:
+     * 
+     * <pre>{@code
+     * return Mono.deferContextual(contextView -> {
+     *     final Context context = contextView.get(Context.class);
+     *     final Assets assets = context.getAssets();
+     *     // ... use assets and context to perform routing logic ...
+     * });
+     * }</pre>
      *
-     * @param request The current `ServerRequest` object.
-     * @return A {@code Mono<ServerResponse>} representing the asynchronous response.
+     * @param request The current {@link ServerRequest} object.
+     * @return A {@code Mono<ServerResponse>} representing the asynchronous response from the downstream service.
      */
     Mono<ServerResponse> route(ServerRequest request);
 

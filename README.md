@@ -3,7 +3,7 @@
 </p>
 <p align="center">
   <a target="_blank" href="https://search.maven.org/search?q=org.miaixz">
-    <img src="https://img.shields.io/badge/maven--central-v8.3.2-blue.svg?label=Maven%20Central" />
+    <img src="https://img.shields.io/badge/maven--central-v8.3.3-blue.svg?label=Maven%20Central" />
   </a>
   <a target="_blank" href="https://jdk.java.net/">
     <img src="https://img.shields.io/badge/Java-21+-green.svg">
@@ -45,12 +45,12 @@ The goal is to create a comprehensive full-stack technical solution that rapidly
 
 Bus primarily has versions 3.x, 5.x, 6.x, and 8.x, as detailed below:
 
-| Version | JDK    | Maven Repository                                                                        | Main Features                                |
-|---------|--------|----------------------------------------------------------------------------------------|---------------------------------------------|
-| 3.x     | jdk1.8 | [org.aoju/bus-all/3.x](https://mvnrepository.com/artifact/org.aoju/bus-all/3.6.9)    | Compiled with jdk1.8                        |
-| 5.x     | jdk1.8 | [org.aoju/bus-all/5.x](https://mvnrepository.com/artifact/org.aoju/bus-all/5.9.9)    | Compiled with jdk1.8                        |
-| 6.x     | jdk 17 | [org.aoju/bus-all/6.x](https://mvnrepository.com/artifact/org.aoju/bus-all/6.6.0)    | Compiled with jdk 17, uses Jakarta EE, compatible with JDK 11, 17 |
-| 8.x     | jdk 21 | [org.miaixz/bus-all/8.x](https://mvnrepository.com/artifact/org.miaixz/bus-all)      | Compiled with jdk 21, uses Jakarta EE, compatible with JDK 11, 17, 21 |
+| Version | JDK    | Maven Repository                                                                    | Main Features                                |
+|---------|--------|-------------------------------------------------------------------------------------|---------------------------------------------|
+| 3.x     | jdk1.8 | [org.aoju/bus-all/3.x](https://central.sonatype.com/artifact/org.aoju/bus-all/3.6.9)    | Compiled with jdk1.8                        |
+| 5.x     | jdk1.8 | [org.aoju/bus-all/5.x](https://central.sonatype.com/artifact/org.aoju/bus-all/5.9.9)   | Compiled with jdk1.8                        |
+| 6.x     | jdk 17 | [org.aoju/bus-all/6.x](https://central.sonatype.com/artifact/org.aoju/bus-all/6.6.1) | Compiled with jdk 17, uses Jakarta EE, compatible with JDK 11, 17 |
+| 8.x     | jdk 21 | [org.miaixz/bus-all/8.x](https://central.sonatype.com/artifact/org.miaixz/bus-alll) | Compiled with jdk 21, uses Jakarta EE, compatible with JDK 11, 17, 21 |
 
 
 ### ✨ Component Information

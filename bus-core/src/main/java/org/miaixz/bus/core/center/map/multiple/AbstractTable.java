@@ -69,8 +69,7 @@ public abstract class AbstractTable<R, C, V> implements Table<R, C, V> {
     public boolean equals(final Object object) {
         if (object == this) {
             return true;
-        } else if (object instanceof Table) {
-            final Table<?, ?, ?> that = (Table<?, ?, ?>) object;
+        } else if (object instanceof Table<?, ?, ?> that) {
             return this.cellSet().equals(that.cellSet());
         } else {
             return false;
@@ -190,8 +189,7 @@ public abstract class AbstractTable<R, C, V> implements Table<R, C, V> {
             if (object == this) {
                 return true;
             }
-            if (object instanceof Cell) {
-                final Cell<?, ?, ?> other = (Cell<?, ?, ?>) object;
+            if (object instanceof Cell<?, ?, ?> other) {
                 return ObjectKit.equals(rowKey, other.getRowKey()) && ObjectKit.equals(columnKey, other.getColumnKey())
                         && ObjectKit.equals(value, other.getValue());
             }

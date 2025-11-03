@@ -25,40 +25,27 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.vortex.strategy;
+package org.miaixz.bus.cron.crontab;
 
-import org.springframework.core.Ordered;
-import org.springframework.web.server.ServerWebExchange;
-
-import reactor.core.publisher.Mono;
+import org.miaixz.bus.cron.Configure;
+import org.miaixz.bus.cron.Repertoire;
 
 /**
- * Represents a single, reusable filtering logic step (a "Strategy").
- * <p>
- * This is the core interface for the Strategy Pattern implementation within the filter chain. Each strategy
- * encapsulates a specific concern, such as request parsing, decryption, authorization, or rate limiting. Strategies are
- * composed into a dynamic chain by the {@code StrategyFactory} and executed by the {@code PrimaryFilter}.
- *
- * <p>
- * Implementations of this interface must also implement {@link Ordered} (usually by using the
- * {@link org.springframework.core.annotation.Order} annotation) to specify their execution priority within the chain.
+ * Task table factory class.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public interface Strategy {
+public class CrontabFactory {
 
     /**
-     * Applies the filtering logic to the request.
-     * <p>
-     * An implementation of this method should perform its specific task and then delegate to the next strategy in the
-     * chain by calling {@code chain.apply(exchange)}.
-     * </p>
+     * Creates a task table.
      *
-     * @param exchange The current server exchange, which can be mutated by the strategy.
-     * @param chain    The chain of remaining strategies to be executed.
-     * @return A {@code Mono<Void>} that signals the completion of this strategy's execution.
+     * @param config The cron task configuration.
+     * @return The task table.
      */
-    Mono<Void> apply(ServerWebExchange exchange, StrategyChain chain);
+    public static Repertoire create(Configure config) {
+        return config.isUseTriggerQueue() ? new TriggerCrontab() : new MatchCrontab();
+    }
 
 }

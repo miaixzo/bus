@@ -43,10 +43,10 @@ public record Launcher(Scheduler scheduler, long millis) implements Runnable {
     @Override
     public void run() {
         // Execute tasks that match the given millisecond timestamp.
-        scheduler.repertoire.executeTaskIfMatch(this.scheduler, this.millis);
+        this.scheduler.repertoire.execute(this.scheduler, this.millis);
 
         // Notify the manager that this launcher has completed its run.
-        scheduler.manager.notifyLauncherCompleted(this);
+        this.scheduler.manager.notifyLauncherCompleted(this);
     }
 
 }

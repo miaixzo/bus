@@ -27,10 +27,7 @@
 */
 package org.miaixz.bus.vortex.strategy;
 
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Optional;
-
+import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -38,8 +35,6 @@ import org.miaixz.bus.core.net.PORT;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.vortex.Args;
-import org.miaixz.bus.vortex.Context;
 import org.miaixz.bus.vortex.Strategy;
 import org.miaixz.bus.vortex.magic.ErrorCode;
 import org.springframework.http.HttpHeaders;
@@ -48,6 +43,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpRequestDecorator;
 import org.springframework.web.server.ServerWebExchange;
+
+import java.net.InetSocketAddress;
+import java.util.*;
 
 /**
  * An abstract base class for {@link Strategy} implementations, providing a collection of common utility methods.
@@ -60,6 +58,27 @@ import org.springframework.web.server.ServerWebExchange;
  * @since Java 17+
  */
 public abstract class AbstractStrategy implements Strategy {
+
+    /**
+     * The maximum number of automatic retry attempts allowed when processing a request body fails.
+     */
+    public static final int MAX_RETRY_ATTEMPTS = Consts.THREE;
+
+    /**
+     * The base delay in milliseconds between automatic retry attempts for request body processing.
+     */
+    public static final long RETRY_DELAY_MS = 1000;
+
+    /**
+     * The maximum allowed size in bytes for a non-multipart request body (e.g., JSON, form-urlencoded). This is a
+     * crucial defense against Denial-of-Service (DoS) attacks via memory exhaustion.
+     */
+    public static final long MAX_REQUEST_SIZE = 100 * 1024 * 1024;
+
+    /**
+     * The maximum allowed size in bytes for a multipart/form-data request, typically used for file uploads.
+     */
+    public static final long MAX_MULTIPART_REQUEST_SIZE = 512 * 1024 * 1024;
 
     /**
      * Safely retrieves the original authority (host + port) of the request, even in a reverse-proxy environment.
@@ -79,7 +98,7 @@ public abstract class AbstractStrategy implements Strategy {
      * @return An {@link Optional} containing the authority string (e.g., "example.com:443"), or
      *         {@link Optional#empty()} if no valid host can be found.
      */
-    public static Optional<String> getAuthority(ServerHttpRequest request) {
+    protected Optional<String> getAuthority(ServerHttpRequest request) {
         HttpHeaders headers = request.getHeaders();
         String protocol = getProtocol(request);
 
@@ -90,7 +109,7 @@ public abstract class AbstractStrategy implements Strategy {
                     .filter(part -> part.toLowerCase().startsWith("host="))
                     .map(part -> part.substring(5).trim().replace("\"", Normal.EMPTY)).findFirst();
             if (authority.isPresent()) {
-                Logger.debug("Authority '{}' found in 'Forwarded' header", authority.get());
+                Logger.debug(true, "Strategy", "{} found in 'Forwarded' header", authority.get());
                 return authority.map(host -> appendPortIfMissing(host, protocol));
             }
         }
@@ -101,26 +120,101 @@ public abstract class AbstractStrategy implements Strategy {
             // In multi-level proxies, this header may contain multiple domain names; the first one is the original
             // domain.
             String authority = forwardedHostHeader.split(Symbol.COMMA)[0].trim();
-            Logger.debug("Authority '{}' found in 'X-Forwarded-Host' header", authority);
+            Logger.debug(true, "Strategy", "{} found in 'X-Forwarded-Host' header", authority);
             return Optional.of(appendPortIfMissing(authority, protocol));
         }
 
         // Priority 3: Try to parse 'Host'
         String hostHeader = headers.getFirst("Host");
         if (StringKit.hasText(hostHeader)) {
-            Logger.debug("Authority '{}' found in 'Host' header", hostHeader);
+            Logger.debug(true, "Strategy", "{} found in 'Host' header", hostHeader);
             return Optional.of(appendPortIfMissing(hostHeader, protocol));
         }
 
         // Priority 4: Use getURI().getHost() as a last fallback
         String uriHost = request.getURI().getHost();
         if (StringKit.hasText(uriHost)) {
-            Logger.debug("Authority host '{}' found via request.getURI().getHost() as fallback", uriHost);
+            Logger.debug(true, "Strategy", "{} found via request.getURI().getHost() as fallback", uriHost);
             return Optional.of(appendPortIfMissing(uriHost, protocol));
         }
 
-        Logger.warn("Could not determine a valid authority from any source for request: {}", request.getPath());
+        Logger.debug(
+                true,
+                "Strategy",
+                "Could not determine a valid authority from any source for request: {}",
+                request.getPath());
         return Optional.empty();
+    }
+
+    /**
+     * Safely retrieves the original client IP address, even in a reverse-proxy environment.
+     * <p>
+     * This method searches for the client IP in the following priority order:
+     * <ol>
+     * <li><b>X-Forwarded-For Header:</b> The standard header for identifying the originating IP address. If it contains
+     * multiple IPs, the first one in the list is used.</li>
+     * <li><b>X-Real-IP Header:</b> A common header used by proxies like Nginx.</li>
+     * <li><b>Proxy-Client-IP / WL-Proxy-Client-IP:</b> Headers used by other proxies.</li>
+     * <li><b>{@code request.getRemoteAddress()}:</b> The direct remote address, used as a last fallback.</li>
+     * </ol>
+     *
+     * @param request The {@link ServerHttpRequest} object.
+     * @return The client IP address as a String, or "unknown" if it cannot be determined.
+     */
+    protected String getClientIp(ServerHttpRequest request) {
+        HttpHeaders headers = request.getHeaders();
+
+        // Priority 1: X-Forwarded-For
+        String ip = headers.getFirst("X-Forwarded-For");
+        if (StringKit.hasText(ip) && !Normal.UNKNOWN.equalsIgnoreCase(ip)) {
+            String source = "X-Forwarded-For";
+            // 'X-Forwarded-For' might be a comma-separated list (e.g., "client, proxy1, proxy2")
+            if (ip.contains(Symbol.COMMA)) {
+                String[] ips = ip.split(Symbol.COMMA);
+                for (String ipSegment : ips) {
+                    String trimmedIp = ipSegment.trim();
+                    if (StringKit.hasText(trimmedIp) && !Normal.UNKNOWN.equalsIgnoreCase(trimmedIp)) {
+                        Logger.debug(true, "Strategy", "Client IP: '{}' found in {} (list)", trimmedIp, source);
+                        return trimmedIp;
+                    }
+                }
+            }
+            // If not a list or list parsing fails, return the trimmed original
+            Logger.debug(true, "Strategy", "Client IP: '{}' found in {}", ip.trim(), source);
+            return ip.trim();
+        }
+
+        // Priority 2: X-Real-IP
+        ip = headers.getFirst("X-Real-IP");
+        if (StringKit.hasText(ip) && !Normal.UNKNOWN.equalsIgnoreCase(ip)) {
+            Logger.debug(true, "Strategy", "Client IP: '{}' found in X-Real-IP", ip.trim());
+            return ip.trim();
+        }
+
+        // Priority 3: Other common proxy headers
+        ip = headers.getFirst("Proxy-Client-IP");
+        if (StringKit.hasText(ip) && !Normal.UNKNOWN.equalsIgnoreCase(ip)) {
+            Logger.debug(true, "Strategy", "Client IP: '{}' found in Proxy-Client-IP", ip.trim());
+            return ip.trim();
+        }
+
+        ip = headers.getFirst("WL-Proxy-Client-IP");
+        if (StringKit.hasText(ip) && !Normal.UNKNOWN.equalsIgnoreCase(ip)) {
+            Logger.debug(true, "Strategy", "Client IP: '{}' found in WL-Proxy-Client-IP", ip.trim());
+            return ip.trim();
+        }
+
+        // Priority 4: Fallback to getRemoteAddress
+        InetSocketAddress remoteAddress = request.getRemoteAddress();
+        if (remoteAddress != null) {
+            String hostString = remoteAddress.getHostString();
+            Logger.debug(true, "Strategy", "Client IP: '{}' found via fallback getRemoteAddress()", hostString);
+            // .getHostString() is preferred over .getHostName() to avoid DNS lookup
+            return hostString;
+        }
+
+        Logger.warn(true, "Strategy", "Client IP could not be determined. Falling back to 'unknown'.");
+        return Normal.UNKNOWN;
     }
 
     /**
@@ -132,7 +226,7 @@ public abstract class AbstractStrategy implements Strategy {
      * @param request The {@link ServerHttpRequest} object.
      * @return The protocol string, either "https" or "http".
      */
-    protected static String getProtocol(ServerHttpRequest request) {
+    protected String getProtocol(ServerHttpRequest request) {
         HttpHeaders headers = request.getHeaders();
 
         // Priority 1: Try to parse from 'Forwarded' header (RFC 7239)
@@ -142,35 +236,24 @@ public abstract class AbstractStrategy implements Strategy {
                     .filter(part -> part.toLowerCase().startsWith("proto="))
                     .map(part -> part.substring(6).trim().replace("\"", Normal.EMPTY)).findFirst();
             if (proto.isPresent()) {
-                return proto.get();
+                String protocol = proto.get();
+                Logger.debug(true, "Strategy", "Protocol: '{}' found in 'Forwarded' header", protocol);
+                return protocol;
             }
         }
 
         // Priority 2: Try to parse from 'X-Forwarded-Proto' header
         String forwardedProtoHeader = headers.getFirst("X-Forwarded-Proto");
         if (StringKit.hasText(forwardedProtoHeader)) {
-            return forwardedProtoHeader.split(Symbol.COMMA)[0].trim();
+            String protocol = forwardedProtoHeader.split(Symbol.COMMA)[0].trim();
+            Logger.debug(true, "Strategy", "Protocol: '{}' found in 'X-Forwarded-Proto' header", protocol);
+            return protocol;
         }
 
         // Priority 3: Use URI scheme as a last fallback
-        return request.getURI().getScheme();
-    }
-
-    /**
-     * Appends a default port to a given authority (host) if the port is missing.
-     *
-     * @param authority The host information, e.g., "example.com" or "example.com:8080".
-     * @param protocol  The protocol, either "http" or "https".
-     * @return The authority string, guaranteed to include a port (e.g., "example.com:443").
-     */
-    private static String appendPortIfMissing(String authority, String protocol) {
-        if (authority.contains(Symbol.COLON)) {
-            return authority; // Port already exists
-        }
-        if (Protocol.HTTPS.name.equalsIgnoreCase(protocol)) {
-            return authority + Symbol.COLON + PORT._443;
-        }
-        return authority + Symbol.COLON + PORT._80;
+        String protocol = request.getURI().getScheme();
+        Logger.debug(true, "Strategy", "Protocol: '{}' found via fallback getURI().getScheme()", protocol);
+        return protocol;
     }
 
     /**
@@ -180,7 +263,7 @@ public abstract class AbstractStrategy implements Strategy {
      * @return The matching {@link HttpMethod} enum.
      * @throws ValidateException if the type is not a valid or supported HTTP method.
      */
-    public HttpMethod valueOf(int type) {
+    protected HttpMethod valueOf(int type) {
         return switch (type) {
             case 1 -> HttpMethod.GET;
             case 2 -> HttpMethod.POST;
@@ -206,6 +289,8 @@ public abstract class AbstractStrategy implements Strategy {
         MediaType mediaType = request.getHeaders().getContentType();
         if (null == mediaType) {
             mediaType = MediaType.APPLICATION_FORM_URLENCODED;
+            Logger.debug(true, "Strategy", "Content-Type is missing. Defaulting to: {}", mediaType);
+
             HttpHeaders headers = new HttpHeaders();
             headers.putAll(exchange.getRequest().getHeaders());
             headers.setContentType(mediaType);
@@ -222,87 +307,20 @@ public abstract class AbstractStrategy implements Strategy {
     }
 
     /**
-     * Validates standard gateway parameters and enriches the context with additional request information.
-     * <p>
-     * This method performs two main functions:
-     * <ol>
-     * <li><b>Validation:</b> It checks for the presence and validity of essential gateway parameters like
-     * {@code method}, {@code version}, and {@code format}.</li>
-     * <li><b>Enrichment:</b> It calls {@link #enrich(ServerWebExchange, Context)} to add derived information like
-     * client IP and domain to the context.</li>
-     * </ol>
-     * This method has the side effect of modifying the passed-in {@code Context} object.
+     * Appends a default port to a given authority (host) if the port is missing.
      *
-     * @param exchange The current server exchange.
-     * @param context  The request context to be validated and enriched.
-     * @throws ValidateException if any standard parameter is missing or invalid.
+     * @param authority The host information, e.g., "example.com" or "example.com:8080".
+     * @param protocol  The protocol, either "http" or "https".
+     * @return The authority string, guaranteed to include a port (e.g., "example.com:443").
      */
-    protected void validateParameters(ServerWebExchange exchange, Context context) {
-        Map<String, String> params = context.getParameters();
-        for (Map.Entry<String, String> entry : params.entrySet()) {
-            // Check for "undefined" string values, which can be sent by some clients.
-            if (entry.getKey() != null && Normal.UNDEFINED.equals(entry.getKey().toLowerCase())) {
-                throw new ValidateException(ErrorCode._100101);
-            }
-            if (Normal.UNDEFINED.equals(String.valueOf(entry.getValue()).toLowerCase())) {
-                throw new ValidateException(ErrorCode._100101);
-            }
+    private String appendPortIfMissing(String authority, String protocol) {
+        if (authority.contains(Symbol.COLON)) {
+            return authority; // Port already exists
         }
-        // Validate presence of core gateway parameters.
-        if (StringKit.isBlank(params.get(Args.METHOD))) {
-            throw new ValidateException(ErrorCode._100108);
+        if (Protocol.HTTPS.name.equalsIgnoreCase(protocol)) {
+            return authority + Symbol.COLON + PORT._443;
         }
-        if (StringKit.isBlank(params.get(Args.VERSION))) {
-            throw new ValidateException(ErrorCode._100107);
-        }
-        if (StringKit.isBlank(params.get(Args.FORMAT))) {
-            throw new ValidateException(ErrorCode._100111);
-        }
-        if (StringKit.isNotBlank(params.get(Args.SIGN))) {
-            context.setSign(Integer.valueOf(params.get(Args.SIGN)));
-        }
-
-        // Add additional derived parameters to the context.
-        this.enrich(exchange, context);
-    }
-
-    /**
-     * Enriches the context with derived information about the client and request authority.
-     * <p>
-     * This method extracts the client's IP address and the request's authority (domain and port), then adds them to the
-     * context's parameter map. This ensures that this information is available to all downstream strategies and the
-     * final service.
-     * <p>
-     * This method has the side effect of modifying the passed-in {@code Context} object.
-     *
-     * @param exchange The current server exchange.
-     * @param context  The request context to be enriched.
-     */
-    protected void enrich(ServerWebExchange exchange, Context context) {
-        // Extract the client's IP address, respecting proxy headers.
-        String clientIp = Optional.ofNullable(exchange.getRequest().getHeaders().getFirst("x_request_ip")).orElseGet(
-                () -> Optional.ofNullable(exchange.getRequest().getHeaders().getFirst("X-Forwarded-For")).orElseGet(
-                        () -> exchange.getRequest().getRemoteAddress() != null
-                                ? exchange.getRequest().getRemoteAddress().getAddress().getHostAddress()
-                                : "unknown"));
-
-        context.setX_request_ipv4(clientIp);
-        context.getParameters().put("x_request_ipv4", clientIp);
-
-        // Extract the request authority (domain and port), respecting proxy headers.
-        Optional<String> authority = getAuthority(exchange.getRequest());
-
-        String unknown = Normal.UNKNOWN + Symbol.COLON + Symbol.ZERO;
-        String domain = authority.orElse(unknown);
-
-        if (unknown.equals(domain)) {
-            Logger.warn(
-                    "==> Filter: Unable to determine the request domain (host:port). Using default value: {}",
-                    domain);
-        }
-
-        context.setX_request_domain(domain);
-        context.getParameters().put("x_request_domain", domain);
+        return authority + Symbol.COLON + PORT._80;
     }
 
 }

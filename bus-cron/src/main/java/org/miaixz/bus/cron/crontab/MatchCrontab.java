@@ -25,35 +25,65 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.vortex.strategy;
+package org.miaixz.bus.cron.crontab;
 
-import org.miaixz.bus.vortex.Strategy;
-import org.springframework.web.server.ServerWebExchange;
+import org.miaixz.bus.cron.Repertoire;
+import org.miaixz.bus.cron.Scheduler;
 
-import reactor.core.publisher.Mono;
+import java.util.concurrent.locks.Lock;
 
 /**
- * Represents the ongoing execution of the strategy chain, implementing the Chain of Responsibility pattern.
- * <p>
- * An instance of this interface is passed to each {@link Strategy#apply(ServerWebExchange, StrategyChain)} method,
- * allowing a strategy to delegate control to the next strategy in the chain. The final link in the chain, implemented
- * in {@link org.miaixz.bus.vortex.filter.PrimaryChain}, delegates control back to the main Spring WebFlux
- * {@code WebFilterChain}.
+ * Task table based on matching<br>
+ * Each time checks if the expressions in the task table match the specified time, and executes the corresponding Task
+ * if they match
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public interface StrategyChain {
+public class MatchCrontab extends Repertoire {
 
     /**
-     * Delegates control to the next strategy in the chain.
-     * <p>
-     * A {@link Strategy} must invoke this method to continue the processing of the request. Failure to do so will
-     * effectively halt the request handling pipeline.
-     *
-     * @param exchange The current server exchange, which may have been mutated by the calling strategy.
-     * @return A {@code Mono<Void>} that signals the completion of the rest of the chain.
+     * Constructor with default capacity of {@link Repertoire#DEFAULT_CAPACITY}
      */
-    Mono<Void> apply(ServerWebExchange exchange);
+    public MatchCrontab() {
+        this(DEFAULT_CAPACITY);
+    }
+
+    /**
+     * Constructor
+     *
+     * @param initialCapacity Initial capacity
+     */
+    public MatchCrontab(final int initialCapacity) {
+        super(initialCapacity);
+    }
+
+    @Override
+    public void execute(final Scheduler scheduler, final long millis) {
+        final Lock readLock = lock.readLock();
+        readLock.lock();
+        try {
+            executeTaskIfMatchInternal(scheduler, millis);
+        } finally {
+            readLock.unlock();
+        }
+    }
+
+    /**
+     * Execute the corresponding Task if the time matches, without lock
+     *
+     * @param scheduler {@link Scheduler}
+     * @param millis    Time in milliseconds
+     */
+    private void executeTaskIfMatchInternal(final Scheduler scheduler, final long millis) {
+        final int size = size();
+        for (int i = 0; i < size; i++) {
+            if (this.table.getMiddle(i)
+                    .match(scheduler.config.getTimeZone(), millis, scheduler.config.isMatchSecond())) {
+                scheduler.manager.spawnExecutor(
+                        new CronCrontab(this.table.getLeft(i), this.table.getMiddle(i), this.table.getRight(i)));
+            }
+        }
+    }
 
 }

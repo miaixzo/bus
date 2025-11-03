@@ -28,8 +28,10 @@
 package org.miaixz.bus.auth.nimble.qq;
 
 import lombok.Data;
-import org.miaixz.bus.auth.magic.AuthToken;
+import org.miaixz.bus.auth.magic.Authorization;
+import org.miaixz.bus.auth.magic.ErrorCode;
 import org.miaixz.bus.cache.CacheX;
+import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
@@ -76,35 +78,38 @@ public class QqMiniProvider extends AbstractProvider {
      * unionId, and session_key.
      *
      * @param authCallback the callback object containing the authorization code
-     * @return the {@link AuthToken} containing access token details
+     * @return the {@link Authorization} containing access token details
      * @throws AuthorizedException if the response indicates an error or is missing required token information
      */
     @Override
-    public AuthToken getAccessToken(Callback authCallback) {
+    public Message token(Callback authCallback) {
         // Use the code to get the corresponding openId, unionId, etc.
-        String response = Httpx.get(accessTokenUrl(authCallback.getCode()));
+        String response = Httpx.get(tokenUrl(authCallback.getCode()));
+        Map<String, Object> object = JsonKit.toPojo(response, Map.class);
 
-        Map<String, Object> accessTokenObject = JsonKit.toPojo(response, Map.class);
-        checkResponse(accessTokenObject);
+        this.checkResponse(object);
 
         // Assemble the result
-        return AuthToken.builder().openId((String) accessTokenObject.get("openid"))
-                .unionId((String) accessTokenObject.get("unionid"))
-                .accessToken((String) accessTokenObject.get("session_key")).build();
+        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+                Authorization.builder().openId((String) object.get("openid")).unionId((String) object.get("unionid"))
+                        .token((String) object.get("session_key")).build())
+                .build();
     }
 
     /**
      * Retrieves user information for the QQ Mini Program. Note: If user information is required, it needs to be passed
      * to the backend after the Mini Program calls a function.
      *
-     * @param authToken the {@link AuthToken} obtained after successful authorization
+     * @param authorization the {@link Authorization} obtained after successful authorization
      * @return {@link Material} containing the user's information
      */
     @Override
-    public Material getUserInfo(AuthToken authToken) {
+    public Message userInfo(Authorization authorization) {
         // If user information is required, it needs to be passed to the backend after the Mini Program calls a function
-        return Material.builder().rawJson(JsonKit.toJsonString(authToken)).username("").nickname("").avatar("")
-                .uuid(authToken.getOpenId()).token(authToken).source(complex.toString()).build();
+        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+                Material.builder().rawJson(JsonKit.toJsonString(authorization)).username("").nickname("").avatar("")
+                        .uuid(authorization.getOpenId()).token(authorization).source(complex.toString()).build())
+                .build();
     }
 
     /**
@@ -126,9 +131,9 @@ public class QqMiniProvider extends AbstractProvider {
      * @return the access token URL
      */
     @Override
-    protected String accessTokenUrl(String code) {
-        return Builder.fromUrl(this.complex.accessToken()).queryParam("appid", context.getAppKey())
-                .queryParam("secret", context.getAppSecret()).queryParam("js_code", code)
+    protected String tokenUrl(String code) {
+        return Builder.fromUrl(this.complex.token()).queryParam("appid", context.getClientId())
+                .queryParam("secret", context.getClientSecret()).queryParam("js_code", code)
                 .queryParam("grant_type", "authorization_code").build();
     }
 

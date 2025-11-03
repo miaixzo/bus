@@ -206,9 +206,8 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
             return;
         }
 
-        if (record instanceof BoundSheetRecord) {
+        if (record instanceof BoundSheetRecord boundSheetRecord) {
             // Sheet boundary record, sheet name can be obtained from this record.
-            final BoundSheetRecord boundSheetRecord = (BoundSheetRecord) record;
             boundSheetRecords.add(boundSheetRecord);
             final String currentSheetName = boundSheetRecord.getSheetname();
             if (null != this.sheetName && StringKit.equals(this.sheetName, currentSheetName)) {
@@ -217,8 +216,7 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
         } else if (record instanceof SSTRecord) {
             // Static string table.
             sstRecord = (SSTRecord) record;
-        } else if (record instanceof BOFRecord) {
-            final BOFRecord bofRecord = (BOFRecord) record;
+        } else if (record instanceof BOFRecord bofRecord) {
             if (bofRecord.getType() == BOFRecord.TYPE_WORKSHEET) {
                 // If needed, create a stub workbook.
                 if (workbookBuildingListener != null && stubWorkbook == null) {

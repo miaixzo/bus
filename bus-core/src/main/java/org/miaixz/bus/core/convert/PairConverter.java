@@ -135,8 +135,7 @@ public class PairConverter extends ConverterWithRoot implements Serializable {
      */
     public Pair<?, ?> convert(final Type leftType, final Type rightType, final Object value) throws ConvertException {
         Map map = null;
-        if (value instanceof Map.Entry) {
-            final Map.Entry entry = (Map.Entry) value;
+        if (value instanceof Map.Entry entry) {
             map = MapKit.of(entry.getKey(), entry.getValue());
         } else if (value instanceof Pair) {
             final Pair entry = (Pair<?, ?>) value;

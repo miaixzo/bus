@@ -170,7 +170,7 @@ public class CharsValidator {
      * @see #isBlank(CharSequence)
      */
     public static boolean isEmpty(final CharSequence text) {
-        return text == null || text.length() == 0;
+        return text == null || text.isEmpty();
     }
 
     /**

@@ -27,329 +27,214 @@
 */
 package org.miaixz.bus.vortex.support.mcp;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Collectors;
-
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Assets;
+import org.miaixz.bus.vortex.provider.ProcessProvider;
 import org.miaixz.bus.vortex.registry.AssetsRegistry;
+import org.miaixz.bus.vortex.support.mcp.client.McpClient;
+import org.miaixz.bus.vortex.support.mcp.client.StdioClient;
 import org.springframework.context.SmartLifecycle;
-
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
+
 /**
- * Manages the lifecycle of all MCP (Model Context Protocol) clients. This service is responsible for initializing,
- * caching, and destroying all assets that operate over the MCP protocol. It also includes dynamic
- * registration/deregistration, health checking, and self-healing capabilities. Implements SmartLifecycle to integrate
- * with Spring's application lifecycle.
+ * A service that manages the lifecycle and provides access to all MCP (Model Context Protocol) clients.
+ * <p>
+ * This service acts as a high-level coordinator and a client registry. It implements {@link SmartLifecycle} to hook
+ * into the Spring application lifecycle. Its primary responsibilities are:
+ * <ul>
+ * <li>On startup, it finds all MCP-related assets and uses a {@link ProcessProvider} to start their underlying
+ * processes.</li>
+ * <li>For each successfully started process, it creates and initializes a corresponding {@link McpClient} (e.g.,
+ * {@link StdioClient}) to handle communication.</li>
+ * <li>It maintains a cache of all active clients, making them available to other services like
+ * {@link org.miaixz.bus.vortex.support.McpRouter}.</li>
+ * <li>On shutdown, it gracefully closes all clients and stops all managed processes.</li>
+ * </ul>
+ * This design separates the concern of process lifecycle management (delegated to {@code ProcessProvider}) from the
+ * concern of protocol communication (encapsulated in {@code McpClient}).
+ *
+ * @author Kimi Liu
+ * @since Java 17+
  */
 public class McpService implements SmartLifecycle {
 
     /**
-     * The interval in seconds for performing health checks.
-     */
-    private static final long HEALTH_CHECK_INTERVAL_SECONDS = 30;
-    /**
-     * The separator used to create unique tool names by prefixing the service name.
+     * The separator used to prefix tool names with their service ID for uniqueness.
      */
     private static final String TOOL_NAME_SEPARATOR = "::";
-    private final AssetsRegistry registry;
+
     /**
-     * A thread-safe cache holding all active and initialized MCP client instances. The key is the service name (asset
-     * name), and the value is the corresponding McpClient instance.
+     * An atomic flag to track the running state of the service, ensuring idempotent start/stop.
+     */
+    private final AtomicBoolean running = new AtomicBoolean(false);
+    /**
+     * The registry providing access to all API asset configurations (e.g., from database or files).
+     */
+    private final AssetsRegistry assetsRegistry;
+    /**
+     * The provider responsible for starting, stopping, and managing external system processes.
+     */
+    private final ProcessProvider processProvider;
+    /**
+     * A thread-safe cache holding all active and initialized MCP clients, keyed by their service ID (asset ID).
      */
     private final Map<String, McpClient> clientCache = new ConcurrentHashMap<>();
-    /**
-     * A map to store the original Assets configuration for each client. This is needed for re-initialization during
-     * self-healing.
-     */
-    private final Map<String, Assets> assetsCache = new ConcurrentHashMap<>();
-    /**
-     * Scheduler for periodic health checks. Uses a single thread to avoid concurrent health check executions.
-     */
-    private final ScheduledExecutorService healthCheckScheduler = Executors.newSingleThreadScheduledExecutor(r -> {
-        Thread t = new Thread(r, "mcp-health-check-scheduler");
-        t.setDaemon(true);
-        return t;
-    });
-    private final AtomicBoolean running = new AtomicBoolean(false);
 
     /**
-     * Constructs the service with a dependency on the AssetsRegistry.
-     * 
-     * @param registry The registry providing access to all asset configurations.
+     * Constructs the service with its required dependencies.
+     *
+     * @param assetsRegistry  The registry providing access to all API asset configurations.
+     * @param processProvider The provider responsible for managing the lifecycle of external processes.
      */
-    public McpService(AssetsRegistry registry) {
-        this.registry = registry;
+    public McpService(AssetsRegistry assetsRegistry, ProcessProvider processProvider) {
+        this.assetsRegistry = assetsRegistry;
+        this.processProvider = processProvider;
     }
 
-    /**
-     * Starts the McpService. This method is called by Spring when the application context is started. It initializes
-     * all MCP clients and starts the periodic health check task.
-     */
     @Override
     public void start() {
-        Logger.info("MCP Service is starting...");
-        List<Assets> mcpAssets = this.registry.getAll().stream().filter(a -> a.getMode() >= 3) // Modes 3,4,5,6 are MCP
-                                                                                               // related
-                .toList();
+        if (running.compareAndSet(false, true)) {
+            Logger.info("MCP Service is starting...");
 
-        Logger.info("Found {} MCP assets to initialize.", mcpAssets.size());
+            // 1. Asynchronously get assets, offloading the potentially blocking registry call
+            Mono.fromCallable(
+                    () -> this.assetsRegistry.getAll().stream().filter(a -> a.getMode() >= 3) // Modes 3, 4, 5, 6 are
+                                                                                              // MCP related
+                            .toList())
+                    .subscribeOn(Schedulers.boundedElastic()) // Offload the registry I/O
+                    .flatMapMany(Flux::fromIterable) // Convert the List<Assets> to a Flux<Assets>
+                    .flatMap(this::startAndRegisterClient) // 2. Start each client in parallel
+                    .doOnError(e -> Logger.error("Error during MCP service startup.", e)).subscribe(); // 3.
+                                                                                                       // Fire-and-forget
+                                                                                                       // (startup is
+                                                                                                       // async)
 
-        for (Assets asset : mcpAssets) {
-            try {
-                // Use registerClient for initial setup as well
-                register(asset).block(); // Block during init to ensure readiness
-            } catch (Exception e) {
-                Logger.error("Failed to initialize MCP client for asset: {}", asset.getName(), e);
-            }
+            Logger.info("MCP Service startup process initiated for all clients.");
         }
-        startHealthCheckTask();
-        running.set(true);
-        Logger.info("MCP Service started.");
     }
 
-    /**
-     * Stops the McpService. This method is called by Spring when the application context is stopped. It shuts down all
-     * MCP clients and stops the periodic health check task.
-     */
     @Override
     public void stop() {
-        Logger.info("MCP Service is stopping...");
-        healthCheckScheduler.shutdownNow(); // Stop the health check task immediately
-        clientCache.values().forEach(client -> {
-            try {
-                client.close();
-            } catch (Exception e) {
-                Logger.error("Error closing a MCP client.", e);
-            }
-        });
-        clientCache.clear();
-        assetsCache.clear();
-        running.set(false);
-        Logger.info("MCP Service stopped.");
+        if (running.compareAndSet(true, false)) {
+            Logger.info("MCP Service is stopping...");
+
+            // 1. Asynchronously get assets, offloading the potentially blocking registry call
+            Mono<List<Assets>> mcpAssets = Mono
+                    .fromCallable(() -> this.assetsRegistry.getAll().stream().filter(a -> a.getMode() >= 3).toList())
+                    .subscribeOn(Schedulers.boundedElastic());
+
+            // 2. Create a Mono to stop all processes (assumes provider.stop() is reactive)
+            Mono<Void> stopProcesses = mcpAssets.flatMapMany(Flux::fromIterable).flatMap(processProvider::stop)
+                    .doOnError(e -> Logger.error("Error stopping MCP process.", e)).then();
+
+            // 3. Create a Mono to close all clients in parallel
+            Mono<Void> closeClients = Flux.fromIterable(clientCache.values())
+                    .flatMap(
+                            client -> Mono.fromRunnable(client::close) // Wrap blocking I/O
+                                    .subscribeOn(Schedulers.boundedElastic()) // Offload each close
+                                    .doOnError(e -> Logger.error("Error closing MCP client.", e)))
+                    .then();
+
+            // 4. Run both stop/close operations in parallel and block until all are complete
+            // (Blocking is acceptable in SmartLifecycle.stop())
+            Mono.when(stopProcesses, closeClients).doOnError(e -> Logger.error("Error during MCP service shutdown.", e))
+                    .block();
+
+            // 5. Clear cache after all resources are released
+            clientCache.clear();
+            Logger.info("MCP Service stopped.");
+        }
     }
 
-    /**
-     * Checks if the McpService is currently running.
-     * 
-     * @return true if the service is running, false otherwise.
-     */
     @Override
     public boolean isRunning() {
         return running.get();
     }
 
     /**
-     * Returns the phase of this SmartLifecycle component. Lower values indicate earlier startup and later shutdown. We
-     * set a high value to ensure it starts after most other beans and stops before them.
-     * 
-     * @return The phase value.
+     * Assumes processProvider.start() and client.initialize() are already reactive (return Mono). If not, they must
+     * also be wrapped in Mono.fromCallable().subscribeOn().
      */
-    @Override
-    public int getPhase() {
-        return Integer.MAX_VALUE;
+    private Mono<Void> startAndRegisterClient(Assets asset) {
+        return processProvider.start(asset).flatMap(process -> {
+            McpClient client = createClientForAsset(asset, process);
+            return client.initialize().doOnSuccess(v -> {
+                clientCache.put(asset.getId(), client);
+                Logger.info("Client for '{}' registered and initialized successfully.", asset.getName());
+            });
+        }).doOnError(e -> Logger.error("Failed to start or register client for asset '{}'", asset.getName(), e)).then();
+    }
+
+    private McpClient createClientForAsset(Assets asset, Process process) {
+        return switch (asset.getMode()) {
+            // For now, we only have a StdioClient implementation.
+            // This can be extended to support other client types (SSE, HTTP) in the future.
+            case 4 -> new StdioClient(asset, process);
+            default -> throw new IllegalArgumentException(
+                    "Unsupported MCP mode for client creation: " + asset.getMode());
+        };
     }
 
     /**
-     * Dynamically registers and initializes a new MCP client. If a client with the same name already exists, it will be
-     * replaced.
-     * 
-     * @param asset The Assets configuration for the client to register.
-     * @return A Mono that completes when the client is successfully registered and initialized.
+     * Retrieves an initialized MCP client instance by its service ID. This is a non-blocking in-memory cache lookup.
+     *
+     * @param serviceId The unique ID.
+     * @return The {@link McpClient} instance, or {@code null} if not found or not ready.
      */
-    public Mono<Void> register(Assets asset) {
-        // Close existing client if any
-        McpClient existingClient = clientCache.remove(asset.getName());
-        if (existingClient != null) {
-            Logger.info("Closing existing client for '{}' before re-registration.", asset.getName());
-            existingClient.close();
-        }
-
-        return Mono.<Void>defer(() -> {
-            try {
-                McpClient client;
-                switch (asset.getMode()) { // Use asset.getMode() directly
-                    case 3: // SSE
-                        client = new SseClient(asset);
-                        break;
-
-                    case 4: // STDIO
-                        client = new StdioClient(asset);
-                        break;
-
-                    case 5: // OPENAPI
-                        client = new OpenApiClient(asset);
-                        break;
-
-                    case 6: // STREAMABLE-HTTP
-                        client = new StreamableHttpClient(asset);
-                        break;
-
-                    default:
-                        throw new IllegalArgumentException("Unknown or unsupported MCP mode: " + asset.getMode());
-                }
-
-                return client.initialize().doOnSuccess(v -> {
-                    clientCache.put(asset.getName(), client);
-                    assetsCache.put(asset.getName(), asset); // Store original asset for self-healing
-                    Logger.info(
-                            "Client for '{}' (mode {}) registered and initialized successfully.",
-                            asset.getName(),
-                            asset.getMode());
-                }).doOnError(e -> {
-                    Logger.error("Error registering client for asset '{}': {}", asset.getName(), e.getMessage());
-                    // Ensure client is closed if initialization fails
-                    client.close();
-                }).then(); // This ensures Mono<Void>
-            } catch (Exception e) {
-                Logger.error("Error creating client for asset '{}': {}", asset.getName(), e.getMessage());
-                return Mono.error(e);
-            }
-        }).subscribeOn(Schedulers.boundedElastic()); // Execute client creation/init on a dedicated scheduler
+    public McpClient getMcp(String serviceId) {
+        return clientCache.get(serviceId);
     }
 
     /**
-     * Dynamically unregisters and closes an existing MCP client.
-     * 
-     * @param serviceName The name of the service (asset name) to unregister.
-     * @return A Mono that completes when the client is successfully unregistered and closed.
-     */
-    public Mono<Void> destroy(String serviceName) {
-        return Mono.<Void>fromRunnable(() -> {
-            McpClient client = clientCache.remove(serviceName);
-            assetsCache.remove(serviceName);
-            if (client != null) {
-                Logger.info("Closing client for '{}' due to unregistration.", serviceName);
-                client.close();
-            } else {
-                Logger.warn("Client '{}' not found in cache for unregistration.", serviceName);
-            }
-        }).subscribeOn(Schedulers.boundedElastic());
-    }
-
-    /**
-     * Dynamically updates an existing MCP client. This is achieved by unregistering the old client and registering a
-     * new one with the updated configuration.
-     * 
-     * @param asset The updated Assets configuration for the client.
-     * @return A Mono that completes when the client is successfully updated.
-     */
-    public Mono<Void> refresh(Assets asset) {
-        Logger.info("Attempting to update client '{}'.", asset.getName());
-        return destroy(asset.getName()).then(register(asset))
-                .doOnSuccess(v -> Logger.info("Client '{}' updated successfully.", asset.getName()))
-                .doOnError(e -> Logger.error("Failed to update client '{}': {}", asset.getName(), e.getMessage()));
-    }
-
-    /**
-     * Starts the periodic health check task for all managed MCP clients.
-     */
-    private void startHealthCheckTask() {
-        healthCheckScheduler.scheduleAtFixedRate(() -> {
-            Logger.debug("Starting periodic health check for {} MCP clients.", clientCache.size());
-            Flux.fromIterable(clientCache.entrySet()).flatMap(entry -> {
-                String serviceName = entry.getKey();
-                McpClient client = entry.getValue();
-                return client.isHealthy().doOnNext(isHealthy -> {
-                    if (!isHealthy) {
-                        Logger.warn("Client '{}' is unhealthy. Attempting self-healing.", serviceName);
-                        // Trigger self-healing: unregister and re-register
-                        Assets assetToHeal = assetsCache.get(serviceName);
-                        if (assetToHeal != null) {
-                            destroy(serviceName).then(register(assetToHeal)).subscribe(
-                                    null,
-                                    e -> Logger.error("Self-healing failed for '{}': {}", serviceName, e.getMessage()));
-                        } else {
-                            Logger.error("Cannot self-heal client '{}': original asset config not found.", serviceName);
-                        }
-                    }
-                }).onErrorResume(e -> {
-                    Logger.error("Health check for client '{}' failed with error: {}", serviceName, e.getMessage());
-                    // Treat error during health check as unhealthy and attempt self-healing
-                    Assets assetToHeal = assetsCache.get(serviceName);
-                    if (assetToHeal != null) {
-                        destroy(serviceName).then(register(assetToHeal)).subscribe(
-                                null,
-                                err -> Logger.error("Self-healing failed for '{}': {}", serviceName, err.getMessage()));
-                    } else {
-                        Logger.error("Cannot self-heal client '{}': original asset config not found.", serviceName);
-                    }
-                    return Mono.just(false); // Mark as unhealthy
-                });
-            }).subscribeOn(Schedulers.boundedElastic()) // Run health checks concurrently on a different scheduler
-                    .subscribe(); // Subscribe to trigger the reactive flow
-        }, HEALTH_CHECK_INTERVAL_SECONDS, HEALTH_CHECK_INTERVAL_SECONDS, TimeUnit.SECONDS);
-    }
-
-    /**
-     * Retrieves an initialized MCP client instance by its service name.
-     * 
-     * @param serviceName The name of the service (asset name).
-     * @return McpClient instance, or null if not found or not ready.
-     */
-    public McpClient getMcp(String serviceName) {
-        return clientCache.get(serviceName);
-    }
-
-    /**
-     * Retrieves all active and initialized MCP client instances.
-     * 
-     * @return A collection of all McpClient instances.
+     * Retrieves all active and initialized MCP client instances. This is a non-blocking in-memory operation.
+     *
+     * @return A collection of all active {@link McpClient} instances.
      */
     public Collection<McpClient> getAll() {
         return clientCache.values();
     }
 
     /**
-     * Aggregates and returns a list of all tools from all active MCP clients. Each tool's name is prefixed with its
-     * service name to ensure uniqueness.
-     * 
-     * @return A Mono emitting a List of all available Tools.
+     * Asynchronously aggregates and returns a list of all tools from all active MCP clients.
+     * <p>
+     * Each tool's name is prefixed with its service name and a separator (e.g., "serviceName::toolName") to ensure
+     * uniqueness across all services.
+     * <p>
+     * This method fetches tools from all clients in parallel, assuming {@code client.getTools()} is a blocking I/O
+     * call.
+     *
+     * @return A {@code Mono} emitting a List of all available {@link Tool}s.
      */
     public Mono<List<Tool>> getTools() {
-        return Mono.just(clientCache.entrySet().stream().flatMap(entry -> {
-            String serviceName = entry.getKey();
-            McpClient client = entry.getValue();
-            return client.getTools().stream().map(
-                    tool -> new Tool(serviceName + TOOL_NAME_SEPARATOR + tool.getName(), tool.getDescription(),
-                            tool.getInputSchema()));
-        }).collect(Collectors.toList()));
-    }
-
-    /**
-     * Retrieves the health status of a specific MCP client.
-     * 
-     * @param serviceName The name of the service.
-     * @return A Mono emitting true if the client is healthy, false if unhealthy or not found.
-     */
-    public Mono<Boolean> getHealth(String serviceName) {
-        McpClient client = clientCache.get(serviceName);
-        if (client == null) {
-            return Mono.just(false); // Client not found is considered unhealthy
-        }
-        return client.isHealthy().onErrorReturn(false); // Treat any error during health check as unhealthy
-    }
-
-    /**
-     * Retrieves the overall health status of all managed MCP clients.
-     * 
-     * @return A Mono emitting true if all clients are healthy, false otherwise.
-     */
-    public Mono<Boolean> getOverall() {
-        if (clientCache.isEmpty()) {
-            return Mono.just(true); // No clients managed, so considered healthy
-        }
-        return Flux.fromIterable(clientCache.values()).flatMap(McpClient::isHealthy).all(isHealthy -> isHealthy);
+        // 1. Get all client entries from the cache (non-blocking)
+        return Flux.fromIterable(clientCache.entrySet())
+                // 2. For each client, fetch its tools in parallel.
+                .flatMap(entry ->
+                // 3. Wrap the blocking client.getTools() call
+                Mono.fromCallable(() -> {
+                    String serviceName = entry.getKey();
+                    McpClient client = entry.getValue();
+                    // This is the blocking call. It's now wrapped and will be offloaded.
+                    return client.getTools().stream()
+                            .map(
+                                    tool -> new Tool(serviceName + TOOL_NAME_SEPARATOR + tool.getName(),
+                                            tool.getDescription(), tool.getInputSchema()))
+                            .collect(Collectors.toList());
+                }).subscribeOn(Schedulers.boundedElastic()) // 4. Offload the blocking call
+                )
+                // 5. We now have a Flux<List<Tool>>. Flatten it to a Flux<Tool>.
+                .flatMap(Flux::fromIterable)
+                // 6. Collect all tools from all clients into a single list.
+                .collectList();
     }
 
 }

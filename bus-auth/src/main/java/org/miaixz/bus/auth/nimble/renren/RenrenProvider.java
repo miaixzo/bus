@@ -27,7 +27,7 @@
 */
 package org.miaixz.bus.auth.nimble.renren;
 
-import org.miaixz.bus.auth.magic.AuthToken;
+import org.miaixz.bus.auth.magic.Authorization;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Gender;
@@ -79,59 +79,64 @@ public class RenrenProvider extends AbstractProvider {
      * Retrieves the access token from Renren's authorization server.
      *
      * @param callback the callback object containing the authorization code
-     * @return the {@link AuthToken} containing access token details
+     * @return the {@link Authorization} containing access token details
      */
     @Override
-    public AuthToken getAccessToken(Callback callback) {
-        return this.getToken(accessTokenUrl(callback.getCode()));
+    public Message token(Callback callback) {
+        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(this.getToken(tokenUrl(callback.getCode())))
+                .build();
     }
 
     /**
      * Retrieves user information from Renren's user info endpoint.
      *
-     * @param authToken the {@link AuthToken} obtained after successful authorization
+     * @param authorization the {@link Authorization} obtained after successful authorization
      * @return {@link Material} containing the user's information
      */
     @Override
-    public Material getUserInfo(AuthToken authToken) {
-        String response = doGetUserInfo(authToken);
+    public Message userInfo(Authorization authorization) {
+        String response = doGetUserInfo(authorization);
         Map<String, Object> userObj = (Map<String, Object>) JsonKit.toPojo(response, Map.class).get("response");
 
-        return Material.builder().rawJson(JsonKit.toJsonString(userObj)).uuid((String) userObj.get("id"))
-                .avatar(getAvatarUrl(userObj)).nickname((String) userObj.get("name")).company(getCompany(userObj))
-                .gender(getGender(userObj)).token(authToken).source(complex.toString()).build();
+        return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+                .data(
+                        Material.builder().rawJson(JsonKit.toJsonString(userObj)).uuid((String) userObj.get("id"))
+                                .avatar(getAvatarUrl(userObj)).nickname((String) userObj.get("name"))
+                                .company(getCompany(userObj)).gender(getGender(userObj)).token(authorization)
+                                .source(complex.toString()).build())
+                .build();
     }
 
     /**
      * Refreshes the access token (renews its validity).
      *
-     * @param authToken the token information returned after successful login
+     * @param authorization the token information returned after successful login
      * @return a {@link Message} containing the refreshed token information
      */
     @Override
-    public Message refresh(AuthToken authToken) {
+    public Message refresh(Authorization authorization) {
         return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
-                .data(getToken(this.refreshTokenUrl(authToken.getRefreshToken()))).build();
+                .data(getToken(this.refreshUrl(authorization.getRefresh()))).build();
     }
 
     /**
      * Retrieves an authentication token from the specified URL.
      *
      * @param url the URL to request the token from
-     * @return the {@link AuthToken} containing token details
+     * @return the {@link Authorization} containing token details
      * @throws AuthorizedException if the response indicates an error or is missing required token information
      */
-    private AuthToken getToken(String url) {
+    private Authorization getToken(String url) {
         String response = Httpx.post(url);
         Map<String, Object> jsonObject = JsonKit.toPojo(response, Map.class);
         if (jsonObject.containsKey("error")) {
             throw new AuthorizedException("Failed to get token from Renren: " + jsonObject);
         }
 
-        return AuthToken.builder().tokenType((String) jsonObject.get("token_type"))
+        return Authorization.builder().token_type((String) jsonObject.get("token_type"))
                 .expireIn(((Number) jsonObject.get("expires_in")).intValue())
-                .accessToken(UrlEncoder.encodeAll((String) jsonObject.get("access_token")))
-                .refreshToken(UrlEncoder.encodeAll((String) jsonObject.get("refresh_token")))
+                .token(UrlEncoder.encodeAll((String) jsonObject.get("access_token")))
+                .refresh(UrlEncoder.encodeAll((String) jsonObject.get("refresh_token")))
                 .openId(((Map<String, Object>) jsonObject.get("user")).get("id").toString()).build();
     }
 
@@ -180,13 +185,13 @@ public class RenrenProvider extends AbstractProvider {
     /**
      * Returns the URL to obtain user information.
      *
-     * @param authToken the user's authorization token
+     * @param authorization the user's authorization token
      * @return the URL to obtain user information
      */
     @Override
-    protected String userInfoUrl(AuthToken authToken) {
-        return Builder.fromUrl(this.complex.userinfo()).queryParam("access_token", authToken.getAccessToken())
-                .queryParam("userId", authToken.getOpenId()).build();
+    protected String userInfoUrl(Authorization authorization) {
+        return Builder.fromUrl(this.complex.userinfo()).queryParam("access_token", authorization.getToken())
+                .queryParam("userId", authorization.getOpenId()).build();
     }
 
     /**
@@ -197,9 +202,11 @@ public class RenrenProvider extends AbstractProvider {
      * @return the authorization URL
      */
     @Override
-    public String authorize(String state) {
-        return Builder.fromUrl(super.authorize(state))
-                .queryParam("scope", this.getScopes(Symbol.COMMA, false, this.getDefaultScopes(RenrenScope.values())))
+    public Message build(String state) {
+        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+                Builder.fromUrl((String) super.build(state).getData())
+                        .queryParam("scope", this.getScopes(Symbol.COMMA, false, this.getScopes(RenrenScope.values())))
+                        .build())
                 .build();
     }
 

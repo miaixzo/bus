@@ -277,7 +277,7 @@ public class SheetDataSaxHandler extends DefaultHandler {
 
         final String contentStr = StringKit.trim(lastContent);
         final Object value;
-        if (this.lastFormula.length() > 0) {
+        if (!this.lastFormula.isEmpty()) {
             if (CellDataType.NULL == this.cellDataType) {
                 // For formulas, the default value type is number.
                 this.cellDataType = CellDataType.NUMBER;

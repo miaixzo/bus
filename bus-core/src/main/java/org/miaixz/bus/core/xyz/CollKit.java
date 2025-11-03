@@ -36,10 +36,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.UnaryOperator;
+import java.util.function.*;
 import java.util.stream.Collectors;
 
 import org.miaixz.bus.core.center.CollectionOperation;
@@ -1154,12 +1151,44 @@ public class CollKit extends CollectionStream {
 
         final Iterator<K> keyIterator = keys.iterator();
         final Iterator<V> valueIterator = values.iterator();
-        while (entryCount > 0) {
+        while (entryCount-- > 0) {
             map.put(keyIterator.next(), valueIterator.next());
             entryCount--;
         }
 
         return map;
+    }
+
+    /**
+     * Pairs elements from two lists by index, merges them through a specified function, and returns a new result list.
+     * The length of the new list will be based on the shorter of the two input lists.
+     *
+     * @param <A>         Element type of the first list
+     * @param <B>         Element type of the second list
+     * @param <R>         Element type of the result list
+     * @param collectionA The first list
+     * @param collectionB The second list
+     * @param zipper      Merge function that receives two elements from listA and listB, and returns a result element
+     * @return The merged new list
+     */
+    public static <A, B, R> List<R> zip(
+            Collection<A> collectionA,
+            Collection<B> collectionB,
+            BiFunction<A, B, R> zipper) {
+        if (isEmpty(collectionA) || isEmpty(collectionB)) {
+            return new ArrayList<>();
+        }
+        Assert.notNull(zipper, "Zipper function must not be null");
+
+        int size = Math.min(collectionA.size(), collectionB.size());
+        final List<R> result = new ArrayList<>(size);
+        final Iterator<A> aIterator = collectionA.iterator();
+        final Iterator<B> bIterator = collectionB.iterator();
+
+        while (size-- > 0) {
+            result.add(zipper.apply(aIterator.next(), bIterator.next()));
+        }
+        return result;
     }
 
     /**

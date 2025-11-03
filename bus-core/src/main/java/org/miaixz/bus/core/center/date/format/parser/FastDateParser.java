@@ -41,6 +41,7 @@ import java.util.regex.Pattern;
 import org.miaixz.bus.core.center.date.format.FormatBuilder;
 import org.miaixz.bus.core.center.date.printer.FastDatePrinter;
 import org.miaixz.bus.core.center.date.printer.SimpleDatePrinter;
+import org.miaixz.bus.core.lang.Keys;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.DateException;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -879,7 +880,14 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
             final String[][] zones = DateFormatSymbols.getInstance(locale).getZoneStrings();
             for (final String[] zoneNames : zones) {
                 final String tzId = zoneNames[ID];
-                if ("GMT".equalsIgnoreCase(tzId)) {
+                if (Keys.IS_AT_LEAST_JDK25) {
+                    // In JDK25+, all three-letter abbreviations are invalid
+                    // See:
+                    // https://stackoverflow.com/questions/41672825/which-three-letter-time-zone-ids-are-not-deprecated
+                    if (tzId.length() == 3) {
+                        continue;
+                    }
+                } else if ("GMT".equalsIgnoreCase(tzId)) {
                     continue;
                 }
                 final TimeZone tz = TimeZone.getTimeZone(tzId);

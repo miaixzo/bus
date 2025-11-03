@@ -36,11 +36,15 @@ import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.magic.Delegate;
 import org.miaixz.bus.vortex.magic.ErrorCode;
 import org.miaixz.bus.vortex.magic.Principal;
+import org.miaixz.bus.vortex.strategy.QualifierStrategy;
+import reactor.core.publisher.Mono;
 
 /**
- * Interface for access authorization providers, defining methods for authentication and authorization operations.
- * Implementations of this interface handle validation of credentials such as tokens, API keys, or licenses, and return
- * the result of the authorization process.
+ * A Service Provider Interface (SPI) for performing authentication and authorization.
+ * <p>
+ * This interface defines the contract for validating credentials. Implementations of this interface should contain the
+ * actual business logic for checking tokens or API keys against a database, an authentication server, or any other
+ * identity provider. An instance of this provider is injected into the {@link QualifierStrategy}.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,75 +52,90 @@ import org.miaixz.bus.vortex.magic.Principal;
 public interface AuthorizeProvider {
 
     /**
-     * Validates the provided principal and performs the authorization process. This method checks the principal's type
-     * and delegates to the appropriate authorization method (e.g., token, API key, or license). If the principal is
-     * invalid or the type is unsupported, an appropriate error is returned.
+     * Asynchronously validates the provided principal and performs the authorization process. This default method acts
+     * as a template, dispatching to the appropriate specific validation method (e.g., {@link #token(Principal)} or
+     * {@link #apiKey(Principal)}) based on the principal's type.
+     * <p>
+     * This method can be overridden to handle custom credential types or more complex dispatching logic.
      *
-     * @param principal The {@link Principal} object containing authentication details, such as a token, API key, or
-     *                  license.
-     * @return A {@link Delegate} object encapsulating the authorization result, including a {@link Message} with status
-     *         information and an optional {@link Authorize} object with authorization details.
-     * @throws ValidateException If the principal is null or empty, with error code {@link ErrorCode#_100806}.
+     * @param principal The {@link Principal} object containing the credential to be validated.
+     * @return A {@code Mono<Delegate>} emitting the authorization result.
      */
-    default Delegate authorize(Principal principal) {
-        // Validate the principal object itself.
+    default Mono<Delegate> authorize(Principal principal) {
         if (ObjectKit.isEmpty(principal)) {
-            Logger.warn("Authorization failed: The principal entity is null or empty.");
-            throw new ValidateException(ErrorCode._100806);
+            Logger.warn(false, "Authorize", "Authorization failed: The principal entity is null or empty.");
+            // Return a Mono that signals an error immediately.
+            return Mono.error(new ValidateException(ErrorCode._100806));
         }
 
-        // Default workflow: Dispatch based on credential type.
+        // Dispatch based on the credential type using an if-else if chain,
+        // as case labels in a switch must be compile-time constants.
         if (Consts.ONE.equals(principal.getType())) {
-            return this.token(principal);
+            return this.token(principal); // Now returns Mono<Delegate>
+        } else if (Consts.TWO.equals(principal.getType())) {
+            return this.apiKey(principal); // Now returns Mono<Delegate>
+        } else {
+            Logger.warn(
+                    false,
+                    "Authorize",
+                    "Unsupported principal type: {}. Override the 'authorize' method to handle it.",
+                    principal.getType());
+            // Return a Mono emitting a Delegate with the error information.
+            return Mono.just(
+                    Delegate.builder()
+                            .message(
+                                    Message.builder().errcode(ErrorCode._100802.getKey())
+                                            .errmsg("Unsupported credential type: " + principal.getType()).build())
+                            .build());
         }
-        if (Consts.TWO.equals(principal.getType())) {
-            return this.apiKey(principal);
-        }
-
-        // The default implementation does not handle other types (e.g., type '3' for licenses).
-        // To support them, the user must override this `authorize` method.
-        Logger.warn(
-                "==>     Provider: Unsupported or unhandled principal type: {}. "
-                        + "Override the 'authorize' method in your provider to handle custom types.",
-                principal.getType());
-        return Delegate.builder()
-                .message(
-                        Message.builder().errcode(ErrorCode._100802.getKey())
-                                .errmsg("Unsupported credential type: " + principal.getType()).build())
-                .build();
     }
 
     /**
-     * Validates a token-based principal. Users should override this method to implement their specific token validation
-     * logic (e.g., JWT parsing, database lookup, Redis cache check).
+     * Asynchronously validates a token-based principal (e.g., JWT, Opaque Token).
      * <p>
-     * The default implementation always returns a successful result, effectively "skipping" the validation. This is
-     * useful for deployments that do not use token-based authentication.
+     * <strong>Warning:</strong> The default implementation of this method provides no security and always returns a
+     * successful result. It is a placeholder and **must be overridden** with actual validation logic, such as JWT
+     * signature verification, introspection against an OAuth2 server, or a database/cache lookup.
      *
-     * @param principal The {@link Principal} object containing the token in its {@code key} field.
-     * @return A {@link Delegate} object containing the authorization result.
+     * @param principal The {@link Principal} object containing the token.
+     * @return A {@code Mono<Delegate>} emitting the authorization result.
      */
-    default Delegate token(Principal principal) {
-        Logger.debug("Executing default `token` method. Returning success without validation.");
-        return Delegate.builder().message(
-                Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build())
-                .authorize(Authorize.builder().build()).build();
+    default Mono<Delegate> token(Principal principal) {
+        Logger.debug(
+                true,
+                "Authorize",
+                "Executing default `token` method. This provides no security and should be overridden.");
+        // Wrap the synchronous default result in Mono.just()
+        return Mono.just(
+                Delegate.builder()
+                        .message(
+                                Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+                                        .errmsg(ErrorCode._SUCCESS.getValue()).build())
+                        .authorize(Authorize.builder().build()).build());
     }
 
     /**
-     * Validates an API key-based principal. Users should override this method to implement their specific API key
-     * validation logic (e.g., database lookup).
+     * Asynchronously validates an API key-based principal.
      * <p>
-     * The default implementation always returns a successful result, effectively "skipping" the validation.
+     * <strong>Warning:</strong> The default implementation of this method provides no security and always returns a
+     * successful result. It is a placeholder and **must be overridden** with actual validation logic, such as looking
+     * up the API key in a database and checking its permissions.
      *
-     * @param principal The {@link Principal} object containing the API key in its {@code key} field.
-     * @return A {@link Delegate} object containing the authorization result.
+     * @param principal The {@link Principal} object containing the API key.
+     * @return A {@code Mono<Delegate>} emitting the authorization result.
      */
-    default Delegate apiKey(Principal principal) {
-        Logger.debug("Executing default `apiKey` method. Returning success without validation.");
-        return Delegate.builder().message(
-                Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build())
-                .authorize(Authorize.builder().build()).build();
+    default Mono<Delegate> apiKey(Principal principal) {
+        Logger.debug(
+                true,
+                "Authorize",
+                "Executing default `apiKey` method. This provides no security and should be overridden.");
+        // Wrap the synchronous default result in Mono.just()
+        return Mono.just(
+                Delegate.builder()
+                        .message(
+                                Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+                                        .errmsg(ErrorCode._SUCCESS.getValue()).build())
+                        .authorize(Authorize.builder().build()).build());
     }
 
 }

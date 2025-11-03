@@ -30,11 +30,13 @@ package org.miaixz.bus.auth.nimble.coding;
 import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Registry;
-import org.miaixz.bus.auth.magic.AuthToken;
+import org.miaixz.bus.auth.magic.Authorization;
 import org.miaixz.bus.auth.magic.Callback;
+import org.miaixz.bus.auth.magic.ErrorCode;
 import org.miaixz.bus.auth.magic.Material;
 import org.miaixz.bus.auth.nimble.AbstractProvider;
 import org.miaixz.bus.cache.CacheX;
+import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.Symbol;
@@ -74,28 +76,29 @@ public class CodingProvider extends AbstractProvider {
      * Retrieves the access token from Coding's authorization server.
      *
      * @param callback the callback object containing the authorization code
-     * @return the {@link AuthToken} containing access token details
+     * @return the {@link Authorization} containing access token details
      * @throws AuthorizedException if parsing the response fails or required token information is missing
      */
     @Override
-    public AuthToken getAccessToken(Callback callback) {
-        String response = doPostAuthorizationCode(callback.getCode());
+    public Message token(Callback callback) {
+        String response = doPostToken(callback.getCode());
         try {
-            Map<String, Object> accessTokenObject = JsonKit.toPojo(response, Map.class);
-            if (accessTokenObject == null) {
+            Map<String, Object> object = JsonKit.toPojo(response, Map.class);
+            if (object == null) {
                 throw new AuthorizedException("Failed to parse access token response: empty response");
             }
-            this.checkResponse(accessTokenObject);
+            this.checkResponse(object);
 
-            String accessToken = (String) accessTokenObject.get("access_token");
-            if (accessToken == null) {
+            String token = (String) object.get("access_token");
+            if (token == null) {
                 throw new AuthorizedException("Missing access_token in response");
             }
-            Object expiresInObj = accessTokenObject.get("expires_in");
+            Object expiresInObj = object.get("expires_in");
             int expiresIn = expiresInObj instanceof Number ? ((Number) expiresInObj).intValue() : 0;
-            String refreshToken = (String) accessTokenObject.get("refresh_token");
+            String refresh = (String) object.get("refresh_token");
 
-            return AuthToken.builder().accessToken(accessToken).expireIn(expiresIn).refreshToken(refreshToken).build();
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+                    .data(Authorization.builder().token(token).expireIn(expiresIn).refresh(refresh).build()).build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse access token response: " + e.getMessage());
         }
@@ -104,13 +107,13 @@ public class CodingProvider extends AbstractProvider {
     /**
      * Retrieves user information from Coding's user info endpoint.
      *
-     * @param authToken the {@link AuthToken} obtained after successful authorization
+     * @param authorization the {@link Authorization} obtained after successful authorization
      * @return {@link Material} containing the user's information
      * @throws AuthorizedException if parsing the response fails or required user information is missing
      */
     @Override
-    public Material getUserInfo(AuthToken authToken) {
-        String response = doGetUserInfo(authToken);
+    public Message userInfo(Authorization authorization) {
+        String response = doGetUserInfo(authorization);
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
             if (object == null) {
@@ -136,11 +139,14 @@ public class CodingProvider extends AbstractProvider {
             String email = (String) data.get("email");
             String slogan = (String) data.get("slogan");
 
-            return Material.builder().rawJson(JsonKit.toJsonString(data)).uuid(id).username(name)
-                    .avatar(avatar != null ? "https://coding.net" + avatar : null)
-                    .blog(path != null ? "https://coding.net" + path : null).nickname(name).company(company)
-                    .location(location).gender(Gender.of(sex)).email(email).remark(slogan).token(authToken)
-                    .source(complex.toString()).build();
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+                    .data(
+                            Material.builder().rawJson(JsonKit.toJsonString(data)).uuid(id).username(name)
+                                    .avatar(avatar != null ? "https://coding.net" + avatar : null)
+                                    .blog(path != null ? "https://coding.net" + path : null).nickname(name)
+                                    .company(company).location(location).gender(Gender.of(sex)).email(email)
+                                    .remark(slogan).token(authorization).source(complex.toString()).build())
+                    .build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
         }
@@ -166,12 +172,14 @@ public class CodingProvider extends AbstractProvider {
      * @return the authorization URL
      */
     @Override
-    public String authorize(String state) {
-        return Builder.fromUrl(String.format(this.complex.authorize(), this.context.getPrefix()))
-                .queryParam("response_type", "code").queryParam("client_id", this.context.getAppKey())
-                .queryParam("redirect_uri", this.context.getRedirectUri())
-                .queryParam("scope", this.getScopes(Symbol.SPACE, true, this.getDefaultScopes(CodingScope.values())))
-                .queryParam("state", getRealState(state)).build();
+    public Message build(String state) {
+        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+                Builder.fromUrl(String.format(this.complex.authorize(), this.context.getPrefix()))
+                        .queryParam("response_type", "code").queryParam("client_id", this.context.getClientId())
+                        .queryParam("redirect_uri", this.context.getRedirectUri())
+                        .queryParam("scope", this.getScopes(Symbol.SPACE, true, this.getScopes(CodingScope.values())))
+                        .queryParam("state", getRealState(state)).build())
+                .build();
     }
 
     /**
@@ -181,23 +189,24 @@ public class CodingProvider extends AbstractProvider {
      * @return the URL to obtain the access token
      */
     @Override
-    public String accessTokenUrl(String code) {
-        return Builder.fromUrl(String.format(this.complex.accessToken(), this.context.getPrefix()))
-                .queryParam("code", code).queryParam("client_id", this.context.getAppKey())
-                .queryParam("client_secret", this.context.getAppSecret()).queryParam("grant_type", "authorization_code")
+    public String tokenUrl(String code) {
+        return Builder.fromUrl(String.format(this.complex.token(), this.context.getPrefix())).queryParam("code", code)
+                .queryParam("client_id", this.context.getClientId())
+                .queryParam("client_secret", this.context.getClientSecret())
+                .queryParam("grant_type", "authorization_code")
                 .queryParam("redirect_uri", this.context.getRedirectUri()).build();
     }
 
     /**
      * Returns the URL to obtain user information.
      *
-     * @param authToken the user's authorization token
+     * @param authorization the user's authorization token
      * @return the URL to obtain user information
      */
     @Override
-    public String userInfoUrl(AuthToken authToken) {
+    public String userInfoUrl(Authorization authorization) {
         return Builder.fromUrl(String.format(this.complex.userinfo(), this.context.getPrefix()))
-                .queryParam("access_token", authToken.getAccessToken()).build();
+                .queryParam("access_token", authorization.getToken()).build();
     }
 
 }

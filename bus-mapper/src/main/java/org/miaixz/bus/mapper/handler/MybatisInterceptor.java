@@ -229,9 +229,9 @@ public class MybatisInterceptor extends AbstractSqlHandler implements Intercepto
      */
     private void logging(MappedStatement ms, BoundSql boundSql, long start) {
         long duration = DateKit.current() - start;
-        Logger.debug("==>     Method: {} {}ms", ms.getId(), duration);
+        Logger.debug(true, "Mapper", "Method: {} {}ms", ms.getId(), duration);
         String sql = format(ms.getConfiguration(), boundSql);
-        Logger.debug("==>     Script: {}", sql);
+        Logger.debug(true, "Mapper", "Script: {}", sql);
     }
 
     /**

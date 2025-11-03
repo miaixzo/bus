@@ -42,87 +42,76 @@ public class ErrorCode extends org.miaixz.bus.core.basic.normal.ErrorCode {
     /**
      * Indicates that the requested operation is not implemented.
      */
-    public static final Errors _NOT_IMPLEMENTED = ErrorRegistry.builder().key("5001").value("Operation not implemented")
+    public static final Errors _110001 = ErrorRegistry.builder().key("110001").value("Operation not implemented")
             .build();
 
     /**
      * Indicates that parameters are incomplete.
      */
-    public static final Errors PARAMETER_INCOMPLETE = ErrorRegistry.builder().key("5002").value("Parameters incomplete")
-            .build();
+    public static final Errors _110002 = ErrorRegistry.builder().key("110002").value("Parameters incomplete").build();
 
     /**
      * Indicates that the registry cannot be empty.
      */
-    public static final Errors NO_AUTH_SOURCE = ErrorRegistry.builder().key("5004").value("Registry cannot be empty")
+    public static final Errors _110003 = ErrorRegistry.builder().key("110003").value("Registry cannot be empty")
             .build();
 
     /**
      * Indicates an unidentified authorization platform.
      */
-    public static final Errors UNIDENTIFIED_PLATFORM = ErrorRegistry.builder().key("5005")
-            .value("Unidentified platform").build();
+    public static final Errors _110004 = ErrorRegistry.builder().key("110004").value("Unidentified platform").build();
 
     /**
      * Indicates an illegal redirect URI.
      */
-    public static final Errors ILLEGAL_REDIRECT_URI = ErrorRegistry.builder().key("5006").value("Illegal redirect URI")
-            .build();
+    public static final Errors _110005 = ErrorRegistry.builder().key("110005").value("Illegal redirect URI").build();
 
     /**
      * Indicates an illegal authorization provider or request.
      */
-    public static final Errors ILLEGAL_REQUEST = ErrorRegistry.builder().key("5007")
-            .value("Illegal provider or request").build();
+    public static final Errors _110006 = ErrorRegistry.builder().key("110006").value("Illegal provider or request")
+            .build();
 
     /**
      * Indicates an illegal authorization code.
      */
-    public static final Errors ILLEGAL_CODE = ErrorRegistry.builder().key("5008").value("Illegal code").build();
+    public static final Errors _110007 = ErrorRegistry.builder().key("110007").value("Illegal code").build();
 
     /**
      * Indicates an illegal state parameter.
      */
-    public static final Errors ILLEGAL_STATUS = ErrorRegistry.builder().key("5009").value("Illegal state").build();
+    public static final Errors _110008 = ErrorRegistry.builder().key("110008").value("Illegal state").build();
 
     /**
      * Indicates that a refresh token is required and cannot be empty.
      */
-    public static final Errors REQUIRED_REFRESH_TOKEN = ErrorRegistry.builder().key("5010")
+    public static final Errors _110009 = ErrorRegistry.builder().key("110009")
             .value("Refresh token is required and cannot be empty").build();
-
-    /**
-     * Indicates an invalid authorization token.
-     */
-    public static final Errors ILLEGAL_TOKEN = ErrorRegistry.builder().key("5011").value("Invalid token").build();
 
     /**
      * Indicates an invalid Key ID (kid).
      */
-    public static final Errors ILLEGAL_KID = ErrorRegistry.builder().key("5012").value("Invalid Key ID (kid)").build();
+    public static final Errors _110010 = ErrorRegistry.builder().key("110010").value("Invalid Key ID (kid)").build();
 
     /**
      * Indicates an invalid Team ID.
      */
-    public static final Errors ILLEGAL_TEAM_ID = ErrorRegistry.builder().key("5013").value("Invalid Team ID").build();
+    public static final Errors _110011 = ErrorRegistry.builder().key("110011").value("Invalid Team ID").build();
 
     /**
      * Indicates an invalid Client ID.
      */
-    public static final Errors ILLEGAL_CLIENT_ID = ErrorRegistry.builder().key("5014").value("Invalid Client ID")
-            .build();
+    public static final Errors _110012 = ErrorRegistry.builder().key("110012").value("Invalid Client ID").build();
 
     /**
      * Indicates an invalid Client Secret.
      */
-    public static final Errors ILLEGAL_CLIENT_SECRET = ErrorRegistry.builder().key("5015")
-            .value("Invalid Client Secret").build();
+    public static final Errors _110013 = ErrorRegistry.builder().key("110013").value("Invalid Client Secret").build();
 
     /**
      * Indicates an illegal WeChat agent ID.
      */
-    public static final Errors ILLEGAL_WECHAT_AGENT_ID = ErrorRegistry.builder().key("5016")
-            .value("Illegal WeChat agent ID").build();
+    public static final Errors _110014 = ErrorRegistry.builder().key("110014").value("Illegal WeChat agent ID").build();
 
     /**
      * Error codes specific to Toutiao (ByteDance) authorization login.

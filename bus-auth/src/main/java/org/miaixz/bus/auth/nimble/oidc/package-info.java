@@ -25,25 +25,10 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.vortex.support.mcp;
-
-import org.miaixz.bus.vortex.Assets;
-
 /**
- * MCP Client implementation for the Streamable HTTP protocol. It extends HttpClient and uses WebClient for
- * communication.
+ * Provides integration for generic OIDC (OpenID Connect) related authentication.
+ *
+ * @author Kimi Liu
+ * @since Java 17+
  */
-public class StreamableHttpClient extends HttpClient {
-
-    /**
-     * Constructs a new StreamableHttpClient.
-     * 
-     * @param assets The Assets configuration for this client.
-     */
-    public StreamableHttpClient(Assets assets) {
-        super(assets);
-        // In a real implementation, this might handle streaming request and response bodies,
-        // but for listTools and callTool's single request-response pattern, the parent's implementation is sufficient.
-    }
-
-}
+package org.miaixz.bus.auth.nimble.oidc;

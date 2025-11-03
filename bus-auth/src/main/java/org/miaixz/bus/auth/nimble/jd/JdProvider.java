@@ -27,7 +27,7 @@
 */
 package org.miaixz.bus.auth.nimble.jd;
 
-import org.miaixz.bus.auth.magic.AuthToken;
+import org.miaixz.bus.auth.magic.Authorization;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.basic.normal.Consts;
@@ -110,17 +110,17 @@ public class JdProvider extends AbstractProvider {
      * Retrieves the access token from JD's authorization server.
      *
      * @param callback the callback object containing the authorization code
-     * @return the {@link AuthToken} containing access token details
+     * @return the {@link Authorization} containing access token details
      * @throws AuthorizedException if parsing the response fails or required token information is missing
      */
     @Override
-    public AuthToken getAccessToken(Callback callback) {
+    public Message token(Callback callback) {
         Map<String, String> form = new HashMap<>(7);
-        form.put("app_key", context.getAppKey());
-        form.put("app_secret", context.getAppSecret());
+        form.put("app_key", context.getClientId());
+        form.put("app_secret", context.getClientSecret());
         form.put("grant_type", "authorization_code");
         form.put("code", callback.getCode());
-        String response = Httpx.post(this.complex.accessToken(), form);
+        String response = Httpx.post(this.complex.token(), form);
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
             if (object == null) {
@@ -128,18 +128,21 @@ public class JdProvider extends AbstractProvider {
             }
             this.checkResponse(object);
 
-            String accessToken = (String) object.get("access_token");
-            if (accessToken == null) {
+            String token = (String) object.get("access_token");
+            if (token == null) {
                 throw new AuthorizedException("Missing access_token in response");
             }
             Object expiresInObj = object.get("expires_in");
             int expiresIn = expiresInObj instanceof Number ? ((Number) expiresInObj).intValue() : 0;
-            String refreshToken = (String) object.get("refresh_token");
+            String refresh = (String) object.get("refresh_token");
             String scope = (String) object.get("scope");
             String openId = (String) object.get("open_id");
 
-            return AuthToken.builder().accessToken(accessToken).expireIn(expiresIn).refreshToken(refreshToken)
-                    .scope(scope).openId(openId).build();
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+                    .data(
+                            Authorization.builder().token(token).expireIn(expiresIn).refresh(refresh).scope(scope)
+                                    .openId(openId).build())
+                    .build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse access token response: " + e.getMessage());
         }
@@ -172,17 +175,17 @@ public class JdProvider extends AbstractProvider {
     /**
      * Refreshes the access token (renews its validity).
      *
-     * @param authToken the token information returned after successful login
+     * @param authorization the token information returned after successful login
      * @return a {@link Message} containing the refreshed token information
      * @throws AuthorizedException if parsing the response fails or an error occurs during token refresh
      */
     @Override
-    public Message refresh(AuthToken authToken) {
+    public Message refresh(Authorization authorization) {
         Map<String, String> form = new HashMap<>(7);
-        form.put("app_key", context.getAppKey());
-        form.put("app_secret", context.getAppSecret());
+        form.put("app_key", context.getClientId());
+        form.put("app_secret", context.getClientSecret());
         form.put("grant_type", "refresh_token");
-        form.put("refresh_token", authToken.getRefreshToken());
+        form.put("refresh_token", authorization.getRefresh());
         String response = Httpx.post(this.complex.refresh(), form);
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
@@ -191,20 +194,20 @@ public class JdProvider extends AbstractProvider {
             }
             this.checkResponse(object);
 
-            String accessToken = (String) object.get("access_token");
-            if (accessToken == null) {
+            String token = (String) object.get("access_token");
+            if (token == null) {
                 throw new AuthorizedException("Missing access_token in refresh response");
             }
             Object expiresInObj = object.get("expires_in");
             int expiresIn = expiresInObj instanceof Number ? ((Number) expiresInObj).intValue() : 0;
-            String refreshToken = (String) object.get("refresh_token");
+            String refresh = (String) object.get("refresh_token");
             String scope = (String) object.get("scope");
             String openId = (String) object.get("open_id");
 
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
                     .data(
-                            AuthToken.builder().accessToken(accessToken).expireIn(expiresIn).refreshToken(refreshToken)
-                                    .scope(scope).openId(openId).build())
+                            Authorization.builder().token(token).expireIn(expiresIn).refresh(refresh).scope(scope)
+                                    .openId(openId).build())
                     .build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse refresh token response: " + e.getMessage());
@@ -228,19 +231,19 @@ public class JdProvider extends AbstractProvider {
     /**
      * Retrieves user information from JD's user info endpoint.
      *
-     * @param authToken the {@link AuthToken} obtained after successful authorization
+     * @param authorization the {@link Authorization} obtained after successful authorization
      * @return {@link Material} containing the user's information
      * @throws AuthorizedException if parsing the response fails or required user information is missing
      */
     @Override
-    public Material getUserInfo(AuthToken authToken) {
+    public Message userInfo(Authorization authorization) {
         Builder urlBuilder = Builder.fromUrl(this.complex.userinfo())
-                .queryParam("access_token", authToken.getAccessToken()).queryParam("app_key", context.getAppKey())
+                .queryParam("access_token", authorization.getToken()).queryParam("app_key", context.getClientId())
                 .queryParam("method", "jingdong.user.getUserInfoByOpenId")
-                .queryParam("360buy_param_json", "{\"openId\":\"" + authToken.getOpenId() + "\"}")
+                .queryParam("360buy_param_json", "{\"openId\":\"" + authorization.getOpenId() + "\"}")
                 .queryParam("timestamp", LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
                 .queryParam("v", "2.0");
-        urlBuilder.queryParam("sign", sign(context.getAppSecret(), urlBuilder.getReadOnlyParams()));
+        urlBuilder.queryParam("sign", sign(context.getClientSecret(), urlBuilder.getReadOnlyParams()));
         String response = Httpx.post(urlBuilder.build(true));
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
@@ -258,9 +261,12 @@ public class JdProvider extends AbstractProvider {
             String imageUrl = (String) data.get("imageUrl");
             String gender = (String) data.get("gendar");
 
-            return Material.builder().rawJson(JsonKit.toJsonString(data)).uuid(authToken.getOpenId()).username(nickName)
-                    .nickname(nickName).avatar(imageUrl).gender(Gender.of(gender)).token(authToken)
-                    .source(complex.toString()).build();
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+                    .data(
+                            Material.builder().rawJson(JsonKit.toJsonString(data)).uuid(authorization.getOpenId())
+                                    .username(nickName).nickname(nickName).avatar(imageUrl).gender(Gender.of(gender))
+                                    .token(authorization).source(complex.toString()).build())
+                    .build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
         }
@@ -274,11 +280,13 @@ public class JdProvider extends AbstractProvider {
      * @return the authorization URL
      */
     @Override
-    public String authorize(String state) {
-        return Builder.fromUrl(complex.authorize()).queryParam("app_key", context.getAppKey())
-                .queryParam("response_type", "code").queryParam("redirect_uri", context.getRedirectUri())
-                .queryParam("scope", this.getScopes(Symbol.SPACE, true, this.getDefaultScopes(JdScope.values())))
-                .queryParam("state", getRealState(state)).build();
+    public Message build(String state) {
+        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+                Builder.fromUrl(complex.authorize()).queryParam("app_key", context.getClientId())
+                        .queryParam("response_type", "code").queryParam("redirect_uri", context.getRedirectUri())
+                        .queryParam("scope", this.getScopes(Symbol.SPACE, true, this.getScopes(JdScope.values())))
+                        .queryParam("state", getRealState(state)).build())
+                .build();
     }
 
 }

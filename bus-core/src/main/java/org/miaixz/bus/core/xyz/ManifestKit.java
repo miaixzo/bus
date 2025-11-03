@@ -66,8 +66,7 @@ public class ManifestKit {
             throw new InternalException(e);
         }
 
-        if (connection instanceof JarURLConnection) {
-            final JarURLConnection conn = (JarURLConnection) connection;
+        if (connection instanceof JarURLConnection conn) {
             return getManifest(conn);
         }
         return null;

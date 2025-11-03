@@ -91,7 +91,8 @@ public class Platform {
     /**
      * Private constructor to prevent external instantiation.
      */
-    private Platform() {
+    public Platform() {
+
     }
 
     /**

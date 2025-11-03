@@ -27,17 +27,21 @@
 */
 package org.miaixz.bus.auth;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+import java.util.List;
+import java.util.Map;
+
 /**
- * * Context configuration class, supporting protocols such as OAuth2, SAML, and LDAP. * This class holds various
- * configuration parameters required for authentication processes. * * @author Kimi Liu * @since Java 17+
+ * Context configuration class, supporting protocols such as OAuth2, SAML, and LDAP. * This class holds various
+ * configuration parameters required for authentication processes.
+ * 
+ * @author Kimi Liu
+ * @since Java 17+
  */
 @Getter
 @Setter
@@ -47,14 +51,14 @@ import lombok.experimental.SuperBuilder;
 public class Context {
 
     /**
-     * Corresponds to the appKey of various platforms (OAuth2: Client ID).
+     * Corresponds to the key of various platforms (OAuth2: Client ID).
      */
-    private String appKey;
+    private String clientId;
 
     /**
-     * Corresponds to the appSecret of various platforms (OAuth2: Client Secret).
+     * Corresponds to the secret of various platforms (OAuth2: Client Secret).
      */
-    private String appSecret;
+    private String clientSecret;
 
     /**
      * *
@@ -163,5 +167,10 @@ public class Context {
      * Extension properties.
      */
     private String extension;
+
+    /**
+     * Dynamic endpoints for OAuth2 providers.
+     */
+    private Map<Endpoint, String> endpoint;
 
 }

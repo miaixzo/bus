@@ -83,11 +83,11 @@ public class HTTP {
      */
     public static final String OPTIONS = "OPTIONS";
     /**
-     * HTTP Method: BEFORE, custom method, possibly used in WebDAV or other extension protocols.
+     * HTTP Method: BEFORE, custom method, not part of standard HTTP protocol.
      */
     public static final String BEFORE = "BEFORE";
     /**
-     * HTTP Method: AFTER, custom method, possibly used in WebDAV or other extension protocols.
+     * HTTP Method: AFTER, custom method, not part of standard HTTP protocol.
      */
     public static final String AFTER = "AFTER";
     /**
@@ -131,7 +131,7 @@ public class HTTP {
      */
     public static final int HTTP_ACCEPTED = 202;
     /**
-     * HTTP Status Code 203: Non-Authoritative Information. Proxy returns non-authoritative information. RFC 7231,
+     * HTTP Status Code 203: Non-Authoritative Information. Transforming proxy has modified the response. RFC 7231,
      * Section 6.3.4
      */
     public static final int HTTP_NOT_AUTHORITATIVE = 203;
@@ -511,9 +511,13 @@ public class HTTP {
      */
     public static final String RANGE = "Range";
     /**
-     * HTTP Referer header field name. RFC 7231, Section 5.5.2
+     * HTTP Referer header field name. RFC 7231, Section 5.5.2 (Note: historical misspelling of "referrer")
      */
     public static final String REFERER = "Referer";
+    /**
+     * HTTP Refresh header field name (non-standard). Browser extension for automatic page refresh.
+     */
+    public static final String REFRESH = "Refresh";
     /**
      * HTTP Retry-After header field name. RFC 7231, Section 7.1.3
      */
@@ -578,7 +582,7 @@ public class HTTP {
      */
     public static final String TRAILERS = "Trailers";
     /**
-     * Content-MD5 header for message integrity check (obsolete). RFC 1864 (superseded)
+     * Content-MD5 header for message integrity check (obsolete). RFC 1864 (deprecated by RFC 7231, Section 6.3)
      */
     public static final String CONTENT_MD5 = "Content-MD5";
     /**

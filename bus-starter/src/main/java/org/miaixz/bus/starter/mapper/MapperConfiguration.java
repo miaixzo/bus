@@ -69,7 +69,6 @@ import jakarta.annotation.Resource;
  * @author Kimi Liu
  * @since Java 17+
  */
-@ConditionalOnMissingBean(MapperFactoryBean.class)
 @EnableConfigurationProperties(value = { MapperProperties.class })
 @ConditionalOnClass({ SqlSessionFactory.class, SqlSessionFactoryBean.class })
 @AutoConfigureBefore(name = "org.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration")

@@ -122,17 +122,21 @@ public class VortexHandler {
             // 1. Initialize and validate the request context
             final Context context = contextView.get(Context.class);
             if (context == null) {
-                Logger.info("==>    Handler: [N/A] [{}] [{}] [CONTEXT_ERROR] - Request context is null", method, path);
+                Logger.info(true, "Vortex", "[N/A] [{}] [{}] [CONTEXT_ERROR] - Request context is null", method, path);
                 throw new ValidateException(ErrorCode._116000);
             }
+            final String ip = context.getX_request_ipv4();
             ServerWebExchange exchange = request.exchange();
-            Logger.info("==>    Handler: [N/A] [{}] [{}] [REQUEST_START] - Request started", method, path);
+            Logger.info(true, "Vortex", "[{}] [{}] [{}] [REQUEST_START] - Request started", ip, method, path);
 
             // 2. Validate configured assets
             Assets assets = context.getAssets();
             if (assets == null) {
                 Logger.info(
-                        "==>    Handler: [N/A] [{}] [{}] [ASSETS_ERROR] - Assets is null in request context",
+                        true,
+                        "Vortex",
+                        "[{}] [{}] [{}] [ASSETS_ERROR] - Assets is null in request context",
+                        ip,
                         method,
                         path);
                 throw new ValidateException(ErrorCode._100800);
@@ -143,12 +147,16 @@ public class VortexHandler {
                 case 1 -> Protocol.HTTP.getName();
                 case 2 -> Protocol.MQ.getName();
                 case 3 -> Protocol.MCP.getName();
+                case 4 -> Protocol.WS.getName();
                 default -> Protocol.HTTP.getName();
             };
 
             Router router = routers.get(mode);
             Logger.info(
-                    "==>    Handler: [N/A] [{}] [{}] [ROUTER_SELECT] - Using route strategy: {}",
+                    true,
+                    "Vortex",
+                    "[{}] [{}] [{}] [ROUTER_SELECT] - Using route strategy: {}",
+                    ip,
                     method,
                     path,
                     router.getClass().getSimpleName());
@@ -157,7 +165,10 @@ public class VortexHandler {
             return executePreHandle(exchange, router).flatMap(preHandleResult -> {
                 if (!preHandleResult) {
                     Logger.info(
-                            "==>    Handler: [N/A] [{}] [{}] [PREHANDLE_ERROR] - Pre-handle validation failed",
+                            true,
+                            "Vortex",
+                            "[{}] [{}] [{}] [PREHANDLE_ERROR] - Pre-handle validation failed",
+                            ip,
                             method,
                             path);
                     throw new ValidateException(ErrorCode._100800);
@@ -168,19 +179,28 @@ public class VortexHandler {
                         .doOnSuccess(response -> {
                             long duration = System.currentTimeMillis() - context.getTimestamp();
                             Logger.info(
-                                    "==>    Handler: [N A] [{}] [{}] [REQUEST_SUCCESS] - Method: {}, Duration: {}ms",
+                                    false,
+                                    "Vortex",
+                                    "[{}] [{}] [{}] [REQUEST_SUCCESS] - Method: {}, Duration: {}ms",
+                                    ip,
                                     method,
                                     path,
                                     assets.getMethod(),
                                     duration);
                             Logger.info(
-                                    "==>    Handler: [N/A] [{}] [{}] [REQUEST_COMPLETE] - Request completed with status: {}",
+                                    false,
+                                    "Vortex",
+                                    "[{}] [{}] [{}] [REQUEST_COMPLETE] - Request completed with status: {}",
+                                    ip,
                                     method,
                                     path,
                                     response.statusCode().value());
                         }).onErrorResume(error -> {
                             Logger.info(
-                                    "==>    Handler: [N/A] [{}] [{}] [REQUEST_ERROR] - Error processing request: {}",
+                                    false,
+                                    "Vortex",
+                                    "[{}] [{}] [{}] [REQUEST_ERROR] - Error processing request: {}",
+                                    ip,
                                     method,
                                     path,
                                     error.getMessage());

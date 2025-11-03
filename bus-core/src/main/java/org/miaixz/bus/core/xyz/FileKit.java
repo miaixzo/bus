@@ -291,21 +291,14 @@ public class FileKit extends PathResolve {
         if (path == null) {
             return new ArrayList<>(0);
         }
+        path = getAbsolutePath(path);
         int index = path.lastIndexOf(FileType.JAR_PATH_EXT);
         if (index < 0) {
             // Normal directory
-            final List<String> paths = new ArrayList<>();
-            final File[] files = ls(path);
-            for (final File file : files) {
-                if (file.isFile()) {
-                    paths.add(file.getName());
-                }
-            }
-            return paths;
+            return Arrays.stream(ls(path)).filter(File::isFile).map(File::getName).toList();
         }
 
         // Path inside a JAR file
-        path = getAbsolutePath(path);
         index = index + FileType.JAR.length();
         JarFile jarFile = null;
         try {

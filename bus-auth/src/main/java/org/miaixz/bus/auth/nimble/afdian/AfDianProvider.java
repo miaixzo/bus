@@ -33,11 +33,13 @@ import java.util.Map;
 import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Registry;
-import org.miaixz.bus.auth.magic.AuthToken;
+import org.miaixz.bus.auth.magic.Authorization;
 import org.miaixz.bus.auth.magic.Callback;
+import org.miaixz.bus.auth.magic.ErrorCode;
 import org.miaixz.bus.auth.magic.Material;
 import org.miaixz.bus.auth.nimble.AbstractProvider;
 import org.miaixz.bus.cache.CacheX;
+import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.extra.json.JsonKit;
@@ -74,34 +76,39 @@ public class AfDianProvider extends AbstractProvider {
      * Retrieves the access token from AfDian's authorization server.
      *
      * @param callback the callback object containing the authorization code
-     * @return the {@link AuthToken} containing access token details
+     * @return the {@link Authorization} containing access token details
      */
     @Override
-    public AuthToken getAccessToken(Callback callback) {
+    public Message token(Callback callback) {
         Map<String, String> params = new HashMap<>();
         params.put("grant_type", "authorization_code");
-        params.put("client_id", this.context.getAppKey());
-        params.put("client_secret", this.context.getAppSecret());
+        params.put("client_id", this.context.getClientId());
+        params.put("client_secret", this.context.getClientSecret());
         params.put("code", callback.getCode());
         params.put("redirect_uri", this.context.getRedirectUri());
 
-        String response = Httpx.post(this.complex.accessToken(), params);
+        String response = Httpx.post(this.complex.token(), params);
 
         String userId = JsonKit.getValue(JsonKit.getValue(response, Consts.DATA), ("user_id"));
-        return AuthToken.builder().userId(userId).build();
+
+        return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+                .data(Authorization.builder().userId(userId).build()).build();
     }
 
     /**
      * Retrieves user information from AfDian's user info endpoint. Note: AfDian does not provide a direct user info
      * endpoint. User ID is extracted from the access token response.
      *
-     * @param authToken the {@link AuthToken} obtained after successful authorization
+     * @param authorization the {@link Authorization} obtained after successful authorization
      * @return {@link Material} containing the user's information
      */
     @Override
-    public Material getUserInfo(AuthToken authToken) {
-        return Material.builder().uuid(authToken.getUserId()).gender(Gender.UNKNOWN).token(authToken)
-                .source(complex.toString()).build();
+    public Message userInfo(Authorization authorization) {
+        return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+                .data(
+                        Material.builder().uuid(authorization.getUserId()).gender(Gender.UNKNOWN).token(authorization)
+                                .source(complex.toString()).build())
+                .build();
     }
 
     /**
@@ -112,10 +119,14 @@ public class AfDianProvider extends AbstractProvider {
      * @return the authorization URL
      */
     @Override
-    public String authorize(String state) {
-        return Builder.fromUrl(this.complex.authorize()).queryParam("response_type", "code")
-                .queryParam("scope", "basic").queryParam("client_id", context.getAppKey())
-                .queryParam("redirect_uri", context.getRedirectUri()).queryParam("state", getRealState(state)).build();
+    public Message build(String state) {
+        return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+                .data(
+                        Builder.fromUrl(this.complex.authorize()).queryParam("response_type", "code")
+                                .queryParam("scope", "basic").queryParam("client_id", context.getClientId())
+                                .queryParam("redirect_uri", context.getRedirectUri())
+                                .queryParam("state", getRealState(state)).build())
+                .build();
     }
 
 }

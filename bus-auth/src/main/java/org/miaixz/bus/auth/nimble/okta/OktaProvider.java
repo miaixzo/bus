@@ -33,7 +33,7 @@ import java.util.Map;
 import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Registry;
-import org.miaixz.bus.auth.magic.AuthToken;
+import org.miaixz.bus.auth.magic.Authorization;
 import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.ErrorCode;
 import org.miaixz.bus.auth.magic.Material;
@@ -81,51 +81,52 @@ public class OktaProvider extends AbstractProvider {
      * Retrieves the access token from Okta's authorization server.
      *
      * @param callback the callback object containing the authorization code
-     * @return the {@link AuthToken} containing access token details
+     * @return the {@link Authorization} containing access token details
      */
     @Override
-    public AuthToken getAccessToken(Callback callback) {
-        String tokenUrl = accessTokenUrl(callback.getCode());
-        return getAuthToken(tokenUrl);
+    public Message token(Callback callback) {
+        String tokenUrl = tokenUrl(callback.getCode());
+
+        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(getAuthToken(tokenUrl)).build();
     }
 
     /**
      * Retrieves the authentication token from the specified URL.
      *
      * @param tokenUrl the URL to fetch the access token from
-     * @return the {@link AuthToken} containing token details
+     * @return the {@link Authorization} containing token details
      * @throws AuthorizedException if parsing the response fails or required token information is missing
      */
-    private AuthToken getAuthToken(String tokenUrl) {
+    private Authorization getAuthToken(String tokenUrl) {
         Map<String, String> header = new HashMap<>();
         header.put("accept", MediaType.APPLICATION_JSON);
         header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
         header.put(
                 "Authorization",
-                "Basic " + Base64.encode(context.getAppKey().concat(Symbol.COLON).concat(context.getAppSecret())));
+                "Basic " + Base64.encode(context.getClientId().concat(Symbol.COLON).concat(context.getClientSecret())));
 
         String response = Httpx.post(tokenUrl, null, header);
         try {
-            Map<String, Object> accessTokenObject = JsonKit.toPojo(response, Map.class);
-            if (accessTokenObject == null) {
+            Map<String, Object> object = JsonKit.toPojo(response, Map.class);
+            if (object == null) {
                 throw new AuthorizedException("Failed to parse access token response: empty response");
             }
 
-            this.checkResponse(accessTokenObject);
+            this.checkResponse(object);
 
-            String accessToken = (String) accessTokenObject.get("access_token");
-            if (accessToken == null) {
+            String token = (String) object.get("access_token");
+            if (token == null) {
                 throw new AuthorizedException("Missing access_token in response");
             }
-            String tokenType = (String) accessTokenObject.get("token_type");
-            Object expiresInObj = accessTokenObject.get("expires_in");
+            String tokenType = (String) object.get("token_type");
+            Object expiresInObj = object.get("expires_in");
             int expiresIn = expiresInObj instanceof Number ? ((Number) expiresInObj).intValue() : 0;
-            String scope = (String) accessTokenObject.get("scope");
-            String refreshToken = (String) accessTokenObject.get("refresh_token");
-            String idToken = (String) accessTokenObject.get("id_token");
+            String scope = (String) object.get("scope");
+            String refresh = (String) object.get("refresh_token");
+            String idToken = (String) object.get("id_token");
 
-            return AuthToken.builder().accessToken(accessToken).tokenType(tokenType).expireIn(expiresIn).scope(scope)
-                    .refreshToken(refreshToken).idToken(idToken).build();
+            return Authorization.builder().token(token).token_type(tokenType).expireIn(expiresIn).scope(scope)
+                    .refresh(refresh).idToken(idToken).build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse access token response: " + e.getMessage());
         }
@@ -134,32 +135,31 @@ public class OktaProvider extends AbstractProvider {
     /**
      * Refreshes the access token (renews its validity).
      *
-     * @param authToken the token information returned after successful login
+     * @param authorization the token information returned after successful login
      * @return a {@link Message} containing the refreshed token information
      */
     @Override
-    public Message refresh(AuthToken authToken) {
-        if (null == authToken.getRefreshToken()) {
-            return Message.builder().errcode(ErrorCode.ILLEGAL_TOKEN.getKey())
-                    .errmsg(ErrorCode.ILLEGAL_TOKEN.getValue()).build();
+    public Message refresh(Authorization authorization) {
+        if (null == authorization.getRefresh()) {
+            return Message.builder().errcode(ErrorCode._100100.getKey()).errmsg(ErrorCode._100100.getValue()).build();
         }
-        String refreshUrl = refreshTokenUrl(authToken.getRefreshToken());
+        String refreshUrl = refreshUrl(authorization.getRefresh());
         return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(this.getAuthToken(refreshUrl)).build();
     }
 
     /**
      * Retrieves user information from Okta's user info endpoint.
      *
-     * @param authToken the {@link AuthToken} obtained after successful authorization
+     * @param authorization the {@link Authorization} obtained after successful authorization
      * @return {@link Material} containing the user's information
      * @throws AuthorizedException if parsing the response fails or required user information is missing
      */
     @Override
-    public Material getUserInfo(AuthToken authToken) {
+    public Message userInfo(Authorization authorization) {
         Map<String, String> header = new HashMap<>();
-        header.put("Authorization", "Bearer " + authToken.getAccessToken());
+        header.put("Authorization", "Bearer " + authorization.getToken());
 
-        String response = Httpx.post(userInfoUrl(authToken), null, header);
+        String response = Httpx.post(userInfoUrl(authorization), null, header);
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
             if (object == null) {
@@ -179,9 +179,12 @@ public class OktaProvider extends AbstractProvider {
             Map<String, Object> address = (Map<String, Object>) object.get("address");
             String streetAddress = address != null ? (String) address.get("street_address") : null;
 
-            return Material.builder().rawJson(JsonKit.toJsonString(object)).uuid(sub).username(name).nickname(nickname)
-                    .email(email).location(streetAddress).gender(Gender.of(sex)).token(authToken)
-                    .source(complex.toString()).build();
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+                    .data(
+                            Material.builder().rawJson(JsonKit.toJsonString(object)).uuid(sub).username(name)
+                                    .nickname(nickname).email(email).location(streetAddress).gender(Gender.of(sex))
+                                    .token(authorization).source(complex.toString()).build())
+                    .build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
         }
@@ -190,21 +193,21 @@ public class OktaProvider extends AbstractProvider {
     /**
      * Revokes the authorization for the given access token.
      *
-     * @param authToken the token information to revoke
+     * @param authorization the token information to revoke
      * @return a {@link Message} indicating the result of the revocation
      */
     @Override
-    public Message revoke(AuthToken authToken) {
+    public Message revoke(Authorization authorization) {
         Map<String, String> params = new HashMap<>(4);
-        params.put("token", authToken.getAccessToken());
+        params.put("token", authorization.getToken());
         params.put("token_type_hint", "access_token");
 
         Map<String, String> header = new HashMap<>();
         header.put(
                 "Authorization",
-                "Basic " + Base64.encode(context.getAppKey().concat(Symbol.COLON).concat(context.getAppSecret())));
+                "Basic " + Base64.encode(context.getClientId().concat(Symbol.COLON).concat(context.getClientSecret())));
 
-        Httpx.post(revokeUrl(authToken), params, header);
+        Httpx.post(revokeUrl(authorization), params, header);
         return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build();
     }
 
@@ -229,17 +232,19 @@ public class OktaProvider extends AbstractProvider {
      * @return the authorization URL
      */
     @Override
-    public String authorize(String state) {
-        return Builder
-                .fromUrl(
+    public Message build(String state) {
+        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+                Builder.fromUrl(
                         String.format(
                                 complex.authorize(),
                                 context.getPrefix(),
                                 ObjectKit.defaultIfNull(context.getUnionId(), "default")))
-                .queryParam("response_type", "code").queryParam("prompt", "consent")
-                .queryParam("client_id", context.getAppKey()).queryParam("redirect_uri", context.getRedirectUri())
-                .queryParam("scope", this.getScopes(Symbol.SPACE, true, this.getDefaultScopes(OktaScope.values())))
-                .queryParam("state", getRealState(state)).build();
+                        .queryParam("response_type", "code").queryParam("prompt", "consent")
+                        .queryParam("client_id", context.getClientId())
+                        .queryParam("redirect_uri", context.getRedirectUri())
+                        .queryParam("scope", this.getScopes(Symbol.SPACE, true, this.getScopes(OktaScope.values())))
+                        .queryParam("state", getRealState(state)).build())
+                .build();
     }
 
     /**
@@ -249,11 +254,11 @@ public class OktaProvider extends AbstractProvider {
      * @return the access token URL
      */
     @Override
-    public String accessTokenUrl(String code) {
+    public String tokenUrl(String code) {
         return Builder
                 .fromUrl(
                         String.format(
-                                this.complex.accessToken(),
+                                this.complex.token(),
                                 context.getPrefix(),
                                 ObjectKit.defaultIfNull(context.getUnionId(), "default")))
                 .queryParam("code", code).queryParam("grant_type", "authorization_code")
@@ -263,28 +268,28 @@ public class OktaProvider extends AbstractProvider {
     /**
      * Constructs the refresh token URL for Okta.
      *
-     * @param refreshToken the refresh token
+     * @param refresh the refresh token
      * @return the refresh token URL
      */
     @Override
-    protected String refreshTokenUrl(String refreshToken) {
+    protected String refreshUrl(String refresh) {
         return Builder
                 .fromUrl(
                         String.format(
                                 this.complex.refresh(),
                                 context.getPrefix(),
                                 ObjectKit.defaultIfNull(context.getUnionId(), "default")))
-                .queryParam("refresh_token", refreshToken).queryParam("grant_type", "refresh_token").build();
+                .queryParam("refresh_token", refresh).queryParam("grant_type", "refresh_token").build();
     }
 
     /**
      * Constructs the revoke authorization URL for Okta.
      *
-     * @param authToken the access token
+     * @param authorization the access token
      * @return the revoke authorization URL
      */
     @Override
-    protected String revokeUrl(AuthToken authToken) {
+    protected String revokeUrl(Authorization authorization) {
         return String.format(
                 this.complex.revoke(),
                 context.getPrefix(),
@@ -294,11 +299,11 @@ public class OktaProvider extends AbstractProvider {
     /**
      * Constructs the user information URL for Okta.
      *
-     * @param authToken the access token
+     * @param authorization the access token
      * @return the user information URL
      */
     @Override
-    public String userInfoUrl(AuthToken authToken) {
+    public String userInfoUrl(Authorization authorization) {
         return String.format(
                 this.complex.userinfo(),
                 context.getPrefix(),

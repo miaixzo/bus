@@ -65,9 +65,9 @@ public class CommonsFtp extends AbstractFtp {
      */
     private FTPClient client;
     /**
-     * The connection mode (Active or Passive).
+     * The connection lifecycle (ACTIVE or PASSIVE).
      */
-    private EnumValue.FtpMode mode;
+    private EnumValue.Lifecycle lifecycle;
     /**
      * Whether to return to the current working directory after an operation is completed.
      */
@@ -76,12 +76,12 @@ public class CommonsFtp extends AbstractFtp {
     /**
      * Constructor.
      *
-     * @param config The FTP configuration.
-     * @param mode   The connection mode (Active or Passive).
+     * @param config    The FTP configuration.
+     * @param lifecycle The connection lifecycle (ACTIVE or PASSIVE).
      */
-    public CommonsFtp(final FtpConfig config, final EnumValue.FtpMode mode) {
+    public CommonsFtp(final FtpConfig config, final EnumValue.Lifecycle lifecycle) {
         super(config);
-        this.mode = mode;
+        this.lifecycle = lifecycle;
         this.init();
     }
 
@@ -164,7 +164,7 @@ public class CommonsFtp extends AbstractFtp {
      * @param charset            The character encoding.
      * @param serverLanguageCode The server language code.
      * @param systemKey          The system key.
-     * @param mode               The connection mode.
+     * @param lifecycle          The connection lifecycle.
      * @return A new CommonsFtp instance.
      */
     public static CommonsFtp of(
@@ -172,8 +172,8 @@ public class CommonsFtp extends AbstractFtp {
             final java.nio.charset.Charset charset,
             final String serverLanguageCode,
             final String systemKey,
-            final EnumValue.FtpMode mode) {
-        return new CommonsFtp(new FtpConfig(connector, charset, serverLanguageCode, systemKey), mode);
+            final EnumValue.Lifecycle lifecycle) {
+        return new CommonsFtp(new FtpConfig(connector, charset, serverLanguageCode, systemKey), lifecycle);
     }
 
     /**
@@ -182,17 +182,17 @@ public class CommonsFtp extends AbstractFtp {
      * @return this
      */
     public CommonsFtp init() {
-        return this.init(this.ftpConfig, this.mode);
+        return this.init(this.ftpConfig, this.lifecycle);
     }
 
     /**
      * Initializes the connection.
      *
-     * @param config The FTP configuration.
-     * @param mode   The connection mode.
+     * @param config    The FTP configuration.
+     * @param lifecycle The connection lifecycle.
      * @return this
      */
-    public CommonsFtp init(final FtpConfig config, final EnumValue.FtpMode mode) {
+    public CommonsFtp init(final FtpConfig config, final EnumValue.Lifecycle lifecycle) {
         final FTPClient client = new FTPClient();
         client.setRemoteVerificationEnabled(false);
 
@@ -233,27 +233,27 @@ public class CommonsFtp extends AbstractFtp {
                     replyCode);
         }
         this.client = client;
-        if (mode != null) {
+        if (lifecycle != null) {
             // noinspection resource
-            setMode(mode);
+            setMode(lifecycle);
         }
         return this;
     }
 
     /**
-     * Sets the FTP connection mode (Active or Passive).
+     * Sets the FTP connection lifecycle (ACTIVE or PASSIVE).
      *
-     * @param mode The mode enumeration.
+     * @param lifecycle The lifecycle enumeration.
      * @return this
      */
-    public CommonsFtp setMode(final EnumValue.FtpMode mode) {
-        this.mode = mode;
-        switch (mode) {
-            case Active:
+    public CommonsFtp setMode(final EnumValue.Lifecycle lifecycle) {
+        this.lifecycle = lifecycle;
+        switch (lifecycle) {
+            case ACTIVE:
                 this.client.enterLocalActiveMode();
                 break;
 
-            case Passive:
+            case PASSIVE:
                 this.client.enterLocalPassiveMode();
                 break;
         }

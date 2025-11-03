@@ -28,52 +28,90 @@
 package org.miaixz.bus.vortex;
 
 import org.miaixz.bus.logger.Logger;
-
+import org.springframework.context.SmartLifecycle;
 import reactor.netty.DisposableServer;
 import reactor.netty.http.server.HttpServer;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 /**
- * Server class responsible for starting and managing an HTTP server based on Reactor Netty.
+ * Manages the lifecycle of the core Reactor Netty HTTP server for the Vortex application.
+ * <p>
+ * This class implements {@link SmartLifecycle} to integrate seamlessly with the Spring application context. It is
+ * responsible for starting the {@link HttpServer} when the application starts and gracefully shutting it down when the
+ * application stops.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class Vortex {
+public class Vortex implements SmartLifecycle {
 
     /**
-     * The Reactor Netty HTTP server instance, used for handling HTTP requests.
+     * The underlying, configured Reactor Netty HTTP server instance.
      */
     private final HttpServer httpServer;
 
     /**
-     * The disposable server instance, representing the bound server resources.
+     * Holds the disposable server resource once the server is bound to a port.
      */
     private DisposableServer disposableServer;
 
     /**
-     * Constructs a {@code Vortex} instance with the given HTTP server.
+     * An atomic flag to track the running state of the server.
+     */
+    private final AtomicBoolean running = new AtomicBoolean(false);
+
+    /**
+     * Constructs a new {@code Vortex} server manager.
      *
-     * @param httpServer The Reactor Netty HTTP server instance.
+     * @param httpServer The pre-configured {@link HttpServer} instance to be managed.
      */
     public Vortex(HttpServer httpServer) {
         this.httpServer = httpServer;
     }
 
     /**
-     * Initializes and starts the HTTP server. Binds the {@code httpServer} to the specified port and logs a success
-     * message upon startup.
+     * Starts the HTTP server. This method is called by the Spring container upon application startup. It binds the
+     * server to its configured port and logs the outcome.
      */
-    private void init() {
-        disposableServer = httpServer.bindNow();
-        Logger.info("reactor server start on port:{} success", disposableServer.port());
+    @Override
+    public void start() {
+        if (running.compareAndSet(false, true)) {
+            try {
+                disposableServer = httpServer.bindNow();
+                Logger.info("Vortex server started successfully on port: {}", disposableServer.port());
+            } catch (Exception e) {
+                running.set(false);
+                Logger.error("Failed to start Vortex server", e);
+                throw new RuntimeException("Failed to bind Vortex server", e);
+            }
+        }
     }
 
     /**
-     * Stops and disposes of the HTTP server. Releases server resources and logs a success message upon shutdown.
+     * Stops the HTTP server. This method is called by the Spring container during a graceful shutdown. It disposes of
+     * the server resources and logs the outcome.
      */
-    private void destroy() {
-        disposableServer.disposeNow();
-        Logger.info("reactor server stop on port:{} success", disposableServer.port());
+    @Override
+    public void stop() {
+        if (running.compareAndSet(true, false) && disposableServer != null) {
+            try {
+                disposableServer.disposeNow();
+                Logger.info("Vortex server stopped successfully on port: {}", disposableServer.port());
+            } catch (Exception e) {
+                Logger.error("Error while stopping Vortex server", e);
+            }
+        }
+    }
+
+    /**
+     * Checks if the server is currently running.
+     *
+     * @return {@code true} if the server is running, {@code false} otherwise.
+     */
+    @Override
+    public boolean isRunning() {
+        return running.get();
     }
 
 }

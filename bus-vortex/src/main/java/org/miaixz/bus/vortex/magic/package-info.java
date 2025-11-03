@@ -26,8 +26,11 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Provides core data structures and magical constants for the Vortex module. This package contains fundamental classes
- * such as error codes, delegation objects, and rate limiters, which are essential for the module's operation.
+ * Provides core domain models, data transfer objects (DTOs), and special marker classes for the Vortex gateway.
+ * <p>
+ * The term "magic" refers to the fact that these classes often represent abstract concepts or data structures that seem
+ * to "magically" appear and flow through the system. This package contains the essential data-carrying objects that are
+ * passed between strategies, providers, and handlers.
  *
  * @author Kimi Liu
  * @since Java 17+

@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.cron;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 import org.miaixz.bus.core.center.date.culture.en.Units;
 import org.miaixz.bus.core.xyz.ThreadKit;
 import org.miaixz.bus.logger.Logger;
-
-import java.io.Serial;
-import java.io.Serializable;
 
 /**
  * The timer thread for the cron scheduler. This thread checks the task list every minute (or second, depending on
@@ -89,37 +89,44 @@ public class CronTimer extends Thread implements Serializable {
 
     @Override
     public void run() {
-        final long timerUnit = this.scheduler.config.matchSecond ? TIMER_UNIT_SECOND : TIMER_UNIT_MINUTE;
+        final long timerUnit = this.scheduler.config.isMatchSecond() ? TIMER_UNIT_SECOND : TIMER_UNIT_MINUTE;
+        final long doubleTimeUnit = 2 * timerUnit;
 
         long thisTime = System.currentTimeMillis();
-        long nextTime;
-        long sleep;
         while (!isStop) {
-            // The next execution time is calculated based on the start time of the previous execution point.
-            // Dividing by the timer unit clears the lower parts (e.g., seconds and milliseconds if the unit is
-            // minutes).
-            nextTime = ((thisTime / timerUnit) + 1) * timerUnit;
-            sleep = nextTime - System.currentTimeMillis();
-            if (isValidSleepMillis(sleep, timerUnit)) {
-                if (!ThreadKit.safeSleep(sleep)) {
-                    // If interrupted while sleeping, exit the timer loop.
-                    break;
-                }
+            spawnLauncher(thisTime);
 
-                // Record the execution time as the start of the tick, not the end.
-                spawnLauncher(nextTime);
-
-                // Use additive progression to ensure an interval of exactly one minute or one second,
-                // avoiding issues with `sleep` waking up late.
-                // No validation is needed here, as each loop sleeps for the difference between the next tick and the
-                // current time.
-                // If the previous wake-up was late, the current sleep time will be reduced, keeping the error within
-                // one unit and continuously correcting.
-                thisTime = nextTime;
-            } else {
-                // Recalculate time if it's not a normal interval.
+            // The next time calculation is based on the previous execution point's start time
+            // Dividing by the timer unit here is to clear the parts below the unit,
+            // for example, if the unit is minute, seconds and milliseconds are cleared
+            long nextTime = ((thisTime / timerUnit) + 1) * timerUnit;
+            final long sleep = nextTime - System.currentTimeMillis();
+            if (sleep < 0) {
+                // Possible slow loop execution causing time points to lag behind system time,
+                // catch up with system time and execute the intermediate time points
                 thisTime = System.currentTimeMillis();
+                while (nextTime <= thisTime) {
+                    // Catch up with system time and run execution points
+                    spawnLauncher(nextTime);
+                    nextTime = ((thisTime / timerUnit) + 1) * timerUnit;
+                }
+                continue;
+            } else if (sleep > doubleTimeUnit) {
+                // Time rollback, possibly the user turned back time or the system automatically corrected time,
+                // recalculate
+                thisTime = System.currentTimeMillis();
+                continue;
+            } else if (!ThreadKit.safeSleep(sleep)) {
+                // Wait until the next time point, exit Timer directly if interrupted by user
+                break;
             }
+
+            // Use additive method to ensure exactly 1 minute or 1 second, avoiding late wake-up issues
+            // No validation needed here, as each loop calculates the time difference between sleep and the last trigger
+            // point.
+            // When the previous wake-up is late, this time will reduce the sleep time, ensuring the error is within one
+            // unit and continuously correcting.
+            thisTime = nextTime;
         }
         Logger.debug("Cron timer stopped.");
     }
@@ -138,7 +145,7 @@ public class CronTimer extends Thread implements Serializable {
      * @param millis The current time in milliseconds.
      */
     private void spawnLauncher(final long millis) {
-        this.scheduler.supervisor.spawnLauncher(millis);
+        this.scheduler.manager.spawnLauncher(millis);
     }
 
 }

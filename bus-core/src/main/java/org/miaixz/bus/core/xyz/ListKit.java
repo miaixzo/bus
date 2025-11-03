@@ -105,8 +105,7 @@ public class ListKit {
         if (null == iterable) {
             return of(isLinked);
         }
-        if (iterable instanceof Collection) {
-            final Collection<T> collection = (Collection<T>) iterable;
+        if (iterable instanceof final Collection<T> collection) {
             return isLinked ? new LinkedList<>(collection) : new ArrayList<>(collection);
         }
         return of(isLinked, iterable.iterator());

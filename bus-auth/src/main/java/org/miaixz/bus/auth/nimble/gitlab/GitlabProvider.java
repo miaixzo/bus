@@ -27,8 +27,10 @@
 */
 package org.miaixz.bus.auth.nimble.gitlab;
 
-import org.miaixz.bus.auth.magic.AuthToken;
+import org.miaixz.bus.auth.magic.Authorization;
+import org.miaixz.bus.auth.magic.ErrorCode;
 import org.miaixz.bus.cache.CacheX;
+import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
@@ -73,12 +75,12 @@ public class GitlabProvider extends AbstractProvider {
      * Retrieves the access token from GitLab's authorization server.
      *
      * @param callback the callback object containing the authorization code
-     * @return the {@link AuthToken} containing access token details
+     * @return the {@link Authorization} containing access token details
      * @throws AuthorizedException if parsing the response fails or required token information is missing
      */
     @Override
-    public AuthToken getAccessToken(Callback callback) {
-        String response = doPostAuthorizationCode(callback.getCode());
+    public Message token(Callback callback) {
+        String response = doPostToken(callback.getCode());
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
             if (object == null) {
@@ -86,17 +88,20 @@ public class GitlabProvider extends AbstractProvider {
             }
             this.checkResponse(object);
 
-            String accessToken = (String) object.get("access_token");
-            if (accessToken == null) {
+            String token = (String) object.get("access_token");
+            if (token == null) {
                 throw new AuthorizedException("Missing access_token in response");
             }
-            String refreshToken = (String) object.get("refresh_token");
+            String refresh = (String) object.get("refresh_token");
             String idToken = (String) object.get("id_token");
             String tokenType = (String) object.get("token_type");
             String scope = (String) object.get("scope");
 
-            return AuthToken.builder().accessToken(accessToken).refreshToken(refreshToken).idToken(idToken)
-                    .tokenType(tokenType).scope(scope).build();
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+                    .data(
+                            Authorization.builder().token(token).refresh(refresh).idToken(idToken).token_type(tokenType)
+                                    .scope(scope).build())
+                    .build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse access token response: " + e.getMessage());
         }
@@ -105,13 +110,13 @@ public class GitlabProvider extends AbstractProvider {
     /**
      * Retrieves user information from GitLab's user info endpoint.
      *
-     * @param authToken the {@link AuthToken} obtained after successful authorization
+     * @param authorization the {@link Authorization} obtained after successful authorization
      * @return {@link Material} containing the user's information
      * @throws AuthorizedException if parsing the response fails or required user information is missing
      */
     @Override
-    public Material getUserInfo(AuthToken authToken) {
-        String response = doGetUserInfo(authToken);
+    public Message userInfo(Authorization authorization) {
+        String response = doGetUserInfo(authorization);
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
             if (object == null) {
@@ -132,9 +137,11 @@ public class GitlabProvider extends AbstractProvider {
             String email = (String) object.get("email");
             String bio = (String) object.get("bio");
 
-            return Material.builder().rawJson(JsonKit.toJsonString(object)).uuid(id).username(username).nickname(name)
-                    .avatar(avatarUrl).blog(webUrl).company(organization).location(location).email(email).remark(bio)
-                    .gender(Gender.UNKNOWN).token(authToken).source(complex.toString()).build();
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+                    Material.builder().rawJson(JsonKit.toJsonString(object)).uuid(id).username(username).nickname(name)
+                            .avatar(avatarUrl).blog(webUrl).company(organization).location(location).email(email)
+                            .remark(bio).gender(Gender.UNKNOWN).token(authorization).source(complex.toString()).build())
+                    .build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
         }
@@ -167,9 +174,11 @@ public class GitlabProvider extends AbstractProvider {
      * @return the authorization URL
      */
     @Override
-    public String authorize(String state) {
-        return Builder.fromUrl(super.authorize(state))
-                .queryParam("scope", this.getScopes(Symbol.PLUS, false, this.getDefaultScopes(GitlabScope.values())))
+    public Message build(String state) {
+        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+                Builder.fromUrl((String) super.build(state).getData())
+                        .queryParam("scope", this.getScopes(Symbol.PLUS, false, this.getScopes(GitlabScope.values())))
+                        .build())
                 .build();
     }
 

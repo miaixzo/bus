@@ -27,7 +27,9 @@
 */
 package org.miaixz.bus.auth.nimble.gitee;
 
+import org.miaixz.bus.auth.magic.ErrorCode;
 import org.miaixz.bus.cache.CacheX;
+import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
@@ -35,7 +37,7 @@ import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Registry;
-import org.miaixz.bus.auth.magic.AuthToken;
+import org.miaixz.bus.auth.magic.Authorization;
 import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.Material;
 import org.miaixz.bus.auth.nimble.AbstractProvider;
@@ -73,31 +75,34 @@ public class GiteeProvider extends AbstractProvider {
      * Retrieves the access token from Gitee's authorization server.
      *
      * @param callback the callback object containing the authorization code
-     * @return the {@link AuthToken} containing access token details
+     * @return the {@link Authorization} containing access token details
      * @throws AuthorizedException if parsing the response fails or required token information is missing
      */
     @Override
-    public AuthToken getAccessToken(Callback callback) {
-        String response = doPostAuthorizationCode(callback.getCode());
+    public Message token(Callback callback) {
+        String response = doGetToken(callback.getCode());
         try {
-            Map<String, Object> accessTokenObject = JsonKit.toPojo(response, Map.class);
-            if (accessTokenObject == null) {
+            Map<String, Object> object = JsonKit.toPojo(response, Map.class);
+            if (object == null) {
                 throw new AuthorizedException("Failed to parse access token response: empty response");
             }
-            this.checkResponse(accessTokenObject);
+            this.checkResponse(object);
 
-            String accessToken = (String) accessTokenObject.get("access_token");
-            if (accessToken == null) {
+            String token = (String) object.get("access_token");
+            if (token == null) {
                 throw new AuthorizedException("Missing access_token in response");
             }
-            String refreshToken = (String) accessTokenObject.get("refresh_token");
-            String scope = (String) accessTokenObject.get("scope");
-            String tokenType = (String) accessTokenObject.get("token_type");
-            Object expiresInObj = accessTokenObject.get("expires_in");
+            String refresh = (String) object.get("refresh_token");
+            String scope = (String) object.get("scope");
+            String tokenType = (String) object.get("token_type");
+            Object expiresInObj = object.get("expires_in");
             int expiresIn = expiresInObj instanceof Number ? ((Number) expiresInObj).intValue() : 0;
 
-            return AuthToken.builder().accessToken(accessToken).refreshToken(refreshToken).scope(scope)
-                    .tokenType(tokenType).expireIn(expiresIn).build();
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+                    .data(
+                            Authorization.builder().token(token).refresh(refresh).scope(scope).token_type(tokenType)
+                                    .expireIn(expiresIn).build())
+                    .build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse access token response: " + e.getMessage());
         }
@@ -106,13 +111,13 @@ public class GiteeProvider extends AbstractProvider {
     /**
      * Retrieves user information from Gitee's user info endpoint.
      *
-     * @param authToken the {@link AuthToken} obtained after successful authorization
+     * @param authorization the {@link Authorization} obtained after successful authorization
      * @return {@link Material} containing the user's information
      * @throws AuthorizedException if parsing the response fails or required user information is missing
      */
     @Override
-    public Material getUserInfo(AuthToken authToken) {
-        String userInfo = doGetUserInfo(authToken);
+    public Message userInfo(Authorization authorization) {
+        String userInfo = doGetUserInfo(authorization);
         try {
             Map<String, Object> object = JsonKit.toPojo(userInfo, Map.class);
             if (object == null) {
@@ -133,9 +138,11 @@ public class GiteeProvider extends AbstractProvider {
             String email = (String) object.get("email");
             String bio = (String) object.get("bio");
 
-            return Material.builder().rawJson(JsonKit.toJsonString(object)).uuid(id).username(login).avatar(avatarUrl)
-                    .blog(blog).nickname(name).company(company).location(address).email(email).remark(bio)
-                    .gender(Gender.UNKNOWN).token(authToken).source(complex.toString()).build();
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+                    Material.builder().rawJson(JsonKit.toJsonString(object)).uuid(id).username(login).avatar(avatarUrl)
+                            .blog(blog).nickname(name).company(company).location(address).email(email).remark(bio)
+                            .gender(Gender.UNKNOWN).token(authorization).source(complex.toString()).build())
+                    .build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
         }
@@ -162,9 +169,11 @@ public class GiteeProvider extends AbstractProvider {
      * @return the authorization URL
      */
     @Override
-    public String authorize(String state) {
-        return Builder.fromUrl(super.authorize(state))
-                .queryParam("scope", this.getScopes(Symbol.SPACE, true, this.getDefaultScopes(GiteeScope.values())))
+    public Message build(String state) {
+        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+                Builder.fromUrl((String) super.build(state).getData())
+                        .queryParam("scope", this.getScopes(Symbol.SPACE, true, this.getScopes(GiteeScope.values())))
+                        .build())
                 .build();
     }
 

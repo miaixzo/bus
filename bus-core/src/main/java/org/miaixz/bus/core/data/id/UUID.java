@@ -399,7 +399,7 @@ public class UUID implements java.io.Serializable, Comparable<UUID> {
      * @return A string representation of this {@code UUID}.
      */
     public String toString(final boolean isSimple) {
-        final long mostSigBits = this.getLeastSignificantBits();
+        final long mostSigBits = this.getMostSignificantBits();
         final long leastSigBits = this.getLeastSignificantBits();
 
         final StringBuilder builder = StringKit.builder(isSimple ? 32 : 36);

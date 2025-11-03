@@ -27,14 +27,13 @@
 */
 package org.miaixz.bus.auth.nimble.dingtalk;
 
-import org.miaixz.bus.auth.magic.AuthToken;
+import org.miaixz.bus.auth.magic.Authorization;
+import org.miaixz.bus.auth.magic.ErrorCode;
 import org.miaixz.bus.cache.CacheX;
+import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.core.codec.binary.Base64;
-import org.miaixz.bus.core.lang.Algorithm;
-import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.lang.Gender;
-import org.miaixz.bus.core.lang.MediaType;
+import org.miaixz.bus.core.lang.*;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.net.url.UrlEncoder;
 import org.miaixz.bus.extra.json.JsonKit;
@@ -99,26 +98,28 @@ public abstract class AbstractDingtalkProvider extends AbstractProvider {
      * derived from the authorization code.
      *
      * @param callback the callback object containing the authorization code
-     * @return the {@link AuthToken} containing access token details
+     * @return the {@link Authorization} containing access token details
      */
     @Override
-    public AuthToken getAccessToken(Callback callback) {
-        return AuthToken.builder().accessCode(callback.getCode()).build();
+    public Message token(Callback callback) {
+        return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+                .data(Authorization.builder().token(callback.getCode()).build()).build();
     }
 
     /**
      * Retrieves user information from DingTalk's user info endpoint.
      *
-     * @param authToken the {@link AuthToken} obtained after successful authorization
+     * @param authorization the {@link Authorization} obtained after successful authorization
      * @return {@link Material} containing the user's information
      * @throws AuthorizedException if parsing the response fails or required user information is missing
      */
     @Override
-    public Material getUserInfo(AuthToken authToken) {
-        String code = authToken.getAccessCode();
+    public Message userInfo(Authorization authorization) {
+        String code = authorization.getToken();
         Map<String, Object> param = new HashMap<>();
         param.put("tmp_auth_code", code);
-        String response = Httpx.post(userInfoUrl(authToken), JsonKit.toJsonString(param), MediaType.APPLICATION_JSON);
+        String response = Httpx
+                .post(userInfoUrl(authorization), JsonKit.toJsonString(param), MediaType.APPLICATION_JSON);
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
             if (object == null) {
@@ -144,10 +145,12 @@ public abstract class AbstractDingtalkProvider extends AbstractProvider {
             }
             String nick = (String) userInfo.get("nick");
 
-            AuthToken token = AuthToken.builder().openId(openId).unionId(unionId).build();
+            Authorization token = Authorization.builder().openId(openId).unionId(unionId).build();
 
-            return Material.builder().rawJson(JsonKit.toJsonString(userInfo)).uuid(unionId).nickname(nick)
-                    .username(nick).gender(Gender.UNKNOWN).source(complex.toString()).token(token).build();
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+                    Material.builder().rawJson(JsonKit.toJsonString(userInfo)).uuid(unionId).nickname(nick)
+                            .username(nick).gender(Gender.UNKNOWN).source(complex.toString()).token(token).build())
+                    .build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
         }
@@ -161,26 +164,30 @@ public abstract class AbstractDingtalkProvider extends AbstractProvider {
      * @return the authorization URL
      */
     @Override
-    public String authorize(String state) {
-        return Builder.fromUrl(this.complex.authorize()).queryParam("response_type", "code")
-                .queryParam("appid", context.getAppKey()).queryParam("scope", "snsapi_login")
-                .queryParam("redirect_uri", context.getRedirectUri()).queryParam("state", getRealState(state)).build();
+    public Message build(String state) {
+        return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+                .data(
+                        Builder.fromUrl(this.complex.authorize()).queryParam("response_type", "code")
+                                .queryParam("appid", context.getClientId()).queryParam("scope", "snsapi_login")
+                                .queryParam("redirect_uri", context.getRedirectUri())
+                                .queryParam("state", getRealState(state)).build())
+                .build();
     }
 
     /**
      * Returns the URL to obtain user information.
      *
-     * @param authToken the user's authorization token
+     * @param authorization the user's authorization token
      * @return the URL to obtain user information
      */
     @Override
-    protected String userInfoUrl(AuthToken authToken) {
+    protected String userInfoUrl(Authorization authorization) {
         // Calculate signature value based on timestamp and appSecret
         String timestamp = System.currentTimeMillis() + "";
-        String urlEncodeSignature = sign(context.getAppSecret(), timestamp);
+        String urlEncodeSignature = sign(context.getClientSecret(), timestamp);
 
         return Builder.fromUrl(this.complex.userinfo()).queryParam("signature", urlEncodeSignature)
-                .queryParam("timestamp", timestamp).queryParam("accessKey", context.getAppKey()).build();
+                .queryParam("timestamp", timestamp).queryParam("accessKey", context.getClientId()).build();
     }
 
 }

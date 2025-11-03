@@ -41,7 +41,7 @@ import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Registry;
-import org.miaixz.bus.auth.magic.AuthToken;
+import org.miaixz.bus.auth.magic.Authorization;
 import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.ErrorCode;
 import org.miaixz.bus.auth.magic.Material;
@@ -82,56 +82,65 @@ public class SlackProvider extends AbstractProvider {
      * Retrieves the access token from Slack's authorization server.
      *
      * @param callback the callback object containing the authorization code
-     * @return the {@link AuthToken} containing access token details
+     * @return the {@link Authorization} containing access token details
      * @throws AuthorizedException if parsing the response fails or required token information is missing
      */
     @Override
-    public AuthToken getAccessToken(Callback callback) {
+    public Message token(Callback callback) {
         Map<String, String> header = new HashMap<>();
         header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
-        String response = Httpx.get(accessTokenUrl(callback.getCode()), null, header);
-        Map<String, Object> accessTokenObject = JsonKit.toPojo(response, Map.class);
-        this.checkResponse(accessTokenObject);
-        return AuthToken.builder().accessToken((String) accessTokenObject.get("access_token"))
-                .scope((String) accessTokenObject.get("scope")).tokenType((String) accessTokenObject.get("token_type"))
-                .uid(((Map<String, Object>) accessTokenObject.get("authed_user")).get("id").toString()).build();
+        String response = Httpx.get(tokenUrl(callback.getCode()), null, header);
+        Map<String, Object> object = JsonKit.toPojo(response, Map.class);
+
+        this.checkResponse(object);
+
+        return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+                .data(
+                        Authorization.builder().token((String) object.get("access_token"))
+                                .scope((String) object.get("scope")).token_type((String) object.get("token_type"))
+                                .uid(((Map<String, Object>) object.get("authed_user")).get("id").toString()).build())
+                .build();
     }
 
     /**
      * Retrieves user information from Slack's user info endpoint.
      *
-     * @param authToken the {@link AuthToken} obtained after successful authorization
+     * @param authorization the {@link Authorization} obtained after successful authorization
      * @return {@link Material} containing the user's information
      * @throws AuthorizedException if parsing the response fails or required user information is missing
      */
     @Override
-    public Material getUserInfo(AuthToken authToken) {
+    public Message userInfo(Authorization authorization) {
         Map<String, String> header = new HashMap<>();
         header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
-        header.put("Authorization", "Bearer ".concat(authToken.getAccessToken()));
-        String userInfo = Httpx.get(userInfoUrl(authToken), null, header);
+        header.put("Authorization", "Bearer ".concat(authorization.getToken()));
+        String userInfo = Httpx.get(userInfoUrl(authorization), null, header);
         Map<String, Object> object = JsonKit.toPojo(userInfo, Map.class);
         this.checkResponse(object);
         Map<String, Object> user = (Map<String, Object>) object.get("user");
         Map<String, Object> profile = (Map<String, Object>) user.get("profile");
-        return Material.builder().rawJson(JsonKit.toJsonString(user)).uuid((String) user.get("id"))
-                .username((String) user.get("name")).nickname((String) user.get("real_name"))
-                .avatar((String) profile.get("image_original")).email((String) profile.get("email"))
-                .gender(Gender.UNKNOWN).token(authToken).source(complex.toString()).build();
+
+        return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+                .data(
+                        Material.builder().rawJson(JsonKit.toJsonString(user)).uuid((String) user.get("id"))
+                                .username((String) user.get("name")).nickname((String) user.get("real_name"))
+                                .avatar((String) profile.get("image_original")).email((String) profile.get("email"))
+                                .gender(Gender.UNKNOWN).token(authorization).source(complex.toString()).build())
+                .build();
     }
 
     /**
      * Revokes the authorization for the given access token.
      *
-     * @param authToken the token information to revoke
+     * @param authorization the token information to revoke
      * @return a {@link Message} indicating the result of the revocation
      * @throws AuthorizedException if parsing the response fails or an error occurs during revocation
      */
     @Override
-    public Message revoke(AuthToken authToken) {
+    public Message revoke(Authorization authorization) {
         Map<String, String> header = new HashMap<>();
         header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
-        header.put("Authorization", "Bearer ".concat(authToken.getAccessToken()));
+        header.put("Authorization", "Bearer ".concat(authorization.getToken()));
         String userInfo = Httpx.get(this.complex.revoke(), null, header);
         Map<String, Object> object = JsonKit.toPojo(userInfo, Map.class);
         this.checkResponse(object);
@@ -165,12 +174,12 @@ public class SlackProvider extends AbstractProvider {
     /**
      * Returns the URL to obtain user information.
      *
-     * @param authToken the user's authorization token
+     * @param authorization the user's authorization token
      * @return the URL to obtain user information
      */
     @Override
-    public String userInfoUrl(AuthToken authToken) {
-        return Builder.fromUrl(this.complex.userinfo()).queryParam("user", authToken.getUid()).build();
+    public String userInfoUrl(Authorization authorization) {
+        return Builder.fromUrl(this.complex.userinfo()).queryParam("user", authorization.getUid()).build();
     }
 
     /**
@@ -181,10 +190,12 @@ public class SlackProvider extends AbstractProvider {
      * @return the authorization URL
      */
     @Override
-    public String authorize(String state) {
-        return Builder.fromUrl(complex.authorize()).queryParam("client_id", context.getAppKey())
-                .queryParam("state", getRealState(state)).queryParam("redirect_uri", context.getRedirectUri())
-                .queryParam("scope", this.getScopes(Symbol.COMMA, true, this.getDefaultScopes(SlackScope.values())))
+    public Message build(String state) {
+        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+                Builder.fromUrl(complex.authorize()).queryParam("client_id", context.getClientId())
+                        .queryParam("state", getRealState(state)).queryParam("redirect_uri", context.getRedirectUri())
+                        .queryParam("scope", this.getScopes(Symbol.COMMA, true, this.getScopes(SlackScope.values())))
+                        .build())
                 .build();
     }
 
@@ -195,9 +206,9 @@ public class SlackProvider extends AbstractProvider {
      * @return the URL to obtain the access token
      */
     @Override
-    protected String accessTokenUrl(String code) {
-        return Builder.fromUrl(this.complex.accessToken()).queryParam("code", code)
-                .queryParam("client_id", context.getAppKey()).queryParam("client_secret", context.getAppSecret())
+    protected String tokenUrl(String code) {
+        return Builder.fromUrl(this.complex.token()).queryParam("code", code)
+                .queryParam("client_id", context.getClientId()).queryParam("client_secret", context.getClientSecret())
                 .queryParam("redirect_uri", context.getRedirectUri()).build();
     }
 

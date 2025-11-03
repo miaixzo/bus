@@ -40,7 +40,7 @@ import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Registry;
-import org.miaixz.bus.auth.magic.AuthToken;
+import org.miaixz.bus.auth.magic.Authorization;
 import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.ErrorCode;
 import org.miaixz.bus.auth.magic.Material;
@@ -80,31 +80,33 @@ public class WeiboProvider extends AbstractProvider {
      * Retrieves the access token from Weibo's authorization server.
      *
      * @param callback the callback object containing the authorization code
-     * @return the {@link AuthToken} containing access token details
+     * @return the {@link Authorization} containing access token details
      * @throws AuthorizedException if parsing the response fails or required token information is missing
      */
     @Override
-    public AuthToken getAccessToken(Callback callback) {
-        String response = doPostAuthorizationCode(callback.getCode());
+    public Message token(Callback callback) {
+        String response = doPostToken(callback.getCode());
         try {
-            Map<String, Object> accessTokenObject = JsonKit.toPojo(response, Map.class);
-            if (accessTokenObject == null) {
+            Map<String, Object> object = JsonKit.toPojo(response, Map.class);
+            if (object == null) {
                 throw new AuthorizedException("Failed to parse access token response: empty response");
             }
-            if (accessTokenObject.containsKey("error")) {
-                String errorDescription = (String) accessTokenObject.get("error_description");
+            if (object.containsKey("error")) {
+                String errorDescription = (String) object.get("error_description");
                 throw new AuthorizedException(errorDescription != null ? errorDescription : "Unknown error");
             }
 
-            String accessToken = (String) accessTokenObject.get("access_token");
-            if (accessToken == null) {
+            String token = (String) object.get("access_token");
+            if (token == null) {
                 throw new AuthorizedException("Missing access_token in response");
             }
-            String uid = (String) accessTokenObject.get("uid");
-            Object expiresInObj = accessTokenObject.get("expires_in");
+            String uid = (String) object.get("uid");
+            Object expiresInObj = object.get("expires_in");
             int expiresIn = expiresInObj instanceof Number ? ((Number) expiresInObj).intValue() : 0;
 
-            return AuthToken.builder().accessToken(accessToken).uid(uid).openId(uid).expireIn(expiresIn).build();
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+                    .data(Authorization.builder().token(token).uid(uid).openId(uid).expireIn(expiresIn).build())
+                    .build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse access token response: " + e.getMessage());
         }
@@ -113,20 +115,20 @@ public class WeiboProvider extends AbstractProvider {
     /**
      * Retrieves user information from Weibo's user info endpoint.
      *
-     * @param authToken the {@link AuthToken} obtained after successful authorization
+     * @param authorization the {@link Authorization} obtained after successful authorization
      * @return {@link Material} containing the user's information
      * @throws AuthorizedException if parsing the response fails or required user information is missing
      */
     @Override
-    public Material getUserInfo(AuthToken authToken) {
-        String accessToken = authToken.getAccessToken();
-        String uid = authToken.getUid();
-        String oauthParam = String.format("uid=%s&access_token=%s", uid, accessToken);
+    public Message userInfo(Authorization authorization) {
+        String token = authorization.getToken();
+        String uid = authorization.getUid();
+        String oauthParam = String.format("uid=%s&access_token=%s", uid, token);
 
         Map<String, String> header = new HashMap<>();
         header.put("Authorization", "OAuth2 " + oauthParam);
         header.put("API-RemoteIP", NetKit.getLocalhostStringV4());
-        String userInfo = Httpx.get(userInfoUrl(authToken), null, header);
+        String userInfo = Httpx.get(userInfoUrl(authorization), null, header);
         try {
             Map<String, Object> object = JsonKit.toPojo(userInfo, Map.class);
             if (object == null) {
@@ -150,10 +152,14 @@ public class WeiboProvider extends AbstractProvider {
             String description = (String) object.get("description");
             String gender = (String) object.get("gender");
 
-            return Material.builder().rawJson(JsonKit.toJsonString(object)).uuid(id).username(name)
-                    .avatar(profileImageUrl).blog(StringKit.isEmpty(url) ? "https://weibo.com/" + profileUrl : url)
-                    .nickname(screenName).location(location).remark(description).gender(Gender.of(gender))
-                    .token(authToken).source(complex.toString()).build();
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+                    .data(
+                            Material.builder().rawJson(JsonKit.toJsonString(object)).uuid(id).username(name)
+                                    .avatar(profileImageUrl)
+                                    .blog(StringKit.isEmpty(url) ? "https://weibo.com/" + profileUrl : url)
+                                    .nickname(screenName).location(location).remark(description)
+                                    .gender(Gender.of(gender)).token(authorization).source(complex.toString()).build())
+                    .build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
         }
@@ -162,13 +168,13 @@ public class WeiboProvider extends AbstractProvider {
     /**
      * Returns the URL to obtain user information.
      *
-     * @param authToken the user's authorization token
+     * @param authorization the user's authorization token
      * @return the URL to obtain user information
      */
     @Override
-    protected String userInfoUrl(AuthToken authToken) {
-        return Builder.fromUrl(this.complex.userinfo()).queryParam("access_token", authToken.getAccessToken())
-                .queryParam("uid", authToken.getUid()).build();
+    protected String userInfoUrl(Authorization authorization) {
+        return Builder.fromUrl(this.complex.userinfo()).queryParam("access_token", authorization.getToken())
+                .queryParam("uid", authorization.getUid()).build();
     }
 
     /**
@@ -179,22 +185,24 @@ public class WeiboProvider extends AbstractProvider {
      * @return the authorization URL
      */
     @Override
-    public String authorize(String state) {
-        return Builder.fromUrl(super.authorize(state))
-                .queryParam("scope", this.getScopes(Symbol.COMMA, false, this.getDefaultScopes(WeiboScope.values())))
+    public Message build(String state) {
+        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+                Builder.fromUrl((String) super.build(state).getData())
+                        .queryParam("scope", this.getScopes(Symbol.COMMA, false, this.getScopes(WeiboScope.values())))
+                        .build())
                 .build();
     }
 
     /**
      * Revokes the authorization for the given access token.
      *
-     * @param authToken the token information to revoke
+     * @param authorization the token information to revoke
      * @return a {@link Message} indicating the result of the revocation
      * @throws AuthorizedException if parsing the response fails or an error occurs during revocation
      */
     @Override
-    public Message revoke(AuthToken authToken) {
-        String response = doGetRevoke(authToken);
+    public Message revoke(Authorization authorization) {
+        String response = doGetRevoke(authorization);
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
             if (object == null) {

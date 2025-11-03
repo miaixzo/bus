@@ -33,6 +33,7 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.nio.charset.Charset;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.*;
 
@@ -199,7 +200,7 @@ public class SMTPMessage extends MimeMessage {
      */
     public SMTPMessage setContent(final String content, final boolean isHtml) {
         try {
-            super.setContent(buildContent(this.mailAccount.getCharset(), isHtml));
+            super.setContent(buildContent(content, this.mailAccount.getCharset(), isHtml));
         } catch (final MessagingException e) {
             throw new InternalException(e);
         }
@@ -340,15 +341,21 @@ public class SMTPMessage extends MimeMessage {
     /**
      * Builds the email's main content part.
      *
+     * @param content Content, if {@code null} then use {@link Normal#EMPTY} instead
      * @param charset The character set for encoding.
      * @param isHtml  {@code true} if the content is HTML, {@code false} for plain text.
      * @return The multipart content.
      * @throws MessagingException if an error occurs while building the content.
      */
-    private Multipart buildContent(final Charset charset, final boolean isHtml) throws MessagingException {
+    private Multipart buildContent(final String content, final Charset charset, final boolean isHtml)
+            throws MessagingException {
         final String charsetStr = null != charset ? charset.name() : MimeUtility.getDefaultJavaCharset();
+        // Body
         final MimeBodyPart body = new MimeBodyPart();
-        body.setContent(content, StringKit.format("text/{}; charset={}", isHtml ? "html" : "plain", charsetStr));
+        // Content will throw an exception if null, use empty string instead
+        body.setContent(
+                StringKit.emptyIfNull(content),
+                StringKit.format("text/{}; charset={}", isHtml ? "html" : "plain", charsetStr));
         addBodyPart(body, 0);
         return this.multipart;
     }

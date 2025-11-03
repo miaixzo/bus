@@ -25,51 +25,54 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.vortex.support.mcp;
+package org.miaixz.bus.spring.http;
 
 import java.util.List;
-import java.util.Map;
-
-import reactor.core.publisher.Mono;
 
 /**
- * The unified interface for an MCP client. It defines the core behaviors for interacting with any type of MCP service.
+ * An interface for configuring JSON {@link org.springframework.http.converter.HttpMessageConverter}s in Spring MVC.
+ * Implementations provide a name, an order of precedence, and the logic to configure the list of converters. It also
+ * supports an {@code autoType} property for serialization/deserialization features like Fastjson's type recognition.
+ * <p>
+ * This interface provides methods to handle field filtering based on annotations like {@code @Transient} and
+ * {@code @Include} across different JSON libraries (Fastjson, GSON, and Jackson).
+ * </p>
+ *
+ * @author Kimi Liu
+ * @since Java 17+
  */
-public interface McpClient {
+public interface HttpMessageConverter {
 
     /**
-     * Asynchronously initializes the client and connects to the backend service.
-     * 
-     * @return A Mono that completes upon successful initialization and connection.
+     * Returns the name of the converter, used for logging and debugging.
+     *
+     * @return The converter's name.
      */
-    Mono<Void> initialize();
+    String name();
 
     /**
-     * Closes the client and releases all associated resources (e.g., subprocesses, network connections).
+     * Returns the order of precedence for the converter (lower values have higher priority).
+     *
+     * @return The order value.
      */
-    void close();
+    int order();
 
     /**
-     * Retrieves the list of tools provided by the service this client is connected to.
-     * 
-     * @return A list of Tool objects.
+     * Configures the list of {@link org.springframework.http.converter.HttpMessageConverter}s. Implementations should
+     * add their custom converter to this list.
+     *
+     * @param converters The list of message converters to configure.
      */
-    List<Tool> getTools();
+    void configure(List<org.springframework.http.converter.HttpMessageConverter<?>> converters);
 
     /**
-     * Calls a specific tool provided by the service.
-     * 
-     * @param toolName  The name of the tool to call.
-     * @param arguments The arguments required by the tool.
-     * @return A Mono containing the execution result as a JSON string.
+     * Sets the {@code autoType} property for serialization/deserialization configuration. The default implementation is
+     * empty, allowing subclasses to override it if they support this feature.
+     *
+     * @param autoType The configuration string for automatic type handling.
      */
-    Mono<String> callTool(String toolName, Map<String, Object> arguments);
-
-    /**
-     * Asynchronously checks the health of the underlying connection or process.
-     * 
-     * @return A Mono that emits true if the client is healthy, false otherwise.
-     */
-    Mono<Boolean> isHealthy();
+    default void autoType(String autoType) {
+        // Default implementation is a no-op to support implementations that do not use autoType.
+    }
 
 }

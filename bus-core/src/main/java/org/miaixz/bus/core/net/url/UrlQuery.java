@@ -341,7 +341,7 @@ public class UrlQuery {
         for (final Map.Entry<CharSequence, CharSequence> entry : this.query) {
             name = entry.getKey();
             if (null != name) {
-                if (sb.length() > 0) {
+                if (!sb.isEmpty()) {
                     sb.append(Symbol.AND);
                 }
                 sb.append(keyCoder.encode(name, charset));

@@ -32,12 +32,13 @@ import java.util.Map;
 import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Registry;
-import org.miaixz.bus.auth.magic.AuthToken;
+import org.miaixz.bus.auth.magic.Authorization;
 import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.ErrorCode;
 import org.miaixz.bus.auth.magic.Material;
 import org.miaixz.bus.auth.nimble.AbstractProvider;
 import org.miaixz.bus.cache.CacheX;
+import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
@@ -74,31 +75,34 @@ public class ToutiaoProvider extends AbstractProvider {
      * Retrieves the access token from Toutiao's authorization server.
      *
      * @param callback the callback object containing the authorization code
-     * @return the {@link AuthToken} containing access token details
+     * @return the {@link Authorization} containing access token details
      * @throws AuthorizedException if parsing the response fails or required token information is missing
      */
     @Override
-    public AuthToken getAccessToken(Callback callback) {
-        String response = doPostAuthorizationCode(callback.getCode());
-        Map<String, Object> accessTokenObject = JsonKit.toPojo(response, Map.class);
+    public Message token(Callback callback) {
+        String response = doPostToken(callback.getCode());
+        Map<String, Object> object = JsonKit.toPojo(response, Map.class);
 
-        this.checkResponse(accessTokenObject);
+        this.checkResponse(object);
 
-        return AuthToken.builder().accessToken((String) accessTokenObject.get("access_token"))
-                .expireIn(((Number) accessTokenObject.get("expires_in")).intValue())
-                .openId((String) accessTokenObject.get("open_id")).build();
+        return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+                .data(
+                        Authorization.builder().token((String) object.get("access_token"))
+                                .expireIn(((Number) object.get("expires_in")).intValue())
+                                .openId((String) object.get("open_id")).build())
+                .build();
     }
 
     /**
      * Retrieves user information from Toutiao's user info endpoint.
      *
-     * @param authToken the {@link AuthToken} obtained after successful authorization
+     * @param authorization the {@link Authorization} obtained after successful authorization
      * @return {@link Material} containing the user's information
      * @throws AuthorizedException if parsing the response fails or required user information is missing
      */
     @Override
-    public Material getUserInfo(AuthToken authToken) {
-        String userResponse = doGetUserInfo(authToken);
+    public Message userInfo(Authorization authorization) {
+        String userResponse = doGetUserInfo(authorization);
         Map<String, Object> userProfile = JsonKit.toPojo(userResponse, Map.class);
 
         this.checkResponse(userProfile);
@@ -108,11 +112,15 @@ public class ToutiaoProvider extends AbstractProvider {
         boolean isAnonymousUser = "14".equals(user.get("uid_type"));
         String anonymousUserName = "Anonymous User";
 
-        return Material.builder().rawJson(JsonKit.toJsonString(userProfile)).uuid((String) user.get("uid"))
-                .username(isAnonymousUser ? anonymousUserName : (String) user.get("screen_name"))
-                .nickname(isAnonymousUser ? anonymousUserName : (String) user.get("screen_name"))
-                .avatar((String) user.get("avatar_url")).remark((String) user.get("description"))
-                .gender(Gender.of((String) user.get("gender"))).token(authToken).source(complex.toString()).build();
+        return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+                .data(
+                        Material.builder().rawJson(JsonKit.toJsonString(userProfile)).uuid((String) user.get("uid"))
+                                .username(isAnonymousUser ? anonymousUserName : (String) user.get("screen_name"))
+                                .nickname(isAnonymousUser ? anonymousUserName : (String) user.get("screen_name"))
+                                .avatar((String) user.get("avatar_url")).remark((String) user.get("description"))
+                                .gender(Gender.of((String) user.get("gender"))).token(authorization)
+                                .source(complex.toString()).build())
+                .build();
     }
 
     /**
@@ -123,10 +131,14 @@ public class ToutiaoProvider extends AbstractProvider {
      * @return the authorization URL
      */
     @Override
-    public String authorize(String state) {
-        return Builder.fromUrl(complex.authorize()).queryParam("response_type", "code")
-                .queryParam("client_key", context.getAppKey()).queryParam("redirect_uri", context.getRedirectUri())
-                .queryParam("auth_only", 1).queryParam("display", 0).queryParam("state", getRealState(state)).build();
+    public Message build(String state) {
+        return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+                .data(
+                        Builder.fromUrl(complex.authorize()).queryParam("response_type", "code")
+                                .queryParam("client_key", context.getClientId())
+                                .queryParam("redirect_uri", context.getRedirectUri()).queryParam("auth_only", 1)
+                                .queryParam("display", 0).queryParam("state", getRealState(state)).build())
+                .build();
     }
 
     /**
@@ -136,22 +148,22 @@ public class ToutiaoProvider extends AbstractProvider {
      * @return the URL to obtain the access token
      */
     @Override
-    protected String accessTokenUrl(String code) {
-        return Builder.fromUrl(this.complex.accessToken()).queryParam("code", code)
-                .queryParam("client_key", context.getAppKey()).queryParam("client_secret", context.getAppSecret())
+    protected String tokenUrl(String code) {
+        return Builder.fromUrl(this.complex.token()).queryParam("code", code)
+                .queryParam("client_key", context.getClientId()).queryParam("client_secret", context.getClientSecret())
                 .queryParam("grant_type", "authorization_code").build();
     }
 
     /**
      * Returns the URL to obtain user information.
      *
-     * @param authToken the user's authorization token
+     * @param authorization the user's authorization token
      * @return the URL to obtain user information
      */
     @Override
-    protected String userInfoUrl(AuthToken authToken) {
-        return Builder.fromUrl(this.complex.userinfo()).queryParam("client_key", context.getAppKey())
-                .queryParam("access_token", authToken.getAccessToken()).build();
+    protected String userInfoUrl(Authorization authorization) {
+        return Builder.fromUrl(this.complex.userinfo()).queryParam("client_key", context.getClientId())
+                .queryParam("access_token", authorization.getToken()).build();
     }
 
     /**

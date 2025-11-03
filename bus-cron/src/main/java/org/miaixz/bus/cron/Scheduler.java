@@ -27,6 +27,14 @@
 */
 package org.miaixz.bus.cron;
 
+import java.io.Serial;
+import java.io.Serializable;
+import java.util.LinkedHashMap;
+import java.util.Map.Entry;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 import org.miaixz.bus.core.data.id.ID;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.CrontabException;
@@ -35,6 +43,7 @@ import org.miaixz.bus.core.lang.thread.ThreadFactoryBuilder;
 import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.cron.crontab.Crontab;
+import org.miaixz.bus.cron.crontab.CrontabFactory;
 import org.miaixz.bus.cron.crontab.InvokeCrontab;
 import org.miaixz.bus.cron.crontab.RunnableCrontab;
 import org.miaixz.bus.cron.listener.TaskListener;
@@ -43,39 +52,30 @@ import org.miaixz.bus.cron.pattern.CronPattern;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.setting.Setting;
 
-import java.io.Serial;
-import java.io.Serializable;
-import java.util.LinkedHashMap;
-import java.util.Map.Entry;
-import java.util.TimeZone;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-
 /**
  * Task scheduler.
  * <p>
  * The scheduler startup process is as follows:
- * 
+ *
  * <pre>
  * Start Timer -> Start TaskLauncher -> Start TaskExecutor
  * </pre>
  * <p>
  * The scheduler shutdown process is as follows:
- * 
+ *
  * <pre>
  * Stop Timer -> Stop all running TaskLaunchers -> Stop all running TaskExecutors
  * </pre>
- * 
+ *
  * Where:
- * 
+ *
  * <pre>
- * Launcher: Called by the timer every minute (or every second if {@link Scheduler#isMatchSecond()} is {@code
+ * Launcher: Called by the timer every minute (or every second if {@link Configure#isMatchSecond()} is {@code
  * true
  * }),
  * responsible for checking if the <strong>Repertoire</strong> has any tasks that match the current time to run.
  * </pre>
- * 
+ *
  * <pre>
  * Executor: Triggered by the TaskLauncher upon a successful match, executes the specific job, and is destroyed upon completion.
  * </pre>
@@ -88,63 +88,58 @@ public class Scheduler implements Serializable {
     @Serial
     private static final long serialVersionUID = 2852287508206L;
 
-    private final Lock lock = new ReentrantLock();
-
     /**
-     * Cron task configuration.
+     * Scheduled task configuration
      */
-    protected Configure config = new Configure();
+    public final Configure config;
     /**
-     * Whether the scheduler runs as a daemon thread.
-     */
-    protected boolean daemon;
-    /**
-     * The table of scheduled tasks.
-     */
-    protected Repertoire repertoire = new Repertoire();
-    /**
-     * Manages the task launchers.
-     */
-    protected Supervisor supervisor;
-    /**
-     * Manages the task executors.
-     */
-    protected Manager manager;
-    /**
-     * Manages the task listeners.
-     */
-    protected TaskListenerManager listenerManager = new TaskListenerManager();
-    /**
-     * Thread pool for executing TaskLaunchers and TaskExecutors.
-     */
-    protected ExecutorService threadExecutor;
-    /**
-     * A flag indicating whether the scheduler has been started.
-     */
-    private boolean started = false;
-    /**
-     * The timer that triggers task checks.
+     * Timer
      */
     private CronTimer timer;
+    /**
+     * Scheduled task table
+     */
+    public Repertoire repertoire;
+    /**
+     * Thread pool for executing TaskLauncher and TaskExecutor
+     */
+    public ExecutorService threadExecutor;
+    /**
+     * Task manager
+     */
+    public Manager manager;
+    /**
+     * Listener manager list
+     */
+    public TaskListenerManager listenerManager;
 
     /**
-     * Gets the time zone, defaulting to {@link TimeZone#getDefault()}.
-     *
-     * @return The time zone.
+     * Lock for scheduled tasks, used to synchronize add and delete operations
      */
-    public TimeZone getTimeZone() {
-        return this.config.getTimeZone();
+    private final Lock lock;
+
+    /**
+     * Whether it has been started
+     */
+    private boolean started;
+
+    /**
+     * Sets the configure.
+     */
+    public Scheduler() {
+        this(Configure.of());
     }
 
     /**
-     * Sets the time zone.
+     * Sets the configure.
      *
-     * @param timeZone The time zone.
-     * @return this {@link Scheduler} instance.
+     * @param config The Configure.
      */
-    public Scheduler setTimeZone(final TimeZone timeZone) {
-        this.config.setTimeZone(timeZone);
-        return this;
+    public Scheduler(final Configure config) {
+        this.config = config;
+        this.lock = new ReentrantLock();
+        this.listenerManager = new TaskListenerManager();
+        this.clear();
     }
 
     /**
@@ -167,51 +162,19 @@ public class Scheduler implements Serializable {
     }
 
     /**
-     * Checks if the scheduler is running as a daemon.
-     *
-     * @return {@code true} if it is a daemon, {@code false} otherwise.
-     */
-    public boolean isDaemon() {
-        return this.daemon;
-    }
-
-    /**
-     * Sets whether the scheduler should run as a daemon thread. If true, tasks will be terminated immediately when
-     * {@link #stop()} is called; otherwise, they will run to completion. This setting is ignored if a custom thread
-     * executor is set via {@link #setThreadExecutor(ExecutorService)}.
-     *
-     * @param on {@code true} to run as a daemon, {@code false} otherwise.
-     * @return this {@link Scheduler} instance.
-     * @throws CrontabException if the scheduler is already started.
-     */
-    public Scheduler setDaemon(final boolean on) throws CrontabException {
-        lock.lock();
-        try {
-            checkStarted();
-            this.daemon = on;
-        } finally {
-            lock.unlock();
-        }
-        return this;
-    }
-
-    /**
-     * Checks if second matching is enabled.
-     *
-     * @return {@code true} if enabled, {@code false} otherwise.
-     */
-    public boolean isMatchSecond() {
-        return this.config.isMatchSecond();
-    }
-
-    /**
      * Sets whether to support second matching in cron expressions. Defaults to false.
      *
      * @param isMatchSecond {@code true} to enable, {@code false} to disable.
      * @return this {@link Scheduler} instance.
      */
     public Scheduler setMatchSecond(final boolean isMatchSecond) {
-        this.config.setMatchSecond(isMatchSecond);
+        lock.lock();
+        try {
+            checkStarted();
+            this.config.setMatchSecond(isMatchSecond);
+        } finally {
+            lock.unlock();
+        }
         return this;
     }
 
@@ -222,7 +185,12 @@ public class Scheduler implements Serializable {
      * @return this {@link Scheduler} instance.
      */
     public Scheduler addListener(final TaskListener listener) {
-        this.listenerManager.addListener(listener);
+        lock.lock();
+        try {
+            this.listenerManager.addListener(listener);
+        } finally {
+            lock.unlock();
+        }
         return this;
     }
 
@@ -233,7 +201,12 @@ public class Scheduler implements Serializable {
      * @return this {@link Scheduler} instance.
      */
     public Scheduler removeListener(final TaskListener listener) {
-        this.listenerManager.removeListener(listener);
+        lock.lock();
+        try {
+            this.listenerManager.removeListener(listener);
+        } finally {
+            lock.unlock();
+        }
         return this;
     }
 
@@ -361,7 +334,7 @@ public class Scheduler implements Serializable {
      *
      * @return The task table ({@link Repertoire}).
      */
-    public Repertoire getTaskTable() {
+    public Repertoire getRepertoire() {
         return this.repertoire;
     }
 
@@ -409,7 +382,7 @@ public class Scheduler implements Serializable {
      * @return this {@link Scheduler} instance.
      */
     public Scheduler clear() {
-        this.repertoire = new Repertoire();
+        this.repertoire = CrontabFactory.create(this.config);
         return this;
     }
 
@@ -430,16 +403,18 @@ public class Scheduler implements Serializable {
      * @return this {@link Scheduler} instance.
      */
     public Scheduler start(final boolean isDaemon) {
-        this.daemon = isDaemon;
+        this.config.setDaemon(isDaemon);
         return start();
     }
 
     /**
-     * Starts the scheduler.
+     * Start
      *
-     * @return this {@link Scheduler} instance.
+     * @return this
      */
     public Scheduler start() {
+        final boolean daemon = this.config.isDaemon();
+
         lock.lock();
         try {
             checkStarted();
@@ -447,17 +422,15 @@ public class Scheduler implements Serializable {
             if (null == this.threadExecutor) {
                 // Use an unbounded thread pool to ensure every task can run promptly,
                 // while reusing existing threads to avoid repeated creation.
-                this.threadExecutor = ExecutorBuilder.of().useSynchronousQueue()
-                        .setThreadFactory(
-                                ThreadFactoryBuilder.of().setNamePrefix("x-cron-").setDaemon(this.daemon).build())
-                        .build();
+                this.threadExecutor = ExecutorBuilder.of().useSynchronousQueue().setThreadFactory(//
+                        ThreadFactoryBuilder.of().setNamePrefix("x-cron-").setDaemon(daemon).build()//
+                ).build();
             }
-            this.supervisor = new Supervisor(this);
             this.manager = new Manager(this);
 
             // Start CronTimer
             timer = new CronTimer(this);
-            timer.setDaemon(this.daemon);
+            timer.setDaemon(daemon);
             timer.start();
             this.started = true;
         } finally {
@@ -510,6 +483,15 @@ public class Scheduler implements Serializable {
             lock.unlock();
         }
         return this;
+    }
+
+    /**
+     * Executes scheduled tasks from the task table that match the timestamp
+     *
+     * @param millis Millisecond timestamp
+     */
+    public void execute(final long millis) {
+        this.repertoire.execute(this, millis);
     }
 
     /**

@@ -256,13 +256,13 @@ public class Keys {
      */
     public static final String DATE_LENIENT = "bus.date.lenient";
     /**
-     * The major version of the JVM (e.g., 8 for Java 8, 17 for Java 17).
+     * The major version of the JVM (e.g., 8 for Java 8, 17 for Java 25).
      */
     public static final int JVM_VERSION;
     /**
-     * Indicates whether the current JVM version is 17 or later.
+     * Indicates whether the current JVM version is 25 or later.
      */
-    public static final boolean IS_AT_LEAST_JDK17;
+    public static final boolean IS_AT_LEAST_JDK25;
     /**
      * Indicates whether the current environment is Android.
      */
@@ -280,7 +280,7 @@ public class Keys {
     static {
         // Initialize JVM version.
         JVM_VERSION = _getJvmVersion();
-        IS_AT_LEAST_JDK17 = JVM_VERSION >= 17;
+        IS_AT_LEAST_JDK25 = JVM_VERSION >= 25;
 
         // Initialize JVM name related flags.
         final String jvmName = _getJvmName();
@@ -469,12 +469,12 @@ public class Keys {
 
     /**
      * Retrieves the major version number of the JVM based on the {@code java.specification.version} property. Defaults
-     * to 8 if the version cannot be determined or is not explicitly set.
+     * to 17 if the version cannot be determined or is not explicitly set.
      *
      * @return The major JVM version number.
      */
     static int _getJvmVersion() {
-        int jvmVersion = 8;
+        int jvmVersion = 17;
 
         String javaSpecVer = getQuietly(JAVA_SPECIFICATION_VERSION);
         if (StringKit.isNotBlank(javaSpecVer)) {

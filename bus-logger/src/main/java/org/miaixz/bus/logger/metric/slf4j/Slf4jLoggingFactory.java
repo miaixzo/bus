@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.logger.metric.slf4j;
 
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.logger.Provider;
 import org.miaixz.bus.logger.magic.AbstractFactory;
 import org.slf4j.LoggerFactory;
@@ -34,7 +35,6 @@ import org.slf4j.helpers.NOPLoggerFactory;
 
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
 
 /**
  * A factory for creating {@link org.slf4j.Logger} instances. This factory detects the presence of an SLF4J binding and
@@ -68,17 +68,13 @@ public class Slf4jLoggingFactory extends AbstractFactory {
         // Redirect System.err to capture the "no binding" message from SLF4J.
         final StringBuilder buf = new StringBuilder();
         final PrintStream err = System.err;
-        try {
-            System.setErr(new PrintStream(new OutputStream() {
+        System.setErr(new PrintStream(new OutputStream() {
 
-                @Override
-                public void write(final int b) {
-                    buf.append((char) b);
-                }
-            }, true, "US-ASCII"));
-        } catch (final UnsupportedEncodingException e) {
-            throw new Error(e);
-        }
+            @Override
+            public void write(final int b) {
+                buf.append((char) b);
+            }
+        }, true, Charset.US_ASCII));
 
         try {
             // Check if the underlying logger factory is a no-operation factory.

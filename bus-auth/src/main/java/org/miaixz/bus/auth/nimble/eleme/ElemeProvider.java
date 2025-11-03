@@ -34,7 +34,7 @@ import java.util.TreeMap;
 import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Registry;
-import org.miaixz.bus.auth.magic.AuthToken;
+import org.miaixz.bus.auth.magic.Authorization;
 import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.ErrorCode;
 import org.miaixz.bus.auth.magic.Material;
@@ -113,20 +113,20 @@ public class ElemeProvider extends AbstractProvider {
      * Retrieves the access token from Ele.me's authorization server.
      *
      * @param callback the callback object containing the authorization code
-     * @return the {@link AuthToken} containing access token details
+     * @return the {@link Authorization} containing access token details
      * @throws AuthorizedException if parsing the response fails or required token information is missing
      */
     @Override
-    public AuthToken getAccessToken(Callback callback) {
+    public Message token(Callback callback) {
         Map<String, String> form = new HashMap<>(7);
-        form.put("client_id", context.getAppKey());
+        form.put("client_id", context.getClientId());
         form.put("redirect_uri", context.getRedirectUri());
         form.put("code", callback.getCode());
         form.put("grant_type", "authorization_code");
 
         Map<String, String> header = this.buildHeader(MediaType.APPLICATION_FORM_URLENCODED, this.getRequestId(), true);
 
-        String response = Httpx.post(this.complex.accessToken(), form, header);
+        String response = Httpx.post(this.complex.token(), form, header);
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
             if (object == null) {
@@ -135,17 +135,20 @@ public class ElemeProvider extends AbstractProvider {
 
             this.checkResponse(object);
 
-            String accessToken = (String) object.get("access_token");
-            if (accessToken == null) {
+            String token = (String) object.get("access_token");
+            if (token == null) {
                 throw new AuthorizedException("Missing access_token in response");
             }
-            String refreshToken = (String) object.get("refresh_token");
+            String refresh = (String) object.get("refresh_token");
             String tokenType = (String) object.get("token_type");
             Object expiresInObj = object.get("expires_in");
             int expiresIn = expiresInObj instanceof Number ? ((Number) expiresInObj).intValue() : 0;
 
-            return AuthToken.builder().accessToken(accessToken).refreshToken(refreshToken).tokenType(tokenType)
-                    .expireIn(expiresIn).build();
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+                    .data(
+                            Authorization.builder().token(token).refresh(refresh).token_type(tokenType)
+                                    .expireIn(expiresIn).build())
+                    .build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse access token response: " + e.getMessage());
         }
@@ -154,14 +157,14 @@ public class ElemeProvider extends AbstractProvider {
     /**
      * Refreshes the access token (renews its validity).
      *
-     * @param authToken the token information returned after successful login
+     * @param authorization the token information returned after successful login
      * @return a {@link Message} containing the refreshed token information
      * @throws AuthorizedException if parsing the response fails or an error occurs during token refresh
      */
     @Override
-    public Message refresh(AuthToken authToken) {
+    public Message refresh(Authorization authorization) {
         Map<String, String> form = new HashMap<>(4);
-        form.put("refresh_token", authToken.getRefreshToken());
+        form.put("refresh_token", authorization.getRefresh());
         form.put("grant_type", "refresh_token");
 
         Map<String, String> header = this.buildHeader(MediaType.APPLICATION_FORM_URLENCODED, this.getRequestId(), true);
@@ -175,18 +178,18 @@ public class ElemeProvider extends AbstractProvider {
 
             this.checkResponse(object);
 
-            String accessToken = (String) object.get("access_token");
-            if (accessToken == null) {
+            String token = (String) object.get("access_token");
+            if (token == null) {
                 throw new AuthorizedException("Missing access_token in response");
             }
-            String refreshToken = (String) object.get("refresh_token");
+            String refresh = (String) object.get("refresh_token");
             String tokenType = (String) object.get("token_type");
             Object expiresInObj = object.get("expires_in");
             int expiresIn = expiresInObj instanceof Number ? ((Number) expiresInObj).intValue() : 0;
 
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
                     .data(
-                            AuthToken.builder().accessToken(accessToken).refreshToken(refreshToken).tokenType(tokenType)
+                            Authorization.builder().token(token).refresh(refresh).token_type(tokenType)
                                     .expireIn(expiresIn).build())
                     .build();
         } catch (Exception e) {
@@ -197,12 +200,12 @@ public class ElemeProvider extends AbstractProvider {
     /**
      * Retrieves user information from Ele.me's user info endpoint.
      *
-     * @param authToken the {@link AuthToken} obtained after successful authorization
+     * @param authorization the {@link Authorization} obtained after successful authorization
      * @return {@link Material} containing the user's information
      * @throws AuthorizedException if parsing the response fails or required user information is missing
      */
     @Override
-    public Material getUserInfo(AuthToken authToken) {
+    public Message userInfo(Authorization authorization) {
         Map<String, Object> parameters = new HashMap<>(4);
         // API method name for getting merchant account information
         String action = "eleme.user.getUser";
@@ -210,14 +213,14 @@ public class ElemeProvider extends AbstractProvider {
         final long timestamp = System.currentTimeMillis();
         // Common parameters
         Map<String, Object> metasHashMap = new HashMap<>(4);
-        metasHashMap.put("app_key", context.getAppKey());
+        metasHashMap.put("app_key", context.getClientId());
         metasHashMap.put("timestamp", timestamp);
         String signature = sign(
-                context.getAppKey(),
-                context.getAppSecret(),
+                context.getClientId(),
+                context.getClientSecret(),
                 timestamp,
                 action,
-                authToken.getAccessToken(),
+                authorization.getToken(),
                 parameters);
 
         String requestId = this.getRequestId();
@@ -226,7 +229,7 @@ public class ElemeProvider extends AbstractProvider {
         paramsMap.put("nop", "1.0.0");
         paramsMap.put("id", requestId);
         paramsMap.put("action", action);
-        paramsMap.put("token", authToken.getAccessToken());
+        paramsMap.put("token", authorization.getToken());
         paramsMap.put("metas", metasHashMap);
         paramsMap.put("params", parameters);
         paramsMap.put("signature", signature);
@@ -263,8 +266,12 @@ public class ElemeProvider extends AbstractProvider {
             }
             String userName = (String) result.get("userName");
 
-            return Material.builder().rawJson(JsonKit.toJsonString(result)).uuid(userId).username(userName)
-                    .nickname(userName).gender(Gender.UNKNOWN).token(authToken).source(complex.toString()).build();
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+                    .data(
+                            Material.builder().rawJson(JsonKit.toJsonString(result)).uuid(userId).username(userName)
+                                    .nickname(userName).gender(Gender.UNKNOWN).token(authorization)
+                                    .source(complex.toString()).build())
+                    .build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
         }
@@ -301,7 +308,7 @@ public class ElemeProvider extends AbstractProvider {
         header.put("x-eleme-requestid", requestId);
 
         if (auth) {
-            header.put("Authorization", this.getBasic(context.getAppKey(), context.getAppSecret()));
+            header.put("Authorization", this.getBasic(context.getClientId(), context.getClientSecret()));
         }
         return header;
     }
@@ -336,8 +343,10 @@ public class ElemeProvider extends AbstractProvider {
      * @return the authorization URL
      */
     @Override
-    public String authorize(String state) {
-        return Builder.fromUrl(super.authorize(state)).queryParam("scope", "all").build();
+    public Message build(String state) {
+        return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+                .data(Builder.fromUrl((String) super.build(state).getData()).queryParam("scope", "all").build())
+                .build();
     }
 
 }

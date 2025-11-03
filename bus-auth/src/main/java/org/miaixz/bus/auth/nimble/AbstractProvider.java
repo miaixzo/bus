@@ -29,11 +29,12 @@ package org.miaixz.bus.auth.nimble;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.cache.AuthCache;
-import org.miaixz.bus.auth.magic.AuthToken;
+import org.miaixz.bus.auth.magic.Authorization;
 import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.ErrorCode;
 import org.miaixz.bus.auth.magic.Material;
@@ -46,8 +47,8 @@ import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.net.url.UrlEncoder;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
-import org.miaixz.bus.logger.Logger;
 
 /**
  * Abstract base class for authorization processing, supporting various protocols such as OAuth2, SAML, and LDAP.
@@ -96,95 +97,33 @@ public abstract class AbstractProvider implements Provider {
         this.cache = cache;
         // Validate authorization support
         if (!Checker.isSupportedAuth(this.context, this.complex)) {
-            throw new AuthorizedException(ErrorCode.PARAMETER_INCOMPLETE);
+            throw new AuthorizedException(ErrorCode._110002);
         }
         // Validate configuration
-        check(this.context);
-    }
-
-    /**
-     * Retrieves a list of default scopes from an array of {@link AuthorizeScope}.
-     *
-     * @param scopes an array of authorization scopes
-     * @return a list of default scope names, or null if no scopes are provided or no default scopes are found
-     */
-    public static List<String> getDefaultScopes(AuthorizeScope[] scopes) {
-        if (null == scopes || scopes.length == 0) {
-            return null;
-        }
-        return Arrays.stream(scopes).filter(AuthorizeScope::isDefault).map(AuthorizeScope::getScope)
-                .collect(Collectors.toList());
-    }
-
-    /**
-     * Retrieves a list of scope names from a variable number of {@link AuthorizeScope} arguments.
-     *
-     * @param scopes a variable number of authorization scopes
-     * @return a list of scope names, or null if no scopes are provided
-     */
-    public static List<String> getScopes(AuthorizeScope... scopes) {
-        if (null == scopes || scopes.length == 0) {
-            return null;
-        }
-        return Arrays.stream(scopes).map(AuthorizeScope::getScope).collect(Collectors.toList());
+        this.validate(this.context);
     }
 
     /**
      * Processes the login flow, validates callback data, obtains an access token, and retrieves user information.
      *
      * @param callback the callback object containing authorization data (e.g., code, state)
-     * @return a {@link Message} object containing user information or an error message
+     * @return a {@link Material} object containing user information or an error message
      */
     @Override
-    public Message login(Callback callback) {
-        try {
-            // Validate callback data
-            check(callback);
-            // For OAuth2, validate the state parameter (if not ignored)
-            if (!context.isIgnoreState() && complex.getProtocol() == Protocol.OIDC) {
-                Checker.check(callback.getState(), complex, cache);
-            }
-
-            // Obtain access token
-            AuthToken authToken = this.getAccessToken(callback);
-            // Retrieve user information
-            Material user = this.getUserInfo(authToken);
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(user).build();
-        } catch (Exception e) {
-            Logger.error("Authorization login failed.", e);
-            return this.responseError(e);
+    public Message authorize(Callback callback) {
+        // Validate callback data
+        this.validate(callback);
+        // For OAuth2, validate the state parameter (if not ignored)
+        if (!this.context.isIgnoreState() && Protocol.OIDC == this.complex.getProtocol()) {
+            Checker.check(callback.getState(), this.complex, this.cache);
         }
-    }
 
-    /**
-     * Validates callback data, primarily used for OAuth2 protocol.
-     *
-     * @param callback the callback object containing authorization data
-     * @throws AuthorizedException if OAuth2 validation fails
-     */
-    protected void check(Callback callback) {
-        if (complex.getProtocol() == Protocol.OIDC) {
-            Checker.check(complex, callback);
-        }
-    }
+        // Obtain access token
+        Message message = this.token(callback);
 
-    /**
-     * Constructs an error response message for exceptions during the login process.
-     *
-     * @param e the exception that occurred
-     * @return a {@link Message} object containing error details
-     */
-    protected Message responseError(Exception e) {
-        String errorCode = ErrorCode._FAILURE.getKey();
-        String errorMsg = e.getMessage();
-        if (e instanceof AuthorizedException) {
-            AuthorizedException authException = ((AuthorizedException) e);
-            errorCode = authException.getErrcode();
-            if (StringKit.isNotEmpty(authException.getErrmsg())) {
-                errorMsg = authException.getErrmsg();
-            }
-        }
-        return Message.builder().errcode(errorCode).errmsg(errorMsg).build();
+        Authorization token = JsonKit.toPojo(JsonKit.toJsonString(message.getData()), Authorization.class);
+        // Retrieve user information
+        return this.userInfo(token);
     }
 
     /**
@@ -194,78 +133,73 @@ public abstract class AbstractProvider implements Provider {
      * @return the authorization URL, or null for protocols like LDAP that do not use an authorization URL
      */
     @Override
-    public String authorize(String state) {
-        if (complex.getProtocol() == Protocol.OIDC) {
+    public Message build(String state) {
+        if (Protocol.OIDC == this.complex.getProtocol()) {
             // Build OAuth2 authorization URL
-            return Builder.fromUrl(this.complex.authorize()).queryParam("response_type", "code")
-                    .queryParam("client_id", this.context.getAppKey())
-                    .queryParam("redirect_uri", this.context.getRedirectUri()).queryParam("state", getRealState(state))
-                    .queryParam("scope", getScopes(Symbol.SPACE, true, getDefaultScopes(null))).build();
-        } else if (this.complex.getProtocol() == Protocol.SAML) {
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+                    .data(
+                            Builder.fromUrl(getEndpoint(Endpoint.AUTHORIZE)).queryParam("response_type", "code")
+                                    .queryParam("client_id", this.context.getClientId())
+                                    .queryParam("redirect_uri", this.context.getRedirectUri())
+                                    .queryParam("state", getRealState(state))
+                                    .queryParam("scope", getScopes(Symbol.SPACE, true, getScopes(null))).build())
+                    .build();
+        } else if (Protocol.SAML == this.complex.getProtocol()) {
             // Build SAML single sign-on URL
-            return Builder.fromUrl(this.complex.endpoint().get("ssoEndpoint"))
-                    .queryParam("RelayState", getRealState(state)).build();
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+                    .data(
+                            Builder.fromUrl(getEndpoint(Endpoint.AUTHORIZE))
+                                    .queryParam("RelayState", getRealState(state)).build())
+                    .build();
         }
         return null; // LDAP does not use an authorization URL
     }
 
     /**
-     * Constructs the OAuth2 access token URL.
+     * 构建 OAuth2 access token 的 URL.
      *
      * @param code the authorization code
      * @return the access token URL
      */
-    protected String accessTokenUrl(String code) {
-        return Builder.fromUrl(complex.accessToken()).queryParam("code", code)
-                .queryParam("client_id", context.getAppKey()).queryParam("client_secret", context.getAppSecret())
+    protected String tokenUrl(String code) {
+        return Builder.fromUrl(getEndpoint(Endpoint.TOKEN)).queryParam("code", code)
+                .queryParam("client_id", context.getClientId()).queryParam("client_secret", context.getClientSecret())
                 .queryParam("grant_type", "authorization_code").queryParam("redirect_uri", context.getRedirectUri())
                 .build();
     }
 
     /**
-     * Constructs the OAuth2 refresh token URL.
+     * 构建 OAuth2 refresh token 的 URL.
      *
-     * @param refreshToken the refresh token
+     * @param token the refresh token
      * @return the refresh token URL
      */
-    protected String refreshTokenUrl(String refreshToken) {
-        return Builder.fromUrl(complex.refresh()).queryParam("client_id", context.getAppKey())
-                .queryParam("client_secret", context.getAppSecret()).queryParam("refresh_token", refreshToken)
+    protected String refreshUrl(String token) {
+        return Builder.fromUrl(getEndpoint(Endpoint.REFRESH)).queryParam("client_id", context.getClientId())
+                .queryParam("client_secret", context.getClientSecret()).queryParam("refresh_token", token)
                 .queryParam("grant_type", "refresh_token").queryParam("redirect_uri", context.getRedirectUri()).build();
     }
 
     /**
-     * Constructs the OAuth2 user information URL.
+     * 构建 OAuth2 user info 的 URL.
      *
-     * @param authToken the access token
+     * @param authorization the access token
      * @return the user information URL
      */
-    protected String userInfoUrl(AuthToken authToken) {
-        return Builder.fromUrl(complex.userinfo()).queryParam("access_token", authToken.getAccessToken()).build();
+    protected String userInfoUrl(Authorization authorization) {
+        return Builder.fromUrl(getEndpoint(Endpoint.USERINFO)).queryParam("access_token", authorization.getToken())
+                .build();
     }
 
     /**
-     * Constructs the OAuth2 revoke authorization URL.
+     * 构建 OAuth2 撤销授权的 URL.
      *
-     * @param authToken the access token
+     * @param authorization the access token
      * @return the revoke authorization URL
      */
-    protected String revokeUrl(AuthToken authToken) {
-        return Builder.fromUrl(complex.revoke()).queryParam("access_token", authToken.getAccessToken()).build();
-    }
-
-    /**
-     * Generates or retrieves a cached state parameter used to prevent CSRF attacks.
-     *
-     * @param state the provided state value; if empty, a new value will be generated
-     * @return the non-empty state value
-     */
-    protected String getRealState(String state) {
-        if (StringKit.isEmpty(state)) {
-            state = ID.objectId();
-        }
-        cache.write(state, state);
-        return state;
+    protected String revokeUrl(Authorization authorization) {
+        return Builder.fromUrl(getEndpoint(Endpoint.REVOKE)).queryParam("access_token", authorization.getToken())
+                .build();
     }
 
     /**
@@ -274,8 +208,8 @@ public abstract class AbstractProvider implements Provider {
      * @param code the authorization code
      * @return the response content
      */
-    protected String doPostAuthorizationCode(String code) {
-        return Httpx.post(accessTokenUrl(code));
+    protected String doPostToken(String code) {
+        return Httpx.post(tokenUrl(code));
     }
 
     /**
@@ -284,28 +218,56 @@ public abstract class AbstractProvider implements Provider {
      * @param code the authorization code
      * @return the response content
      */
-    protected String doGetAuthorizationCode(String code) {
-        return Httpx.get(accessTokenUrl(code));
+    protected String doGetToken(String code) {
+        return Httpx.get(tokenUrl(code));
     }
 
     /**
      * Executes a GET request to obtain OAuth2 user information.
      *
-     * @param authToken the access token
+     * @param authorization the access token
      * @return the response content
      */
-    protected String doGetUserInfo(AuthToken authToken) {
-        return Httpx.get(userInfoUrl(authToken));
+    protected String doGetUserInfo(Authorization authorization) {
+        return Httpx.get(userInfoUrl(authorization));
     }
 
     /**
      * Executes a GET request to revoke OAuth2 authorization.
      *
-     * @param authToken the access token
+     * @param authorization the access token
      * @return the response content
      */
-    protected String doGetRevoke(AuthToken authToken) {
-        return Httpx.get(revokeUrl(authToken));
+    protected String doGetRevoke(Authorization authorization) {
+        return Httpx.get(revokeUrl(authorization));
+    }
+
+    /**
+     * Gets the endpoint URL.
+     * <p>
+     * Prioritizes the configuration from {@code context.getEndpoint()}. If not configured or empty, it falls back to
+     * the default configuration from {@code complex.endpoint()}.
+     *
+     * @param endpoint the endpoint type
+     * @return the endpoint URL
+     */
+    protected String getEndpoint(Endpoint endpoint) {
+        return Optional.ofNullable(this.context.getEndpoint()).map(ep -> ep.get(endpoint)).filter(StringKit::isNotEmpty)
+                .orElse(this.complex.endpoint().get(endpoint));
+    }
+
+    /**
+     * Retrieves a list of default scopes from an array of {@link AuthorizeScope}.
+     *
+     * @param scopes an array of authorization scopes
+     * @return a list of default scope names, or null if no scopes are provided or no default scopes are found
+     */
+    public static List<String> getScopes(AuthorizeScope[] scopes) {
+        if (null == scopes || scopes.length == 0) {
+            return null;
+        }
+        return Arrays.stream(scopes).filter(AuthorizeScope::isDefault).map(AuthorizeScope::getScope)
+                .collect(Collectors.toList());
     }
 
     /**
@@ -332,14 +294,40 @@ public abstract class AbstractProvider implements Provider {
     }
 
     /**
+     * Generates or retrieves a cached state parameter used to prevent CSRF attacks.
+     *
+     * @param state the provided state value; if empty, a new value will be generated
+     * @return the non-empty state value
+     */
+    protected String getRealState(String state) {
+        if (StringKit.isEmpty(state)) {
+            state = ID.objectId();
+        }
+        this.cache.write(state, state);
+        return state;
+    }
+
+    /**
      * Validates the completeness of the context configuration, checking required fields based on the protocol type.
      *
      * @param context the context configuration
      * @throws AuthorizedException if the configuration is incomplete
      */
-    protected void check(Context context) {
+    protected void validate(Context context) {
         if (complex.getProtocol() == Protocol.OIDC) {
             Checker.check(context, this.complex);
+        }
+    }
+
+    /**
+     * Validates callback data, primarily used for OAuth2 protocol.
+     *
+     * @param callback the callback object containing authorization data
+     * @throws AuthorizedException if OAuth2 validation fails
+     */
+    protected void validate(Callback callback) {
+        if (complex.getProtocol() == Protocol.OIDC) {
+            Checker.check(complex, callback);
         }
     }
 

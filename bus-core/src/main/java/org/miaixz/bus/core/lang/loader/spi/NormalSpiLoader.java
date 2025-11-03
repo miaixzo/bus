@@ -84,26 +84,18 @@ public class NormalSpiLoader {
     }
 
     /**
-     * Loads services using the standard {@link java.util.ServiceLoader}.
+     * 加载第一个服务，如果用户定义了多个接口实现类，只获取第一个。
      *
-     * @param <T>   The type of the service interface.
-     * @param clazz The service interface class.
-     * @return A {@link java.util.ServiceLoader} for the given service interface.
+     * @param <T>   接口类型
+     * @param clazz 服务接口
+     * @return 第一个服务接口实现对象，无实现返回{@code null}
      */
-    public static <T> java.util.ServiceLoader<T> load(final Class<T> clazz) {
-        return load(clazz, null);
-    }
-
-    /**
-     * Loads services using the standard {@link java.util.ServiceLoader} and a specified {@link ClassLoader}.
-     *
-     * @param <T>    The type of the service interface.
-     * @param clazz  The service interface class.
-     * @param loader The {@link ClassLoader} to be used to load provider-configuration files and provider classes.
-     * @return A {@link java.util.ServiceLoader} for the given service interface.
-     */
-    public static <T> java.util.ServiceLoader<T> load(final Class<T> clazz, final ClassLoader loader) {
-        return java.util.ServiceLoader.load(clazz, ObjectKit.defaultIfNull(loader, ClassKit::getClassLoader));
+    public static <T> T loadFirst(final Class<T> clazz) {
+        final Iterator<T> iterator = load(clazz).iterator();
+        if (iterator.hasNext()) {
+            return iterator.next();
+        }
+        return null;
     }
 
     /**
@@ -154,6 +146,29 @@ public class NormalSpiLoader {
      */
     public static <T> List<T> loadList(final boolean isLinked, final Class<T> clazz, final ClassLoader loader) {
         return ListKit.of(isLinked, load(clazz, loader));
+    }
+
+    /**
+     * Loads services using the standard {@link java.util.ServiceLoader}.
+     *
+     * @param <T>   The type of the service interface.
+     * @param clazz The service interface class.
+     * @return A {@link java.util.ServiceLoader} for the given service interface.
+     */
+    public static <T> java.util.ServiceLoader<T> load(final Class<T> clazz) {
+        return load(clazz, null);
+    }
+
+    /**
+     * Loads services using the standard {@link java.util.ServiceLoader} and a specified {@link ClassLoader}.
+     *
+     * @param <T>    The type of the service interface.
+     * @param clazz  The service interface class.
+     * @param loader The {@link ClassLoader} to be used to load provider-configuration files and provider classes.
+     * @return A {@link java.util.ServiceLoader} for the given service interface.
+     */
+    public static <T> java.util.ServiceLoader<T> load(final Class<T> clazz, final ClassLoader loader) {
+        return java.util.ServiceLoader.load(clazz, ObjectKit.defaultIfNull(loader, ClassKit::getClassLoader));
     }
 
 }

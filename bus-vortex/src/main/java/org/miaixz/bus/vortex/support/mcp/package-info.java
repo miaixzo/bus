@@ -1,12 +1,14 @@
 /**
- * Provides the concrete implementation for routing requests to services using the Miaixz Communication Protocol (MCP).
+ * Provides the core services and concrete implementations for supporting the Miaixz Communication Protocol (MCP).
  * <p>
- * This package contains the necessary components for MCP interaction:
+ * This package is the root for all MCP-related functionality. It contains:
  * <ul>
- * <li>{@link org.miaixz.bus.vortex.support.mcp.McpService}: A service that manages the lifecycle of all MCP
+ * <li>{@link org.miaixz.bus.vortex.support.mcp.McpService}: The central service that manages the lifecycle of all MCP
  * clients.</li>
- * <li>{@link org.miaixz.bus.vortex.support.mcp.McpClient}: A client that encapsulates the logic for communicating with
- * a single downstream MCP service.</li>
+ * <li>The {@code client} subpackage: Contains different {@link org.miaixz.bus.vortex.support.mcp.client.McpClient}
+ * implementations for various transport protocols (e.g., stdio, http).</li>
+ * <li>The {@code process} subpackage: Contains the default implementation for managing local MCP service
+ * processes.</li>
  * </ul>
  *
  * @author Kimi Liu

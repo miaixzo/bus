@@ -38,19 +38,36 @@ import java.util.TimeZone;
 public class Configure {
 
     /**
-     * The time zone for the scheduler.
+     * Time zone
      */
-    protected TimeZone timezone = TimeZone.getDefault();
+    private TimeZone timezone = TimeZone.getDefault();
     /**
-     * Whether to match the seconds field in a cron expression.
+     * Whether to support second matching
      */
-    protected boolean matchSecond;
+    private boolean matchSecond;
+    /**
+     * Whether to use daemon thread
+     */
+    private boolean daemon;
+    /**
+     * Whether to use trigger queue
+     */
+    private boolean useTriggerQueue;
 
     /**
      * Default constructor.
      */
     public Configure() {
 
+    }
+
+    /**
+     * Creates Cron configuration
+     *
+     * @return Cron configuration
+     */
+    public static Configure of() {
+        return new Configure();
     }
 
     /**
@@ -90,6 +107,51 @@ public class Configure {
      */
     public Configure setMatchSecond(final boolean isMatchSecond) {
         this.matchSecond = isMatchSecond;
+        return this;
+    }
+
+    /**
+     * Checks if the thread is a daemon thread.
+     *
+     * @return {@code true} if daemon thread, {@code false} if non-daemon thread
+     */
+    public boolean isDaemon() {
+        return this.daemon;
+    }
+
+    /**
+     * Sets whether to use a daemon thread.
+     *
+     * @param daemon {@code true} for daemon thread, {@code false} for non-daemon thread
+     * @return this {@link Configure} instance for chaining.
+     */
+    public Configure setDaemon(final boolean daemon) {
+        this.daemon = daemon;
+        return this;
+    }
+
+    /**
+     * Whether to use trigger queue
+     *
+     * @return {@code true} if used, {@code false} if not used
+     */
+    public boolean isUseTriggerQueue() {
+        return this.useTriggerQueue;
+    }
+
+    /**
+     * Sets whether to use trigger queue<br>
+     * {@code true} uses the trigger queue method, which pre-adds the next trigger time of tasks to the queue. When the
+     * trigger time of tasks in the queue is less than the current time, they are taken out of the queue and
+     * executed.<br>
+     * {@code false} uses the normal trigger method, which checks the task table. When the expression in the task table
+     * matches the specified time, the corresponding Task is executed.
+     *
+     * @param useTriggerQueue {@code true} to use, {@code false} not to use
+     * @return this
+     */
+    public Configure setUseTriggerQueue(final boolean useTriggerQueue) {
+        this.useTriggerQueue = useTriggerQueue;
         return this;
     }
 
