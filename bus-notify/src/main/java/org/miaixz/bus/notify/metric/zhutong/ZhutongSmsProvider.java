@@ -56,7 +56,7 @@ import org.miaixz.bus.notify.metric.AbstractProvider;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class ZhutongSmsProvider extends AbstractProvider<ZhutongMaterial, Context> {
+public class ZhutongSmsProvider extends AbstractProvider<ZhutongNotice, Context> {
 
     /**
      * Constructor for building the SMS implementation module.
@@ -69,13 +69,13 @@ public class ZhutongSmsProvider extends AbstractProvider<ZhutongMaterial, Contex
 
     /**
      * Sends an SMS notification using Zhutong SMS service. It determines whether to send a custom SMS or a template SMS
-     * based on the provided material.
+     * based on the provided notice.
      *
-     * @param entity The {@link ZhutongMaterial} containing SMS details.
+     * @param entity The {@link ZhutongNotice} containing SMS details.
      * @return A {@link Message} indicating the result of the SMS sending operation.
      */
     @Override
-    public Message send(ZhutongMaterial entity) {
+    public Message send(ZhutongNotice entity) {
         // If template ID or template variable name is empty, use custom SMS sending without a template
         if (ArrayKit.hasBlank(entity.getSignature(), entity.getTemplate(), entity.getTemplateName())) {
             return sendForCustom(entity);
@@ -87,11 +87,11 @@ public class ZhutongSmsProvider extends AbstractProvider<ZhutongMaterial, Contex
     /**
      * Sends a custom SMS message. Documentation: https://doc.zthysms.com/web/#/1/14
      *
-     * @param entity The {@link ZhutongMaterial} containing custom SMS details.
+     * @param entity The {@link ZhutongNotice} containing custom SMS details.
      * @return A {@link Message} indicating the result of the SMS sending operation.
      * @throws ValidateException if requestUrl, username, password, mobile, or content is invalid.
      */
-    protected Message sendForCustom(ZhutongMaterial entity) {
+    protected Message sendForCustom(ZhutongNotice entity) {
         String requestUrl = this.getUrl(entity);
         String username = this.context.getAppKey();
         String password = this.context.getAppSecret();
@@ -143,11 +143,11 @@ public class ZhutongSmsProvider extends AbstractProvider<ZhutongMaterial, Contex
     /**
      * Sends a template SMS message. Documentation: https://doc.zthysms.com/web/#/1/13
      *
-     * @param entity The {@link ZhutongMaterial} containing template SMS details.
+     * @param entity The {@link ZhutongNotice} containing template SMS details.
      * @return A {@link Message} indicating the result of the SMS sending operation.
      * @throws InternalException if the signature or template ID is empty.
      */
-    protected Message sendForTemplate(ZhutongMaterial entity) {
+    protected Message sendForTemplate(ZhutongNotice entity) {
         validator(this.getUrl(entity), this.context.getAppKey(), this.context.getAppSecret());
         if (StringKit.isBlank(entity.getSignature())) {
             throw new InternalException("Zhutong SMS: The reported signature in template SMS cannot be empty!");

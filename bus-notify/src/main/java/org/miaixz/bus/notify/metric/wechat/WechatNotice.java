@@ -25,16 +25,17 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.notify.metric.unisms;
+package org.miaixz.bus.notify.metric.wechat;
 
-import org.miaixz.bus.notify.Context;
-import org.miaixz.bus.notify.magic.Material;
+import org.miaixz.bus.notify.magic.Notice;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * Material for Uni SMS service.
+ * Notice for WeChat messaging services.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,37 +43,7 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @Setter
 @SuperBuilder
-@NoArgsConstructor
 @AllArgsConstructor
-public class UniMaterial extends Material {
-
-    /**
-     * Indicates whether to use simple mode. Defaults to true.
-     */
-    @Builder.Default
-    private boolean simple = true;
-
-    /**
-     * The name of the template variable.
-     */
-    private String templateName;
-    /**
-     * The retry interval in milliseconds.
-     */
-    private int retryInterval;
-    /**
-     * The maximum number of retries.
-     */
-    private int maxRetries;
-
-    /**
-     * Retrieves the default API request address. This address is used when the {@link Context} endpoint is empty.
-     *
-     * @return The default API request address for Uni SMS.
-     */
-    @Override
-    public String getUrl() {
-        return this.url = "https://uni.apistd.com/";
-    }
+public class WechatNotice extends Notice {
 
 }

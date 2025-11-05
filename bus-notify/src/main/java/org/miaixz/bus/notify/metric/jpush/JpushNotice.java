@@ -28,7 +28,7 @@
 package org.miaixz.bus.notify.metric.jpush;
 
 import org.miaixz.bus.notify.Context;
-import org.miaixz.bus.notify.magic.Material;
+import org.miaixz.bus.notify.magic.Notice;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -36,7 +36,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * Material for JPush SMS service.
+ * Notice for JPush SMS service.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -45,7 +45,7 @@ import lombok.experimental.SuperBuilder;
 @Setter
 @SuperBuilder
 @AllArgsConstructor
-public class JpushMaterial extends Material {
+public class JpushNotice extends Notice {
 
     /**
      * Retrieves the default API request address. This address is used when the {@link Context} endpoint is empty.

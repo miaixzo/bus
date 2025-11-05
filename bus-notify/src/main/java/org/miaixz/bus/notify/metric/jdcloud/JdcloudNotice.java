@@ -25,16 +25,18 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.notify.metric.ctyun;
+package org.miaixz.bus.notify.metric.jdcloud;
 
 import org.miaixz.bus.notify.Context;
-import org.miaixz.bus.notify.magic.Material;
+import org.miaixz.bus.notify.magic.Notice;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * Material for China Telecom Cloud (CTYUN) SMS service.
+ * Notice for JD Cloud SMS service.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,29 +44,17 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @Setter
 @SuperBuilder
-@NoArgsConstructor
 @AllArgsConstructor
-public class CtyunMaterial extends Material {
-
-    /**
-     * The name of the template variable.
-     */
-    private String templateName;
-
-    /**
-     * The API action to be performed, defaults to "SendSms".
-     */
-    @Builder.Default
-    private String action = "SendSms";
+public class JdcloudNotice extends Notice {
 
     /**
      * Retrieves the default API request address. This address is used when the {@link Context} endpoint is empty.
      *
-     * @return The default API request address for CTYUN SMS.
+     * @return The default API request address for JD Cloud SMS.
      */
     @Override
     public String getUrl() {
-        return this.url = "https://sms-global.ctapi.ctyun.cn/sms/api/v1/";
+        return this.url = "https://sms.jdcloud-api.com/";
     }
 
 }

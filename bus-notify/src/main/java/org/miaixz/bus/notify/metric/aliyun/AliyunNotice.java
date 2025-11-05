@@ -25,10 +25,10 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.notify.metric.tencent;
+package org.miaixz.bus.notify.metric.aliyun;
 
 import org.miaixz.bus.notify.Context;
-import org.miaixz.bus.notify.magic.Material;
+import org.miaixz.bus.notify.magic.Notice;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -37,9 +37,9 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * Material for Tencent Cloud notification services.
+ * Notice for Alibaba Cloud notification services.
  *
- * @author Kimi Liu
+ * @author Justubborn
  * @since Java 17+
  */
 @Getter
@@ -47,21 +47,21 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TencentMaterial extends Material {
+public class AliyunNotice extends Notice {
 
     /**
-     * The SMS application ID.
+     * The number of times to play the voice message.
      */
-    private String smsAppId;
+    private String playTimes;
 
     /**
      * Retrieves the default API request address. This address is used when the {@link Context} endpoint is empty.
      *
-     * @return The default API request address for Tencent Cloud SMS.
+     * @return The default API request address for Alibaba Cloud SMS.
      */
     @Override
     public String getUrl() {
-        return this.url = "https://sms.tencentcloudapi.com/";
+        return this.url = "https://dysmsapi.aliyuncs.com/";
     }
 
 }

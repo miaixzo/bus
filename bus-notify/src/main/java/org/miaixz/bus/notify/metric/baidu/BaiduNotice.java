@@ -25,10 +25,10 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.notify.metric.qiniu;
+package org.miaixz.bus.notify.metric.baidu;
 
 import org.miaixz.bus.notify.Context;
-import org.miaixz.bus.notify.magic.Material;
+import org.miaixz.bus.notify.magic.Notice;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -36,7 +36,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * Material for Qiniu Cloud SMS service.
+ * Notice for Baidu Cloud SMS service.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -45,16 +45,16 @@ import lombok.experimental.SuperBuilder;
 @Setter
 @SuperBuilder
 @AllArgsConstructor
-public class QiniuMaterial extends Material {
+public class BaiduNotice extends Notice {
 
     /**
-     * Retrieves the default API request address. This address is used when the {@link Context} endpoint is empty.
+     * Retrieves the API default request address. This address is used when the {@link Context} endpoint is empty.
      *
-     * @return The default API request address for Qiniu Cloud SMS.
+     * @return The API request address.
      */
     @Override
     public String getUrl() {
-        return this.url = "https://sms.qiniuapi.com/v1/message";
+        return this.url;
     }
 
 }

@@ -33,22 +33,22 @@ import java.util.List;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.core.xyz.ListKit;
-import org.miaixz.bus.notify.magic.Material;
+import org.miaixz.bus.notify.magic.Notice;
 
 /**
  * Notifier interface for sending various types of notifications, such as SMS, email, voice, WeChat, etc.
  *
- * @param <T> the type of material used for the notification, extending {@link Material}
+ * @param <T> the type of notice used for the notification, extending {@link Notice}
  * @author Justubborn
  * @since Java 17+
  */
-public interface Provider<T extends Material> extends org.miaixz.bus.core.Provider {
+public interface Provider<T extends Notice> extends org.miaixz.bus.core.Provider {
 
     /**
-     * Sends a notification using the specified template {@link Material}. Note: The template implementation varies
+     * Sends a notification using the specified template {@link Notice}. Note: The template implementation varies
      * among different service providers.
      *
-     * @param entity The notification content or material.
+     * @param entity The notification content or notice.
      * @return The result of the sending operation.
      */
     Message send(T entity);
@@ -56,7 +56,7 @@ public interface Provider<T extends Material> extends org.miaixz.bus.core.Provid
     /**
      * Sends a notification to a list of mobile numbers.
      *
-     * @param entity The notification content or material.
+     * @param entity The notification content or notice.
      * @param mobile A list of mobile numbers to send the notification to.
      * @return The result of the sending operation.
      */
@@ -65,7 +65,7 @@ public interface Provider<T extends Material> extends org.miaixz.bus.core.Provid
     /**
      * Sends a notification to a single mobile number.
      *
-     * @param entity The notification content or material.
+     * @param entity The notification content or notice.
      * @param mobile The mobile number to send the notification to.
      * @return The result of the sending operation.
      */
@@ -76,7 +76,7 @@ public interface Provider<T extends Material> extends org.miaixz.bus.core.Provid
     /**
      * Sends a notification to multiple mobile numbers.
      *
-     * @param entity The notification content or material.
+     * @param entity The notification content or notice.
      * @param mobile An array of mobile numbers to send the notification to.
      * @return The result of the sending operation.
      */

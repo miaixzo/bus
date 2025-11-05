@@ -25,10 +25,10 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.notify.metric.yunpian;
+package org.miaixz.bus.notify.metric.tencent;
 
 import org.miaixz.bus.notify.Context;
-import org.miaixz.bus.notify.magic.Material;
+import org.miaixz.bus.notify.magic.Notice;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -37,7 +37,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * Material for Yunpian SMS service.
+ * Notice for Tencent Cloud notification services.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -47,21 +47,21 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class YunpianMaterial extends Material {
+public class TencentNotice extends Notice {
 
     /**
-     * The API key for Yunpian API.
+     * The SMS application ID.
      */
-    private String apikey;
+    private String smsAppId;
 
     /**
      * Retrieves the default API request address. This address is used when the {@link Context} endpoint is empty.
      *
-     * @return The default API request address for Yunpian SMS.
+     * @return The default API request address for Tencent Cloud SMS.
      */
     @Override
     public String getUrl() {
-        return this.url = "https://sms.yunpian.com/v2/";
+        return this.url = "https://sms.tencentcloudapi.com/";
     }
 
 }

@@ -33,20 +33,20 @@ import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.notify.Context;
 import org.miaixz.bus.notify.Provider;
-import org.miaixz.bus.notify.magic.Material;
+import org.miaixz.bus.notify.magic.Notice;
 
 import lombok.AllArgsConstructor;
 
 /**
  * Abstract base class for notification providers, offering common functionalities and properties.
  *
- * @param <T> The type of {@link Material} this provider handles.
+ * @param <T> The type of {@link Notice} this provider handles.
  * @param <K> The type of {@link Context} this provider uses.
  * @author Justubborn
  * @since Java 17+
  */
 @AllArgsConstructor
-public abstract class AbstractProvider<T extends Material, K extends Context> implements Provider<T> {
+public abstract class AbstractProvider<T extends Notice, K extends Context> implements Provider<T> {
 
     /**
      * The context containing configuration information for the provider.
@@ -54,10 +54,10 @@ public abstract class AbstractProvider<T extends Material, K extends Context> im
     protected K context;
 
     /**
-     * Sends a notification with the given material. Implementations should override this method to provide specific
+     * Sends a notification with the given notice. Implementations should override this method to provide specific
      * sending logic.
      *
-     * @param entity The notification content or material.
+     * @param entity The notification content or notice.
      * @return The result of the sending operation, or {@code null} if not implemented.
      */
     @Override
@@ -66,10 +66,10 @@ public abstract class AbstractProvider<T extends Material, K extends Context> im
     }
 
     /**
-     * Sends a notification with the given material to a list of mobile numbers. Implementations should override this
+     * Sends a notification with the given notice to a list of mobile numbers. Implementations should override this
      * method to provide specific sending logic.
      *
-     * @param entity The notification content or material.
+     * @param entity The notification content or notice.
      * @param mobile A list of mobile numbers to send the notification to.
      * @return The result of the sending operation, or {@code null} if not implemented.
      */
@@ -81,7 +81,7 @@ public abstract class AbstractProvider<T extends Material, K extends Context> im
     /**
      * Retrieves the URL for the notification, prioritizing the context's endpoint if available.
      *
-     * @param property The material containing a potential URL.
+     * @param property The notice containing a potential URL.
      * @return The URL for the notification.
      */
     protected String getUrl(T property) {
@@ -92,7 +92,7 @@ public abstract class AbstractProvider<T extends Material, K extends Context> im
      * Retrieves the URL for the notification, prioritizing the context's endpoint if available.
      *
      * @param context The context containing the endpoint.
-     * @param entity  The material containing a potential URL.
+     * @param entity  The notice containing a potential URL.
      * @return The URL for the notification.
      */
     protected String getUrl(K context, T entity) {

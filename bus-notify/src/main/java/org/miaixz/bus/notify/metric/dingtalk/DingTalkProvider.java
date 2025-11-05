@@ -52,7 +52,7 @@ import lombok.Setter;
  * @since Java 17+
  */
 @Setter
-public class DingTalkProvider extends AbstractProvider<DingTalkMaterial, Context> {
+public class DingTalkProvider extends AbstractProvider<DingTalkNotice, Context> {
 
     /**
      * Atomic reference for storing the access token.
@@ -79,11 +79,11 @@ public class DingTalkProvider extends AbstractProvider<DingTalkMaterial, Context
     /**
      * Sends a DingTalk notification.
      *
-     * @param entity The {@link DingTalkMaterial} containing notification details.
+     * @param entity The {@link DingTalkNotice} containing notification details.
      * @return A {@link Message} indicating the result of the sending operation.
      */
     @Override
-    public Message send(DingTalkMaterial entity) {
+    public Message send(DingTalkNotice entity) {
         Map<String, String> bodys = new HashMap<>();
         bodys.put("access_token", entity.getToken());
         bodys.put("agent_id", entity.getAgentId());

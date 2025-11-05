@@ -25,10 +25,10 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.notify.metric.huawei;
+package org.miaixz.bus.notify.metric.cloopen;
 
 import org.miaixz.bus.notify.Context;
-import org.miaixz.bus.notify.magic.Material;
+import org.miaixz.bus.notify.magic.Notice;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -36,7 +36,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * Material for Huawei Cloud SMS service.
+ * Notice for Cloopen Cloud SMS service.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -45,16 +45,16 @@ import lombok.experimental.SuperBuilder;
 @Setter
 @SuperBuilder
 @AllArgsConstructor
-public class HuaweiMaterial extends Material {
+public class CloopenNotice extends Notice {
 
     /**
      * Retrieves the default API request address. This address is used when the {@link Context} endpoint is empty.
      *
-     * @return The default API request address for Huawei Cloud SMS.
+     * @return The default API request address for Cloopen Cloud SMS.
      */
     @Override
     public String getUrl() {
-        return this.url = "https://smsapi.cn-north-4.myhuaweicloud.com/sms/batchSendSms/v1/";
+        return this.url = "https://app.cloopen.com:8883/2013-12-26/";
     }
 
 }

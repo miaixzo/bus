@@ -49,7 +49,7 @@ import org.miaixz.bus.notify.metric.AbstractProvider;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class UpyunSmsProvider extends AbstractProvider<UpyunMaterial, Context> {
+public class UpyunSmsProvider extends AbstractProvider<UpyunNotice, Context> {
 
     /**
      * Constructs a {@code UpyunSmsProvider} with the given context.
@@ -63,11 +63,11 @@ public class UpyunSmsProvider extends AbstractProvider<UpyunMaterial, Context> {
     /**
      * Sends an SMS notification using Upyun SMS service.
      *
-     * @param entity The {@link UpyunMaterial} containing SMS details like template ID, recipient, and parameters.
+     * @param entity The {@link UpyunNotice} containing SMS details like template ID, recipient, and parameters.
      * @return A {@link Message} indicating the result of the SMS sending operation.
      */
     @Override
-    public Message send(UpyunMaterial entity) {
+    public Message send(UpyunNotice entity) {
         Map<String, String> bodys = new HashMap<>();
         // The template ID for the SMS message.
         bodys.put("template_id", entity.getTemplate());
@@ -81,11 +81,11 @@ public class UpyunSmsProvider extends AbstractProvider<UpyunMaterial, Context> {
         headers.put(HTTP.AUTHORIZATION, entity.getToken());
         String response = Httpx.post(this.getUrl(entity), bodys, headers);
 
-        Collection<UpyunMaterial.MessageId> list = JsonKit.toList(response, UpyunMaterial.MessageId.class);
+        Collection<UpyunNotice.MessageId> list = JsonKit.toList(response, UpyunNotice.MessageId.class);
         if (CollKit.isEmpty(list)) {
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
         }
-        boolean succeed = list.stream().filter(Objects::nonNull).anyMatch(UpyunMaterial.MessageId::succeed);
+        boolean succeed = list.stream().filter(Objects::nonNull).anyMatch(UpyunNotice.MessageId::succeed);
         String errcode = succeed ? ErrorCode._SUCCESS.getKey() : ErrorCode._FAILURE.getKey();
         String errmsg = succeed ? ErrorCode._SUCCESS.getValue() : ErrorCode._FAILURE.getValue();
 

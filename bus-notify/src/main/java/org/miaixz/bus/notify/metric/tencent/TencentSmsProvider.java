@@ -43,7 +43,7 @@ import org.miaixz.bus.notify.metric.AbstractProvider;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class TencentSmsProvider extends AbstractProvider<TencentMaterial, Context> {
+public class TencentSmsProvider extends AbstractProvider<TencentNotice, Context> {
 
     /**
      * Constructs a {@code TencentSmsProvider} with the given context.
@@ -57,12 +57,12 @@ public class TencentSmsProvider extends AbstractProvider<TencentMaterial, Contex
     /**
      * Sends an SMS notification using Tencent Cloud SMS service.
      *
-     * @param entity The {@link TencentMaterial} containing SMS details such as App ID, signature, template, parameters,
+     * @param entity The {@link TencentNotice} containing SMS details such as App ID, signature, template, parameters,
      *               and recipient.
      * @return A {@link Message} indicating the result of the SMS sending operation.
      */
     @Override
-    public Message send(TencentMaterial entity) {
+    public Message send(TencentNotice entity) {
         Map<String, String> bodys = new HashMap<>();
         bodys.put("SmsSdkAppid", entity.getSmsAppId());
         bodys.put("Sign", entity.getSignature());

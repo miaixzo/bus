@@ -48,7 +48,7 @@ import org.miaixz.bus.notify.metric.AbstractProvider;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class UniSmsProvider extends AbstractProvider<UniMaterial, Context> {
+public class UniSmsProvider extends AbstractProvider<UniNotice, Context> {
 
     /**
      * Constructs a {@code UniSmsProvider} with the given context.
@@ -62,13 +62,13 @@ public class UniSmsProvider extends AbstractProvider<UniMaterial, Context> {
     /**
      * Sends an SMS notification using Uni SMS service.
      *
-     * @param entity The {@link UniMaterial} containing SMS details like template ID, template name, recipient,
+     * @param entity The {@link UniNotice} containing SMS details like template ID, template name, recipient,
      *               signature, and parameters.
      * @return A {@link Message} indicating the result of the SMS sending operation.
      * @throws ValidateException if both template ID and template name are empty.
      */
     @Override
-    public Message send(UniMaterial entity) {
+    public Message send(UniNotice entity) {
         if ("".equals(entity.getTemplate()) && "".equals(entity.getTemplateName())) {
             throw new ValidateException("Template ID and template variable in the configuration file cannot be empty!");
         }
@@ -91,12 +91,12 @@ public class UniSmsProvider extends AbstractProvider<UniMaterial, Context> {
     /**
      * Sends a request to the Uni SMS API.
      *
-     * @param entity The {@link UniMaterial} containing request details.
+     * @param entity The {@link UniNotice} containing request details.
      * @param action The API action to be performed, e.g., "sms.message.send".
      * @param bodys  The request body parameters.
      * @return A {@link Message} indicating the result of the API request.
      */
-    public Message request(final UniMaterial entity, final String action, final Map<String, Object> bodys) {
+    public Message request(final UniNotice entity, final String action, final Map<String, Object> bodys) {
         Map<String, String> headers = new HashMap<>();
         headers.put("User-Agent", "uni-java-sdk" + "/" + "0.0.4");
         headers.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON);

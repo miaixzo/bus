@@ -44,7 +44,7 @@ import org.miaixz.bus.notify.metric.AbstractProvider;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class BaiduSmsProvider extends AbstractProvider<BaiduMaterial, Context> {
+public class BaiduSmsProvider extends AbstractProvider<BaiduNotice, Context> {
 
     /**
      * Constructs a {@code BaiduSmsProvider} with the given context.
@@ -58,12 +58,12 @@ public class BaiduSmsProvider extends AbstractProvider<BaiduMaterial, Context> {
     /**
      * Sends an SMS notification using Baidu Cloud SMS service.
      *
-     * @param entity The {@link BaiduMaterial} containing SMS details like recipient, template, signature, and
+     * @param entity The {@link BaiduNotice} containing SMS details like recipient, template, signature, and
      *               parameters.
      * @return A {@link Message} indicating the result of the SMS sending operation.
      */
     @Override
-    public Message send(BaiduMaterial entity) {
+    public Message send(BaiduNotice entity) {
         Map<String, String> bodys = new HashMap<>();
         // The recipient's mobile number.
         bodys.put("mobile", entity.getReceive());

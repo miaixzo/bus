@@ -27,7 +27,7 @@
 */
 package org.miaixz.bus.notify.metric.dingtalk;
 
-import org.miaixz.bus.notify.magic.Material;
+import org.miaixz.bus.notify.magic.Notice;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -36,7 +36,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * Material for DingTalk notification messages.
+ * Notice for DingTalk notification messages.
  *
  * @author Justubborn
  * @since Java 17+
@@ -46,7 +46,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class DingTalkMaterial extends Material {
+public class DingTalkNotice extends Notice {
 
     /**
      * The agent ID of the application.

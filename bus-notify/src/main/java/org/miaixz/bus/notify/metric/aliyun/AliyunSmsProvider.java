@@ -44,7 +44,7 @@ import org.miaixz.bus.notify.Context;
  * @author Justubborn
  * @since Java 17+
  */
-public class AliyunSmsProvider extends AliyunProvider<AliyunMaterial, Context> {
+public class AliyunSmsProvider extends AliyunProvider<AliyunNotice, Context> {
 
     /**
      * Constructs an {@code AliyunSmsProvider} with the given context.
@@ -58,12 +58,12 @@ public class AliyunSmsProvider extends AliyunProvider<AliyunMaterial, Context> {
     /**
      * Sends an SMS notification using Alibaba Cloud SMS service.
      *
-     * @param entity The {@link AliyunMaterial} containing SMS details like recipient, signature, template, and
+     * @param entity The {@link AliyunNotice} containing SMS details like recipient, signature, template, and
      *               parameters.
      * @return A {@link Message} indicating the result of the SMS sending operation.
      */
     @Override
-    public Message send(AliyunMaterial entity) {
+    public Message send(AliyunNotice entity) {
         Map<String, String> bodys = new HashMap<>();
         // 1. System parameters
         // The signature method used for authentication.

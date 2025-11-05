@@ -25,9 +25,10 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.notify.metric.emay;
+package org.miaixz.bus.notify.metric.zhutong;
 
-import org.miaixz.bus.notify.magic.Material;
+import org.miaixz.bus.notify.Context;
+import org.miaixz.bus.notify.magic.Notice;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -36,7 +37,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * Material for Emay SMS service.
+ * Notice for Zhutong SMS service.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -46,11 +47,22 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class EmayMaterial extends Material {
+public class ZhutongNotice extends Notice {
 
     /**
-     * The request URL for the Emay API.
+     * The name of the template variable. View address: https://mix2.zthysms.com/index.html#/TemplateManagement. Can be
+     * empty, in which case a non-template form is used to send SMS.
      */
-    private String requestUrl;
+    private String templateName;
+
+    /**
+     * Retrieves the default API request address. This address is used when the {@link Context} endpoint is empty.
+     *
+     * @return The default API request address for Zhutong SMS.
+     */
+    @Override
+    public String getUrl() {
+        return this.url = "https://api.mix2.zthysms.com/";
+    }
 
 }

@@ -44,7 +44,7 @@ import org.miaixz.bus.notify.metric.AbstractProvider;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class YunpianSmsProvider extends AbstractProvider<YunpianMaterial, Context> {
+public class YunpianSmsProvider extends AbstractProvider<YunpianNotice, Context> {
 
     /**
      * Constructs a {@code YunpianSmsProvider} with the given context.
@@ -58,12 +58,12 @@ public class YunpianSmsProvider extends AbstractProvider<YunpianMaterial, Contex
     /**
      * Sends an SMS notification using Yunpian SMS service.
      *
-     * @param entity The {@link YunpianMaterial} containing SMS details like API key, recipient, template ID, and
+     * @param entity The {@link YunpianNotice} containing SMS details like API key, recipient, template ID, and
      *               template parameters.
      * @return A {@link Message} indicating the result of the SMS sending operation.
      */
     @Override
-    public Message send(YunpianMaterial entity) {
+    public Message send(YunpianNotice entity) {
         Map<String, String> bodys = new HashMap<>();
         // The API key for Yunpian.
         bodys.put("apikey", entity.getApikey());

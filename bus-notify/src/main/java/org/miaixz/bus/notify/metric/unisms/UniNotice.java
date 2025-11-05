@@ -25,20 +25,18 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.notify.magic;
+package org.miaixz.bus.notify.metric.unisms;
 
-import java.util.Map;
+import org.miaixz.bus.notify.Context;
+import org.miaixz.bus.notify.magic.Notice;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 /**
- * Represents the material or content of a message template.
+ * Notice for Uni SMS service.
  *
- * @author Justubborn
+ * @author Kimi Liu
  * @since Java 17+
  */
 @Getter
@@ -46,100 +44,35 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Material {
+public class UniNotice extends Notice {
 
     /**
-     * The URL associated with the material, if any.
+     * Indicates whether to use simple mode. Defaults to true.
      */
-    protected String url;
-    /**
-     * The sender of the message.
-     */
-    protected String sender;
+    @Builder.Default
+    private boolean simple = true;
 
     /**
-     * The recipient(s) of the message, typically comma-separated.
+     * The name of the template variable.
      */
-    protected String receive;
+    private String templateName;
+    /**
+     * The retry interval in milliseconds.
+     */
+    private int retryInterval;
+    /**
+     * The maximum number of retries.
+     */
+    private int maxRetries;
 
     /**
-     * The subject of the message.
+     * Retrieves the default API request address. This address is used when the {@link Context} endpoint is empty.
+     *
+     * @return The default API request address for Uni SMS.
      */
-    protected String subject;
-
-    /**
-     * The main content of the message. Limited to 28K characters.
-     */
-    protected String content;
-
-    /**
-     * The template or template ID to be used.
-     */
-    protected String template;
-
-    /**
-     * The signature or signature ID for the message.
-     */
-    protected String signature;
-
-    /**
-     * Parameters for the message template.
-     */
-    protected String params;
-
-    /**
-     * Extension fields or additional properties.
-     */
-    protected Map<String, Object> extend;
-
-    /**
-     * The type of the content.
-     */
-    protected Type type;
-
-    /**
-     * The sending mode of the message.
-     */
-    protected Mode mode;
-
-    /**
-     * Enumerates the types of content that can be sent.
-     */
-    public enum Type {
-        /**
-         * HTML content type.
-         */
-        HTML,
-        /**
-         * Plain text content type.
-         */
-        TEXT,
-        /**
-         * Voice message content type.
-         */
-        VOICE,
-        /**
-         * File content type.
-         */
-        FILE,
-        /**
-         * Other content type not explicitly defined.
-         */
-        OTHER
-    }
-
-    /**
-     * Enumerates the sending modes for messages.
-     */
-    public enum Mode {
-        /**
-         * Single message sending mode.
-         */
-        SINGLE,
-        /**
-         * Batch message sending mode.
-         */
-        BATCH
+    @Override
+    public String getUrl() {
+        return this.url = "https://uni.apistd.com/";
     }
 
 }

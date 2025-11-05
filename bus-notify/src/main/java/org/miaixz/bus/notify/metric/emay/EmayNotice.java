@@ -25,17 +25,18 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.notify.metric.wechat;
+package org.miaixz.bus.notify.metric.emay;
 
-import org.miaixz.bus.notify.magic.Material;
+import org.miaixz.bus.notify.magic.Notice;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * Material for WeChat messaging services.
+ * Notice for Emay SMS service.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,7 +44,13 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @Setter
 @SuperBuilder
+@NoArgsConstructor
 @AllArgsConstructor
-public class WechatMaterial extends Material {
+public class EmayNotice extends Notice {
+
+    /**
+     * The request URL for the Emay API.
+     */
+    private String requestUrl;
 
 }

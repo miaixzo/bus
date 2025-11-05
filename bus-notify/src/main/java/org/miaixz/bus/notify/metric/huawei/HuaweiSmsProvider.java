@@ -50,7 +50,7 @@ import org.miaixz.bus.notify.metric.AbstractProvider;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class HuaweiSmsProvider extends AbstractProvider<HuaweiMaterial, Context> {
+public class HuaweiSmsProvider extends AbstractProvider<HuaweiNotice, Context> {
 
     /**
      * Success code for Huawei Cloud SMS API responses.
@@ -99,12 +99,12 @@ public class HuaweiSmsProvider extends AbstractProvider<HuaweiMaterial, Context>
     /**
      * Sends an SMS notification using Huawei Cloud SMS service.
      *
-     * @param entity The {@link HuaweiMaterial} containing SMS details like sender, recipient, template ID, template
+     * @param entity The {@link HuaweiNotice} containing SMS details like sender, recipient, template ID, template
      *               parameters, and signature.
      * @return A {@link Message} indicating the result of the SMS sending operation.
      */
     @Override
-    public Message send(HuaweiMaterial entity) {
+    public Message send(HuaweiNotice entity) {
         Map<String, String> bodys = new HashMap<>();
         // The sender's number.
         bodys.put("from", entity.getSender());

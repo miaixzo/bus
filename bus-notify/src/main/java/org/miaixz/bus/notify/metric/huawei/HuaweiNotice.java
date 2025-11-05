@@ -25,19 +25,18 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.notify.metric.zhutong;
+package org.miaixz.bus.notify.metric.huawei;
 
 import org.miaixz.bus.notify.Context;
-import org.miaixz.bus.notify.magic.Material;
+import org.miaixz.bus.notify.magic.Notice;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * Material for Zhutong SMS service.
+ * Notice for Huawei Cloud SMS service.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -45,24 +44,17 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @Setter
 @SuperBuilder
-@NoArgsConstructor
 @AllArgsConstructor
-public class ZhutongMaterial extends Material {
-
-    /**
-     * The name of the template variable. View address: https://mix2.zthysms.com/index.html#/TemplateManagement. Can be
-     * empty, in which case a non-template form is used to send SMS.
-     */
-    private String templateName;
+public class HuaweiNotice extends Notice {
 
     /**
      * Retrieves the default API request address. This address is used when the {@link Context} endpoint is empty.
      *
-     * @return The default API request address for Zhutong SMS.
+     * @return The default API request address for Huawei Cloud SMS.
      */
     @Override
     public String getUrl() {
-        return this.url = "https://api.mix2.zthysms.com/";
+        return this.url = "https://smsapi.cn-north-4.myhuaweicloud.com/sms/batchSendSms/v1/";
     }
 
 }

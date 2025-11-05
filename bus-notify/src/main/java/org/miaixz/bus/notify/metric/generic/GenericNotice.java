@@ -33,7 +33,7 @@ import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.notify.magic.Material;
+import org.miaixz.bus.notify.magic.Notice;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -42,7 +42,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * Represents the material for generic email messages.
+ * Represents the notice for generic email messages.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -52,7 +52,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class GenericMaterial extends Material {
+public class GenericNotice extends Notice {
 
     /**
      * SMTP host property key.
@@ -206,9 +206,9 @@ public class GenericMaterial extends Material {
     /**
      * Fills in default values for properties if they are null or empty.
      *
-     * @return This {@code GenericMaterial} instance with default values applied.
+     * @return This {@code GenericNotice} instance with default values applied.
      */
-    public GenericMaterial defaultIfEmpty() {
+    public GenericNotice defaultIfEmpty() {
         if (StringKit.isBlank(this.host)) {
             // If the SMTP address is empty, default to smtp.<sender_email_suffix>
             this.host = StringKit

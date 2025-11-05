@@ -25,21 +25,18 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.notify.metric.aliyun;
+package org.miaixz.bus.notify.metric.ctyun;
 
 import org.miaixz.bus.notify.Context;
-import org.miaixz.bus.notify.magic.Material;
+import org.miaixz.bus.notify.magic.Notice;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 /**
- * Material for Alibaba Cloud notification services.
+ * Notice for China Telecom Cloud (CTYUN) SMS service.
  *
- * @author Justubborn
+ * @author Kimi Liu
  * @since Java 17+
  */
 @Getter
@@ -47,21 +44,27 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AliyunMaterial extends Material {
+public class CtyunNotice extends Notice {
 
     /**
-     * The number of times to play the voice message.
+     * The name of the template variable.
      */
-    private String playTimes;
+    private String templateName;
+
+    /**
+     * The API action to be performed, defaults to "SendSms".
+     */
+    @Builder.Default
+    private String action = "SendSms";
 
     /**
      * Retrieves the default API request address. This address is used when the {@link Context} endpoint is empty.
      *
-     * @return The default API request address for Alibaba Cloud SMS.
+     * @return The default API request address for CTYUN SMS.
      */
     @Override
     public String getUrl() {
-        return this.url = "https://dysmsapi.aliyuncs.com/";
+        return this.url = "https://sms-global.ctapi.ctyun.cn/sms/api/v1/";
     }
 
 }

@@ -25,36 +25,121 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.notify.metric.jdcloud;
+package org.miaixz.bus.notify.magic;
 
-import org.miaixz.bus.notify.Context;
-import org.miaixz.bus.notify.magic.Material;
+import java.util.Map;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * Material for JD Cloud SMS service.
+ * Represents the notice or content of a message template.
  *
- * @author Kimi Liu
+ * @author Justubborn
  * @since Java 17+
  */
 @Getter
 @Setter
 @SuperBuilder
+@NoArgsConstructor
 @AllArgsConstructor
-public class JdcloudMaterial extends Material {
+public class Notice {
 
     /**
-     * Retrieves the default API request address. This address is used when the {@link Context} endpoint is empty.
-     *
-     * @return The default API request address for JD Cloud SMS.
+     * The URL associated with the notice, if any.
      */
-    @Override
-    public String getUrl() {
-        return this.url = "https://sms.jdcloud-api.com/";
+    protected String url;
+    /**
+     * The sender of the message.
+     */
+    protected String sender;
+
+    /**
+     * The recipient(s) of the message, typically comma-separated.
+     */
+    protected String receive;
+
+    /**
+     * The subject of the message.
+     */
+    protected String subject;
+
+    /**
+     * The main content of the message. Limited to 28K characters.
+     */
+    protected String content;
+
+    /**
+     * The template or template ID to be used.
+     */
+    protected String template;
+
+    /**
+     * The signature or signature ID for the message.
+     */
+    protected String signature;
+
+    /**
+     * Parameters for the message template.
+     */
+    protected String params;
+
+    /**
+     * Extension fields or additional properties.
+     */
+    protected Map<String, Object> extend;
+
+    /**
+     * The type of the content.
+     */
+    protected Type type;
+
+    /**
+     * The sending mode of the message.
+     */
+    protected Mode mode;
+
+    /**
+     * Enumerates the types of content that can be sent.
+     */
+    public enum Type {
+        /**
+         * HTML content type.
+         */
+        HTML,
+        /**
+         * Plain text content type.
+         */
+        TEXT,
+        /**
+         * Voice message content type.
+         */
+        VOICE,
+        /**
+         * File content type.
+         */
+        FILE,
+        /**
+         * Other content type not explicitly defined.
+         */
+        OTHER
+    }
+
+    /**
+     * Enumerates the sending modes for messages.
+     */
+    public enum Mode {
+        /**
+         * Single message sending mode.
+         */
+        SINGLE,
+        /**
+         * Batch message sending mode.
+         */
+        BATCH
     }
 
 }

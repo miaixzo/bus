@@ -53,7 +53,7 @@ import org.miaixz.bus.notify.metric.AbstractProvider;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class CtyunSmsProvider extends AbstractProvider<CtyunMaterial, Context> {
+public class CtyunSmsProvider extends AbstractProvider<CtyunNotice, Context> {
 
     /**
      * Constructs a {@code CtyunSmsProvider} with the given context.
@@ -104,12 +104,12 @@ public class CtyunSmsProvider extends AbstractProvider<CtyunMaterial, Context> {
     /**
      * Sends an SMS notification using China Telecom Cloud (CTYUN) SMS service.
      *
-     * @param entity The {@link CtyunMaterial} containing SMS details like recipient, signature, template, and
+     * @param entity The {@link CtyunNotice} containing SMS details like recipient, signature, template, and
      *               parameters.
      * @return A {@link Message} indicating the result of the SMS sending operation.
      */
     @Override
-    public Message send(CtyunMaterial entity) {
+    public Message send(CtyunNotice entity) {
         Map<String, String> bodys = new HashMap<>(5);
         // The API action to be performed.
         bodys.put("action", entity.getAction());

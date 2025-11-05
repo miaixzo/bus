@@ -49,7 +49,7 @@ import org.miaixz.bus.notify.metric.AbstractProvider;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class JpushSmsProvider extends AbstractProvider<JpushMaterial, Context> {
+public class JpushSmsProvider extends AbstractProvider<JpushNotice, Context> {
 
     /**
      * Constructs a {@code JpushSmsProvider} with the given context.
@@ -63,12 +63,12 @@ public class JpushSmsProvider extends AbstractProvider<JpushMaterial, Context> {
     /**
      * Sends an SMS notification using JPush SMS service.
      *
-     * @param entity The {@link JpushMaterial} containing SMS details like signature ID, recipient, template ID, and
+     * @param entity The {@link JpushNotice} containing SMS details like signature ID, recipient, template ID, and
      *               template parameters.
      * @return A {@link Message} indicating the result of the SMS sending operation.
      */
     @Override
-    public Message send(JpushMaterial entity) {
+    public Message send(JpushNotice entity) {
         Map<String, String> bodys = new HashMap<>();
         /**
          * The signature ID for the SMS.
