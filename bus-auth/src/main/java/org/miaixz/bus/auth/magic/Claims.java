@@ -48,7 +48,7 @@ import java.io.Serializable;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Material implements Serializable {
+public class Claims implements Serializable {
 
     /**
      * The unique ID of the user in the third-party system. When integrating this component, the user can be uniquely

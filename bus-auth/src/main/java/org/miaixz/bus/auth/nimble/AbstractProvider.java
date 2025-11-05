@@ -37,7 +37,7 @@ import org.miaixz.bus.auth.cache.AuthCache;
 import org.miaixz.bus.auth.magic.Authorization;
 import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.ErrorCode;
-import org.miaixz.bus.auth.magic.Material;
+import org.miaixz.bus.auth.magic.Claims;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.data.id.ID;
@@ -107,7 +107,7 @@ public abstract class AbstractProvider implements Provider {
      * Processes the login flow, validates callback data, obtains an access token, and retrieves user information.
      *
      * @param callback the callback object containing authorization data (e.g., code, state)
-     * @return a {@link Material} object containing user information or an error message
+     * @return a {@link Claims} object containing user information or an error message
      */
     @Override
     public Message authorize(Callback callback) {

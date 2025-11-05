@@ -36,7 +36,7 @@ import org.miaixz.bus.auth.Registry;
 import org.miaixz.bus.auth.magic.Authorization;
 import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.ErrorCode;
-import org.miaixz.bus.auth.magic.Material;
+import org.miaixz.bus.auth.magic.Claims;
 import org.miaixz.bus.auth.nimble.AbstractProvider;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Message;
@@ -128,7 +128,7 @@ public class RednoteMarketiProvider extends AbstractProvider {
      * not support direct user info retrieval via a dedicated URL.
      *
      * @param authorization the {@link Authorization} obtained after successful authorization
-     * @return {@link Material} containing the user's information
+     * @return {@link Claims} containing the user's information
      * @throws UnsupportedOperationException if this operation is not supported by the platform
      */
     @Override

@@ -33,7 +33,7 @@ import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.ErrorCode;
-import org.miaixz.bus.auth.magic.Material;
+import org.miaixz.bus.auth.magic.Claims;
 import org.miaixz.bus.auth.nimble.AbstractProvider;
 
 /**
@@ -88,7 +88,7 @@ public interface Provider extends org.miaixz.bus.core.Provider {
      * Exchanges the token for user information.
      *
      * @param authorization the token information
-     * @return {@link Material} containing the user's information
+     * @return {@link Claims} containing the user's information
      * @see AbstractProvider#token(Callback)
      */
     Message userInfo(Authorization authorization);

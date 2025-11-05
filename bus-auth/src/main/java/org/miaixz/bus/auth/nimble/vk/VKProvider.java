@@ -37,7 +37,7 @@ import org.miaixz.bus.auth.Registry;
 import org.miaixz.bus.auth.magic.Authorization;
 import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.ErrorCode;
-import org.miaixz.bus.auth.magic.Material;
+import org.miaixz.bus.auth.magic.Claims;
 import org.miaixz.bus.auth.nimble.AbstractProvider;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Message;
@@ -146,7 +146,7 @@ public class VKProvider extends AbstractProvider {
         // Extract user information
         return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
                 .data(
-                        Material.builder().uuid(userObj.get("user_id")).username(userObj.get("first_name"))
+                        Claims.builder().uuid(userObj.get("user_id")).username(userObj.get("first_name"))
                                 .nickname(userObj.get("first_name") + " " + userObj.get("last_name"))
                                 .avatar(userObj.get("avatar")).email(userObj.get("email")).token(authorization)
                                 .rawJson(JsonKit.toJsonString(userObj)).source(this.complex.toString()).build())

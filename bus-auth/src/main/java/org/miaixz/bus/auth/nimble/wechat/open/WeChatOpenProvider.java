@@ -39,7 +39,7 @@ import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Registry;
 import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.ErrorCode;
-import org.miaixz.bus.auth.magic.Material;
+import org.miaixz.bus.auth.magic.Claims;
 import org.miaixz.bus.auth.nimble.wechat.AbstractWeChatProvider;
 
 import java.util.Map;
@@ -87,7 +87,7 @@ public class WeChatOpenProvider extends AbstractWeChatProvider {
      * Retrieves user information from WeChat Open Platform's user info endpoint.
      *
      * @param authorization the {@link Authorization} obtained after successful authorization
-     * @return {@link Material} containing the user's information
+     * @return {@link Claims} containing the user's information
      * @throws AuthorizedException if parsing the response fails or required user information is missing
      */
     @Override
@@ -117,7 +117,7 @@ public class WeChatOpenProvider extends AbstractWeChatProvider {
             String sex = (String) object.get("sex");
 
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
-                    Material.builder().rawJson(JsonKit.toJsonString(object)).username(nickname).nickname(nickname)
+                    Claims.builder().rawJson(JsonKit.toJsonString(object)).username(nickname).nickname(nickname)
                             .avatar(headimgurl).location(location).uuid(openId).gender(getWechatRealGender(sex))
                             .token(authorization).source(complex.toString()).build())
                     .build();

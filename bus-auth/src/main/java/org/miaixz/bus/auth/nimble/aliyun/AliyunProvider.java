@@ -36,7 +36,7 @@ import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Registry;
 import org.miaixz.bus.auth.magic.Callback;
-import org.miaixz.bus.auth.magic.Material;
+import org.miaixz.bus.auth.magic.Claims;
 import org.miaixz.bus.auth.nimble.AbstractProvider;
 
 import java.util.Map;
@@ -91,7 +91,7 @@ public class AliyunProvider extends AbstractProvider {
      * Retrieves user information from Aliyun's user info endpoint.
      *
      * @param authorization the {@link Authorization} obtained after successful authorization
-     * @return {@link Material} containing the user's information
+     * @return {@link Claims} containing the user's information
      */
     @Override
     public Message userInfo(Authorization authorization) {
@@ -99,7 +99,7 @@ public class AliyunProvider extends AbstractProvider {
         Map<String, Object> object = JsonKit.toPojo(userInfo, Map.class);
         return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
                 .data(
-                        Material.builder().rawJson(JsonKit.toJsonString(object)).uuid((String) object.get("sub"))
+                        Claims.builder().rawJson(JsonKit.toJsonString(object)).uuid((String) object.get("sub"))
                                 .username((String) object.get("login_name")).nickname((String) object.get("name"))
                                 .gender(Gender.UNKNOWN).token(authorization).source(complex.toString()).build())
                 .build();

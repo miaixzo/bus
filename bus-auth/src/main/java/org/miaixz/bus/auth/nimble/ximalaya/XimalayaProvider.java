@@ -42,7 +42,7 @@ import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Registry;
 import org.miaixz.bus.auth.magic.Authorization;
 import org.miaixz.bus.auth.magic.Callback;
-import org.miaixz.bus.auth.magic.Material;
+import org.miaixz.bus.auth.magic.Claims;
 import org.miaixz.bus.auth.nimble.AbstractProvider;
 
 import java.security.MessageDigest;
@@ -184,7 +184,7 @@ public class XimalayaProvider extends AbstractProvider {
      * Retrieves user information from Ximalaya's user info endpoint.
      *
      * @param authorization the token information
-     * @return {@link Material} containing the user's information
+     * @return {@link Claims} containing the user's information
      * @see AbstractProvider#token(Callback)
      * @throws AuthorizedException if parsing the response fails or required user information is missing
      */
@@ -214,7 +214,7 @@ public class XimalayaProvider extends AbstractProvider {
 
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
                     .data(
-                            Material.builder().uuid(id).nickname(nickname).avatar(avatarUrl)
+                            Claims.builder().uuid(id).nickname(nickname).avatar(avatarUrl)
                                     .rawJson(JsonKit.toJsonString(object)).source(complex.toString())
                                     .token(authorization).gender(Gender.UNKNOWN).build())
                     .build();

@@ -35,7 +35,7 @@ import org.miaixz.bus.auth.Registry;
 import org.miaixz.bus.auth.magic.Authorization;
 import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.ErrorCode;
-import org.miaixz.bus.auth.magic.Material;
+import org.miaixz.bus.auth.magic.Claims;
 import org.miaixz.bus.auth.nimble.AbstractProvider;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Message;
@@ -105,7 +105,7 @@ public class DouyinMiniProvider extends AbstractProvider {
      * function.
      *
      * @param authorization the {@link Authorization} obtained after successful authorization
-     * @return {@link Material} containing the user's information
+     * @return {@link Claims} containing the user's information
      */
     @Override
     public Message userInfo(Authorization authorization) {
@@ -113,7 +113,7 @@ public class DouyinMiniProvider extends AbstractProvider {
         // documentation
         // If user information is required, it needs to be passed to the backend after the Mini Program calls a function
         return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
-                Material.builder().username(Normal.EMPTY).nickname(Normal.EMPTY).avatar(Normal.EMPTY)
+                Claims.builder().username(Normal.EMPTY).nickname(Normal.EMPTY).avatar(Normal.EMPTY)
                         .uuid(authorization.getOpenId()).token(authorization).source(complex.toString()).build())
                 .build();
     }

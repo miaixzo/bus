@@ -44,7 +44,7 @@ import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Registry;
 import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.ErrorCode;
-import org.miaixz.bus.auth.magic.Material;
+import org.miaixz.bus.auth.magic.Claims;
 import org.miaixz.bus.auth.nimble.AbstractProvider;
 
 import java.util.Base64;
@@ -112,7 +112,7 @@ public class HuaweiProvider extends AbstractProvider {
      * Retrieves user information from Huawei's user info endpoint.
      *
      * @param authorization the token information
-     * @return {@link Material} containing the user's information
+     * @return {@link Claims} containing the user's information
      * @see AbstractProvider#token(Callback)
      */
     @Override
@@ -143,7 +143,7 @@ public class HuaweiProvider extends AbstractProvider {
 
                 return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
                         .data(
-                                Material.builder().rawJson(JsonKit.toJsonString(object)).uuid(unionID)
+                                Claims.builder().rawJson(JsonKit.toJsonString(object)).uuid(unionID)
                                         .username(displayName).nickname(displayName).gender(Gender.UNKNOWN)
                                         .avatar(headPictureURL).token(authorization).source(context.toString()).build())
                         .build();
@@ -168,7 +168,7 @@ public class HuaweiProvider extends AbstractProvider {
 
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
                     .data(
-                            Material.builder().rawJson(JsonKit.toJsonString(object)).uuid(sub).username(name)
+                            Claims.builder().rawJson(JsonKit.toJsonString(object)).uuid(sub).username(name)
                                     .nickname(nickname).gender(Gender.UNKNOWN).avatar(picture).token(authorization)
                                     .source(complex.toString()).build())
                     .build();

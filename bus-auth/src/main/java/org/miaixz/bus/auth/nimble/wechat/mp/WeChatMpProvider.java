@@ -42,7 +42,7 @@ import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Registry;
 import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.ErrorCode;
-import org.miaixz.bus.auth.magic.Material;
+import org.miaixz.bus.auth.magic.Claims;
 import org.miaixz.bus.auth.nimble.wechat.AbstractWeChatProvider;
 
 import java.util.HashMap;
@@ -91,7 +91,7 @@ public class WeChatMpProvider extends AbstractWeChatProvider {
      * Retrieves user information from WeChat Official Account's user info endpoint.
      *
      * @param authorization the {@link Authorization} obtained after successful authorization
-     * @return {@link Material} containing the user's information
+     * @return {@link Claims} containing the user's information
      * @throws AuthorizedException if parsing the response fails or required user information is missing
      */
     @Override
@@ -109,7 +109,7 @@ public class WeChatMpProvider extends AbstractWeChatProvider {
 
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
                     .data(
-                            Material.builder().rawJson(JsonKit.toJsonString(tokenMap)).uuid(openId)
+                            Claims.builder().rawJson(JsonKit.toJsonString(tokenMap)).uuid(openId)
                                     .snapshotUser(authorization.isSnapshotUser()).token(authorization)
                                     .source(complex.toString()).build())
                     .build();
@@ -140,7 +140,7 @@ public class WeChatMpProvider extends AbstractWeChatProvider {
 
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
                     .data(
-                            Material.builder().rawJson(JsonKit.toJsonString(object)).username(nickname)
+                            Claims.builder().rawJson(JsonKit.toJsonString(object)).username(nickname)
                                     .nickname(nickname).avatar(headimgurl).location(location).uuid(openId)
                                     .snapshotUser(authorization.isSnapshotUser()).gender(getWechatRealGender(sex))
                                     .token(authorization).source(complex.toString()).build())

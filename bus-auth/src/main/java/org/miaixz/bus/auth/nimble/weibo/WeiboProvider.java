@@ -43,7 +43,7 @@ import org.miaixz.bus.auth.Registry;
 import org.miaixz.bus.auth.magic.Authorization;
 import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.ErrorCode;
-import org.miaixz.bus.auth.magic.Material;
+import org.miaixz.bus.auth.magic.Claims;
 import org.miaixz.bus.auth.nimble.AbstractProvider;
 
 import java.util.HashMap;
@@ -116,7 +116,7 @@ public class WeiboProvider extends AbstractProvider {
      * Retrieves user information from Weibo's user info endpoint.
      *
      * @param authorization the {@link Authorization} obtained after successful authorization
-     * @return {@link Material} containing the user's information
+     * @return {@link Claims} containing the user's information
      * @throws AuthorizedException if parsing the response fails or required user information is missing
      */
     @Override
@@ -154,7 +154,7 @@ public class WeiboProvider extends AbstractProvider {
 
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
                     .data(
-                            Material.builder().rawJson(JsonKit.toJsonString(object)).uuid(id).username(name)
+                            Claims.builder().rawJson(JsonKit.toJsonString(object)).uuid(id).username(name)
                                     .avatar(profileImageUrl)
                                     .blog(StringKit.isEmpty(url) ? "https://weibo.com/" + profileUrl : url)
                                     .nickname(screenName).location(location).remark(description)

@@ -42,7 +42,7 @@ import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Complex;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.magic.Callback;
-import org.miaixz.bus.auth.magic.Material;
+import org.miaixz.bus.auth.magic.Claims;
 import org.miaixz.bus.auth.nimble.AbstractProvider;
 
 import java.util.HashMap;
@@ -110,7 +110,7 @@ public abstract class AbstractDingtalkProvider extends AbstractProvider {
      * Retrieves user information from DingTalk's user info endpoint.
      *
      * @param authorization the {@link Authorization} obtained after successful authorization
-     * @return {@link Material} containing the user's information
+     * @return {@link Claims} containing the user's information
      * @throws AuthorizedException if parsing the response fails or required user information is missing
      */
     @Override
@@ -148,7 +148,7 @@ public abstract class AbstractDingtalkProvider extends AbstractProvider {
             Authorization token = Authorization.builder().openId(openId).unionId(unionId).build();
 
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
-                    Material.builder().rawJson(JsonKit.toJsonString(userInfo)).uuid(unionId).nickname(nick)
+                    Claims.builder().rawJson(JsonKit.toJsonString(userInfo)).uuid(unionId).nickname(nick)
                             .username(nick).gender(Gender.UNKNOWN).source(complex.toString()).token(token).build())
                     .build();
         } catch (Exception e) {

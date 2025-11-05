@@ -38,7 +38,7 @@ import org.miaixz.bus.auth.Registry;
 import org.miaixz.bus.auth.magic.Authorization;
 import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.ErrorCode;
-import org.miaixz.bus.auth.magic.Material;
+import org.miaixz.bus.auth.magic.Claims;
 import org.miaixz.bus.auth.nimble.AbstractProvider;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Message;
@@ -243,7 +243,7 @@ public class TwitterProvider extends AbstractProvider {
 
         // Build user information object
         return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
-                Material.builder().rawJson(rawJson).uuid((String) userInfo.get("id_str"))
+                Claims.builder().rawJson(rawJson).uuid((String) userInfo.get("id_str"))
                         .username((String) userInfo.get("screen_name")).nickname((String) userInfo.get("name"))
                         .remark((String) userInfo.get("description"))
                         .avatar((String) userInfo.get("profile_image_url_https")).blog((String) userInfo.get("url"))

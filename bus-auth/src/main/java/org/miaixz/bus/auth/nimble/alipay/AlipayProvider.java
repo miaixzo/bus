@@ -37,7 +37,7 @@ import org.miaixz.bus.auth.Registry;
 import org.miaixz.bus.auth.magic.Authorization;
 import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.ErrorCode;
-import org.miaixz.bus.auth.magic.Material;
+import org.miaixz.bus.auth.magic.Claims;
 import org.miaixz.bus.auth.nimble.AbstractProvider;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Message;
@@ -190,7 +190,7 @@ public class AlipayProvider extends AbstractProvider {
      * Retrieves user information from Alipay's user info endpoint.
      *
      * @param authorization the {@link Authorization} obtained after successful authorization
-     * @return {@link Material} containing the user's information
+     * @return {@link Claims} containing the user's information
      * @throws AuthorizedException if parsing the response fails or required user information is missing
      */
     @Override
@@ -219,7 +219,7 @@ public class AlipayProvider extends AbstractProvider {
                 .format("%s %s", StringKit.isEmpty(province) ? "" : province, StringKit.isEmpty(city) ? "" : city);
 
         return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
-                Material.builder().rawJson(JsonKit.toJsonString(userResponse))
+                Claims.builder().rawJson(JsonKit.toJsonString(userResponse))
                         .uuid((String) userResponse.get("user_id"))
                         .username(
                                 StringKit.isEmpty((String) userResponse.get("user_name"))

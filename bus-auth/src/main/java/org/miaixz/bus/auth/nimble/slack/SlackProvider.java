@@ -44,7 +44,7 @@ import org.miaixz.bus.auth.Registry;
 import org.miaixz.bus.auth.magic.Authorization;
 import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.ErrorCode;
-import org.miaixz.bus.auth.magic.Material;
+import org.miaixz.bus.auth.magic.Claims;
 import org.miaixz.bus.auth.nimble.AbstractProvider;
 
 import java.util.HashMap;
@@ -106,7 +106,7 @@ public class SlackProvider extends AbstractProvider {
      * Retrieves user information from Slack's user info endpoint.
      *
      * @param authorization the {@link Authorization} obtained after successful authorization
-     * @return {@link Material} containing the user's information
+     * @return {@link Claims} containing the user's information
      * @throws AuthorizedException if parsing the response fails or required user information is missing
      */
     @Override
@@ -122,7 +122,7 @@ public class SlackProvider extends AbstractProvider {
 
         return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
                 .data(
-                        Material.builder().rawJson(JsonKit.toJsonString(user)).uuid((String) user.get("id"))
+                        Claims.builder().rawJson(JsonKit.toJsonString(user)).uuid((String) user.get("id"))
                                 .username((String) user.get("name")).nickname((String) user.get("real_name"))
                                 .avatar((String) profile.get("image_original")).email((String) profile.get("email"))
                                 .gender(Gender.UNKNOWN).token(authorization).source(complex.toString()).build())
