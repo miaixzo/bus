@@ -45,7 +45,7 @@ import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.storage.Builder;
 import org.miaixz.bus.storage.Context;
 import org.miaixz.bus.storage.magic.ErrorCode;
-import org.miaixz.bus.storage.magic.Material;
+import org.miaixz.bus.storage.magic.Blob;
 
 /**
  * Storage service provider for SFTP (SSH File Transfer Protocol). This provider allows interaction with SFTP servers
@@ -173,7 +173,7 @@ public class SftpFileProvider extends AbstractProvider {
     /**
      * Lists files in the default storage bucket.
      *
-     * @return A {@link Message} containing the result of the operation, including a list of {@link Material} objects or
+     * @return A {@link Message} containing the result of the operation, including a list of {@link Blob} objects or
      *         an error message.
      */
     @Override
@@ -184,7 +184,7 @@ public class SftpFileProvider extends AbstractProvider {
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
                     .data(files.stream().map(fileName -> {
                         Map<String, Object> extend = new HashMap<>();
-                        return Material.builder().name(fileName).extend(extend).build();
+                        return Blob.builder().name(fileName).extend(extend).build();
                     }).collect(Collectors.toList())).build();
         } catch (InternalException e) {
             Logger.error("Failed to list files in path: {}. Error: {}", context.getPrefix(), e.getMessage(), e);
@@ -339,7 +339,7 @@ public class SftpFileProvider extends AbstractProvider {
             }
             client.put(content, objectKey, null, JschSftp.Mode.OVERWRITE);
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
-                    .data(Material.builder().name(fileName).path(objectKey).build()).build();
+                    .data(Blob.builder().name(fileName).path(objectKey).build()).build();
         } catch (InternalException e) {
             Logger.error(
                     "Failed to upload file: {} to bucket: {} path: {}. Error: {}",

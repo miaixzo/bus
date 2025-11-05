@@ -46,7 +46,7 @@ import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.storage.Builder;
 import org.miaixz.bus.storage.Context;
 import org.miaixz.bus.storage.magic.ErrorCode;
-import org.miaixz.bus.storage.magic.Material;
+import org.miaixz.bus.storage.magic.Blob;
 
 /**
  * Storage service provider for GitLab. This provider integrates with GitLab for file storage operations, treating
@@ -164,7 +164,7 @@ public class GitlabFileProvider extends AbstractProvider {
     /**
      * Lists files in the default GitLab project (bucket).
      *
-     * @return A {@link Message} containing the result of the operation, including a list of {@link Material} objects if
+     * @return A {@link Message} containing the result of the operation, including a list of {@link Blob} objects if
      *         successful.
      */
     @Override
@@ -186,7 +186,7 @@ public class GitlabFileProvider extends AbstractProvider {
                                         // If the last commit ID is needed, it can be obtained via RepositoryFileApi or
                                         // CommitsApi.
                                         extend.put("lastModified", null);
-                                        return Material.builder().name(item.getPath()).size("0").extend(extend).build();
+                                        return Blob.builder().name(item.getPath()).size("0").extend(extend).build();
                                     }).collect(Collectors.toList()))
                     .build();
         } catch (Exception e) {
@@ -328,7 +328,7 @@ public class GitlabFileProvider extends AbstractProvider {
      * @param path     The target path for the file.
      * @param fileName The name of the file to upload.
      * @param content  The file content as an {@link InputStream}.
-     * @return A {@link Message} containing the result of the operation, including material details if successful.
+     * @return A {@link Message} containing the result of the operation, including blob details if successful.
      */
     @Override
     public Message upload(String bucket, String path, String fileName, InputStream content) {
@@ -342,7 +342,7 @@ public class GitlabFileProvider extends AbstractProvider {
             client.getRepositoryFileApi().createFile(bucket, file, "master", "upload");
             String url = client.getProjectApi().getProject(bucket).getWebUrl() + "/-/blob/master/" + objectKey;
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
-                    .data(Material.builder().name(fileName).url(url).path(objectKey).build()).build();
+                    .data(Blob.builder().name(fileName).url(url).path(objectKey).build()).build();
         } catch (Exception e) {
             Logger.error(
                     "Failed to upload file: {} to bucket: {} path: {}. Error: {}",

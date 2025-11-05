@@ -43,7 +43,7 @@ import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.storage.Builder;
 import org.miaixz.bus.storage.Context;
 import org.miaixz.bus.storage.magic.ErrorCode;
-import org.miaixz.bus.storage.magic.Material;
+import org.miaixz.bus.storage.magic.Blob;
 
 import com.github.sardine.Sardine;
 import com.github.sardine.SardineFactory;
@@ -163,7 +163,7 @@ public class WebDavProvider extends AbstractProvider {
     /**
      * Lists files in the default storage bucket.
      *
-     * @return A {@link Message} containing the result of the operation, including a list of {@link Material} objects or
+     * @return A {@link Message} containing the result of the operation, including a list of {@link Blob} objects or
      *         an error message.
      */
     @Override
@@ -176,7 +176,7 @@ public class WebDavProvider extends AbstractProvider {
                         Map<String, Object> extend = new HashMap<>();
                         extend.put("tag", resource.getEtag());
                         extend.put("lastModified", resource.getModified());
-                        return Material.builder().name(resource.getName())
+                        return Blob.builder().name(resource.getName())
                                 .size(StringKit.toString(resource.getContentLength())).extend(extend).build();
                     }).collect(Collectors.toList())).build();
         } catch (Exception e) {
@@ -338,7 +338,7 @@ public class WebDavProvider extends AbstractProvider {
             client.createDirectory(parentUrl);
             client.put(url, content);
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
-                    .data(Material.builder().name(fileName).path(objectKey).build()).build();
+                    .data(Blob.builder().name(fileName).path(objectKey).build()).build();
         } catch (Exception e) {
             Logger.error(
                     "Failed to upload file: {} to bucket: {} with path: {}, error: {}",

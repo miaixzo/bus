@@ -36,7 +36,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * Represents material information, typically for attachments or files.
+ * Represents blob information, typically for attachments or files.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -46,62 +46,68 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Material {
+public class Blob {
 
     /**
-     * Unique identifier for the material.
+     * Unique identifier for the blob.
      */
     public String key;
 
     /**
-     * The name of the material.
+     * The name of the blob.
      */
     public String name;
 
     /**
-     * An alias or alternative name for the material.
+     * An alias or alternative name for the blob.
      */
     public String alias;
 
     /**
-     * The path where the material is stored.
+     * The path where the blob is stored.
      */
     public String path;
 
     /**
-     * The size of the material.
+     * The size of the blob.
      */
     public String size;
 
     /**
-     * The type or format of the material.
+     * The type or format of the blob.
      */
     public String type;
 
     /**
-     * The status of the material.
+     * The status of the blob.
      */
     public String status;
 
     /**
-     * The owner of the material.
+     * The owner of the blob.
      */
     public String owner;
 
     /**
-     * The hash value of the material, typically for integrity verification.
+     * The hash value of the blob, typically for integrity verification.
      */
     public String hash;
 
     /**
-     * The URL for accessing the material, possibly a thumbnail URL.
+     * The URL for accessing the blob, possibly a thumbnail URL.
      */
     public String url;
 
     /**
-     * The storage platform where the material is hosted.
+     * The storage platform where the blob is hosted.
      */
     public String platform;
+
+    /**
+     * The actual byte content of the blob (the Blob data). Be cautious with this field as it can consume large amounts
+     * of memory.
+     */
+    public byte[] bytes;
 
     /**
      * Extended fields for the file, stored as a map.

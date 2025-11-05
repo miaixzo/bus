@@ -47,7 +47,7 @@ import org.miaixz.bus.storage.Builder;
 import org.miaixz.bus.storage.ClientX;
 import org.miaixz.bus.storage.Context;
 import org.miaixz.bus.storage.magic.ErrorCode;
-import org.miaixz.bus.storage.magic.Material;
+import org.miaixz.bus.storage.magic.Blob;
 
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
@@ -207,7 +207,7 @@ public class MinioOssProvider extends AbstractProvider {
     /**
      * Lists files in the default storage bucket.
      *
-     * @return A {@link Message} containing the result of the operation, including a list of {@link Material} objects if
+     * @return A {@link Message} containing the result of the operation, including a list of {@link Blob} objects if
      *         successful.
      */
     @Override
@@ -225,7 +225,7 @@ public class MinioOssProvider extends AbstractProvider {
                         extend.put("tag", item.eTag());
                         extend.put("storageClass", item.storageClassAsString());
                         extend.put("lastModified", item.lastModified());
-                        return Material.builder().name(item.key()).size(StringKit.toString(item.size())).extend(extend)
+                        return Blob.builder().name(item.key()).size(StringKit.toString(item.size())).extend(extend)
                                 .build();
                     }).collect(Collectors.toList())).build();
         } catch (SdkException e) {
@@ -374,7 +374,7 @@ public class MinioOssProvider extends AbstractProvider {
      * @param path     The target path for the file.
      * @param fileName The name of the file to upload.
      * @param content  The file content as an {@link InputStream}.
-     * @return A {@link Message} containing the result of the operation, including material details if successful.
+     * @return A {@link Message} containing the result of the operation, including blob details if successful.
      */
     @Override
     public Message upload(String bucket, String path, String fileName, InputStream content) {
@@ -392,7 +392,7 @@ public class MinioOssProvider extends AbstractProvider {
             String presignedUrl = presignedRequest.url().toString();
 
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
-                    .data(Material.builder().name(fileName).url(presignedUrl).path(objectKey).build()).build();
+                    .data(Blob.builder().name(fileName).url(presignedUrl).path(objectKey).build()).build();
         } catch (Exception e) {
             Logger.error(
                     "Failed to upload file: {} to bucket: {} with path: {}, error: {}",

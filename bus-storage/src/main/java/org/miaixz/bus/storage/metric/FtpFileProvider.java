@@ -49,7 +49,7 @@ import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.storage.Builder;
 import org.miaixz.bus.storage.Context;
 import org.miaixz.bus.storage.magic.ErrorCode;
-import org.miaixz.bus.storage.magic.Material;
+import org.miaixz.bus.storage.magic.Blob;
 
 /**
  * Storage service provider for FTP (File Transfer Protocol). This provider integrates with FTP servers for file storage
@@ -178,7 +178,7 @@ public class FtpFileProvider extends AbstractProvider {
     /**
      * Lists files in the default storage bucket.
      *
-     * @return A {@link Message} containing the result of the operation, including a list of {@link Material} objects if
+     * @return A {@link Message} containing the result of the operation, including a list of {@link Blob} objects if
      *         successful.
      */
     @Override
@@ -189,7 +189,7 @@ public class FtpFileProvider extends AbstractProvider {
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
                     .data(files.stream().map(fileName -> {
                         Map<String, Object> extend = new HashMap<>();
-                        return Material.builder().name(fileName).extend(extend).build();
+                        return Blob.builder().name(fileName).extend(extend).build();
                     }).collect(Collectors.toList())).build();
         } catch (InternalException e) {
             Logger.error("Failed to list files in path: {}. Error: {}", context.getPrefix(), e.getMessage(), e);
@@ -325,7 +325,7 @@ public class FtpFileProvider extends AbstractProvider {
      * @param path     The target path for the file.
      * @param fileName The name of the file to upload.
      * @param content  The file content as an {@link InputStream}.
-     * @return A {@link Message} containing the result of the operation, including material details if successful.
+     * @return A {@link Message} containing the result of the operation, including blob details if successful.
      */
     @Override
     public Message upload(String bucket, String path, String fileName, InputStream content) {
@@ -343,7 +343,7 @@ public class FtpFileProvider extends AbstractProvider {
             client.uploadFile(dirPath, tempFile);
             tempFile.delete();
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
-                    .data(Material.builder().name(fileName).path(objectKey).build()).build();
+                    .data(Blob.builder().name(fileName).path(objectKey).build()).build();
         } catch (InternalException | IOException e) {
             Logger.error(
                     "Failed to upload file: {} to bucket: {} path: {}. Error: {}",
