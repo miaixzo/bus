@@ -148,8 +148,8 @@ public abstract class AbstractDingtalkProvider extends AbstractProvider {
             Authorization token = Authorization.builder().openId(openId).unionId(unionId).build();
 
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
-                    Claims.builder().rawJson(JsonKit.toJsonString(userInfo)).uuid(unionId).nickname(nick)
-                            .username(nick).gender(Gender.UNKNOWN).source(complex.toString()).token(token).build())
+                    Claims.builder().rawJson(JsonKit.toJsonString(userInfo)).uuid(unionId).nickname(nick).username(nick)
+                            .gender(Gender.UNKNOWN).source(complex.toString()).token(token).build())
                     .build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());

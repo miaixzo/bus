@@ -58,8 +58,8 @@ public class YunpianSmsProvider extends AbstractProvider<YunpianNotice, Context>
     /**
      * Sends an SMS notification using Yunpian SMS service.
      *
-     * @param entity The {@link YunpianNotice} containing SMS details like API key, recipient, template ID, and
-     *               template parameters.
+     * @param entity The {@link YunpianNotice} containing SMS details like API key, recipient, template ID, and template
+     *               parameters.
      * @return A {@link Message} indicating the result of the SMS sending operation.
      */
     @Override

@@ -186,7 +186,7 @@ public class Provider {
      * Resolves and creates a {@link ValidateException} based on the validation criterion and context.
      *
      * @param criterion the validation criterion, containing validator configuration, error messages, etc.
-     * @param context  the validation context, containing runtime information like exception class and error codes.
+     * @param context   the validation context, containing runtime information like exception class and error codes.
      * @return a {@link ValidateException} instance created according to the rules and context.
      * @throws NoSuchException if the custom exception class does not meet the requirements (e.g., missing constructor).
      */

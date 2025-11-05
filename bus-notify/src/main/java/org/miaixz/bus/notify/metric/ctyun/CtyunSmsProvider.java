@@ -104,8 +104,7 @@ public class CtyunSmsProvider extends AbstractProvider<CtyunNotice, Context> {
     /**
      * Sends an SMS notification using China Telecom Cloud (CTYUN) SMS service.
      *
-     * @param entity The {@link CtyunNotice} containing SMS details like recipient, signature, template, and
-     *               parameters.
+     * @param entity The {@link CtyunNotice} containing SMS details like recipient, signature, template, and parameters.
      * @return A {@link Message} indicating the result of the SMS sending operation.
      */
     @Override

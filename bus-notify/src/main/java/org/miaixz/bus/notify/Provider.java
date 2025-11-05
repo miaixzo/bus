@@ -45,8 +45,8 @@ import org.miaixz.bus.notify.magic.Notice;
 public interface Provider<T extends Notice> extends org.miaixz.bus.core.Provider {
 
     /**
-     * Sends a notification using the specified template {@link Notice}. Note: The template implementation varies
-     * among different service providers.
+     * Sends a notification using the specified template {@link Notice}. Note: The template implementation varies among
+     * different service providers.
      *
      * @param entity The notification content or notice.
      * @return The result of the sending operation.

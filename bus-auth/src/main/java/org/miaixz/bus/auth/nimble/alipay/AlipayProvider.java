@@ -219,8 +219,7 @@ public class AlipayProvider extends AbstractProvider {
                 .format("%s %s", StringKit.isEmpty(province) ? "" : province, StringKit.isEmpty(city) ? "" : city);
 
         return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
-                Claims.builder().rawJson(JsonKit.toJsonString(userResponse))
-                        .uuid((String) userResponse.get("user_id"))
+                Claims.builder().rawJson(JsonKit.toJsonString(userResponse)).uuid((String) userResponse.get("user_id"))
                         .username(
                                 StringKit.isEmpty((String) userResponse.get("user_name"))
                                         ? (String) userResponse.get("nick_name")

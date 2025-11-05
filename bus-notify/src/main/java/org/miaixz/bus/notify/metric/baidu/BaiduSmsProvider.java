@@ -58,8 +58,7 @@ public class BaiduSmsProvider extends AbstractProvider<BaiduNotice, Context> {
     /**
      * Sends an SMS notification using Baidu Cloud SMS service.
      *
-     * @param entity The {@link BaiduNotice} containing SMS details like recipient, template, signature, and
-     *               parameters.
+     * @param entity The {@link BaiduNotice} containing SMS details like recipient, template, signature, and parameters.
      * @return A {@link Message} indicating the result of the SMS sending operation.
      */
     @Override

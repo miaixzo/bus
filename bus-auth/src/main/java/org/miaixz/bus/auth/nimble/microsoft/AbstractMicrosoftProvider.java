@@ -171,10 +171,11 @@ public abstract class AbstractMicrosoftProvider extends AbstractProvider {
             String officeLocation = (String) object.get("officeLocation");
             String mail = (String) object.get("mail");
 
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
-                    Claims.builder().rawJson(JsonKit.toJsonString(object)).uuid(id).username(userPrincipalName)
-                            .nickname(displayName).location(officeLocation).email(mail).gender(Gender.UNKNOWN)
-                            .token(authorization).source(complex.toString()).build())
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+                    .data(
+                            Claims.builder().rawJson(JsonKit.toJsonString(object)).uuid(id).username(userPrincipalName)
+                                    .nickname(displayName).location(officeLocation).email(mail).gender(Gender.UNKNOWN)
+                                    .token(authorization).source(complex.toString()).build())
                     .build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());

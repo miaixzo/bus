@@ -57,7 +57,7 @@ public class Checker {
     /**
      * Validates an object against a specific validator rule.
      *
-     * @param verified The object to be validated, wrapped in a {@link Verified} instance.
+     * @param verified  The object to be validated, wrapped in a {@link Verified} instance.
      * @param criterion The validation rule criterion.
      * @return A {@link Collector} containing the validation results.
      * @throws ValidateException if fast-fail is enabled in the context and validation fails.
@@ -186,7 +186,7 @@ public class Checker {
     /**
      * Performs the actual validation of an object against a rule.
      *
-     * @param verified The object to be validated.
+     * @param verified  The object to be validated.
      * @param criterion The validation rule criterion.
      * @return A {@link Collector} containing the validation result.
      */
@@ -216,7 +216,7 @@ public class Checker {
     /**
      * Validates each element of a collection.
      *
-     * @param verified The collection object to be validated.
+     * @param verified  The collection object to be validated.
      * @param criterion The validation rule to apply to each element.
      * @return A {@link Collector} containing the results for each element.
      */
@@ -236,7 +236,7 @@ public class Checker {
     /**
      * Validates each element of an array.
      *
-     * @param verified The array object to be validated.
+     * @param verified  The array object to be validated.
      * @param criterion The validation rule to apply to each element.
      * @return A {@link Collector} containing the results for each element.
      */

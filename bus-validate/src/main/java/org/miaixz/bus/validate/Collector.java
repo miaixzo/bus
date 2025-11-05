@@ -89,9 +89,9 @@ public class Collector {
     /**
      * Constructs a new Collector representing a single validation result.
      *
-     * @param target   the object being validated.
+     * @param target    the object being validated.
      * @param criterion the validation criterion.
-     * @param pass     whether the validation passed.
+     * @param pass      whether the validation passed.
      */
     public Collector(Verified target, Criterion criterion, boolean pass) {
         this.target = target;

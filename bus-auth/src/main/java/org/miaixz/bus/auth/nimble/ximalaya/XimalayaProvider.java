@@ -212,11 +212,9 @@ public class XimalayaProvider extends AbstractProvider {
             String nickname = (String) object.get("nickname");
             String avatarUrl = (String) object.get("avatar_url");
 
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
-                    .data(
-                            Claims.builder().uuid(id).nickname(nickname).avatar(avatarUrl)
-                                    .rawJson(JsonKit.toJsonString(object)).source(complex.toString())
-                                    .token(authorization).gender(Gender.UNKNOWN).build())
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+                    Claims.builder().uuid(id).nickname(nickname).avatar(avatarUrl).rawJson(JsonKit.toJsonString(object))
+                            .source(complex.toString()).token(authorization).gender(Gender.UNKNOWN).build())
                     .build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());

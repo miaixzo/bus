@@ -62,8 +62,8 @@ public class UniSmsProvider extends AbstractProvider<UniNotice, Context> {
     /**
      * Sends an SMS notification using Uni SMS service.
      *
-     * @param entity The {@link UniNotice} containing SMS details like template ID, template name, recipient,
-     *               signature, and parameters.
+     * @param entity The {@link UniNotice} containing SMS details like template ID, template name, recipient, signature,
+     *               and parameters.
      * @return A {@link Message} indicating the result of the SMS sending operation.
      * @throws ValidateException if both template ID and template name are empty.
      */

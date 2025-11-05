@@ -119,11 +119,12 @@ public class QqProvider extends AbstractProvider {
 
         String location = String.format("%s-%s", object.get("province"), object.get("city"));
 
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
-                Claims.builder().rawJson(JsonKit.toJsonString(object)).username((String) object.get("nickname"))
-                        .nickname((String) object.get("nickname")).avatar(avatar).location(location).uuid(openId)
-                        .gender(Gender.of((String) object.get("gender"))).token(authorization)
-                        .source(complex.toString()).build())
+        return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+                .data(
+                        Claims.builder().rawJson(JsonKit.toJsonString(object)).username((String) object.get("nickname"))
+                                .nickname((String) object.get("nickname")).avatar(avatar).location(location)
+                                .uuid(openId).gender(Gender.of((String) object.get("gender"))).token(authorization)
+                                .source(complex.toString()).build())
                 .build();
     }
 

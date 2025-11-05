@@ -173,8 +173,8 @@ public class SftpFileProvider extends AbstractProvider {
     /**
      * Lists files in the default storage bucket.
      *
-     * @return A {@link Message} containing the result of the operation, including a list of {@link Blob} objects or
-     *         an error message.
+     * @return A {@link Message} containing the result of the operation, including a list of {@link Blob} objects or an
+     *         error message.
      */
     @Override
     public Message list() {

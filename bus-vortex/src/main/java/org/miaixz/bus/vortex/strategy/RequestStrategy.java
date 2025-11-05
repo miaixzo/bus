@@ -31,6 +31,7 @@ import java.util.*;
 
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.lang.exception.UncheckedException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
@@ -58,7 +59,7 @@ import reactor.util.retry.Retry;
  * <p>
  * As the first strategy in the chain (with the highest precedence), its primary roles are:
  * <ol>
- * <li>Performing initial security checks, such as path validation and path traversal detection.</li>
+ * <li>Performing initial security checks, such as path validation, and path traversal detection.</li>
  * <li>Dispatching the request to a specific handler based on its HTTP method and {@code Content-Type}.</li>
  * <li><b>Caching the request body:</b> Since a reactive request body can only be consumed once, this strategy reads the
  * body into memory and wraps the request with a {@link ServerHttpRequestDecorator}. This crucial step allows downstream
@@ -172,6 +173,7 @@ public class RequestStrategy extends AbstractStrategy {
         return exchange.getRequest().getBody().collectList()
                 .flatMap(dataBuffers -> processJsonData(exchange, chain, context, dataBuffers)).retryWhen(
                         Retry.backoff(MAX_RETRY_ATTEMPTS, java.time.Duration.ofMillis(RETRY_DELAY_MS))
+                                .filter(throwable -> !(throwable instanceof UncheckedException))
                                 .maxBackoff(java.time.Duration.ofMillis(500)).jitter(0.75)
                                 .doBeforeRetry(
                                         retrySignal -> Logger.warn(
@@ -280,6 +282,7 @@ public class RequestStrategy extends AbstractStrategy {
         return exchange.getRequest().getBody().collectList()
                 .flatMap(dataBuffers -> processFormData(exchange, chain, context, dataBuffers)).retryWhen(
                         Retry.backoff(MAX_RETRY_ATTEMPTS, java.time.Duration.ofMillis(RETRY_DELAY_MS))
+                                .filter(throwable -> !(throwable instanceof UncheckedException))
                                 .maxBackoff(java.time.Duration.ofMillis(500)).jitter(0.75)
                                 .doBeforeRetry(
                                         retrySignal -> Logger.warn(
@@ -387,6 +390,7 @@ public class RequestStrategy extends AbstractStrategy {
         return exchange.getMultipartData().flatMap(params -> processMultipartData(exchange, chain, context, params))
                 .retryWhen(
                         Retry.backoff(MAX_RETRY_ATTEMPTS, java.time.Duration.ofMillis(RETRY_DELAY_MS))
+                                .filter(throwable -> !(throwable instanceof UncheckedException))
                                 .maxBackoff(java.time.Duration.ofMillis(500)).jitter(0.75)
                                 .doBeforeRetry(
                                         retrySignal -> Logger.warn(

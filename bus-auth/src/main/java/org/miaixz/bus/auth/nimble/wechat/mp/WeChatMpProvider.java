@@ -140,8 +140,8 @@ public class WeChatMpProvider extends AbstractWeChatProvider {
 
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
                     .data(
-                            Claims.builder().rawJson(JsonKit.toJsonString(object)).username(nickname)
-                                    .nickname(nickname).avatar(headimgurl).location(location).uuid(openId)
+                            Claims.builder().rawJson(JsonKit.toJsonString(object)).username(nickname).nickname(nickname)
+                                    .avatar(headimgurl).location(location).uuid(openId)
                                     .snapshotUser(authorization.isSnapshotUser()).gender(getWechatRealGender(sex))
                                     .token(authorization).source(complex.toString()).build())
                     .build();

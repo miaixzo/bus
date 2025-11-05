@@ -116,10 +116,11 @@ public class WeChatOpenProvider extends AbstractWeChatProvider {
             String headimgurl = (String) object.get("headimgurl");
             String sex = (String) object.get("sex");
 
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
-                    Claims.builder().rawJson(JsonKit.toJsonString(object)).username(nickname).nickname(nickname)
-                            .avatar(headimgurl).location(location).uuid(openId).gender(getWechatRealGender(sex))
-                            .token(authorization).source(complex.toString()).build())
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+                    .data(
+                            Claims.builder().rawJson(JsonKit.toJsonString(object)).username(nickname).nickname(nickname)
+                                    .avatar(headimgurl).location(location).uuid(openId).gender(getWechatRealGender(sex))
+                                    .token(authorization).source(complex.toString()).build())
                     .build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
