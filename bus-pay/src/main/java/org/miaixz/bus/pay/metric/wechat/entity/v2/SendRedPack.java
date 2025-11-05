@@ -32,7 +32,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import org.miaixz.bus.pay.magic.Material;
+import org.miaixz.bus.pay.magic.Voucher;
 
 /**
  * Model for the Send Red Packet API.
@@ -45,7 +45,7 @@ import org.miaixz.bus.pay.magic.Material;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SendRedPack extends Material {
+public class SendRedPack extends Voucher {
 
     /**
      * Random string.

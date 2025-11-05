@@ -32,7 +32,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import org.miaixz.bus.pay.magic.Material;
+import org.miaixz.bus.pay.magic.Voucher;
 
 /**
  * Model for the WeCom Pay - Payment to Employee API.
@@ -45,7 +45,7 @@ import org.miaixz.bus.pay.magic.Material;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Trans2Pocket extends Material {
+public class Trans2Pocket extends Voucher {
 
     /**
      * Merchant ID.

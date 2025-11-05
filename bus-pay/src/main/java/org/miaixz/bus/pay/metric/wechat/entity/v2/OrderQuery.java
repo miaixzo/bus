@@ -32,7 +32,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import org.miaixz.bus.pay.magic.Material;
+import org.miaixz.bus.pay.magic.Voucher;
 
 /**
  * Model for the Order Query API. Supports querying regular orders, face-payment orders, profit sharing results, and
@@ -46,7 +46,7 @@ import org.miaixz.bus.pay.magic.Material;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrderQuery extends Material {
+public class OrderQuery extends Voucher {
 
     /**
      * Sub-merchant App ID.

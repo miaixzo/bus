@@ -32,7 +32,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import org.miaixz.bus.pay.magic.Material;
+import org.miaixz.bus.pay.magic.Voucher;
 
 /**
  * Model for the Customs Declaration API, used for submitting, querying, or re-pushing additional order information for
@@ -46,7 +46,7 @@ import org.miaixz.bus.pay.magic.Material;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CustomDeclare extends Material {
+public class CustomDeclare extends Voucher {
 
     /**
      * Signature.

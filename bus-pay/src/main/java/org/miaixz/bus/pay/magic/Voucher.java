@@ -51,7 +51,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Material {
+public class Voucher {
 
     /**
      * The appid of the merchant account application or the appid bound to the merchant account. The enterprise number

@@ -27,7 +27,7 @@
 */
 package org.miaixz.bus.pay.metric.unionpay.entity;
 
-import org.miaixz.bus.pay.magic.Material;
+import org.miaixz.bus.pay.magic.Voucher;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -46,7 +46,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Refund extends Material {
+public class Refund extends Voucher {
 
     /**
      * Service name.

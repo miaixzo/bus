@@ -35,7 +35,7 @@ import org.miaixz.bus.core.xyz.XmlKit;
 import org.miaixz.bus.pay.Complex;
 import org.miaixz.bus.pay.Context;
 import org.miaixz.bus.pay.Registry;
-import org.miaixz.bus.pay.magic.Material;
+import org.miaixz.bus.pay.magic.Voucher;
 import org.miaixz.bus.pay.metric.AbstractProvider;
 import org.miaixz.bus.pay.metric.tenpay.api.TenpayApi;
 
@@ -45,7 +45,7 @@ import org.miaixz.bus.pay.metric.tenpay.api.TenpayApi;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class TenpayProvider extends AbstractProvider<Material, Context> {
+public class TenpayProvider extends AbstractProvider<Voucher, Context> {
 
     /**
      * Constructs a new TenpayProvider.

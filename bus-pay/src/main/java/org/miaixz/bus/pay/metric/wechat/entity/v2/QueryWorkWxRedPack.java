@@ -32,7 +32,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import org.miaixz.bus.pay.magic.Material;
+import org.miaixz.bus.pay.magic.Voucher;
 
 /**
  * Model for the WeCom Pay - Query Corporate Red Packet Record API.
@@ -45,7 +45,7 @@ import org.miaixz.bus.pay.magic.Material;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class QueryWorkWxRedPack extends Material {
+public class QueryWorkWxRedPack extends Voucher {
 
     /**
      * Random string.

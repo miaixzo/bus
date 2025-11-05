@@ -44,7 +44,7 @@ import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.pay.Complex;
 import org.miaixz.bus.pay.Context;
 import org.miaixz.bus.pay.Registry;
-import org.miaixz.bus.pay.magic.Material;
+import org.miaixz.bus.pay.magic.Voucher;
 import org.miaixz.bus.pay.metric.AbstractProvider;
 
 /**
@@ -53,7 +53,7 @@ import org.miaixz.bus.pay.metric.AbstractProvider;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class AliPayProvider extends AbstractProvider<Material, Context> {
+public class AliPayProvider extends AbstractProvider<Voucher, Context> {
 
     public AliPayProvider(Context context) {
         this(context, null);

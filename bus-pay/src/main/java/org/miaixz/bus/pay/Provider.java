@@ -28,16 +28,16 @@
 package org.miaixz.bus.pay;
 
 import org.miaixz.bus.core.lang.EnumValue;
-import org.miaixz.bus.pay.magic.Material;
+import org.miaixz.bus.pay.magic.Voucher;
 
 /**
  * Common interface for {@code Provider}. All platform {@code Provider}s need to implement this interface.
  *
- * @param <T> The global object type, extending {@link Material}.
+ * @param <T> The global object type, extending {@link Voucher}.
  * @author Kimi Liu
  * @since Java 17+
  */
-public interface Provider<T extends Material> extends org.miaixz.bus.core.Provider {
+public interface Provider<T extends Voucher> extends org.miaixz.bus.core.Provider {
 
     /**
      * Returns the type of this provider.

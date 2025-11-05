@@ -40,7 +40,7 @@ import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.XmlKit;
 import org.miaixz.bus.pay.*;
-import org.miaixz.bus.pay.magic.Material;
+import org.miaixz.bus.pay.magic.Voucher;
 import org.miaixz.bus.pay.magic.Message;
 import org.miaixz.bus.pay.metric.AbstractProvider;
 import org.miaixz.bus.pay.metric.unionpay.api.UnionPayApi;
@@ -52,7 +52,7 @@ import org.miaixz.bus.pay.metric.wechat.api.v2.*;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class WechatPayProvider extends AbstractProvider<Material, Context> {
+public class WechatPayProvider extends AbstractProvider<Voucher, Context> {
 
     /**
      * Constructs a WechatPayProvider with the given context.
