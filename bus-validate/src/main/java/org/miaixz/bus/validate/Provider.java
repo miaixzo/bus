@@ -30,8 +30,8 @@ package org.miaixz.bus.validate;
 import org.miaixz.bus.core.lang.exception.NoSuchException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.ObjectKit;
+import org.miaixz.bus.validate.magic.Criterion;
 import org.miaixz.bus.validate.magic.ErrorCode;
-import org.miaixz.bus.validate.magic.Material;
 import org.miaixz.bus.validate.magic.annotation.Complex;
 
 import java.lang.annotation.Annotation;
@@ -183,38 +183,38 @@ public class Provider {
     }
 
     /**
-     * Resolves and creates a {@link ValidateException} based on the validation material and context.
+     * Resolves and creates a {@link ValidateException} based on the validation criterion and context.
      *
-     * @param material the validation material, containing validator configuration, error messages, etc.
+     * @param criterion the validation criterion, containing validator configuration, error messages, etc.
      * @param context  the validation context, containing runtime information like exception class and error codes.
      * @return a {@link ValidateException} instance created according to the rules and context.
      * @throws NoSuchException if the custom exception class does not meet the requirements (e.g., missing constructor).
      */
-    public static ValidateException resolve(Material material, Context context) {
-        // 1. Determine the exception class: Priority is given to the context's exception class, then the material's,
+    public static ValidateException resolve(Criterion criterion, Context context) {
+        // 1. Determine the exception class: Priority is given to the context's exception class, then the criterion's,
         // and finally ValidateException.
         Class<? extends ValidateException> exceptionClass = ObjectKit
-                .defaultIfNull(material.getException(), context.getException());
+                .defaultIfNull(criterion.getException(), context.getException());
 
-        // 2. Determine the error code: Priority is given to the material's error code; if it's the default, the
+        // 2. Determine the error code: Priority is given to the criterion's error code; if it's the default, the
         // context's error code is used.
-        String errcode = ObjectKit.defaultIfNull(material.getErrcode(), context.getErrcode());
+        String errcode = ObjectKit.defaultIfNull(criterion.getErrcode(), context.getErrcode());
 
         // 3. Get the error message: Fetched from Errors; if the key is null, the original errorCode is used.
-        String errmsg = ObjectKit.defaultIfNull(material.getErrmsg(), ErrorCode._115000.getValue());
+        String errmsg = ObjectKit.defaultIfNull(criterion.getErrmsg(), ErrorCode._115000.getValue());
 
-        // 4. Set the error code and message in the material.
-        material.setErrcode(errcode);
-        material.setErrmsg(errmsg);
+        // 4. Set the error code and message in the criterion.
+        criterion.setErrcode(errcode);
+        criterion.setErrmsg(errmsg);
 
         // 5. Create the exception instance.
         if (exceptionClass == null) {
-            return new ValidateException(errcode, material.getMessage());
+            return new ValidateException(errcode, criterion.getMessage());
         }
         try {
             Constructor<? extends ValidateException> constructor = exceptionClass
                     .getConstructor(String.class, String.class);
-            return constructor.newInstance(errcode, material.getMessage());
+            return constructor.newInstance(errcode, criterion.getMessage());
         } catch (NoSuchMethodException e) {
             throw new NoSuchException("Illegal custom validation exception, no constructor(String, String) found: "
                     + exceptionClass.getName());

@@ -49,7 +49,7 @@ import java.util.Map;
  */
 @Getter
 @Setter
-public class Material {
+public class Criterion {
 
     /**
      * Indicates if the validation should be applied to each element of an array or collection.
@@ -77,7 +77,7 @@ public class Material {
      */
     private String[] group;
     /**
-     * The actual annotation instance from which this material was built.
+     * The actual annotation instance from which this criterion was built.
      */
     private Annotation annotation;
     /**
@@ -93,14 +93,14 @@ public class Material {
      */
     private Map<String, Object> param;
     /**
-     * A list of nested validation materials, used for handling meta-annotations.
+     * A list of nested validation criterions, used for handling meta-annotations.
      */
-    private List<Material> list;
+    private List<Criterion> list;
 
     /**
-     * Default constructor. Initializes the parameter map and material list.
+     * Default constructor. Initializes the parameter map and criterion list.
      */
-    public Material() {
+    public Criterion() {
         this.list = new ArrayList<>();
         this.param = new HashMap<>();
     }
@@ -109,13 +109,13 @@ public class Material {
      * Adds a parent validation annotation's properties. This is used for handling meta-annotations where one validation
      * annotation is composed of others.
      *
-     * @param material The parent validation material to add.
+     * @param criterion The parent validation criterion to add.
      */
-    public void addParentProperty(Material material) {
+    public void addParentProperty(Criterion criterion) {
         if (CollKit.isEmpty(this.list)) {
             this.list = new ArrayList<>();
         }
-        this.list.add(material);
+        this.list.add(criterion);
     }
 
     /**

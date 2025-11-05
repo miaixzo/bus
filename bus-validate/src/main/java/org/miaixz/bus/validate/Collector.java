@@ -30,7 +30,7 @@ package org.miaixz.bus.validate;
 import lombok.Getter;
 import lombok.Setter;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.validate.magic.Material;
+import org.miaixz.bus.validate.magic.Criterion;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,9 +56,9 @@ public class Collector {
     private List<Collector> result;
 
     /**
-     * The validation material associated with this result.
+     * The validation criterion associated with this result.
      */
-    private Material material;
+    private Criterion criterion;
 
     /**
      * The pass/fail status of this validation result.
@@ -90,12 +90,12 @@ public class Collector {
      * Constructs a new Collector representing a single validation result.
      *
      * @param target   the object being validated.
-     * @param material the validation material.
+     * @param criterion the validation criterion.
      * @param pass     whether the validation passed.
      */
-    public Collector(Verified target, Material material, boolean pass) {
+    public Collector(Verified target, Criterion criterion, boolean pass) {
         this.target = target;
-        this.material = material;
+        this.criterion = criterion;
         this.pass = pass;
     }
 

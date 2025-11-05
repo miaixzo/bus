@@ -47,7 +47,7 @@ import java.util.List;
 
 /**
  * The validation checker. This class is responsible for orchestrating the validation process based on the provided
- * {@link Verified} object and its associated {@link Material} rules.
+ * {@link Verified} object and its associated {@link Criterion} rules.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -58,19 +58,19 @@ public class Checker {
      * Validates an object against a specific validator rule.
      *
      * @param verified The object to be validated, wrapped in a {@link Verified} instance.
-     * @param material The validation rule material.
+     * @param criterion The validation rule criterion.
      * @return A {@link Collector} containing the validation results.
      * @throws ValidateException if fast-fail is enabled in the context and validation fails.
      */
-    public Collector object(Verified verified, Material material) throws ValidateException {
+    public Collector object(Verified verified, Criterion criterion) throws ValidateException {
         Collector collector = new Collector(verified);
         Context context = verified.getContext();
 
-        if (Provider.isGroup(material.getGroup(), context.getGroup())) {
-            collector.collect(doObject(verified, material));
+        if (Provider.isGroup(criterion.getGroup(), context.getGroup())) {
+            collector.collect(doObject(verified, criterion));
         }
-        List<Material> list = material.getList();
-        for (Material p : list) {
+        List<Criterion> list = criterion.getList();
+        for (Criterion p : list) {
             collector.collect(doObject(verified, p));
         }
         return collector;
@@ -121,7 +121,7 @@ public class Checker {
 
             if (verified.getList().isEmpty()) {
                 Logger.warn(true, "Checker", "Please check the annotation on property: {}", field.getName());
-                // Create a Verified object with a default Material.
+                // Create a Verified object with a default Criterion.
                 verified = new Verified(value, new Annotation[0], verified.getContext(), field.getName());
                 verified.getList().add(without(field));
             }
@@ -132,25 +132,25 @@ public class Checker {
     }
 
     /**
-     * Creates a {@link Material} object representing a "not blank" validation rule.
+     * Creates a {@link Criterion} object representing a "not blank" validation rule.
      *
      * @param field The field to be validated.
-     * @return A {@link Material} object configured with the validation rule.
+     * @return A {@link Criterion} object configured with the validation rule.
      */
-    public Material without(Field field) {
-        // Create a new Material object to store the validation rule.
-        Material material = new Material();
+    public Criterion without(Field field) {
+        // Create a new Criterion object to store the validation rule.
+        Criterion criterion = new Criterion();
 
         // Set the validator name to "NOT_BLANK".
-        material.setName(Builder._NOT_BLANK);
+        criterion.setName(Builder._NOT_BLANK);
 
         // Get the NotBlank validator class from the Registry and set it.
         // The require method is used here to ensure the validator exists.
-        material.setClazz(Registry.getInstance().require(Builder._NOT_BLANK).getClass());
+        criterion.setClazz(Registry.getInstance().require(Builder._NOT_BLANK).getClass());
 
         // Create a NotBlank annotation instance using a dynamic proxy.
         // The proxy will return the default values for the annotation methods.
-        material.setAnnotation(
+        criterion.setAnnotation(
                 (NotBlank) Proxy.newProxyInstance(
                         // Use the annotation's class loader.
                         NotBlank.class.getClassLoader(),
@@ -163,53 +163,53 @@ public class Checker {
                         }));
 
         // Set the error message template, using the ${field} placeholder.
-        material.setErrmsg("Please check the ${field} parameter");
+        criterion.setErrmsg("Please check the ${field} parameter");
 
         // Set the default error code.
-        material.setErrcode(Builder.DEFAULT_ERRCODE);
+        criterion.setErrcode(Builder.DEFAULT_ERRCODE);
 
         // Set the name of the field to be validated.
-        material.setField(field.getName());
+        criterion.setField(field.getName());
 
         // Set the validation groups to an empty array (meaning no group).
-        material.setGroup(new String[0]);
+        criterion.setGroup(new String[0]);
 
         // Add validation parameters:
         // 1. FIELD parameter: the field name.
-        material.addParam(Builder.FIELD, field.getName());
+        criterion.addParam(Builder.FIELD, field.getName());
         // 2. VALUE parameter: an empty string (for validating against null/empty).
-        material.addParam(Builder.VALUE, Normal.EMPTY);
+        criterion.addParam(Builder.VALUE, Normal.EMPTY);
 
-        return material;
+        return criterion;
     }
 
     /**
      * Performs the actual validation of an object against a rule.
      *
      * @param verified The object to be validated.
-     * @param material The validation rule material.
+     * @param criterion The validation rule criterion.
      * @return A {@link Collector} containing the validation result.
      */
-    public Collector doObject(Verified verified, Material material) {
-        Matcher matcher = (Matcher) Registry.getInstance().require(material.getName(), material.getClazz());
+    public Collector doObject(Verified verified, Criterion criterion) {
+        Matcher matcher = (Matcher) Registry.getInstance().require(criterion.getName(), criterion.getClazz());
         if (ObjectKit.isEmpty(matcher)) {
             throw new NoSuchException(String.format(
                     "Cannot find the specified validator, name:%s, class:%s",
-                    material.getName(),
-                    null == material.getClazz() ? Normal.NULL : material.getClazz().getName()));
+                    criterion.getName(),
+                    null == criterion.getClazz() ? Normal.NULL : criterion.getClazz().getName()));
         }
         Object validatedTarget = verified.getObject();
-        if (ObjectKit.isNotEmpty(validatedTarget) && material.isArray() && Provider.isArray(validatedTarget)) {
-            return doArrayObject(verified, material);
-        } else if (ObjectKit.isNotEmpty(validatedTarget) && material.isArray()
+        if (ObjectKit.isNotEmpty(validatedTarget) && criterion.isArray() && Provider.isArray(validatedTarget)) {
+            return doArrayObject(verified, criterion);
+        } else if (ObjectKit.isNotEmpty(validatedTarget) && criterion.isArray()
                 && Provider.isCollection(validatedTarget)) {
-            return doCollection(verified, material);
+            return doCollection(verified, criterion);
         } else {
-            boolean result = matcher.on(validatedTarget, material.getAnnotation(), verified.getContext());
+            boolean result = matcher.on(validatedTarget, criterion.getAnnotation(), verified.getContext());
             if (!result && verified.getContext().isFast()) {
-                throw Provider.resolve(material, verified.getContext());
+                throw Provider.resolve(criterion, verified.getContext());
             }
-            return new Collector(verified, material, result);
+            return new Collector(verified, criterion, result);
         }
     }
 
@@ -217,14 +217,14 @@ public class Checker {
      * Validates each element of a collection.
      *
      * @param verified The collection object to be validated.
-     * @param material The validation rule to apply to each element.
+     * @param criterion The validation rule to apply to each element.
      * @return A {@link Collector} containing the results for each element.
      */
-    public Collector doCollection(Verified verified, Material material) {
+    public Collector doCollection(Verified verified, Criterion criterion) {
         Collector collector = new Collector(verified);
         Collection<?> collection = (Collection<?>) verified.getObject();
         for (Object item : collection) {
-            Verified itemTarget = new Verified(item, new Annotation[] { material.getAnnotation() },
+            Verified itemTarget = new Verified(item, new Annotation[] { criterion.getAnnotation() },
                     verified.getContext());
             Collector checked = itemTarget.access();
             collector.collect(checked);
@@ -237,14 +237,14 @@ public class Checker {
      * Validates each element of an array.
      *
      * @param verified The array object to be validated.
-     * @param material The validation rule to apply to each element.
+     * @param criterion The validation rule to apply to each element.
      * @return A {@link Collector} containing the results for each element.
      */
-    public Collector doArrayObject(Verified verified, Material material) {
+    public Collector doArrayObject(Verified verified, Criterion criterion) {
         Collector collector = new Collector(verified);
         Object[] array = (Object[]) verified.getObject();
         for (int i = 0; i < array.length; i++) {
-            Verified itemTarget = new Verified(array[i], new Annotation[] { material.getAnnotation() },
+            Verified itemTarget = new Verified(array[i], new Annotation[] { criterion.getAnnotation() },
                     verified.getContext());
             Collector checked = itemTarget.access();
             collector.collect(checked);
