@@ -81,7 +81,7 @@ public class FastjsonMessageConverter extends AbstractHttpMessageConverter {
 
     @Override
     public int order() {
-        return 1;
+        return 0;
     }
 
     @Override

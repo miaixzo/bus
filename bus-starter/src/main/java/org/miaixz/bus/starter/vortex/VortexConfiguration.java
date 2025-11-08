@@ -264,7 +264,8 @@ public class VortexConfiguration {
         // Create the Reactor Netty HTTP server adapter.
         ReactorHttpHandlerAdapter adapter = new ReactorHttpHandlerAdapter(httpHandler);
         HttpServer server = HttpServer.create()
-                .port(this.properties.getPort() != 0 ? this.properties.getPort() : PORT._8765).handle(adapter);
+                .port(this.properties.getPort() != 0 ? this.properties.getPort() : PORT._8765.getPort())
+                .handle(adapter);
 
         return new Vortex(server);
     }

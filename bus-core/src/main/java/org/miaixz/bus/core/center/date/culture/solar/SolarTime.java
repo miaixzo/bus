@@ -29,10 +29,12 @@ package org.miaixz.bus.core.center.date.culture.solar;
 
 import org.miaixz.bus.core.center.date.culture.Loops;
 import org.miaixz.bus.core.center.date.culture.cn.JulianDay;
+import org.miaixz.bus.core.center.date.culture.cn.Phase;
 import org.miaixz.bus.core.center.date.culture.cn.climate.Climate;
 import org.miaixz.bus.core.center.date.culture.cn.sixty.SixtyCycleHour;
 import org.miaixz.bus.core.center.date.culture.lunar.LunarDay;
 import org.miaixz.bus.core.center.date.culture.lunar.LunarHour;
+import org.miaixz.bus.core.center.date.culture.lunar.LunarMonth;
 
 /**
  * Represents a specific time in the Gregorian calendar.
@@ -318,6 +320,20 @@ public class SolarTime extends Loops {
      */
     public SixtyCycleHour getSixtyCycleHour() {
         return SixtyCycleHour.fromSolarTime(this);
+    }
+
+    /**
+     * Gets the lunar phase (Moon Phase) corresponding to this solar time.
+     *
+     * @return The {@link Phase} for this solar time.
+     */
+    public Phase getPhase() {
+        LunarMonth month = getLunarHour().getLunarDay().getLunarMonth().next(1);
+        Phase p = Phase.fromIndex(month.getYear(), month.getMonthWithLeap(), 0);
+        while (p.getSolarTime().isAfter(this)) {
+            p = p.next(-1);
+        }
+        return p;
     }
 
 }

@@ -102,7 +102,7 @@ public class CommonsFtp extends AbstractFtp {
      * @return A new CommonsFtp instance.
      */
     public static CommonsFtp of(final String host) {
-        return of(host, PORT._21);
+        return of(host, PORT._21.getPort());
     }
 
     /**

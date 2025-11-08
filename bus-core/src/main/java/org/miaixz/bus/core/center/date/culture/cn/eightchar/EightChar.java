@@ -31,9 +31,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.miaixz.bus.core.center.date.culture.Tradition;
-import org.miaixz.bus.core.center.date.culture.cn.sixty.EarthBranch;
-import org.miaixz.bus.core.center.date.culture.cn.sixty.HeavenStem;
-import org.miaixz.bus.core.center.date.culture.cn.sixty.SixtyCycle;
+import org.miaixz.bus.core.center.date.culture.cn.Duty;
+import org.miaixz.bus.core.center.date.culture.cn.sixty.*;
 import org.miaixz.bus.core.center.date.culture.solar.SolarDay;
 import org.miaixz.bus.core.center.date.culture.solar.SolarTerms;
 import org.miaixz.bus.core.center.date.culture.solar.SolarTime;
@@ -49,47 +48,35 @@ import org.miaixz.bus.core.center.date.culture.solar.SolarTime;
 public class EightChar extends Tradition {
 
     /**
-     * The Sixty-Year Cycle for the year (年柱).
+     * The Three Pillars (Year, Month, Day).
      */
-    protected SixtyCycle year;
+    protected ThreePillars threePillars;
 
     /**
-     * The Sixty-Year Cycle for the month (月柱).
-     */
-    protected SixtyCycle month;
-
-    /**
-     * The Sixty-Year Cycle for the day (日柱).
-     */
-    protected SixtyCycle day;
-
-    /**
-     * The Sixty-Year Cycle for the hour (时柱).
+     * The Hour Pillar.
      */
     protected SixtyCycle hour;
 
     /**
-     * Constructs an {@code EightChar} instance with the specified year, month, day, and hour pillars.
+     * Initializes the EightChar.
      *
-     * @param year  The {@link SixtyCycle} for the year.
-     * @param month The {@link SixtyCycle} for the month.
-     * @param day   The {@link SixtyCycle} for the day.
-     * @param hour  The {@link SixtyCycle} for the hour.
+     * @param year  The Year Pillar.
+     * @param month The Month Pillar.
+     * @param day   The Day Pillar.
+     * @param hour  The Hour Pillar.
      */
     public EightChar(SixtyCycle year, SixtyCycle month, SixtyCycle day, SixtyCycle hour) {
-        this.year = year;
-        this.month = month;
-        this.day = day;
+        this.threePillars = new ThreePillars(year, month, day);
         this.hour = hour;
     }
 
     /**
-     * Constructs an {@code EightChar} instance with the specified year, month, day, and hour pillar names.
+     * Initializes the EightChar.
      *
-     * @param year  The name of the Sixty-Year Cycle for the year.
-     * @param month The name of the Sixty-Year Cycle for the month.
-     * @param day   The name of the Sixty-Year Cycle for the day.
-     * @param hour  The name of the Sixty-Year Cycle for the hour.
+     * @param year  The Year Pillar (as a string).
+     * @param month The Month Pillar (as a string).
+     * @param day   The Day Pillar (as a string).
+     * @param hour  The Hour Pillar (as a string).
      */
     public EightChar(String year, String month, String day, String hour) {
         this(SixtyCycle.fromName(year), SixtyCycle.fromName(month), SixtyCycle.fromName(day),
@@ -97,68 +84,70 @@ public class EightChar extends Tradition {
     }
 
     /**
-     * Gets the Sixty-Year Cycle for the year (年柱).
+     * Gets the Year Pillar.
      *
-     * @return The {@link SixtyCycle} instance representing the year pillar.
+     * @return The Year Pillar.
      */
     public SixtyCycle getYear() {
-        return year;
+        return threePillars.getYear();
     }
 
     /**
-     * Gets the Sixty-Year Cycle for the month (月柱).
+     * Gets the Month Pillar.
      *
-     * @return The {@link SixtyCycle} instance representing the month pillar.
+     * @return The Month Pillar.
      */
     public SixtyCycle getMonth() {
-        return month;
+        return threePillars.getMonth();
     }
 
     /**
-     * Gets the Sixty-Year Cycle for the day (日柱).
+     * Gets the Day Pillar.
      *
-     * @return The {@link SixtyCycle} instance representing the day pillar.
+     * @return The Day Pillar.
      */
     public SixtyCycle getDay() {
-        return day;
+        return threePillars.getDay();
     }
 
     /**
-     * Gets the Sixty-Year Cycle for the hour (时柱).
+     * Gets the Hour Pillar.
      *
-     * @return The {@link SixtyCycle} instance representing the hour pillar.
+     * @return The Hour Pillar.
      */
     public SixtyCycle getHour() {
         return hour;
     }
 
     /**
-     * Gets the Fetal Origin (胎元) for this Eight Char.
+     * Gets the Fetal Origin (Tai Yuan).
      *
-     * @return The {@link SixtyCycle} instance representing the Fetal Origin.
+     * @return The Fetal Origin.
      */
     public SixtyCycle getFetalOrigin() {
-        return SixtyCycle.fromName(month.getHeavenStem().next(1).getName() + month.getEarthBranch().next(3).getName());
+        SixtyCycle m = getMonth();
+        return SixtyCycle.fromName(m.getHeavenStem().next(1).getName() + m.getEarthBranch().next(3).getName());
     }
 
     /**
-     * Gets the Fetal Breath (胎息) for this Eight Char.
+     * Gets the Fetal Breath (Tai Xi).
      *
-     * @return The {@link SixtyCycle} instance representing the Fetal Breath.
+     * @return The Fetal Breath.
      */
     public SixtyCycle getFetalBreath() {
+        SixtyCycle d = getDay();
         return SixtyCycle.fromName(
-                day.getHeavenStem().next(5).getName()
-                        + EarthBranch.fromIndex(13 - day.getEarthBranch().getIndex()).getName());
+                d.getHeavenStem().next(5).getName()
+                        + EarthBranch.fromIndex(13 - d.getEarthBranch().getIndex()).getName());
     }
 
     /**
-     * Gets the Life Palace (命宫) for this Eight Char.
+     * Gets the Own Sign (Ming Gong), or Life Palace.
      *
-     * @return The {@link SixtyCycle} instance representing the Life Palace.
+     * @return The Own Sign.
      */
     public SixtyCycle getOwnSign() {
-        int m = month.getEarthBranch().getIndex() - 1;
+        int m = getMonth().getEarthBranch().getIndex() - 1;
         if (m < 1) {
             m += 12;
         }
@@ -169,17 +158,17 @@ public class EightChar extends Tradition {
         int offset = m + h;
         offset = (offset >= 14 ? 26 : 14) - offset;
         return SixtyCycle.fromName(
-                HeavenStem.fromIndex((year.getHeavenStem().getIndex() + 1) * 2 + offset - 1).getName()
+                HeavenStem.fromIndex((getYear().getHeavenStem().getIndex() + 1) * 2 + offset - 1).getName()
                         + EarthBranch.fromIndex(offset + 1).getName());
     }
 
     /**
-     * Gets the Body Palace (身宫) for this Eight Char.
+     * Gets the Body Sign (Shen Gong), or Body Palace.
      *
-     * @return The {@link SixtyCycle} instance representing the Body Palace.
+     * @return The Body Sign.
      */
     public SixtyCycle getBodySign() {
-        int offset = month.getEarthBranch().getIndex() - 1;
+        int offset = getMonth().getEarthBranch().getIndex() - 1;
         if (offset < 1) {
             offset += 12;
         }
@@ -188,57 +177,72 @@ public class EightChar extends Tradition {
             offset -= 12;
         }
         return SixtyCycle.fromName(
-                HeavenStem.fromIndex((year.getHeavenStem().getIndex() + 1) * 2 + offset - 1).getName()
+                HeavenStem.fromIndex((getYear().getHeavenStem().getIndex() + 1) * 2 + offset - 1).getName()
                         + EarthBranch.fromIndex(offset + 1).getName());
     }
 
     /**
-     * Gets a list of Gregorian times that correspond to this Eight Char.
+     * Gets the 12 Duty Gods (Jian Chu).
      *
-     * @param startYear The start year (inclusive), supporting years from 1 to 9999.
-     * @param endYear   The end year (inclusive), supporting years from 1 to 9999.
-     * @return A list of {@link SolarTime} objects matching this Eight Char.
+     * @return The Duty.
+     * @see SixtyCycleDay#getDuty()
+     */
+    @Deprecated
+    public Duty getDuty() {
+        return Duty.fromIndex(getDay().getEarthBranch().getIndex() - getYear().getEarthBranch().getIndex());
+    }
+
+    /**
+     * Gets a list of Gregorian (Solar) times that match this EightChar.
+     *
+     * @param startYear The inclusive start year (supports 1-9999).
+     * @param endYear   The inclusive end year (supports 1-9999).
+     * @return A list of {@link SolarTime} objects.
      */
     public List<SolarTime> getSolarTimes(int startYear, int endYear) {
         List<SolarTime> l = new ArrayList<>();
-        // Offset of the month's Earthly Branch from Yin month (寅月)
+        SixtyCycle year = getYear();
+        SixtyCycle month = getMonth();
+        SixtyCycle day = getDay();
+        // Offset of the month's Earthly Branch from Yin month
         int m = month.getEarthBranch().next(-2).getIndex();
-        // The Heavenly Stem of the month must match
+        // The month's Heavenly Stem must match
         if (!HeavenStem.fromIndex((year.getHeavenStem().getIndex() + 1) * 2 + m).equals(month.getHeavenStem())) {
             return l;
         }
-        // The first year's Start of Spring (立春) is Xinyou (辛酉), index 57
+        // The Start of Spring in year 1 is Xin-You, index 57
         int y = year.next(-57).getIndex() + 1;
         // Solar term offset
         m *= 2;
-        // Convert hour's Earthly Branch to hour
+        // Convert hour Earthly Branch to hour of day
         int h = hour.getEarthBranch().getIndex() * 2;
-        // Handle different schools of thought for Zi hour (子时)
+        // Compatible with multiple schools of thought for Zi hour (midnight)
         int[] hours = h == 0 ? new int[] { 0, 23 } : new int[] { h };
         int baseYear = startYear - 1;
         if (baseYear > y) {
             y += 60 * (int) Math.ceil((baseYear - y) / 60D);
         }
         while (y <= endYear) {
-            // Start of Spring (立春) is the beginning of Yin month (寅月)
+            // Start of Spring is the beginning of Yin month
             SolarTerms term = SolarTerms.fromIndex(y, 3);
-            // Adjust solar term, then year and month pillars will match
+            // Shift by solar terms, the year and month pillars will match
             if (m > 0) {
                 term = term.next(m);
             }
             SolarTime solarTime = term.getJulianDay().getSolarTime();
             if (solarTime.getYear() >= startYear) {
-                // Offset between day pillar and solar term pillar
+                // Offset between the day's SixtyCycle and the solar term's SixtyCycle
                 SolarDay solarDay = solarTime.getSolarDay();
                 int d = day.next(-solarDay.getLunarDay().getSixtyCycle().getIndex()).getIndex();
                 if (d > 0) {
-                    // Advance days from solar term
+                    // Shift days from the solar term
                     solarDay = solarDay.next(d);
                 }
                 for (int hour : hours) {
                     int mi = 0;
                     int s = 0;
-                    // In extreme cases where it's the solar term day and the hour matches, include minutes and seconds
+                    // In the extreme case where it is exactly the solar term day and the hour
+                    // matches the solar term's hour, include minutes and seconds
                     if (d == 0 && hour == solarTime.getHour()) {
                         mi = solarTime.getMinute();
                         s = solarTime.getSecond();
@@ -248,7 +252,7 @@ public class EightChar extends Tradition {
                     if (d == 30) {
                         time = time.next(-3600);
                     }
-                    // Verify the result
+                    // Verify
                     if (time.getLunarHour().getEightChar().equals(this)) {
                         l.add(time);
                     }
@@ -265,7 +269,7 @@ public class EightChar extends Tradition {
      * @return The Eight Characters as a formatted string.
      */
     public String getName() {
-        return String.format("%s %s %s %s", year, month, day, hour);
+        return String.format("%s %s", threePillars, hour);
     }
 
 }

@@ -31,8 +31,6 @@ import java.lang.ref.PhantomReference;
 import java.lang.ref.ReferenceQueue;
 import java.util.Objects;
 
-import org.miaixz.bus.core.xyz.ObjectKit;
-
 /**
  * A phantom reference object. When the garbage collector determines that a phantom reference's referent is phantom
  * reachable, the {@link PhantomReference} object is enqueued on its {@link ReferenceQueue}. The object is not yet
@@ -86,7 +84,7 @@ public class PhantomObject<T> extends PhantomReference<T> implements Ref<T> {
         if (other == this) {
             return true;
         } else if (other instanceof PhantomObject) {
-            return ObjectKit.equals(((PhantomObject<?>) other).get(), get());
+            return this.hashCode == ((PhantomObject<?>) other).hashCode;
         }
         return false;
     }

@@ -124,7 +124,7 @@ public class LunarFestival extends Loops {
 
             case TERM:
                 SolarTerms solarTerm = SolarTerms.fromIndex(year, Integer.parseInt(data.substring(4), 10));
-                return new LunarFestival(type, solarTerm.getJulianDay().getSolarDay().getLunarDay(), solarTerm, data);
+                return new LunarFestival(type, solarTerm.getSolarDay().getLunarDay(), solarTerm, data);
 
             case EVE:
                 return new LunarFestival(type, LunarDay.fromYmd(year + 1, 1, 1).next(-1), null, data);
@@ -151,7 +151,7 @@ public class LunarFestival extends Loops {
         while (matcher.find()) {
             String data = matcher.group();
             SolarTerms solarTerms = SolarTerms.fromIndex(year, Integer.parseInt(data.substring(4), 10));
-            LunarDay lunarDay = solarTerms.getJulianDay().getSolarDay().getLunarDay();
+            LunarDay lunarDay = solarTerms.getSolarDay().getLunarDay();
             if (lunarDay.getYear() == year && lunarDay.getMonth() == month && lunarDay.getDay() == day) {
                 return new LunarFestival(EnumValue.Festival.TERM, lunarDay, solarTerms, data);
             }

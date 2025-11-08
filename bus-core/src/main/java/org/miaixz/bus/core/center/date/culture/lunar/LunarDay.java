@@ -34,10 +34,7 @@ import org.miaixz.bus.core.center.date.culture.Loops;
 import org.miaixz.bus.core.center.date.culture.cn.*;
 import org.miaixz.bus.core.center.date.culture.cn.fetus.FetusDay;
 import org.miaixz.bus.core.center.date.culture.cn.ren.MinorRen;
-import org.miaixz.bus.core.center.date.culture.cn.sixty.EarthBranch;
-import org.miaixz.bus.core.center.date.culture.cn.sixty.HeavenStem;
-import org.miaixz.bus.core.center.date.culture.cn.sixty.SixtyCycle;
-import org.miaixz.bus.core.center.date.culture.cn.sixty.SixtyCycleDay;
+import org.miaixz.bus.core.center.date.culture.cn.sixty.*;
 import org.miaixz.bus.core.center.date.culture.cn.star.nine.NineStar;
 import org.miaixz.bus.core.center.date.culture.cn.star.six.SixStar;
 import org.miaixz.bus.core.center.date.culture.cn.star.twelve.TwelveStar;
@@ -290,12 +287,29 @@ public class LunarDay extends Loops {
     }
 
     /**
-     * Gets the phase of the moon for this day.
+     * Gets the day index within the lunar phase.
+     *
+     * @return The day index within the lunar phase.
+     */
+    public Phase.PhaseDay getPhaseDay() {
+        SolarDay today = getSolarDay();
+        LunarMonth m = month.next(1);
+        Phase p = Phase.fromIndex(m.getYear(), m.getMonthWithLeap(), 0);
+        SolarDay d = p.getSolarDay();
+        while (d.isAfter(today)) {
+            p = p.next(-1);
+            d = p.getSolarDay();
+        }
+        return new Phase.PhaseDay(p, today.subtract(d));
+    }
+
+    /**
+     * Gets the lunar phase (Moon Phase).
      *
      * @return The {@link Phase}.
      */
     public Phase getPhase() {
-        return Phase.fromIndex(day - 1);
+        return getPhaseDay().getPhase();
     }
 
     /**
@@ -400,6 +414,15 @@ public class LunarDay extends Loops {
      */
     public MinorRen getMinorRen() {
         return getLunarMonth().getMinorRen().next(day - 1);
+    }
+
+    /**
+     * Gets the Three Pillars (Year, Month, Day).
+     *
+     * @return The {@link ThreePillars}.
+     */
+    public ThreePillars getThreePillars() {
+        return getSixtyCycleDay().getThreePillars();
     }
 
 }

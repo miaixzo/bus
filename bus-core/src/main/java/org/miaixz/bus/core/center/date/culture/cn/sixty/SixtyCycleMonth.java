@@ -171,8 +171,7 @@ public class SixtyCycleMonth extends Loops {
      * @return The {@link SixtyCycleDay} instance representing the first day.
      */
     public SixtyCycleDay getFirstDay() {
-        return SixtyCycleDay.fromSolarDay(
-                SolarTerms.fromIndex(year.getYear(), 3 + getIndexInYear() * 2).getJulianDay().getSolarDay());
+        return SixtyCycleDay.fromSolarDay(SolarTerms.fromIndex(year.getYear(), 3 + getIndexInYear() * 2).getSolarDay());
     }
 
     /**

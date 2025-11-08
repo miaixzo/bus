@@ -36,6 +36,7 @@ import org.miaixz.bus.core.lang.annotation.Ignore;
 import org.miaixz.bus.core.lang.annotation.Include;
 
 import jakarta.persistence.Transient;
+import org.miaixz.bus.core.xyz.ObjectKit;
 
 /**
  * An abstract base class for HTTP message converters that provides a unified and reusable logic for determining which
@@ -158,7 +159,7 @@ public abstract class AbstractHttpMessageConverter implements HttpMessageConvert
      * @return {@code true} if the value is null, empty, or blank; {@code false} otherwise.
      */
     private static boolean isValueEmpty(Object value) {
-        return value == null || Normal.EMPTY.equals(value) || Symbol.SPACE.equals(value);
+        return ObjectKit.isEmpty(value) || Normal.EMPTY.equals(value) || Symbol.SPACE.equals(value);
     }
 
 }

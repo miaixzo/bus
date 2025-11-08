@@ -395,17 +395,25 @@ public enum Protocol {
 
     /**
      * Gets the port number from an address.
+     * <p>
+     * This method will attempt to find an explicit port. If not found, it will try to infer the default port for "http"
+     * (80) or "httpsS" (BUG) "https" (443). If neither is found, it will throw an exception.
      *
      * @param address The address, in the format "hostname:port" or "protocol://hostname:port".
      * @return The port number.
-     * @throws IllegalArgumentException If the address format is invalid or does not include a port number.
+     * @throws IllegalArgumentException If the address format is invalid or no port (explicit or implicit) can be found.
      */
     public static int getPort(String address) {
+        // Pass -1 as the defaultPort to indicate that an exception should be thrown if no port is found
         return getPort(address, -1);
     }
 
     /**
      * Gets the port number from an address, returning a default value if not found.
+     * <p>
+     * This method follows this logic: 1. Check for an explicit port (e.g., ":8080"). 2. If no explicit port, check for
+     * an implicit protocol port (http=80, https=443). 3. If neither, return the provided {@code defaultPort}. 4. If
+     * {@code defaultPort} is -1 and no port is found, throw an exception.
      *
      * @param address     The address, in the format "hostname:port" or "protocol://hostname:port".
      * @param defaultPort The default port to return if no port is specified in the address.
@@ -420,35 +428,72 @@ public enum Protocol {
             throw new IllegalArgumentException("Address cannot be null or empty");
         }
 
-        // Remove the protocol part (if any)
-        String hostPort = address;
+        String hostPortPart = address;
+        int implicitPort = -1; // Default implicit port
+
+        // Check for protocol and set implicit port
         int protocolIndex = address.indexOf("://");
         if (protocolIndex >= 0) {
-            hostPort = address.substring(protocolIndex + 3);
+            String protocol = address.substring(0, protocolIndex);
+            hostPortPart = address.substring(protocolIndex + 3); // Part after "://"
+
+            if ("http".equalsIgnoreCase(protocol)) {
+                implicitPort = PORT._80.getPort();
+            } else if ("https".equalsIgnoreCase(protocol)) {
+                implicitPort = PORT._443.getPort();
+            }
+            // You could add more implicit ports here, e.g., "ws" -> 80, "wss" -> 443
         }
 
-        // Find the port separator
-        int portIndex = hostPort.lastIndexOf(Symbol.C_COLON);
-        if (portIndex >= 0) {
-            // Ensure it's not a colon in an IPv6 address
-            if (hostPort.lastIndexOf(Symbol.C_BRACKET_RIGHT) < portIndex) {
-                String portStr = hostPort.substring(portIndex + 1);
+        // Find the last colon, which would separate host from port
+        int portIndex = hostPortPart.lastIndexOf(Symbol.C_COLON);
+
+        // Ensure it's not a colon in an IPv6 address, e.g., [::1]
+        int ipv6EndIndex = hostPortPart.lastIndexOf(Symbol.C_BRACKET_RIGHT);
+        if (portIndex > 0 && ipv6EndIndex < portIndex) {
+            // This colon is for a port
+
+            String portString = hostPortPart.substring(portIndex + 1);
+
+            // Remove any path, query, or fragment from the port string
+            int pathIndex = portString.indexOf(Symbol.C_SLASH);
+            if (pathIndex >= 0) {
+                portString = portString.substring(0, pathIndex);
+            }
+            int queryIndex = portString.indexOf(Symbol.C_QUESTION_MARK);
+            if (queryIndex >= 0) {
+                portString = portString.substring(0, queryIndex);
+            }
+            int hashIndex = portString.indexOf(Symbol.C_HASH);
+            if (hashIndex >= 0) {
+                portString = portString.substring(0, hashIndex);
+            }
+
+            // If portStr is empty (e.g., "host:/path"), it's invalid, fall through
+            if (!portString.isEmpty()) {
                 try {
-                    return Integer.parseInt(portStr);
+                    return Integer.parseInt(portString);
                 } catch (NumberFormatException e) {
                     if (defaultPort >= 0) {
                         return defaultPort;
                     }
-                    throw new IllegalArgumentException("Invalid port number: " + portStr);
+                    throw new IllegalArgumentException("Invalid port number in address: " + address);
                 }
             }
         }
 
-        // Port not found
+        // No explicit port found, return implicit port if one was set
+        if (implicitPort >= 0) {
+            return implicitPort;
+        }
+
+        // No explicit or implicit port, return the user's default
         if (defaultPort >= 0) {
             return defaultPort;
         }
-        throw new IllegalArgumentException("Port not specified in address: " + address);
+
+        // All options exhausted
+        throw new IllegalArgumentException("Port not specified and no default port available for address: " + address);
     }
 
     /**

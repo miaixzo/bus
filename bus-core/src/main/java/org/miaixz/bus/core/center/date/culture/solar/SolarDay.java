@@ -31,6 +31,7 @@ import org.miaixz.bus.core.center.date.Holiday;
 import org.miaixz.bus.core.center.date.culture.Loops;
 import org.miaixz.bus.core.center.date.culture.cn.HiddenStems;
 import org.miaixz.bus.core.center.date.culture.cn.JulianDay;
+import org.miaixz.bus.core.center.date.culture.cn.Phase;
 import org.miaixz.bus.core.center.date.culture.cn.Week;
 import org.miaixz.bus.core.center.date.culture.cn.climate.Climate;
 import org.miaixz.bus.core.center.date.culture.cn.climate.ClimateDay;
@@ -255,10 +256,10 @@ public class SolarDay extends Loops {
             i = 0;
         }
         SolarTerms term = SolarTerms.fromIndex(y, i);
-        SolarDay day = term.getJulianDay().getSolarDay();
+        SolarDay day = term.getSolarDay();
         while (isBefore(day)) {
             term = term.next(-1);
-            day = term.getJulianDay().getSolarDay();
+            day = term.getSolarDay();
         }
         return new SolarTermDay(term, subtract(day));
     }
@@ -312,7 +313,7 @@ public class SolarDay extends Loops {
     public DogDay getDogDay() {
         // Summer Solstice
         SolarTerms xiaZhi = SolarTerms.fromIndex(getYear(), 12);
-        SolarDay start = xiaZhi.getJulianDay().getSolarDay();
+        SolarDay start = xiaZhi.getSolarDay();
         // The 3rd Geng day after Summer Solstice, which is the 1st day of Chufu.
         start = start.next(start.getLunarDay().getSixtyCycle().getHeavenStem().stepsTo(6) + 20);
         int days = subtract(start);
@@ -333,7 +334,7 @@ public class SolarDay extends Loops {
         start = start.next(10);
         days = subtract(start);
         // Autumn Begins
-        if (xiaZhi.next(3).getJulianDay().getSolarDay().isAfter(start)) {
+        if (xiaZhi.next(3).getSolarDay().isAfter(start)) {
             if (days < 10) {
                 return new DogDay(Dog.fromIndex(1), days + 10);
             }
@@ -350,9 +351,9 @@ public class SolarDay extends Loops {
      */
     public NineDay getNineDay() {
         int year = getYear();
-        SolarDay start = SolarTerms.fromIndex(year + 1, 0).getJulianDay().getSolarDay();
+        SolarDay start = SolarTerms.fromIndex(year + 1, 0).getSolarDay();
         if (isBefore(start)) {
-            start = SolarTerms.fromIndex(year, 0).getJulianDay().getSolarDay();
+            start = SolarTerms.fromIndex(year, 0).getSolarDay();
         }
         SolarDay end = start.next(81);
         if (isBefore(start) || !isBefore(end)) {
@@ -371,12 +372,12 @@ public class SolarDay extends Loops {
     public PlumRainDay getPlumRainDay() {
         // Grain in Ear
         SolarTerms grainInEar = SolarTerms.fromIndex(getYear(), 11);
-        SolarDay start = grainInEar.getJulianDay().getSolarDay();
+        SolarDay start = grainInEar.getSolarDay();
         // The first Bing day after Mangzhong
         start = start.next(start.getLunarDay().getSixtyCycle().getHeavenStem().stepsTo(2));
 
         // Minor Heat
-        SolarDay end = grainInEar.next(2).getJulianDay().getSolarDay();
+        SolarDay end = grainInEar.next(2).getSolarDay();
         // The first Wei day after Xiaoshu
         end = end.next(end.getLunarDay().getSixtyCycle().getEarthBranch().stepsTo(7));
 
@@ -398,7 +399,7 @@ public class SolarDay extends Loops {
         if (term.isQi()) {
             term = term.next(-1);
         }
-        int dayIndex = subtract(term.getJulianDay().getSolarDay());
+        int dayIndex = subtract(term.getSolarDay());
         int startIndex = (term.getIndex() - 1) * 3;
         String data = "93705542220504xx1513904541632524533533105544806564xx7573304542018584xx95"
                 .substring(startIndex, startIndex + 6);
@@ -500,6 +501,31 @@ public class SolarDay extends Loops {
      */
     public RabjungDay getRabByungDay() {
         return RabjungDay.fromSolarDay(this);
+    }
+
+    /**
+     * Gets the lunar phase day information (day index within the current phase).
+     *
+     * @return The {@link Phase.PhaseDay} (the phase and the day index within it).
+     */
+    public Phase.PhaseDay getPhaseDay() {
+        LunarMonth month = getLunarDay().getLunarMonth().next(1);
+        Phase p = Phase.fromIndex(month.getYear(), month.getMonthWithLeap(), 0);
+        SolarDay d = p.getSolarDay();
+        while (d.isAfter(this)) {
+            p = p.next(-1);
+            d = p.getSolarDay();
+        }
+        return new Phase.PhaseDay(p, subtract(d));
+    }
+
+    /**
+     * Gets the lunar phase (Moon Phase) for this day.
+     *
+     * @return The {@link Phase}.
+     */
+    public Phase getPhase() {
+        return getPhaseDay().getPhase();
     }
 
 }
