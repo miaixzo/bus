@@ -197,6 +197,9 @@ public class StorageService {
             case UPYUN:
                 return new UpyunOssProvider(context);
 
+            case VOLCENGINE:
+                return new VolcengineTosProvider(context);
+
             case WASABI:
                 return new WasabiProvider(context);
 

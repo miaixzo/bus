@@ -40,7 +40,7 @@ import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.xyz.IoKit;
+import org.miaixz.bus.core.net.PORT;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.ftp.CommonsFtp;
 import org.miaixz.bus.extra.ftp.Ftp;
@@ -91,7 +91,7 @@ public class FtpFileProvider extends AbstractProvider {
         try {
             Connector connector = new Connector();
             connector.setHost(host);
-            connector.setPort(port != 0 ? port : 21); // Default FTP port is 21
+            connector.setPort(port != 0 ? port : PORT._21.getPort()); // Default FTP port is 21
             connector.setUser(username);
             connector.setPassword(password);
             this.client = CommonsFtp.of(connector, Charset.UTF_8);
@@ -104,7 +104,7 @@ public class FtpFileProvider extends AbstractProvider {
      * Downloads a file from the default storage bucket.
      *
      * @param fileName The name of the file to download.
-     * @return A {@link Message} containing the result of the operation, including the file content stream if
+     * @return A {@link Message} containing the result of the operation, including the file content as a byte array if
      *         successful.
      */
     @Override
@@ -113,25 +113,35 @@ public class FtpFileProvider extends AbstractProvider {
     }
 
     /**
-     * Downloads a file from the specified storage bucket.
+     * Downloads a file from the specified storage bucket and returns its content as a byte array.
+     * <p>
+     * This method reads the entire file content into memory as a byte array, making it suitable for images, PDFs, DOCX
+     * files, and other binary files. The underlying input stream is automatically closed using try-with-resources to
+     * prevent resource leaks.
+     * </p>
+     * <p>
+     * <strong>Note:</strong> For large files (> 50MB), consider using {@link #download(String, String, File)} instead
+     * to avoid excessive memory consumption.
+     * </p>
      *
      * @param bucket   The name of the storage bucket.
      * @param fileName The name of the file to download.
-     * @return A {@link Message} containing the result of the operation, including the file content stream if
-     *         successful.
+     * @return A {@link Message} containing the result of the operation. If successful, the data field contains the file
+     *         content as a byte array; otherwise, it contains error information.
      */
     @Override
     public Message download(String bucket, String fileName) {
         try {
             String objectKey = getAbsolutePath(bucket, Normal.EMPTY, fileName);
             InputStream inputStream = client.getFileStream(objectKey);
-            if (inputStream == null) {
-                return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg("File not found").build();
+            // Use try-with-resources to automatically close the InputStream and prevent resource leaks
+            try (inputStream) {
+                byte[] content = inputStream.readAllBytes();
+
+                return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+                        .data(content).build();
             }
-            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
-                    .data(reader).build();
-        } catch (InternalException e) {
+        } catch (InternalException | IOException e) {
             Logger.error("Failed to download file: {} from bucket: {}. Error: {}", fileName, bucket, e.getMessage(), e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
         }
@@ -150,12 +160,21 @@ public class FtpFileProvider extends AbstractProvider {
     }
 
     /**
-     * Downloads a file from the specified storage bucket and saves it to a local file.
+     * Downloads a file from the specified storage bucket and saves it directly to a local file.
+     * <p>
+     * This method uses the FTP client's built-in download functionality, which is memory-efficient and suitable for
+     * large files.
+     * </p>
+     * <p>
+     * <strong>Recommended for:</strong> Large files, videos, archives, or any scenario where you need to persist the
+     * file locally without loading it entirely into memory.
+     * </p>
      *
      * @param bucket   The name of the storage bucket.
      * @param fileName The name of the file to download.
      * @param file     The target local file to save the downloaded content.
-     * @return A {@link Message} containing the result of the operation.
+     * @return A {@link Message} containing the result of the operation. If successful, the file is saved to the
+     *         specified location; otherwise, error information is returned.
      */
     @Override
     public Message download(String bucket, String fileName, File file) {
@@ -329,19 +348,22 @@ public class FtpFileProvider extends AbstractProvider {
      */
     @Override
     public Message upload(String bucket, String path, String fileName, InputStream content) {
+        File tempFile = null;
         try {
             String objectKey = getAbsolutePath(bucket, path, fileName);
             String dirPath = objectKey.substring(0, objectKey.lastIndexOf(Symbol.SLASH));
             if (!client.isDir(dirPath)) {
                 client.mkDirs(dirPath);
             }
+
             // Use a temporary file to upload stream content
-            File tempFile = File.createTempFile("ftp_upload_", ".tmp");
+            tempFile = File.createTempFile("ftp_upload_", ".tmp");
             try (OutputStream out = new FileOutputStream(tempFile)) {
-                IoKit.copy(content, out);
+                content.transferTo(out);
             }
+
             client.uploadFile(dirPath, tempFile);
-            tempFile.delete();
+
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
                     .data(Blob.builder().name(fileName).path(objectKey).build()).build();
         } catch (InternalException | IOException e) {
@@ -353,6 +375,11 @@ public class FtpFileProvider extends AbstractProvider {
                     e.getMessage(),
                     e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
+        } finally {
+            // Clean up temporary file
+            if (tempFile != null && tempFile.exists()) {
+                tempFile.delete();
+            }
         }
     }
 

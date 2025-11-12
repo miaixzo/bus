@@ -144,7 +144,7 @@ public class SmbFileProvider extends AbstractProvider {
      * Downloads a file from the default storage bucket.
      *
      * @param fileName The name of the file to download.
-     * @return A {@link Message} containing the result of the operation, including the file content stream if
+     * @return A {@link Message} containing the result of the operation, including the file content as a byte array if
      *         successful.
      */
     @Override
@@ -153,22 +153,32 @@ public class SmbFileProvider extends AbstractProvider {
     }
 
     /**
-     * Downloads a file from the specified storage bucket.
+     * Downloads a file from the specified storage bucket and returns its content as a byte array.
+     * <p>
+     * This method reads the entire file content into memory as a byte array, making it suitable for images, PDFs, DOCX
+     * files, and other binary files. The SMB file and input stream are automatically closed using try-with-resources to
+     * prevent resource leaks.
+     * </p>
+     * <p>
+     * <strong>Note:</strong> For large files (> 50MB), consider using {@link #download(String, String, File)} instead
+     * to avoid excessive memory consumption.
+     * </p>
      *
      * @param bucket   The name of the storage bucket.
      * @param fileName The name of the file to download.
-     * @return A {@link Message} containing the result of the operation, including the file content stream if
-     *         successful.
+     * @return A {@link Message} containing the result of the operation. If successful, the data field contains the file
+     *         content as a byte array; otherwise, it contains error information.
      */
     @Override
     public Message download(String bucket, String fileName) {
+        com.hierynomus.smbj.share.File smbFile = null;
         try {
             String objectKey = getAbsolutePath(bucket, Normal.EMPTY, fileName);
             if (!share.fileExists(objectKey)) {
                 return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg("File not found").build();
             }
 
-            com.hierynomus.smbj.share.File smbFile = share.openFile(
+            smbFile = share.openFile(
                     objectKey,
                     EnumSet.of(AccessMask.GENERIC_READ),
                     null,
@@ -176,14 +186,26 @@ public class SmbFileProvider extends AbstractProvider {
                     SMB2CreateDisposition.FILE_OPEN,
                     null);
 
-            InputStream inputStream = smbFile.getInputStream();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+            // Use try-with-resources to automatically close the InputStream
+            try (InputStream inputStream = smbFile.getInputStream()) {
+                // Read all bytes - supports images, PDFs, DOCX, and all other binary file types
+                byte[] content = inputStream.readAllBytes();
 
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
-                    .data(reader).build();
+                return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+                        .data(content).build();
+            }
         } catch (Exception e) {
             Logger.error("Failed to download file: {} from bucket: {}. Error: {}", fileName, bucket, e.getMessage(), e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
+        } finally {
+            // Close SMB file resource
+            if (smbFile != null) {
+                try {
+                    smbFile.close();
+                } catch (Exception e) {
+                    Logger.warn("Failed to close SMB file: {}", e.getMessage());
+                }
+            }
         }
     }
 
@@ -200,22 +222,33 @@ public class SmbFileProvider extends AbstractProvider {
     }
 
     /**
-     * Downloads a file from the specified storage bucket and saves it to a local file.
+     * Downloads a file from the specified storage bucket and saves it directly to a local file.
+     * <p>
+     * This method uses streaming to transfer file content, making it memory-efficient and suitable for large files.
+     * Both the input stream and output stream are automatically closed using try-with-resources to ensure proper
+     * resource management.
+     * </p>
+     * <p>
+     * <strong>Recommended for:</strong> Large files, videos, archives, or any scenario where you need to persist the
+     * file locally without loading it entirely into memory.
+     * </p>
      *
      * @param bucket   The name of the storage bucket.
      * @param fileName The name of the file to download.
      * @param file     The target local file to save the downloaded content.
-     * @return A {@link Message} containing the result of the operation.
+     * @return A {@link Message} containing the result of the operation. If successful, the file is saved to the
+     *         specified location; otherwise, error information is returned.
      */
     @Override
     public Message download(String bucket, String fileName, File file) {
-        try (OutputStream outputStream = new FileOutputStream(file)) {
+        com.hierynomus.smbj.share.File smbFile = null;
+        try {
             String objectKey = getAbsolutePath(bucket, Normal.EMPTY, fileName);
             if (!share.fileExists(objectKey)) {
                 return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg("File not found").build();
             }
 
-            com.hierynomus.smbj.share.File smbFile = share.openFile(
+            smbFile = share.openFile(
                     objectKey,
                     EnumSet.of(AccessMask.GENERIC_READ),
                     null,
@@ -223,12 +256,10 @@ public class SmbFileProvider extends AbstractProvider {
                     SMB2CreateDisposition.FILE_OPEN,
                     null);
 
-            try (InputStream inputStream = smbFile.getInputStream()) {
-                byte[] buffer = new byte[4096];
-                int bytesRead;
-                while ((bytesRead = inputStream.read(buffer)) != -1) {
-                    outputStream.write(buffer, 0, bytesRead);
-                }
+            // Use try-with-resources to automatically close both streams
+            try (InputStream inputStream = smbFile.getInputStream();
+                    OutputStream outputStream = new FileOutputStream(file)) {
+                inputStream.transferTo(outputStream);
             }
 
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build();
@@ -241,6 +272,15 @@ public class SmbFileProvider extends AbstractProvider {
                     e.getMessage(),
                     e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
+        } finally {
+            // Close SMB file resource
+            if (smbFile != null) {
+                try {
+                    smbFile.close();
+                } catch (Exception e) {
+                    Logger.warn("Failed to close SMB file: {}", e.getMessage());
+                }
+            }
         }
     }
 
@@ -326,7 +366,7 @@ public class SmbFileProvider extends AbstractProvider {
             try {
                 // 2. Set rename information - correct constructor parameter order
                 FileRenameInformation renameInfo = new FileRenameInformation(false, // replaceIfExists - do not replace
-                                                                                    // target file (if exists)
+                        // target file (if exists)
                         0L, // rootDirectory - root directory file ID (usually 0)
                         newObjectKey // fileName - new file name
                 );
@@ -357,8 +397,7 @@ public class SmbFileProvider extends AbstractProvider {
      *
      * @param fileName The name of the file to upload.
      * @param content  The file content as a byte array.
-     * @return A {@link Message} containing the result of the operation, including the uploaded file information or an
-     *         error message.
+     * @return A {@link Message} containing the result of the operation.
      */
     @Override
     public Message upload(String fileName, byte[] content) {
@@ -368,11 +407,10 @@ public class SmbFileProvider extends AbstractProvider {
     /**
      * Uploads a byte array to a specified path in the default storage bucket.
      *
-     * @param path     The path to upload the file to.
+     * @param path     The target path for the file.
      * @param fileName The name of the file to upload.
      * @param content  The file content as a byte array.
-     * @return A {@link Message} containing the result of the operation, including the uploaded file information or an
-     *         error message.
+     * @return A {@link Message} containing the result of the operation.
      */
     @Override
     public Message upload(String path, String fileName, byte[] content) {
@@ -383,11 +421,10 @@ public class SmbFileProvider extends AbstractProvider {
      * Uploads a byte array to the specified storage bucket and path.
      *
      * @param bucket   The name of the storage bucket.
-     * @param path     The path to upload the file to.
+     * @param path     The target path for the file.
      * @param fileName The name of the file to upload.
      * @param content  The file content as a byte array.
-     * @return A {@link Message} containing the result of the operation, including the uploaded file information or an
-     *         error message.
+     * @return A {@link Message} containing the result of the operation.
      */
     @Override
     public Message upload(String bucket, String path, String fileName, byte[] content) {
@@ -399,8 +436,7 @@ public class SmbFileProvider extends AbstractProvider {
      *
      * @param fileName The name of the file to upload.
      * @param content  The file content as an {@link InputStream}.
-     * @return A {@link Message} containing the result of the operation, including the uploaded file information or an
-     *         error message.
+     * @return A {@link Message} containing the result of the operation.
      */
     @Override
     public Message upload(String fileName, InputStream content) {
@@ -410,11 +446,10 @@ public class SmbFileProvider extends AbstractProvider {
     /**
      * Uploads an input stream to a specified path in the default storage bucket.
      *
-     * @param path     The path to upload the file to.
+     * @param path     The target path for the file.
      * @param fileName The name of the file to upload.
      * @param content  The file content as an {@link InputStream}.
-     * @return A {@link Message} containing the result of the operation, including the uploaded file information or an
-     *         error message.
+     * @return A {@link Message} containing the result of the operation.
      */
     @Override
     public Message upload(String path, String fileName, InputStream content) {
@@ -425,14 +460,14 @@ public class SmbFileProvider extends AbstractProvider {
      * Uploads an input stream to the specified storage bucket and path.
      *
      * @param bucket   The name of the storage bucket.
-     * @param path     The path to upload the file to.
+     * @param path     The target path for the file.
      * @param fileName The name of the file to upload.
      * @param content  The file content as an {@link InputStream}.
-     * @return A {@link Message} containing the result of the operation, including the uploaded file information or an
-     *         error message.
+     * @return A {@link Message} containing the result of the operation, including blob details if successful.
      */
     @Override
     public Message upload(String bucket, String path, String fileName, InputStream content) {
+        com.hierynomus.smbj.share.File smbFile = null;
         try {
             String objectKey = getAbsolutePath(bucket, path, fileName);
             String dirPath = objectKey.substring(0, objectKey.lastIndexOf(Symbol.SLASH));
@@ -440,7 +475,7 @@ public class SmbFileProvider extends AbstractProvider {
             // Ensure directory exists
             ensureDirectoryExists(dirPath);
 
-            com.hierynomus.smbj.share.File smbFile = share.openFile(
+            smbFile = share.openFile(
                     objectKey,
                     EnumSet.of(AccessMask.GENERIC_WRITE),
                     null,
@@ -449,11 +484,7 @@ public class SmbFileProvider extends AbstractProvider {
                     null);
 
             try (OutputStream outputStream = smbFile.getOutputStream()) {
-                byte[] buffer = new byte[4096];
-                int bytesRead;
-                while ((bytesRead = content.read(buffer)) != -1) {
-                    outputStream.write(buffer, 0, bytesRead);
-                }
+                content.transferTo(outputStream);
             }
 
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
@@ -467,6 +498,15 @@ public class SmbFileProvider extends AbstractProvider {
                     e.getMessage(),
                     e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
+        } finally {
+            // Close SMB file resource
+            if (smbFile != null) {
+                try {
+                    smbFile.close();
+                } catch (Exception e) {
+                    Logger.warn("Failed to close SMB file: {}", e.getMessage());
+                }
+            }
         }
     }
 
@@ -474,7 +514,7 @@ public class SmbFileProvider extends AbstractProvider {
      * Removes a file from the default storage bucket.
      *
      * @param fileName The name of the file to remove.
-     * @return A {@link Message} containing the result of the operation, including success or error information.
+     * @return A {@link Message} containing the result of the operation.
      */
     @Override
     public Message remove(String fileName) {
@@ -484,9 +524,9 @@ public class SmbFileProvider extends AbstractProvider {
     /**
      * Removes a file from a specified path in the default storage bucket.
      *
-     * @param path     The path where the file is located.
+     * @param path     The storage path where the file is located.
      * @param fileName The name of the file to remove.
-     * @return A {@link Message} containing the result of the operation, including success or error information.
+     * @return A {@link Message} containing the result of the operation.
      */
     @Override
     public Message remove(String path, String fileName) {
@@ -497,9 +537,9 @@ public class SmbFileProvider extends AbstractProvider {
      * Removes a file from the specified storage bucket and path.
      *
      * @param bucket   The name of the storage bucket.
-     * @param path     The path where the file is located.
+     * @param path     The storage path where the file is located.
      * @param fileName The name of the file to remove.
-     * @return A {@link Message} containing the result of the operation, including success or error information.
+     * @return A {@link Message} containing the result of the operation.
      */
     @Override
     public Message remove(String bucket, String path, String fileName) {
@@ -525,8 +565,8 @@ public class SmbFileProvider extends AbstractProvider {
      * Removes a file from the specified storage bucket based on its path.
      *
      * @param bucket The name of the storage bucket.
-     * @param path   The path of the file to remove.
-     * @return A {@link Message} containing the result of the operation, including success or error information.
+     * @param path   The target path of the file to remove.
+     * @return A {@link Message} containing the result of the operation.
      */
     @Override
     public Message remove(String bucket, Path path) {
@@ -643,21 +683,6 @@ public class SmbFileProvider extends AbstractProvider {
         } catch (Exception e) {
             Logger.error("Failed to ensure directory exists: {}. Error: {}", dirPath, e.getMessage(), e);
             throw new InternalException("Failed to create directory: " + dirPath, e);
-        }
-    }
-
-    /**
-     * Checks if a file exists on the SMB share.
-     *
-     * @param path The path to the file.
-     * @return {@code true} if the file exists, {@code false} otherwise.
-     */
-    private boolean isExist(String path) {
-        try {
-            return share.fileExists(path);
-        } catch (Exception e) {
-            Logger.error("Failed to check existence of file: {}. Error: {}", path, e.getMessage(), e);
-            return false;
         }
     }
 

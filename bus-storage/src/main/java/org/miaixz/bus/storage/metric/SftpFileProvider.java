@@ -99,8 +99,8 @@ public class SftpFileProvider extends AbstractProvider {
      * Downloads a file from the default storage bucket.
      *
      * @param fileName The name of the file to download.
-     * @return A {@link Message} containing the result of the operation, including the file content stream or an error
-     *         message.
+     * @return A {@link Message} containing the result of the operation, including the file content as a byte array if
+     *         successful.
      */
     @Override
     public Message download(String fileName) {
@@ -108,12 +108,21 @@ public class SftpFileProvider extends AbstractProvider {
     }
 
     /**
-     * Downloads a file from the specified storage bucket.
+     * Downloads a file from the specified storage bucket and returns its content as a byte array.
+     * <p>
+     * This method reads the entire file content into memory as a byte array, making it suitable for images, PDFs, DOCX
+     * files, and other binary files. The underlying input stream is automatically closed using try-with-resources to
+     * prevent resource leaks.
+     * </p>
+     * <p>
+     * <strong>Note:</strong> For large files (> 50MB), consider using {@link #download(String, String, File)} instead
+     * to avoid excessive memory consumption.
+     * </p>
      *
      * @param bucket   The name of the storage bucket.
      * @param fileName The name of the file to download.
-     * @return A {@link Message} containing the result of the operation, including the file content stream or an error
-     *         message.
+     * @return A {@link Message} containing the result of the operation. If successful, the data field contains the file
+     *         content as a byte array; otherwise, it contains error information.
      */
     @Override
     public Message download(String bucket, String fileName) {
@@ -123,10 +132,15 @@ public class SftpFileProvider extends AbstractProvider {
             if (inputStream == null) {
                 return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg("File not found").build();
             }
-            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
-                    .data(reader).build();
-        } catch (InternalException e) {
+
+            // Use try-with-resources to automatically close the InputStream and prevent resource leaks
+            try (inputStream) {
+                byte[] content = inputStream.readAllBytes();
+
+                return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+                        .data(content).build();
+            }
+        } catch (InternalException | IOException e) {
             Logger.error("Failed to download file: {} from bucket: {}. Error: {}", fileName, bucket, e.getMessage(), e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
         }
@@ -137,7 +151,7 @@ public class SftpFileProvider extends AbstractProvider {
      *
      * @param fileName The name of the file to download.
      * @param file     The target local file to save the downloaded content.
-     * @return A {@link Message} containing the result of the operation, including success or error information.
+     * @return A {@link Message} containing the result of the operation.
      */
     @Override
     public Message download(String fileName, File file) {
@@ -145,12 +159,21 @@ public class SftpFileProvider extends AbstractProvider {
     }
 
     /**
-     * Downloads a file from the specified storage bucket and saves it to a local file.
+     * Downloads a file from the specified storage bucket and saves it directly to a local file.
+     * <p>
+     * This method uses the SFTP client's built-in download functionality, which is memory-efficient and suitable for
+     * large files.
+     * </p>
+     * <p>
+     * <strong>Recommended for:</strong> Large files, videos, archives, or any scenario where you need to persist the
+     * file locally without loading it entirely into memory.
+     * </p>
      *
      * @param bucket   The name of the storage bucket.
      * @param fileName The name of the file to download.
      * @param file     The target local file to save the downloaded content.
-     * @return A {@link Message} containing the result of the operation, including success or error information.
+     * @return A {@link Message} containing the result of the operation. If successful, the file is saved to the
+     *         specified location; otherwise, error information is returned.
      */
     @Override
     public Message download(String bucket, String fileName, File file) {
@@ -173,8 +196,8 @@ public class SftpFileProvider extends AbstractProvider {
     /**
      * Lists files in the default storage bucket.
      *
-     * @return A {@link Message} containing the result of the operation, including a list of {@link Blob} objects or an
-     *         error message.
+     * @return A {@link Message} containing the result of the operation, including a list of {@link Blob} objects if
+     *         successful.
      */
     @Override
     public Message list() {
@@ -197,7 +220,7 @@ public class SftpFileProvider extends AbstractProvider {
      *
      * @param oldName The current name of the file.
      * @param newName The new name for the file.
-     * @return A {@link Message} containing the result of the operation, including success or error information.
+     * @return A {@link Message} containing the result of the operation.
      */
     @Override
     public Message rename(String oldName, String newName) {
@@ -210,7 +233,7 @@ public class SftpFileProvider extends AbstractProvider {
      * @param path    The path where the file is located.
      * @param oldName The current name of the file.
      * @param newName The new name for the file.
-     * @return A {@link Message} containing the result of the operation, including success or error information.
+     * @return A {@link Message} containing the result of the operation.
      */
     @Override
     public Message rename(String path, String oldName, String newName) {
@@ -224,7 +247,7 @@ public class SftpFileProvider extends AbstractProvider {
      * @param path    The path where the file is located.
      * @param oldName The current name of the file.
      * @param newName The new name for the file.
-     * @return A {@link Message} containing the result of the operation, including success or error information.
+     * @return A {@link Message} containing the result of the operation.
      */
     @Override
     public Message rename(String bucket, String path, String oldName, String newName) {
@@ -255,8 +278,7 @@ public class SftpFileProvider extends AbstractProvider {
      *
      * @param fileName The name of the file to upload.
      * @param content  The file content as a byte array.
-     * @return A {@link Message} containing the result of the operation, including the uploaded file information or an
-     *         error message.
+     * @return A {@link Message} containing the result of the operation.
      */
     @Override
     public Message upload(String fileName, byte[] content) {
@@ -266,11 +288,10 @@ public class SftpFileProvider extends AbstractProvider {
     /**
      * Uploads a byte array to a specified path in the default storage bucket.
      *
-     * @param path     The path to upload the file to.
+     * @param path     The target path for the file.
      * @param fileName The name of the file to upload.
      * @param content  The file content as a byte array.
-     * @return A {@link Message} containing the result of the operation, including the uploaded file information or an
-     *         error message.
+     * @return A {@link Message} containing the result of the operation.
      */
     @Override
     public Message upload(String path, String fileName, byte[] content) {
@@ -281,11 +302,10 @@ public class SftpFileProvider extends AbstractProvider {
      * Uploads a byte array to the specified storage bucket and path.
      *
      * @param bucket   The name of the storage bucket.
-     * @param path     The path to upload the file to.
+     * @param path     The target path for the file.
      * @param fileName The name of the file to upload.
      * @param content  The file content as a byte array.
-     * @return A {@link Message} containing the result of the operation, including the uploaded file information or an
-     *         error message.
+     * @return A {@link Message} containing the result of the operation.
      */
     @Override
     public Message upload(String bucket, String path, String fileName, byte[] content) {
@@ -297,8 +317,7 @@ public class SftpFileProvider extends AbstractProvider {
      *
      * @param fileName The name of the file to upload.
      * @param content  The file content as an {@link InputStream}.
-     * @return A {@link Message} containing the result of the operation, including the uploaded file information or an
-     *         error message.
+     * @return A {@link Message} containing the result of the operation.
      */
     @Override
     public Message upload(String fileName, InputStream content) {
@@ -308,11 +327,10 @@ public class SftpFileProvider extends AbstractProvider {
     /**
      * Uploads an input stream to a specified path in the default storage bucket.
      *
-     * @param path     The path to upload the file to.
+     * @param path     The target path for the file.
      * @param fileName The name of the file to upload.
      * @param content  The file content as an {@link InputStream}.
-     * @return A {@link Message} containing the result of the operation, including the uploaded file information or an
-     *         error message.
+     * @return A {@link Message} containing the result of the operation.
      */
     @Override
     public Message upload(String path, String fileName, InputStream content) {
@@ -323,11 +341,10 @@ public class SftpFileProvider extends AbstractProvider {
      * Uploads an input stream to the specified storage bucket and path.
      *
      * @param bucket   The name of the storage bucket.
-     * @param path     The path to upload the file to.
+     * @param path     The target path for the file.
      * @param fileName The name of the file to upload.
      * @param content  The file content as an {@link InputStream}.
-     * @return A {@link Message} containing the result of the operation, including the uploaded file information or an
-     *         error message.
+     * @return A {@link Message} containing the result of the operation, including blob details if successful.
      */
     @Override
     public Message upload(String bucket, String path, String fileName, InputStream content) {
@@ -356,7 +373,7 @@ public class SftpFileProvider extends AbstractProvider {
      * Removes a file from the default storage bucket.
      *
      * @param fileName The name of the file to remove.
-     * @return A {@link Message} containing the result of the operation, including success or error information.
+     * @return A {@link Message} containing the result of the operation.
      */
     @Override
     public Message remove(String fileName) {
@@ -366,9 +383,9 @@ public class SftpFileProvider extends AbstractProvider {
     /**
      * Removes a file from a specified path in the default storage bucket.
      *
-     * @param path     The path where the file is located.
+     * @param path     The storage path where the file is located.
      * @param fileName The name of the file to remove.
-     * @return A {@link Message} containing the result of the operation, including success or error information.
+     * @return A {@link Message} containing the result of the operation.
      */
     @Override
     public Message remove(String path, String fileName) {
@@ -379,9 +396,9 @@ public class SftpFileProvider extends AbstractProvider {
      * Removes a file from the specified storage bucket and path.
      *
      * @param bucket   The name of the storage bucket.
-     * @param path     The path where the file is located.
+     * @param path     The storage path where the file is located.
      * @param fileName The name of the file to remove.
-     * @return A {@link Message} containing the result of the operation, including success or error information.
+     * @return A {@link Message} containing the result of the operation.
      */
     @Override
     public Message remove(String bucket, String path, String fileName) {
@@ -407,8 +424,8 @@ public class SftpFileProvider extends AbstractProvider {
      * Removes a file from the specified storage bucket based on its path.
      *
      * @param bucket The name of the storage bucket.
-     * @param path   The path of the file to remove.
-     * @return A {@link Message} containing the result of the operation, including success or error information.
+     * @param path   The target path of the file to remove.
+     * @return A {@link Message} containing the result of the operation.
      */
     @Override
     public Message remove(String bucket, Path path) {

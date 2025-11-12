@@ -37,7 +37,6 @@ import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.io.file.PathResolve;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.storage.Builder;
@@ -85,8 +84,8 @@ public class WebDavProvider extends AbstractProvider {
      * Downloads a file from the default storage bucket.
      *
      * @param fileName The name of the file to download.
-     * @return A {@link Message} containing the result of the operation, including the file content stream or an error
-     *         message.
+     * @return A {@link Message} containing the result of the operation, including the file content as a byte array if
+     *         successful.
      */
     @Override
     public Message download(String fileName) {
@@ -94,12 +93,21 @@ public class WebDavProvider extends AbstractProvider {
     }
 
     /**
-     * Downloads a file from the specified storage bucket.
+     * Downloads a file from the specified storage bucket and returns its content as a byte array.
+     * <p>
+     * This method reads the entire file content into memory as a byte array, making it suitable for images, PDFs, DOCX
+     * files, and other binary files. The WebDAV input stream is automatically closed using try-with-resources to
+     * prevent resource leaks.
+     * </p>
+     * <p>
+     * <strong>Note:</strong> For large files (> 50MB), consider using {@link #download(String, String, File)} instead
+     * to avoid excessive memory consumption.
+     * </p>
      *
      * @param bucket   The name of the storage bucket.
      * @param fileName The name of the file to download.
-     * @return A {@link Message} containing the result of the operation, including the file content stream or an error
-     *         message.
+     * @return A {@link Message} containing the result of the operation. If successful, the data field contains the file
+     *         content as a byte array; otherwise, it contains error information.
      */
     @Override
     public Message download(String bucket, String fileName) {
@@ -107,10 +115,14 @@ public class WebDavProvider extends AbstractProvider {
             String prefix = Builder.buildNormalizedPrefix(context.getPrefix());
             String objectKey = Builder.buildObjectKey(prefix, Normal.EMPTY, fileName);
             String url = getUrl(bucket + "/" + objectKey);
-            InputStream inputStream = client.get(url);
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
-                    .data(bufferedReader).build();
+
+            // Use try-with-resources to automatically close the InputStream
+            try (InputStream inputStream = client.get(url)) {
+                byte[] content = inputStream.readAllBytes();
+
+                return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+                        .data(content).build();
+            }
         } catch (Exception e) {
             Logger.error("Failed to download file: {} from bucket: {}. Error: {}", fileName, bucket, e.getMessage(), e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
@@ -122,7 +134,7 @@ public class WebDavProvider extends AbstractProvider {
      *
      * @param fileName The name of the file to download.
      * @param file     The target local file to save the downloaded content.
-     * @return A {@link Message} containing the result of the operation, including success or error information.
+     * @return A {@link Message} containing the result of the operation.
      */
     @Override
     public Message download(String fileName, File file) {
@@ -130,12 +142,22 @@ public class WebDavProvider extends AbstractProvider {
     }
 
     /**
-     * Downloads a file from the specified storage bucket and saves it to a local file.
+     * Downloads a file from the specified storage bucket and saves it directly to a local file.
+     * <p>
+     * This method uses streaming to transfer file content, making it memory-efficient and suitable for large files.
+     * Both the input stream and output stream are automatically closed using try-with-resources to ensure proper
+     * resource management.
+     * </p>
+     * <p>
+     * <strong>Recommended for:</strong> Large files, videos, archives, or any scenario where you need to persist the
+     * file locally without loading it entirely into memory.
+     * </p>
      *
      * @param bucket   The name of the storage bucket.
      * @param fileName The name of the file to download.
      * @param file     The target local file to save the downloaded content.
-     * @return A {@link Message} containing the result of the operation, including success or error information.
+     * @return A {@link Message} containing the result of the operation. If successful, the file is saved to the
+     *         specified location; otherwise, error information is returned.
      */
     @Override
     public Message download(String bucket, String fileName, File file) {
@@ -143,10 +165,12 @@ public class WebDavProvider extends AbstractProvider {
             String prefix = Builder.buildNormalizedPrefix(context.getPrefix());
             String objectKey = Builder.buildObjectKey(prefix, Normal.EMPTY, fileName);
             String url = getUrl(bucket + "/" + objectKey);
-            InputStream inputStream = client.get(url);
-            try (OutputStream outputStream = new FileOutputStream(file)) {
-                IoKit.copy(inputStream, outputStream);
+
+            // Use try-with-resources to automatically close both streams
+            try (InputStream inputStream = client.get(url); OutputStream outputStream = new FileOutputStream(file)) {
+                inputStream.transferTo(outputStream);
             }
+
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build();
         } catch (Exception e) {
             Logger.error(
@@ -163,8 +187,8 @@ public class WebDavProvider extends AbstractProvider {
     /**
      * Lists files in the default storage bucket.
      *
-     * @return A {@link Message} containing the result of the operation, including a list of {@link Blob} objects or an
-     *         error message.
+     * @return A {@link Message} containing the result of the operation, including a list of {@link Blob} objects if
+     *         successful.
      */
     @Override
     public Message list() {
@@ -194,7 +218,7 @@ public class WebDavProvider extends AbstractProvider {
      *
      * @param oldName The current name of the file.
      * @param newName The new name for the file.
-     * @return A {@link Message} containing the result of the operation, including success or error information.
+     * @return A {@link Message} containing the result of the operation.
      */
     @Override
     public Message rename(String oldName, String newName) {
@@ -207,7 +231,7 @@ public class WebDavProvider extends AbstractProvider {
      * @param path    The path where the file is located.
      * @param oldName The current name of the file.
      * @param newName The new name for the file.
-     * @return A {@link Message} containing the result of the operation, including success or error information.
+     * @return A {@link Message} containing the result of the operation.
      */
     @Override
     public Message rename(String path, String oldName, String newName) {
@@ -221,7 +245,7 @@ public class WebDavProvider extends AbstractProvider {
      * @param path    The path where the file is located.
      * @param oldName The current name of the file.
      * @param newName The new name for the file.
-     * @return A {@link Message} containing the result of the operation, including success or error information.
+     * @return A {@link Message} containing the result of the operation.
      */
     @Override
     public Message rename(String bucket, String path, String oldName, String newName) {
@@ -251,8 +275,7 @@ public class WebDavProvider extends AbstractProvider {
      *
      * @param fileName The name of the file to upload.
      * @param content  The file content as a byte array.
-     * @return A {@link Message} containing the result of the operation, including the uploaded file information or an
-     *         error message.
+     * @return A {@link Message} containing the result of the operation.
      */
     @Override
     public Message upload(String fileName, byte[] content) {
@@ -265,8 +288,7 @@ public class WebDavProvider extends AbstractProvider {
      * @param bucket   The name of the storage bucket.
      * @param fileName The name of the file to upload.
      * @param content  The file content as a byte array.
-     * @return A {@link Message} containing the result of the operation, including the uploaded file information or an
-     *         error message.
+     * @return A {@link Message} containing the result of the operation.
      */
     @Override
     public Message upload(String bucket, String fileName, byte[] content) {
@@ -277,11 +299,10 @@ public class WebDavProvider extends AbstractProvider {
      * Uploads a byte array to the specified storage bucket and path.
      *
      * @param bucket   The name of the storage bucket.
-     * @param path     The path to upload the file to.
+     * @param path     The target path for the file.
      * @param fileName The name of the file to upload.
      * @param content  The file content as a byte array.
-     * @return A {@link Message} containing the result of the operation, including the uploaded file information or an
-     *         error message.
+     * @return A {@link Message} containing the result of the operation.
      */
     @Override
     public Message upload(String bucket, String path, String fileName, byte[] content) {
@@ -293,8 +314,7 @@ public class WebDavProvider extends AbstractProvider {
      *
      * @param fileName The name of the file to upload.
      * @param content  The file content as an {@link InputStream}.
-     * @return A {@link Message} containing the result of the operation, including the uploaded file information or an
-     *         error message.
+     * @return A {@link Message} containing the result of the operation.
      */
     @Override
     public Message upload(String fileName, InputStream content) {
@@ -304,11 +324,10 @@ public class WebDavProvider extends AbstractProvider {
     /**
      * Uploads an input stream to a specified path in the default storage bucket.
      *
-     * @param path     The path to upload the file to.
+     * @param path     The target path for the file.
      * @param fileName The name of the file to upload.
      * @param content  The file content as an {@link InputStream}.
-     * @return A {@link Message} containing the result of the operation, including the uploaded file information or an
-     *         error message.
+     * @return A {@link Message} containing the result of the operation.
      */
     @Override
     public Message upload(String path, String fileName, InputStream content) {
@@ -319,11 +338,10 @@ public class WebDavProvider extends AbstractProvider {
      * Uploads an input stream to the specified storage bucket and path.
      *
      * @param bucket   The name of the storage bucket.
-     * @param path     The path to upload the file to.
+     * @param path     The target path for the file.
      * @param fileName The name of the file to upload.
      * @param content  The file content as an {@link InputStream}.
-     * @return A {@link Message} containing the result of the operation, including the uploaded file information or an
-     *         error message.
+     * @return A {@link Message} containing the result of the operation, including blob details if successful.
      */
     @Override
     public Message upload(String bucket, String path, String fileName, InputStream content) {
@@ -331,12 +349,15 @@ public class WebDavProvider extends AbstractProvider {
             String prefix = Builder.buildNormalizedPrefix(context.getPrefix());
             String objectKey = Builder.buildObjectKey(prefix, path, fileName);
             String url = getUrl(bucket + "/" + objectKey);
+
             // Create parent directories if they do not exist
             String parentUrl = getUrl(
                     bucket + "/" + (StringKit.isBlank(prefix) ? "" : prefix)
                             + (StringKit.isBlank(path) ? "" : "/" + path));
             client.createDirectory(parentUrl);
+
             client.put(url, content);
+
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
                     .data(Blob.builder().name(fileName).path(objectKey).build()).build();
         } catch (Exception e) {
@@ -355,7 +376,7 @@ public class WebDavProvider extends AbstractProvider {
      * Removes a file from the default storage bucket.
      *
      * @param fileName The name of the file to remove.
-     * @return A {@link Message} containing the result of the operation, including success or error information.
+     * @return A {@link Message} containing the result of the operation.
      */
     @Override
     public Message remove(String fileName) {
@@ -367,7 +388,7 @@ public class WebDavProvider extends AbstractProvider {
      *
      * @param bucket   The name of the storage bucket.
      * @param fileName The name of the file to remove.
-     * @return A {@link Message} containing the result of the operation, including success or error information.
+     * @return A {@link Message} containing the result of the operation.
      */
     @Override
     public Message remove(String bucket, String fileName) {
@@ -378,9 +399,9 @@ public class WebDavProvider extends AbstractProvider {
      * Removes a file from the specified storage bucket and path.
      *
      * @param bucket   The name of the storage bucket.
-     * @param path     The path where the file is located.
+     * @param path     The storage path where the file is located.
      * @param fileName The name of the file to remove.
-     * @return A {@link Message} containing the result of the operation, including success or error information.
+     * @return A {@link Message} containing the result of the operation.
      */
     @Override
     public Message remove(String bucket, String path, String fileName) {
@@ -406,8 +427,8 @@ public class WebDavProvider extends AbstractProvider {
      * Removes a file from the specified storage bucket based on its path.
      *
      * @param bucket The name of the storage bucket.
-     * @param path   The path of the file to remove.
-     * @return A {@link Message} containing the result of the operation, including success or error information.
+     * @param path   The target path of the file to remove.
+     * @return A {@link Message} containing the result of the operation.
      */
     @Override
     public Message remove(String bucket, Path path) {

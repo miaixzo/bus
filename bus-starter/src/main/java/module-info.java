@@ -36,6 +36,7 @@ module bus.starter {
     requires java.datatransfer;
     requires java.desktop;
     requires java.management;
+    requires java.sql;
 
     requires bus.auth;
     requires bus.base;

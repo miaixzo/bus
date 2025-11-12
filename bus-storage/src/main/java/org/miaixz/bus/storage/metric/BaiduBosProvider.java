@@ -130,7 +130,8 @@ public class BaiduBosProvider extends AbstractProvider {
      * Downloads a file from the default storage bucket.
      *
      * @param fileName The name of the file to download.
-     * @return A {@link Message} containing the result of the operation, including the file stream if successful.
+     * @return A {@link Message} containing the result of the operation, including the file content as a byte array if
+     *         successful.
      */
     @Override
     public Message download(String fileName) {
@@ -138,11 +139,21 @@ public class BaiduBosProvider extends AbstractProvider {
     }
 
     /**
-     * Downloads a file from the specified storage bucket.
+     * Downloads a file from the specified storage bucket and returns its content as a byte array.
+     * <p>
+     * This method reads the entire file content into memory as a byte array, making it suitable for images, PDFs, DOCX
+     * files, and other binary files. The underlying input stream is automatically closed using try-with-resources to
+     * prevent resource leaks.
+     * </p>
+     * <p>
+     * <strong>Note:</strong> For large files (> 50MB), consider using {@link #download(String, String, File)} instead
+     * to avoid excessive memory consumption.
+     * </p>
      *
      * @param bucket   The name of the storage bucket.
      * @param fileName The name of the file to download.
-     * @return A {@link Message} containing the result of the operation, including the file stream if successful.
+     * @return A {@link Message} containing the result of the operation. If successful, the data field contains the file
+     *         content as a byte array; otherwise, it contains error information.
      */
     @Override
     public Message download(String bucket, String fileName) {
@@ -150,10 +161,13 @@ public class BaiduBosProvider extends AbstractProvider {
             String prefix = Builder.buildNormalizedPrefix(context.getPrefix());
             String objectKey = Builder.buildObjectKey(prefix, Normal.EMPTY, fileName);
             GetObjectRequest request = GetObjectRequest.builder().bucket(bucket).key(objectKey).build();
-            InputStream inputStream = client.getObject(request);
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
-                    .data(bufferedReader).build();
+
+            // Use try-with-resources to automatically close the InputStream and prevent resource leaks
+            try (InputStream inputStream = client.getObject(request)) {
+                byte[] content = inputStream.readAllBytes();
+                return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+                        .data(content).build();
+            }
         } catch (Exception e) {
             Logger.error("Failed to download file: {} from bucket: {}. Error: {}", fileName, bucket, e.getMessage(), e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
@@ -173,12 +187,22 @@ public class BaiduBosProvider extends AbstractProvider {
     }
 
     /**
-     * Downloads a file from the specified storage bucket and saves it to a local file.
+     * Downloads a file from the specified storage bucket and saves it directly to a local file.
+     * <p>
+     * This method uses streaming to transfer file content, making it memory-efficient and suitable for large files.
+     * Both the input stream and output stream are automatically closed using try-with-resources to ensure proper
+     * resource management.
+     * </p>
+     * <p>
+     * <strong>Recommended for:</strong> Large files, videos, archives, or any scenario where you need to persist the
+     * file locally without loading it entirely into memory.
+     * </p>
      *
      * @param bucket   The name of the storage bucket.
      * @param fileName The name of the file to download.
      * @param file     The target local file to save the downloaded content.
-     * @return A {@link Message} containing the result of the operation.
+     * @return A {@link Message} containing the result of the operation. If successful, the file is saved to the
+     *         specified location; otherwise, error information is returned.
      */
     @Override
     public Message download(String bucket, String fileName, File file) {
@@ -186,10 +210,13 @@ public class BaiduBosProvider extends AbstractProvider {
             String prefix = Builder.buildNormalizedPrefix(context.getPrefix());
             String objectKey = Builder.buildObjectKey(prefix, Normal.EMPTY, fileName);
             GetObjectRequest request = GetObjectRequest.builder().bucket(bucket).key(objectKey).build();
-            InputStream inputStream = client.getObject(request);
-            try (OutputStream outputStream = new FileOutputStream(file)) {
+
+            // Use try-with-resources to automatically close both streams
+            try (InputStream inputStream = client.getObject(request);
+                    OutputStream outputStream = new FileOutputStream(file)) {
                 IoKit.copy(inputStream, outputStream);
             }
+
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build();
         } catch (Exception e) {
             Logger.error(

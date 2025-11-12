@@ -28,10 +28,12 @@
 package org.miaixz.bus.starter.annotation;
 
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.starter.aot.ReflectiveProcessor;
 import org.miaixz.bus.starter.jdbc.JdbcConfiguration;
 import org.miaixz.bus.starter.mapper.MapperConfiguration;
 import org.miaixz.bus.starter.mapper.MapperFactoryBean;
 import org.miaixz.bus.starter.mapper.MapperScannerRegistrar;
+import org.springframework.aot.hint.annotation.Reflective;
 import org.springframework.beans.factory.support.BeanNameGenerator;
 import org.springframework.context.annotation.Import;
 
@@ -53,6 +55,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @Import({ JdbcConfiguration.class, MapperScannerRegistrar.class, MapperConfiguration.class })
+@Reflective(ReflectiveProcessor.class)
 public @interface EnableMapper {
 
     /**

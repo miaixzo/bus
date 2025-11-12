@@ -36,7 +36,6 @@ import java.util.stream.Collectors;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.storage.Builder;
@@ -69,7 +68,8 @@ public class LocalFileProvider extends AbstractProvider {
      * Downloads a file from the default storage bucket.
      *
      * @param fileName The name of the file to download.
-     * @return A {@link Message} containing the result of the operation.
+     * @return A {@link Message} containing the result of the operation, including the file content as a byte array if
+     *         successful.
      */
     @Override
     public Message download(String fileName) {
@@ -77,11 +77,20 @@ public class LocalFileProvider extends AbstractProvider {
     }
 
     /**
-     * Downloads a file from the specified storage bucket.
+     * Downloads a file from the specified storage bucket and returns its content as a byte array.
+     * <p>
+     * This method reads the entire file content into memory as a byte array, making it suitable for images, PDFs, DOCX
+     * files, and other binary files.
+     * </p>
+     * <p>
+     * <strong>Note:</strong> For large files (> 50MB), consider using {@link #download(String, String, File)} instead
+     * to avoid excessive memory consumption.
+     * </p>
      *
      * @param bucket   The name of the storage bucket.
      * @param fileName The name of the file to download.
-     * @return A {@link Message} containing the result of the operation, including the file stream if successful.
+     * @return A {@link Message} containing the result of the operation. If successful, the data field contains the file
+     *         content as a byte array; otherwise, it contains error information.
      */
     @Override
     public Message download(String bucket, String fileName) {
@@ -89,13 +98,16 @@ public class LocalFileProvider extends AbstractProvider {
             String prefix = Builder.buildNormalizedPrefix(context.getPrefix());
             String objectKey = Builder.buildObjectKey(prefix, Normal.EMPTY, fileName);
             Path filePath = Paths.get(context.getRegion(), bucket, objectKey);
+
             if (!Files.exists(filePath)) {
                 throw new IOException("File does not exist: " + filePath);
             }
-            InputStream inputStream = Files.newInputStream(filePath);
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+
+            // Read all bytes directly from the file
+            byte[] content = Files.readAllBytes(filePath);
+
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
-                    .data(bufferedReader).build();
+                    .data(content).build();
         } catch (IOException e) {
             Logger.error("Failed to download file: {} from bucket: {}. Error: {}", fileName, bucket, e.getMessage(), e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
@@ -115,12 +127,20 @@ public class LocalFileProvider extends AbstractProvider {
     }
 
     /**
-     * Downloads a file from the specified storage bucket and saves it to a local file.
+     * Downloads a file from the specified storage bucket and saves it directly to a local file.
+     * <p>
+     * This method uses file system copy operations, making it memory-efficient and suitable for large files.
+     * </p>
+     * <p>
+     * <strong>Recommended for:</strong> Large files, videos, archives, or any scenario where you need to persist the
+     * file locally without loading it entirely into memory.
+     * </p>
      *
      * @param bucket   The name of the storage bucket.
      * @param fileName The name of the file to download.
      * @param file     The target local file to save the downloaded content.
-     * @return A {@link Message} containing the result of the operation.
+     * @return A {@link Message} containing the result of the operation. If successful, the file is saved to the
+     *         specified location; otherwise, error information is returned.
      */
     @Override
     public Message download(String bucket, String fileName, File file) {
@@ -128,10 +148,13 @@ public class LocalFileProvider extends AbstractProvider {
             String prefix = Builder.buildNormalizedPrefix(context.getPrefix());
             String objectKey = Builder.buildObjectKey(prefix, Normal.EMPTY, fileName);
             Path sourcePath = Paths.get(context.getRegion(), bucket, objectKey);
+
             if (!Files.exists(sourcePath)) {
                 throw new IOException("File does not exist: " + sourcePath);
             }
+
             Files.copy(sourcePath, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build();
         } catch (IOException e) {
             Logger.error(
@@ -222,11 +245,14 @@ public class LocalFileProvider extends AbstractProvider {
             String newObjectKey = Builder.buildObjectKey(prefix, path, newName);
             Path oldPath = Paths.get(context.getRegion(), bucket, oldObjectKey);
             Path newPath = Paths.get(context.getRegion(), bucket, newObjectKey);
+
             if (!Files.exists(oldPath)) {
                 throw new IOException("Source file does not exist: " + oldPath);
             }
+
             Files.createDirectories(newPath.getParent());
             Files.move(oldPath, newPath, StandardCopyOption.REPLACE_EXISTING);
+
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build();
         } catch (IOException e) {
             Logger.error(
@@ -320,11 +346,12 @@ public class LocalFileProvider extends AbstractProvider {
             String prefix = Builder.buildNormalizedPrefix(context.getPrefix());
             String objectKey = Builder.buildObjectKey(prefix, path, fileName);
             Path destPath = Paths.get(context.getRegion(), bucket, objectKey);
+
             Files.createDirectories(destPath.getParent());
-            try (OutputStream out = Files
-                    .newOutputStream(destPath, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)) {
-                IoKit.copy(content, out);
-            }
+
+            // Use Files.copy to write the InputStream directly to the file
+            Files.copy(content, destPath, StandardCopyOption.REPLACE_EXISTING);
+
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
                     .data(Blob.builder().name(fileName).path(objectKey).build()).build();
         } catch (IOException e) {
@@ -376,7 +403,9 @@ public class LocalFileProvider extends AbstractProvider {
             String prefix = Builder.buildNormalizedPrefix(context.getPrefix());
             String objectKey = Builder.buildObjectKey(prefix, path, fileName);
             Path filePath = Paths.get(context.getRegion(), bucket, objectKey);
+
             Files.deleteIfExists(filePath);
+
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build();
         } catch (IOException e) {
             Logger.error(

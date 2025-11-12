@@ -1195,10 +1195,10 @@
                         <metadataRepository>
                             <enabled>true</enabled>
                         </metadataRepository>
-                        <requiredVersion>22.3</requiredVersion>
                         <buildArgs>
-                            <arg>--enable-monitoring=jfr</arg>
-                            <arg>-H:+AddAllCharsets</arg>
+                            <buildArg>--enable-url-protocols=http,https</buildArg>
+                            <buildArg>-J-Dfile.encoding=UTF-8</buildArg>
+                            <buildArg>-H:+AddAllCharsets</buildArg>
                         </buildArgs>
                     </configuration>
                     <executions>

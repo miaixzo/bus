@@ -116,6 +116,10 @@ public enum Registry {
      */
     UPYUN,
     /**
+     * Volcengine TOS Storage (S3 Compatible).
+     */
+    VOLCENGINE,
+    /**
      * Wasabi Cloud Storage (S3 Compatible).
      */
     WASABI,
