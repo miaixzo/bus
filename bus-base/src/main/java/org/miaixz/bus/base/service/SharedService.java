@@ -38,191 +38,210 @@ import org.miaixz.bus.mapper.binding.condition.ConditionWrapper;
 import org.miaixz.bus.mapper.binding.function.Fn;
 
 /**
- * Generic service interface for basic CRUD (Create, Retrieve, Update, Delete) operations on entities.
+ * Generic service interface defining standard CRUD (Create, Retrieve, Update, Delete) operations.
+ * <p>
+ * This interface serves as a base for service implementations, providing common methods for entity persistence, batch
+ * operations, and conditional queries.
  *
  * @param <T> the entity type
  * @param <I> the type of the primary key, which must implement {@link Serializable}
  * @author Kimi Liu
  * @since Java 17+
  */
-interface SharedService<T, I extends Serializable> extends Service {
+public interface SharedService<T, I extends Serializable> extends Service {
 
     /**
-     * Inserts a new entity with all fields.
+     * Persists a new entity, saving all fields (including nulls).
      *
      * @param entity the entity to insert
-     * @return the inserted entity
+     * @return the persisted entity (typically with populated ID)
      */
     Object insert(T entity);
 
     /**
-     * Inserts a new entity, only including non-null fields.
+     * Persists a new entity, saving only non-null fields.
+     * <p>
+     * Fields with null values will rely on the database's default values.
      *
      * @param entity the entity to insert
-     * @return the inserted entity
+     * @return the persisted entity
      */
     Object insertSelective(T entity);
 
     /**
-     * Inserts a batch of entities with all fields.
+     * Persists a batch of entities, saving all fields for each entity.
      *
      * @param list the list of entities to insert
      * @return the list of inserted entities
      */
-    List<T> insertBatch(List<T> list);
+    Object insertBatch(List<T> list);
 
     /**
-     * Inserts a batch of entities, only including non-null fields.
+     * Batch insert or update (Upsert) operation.
+     * <p>
+     * Typically attempts to insert the entities, and updates them if a primary key or unique constraint violation
+     * occurs.
+     *
+     * @param list the list of entities to insert or update
+     * @return the result of the batch operation
+     */
+    Object insertUpBatch(List<T> list);
+
+    /**
+     * Persists a batch of entities, saving only non-null fields for each entity.
      *
      * @param list the list of entities to insert
      * @return the list of inserted entities
      */
-    List<T> insertBatchSelective(List<T> list);
+    Object insertSelectiveBatch(List<T> list);
 
     /**
-     * Updates an existing entity with all fields.
+     * Updates an existing entity, overwriting all fields (including setting fields to null).
      *
      * @param entity the entity to update
-     * @return the updated entity
+     * @return the updated entity or operation result
      */
     Object update(T entity);
 
     /**
-     * Updates an existing entity, specifying which fields to update.
+     * Updates an existing entity, forcing updates on the specific fields provided.
      *
      * @param entity the entity to update
-     * @param fields the fields to be updated
-     * @return the updated entity
+     * @param fields the specific fields to force update
+     * @return the updated entity or operation result
      */
     Object update(T entity, Fn<T, Object>... fields);
 
     /**
-     * Updates an existing entity, only including non-null fields.
+     * Updates an existing entity, only modifying fields that are non-null.
      *
      * @param entity the entity to update
-     * @return the updated entity
+     * @return the updated entity or operation result
      */
     Object updateSelective(T entity);
 
     /**
-     * Updates an existing entity, only including non-null fields, and forces update for specified fields.
+     * Updates an existing entity, only modifying non-null fields, while forcing updates on the additional specified
+     * fields.
      *
      * @param entity the entity to update
-     * @param fields the fields to force update
-     * @return the updated entity
+     * @param fields the additional fields to force update (even if they are null in the entity)
+     * @return the updated entity or operation result
      */
     Object updateSelective(T entity, Fn<T, Object>... fields);
 
     /**
-     * Inserts a new entity or updates an existing one with all fields.
+     * Saves the entity: inserts if it's new, or updates if it already exists (based on all fields).
      *
-     * @param entity the entity to insert or update
-     * @return the inserted or updated entity
+     * @param entity the entity to save
+     * @return the saved entity
      */
     Object insertOrUpdate(T entity);
 
     /**
-     * Inserts a new entity or updates an existing one, only including non-null fields.
+     * Saves the entity: inserts if it's new, or updates if it already exists (based on non-null fields).
      *
-     * @param entity the entity to insert or update
-     * @return the inserted or updated entity
+     * @param entity the entity to save
+     * @return the saved entity
      */
     Object insertOrUpdateSelective(T entity);
 
     /**
-     * Performs a logical deletion of an entity. This typically involves updating a status field rather than physically
-     * deleting the record.
+     * Performs a logical deletion of the entity.
+     * <p>
+     * Instead of physically removing the row, this typically updates a "deleted" flag or status field.
      *
-     * @param entity the entity to be logically removed
+     * @param entity the entity to logically delete
      * @return the number of affected rows
      */
     long remove(T entity);
 
     /**
-     * Performs a physical deletion of an entity from the database.
+     * Performs a physical deletion of the entity from the database.
      *
      * @param entity the entity to delete
-     * @return the number of records deleted, greater than 0 indicates success
+     * @return the number of deleted records (usually 1 if successful)
      */
     long delete(T entity);
 
     /**
-     * Deletes an entity by its primary key.
+     * Physically deletes an entity by its primary key.
      *
-     * @param id the primary key
-     * @return the number of records deleted, 1 indicates success
+     * @param id the primary key of the entity to delete
+     * @return the number of deleted records
      */
     long deleteById(I id);
 
     /**
-     * Deletes entities by a collection of primary keys.
+     * Physically deletes multiple entities by a collection of primary keys.
      *
      * @param ids the collection of primary keys
-     * @return the number of records deleted
+     * @return the number of deleted records
      */
     long deleteByIds(Collection<I> ids);
 
     /**
-     * Deletes entities by a collection of field values.
+     * Physically deletes entities that match a list of values for a specific field.
      *
-     * @param field          the field to match against
-     * @param fieldValueList the collection of field values
+     * @param field          the field to match against (e.g., User::getAge)
+     * @param fieldValueList the collection of values to match
      * @param <F>            the type of the field value
-     * @return the number of records deleted
+     * @return the number of deleted records
      */
     <F> long deleteByFieldList(Fn<T, F> field, Collection<F> fieldValueList);
 
     /**
-     * Retrieves an entity by its primary key.
+     * Retrieves a single entity by its primary key.
      *
      * @param id the primary key
-     * @return the entity, or null if not found
+     * @return the found entity, or null if not found
      */
     Object selectById(I id);
 
     /**
-     * Retrieves a single entity based on the provided entity conditions.
+     * Retrieves a single entity matching the properties set in the provided entity object.
      *
-     * @param entity the entity containing query conditions
-     * @return the entity, or null if not found
+     * @param entity the entity acting as a query prototype
+     * @return the found entity, or null if not found
      */
     Object selectOne(T entity);
 
     /**
-     * Retrieves a list of entities based on the provided entity conditions.
+     * Retrieves a list of entities matching the properties set in the provided entity object.
      *
-     * @param entity the entity containing query conditions
-     * @return a list of entities
+     * @param entity the entity acting as a query prototype
+     * @return a list of matching entities
      */
     List<T> selectList(T entity);
 
     /**
-     * Retrieves a list of entities based on a collection of field values.
+     * Retrieves a list of entities where the specified field matches any value in the provided collection (IN query).
      *
-     * @param field          the field to match against
-     * @param fieldValueList the collection of field values
+     * @param field          the field to query (e.g., User::getId)
+     * @param fieldValueList the collection of values to match
      * @param <F>            the type of the field value
-     * @return a list of entities
+     * @return a list of matching entities
      */
     <F> List<T> selectByFieldList(Fn<T, F> field, Collection<F> fieldValueList);
 
     /**
-     * Retrieves all records.
+     * Retrieves all records from the table.
      *
-     * @return a list of all entities
+     * @return a list containing all entities
      */
     List<T> selectAll();
 
     /**
-     * Counts the number of records matching the provided entity conditions.
+     * Counts the number of records matching the properties set in the provided entity object.
      *
-     * @param entity the entity containing query conditions
-     * @return the total number of records
+     * @param entity the entity acting as a query prototype
+     * @return the count of matching records
      */
     long count(T entity);
 
     /**
-     * Returns a new {@link Condition} object for building complex queries.
+     * Creates and returns a new {@link Condition} instance for building complex queries.
+     *
      *
      * @return a new Condition object
      */
@@ -231,52 +250,58 @@ interface SharedService<T, I extends Serializable> extends Service {
     }
 
     /**
-     * Deletes records based on the provided {@link Condition}.
+     * Deletes records matching the provided {@link Condition}.
      *
-     * @param condition the query condition
-     * @return the number of records deleted, greater than 0 indicates success
+     * @param condition the complex query condition
+     * @return the number of deleted records
      */
     long delete(Condition<T> condition);
 
     /**
-     * Updates records based on the provided entity and {@link Condition}, updating all fields.
+     * Updates records matching the {@link Condition} with values from the provided entity (updates all fields).
      *
-     * @param entity    the entity with updated information
-     * @param condition the query condition
-     * @return the number of records updated, greater than 0 indicates success
+     * @param entity    the source of the new values
+     * @param condition the condition defining which records to update
+     * @return the number of updated records
      */
     long update(T entity, Condition<T> condition);
 
     /**
-     * Updates records based on the provided entity and {@link Condition}, only updating non-null fields.
+     * Updates records matching the {@link Condition} with values from the provided entity (updates only non-null
+     * fields).
      *
-     * @param entity    the entity with updated information
-     * @param condition the query condition
-     * @return the number of records updated, greater than 0 indicates success
+     * @param entity    the source of the new values
+     * @param condition the condition defining which records to update
+     * @return the number of updated records
      */
     long updateSelective(T entity, Condition<T> condition);
 
     /**
-     * Retrieves a single entity based on the provided {@link Condition}.
+     * Retrieves a single entity matching the provided {@link Condition}.
+     * <p>
+     * Note: Use this when you expect exactly one or zero results. If multiple results exist, implementation behavior
+     * may vary (throw exception or return first).
      *
      * @param condition the query condition
-     * @return the entity, or null if not found
+     * @return the found entity, or null if not found
      */
     Object selectOne(Condition<T> condition);
 
     /**
-     * Retrieves the first entity found based on the provided {@link Condition}.
+     * Retrieves the first entity matching the provided {@link Condition}.
+     * <p>
+     * Typically limits the query result to 1 record.
      *
      * @param condition the query condition
-     * @return the entity
+     * @return the first matching entity, or null if none found
      */
     Object selectFirst(Condition<T> condition);
 
     /**
-     * Retrieves a list of entities based on the provided {@link Condition}.
+     * Retrieves a list of entities matching the provided {@link Condition}.
      *
      * @param condition the query condition
-     * @return a list of entities
+     * @return a list of matching entities
      */
     List<T> selectList(Condition<T> condition);
 
@@ -284,12 +309,12 @@ interface SharedService<T, I extends Serializable> extends Service {
      * Counts the number of records matching the provided {@link Condition}.
      *
      * @param condition the query condition
-     * @return the total number of records
+     * @return the total count of matching records
      */
     long count(Condition<T> condition);
 
     /**
-     * Checks if the primary key of the given entity has a value.
+     * Checks if the primary key of the provided entity is set (not null/empty).
      *
      * @param entity the entity to check
      * @return true if the primary key has a value, false otherwise
@@ -297,17 +322,19 @@ interface SharedService<T, I extends Serializable> extends Service {
     boolean pkHasValue(T entity);
 
     /**
-     * Performs a paginated query based on the provided entity, which should contain pagination and sorting parameters.
+     * Performs a paginated query based on the parameters within the entity.
+     * <p>
+     * The entity is expected to contain pagination (page number, size) and sorting information.
      *
-     * @param entity the entity containing pagination and sorting parameters
-     * @return a {@link Result} object containing the paginated list of records and the total count
+     * @param entity the entity containing query, pagination, and sorting params
+     * @return a {@link Result} containing the list of records and total count
      */
     Result<T> page(T entity);
 
     /**
-     * Returns a new {@link ConditionWrapper} object for building complex query conditions.
+     * Creates and returns a new {@link ConditionWrapper} for fluent query construction.
      *
-     * @return a new ConditionWrapper object
+     * @return a new ConditionWrapper instance
      */
     ConditionWrapper<T, I> wrapper();
 

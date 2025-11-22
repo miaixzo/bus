@@ -38,7 +38,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.ibatis.builder.annotation.ProviderContext;
-import org.miaixz.bus.mapper.ORDER;
+import org.miaixz.bus.mapper.Order;
 import org.miaixz.bus.mapper.annotation.SqlWrapper;
 import org.miaixz.bus.mapper.parsing.SqlScript;
 import org.miaixz.bus.mapper.parsing.SqlScriptWrapper;
@@ -75,7 +75,7 @@ public class SchemaSqlScriptBuilder implements SqlScriptWrapper {
             wrappers.addAll(parseAnnotations(parameters[i], ElementType.PARAMETER, parameterAnnotations[i]));
         }
         // Deduplicate and sort
-        wrappers = wrappers.stream().distinct().sorted(Comparator.comparing(f -> ((ORDER) f).order()).reversed())
+        wrappers = wrappers.stream().distinct().sorted(Comparator.comparing(f -> ((Order) f).order()).reversed())
                 .collect(Collectors.toList());
         for (SqlScriptWrapper wrapper : wrappers) {
             sqlScript = wrapper.wrap(context, tableMeta, sqlScript);

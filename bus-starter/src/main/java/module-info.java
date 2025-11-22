@@ -52,7 +52,6 @@ module bus.starter {
     requires bus.mapper;
     requires bus.notify;
     requires bus.office;
-    requires bus.pager;
     requires bus.pay;
     requires bus.proxy;
     requires bus.sensitive;
@@ -93,7 +92,6 @@ module bus.starter {
     requires elasticsearch.rest.client;
     requires io.vertx.core;
     requires io.vertx.web;
-    requires net.sf.jsqlparser;
     requires org.aspectj.weaver;
     requires org.jboss.logging;
     requires org.mongodb.driver.core;

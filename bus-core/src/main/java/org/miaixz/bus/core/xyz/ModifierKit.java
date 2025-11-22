@@ -30,6 +30,7 @@ package org.miaixz.bus.core.xyz;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 
 import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -247,6 +248,29 @@ public class ModifierKit {
      */
     public static boolean isInterface(final Class<?> clazz) {
         return null != clazz && clazz.isInterface();
+    }
+
+    /**
+     * Checks if the given field is declared as transient.
+     *
+     * @param field The Field object to check.
+     * @return {@code true} if the field is transient; otherwise, {@code false}. Also returns {@code false} if the
+     *         {@code field} parameter is {@code null}.
+     */
+    public static boolean isTransient(Field field) {
+        // Defensive programming: If the field object is null, return false immediately
+        if (field == null) {
+            return false;
+        }
+
+        // 1. Get the integer representation of the field's modifiers.
+        // field.getModifiers() returns an int containing bit flags for all modifiers
+        // (public, private, static, final, transient, etc.).
+        int modifiers = field.getModifiers();
+
+        // 2. Use the static method from the Modifier class to check the transient modifier flag.
+        // Modifier.isTransient(int) performs a bitwise check against the Modifier.TRANSIENT constant.
+        return Modifier.isTransient(modifiers);
     }
 
     /**

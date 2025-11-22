@@ -34,10 +34,10 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.miaixz.bus.mapper.OGNL;
+import org.miaixz.bus.mapper.parsing.ClassField;
 import org.miaixz.bus.mapper.parsing.ColumnMeta;
 import org.miaixz.bus.mapper.parsing.MapperFactory;
 import org.miaixz.bus.mapper.parsing.TableMeta;
-import org.miaixz.bus.mapper.support.ClassField;
 
 /**
  * A utility interface for method references, used to obtain field and column information.

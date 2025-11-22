@@ -50,7 +50,6 @@ module bus.bom {
     requires bus.mapper;
     requires bus.notify;
     requires bus.office;
-    requires bus.pager;
     requires bus.pay;
     requires bus.proxy;
     requires bus.sensitive;

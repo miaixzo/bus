@@ -76,7 +76,6 @@ Bus primarily has versions 3.x, 5.x, 6.x, and 8.x, as detailed below:
 | [√]    | [bus-notify](bus-notify)      | Multi-channel notification center, supporting push methods like email/SMS/DingTalk/WeChat Work |
 | [√]    | [bus-office](bus-office)      | Office document processing engine, implementing Excel/Word/PPT operations based on POI |
 | [√]    | [bus-opencv](bus-opencv)      | Computer vision library, wrapping OpenCV to provide image recognition/face detection/video analysis capabilities |
-| [√]    | [bus-pager](bus-pager)        | Pagination query enhancement, supporting physical pagination/multiple data sources/dynamic sorting |
 | [√]    | [bus-parent](bus-parent)      | Parent POM, unified management of dependency versions/build configurations/coding standards |
 | [√]    | [bus-pay](bus-pay)            | Payment aggregation service, integrating 20+ payment channels including WeChat Pay/Alipay/UnionPay |
 | [√]    | [bus-proxy](bus-proxy)        | Dynamic proxy tool, simplifying JDK/CGLIB proxy implementation |

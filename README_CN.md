@@ -76,7 +76,6 @@ Bus主要版本 3.x、5.x、6.x、8.x，具体如下：
 | [√]  | [bus-notify](bus-notify)       | 多通道通知中心，支持邮件/短信/钉钉/企业微信等推送方式                   |
 | [√]  | [bus-office](bus-office)       | Office文档处理引擎，基于POI实现Excel/Word/PPT操作           |
 | [√]  | [bus-opencv](bus-opencv)       | 计算机视觉库，封装OpenCV提供图像识别/人脸检测/视频分析能力              |
-| [√]  | [bus-pager](bus-pager)         | 分页查询增强，支持物理分页/多数据源/动态排序                        |
 | [√]  | [bus-parent](bus-parent)       | 父级POM，统一管理依赖版本/构建配置/编码规范                       |
 | [√]  | [bus-pay](bus-pay)             | 支付聚合服务，集成微信/支付宝/银联等20+支付渠道                     |
 | [√]  | [bus-proxy](bus-proxy)         | 动态代理工具，简化JDK/CGLIB代理实现                         |

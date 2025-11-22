@@ -56,8 +56,8 @@ public @interface DataSource {
     /**
      * Whether to clear the data source setting after the method execution.
      * <p>
-     * If set to {@code true}, the data source context will be reset to its previous state after the annotated method
-     * completes.
+     * If set to {@code true}, the data source context will be reset to the default data source after the annotated
+     * method completes.
      * </p>
      *
      * @return {@code true} to clear the data source setting, {@code false} otherwise.

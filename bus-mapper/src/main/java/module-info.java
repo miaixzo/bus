@@ -33,6 +33,7 @@
  */
 module bus.mapper {
 
+    requires java.compiler;
     requires java.desktop;
 
     requires bus.core;
@@ -48,16 +49,24 @@ module bus.mapper {
     exports org.miaixz.bus.mapper.binding;
     exports org.miaixz.bus.mapper.builder;
     exports org.miaixz.bus.mapper.criteria;
+    exports org.miaixz.bus.mapper.dialect;
     exports org.miaixz.bus.mapper.handler;
     exports org.miaixz.bus.mapper.parsing;
     exports org.miaixz.bus.mapper.provider;
-    exports org.miaixz.bus.mapper.support;
     exports org.miaixz.bus.mapper.binding.basic;
+    exports org.miaixz.bus.mapper.binding.batch;
     exports org.miaixz.bus.mapper.binding.condition;
     exports org.miaixz.bus.mapper.binding.cursor;
     exports org.miaixz.bus.mapper.binding.function;
     exports org.miaixz.bus.mapper.binding.list;
     exports org.miaixz.bus.mapper.binding.logical;
-    exports org.miaixz.bus.mapper.support.keysql;
+    exports org.miaixz.bus.mapper.support.audit;
+    exports org.miaixz.bus.mapper.support.keygen;
+    exports org.miaixz.bus.mapper.support.operation;
+    exports org.miaixz.bus.mapper.support.paging;
+    exports org.miaixz.bus.mapper.support.tenant;
+    exports org.miaixz.bus.mapper.support.populate;
+    exports org.miaixz.bus.mapper.support.visible;
+    exports org.miaixz.bus.mapper.support.prefix;
 
 }

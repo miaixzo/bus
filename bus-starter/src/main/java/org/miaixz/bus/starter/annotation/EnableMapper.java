@@ -135,7 +135,7 @@ public @interface EnableMapper {
 
     /**
      * Configuration properties for the generic Mapper, with one property per line. This is often used to configure
-     * plugins like PageHelper.
+     * plugins like PageContext.
      *
      * @return An array of property strings.
      */

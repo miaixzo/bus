@@ -36,7 +36,6 @@ module bus.base {
     requires bus.core;
     requires bus.logger;
     requires bus.mapper;
-    requires bus.pager;
     requires bus.validate;
 
     requires lombok;

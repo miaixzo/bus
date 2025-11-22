@@ -27,7 +27,7 @@
 */
 package org.miaixz.bus.mapper.builder;
 
-import org.miaixz.bus.mapper.ORDER;
+import org.miaixz.bus.mapper.Order;
 import org.miaixz.bus.mapper.parsing.TableMeta;
 
 /**
@@ -37,7 +37,7 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
  * @author Kimi Liu
  * @since Java 17+
  */
-public interface TableSchemaBuilder extends ORDER {
+public interface TableSchemaBuilder extends Order {
 
     /**
      * Creates table information based on an entity class. This method should only return table-level information and

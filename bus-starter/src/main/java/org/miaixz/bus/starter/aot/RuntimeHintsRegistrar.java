@@ -70,7 +70,7 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
 import org.miaixz.bus.mapper.provider.ConditionProvider;
 import org.miaixz.bus.mapper.provider.EntityProvider;
 import org.miaixz.bus.mapper.provider.FunctionProvider;
-import org.miaixz.bus.pager.PageContext;
+import org.miaixz.bus.mapper.support.paging.PageContext;
 import org.miaixz.bus.starter.jdbc.JdbcProperties;
 import org.miaixz.bus.starter.mapper.MapperPluginBuilder;
 import org.miaixz.bus.starter.mapper.MapperProperties;

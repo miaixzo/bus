@@ -31,7 +31,7 @@ import java.util.List;
 
 import org.apache.ibatis.builder.annotation.ProviderContext;
 import org.miaixz.bus.core.lang.loader.spi.NormalSpiLoader;
-import org.miaixz.bus.mapper.ORDER;
+import org.miaixz.bus.mapper.Order;
 
 /**
  * SPI interface for processing the final SQL script.
@@ -39,7 +39,7 @@ import org.miaixz.bus.mapper.ORDER;
  * @author Kimi Liu
  * @since Java 17+
  */
-public interface SqlScriptWrapper extends ORDER {
+public interface SqlScriptWrapper extends Order {
 
     /**
      * Wraps an SQL script by applying all {@link SqlScriptWrapper} implementations.

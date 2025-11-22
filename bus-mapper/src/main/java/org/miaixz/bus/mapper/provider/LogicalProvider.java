@@ -129,7 +129,7 @@ public class LogicalProvider {
                                 "",
                                 () -> ifParameterNotNull(() -> Args.CONDITION_WHERE_CLAUSE)
                                         + logicalCondition(entity, false))
-                        + ifTest("orderByClause != null", () -> " ORDER BY ${orderByClause}")
+                        + ifTest("orderByClause != null", () -> " Order BY ${orderByClause}")
                         + ifTest("orderByClause == null", () -> entity.orderByColumn().orElse(""))
                         + ifTest("endSql != null and endSql != ''", () -> "${endSql}");
             }

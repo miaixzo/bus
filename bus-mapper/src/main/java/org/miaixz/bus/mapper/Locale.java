@@ -58,12 +58,12 @@ public class Locale {
             bundle = ResourceBundle.getBundle(bundleName, locale);
         } catch (Exception e) {
             bundle = null;
-            Logger.warn("Failed to load resource bundle: " + bundleName + " for locale: " + locale);
+            Logger.warn(false, "Locale", "Failed to load resource bundle: {} for locale: {}", bundleName, locale);
         }
         try {
             return MessageFormat.format(bundle.getString(key), args);
         } catch (MissingResourceException e) {
-            Logger.warn("Resource key not found: " + key + " in bundle: " + bundleName);
+            Logger.warn(false, "Locale", "Resource key not found: {} in bundle: {}", key, bundleName);
             return MessageFormat.format(key, args);
         }
     }

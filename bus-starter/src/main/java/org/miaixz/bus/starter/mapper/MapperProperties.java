@@ -27,8 +27,12 @@
 */
 package org.miaixz.bus.starter.mapper;
 
-import lombok.Getter;
-import lombok.Setter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Properties;
+
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ExecutorType;
 import org.miaixz.bus.spring.GeniusBuilder;
@@ -38,11 +42,8 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Properties;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Configuration properties for MyBatis Mapper.
@@ -117,7 +118,7 @@ public class MapperProperties {
     private Configuration configuration;
 
     /**
-     * General parameter settings, often used for plugins. For example, for PageHelper:
+     * General parameter settings, often used for plugins. For example, for PageContext:
      * {@code helperDialect=mysql,reasonable=true,supportMethodsArguments=true,params=count=countSql}
      */
     private String params;
@@ -137,6 +138,151 @@ public class MapperProperties {
      * Whether to support passing pagination parameters through Mapper interface method arguments.
      */
     private String supportMethodsArguments;
+
+    /**
+     * Tenant configuration (simplified configuration, supports per-datasource).
+     */
+    @NestedConfigurationProperty
+    private TenantProperties tenant;
+
+    /**
+     * Audit configuration (simplified configuration, supports per-datasource).
+     */
+    @NestedConfigurationProperty
+    private AuditProperties audit;
+
+    /**
+     * Populate configuration (simplified configuration, supports per-datasource).
+     */
+    @NestedConfigurationProperty
+    private PopulateProperties populate;
+
+    /**
+     * Visible configuration (simplified configuration, supports per-datasource).
+     */
+    @NestedConfigurationProperty
+    private VisibleProperties visible;
+
+    /**
+     * Prefix configuration (simplified configuration, supports per-datasource).
+     */
+    @NestedConfigurationProperty
+    private PrefixProperties prefix;
+
+    /**
+     * Tenant configuration class.
+     */
+    @Getter
+    @Setter
+    public static class TenantProperties {
+
+        /**
+         * Tenant column name.
+         */
+        private String column = "tenant_id";
+
+        /**
+         * Tables to ignore tenant filtering (comma-separated).
+         */
+        private String ignore;
+
+        /**
+         * Mappers to ignore tenant filtering (comma-separated).
+         */
+        private String ignoreMappers;
+    }
+
+    /**
+     * Audit configuration class.
+     */
+    @Getter
+    @Setter
+    public static class AuditProperties {
+
+        /**
+         * Slow SQL threshold in milliseconds.
+         */
+        private long slowSqlThreshold = 1000;
+
+        /**
+         * Whether to log SQL parameters.
+         */
+        private boolean logParameters = true;
+
+        /**
+         * Whether to log SQL results.
+         */
+        private boolean logResults = false;
+
+        /**
+         * Whether to log all SQL (not just slow SQL).
+         */
+        private boolean logAllSql = false;
+
+        /**
+         * Whether to print audit logs to console.
+         */
+        private boolean printConsole = false;
+    }
+
+    /**
+     * Populate configuration class.
+     */
+    @Getter
+    @Setter
+    public static class PopulateProperties {
+
+        /**
+         * Whether to enable created time field.
+         */
+        private boolean created = true;
+
+        /**
+         * Whether to enable modified time field.
+         */
+        private boolean modified = true;
+
+        /**
+         * Whether to enable creator field.
+         */
+        private boolean creator = true;
+
+        /**
+         * Whether to enable modifier field.
+         */
+        private boolean modifier = true;
+    }
+
+    /**
+     * Visible configuration class.
+     */
+    @Getter
+    @Setter
+    public static class VisibleProperties {
+
+        /**
+         * Tables to ignore visibility filtering (comma-separated).
+         */
+        private String ignore;
+    }
+
+    /**
+     * Prefix configuration class.
+     */
+    @Getter
+    @Setter
+    public static class PrefixProperties {
+
+        /**
+         * Table prefix value.
+         */
+        private String prefix;
+
+        /**
+         * Tables to ignore prefix (comma-separated).
+         */
+        private String ignore;
+    }
 
     /**
      * Resolves the mapper locations specified in the properties into an array of {@link Resource} objects.

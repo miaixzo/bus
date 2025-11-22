@@ -159,7 +159,7 @@ public class ConditionProvider {
                         + ifTest("selectColumns != null and selectColumns != ''", () -> "${selectColumns}")
                         + ifTest("selectColumns == null or selectColumns == ''", entity::baseColumnAsPropertyList)
                         + " FROM " + entity.tableName() + ifParameterNotNull(() -> Args.CONDITION_WHERE_CLAUSE)
-                        + ifTest("orderByClause != null", () -> " ORDER BY ${orderByClause}")
+                        + ifTest("orderByClause != null", () -> " Order BY ${orderByClause}")
                         + ifTest("orderByClause == null", () -> entity.orderByColumn().orElse(""))
                         + ifTest("endSql != null and endSql != ''", () -> "${endSql}");
             }

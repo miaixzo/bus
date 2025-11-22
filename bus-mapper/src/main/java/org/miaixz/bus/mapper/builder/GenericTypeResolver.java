@@ -29,6 +29,7 @@ package org.miaixz.bus.mapper.builder;
 
 import java.lang.reflect.*;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.ibatis.annotations.MapKey;
 import org.apache.ibatis.annotations.ResultType;
@@ -37,8 +38,9 @@ import org.miaixz.bus.core.lang.Optional;
 
 /**
  * A utility class for resolving generic types, based on the source code of MyBatis 3. It adds the
- * {@code resolveMapperTypes} method to support resolving generic types of interfaces. Original source from
- * https://github.com/mybatis/mybatis-3
+ * {@code resolveMapperTypes} method to support resolving generic types of interfaces. This class primarily handles the
+ * runtime resolution of generic type arguments to their actual concrete types by traversing the type hierarchy.
+ * Original source from https://github.com/mybatis/mybatis-3
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -46,35 +48,70 @@ import org.miaixz.bus.core.lang.Optional;
 public class GenericTypeResolver {
 
     /**
-     * Private constructor to prevent instantiation.
+     * Cache for resolved generic types of mapper interfaces (Class -> Actual Type Arguments).
+     */
+    private static final Map<Class<?>, Type[]> RESOLVED_MAPPER_TYPES_CACHE = new ConcurrentHashMap<>();
+
+    /**
+     * Cache for resolved generic types of the interface where a specific method is declared (Method -> Actual Type
+     * Arguments).
+     */
+    private static final Map<Method, Type[]> RESOLVED_METHOD_MAPPER_TYPES_CACHE = new ConcurrentHashMap<>();
+
+    /**
+     * Cache for resolved generic field types (Field -> Actual Type).
+     */
+    private static final Map<Field, Type> RESOLVED_FIELD_TYPE_CACHE = new ConcurrentHashMap<>();
+
+    /**
+     * Cache for resolved generic method return types (Method -> Actual Return Type).
+     */
+    private static final Map<Method, Type> RESOLVED_RETURN_TYPE_CACHE = new ConcurrentHashMap<>();
+
+    /**
+     * Cache for resolved generic method parameter types (Method -> Actual Parameter Types Array).
+     */
+    private static final Map<Method, Type[]> RESOLVED_PARAM_TYPES_CACHE = new ConcurrentHashMap<>();
+
+    /**
+     * Private constructor to prevent instantiation of this utility class.
      */
     public GenericTypeResolver() {
-
+        // Private constructor for utility class
     }
 
     /**
-     * Gets the actual return type of a method.
+     * Gets the actual return type of a method, taking into account generics, collections, arrays, and MyBatis
+     * annotations.
      *
-     * @param method  The method.
-     * @param srcType The class where the method is declared.
-     * @return The actual return type of the method.
+     * @param method  The method to analyze.
+     * @param srcType The class where the method is being invoked or the generic context class.
+     * @return The actual concrete {@code Class} representing the return type.
      */
     public static Class<?> getReturnType(Method method, Class<?> srcType) {
         Class<?> returnType = method.getReturnType();
         Type resolvedReturnType = resolveReturnType(method, srcType);
+
+        // Handle resolved type if it's a concrete Class
         if (resolvedReturnType instanceof Class) {
             returnType = (Class<?>) resolvedReturnType;
             if (returnType.isArray()) {
+                // If it's an array, get the component type (e.g., String[] -> String)
                 returnType = returnType.getComponentType();
             }
             if (void.class.equals(returnType)) {
+                // Handle MyBatis @ResultType annotation for void methods (e.g., for bulk operations)
                 ResultType rt = method.getAnnotation(ResultType.class);
                 if (rt != null) {
                     returnType = rt.value();
                 }
             }
-        } else if (resolvedReturnType instanceof ParameterizedType parameterizedType) {
+        }
+        // Handle resolved type if it's a ParameterizedType (e.g., List<T>, Map<K, V>)
+        else if (resolvedReturnType instanceof ParameterizedType parameterizedType) {
             Class<?> rawType = (Class<?>) parameterizedType.getRawType();
+
+            // Handle Collections (List, Set, Collection) and Cursor types: return the type of the element.
             if (Collection.class.isAssignableFrom(rawType) || Cursor.class.isAssignableFrom(rawType)) {
                 Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
                 if (actualTypeArguments != null && actualTypeArguments.length == 1) {
@@ -82,30 +119,34 @@ public class GenericTypeResolver {
                     if (returnTypeParameter instanceof Class<?>) {
                         returnType = (Class<?>) returnTypeParameter;
                     } else if (returnTypeParameter instanceof ParameterizedType) {
-                        // actual type can be a also a parameterized type
+                        // Handle nested generics (e.g., List<List<String>>)
                         returnType = (Class<?>) ((ParameterizedType) returnTypeParameter).getRawType();
                     } else if (returnTypeParameter instanceof GenericArrayType) {
+                        // Handle array component types (e.g., List<byte[]>)
                         Class<?> componentType = (Class<?>) ((GenericArrayType) returnTypeParameter)
                                 .getGenericComponentType();
-                        // support List<byte[]>
+                        // Construct Class<?> for the array type
                         returnType = Array.newInstance(componentType, 0).getClass();
                     }
                 }
-            } else if (method.isAnnotationPresent(MapKey.class) && Map.class.isAssignableFrom(rawType)) {
-                // Do not look into Maps if there is not MapKey annotation
+            }
+            // Handle Map types with @MapKey annotation: return the value type.
+            else if (method.isAnnotationPresent(MapKey.class) && Map.class.isAssignableFrom(rawType)) {
                 Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
                 if (actualTypeArguments != null && actualTypeArguments.length == 2) {
-                    Type returnTypeParameter = actualTypeArguments[1];
+                    Type returnTypeParameter = actualTypeArguments[1]; // Value type is the second argument
                     if (returnTypeParameter instanceof Class<?>) {
                         returnType = (Class<?>) returnTypeParameter;
                     } else if (returnTypeParameter instanceof ParameterizedType) {
-                        // actual type can be a also a parameterized type
+                        // Handle nested generics (e.g., Map<String, List<Integer>>)
                         returnType = (Class<?>) ((ParameterizedType) returnTypeParameter).getRawType();
                     }
                 }
-            } else if (Optional.class.equals(rawType)) {
+            }
+            // Handle Optional<T> types: return the enclosed type T.
+            else if (Optional.class.equals(rawType)) {
                 Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
-                Type returnTypeParameter = actualTypeArguments[0];
+                Type returnTypeParameter = actualTypeArguments[0]; // Enclosed type is the first argument
                 if (returnTypeParameter instanceof Class<?>) {
                     returnType = (Class<?>) returnTypeParameter;
                 }
@@ -116,83 +157,104 @@ public class GenericTypeResolver {
     }
 
     /**
-     * Resolves the generic types of a mapper interface.
+     * Resolves the generic types of a mapper interface (and its super-interfaces) to find the actual type arguments
+     * provided by the implementation.
      *
-     * @param srcType The interface type.
+     * @param srcType The interface type (usually a MyBatis Mapper interface).
      * @return An array of actual type arguments for the generic parameters of the interface.
      */
     public static Type[] resolveMapperTypes(Class<?> srcType) {
-        Type[] types = srcType.getGenericInterfaces();
-        List<Type> result = new ArrayList<>();
-        for (Type type : types) {
-            if (type instanceof Class) {
-                result.addAll(Arrays.asList(resolveMapperTypes((Class<?>) type)));
-            } else if (type instanceof ParameterizedType) {
-                Collections.addAll(result, ((ParameterizedType) type).getActualTypeArguments());
+        // Use cache to prevent repeated calculations
+        return RESOLVED_MAPPER_TYPES_CACHE.computeIfAbsent(srcType, key -> {
+            Type[] types = key.getGenericInterfaces();
+            List<Type> result = new ArrayList<>();
+            for (Type type : types) {
+                if (type instanceof Class) {
+                    // Recursively resolve types of non-parameterized super-interfaces
+                    result.addAll(Arrays.asList(resolveMapperTypes((Class<?>) type)));
+                } else if (type instanceof ParameterizedType) {
+                    // Add actual type arguments from parameterized super-interfaces
+                    Collections.addAll(result, ((ParameterizedType) type).getActualTypeArguments());
+                }
             }
-        }
-        return result.toArray(new Type[] {});
+            return result.toArray(new Type[0]);
+        });
     }
 
     /**
-     * Resolves the generic types of the interface where a method is declared.
+     * Resolves the actual type arguments for the type variables defined in the interface where a method is declared,
+     * based on the concrete type provided by {@code srcType}.
      *
-     * @param method  The method.
-     * @param srcType The interface type.
-     * @return An array of actual type arguments for the generic parameters of the interface.
+     * @param method  The method declared in a generic interface.
+     * @param srcType The concrete implementation type or context type.
+     * @return An array of actual type arguments corresponding to the method's declaring interface's type parameters.
      */
     public static Type[] resolveMapperTypes(Method method, Type srcType) {
-        Class<?> declaringClass = method.getDeclaringClass();
-        TypeVariable<? extends Class<?>>[] typeParameters = declaringClass.getTypeParameters();
-        Type[] result = new Type[typeParameters.length];
-        for (int i = 0; i < typeParameters.length; i++) {
-            result[i] = resolveType(typeParameters[i], srcType, declaringClass);
-        }
-        return result;
+        // Use cache to prevent repeated calculations
+        return RESOLVED_METHOD_MAPPER_TYPES_CACHE.computeIfAbsent(method, key -> {
+            Class<?> declaringClass = key.getDeclaringClass();
+            TypeVariable<? extends Class<?>>[] typeParameters = declaringClass.getTypeParameters();
+            Type[] result = new Type[typeParameters.length];
+            for (int i = 0; i < typeParameters.length; i++) {
+                // Resolve each type variable (T, K, V, etc.) against the source type context
+                result[i] = resolveType(typeParameters[i], srcType, declaringClass);
+            }
+            return result;
+        });
     }
 
     /**
-     * Resolves the generic type of a field.
+     * Resolves the generic type of a field to its actual concrete type based on the source type context.
      *
-     * @param field   The field.
-     * @param srcType The source type.
-     * @return The actual type of the field.
+     * @param field   The field whose type needs resolution.
+     * @param srcType The source type (the class containing the field, possibly parameterized).
+     * @return The actual resolved {@code Type} of the field.
      */
     public static Type resolveFieldType(Field field, Type srcType) {
-        Type fieldType = field.getGenericType();
-        Class<?> declaringClass = field.getDeclaringClass();
-        return resolveType(fieldType, srcType, declaringClass);
+        // Use cache to prevent repeated calculations
+        return RESOLVED_FIELD_TYPE_CACHE.computeIfAbsent(field, key -> {
+            Type fieldType = key.getGenericType();
+            Class<?> declaringClass = key.getDeclaringClass();
+            // Delegate to the core type resolution method
+            return resolveType(fieldType, srcType, declaringClass);
+        });
     }
 
     /**
-     * Resolves the actual class of a field's type.
+     * Resolves the actual class of a field's type by calling {@code resolveTypeToClass} after generic resolution.
      *
-     * @param field   The field.
-     * @param srcType The source type.
-     * @return The actual class of the field's type.
+     * @param field   The field whose type needs resolution.
+     * @param srcType The source type (the class containing the field, possibly parameterized).
+     * @return The actual concrete {@code Class} of the field's type.
      */
     public static Class<?> resolveFieldClass(Field field, Type srcType) {
         Type fieldType = field.getGenericType();
         Class<?> declaringClass = field.getDeclaringClass();
+        // 1. Resolve generics
         Type type = resolveType(fieldType, srcType, declaringClass);
+        // 2. Convert resolved Type to Class
         return resolveTypeToClass(type);
     }
 
     /**
-     * Converts a {@link Type} to its corresponding {@link Class}.
+     * Converts a {@link Type} (which can be a Class, ParameterizedType, TypeVariable, or GenericArrayType) to its
+     * corresponding raw {@link Class}.
      *
      * @param type The type to convert.
-     * @return The corresponding class.
+     * @return The corresponding raw class. Returns {@code Object.class} if the resolution fails or is ambiguous.
      */
     public static Class<?> resolveTypeToClass(Type type) {
         if (type instanceof Class) {
             return (Class<?>) type;
         } else if (type instanceof ParameterizedType) {
+            // For ParameterizedType (e.g., List<String>), return the raw type (List.class)
             return (Class<?>) ((ParameterizedType) type).getRawType();
         } else if (type instanceof TypeVariable<?>) {
+            // For TypeVariable (e.g., T), return the first upper bound (e.g., Serializable or Object)
             Type[] bounds = ((TypeVariable<?>) type).getBounds();
             return (Class<?>) bounds[0];
         } else if (type instanceof GenericArrayType) {
+            // For GenericArrayType (e.g., T[]), resolve the component type and return the array class
             Type componentType = ((GenericArrayType) type).getGenericComponentType();
             if (componentType instanceof Class) {
                 return Array.newInstance((Class<?>) componentType, 0).getClass();
@@ -205,42 +267,51 @@ public class GenericTypeResolver {
     }
 
     /**
-     * Resolves the return type of a method.
+     * Resolves the generic return type of a method to its actual concrete type based on the source type context.
      *
-     * @param method  The method.
-     * @param srcType The source type.
-     * @return The actual return type of the method.
+     * @param method  The method whose return type needs resolution.
+     * @param srcType The source type (the class where the method is declared, possibly parameterized).
+     * @return The actual resolved {@code Type} of the method's return value.
      */
     public static Type resolveReturnType(Method method, Type srcType) {
-        Type returnType = method.getGenericReturnType();
-        Class<?> declaringClass = method.getDeclaringClass();
-        return resolveType(returnType, srcType, declaringClass);
+        // Use cache to prevent repeated calculations
+        return RESOLVED_RETURN_TYPE_CACHE.computeIfAbsent(method, key -> {
+            Type returnType = key.getGenericReturnType();
+            Class<?> declaringClass = key.getDeclaringClass();
+            // Delegate to the core type resolution method
+            return resolveType(returnType, srcType, declaringClass);
+        });
     }
 
     /**
-     * Resolves the parameter types of a method.
+     * Resolves the generic parameter types of a method to their actual concrete types based on the source type context.
      *
-     * @param method  The method.
-     * @param srcType The source type.
-     * @return An array of actual parameter types for the method.
+     * @param method  The method whose parameter types need resolution.
+     * @param srcType The source type (the class where the method is declared, possibly parameterized).
+     * @return An array of actual resolved {@code Type}s for the method's parameters.
      */
     public static Type[] resolveParamTypes(Method method, Type srcType) {
-        Type[] paramTypes = method.getGenericParameterTypes();
-        Class<?> declaringClass = method.getDeclaringClass();
-        Type[] result = new Type[paramTypes.length];
-        for (int i = 0; i < paramTypes.length; i++) {
-            result[i] = resolveType(paramTypes[i], srcType, declaringClass);
-        }
-        return result;
+        // Use cache to prevent repeated calculations
+        return RESOLVED_PARAM_TYPES_CACHE.computeIfAbsent(method, key -> {
+            Type[] paramTypes = key.getGenericParameterTypes();
+            Class<?> declaringClass = key.getDeclaringClass();
+            Type[] result = new Type[paramTypes.length];
+            for (int i = 0; i < paramTypes.length; i++) {
+                // Resolve each parameter type against the source type context
+                result[i] = resolveType(paramTypes[i], srcType, declaringClass);
+            }
+            return result;
+        });
     }
 
     /**
-     * Resolves a generic type.
+     * Core method for resolving a generic type by delegating to specific resolution methods based on the type's
+     * concrete implementation (TypeVariable, ParameterizedType, GenericArrayType, or Class).
      *
      * @param type           The type to resolve.
-     * @param srcType        The source type.
-     * @param declaringClass The declaring class.
-     * @return The resolved actual type.
+     * @param srcType        The source type, providing the context for resolution (e.g., {@code MyClass<String>}).
+     * @param declaringClass The class where the original generic type was declared.
+     * @return The resolved actual {@code Type}.
      */
     public static Type resolveType(Type type, Type srcType, Class<?> declaringClass) {
         if (type instanceof TypeVariable) {
@@ -250,17 +321,19 @@ public class GenericTypeResolver {
         } else if (type instanceof GenericArrayType) {
             return resolveGenericArrayType((GenericArrayType) type, srcType, declaringClass);
         } else {
+            // Return Class or non-generic types directly
             return type;
         }
     }
 
     /**
-     * Resolves a generic array type.
+     * Resolves the component type of a {@link GenericArrayType}.
      *
-     * @param genericArrayType The generic array type.
-     * @param srcType          The source type.
-     * @param declaringClass   The declaring class.
-     * @return The resolved actual type.
+     * @param genericArrayType The generic array type (e.g., T[]).
+     * @param srcType          The source type context.
+     * @param declaringClass   The class where the generic type was declared.
+     * @return The resolved actual array type or a new {@code GenericArrayType} implementation if the component is still
+     *         generic.
      */
     private static Type resolveGenericArrayType(
             GenericArrayType genericArrayType,
@@ -268,6 +341,8 @@ public class GenericTypeResolver {
             Class<?> declaringClass) {
         Type componentType = genericArrayType.getGenericComponentType();
         Type resolvedComponentType = null;
+
+        // Recursively resolve the component type
         if (componentType instanceof TypeVariable) {
             resolvedComponentType = resolveTypeVar((TypeVariable<?>) componentType, srcType, declaringClass);
         } else if (componentType instanceof GenericArrayType) {
@@ -278,20 +353,25 @@ public class GenericTypeResolver {
                     srcType,
                     declaringClass);
         }
+
+        // If component type is now concrete, return the actual array Class
         if (resolvedComponentType instanceof Class) {
             return Array.newInstance((Class<?>) resolvedComponentType, 0).getClass();
-        } else {
+        }
+        // Otherwise, return a custom GenericArrayType implementation with the resolved component
+        else {
             return new GenericArrayTypes(resolvedComponentType);
         }
     }
 
     /**
-     * Resolves a parameterized type.
+     * Resolves the type arguments of a {@link ParameterizedType}.
      *
-     * @param parameterizedType The parameterized type.
-     * @param srcType           The source type.
-     * @param declaringClass    The declaring class.
-     * @return The resolved parameterized type.
+     * @param parameterizedType The parameterized type (e.g., List<T>).
+     * @param srcType           The source type context.
+     * @param declaringClass    The class where the generic type was declared.
+     * @return The resolved parameterized type with concrete arguments or a new {@code ParameterizedType}
+     *         implementation.
      */
     private static ParameterizedType resolveParameterizedType(
             ParameterizedType parameterizedType,
@@ -300,6 +380,8 @@ public class GenericTypeResolver {
         Class<?> rawType = (Class<?>) parameterizedType.getRawType();
         Type[] typeArgs = parameterizedType.getActualTypeArguments();
         Type[] args = new Type[typeArgs.length];
+
+        // Iterate through all type arguments and resolve them recursively
         for (int i = 0; i < typeArgs.length; i++) {
             if (typeArgs[i] instanceof TypeVariable) {
                 args[i] = resolveTypeVar((TypeVariable<?>) typeArgs[i], srcType, declaringClass);
@@ -308,32 +390,36 @@ public class GenericTypeResolver {
             } else if (typeArgs[i] instanceof WildcardType) {
                 args[i] = resolveWildcardType((WildcardType) typeArgs[i], srcType, declaringClass);
             } else {
-                args[i] = typeArgs[i];
+                args[i] = typeArgs[i]; // Concrete type
             }
         }
+        // Return a custom ParameterizedType implementation with resolved arguments
         return new ParameterizedTypes(rawType, null, args);
     }
 
     /**
-     * Resolves a wildcard type.
+     * Resolves the bounds of a {@link WildcardType}.
      *
-     * @param wildcardType   The wildcard type.
-     * @param srcType        The source type.
-     * @param declaringClass The declaring class.
-     * @return The resolved wildcard type.
+     * @param wildcardType   The wildcard type (e.g., ? extends Number).
+     * @param srcType        The source type context.
+     * @param declaringClass The class where the generic type was declared.
+     * @return The resolved wildcard type with resolved bounds or a new {@code WildcardType} implementation.
      */
     private static Type resolveWildcardType(WildcardType wildcardType, Type srcType, Class<?> declaringClass) {
+        // Resolve the lower bounds
         Type[] lowerBounds = resolveWildcardTypeBounds(wildcardType.getLowerBounds(), srcType, declaringClass);
+        // Resolve the upper bounds
         Type[] upperBounds = resolveWildcardTypeBounds(wildcardType.getUpperBounds(), srcType, declaringClass);
+        // Return a custom WildcardType implementation with resolved bounds
         return new WildcardTypes(lowerBounds, upperBounds);
     }
 
     /**
-     * Resolves the bounds of a wildcard type.
+     * Helper method to recursively resolve all types in an array of bounds (used by {@code resolveWildcardType}).
      *
      * @param bounds         The array of bounds.
-     * @param srcType        The source type.
-     * @param declaringClass The declaring class.
+     * @param srcType        The source type context.
+     * @param declaringClass The class where the generic type was declared.
      * @return The array of resolved bounds.
      */
     private static Type[] resolveWildcardTypeBounds(Type[] bounds, Type srcType, Class<?> declaringClass) {
@@ -353,12 +439,14 @@ public class GenericTypeResolver {
     }
 
     /**
-     * Resolves a type variable.
+     * Resolves a {@link TypeVariable} (e.g., 'T') to its actual concrete type by traversing the class/interface
+     * hierarchy from the {@code srcType} up to the {@code declaringClass}.
      *
-     * @param typeVar        The type variable.
-     * @param srcType        The source type.
-     * @param declaringClass The declaring class.
-     * @return The resolved actual type.
+     * @param typeVar        The type variable to resolve.
+     * @param srcType        The source type (the concrete class/interface providing the type argument).
+     * @param declaringClass The class where the type variable was originally defined.
+     * @return The resolved actual {@code Type}. Returns the first bound or {@code Object.class} if not found.
+     * @throws IllegalArgumentException if {@code srcType} is neither a Class nor a ParameterizedType.
      */
     private static Type resolveTypeVar(TypeVariable<?> typeVar, Type srcType, Class<?> declaringClass) {
         Type result;
@@ -372,6 +460,7 @@ public class GenericTypeResolver {
                     "The 2nd arg must be Class or ParameterizedType, but was: " + srcType.getClass());
         }
 
+        // Base case: If the current class is the declaring class, return the type variable's bound (or Object)
         if (clazz == declaringClass) {
             Type[] bounds = typeVar.getBounds();
             if (bounds.length > 0) {
@@ -380,12 +469,14 @@ public class GenericTypeResolver {
             return Object.class;
         }
 
+        // Recursively check superclass hierarchy
         Type superclass = clazz.getGenericSuperclass();
         result = scanSuperTypes(typeVar, srcType, declaringClass, clazz, superclass);
         if (result != null) {
             return result;
         }
 
+        // Recursively check super-interface hierarchy
         Type[] superInterfaces = clazz.getGenericInterfaces();
         for (Type superInterface : superInterfaces) {
             result = scanSuperTypes(typeVar, srcType, declaringClass, clazz, superInterface);
@@ -393,18 +484,20 @@ public class GenericTypeResolver {
                 return result;
             }
         }
+        // If not found, return Object.class (default bound)
         return Object.class;
     }
 
     /**
-     * Scans superclasses and interfaces to resolve a type variable.
+     * Scans a superclass or super-interface type to find the actual type argument corresponding to a
+     * {@link TypeVariable}.
      *
-     * @param typeVar        The type variable.
-     * @param srcType        The source type.
-     * @param declaringClass The declaring class.
-     * @param clazz          The current class.
-     * @param superclass     The superclass or interface type.
-     * @return The resolved actual type.
+     * @param typeVar        The type variable being searched for.
+     * @param srcType        The original source type.
+     * @param declaringClass The class where the type variable was declared.
+     * @param clazz          The current class being scanned.
+     * @param superclass     The superclass or interface type to analyze.
+     * @return The resolved actual type if found, otherwise {@code null}.
      */
     private static Type scanSuperTypes(
             TypeVariable<?> typeVar,
@@ -413,11 +506,17 @@ public class GenericTypeResolver {
             Class<?> clazz,
             Type superclass) {
         if (superclass instanceof ParameterizedType parentAsType) {
+            // Case 1: Supertype is parameterized (e.g., MyClass<String> extends Base<String>)
             Class<?> parentAsClass = (Class<?>) parentAsType.getRawType();
             TypeVariable<?>[] parentTypeVars = parentAsClass.getTypeParameters();
+
+            // If the source type is also parameterized, translate the parent's type variables using the source's
+            // arguments
             if (srcType instanceof ParameterizedType) {
                 parentAsType = translateParentTypeVars((ParameterizedType) srcType, clazz, parentAsType);
             }
+
+            // If the superclass is the declaring class, find the matching type argument
             if (declaringClass == parentAsClass) {
                 for (int i = 0; i < parentTypeVars.length; i++) {
                     if (typeVar.equals(parentTypeVars[i])) {
@@ -425,22 +524,26 @@ public class GenericTypeResolver {
                     }
                 }
             }
+
+            // If the declaring class is further up the hierarchy, recurse
             if (declaringClass.isAssignableFrom(parentAsClass)) {
                 return resolveTypeVar(typeVar, parentAsType, declaringClass);
             }
         } else if (superclass instanceof Class && declaringClass.isAssignableFrom((Class<?>) superclass)) {
+            // Case 2: Supertype is raw (e.g., MyClass<String> extends Base) and Base is in the hierarchy
             return resolveTypeVar(typeVar, superclass, declaringClass);
         }
         return null;
     }
 
     /**
-     * Translates type variables from a parent type.
+     * Translates type variables in a parent's {@link ParameterizedType} using the concrete type arguments provided by
+     * the child's {@link ParameterizedType}.
      *
-     * @param srcType    The source parameterized type.
-     * @param srcClass   The source class.
-     * @param parentType The parent parameterized type.
-     * @return The translated parameterized type.
+     * @param srcType    The child's parameterized type (e.g., {@code Child<C>}).
+     * @param srcClass   The child's raw class (e.g., {@code Child.class}).
+     * @param parentType The parent's parameterized type (e.g., {@code Parent<T, K>}).
+     * @return The translated parameterized type where parent type variables are replaced by child's concrete types.
      */
     private static ParameterizedType translateParentTypeVars(
             ParameterizedType srcType,
@@ -451,8 +554,11 @@ public class GenericTypeResolver {
         TypeVariable<?>[] srcTypeVars = srcClass.getTypeParameters();
         Type[] newParentArgs = new Type[parentTypeArgs.length];
         boolean noChange = true;
+
         for (int i = 0; i < parentTypeArgs.length; i++) {
             if (parentTypeArgs[i] instanceof TypeVariable) {
+                // If a parent's argument is a TypeVariable (e.g., T in Parent<T>),
+                // find which child's TypeVariable it maps to and use the child's concrete argument
                 for (int j = 0; j < srcTypeVars.length; j++) {
                     if (srcTypeVars[j].equals(parentTypeArgs[i])) {
                         noChange = false;
@@ -463,26 +569,30 @@ public class GenericTypeResolver {
                 newParentArgs[i] = parentTypeArgs[i];
             }
         }
+
+        // Return the original type if no variables were translated, otherwise return the new ParameterizedType
+        // implementation
         return noChange ? parentType : new ParameterizedTypes((Class<?>) parentType.getRawType(), null, newParentArgs);
     }
 
     /**
-     * An implementation of {@link ParameterizedType}.
+     * An implementation of the standard Java reflection {@link ParameterizedType} interface. This custom implementation
+     * is used to hold resolved generic type arguments.
      */
     public static class ParameterizedTypes implements ParameterizedType {
 
         /**
-         * The raw type.
+         * The raw type (e.g., {@code List.class} for {@code List<String>}).
          */
         private final Class<?> rawType;
 
         /**
-         * The owner type.
+         * The owner type (usually {@code null} for static contexts like fields or methods).
          */
         private final Type ownerType;
 
         /**
-         * The actual type arguments.
+         * The actual type arguments (e.g., {@code [String.class]} for {@code List<String>}).
          */
         private final Type[] actualTypeArguments;
 
@@ -490,7 +600,7 @@ public class GenericTypeResolver {
          * Constructs a new ParameterizedTypes instance.
          *
          * @param rawType             The raw type.
-         * @param ownerType           The owner type.
+         * @param ownerType           The owner type (can be null).
          * @param actualTypeArguments The actual type arguments.
          */
         public ParameterizedTypes(Class<?> rawType, Type ownerType, Type[] actualTypeArguments) {
@@ -531,7 +641,7 @@ public class GenericTypeResolver {
         }
 
         /**
-         * Returns a string representation of this parameterized type.
+         * Returns a string representation of this parameterized type, mainly for debugging purposes.
          *
          * @return A string representation.
          */
@@ -543,17 +653,18 @@ public class GenericTypeResolver {
     }
 
     /**
-     * An implementation of {@link WildcardType}.
+     * An implementation of the standard Java reflection {@link WildcardType} interface. This custom implementation is
+     * used to hold resolved wildcard bounds.
      */
     public static class WildcardTypes implements WildcardType {
 
         /**
-         * The lower bounds.
+         * The array of lower bounds (types preceded by {@code super}).
          */
         private final Type[] lowerBounds;
 
         /**
-         * The upper bounds.
+         * The array of upper bounds (types preceded by {@code extends} or default to {@code Object}).
          */
         private final Type[] upperBounds;
 
@@ -588,15 +699,18 @@ public class GenericTypeResolver {
         public Type[] getUpperBounds() {
             return upperBounds;
         }
+
+        // Omitted toString(), hashCode(), equals() for brevity, but should typically be included in production code
     }
 
     /**
-     * An implementation of {@link GenericArrayType}.
+     * An implementation of the standard Java reflection {@link GenericArrayType} interface. This custom implementation
+     * is used to hold a resolved generic component type.
      */
     public static class GenericArrayTypes implements GenericArrayType {
 
         /**
-         * The generic component type.
+         * The generic component type (e.g., {@code T} in {@code T[]}).
          */
         private final Type genericComponentType;
 
@@ -619,6 +733,7 @@ public class GenericTypeResolver {
         public Type getGenericComponentType() {
             return genericComponentType;
         }
+
     }
 
 }

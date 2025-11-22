@@ -107,7 +107,7 @@ public class MapperConfiguration implements InitializingBean {
         this.environment = environment;
         this.resourceLoader = resourceLoader;
         this.configurationCustomizers = configurationCustomizersProvider.getIfAvailable();
-        Logger.info("Initializing MapperConfiguration with provided environment and resource loader");
+        Logger.info(true, "Mapper", "Initializing MapperConfiguration");
     }
 
     /**
@@ -122,7 +122,7 @@ public class MapperConfiguration implements InitializingBean {
                     resource.exists(),
                     "Cannot find config location: " + resource
                             + " (please add config file or check your Mybatis configuration)");
-            Logger.debug("Checked MyBatis config location: {}", this.properties.getConfigLocation());
+            Logger.debug(true, "Mapper", "Checked MyBatis config location: {}", this.properties.getConfigLocation());
         }
     }
 
@@ -136,7 +136,7 @@ public class MapperConfiguration implements InitializingBean {
     @Bean
     @ConditionalOnMissingBean
     public SqlSessionFactory sqlSessionFactory(DataSource dataSource) throws Exception {
-        Logger.info("Creating SqlSessionFactory with dataSource");
+        Logger.info(true, "Mapper", "Creating SqlSessionFactory with dataSource");
         SqlSessionFactoryBean factory = new SqlSessionFactoryBean();
         factory.setDataSource(dataSource);
 
@@ -191,7 +191,7 @@ public class MapperConfiguration implements InitializingBean {
         factory.setPlugins(MapperPluginBuilder.build(environment));
 
         SqlSessionFactory sqlSessionFactory = factory.getObject();
-        Logger.info("SqlSessionFactory created successfully");
+        Logger.info(false, "Mapper", "SqlSessionFactory created successfully");
         return sqlSessionFactory;
     }
 
@@ -208,10 +208,10 @@ public class MapperConfiguration implements InitializingBean {
         SqlSessionTemplate template;
         if (executorType != null) {
             template = new SqlSessionTemplate(sqlSessionFactory, executorType);
-            Logger.info("Created SqlSessionTemplate with executor type: {}", executorType);
+            Logger.info(false, "Mapper", "Created SqlSessionTemplate with executor type: {}", executorType);
         } else {
             template = new SqlSessionTemplate(sqlSessionFactory);
-            Logger.info("Created SqlSessionTemplate with default executor type");
+            Logger.info(false, "Mapper", "Created SqlSessionTemplate with default executor type");
         }
         return template;
     }
@@ -232,7 +232,7 @@ public class MapperConfiguration implements InitializingBean {
          */
         public SpringBootVFS() {
             this.resourceResolver = new PathMatchingResourcePatternResolver(getClass().getClassLoader());
-            Logger.debug("Initialized SpringBootVFS with resource resolver");
+            Logger.debug(true, "Mapper", "Initialized SpringBootVFS with resource resolver");
         }
 
         /**
@@ -261,7 +261,7 @@ public class MapperConfiguration implements InitializingBean {
             for (org.springframework.core.io.Resource resource : resources) {
                 resourcePaths.add(preserveSubpackageName(resource.getURI(), path));
             }
-            Logger.debug("Listed resources for path: {}", path);
+            Logger.debug(false, "Mapper", "Listed resources for path: {}", path);
             return resourcePaths;
         }
 

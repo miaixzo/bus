@@ -32,7 +32,7 @@ import java.util.List;
 
 import org.apache.ibatis.type.TypeHandler;
 import org.miaixz.bus.core.lang.Optional;
-import org.miaixz.bus.mapper.ORDER;
+import org.miaixz.bus.mapper.Order;
 import org.miaixz.bus.mapper.parsing.ColumnMeta;
 import org.miaixz.bus.mapper.parsing.FieldMeta;
 import org.miaixz.bus.mapper.parsing.TableMeta;
@@ -120,7 +120,7 @@ public class ColumnAnnotationBuilder implements ColumnSchemaBuilder {
         // Process the order-by annotation.
         if (fieldMeta.isAnnotationPresent(OrderBy.class)) {
             OrderBy orderBy = fieldMeta.getAnnotation(OrderBy.class);
-            columnMeta.orderBy(orderBy.value().isEmpty() ? ORDER.ASC : orderBy.value());
+            columnMeta.orderBy(orderBy.value().isEmpty() ? Order.ASC : orderBy.value());
         }
 
         // Process the type converter annotation.

@@ -101,7 +101,6 @@
         <elastic.version>8.19.0</elastic.version>
         <mongo.version>5.5.1</mongo.version>
         <curator.version>5.8.0</curator.version>
-        <jsqlparser.version>5.3</jsqlparser.version>
     </properties>
 
     <dependencies>
@@ -174,12 +173,6 @@
         <dependency>
             <groupId>org.miaixz</groupId>
             <artifactId>bus-opencv</artifactId>
-            <version>${bus.version}</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.miaixz</groupId>
-            <artifactId>bus-pager</artifactId>
             <version>${bus.version}</version>
             <optional>true</optional>
         </dependency>
@@ -356,12 +349,6 @@
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>com.github.jsqlparser</groupId>
-            <artifactId>jsqlparser</artifactId>
-            <version>${jsqlparser.version}</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-jdbc</artifactId>
             <version>${spring.boot.version}</version>
@@ -505,7 +492,7 @@
             <plugin>
                 <groupId>com.diffplug.spotless</groupId>
                 <artifactId>spotless-maven-plugin</artifactId>
-                <version>3.0.0</version>
+                <version>3.1.0</version>
                 <configuration>
                     <upToDateChecking>
                         <enabled>false</enabled>

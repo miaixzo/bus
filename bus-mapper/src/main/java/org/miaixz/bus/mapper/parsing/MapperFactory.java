@@ -29,15 +29,21 @@ package org.miaixz.bus.mapper.parsing;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.List;
 
 import org.miaixz.bus.core.lang.Optional;
+import org.miaixz.bus.core.xyz.FieldKit;
+import org.miaixz.bus.core.xyz.ModifierKit;
 import org.miaixz.bus.mapper.Holder;
 import org.miaixz.bus.mapper.builder.ClassMetaResolver;
 
 /**
  * A factory for creating and managing entity class metadata.
+ *
+ * <p>
+ * This factory uses bus-core utilities (FieldKit, ModifierKit) for high-performance reflection operations with built-in
+ * caching.
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -83,14 +89,13 @@ public abstract class MapperFactory {
                     Class<?> declaredClass = entityClass;
                     boolean isSuperclass = false;
                     while (declaredClass != null && declaredClass != Object.class) {
-                        Field[] declaredFields = declaredClass.getDeclaredFields();
+                        // Use bus-core FieldKit for field retrieval with built-in cache optimization
+                        Field[] declaredFields = FieldKit.getFields(declaredClass);
                         if (isSuperclass) {
                             reverse(declaredFields);
                         }
                         for (Field field : declaredFields) {
-                            int modifiers = field.getModifiers();
-                            // Exclude static and transient fields.
-                            if (!Modifier.isStatic(modifiers) && !Modifier.isTransient(modifiers)) {
+                            if (!ModifierKit.isStatic(field) && !ModifierKit.isTransient(field)) {
                                 FieldMeta fieldMeta = new FieldMeta(entityClass, field);
                                 // Check if the field needs to be excluded.
                                 if (tableMeta.isExcludeField(fieldMeta)) {

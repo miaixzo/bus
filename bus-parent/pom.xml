@@ -145,7 +145,6 @@
         <mybatis.spring.version>3.0.5</mybatis.spring.version>
         <poi.version>5.4.1</poi.version>
         <ofdrw.version>2.3.7</ofdrw.version>
-        <jsqlparser.version>5.3</jsqlparser.version>
         <hikaricp.version>7.0.2</hikaricp.version>
         <druid.version>1.2.27</druid.version>
         <vertx.version>5.0.1</vertx.version>
@@ -242,11 +241,6 @@
             <dependency>
                 <groupId>org.miaixz</groupId>
                 <artifactId>bus-opencv</artifactId>
-                <version>${bus.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.miaixz</groupId>
-                <artifactId>bus-pager</artifactId>
                 <version>${bus.version}</version>
             </dependency>
             <dependency>
@@ -828,11 +822,6 @@
                 </exclusions>
             </dependency>
             <dependency>
-                <groupId>com.github.jsqlparser</groupId>
-                <artifactId>jsqlparser</artifactId>
-                <version>${jsqlparser.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>com.alibaba</groupId>
                 <artifactId>druid</artifactId>
                 <version>${druid.version}</version>
@@ -1288,7 +1277,7 @@
             <plugin>
                 <groupId>com.diffplug.spotless</groupId>
                 <artifactId>spotless-maven-plugin</artifactId>
-                <version>3.0.0</version>
+                <version>3.1.0</version>
                 <configuration>
                     <upToDateChecking>
                         <enabled>false</enabled>

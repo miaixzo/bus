@@ -48,35 +48,35 @@ public interface ListMapper<T> {
     /**
      * Performs a batch insert of a list of entities.
      *
-     * @param entityList The list of entity objects to insert.
-     * @param <S>        A subtype of the entity class.
+     * @param list The list of entity objects to insert.
+     * @param <S>  A subtype of the entity class.
      * @return The number of successfully inserted records. A return value equal to {@code entityList.size()} indicates
      *         success; otherwise, it indicates failure.
      */
     @Lang(Caching.class)
     @InsertProvider(type = ListProvider.class, method = "insertList")
-    <S extends T> int insertList(@Param("entityList") List<S> entityList);
+    <S extends T> int insertList(@Param("list") List<S> list);
 
     /**
      * Performs a batch update of a list of entities based on their primary keys.
      *
-     * @param entityList The list of entity objects to update.
-     * @param <S>        A subtype of the entity class.
+     * @param list The list of entity objects to update.
+     * @param <S>  A subtype of the entity class.
      * @return The number of successfully updated records.
      */
     @Lang(Caching.class)
     @UpdateProvider(type = ListProvider.class, method = "updateList")
-    <S extends T> int updateList(@Param("entityList") List<S> entityList);
+    <S extends T> int updateList(@Param("list") List<S> list);
 
     /**
      * Performs a batch update of the non-null fields of a list of entities based on their primary keys.
      *
-     * @param entityList The list of entity objects to update.
-     * @param <S>        A subtype of the entity class.
+     * @param list The list of entity objects to update.
+     * @param <S>  A subtype of the entity class.
      * @return The number of successfully updated records.
      */
     @Lang(Caching.class)
     @UpdateProvider(type = ListProvider.class, method = "updateListSelective")
-    <S extends T> int updateListSelective(@Param("entityList") List<S> entityList);
+    <S extends T> int updateListSelective(@Param("list") List<S> list);
 
 }

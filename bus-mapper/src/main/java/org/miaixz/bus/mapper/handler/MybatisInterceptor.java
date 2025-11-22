@@ -32,6 +32,7 @@ import java.sql.Statement;
 import java.text.DateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.ibatis.cache.CacheKey;
 import org.apache.ibatis.executor.Executor;
@@ -50,16 +51,27 @@ import org.apache.ibatis.type.TypeHandlerRegistry;
 import org.miaixz.bus.core.data.id.ID;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.xyz.ArrayKit;
-import org.miaixz.bus.core.xyz.CollKit;
-import org.miaixz.bus.core.xyz.DateKit;
-import org.miaixz.bus.core.xyz.ReflectKit;
+import org.miaixz.bus.core.text.StringBuilderPool;
+import org.miaixz.bus.core.xyz.*;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.Context;
 
 /**
- * A MyBatis SQL interceptor that applies custom logic to SQL execution by using registered handlers. It intercepts
- * {@link Executor} and {@link StatementHandler} to process queries, updates, and SQL preparation.
+ * A MyBatis SQL interceptor that applies custom logic to SQL execution by using registered handlers.
+ * <p>
+ * This interceptor acts as a central dispatcher, hooking into the MyBatis execution lifecycle (Executor,
+ * StatementHandler, ResultSetHandler) and delegating specific logic to a chain of {@link MapperHandler}s.
+ * </p>
+ *
+ * <p>
+ * Key features:
+ * </p>
+ * <ul>
+ * <li><b>O(1) Handler Lookup:</b> Uses {@link HandlerRegistry} to efficiently find handlers for specific operations
+ * (Query, Update, etc).</li>
+ * <li><b>SQL Logging:</b> detailed logging of executed SQL statements with parameters filled in.</li>
+ * <li><b>Execution Control:</b> Handlers can modify execution arguments or block execution completely.</li>
+ * </ul>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -75,16 +87,54 @@ import org.miaixz.bus.mapper.Context;
 public class MybatisInterceptor extends AbstractSqlHandler implements Interceptor {
 
     /**
-     * A set of custom handlers to avoid duplicates.
+     * Pre-compiled pattern for matching multiple whitespace characters. Used to normalize SQL strings for logging.
      */
-    private final Set<MapperHandler> handlers = new HashSet<>();
+    private static final Pattern MULTIPLE_SPACES_PATTERN = Pattern.compile("[\\s]+");
 
     /**
-     * Intercepts MyBatis Executor and StatementHandler calls.
+     * Pre-compiled pattern for matching the standard SQL placeholder '?'.
+     */
+    private static final Pattern PARAM_PLACEHOLDER_PATTERN = Pattern.compile("\\?");
+
+    /**
+     * The registry for managing and retrieving SQL handlers efficiently.
+     * <p>
+     * It optimizes handler lookup from O(n) to O(1) by indexing handlers based on their overridden methods (Operation
+     * Type).
+     * </p>
+     */
+    private final HandlerRegistry handlerRegistry = new HandlerRegistry();
+
+    /**
+     * Formats a single parameter value for display in SQL logs.
+     * <p>
+     * Handles Strings (adds quotes), Dates (formats to string), and others (toString).
+     * </p>
      *
-     * @param invocation The invocation details.
+     * @param object The parameter object.
+     * @return The formatted string representation.
+     */
+    private static String getParameterValue(Object object) {
+        if (object instanceof String) {
+            return Symbol.SINGLE_QUOTE + object + Symbol.SINGLE_QUOTE;
+        } else if (object instanceof Date) {
+            DateFormat formatter = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.DEFAULT, Locale.CHINA);
+            return Symbol.SINGLE_QUOTE + formatter.format(object) + Symbol.SINGLE_QUOTE;
+        } else {
+            return object != null ? object.toString() : Normal.EMPTY;
+        }
+    }
+
+    /**
+     * The main interception entry point.
+     * <p>
+     * Dispatches control to specific handling logic based on the target object type (Executor or StatementHandler) and
+     * logs the execution time.
+     * </p>
+     *
+     * @param invocation The invocation details containing target, method, and args.
      * @return The result of the intercepted method.
-     * @throws Throwable if an error occurs during interception.
+     * @throws Throwable if an error occurs during interception or subsequent processing.
      */
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
@@ -107,8 +157,11 @@ public class MybatisInterceptor extends AbstractSqlHandler implements Intercepto
             logging(ms, boundSql, start);
             return result;
         }
-        // Default case for unhandled targets
+
+        // Default case for unhandled targets (e.g. ResultSetHandler fallback)
         Object result = invocation.proceed();
+
+        // Try to log if possible
         MetaObject metaObject = args != null && args.length > 0 && args[0] instanceof MappedStatement
                 ? getMetaObject(args[0])
                 : null;
@@ -121,11 +174,11 @@ public class MybatisInterceptor extends AbstractSqlHandler implements Intercepto
     }
 
     /**
-     * Handles interception logic for Executor (query or update).
+     * Handles interception logic for Executor operations (QUERY, UPDATE/INSERT/DELETE).
      *
      * @param executor   The Executor instance.
-     * @param args       The arguments array.
-     * @param invocation The invocation details.
+     * @param args       The arguments array from the invocation.
+     * @param invocation The original invocation object.
      * @return The result of the operation.
      * @throws Throwable if an error occurs during processing.
      */
@@ -145,7 +198,7 @@ public class MybatisInterceptor extends AbstractSqlHandler implements Intercepto
     }
 
     /**
-     * Handles interception logic for StatementHandler (getBoundSql or prepare).
+     * Handles interception logic for StatementHandler operations (getBoundSql, prepare).
      *
      * @param statementHandler The StatementHandler instance.
      * @param args             The arguments array.
@@ -156,8 +209,12 @@ public class MybatisInterceptor extends AbstractSqlHandler implements Intercepto
     private Object handleStatementHandler(StatementHandler statementHandler, Object[] args, Invocation invocation)
             throws Throwable {
         if (args == null) {
+            // Handle getBoundSql
+            List<MapperHandler> handlers = handlerRegistry.getHandlers(HandlerRegistry.HandlerType.GET_BOUND_SQL);
             handlers.forEach(handler -> handler.getBoundSql(statementHandler));
         } else {
+            // Handle prepare
+            List<MapperHandler> handlers = handlerRegistry.getHandlers(HandlerRegistry.HandlerType.PREPARE);
             handlers.forEach(handler -> handler.prepare(statementHandler));
         }
 
@@ -165,7 +222,7 @@ public class MybatisInterceptor extends AbstractSqlHandler implements Intercepto
     }
 
     /**
-     * Processes a query operation.
+     * Processes a query operation by iterating through registered QUERY handlers.
      *
      * @param executor   The Executor instance.
      * @param ms         The MappedStatement instance.
@@ -186,10 +243,15 @@ public class MybatisInterceptor extends AbstractSqlHandler implements Intercepto
         BoundSql boundSql = args.length == 4 ? ms.getBoundSql(parameter) : (BoundSql) args[5];
         CacheKey cacheKey = executor.createCacheKey(ms, parameter, rowBounds, boundSql);
 
-        for (MapperHandler handler : handlers) {
+        // O(1) lookup: only get handlers that actually override query methods
+        List<MapperHandler> queryHandlers = handlerRegistry.getHandlers(HandlerRegistry.HandlerType.QUERY);
+
+        for (MapperHandler handler : queryHandlers) {
+            // Allow handler to block execution
             if (!handler.isQuery(executor, ms, parameter, rowBounds, resultHandler, boundSql)) {
                 return Collections.emptyList();
             }
+            // Allow handler to execute custom query logic
             Object[] result = new Object[1];
             handler.query(result, executor, ms, parameter, rowBounds, resultHandler, boundSql);
             if (ArrayKit.isNotEmpty(result[0])) {
@@ -200,7 +262,7 @@ public class MybatisInterceptor extends AbstractSqlHandler implements Intercepto
     }
 
     /**
-     * Processes an update operation.
+     * Processes an update operation by iterating through registered UPDATE handlers.
      *
      * @param executor   The Executor instance.
      * @param ms         The MappedStatement instance.
@@ -211,7 +273,10 @@ public class MybatisInterceptor extends AbstractSqlHandler implements Intercepto
      */
     private Object processUpdate(Executor executor, MappedStatement ms, Object parameter, Invocation invocation)
             throws Throwable {
-        for (MapperHandler handler : handlers) {
+        // O(1) lookup: only get handlers that actually override update methods
+        List<MapperHandler> updateHandlers = handlerRegistry.getHandlers(HandlerRegistry.HandlerType.UPDATE);
+
+        for (MapperHandler handler : updateHandlers) {
             if (!handler.isUpdate(executor, ms, parameter)) {
                 return -1;
             }
@@ -221,11 +286,11 @@ public class MybatisInterceptor extends AbstractSqlHandler implements Intercepto
     }
 
     /**
-     * Logs SQL execution information.
+     * Logs the SQL execution information, including method ID, execution time, and the formatted SQL.
      *
      * @param ms       The MappedStatement instance.
      * @param boundSql The BoundSql instance.
-     * @param start    The start time.
+     * @param start    The start timestamp (ms).
      */
     private void logging(MappedStatement ms, BoundSql boundSql, long start) {
         long duration = DateKit.current() - start;
@@ -235,71 +300,86 @@ public class MybatisInterceptor extends AbstractSqlHandler implements Intercepto
     }
 
     /**
-     * Formats an SQL statement by replacing placeholders with parameter values.
+     * Formats an SQL statement by replacing placeholders ('?') with actual parameter values.
+     * <p>
+     * This method uses a temporary unique ID replacement strategy to strictly ensure that parameter values are not
+     * mistakenly identified as placeholders during subsequent replacements.
+     * </p>
      *
      * @param configuration The MyBatis configuration.
      * @param boundSql      The BoundSql instance.
-     * @return The formatted SQL statement.
+     * @return The formatted SQL statement string.
      */
     private String format(Configuration configuration, BoundSql boundSql) {
         String id = ID.objectId();
-        // 1. Replace multiple spaces with a single space.
-        // 2. Replace question marks with a unique ID to avoid issues with parameter values.
-        String sql = boundSql.getSql().replaceAll("[\\s]+", Symbol.SPACE).replaceAll("\\?", id);
-        // Get parameters.
-        Object parameterObject = boundSql.getParameterObject();
-        List<ParameterMapping> parameterMappings = boundSql.getParameterMappings();
-        if (CollKit.isEmpty(parameterMappings) || parameterObject == null) {
-            return sql;
-        }
-        // Get the type handler registry.
-        TypeHandlerRegistry typeHandlerRegistry = configuration.getTypeHandlerRegistry();
-        if (typeHandlerRegistry.hasTypeHandler(parameterObject.getClass())) {
-            return sql.replaceFirst(id, Matcher.quoteReplacement(getParameterValue(parameterObject)));
-        }
-        // MetaObject provides get/set methods for JavaBeans, Collections, and Maps.
-        MetaObject metaObject = configuration.newMetaObject(parameterObject);
-        for (ParameterMapping mapping : parameterMappings) {
-            String propertyName = mapping.getProperty();
-            if (metaObject.hasGetter(propertyName)) {
-                sql = sql.replaceFirst(
-                        id,
-                        Matcher.quoteReplacement(getParameterValue(metaObject.getValue(propertyName))));
-            } else if (boundSql.hasAdditionalParameter(propertyName)) {
-                // This branch handles dynamic SQL.
-                sql = sql.replaceFirst(
-                        id,
-                        Matcher.quoteReplacement(getParameterValue(boundSql.getAdditionalParameter(propertyName))));
-            } else {
-                // Print "Missing" to indicate a missing parameter and prevent misalignment.
-                sql = sql.replaceFirst(id, "Missing");
+        String originalSql = boundSql.getSql();
+
+        // Estimate buffer size to prevent resizing overhead
+        int estimatedLength = originalSql.length() + boundSql.getParameterMappings().size() * 20;
+        StringBuilder sqlBuilder = StringBuilderPool.acquireRaw(estimatedLength);
+
+        try {
+            // 1. Normalize spaces
+            // 2. Replace all '?' with a unique ID to avoid collision during parameter replacement
+            String sql = MULTIPLE_SPACES_PATTERN.matcher(originalSql).replaceAll(Symbol.SPACE);
+            sql = PARAM_PLACEHOLDER_PATTERN.matcher(sql).replaceAll(id);
+
+            // Get parameters.
+            Object parameterObject = boundSql.getParameterObject();
+            List<ParameterMapping> parameterMappings = boundSql.getParameterMappings();
+            if (CollKit.isEmpty(parameterMappings) || parameterObject == null) {
+                return sql;
             }
+
+            // If the parameter class itself has a TypeHandler, use it directly (e.g., String, Integer)
+            TypeHandlerRegistry typeHandlerRegistry = configuration.getTypeHandlerRegistry();
+            if (typeHandlerRegistry.hasTypeHandler(parameterObject.getClass())) {
+                return sql.replaceFirst(id, Matcher.quoteReplacement(getParameterValue(parameterObject)));
+            }
+
+            // Use MetaObject for complex objects (JavaBeans, Maps)
+            MetaObject metaObject = configuration.newMetaObject(parameterObject);
+
+            // Efficient replacement using StringBuilder
+            int lastEndIndex = 0;
+            sqlBuilder.setLength(0);
+            sqlBuilder.append(sql);
+
+            for (ParameterMapping mapping : parameterMappings) {
+                String propertyName = mapping.getProperty();
+                String paramValue;
+
+                if (metaObject.hasGetter(propertyName)) {
+                    paramValue = getParameterValue(metaObject.getValue(propertyName));
+                } else if (boundSql.hasAdditionalParameter(propertyName)) {
+                    // Dynamic SQL parameters (e.g. from <foreach>)
+                    paramValue = getParameterValue(boundSql.getAdditionalParameter(propertyName));
+                } else {
+                    // Placeholder for missing parameters to maintain visual structure
+                    paramValue = "Missing";
+                }
+
+                // Find the next occurrence of the unique ID and replace it
+                int index = sqlBuilder.indexOf(id, lastEndIndex);
+                if (index != -1) {
+                    sqlBuilder.replace(index, index + id.length(), Matcher.quoteReplacement(paramValue));
+                    lastEndIndex = index + paramValue.length();
+                }
+            }
+
+            return sqlBuilder.toString();
+
+        } finally {
+            // Release StringBuilder back to the pool
+            StringBuilderPool.release(sqlBuilder);
         }
-        return sql;
     }
 
     /**
-     * Formats a parameter value.
+     * The plugin method, which determines whether to wrap the target object in a proxy.
      *
-     * @param object The parameter object.
-     * @return The formatted parameter value.
-     */
-    private static String getParameterValue(Object object) {
-        if (object instanceof String) {
-            return Symbol.SINGLE_QUOTE + object + Symbol.SINGLE_QUOTE;
-        } else if (object instanceof Date) {
-            DateFormat formatter = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.DEFAULT, Locale.CHINA);
-            return Symbol.SINGLE_QUOTE + formatter.format(object) + Symbol.SINGLE_QUOTE;
-        } else {
-            return object != null ? object.toString() : Normal.EMPTY;
-        }
-    }
-
-    /**
-     * The plugin method, which determines whether to proxy the target object.
-     *
-     * @param target The target object.
-     * @return The proxy object or the original object.
+     * @param target The target object (Executor, StatementHandler, etc.).
+     * @return The proxy object containing this interceptor, or the original object if not intercepted.
      */
     @Override
     public Object plugin(Object target) {
@@ -309,37 +389,43 @@ public class MybatisInterceptor extends AbstractSqlHandler implements Intercepto
     }
 
     /**
-     * Adds a custom handler.
+     * Adds a custom handler to the registry.
      *
      * @param handler The custom handler instance.
      */
     public void addHandler(MapperHandler handler) {
-        handlers.add(handler);
+        handlerRegistry.addHandler(handler);
     }
 
     /**
-     * Sets the list of handlers (for compatibility with older MybatisPluginBuilder versions).
+     * Gets a snapshot of all registered handlers.
      *
-     * @param handlers The list of handlers.
+     * @return A mutable copy of the handler list.
+     */
+    public List<MapperHandler> getHandlers() {
+        return ListKit.of(handlerRegistry.getHandlers());
+    }
+
+    /**
+     * Replaces all handlers with the provided list.
+     * <p>
+     * Note: This clears existing handlers. Primarily used for configuration initialization.
+     * </p>
+     *
+     * @param handlers The new list of handlers.
      */
     public void setHandlers(List<MapperHandler> handlers) {
-        this.handlers.clear();
+        handlerRegistry.clear();
         if (handlers != null) {
-            this.handlers.addAll(handlers);
+            handlerRegistry.addHandlers(handlers);
         }
     }
 
     /**
-     * Gets the list of handlers.
-     *
-     * @return A copy of the list of handlers.
-     */
-    public List<MapperHandler> getHandlers() {
-        return new ArrayList<>(handlers);
-    }
-
-    /**
-     * Sets property configurations, dynamically creating and configuring handlers.
+     * Dynamically creates and registers handlers based on configuration properties.
+     * <p>
+     * Parses properties to instantiate handler classes defined in the configuration.
+     * </p>
      *
      * @param properties The configuration properties.
      */
@@ -348,8 +434,7 @@ public class MybatisInterceptor extends AbstractSqlHandler implements Intercepto
         Context context = (Context) Context.newInstance(properties);
         Map<String, Properties> groups = context.group(Symbol.AT);
         groups.forEach((key, value) -> {
-            MapperHandler handler = ReflectKit.newInstance(key);
-            addHandler(handler);
+            addHandler(ReflectKit.newInstance(key));
         });
     }
 

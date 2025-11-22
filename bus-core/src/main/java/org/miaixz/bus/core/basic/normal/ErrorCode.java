@@ -47,7 +47,7 @@ public class ErrorCode {
     /**
      * Common: Request was successful.
      */
-    public static final Errors _SUCCESS = ErrorRegistry.builder().key(Symbol.ZERO).value("Success").build();
+    public static final Errors _SUCCESS = ErrorRegistry.builder().key(Symbol.ZERO).value("OK").build();
 
     /**
      * Common: System is busy, please try again later.
