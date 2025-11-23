@@ -167,6 +167,24 @@ public final class PageContext {
     }
 
     /**
+     * Sets the {@link Pageable} object for the current thread.
+     *
+     * @param pageable the pageable to set
+     */
+    public static void setLocalPage(Pageable pageable) {
+        LOCAL_PAGE.set(pageable);
+    }
+
+    /**
+     * Sets whether to perform a count query for the current thread.
+     *
+     * @param count {@code true} to perform count query, {@code false} otherwise
+     */
+    public static void setLocalCount(boolean count) {
+        LOCAL_COUNT.set(count);
+    }
+
+    /**
      * Clears all pagination information for the current thread.
      * <p>
      * This method must be called after the database operation is complete (usually in a finally block) to prevent

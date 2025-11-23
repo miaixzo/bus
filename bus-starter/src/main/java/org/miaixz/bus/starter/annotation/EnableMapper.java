@@ -55,7 +55,6 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @Import({ JdbcConfiguration.class, MapperScannerRegistrar.class, MapperConfiguration.class })
-@Reflective(ReflectiveProcessor.class)
 public @interface EnableMapper {
 
     /**

@@ -87,7 +87,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <bus.version>8.3.3</bus.version>
         <lombok.version>1.18.42</lombok.version>
-        <spring.boot.version>3.5.6</spring.boot.version>
+        <spring.boot.version>3.5.8</spring.boot.version>
         <jedis.version>6.0.0</jedis.version>
         <xmemcached.version>2.4.8</xmemcached.version>
         <curator.version>5.9.0</curator.version>

@@ -69,7 +69,7 @@ import org.miaixz.bus.mapper.handler.ConditionHandler;
  *
  * // Use with PageContext and Sort
  * Sort sort = Sort.by("name").ascending().and("age").descending();
- * PageContext.startPage(0, 10, true, sort);
+ * PageContext.of(0, 10, true, sort);
  * List<User> users = userMapper.selectAll();
  * // users is now a Page<User> with pagination info
  * }</pre>
@@ -223,10 +223,36 @@ public class PageHandler<T> extends ConditionHandler<T> {
             BoundSql boundSql) {
         // Check if pagination is enabled for this thread
         Pageable pageable = PageContext.getLocalPage();
+
+        // If no thread-local pagination, check supportMethodsArguments
         if (pageable == null || pageable.isUnpaged()) {
-            Logger.debug(true, "Page", "Pagination not enabled, skipping query: {}", mappedStatement.getId());
-            // No pagination, let the query proceed normally
-            return;
+            if (supportMethodsArguments && parameter != null) {
+                try {
+                    pageable = extractPageableFromParameter(parameter);
+                    if (pageable != null) {
+                        PageContext.setLocalPage(pageable);
+                        Logger.debug(
+                                false,
+                                "Page",
+                                "Extracted pagination from method arguments (pageNo={}, pageSize={}): {}",
+                                pageable.getPageNo(),
+                                pageable.getPageSize(),
+                                mappedStatement.getId());
+                    }
+                } catch (Exception e) {
+                    Logger.debug(
+                            true,
+                            "Page",
+                            "Failed to extract pagination from method arguments: {}",
+                            e.getMessage());
+                }
+            }
+
+            if (pageable == null || pageable.isUnpaged()) {
+                Logger.debug(true, "Page", "Pagination not enabled, skipping query: {}", mappedStatement.getId());
+                // No pagination, let the query proceed normally
+                return;
+            }
         }
 
         Logger.debug(
@@ -329,6 +355,150 @@ public class PageHandler<T> extends ConditionHandler<T> {
         Connection connection = executor.getTransaction().getConnection();
         String url = connection.getMetaData().getURL();
         return dialectCache.computeIfAbsent(url, DialectRegistry::getDialectByUrl);
+    }
+
+    /**
+     * Extracts pagination parameters from the method parameter object when supportMethodsArguments is enabled.
+     *
+     * @param parameter the method parameter object
+     * @return a Pageable object with extracted parameters, or null if no pagination parameters are found
+     */
+    private Pageable extractPageableFromParameter(Object parameter) {
+        if (parameter == null) {
+            return null;
+        }
+
+        // Use reflection to extract pagination parameters from the parameter object
+        MetaObject metaObject = SystemMetaObject.forObject(parameter);
+
+        // Default parameter names - can be configured via paramsMap
+        String pageNoParam = paramsMap.getOrDefault("pageNo", "pageNo");
+        String pageSizeParam = paramsMap.getOrDefault("pageSize", "pageSize");
+        String countParam = paramsMap.getOrDefault("count", "count");
+        String orderByParam = paramsMap.getOrDefault("orderBy", "orderBy");
+
+        // Extract page number and page size
+        Object pageNoValue = getParamValue(metaObject, pageNoParam);
+        Object pageSizeValue = getParamValue(metaObject, pageSizeParam);
+
+        if (pageNoValue == null || pageSizeValue == null) {
+            // Try alternative parameter names
+            pageNoValue = getParamValue(metaObject, "pageNum");
+            pageSizeValue = getParamValue(metaObject, "limit");
+
+            if (pageNoValue == null || pageSizeValue == null) {
+                return null; // No valid pagination parameters found
+            }
+        }
+
+        try {
+            int pageNo = Integer.parseInt(String.valueOf(pageNoValue));
+            int pageSize = Integer.parseInt(String.valueOf(pageSizeValue));
+
+            if (pageNo < 0 || pageSize < 0) {
+                return null; // Invalid pagination parameters
+            }
+
+            // Create Sort if orderBy parameter exists
+            Sort sort = null;
+            Object orderByValue = getParamValue(metaObject, orderByParam);
+            if (orderByValue != null && StringKit.isNotEmpty(orderByValue.toString())) {
+                sort = parseOrderBy(orderByValue.toString());
+            }
+
+            // Create Pageable
+            Pageable pageable = Pageable.of(pageNo, pageSize, sort);
+
+            // Extract optional parameters
+            Object countValue = getParamValue(metaObject, countParam);
+            if (countValue != null) {
+                boolean performCount = Boolean.parseBoolean(String.valueOf(countValue));
+                PageContext.setLocalCount(performCount);
+            }
+
+            // Note: reasonable and pageSizeZero parameters are not yet implemented
+            // They can be added in future versions as needed
+
+            return pageable;
+
+        } catch (NumberFormatException e) {
+            Logger.debug(true, "Page", "Invalid pagination parameter format: {}", e.getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Gets parameter value from MetaObject with null check.
+     *
+     * @param metaObject the MetaObject
+     * @param paramName  the parameter name
+     * @return the parameter value or null
+     */
+    private Object getParamValue(MetaObject metaObject, String paramName) {
+        if (!metaObject.hasGetter(paramName)) {
+            return null;
+        }
+
+        Object value = metaObject.getValue(paramName);
+        if (value != null && value.getClass().isArray()) {
+            Object[] values = (Object[]) value;
+            if (values.length > 0) {
+                value = values[0];
+            } else {
+                value = null;
+            }
+        }
+
+        return value;
+    }
+
+    /**
+     * Parses orderBy string into Sort object.
+     *
+     * @param orderBy the orderBy string
+     * @return the Sort object, or null if invalid
+     */
+    private Sort parseOrderBy(String orderBy) {
+        if (StringKit.isBlank(orderBy)) {
+            return null;
+        }
+
+        try {
+            // Simple parsing for comma-separated field:direction pairs
+            // Example: "name ASC, age DESC, email"
+            Sort sort = Sort.unsorted();
+            String[] parts = orderBy.split(",");
+
+            for (String part : parts) {
+                part = part.trim();
+                if (StringKit.isBlank(part)) {
+                    continue;
+                }
+
+                String[] fieldAndDirection = part.split("\\s+");
+                String field = fieldAndDirection[0].trim();
+
+                if (StringKit.isBlank(field)) {
+                    continue;
+                }
+
+                if (fieldAndDirection.length > 1) {
+                    String direction = fieldAndDirection[1].trim().toUpperCase();
+                    if ("DESC".equals(direction)) {
+                        sort = sort.and(Sort.by(field).descending());
+                    } else {
+                        sort = sort.and(Sort.by(field).ascending());
+                    }
+                } else {
+                    sort = sort.and(Sort.by(field).ascending());
+                }
+            }
+
+            return sort.isSorted() ? sort : null;
+        } catch (Exception e) {
+            Logger.debug(true, "Page", "Failed to parse orderBy: {}", e.getMessage());
+            return null;
+        }
     }
 
     /**

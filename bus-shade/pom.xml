@@ -87,7 +87,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <bus.version>8.3.3</bus.version>
         <lombok.version>1.18.42</lombok.version>
-        <spring.boot.version>3.5.6</spring.boot.version>
+        <spring.boot.version>3.5.8</spring.boot.version>
         <compress.version>1.28.0</compress.version>
         <freemarker.version>2.3.34</freemarker.version>
         <hikaricp.version>7.0.2</hikaricp.version>
