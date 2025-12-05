@@ -38,6 +38,10 @@ import org.miaixz.bus.crypto.metric.BouncyCastleProvider;
  * globally.
  * </p>
  * <p>
+ * In GraalVM native image environments, custom providers are disabled to avoid JCE verification issues. The JDK's
+ * default provider will be used instead.
+ * </p>
+ * <p>
  * Users can still control whether to use this custom provider or the JDK's default providers by calling the
  * {@link #setUseCustomProvider(boolean)} method.
  * </p>
@@ -58,13 +62,27 @@ public class Holder implements org.miaixz.bus.core.Holder {
     private static boolean useCustomProvider = true;
 
     /**
-     * Retrieves the {@link java.security.Provider} instance. If {@link #useCustomProvider} is {@code false}, this
-     * method returns {@code null}, indicating that the JDK's default providers should be used.
+     * Retrieves the {@link java.security.Provider} instance. In GraalVM native image environments, this method always
+     * returns {@code null} to avoid JCE verification issues.
      *
-     * @return The {@link java.security.Provider} instance, or {@code null} if not using a custom provider.
+     * @return The {@link java.security.Provider} instance, or {@code null} if not using a custom provider or running in
+     *         a GraalVM native image.
      */
     public static java.security.Provider getProvider() {
+        // In GraalVM native image, always return null to avoid JCE verification issues
+        if (isGraalVMPNativeImage()) {
+            return null;
+        }
         return useCustomProvider ? provider : null;
+    }
+
+    /**
+     * Detects if the current environment is a GraalVM native image.
+     *
+     * @return {@code true} if running in a GraalVM native image, {@code false} otherwise.
+     */
+    public static boolean isGraalVMPNativeImage() {
+        return System.getProperty("org.graalvm.nativeimage.imagecode") != null;
     }
 
     /**

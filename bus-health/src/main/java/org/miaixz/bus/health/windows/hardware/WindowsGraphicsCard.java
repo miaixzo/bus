@@ -39,6 +39,7 @@ import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.GraphicsCard;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractGraphicsCard;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractHardwareAbstractionLayer;
+import org.miaixz.bus.health.windows.RegistryKit;
 import org.miaixz.bus.health.windows.WmiKit;
 import org.miaixz.bus.health.windows.driver.wmi.Win32VideoController;
 import org.miaixz.bus.health.windows.driver.wmi.Win32VideoController.VideoControllerProperty;
@@ -98,11 +99,10 @@ final class WindowsGraphicsCard extends AbstractGraphicsCard {
                     continue;
                 }
 
-                String name = Advapi32Util.registryGetStringValue(WinReg.HKEY_LOCAL_MACHINE, fullKey, DRIVER_DESC);
+                String name = RegistryKit.getStringValue(WinReg.HKEY_LOCAL_MACHINE, fullKey, DRIVER_DESC);
                 String deviceId = "VideoController" + index++;
-                String vendor = Advapi32Util.registryGetStringValue(WinReg.HKEY_LOCAL_MACHINE, fullKey, VENDOR);
-                String versionInfo = Advapi32Util
-                        .registryGetStringValue(WinReg.HKEY_LOCAL_MACHINE, fullKey, DRIVER_VERSION);
+                String vendor = RegistryKit.getStringValue(WinReg.HKEY_LOCAL_MACHINE, fullKey, VENDOR);
+                String versionInfo = RegistryKit.getStringValue(WinReg.HKEY_LOCAL_MACHINE, fullKey, DRIVER_VERSION);
                 long vram = 0L;
 
                 if (Advapi32Util.registryValueExists(WinReg.HKEY_LOCAL_MACHINE, fullKey, QW_MEMORY_SIZE)) {

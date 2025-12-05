@@ -142,7 +142,7 @@ public class CreditCode {
 
         //
         for (int i = 0; i < 2; i++) {
-            final int num = RandomKit.randomInt(BASE_CODE_ARRAY.length - 1);
+            final int num = RandomKit.randomInt(BASE_CODE_ARRAY.length);
             buf.append(Character.toUpperCase(BASE_CODE_ARRAY[num]));
         }
         for (int i = 2; i < 8; i++) {
@@ -150,7 +150,7 @@ public class CreditCode {
             buf.append(BASE_CODE_ARRAY[num]);
         }
         for (int i = 8; i < 17; i++) {
-            final int num = RandomKit.randomInt(BASE_CODE_ARRAY.length - 1);
+            final int num = RandomKit.randomInt(BASE_CODE_ARRAY.length);
             buf.append(BASE_CODE_ARRAY[num]);
         }
 

@@ -37,7 +37,11 @@ import org.miaixz.bus.core.xyz.MathKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * A utility class for evaluating mathematical expressions.
+ * A utility class for evaluating mathematical expressions using the Shunting Yard algorithm.
+ * <p>
+ * This calculator supports basic arithmetic operators (+, -, *, /, %), parentheses, and scientific notation. It handles
+ * operator precedence and converts infix expressions to postfix (Reverse Polish Notation) for evaluation.
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -45,27 +49,43 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class Calculator {
 
     /**
-     * The stack for the postfix expression.
+     * The stack used to store the postfix expression (Reverse Polish Notation).
      */
     private final Stack<String> postfixStack = new Stack<>();
     /**
      * Operator priorities, indexed by the operator's ASCII value minus 40.
+     * <p>
+     * ASCII mapping reference (Offset 40):
+     * <ul>
+     * <li>40 '(': Priority 0</li>
+     * <li>41 ')': Priority 3</li>
+     * <li>42 '*': Priority 2</li>
+     * <li>43 '+': Priority 1</li>
+     * <li>44 ',': Priority -1 (Sentinel)</li>
+     * <li>45 '-': Priority 1</li>
+     * <li>46 '.': Priority 0</li>
+     * <li>47 '/': Priority 2</li>
+     * </ul>
+     * </p>
      */
     private final int[] operatPriority = new int[] { 0, 3, 2, 1, -1, 1, 0, 2 };
 
     /**
      * Calculates the value of a given mathematical expression.
      *
-     * @param expression The expression to evaluate.
-     * @return The result of the calculation.
+     * @param expression The expression to evaluate (e.g., "3 + 4 * 2").
+     * @return The result of the calculation as a double.
      */
     public static double conversion(final String expression) {
         return (new Calculator()).calculate(expression);
     }
 
     /**
-     * Transforms the expression by changing the sign of negative numbers. For example, -2+-1*(-3E-2)-(-1) is converted
-     * to ~2+~1*(~3E~2)-(~1).
+     * Transforms the expression by preparing negative numbers and unary operators for parsing.
+     * <p>
+     * For example, it converts {@code -2+-1*(-3E-2)-(-1)} to {@code ~2+~1*(~3E~2)-(~1)}, where '~' represents a unary
+     * minus to distinguish it from the binary subtraction operator.
+     * </p>
      *
      * @param expression The expression to transform.
      * @return The transformed string.
@@ -74,32 +94,94 @@ public class Calculator {
         expression = StringKit.cleanBlank(expression);
         expression = StringKit.removeSuffix(expression, Symbol.EQUAL);
         final char[] arr = expression.toCharArray();
+
+        final StringBuilder out = new StringBuilder(arr.length);
         for (int i = 0; i < arr.length; i++) {
-            if (arr[i] == Symbol.C_MINUS) {
-                if (i == 0) {
-                    arr[i] = Symbol.C_TILDE;
-                } else {
-                    final char c = arr[i - 1];
-                    if (c == Symbol.C_PLUS || c == Symbol.C_MINUS || c == Symbol.C_STAR || c == '/'
-                            || c == Symbol.C_PARENTHESE_LEFT || c == 'E' || c == 'e') {
-                        arr[i] = Symbol.C_TILDE;
+            final char c = arr[i];
+
+            // Treat 'x' or 'X' as multiplication operator '*'
+            if (CharKit.equals(c, 'x', true)) {
+                out.append('*');
+                continue;
+            }
+
+            // If it's '+' or '-', determine if it's a sign (scientific notation), a binary operator, or a unary
+            // operator
+            if (c == '+' || c == '-') {
+                // If the previous character written was 'e' or 'E', treat this as a sign for scientific notation
+                final int outLen = out.length();
+                if (outLen > 0) {
+                    final char prevOut = out.charAt(outLen - 1);
+                    if (prevOut == 'e' || prevOut == 'E') {
+                        // After e/E:
+                        // '+' can be safely discarded (1e+3 == 1e3)
+                        // '-' must be kept but should not be treated as a binary operator, so replace with '~'
+                        // temporarily
+                        if (c == '-') {
+                            out.append('~');
+                        }
+                        continue;
                     }
                 }
-            } else if (CharKit.equals(arr[i], Character.toLowerCase(Symbol.C_X), true)) {
-                // Convert 'x' to '*'.
-                arr[i] = Symbol.C_STAR;
+
+                // Find the previous non-whitespace character in the original string to check for unary context
+                int j = i - 1;
+                while (j >= 0 && Character.isWhitespace(arr[j]))
+                    j--;
+                final boolean unaryContext = (j < 0) || isPrevCharOperatorOrLeftParen(arr[j]);
+
+                if (unaryContext) {
+                    // Collect consecutive unary + or - (e.g., --+ - -> merge into a single net sign)
+                    int k = i;
+                    int minusCount = 0;
+                    while (k < arr.length && (arr[k] == '+' || arr[k] == '-')) {
+                        if (arr[k] == '-')
+                            minusCount++;
+                        k++;
+                    }
+                    final boolean netNegative = (minusCount % 2 == 1);
+                    if (netNegative) {
+                        // Mark unary minus with '~' (compatible with original implementation)
+                        out.append('~');
+                    }
+                    i = k - 1;
+                } else {
+                    // Binary operator, write + or - directly
+                    out.append(c);
+                }
+                continue;
             }
+            // Append other characters (digits, letters, parentheses, e, E, decimal points, etc.) directly
+            out.append(c);
         }
-        if (arr[0] == Symbol.C_TILDE && (arr.length > 1 && arr[1] == Symbol.C_PARENTHESE_LEFT)) {
-            arr[0] = Symbol.C_MINUS;
-            return "0" + new String(arr);
+
+        // Special handling: if it starts with "~(", convert it to "0-(" (handled as 0 minus group)
+        final String result = out.toString();
+        final char[] resArr = result.toCharArray();
+        if (resArr.length >= 2 && resArr[0] == '~' && resArr[1] == '(') {
+            resArr[0] = '-';
+            return "0" + new String(resArr);
         } else {
-            return new String(arr);
+            return result;
         }
     }
 
     /**
-     * Calculates the result of the given expression. For example: 5+12*(3+5)/7
+     * Checks if the character preceding the current position is an operator or a left parenthesis. This is used to
+     * determine if a subsequent '+' or '-' is a unary operator.
+     *
+     * @param c The character to check.
+     * @return {@code true} if the character indicates a unary context.
+     */
+    private static boolean isPrevCharOperatorOrLeftParen(final char c) {
+        return c == '+' || c == '-' || c == '*' || c == '/' || c == '(';
+    }
+
+    /**
+     * Calculates the result of the given expression.
+     * <p>
+     * Example: {@code 5+12*(3+5)/7}
+     * </p>
      *
      * @param expression The expression to calculate.
      * @return The result of the calculation.
@@ -108,18 +190,20 @@ public class Calculator {
         prepare(transform(expression));
 
         final Stack<String> resultStack = new Stack<>();
-        Collections.reverse(postfixStack); // Reverse the postfix stack.
-        String firstValue, secondValue, currentOp; // The first value, second value, and operator for the calculation.
+        Collections.reverse(postfixStack); // Reverse the list view to process from start to end (Shunting Yard output)
+        String firstValue, secondValue, currentOp;
         while (!postfixStack.isEmpty()) {
             currentOp = postfixStack.pop();
-            if (!isOperator(currentOp.charAt(0))) { // If it's not an operator, push it onto the operand stack.
+            if (!isOperator(currentOp.charAt(0))) {
+                // If it's not an operator, push it onto the operand stack
                 currentOp = currentOp.replace(Symbol.TILDE, Symbol.MINUS);
                 resultStack.push(currentOp);
-            } else { // If it's an operator, pop two values from the operand stack for calculation.
+            } else {
+                // If it's an operator, pop two values from the operand stack for calculation
                 secondValue = resultStack.pop();
                 firstValue = resultStack.pop();
 
-                // Change the negative sign marker back to a minus sign.
+                // Change the temporary negative sign marker back to a standard minus sign
                 firstValue = firstValue.replace(Symbol.TILDE, Symbol.MINUS);
                 secondValue = secondValue.replace(Symbol.TILDE, Symbol.MINUS);
 
@@ -128,40 +212,38 @@ public class Calculator {
             }
         }
 
-        // If there are multiple numbers in the result stack, it may be due to an omitted multiplication operator, e.g.,
-        // (1+2)3.
+        // If multiple numbers remain, it may be due to omitted multiplication, e.g., (1+2)3 -> 3 * 3
         return MathKit.mul(resultStack.toArray(new String[0])).doubleValue();
     }
 
     /**
-     * Prepares the data by converting the infix expression to a postfix stack.
+     * Prepares the data by converting the infix expression to a postfix stack (Shunting Yard Algorithm).
      *
      * @param expression The expression to prepare.
      */
     private void prepare(final String expression) {
         final Stack<Character> opStack = new Stack<>();
-        opStack.push(Symbol.C_COMMA); // Push a comma onto the bottom of the operator stack, as it has the lowest
-                                      // priority.
+        opStack.push(Symbol.C_COMMA); // Push a comma sentinel to the stack bottom (lowest priority)
         final char[] arr = expression.toCharArray();
-        int currentIndex = 0; // The current character's position.
-        int count = 0; // The length of the substring between the last and current operators, used to extract the
-                       // number.
-        char currentOp, peekOp; // The current operator and the operator at the top of the stack.
+        int currentIndex = 0; // Start index of the current number substring
+        int count = 0; // Length of the current number substring
+        char currentOp, peekOp;
         for (int i = 0; i < arr.length; i++) {
             currentOp = arr[i];
-            if (isOperator(currentOp)) { // If the current character is an operator.
+            if (isOperator(currentOp)) { // If current char is an operator
                 if (count > 0) {
-                    postfixStack.push(new String(arr, currentIndex, count)); // Extract the number between the two
-                                                                             // operators.
+                    // Push the number preceding the operator to the output stack
+                    postfixStack.push(new String(arr, currentIndex, count));
                 }
                 peekOp = opStack.peek();
-                if (currentOp == ')') { // If a right parenthesis is found, pop operators to the postfix stack until a
-                                        // left parenthesis is found.
+                if (currentOp == ')') {
+                    // Pop operators to output until a left parenthesis is found
                     while (opStack.peek() != Symbol.C_PARENTHESE_LEFT) {
                         postfixStack.push(String.valueOf(opStack.pop()));
                     }
-                    opStack.pop();
+                    opStack.pop(); // Discard the left parenthesis
                 } else {
+                    // Push operators with higher or equal precedence from opStack to output
                     while (currentOp != Symbol.C_PARENTHESE_LEFT && peekOp != Symbol.C_COMMA
                             && compare(currentOp, peekOp)) {
                         postfixStack.push(String.valueOf(opStack.pop()));
@@ -175,20 +257,19 @@ public class Calculator {
                 count++;
             }
         }
-        if (count > 1 || (count == 1 && !isOperator(arr[currentIndex]))) { // If the last character is not a parenthesis
-                                                                           // or other operator, add it to the postfix
-                                                                           // stack.
+        // Push the last number if exists
+        if (count > 1 || (count == 1 && !isOperator(arr[currentIndex]))) {
             postfixStack.push(new String(arr, currentIndex, count));
         }
 
+        // Pop remaining operators
         while (opStack.peek() != Symbol.C_COMMA) {
-            postfixStack.push(String.valueOf(opStack.pop())); // Add the remaining operators from the operator stack to
-                                                              // the postfix stack.
+            postfixStack.push(String.valueOf(opStack.pop()));
         }
     }
 
     /**
-     * Checks if a character is an arithmetic operator.
+     * Checks if a character is a supported arithmetic operator.
      *
      * @param c The character to check.
      * @return {@code true} if it is an arithmetic operator, {@code false} otherwise.
@@ -199,16 +280,16 @@ public class Calculator {
     }
 
     /**
-     * Compares the priority of two operators using their ASCII values minus 40 as an index.
+     * Compares the priority of two operators.
      *
      * @param cur  The current operator.
      * @param peek The operator at the top of the stack.
-     * @return {@code true} if the priority of peek is greater than or equal to cur, {@code false} otherwise.
+     * @return {@code true} if {@code peek} has higher or equal priority than {@code cur}, {@code false} otherwise.
      */
-    private boolean compare(char cur, char peek) { // Returns true if peek has higher or equal priority than cur.
+    private boolean compare(char cur, char peek) {
         final int offset = 40;
         if (cur == Symbol.C_PERCENT) {
-            // The '%' operator has the highest priority.
+            // Map '%' to the same priority index as '/' (47)
             cur = 47;
         }
         if (peek == Symbol.C_PERCENT) {
@@ -220,12 +301,13 @@ public class Calculator {
     }
 
     /**
-     * Performs a calculation based on the given arithmetic operator.
+     * Performs a calculation on two values based on the given arithmetic operator.
      *
-     * @param firstValue  The first value.
-     * @param secondValue The second value.
-     * @param currentOp   The arithmetic operator, supporting only '+', '-', '*', '/', and '%'.
-     * @return The result of the calculation.
+     * @param firstValue  The first operand.
+     * @param secondValue The second operand.
+     * @param currentOp   The arithmetic operator (+, -, *, /, %).
+     * @return The result of the calculation as a {@link BigDecimal}.
+     * @throws IllegalStateException If an unsupported operator is encountered.
      */
     private BigDecimal calculate(final String firstValue, final String secondValue, final char currentOp) {
         return switch (currentOp) {

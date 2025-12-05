@@ -48,16 +48,19 @@ public class ObjectKit extends ObjectValidator {
     /**
      * Calculates the length of an object. Supported types include:
      * <ul>
-     * <li>{@code null}: returns {@code 0}.</li>
+     * <li>{@code null}: returns {@code 0} by default.</li>
      * <li>Array: returns the array length.</li>
      * <li>{@link CharSequence}: returns {@link CharSequence#length()}.</li>
      * <li>{@link Collection}: returns {@link Collection#size()}.</li>
-     * <li>{@link Iterator} or {@link Iterable}: returns the number of iterable elements.</li>
-     * <li>{@link Enumeration}: returns the number of iterable elements.</li>
+     * <li>{@link Map}: returns {@link Map#size()}.</li>
+     * <li>{@link Iterator} or {@link Iterable}: returns the count of iterable elements. Side effect: {@link Iterator}
+     * can only be iterated once.</li>
+     * <li>{@link Enumeration}: returns the count of iterable elements. Side effect: {@link Enumeration} can only be
+     * iterated once.</li>
      * </ul>
      *
      * @param object The object whose length is to be calculated.
-     * @return The length of the object.
+     * @return The length of the object, or -1 if the type is not supported.
      */
     public static int length(final Object object) {
         if (object == null) {
@@ -114,11 +117,22 @@ public class ObjectKit extends ObjectValidator {
         if (object == null) {
             return false;
         }
-        if (object instanceof String) {
-            if (element == null) {
+        if (object instanceof CharSequence) {
+            if (!(element instanceof CharSequence)) {
                 return false;
             }
-            return ((String) object).contains(element.toString());
+            final String elementStr;
+            try {
+                elementStr = element.toString();
+                // Check if toString() returns null
+            } catch (final Exception e) {
+                // If toString throws an exception, treat as not contained
+                return false;
+            }
+            if (null == elementStr) {
+                return false;
+            }
+            return object.toString().contains(elementStr);
         }
         if (object instanceof Collection) {
             return ((Collection<?>) object).contains(element);

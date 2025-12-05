@@ -54,6 +54,9 @@ import org.miaixz.bus.office.excel.xyz.ExcelSaxKit;
  */
 public class Excel07SaxReader implements ExcelSaxReader<Excel07SaxReader> {
 
+    /**
+     * Handler for parsing sheet data.
+     */
     private final SheetDataSaxHandler handler;
 
     /**
@@ -88,22 +91,12 @@ public class Excel07SaxReader implements ExcelSaxReader<Excel07SaxReader> {
     }
 
     @Override
-    public Excel07SaxReader read(final File file, final int rid) throws InternalException {
-        return read(file, RID_PREFIX + rid);
-    }
-
-    @Override
     public Excel07SaxReader read(final File file, final String idOrRidOrSheetName) throws InternalException {
         try (final OPCPackage open = OPCPackage.open(file, PackageAccess.READ)) {
             return read(open, idOrRidOrSheetName);
         } catch (final InvalidFormatException | IOException e) {
             throw new InternalException(e);
         }
-    }
-
-    @Override
-    public Excel07SaxReader read(final InputStream in, final int rid) throws InternalException {
-        return read(in, RID_PREFIX + rid);
     }
 
     @Override
@@ -124,7 +117,7 @@ public class Excel07SaxReader implements ExcelSaxReader<Excel07SaxReader> {
      * @throws InternalException If a POI-related exception occurs.
      */
     public Excel07SaxReader read(final OPCPackage opcPackage, final int rid) throws InternalException {
-        return read(opcPackage, RID_PREFIX + rid);
+        return read(opcPackage, String.valueOf(rid));
     }
 
     /**
@@ -184,22 +177,22 @@ public class Excel07SaxReader implements ExcelSaxReader<Excel07SaxReader> {
      */
     private Excel07SaxReader readSheets(final XSSFReader xssfReader, final String idOrRidOrSheetName)
             throws InternalException {
-        this.handler.sheetIndex = getSheetIndex(xssfReader, idOrRidOrSheetName);
+        this.handler.rid = getRid(xssfReader, idOrRidOrSheetName);
         InputStream sheetInputStream = null;
         try {
-            if (this.handler.sheetIndex > -1) {
+            if (this.handler.rid > -1) {
                 // Find sheet by rId# or rSheet#.
-                sheetInputStream = xssfReader.getSheet(RID_PREFIX + (this.handler.sheetIndex + 1));
+                sheetInputStream = xssfReader.getSheet(RID_PREFIX + (this.handler.rid + 1));
                 ExcelSaxKit.readFrom(sheetInputStream, this.handler);
                 this.handler.rowHandler.doAfterAllAnalysed();
             } else {
-                this.handler.sheetIndex = -1;
+                this.handler.rid = -1;
                 // Iterate through all sheets.
                 final Iterator<InputStream> sheetInputStreams = xssfReader.getSheetsData();
                 while (sheetInputStreams.hasNext()) {
                     // Reset row index when reading a new sheet.
                     this.handler.index = 0;
-                    this.handler.sheetIndex++;
+                    this.handler.rid++;
                     sheetInputStream = sheetInputStreams.next();
                     ExcelSaxKit.readFrom(sheetInputStream, this.handler);
                     this.handler.rowHandler.doAfterAllAnalysed();
@@ -231,7 +224,7 @@ public class Excel07SaxReader implements ExcelSaxReader<Excel07SaxReader> {
      * @return The sheet index (0-based).
      * @throws IllegalArgumentException if the provided {@code idOrRidOrSheetName} is invalid or not found.
      */
-    private int getSheetIndex(final XSSFReader xssfReader, String idOrRidOrSheetName) {
+    private int getRid(final XSSFReader xssfReader, String idOrRidOrSheetName) {
         // Process rId directly.
         if (StringKit.startWithIgnoreCase(idOrRidOrSheetName, RID_PREFIX)) {
             return Integer.parseInt(StringKit.removePrefixIgnoreCase(idOrRidOrSheetName, RID_PREFIX));
@@ -241,24 +234,24 @@ public class Excel07SaxReader implements ExcelSaxReader<Excel07SaxReader> {
         final SheetRidReader ridReader = SheetRidReader.parse(xssfReader);
 
         if (StringKit.startWithIgnoreCase(idOrRidOrSheetName, SHEET_NAME_PREFIX)) {
-            // Names starting with "name:" are treated directly as sheet names.
+            // Names starting with "sheetName:" are treated directly as sheet names.
             idOrRidOrSheetName = StringKit.removePrefixIgnoreCase(idOrRidOrSheetName, SHEET_NAME_PREFIX);
-            final Integer rid = ridReader.getRidByNameBase0(idOrRidOrSheetName);
+            final Integer rid = ridReader.getRidByName(idOrRidOrSheetName);
             if (null != rid) {
                 return rid;
             }
         } else {
             // Try to find by name.
-            Integer rid = ridReader.getRidByNameBase0(idOrRidOrSheetName);
+            Integer rid = ridReader.getRidByName(idOrRidOrSheetName);
             if (null != rid) {
                 return rid;
             }
 
             try {
-                final int sheetIndex = Integer.parseInt(idOrRidOrSheetName);
-                rid = ridReader.getRidBySheetIdBase0(sheetIndex);
+                final int sheetId = Integer.parseInt(idOrRidOrSheetName);
+                rid = ridReader.getRidBySheetId(sheetId);
                 // If no corresponding index is found, assume the user directly provided the rId.
-                return ObjectKit.defaultIfNull(rid, sheetIndex);
+                return ObjectKit.defaultIfNull(rid, sheetId);
             } catch (final NumberFormatException ignore) {
                 // Not a number, meaning it's not an index, and no corresponding name, throw exception.
             }

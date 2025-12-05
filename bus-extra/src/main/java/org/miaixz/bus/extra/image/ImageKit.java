@@ -1769,7 +1769,7 @@ public class ImageKit {
      * @throws InternalException if an I/O error occurs.
      */
     public static void write(final Image image, final File destFile) throws InternalException {
-        ImageWriter.of(image, FileName.extName(destFile)).write(destFile);
+        ImageWriter.of(image, FileName.extName(destFile)).write(destFile).flush();
     }
 
     /**

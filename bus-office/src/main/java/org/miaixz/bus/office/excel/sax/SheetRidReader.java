@@ -128,20 +128,6 @@ public class SheetRidReader extends DefaultHandler {
     }
 
     /**
-     * Gets the relationship ID (rId) by sheet ID. The rId is 0-based.
-     *
-     * @param sheetId The sheet ID (0-based).
-     * @return The relationship ID (0-based), or {@code null} if not found.
-     */
-    public Integer getRidBySheetIdBase0(final int sheetId) {
-        final Integer rid = getRidBySheetId(sheetId + 1);
-        if (null != rid) {
-            return rid - 1;
-        }
-        return null;
-    }
-
-    /**
      * Gets the relationship ID (rId) by sheet name. The rId is 1-based.
      *
      * @param sheetName The name of the sheet.
@@ -152,20 +138,6 @@ public class SheetRidReader extends DefaultHandler {
     }
 
     /**
-     * Gets the relationship ID (rId) by sheet name. The rId is 0-based.
-     *
-     * @param sheetName The name of the sheet.
-     * @return The relationship ID (0-based), or {@code null} if not found.
-     */
-    public Integer getRidByNameBase0(final String sheetName) {
-        final Integer rid = getRidByName(sheetName);
-        if (null != rid) {
-            return rid - 1;
-        }
-        return null;
-    }
-
-    /**
      * Gets the relationship ID (rId) by sheet index. The rId is 1-based.
      *
      * @param index The index of the sheet, starting from 0.
@@ -173,20 +145,6 @@ public class SheetRidReader extends DefaultHandler {
      */
     public Integer getRidByIndex(final int index) {
         return CollKit.get(this.NAME_RID_MAP.values(), index);
-    }
-
-    /**
-     * Gets the relationship ID (rId) by sheet index. The rId is 0-based.
-     *
-     * @param index The index of the sheet, starting from 0.
-     * @return The relationship ID (0-based), or {@code null} if not found.
-     */
-    public Integer getRidByIndexBase0(final int index) {
-        final Integer rid = CollKit.get(this.NAME_RID_MAP.values(), index);
-        if (null != rid) {
-            return rid - 1;
-        }
-        return null;
     }
 
     /**

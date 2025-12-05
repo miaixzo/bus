@@ -1,0 +1,13 @@
+[
+  {
+    "name": "org.miaixz.vortex.entity.BaseEntity",
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  }
+]

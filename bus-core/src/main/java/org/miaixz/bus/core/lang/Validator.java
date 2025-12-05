@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.lang;
 
+import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.util.Date;
 import java.util.regex.Matcher;
@@ -1085,8 +1086,10 @@ public class Validator {
         Assert.notNull(value);
         Assert.notNull(min);
         Assert.notNull(max);
-        final double doubleValue = value.doubleValue();
-        return (doubleValue >= min.doubleValue()) && (doubleValue <= max.doubleValue());
+        BigDecimal valBd = MathKit.toBigDecimal(value);
+        BigDecimal minBd = MathKit.toBigDecimal(min);
+        BigDecimal maxBd = MathKit.toBigDecimal(max);
+        return valBd.compareTo(minBd) >= 0 && valBd.compareTo(maxBd) <= 0;
     }
 
     /**

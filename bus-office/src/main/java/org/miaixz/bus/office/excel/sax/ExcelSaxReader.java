@@ -43,40 +43,58 @@ import org.miaixz.bus.core.xyz.FileKit;
 public interface ExcelSaxReader<T> {
 
     /**
-     * Prefix for sheet r:Id attribute.
+     * The prefix for sheet r:Id.
      */
     String RID_PREFIX = "rId";
     /**
-     * Prefix for sheet name.
+     * The prefix for sheet name.
      */
     String SHEET_NAME_PREFIX = "sheetName:";
 
     /**
-     * Starts reading an Excel file.
+     * Starts reading Excel from a file.
      *
      * @param file               The Excel file.
-     * @param idOrRidOrSheetName The sheet identifier in Excel, which can be a sheet ID, an rId (prefixed with "rId",
-     *                           e.g., "rId1"), or a sheet name. If -1, all sheets will be processed.
+     * @param idOrRidOrSheetName The sheet identifier in Excel, which can be a sheet ID, an rId, or a sheet name. The
+     *                           rules are as follows:
+     *                           <ul>
+     *                           <li>If -1, process all sheets.</li>
+     *                           <li>If it starts with "rId" (e.g., "rId1"), it reads the sheet with the specified rId.
+     *                           rId counts from 1 (e.g., "rId1" is the first sheet).</li>
+     *                           <li>If it is a sheet name (e.g., "sheet1"), it reads the corresponding sheet
+     *                           directly.</li>
+     *                           <li>If it is a pure number: in Excel 2003 it represents the index (0-based); in Excel
+     *                           2007+ it represents the sheet ID (1-based).</li>
+     *                           </ul>
      * @return This reader instance, for chaining.
      * @throws InternalException If a POI-related exception occurs.
      */
     T read(File file, String idOrRidOrSheetName) throws InternalException;
 
     /**
-     * Starts reading an Excel file from an input stream. The stream will not be closed after reading.
+     * Starts reading Excel from an input stream. The stream is not closed after reading.
      *
      * @param in                 The Excel input stream.
-     * @param idOrRidOrSheetName The sheet identifier in Excel, which can be a sheet ID, an rId (prefixed with "rId",
-     *                           e.g., "rId1"), or a sheet name. If -1, all sheets will be processed.
+     * @param idOrRidOrSheetName The sheet identifier in Excel, which can be a sheet ID, an rId, or a sheet name. The
+     *                           rules are as follows:
+     *                           <ul>
+     *                           <li>If -1, process all sheets.</li>
+     *                           <li>If it starts with "rId" (e.g., "rId1"), it reads the sheet with the specified rId.
+     *                           rId counts from 1 (e.g., "rId1" is the first sheet).</li>
+     *                           <li>If it is a sheet name (e.g., "sheet1"), it reads the corresponding sheet
+     *                           directly.</li>
+     *                           <li>If it is a pure number: in Excel 2003 it represents the index (0-based); in Excel
+     *                           2007+ it represents the sheet ID (1-based).</li>
+     *                           </ul>
      * @return This reader instance, for chaining.
      * @throws InternalException If a POI-related exception occurs.
      */
     T read(InputStream in, String idOrRidOrSheetName) throws InternalException;
 
     /**
-     * Starts reading an Excel file from a path, processing all sheets.
+     * Starts reading Excel from a file path, processing all sheets.
      *
-     * @param path The path to the Excel file.
+     * @param path The path to the Excel file. If it is a relative path, it is relative to the classpath.
      * @return This reader instance, for chaining.
      * @throws InternalException If a POI-related exception occurs.
      */
@@ -85,7 +103,7 @@ public interface ExcelSaxReader<T> {
     }
 
     /**
-     * Starts reading an Excel file, processing all sheets.
+     * Starts reading Excel from a file, processing all sheets.
      *
      * @param file The Excel file.
      * @return This reader instance, for chaining.
@@ -96,8 +114,7 @@ public interface ExcelSaxReader<T> {
     }
 
     /**
-     * Starts reading an Excel file from an input stream, processing all sheets. The stream will not be closed after
-     * reading.
+     * Starts reading Excel from an input stream, processing all sheets. The stream is not closed after reading.
      *
      * @param in The Excel input stream.
      * @return This reader instance, for chaining.
@@ -108,24 +125,32 @@ public interface ExcelSaxReader<T> {
     }
 
     /**
-     * Starts reading an Excel file from a path.
+     * Starts reading Excel from a file path.
      *
-     * @param path               The path to the Excel file.
-     * @param idOrRidOrSheetName The sheet identifier in Excel, which can be a sheet ID, an rId (prefixed with "rId",
-     *                           e.g., "rId1"), or a sheet name. If -1, all sheets will be processed.
+     * @param path    The path to the Excel file. If it is a relative path, it is relative to the classpath.
+     * @param idOrRid The sheet identifier. It can be a sheet ID or an rId. If -1, all sheets are processed.
      * @return This reader instance, for chaining.
      * @throws InternalException If a POI-related exception occurs.
      */
-    default T read(final String path, final int idOrRidOrSheetName) throws InternalException {
-        return read(FileKit.file(path), idOrRidOrSheetName);
+    default T read(final String path, final int idOrRid) throws InternalException {
+        return read(FileKit.file(path), idOrRid);
     }
 
     /**
-     * Starts reading an Excel file from a path.
+     * Starts reading Excel from a file path.
      *
      * @param path               The path to the Excel file.
-     * @param idOrRidOrSheetName The sheet identifier in Excel, which can be a sheet ID, an rId (prefixed with "rId",
-     *                           e.g., "rId1"), or a sheet name. If -1, all sheets will be processed.
+     * @param idOrRidOrSheetName The sheet identifier in Excel, which can be a sheet ID, an rId, or a sheet name. The
+     *                           rules are as follows:
+     *                           <ul>
+     *                           <li>If -1, process all sheets.</li>
+     *                           <li>If it starts with "rId" (e.g., "rId1"), it reads the sheet with the specified rId.
+     *                           rId counts from 1 (e.g., "rId1" is the first sheet).</li>
+     *                           <li>If it is a sheet name (e.g., "sheet1"), it reads the corresponding sheet
+     *                           directly.</li>
+     *                           <li>If it is a pure number: in Excel 2003 it represents the index (0-based); in Excel
+     *                           2007+ it represents the sheet ID (1-based).</li>
+     *                           </ul>
      * @return This reader instance, for chaining.
      * @throws InternalException If a POI-related exception occurs.
      */
@@ -134,27 +159,37 @@ public interface ExcelSaxReader<T> {
     }
 
     /**
-     * Starts reading an Excel file.
+     * Starts reading Excel from a file.
      *
-     * @param file The Excel file.
-     * @param rid  The sheet rId in Excel. If -1, all sheets will be processed.
+     * @param file    The Excel file.
+     * @param idOrRid The sheet identifier. The rules are as follows:
+     *                <ul>
+     *                <li>If -1, process all sheets.</li>
+     *                <li>If it is a pure number: in Excel 2003 it represents the index (0-based); in Excel 2007+ it
+     *                represents the sheet ID (1-based).</li>
+     *                </ul>
      * @return This reader instance, for chaining.
      * @throws InternalException If a POI-related exception occurs.
      */
-    default T read(final File file, final int rid) throws InternalException {
-        return read(file, String.valueOf(rid));
+    default T read(final File file, final int idOrRid) throws InternalException {
+        return read(file, String.valueOf(idOrRid));
     }
 
     /**
-     * Starts reading an Excel file from an input stream. The stream will not be closed after reading.
+     * Starts reading Excel from an input stream. The stream is not closed after reading.
      *
-     * @param in  The Excel input stream.
-     * @param rid The sheet rId in Excel. If -1, all sheets will be processed.
+     * @param in      The Excel input stream.
+     * @param idOrRid The sheet identifier. The rules are as follows:
+     *                <ul>
+     *                <li>If -1, process all sheets.</li>
+     *                <li>If it is a pure number: in Excel 2003 it represents the index (0-based); in Excel 2007+ it
+     *                represents the sheet ID (1-based).</li>
+     *                </ul>
      * @return This reader instance, for chaining.
      * @throws InternalException If a POI-related exception occurs.
      */
-    default T read(final InputStream in, final int rid) throws InternalException {
-        return read(in, String.valueOf(rid));
+    default T read(final InputStream in, final int idOrRid) throws InternalException {
+        return read(in, String.valueOf(idOrRid));
     }
 
 }

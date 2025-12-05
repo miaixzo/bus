@@ -3,7 +3,7 @@
 </p>
 <p align="center">
   <a target="_blank" href="https://search.maven.org/search?q=org.miaixz">
-    <img src="https://img.shields.io/badge/maven--central-v8.3.3-blue.svg?label=Maven%20Central" />
+    <img src="https://img.shields.io/badge/maven--central-v8.3.x-blue.svg?label=Maven%20Central" />
   </a>
   <a target="_blank" href="https://jdk.java.net/">
     <img src="https://img.shields.io/badge/Java-21+-green.svg">

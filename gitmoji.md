@@ -62,7 +62,7 @@
 * 🛂 `:passport_control:` 处理与授权、角色和权限相关代码 (Work on code related to authorization, roles, and permissions.)
 * 🩹 `:adhesive_bandage:` 对非关键问题的简单修复 (Simple fix for a non-critical issue.)
 * 🧐 `:monocle_face:` 数据探索/检查 (Data exploration / inspection.)
-* ⚰️ `:coffin:` 删除死代码 (Remove dead code.)
+* ⚰️ `:coffin:` 删除代码 (Remove dead code.)
 * 🧪 `:test_tube:` 添加失败的测试 (Add a failing test.)
 * 👔 `:necktie:` 添加或更新业务逻辑 (Add or update business logic.)
 * 🩺 `:stethoscope:` 添加或更新健康检查 (Add or update healthcheck.)

@@ -32,24 +32,18 @@ import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
-import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.Config;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.Parsing;
-import org.miaixz.bus.health.builtin.jna.Struct;
-import org.miaixz.bus.health.builtin.software.*;
+import org.miaixz.bus.health.builtin.software.ApplicationInfo;
+import org.miaixz.bus.health.builtin.software.OSProcess;
+import org.miaixz.bus.health.builtin.software.OSService;
+import org.miaixz.bus.health.builtin.software.OSThread;
 import org.miaixz.bus.health.builtin.software.common.AbstractOperatingSystem;
-import org.miaixz.bus.health.mac.SysctlKit;
-import org.miaixz.bus.health.mac.driver.Who;
-import org.miaixz.bus.health.mac.driver.WindowInfo;
 import org.miaixz.bus.logger.Logger;
-
-import com.sun.jna.platform.mac.SystemB;
 
 /**
  * macOS, previously Mac OS X and later OS X) is a series of proprietary graphical operating systems developed and
@@ -59,40 +53,19 @@ import com.sun.jna.platform.mac.SystemB;
  * @since Java 17+
  */
 @ThreadSafe
-public class MacOperatingSystem extends AbstractOperatingSystem {
+public abstract class MacOperatingSystem extends AbstractOperatingSystem {
 
     private static final String SYSTEM_LIBRARY_LAUNCH_AGENTS = "/System/Library/LaunchAgents";
     private static final String SYSTEM_LIBRARY_LAUNCH_DAEMONS = "/System/Library/LaunchDaemons";
-    private static final long BOOTTIME;
-    private final Supplier<List<ApplicationInfo>> installedAppsSupplier = Memoizer
-            .memoize(MacInstalledApps::queryInstalledApps, Memoizer.installedAppsExpiration());
 
-    static {
-        try (Struct.CloseableTimeval tv = new Struct.CloseableTimeval()) {
-            if (!SysctlKit.sysctl("kern.boottime", tv) || tv.tv_sec.longValue() == 0L) {
-                // Usually this works. If it doesn't, fall back to text parsing.
-                // Boot time will be the first consecutive string of digits.
-                BOOTTIME = Parsing.parseLongOrDefault(
-                        Executor.getFirstAnswer("sysctl -n kern.boottime").split(Symbol.COMMA)[0]
-                                .replaceAll("\\D", Normal.EMPTY),
-                        System.currentTimeMillis() / 1000);
-            } else {
-                // tv now points to a 64-bit timeval structure for boot time.
-                // First 4 bytes are seconds, second 4 bytes are microseconds
-                // (we ignore)
-                BOOTTIME = tv.tv_sec.longValue();
-            }
-        }
-    }
+    protected final int maxProc;
 
     protected final String osXVersion;
     protected final int major;
     protected final int minor;
-    protected int maxProc;
 
-    public MacOperatingSystem() {
-        this(SysctlKit.sysctl("kern.maxproc", 0x1000));
-    }
+    private final Supplier<List<ApplicationInfo>> installedAppsSupplier = Memoizer
+            .memoize(MacInstalledApps::queryInstalledApps, Memoizer.installedAppsExpiration());
 
     protected MacOperatingSystem(int maxproc) {
         String version = System.getProperty("os.version");
@@ -119,16 +92,7 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
         return "Apple";
     }
 
-    @Override
-    public Pair<String, OperatingSystem.OSVersionInfo> queryFamilyVersionInfo() {
-        String family = this.major > 10 || (this.major == 10 && this.minor >= 12) ? "macOS"
-                : System.getProperty("os.name");
-        String codeName = parseCodeName();
-        String buildNumber = SysctlKit.sysctl("kern.osversion", Normal.EMPTY);
-        return Pair.of(family, new OperatingSystem.OSVersionInfo(this.osXVersion, codeName, buildNumber));
-    }
-
-    private String parseCodeName() {
+    protected String parseCodeName() {
         Properties verProps = Config.readProperties(Config._MACOS_VERSIONS_PROPERTIES);
         String codeName = null;
         if (this.major > 10) {
@@ -151,45 +115,6 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
     }
 
     @Override
-    public FileSystem getFileSystem() {
-        return new MacFileSystem();
-    }
-
-    @Override
-    public InternetProtocolStats getInternetProtocolStats() {
-        return new MacInternetProtocolStats(isElevated());
-    }
-
-    @Override
-    public List<OSSession> getSessions() {
-        return USE_WHO_COMMAND ? super.getSessions() : Who.queryUtxent();
-    }
-
-    @Override
-    public List<OSProcess> queryAllProcesses() {
-        List<OSProcess> procs = new ArrayList<>();
-        int[] pids = new int[this.maxProc];
-        Arrays.fill(pids, -1);
-        int numberOfProcesses = SystemB.INSTANCE
-                .proc_listpids(SystemB.PROC_ALL_PIDS, 0, pids, pids.length * SystemB.INT_SIZE) / SystemB.INT_SIZE;
-        for (int i = 0; i < numberOfProcesses; i++) {
-            if (pids[i] >= 0) {
-                OSProcess proc = getProcess(pids[i]);
-                if (proc != null) {
-                    procs.add(proc);
-                }
-            }
-        }
-        return procs;
-    }
-
-    @Override
-    public OSProcess getProcess(int pid) {
-        OSProcess proc = new MacOSProcess(pid, this.major, this.minor, this);
-        return proc.getState().equals(OSProcess.State.INVALID) ? null : proc;
-    }
-
-    @Override
     public List<OSProcess> queryChildProcesses(int parentPid) {
         List<OSProcess> allProcs = queryAllProcesses();
         Set<Integer> descendantPids = getChildrenOrDescendants(allProcs, parentPid, false);
@@ -201,16 +126,6 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
         List<OSProcess> allProcs = queryAllProcesses();
         Set<Integer> descendantPids = getChildrenOrDescendants(allProcs, parentPid, true);
         return allProcs.stream().filter(p -> descendantPids.contains(p.getProcessID())).collect(Collectors.toList());
-    }
-
-    @Override
-    public int getProcessId() {
-        return SystemB.INSTANCE.getpid();
-    }
-
-    @Override
-    public int getProcessCount() {
-        return SystemB.INSTANCE.proc_listpids(SystemB.PROC_ALL_PIDS, 0, null, 0) / SystemB.INT_SIZE;
     }
 
     @Override
@@ -230,38 +145,8 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
     }
 
     @Override
-    public int getThreadCount() {
-        // Get current pids, then slightly pad in case new process starts while
-        // allocating array space
-        int[] pids = new int[getProcessCount() + 10];
-        int numberOfProcesses = SystemB.INSTANCE.proc_listpids(SystemB.PROC_ALL_PIDS, 0, pids, pids.length)
-                / SystemB.INT_SIZE;
-        int numberOfThreads = 0;
-        try (Struct.CloseableProcTaskInfo taskInfo = new Struct.CloseableProcTaskInfo()) {
-            for (int i = 0; i < numberOfProcesses; i++) {
-                int exit = SystemB.INSTANCE
-                        .proc_pidinfo(pids[i], SystemB.PROC_PIDTASKINFO, 0, taskInfo, taskInfo.size());
-                if (exit != -1) {
-                    numberOfThreads += taskInfo.pti_threadnum;
-                }
-            }
-        }
-        return numberOfThreads;
-    }
-
-    @Override
     public long getSystemUptime() {
         return System.currentTimeMillis() / 1000 - getSystemBootTime();
-    }
-
-    @Override
-    public long getSystemBootTime() {
-        return BOOTTIME;
-    }
-
-    @Override
-    public NetworkParams getNetworkParams() {
-        return new MacNetworkParams();
     }
 
     @Override
@@ -269,11 +154,7 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
         // Get running services
         List<OSService> services = new ArrayList<>();
         Set<String> running = new HashSet<>();
-        for (OSProcess p : getChildProcesses(
-                1,
-                OperatingSystem.ProcessFiltering.ALL_PROCESSES,
-                OperatingSystem.ProcessSorting.PID_ASC,
-                0)) {
+        for (OSProcess p : getChildProcesses(1, ProcessFiltering.ALL_PROCESSES, ProcessSorting.PID_ASC, 0)) {
             OSService s = new OSService(p.getName(), p.getProcessID(), OSService.State.RUNNING);
             services.add(s);
             running.add(p.getName());
@@ -303,11 +184,6 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
             }
         }
         return services;
-    }
-
-    @Override
-    public List<OSDesktopWindow> getDesktopWindows(boolean visibleOnly) {
-        return WindowInfo.queryDesktopWindows(visibleOnly);
     }
 
     @Override

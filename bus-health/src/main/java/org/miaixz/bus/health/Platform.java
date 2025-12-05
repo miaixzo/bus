@@ -42,7 +42,7 @@ import org.miaixz.bus.health.builtin.software.OperatingSystem;
 import org.miaixz.bus.health.linux.hardware.LinuxHardwareAbstractionLayer;
 import org.miaixz.bus.health.linux.software.LinuxOperatingSystem;
 import org.miaixz.bus.health.mac.hardware.MacHardwareAbstractionLayer;
-import org.miaixz.bus.health.mac.software.MacOperatingSystem;
+import org.miaixz.bus.health.mac.software.MacOperatingSystemJNA;
 import org.miaixz.bus.health.unix.platform.aix.hardware.AixHardwareAbstractionLayer;
 import org.miaixz.bus.health.unix.platform.aix.software.AixOperatingSystem;
 import org.miaixz.bus.health.unix.platform.freebsd.hardware.FreeBsdHardwareAbstractionLayer;
@@ -564,7 +564,7 @@ public class Platform {
                 return new LinuxOperatingSystem();
 
             case MACOS:
-                return new MacOperatingSystem();
+                return new MacOperatingSystemJNA();
 
             case SOLARIS:
                 return new SolarisOperatingSystem();

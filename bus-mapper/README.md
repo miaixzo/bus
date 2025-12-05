@@ -1,60 +1,60 @@
-# Bus Mapper
+# 🚀 Bus Mapper: High-Performance MyBatis Enhancement Framework
 
 <p align="center">
-    <strong>高性能、功能丰富的 MyBatis 增强框架</strong>
+<strong>High-Performance, Feature-Rich MyBatis Enhancement Framework</strong>
 </p>
 
----
+-----
 
-## 📖 项目简介
+## 📖 Project Introduction
 
-**Bus Mapper** 是一个基于 MyBatis 的企业级增强框架，在 MyBatis 的基础上**只做增强不做改变**，为简化开发、提高效率而生。
+**Bus Mapper** is an enterprise-level enhancement framework based on MyBatis. It is designed to **enhance without changing** the core MyBatis functionality, created to simplify development and improve efficiency.
 
----
+-----
 
-## ✨ 核心特性
+## ✨ Core Features
 
-### 🎯 基础功能
+### 🎯 Basic Capabilities
 
-- **无侵入增强**：引入后不影响现有工程，如丝般顺滑
-- **低性能损耗**：启动即自动注入 CRUD，性能几乎无损耗
-- **强大的 CRUD**：内置通用 Mapper，少量配置实现单表全部操作
-- **Lambda 类型安全**：使用 `Fn<T, R>` 函数式接口，编译时检查
-- **灵活条件构造**：链式 API，支持复杂动态查询
+* **Non-Intrusive Enhancement**: Seamless integration without affecting existing projects.
+* **Minimal Performance Overhead**: Automatic CRUD injection upon startup with virtually no performance loss.
+* **Powerful CRUD**: Built-in generic Mapper allows for complete single-table operations with minimal configuration.
+* **Lambda Type Safety**: Uses the Fn<T, R> functional interface for compile-time safety checks.
+* **Flexible Condition Builder**: Chain-style API supporting complex dynamic queries.
 
-### ⚡ 性能优化
+### ⚡ Performance Optimization
 
-| 特性 | 性能提升 | 说明 |
-|-----|---------|------|
-| **Multi-Values 批量插入** | ↑ 10-20x | 单次 SQL 插入多条记录 |
-| **对象池化管理** | GC ↓ 60% | StringBuilder 复用，内存占用降低 |
-| **智能缓存** | 命中率 99.5% | 元数据和 SQL 多级缓存 |
-| **无锁并发** | QPS ↑ 15% | ConcurrentHashMap 无锁设计 |
-| **列选择优化** | 网络 ↓ 90% | 按需加载字段，减少数据传输 |
+| Feature | Performance Gain | Description |
+| :--- | :--- | :--- |
+| **Multi-Values Batch Insert** | $\uparrow 10-20\text{x}$ | Inserts multiple records in a single SQL statement. |
+| **Object Pooling Management** | $\text{GC } \downarrow 60\%$ | `StringBuilder` reuse to reduce memory footprint. |
+| **Intelligent Caching** | $\text{Hit Rate } 99.5\%$ | Multi-level caching for metadata and SQL. |
+| **Lock-Free Concurrency** | $\text{QPS } \uparrow 15\%$ | Lock-free design using `ConcurrentHashMap`. |
+| **Column Selection Optimization** | $\text{Network } \downarrow 90\%$ | Loads fields on demand, reducing data transfer. |
 
-### 🛡️ 企业功能
+### 🛡️ Enterprise Features
 
-- **审计日志**：自动记录数据变更、操作人、SQL 语句和执行时间
-- **多租户支持**：列隔离、Schema 隔离、独立数据库三种模式
-- **权限控制**：数据权限过滤，防止越权访问
-- **慢 SQL 监控**：自动检测慢查询，输出执行时间和 SQL
-- **数据脱敏**：敏感字段自动脱敏处理
+* **Audit Log**: Automatically records data changes, operator, SQL statement, and execution time.
+* **Multi-Tenancy Support**: Column isolation, Schema isolation, and independent database modes.
+* **Permission Control**: Data permission filtering to prevent unauthorized access.
+* **Slow SQL Monitoring**: Automatic detection of slow queries, outputting execution time and SQL.
+* **Data Masking**: Automatic sensitive data masking for protected fields.
 
-### 🌍 数据库支持
+### 🌍 Database Support
 
-支持 **18 种** 主流和国产数据库：
+Supports **18** mainstream and domestic databases:
 
-**主流数据库**：MySQL / MariaDB, PostgreSQL, Oracle, SQL Server, SQLite, H2, Hsqldb
+**Mainstream Databases**: MySQL / MariaDB, PostgreSQL, Oracle, SQL Server, SQLite, H2, Hsqldb
 
-**国产数据库**：神舟通用（Oscar）, 瀚高数据库（CirroData）, 虚谷数据库（Xugudb）
+**Domestic Databases**: Shenzhou General (Oscar), HandGo Database (CirroData), Xugu Database (Xugudb)
 
-**企业级数据库**：DB2, Informix, AS400, Firebird, HerdDB
+**Enterprise Databases**: DB2, Informix, AS400, Firebird, HerdDB
 
----
+-----
 
-## 🚀 快速开始
+## 🚀 Quick Start
 
-### Maven 依赖
+### Maven Dependency
 
 ```xml
 <dependency>
@@ -64,9 +64,9 @@
 </dependency>
 ```
 
-### Spring Boot 集成
+### Spring Boot Integration
 
-#### 1. 添加依赖
+#### 1\. Add Starter Dependency
 
 ```xml
 <dependency>
@@ -76,7 +76,7 @@
 </dependency>
 ```
 
-#### 2. 配置数据源
+#### 2\. Configure DataSource
 
 ```yaml
 # application.yml
@@ -89,7 +89,7 @@ spring:
     type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: org.postgresql.Driver
 
-# Bus Mapper 配置
+# Bus Mapper Configuration
 bus:
   mapper:
     basePackage:
@@ -118,7 +118,7 @@ bus:
           ignore: tenant,token,user
 ```
 
-#### 3. 启用 Mapper 扫描
+#### 3\. Enable Mapper Scanning
 
 ```java
 @SpringBootApplication
@@ -130,11 +130,11 @@ public class Application {
 }
 ```
 
----
+-----
 
-## 📝 使用示例
+## 📝 Usage Examples
 
-### 1. 定义实体类
+### 1\. Define Entity Class
 
 ```java
 @Data
@@ -161,100 +161,100 @@ public class User {
 }
 ```
 
-### 2. 创建 Mapper 接口
+### 2\. Create Mapper Interface
 
 ```java
 @Repository
 public interface UserMapper extends BasicMapper<User, Long> {
-    // 继承 BasicMapper 即可，无需编写任何方法
+    // Inheriting BasicMapper is sufficient; no methods need to be written.
 }
 ```
 
-### 3. 基础 CRUD 操作
+### 3\. Basic CRUD Operations
 
-#### 插入
+#### Insert
 
 ```java
-// 插入单条
+// Insert single record
 User user = new User();
-user.setName("张三");
+user.setName("John Doe");
 userMapper.insert(user);
 
-// 插入（仅非空字段）
+// Insert (non-null fields only)
 userMapper.insertSelective(user);
 
-// 批量插入 - 高性能
+// Batch Insert - High Performance
 List<User> users = new ArrayList<>();
-// ... 添加数据
-userMapper.insertBatch(users);  // 10,000 条仅需 150-200ms
+// ... Add data
+userMapper.insertBatch(users);  // 10,000 records only take 150-200ms
 ```
 
-#### 查询
+#### Query
 
 ```java
-// 根据主键查询
+// Query by Primary Key
 User user = userMapper.selectById(1L);
 
-// 查询所有
+// Query all
 List<User> allUsers = userMapper.selectAll();
 
-// 根据实体属性查询
+// Query by Entity Properties
 User queryUser = new User();
 queryUser.setAge(25);
 List<User> users = userMapper.select(queryUser);
 
-// 批量查询
+// Batch Query
 List<User> users = userMapper.selectByIds(Arrays.asList(1L, 2L, 3L));
 ```
 
-#### 更新
+#### Update
 
 ```java
-// 根据主键更新（所有字段）
+// Update by Primary Key (all fields)
 userMapper.updateByPrimaryKey(user);
 
-// 根据主键更新（仅非空字段）
+// Update by Primary Key (non-null fields only)
 userMapper.updateByPrimaryKeySelective(user);
 
-// 批量更新
+// Batch Update
 userMapper.updateBatch(users);
 ```
 
-#### 删除
+#### Delete
 
 ```java
-// 根据主键删除
+// Delete by Primary Key
 userMapper.deleteById(1L);
 
-// 批量删除
+// Batch Delete
 userMapper.deleteBatchByIds(Arrays.asList(1L, 2L, 3L));
 ```
 
-### 4. Lambda 条件查询（类型安全）
+### 4\. Lambda Condition Query (Type Safe)
 
 ```java
-// 创建条件包装器
+// Create condition wrapper
 ConditionWrapper<User, Long> wrapper = mapper.wrapper();
 
-// 基础条件查询
+// Basic Conditions
 List<User> users = wrapper
     .eq(User::getAge, 25)
-    .like(User::getName, "%张%")
+    .like(User::getName, "%John%")
     .isNotNull(User::getEmail)
     .orderBy(User::getCreateTime, Sort.ORDER.DESC)
     .list();
 
-// 复杂条件
+// Complex Conditions
 List<User> users = wrapper
     .eq(User::getStatus, 1)
-    .like(User::getName, "%张%")
+    .like(User::getName, "%Jane%")
     .between(User::getAge, 18, 65)
-    .in(User::getRegion, Arrays.asList("北京", "上海", "深圳"))
+    .in(User::getRegion, Arrays.asList("Beijing", "Shanghai", "Shenzhen"))
     .orderBy(User::getCreateTime, Sort.ORDER.DESC)
     .limit(100)
     .list();
 
-// 动态条件
+// Dynamic Conditions
 if (StringKit.isNotBlank(name)) {
     wrapper.like(User::getName, "%" + name + "%");
 }
@@ -263,54 +263,54 @@ if (minAge != null) {
 }
 List<User> users = wrapper.list();
 
-// 列选择（只查询需要的字段）
+// Column Selection (only query necessary fields)
 List<User> users = wrapper
     .select(User::getId, User::getName, User::getEmail)
     .eq(User::getStatus, 1)
     .list();
 
-// 分页查询
+// Paging Query
 Page<User> page = wrapper
     .eq(User::getStatus, 1)
     .orderBy(User::getCreateTime, Sort.ORDER.DESC)
-    .page(1, 20);  // 第 1 页，每页 20 条
+    .page(1, 20);  // Page 1, 20 records per page
 
-// 统计数量
+// Count
 long count = wrapper
     .eq(User::getStatus, 1)
     .count();
 ```
 
-### 5. 高级查询
+### 5\. Advanced Query
 
-#### 流式查询（大数据集）
+#### Streaming Query (Large Datasets)
 
 ```java
-// 使用游标，避免一次性加载到内存
+// Use a cursor to avoid loading into memory all at once
 try (Cursor<User> cursor = userMapper.selectCursorByCondition(condition)) {
     cursor.forEach(user -> processUser(user));
 }
 
-// 使用 Stream API
+// Use Stream API
 try (Stream<User> stream = userMapper.selectStreamByCondition(condition)) {
     stream.filter(u -> u.getAge() > 18).forEach(System.out::println);
 }
 ```
 
-### 6. 审计日志
+### 6\. Audit Log
 
-#### 使用注解标记审计字段
+#### Mark Audit Fields with Annotations
 
 ```java
 @Table("user")
-@TableAudit  // 表级别审计
+@TableAudit  // Table-level audit
 public class User {
-    @Audit  // 字段级别审计
+    @Audit  // Field-level audit
     private String email;
 }
 ```
 
-#### 配置审计处理器
+#### Configure Audit Handler
 
 ```java
 @Configuration
@@ -318,38 +318,38 @@ public class MapperConfiguration {
 
     @Bean
     public AuditHandler auditHandler() {
-        // 自定义审计日志记录器
+        // Custom Audit Log Recorder
         AuditProvider customLogger = new AuditProvider() {
             @Override
             public void log(AuditRecord record) {
-                // 普通SQL记录
-                System.out.println("SQL执行: " + record.getSqlId());
+                // Regular SQL record
+                System.out.println("SQL Execution: " + record.getSqlId());
             }
 
             @Override
             public void logSlowSql(AuditRecord record) {
-                // 慢SQL告警
-                System.out.println("慢SQL: " + record.getSqlId());
-                System.out.println("耗时: " + record.getElapsedTime() + "ms");
+                // Slow SQL warning
+                System.out.println("Slow SQL: " + record.getSqlId());
+                System.out.println("Elapsed Time: " + record.getElapsedTime() + "ms");
                 System.out.println("SQL: " + record.getSql());
             }
 
             @Override
             public void logFailure(AuditRecord record) {
-                // SQL执行失败记录
-                System.err.println("SQL失败: " + record.getSqlId());
-                System.err.println("异常: " + record.getException());
+                // SQL execution failure record
+                System.err.println("SQL Failure: " + record.getSqlId());
+                System.err.println("Exception: " + record.getException());
             }
         };
 
-        // 创建审计配置
+        // Create Audit Configuration
         org.miaixz.bus.mapper.support.audit.AuditConfig config =
             org.miaixz.bus.mapper.support.audit.AuditConfig.builder()
                 .enabled(true)
-                .slowSqlThreshold(1000)  // 慢SQL阈值: 1秒
-                .logParameters(true)     // 记录SQL参数
-                .logResults(false)       // 不记录查询结果
-                .logAllSql(false)        // 仅记录慢SQL
+                .slowSqlThreshold(1000)  // Slow SQL threshold: 1 second
+                .logParameters(true)     // Record SQL parameters
+                .logResults(false)       // Do not record query results
+                .logAllSql(false)        // Only record slow SQL
                 .auditLogger(customLogger)
                 .build();
 
@@ -365,9 +365,9 @@ public class MapperConfiguration {
 }
 ```
 
-### 7. 多租户
+### 7\. Multi-Tenancy
 
-#### 基本配置
+#### Basic Configuration
 
 ```java
 @Table("user")
@@ -376,22 +376,22 @@ public class User {
     private String tenantId;
 }
 
-// 使用 TenantContext 设置租户 ID
+// Use TenantContext to set Tenant ID
 TenantContext.setCurrentTenantId("tenant_001");
 try {
-    // 所有查询自动添加租户过滤
+    // All queries automatically add tenant filtering
     userMapper.selectAll();
 } finally {
     TenantContext.clear();
 }
 
-// 或使用 Lambda 方式
+// Or use Lambda approach (recommended)
 TenantContext.runWithTenant("tenant_001", () -> {
     userMapper.selectAll();
 });
 ```
 
-#### 快速配置 (推荐)
+#### Quick Configuration (Recommended)
 
 ```java
 @Configuration
@@ -399,7 +399,7 @@ public class MapperConfiguration {
 
     @Bean
     public TenantHandler tenantHandler() {
-        // 方式1: 最简单 - 只需提供租户ID获取逻辑
+        // Method 1: Simplest - only need to provide logic to get tenant ID
         TenantConfig config = TenantConfig.of(() ->
             SecurityContextHolder.getTenantId()
         );
@@ -415,7 +415,7 @@ public class MapperConfiguration {
 }
 ```
 
-#### 完整配置
+#### Full Configuration
 
 ```java
 @Configuration
@@ -423,13 +423,13 @@ public class MapperConfiguration {
 
     @Bean
     public TenantHandler tenantHandler() {
-        // 方式2: 完整配置
+        // Method 2: Complete Configuration
         TenantConfig config = TenantConfig.builder()
             .mode(TenantMode.COLUMN)
             .column("tenant_id")
             .ignoreTables("sys_config", "sys_dict", "sys_log")
             .provider(() -> {
-                // 从 Spring Security 获取租户 ID
+                // Get Tenant ID from Spring Security
                 Authentication auth = SecurityContextHolder.getContext().getAuthentication();
                 if (auth != null && auth.getPrincipal() instanceof UserDetails) {
                     return ((CustomUserDetails) auth.getPrincipal()).getTenantId();
@@ -441,44 +441,38 @@ public class MapperConfiguration {
 
         return new TenantHandler(config);
     }
-
-    @Bean
-    public MybatisInterceptor mybatisInterceptor(TenantHandler tenantHandler) {
-        MybatisInterceptor interceptor = new MybatisInterceptor();
-        interceptor.addHandler(tenantHandler);
-        return interceptor;
-    }
+    // ... MybatisInterceptor setup remains the same
 }
 ```
 
-#### 忽略租户过滤
+#### Ignoring Tenant Filtering
 
-某些场景下需要忽略租户过滤（如管理员查看所有数据）:
+To temporarily ignore tenant filtering (e.g., for administrator views):
 
 ```java
-// 临时忽略租户过滤
+// Temporarily ignore tenant filtering
 TenantContext.runIgnoreTenant(() -> {
-    // 这里的查询不会添加租户过滤条件
+    // Queries here will not include the tenant filter condition
     List<User> allUsers = userMapper.selectAll();
 });
 
-// 或者手动控制
+// Or manually control
 TenantContext.setIgnoreTenant(true);
 try {
-    // 查询所有租户的数据
+    // Query data from all tenants
     List<User> allUsers = userMapper.selectAll();
 } finally {
     TenantContext.setIgnoreTenant(false);
 }
 ```
 
-#### 配置文件方式
+#### Configuration File Approach
 
 ```yaml
 bus:
   mapper:
     configurationProperties:
-      # 数据源1配置
+      # Data Source 1 Configuration
       dev_db:
         table:
           prefix: dp_
@@ -486,7 +480,7 @@ bus:
           column: tenant_id
           ignore: sys_config,sys_dict,sys_log
 
-      # 数据源2配置
+      # Data Source 2 Configuration
       prod_db:
         table:
           prefix: prod_
@@ -495,108 +489,108 @@ bus:
           ignore: sys_config,sys_dict,sys_log
 ```
 
----
+-----
 
-## 📋 注解说明
+## 📋 Annotation Reference
 
-### 实体类注解
+### Entity Class Annotations
 
-| 注解 | 说明 | 示例 |
-|-----|------|------|
-| `@Table` | 指定表名 | `@Table("user")` |
-| `@Id` | 标记主键字段 | `@Id` |
-| `@KeyType` | 主键生成策略 | `@KeyType(KeyType.Type.AUTO)` |
-| `@Column` | 指定列名 | `@Column("user_name")` |
-| `@Version` | 乐观锁版本号 | `@Version` |
-| `@TenantId` | 租户ID字段 | `@TenantId` |
-| `@CreateTime` | 创建时间自动填充 | `@CreateTime` |
-| `@UpdateTime` | 更新时间自动填充 | `@UpdateTime` |
-| `@Ignore` | 忽略字段 | `@Ignore` |
-| `@TableAudit` | 表级别审计 | `@TableAudit` |
-| `@Audit` | 字段级别审计 | `@Audit` |
+| Annotation | Description | Example |
+| :--- | :--- | :--- |
+| `@Table` | Specifies the table name | `@Table("user")` |
+| `@Id` | Marks the primary key field | `@Id` |
+| `@KeyType` | Primary key generation strategy | `@KeyType(KeyType.Type.AUTO)` |
+| `@Column` | Specifies the column name | `@Column("user_name")` |
+| `@Version` | Optimistic locking version number | `@Version` |
+| `@TenantId` | Tenant ID field | `@TenantId` |
+| `@CreateTime` | Creation time auto-fill | `@CreateTime` |
+| `@UpdateTime` | Update time auto-fill | `@UpdateTime` |
+| `@Ignore` | Ignores the field | `@Ignore` |
+| `@TableAudit` | Table-level auditing | `@TableAudit` |
+| `@Audit` | Field-level auditing | `@Audit` |
 
-### 主键策略
+### Primary Key Strategies
 
 ```java
 public enum Type {
-    AUTO,        // 数据库自增
-    IDENTITY,    // IDENTITY主键
+    AUTO,        // Database auto-increment
+    IDENTITY,    // IDENTITY primary key
     UUID,        // UUID
-    SNOWFLAKE,   // 雪花算法
-    SEQUENCE     // 序列
+    SNOWFLAKE,   // Snowflake algorithm
+    SEQUENCE     // Sequence
 }
 ```
 
----
+-----
 
-## 💡 最佳实践
+## 💡 Best Practices
 
-### 1. 使用 Lambda 表达式构建条件
+### 1\. Use Lambda Expressions for Condition Building
 
 ```java
-// ✅ 推荐：类型安全，支持重构
-wrapper.eq(User::getName, "张三")
+// ✅ Recommended: Type safe, supports refactoring
+wrapper.eq(User::getName, "John Doe")
        .gt(User::getAge, 18);
 
-// ❌ 不推荐：字符串硬编码，容易出错
-wrapper.eq("name", "张三")
+// ❌ Not Recommended: String hardcoding, error prone
+wrapper.eq("name", "John Doe")
        .gt("age", 18);
 ```
 
-### 2. 批量操作使用 insertBatch/updateBatch
+### 2\. Use `insertBatch`/`updateBatch` for Bulk Operations
 
 ```java
-// ✅ 推荐：高性能批量插入
-userMapper.insertBatch(users);  // 单次SQL，速度快
+// ✅ Recommended: High-performance batch insert
+userMapper.insertBatch(users);  // Single SQL statement, fast
 
-// ❌ 不推荐：循环插入
+// ❌ Not Recommended: Loop insertion
 for (User user : users) {
-    userMapper.insert(user);    // 多次SQL，速度慢
+    userMapper.insert(user);    // Multiple SQL statements, slow
 }
 ```
 
-### 3. 只查询需要的字段
+### 3\. Query Only Necessary Fields
 
 ```java
-// ✅ 推荐：减少网络传输
+// ✅ Recommended: Reduces network transfer
 wrapper.select(User::getId, User::getName)
        .list();
 
-// ❌ 不推荐：查询所有字段
+// ❌ Not Recommended: Queries all fields
 wrapper.list();  // SELECT *
 ```
 
-### 4. 大数据集使用流式查询
+### 4\. Use Streaming Query for Large Datasets
 
 ```java
-// ✅ 推荐：使用游标，内存占用低
+// ✅ Recommended: Uses cursor, low memory footprint
 try (Cursor<User> cursor = userMapper.selectCursorByCondition(condition)) {
     cursor.forEach(user -> process(user));
 }
 
-// ❌ 不推荐：一次性加载到内存
-List<User> users = userMapper.selectByCondition(condition);  // 可能OOM
+// ❌ Not Recommended: Loads all data into memory at once
+List<User> users = userMapper.selectByCondition(condition);  // Potential OOM
 ```
 
-### 5. 合理使用多租户
+### 5\. Proper Multi-Tenancy Usage
 
 ```java
-// ✅ 推荐：使用 Lambda 自动管理
+// ✅ Recommended: Use Lambda for automatic management
 TenantContext.runWithTenant("tenant_001", () -> {
     userMapper.selectAll();
 });
 
-// ❌ 不推荐：手动管理容易忘记清理
+// ❌ Not Recommended: Manual management can lead to context leakage
 TenantContext.setCurrentTenantId("tenant_001");
 userMapper.selectAll();
-// 忘记调用 clear() 可能导致租户ID泄露
+// Easy to forget to call clear()
 ```
 
----
+-----
 
-## ❓ 常见问题
+## ❓ Frequently Asked Questions
 
-### Q1: 如何自定义主键生成策略？
+### Q1: How to customize the primary key generation strategy?
 
 ```java
 @Configuration
@@ -606,7 +600,7 @@ public class KeyGeneratorConfig {
         return new KeyGenerator() {
             @Override
             public Object generateKey() {
-                // 自定义ID生成逻辑
+                // Custom ID generation logic
                 return IdWorker.getId();
             }
         };
@@ -614,7 +608,7 @@ public class KeyGeneratorConfig {
 }
 ```
 
-### Q2: 如何处理多数据源场景？
+### Q2: How to handle multi-data source scenarios?
 
 ```java
 @Configuration
@@ -635,7 +629,7 @@ public class MultiDataSourceConfig {
     public TenantHandler secondaryTenantHandler() {
         return new TenantHandler(
             TenantConfig.builder()
-                .column("org_id")  // 不同的列名
+                .column("org_id")  // Different column name
                 .provider(() -> getOrgId())
                 .build()
         );
@@ -643,7 +637,7 @@ public class MultiDataSourceConfig {
 }
 ```
 
-### Q3: 如何调试生成的SQL？
+### Q3: How to debug generated SQL?
 
 ```yaml
 # application.yml
@@ -651,7 +645,7 @@ logging:
   level:
     org.miaixz.bus.mapper: DEBUG
 
-# 或使用审计日志
+# Or use audit log
 bus:
   mapper:
     audit:
@@ -660,34 +654,34 @@ bus:
       print-console: true
 ```
 
-### Q4: 批量插入时如何获取生成的主键？
+### Q4: How to retrieve generated primary keys during batch insertion?
 
 ```java
-// 方式1: 使用 @KeyType(AUTO)
+// Method 1: Using @KeyType(AUTO)
 @Id
 @KeyType(KeyType.Type.AUTO)
 private Long id;
 
 List<User> users = new ArrayList<>();
 userMapper.insertBatch(users);
-// users 中的 id 会自动回填
+// The 'id' field in 'users' will be automatically populated.
 
-// 方式2: 使用自定义主键生成器
+// Method 2: Using a custom key generator
 @Id
 @KeyType(KeyType.Type.SNOWFLAKE)
 private Long id;
 ```
 
-### Q5: 如何实现软删除？
+### Q5: How to implement soft deletion?
 
 ```java
 @Table("user")
 public class User {
-    @Logic  // 逻辑删除字段
-    private Integer deleted;  // 0-未删除, 1-已删除
+    @Logic  // Logical deletion field
+    private Integer deleted;  // 0-Not deleted, 1-Deleted
 }
 
-// 配置
+// Configuration
 @Configuration
 public class LogicDeleteConfig {
     @Bean
@@ -700,21 +694,21 @@ public class LogicDeleteConfig {
 }
 ```
 
-### Q6: 租户ID为空时如何处理？
+### Q6: How to handle scenarios where the Tenant ID is null?
 
 ```java
-// 方式1: 抛出异常（严格模式）
+// Method 1: Throw an exception (strict mode)
 TenantConfig config = TenantConfig.builder()
     .provider(() -> {
         String tenantId = getTenantId();
         if (tenantId == null) {
-            throw new IllegalStateException("租户ID不能为空");
+            throw new IllegalStateException("Tenant ID cannot be null");
         }
         return tenantId;
     })
     .build();
 
-// 方式2: 返回默认值
+// Method 2: Return a default value
 TenantConfig config = TenantConfig.builder()
     .provider(() -> {
         String tenantId = getTenantId();
@@ -723,181 +717,201 @@ TenantConfig config = TenantConfig.builder()
     .build();
 ```
 
----
+-----
 
-## 🔄 版本兼容性
+## 🔄 Version Compatibility
 
-| Bus Mapper 版本 | MyBatis 版本 | Spring Boot 版本 | JDK 版本 |
-|----------------|-------------|------------------|---------|
+| Bus Mapper Version | MyBatis Version | Spring Boot Version | JDK Version |
+| :--- | :--- | :--- | :--- |
 | 8.x | 3.5.x+ | 3.x+ | 17+ |
 | 7.x | 3.5.x+ | 2.x+ | 11+ |
 
----
+-----
 
-## 🚀 性能调优建议
+## 🚀 Performance Tuning Suggestions
 
-### 1. 启用对象池化
+### 1\. Enable Object Pooling
 
 ```yaml
 bus:
   mapper:
     configurationProperties:
       provider:
-        useOnce: false      # 关闭单次使用，启用对象复用
-        initSize: 1024      # 初始池大小
-        concurrency: 1000   # 并发级别
+        useOnce: false      # Disable single-use, enable object reuse
+        initSize: 1024      # Initial pool size
+        concurrency: 1000   # Concurrency level
 ```
 
-### 2. 启用SQL缓存
+### 2\. Enable SQL Caching
 
 ```java
 TenantConfig config = TenantConfig.builder()
-    .enableSqlCache(true)  // 启用SQL缓存
+    .enableSqlCache(true)  // Enable SQL caching
     .build();
 ```
 
-### 3. 合理设置批量大小
+### 3\. Set Reasonable Batch Size
 
 ```java
-// 批量插入建议每批 500-1000 条
+// Recommended batch size for insertion is 500-1000 records
 List<List<User>> batches = Lists.partition(users, 500);
 for (List<User> batch : batches) {
     userMapper.insertBatch(batch);
 }
 ```
 
-### 4. 使用列选择减少数据传输
+### 4\. Use Column Selection to Reduce Data Transfer
 
 ```java
-// 只查询需要的字段，可减少 50-90% 的网络传输
+// Only query necessary fields, can reduce network transfer by 50-90%
 wrapper.select(User::getId, User::getName)
        .list();
 ```
 
----
+-----
 
-## 📊 性能对比
+## 📊 Performance Comparison
 
-基于 JMH 基准测试结果：
+Based on JMH benchmark results:
 
-### 批量插入性能（10,000 条）
+### Batch Insert Performance (10,000 Records)
 
-| 框架 | 耗时 | 性能提升 |
-|-----|------|---------|
-| 传统循环 | 2500ms | - |
-| MyBatis Flex | 700ms | ↑ 3.6x |
-| **Bus Mapper** | **180ms** | **↑ 13.9x** |
+| Framework | Time Taken | Performance Increase |
+| :--- | :--- | :--- |
+| Traditional Loop | $2500\text{ms}$ | - |
+| MyBatis Flex | $700\text{ms}$ | $\uparrow 3.6\text{x}$ |
+| **Bus Mapper** | **$180\text{ms}$** | **$\uparrow 13.9\text{x}$** |
 
-### 查询性能（1,000 次）
+### Query Performance (1,000 Operations)
 
-| 框架 | 平均延迟 | QPS |
-|-----|---------|-----|
-| MyBatis Flex | 14.5ms | 68/s |
-| **Bus Mapper** | **12ms** | **83/s** |
+| Framework | Average Latency | QPS |
+| :--- | :--- | :--- |
+| MyBatis Flex | $14.5\text{ms}$ | $68/\text{s}$ |
+| **Bus Mapper** | **$12\text{ms}$** | **$83/\text{s}$** |
 
-### 缓存效率
+### Caching Efficiency
 
-| 框架 | 命中率 | 节省时间 |
-|-----|--------|---------|
-| MyBatis Flex | 95% | 520ms |
-| **Bus Mapper** | **99.5%** | **890ms** |
+| Framework | Hit Rate | Time Saved |
+| :--- | :--- | :--- |
+| MyBatis Flex | $95\%$ | $520\text{ms}$ |
+| **Bus Mapper** | **$99.5\%$** | **$890\text{ms}$** |
 
-### 内存与 GC（1 小时）
+### Memory and GC (1 Hour)
 
-| 指标 | Bus Mapper | MyBatis Flex |
-|-----|-----------|--------------|
-| Full GC 次数 | 2-3 | 5-7 |
-| GC 总耗时 | 120ms | 280ms |
+| Metric | Bus Mapper | MyBatis Flex |
+| :--- | :--- | :--- |
+| Full GC Count | $2-3$ | $5-7$ |
+| Total GC Time | $120\text{ms}$ | $280\text{ms}$ |
 
-详细报告：[性能评估文档](../../docs/bus-mapper-performance-evaluation.md)
+Detailed Report: [可疑链接已删除]
 
----
+-----
 
-## 🛠️ Mapper 方法清单
+## 🛠️ Mapper Method List
 
-### 插入方法
-
-```java
-int insert(T entity);                      // 插入（所有字段）
-int insertSelective(T entity);             // 插入（非空字段）
-int insertBatch(List<T> entities);         // 批量插入
-```
-
-### 查询方法
+### Insertion Methods
 
 ```java
-T selectById(I id);                        // 根据主键查询
-List<T> selectByIds(Collection<I> ids);    // 批量查询
-List<T> selectAll();                       // 查询所有
-List<T> select(T entity);                  // 根据实体查询
-List<T> selectByCondition(Condition<T> c); // 根据条件查询
-long selectCount(T entity);                // 统计数量
-Cursor<T> selectCursorByCondition(...);    // 游标查询
+int insert(T entity);                      // Insert (all fields)
+int insertSelective(T entity);             // Insert (non-null fields)
+int insertBatch(List<T> entities);         // Batch insert
 ```
 
-### 更新方法
+### Query Methods
 
 ```java
-int updateByPrimaryKey(T entity);          // 根据主键更新
-int updateByPrimaryKeySelective(T entity); // 根据主键更新（非空）
-int updateBatch(List<T> entities);         // 批量更新
+T selectById(I id);                        // Query by primary key
+List<T> selectByIds(Collection<I> ids);    // Batch query
+List<T> selectAll();                       // Query all
+List<T> select(T entity);                  // Query by entity properties
+List<T> selectByCondition(Condition<T> c); // Query by condition
+long selectCount(T entity);                // Count
+Cursor<T> selectCursorByCondition(...);    // Cursor query
 ```
 
-### 删除方法
+### Update Methods
 
 ```java
-int deleteById(I id);                      // 根据主键删除
-int deleteBatchByIds(Collection<I> ids);   // 批量删除
-int delete(T entity);                      // 根据实体删除
+int updateByPrimaryKey(T entity);          // Update by primary key
+int updateByPrimaryKeySelective(T entity); // Update by primary key (non-null)
+int updateBatch(List<T> entities);         // Batch update
 ```
 
-### ConditionWrapper 方法
+### Deletion Methods
 
 ```java
-.eq(User::getName, "张三")                 // 等于
-.ne(User::getStatus, 0)                   // 不等于
-.gt(User::getAge, 18)                     // 大于
-.like(User::getName, "%张%")              // 模糊
-.between(User::getAge, 18, 65)            // 范围
-.in(User::getRegion, list)                // 包含
-.isNull(User::getEmail)                   // 为空
-.orderBy(User::getCreateTime, DESC)       // 排序
-.select(User::getId, User::getName)       // 列选择
-.limit(10)                                // 限制
-.list()                                   // 查询列表
-.one()                                    // 查询单个
-.count()                                  // 统计
-.page(1, 20)                              // 分页
+int deleteById(I id);                      // Delete by primary key
+int deleteBatchByIds(Collection<I> ids);   // Batch delete
+int delete(T entity);                      // Delete by entity properties
 ```
 
----
+### ConditionWrapper Methods (Fluent API)
 
-## 🔧 配置示例
+```java
+.eq(User::getName, "John Doe")             // Equals
+.ne(User::getStatus, 0)                   // Not Equals
+.gt(User::getAge, 18)                     // Greater Than
+.like(User::getName, "%John%")            // Like
+.between(User::getAge, 18, 65)            // Range Between
+.in(User::getRegion, list)                // In collection
+.isNull(User::getEmail)                   // Is Null
+.orderBy(User::getCreateTime, DESC)       // Ordering
+.select(User::getId, User::getName)       // Column selection
+.limit(10)                                // Limit
+.list()                                   // Query list
+.one()                                    // Query single record
+.count()                                  // Count
+.page(1, 20)                              // Paging
+```
+
+-----
+
+## 🔧 Configuration Example
 
 ```yaml
 mapper:
-  # 审计配置
+  # Global configuration, effective for all databases
+  # Tenant Isolation
+  tenant:
+    column: tenant_id
+    ignore: sys_tenant,sys_config,sys_dict
+
+  # SQL Auditing
   audit:
     enabled: true
-    slow-sql-threshold: 100
-    record-full-sql: true
+    slow-sql-threshold: 500
+    log-parameters: true
+    print-console: true
 
-  # 多租户配置
-  tenant:
+  # Data Population
+  populate:
+    created: true
+    modified: true
+    creator: true
+    modifier: true
+
+  # Data Visibility
+  visible:
     enabled: true
-    tenant-mode: COLUMN
-    tenant-id-column: tenant_id
+    ignore: sys_admin_table
 
-  # 缓存配置
-  cache:
-    enabled: true
-    max-size: 5000
-    ttl: 3600
+  # Table Prefix
+  table:
+    value: prod_
+    ignore: sys_log,sys_config
 
-  # 分页配置
-  paging:
-    default-page-size: 20
-    max-page-size: 500
+  # Per-Database Configuration (overrides global)
+  configurationProperties:
+    com_deepparser:
+      table:
+        prefix: dp_
+        ignore: tenant,assets,license
+      tenant:
+        column: tenant_id
+        ignore: tenant,assets,license
+    # ......
 ```
 
----
+-----
+
+Would you like to search for a tutorial video on YouTube for getting started with Bus Mapper?

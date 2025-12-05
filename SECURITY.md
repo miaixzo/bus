@@ -12,5 +12,3 @@
 ## Reporting a Vulnerability
 
 If you discover any security issues or vulnerabilities, please send an email to `service@miaixz.org`.
-
-To report any found security issues or vulnerabilities, please send a mail to `service@miaixz.org`.

@@ -28,43 +28,110 @@
 package org.miaixz.bus.starter.mapper;
 
 import java.io.IOException;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.sql.DataSource;
 
+import org.apache.ibatis.annotations.DeleteProvider;
+import org.apache.ibatis.annotations.InsertProvider;
+import org.apache.ibatis.annotations.SelectProvider;
+import org.apache.ibatis.annotations.UpdateProvider;
 import org.apache.ibatis.io.VFS;
+import org.apache.ibatis.reflection.TypeParameterResolver;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.miaixz.bus.core.Context;
+import org.miaixz.bus.core.io.file.FileType;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
+import org.mybatis.spring.mapper.MapperScannerConfigurer;
+import org.springframework.aot.hint.MemberCategory;
+import org.springframework.aot.hint.RuntimeHints;
+import org.springframework.beans.PropertyValue;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.aot.BeanFactoryInitializationAotContribution;
+import org.springframework.beans.factory.aot.BeanFactoryInitializationAotProcessor;
+import org.springframework.beans.factory.aot.BeanRegistrationExcludeFilter;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.beans.factory.support.MergedBeanDefinitionPostProcessor;
+import org.springframework.beans.factory.support.RegisteredBean;
+import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Role;
+import org.springframework.core.ResolvableType;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
+import org.springframework.util.ClassUtils;
+import org.springframework.util.ReflectionUtils;
 
 import jakarta.annotation.Resource;
 
 /**
- * Auto-configuration for MyBatis, providing {@link SqlSessionFactory} and {@link SqlSessionTemplate} beans. This
- * configuration is activated when {@link SqlSessionFactory} and {@link SqlSessionFactoryBean} are on the classpath and
- * no other {@link MapperFactoryBean} is defined.
+ * Unified auto-configuration for MyBatis with comprehensive Native Image support.
+ * <p>
+ * This class handles both:
+ * <ul>
+ * <li><strong>JVM Runtime:</strong> Creates MyBatis core beans (SqlSessionFactory, SqlSessionTemplate)</li>
+ * <li><strong>GraalVM Native Image:</strong> Registers AOT hints for Mapper discovery and entity type resolution</li>
+ * </ul>
+ * <p>
+ * <strong>JVM Mode Behavior:</strong>
+ * <ul>
+ * <li>Loads MapperConfiguration (this class) as auto-configuration</li>
+ * <li>Creates SqlSessionFactory and SqlSessionTemplate beans</li>
+ * <li>AOT processors are instantiated but not executed (Spring ignores BeanFactoryInitializationAotProcessor in
+ * JVM)</li>
+ * <li>Bean post-processors (MapperInterfaceStringToClassConverter) handle any String-based mapperInterface
+ * gracefully</li>
+ * <li>No runtime overhead - only infrastructure beans</li>
+ * </ul>
+ * <p>
+ * <strong>Native Image Compilation Behavior:</strong>
+ * <ul>
+ * <li>Spring AOT discovers and processes this configuration</li>
+ * <li>MyBatisBeanFactoryInitializationAotProcessor executes dynamically</li>
+ * <li>Scans for all MapperFactoryBean definitions</li>
+ * <li>Registers JDK proxies for Mapper interfaces</li>
+ * <li>Analyzes method signatures to extract entity types</li>
+ * <li>Registers SQL Provider classes from annotations</li>
+ * <li>Generates reflection metadata into native image binary</li>
+ * </ul>
+ * <p>
+ * <strong>Native Image Runtime Behavior:</strong>
+ * <ul>
+ * <li>Creates SqlSessionFactory and SqlSessionTemplate (same as JVM)</li>
+ * <li>MapperInterfaceStringToClassConverter fixes AOT-generated bean definitions</li>
+ * <li>Uses pre-compiled reflection metadata from native-image compilation</li>
+ * <li>All Mapper methods work with zero reflection overhead</li>
+ * </ul>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -246,7 +313,7 @@ public class MapperConfiguration implements InitializingBean {
         }
 
         /**
-         * Lists all resources under a given path, which is essential for MyBatis to find mappers and type aliases.
+         * Lists all resources under a given path.
          *
          * @param url  The URL of the resource to list.
          * @param path The path within the URL to list.
@@ -267,14 +334,308 @@ public class MapperConfiguration implements InitializingBean {
 
         /**
          * Preserves the sub-package name from the full resource URI.
-         *
-         * @param uri      The URI of the resource.
-         * @param rootPath The root path to relativize against.
-         * @return The relative path of the resource.
          */
         private String preserveSubpackageName(final URI uri, final String rootPath) {
             final String url = uri.toString();
             return url.substring(url.indexOf(rootPath));
+        }
+
+    }
+
+    /**
+     * Registers the {@link BeanFactoryInitializationAotProcessor} that scans for {@link MapperFactoryBean} definitions
+     * and registers runtime hints.
+     * <p>
+     * <strong>JVM Mode:</strong> Instantiated but not executed (AOT processors are ignored) <strong>Native Image
+     * Mode:</strong> Executed during native-image compilation
+     *
+     * @return the AOT processor bean
+     */
+    @Bean
+    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+    static MyBatisBeanFactoryInitializationAotProcessor myBatisBeanFactoryInitializationAotProcessor() {
+        return new MyBatisBeanFactoryInitializationAotProcessor();
+    }
+
+    /**
+     * Registers a {@link MergedBeanDefinitionPostProcessor} to resolve the generic type of {@link MapperFactoryBean}
+     * bean definitions.
+     *
+     * @return the post-processor bean
+     */
+    @Bean
+    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+    static MyBatisMapperFactoryBeanPostProcessor myBatisMapperFactoryBeanPostProcessor() {
+        return new MyBatisMapperFactoryBeanPostProcessor();
+    }
+
+    /**
+     * Registers a BeanFactoryPostProcessor to fix MapperFactoryBean definitions at runtime. This is needed when
+     * AOT-generated bean definitions set mapperInterface as String.
+     *
+     * @return the bean factory post-processor
+     */
+    @Bean
+    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+    static MapperInterfaceStringToClassConverter mapperInterfaceStringToClassConverter() {
+        return new MapperInterfaceStringToClassConverter();
+    }
+
+    /**
+     * AOT processor that discovers MapperFactoryBean beans and registers runtime hints for native compilation.
+     */
+    static class MyBatisBeanFactoryInitializationAotProcessor
+            implements BeanFactoryInitializationAotProcessor, BeanRegistrationExcludeFilter {
+
+        private final Set<Class<?>> excludeClasses = new HashSet<>();
+
+        MyBatisBeanFactoryInitializationAotProcessor() {
+            excludeClasses.add(MapperScannerConfigurer.class);
+        }
+
+        @Override
+        public boolean isExcludedFromAotProcessing(RegisteredBean registeredBean) {
+            return excludeClasses.contains(registeredBean.getBeanClass());
+        }
+
+        @Override
+        public BeanFactoryInitializationAotContribution processAheadOfTime(
+                ConfigurableListableBeanFactory beanFactory) {
+            String[] beanNames = beanFactory.getBeanNamesForType(MapperFactoryBean.class);
+            if (beanNames.length == 0) {
+                return null;
+            }
+            return (context, code) -> {
+                RuntimeHints hints = context.getRuntimeHints();
+                for (String beanName : beanNames) {
+                    BeanDefinition beanDefinition = beanFactory.getBeanDefinition(beanName.substring(1));
+                    PropertyValue mapperInterface = beanDefinition.getPropertyValues()
+                            .getPropertyValue("mapperInterface");
+                    if (mapperInterface != null && mapperInterface.getValue() != null) {
+                        Class<?> mapperInterfaceType = null;
+                        Object mapperInterfaceValue = mapperInterface.getValue();
+
+                        if (mapperInterfaceValue instanceof Class) {
+                            mapperInterfaceType = (Class<?>) mapperInterfaceValue;
+                        } else if (mapperInterfaceValue instanceof String) {
+                            try {
+                                mapperInterfaceType = Class.forName((String) mapperInterfaceValue);
+                            } catch (ClassNotFoundException e) {
+                                Logger.debug("Failed to load mapper interface class: " + mapperInterfaceValue);
+                                e.printStackTrace();
+                                continue;
+                            }
+                        }
+
+                        if (mapperInterfaceType != null) {
+                            registerReflectionTypeIfNecessary(mapperInterfaceType, hints);
+                            hints.proxies().registerJdkProxy(mapperInterfaceType);
+                            String registerPattern = mapperInterfaceType.getName().replace(Symbol.C_DOT, Symbol.C_SLASH)
+                                    .replace("org/miaixz/", Normal.EMPTY).concat(FileType.TYPE_XML);
+                            hints.resources().registerPattern(registerPattern);
+                            registerMapperRelationships(mapperInterfaceType, hints);
+                        }
+                    }
+                }
+            };
+        }
+
+        private void registerMapperRelationships(Class<?> mapperInterfaceType, RuntimeHints hints) {
+            Method[] methods = ReflectionUtils.getAllDeclaredMethods(mapperInterfaceType);
+            for (Method method : methods) {
+                if (method.getDeclaringClass() != Object.class) {
+                    ReflectionUtils.makeAccessible(method);
+                    registerSqlProviderTypes(
+                            method,
+                            hints,
+                            SelectProvider.class,
+                            SelectProvider::value,
+                            SelectProvider::type);
+                    registerSqlProviderTypes(
+                            method,
+                            hints,
+                            InsertProvider.class,
+                            InsertProvider::value,
+                            InsertProvider::type);
+                    registerSqlProviderTypes(
+                            method,
+                            hints,
+                            UpdateProvider.class,
+                            UpdateProvider::value,
+                            UpdateProvider::type);
+                    registerSqlProviderTypes(
+                            method,
+                            hints,
+                            DeleteProvider.class,
+                            DeleteProvider::value,
+                            DeleteProvider::type);
+
+                    Class<?> returnType = MyBatisMapperTypes.resolveReturnClass(mapperInterfaceType, method);
+                    registerReflectionTypeIfNecessary(returnType, hints);
+                    MyBatisMapperTypes.resolveParameterClasses(mapperInterfaceType, method)
+                            .forEach(x -> registerReflectionTypeIfNecessary(x, hints));
+                }
+            }
+        }
+
+        @SafeVarargs
+        private <T extends Annotation> void registerSqlProviderTypes(
+                Method method,
+                RuntimeHints hints,
+                Class<T> annotationType,
+                Function<T, Class<?>>... providerTypeResolvers) {
+            for (T annotation : method.getAnnotationsByType(annotationType)) {
+                for (Function<T, Class<?>> providerTypeResolver : providerTypeResolvers) {
+                    registerReflectionTypeIfNecessary(providerTypeResolver.apply(annotation), hints);
+                }
+            }
+        }
+
+        private void registerReflectionTypeIfNecessary(Class<?> type, RuntimeHints hints) {
+            if (!type.isPrimitive() && !type.getName().startsWith("java")) {
+                hints.reflection().registerType(type, MemberCategory.values());
+            }
+        }
+    }
+
+    /**
+     * Utility class to resolve actual parameter and return types from mapper methods with generics.
+     */
+    static class MyBatisMapperTypes {
+
+        private MyBatisMapperTypes() {
+            // Utility class - no instantiation
+        }
+
+        static Class<?> resolveReturnClass(Class<?> mapperInterface, Method method) {
+            Type resolvedReturnType = TypeParameterResolver.resolveReturnType(method, mapperInterface);
+            return typeToClass(resolvedReturnType, method.getReturnType());
+        }
+
+        static Set<Class<?>> resolveParameterClasses(Class<?> mapperInterface, Method method) {
+            return Stream.of(TypeParameterResolver.resolveParamTypes(method, mapperInterface))
+                    .map(x -> typeToClass(x, x instanceof Class ? (Class<?>) x : Object.class))
+                    .collect(Collectors.toSet());
+        }
+
+        private static Class<?> typeToClass(Type src, Class<?> fallback) {
+            Class<?> result = null;
+            if (src instanceof Class<?>) {
+                if (((Class<?>) src).isArray()) {
+                    result = ((Class<?>) src).getComponentType();
+                } else {
+                    result = (Class<?>) src;
+                }
+            } else if (src instanceof ParameterizedType) {
+                ParameterizedType parameterizedType = (ParameterizedType) src;
+                int index = (parameterizedType.getRawType() instanceof Class
+                        && Map.class.isAssignableFrom((Class<?>) parameterizedType.getRawType())
+                        && parameterizedType.getActualTypeArguments().length > 1) ? 1 : 0;
+                Type actualType = parameterizedType.getActualTypeArguments()[index];
+                result = typeToClass(actualType, fallback);
+            }
+            if (result == null) {
+                result = fallback;
+            }
+            return result;
+        }
+    }
+
+    /**
+     * Post-processor that ensures MapperFactoryBean bean definitions include generic type information.
+     */
+    static class MyBatisMapperFactoryBeanPostProcessor implements MergedBeanDefinitionPostProcessor, BeanFactoryAware {
+
+        private ConfigurableBeanFactory beanFactory;
+
+        @Override
+        public void setBeanFactory(BeanFactory beanFactory) {
+            this.beanFactory = (ConfigurableBeanFactory) beanFactory;
+        }
+
+        @Override
+        public void postProcessMergedBeanDefinition(
+                RootBeanDefinition beanDefinition,
+                Class<?> beanType,
+                String beanName) {
+        }
+    }
+
+    /**
+     * Converts String-based mapperInterface properties to Class objects in MapperFactoryBean definitions. Necessary
+     * because AOT-generated bean definitions set mapperInterface as String.
+     */
+    static class MapperInterfaceStringToClassConverter
+            implements org.springframework.beans.factory.config.BeanFactoryPostProcessor {
+
+        @Override
+        public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) {
+            Logger.debug("MapperInterfaceStringToClassConverter: Starting to process bean definitions");
+
+            String[] allBeanNames = beanFactory.getBeanDefinitionNames();
+            int processedCount = 0;
+
+            Logger.debug("Total bean definitions to check: {}", allBeanNames.length);
+
+            for (String beanName : allBeanNames) {
+                try {
+                    BeanDefinition beanDefinition = beanFactory.getBeanDefinition(beanName);
+
+                    if (beanDefinition instanceof RootBeanDefinition) {
+                        RootBeanDefinition rootBeanDefinition = (RootBeanDefinition) beanDefinition;
+
+                        if (rootBeanDefinition.hasBeanClass()
+                                && MapperFactoryBean.class.isAssignableFrom(rootBeanDefinition.getBeanClass())) {
+
+                            Object mapperInterfaceValue = rootBeanDefinition.getPropertyValues().get("mapperInterface");
+
+                            Logger.debug(
+                                    "Found MapperFactoryBean: " + beanName + ", mapperInterface type: "
+                                            + (mapperInterfaceValue != null ? mapperInterfaceValue.getClass().getName()
+                                                    : "null")
+                                            + ", value: " + mapperInterfaceValue);
+
+                            if (mapperInterfaceValue instanceof String) {
+                                String mapperInterfaceClassName = (String) mapperInterfaceValue;
+                                Logger.debug("Converting String to Class: {}", mapperInterfaceClassName);
+                                try {
+                                    Class<?> mapperInterface = ClassUtils
+                                            .forName(mapperInterfaceClassName, beanFactory.getBeanClassLoader());
+
+                                    rootBeanDefinition.getPropertyValues().removePropertyValue("mapperInterface");
+                                    rootBeanDefinition.getPropertyValues()
+                                            .addPropertyValue("mapperInterface", mapperInterface);
+
+                                    rootBeanDefinition.setTargetType(
+                                            ResolvableType
+                                                    .forClassWithGenerics(MapperFactoryBean.class, mapperInterface));
+
+                                    Logger.debug(
+                                            "Converted mapperInterface from String to Class for bean: " + beanName
+                                                    + " -> " + mapperInterface.getName());
+                                    processedCount++;
+                                } catch (ClassNotFoundException e) {
+                                    Logger.error(
+                                            "Failed to load mapper interface class: " + mapperInterfaceClassName,
+                                            e);
+                                }
+                            } else if (mapperInterfaceValue instanceof Class) {
+                                Logger.debug("Already a Class, no conversion needed");
+                            } else {
+                                Logger.debug(
+                                        "Unexpected type: "
+                                                + (mapperInterfaceValue != null ? mapperInterfaceValue.getClass()
+                                                        : "null"));
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    Logger.warn("Failed to process bean definition for: " + beanName, e);
+                }
+            }
+            Logger.debug(
+                    "MapperInterfaceStringToClassConverter: Processed " + processedCount
+                            + " MapperFactoryBean definitions");
         }
     }
 

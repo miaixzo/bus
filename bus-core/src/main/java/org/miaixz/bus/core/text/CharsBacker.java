@@ -2275,8 +2275,32 @@ public class CharsBacker extends CharsValidator {
         if (null == text1 || null == text2) {
             return false;
         }
+        if (text1 instanceof String && text2 instanceof String) {
+            return ((String) text1).regionMatches(ignoreCase, offset1, (String) text2, offset2, length);
+        }
+        if (offset1 < 0 || offset2 < 0 || length < 0) {
+            return false;
+        }
+        if (text1.length() - offset1 < length || text2.length() - offset2 < length) {
+            return false;
+        }
+        for (int i = 0; i < length; i++) {
+            final char c1 = text1.charAt(offset1 + i);
+            final char c2 = text2.charAt(offset2 + i);
+            if (c1 == c2) {
+                continue;
+            }
+            if (ignoreCase) {
+                final char u1 = Character.toLowerCase(c1);
+                final char u2 = Character.toLowerCase(c2);
+                if (u1 == u2) {
+                    continue;
+                }
+            }
+            return false;
+        }
 
-        return text1.toString().regionMatches(ignoreCase, offset1, text2.toString(), offset2, length);
+        return true;
     }
 
     /**

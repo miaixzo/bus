@@ -163,7 +163,7 @@ public class StringKit extends CharsBacker {
         if (null == charset) {
             charset = java.nio.charset.Charset.defaultCharset();
         }
-        return charset.decode(data).toString();
+        return charset.decode(data.duplicate()).toString();
     }
 
     /**

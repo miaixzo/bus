@@ -8,6 +8,7 @@ on:
       - "**.jpeg"
       - "**.png"
       - "**.webp"
+      - "**.svg"
   workflow_dispatch:
 jobs:
   build:

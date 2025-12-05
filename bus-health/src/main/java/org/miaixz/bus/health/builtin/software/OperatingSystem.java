@@ -42,8 +42,10 @@ import org.miaixz.bus.health.unix.driver.Xwininfo;
 
 /**
  * An operating system (OS) is the software on a computer that manages the way different programs use its hardware, and
- * regulates the ways that a user controls the computer. Considered thread safe, but see remarks for the
- * {@link #getSessions()} method.
+ * regulates the ways that a user controls the computer.
+ * <p>
+ * This interface is considered thread-safe, but see remarks for the {@link #getSessions()} method.
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -52,18 +54,101 @@ import org.miaixz.bus.health.unix.driver.Xwininfo;
 public interface OperatingSystem {
 
     /**
-     * Instantiates a {@link FileSystem} object.
-     *
-     * @return A {@link FileSystem} object.
+     * Constants which may be used to filter Process lists in {@link #getProcesses(Predicate, Comparator, int)},
+     * {@link #getChildProcesses(int, Predicate, Comparator, int)}, and
+     * {@link #getDescendantProcesses(int, Predicate, Comparator, int)}.
      */
-    FileSystem getFileSystem();
+    final class ProcessFiltering {
+
+        /**
+         * Private constructor to prevent instantiation.
+         */
+        private ProcessFiltering() {
+        }
+
+        /**
+         * No filtering. Returns all processes.
+         */
+        public static final Predicate<OSProcess> ALL_PROCESSES = p -> true;
+
+        /**
+         * Exclude processes with {@link OSProcess.State#INVALID} process state.
+         */
+        public static final Predicate<OSProcess> VALID_PROCESS = p -> !p.getState().equals(OSProcess.State.INVALID);
+
+        /**
+         * Exclude child processes. Only include processes which are their own parent.
+         */
+        public static final Predicate<OSProcess> NO_PARENT = p -> p.getParentProcessID() == p.getProcessID();
+
+        /**
+         * Only include 64-bit processes.
+         */
+        public static final Predicate<OSProcess> BITNESS_64 = p -> p.getBitness() == 64;
+
+        /**
+         * Only include 32-bit processes.
+         */
+        public static final Predicate<OSProcess> BITNESS_32 = p -> p.getBitness() == 32;
+    }
 
     /**
-     * Instantiates a {@link InternetProtocolStats} object.
-     *
-     * @return a {@link InternetProtocolStats} object.
+     * Constants which may be used to sort Process lists in {@link #getProcesses(Predicate, Comparator, int)},
+     * {@link #getChildProcesses(int, Predicate, Comparator, int)}, and
+     * {@link #getDescendantProcesses(int, Predicate, Comparator, int)}.
      */
-    InternetProtocolStats getInternetProtocolStats();
+    final class ProcessSorting {
+
+        /**
+         * Private constructor to prevent instantiation.
+         */
+        private ProcessSorting() {
+        }
+
+        /**
+         * No sorting.
+         */
+        public static final Comparator<OSProcess> NO_SORTING = (p1, p2) -> 0;
+
+        /**
+         * Sort by decreasing cumulative CPU percentage.
+         */
+        public static final Comparator<OSProcess> CPU_DESC = Comparator
+                .comparingDouble(OSProcess::getProcessCpuLoadCumulative).reversed();
+
+        /**
+         * Sort by decreasing Resident Set Size (RSS).
+         */
+        public static final Comparator<OSProcess> RSS_DESC = Comparator.comparingLong(OSProcess::getResidentSetSize)
+                .reversed();
+
+        /**
+         * Sort by up time, newest processes first.
+         */
+        public static final Comparator<OSProcess> UPTIME_ASC = Comparator.comparingLong(OSProcess::getUpTime);
+
+        /**
+         * Sort by up time, oldest processes first.
+         */
+        public static final Comparator<OSProcess> UPTIME_DESC = UPTIME_ASC.reversed();
+
+        /**
+         * Sort by Process Id.
+         */
+        public static final Comparator<OSProcess> PID_ASC = Comparator.comparingInt(OSProcess::getProcessID);
+
+        /**
+         * Sort by Parent Process Id.
+         */
+        public static final Comparator<OSProcess> PARENTPID_ASC = Comparator
+                .comparingInt(OSProcess::getParentProcessID);
+
+        /**
+         * Sort by Process Name (case-insensitive).
+         */
+        public static final Comparator<OSProcess> NAME_ASC = Comparator
+                .comparing(OSProcess::getName, String.CASE_INSENSITIVE_ORDER);
+    }
 
     /**
      * Get the Operating System family.
@@ -85,6 +170,20 @@ public interface OperatingSystem {
      * @return version information
      */
     OSVersionInfo getVersionInfo();
+
+    /**
+     * Instantiates a {@link FileSystem} object.
+     *
+     * @return A {@link FileSystem} object.
+     */
+    FileSystem getFileSystem();
+
+    /**
+     * Instantiates a {@link InternetProtocolStats} object.
+     *
+     * @return a {@link InternetProtocolStats} object.
+     */
+    InternetProtocolStats getInternetProtocolStats();
 
     /**
      * Gets currently running processes. No order is guaranteed.
@@ -113,7 +212,19 @@ public interface OperatingSystem {
     List<OSProcess> getProcesses(Predicate<OSProcess> filter, Comparator<OSProcess> sort, int limit);
 
     /**
-     * Gets information on a currently running process
+     * Gets information on a {@link Collection} of currently running processes. This has potentially improved
+     * performance vs. iterating individual processes.
+     *
+     * @param pids A collection of process IDs
+     * @return A list of {@link OSProcess} objects for the specified process ids if it is running
+     */
+    default List<OSProcess> getProcesses(Collection<Integer> pids) {
+        return pids.stream().map(this::getProcess).filter(Objects::nonNull).filter(ProcessFiltering.VALID_PROCESS)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Gets information on a currently running process.
      *
      * @param pid A process ID
      * @return An {@link OSProcess} object for the specified process id if it is running; null otherwise
@@ -143,18 +254,6 @@ public interface OperatingSystem {
             int limit);
 
     /**
-     * Gets information on a {@link Collection} of currently running processes. This has potentially improved
-     * performance vs. iterating individual processes.
-     *
-     * @param pids A collection of process IDs
-     * @return A list of {@link OSProcess} objects for the specified process ids if it is running
-     */
-    default List<OSProcess> getProcesses(Collection<Integer> pids) {
-        return pids.stream().map(this::getProcess).filter(Objects::nonNull).filter(ProcessFiltering.VALID_PROCESS)
-                .collect(Collectors.toList());
-    }
-
-    /**
      * Gets currently running processes of provided parent PID's descendants, including their children, the children's
      * children, etc., optionally filtering, sorting, and limited to the top "N".
      *
@@ -177,31 +276,6 @@ public interface OperatingSystem {
             int limit);
 
     /**
-     * Instantiates a {@link NetworkParams} object.
-     *
-     * @return A {@link NetworkParams} object.
-     */
-    NetworkParams getNetworkParams();
-
-    /**
-     * Gets currently logged in users.
-     * <p>
-     * On macOS, Linux, and Unix systems, the default implementation uses native code (see {@code man getutxent}) that
-     * is not thread safe. OSHI's use of this code is synchronized and may be used in a multi-threaded environment
-     * without introducing any additional conflicts. Users should note, however, that other operating system code may
-     * access the same native code.
-     * <p>
-     * The {@link Who#queryWho()} method produces similar output parsing the output of the Posix-standard {@code who}
-     * command, and may internally employ reentrant code on some platforms. Users may opt to use this command-line
-     * variant by default using the {@code bus.health.unix.whoCommand} configuration property.
-     *
-     * @return A list of {@link OSSession} objects representing logged-in users
-     */
-    default List<OSSession> getSessions() {
-        return Who.queryWho();
-    }
-
-    /**
      * Gets the current process ID (PID).
      *
      * @return the Process ID of the current process
@@ -218,7 +292,7 @@ public interface OperatingSystem {
     }
 
     /**
-     * Get the number of processes currently running
+     * Get the number of processes currently running.
      *
      * @return The number of processes running
      */
@@ -226,7 +300,7 @@ public interface OperatingSystem {
 
     /**
      * Makes a best effort to get the current thread ID (TID). May not be useful in a multithreaded environment. The
-     * thread ID returned may have been short lived and no longer exist.
+     * thread ID returned may have been short-lived and no longer exist.
      * <p>
      * Thread IDs on macOS are not correlated with any other Operating System output.
      *
@@ -236,7 +310,7 @@ public interface OperatingSystem {
 
     /**
      * Makes a best effort to get the current thread. May not be useful in a multithreaded environment. The thread
-     * returned may have been short lived and no longer exist.
+     * returned may have been short-lived and no longer exist.
      * <p>
      * On macOS, returns the oldest thread in the calling process.
      *
@@ -245,7 +319,7 @@ public interface OperatingSystem {
     OSThread getCurrentThread();
 
     /**
-     * Get the number of threads currently running
+     * Get the number of threads currently running.
      *
      * @return The number of threads running
      */
@@ -273,12 +347,46 @@ public interface OperatingSystem {
     long getSystemBootTime();
 
     /**
-     * Determine whether the current process has elevated permissions such as sudo / Administrator
+     * Determine whether the current process has elevated permissions such as sudo / Administrator.
      *
      * @return True if this process has elevated permissions
      */
     default boolean isElevated() {
         return IdGroup.isElevated();
+    }
+
+    /**
+     * Instantiates a {@link NetworkParams} object.
+     *
+     * @return A {@link NetworkParams} object.
+     */
+    NetworkParams getNetworkParams();
+
+    /**
+     * Gets the all services on the system. The definition of what is a service is platform-dependent.
+     *
+     * @return An array of {@link OSService} objects
+     */
+    default List<OSService> getServices() {
+        return new ArrayList<>();
+    }
+
+    /**
+     * Gets currently logged in users.
+     * <p>
+     * On macOS, Linux, and Unix systems, the default implementation uses native code (see {@code man getutxent}) that
+     * is not thread safe. OSHI's use of this code is synchronized and may be used in a multi-threaded environment
+     * without introducing any additional conflicts. Users should note, however, that other operating system code may
+     * access the same native code.
+     * <p>
+     * The {@link Who#queryWho()} method produces similar output parsing the output of the Posix-standard {@code who}
+     * command, and may internally employ reentrant code on some platforms. Users may opt to use this command-line
+     * variant by default using the {@code oshi.os.unix.whoCommand} configuration property.
+     *
+     * @return A list of {@link OSSession} objects representing logged-in users
+     */
+    default List<OSSession> getSessions() {
+        return Who.queryWho();
     }
 
     /**
@@ -314,105 +422,35 @@ public interface OperatingSystem {
     }
 
     /**
-     * Gets the all services on the system. The definition of what is a service is platform-dependent.
-     *
-     * @return An array of {@link OSService} objects
-     */
-    default List<OSService> getServices() {
-        return new ArrayList<>();
-    }
-
-    /**
-     * Constants which may be used to filter Process lists in {@link #getProcesses(Predicate, Comparator, int)},
-     * {@link #getChildProcesses(int, Predicate, Comparator, int)}, and
-     * {@link #getDescendantProcesses(int, Predicate, Comparator, int)}.
-     */
-    final class ProcessFiltering {
-
-        /**
-         * No filtering.
-         */
-        public static final Predicate<OSProcess> ALL_PROCESSES = p -> true;
-        /**
-         * Exclude processes with {@link OSProcess.State#INVALID} process state.
-         */
-        public static final Predicate<OSProcess> VALID_PROCESS = p -> !p.getState().equals(OSProcess.State.INVALID);
-        /**
-         * Exclude child processes. Only include processes which are their own parent.
-         */
-        public static final Predicate<OSProcess> NO_PARENT = p -> p.getParentProcessID() == p.getProcessID();
-        /**
-         * Only incude 64-bit processes.
-         */
-        public static final Predicate<OSProcess> BITNESS_64 = p -> p.getBitness() == 64;
-        /**
-         * Only include 32-bit processes.
-         */
-        public static final Predicate<OSProcess> BITNESS_32 = p -> p.getBitness() == 32;
-
-        private ProcessFiltering() {
-        }
-    }
-
-    /**
-     * Constants which may be used to sort Process lists in {@link #getProcesses(Predicate, Comparator, int)},
-     * {@link #getChildProcesses(int, Predicate, Comparator, int)}, and
-     * {@link #getDescendantProcesses(int, Predicate, Comparator, int)}.
-     */
-    final class ProcessSorting {
-
-        /**
-         * No sorting
-         */
-        public static final Comparator<OSProcess> NO_SORTING = (p1, p2) -> 0;
-        /**
-         * Sort by decreasing cumulative CPU percentage
-         */
-        public static final Comparator<OSProcess> CPU_DESC = Comparator
-                .comparingDouble(OSProcess::getProcessCpuLoadCumulative).reversed();
-        /**
-         * Sort by decreasing Resident Set Size (RSS)
-         */
-        public static final Comparator<OSProcess> RSS_DESC = Comparator.comparingLong(OSProcess::getResidentSetSize)
-                .reversed();
-        /**
-         * Sort by up time, newest processes first
-         */
-        public static final Comparator<OSProcess> UPTIME_ASC = Comparator.comparingLong(OSProcess::getUpTime);
-        /**
-         * Sort by up time, oldest processes first
-         */
-        public static final Comparator<OSProcess> UPTIME_DESC = UPTIME_ASC.reversed();
-        /**
-         * Sort by Process Id
-         */
-        public static final Comparator<OSProcess> PID_ASC = Comparator.comparingInt(OSProcess::getProcessID);
-        /**
-         * Sort by Parent Process Id
-         */
-        public static final Comparator<OSProcess> PARENTPID_ASC = Comparator
-                .comparingInt(OSProcess::getParentProcessID);
-        /**
-         * Sort by Process Name (case insensitive)
-         */
-        public static final Comparator<OSProcess> NAME_ASC = Comparator
-                .comparing(OSProcess::getName, String.CASE_INSENSITIVE_ORDER);
-
-        private ProcessSorting() {
-        }
-    }
-
-    /**
      * A class representing the Operating System version details.
      */
     @Immutable
     class OSVersionInfo {
 
+        /**
+         * The OS version string.
+         */
         private final String version;
+        /**
+         * The code name of the OS.
+         */
         private final String codeName;
+        /**
+         * The build number of the OS.
+         */
         private final String buildNumber;
+        /**
+         * The string representation of the version info.
+         */
         private final String versionStr;
 
+        /**
+         * Constructor for OSVersionInfo.
+         *
+         * @param version     The OS version.
+         * @param codeName    The code name.
+         * @param buildNumber The build number.
+         */
         public OSVersionInfo(String version, String codeName, String buildNumber) {
             this.version = version;
             this.codeName = codeName;
