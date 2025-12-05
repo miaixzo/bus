@@ -32,7 +32,7 @@
 
     <groupId>org.miaixz</groupId>
     <artifactId>bus-proxy</artifactId>
-    <version>8.3.3</version>
+    <version>8.3.5</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -85,8 +85,8 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <bus.version>8.3.3</bus.version>
-        <spring.boot.version>3.5.6</spring.boot.version>
+        <bus.version>8.3.5</bus.version>
+        <spring.boot.version>3.5.8</spring.boot.version>
         <aspectj.version>1.9.24</aspectj.version>
     </properties>
 
@@ -199,9 +199,14 @@
                 </configuration>
             </plugin>
             <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>versions-maven-plugin</artifactId>
+                <version>2.20.1</version>
+            </plugin>
+            <plugin>
                 <groupId>com.diffplug.spotless</groupId>
                 <artifactId>spotless-maven-plugin</artifactId>
-                <version>3.0.0</version>
+                <version>3.1.0</version>
                 <configuration>
                     <upToDateChecking>
                         <enabled>false</enabled>

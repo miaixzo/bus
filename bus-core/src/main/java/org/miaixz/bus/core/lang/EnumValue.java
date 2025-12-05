@@ -568,59 +568,144 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
     }
 
     /**
-     * Enumeration for naming conventions or patterns.
+     * Enumeration for different text styles, including naming conventions and text formatting.
+     *
+     * <p>
+     * Defines constants representing various text styles, such as naming conventions (e.g., camelCase, snake_case) and
+     * formatting options (e.g., Bold, Italic). These constants can be used to specify a target style for text
+     * transformation.
+     * </p>
      */
     @Getter
     @AllArgsConstructor
     enum Naming {
 
         /**
-         * Default or normal naming convention.
+         * Normal text style, no transformation applied.
+         * <p>
+         * e.g., "get_user_info" remains "get_user_info".
          */
-        NORMAL(0, "默认"),
+        NORMAL(0, "Normal"),
 
         /**
-         * Bold or intensified style.
+         * Bold text style, applies a bold formatting.
+         * <p>
+         * e.g., "get_user_info" would be displayed as get_user_info.
          */
-        BOLD(1, "粗体"),
+        BOLD(1, "Bold"),
 
         /**
-         * Faint or de-emphasized style.
+         * Faint/de-emphasized text style, reduces the intensity.
+         * <p>
+         * e.g., "get_user_info" would be displayed with a faint style.
          */
-        FAINT(2, "弱化"),
-        /**
-         * Italic style.
-         */
-        ITALIC(3, "斜体"),
-        /**
-         * Convert to uppercase.
-         */
-        UPPER_CASE(4, "大写"),
-        /**
-         * Convert to lowercase.
-         */
-        LOWER_CASE(5, "小写"),
-        /**
-         * Camel case naming convention.
-         */
-        CAMEL(6, "驼峰"),
-        /**
-         * Convert camel case to uppercase with underscores.
-         */
-        CAMEL_UNDERLINE_UPPER_CASE(7, "驼峰转下划线大写"),
-        /**
-         * Convert camel case to lowercase with underscores.
-         */
-        CAMEL_UNDERLINE_LOWER_CASE(8, "驼峰转下划线小写");
+        FAINT(2, "Faint"),
 
         /**
-         * The code associated with the naming convention.
+         * Italic text style, applies an italic slant.
+         * <p>
+         * e.g., "get_user_info" would be displayed as get_user_info.
+         */
+        ITALIC(3, "Italic"),
+
+        /**
+         * Converts text to all uppercase letters.
+         * <p>
+         * e.g., "get_user_info" becomes "GET_USER_INFO".
+         */
+        UPPER_CASE(4, "Uppercase"),
+
+        /**
+         * Converts text to all lowercase letters.
+         * <p>
+         * e.g., "get_user_info" becomes "get_user_info".
+         */
+        LOWER_CASE(5, "Lowercase"),
+
+        /**
+         * Lower camel case naming convention.
+         * <p>
+         * e.g., "get_user_info" becomes "getUserInfo".
+         */
+        CAMEL_CASE(6, "Camel Case"),
+
+        /**
+         * Pascal case (Upper Camel Case) naming convention.
+         * <p>
+         * e.g., "get_user_info" becomes "GetUserInfo".
+         */
+        PASCAL_CASE(7, "Pascal Case"),
+
+        /**
+         * Lower snake case naming convention.
+         * <p>
+         * e.g., "get_user_info" becomes "get_user_info".
+         */
+        LOWER_SNAKE_CASE(8, "Lower Snake Case"),
+
+        /**
+         * Upper snake case naming convention, often used for constants.
+         * <p>
+         * e.g., "get_user_info" becomes "GET_USER_INFO".
+         */
+        UPPER_SNAKE_CASE(9, "Upper Snake Case");
+
+        /**
+         * The unique code associated with the text style.
          */
         private final long code;
+
         /**
-         * The Chinese name of the naming convention.
+         * The display name of the text style.
          */
         private final String name;
+
+        /**
+         * Gets the text style by its associated code.
+         *
+         * @param code the code value
+         * @return the text style, or {@link #NORMAL} if not found
+         */
+        public static Naming fromCode(long code) {
+            for (Naming naming : values()) {
+                if (naming.code == code) {
+                    return naming;
+                }
+            }
+            return NORMAL;
+        }
+
+        /**
+         * Gets the text style by its name (case-insensitive).
+         * <p>
+         * This method normalizes the input string by converting it to uppercase and replacing hyphens with underscores
+         * to match the enum constant names.
+         * </p>
+         *
+         * @param name the text style name
+         * @return the text style, or {@link #NORMAL} if not found or if the name is null/empty
+         */
+        public static Naming fromString(String name) {
+            if (name == null || name.isEmpty()) {
+                return NORMAL;
+            }
+
+            try {
+                String normalized = name.toUpperCase().replace(Symbol.C_MINUS, Symbol.C_UNDERLINE);
+                return valueOf(normalized);
+            } catch (IllegalArgumentException e) {
+                return NORMAL;
+            }
+        }
+
+        /**
+         * Gets the default naming convention.
+         *
+         * @return the default naming convention, which is {@link #LOWER_SNAKE_CASE}
+         */
+        public static Naming getDefault() {
+            return LOWER_SNAKE_CASE;
+        }
 
     }
 
@@ -782,6 +867,24 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
          * The code value representing the sort order.
          */
         String code;
+
+        public boolean isAscending() {
+            return this.equals(ASC);
+        }
+
+        public boolean isDescending() {
+            return this.equals(DESC);
+        }
+
+        public static Sort fromString(String value) {
+            try {
+                return Sort.valueOf(value.toUpperCase());
+            } catch (Exception e) {
+                throw new IllegalArgumentException(String.format(
+                        "Invalid value '%s' for orders given; Has to be either 'desc' or 'asc' (case insensitive)",
+                        value), e);
+            }
+        }
 
     }
 

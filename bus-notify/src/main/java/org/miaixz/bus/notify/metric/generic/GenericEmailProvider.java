@@ -43,7 +43,7 @@ import org.miaixz.bus.extra.mail.MailAuthenticator;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.notify.Context;
 import org.miaixz.bus.notify.magic.ErrorCode;
-import org.miaixz.bus.notify.magic.Material;
+import org.miaixz.bus.notify.magic.Notice;
 import org.miaixz.bus.notify.metric.AbstractProvider;
 
 import jakarta.activation.DataHandler;
@@ -58,7 +58,7 @@ import jakarta.mail.internet.*;
  * @author Justubborn
  * @since Java 17+
  */
-public class GenericEmailProvider extends AbstractProvider<GenericMaterial, Context> {
+public class GenericEmailProvider extends AbstractProvider<GenericNotice, Context> {
 
     /**
      * Constructs a {@code GenericEmailProvider} with the given context.
@@ -72,11 +72,11 @@ public class GenericEmailProvider extends AbstractProvider<GenericMaterial, Cont
     /**
      * Sends an email notification.
      *
-     * @param entity The {@link GenericMaterial} containing email details.
+     * @param entity The {@link GenericNotice} containing email details.
      * @return A {@link Message} indicating the result of the email sending operation.
      */
     @Override
-    public Message send(GenericMaterial entity) {
+    public Message send(GenericNotice entity) {
         try {
             Transport.send(build(entity));
         } catch (MessagingException e) {
@@ -164,13 +164,13 @@ public class GenericEmailProvider extends AbstractProvider<GenericMaterial, Cont
     }
 
     /**
-     * Builds a {@link MimeMessage} from the given {@link GenericMaterial}.
+     * Builds a {@link MimeMessage} from the given {@link GenericNotice}.
      *
-     * @param entity The {@link GenericMaterial} containing email details.
+     * @param entity The {@link GenericNotice} containing email details.
      * @return The constructed {@link MimeMessage}.
      * @throws MessagingException if there is an error in building the message.
      */
-    private MimeMessage build(GenericMaterial entity) throws MessagingException {
+    private MimeMessage build(GenericNotice entity) throws MessagingException {
         entity.defaultIfEmpty();
         final Charset charset = entity.getCharset();
         final MimeMessage msg = new MimeMessage(getSession(entity));
@@ -196,7 +196,7 @@ public class GenericEmailProvider extends AbstractProvider<GenericMaterial, Cont
                 entity.getContent(),
                 StringKit.format(
                         "text/{}; charset={}",
-                        Material.Type.HTML.equals(entity.getType()) ? "html" : "plain",
+                        Notice.Type.HTML.equals(entity.getType()) ? "html" : "plain",
                         entity.getCharset()));
         mainPart.addBodyPart(body);
 
@@ -242,10 +242,10 @@ public class GenericEmailProvider extends AbstractProvider<GenericMaterial, Cont
      * Retrieves a mail session. If a global singleton session is used, only one email account is allowed globally;
      * otherwise, a new session will be created for each email sent.
      *
-     * @param template The {@link GenericMaterial} containing session configuration.
+     * @param template The {@link GenericNotice} containing session configuration.
      * @return The mail {@link Session}.
      */
-    private Session getSession(GenericMaterial template) {
+    private Session getSession(GenericNotice template) {
         Authenticator authenticator = null;
         if (template.getAuth()) {
             authenticator = MailAuthenticator.of(template.getUser(), template.getPass());

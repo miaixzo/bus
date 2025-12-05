@@ -47,18 +47,18 @@ import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.notify.Context;
 import org.miaixz.bus.notify.magic.ErrorCode;
-import org.miaixz.bus.notify.magic.Material;
+import org.miaixz.bus.notify.magic.Notice;
 import org.miaixz.bus.notify.metric.AbstractProvider;
 
 /**
  * Abstract provider for Alibaba Cloud notification services, handling common logic like signing requests.
  *
- * @param <T> The type of {@link Material} this provider handles.
+ * @param <T> The type of {@link Notice} this provider handles.
  * @param <K> The type of {@link Context} this provider uses.
  * @author Justubborn
  * @since Java 17+
  */
-public class AliyunProvider<T extends Material, K extends Context> extends AbstractProvider<T, K> {
+public class AliyunProvider<T extends Notice, K extends Context> extends AbstractProvider<T, K> {
 
     /**
      * The success result code returned by Alibaba Cloud services.

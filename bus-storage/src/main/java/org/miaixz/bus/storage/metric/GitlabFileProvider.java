@@ -37,7 +37,6 @@ import java.util.stream.Collectors;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.gitlab.GitLabApi;
 import org.miaixz.bus.gitlab.models.RepositoryFile;
@@ -46,7 +45,7 @@ import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.storage.Builder;
 import org.miaixz.bus.storage.Context;
 import org.miaixz.bus.storage.magic.ErrorCode;
-import org.miaixz.bus.storage.magic.Material;
+import org.miaixz.bus.storage.magic.Blob;
 
 /**
  * Storage service provider for GitLab. This provider integrates with GitLab for file storage operations, treating
@@ -85,7 +84,7 @@ public class GitlabFileProvider extends AbstractProvider {
      * Downloads a file from the default GitLab project (bucket).
      *
      * @param fileName The name of the file to download.
-     * @return A {@link Message} containing the result of the operation, including the file content stream if
+     * @return A {@link Message} containing the result of the operation, including the file content as a byte array if
      *         successful.
      */
     @Override
@@ -94,12 +93,20 @@ public class GitlabFileProvider extends AbstractProvider {
     }
 
     /**
-     * Downloads a file from the specified GitLab project (bucket).
+     * Downloads a file from the specified GitLab project (bucket) and returns its content as a byte array.
+     * <p>
+     * This method retrieves the file content from GitLab and returns it as a byte array, making it suitable for images,
+     * PDFs, DOCX files, and other binary files.
+     * </p>
+     * <p>
+     * <strong>Note:</strong> For large files (> 50MB), consider using {@link #download(String, String, File)} instead
+     * to avoid excessive memory consumption.
+     * </p>
      *
      * @param bucket   The ID of the GitLab project (bucket).
      * @param fileName The name of the file to download.
-     * @return A {@link Message} containing the result of the operation, including the file content stream if
-     *         successful.
+     * @return A {@link Message} containing the result of the operation. If successful, the data field contains the file
+     *         content as a byte array; otherwise, it contains error information.
      */
     @Override
     public Message download(String bucket, String fileName) {
@@ -108,10 +115,9 @@ public class GitlabFileProvider extends AbstractProvider {
             String objectKey = Builder.buildObjectKey(prefix, Normal.EMPTY, fileName);
             RepositoryFile file = client.getRepositoryFileApi().getFile(bucket, objectKey, "master");
             byte[] content = file.getContent().getBytes();
-            BufferedReader bufferedReader = new BufferedReader(
-                    new InputStreamReader(new ByteArrayInputStream(content)));
+
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
-                    .data(bufferedReader).build();
+                    .data(content).build();
         } catch (Exception e) {
             Logger.error("Failed to download file: {} from bucket: {}. Error: {}", fileName, bucket, e.getMessage(), e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
@@ -131,12 +137,21 @@ public class GitlabFileProvider extends AbstractProvider {
     }
 
     /**
-     * Downloads a file from the specified GitLab project (bucket) and saves it to a local file.
+     * Downloads a file from the specified GitLab project (bucket) and saves it directly to a local file.
+     * <p>
+     * This method retrieves file content from GitLab and writes it to the specified local file. The output stream is
+     * automatically closed using try-with-resources to ensure proper resource management.
+     * </p>
+     * <p>
+     * <strong>Recommended for:</strong> Large files, or any scenario where you need to persist the file locally without
+     * holding it entirely in memory.
+     * </p>
      *
      * @param bucket   The ID of the GitLab project (bucket).
      * @param fileName The name of the file to download.
      * @param file     The target local file to save the downloaded content.
-     * @return A {@link Message} containing the result of the operation.
+     * @return A {@link Message} containing the result of the operation. If successful, the file is saved to the
+     *         specified location; otherwise, error information is returned.
      */
     @Override
     public Message download(String bucket, String fileName, File file) {
@@ -145,9 +160,12 @@ public class GitlabFileProvider extends AbstractProvider {
             String objectKey = Builder.buildObjectKey(prefix, Normal.EMPTY, fileName);
             RepositoryFile repositoryFile = client.getRepositoryFileApi().getFile(bucket, objectKey, "master");
             byte[] content = repositoryFile.getContent().getBytes();
+
+            // Use try-with-resources to automatically close the output stream
             try (OutputStream outputStream = new FileOutputStream(file)) {
-                IoKit.copy(new ByteArrayInputStream(content), outputStream);
+                outputStream.write(content);
             }
+
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build();
         } catch (Exception e) {
             Logger.error(
@@ -164,7 +182,7 @@ public class GitlabFileProvider extends AbstractProvider {
     /**
      * Lists files in the default GitLab project (bucket).
      *
-     * @return A {@link Message} containing the result of the operation, including a list of {@link Material} objects if
+     * @return A {@link Message} containing the result of the operation, including a list of {@link Blob} objects if
      *         successful.
      */
     @Override
@@ -186,7 +204,7 @@ public class GitlabFileProvider extends AbstractProvider {
                                         // If the last commit ID is needed, it can be obtained via RepositoryFileApi or
                                         // CommitsApi.
                                         extend.put("lastModified", null);
-                                        return Material.builder().name(item.getPath()).size("0").extend(extend).build();
+                                        return Blob.builder().name(item.getPath()).size("0").extend(extend).build();
                                     }).collect(Collectors.toList()))
                     .build();
         } catch (Exception e) {
@@ -328,21 +346,26 @@ public class GitlabFileProvider extends AbstractProvider {
      * @param path     The target path for the file.
      * @param fileName The name of the file to upload.
      * @param content  The file content as an {@link InputStream}.
-     * @return A {@link Message} containing the result of the operation, including material details if successful.
+     * @return A {@link Message} containing the result of the operation, including blob details if successful.
      */
     @Override
     public Message upload(String bucket, String path, String fileName, InputStream content) {
         try {
             String prefix = Builder.buildNormalizedPrefix(context.getPrefix());
             String objectKey = Builder.buildObjectKey(prefix, path, fileName);
-            byte[] contentBytes = IoKit.readBytes(content);
+
+            // Read the content from the input stream
+            byte[] contentBytes = content.readAllBytes();
+
             RepositoryFile file = new RepositoryFile();
             file.setFilePath(objectKey);
             file.setContent(new String(contentBytes));
             client.getRepositoryFileApi().createFile(bucket, file, "master", "upload");
+
             String url = client.getProjectApi().getProject(bucket).getWebUrl() + "/-/blob/master/" + objectKey;
+
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
-                    .data(Material.builder().name(fileName).url(url).path(objectKey).build()).build();
+                    .data(Blob.builder().name(fileName).url(url).path(objectKey).build()).build();
         } catch (Exception e) {
             Logger.error(
                     "Failed to upload file: {} to bucket: {} path: {}. Error: {}",

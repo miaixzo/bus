@@ -124,11 +124,11 @@ public class Word07Writer implements Closeable {
     /**
      * Adds a paragraph with the specified font and text content.
      *
-     * @param font  The font information ({@link Font}). May be {@code null} to use default font settings.
+     * @param font  The font information ({@link FontStyle}). May be {@code null} to use default font settings.
      * @param texts The text content for the paragraph. Multiple strings will be concatenated within the same paragraph.
      * @return This {@code Word07Writer} instance, for chaining.
      */
-    public Word07Writer addText(final Font font, final String... texts) {
+    public Word07Writer addText(final FontStyle font, final String... texts) {
         return addText(null, font, texts);
     }
 
@@ -136,11 +136,11 @@ public class Word07Writer implements Closeable {
      * Adds a paragraph with the specified alignment, font, and text content.
      *
      * @param align The paragraph alignment ({@link ParagraphAlignment}). May be {@code null} for default alignment.
-     * @param font  The font information ({@link Font}). May be {@code null} to use default font settings.
+     * @param font  The font information ({@link FontStyle}). May be {@code null} to use default font settings.
      * @param texts The text content for the paragraph. Multiple strings will be concatenated within the same paragraph.
      * @return This {@code Word07Writer} instance, for chaining.
      */
-    public Word07Writer addText(final ParagraphAlignment align, final Font font, final String... texts) {
+    public Word07Writer addText(final ParagraphAlignment align, final FontStyle font, final String... texts) {
         final XWPFParagraph p = this.doc.createParagraph();
         if (null != align) {
             p.setAlignment(align);
@@ -151,10 +151,7 @@ public class Word07Writer implements Closeable {
                 run = p.createRun();
                 run.setText(text);
                 if (null != font) {
-                    run.setFontFamily(font.getFamily());
-                    run.setFontSize(font.getSize());
-                    run.setBold(font.isBold());
-                    run.setItalic(font.isItalic());
+                    font.fill(run);
                 }
             }
         }

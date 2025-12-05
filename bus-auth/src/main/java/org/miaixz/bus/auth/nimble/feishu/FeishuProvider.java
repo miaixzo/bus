@@ -36,7 +36,7 @@ import org.miaixz.bus.auth.Registry;
 import org.miaixz.bus.auth.magic.Authorization;
 import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.ErrorCode;
-import org.miaixz.bus.auth.magic.Material;
+import org.miaixz.bus.auth.magic.Claims;
 import org.miaixz.bus.auth.nimble.AbstractProvider;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Message;
@@ -167,7 +167,7 @@ public class FeishuProvider extends AbstractProvider {
 
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
                     .data(
-                            Material.builder().rawJson(JsonKit.toJsonString(object)).uuid(unionId).username(name)
+                            Claims.builder().rawJson(JsonKit.toJsonString(object)).uuid(unionId).username(name)
                                     .nickname(name).avatar(avatarUrl).email(email).gender(Gender.UNKNOWN)
                                     .token(authorization).source(complex.toString()).build())
                     .build();

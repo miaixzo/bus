@@ -182,10 +182,11 @@ public class BiMap<K, V> extends MapWrapper<K, V> {
      */
     @Override
     public V putIfAbsent(final K key, final V value) {
-        if (null != this.inverse) {
-            this.inverse.putIfAbsent(value, key);
+        final V oldValue = super.putIfAbsent(key, value);
+        if (null == oldValue && null != this.inverse) {
+            this.inverse.put(value, key);
         }
-        return super.putIfAbsent(key, value);
+        return oldValue;
     }
 
     /**

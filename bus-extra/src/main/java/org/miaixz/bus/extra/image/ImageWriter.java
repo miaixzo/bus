@@ -28,7 +28,6 @@
 package org.miaixz.bus.extra.image;
 
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.RenderedImage;
 import java.io.File;
@@ -48,20 +47,33 @@ import org.miaixz.bus.core.xyz.IoKit;
 
 /**
  * Image writer wrapper.
+ * <p>
+ * This class provides a fluent interface for writing images to various outputs (files, streams), allowing configuration
+ * of compression quality and formats.
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class ImageWriter implements Flushable {
 
+    /**
+     * The image to be written, rendered as a {@link RenderedImage}.
+     */
     private final RenderedImage image;
+    /**
+     * The underlying {@link javax.imageio.ImageWriter} used for output.
+     */
     private final javax.imageio.ImageWriter writer;
+    /**
+     * The write parameters, used for setting compression quality, etc.
+     */
     private ImageWriteParam writeParam;
 
     /**
      * Constructor.
      *
-     * @param image     The {@link Image}.
+     * @param image     The {@link Image} to write.
      * @param imageType The image type (extension), or {@code null} for RGB mode (JPG).
      */
     public ImageWriter(final Image image, final String imageType) {
@@ -70,35 +82,35 @@ public class ImageWriter implements Flushable {
     }
 
     /**
-     * Creates an ImageWriter.
+     * Creates an {@code ImageWriter} instance.
      *
-     * @param image           The image.
+     * @param image           The image to write.
      * @param imageType       The image type (extension), or {@code null} for RGB mode (JPG).
      * @param backgroundColor The background color {@link Color}, or {@code null} for black or transparent.
-     * @return An {@code ImageWriter}.
+     * @return An {@code ImageWriter} instance.
      */
     public static ImageWriter of(final Image image, final String imageType, final Color backgroundColor) {
         return of(ImageKit.toBufferedImage(image, imageType, backgroundColor), imageType);
     }
 
     /**
-     * Creates an ImageWriter.
+     * Creates an {@code ImageWriter} instance.
      *
-     * @param image     The image.
+     * @param image     The image to write.
      * @param imageType The image type (extension), or {@code null} for RGB mode (JPG).
-     * @return An {@code ImageWriter}.
+     * @return An {@code ImageWriter} instance.
      */
     public static ImageWriter of(final Image image, final String imageType) {
         return new ImageWriter(image, imageType);
     }
 
     /**
-     * Builds image write parameters.
+     * Builds image write parameters, specifically for compression quality.
      *
-     * @param renderedImage The image.
+     * @param renderedImage The image being written.
      * @param writer        The {@link javax.imageio.ImageWriter}.
-     * @param quality       The quality, from 0 to 1.
-     * @return An {@link ImageWriteParam} or {@code null}.
+     * @param quality       The quality setting, from 0 to 1.
+     * @return An {@link ImageWriteParam} configured with the quality, or {@code null} if no compression is applied.
      */
     private static ImageWriteParam buildParam(
             final RenderedImage renderedImage,
@@ -120,8 +132,11 @@ public class ImageWriter implements Flushable {
     }
 
     /**
-     * Sets the write quality. A value between 0 and 1 (exclusive) indicates a compression ratio; other values indicate
-     * no compression.
+     * Sets the write quality.
+     * <p>
+     * A value strictly between 0 and 1 indicates a compression ratio (e.g., for JPEG). Other values indicate no
+     * explicit compression settings will be used.
+     * </p>
      *
      * @param quality The write quality, a value between 0 and 1 (exclusive) for compression.
      * @return this
@@ -132,22 +147,31 @@ public class ImageWriter implements Flushable {
     }
 
     /**
-     * Writes the image. This method does not close the stream.
+     * Writes the image to an output stream.
+     * <p>
+     * This method does not close the stream.
+     * </p>
      *
      * @param out The target output stream.
+     * @return this
      * @throws InternalException if an I/O error occurs.
      */
-    public void write(final OutputStream out) throws InternalException {
+    public ImageWriter write(final OutputStream out) throws InternalException {
         write(ImageKit.getImageOutputStream(out));
+        return this;
     }
 
     /**
-     * Writes the image in the format corresponding to the destination file's extension.
+     * Writes the image to a file.
+     * <p>
+     * The format is determined by the destination file's extension or the type specified during creation.
+     * </p>
      *
      * @param destFile The destination file.
+     * @return this
      * @throws InternalException if an I/O error occurs.
      */
-    public void write(final File destFile) throws InternalException {
+    public ImageWriter write(final File destFile) throws InternalException {
         FileKit.touch(destFile);
         ImageOutputStream out = null;
         try {
@@ -156,14 +180,17 @@ public class ImageWriter implements Flushable {
         } finally {
             IoKit.closeQuietly(out);
         }
+        return this;
     }
 
     /**
-     * Writes the image to an output stream using an {@link javax.imageio.ImageWriter}.
+     * Writes the image to an {@link ImageOutputStream} using the underlying {@link javax.imageio.ImageWriter}.
      *
-     * @param output The {@link ImageOutputStream} to write to (not null).
+     * @param output The {@link ImageOutputStream} to write to (must not be null).
+     * @return this
+     * @throws InternalException if an I/O error occurs.
      */
-    public void write(final ImageOutputStream output) {
+    public ImageWriter write(final ImageOutputStream output) {
         Assert.notNull(output);
 
         final javax.imageio.ImageWriter writer = this.writer;
@@ -184,14 +211,16 @@ public class ImageWriter implements Flushable {
             // FileCacheImageOutputStream creates a temporary file, which is cleaned up here
             IoKit.closeQuietly(output);
         }
+        return this;
     }
 
+    /**
+     * Flushes the underlying image resources if applicable.
+     */
     @Override
     public void flush() {
         final RenderedImage renderedImage = this.image;
-        if (renderedImage instanceof BufferedImage) {
-            ImageKit.flush((BufferedImage) renderedImage);
-        } else if (renderedImage instanceof Image) {
+        if (renderedImage instanceof Image) {
             ImageKit.flush((Image) renderedImage);
         }
     }

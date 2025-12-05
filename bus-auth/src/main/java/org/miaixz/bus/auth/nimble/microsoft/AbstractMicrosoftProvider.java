@@ -43,7 +43,7 @@ import org.miaixz.bus.auth.Complex;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.ErrorCode;
-import org.miaixz.bus.auth.magic.Material;
+import org.miaixz.bus.auth.magic.Claims;
 import org.miaixz.bus.auth.nimble.AbstractProvider;
 
 import java.util.HashMap;
@@ -145,7 +145,7 @@ public abstract class AbstractMicrosoftProvider extends AbstractProvider {
      * Retrieves user information from Microsoft's user info endpoint.
      *
      * @param authorization the {@link Authorization} obtained after successful authorization
-     * @return {@link Material} containing the user's information
+     * @return {@link Claims} containing the user's information
      * @throws AuthorizedException if parsing the response fails or required user information is missing
      */
     @Override
@@ -171,10 +171,11 @@ public abstract class AbstractMicrosoftProvider extends AbstractProvider {
             String officeLocation = (String) object.get("officeLocation");
             String mail = (String) object.get("mail");
 
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
-                    Material.builder().rawJson(JsonKit.toJsonString(object)).uuid(id).username(userPrincipalName)
-                            .nickname(displayName).location(officeLocation).email(mail).gender(Gender.UNKNOWN)
-                            .token(authorization).source(complex.toString()).build())
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+                    .data(
+                            Claims.builder().rawJson(JsonKit.toJsonString(object)).uuid(id).username(userPrincipalName)
+                                    .nickname(displayName).location(officeLocation).email(mail).gender(Gender.UNKNOWN)
+                                    .token(authorization).source(complex.toString()).build())
                     .build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());

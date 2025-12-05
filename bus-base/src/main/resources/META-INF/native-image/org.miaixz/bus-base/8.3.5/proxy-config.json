@@ -1,0 +1,17 @@
+[
+  {
+    "interfaces": [
+      "org.miaixz.bus.base.mapper.BaseMapper"
+    ]
+  },
+  {
+    "interfaces": [
+      "org.miaixz.bus.base.mapper.Mapper"
+    ]
+  },
+  {
+    "interfaces": [
+      "org.miaixz.bus.base.mapper.SharedMapper"
+    ]
+  }
+]

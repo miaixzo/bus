@@ -37,7 +37,7 @@ import org.miaixz.bus.auth.Registry;
 import org.miaixz.bus.auth.magic.Authorization;
 import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.ErrorCode;
-import org.miaixz.bus.auth.magic.Material;
+import org.miaixz.bus.auth.magic.Claims;
 import org.miaixz.bus.auth.nimble.AbstractProvider;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Message;
@@ -204,7 +204,7 @@ public class AmazonProvider extends AbstractProvider {
      * https://developer.amazon.com/zh/docs/login-with-amazon/obtain-customer-profile.html#call-profile-endpoint
      *
      * @param authorization the token information
-     * @return {@link Material} containing the user's information
+     * @return {@link Claims} containing the user's information
      * @throws AuthorizedException if parsing the response fails or required user information is missing
      */
     @Override
@@ -232,7 +232,7 @@ public class AmazonProvider extends AbstractProvider {
 
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
                     .data(
-                            Material.builder().rawJson(JsonKit.toJsonString(object)).uuid(userId).username(name)
+                            Claims.builder().rawJson(JsonKit.toJsonString(object)).uuid(userId).username(name)
                                     .nickname(name).email(email).gender(Gender.UNKNOWN).source(complex.toString())
                                     .token(authorization).build())
                     .build();

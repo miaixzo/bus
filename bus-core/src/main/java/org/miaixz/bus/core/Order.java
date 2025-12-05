@@ -36,12 +36,22 @@ package org.miaixz.bus.core;
 public interface Order extends Comparable<Order> {
 
     /**
+     * A constant holding the minimum value an {@code int} can have, -2<sup>31</sup>.
+     */
+    int MIN_VALUE = Integer.MIN_VALUE;
+
+    /**
+     * A constant holding the maximum value an {@code int} can have, 2<sup>31</sup>-1.
+     */
+    int MAX_VALUE = Integer.MAX_VALUE;
+
+    /**
      * Gets the order value of this object. A smaller value represents a higher priority.
      *
      * @return The order value.
      */
     default int order() {
-        return 0;
+        return MIN_VALUE;
     }
 
     /**

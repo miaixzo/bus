@@ -32,6 +32,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
@@ -42,6 +43,8 @@ import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoField;
 import java.util.*;
 import java.util.regex.Matcher;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Charset;
@@ -138,6 +141,31 @@ public final class Parsing {
      */
     private static final DateTimeFormatter CIM_FORMAT = DateTimeFormatter
             .ofPattern("yyyyMMddHHmmss.SSSSSSZZZZZ", Locale.US);
+
+    /**
+     * Decodes REG_BINARY to String. Supports UTF-16LE and Windows-1252 C-strings, otherwise returns a hex.
+     */
+    public static String decodeBinaryToString(byte[] bytes) {
+        if (bytes == null || bytes.length == 0) {
+            return null;
+        }
+
+        int len = bytes.length;
+
+        // Check for UTF-16LE null terminator (00 00)
+        if (len >= 2 && bytes[len - 1] == 0x00 && bytes[len - 2] == 0x00) {
+            return new String(bytes, StandardCharsets.UTF_16LE).trim();
+        }
+
+        // Check for Windows-1252 (single null terminator)
+        if (len >= 1 && bytes[len - 1] == 0x00) {
+            return new String(bytes, Charset.WINDOWS_1252).trim();
+        }
+
+        // fall back to Hex
+        return IntStream.range(0, bytes.length).mapToObj(i -> String.format(Locale.ROOT, "%02X", bytes[i]))
+                .collect(Collectors.joining(" "));
+    }
 
     /**
      * Parses a speed from a string, e.g., "2.00 MT/s" to 2000000L.

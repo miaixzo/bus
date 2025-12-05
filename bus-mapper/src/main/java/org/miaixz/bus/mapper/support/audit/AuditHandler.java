@@ -1,0 +1,269 @@
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+*/
+package org.miaixz.bus.mapper.support.audit;
+
+import java.util.Properties;
+
+import org.apache.ibatis.executor.Executor;
+import org.apache.ibatis.mapping.BoundSql;
+import org.apache.ibatis.mapping.MappedStatement;
+import org.apache.ibatis.session.ResultHandler;
+import org.apache.ibatis.session.RowBounds;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.mapper.Args;
+import org.miaixz.bus.mapper.Context;
+import org.miaixz.bus.mapper.Holder;
+import org.miaixz.bus.mapper.handler.ConditionHandler;
+
+/**
+ * SQL Audit Interceptor
+ *
+ * <p>
+ * Automatically intercepts all SQL executions, records execution time, parameters, results and other information.
+ * Supports:
+ * </p>
+ * <ul>
+ * <li>SQL execution time statistics</li>
+ * <li>Slow SQL detection and alerting</li>
+ * <li>SQL execution failure recording</li>
+ * <li>SQL parameters and results recording</li>
+ * <li>Custom audit log output</li>
+ * </ul>
+ *
+ * <p>
+ * Usage example:
+ * </p>
+ *
+ * <pre>{@code
+ * // Configure interceptor
+ * AuditConfig config = AuditConfig.builder().enabled(true).slowSqlThreshold(1000) // 1 second
+ *         .logParameters(true).logAllSql(false) // Only log slow SQL
+ *         .build();
+ *
+ * AuditHandler interceptor = new AuditHandler(config);
+ *
+ * // Add to MybatisInterceptor
+ * MybatisInterceptor mybatisInterceptor = new MybatisInterceptor();
+ * mybatisInterceptor.addHandler(interceptor);
+ * }</pre>
+ *
+ * @param <T> the generic type parameter
+ * @author Kimi Liu
+ * @since Java 17+
+ */
+public class AuditHandler<T> extends ConditionHandler<T> {
+
+    /**
+     * Audit configuration from file (lowest priority).
+     */
+    private AuditConfig config;
+
+    /**
+     * Default constructor (uses default configuration).
+     */
+    public AuditHandler() {
+
+    }
+
+    /**
+     * Constructor with file configuration.
+     *
+     * @param config the audit configuration from file
+     */
+    public AuditHandler(AuditConfig config) {
+        this.config = config;
+    }
+
+    /**
+     * Sets the audit-related configuration properties. This method is typically called during plugin initialization to
+     * configure SQL audit behaviors.
+     *
+     * @param properties the configuration properties (contains all datasources)
+     * @return true if properties were successfully set, false if properties is null
+     */
+    @Override
+    public boolean setProperties(Properties properties) {
+        if (properties == null) {
+            return false;
+        }
+
+        // Try to get provider from properties
+        AuditProvider provider = null;
+        Object providerObj = properties.get(Args.PROVIDER_KEY);
+        if (providerObj instanceof AuditProvider) {
+            provider = (AuditProvider) providerObj;
+        }
+
+        // Set provider if found
+        if (provider == null) {
+            Logger.warn(false, "Mapper", "Provider not found, feature will not be enabled");
+            return false;
+        }
+
+        // Get current datasource key
+        String datasourceKey = Holder.getKey();
+        if (StringKit.isEmpty(datasourceKey)) {
+            // Use actual default datasource name or fallback to "default"
+            datasourceKey = "default";
+        }
+
+        // Build configuration paths
+        String sharedPrefix = Args.SHARED_KEY + Symbol.DOT + Args.AUDIT_KEY + Symbol.DOT;
+        String dsPrefix = datasourceKey + Symbol.DOT + Args.AUDIT_KEY + Symbol.DOT;
+
+        // Merge configuration: datasource-specific > shared > default
+        long slowSqlThreshold = Long.parseLong(
+                properties.getProperty(
+                        dsPrefix + Args.AUDIT_SLOW_SQL_THRESHOLD,
+                        properties.getProperty(sharedPrefix + Args.AUDIT_SLOW_SQL_THRESHOLD, "1000")));
+        boolean logParameters = Boolean.parseBoolean(
+                properties.getProperty(
+                        dsPrefix + Args.AUDIT_LOG_PARAMETERS,
+                        properties.getProperty(sharedPrefix + Args.AUDIT_LOG_PARAMETERS, "true")));
+        boolean logResults = Boolean.parseBoolean(
+                properties.getProperty(
+                        dsPrefix + Args.AUDIT_LOG_RESULTS,
+                        properties.getProperty(sharedPrefix + Args.AUDIT_LOG_RESULTS, "false")));
+        boolean logAllSql = Boolean.parseBoolean(
+                properties.getProperty(
+                        dsPrefix + Args.AUDIT_LOG_ALL_SQL,
+                        properties.getProperty(sharedPrefix + Args.AUDIT_LOG_ALL_SQL, "false")));
+        boolean printConsole = Boolean.parseBoolean(
+                properties.getProperty(
+                        dsPrefix + Args.AUDIT_PRINT_CONSOLE,
+                        properties.getProperty(sharedPrefix + Args.AUDIT_PRINT_CONSOLE, "false")));
+
+        this.config = AuditConfig.builder().slowSqlThreshold(slowSqlThreshold).logParameters(logParameters)
+                .provider(provider).logResults(logResults).logAllSql(logAllSql).printConsole(printConsole).build();
+
+        return true;
+    }
+
+    /**
+     * Get current effective configuration with priority: Context > File Config.
+     *
+     * @return the effective audit configuration
+     */
+    private AuditConfig getCurrentConfig() {
+        // 1. Highest priority: Context configuration
+        Context.MapperConfig contextConfig = Context.getMapperConfig();
+        if (contextConfig != null && contextConfig.getAudit() != null) {
+            return contextConfig.getAudit();
+        }
+
+        // 2. Lowest priority: File configuration
+        return config;
+    }
+
+    @Override
+    public boolean isUpdate(Executor executor, MappedStatement mappedStatement, Object parameter) {
+        // Get current configuration
+        AuditConfig currentConfig = getCurrentConfig();
+        if (currentConfig == null || AuditContext.isIgnore()) {
+            Logger.debug(true, "Audit", "Audit disabled or ignored for update: {}", mappedStatement.getId());
+            return true;
+        }
+
+        // Create builder on-demand for current config and check if should ignore
+        AuditBuilder builder = new AuditBuilder(currentConfig);
+        if (builder.shouldIgnoreAudit(mappedStatement)) {
+            Logger.debug(true, "Audit", "Audit ignored for mapper: {}", mappedStatement.getId());
+            return true;
+        }
+
+        Logger.debug(false, "Audit", "Starting audit for update: {}", mappedStatement.getId());
+        // Start audit record
+        builder.before(mappedStatement, parameter);
+        return true;
+    }
+
+    @Override
+    public boolean isQuery(
+            Executor executor,
+            MappedStatement mappedStatement,
+            Object parameter,
+            RowBounds rowBounds,
+            ResultHandler resultHandler,
+            BoundSql boundSql) {
+        // Get current configuration
+        AuditConfig currentConfig = getCurrentConfig();
+        if (currentConfig == null || AuditContext.isIgnore()) {
+            Logger.debug(true, "Audit", "Audit disabled or ignored for query: {}", mappedStatement.getId());
+            return true;
+        }
+
+        // Create builder on-demand for current config and check if should ignore
+        AuditBuilder builder = new AuditBuilder(currentConfig);
+        if (builder.shouldIgnoreAudit(mappedStatement)) {
+            Logger.debug(true, "Audit", "Audit ignored for mapper: {}", mappedStatement.getId());
+            return true;
+        }
+
+        Logger.debug(false, "Audit", "Starting audit for query: {}", mappedStatement.getId());
+        // Start audit record
+        builder.before(mappedStatement, parameter, boundSql);
+        return true;
+    }
+
+    @Override
+    public void query(
+            Object result,
+            Executor executor,
+            MappedStatement mappedStatement,
+            Object parameter,
+            RowBounds rowBounds,
+            ResultHandler resultHandler,
+            BoundSql boundSql) {
+        // End audit record
+        AuditConfig currentConfig = getCurrentConfig();
+        if (currentConfig != null) {
+            Logger.debug(false, "Audit", "Completing audit for query: {}", mappedStatement.getId());
+            AuditBuilder builder = new AuditBuilder(currentConfig);
+            builder.after(result, null);
+        }
+    }
+
+    /**
+     * Clear audit cache (no-op since we don't cache builders anymore).
+     */
+    public void clear() {
+        // No-op: builder is created on-demand per SQL execution
+    }
+
+    /**
+     * Get audit configuration from file (lowest priority).
+     *
+     * @return the audit configuration
+     */
+    public AuditConfig getConfig() {
+        return this.config;
+    }
+
+}

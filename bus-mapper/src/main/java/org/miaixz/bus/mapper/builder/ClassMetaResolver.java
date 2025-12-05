@@ -28,14 +28,11 @@
 package org.miaixz.bus.mapper.builder;
 
 import java.lang.reflect.Method;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.*;
 
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.loader.spi.NormalSpiLoader;
-import org.miaixz.bus.mapper.ORDER;
+import org.miaixz.bus.mapper.Order;
 
 /**
  * Resolves the entity class type based on information such as the mapper type and method. The default implementation
@@ -44,13 +41,13 @@ import org.miaixz.bus.mapper.ORDER;
  * @author Kimi Liu
  * @since Java 17+
  */
-public interface ClassMetaResolver extends ORDER {
+public interface ClassMetaResolver extends Order {
 
     /**
      * A cache to avoid repeated lookups during method execution. The key is a {@link MapperTypeMethod} and the value is
      * the corresponding entity class.
      */
-    Map<MapperTypeMethod, Optional<Class<?>>> ENTITY_CLASS_MAP = new ConcurrentHashMap<>();
+    Map<MapperTypeMethod, Optional<Class<?>>> ENTITY_CLASS_MAP = Collections.synchronizedMap(new WeakHashMap<>());
 
     /**
      * Finds the entity class corresponding to the current method.
@@ -61,15 +58,26 @@ public interface ClassMetaResolver extends ORDER {
      */
     static Optional<Class<?>> find(Class<?> mapperType, Method mapperMethod) {
         Objects.requireNonNull(mapperType);
-        return ENTITY_CLASS_MAP.computeIfAbsent(new MapperTypeMethod(mapperType, mapperMethod), mapperTypeMethod -> {
-            for (ClassMetaResolver instance : ClassFinderInstance.getInstances()) {
-                Optional<Class<?>> optionalClass = instance.findClass(mapperType, mapperMethod);
-                if (optionalClass.isPresent()) {
-                    return optionalClass;
+        MapperTypeMethod key = new MapperTypeMethod(mapperType, mapperMethod);
+        Optional<Class<?>> optionalClass = ENTITY_CLASS_MAP.get(key);
+        if (optionalClass == null) {
+            synchronized (ENTITY_CLASS_MAP) {
+                optionalClass = ENTITY_CLASS_MAP.get(key);
+                if (optionalClass == null) {
+                    Optional<Class<?>> foundClass = Optional.empty();
+                    for (ClassMetaResolver instance : ClassFinderInstance.getInstances()) {
+                        Optional<Class<?>> result = instance.findClass(mapperType, mapperMethod);
+                        if (result.isPresent()) {
+                            foundClass = result;
+                            break;
+                        }
+                    }
+                    optionalClass = foundClass;
+                    ENTITY_CLASS_MAP.put(key, optionalClass);
                 }
             }
-            return Optional.empty();
-        });
+        }
+        return optionalClass;
     }
 
     /**
@@ -159,24 +167,21 @@ public interface ClassMetaResolver extends ORDER {
     class ClassFinderInstance {
 
         /**
-         * A cached list of {@link ClassMetaResolver} instances.
-         */
-        private static volatile List<ClassMetaResolver> INSTANCES;
-
-        /**
          * Gets extended implementations via SPI or uses the default implementation.
          *
          * @return A list of {@link ClassMetaResolver} instances.
          */
         public static List<ClassMetaResolver> getInstances() {
-            if (INSTANCES == null) {
-                synchronized (ClassMetaResolver.class) {
-                    if (INSTANCES == null) {
-                        INSTANCES = NormalSpiLoader.loadList(false, ClassMetaResolver.class);
-                    }
-                }
-            }
-            return INSTANCES;
+            return ClassMetaResolverHolder.INSTANCES;
+        }
+
+        /**
+         * Initialization-on-demand holder idiom.
+         */
+        private static class ClassMetaResolverHolder {
+
+            private static final List<ClassMetaResolver> INSTANCES = NormalSpiLoader
+                    .loadList(false, ClassMetaResolver.class);
         }
     }
 

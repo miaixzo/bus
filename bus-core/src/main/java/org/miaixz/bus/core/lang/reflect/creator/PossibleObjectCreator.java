@@ -60,12 +60,7 @@ import org.miaixz.bus.core.xyz.ReflectKit;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class PossibleObjectCreator<T> implements ObjectCreator<T> {
-
-    /**
-     * The class to be instantiated.
-     */
-    final Class<T> clazz;
+public record PossibleObjectCreator<T>(Class<T> clazz) implements ObjectCreator<T> {
 
     /**
      * Constructs a new {@code PossibleObjectCreator} for the given class.
@@ -96,14 +91,20 @@ public class PossibleObjectCreator<T> implements ObjectCreator<T> {
      *         default is found.
      */
     private static Class<?> resolveType(final Class<?> type) {
-        if (type.isAssignableFrom(AbstractMap.class)) {
-            return HashMap.class;
-        } else if (type.isAssignableFrom(List.class)) {
-            return ArrayList.class;
-        } else if (type == SortedSet.class) {
-            return TreeSet.class;
-        } else if (type.isAssignableFrom(Set.class)) {
-            return HashSet.class;
+        if (Object.class != type) {
+            if (type.isAssignableFrom(AbstractMap.class)) {
+                return HashMap.class;
+            } else if (type.isAssignableFrom(List.class)) {
+                return ArrayList.class;
+            } else if (type == SortedSet.class) {
+                return TreeSet.class;
+            } else if (type.isAssignableFrom(Set.class)) {
+                return HashSet.class;
+            } else if (type.isAssignableFrom(Queue.class)) {
+                return LinkedList.class;
+            } else if (type.isAssignableFrom(Deque.class)) {
+                return LinkedList.class;
+            }
         }
 
         return type;

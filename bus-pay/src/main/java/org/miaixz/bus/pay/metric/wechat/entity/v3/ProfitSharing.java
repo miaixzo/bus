@@ -32,7 +32,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import org.miaixz.bus.pay.magic.Material;
+import org.miaixz.bus.pay.magic.Voucher;
 import org.miaixz.bus.pay.metric.wechat.entity.Receiver;
 
 import java.util.List;
@@ -49,7 +49,7 @@ import java.util.List;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProfitSharing extends Material {
+public class ProfitSharing extends Voucher {
 
     /**
      * Service provider's merchant ID, assigned by WeChat Pay. Compatible with V2 API.

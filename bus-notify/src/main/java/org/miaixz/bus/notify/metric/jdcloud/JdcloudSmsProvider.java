@@ -45,7 +45,7 @@ import org.miaixz.bus.notify.metric.AbstractProvider;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class JdcloudSmsProvider extends AbstractProvider<JdcloudMaterial, Context> {
+public class JdcloudSmsProvider extends AbstractProvider<JdcloudNotice, Context> {
 
     /**
      * Constructs a {@code JdcloudSmsProvider} with the given context.
@@ -59,12 +59,12 @@ public class JdcloudSmsProvider extends AbstractProvider<JdcloudMaterial, Contex
     /**
      * Sends an SMS notification using JD Cloud SMS service.
      *
-     * @param entity The {@link JdcloudMaterial} containing SMS details like recipient, template ID, parameters, and
+     * @param entity The {@link JdcloudNotice} containing SMS details like recipient, template ID, parameters, and
      *               signature.
      * @return A {@link Message} indicating the result of the SMS sending operation.
      */
     @Override
-    public Message send(JdcloudMaterial entity) {
+    public Message send(JdcloudNotice entity) {
         Map<String, String> bodys = new HashMap<>();
         /**
          * The region ID where the SMS service is located.

@@ -318,9 +318,9 @@ public abstract class AbstractStrategy implements Strategy {
             return authority; // Port already exists
         }
         if (Protocol.HTTPS.name.equalsIgnoreCase(protocol)) {
-            return authority + Symbol.COLON + PORT._443;
+            return authority + Symbol.COLON + PORT._443.getPort();
         }
-        return authority + Symbol.COLON + PORT._80;
+        return authority + Symbol.COLON + PORT._80.getPort();
     }
 
 }

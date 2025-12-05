@@ -63,7 +63,7 @@ import org.miaixz.bus.pay.Context;
 import org.miaixz.bus.pay.Provider;
 import org.miaixz.bus.pay.cache.PayCache;
 import org.miaixz.bus.pay.magic.ErrorCode;
-import org.miaixz.bus.pay.magic.Material;
+import org.miaixz.bus.pay.magic.Voucher;
 import org.miaixz.bus.pay.magic.Message;
 
 import lombok.SneakyThrows;
@@ -71,12 +71,12 @@ import lombok.SneakyThrows;
 /**
  * Abstract provider for handling payment requests.
  *
- * @param <T> The type of the global object, extending {@link Material}.
+ * @param <T> The type of the global object, extending {@link Voucher}.
  * @param <K> The type of the context object, extending {@link Context}.
  * @author Kimi Liu
  * @since Java 17+
  */
-public abstract class AbstractProvider<T extends Material, K extends Context> implements Provider<T> {
+public abstract class AbstractProvider<T extends Voucher, K extends Context> implements Provider<T> {
 
     /**
      * The context object containing configuration and other necessary information.

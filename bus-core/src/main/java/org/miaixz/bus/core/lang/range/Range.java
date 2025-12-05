@@ -206,6 +206,9 @@ public class Range<T> implements Iterable<T>, Serializable {
              * @return the next stepped element, or {@code null} if stepping fails or ends
              */
             private T safeStep(final T base) {
+                if (base == null || (base.equals(end))) {
+                    return null;
+                }
                 final int index = this.index;
                 T next = null;
                 try {

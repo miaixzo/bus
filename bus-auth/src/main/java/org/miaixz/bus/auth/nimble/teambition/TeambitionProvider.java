@@ -38,7 +38,7 @@ import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Registry;
 import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.ErrorCode;
-import org.miaixz.bus.auth.magic.Material;
+import org.miaixz.bus.auth.magic.Claims;
 import org.miaixz.bus.auth.nimble.AbstractProvider;
 
 import java.util.HashMap;
@@ -102,7 +102,7 @@ public class TeambitionProvider extends AbstractProvider {
      * Retrieves user information from Teambition's user info endpoint.
      *
      * @param authorization the {@link Authorization} obtained after successful authorization
-     * @return {@link Material} containing the user's information
+     * @return {@link Claims} containing the user's information
      * @throws AuthorizedException if parsing the response fails or required user information is missing
      */
     @Override
@@ -120,7 +120,7 @@ public class TeambitionProvider extends AbstractProvider {
 
         return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
                 .data(
-                        Material.builder().rawJson(JsonKit.toJsonString(object)).uuid((String) object.get("_id"))
+                        Claims.builder().rawJson(JsonKit.toJsonString(object)).uuid((String) object.get("_id"))
                                 .username((String) object.get("name")).nickname((String) object.get("name"))
                                 .avatar((String) object.get("avatarUrl")).blog((String) object.get("website"))
                                 .location((String) object.get("location")).email((String) object.get("email"))

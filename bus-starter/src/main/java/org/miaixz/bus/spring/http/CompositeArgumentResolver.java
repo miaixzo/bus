@@ -29,7 +29,7 @@ package org.miaixz.bus.spring.http;
 
 import java.util.stream.Collectors;
 
-import org.miaixz.bus.auth.magic.ErrorCode;
+import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Symbol;

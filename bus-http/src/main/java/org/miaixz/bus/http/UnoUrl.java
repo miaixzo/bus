@@ -163,9 +163,9 @@ public final class UnoUrl {
      */
     public static int defaultPort(String scheme) {
         if (Protocol.HTTP.name.equals(scheme)) {
-            return PORT._80;
+            return PORT._80.getPort();
         } else if (Protocol.HTTPS.name.equals(scheme)) {
-            return PORT._443;
+            return PORT._443.getPort();
         } else {
             return -1;
         }

@@ -27,7 +27,7 @@
 */
 /**
  * This package contains the core components for rule matching and validation logic, including checkers, matchers, and
- * material for defining validation rules.
+ * criterion for defining validation rules.
  *
  * @author Kimi Liu
  * @since Java 17+

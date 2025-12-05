@@ -137,9 +137,10 @@ public class EscapeKit {
             return StringKit.toStringOrNull(content);
         }
 
-        final StringBuilder tmp = new StringBuilder(content.length() * 6);
+        final int len = content.length();
+        final StringBuilder tmp = new StringBuilder(len * 6);
         char c;
-        for (int i = 0; i < content.length(); i++) {
+        for (int i = 0; i < len; i++) {
             c = content.charAt(i);
             if (!filter.test(c)) {
                 tmp.append(c);
@@ -168,30 +169,40 @@ public class EscapeKit {
      * @return The decoded string.
      */
     public static String unescape(final String content) {
-        if (StringKit.isBlank(content)) {
-            return content;
-        }
-
-        final StringBuilder tmp = new StringBuilder(content.length());
+        final int len = content.length();
+        final StringBuilder tmp = new StringBuilder(len);
         int lastPos = 0;
         int pos;
         char ch;
-        while (lastPos < content.length()) {
+        while (lastPos < len) {
             pos = content.indexOf(Symbol.PERCENT, lastPos);
             if (pos == lastPos) {
-                if (content.charAt(pos + 1) == 'u') {
-                    ch = (char) Integer.parseInt(content.substring(pos + 2, pos + 6), 16);
-                    tmp.append(ch);
-                    lastPos = pos + 6;
+                if (pos + 1 < len && content.charAt(pos + 1) == 'u') {
+                    if (pos + 6 <= len) {
+                        ch = (char) Integer.parseInt(content.substring(pos + 2, pos + 6), 16);
+                        tmp.append(ch);
+                        lastPos = pos + 6;
+                    } else {
+                        // Not enough characters, append as-is
+                        tmp.append(content.substring(pos));
+                        lastPos = len;
+                    }
                 } else {
-                    ch = (char) Integer.parseInt(content.substring(pos + 1, pos + 3), 16);
-                    tmp.append(ch);
-                    lastPos = pos + 3;
+                    // Check if there's enough characters for hex escape (%XX)
+                    if (pos + 3 <= len) {
+                        ch = (char) Integer.parseInt(content.substring(pos + 1, pos + 3), 16);
+                        tmp.append(ch);
+                        lastPos = pos + 3;
+                    } else {
+                        // Not enough characters, append as-is
+                        tmp.append(content.substring(pos));
+                        lastPos = len;
+                    }
                 }
             } else {
                 if (pos == -1) {
                     tmp.append(content.substring(lastPos));
-                    lastPos = content.length();
+                    lastPos = len;
                 } else {
                     tmp.append(content, lastPos, pos);
                     lastPos = pos;

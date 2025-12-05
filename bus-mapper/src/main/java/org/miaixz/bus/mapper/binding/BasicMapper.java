@@ -36,6 +36,7 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.UpdateProvider;
 import org.miaixz.bus.mapper.Caching;
 import org.miaixz.bus.mapper.binding.basic.EntityMapper;
+import org.miaixz.bus.mapper.binding.batch.BatchMapper;
 import org.miaixz.bus.mapper.binding.condition.Condition;
 import org.miaixz.bus.mapper.binding.condition.ConditionMapper;
 import org.miaixz.bus.mapper.binding.condition.ConditionWrapper;
@@ -53,7 +54,7 @@ import org.miaixz.bus.mapper.provider.FunctionProvider;
  * @since Java 17+
  */
 public interface BasicMapper<T, I extends Serializable>
-        extends EntityMapper<T, I>, ConditionMapper<T, Condition<T>>, CursorMapper<T, Condition<T>> {
+        extends EntityMapper<T, I>, ConditionMapper<T, Condition<T>>, CursorMapper<T, Condition<T>>, BatchMapper<T> {
 
     /**
      * Creates a {@link ConditionWrapper} object for building complex queries.

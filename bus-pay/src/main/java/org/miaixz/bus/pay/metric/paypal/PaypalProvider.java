@@ -42,7 +42,7 @@ import org.miaixz.bus.pay.Complex;
 import org.miaixz.bus.pay.Context;
 import org.miaixz.bus.pay.Registry;
 import org.miaixz.bus.pay.cache.PayCache;
-import org.miaixz.bus.pay.magic.Material;
+import org.miaixz.bus.pay.magic.Voucher;
 import org.miaixz.bus.pay.magic.Message;
 import org.miaixz.bus.pay.metric.AbstractProvider;
 import org.miaixz.bus.pay.metric.paypal.api.PayPalApi;
@@ -54,7 +54,7 @@ import org.miaixz.bus.pay.metric.paypal.entity.AccessToken;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class PaypalProvider extends AbstractProvider<Material, Context> {
+public class PaypalProvider extends AbstractProvider<Voucher, Context> {
 
     /**
      * Constructs a new PaypalProvider.

@@ -44,7 +44,7 @@ import org.miaixz.bus.notify.metric.AbstractProvider;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class QiniuSmsProvider extends AbstractProvider<QiniuMaterial, Context> {
+public class QiniuSmsProvider extends AbstractProvider<QiniuNotice, Context> {
 
     @Serial
     private static final long serialVersionUID = -202510031218L;
@@ -61,11 +61,11 @@ public class QiniuSmsProvider extends AbstractProvider<QiniuMaterial, Context> {
     /**
      * Sends an SMS notification using Qiniu Cloud SMS service.
      *
-     * @param entity The {@link QiniuMaterial} containing SMS details such as template ID, parameters, and recipient.
+     * @param entity The {@link QiniuNotice} containing SMS details such as template ID, parameters, and recipient.
      * @return A {@link Message} indicating the result of the SMS sending operation.
      */
     @Override
-    public Message send(QiniuMaterial entity) {
+    public Message send(QiniuNotice entity) {
         Map<String, String> bodys = new HashMap<>();
         bodys.put("template_id", entity.getTemplate());
         bodys.put("parameters", entity.getParams());

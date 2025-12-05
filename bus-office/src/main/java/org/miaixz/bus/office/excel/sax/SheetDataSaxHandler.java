@@ -46,6 +46,10 @@ import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * Handler for reading content within the sheetData tag.
+ * <p>
+ * This class processes the stream of SAX events for Excel XML data, specifically looking for the content inside the
+ * {@code <sheetData>} element.
+ * </p>
  * 
  * <pre>
  * &lt;sheetData&gt;&lt;/sheetData&gt;
@@ -56,49 +60,106 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class SheetDataSaxHandler extends DefaultHandler {
 
-    /** The content of the last parsed element. */
+    /**
+     * The content of the last parsed element (e.g., cell value).
+     */
     private final StringBuilder lastContent = new StringBuilder();
-    /** Configuration item: whether to align data by padding with null cells at the end of a row. */
+
+    /**
+     * Configuration item: whether to align data by padding with null cells at the end of a row.
+     */
     private final boolean padCellAtEndOfRow;
-    /** The content of the last parsed formula element. */
+
+    /**
+     * The content of the last parsed formula element.
+     */
     private final StringBuilder lastFormula = new StringBuilder();
-    /** Row handler. */
+
+    /**
+     * Row handler used to process complete rows or individual cells.
+     */
     protected RowHandler rowHandler;
-    /** The cell format table, corresponding to style.xml. */
+
+    /**
+     * The cell format table, corresponding to {@code styles.xml} in the XLSX structure.
+     */
     protected StylesTable stylesTable;
-    /** The shared strings table for Excel 2007, corresponding to sharedString.xml. */
+
+    /**
+     * The shared strings table for Excel 2007+, corresponding to {@code sharedStrings.xml}.
+     */
     protected SharedStrings sharedStrings;
-    /** The 0-based index of the sheet. */
-    protected int sheetIndex;
-    /** The current non-empty row index. */
+
+    /**
+     * The 0-based index of the current sheet.
+     */
+    protected int rid;
+
+    /**
+     * The current row count (index of non-empty rows processed).
+     */
     protected int index;
-    /** The current column index. */
+
+    /**
+     * The current column index (0-based).
+     */
     private int curCell;
-    /** The data type of the cell. */
+
+    /**
+     * The data type of the current cell.
+     */
     private CellDataType cellDataType;
-    /** The current row number, 0-based. */
+
+    /**
+     * The current row number (0-based), extracted from the 'r' attribute.
+     */
     private long rowNumber;
-    /** The current cell coordinate, e.g., A1, B5. */
+
+    /**
+     * The current cell coordinate (e.g., "A1", "B5").
+     */
     private String curCoordinate;
-    /** The name of the current element. */
+
+    /**
+     * The name of the current XML element being processed.
+     */
     private ElementName curElementName;
-    /** The coordinate of the previous cell. */
+
+    /**
+     * The coordinate of the previous cell, used for calculating empty cell padding.
+     */
     private String preCoordinate;
-    /** The maximum cell coordinate in a row. */
+
+    /**
+     * The maximum cell coordinate encountered in the first row, used for padding subsequent rows if enabled.
+     */
     private String maxCellCoordinate;
-    /** The cell style. */
+
+    /**
+     * The style associated with the current cell.
+     */
     private XSSFCellStyle xssfCellStyle;
-    /** The format string stored in the cell, the value of the formatCode attribute of numFmt. */
+
+    /**
+     * The format string stored in the cell, derived from the {@code formatCode} attribute of {@code numFmt}.
+     */
     private String numFmtString;
-    /** Whether currently inside a sheetData tag. The SAX parser only parses content within this tag. */
+
+    /**
+     * Flag indicating whether the parser is currently inside a {@code <sheetData>} tag. The SAX parser only processes
+     * content within this tag.
+     */
     private boolean isInSheetData;
-    /** Stores the cell elements for each row. */
+
+    /**
+     * Container for storing cell values for the current row.
+     */
     private List<Object> rowCellList = new ArrayList<>();
 
     /**
      * Constructor.
      *
-     * @param rowHandler        The row handler.
+     * @param rowHandler        The row handler for processing data.
      * @param padCellAtEndOfRow Whether to align data by padding with null cells at the end of a row.
      */
     public SheetDataSaxHandler(final RowHandler rowHandler, final boolean padCellAtEndOfRow) {
@@ -109,7 +170,7 @@ public class SheetDataSaxHandler extends DefaultHandler {
     /**
      * Sets the row handler.
      *
-     * @param rowHandler The row handler.
+     * @param rowHandler The new row handler.
      */
     public void setRowHandler(final RowHandler rowHandler) {
         this.rowHandler = rowHandler;
@@ -117,6 +178,11 @@ public class SheetDataSaxHandler extends DefaultHandler {
 
     /**
      * Callback method for handling the start of an XML element.
+     *
+     * @param uri        The Namespace URI.
+     * @param localName  The local name (without prefix).
+     * @param qName      The qualified name (with prefix).
+     * @param attributes The attributes attached to the element.
      */
     @Override
     public void startElement(
@@ -154,6 +220,10 @@ public class SheetDataSaxHandler extends DefaultHandler {
 
     /**
      * Callback method for handling the end of an XML element.
+     *
+     * @param uri       The Namespace URI.
+     * @param localName The local name (without prefix).
+     * @param qName     The qualified name (with prefix).
      */
     @Override
     public void endElement(final String uri, final String localName, final String qName) {
@@ -177,6 +247,13 @@ public class SheetDataSaxHandler extends DefaultHandler {
         // Ignore other tags
     }
 
+    /**
+     * Callback method for processing character data inside an element.
+     *
+     * @param ch     The characters.
+     * @param start  The start position in the character array.
+     * @param length The number of characters to use from the character array.
+     */
     @Override
     public void characters(final char[] ch, final int start, final int length) {
         if (!this.isInSheetData) {
@@ -207,7 +284,7 @@ public class SheetDataSaxHandler extends DefaultHandler {
     /**
      * Starts processing a new row.
      *
-     * @param attributes The attribute list.
+     * @param attributes The attribute list associated with the row element.
      */
     private void startRow(final Attributes attributes) {
         final String rValue = AttributeName.r.getValue(attributes);
@@ -217,13 +294,13 @@ public class SheetDataSaxHandler extends DefaultHandler {
     /**
      * Starts processing a new cell.
      *
-     * @param attributes The attribute list.
+     * @param attributes The attribute list associated with the cell element.
      */
     private void startCell(final Attributes attributes) {
         // Get the current cell coordinate.
         final String tempCurCoordinate = AttributeName.r.getValue(attributes);
-        // If the previous coordinate is null, set it to "@". 'A' is the first column with ASCII 65, so the previous one
-        // is '@' with ASCII 64.
+        // If the previous coordinate is null, set it to "@".
+        // 'A' is the first column with ASCII 65, so the previous one is '@' with ASCII 64.
         if (preCoordinate == null) {
             preCoordinate = String.valueOf(Symbol.C_AT);
         } else {
@@ -254,7 +331,7 @@ public class SheetDataSaxHandler extends DefaultHandler {
             padCell(curCoordinate, maxCellCoordinate, true);
         }
 
-        rowHandler.handle(sheetIndex, rowNumber, rowCellList);
+        rowHandler.handle(rid, rowNumber, rowCellList);
 
         // End of a row.
         // Create a new list for the next row, discarding the old one.
@@ -294,20 +371,21 @@ public class SheetDataSaxHandler extends DefaultHandler {
     /**
      * Adds a value to a specified column in the row.
      *
-     * @param index The position.
-     * @param value The value.
+     * @param index The column index (0-based).
+     * @param value The value to add.
      */
     private void addCellValue(final int index, final Object value) {
         this.rowCellList.add(index, value);
-        this.rowHandler.handleCell(this.sheetIndex, this.rowNumber, index, value, this.xssfCellStyle);
+        this.rowHandler.handleCell(this.rid, this.rowNumber, index, value, this.xssfCellStyle);
     }
 
     /**
-     * Fills empty cells. If the previous cell is greater than the current one, no filling is needed.
+     * Fills empty cells with {@code null}. If the previous cell is directly before the current one, no filling is
+     * needed.
      *
      * @param preCoordinate The coordinate of the previous cell.
      * @param curCoordinate The coordinate of the current cell.
-     * @param isEnd         Whether this is the last cell.
+     * @param isEnd         Whether this is the last cell in the row.
      */
     private void padCell(final String preCoordinate, final String curCoordinate, final boolean isEnd) {
         if (null != curCoordinate && !curCoordinate.equals(preCoordinate)) {
@@ -322,9 +400,9 @@ public class SheetDataSaxHandler extends DefaultHandler {
     }
 
     /**
-     * Sets the cell type.
+     * Sets the cell type based on attributes.
      *
-     * @param attributes The attributes.
+     * @param attributes The attributes of the cell element.
      */
     private void setCellType(final Attributes attributes) {
         // Value of numFmtString
@@ -351,4 +429,5 @@ public class SheetDataSaxHandler extends DefaultHandler {
             }
         }
     }
+
 }

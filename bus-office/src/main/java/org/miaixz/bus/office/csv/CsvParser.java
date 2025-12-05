@@ -40,6 +40,10 @@ import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * CSV row parser, inspired by FastCSV.
+ * <p>
+ * This class reads CSV data character by character, handling quoted fields, escaped delimiters, and multi-line fields
+ * according to standard CSV rules (RFC 4180).
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -83,7 +87,7 @@ public final class CsvParser extends ComputeIterator<CsvRow> implements Closeabl
      */
     private long lineNo = -1;
     /**
-     * The number of lines consumed while inside a quoted field.
+     * The number of lines consumed while inside a quoted field (handling multi-line fields).
      */
     private long inQuotesLineCount;
     /**
@@ -91,7 +95,7 @@ public final class CsvParser extends ComputeIterator<CsvRow> implements Closeabl
      */
     private int firstLineFieldCount = -1;
     /**
-     * The maximum number of fields found in any row so far, used for initial row capacity.
+     * The maximum number of fields found in any row so far, used for initial row capacity optimization.
      */
     private int maxFieldCount;
     /**
@@ -135,7 +139,7 @@ public final class CsvParser extends ComputeIterator<CsvRow> implements Closeabl
      * Reads the next row of data from the CSV. This method handles skipping empty rows, checking field counts, and
      * initializing the header row based on the configuration.
      *
-     * @return The next {@link CsvRow}, or {@code null} if the end of the CSV data is reached.
+     * @return The next {@link CsvRow}, or {@code null} if the end of the stream has been reached.
      * @throws InternalException If an I/O error occurs during reading or if field count consistency check fails.
      */
     public CsvRow nextRow() throws InternalException {
@@ -206,7 +210,7 @@ public final class CsvParser extends ComputeIterator<CsvRow> implements Closeabl
         for (int i = 0; i < currentFields.size(); i++) {
             String field = currentFields.get(i);
             if (MapKit.isNotEmpty(this.config.headerAlias)) {
-                // Custom alias
+                // Custom alias processing
                 field = ObjectKit.defaultIfNull(this.config.headerAlias.get(field), field);
             }
             if (StringKit.isNotEmpty(field) && !localHeaderMap.containsKey(field)) {
@@ -231,8 +235,9 @@ public final class CsvParser extends ComputeIterator<CsvRow> implements Closeabl
      */
     private List<String> readLine() throws InternalException {
         // Correct the line number
-        // When a line contains multiple lines of data, the line number of the first line is recorded,
-        // but when reading the next line, the number of lines in the multi-line content needs to be added.
+        // When a line contains multiple lines of data (due to quoted newlines), the line number of the first line is
+        // recorded.
+        // However, when reading the next line, the number of lines within the multi-line content must be added.
         if (inQuotesLineCount > 0) {
             this.lineNo += this.inQuotesLineCount;
             this.inQuotesLineCount = 0;
@@ -250,11 +255,11 @@ public final class CsvParser extends ComputeIterator<CsvRow> implements Closeabl
             if (c < 0) {
                 if (!currentField.isEmpty() || preChar == config.fieldSeparator) {
                     if (this.inQuotes) {
-                        // Unclosed text delimiter, append delimiter at the end.
+                        // Unclosed text delimiter, append delimiter at the end to close it or denote issue.
                         currentField.append(config.textDelimiter);
                     }
 
-                    // Remaining part as a field
+                    // Treat the remaining part as a field
                     addField(currentFields, currentField.toString());
                     currentField.setLength(0);
                 }
@@ -265,11 +270,12 @@ public final class CsvParser extends ComputeIterator<CsvRow> implements Closeabl
 
             // Comment line marker
             if (preChar < 0 || preChar == Symbol.C_CR || preChar == Symbol.C_LF) {
-                // Determine if a comment starts with the specified comment character at the beginning of a line,
-                // until a newline character is encountered.
-                // The beginning of a line has two cases: 1. preChar < 0 indicates the beginning of the text,
-                // 2. a newline character is immediately followed by the beginning of the next line.
-                // If the comment character appears within a text delimiter, it is treated as a normal character.
+                // Determine if a comment starts with the specified comment character at the beginning of a line.
+                // The beginning of a line has two cases:
+                // 1. preChar < 0 indicates the very beginning of the stream.
+                // 2. A newline character is immediately followed by the beginning of the next line.
+                // Note: If the comment character appears within a text delimiter (quoted), it is treated as a normal
+                // character.
                 if (!inQuotes && null != this.config.commentCharacter && c == this.config.commentCharacter) {
                     inComment = true;
                 }
@@ -288,22 +294,24 @@ public final class CsvParser extends ComputeIterator<CsvRow> implements Closeabl
             if (inQuotes) {
                 // Inside quotes, treat as content until quotes end.
                 if (c == config.textDelimiter) {
-                    // Escaped text delimiter
+                    // Encountered a text delimiter (potentially an escaped one or end of quotes)
                     final int next = tokener.next();
                     if (next != config.textDelimiter) {
-                        // End of quoting
+                        // Not a double delimiter, so it marks the end of quoting
                         inQuotes = false;
                         tokener.back();
                     }
-                    // https://datatracker.ietf.org/doc/html/rfc4180#section-2 Skip the escape character, only keep the
-                    // escaped delimiter.
+                    // Else: It was a double delimiter (escaped delimiter).
+                    // https://datatracker.ietf.org/doc/html/rfc4180#section-2
+                    // We skip the escape character (handled by the next() call above) and fall through to append the
+                    // single delimiter.
                 } else {
                     // Newline within field content.
                     if (isLineEnd(c, preChar)) {
                         inQuotesLineCount++;
                     }
                 }
-                // Normal field character
+                // Normal field character (or the unescaped delimiter)
                 currentField.append((char) c);
             } else {
                 // Not inside quotes
@@ -329,7 +337,7 @@ public final class CsvParser extends ComputeIterator<CsvRow> implements Closeabl
                         preChar = c;
                         break;
                     }
-                    // If the previous character was \r, this field has already been processed, so skip it.
+                    // If the previous character was \r, this field (line end) has already been processed, so skip it.
                 } else {
                     currentField.append((char) c);
                 }
@@ -359,9 +367,10 @@ public final class CsvParser extends ComputeIterator<CsvRow> implements Closeabl
     private void addField(final List<String> currentFields, String field) {
         final char textDelimiter = this.config.textDelimiter;
 
-        // Ignore newline characters after redundant quotes.
+        // Ignore newline characters after redundant quotes (trim suffix).
         field = StringKit.trim(field, StringTrimer.TrimMode.SUFFIX, (c -> c == Symbol.C_LF || c == Symbol.C_CR));
 
+        // If wrapped in text delimiters, remove them.
         if (StringKit.isWrap(field, textDelimiter)) {
             field = StringKit.sub(field, 1, field.length() - 1);
         }

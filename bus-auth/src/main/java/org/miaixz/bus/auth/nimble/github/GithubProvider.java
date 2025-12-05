@@ -40,7 +40,7 @@ import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Registry;
 import org.miaixz.bus.auth.magic.Callback;
-import org.miaixz.bus.auth.magic.Material;
+import org.miaixz.bus.auth.magic.Claims;
 import org.miaixz.bus.auth.nimble.AbstractProvider;
 
 import java.util.HashMap;
@@ -101,7 +101,7 @@ public class GithubProvider extends AbstractProvider {
      * Retrieves user information from GitHub's user info endpoint.
      *
      * @param authorization the {@link Authorization} obtained after successful authorization
-     * @return {@link Material} containing the user's information
+     * @return {@link Claims} containing the user's information
      * @throws AuthorizedException if parsing the response fails or required user information is missing
      */
     @Override
@@ -131,7 +131,7 @@ public class GithubProvider extends AbstractProvider {
             String bio = (String) object.get("bio");
 
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
-                    Material.builder().rawJson(JsonKit.toJsonString(object)).uuid(id).username(login).avatar(avatarUrl)
+                    Claims.builder().rawJson(JsonKit.toJsonString(object)).uuid(id).username(login).avatar(avatarUrl)
                             .blog(blog).nickname(name).company(company).location(location).email(email).remark(bio)
                             .gender(Gender.UNKNOWN).token(authorization).source(complex.toString()).build())
                     .build();

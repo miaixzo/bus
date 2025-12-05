@@ -1,0 +1,18 @@
+[
+  {
+    "latest": true,
+    "metadata-version": "8.3.5",
+    "module": "org.miaixz:bus-vortex",
+    "tested-versions": [
+      "8.3.5"
+    ]
+  },
+  {
+    "metadata-version": "8.3.5",
+    "default-for": "8\\.3\\.[5-9]",
+    "module": "org.miaixz:bus-vortex",
+    "tested-versions": [
+      "8.3.5"
+    ]
+  }
+]

@@ -44,8 +44,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.introspect.AnnotatedMember;
-import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
-import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator;
 import com.fasterxml.jackson.databind.ser.BeanPropertyWriter;
 import com.fasterxml.jackson.databind.ser.PropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
@@ -94,7 +92,7 @@ public class JacksonMessageConverter extends AbstractHttpMessageConverter {
      */
     @Override
     public int order() {
-        return 0; // Highest precedence among default JSON converters
+        return 1; // Highest precedence among default JSON converters
     }
 
     /**
@@ -125,9 +123,7 @@ public class JacksonMessageConverter extends AbstractHttpMessageConverter {
 
         // 4. Configure autoType restrictions
         if (autoType != null && !autoType.isEmpty()) {
-            PolymorphicTypeValidator ptv = BasicPolymorphicTypeValidator.builder().allowIfBaseType(autoType).build();
-            jacksonMapper.activateDefaultTyping(ptv, ObjectMapper.DefaultTyping.NON_FINAL);
-            Logger.debug("Jackson autoType enabled for package prefix: {}", autoType);
+            Logger.debug("Jackson autoType is DISABLED to ensure clean JSON output.");
         }
 
         // 5. Add support for Java Time API (LocalDateTime)

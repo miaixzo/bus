@@ -33,12 +33,12 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-dependencies</artifactId>
-        <version>3.5.5</version>
+        <version>3.5.8</version>
     </parent>
 
     <groupId>org.miaixz</groupId>
     <artifactId>bus-parent</artifactId>
-    <version>8.3.3</version>
+    <version>8.3.5</version>
     <packaging>pom</packaging>
 
     <name>${project.artifactId}</name>
@@ -91,9 +91,9 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <bus.version>8.3.3</bus.version>
+        <bus.version>8.3.5</bus.version>
         <lombok.version>1.18.42</lombok.version>
-        <spring.boot.version>3.5.6</spring.boot.version>
+        <spring.boot.version>3.5.8</spring.boot.version>
         <jakarta.persistence.version>3.2.0</jakarta.persistence.version>
         <jakarta.mail.version>2.1.3</jakarta.mail.version>
         <jakarta.servlet.version>6.1.0</jakarta.servlet.version>
@@ -145,7 +145,6 @@
         <mybatis.spring.version>3.0.5</mybatis.spring.version>
         <poi.version>5.4.1</poi.version>
         <ofdrw.version>2.3.7</ofdrw.version>
-        <jsqlparser.version>5.3</jsqlparser.version>
         <hikaricp.version>7.0.2</hikaricp.version>
         <druid.version>1.2.27</druid.version>
         <vertx.version>5.0.1</vertx.version>
@@ -242,11 +241,6 @@
             <dependency>
                 <groupId>org.miaixz</groupId>
                 <artifactId>bus-opencv</artifactId>
-                <version>${bus.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.miaixz</groupId>
-                <artifactId>bus-pager</artifactId>
                 <version>${bus.version}</version>
             </dependency>
             <dependency>
@@ -828,11 +822,6 @@
                 </exclusions>
             </dependency>
             <dependency>
-                <groupId>com.github.jsqlparser</groupId>
-                <artifactId>jsqlparser</artifactId>
-                <version>${jsqlparser.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>com.alibaba</groupId>
                 <artifactId>druid</artifactId>
                 <version>${druid.version}</version>
@@ -1195,10 +1184,10 @@
                         <metadataRepository>
                             <enabled>true</enabled>
                         </metadataRepository>
-                        <requiredVersion>22.3</requiredVersion>
                         <buildArgs>
-                            <arg>--enable-monitoring=jfr</arg>
-                            <arg>-H:+AddAllCharsets</arg>
+                            <buildArg>--enable-url-protocols=http,https</buildArg>
+                            <buildArg>-J-Dfile.encoding=UTF-8</buildArg>
+                            <buildArg>-H:+AddAllCharsets</buildArg>
                         </buildArgs>
                     </configuration>
                     <executions>
@@ -1286,9 +1275,14 @@
                 </configuration>
             </plugin>
             <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>versions-maven-plugin</artifactId>
+                <version>2.20.1</version>
+            </plugin>
+            <plugin>
                 <groupId>com.diffplug.spotless</groupId>
                 <artifactId>spotless-maven-plugin</artifactId>
-                <version>3.0.0</version>
+                <version>3.1.0</version>
                 <configuration>
                     <upToDateChecking>
                         <enabled>false</enabled>

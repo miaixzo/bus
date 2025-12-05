@@ -35,7 +35,6 @@ import org.miaixz.bus.base.entity.BaseEntity;
 import org.miaixz.bus.base.mapper.SharedMapper;
 import org.miaixz.bus.core.basic.entity.Result;
 import org.miaixz.bus.core.basic.normal.Consts;
-import org.miaixz.bus.core.xyz.ListKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.mapper.binding.condition.Condition;
@@ -43,19 +42,24 @@ import org.miaixz.bus.mapper.binding.condition.ConditionWrapper;
 import org.miaixz.bus.mapper.binding.function.Fn;
 import org.miaixz.bus.mapper.parsing.ColumnMeta;
 import org.miaixz.bus.mapper.parsing.TableMeta;
-import org.miaixz.bus.pager.Page;
-import org.miaixz.bus.pager.PageContext;
+import org.miaixz.bus.mapper.support.paging.Page;
+import org.miaixz.bus.mapper.support.paging.PageContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * Abstract service implementation based on Spring, implementing the {@link SharedService} interface. This class
- * provides common CRUD operations and integrates with {@link BaseEntity} for common fields like status, creator, etc.
- * If specific business requirements do not include fields like status, creator, etc., this class and {@link BaseEntity}
- * should be overridden, and business classes should inherit from the new class.
+ * Abstract base implementation of {@link SharedService} providing standard CRUD functionality.
+ * <p>
+ * This class integrates with {@link BaseEntity} to automatically handle common lifecycle fields (e.g., status, creator,
+ * creation time, modifier, update time) during insert and update operations.
+ * </p>
+ * <p>
+ * If your business logic requires custom handling of these fields or does not use {@link BaseEntity}, consider
+ * overriding the specific methods or extending a different base class.
+ * </p>
  *
- * @param <T> the entity type, which must extend {@link BaseEntity}
- * @param <I> the type of the primary key, which must implement {@link Serializable}
- * @param <M> the mapper type, which must extend {@link SharedMapper}
+ * @param <T> the entity type, must extend {@link BaseEntity}
+ * @param <I> the type of the primary key, must implement {@link Serializable}
+ * @param <M> the mapper type, must extend {@link SharedMapper}
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -63,14 +67,16 @@ public class AbstractService<T extends BaseEntity, I extends Serializable, M ext
         implements SharedService<T, I> {
 
     /**
-     * The mapper instance for database operations.
+     * The underlying mapper instance for database interactions. Automatically injected by Spring.
      */
     @Autowired
     protected M mapper;
 
     /**
-     * Inserts a new entity with all fields. Sets common entity properties like status, creator, and creation time
-     * before insertion.
+     * Persists a new entity with all fields.
+     * <p>
+     * Automatically populates common metadata (status, creator, create time) before insertion.
+     * </p>
      *
      * @param entity the entity to insert
      * @return the inserted entity
@@ -82,8 +88,10 @@ public class AbstractService<T extends BaseEntity, I extends Serializable, M ext
     }
 
     /**
-     * Inserts a new entity, only including non-null fields. Sets common entity properties like status, creator, and
-     * creation time before insertion.
+     * Persists a new entity, saving only non-null fields.
+     * <p>
+     * Automatically populates common metadata (status, creator, create time) before insertion.
+     * </p>
      *
      * @param entity the entity to insert
      * @return the inserted entity
@@ -95,45 +103,50 @@ public class AbstractService<T extends BaseEntity, I extends Serializable, M ext
     }
 
     /**
-     * Inserts a batch of entities with all fields. Each entity in the list will have its common properties set before
-     * insertion.
+     * Persists a batch of entities, saving all fields for each entity.
+     * <p>
+     * Unlike single insert, this method typically delegates directly to the mapper without the individual `setValue`
+     * hook loop for performance, unless handled within the mapper/interceptor.
+     * </p>
      *
      * @param list the list of entities to insert
-     * @return the list of inserted entities
+     * @return the list of inserted entities or operation result
      */
     @Override
-    public List<T> insertBatch(List<T> list) {
-        List<T> data = ListKit.of();
-        list.forEach(item -> {
-            T t = (T) this.insertSelective(item);
-            data.add(t);
-        });
-        return data;
+    public Object insertBatch(List<T> list) {
+        return mapper.insertBatch(list);
     }
 
     /**
-     * Inserts a batch of entities, only including non-null fields. Each entity in the list will have its common
-     * properties set before insertion.
+     * Batch insert or update (Upsert) operation.
      *
-     * @param list the list of entities to insert
-     * @return the list of inserted entities
+     * @param list the list of entities to insert or update
+     * @return the result of the batch operation
      */
     @Override
-    public List<T> insertBatchSelective(List<T> list) {
-        List<T> data = ListKit.of();
-        list.forEach(item -> {
-            T t = (T) this.insertSelective(item);
-            data.add(t);
-        });
-        return data;
+    public Object insertUpBatch(List<T> list) {
+        return mapper.insertUpBatch(list);
     }
 
     /**
-     * Updates an existing entity with all fields. Sets common entity properties like modifier and modification time
-     * before updating.
+     * Persists a batch of entities, saving only non-null fields.
+     *
+     * @param list the list of entities to insert
+     * @return the list of inserted entities or operation result
+     */
+    @Override
+    public Object insertSelectiveBatch(List<T> list) {
+        return mapper.insertSelectiveBatch(list);
+    }
+
+    /**
+     * Updates an existing entity with all fields.
+     * <p>
+     * Automatically updates modification metadata (modifier, update time) before execution.
+     * </p>
      *
      * @param entity the entity to update
-     * @return the updated entity
+     * @return the updated entity or operation result
      */
     @Override
     public Object update(T entity) {
@@ -142,12 +155,14 @@ public class AbstractService<T extends BaseEntity, I extends Serializable, M ext
     }
 
     /**
-     * Updates an existing entity, specifying which fields to update. Sets common entity properties like modifier and
-     * modification time before updating.
+     * Updates an existing entity, forcing updates on specified fields.
+     * <p>
+     * Automatically updates modification metadata (modifier, update time).
+     * </p>
      *
      * @param entity the entity to update
-     * @param fields the fields to be updated
-     * @return the updated entity
+     * @param fields the specific fields to force update
+     * @return the updated entity or operation result
      */
     @Override
     public Object update(T entity, Fn<T, Object>... fields) {
@@ -156,11 +171,13 @@ public class AbstractService<T extends BaseEntity, I extends Serializable, M ext
     }
 
     /**
-     * Updates an existing entity, only including non-null fields. Sets common entity properties like modifier and
-     * modification time before updating.
+     * Updates an existing entity, only modifying fields that are non-null.
+     * <p>
+     * Automatically updates modification metadata (modifier, update time).
+     * </p>
      *
      * @param entity the entity to update
-     * @return the updated entity
+     * @return the updated entity or operation result
      */
     @Override
     public Object updateSelective(T entity) {
@@ -169,12 +186,14 @@ public class AbstractService<T extends BaseEntity, I extends Serializable, M ext
     }
 
     /**
-     * Updates an existing entity, only including non-null fields, and forces update for specified fields. Sets common
-     * entity properties like modifier and modification time before updating.
+     * Updates an existing entity, only modifying non-null fields, while forcing updates on additional specified fields.
+     * <p>
+     * Automatically updates modification metadata (modifier, update time).
+     * </p>
      *
      * @param entity the entity to update
-     * @param fields the fields to force update
-     * @return the updated entity
+     * @param fields the additional fields to force update
+     * @return the updated entity or operation result
      */
     @Override
     public Object updateSelective(T entity, Fn<T, Object>... fields) {
@@ -183,11 +202,10 @@ public class AbstractService<T extends BaseEntity, I extends Serializable, M ext
     }
 
     /**
-     * Inserts a new entity or updates an existing one with all fields. Determines whether to insert or update based on
-     * the primary key's value.
+     * Saves the entity: inserts if primary key is missing, otherwise updates (all fields).
      *
      * @param entity the entity to insert or update
-     * @return the inserted or updated entity
+     * @return the saved entity
      */
     @Override
     public Object insertOrUpdate(T entity) {
@@ -199,11 +217,10 @@ public class AbstractService<T extends BaseEntity, I extends Serializable, M ext
     }
 
     /**
-     * Inserts a new entity or updates an existing one, only including non-null fields. Determines whether to insert or
-     * update based on the primary key's value.
+     * Saves the entity: inserts if primary key is missing, otherwise updates (selective fields).
      *
      * @param entity the entity to insert or update
-     * @return the inserted or updated entity
+     * @return the saved entity
      */
     @Override
     public Object insertOrUpdateSelective(T entity) {
@@ -215,10 +232,13 @@ public class AbstractService<T extends BaseEntity, I extends Serializable, M ext
     }
 
     /**
-     * Performs a logical deletion of an entity. This involves setting the entity's status to {@link Consts#MINUS_ONE}
-     * and updating the entity.
+     * Performs a logical deletion.
+     * <p>
+     * Sets the entity's status to {@link Consts#MINUS_ONE} (Deleted), updates the modification metadata, and persists
+     * the change.
+     * </p>
      *
-     * @param entity the entity to be logically removed
+     * @param entity the entity to logically delete
      * @return the number of affected rows
      */
     @Override
@@ -229,10 +249,10 @@ public class AbstractService<T extends BaseEntity, I extends Serializable, M ext
     }
 
     /**
-     * Performs a physical deletion of an entity from the database.
+     * Performs a physical deletion of the entity from the database.
      *
      * @param entity the entity to delete
-     * @return the number of records deleted, greater than 0 indicates success
+     * @return the number of deleted records
      */
     @Override
     public long delete(T entity) {
@@ -240,10 +260,10 @@ public class AbstractService<T extends BaseEntity, I extends Serializable, M ext
     }
 
     /**
-     * Deletes an entity by its primary key.
+     * Physically deletes an entity by its primary key.
      *
      * @param id the primary key
-     * @return the number of records deleted, 1 indicates success
+     * @return the number of deleted records
      */
     @Override
     public long deleteById(I id) {
@@ -251,10 +271,10 @@ public class AbstractService<T extends BaseEntity, I extends Serializable, M ext
     }
 
     /**
-     * Deletes entities by a collection of primary keys.
+     * Physically deletes entities by a collection of primary keys.
      *
      * @param ids the collection of primary keys
-     * @return the number of records deleted
+     * @return the number of deleted records
      */
     @Override
     public long deleteByIds(Collection<I> ids) {
@@ -262,12 +282,12 @@ public class AbstractService<T extends BaseEntity, I extends Serializable, M ext
     }
 
     /**
-     * Deletes entities by a collection of field values.
+     * Physically deletes entities that match a list of values for a specific field.
      *
      * @param field          the field to match against
      * @param fieldValueList the collection of field values
      * @param <F>            the type of the field value
-     * @return the number of records deleted
+     * @return the number of deleted records
      */
     @Override
     public <F> long deleteByFieldList(Fn<T, F> field, Collection<F> fieldValueList) {
@@ -275,10 +295,10 @@ public class AbstractService<T extends BaseEntity, I extends Serializable, M ext
     }
 
     /**
-     * Retrieves an entity by its primary key.
+     * Retrieves a single entity by its primary key.
      *
      * @param id the primary key
-     * @return the entity, or null if not found
+     * @return the found entity, or null if not found
      */
     @Override
     public Object selectById(I id) {
@@ -286,10 +306,10 @@ public class AbstractService<T extends BaseEntity, I extends Serializable, M ext
     }
 
     /**
-     * Retrieves a single entity based on the provided entity conditions.
+     * Retrieves a single entity matching the properties set in the provided entity object.
      *
-     * @param entity the entity containing query conditions
-     * @return the entity, or null if not found
+     * @param entity the entity acting as a query prototype
+     * @return the found entity, or null if not found
      */
     @Override
     public Object selectOne(T entity) {
@@ -297,10 +317,10 @@ public class AbstractService<T extends BaseEntity, I extends Serializable, M ext
     }
 
     /**
-     * Retrieves a list of entities based on the provided entity conditions.
+     * Retrieves a list of entities matching the properties set in the provided entity object.
      *
-     * @param entity the entity containing query conditions
-     * @return a list of entities
+     * @param entity the entity acting as a query prototype
+     * @return a list of matching entities
      */
     @Override
     public List<T> selectList(T entity) {
@@ -308,12 +328,12 @@ public class AbstractService<T extends BaseEntity, I extends Serializable, M ext
     }
 
     /**
-     * Retrieves a list of entities based on a collection of field values.
+     * Retrieves a list of entities where the specified field matches any value in the provided collection.
      *
-     * @param field          the field to match against
-     * @param fieldValueList the collection of field values
+     * @param field          the field to query
+     * @param fieldValueList the collection of values to match
      * @param <F>            the type of the field value
-     * @return a list of entities
+     * @return a list of matching entities
      */
     @Override
     public <F> List<T> selectByFieldList(Fn<T, F> field, Collection<F> fieldValueList) {
@@ -321,7 +341,7 @@ public class AbstractService<T extends BaseEntity, I extends Serializable, M ext
     }
 
     /**
-     * Retrieves all records.
+     * Retrieves all records from the table.
      *
      * @return a list of all entities
      */
@@ -331,10 +351,10 @@ public class AbstractService<T extends BaseEntity, I extends Serializable, M ext
     }
 
     /**
-     * Counts the number of records matching the provided entity conditions.
+     * Counts the number of records matching the properties set in the provided entity object.
      *
-     * @param entity the entity containing query conditions
-     * @return the total number of records
+     * @param entity the entity acting as a query prototype
+     * @return the count of matching records
      */
     @Override
     public long count(T entity) {
@@ -342,7 +362,7 @@ public class AbstractService<T extends BaseEntity, I extends Serializable, M ext
     }
 
     /**
-     * Returns a new {@link Condition} object for building complex queries.
+     * Creates and returns a new {@link Condition} instance for building complex queries.
      *
      * @return a new Condition object
      */
@@ -352,10 +372,10 @@ public class AbstractService<T extends BaseEntity, I extends Serializable, M ext
     }
 
     /**
-     * Deletes records based on the provided {@link Condition}.
+     * Deletes records matching the provided {@link Condition}.
      *
      * @param condition the query condition
-     * @return the number of records deleted, greater than 0 indicates success
+     * @return the number of deleted records
      */
     @Override
     public long delete(Condition<T> condition) {
@@ -363,11 +383,11 @@ public class AbstractService<T extends BaseEntity, I extends Serializable, M ext
     }
 
     /**
-     * Updates records based on the provided entity and {@link Condition}, updating all fields.
+     * Updates records matching the {@link Condition} with values from the provided entity (updates all fields).
      *
-     * @param entity    the entity with updated information
-     * @param condition the query condition
-     * @return the number of records updated, greater than 0 indicates success
+     * @param entity    the source of the new values
+     * @param condition the condition defining which records to update
+     * @return the number of updated records
      */
     @Override
     public long update(T entity, Condition<T> condition) {
@@ -375,11 +395,12 @@ public class AbstractService<T extends BaseEntity, I extends Serializable, M ext
     }
 
     /**
-     * Updates records based on the provided entity and {@link Condition}, only updating non-null fields.
+     * Updates records matching the {@link Condition} with values from the provided entity (updates only non-null
+     * fields).
      *
-     * @param entity    the entity with updated information
-     * @param condition the query condition
-     * @return the number of records updated, greater than 0 indicates success
+     * @param entity    the source of the new values
+     * @param condition the condition defining which records to update
+     * @return the number of updated records
      */
     @Override
     public long updateSelective(T entity, Condition<T> condition) {
@@ -387,10 +408,10 @@ public class AbstractService<T extends BaseEntity, I extends Serializable, M ext
     }
 
     /**
-     * Retrieves a single entity based on the provided {@link Condition}.
+     * Retrieves a single entity matching the provided {@link Condition}.
      *
      * @param condition the query condition
-     * @return the entity, or null if not found
+     * @return the found entity, or null if not found
      */
     @Override
     public Object selectOne(Condition<T> condition) {
@@ -398,10 +419,10 @@ public class AbstractService<T extends BaseEntity, I extends Serializable, M ext
     }
 
     /**
-     * Retrieves the first entity found based on the provided {@link Condition}.
+     * Retrieves the first entity matching the provided {@link Condition}.
      *
      * @param condition the query condition
-     * @return the first entity found, or null if no entities match the condition
+     * @return the first matching entity, or null if none found
      */
     @Override
     public Object selectFirst(Condition<T> condition) {
@@ -410,10 +431,10 @@ public class AbstractService<T extends BaseEntity, I extends Serializable, M ext
     }
 
     /**
-     * Retrieves a list of entities based on the provided {@link Condition}.
+     * Retrieves a list of entities matching the provided {@link Condition}.
      *
      * @param condition the query condition
-     * @return a list of entities
+     * @return a list of matching entities
      */
     @Override
     public List<T> selectList(Condition<T> condition) {
@@ -424,7 +445,7 @@ public class AbstractService<T extends BaseEntity, I extends Serializable, M ext
      * Counts the number of records matching the provided {@link Condition}.
      *
      * @param condition the query condition
-     * @return the total number of records
+     * @return the total count of matching records
      */
     @Override
     public long count(Condition<T> condition) {
@@ -432,10 +453,13 @@ public class AbstractService<T extends BaseEntity, I extends Serializable, M ext
     }
 
     /**
-     * Checks if the primary key of the given entity has a value.
+     * Checks if the primary key of the provided entity is populated.
+     * <p>
+     * This uses the underlying {@link TableMeta} to identify the ID column and reflection to check its value.
+     * </p>
      *
      * @param entity the entity to check
-     * @return true if the primary key has a value, false otherwise
+     * @return true if the primary key is not null, false otherwise
      */
     @Override
     public boolean pkHasValue(T entity) {
@@ -445,14 +469,18 @@ public class AbstractService<T extends BaseEntity, I extends Serializable, M ext
     }
 
     /**
-     * Performs a paginated query based on the provided entity, which should contain pagination and sorting parameters.
+     * Performs a paginated query based on the parameters within the entity.
+     * <p>
+     * This method initializes the {@link PageContext} using the entity's page number, size, and sort order, then
+     * delegates to the mapper.
+     * </p>
      *
      * @param entity the entity containing pagination and sorting parameters
-     * @return a {@link Result} object containing the paginated list of records and the total count
+     * @return a {@link Result} containing the list of records and total count
      */
     @Override
     public Result<T> page(T entity) {
-        PageContext.startPage(entity.getPageNo(), entity.getPageSize());
+        PageContext.of(entity.getPageNo(), entity.getPageSize());
         if (StringKit.isNotEmpty(entity.getOrderBy())) {
             PageContext.orderBy(entity.getOrderBy());
         }
@@ -461,9 +489,9 @@ public class AbstractService<T extends BaseEntity, I extends Serializable, M ext
     }
 
     /**
-     * Returns a new {@link ConditionWrapper} object for building complex query conditions.
+     * Returns a new {@link ConditionWrapper} for fluent query construction.
      *
-     * @return a new ConditionWrapper object
+     * @return a new ConditionWrapper instance
      */
     @Override
     public ConditionWrapper<T, I> wrapper() {
@@ -471,11 +499,14 @@ public class AbstractService<T extends BaseEntity, I extends Serializable, M ext
     }
 
     /**
-     * Sets common entity property values such as status, operator, and operation time. If the entity's status is empty,
-     * it defaults to {@link Consts#ONE}.
+     * Helper method to set common entity lifecycle properties before persistence.
+     * <p>
+     * Sets default Status (1) if empty, and triggers {@link BaseEntity#setValue(Object)} for creator/modifier/timestamp
+     * handling.
+     * </p>
      *
-     * @param entity the entity to set values for
-     * @return the ID of the entity, or null if the entity is null
+     * @param entity the entity to process
+     * @return the ID of the entity
      */
     protected String setValue(T entity) {
         if (ObjectKit.isEmpty(entity)) {

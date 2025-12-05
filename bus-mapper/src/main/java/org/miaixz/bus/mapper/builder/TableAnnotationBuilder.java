@@ -27,12 +27,7 @@
  */
 package org.miaixz.bus.mapper.builder;
 
-import org.miaixz.bus.core.Context;
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.mapper.Args;
-import org.miaixz.bus.mapper.Holder;
 import org.miaixz.bus.mapper.parsing.TableMeta;
 import org.miaixz.bus.mapper.provider.NamingProvider;
 
@@ -69,12 +64,6 @@ public class TableAnnotationBuilder implements TableSchemaBuilder {
             tableMeta.autoResultMap(true);
         }
 
-        // If the table name is not empty, add the table prefix.
-        if (StringKit.isNotEmpty(tableMeta.table())) {
-            String key = Holder.getKey() + Symbol.DOT + Args.TABLE_PREFIX_KEY;
-            String prefix = Context.INSTANCE.getProperty(key, Normal.EMPTY);
-            tableMeta.table(prefix + tableMeta.table());
-        }
         EntityClassBuilder.setTableMeta(tableMeta);
 
         return tableMeta;

@@ -36,6 +36,7 @@ module bus.starter {
     requires java.datatransfer;
     requires java.desktop;
     requires java.management;
+    requires java.sql;
 
     requires bus.auth;
     requires bus.base;
@@ -51,7 +52,6 @@ module bus.starter {
     requires bus.mapper;
     requires bus.notify;
     requires bus.office;
-    requires bus.pager;
     requires bus.pay;
     requires bus.proxy;
     requires bus.sensitive;
@@ -92,7 +92,6 @@ module bus.starter {
     requires elasticsearch.rest.client;
     requires io.vertx.core;
     requires io.vertx.web;
-    requires net.sf.jsqlparser;
     requires org.aspectj.weaver;
     requires org.jboss.logging;
     requires org.mongodb.driver.core;
@@ -107,6 +106,7 @@ module bus.starter {
 
     exports org.miaixz.bus.spring;
     exports org.miaixz.bus.spring.annotation;
+    exports org.miaixz.bus.spring.aot;
     exports org.miaixz.bus.spring.autoproxy;
     exports org.miaixz.bus.spring.banner;
     exports org.miaixz.bus.spring.boot;

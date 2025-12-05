@@ -221,18 +221,23 @@ public class FiniteBound<T extends Comparable<? super T>> implements Bound<T> {
     private int compareIfSameBoundValue(final Bound<T> bound) {
         final BoundType bt1 = this.getType();
         final BoundType bt2 = bound.getType();
-        // If both bounds have the same type, they coincide
+        // If the two boundary types are the same, it means the boundaries coincide.
         if (bt1 == bt2) {
             return 0;
         }
-        // If one is a lower bound and the other is an upper bound, they are dislocated.
-        // A lower bound is considered to the right of an upper bound if their values are the same.
+        // One is a lower bound, the other is an upper bound.
         if (bt1.isDislocated(bt2)) {
+            // Special case: When a closed upper bound and a closed lower bound are at the same point,
+            // they are considered to overlap (used for interval intersection judgment).
+            if ((bt1 == BoundType.CLOSE_UPPER_BOUND && bt2 == BoundType.CLOSE_LOWER_BOUND)
+                    || (bt1 == BoundType.CLOSE_LOWER_BOUND && bt2 == BoundType.CLOSE_UPPER_BOUND)) {
+                return 0;
+            }
+            // General case: The lower bound is always considered "after" (greater than) the upper bound.
             return bt1.isLowerBound() ? 1 : -1;
         }
-        // If both are lower bounds, a closed bound comes before an open bound.
-        // If both are upper bounds, an open bound comes before a closed bound.
-        // This is handled by comparing their codes.
+        // If both are lower bounds, the closed bound comes first;
+        // if both are upper bounds, the closed bound comes later.
         return Integer.compare(bt1.getCode(), bt2.getCode());
     }
 

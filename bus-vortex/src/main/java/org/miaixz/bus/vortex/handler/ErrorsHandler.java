@@ -31,7 +31,6 @@ import java.net.UnknownHostException;
 
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.exception.UncheckedException;
-import org.miaixz.bus.core.xyz.ExceptionKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Context;
@@ -46,11 +45,7 @@ import org.springframework.web.reactive.function.client.WebClientRequestExceptio
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebExceptionHandler;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.Builder;
+import lombok.*;
 import reactor.core.publisher.Mono;
 import reactor.util.annotation.NonNull;
 
@@ -154,11 +149,10 @@ public class ErrorsHandler implements WebExceptionHandler {
      */
     private Message buildErrorMessage(Throwable ex, String method, String path) {
         // This logic is fast, synchronous, and non-blocking.
-        Throwable target = ExceptionKit.getRootCause(ex);
 
         // 1. Handle UncheckedException
-        if (target instanceof UncheckedException) {
-            UncheckedException ue = (UncheckedException) target;
+        if (ex instanceof UncheckedException) {
+            UncheckedException ue = (UncheckedException) ex;
             String errcode = ue.getErrcode();
             String errmsg = ue.getErrmsg();
             if (StringKit.isNotBlank(errcode)) {
@@ -175,15 +169,15 @@ public class ErrorsHandler implements WebExceptionHandler {
             // If errcode is blank, fall through to the default unknown error (preserves original logic)
         }
         // 2. Handle WebClientException
-        else if (target instanceof WebClientException || target instanceof WebClientRequestException) {
-            if (target.getCause() instanceof UnknownHostException) {
+        else if (ex instanceof WebClientException || ex instanceof WebClientRequestException) {
+            if (ex.getCause() instanceof UnknownHostException) {
                 Logger.error(
                         false,
                         "Errors",
                         "[N/A] [{}] [{}] [ERROR_WEBCLIENT] - UnknownHostException: {}",
                         method,
                         path,
-                        target.getCause().getMessage());
+                        ex.getCause().getMessage());
                 return Message.builder().errcode(ErrorCode._100811.getKey()).errmsg(ErrorCode._100811.getValue())
                         .build();
             } else {
@@ -193,7 +187,7 @@ public class ErrorsHandler implements WebExceptionHandler {
                         "[N/A] [{}] [{}] [ERROR_WEBCLIENT] - WebClientException: {}",
                         method,
                         path,
-                        target.getMessage());
+                        ex.getMessage());
                 return Message.builder().errcode(ErrorCode._116000.getKey()).errmsg(ErrorCode._116000.getValue())
                         .build();
             }
@@ -204,8 +198,8 @@ public class ErrorsHandler implements WebExceptionHandler {
                 "[N/A] [{}] [{}] [ERROR_UNKNOWN] - Unknown exception type: {}, Message: {}",
                 method,
                 path,
-                target.getClass().getName(),
-                target.getMessage());
+                ex.getClass().getName(),
+                ex.getMessage());
         return Message.builder().errcode(ErrorCode._100807.getKey()).errmsg(ErrorCode._100807.getValue()).build();
     }
 

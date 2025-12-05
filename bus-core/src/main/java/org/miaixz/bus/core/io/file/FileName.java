@@ -190,7 +190,7 @@ public class FileName {
         }
         final int secondToLastIndex = fileName.substring(0, index).lastIndexOf(Symbol.DOT);
         final String substr = fileName.substring(secondToLastIndex == -1 ? index : secondToLastIndex + 1);
-        if (StringKit.containsAny(substr, SPECIAL_SUFFIX)) {
+        if (StringKit.equalsAny(substr, SPECIAL_SUFFIX)) {
             return substr;
         }
 

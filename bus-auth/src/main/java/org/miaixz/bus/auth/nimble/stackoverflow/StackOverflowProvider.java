@@ -44,7 +44,7 @@ import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Registry;
 import org.miaixz.bus.auth.magic.Callback;
-import org.miaixz.bus.auth.magic.Material;
+import org.miaixz.bus.auth.magic.Claims;
 import org.miaixz.bus.auth.nimble.AbstractProvider;
 
 import java.util.HashMap;
@@ -109,7 +109,7 @@ public class StackOverflowProvider extends AbstractProvider {
      * Retrieves user information from Stack Overflow's user info endpoint.
      *
      * @param authorization the {@link Authorization} obtained after successful authorization
-     * @return {@link Material} containing the user's information
+     * @return {@link Claims} containing the user's information
      * @throws AuthorizedException if parsing the response fails or required user information is missing
      */
     @Override
@@ -123,7 +123,7 @@ public class StackOverflowProvider extends AbstractProvider {
         Map<String, Object> userObj = (Map<String, Object>) ((List<Object>) object.get("items")).get(0);
 
         return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
-                Material.builder().rawJson(JsonKit.toJsonString(userObj)).uuid((String) userObj.get("user_id"))
+                Claims.builder().rawJson(JsonKit.toJsonString(userObj)).uuid((String) userObj.get("user_id"))
                         .avatar((String) userObj.get("profile_image")).location((String) userObj.get("location"))
                         .nickname((String) userObj.get("display_name")).blog((String) userObj.get("website_url"))
                         .gender(Gender.UNKNOWN).token(authorization).source(complex.toString()).build())

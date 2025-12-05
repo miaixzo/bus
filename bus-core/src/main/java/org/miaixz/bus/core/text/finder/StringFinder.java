@@ -28,6 +28,8 @@
 package org.miaixz.bus.core.text.finder;
 
 import java.io.Serial;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
@@ -35,6 +37,9 @@ import org.miaixz.bus.core.text.CharsBacker;
 
 /**
  * String finder. Used to find the position of a specified string within a text.
+ * <p>
+ * This implementation uses the Sunday algorithm for efficient substring searching.
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -51,10 +56,21 @@ public class StringFinder extends TextFinder {
      * The string to find.
      */
     private final CharSequence strToFind;
+
     /**
      * Whether to ignore case during the search.
      */
     private final boolean caseInsensitive;
+
+    /**
+     * Cache for forward offset mapping (used in forward searches).
+     */
+    private Map<Character, Integer> forwardOffsetMap;
+
+    /**
+     * Cache for reverse offset mapping (used in backward searches).
+     */
+    private Map<Character, Integer> reverseOffsetMap;
 
     /**
      * Constructor.
@@ -80,27 +96,114 @@ public class StringFinder extends TextFinder {
         return new StringFinder(strToFind, caseInsensitive);
     }
 
+    /**
+     * Builds the forward offset map for the Sunday algorithm.
+     * <p>
+     * The offset indicates how far to jump if the character following the current window match attempt does not match.
+     * It maps characters in the pattern to their distance from the end of the pattern.
+     * </p>
+     *
+     * @param pattern         The pattern string.
+     * @param caseInsensitive Whether the search is case-insensitive.
+     * @return A map of character offsets.
+     */
+    private static Map<Character, Integer> buildForwardOffsetMap(CharSequence pattern, boolean caseInsensitive) {
+        int m = pattern.length();
+        Map<Character, Integer> map = new HashMap<>(Math.min(m, 128));
+
+        for (int i = 0; i < m; i++) {
+            char c = pattern.charAt(i);
+            int jump = m - i;
+
+            if (caseInsensitive) {
+                map.put(Character.toLowerCase(c), jump);
+            } else {
+                map.put(c, jump);
+            }
+        }
+        return map;
+    }
+
+    /**
+     * Builds the reverse offset map for the Sunday algorithm (adapted for backward searching).
+     * <p>
+     * The offset indicates how far to jump backwards if the character preceding the current window match attempt does
+     * not match. It maps characters in the pattern to their distance from the start of the pattern.
+     * </p>
+     *
+     * @param pattern         The pattern string.
+     * @param caseInsensitive Whether the search is case-insensitive.
+     * @return A map of character offsets.
+     */
+    private static Map<Character, Integer> buildReverseOffsetMap(CharSequence pattern, boolean caseInsensitive) {
+        int m = pattern.length();
+        Map<Character, Integer> map = new HashMap<>(Math.min(m, 128));
+
+        for (int i = m - 1; i >= 0; i--) {
+            char c = pattern.charAt(i);
+            int jump = i + 1;
+
+            if (caseInsensitive) {
+                map.put(Character.toLowerCase(c), jump);
+            } else {
+                map.put(c, jump);
+            }
+        }
+        return map;
+    }
+
     @Override
     public int start(int from) {
         Assert.notNull(this.text, "Text to find must be not null!");
         final int subLen = strToFind.length();
+        final int textLen = text.length();
 
-        if (from < 0) {
-            from = 0;
-        }
-        int endLimit = getValidEndIndex();
+        // Efficient substring query based on the Sunday algorithm
         if (negative) {
-            for (int i = from; i > endLimit; i--) {
+            // Backward search
+            if (this.reverseOffsetMap == null) {
+                this.reverseOffsetMap = buildReverseOffsetMap(strToFind, caseInsensitive);
+            }
+            int maxIndex = textLen - subLen;
+            if (from > maxIndex) {
+                from = maxIndex;
+            }
+            int i = from;
+            while (i >= 0) {
                 if (CharsBacker.isSubEquals(text, i, strToFind, 0, subLen, caseInsensitive)) {
                     return i;
                 }
+                if (i - 1 < 0) {
+                    break;
+                }
+                // Calculate jump based on the character preceding the current window
+                char preChar = text.charAt(i - 1);
+                int jump = reverseOffsetMap
+                        .getOrDefault(caseInsensitive ? Character.toLowerCase(preChar) : preChar, subLen + 1);
+                i -= jump;
             }
         } else {
-            endLimit = endLimit - subLen + 1;
-            for (int i = from; i < endLimit; i++) {
+            // Forward search
+            if (this.forwardOffsetMap == null) {
+                this.forwardOffsetMap = buildForwardOffsetMap(strToFind, caseInsensitive);
+            }
+            if (from < 0) {
+                from = 0;
+            }
+            int endLimit = textLen - subLen;
+            int i = from;
+            while (i <= endLimit) {
                 if (CharsBacker.isSubEquals(text, i, strToFind, 0, subLen, caseInsensitive)) {
                     return i;
                 }
+                if (i + subLen >= textLen) {
+                    break;
+                }
+                // Calculate jump based on the character following the current window
+                char nextChar = text.charAt(i + subLen);
+                int jump = forwardOffsetMap
+                        .getOrDefault(caseInsensitive ? Character.toLowerCase(nextChar) : nextChar, subLen + 1);
+                i += jump;
             }
         }
 

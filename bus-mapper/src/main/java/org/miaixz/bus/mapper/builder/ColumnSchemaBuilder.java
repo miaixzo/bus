@@ -31,7 +31,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.miaixz.bus.core.lang.Optional;
-import org.miaixz.bus.mapper.ORDER;
+import org.miaixz.bus.mapper.Order;
 import org.miaixz.bus.mapper.parsing.ColumnMeta;
 import org.miaixz.bus.mapper.parsing.FieldMeta;
 import org.miaixz.bus.mapper.parsing.TableMeta;
@@ -43,7 +43,7 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
  * @author Kimi Liu
  * @since Java 17+
  */
-public interface ColumnSchemaBuilder extends ORDER {
+public interface ColumnSchemaBuilder extends Order {
 
     /**
      * A default value for ignored fields, representing an empty list of column information.

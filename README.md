@@ -3,7 +3,7 @@
 </p>
 <p align="center">
   <a target="_blank" href="https://search.maven.org/search?q=org.miaixz">
-    <img src="https://img.shields.io/badge/maven--central-v8.3.3-blue.svg?label=Maven%20Central" />
+    <img src="https://img.shields.io/badge/maven--central-v8.3.x-blue.svg?label=Maven%20Central" />
   </a>
   <a target="_blank" href="https://jdk.java.net/">
     <img src="https://img.shields.io/badge/Java-21+-green.svg">
@@ -76,7 +76,6 @@ Bus primarily has versions 3.x, 5.x, 6.x, and 8.x, as detailed below:
 | [√]    | [bus-notify](bus-notify)      | Multi-channel notification center, supporting push methods like email/SMS/DingTalk/WeChat Work |
 | [√]    | [bus-office](bus-office)      | Office document processing engine, implementing Excel/Word/PPT operations based on POI |
 | [√]    | [bus-opencv](bus-opencv)      | Computer vision library, wrapping OpenCV to provide image recognition/face detection/video analysis capabilities |
-| [√]    | [bus-pager](bus-pager)        | Pagination query enhancement, supporting physical pagination/multiple data sources/dynamic sorting |
 | [√]    | [bus-parent](bus-parent)      | Parent POM, unified management of dependency versions/build configurations/coding standards |
 | [√]    | [bus-pay](bus-pay)            | Payment aggregation service, integrating 20+ payment channels including WeChat Pay/Alipay/UnionPay |
 | [√]    | [bus-proxy](bus-proxy)        | Dynamic proxy tool, simplifying JDK/CGLIB proxy implementation |

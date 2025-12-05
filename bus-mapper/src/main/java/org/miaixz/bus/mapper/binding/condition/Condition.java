@@ -38,7 +38,7 @@ import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.mapper.ORDER;
+import org.miaixz.bus.mapper.Order;
 import org.miaixz.bus.mapper.binding.function.Fn;
 import org.miaixz.bus.mapper.criteria.Criteria;
 import org.miaixz.bus.mapper.criteria.Criterion;
@@ -63,7 +63,7 @@ import lombok.experimental.SuperBuilder;
 public class Condition<T> {
 
     /**
-     * The ORDER BY clause for the query.
+     * The Order BY clause for the query.
      */
     protected String orderByClause;
     /**
@@ -333,7 +333,7 @@ public class Condition<T> {
     }
 
     /**
-     * Adds an ORDER BY clause using a method reference.
+     * Adds an Order BY clause using a method reference.
      *
      * @param fn    A method reference to the column to order by.
      * @param order The sort order ("ASC" or "DESC").
@@ -350,7 +350,7 @@ public class Condition<T> {
     }
 
     /**
-     * Adds a raw string ORDER BY clause. This does not overwrite existing clauses.
+     * Adds a raw string Order BY clause. This does not overwrite existing clauses.
      *
      * @param orderByCondition The sorting expression (e.g., "status = 5 DESC").
      * @return The current {@link Condition} object.
@@ -368,7 +368,7 @@ public class Condition<T> {
     }
 
     /**
-     * Adds a dynamically constructed, unconventional ORDER BY clause.
+     * Adds a dynamically constructed, unconventional Order BY clause.
      *
      * @param orderByCondition A supplier for the sorting expression (e.g., FIELD(id,3,1,2)).
      * @return The current {@link Condition} object.
@@ -378,7 +378,7 @@ public class Condition<T> {
     }
 
     /**
-     * Adds an ascending ORDER BY clause for the specified columns using method references.
+     * Adds an ascending Order BY clause for the specified columns using method references.
      *
      * @param fns An array of method references to the columns.
      * @return The current {@link Condition} object.
@@ -387,14 +387,14 @@ public class Condition<T> {
     public final Condition<T> orderByAsc(Fn<T, Object>... fns) {
         if (fns != null && fns.length > 0) {
             for (Fn<T, Object> fn : fns) {
-                orderBy(fn, ORDER.ASC);
+                orderBy(fn, Order.ASC);
             }
         }
         return this;
     }
 
     /**
-     * Adds a descending ORDER BY clause for the specified columns using method references.
+     * Adds a descending Order BY clause for the specified columns using method references.
      *
      * @param fns An array of method references to the columns.
      * @return The current {@link Condition} object.
@@ -403,25 +403,25 @@ public class Condition<T> {
     public final Condition<T> orderByDesc(Fn<T, Object>... fns) {
         if (fns != null && fns.length > 0) {
             for (Fn<T, Object> fn : fns) {
-                orderBy(fn, ORDER.DESC);
+                orderBy(fn, Order.DESC);
             }
         }
         return this;
     }
 
     /**
-     * Gets the ORDER BY clause.
+     * Gets the Order BY clause.
      *
-     * @return The ORDER BY clause string.
+     * @return The Order BY clause string.
      */
     public String getOrderByClause() {
         return orderByClause;
     }
 
     /**
-     * Sets the ORDER BY clause.
+     * Sets the Order BY clause.
      *
-     * @param orderByClause The ORDER BY clause string.
+     * @param orderByClause The Order BY clause string.
      * @return The current {@link Condition} object.
      */
     public Condition<T> setOrderByClause(String orderByClause) {

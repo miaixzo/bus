@@ -39,7 +39,7 @@ import java.util.concurrent.Executor;
  * @author Kimi Liu
  * @since Java 17+
  */
-public interface Handler<T> extends Serializable {
+public interface Handler<T> extends Order, Serializable {
 
     /**
      * A pre-processing callback method that is invoked before the main task is executed. This can be used for

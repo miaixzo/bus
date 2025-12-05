@@ -32,7 +32,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import org.miaixz.bus.pay.magic.Material;
+import org.miaixz.bus.pay.magic.Voucher;
 
 /**
  * Model for the V3 Add Profit Sharing Receivers API.
@@ -45,7 +45,7 @@ import org.miaixz.bus.pay.magic.Material;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AddReceivers extends Material {
+public class AddReceivers extends Voucher {
 
     /**
      * Sub-merchant ID assigned by WeChat Pay, which is the contributing merchant for profit sharing. (Not required for

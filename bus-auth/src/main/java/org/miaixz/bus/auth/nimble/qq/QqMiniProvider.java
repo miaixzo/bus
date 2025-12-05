@@ -41,7 +41,7 @@ import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Registry;
 import org.miaixz.bus.auth.magic.Callback;
-import org.miaixz.bus.auth.magic.Material;
+import org.miaixz.bus.auth.magic.Claims;
 import org.miaixz.bus.auth.nimble.AbstractProvider;
 
 import java.util.Map;
@@ -101,13 +101,13 @@ public class QqMiniProvider extends AbstractProvider {
      * to the backend after the Mini Program calls a function.
      *
      * @param authorization the {@link Authorization} obtained after successful authorization
-     * @return {@link Material} containing the user's information
+     * @return {@link Claims} containing the user's information
      */
     @Override
     public Message userInfo(Authorization authorization) {
         // If user information is required, it needs to be passed to the backend after the Mini Program calls a function
         return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
-                Material.builder().rawJson(JsonKit.toJsonString(authorization)).username("").nickname("").avatar("")
+                Claims.builder().rawJson(JsonKit.toJsonString(authorization)).username("").nickname("").avatar("")
                         .uuid(authorization.getOpenId()).token(authorization).source(complex.toString()).build())
                 .build();
     }

@@ -53,7 +53,7 @@ import org.miaixz.bus.notify.metric.AbstractProvider;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class EmaySmsProvider extends AbstractProvider<EmayMaterial, Context> {
+public class EmaySmsProvider extends AbstractProvider<EmayNotice, Context> {
 
     /**
      * Constructs an {@code EmaySmsProvider} with the given context.
@@ -89,11 +89,11 @@ public class EmaySmsProvider extends AbstractProvider<EmayMaterial, Context> {
     /**
      * Sends an SMS notification using the Emay SMS service.
      *
-     * @param entity The {@link EmayMaterial} containing the SMS details like recipient and content.
+     * @param entity The {@link EmayNotice} containing the SMS details like recipient and content.
      * @return A {@link Message} indicating the result of the SMS sending operation.
      */
     @Override
-    public Message send(EmayMaterial entity) {
+    public Message send(EmayNotice entity) {
         Map<String, String> bodys = getParamsMap(
                 context.getAppKey(),
                 context.getAppSecret(),

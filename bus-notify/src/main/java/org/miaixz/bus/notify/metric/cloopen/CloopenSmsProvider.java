@@ -45,7 +45,7 @@ import org.miaixz.bus.notify.metric.AbstractProvider;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class CloopenSmsProvider extends AbstractProvider<CloopenMaterial, Context> {
+public class CloopenSmsProvider extends AbstractProvider<CloopenNotice, Context> {
 
     /**
      * Constructs a {@code CloopenSmsProvider} with the given context.
@@ -59,11 +59,11 @@ public class CloopenSmsProvider extends AbstractProvider<CloopenMaterial, Contex
     /**
      * Sends an SMS notification using Cloopen Cloud SMS service.
      *
-     * @param entity The {@link CloopenMaterial} containing SMS details like recipient, template ID, and content.
+     * @param entity The {@link CloopenNotice} containing SMS details like recipient, template ID, and content.
      * @return A {@link Message} indicating the result of the SMS sending operation.
      */
     @Override
-    public Message send(CloopenMaterial entity) {
+    public Message send(CloopenNotice entity) {
         Map<String, String> bodys = MapKit.newHashMap(4, true);
         // The recipient's mobile number(s), comma-separated.
 

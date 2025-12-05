@@ -41,7 +41,7 @@ import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Registry;
 import org.miaixz.bus.auth.magic.Callback;
-import org.miaixz.bus.auth.magic.Material;
+import org.miaixz.bus.auth.magic.Claims;
 import org.miaixz.bus.auth.nimble.AbstractProvider;
 
 import java.util.Map;
@@ -111,7 +111,7 @@ public class PinterestProvider extends AbstractProvider {
      * Retrieves user information from Pinterest's user info endpoint.
      *
      * @param authorization the {@link Authorization} obtained after successful authorization
-     * @return {@link Material} containing the user's information
+     * @return {@link Claims} containing the user's information
      * @throws AuthorizedException if parsing the response fails or required user information is missing
      */
     @Override
@@ -143,7 +143,7 @@ public class PinterestProvider extends AbstractProvider {
             String avatar = getAvatarUrl(userObj);
 
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
-                    Material.builder().rawJson(JsonKit.toJsonString(userObj)).uuid(id).avatar(avatar).username(username)
+                    Claims.builder().rawJson(JsonKit.toJsonString(userObj)).uuid(id).avatar(avatar).username(username)
                             .nickname(firstName + Symbol.SPACE + lastName).gender(Gender.UNKNOWN).remark(bio)
                             .token(authorization).source(complex.toString()).build())
                     .build();

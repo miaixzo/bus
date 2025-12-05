@@ -89,7 +89,7 @@ public class SixtyCycleDay extends Loops {
      */
     public SixtyCycleDay(SolarDay solarDay) {
         int solarYear = solarDay.getYear();
-        SolarDay springSolarDay = SolarTerms.fromIndex(solarYear, 3).getJulianDay().getSolarDay();
+        SolarDay springSolarDay = SolarTerms.fromIndex(solarYear, 3).getSolarDay();
         LunarDay lunarDay = solarDay.getLunarDay();
         LunarYear lunarYear = lunarDay.getLunarMonth().getLunarYear();
         if (lunarYear.getYear() == solarYear) {
@@ -103,7 +103,7 @@ public class SixtyCycleDay extends Loops {
         }
         SolarTerms term = solarDay.getTerm();
         int index = term.getIndex() - 3;
-        if (index < 0 && term.getJulianDay().getSolarDay().isAfter(springSolarDay)) {
+        if (index < 0 && term.getSolarDay().isAfter(springSolarDay)) {
             index += 24;
         }
         this.solarDay = solarDay;
@@ -212,9 +212,9 @@ public class SixtyCycleDay extends Loops {
      */
     public NineStar getNineStar() {
         SolarTerms dongZhi = SolarTerms.fromIndex(solarDay.getYear(), 0);
-        SolarDay dongZhiSolar = dongZhi.getJulianDay().getSolarDay();
-        SolarDay xiaZhiSolar = dongZhi.next(12).getJulianDay().getSolarDay();
-        SolarDay dongZhiSolar2 = dongZhi.next(24).getJulianDay().getSolarDay();
+        SolarDay dongZhiSolar = dongZhi.getSolarDay();
+        SolarDay xiaZhiSolar = dongZhi.next(12).getSolarDay();
+        SolarDay dongZhiSolar2 = dongZhi.next(24).getSolarDay();
         int dongZhiIndex = dongZhiSolar.getLunarDay().getSixtyCycle().getIndex();
         int xiaZhiIndex = xiaZhiSolar.getLunarDay().getSixtyCycle().getIndex();
         int dongZhiIndex2 = dongZhiSolar2.getLunarDay().getSixtyCycle().getIndex();
@@ -318,6 +318,15 @@ public class SixtyCycleDay extends Loops {
             l.add(h);
         }
         return l;
+    }
+
+    /**
+     * The Three Pillars (Year, Month, Day).
+     * 
+     * @return the {@link ThreePillars}
+     */
+    public ThreePillars getThreePillars() {
+        return new ThreePillars(getYear(), getMonth(), getSixtyCycle());
     }
 
 }

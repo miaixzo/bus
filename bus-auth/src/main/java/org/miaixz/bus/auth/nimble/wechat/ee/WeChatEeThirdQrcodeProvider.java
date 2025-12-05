@@ -38,7 +38,7 @@ import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.ErrorCode;
-import org.miaixz.bus.auth.magic.Material;
+import org.miaixz.bus.auth.magic.Claims;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -155,13 +155,13 @@ public class WeChatEeThirdQrcodeProvider extends AbstractWeChatEeProvider {
      * Retrieves user information from WeChat Enterprise's user info endpoint.
      *
      * @param authorization the {@link Authorization} obtained after successful authorization
-     * @return {@link Material} containing the user's information
+     * @return {@link Claims} containing the user's information
      */
     @Override
     public Message userInfo(Authorization authorization) {
         Map<String, Object> response = this.checkResponse(doGetUserInfo(authorization));
         return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
-                .data(Material.builder().rawJson(JsonKit.toJsonString(response)).build()).build();
+                .data(Claims.builder().rawJson(JsonKit.toJsonString(response)).build()).build();
     }
 
     /**

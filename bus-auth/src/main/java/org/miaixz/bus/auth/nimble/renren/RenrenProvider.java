@@ -41,7 +41,7 @@ import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Registry;
 import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.ErrorCode;
-import org.miaixz.bus.auth.magic.Material;
+import org.miaixz.bus.auth.magic.Claims;
 import org.miaixz.bus.auth.nimble.AbstractProvider;
 
 import java.util.List;
@@ -91,7 +91,7 @@ public class RenrenProvider extends AbstractProvider {
      * Retrieves user information from Renren's user info endpoint.
      *
      * @param authorization the {@link Authorization} obtained after successful authorization
-     * @return {@link Material} containing the user's information
+     * @return {@link Claims} containing the user's information
      */
     @Override
     public Message userInfo(Authorization authorization) {
@@ -100,7 +100,7 @@ public class RenrenProvider extends AbstractProvider {
 
         return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
                 .data(
-                        Material.builder().rawJson(JsonKit.toJsonString(userObj)).uuid((String) userObj.get("id"))
+                        Claims.builder().rawJson(JsonKit.toJsonString(userObj)).uuid((String) userObj.get("id"))
                                 .avatar(getAvatarUrl(userObj)).nickname((String) userObj.get("name"))
                                 .company(getCompany(userObj)).gender(getGender(userObj)).token(authorization)
                                 .source(complex.toString()).build())

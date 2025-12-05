@@ -485,9 +485,9 @@ public class TableMeta extends PropertyMeta<TableMeta> {
     }
 
     /**
-     * Gets ORDER BY columns.
+     * Gets Order BY columns.
      *
-     * @return An {@link Optional} containing a list of ORDER BY columns.
+     * @return An {@link Optional} containing a list of Order BY columns.
      */
     public Optional<List<ColumnMeta>> orderByColumns() {
         List<ColumnMeta> orderByColumns = columns().stream().filter(c -> StringKit.isNotEmpty(c.orderBy))
@@ -574,9 +574,9 @@ public class TableMeta extends PropertyMeta<TableMeta> {
     }
 
     /**
-     * Gets the ORDER BY column list in the format "column1 ASC, column2 DESC, ...".
+     * Gets the Order BY column list in the format "column1 ASC, column2 DESC, ...".
      *
-     * @return An {@link Optional} containing the comma-separated string of ORDER BY columns.
+     * @return An {@link Optional} containing the comma-separated string of Order BY columns.
      */
     public Optional<String> orderByColumnList() {
         Optional<List<ColumnMeta>> orderByColumns = orderByColumns();
@@ -586,13 +586,13 @@ public class TableMeta extends PropertyMeta<TableMeta> {
     }
 
     /**
-     * Gets the ORDER BY column string with the " ORDER BY " prefix.
+     * Gets the Order BY column string with the " Order BY " prefix.
      *
-     * @return An {@link Optional} containing the prefixed ORDER BY column string.
+     * @return An {@link Optional} containing the prefixed Order BY column string.
      */
     public Optional<String> orderByColumn() {
         Optional<String> orderColumnList = orderByColumnList();
-        return orderColumnList.map(s -> " ORDER BY " + s);
+        return orderColumnList.map(s -> " Order BY " + s);
     }
 
     /**

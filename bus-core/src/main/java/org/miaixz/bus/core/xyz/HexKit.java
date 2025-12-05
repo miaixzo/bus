@@ -127,7 +127,7 @@ public class HexKit extends Hex {
      * Converts a given int value to its Unicode hexadecimal string representation. This is commonly used for converting
      * special characters (e.g., Chinese characters) to Unicode form. If the hexadecimal string after 'u' is less than 4
      * digits, it will be padded with leading zeros. For example:
-     * 
+     *
      * <pre>
      * 你 = \u4f60
      * </pre>
@@ -153,7 +153,7 @@ public class HexKit extends Hex {
      * Converts a given char value to its Unicode hexadecimal string representation. This is commonly used for
      * converting special characters (e.g., Chinese characters) to Unicode form. If the hexadecimal string after 'u' is
      * less than 4 digits, it will be padded with leading zeros. For example:
-     * 
+     *
      * <pre>
      * 你 = \u4f60
      * </pre>
@@ -182,7 +182,7 @@ public class HexKit extends Hex {
      * @return The int value represented by the hexadecimal string.
      */
     public static int hexToInt(final String value) {
-        return Integer.parseInt(value, 16);
+        return Integer.parseInt(removeHexPrefix(value), 16);
     }
 
     /**
@@ -202,7 +202,7 @@ public class HexKit extends Hex {
      * @return The long value represented by the hexadecimal string.
      */
     public static long hexToLong(final String value) {
-        return Long.parseLong(value, 16);
+        return Long.parseLong(removeHexPrefix(value), 16);
     }
 
     /**
@@ -219,54 +219,102 @@ public class HexKit extends Hex {
     /**
      * Converts a hexadecimal string to a {@link BigInteger}.
      *
-     * @param hexStr The hexadecimal string.
+     * @param text The hexadecimal string.
      * @return The {@link BigInteger} represented by the hexadecimal string, or {@code null} if the input string is
      *         {@code null}.
      */
-    public static BigInteger toBigInteger(final String hexStr) {
-        if (null == hexStr) {
+    public static BigInteger toBigInteger(final String text) {
+        if (null == text) {
             return null;
         }
-        return new BigInteger(hexStr, 16);
+        return new BigInteger(removeHexPrefix(text), 16);
     }
 
     /**
      * Formats a hexadecimal string by inserting a space every two characters. For example:
-     * 
+     *
      * <pre>
-     *     e8 8c 67 03 80 cb 22 00 95 26 8f
+     * e8 8c 67 03 80 cb 22 00 95 26 8f
      * </pre>
      *
-     * @param hexStr The hexadecimal string to format.
+     * @param text The hexadecimal string to format.
      * @return The formatted string.
      */
-    public static String format(final String hexStr) {
-        return format(hexStr, Normal.EMPTY);
+    public static String format(final String text) {
+        return format(text, Normal.EMPTY);
     }
 
     /**
      * Formats a hexadecimal string by inserting a space and a custom prefix every two characters. For example:
-     * 
+     *
      * <pre>
-     *     e8 8c 67 03 80 cb 22 00 95 26 8f
+     * e8 8c 67 03 80 cb 22 00 95 26 8f
      * </pre>
      *
-     * @param hexStr The hexadecimal string to format.
+     * @param text   The hexadecimal string to format.
      * @param prefix The custom prefix to insert, such as "0x". If {@code null}, an empty string is used.
      * @return The formatted string.
      */
-    public static String format(final String hexStr, String prefix) {
+    public static String format(final String text, final String prefix) {
+        return format(text, prefix, Symbol.SPACE);
+    }
+
+    /**
+     * Formats a hexadecimal string by inserting a custom separator and prefix every two characters. For example:
+     *
+     * <pre>
+     * e8 8c 67 03 80 cb 22 00 95 26 8f
+     * </pre>
+     *
+     * @param text      The hexadecimal string to format.
+     * @param prefix    The custom prefix, such as "0x".
+     * @param separator The custom separator, such as a space.
+     * @return The formatted string.
+     */
+    public static String format(final String text, String prefix, String separator) {
+        if (StringKit.isEmpty(text)) {
+            return Normal.EMPTY;
+        }
         if (null == prefix) {
             prefix = Normal.EMPTY;
         }
+        if (null == separator) {
+            separator = Symbol.SPACE;
+        }
 
-        final int length = hexStr.length();
+        final int length = text.length();
         final StringBuilder builder = StringKit.builder(length + length / 2 + (length / 2 * prefix.length()));
-        builder.append(prefix).append(hexStr.charAt(0)).append(hexStr.charAt(1));
-        for (int i = 2; i < length - 1; i += 2) {
-            builder.append(Symbol.C_SPACE).append(prefix).append(hexStr.charAt(i)).append(hexStr.charAt(i + 1));
+        for (int i = 0; i < length; i++) {
+            if (i % 2 == 0) {
+                if (i != 0) {
+                    builder.append(separator);
+                }
+                builder.append(prefix);
+            }
+            builder.append(text.charAt(i));
         }
         return builder.toString();
+    }
+
+    /**
+     * Removes standard hexadecimal prefixes from a string. The supported prefixes are "0x", "0X", and "#".
+     *
+     * @param text The hexadecimal string.
+     * @return The string with the prefix removed.
+     */
+    private static String removeHexPrefix(final String text) {
+        if (StringKit.length(text) > 1) {
+            final char c0 = text.charAt(0);
+            switch (c0) {
+                case '0':
+                    if (text.charAt(1) == 'x' || text.charAt(1) == 'X') {
+                        return text.substring(2);
+                    }
+                case '#':
+                    return text.substring(1);
+            }
+        }
+        return text;
     }
 
 }

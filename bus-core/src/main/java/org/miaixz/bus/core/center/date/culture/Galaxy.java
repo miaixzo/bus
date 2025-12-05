@@ -51,7 +51,7 @@ public class Galaxy {
     /**
      * The number of arcseconds per radian.
      */
-    public static final double SECOND_PER_RAD = 180 * 3600 / Math.PI;
+    public static final double SECOND_PER_RAD = 648000 / Math.PI;
 
     /**
      * Predefined constants for nutation calculations.
@@ -555,7 +555,7 @@ public class Galaxy {
         s = s.replace("D", o2 + o);
         s = s.replace("E", o2);
         s = s.replace("F", o);
-        return s;
+        return s.replace("F", o);
     }
 
     /**
@@ -583,16 +583,15 @@ public class Galaxy {
     public static double eLon(double t, int n) {
         t /= 10;
         double v = 0, tn = 1;
-        int m;
-        int pn = 1;
-        double m0 = XL0[pn + 1] - XL0[pn];
+        double m0 = XL0[2] - XL0[1];
         for (int i = 0; i < 6; i++, tn *= t) {
-            int n1 = (int) XL0[pn + i];
-            int n2 = (int) XL0[pn + 1 + i];
+            int n1 = (int) XL0[1 + i];
+            int n2 = (int) XL0[2 + i];
             double n0 = n2 - n1;
             if (n0 == 0) {
                 continue;
             }
+            int m;
             if (n < 0) {
                 m = n2;
             } else {
@@ -610,10 +609,8 @@ public class Galaxy {
             }
             v += c * tn;
         }
-        v /= XL0[0];
         double t2 = t * t;
-        v += (-0.0728 - 2.7702 * t - 1.1019 * t2 - 0.0996 * t2 * t) / SECOND_PER_RAD;
-        return v;
+        return v / XL0[0] + (-0.0728 - 2.7702 * t - 1.1019 * t2 - 0.0996 * t2 * t) / SECOND_PER_RAD;
     }
 
     /**
@@ -659,8 +656,7 @@ public class Galaxy {
             }
             v += c * tn;
         }
-        v /= SECOND_PER_RAD;
-        return v;
+        return v / SECOND_PER_RAD;
     }
 
     /**
@@ -755,14 +751,13 @@ public class Galaxy {
      * @return The calculated value.
      */
     public static double mv(double t) {
-        double v = 8399.71 - 914 * Math.sin(0.7848 + 8328.691425 * t + 0.0001523 * t * t);
-        v -= 179 * Math.sin(2.543 + 15542.7543 * t) + 160 * Math.sin(0.1874 + 7214.0629 * t)
-                + 62 * Math.sin(3.14 + 16657.3828 * t) + 34 * Math.sin(4.827 + 16866.9323 * t)
-                + 22 * Math.sin(4.9 + 23871.4457 * t) + 12 * Math.sin(2.59 + 14914.4523 * t)
-                + 7 * Math.sin(0.23 + 6585.7609 * t) + 5 * Math.sin(0.9 + 25195.624 * t)
-                + 5 * Math.sin(2.32 - 7700.3895 * t) + 5 * Math.sin(3.88 + 8956.9934 * t)
-                + 5 * Math.sin(0.49 + 7771.3771 * t);
-        return v;
+        return 8399.71 - 914 * Math.sin(0.7848 + 8328.691425 * t + 0.0001523 * t * t)
+                - (179 * Math.sin(2.543 + 15542.7543 * t) + 160 * Math.sin(0.1874 + 7214.0629 * t)
+                        + 62 * Math.sin(3.14 + 16657.3828 * t) + 34 * Math.sin(4.827 + 16866.9323 * t)
+                        + 22 * Math.sin(4.9 + 23871.4457 * t) + 12 * Math.sin(2.59 + 14914.4523 * t)
+                        + 7 * Math.sin(0.23 + 6585.7609 * t) + 5 * Math.sin(0.9 + 25195.624 * t)
+                        + 5 * Math.sin(2.32 - 7700.3895 * t) + 5 * Math.sin(3.88 + 8956.9934 * t)
+                        + 5 * Math.sin(0.49 + 7771.3771 * t));
     }
 
     /**
@@ -772,13 +767,9 @@ public class Galaxy {
      * @return The time parameter {@code t}.
      */
     public static double saLonT(double w) {
-        double v = 628.3319653318;
-        double t = (w - 1.75347 - Math.PI) / v;
-        v = ev(t);
-        t += (w - saLon(t, 10)) / v;
-        v = ev(t);
-        t += (w - saLon(t, -1)) / v;
-        return t;
+        double t = (w - 1.75347 - Math.PI) / 628.3319653318;
+        t += (w - saLon(t, 10)) / ev(t);
+        return t + (w - saLon(t, -1)) / ev(t);
     }
 
     /**
@@ -820,8 +811,7 @@ public class Galaxy {
         double t = (w - 1.75347 - Math.PI) / v;
         t -= (0.000005297 * t * t + 0.0334166 * Math.cos(4.669257 + 628.307585 * t)
                 + 0.0002061 * Math.cos(2.67823 + 628.307585 * t) * t) / v;
-        t += (w - eLon(t, 8) - Math.PI + (20.5 + 17.2 * Math.sin(2.1824 - 33.75705 * t)) / SECOND_PER_RAD) / v;
-        return t;
+        return t + (w - eLon(t, 8) - Math.PI + (20.5 + 17.2 * Math.sin(2.1824 - 33.75705 * t)) / SECOND_PER_RAD) / v;
     }
 
     /**
@@ -834,17 +824,11 @@ public class Galaxy {
         double v = 7771.37714500204;
         double t = (w + 1.08472) / v;
         double t2 = t * t;
-        t -= (-0.00003309 * t2 + 0.10976 * Math.cos(0.784758 + 8328.6914246 * t + 0.000152292 * t2)
-                + 0.02224 * Math.cos(0.18740 + 7214.0628654 * t - 0.00021848 * t2)
-                - 0.03342 * Math.cos(4.669257 + 628.307585 * t)) / v;
-        t2 = t * t;
-        double l = mLon(t, 20) - (4.8950632 + 628.3319653318 * t + 0.000005297 * t2
+        return t + (w - (mLon(t, 20) - (4.8950632 + 628.3319653318 * t + 0.000005297 * t2
                 + 0.0334166 * Math.cos(4.669257 + 628.307585 * t) + 0.0002061 * Math.cos(2.67823 + 628.307585 * t) * t
-                + 0.000349 * Math.cos(4.6261 + 1256.61517 * t) - 20.5 / SECOND_PER_RAD);
-        v = 7771.38 - 914 * Math.sin(0.7848 + 8328.691425 * t + 0.0001523 * t2) - 179 * Math.sin(2.543 + 15542.7543 * t)
-                - 160 * Math.sin(0.1874 + 7214.0629 * t);
-        t += (w - l) / v;
-        return t;
+                + 0.000349 * Math.cos(4.6261 + 1256.61517 * t) - 20.5 / SECOND_PER_RAD)))
+                / (7771.38 - 914 * Math.sin(0.7848 + 8328.691425 * t + 0.0001523 * t2)
+                        - 179 * Math.sin(2.543 + 15542.7543 * t) - 160 * Math.sin(0.1874 + 7214.0629 * t));
     }
 
     /**
@@ -942,10 +926,10 @@ public class Galaxy {
         } else if (jd >= f2) {
             d = Math.floor(shuoLow(Math.floor((jd + pc - 2451551) / 29.5306) * PI_2) + 0.5);
             int from = (int) ((jd - f2) / 29.5306);
-            String n = SB.substring(from, from + 1);
-            if ("1".equals(n)) {
+            char n = SB.charAt(from);
+            if ('1' == n) {
                 d += 1;
-            } else if ("2".equals(n)) {
+            } else if ('2' == n) {
                 d -= 1;
             }
         }
@@ -961,12 +945,13 @@ public class Galaxy {
     public static double calcQi(double jd) {
         int size = QI_KB.length;
         double d = 0;
-        int pc = 7, i;
+        int pc = 7;
         jd += 2451545;
         double f1 = QI_KB[0] - pc, f2 = QI_KB[size - 1] - pc, f3 = 2436935;
         if (jd < f1 || jd >= f3) {
             d = Math.floor(qiHigh(Math.floor((jd + pc - 2451259) / 365.2422 * 24) * Math.PI / 12) + 0.5);
         } else if (jd >= f1 && jd < f2) {
+            int i;
             for (i = 0; i < size; i += 2) {
                 if (jd + pc < QI_KB[i + 2]) {
                     break;
@@ -981,10 +966,10 @@ public class Galaxy {
         } else if (jd >= f2) {
             d = Math.floor(qiLow(Math.floor((jd + pc - 2451259) / 365.2422 * 24) * Math.PI / 12) + 0.5);
             int from = (int) ((jd - f2) / 365.2422 * 24);
-            String n = QB.substring(from, from + 1);
-            if ("1".equals(n)) {
+            char n = QB.charAt(from);
+            if ('1' == n) {
                 d += 1;
-            } else if ("2".equals(n)) {
+            } else if ('2' == n) {
                 d -= 1;
             }
         }

@@ -43,7 +43,7 @@ import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Registry;
 import org.miaixz.bus.auth.magic.Callback;
-import org.miaixz.bus.auth.magic.Material;
+import org.miaixz.bus.auth.magic.Claims;
 import org.miaixz.bus.auth.nimble.AbstractProvider;
 
 /**
@@ -105,7 +105,7 @@ public class ProginnProvider extends AbstractProvider {
      * Retrieves user information from Proginn's user info endpoint.
      *
      * @param authorization the {@link Authorization} obtained after successful authorization
-     * @return {@link Material} containing the user's information
+     * @return {@link Claims} containing the user's information
      * @throws AuthorizedException if parsing the response fails or required user information is missing
      */
     @Override
@@ -116,7 +116,7 @@ public class ProginnProvider extends AbstractProvider {
 
         return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
                 .data(
-                        Material.builder().rawJson(JsonKit.toJsonString(object)).uuid((String) object.get("uid"))
+                        Claims.builder().rawJson(JsonKit.toJsonString(object)).uuid((String) object.get("uid"))
                                 .username((String) object.get("nickname")).nickname((String) object.get("nickname"))
                                 .avatar((String) object.get("avatar")).email((String) object.get("email"))
                                 .gender(Gender.UNKNOWN).token(authorization).source(complex.toString()).build())

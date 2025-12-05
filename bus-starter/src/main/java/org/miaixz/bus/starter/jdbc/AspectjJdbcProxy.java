@@ -31,6 +31,7 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.springframework.core.annotation.Order;
 
@@ -87,8 +88,8 @@ public class AspectjJdbcProxy {
      * Advice that executes after a method annotated with {@link DataSource}.
      * <p>
      * It cleans up the data source context based on the annotation's configuration. If {@link DataSource#clear()} is
-     * {@code true}, the data source context is cleared. Otherwise, it is maintained for subsequent operations within
-     * the same thread.
+     * {@code true}, the data source context is switched back to the default data source. Otherwise, it is maintained
+     * for subsequent operations within the same thread.
      * </p>
      *
      * @param joinPoint  The join point representing the method execution.
@@ -107,11 +108,21 @@ public class AspectjJdbcProxy {
             Logger.info(
                     false,
                     "AOP",
-                    "[{}.{}] execution completed, clearing datasource setting: [{}]",
+                    "[{}.{}] execution completed, clearing datasource setting: [{}], switching back to default",
                     className,
                     methodName,
                     dataSourceName);
-            DataSourceHolder.remove();
+
+            // Switch back to the default data source instead of just clearing
+            String defaultDataSource = DataSourceHolder.getDefault();
+            if (StringKit.isEmpty(defaultDataSource)) {
+                DataSourceHolder.setKey(defaultDataSource);
+                Logger.debug(false, "AOP", "Switched back to default datasource: [{}]", defaultDataSource);
+            } else {
+                // If no default data source is configured, clear the context (fallback to original behavior)
+                DataSourceHolder.remove();
+                Logger.debug(false, "AOP", "No default datasource configured, context cleared");
+            }
         } else {
             Logger.info(
                     false,

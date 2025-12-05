@@ -157,7 +157,7 @@ public class ConditionWrapper<T, I extends Serializable> {
     }
 
     /**
-     * Adds an ORDER BY clause.
+     * Adds an Order BY clause.
      *
      * @param fn    A method reference to the column.
      * @param order The sort order ("ASC" or "DESC").
@@ -169,7 +169,7 @@ public class ConditionWrapper<T, I extends Serializable> {
     }
 
     /**
-     * Adds a raw string ORDER BY clause. This does not overwrite existing clauses.
+     * Adds a raw string Order BY clause. This does not overwrite existing clauses.
      *
      * @param orderByCondition The sorting expression.
      * @return This wrapper instance for chaining.
@@ -180,7 +180,7 @@ public class ConditionWrapper<T, I extends Serializable> {
     }
 
     /**
-     * Adds a dynamically constructed ORDER BY clause.
+     * Adds a dynamically constructed Order BY clause.
      *
      * @param orderByCondition A supplier for the sorting expression.
      * @return This wrapper instance for chaining.
@@ -191,7 +191,7 @@ public class ConditionWrapper<T, I extends Serializable> {
     }
 
     /**
-     * Conditionally adds a dynamically constructed ORDER BY clause.
+     * Conditionally adds a dynamically constructed Order BY clause.
      *
      * @param useOrderBy       Whether to apply the ordering.
      * @param orderByCondition A supplier for the sorting expression.
@@ -202,7 +202,7 @@ public class ConditionWrapper<T, I extends Serializable> {
     }
 
     /**
-     * Adds an ascending ORDER BY clause for the specified columns.
+     * Adds an ascending Order BY clause for the specified columns.
      *
      * @param fns An array of method references to the columns.
      * @return This wrapper instance for chaining.
@@ -214,7 +214,7 @@ public class ConditionWrapper<T, I extends Serializable> {
     }
 
     /**
-     * Adds a descending ORDER BY clause for the specified columns.
+     * Adds a descending Order BY clause for the specified columns.
      *
      * @param fns An array of method references to the columns.
      * @return This wrapper instance for chaining.

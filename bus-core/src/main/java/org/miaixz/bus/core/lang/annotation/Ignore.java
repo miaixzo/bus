@@ -29,6 +29,8 @@ package org.miaixz.bus.core.lang.annotation;
 
 import java.lang.annotation.*;
 
+import org.miaixz.bus.core.lang.Normal;
+
 /**
  * Marks a field, method, or parameter to be ignored during certain automated processes, such as bean copying,
  * serialization, or map conversion.
@@ -50,5 +52,12 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER })
 public @interface Ignore {
+
+    /**
+     * Reason description for ignoring (optional)
+     *
+     * @return Reason for ignoring
+     */
+    String value() default Normal.EMPTY;
 
 }

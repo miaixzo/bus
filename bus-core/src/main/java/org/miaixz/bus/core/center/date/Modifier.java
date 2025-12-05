@@ -106,7 +106,7 @@ public class Modifier {
                 case ROUND:
                     final int min = isAM ? 0 : 12;
                     final int max = isAM ? 11 : 23;
-                    final int href = (max - min) / 2 + 1;
+                    final int href = min + (max - min) / 2 + 1;
                     final int value = calendar.get(java.util.Calendar.HOUR_OF_DAY);
                     calendar.set(java.util.Calendar.HOUR_OF_DAY, (value < href) ? min : max);
                     break;

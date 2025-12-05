@@ -51,7 +51,7 @@ public abstract class AbstractFilter implements BloomFilter {
      * The underlying {@link BitSet} used to store the presence of elements. This bit set represents the Bloom filter's
      * bit array.
      */
-    private final BitSet bitSet;
+    protected final BitSet bitSet;
     /**
      * The capacity of the Bloom filter, representing the number of bits in the {@link BitSet}.
      */
@@ -71,12 +71,12 @@ public abstract class AbstractFilter implements BloomFilter {
 
     @Override
     public boolean contains(final String text) {
-        return bitSet.get(Math.abs(hash(text)));
+        return bitSet.get(hash(text));
     }
 
     @Override
     public boolean add(final String text) {
-        final int hash = Math.abs(hash(text));
+        final int hash = hash(text);
         if (bitSet.get(hash)) {
             return false;
         }

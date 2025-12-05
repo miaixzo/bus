@@ -144,6 +144,15 @@ public class Charset {
     public static final java.nio.charset.Charset UTF_32_LE = java.nio.charset.Charset.forName(DEFAULT_UTF_32_LE);
 
     /**
+     * {@link java.nio.charset.Charset} instance for Windows-1252.
+     */
+    public static final String DEFAULT_WINDOWS_1252 = "Windows-1252";
+    /**
+     * {@link java.nio.charset.Charset} instance for Windows-1252.
+     */
+    public static final java.nio.charset.Charset WINDOWS_1252 = java.nio.charset.Charset.forName(DEFAULT_WINDOWS_1252);
+
+    /**
      * Converts a character set name to a {@link java.nio.charset.Charset} object. If the character set name is blank,
      * the default character set is returned.
      *

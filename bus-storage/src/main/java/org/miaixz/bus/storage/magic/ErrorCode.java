@@ -39,45 +39,54 @@ import org.miaixz.bus.core.basic.normal.Errors;
 public class ErrorCode extends org.miaixz.bus.core.basic.normal.ErrorCode {
 
     /**
-     * Constructs a new AbstractProvider with default settings.
+     * Constructs a new ErrorCode with default settings.
      */
     public ErrorCode() {
 
     }
 
     /**
-     * Common: File upload failed.
+     * File upload failed.
      */
-    public static final Errors _113000 = ErrorRegistry.builder().key("113000").value("文件上传失败").build();
+    public static final Errors _113000 = ErrorRegistry.builder().key("113000").value("File upload failed").build();
 
     /**
-     * Common: Directory already exists.
+     * Directory already exists.
      */
-    public static final Errors _113001 = ErrorRegistry.builder().key("113001").value("目录已存在").build();
+    public static final Errors _113001 = ErrorRegistry.builder().key("113001").value("Directory already exists")
+            .build();
 
     /**
-     * Common: Directory does not exist.
+     * Directory does not exist.
      */
-    public static final Errors _113002 = ErrorRegistry.builder().key("113002").value("目录不存在").build();
+    public static final Errors _113002 = ErrorRegistry.builder().key("113002").value("Directory does not exist")
+            .build();
 
     /**
-     * Common: File does not exist.
+     * File does not exist.
      */
-    public static final Errors _113003 = ErrorRegistry.builder().key("113003").value("文件不存在").build();
+    public static final Errors _113003 = ErrorRegistry.builder().key("113003").value("File does not exist").build();
 
     /**
-     * Common: File already exists.
+     * File already exists.
      */
-    public static final Errors _113004 = ErrorRegistry.builder().key("113004").value("文件已存在").build();
+    public static final Errors _113004 = ErrorRegistry.builder().key("113004").value("File already exists").build();
 
     /**
-     * Common: Failed to get directory.
+     * Failed to get directory.
      */
-    public static final Errors _113005 = ErrorRegistry.builder().key("113005").value("目录获取失败").build();
+    public static final Errors _113005 = ErrorRegistry.builder().key("113005").value("Failed to get directory").build();
 
     /**
-     * Common: Failed to calculate file MD5.
+     * Failed to calculate file MD5.
      */
-    public static final Errors _113006 = ErrorRegistry.builder().key("113006").value("文件MD5计算失败").build();
+    public static final Errors _113006 = ErrorRegistry.builder().key("113006").value("Failed to calculate file MD5")
+            .build();
+
+    /**
+     * Storage service configuration error, please check.
+     */
+    public static final Errors _113007 = ErrorRegistry.builder().key("113007")
+            .value("Storage service configuration error, please check").build();
 
 }

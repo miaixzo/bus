@@ -38,7 +38,7 @@ import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Registry;
 import org.miaixz.bus.auth.magic.Authorization;
 import org.miaixz.bus.auth.magic.Callback;
-import org.miaixz.bus.auth.magic.Material;
+import org.miaixz.bus.auth.magic.Claims;
 import org.miaixz.bus.auth.nimble.AbstractProvider;
 
 import java.util.Map;
@@ -109,7 +109,7 @@ public class OschinaProvider extends AbstractProvider {
      * Retrieves user information from OSChina's user info endpoint.
      *
      * @param authorization the {@link Authorization} obtained after successful authorization
-     * @return {@link Material} containing the user's information
+     * @return {@link Claims} containing the user's information
      * @throws AuthorizedException if parsing the response fails or required user information is missing
      */
     @Override
@@ -135,7 +135,7 @@ public class OschinaProvider extends AbstractProvider {
             String email = (String) object.get("email");
 
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
-                    Material.builder().rawJson(JsonKit.toJsonString(object)).uuid(id).username(name).nickname(name)
+                    Claims.builder().rawJson(JsonKit.toJsonString(object)).uuid(id).username(name).nickname(name)
                             .avatar(avatar).blog(url).location(location).gender(Gender.of(gender)).email(email)
                             .token(authorization).source(complex.toString()).build())
                     .build();

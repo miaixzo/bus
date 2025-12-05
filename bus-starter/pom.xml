@@ -32,7 +32,7 @@
 
     <groupId>org.miaixz</groupId>
     <artifactId>bus-starter</artifactId>
-    <version>8.3.3</version>
+    <version>8.3.5</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -85,9 +85,9 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <bus.version>8.3.3</bus.version>
+        <bus.version>8.3.5</bus.version>
         <lombok.version>1.18.42</lombok.version>
-        <spring.boot.version>3.5.6</spring.boot.version>
+        <spring.boot.version>3.5.8</spring.boot.version>
         <jakarta.persistence.version>3.2.0</jakarta.persistence.version>
         <jakarta.servlet.version>6.1.0</jakarta.servlet.version>
         <aspectj.version>1.9.24</aspectj.version>
@@ -101,7 +101,6 @@
         <elastic.version>8.19.0</elastic.version>
         <mongo.version>5.5.1</mongo.version>
         <curator.version>5.8.0</curator.version>
-        <jsqlparser.version>5.3</jsqlparser.version>
     </properties>
 
     <dependencies>
@@ -174,12 +173,6 @@
         <dependency>
             <groupId>org.miaixz</groupId>
             <artifactId>bus-opencv</artifactId>
-            <version>${bus.version}</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.miaixz</groupId>
-            <artifactId>bus-pager</artifactId>
             <version>${bus.version}</version>
             <optional>true</optional>
         </dependency>
@@ -356,12 +349,6 @@
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>com.github.jsqlparser</groupId>
-            <artifactId>jsqlparser</artifactId>
-            <version>${jsqlparser.version}</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-jdbc</artifactId>
             <version>${spring.boot.version}</version>
@@ -503,9 +490,14 @@
                 </configuration>
             </plugin>
             <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>versions-maven-plugin</artifactId>
+                <version>2.20.1</version>
+            </plugin>
+            <plugin>
                 <groupId>com.diffplug.spotless</groupId>
                 <artifactId>spotless-maven-plugin</artifactId>
-                <version>3.0.0</version>
+                <version>3.1.0</version>
                 <configuration>
                     <upToDateChecking>
                         <enabled>false</enabled>

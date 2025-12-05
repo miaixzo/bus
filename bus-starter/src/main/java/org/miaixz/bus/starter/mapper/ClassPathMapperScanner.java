@@ -154,7 +154,9 @@ public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
 
         if (beanDefinitions.isEmpty()) {
             Logger.warn(
-                    "No MyBatis mapper was found in '{}' package. Please check your configuration.",
+                    false,
+                    "Mapper",
+                    "No MyBatis mapper found in '{}' package. Please check configuration",
                     Arrays.toString(basePackages));
         } else {
             processBeanDefinitions(beanDefinitions);
@@ -198,7 +200,9 @@ public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
             if (StringKit.hasText(this.sqlSessionTemplateBeanName)) {
                 if (explicitFactoryUsed) {
                     Logger.warn(
-                            "Cannot use both sqlSessionTemplate and sqlSessionFactory together. sqlSessionFactory is ignored.");
+                            false,
+                            "Mapper",
+                            "Cannot use both sqlSessionTemplate and sqlSessionFactory together. sqlSessionFactory is ignored");
                 }
                 definition.getPropertyValues()
                         .add("sqlSessionTemplate", new RuntimeBeanReference(this.sqlSessionTemplateBeanName));
@@ -206,7 +210,9 @@ public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
             } else if (this.sqlSessionTemplate != null) {
                 if (explicitFactoryUsed) {
                     Logger.warn(
-                            "Cannot use both sqlSessionTemplate and sqlSessionFactory together. sqlSessionFactory is ignored.");
+                            false,
+                            "Mapper",
+                            "Cannot use both sqlSessionTemplate and sqlSessionFactory together. sqlSessionFactory is ignored");
                 }
                 definition.getPropertyValues().add("sqlSessionTemplate", this.sqlSessionTemplate);
                 explicitFactoryUsed = true;
@@ -244,7 +250,9 @@ public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
             return true;
         } else {
             Logger.warn(
-                    "Skipping MapperFactoryBean with name '{}' and '{}' mapperInterface. Bean already defined with the same name!",
+                    false,
+                    "Mapper",
+                    "Skipping MapperFactoryBean '{}' with '{}' mapperInterface. Bean already defined with same name",
                     beanName,
                     beanDefinition.getBeanClassName());
             return false;

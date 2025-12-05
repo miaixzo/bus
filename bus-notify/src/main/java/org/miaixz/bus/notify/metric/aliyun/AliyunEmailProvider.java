@@ -39,7 +39,7 @@ import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.notify.Context;
-import org.miaixz.bus.notify.metric.generic.GenericMaterial;
+import org.miaixz.bus.notify.metric.generic.GenericNotice;
 
 /**
  * Alibaba Cloud Email service provider.
@@ -47,7 +47,7 @@ import org.miaixz.bus.notify.metric.generic.GenericMaterial;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class AliyunEmailProvider extends AliyunProvider<AliyunMaterial, Context> {
+public class AliyunEmailProvider extends AliyunProvider<AliyunNotice, Context> {
 
     /**
      * Constructs an {@code AliyunEmailProvider} with the given context.
@@ -61,12 +61,12 @@ public class AliyunEmailProvider extends AliyunProvider<AliyunMaterial, Context>
     /**
      * Sends an email notification using Alibaba Cloud Direct Mail service.
      *
-     * @param entity The {@link AliyunMaterial} containing email details like recipient, subject, content, and sender.
+     * @param entity The {@link AliyunNotice} containing email details like recipient, subject, content, and sender.
      * @return A {@link Message} indicating the result of the email sending operation.
      * @throws InternalException if the email content, recipient address, or subject is empty.
      */
     @Override
-    public Message send(AliyunMaterial entity) throws InternalException {
+    public Message send(AliyunNotice entity) throws InternalException {
         if (StringKit.isEmpty(entity.getContent())) {
             throw new InternalException("Email content cannot be empty");
         } else if (StringKit.isEmpty(entity.getReceive())) {
@@ -128,12 +128,12 @@ public class AliyunEmailProvider extends AliyunProvider<AliyunMaterial, Context>
          */
         bodys.put("ToAddress", entity.getReceive());
 
-        if (GenericMaterial.Type.HTML.equals(entity.getType())) {
+        if (GenericNotice.Type.HTML.equals(entity.getType())) {
             /**
              * The HTML body of the email.
              */
             bodys.put("HtmlBody", entity.getContent());
-        } else if (GenericMaterial.Type.TEXT.equals(entity.getType())) {
+        } else if (GenericNotice.Type.TEXT.equals(entity.getType())) {
             /**
              * The plain text body of the email.
              */

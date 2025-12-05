@@ -75,7 +75,7 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
      */
     private final RowHandler rowHandler;
     /**
-     * Used to parse formulas.
+     * Listener used to parse formulas and build the stub workbook.
      */
     private SheetRecordCollectingListener workbookBuildingListener;
     /**
@@ -83,10 +83,16 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
      */
     private HSSFWorkbook stubWorkbook;
     /**
-     * Static string table.
+     * Static string table record.
      */
     private SSTRecord sstRecord;
+    /**
+     * Listener for tracking formatting.
+     */
     private FormatTrackingHSSFListener formatListener;
+    /**
+     * Flag indicating if the next record contains the string value of a formula.
+     */
     private boolean isOutputNextStringRecord;
     /**
      * Container for storing cell values of the current row.
@@ -95,13 +101,13 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
     /**
      * Custom sheet ID to process. If -1, all sheets are processed.
      */
-    private int rid = -1;
+    private int sheetIndex = -1;
     /**
      * Sheet name, mainly used when reading by sheet name.
      */
     private String sheetName;
     /**
-     * Current rId index.
+     * Current rId index (sheet index tracking).
      */
     private int curRid = -1;
 
@@ -143,7 +149,7 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
      * @throws InternalException If an I/O error occurs or a POI-related exception occurs.
      */
     public Excel03SaxReader read(final POIFSFileSystem fs, final String idOrRidOrSheetName) throws InternalException {
-        this.rid = getSheetIndex(idOrRidOrSheetName);
+        this.initSheetIndexOrSheetName(idOrRidOrSheetName);
 
         formatListener = new FormatTrackingHSSFListener(new MissingRecordAwareHSSFListener(this));
         final HSSFRequest request = new HSSFRequest();
@@ -173,7 +179,7 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
      * @return The sheet index.
      */
     public int getSheetIndex() {
-        return this.rid;
+        return this.sheetIndex;
     }
 
     /**
@@ -187,8 +193,8 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
             return this.sheetName;
         }
 
-        if (this.boundSheetRecords.size() > this.rid) {
-            return this.boundSheetRecords.get(this.rid > -1 ? this.rid : this.curRid).getSheetname();
+        if (this.boundSheetRecords.size() > this.sheetIndex) {
+            return this.boundSheetRecords.get(this.sheetIndex > -1 ? this.sheetIndex : this.curRid).getSheetname();
         }
 
         return null;
@@ -201,7 +207,7 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
      */
     @Override
     public void processRecord(final Record record) {
-        if (this.rid > -1 && this.curRid > this.rid) {
+        if (this.sheetIndex > -1 && this.curRid > this.sheetIndex) {
             // Data after the specified sheet is no longer processed.
             return;
         }
@@ -211,7 +217,7 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
             boundSheetRecords.add(boundSheetRecord);
             final String currentSheetName = boundSheetRecord.getSheetname();
             if (null != this.sheetName && StringKit.equals(this.sheetName, currentSheetName)) {
-                this.rid = this.boundSheetRecords.size() - 1;
+                this.sheetIndex = this.boundSheetRecords.size() - 1;
             }
         } else if (record instanceof SSTRecord) {
             // Static string table.
@@ -225,7 +231,7 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
                 curRid++;
             }
         } else if (record instanceof EOFRecord) {
-            if (this.rid < 0 && null != this.sheetName) {
+            if (this.sheetIndex < 0 && null != this.sheetName) {
                 throw new InternalException("Sheet [{}] not exist!", this.sheetName);
             }
             if (this.curRid != -1 && isProcessCurrentSheet()) {
@@ -246,7 +252,6 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
                 processCellValue(record);
             }
         }
-
     }
 
     /**
@@ -311,8 +316,7 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
                 final FormulaRecord formulaRec = (FormulaRecord) record;
                 if (isOutputFormulaValues) {
                     if (Double.isNaN(formulaRec.getValue())) {
-                        // Formula result is a string
-                        // This is stored in the next record
+                        // Formula result is a string, stored in the next record
                         isOutputNextStringRecord = true;
                     } else {
                         value = ExcelSaxKit
@@ -340,7 +344,7 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
                 break;
 
             case LabelSSTRecord.sid:
-                // String type.
+                // String type (Shared String Table).
                 final LabelSSTRecord lsrec = (LabelSSTRecord) record;
                 if (null != sstRecord) {
                     value = sstRecord.getString(lsrec.getSSTIndex()).toString();
@@ -348,7 +352,8 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
                 addToRowCellList(lsrec, ObjectKit.defaultIfNull(value, Normal.EMPTY));
                 break;
 
-            case NumberRecord.sid: // Numeric type.
+            case NumberRecord.sid:
+                // Numeric type.
                 final NumberRecord numrec = (NumberRecord) record;
                 value = ExcelSaxKit.getNumberOrDateValue(numrec, numrec.getValue(), this.formatListener);
                 // Add column value to container.
@@ -387,11 +392,11 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
      */
     private boolean isProcessCurrentSheet() {
         // If rid < 0 and sheet name exists, it means no sheet name matched.
-        return (this.rid < 0 && null == this.sheetName) || this.rid == this.curRid;
+        return (this.sheetIndex < 0 && null == this.sheetName) || this.sheetIndex == this.curRid;
     }
 
     /**
-     * Gets the sheet index (0-based).
+     * Initializes the sheet index or sheet name based on the input string.
      * <ul>
      * <li>If the input starts with 'rId', the 'rId' prefix is removed directly.</li>
      * <li>If the input is a pure number, it is treated as a sheet index and converted to rId.</li>
@@ -399,27 +404,26 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
      *
      * @param idOrRidOrSheetName The sheet identifier in Excel, which can be a sheet ID, an rId (prefixed with "rId",
      *                           e.g., "rId0"), or a sheet name. If -1, all sheets are processed.
-     * @return The sheet index (0-based).
      */
-    private int getSheetIndex(final String idOrRidOrSheetName) {
+    private void initSheetIndexOrSheetName(final String idOrRidOrSheetName) {
         Assert.notBlank(idOrRidOrSheetName, "id or rid or sheetName must be not blank!");
 
-        // Process rId directly.
+        // Handle rId directly
         if (StringKit.startWithIgnoreCase(idOrRidOrSheetName, RID_PREFIX)) {
-            return Integer.parseInt(StringKit.removePrefixIgnoreCase(idOrRidOrSheetName, RID_PREFIX));
+            // rId counts from 1, convert to 0-based index here
+            this.sheetIndex = Integer.parseInt(StringKit.removePrefixIgnoreCase(idOrRidOrSheetName, RID_PREFIX)) - 1;
         } else if (StringKit.startWithIgnoreCase(idOrRidOrSheetName, SHEET_NAME_PREFIX)) {
-            // Support any name.
+            // Support arbitrary names
             this.sheetName = StringKit.removePrefixIgnoreCase(idOrRidOrSheetName, SHEET_NAME_PREFIX);
         } else {
+            // Pure number input represents sheetIndex
             try {
-                return Integer.parseInt(idOrRidOrSheetName);
+                this.sheetIndex = Integer.parseInt(idOrRidOrSheetName);
             } catch (final NumberFormatException ignore) {
-                // If the user enters a non-numeric value, treat it as a sheet name.
+                // If non-number input, treat as sheet name
                 this.sheetName = idOrRidOrSheetName;
             }
         }
-
-        return -1;
     }
 
 }

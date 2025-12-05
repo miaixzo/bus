@@ -44,7 +44,7 @@ import org.miaixz.bus.notify.Context;
  * @author Justubborn
  * @since Java 17+
  */
-public class AliyunVmsProvider extends AliyunProvider<AliyunMaterial, Context> {
+public class AliyunVmsProvider extends AliyunProvider<AliyunNotice, Context> {
 
     /**
      * Constructs an {@code AliyunVmsProvider} with the given context.
@@ -58,12 +58,12 @@ public class AliyunVmsProvider extends AliyunProvider<AliyunMaterial, Context> {
     /**
      * Sends a voice notification using Alibaba Cloud VMS service.
      *
-     * @param entity The {@link AliyunMaterial} containing VMS details like recipient, sender, play times, template, and
+     * @param entity The {@link AliyunNotice} containing VMS details like recipient, sender, play times, template, and
      *               parameters.
      * @return A {@link Message} indicating the result of the VMS sending operation.
      */
     @Override
-    public Message send(AliyunMaterial entity) {
+    public Message send(AliyunNotice entity) {
         Map<String, String> bodys = new HashMap<>();
         // 1. System parameters
         // The signature method used for authentication.

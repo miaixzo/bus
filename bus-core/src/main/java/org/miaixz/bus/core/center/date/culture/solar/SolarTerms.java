@@ -33,7 +33,7 @@ import org.miaixz.bus.core.center.date.culture.cn.JulianDay;
 import org.miaixz.bus.core.xyz.EnumKit;
 
 /**
- * Represents a Solar Term (Jieqi).
+ * Represents a Solar Term (节气).
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -50,7 +50,7 @@ public class SolarTerms extends Samsara {
     protected int year;
 
     /**
-     * The cursory Julian day of the solar term.
+     * Julian day (for calendar, accurate only to 12:00 PM).
      */
     protected double cursoryJulianDay;
 
@@ -107,7 +107,7 @@ public class SolarTerms extends Samsara {
      */
     protected void initByYear(int year, int offset) {
         double jd = Math.floor((year - 2000) * 365.2422 + 180);
-        // 355 is the Winter Solstice of 2000.12, get an estimated Winter Solstice closer to jd
+        // 355 is the Winter Solstice in 2000.12, used to get an estimated Winter Solstice value closer to jd
         double w = Math.floor((jd - 355 + 183) / 365.2422) * 365.2422 + 355;
         if (Galaxy.calcQi(w) > jd) {
             w -= 365.2422;
@@ -156,9 +156,18 @@ public class SolarTerms extends Samsara {
     }
 
     /**
-     * Gets the year of the solar term.
+     * Gets the Gregorian solar day (for calendar use).
      *
-     * @return The year.
+     * @return The SolarDay object
+     */
+    public SolarDay getSolarDay() {
+        return JulianDay.fromJulianDay(cursoryJulianDay + JulianDay.J2000).getSolarDay();
+    }
+
+    /**
+     * Gets the year.
+     *
+     * @return The year
      */
     public int getYear() {
         return year;

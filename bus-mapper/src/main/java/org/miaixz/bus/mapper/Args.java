@@ -37,8 +37,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import org.miaixz.bus.core.lang.EnumValue;
-
 /**
  * This class defines constants for MyBatis configuration and SQL fragments.
  *
@@ -68,75 +66,145 @@ public class Args {
     public static final Pattern DELIMITER = Pattern.compile("^[`\\[\"]?(.*?)[`\\]\"]?$");
 
     /**
-     * Represents the 'normal' naming convention (no change).
+     * Shared (global) configuration prefix for cross-datasource settings.
      */
-    public static final String NORMAL = EnumValue.Naming.NORMAL.name().toLowerCase();
+    public static final String SHARED_KEY = "shared";
 
     /**
-     * Represents the 'lower case' naming convention.
+     * Configuration key for table-related settings (prefix, ignore).
      */
-    public static final String LOWER_CASE = EnumValue.Naming.LOWER_CASE.name().toLowerCase();
+    public static final String TABLE_KEY = "table";
 
     /**
-     * Represents the 'upper case' naming convention.
+     * Configuration key for tenant (multi-tenancy) settings.
      */
-    public static final String UPPER_CASE = EnumValue.Naming.UPPER_CASE.name().toLowerCase();
+    public static final String TENANT_KEY = "tenant";
 
     /**
-     * Represents the 'camel case to lower case with underscore' naming convention.
+     * Configuration key for populate (auto-fill) functionality.
      */
-    public static final String CAMEL_UNDERLINE_LOWER_CASE = EnumValue.Naming.CAMEL_UNDERLINE_LOWER_CASE.name()
-            .toLowerCase();
+    public static final String POPULATE_KEY = "populate";
 
     /**
-     * Represents the 'camel case to upper case with underscore' naming convention.
+     * Configuration key for visible (data perimeter) functionality.
      */
-    public static final String CAMEL_UNDERLINE_UPPER_CASE = EnumValue.Naming.CAMEL_UNDERLINE_UPPER_CASE.name()
-            .toLowerCase();
+    public static final String VISIBLE_KEY = "visible";
 
     /**
-     * Configuration key for table prefix.
+     * Configuration key for audit functionality.
      */
-    public static final String TABLE_PREFIX_KEY = "table.prefix";
+    public static final String AUDIT_KEY = "audit";
 
     /**
-     * Configuration key for tables to ignore for multi-tenancy.
+     * Common property name for ignore tables list (used by multiple plugins).
      */
-    public static final String TENANT_IGNORE_KEY = "tenant.ignore";
-    /**
-     * The name of the tenant table to be ignored.
-     */
-    public static final String TENANT_IGNORE_TABLE = "tenant";
+    public static final String PROP_IGNORE = "ignore";
 
     /**
-     * Configuration key for the tenant ID column name.
+     * Tenant property key: column.
      */
-    public static final String TENANT_COLUMN_KEY = "tenant.column";
+    public static final String TENANT_COLUMN = "column";
 
     /**
-     * Default column name for the tenant ID.
+     * Default column name for tenant ID.
      */
-    public static final String TENANT_TABLE_COLUMN = "tenant_id";
+    public static final String TENANT_ID = "tenant_id";
+
+    /**
+     * Table property: prefix value.
+     */
+    public static final String TABLE_PREFIX = "prefix";
+
+    /**
+     * Populate property: enable created time field.
+     */
+    public static final String POPULATE_CREATED = "created";
+
+    /**
+     * Populate property: enable modified time field.
+     */
+    public static final String POPULATE_MODIFIED = "modified";
+
+    /**
+     * Populate property: enable creator field.
+     */
+    public static final String POPULATE_CREATOR = "creator";
+
+    /**
+     * Populate property: enable modifier field.
+     */
+    public static final String POPULATE_MODIFIER = "modifier";
+
+    /**
+     * Audit property: slow SQL threshold in milliseconds.
+     */
+    public static final String AUDIT_SLOW_SQL_THRESHOLD = "slowSqlThreshold";
+
+    /**
+     * Audit property: whether to log SQL parameters.
+     */
+    public static final String AUDIT_LOG_PARAMETERS = "logParameters";
+
+    /**
+     * Audit property: whether to log SQL results.
+     */
+    public static final String AUDIT_LOG_RESULTS = "logResults";
+
+    /**
+     * Audit property: whether to log all SQL.
+     */
+    public static final String AUDIT_LOG_ALL_SQL = "logAllSql";
+
+    /**
+     * Audit property: whether to print to console.
+     */
+    public static final String AUDIT_PRINT_CONSOLE = "printConsole";
+
+    /**
+     * Page property: auto-delimit keywords.
+     */
+    public static final String PAGE_AUTO_DELIMIT_KEYWORDS = "autoDelimitKeywords";
+
+    /**
+     * Page property: reasonable pagination.
+     */
+    public static final String PAGE_REASONABLE = "reasonable";
+
+    /**
+     * Page property: support method arguments.
+     */
+    public static final String PAGE_SUPPORT_METHOD_ARGUMENTS = "supportMethodsArguments";
+
+    /**
+     * Page property: params configuration.
+     */
+    public static final String PAGE_PARAMS = "params";
+
+    /**
+     * Provider key: used to pass provider object in Properties. The actual key format is: "_provider" (underscore
+     * prefix to avoid conflicts).
+     */
+    public static final String PROVIDER_KEY = "provider";
 
     /**
      * Configuration key for the naming convention.
      */
-    public static final String NAMING_KEY = "provider.naming";
+    public static final String NAMING_KEY = "naming";
 
     /**
      * Configuration key for enabling/disabling one-time caching.
      */
-    public static final String USEONCE_KEY = "provider.useOnce";
+    public static final String USEONCE_KEY = "useOnce";
 
     /**
      * Configuration key for the initial size of the cache.
      */
-    public static final String INITSIZE_KEY = "provider.initSize";
+    public static final String INITSIZE_KEY = "initSize";
 
     /**
      * Configuration key for concurrency level of primary key generation.
      */
-    public static final String CONCURRENCY_KEY = "provider.concurrency";
+    public static final String CONCURRENCY_KEY = "concurrency";
 
     /**
      * Default name for the base result map.

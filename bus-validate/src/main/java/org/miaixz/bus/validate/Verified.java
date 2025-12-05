@@ -36,7 +36,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.validate.magic.Checker;
-import org.miaixz.bus.validate.magic.Material;
+import org.miaixz.bus.validate.magic.Criterion;
 import org.miaixz.bus.validate.magic.annotation.*;
 
 import java.lang.annotation.Annotation;
@@ -59,9 +59,9 @@ import java.util.List;
 public class Verified extends Provider {
 
     /**
-     * List of validation materials.
+     * List of validation criterions.
      */
-    private List<Material> list;
+    private List<Criterion> list;
     /**
      * The value of the property being validated.
      */
@@ -148,22 +148,22 @@ public class Verified extends Provider {
      * Resolves validators based on object annotations.
      *
      * @param annotations The annotation information.
-     * @return A list of resolved validation materials.
+     * @return A list of resolved validation criterions.
      */
-    private List<Material> resolve(Annotation[] annotations) {
-        List<Material> list = new ArrayList<>();
+    private List<Criterion> resolve(Annotation[] annotations) {
+        List<Criterion> list = new ArrayList<>();
         for (Annotation annotation : annotations) {
             if (isAnnotation(annotation)) {
-                Material material = build(annotation, this.object);
-                list.add(material);
+                Criterion criterion = build(annotation, this.object);
+                list.add(criterion);
             }
         }
         if (ObjectKit.isNotEmpty(this.object)) {
             Class<?> clazz = this.object.getClass();
             List<Annotation> clazzAnnotations = getAnnotation(clazz);
             for (Annotation annotation : clazzAnnotations) {
-                Material material = build(annotation, this.object);
-                list.add(material);
+                Criterion criterion = build(annotation, this.object);
+                list.add(criterion);
             }
         }
         return list;
@@ -209,7 +209,7 @@ public class Verified extends Provider {
     public Collector access() {
         Collector collector = new Collector(this);
         Checker checker = context.getChecker();
-        for (Material p : this.list) {
+        for (Criterion p : this.list) {
             Collector result = checker.object(this, p);
             collector.collect(result);
         }
@@ -221,13 +221,13 @@ public class Verified extends Provider {
     }
 
     /**
-     * Creates a validation material object.
+     * Creates a validation criterion object.
      *
      * @param annotation The annotation.
      * @param object     The object.
-     * @return The validation material object.
+     * @return The validation criterion object.
      */
-    public Material build(Annotation annotation, Object object) {
+    public Criterion build(Annotation annotation, Object object) {
         Assert.isTrue(
                 isAnnotation(annotation),
                 "Attempt to get information from a non-validation annotation:" + annotation);
@@ -238,17 +238,17 @@ public class Verified extends Provider {
             String errcode = (String) annotationType.getMethod(Consts.ERRCODE).invoke(annotation);
             String name = (String) annotationType.getMethod(Builder.FIELD).invoke(annotation);
             this.field = Builder.DEFAULT_FIELD.equals(name) ? this.field : name;
-            Material material = new Material();
-            material.setAnnotation(annotation);
-            material.setErrcode(errcode);
-            material.setErrmsg(errmsg);
-            material.setField(this.field);
-            material.setGroup(groups);
-            material.addParam(Builder.FIELD, this.field);
+            Criterion criterion = new Criterion();
+            criterion.setAnnotation(annotation);
+            criterion.setErrcode(errcode);
+            criterion.setErrmsg(errmsg);
+            criterion.setField(this.field);
+            criterion.setGroup(groups);
+            criterion.addParam(Builder.FIELD, this.field);
             if (ObjectKit.isNotEmpty(object) && object.getClass().isArray()) {
-                material.addParam(Builder.VALUE, Arrays.toString((Object[]) object));
+                criterion.addParam(Builder.VALUE, Arrays.toString((Object[]) object));
             } else {
-                material.addParam(Builder.VALUE, String.valueOf(object));
+                criterion.addParam(Builder.VALUE, String.valueOf(object));
             }
             Method[] declaredMethods = annotationType.getDeclaredMethods();
             for (Method m : declaredMethods) {
@@ -257,31 +257,31 @@ public class Verified extends Provider {
                     Class<?> returnType = m.getReturnType();
                     Object invoke = m.invoke(annotation);
                     if (returnType.isArray()) {
-                        material.addParam(filler.value(), Arrays.toString((Object[]) invoke));
+                        criterion.addParam(filler.value(), Arrays.toString((Object[]) invoke));
                     } else {
-                        material.addParam(filler.value(), invoke);
+                        criterion.addParam(filler.value(), invoke);
                     }
                 }
             }
             Annotation[] parentAnnos = annotationType.getAnnotations();
             for (Annotation anno : parentAnnos) {
                 if (isAnnotation(anno)) {
-                    material.addParentProperty(build(anno, object));
+                    criterion.addParentProperty(build(anno, object));
                 } else if (anno instanceof Array) {
-                    material.setArray(true);
+                    criterion.setArray(true);
                 } else if (anno instanceof Complex) {
-                    material.setClazz(((Complex) anno).clazz());
-                    material.setName(((Complex) anno).value());
+                    criterion.setClazz(((Complex) anno).clazz());
+                    criterion.setName(((Complex) anno).value());
                 } else if (anno instanceof ValidEx) {
-                    material.setException(((ValidEx) anno).value());
+                    criterion.setException(((ValidEx) anno).value());
                 }
             }
-            if (ObjectKit.isEmpty(material.getClazz()) || StringKit.isEmpty(material.getName())) {
+            if (ObjectKit.isEmpty(criterion.getClazz()) || StringKit.isEmpty(criterion.getName())) {
                 throw new InternalException(
                         "Invalid validation annotation, missing Complex meta-annotation to specify validator:"
                                 + annotationType.getName());
             }
-            return material;
+            return criterion;
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             throw new InternalException(
                     "Invalid validation annotation, missing common validation attributes:" + annotationType.getName(),

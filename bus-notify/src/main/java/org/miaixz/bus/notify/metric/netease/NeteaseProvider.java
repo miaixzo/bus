@@ -39,18 +39,18 @@ import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.notify.Context;
 import org.miaixz.bus.notify.magic.ErrorCode;
-import org.miaixz.bus.notify.magic.Material;
+import org.miaixz.bus.notify.magic.Notice;
 import org.miaixz.bus.notify.metric.AbstractProvider;
 
 /**
  * Abstract base class for NetEase Cloud notification providers, handling common logic like authentication.
  *
- * @param <T> The type of {@link Material} this provider handles.
+ * @param <T> The type of {@link Notice} this provider handles.
  * @param <K> The type of {@link Context} this provider uses.
  * @author Justubborn
  * @since Java 17+
  */
-public abstract class NeteaseProvider<T extends Material, K extends Context> extends AbstractProvider<T, K> {
+public abstract class NeteaseProvider<T extends Notice, K extends Context> extends AbstractProvider<T, K> {
 
     /**
      * Hexadecimal digits for SHA1 encoding.

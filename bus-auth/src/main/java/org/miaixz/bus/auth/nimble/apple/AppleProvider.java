@@ -43,7 +43,7 @@ import org.miaixz.bus.auth.cache.AuthCache;
 import org.miaixz.bus.auth.magic.Authorization;
 import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.ErrorCode;
-import org.miaixz.bus.auth.magic.Material;
+import org.miaixz.bus.auth.magic.Claims;
 import org.miaixz.bus.auth.nimble.AbstractProvider;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Symbol;
@@ -163,7 +163,7 @@ public class AppleProvider extends AbstractProvider {
      * Retrieves user information from Apple's ID token payload.
      *
      * @param authorization the {@link Authorization} obtained after successful authorization, containing the ID token
-     * @return {@link Material} containing the user's information
+     * @return {@link Claims} containing the user's information
      * @throws AuthorizedException if parsing the ID token payload fails or required user information is missing
      */
     @Override
@@ -185,7 +185,7 @@ public class AppleProvider extends AbstractProvider {
 
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
                     .data(
-                            Material.builder().rawJson(JsonKit.toJsonString(object)).uuid(sub).email(email)
+                            Claims.builder().rawJson(JsonKit.toJsonString(object)).uuid(sub).email(email)
                                     .username(authorization.getUsername()).token(authorization)
                                     .source(this.complex.toString()).build())
                     .build();

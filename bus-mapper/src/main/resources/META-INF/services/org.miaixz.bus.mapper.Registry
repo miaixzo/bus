@@ -24,4 +24,4 @@
 #                                                                               #
 #################################################################################
 
-org.miaixz.bus.mapper.support.keysql.KeySqlRegistry
+org.miaixz.bus.mapper.support.keygen.KeySqlRegistry
