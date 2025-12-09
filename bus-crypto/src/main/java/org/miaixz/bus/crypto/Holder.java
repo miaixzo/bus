@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.crypto;
 
+import org.miaixz.bus.core.lang.Keys;
 import org.miaixz.bus.core.lang.loader.spi.NormalSpiLoader;
 import org.miaixz.bus.crypto.metric.BouncyCastleProvider;
 
@@ -70,19 +71,10 @@ public class Holder implements org.miaixz.bus.core.Holder {
      */
     public static java.security.Provider getProvider() {
         // In GraalVM native image, always return null to avoid JCE verification issues
-        if (isGraalVMPNativeImage()) {
+        if (Keys.IS_GRAALVM_NATIVE) {
             return null;
         }
         return useCustomProvider ? provider : null;
-    }
-
-    /**
-     * Detects if the current environment is a GraalVM native image.
-     *
-     * @return {@code true} if running in a GraalVM native image, {@code false} otherwise.
-     */
-    public static boolean isGraalVMPNativeImage() {
-        return System.getProperty("org.graalvm.nativeimage.imagecode") != null;
     }
 
     /**
