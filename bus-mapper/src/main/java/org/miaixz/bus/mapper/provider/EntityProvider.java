@@ -187,7 +187,7 @@ public class EntityProvider extends BasicProvider {
      * @param providerContext The provider context, containing method and interface information.
      * @return The cache key.
      */
-    public static String countByExample(ProviderContext providerContext) {
+    public static String countByCondition(ProviderContext providerContext) {
         return cacheSql(providerContext, entity -> buildCountSelective(entity, null));
     }
 

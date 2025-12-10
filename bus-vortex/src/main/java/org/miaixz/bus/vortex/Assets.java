@@ -116,6 +116,7 @@ public class Assets {
      * <li>{@code 6}: DELETE</li>
      * <li>{@code 7}: OPTIONS</li>
      * <li>{@code 8}: TRACE</li>
+     * <li>{@code 9}: CONNECT</li>
      * </ul>
      */
     private Integer type;
@@ -131,7 +132,7 @@ public class Assets {
 
     /**
      * A flag indicating whether the request and response for this asset are expected to be cryptographically signed.
-     * This is used to enable or disable strategies like {@link org.miaixz.bus.vortex.strategy.CipherStrategy}.
+     * This is used to enable or disable strategies like {@link org.miaixz.bus.vortex.strategy.VettingStrategy}.
      */
     private Integer sign;
 
