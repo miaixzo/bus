@@ -580,9 +580,9 @@ public class MathKit extends NumberValidator {
     /**
      * 获得数字对应的二进制字符串
      * <ul>
-     *     <li>Integer/Long：直接使用 JDK 内置方法转换</li>
-     *     <li>Byte/Short：转换为无符号整数后补充前导零至对应位数（Byte=8位，Short=16位）</li>
-     *     <li>Float/Double：使用 IEEE 754 标准格式转换，Float=32位，Double=64位</li>
+     * <li>Integer/Long：直接使用 JDK 内置方法转换</li>
+     * <li>Byte/Short：转换为无符号整数后补充前导零至对应位数（Byte=8位，Short=16位）</li>
+     * <li>Float/Double：使用 IEEE 754 标准格式转换，Float=32位，Double=64位</li>
      * </ul>
      *
      * @param number 待转换的Number对象（支持Integer、Long、Byte、Short、Float、Double）

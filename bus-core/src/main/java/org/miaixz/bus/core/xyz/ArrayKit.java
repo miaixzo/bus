@@ -185,7 +185,7 @@ public class ArrayKit extends PrimitiveArray {
      * @return The array type.
      */
     public static Class<?> getArrayType(final Class<?> componentType) {
-        if(null == componentType) {
+        if (null == componentType) {
             return null;
         }
         return Array.newInstance(componentType, 0).getClass();
