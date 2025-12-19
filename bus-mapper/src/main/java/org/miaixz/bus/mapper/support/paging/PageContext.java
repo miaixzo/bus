@@ -43,8 +43,7 @@ import org.miaixz.bus.mapper.Order;
  * <p>
  * Usage pattern:
  * </p>
- * *
- * 
+ *
  * <pre>{@code
  *
  * // Set pagination
@@ -99,7 +98,7 @@ public final class PageContext {
     /**
      * Starts a new page for the current thread with default count behavior (true).
      *
-     * @param pageNo   the page number (0-based)
+     * @param pageNo   the page number (1-based)
      * @param pageSize the page size
      * @return PageContext instance for chaining method calls (fluent API)
      */
@@ -110,7 +109,7 @@ public final class PageContext {
     /**
      * Starts a new page for the current thread with optional count query control.
      *
-     * @param pageNo   the page number (0-based)
+     * @param pageNo   the page number (1-based)
      * @param pageSize the page size
      * @param count    {@code true} to execute count query, {@code false} otherwise
      * @return PageContext instance for chaining method calls (fluent API)
@@ -122,7 +121,7 @@ public final class PageContext {
     /**
      * Starts a new page for the current thread with optional count query control.
      *
-     * @param pageNo   the page number (0-based)
+     * @param pageNo   the page number (1-based)
      * @param pageSize the page size
      * @param sort     the sorting information to apply
      * @return PageContext instance for chaining method calls (fluent API)
@@ -134,7 +133,7 @@ public final class PageContext {
     /**
      * Starts a new page for the current thread with sorting specification.
      *
-     * @param pageNo   the page number (0-based)
+     * @param pageNo   the page number (1-based)
      * @param pageSize the page size
      * @param count    {@code true} to execute count query, {@code false} otherwise
      * @param sort     the sorting information to apply
@@ -208,13 +207,13 @@ public final class PageContext {
     }
 
     /**
-     * Gets the current page number (0-based).
+     * Gets the current page number (1-based).
      *
-     * @return the page number, or 0 if no pagination is active
+     * @return the page number, or 1 if no pagination is active
      */
     public static int getCurrentPageNo() {
         Pageable pageable = LOCAL_PAGE.get();
-        return pageable != null ? pageable.getPageNo() : 0;
+        return pageable != null ? pageable.getPageNo() : 1;
     }
 
     /**

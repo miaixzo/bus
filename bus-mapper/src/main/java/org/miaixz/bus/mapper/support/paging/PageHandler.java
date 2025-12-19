@@ -69,7 +69,7 @@ import org.miaixz.bus.mapper.handler.ConditionHandler;
  *
  * // Use with PageContext and Sort
  * Sort sort = Sort.by("name").ascending().and("age").descending();
- * PageContext.of(0, 10, true, sort);
+ * PageContext.of(1, 10, true, sort);
  * List<User> users = userMapper.selectAll();
  * // users is now a Page<User> with pagination info
  * }</pre>
@@ -330,14 +330,14 @@ public class PageHandler<T> extends ConditionHandler<T> {
         int pageSize = pageable.getPageSize();
         int totalPages = (int) Math.ceil((double) totalElements / pageSize);
 
-        // If page number is less than 0, set to 0 (first page)
-        if (pageNo < 0) {
-            return Pageable.of(0, pageSize, pageable.getSort());
+        // If page number is less than 1, set to 1 (first page)
+        if (pageNo < 1) {
+            return Pageable.of(1, pageSize, pageable.getSort());
         }
 
-        // If page number is greater than or equal to total pages, set to last page
-        if (totalPages > 0 && pageNo >= totalPages) {
-            return Pageable.of(totalPages - 1, pageSize, pageable.getSort());
+        // If page number is greater than total pages, set to last page
+        if (totalPages > 0 && pageNo > totalPages) {
+            return Pageable.of(totalPages, pageSize, pageable.getSort());
         }
 
         return pageable;
@@ -395,7 +395,7 @@ public class PageHandler<T> extends ConditionHandler<T> {
             int pageNo = Integer.parseInt(String.valueOf(pageNoValue));
             int pageSize = Integer.parseInt(String.valueOf(pageSizeValue));
 
-            if (pageNo < 0 || pageSize < 0) {
+            if (pageNo < 1 || pageSize < 0) {
                 return null; // Invalid pagination parameters
             }
 

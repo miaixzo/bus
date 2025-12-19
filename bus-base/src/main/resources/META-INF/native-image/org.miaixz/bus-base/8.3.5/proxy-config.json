@@ -13,5 +13,20 @@
     "interfaces": [
       "org.miaixz.bus.base.mapper.SharedMapper"
     ]
+  },
+  {
+    "interfaces": [
+      "org.miaixz.bus.base.service.BaseService"
+    ]
+  },
+  {
+    "interfaces": [
+      "org.miaixz.bus.base.service.SharedService"
+    ]
+  },
+  {
+    "interfaces": [
+      "org.miaixz.bus.core.basic.service.Service"
+    ]
   }
 ]

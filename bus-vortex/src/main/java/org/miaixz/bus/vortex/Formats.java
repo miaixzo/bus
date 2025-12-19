@@ -31,6 +31,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.vortex.provider.BinaryProvider;
 import org.miaixz.bus.vortex.provider.JsonProvider;
 import org.miaixz.bus.vortex.provider.XmlProvider;
 import org.miaixz.bus.vortex.strategy.ResponseStrategy;
@@ -63,16 +64,10 @@ public enum Formats {
     JSON(new JsonProvider(), MediaType.APPLICATION_JSON),
 
     /**
-     * Represents PDF documents. This format does not have a default provider and is typically handled by streaming raw
-     * bytes directly.
+     * Represents a generic binary file stream. This format is handled by the BinaryProvider for proper binary data
+     * handling without string conversion corruption.
      */
-    PDF(null, MediaType.APPLICATION_PDF),
-
-    /**
-     * Represents a generic binary file stream. This format does not have a default provider and is handled by streaming
-     * raw bytes.
-     */
-    BINARY(null, MediaType.APPLICATION_OCTET_STREAM);
+    BINARY(new BinaryProvider(), MediaType.APPLICATION_OCTET_STREAM);
 
     /**
      * The data format provider, responsible for serializing response objects into the specific format.

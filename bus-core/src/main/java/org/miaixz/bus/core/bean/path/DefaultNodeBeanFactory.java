@@ -92,6 +92,13 @@ public class DefaultNodeBeanFactory implements NodeBeanFactory<Object> {
         if (Symbol.DOLLAR.equals(name)) {
             return bean;
         }
+
+        if (bean instanceof Collection) {
+            if (Symbol.STAR.equals(name)) {
+                return bean;
+            }
+        }
+
         Object value = DynaBean.of(bean).get(name);
         if (null == value && StringKit.lowerFirst(ClassKit.getClassName(bean, true)).equals(name)) {
             // If the bean class name is the same as the property name, return the bean itself.

@@ -51,7 +51,7 @@ import org.miaixz.bus.mapper.Order;
  * </p>
  *
  * <pre>{@code
- * 
+ *
  * PageBuilder builder = new PageBuilder();
  *
  * // Apply sorting
@@ -59,7 +59,7 @@ import org.miaixz.bus.mapper.Order;
  * String sortedSql = builder.applySort("SELECT * FROM users", sort);
  *
  * // Generate pagination SQL
- * Pageable pageable = Pageable.of(0, 10, sort);
+ * Pageable pageable = Pageable.of(1, 10, sort);
  * String pageSql = builder.buildPaginationSql(sortedSql, pageable, dialect);
  * }</pre>
  *

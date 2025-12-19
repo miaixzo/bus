@@ -2,7 +2,7 @@
   "resources": {
     "includes": [
       {
-        "pattern": "cache/.*"
+        "pattern": "META-INF/cache/.*"
       }
     ]
   }

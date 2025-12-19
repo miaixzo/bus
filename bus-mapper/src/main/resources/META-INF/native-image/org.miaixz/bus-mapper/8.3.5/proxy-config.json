@@ -1,14 +1,22 @@
 [
   {
-    "interfaces": ["org.apache.ibatis.executor.Executor"]
+    "interfaces": [
+      "org.apache.ibatis.executor.Executor"
+    ]
   },
   {
-    "interfaces": ["org.apache.ibatis.executor.statement.StatementHandler"]
+    "interfaces": [
+      "org.apache.ibatis.executor.statement.StatementHandler"
+    ]
   },
   {
-    "interfaces": ["org.apache.ibatis.executor.parameter.ParameterHandler"]
+    "interfaces": [
+      "org.apache.ibatis.executor.parameter.ParameterHandler"
+    ]
   },
   {
-    "interfaces": ["org.apache.ibatis.executor.resultset.ResultSetHandler"]
+    "interfaces": [
+      "org.apache.ibatis.executor.resultset.ResultSetHandler"
+    ]
   }
 ]

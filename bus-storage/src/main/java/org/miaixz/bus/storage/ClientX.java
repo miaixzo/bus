@@ -241,9 +241,13 @@ public class ClientX implements SdkHttpClient {
      */
     private class HttpExecutableHttpRequest implements ExecutableHttpRequest {
 
-        /** The HTTP call instance. */
+        /**
+         * The HTTP call instance.
+         */
         private final NewCall call;
-        /** Flag indicating if the request has been aborted. */
+        /**
+         * Flag indicating if the request has been aborted.
+         */
         private final AtomicBoolean aborted = new AtomicBoolean(false);
 
         /**
@@ -329,11 +333,17 @@ public class ClientX implements SdkHttpClient {
      */
     private static class CustomRequestBody extends RequestBody {
 
-        /** The content stream provider. */
+        /**
+         * The content stream provider.
+         */
         private final ContentStreamProvider contentStreamProvider;
-        /** The HTTP request. */
+        /**
+         * The HTTP request.
+         */
         private final SdkHttpRequest httpRequest;
-        /** The content length, calculated lazily. */
+        /**
+         * The content length, calculated lazily.
+         */
         private volatile Long contentLength;
 
         /**
@@ -433,11 +443,17 @@ public class ClientX implements SdkHttpClient {
      */
     private static class AsyncContentPublisherWrapper extends RequestBody {
 
-        /** The content publisher. */
+        /**
+         * The content publisher.
+         */
         private final SdkHttpContentPublisher contentPublisher;
-        /** The HTTP request. */
+        /**
+         * The HTTP request.
+         */
         private final SdkHttpRequest httpRequest;
-        /** The content length, calculated lazily. */
+        /**
+         * The content length, calculated lazily.
+         */
         private volatile Long contentLength;
 
         /**
@@ -581,11 +597,17 @@ public class ClientX implements SdkHttpClient {
      */
     private static class ByteBufferPublisher implements Publisher<ByteBuffer> {
 
-        /** The input stream to read from. */
+        /**
+         * The input stream to read from.
+         */
         private final InputStream inputStream;
-        /** The size of the buffer to use for reading. */
+        /**
+         * The size of the buffer to use for reading.
+         */
         private final int bufferSize;
-        /** The executor service for emitting data. */
+        /**
+         * The executor service for emitting data.
+         */
         private final ExecutorService executorService;
 
         /**
@@ -692,9 +714,13 @@ public class ClientX implements SdkHttpClient {
      */
     public static class ClientBuilder implements SdkHttpClient.Builder<ClientBuilder> {
 
-        /** The HTTP client builder. */
+        /**
+         * The HTTP client builder.
+         */
         private Httpd.Builder httpdBuilder;
-        /** The executor service for callbacks. */
+        /**
+         * The executor service for callbacks.
+         */
         private ExecutorService executor;
 
         /**

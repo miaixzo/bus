@@ -1,18 +1,13 @@
 [
   {
     "latest": true,
-    "metadata-version": "8.3.5",
+    "override": true,
     "module": "org.miaixz:bus-crypto",
-    "tested-versions": [
-      "8.3.5"
-    ]
-  },
-  {
-    "metadata-version": "8.3.5",
     "default-for": "8\\.3\\.[5-9]",
-    "module": "org.miaixz:bus-crypto",
+    "metadata-version": "8.3.5",
     "tested-versions": [
-      "8.3.5"
+      "8.3.5",
+      "8.3.6"
     ]
   }
 ]

@@ -40,6 +40,17 @@ import org.miaixz.bus.core.xyz.RandomKit;
 /**
  * A utility class for working with primitive type arrays.
  *
+ * <ol>
+ * <li>{@code int[]}</li>
+ * <li>{@code long[]}</li>
+ * <li>{@code double[]}</li>
+ * <li>{@code float[]}</li>
+ * <li>{@code short[]}</li>
+ * <li>{@code char[]}</li>
+ * <li>{@code byte[]}</li>
+ * <li>{@code boolean[]}</li>
+ * </ol>
+ *
  * @author Kimi Liu
  * @since Java 17+
  */

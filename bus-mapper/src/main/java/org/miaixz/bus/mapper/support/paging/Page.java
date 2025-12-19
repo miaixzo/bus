@@ -58,7 +58,7 @@ import java.util.List;
  *
  * <pre>{@code
  * // Create using builder
- * Page<User> page = Page.<User>builder().result(users).pageable(PageRequest.of(0, 10)).total(100).build();
+ * Page<User> page = Page.<User>builder().result(users).pageable(PageRequest.of(1, 10)).total(100).build();
  *
  * // Access data
  * List<User> users = page.getResult(); // or just use page directly as List
@@ -162,12 +162,12 @@ public class Page<T> extends ArrayList<T> {
     }
 
     /**
-     * Gets the current page number (1-based). Converts from internal 0-based index to user-friendly 1-based.
+     * Gets the current page number (1-based).
      *
      * @return the current page number (1-based)
      */
     public int getPageNo() {
-        return pageable.getPageNo() + 1;
+        return pageable.getPageNo();
     }
 
     /**
@@ -200,7 +200,7 @@ public class Page<T> extends ArrayList<T> {
         if (pageable.isUnpaged()) {
             return 1;
         }
-        return (long) pageable.getPageNo() * pageable.getPageSize() + 1;
+        return (long) (pageable.getPageNo() - 1) * pageable.getPageSize() + 1;
     }
 
     /**
