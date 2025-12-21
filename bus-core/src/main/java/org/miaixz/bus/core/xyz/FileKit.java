@@ -62,6 +62,12 @@ import org.miaixz.bus.core.text.CharsBacker;
 public class FileKit extends PathResolve {
 
     /**
+     * Constructs a new FileKit. Utility class constructor for static access.
+     */
+    private FileKit() {
+    }
+
+    /**
      * Regex for detecting absolute paths.
      */
     private static final Pattern PATTERN_PATH_ABSOLUTE = Pattern.compile("^[a-zA-Z]:([/\\\\].*)?", Pattern.DOTALL);

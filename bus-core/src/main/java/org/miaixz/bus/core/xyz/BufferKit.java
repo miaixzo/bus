@@ -45,6 +45,12 @@ import org.miaixz.bus.core.lang.Symbol;
 public class BufferKit {
 
     /**
+     * Constructs a new BufferKit. Utility class constructor for static access.
+     */
+    private BufferKit() {
+    }
+
+    /**
      * Converts a {@link ByteBuffer} to a byte array.
      *
      * @param bytebuffer The {@link ByteBuffer} to convert.

@@ -255,8 +255,8 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
      * 
      * @return the index of the read buffer
      */
-    static int readBufferIndex() {
-        return ((int) Thread.currentThread().getId()) & READ_BUFFERS_MASK;
+    static long readBufferIndex() {
+        return Thread.currentThread().threadId() & READ_BUFFERS_MASK;
     }
 
     /**
@@ -320,7 +320,7 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
      * @param node the entry in the page replacement policy
      */
     void afterRead(final Node<K, V> node) {
-        final int bufferIndex = readBufferIndex();
+        final long bufferIndex = readBufferIndex();
         final long writeCount = recordRead(bufferIndex, node);
         drainOnReadIfNeeded(bufferIndex, writeCount);
         notifyListener();
@@ -333,12 +333,12 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
      * @param node        the entry in the page replacement policy
      * @return the number of writes on the chosen read buffer
      */
-    long recordRead(final int bufferIndex, final Node<K, V> node) {
-        final AtomicLong counter = readBufferWriteCount[bufferIndex];
+    long recordRead(final long bufferIndex, final Node<K, V> node) {
+        final AtomicLong counter = readBufferWriteCount[(int) bufferIndex];
         final long writeCount = counter.get();
         counter.lazySet(writeCount + 1);
         final int index = (int) (writeCount & READ_BUFFER_INDEX_MASK);
-        readBuffers[bufferIndex][index].lazySet(node);
+        readBuffers[(int) bufferIndex][index].lazySet(node);
         return writeCount;
     }
 
@@ -348,8 +348,8 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
      * @param bufferIndex the index to the chosen read buffer
      * @param writeCount  the number of writes on the chosen read buffer
      */
-    void drainOnReadIfNeeded(final int bufferIndex, final long writeCount) {
-        final long pending = (writeCount - readBufferDrainAtWriteCount[bufferIndex].get());
+    void drainOnReadIfNeeded(final long bufferIndex, final long writeCount) {
+        final long pending = (writeCount - readBufferDrainAtWriteCount[(int) bufferIndex].get());
         final boolean delayable = (pending < READ_BUFFER_THRESHOLD);
         final DrainStatus status = drainStatus.get();
         if (status.shouldDrainBuffers(delayable)) {
@@ -397,10 +397,10 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
      * Drains the read buffers, each up to an amortized threshold.
      */
     void drainReadBuffers() {
-        final int start = (int) Thread.currentThread().getId();
-        final int end = start + NUMBER_OF_READ_BUFFERS;
-        for (int i = start; i < end; i++) {
-            drainReadBuffer(i & READ_BUFFERS_MASK);
+        final long start = Thread.currentThread().threadId();
+        final long end = start + NUMBER_OF_READ_BUFFERS;
+        for (long i = start; i < end; i++) {
+            drainReadBuffer((int) (i & READ_BUFFERS_MASK));
         }
     }
 

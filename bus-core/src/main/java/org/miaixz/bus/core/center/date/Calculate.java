@@ -43,6 +43,12 @@ import org.miaixz.bus.core.center.date.culture.en.Week;
 public class Calculate extends Resolver {
 
     /**
+     * Constructs a new Calculate. Utility class constructor for static access.
+     */
+    public Calculate() {
+    }
+
+    /**
      * Checks if the current date is within the specified date range. The begin and end dates can be interchanged.
      *
      * @param date      The date to check.

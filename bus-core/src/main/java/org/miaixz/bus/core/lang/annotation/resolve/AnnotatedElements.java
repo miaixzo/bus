@@ -103,6 +103,12 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 public class AnnotatedElements {
 
     /**
+     * Constructs a new AnnotatedElements. Utility class constructor for static access.
+     */
+    private AnnotatedElements() {
+    }
+
+    /**
      * Cache for {@link MetaAnnotatedElement} with attribute resolution enabled.
      */
     private static final Map<AnnotatedElement, MetaAnnotatedElement<ResolvedAnnotationMapping>> RESOLVED_ELEMENT_CACHE = new WeakConcurrentMap<>();

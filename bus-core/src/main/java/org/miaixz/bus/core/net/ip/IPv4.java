@@ -68,9 +68,21 @@ import org.miaixz.bus.core.xyz.*;
 public class IPv4 {
 
     /**
+     * Constructs a new IPv4. Utility class constructor for static access.
+     */
+    public IPv4() {
+    }
+
+    /**
+     * The numeric value of the default localhost IP address (127.0.0.1).
+     */
+    /**
      * The numeric value of the default localhost IP address (127.0.0.1).
      */
     public static final long LOCAL_IP_NUM = IPv4.ipv4ToLong(Protocol.HOST_IPV4);
+    /**
+     * The minimum numeric value for an IPv4 address (0.0.0.0).
+     */
     /**
      * The minimum numeric value for an IPv4 address (0.0.0.0).
      */
@@ -79,17 +91,20 @@ public class IPv4 {
      * The minimum numeric value for an unused IPv4 address (0.0.0.0).
      */
     public static final long IPV4_UNUSED_NUM_MIN = IPv4.ipv4ToLong(Protocol.IPV4_STR_MIN);
-
     /**
      * The maximum numeric value for an unused IPv4 address (0.255.255.255).
      */
     public static final long IPV4_UNUSED_NUM_MAX = IPv4.ipv4ToLong(Protocol.IPV4_UNUSED_STR_MAX);
-
     /**
      * The minimum possible mask bit length for IPv4 (0).
      */
+    /**
+     * The minimum possible mask bit length for IPv4 (0 represents no mask).
+     */
     public static final int IPV4_MASK_BIT_MIN = 0;
-
+    /**
+     * The minimum valid mask bit length for a usable IPv4 network (1).
+     */
     /**
      * The minimum valid mask bit length for a usable IPv4 network (1).
      */
@@ -97,109 +112,331 @@ public class IPv4 {
     /**
      * The string representation of the minimum valid IPv4 mask.
      */
+    /**
+     * The minimum valid subnet mask string for IPv4 (128.0.0.0).
+     */
     public static final String IPV4_MASK_VALID_MIN = MaskBit.get(IPV4_MASK_BIT_VALID_MIN);
 
     /**
      * The maximum mask bit length for IPv4 (32).
      */
+    /**
+     * The maximum possible mask bit length for IPv4 (32 represents /32 mask).
+     */
     public static final int IPV4_MASK_BIT_MAX = 32;
     /**
      * The string representation of the maximum IPv4 mask (255.255.255.255).
+     */
+    /**
+     * The maximum subnet mask string for IPv4 (255.255.255.255).
      */
     public static final String IPV4_MASK_MAX = MaskBit.get(IPV4_MASK_BIT_MAX);
     /**
      * The minimum string representation of the IPv4 loopback address range.
      */
+    /**
+     * The minimum string representation of IPv4 loopback address range (127.0.0.0).
+     */
     public static final String IPV4_LOOPBACK_STR_MIN = "127.0.0.0";
     /**
      * The minimum numeric value of the IPv4 loopback address range.
+     */
+    /**
+     * The minimum numeric value of IPv4 loopback address range (127.0.0.0).
      */
     public static final long IPV4_LOOPBACK_NUM_MIN = IPv4.ipv4ToLong(IPV4_LOOPBACK_STR_MIN);
     /**
      * The maximum string representation of the IPv4 loopback address range.
      */
+    /**
+     * The maximum string representation of IPv4 loopback address range (127.255.255.255).
+     */
     public static final String IPV4_LOOPBACK_STR_MAX = "127.255.255.255";
     /**
      * The maximum numeric value of the IPv4 loopback address range.
      */
+    /**
+     * The maximum numeric value of IPv4 loopback address range (127.255.255.255).
+     */
     public static final long IPV4_LOOPBACK_NUM_MAX = IPv4.ipv4ToLong(IPV4_LOOPBACK_STR_MAX);
-
-    // Class A Address Constants
+    /**
+     * The minimum string representation of Class A IP address (0.0.0.0).
+     */
     public static final String IPV4_A_STR_MIN = "0.0.0.0";
+    /**
+     * The minimum numeric value of Class A IP address (0.0.0.0).
+     */
     public static final long IPV4_A_NUM_MIN = IPv4.ipv4ToLong(IPV4_A_STR_MIN);
+    /**
+     * The maximum string representation of Class A IP address (127.255.255.255).
+     */
     public static final String IPV4_A_STR_MAX = "127.255.255.255";
+    /**
+     * The maximum numeric value of Class A IP address (127.255.255.255).
+     */
     public static final long IPV4_A_NUM_MAX = IPv4.ipv4ToLong(IPV4_A_STR_MAX);
+    /**
+     * The minimum string representation of Class A public network range 1 (1.0.0.0).
+     */
     public static final String IPV4_A_PUBLIC_1_STR_MIN = "1.0.0.0";
+    /**
+     * The minimum numeric value of Class A public network range 1 (1.0.0.0).
+     */
     public static final long IPV4_A_PUBLIC_1_NUM_MIN = IPv4.ipv4ToLong(IPV4_A_PUBLIC_1_STR_MIN);
+    /**
+     * The maximum string representation of Class A public network range 1 (9.255.255.255).
+     */
     public static final String IPV4_A_PUBLIC_1_STR_MAX = "9.255.255.255";
+    /**
+     * The maximum numeric value of Class A public network range 1 (9.255.255.255).
+     */
     public static final long IPV4_A_PUBLIC_1_NUM_MAX = IPv4.ipv4ToLong(IPV4_A_PUBLIC_1_STR_MAX);
+    /**
+     * The minimum string representation of Class A private network range (10.0.0.0).
+     */
     public static final String IPV4_A_PRIVATE_STR_MIN = "10.0.0.0";
+    /**
+     * The minimum numeric value of Class A private network range (10.0.0.0).
+     */
     public static final long IPV4_A_PRIVATE_NUM_MIN = IPv4.ipv4ToLong(IPV4_A_PRIVATE_STR_MIN);
+    /**
+     * The maximum string representation of Class A private network range (10.255.255.255).
+     */
     public static final String IPV4_A_PRIVATE_STR_MAX = "10.255.255.255";
+    /**
+     * The maximum numeric value of Class A private network range (10.255.255.255).
+     */
     public static final long IPV4_A_PRIVATE_NUM_MAX = IPv4.ipv4ToLong(IPV4_A_PRIVATE_STR_MAX);
+    /**
+     * The minimum string representation of Class A public network range 2 (11.0.0.0).
+     */
     public static final String IPV4_A_PUBLIC_2_STR_MIN = "11.0.0.0";
+    /**
+     * The minimum numeric value of Class A public network range 2 (11.0.0.0).
+     */
     public static final long IPV4_A_PUBLIC_2_NUM_MIN = IPv4.ipv4ToLong(IPV4_A_PUBLIC_2_STR_MIN);
+    /**
+     * The maximum string representation of Class A public network range 2 (126.255.255.255).
+     */
     public static final String IPV4_A_PUBLIC_2_STR_MAX = "126.255.255.255";
+    /**
+     * The maximum numeric value of Class A public network range 2 (126.255.255.255).
+     */
     public static final long IPV4_A_PUBLIC_2_NUM_MAX = IPv4.ipv4ToLong(IPV4_A_PUBLIC_2_STR_MAX);
-
-    // Class B Address Constants
+    /**
+     * The minimum string representation of Class B IP address (128.0.0.0).
+     */
     public static final String IPV4_B_STR_MIN = "128.0.0.0";
+    /**
+     * The minimum numeric value of Class B IP address (128.0.0.0).
+     */
     public static final long IPV4_B_NUM_MIN = IPv4.ipv4ToLong(IPV4_B_STR_MIN);
+    /**
+     * The maximum string representation of Class B IP address (191.255.255.255).
+     */
     public static final String IPV4_B_STR_MAX = "191.255.255.255";
+    /**
+     * The maximum numeric value of Class B IP address (191.255.255.255).
+     */
     public static final long IPV4_B_NUM_MAX = IPv4.ipv4ToLong(IPV4_B_STR_MAX);
+    /**
+     * The minimum string representation of Class B public network range 1 (128.0.0.0).
+     */
     public static final String IPV4_B_PUBLIC_1_STR_MIN = "128.0.0.0";
+    /**
+     * The minimum numeric value of Class B public network range 1 (128.0.0.0).
+     */
     public static final long IPV4_B_PUBLIC_1_NUM_MIN = IPv4.ipv4ToLong(IPV4_B_PUBLIC_1_STR_MIN);
+    /**
+     * The maximum string representation of Class B public network range 1 (172.15.255.255).
+     */
     public static final String IPV4_B_PUBLIC_1_STR_MAX = "172.15.255.255";
+    /**
+     * The maximum numeric value of Class B public network range 1 (172.15.255.255).
+     */
     public static final long IPV4_B_PUBLIC_1_NUM_MAX = IPv4.ipv4ToLong(IPV4_B_PUBLIC_1_STR_MAX);
+    /**
+     * The minimum string representation of Class B private network range (172.16.0.0).
+     */
     public static final String IPV4_B_PRIVATE_STR_MIN = "172.16.0.0";
+    /**
+     * The minimum numeric value of Class B private network range (172.16.0.0).
+     */
     public static final long IPV4_B_PRIVATE_NUM_MIN = IPv4.ipv4ToLong(IPV4_B_PRIVATE_STR_MIN);
+    /**
+     * The maximum string representation of Class B private network range (172.31.255.255).
+     */
     public static final String IPV4_B_PRIVATE_STR_MAX = "172.31.255.255";
+    /**
+     * The maximum numeric value of Class B private network range (172.31.255.255).
+     */
     public static final long IPV4_B_PRIVATE_NUM_MAX = IPv4.ipv4ToLong(IPV4_B_PRIVATE_STR_MAX);
+    /**
+     * The minimum string representation of Class B public network range 2 (172.32.0.0).
+     */
     public static final String IPV4_B_PUBLIC_2_STR_MIN = "172.32.0.0";
+    /**
+     * The minimum numeric value of Class B public network range 2 (172.32.0.0).
+     */
     public static final long IPV4_B_PUBLIC_2_NUM_MIN = IPv4.ipv4ToLong(IPV4_B_PUBLIC_2_STR_MIN);
+    /**
+     * The maximum string representation of Class B public network range 2 (191.255.255.255).
+     */
     public static final String IPV4_B_PUBLIC_2_STR_MAX = "191.255.255.255";
+    /**
+     * The maximum numeric value of Class B public network range 2 (191.255.255.255).
+     */
     public static final long IPV4_B_PUBLIC_2_NUM_MAX = IPv4.ipv4ToLong(IPV4_B_PUBLIC_2_STR_MAX);
-
-    // Class C Address Constants
+    /**
+     * The minimum string representation of Class C IP address (192.0.0.0).
+     */
     public static final String IPV4_C_STR_MIN = "192.0.0.0";
+    /**
+     * The minimum numeric value of Class C IP address (192.0.0.0).
+     */
     public static final long IPV4_C_NUM_MIN = IPv4.ipv4ToLong(IPV4_C_STR_MIN);
+    /**
+     * The maximum string representation of Class C IP address (223.255.255.255).
+     */
     public static final String IPV4_C_STR_MAX = "223.255.255.255";
+    /**
+     * The maximum numeric value of Class C IP address (223.255.255.255).
+     */
     public static final long IPV4_C_NUM_MAX = IPv4.ipv4ToLong(IPV4_C_STR_MAX);
+    /**
+     * The minimum string representation of Class C public network range 1 (192.0.0.0).
+     */
     public static final String IPV4_C_PUBLIC_1_STR_MIN = "192.0.0.0";
+    /**
+     * The minimum numeric value of Class C public network range 1 (192.0.0.0).
+     */
     public static final long IPV4_C_PUBLIC_1_NUM_MIN = IPv4.ipv4ToLong(IPV4_C_PUBLIC_1_STR_MIN);
+    /**
+     * The maximum string representation of Class C public network range 1 (192.167.255.255).
+     */
     public static final String IPV4_C_PUBLIC_1_STR_MAX = "192.167.255.255";
+    /**
+     * The maximum numeric value of Class C public network range 1 (192.167.255.255).
+     */
     public static final long IPV4_C_PUBLIC_1_NUM_MAX = IPv4.ipv4ToLong(IPV4_C_PUBLIC_1_STR_MAX);
+    /**
+     * The minimum string representation of Class C private network range (192.168.0.0).
+     */
     public static final String IPV4_C_PRIVATE_STR_MIN = "192.168.0.0";
+    /**
+     * The minimum numeric value of Class C private network range (192.168.0.0).
+     */
     public static final long IPV4_C_PRIVATE_NUM_MIN = IPv4.ipv4ToLong(IPV4_C_PRIVATE_STR_MIN);
+    /**
+     * The maximum string representation of Class C private network range (192.168.255.255).
+     */
     public static final String IPV4_C_PRIVATE_STR_MAX = "192.168.255.255";
+    /**
+     * The maximum numeric value of Class C private network range (192.168.255.255).
+     */
     public static final long IPV4_C_PRIVATE_NUM_MAX = IPv4.ipv4ToLong(IPV4_C_PRIVATE_STR_MAX);
+    /**
+     * The minimum string representation of Class C public network range 2 (192.169.0.0).
+     */
     public static final String IPV4_C_PUBLIC_2_STR_MIN = "192.169.0.0";
+    /**
+     * The minimum numeric value of Class C public network range 2 (192.169.0.0).
+     */
     public static final long IPV4_C_PUBLIC_2_NUM_MIN = IPv4.ipv4ToLong(IPV4_C_PUBLIC_2_STR_MIN);
+    /**
+     * The maximum string representation of Class C public network range 2 (223.255.255.255).
+     */
     public static final String IPV4_C_PUBLIC_2_STR_MAX = "223.255.255.255";
+    /**
+     * The maximum numeric value of Class C public network range 2 (223.255.255.255).
+     */
     public static final long IPV4_C_PUBLIC_2_NUM_MAX = IPv4.ipv4ToLong(IPV4_C_PUBLIC_2_STR_MAX);
-
-    // Class D (Multicast) Address Constants
+    /**
+     * The minimum string representation of Class D IP address for multicast (224.0.0.0).
+     */
     public static final String IPV4_D_STR_MIN = "224.0.0.0";
+    /**
+     * The minimum numeric value of Class D IP address for multicast (224.0.0.0).
+     */
     public static final long IPV4_D_NUM_MIN = IPv4.ipv4ToLong(IPV4_D_STR_MIN);
+    /**
+     * The maximum string representation of Class D IP address for multicast (239.255.255.255).
+     */
     public static final String IPV4_D_STR_MAX = "239.255.255.255";
+    /**
+     * The maximum numeric value of Class D IP address for multicast (239.255.255.255).
+     */
     public static final long IPV4_D_NUM_MAX = IPv4.ipv4ToLong(IPV4_D_STR_MAX);
+    /**
+     * The minimum string representation of Class D dedicated multicast range (224.0.0.0).
+     */
     public static final String IPV4_D_DEDICATED_STR_MIN = "224.0.0.0";
+    /**
+     * The minimum numeric value of Class D dedicated multicast range (224.0.0.0).
+     */
     public static final long IPV4_D_DEDICATED_NUM_MIN = IPv4.ipv4ToLong(IPV4_D_DEDICATED_STR_MIN);
+    /**
+     * The maximum string representation of Class D dedicated multicast range (224.0.0.255).
+     */
     public static final String IPV4_D_DEDICATED_STR_MAX = "224.0.0.255";
+    /**
+     * The maximum numeric value of Class D dedicated multicast range (224.0.0.255).
+     */
     public static final long IPV4_D_DEDICATED_NUM_MAX = IPv4.ipv4ToLong(IPV4_D_DEDICATED_STR_MAX);
+    /**
+     * The minimum string representation of Class D public multicast range (224.0.1.0).
+     */
     public static final String IPV4_D_PUBLIC_STR_MIN = "224.0.1.0";
+    /**
+     * The minimum numeric value of Class D public multicast range (224.0.1.0). This range is used for public multicast
+     * services and applications.
+     */
     public static final long IPV4_D_PUBLIC_NUM_MIN = IPv4.ipv4ToLong(IPV4_D_PUBLIC_STR_MIN);
+    /**
+     * The maximum string representation of Class D public multicast range (238.255.255.255).
+     */
     public static final String IPV4_D_PUBLIC_STR_MAX = "238.255.255.255";
+    /**
+     * The maximum numeric value of Class D public multicast range (238.255.255.255).
+     */
     public static final long IPV4_D_PUBLIC_NUM_MAX = IPv4.ipv4ToLong(IPV4_D_PUBLIC_STR_MAX);
+    /**
+     * The minimum string representation of Class D private multicast range (239.0.0.0).
+     */
     public static final String IPV4_D_PRIVATE_STR_MIN = "239.0.0.0";
+    /**
+     * The minimum numeric value of Class D private multicast range (239.0.0.0). This range is reserved for private
+     * network multicast communication.
+     */
     public static final long IPV4_D_PRIVATE_NUM_MIN = IPv4.ipv4ToLong(IPV4_D_PRIVATE_STR_MIN);
+    /**
+     * The maximum string representation of Class D private multicast range (239.255.255.255).
+     */
     public static final String IPV4_D_PRIVATE_STR_MAX = "239.255.255.255";
+    /**
+     * The maximum numeric value of Class D private multicast range (239.255.255.255). This range is reserved for
+     * private network multicast communication.
+     */
     public static final long IPV4_D_PRIVATE_NUM_MAX = IPv4.ipv4ToLong(IPV4_D_PRIVATE_STR_MAX);
-
-    // Class E (Reserved) Address Constants
+    /**
+     * The minimum string representation of Class E IP address (240.0.0.0). This range is reserved for experimental
+     * purposes and future use.
+     */
     public static final String IPV4_E_STR_MIN = "240.0.0.0";
+    /**
+     * The minimum numeric value of Class E IP address (240.0.0.0). This range is reserved for experimental purposes and
+     * future use.
+     */
     public static final long IPV4_E_NUM_MIN = IPv4.ipv4ToLong(IPV4_E_STR_MIN);
+    /**
+     * The maximum string representation of Class E IP address (255.255.255.255). This range is reserved for
+     * experimental purposes and future use.
+     */
     public static final String IPV4_E_STR_MAX = "255.255.255.255";
+    /**
+     * The maximum numeric value of Class E IP address (255.255.255.255). This range is reserved for experimental
+     * purposes and future use.
+     */
     public static final long IPV4_E_NUM_MAX = IPv4.ipv4ToLong(IPV4_E_STR_MAX);
 
     /**

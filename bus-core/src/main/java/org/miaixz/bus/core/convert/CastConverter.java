@@ -43,6 +43,12 @@ import org.miaixz.bus.core.lang.exception.ConvertException;
 public class CastConverter implements MatcherConverter, Serializable {
 
     /**
+     * Constructs a new CastConverter. Utility class constructor for static access.
+     */
+    private CastConverter() {
+    }
+
+    /**
      * Singleton instance.
      */
     public static final CastConverter INSTANCE = new CastConverter();

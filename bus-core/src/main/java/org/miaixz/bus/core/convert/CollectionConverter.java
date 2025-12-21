@@ -45,6 +45,12 @@ import org.miaixz.bus.core.xyz.TypeKit;
 public class CollectionConverter implements MatcherConverter, Serializable {
 
     /**
+     * Constructs a new CollectionConverter. Utility class constructor for static access.
+     */
+    CollectionConverter() {
+    }
+
+    /**
      * Singleton instance.
      */
     public static final CollectionConverter INSTANCE = new CollectionConverter();

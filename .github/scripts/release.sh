@@ -6,6 +6,9 @@
 
 set -e  # Exit immediately on error
 
+# Global configuration
+DEFAULT_JAVA_VERSION=21
+
 # Color definitions
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -28,6 +31,114 @@ log_warning() {
 
 log_error() {
     echo -e "${RED}[ERROR]${NC} $1"
+}
+
+# Auto detect and setup JAVA_HOME
+setup_java() {
+    local java_version=${1:-$DEFAULT_JAVA_VERSION}
+    log_info "Setting up Java $java_version environment..."
+
+    # If JAVA_HOME is already set, verify it
+    if [ -n "$JAVA_HOME" ] && [ -d "$JAVA_HOME" ]; then
+        log_info "JAVA_HOME is already set to: $JAVA_HOME"
+        if [ -x "$JAVA_HOME/bin/java" ]; then
+            local detected_version=$("$JAVA_HOME/bin/java" -version 2>&1 | awk -F '"' '/version/ {print $2}' | cut -d'.' -f1)
+            if [ "$detected_version" = "$java_version" ]; then
+                log_success "Java $java_version detected at: $JAVA_HOME"
+                export JAVA_HOME
+                export PATH="$JAVA_HOME/bin:$PATH"
+                return 0
+            else
+                log_warning "Current Java version is $detected_version, need Java $java_version"
+            fi
+        fi
+    fi
+
+    # Try to find Java installation
+    local java_home_patterns=(
+        "/usr/lib/jvm/java-${java_version}-*"
+        "/usr/lib/jvm/graalvm-ce-java${java_version}"
+        "/usr/local/opt/openjdk@${java_version}"
+        "/opt/homebrew/opt/openjdk@${java_version}"
+        "/Library/Java/JavaVirtualMachines/openjdk-${java_version}.jdk/Contents/Home"
+        "/Library/Java/JavaVirtualMachines/graalvm-ce-java${java_version}/Contents/Home"
+        "$HOME/.sdkman/candidates/java/${java_version}.*"
+    )
+
+    # Try to detect Java using java command
+    if command -v java >/dev/null 2>&1; then
+        local java_exec=$(which java)
+        local detected_version=$("$java_exec" -version 2>&1 | awk -F '"' '/version/ {print $2}' | cut -d'.' -f1)
+
+        if [ "$detected_version" = "$java_version" ]; then
+            # Try to get the actual JAVA_HOME using java -XshowSettings
+            local detected_home=$("$java_exec" -XshowSettings:properties -version 2>&1 | grep 'java.home' | awk '{print $3}')
+
+            if [ -n "$detected_home" ] && [ -d "$detected_home" ]; then
+                log_success "Found Java $java_version at: $detected_home"
+                export JAVA_HOME="$detected_home"
+                export PATH="$JAVA_HOME/bin:$PATH"
+                return 0
+            else
+                log_warning "Java $java_version detected but JAVA_HOME path not clear, using system path"
+                return 0
+            fi
+        fi
+    fi
+
+    # Search in common paths
+    for pattern in "${java_home_patterns[@]}"; do
+        for expanded_path in $pattern; do
+            if [ -d "$expanded_path" ] && [ -x "$expanded_path/bin/java" ]; then
+                local version=$("$expanded_path/bin/java" -version 2>&1 | awk -F '"' '/version/ {print $2}' | cut -d'.' -f1)
+                if [ "$version" = "$java_version" ]; then
+                    log_success "Found Java $java_version at: $expanded_path"
+                    export JAVA_HOME="$expanded_path"
+                    export PATH="$JAVA_HOME/bin:$PATH"
+                    return 0
+                fi
+            fi
+        done
+    done
+
+    # If we can't find the requested Java version
+    log_error "Java $java_version not found. Please install Java $java_version or set JAVA_HOME manually"
+    log_error "You can install Java $java_version using:"
+    log_error "  - Ubuntu/Debian: sudo apt install openjdk-${java_version}-jdk"
+    log_error "  - macOS: brew install openjdk@${java_version}"
+    log_error "  - SDKMAN: sdk install java ${java_version}.0.2-tem"
+    exit 1
+}
+
+# Check Java installation and version
+check_java() {
+    local java_version=${1:-$DEFAULT_JAVA_VERSION}
+    log_info "Checking Java installation..."
+
+    # Setup Java environment first
+    setup_java "$java_version"
+
+    # Verify Java is working
+    if ! command -v java &> /dev/null; then
+        log_error "Java command not found after setup"
+        exit 1
+    fi
+
+    if ! command -v javac &> /dev/null; then
+        log_error "Java compiler (javac) not found"
+        exit 1
+    fi
+
+    # Show Java version
+    local actual_version=$(java -version 2>&1 | head -n 1)
+    log_success "Java version: $actual_version"
+
+    # Show JAVA_HOME
+    if [ -n "$JAVA_HOME" ]; then
+        log_success "JAVA_HOME: $JAVA_HOME"
+    else
+        log_warning "JAVA_HOME is not set, using system Java"
+    fi
 }
 
 # Check if Maven is installed
@@ -62,14 +173,18 @@ check_maven_settings() {
 
     if [ ! -f "$settings_file" ]; then
         log_warning "Maven settings.xml file not found"
-        log_warning "Please ensure central repository deployment permissions are configured"
-        return
+        log_info "Maven will use command-line Java configuration"
+    else
+        log_info "Maven settings.xml found, but script will use command-line Java configuration to ensure consistency"
     fi
 
-    if grep -q "ossrh" "$settings_file" || grep -q "central" "$settings_file"; then
+    if grep -q "ossrh" "$settings_file" 2>/dev/null || grep -q "central" "$settings_file" 2>/dev/null; then
         log_success "Central repository configuration detected"
     else
-        log_warning "Central repository configuration not detected, please check settings.xml"
+        log_warning "Central repository configuration not detected"
+        if [ "${1:-}" = "deploy" ]; then
+            log_error "For deployment to central repository, please configure settings.xml with proper credentials"
+        fi
     fi
 }
 
@@ -82,13 +197,13 @@ build_module() {
 
     cd "$module"
 
-    # Execute Maven command
+    # Execute Maven command with Java version from environment variable
     if [ "$phase" = "deploy" ]; then
         # Deploy to central repository
-        mvn clean deploy -DskipTests
+        mvn clean deploy -DskipTests -Djava.version=$JAVA_VERSION
     else
         # Local install
-        mvn clean install -DskipTests
+        mvn clean install -DskipTests -Djava.version=$JAVA_VERSION
     fi
 
     local exit_code=$?
@@ -114,7 +229,7 @@ build_parallel() {
         (
             log_info "Parallel building module: $module"
             cd "$module"
-            mvn clean install -DskipTests
+            mvn clean install -DskipTests -Djava.version=$JAVA_VERSION
             log_success "Parallel build of module $module completed"
         ) &
         pids+=($!)
@@ -135,15 +250,20 @@ build_parallel() {
 # Main function
 main() {
     local phase=${1:-install}  # Default to install, can be specified as deploy
+    local java_version=${2:-$DEFAULT_JAVA_VERSION}  # Default to specified version or global default
 
-    log_info "Starting Bus project one-click build and deploy (phase: $phase)"
+    log_info "Starting Bus project one-click build and deploy (phase: $phase, Java: $java_version)"
     log_info "Current time: $(date)"
     log_info "Working directory: $(pwd)"
 
     # Environment checks
+    check_java "$java_version"
     check_maven
     check_gpg
-    check_maven_settings
+    check_maven_settings "$phase"
+
+    # Export Java version for all Maven commands
+    export JAVA_VERSION=$java_version
 
     echo
     log_info "Building and deploying modules following dependency order..."
@@ -210,20 +330,22 @@ show_help() {
     echo "Bus Project One-Click Build and Deploy Script"
     echo
     echo "Usage:"
-    echo "  ./$(basename "$0") [install|deploy]"
+    echo "  ./$(basename "$0") [install|deploy] [java-version]"
     echo
     echo "Parameters:"
-    echo "  install  - Build and install to local repository (default)"
-    echo "  deploy   - Build and deploy to central repository"
+    echo "  install      - Build and install to local repository (default)"
+    echo "  deploy       - Build and deploy to central repository"
+    echo "  java-version - Java version to use (default: $DEFAULT_JAVA_VERSION)"
     echo
     echo "Environment Requirements:"
-    echo "  1. Maven 3.6+"
-    echo "  2. GPG (required for deployment)"
-    echo "  3. Configured ~/.m2/settings.xml (required for deployment)"
+    echo "  1. JDK (auto-detected, default: $DEFAULT_JAVA_VERSION)"
+    echo "  2. Maven 3.6+"
+    echo "  3. GPG (required for deployment)"
+    echo "  4. Configured ~/.m2/settings.xml (required for deployment)"
     echo
     echo "Examples:"
-    echo "  ./$(basename "$0") install   # Local build and install"
-    echo "  ./$(basename "$0") deploy    # Deploy to central repository"
+    echo "  ./$(basename "$0") install        # Local build with Java $DEFAULT_JAVA_VERSION"
+    echo "  ./$(basename "$0") deploy         # Deploy with Java $DEFAULT_JAVA_VERSION"
 }
 
 # Script entry point
@@ -233,10 +355,10 @@ case "$1" in
         exit 0
         ;;
     install|"")
-        main "install"
+        main "install" "$2"
         ;;
     deploy)
-        main "deploy"
+        main "deploy" "$2"
         ;;
     *)
         log_error "Unknown parameter: $1"

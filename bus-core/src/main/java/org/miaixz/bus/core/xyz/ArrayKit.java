@@ -53,6 +53,12 @@ import org.miaixz.bus.core.text.StringJoiner;
 public class ArrayKit extends PrimitiveArray {
 
     /**
+     * Constructs a new ArrayKit. Utility class constructor for static access.
+     */
+    private ArrayKit() {
+    }
+
+    /**
      * Converts to an array. If {@code values} is already an array, it is returned. Otherwise, a new array containing
      * only {@code values} is returned. Note: The element type of {@code values} or its own type must exactly match the
      * provided {@code elementType}.

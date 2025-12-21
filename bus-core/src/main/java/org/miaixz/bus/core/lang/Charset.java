@@ -47,6 +47,12 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class Charset {
 
     /**
+     * Constructs a new Charset. Utility class constructor for static access.
+     */
+    private Charset() {
+    }
+
+    /**
      * The default character set of the Java virtual machine.
      */
     public static final java.nio.charset.Charset DEFAULT = java.nio.charset.Charset.defaultCharset();

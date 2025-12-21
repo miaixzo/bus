@@ -40,6 +40,12 @@ import java.io.Serial;
 public class CRC16CCITTFalse extends CRC16Checksum {
 
     /**
+     * Constructs a new CRC16CCITTFalse. Utility class constructor for static access.
+     */
+    private CRC16CCITTFalse() {
+    }
+
+    /**
      * The serial version UID for serialization.
      */
     @Serial

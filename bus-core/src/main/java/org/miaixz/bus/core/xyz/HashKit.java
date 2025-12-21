@@ -42,6 +42,12 @@ import org.miaixz.bus.core.codec.hash.metro.MetroHash64;
 public class HashKit {
 
     /**
+     * Constructs a new HashKit. Utility class constructor for static access.
+     */
+    private HashKit() {
+    }
+
+    /**
      * Additive hash.
      *
      * @param key   The string.

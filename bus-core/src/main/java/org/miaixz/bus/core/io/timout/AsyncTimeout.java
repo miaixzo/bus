@@ -48,6 +48,12 @@ import org.miaixz.bus.core.xyz.IoKit;
 public class AsyncTimeout extends Timeout {
 
     /**
+     * Constructs a new AsyncTimeout. Utility class constructor for static access.
+     */
+    public AsyncTimeout() {
+    }
+
+    /**
      * The maximum number of bytes to write at once. No more than 64 KiB should be written at a time, regardless of the
      * total size. Otherwise, slow connections may time out even if progress is (slowly) being made. Without this,
      * writing a single 1 MiB buffer might never succeed on a sufficiently slow connection.

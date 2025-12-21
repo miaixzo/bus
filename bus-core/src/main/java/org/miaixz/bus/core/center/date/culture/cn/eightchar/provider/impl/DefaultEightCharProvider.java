@@ -41,6 +41,12 @@ import org.miaixz.bus.core.center.date.culture.lunar.LunarHour;
 public class DefaultEightCharProvider implements EightCharProvider {
 
     /**
+     * Constructs a new DefaultEightCharProvider. Utility class constructor for static access.
+     */
+    public DefaultEightCharProvider() {
+    }
+
+    /**
      * Calculates the Eight Characters (八字) from a Lunar Hour.
      *
      * @param hour The Lunar Hour.

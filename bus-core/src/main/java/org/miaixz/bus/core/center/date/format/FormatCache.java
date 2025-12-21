@@ -48,6 +48,12 @@ import org.miaixz.bus.core.lang.tuple.Tuple;
 public abstract class FormatCache<F extends Format> {
 
     /**
+     * Constructs a new FormatCache. Utility class constructor for static access.
+     */
+    protected FormatCache() {
+    }
+
+    /**
      * Cache for date/time instance patterns, used for parameters similar to DateFormat.SHORT or DateFormat.LONG.
      */
     private static final ConcurrentMap<Tuple, String> C_DATE_TIME_INSTANCE_CACHE = new ConcurrentHashMap<>(7);

@@ -48,6 +48,12 @@ import org.miaixz.bus.core.xyz.RecordKit;
 public class BeanDescFactory {
 
     /**
+     * Constructs a new BeanDescFactory. Utility class constructor for static access.
+     */
+    private BeanDescFactory() {
+    }
+
+    /**
      * A weak concurrent map for caching {@code BeanDesc} instances.
      */
     private static final WeakConcurrentMap<Class<?>, BeanDesc> Cache = new WeakConcurrentMap<>();

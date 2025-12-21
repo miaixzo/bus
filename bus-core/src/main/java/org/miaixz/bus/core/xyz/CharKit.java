@@ -43,6 +43,12 @@ import org.miaixz.bus.core.text.ASCIIStrCache;
 public class CharKit {
 
     /**
+     * Constructs a new CharKit. Utility class constructor for static access.
+     */
+    private CharKit() {
+    }
+
+    /**
      * Checks if the character is an ASCII character (0-127).
      *
      * <pre>

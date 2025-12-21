@@ -157,23 +157,25 @@ public interface SqlScript {
     /**
      * Adds a validation that a boolean parameter is true.
      *
-     * @param variable The parameter (a boolean value).
+     * @param variable The parameter (a boolean value or expression).
      * @param message  The prompt message.
      * @return The validation code snippet.
      */
     default String variableIsTrue(String variable, String message) {
-        return "\n${@org.miaixz.bus.core.lang.Assert@isTrue(" + variable + ", '" + message + "')}\n";
+        return "\n<if test=\"!" + variable + "\">\n" + "${@org.miaixz.bus.core.lang.Assert@isTrue(false, '" + message
+                + "')}\n" + "</if>\n";
     }
 
     /**
      * Adds a validation that a boolean parameter is false.
      *
-     * @param variable The parameter (a boolean value).
+     * @param variable The parameter (a boolean value or expression).
      * @param message  The prompt message.
      * @return The validation code snippet.
      */
     default String variableIsFalse(String variable, String message) {
-        return "\n${@org.miaixz.bus.core.lang.Assert@isFalse(" + variable + ", '" + message + "')}\n";
+        return "\n<if test=\"" + variable + "\">\n" + "${@org.miaixz.bus.core.lang.Assert@isFalse(true, '" + message
+                + "')}\n" + "</if>\n";
     }
 
     /**
@@ -184,7 +186,8 @@ public interface SqlScript {
      * @return The validation code snippet.
      */
     default String variableNotNull(String variable, String message) {
-        return "\n${@org.miaixz.bus.core.lang.Assert@notNull(" + variable + ", '" + message + "')}\n";
+        return "\n<if test=\"" + variable + " == null\">\n" + "${@org.miaixz.bus.core.lang.Assert@notNull(null, '"
+                + message + "')}\n" + "</if>\n";
     }
 
     /**
@@ -195,7 +198,8 @@ public interface SqlScript {
      * @return The validation code snippet.
      */
     default String variableNotEmpty(String variable, String message) {
-        return "\n${@org.miaixz.bus.core.lang.Assert@notEmpty(" + variable + ", '" + message + "')}\n";
+        return "\n<if test=\"" + variable + " == null or " + variable + ".isEmpty()\">\n"
+                + "${@org.miaixz.bus.core.lang.Assert@notEmpty(null, '" + message + "')}\n" + "</if>\n";
     }
 
     /**

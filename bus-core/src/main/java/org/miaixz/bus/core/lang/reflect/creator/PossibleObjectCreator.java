@@ -56,7 +56,8 @@ import org.miaixz.bus.core.xyz.ReflectKit;
  *     SortedSet - TreeSet
  * </pre>
  *
- * @param <T> The type of the object to be created.
+ * @param <T>   The type of the object to be created.
+ * @param clazz The class to create an instance of.
  * @author Kimi Liu
  * @since Java 17+
  */

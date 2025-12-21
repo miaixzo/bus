@@ -52,6 +52,12 @@ import org.miaixz.bus.core.xyz.*;
 public class Base64 {
 
     /**
+     * Constructs a new Base64. Utility class constructor for static access.
+     */
+    private Base64() {
+    }
+
+    /**
      * Encodes a byte array into a Base64 byte array.
      *
      * @param arr     The byte array to be encoded.

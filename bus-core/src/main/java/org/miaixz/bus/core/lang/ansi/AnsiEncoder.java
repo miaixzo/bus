@@ -39,6 +39,12 @@ import org.miaixz.bus.core.lang.Symbol;
 public class AnsiEncoder {
 
     /**
+     * Constructs a new AnsiEncoder. Utility class constructor for static access.
+     */
+    private AnsiEncoder() {
+    }
+
+    /**
      * The starting sequence for an ANSI escape code.
      */
     private static final String ENCODE_START = "\033[";

@@ -51,6 +51,12 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class FileName {
 
     /**
+     * Constructs a new FileName. Utility class constructor for static access.
+     */
+    private FileName() {
+    }
+
+    /**
      * An array of special double-file extensions (e.g., for compressed tarballs like "tar.bz2", "tar.gz", "tar.xz").
      * These suffixes are treated as a single extension for operations like {@link #mainName(String)}.
      */

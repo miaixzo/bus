@@ -39,6 +39,12 @@ import java.time.temporal.TemporalAmount;
  */
 public class DurationConverter extends AbstractConverter {
 
+    /**
+     * Constructs a new DurationConverter. Utility class constructor for static access.
+     */
+    public DurationConverter() {
+    }
+
     @Serial
     private static final long serialVersionUID = 2852268197775L;
 

@@ -37,6 +37,12 @@ package org.miaixz.bus.core.text;
 public class ASCIIStrCache {
 
     /**
+     * Constructs a new ASCIIStrCache. Utility class constructor for static access.
+     */
+    private ASCIIStrCache() {
+    }
+
+    /**
      * The maximum length of the ASCII character set (0-127).
      */
     private static final int ASCII_LENGTH = 128;

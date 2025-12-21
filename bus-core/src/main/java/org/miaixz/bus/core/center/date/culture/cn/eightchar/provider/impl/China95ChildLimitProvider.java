@@ -40,6 +40,12 @@ import org.miaixz.bus.core.center.date.culture.solar.SolarTime;
 public class China95ChildLimitProvider extends AbstractChildLimitProvider {
 
     /**
+     * Constructs a new China95ChildLimitProvider. Utility class constructor for static access.
+     */
+    protected China95ChildLimitProvider() {
+    }
+
+    /**
      * Calculates and returns the Child Limit information based on the "Yuan Heng Li Zhen" method.
      *
      * @param birthTime The Gregorian birth time.

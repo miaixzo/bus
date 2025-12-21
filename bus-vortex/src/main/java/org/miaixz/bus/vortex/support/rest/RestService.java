@@ -407,36 +407,36 @@ public class RestService {
             String path) {
         // This is your provided code block (streaming).
         return bodySpec.exchangeToMono(clientResponse -> {
-                    ServerResponse.BodyBuilder responseBuilder = ServerResponse.status(clientResponse.statusCode());
+            ServerResponse.BodyBuilder responseBuilder = ServerResponse.status(clientResponse.statusCode());
 
-                    responseBuilder.headers(headers -> {
-                        headers.addAll(clientResponse.headers().asHttpHeaders());
-                        headers.remove(HttpHeaders.HOST);
-                        headers.remove(HttpHeaders.TRANSFER_ENCODING);
-                        headers.remove(HttpHeaders.CONTENT_LENGTH);
-                    });
+            responseBuilder.headers(headers -> {
+                headers.addAll(clientResponse.headers().asHttpHeaders());
+                headers.remove(HttpHeaders.HOST);
+                headers.remove(HttpHeaders.TRANSFER_ENCODING);
+                headers.remove(HttpHeaders.CONTENT_LENGTH);
+            });
 
-                    // Stream the response body directly, with logging
-                    Flux<DataBuffer> bodyFlux = clientResponse.bodyToFlux(DataBuffer.class).doOnNext(dataBuffer -> {
-                        Logger.info(
-                                false,
-                                "Http",
-                                "[{}] [{}] [{}] [HTTP_ROUTER_RECV_STREAM_CHUNK] - Received data chunk, size: {} bytes",
-                                ip,
-                                method,
-                                path,
-                                dataBuffer.readableByteCount());
-                    });
+            // Stream the response body directly, with logging
+            Flux<DataBuffer> bodyFlux = clientResponse.bodyToFlux(DataBuffer.class).doOnNext(dataBuffer -> {
+                Logger.info(
+                        false,
+                        "Http",
+                        "[{}] [{}] [{}] [HTTP_ROUTER_RECV_STREAM_CHUNK] - Received data chunk, size: {} bytes",
+                        ip,
+                        method,
+                        path,
+                        dataBuffer.readableByteCount());
+            });
 
-                    return responseBuilder.body(bodyFlux, DataBuffer.class);
-                }).doOnSubscribe(
-                        subscription -> Logger.info(
-                                true,
-                                "Http",
-                                "[{}] [{}] [{}] [HTTP_ROUTER_SUBSCRIBE] - Request subscribed (Streaming).",
-                                ip,
-                                method,
-                                path))
+            return responseBuilder.body(bodyFlux, DataBuffer.class);
+        }).doOnSubscribe(
+                subscription -> Logger.info(
+                        true,
+                        "Http",
+                        "[{}] [{}] [{}] [HTTP_ROUTER_SUBSCRIBE] - Request subscribed (Streaming).",
+                        ip,
+                        method,
+                        path))
                 .doOnSuccess(
                         serverResponse -> Logger.info(
                                 false,
@@ -562,9 +562,8 @@ public class RestService {
     }
 
     /**
-     * Fix GraalVM Native Image JSON encoding issues caused by FastJSON unsafe operations.
-     * This method removes NULL bytes that get inserted due to memory layout differences
-     * between JVM and GraalVM Native Image environments.
+     * Fix GraalVM Native Image JSON encoding issues caused by FastJSON unsafe operations. This method removes NULL
+     * bytes that get inserted due to memory layout differences between JVM and GraalVM Native Image environments.
      *
      * @param json JSON string potentially corrupted by FastJSON in Native Image
      * @return Fixed JSON string with NULL bytes removed
@@ -603,9 +602,13 @@ public class RestService {
         String result = fixedJson.toString();
 
         if (nullCount > 0) {
-            Logger.info(true, "RestService",
+            Logger.info(
+                    true,
+                    "RestService",
                     "GraalVM JSON encoding fix applied - Removed {} NULL bytes: {} -> {}",
-                    nullCount, json.length(), result.length());
+                    nullCount,
+                    json.length(),
+                    result.length());
         }
 
         return result;

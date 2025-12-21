@@ -46,6 +46,12 @@ import org.miaixz.bus.core.xyz.*;
 public class DefaultNodeBeanFactory implements NodeBeanFactory<Object> {
 
     /**
+     * Constructs a new DefaultNodeBeanFactory. Utility class constructor for static access.
+     */
+    private DefaultNodeBeanFactory() {
+    }
+
+    /**
      * The singleton instance of {@code DefaultNodeBeanFactory}.
      */
     public static final DefaultNodeBeanFactory INSTANCE = new DefaultNodeBeanFactory();

@@ -27,9 +27,11 @@
 */
 package org.miaixz.bus.spring;
 
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.Part;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.cache.metric.CaffeineCache;
 import org.miaixz.bus.cache.metric.MemoryCache;
@@ -44,21 +46,22 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.NonNull;
 import org.miaixz.bus.core.lang.annotation.Nullable;
 import org.miaixz.bus.core.net.url.UrlDecoder;
+import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.ThreadKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.spring.http.MutableRequestWrapper;
+import org.miaixz.bus.vortex.Args;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.util.WebUtils;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.Part;
 
 /**
  * A utility class for convenient operations on HTTP requests, user information, and more.
@@ -858,6 +861,71 @@ public class ContextBuilder extends WebUtils {
         } else {
             Logger.debug(false, "Context", "No request ID to clear");
         }
+    }
+
+    /**
+     * Extracts the authentication token from the incoming request.
+     *
+     * <p>
+     * The token extraction follows a specific order of precedence to ensure compatibility with both standard and legacy
+     * authentication methods:
+     * </p>
+     *
+     * <ol>
+     * <li><b>Standard Authorization Header:</b> It first checks for the standard {@code Authorization: Bearer <token>}
+     * header. This is the preferred and most secure method.</li>
+     * <li><b>Custom Header for Backward Compatibility:</b> If the standard header is not found, it searches for a
+     * custom header, {@code X-Access-Token}. This check is performed against a list of common case variations (e.g.,
+     * {@code X_ACCESS_TOKEN}, {@code x_access_token}) to accommodate different client implementations.</li>
+     * <li><b>Request Parameter as Fallback:</b> As a final fallback, if no token is found in the headers, the method
+     * searches for the token in the request parameters (query string) using the same set of keys as the custom header.
+     * </li>
+     * </ol>
+     *
+     * @return The extracted token string, or {@code null} if no token is found in any of the checked locations.
+     */
+    public static String getToken() {
+        // 1. Prioritize the standard `Authorization` header with the `Bearer` scheme.
+        String authorization = getHeaderValue("Authorization");
+        if (StringKit.isNotEmpty(authorization) && authorization.startsWith("Bearer ")) {
+            return authorization.substring(7);
+        }
+
+        // 2. Check for a custom `X-Access-Token` header for backward compatibility.
+        final String[] keys = { Args.X_ACCESS_TOKEN, Args.X_ACCESS_TOKEN.toUpperCase(),
+                Args.X_ACCESS_TOKEN.toLowerCase(), "X_Access_Token", "X_ACCESS_TOKEN", "x_access_token" };
+
+        String token = MapKit.getFirstNonNull(getHeaders(), keys);
+        if (StringKit.isNotEmpty(token)) {
+            return token;
+        }
+
+        // 3. If not found in headers, search in request parameters as a fallback.
+        if (StringKit.isBlank(token)) {
+            token = MapKit.getFirstNonNull(getParameters(), keys);
+        }
+
+        return token;
+    }
+
+    /**
+     * Searches for an API key in a predefined list of request parameters and headers.
+     *
+     * @return The found API key, or {@code null} if not present.
+     */
+    public static String getApiKey() {
+        final String[] keys = { "apiKey", "apikey", "api_key", "x_api_key", "api_id", "x_api_id", "X-API-ID",
+                "X-API-KEY", "API-KEY", "API-ID" };
+
+        // First, search in request parameters.
+        String apiKey = MapKit.getFirstNonNull(getParameters(), keys);
+
+        // If not found, search in request headers.
+        if (StringKit.isBlank(apiKey)) {
+            apiKey = MapKit.getFirstNonNull(getHeaders(), keys);
+        }
+
+        return apiKey;
     }
 
     /**

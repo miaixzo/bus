@@ -46,6 +46,12 @@ import org.miaixz.bus.core.xyz.ArrayKit;
  */
 public class Base64Decoder implements Decoder<byte[], byte[]>, Serializable {
 
+    /**
+     * Constructs a new Base64Decoder. Utility class constructor for static access.
+     */
+    private Base64Decoder() {
+    }
+
     @Serial
     private static final long serialVersionUID = 2852282603562L;
 

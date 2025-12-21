@@ -48,6 +48,12 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 public class CheckKit {
 
     /**
+     * Constructs a new CheckKit. Utility class constructor for static access.
+     */
+    private CheckKit() {
+    }
+
+    /**
      * Calculates the CRC32 checksum for a file.
      *
      * @param file The file, cannot be a directory.

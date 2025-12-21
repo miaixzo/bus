@@ -45,6 +45,12 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class AnyKeyManager {
 
     /**
+     * Constructs a new AnyKeyManager. Utility class constructor for static access.
+     */
+    private AnyKeyManager() {
+    }
+
+    /**
      * Gets the default {@link KeyManagerFactory}.
      *
      * @return The default {@link KeyManagerFactory}.

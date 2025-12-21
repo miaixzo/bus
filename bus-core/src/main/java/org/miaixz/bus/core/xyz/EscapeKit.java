@@ -46,6 +46,12 @@ import org.miaixz.bus.core.text.escape.XmlUnescape;
 public class EscapeKit {
 
     /**
+     * Constructs a new EscapeKit. Utility class constructor for static access.
+     */
+    private EscapeKit() {
+    }
+
+    /**
      * Characters that should not be escaped for JS compatibility.
      */
     private static final String NOT_ESCAPE_CHARS = "*@-_+./";

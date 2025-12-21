@@ -39,6 +39,12 @@ import java.util.concurrent.atomic.AtomicLongArray;
 public class AtomicLongArrayConverter extends AbstractConverter {
 
     /**
+     * Constructs a new AtomicLongArrayConverter. Utility class constructor for static access.
+     */
+    public AtomicLongArrayConverter() {
+    }
+
+    /**
      * The serial version UID.
      */
     @Serial

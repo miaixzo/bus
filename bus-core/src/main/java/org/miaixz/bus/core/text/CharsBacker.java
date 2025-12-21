@@ -88,6 +88,12 @@ import org.miaixz.bus.core.xyz.*;
 public class CharsBacker extends CharsValidator {
 
     /**
+     * Constructs a new CharsBacker. Utility class constructor for static access.
+     */
+    public CharsBacker() {
+    }
+
+    /**
      * Calls the {@code toString()} method of an object. If the object is {@code null}, it returns the string "null".
      *
      * @param object The object to convert to a string.

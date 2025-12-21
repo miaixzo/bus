@@ -38,6 +38,12 @@ import java.util.Currency;
  */
 public class CurrencyConverter extends AbstractConverter {
 
+    /**
+     * Constructs a new CurrencyConverter. Utility class constructor for static access.
+     */
+    public CurrencyConverter() {
+    }
+
     @Serial
     private static final long serialVersionUID = 2852267872622L;
 

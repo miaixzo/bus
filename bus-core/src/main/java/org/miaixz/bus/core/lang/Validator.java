@@ -931,8 +931,8 @@ public class Validator {
             return false;
         }
         try {
-            new java.net.URL(value.toString());
-        } catch (final MalformedURLException e) {
+            java.net.URI.create(value.toString()).toURL();
+        } catch (final MalformedURLException | IllegalArgumentException e) {
             return false;
         }
         return true;

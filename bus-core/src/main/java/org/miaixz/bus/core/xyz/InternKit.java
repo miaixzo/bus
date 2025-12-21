@@ -40,6 +40,12 @@ import org.miaixz.bus.core.lang.intern.WeakIntern;
 public class InternKit {
 
     /**
+     * Constructs a new InternKit. Utility class constructor for static access.
+     */
+    private InternKit() {
+    }
+
+    /**
      * Creates an interner implemented with `WeakHashMap`.
      *
      * @param <T> The type of the object to intern.

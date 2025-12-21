@@ -40,6 +40,12 @@ import org.miaixz.bus.core.lang.caller.StackTraceCaller;
  */
 public class CallerKit {
 
+    /**
+     * Constructs a new CallerKit. Utility class constructor for static access.
+     */
+    private CallerKit() {
+    }
+
     private static final Caller INSTANCE;
 
     static {

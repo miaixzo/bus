@@ -45,6 +45,12 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class Console {
 
     /**
+     * Constructs a new Console. Utility class constructor for static access.
+     */
+    private Console() {
+    }
+
+    /**
      * Prints a new line to the console, similar to {@code System.out.println()}.
      */
     public static void log() {
@@ -336,6 +342,12 @@ public class Console {
      * Utility class for printing tables to the console.
      */
     public static class Table {
+
+        /**
+         * Constructs a new Table.
+         */
+        public Table() {
+        }
 
         private static final char ROW_LINE = '－';
         private static final char COLUMN_LINE = '|';

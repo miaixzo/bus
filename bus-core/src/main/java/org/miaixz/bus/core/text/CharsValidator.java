@@ -48,6 +48,12 @@ import org.miaixz.bus.core.xyz.CollKit;
 public class CharsValidator {
 
     /**
+     * Constructs a new CharsValidator. Utility class constructor for static access.
+     */
+    public CharsValidator() {
+    }
+
+    /**
      * Checks if a string is blank. A string is considered blank if it is:
      * <ol>
      * <li>{@code null}</li>

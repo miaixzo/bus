@@ -40,6 +40,12 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 public class DocumentBuilder {
 
     /**
+     * Constructs a new DocumentBuilder. Utility class constructor for static access.
+     */
+    private DocumentBuilder() {
+    }
+
+    /**
      * Creates a new {@link javax.xml.parsers.DocumentBuilder} instance.
      *
      * @param namespaceAware {@code true} to enable namespace awareness, {@code false} otherwise.

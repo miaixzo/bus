@@ -189,7 +189,7 @@ public class UncheckedException extends RuntimeException {
     public String getLocalizedMessage() {
         if (errcode != null) {
             try {
-                Locale locale = new Locale(I18n.AUTO_DETECT.lang());
+                Locale locale = Locale.forLanguageTag(I18n.AUTO_DETECT.lang());
                 ResourceBundle bundle = ResourceBundle.getBundle(Keys.BUNDLE_NAME, locale);
                 return bundle.getString(this.errcode);
             } catch (Exception e) {

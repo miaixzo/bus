@@ -50,6 +50,12 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 public class ExceptionKit {
 
     /**
+     * Constructs a new ExceptionKit. Utility class constructor for static access.
+     */
+    private ExceptionKit() {
+    }
+
+    /**
      * Gets the full message, including the exception name, in the format: {SimpleClassName}: {ThrowableMessage}.
      *
      * @param e The exception.

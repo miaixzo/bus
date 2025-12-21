@@ -59,6 +59,12 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class Calendar extends Calculate {
 
     /**
+     * Constructs a new Calendar. Utility class constructor for static access.
+     */
+    public Calendar() {
+    }
+
+    /**
      * Checks if the given calendar represents an AM time.
      *
      * @param calendar The {@link java.util.Calendar} object.

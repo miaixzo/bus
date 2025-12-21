@@ -124,6 +124,8 @@ public class BoundedPriorityQueue<E> extends PriorityQueue<E> implements Bounded
     }
 
     /**
+     * Returns a sorted list of all elements in this queue.
+     *
      * @return 返回排序后的列表
      */
     public ArrayList<E> toList() {

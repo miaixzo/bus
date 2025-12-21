@@ -66,6 +66,12 @@ import org.miaixz.bus.core.text.CharsBacker;
 public class CollKit extends CollectionStream {
 
     /**
+     * Constructs a new CollKit. Utility class constructor for static access.
+     */
+    private CollKit() {
+    }
+
+    /**
      * Returns a `Predicate` that maintains state for filtering distinct elements based on a key extractor.
      *
      * @param <T> The type of the elements.

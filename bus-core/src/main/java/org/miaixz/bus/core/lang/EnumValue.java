@@ -868,14 +868,30 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
          */
         String code;
 
+        /**
+         * Checks if this sort order is ascending.
+         *
+         * @return true if ascending, false otherwise
+         */
         public boolean isAscending() {
             return this.equals(ASC);
         }
 
+        /**
+         * Checks if this sort order is descending.
+         *
+         * @return true if descending, false otherwise
+         */
         public boolean isDescending() {
             return this.equals(DESC);
         }
 
+        /**
+         * Creates a Sort enum from a string value.
+         *
+         * @param value the string value to convert
+         * @return the Sort enum value
+         */
         public static Sort fromString(String value) {
             try {
                 return Sort.valueOf(value.toUpperCase());

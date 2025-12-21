@@ -49,6 +49,12 @@ import org.miaixz.bus.core.xyz.TypeKit;
 public class ActualTypeMapper {
 
     /**
+     * Constructs a new ActualTypeMapper. Utility class constructor for static access.
+     */
+    private ActualTypeMapper() {
+    }
+
+    /**
      * A weak concurrent map to cache the mapping between a generic type and its resolved actual type arguments. The
      * keys are generic types (e.g., ParameterizedType), and the values are maps from TypeVariable to their actual Type.
      */

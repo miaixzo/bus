@@ -50,6 +50,12 @@ import java.util.Objects;
 public class Coordinate {
 
     /**
+     * Constructs a new Coordinate. Utility class constructor for static access.
+     */
+    private Coordinate() {
+    }
+
+    /**
      * Coordinate transformation parameter (intermediate variable for converting between Mars and Baidu coordinate
      * systems).
      */

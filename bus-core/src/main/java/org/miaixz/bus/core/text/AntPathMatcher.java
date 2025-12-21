@@ -757,6 +757,11 @@ public class AntPathMatcher {
          */
         private final String path;
 
+        /**
+         * Creates a new AntPatternComparator for the specified path.
+         *
+         * @param path The path to compare patterns against.
+         */
         public AntPatternComparator(final String path) {
             this.path = path;
         }

@@ -66,6 +66,12 @@ import org.miaixz.bus.core.text.CharsBacker;
 public class DateKit extends Calendar {
 
     /**
+     * Constructs a new DateKit. Utility class constructor for static access.
+     */
+    private DateKit() {
+    }
+
+    /**
      * Checks if the time is in the morning (AM).
      *
      * @param date The date.
@@ -171,16 +177,17 @@ public class DateKit extends Calendar {
     }
 
     /**
-     * Gets the current time as a {@link DateTime} object.
+     * Gets the current date and time as a {@link DateTime} object.
      *
-     * @return The current time.
+     * @return The current date and time.
      */
+
     public static DateTime now() {
         return new DateTime();
     }
 
     /**
-     * Gets the start of the current day (e.g., 2022-10-26 00:00:00).
+     * Gets the start of the current day (00:00:00).
      *
      * @return The start of today.
      */
@@ -189,7 +196,7 @@ public class DateKit extends Calendar {
     }
 
     /**
-     * Gets the current time, truncated to the second.
+     * Gets the current time, truncated to seconds precision (milliseconds set to 0).
      *
      * @return The current time without milliseconds.
      */
@@ -299,7 +306,7 @@ public class DateKit extends Calendar {
     }
 
     /**
-     * Gets the current time in seconds.
+     * Gets the current time in seconds since the Unix epoch (January 1, 1970).
      *
      * @return The current time in seconds.
      */
@@ -496,6 +503,8 @@ public class DateKit extends Calendar {
     }
 
     /**
+     * Gets the current month value.
+     *
      * @return The current month (0-11).
      */
     public static int thisMonth() {
@@ -503,6 +512,8 @@ public class DateKit extends Calendar {
     }
 
     /**
+     * Gets the current month as a {@link Month} enum.
+     *
      * @return The current month as a {@link Month} enum.
      */
     public static Month thisMonthEnum() {
@@ -1685,6 +1696,12 @@ public class DateKit extends Calendar {
      * Utility class for `java.sql` date/time types.
      */
     public static class SQL {
+
+        /**
+         * Constructs a new SQL. Utility class constructor for static access.
+         */
+        private SQL() {
+        }
 
         /**
          * Converts a {@link Date} to a {@link Timestamp}.

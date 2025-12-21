@@ -29,6 +29,7 @@ package org.miaixz.bus.core.lang.loader;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.LinkedList;
@@ -160,7 +161,7 @@ public class FileLoader extends ResourceLoader implements Loader {
                 if (file.isFile()) {
                     try {
                         String name = context.toURI().relativize(file.toURI()).toString();
-                        URL url = new URL(context, name);
+                        URL url = URI.create(context + name).toURL();
                         if (filter.filtrate(name, url)) {
                             next = new UrlResource(url, name);
                             return true;

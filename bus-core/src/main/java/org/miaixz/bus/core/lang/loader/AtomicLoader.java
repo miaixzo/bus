@@ -52,6 +52,12 @@ import org.miaixz.bus.core.Loader;
  */
 public abstract class AtomicLoader<T> implements Loader<T>, Serializable {
 
+    /**
+     * Constructs a new AtomicLoader. Utility class constructor for static access.
+     */
+    private AtomicLoader() {
+    }
+
     @Serial
     private static final long serialVersionUID = 2852267211560L;
 

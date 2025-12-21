@@ -57,6 +57,12 @@ import org.miaixz.bus.core.xyz.RandomKit;
 public class PrimitiveArray extends ArrayValidator {
 
     /**
+     * Constructs a new PrimitiveArray. Utility class constructor for static access.
+     */
+    public PrimitiveArray() {
+    }
+
+    /**
      * Creates a new array of a specified size, copying elements from the original array. If the new size is larger, the
      * new array is padded with default values (0). If smaller, the array is truncated.
      *

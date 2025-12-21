@@ -49,6 +49,12 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 public class AsyncKit {
 
     /**
+     * Constructs a new AsyncKit. Utility class constructor for static access.
+     */
+    private AsyncKit() {
+    }
+
+    /**
      * Waits for all tasks to complete, wrapping any exceptions.
      *
      * @param tasks The parallel tasks.

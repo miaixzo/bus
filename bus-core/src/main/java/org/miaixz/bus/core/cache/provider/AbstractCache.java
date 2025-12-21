@@ -60,6 +60,12 @@ import org.miaixz.bus.core.lang.mutable.MutableObject;
  */
 public abstract class AbstractCache<K, V> implements Cache<K, V> {
 
+    /**
+     * Constructs a new AbstractCache. Utility class constructor for static access.
+     */
+    public AbstractCache() {
+    }
+
     @Serial
     private static final long serialVersionUID = 2852230739085L;
 

@@ -41,6 +41,12 @@ import org.miaixz.bus.core.xyz.BooleanKit;
 public class AtomicBooleanConverter extends AbstractConverter {
 
     /**
+     * Constructs a new AtomicBooleanConverter. Utility class constructor for static access.
+     */
+    public AtomicBooleanConverter() {
+    }
+
+    /**
      * Singleton instance.
      */
     public static final AtomicBooleanConverter INSTANCE = new AtomicBooleanConverter();

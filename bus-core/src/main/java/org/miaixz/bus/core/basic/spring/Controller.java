@@ -42,6 +42,12 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class Controller {
 
     /**
+     * Constructs a new Controller. Utility class constructor for static access.
+     */
+    public Controller() {
+    }
+
+    /**
      * Creates a success response with the given data.
      *
      * @param data The data to be included in the response.

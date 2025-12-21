@@ -41,6 +41,12 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class CharacterConverter extends AbstractConverter {
 
     /**
+     * Constructs a new CharacterConverter. Utility class constructor for static access.
+     */
+    public CharacterConverter() {
+    }
+
+    /**
      * Singleton instance.
      */
     public static final CharacterConverter INSTANCE = new CharacterConverter();
