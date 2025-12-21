@@ -105,17 +105,62 @@
                 <version>3.2.0</version>
                 <executions>
                     <execution>
-                        <id>generate-native-configs</id>
+                        <id>clean-original-jar</id>
                         <goals>
                             <goal>run</goal>
                         </goals>
-                        <phase>compile</phase>
+                        <phase>install</phase>
+                        <inherited>false</inherited>
                         <configuration>
                             <target>
-                                <mkdir dir="${project.build.outputDirectory}/META-INF/native-image" />
+                                <delete failonerror="true" file="${project.build.directory}/original-bus-all-${project.version}.jar" />
+                                <delete failonerror="true" file="${project.build.directory}/original-bus-all-${project.version}-sources.jar" />
+                            </target>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>clean-jar-native-image</id>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <phase>verify</phase>
+                        <inherited>false</inherited>
+                        <configuration>
+                            <target>
+                                <delete dir="${project.build.outputDirectory}/META-INF/native-image" includeemptydirs="true" />
                                 <java classname="org.miaixz.Nativex" classpath="${project.build.outputDirectory}" failonerror="false" fork="true">
                                     <arg value="${project.version}" />
                                 </java>
+
+                                <delete dir="${project.build.directory}/jar-extract" includeemptydirs="true" />
+                                <unzip dest="${project.build.directory}/jar-extract" src="${project.build.directory}/${project.artifactId}-${project.version}.jar" />
+
+                                <delete dir="${project.build.directory}/jar-extract/META-INF/native-image" includeemptydirs="true" />
+                                <mkdir dir="${project.build.directory}/jar-extract/META-INF/native-image" />
+                                <copy todir="${project.build.directory}/jar-extract/META-INF/native-image">
+                                    <fileset dir="${project.build.outputDirectory}/META-INF/native-image">
+                                        <include name="**/*" />
+                                    </fileset>
+                                </copy>
+
+                                <delete file="${project.build.directory}/${project.artifactId}-${project.version}.jar" />
+                                <jar basedir="${project.build.directory}/jar-extract" destfile="${project.build.directory}/${project.artifactId}-${project.version}.jar" />
+                                <delete dir="${project.build.directory}/jar-extract" includeemptydirs="true" />
+
+                                <delete dir="${project.build.directory}/sources-jar-extract" includeemptydirs="true" />
+                                <unzip dest="${project.build.directory}/sources-jar-extract" src="${project.build.directory}/${project.artifactId}-${project.version}-sources.jar" />
+
+                                <delete dir="${project.build.directory}/sources-jar-extract/META-INF/native-image" includeemptydirs="true" />
+                                <mkdir dir="${project.build.directory}/sources-jar-extract/META-INF/native-image" />
+                                <copy todir="${project.build.directory}/sources-jar-extract/META-INF/native-image">
+                                    <fileset dir="${project.build.outputDirectory}/META-INF/native-image">
+                                        <include name="**/*" />
+                                    </fileset>
+                                </copy>
+
+                                <delete file="${project.build.directory}/${project.artifactId}-${project.version}-sources.jar" />
+                                <jar basedir="${project.build.directory}/sources-jar-extract" destfile="${project.build.directory}/${project.artifactId}-${project.version}-sources.jar" />
+                                <delete dir="${project.build.directory}/sources-jar-extract" includeemptydirs="true" />
                             </target>
                         </configuration>
                     </execution>
