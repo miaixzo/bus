@@ -60,6 +60,9 @@ public class RecordKit {
      */
     public static Map.Entry<String, Type>[] getRecordComponents(final Class<?> recordClass) {
         final RecordComponent[] components = recordClass.getRecordComponents();
+        if (null == components) {
+            return null;
+        }
         final Map.Entry<String, Type>[] entries = new Map.Entry[components.length];
         for (int i = 0; i < components.length; i++) {
             entries[i] = new AbstractMap.SimpleEntry<>(components[i].getName(), components[i].getGenericType());

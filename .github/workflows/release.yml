@@ -1,18 +1,231 @@
-name: Release
+name: Release to Maven Central
+
 on:
   push:
     tags:
-      - v8.1.[0-9]+
+      - '[0-9]+.[0-9]+.[0-9]+'  # Match semantic versioning tags like 8.3.5
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  build-and-stage-release:
-    name: Build and Stage Release
-    if: ${{ github.repository == '818000/bus' }}
-    runs-on: ${{ vars.UBUNTU_MEDIUM || 'ubuntu-latest' }}
+  # Validate tag and extract version
+  validate-release:
+    name: Validate Release Tag
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.extract-version.outputs.version }}
+      is-prerelease: ${{ steps.check-prerelease.outputs.is-prerelease }}
     steps:
       - name: Check Out Code
         uses: actions/checkout@v4
-      - name: Build and Publish
-        id: build-and-publish
-        uses: ./.github/actions/build
+        with:
+          fetch-depth: 0
+
+      - name: Extract Version from Tag
+        id: extract-version
+        run: |
+          # Get version directly from tag (no 'v' prefix to remove)
+          VERSION=${GITHUB_REF#refs/tags/}
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Release version: $VERSION"
+
+      - name: Check if Pre-release
+        id: check-prerelease
+        run: |
+          VERSION=${{ steps.extract-version.outputs.version }}
+          if [[ $VERSION == *-* ]]; then
+            echo "is-prerelease=true" >> $GITHUB_OUTPUT
+            echo "This is a pre-release version"
+          else
+            echo "is-prerelease=false" >> $GITHUB_OUTPUT
+            echo "This is a stable release"
+          fi
+
+      - name: Verify Version in POM
+        run: |
+          VERSION=${{ steps.extract-version.outputs.version }}
+          echo "Expected version from tag: $VERSION"
+
+          # Check if version exists in any pom.xml file
+          if grep -r "<version>$VERSION</version>" . > /dev/null; then
+            echo "✅ Version $VERSION found in POM files"
+          else
+            echo "❌ Version $VERSION not found in pom.xml files"
+            echo "Please ensure the version is correctly set before creating the tag"
+            exit 1
+          fi
+
+  # Build and deploy to Maven Central
+  build-and-deploy:
+    name: Build and Deploy to Maven Central
+    needs: validate-release
+    if: ${{ github.repository == '818000/bus' }}
+    runs-on: ${{ vars.UBUNTU_MEDIUM || 'ubuntu-latest' }}
+    environment:
+      name: release
+      url: https://central.sonatype.com/publishing/deployments
+
+    steps:
+      - name: Check Out Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: 'maven'
+          server-id: central
+          server-username: MAVEN_CENTRAL_TOKEN_USERNAME
+          server-password: MAVEN_CENTRAL_TOKEN_PASSWORD
+          gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE
+
+      - name: Import GPG Key
+        id: import-gpg
+        uses: crazy-max/ghaction-import-gpg@v6
+        with:
+          gpg_private_key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
+          git_user_signingkey: true
+          git_commit_gpgsign: true
+
+      - name: Display GPG Key Info
+        run: |
+          echo "GPG Key ID: $(gpg --list-secret-keys --keyid-format LONG)"
+          gpg --list-secret-keys --keyid-format LONG
+
+      - name: Configure Git User
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Cache Maven Dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: Verify Version in POM files
+        run: |
+          VERSION=${{ needs.validate-release.outputs.version }}
+          echo "Expected version from tag: $VERSION"
+
+          # Check if version exists in pom.xml files
+          echo "Checking if version $VERSION is present in POM files..."
+          if grep -r "<version>$VERSION</version>" . > /dev/null; then
+            echo "✅ Version $VERSION found in POM files"
+            grep -r "<version>$VERSION</version>" . | head -5
+          else
+            echo "❌ Version $VERSION not found in pom.xml files"
+            echo "Please ensure the version is correctly set before creating the tag"
+            exit 1
+          fi
+
+      - name: Run Build Script (Install)
+        run: |
+          echo "Running build script with install phase..."
+          chmod +x .github/scripts/release.sh
+          .github/scripts/release.sh install
+
+      - name: Run Build Script (Deploy)
+        env:
+          MAVEN_CENTRAL_TOKEN_USERNAME: ${{ secrets.MAVEN_CENTRAL_TOKEN_USERNAME }}
+          MAVEN_CENTRAL_TOKEN_PASSWORD: ${{ secrets.MAVEN_CENTRAL_TOKEN_PASSWORD }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
+        run: |
+          echo "Running build script with deploy phase..."
+          .github/scripts/release.sh deploy
+
+      - name: Verify Deployment
+        run: |
+          echo "Verifying deployment artifacts..."
+          # Check if artifacts were created
+          find . -name "*.jar" | head -10
+
+          # Verify deployment to central (this might take time)
+          echo "Deployment initiated. Artifacts will be available on Maven Central after synchronization."
+
+      - name: Wait for Central Sync (Optional)
+        if: ${{ needs.validate-release.outputs.is-prerelease == 'false' }}
+        run: |
+          echo "Waiting for Maven Central synchronization (this may take several minutes)..."
+          echo "You can check the status at: https://central.sonatype.com/publishing/deployments"
+          # Note: Actual sync monitoring would require additional API integration
+
+  # Create GitHub Release
+  create-github-release:
+    name: Create GitHub Release
+    needs: [validate-release, build-and-deploy]
+    if: ${{ github.repository == '818000/bus' && always() && needs.build-and-deploy.result == 'success' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check Out Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Generate Changelog
+        id: changelog
+        run: |
+          # Get previous tag
+          PREVIOUS_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
+
+          if [ -z "$PREVIOUS_TAG" ]; then
+            echo "changelog=Initial release" >> $GITHUB_OUTPUT
+          else
+            # Generate changelog between previous tag and current tag
+            CHANGELOG=$(git log --pretty=format:"- %s (%h)" $PREVIOUS_TAG..HEAD | head -20)
+            echo "changelog<<EOF" >> $GITHUB_OUTPUT
+            echo "## Changes since $PREVIOUS_TAG" >> $GITHUB_OUTPUT
+            echo "" >> $GITHUB_OUTPUT
+            echo "$CHANGELOG" >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: Release ${{ github.ref_name }}
+          body: ${{ steps.changelog.outputs.changelog }}
+          draft: false
+          prerelease: ${{ needs.validate-release.outputs.is-prerelease }}
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # Notify on success
+  notify-success:
+    name: Notify Success
+    needs: [validate-release, build-and-deploy, create-github-release]
+    if: ${{ github.repository == '818000/bus' && always() && needs.build-and-deploy.result == 'success' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deployment Success
+        run: |
+          echo "✅ Release ${{ github.ref_name }} deployed successfully!"
+          echo "📦 Maven Central: https://search.maven.org/search?q=g:org.miaixz"
+          echo "🚀 GitHub Release: ${{ github.server_url }}/${{ github.repository }}/releases/tag/${{ github.ref_name }}"
+
+  # Notify on failure
+  notify-failure:
+    name: Notify Failure
+    needs: [validate-release, build-and-deploy]
+    if: ${{ github.repository == '818000/bus' && (failure() || cancelled()) }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deployment Failed
+        run: |
+          echo "❌ Release ${{ github.ref_name }} failed!"
+          echo "Please check the workflow logs for details."
+          exit 1
