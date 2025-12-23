@@ -49,6 +49,12 @@ import org.miaixz.bus.core.data.CIN10;
 public class CitizenIdKit {
 
     /**
+     * Constructs a new CitizenIdKit. Utility class constructor for static access.
+     */
+    private CitizenIdKit() {
+    }
+
+    /**
      * Converts a 15-digit ID card number to an 18-digit one. The 15-digit format follows the GB 11643-1989 standard.
      *
      * @param idCard The 15-digit ID card number.

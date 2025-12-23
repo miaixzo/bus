@@ -62,6 +62,12 @@ import org.miaixz.bus.core.lang.Normal;
 public class ByteKit {
 
     /**
+     * Constructs a new ByteKit. Utility class constructor for static access.
+     */
+    private ByteKit() {
+    }
+
+    /**
      * Default byte order: Little Endian.
      */
     public static final ByteOrder DEFAULT_ORDER = ByteOrder.LITTLE_ENDIAN;

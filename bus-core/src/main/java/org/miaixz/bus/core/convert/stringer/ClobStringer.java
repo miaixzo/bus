@@ -44,6 +44,12 @@ import org.miaixz.bus.core.xyz.IoKit;
 public class ClobStringer implements Function<Object, String> {
 
     /**
+     * Constructs a new ClobStringer. Utility class constructor for static access.
+     */
+    private ClobStringer() {
+    }
+
+    /**
      * Singleton instance.
      */
     public static final ClobStringer INSTANCE = new ClobStringer();

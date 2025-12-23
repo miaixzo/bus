@@ -41,6 +41,12 @@ import org.miaixz.bus.core.lang.Normal;
 public class BooleanKit {
 
     /**
+     * Constructs a new BooleanKit. Utility class constructor for static access.
+     */
+    private BooleanKit() {
+    }
+
+    /**
      * A set of strings that represent the boolean value {@code true}.
      */
     private static final Set<String> TRUE_SET = SetKit.of(Normal.TRUE_ARRAY);

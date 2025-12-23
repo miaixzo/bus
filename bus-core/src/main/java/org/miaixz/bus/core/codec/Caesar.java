@@ -41,6 +41,12 @@ import org.miaixz.bus.core.lang.Assert;
 public class Caesar {
 
     /**
+     * Constructs a new Caesar. Utility class constructor for static access.
+     */
+    private Caesar() {
+    }
+
+    /**
      * The alphabet table used for Caesar cipher, containing both lowercase and uppercase English letters. The order is
      * important for shifting operations.
      */

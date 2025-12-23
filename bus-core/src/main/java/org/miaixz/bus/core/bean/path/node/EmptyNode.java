@@ -37,6 +37,12 @@ package org.miaixz.bus.core.bean.path.node;
 public class EmptyNode implements Node {
 
     /**
+     * Constructs a new EmptyNode. Utility class constructor for static access.
+     */
+    private EmptyNode() {
+    }
+
+    /**
      * The singleton instance of {@code EmptyNode}.
      */
     public static EmptyNode INSTANCE = new EmptyNode();

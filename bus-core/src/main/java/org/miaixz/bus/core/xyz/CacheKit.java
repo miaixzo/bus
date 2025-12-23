@@ -38,6 +38,12 @@ import org.miaixz.bus.core.cache.provider.*;
 public class CacheKit {
 
     /**
+     * Constructs a new CacheKit. Utility class constructor for static access.
+     */
+    private CacheKit() {
+    }
+
+    /**
      * Creates a FIFO (First-In, First-Out) cache.
      *
      * @param <K>      The type of the key.

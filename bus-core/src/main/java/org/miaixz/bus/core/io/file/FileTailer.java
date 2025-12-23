@@ -325,6 +325,12 @@ public class FileTailer implements Serializable {
      */
     public static class ConsoleLineHandler implements ConsumerX<String> {
 
+        /**
+         * Constructs a new ConsoleLineHandler.
+         */
+        public ConsoleLineHandler() {
+        }
+
         @Serial
         private static final long serialVersionUID = 2852227591586L;
 

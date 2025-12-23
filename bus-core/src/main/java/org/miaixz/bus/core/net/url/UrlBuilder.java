@@ -601,10 +601,29 @@ public final class UrlBuilder implements Builder<String> {
         }
 
         try {
-            return new URL(getSchemeWithDefault(), host, port, fileBuilder.toString(), handler);
-        } catch (final MalformedURLException e) {
+            // Create URL string with port logic
+            String urlStr = getSchemeWithDefault() + "://" + host;
+            if (port > 0 && !isDefaultPort(getSchemeWithDefault(), port)) {
+                urlStr += ":" + port;
+            }
+            urlStr += fileBuilder.toString();
+            return URI.create(urlStr).toURL();
+        } catch (final MalformedURLException | IllegalArgumentException e) {
             throw new InternalException(e);
         }
+    }
+
+    /**
+     * Check if the given port is the default port for the scheme.
+     */
+    private boolean isDefaultPort(String scheme, int portNum) {
+        return switch (scheme.toLowerCase()) {
+            case "http" -> portNum == 80;
+            case "https" -> portNum == 443;
+            case "ftp" -> portNum == 21;
+            case "sftp" -> portNum == 22;
+            default -> false;
+        };
     }
 
     /**

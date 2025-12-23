@@ -106,7 +106,6 @@ module bus.starter {
 
     exports org.miaixz.bus.spring;
     exports org.miaixz.bus.spring.annotation;
-    exports org.miaixz.bus.spring.aot;
     exports org.miaixz.bus.spring.autoproxy;
     exports org.miaixz.bus.spring.banner;
     exports org.miaixz.bus.spring.boot;

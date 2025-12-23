@@ -55,6 +55,12 @@ public @interface Async {
     class MethodNameTransformer {
 
         /**
+         * Constructs a new MethodNameTransformer.
+         */
+        private MethodNameTransformer() {
+        }
+
+        /**
          * Transforms the name of the original method into a new name for its asynchronous counterpart.
          *
          * @param methodName The name of the original method.

@@ -46,6 +46,12 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class ChineseNumberParser {
 
     /**
+     * Constructs a new ChineseNumberParser. Utility class constructor for static access.
+     */
+    private ChineseNumberParser() {
+    }
+
+    /**
      * Mapping of Chinese characters to their numeric values and unit properties.
      */
     private static final ChineseUnit[] CHINESE_NAME_VALUE = { new ChineseUnit(Symbol.C_SPACE, 1, false),

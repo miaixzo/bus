@@ -107,7 +107,7 @@ public final class LinuxPowerSource extends AbstractPowerSource {
                     for (UdevListEntry entry = enumerate.getListEntry(); entry != null; entry = entry.getNext()) {
                         String syspath = entry.getName();
                         String name = syspath.substring(syspath.lastIndexOf(File.separatorChar) + 1);
-                        if (!name.startsWith("ADP") && !name.startsWith("AC")) {
+                        if (!name.startsWith("ADP") && !name.startsWith("AC") && !name.contains("USBC")) {
                             UdevDevice device = udev.deviceNewFromSyspath(syspath);
                             if (device != null) {
                                 try {

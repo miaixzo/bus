@@ -40,6 +40,12 @@ import java.io.Serial;
 public class CRC16X25 extends CRC16Checksum {
 
     /**
+     * Constructs a new CRC16X25. Utility class constructor for static access.
+     */
+    private CRC16X25() {
+    }
+
+    /**
      * The serial version UID for serialization.
      */
     @Serial

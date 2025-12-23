@@ -49,6 +49,12 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class Calculator {
 
     /**
+     * Constructs a new Calculator. Utility class constructor for static access.
+     */
+    private Calculator() {
+    }
+
+    /**
      * The stack used to store the postfix expression (Reverse Polish Notation).
      */
     private final Stack<String> postfixStack = new Stack<>();

@@ -43,6 +43,12 @@ import org.miaixz.bus.core.xyz.MapKit;
 public class DefaultNodeParser<T> implements NodeParser<TreeNode<T>, T> {
 
     /**
+     * Constructs a new DefaultNodeParser. Utility class constructor for static access.
+     */
+    public DefaultNodeParser() {
+    }
+
+    /**
      * Converts a {@link TreeNode} object to a {@link MapTree} object. It maps the basic properties (ID, parent ID,
      * weight, name) and any extended properties.
      *

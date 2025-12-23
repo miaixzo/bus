@@ -117,7 +117,7 @@ public class ErrorRegistry implements Errors {
     public String getValue(I18n i18n) {
         try {
             // Determine the locale: use default if auto-detect, otherwise create a new locale.
-            Locale locale = i18n == I18n.AUTO_DETECT ? Locale.getDefault() : new Locale(i18n.lang());
+            Locale locale = i18n == I18n.AUTO_DETECT ? Locale.getDefault() : Locale.forLanguageTag(i18n.lang());
             // Get the resource bundle for the specified locale.
             ResourceBundle bundle = ResourceBundle.getBundle(Keys.BUNDLE_NAME, locale);
             // Return the localized message from the bundle.
@@ -133,6 +133,12 @@ public class ErrorRegistry implements Errors {
      * A builder for {@link ErrorRegistry}, supporting a fluent, chainable interface.
      */
     public static class Builder {
+
+        /**
+         * Constructs a new Builder.
+         */
+        public Builder() {
+        }
 
         /**
          * The unique key for the error code.

@@ -61,12 +61,33 @@ public class ResponseStrategy extends AbstractStrategy {
             ServerWebExchange newExchange = exchange;
             final String ip = context.getX_request_ipv4();
 
+            // **DEBUG LOGGING:** Log response strategy parameters and format details
+            Logger.info(
+                    true,
+                    "Response",
+                    "[{}] Processing response - Format: {}, Channel: {}, Parameters count: {}",
+                    ip,
+                    context.getFormat(),
+                    context.getChannel(),
+                    context.getParameters().size());
+
+            // Log all parameters being passed through for debugging
+            if (!context.getParameters().isEmpty()) {
+                Logger.info(true, "ResponseStrategy", "[{}] Parameters in response: {}", ip, context.getParameters());
+            }
+
             Logger.debug(true, "Response", "[{}] Strategy applying for format: {}", ip, context.getFormat());
 
             // If the request asks for XML format, apply the transformation.
             if (Formats.XML.equals(context.getFormat())) {
                 Logger.debug(true, "Response", "[{}] Format is XML, applying response transformation.", ip);
                 newExchange = exchange.mutate().response(processXml(exchange, context)).build();
+            }
+
+            // If the request asks for BINARY format, apply binary handling.
+            if (Formats.BINARY.equals(context.getFormat())) {
+                Logger.debug(true, "Response", "[{}] Format is BINARY, applying binary stream handling.", ip);
+                newExchange = exchange.mutate().response(processBinary(exchange, context)).build();
             }
 
             return chain.apply(newExchange);
@@ -128,6 +149,54 @@ public class ResponseStrategy extends AbstractStrategy {
 
                 // Write the formatted response. super.writeWith subscribes to the Mono.
                 return super.writeWith(formattedBufferMono);
+            }
+        };
+    }
+
+    /**
+     * Creates a response decorator to handle binary data streams.
+     * <p>
+     * This method wraps the original response and ensures binary data is properly handled without string conversion. It
+     * sets the appropriate Content-Type header and preserves the original binary data stream.
+     * </p>
+     *
+     * @param exchange The {@link ServerWebExchange} object.
+     * @param context  The request context (for logging).
+     * @return The decorated {@link ServerHttpResponseDecorator}.
+     */
+    private ServerHttpResponseDecorator processBinary(ServerWebExchange exchange, Context context) {
+        return new ServerHttpResponseDecorator(exchange.getResponse()) {
+
+            @Override
+            public Mono<Void> writeWith(Publisher<? extends DataBuffer> body) {
+                Logger.debug(true, "Response", "[{}] Processing binary stream response", context.getX_request_ipv4());
+
+                // Set headers *before* writing
+                getDelegate().getHeaders().setContentType(Formats.BINARY.getMediaType());
+
+                // For binary data, we want to preserve the original stream without conversion
+                // This is important for file downloads, images, PDFs, etc.
+                if (body instanceof Flux) {
+                    Logger.debug(
+                            true,
+                            "Response",
+                            "[{}] Binary Flux detected, streaming directly",
+                            context.getX_request_ipv4());
+                    return super.writeWith(body);
+                }
+
+                // Convert to Flux if it's not already
+                Flux<? extends DataBuffer> flux = Flux.from(body);
+
+                // Log the binary stream size for debugging
+                return flux.doOnNext(dataBuffer -> {
+                    Logger.debug(
+                            true,
+                            "Response",
+                            "[{}] Binary data chunk: {} bytes",
+                            context.getX_request_ipv4(),
+                            dataBuffer.readableByteCount());
+                }).then(super.writeWith(flux));
             }
         };
     }

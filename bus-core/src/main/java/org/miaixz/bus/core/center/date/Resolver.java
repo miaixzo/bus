@@ -54,6 +54,12 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class Resolver extends Converter {
 
     /**
+     * Constructs a new Resolver. Utility class constructor for static access.
+     */
+    public Resolver() {
+    }
+
+    /**
      * Converts a date string to a {@link DateTime} object. Supported formats include:
      * <ol>
      * <li>yyyy-MM-dd HH:mm:ss</li>

@@ -42,6 +42,12 @@ import org.miaixz.bus.core.center.date.culture.solar.SolarTime;
 public abstract class AbstractChildLimitProvider implements ChildLimitProvider {
 
     /**
+     * Constructs a new AbstractChildLimitProvider. Utility class constructor for static access.
+     */
+    protected AbstractChildLimitProvider() {
+    }
+
+    /**
      * Calculates the end time and duration of the Child Limit based on the birth time and added time components.
      *
      * @param birthTime The Gregorian birth time.

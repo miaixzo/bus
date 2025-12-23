@@ -55,6 +55,12 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 public class CollectionValidator {
 
     /**
+     * Constructs a new CollectionValidator. Utility class constructor for static access.
+     */
+    public CollectionValidator() {
+    }
+
+    /**
      * Checks if the given collection is empty.
      *
      * @param collection The collection to check.

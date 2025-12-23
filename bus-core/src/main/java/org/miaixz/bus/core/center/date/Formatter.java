@@ -64,6 +64,12 @@ import org.miaixz.bus.core.xyz.ZoneKit;
 public class Formatter {
 
     /**
+     * Constructs a new Formatter. Utility class constructor for static access.
+     */
+    public Formatter() {
+    }
+
+    /**
      * Month format {@link FormatBuilder}: yyyy-MM
      */
     public static final FormatBuilder NORM_MONTH_FORMAT = FormatBuilder.getInstance(Fields.NORM_MONTH);

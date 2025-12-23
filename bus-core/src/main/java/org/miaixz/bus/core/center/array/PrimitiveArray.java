@@ -40,10 +40,27 @@ import org.miaixz.bus.core.xyz.RandomKit;
 /**
  * A utility class for working with primitive type arrays.
  *
+ * <ol>
+ * <li>{@code int[]}</li>
+ * <li>{@code long[]}</li>
+ * <li>{@code double[]}</li>
+ * <li>{@code float[]}</li>
+ * <li>{@code short[]}</li>
+ * <li>{@code char[]}</li>
+ * <li>{@code byte[]}</li>
+ * <li>{@code boolean[]}</li>
+ * </ol>
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class PrimitiveArray extends ArrayValidator {
+
+    /**
+     * Constructs a new PrimitiveArray. Utility class constructor for static access.
+     */
+    public PrimitiveArray() {
+    }
 
     /**
      * Creates a new array of a specified size, copying elements from the original array. If the new size is larger, the

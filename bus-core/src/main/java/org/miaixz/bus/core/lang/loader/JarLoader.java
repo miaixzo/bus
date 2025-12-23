@@ -30,6 +30,7 @@ package org.miaixz.bus.core.lang.loader;
 import java.io.File;
 import java.io.IOException;
 import java.net.JarURLConnection;
+import java.net.URI;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.jar.JarEntry;
@@ -66,7 +67,8 @@ public class JarLoader extends ResourceLoader implements Loader {
      * @throws IOException If an I/O error occurs.
      */
     public JarLoader(File file) throws IOException {
-        this(new URL(Normal.JAR_URL_PREFIX + file.toURI().toURL() + Normal.JAR_URL_SEPARATOR), new JarFile(file));
+        this(URI.create(Normal.JAR_URL_PREFIX + file.toURI().toURL() + Normal.JAR_URL_SEPARATOR).toURL(),
+                new JarFile(file));
     }
 
     /**
@@ -168,7 +170,7 @@ public class JarLoader extends ResourceLoader implements Loader {
                 if (name.equals(path) || (recursively && name.startsWith(folder)) || (!recursively
                         && name.startsWith(folder) && name.indexOf(Symbol.SLASH, folder.length()) < 0)) {
                     try {
-                        URL url = new URL(context, UrlEncoder.encodeAll(name, Charset.UTF_8));
+                        URL url = URI.create(context.toString() + UrlEncoder.encodeAll(name, Charset.UTF_8)).toURL();
                         if (filter.filtrate(name, url)) {
                             next = new UrlResource(url, name);
                             return true;

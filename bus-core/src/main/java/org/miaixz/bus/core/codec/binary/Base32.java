@@ -49,6 +49,12 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class Base32 {
 
     /**
+     * Constructs a new Base32. Utility class constructor for static access.
+     */
+    private Base32() {
+    }
+
+    /**
      * Encodes a byte array into a Base32 string using the standard alphabet.
      *
      * @param bytes The byte array to encode.

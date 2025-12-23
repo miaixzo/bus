@@ -40,6 +40,12 @@ import org.miaixz.bus.core.basic.service.ErrorService;
 public class ErrorAdvice {
 
     /**
+     * Constructs a new ErrorAdvice. Utility class constructor for static access.
+     */
+    private ErrorAdvice() {
+    }
+
+    /**
      * This method is called before the business processor handles the request to process the user's request. If it
      * returns {@code true}, subsequent interceptors and the target method will be called; otherwise, the request is
      * terminated. This is a suitable place for implementing login verification, permission interception, request

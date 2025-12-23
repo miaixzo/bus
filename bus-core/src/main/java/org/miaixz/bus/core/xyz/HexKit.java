@@ -50,6 +50,12 @@ import org.miaixz.bus.core.lang.Symbol;
 public class HexKit extends Hex {
 
     /**
+     * Constructs a new HexKit. Utility class constructor for static access.
+     */
+    private HexKit() {
+    }
+
+    /**
      * Encodes a {@link Color} object into its hexadecimal string representation.
      *
      * @param color The {@link Color} object to encode.

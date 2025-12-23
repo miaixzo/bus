@@ -57,6 +57,12 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class Base62 {
 
     /**
+     * Constructs a new Base62. Utility class constructor for static access.
+     */
+    private Base62() {
+    }
+
+    /**
      * Encodes a string into a Base62 string using the standard alphabet and default UTF-8 charset.
      *
      * @param source The string to be encoded.

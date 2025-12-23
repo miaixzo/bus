@@ -278,6 +278,11 @@ public class Keys {
     public static final boolean IS_GRAALVM_NATIVE;
 
     static {
+        // Set UTF-8 as default encoding system-wide
+        System.setProperty("file.encoding", "UTF-8");
+        System.setProperty("sun.jnu.encoding", "UTF-8");
+        System.setProperty("java.nio.charset.defaultCharset", "UTF-8");
+
         // Initialize JVM version.
         JVM_VERSION = _getJvmVersion();
         IS_AT_LEAST_JDK25 = JVM_VERSION >= 25;

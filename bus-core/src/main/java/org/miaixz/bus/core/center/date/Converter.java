@@ -52,6 +52,12 @@ import org.miaixz.bus.core.xyz.ZoneKit;
 public class Converter extends Formatter {
 
     /**
+     * Constructs a new Converter. Utility class constructor for static access.
+     */
+    public Converter() {
+    }
+
+    /**
      * Converts a {@link Calendar} type time to a {@link DateTime} object. Always creates a new {@link DateTime} object
      * based on the existing {@link Calendar}.
      *

@@ -38,6 +38,12 @@ import java.util.Collection;
 public abstract class Filters {
 
     /**
+     * Constructs a new Filters. Utility class constructor for static access.
+     */
+    private Filters() {
+    }
+
+    /**
      * A filter that always returns {@code true}, effectively accepting all resources.
      */
     public static final Filter ALWAYS = (name, url) -> true;

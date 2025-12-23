@@ -88,6 +88,12 @@ import org.miaixz.bus.core.xyz.*;
 public class CharsBacker extends CharsValidator {
 
     /**
+     * Constructs a new CharsBacker. Utility class constructor for static access.
+     */
+    public CharsBacker() {
+    }
+
+    /**
      * Calls the {@code toString()} method of an object. If the object is {@code null}, it returns the string "null".
      *
      * @param object The object to convert to a string.
@@ -4049,41 +4055,51 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * Cyclically shifts a substring within a string by a specified distance. If {@code moveLength} is positive, it
-     * shifts to the right; if negative, to the left; if 0, no shift. If {@code moveLength} is greater than the string
-     * length, it performs a cyclic shift, meaning it wraps around. For example, a length of 10 and a shift of 13 is
-     * equivalent to a shift of 3.
+     * Cyclically shifts a substring within a string by a specified distance.
+     * <p>
+     * If {@code moveLength} is positive, the substring shifts to the right; if negative, to the left. If
+     * {@code moveLength} exceeds the number of possible positions, it wraps around (cyclic shift). For example, in a
+     * string of length 10, selecting 1 character leaves 9 remaining characters, creating 10 possible positions
+     * (intervals). A shift of 13 is equivalent to a shift of 3.
+     * </p>
      *
      * @param text         The string to modify.
      * @param startInclude The starting position of the substring (inclusive).
      * @param endExclude   The ending position of the substring (exclusive).
      * @param moveLength   The distance to move. Negative for left shift, positive for right shift.
      * @return The string with the substring shifted.
+     * @throws IndexOutOfBoundsException if the range is invalid.
      */
     public static String move(final CharSequence text, final int startInclude, final int endExclude, int moveLength) {
         if (isEmpty(text)) {
             return toStringOrNull(text);
         }
         final int len = text.length();
-        if (Math.abs(moveLength) > len) {
-            // Cyclic shift: wrap around if out of bounds.
-            moveLength = moveLength % len;
+        if (startInclude < 0 || endExclude > len || startInclude > endExclude) {
+            throw new IndexOutOfBoundsException("Invalid range: [" + startInclude + ", " + endExclude + ")");
         }
-        final StringBuilder strBuilder = new StringBuilder(len);
-        if (moveLength > 0) {
-            final int endAfterMove = Math.min(endExclude + moveLength, text.length());
-            strBuilder.append(text.subSequence(0, startInclude)).append(text.subSequence(endExclude, endAfterMove))
-                    .append(text.subSequence(startInclude, endExclude))
-                    .append(text.subSequence(endAfterMove, text.length()));
-        } else if (moveLength < 0) {
-            final int startAfterMove = Math.max(startInclude + moveLength, 0);
-            strBuilder.append(text.subSequence(0, startAfterMove)).append(text.subSequence(startInclude, endExclude))
-                    .append(text.subSequence(startAfterMove, startInclude))
-                    .append(text.subSequence(endExclude, text.length()));
-        } else {
-            return toStringOrNull(text);
+
+        // Separate the "block to move" and the "remaining string"
+        final String block = text.subSequence(startInclude, endExclude).toString();
+        final String rest = new StringBuilder(text).delete(startInclude, endExclude).toString();
+
+        final int restLen = rest.length();
+        if (restLen == 0) {
+            return text.toString(); // Shifting is meaningless when the entire string is selected
         }
-        return strBuilder.toString();
+
+        // Calculate the cycle period: length of remaining characters + 1
+        // (This represents the total number of possible insertion points for the block)
+        final int totalPositions = restLen + 1;
+
+        // Calculate the new position after the move (handling positive and negative shifts and wrapping)
+        // Note: The logic handles the modulo operation here, so no pre-check for moveLength is needed.
+        final int newPos = (startInclude + moveLength % totalPositions + totalPositions) % totalPositions;
+
+        // Reassemble the string
+        return rest.substring(0, newPos) + // The part of the remaining string before the new position
+                block + // The moved block
+                rest.substring(newPos); // The part of the remaining string after the new position
     }
 
     /**

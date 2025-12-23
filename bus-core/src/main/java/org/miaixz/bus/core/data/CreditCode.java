@@ -56,6 +56,12 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class CreditCode {
 
     /**
+     * Constructs a new CreditCode. Utility class constructor for static access.
+     */
+    private CreditCode() {
+    }
+
+    /**
      * Unified social credit code regex.
      */
     public static final java.util.regex.Pattern CREDIT_CODE_PATTERN = Pattern.CREDIT_CODE_PATTERN;

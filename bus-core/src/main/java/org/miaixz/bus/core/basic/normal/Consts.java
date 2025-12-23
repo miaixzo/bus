@@ -42,6 +42,12 @@ import org.miaixz.bus.core.lang.Normal;
 public class Consts extends Normal {
 
     /**
+     * Constructs a new Consts. Utility class constructor for static access.
+     */
+    public Consts() {
+    }
+
+    /**
      * General-purpose numeric identifier -1.
      * <p>
      * Can be used to represent various business concepts such as:

@@ -158,7 +158,7 @@ public class QualifierStrategy extends AbstractStrategy {
                         Mono<Void> validationMono = this.method(exchange, context, assets);
 
                         // 4. Chain authorization if the API is protected
-                        Mono<Void> authMono = (Consts.ONE != assets.getFirewall()) ? this.authorize(context)
+                        Mono<Void> authMono = (Consts.ONE != assets.getPolicy()) ? this.authorize(context)
                                 : Mono.empty();
 
                         // 5. Execute validation then authorization sequentially
@@ -234,7 +234,7 @@ public class QualifierStrategy extends AbstractStrategy {
      */
     protected Mono<Void> authorize(Context context) {
         // If the asset is configured to not require a token, skip authorization.
-        if (Consts.ZERO == context.getAssets().getToken()) {
+        if (Consts.ZERO == context.getAssets().getPolicy()) {
             return Mono.empty();
         }
 

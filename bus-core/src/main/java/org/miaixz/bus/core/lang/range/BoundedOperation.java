@@ -42,6 +42,12 @@ import org.miaixz.bus.core.xyz.CompareKit;
 public class BoundedOperation {
 
     /**
+     * Constructs a new BoundedOperation. Utility class constructor for static access.
+     */
+    private BoundedOperation() {
+    }
+
+    /**
      * Merges the {@code other} range with the {@code boundedRange} if they intersect. If the two ranges do not
      * intersect, the original {@code boundedRange} is returned.
      *

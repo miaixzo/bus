@@ -40,6 +40,7 @@ import org.miaixz.bus.core.compare.PinyinCompare;
 import org.miaixz.bus.core.compare.PropertyCompare;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Validator;
+import org.miaixz.bus.core.lang.reflect.creator.PossibleObjectCreator;
 
 /**
  * Utility class for `List`.
@@ -331,6 +332,9 @@ public class ListKit {
      * @return A new reversed list.
      */
     public static <T> List<T> reverseNew(final List<T> list) {
+        if (null == list) {
+            return null;
+        }
         List<T> list2 = ObjectKit.clone(list);
         if (null == list2) {
             list2 = new ArrayList<>(list);
@@ -428,58 +432,67 @@ public class ListKit {
     /**
      * Slices a portion of a list.
      *
-     * @param <T>          The element type.
-     * @param list         The list to slice.
-     * @param beginInclude The start index (inclusive).
-     * @param endExclude   The end index (exclusive).
+     * @param <T>       The element type.
+     * @param list      The list to slice.
+     * @param fromIndex The start index (inclusive).
+     * @param toIndex   The end index (exclusive).
      * @return The sliced list as a new `ArrayList`.
      */
-    public static <T> List<T> sub(final List<T> list, final int beginInclude, final int endExclude) {
-        return sub(list, beginInclude, endExclude, 1);
+    public static <T> List<T> sub(final List<T> list, final int fromIndex, final int toIndex) {
+        return sub(list, fromIndex, toIndex, 1);
     }
 
     /**
      * Slices a portion of a list with a given step. This creates a new list, unlike `List.subList`.
      *
-     * @param <T>          The element type.
-     * @param list         The list to slice.
-     * @param beginInclude The start index (inclusive).
-     * @param endExclude   The end index (exclusive).
-     * @param step         The step size.
+     * @param <T>       The element type.
+     * @param list      The list to slice.
+     * @param fromIndex The start index (inclusive).
+     * @param toIndex   The end index (exclusive).
+     * @param step      The step size.
      * @return The sliced list as a new `ArrayList`.
      */
-    public static <T> List<T> sub(final List<T> list, int beginInclude, int endExclude, int step) {
+    public static <T> List<T> sub(final List<T> list, int fromIndex, int toIndex, int step) {
         if (list == null) {
             return null;
         }
+
+        List<T> result = PossibleObjectCreator.of(list.getClass()).create();
+        if (null == result) {
+            result = new ArrayList<>(0);
+        }
+
         if (list.isEmpty()) {
-            return new ArrayList<>(0);
+            return result;
         }
 
         final int size = list.size();
-        if (beginInclude < 0) {
-            beginInclude += size;
+        if (fromIndex < 0) {
+            fromIndex += size;
         }
-        if (endExclude < 0) {
-            endExclude += size;
+        if (toIndex < 0) {
+            toIndex += size;
         }
-        if (beginInclude > endExclude) {
-            final int tmp = beginInclude;
-            beginInclude = endExclude;
-            endExclude = tmp;
+        if (fromIndex == size) {
+            return result;
         }
-        if (endExclude > size) {
-            endExclude = size;
+        if (fromIndex > toIndex) {
+            final int tmp = fromIndex;
+            fromIndex = toIndex;
+            toIndex = tmp;
         }
-        if (beginInclude >= endExclude) {
-            return new ArrayList<>(0);
+        if (toIndex > size) {
+            if (fromIndex >= size) {
+                return result;
+            }
+            toIndex = size;
         }
+
         if (step < 1) {
             step = 1;
         }
 
-        final List<T> result = new ArrayList<>();
-        for (int i = beginInclude; i < endExclude; i += step) {
+        for (int i = fromIndex; i < toIndex; i += step) {
             result.add(list.get(i));
         }
         return result;

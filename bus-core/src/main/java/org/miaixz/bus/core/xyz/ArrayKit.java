@@ -53,6 +53,12 @@ import org.miaixz.bus.core.text.StringJoiner;
 public class ArrayKit extends PrimitiveArray {
 
     /**
+     * Constructs a new ArrayKit. Utility class constructor for static access.
+     */
+    private ArrayKit() {
+    }
+
+    /**
      * Converts to an array. If {@code values} is already an array, it is returned. Otherwise, a new array containing
      * only {@code values} is returned. Note: The element type of {@code values} or its own type must exactly match the
      * provided {@code elementType}.
@@ -185,6 +191,9 @@ public class ArrayKit extends PrimitiveArray {
      * @return The array type.
      */
     public static Class<?> getArrayType(final Class<?> componentType) {
+        if (null == componentType) {
+            return null;
+        }
         return Array.newInstance(componentType, 0).getClass();
     }
 
@@ -968,18 +977,18 @@ public class ArrayKit extends PrimitiveArray {
     /**
      * Reverses the order of elements in a portion of the array. This modifies the original array.
      *
-     * @param <T>                 The array element type.
-     * @param array               The array to be reversed (will be modified).
-     * @param startIndexInclusive The starting index (inclusive).
-     * @param endIndexExclusive   The ending index (exclusive).
+     * @param <T>       The array element type.
+     * @param array     The array to be reversed (will be modified).
+     * @param fromIndex The starting index (inclusive).
+     * @param toIndex   The ending index (exclusive).
      * @return The modified original array.
      */
-    public static <T> T[] reverse(final T[] array, final int startIndexInclusive, final int endIndexExclusive) {
+    public static <T> T[] reverse(final T[] array, final int fromIndex, final int toIndex) {
         if (isEmpty(array)) {
             return array;
         }
-        int i = Math.max(startIndexInclusive, 0);
-        int j = Math.min(array.length, endIndexExclusive) - 1;
+        int i = Math.max(fromIndex, 0);
+        int j = Math.min(array.length, toIndex) - 1;
         T tmp;
         while (j > i) {
             tmp = array[j];
@@ -1292,61 +1301,61 @@ public class ArrayKit extends PrimitiveArray {
     /**
      * Gets a sub-array.
      *
-     * @param <T>   The array element type.
-     * @param array The array, must not be null.
-     * @param start The starting position (inclusive).
-     * @param end   The ending position (exclusive).
+     * @param <T>       The array element type.
+     * @param array     The array, must not be null.
+     * @param fromIndex The starting position (inclusive).
+     * @param toIndex   The ending position (exclusive).
      * @return The new sub-array.
      * @see Arrays#copyOfRange(Object[], int, int)
      */
-    public static <T> T[] sub(final T[] array, int start, int end) {
+    public static <T> T[] sub(final T[] array, int fromIndex, int toIndex) {
         Assert.notNull(array, "array must be not null !");
         final int length = length(array);
-        if (start < 0) {
-            start += length;
+        if (fromIndex < 0) {
+            fromIndex += length;
         }
-        if (end < 0) {
-            end += length;
+        if (toIndex < 0) {
+            toIndex += length;
         }
-        if (start > end) {
-            final int tmp = start;
-            start = end;
-            end = tmp;
+        if (fromIndex > toIndex) {
+            final int tmp = fromIndex;
+            fromIndex = toIndex;
+            toIndex = tmp;
         }
-        if (start >= length) {
+        if (fromIndex >= length) {
             return newArray(array.getClass().getComponentType(), 0);
         }
-        if (end > length) {
-            end = length;
+        if (toIndex > length) {
+            toIndex = length;
         }
-        return Arrays.copyOfRange(array, start, end);
+        return Arrays.copyOfRange(array, fromIndex, toIndex);
     }
 
     /**
      * Gets a sub-array.
      *
-     * @param array        The array.
-     * @param beginInclude The starting position (inclusive).
-     * @param endExclude   The ending position (exclusive).
-     * @param <A>          The array type.
+     * @param array     The array.
+     * @param fromIndex The starting position (inclusive).
+     * @param toIndex   The ending position (exclusive).
+     * @param <A>       The array type.
      * @return The new sub-array.
      */
-    public static <A> A sub(final A array, final int beginInclude, final int endExclude) {
-        return ArrayWrapper.of(array).getSub(beginInclude, endExclude);
+    public static <A> A sub(final A array, final int fromIndex, final int toIndex) {
+        return ArrayWrapper.of(array).getSub(fromIndex, toIndex);
     }
 
     /**
      * Gets a sub-array with a specified step.
      *
-     * @param array        The array.
-     * @param beginInclude The starting position (inclusive).
-     * @param endExclude   The ending position (exclusive).
-     * @param step         The step size.
-     * @param <A>          The array type.
+     * @param array     The array.
+     * @param fromIndex The starting position (inclusive).
+     * @param toIndex   The ending position (exclusive).
+     * @param step      The step size.
+     * @param <A>       The array type.
      * @return The new sub-array.
      */
-    public static <A> A sub(final A array, final int beginInclude, final int endExclude, final int step) {
-        return ArrayWrapper.of(array).getSub(beginInclude, endExclude, step);
+    public static <A> A sub(final A array, final int fromIndex, final int toIndex, final int step) {
+        return ArrayWrapper.of(array).getSub(fromIndex, toIndex, step);
     }
 
     /**
@@ -1368,19 +1377,19 @@ public class ArrayKit extends PrimitiveArray {
     /**
      * Finds the starting position of the last sub-array, searching backward from a specified inclusive end position.
      *
-     * @param array      The array.
-     * @param endInclude The inclusive end position when searching backward.
-     * @param subArray   The sub-array.
-     * @param <T>        The array element type.
+     * @param array     The array.
+     * @param fromIndex The starting position of the search (backward), inclusive.
+     * @param subArray  The sub-array.
+     * @param <T>       The array element type.
      * @return The starting position of the last sub-array, i.e., the position of the first element of the sub-array in
      *         the array when searching backward.
      */
-    public static <T> int lastIndexOfSub(final T[] array, final int endInclude, final T[] subArray) {
-        if (isEmpty(array) || isEmpty(subArray) || subArray.length > array.length || endInclude < 0) {
+    public static <T> int lastIndexOfSub(final T[] array, final int fromIndex, final T[] subArray) {
+        if (isEmpty(array) || isEmpty(subArray) || subArray.length > array.length || fromIndex < 0) {
             return Normal.__1;
         }
 
-        final int firstIndex = lastIndexOf(array, subArray[0], endInclude);
+        final int firstIndex = lastIndexOf(array, subArray[0], fromIndex);
         if (firstIndex < 0 || firstIndex + subArray.length > array.length) {
             return Normal.__1;
         }

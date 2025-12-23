@@ -40,6 +40,12 @@ import org.miaixz.bus.core.center.date.culture.solar.SolarTime;
 public class DefaultChildLimitProvider extends AbstractChildLimitProvider {
 
     /**
+     * Constructs a new DefaultChildLimitProvider. Utility class constructor for static access.
+     */
+    public DefaultChildLimitProvider() {
+    }
+
+    /**
      * Calculates and returns the Child Limit information based on default rules.
      *
      * @param birthTime The Gregorian birth time.

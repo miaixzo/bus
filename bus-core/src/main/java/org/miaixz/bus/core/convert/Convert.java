@@ -52,6 +52,12 @@ import org.miaixz.bus.core.xyz.*;
 public class Convert {
 
     /**
+     * Constructs a new Convert. Utility class constructor for static access.
+     */
+    private Convert() {
+    }
+
+    /**
      * Converts the given value to a {@code String}. If the value is null or conversion fails, the default value is
      * returned. No exceptions are thrown on failure.
      *

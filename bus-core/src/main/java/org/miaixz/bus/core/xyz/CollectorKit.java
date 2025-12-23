@@ -48,6 +48,12 @@ import org.miaixz.bus.core.lang.tuple.Triplet;
 public class CollectorKit {
 
     /**
+     * Constructs a new CollectorKit. Utility class constructor for static access.
+     */
+    private CollectorKit() {
+    }
+
+    /**
      * Collector characteristics indicating IDENTITY_FINISH.
      */
     public static final Set<Collector.Characteristics> CH_ID = Collections
@@ -576,13 +582,13 @@ public class CollectorKit {
      * @param <T>         The type of the input elements.
      * @param <LU>        The type of the left element.
      * @param <LA>        ... (Types for left downstream collector)
-     * @param <LR>
+     * @param <LR>        The result type of the left downstream collector.
      * @param <MU>        The type of the middle element.
      * @param <MA>        ... (Types for middle downstream collector)
-     * @param <MR>
+     * @param <MR>        The result type of the middle downstream collector.
      * @param <RU>        The type of the right element.
      * @param <RA>        ... (Types for right downstream collector)
-     * @param <RR>
+     * @param <RR>        The result type of the right downstream collector.
      * @return A {@code Triplet} containing the three collected results.
      */
     public static <T, LU, LA, LR, MU, MA, MR, RU, RA, RR> Collector<T, ?, Triplet<LR, MR, RR>> toTriplet(

@@ -68,6 +68,12 @@ import org.miaixz.bus.core.lang.mutable.MutableEntry;
 public class BeanKit {
 
     /**
+     * Constructs a new BeanKit. Utility class constructor for static access.
+     */
+    private BeanKit() {
+    }
+
+    /**
      * Creates a dynamic Bean.
      *
      * @param bean A regular Bean or a Map.

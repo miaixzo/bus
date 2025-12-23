@@ -52,6 +52,12 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class ArrayValidator {
 
     /**
+     * Constructs a new ArrayValidator. Utility class constructor for static access.
+     */
+    ArrayValidator() {
+    }
+
+    /**
      * Checks if the given long array is empty.
      *
      * @param array The long array to check.

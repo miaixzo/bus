@@ -41,6 +41,12 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class EnglishNumberFormatter {
 
     /**
+     * Constructs a new EnglishNumberFormatter. Utility class constructor for static access.
+     */
+    private EnglishNumberFormatter() {
+    }
+
+    /**
      * Converts an Arabic numeral to its English expression.
      *
      * @param x The Arabic numeral, which can be a {@link Number} object or a plain object. It will ultimately be

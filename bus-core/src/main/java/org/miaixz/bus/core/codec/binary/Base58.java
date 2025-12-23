@@ -53,6 +53,12 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 public class Base58 {
 
     /**
+     * Constructs a new Base58. Utility class constructor for static access.
+     */
+    private Base58() {
+    }
+
+    /**
      * The size of the checksum in bytes.
      */
     private static final int CHECKSUM_SIZE = 4;

@@ -40,6 +40,12 @@ import java.util.Map;
 public abstract class AnsiLabMapping {
 
     /**
+     * Constructs a new AnsiLabMapping. Utility class constructor for static access.
+     */
+    AnsiLabMapping() {
+    }
+
+    /**
      * A map storing the correspondence between {@link AnsiElement} and {@link LabColor}. Subclasses are expected to
      * populate this map.
      */

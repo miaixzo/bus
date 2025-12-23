@@ -1,30 +1,30 @@
 /*
- * ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- *
- * The MIT License (MIT)
- *
- * Copyright (c) 2015-2025 miaixz.org and other contributors.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- *
- * ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+*/
 package org.miaixz.bus.mapper.support.paging;
 
 import java.sql.Connection;
@@ -69,7 +69,7 @@ import org.miaixz.bus.mapper.handler.ConditionHandler;
  *
  * // Use with PageContext and Sort
  * Sort sort = Sort.by("name").ascending().and("age").descending();
- * PageContext.of(0, 10, true, sort);
+ * PageContext.of(1, 10, true, sort);
  * List<User> users = userMapper.selectAll();
  * // users is now a Page<User> with pagination info
  * }</pre>
@@ -330,14 +330,14 @@ public class PageHandler<T> extends ConditionHandler<T> {
         int pageSize = pageable.getPageSize();
         int totalPages = (int) Math.ceil((double) totalElements / pageSize);
 
-        // If page number is less than 0, set to 0 (first page)
-        if (pageNo < 0) {
-            return Pageable.of(0, pageSize, pageable.getSort());
+        // If page number is less than 1, set to 1 (first page)
+        if (pageNo < 1) {
+            return Pageable.of(1, pageSize, pageable.getSort());
         }
 
-        // If page number is greater than or equal to total pages, set to last page
-        if (totalPages > 0 && pageNo >= totalPages) {
-            return Pageable.of(totalPages - 1, pageSize, pageable.getSort());
+        // If page number is greater than total pages, set to last page
+        if (totalPages > 0 && pageNo > totalPages) {
+            return Pageable.of(totalPages, pageSize, pageable.getSort());
         }
 
         return pageable;
@@ -395,7 +395,7 @@ public class PageHandler<T> extends ConditionHandler<T> {
             int pageNo = Integer.parseInt(String.valueOf(pageNoValue));
             int pageSize = Integer.parseInt(String.valueOf(pageSizeValue));
 
-            if (pageNo < 0 || pageSize < 0) {
+            if (pageNo < 1 || pageSize < 0) {
                 return null; // Invalid pagination parameters
             }
 

@@ -32,9 +32,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
-
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONWriter;
 import com.alibaba.fastjson2.filter.Filter;
@@ -53,13 +50,13 @@ public class FastJsonProvider extends AbstractJsonProvider {
      * Default writer features for Fastjson serialization, including field-based serialization and writing null values.
      */
     private static final JSONWriter.Feature[] WRITER_FEATURES = { JSONWriter.Feature.FieldBased,
-            JSONWriter.Feature.WriteMapNullValue, JSONWriter.Feature.WriteNulls };
+            JSONWriter.Feature.WriteMapNullValue, JSONWriter.Feature.WriteNullListAsEmpty,
+            JSONWriter.Feature.BrowserCompatible, JSONWriter.Feature.WriteNulls };
 
     /**
      * Default filters for Fastjson serialization, which convert null, empty, or blank string values to null.
      */
-    private static final Filter[] FILTERS = { (ValueFilter) (object, name, value) -> value == null
-            || Normal.EMPTY.equals(value) || Symbol.SPACE.equals(value) ? null : value };
+    private static final Filter[] FILTERS = { (ValueFilter) (object, name, value) -> value };
 
     /**
      * Constructs a new {@code FastJsonProvider} instance.

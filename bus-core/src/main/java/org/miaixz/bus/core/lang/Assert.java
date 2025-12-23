@@ -42,6 +42,12 @@ import org.miaixz.bus.core.xyz.*;
 public class Assert {
 
     /**
+     * Constructs a new Assert. Utility class constructor for static access.
+     */
+    private Assert() {
+    }
+
+    /**
      * Template for error messages when a value is out of bounds.
      */
     private static final String TEMPLATE_VALUE_MUST_BE_BETWEEN_AND = "The value must be between {} and {}.";

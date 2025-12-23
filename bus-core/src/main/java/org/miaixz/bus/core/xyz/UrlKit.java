@@ -113,7 +113,7 @@ public class UrlKit {
         }
 
         try {
-            return new URL(null, url, handler);
+            return URI.create(url).toURL();
         } catch (final MalformedURLException e) {
             if (e.getMessage().contains("Accessing an URL protocol that was not enabled")) {
                 // Graalvm packaging requires manual specification of parameters to enable protocols:
@@ -169,7 +169,7 @@ public class UrlKit {
         // Encode whitespace characters to prevent request exceptions caused by spaces
         urlStr = UrlEncoder.encodeBlank(urlStr);
         try {
-            return new URL(null, urlStr, handler);
+            return URI.create(urlStr).toURL();
         } catch (final MalformedURLException e) {
             throw new InternalException(e);
         }
@@ -227,7 +227,7 @@ public class UrlKit {
         // # is valid in file paths but invalid in URLs, so escape it here
         relativePath = StringKit.replace(StringKit.removePrefix(relativePath, Symbol.SLASH), Symbol.HASH, "%23");
         try {
-            return new URL(url, relativePath);
+            return URI.create(url.toString() + relativePath).toURL();
         } catch (final MalformedURLException e) {
             throw new InternalException(e, "Error occurred when get URL!");
         }
@@ -288,8 +288,8 @@ public class UrlKit {
         }
 
         try {
-            final URL absoluteUrl = new URL(baseUrl);
-            final URL parseUrl = new URL(absoluteUrl, relativePath);
+            final URL absoluteUrl = URI.create(baseUrl).toURL();
+            final URL parseUrl = URI.create(absoluteUrl.toString() + relativePath).toURL();
             return parseUrl.toString();
         } catch (final MalformedURLException e) {
             throw new InternalException(e);

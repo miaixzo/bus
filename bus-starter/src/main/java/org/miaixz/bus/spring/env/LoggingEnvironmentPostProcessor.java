@@ -27,6 +27,9 @@
 */
 package org.miaixz.bus.spring.env;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.miaixz.bus.core.lang.Keys;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.spring.GeniusBuilder;
@@ -35,9 +38,6 @@ import org.springframework.boot.context.config.ConfigDataEnvironmentPostProcesso
 import org.springframework.boot.env.EnvironmentPostProcessor;
 import org.springframework.core.Ordered;
 import org.springframework.core.env.ConfigurableEnvironment;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * An {@link EnvironmentPostProcessor} implementation for logging configuration detection and initialization.
@@ -106,6 +106,17 @@ public class LoggingEnvironmentPostProcessor implements EnvironmentPostProcessor
      */
     @Override
     public void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication application) {
+        // Debug check: Suppress BeanPostProcessor warnings only in non-debug mode and non-GraalVM environment.
+        boolean isDebugMode = System.getProperty("spring.profiles.active", "").contains("debug")
+                || System.getProperty("debug", "false").equals("true")
+                || System.getProperty("logging.level.org.miaixz", "INFO").equals("DEBUG");
+
+        if (!isDebugMode && !Keys.IS_GRAALVM_NATIVE) {
+            System.setProperty(
+                    "logging.level.org.springframework.context.support.PostProcessorRegistrationDelegate",
+                    "OFF");
+        }
+
         Map<String, String> context = new HashMap<>();
         loadLogConfiguration(
                 GeniusBuilder.LOGGING_PATH,

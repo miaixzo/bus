@@ -116,6 +116,11 @@ public final class Config {
     public static final String _LINUX_ALLOWUDEV = "bus.health.linux.allowudev";
 
     /**
+     * Configuration property key: Determines whether Systemd integration is allowed on Linux.
+     */
+    public static final String _LINUX_ALLOWSYSTEMD = "bus.health.linux.allowsystemd";
+
+    /**
      * Linux configuration: whether to log procfs warnings.
      */
     public static final String _LINUX_PROCFS_LOGWARNING = "bus.health.linux.procfs.logwarning";

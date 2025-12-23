@@ -40,6 +40,12 @@ import org.miaixz.bus.core.lang.Charset;
 public class CharsetConverter extends AbstractConverter {
 
     /**
+     * Constructs a new CharsetConverter. Utility class constructor for static access.
+     */
+    public CharsetConverter() {
+    }
+
+    /**
      * The serial version UID.
      */
     @Serial

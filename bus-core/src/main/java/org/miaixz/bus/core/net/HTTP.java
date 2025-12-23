@@ -39,6 +39,12 @@ package org.miaixz.bus.core.net;
 public class HTTP {
 
     /**
+     * Constructs a new HTTP. Utility class constructor for static access.
+     */
+    private HTTP() {
+    }
+
+    /**
      * HTTP Method: Matches all methods, commonly used in configurations or filters. RFC 7230, Section 5.2
      */
     public static final String ALL = "ALL";

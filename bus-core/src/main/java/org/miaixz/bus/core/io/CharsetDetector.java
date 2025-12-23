@@ -51,6 +51,12 @@ import org.miaixz.bus.core.xyz.IoKit;
 public class CharsetDetector {
 
     /**
+     * Constructs a new CharsetDetector. Utility class constructor for static access.
+     */
+    private CharsetDetector() {
+    }
+
+    /**
      * Default charsets to participate in the detection test.
      */
     private static final Charset[] DEFAULT_CHARSETS;

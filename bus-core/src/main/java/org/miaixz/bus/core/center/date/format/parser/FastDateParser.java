@@ -62,7 +62,7 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
     /**
      * Locale for Japanese Imperial calendar.
      */
-    private static final Locale JAPANESE_IMPERIAL = new Locale("ja", "JP", "JP");
+    private static final Locale JAPANESE_IMPERIAL = Locale.forLanguageTag("ja-JP-JP");
 
     /**
      * Comparator for sorting strings by length in descending order, for regular expression options.

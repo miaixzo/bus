@@ -40,6 +40,12 @@ import java.io.Serial;
 public class CRC16USB extends CRC16Checksum {
 
     /**
+     * Constructs a new CRC16USB. Utility class constructor for static access.
+     */
+    private CRC16USB() {
+    }
+
+    /**
      * The serial version UID for serialization.
      */
     @Serial

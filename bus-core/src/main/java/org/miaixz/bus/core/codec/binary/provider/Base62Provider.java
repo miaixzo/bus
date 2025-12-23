@@ -46,8 +46,14 @@ import org.miaixz.bus.core.xyz.ArrayKit;
  */
 public class Base62Provider implements Encoder<byte[], byte[]>, Decoder<byte[], byte[]>, Serializable {
 
+    /**
+     * Constructs a new Base62Provider. Utility class constructor for static access.
+     */
+    private Base62Provider() {
+    }
+
     @Serial
-    public static final long serialVersionUID = 2852259077806L;
+    private static final long serialVersionUID = 2852259077806L;
 
     /**
      * Singleton instance of the Base62Provider.

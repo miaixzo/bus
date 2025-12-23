@@ -52,6 +52,12 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class AnyTrustManager extends X509ExtendedTrustManager {
 
     /**
+     * Constructs a new AnyTrustManager. Utility class constructor for static access.
+     */
+    private AnyTrustManager() {
+    }
+
+    /**
      * A global singleton trust manager that trusts all client and server certificates.
      */
     public static final AnyTrustManager INSTANCE = new AnyTrustManager();

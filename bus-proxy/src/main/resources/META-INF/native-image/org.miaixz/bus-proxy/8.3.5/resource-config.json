@@ -1,0 +1,12 @@
+{
+  "resources": {
+    "includes": [
+      {
+        "pattern": "org.aspectj.weaver.weaver-messages"
+      },
+      {
+        "pattern": "org.aspectj.weaver.weaver-messages.properties"
+      }
+    ]
+  }
+}

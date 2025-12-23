@@ -59,6 +59,12 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class ExplorerCompare implements Comparator<CharSequence> {
 
     /**
+     * Constructs a new ExplorerCompare. Utility class constructor for static access.
+     */
+    private ExplorerCompare() {
+    }
+
+    /**
      * Singleton instance of the comparator.
      */
     public static final ExplorerCompare INSTANCE = new ExplorerCompare();

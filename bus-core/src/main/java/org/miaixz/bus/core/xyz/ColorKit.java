@@ -48,6 +48,12 @@ import org.miaixz.bus.core.text.CharsBacker;
  */
 public class ColorKit {
 
+    /**
+     * Constructs a new ColorKit. Utility class constructor for static access.
+     */
+    private ColorKit() {
+    }
+
     private static final Map<String, Color> COLOR_MAPPING;
     /**
      * Upper bound for RGB color values.

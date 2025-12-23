@@ -252,8 +252,11 @@ public class RestService {
         if (!params.isEmpty()) {
             // **OPTIMIZATION:** Wrap synchronous, CPU-bound JSON serialization
             // in fromCallable and offload it from the event loop.
-            Mono<String> jsonBodyMono = Mono.fromCallable(() -> JsonKit.toJsonString(params))
-                    .subscribeOn(Schedulers.boundedElastic());
+            // **GRAALVM FIX**: Apply Native Image encoding fix for FastJSON unsafe operations
+            Mono<String> jsonBodyMono = Mono.fromCallable(() -> {
+                String json = JsonKit.toJsonString(params);
+                return fixGraalvmJsonEncoding(json);
+            }).subscribeOn(Schedulers.boundedElastic());
 
             bodySpec.contentType(MediaType.APPLICATION_JSON).body(jsonBodyMono, String.class);
 
@@ -556,6 +559,59 @@ public class RestService {
                                 ip,
                                 method,
                                 path));
+    }
+
+    /**
+     * Fix GraalVM Native Image JSON encoding issues caused by FastJSON unsafe operations. This method removes NULL
+     * bytes that get inserted due to memory layout differences between JVM and GraalVM Native Image environments.
+     *
+     * @param json JSON string potentially corrupted by FastJSON in Native Image
+     * @return Fixed JSON string with NULL bytes removed
+     */
+    private String fixGraalvmJsonEncoding(String json) {
+        if (json == null || json.isEmpty()) {
+            return json;
+        }
+
+        // Quick check for NULL bytes
+        boolean hasNullBytes = false;
+        for (int i = 0; i < json.length(); i++) {
+            if (json.charAt(i) == '\u0000') {
+                hasNullBytes = true;
+                break;
+            }
+        }
+
+        if (!hasNullBytes) {
+            return json;
+        }
+
+        // Remove NULL bytes at character level
+        StringBuilder fixedJson = new StringBuilder(json.length());
+        int nullCount = 0;
+
+        for (int i = 0; i < json.length(); i++) {
+            char c = json.charAt(i);
+            if (c != '\u0000') {
+                fixedJson.append(c);
+            } else {
+                nullCount++;
+            }
+        }
+
+        String result = fixedJson.toString();
+
+        if (nullCount > 0) {
+            Logger.info(
+                    true,
+                    "RestService",
+                    "GraalVM JSON encoding fix applied - Removed {} NULL bytes: {} -> {}",
+                    nullCount,
+                    json.length(),
+                    result.length());
+        }
+
+        return result;
     }
 
 }

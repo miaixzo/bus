@@ -49,6 +49,12 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class Hex {
 
     /**
+     * Constructs a new Hex. Utility class constructor for static access.
+     */
+    public Hex() {
+    }
+
+    /**
      * Encodes a byte array into a hexadecimal character array (lowercase).
      *
      * @param data The byte array to encode.

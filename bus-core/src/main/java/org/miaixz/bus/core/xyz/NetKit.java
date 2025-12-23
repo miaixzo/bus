@@ -218,8 +218,8 @@ public class NetKit {
      */
     public static String toAbsoluteUrl(final String absoluteBasePath, final String relativePath) {
         try {
-            final URL absoluteUrl = new URL(absoluteBasePath);
-            return new URL(absoluteUrl, relativePath).toString();
+            final URL absoluteUrl = URI.create(absoluteBasePath).toURL();
+            return URI.create(absoluteUrl + relativePath).toURL().toString();
         } catch (final Exception e) {
             throw new InternalException(e, "To absolute url [{}] base [{}] error!", relativePath, absoluteBasePath);
         }

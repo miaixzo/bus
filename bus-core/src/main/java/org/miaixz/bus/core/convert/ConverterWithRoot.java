@@ -37,6 +37,9 @@ import org.miaixz.bus.core.lang.Assert;
  */
 public abstract class ConverterWithRoot implements Converter {
 
+    /**
+     * The root converter for conversion operations.
+     */
     protected final Converter converter;
 
     /**

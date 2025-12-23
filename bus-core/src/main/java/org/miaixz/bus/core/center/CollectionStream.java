@@ -48,6 +48,12 @@ import org.miaixz.bus.core.xyz.*;
 public class CollectionStream extends CollectionValidator {
 
     /**
+     * Constructs a new CollectionStream. Utility class constructor for static access.
+     */
+    public CollectionStream() {
+    }
+
+    /**
      * Converts a collection into a map, where the keys are derived from the elements and the values are the elements
      * themselves.
      * <p>

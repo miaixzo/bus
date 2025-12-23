@@ -47,6 +47,12 @@ import org.miaixz.bus.core.xyz.ByteKit;
  */
 public class CityHash implements Hash32<byte[]>, Hash64<byte[]>, Hash128<byte[]> {
 
+    /**
+     * Constructs a new CityHash. Utility class constructor for static access.
+     */
+    private CityHash() {
+    }
+
     // Some primes between 2^63 and 2^64 for various uses.
     private static final long k0 = 0xc3a5c85c97cb3127L;
     private static final long k1 = 0xb492b66fbe98f273L;

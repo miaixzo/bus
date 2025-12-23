@@ -51,6 +51,12 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class ChineseNumberFormatter {
 
     /**
+     * Constructs a new ChineseNumberFormatter. Utility class constructor for static access.
+     */
+    private ChineseNumberFormatter() {
+    }
+
+    /**
      * Chinese numeral characters. Odd indices are simplified, even indices are traditional (for accounting). '零' (zero)
      * is shared.
      */

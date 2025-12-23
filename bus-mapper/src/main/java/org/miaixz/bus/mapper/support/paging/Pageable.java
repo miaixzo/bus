@@ -1,30 +1,30 @@
 /*
- * ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- *
- * The MIT License (MIT)
- *
- * Copyright (c) 2015-2025 miaixz.org and other contributors.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- *
- * ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+*/
 package org.miaixz.bus.mapper.support.paging;
 
 import java.io.Serial;
@@ -52,14 +52,14 @@ import java.io.Serializable;
  * <p>
  * Example usage:
  * </p>
- * 
+ *
  * <pre>{@code
  *
  * // Create a pageable request
- * Pageable pageable = PageRequest.of(0, 10, Sort.by("name").ascending());
+ * Pageable pageable = PageRequest.of(1, 10, Sort.by("name").ascending());
  *
  * // Access pagination info
- * int pageNo = pageable.getPageNo(); // 0
+ * int pageNo = pageable.getPageNo(); // 1
  * int pageSize = pageable.getPageSize(); // 10
  * long offset = pageable.getOffset(); // 0
  *
@@ -67,7 +67,7 @@ import java.io.Serializable;
  * boolean unpaged = pageable.isUnpaged(); // false
  *
  * // Get next/previous pageable
- * Pageable next = pageable.next(); // page 1, size 10
+ * Pageable next = pageable.next(); // page 2, size 10
  * Pageable previous = pageable.previous(); // throws exception (no previous)
  * }</pre>
  *
@@ -93,7 +93,7 @@ public interface Pageable extends Serializable {
     /**
      * Creates a pageable request with the specified page number and size.
      *
-     * @param pageNo   the page number (0-based)
+     * @param pageNo   the page number (1-based)
      * @param pageSize the page size
      * @return a pageable request
      */
@@ -104,7 +104,7 @@ public interface Pageable extends Serializable {
     /**
      * Creates a pageable request with the specified page number, size, and sorting.
      *
-     * @param pageNo   the page number (0-based)
+     * @param pageNo   the page number (1-based)
      * @param pageSize the page size
      * @param sort     the sorting information
      * @return a pageable request
@@ -114,7 +114,7 @@ public interface Pageable extends Serializable {
     }
 
     /**
-     * Gets the page number (0-based).
+     * Gets the page number (1-based).
      *
      * @return the page number
      */
@@ -143,7 +143,7 @@ public interface Pageable extends Serializable {
         if (isUnpaged()) {
             return 0;
         }
-        return (long) getPageNo() * (long) getPageSize();
+        return (long) (getPageNo() - 1) * (long) getPageSize();
     }
 
     /**
@@ -170,7 +170,7 @@ public interface Pageable extends Serializable {
      * @return true if there is a previous page, false otherwise
      */
     default boolean hasPrevious() {
-        return getPageNo() > 0;
+        return getPageNo() > 1;
     }
 
     /**
@@ -216,7 +216,7 @@ public interface Pageable extends Serializable {
         private final Sort sort;
 
         private PageRequest(int pageNo, int pageSize, Sort sort) {
-            this.pageNo = Math.max(0, pageNo);
+            this.pageNo = Math.max(1, pageNo);
             this.pageSize = Math.max(1, pageSize);
             this.sort = sort != null ? sort : Sort.unsorted();
         }
@@ -224,7 +224,7 @@ public interface Pageable extends Serializable {
         /**
          * Creates a page request with the specified page number and size.
          *
-         * @param pageNo   the page number (0-based)
+         * @param pageNo   the page number (1-based)
          * @param pageSize the page size
          * @return a page request
          */
@@ -235,7 +235,7 @@ public interface Pageable extends Serializable {
         /**
          * Creates a page request with the specified page number, size, and sorting.
          *
-         * @param pageNo   the page number (0-based)
+         * @param pageNo   the page number (1-based)
          * @param pageSize the page size
          * @param sort     the sorting information
          * @return a page request
@@ -250,7 +250,7 @@ public interface Pageable extends Serializable {
          * @return an unpaged page request
          */
         public static PageRequest unpaged() {
-            return new PageRequest(0, UNPAGED_SIZE, Sort.unsorted());
+            return new PageRequest(1, UNPAGED_SIZE, Sort.unsorted());
         }
 
         @Override
@@ -285,7 +285,7 @@ public interface Pageable extends Serializable {
 
         @Override
         public PageRequest first() {
-            return withPage(0);
+            return withPage(1);
         }
 
         @Override

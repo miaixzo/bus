@@ -39,6 +39,12 @@ import java.util.concurrent.atomic.AtomicIntegerArray;
 public class AtomicIntegerArrayConverter extends AbstractConverter {
 
     /**
+     * Constructs a new AtomicIntegerArrayConverter. Utility class constructor for static access.
+     */
+    public AtomicIntegerArrayConverter() {
+    }
+
+    /**
      * The serial version UID.
      */
     @Serial

@@ -1,30 +1,30 @@
 /*
- * ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- *
- * The MIT License (MIT)
- *
- * Copyright (c) 2015-2025 miaixz.org and other contributors.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- *
- * ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+*/
 package org.miaixz.bus.mapper.support.paging;
 
 import java.util.ArrayList;
@@ -43,8 +43,7 @@ import org.miaixz.bus.mapper.Order;
  * <p>
  * Usage pattern:
  * </p>
- * *
- * 
+ *
  * <pre>{@code
  *
  * // Set pagination
@@ -99,7 +98,7 @@ public final class PageContext {
     /**
      * Starts a new page for the current thread with default count behavior (true).
      *
-     * @param pageNo   the page number (0-based)
+     * @param pageNo   the page number (1-based)
      * @param pageSize the page size
      * @return PageContext instance for chaining method calls (fluent API)
      */
@@ -110,7 +109,7 @@ public final class PageContext {
     /**
      * Starts a new page for the current thread with optional count query control.
      *
-     * @param pageNo   the page number (0-based)
+     * @param pageNo   the page number (1-based)
      * @param pageSize the page size
      * @param count    {@code true} to execute count query, {@code false} otherwise
      * @return PageContext instance for chaining method calls (fluent API)
@@ -122,7 +121,7 @@ public final class PageContext {
     /**
      * Starts a new page for the current thread with optional count query control.
      *
-     * @param pageNo   the page number (0-based)
+     * @param pageNo   the page number (1-based)
      * @param pageSize the page size
      * @param sort     the sorting information to apply
      * @return PageContext instance for chaining method calls (fluent API)
@@ -134,7 +133,7 @@ public final class PageContext {
     /**
      * Starts a new page for the current thread with sorting specification.
      *
-     * @param pageNo   the page number (0-based)
+     * @param pageNo   the page number (1-based)
      * @param pageSize the page size
      * @param count    {@code true} to execute count query, {@code false} otherwise
      * @param sort     the sorting information to apply
@@ -208,13 +207,13 @@ public final class PageContext {
     }
 
     /**
-     * Gets the current page number (0-based).
+     * Gets the current page number (1-based).
      *
-     * @return the page number, or 0 if no pagination is active
+     * @return the page number, or 1 if no pagination is active
      */
     public static int getCurrentPageNo() {
         Pageable pageable = LOCAL_PAGE.get();
-        return pageable != null ? pageable.getPageNo() : 0;
+        return pageable != null ? pageable.getPageNo() : 1;
     }
 
     /**

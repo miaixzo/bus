@@ -54,6 +54,12 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 public class AnnoKit {
 
     /**
+     * Constructs a new AnnoKit. Utility class constructor for static access.
+     */
+    private AnnoKit() {
+    }
+
+    /**
      * JDK annotation attribute field name.
      */
     private static final String JDK_MEMBER_ATTRIBUTE = "memberValues";
