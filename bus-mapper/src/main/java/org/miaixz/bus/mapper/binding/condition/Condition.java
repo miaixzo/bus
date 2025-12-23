@@ -104,6 +104,13 @@ public class Condition<T> {
     }
 
     /**
+     * Default constructor. Initializes the criteria list and set-values list.
+     */
+    public void of() {
+        new Condition();
+    }
+
+    /**
      * Adds a criteria group with an OR condition.
      *
      * @param criteria The criteria object to add.

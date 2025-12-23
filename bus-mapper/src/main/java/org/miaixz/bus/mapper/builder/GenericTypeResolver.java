@@ -53,10 +53,10 @@ public class GenericTypeResolver {
     private static final Map<Class<?>, Type[]> RESOLVED_MAPPER_TYPES_CACHE = new ConcurrentHashMap<>();
 
     /**
-     * Cache for resolved generic types of the interface where a specific method is declared (Method -> Actual Type
-     * Arguments).
+     * Cache for resolved generic types of the interface where a specific method is declared. Uses nested maps for
+     * zero-allocation lookups: Method -> (Type -> Type[])
      */
-    private static final Map<Method, Type[]> RESOLVED_METHOD_MAPPER_TYPES_CACHE = new ConcurrentHashMap<>();
+    private static final Map<Method, Map<Type, Type[]>> RESOLVED_METHOD_MAPPER_TYPES_CACHE = new ConcurrentHashMap<>();
 
     /**
      * Cache for resolved generic field types (Field -> Actual Type).
@@ -64,14 +64,16 @@ public class GenericTypeResolver {
     private static final Map<Field, Type> RESOLVED_FIELD_TYPE_CACHE = new ConcurrentHashMap<>();
 
     /**
-     * Cache for resolved generic method return types (Method -> Actual Return Type).
+     * Cache for resolved generic method return types. Uses nested maps for zero-allocation lookups: Method -> (Type ->
+     * Type)
      */
-    private static final Map<Method, Type> RESOLVED_RETURN_TYPE_CACHE = new ConcurrentHashMap<>();
+    private static final Map<Method, Map<Type, Type>> RESOLVED_RETURN_TYPE_CACHE = new ConcurrentHashMap<>();
 
     /**
-     * Cache for resolved generic method parameter types (Method -> Actual Parameter Types Array).
+     * Cache for resolved generic method parameter types. Uses nested maps for zero-allocation lookups: Method -> (Type
+     * -> Type[])
      */
-    private static final Map<Method, Type[]> RESOLVED_PARAM_TYPES_CACHE = new ConcurrentHashMap<>();
+    private static final Map<Method, Map<Type, Type[]>> RESOLVED_PARAM_TYPES_CACHE = new ConcurrentHashMap<>();
 
     /**
      * Private constructor to prevent instantiation of this utility class.
@@ -190,17 +192,18 @@ public class GenericTypeResolver {
      * @return An array of actual type arguments corresponding to the method's declaring interface's type parameters.
      */
     public static Type[] resolveMapperTypes(Method method, Type srcType) {
-        // Use cache to prevent repeated calculations
-        return RESOLVED_METHOD_MAPPER_TYPES_CACHE.computeIfAbsent(method, key -> {
-            Class<?> declaringClass = key.getDeclaringClass();
-            TypeVariable<? extends Class<?>>[] typeParameters = declaringClass.getTypeParameters();
-            Type[] result = new Type[typeParameters.length];
-            for (int i = 0; i < typeParameters.length; i++) {
-                // Resolve each type variable (T, K, V, etc.) against the source type context
-                result[i] = resolveType(typeParameters[i], srcType, declaringClass);
-            }
-            return result;
-        });
+        // Use nested maps for zero-allocation lookups
+        return RESOLVED_METHOD_MAPPER_TYPES_CACHE.computeIfAbsent(method, k -> new ConcurrentHashMap<>())
+                .computeIfAbsent(srcType, k -> {
+                    Class<?> declaringClass = method.getDeclaringClass();
+                    TypeVariable<? extends Class<?>>[] typeParameters = declaringClass.getTypeParameters();
+                    Type[] result = new Type[typeParameters.length];
+                    for (int i = 0; i < typeParameters.length; i++) {
+                        // Resolve each type variable (T, K, V, etc.) against the source type context
+                        result[i] = resolveType(typeParameters[i], srcType, declaringClass);
+                    }
+                    return result;
+                });
     }
 
     /**
@@ -274,13 +277,14 @@ public class GenericTypeResolver {
      * @return The actual resolved {@code Type} of the method's return value.
      */
     public static Type resolveReturnType(Method method, Type srcType) {
-        // Use cache to prevent repeated calculations
-        return RESOLVED_RETURN_TYPE_CACHE.computeIfAbsent(method, key -> {
-            Type returnType = key.getGenericReturnType();
-            Class<?> declaringClass = key.getDeclaringClass();
-            // Delegate to the core type resolution method
-            return resolveType(returnType, srcType, declaringClass);
-        });
+        // Use nested maps for zero-allocation lookups
+        return RESOLVED_RETURN_TYPE_CACHE.computeIfAbsent(method, k -> new ConcurrentHashMap<>())
+                .computeIfAbsent(srcType, k -> {
+                    Type returnType = method.getGenericReturnType();
+                    Class<?> declaringClass = method.getDeclaringClass();
+                    // Delegate to the core type resolution method
+                    return resolveType(returnType, srcType, declaringClass);
+                });
     }
 
     /**
@@ -291,17 +295,18 @@ public class GenericTypeResolver {
      * @return An array of actual resolved {@code Type}s for the method's parameters.
      */
     public static Type[] resolveParamTypes(Method method, Type srcType) {
-        // Use cache to prevent repeated calculations
-        return RESOLVED_PARAM_TYPES_CACHE.computeIfAbsent(method, key -> {
-            Type[] paramTypes = key.getGenericParameterTypes();
-            Class<?> declaringClass = key.getDeclaringClass();
-            Type[] result = new Type[paramTypes.length];
-            for (int i = 0; i < paramTypes.length; i++) {
-                // Resolve each parameter type against the source type context
-                result[i] = resolveType(paramTypes[i], srcType, declaringClass);
-            }
-            return result;
-        });
+        // Use nested maps for zero-allocation lookups
+        return RESOLVED_PARAM_TYPES_CACHE.computeIfAbsent(method, k -> new ConcurrentHashMap<>())
+                .computeIfAbsent(srcType, k -> {
+                    Type[] paramTypes = method.getGenericParameterTypes();
+                    Class<?> declaringClass = method.getDeclaringClass();
+                    Type[] result = new Type[paramTypes.length];
+                    for (int i = 0; i < paramTypes.length; i++) {
+                        // Resolve each parameter type against the source type context
+                        result[i] = resolveType(paramTypes[i], srcType, declaringClass);
+                    }
+                    return result;
+                });
     }
 
     /**
@@ -647,7 +652,7 @@ public class GenericTypeResolver {
          */
         @Override
         public String toString() {
-            return "ParameterizedTypeImpl [rawType=" + rawType + ", ownerType=" + ownerType + ", actualTypeArguments="
+            return "ParameterizedTypes [rawType=" + rawType + ", ownerType=" + ownerType + ", actualTypeArguments="
                     + Arrays.toString(actualTypeArguments) + "]";
         }
     }

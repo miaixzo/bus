@@ -108,7 +108,7 @@ public class GsonMessageConverter extends AbstractHttpMessageConverter {
 
                     // CORRECTED: Removed the inversion. Both GSON's strategy and our method
                     // return true to SKIP, so the result can be used directly.
-                    return GsonMessageConverter.this.shouldSkipField(field);
+                    return isFieldIgnored(field);
                 } catch (NoSuchFieldException | SecurityException e) {
                     Logger.warn(
                             "Could not access field '{}' for annotation check. Defaulting to include.",
@@ -122,7 +122,7 @@ public class GsonMessageConverter extends AbstractHttpMessageConverter {
             @Override
             public boolean shouldSkipClass(Class<?> clazz) {
                 // CORRECTED: Delegate to the base class for consistent class-level skipping logic.
-                return GsonMessageConverter.this.shouldSkipClass(clazz);
+                return isClassIgnored(clazz);
             }
         });
 

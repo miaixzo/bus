@@ -7,7 +7,8 @@
     "metadata-version": "8.3.5",
     "tested-versions": [
       "8.3.5",
-      "8.3.6"
+      "8.3.6",
+      "8.3.8"
     ]
   }
 ]

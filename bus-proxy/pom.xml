@@ -32,7 +32,7 @@
 
     <groupId>org.miaixz</groupId>
     <artifactId>bus-proxy</artifactId>
-    <version>8.3.6</version>
+    <version>8.3.8</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -85,7 +85,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <bus.version>8.3.6</bus.version>
+        <bus.version>8.3.8</bus.version>
         <spring.boot.version>3.5.8</spring.boot.version>
         <aspectj.version>1.9.24</aspectj.version>
     </properties>
