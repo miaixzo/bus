@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.vortex.handler;
 
+import java.time.Duration;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -41,6 +42,7 @@ import org.miaixz.bus.vortex.Context;
 import org.miaixz.bus.vortex.Handler;
 import org.miaixz.bus.vortex.Router;
 import org.miaixz.bus.vortex.magic.ErrorCode;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import org.springframework.web.server.ServerWebExchange;
@@ -48,14 +50,16 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.annotation.NonNull;
+import reactor.util.retry.Retry;
 
 /**
  * Request handling entry class, responsible for routing requests and asynchronously invoking multiple interceptor
  * logics.
  * <p>
- * This class implements the control flow for request processing, including request validation, routing strategy
- * selection, interceptor execution, and response handling. The specific protocol handling logic is entirely delegated
- * to their respective strategy implementers (HTTP, MQ, MCP).
+ * This class implements the complete control flow for request processing, including context validation, routing
+ * strategy selection, interceptor chain execution, and response handling. The concrete protocol handling logic is fully
+ * delegated to the respective {@link Router} implementations (e.g., HTTP, MQ, MCP).
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -63,54 +67,57 @@ import reactor.util.annotation.NonNull;
 public class VortexHandler {
 
     /**
-     * A thread-safe map of strategies, storing strategy implementations indexed by protocol name.
+     * Thread-safe map of routing strategies, keyed by protocol name, holding the corresponding {@link Router}
+     * implementations.
      * <p>
-     * This map allows dynamic selection of routing strategies based on the protocol, supporting HTTP, MQ, and MCP
-     * protocols. {@code ConcurrentHashMap} is used to ensure thread safety.
+     * Enables dynamic selection of routing strategies based on interaction mode, currently supporting HTTP, MQ, and MCP
+     * (including both remote Streamable HTTP and local STDIO transports). A thread-safe collection is used to support
+     * concurrent access.
      * </p>
      */
     private final Map<String, Router> routers;
 
     /**
-     * A list of ordered interceptors, used to process requests in a specific sequence.
+     * Ordered list of interceptors, sorted in ascending order by {@link Handler#getOrder()}, used to execute processing
+     * logic at various request stages in sequence.
      * <p>
-     * Interceptors are invoked at different stages of request processing (e.g., pre-processing, post-processing).
-     * Interceptors are sorted by their order property to ensure execution sequence.
+     * Interceptors are invoked at different phases of the request lifecycle (e.g., pre-processing, post-processing,
+     * completion callback).
      * </p>
      */
     private final List<Handler> handlers;
 
     /**
-     * Constructs a {@code VortexHandler}, initializing the strategy map and the interceptor list.
+     * Constructs a {@link VortexHandler} instance, initializing the routing strategy map and interceptor list.
      *
-     * @param handlers A list of asynchronous interceptor instances, used to handle various stages of a request.
-     * @param routers  A list of asynchronous interceptor instances, used to handle various stages of a request.
-     * @throws NullPointerException If handlers or the default strategy is null.
+     * @param handlers list of interceptor instances, may be empty
+     * @param routers  map of routing strategies, keyed by protocol name, with values being the corresponding
+     *                 {@link Router} implementations
+     * @throws NullPointerException if routers is null
      */
     public VortexHandler(List<Handler> handlers, Map<String, Router> routers) {
-        this.routers = routers;
-        Objects.requireNonNull(this.routers, "Default router cannot be null");
-        // If handlers is empty, use the default AccessHandler
+        this.routers = Objects.requireNonNull(routers, "Routers map cannot be null");
         this.handlers = handlers.isEmpty() ? List.of(new AccessHandler())
                 : handlers.stream().sorted(Comparator.comparingInt(Handler::getOrder)).collect(Collectors.toList());
     }
 
     /**
-     * Handles client requests, executes the control flow, and returns a response.
+     * Handles client requests; this is the unified entry point for the Vortex gateway.
      * <p>
-     * This method is the entry point for request processing, coordinating the entire request handling flow. The
-     * processing flow includes:
+     * This method orchestrates the entire request processing flow:
      * <ol>
-     * <li>Initialization and validation of the request context.</li>
-     * <li>Validation of configured assets.</li>
-     * <li>Selection of the routing strategy.</li>
-     * <li>Execution of pre-processing handlers.</li>
-     * <li>Delegation to the strategy implementer to handle the request.</li>
-     * <li>Execution of post-processing handlers.</li>
+     * <li>Retrieve and validate the request context</li>
+     * <li>Validate the Assets configuration</li>
+     * <li>Select the corresponding routing strategy based on {@link Assets#getMode()}</li>
+     * <li>Execute pre-handle logic for all interceptors</li>
+     * <li>Delegate actual forwarding or processing to the selected {@link Router}</li>
+     * <li>Execute post-handle and after-completion logic for all interceptors</li>
+     * <li>Log request duration, success/failure information</li>
      * </ol>
+     * </p>
      *
-     * @param request The client's {@link ServerRequest} object, containing all request information.
-     * @return {@link Mono<ServerResponse>} containing the response from the target service, returned reactively.
+     * @param request the client's {@link ServerRequest} containing full request information
+     * @return {@link Mono<ServerResponse>} the response from the target service, returned reactively
      */
     @NonNull
     public Mono<ServerResponse> handle(ServerRequest request) {
@@ -119,7 +126,7 @@ public class VortexHandler {
             String method = request.methodName();
             String path = request.path();
 
-            // 1. Initialize and validate the request context
+            // 1. Retrieve and validate request context
             final Context context = contextView.get(Context.class);
             if (context == null) {
                 Logger.info(true, "Vortex", "[N/A] [{}] [{}] [CONTEXT_ERROR] - Request context is null", method, path);
@@ -129,7 +136,7 @@ public class VortexHandler {
             ServerWebExchange exchange = request.exchange();
             Logger.info(true, "Vortex", "[{}] [{}] [{}] [REQUEST_START] - Request started", ip, method, path);
 
-            // 2. Validate configured assets
+            // 2. Validate Assets configuration
             Assets assets = context.getAssets();
             if (assets == null) {
                 Logger.info(
@@ -142,26 +149,40 @@ public class VortexHandler {
                 throw new ValidateException(ErrorCode._100800);
             }
 
-            // 3. Select the routing strategy
-            String mode = switch (assets.getMode()) {
-                case 1 -> Protocol.HTTP.getName();
-                case 2 -> Protocol.MQ.getName();
-                case 3 -> Protocol.MCP.getName();
-                case 4 -> Protocol.WS.getName();
-                default -> Protocol.HTTP.getName();
+            // 3. Map mode to router key
+            String modeKey = switch (assets.getMode()) {
+                case 1 -> Protocol.HTTP.getName(); // HTTP/HTTPS reverse proxy
+                case 2 -> Protocol.MQ.getName(); // Message queue
+                case 3 -> Protocol.MCP.getName(); // Model Context Protocol (handles both remote and local transports)
+                case 4 -> Protocol.GRPC.getName(); // gRPC
+                case 5 -> Protocol.WS.getName(); // WebSocket
+                default -> throw new ValidateException(ErrorCode._116005);
             };
 
-            Router router = routers.get(mode);
+            // 4. Retrieve the corresponding Router instance
+            Router router = routers.get(modeKey);
+            if (router == null) {
+                Logger.info(
+                        true,
+                        "Vortex",
+                        "[{}] [{}] [{}] [ROUTER_NOT_FOUND] - No router found for mode key: {}",
+                        ip,
+                        method,
+                        path,
+                        modeKey);
+                throw new ValidateException(ErrorCode._100800, "No router for mode: " + modeKey);
+            }
+
             Logger.info(
                     true,
                     "Vortex",
-                    "[{}] [{}] [{}] [ROUTER_SELECT] - Using route strategy: {}",
+                    "[{}] [{}] [{}] [ROUTER_SELECT] - Using router: {}",
                     ip,
                     method,
                     path,
                     router.getClass().getSimpleName());
 
-            // 4. Execute pre-processing
+            // 5. Execute pre-interceptors and delegate routing
             return executePreHandle(exchange, router).flatMap(preHandleResult -> {
                 if (!preHandleResult) {
                     Logger.info(
@@ -174,8 +195,11 @@ public class VortexHandler {
                     throw new ValidateException(ErrorCode._100800);
                 }
 
-                // 5. Delegate to the strategy implementer to handle the request
-                return router.route(request).flatMap(response -> executePostHandlers(exchange, router, response))
+                // Actual routing with timeout + retry mechanism + post-interceptors
+                return router.route(request)
+                        .timeout(Duration.ofSeconds(assets.getTimeout() != null ? assets.getTimeout() : 60))
+                        .retryWhen(buildRetrySpec(assets, ip, method, path))
+                        .flatMap(response -> executePostHandlers(exchange, router, response))
                         .doOnSuccess(response -> {
                             long duration = System.currentTimeMillis() - context.getTimestamp();
                             Logger.info(
@@ -190,7 +214,7 @@ public class VortexHandler {
                             Logger.info(
                                     false,
                                     "Vortex",
-                                    "[{}] [{}] [{}] [REQUEST_COMPLETE] - Request completed with status: {}",
+                                    "[{}] [{}] [{}] [REQUEST_COMPLETE] - Status: {}",
                                     ip,
                                     method,
                                     path,
@@ -199,12 +223,13 @@ public class VortexHandler {
                             Logger.info(
                                     false,
                                     "Vortex",
-                                    "[{}] [{}] [{}] [REQUEST_ERROR] - Error processing request: {}",
+                                    "[{}] [{}] [{}] [REQUEST_ERROR] - Error: {}",
                                     ip,
                                     method,
                                     path,
                                     error.getMessage());
-                            // Sequentially run afterCompletion for all handlers before re-throwing the error
+
+                            // Ensure afterCompletion is executed for all handlers even on error
                             return Flux.fromIterable(handlers)
                                     .concatMap(handler -> handler.afterCompletion(exchange, router, null, null, error))
                                     .then(Mono.error(error));
@@ -214,46 +239,118 @@ public class VortexHandler {
     }
 
     /**
-     * Executes the pre-processing logic of all interceptors sequentially.
+     * Sequentially executes the pre-handle logic of all interceptors.
      * <p>
-     * This method calls the {@code preHandle} method of all interceptors in a sequential chain. If any interceptor
-     * returns {@code false}, the chain is immediately terminated, and the method returns {@code Mono<Boolean>} with a
-     * value of {@code false}, effectively "short-circuiting" the execution.
+     * Interceptors are invoked in registration order. If any interceptor returns {@code false}, the chain is
+     * immediately terminated, preventing subsequent routing.
      * </p>
      *
-     * @param exchange The {@link ServerWebExchange} object, containing request and response context information.
-     * @param router   The routing strategy, used to determine how to route the request.
-     * @return {@code Mono<Boolean>} indicating whether all pre-processing steps passed ({@code true}) or if any
-     *         interceptor blocked the request ({@code false}).
+     * @param exchange the current request/response context
+     * @param router   the selected routing strategy instance
+     * @return {@link Mono<Boolean>} indicating whether all pre-handle steps passed (true = all passed)
      */
     private Mono<Boolean> executePreHandle(ServerWebExchange exchange, Router router) {
         return Flux.fromIterable(handlers).concatMap(handler -> handler.preHandle(exchange, router, null))
-                .all(result -> result);
+                .all(Boolean::booleanValue);
     }
 
     /**
-     * Executes the post-processing logic of all interceptors sequentially.
+     * Sequentially executes post-handle and after-completion logic of all interceptors.
      * <p>
-     * This method first calls the {@code postHandle} method of all interceptors in sequence. After that completes, it
-     * calls the {@code afterCompletion} method of all interceptors, also in sequence.
+     * First invokes {@link Handler#postHandle} for all handlers in sequence, then invokes
+     * {@link Handler#afterCompletion}. Completion callbacks should be executed regardless of success or failure.
      * </p>
      *
-     * @param exchange The {@link ServerWebExchange} object, containing request and response context information.
-     * @param router   The routing strategy, used to determine how to route the request.
-     * @param response The {@link ServerResponse} object, containing the response status, headers, and body.
-     * @return {@code Mono<ServerResponse>} The original response, after all interceptors have been processed.
+     * @param exchange the current request/response context
+     * @param router   the selected routing strategy instance
+     * @param response the response returned from the target service (may be null if error occurred earlier)
+     * @return {@link Mono<ServerResponse>} the original response after interceptor processing
      */
     private Mono<ServerResponse> executePostHandlers(
             ServerWebExchange exchange,
             Router router,
             ServerResponse response) {
-        Mono<Void> postHandleChain = Flux.fromIterable(handlers)
+        // postHandle chain
+        Mono<Void> postHandle = Flux.fromIterable(handlers)
                 .concatMap(handler -> handler.postHandle(exchange, router, null, response)).then();
 
-        Mono<Void> afterCompletionChain = Flux.fromIterable(handlers)
+        // afterCompletion chain (normal case)
+        Mono<Void> afterCompletion = Flux.fromIterable(handlers)
                 .concatMap(handler -> handler.afterCompletion(exchange, router, null, response, null)).then();
 
-        return postHandleChain.then(afterCompletionChain).thenReturn(response);
+        return postHandle.then(afterCompletion).thenReturn(response);
+    }
+
+    /**
+     * Builds a retry specification based on the Assets configuration.
+     * <p>
+     * This method creates a retry strategy that:
+     * <ul>
+     * <li>Retries up to {@link Assets#getRetries()} times</li>
+     * <li>Uses exponential backoff starting at 100ms</li>
+     * <li>Only retries on transient errors (network timeouts, 5xx errors)</li>
+     * <li>Logs each retry attempt for observability</li>
+     * </ul>
+     * </p>
+     *
+     * @param assets The asset configuration containing retry policy
+     * @param ip     The client IP for logging
+     * @param method The HTTP method for logging
+     * @param path   The request path for logging
+     * @return A configured {@link Retry} specification
+     */
+    private Retry buildRetrySpec(Assets assets, String ip, String method, String path) {
+        int maxRetries = assets.getRetries() != null && assets.getRetries() > 0 ? assets.getRetries() : 0;
+
+        if (maxRetries == 0) {
+            // No retries configured
+            return Retry.max(0);
+        }
+
+        return Retry.backoff(maxRetries, Duration.ofMillis(100)).maxBackoff(Duration.ofSeconds(5)).filter(throwable -> {
+            // Only retry on transient errors
+            if (throwable instanceof java.util.concurrent.TimeoutException) {
+                return true; // Reactor timeout
+            }
+            if (throwable instanceof java.net.ConnectException) {
+                return true; // Connection refused
+            }
+            if (throwable instanceof java.net.SocketTimeoutException) {
+                return true; // Read timeout
+            }
+            if (throwable instanceof java.io.IOException) {
+                return true; // Network I/O errors
+            }
+            if (throwable instanceof WebClientResponseException) {
+                WebClientResponseException ex = (WebClientResponseException) throwable;
+                // Retry on 5xx server errors and 429 Too Many Requests
+                return ex.getStatusCode().is5xxServerError() || ex.getStatusCode().value() == 429;
+            }
+            return false; // Don't retry on other errors (4xx client errors, etc.)
+        }).doBeforeRetry(retrySignal -> {
+            long attempt = retrySignal.totalRetries() + 1;
+            Throwable failure = retrySignal.failure();
+            Logger.warn(
+                    true,
+                    "Vortex",
+                    "[{}] [{}] [{}] [RETRY_ATTEMPT] - Retry attempt {}/{} after error: {}",
+                    ip,
+                    method,
+                    path,
+                    attempt,
+                    maxRetries,
+                    failure.getMessage());
+        }).onRetryExhaustedThrow((retryBackoffSpec, retrySignal) -> {
+            Logger.error(
+                    true,
+                    "Vortex",
+                    "[{}] [{}] [{}] [RETRY_EXHAUSTED] - All {} retry attempts exhausted",
+                    ip,
+                    method,
+                    path,
+                    maxRetries);
+            return retrySignal.failure();
+        });
     }
 
 }

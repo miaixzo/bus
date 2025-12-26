@@ -27,10 +27,8 @@
 */
 package org.miaixz.bus.vortex.support.rest;
 
-import java.time.Duration;
 import java.util.Map;
 
-import io.netty.handler.timeout.ReadTimeoutHandler;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.NonNull;
@@ -58,6 +56,7 @@ import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 import reactor.netty.http.client.HttpClient;
 import reactor.netty.resources.ConnectionProvider;
+
 
 /**
  * The core executor for forwarding requests to downstream RESTful HTTP services.
@@ -108,33 +107,15 @@ public class RestService {
         String baseUrl = buildBaseUrl(assets);
         Logger.info(true, "Http", "[{}] [{}] [{}] [HTTP_ROUTER_BASEURL] - Base URL: {}", ip, method, path, baseUrl);
 
-        // 2. Dynamically configure an HttpClient for THIS request.
-        HttpClient configuredClient;
-        if (assets.getMode() == 3) { // 3 represents SSE (Streaming)
-            Logger.info(
-                    true,
-                    "Http",
-                    "[{}] Applying IDLE timeout of {} seconds for streaming request.",
-                    ip,
-                    assets.getTimeout());
-            configuredClient = HttpClient.create(SHARED_CONNECTION_PROVIDER)
-                    .doOnConnected(conn -> conn.addHandlerLast(new ReadTimeoutHandler(assets.getTimeout())));
-        } else { // Unary request
-            Logger.info(
-                    true,
-                    "Http",
-                    "[{}] Applying RESPONSE timeout of {} seconds for unary request.",
-                    ip,
-                    assets.getTimeout());
-            configuredClient = HttpClient.create(SHARED_CONNECTION_PROVIDER)
-                    .responseTimeout(Duration.ofSeconds(assets.getTimeout()));
-        }
+        // 2. Build a WebClient with shared connection pool (timeout is handled at VortexHandler level)
+        HttpClient httpClient = HttpClient.create(SHARED_CONNECTION_PROVIDER);
+        WebClient webClient = WebClient.builder()
+                .clientConnector(new ReactorClientHttpConnector(httpClient))
+                .exchangeStrategies(CACHED_EXCHANGE_STRATEGIES)
+                .baseUrl(baseUrl)
+                .build();
 
-        // 3. Build a WebClient ON TOP of the dynamically configured HttpClient.
-        WebClient webClient = WebClient.builder().clientConnector(new ReactorClientHttpConnector(configuredClient))
-                .exchangeStrategies(CACHED_EXCHANGE_STRATEGIES).baseUrl(baseUrl).build();
-
-        // 4. Build and execute the request.
+        // 3. Build and execute the request.
         String targetUri = buildTargetUri(assets, context);
         Logger.info(true, "Http", "[{}] [{}] [{}] [HTTP_ROUTER_URI] - Target URI: {}", ip, method, path, targetUri);
 
@@ -148,7 +129,7 @@ public class RestService {
                 path,
                 context.getHttpMethod());
 
-        // 5. Configure request headers, copying from the original request and cleaning up as needed.
+        // 4. Configure request headers, copying from the original request and cleaning up as needed.
         bodySpec.headers(headers -> {
             headers.addAll(request.headers().asHttpHeaders());
             headers.remove(HttpHeaders.HOST);
@@ -156,7 +137,7 @@ public class RestService {
         });
         Logger.info(true, "Http", "[{}] [{}] [{}] [HTTP_ROUTER_HEADERS] - Headers configured", ip, method, path);
 
-        // 6. Handle the request body, if applicable (i.e., for non-GET requests).
+        // 5. Handle the request body, if applicable (i.e., for non-GET requests).
         if (!HttpMethod.GET.equals(context.getHttpMethod())) {
             MediaType mediaType = request.headers().contentType().orElse(null);
             if (mediaType != null) {
@@ -197,35 +178,36 @@ public class RestService {
                     path);
         }
 
-        // 7. Send the request and process the response.
+        // 6. Send the request and process the response (timeout and retry are handled at VortexHandler level).
         Logger.info(
                 true,
                 "Http",
-                "[{}] [{}] [{}] [HTTP_ROUTER_SEND] - Sending request with timeout: {}s",
+                "[{}] [{}] [{}] [HTTP_ROUTER_SEND] - Sending request",
                 ip,
                 method,
-                path,
-                assets.getTimeout());
+                path);
 
-        // This is the refactored logic. We choose the execution strategy based on the asset's mode.
-        if (assets.getMode() == 3) {
-            // ** STRATEGY 1: STREAMING (for SSE / Reactive) **
-            // Use the low-memory exchangeToMono. This is your provided code.
+        // Choose the execution strategy based on the asset's stream configuration.
+        boolean isStreaming = assets.getStream() != null && assets.getStream() == 2;
+
+        if (isStreaming) {
+            // ** STRATEGY 1: STREAMING (stream = 2) **
+            // Use the low-memory exchangeToMono for streaming responses (SSE, chunked transfer).
             Logger.info(
                     true,
                     "Http",
-                    "[{}] [{}] [{}] [HTTP_ROUTER_STRATEGY] - Using STREAMING mode (exchangeToMono)",
+                    "[{}] [{}] [{}] [HTTP_ROUTER_STRATEGY] - Using STREAMING mode (stream=2, exchangeToMono)",
                     ip,
                     method,
                     path);
             return executeStreaming(bodySpec, ip, method, path);
         } else {
-            // ** STRATEGY 2: BUFFERING (for Unary / Servlet) **
-            // Use the compatible retrieve().toEntity() mode. This is the fix.
+            // ** STRATEGY 2: ATOMIC/BUFFERING (stream = 1 or null) **
+            // Use the buffering retrieve().toEntity() for standard responses.
             Logger.info(
                     true,
                     "Http",
-                    "[{}] [{}] [{}] [HTTP_ROUTER_STRATEGY] - Using BUFFERING mode (retrieve.toEntity)",
+                    "[{}] [{}] [{}] [HTTP_ROUTER_STRATEGY] - Using ATOMIC mode (stream=1, retrieve.toEntity)",
                     ip,
                     method,
                     path);
@@ -430,13 +412,13 @@ public class RestService {
 
             return responseBuilder.body(bodyFlux, DataBuffer.class);
         }).doOnSubscribe(
-                subscription -> Logger.info(
-                        true,
-                        "Http",
-                        "[{}] [{}] [{}] [HTTP_ROUTER_SUBSCRIBE] - Request subscribed (Streaming).",
-                        ip,
-                        method,
-                        path))
+                        subscription -> Logger.info(
+                                true,
+                                "Http",
+                                "[{}] [{}] [{}] [HTTP_ROUTER_SUBSCRIBE] - Request subscribed (Streaming).",
+                                ip,
+                                method,
+                                path))
                 .doOnSuccess(
                         serverResponse -> Logger.info(
                                 false,

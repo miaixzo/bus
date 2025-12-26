@@ -89,6 +89,8 @@
         <lombok.version>1.18.42</lombok.version>
         <spring.boot.version>3.5.8</spring.boot.version>
         <guava.version>33.5.0-jre</guava.version>
+        <grpc.version>1.78.0</grpc.version>
+        <protobuf.version>4.33.2</protobuf.version>
         <jakarta.servlet.version>6.1.0</jakarta.servlet.version>
     </properties>
 
@@ -124,6 +126,26 @@
             <artifactId>guava</artifactId>
             <version>${guava.version}</version>
             <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>io.grpc</groupId>
+            <artifactId>grpc-netty-shaded</artifactId>
+            <version>${grpc.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.grpc</groupId>
+            <artifactId>grpc-protobuf</artifactId>
+            <version>${grpc.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.grpc</groupId>
+            <artifactId>grpc-stub</artifactId>
+            <version>${grpc.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.protobuf</groupId>
+            <artifactId>protobuf-java-util</artifactId>
+            <version>${protobuf.version}</version>
         </dependency>
         <dependency>
             <groupId>jakarta.servlet</groupId>

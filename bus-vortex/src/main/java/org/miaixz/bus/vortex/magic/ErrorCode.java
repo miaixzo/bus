@@ -80,4 +80,13 @@ public class ErrorCode extends org.miaixz.bus.core.basic.normal.ErrorCode {
     public static final Errors _116004 = ErrorRegistry.builder().key("116004").value("Request body is too large")
             .build();
 
+    /**
+     * Error code: 116005 - Unsupported interaction mode.
+     * <p>
+     * Indicates that the configured {@code mode} in the {@link org.miaixz.bus.vortex.Assets} is not supported or
+     * recognized by the current Vortex gateway instance.
+     * </p>
+     */
+    public static final Errors _116005 = ErrorRegistry.builder().key("116005").value("Unsupported interaction mode")
+            .build();
 }

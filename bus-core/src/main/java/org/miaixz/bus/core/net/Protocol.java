@@ -254,6 +254,11 @@ public enum Protocol {
      */
     MCP("MCP"),
 
+    /**
+     * gRPC - High-performance RPC framework using Protocol Buffers.
+     */
+    GRPC("gRPC"),
+
     ;
 
     /**

@@ -79,6 +79,10 @@ module bus.vortex {
     requires static io.netty.handler;
     requires static org.reactivestreams;
     requires static com.google.common;
+    requires io.grpc.stub;
+    requires io.grpc;
+    requires com.google.protobuf.util;
+    requires com.google.protobuf;
 
     exports org.miaixz.bus.vortex;
     exports org.miaixz.bus.vortex.filter;
