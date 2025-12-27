@@ -32,7 +32,7 @@
 
     <groupId>org.miaixz</groupId>
     <artifactId>bus-auth</artifactId>
-    <version>8.3.8</version>
+    <version>8.3.9</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -85,9 +85,9 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <bus.version>8.3.8</bus.version>
+        <bus.version>8.3.9</bus.version>
         <lombok.version>1.18.42</lombok.version>
-        <bcpkix.version>1.82</bcpkix.version>
+        <bcpkix.version>1.83</bcpkix.version>
         <vertx.version>5.0.1</vertx.version>
     </properties>
 

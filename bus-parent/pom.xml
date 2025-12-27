@@ -38,7 +38,7 @@
 
     <groupId>org.miaixz</groupId>
     <artifactId>bus-parent</artifactId>
-    <version>8.3.8</version>
+    <version>8.3.9</version>
     <packaging>pom</packaging>
 
     <name>${project.artifactId}</name>
@@ -91,7 +91,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <bus.version>8.3.8</bus.version>
+        <bus.version>8.3.9</bus.version>
         <lombok.version>1.18.42</lombok.version>
         <spring.boot.version>3.5.8</spring.boot.version>
         <jakarta.persistence.version>3.2.0</jakarta.persistence.version>
@@ -108,7 +108,7 @@
         <tinylog.version>2.7.0</tinylog.version>
         <yaml.version>2.5</yaml.version>
         <aspectj.version>1.9.24</aspectj.version>
-        <bcpkix.version>1.82</bcpkix.version>
+        <bcpkix.version>1.83</bcpkix.version>
         <temporal.version>1.31.0</temporal.version>
         <fastjson.version>2.0.60</fastjson.version>
         <gson.version>2.13.2</gson.version>
@@ -153,7 +153,7 @@
         <mongo.version>5.5.1</mongo.version>
         <curator.version>5.8.0</curator.version>
         <sardine.version>5.13</sardine.version>
-        <amazon.s3.version>2.32.33</amazon.s3.version>
+        <amazon.s3.version>2.40.15</amazon.s3.version>
     </properties>
 
     <dependencyManagement>

@@ -32,7 +32,7 @@
 
     <groupId>org.miaixz</groupId>
     <artifactId>bus-storage</artifactId>
-    <version>8.3.8</version>
+    <version>8.3.9</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -85,12 +85,12 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <bus.version>8.3.8</bus.version>
+        <bus.version>8.3.9</bus.version>
         <lombok.version>1.18.42</lombok.version>
         <jackson.version>2.20.0</jackson.version>
         <sardine.version>5.13</sardine.version>
         <jsch.version>2.27.2</jsch.version>
-        <amazon.s3.version>2.32.33</amazon.s3.version>
+        <amazon.s3.version>2.40.15</amazon.s3.version>
         <smbj.version>0.14.0</smbj.version>
     </properties>
 

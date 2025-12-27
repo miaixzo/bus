@@ -24,7 +24,6 @@ import org.miaixz.bus.mapper.parsing.SqlSource;
  * <li>Dynamic configuration building based on current datasource</li>
  * <li>Three-tier configuration priority (Capture > Derived > Defaults)</li>
  * </ul>
- * </p>
  *
  * @param <T> the type parameter for the mapper handler
  * @param <C> the configuration type (e.g., TenantConfig, PopulateConfig, etc.)
