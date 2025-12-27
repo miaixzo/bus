@@ -30,6 +30,7 @@ package org.miaixz.bus.vortex.support;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.vortex.Assets;
 import org.miaixz.bus.vortex.Context;
@@ -45,7 +46,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
-import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 
 /**
@@ -185,7 +185,7 @@ public class McpRouter implements Router {
 
             // Convert result to streaming data buffers
             Flux<DataBuffer> dataFlux = Flux.interval(Duration.ofMillis(10)).take(1).map(i -> {
-                byte[] bytes = resultJson.getBytes(StandardCharsets.UTF_8);
+                byte[] bytes = resultJson.getBytes(Charset.UTF_8);
                 return bufferFactory.wrap(bytes);
             });
 

@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.vortex.support;
 
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Assets;
@@ -42,7 +43,6 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 
 /**
@@ -140,7 +140,7 @@ public class MqRouter implements Router {
 
         // Convert response to streaming data buffers
         Flux<DataBuffer> dataFlux = Flux.interval(Duration.ofMillis(10)).take(1).map(i -> {
-            byte[] bytes = responseJson.getBytes(StandardCharsets.UTF_8);
+            byte[] bytes = responseJson.getBytes(Charset.UTF_8);
             return bufferFactory.wrap(bytes);
         });
 

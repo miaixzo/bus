@@ -27,8 +27,7 @@
 */
 package org.miaixz.bus.vortex.provider;
 
-import java.nio.charset.StandardCharsets;
-
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Provider;
 import org.springframework.core.io.buffer.DataBuffer;
@@ -74,7 +73,7 @@ public class BinaryProvider implements Provider {
                 Logger.debug(true, "BinaryProvider", "Processing byte array of size: {}", bytes.length);
                 // For binary data, we don't actually want to convert to string
                 // But for Provider interface compatibility, we'll use a marker
-                return new String(bytes, StandardCharsets.ISO_8859_1);
+                return new String(bytes, Charset.ISO_8859_1);
             }
 
             // If it's a DataBuffer, extract bytes
@@ -83,7 +82,7 @@ public class BinaryProvider implements Provider {
                 byte[] bytes = new byte[dataBuffer.readableByteCount()];
                 dataBuffer.read(bytes);
                 Logger.debug(true, "BinaryProvider", "Processing DataBuffer of size: {}", bytes.length);
-                return new String(bytes, StandardCharsets.ISO_8859_1);
+                return new String(bytes, Charset.ISO_8859_1);
             }
 
             // If it's a Flux of DataBuffer, we can't serialize to a single string

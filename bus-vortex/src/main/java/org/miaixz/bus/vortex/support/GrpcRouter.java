@@ -103,8 +103,9 @@ public class GrpcRouter implements Router {
             boolean isStreaming = assets.getStream() != null && assets.getStream() == 2;
 
             return request.bodyToMono(String.class).switchIfEmpty(Mono.just("{}")).flatMap(payload -> {
-                // Invoke gRPC service
-                Mono<String> responseMono = this.service.invoke(assets, payload);
+                // Invoke gRPC service (wrap synchronous call in Mono)
+                Mono<String> responseMono = Mono.fromCallable(() -> this.service.invoke(assets, payload))
+                        .subscribeOn(reactor.core.scheduler.Schedulers.boundedElastic());
 
                 if (isStreaming) {
                     // STREAMING MODE: Use streaming execution

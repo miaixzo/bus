@@ -44,7 +44,6 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.Args;
 import org.miaixz.bus.mapper.Context;
-import org.miaixz.bus.mapper.OGNL;
 import org.miaixz.bus.mapper.handler.ConditionHandler;
 
 /**
@@ -316,10 +315,9 @@ public class TenantHandler<T> extends ConditionHandler<T, TenantConfig> {
         String tenantId = currentConfig.getProvider().getTenantId();
         if (tenantId == null || tenantId.isEmpty()) {
             // Throw exception without SQL details to avoid duplicate logging
-            throw new IllegalStateException(
-                    "Tenant ID is required but not found. " +
-                    "Please set tenant ID using TenantContext.setTenantId() before executing database operations. " +
-                    "Mapper: " + mapperId);
+            throw new IllegalStateException("Tenant ID is required but not found. "
+                    + "Please set tenant ID using TenantContext.setTenantId() before executing database operations. "
+                    + "Mapper: " + mapperId);
         }
 
         // Rewrite SQL with actual tenant ID
