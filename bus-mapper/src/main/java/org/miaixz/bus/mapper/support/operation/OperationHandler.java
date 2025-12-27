@@ -37,7 +37,8 @@ import org.apache.ibatis.reflection.MetaObject;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.mapper.handler.ConditionHandler;
+import org.miaixz.bus.mapper.handler.AbstractSqlHandler;
+import org.miaixz.bus.mapper.handler.MapperHandler;
 
 /**
  * Operation handler to prevent full table updates and deletes. This handler intercepts UPDATE and DELETE statements to
@@ -51,7 +52,7 @@ import org.miaixz.bus.mapper.handler.ConditionHandler;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class OperationHandler<T> extends ConditionHandler<T> {
+public class OperationHandler<T> extends AbstractSqlHandler implements MapperHandler<T> {
 
     /**
      * Pattern to detect WHERE clause in SQL statements (case-insensitive)
@@ -79,7 +80,7 @@ public class OperationHandler<T> extends ConditionHandler<T> {
 
     @Override
     public int getOrder() {
-        return MIN_VALUE + 1;
+        return MIN_VALUE + 3;
     }
 
     /**

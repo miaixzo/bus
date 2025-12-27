@@ -194,7 +194,7 @@ public class OpenApiClient implements McpClient {
      *         the request fails.
      */
     @Override
-    public Mono<String> callTool(String toolName, Map<String, Object> arguments) {
+    public Mono<Object> callTool(String toolName, Map<String, Object> arguments) {
         // 1. Look up the tool definition.
         Tool tool = tools.get(toolName);
         if (tool == null) {
@@ -238,8 +238,10 @@ public class OpenApiClient implements McpClient {
 
         Logger.info("Executing OpenAPI tool '{}': {} {}", toolName, httpMethod, finalUri);
 
-        // 9. Execute the request and return the response body.
-        return requestSpec.retrieve().bodyToMono(String.class)
+        // 9. Execute the request and return the response body as Object.
+        return requestSpec.retrieve().bodyToMono(String.class).map(response -> (Object) response) // Cast String to
+                                                                                                  // Object to match
+                                                                                                  // interface
                 .doOnSuccess(response -> Logger.info("Received response for tool '{}'", toolName));
     }
 

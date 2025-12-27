@@ -108,13 +108,11 @@ public class VortexHandler {
      * <ol>
      * <li>Retrieve and validate the request context</li>
      * <li>Validate the Assets configuration</li>
-     * <li>Select the corresponding routing strategy based on {@link Assets#getMode()}</li>
      * <li>Execute pre-handle logic for all interceptors</li>
      * <li>Delegate actual forwarding or processing to the selected {@link Router}</li>
      * <li>Execute post-handle and after-completion logic for all interceptors</li>
      * <li>Log request duration, success/failure information</li>
      * </ol>
-     * </p>
      *
      * @param request the client's {@link ServerRequest} containing full request information
      * @return {@link Mono<ServerResponse>} the response from the target service, returned reactively
@@ -199,8 +197,7 @@ public class VortexHandler {
                 return router.route(request)
                         .timeout(Duration.ofSeconds(assets.getTimeout() != null ? assets.getTimeout() : 60))
                         .retryWhen(buildRetrySpec(assets, ip, method, path))
-                        .flatMap(response -> executePostHandlers(exchange, router, response))
-                        .doOnSuccess(response -> {
+                        .flatMap(response -> executePostHandlers(exchange, router, response)).doOnSuccess(response -> {
                             long duration = System.currentTimeMillis() - context.getTimestamp();
                             Logger.info(
                                     false,

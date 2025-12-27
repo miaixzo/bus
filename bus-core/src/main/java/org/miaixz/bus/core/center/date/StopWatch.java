@@ -208,7 +208,7 @@ public class StopWatch {
             throw new IllegalStateException("Can't stop StopWatch: it's not running");
         }
 
-        final long lastTime = System.nanoTime() - this.startTimeNanos;
+        final long lastTime = Math.max(System.nanoTime() - this.startTimeNanos, 0);
         this.totalTimeNanos += lastTime;
         this.lastTaskInfo = new TaskInfo(this.currentTaskName, lastTime);
         if (null != this.taskList) {

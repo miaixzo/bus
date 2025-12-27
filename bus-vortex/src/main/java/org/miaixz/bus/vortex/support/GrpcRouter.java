@@ -48,8 +48,7 @@ import reactor.core.publisher.Mono;
  * A {@link Router} implementation for forwarding requests to gRPC services.
  * <p>
  * This class acts as a coordinator for gRPC communication. It extracts the request body and uses a {@link GrpcService}
- * to invoke the gRPC method on the target service. It supports both unary and streaming gRPC calls based on the
- * {@link Assets#getStream()} configuration.
+ * to invoke the gRPC method on the target service.
  *
  * @author Kimi Liu
  * @see GrpcService
@@ -76,8 +75,6 @@ public class GrpcRouter implements Router {
      * <p>
      * This method retrieves the {@link Context} and {@link Assets} to determine the target gRPC service and method. It
      * then reads the request body and delegates the invocation to the {@link GrpcService}.
-     * <p>
-     * Supports both streaming and atomic response modes based on the {@link Assets#getStream()} configuration.
      *
      * @param request The current {@link ServerRequest}.
      * @return A {@code Mono<ServerResponse>} containing the response from the gRPC service.

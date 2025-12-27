@@ -164,8 +164,9 @@ public record PossibleObjectCreator<T>(Class<T> clazz) implements ObjectCreator<
             if (0 == parameterTypes.length) {
                 continue;
             }
-            ReflectKit.setAccessible(constructor);
+
             try {
+                ReflectKit.setAccessible(constructor);
                 return constructor.newInstance(ClassKit.getDefaultValues(parameterTypes));
             } catch (final Exception ignore) {
                 // If constructor fails, continue to try the next one.

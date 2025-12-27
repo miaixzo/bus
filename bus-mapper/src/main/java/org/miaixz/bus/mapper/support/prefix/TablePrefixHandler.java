@@ -28,16 +28,15 @@
 package org.miaixz.bus.mapper.support.prefix;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import org.apache.ibatis.executor.Executor;
-import org.apache.ibatis.executor.statement.StatementHandler;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
-import org.apache.ibatis.reflection.MetaObject;
-import org.apache.ibatis.reflection.SystemMetaObject;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 import org.miaixz.bus.core.lang.Normal;
@@ -47,9 +46,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.Args;
 import org.miaixz.bus.mapper.Context;
-import org.miaixz.bus.mapper.Holder;
-import org.miaixz.bus.mapper.handler.AbstractSqlHandler;
-import org.miaixz.bus.mapper.handler.MapperHandler;
+import org.miaixz.bus.mapper.handler.ConditionHandler;
 
 /**
  * Table prefix handler.
@@ -71,12 +68,17 @@ import org.miaixz.bus.mapper.handler.MapperHandler;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class TablePrefixHandler extends AbstractSqlHandler implements MapperHandler<Object> {
+public class TablePrefixHandler extends ConditionHandler<Object, TablePrefixConfig> {
 
     /**
      * Prefix configuration from file (lowest priority).
      */
     private TablePrefixConfig config;
+
+    /**
+     * Cached modification status to avoid redundant processing.
+     */
+    private static final ConcurrentHashMap<String, Boolean> MODIFICATION_CACHE = new ConcurrentHashMap<>();
 
     /**
      * Default constructor (uses default configuration).
@@ -107,20 +109,61 @@ public class TablePrefixHandler extends AbstractSqlHandler implements MapperHand
             return false;
         }
 
+        // Store all properties for dynamic lookup (in parent class)
+        this.properties = properties;
+
+        // Get current datasource key for static config initialization
+        String datasourceKey = getDatasourceKey();
+
         // Try to get provider from properties
-        TablePrefixProvider provider = null;
-        Object object = properties.get(Args.PROVIDER_KEY);
-        if (object instanceof TablePrefixProvider) {
-            provider = (TablePrefixProvider) object;
+        TablePrefixProvider provider = getProvider(properties, TablePrefixProvider.class);
+
+        // Build initial static config
+        TablePrefixConfig staticConfig = buildTablePrefixConfig(datasourceKey, properties, provider);
+        if (staticConfig == null) {
+            return false;
         }
 
-        // Get current datasource key
-        String datasourceKey = Holder.getKey();
-        // Use actual default datasource name or fallback to "default"
-        if (StringKit.isEmpty(datasourceKey)) {
-            datasourceKey = "default";
-        }
+        this.config = staticConfig;
+        return true;
+    }
 
+    @Override
+    protected String scope() {
+        return Args.TABLE_KEY;
+    }
+
+    @Override
+    protected TablePrefixConfig defaults() {
+        return config;
+    }
+
+    @Override
+    protected TablePrefixConfig capture() {
+        Context.MapperConfig contextConfig = Context.getMapperConfig();
+        return contextConfig != null ? contextConfig.getPrefix() : null;
+    }
+
+    @Override
+    protected TablePrefixConfig derived(String datasourceKey, Properties properties) {
+        // Try to get provider from properties
+        TablePrefixProvider provider = getProvider(properties, TablePrefixProvider.class);
+
+        return buildTablePrefixConfig(datasourceKey, properties, provider);
+    }
+
+    /**
+     * Build table prefix configuration from properties for a specific datasource.
+     *
+     * @param datasourceKey the datasource key
+     * @param properties    the properties
+     * @param provider      the table prefix provider
+     * @return the table prefix configuration, or null if no valid configuration
+     */
+    private TablePrefixConfig buildTablePrefixConfig(
+            String datasourceKey,
+            Properties properties,
+            TablePrefixProvider provider) {
         // Build configuration paths
         String sharedPrefix = Args.SHARED_KEY + Symbol.DOT + Args.TABLE_KEY + Symbol.DOT;
         String dsPrefix = datasourceKey + Symbol.DOT + Args.TABLE_KEY + Symbol.DOT;
@@ -135,12 +178,12 @@ public class TablePrefixHandler extends AbstractSqlHandler implements MapperHand
                 properties.getProperty(sharedPrefix + Args.PROP_IGNORE, Normal.EMPTY));
 
         // Get ignore tables list
-        List<String> ignoreTables = Arrays.stream(ignore.split(Symbol.COMMA)).map(String::trim)
-                .filter(ObjectKit::isNotEmpty).collect(Collectors.toList());
+        List<String> ignoreTables = StringKit.isNotEmpty(ignore) ? Arrays.stream(ignore.split(Symbol.COMMA))
+                .map(String::trim).filter(ObjectKit::isNotEmpty).collect(Collectors.toList()) : Collections.emptyList();
 
-        // If no provider and no prefix value from config, return false
+        // If no provider and no prefix value from config, return null
         if (provider == null && StringKit.isEmpty(prefixValue)) {
-            return false;
+            return null;
         }
 
         // Create a file-based provider if no provider bean but prefix value exists
@@ -150,59 +193,13 @@ public class TablePrefixHandler extends AbstractSqlHandler implements MapperHand
             finalProvider = () -> configuredPrefix;
         }
 
-        // Build configuration
-        this.config = TablePrefixConfig.builder().provider(finalProvider).ignore(ignoreTables).build();
-
-        return true;
-    }
-
-    /**
-     * Get current effective configuration with priority: Context > File Config.
-     *
-     * @return the effective prefix configuration
-     */
-    private TablePrefixConfig getConfig() {
-        // 1. Highest priority: Context configuration
-        Context.MapperConfig contextConfig = Context.getMapperConfig();
-        if (contextConfig != null && contextConfig.getPrefix() != null) {
-            return contextConfig.getPrefix();
-        }
-
-        // 2. Lowest priority: File configuration
-        return config;
+        // Build and return configuration
+        return TablePrefixConfig.builder().provider(finalProvider).ignore(ignoreTables).build();
     }
 
     @Override
     public int getOrder() {
-        return MIN_VALUE + 2;
-    }
-
-    @Override
-    public void prepare(StatementHandler statementHandler) {
-        TablePrefixConfig currentConfig = getConfig();
-        if (currentConfig == null || currentConfig.getProvider() == null) {
-            Logger.debug(true, "Prefix", "Table prefix config not found, skipping prepare phase");
-            return;
-        }
-
-        MetaObject metaObject = SystemMetaObject.forObject(statementHandler);
-        BoundSql boundSql = (BoundSql) metaObject.getValue(DELEGATE_BOUNDSQL);
-        if (boundSql != null) {
-            Logger.debug(false, "Prefix", "Processing SQL in prepare phase");
-            processSql(boundSql, currentConfig);
-        }
-    }
-
-    @Override
-    public void update(Executor executor, MappedStatement ms, Object parameter) {
-        TablePrefixConfig currentConfig = getConfig();
-        if (currentConfig == null || currentConfig.getProvider() == null) {
-            Logger.debug(true, "Prefix", "Table prefix config not found, skipping update: {}", ms.getId());
-            return;
-        }
-
-        Logger.debug(false, "Prefix", "Processing update SQL: {}", ms.getId());
-        processSql(ms.getBoundSql(parameter), currentConfig);
+        return MIN_VALUE + 1;
     }
 
     @Override
@@ -214,23 +211,43 @@ public class TablePrefixHandler extends AbstractSqlHandler implements MapperHand
             RowBounds rowBounds,
             ResultHandler resultHandler,
             BoundSql boundSql) {
-        TablePrefixConfig currentConfig = getConfig();
+        TablePrefixConfig currentConfig = current();
         if (currentConfig == null || currentConfig.getProvider() == null) {
             Logger.debug(true, "Prefix", "Table prefix config not found, skipping query: {}", ms.getId());
             return;
         }
 
         Logger.debug(false, "Prefix", "Processing query SQL: {}", ms.getId());
-        processSql(boundSql, currentConfig);
+        processSqlInMappedStatement(ms, boundSql, currentConfig);
+    }
+
+    @Override
+    public void update(Executor executor, MappedStatement ms, Object parameter) {
+        TablePrefixConfig currentConfig = current();
+        if (currentConfig == null || currentConfig.getProvider() == null) {
+            Logger.debug(true, "Prefix", "Table prefix config not found, skipping update: {}", ms.getId());
+            return;
+        }
+
+        Logger.debug(false, "Prefix", "Processing update SQL: {}", ms.getId());
+        BoundSql boundSql = ms.getBoundSql(parameter);
+        processSqlInMappedStatement(ms, boundSql, currentConfig);
     }
 
     /**
-     * Process SQL to apply table prefix.
+     * Process SQL by modifying the BoundSql parameter and replacing MappedStatement's SqlSource. This ensures that: 1.
+     * The current BoundSql instance is modified (visible to current execution) 2. Subsequent getBoundSql() calls return
+     * the modified SQL (via SqlSource replacement)
      *
-     * @param boundSql the bound SQL to process
-     * @param config   the prefix configuration for current datasource
+     * Performance optimizations: - Uses cached Field object to avoid repeated reflection lookup - Caches modification
+     * status to avoid redundant processing - Combines reflection (for current instance) with SqlSource replacement (for
+     * subsequent calls)
+     *
+     * @param ms       the MappedStatement
+     * @param boundSql the BoundSql parameter (will be modified directly)
+     * @param config   the prefix configuration
      */
-    private void processSql(BoundSql boundSql, TablePrefixConfig config) {
+    private void processSqlInMappedStatement(MappedStatement ms, BoundSql boundSql, TablePrefixConfig config) {
         String prefix = config.getProvider().getPrefix();
         if (StringKit.isEmpty(prefix)) {
             Logger.debug(true, "Prefix", "Prefix is empty, skipping SQL processing");
@@ -238,29 +255,45 @@ public class TablePrefixHandler extends AbstractSqlHandler implements MapperHand
         }
 
         try {
+            // Get original SQL from the BoundSql parameter
             String originalSql = boundSql.getSql();
 
-            // Apply prefix using regex-based builder
+            // Check if SQL already has the prefix applied
+            if (originalSql.contains(" " + prefix)) {
+                Logger.debug(false, "Prefix", "SQL already contains prefix '{}', skipping", prefix);
+                return;
+            }
+
+            // Generate cache key for this SQL
+            String cacheKey = ms.getId() + "::" + System.identityHashCode(originalSql);
+
+            // Check cache to avoid redundant processing
+            if (MODIFICATION_CACHE.containsKey(cacheKey)) {
+                Logger.debug(false, "Prefix", "SQL already processed (cached), skipping");
+                return;
+            }
+
+            // Apply prefix
             TablePrefixBuilder builder = new TablePrefixBuilder(prefix, config.getIgnore());
             String modifiedSql = builder.applyPrefix(originalSql);
 
-            // Only update if SQL was modified
             if (!originalSql.equals(modifiedSql)) {
-                Logger.debug(false, "Prefix", "Applied table prefix: {}", prefix);
-                // Use reflection to update SQL in BoundSql
-                try {
-                    java.lang.reflect.Field field = BoundSql.class.getDeclaredField("sql");
-                    field.setAccessible(true);
-                    field.set(boundSql, modifiedSql);
-                } catch (Exception e) {
-                    Logger.warn(false, "Prefix", "Failed to update SQL in BoundSql: {}", e.getMessage());
+                // Step 1: Modify the BoundSql parameter using reflection
+                // This ensures the current BoundSql instance is modified for current execution
+                if (!setBoundSql(boundSql, modifiedSql)) {
+                    Logger.warn(false, "Prefix", "Failed to modify BoundSql.sql");
+                    // Fallback: continue with SqlSource replacement only
                 }
-            } else {
-                Logger.debug(false, "Prefix", "SQL unchanged, no prefix applied");
-            }
 
+                // Step 2: Replace the SqlSource in MappedStatement
+                // This ensures subsequent getBoundSql() calls return the modified SQL
+                replaceSqlSource(ms, boundSql, modifiedSql);
+                Logger.debug(false, "Prefix", "Replaced MappedStatement.sqlSource with prefix: {}", prefix);
+
+                // Mark as processed in cache
+                MODIFICATION_CACHE.put(cacheKey, true);
+            }
         } catch (Exception e) {
-            // Log warning but don't break execution
             Logger.warn(false, "Prefix", "Failed to apply table prefix to SQL: {}", e.getMessage());
         }
     }

@@ -39,7 +39,6 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.Args;
 import org.miaixz.bus.mapper.Context;
-import org.miaixz.bus.mapper.Holder;
 import org.miaixz.bus.mapper.handler.ConditionHandler;
 
 /**
@@ -78,7 +77,7 @@ import org.miaixz.bus.mapper.handler.ConditionHandler;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class AuditHandler<T> extends ConditionHandler<T> {
+public class AuditHandler<T> extends ConditionHandler<T, AuditConfig> {
 
     /**
      * Audit configuration from file (lowest priority).
@@ -114,12 +113,14 @@ public class AuditHandler<T> extends ConditionHandler<T> {
             return false;
         }
 
+        // Store all properties for dynamic lookup (in parent class)
+        this.properties = properties;
+
+        // Get current datasource key for static config initialization
+        String datasourceKey = getDatasourceKey();
+
         // Try to get provider from properties
-        AuditProvider provider = null;
-        Object providerObj = properties.get(Args.PROVIDER_KEY);
-        if (providerObj instanceof AuditProvider) {
-            provider = (AuditProvider) providerObj;
-        }
+        AuditProvider provider = getProvider(properties, AuditProvider.class);
 
         // Set provider if found
         if (provider == null) {
@@ -127,18 +128,52 @@ public class AuditHandler<T> extends ConditionHandler<T> {
             return false;
         }
 
-        // Get current datasource key
-        String datasourceKey = Holder.getKey();
-        if (StringKit.isEmpty(datasourceKey)) {
-            // Use actual default datasource name or fallback to "default"
-            datasourceKey = "default";
+        // Build initial static config
+        this.config = buildAuditConfig(datasourceKey, properties, provider);
+        return true;
+    }
+
+    @Override
+    protected String scope() {
+        return Args.AUDIT_KEY;
+    }
+
+    @Override
+    protected AuditConfig defaults() {
+        return config;
+    }
+
+    @Override
+    protected AuditConfig capture() {
+        Context.MapperConfig contextConfig = Context.getMapperConfig();
+        return contextConfig != null ? contextConfig.getAudit() : null;
+    }
+
+    @Override
+    protected AuditConfig derived(String datasourceKey, Properties properties) {
+        // Try to get provider from properties
+        AuditProvider provider = getProvider(properties, AuditProvider.class);
+
+        // Set provider if found
+        if (provider == null) {
+            return null;
         }
 
-        // Build configuration paths
+        return buildAuditConfig(datasourceKey, properties, provider);
+    }
+
+    /**
+     * Build audit configuration from properties for a specific datasource.
+     *
+     * @param datasourceKey the datasource key
+     * @param properties    the properties
+     * @param provider      the audit provider
+     * @return the audit configuration
+     */
+    private AuditConfig buildAuditConfig(String datasourceKey, Properties properties, AuditProvider provider) {
         String sharedPrefix = Args.SHARED_KEY + Symbol.DOT + Args.AUDIT_KEY + Symbol.DOT;
         String dsPrefix = datasourceKey + Symbol.DOT + Args.AUDIT_KEY + Symbol.DOT;
 
-        // Merge configuration: datasource-specific > shared > default
         long slowSqlThreshold = Long.parseLong(
                 properties.getProperty(
                         dsPrefix + Args.AUDIT_SLOW_SQL_THRESHOLD,
@@ -160,32 +195,14 @@ public class AuditHandler<T> extends ConditionHandler<T> {
                         dsPrefix + Args.AUDIT_PRINT_CONSOLE,
                         properties.getProperty(sharedPrefix + Args.AUDIT_PRINT_CONSOLE, "false")));
 
-        this.config = AuditConfig.builder().slowSqlThreshold(slowSqlThreshold).logParameters(logParameters)
-                .provider(provider).logResults(logResults).logAllSql(logAllSql).printConsole(printConsole).build();
-
-        return true;
-    }
-
-    /**
-     * Get current effective configuration with priority: Context > File Config.
-     *
-     * @return the effective audit configuration
-     */
-    private AuditConfig getCurrentConfig() {
-        // 1. Highest priority: Context configuration
-        Context.MapperConfig contextConfig = Context.getMapperConfig();
-        if (contextConfig != null && contextConfig.getAudit() != null) {
-            return contextConfig.getAudit();
-        }
-
-        // 2. Lowest priority: File configuration
-        return config;
+        return AuditConfig.builder().slowSqlThreshold(slowSqlThreshold).logParameters(logParameters).provider(provider)
+                .logResults(logResults).logAllSql(logAllSql).printConsole(printConsole).build();
     }
 
     @Override
     public boolean isUpdate(Executor executor, MappedStatement mappedStatement, Object parameter) {
         // Get current configuration
-        AuditConfig currentConfig = getCurrentConfig();
+        AuditConfig currentConfig = current();
         if (currentConfig == null || AuditContext.isIgnore()) {
             Logger.debug(true, "Audit", "Audit disabled or ignored for update: {}", mappedStatement.getId());
             return true;
@@ -213,7 +230,7 @@ public class AuditHandler<T> extends ConditionHandler<T> {
             ResultHandler resultHandler,
             BoundSql boundSql) {
         // Get current configuration
-        AuditConfig currentConfig = getCurrentConfig();
+        AuditConfig currentConfig = current();
         if (currentConfig == null || AuditContext.isIgnore()) {
             Logger.debug(true, "Audit", "Audit disabled or ignored for query: {}", mappedStatement.getId());
             return true;
@@ -242,7 +259,7 @@ public class AuditHandler<T> extends ConditionHandler<T> {
             ResultHandler resultHandler,
             BoundSql boundSql) {
         // End audit record
-        AuditConfig currentConfig = getCurrentConfig();
+        AuditConfig currentConfig = current();
         if (currentConfig != null) {
             Logger.debug(false, "Audit", "Completing audit for query: {}", mappedStatement.getId());
             AuditBuilder builder = new AuditBuilder(currentConfig);

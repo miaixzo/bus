@@ -693,6 +693,57 @@ public class OGNL {
     }
 
     /**
+     * Format SQL for better readability in logs and error messages.
+     *
+     * <p>
+     * This method removes extra whitespace and blank lines to make SQL more compact and readable.
+     * </p>
+     *
+     * <p>
+     * Example:
+     * </p>
+     * 
+     * <pre>{@code
+     * // Before formatting:
+     * SELECT id, name
+     * FROM users
+     * WHERE status = ?
+     *
+     *
+     * AND active = ?
+     *
+     * // After formatting:
+     * SELECT id, name FROM users WHERE status = ? AND active = ?
+     * }</pre>
+     *
+     * @param sql the SQL to format
+     * @return the formatted SQL (single line, compact format), or null if input is null
+     */
+    public static String formatSql(String sql) {
+        if (sql == null || sql.isEmpty()) {
+            return sql;
+        }
+
+        // Remove leading/trailing whitespace from each line
+        String[] lines = sql.split("\\r?\\n");
+        StringBuilder formatted = new StringBuilder();
+
+        for (String line : lines) {
+            String trimmed = line.trim();
+            // Skip empty lines
+            if (!trimmed.isEmpty()) {
+                if (formatted.length() > 0) {
+                    formatted.append(" ");
+                }
+                formatted.append(trimmed);
+            }
+        }
+
+        // Replace multiple spaces with single space
+        return formatted.toString().replaceAll("\\s+", " ");
+    }
+
+    /**
      * Cache statistics class.
      */
     public static class CacheStats {

@@ -112,7 +112,7 @@ public class HexKit extends Hex {
      * @return {@code true} if the string is a hexadecimal number, {@code false} otherwise.
      */
     public static boolean isHexNumber(final String value) {
-        if (StringKit.startWith(value, Symbol.C_MINUS)) {
+        if (StringKit.isEmpty(value) || StringKit.startWith(value, Symbol.C_MINUS)) {
             return false;
         }
         int index = 0;
@@ -209,6 +209,46 @@ public class HexKit extends Hex {
      */
     public static long hexToLong(final String value) {
         return Long.parseLong(removeHexPrefix(value), 16);
+    }
+
+    /**
+     * Converts a float value to its hexadecimal string representation.
+     *
+     * @param value the float value to convert
+     * @return the hexadecimal string
+     */
+    public static String toHex(float value) {
+        return Integer.toHexString(Float.floatToIntBits(value));
+    }
+
+    /**
+     * Converts a hexadecimal string to a float value.
+     *
+     * @param value the hexadecimal string
+     * @return the float value derived from the hex string
+     */
+    public static float hexToFloat(String value) {
+        return Float.intBitsToFloat(Integer.parseUnsignedInt(removeHexPrefix(value), 16));
+    }
+
+    /**
+     * Converts a double value to its hexadecimal string representation.
+     *
+     * @param value the double value to convert
+     * @return the hexadecimal string
+     */
+    public static String toHex(double value) {
+        return Long.toHexString(Double.doubleToLongBits(value));
+    }
+
+    /**
+     * Converts a hexadecimal string to a double value.
+     *
+     * @param value the hexadecimal string
+     * @return the double value derived from the hex string
+     */
+    public static double hexToDouble(String value) {
+        return Double.longBitsToDouble(Long.parseUnsignedLong(removeHexPrefix(value), 16));
     }
 
     /**

@@ -46,8 +46,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * <li>Connection health monitoring</li>
  * </ul>
  * <p>
- * The service maintains a registry of active WebSocket sessions, allowing for efficient
- * message delivery and connection management across the gateway.
+ * The service maintains a registry of active WebSocket sessions, allowing for efficient message delivery and connection
+ * management across the gateway.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -55,23 +55,22 @@ import java.util.concurrent.ConcurrentHashMap;
 public class WsService {
 
     /**
-     * A thread-safe map of active WebSocket sessions, keyed by session ID.
-     * This allows tracking and managing all active connections through the gateway.
+     * A thread-safe map of active WebSocket sessions, keyed by session ID. This allows tracking and managing all active
+     * connections through the gateway.
      */
     private final Map<String, WebSocketSession> activeSessions = new ConcurrentHashMap<>();
 
     /**
-     * A thread-safe map of session metadata, keyed by session ID.
-     * Stores additional information about each session such as connection time,
-     * target upstream URL, and custom attributes.
+     * A thread-safe map of session metadata, keyed by session ID. Stores additional information about each session such
+     * as connection time, target upstream URL, and custom attributes.
      */
     private final Map<String, SessionMetadata> sessionMetadata = new ConcurrentHashMap<>();
 
     /**
      * Registers a new WebSocket session.
      * <p>
-     * This method should be called when a new WebSocket connection is established
-     * through the gateway. It tracks the session for management and monitoring purposes.
+     * This method should be called when a new WebSocket connection is established through the gateway. It tracks the
+     * session for management and monitoring purposes.
      *
      * @param session The WebSocket session to register.
      * @param assets  The asset configuration for this connection.
@@ -80,11 +79,8 @@ public class WsService {
         String sessionId = session.getId();
         activeSessions.put(sessionId, session);
 
-        SessionMetadata metadata = new SessionMetadata(
-                sessionId,
-                System.currentTimeMillis(),
-                assets.getHost() + ":" + assets.getPort(),
-                assets.getMethod());
+        SessionMetadata metadata = new SessionMetadata(sessionId, System.currentTimeMillis(),
+                assets.getHost() + ":" + assets.getPort(), assets.getMethod());
 
         sessionMetadata.put(sessionId, metadata);
 
@@ -99,8 +95,8 @@ public class WsService {
     /**
      * Unregisters a WebSocket session.
      * <p>
-     * This method should be called when a WebSocket connection is closed.
-     * It removes the session from tracking and cleans up associated resources.
+     * This method should be called when a WebSocket connection is closed. It removes the session from tracking and
+     * cleans up associated resources.
      *
      * @param sessionId The ID of the session to unregister.
      */
@@ -151,8 +147,8 @@ public class WsService {
     /**
      * Gracefully closes all active WebSocket sessions.
      * <p>
-     * This method is automatically called during application shutdown to ensure
-     * all WebSocket connections are properly closed.
+     * This method is automatically called during application shutdown to ensure all WebSocket connections are properly
+     * closed.
      */
     @PreDestroy
     public void destroy() {
@@ -180,6 +176,7 @@ public class WsService {
      * Metadata for a WebSocket session.
      */
     public static class SessionMetadata {
+
         private final String sessionId;
         private final long connectedAt;
         private final String upstreamTarget;

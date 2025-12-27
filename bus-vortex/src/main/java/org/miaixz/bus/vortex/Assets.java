@@ -128,7 +128,8 @@ public class Assets {
      * <li>{@code 2}: <strong>Message Queue</strong> - Send payload to MQ broker (e.g., Kafka, RabbitMQ).</li>
      * <li>{@code 3}: <strong>Model Context Protocol (MCP)</strong> - AI tool calling protocol (JSON-RPC based).</li>
      * <li>{@code 4}: <strong>gRPC</strong> - High-performance RPC framework using Protocol Buffers.</li>
-     * <li>{@code 5}: <strong>WebSocket</strong> - Bidirectional real-time communication over persistent connections.</li>
+     * <li>{@code 5}: <strong>WebSocket</strong> - Bidirectional real-time communication over persistent
+     * connections.</li>
      * </ul>
      */
     private Integer mode;

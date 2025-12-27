@@ -294,9 +294,9 @@ public class MybatisInterceptor extends AbstractSqlHandler implements Intercepto
      */
     private void logging(MappedStatement ms, BoundSql boundSql, long start) {
         long duration = DateKit.current() - start;
-        Logger.debug(true, "Mapper", "Method: {} {}ms", ms.getId(), duration);
+        Logger.debug(true, "Method", "{} {}ms", ms.getId(), duration);
         String sql = format(ms.getConfiguration(), boundSql);
-        Logger.debug(true, "Mapper", "Script: {}", sql);
+        Logger.debug(true, "Script", "{}", sql);
     }
 
     /**
@@ -433,9 +433,7 @@ public class MybatisInterceptor extends AbstractSqlHandler implements Intercepto
     public void setProperties(Properties properties) {
         Context context = (Context) Context.newInstance(properties);
         Map<String, Properties> groups = context.group(Symbol.AT);
-        groups.forEach((key, value) -> {
-            addHandler(ReflectKit.newInstance(key));
-        });
+        groups.forEach((key, value) -> addHandler(ReflectKit.newInstance(key)));
     }
 
 }

@@ -79,8 +79,6 @@ public class MqRouter implements Router {
      * This method retrieves the {@link Context} and {@link Assets} to determine the target MQ topic and timeout. It
      * then reads the request body and delegates the sending operation to the {@link MqService}. It provides an
      * immediate acknowledgment to the client.
-     * <p>
-     * Supports both streaming and atomic response modes based on the {@link Assets#getStream()} configuration.
      *
      * @param request The current {@link ServerRequest}.
      * @return A {@code Mono<ServerResponse>} indicating that the message has been successfully forwarded to the MQ.
@@ -99,8 +97,7 @@ public class MqRouter implements Router {
 
             return request.bodyToMono(String.class)
                     // .switchIfEmpty() handles cases where the body might be empty
-                    .switchIfEmpty(Mono.just(Normal.EMPTY))
-                    .flatMap(payload -> this.service.send(assets, payload))
+                    .switchIfEmpty(Mono.just(Normal.EMPTY)).flatMap(payload -> this.service.send(assets, payload))
                     .then(Mono.defer(() -> {
                         long duration = System.currentTimeMillis() - startTime;
                         Logger.info(
@@ -117,16 +114,14 @@ public class MqRouter implements Router {
                             // ATOMIC MODE: Use buffering execution
                             return executeBuffering(responseJson);
                         }
-                    }))
-                    .onErrorResume(e -> {
+                    })).onErrorResume(e -> {
                         long duration = System.currentTimeMillis() - startTime;
                         Logger.error(
                                 "MQ Router: Failed to forward request for topic: {} in {}ms",
                                 assets.getMethod(),
                                 duration,
                                 e);
-                        return ServerResponse.status(500)
-                                .contentType(MediaType.APPLICATION_JSON)
+                        return ServerResponse.status(500).contentType(MediaType.APPLICATION_JSON)
                                 .bodyValue("{\"error\": \"Failed to forward request to MQ: " + e.getMessage() + "\"}");
                     });
         });
@@ -144,16 +139,12 @@ public class MqRouter implements Router {
         DefaultDataBufferFactory bufferFactory = new DefaultDataBufferFactory();
 
         // Convert response to streaming data buffers
-        Flux<DataBuffer> dataFlux = Flux.interval(Duration.ofMillis(10))
-                .take(1)
-                .map(i -> {
-                    byte[] bytes = responseJson.getBytes(StandardCharsets.UTF_8);
-                    return bufferFactory.wrap(bytes);
-                });
+        Flux<DataBuffer> dataFlux = Flux.interval(Duration.ofMillis(10)).take(1).map(i -> {
+            byte[] bytes = responseJson.getBytes(StandardCharsets.UTF_8);
+            return bufferFactory.wrap(bytes);
+        });
 
-        return ServerResponse.ok()
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(dataFlux, DataBuffer.class);
+        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(dataFlux, DataBuffer.class);
     }
 
     /**
@@ -165,9 +156,7 @@ public class MqRouter implements Router {
      * @return A buffered ServerResponse
      */
     private Mono<ServerResponse> executeBuffering(String responseJson) {
-        return ServerResponse.ok()
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(responseJson);
+        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).bodyValue(responseJson);
     }
 
 }

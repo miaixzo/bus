@@ -41,7 +41,6 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.Args;
 import org.miaixz.bus.mapper.Context;
-import org.miaixz.bus.mapper.Holder;
 import org.miaixz.bus.mapper.handler.ConditionHandler;
 
 /**
@@ -67,7 +66,7 @@ import org.miaixz.bus.mapper.handler.ConditionHandler;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class PopulateHandler<T> extends ConditionHandler<T> {
+public class PopulateHandler<T> extends ConditionHandler<T, PopulateConfig> {
 
     /**
      * Populate configuration from file (lowest priority).
@@ -103,12 +102,14 @@ public class PopulateHandler<T> extends ConditionHandler<T> {
             return false;
         }
 
+        // Store all properties for dynamic lookup (in parent class)
+        this.properties = properties;
+
+        // Get current datasource key for static config initialization
+        String datasourceKey = getDatasourceKey();
+
         // Try to get provider from properties
-        PopulateProvider provider = null;
-        Object object = properties.get(Args.PROVIDER_KEY);
-        if (object instanceof PopulateProvider) {
-            provider = (PopulateProvider) object;
-        }
+        PopulateProvider provider = getProvider(properties, PopulateProvider.class);
 
         // Set provider if found
         if (provider == null) {
@@ -116,18 +117,51 @@ public class PopulateHandler<T> extends ConditionHandler<T> {
             return false;
         }
 
-        // Get current datasource key
-        String datasourceKey = Holder.getKey();
-        if (StringKit.isEmpty(datasourceKey)) {
-            // Use actual default datasource name or fallback to "default"
-            datasourceKey = "default";
+        // Build initial static config
+        this.config = buildPopulateConfig(datasourceKey, properties, provider);
+        return true;
+    }
+
+    @Override
+    protected String scope() {
+        return Args.POPULATE_KEY;
+    }
+
+    @Override
+    protected PopulateConfig defaults() {
+        return config;
+    }
+
+    @Override
+    protected PopulateConfig capture() {
+        Context.MapperConfig contextConfig = Context.getMapperConfig();
+        return contextConfig != null ? contextConfig.getPopulate() : null;
+    }
+
+    @Override
+    protected PopulateConfig derived(String datasourceKey, Properties properties) {
+        // Try to get provider from properties
+        PopulateProvider provider = getProvider(properties, PopulateProvider.class);
+
+        // Set provider if found
+        if (provider == null) {
+            return null;
         }
 
-        // Build configuration paths
+        return buildPopulateConfig(datasourceKey, properties, provider);
+    }
+
+    /**
+     * Build populate configuration from properties for a specific datasource.
+     *
+     * @param datasourceKey the datasource key
+     * @param properties    the properties
+     * @param provider      the populate provider
+     * @return the populate configuration
+     */
+    private PopulateConfig buildPopulateConfig(String datasourceKey, Properties properties, PopulateProvider provider) {
         String sharedPrefix = Args.SHARED_KEY + Symbol.DOT + Args.POPULATE_KEY + Symbol.DOT;
         String dsPrefix = datasourceKey + Symbol.DOT + Args.POPULATE_KEY + Symbol.DOT;
-
-        // Merge configuration: datasource-specific > shared > default
 
         boolean created = Boolean.parseBoolean(
                 properties.getProperty(
@@ -146,27 +180,8 @@ public class PopulateHandler<T> extends ConditionHandler<T> {
                         dsPrefix + Args.POPULATE_MODIFIER,
                         properties.getProperty(sharedPrefix + Args.POPULATE_MODIFIER, "true")));
 
-        // Build and store config
-        this.config = PopulateConfig.builder().created(created).modified(modified).creator(creator).modifier(modifier)
+        return PopulateConfig.builder().created(created).modified(modified).creator(creator).modifier(modifier)
                 .provider(provider).build();
-
-        return true;
-    }
-
-    /**
-     * Get current effective configuration with priority: Context > File Config.
-     *
-     * @return the effective populate configuration
-     */
-    private PopulateConfig getConfig() {
-        // 1. Highest priority: Context configuration
-        Context.MapperConfig contextConfig = Context.getMapperConfig();
-        if (contextConfig != null && contextConfig.getPopulate() != null) {
-            return contextConfig.getPopulate();
-        }
-
-        // 2. Lowest priority: File configuration
-        return config;
     }
 
     @Override
@@ -190,7 +205,7 @@ public class PopulateHandler<T> extends ConditionHandler<T> {
     @Override
     public boolean isUpdate(Executor executor, MappedStatement ms, Object parameter) {
         // Get current configuration
-        PopulateConfig config = getConfig();
+        PopulateConfig config = current();
         if (config == null) {
             Logger.debug(true, "Populate", "Populate config not found, skipping: {}", ms.getId());
             return true;

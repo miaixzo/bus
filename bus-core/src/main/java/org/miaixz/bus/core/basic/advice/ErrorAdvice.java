@@ -42,7 +42,8 @@ public class ErrorAdvice {
     /**
      * Constructs a new ErrorAdvice. Utility class constructor for static access.
      */
-    private ErrorAdvice() {
+    public ErrorAdvice() {
+
     }
 
     /**

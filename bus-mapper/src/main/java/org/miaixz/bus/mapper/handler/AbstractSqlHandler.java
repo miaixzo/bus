@@ -39,6 +39,7 @@ import org.apache.ibatis.reflection.DefaultReflectorFactory;
 import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.reflection.SystemMetaObject;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.FieldKit;
 
 /**
  * An abstract base class for SQL interception and handling in MyBatis.
@@ -175,6 +176,27 @@ public abstract class AbstractSqlHandler {
         statementHandler = realTarget(statementHandler);
         MetaObject object = getMetaObject(statementHandler);
         return new MapperStatementHandler(getMetaObject(object.getValue("delegate")));
+    }
+
+    /**
+     * Modifies the SQL in a {@link BoundSql} object using reflection.
+     *
+     * <p>
+     * This method uses reflection to directly modify the {@code sql} field in the BoundSql object, which is a private
+     * field. This is useful for interceptors that need to modify SQL at runtime.
+     * </p>
+     *
+     * @param boundSql The BoundSql object to modify.
+     * @param newSql   The new SQL string to set.
+     * @return {@code true} if the modification was successful, {@code false} otherwise.
+     */
+    protected static boolean setBoundSql(BoundSql boundSql, String newSql) {
+        try {
+            FieldKit.setFieldValue(boundSql, "sql", newSql);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
 }

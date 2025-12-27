@@ -46,7 +46,8 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.dialect.Dialect;
 import org.miaixz.bus.mapper.dialect.DialectRegistry;
-import org.miaixz.bus.mapper.handler.ConditionHandler;
+import org.miaixz.bus.mapper.handler.AbstractSqlHandler;
+import org.miaixz.bus.mapper.handler.MapperHandler;
 
 /**
  * Pagination interceptor handler for automatic pagination support.
@@ -78,7 +79,7 @@ import org.miaixz.bus.mapper.handler.ConditionHandler;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class PageHandler<T> extends ConditionHandler<T> {
+public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<T> {
 
     /**
      * Cache for database dialect detection (JDBC URL -> Dialect)
@@ -255,6 +256,9 @@ public class PageHandler<T> extends ConditionHandler<T> {
             }
         }
 
+        // Re-get BoundSql from MappedStatement to get the latest SQL modified by previous handlers
+        BoundSql latestBoundSql = mappedStatement.getBoundSql(parameter);
+
         Logger.debug(
                 false,
                 "Page",
@@ -273,7 +277,7 @@ public class PageHandler<T> extends ConditionHandler<T> {
             boolean performCount = PageContext.getLocalCount();
             if (performCount) {
                 Logger.debug(false, "Page", "Executing count query: {}", mappedStatement.getId());
-                total = executeCountQuery(executor, mappedStatement, parameter, boundSql, dialect);
+                total = executeCountQuery(executor, mappedStatement, parameter, latestBoundSql, dialect);
                 Logger.debug(false, "Page", "Count query result: {} records", total);
                 if (total == 0) {
                     Logger.debug(false, "Page", "No results found, returning empty page");
@@ -299,7 +303,7 @@ public class PageHandler<T> extends ConditionHandler<T> {
                     mappedStatement,
                     parameter,
                     resultHandler,
-                    boundSql,
+                    latestBoundSql,
                     pageable,
                     dialect);
 
@@ -655,9 +659,8 @@ public class PageHandler<T> extends ConditionHandler<T> {
         String sortedSql = paginationBuilder.applySort(originalSql, sort);
 
         if (!originalSql.equals(sortedSql)) {
-            // Update the SQL in BoundSql using reflection
-            MetaObject metaObject = SystemMetaObject.forObject(boundSql);
-            metaObject.setValue("sql", sortedSql);
+            // Update the SQL in BoundSql using parent class method
+            setBoundSql(boundSql, sortedSql);
         }
     }
 

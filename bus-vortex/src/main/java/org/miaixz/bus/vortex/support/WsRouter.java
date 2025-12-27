@@ -240,8 +240,7 @@ public class WsRouter implements Router {
         // Add port if specified and not default
         if (assets.getPort() != null && assets.getPort() > 0) {
             // Don't add port if it's the default for the protocol
-            boolean isDefaultPort = (isSecure && assets.getPort() == 443) ||
-                                   (!isSecure && assets.getPort() == 80);
+            boolean isDefaultPort = (isSecure && assets.getPort() == 443) || (!isSecure && assets.getPort() == 80);
             if (!isDefaultPort) {
                 urlBuilder.append(Symbol.COLON).append(assets.getPort());
             }

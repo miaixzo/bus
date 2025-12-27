@@ -88,6 +88,15 @@ public class StringMatcher {
             if (inVar) {
                 part.append(c);
                 if ('}' == c) {
+                    if (!patterns.isEmpty()) {
+                        final String lastPart = patterns.get(patterns.size() - 1);
+                        if (StringKit.isWrap(lastPart, "${", "}")) {
+                            throw new IllegalArgumentException(StringKit.format(
+                                    "Consecutive variables '{}{}' are not supported",
+                                    lastPart,
+                                    part.toString()));
+                        }
+                    }
                     // Variable end
                     inVar = false;
                     patterns.add(part.toString());
