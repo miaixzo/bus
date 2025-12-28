@@ -176,6 +176,13 @@ public class MapperPluginBuilder {
 
         // Check for simplified tenant configuration (bus.mapper.tenant.*)
         MapperProperties.TenantProperties tenantProps = properties != null ? properties.getTenant() : null;
+
+        // Check if explicitly disabled
+        if (tenantProps != null && !tenantProps.isEnabled()) {
+            Logger.info(false, "Mapper", "Tenant handler is disabled by configuration");
+            return;
+        }
+
         boolean hasSimplifiedConfig = tenantProps != null;
         boolean hasConfigFile = ObjectKit.isNotEmpty(properties)
                 && ObjectKit.isNotEmpty(properties.getConfigurationProperties());
@@ -257,6 +264,13 @@ public class MapperPluginBuilder {
 
         // Check for simplified populate configuration (bus.mapper.populate.*)
         MapperProperties.PopulateProperties populateProps = properties != null ? properties.getPopulate() : null;
+
+        // Check if explicitly disabled
+        if (populateProps != null && !populateProps.isEnabled()) {
+            Logger.info(false, "Mapper", "Populate handler is disabled by configuration");
+            return;
+        }
+
         boolean hasSimplifiedConfig = populateProps != null;
         boolean hasConfigFile = ObjectKit.isNotEmpty(properties)
                 && ObjectKit.isNotEmpty(properties.getConfigurationProperties());
@@ -342,6 +356,13 @@ public class MapperPluginBuilder {
 
         // Check for simplified visible configuration (bus.mapper.visible.*)
         MapperProperties.VisibleProperties visibleProps = properties != null ? properties.getVisible() : null;
+
+        // Check if explicitly disabled
+        if (visibleProps != null && !visibleProps.isEnabled()) {
+            Logger.info(false, "Mapper", "Visible handler is disabled by configuration");
+            return;
+        }
+
         boolean hasSimplifiedConfig = visibleProps != null;
         boolean hasConfigFile = ObjectKit.isNotEmpty(properties)
                 && ObjectKit.isNotEmpty(properties.getConfigurationProperties());
@@ -420,6 +441,13 @@ public class MapperPluginBuilder {
 
         // Check for simplified prefix configuration (bus.mapper.prefix.*)
         MapperProperties.PrefixProperties prefixProps = properties != null ? properties.getPrefix() : null;
+
+        // Check if explicitly disabled
+        if (prefixProps != null && !prefixProps.isEnabled()) {
+            Logger.info(false, "Mapper", "Prefix handler is disabled by configuration");
+            return;
+        }
+
         boolean hasSimplifiedConfig = prefixProps != null;
         boolean hasConfigFile = ObjectKit.isNotEmpty(properties)
                 && ObjectKit.isNotEmpty(properties.getConfigurationProperties());
@@ -504,6 +532,13 @@ public class MapperPluginBuilder {
 
         // Check for simplified audit configuration (bus.mapper.audit.*)
         MapperProperties.AuditProperties auditProps = properties != null ? properties.getAudit() : null;
+
+        // Check if explicitly disabled
+        if (auditProps != null && !auditProps.isEnabled()) {
+            Logger.info(false, "Mapper", "Audit handler is disabled by configuration");
+            return;
+        }
+
         boolean hasSimplifiedConfig = auditProps != null;
         boolean hasConfigFile = ObjectKit.isNotEmpty(properties)
                 && ObjectKit.isNotEmpty(properties.getConfigurationProperties());

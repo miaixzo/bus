@@ -33,6 +33,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
+import lombok.Builder;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ExecutorType;
 import org.miaixz.bus.spring.GeniusBuilder;
@@ -177,6 +178,11 @@ public class MapperProperties {
     public static class TenantProperties {
 
         /**
+         * Enable/disable tenant handler (default: true).
+         */
+        private boolean enabled = true;
+
+        /**
          * Tenant column name.
          */
         private String column = "tenant_id";
@@ -198,6 +204,11 @@ public class MapperProperties {
     @Getter
     @Setter
     public static class AuditProperties {
+
+        /**
+         * Enable/disable audit handler (default: true).
+         */
+        private boolean enabled = true;
 
         /**
          * Slow SQL threshold in milliseconds.
@@ -233,6 +244,11 @@ public class MapperProperties {
     public static class PopulateProperties {
 
         /**
+         * Enable/disable populate handler (default: true).
+         */
+        private boolean enabled = true;
+
+        /**
          * Whether to enable created time field.
          */
         private boolean created = true;
@@ -261,6 +277,11 @@ public class MapperProperties {
     public static class VisibleProperties {
 
         /**
+         * Enable/disable visible handler (default: true).
+         */
+        private boolean enabled = true;
+
+        /**
          * Tables to ignore visibility filtering (comma-separated).
          */
         private String ignore;
@@ -272,6 +293,11 @@ public class MapperProperties {
     @Getter
     @Setter
     public static class PrefixProperties {
+
+        /**
+         * Enable/disable prefix handler (default: true).
+         */
+        private boolean enabled = true;
 
         /**
          * Table prefix value.
