@@ -1958,17 +1958,6 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.starter.wrapper.WrapperConfiguration",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllPublicMethods": true
-  },
-  {
     "name": "org.miaixz.bus.starter.wrapper.WrapperConfiguration$RequestMappingHandler",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
