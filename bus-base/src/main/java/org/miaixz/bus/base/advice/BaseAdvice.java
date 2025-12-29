@@ -200,7 +200,7 @@ public class BaseAdvice extends Controller {
     public Object signatureException(SignatureException e) {
         this.defaultExceptionHandler(e);
         if (StringKit.isBlank(e.getErrcode())) {
-            return write(ErrorCode._100106);
+            return write(ErrorCode._100109);
         }
         return write(e.getErrcode(), e.getErrmsg());
     }

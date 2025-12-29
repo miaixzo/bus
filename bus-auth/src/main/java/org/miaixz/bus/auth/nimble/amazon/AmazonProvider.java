@@ -257,7 +257,7 @@ public class AmazonProvider extends AbstractProvider {
             }
             String aud = (String) jsonObject.get("aud");
             if (!context.getClientId().equals(aud)) {
-                throw new AuthorizedException(ErrorCode._100100.getKey());
+                throw new AuthorizedException(ErrorCode._100113.getKey());
             }
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse token info response: " + e.getMessage());

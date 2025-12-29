@@ -144,11 +144,11 @@ public class VettingStrategy extends AbstractStrategy {
         return Mono.fromRunnable(() -> {
             Map<String, Object> params = context.getParameters();
             checkForUndefinedValues(params);
-            requireParameter(params, Args.METHOD, ErrorCode._100110);
-            requireParameter(params, Args.VERSION, ErrorCode._100109);
-            requireParameter(params, Args.FORMAT, ErrorCode._100113);
-            requireParameter(params, Args.SIGN, ErrorCode._100114);
-            requireParameter(params, Args.TIMESTAMP, ErrorCode._100115);
+            requireParameter(params, Args.METHOD, ErrorCode._100102);
+            requireParameter(params, Args.VERSION, ErrorCode._100106);
+            requireParameter(params, Args.FORMAT, ErrorCode._100104);
+            requireParameter(params, Args.SIGN, ErrorCode._100108);
+            requireParameter(params, Args.TIMESTAMP, ErrorCode._100110);
         });
     }
 
@@ -200,10 +200,10 @@ public class VettingStrategy extends AbstractStrategy {
 
             if (absoluteDifferenceMs > TimeUnit.MINUTES.toMillis(10)) {
                 logTimestampMismatch(clientTimestampMs, currentTimestampMs, absoluteDifferenceMs);
-                throw new ValidateException(ErrorCode._100107);
+                throw new ValidateException(ErrorCode._100111);
             }
             return (Void) null; // fromCallable requires a return value
-        }).onErrorMap(NumberFormatException.class, ex -> new ValidateException(ErrorCode._100107));
+        }).onErrorMap(NumberFormatException.class, ex -> new ValidateException(ErrorCode._100111));
     }
 
     /**
@@ -238,7 +238,7 @@ public class VettingStrategy extends AbstractStrategy {
                     : String.valueOf(params.get(Args.METHOD));
 
             if (!validateSign(key + params.get(Args.TIMESTAMP), context.getHttpMethod().name(), params)) {
-                throw new SignatureException(ErrorCode._100106);
+                throw new SignatureException(ErrorCode._100109);
             }
             return (Void) null;
         }).subscribeOn(Schedulers.boundedElastic()); // Offload blocking signature validation
