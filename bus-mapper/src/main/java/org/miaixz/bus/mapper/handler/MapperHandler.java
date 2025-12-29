@@ -72,6 +72,19 @@ import org.miaixz.bus.core.Handler;
 public interface MapperHandler<T> extends Handler<T> {
 
     /**
+     * Get the handler name.
+     *
+     * <p>
+     * This name is used in log messages to identify which handler is processing the SQL.
+     * </p>
+     *
+     * @return the handler name, default is the simple class name
+     */
+    default String getHandler() {
+        return this.getClass().getSimpleName();
+    }
+
+    /**
      * Get the execution order of this handler.
      *
      * <p>

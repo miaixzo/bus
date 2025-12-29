@@ -30,7 +30,6 @@ package org.miaixz.bus.spring.http;
 import java.io.IOException;
 
 import org.miaixz.bus.core.net.HTTP;
-import org.miaixz.bus.spring.ContextBuilder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 

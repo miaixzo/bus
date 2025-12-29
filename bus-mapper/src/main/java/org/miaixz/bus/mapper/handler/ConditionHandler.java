@@ -7,6 +7,7 @@ import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.reflection.SystemMetaObject;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.FieldKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.Args;
@@ -98,7 +99,7 @@ public abstract class ConditionHandler<T, C> extends AbstractSqlHandler implemen
         // 1. Highest priority: Runtime configuration (ThreadLocal/InheritableThreadLocal)
         C captured = capture();
         if (captured != null) {
-            Logger.debug(false, handler(), "Using Runtime configuration");
+            Logger.debug(false, getHandler(), "Using Runtime configuration");
             return captured;
         }
 
@@ -111,7 +112,7 @@ public abstract class ConditionHandler<T, C> extends AbstractSqlHandler implemen
 
             C derived = derived(key, properties);
             if (derived != null) {
-                Logger.debug(false, handler(), "Using Datasource configuration");
+                Logger.debug(false, getHandler(), "Using Datasource configuration");
                 return derived;
             }
         }
@@ -119,11 +120,11 @@ public abstract class ConditionHandler<T, C> extends AbstractSqlHandler implemen
         // 3. Lowest priority: Default configuration (from properties file global settings)
         C defaults = defaults();
         if (defaults != null) {
-            Logger.debug(false, handler(), "Using Default configuration");
+            Logger.debug(false, getHandler(), "Using Default configuration");
         } else {
-            Logger.debug(true, handler(), "No configuration available");
+            Logger.debug(true, getHandler(), "No configuration available");
         }
-        return defaults;
+        return defaults();
     }
 
     /**
@@ -171,28 +172,12 @@ public abstract class ConditionHandler<T, C> extends AbstractSqlHandler implemen
     }
 
     /**
-     * Get the handler name for logging purposes.
-     * <p>
-     * Default implementation uses the simple class name. Subclasses can override for custom names.
-     * </p>
-     *
-     * @return the handler name
-     */
-    protected String handler() {
-        return this.getClass().getSimpleName();
-    }
-
-    /**
      * Get the current datasource key with fallback to "default".
      *
      * @return the datasource key, or "default" if not set
      */
     protected String getDatasourceKey() {
-        String datasourceKey = Holder.getKey();
-        if (StringKit.isEmpty(datasourceKey)) {
-            datasourceKey = "default";
-        }
-        return datasourceKey;
+        return Holder.getKey();
     }
 
     /**
@@ -215,29 +200,51 @@ public abstract class ConditionHandler<T, C> extends AbstractSqlHandler implemen
     }
 
     /**
-     * Replace the SqlSource in MappedStatement with actual SQL.
+     * Replace the SqlSource in MappedStatement with a custom SqlSource.
      * <p>
-     * This ensures subsequent getBoundSql() calls return the actual SQL.
+     * The new SqlSource saves the actual SQL (after interceptor processing) and delegates parameter mapping to the
+     * original SqlSource. This ensures that:
      * </p>
+     * <ul>
+     * <li>Modified SQL (with table prefix, tenant conditions, etc.) is preserved globally</li>
+     * <li>Parameter mappings are dynamically generated based on current parameters</li>
+     * <li>Subsequent interceptors can process the modified SQL correctly</li>
+     * </ul>
      *
      * @param ms        the MappedStatement
-     * @param boundSql  the BoundSql object
-     * @param actualSql the actual SQL string
+     * @param boundSql  the current BoundSql
+     * @param actualSql the actual SQL (after interceptor processing)
      */
     protected void replaceSqlSource(MappedStatement ms, BoundSql boundSql, String actualSql) {
         try {
-            // Step 1: Modify BoundSql SQL field directly using reflection
-            MetaObject boundSqlMetaObject = SystemMetaObject.forObject(boundSql);
-            boundSqlMetaObject.setValue("sql", actualSql);
+            // Get the original SqlSource before any interceptor modifications
+            // We'll save this to get correct parameter mappings on each call
+            org.apache.ibatis.mapping.SqlSource currentSqlSource = ms.getSqlSource();
+            org.apache.ibatis.mapping.SqlSource sqlSource;
 
-            // Step 2: Replace SqlSource to ensure consistency in all phases
+            // If current SqlSource is already our custom SqlSource, get the original from it
+            if (currentSqlSource instanceof SqlSource customSqlSource) {
+                try {
+                    sqlSource = (org.apache.ibatis.mapping.SqlSource) FieldKit
+                            .getFieldValue(customSqlSource, "sqlSource");
+                } catch (Exception e) {
+                    Logger.warn(false, getHandler(), "Failed to get original SqlSource: {}", e.getMessage());
+                    sqlSource = currentSqlSource;
+                }
+            } else {
+                sqlSource = currentSqlSource;
+            }
+
+            // Create new custom SqlSource with actual SQL and original SqlSource
+            SqlSource newSqlSource = new SqlSource(ms, actualSql, sqlSource);
+
+            // Replace the SqlSource in MappedStatement
             MetaObject msMetaObject = SystemMetaObject.forObject(ms);
-            org.apache.ibatis.mapping.SqlSource sqlSource = new SqlSource(ms, actualSql);
-            msMetaObject.setValue("sqlSource", sqlSource);
+            msMetaObject.setValue("sqlSource", newSqlSource);
 
-            Logger.debug(false, handler(), "Replaced SqlSource for MappedStatement: {}", ms.getId());
+            Logger.debug(false, getHandler(), "Replaced SqlSource: method={}", ms.getId());
         } catch (Exception e) {
-            Logger.warn(false, handler(), "Failed to replace SqlSource: {}", e.getMessage());
+            Logger.warn(false, getHandler(), "Failed to replace SqlSource: {}", e.getMessage());
         }
     }
 

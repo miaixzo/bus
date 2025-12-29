@@ -45,7 +45,6 @@ import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.Args;
 import org.miaixz.bus.mapper.Context;
 import org.miaixz.bus.mapper.handler.ConditionHandler;
-import org.miaixz.bus.mapper.parsing.SqlSource;
 
 /**
  * Multi-tenancy handler.
@@ -105,6 +104,16 @@ public class TenantHandler<T> extends ConditionHandler<T, TenantConfig> {
             throw new IllegalArgumentException("TenantConfig cannot be null");
         }
         this.config = config;
+    }
+
+    /**
+     * Get the handler name for logging purposes.
+     *
+     * @return the handler name "Tenant"
+     */
+    @Override
+    public String getHandler() {
+        return "Tenant";
     }
 
     /**
@@ -183,14 +192,14 @@ public class TenantHandler<T> extends ConditionHandler<T, TenantConfig> {
                 dsPrefix + Args.PROP_IGNORE,
                 properties.getProperty(sharedPrefix + Args.PROP_IGNORE, Normal.EMPTY));
 
-        Logger.debug(false, "Tenant", "Building config for datasource: {}", datasourceKey);
-        Logger.debug(false, "Tenant", "  Ignore config key: {}", dsPrefix + Args.PROP_IGNORE);
-        Logger.debug(false, "Tenant", "  Ignore raw value: {}", ignoreTablesStr);
+        Logger.debug(false, getHandler(), "Building config for datasource: {}", datasourceKey);
+        Logger.debug(false, getHandler(), "Ignore config key: {}", dsPrefix + Args.PROP_IGNORE);
+        Logger.debug(false, getHandler(), "Ignore raw value: {}", ignoreTablesStr);
 
         List<String> ignoreTables = Arrays.stream(ignoreTablesStr.split(Symbol.COMMA)).map(String::trim)
                 .filter(ObjectKit::isNotEmpty).collect(Collectors.toList());
 
-        Logger.debug(false, "Tenant", "  Ignore parsed list: {}", ignoreTables);
+        Logger.debug(false, getHandler(), "Ignore parsed list: {}", ignoreTables);
 
         // If column is configured, create a default provider that gets tenant ID from TenantContext
         TenantProvider finalProvider = provider;
@@ -222,20 +231,20 @@ public class TenantHandler<T> extends ConditionHandler<T, TenantConfig> {
         // If multi-tenancy is not enabled, return true directly
         TenantConfig currentConfig = current();
         if (currentConfig == null) {
-            Logger.debug(true, "Tenant", "Multi-tenancy disabled for query: {}", ms.getId());
+            Logger.debug(true, getHandler(), "Multi-tenancy disabled: method={}", ms.getId());
             return true;
         }
 
         // If tenant filtering is ignored, return true directly
         if (TenantContext.isIgnore()) {
-            Logger.debug(true, "Tenant", "Tenant filtering ignored for query: {}", ms.getId());
+            Logger.debug(true, getHandler(), "Tenant filtering ignored: method={}", ms.getId());
             return true;
         }
 
         // Check if the Mapper should be ignored
         String mapperId = ms.getId();
         if (currentConfig.isIgnoreMapper(mapperId)) {
-            Logger.debug(true, "Tenant", "Mapper ignored for tenant filtering: {}", mapperId);
+            Logger.debug(true, getHandler(), "Mapper ignored: method={}", ms.getId());
             return true;
         }
 
@@ -251,13 +260,13 @@ public class TenantHandler<T> extends ConditionHandler<T, TenantConfig> {
             RowBounds rowBounds,
             ResultHandler resultHandler,
             BoundSql boundSql) {
-        Logger.debug(false, "Tenant", "Processing query SQL: {}", ms.getId());
+        Logger.debug(false, getHandler(), "Processing query: method={}", ms.getId());
         handleSqlInMappedStatement(ms, parameter, boundSql);
     }
 
     @Override
     public void update(Executor executor, MappedStatement ms, Object parameter) {
-        Logger.debug(false, "Tenant", "Processing update SQL: {}", ms.getId());
+        Logger.debug(false, getHandler(), "Processing insert/update: method={}", ms.getId());
         // Get BoundSql and process SQL by modifying MappedStatement's SqlSource
         BoundSql boundSql = ms.getBoundSql(parameter);
         handleSqlInMappedStatement(ms, parameter, boundSql);
@@ -265,12 +274,6 @@ public class TenantHandler<T> extends ConditionHandler<T, TenantConfig> {
 
     /**
      * Process SQL by modifying the MappedStatement's SqlSource.
-     *
-     * <p>
-     * <strong>Performance Optimization:</strong> Checks if the SqlSource has already been replaced by our custom
-     * SqlSource. If yes, processing is skipped since the SQL has already been modified. This provides O(1) cache-like
-     * performance without the issues of request-level caching.
-     * </p>
      *
      * @param ms        the MappedStatement
      * @param parameter the parameter object
@@ -294,27 +297,28 @@ public class TenantHandler<T> extends ConditionHandler<T, TenantConfig> {
             return;
         }
 
-        // Optimization: Check if SqlSource has already been replaced (O(1))
-        // This is safe because once replaced, all subsequent calls will use the actual SQL
-        if (SqlSource.class.isInstance(ms.getSqlSource())) {
-            Logger.debug(false, "Tenant", "SqlSource already replaced for: {}", mapperId);
-            return;
-        }
-
         // Get original SQL
         String originalSql = boundSql.getSql();
+
+        // Check if SQL already contains tenant_id condition (e.g., from previous processing)
+        // This prevents duplicate tenant conditions and avoids unnecessary re-processing
+        String tenantColumn = currentConfig.getColumn();
+        if (originalSql.contains(tenantColumn + " =") || originalSql.contains(tenantColumn + "=")) {
+            Logger.debug(false, getHandler(), "SQL already contains tenant condition: method={}", ms.getId());
+            return;
+        }
 
         // Check if this SQL actually needs tenant filtering by using TenantBuilder
         // This checks if the table is in the ignore list
         TenantBuilder builder = new TenantBuilder(currentConfig);
-        String testSql = builder.handleSql(originalSql, "__TEST__");
+        String tenantSql = builder.handleSql(originalSql, Args.TENANT_ID);
 
-        Logger.debug(false, "Tenant", "Ignore check - Table: {}", currentConfig.getIgnore());
-        Logger.debug(false, "Tenant", "Ignore check - SQL modified: {}", !originalSql.equals(testSql));
+        Logger.debug(false, getHandler(), "Ignore check: tables={}", currentConfig.getIgnore());
+        Logger.debug(false, getHandler(), "Ignore check: tenant={}", !originalSql.equals(tenantSql));
 
         // If SQL wasn't modified (table is ignored), skip tenant ID validation
-        if (originalSql.equals(testSql)) {
-            Logger.debug(false, "Tenant", "Table is in ignore list, skipping tenant filtering");
+        if (originalSql.equals(tenantSql)) {
+            Logger.debug(false, getHandler(), "Table ignored, skipping: method={}", ms.getId());
             return;
         }
 
@@ -333,23 +337,22 @@ public class TenantHandler<T> extends ConditionHandler<T, TenantConfig> {
 
         // If SQL hasn't changed, return directly
         if (originalSql.equals(actualSql)) {
-            Logger.debug(false, "Tenant", "SQL unchanged for mapper: {}", mapperId);
+            Logger.debug(false, getHandler(), "SQL unchanged: method={}", ms.getId());
             return;
         }
 
-        Logger.debug(false, "Tenant", "Applied tenant filter (tenantId={}) for mapper: {}", tenantId, mapperId);
+        Logger.debug(false, getHandler(), "Applied: tenantId={}, method={}", tenantId, ms.getId());
 
         // Step 1: Modify the BoundSql parameter using reflection
         // This ensures the current BoundSql instance is modified for current execution
         if (!setBoundSql(boundSql, actualSql)) {
-            Logger.warn(false, "Tenant", "Failed to modify BoundSql.sql");
+            Logger.warn(false, getHandler(), "Failed to modify BoundSql");
             // Fallback: continue with SqlSource replacement only
         }
 
         // Step 2: Replace the SqlSource in MappedStatement
         // This ensures subsequent getBoundSql() calls return the actual SQL
         replaceSqlSource(ms, boundSql, actualSql);
-        Logger.debug(false, "Tenant", "Replaced MappedStatement.sqlSource");
     }
 
     /**

@@ -33,7 +33,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
-import lombok.Builder;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ExecutorType;
 import org.miaixz.bus.spring.GeniusBuilder;

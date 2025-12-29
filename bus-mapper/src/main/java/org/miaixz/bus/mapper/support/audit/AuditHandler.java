@@ -100,6 +100,16 @@ public class AuditHandler<T> extends ConditionHandler<T, AuditConfig> {
     }
 
     /**
+     * Get the handler name for logging purposes.
+     *
+     * @return the handler name "Audit"
+     */
+    @Override
+    public String getHandler() {
+        return "Audit";
+    }
+
+    /**
      * Sets the audit-related configuration properties. This method is typically called during plugin initialization to
      * configure SQL audit behaviors.
      *
@@ -123,7 +133,7 @@ public class AuditHandler<T> extends ConditionHandler<T, AuditConfig> {
 
         // Set provider if found
         if (provider == null) {
-            Logger.warn(false, "Mapper", "Provider not found, feature will not be enabled");
+            Logger.warn(false, getHandler(), "Provider not found, feature will not be enabled");
             return false;
         }
 
@@ -199,22 +209,27 @@ public class AuditHandler<T> extends ConditionHandler<T, AuditConfig> {
     }
 
     @Override
+    public int getOrder() {
+        return MIN_VALUE + 7;
+    }
+
+    @Override
     public boolean isUpdate(Executor executor, MappedStatement mappedStatement, Object parameter) {
         // Get current configuration
         AuditConfig currentConfig = current();
         if (currentConfig == null || AuditContext.isIgnore()) {
-            Logger.debug(true, "Audit", "Audit disabled or ignored for update: {}", mappedStatement.getId());
+            Logger.debug(true, getHandler(), "Audit disabled or ignored for update: {}", mappedStatement.getId());
             return true;
         }
 
         // Create builder on-demand for current config and check if should ignore
         AuditBuilder builder = new AuditBuilder(currentConfig);
         if (builder.shouldIgnoreAudit(mappedStatement)) {
-            Logger.debug(true, "Audit", "Audit ignored for mapper: {}", mappedStatement.getId());
+            Logger.debug(true, getHandler(), "Audit ignored for mapper: {}", mappedStatement.getId());
             return true;
         }
 
-        Logger.debug(false, "Audit", "Starting audit for update: {}", mappedStatement.getId());
+        Logger.debug(false, getHandler(), "Starting audit for update: {}", mappedStatement.getId());
         // Start audit record
         builder.before(mappedStatement, parameter);
         return true;
@@ -231,18 +246,18 @@ public class AuditHandler<T> extends ConditionHandler<T, AuditConfig> {
         // Get current configuration
         AuditConfig currentConfig = current();
         if (currentConfig == null || AuditContext.isIgnore()) {
-            Logger.debug(true, "Audit", "Audit disabled or ignored for query: {}", mappedStatement.getId());
+            Logger.debug(true, getHandler(), "Audit disabled or ignored for query: {}", mappedStatement.getId());
             return true;
         }
 
         // Create builder on-demand for current config and check if should ignore
         AuditBuilder builder = new AuditBuilder(currentConfig);
         if (builder.shouldIgnoreAudit(mappedStatement)) {
-            Logger.debug(true, "Audit", "Audit ignored for mapper: {}", mappedStatement.getId());
+            Logger.debug(true, getHandler(), "Audit ignored for mapper: {}", mappedStatement.getId());
             return true;
         }
 
-        Logger.debug(false, "Audit", "Starting audit for query: {}", mappedStatement.getId());
+        Logger.debug(false, getHandler(), "Starting audit for query: {}", mappedStatement.getId());
         // Start audit record
         builder.before(mappedStatement, parameter, boundSql);
         return true;
@@ -260,7 +275,7 @@ public class AuditHandler<T> extends ConditionHandler<T, AuditConfig> {
         // End audit record
         AuditConfig currentConfig = current();
         if (currentConfig != null) {
-            Logger.debug(false, "Audit", "Completing audit for query: {}", mappedStatement.getId());
+            Logger.debug(false, getHandler(), "Completing audit for query: {}", mappedStatement.getId());
             AuditBuilder builder = new AuditBuilder(currentConfig);
             builder.after(result, null);
         }

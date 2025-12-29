@@ -85,6 +85,16 @@ public class OperationHandler<T> extends AbstractSqlHandler implements MapperHan
      */
     private boolean strictMode = true;
 
+    /**
+     * Get the handler name for logging purposes.
+     *
+     * @return the handler name "Operation"
+     */
+    @Override
+    public String getHandler() {
+        return "Operation";
+    }
+
     @Override
     public int getOrder() {
         return MIN_VALUE + 3;

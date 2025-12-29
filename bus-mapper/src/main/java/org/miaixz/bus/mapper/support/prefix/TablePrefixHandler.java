@@ -46,7 +46,6 @@ import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.Args;
 import org.miaixz.bus.mapper.Context;
 import org.miaixz.bus.mapper.handler.ConditionHandler;
-import org.miaixz.bus.mapper.parsing.SqlSource;
 
 /**
  * Table prefix handler.
@@ -89,6 +88,16 @@ public class TablePrefixHandler extends ConditionHandler<Object, TablePrefixConf
      */
     public TablePrefixHandler(TablePrefixConfig config) {
         this.config = config;
+    }
+
+    /**
+     * Get the handler name for logging purposes.
+     *
+     * @return the handler name "Prefix"
+     */
+    @Override
+    public String getHandler() {
+        return "Prefix";
     }
 
     /**
@@ -208,11 +217,11 @@ public class TablePrefixHandler extends ConditionHandler<Object, TablePrefixConf
             BoundSql boundSql) {
         TablePrefixConfig currentConfig = current();
         if (currentConfig == null || currentConfig.getProvider() == null) {
-            Logger.debug(true, "Prefix", "Table prefix config not found, skipping query: {}", ms.getId());
+            Logger.debug(true, getHandler(), "Config not found, skipping: method={}", ms.getId());
             return;
         }
 
-        Logger.debug(false, "Prefix", "Processing query SQL: {}", ms.getId());
+        Logger.debug(false, getHandler(), "Processing query: method={}", ms.getId());
         processSqlInMappedStatement(ms, boundSql, currentConfig);
     }
 
@@ -220,11 +229,11 @@ public class TablePrefixHandler extends ConditionHandler<Object, TablePrefixConf
     public void update(Executor executor, MappedStatement ms, Object parameter) {
         TablePrefixConfig currentConfig = current();
         if (currentConfig == null || currentConfig.getProvider() == null) {
-            Logger.debug(true, "Prefix", "Table prefix config not found, skipping update: {}", ms.getId());
+            Logger.debug(true, getHandler(), "Config not found, skipping: method={}", ms.getId());
             return;
         }
 
-        Logger.debug(false, "Prefix", "Processing update SQL: {}", ms.getId());
+        Logger.debug(false, getHandler(), "Processing insert/update: method={}", ms.getId());
         BoundSql boundSql = ms.getBoundSql(parameter);
         processSqlInMappedStatement(ms, boundSql, currentConfig);
     }
@@ -234,12 +243,6 @@ public class TablePrefixHandler extends ConditionHandler<Object, TablePrefixConf
      * The current BoundSql instance is modified (visible to current execution) 2. Subsequent getBoundSql() calls return
      * the actual SQL (via SqlSource replacement)
      *
-     * <p>
-     * <strong>Performance Optimization:</strong> Checks if the SqlSource has already been replaced by our custom
-     * SqlSource. If yes, processing is skipped since the SQL has already been modified. This provides O(1) cache-like
-     * performance without the issues of request-level caching.
-     * </p>
-     *
      * @param ms       the MappedStatement
      * @param boundSql the BoundSql parameter (will be modified directly)
      * @param config   the prefix configuration
@@ -247,14 +250,7 @@ public class TablePrefixHandler extends ConditionHandler<Object, TablePrefixConf
     private void processSqlInMappedStatement(MappedStatement ms, BoundSql boundSql, TablePrefixConfig config) {
         String prefix = config.getProvider().getPrefix();
         if (StringKit.isEmpty(prefix)) {
-            Logger.debug(true, "Prefix", "Prefix is empty, skipping SQL processing");
-            return;
-        }
-
-        // Optimization: Check if SqlSource has already been replaced (O(1))
-        // This is safe because once replaced, all subsequent calls will use the actual SQL
-        if (SqlSource.class.isInstance(ms.getSqlSource())) {
-            Logger.debug(false, "Prefix", "SqlSource already replaced for: {}", ms.getId());
+            Logger.debug(true, getHandler(), "Prefix is empty, skipping");
             return;
         }
 
@@ -270,20 +266,20 @@ public class TablePrefixHandler extends ConditionHandler<Object, TablePrefixConf
                 // Step 1: Modify the BoundSql parameter using reflection
                 // This ensures the current BoundSql instance is modified for current execution
                 if (!setBoundSql(boundSql, actualSql)) {
-                    Logger.warn(false, "Prefix", "Failed to modify BoundSql.sql");
+                    Logger.warn(false, getHandler(), "Failed to modify BoundSql");
                     // Fallback: continue with SqlSource replacement only
                 }
 
                 // Step 2: Replace the SqlSource in MappedStatement
                 // This ensures subsequent getBoundSql() calls return the actual SQL
                 replaceSqlSource(ms, boundSql, actualSql);
-                Logger.debug(false, "Prefix", "Applied table prefix '{}' to: {}", prefix, ms.getId());
+                Logger.debug(false, getHandler(), "Applied: prefix={}, method={}", prefix, ms.getId());
             } else {
                 // SQL unchanged (table in ignore list or no match)
-                Logger.debug(false, "Prefix", "SQL unchanged for: {}", ms.getId());
+                Logger.debug(false, getHandler(), "SQL unchanged: method={}", ms.getId());
             }
         } catch (Exception e) {
-            Logger.warn(false, "Prefix", "Failed to apply table prefix to SQL: {}", e.getMessage());
+            Logger.warn(false, getHandler(), "Failed to apply prefix: {}", e.getMessage());
         }
     }
 

@@ -89,6 +89,16 @@ public class PopulateHandler<T> extends ConditionHandler<T, PopulateConfig> {
     }
 
     /**
+     * Get the handler name for logging purposes.
+     *
+     * @return the handler name "Populate"
+     */
+    @Override
+    public String getHandler() {
+        return "Populate";
+    }
+
+    /**
      * Sets the populate-related configuration properties. This method is typically called during plugin initialization
      * to configure data fill behaviors.
      *
@@ -206,13 +216,13 @@ public class PopulateHandler<T> extends ConditionHandler<T, PopulateConfig> {
         // Get current configuration
         PopulateConfig config = current();
         if (config == null) {
-            Logger.debug(true, "Populate", "Populate config not found, skipping: {}", ms.getId());
+            Logger.debug(true, getHandler(), "Populate config not found, skipping: {}", ms.getId());
             return true;
         }
 
         // Skip if parameter is null
         if (parameter == null) {
-            Logger.debug(true, "Populate", "Parameter is null, skipping: {}", ms.getId());
+            Logger.debug(true, getHandler(), "Parameter is null, skipping: {}", ms.getId());
             return true;
         }
 
@@ -224,10 +234,10 @@ public class PopulateHandler<T> extends ConditionHandler<T, PopulateConfig> {
 
         // Fill data based on command type
         if (commandType == SqlCommandType.INSERT) {
-            Logger.debug(false, "Populate", "Filling INSERT data for: {}", ms.getId());
+            Logger.debug(false, getHandler(), "Filling INSERT data for: {}", ms.getId());
             builder.fillInsertData(parameter);
         } else if (commandType == SqlCommandType.UPDATE) {
-            Logger.debug(false, "Populate", "Filling UPDATE data for: {}", ms.getId());
+            Logger.debug(false, getHandler(), "Filling UPDATE data for: {}", ms.getId());
             builder.fillUpdateData(parameter);
         }
 

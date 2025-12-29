@@ -111,6 +111,16 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
         this.paginationBuilder = new PageBuilder();
     }
 
+    /**
+     * Get the handler name for logging purposes.
+     *
+     * @return the handler name "Page"
+     */
+    @Override
+    public String getHandler() {
+        return "Page";
+    }
+
     @Override
     public int getOrder() {
         return MIN_VALUE + 6;
@@ -169,7 +179,7 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
         // Check if pagination is enabled for this thread
         Pageable pageable = PageContext.getLocalPage();
         if (pageable == null || pageable.isUnpaged()) {
-            Logger.debug(true, "Page", "Pagination not enabled, skipping getBoundSql");
+            Logger.debug(true, getHandler(), "Pagination not enabled, skipping getBoundSql");
             return;
         }
 
@@ -177,18 +187,18 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
         MetaObject metaObject = SystemMetaObject.forObject(statementHandler);
         BoundSql boundSql = (BoundSql) metaObject.getValue("delegate.boundSql");
         if (boundSql == null) {
-            Logger.debug(true, "Page", "BoundSql is null in getBoundSql");
+            Logger.debug(true, getHandler(), "BoundSql is null in getBoundSql");
             return;
         }
 
         // Get MappedStatement
         MappedStatement ms = (MappedStatement) metaObject.getValue("delegate.mappedStatement");
         if (ms == null) {
-            Logger.debug(true, "Page", "MappedStatement is null in getBoundSql");
+            Logger.debug(true, getHandler(), "MappedStatement is null in getBoundSql");
             return;
         }
 
-        Logger.debug(false, "Page", "Applying sorting in getBoundSql: {}", ms.getId());
+        Logger.debug(false, getHandler(), "Applying sorting in getBoundSql: {}", ms.getId());
         // Apply sorting to SQL
         applySorting(boundSql, ms, pageable);
     }
@@ -198,7 +208,7 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
         // Apply pagination SQL modifications
         Pageable pageable = PageContext.getLocalPage();
         if (pageable == null || pageable.isUnpaged()) {
-            Logger.debug(true, "Page", "Pagination not enabled, skipping prepare phase");
+            Logger.debug(true, getHandler(), "Pagination not enabled, skipping prepare phase");
             return;
         }
 
@@ -208,7 +218,11 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
 
         // Apply sorting modifications if needed
         if (pageable.getSort() != null && pageable.getSort().isSorted()) {
-            Logger.debug(false, "Page", "Applying sorting in prepare phase: {}", ms != null ? ms.getId() : "unknown");
+            Logger.debug(
+                    false,
+                    getHandler(),
+                    "Applying sorting in prepare phase: {}",
+                    ms != null ? ms.getId() : "unknown");
             applySorting(boundSql, ms, pageable);
         }
     }
@@ -234,7 +248,7 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
                         PageContext.setLocalPage(pageable);
                         Logger.debug(
                                 false,
-                                "Page",
+                                getHandler(),
                                 "Extracted pagination from method arguments (pageNo={}, pageSize={}): {}",
                                 pageable.getPageNo(),
                                 pageable.getPageSize(),
@@ -243,14 +257,14 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
                 } catch (Exception e) {
                     Logger.debug(
                             true,
-                            "Page",
+                            getHandler(),
                             "Failed to extract pagination from method arguments: {}",
                             e.getMessage());
                 }
             }
 
             if (pageable == null || pageable.isUnpaged()) {
-                Logger.debug(true, "Page", "Pagination not enabled, skipping query: {}", mappedStatement.getId());
+                Logger.debug(true, getHandler(), "Pagination not enabled, skipping query: {}", mappedStatement.getId());
                 // No pagination, let the query proceed normally
                 return;
             }
@@ -261,7 +275,7 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
 
         Logger.debug(
                 false,
-                "Page",
+                getHandler(),
                 "Processing pagination query (pageNo={}, pageSize={}): {}",
                 pageable.getPageNo(),
                 pageable.getPageSize(),
@@ -270,17 +284,17 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
         try {
             // Get database dialect
             Dialect dialect = getDialect(executor);
-            Logger.debug(false, "Page", "Using dialect: {}", dialect.getClass().getSimpleName());
+            Logger.debug(false, getHandler(), "Using dialect: {}", dialect.getClass().getSimpleName());
 
             // Execute count query if needed
             long total = 0;
             boolean performCount = PageContext.getLocalCount();
             if (performCount) {
-                Logger.debug(false, "Page", "Executing count query: {}", mappedStatement.getId());
+                Logger.debug(false, getHandler(), "Executing count query: {}", mappedStatement.getId());
                 total = executeCountQuery(executor, mappedStatement, parameter, latestBoundSql, dialect);
-                Logger.debug(false, "Page", "Count query result: {} records", total);
+                Logger.debug(false, getHandler(), "Count query result: {} records", total);
                 if (total == 0) {
-                    Logger.debug(false, "Page", "No results found, returning empty page");
+                    Logger.debug(false, getHandler(), "No results found, returning empty page");
                     // No results, return empty page
                     if (result instanceof Object[]) {
                         ((Object[]) result)[0] = Page.builder().result(Collections.emptyList()).pageable(pageable)
@@ -292,12 +306,12 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
 
             // Apply reasonable logic if enabled
             if (reasonable && performCount && total > 0) {
-                Logger.debug(false, "Page", "Applying reasonable logic (total={})", total);
+                Logger.debug(false, getHandler(), "Applying reasonable logic (total={})", total);
                 pageable = applyReasonable(pageable, total);
             }
 
             // Execute pagination query
-            Logger.debug(false, "Page", "Executing pagination query: {}", mappedStatement.getId());
+            Logger.debug(false, getHandler(), "Executing pagination query: {}", mappedStatement.getId());
             List<Object> data = executePaginationQuery(
                     executor,
                     mappedStatement,
@@ -309,7 +323,7 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
 
             // Wrap result in Page
             Page<Object> page = Page.builder().result(data).pageable(pageable).total(total).build();
-            Logger.debug(false, "Page", "Pagination completed: {} records returned", data.size());
+            Logger.debug(false, getHandler(), "Pagination completed: {} records returned", data.size());
 
             // Set result
             if (result instanceof Object[]) {
@@ -317,7 +331,7 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
             }
 
         } catch (Exception e) {
-            Logger.error(false, "Page", "{}", e.getMessage(), e);
+            Logger.error(false, getHandler(), "{}", e.getMessage(), e);
             throw new MapperException("Failed to execute pagination query: " + e.getMessage(), e);
         }
     }
@@ -426,7 +440,7 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
             return pageable;
 
         } catch (NumberFormatException e) {
-            Logger.debug(true, "Page", "Invalid pagination parameter format: {}", e.getMessage());
+            Logger.debug(true, getHandler(), "Invalid pagination parameter format: {}", e.getMessage());
             return null;
         }
     }
@@ -500,7 +514,7 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
 
             return sort.isSorted() ? sort : null;
         } catch (Exception e) {
-            Logger.debug(true, "Page", "Failed to parse orderBy: {}", e.getMessage());
+            Logger.debug(true, getHandler(), "Failed to parse orderBy: {}", e.getMessage());
             return null;
         }
     }

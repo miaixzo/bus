@@ -48,7 +48,6 @@ import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.Args;
 import org.miaixz.bus.mapper.Context;
 import org.miaixz.bus.mapper.handler.ConditionHandler;
-import org.miaixz.bus.mapper.parsing.SqlSource;
 
 /**
  * Visible control interceptor handler.
@@ -85,6 +84,16 @@ public class VisibleHandler<T> extends ConditionHandler<T, VisibleConfig> {
     }
 
     /**
+     * Get the handler name for logging purposes.
+     *
+     * @return the handler name "Visible"
+     */
+    @Override
+    public String getHandler() {
+        return "Visible";
+    }
+
+    /**
      * Sets the visible-related configuration properties. This method is typically called during plugin initialization
      * to configure data perimeter behaviors.
      *
@@ -108,7 +117,7 @@ public class VisibleHandler<T> extends ConditionHandler<T, VisibleConfig> {
 
         // Set provider if found
         if (provider == null) {
-            Logger.warn(false, "Mapper", "Provider not found, feature will not be enabled");
+            Logger.warn(false, getHandler(), "Provider not found, feature will not be enabled");
             return false;
         }
 
@@ -208,36 +217,29 @@ public class VisibleHandler<T> extends ConditionHandler<T, VisibleConfig> {
 
         // Skip if perimeter control is disabled
         if (currentConfig == null) {
-            Logger.debug(true, "Visible", "Visibility control disabled for query: {}", ms.getId());
+            Logger.debug(true, getHandler(), "Visibility control disabled: method={}", ms.getId());
             return true;
         }
 
         // Skip if perimeter filtering is ignored
         if (VisibleContext.isIgnore()) {
-            Logger.debug(true, "Visible", "Visibility filtering ignored for query: {}", ms.getId());
+            Logger.debug(true, getHandler(), "Visibility filtering ignored: method={}", ms.getId());
             return true;
         }
 
         // Skip if provider is not configured
         if (currentConfig.getProvider() == null) {
-            Logger.warn(true, "Visible", "Visibility provider not configured for query: {}", ms.getId());
+            Logger.warn(true, getHandler(), "Visibility provider not configured: method={}", ms.getId());
             return true;
         }
 
         // Only handle SELECT queries
         if (ms.getSqlCommandType() != SqlCommandType.SELECT) {
-            Logger.debug(true, "Visible", "Skipped non-SELECT query: {}", ms.getId());
+            Logger.debug(true, getHandler(), "Skipped non-SELECT: method={}", ms.getId());
             return true;
         }
 
         String mapperId = ms.getId();
-
-        // Optimization: Check if SqlSource has already been replaced (O(1))
-        // This is safe because once replaced, all subsequent calls will use the actual SQL
-        if (SqlSource.class.isInstance(ms.getSqlSource())) {
-            Logger.debug(false, "Visible", "SqlSource already replaced for: {}", mapperId);
-            return true;
-        }
 
         // Get original SQL
         String originalSql = boundSql.getSql();
@@ -248,16 +250,20 @@ public class VisibleHandler<T> extends ConditionHandler<T, VisibleConfig> {
 
         // If SQL was modified, update the bound SQL
         if (!originalSql.equals(actualSql)) {
-            Logger.debug(false, "Visible", "Applied visibility filter for query: {}", mapperId);
-            // Use reflection to update SQL in BoundSql
+            Logger.debug(false, getHandler(), "Applied visibility filter: method={}", mapperId);
+            // Step 1: Use reflection to update SQL in BoundSql
             if (setBoundSql(boundSql, actualSql)) {
-                Logger.debug(false, "Visible", "Modified BoundSql.sql");
+                Logger.debug(false, getHandler(), "Modified BoundSql.sql");
             } else {
                 // If reflection fails, log warning and continue with original SQL
-                Logger.warn(false, "Visible", "Failed to update SQL");
+                Logger.warn(false, getHandler(), "Failed to update SQL");
             }
+
+            // Step 2: Replace the SqlSource in MappedStatement
+            // This ensures subsequent getBoundSql() calls return the actual SQL
+            replaceSqlSource(ms, boundSql, actualSql);
         } else {
-            Logger.debug(false, "Visible", "SQL unchanged for query: {}", mapperId);
+            Logger.debug(false, getHandler(), "SQL unchanged: method={}", mapperId);
         }
 
         return true;
