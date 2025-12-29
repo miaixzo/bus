@@ -528,6 +528,17 @@
     "queryAllPublicMethods": true
   },
   {
+    "name": "org.miaixz.bus.spring.http.RuntimeContextBindingFilter",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
     "name": "org.miaixz.bus.spring.http.SentinelRequestHandler",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
@@ -1947,7 +1958,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.starter.wrapper.WrapperConfiguration$BodyCacheFilter",
+    "name": "org.miaixz.bus.starter.wrapper.WrapperConfiguration",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,

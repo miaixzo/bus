@@ -31,7 +31,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import org.apache.ibatis.executor.Executor;
@@ -47,6 +46,7 @@ import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.Args;
 import org.miaixz.bus.mapper.Context;
 import org.miaixz.bus.mapper.handler.ConditionHandler;
+import org.miaixz.bus.mapper.parsing.SqlSource;
 
 /**
  * Table prefix handler.
@@ -74,11 +74,6 @@ public class TablePrefixHandler extends ConditionHandler<Object, TablePrefixConf
      * Prefix configuration from file (lowest priority).
      */
     private TablePrefixConfig config;
-
-    /**
-     * Cached modification status to avoid redundant processing.
-     */
-    private static final ConcurrentHashMap<String, Boolean> MODIFICATION_CACHE = new ConcurrentHashMap<>();
 
     /**
      * Default constructor (uses default configuration).
@@ -237,11 +232,13 @@ public class TablePrefixHandler extends ConditionHandler<Object, TablePrefixConf
     /**
      * Process SQL by modifying the BoundSql parameter and replacing MappedStatement's SqlSource. This ensures that: 1.
      * The current BoundSql instance is modified (visible to current execution) 2. Subsequent getBoundSql() calls return
-     * the modified SQL (via SqlSource replacement)
+     * the actual SQL (via SqlSource replacement)
      *
-     * Performance optimizations: - Uses cached Field object to avoid repeated reflection lookup - Caches modification
-     * status to avoid redundant processing - Combines reflection (for current instance) with SqlSource replacement (for
-     * subsequent calls)
+     * <p>
+     * <strong>Performance Optimization:</strong> Checks if the SqlSource has already been replaced by our custom
+     * SqlSource. If yes, processing is skipped since the SQL has already been modified. This provides O(1) cache-like
+     * performance without the issues of request-level caching.
+     * </p>
      *
      * @param ms       the MappedStatement
      * @param boundSql the BoundSql parameter (will be modified directly)
@@ -254,44 +251,36 @@ public class TablePrefixHandler extends ConditionHandler<Object, TablePrefixConf
             return;
         }
 
+        // Optimization: Check if SqlSource has already been replaced (O(1))
+        // This is safe because once replaced, all subsequent calls will use the actual SQL
+        if (SqlSource.class.isInstance(ms.getSqlSource())) {
+            Logger.debug(false, "Prefix", "SqlSource already replaced for: {}", ms.getId());
+            return;
+        }
+
         try {
             // Get original SQL from the BoundSql parameter
             String originalSql = boundSql.getSql();
 
-            // Check if SQL already has the prefix applied
-            if (originalSql.contains(" " + prefix)) {
-                Logger.debug(false, "Prefix", "SQL already contains prefix '{}', skipping", prefix);
-                return;
-            }
-
-            // Generate cache key for this SQL
-            String cacheKey = ms.getId() + "::" + System.identityHashCode(originalSql);
-
-            // Check cache to avoid redundant processing
-            if (MODIFICATION_CACHE.containsKey(cacheKey)) {
-                Logger.debug(false, "Prefix", "SQL already processed (cached), skipping");
-                return;
-            }
-
-            // Apply prefix
+            // Apply prefix directly
             TablePrefixBuilder builder = new TablePrefixBuilder(prefix, config.getIgnore());
-            String modifiedSql = builder.applyPrefix(originalSql);
+            String actualSql = builder.applyPrefix(originalSql);
 
-            if (!originalSql.equals(modifiedSql)) {
+            if (!originalSql.equals(actualSql)) {
                 // Step 1: Modify the BoundSql parameter using reflection
                 // This ensures the current BoundSql instance is modified for current execution
-                if (!setBoundSql(boundSql, modifiedSql)) {
+                if (!setBoundSql(boundSql, actualSql)) {
                     Logger.warn(false, "Prefix", "Failed to modify BoundSql.sql");
                     // Fallback: continue with SqlSource replacement only
                 }
 
                 // Step 2: Replace the SqlSource in MappedStatement
-                // This ensures subsequent getBoundSql() calls return the modified SQL
-                replaceSqlSource(ms, boundSql, modifiedSql);
-                Logger.debug(false, "Prefix", "Replaced MappedStatement.sqlSource with prefix: {}", prefix);
-
-                // Mark as processed in cache
-                MODIFICATION_CACHE.put(cacheKey, true);
+                // This ensures subsequent getBoundSql() calls return the actual SQL
+                replaceSqlSource(ms, boundSql, actualSql);
+                Logger.debug(false, "Prefix", "Applied table prefix '{}' to: {}", prefix, ms.getId());
+            } else {
+                // SQL unchanged (table in ignore list or no match)
+                Logger.debug(false, "Prefix", "SQL unchanged for: {}", ms.getId());
             }
         } catch (Exception e) {
             Logger.warn(false, "Prefix", "Failed to apply table prefix to SQL: {}", e.getMessage());

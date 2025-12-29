@@ -143,10 +143,10 @@ public class MybatisInterceptor extends AbstractSqlHandler implements Intercepto
         Object[] args = invocation.getArgs();
 
         if (target instanceof Executor) {
-            Object result = handleExecutor((Executor) target, args, invocation);
             MappedStatement ms = (MappedStatement) args[0];
             Object parameter = args.length > 1 ? args[1] : null;
             BoundSql boundSql = ms.getBoundSql(parameter);
+            Object result = handleExecutor((Executor) target, args, invocation, boundSql);
             logging(ms, boundSql, start);
             return result;
         } else if (target instanceof StatementHandler) {
@@ -179,19 +179,21 @@ public class MybatisInterceptor extends AbstractSqlHandler implements Intercepto
      * @param executor   The Executor instance.
      * @param args       The arguments array from the invocation.
      * @param invocation The original invocation object.
+     * @param boundSql   The BoundSql (pre-computed to avoid redundant getBoundSql() calls).
      * @return The result of the operation.
      * @throws Throwable if an error occurs during processing.
      */
-    private Object handleExecutor(Executor executor, Object[] args, Invocation invocation) throws Throwable {
+    private Object handleExecutor(Executor executor, Object[] args, Invocation invocation, BoundSql boundSql)
+            throws Throwable {
         MappedStatement ms = (MappedStatement) args[0];
         Object parameter = args[1];
         SqlCommandType commandType = ms.getSqlCommandType();
 
         if (commandType == SqlCommandType.SELECT) {
-            return processQuery(executor, ms, parameter, args, invocation);
+            return processQuery(executor, ms, parameter, args, invocation, boundSql);
         } else if (commandType == SqlCommandType.INSERT || commandType == SqlCommandType.UPDATE
                 || commandType == SqlCommandType.DELETE) {
-            return processUpdate(executor, ms, parameter, invocation);
+            return processUpdate(executor, ms, parameter, invocation, boundSql);
         }
 
         return invocation.proceed();
@@ -229,6 +231,7 @@ public class MybatisInterceptor extends AbstractSqlHandler implements Intercepto
      * @param parameter  The parameter object.
      * @param args       The arguments array.
      * @param invocation The invocation details.
+     * @param boundSql   The BoundSql (pre-computed to avoid redundant getBoundSql() calls).
      * @return The query result, or an empty list if blocked by an interceptor.
      * @throws Throwable if an error occurs during processing.
      */
@@ -237,10 +240,10 @@ public class MybatisInterceptor extends AbstractSqlHandler implements Intercepto
             MappedStatement ms,
             Object parameter,
             Object[] args,
-            Invocation invocation) throws Throwable {
+            Invocation invocation,
+            BoundSql boundSql) throws Throwable {
         RowBounds rowBounds = (RowBounds) args[2];
         ResultHandler<?> resultHandler = (ResultHandler<?>) args[3];
-        BoundSql boundSql = args.length == 4 ? ms.getBoundSql(parameter) : (BoundSql) args[5];
         CacheKey cacheKey = executor.createCacheKey(ms, parameter, rowBounds, boundSql);
 
         // O(1) lookup: only get handlers that actually override query methods
@@ -268,11 +271,16 @@ public class MybatisInterceptor extends AbstractSqlHandler implements Intercepto
      * @param ms         The MappedStatement instance.
      * @param parameter  The parameter object.
      * @param invocation The invocation details.
+     * @param boundSql   The BoundSql (pre-computed to avoid redundant getBoundSql() calls).
      * @return The update result, or -1 if blocked by an interceptor.
      * @throws Throwable if an error occurs during processing.
      */
-    private Object processUpdate(Executor executor, MappedStatement ms, Object parameter, Invocation invocation)
-            throws Throwable {
+    private Object processUpdate(
+            Executor executor,
+            MappedStatement ms,
+            Object parameter,
+            Invocation invocation,
+            BoundSql boundSql) throws Throwable {
         // O(1) lookup: only get handlers that actually override update methods
         List<MapperHandler> updateHandlers = handlerRegistry.getHandlers(HandlerRegistry.HandlerType.UPDATE);
 
@@ -287,6 +295,10 @@ public class MybatisInterceptor extends AbstractSqlHandler implements Intercepto
 
     /**
      * Logs the SQL execution information, including method ID, execution time, and the formatted SQL.
+     * <p>
+     * <strong>Performance Optimization:</strong> SQL formatting is only performed when DEBUG logging is enabled,
+     * avoiding unnecessary string operations in production environments.
+     * </p>
      *
      * @param ms       The MappedStatement instance.
      * @param boundSql The BoundSql instance.
@@ -295,8 +307,11 @@ public class MybatisInterceptor extends AbstractSqlHandler implements Intercepto
     private void logging(MappedStatement ms, BoundSql boundSql, long start) {
         long duration = DateKit.current() - start;
         Logger.debug(true, "Method", "{} {}ms", ms.getId(), duration);
-        String sql = format(ms.getConfiguration(), boundSql);
-        Logger.debug(true, "Script", "{}", sql);
+
+        if (Logger.isDebugEnabled()) {
+            String sql = format(ms.getConfiguration(), boundSql);
+            Logger.debug(true, "Script", "{}", sql);
+        }
     }
 
     /**

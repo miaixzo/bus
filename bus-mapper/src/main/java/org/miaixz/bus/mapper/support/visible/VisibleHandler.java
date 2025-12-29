@@ -31,7 +31,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import org.apache.ibatis.executor.Executor;
@@ -49,6 +48,7 @@ import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.Args;
 import org.miaixz.bus.mapper.Context;
 import org.miaixz.bus.mapper.handler.ConditionHandler;
+import org.miaixz.bus.mapper.parsing.SqlSource;
 
 /**
  * Visible control interceptor handler.
@@ -67,11 +67,6 @@ public class VisibleHandler<T> extends ConditionHandler<T, VisibleConfig> {
      * Visible configuration from file (lowest priority).
      */
     private VisibleConfig config;
-
-    /**
-     * Cached modification status to avoid redundant processing.
-     */
-    private static final ConcurrentHashMap<String, Boolean> MODIFICATION_CACHE = new ConcurrentHashMap<>();
 
     /**
      * Default constructor (uses default configuration).
@@ -186,6 +181,12 @@ public class VisibleHandler<T> extends ConditionHandler<T, VisibleConfig> {
      * user's data perimeter and the entity's {@link Visible} annotation.
      * </p>
      *
+     * <p>
+     * <strong>Performance Optimization:</strong> Checks if the SqlSource has already been replaced by our custom
+     * SqlSource. If yes, processing is skipped since the SQL has already been modified. This provides O(1) cache-like
+     * performance without the issues of request-level caching.
+     * </p>
+     *
      * @param executor      the MyBatis executor
      * @param ms            the mapped statement
      * @param parameter     the parameter object
@@ -229,36 +230,34 @@ public class VisibleHandler<T> extends ConditionHandler<T, VisibleConfig> {
             return true;
         }
 
-        // Get original SQL
-        String originalSql = boundSql.getSql();
+        String mapperId = ms.getId();
 
-        // Generate cache key for this SQL
-        String cacheKey = ms.getId() + "::" + System.identityHashCode(originalSql);
-
-        // Check cache to avoid redundant processing
-        if (MODIFICATION_CACHE.containsKey(cacheKey)) {
-            Logger.debug(false, "Visible", "SQL already processed (cached), skipping");
+        // Optimization: Check if SqlSource has already been replaced (O(1))
+        // This is safe because once replaced, all subsequent calls will use the actual SQL
+        if (SqlSource.class.isInstance(ms.getSqlSource())) {
+            Logger.debug(false, "Visible", "SqlSource already replaced for: {}", mapperId);
             return true;
         }
 
+        // Get original SQL
+        String originalSql = boundSql.getSql();
+
         // Create builder for current config and apply perimeter condition
         VisibleBuilder builder = new VisibleBuilder(currentConfig);
-        String modifiedSql = builder.applyVisibility(originalSql);
+        String actualSql = builder.applyVisibility(originalSql);
 
         // If SQL was modified, update the bound SQL
-        if (!originalSql.equals(modifiedSql)) {
-            Logger.debug(false, "Visible", "Applied visibility filter for query: {}", ms.getId());
+        if (!originalSql.equals(actualSql)) {
+            Logger.debug(false, "Visible", "Applied visibility filter for query: {}", mapperId);
             // Use reflection to update SQL in BoundSql
-            if (setBoundSql(boundSql, modifiedSql)) {
+            if (setBoundSql(boundSql, actualSql)) {
                 Logger.debug(false, "Visible", "Modified BoundSql.sql");
-                // Mark as processed in cache
-                MODIFICATION_CACHE.put(cacheKey, true);
             } else {
                 // If reflection fails, log warning and continue with original SQL
                 Logger.warn(false, "Visible", "Failed to update SQL");
             }
         } else {
-            Logger.debug(false, "Visible", "SQL unchanged for query: {}", ms.getId());
+            Logger.debug(false, "Visible", "SQL unchanged for query: {}", mapperId);
         }
 
         return true;

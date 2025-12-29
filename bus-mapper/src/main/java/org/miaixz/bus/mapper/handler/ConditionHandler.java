@@ -215,19 +215,27 @@ public abstract class ConditionHandler<T, C> extends AbstractSqlHandler implemen
     }
 
     /**
-     * Replace the SqlSource in MappedStatement with a new SQL.
+     * Replace the SqlSource in MappedStatement with actual SQL.
      * <p>
-     * This ensures subsequent getBoundSql() calls return the modified SQL.
+     * This ensures subsequent getBoundSql() calls return the actual SQL.
      * </p>
      *
-     * @param ms       the MappedStatement
-     * @param boundSql the BoundSql object
-     * @param newSql   the new SQL string
+     * @param ms        the MappedStatement
+     * @param boundSql  the BoundSql object
+     * @param actualSql the actual SQL string
      */
-    protected void replaceSqlSource(MappedStatement ms, BoundSql boundSql, String newSql) {
+    protected void replaceSqlSource(MappedStatement ms, BoundSql boundSql, String actualSql) {
         try {
+            // Step 1: Modify BoundSql SQL field directly using reflection
+            MetaObject boundSqlMetaObject = SystemMetaObject.forObject(boundSql);
+            boundSqlMetaObject.setValue("sql", actualSql);
+
+            // Step 2: Replace SqlSource to ensure consistency in all phases
             MetaObject msMetaObject = SystemMetaObject.forObject(ms);
-            msMetaObject.setValue("sqlSource", new SqlSource(ms.getConfiguration(), boundSql, newSql));
+            org.apache.ibatis.mapping.SqlSource sqlSource = new SqlSource(ms, actualSql);
+            msMetaObject.setValue("sqlSource", sqlSource);
+
+            Logger.debug(false, handler(), "Replaced SqlSource for MappedStatement: {}", ms.getId());
         } catch (Exception e) {
             Logger.warn(false, handler(), "Failed to replace SqlSource: {}", e.getMessage());
         }

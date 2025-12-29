@@ -27,21 +27,16 @@
 */
 package org.miaixz.bus.starter.wrapper;
 
-import jakarta.annotation.Resource;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import java.lang.reflect.Method;
+
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.spring.http.AwareWebMvcConfigurer;
-import org.miaixz.bus.spring.http.MutableRequestWrapper;
-import org.miaixz.bus.spring.http.MutableResponseWrapper;
+import org.miaixz.bus.spring.http.RuntimeContextBindingFilter;
 import org.miaixz.bus.spring.http.SentinelRequestHandler;
 import org.springframework.boot.autoconfigure.web.servlet.WebMvcRegistrations;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -52,12 +47,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.filter.ForwardedHeaderFilter;
-import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
-import java.io.IOException;
-import java.lang.reflect.Method;
+import jakarta.annotation.Resource;
 
 /**
  * Configuration class for XSS protection and request/response content caching. This class configures web request
@@ -121,18 +114,18 @@ public class WrapperConfiguration implements WebMvcRegistrations {
     /**
      * Registers the request body caching filter.
      * <p>
-     * This method creates and configures a {@link BodyCacheFilter} to wrap requests for specific HTTP methods, enabling
-     * XSS protection and request/response content caching.
+     * This method creates and configures a {@link RuntimeContextBindingFilter} to wrap requests for specific HTTP
+     * methods, enabling XSS protection and request/response content caching.
      * </p>
      *
      * @return A configured {@link FilterRegistrationBean} for the body cache filter.
      */
     @Bean("registrationBodyCacheFilter")
-    public FilterRegistrationBean<BodyCacheFilter> registrationBodyCacheFilter() {
-        FilterRegistrationBean<BodyCacheFilter> registrationBean = new FilterRegistrationBean<>();
+    public FilterRegistrationBean<RuntimeContextBindingFilter> registrationBodyCacheFilter() {
+        FilterRegistrationBean<RuntimeContextBindingFilter> registrationBean = new FilterRegistrationBean<>();
         registrationBean.setEnabled(this.properties.isEnabled());
         registrationBean.setOrder(this.properties.getOrder());
-        registrationBean.setFilter(new BodyCacheFilter());
+        registrationBean.setFilter(new RuntimeContextBindingFilter());
         if (StringKit.isNotEmpty(this.properties.getName())) {
             registrationBean.setName(this.properties.getName());
         }
@@ -229,45 +222,6 @@ public class WrapperConfiguration implements WebMvcRegistrations {
                 }
             }
             return requestMappingInfo;
-        }
-    }
-
-    /**
-     * A filter that caches the request body by wrapping the {@link HttpServletRequest}. This allows the request body to
-     * be read multiple times, which is necessary for features like XSS filtering and logging.
-     */
-    class BodyCacheFilter extends OncePerRequestFilter {
-
-        /**
-         * Wraps the request and response if necessary.
-         * <p>
-         * This method wraps the {@link HttpServletRequest} in a {@link MutableRequestWrapper} for HTTP methods that
-         * typically contain a body (POST, PATCH, PUT) to allow for repeatable reads. The {@link HttpServletResponse} is
-         * also wrapped to allow for response body manipulation or caching.
-         * </p>
-         *
-         * @param request     The original HTTP request.
-         * @param response    The original HTTP response.
-         * @param filterChain The filter chain.
-         * @throws ServletException if a servlet-specific error occurs.
-         * @throws IOException      if an I/O error occurs.
-         */
-        @Override
-        protected void doFilterInternal(
-                HttpServletRequest request,
-                HttpServletResponse response,
-                FilterChain filterChain) throws ServletException, IOException {
-            final String method = request.getMethod();
-            // Only wrap requests with a body to improve performance.
-            if (HTTP.POST.equals(method) || HTTP.PATCH.equals(method) || HTTP.PUT.equals(method)) {
-                if (!(request instanceof MutableRequestWrapper)) {
-                    request = new MutableRequestWrapper(request);
-                }
-            }
-            if (!(response instanceof MutableResponseWrapper)) {
-                response = new MutableResponseWrapper(response);
-            }
-            filterChain.doFilter(request, response);
         }
     }
 

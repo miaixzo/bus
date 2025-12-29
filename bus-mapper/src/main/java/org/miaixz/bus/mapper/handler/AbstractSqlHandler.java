@@ -186,13 +186,13 @@ public abstract class AbstractSqlHandler {
      * field. This is useful for interceptors that need to modify SQL at runtime.
      * </p>
      *
-     * @param boundSql The BoundSql object to modify.
-     * @param newSql   The new SQL string to set.
+     * @param boundSql  The BoundSql object to modify.
+     * @param actualSql The actual SQL string to set.
      * @return {@code true} if the modification was successful, {@code false} otherwise.
      */
-    protected static boolean setBoundSql(BoundSql boundSql, String newSql) {
+    protected static boolean setBoundSql(BoundSql boundSql, String actualSql) {
         try {
-            FieldKit.setFieldValue(boundSql, "sql", newSql);
+            FieldKit.setFieldValue(boundSql, "sql", actualSql);
             return true;
         } catch (Exception e) {
             return false;

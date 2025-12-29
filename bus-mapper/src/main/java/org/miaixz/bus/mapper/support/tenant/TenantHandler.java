@@ -45,6 +45,7 @@ import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.Args;
 import org.miaixz.bus.mapper.Context;
 import org.miaixz.bus.mapper.handler.ConditionHandler;
+import org.miaixz.bus.mapper.parsing.SqlSource;
 
 /**
  * Multi-tenancy handler.
@@ -265,6 +266,12 @@ public class TenantHandler<T> extends ConditionHandler<T, TenantConfig> {
     /**
      * Process SQL by modifying the MappedStatement's SqlSource.
      *
+     * <p>
+     * <strong>Performance Optimization:</strong> Checks if the SqlSource has already been replaced by our custom
+     * SqlSource. If yes, processing is skipped since the SQL has already been modified. This provides O(1) cache-like
+     * performance without the issues of request-level caching.
+     * </p>
+     *
      * @param ms        the MappedStatement
      * @param parameter the parameter object
      * @param boundSql  the current BoundSql
@@ -287,14 +294,15 @@ public class TenantHandler<T> extends ConditionHandler<T, TenantConfig> {
             return;
         }
 
-        // Get original SQL
-        String originalSql = boundSql.getSql();
-
-        // Check if SQL already has tenant condition - if yes, no need to process
-        if (originalSql.contains(currentConfig.getColumn() + " =")) {
-            Logger.debug(false, "Tenant", "SQL already contains tenant condition, skipping");
+        // Optimization: Check if SqlSource has already been replaced (O(1))
+        // This is safe because once replaced, all subsequent calls will use the actual SQL
+        if (SqlSource.class.isInstance(ms.getSqlSource())) {
+            Logger.debug(false, "Tenant", "SqlSource already replaced for: {}", mapperId);
             return;
         }
+
+        // Get original SQL
+        String originalSql = boundSql.getSql();
 
         // Check if this SQL actually needs tenant filtering by using TenantBuilder
         // This checks if the table is in the ignore list
@@ -321,10 +329,10 @@ public class TenantHandler<T> extends ConditionHandler<T, TenantConfig> {
         }
 
         // Rewrite SQL with actual tenant ID
-        String newSql = builder.handleSql(originalSql, tenantId);
+        String actualSql = builder.handleSql(originalSql, tenantId);
 
         // If SQL hasn't changed, return directly
-        if (originalSql.equals(newSql)) {
+        if (originalSql.equals(actualSql)) {
             Logger.debug(false, "Tenant", "SQL unchanged for mapper: {}", mapperId);
             return;
         }
@@ -333,14 +341,14 @@ public class TenantHandler<T> extends ConditionHandler<T, TenantConfig> {
 
         // Step 1: Modify the BoundSql parameter using reflection
         // This ensures the current BoundSql instance is modified for current execution
-        if (!setBoundSql(boundSql, newSql)) {
+        if (!setBoundSql(boundSql, actualSql)) {
             Logger.warn(false, "Tenant", "Failed to modify BoundSql.sql");
             // Fallback: continue with SqlSource replacement only
         }
 
         // Step 2: Replace the SqlSource in MappedStatement
-        // This ensures subsequent getBoundSql() calls return the modified SQL
-        replaceSqlSource(ms, boundSql, newSql);
+        // This ensures subsequent getBoundSql() calls return the actual SQL
+        replaceSqlSource(ms, boundSql, actualSql);
         Logger.debug(false, "Tenant", "Replaced MappedStatement.sqlSource");
     }
 

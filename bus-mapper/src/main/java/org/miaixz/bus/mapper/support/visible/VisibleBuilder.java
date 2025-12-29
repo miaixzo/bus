@@ -103,7 +103,7 @@ public class VisibleBuilder {
      * Apply visibility condition to SQL.
      *
      * @param sql the original SQL
-     * @return the modified SQL with visibility condition
+     * @return the actual SQL with visibility condition
      */
     public String applyVisibility(String sql) {
         if (config.getProvider() == null || StringKit.isEmpty(sql)) {
@@ -164,7 +164,7 @@ public class VisibleBuilder {
      *
      * @param sql       the original SQL
      * @param condition the visibility condition
-     * @return the modified SQL
+     * @return the actual SQL
      */
     private String addConditionToSql(String sql, String condition) {
         // Find WHERE clause position
