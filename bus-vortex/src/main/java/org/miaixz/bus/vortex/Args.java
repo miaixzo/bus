@@ -27,13 +27,17 @@
 */
 package org.miaixz.bus.vortex;
 
+import java.util.Map;
+
+import org.miaixz.bus.core.net.Protocol;
+import org.miaixz.bus.vortex.strategy.QualifierStrategy;
+import org.miaixz.bus.vortex.strategy.RequestStrategy;
+import org.miaixz.bus.vortex.strategy.VettingStrategy;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import org.miaixz.bus.vortex.strategy.QualifierStrategy;
-import org.miaixz.bus.vortex.strategy.RequestStrategy;
-import org.miaixz.bus.vortex.strategy.VettingStrategy;
 
 /**
  * A central repository for constants defining the gateway's public API contract and for binding configuration
@@ -143,6 +147,22 @@ public class Args {
      * A constant for a default API version, e.g., "1.0".
      */
     public static final String DEFAULT_VERSION = "1.0";
+
+    /**
+     * Pre-built mapping table for mode to router key. Using static map for O(1) lookup instead of switch expression
+     * evaluation on every request.
+     */
+    public static final Map<Integer, String> MODE_TO_ROUTER = Map.of(
+            1,
+            Protocol.HTTP.getName(),
+            2,
+            Protocol.MQ.getName(),
+            3,
+            Protocol.MCP.getName(),
+            4,
+            Protocol.GRPC.getName(),
+            5,
+            Protocol.WS.getName());
 
     /**
      * Checks if the given path is a RESTful API proxy request path.

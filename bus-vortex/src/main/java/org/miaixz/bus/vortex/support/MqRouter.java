@@ -27,136 +27,78 @@
 */
 package org.miaixz.bus.vortex.support;
 
-import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.vortex.Assets;
 import org.miaixz.bus.vortex.Context;
 import org.miaixz.bus.vortex.Router;
-import org.miaixz.bus.vortex.support.mq.MqService;
-import org.springframework.core.io.buffer.DataBuffer;
-import org.springframework.core.io.buffer.DefaultDataBufferFactory;
-import org.springframework.http.MediaType;
+import org.miaixz.bus.vortex.support.mq.MqExecutor;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
-import java.time.Duration;
 
 /**
  * A {@link Router} implementation for forwarding requests to a message queue (MQ).
  * <p>
- * This class acts as a coordinator for asynchronous messaging. It extracts the request body and uses an
- * {@link MqService} to send the payload to a message broker. It immediately returns a success response to the client,
- * acknowledging that the message has been accepted for processing, without waiting for the downstream consumer to
- * finish.
+ * This class acts as a simple coordinator. Its sole responsibility is to retrieve the necessary context and request
+ * body, then delegate the actual execution to the {@link MqExecutor}.
+ * <p>
+ * The executor handles all protocol-specific logic including:
+ * <ul>
+ * <li>Sending messages to the message broker</li>
+ * <li>Selecting response strategy (streaming vs buffering) based on
+ * {@link org.miaixz.bus.vortex.Assets#getStream()}</li>
+ * <li>Building the appropriate acknowledgment {@link ServerResponse}</li>
+ * </ul>
+ * <p>
+ * Generic type parameters: {@code Router<ServerRequest, ServerResponse>}
  *
  * @author Kimi Liu
- * @see MqService
  * @since Java 17+
  */
-public class MqRouter implements Router {
+public class MqRouter implements Router<ServerRequest, ServerResponse> {
 
     /**
-     * The service responsible for sending messages to the message queue.
+     * The executor responsible for sending messages to the message queue.
      */
-    private final MqService service;
+    private final MqExecutor executor;
 
     /**
      * Constructs a new {@code MqRouter}.
      *
-     * @param service The service that will perform the message sending.
+     * @param executor The executor that will perform the message sending.
      */
-    public MqRouter(MqService service) {
-        this.service = service;
+    public MqRouter(MqExecutor executor) {
+        this.executor = executor;
     }
 
     /**
      * Routes a client request by sending its body as a message to a message queue.
      * <p>
-     * This method retrieves the {@link Context} and {@link Assets} to determine the target MQ topic and timeout. It
-     * then reads the request body and delegates the sending operation to the {@link MqService}. It provides an
-     * immediate acknowledgment to the client.
+     * This method retrieves the {@link Context} from the reactive stream and delegates the execution to the
+     * {@link MqExecutor}. The executor is responsible for sending the message and building the acknowledgment response.
      *
-     * @param request The current {@link ServerRequest}.
-     * @return A {@code Mono<ServerResponse>} indicating that the message has been successfully forwarded to the MQ.
+     * @param input The ServerRequest object (strongly typed)
+     * @return A {@code Mono<ServerResponse>} containing the acknowledgment response
      */
     @Override
-    public Mono<ServerResponse> route(ServerRequest request) {
+    public Mono<ServerResponse> route(ServerRequest input) {
         return Mono.deferContextual(contextView -> {
             final Context context = contextView.get(Context.class);
-            final Assets assets = context.getAssets();
 
-            long startTime = System.currentTimeMillis();
-            Logger.info("MQ Router: Routing request for topic: {}", assets.getMethod());
+            Logger.info("MQ Router: Routing request for topic: {}", context.getAssets().getMethod());
 
-            // Determine if streaming mode is enabled
-            boolean isStreaming = assets.getStream() != null && assets.getStream() == 2;
-
-            return request.bodyToMono(String.class)
+            // Read request body and delegate to executor
+            return input.bodyToMono(String.class)
                     // .switchIfEmpty() handles cases where the body might be empty
-                    .switchIfEmpty(Mono.just(Normal.EMPTY)).flatMap(payload -> this.service.send(assets, payload))
-                    .then(Mono.defer(() -> {
-                        long duration = System.currentTimeMillis() - startTime;
-                        Logger.info(
-                                "MQ Router: Successfully forwarded request for topic: {} in {}ms",
-                                assets.getMethod(),
-                                duration);
-
-                        String responseJson = "{\"status\": \"Request forwarded to MQ\"}";
-
-                        if (isStreaming) {
-                            // STREAMING MODE: Use streaming execution
-                            return executeStreaming(responseJson);
-                        } else {
-                            // ATOMIC MODE: Use buffering execution
-                            return executeBuffering(responseJson);
-                        }
-                    })).onErrorResume(e -> {
-                        long duration = System.currentTimeMillis() - startTime;
-                        Logger.error(
-                                "MQ Router: Failed to forward request for topic: {} in {}ms",
-                                assets.getMethod(),
-                                duration,
-                                e);
-                        return ServerResponse.status(500).contentType(MediaType.APPLICATION_JSON)
-                                .bodyValue("{\"error\": \"Failed to forward request to MQ: " + e.getMessage() + "\"}");
-                    });
+                    .switchIfEmpty(Mono.just(Normal.EMPTY)).flatMap(body -> executor.execute(context, body)).doOnError(
+                            error -> Logger.error(
+                                    true,
+                                    "MQ",
+                                    "[MQ_ROUTER_ERROR] - Failed to forward request to topic: {} - {}",
+                                    context.getAssets().getMethod(),
+                                    error.getMessage()));
         });
-    }
-
-    /**
-     * Executes the MQ acknowledgment response in streaming mode.
-     * <p>
-     * Converts the response JSON into a flux of data buffers for streaming transfer.
-     *
-     * @param responseJson The JSON response string
-     * @return A streaming ServerResponse
-     */
-    private Mono<ServerResponse> executeStreaming(String responseJson) {
-        DefaultDataBufferFactory bufferFactory = new DefaultDataBufferFactory();
-
-        // Convert response to streaming data buffers
-        Flux<DataBuffer> dataFlux = Flux.interval(Duration.ofMillis(10)).take(1).map(i -> {
-            byte[] bytes = responseJson.getBytes(Charset.UTF_8);
-            return bufferFactory.wrap(bytes);
-        });
-
-        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(dataFlux, DataBuffer.class);
-    }
-
-    /**
-     * Executes the MQ acknowledgment response in atomic/buffering mode.
-     * <p>
-     * Buffers the complete response before sending.
-     *
-     * @param responseJson The JSON response string
-     * @return A buffered ServerResponse
-     */
-    private Mono<ServerResponse> executeBuffering(String responseJson) {
-        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).bodyValue(responseJson);
     }
 
 }

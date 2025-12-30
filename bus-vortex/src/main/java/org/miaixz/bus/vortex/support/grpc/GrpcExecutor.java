@@ -27,25 +27,124 @@
 */
 package org.miaixz.bus.vortex.support.grpc;
 
+import java.time.Duration;
+
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Assets;
-import org.springframework.beans.factory.DisposableBean;
+import org.miaixz.bus.vortex.Context;
+import org.miaixz.bus.vortex.support.Coordinator;
+import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.core.io.buffer.DefaultDataBufferFactory;
+import org.springframework.web.reactive.function.server.ServerResponse;
+
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 /**
- * A service for invoking gRPC methods on remote services via HTTP gateway.
+ * An executor for executing gRPC methods on remote services via HTTP gateway.
  * <p>
- * This service uses HTTP as transport protocol instead of direct gRPC, avoiding third-party gRPC library dependencies.
+ * This executor uses HTTP as transport protocol instead of direct gRPC, avoiding third-party gRPC library dependencies.
  * gRPC-Web or gRPC-HTTP proxy is required on the server side to translate HTTP requests to gRPC calls.
  * </p>
+ * <p>
+ * The executor supports two execution modes controlled by {@link Assets#getStream()}:
+ * <ul>
+ * <li>Buffering mode (stream = 1 or null): Buffers the complete response before returning</li>
+ * <li>Streaming mode (stream = 2): Streams the response in chunks</li>
+ * </ul>
+ * </p>
+ * Generic type parameters: {@code Executor<String, ServerResponse>}
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class GrpcService implements DisposableBean {
+public class GrpcExecutor extends Coordinator<String, ServerResponse> {
+
+    /**
+     * Executes a gRPC request using the provided context and String payload.
+     * <p>
+     * This method is required by the {@link org.miaixz.bus.vortex.Executor} interface. It invokes the gRPC method and
+     * selects the appropriate execution strategy (streaming or buffering) based on {@link Assets#getStream()}.
+     *
+     * @param context The request context containing the assets configuration
+     * @param input   The String payload to send to the gRPC service
+     * @return A Mono emitting the ServerResponse
+     */
+    @Override
+    public Mono<ServerResponse> execute(Context context, String input) {
+        Assets assets = context.getAssets();
+        String payload = input;
+
+        // Invoke gRPC service (wrap synchronous call in Mono)
+        Mono<String> responseMono = Mono.fromCallable(() -> invoke(assets, payload))
+                .subscribeOn(reactor.core.scheduler.Schedulers.boundedElastic());
+
+        // Select execution strategy based on assets.getStream()
+        boolean isStreaming = assets.getStream() != null && assets.getStream() == 2;
+
+        if (isStreaming) {
+            return executeStreaming(responseMono, assets);
+        } else {
+            return executeBuffering(responseMono, assets);
+        }
+    }
+
+    /**
+     * Executes the gRPC call in streaming mode.
+     * <p>
+     * Converts the gRPC response into a flux of data buffers for streaming transfer.
+     *
+     * @param responseMono The mono containing the gRPC response
+     * @param assets       The asset configuration
+     * @return A streaming ServerResponse
+     */
+    private Mono<ServerResponse> executeStreaming(Mono<String> responseMono, Assets assets) {
+        return responseMono.flatMap(response -> {
+            Logger.info(
+                    false,
+                    "gRPC",
+                    "[GRPC_SUCCESS_STREAM] - Successfully invoked gRPC service: {} (streaming)",
+                    assets.getMethod());
+
+            DefaultDataBufferFactory bufferFactory = new DefaultDataBufferFactory();
+
+            // Convert response to streaming data buffers
+            Flux<DataBuffer> dataFlux = Flux.interval(Duration.ofMillis(10)).take(1).map(i -> {
+                byte[] bytes = response.getBytes(Charset.UTF_8);
+                return bufferFactory.wrap(bytes);
+            });
+
+            return ServerResponse.ok().header(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                    .body(dataFlux, DataBuffer.class);
+        });
+    }
+
+    /**
+     * Executes the gRPC call in atomic/buffering mode.
+     * <p>
+     * Buffers the complete gRPC response before sending.
+     *
+     * @param responseMono The mono containing the gRPC response
+     * @param assets       The asset configuration
+     * @return A buffered ServerResponse
+     */
+    private Mono<ServerResponse> executeBuffering(Mono<String> responseMono, Assets assets) {
+        return responseMono.flatMap(response -> {
+            Logger.info(
+                    false,
+                    "gRPC",
+                    "[GRPC_SUCCESS_ATOMIC] - Successfully invoked gRPC service: {} (atomic)",
+                    assets.getMethod());
+
+            return ServerResponse.ok().header(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON).bodyValue(response);
+        });
+    }
 
     /**
      * Invokes a gRPC method via HTTP gateway.
@@ -103,16 +202,6 @@ public class GrpcService implements DisposableBean {
         }
 
         return url.toString();
-    }
-
-    /**
-     * Destroys this service when the Spring container shuts down.
-     * <p>
-     * This method cleans up resources.
-     */
-    @Override
-    public void destroy() {
-        Logger.info("GrpcService shut down successfully.");
     }
 
 }

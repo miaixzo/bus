@@ -89,4 +89,34 @@ public class ErrorCode extends org.miaixz.bus.core.basic.normal.ErrorCode {
      */
     public static final Errors _116005 = ErrorRegistry.builder().key("116005").value("Unsupported interaction mode")
             .build();
+
+    /**
+     * Error code: 116006 - MQ forwarding failed.
+     * <p>
+     * Indicates that the Vortex gateway failed to forward a request to the message queue (MQ). This could be due to
+     * connection issues, authentication failures, or broker unavailability.
+     * </p>
+     */
+    public static final Errors _116006 = ErrorRegistry.builder().key("116006").value("MQ forwarding failed").build();
+
+    /**
+     * Error code: 116007 - gRPC service invocation failed.
+     * <p>
+     * Indicates that the Vortex gateway failed to invoke a downstream gRPC service. This could be due to service
+     * unavailability, timeout, or communication errors.
+     * </p>
+     */
+    public static final Errors _116007 = ErrorRegistry.builder().key("116007").value("gRPC service invocation failed")
+            .build();
+
+    /**
+     * Error code: 116008 - MCP tool execution failed.
+     * <p>
+     * Indicates that the Vortex gateway failed to execute an MCP (Miaixz Communication Protocol) tool. This could be
+     * due to tool unavailability, invalid parameters, or execution errors.
+     * </p>
+     */
+    public static final Errors _116008 = ErrorRegistry.builder().key("116008").value("MCP tool execution failed")
+            .build();
+
 }

@@ -30,12 +30,12 @@ package org.miaixz.bus.vortex.support.rest;
 import java.util.Map;
 
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.NonNull;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Assets;
 import org.miaixz.bus.vortex.Context;
+import org.miaixz.bus.vortex.support.Coordinator;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -58,16 +58,18 @@ import reactor.netty.http.client.HttpClient;
 import reactor.netty.resources.ConnectionProvider;
 
 /**
- * The core executor for forwarding requests to downstream RESTful HTTP services.
+ * The core executor for executing RESTful HTTP requests to downstream services.
  * <p>
- * This service encapsulates all the logic for using Spring's {@link WebClient} to act as a reverse proxy. It builds the
- * downstream request based on the provided {@link Assets} and {@link Context}, sends it, and then transforms the
+ * This executor encapsulates all the logic for using Spring's {@link WebClient} to act as a reverse proxy. It builds
+ * the downstream request based on the provided {@link Assets} and {@link Context}, sends it, and then transforms the
  * downstream response back into a {@link ServerResponse} for the original client.
+ * <p>
+ * Generic type parameters: {@code Executor<ServerRequest, ServerResponse>}
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class RestService {
+public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
 
     /**
      * A cached, pre-configured {@link ExchangeStrategies} instance for the {@link WebClient}.
@@ -84,26 +86,27 @@ public class RestService {
     private static final ConnectionProvider SHARED_CONNECTION_PROVIDER = ConnectionProvider.create("vortex-http-pool");
 
     /**
-     * Executes the full reverse-proxy logic for an HTTP request.
+     * Executes the HTTP request using the provided context and ServerRequest.
      * <p>
-     * This method orchestrates the entire process of forwarding an incoming {@link ServerRequest} to an external HTTP
-     * service. It involves building the target URL, dynamically configuring an
-     * {@link reactor.netty.http.client.HttpClient} with the correct timeout strategy, creating a {@link WebClient}
-     * instance, and then sending the request.
+     * This method is required by the {@link org.miaixz.bus.vortex.Executor} interface. For REST executors, the
+     * {@code input} parameter is typed as {@link ServerRequest} for compile-time type safety.
      *
-     * @param request The original incoming {@link ServerRequest}.
-     * @param context The request context, containing parameters and resolved configuration.
-     * @param assets  The API asset configuration, containing details about the downstream service.
-     * @return A {@link Mono<ServerResponse>} containing the response from the downstream service.
+     * @param context The request context
+     * @param input   The ServerRequest object (strongly typed)
+     * @return A Mono emitting the ServerResponse, or error if validation fails
      */
     @NonNull
-    public Mono<ServerResponse> execute(ServerRequest request, Context context, Assets assets) {
+    @Override
+    public Mono<ServerResponse> execute(Context context, ServerRequest input) {
+        ServerRequest request = input;
+        Assets assets = context.getAssets();
+
         final String method = request.methodName();
         final String path = request.path();
         final String ip = context.getX_request_ipv4();
 
         // 1. Build the base URL for the target service.
-        String baseUrl = buildBaseUrl(assets);
+        String baseUrl = build(context).block();
         Logger.info(true, "Http", "[{}] [{}] [{}] [HTTP_ROUTER_BASEURL] - Base URL: {}", ip, method, path, baseUrl);
 
         // 2. Build a WebClient with shared connection pool (timeout is handled at VortexHandler level)
@@ -227,9 +230,33 @@ public class RestService {
             // **GRAALVM FIX**: Apply Native Image encoding fix for FastJSON unsafe operations
             Mono<String> jsonBodyMono = Mono.fromCallable(() -> {
                 String json = JsonKit.toJsonString(params);
-                return fixGraalvmJsonEncoding(json);
-            }).subscribeOn(Schedulers.boundedElastic());
+                String fixed = fixJsonEncoding(json);
+                // Log what will actually be sent
+                int backslashCount = fixed.length() - fixed.replace("\\", "").length();
+                Logger.debug(
+                        true,
+                        "Http",
+                        "[{}] [{}] [{}] [HTTP_BEFORE_SEND] - Backslashes: {}, First 300 chars: {}",
+                        ip,
+                        method,
+                        path,
+                        backslashCount,
+                        fixed.length() > 300 ? fixed.substring(0, 300) + "..." : fixed);
+                return fixed;
+            }).subscribeOn(Schedulers.boundedElastic()).doOnNext(jsonString -> {
+                // Log the exact JSON string after fix
+                Logger.debug(
+                        true,
+                        "Http",
+                        "[{}] [{}] [{}] [HTTP_JSON_AFTER_FIX] - Length: {}, Full JSON: {}",
+                        ip,
+                        method,
+                        path,
+                        jsonString.length(),
+                        jsonString);
+            });
 
+            // Use body() for reactive types (Publisher)
             bodySpec.contentType(MediaType.APPLICATION_JSON).body(jsonBodyMono, String.class);
 
             Logger.info(
@@ -327,30 +354,9 @@ public class RestService {
     }
 
     /**
-     * Builds the base URL for the downstream service from the asset configuration.
-     *
-     * @param assets The configured assets for the target service.
-     * @return The constructed base URL string (e.g., "http://api.example.com:8080/v1").
-     */
-    private String buildBaseUrl(Assets assets) {
-        // This is fast, non-blocking string building.
-        StringBuilder baseUrlBuilder = new StringBuilder(assets.getHost());
-        if (assets.getPort() != null && assets.getPort() > 0) {
-            baseUrlBuilder.append(Symbol.COLON).append(assets.getPort());
-        }
-        if (assets.getPath() != null && !assets.getPath().isEmpty()) {
-            if (!assets.getPath().startsWith(Symbol.SLASH)) {
-                baseUrlBuilder.append(Symbol.SLASH);
-            }
-            baseUrlBuilder.append(assets.getPath());
-        }
-        return baseUrlBuilder.toString();
-    }
-
-    /**
      * Builds the target URI for the downstream request.
      *
-     * @param assets  The configured assets for the target service.
+     * @param assets  The configured assets for the target executor.
      * @param context The request context.
      * @return The constructed target URI string, including query parameters for GET requests.
      */
@@ -531,59 +537,6 @@ public class RestService {
                                 ip,
                                 method,
                                 path));
-    }
-
-    /**
-     * Fix GraalVM Native Image JSON encoding issues caused by FastJSON unsafe operations. This method removes NULL
-     * bytes that get inserted due to memory layout differences between JVM and GraalVM Native Image environments.
-     *
-     * @param json JSON string potentially corrupted by FastJSON in Native Image
-     * @return Fixed JSON string with NULL bytes removed
-     */
-    private String fixGraalvmJsonEncoding(String json) {
-        if (json == null || json.isEmpty()) {
-            return json;
-        }
-
-        // Quick check for NULL bytes
-        boolean hasNullBytes = false;
-        for (int i = 0; i < json.length(); i++) {
-            if (json.charAt(i) == '\u0000') {
-                hasNullBytes = true;
-                break;
-            }
-        }
-
-        if (!hasNullBytes) {
-            return json;
-        }
-
-        // Remove NULL bytes at character level
-        StringBuilder fixedJson = new StringBuilder(json.length());
-        int nullCount = 0;
-
-        for (int i = 0; i < json.length(); i++) {
-            char c = json.charAt(i);
-            if (c != '\u0000') {
-                fixedJson.append(c);
-            } else {
-                nullCount++;
-            }
-        }
-
-        String result = fixedJson.toString();
-
-        if (nullCount > 0) {
-            Logger.info(
-                    true,
-                    "RestService",
-                    "GraalVM JSON encoding fix applied - Removed {} NULL bytes: {} -> {}",
-                    nullCount,
-                    json.length(),
-                    result.length());
-        }
-
-        return result;
     }
 
 }

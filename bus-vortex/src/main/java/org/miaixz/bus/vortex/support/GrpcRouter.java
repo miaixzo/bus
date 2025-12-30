@@ -27,188 +27,80 @@
 */
 package org.miaixz.bus.vortex.support;
 
-import java.time.Duration;
-
-import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.vortex.Assets;
 import org.miaixz.bus.vortex.Context;
 import org.miaixz.bus.vortex.Router;
-import org.miaixz.bus.vortex.support.grpc.GrpcService;
-import org.springframework.core.io.buffer.DataBuffer;
-import org.springframework.core.io.buffer.DefaultDataBufferFactory;
-import org.springframework.http.MediaType;
+import org.miaixz.bus.vortex.support.grpc.GrpcExecutor;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 /**
  * A {@link Router} implementation for forwarding requests to gRPC services.
  * <p>
- * This class acts as a coordinator for gRPC communication. It extracts the request body and uses a {@link GrpcService}
- * to invoke the gRPC method on the target service.
+ * This class acts as a simple coordinator. Its sole responsibility is to retrieve the necessary context and request
+ * body, then delegate the actual execution to the {@link GrpcExecutor}.
+ * <p>
+ * The executor handles all protocol-specific logic including:
+ * <ul>
+ * <li>Invoking the gRPC method via HTTP gateway</li>
+ * <li>Selecting execution strategy (streaming vs buffering) based on
+ * {@link org.miaixz.bus.vortex.Assets#getStream()}</li>
+ * <li>Building the appropriate {@link ServerResponse}</li>
+ * </ul>
+ * <p>
+ * Generic type parameters: {@code Router<ServerRequest, ServerResponse>}
  *
  * @author Kimi Liu
- * @see GrpcService
  * @since Java 17+
  */
-public class GrpcRouter implements Router {
+public class GrpcRouter implements Router<ServerRequest, ServerResponse> {
 
     /**
-     * The service responsible for executing gRPC calls.
+     * The executor responsible for executing gRPC calls.
      */
-    private final GrpcService service;
+    private final GrpcExecutor executor;
 
     /**
      * Constructs a new {@code GrpcRouter}.
      *
-     * @param service The service that will perform the gRPC invocation.
+     * @param executor The executor that will perform the gRPC invocation.
      */
-    public GrpcRouter(GrpcService service) {
-        this.service = service;
+    public GrpcRouter(GrpcExecutor executor) {
+        this.executor = executor;
     }
 
     /**
      * Routes a client request by invoking a gRPC method on the target service.
      * <p>
-     * This method retrieves the {@link Context} and {@link Assets} to determine the target gRPC service and method. It
-     * then reads the request body and delegates the invocation to the {@link GrpcService}.
+     * This method retrieves the {@link Context} from the reactive stream and delegates the execution to the
+     * {@link GrpcExecutor}. The executor is responsible for protocol interaction, strategy selection, and response
+     * building.
      *
-     * @param request The current {@link ServerRequest}.
-     * @return A {@code Mono<ServerResponse>} containing the response from the gRPC service.
+     * @param input The ServerRequest object (strongly typed)
+     * @return A {@code Mono<ServerResponse>} containing the response from the gRPC service
      */
     @Override
-    public Mono<ServerResponse> route(ServerRequest request) {
+    public Mono<ServerResponse> route(ServerRequest input) {
         return Mono.deferContextual(contextView -> {
             final Context context = contextView.get(Context.class);
-            final Assets assets = context.getAssets();
-
-            long startTime = System.currentTimeMillis();
-            String ip = context.getX_request_ipv4();
-            String method = request.methodName();
-            String path = request.path();
 
             Logger.info(
                     true,
                     "gRPC",
-                    "[{}] [{}] [{}] [GRPC_ROUTER_START] - Routing request to gRPC service: {}",
-                    ip,
-                    method,
-                    path,
-                    assets.getMethod());
+                    "[GRPC_ROUTER_START] - Routing request to gRPC service: {}",
+                    context.getAssets().getMethod());
 
-            // Determine if streaming mode is enabled
-            boolean isStreaming = assets.getStream() != null && assets.getStream() == 2;
-
-            return request.bodyToMono(String.class).switchIfEmpty(Mono.just("{}")).flatMap(payload -> {
-                // Invoke gRPC service (wrap synchronous call in Mono)
-                Mono<String> responseMono = Mono.fromCallable(() -> this.service.invoke(assets, payload))
-                        .subscribeOn(reactor.core.scheduler.Schedulers.boundedElastic());
-
-                if (isStreaming) {
-                    // STREAMING MODE: Use streaming execution
-                    return executeStreaming(responseMono, ip, method, path, startTime, assets);
-                } else {
-                    // ATOMIC MODE: Use buffering execution
-                    return executeBuffering(responseMono, ip, method, path, startTime, assets);
-                }
-            }).onErrorResume(e -> {
-                long duration = System.currentTimeMillis() - startTime;
-                Logger.error(
-                        true,
-                        "gRPC",
-                        "[{}] [{}] [{}] [GRPC_ROUTER_ERROR] - Failed to invoke gRPC service: {} in {}ms",
-                        ip,
-                        method,
-                        path,
-                        assets.getMethod(),
-                        duration,
-                        e);
-                return ServerResponse.status(500).contentType(MediaType.APPLICATION_JSON)
-                        .bodyValue("{\"error\": \"Failed to invoke gRPC service: " + e.getMessage() + "\"}");
-            });
-        });
-    }
-
-    /**
-     * Executes the gRPC call in streaming mode.
-     * <p>
-     * Converts the gRPC response into a flux of data buffers for streaming transfer.
-     *
-     * @param responseMono The mono containing the gRPC response
-     * @param ip           The client IP for logging
-     * @param method       The HTTP method for logging
-     * @param path         The request path for logging
-     * @param startTime    The request start time for logging
-     * @param assets       The asset configuration
-     * @return A streaming ServerResponse
-     */
-    private Mono<ServerResponse> executeStreaming(
-            Mono<String> responseMono,
-            String ip,
-            String method,
-            String path,
-            long startTime,
-            Assets assets) {
-        return responseMono.flatMap(response -> {
-            long duration = System.currentTimeMillis() - startTime;
-            Logger.info(
-                    false,
-                    "gRPC",
-                    "[{}] [{}] [{}] [GRPC_ROUTER_SUCCESS_STREAM] - Successfully invoked gRPC service: {} in {}ms (streaming)",
-                    ip,
-                    method,
-                    path,
-                    assets.getMethod(),
-                    duration);
-
-            DefaultDataBufferFactory bufferFactory = new DefaultDataBufferFactory();
-
-            // Convert response to streaming data buffers
-            Flux<DataBuffer> dataFlux = Flux.interval(Duration.ofMillis(10)).take(1).map(i -> {
-                byte[] bytes = response.getBytes(Charset.UTF_8);
-                return bufferFactory.wrap(bytes);
-            });
-
-            return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(dataFlux, DataBuffer.class);
-        });
-    }
-
-    /**
-     * Executes the gRPC call in atomic/buffering mode.
-     * <p>
-     * Buffers the complete gRPC response before sending.
-     *
-     * @param responseMono The mono containing the gRPC response
-     * @param ip           The client IP for logging
-     * @param method       The HTTP method for logging
-     * @param path         The request path for logging
-     * @param startTime    The request start time for logging
-     * @param assets       The asset configuration
-     * @return A buffered ServerResponse
-     */
-    private Mono<ServerResponse> executeBuffering(
-            Mono<String> responseMono,
-            String ip,
-            String method,
-            String path,
-            long startTime,
-            Assets assets) {
-        return responseMono.flatMap(response -> {
-            long duration = System.currentTimeMillis() - startTime;
-            Logger.info(
-                    false,
-                    "gRPC",
-                    "[{}] [{}] [{}] [GRPC_ROUTER_SUCCESS_ATOMIC] - Successfully invoked gRPC service: {} in {}ms (atomic)",
-                    ip,
-                    method,
-                    path,
-                    assets.getMethod(),
-                    duration);
-
-            return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).bodyValue(response);
+            // Read request body and delegate to executor
+            return input.bodyToMono(String.class).switchIfEmpty(Mono.just("{}"))
+                    .flatMap(body -> executor.execute(context, body)).doOnError(
+                            error -> Logger.error(
+                                    true,
+                                    "gRPC",
+                                    "[GRPC_ROUTER_ERROR] - Failed to invoke gRPC service: {} - {}",
+                                    context.getAssets().getMethod(),
+                                    error.getMessage()));
         });
     }
 

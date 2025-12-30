@@ -35,12 +35,8 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.vortex.Assets;
-import org.miaixz.bus.vortex.Context;
-import org.miaixz.bus.vortex.Handler;
-import org.miaixz.bus.vortex.Router;
+import org.miaixz.bus.vortex.*;
 import org.miaixz.bus.vortex.magic.ErrorCode;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -73,9 +69,12 @@ public class VortexHandler {
      * Enables dynamic selection of routing strategies based on interaction mode, currently supporting HTTP, MQ, and MCP
      * (including both remote Streamable HTTP and local STDIO transports). A thread-safe collection is used to support
      * concurrent access.
+     * <p>
+     * Uses wildcard generics {@code Router<ServerRequest, ?>} to support different return types (ServerResponse,
+     * String) across different protocol implementations.
      * </p>
      */
-    private final Map<String, Router> routers;
+    private final Map<String, Router<ServerRequest, ?>> routers;
 
     /**
      * Ordered list of interceptors, sorted in ascending order by {@link Handler#getOrder()}, used to execute processing
@@ -92,10 +91,10 @@ public class VortexHandler {
      *
      * @param handlers list of interceptor instances, may be empty
      * @param routers  map of routing strategies, keyed by protocol name, with values being the corresponding
-     *                 {@link Router} implementations
+     *                 {@link Router} implementations with wildcard return types
      * @throws NullPointerException if routers is null
      */
-    public VortexHandler(List<Handler> handlers, Map<String, Router> routers) {
+    public VortexHandler(List<Handler> handlers, Map<String, Router<ServerRequest, ?>> routers) {
         this.routers = Objects.requireNonNull(routers, "Routers map cannot be null");
         this.handlers = handlers.isEmpty() ? List.of(new AccessHandler())
                 : handlers.stream().sorted(Comparator.comparingInt(Handler::getOrder)).collect(Collectors.toList());
@@ -147,18 +146,22 @@ public class VortexHandler {
                 throw new ValidateException(ErrorCode._100800);
             }
 
-            // 3. Map mode to router key
-            String modeKey = switch (assets.getMode()) {
-                case 1 -> Protocol.HTTP.getName(); // HTTP/HTTPS reverse proxy
-                case 2 -> Protocol.MQ.getName(); // Message queue
-                case 3 -> Protocol.MCP.getName(); // Model Context Protocol (handles both remote and local transports)
-                case 4 -> Protocol.GRPC.getName(); // gRPC
-                case 5 -> Protocol.WS.getName(); // WebSocket
-                default -> throw new ValidateException(ErrorCode._116005);
-            };
+            // 3. Map mode to router key using pre-built static map for O(1) lookup
+            String modeKey = Args.MODE_TO_ROUTER.get(assets.getMode());
+            if (modeKey == null) {
+                Logger.info(
+                        true,
+                        "Vortex",
+                        "[{}] [{}] [{}] [INVALID_MODE] - Invalid mode: {}",
+                        ip,
+                        method,
+                        path,
+                        assets.getMode());
+                throw new ValidateException(ErrorCode._116005);
+            }
 
             // 4. Retrieve the corresponding Router instance
-            Router router = routers.get(modeKey);
+            Router<ServerRequest, ?> router = routers.get(modeKey);
             if (router == null) {
                 Logger.info(
                         true,
@@ -196,8 +199,9 @@ public class VortexHandler {
                 // Actual routing with timeout + retry mechanism + post-interceptors
                 return router.route(request)
                         .timeout(Duration.ofSeconds(assets.getTimeout() != null ? assets.getTimeout() : 60))
-                        .retryWhen(buildRetrySpec(assets, ip, method, path))
-                        .flatMap(response -> executePostHandlers(exchange, router, response)).doOnSuccess(response -> {
+                        .retryWhen(buildRetrySpec(assets, ip, method, path)).cast(ServerResponse.class)
+                        .flatMap(response -> executePostHandlers(exchange, router, response, null).map(obj -> response))
+                        .doOnSuccess(serverResponse -> {
                             long duration = System.currentTimeMillis() - context.getTimestamp();
                             Logger.info(
                                     false,
@@ -208,15 +212,17 @@ public class VortexHandler {
                                     path,
                                     assets.getMethod(),
                                     duration);
-                            Logger.info(
-                                    false,
-                                    "Vortex",
-                                    "[{}] [{}] [{}] [REQUEST_COMPLETE] - Status: {}",
-                                    ip,
-                                    method,
-                                    path,
-                                    response.statusCode().value());
-                        }).onErrorResume(error -> {
+                            if (serverResponse != null) {
+                                Logger.info(
+                                        false,
+                                        "Vortex",
+                                        "[{}] [{}] [{}] [REQUEST_COMPLETE] - Status: {}",
+                                        ip,
+                                        method,
+                                        path,
+                                        serverResponse.statusCode().value());
+                            }
+                        }).onErrorResume(Throwable.class, error -> {
                             Logger.info(
                                     false,
                                     "Vortex",
@@ -226,10 +232,8 @@ public class VortexHandler {
                                     path,
                                     error.getMessage());
 
-                            // Ensure afterCompletion is executed for all handlers even on error
-                            return Flux.fromIterable(handlers)
-                                    .concatMap(handler -> handler.afterCompletion(exchange, router, null, null, error))
-                                    .then(Mono.error(error));
+                            // Execute postHandle and afterCompletion for all handlers even on error
+                            return executePostHandlers(exchange, router, null, error).then(Mono.error(error));
                         });
             });
         });
@@ -243,10 +247,10 @@ public class VortexHandler {
      * </p>
      *
      * @param exchange the current request/response context
-     * @param router   the selected routing strategy instance
+     * @param router   the selected routing strategy instance (with wildcard return type)
      * @return {@link Mono<Boolean>} indicating whether all pre-handle steps passed (true = all passed)
      */
-    private Mono<Boolean> executePreHandle(ServerWebExchange exchange, Router router) {
+    private Mono<Boolean> executePreHandle(ServerWebExchange exchange, Router<ServerRequest, ?> router) {
         return Flux.fromIterable(handlers).concatMap(handler -> handler.preHandle(exchange, router, null))
                 .all(Boolean::booleanValue);
     }
@@ -254,26 +258,33 @@ public class VortexHandler {
     /**
      * Sequentially executes post-handle and after-completion logic of all interceptors.
      * <p>
-     * First invokes {@link Handler#postHandle} for all handlers in sequence, then invokes
+     * First invokes {@link Handler#postHandle} for all handlers in sequence (only if no error), then invokes
      * {@link Handler#afterCompletion}. Completion callbacks should be executed regardless of success or failure.
      * </p>
      *
      * @param exchange the current request/response context
-     * @param router   the selected routing strategy instance
+     * @param router   the selected routing strategy instance (with wildcard return type)
      * @param response the response returned from the target service (may be null if error occurred earlier)
-     * @return {@link Mono<ServerResponse>} the original response after interceptor processing
+     * @param error    the error that occurred (may be null if request succeeded)
+     * @return {@link Mono<Object>} the original response after interceptor processing
      */
-    private Mono<ServerResponse> executePostHandlers(
+    private Mono<Object> executePostHandlers(
             ServerWebExchange exchange,
-            Router router,
-            ServerResponse response) {
-        // postHandle chain
-        Mono<Void> postHandle = Flux.fromIterable(handlers)
-                .concatMap(handler -> handler.postHandle(exchange, router, null, response)).then();
+            Router<ServerRequest, ?> router,
+            Object response,
+            Throwable error) {
+        // Cast to ServerResponse for handlers (if applicable)
+        ServerResponse serverResponse = response instanceof ServerResponse ? (ServerResponse) response : null;
 
-        // afterCompletion chain (normal case)
+        // postHandle chain (only if no error)
+        Mono<Void> postHandle = error == null
+                ? Flux.fromIterable(handlers)
+                        .concatMap(handler -> handler.postHandle(exchange, router, null, serverResponse)).then()
+                : Mono.empty();
+
+        // afterCompletion chain (always executed, with or without error)
         Mono<Void> afterCompletion = Flux.fromIterable(handlers)
-                .concatMap(handler -> handler.afterCompletion(exchange, router, null, response, null)).then();
+                .concatMap(handler -> handler.afterCompletion(exchange, router, null, serverResponse, error)).then();
 
         return postHandle.then(afterCompletion).thenReturn(response);
     }

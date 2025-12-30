@@ -131,14 +131,15 @@ public class ResponseStrategy extends AbstractStrategy {
                     // and handles its own thread scheduling.
                     return provider.serialize(bodyString).map(xmlBody -> {
                         // 4. This logic now runs after the async serialization is complete
+                        String xmlString = xmlBody.toString();
                         Logger.trace(
                                 false,
                                 "Response",
                                 "[{}] Response formatted to XML: {}",
                                 context.getX_request_ipv4(),
-                                xmlBody);
+                                xmlString);
                         // Wrap the formatted data into a new data buffer
-                        return bufferFactory().wrap(xmlBody.getBytes(Charset.UTF_8));
+                        return bufferFactory().wrap(xmlString.getBytes(Charset.UTF_8));
                     });
                 });
                 // The Mono.fromCallable and .subscribeOn are no longer needed here,

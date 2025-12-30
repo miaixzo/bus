@@ -5,8 +5,10 @@
  * <ul>
  * <li>{@link org.miaixz.bus.vortex.Strategy}: The primary interface for implementing individual processing steps in the
  * request chain (Chain of Responsibility pattern).</li>
- * <li>{@link org.miaixz.bus.vortex.Router}: The interface for routing requests to different downstream protocols (e.g.,
- * HTTP, MCP, MQ).</li>
+ * <li>{@link org.miaixz.bus.vortex.Executor}: The interface for executing requests to different downstream protocols
+ * (e.g., HTTP, gRPC, WebSocket, MQ, MCP).</li>
+ * <li>{@link org.miaixz.bus.vortex.Router}: The interface for routing requests to different downstream protocols based
+ * on configuration.</li>
  * <li>{@link org.miaixz.bus.vortex.Handler}: The interface for handling the final request processing and for
  * implementing interceptor-style logic.</li>
  * <li>{@link org.miaixz.bus.vortex.Context}: The central data carrier object that holds the state for a single request

@@ -105,10 +105,15 @@ public class ErrorsHandler implements WebExceptionHandler {
 
         // 6. Asynchronously serialize the message and get a DataBuffer
         Mono<DataBuffer> dataBufferMono = messageMono.flatMap(message ->
-        // Call the new asynchronous serialize method
-        formats.getProvider().serialize(message)).map(formatBody ->
-        // This runs after the async serialization is complete
-        response.bufferFactory().wrap(formatBody.getBytes(Charset.UTF_8)));
+        // Call the asynchronous serialize method
+        formats.getProvider().serialize(message)).map(formatBody -> {
+            // Handle both String (JSON/XML) and byte[] (BINARY) return types
+            if (formatBody instanceof byte[]) {
+                return response.bufferFactory().wrap((byte[]) formatBody);
+            } else {
+                return response.bufferFactory().wrap(((String) formatBody).getBytes(Charset.UTF_8));
+            }
+        });
 
         // 7. Write response and log completion
         return response.writeWith(dataBufferMono).doOnTerminate(() -> {

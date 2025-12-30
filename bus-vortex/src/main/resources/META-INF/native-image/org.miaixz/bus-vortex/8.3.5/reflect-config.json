@@ -66,6 +66,17 @@
     "queryAllPublicMethods": true
   },
   {
+    "name": "org.miaixz.bus.vortex.Executor",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
     "name": "org.miaixz.bus.vortex.Filter",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
@@ -506,6 +517,17 @@
     "queryAllPublicMethods": true
   },
   {
+    "name": "org.miaixz.bus.vortex.support.Coordinator",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
     "name": "org.miaixz.bus.vortex.support.GrpcRouter",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
@@ -561,7 +583,18 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.vortex.support.mcp.McpService",
+    "name": "org.miaixz.bus.vortex.support.grpc.GrpcExecutor",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.vortex.support.mcp.McpExecutor",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -682,7 +715,7 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.vortex.support.mq.MqService",
+    "name": "org.miaixz.bus.vortex.support.mq.MqExecutor",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -693,7 +726,18 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.miaixz.bus.vortex.support.rest.RestService",
+    "name": "org.miaixz.bus.vortex.support.rest.RestExecutor",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.miaixz.bus.vortex.support.ws.WsExecutor",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,

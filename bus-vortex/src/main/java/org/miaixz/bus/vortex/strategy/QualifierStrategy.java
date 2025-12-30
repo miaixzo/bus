@@ -283,7 +283,8 @@ public class QualifierStrategy extends AbstractStrategy {
                 BeanKit.beanToMap(
                         delegate.getAuthorize(),
                         authMap,
-                        CopyOptions.of().setTransientSupport(false).setIgnoreCase(true));
+                        CopyOptions.of().setTransientSupport(false).setIgnoreCase(true).setIgnoreProperties("id"));
+
                 context.getParameters().putAll(authMap);
                 Logger.info(true, "Qualifier", "[{}] Authentication successful.", context.getX_request_ipv4());
                 return Mono.empty(); // Signal success
