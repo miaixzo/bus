@@ -35,6 +35,7 @@ import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Assets;
 import org.miaixz.bus.vortex.Context;
+import org.miaixz.bus.vortex.Holder;
 import org.miaixz.bus.vortex.support.Coordinator;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
@@ -55,7 +56,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 import reactor.netty.http.client.HttpClient;
-import reactor.netty.resources.ConnectionProvider;
 
 /**
  * The core executor for executing RESTful HTTP requests to downstream services.
@@ -81,9 +81,39 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
             .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(Math.toIntExact(Normal.MEBI_128))).build();
 
     /**
-     * A shared, reusable Connection Provider (Connection Pool) for all requests.
+     * A cached {@link HttpClient} instance that uses the shared connection pool.
+     * <p>
+     * This is initialized once and reused for all requests to avoid redundant HttpClient creation.
      */
-    private static final ConnectionProvider SHARED_CONNECTION_PROVIDER = ConnectionProvider.create("vortex-http-pool");
+    private static volatile HttpClient CACHED_HTTP_CLIENT;
+
+    /**
+     * Default constructor.
+     * <p>
+     * The HTTP connection pool is obtained from {@link Holder#connectionProvider()} which is configured globally via
+     * {@code vortex.performance.maxConnections} property.
+     */
+    public RestExecutor() {
+    }
+
+    /**
+     * Gets the cached HTTP client, initializing it lazily if needed.
+     * <p>
+     * Uses double-checked locking for thread-safe lazy initialization.
+     *
+     * @return The cached HttpClient instance
+     */
+    private HttpClient getHttpClient() {
+        if (CACHED_HTTP_CLIENT == null) {
+            synchronized (RestExecutor.class) {
+                if (CACHED_HTTP_CLIENT == null) {
+                    CACHED_HTTP_CLIENT = HttpClient.create(Holder.connectionProvider());
+                    Logger.info(true, "RestExecutor", "HttpClient initialized with shared connection pool");
+                }
+            }
+        }
+        return CACHED_HTTP_CLIENT;
+    }
 
     /**
      * Executes the HTTP request using the provided context and ServerRequest.
@@ -105,13 +135,12 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
         final String path = request.path();
         final String ip = context.getX_request_ipv4();
 
-        // 1. Build the base URL for the target service.
-        String baseUrl = build(context).block();
+        // 1. Build the base URL for the target service (synchronous, no I/O involved)
+        String baseUrl = buildBaseUrl(context);
         Logger.info(true, "Http", "[{}] [{}] [{}] [HTTP_ROUTER_BASEURL] - Base URL: {}", ip, method, path, baseUrl);
 
-        // 2. Build a WebClient with shared connection pool (timeout is handled at VortexHandler level)
-        HttpClient httpClient = HttpClient.create(SHARED_CONNECTION_PROVIDER);
-        WebClient webClient = WebClient.builder().clientConnector(new ReactorClientHttpConnector(httpClient))
+        // 2. Build a WebClient with cached HTTP client (timeout is handled at VortexHandler level)
+        WebClient webClient = WebClient.builder().clientConnector(new ReactorClientHttpConnector(getHttpClient()))
                 .exchangeStrategies(CACHED_EXCHANGE_STRATEGIES).baseUrl(baseUrl).build();
 
         // 3. Build and execute the request.
@@ -396,7 +425,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
 
             // Stream the response body directly, with logging
             Flux<DataBuffer> bodyFlux = clientResponse.bodyToFlux(DataBuffer.class).doOnNext(dataBuffer -> {
-                Logger.info(
+                Logger.debug(
                         false,
                         "Http",
                         "[{}] [{}] [{}] [HTTP_ROUTER_RECV_STREAM_CHUNK] - Received data chunk, size: {} bytes",

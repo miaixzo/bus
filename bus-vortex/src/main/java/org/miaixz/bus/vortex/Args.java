@@ -116,6 +116,13 @@ public class Args {
     public static final String REST_PATH_PREFIX = "/router/rest";
 
     /**
+     * The base URI path for requests to be forwarded to a Message Queue.
+     *
+     * @see org.miaixz.bus.vortex.strategy.RequestStrategy
+     */
+    public static final String MQ_PATH_PREFIX = "/router/mq";
+
+    /**
      * The base URI path for requests to the MCP (Miaixz Communication Protocol) hub.
      *
      * @see org.miaixz.bus.vortex.strategy.RequestStrategy
@@ -123,11 +130,11 @@ public class Args {
     public static final String MCP_PATH_PREFIX = "/router/mcp";
 
     /**
-     * The base URI path for requests to be forwarded to a Message Queue.
+     * The base URI path for standard gRPC requests.
      *
      * @see org.miaixz.bus.vortex.strategy.RequestStrategy
      */
-    public static final String MQ_PATH_PREFIX = "/router/mq";
+    public static final String GRPC_PATH_PREFIX = "/router/grpc";
 
     /**
      * The base URI path for WebSocket connections.
@@ -212,6 +219,16 @@ public class Args {
      */
     public static boolean isCstRequest(String path) {
         return path.startsWith(Args.CST_PATH_PREFIX);
+    }
+
+    /**
+     * Checks if the given path is a custom (gRPC) request path.
+     *
+     * @param path The URL path string to check.
+     * @return {@code true} if the path starts with the CST prefix, {@code false} otherwise.
+     */
+    public static boolean isGrpcRequest(String path) {
+        return path.startsWith(Args.GRPC_PATH_PREFIX);
     }
 
     /**

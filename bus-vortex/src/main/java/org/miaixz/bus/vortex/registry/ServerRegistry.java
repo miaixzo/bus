@@ -33,6 +33,7 @@ import org.miaixz.bus.vortex.magic.Metrics;
 import org.miaixz.bus.vortex.magic.Transmit;
 import org.miaixz.bus.vortex.provider.MetricsProvider;
 import org.miaixz.bus.vortex.provider.ProcessProvider;
+
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
@@ -108,7 +109,7 @@ public class ServerRegistry {
                 .defaultIfEmpty(EnumValue.Lifecycle.UNKNOWN);
         Mono<Metrics> metricsMono = metricsProvider.getMetrics(assets.getId()).defaultIfEmpty(new Metrics(0, 0));
 
-        return Mono.zip(statusMono, metricsMono, (status, metrics) -> new Transmit(assets.getName(), status, metrics));
+        return Mono.zip(statusMono, metricsMono, (status, metrics) -> new Transmit(assets.getName(), metrics, status));
     }
 
 }

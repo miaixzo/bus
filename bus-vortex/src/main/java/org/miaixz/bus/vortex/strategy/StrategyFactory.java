@@ -55,6 +55,11 @@ public class StrategyFactory {
     private final List<Strategy> chain;
 
     /**
+     * A specialized chain for MQ (message queue) requests.
+     */
+    private final List<Strategy> grpcChain;
+
+    /**
      * A specialized, minimal chain for CST (Url-based) requests.
      */
     private final List<Strategy> cstChain;
@@ -68,6 +73,11 @@ public class StrategyFactory {
      * A specialized chain for MQ (message queue) requests.
      */
     private final List<Strategy> mqChain;
+
+    /**
+     * A specialized chain for WS (websocket) requests.
+     */
+    private final List<Strategy> wsChain;
 
     /**
      * Constructs a new {@code StrategyFactory} and pre-calculates the strategy chains.
@@ -88,6 +98,14 @@ public class StrategyFactory {
                 "Default Chain ({} strategies): {}",
                 this.chain.size(),
                 getStrategyNames(this.chain));
+
+        this.grpcChain = chain.stream().filter(this::isApplicableToGrpc).collect(Collectors.toUnmodifiableList());
+        Logger.info(
+                true,
+                "Chain",
+                "gRPC Chain     ({} strategies): {}",
+                this.grpcChain.size(),
+                getStrategyNames(this.grpcChain));
 
         this.cstChain = chain.stream().filter(this::isApplicableToCst).collect(Collectors.toUnmodifiableList());
         Logger.info(
@@ -112,6 +130,14 @@ public class StrategyFactory {
                 "MQ Chain      ({} strategies): {}",
                 this.mqChain.size(),
                 getStrategyNames(this.mqChain));
+
+        this.wsChain = chain.stream().filter(this::isApplicableToMq).collect(Collectors.toUnmodifiableList());
+        Logger.info(
+                true,
+                "Chain",
+                "WS Chain      ({} strategies): {}",
+                this.wsChain.size(),
+                getStrategyNames(this.wsChain));
 
         Logger.info(true, "Chain", "StrategyFactory initialization complete.");
     }
@@ -168,7 +194,29 @@ public class StrategyFactory {
             return this.mqChain;
         }
 
-        // 4. For all other requests (e.g., REST), apply the full, default strategy chain.
+        // 3. grcp requests.
+        if (Args.isGrpcRequest(path)) {
+            Logger.debug(
+                    true,
+                    "Chain",
+                    "{} Path matched gRPC. Selected gRPC Chain ({} strategies).",
+                    ipTag,
+                    this.grpcChain.size());
+            return this.grpcChain;
+        }
+
+        // 4. grcp requests.
+        if (Args.isWsRequest(path)) {
+            Logger.debug(
+                    true,
+                    "Chain",
+                    "{} Path matched WS. Selected WS Chain ({} strategies).",
+                    ipTag,
+                    this.wsChain.size());
+            return this.wsChain;
+        }
+
+        // 5. For all other requests (e.g., REST), apply the full, default strategy chain.
         Logger.debug(
                 true,
                 "Chain",
@@ -205,6 +253,20 @@ public class StrategyFactory {
     public boolean isApplicableToMq(Strategy strategy) {
         // Example: MQ requests might have their own authorization logic but share others.
         // For now, we assume all strategies apply to MQ, but this can be customized.
+        // This logic is identical to default, but is kept separate for future customization.
+        return true;
+    }
+
+    /**
+     * Determines if a strategy is applicable to CST (Url-based) requests.
+     * <p>
+     * This method provides a hook to define a custom strategy chain for simple URL-based requests.
+     *
+     * @param strategy The strategy to check.
+     * @return {@code true} if the strategy should be part of the CST chain, {@code false} otherwise.
+     */
+    public boolean isApplicableToGrpc(Strategy strategy) {
+        // For now, we assume all strategies apply to CST.
         // This logic is identical to default, but is kept separate for future customization.
         return true;
     }

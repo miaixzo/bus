@@ -27,7 +27,6 @@
 */
 package org.miaixz.bus.vortex.strategy;
 
-import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -36,6 +35,7 @@ import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Strategy;
+import org.miaixz.bus.vortex.Holder;
 import org.miaixz.bus.vortex.magic.ErrorCode;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -58,27 +58,6 @@ import java.util.*;
  * @since Java 17+
  */
 public abstract class AbstractStrategy implements Strategy {
-
-    /**
-     * The maximum number of automatic retry attempts allowed when processing a request body fails.
-     */
-    public static final int MAX_RETRY_ATTEMPTS = Consts.THREE;
-
-    /**
-     * The base delay in milliseconds between automatic retry attempts for request body processing.
-     */
-    public static final long RETRY_DELAY_MS = 1000;
-
-    /**
-     * The maximum allowed size in bytes for a non-multipart request body (e.g., JSON, form-urlencoded). This is a
-     * crucial defense against Denial-of-Service (DoS) attacks via memory exhaustion.
-     */
-    public static final long MAX_REQUEST_SIZE = 100 * 1024 * 1024;
-
-    /**
-     * The maximum allowed size in bytes for a multipart/form-data request, typically used for file uploads.
-     */
-    public static final long MAX_MULTIPART_REQUEST_SIZE = 512 * 1024 * 1024;
 
     /**
      * Safely retrieves the original authority (host + port) of the request, even in a reverse-proxy environment.

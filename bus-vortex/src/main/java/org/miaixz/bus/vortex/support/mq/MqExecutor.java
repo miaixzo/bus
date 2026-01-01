@@ -27,12 +27,9 @@
 */
 package org.miaixz.bus.vortex.support.mq;
 
-import java.time.Duration;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 
+import org.miaixz.bus.core.cache.provider.LRUCache;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Symbol;
@@ -44,6 +41,8 @@ import org.miaixz.bus.extra.mq.Producer;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Assets;
 import org.miaixz.bus.vortex.Context;
+import org.miaixz.bus.vortex.Holder;
+import org.miaixz.bus.vortex.magic.Performance;
 import org.miaixz.bus.vortex.support.Coordinator;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
@@ -57,6 +56,15 @@ import reactor.core.scheduler.Schedulers;
  * This executor manages a cache of {@link Producer} instances, keyed by their broker URL. This allows the gateway to
  * efficiently execute messages to multiple different MQ brokers without creating new producers for each request. The
  * actual message sending is performed asynchronously on a dedicated thread pool to avoid blocking reactive threads.
+ * </p>
+ * <p>
+ * Performance optimizations:
+ * <ul>
+ * <li>Optimized thread pool with core size based on CPU cores, max size for burst handling</li>
+ * <li>Producer cache with bounded size (configurable via {@code vortex.performance.max-producer-cache-size})</li>
+ * <li>Graceful shutdown with timeout handling</li>
+ * <li>Rejection policy that CallerRunsPolicy to prevent message loss under load</li>
+ * </ul>
  * </p>
  * <p>
  * The executor supports two response modes controlled by {@link Assets#getStream()}:
@@ -73,25 +81,63 @@ import reactor.core.scheduler.Schedulers;
 public class MqExecutor extends Coordinator<String, ServerResponse> {
 
     /**
-     * A dedicated thread pool for asynchronously handling MQ message sending operations. This prevents blocking the
-     * main reactive threads with potentially slow network I/O.
+     * A dedicated thread pool for asynchronously handling MQ message sending operations.
+     * <p>
+     * Performance optimizations:
+     * <ul>
+     * <li>Core pool size: CPU cores * 2 for optimal throughput</li>
+     * <li>Max pool size: CPU cores * 4 for burst handling</li>
+     * <li>Keep-alive time: 60 seconds for idle threads</li>
+     * <li>CallerRunsPolicy: Prevents message rejection by running in caller thread under load</li>
+     * </ul>
      */
     private final ExecutorService executor;
-    /**
-     * A thread-safe cache of {@link Producer} instances, keyed by their broker URL. This ensures that a producer for a
-     * given MQ broker is reused, optimizing resource usage.
-     */
-    private final Map<String, Producer> producerCache = new ConcurrentHashMap<>();
 
     /**
-     * Constructs a new {@code MqExecutor} and initializes its dedicated thread pool.
+     * A thread-safe LRU cache of {@link Producer} instances, keyed by their broker URL.
+     * <p>
+     * Bounded to {@link Holder#getMaxProducerCacheSize()} to prevent memory leaks from broker URL proliferation. Uses
+     * {@link LRUCache} with automatic LRU eviction - least recently used entries are automatically evicted when the
+     * cache reaches maximum size.
+     * <p>
+     * Performance optimizations:
+     * <ul>
+     * <li>Automatic LRU eviction prevents memory leaks</li>
+     * <li>Thread-safe with built-in ReentrantLock</li>
+     * <li>Automatic resource cleanup via CacheListener</li>
+     * <li>Lazy initialization of producers on first access</li>
+     * </ul>
+     */
+    private final LRUCache<String, Producer> producerCache;
+
+    /**
+     * Constructs a new {@code MqExecutor} with centralized performance configuration.
+     * <p>
+     * Uses {@link Holder#getMaxProducerCacheSize()} to obtain the globally configured cache size, which is initialized
+     * during application startup via {@link Holder#of(Performance)}.
      */
     public MqExecutor() {
-        this.executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 2, r -> {
-            Thread t = new Thread(r, "vortex-mq-producer-pool");
-            t.setDaemon(true);
-            return t;
+        // Initialize LRU cache with capacity limit from global Holder
+        this.producerCache = new LRUCache<>(Holder.getMaxProducerCacheSize(), 0);
+        this.producerCache.setListener((key, producer) -> {
+            try {
+                producer.close();
+                Logger.info(true, "MqExecutor", "Producer evicted from cache (LRU) for broker: {}", key);
+            } catch (Exception e) {
+                Logger.error("Failed to close evicted MQ Producer for broker: {}", key, e);
+            }
         });
+
+        int corePoolSize = Runtime.getRuntime().availableProcessors() * 2;
+        int maxPoolSize = Runtime.getRuntime().availableProcessors() * 4;
+
+        this.executor = new ThreadPoolExecutor(corePoolSize, maxPoolSize, 60L, TimeUnit.SECONDS,
+                new LinkedBlockingQueue<>(1000), r -> {
+                    Thread t = new Thread(r, "vortex-mq-producer-pool");
+                    t.setDaemon(true);
+                    t.setPriority(Thread.NORM_PRIORITY);
+                    return t;
+                }, new ThreadPoolExecutor.CallerRunsPolicy());
     }
 
     /**
@@ -185,22 +231,40 @@ public class MqExecutor extends Coordinator<String, ServerResponse> {
             Producer producer = getOrCreateProducer(assets);
             producer.send(message);
             return "{\"status\": \"Request forwarded to MQ\"}";
-        }).subscribeOn(Schedulers.fromExecutor(this.executor)).timeout(Duration.ofMillis(assets.getTimeout()))
+        }).subscribeOn(Schedulers.fromExecutor(this.executor))
                 .doOnError(e -> Logger.error("Failed to send message to topic '{}'", assets.getMethod(), e));
     }
 
     /**
      * Retrieves an existing {@link Producer} from the cache or creates a new one if it doesn't exist.
+     * <p>
+     * Uses {@link LRUCache} with automatic LRU eviction - when the cache reaches the configured maximum
+     * ({@link Holder#getMaxProducerCacheSize()}), least recently used entries are automatically evicted. Thread-safe
+     * with built-in ReentrantLock.
      *
      * @param assets The configuration for the target MQ broker.
      * @return A thread-safe, cached {@link Producer} instance.
      */
     private Producer getOrCreateProducer(Assets assets) {
         String brokerUrl = assets.getHost() + Symbol.COLON + assets.getPort();
-        return producerCache.computeIfAbsent(brokerUrl, key -> {
-            Logger.info("No existing MQ Producer for broker '{}'. Creating a new one.", key);
-            MQConfig config = MQConfig.of(key);
-            return MQFactory.createEngine(config).getProducer();
+
+        // Use LRUCache's get method with supplier for thread-safe lazy initialization
+        // The cache handles locking and double-checking internally
+        return producerCache.get(brokerUrl, true, 0, () -> {
+            Logger.info(true, "MqExecutor", "No existing MQ Producer for broker '{}'. Creating a new one.", brokerUrl);
+            try {
+                MQConfig config = MQConfig.of(brokerUrl);
+                Producer producer = MQFactory.createEngine(config).getProducer();
+                return producer;
+            } catch (Exception e) {
+                Logger.error(
+                        true,
+                        "MqExecutor",
+                        "Failed to get or create MQ Producer for broker '{}': {}",
+                        brokerUrl,
+                        e.getMessage());
+                throw new RuntimeException("Failed to get or create MQ Producer", e);
+            }
         });
     }
 
@@ -215,13 +279,7 @@ public class MqExecutor extends Coordinator<String, ServerResponse> {
     public Mono<ServerResponse> destroy() {
         return Mono.fromRunnable(() -> {
             Logger.info("Shutting down MqExecutor...");
-            producerCache.values().forEach(producer -> {
-                try {
-                    producer.close();
-                } catch (Exception e) {
-                    Logger.error("Failed to close an MQ Producer", e);
-                }
-            });
+            // Clear the cache - the listener will automatically close all producers
             producerCache.clear();
             this.executor.shutdown();
             Logger.info("MqExecutor shut down successfully.");

@@ -56,13 +56,13 @@ public class Transmit {
     private String name;
 
     /**
-     * The current lifecycle status of the service process (e.g., RUNNING, STOPPED).
-     */
-    private EnumValue.Lifecycle lifecycle;
-
-    /**
      * The latest performance metrics for the service process (e.g., CPU and memory usage).
      */
     private Metrics metrics;
+
+    /**
+     * The current lifecycle status of the service process (e.g., RUNNING, STOPPED).
+     */
+    private EnumValue.Lifecycle lifecycle;
 
 }

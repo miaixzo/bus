@@ -31,6 +31,7 @@ import org.miaixz.bus.logger.Logger;
 import org.springframework.context.SmartLifecycle;
 import reactor.netty.DisposableServer;
 import reactor.netty.http.server.HttpServer;
+import reactor.netty.resources.ConnectionProvider;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -90,16 +91,28 @@ public class Vortex implements SmartLifecycle {
 
     /**
      * Stops the HTTP server. This method is called by the Spring container during a graceful shutdown. It disposes of
-     * the server resources and logs the outcome.
+     * the server resources, closes the connection pool, and logs the outcome.
      */
     @Override
     public void stop() {
         if (running.compareAndSet(true, false) && disposableServer != null) {
             try {
+                // Dispose the HTTP server first
                 disposableServer.disposeNow();
                 Logger.info("Vortex server stopped successfully on port: {}", disposableServer.port());
             } catch (Exception e) {
                 Logger.error("Error while stopping Vortex server", e);
+            }
+
+            // Close the ConnectionProvider to release all connections
+            try {
+                ConnectionProvider connectionProvider = Holder.getConnectionProviderIfPresent();
+                if (connectionProvider != null) {
+                    connectionProvider.dispose();
+                    Logger.info("ConnectionProvider closed successfully");
+                }
+            } catch (Exception e) {
+                Logger.error("Error while closing ConnectionProvider", e);
             }
         }
     }

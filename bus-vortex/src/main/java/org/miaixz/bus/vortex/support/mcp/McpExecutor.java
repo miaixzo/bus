@@ -177,8 +177,10 @@ public class McpExecutor extends Coordinator<Void, Void> implements SmartLifecyc
 
             // 4. Run both stop/close operations in parallel and block until all are complete
             // (Blocking is acceptable in SmartLifecycle.stop())
+            // Add timeout to prevent indefinite blocking during shutdown
             Mono.when(stopProcesses, closeClients).doOnError(e -> Logger.error("Error during MCP service shutdown.", e))
-                    .block();
+                    .timeout(java.time.Duration.ofSeconds(5))
+                    .doOnError(e -> Logger.warn("MCP service shutdown timed out after 5 seconds")).block();
 
             // 5. Clear cache after all resources are released
             clientCache.clear();

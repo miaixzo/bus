@@ -34,6 +34,7 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.PORT;
 import org.miaixz.bus.vortex.*;
+import org.miaixz.bus.vortex.Holder;
 import org.miaixz.bus.vortex.filter.PrimaryFilter;
 import org.miaixz.bus.vortex.handler.ErrorsHandler;
 import org.miaixz.bus.vortex.handler.VortexHandler;
@@ -56,6 +57,7 @@ import org.springframework.http.server.reactive.HttpHandler;
 import org.springframework.http.server.reactive.ReactorHttpHandlerAdapter;
 import org.springframework.web.reactive.function.server.*;
 import org.springframework.web.server.WebHandler;
+import org.springframework.web.server.adapter.ForwardedHeaderTransformer;
 import org.springframework.web.server.adapter.WebHttpHandlerBuilder;
 
 import jakarta.annotation.Resource;
@@ -114,6 +116,10 @@ public class VortexConfiguration {
      */
     @Bean(initMethod = "start", destroyMethod = "stop")
     public Vortex vortex(List<Filter> filters, List<Handler> handlers, Map<String, Router<ServerRequest, ?>> routers) {
+        // Initialize the global performance configuration holder
+        // This must be done first, before any Strategy is used
+        Holder.of(properties.getPerformance());
+
         // Create the main Vortex handler with all injected Handler instances.
         VortexHandler vortexHandler = new VortexHandler(handlers, routers);
 
@@ -138,6 +144,20 @@ public class VortexConfiguration {
                 .handle(adapter);
 
         return new Vortex(server);
+    }
+
+    /**
+     * Configures the ForwardedHeaderTransformer bean.
+     * <p>
+     * This transformer processes proxy headers (X-Forwarded-For, X-Forwarded-Proto, Forwarded) to correctly identify
+     * the original client IP address, protocol, and host when the application is behind a reverse proxy (e.g., Nginx,
+     * HAProxy, AWS ELB).
+     *
+     * @return A new {@link ForwardedHeaderTransformer} instance.
+     */
+    @Bean
+    public ForwardedHeaderTransformer forwardedHeaderTransformer() {
+        return new ForwardedHeaderTransformer();
     }
 
     /**
@@ -226,8 +246,11 @@ public class VortexConfiguration {
 
     /**
      * Provides the MqExecutor bean. This executor handles sending messages to a message queue.
+     * <p>
+     * Uses {@link Holder#get()} to obtain the global Performance configuration, which is initialized during
+     * {@code Holder.of(properties.getPerformance())} call in the vortex bean.
      *
-     * @return A new instance of MqExecutor.
+     * @return A new instance of MqExecutor with globally configured performance settings
      */
     @Bean
     public MqExecutor mqExecutor() {
@@ -236,6 +259,9 @@ public class VortexConfiguration {
 
     /**
      * Provides the RestExecutor bean. This executor is responsible for executing HTTP requests to downstream services.
+     * <p>
+     * The HTTP connection pool is obtained from {@link org.miaixz.bus.vortex.Holder#connectionProvider()} which is
+     * configured globally via {@code vortex.performance.maxConnections} property.
      *
      * @return A new instance of RestExecutor.
      */

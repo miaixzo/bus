@@ -25,60 +25,10 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.starter.bridge;
-
-import lombok.Getter;
-import lombok.Setter;
-import org.miaixz.bus.spring.GeniusBuilder;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-
 /**
- * Configuration properties for the configuration center bridge.
- * <p>
- * These properties are used to configure both the server and client aspects of the configuration bridge.
- * </p>
+ * ZooKeeper distributed coordination support.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-@Getter
-@Setter
-@ConfigurationProperties(prefix = GeniusBuilder.BRIDGE)
-public class BridgeProperties {
-
-    /**
-     * The port for the configuration server.
-     */
-    private int port;
-
-    /**
-     * The application key for the client, used for identification.
-     */
-    private String appKey;
-
-    /**
-     * The active profile for the client (e.g., dev, test, prod).
-     */
-    private String profile;
-
-    /**
-     * The URL of the configuration server that the client connects to.
-     */
-    private String url;
-
-    /**
-     * The HTTP method to use when the client requests configuration from the server.
-     */
-    private String method;
-
-    /**
-     * The expected response format from the server (e.g., json, properties).
-     */
-    private String format;
-
-    /**
-     * The version of the configuration to be requested by the client.
-     */
-    private String version;
-
-}
+package org.miaixz.bus.starter.zookeeper;

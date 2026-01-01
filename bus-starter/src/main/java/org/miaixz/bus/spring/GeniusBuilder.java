@@ -168,11 +168,6 @@ public class GeniusBuilder {
     public static final String SPRING_BANNER_LOCATION = "spring.banner.location";
 
     /**
-     * Prefix for Bus startup logging extra information.
-     */
-    public static final String BUS_SWITCH_LISTENER_PREFIX_ = "bus.switch.listener.";
-
-    /**
      * Property key for Bus banner configuration.
      */
     public static final String BANNER = Keys.BUS + Symbol.DOT + "banner";
@@ -183,19 +178,9 @@ public class GeniusBuilder {
     public static final String CACHE = Keys.BUS + Symbol.DOT + "cache";
 
     /**
-     * Property key for Bus bridge configuration.
-     */
-    public static final String BRIDGE = Keys.BUS + Symbol.DOT + "bridge";
-
-    /**
      * Property key for Bus CORS configuration.
      */
     public static final String CORS = Keys.BUS + Symbol.DOT + "cors";
-
-    /**
-     * Property key for Bus Druid configuration.
-     */
-    public static final String DRUID = Keys.BUS + Symbol.DOT + "druid";
 
     /**
      * Property key for Bus Dubbo configuration.

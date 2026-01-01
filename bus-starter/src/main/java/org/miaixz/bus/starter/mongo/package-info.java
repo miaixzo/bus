@@ -25,33 +25,10 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.starter.bridge;
-
 /**
- * Defines the contract for services that resolve and retrieve configuration information.
- * <p>
- * Implementations of this interface are responsible for fetching configuration data based on the provided properties.
- * </p>
+ * MongoDB integration support.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public interface Resolvable {
-
-    /**
-     * Finds and retrieves a single piece of configuration information.
-     *
-     * @param entity The properties entity containing the request parameters.
-     * @return The resolved configuration object, or {@code null} if not found.
-     */
-    Object find(BridgeProperties entity);
-
-    /**
-     * Finds and retrieves a collection of configuration information.
-     *
-     * @param entity The properties entity containing the request parameters for the batch operation.
-     * @return A collection of resolved configuration objects.
-     */
-    Object findAll(BridgeProperties entity);
-
-}
+package org.miaixz.bus.starter.mongo;

@@ -25,56 +25,10 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.starter.bridge;
-
-import io.vertx.core.Vertx;
-import jakarta.annotation.Resource;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Import;
-
 /**
- * Auto-configuration for the configuration center bridge.
- * <p>
- * This class enables {@link BridgeProperties}, imports the {@link BridgePropertyLoader} to load remote configurations,
- * and sets up the necessary Vert.x infrastructure for the configuration server.
- * </p>
+ * Health check and monitoring support.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-@Import({ BridgePropertyLoader.class })
-@EnableConfigurationProperties(value = { BridgeProperties.class })
-public class BridgeConfiguration {
-
-    /**
-     * Injected configuration bridge properties.
-     */
-    @Resource
-    BridgeProperties properties;
-
-    /**
-     * Creates the core Vert.x instance.
-     *
-     * @return A new {@link Vertx} instance.
-     */
-    @Bean
-    public Vertx vertx() {
-        return Vertx.vertx();
-    }
-
-    /**
-     * Creates the Vert.x verticle service for the configuration bridge.
-     * <p>
-     * The bean's lifecycle is managed by Spring, with its {@code start} and {@code stop} methods called automatically
-     * on application startup and shutdown.
-     * </p>
-     *
-     * @return A new {@link BridgeVerticleService} instance.
-     */
-    @Bean(initMethod = "start", destroyMethod = "stop")
-    public BridgeVerticleService verticle() {
-        return new BridgeVerticleService(properties);
-    }
-
-}
+package org.miaixz.bus.starter.health;
