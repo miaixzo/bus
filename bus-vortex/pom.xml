@@ -87,7 +87,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <bus.version>8.3.9</bus.version>
         <lombok.version>1.18.42</lombok.version>
-        <spring.boot.version>3.5.8</spring.boot.version>
+        <spring.boot.version>3.5.9</spring.boot.version>
         <guava.version>33.5.0-jre</guava.version>
         <jakarta.servlet.version>6.1.0</jakarta.servlet.version>
     </properties>

@@ -35,7 +35,6 @@ import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Strategy;
-import org.miaixz.bus.vortex.Holder;
 import org.miaixz.bus.vortex.magic.ErrorCode;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
