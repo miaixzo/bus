@@ -31,6 +31,8 @@ package org.miaixz.bus.cron;
  * Task launcher responsible for checking if the {@link Repertoire} has any tasks that match the current execution time.
  * The launcher's thread terminates after the check is complete.
  *
+ * @param scheduler the scheduler managing task execution
+ * @param millis    the current time in milliseconds to check for task matches
  * @author Kimi Liu
  * @since Java 17+
  */

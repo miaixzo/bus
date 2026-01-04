@@ -64,51 +64,122 @@ public class AsynchronousSocketChannelProxy extends AsynchronousSocketChannel {
         this.asynchronousSocketChannel = asynchronousSocketChannel;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param local the local address to bind to
+     * @return this channel
+     * @throws IOException if an I/O error occurs
+     */
     @Override
     public AsynchronousSocketChannel bind(SocketAddress local) throws IOException {
         return asynchronousSocketChannel.bind(local);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param <T>   the type of the socket option value
+     * @param name  the socket option
+     * @param value the value of the socket option
+     * @return this channel
+     * @throws IOException if an I/O error occurs
+     */
     @Override
     public <T> AsynchronousSocketChannel setOption(SocketOption<T> name, T value) throws IOException {
         return asynchronousSocketChannel.setOption(name, value);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param <T>  the type of the socket option value
+     * @param name the socket option
+     * @return the value of the socket option
+     * @throws IOException if an I/O error occurs
+     */
     @Override
     public <T> T getOption(SocketOption<T> name) throws IOException {
         return asynchronousSocketChannel.getOption(name);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return a set of the socket options supported by this channel
+     */
     @Override
     public Set<SocketOption<?>> supportedOptions() {
         return asynchronousSocketChannel.supportedOptions();
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return this channel
+     * @throws IOException if an I/O error occurs
+     */
     @Override
     public AsynchronousSocketChannel shutdownInput() throws IOException {
         return asynchronousSocketChannel.shutdownInput();
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return this channel
+     * @throws IOException if an I/O error occurs
+     */
     @Override
     public AsynchronousSocketChannel shutdownOutput() throws IOException {
         return asynchronousSocketChannel.shutdownOutput();
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return the remote address, or {@code null} if the channel is not connected
+     * @throws IOException if an I/O error occurs
+     */
     @Override
     public SocketAddress getRemoteAddress() throws IOException {
         return asynchronousSocketChannel.getRemoteAddress();
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param <A>        the type of the attachment
+     * @param remote     the remote address to which this channel is to be connected
+     * @param attachment the object to attach to the I/O operation
+     * @param handler    the handler for consuming the result
+     */
     @Override
     public <A> void connect(SocketAddress remote, A attachment, CompletionHandler<Void, ? super A> handler) {
         asynchronousSocketChannel.connect(remote, attachment, handler);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param remote the remote address to which this channel is to be connected
+     * @return a {@link Future} representing the pending result
+     */
     @Override
     public Future<Void> connect(SocketAddress remote) {
         return asynchronousSocketChannel.connect(remote);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param <A>        the type of the attachment
+     * @param dst        the buffer into which bytes are to be transferred
+     * @param timeout    the maximum time for the I/O operation to complete
+     * @param unit       the time unit of the timeout argument
+     * @param attachment the object to attach to the I/O operation
+     * @param handler    the handler for consuming the result
+     */
     @Override
     public <A> void read(
             ByteBuffer dst,
@@ -119,11 +190,29 @@ public class AsynchronousSocketChannelProxy extends AsynchronousSocketChannel {
         asynchronousSocketChannel.read(dst, timeout, unit, attachment, handler);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param dst the buffer into which bytes are to be transferred
+     * @return a {@link Future} representing the pending result
+     */
     @Override
     public Future<Integer> read(ByteBuffer dst) {
         return asynchronousSocketChannel.read(dst);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param <A>        the type of the attachment
+     * @param dsts       the buffers into which bytes are to be transferred
+     * @param offset     the offset within the buffer array of the first buffer
+     * @param length     the maximum number of buffers to be accessed
+     * @param timeout    the maximum time for the I/O operation to complete
+     * @param unit       the time unit of the timeout argument
+     * @param attachment the object to attach to the I/O operation
+     * @param handler    the handler for consuming the result
+     */
     @Override
     public <A> void read(
             ByteBuffer[] dsts,
@@ -136,6 +225,16 @@ public class AsynchronousSocketChannelProxy extends AsynchronousSocketChannel {
         asynchronousSocketChannel.read(dsts, offset, length, timeout, unit, attachment, handler);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param <A>        the type of the attachment
+     * @param src        the buffer from which bytes are to be retrieved
+     * @param timeout    the maximum time for the I/O operation to complete
+     * @param unit       the time unit of the timeout argument
+     * @param attachment the object to attach to the I/O operation
+     * @param handler    the handler for consuming the result
+     */
     @Override
     public <A> void write(
             ByteBuffer src,
@@ -146,11 +245,29 @@ public class AsynchronousSocketChannelProxy extends AsynchronousSocketChannel {
         asynchronousSocketChannel.write(src, timeout, unit, attachment, handler);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param src the buffer from which bytes are to be retrieved
+     * @return a {@link Future} representing the pending result
+     */
     @Override
     public Future<Integer> write(ByteBuffer src) {
         return asynchronousSocketChannel.write(src);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param <A>        the type of the attachment
+     * @param srcs       the buffers from which bytes are to be retrieved
+     * @param offset     the offset within the buffer array of the first buffer
+     * @param length     the maximum number of buffers to be accessed
+     * @param timeout    the maximum time for the I/O operation to complete
+     * @param unit       the time unit of the timeout argument
+     * @param attachment the object to attach to the I/O operation
+     * @param handler    the handler for consuming the result
+     */
     @Override
     public <A> void write(
             ByteBuffer[] srcs,
@@ -163,16 +280,32 @@ public class AsynchronousSocketChannelProxy extends AsynchronousSocketChannel {
         asynchronousSocketChannel.write(srcs, offset, length, timeout, unit, attachment, handler);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return the local address, or {@code null} if the channel is not bound
+     * @throws IOException if an I/O error occurs
+     */
     @Override
     public SocketAddress getLocalAddress() throws IOException {
         return asynchronousSocketChannel.getLocalAddress();
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return {@code true} if, and only if, this channel is open
+     */
     @Override
     public boolean isOpen() {
         return asynchronousSocketChannel.isOpen();
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @throws IOException if an I/O error occurs
+     */
     @Override
     public void close() throws IOException {
         asynchronousSocketChannel.close();

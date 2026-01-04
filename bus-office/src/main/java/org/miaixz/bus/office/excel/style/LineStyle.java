@@ -87,6 +87,9 @@ public enum LineStyle {
      */
     NONE(HSSFShape.LINESTYLE_NONE);
 
+    /**
+     * The integer code representing the line style.
+     */
     private final int value;
 
     /**

@@ -195,12 +195,12 @@ public class CharSequenceReader extends Reader {
         if (n < 0) {
             throw new IllegalArgumentException("Number of characters to skip is less than zero: " + n);
         }
-        if (next >= end) {
+        if (this.next >= this.end) {
             return 0;
         }
-        final int dest = (int) Math.min(end, next + n);
-        final int count = dest - next;
-        next = dest;
+        final int dest = (int) Math.min(this.end, this.next + n);
+        final int count = dest - this.next;
+        this.next = dest;
         return count;
     }
 
@@ -211,7 +211,7 @@ public class CharSequenceReader extends Reader {
      */
     @Override
     public boolean ready() {
-        return next < end;
+        return this.next < end;
     }
 
     /**
@@ -219,8 +219,8 @@ public class CharSequenceReader extends Reader {
      */
     @Override
     public void close() {
-        next = start;
-        mark = start;
+        this.next = start;
+        this.mark = start;
     }
 
     /**
@@ -230,7 +230,7 @@ public class CharSequenceReader extends Reader {
      */
     @Override
     public String toString() {
-        return text.subSequence(start, end).toString();
+        return this.text.subSequence(this.start, this.end).toString();
     }
 
 }

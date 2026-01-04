@@ -30,7 +30,8 @@ package org.miaixz.bus.core.convert;
 import org.miaixz.bus.core.lang.Assert;
 
 /**
- * 带根的转换器 在嵌套对象转换中，如果涉及子对象的转换，使用根转换器转换
+ * Converter with root. In nested object conversion, if sub-object conversion is involved, use the root converter for
+ * conversion
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,18 +44,18 @@ public abstract class ConverterWithRoot implements Converter {
     protected final Converter converter;
 
     /**
-     * 构造
+     * Constructs a new ConverterWithRoot
      *
-     * @param rootConverter 根转换器
+     * @param rootConverter the root converter
      */
     public ConverterWithRoot(final Converter rootConverter) {
         this.converter = Assert.notNull(rootConverter);
     }
 
     /**
-     * 获取根转换器，用于子转换器转换
+     * Gets the root converter for sub-converter conversion
      *
-     * @return 根转换器
+     * @return the root converter
      */
     public Converter getRootConverter() {
         return converter;

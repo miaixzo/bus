@@ -46,8 +46,7 @@ import reactor.core.publisher.Mono;
  * The executor handles all protocol-specific logic including:
  * <ul>
  * <li>Sending messages to the message broker</li>
- * <li>Selecting response strategy (streaming vs buffering) based on
- * {@link org.miaixz.bus.vortex.Assets#getStream()}</li>
+ * <li>Selecting response strategy (streaming vs buffering)
  * <li>Building the appropriate acknowledgment {@link ServerResponse}</li>
  * </ul>
  * <p>

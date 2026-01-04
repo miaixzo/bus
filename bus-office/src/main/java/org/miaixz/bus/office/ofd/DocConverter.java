@@ -37,7 +37,9 @@ import org.ofdrw.converter.ofdconverter.PDFConverter;
 import org.ofdrw.converter.ofdconverter.TextConverter;
 
 /**
- * Document converter based on {@code ofdrw-converter}, providing:
+ * Document converter based on {@code ofdrw-converter}.
+ * <p>
+ * Provides:
  * <ul>
  * <li>OFD and PDF mutual conversion</li>
  * <li>OFD and TEXT mutual conversion</li>

@@ -40,7 +40,7 @@ import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 日期转换器
+ * Converter for Date objects
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -51,44 +51,44 @@ public class DateConverter extends AbstractConverter implements MatcherConverter
     private static final long serialVersionUID = 2852267950550L;
 
     /**
-     * 单例
+     * Singleton instance
      */
     public static final DateConverter INSTANCE = new DateConverter();
 
     /**
-     * 日期格式化
+     * Date format pattern
      */
     private String format;
 
     /**
-     * 构造
+     * Constructs a new DateConverter
      */
     public DateConverter() {
         this(null);
     }
 
     /**
-     * 构造
+     * Constructs a new DateConverter with specified format
      *
-     * @param format 日期格式，{@code null}表示无格式定义
+     * @param format the date format pattern, {@code null} means no format defined
      */
     public DateConverter(final String format) {
         this.format = format;
     }
 
     /**
-     * 获取日期格式
+     * Gets the date format pattern
      *
-     * @return 设置日期格式
+     * @return the date format pattern
      */
     public String getFormat() {
         return format;
     }
 
     /**
-     * 设置日期格式
+     * Sets the date format pattern
      *
-     * @param format 日期格式
+     * @param format the date format pattern
      */
     public void setFormat(final String format) {
         this.format = format;
@@ -111,7 +111,7 @@ public class DateConverter extends AbstractConverter implements MatcherConverter
         } else if (null == this.format && value instanceof Number) {
             return wrap(targetClass, ((Number) value).longValue());
         } else {
-            // 统一按照字符串处理
+            // Process uniformly as string
             final String values = convertToString(value);
             final Date date = StringKit.isBlank(this.format) //
                     ? Resolver.parse(values) //
@@ -126,10 +126,10 @@ public class DateConverter extends AbstractConverter implements MatcherConverter
     }
 
     /**
-     * java.util.Date转为子类型
+     * Converts java.util.Date to subtype
      *
-     * @param date Date
-     * @return 目标类型对象
+     * @param date the Date
+     * @return the target type object
      */
     private java.util.Date wrap(final Class<?> targetClass, final Date date) {
         if (targetClass == date.getClass()) {
@@ -140,7 +140,7 @@ public class DateConverter extends AbstractConverter implements MatcherConverter
     }
 
     /**
-     * 时间戳转为子类型，支持：
+     * Converts timestamp to subtype, supporting:
      * <ul>
      * <li>{@link java.util.Date}</li>
      * <li>{@link DateTime}</li>
@@ -149,11 +149,11 @@ public class DateConverter extends AbstractConverter implements MatcherConverter
      * <li>{@link java.sql.Timestamp}</li>
      * </ul>
      *
-     * @param mills Date
-     * @return 目标类型对象
+     * @param mills the timestamp in milliseconds
+     * @return the target type object
      */
     private java.util.Date wrap(final Class<?> targetClass, final long mills) {
-        // 返回指定类型
+        // Return specified type
         if (java.util.Date.class == targetClass) {
             return new java.util.Date(mills);
         }
@@ -163,8 +163,8 @@ public class DateConverter extends AbstractConverter implements MatcherConverter
 
         final String dateClassName = targetClass.getName();
         if (dateClassName.startsWith("java.sql.")) {
-            // 为了解决在JDK9+模块化项目中用户没有引入java.sql模块导致的问题，此处增加判断
-            // 如果targetClass是java.sql的类，说明引入了此模块
+            // To solve the problem that users do not introduce java.sql module in JDK9+ modular projects,
+            // add judgment here. If targetClass is a class of java.sql, it means this module has been introduced
             return DateKit.SQL.wrap(targetClass, mills);
         }
 

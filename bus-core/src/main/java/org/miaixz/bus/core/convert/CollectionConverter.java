@@ -54,9 +54,6 @@ public class CollectionConverter implements MatcherConverter, Serializable {
      * Singleton instance.
      */
     public static final CollectionConverter INSTANCE = new CollectionConverter();
-    /**
-     * The serial version UID.
-     */
     @Serial
     private static final long serialVersionUID = 2852266827800L;
 

@@ -213,6 +213,12 @@ public class TEA implements Encryptor, Decryptor, Serializable {
         return result;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param data {@inheritDoc}
+     * @return {@inheritDoc}
+     */
     @Override
     public byte[] encrypt(final byte[] data) {
         if (data.length == 0) {
@@ -221,11 +227,24 @@ public class TEA implements Encryptor, Decryptor, Serializable {
         return toByteArray(encrypt(toIntArray(data, true), toIntArray(fixKey(key), false)), false);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param data    {@inheritDoc}
+     * @param out     {@inheritDoc}
+     * @param isClose {@inheritDoc}
+     */
     @Override
     public void encrypt(final InputStream data, final OutputStream out, final boolean isClose) {
         IoKit.write(out, isClose, encrypt(IoKit.readBytes(data)));
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param data {@inheritDoc}
+     * @return {@inheritDoc}
+     */
     @Override
     public byte[] decrypt(final byte[] data) {
         if (data.length == 0) {
@@ -234,6 +253,13 @@ public class TEA implements Encryptor, Decryptor, Serializable {
         return toByteArray(decrypt(toIntArray(data, false), toIntArray(fixKey(key), false)), true);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param data    {@inheritDoc}
+     * @param out     {@inheritDoc}
+     * @param isClose {@inheritDoc}
+     */
     @Override
     public void decrypt(final InputStream data, final OutputStream out, final boolean isClose) {
         IoKit.write(out, isClose, decrypt(IoKit.readBytes(data)));

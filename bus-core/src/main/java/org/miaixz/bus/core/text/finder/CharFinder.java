@@ -40,9 +40,6 @@ import org.miaixz.bus.core.xyz.CharKit;
  */
 public class CharFinder extends TextFinder {
 
-    /**
-     * The serial version UID
-     */
     @Serial
     private static final long serialVersionUID = 2852236682062L;
 

@@ -99,6 +99,11 @@ public enum Registry implements Complex {
      */
     AFDIAN {
 
+        /**
+         * {@inheritDoc} Returns the endpoint mappings for AfDian OAuth2 authentication.
+         *
+         * @return a map of endpoints including authorize, token, and userinfo URLs
+         */
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -108,11 +113,21 @@ public enum Registry implements Complex {
             return map;
         }
 
+        /**
+         * {@inheritDoc} Returns the OIDC protocol used by AfDian.
+         *
+         * @return the OIDC protocol
+         */
         @Override
         public Protocol getProtocol() {
             return Protocol.OIDC;
         }
 
+        /**
+         * {@inheritDoc} Returns the provider class for AfDian authentication.
+         *
+         * @return the ProginnProvider class
+         */
         @Override
         public Class<? extends AbstractProvider> getTargetClass() {
             return ProginnProvider.class;
@@ -123,6 +138,11 @@ public enum Registry implements Complex {
      */
     ALIPAY {
 
+        /**
+         * {@inheritDoc} Returns the endpoint mappings for Alipay OAuth2 authentication.
+         *
+         * @return a map of endpoints including authorize, token, and userinfo URLs
+         */
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -132,11 +152,21 @@ public enum Registry implements Complex {
             return map;
         }
 
+        /**
+         * {@inheritDoc} Returns the OIDC protocol used by Alipay.
+         *
+         * @return the OIDC protocol
+         */
         @Override
         public Protocol getProtocol() {
             return Protocol.OIDC;
         }
 
+        /**
+         * {@inheritDoc} Returns the provider class for Alipay authentication.
+         *
+         * @return the AlipayProvider class
+         */
         @Override
         public Class<? extends AbstractProvider> getTargetClass() {
             return AlipayProvider.class;
@@ -147,6 +177,11 @@ public enum Registry implements Complex {
      */
     ALIYUN {
 
+        /**
+         * {@inheritDoc} Returns the endpoint mappings for Aliyun OAuth2 authentication.
+         *
+         * @return a map of endpoints including authorize, token, userinfo, and refresh URLs
+         */
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -157,11 +192,21 @@ public enum Registry implements Complex {
             return map;
         }
 
+        /**
+         * {@inheritDoc} Returns the OIDC protocol used by Aliyun.
+         *
+         * @return the OIDC protocol
+         */
         @Override
         public Protocol getProtocol() {
             return Protocol.OIDC;
         }
 
+        /**
+         * {@inheritDoc} Returns the provider class for Aliyun authentication.
+         *
+         * @return the AliyunProvider class
+         */
         @Override
         public Class<? extends AbstractProvider> getTargetClass() {
             return AliyunProvider.class;
@@ -172,6 +217,11 @@ public enum Registry implements Complex {
      */
     AMAZON {
 
+        /**
+         * {@inheritDoc} Returns the endpoint mappings for Amazon OAuth2 authentication.
+         *
+         * @return a map of endpoints including authorize, token, userinfo, and refresh URLs
+         */
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -182,11 +232,21 @@ public enum Registry implements Complex {
             return map;
         }
 
+        /**
+         * {@inheritDoc} Returns the OIDC protocol used by Amazon.
+         *
+         * @return the OIDC protocol
+         */
         @Override
         public Protocol getProtocol() {
             return Protocol.OIDC;
         }
 
+        /**
+         * {@inheritDoc} Returns the provider class for Amazon authentication.
+         *
+         * @return the AmazonProvider class
+         */
         @Override
         public Class<? extends AbstractProvider> getTargetClass() {
             return AmazonProvider.class;
@@ -197,6 +257,11 @@ public enum Registry implements Complex {
      */
     APPLE {
 
+        /**
+         * {@inheritDoc} Returns the endpoint mappings for Apple OAuth2 authentication.
+         *
+         * @return a map of endpoints including authorize and token URLs
+         */
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -206,11 +271,21 @@ public enum Registry implements Complex {
             return map;
         }
 
+        /**
+         * {@inheritDoc} Returns the OIDC protocol used by Apple.
+         *
+         * @return the OIDC protocol
+         */
         @Override
         public Protocol getProtocol() {
             return Protocol.OIDC;
         }
 
+        /**
+         * {@inheritDoc} Returns the provider class for Apple authentication.
+         *
+         * @return the AppleProvider class
+         */
         @Override
         public Class<? extends AbstractProvider> getTargetClass() {
             return AppleProvider.class;
@@ -221,6 +296,11 @@ public enum Registry implements Complex {
      */
     BAIDU {
 
+        /**
+         * {@inheritDoc} Returns the endpoint mappings for Baidu OAuth2 authentication.
+         *
+         * @return a map of endpoints including authorize, token, userinfo, revoke, and refresh URLs
+         */
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -232,11 +312,21 @@ public enum Registry implements Complex {
             return map;
         }
 
+        /**
+         * {@inheritDoc} Returns the OIDC protocol used by Baidu.
+         *
+         * @return the OIDC protocol
+         */
         @Override
         public Protocol getProtocol() {
             return Protocol.OIDC;
         }
 
+        /**
+         * {@inheritDoc} Returns the provider class for Baidu authentication.
+         *
+         * @return the BaiduProvider class
+         */
         @Override
         public Class<? extends AbstractProvider> getTargetClass() {
             return BaiduProvider.class;
@@ -247,6 +337,11 @@ public enum Registry implements Complex {
      */
     CODING {
 
+        /**
+         * {@inheritDoc} Returns the endpoint mappings for Coding OAuth2 authentication.
+         *
+         * @return a map of endpoints including authorize, token, and userinfo URLs
+         */
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -256,11 +351,21 @@ public enum Registry implements Complex {
             return map;
         }
 
+        /**
+         * {@inheritDoc} Returns the OIDC protocol used by Coding.
+         *
+         * @return the OIDC protocol
+         */
         @Override
         public Protocol getProtocol() {
             return Protocol.OIDC;
         }
 
+        /**
+         * {@inheritDoc} Returns the provider class for Coding authentication.
+         *
+         * @return the CodingProvider class
+         */
         @Override
         public Class<? extends AbstractProvider> getTargetClass() {
             return CodingProvider.class;
@@ -271,6 +376,11 @@ public enum Registry implements Complex {
      */
     DINGTALK {
 
+        /**
+         * {@inheritDoc} Returns the endpoint mappings for DingTalk OAuth2 authentication.
+         *
+         * @return a map of endpoints including authorize, token, and userinfo URLs
+         */
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -280,11 +390,21 @@ public enum Registry implements Complex {
             return map;
         }
 
+        /**
+         * {@inheritDoc} Returns the OIDC protocol used by DingTalk.
+         *
+         * @return the OIDC protocol
+         */
         @Override
         public Protocol getProtocol() {
             return Protocol.OIDC;
         }
 
+        /**
+         * {@inheritDoc} Returns the provider class for DingTalk authentication.
+         *
+         * @return the DingTalkProvider class
+         */
         @Override
         public Class<? extends AbstractProvider> getTargetClass() {
             return DingTalkProvider.class;
@@ -295,6 +415,11 @@ public enum Registry implements Complex {
      */
     DINGTALK_ACCOUNT {
 
+        /**
+         * {@inheritDoc} Returns the endpoint mappings for DingTalk Account OAuth2 authentication.
+         *
+         * @return a map of endpoints including authorize, token, and userinfo URLs
+         */
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -304,11 +429,21 @@ public enum Registry implements Complex {
             return map;
         }
 
+        /**
+         * {@inheritDoc} Returns the OIDC protocol used by DingTalk Account.
+         *
+         * @return the OIDC protocol
+         */
         @Override
         public Protocol getProtocol() {
             return Protocol.OIDC;
         }
 
+        /**
+         * {@inheritDoc} Returns the provider class for DingTalk Account authentication.
+         *
+         * @return the DingTalkAccountProvider class
+         */
         @Override
         public Class<? extends AbstractProvider> getTargetClass() {
             return DingTalkAccountProvider.class;
@@ -319,6 +454,11 @@ public enum Registry implements Complex {
      */
     DOUYIN {
 
+        /**
+         * {@inheritDoc} Returns the endpoint mappings for Douyin OAuth2 authentication.
+         *
+         * @return a map of endpoints including authorize, token, userinfo, and refresh URLs
+         */
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -329,11 +469,21 @@ public enum Registry implements Complex {
             return map;
         }
 
+        /**
+         * {@inheritDoc} Returns the OIDC protocol used by Douyin.
+         *
+         * @return the OIDC protocol
+         */
         @Override
         public Protocol getProtocol() {
             return Protocol.OIDC;
         }
 
+        /**
+         * {@inheritDoc} Returns the provider class for Douyin authentication.
+         *
+         * @return the DouyinProvider class
+         */
         @Override
         public Class<? extends AbstractProvider> getTargetClass() {
             return DouyinProvider.class;
@@ -344,6 +494,11 @@ public enum Registry implements Complex {
      */
     DOUYIN_MINI {
 
+        /**
+         * {@inheritDoc} Returns the endpoint mappings for Douyin Mini Program OAuth2 authentication.
+         *
+         * @return a map of endpoints including token URL
+         */
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -358,11 +513,21 @@ public enum Registry implements Complex {
             return map;
         }
 
+        /**
+         * {@inheritDoc} Returns the OIDC protocol used by Douyin Mini Program.
+         *
+         * @return the OIDC protocol
+         */
         @Override
         public Protocol getProtocol() {
             return Protocol.OIDC;
         }
 
+        /**
+         * {@inheritDoc} Returns the provider class for Douyin Mini Program authentication.
+         *
+         * @return the DouyinMiniProvider class
+         */
         @Override
         public Class<? extends AbstractProvider> getTargetClass() {
             return DouyinMiniProvider.class;
@@ -373,6 +538,11 @@ public enum Registry implements Complex {
      */
     ELEME {
 
+        /**
+         * {@inheritDoc} Returns the endpoint mappings for Eleme OAuth2 authentication.
+         *
+         * @return a map of endpoints including authorize, token, userinfo, and refresh URLs
+         */
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -383,11 +553,21 @@ public enum Registry implements Complex {
             return map;
         }
 
+        /**
+         * {@inheritDoc} Returns the OIDC protocol used by Eleme.
+         *
+         * @return the OIDC protocol
+         */
         @Override
         public Protocol getProtocol() {
             return Protocol.OIDC;
         }
 
+        /**
+         * {@inheritDoc} Returns the provider class for Eleme authentication.
+         *
+         * @return the ElemeProvider class
+         */
         @Override
         public Class<? extends AbstractProvider> getTargetClass() {
             return ElemeProvider.class;
@@ -398,6 +578,11 @@ public enum Registry implements Complex {
      */
     FACEBOOK {
 
+        /**
+         * {@inheritDoc} Returns the endpoint mappings for Facebook OAuth2 authentication.
+         *
+         * @return a map of endpoints including authorize, token, and userinfo URLs
+         */
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -407,11 +592,21 @@ public enum Registry implements Complex {
             return map;
         }
 
+        /**
+         * {@inheritDoc} Returns the OIDC protocol used by Facebook.
+         *
+         * @return the OIDC protocol
+         */
         @Override
         public Protocol getProtocol() {
             return Protocol.OIDC;
         }
 
+        /**
+         * {@inheritDoc} Returns the provider class for Facebook authentication.
+         *
+         * @return the FacebookProvider class
+         */
         @Override
         public Class<? extends AbstractProvider> getTargetClass() {
             return FacebookProvider.class;
@@ -422,6 +617,11 @@ public enum Registry implements Complex {
      */
     FEISHU {
 
+        /**
+         * {@inheritDoc} Returns the endpoint mappings for Feishu OAuth2 authentication.
+         *
+         * @return a map of endpoints including authorize, token, userinfo, and refresh URLs
+         */
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -432,11 +632,21 @@ public enum Registry implements Complex {
             return map;
         }
 
+        /**
+         * {@inheritDoc} Returns the OIDC protocol used by Feishu.
+         *
+         * @return the OIDC protocol
+         */
         @Override
         public Protocol getProtocol() {
             return Protocol.OIDC;
         }
 
+        /**
+         * {@inheritDoc} Returns the provider class for Feishu authentication.
+         *
+         * @return the FeishuProvider class
+         */
         @Override
         public Class<? extends AbstractProvider> getTargetClass() {
             return FeishuProvider.class;
@@ -447,6 +657,11 @@ public enum Registry implements Complex {
      */
     FIGMA {
 
+        /**
+         * {@inheritDoc} Returns the endpoint mappings for Figma OAuth2 authentication.
+         *
+         * @return a map of endpoints including authorize, token, userinfo, and refresh URLs
+         */
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -457,11 +672,21 @@ public enum Registry implements Complex {
             return map;
         }
 
+        /**
+         * {@inheritDoc} Returns the OIDC protocol used by Figma.
+         *
+         * @return the OIDC protocol
+         */
         @Override
         public Protocol getProtocol() {
             return Protocol.OIDC;
         }
 
+        /**
+         * {@inheritDoc} Returns the provider class for Figma authentication.
+         *
+         * @return the FigmaProvider class
+         */
         @Override
         public Class<? extends AbstractProvider> getTargetClass() {
             return FigmaProvider.class;
@@ -472,6 +697,11 @@ public enum Registry implements Complex {
      */
     GITEE {
 
+        /**
+         * {@inheritDoc} Returns the endpoint mappings for Gitee OAuth2 authentication.
+         *
+         * @return a map of endpoints including authorize, token, and userinfo URLs
+         */
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -481,11 +711,21 @@ public enum Registry implements Complex {
             return map;
         }
 
+        /**
+         * {@inheritDoc} Returns the OIDC protocol used by Gitee.
+         *
+         * @return the OIDC protocol
+         */
         @Override
         public Protocol getProtocol() {
             return Protocol.OIDC;
         }
 
+        /**
+         * {@inheritDoc} Returns the provider class for Gitee authentication.
+         *
+         * @return the GiteeProvider class
+         */
         @Override
         public Class<? extends AbstractProvider> getTargetClass() {
             return GiteeProvider.class;
@@ -496,6 +736,11 @@ public enum Registry implements Complex {
      */
     GITHUB {
 
+        /**
+         * {@inheritDoc} Returns the endpoint mappings for GitHub OAuth2 authentication.
+         *
+         * @return a map of endpoints including authorize, token, and userinfo URLs
+         */
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -505,11 +750,21 @@ public enum Registry implements Complex {
             return map;
         }
 
+        /**
+         * {@inheritDoc} Returns the OIDC protocol used by GitHub.
+         *
+         * @return the OIDC protocol
+         */
         @Override
         public Protocol getProtocol() {
             return Protocol.OIDC;
         }
 
+        /**
+         * {@inheritDoc} Returns the provider class for GitHub authentication.
+         *
+         * @return the GithubProvider class
+         */
         @Override
         public Class<? extends AbstractProvider> getTargetClass() {
             return GithubProvider.class;
@@ -520,6 +775,11 @@ public enum Registry implements Complex {
      */
     GITLAB {
 
+        /**
+         * {@inheritDoc} Returns the endpoint mappings for GitLab OAuth2 authentication.
+         *
+         * @return a map of endpoints including authorize, token, and userinfo URLs
+         */
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -529,11 +789,21 @@ public enum Registry implements Complex {
             return map;
         }
 
+        /**
+         * {@inheritDoc} Returns the OIDC protocol used by GitLab.
+         *
+         * @return the OIDC protocol
+         */
         @Override
         public Protocol getProtocol() {
             return Protocol.OIDC;
         }
 
+        /**
+         * {@inheritDoc} Returns the provider class for GitLab authentication.
+         *
+         * @return the GitlabProvider class
+         */
         @Override
         public Class<? extends AbstractProvider> getTargetClass() {
             return GitlabProvider.class;
@@ -544,6 +814,11 @@ public enum Registry implements Complex {
      */
     GOOGLE {
 
+        /**
+         * {@inheritDoc} Returns the endpoint mappings for Google OAuth2 authentication.
+         *
+         * @return a map of endpoints including authorize, token, and userinfo URLs
+         */
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -553,11 +828,21 @@ public enum Registry implements Complex {
             return map;
         }
 
+        /**
+         * {@inheritDoc} Returns the OIDC protocol used by Google.
+         *
+         * @return the OIDC protocol
+         */
         @Override
         public Protocol getProtocol() {
             return Protocol.OIDC;
         }
 
+        /**
+         * {@inheritDoc} Returns the provider class for Google authentication.
+         *
+         * @return the GoogleProvider class
+         */
         @Override
         public Class<? extends AbstractProvider> getTargetClass() {
             return GoogleProvider.class;
@@ -568,6 +853,11 @@ public enum Registry implements Complex {
      */
     HUAWEI {
 
+        /**
+         * {@inheritDoc} Returns the endpoint mappings for Huawei OAuth2 authentication.
+         *
+         * @return a map of endpoints including authorize, token, userinfo, and refresh URLs
+         */
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -578,11 +868,21 @@ public enum Registry implements Complex {
             return map;
         }
 
+        /**
+         * {@inheritDoc} Returns the OIDC protocol used by Huawei.
+         *
+         * @return the OIDC protocol
+         */
         @Override
         public Protocol getProtocol() {
             return Protocol.OIDC;
         }
 
+        /**
+         * {@inheritDoc} Returns the provider class for Huawei authentication.
+         *
+         * @return the HuaweiProvider class
+         */
         @Override
         public Class<? extends AbstractProvider> getTargetClass() {
             return HuaweiProvider.class;
@@ -593,6 +893,11 @@ public enum Registry implements Complex {
      */
     JD {
 
+        /**
+         * {@inheritDoc} Returns the endpoint mappings for JD OAuth2 authentication.
+         *
+         * @return a map of endpoints including authorize, token, userinfo, and refresh URLs
+         */
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -603,11 +908,21 @@ public enum Registry implements Complex {
             return map;
         }
 
+        /**
+         * {@inheritDoc} Returns the OIDC protocol used by JD.
+         *
+         * @return the OIDC protocol
+         */
         @Override
         public Protocol getProtocol() {
             return Protocol.OIDC;
         }
 
+        /**
+         * {@inheritDoc} Returns the provider class for JD authentication.
+         *
+         * @return the JdProvider class
+         */
         @Override
         public Class<? extends AbstractProvider> getTargetClass() {
             return JdProvider.class;
@@ -618,6 +933,11 @@ public enum Registry implements Complex {
      */
     KUJIALE {
 
+        /**
+         * {@inheritDoc} Returns the endpoint mappings for Kujiale OAuth2 authentication.
+         *
+         * @return a map of endpoints including authorize, token, userinfo, and refresh URLs
+         */
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -628,11 +948,21 @@ public enum Registry implements Complex {
             return map;
         }
 
+        /**
+         * {@inheritDoc} Returns the OIDC protocol used by Kujiale.
+         *
+         * @return the OIDC protocol
+         */
         @Override
         public Protocol getProtocol() {
             return Protocol.OIDC;
         }
 
+        /**
+         * {@inheritDoc} Returns the provider class for Kujiale authentication.
+         *
+         * @return the KujialeProvider class
+         */
         @Override
         public Class<? extends AbstractProvider> getTargetClass() {
             return KujialeProvider.class;
@@ -643,6 +973,11 @@ public enum Registry implements Complex {
      */
     LINE {
 
+        /**
+         * {@inheritDoc} Returns the endpoint mappings for LINE OAuth2 authentication.
+         *
+         * @return a map of endpoints including authorize, token, userinfo, refresh, and revoke URLs
+         */
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -654,11 +989,21 @@ public enum Registry implements Complex {
             return map;
         }
 
+        /**
+         * {@inheritDoc} Returns the OIDC protocol used by LINE.
+         *
+         * @return the OIDC protocol
+         */
         @Override
         public Protocol getProtocol() {
             return Protocol.OIDC;
         }
 
+        /**
+         * {@inheritDoc} Returns the provider class for LINE authentication.
+         *
+         * @return the LineProvider class
+         */
         @Override
         public Class<? extends AbstractProvider> getTargetClass() {
             return LineProvider.class;
@@ -669,6 +1014,11 @@ public enum Registry implements Complex {
      */
     LINKEDIN {
 
+        /**
+         * {@inheritDoc} Returns the endpoint mappings for LinkedIn OAuth2 authentication.
+         *
+         * @return a map of endpoints including authorize, token, userinfo, and refresh URLs
+         */
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -679,11 +1029,21 @@ public enum Registry implements Complex {
             return map;
         }
 
+        /**
+         * {@inheritDoc} Returns the OIDC protocol used by LinkedIn.
+         *
+         * @return the OIDC protocol
+         */
         @Override
         public Protocol getProtocol() {
             return Protocol.OIDC;
         }
 
+        /**
+         * {@inheritDoc} Returns the provider class for LinkedIn authentication.
+         *
+         * @return the LinkedinProvider class
+         */
         @Override
         public Class<? extends AbstractProvider> getTargetClass() {
             return LinkedinProvider.class;
@@ -694,6 +1054,11 @@ public enum Registry implements Complex {
      */
     MEITUAN {
 
+        /**
+         * {@inheritDoc} Returns the endpoint mappings for Meituan OAuth2 authentication.
+         *
+         * @return a map of endpoints including authorize, token, userinfo, and refresh URLs
+         */
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -704,11 +1069,21 @@ public enum Registry implements Complex {
             return map;
         }
 
+        /**
+         * {@inheritDoc} Returns the OIDC protocol used by Meituan.
+         *
+         * @return the OIDC protocol
+         */
         @Override
         public Protocol getProtocol() {
             return Protocol.OIDC;
         }
 
+        /**
+         * {@inheritDoc} Returns the provider class for Meituan authentication.
+         *
+         * @return the MeituanProvider class
+         */
         @Override
         public Class<? extends AbstractProvider> getTargetClass() {
             return MeituanProvider.class;
@@ -719,6 +1094,11 @@ public enum Registry implements Complex {
      */
     MI {
 
+        /**
+         * {@inheritDoc} Returns the endpoint mappings for Xiaomi OAuth2 authentication.
+         *
+         * @return a map of endpoints including authorize, token, userinfo, and refresh URLs
+         */
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -729,11 +1109,21 @@ public enum Registry implements Complex {
             return map;
         }
 
+        /**
+         * {@inheritDoc} Returns the OIDC protocol used by Xiaomi.
+         *
+         * @return the OIDC protocol
+         */
         @Override
         public Protocol getProtocol() {
             return Protocol.OIDC;
         }
 
+        /**
+         * {@inheritDoc} Returns the provider class for Xiaomi authentication.
+         *
+         * @return the MiProvider class
+         */
         @Override
         public Class<? extends AbstractProvider> getTargetClass() {
             return MiProvider.class;
@@ -744,6 +1134,11 @@ public enum Registry implements Complex {
      */
     MICROSOFT {
 
+        /**
+         * {@inheritDoc} Returns the endpoint mappings for Microsoft OAuth2 authentication.
+         *
+         * @return a map of endpoints including authorize, token, userinfo, and refresh URLs
+         */
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -754,11 +1149,21 @@ public enum Registry implements Complex {
             return map;
         }
 
+        /**
+         * {@inheritDoc} Returns the OIDC protocol used by Microsoft.
+         *
+         * @return the OIDC protocol
+         */
         @Override
         public Protocol getProtocol() {
             return Protocol.OIDC;
         }
 
+        /**
+         * {@inheritDoc} Returns the provider class for Microsoft authentication.
+         *
+         * @return the MicrosoftProvider class
+         */
         @Override
         public Class<? extends AbstractProvider> getTargetClass() {
             return MicrosoftProvider.class;
@@ -769,6 +1174,11 @@ public enum Registry implements Complex {
      */
     MICROSOFT_CN {
 
+        /**
+         * {@inheritDoc} Returns the endpoint mappings for Microsoft China OAuth2 authentication.
+         *
+         * @return a map of endpoints including authorize, token, userinfo, and refresh URLs
+         */
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -779,11 +1189,21 @@ public enum Registry implements Complex {
             return map;
         }
 
+        /**
+         * {@inheritDoc} Returns the OIDC protocol used by Microsoft China.
+         *
+         * @return the OIDC protocol
+         */
         @Override
         public Protocol getProtocol() {
             return Protocol.OIDC;
         }
 
+        /**
+         * {@inheritDoc} Returns the provider class for Microsoft China authentication.
+         *
+         * @return the MicrosoftCnProvider class
+         */
         @Override
         public Class<? extends AbstractProvider> getTargetClass() {
             return MicrosoftCnProvider.class;
@@ -794,16 +1214,31 @@ public enum Registry implements Complex {
      */
     OIDC {
 
+        /**
+         * {@inheritDoc} Returns an empty endpoint map for generic OIDC providers.
+         *
+         * @return an empty map
+         */
         @Override
         public Map<Endpoint, String> endpoint() {
             return MapKit.empty();
         }
 
+        /**
+         * {@inheritDoc} Returns the OIDC protocol.
+         *
+         * @return the OIDC protocol
+         */
         @Override
         public Protocol getProtocol() {
             return Protocol.OIDC;
         }
 
+        /**
+         * {@inheritDoc} Returns the provider class for generic OIDC authentication.
+         *
+         * @return the OIDCProvider class
+         */
         @Override
         public Class<? extends AbstractProvider> getTargetClass() {
             return OIDCProvider.class;
@@ -814,6 +1249,11 @@ public enum Registry implements Complex {
      */
     OKTA {
 
+        /**
+         * {@inheritDoc} Returns the endpoint mappings for Okta OAuth2 authentication.
+         *
+         * @return a map of endpoints including authorize, token, userinfo, refresh, and revoke URLs
+         */
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -825,11 +1265,21 @@ public enum Registry implements Complex {
             return map;
         }
 
+        /**
+         * {@inheritDoc} Returns the OIDC protocol used by Okta.
+         *
+         * @return the OIDC protocol
+         */
         @Override
         public Protocol getProtocol() {
             return Protocol.OIDC;
         }
 
+        /**
+         * {@inheritDoc} Returns the provider class for Okta authentication.
+         *
+         * @return the OktaProvider class
+         */
         @Override
         public Class<? extends AbstractProvider> getTargetClass() {
             return OktaProvider.class;
@@ -840,6 +1290,11 @@ public enum Registry implements Complex {
      */
     OSCHINA {
 
+        /**
+         * {@inheritDoc} Returns the endpoint mappings for OSChina OAuth2 authentication.
+         *
+         * @return a map of endpoints including authorize, token, and userinfo URLs
+         */
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -849,11 +1304,21 @@ public enum Registry implements Complex {
             return map;
         }
 
+        /**
+         * {@inheritDoc} Returns the OIDC protocol used by OSChina.
+         *
+         * @return the OIDC protocol
+         */
         @Override
         public Protocol getProtocol() {
             return Protocol.OIDC;
         }
 
+        /**
+         * {@inheritDoc} Returns the provider class for OSChina authentication.
+         *
+         * @return the OschinaProvider class
+         */
         @Override
         public Class<? extends AbstractProvider> getTargetClass() {
             return OschinaProvider.class;
@@ -864,6 +1329,11 @@ public enum Registry implements Complex {
      */
     PINTEREST {
 
+        /**
+         * {@inheritDoc} Returns the endpoint mappings for Pinterest OAuth2 authentication.
+         *
+         * @return a map of endpoints including authorize, token, and userinfo URLs
+         */
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -873,11 +1343,21 @@ public enum Registry implements Complex {
             return map;
         }
 
+        /**
+         * {@inheritDoc} Returns the OIDC protocol used by Pinterest.
+         *
+         * @return the OIDC protocol
+         */
         @Override
         public Protocol getProtocol() {
             return Protocol.OIDC;
         }
 
+        /**
+         * {@inheritDoc} Returns the provider class for Pinterest authentication.
+         *
+         * @return the PinterestProvider class
+         */
         @Override
         public Class<? extends AbstractProvider> getTargetClass() {
             return PinterestProvider.class;
@@ -888,6 +1368,11 @@ public enum Registry implements Complex {
      */
     PROGINN {
 
+        /**
+         * {@inheritDoc} Returns the endpoint mappings for Proginn OAuth2 authentication.
+         *
+         * @return a map of endpoints including authorize, token, and userinfo URLs
+         */
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -897,11 +1382,21 @@ public enum Registry implements Complex {
             return map;
         }
 
+        /**
+         * {@inheritDoc} Returns the OIDC protocol used by Proginn.
+         *
+         * @return the OIDC protocol
+         */
         @Override
         public Protocol getProtocol() {
             return Protocol.OIDC;
         }
 
+        /**
+         * {@inheritDoc} Returns the provider class for Proginn authentication.
+         *
+         * @return the ProginnProvider class
+         */
         @Override
         public Class<? extends AbstractProvider> getTargetClass() {
             return ProginnProvider.class;
@@ -912,6 +1407,11 @@ public enum Registry implements Complex {
      */
     QQ {
 
+        /**
+         * {@inheritDoc} Returns the endpoint mappings for QQ OAuth2 authentication.
+         *
+         * @return a map of endpoints including authorize, token, userinfo, and refresh URLs
+         */
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -922,11 +1422,21 @@ public enum Registry implements Complex {
             return map;
         }
 
+        /**
+         * {@inheritDoc} Returns the OIDC protocol used by QQ.
+         *
+         * @return the OIDC protocol
+         */
         @Override
         public Protocol getProtocol() {
             return Protocol.OIDC;
         }
 
+        /**
+         * {@inheritDoc} Returns the provider class for QQ authentication.
+         *
+         * @return the QqProvider class
+         */
         @Override
         public Class<? extends AbstractProvider> getTargetClass() {
             return QqProvider.class;
@@ -937,6 +1447,11 @@ public enum Registry implements Complex {
      */
     QQ_MINI {
 
+        /**
+         * {@inheritDoc} Returns the endpoint mappings for QQ Mini Program OAuth2 authentication.
+         *
+         * @return a map of endpoints including token URL
+         */
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -944,11 +1459,21 @@ public enum Registry implements Complex {
             return map;
         }
 
+        /**
+         * {@inheritDoc} Returns the OIDC protocol used by QQ Mini Program.
+         *
+         * @return the OIDC protocol
+         */
         @Override
         public Protocol getProtocol() {
             return Protocol.OIDC;
         }
 
+        /**
+         * {@inheritDoc} Returns the provider class for QQ Mini Program authentication.
+         *
+         * @return the QqMiniProvider class
+         */
         @Override
         public Class<? extends AbstractProvider> getTargetClass() {
             return QqMiniProvider.class;
@@ -959,6 +1484,11 @@ public enum Registry implements Complex {
      */
     RENREN {
 
+        /**
+         * {@inheritDoc} Returns the endpoint mappings for Renren OAuth2 authentication.
+         *
+         * @return a map of endpoints including authorize, token, userinfo, and refresh URLs
+         */
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -969,11 +1499,21 @@ public enum Registry implements Complex {
             return map;
         }
 
+        /**
+         * {@inheritDoc} Returns the OIDC protocol used by Renren.
+         *
+         * @return the OIDC protocol
+         */
         @Override
         public Protocol getProtocol() {
             return Protocol.OIDC;
         }
 
+        /**
+         * {@inheritDoc} Returns the provider class for Renren authentication.
+         *
+         * @return the RenrenProvider class
+         */
         @Override
         public Class<? extends AbstractProvider> getTargetClass() {
             return RenrenProvider.class;
@@ -984,6 +1524,11 @@ public enum Registry implements Complex {
      */
     REDNOTE_MARKET {
 
+        /**
+         * {@inheritDoc} Returns the endpoint mappings for Rednote Market OAuth2 authentication.
+         *
+         * @return a map of endpoints including authorize, token, userinfo, and refresh URLs
+         */
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -994,11 +1539,21 @@ public enum Registry implements Complex {
             return map;
         }
 
+        /**
+         * {@inheritDoc} Returns the OIDC protocol used by Rednote Market.
+         *
+         * @return the OIDC protocol
+         */
         @Override
         public Protocol getProtocol() {
             return Protocol.OIDC;
         }
 
+        /**
+         * {@inheritDoc} Returns the provider class for Rednote Market authentication.
+         *
+         * @return the RednoteMarketiProvider class
+         */
         @Override
         public Class<? extends AbstractProvider> getTargetClass() {
             return RednoteMarketiProvider.class;
@@ -1009,6 +1564,11 @@ public enum Registry implements Complex {
      */
     SLACK {
 
+        /**
+         * {@inheritDoc} Returns the endpoint mappings for Slack OAuth2 authentication.
+         *
+         * @return a map of endpoints including authorize, token, userinfo, and revoke URLs
+         */
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -1019,11 +1579,21 @@ public enum Registry implements Complex {
             return map;
         }
 
+        /**
+         * {@inheritDoc} Returns the OIDC protocol used by Slack.
+         *
+         * @return the OIDC protocol
+         */
         @Override
         public Protocol getProtocol() {
             return Protocol.OIDC;
         }
 
+        /**
+         * {@inheritDoc} Returns the provider class for Slack authentication.
+         *
+         * @return the SlackProvider class
+         */
         @Override
         public Class<? extends AbstractProvider> getTargetClass() {
             return SlackProvider.class;
@@ -1034,6 +1604,11 @@ public enum Registry implements Complex {
      */
     STACK_OVERFLOW {
 
+        /**
+         * {@inheritDoc} Returns the endpoint mappings for Stack Overflow OAuth2 authentication.
+         *
+         * @return a map of endpoints including authorize, token, and userinfo URLs
+         */
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -1043,11 +1618,21 @@ public enum Registry implements Complex {
             return map;
         }
 
+        /**
+         * {@inheritDoc} Returns the OIDC protocol used by Stack Overflow.
+         *
+         * @return the OIDC protocol
+         */
         @Override
         public Protocol getProtocol() {
             return Protocol.OIDC;
         }
 
+        /**
+         * {@inheritDoc} Returns the provider class for Stack Overflow authentication.
+         *
+         * @return the StackOverflowProvider class
+         */
         @Override
         public Class<? extends AbstractProvider> getTargetClass() {
             return StackOverflowProvider.class;
@@ -1058,6 +1643,11 @@ public enum Registry implements Complex {
      */
     TAOBAO {
 
+        /**
+         * {@inheritDoc} Returns the endpoint mappings for Taobao OAuth2 authentication.
+         *
+         * @return a map of endpoints including authorize and token URLs
+         */
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -1066,11 +1656,21 @@ public enum Registry implements Complex {
             return map;
         }
 
+        /**
+         * {@inheritDoc} Returns the OIDC protocol used by Taobao.
+         *
+         * @return the OIDC protocol
+         */
         @Override
         public Protocol getProtocol() {
             return Protocol.OIDC;
         }
 
+        /**
+         * {@inheritDoc} Returns the provider class for Taobao authentication.
+         *
+         * @return the TaobaoProvider class
+         */
         @Override
         public Class<? extends AbstractProvider> getTargetClass() {
             return TaobaoProvider.class;
@@ -1081,6 +1681,11 @@ public enum Registry implements Complex {
      */
     TEAMBITION {
 
+        /**
+         * {@inheritDoc} Returns the endpoint mappings for Teambition OAuth2 authentication.
+         *
+         * @return a map of endpoints including authorize, token, userinfo, and refresh URLs
+         */
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -1091,11 +1696,21 @@ public enum Registry implements Complex {
             return map;
         }
 
+        /**
+         * {@inheritDoc} Returns the OIDC protocol used by Teambition.
+         *
+         * @return the OIDC protocol
+         */
         @Override
         public Protocol getProtocol() {
             return Protocol.OIDC;
         }
 
+        /**
+         * {@inheritDoc} Returns the provider class for Teambition authentication.
+         *
+         * @return the TeambitionProvider class
+         */
         @Override
         public Class<? extends AbstractProvider> getTargetClass() {
             return TeambitionProvider.class;
@@ -1106,6 +1721,11 @@ public enum Registry implements Complex {
      */
     TOUTIAO {
 
+        /**
+         * {@inheritDoc} Returns the endpoint mappings for Toutiao OAuth2 authentication.
+         *
+         * @return a map of endpoints including authorize, token, and userinfo URLs
+         */
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -1115,11 +1735,21 @@ public enum Registry implements Complex {
             return map;
         }
 
+        /**
+         * {@inheritDoc} Returns the OIDC protocol used by Toutiao.
+         *
+         * @return the OIDC protocol
+         */
         @Override
         public Protocol getProtocol() {
             return Protocol.OIDC;
         }
 
+        /**
+         * {@inheritDoc} Returns the provider class for Toutiao authentication.
+         *
+         * @return the ToutiaoProvider class
+         */
         @Override
         public Class<? extends AbstractProvider> getTargetClass() {
             return ToutiaoProvider.class;
@@ -1130,6 +1760,11 @@ public enum Registry implements Complex {
      */
     TWITTER {
 
+        /**
+         * {@inheritDoc} Returns the endpoint mappings for Twitter OAuth2 authentication.
+         *
+         * @return a map of endpoints including authorize, token, and userinfo URLs
+         */
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -1139,11 +1774,21 @@ public enum Registry implements Complex {
             return map;
         }
 
+        /**
+         * {@inheritDoc} Returns the OIDC protocol used by Twitter.
+         *
+         * @return the OIDC protocol
+         */
         @Override
         public Protocol getProtocol() {
             return Protocol.OIDC;
         }
 
+        /**
+         * {@inheritDoc} Returns the provider class for Twitter authentication.
+         *
+         * @return the TwitterProvider class
+         */
         @Override
         public Class<? extends AbstractProvider> getTargetClass() {
             return TwitterProvider.class;
@@ -1154,6 +1799,11 @@ public enum Registry implements Complex {
      */
     VK {
 
+        /**
+         * {@inheritDoc} Returns the endpoint mappings for VK OAuth2 authentication.
+         *
+         * @return a map of endpoints including authorize, token, userinfo, revoke, and refresh URLs
+         */
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -1165,11 +1815,21 @@ public enum Registry implements Complex {
             return map;
         }
 
+        /**
+         * {@inheritDoc} Returns the OIDC protocol used by VK.
+         *
+         * @return the OIDC protocol
+         */
         @Override
         public Protocol getProtocol() {
             return Protocol.OIDC;
         }
 
+        /**
+         * {@inheritDoc} Returns the provider class for VK authentication.
+         *
+         * @return the VKProvider class
+         */
         @Override
         public Class<? extends AbstractProvider> getTargetClass() {
             return VKProvider.class;
@@ -1180,6 +1840,11 @@ public enum Registry implements Complex {
      */
     WECHAT_EE {
 
+        /**
+         * {@inheritDoc} Returns the endpoint mappings for WeChat Enterprise OAuth2 authentication.
+         *
+         * @return a map of endpoints including authorize, token, and userinfo URLs
+         */
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -1189,11 +1854,21 @@ public enum Registry implements Complex {
             return map;
         }
 
+        /**
+         * {@inheritDoc} Returns the OIDC protocol used by WeChat Enterprise.
+         *
+         * @return the OIDC protocol
+         */
         @Override
         public Protocol getProtocol() {
             return Protocol.OIDC;
         }
 
+        /**
+         * {@inheritDoc} Returns the provider class for WeChat Enterprise authentication.
+         *
+         * @return the WeChatEeQrcodeProvider class
+         */
         @Override
         public Class<? extends AbstractProvider> getTargetClass() {
             return WeChatEeQrcodeProvider.class;
@@ -1204,6 +1879,11 @@ public enum Registry implements Complex {
      */
     WECHAT_EE_QRCODE {
 
+        /**
+         * {@inheritDoc} Returns the endpoint mappings for WeChat Enterprise QR Code OAuth2 authentication.
+         *
+         * @return a map of endpoints including authorize, token, and userinfo URLs
+         */
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -1213,11 +1893,21 @@ public enum Registry implements Complex {
             return map;
         }
 
+        /**
+         * {@inheritDoc} Returns the OIDC protocol used by WeChat Enterprise QR Code.
+         *
+         * @return the OIDC protocol
+         */
         @Override
         public Protocol getProtocol() {
             return Protocol.OIDC;
         }
 
+        /**
+         * {@inheritDoc} Returns the provider class for WeChat Enterprise QR Code authentication.
+         *
+         * @return the WeChatEeThirdQrcodeProvider class
+         */
         @Override
         public Class<? extends AbstractProvider> getTargetClass() {
             return WeChatEeThirdQrcodeProvider.class;
@@ -1228,6 +1918,11 @@ public enum Registry implements Complex {
      */
     WECHAT_EE_WEB {
 
+        /**
+         * {@inheritDoc} Returns the endpoint mappings for WeChat Enterprise Web OAuth2 authentication.
+         *
+         * @return a map of endpoints including authorize, token, and userinfo URLs
+         */
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -1237,11 +1932,21 @@ public enum Registry implements Complex {
             return map;
         }
 
+        /**
+         * {@inheritDoc} Returns the OIDC protocol used by WeChat Enterprise Web.
+         *
+         * @return the OIDC protocol
+         */
         @Override
         public Protocol getProtocol() {
             return Protocol.OIDC;
         }
 
+        /**
+         * {@inheritDoc} Returns the provider class for WeChat Enterprise Web authentication.
+         *
+         * @return the WeChatEeWebProvider class
+         */
         @Override
         public Class<? extends AbstractProvider> getTargetClass() {
             return WeChatEeWebProvider.class;
@@ -1252,6 +1957,11 @@ public enum Registry implements Complex {
      */
     WECHAT_MP {
 
+        /**
+         * {@inheritDoc} Returns the endpoint mappings for WeChat MP OAuth2 authentication.
+         *
+         * @return a map of endpoints including authorize, token, userinfo, and refresh URLs
+         */
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -1262,11 +1972,21 @@ public enum Registry implements Complex {
             return map;
         }
 
+        /**
+         * {@inheritDoc} Returns the OIDC protocol used by WeChat MP.
+         *
+         * @return the OIDC protocol
+         */
         @Override
         public Protocol getProtocol() {
             return Protocol.OIDC;
         }
 
+        /**
+         * {@inheritDoc} Returns the provider class for WeChat MP authentication.
+         *
+         * @return the WeChatMpProvider class
+         */
         @Override
         public Class<? extends AbstractProvider> getTargetClass() {
             return WeChatMpProvider.class;
@@ -1277,6 +1997,11 @@ public enum Registry implements Complex {
      */
     WECHAT_MINI {
 
+        /**
+         * {@inheritDoc} Returns the endpoint mappings for WeChat Mini Program OAuth2 authentication.
+         *
+         * @return a map of endpoints including token URL
+         */
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -1284,11 +2009,21 @@ public enum Registry implements Complex {
             return map;
         }
 
+        /**
+         * {@inheritDoc} Returns the OIDC protocol used by WeChat Mini Program.
+         *
+         * @return the OIDC protocol
+         */
         @Override
         public Protocol getProtocol() {
             return Protocol.OIDC;
         }
 
+        /**
+         * {@inheritDoc} Returns the provider class for WeChat Mini Program authentication.
+         *
+         * @return the WeChatMiniProvider class
+         */
         @Override
         public Class<? extends AbstractProvider> getTargetClass() {
             return WeChatMiniProvider.class;
@@ -1299,6 +2034,11 @@ public enum Registry implements Complex {
      */
     WECHAT_OPEN {
 
+        /**
+         * {@inheritDoc} Returns the endpoint mappings for WeChat Open Platform OAuth2 authentication.
+         *
+         * @return a map of endpoints including authorize, token, userinfo, and refresh URLs
+         */
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -1309,11 +2049,21 @@ public enum Registry implements Complex {
             return map;
         }
 
+        /**
+         * {@inheritDoc} Returns the OIDC protocol used by WeChat Open Platform.
+         *
+         * @return the OIDC protocol
+         */
         @Override
         public Protocol getProtocol() {
             return Protocol.OIDC;
         }
 
+        /**
+         * {@inheritDoc} Returns the provider class for WeChat Open Platform authentication.
+         *
+         * @return the WeChatOpenProvider class
+         */
         @Override
         public Class<? extends AbstractProvider> getTargetClass() {
             return WeChatOpenProvider.class;
@@ -1324,6 +2074,11 @@ public enum Registry implements Complex {
      */
     WEIBO {
 
+        /**
+         * {@inheritDoc} Returns the endpoint mappings for Weibo OAuth2 authentication.
+         *
+         * @return a map of endpoints including authorize, token, userinfo, and revoke URLs
+         */
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -1334,11 +2089,21 @@ public enum Registry implements Complex {
             return map;
         }
 
+        /**
+         * {@inheritDoc} Returns the OIDC protocol used by Weibo.
+         *
+         * @return the OIDC protocol
+         */
         @Override
         public Protocol getProtocol() {
             return Protocol.OIDC;
         }
 
+        /**
+         * {@inheritDoc} Returns the provider class for Weibo authentication.
+         *
+         * @return the WeiboProvider class
+         */
         @Override
         public Class<? extends AbstractProvider> getTargetClass() {
             return WeiboProvider.class;
@@ -1349,6 +2114,11 @@ public enum Registry implements Complex {
      */
     XIMALAYA {
 
+        /**
+         * {@inheritDoc} Returns the endpoint mappings for Ximalaya OAuth2 authentication.
+         *
+         * @return a map of endpoints including authorize, token, and userinfo URLs
+         */
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -1358,11 +2128,21 @@ public enum Registry implements Complex {
             return map;
         }
 
+        /**
+         * {@inheritDoc} Returns the OIDC protocol used by Ximalaya.
+         *
+         * @return the OIDC protocol
+         */
         @Override
         public Protocol getProtocol() {
             return Protocol.OIDC;
         }
 
+        /**
+         * {@inheritDoc} Returns the provider class for Ximalaya authentication.
+         *
+         * @return the XimalayaProvider class
+         */
         @Override
         public Class<? extends AbstractProvider> getTargetClass() {
             return XimalayaProvider.class;

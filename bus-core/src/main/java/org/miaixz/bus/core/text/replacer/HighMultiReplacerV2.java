@@ -49,9 +49,6 @@ import org.miaixz.bus.core.text.finder.MultiStringFinder;
  */
 public class HighMultiReplacerV2 extends StringReplacer {
 
-    /**
-     * The serial version UID.
-     */
     @Serial
     private static final long serialVersionUID = 2852238992618L;
 

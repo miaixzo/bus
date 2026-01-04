@@ -149,6 +149,13 @@ public class LinkedDeque<E extends Linked<E>> extends AbstractCollection<E> impl
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Returns {@code true} if this deque contains no elements.
+     *
+     * @return {@code true} if this deque contains no elements
+     */
     @Override
     public boolean isEmpty() {
         return (first == null);
@@ -174,6 +181,11 @@ public class LinkedDeque<E extends Linked<E>> extends AbstractCollection<E> impl
         return size;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Removes all of the elements from this deque. The deque will be empty after this call returns.
+     */
     @Override
     public void clear() {
         for (E e = first; e != null;) {
@@ -185,6 +197,14 @@ public class LinkedDeque<E extends Linked<E>> extends AbstractCollection<E> impl
         first = last = null;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Returns {@code true} if this deque contains the specified element.
+     *
+     * @param o the element to check for presence
+     * @return {@code true} if this deque contains the specified element
+     */
     @Override
     public boolean contains(final Object o) {
         return (o instanceof Linked<?>) && contains((Linked<?>) o);
@@ -219,43 +239,107 @@ public class LinkedDeque<E extends Linked<E>> extends AbstractCollection<E> impl
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Retrieves, but does not remove, the head of the queue represented by this deque (in other words, the first
+     * element of this deque), or returns {@code null} if this deque is empty.
+     *
+     * @return the head of the queue, or {@code null} if this deque is empty
+     */
     @Override
     public E peek() {
         return peekFirst();
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Retrieves, but does not remove, the first element of this deque, or returns {@code null} if this deque is empty.
+     *
+     * @return the first element of this deque, or {@code null} if this deque is empty
+     */
     @Override
     public E peekFirst() {
         return first;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Retrieves, but does not remove, the last element of this deque, or returns {@code null} if this deque is empty.
+     *
+     * @return the last element of this deque, or {@code null} if this deque is empty
+     */
     @Override
     public E peekLast() {
         return last;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Retrieves, but does not remove, the first element of this deque. This method differs from {@link #peekFirst} only
+     * in that it throws an exception if this deque is empty.
+     *
+     * @return the first element of this deque
+     * @throws NoSuchElementException if this deque is empty
+     */
     @Override
     public E getFirst() {
         checkNotEmpty();
         return peekFirst();
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Retrieves, but does not remove, the last element of this deque. This method differs from {@link #peekLast} only
+     * in that it throws an exception if this deque is empty.
+     *
+     * @return the last element of this deque
+     * @throws NoSuchElementException if this deque is empty
+     */
     @Override
     public E getLast() {
         checkNotEmpty();
         return peekLast();
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Retrieves, but does not remove, the head of the queue represented by this deque.
+     *
+     * @return the head of the queue
+     * @throws NoSuchElementException if this deque is empty
+     */
     @Override
     public E element() {
         return getFirst();
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Adds the specified element as the tail (last element) of this deque.
+     *
+     * @param e the element to add
+     * @return {@code true} if the element was added successfully
+     */
     @Override
     public boolean offer(final E e) {
         return offerLast(e);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Inserts the specified element at the front of this deque.
+     *
+     * @param e the element to insert
+     * @return {@code true} if the element was added successfully, {@code false} if already present
+     */
     @Override
     public boolean offerFirst(final E e) {
         if (contains(e)) {
@@ -265,6 +349,14 @@ public class LinkedDeque<E extends Linked<E>> extends AbstractCollection<E> impl
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Inserts the specified element at the end of this deque.
+     *
+     * @param e the element to insert
+     * @return {@code true} if the element was added successfully, {@code false} if already present
+     */
     @Override
     public boolean offerLast(final E e) {
         if (contains(e)) {
@@ -274,11 +366,28 @@ public class LinkedDeque<E extends Linked<E>> extends AbstractCollection<E> impl
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Adds the specified element as the tail (last element) of this deque.
+     *
+     * @param e the element to add
+     * @return {@code true}
+     * @throws IllegalArgumentException if the element is already present
+     */
     @Override
     public boolean add(final E e) {
         return offerLast(e);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Inserts the specified element at the front of this deque.
+     *
+     * @param e the element to insert
+     * @throws IllegalArgumentException if the element is already present
+     */
     @Override
     public void addFirst(final E e) {
         if (!offerFirst(e)) {
@@ -286,6 +395,14 @@ public class LinkedDeque<E extends Linked<E>> extends AbstractCollection<E> impl
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Inserts the specified element at the end of this deque.
+     *
+     * @param e the element to insert
+     * @throws IllegalArgumentException if the element is already present
+     */
     @Override
     public void addLast(final E e) {
         if (!offerLast(e)) {
@@ -293,26 +410,64 @@ public class LinkedDeque<E extends Linked<E>> extends AbstractCollection<E> impl
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Retrieves and removes the head of the queue represented by this deque (in other words, the first element of this
+     * deque), or returns {@code null} if this deque is empty.
+     *
+     * @return the head of the queue, or {@code null} if this deque is empty
+     */
     @Override
     public E poll() {
         return pollFirst();
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Retrieves and removes the first element of this deque, or returns {@code null} if this deque is empty.
+     *
+     * @return the first element of this deque, or {@code null} if this deque is empty
+     */
     @Override
     public E pollFirst() {
         return isEmpty() ? null : unlinkFirst();
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Retrieves and removes the last element of this deque, or returns {@code null} if this deque is empty.
+     *
+     * @return the last element of this deque, or {@code null} if this deque is empty
+     */
     @Override
     public E pollLast() {
         return isEmpty() ? null : unlinkLast();
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Retrieves and removes the head of the queue represented by this deque.
+     *
+     * @return the head of the queue
+     * @throws NoSuchElementException if this deque is empty
+     */
     @Override
     public E remove() {
         return removeFirst();
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Removes the first occurrence of the specified element from this deque.
+     *
+     * @param o the element to remove
+     * @return {@code true} if the element was removed
+     */
     @Override
     public boolean remove(final Object o) {
         return (o instanceof Linked<?>) && remove((E) o);
@@ -327,28 +482,68 @@ public class LinkedDeque<E extends Linked<E>> extends AbstractCollection<E> impl
         return false;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Retrieves and removes the first element of this deque.
+     *
+     * @return the first element of this deque
+     * @throws NoSuchElementException if this deque is empty
+     */
     @Override
     public E removeFirst() {
         checkNotEmpty();
         return pollFirst();
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Removes the first occurrence of the specified element from this deque.
+     *
+     * @param o the element to remove
+     * @return {@code true} if the element was removed
+     */
     @Override
     public boolean removeFirstOccurrence(final Object o) {
         return remove(o);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Retrieves and removes the last element of this deque.
+     *
+     * @return the last element of this deque
+     * @throws NoSuchElementException if this deque is empty
+     */
     @Override
     public E removeLast() {
         checkNotEmpty();
         return pollLast();
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Removes the last occurrence of the specified element from this deque.
+     *
+     * @param o the element to remove
+     * @return {@code true} if the element was removed
+     */
     @Override
     public boolean removeLastOccurrence(final Object o) {
         return remove(o);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Removes all of this deque's elements that are also contained in the specified collection.
+     *
+     * @param c the collection containing elements to remove
+     * @return {@code true} if the deque was modified
+     */
     @Override
     public boolean removeAll(final Collection<?> c) {
         boolean modified = false;
@@ -358,16 +553,38 @@ public class LinkedDeque<E extends Linked<E>> extends AbstractCollection<E> impl
         return modified;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Pushes an element onto the stack represented by this deque (in other words, at the head of this deque).
+     *
+     * @param e the element to push
+     */
     @Override
     public void push(final E e) {
         addFirst(e);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Pops an element from the stack represented by this deque (in other words, removes and returns the first element
+     * of this deque).
+     *
+     * @return the element at the front of this deque
+     */
     @Override
     public E pop() {
         return removeFirst();
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Returns an iterator over the elements in this deque in proper sequence.
+     *
+     * @return an iterator over the elements in this deque in proper sequence
+     */
     @Override
     public Iterator<E> iterator() {
         return new AbstractLinkedIterator(first) {
@@ -379,6 +596,13 @@ public class LinkedDeque<E extends Linked<E>> extends AbstractCollection<E> impl
         };
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Returns an iterator over the elements in this deque in reverse sequential order.
+     *
+     * @return an iterator over the elements in this deque in reverse order
+     */
     @Override
     public Iterator<E> descendingIterator() {
         return new AbstractLinkedIterator(last) {
@@ -390,6 +614,16 @@ public class LinkedDeque<E extends Linked<E>> extends AbstractCollection<E> impl
         };
     }
 
+    /**
+     * Abstract iterator for traversing the linked deque elements.
+     * <p>
+     * This class provides the basic iteration functionality for the LinkedDeque, allowing traversal in either forward
+     * or reverse direction depending on the implementation of the {@link #computeNext()} method.
+     * </p>
+     *
+     * @author Kimi Liu
+     * @since Java 17+
+     */
     abstract class AbstractLinkedIterator implements Iterator<E> {
 
         E cursor;
@@ -403,11 +637,26 @@ public class LinkedDeque<E extends Linked<E>> extends AbstractCollection<E> impl
             cursor = start;
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Returns {@code true} if the iteration has more elements.
+         *
+         * @return {@code true} if the iteration has more elements
+         */
         @Override
         public boolean hasNext() {
             return (cursor != null);
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Returns the next element in the iteration.
+         *
+         * @return the next element
+         * @throws NoSuchElementException if the iteration has no more elements
+         */
         @Override
         public E next() {
             if (!hasNext()) {
@@ -418,6 +667,13 @@ public class LinkedDeque<E extends Linked<E>> extends AbstractCollection<E> impl
             return e;
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * This operation is not supported.
+         *
+         * @throws UnsupportedOperationException always
+         */
         @Override
         public void remove() {
             throw new UnsupportedOperationException();

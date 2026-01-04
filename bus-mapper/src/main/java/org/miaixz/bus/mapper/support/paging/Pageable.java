@@ -253,41 +253,82 @@ public interface Pageable extends Serializable {
             return new PageRequest(1, UNPAGED_SIZE, Sort.unsorted());
         }
 
+        /**
+         * {@inheritDoc}
+         *
+         * @return the page number
+         */
         @Override
         public int getPageNo() {
             return pageNo;
         }
 
+        /**
+         * {@inheritDoc}
+         *
+         * @return the page size
+         */
         @Override
         public int getPageSize() {
             return pageSize;
         }
 
+        /**
+         * {@inheritDoc}
+         *
+         * @return the sorting information
+         */
         @Override
         public Sort getSort() {
             return sort;
         }
 
+        /**
+         * {@inheritDoc}
+         *
+         * @return true if unpaged, false otherwise
+         */
         @Override
         public boolean isUnpaged() {
             return pageSize == UNPAGED_SIZE;
         }
 
+        /**
+         * {@inheritDoc}
+         *
+         * @return a pageable for the previous page
+         */
         @Override
         public PageRequest previous() {
             return hasPrevious() ? withPage(getPageNo() - 1) : this;
         }
 
+        /**
+         * {@inheritDoc}
+         *
+         * @return a pageable for the next page
+         */
         @Override
         public PageRequest next() {
             return withPage(getPageNo() + 1);
         }
 
+        /**
+         * {@inheritDoc}
+         *
+         * @return a pageable for the first page
+         */
         @Override
         public PageRequest first() {
             return withPage(1);
         }
 
+        /**
+         * {@inheritDoc}
+         *
+         * @param pageNo the new page number
+         * @return a pageable with the new page number
+         */
         @Override
         public PageRequest withPage(int pageNo) {
             return new PageRequest(pageNo, getPageSize(), getSort());
@@ -313,6 +354,12 @@ public interface Pageable extends Serializable {
             return new PageRequest(getPageNo(), getPageSize(), sort);
         }
 
+        /**
+         * {@inheritDoc}
+         *
+         * @param obj the object to compare
+         * @return true if equal, false otherwise
+         */
         @Override
         public boolean equals(Object obj) {
             if (this == obj)
@@ -329,6 +376,11 @@ public interface Pageable extends Serializable {
             return sort.equals(that.sort);
         }
 
+        /**
+         * {@inheritDoc}
+         *
+         * @return the hash code
+         */
         @Override
         public int hashCode() {
             int result = pageNo;
@@ -337,6 +389,11 @@ public interface Pageable extends Serializable {
             return result;
         }
 
+        /**
+         * {@inheritDoc}
+         *
+         * @return the string representation
+         */
         @Override
         public String toString() {
             return String.format("Page request [number: %d, size %d, sort: %s]", pageNo, pageSize, sort);

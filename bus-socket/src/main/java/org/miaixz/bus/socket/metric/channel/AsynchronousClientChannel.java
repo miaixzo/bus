@@ -62,6 +62,17 @@ final class AsynchronousClientChannel extends AsynchronousServerChannel {
         this.group = group;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param <A>        the type of the attachment
+     * @param remote     the remote address to connect to
+     * @param attachment the object to attach to the I/O operation
+     * @param handler    the completion handler
+     * @throws ShutdownChannelGroupException if the channel group has been shut down
+     * @throws AlreadyConnectedException     if this channel is already connected
+     * @throws ConnectionPendingException    if a connection operation is already in progress
+     */
     @Override
     public <A> void connect(SocketAddress remote, A attachment, CompletionHandler<Void, ? super A> handler) {
         if (group.isTerminated()) {
@@ -76,6 +87,12 @@ final class AsynchronousClientChannel extends AsynchronousServerChannel {
         doConnect(remote, attachment, handler);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param remote the remote address to connect to
+     * @return a {@link Future} representing the pending result
+     */
     @Override
     public Future<Void> connect(SocketAddress remote) {
         FutureCompletionHandler<Void, Void> connectFuture = new FutureCompletionHandler<>();

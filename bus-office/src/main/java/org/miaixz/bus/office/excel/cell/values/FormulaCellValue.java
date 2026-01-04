@@ -98,11 +98,21 @@ public class FormulaCellValue implements CellValue<String>, CellSetter {
         return this.resultType;
     }
 
+    /**
+     * Gets the formula string from this cell value.
+     *
+     * @return The formula string.
+     */
     @Override
     public String getValue() {
         return this.formula;
     }
 
+    /**
+     * Sets the formula to the specified cell.
+     *
+     * @param cell The {@link Cell} to set the formula to.
+     */
     @Override
     public void setValue(final Cell cell) {
         cell.setCellFormula(this.formula);
@@ -117,6 +127,11 @@ public class FormulaCellValue implements CellValue<String>, CellSetter {
         return this.result;
     }
 
+    /**
+     * Returns the string representation of the formula result.
+     *
+     * @return The string representation of the result.
+     */
     @Override
     public String toString() {
         return getResult().toString();

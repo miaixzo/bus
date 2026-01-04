@@ -42,9 +42,6 @@ import org.miaixz.bus.core.xyz.ByteKit;
  */
 public class CharSequenceResource extends BytesResource {
 
-    /**
-     * The serial version UID for serialization.
-     */
     @Serial
     private static final long serialVersionUID = 2852230576091L;
 

@@ -112,6 +112,15 @@ public class ColorLoggingProvider extends NormalLoggingProvider {
         ColorLoggingProvider.colorFactory = colorFactory;
     }
 
+    /**
+     * Logs a message at the specified level with ANSI color formatting.
+     *
+     * @param fqcn   the fully qualified class name of the caller
+     * @param level  the logging level
+     * @param t      the throwable to log
+     * @param format the message format string
+     * @param args   the arguments to format into the message string
+     */
     @Override
     public synchronized void log(
             final String fqcn,
@@ -147,6 +156,11 @@ public class ColorLoggingProvider extends NormalLoggingProvider {
         }
     }
 
+    /**
+     * Gets the current logging level.
+     *
+     * @return the current logging level, or {@link Level#OFF} if it cannot be determined
+     */
     @Override
     public Level getLevel() {
         if (isTraceEnabled()) {

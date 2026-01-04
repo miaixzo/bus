@@ -71,6 +71,12 @@ public class OIDCProvider extends AbstractProvider {
         super(context, Registry.OIDC, cache);
     }
 
+    /**
+     * {@inheritDoc} Builds the authorization URL for OIDC authentication.
+     *
+     * @param state the state parameter for CSRF protection
+     * @return a message containing the authorization URL
+     */
     @Override
     public Message build(String state) {
         return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
@@ -83,6 +89,12 @@ public class OIDCProvider extends AbstractProvider {
                 .build();
     }
 
+    /**
+     * {@inheritDoc} Exchanges the authorization code for an access token.
+     *
+     * @param callback the callback containing the authorization code
+     * @return a message containing the access token and related information
+     */
     @Override
     public Message token(Callback callback) {
         String tokenUrl = getEndpoint(Endpoint.TOKEN);
@@ -99,6 +111,12 @@ public class OIDCProvider extends AbstractProvider {
                 .build();
     }
 
+    /**
+     * {@inheritDoc} Retrieves user information using the access token.
+     *
+     * @param authorization the authorization containing the access token
+     * @return a message containing user claims and information
+     */
     @Override
     public Message userInfo(Authorization authorization) {
         String userInfoUrl = getEndpoint(Endpoint.USERINFO);

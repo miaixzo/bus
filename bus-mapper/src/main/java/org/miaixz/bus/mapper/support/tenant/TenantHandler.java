@@ -143,22 +143,44 @@ public class TenantHandler<T> extends ConditionHandler<T, TenantConfig> {
         return this.config != null;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return the scope key for tenant configuration
+     */
     @Override
     protected String scope() {
         return Args.TENANT_KEY;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return the default tenant configuration
+     */
     @Override
     protected TenantConfig defaults() {
         return config;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return the captured tenant configuration from context
+     */
     @Override
     protected TenantConfig capture() {
         Context.MapperConfig contextConfig = Context.getMapperConfig();
         return contextConfig != null ? contextConfig.getTenant() : null;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param datasourceKey the datasource key
+     * @param properties    the properties
+     * @return the derived tenant configuration
+     */
     @Override
     protected TenantConfig derived(String datasourceKey, Properties properties) {
         // Try to get provider from properties
@@ -215,11 +237,27 @@ public class TenantHandler<T> extends ConditionHandler<T, TenantConfig> {
         return TenantConfig.builder().column(column).ignore(ignoreTables).provider(finalProvider).build();
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return the order value for this handler
+     */
     @Override
     public int getOrder() {
         return MIN_VALUE + 2;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param executor      the executor
+     * @param ms            the mapped statement
+     * @param parameter     the parameter
+     * @param rowBounds     the row bounds
+     * @param resultHandler the result handler
+     * @param boundSql      the bound SQL
+     * @return true if query should proceed, false otherwise
+     */
     @Override
     public boolean isQuery(
             Executor executor,
@@ -251,6 +289,17 @@ public class TenantHandler<T> extends ConditionHandler<T, TenantConfig> {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param result        the query result
+     * @param executor      the executor
+     * @param ms            the mapped statement
+     * @param parameter     the parameter
+     * @param rowBounds     the row bounds
+     * @param resultHandler the result handler
+     * @param boundSql      the bound SQL
+     */
     @Override
     public void query(
             Object result,
@@ -264,6 +313,13 @@ public class TenantHandler<T> extends ConditionHandler<T, TenantConfig> {
         handleSqlInMappedStatement(ms, parameter, boundSql);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param executor  the executor
+     * @param ms        the mapped statement
+     * @param parameter the parameter
+     */
     @Override
     public void update(Executor executor, MappedStatement ms, Object parameter) {
         Logger.debug(false, getHandler(), "Processing insert/update: method={}", ms.getId());

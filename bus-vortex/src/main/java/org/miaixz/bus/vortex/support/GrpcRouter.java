@@ -45,8 +45,7 @@ import reactor.core.publisher.Mono;
  * The executor handles all protocol-specific logic including:
  * <ul>
  * <li>Invoking the gRPC method via HTTP gateway</li>
- * <li>Selecting execution strategy (streaming vs buffering) based on
- * {@link org.miaixz.bus.vortex.Assets#getStream()}</li>
+ * <li>Selecting execution strategy (streaming vs buffering)</li>
  * <li>Building the appropriate {@link ServerResponse}</li>
  * </ul>
  * <p>

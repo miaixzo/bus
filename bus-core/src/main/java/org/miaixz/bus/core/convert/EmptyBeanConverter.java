@@ -35,7 +35,7 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.ReflectKit;
 
 /**
- * 空值或空对象转换器，转换结果为目标类型对象的实例化对象
+ * Converter for null or empty objects, converting to an instance of the target type
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -52,18 +52,36 @@ public class EmptyBeanConverter extends AbstractConverter implements MatcherConv
     private static final long serialVersionUID = 2852268257237L;
 
     /**
-     * 单例
+     * Singleton instance
      */
     public static final EmptyBeanConverter INSTANCE = new EmptyBeanConverter();
 
+    /**
+     * Checks if this converter can handle the conversion to the specified target type.
+     *
+     * @param targetType the target type
+     * @param rawType    the raw class of the target type
+     * @param value      the value to be converted
+     * @return {@code true} if the value is null or empty
+     */
     @Override
     public boolean match(final Type targetType, final Class<?> rawType, final Object value) {
         return ObjectKit.isEmpty(value);
     }
 
+    /**
+     * Converts the given value (which must be null or empty) to an instance of the target class.
+     * <p>
+     * Creates a new instance of the target class using reflection.
+     * </p>
+     *
+     * @param targetClass the target class to instantiate
+     * @param value       the value (should be null or empty)
+     * @return a new instance of the target class
+     */
     @Override
     protected Object convertInternal(final Class<?> targetClass, final Object value) {
-        // 空值转空对象，则直接实例化
+        // For null values, instantiate the target class directly
         return ReflectKit.newInstanceIfPossible(targetClass);
     }
 

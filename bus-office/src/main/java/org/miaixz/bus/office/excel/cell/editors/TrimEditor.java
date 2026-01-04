@@ -38,6 +38,13 @@ import org.miaixz.bus.core.xyz.StringKit;
  */
 public class TrimEditor implements CellEditor {
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param cell  the cell being edited
+     * @param value the value to edit
+     * @return the trimmed string value if value is a String, otherwise returns the original value
+     */
     @Override
     public Object edit(final Cell cell, final Object value) {
         if (value instanceof String) {

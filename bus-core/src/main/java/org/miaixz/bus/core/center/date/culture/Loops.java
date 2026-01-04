@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.core.center.date.culture;
 
+import org.miaixz.bus.core.center.date.Culture;
+
 /**
  * Abstract class representing the concept of cycles or loops in cultural contexts. This serves as a base for various
  * cyclical systems found in different cultures.

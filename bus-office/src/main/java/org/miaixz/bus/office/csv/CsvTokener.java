@@ -106,6 +106,11 @@ public class CsvTokener extends SimpleWrapper<Reader> implements Closeable {
         return this.index;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @throws IOException if an I/O error occurs
+     */
     @Override
     public void close() throws IOException {
         IoKit.nullSafeClose(this.raw);

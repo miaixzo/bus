@@ -38,6 +38,13 @@ import org.apache.poi.ss.usermodel.Cell;
  */
 public class NumericToIntEditor implements CellEditor {
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param cell  the cell being edited
+     * @param value the value to edit
+     * @return the integer value if value is a Number, otherwise returns the original value
+     */
     @Override
     public Object edit(final Cell cell, final Object value) {
         if (value instanceof Number) {

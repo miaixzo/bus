@@ -60,6 +60,13 @@ public class JWTPayload extends Claims implements JWTRegister<JWTPayload> {
         return this;
     }
 
+    /**
+     * {@inheritDoc} Sets a specific payload claim with the given name and value.
+     *
+     * @param name  the name of the claim
+     * @param value the value of the claim
+     * @return this {@link JWTPayload} instance
+     */
     @Override
     public JWTPayload setPayload(final String name, final Object value) {
         setClaim(name, value);

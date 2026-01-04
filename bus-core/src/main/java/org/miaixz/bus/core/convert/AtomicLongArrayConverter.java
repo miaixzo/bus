@@ -44,9 +44,6 @@ public class AtomicLongArrayConverter extends AbstractConverter {
     public AtomicLongArrayConverter() {
     }
 
-    /**
-     * The serial version UID.
-     */
     @Serial
     private static final long serialVersionUID = 2852265081792L;
 

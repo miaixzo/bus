@@ -37,6 +37,9 @@ import java.util.Objects;
  */
 public class Expense {
 
+    /**
+     * The wrapped process.
+     */
     private final Process process;
 
     /**

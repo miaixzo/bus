@@ -91,6 +91,13 @@ public class OffsetMatcher implements BiPredicate<CharSequence, CharSequence>, S
         this.offset = offset;
     }
 
+    /**
+     * Tests if the specified substring matches in the given text at the configured offset.
+     *
+     * @param text  The text to search in.
+     * @param check The substring to check for.
+     * @return {@code true} if the substring matches at the configured position, {@code false} otherwise.
+     */
     @Override
     public boolean test(final CharSequence text, final CharSequence check) {
         if (null == text || null == check) {

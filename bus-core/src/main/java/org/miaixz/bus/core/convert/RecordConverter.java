@@ -39,8 +39,8 @@ import org.miaixz.bus.core.xyz.BeanKit;
 import org.miaixz.bus.core.xyz.RecordKit;
 
 /**
- * Record类的转换器，支持：
- * 
+ * Converter for Record classes, supporting:
+ *
  * <pre>
  *   Map = Record
  *   Bean = Record
@@ -56,15 +56,34 @@ public class RecordConverter extends AbstractConverter implements MatcherConvert
     private static final long serialVersionUID = 2852271152563L;
 
     /**
-     * 单例对象
+     * Singleton instance
      */
     public static RecordConverter INSTANCE = new RecordConverter();
 
+    /**
+     * Checks if this converter can handle the conversion to the specified target type.
+     *
+     * @param targetType the target type
+     * @param rawType    the raw class of the target type
+     * @param value      the value to be converted
+     * @return {@code true} if the target type is a Record class
+     */
     @Override
     public boolean match(final Type targetType, final Class<?> rawType, final Object value) {
         return RecordKit.isRecord(rawType);
     }
 
+    /**
+     * Converts the given value to a Record instance.
+     * <p>
+     * Supports conversion from Map, Bean, and ValueProvider.
+     * </p>
+     *
+     * @param targetClass the target Record class
+     * @param value       the value to convert (Map, Bean, or ValueProvider)
+     * @return the created Record instance
+     * @throws ConvertException if the source type is not supported
+     */
     @Override
     protected Object convertInternal(final Class<?> targetClass, final Object value) {
         ValueProvider<String> valueProvider = null;

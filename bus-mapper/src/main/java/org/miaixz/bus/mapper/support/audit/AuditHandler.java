@@ -142,22 +142,44 @@ public class AuditHandler<T> extends ConditionHandler<T, AuditConfig> {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return the scope key for audit configuration
+     */
     @Override
     protected String scope() {
         return Args.AUDIT_KEY;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return the default audit configuration
+     */
     @Override
     protected AuditConfig defaults() {
         return config;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return the captured audit configuration from context
+     */
     @Override
     protected AuditConfig capture() {
         Context.MapperConfig contextConfig = Context.getMapperConfig();
         return contextConfig != null ? contextConfig.getAudit() : null;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param datasourceKey the datasource key
+     * @param properties    the properties
+     * @return the derived audit configuration
+     */
     @Override
     protected AuditConfig derived(String datasourceKey, Properties properties) {
         // Try to get provider from properties
@@ -208,11 +230,24 @@ public class AuditHandler<T> extends ConditionHandler<T, AuditConfig> {
                 .logResults(logResults).logAllSql(logAllSql).printConsole(printConsole).build();
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return the order value for this handler
+     */
     @Override
     public int getOrder() {
         return MIN_VALUE + 7;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param executor        the executor
+     * @param mappedStatement the mapped statement
+     * @param parameter       the parameter
+     * @return true if update should proceed, false otherwise
+     */
     @Override
     public boolean isUpdate(Executor executor, MappedStatement mappedStatement, Object parameter) {
         // Get current configuration
@@ -235,6 +270,17 @@ public class AuditHandler<T> extends ConditionHandler<T, AuditConfig> {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param executor        the executor
+     * @param mappedStatement the mapped statement
+     * @param parameter       the parameter
+     * @param rowBounds       the row bounds
+     * @param resultHandler   the result handler
+     * @param boundSql        the bound SQL
+     * @return true if query should proceed, false otherwise
+     */
     @Override
     public boolean isQuery(
             Executor executor,
@@ -263,6 +309,17 @@ public class AuditHandler<T> extends ConditionHandler<T, AuditConfig> {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param result          the query result
+     * @param executor        the executor
+     * @param mappedStatement the mapped statement
+     * @param parameter       the parameter
+     * @param rowBounds       the row bounds
+     * @param resultHandler   the result handler
+     * @param boundSql        the bound SQL
+     */
     @Override
     public void query(
             Object result,

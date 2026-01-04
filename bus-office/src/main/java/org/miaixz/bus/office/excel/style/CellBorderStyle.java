@@ -47,13 +47,37 @@ public class CellBorderStyle implements Serializable {
     @Serial
     private static final long serialVersionUID = 2852286028705L;
 
+    /**
+     * The top border style.
+     */
     private BorderStyle topStyle;
+    /**
+     * The top border color.
+     */
     private Short topColor;
+    /**
+     * The right border style.
+     */
     private BorderStyle rightStyle;
+    /**
+     * The right border color.
+     */
     private Short rightColor;
+    /**
+     * The bottom border style.
+     */
     private BorderStyle bottomStyle;
+    /**
+     * The bottom border color.
+     */
     private Short bottomColor;
+    /**
+     * The left border style.
+     */
     private BorderStyle leftStyle;
+    /**
+     * The left border color.
+     */
     private Short leftColor;
 
     /**

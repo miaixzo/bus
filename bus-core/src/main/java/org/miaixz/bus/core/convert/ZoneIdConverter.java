@@ -35,7 +35,7 @@ import java.util.TimeZone;
 import org.miaixz.bus.core.xyz.ZoneKit;
 
 /**
- * {@link ZoneId}转换器
+ * Converter for {@link ZoneId} objects
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -46,7 +46,7 @@ public class ZoneIdConverter extends AbstractConverter implements MatcherConvert
     private static final long serialVersionUID = 2852273106332L;
 
     /**
-     * 单例
+     * Singleton instance
      */
     public static final ZoneIdConverter INSTANCE = new ZoneIdConverter();
 

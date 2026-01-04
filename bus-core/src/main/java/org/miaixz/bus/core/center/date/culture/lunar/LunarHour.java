@@ -29,20 +29,20 @@ package org.miaixz.bus.core.center.date.culture.lunar;
 
 import java.util.List;
 
-import org.miaixz.bus.core.center.date.culture.Loops;
-import org.miaixz.bus.core.center.date.culture.cn.Taboo;
-import org.miaixz.bus.core.center.date.culture.cn.eightchar.EightChar;
-import org.miaixz.bus.core.center.date.culture.cn.eightchar.provider.EightCharProvider;
-import org.miaixz.bus.core.center.date.culture.cn.eightchar.provider.impl.DefaultEightCharProvider;
-import org.miaixz.bus.core.center.date.culture.cn.ren.MinorRen;
-import org.miaixz.bus.core.center.date.culture.cn.sixty.EarthBranch;
-import org.miaixz.bus.core.center.date.culture.cn.sixty.HeavenStem;
-import org.miaixz.bus.core.center.date.culture.cn.sixty.SixtyCycle;
-import org.miaixz.bus.core.center.date.culture.cn.sixty.SixtyCycleHour;
-import org.miaixz.bus.core.center.date.culture.cn.star.nine.NineStar;
-import org.miaixz.bus.core.center.date.culture.cn.star.twelve.TwelveStar;
-import org.miaixz.bus.core.center.date.culture.solar.SolarDay;
+import org.miaixz.bus.core.center.date.culture.Taboo;
+import org.miaixz.bus.core.center.date.culture.eightchar.EightChar;
+import org.miaixz.bus.core.center.date.culture.eightchar.provider.EightCharProvider;
+import org.miaixz.bus.core.center.date.culture.eightchar.provider.impl.DefaultEightCharProvider;
+import org.miaixz.bus.core.center.date.culture.parts.SecondParts;
+import org.miaixz.bus.core.center.date.culture.ren.MinorRen;
+import org.miaixz.bus.core.center.date.culture.sixty.EarthBranch;
+import org.miaixz.bus.core.center.date.culture.sixty.HeavenStem;
+import org.miaixz.bus.core.center.date.culture.sixty.SixtyCycle;
+import org.miaixz.bus.core.center.date.culture.sixty.SixtyCycleHour;
 import org.miaixz.bus.core.center.date.culture.solar.SolarTerms;
+import org.miaixz.bus.core.center.date.culture.star.nine.NineStar;
+import org.miaixz.bus.core.center.date.culture.star.twelve.TwelveStar;
+import org.miaixz.bus.core.center.date.culture.solar.SolarDay;
 import org.miaixz.bus.core.center.date.culture.solar.SolarTime;
 
 /**
@@ -51,147 +51,75 @@ import org.miaixz.bus.core.center.date.culture.solar.SolarTime;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class LunarHour extends Loops {
+public class LunarHour extends SecondParts {
 
     /**
-     * The provider for Eight Characters (Bazi) calculations.
+     * Provider for Eight Character (Ba Zi) calculations.
      */
     public static EightCharProvider provider = new DefaultEightCharProvider();
-    /**
-     * The lunar day this hour belongs to.
-     */
-    protected LunarDay day;
-    /**
-     * The hour (0-23).
-     */
-    protected int hour;
-    /**
-     * The minute (0-59).
-     */
-    protected int minute;
-    /**
-     * The second (0-59).
-     */
-    protected int second;
 
     /**
-     * The corresponding Gregorian (Solar) time, lazily initialized.
-     */
-    protected SolarTime solarTime;
-
-    /**
-     * The corresponding Sixty Cycle (Ganzhi) hour, lazily initialized.
-     */
-    protected SixtyCycleHour sixtyCycleHour;
-
-    /**
-     * Constructs a {@code LunarHour} from its components.
+     * Validates lunar year, month, day, hour, minute, and second.
      *
-     * @param year   The lunar year.
-     * @param month  The lunar month (a negative value indicates a leap month).
-     * @param day    The lunar day.
-     * @param hour   The hour (0-23).
-     * @param minute The minute (0-59).
-     * @param second The second (0-59).
+     * @param year   the lunar year
+     * @param month  the lunar month
+     * @param day    the lunar day
+     * @param hour   the hour (0-23)
+     * @param minute the minute (0-59)
+     * @param second the second (0-59)
+     */
+    public static void validate(int year, int month, int day, int hour, int minute, int second) {
+        SecondParts.validate(hour, minute, second);
+        LunarDay.validate(year, month, day);
+    }
+
+    /**
+     * Constructs a LunarHour instance.
+     *
+     * @param year   the lunar year
+     * @param month  the lunar month (negative value indicates a leap month)
+     * @param day    the lunar day
+     * @param hour   the hour (0-23)
+     * @param minute the minute (0-59)
+     * @param second the second (0-59)
      */
     public LunarHour(int year, int month, int day, int hour, int minute, int second) {
-        if (hour < 0 || hour > 23) {
-            throw new IllegalArgumentException(String.format("illegal hour: %d", hour));
-        }
-        if (minute < 0 || minute > 59) {
-            throw new IllegalArgumentException(String.format("illegal minute: %d", minute));
-        }
-        if (second < 0 || second > 59) {
-            throw new IllegalArgumentException(String.format("illegal second: %d", second));
-        }
-        this.day = LunarDay.fromYmd(year, month, day);
+        this.year = year;
+        this.month = month;
+        this.day = day;
         this.hour = hour;
         this.minute = minute;
         this.second = second;
     }
 
     /**
-     * Creates a {@code LunarHour} from its components.
+     * Creates a LunarHour from year, month, day, hour, minute, and second components.
      *
-     * @param year   The lunar year.
-     * @param month  The lunar month (a negative value indicates a leap month).
-     * @param day    The lunar day.
-     * @param hour   The hour (0-23).
-     * @param minute The minute (0-59).
-     * @param second The second (0-59).
-     * @return a new {@code LunarHour} instance.
+     * @param year   the lunar year
+     * @param month  the lunar month (negative value indicates a leap month)
+     * @param day    the lunar day
+     * @param hour   the hour (0-23)
+     * @param minute the minute (0-59)
+     * @param second the second (0-59)
+     * @return a new LunarHour instance
      */
     public static LunarHour fromYmdHms(int year, int month, int day, int hour, int minute, int second) {
         return new LunarHour(year, month, day, hour, minute, second);
     }
 
     /**
-     * Gets the lunar day object.
+     * Gets the lunar day for this hour.
      *
-     * @return The {@link LunarDay}.
+     * @return the lunar day
      */
     public LunarDay getLunarDay() {
-        return day;
+        return LunarDay.fromYmd(year, month, day);
     }
 
     /**
-     * Gets the year.
+     * Gets the Chinese name of this two-hour period (shichen).
      *
-     * @return The lunar year.
-     */
-    public int getYear() {
-        return day.getYear();
-    }
-
-    /**
-     * Gets the month.
-     *
-     * @return The lunar month.
-     */
-    public int getMonth() {
-        return day.getMonth();
-    }
-
-    /**
-     * Gets the day.
-     *
-     * @return The lunar day.
-     */
-    public int getDay() {
-        return day.getDay();
-    }
-
-    /**
-     * Gets the hour.
-     *
-     * @return The hour (0-23).
-     */
-    public int getHour() {
-        return hour;
-    }
-
-    /**
-     * Gets the minute.
-     *
-     * @return The minute (0-59).
-     */
-    public int getMinute() {
-        return minute;
-    }
-
-    /**
-     * Gets the second.
-     *
-     * @return The second (0-59).
-     */
-    public int getSecond() {
-        return second;
-    }
-
-    /**
-     * Gets the name of the two-hour block (e.g., "子时").
-     *
-     * @return The name of the hour.
+     * @return the name (e.g., "子时", "丑时")
      */
     public String getName() {
         return EarthBranch.fromIndex(getIndexInDay()).getName() + "时";
@@ -199,47 +127,51 @@ public class LunarHour extends Loops {
 
     @Override
     public String toString() {
-        return day + getSixtyCycle().getName() + "时";
+        return getLunarDay() + getSixtyCycle().getName() + "时";
     }
 
     /**
-     * Gets the index of this hour within the day (0-11 for the 12 two-hour blocks). For example, 23:00-00:59 is index 0
-     * (子时).
+     * Gets the index of this hour within the day (0-11).
      *
-     * @return The index of the hour block.
+     * @return the index (0 for Zi hour, 1 for Chou hour, etc.)
      */
     public int getIndexInDay() {
         return (hour + 1) / 2;
     }
 
-    @Override
+    /**
+     * Gets the lunar hour that is n two-hour periods after this hour.
+     *
+     * @param n the number of two-hour periods to advance (can be negative)
+     * @return the lunar hour after n periods
+     */
     public LunarHour next(int n) {
         if (n == 0) {
-            return fromYmdHms(getYear(), getMonth(), getDay(), hour, minute, second);
+            return fromYmdHms(year, month, day, hour, minute, second);
         }
-        // Each step is 2 hours.
         int h = hour + n * 2;
         int diff = h < 0 ? -1 : 1;
-        int totalHours = Math.abs(h);
-        int days = (totalHours / 24) * diff;
-        int remainingHours = (totalHours % 24) * diff;
-        if (remainingHours < 0) {
-            remainingHours += 24;
+        int hour = Math.abs(h);
+        int days = hour / 24 * diff;
+        hour = (hour % 24) * diff;
+        if (hour < 0) {
+            hour += 24;
             days--;
         }
-        LunarDay d = day.next(days);
-        return fromYmdHms(d.getYear(), d.getMonth(), d.getDay(), remainingHours, minute, second);
+        LunarDay d = getLunarDay().next(days);
+        return fromYmdHms(d.getYear(), d.getMonth(), d.getDay(), hour, minute, second);
     }
 
     /**
-     * Checks if this lunar hour is before another.
+     * Checks if this lunar hour is before the target lunar hour.
      *
-     * @param target The other lunar hour.
-     * @return {@code true} if this hour is before the target.
+     * @param target the lunar hour to compare with
+     * @return true if this hour is before the target, false otherwise
      */
     public boolean isBefore(LunarHour target) {
-        if (!day.equals(target.getLunarDay())) {
-            return day.isBefore(target.getLunarDay());
+        LunarDay d = getLunarDay();
+        if (!d.equals(target.getLunarDay())) {
+            return d.isBefore(target.getLunarDay());
         }
         if (hour != target.getHour()) {
             return hour < target.getHour();
@@ -248,14 +180,15 @@ public class LunarHour extends Loops {
     }
 
     /**
-     * Checks if this lunar hour is after another.
+     * Checks if this lunar hour is after the target lunar hour.
      *
-     * @param target The other lunar hour.
-     * @return {@code true} if this hour is after the target.
+     * @param target the lunar hour to compare with
+     * @return true if this hour is after the target, false otherwise
      */
     public boolean isAfter(LunarHour target) {
-        if (!day.equals(target.getLunarDay())) {
-            return day.isAfter(target.getLunarDay());
+        LunarDay d = getLunarDay();
+        if (!d.equals(target.getLunarDay())) {
+            return d.isAfter(target.getLunarDay());
         }
         if (hour != target.getHour()) {
             return hour > target.getHour();
@@ -264,14 +197,49 @@ public class LunarHour extends Loops {
     }
 
     /**
-     * Gets the Sixty Cycle (Ganzhi) of this hour.
+     * Gets the year's Sixty Cycle (Gan-Zhi) for this hour (changes on Lichun).
      *
-     * @return The {@link SixtyCycle}.
+     * @return the Sixty Cycle
+     * @see SixtyCycleHour#getYear()
+     * @deprecated Use {@link SixtyCycleHour#getYear()} instead
+     */
+    @Deprecated
+    public SixtyCycle getYearSixtyCycle() {
+        return getSixtyCycleHour().getYear();
+    }
+
+    /**
+     * Gets the month's Sixty Cycle (Gan-Zhi) for this hour (changes on solar terms).
+     *
+     * @return the Sixty Cycle
+     * @see SixtyCycleHour#getMonth()
+     * @deprecated Use {@link SixtyCycleHour#getMonth()} instead
+     */
+    @Deprecated
+    public SixtyCycle getMonthSixtyCycle() {
+        return getSixtyCycleHour().getMonth();
+    }
+
+    /**
+     * Gets the day's Sixty Cycle (Gan-Zhi) for this hour (23:00 counts as the next day).
+     *
+     * @return the Sixty Cycle
+     * @see SixtyCycleHour#getDay()
+     * @deprecated Use {@link SixtyCycleHour#getDay()} instead
+     */
+    @Deprecated
+    public SixtyCycle getDaySixtyCycle() {
+        return getSixtyCycleHour().getDay();
+    }
+
+    /**
+     * Gets the Sixty Cycle (Gan-Zhi) for this hour.
+     *
+     * @return the Sixty Cycle
      */
     public SixtyCycle getSixtyCycle() {
         int earthBranchIndex = getIndexInDay() % 12;
-        SixtyCycle d = day.getSixtyCycle();
-        // The day's stem changes for the first hour block (23:00-00:59).
+        SixtyCycle d = getLunarDay().getSixtyCycle();
         if (hour >= 23) {
             d = d.next(1);
         }
@@ -281,9 +249,9 @@ public class LunarHour extends Loops {
     }
 
     /**
-     * Gets the Twelve Star (Huang Dao Hei Dao) for this hour.
+     * Gets the twelve stars (Huangdao-Heidao twelve gods) for this hour.
      *
-     * @return The {@link TwelveStar}.
+     * @return the twelve star spirit
      */
     public TwelveStar getTwelveStar() {
         return TwelveStar.fromIndex(
@@ -292,82 +260,84 @@ public class LunarHour extends Loops {
     }
 
     /**
-     * Gets the Nine Star (Jiu Xing) for this hour.
+     * Gets the nine stars for this hour.
+     * <p>
+     * Based on the Time Family Purple-White Star Song: "The three yuan time white is most excellent, yang grows from
+     * winter solstice and moves forward without error. Meng day seventh palace, zhong day one white, ji day four green
+     * sprouts. Starting from Jiazi for each time period, the star of this time shines with glory. When the time star
+     * moves into the central palace, flying forward in eight directions for careful inspection. From summer solstice
+     * yin grows and reverses direction, meng returns to three green, ji adds six, zhong at nine palace starting from
+     * Jia, still crossing the reverse wheel in the palm."
      *
-     * @return The {@link NineStar}.
+     * @return the nine star
      */
     public NineStar getNineStar() {
-        SolarDay solar = day.getSolarDay();
+        LunarDay d = getLunarDay();
+        SolarDay solar = d.getSolarDay();
         SolarTerms dongZhi = SolarTerms.fromIndex(solar.getYear(), 0);
-        boolean asc = !solar.isBefore(dongZhi.getJulianDay().getSolarDay())
-                && solar.isBefore(dongZhi.next(12).getJulianDay().getSolarDay());
-        int start = new int[] { 8, 5, 2 }[day.getSixtyCycle().getEarthBranch().getIndex() % 3];
-        if (asc) {
-            start = 8 - start;
-        }
         int earthBranchIndex = getIndexInDay() % 12;
-        return NineStar.fromIndex(start + (asc ? earthBranchIndex : -earthBranchIndex));
+        int index = new int[] { 8, 5, 2 }[d.getSixtyCycle().getEarthBranch().getIndex() % 3];
+        if (!solar.isBefore(dongZhi.getJulianDay().getSolarDay())
+                && solar.isBefore(dongZhi.next(12).getJulianDay().getSolarDay())) {
+            index = 8 + earthBranchIndex - index;
+        } else {
+            index -= earthBranchIndex;
+        }
+        return NineStar.fromIndex(index);
     }
 
     /**
-     * Gets the corresponding Gregorian (Solar) time.
+     * Gets the solar time corresponding to this lunar hour.
      *
-     * @return The {@link SolarTime}.
+     * @return the solar time
      */
     public SolarTime getSolarTime() {
-        if (null == solarTime) {
-            SolarDay d = day.getSolarDay();
-            solarTime = SolarTime.fromYmdHms(d.getYear(), d.getMonth(), d.getDay(), hour, minute, second);
-        }
-        return solarTime;
+        SolarDay d = getLunarDay().getSolarDay();
+        return SolarTime.fromYmdHms(d.getYear(), d.getMonth(), d.getDay(), hour, minute, second);
     }
 
     /**
-     * Gets the Eight Characters (Bazi) for this specific time.
+     * Gets the Eight Characters (Ba Zi) for this hour.
      *
-     * @return The {@link EightChar}.
+     * @return the eight characters
      */
     public EightChar getEightChar() {
         return provider.getEightChar(this);
     }
 
     /**
-     * Gets the corresponding Sixty Cycle (Ganzhi) hour object.
+     * Gets the Sixty Cycle hour for this lunar hour.
      *
-     * @return The {@link SixtyCycleHour}.
+     * @return the Sixty Cycle hour
      */
     public SixtyCycleHour getSixtyCycleHour() {
-        if (null == sixtyCycleHour) {
-            sixtyCycleHour = getSolarTime().getSixtyCycleHour();
-        }
-        return sixtyCycleHour;
+        return getSolarTime().getSixtyCycleHour();
     }
 
     /**
      * Gets the list of recommended activities for this hour.
      *
-     * @return A list of recommended {@link Taboo}s.
+     * @return the list of taboos representing recommended activities
      */
     public List<Taboo> getRecommends() {
         return Taboo.getHourRecommends(getSixtyCycleHour().getDay(), getSixtyCycle());
     }
 
     /**
-     * Gets the list of avoided activities for this hour.
+     * Gets the list of activities to avoid for this hour.
      *
-     * @return A list of avoided {@link Taboo}s.
+     * @return the list of taboos representing activities to avoid
      */
     public List<Taboo> getAvoids() {
         return Taboo.getHourAvoids(getSixtyCycleHour().getDay(), getSixtyCycle());
     }
 
     /**
-     * Gets the Minor Liu Ren for this hour.
+     * Gets the Minor Six Ren divination for this hour.
      *
-     * @return The {@link MinorRen}.
+     * @return the Minor Six Ren
      */
     public MinorRen getMinorRen() {
         return getLunarDay().getMinorRen().next(getIndexInDay());
     }
-
 }

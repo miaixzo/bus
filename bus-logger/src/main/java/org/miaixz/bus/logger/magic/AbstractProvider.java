@@ -56,6 +56,12 @@ public abstract class AbstractProvider implements Provider, Serializable {
      */
     protected String name;
 
+    /**
+     * Checks if logging is enabled for the specified level.
+     *
+     * @param level the logging level to check
+     * @return {@code true} if logging is enabled for the specified level
+     */
     @Override
     public boolean isEnabled(final Level level) {
         switch (level) {
@@ -79,26 +85,55 @@ public abstract class AbstractProvider implements Provider, Serializable {
         }
     }
 
+    /**
+     * Logs a message at TRACE level with a throwable.
+     *
+     * @param t the throwable to log
+     */
     @Override
     public void trace(final Throwable t) {
         trace(t, ExceptionKit.getSimpleMessage(t));
     }
 
+    /**
+     * Logs a formatted message at TRACE level.
+     *
+     * @param format the message format string
+     * @param args   the arguments to format into the message string
+     */
     @Override
     public void trace(final String format, final Object... args) {
         trace(null, format, args);
     }
 
+    /**
+     * Logs a formatted message at TRACE level with a throwable.
+     *
+     * @param t      the throwable to log
+     * @param format the message format string
+     * @param args   the arguments to format into the message string
+     */
     @Override
     public void trace(final Throwable t, final String format, final Object... args) {
         trace(FQCN, t, format, args);
     }
 
+    /**
+     * Logs a message at DEBUG level with a throwable.
+     *
+     * @param t the throwable to log
+     */
     @Override
     public void debug(final Throwable t) {
         debug(t, ExceptionKit.getSimpleMessage(t));
     }
 
+    /**
+     * Logs a formatted message at DEBUG level.
+     *
+     * @param format the message format string
+     * @param args   the arguments to format into the message string
+     */
     @Override
     public void debug(final String format, final Object... args) {
         if (null != args && 1 == args.length && args[0] instanceof Throwable) {
@@ -109,16 +144,34 @@ public abstract class AbstractProvider implements Provider, Serializable {
         }
     }
 
+    /**
+     * Logs a formatted message at DEBUG level with a throwable.
+     *
+     * @param t      the throwable to log
+     * @param format the message format string
+     * @param args   the arguments to format into the message string
+     */
     @Override
     public void debug(final Throwable t, final String format, final Object... args) {
         debug(FQCN, t, format, args);
     }
 
+    /**
+     * Logs a message at INFO level with a throwable.
+     *
+     * @param t the throwable to log
+     */
     @Override
     public void info(final Throwable t) {
         info(t, ExceptionKit.getSimpleMessage(t));
     }
 
+    /**
+     * Logs a formatted message at INFO level.
+     *
+     * @param format the message format string
+     * @param args   the arguments to format into the message string
+     */
     @Override
     public void info(final String format, final Object... args) {
         if (null != args && 1 == args.length && args[0] instanceof Throwable) {
@@ -129,16 +182,34 @@ public abstract class AbstractProvider implements Provider, Serializable {
         }
     }
 
+    /**
+     * Logs a formatted message at INFO level with a throwable.
+     *
+     * @param t      the throwable to log
+     * @param format the message format string
+     * @param args   the arguments to format into the message string
+     */
     @Override
     public void info(final Throwable t, final String format, final Object... args) {
         info(FQCN, t, format, args);
     }
 
+    /**
+     * Logs a message at WARN level with a throwable.
+     *
+     * @param t the throwable to log
+     */
     @Override
     public void warn(final Throwable t) {
         warn(t, ExceptionKit.getSimpleMessage(t));
     }
 
+    /**
+     * Logs a formatted message at WARN level.
+     *
+     * @param format the message format string
+     * @param args   the arguments to format into the message string
+     */
     @Override
     public void warn(final String format, final Object... args) {
         if (null != args && 1 == args.length && args[0] instanceof Throwable) {
@@ -149,16 +220,34 @@ public abstract class AbstractProvider implements Provider, Serializable {
         }
     }
 
+    /**
+     * Logs a formatted message at WARN level with a throwable.
+     *
+     * @param t      the throwable to log
+     * @param format the message format string
+     * @param args   the arguments to format into the message string
+     */
     @Override
     public void warn(final Throwable t, final String format, final Object... args) {
         warn(FQCN, t, format, args);
     }
 
+    /**
+     * Logs a message at ERROR level with a throwable.
+     *
+     * @param t the throwable to log
+     */
     @Override
     public void error(final Throwable t) {
         this.error(t, ExceptionKit.getSimpleMessage(t));
     }
 
+    /**
+     * Logs a formatted message at ERROR level.
+     *
+     * @param format the message format string
+     * @param args   the arguments to format into the message string
+     */
     @Override
     public void error(final String format, final Object... args) {
         if (null != args && 1 == args.length && args[0] instanceof Throwable) {
@@ -169,11 +258,25 @@ public abstract class AbstractProvider implements Provider, Serializable {
         }
     }
 
+    /**
+     * Logs a formatted message at ERROR level with a throwable.
+     *
+     * @param t      the throwable to log
+     * @param format the message format string
+     * @param args   the arguments to format into the message string
+     */
     @Override
     public void error(final Throwable t, final String format, final Object... args) {
         error(FQCN, t, format, args);
     }
 
+    /**
+     * Logs a formatted message at the specified level.
+     *
+     * @param level  the logging level
+     * @param format the message format string
+     * @param args   the arguments to format into the message string
+     */
     @Override
     public void log(final Level level, final String format, final Object... args) {
         if (null != args && 1 == args.length && args[0] instanceof Throwable) {
@@ -184,6 +287,14 @@ public abstract class AbstractProvider implements Provider, Serializable {
         }
     }
 
+    /**
+     * Logs a formatted message at the specified level with a throwable.
+     *
+     * @param level  the logging level
+     * @param t      the throwable to log
+     * @param format the message format string
+     * @param args   the arguments to format into the message string
+     */
     @Override
     public void log(final Level level, final Throwable t, final String format, final Object... args) {
         this.log(FQCN, level, t, format, args);

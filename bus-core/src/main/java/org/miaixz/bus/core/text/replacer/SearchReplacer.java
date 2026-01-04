@@ -42,9 +42,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  */
 public class SearchReplacer extends StringReplacer {
 
-    /**
-     * The serial version UID.
-     */
     @Serial
     private static final long serialVersionUID = 2852239556681L;
 

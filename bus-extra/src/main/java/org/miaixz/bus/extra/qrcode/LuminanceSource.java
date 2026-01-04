@@ -32,7 +32,10 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 
 /**
- * {@link BufferedImage} 图片二维码源 来自：http://blog.csdn.net/yangxin_blog/article/details/50850701 此类同样在zxing-j2se包中也有提供
+ * {@link BufferedImage} QR code luminance source.
+ * <p>
+ * Adapted from: http://blog.csdn.net/yangxin_blog/article/details/50850701 This class is also provided in the
+ * zxing-j2se package.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,22 +47,22 @@ public final class LuminanceSource extends com.google.zxing.LuminanceSource {
     private final int top;
 
     /**
-     * 构造
+     * Constructs a new LuminanceSource from the entire image.
      *
-     * @param image {@link BufferedImage}
+     * @param image the {@link BufferedImage} to read
      */
     public LuminanceSource(final BufferedImage image) {
         this(image, 0, 0, image.getWidth(), image.getHeight());
     }
 
     /**
-     * 构造
+     * Constructs a new LuminanceSource from a region of the image.
      *
-     * @param image  {@link BufferedImage}
-     * @param left   左边间隔
-     * @param top    顶部间隔
-     * @param width  宽度
-     * @param height 高度
+     * @param image  the {@link BufferedImage} to read
+     * @param left   the left offset of the region
+     * @param top    the top offset of the region
+     * @param width  the width of the region
+     * @param height the height of the region
      */
     public LuminanceSource(final BufferedImage image, final int left, final int top, final int width,
             final int height) {

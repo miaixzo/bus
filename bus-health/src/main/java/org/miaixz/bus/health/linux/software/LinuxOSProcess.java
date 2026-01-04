@@ -137,21 +137,41 @@ public class LinuxOSProcess extends AbstractOSProcess {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return the process name
+     */
     @Override
     public String getName() {
         return this.name;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return the full path of the process executable
+     */
     @Override
     public String getPath() {
         return this.path;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return the command line used to start the process
+     */
     @Override
     public String getCommandLine() {
         return commandLine.get();
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return the list of arguments passed to the process
+     */
     @Override
     public List<String> getArguments() {
         return arguments.get();
@@ -163,6 +183,11 @@ public class LinuxOSProcess extends AbstractOSProcess {
                 .collect(Collectors.joining(Symbol.SPACE));
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return a map of environment variables for the process
+     */
     @Override
     public Map<String, String> getEnvironmentVariables() {
         return environmentVariables.get();
@@ -176,6 +201,11 @@ public class LinuxOSProcess extends AbstractOSProcess {
                                 LOG_PROCFS_WARNING)));
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return the current working directory of the process
+     */
     @Override
     public String getCurrentWorkingDirectory() {
         try {
@@ -190,6 +220,11 @@ public class LinuxOSProcess extends AbstractOSProcess {
         return Normal.EMPTY;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return the user name who owns the process
+     */
     @Override
     public String getUser() {
         return user.get();
@@ -203,11 +238,21 @@ public class LinuxOSProcess extends AbstractOSProcess {
                                 LOG_PROCFS_WARNING)));
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return the user ID of the process owner
+     */
     @Override
     public String getUserID() {
         return this.userID;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return the group name that owns the process
+     */
     @Override
     public String getGroup() {
         return group.get();
@@ -217,71 +262,141 @@ public class LinuxOSProcess extends AbstractOSProcess {
         return IdGroup.getUser(userID);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return the group ID of the process owner
+     */
     @Override
     public String getGroupID() {
         return this.groupID;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return the state of the process
+     */
     @Override
     public State getState() {
         return this.state;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return the parent process ID
+     */
     @Override
     public int getParentProcessID() {
         return this.parentProcessID;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return the number of threads in the process
+     */
     @Override
     public int getThreadCount() {
         return this.threadCount;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return the process scheduling priority
+     */
     @Override
     public int getPriority() {
         return this.priority;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return the virtual memory size in bytes
+     */
     @Override
     public long getVirtualSize() {
         return this.virtualSize;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return the resident set size (RSS) in bytes
+     */
     @Override
     public long getResidentSetSize() {
         return this.residentSetSize;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return the kernel time in milliseconds
+     */
     @Override
     public long getKernelTime() {
         return this.kernelTime;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return the user time in milliseconds
+     */
     @Override
     public long getUserTime() {
         return this.userTime;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return the process uptime in milliseconds
+     */
     @Override
     public long getUpTime() {
         return this.upTime;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return the process start time in milliseconds
+     */
     @Override
     public long getStartTime() {
         return this.startTime;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return the number of bytes read from disk
+     */
     @Override
     public long getBytesRead() {
         return this.bytesRead;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return the number of bytes written to disk
+     */
     @Override
     public long getBytesWritten() {
         return this.bytesWritten;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return the list of thread details for the process
+     */
     @Override
     public List<OSThread> getThreadDetails() {
         return ProcessStat.getThreadIds(getProcessID()).stream().parallel()
@@ -289,26 +404,51 @@ public class LinuxOSProcess extends AbstractOSProcess {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return the number of minor page faults
+     */
     @Override
     public long getMinorFaults() {
         return this.minorFaults;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return the number of major page faults
+     */
     @Override
     public long getMajorFaults() {
         return this.majorFaults;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return the number of context switches
+     */
     @Override
     public long getContextSwitches() {
         return this.contextSwitches;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return the number of open file descriptors
+     */
     @Override
     public long getOpenFiles() {
         return ProcessStat.getFileDescriptorFiles(getProcessID()).length;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return the soft limit of open files for the current process
+     */
     @Override
     public long getSoftOpenFileLimit() {
         if (getProcessID() == this.os.getProcessId()) {
@@ -320,6 +460,11 @@ public class LinuxOSProcess extends AbstractOSProcess {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return the hard limit of open files for the current process
+     */
     @Override
     public long getHardOpenFileLimit() {
         if (getProcessID() == this.os.getProcessId()) {
@@ -331,6 +476,11 @@ public class LinuxOSProcess extends AbstractOSProcess {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return the process bitness (32 or 64)
+     */
     @Override
     public int getBitness() {
         return this.bitness.get();
@@ -356,6 +506,11 @@ public class LinuxOSProcess extends AbstractOSProcess {
         return IdGroup.getGroupName(groupID);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return the processor affinity mask
+     */
     @Override
     public long getAffinityMask() {
         // Would prefer to use native sched_getaffinity call but variable sizing is
@@ -372,6 +527,11 @@ public class LinuxOSProcess extends AbstractOSProcess {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return {@code true} if the process attributes were successfully updated, {@code false} otherwise
+     */
     @Override
     public boolean updateAttributes() {
         String procPidExe = String.format(Locale.ROOT, ProcPath.PID_EXE, getProcessID());

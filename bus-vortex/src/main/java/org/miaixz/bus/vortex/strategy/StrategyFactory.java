@@ -154,7 +154,7 @@ public class StrategyFactory {
     public List<Strategy> getStrategiesFor(ServerWebExchange exchange) {
         String path = exchange.getRequest().getPath().value();
 
-        // 此方法在创建 Context 和 IP 之前被调用, 因此使用 [N/A]
+        // This method is called before creating Context and IP, therefore using [N/A]
         final String ipTag = "[N/A]";
 
         if (Logger.isDebugEnabled()) {

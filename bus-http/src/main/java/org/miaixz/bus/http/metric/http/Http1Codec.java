@@ -121,11 +121,24 @@ public class Http1Codec implements HttpCodec {
         this.sink = sink;
     }
 
+    /**
+     * Returns the connection backing this codec.
+     *
+     * @return The connection.
+     */
     @Override
     public RealConnection connection() {
         return realConnection;
     }
 
+    /**
+     * Creates a request body sink for streaming a request body.
+     *
+     * @param request       The request.
+     * @param contentLength The known content length, or -1 for chunked encoding.
+     * @return A sink for writing the request body.
+     * @throws IOException if an I/O error occurs.
+     */
     @Override
     public Sink createRequestBody(Request request, long contentLength) throws IOException {
         if (request.body() != null && request.body().isDuplex()) {
@@ -146,6 +159,9 @@ public class Http1Codec implements HttpCodec {
                 "Cannot stream a request body without chunked encoding or a known content length!");
     }
 
+    /**
+     * Cancels the ongoing request.
+     */
     @Override
     public void cancel() {
         if (realConnection != null)
@@ -167,6 +183,12 @@ public class Http1Codec implements HttpCodec {
         writeRequest(request.headers(), requestLine);
     }
 
+    /**
+     * Returns the content length of the response body, or 0 if there is no body.
+     *
+     * @param response The response.
+     * @return The content length, or -1 for chunked transfers.
+     */
     @Override
     public long reportedContentLength(Response response) {
         if (!Headers.hasBody(response)) {
@@ -180,6 +202,12 @@ public class Http1Codec implements HttpCodec {
         return Headers.contentLength(response);
     }
 
+    /**
+     * Opens a source to read the response body.
+     *
+     * @param response The response.
+     * @return A buffered source for reading the response body.
+     */
     @Override
     public Source openResponseBodySource(Response response) {
         if (!Headers.hasBody(response)) {
@@ -198,6 +226,12 @@ public class Http1Codec implements HttpCodec {
         return newUnknownLengthSource();
     }
 
+    /**
+     * Returns the trailers from the last response, or an empty map if there are no trailers.
+     *
+     * @return The trailers.
+     * @throws IllegalStateException if called before the response body has been fully read.
+     */
     @Override
     public Headers trailers() {
         if (state != STATE_CLOSED) {
@@ -208,18 +242,28 @@ public class Http1Codec implements HttpCodec {
 
     /**
      * Returns true if this connection is closed.
-     * 
+     *
      * @return true if this connection is closed.
      */
     public boolean isClosed() {
         return state == STATE_CLOSED;
     }
 
+    /**
+     * Flushes the pending request data to the underlying connection.
+     *
+     * @throws IOException if an I/O error occurs.
+     */
     @Override
     public void flushRequest() throws IOException {
         sink.flush();
     }
 
+    /**
+     * Finishes writing the request by flushing any buffered data.
+     *
+     * @throws IOException if an I/O error occurs.
+     */
     @Override
     public void finishRequest() throws IOException {
         sink.flush();
@@ -243,6 +287,13 @@ public class Http1Codec implements HttpCodec {
         state = STATE_OPEN_REQUEST_BODY;
     }
 
+    /**
+     * Reads the response headers from the server.
+     *
+     * @param expectContinue Whether this is a 100-continue request.
+     * @return A response builder if the response was received, or null if a 100 Continue was received.
+     * @throws IOException if an I/O error occurs.
+     */
     @Override
     public Response.Builder readResponseHeaders(boolean expectContinue) throws IOException {
         if (state != STATE_OPEN_REQUEST_BODY && state != STATE_READ_RESPONSE_HEADERS) {
@@ -367,11 +418,23 @@ public class Http1Codec implements HttpCodec {
         private final AssignTimeout timeout = new AssignTimeout(sink.timeout());
         private boolean closed;
 
+        /**
+         * Returns the timeout for this sink.
+         *
+         * @return The timeout.
+         */
         @Override
         public Timeout timeout() {
             return timeout;
         }
 
+        /**
+         * Writes data to the sink.
+         *
+         * @param source    The buffer containing the data.
+         * @param byteCount The number of bytes to write.
+         * @throws IOException if an I/O error occurs or the sink is closed.
+         */
         @Override
         public void write(Buffer source, long byteCount) throws IOException {
             if (closed)
@@ -380,6 +443,11 @@ public class Http1Codec implements HttpCodec {
             sink.write(source, byteCount);
         }
 
+        /**
+         * Flushes the sink.
+         *
+         * @throws IOException if an I/O error occurs.
+         */
         @Override
         public void flush() throws IOException {
             if (closed)
@@ -387,6 +455,9 @@ public class Http1Codec implements HttpCodec {
             sink.flush();
         }
 
+        /**
+         * Closes the sink.
+         */
         @Override
         public void close() {
             if (closed)
@@ -409,11 +480,23 @@ public class Http1Codec implements HttpCodec {
         ChunkedSink() {
         }
 
+        /**
+         * Returns the timeout for this sink.
+         *
+         * @return The timeout.
+         */
         @Override
         public Timeout timeout() {
             return timeout;
         }
 
+        /**
+         * Writes a chunk of data to the sink.
+         *
+         * @param source    The buffer containing the data.
+         * @param byteCount The number of bytes to write.
+         * @throws IOException if an I/O error occurs or the sink is closed.
+         */
         @Override
         public void write(Buffer source, long byteCount) throws IOException {
             if (closed)
@@ -427,6 +510,11 @@ public class Http1Codec implements HttpCodec {
             sink.writeUtf8(Symbol.CRLF);
         }
 
+        /**
+         * Flushes the sink.
+         *
+         * @throws IOException if an I/O error occurs.
+         */
         @Override
         public synchronized void flush() throws IOException {
             if (closed)
@@ -434,6 +522,11 @@ public class Http1Codec implements HttpCodec {
             sink.flush();
         }
 
+        /**
+         * Closes the sink and writes the final empty chunk.
+         *
+         * @throws IOException if an I/O error occurs.
+         */
         @Override
         public synchronized void close() throws IOException {
             if (closed)
@@ -450,11 +543,24 @@ public class Http1Codec implements HttpCodec {
         protected final AssignTimeout timeout = new AssignTimeout(source.timeout());
         protected boolean closed;
 
+        /**
+         * Returns the timeout for this source.
+         *
+         * @return The timeout.
+         */
         @Override
         public Timeout timeout() {
             return timeout;
         }
 
+        /**
+         * Reads data from the source.
+         *
+         * @param sink      The buffer to read data into.
+         * @param byteCount The maximum number of bytes to read.
+         * @return The number of bytes read, or -1 if the end of the stream has been reached.
+         * @throws IOException if an I/O error occurs.
+         */
         @Override
         public long read(Buffer sink, long byteCount) throws IOException {
             try {
@@ -496,6 +602,14 @@ public class Http1Codec implements HttpCodec {
             }
         }
 
+        /**
+         * Reads data from the source, up to the fixed length.
+         *
+         * @param sink      The buffer to read data into.
+         * @param byteCount The maximum number of bytes to read.
+         * @return The number of bytes read, or -1 if the end of the stream has been reached.
+         * @throws IOException if an I/O error occurs or the stream is closed.
+         */
         @Override
         public long read(Buffer sink, long byteCount) throws IOException {
             if (byteCount < 0)
@@ -520,6 +634,9 @@ public class Http1Codec implements HttpCodec {
             return read;
         }
 
+        /**
+         * Closes the source.
+         */
         @Override
         public void close() {
             if (closed)
@@ -551,6 +668,14 @@ public class Http1Codec implements HttpCodec {
             this.url = url;
         }
 
+        /**
+         * Reads a chunk from the source.
+         *
+         * @param sink      The buffer to read data into.
+         * @param byteCount The maximum number of bytes to read.
+         * @return The number of bytes read, or -1 if the end of the stream has been reached.
+         * @throws IOException if an I/O error occurs or the stream is closed.
+         */
         @Override
         public long read(Buffer sink, long byteCount) throws IOException {
             if (byteCount < 0)
@@ -600,6 +725,9 @@ public class Http1Codec implements HttpCodec {
             }
         }
 
+        /**
+         * Closes the source.
+         */
         @Override
         public void close() {
             if (closed)
@@ -619,6 +747,14 @@ public class Http1Codec implements HttpCodec {
 
         private boolean inputExhausted;
 
+        /**
+         * Reads data from the source until the end of the stream.
+         *
+         * @param sink      The buffer to read data into.
+         * @param byteCount The maximum number of bytes to read.
+         * @return The number of bytes read, or -1 if the end of the stream has been reached.
+         * @throws IOException if an I/O error occurs or the stream is closed.
+         */
         @Override
         public long read(Buffer sink, long byteCount) throws IOException {
             if (byteCount < 0)
@@ -637,6 +773,9 @@ public class Http1Codec implements HttpCodec {
             return read;
         }
 
+        /**
+         * Closes the source.
+         */
         @Override
         public void close() {
             if (closed)

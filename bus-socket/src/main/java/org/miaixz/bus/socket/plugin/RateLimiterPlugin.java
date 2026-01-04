@@ -85,6 +85,9 @@ public class RateLimiterPlugin<T> extends AbstractPlugin<T> {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public AsynchronousSocketChannel shouldAccept(AsynchronousSocketChannel channel) {
         return enabled ? new RateLimiterChannel(channel, readRateLimiter, writeRateLimiter) : channel;
@@ -129,6 +132,9 @@ public class RateLimiterPlugin<T> extends AbstractPlugin<T> {
             this.writeRateLimiter = writeRateLimiter;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public <A> void read(
                 ByteBuffer dst,
@@ -162,6 +168,9 @@ public class RateLimiterPlugin<T> extends AbstractPlugin<T> {
             dst.limit(dst.position() + availReadSize);
             super.read(dst, timeout, unit, attachment, new CompletionHandler<>() {
 
+                /**
+                 * {@inheritDoc}
+                 */
                 @Override
                 public void completed(Integer result, A attachment) {
                     if (result > 0) {
@@ -178,6 +187,9 @@ public class RateLimiterPlugin<T> extends AbstractPlugin<T> {
                     handler.completed(result, attachment);
                 }
 
+                /**
+                 * {@inheritDoc}
+                 */
                 @Override
                 public void failed(Throwable exc, A attachment) {
                     handler.failed(exc, attachment);
@@ -185,6 +197,9 @@ public class RateLimiterPlugin<T> extends AbstractPlugin<T> {
             });
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public <A> void write(
                 ByteBuffer src,
@@ -218,6 +233,9 @@ public class RateLimiterPlugin<T> extends AbstractPlugin<T> {
             src.limit(src.position() + availWriteSize);
             super.write(src, timeout, unit, attachment, new CompletionHandler<>() {
 
+                /**
+                 * {@inheritDoc}
+                 */
                 @Override
                 public void completed(Integer result, A attachment) {
                     if (result > 0) {
@@ -234,6 +252,9 @@ public class RateLimiterPlugin<T> extends AbstractPlugin<T> {
                     handler.completed(result, attachment);
                 }
 
+                /**
+                 * {@inheritDoc}
+                 */
                 @Override
                 public void failed(Throwable exc, A attachment) {
                     handler.failed(exc, attachment);

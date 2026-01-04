@@ -74,6 +74,9 @@ class ReconnectPlugin extends AbstractPlugin {
         this.asynchronousChannelGroup = asynchronousChannelGroup;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void stateEvent(Status status, Session session, Throwable throwable) {
         // Only attempt reconnection if the session is closed and the plugin is not shut down.

@@ -106,31 +106,61 @@ public class JCEMac extends SimpleWrapper<javax.crypto.Mac> implements Mac {
         return mac;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param in {@inheritDoc}
+     */
     @Override
     public void update(final byte[] in) {
         this.raw.update(in);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param in    {@inheritDoc}
+     * @param inOff {@inheritDoc}
+     * @param len   {@inheritDoc}
+     */
     @Override
     public void update(final byte[] in, final int inOff, final int len) {
         this.raw.update(in, inOff, len);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return {@inheritDoc}
+     */
     @Override
     public byte[] doFinal() {
         return this.raw.doFinal();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void reset() {
         this.raw.reset();
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return {@inheritDoc}
+     */
     @Override
     public int getMacLength() {
         return this.raw.getMacLength();
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return {@inheritDoc}
+     */
     @Override
     public String getAlgorithm() {
         return this.raw.getAlgorithm();

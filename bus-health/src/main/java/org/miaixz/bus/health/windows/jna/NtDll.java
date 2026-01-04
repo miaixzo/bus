@@ -61,6 +61,13 @@ public interface NtDll extends com.sun.jna.platform.win32.NtDll {
             int ProcessInformationLength,
             IntByReference ReturnLength);
 
+    /**
+     * JNA wrapper for the PROCESS_BASIC_INFORMATION structure.
+     * <p>
+     * This class maps to the native Windows structure: {@code typedef struct _PROCESS_BASIC_INFORMATION { PVOID
+     * Reserved1; PVOID PebBaseAddress; PVOID Reserved2[4]; } PROCESS_BASIC_INFORMATION; }
+     * </p>
+     */
     @FieldOrder({ "Reserved1", "PebBaseAddress", "Reserved2" })
     class PROCESS_BASIC_INFORMATION extends Structure {
 
@@ -69,6 +76,13 @@ public interface NtDll extends com.sun.jna.platform.win32.NtDll {
         public Pointer[] Reserved2 = new Pointer[4];
     }
 
+    /**
+     * JNA wrapper for the PEB (Process Environment Block) structure.
+     * <p>
+     * This class maps to the native Windows structure: {@code typedef struct _PEB { BYTE pad[4]; PVOID pad2[3]; PVOID
+     * ProcessParameters; } PEB; }
+     * </p>
+     */
     @FieldOrder({ "pad", "pad2", "ProcessParameters" })
     class PEB extends Structure {
 
@@ -77,6 +91,13 @@ public interface NtDll extends com.sun.jna.platform.win32.NtDll {
         public Pointer ProcessParameters; // RTL_USER_PROCESS_PARAMETERS
     }
 
+    /**
+     * JNA wrapper for the RTL_USER_PROCESS_PARAMETERS structure.
+     * <p>
+     * This class maps to the native Windows RTL_USER_PROCESS_PARAMETERS structure which contains process parameters
+     * including command line, environment, and other startup information.
+     * </p>
+     */
     @FieldOrder({ "MaximumLength", "Length", "Flags", "DebugFlags", "ConsoleHandle", "ConsoleFlags", "StandardInput",
             "StandardOutput", "StandardError", "CurrentDirectory", "DllPath", "ImagePathName", "CommandLine",
             "Environment", "StartingX", "StartingY", "CountX", "CountY", "CountCharsX", "CountCharsY", "FillAttribute",
@@ -125,6 +146,13 @@ public interface NtDll extends com.sun.jna.platform.win32.NtDll {
         public int DefaultThreadpoolCpuSetMaskCount;
     }
 
+    /**
+     * JNA wrapper for the UNICODE_STRING structure.
+     * <p>
+     * This class maps to the native Windows structure: {@code typedef struct _UNICODE_STRING { USHORT Length; USHORT
+     * MaximumLength; PWSTR Buffer; } UNICODE_STRING; }
+     * </p>
+     */
     @FieldOrder({ "Length", "MaximumLength", "Buffer" })
     class UNICODE_STRING extends Structure {
 
@@ -133,6 +161,13 @@ public interface NtDll extends com.sun.jna.platform.win32.NtDll {
         public Pointer Buffer;
     }
 
+    /**
+     * JNA wrapper for the STRING (ANSI_STRING) structure.
+     * <p>
+     * This class maps to the native Windows structure: {@code typedef struct _STRING { USHORT Length; USHORT
+     * MaximumLength; PCHAR Buffer; } STRING; }
+     * </p>
+     */
     @FieldOrder({ "Length", "MaximumLength", "Buffer" })
     class STRING extends Structure {
 
@@ -141,6 +176,12 @@ public interface NtDll extends com.sun.jna.platform.win32.NtDll {
         public Pointer Buffer;
     }
 
+    /**
+     * JNA wrapper for the CURDIR structure.
+     * <p>
+     * This class maps to the native Windows structure for current directory information.
+     * </p>
+     */
     @FieldOrder({ "DosPath", "Handle" })
     class CURDIR extends Structure {
 
@@ -148,6 +189,12 @@ public interface NtDll extends com.sun.jna.platform.win32.NtDll {
         public Pointer Handle;
     }
 
+    /**
+     * JNA wrapper for the RTL_DRIVE_LETTER_CURDIR structure.
+     * <p>
+     * This class maps to the native Windows structure for drive letter current directory information.
+     * </p>
+     */
     @FieldOrder({ "Flags", "Length", "TimeStamp", "DosPath" })
     class RTL_DRIVE_LETTER_CURDIR extends Structure {
 

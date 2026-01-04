@@ -27,7 +27,7 @@
 */
 package org.miaixz.bus.core.center.date.culture;
 
-import org.miaixz.bus.core.center.date.culture.cn.sixty.SixtyCycle;
+import org.miaixz.bus.core.center.date.culture.sixty.SixtyCycle;
 import org.miaixz.bus.core.center.date.culture.lunar.LunarDay;
 
 /**

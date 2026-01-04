@@ -45,8 +45,10 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import org.miaixz.bus.core.center.date.*;
 import org.miaixz.bus.core.center.date.Calendar;
 import org.miaixz.bus.core.center.date.Formatter;
-import org.miaixz.bus.core.center.date.culture.cn.Zodiac;
-import org.miaixz.bus.core.center.date.culture.en.*;
+import org.miaixz.bus.core.center.date.Quarter;
+import org.miaixz.bus.core.center.date.Units;
+import org.miaixz.bus.core.center.date.Various;
+import org.miaixz.bus.core.center.date.Week;
 import org.miaixz.bus.core.center.date.format.FormatBuilder;
 import org.miaixz.bus.core.center.date.format.FormatManager;
 import org.miaixz.bus.core.center.date.format.FormatPeriod;
@@ -1451,18 +1453,18 @@ public class DateKit extends Calendar {
      * @return A list of {@link DateTime} objects.
      */
     public static List<DateTime> rangeToList(final Date start, final Date end, final Various unit, final int step) {
-        return ListKit.of((Iterable<DateTime>) new Boundary(start, end, unit, step));
+        return ListKit.of(new Boundary(start, end, unit, step));
     }
 
     /**
-     * Gets the astrological constellation for a given month and day.
+     * Gets the astrological zodiac for a given month and day.
      *
      * @param month The month (0-11).
      * @param day   The day.
-     * @return The constellation name.
+     * @return The zodiac name.
      */
-    public static String getConstellation(final int month, final int day) {
-        return Constellation.getName(month, day);
+    public static String getZodiac(final int month, final int day) {
+        return Zodiac.getName(month, day);
     }
 
     /**
@@ -1471,8 +1473,8 @@ public class DateKit extends Calendar {
      * @param year The year.
      * @return The Zodiac name.
      */
-    public static String getZodiac(final int year) {
-        return Zodiac.getName(year);
+    public static String getCNZodiac(final int year) {
+        return org.miaixz.bus.core.center.date.culture.Zodiac.getName(year);
     }
 
     /**

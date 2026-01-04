@@ -365,9 +365,24 @@ public abstract class AbstractMetrics implements Metrics {
      */
     protected static final class DataDO {
 
+        /**
+         * The cache pattern name (e.g., cache name).
+         */
         private String pattern;
+
+        /**
+         * The number of cache hits.
+         */
         private long hitCount;
+
+        /**
+         * The number of cache requests.
+         */
         private long requireCount;
+
+        /**
+         * The version number for optimistic locking.
+         */
         private long version;
 
         public String getPattern() {

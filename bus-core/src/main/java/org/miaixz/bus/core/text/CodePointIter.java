@@ -33,12 +33,17 @@ import java.util.Iterator;
  * Unicode character iterator. Reference:
  * <a href="http://stackoverflow.com/a/21791059/6030888">http://stackoverflow.com/a/21791059/6030888</a>
  *
+ * @param text the string to iterate over
  * @author Kimi Liu
  * @since Java 17+
- * @param text The string to iterate over.
  */
 public record CodePointIter(String text) implements Iterable<Integer> {
 
+    /**
+     * Returns an iterator over Unicode code points in the text.
+     *
+     * @return An iterator that yields each Unicode code point in the text.
+     */
     @Override
     public Iterator<Integer> iterator() {
         return new Iterator<>() {
@@ -52,11 +57,21 @@ public record CodePointIter(String text) implements Iterable<Integer> {
              */
             private int nextIndex = 0;
 
+            /**
+             * Returns {@code true} if there are more code points to iterate.
+             *
+             * @return {@code true} if the iteration has more elements, {@code false} otherwise.
+             */
             @Override
             public boolean hasNext() {
                 return this.nextIndex < this.length;
             }
 
+            /**
+             * Returns the next Unicode code point in the iteration.
+             *
+             * @return The next code point as an {@link Integer}.
+             */
             @Override
             public Integer next() {
                 final int result = text.codePointAt(this.nextIndex);
@@ -64,6 +79,11 @@ public record CodePointIter(String text) implements Iterable<Integer> {
                 return result;
             }
 
+            /**
+             * This operation is not supported.
+             *
+             * @throws UnsupportedOperationException always.
+             */
             @Override
             public void remove() {
                 throw new UnsupportedOperationException();

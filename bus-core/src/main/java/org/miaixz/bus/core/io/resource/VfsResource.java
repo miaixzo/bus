@@ -127,21 +127,41 @@ public class VfsResource implements Resource {
         return MethodKit.invoke(virtualFile, VIRTUAL_FILE_METHOD_EXISTS);
     }
 
+    /**
+     * Returns the name of this VFS resource.
+     *
+     * @return The name of the VFS file.
+     */
     @Override
     public String getName() {
         return MethodKit.invoke(virtualFile, VIRTUAL_FILE_METHOD_GET_NAME);
     }
 
+    /**
+     * Returns the URL of this VFS resource.
+     *
+     * @return The URL representing the VFS file.
+     */
     @Override
     public URL getUrl() {
         return MethodKit.invoke(virtualFile, VIRTUAL_FILE_METHOD_TO_URL);
     }
 
+    /**
+     * Returns an input stream for this VFS resource.
+     *
+     * @return An input stream for reading the VFS file.
+     */
     @Override
     public InputStream getStream() {
         return MethodKit.invoke(virtualFile, VIRTUAL_FILE_METHOD_GET_INPUT_STREAM);
     }
 
+    /**
+     * Checks if this VFS resource has been modified since it was last accessed.
+     *
+     * @return {@code true} if the VFS file has been modified, {@code false} otherwise.
+     */
     @Override
     public boolean isModified() {
         return this.lastModified != getLastModified();

@@ -40,7 +40,7 @@ import com.google.zxing.common.GlobalHistogramBinarizer;
 import com.google.zxing.common.HybridBinarizer;
 
 /**
- * 二维码（条形码等）解码器
+ * QR code (barcode, etc.) decoder
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -50,19 +50,19 @@ public class QrDecoder implements Decoder<Image, String> {
     private final Map<DecodeHintType, Object> hints;
 
     /**
-     * 构造
+     * Constructor
      *
-     * @param hints 自定义扫码配置，包括算法、编码、复杂模式等
+     * @param hints Custom scanning configuration, including algorithm, encoding, complex mode, etc.
      */
     public QrDecoder(final Map<DecodeHintType, Object> hints) {
         this.hints = hints;
     }
 
     /**
-     * 创建二维码（条形码等）解码器，用于将二维码（条形码等）解码为所代表的内容字符串
+     * Create QR code (barcode, etc.) decoder to decode QR code (barcode, etc.) into the represented content string
      *
-     * @param isTryHarder   是否优化精度
-     * @param isPureBarcode 是否使用复杂模式，扫描带logo的二维码设为true
+     * @param isTryHarder   Whether to optimize accuracy
+     * @param isPureBarcode Whether to use complex mode, set to true for scanning QR codes with logo
      * @return QrDecoder
      */
     public static QrDecoder of(final boolean isTryHarder, final boolean isPureBarcode) {
@@ -70,9 +70,9 @@ public class QrDecoder implements Decoder<Image, String> {
     }
 
     /**
-     * 创建二维码（条形码等）解码器
+     * Create QR code (barcode, etc.) decoder
      *
-     * @param hints 自定义扫码配置，包括算法、编码、复杂模式等
+     * @param hints Custom scanning configuration, including algorithm, encoding, complex mode, etc.
      * @return QrDecoder
      */
     public static QrDecoder of(final Map<DecodeHintType, Object> hints) {
@@ -80,7 +80,7 @@ public class QrDecoder implements Decoder<Image, String> {
     }
 
     /**
-     * 解码多种类型的码，包括二维码和条形码
+     * Decode various types of codes, including QR codes and barcodes
      *
      * @param formatReader {@link MultiFormatReader}
      * @param binarizer    {@link Binarizer}
@@ -95,21 +95,21 @@ public class QrDecoder implements Decoder<Image, String> {
     }
 
     /**
-     * 创建解码选项
+     * Create decoding options
      *
-     * @param isTryHarder   是否优化精度
-     * @param isPureBarcode 是否使用复杂模式，扫描带logo的二维码设为true
-     * @return 选项Map
+     * @param isTryHarder   Whether to optimize accuracy
+     * @param isPureBarcode Whether to use complex mode, set to true for scanning QR codes with logo
+     * @return Options Map
      */
     private static Map<DecodeHintType, Object> buildHints(final boolean isTryHarder, final boolean isPureBarcode) {
         final HashMap<DecodeHintType, Object> hints = new HashMap<>(3, 1);
         hints.put(DecodeHintType.CHARACTER_SET, Charset.DEFAULT_UTF_8);
 
-        // 优化精度
+        // Optimize accuracy
         if (isTryHarder) {
             hints.put(DecodeHintType.TRY_HARDER, true);
         }
-        // 复杂模式，开启PURE_BARCODE模式
+        // Complex mode, enable PURE_BARCODE mode
         if (isPureBarcode) {
             hints.put(DecodeHintType.PURE_BARCODE, true);
         }

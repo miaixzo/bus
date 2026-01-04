@@ -91,7 +91,6 @@ import reactor.netty.http.server.HttpServer;
  * <li>MCP (mode 4-6): Model Context Protocol (STDIO, SSE, HTTP)</li>
  * <li>MQ (mode 7): Message Queue integration</li>
  * </ul>
- * </p>
  *
  * @author Kimi Liu
  * @since Java 17+

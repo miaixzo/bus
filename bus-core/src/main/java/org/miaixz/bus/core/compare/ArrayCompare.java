@@ -43,7 +43,13 @@ import org.miaixz.bus.core.xyz.ArrayKit;
  */
 public class ArrayCompare<T> implements Comparator<T> {
 
+    /**
+     * Whether to place elements not found in the array at the end of the sort order.
+     */
     private final boolean atEndIfMiss;
+    /**
+     * The array that defines the sort order for elements.
+     */
     private final T[] array;
 
     /**
@@ -68,6 +74,17 @@ public class ArrayCompare<T> implements Comparator<T> {
         this.array = objs;
     }
 
+    /**
+     * Compares two objects based on their position in the order-defining array.
+     * <p>
+     * Elements found earlier in the array are considered "smaller" and will be sorted before elements found later.
+     * Elements not present in the array are placed either at the beginning or end based on {@link #atEndIfMiss}.
+     *
+     * @param o1 the first object to be compared.
+     * @param o2 the second object to be compared.
+     * @return a negative integer, zero, or a positive integer as the first argument is less than, equal to, or greater
+     *         than the second.
+     */
     @Override
     public int compare(final T o1, final T o2) {
         final int index1 = getOrder(o1);

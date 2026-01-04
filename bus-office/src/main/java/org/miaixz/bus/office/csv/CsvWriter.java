@@ -179,7 +179,9 @@ public final class CsvWriter implements Closeable, Flushable, Serializable {
     }
 
     /**
-     * Checks if the given character is unsafe for DDE attacks, including:
+     * Checks if the given character is unsafe for DDE attacks.
+     * <p>
+     * Unsafe characters include:
      * <ul>
      * <li>{@code @ }</li>
      * <li>{@code + }</li>

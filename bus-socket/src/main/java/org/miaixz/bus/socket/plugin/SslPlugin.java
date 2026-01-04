@@ -160,6 +160,9 @@ public final class SslPlugin<T> extends AbstractPlugin<T> {
         }, bufferPagePool);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public AsynchronousSocketChannel shouldAccept(AsynchronousSocketChannel channel) {
         return new SslAsynchronousSocketChannel(channel, sslService, bufferPagePool.allocateBufferPage());

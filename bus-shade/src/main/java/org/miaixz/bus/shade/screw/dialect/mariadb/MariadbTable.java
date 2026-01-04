@@ -34,7 +34,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * 表信息
+ * MariaDB table information.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,52 +44,52 @@ import lombok.Setter;
 public class MariadbTable implements Table {
 
     /**
-     * tableCat
+     * Table catalog.
      */
     @MappingField(value = "TABLE_CAT")
     private String tableCat;
     /**
-     * 表名
+     * Table name.
      */
     @MappingField(value = "TABLE_NAME")
     private String tableName;
     /**
-     *
+     * Self-referencing column name.
      */
     @MappingField(value = "SELF_REFERENCING_COL_NAME")
     private Object selfReferencingColName;
     /**
-     *
+     * Table schema.
      */
     @MappingField(value = "TABLE_CAT")
     private Object tableSchem;
     /**
-     *
+     * Type schema.
      */
     @MappingField(value = "TYPE_SCHEM")
     private Object typeSchem;
     /**
-     *
+     * Type catalog.
      */
     @MappingField(value = "TABLE_CAT")
     private Object typeCat;
     /**
-     * 表类型
+     * Table type.
      */
     @MappingField(value = "TABLE_TYPE")
     private String tableType;
     /**
-     * 备注
+     * Remarks or comments about the table.
      */
     @MappingField(value = "REMARKS")
     private String remarks;
     /**
-     *
+     * Reference generation method.
      */
     @MappingField(value = "REF_GENERATION")
     private Object refGeneration;
     /**
-     * 类型名称
+     * Type name.
      */
     @MappingField(value = "TYPE_NAME")
     private Object typeName;

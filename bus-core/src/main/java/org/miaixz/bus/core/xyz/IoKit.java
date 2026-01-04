@@ -1469,6 +1469,9 @@ public class IoKit {
 
         return new Sink() {
 
+            /**
+             * {@inheritDoc}
+             */
             @Override
             public void write(Buffer source, long byteCount) throws IOException {
                 checkOffsetAndCount(source.size, 0, byteCount);
@@ -1489,21 +1492,33 @@ public class IoKit {
                 }
             }
 
+            /**
+             * {@inheritDoc}
+             */
             @Override
             public void flush() throws IOException {
                 out.flush();
             }
 
+            /**
+             * {@inheritDoc}
+             */
             @Override
             public void close() throws IOException {
                 out.close();
             }
 
+            /**
+             * {@inheritDoc}
+             */
             @Override
             public Timeout timeout() {
                 return timeout;
             }
 
+            /**
+             * {@inheritDoc}
+             */
             @Override
             public String toString() {
                 return "sink(" + out + Symbol.PARENTHESE_RIGHT;
@@ -1561,6 +1576,9 @@ public class IoKit {
 
         return new Source() {
 
+            /**
+             * {@inheritDoc}
+             */
             @Override
             public long read(Buffer sink, long byteCount) throws IOException {
                 if (byteCount < 0)
@@ -1590,16 +1608,25 @@ public class IoKit {
                 }
             }
 
+            /**
+             * {@inheritDoc}
+             */
             @Override
             public void close() throws IOException {
                 in.close();
             }
 
+            /**
+             * {@inheritDoc}
+             */
             @Override
             public Timeout timeout() {
                 return timeout;
             }
 
+            /**
+             * {@inheritDoc}
+             */
             @Override
             public String toString() {
                 return "source(" + in + Symbol.PARENTHESE_RIGHT;
@@ -1692,20 +1719,32 @@ public class IoKit {
     public static Sink blackhole() {
         return new Sink() {
 
+            /**
+             * {@inheritDoc}
+             */
             @Override
             public void write(Buffer source, long byteCount) throws IOException {
                 source.skip(byteCount);
             }
 
+            /**
+             * {@inheritDoc}
+             */
             @Override
             public void flush() {
             }
 
+            /**
+             * {@inheritDoc}
+             */
             @Override
             public Timeout timeout() {
                 return Timeout.NONE;
             }
 
+            /**
+             * {@inheritDoc}
+             */
             @Override
             public void close() {
             }
@@ -1744,6 +1783,9 @@ public class IoKit {
     private static AsyncTimeout timeout(final Socket socket) {
         return new AsyncTimeout() {
 
+            /**
+             * {@inheritDoc}
+             */
             @Override
             protected IOException newTimeoutException(IOException cause) {
                 InterruptedIOException ioe = new SocketTimeoutException("timeout");
@@ -1753,6 +1795,9 @@ public class IoKit {
                 return ioe;
             }
 
+            /**
+             * {@inheritDoc}
+             */
             @Override
             protected void timedOut() {
                 try {

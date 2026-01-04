@@ -76,6 +76,13 @@ public class ResourceClassLoader<T extends Resource> extends SecureClassLoader {
         return this;
     }
 
+    /**
+     * Finds and loads the class with the specified name.
+     *
+     * @param name the fully qualified class name.
+     * @return the loaded {@link Class} object.
+     * @throws ClassNotFoundException if the class cannot be found.
+     */
     @Override
     protected Class<?> findClass(final String name) throws ClassNotFoundException {
         final Class<?> clazz = cacheClassMap.computeIfAbsent(name, this::defineByName);

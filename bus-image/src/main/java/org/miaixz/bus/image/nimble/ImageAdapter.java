@@ -97,8 +97,9 @@ public class ImageAdapter {
             desc.setMinMaxPixelValue(frameIndex, minMax);
         }
         this.minMax = minMax;
-        // 延迟计算图像像素变换，因为内部类Load是从一个单独的专用工作线程调用的。 此外，它只会计算一次。
-        // 考虑到默认的像素填充选项为true，且反转LUT操作为false
+        // Deferred calculation of image pixel transformation, because inner class Load is called from a separate
+        // dedicated worker thread. Additionally, it will only be calculated once.
+        // Considering the default pixel padding option is true, and inverse LUT operation is false
         getModalityLookup(null, false);
     }
 
@@ -125,7 +126,7 @@ public class ImageAdapter {
                 val = findMinMaxValues(image, paddingValueMin, paddingValueMax);
             }
         }
-        // 当不是单色且没有填充值时，使用默认的最小和最大值
+        // When not monochrome and no padding value, use default minimum and maximum values
         if (val == null) {
             val = ImageProcessor.findRawMinMaxValues(image, !monochrome);
         }
@@ -140,17 +141,19 @@ public class ImageAdapter {
      * @return 最小/最大值结果
      */
     private MinMaxLocResult findMinMaxValues(PlanarImage image, int frameIndex) {
-        // 这个函数可以从内部类Load中多次调用。min和max只会计算一次。
+        // This function can be called multiple times from inner class Load. min and max will only be calculated once.
         MinMaxLocResult val = getMinMaxValues(image, desc, frameIndex);
-        // 不能信任SmallestImagePixelValue和LargestImagePixelValue值！所以需要搜索最小和最大值
+        // Cannot trust SmallestImagePixelValue and LargestImagePixelValue values! So need to search for minimum and
+        // maximum values
         int bitsAllocated = desc.getBitsAllocated();
         if (bitsStored < bitsAllocated) {
             boolean isSigned = desc.isSigned();
             int minInValue = isSigned ? -(1 << (bitsStored - 1)) : 0;
             int maxInValue = isSigned ? (1 << (bitsStored - 1)) - 1 : (1 << bitsStored) - 1;
             if (val.minVal < minInValue || val.maxVal > maxInValue) {
-                // 当图像包含超出存储位数的值时，存储位数将被分配位数替换， 以便有一个能处理所有值的LUT。
-                // 在查找最小和最大值之前，应该屏蔽像素数据中的覆盖层。
+                // When image contains values outside the stored bits, bits stored will be replaced by bits allocated,
+                // to have a LUT that can handle all values.
+                // Before finding minimum and maximum values, overlays in pixel data should be masked.
                 setBitsStored(bitsAllocated);
             }
         }
@@ -175,8 +178,8 @@ public class ImageAdapter {
             val.maxVal = 255.0;
         } else {
             val = ImageProcessor.findMinMaxValues(image.toMat(), paddingValueMin, paddingValueMax);
-            // 处理最小和最大相等的情况，例如黑色图像
-            // 最大值+1以显示正确的值
+            // Handle case where minimum and maximum are equal, e.g., black image
+            // Maximum value+1 to display correct value
             if (val != null && val.minVal == val.maxVal) {
                 val.maxVal += 1.0;
             }
@@ -292,7 +295,7 @@ public class ImageAdapter {
         if (min == null || max == null) {
             return 0;
         }
-        // 计算最小和最大值，因为斜率可能为负
+        // Calculate minimum and maximum values, because slope may be negative
         if (minVal) {
             return Math.min(min.doubleValue(), max.doubleValue());
         }
@@ -491,7 +494,7 @@ public class ImageAdapter {
             inverseLut ^= inverseLUTAction;
         }
         LutParameters lutParams = getLutParameters(pixelPadding, mLUTSeq, inverseLut, pr);
-        // 不需要模态查找表
+        // No modality lookup table needed
         if (lutParams == null) {
             return null;
         }
@@ -557,7 +560,7 @@ public class ImageAdapter {
         boolean isSigned = desc.isSigned();
         double intercept = getRescaleIntercept(pr);
         double slope = getRescaleSlope(pr);
-        // 不需要模态查找表
+        // No modality lookup table needed
         if (bitsStored > 16
                 || (MathKit.isEqual(slope, 1.0) && MathKit.isEqualToZero(intercept) && paddingValue == null)) {
             return null;
@@ -571,7 +574,7 @@ public class ImageAdapter {
             bitsOutputLut = Integer.SIZE - Integer.numberOfLeadingZeros((int) Math.round(maxValue - minValue));
             outputSigned = minValue < 0 || isSigned;
             if (outputSigned && bitsOutputLut <= 8) {
-                // 允许使用8位图像处理负值
+                // Allow 8-bit images to handle negative values
                 bitsOutputLut = 9;
             }
         } else {
@@ -592,7 +595,8 @@ public class ImageAdapter {
         }
         int minValue;
         int maxValue;
-        // 当激活像素填充时，VOI LUT必须扩展到最小存储位值（MONOCHROME2）和最大存储位值（MONOCHROME1）。 参见C.7.5.1.1.2
+        // When pixel padding is activated, VOI LUT must be extended to minimum stored bit value (MONOCHROME2) and
+        // maximum stored bit value (MONOCHROME1). See C.7.5.1.1.2
         if (wl.isFillOutsideLutRange()
                 || (desc.getPixelPaddingValue() != null && desc.getPhotometricInterpretation().isMonochrome())) {
             minValue = getMinAllocatedValue(wl);

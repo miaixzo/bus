@@ -43,9 +43,6 @@ import org.miaixz.bus.core.lang.exception.InternalException;
  */
 public class InputStreamResource implements Resource, Serializable {
 
-    /**
-     * The serial version UID for serialization.
-     */
     @Serial
     private static final long serialVersionUID = 2852231716055L;
 
@@ -89,16 +86,33 @@ public class InputStreamResource implements Resource, Serializable {
         this.name = name;
     }
 
+    /**
+     * Returns the name of this input stream resource.
+     *
+     * @return The name of the resource.
+     */
     @Override
     public String getName() {
         return this.name;
     }
 
+    /**
+     * Returns the URL of this input stream resource.
+     * <p>
+     * Returns {@code null} since an input stream resource does not have a URL.
+     *
+     * @return {@code null}.
+     */
     @Override
     public URL getUrl() {
         return null;
     }
 
+    /**
+     * Returns the size of this input stream resource based on available bytes.
+     *
+     * @return The number of available bytes.
+     */
     @Override
     public long size() {
         try {
@@ -108,6 +122,11 @@ public class InputStreamResource implements Resource, Serializable {
         }
     }
 
+    /**
+     * Returns the input stream for this resource.
+     *
+     * @return The underlying input stream.
+     */
     @Override
     public InputStream getStream() {
         return this.in;

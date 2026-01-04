@@ -50,9 +50,6 @@ public class CharacterConverter extends AbstractConverter {
      * Singleton instance.
      */
     public static final CharacterConverter INSTANCE = new CharacterConverter();
-    /**
-     * The serial version UID.
-     */
     @Serial
     private static final long serialVersionUID = 2852266250201L;
 

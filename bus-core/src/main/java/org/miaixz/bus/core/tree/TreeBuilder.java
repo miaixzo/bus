@@ -52,8 +52,19 @@ public class TreeBuilder<E> implements Builder<MapTree<E>> {
     @Serial
     private static final long serialVersionUID = 2852250515557L;
 
+    /**
+     * A map storing nodes by their ID for efficient lookup during tree construction.
+     */
     private final Map<E, MapTree<E>> idTreeMap;
+
+    /**
+     * Indicates whether the tree has already been built.
+     */
     private boolean isBuild;
+
+    /**
+     * The root node of the tree being built.
+     */
     private MapTree<E> root;
 
     /**

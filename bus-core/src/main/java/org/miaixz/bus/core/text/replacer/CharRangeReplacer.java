@@ -41,9 +41,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  */
 public class CharRangeReplacer extends StringReplacer {
 
-    /**
-     * The serial version UID.
-     */
     @Serial
     private static final long serialVersionUID = 2852238751018L;
 

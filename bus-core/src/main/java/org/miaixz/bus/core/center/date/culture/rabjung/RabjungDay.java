@@ -28,7 +28,7 @@
 package org.miaixz.bus.core.center.date.culture.rabjung;
 
 import org.miaixz.bus.core.center.date.culture.Loops;
-import org.miaixz.bus.core.center.date.culture.cn.Zodiac;
+import org.miaixz.bus.core.center.date.culture.Zodiac;
 import org.miaixz.bus.core.center.date.culture.solar.SolarDay;
 
 /**

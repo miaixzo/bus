@@ -32,7 +32,7 @@ import java.time.Duration;
 import java.time.temporal.TemporalAmount;
 
 /**
- * {@link Duration}对象转换器
+ * Converter for {@link Duration} objects
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,6 +48,16 @@ public class DurationConverter extends AbstractConverter {
     @Serial
     private static final long serialVersionUID = 2852268197775L;
 
+    /**
+     * Converts the given value to a Duration.
+     * <p>
+     * Supports conversion from TemporalAmount, Long (milliseconds), and string representations.
+     * </p>
+     *
+     * @param targetClass the target class (should be Duration.class)
+     * @param value       the value to convert
+     * @return the converted Duration object
+     */
     @Override
     protected Duration convertInternal(final Class<?> targetClass, final Object value) {
         if (value instanceof TemporalAmount) {

@@ -37,6 +37,9 @@ import org.apache.poi.ss.usermodel.Cell;
  */
 public class BooleanCellSetter implements CellSetter {
 
+    /**
+     * The boolean value to set in the cell.
+     */
     private final Boolean value;
 
     /**
@@ -48,6 +51,11 @@ public class BooleanCellSetter implements CellSetter {
         this.value = value;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param cell the cell to set the boolean value in
+     */
     @Override
     public void setValue(final Cell cell) {
         cell.setCellValue(value);

@@ -96,7 +96,7 @@ public class UDPListener implements Listener {
         try {
             ds.close();
         } catch (Throwable e) {
-            // 关闭数据报套接字时忽略错误
+            // Ignore errors when closing datagram socket
             Logger.error(e.getMessage());
         }
     }

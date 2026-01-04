@@ -34,7 +34,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * 表主键
+ * MariaDB table primary key.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,32 +44,32 @@ import lombok.Setter;
 public class MariadbPrimaryKey implements PrimaryKey {
 
     /**
-     * tableCat
+     * Table catalog.
      */
     @MappingField(value = "TABLE_CAT")
     private String tableCat;
     /**
-     * 表名
+     * Table name.
      */
     @MappingField(value = "TABLE_NAME")
     private String tableName;
     /**
-     * 主键名称
+     * Primary key name.
      */
     @MappingField(value = "PK_NAME")
     private String pkName;
     /**
-     *
+     * Table schema.
      */
     @MappingField(value = "TABLE_SCHEM")
     private String tableSchem;
     /**
-     * 列名
+     * Column name.
      */
     @MappingField(value = "COLUMN_NAME")
     private String columnName;
     /**
-     * 关键序列
+     * Key sequence.
      */
     @MappingField(value = "KEY_SEQ")
     private String keySeq;

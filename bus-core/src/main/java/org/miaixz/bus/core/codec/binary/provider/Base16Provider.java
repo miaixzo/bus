@@ -141,11 +141,11 @@ public class Base16Provider implements Encoder<byte[], char[]>, Decoder<CharSequ
     }
 
     /**
-     * Converts a character to its Unicode string representation (e.g., {@code \u4f60}). The resulting string is padded
+     * Converts a character to its Unicode string representation (e.g., {@code \u0041}). The resulting string is padded
      * with leading zeros if necessary to ensure a 4-digit hex value.
-     * 
+     *
      * <pre>
-     * toUnicodeHex('你') = "\\u4f60"
+     * toUnicodeHex('A') = "\\u0041"
      * </pre>
      *
      * @param ch The character to convert.

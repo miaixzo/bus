@@ -39,6 +39,9 @@ import org.miaixz.bus.core.lang.Normal;
  */
 public class ErrorCellValue implements CellValue<String> {
 
+    /**
+     * The cell object representing the error cell.
+     */
     private final Cell cell;
 
     /**
@@ -50,6 +53,11 @@ public class ErrorCellValue implements CellValue<String> {
         this.cell = cell;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return the error string, or empty string if error code is invalid
+     */
     @Override
     public String getValue() {
         final FormulaError error = FormulaError.forInt(cell.getErrorCellValue());

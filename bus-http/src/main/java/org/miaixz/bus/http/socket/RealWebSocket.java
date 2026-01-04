@@ -203,16 +203,29 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
         };
     }
 
+    /**
+     * Returns the original HTTP request that initiated this WebSocket.
+     *
+     * @return The original request.
+     */
     @Override
     public Request request() {
         return originalRequest;
     }
 
+    /**
+     * Returns the total size in bytes of enqueued messages.
+     *
+     * @return The queue size in bytes.
+     */
     @Override
     public synchronized long queueSize() {
         return queueSize;
     }
 
+    /**
+     * Cancels the WebSocket connection.
+     */
     @Override
     public void cancel() {
         call.cancel();
@@ -231,6 +244,12 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
         call = Internal.instance.newWebSocketCall(client, request);
         call.enqueue(new Callback() {
 
+            /**
+             * Called when the response is received.
+             *
+             * @param call     The call.
+             * @param response The response.
+             */
             @Override
             public void onResponse(NewCall call, Response response) {
                 Exchange exchange = Internal.instance.exchange(response);
@@ -257,6 +276,12 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
                 }
             }
 
+            /**
+             * Called when the request fails.
+             *
+             * @param call The call.
+             * @param e    The exception.
+             */
             @Override
             public void onFailure(NewCall call, IOException e) {
                 failWebSocket(e, null);
@@ -398,16 +423,31 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
         return receivedPongCount;
     }
 
+    /**
+     * Called when a text message is received.
+     *
+     * @param text The message text.
+     */
     @Override
     public void onReadMessage(String text) {
         listener.onMessage(this, text);
     }
 
+    /**
+     * Called when a binary message is received.
+     *
+     * @param bytes The message bytes.
+     */
     @Override
     public void onReadMessage(ByteString bytes) {
         listener.onMessage(this, bytes);
     }
 
+    /**
+     * Called when a ping frame is received.
+     *
+     * @param payload The ping payload.
+     */
     @Override
     public synchronized void onReadPing(ByteString payload) {
         if (failed || (enqueuedClose && messageAndCloseQueue.isEmpty()))
@@ -418,12 +458,23 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
         receivedPingCount++;
     }
 
+    /**
+     * Called when a pong frame is received.
+     *
+     * @param buffer The pong payload.
+     */
     @Override
     public synchronized void onReadPong(ByteString buffer) {
         receivedPongCount++;
         awaitingPong = false;
     }
 
+    /**
+     * Called when a close frame is received.
+     *
+     * @param code   The close code.
+     * @param reason The close reason.
+     */
     @Override
     public void onReadClose(int code, String reason) {
         if (code == -1)
@@ -455,6 +506,12 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
         }
     }
 
+    /**
+     * Sends a text message.
+     *
+     * @param text The message text.
+     * @return true if the message was successfully enqueued.
+     */
     @Override
     public boolean send(String text) {
         if (text == null)
@@ -462,6 +519,12 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
         return send(ByteString.encodeUtf8(text), WebSocketProtocol.OPCODE_TEXT);
     }
 
+    /**
+     * Sends a binary message.
+     *
+     * @param bytes The message bytes.
+     * @return true if the message was successfully enqueued.
+     */
     @Override
     public boolean send(ByteString bytes) {
         if (bytes == null)
@@ -506,6 +569,13 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
         return true;
     }
 
+    /**
+     * Initiates a graceful close of the WebSocket connection.
+     *
+     * @param code   The close code.
+     * @param reason The close reason.
+     * @return true if the close frame was successfully enqueued.
+     */
     @Override
     public boolean close(int code, String reason) {
         return close(code, reason, CANCEL_AFTER_CLOSE_MILLIS);
@@ -765,6 +835,9 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
         PingRunnable() {
         }
 
+        /**
+         * Executes the ping operation.
+         */
         @Override
         public void run() {
             writePingFrame();
@@ -776,6 +849,9 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
      */
     final class CancelRunnable implements Runnable {
 
+        /**
+         * Executes the cancel operation.
+         */
         @Override
         public void run() {
             cancel();

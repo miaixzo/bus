@@ -160,11 +160,19 @@ public class CsvReader extends CsvBaseReader implements Iterable<CsvRow>, Closea
         return StreamSupport.stream(spliterator(), false).onClose(this::close);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return iterator over CSV rows
+     */
     @Override
     public Iterator<CsvRow> iterator() {
         return parse(this.reader);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void close() {
         IoKit.closeQuietly(this.reader);

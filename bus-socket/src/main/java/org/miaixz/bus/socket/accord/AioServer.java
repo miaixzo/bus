@@ -172,6 +172,9 @@ public class AioServer {
                 .allocate(context.getReadBufferSize());
         serverSocketChannel.accept(null, new CompletionHandler<AsynchronousSocketChannel, Void>() {
 
+            /**
+             * {@inheritDoc}
+             */
             @Override
             public void completed(AsynchronousSocketChannel channel, Void attachment) {
                 try {
@@ -185,6 +188,9 @@ public class AioServer {
                 }
             }
 
+            /**
+             * {@inheritDoc}
+             */
             @Override
             public void failed(Throwable exc, Void attachment) {
                 exc.printStackTrace();

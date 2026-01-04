@@ -89,37 +89,37 @@ public class Scheduler implements Serializable {
     private static final long serialVersionUID = 2852287508206L;
 
     /**
-     * Scheduled task configuration
+     * Scheduled task configuration.
      */
     public final Configure config;
     /**
-     * Timer
+     * Timer.
      */
     private CronTimer timer;
     /**
-     * Scheduled task table
+     * Scheduled task table.
      */
     public Repertoire repertoire;
     /**
-     * Thread pool for executing TaskLauncher and TaskExecutor
+     * Thread pool for executing TaskLauncher and TaskExecutor.
      */
     public ExecutorService threadExecutor;
     /**
-     * Task manager
+     * Task manager.
      */
     public Manager manager;
     /**
-     * Listener manager list
+     * Listener manager list.
      */
     public TaskListenerManager listenerManager;
 
     /**
-     * Lock for scheduled tasks, used to synchronize add and delete operations
+     * Lock for scheduled tasks, used to synchronize add and delete operations.
      */
     private final Lock lock;
 
     /**
-     * Whether it has been started
+     * Whether it has been started.
      */
     private boolean started;
 
@@ -408,7 +408,7 @@ public class Scheduler implements Serializable {
     }
 
     /**
-     * Start
+     * Start.
      *
      * @return this
      */
@@ -486,9 +486,9 @@ public class Scheduler implements Serializable {
     }
 
     /**
-     * Executes scheduled tasks from the task table that match the timestamp
+     * Executes scheduled tasks from the task table that match the timestamp.
      *
-     * @param millis Millisecond timestamp
+     * @param millis Millisecond timestamp.
      */
     public void execute(final long millis) {
         this.repertoire.execute(this, millis);

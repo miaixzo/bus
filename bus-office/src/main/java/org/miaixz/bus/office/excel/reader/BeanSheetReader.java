@@ -44,7 +44,13 @@ import org.miaixz.bus.core.xyz.BeanKit;
  */
 public class BeanSheetReader<T> implements SheetReader<List<T>> {
 
+    /**
+     * The bean class to convert each row to.
+     */
     private final Class<T> beanClass;
+    /**
+     * The map sheet reader used to read the sheet.
+     */
     private final MapSheetReader mapSheetReader;
 
     /**
@@ -62,6 +68,12 @@ public class BeanSheetReader<T> implements SheetReader<List<T>> {
         this.beanClass = beanClass;
     }
 
+    /**
+     * Reads the sheet and converts each row into a bean of the specified type.
+     *
+     * @param sheet The {@link Sheet} to read.
+     * @return A list of beans converted from the sheet rows.
+     */
     @Override
     public List<T> read(final Sheet sheet) {
         final List<Map<Object, Object>> mapList = mapSheetReader.read(sheet);

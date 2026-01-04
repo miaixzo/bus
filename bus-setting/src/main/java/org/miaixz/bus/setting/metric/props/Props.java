@@ -306,6 +306,12 @@ public final class Props extends java.util.Properties implements TypeGetter<Char
 
                 @Override
                 public void onModify(final WatchEvent<?> event, final WatchKey key) {
+                    /**
+                     * Called when the watched file is modified. Reloads the properties from the file.
+                     *
+                     * @param event the watch event that occurred
+                     * @param key   the watch key representing the directory being watched
+                     */
                     load();
                 }
             });

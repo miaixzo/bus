@@ -39,7 +39,15 @@ import org.miaixz.bus.core.xyz.StringKit;
  */
 public class NumberValidator {
 
+    /**
+     * The tolerance value for double comparison. Two double values are considered equal if their absolute difference is
+     * less than this value.
+     */
     public static final double DOUBLE_EPSILON = 1e-6;
+    /**
+     * The tolerance value for float comparison. Two float values are considered equal if their absolute difference is
+     * less than this value.
+     */
     public static final double FLOAT_EPSILON = 1e-5;
 
     /**

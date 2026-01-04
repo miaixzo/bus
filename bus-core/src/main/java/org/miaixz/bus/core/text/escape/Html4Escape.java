@@ -41,6 +41,9 @@ import org.miaixz.bus.core.text.replacer.ReplacerChain;
  */
 public class Html4Escape extends ReplacerChain {
 
+    @Serial
+    private static final long serialVersionUID = 2852235839619L;
+
     /**
      * Lookup table for ISO-8859-1 HTML escape characters. This array defines the mapping from ISO-8859-1 characters to
      * their HTML entity references.
@@ -345,11 +348,6 @@ public class Html4Escape extends ReplacerChain {
             // <!-- rsaquo is proposed but not yet ISO standardized -->
             { "\u20AC", "&euro;" }, // -- euro sign, U+20AC NEW -->
     };
-    /**
-     * The serial version UID for serialization.
-     */
-    @Serial
-    private static final long serialVersionUID = 2852235839619L;
 
     /**
      * Constructs a new {@code Html4Escape} instance. Initializes the escape chain with ISO-8859-1 and extended HTML 4.0

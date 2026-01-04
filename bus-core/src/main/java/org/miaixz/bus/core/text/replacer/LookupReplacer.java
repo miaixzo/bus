@@ -42,9 +42,6 @@ import java.util.Set;
  */
 public class LookupReplacer extends StringReplacer {
 
-    /**
-     * The serial version UID.
-     */
     @Serial
     private static final long serialVersionUID = 2852239213366L;
 

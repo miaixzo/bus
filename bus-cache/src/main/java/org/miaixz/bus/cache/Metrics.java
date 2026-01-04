@@ -123,16 +123,16 @@ public interface Metrics {
     /**
      * Gets the name used for the summary or global statistics.
      * <p>
-     * Returns "全局" (Global) if the system language is Chinese, otherwise returns "summary". Example code:
+     * Returns "全局" (Global in Chinese) if the system language is Chinese, otherwise returns "summary". Example code:
      * </p>
-     * 
+     *
      * <pre>{@code
      * Metrics metrics = new SomeMetricsImpl();
      * String summary = metrics.summaryName();
      * System.out.println("Summary Name: " + summary);
      * }</pre>
      *
-     * @return The name for the summary statistics.
+     * @return The name for the summary statistics. Returns "全局" for Chinese locale, "summary" otherwise.
      */
     default String summaryName() {
         return "zh".equalsIgnoreCase(System.getProperty("user.language")) ? "全局" : "summary";

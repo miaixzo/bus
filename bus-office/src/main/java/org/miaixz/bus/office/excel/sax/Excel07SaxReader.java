@@ -90,6 +90,14 @@ public class Excel07SaxReader implements ExcelSaxReader<Excel07SaxReader> {
         return this;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param file               the Excel file to read
+     * @param idOrRidOrSheetName the sheet identifier (sheet ID, rID, or sheet name)
+     * @return this reader instance for chaining
+     * @throws InternalException if an InvalidFormatException or IOException occurs
+     */
     @Override
     public Excel07SaxReader read(final File file, final String idOrRidOrSheetName) throws InternalException {
         try (final OPCPackage open = OPCPackage.open(file, PackageAccess.READ)) {
@@ -99,6 +107,14 @@ public class Excel07SaxReader implements ExcelSaxReader<Excel07SaxReader> {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param in                 the input stream containing the Excel data
+     * @param idOrRidOrSheetName the sheet identifier (sheet ID, rID, or sheet name)
+     * @return this reader instance for chaining
+     * @throws InternalException if an IOException or InvalidFormatException occurs
+     */
     @Override
     public Excel07SaxReader read(final InputStream in, final String idOrRidOrSheetName) throws InternalException {
         try (final OPCPackage opcPackage = OPCPackage.open(in)) {

@@ -131,6 +131,18 @@ public class McpExecutor extends Coordinator<Void, Void> implements SmartLifecyc
                 .subscribeOn(reactor.core.scheduler.Schedulers.boundedElastic()).then(Mono.empty());
     }
 
+    /**
+     * Starts the MCP service and initializes all MCP clients.
+     * <p>
+     * This method is called by Spring during application startup. It:
+     * <ol>
+     * <li>Finds all assets with mode >= 3 (MCP-related assets)</li>
+     * <li>Starts the external process for each asset using ProcessProvider</li>
+     * <li>Creates and initializes the corresponding MCP client for each process</li>
+     * <li>Registers each successfully initialized client in the client cache</li>
+     * </ol>
+     * The startup process is asynchronous and non-blocking.
+     */
     @Override
     public void start() {
         if (running.compareAndSet(false, true)) {
@@ -153,6 +165,17 @@ public class McpExecutor extends Coordinator<Void, Void> implements SmartLifecyc
         }
     }
 
+    /**
+     * Stops the MCP service and gracefully shuts down all MCP clients and processes.
+     * <p>
+     * This method is called by Spring during application shutdown. It:
+     * <ol>
+     * <li>Stops all external processes managed by ProcessProvider</li>
+     * <li>Closes all MCP client connections</li>
+     * <li>Clears the client cache</li>
+     * </ol>
+     * The shutdown process has a 5-second timeout to prevent indefinite blocking.
+     */
     @Override
     public void stop() {
         if (running.compareAndSet(true, false)) {
@@ -188,6 +211,13 @@ public class McpExecutor extends Coordinator<Void, Void> implements SmartLifecyc
         }
     }
 
+    /**
+     * Checks whether the MCP service is currently running.
+     * <p>
+     * This method is called by Spring to check the lifecycle status.
+     *
+     * @return {@code true} if the service is running, {@code false} otherwise
+     */
     @Override
     public boolean isRunning() {
         return running.get();
@@ -274,7 +304,7 @@ public class McpExecutor extends Coordinator<Void, Void> implements SmartLifecyc
      * Calls a tool on the specified MCP service and formats the response based on stream mode.
      * <p>
      * This method retrieves the MCP client for the specified service, calls the tool, and formats the response
-     * according to the {@link Assets#getStream()} configuration (streaming vs buffering).
+     * according to the {@link Assets} configuration (streaming vs buffering).
      *
      * @param serviceName The name of the MCP service
      * @param toolName    The name of the tool to call

@@ -41,9 +41,6 @@ import org.miaixz.bus.core.lang.Assert;
  */
 public class MatcherFinder extends TextFinder {
 
-    /**
-     * The serial version UID.
-     */
     @Serial
     private static final long serialVersionUID = 2852236936800L;
 

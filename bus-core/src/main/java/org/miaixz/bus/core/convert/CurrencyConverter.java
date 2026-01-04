@@ -31,7 +31,7 @@ import java.io.Serial;
 import java.util.Currency;
 
 /**
- * 货币{@link Currency} 转换器
+ * Converter for currency {@link Currency} objects
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -47,6 +47,16 @@ public class CurrencyConverter extends AbstractConverter {
     @Serial
     private static final long serialVersionUID = 2852267872622L;
 
+    /**
+     * Converts the given value to a Currency.
+     * <p>
+     * Converts the value to a string first, then uses {@link Currency#getInstance} to create the Currency.
+     * </p>
+     *
+     * @param targetClass the target class (should be Currency.class)
+     * @param value       the value to convert (typically a currency code string)
+     * @return the converted Currency object
+     */
     @Override
     protected Currency convertInternal(final Class<?> targetClass, final Object value) {
         return Currency.getInstance(convertToString(value));

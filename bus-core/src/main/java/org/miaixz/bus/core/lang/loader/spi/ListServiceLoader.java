@@ -136,6 +136,9 @@ public class ListServiceLoader<S> extends AbstractServiceLoader<S> {
         return new ListServiceLoader<>(pathPrefix, serviceClass, classLoader, null);
     }
 
+    /**
+     * Loads or reloads all services. This method parses all service resources with the same name.
+     */
     @Override
     public void load() {
         final MultiResource resources = ResourceKit.getResources(pathPrefix + serviceClass.getName(), this.classLoader);
@@ -144,11 +147,21 @@ public class ListServiceLoader<S> extends AbstractServiceLoader<S> {
         }
     }
 
+    /**
+     * Returns the number of services loaded.
+     *
+     * @return the number of services.
+     */
     @Override
     public int size() {
         return this.serviceNames.size();
     }
 
+    /**
+     * Returns a list of all service names.
+     *
+     * @return an unmodifiable list of service names.
+     */
     @Override
     public List<String> getServiceNames() {
         return ListKit.view(this.serviceNames);
@@ -168,6 +181,12 @@ public class ListServiceLoader<S> extends AbstractServiceLoader<S> {
         return getServiceClass(serviceClassName);
     }
 
+    /**
+     * Gets the implementation class for the service by name.
+     *
+     * @param serviceName the fully qualified class name of the service.
+     * @return the service class, or {@code null} if not found.
+     */
     @Override
     public Class<S> getServiceClass(final String serviceName) {
         return ClassKit.loadClass(serviceName);
@@ -187,11 +206,22 @@ public class ListServiceLoader<S> extends AbstractServiceLoader<S> {
         return getService(serviceClassName);
     }
 
+    /**
+     * Gets the service instance by name, using a cache. Multiple calls will return the same service object.
+     *
+     * @param serviceName the fully qualified class name of the service.
+     * @return the service object, or {@code null} if not found.
+     */
     @Override
     public S getService(final String serviceName) {
         return this.serviceCache.get(serviceName, () -> createService(serviceName));
     }
 
+    /**
+     * Returns an iterator over the services. The iterator will return the same service object for multiple calls.
+     *
+     * @return an iterator over the services.
+     */
     @Override
     public Iterator<S> iterator() {
         return new Iterator<>() {
@@ -201,11 +231,21 @@ public class ListServiceLoader<S> extends AbstractServiceLoader<S> {
              */
             private final Iterator<String> nameIter = serviceNames.iterator();
 
+            /**
+             * Returns {@code true} if there are more services to iterate over.
+             *
+             * @return {@code true} if there are more services, {@code false} otherwise.
+             */
             @Override
             public boolean hasNext() {
                 return nameIter.hasNext();
             }
 
+            /**
+             * Returns the next service in the iteration.
+             *
+             * @return the next service.
+             */
             @Override
             public S next() {
                 return getService(nameIter.next());

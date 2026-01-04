@@ -33,7 +33,7 @@ import java.net.URI;
 import java.net.URL;
 
 /**
- * URI对象转换器
+ * Converter for URI objects
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,6 +43,16 @@ public class URIConverter extends AbstractConverter {
     @Serial
     private static final long serialVersionUID = 2852272395520L;
 
+    /**
+     * Converts the given value to a URI.
+     * <p>
+     * Supports conversion from File, URL, and string representations.
+     * </p>
+     *
+     * @param targetClass the target class (should be URI.class)
+     * @param value       the value to convert
+     * @return the converted URI object, or null if conversion fails
+     */
     @Override
     protected URI convertInternal(final Class<?> targetClass, final Object value) {
         try {

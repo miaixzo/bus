@@ -34,6 +34,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Context;
+import org.miaixz.bus.vortex.Holder;
 import org.miaixz.bus.vortex.magic.ErrorCode;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -55,17 +56,14 @@ import reactor.core.publisher.Mono;
  * The foundational strategy responsible for request parsing, body caching, and context initialization.
  * <p>
  * As the first strategy in the chain (with the highest precedence), its primary roles are:
- * <ol>
+ * <ul>
  * <li>Performing initial security checks, such as path validation, and path traversal detection.</li>
  * <li>Dispatching the request to a specific handler based on its HTTP method and {@code Content-Type}.</li>
- * <li><b>Smart request body handling:</b>
- * <ul>
- * <li>For small requests (< 10 MB): Caches the request body in memory for fast processing and re-reading</li>
+ * <li><b>Smart request body handling:</b></li>
+ * <li>For small requests (&lt; 10 MB): Caches the request body in memory for fast processing and re-reading</li>
  * <li>For large multipart requests: Uses streaming processing to avoid high memory pressure</li>
  * <li>This ensures optimal performance while preventing OOM errors under high load</li>
  * </ul>
- * </li>
- * </ol>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -236,6 +234,14 @@ public class RequestStrategy extends AbstractStrategy {
             // 3. Create the decorator to cache the body
             ServerHttpRequest newRequest = new ServerHttpRequestDecorator(exchange.getRequest()) {
 
+                /**
+                 * Returns the cached request body as a Flux of DataBuffer.
+                 * <p>
+                 * This override allows the request body to be read multiple times by returning the cached byte array
+                 * wrapped in a DataBuffer.
+                 *
+                 * @return A Flux emitting a single DataBuffer containing the cached body
+                 */
                 @Override
                 public Flux<DataBuffer> getBody() {
                     return Flux.just(exchange.getResponse().bufferFactory().wrap(bytes));
@@ -313,8 +319,22 @@ public class RequestStrategy extends AbstractStrategy {
         return Mono.fromCallable(() -> {
             byte[] bytes = readBodyToBytes(dataBuffers); // Can throw ValidateException
 
+            /**
+             * Decorator that caches the request body for multiple reads.
+             * <p>
+             * This inner class overrides getBody() to return the cached byte array, allowing the request body to be
+             * consumed multiple times.
+             */
             ServerHttpRequest newRequest = new ServerHttpRequestDecorator(exchange.getRequest()) {
 
+                /**
+                 * Returns the cached request body as a Flux of DataBuffer.
+                 * <p>
+                 * This override allows the request body to be read multiple times by returning the cached byte array
+                 * wrapped in a DataBuffer.
+                 *
+                 * @return A Flux emitting a single DataBuffer containing the cached body
+                 */
                 @Override
                 public Flux<DataBuffer> getBody() {
                     return Flux.just(exchange.getResponse().bufferFactory().wrap(bytes));

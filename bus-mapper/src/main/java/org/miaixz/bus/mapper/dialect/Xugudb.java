@@ -30,10 +30,10 @@ package org.miaixz.bus.mapper.dialect;
 import org.miaixz.bus.mapper.support.paging.Pageable;
 
 /**
- * Xugudb (虚谷数据库) dialect.
+ * Xugudb database dialect.
  *
  * <p>
- * Xugudb is a Chinese domestic database that supports standard SQL syntax.
+ * Xugudb is a Chinese domestic database that supports standard SQL syntax (虚谷数据库).
  * </p>
  *
  * <p>

@@ -47,11 +47,23 @@ public class JbossLoggingFactory extends AbstractFactory {
         exists(org.jboss.logging.Logger.class);
     }
 
+    /**
+     * Creates a logger provider for the specified name.
+     *
+     * @param name the name of the logger
+     * @return a new {@link Provider} instance
+     */
     @Override
     public Provider create(final String name) {
         return new JbossLoggingProvider(name);
     }
 
+    /**
+     * Creates a logger provider for the specified class.
+     *
+     * @param clazz the class for which to create the logger
+     * @return a new {@link Provider} instance
+     */
     @Override
     public Provider create(final Class<?> clazz) {
         return new JbossLoggingProvider(clazz);

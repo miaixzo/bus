@@ -123,7 +123,15 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
     int proc_pidfdinfo(int pid, int fd, int flavor, Structure buffer, int buffersize);
 
     /**
-     * Mac utmpx structure, representing an entry in the user accounting database.
+     * JNA wrapper for the Mac utmpx structure.
+     * <p>
+     * This class maps to the native macOS utmpx structure representing an entry in the user accounting database: {@code
+     * struct utmpx {
+     *     char ut_user[UTX_USERSIZE];
+     *     char ut_id[UTX_IDSIZE];
+     *     char ut_line[UTX_LINESIZE]; pid_t ut_pid; short ut_type; struct timeval ut_tv; char ut_host[UTX_HOSTSIZE];
+     * char ut_pad[16]; }; }
+     * </p>
      */
     @FieldOrder({ "ut_user", "ut_id", "ut_line", "ut_pid", "ut_type", "ut_tv", "ut_host", "ut_pad" })
     class MacUtmpx extends Structure {
@@ -163,7 +171,10 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
     }
 
     /**
-     * Mac file descriptor information structure.
+     * JNA wrapper for the ProcFdInfo structure.
+     * <p>
+     * This class maps to the native macOS file descriptor information structure.
+     * </p>
      */
     @FieldOrder({ "proc_fd", "proc_fdtype" })
     class ProcFdInfo extends Structure {
@@ -179,7 +190,10 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
     }
 
     /**
-     * Mac internet socket information structure.
+     * JNA wrapper for the InSockInfo structure.
+     * <p>
+     * This class maps to the native macOS internet socket information structure.
+     * </p>
      */
     @FieldOrder({ "insi_fport", "insi_lport", "insi_gencnt", "insi_flags", "insi_flow", "insi_vflag", "insi_ip_ttl",
             "rfu_1", "insi_faddr", "insi_laddr", "insi_v4", "insi_v6" })
@@ -237,7 +251,10 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
     }
 
     /**
-     * Mac TCP socket information structure.
+     * JNA wrapper for the TcpSockInfo structure.
+     * <p>
+     * This class maps to the native macOS TCP socket information structure.
+     * </p>
      */
     @FieldOrder({ "tcpsi_ini", "tcpsi_state", "tcpsi_timer", "tcpsi_mss", "tcpsi_flags", "rfu_1", "tcpsi_tp" })
     class TcpSockInfo extends Structure {
@@ -273,7 +290,10 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
     }
 
     /**
-     * Mac IP Socket Info structure.
+     * JNA wrapper for the SocketInfo structure.
+     * <p>
+     * This class maps to the native macOS IP socket information structure.
+     * </p>
      */
     @FieldOrder({ "soi_stat", "soi_so", "soi_pcb", "soi_type", "soi_protocol", "soi_family", "soi_options",
             "soi_linger", "soi_state", "soi_qlen", "soi_incqlen", "soi_qlimit", "soi_timeo", "soi_error", "soi_oobmark",
@@ -363,7 +383,10 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
     }
 
     /**
-     * Mac file information structure.
+     * JNA wrapper for the ProcFileInfo structure.
+     * <p>
+     * This class maps to the native macOS file information structure.
+     * </p>
      */
     @FieldOrder({ "fi_openflags", "fi_status", "fi_offset", "fi_type", "fi_guardflags" })
     class ProcFileInfo extends Structure {
@@ -391,7 +414,10 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
     }
 
     /**
-     * Mac socket file descriptor information structure.
+     * JNA wrapper for the SocketFdInfo structure.
+     * <p>
+     * This class maps to the native macOS socket file descriptor information structure.
+     * </p>
      */
     @FieldOrder({ "pfi", "psi" })
     class SocketFdInfo extends Structure implements AutoCloseable {
@@ -415,7 +441,10 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
     }
 
     /**
-     * Union for protocol-specific socket information, either internet or TCP.
+     * JNA wrapper for the Pri union.
+     * <p>
+     * This class maps to the native macOS union for protocol-specific socket information.
+     * </p>
      */
     class Pri extends Union {
 

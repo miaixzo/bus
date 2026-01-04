@@ -165,21 +165,41 @@ public class MutableDouble extends Number implements Comparable<MutableDouble>, 
         return this;
     }
 
+    /**
+     * Returns the value of this MutableDouble as an {@code int}.
+     *
+     * @return The numeric value represented by this object after conversion to type {@code int}.
+     */
     @Override
     public int intValue() {
         return (int) value;
     }
 
+    /**
+     * Returns the value of this MutableDouble as a {@code long}.
+     *
+     * @return The numeric value represented by this object after conversion to type {@code long}.
+     */
     @Override
     public long longValue() {
         return (long) value;
     }
 
+    /**
+     * Returns the value of this MutableDouble as a {@code float}.
+     *
+     * @return The numeric value represented by this object after conversion to type {@code float}.
+     */
     @Override
     public float floatValue() {
         return (float) value;
     }
 
+    /**
+     * Returns the value of this MutableDouble as a {@code double}.
+     *
+     * @return The numeric value represented by this object after conversion to type {@code double}.
+     */
     @Override
     public double doubleValue() {
         return value;
@@ -205,6 +225,11 @@ public class MutableDouble extends Number implements Comparable<MutableDouble>, 
         return false;
     }
 
+    /**
+     * Returns the hash code for this MutableDouble.
+     *
+     * @return The hash code based on the current value.
+     */
     @Override
     public int hashCode() {
         return Double.hashCode(value);
@@ -222,6 +247,11 @@ public class MutableDouble extends Number implements Comparable<MutableDouble>, 
         return CompareKit.compare(this.value, other.value);
     }
 
+    /**
+     * Returns the string representation of this MutableDouble.
+     *
+     * @return The string representation of the current value.
+     */
     @Override
     public String toString() {
         return String.valueOf(value);

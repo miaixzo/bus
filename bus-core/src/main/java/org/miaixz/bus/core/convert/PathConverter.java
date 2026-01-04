@@ -35,7 +35,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 /**
- * 字符串转换器
+ * Path string converter.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -45,6 +45,16 @@ public class PathConverter extends AbstractConverter {
     @Serial
     private static final long serialVersionUID = 2852270693527L;
 
+    /**
+     * Converts the given value to a Path.
+     * <p>
+     * Supports conversion from URI, URL, File, and String.
+     * </p>
+     *
+     * @param targetClass the target class (should be Path.class)
+     * @param value       the value to convert
+     * @return the converted Path object, or null if conversion fails
+     */
     @Override
     protected Path convertInternal(final Class<?> targetClass, final Object value) {
         try {

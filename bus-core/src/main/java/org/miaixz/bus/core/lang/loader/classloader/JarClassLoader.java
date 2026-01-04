@@ -169,6 +169,11 @@ public class JarClassLoader extends URLClassLoader {
         return this;
     }
 
+    /**
+     * Adds a URL to the classpath.
+     *
+     * @param url the URL to be added to the classpath.
+     */
     @Override
     public void addURL(final URL url) {
         super.addURL(url);

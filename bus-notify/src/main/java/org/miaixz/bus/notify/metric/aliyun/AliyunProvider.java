@@ -95,9 +95,9 @@ public class AliyunProvider<T extends Notice, K extends Context> extends Abstrac
      * @throws InternalException if a security algorithm is not found or the key is invalid during signing.
      */
     protected String getSign(Map<String, String> params) {
-        // 4. 参数KEY排序
+        // 4. Sort parameter keys
         Map<String, String> map = new TreeMap<>(params);
-        // 5. 构造待签名的字符串
+        // 5. Construct string to be signed
         Iterator<String> it = map.keySet().iterator();
         StringBuilder sortQueryStringTmp = new StringBuilder();
         while (it.hasNext()) {
@@ -105,7 +105,7 @@ public class AliyunProvider<T extends Notice, K extends Context> extends Abstrac
             sortQueryStringTmp.append(Symbol.AND).append(specialUrlEncode(key)).append(Symbol.EQUAL)
                     .append(specialUrlEncode(params.get(key)));
         }
-        // 去除第一个多余的&符号
+        // Remove the first excess & symbol
         String sortedQueryString = sortQueryStringTmp.substring(1);
         String stringToSign = HTTP.GET + Symbol.AND + specialUrlEncode(Symbol.SLASH) + Symbol.AND
                 + specialUrlEncode(sortedQueryString);

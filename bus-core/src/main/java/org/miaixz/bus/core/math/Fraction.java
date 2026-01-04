@@ -681,21 +681,41 @@ public final class Fraction extends Number implements Comparable<Fraction> {
         return toProperString;
     }
 
+    /**
+     * Returns the value of this fraction as a {@code double}.
+     *
+     * @return The fraction value as a double.
+     */
     @Override
     public double doubleValue() {
         return (double) numerator / (double) denominator;
     }
 
+    /**
+     * Returns the value of this fraction as a {@code float}.
+     *
+     * @return The fraction value as a float.
+     */
     @Override
     public float floatValue() {
         return (float) numerator / (float) denominator;
     }
 
+    /**
+     * Returns the value of this fraction as an {@code int}, truncating if necessary.
+     *
+     * @return The fraction value as an integer.
+     */
     @Override
     public int intValue() {
         return numerator / denominator;
     }
 
+    /**
+     * Returns the value of this fraction as a {@code long}, truncating if necessary.
+     *
+     * @return The fraction value as a long.
+     */
     @Override
     public long longValue() {
         return (long) numerator / denominator;
@@ -703,6 +723,13 @@ public final class Fraction extends Number implements Comparable<Fraction> {
 
     // region ----- private methods
 
+    /**
+     * Compares this fraction with another.
+     *
+     * @param other The fraction to compare with.
+     * @return A negative integer, zero, or a positive integer as this fraction is less than, equal to, or greater than
+     *         the specified fraction.
+     */
     @Override
     public int compareTo(final Fraction other) {
         if (equals(other)) {
@@ -715,6 +742,12 @@ public final class Fraction extends Number implements Comparable<Fraction> {
         return Long.compare(first, second);
     }
 
+    /**
+     * Checks if this fraction is equal to another object.
+     *
+     * @param object The object to compare with.
+     * @return {@code true} if the objects are equal, {@code false} otherwise.
+     */
     @Override
     public boolean equals(final Object object) {
         if (object == this) {
@@ -726,6 +759,11 @@ public final class Fraction extends Number implements Comparable<Fraction> {
         return getNumerator() == other.getNumerator() && getDenominator() == other.getDenominator();
     }
 
+    /**
+     * Returns the hash code for this fraction.
+     *
+     * @return The hash code.
+     */
     @Override
     public int hashCode() {
         if (hashCode == 0) {
@@ -735,6 +773,11 @@ public final class Fraction extends Number implements Comparable<Fraction> {
         return hashCode;
     }
 
+    /**
+     * Returns the string representation of this fraction.
+     *
+     * @return A string in the format "numerator/denominator".
+     */
     @Override
     public String toString() {
         if (toString == null) {

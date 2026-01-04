@@ -30,6 +30,7 @@ package org.miaixz.bus.shade.beans;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -43,6 +44,7 @@ import java.io.Serializable;
 @Setter
 public class PropertyInfo implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = -1L;
 
     /**

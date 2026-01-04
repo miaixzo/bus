@@ -42,8 +42,17 @@ import org.miaixz.bus.office.excel.xyz.CellKit;
  */
 public class CompositeCellValue implements CellValue<Object> {
 
+    /**
+     * The cell object.
+     */
     private final Cell cell;
+    /**
+     * The cell type.
+     */
     private final CellType cellType;
+    /**
+     * The cell editor.
+     */
     private final CellEditor cellEditor;
 
     /**
@@ -73,6 +82,11 @@ public class CompositeCellValue implements CellValue<Object> {
         return new CompositeCellValue(cell, cellType, cellEditor);
     }
 
+    /**
+     * Gets the cell value based on the cell type and applies any configured cell editor.
+     *
+     * @return The cell value, or {@code null} if the cell is null.
+     */
     @Override
     public Object getValue() {
         Cell cell = this.cell;

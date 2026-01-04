@@ -509,11 +509,25 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Returns {@code true} if this map contains no key-value mappings.
+     *
+     * @return {@code true} if this map contains no key-value mappings
+     */
     @Override
     public boolean isEmpty() {
         return data.isEmpty();
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Returns the number of key-value mappings in this map.
+     *
+     * @return the number of key-value mappings in this map
+     */
     @Override
     public int size() {
         return data.size();
@@ -528,6 +542,11 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
         return Math.max(0, weightedSize.get());
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Removes all of the mappings from this map. The map will be empty after this call returns.
+     */
     @Override
     public void clear() {
         evictionLock.lock();
@@ -556,11 +575,27 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Returns {@code true} if this map contains a mapping for the specified key.
+     *
+     * @param key the key whose presence in this map is to be tested
+     * @return {@code true} if this map contains a mapping for the specified key
+     */
     @Override
     public boolean containsKey(final Object key) {
         return data.containsKey(key);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Returns {@code true} if this map maps one or more keys to the specified value.
+     *
+     * @param value value whose presence in this map is to be tested
+     * @return {@code true} if this map maps one or more keys to the specified value
+     */
     @Override
     public boolean containsValue(final Object value) {
         Assert.notNull(value);
@@ -572,6 +607,18 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
         return false;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Returns the value to which the specified key is mapped, or {@code null} if this map contains no mapping for the
+     * key.
+     * <p>
+     * This operation is recorded with the page replacement policy.
+     *
+     * @param key the key whose associated value is to be returned
+     * @return the value to which the specified key is mapped, or {@code null} if this map contains no mapping for the
+     *         key
+     */
     @Override
     public V get(final Object key) {
         final Node<K, V> node = data.get(key);
@@ -597,11 +644,32 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
         return (node == null) ? null : node.getValue();
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Maps the specified key to the specified value in this map. Neither the key nor the value can be {@code null}.
+     * <p>
+     * This operation is recorded with the page replacement policy.
+     *
+     * @param key   key with which the specified value is to be associated
+     * @param value value to be associated with the specified key
+     * @return the previous value associated with {@code key}, or {@code null} if there was no mapping for {@code key}
+     */
     @Override
     public V put(final K key, final V value) {
         return put(key, value, false);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * If the specified key is not already associated with a value, associates it with the given value and performs the
+     * necessary page replacement policy operations.
+     *
+     * @param key   key with which the specified value is to be associated
+     * @param value value to be associated with the specified key
+     * @return the previous value associated with the specified key, or {@code null} if there was no mapping
+     */
     @Override
     public V putIfAbsent(final K key, final V value) {
         return put(key, value, true);
@@ -651,6 +719,16 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Removes the mapping for a key from this map if it is present.
+     * <p>
+     * This operation is recorded with the page replacement policy.
+     *
+     * @param key key whose mapping is to be removed from the map
+     * @return the previous value associated with {@code key}, or {@code null} if there was no mapping for {@code key}
+     */
     @Override
     public V remove(final Object key) {
         final Node<K, V> node = data.remove(key);
@@ -663,6 +741,17 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
         return node.getValue();
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Removes the entry for a key only if it is currently mapped to a given value.
+     * <p>
+     * This operation is recorded with the page replacement policy if successful.
+     *
+     * @param key   key with which the specified value is associated
+     * @param value value expected to be associated with the specified key
+     * @return {@code true} if the value was removed
+     */
     @Override
     public boolean remove(final Object key, final Object value) {
         final Node<K, V> node = data.get((K) key);
@@ -689,6 +778,17 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Replaces the entry for a key only if it is currently mapped to some value.
+     * <p>
+     * This operation is recorded with the page replacement policy.
+     *
+     * @param key   key with which the specified value is associated
+     * @param value value to be associated with the specified key
+     * @return the previous value associated with the specified key, or {@code null} if there was no mapping for the key
+     */
     @Override
     public V replace(final K key, final V value) {
         Assert.notNull(key);
@@ -718,6 +818,18 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Replaces the entry for a key only if currently mapped to the given value.
+     * <p>
+     * This operation is recorded with the page replacement policy if successful.
+     *
+     * @param key      key with which the specified value is associated
+     * @param oldValue value expected to be associated with the specified key
+     * @param newValue value to be associated with the specified key
+     * @return {@code true} if the value was replaced
+     */
     @Override
     public boolean replace(final K key, final V oldValue, final V newValue) {
         Assert.notNull(key);
@@ -748,6 +860,14 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Returns a {@link Set} view of the keys contained in this map. The set is backed by the map, so changes to the map
+     * are reflected in the set, and vice-versa.
+     *
+     * @return a set view of the keys contained in this map
+     */
     @Override
     public Set<K> keySet() {
         final Set<K> ks = keySet;
@@ -838,12 +958,28 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Returns a {@link Collection} view of the values contained in this map. The collection is backed by the map, so
+     * changes to the map are reflected in the collection, and vice-versa.
+     *
+     * @return a collection view of the values contained in this map
+     */
     @Override
     public Collection<V> values() {
         final Collection<V> vs = values;
         return (vs == null) ? (values = new Values()) : vs;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Returns a {@link Set} view of the mappings contained in this map. The set is backed by the map, so changes to the
+     * map are reflected in the set, and vice-versa.
+     *
+     * @return a set view of the mappings contained in this map
+     */
     @Override
     public Set<Entry<K, V>> entrySet() {
         final Set<Entry<K, V>> es = entrySet;
@@ -949,6 +1085,14 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
          */
         IDLE {
 
+            /**
+             * {@inheritDoc}
+             * <p>
+             * Determines whether buffers should be drained when in idle state.
+             *
+             * @param delayable if a drain should be delayed until required
+             * @return {@code true} if drain should not be delayed
+             */
             @Override
             boolean shouldDrainBuffers(final boolean delayable) {
                 return !delayable;
@@ -960,6 +1104,14 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
          */
         REQUIRED {
 
+            /**
+             * {@inheritDoc}
+             * <p>
+             * Determines whether buffers should be drained when in required state.
+             *
+             * @param delayable if a drain should be delayed until required
+             * @return {@code true} as drain is required
+             */
             @Override
             boolean shouldDrainBuffers(final boolean delayable) {
                 return true;
@@ -971,6 +1123,14 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
          */
         PROCESSING {
 
+            /**
+             * {@inheritDoc}
+             * <p>
+             * Determines whether buffers should be drained when already processing.
+             *
+             * @param delayable if a drain should be delayed until required
+             * @return {@code false} as drain is already in progress
+             */
             @Override
             boolean shouldDrainBuffers(final boolean delayable) {
                 return false;
@@ -993,6 +1153,15 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
 
         INSTANCE;
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Accepts a key-value pair notification when an entry is evicted from the map. This implementation discards all
+         * notifications.
+         *
+         * @param key   the key of the evicted entry
+         * @param value the value of the evicted entry
+         */
         @Override
         public void accept(final Object key, final Object value) {
         }
@@ -1057,21 +1226,49 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
             this.key = key;
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Returns the previous node in the eviction deque.
+         *
+         * @return the previous node, or {@code null} if this is the first node
+         */
         @Override
         public Node<K, V> getPrevious() {
             return prev;
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Sets the previous node in the eviction deque.
+         *
+         * @param prev the node to set as previous
+         */
         @Override
         public void setPrevious(final Node<K, V> prev) {
             this.prev = prev;
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Returns the next node in the eviction deque.
+         *
+         * @return the next node, or {@code null} if this is the last node
+         */
         @Override
         public Node<K, V> getNext() {
             return next;
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Sets the next node in the eviction deque.
+         *
+         * @param next the node to set as next
+         */
         @Override
         public void setNext(final Node<K, V> next) {
             this.next = next;
@@ -1099,6 +1296,15 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
             this.weigher = weigher;
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Returns the weight of the entry for the given key and value.
+         *
+         * @param key   the key of the entry
+         * @param value the value of the entry
+         * @return the weight of the entry (must be at least 1)
+         */
         @Override
         public int weightOf(final K key, final V value) {
             final int weight = weigher.weightOf(key, value);
@@ -1151,8 +1357,8 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
      * .weigher(Weighers.<Edge>set()).build();
      * }</pre>
      *
-     * @param <K> key类型
-     * @param <V> 值类型
+     * @param <K> the key type
+     * @param <V> the value type
      */
     public static final class Builder<K, V> {
 
@@ -1164,7 +1370,7 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
         long capacity;
 
         /**
-         * 构造
+         * Constructs a new Builder.
          */
         public Builder() {
             capacity = -1;
@@ -1281,6 +1487,11 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
             this.node = node;
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Executes the task to add the node to the eviction policy and update the weighted size.
+         */
         @Override
 
         public void run() {
@@ -1305,6 +1516,11 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
             this.node = node;
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Executes the task to remove the node from the eviction policy and mark it as dead.
+         */
         @Override
 
         public void run() {
@@ -1327,6 +1543,11 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
             this.node = node;
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Executes the task to update the weighted size and potentially evict entries.
+         */
         @Override
 
         public void run() {
@@ -1343,36 +1564,88 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
 
         final ConcurrentLinkedHashMap<K, V> map = ConcurrentLinkedHashMap.this;
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Returns the number of keys in the map.
+         *
+         * @return the number of keys
+         */
         @Override
         public int size() {
             return map.size();
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Clears all keys from the map.
+         */
         @Override
         public void clear() {
             map.clear();
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Returns an iterator over the keys in the map.
+         *
+         * @return an iterator over the keys
+         */
         @Override
         public Iterator<K> iterator() {
             return new KeyIterator();
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Returns {@code true} if this set contains the specified key.
+         *
+         * @param object the key to check for presence
+         * @return {@code true} if this set contains the specified key
+         */
         @Override
         public boolean contains(final Object object) {
             return containsKey(object);
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Removes the specified key from the map.
+         *
+         * @param object the key to remove
+         * @return {@code true} if the key was removed
+         */
         @Override
         public boolean remove(final Object object) {
             return (map.remove(object) != null);
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Returns an array containing all of the keys in this set.
+         *
+         * @return an array containing all of the keys in this set
+         */
         @Override
         public Object[] toArray() {
             return map.data.keySet().toArray();
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Returns an array containing all of the keys in this set; the runtime type of the returned array is that of
+         * the specified array.
+         *
+         * @param <T>   the component type of the array
+         * @param array the array into which the elements of this set are to be stored
+         * @return an array containing all of the keys in this set
+         */
         @Override
         public <T> T[] toArray(final T[] array) {
             return map.data.keySet().toArray(array);
@@ -1387,17 +1660,37 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
         final Iterator<K> iterator = data.keySet().iterator();
         K current;
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Returns {@code true} if the iteration has more keys.
+         *
+         * @return {@code true} if the iteration has more keys
+         */
         @Override
         public boolean hasNext() {
             return iterator.hasNext();
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Returns the next element in the iteration.
+         *
+         * @return the next element
+         * @throws NoSuchElementException if the iteration has no more elements
+         */
         @Override
         public K next() {
             current = iterator.next();
             return current;
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Removes from the underlying collection the last element returned by this iterator.
+         */
         @Override
         public void remove() {
             Assert.state(current != null);
@@ -1411,21 +1704,48 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
      */
     final class Values extends AbstractCollection<V> {
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Returns the number of values in the map.
+         *
+         * @return the number of values
+         */
         @Override
         public int size() {
             return ConcurrentLinkedHashMap.this.size();
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Clears all values from the map.
+         */
         @Override
         public void clear() {
             ConcurrentLinkedHashMap.this.clear();
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Returns an iterator over the values in the map.
+         *
+         * @return an iterator over the values
+         */
         @Override
         public Iterator<V> iterator() {
             return new ValueIterator();
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Returns {@code true} if this collection contains the specified value.
+         *
+         * @param o the value to check for presence
+         * @return {@code true} if this collection contains the specified value
+         */
         @Override
         public boolean contains(final Object o) {
             return containsValue(o);
@@ -1440,17 +1760,36 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
         final Iterator<Node<K, V>> iterator = data.values().iterator();
         Node<K, V> current;
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Returns {@code true} if the iteration has more values.
+         *
+         * @return {@code true} if the iteration has more values
+         */
         @Override
         public boolean hasNext() {
             return iterator.hasNext();
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Returns the next value in the iteration.
+         *
+         * @return the next value
+         */
         @Override
         public V next() {
             current = iterator.next();
             return current.getValue();
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Removes from the underlying collection the last element returned by this iterator.
+         */
         @Override
         public void remove() {
             Assert.state(current != null);
@@ -1466,21 +1805,48 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
 
         final ConcurrentLinkedHashMap<K, V> map = ConcurrentLinkedHashMap.this;
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Returns the number of entries in the map.
+         *
+         * @return the number of entries
+         */
         @Override
         public int size() {
             return map.size();
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Clears all entries from the map.
+         */
         @Override
         public void clear() {
             map.clear();
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Returns an iterator over the entries in the map.
+         *
+         * @return an iterator over the entries
+         */
         @Override
         public Iterator<Entry<K, V>> iterator() {
             return new EntryIterator();
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Returns {@code true} if this set contains the specified entry.
+         *
+         * @param object the entry to check for presence
+         * @return {@code true} if this set contains the specified entry
+         */
         @Override
         public boolean contains(final Object object) {
             if (!(object instanceof Entry)) {
@@ -1491,11 +1857,27 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
             return (node != null) && (node.getValue().equals(entry.getValue()));
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Adds the specified entry to the map if not already present.
+         *
+         * @param entry the entry to add
+         * @return {@code true} if the entry was added
+         */
         @Override
         public boolean add(final Entry<K, V> entry) {
             return (map.putIfAbsent(entry.getKey(), entry.getValue()) == null);
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Removes the specified entry from the map.
+         *
+         * @param object the entry to remove
+         * @return {@code true} if the entry was removed
+         */
         @Override
         public boolean remove(final Object object) {
             if (!(object instanceof Entry<?, ?>)) {
@@ -1514,17 +1896,36 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
         final Iterator<Node<K, V>> iterator = data.values().iterator();
         Node<K, V> current;
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Returns {@code true} if the iteration has more entries.
+         *
+         * @return {@code true} if the iteration has more entries
+         */
         @Override
         public boolean hasNext() {
             return iterator.hasNext();
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Returns the next entry in the iteration.
+         *
+         * @return the next entry
+         */
         @Override
         public Entry<K, V> next() {
             current = iterator.next();
             return new WriteThroughEntry(current);
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Removes from the underlying collection the last element returned by this iterator.
+         */
         @Override
         public void remove() {
             Assert.state(current != null);
@@ -1545,6 +1946,14 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
             super(node.key, node.getValue());
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Sets the value for this entry, writing through to the underlying map.
+         *
+         * @param value the new value to be stored
+         * @return the old value
+         */
         @Override
         public V setValue(final V value) {
             put(getKey(), value);

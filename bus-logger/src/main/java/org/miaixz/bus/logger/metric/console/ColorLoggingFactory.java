@@ -46,11 +46,17 @@ public class ColorLoggingFactory extends AbstractFactory {
         super("System.out.println");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Provider create(final String name) {
         return new ColorLoggingProvider(name);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Provider create(final Class<?> clazz) {
         return new ColorLoggingProvider(clazz);

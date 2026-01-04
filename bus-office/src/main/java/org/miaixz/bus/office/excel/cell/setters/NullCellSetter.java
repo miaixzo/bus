@@ -43,6 +43,11 @@ public class NullCellSetter implements CellSetter {
      */
     public static final NullCellSetter INSTANCE = new NullCellSetter();
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param cell the cell to set the empty value in
+     */
     @Override
     public void setValue(final Cell cell) {
         cell.setCellValue(Normal.EMPTY);

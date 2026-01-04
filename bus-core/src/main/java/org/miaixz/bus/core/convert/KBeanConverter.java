@@ -42,7 +42,7 @@ import org.miaixz.bus.core.xyz.KotlinKit;
 import org.miaixz.bus.core.xyz.TypeKit;
 
 /**
- * Kotlin Bean转换器，支持：
+ * Converter for Kotlin Beans, supporting:
  *
  * <pre>
  * Map = Bean
@@ -59,7 +59,7 @@ public class KBeanConverter implements MatcherConverter, Serializable {
     private static final long serialVersionUID = 2852268927129L;
 
     /**
-     * 单例对象
+     * Singleton instance
      */
     public static KBeanConverter INSTANCE = new KBeanConverter();
 
@@ -75,7 +75,7 @@ public class KBeanConverter implements MatcherConverter, Serializable {
             return null;
         }
 
-        // value本身实现了Converter接口，直接调用
+        // If value itself implements Converter interface, call it directly
         if (value instanceof Converter) {
             return ((Converter) value).convert(targetType, value);
         }

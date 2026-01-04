@@ -144,14 +144,36 @@ public class Addables {
      */
     private static class ArrayAddable implements Addable<Object[]> {
 
+        /**
+         * The underlying array instance.
+         */
         private Object[] instance;
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Initializes the array with the specified size.
+         * </p>
+         *
+         * @param type     The array class (e.g., {@code Object[].class}).
+         * @param initSize The initial size of the array.
+         * @return This {@link Addable} instance for chaining.
+         */
         @Override
         public Addable init(Class<Object[]> type, int initSize) {
             this.instance = new Object[initSize];
             return this;
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Adds all elements from the list to the array at sequential positions.
+         * </p>
+         *
+         * @param list The list of elements to add to the array.
+         * @return This {@link Addable} instance for chaining.
+         */
         @Override
         public Addable addAll(List<Object> list) {
             for (int i = 0; i < list.size(); ++i) {
@@ -160,6 +182,11 @@ public class Addables {
             return this;
         }
 
+        /**
+         * {@inheritDoc}
+         *
+         * @return The populated array.
+         */
         @Override
         public Object[] get() {
             return this.instance;
@@ -171,8 +198,22 @@ public class Addables {
      */
     private static class CollectionAddable implements Addable<Collection> {
 
+        /**
+         * The underlying collection instance.
+         */
         private Collection instance;
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Initializes the collection by invoking its no-argument constructor.
+         * </p>
+         *
+         * @param type     The concrete collection class (e.g., {@code ArrayList.class}).
+         * @param initSize The initial size hint (currently unused).
+         * @return This {@link Addable} instance for chaining.
+         * @throws RuntimeException if the collection cannot be instantiated.
+         */
         @Override
         public Addable init(Class<Collection> type, int initSize) {
             try {
@@ -185,12 +226,26 @@ public class Addables {
             return this;
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Adds all elements from the list to the collection.
+         * </p>
+         *
+         * @param list The list of elements to add.
+         * @return This {@link Addable} instance for chaining.
+         */
         @Override
         public Addable addAll(List<Object> list) {
             this.instance.addAll(list);
             return this;
         }
 
+        /**
+         * {@inheritDoc}
+         *
+         * @return The populated collection.
+         */
         @Override
         public Collection get() {
             return this.instance;
@@ -202,8 +257,22 @@ public class Addables {
      */
     private static class MapAddable implements Addable<Map> {
 
+        /**
+         * The underlying map instance.
+         */
         private Map instance;
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Initializes the map by invoking its no-argument constructor.
+         * </p>
+         *
+         * @param type     The concrete map class (e.g., {@code HashMap.class}).
+         * @param initSize The initial size hint (currently unused).
+         * @return This {@link Addable} instance for chaining.
+         * @throws RuntimeException if the map cannot be instantiated.
+         */
         @Override
         public Addable init(Class<Map> type, int initSize) {
             try {
@@ -217,7 +286,10 @@ public class Addables {
         }
 
         /**
-         * Adds all entries to the map.
+         * {@inheritDoc}
+         * <p>
+         * Adds all entries to the map. Each object in the list is expected to be a {@link Map.Entry}.
+         * </p>
          *
          * @param list A list of objects, where each object is expected to be a {@link Map.Entry}.
          * @return This {@link Addable} instance for chaining.
@@ -232,6 +304,11 @@ public class Addables {
             return this;
         }
 
+        /**
+         * {@inheritDoc}
+         *
+         * @return The populated map.
+         */
         @Override
         public Map get() {
             return instance;

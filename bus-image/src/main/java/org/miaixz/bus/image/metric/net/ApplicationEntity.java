@@ -68,7 +68,7 @@ public class ApplicationEntity implements Serializable {
      */
     private final LinkedHashSet<String> otherAETs = new LinkedHashSet<>();
 
-    /** 禁用异步模式的被调用应用实体标题集合 */
+    /** Collection of called application entity titles with asynchronous mode disabled */
     private final LinkedHashSet<String> noAsyncModeCalledAETs = new LinkedHashSet<>();
 
     /**

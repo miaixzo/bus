@@ -267,6 +267,14 @@ public class Setting extends AbstractSetting implements Map<String, String> {
 
     @Override
     public Object getObjectByGroup(final CharSequence key, final CharSequence group, final Object defaultValue) {
+        /**
+         * Gets an object value for the specified key in the specified group.
+         *
+         * @param key          the key to look up
+         * @param group        the group to look in
+         * @param defaultValue the default value to return if the key is not found
+         * @return the value associated with the key, or the default value if not found
+         */
         final String result = this.groupedMap.get(group, key);
         if (result == null && logIfNull) {
             Logger.debug("No data found for key [{}] in group [{}]", key, group);

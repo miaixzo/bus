@@ -178,16 +178,32 @@ class AsynchronousChannelGroup extends java.nio.channels.AsynchronousChannelGrou
         return readWorkers[(readIndex.getAndIncrement() & Integer.MAX_VALUE) % readWorkers.length];
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return {@code true} if this channel group has been shut down, {@code false} otherwise
+     */
     @Override
     public boolean isShutdown() {
         return readExecutorService.isShutdown();
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return {@code true} if all tasks have completed following shutdown, {@code false} otherwise
+     */
     @Override
     public boolean isTerminated() {
         return readExecutorService.isTerminated();
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * This implementation interrupts all worker threads and shuts down both the read and common executor services.
+     * </p>
+     */
     @Override
     public void shutdown() {
         running = false;
@@ -200,11 +216,25 @@ class AsynchronousChannelGroup extends java.nio.channels.AsynchronousChannelGrou
         commonExecutorService.shutdown();
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * This implementation delegates to {@link #shutdown()}.
+     * </p>
+     */
     @Override
     public void shutdownNow() {
         shutdown();
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param timeout the maximum time to wait
+     * @param unit    the time unit of the timeout argument
+     * @return {@code true} if this channel group terminated and {@code false} if the timeout elapsed before termination
+     * @throws InterruptedException if interrupted while waiting
+     */
     @Override
     public boolean awaitTermination(long timeout, TimeUnit unit) throws InterruptedException {
         return readExecutorService.awaitTermination(timeout, unit);
@@ -245,6 +275,18 @@ class AsynchronousChannelGroup extends java.nio.channels.AsynchronousChannelGrou
             selector.wakeup();
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * This worker continuously processes I/O events by:
+         * </p>
+         * <ul>
+         * <li>Executing pending registration tasks</li>
+         * <li>Waiting for selector events via {@link Selector#select()}</li>
+         * <li>Processing triggered events through the configured consumer</li>
+         * <li>Cleaning up resources when the worker stops</li>
+         * </ul>
+         */
         @Override
         public final void run() {
             workerThread = Thread.currentThread();

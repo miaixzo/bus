@@ -1,0 +1,142 @@
+[
+  {
+    "interfaces": [
+      "org.apache.ibatis.executor.Executor"
+    ]
+  },
+  {
+    "interfaces": [
+      "org.apache.ibatis.executor.parameter.ParameterHandler"
+    ]
+  },
+  {
+    "interfaces": [
+      "org.apache.ibatis.executor.resultset.ResultSetHandler"
+    ]
+  },
+  {
+    "interfaces": [
+      "org.apache.ibatis.executor.statement.StatementHandler"
+    ]
+  },
+  {
+    "interfaces": [
+      "org.miaixz.bus.mapper.Mapper"
+    ]
+  },
+  {
+    "interfaces": [
+      "org.miaixz.bus.mapper.binding.BasicMapper"
+    ]
+  },
+  {
+    "interfaces": [
+      "org.miaixz.bus.mapper.binding.basic.ClassMapper"
+    ]
+  },
+  {
+    "interfaces": [
+      "org.miaixz.bus.mapper.binding.basic.EntityMapper"
+    ]
+  },
+  {
+    "interfaces": [
+      "org.miaixz.bus.mapper.binding.batch.BatchMapper"
+    ]
+  },
+  {
+    "interfaces": [
+      "org.miaixz.bus.mapper.binding.condition.ConditionMapper"
+    ]
+  },
+  {
+    "interfaces": [
+      "org.miaixz.bus.mapper.binding.cursor.CursorMapper"
+    ]
+  },
+  {
+    "interfaces": [
+      "org.miaixz.bus.mapper.binding.function.FunctionMapper"
+    ]
+  },
+  {
+    "interfaces": [
+      "org.miaixz.bus.mapper.binding.list.ListMapper"
+    ]
+  },
+  {
+    "interfaces": [
+      "org.miaixz.bus.mapper.binding.logical.LogicalMapper"
+    ]
+  },
+  {
+    "interfaces": [
+      "org.miaixz.bus.mapper.provider.BasicProvider"
+    ]
+  },
+  {
+    "interfaces": [
+      "org.miaixz.bus.mapper.provider.BatchProvider"
+    ]
+  },
+  {
+    "interfaces": [
+      "org.miaixz.bus.mapper.provider.ConditionProvider"
+    ]
+  },
+  {
+    "interfaces": [
+      "org.miaixz.bus.mapper.provider.EntityProvider"
+    ]
+  },
+  {
+    "interfaces": [
+      "org.miaixz.bus.mapper.provider.FunctionProvider"
+    ]
+  },
+  {
+    "interfaces": [
+      "org.miaixz.bus.mapper.provider.ListProvider"
+    ]
+  },
+  {
+    "interfaces": [
+      "org.miaixz.bus.mapper.provider.LogicalProvider"
+    ]
+  },
+  {
+    "interfaces": [
+      "org.miaixz.bus.mapper.provider.MapperProvider"
+    ]
+  },
+  {
+    "interfaces": [
+      "org.miaixz.bus.mapper.provider.NamingProvider"
+    ]
+  },
+  {
+    "interfaces": [
+      "org.miaixz.bus.mapper.support.audit.AuditProvider"
+    ]
+  },
+  {
+    "interfaces": [
+      "org.miaixz.bus.mapper.support.populate.PopulateProvider"
+    ]
+  },
+  {
+    "interfaces": [
+      "org.miaixz.bus.mapper.support.prefix.TablePrefixProvider"
+    ]
+  },
+  {
+    "interfaces": [
+      "org.miaixz.bus.mapper.support.tenant.TenantProvider"
+    ]
+  },
+  {
+    "interfaces": [
+      "org.miaixz.bus.mapper.support.visible.VisibleProvider"
+    ]
+  }
+]

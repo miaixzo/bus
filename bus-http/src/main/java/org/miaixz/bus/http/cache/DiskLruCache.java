@@ -298,6 +298,15 @@ public class DiskLruCache implements Closeable, Flushable {
         Sink fileSink = diskFile.appendingSink(journalFile);
         Sink faultHidingSink = new FaultHideSink(fileSink) {
 
+            /**
+             * Called when an I/O exception occurs during journal write operations.
+             * <p>
+             * This method sets a flag to indicate that journal errors have occurred, which prevents the cache from
+             * being used until it is deleted and recreated.
+             * </p>
+             *
+             * @param e The {@link IOException} that occurred.
+             */
             @Override
             protected void onException(IOException e) {
                 assert (Thread.holdsLock(DiskLruCache.this));
@@ -732,6 +741,11 @@ public class DiskLruCache implements Closeable, Flushable {
              */
             Snapshot removeSnapshot;
 
+            /**
+             * Returns {@code true} if there are more snapshots to iterate over.
+             *
+             * @return {@code true} if the iteration has more elements.
+             */
             @Override
             public boolean hasNext() {
                 if (nextSnapshot != null)
@@ -757,6 +771,12 @@ public class DiskLruCache implements Closeable, Flushable {
                 return false;
             }
 
+            /**
+             * Returns the next snapshot in the iteration.
+             *
+             * @return The next {@link Snapshot}.
+             * @throws NoSuchElementException if there are no more elements.
+             */
             @Override
             public Snapshot next() {
                 if (!hasNext())
@@ -766,6 +786,11 @@ public class DiskLruCache implements Closeable, Flushable {
                 return removeSnapshot;
             }
 
+            /**
+             * Removes the current snapshot from the cache.
+             *
+             * @throws IllegalStateException if {@code remove()} is called before {@code next()}.
+             */
             @Override
             public void remove() {
                 if (removeSnapshot == null)
@@ -1092,6 +1117,15 @@ public class DiskLruCache implements Closeable, Flushable {
                 }
                 return new FaultHideSink(sink) {
 
+                    /**
+                     * Called when an I/O exception occurs during write operations.
+                     * <p>
+                     * This method detaches the editor to prevent it from completing normally, which ensures that any
+                     * partially written files are cleaned up.
+                     * </p>
+                     *
+                     * @param e The {@link IOException} that occurred.
+                     */
                     @Override
                     protected void onException(IOException e) {
                         synchronized (DiskLruCache.this) {

@@ -56,6 +56,9 @@ import org.miaixz.bus.office.excel.xyz.RowKit;
  */
 public class SheetDataWriter {
 
+    /**
+     * The sheet being written to.
+     */
     private final Sheet sheet;
     /**
      * Excel output configuration.

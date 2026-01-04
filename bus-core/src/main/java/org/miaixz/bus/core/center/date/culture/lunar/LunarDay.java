@@ -30,17 +30,18 @@ package org.miaixz.bus.core.center.date.culture.lunar;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.miaixz.bus.core.center.date.culture.Loops;
-import org.miaixz.bus.core.center.date.culture.cn.*;
-import org.miaixz.bus.core.center.date.culture.cn.fetus.FetusDay;
-import org.miaixz.bus.core.center.date.culture.cn.ren.MinorRen;
-import org.miaixz.bus.core.center.date.culture.cn.sixty.*;
-import org.miaixz.bus.core.center.date.culture.cn.star.nine.NineStar;
-import org.miaixz.bus.core.center.date.culture.cn.star.six.SixStar;
-import org.miaixz.bus.core.center.date.culture.cn.star.twelve.TwelveStar;
-import org.miaixz.bus.core.center.date.culture.cn.star.twentyeight.TwentyEightStar;
-import org.miaixz.bus.core.center.date.culture.solar.SolarDay;
+import org.miaixz.bus.core.center.date.culture.*;
+import org.miaixz.bus.core.center.date.culture.Week;
+import org.miaixz.bus.core.center.date.culture.fetus.FetusDay;
+import org.miaixz.bus.core.center.date.culture.parts.DayParts;
+import org.miaixz.bus.core.center.date.culture.ren.MinorRen;
+import org.miaixz.bus.core.center.date.culture.sixty.*;
 import org.miaixz.bus.core.center.date.culture.solar.SolarTerms;
+import org.miaixz.bus.core.center.date.culture.star.nine.NineStar;
+import org.miaixz.bus.core.center.date.culture.star.six.SixStar;
+import org.miaixz.bus.core.center.date.culture.star.twelve.TwelveStar;
+import org.miaixz.bus.core.center.date.culture.star.twentyeight.TwentyEightStar;
+import org.miaixz.bus.core.center.date.culture.solar.SolarDay;
 
 /**
  * Represents a day in the Lunar calendar.
@@ -48,102 +49,72 @@ import org.miaixz.bus.core.center.date.culture.solar.SolarTerms;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class LunarDay extends Loops {
+public class LunarDay extends DayParts {
 
     /**
-     * Names of the days in a lunar month.
+     * Chinese names for lunar days from 1 to 30.
      */
     public static final String[] NAMES = { "初一", "初二", "初三", "初四", "初五", "初六", "初七", "初八", "初九", "初十", "十一", "十二", "十三",
             "十四", "十五", "十六", "十七", "十八", "十九", "二十", "廿一", "廿二", "廿三", "廿四", "廿五", "廿六", "廿七", "廿八", "廿九", "三十" };
 
     /**
-     * The lunar month this day belongs to.
-     */
-    protected LunarMonth month;
-
-    /**
-     * The day of the month (1-30).
-     */
-    protected int day;
-
-    /**
-     * The corresponding Gregorian (Solar) day, lazily initialized.
-     */
-    protected SolarDay solarDay;
-
-    /**
-     * The corresponding Sixty Cycle (Ganzhi) day, lazily initialized.
-     */
-    protected SixtyCycleDay sixtyCycleDay;
-
-    /**
-     * Constructs a {@code LunarDay} from a year, month, and day.
+     * Constructs a LunarDay instance.
      *
-     * @param year  The lunar year.
-     * @param month The lunar month (a negative value indicates a leap month).
-     * @param day   The lunar day.
+     * @param year  the lunar year
+     * @param month the lunar month (negative value indicates a leap month)
+     * @param day   the lunar day (1-30)
+     * @throws IllegalArgumentException if the day is invalid for the given month/year
      */
     public LunarDay(int year, int month, int day) {
-        LunarMonth m = LunarMonth.fromYm(year, month);
-        if (day < 1 || day > m.getDayCount()) {
-            throw new IllegalArgumentException(String.format("illegal day %d in %s", day, m));
-        }
-        this.month = m;
+        validate(year, month, day);
+        this.year = year;
+        this.month = month;
         this.day = day;
     }
 
     /**
-     * Creates a {@code LunarDay} from a year, month, and day.
+     * Creates a LunarDay from year, month, and day components.
      *
-     * @param year  The lunar year.
-     * @param month The lunar month (a negative value indicates a leap month).
-     * @param day   The lunar day.
-     * @return a new {@code LunarDay} instance.
+     * @param year  the lunar year
+     * @param month the lunar month (negative value indicates a leap month)
+     * @param day   the lunar day
+     * @return a new LunarDay instance
      */
     public static LunarDay fromYmd(int year, int month, int day) {
         return new LunarDay(year, month, day);
     }
 
     /**
-     * Gets the lunar month object.
+     * Validates the lunar year, month, and day.
      *
-     * @return The {@link LunarMonth}.
+     * @param year  the lunar year
+     * @param month the lunar month
+     * @param day   the lunar day
+     * @throws IllegalArgumentException if the day is invalid
+     */
+    public static void validate(int year, int month, int day) {
+        if (day < 1) {
+            throw new IllegalArgumentException(String.format("illegal lunar day %d", day));
+        }
+        LunarMonth m = LunarMonth.fromYm(year, month);
+        if (day > m.getDayCount()) {
+            throw new IllegalArgumentException(String.format("illegal day %d in %s", day, m));
+        }
+    }
+
+    /**
+     * Gets the lunar month for this day.
+     *
+     * @return the lunar month
      */
     public LunarMonth getLunarMonth() {
-        return month;
+        return LunarMonth.fromYm(year, month);
     }
 
     /**
-     * Gets the year.
+     * Gets the Chinese name of this lunar day.
      *
-     * @return The lunar year.
-     */
-    public int getYear() {
-        return month.getYear();
-    }
-
-    /**
-     * Gets the month.
-     *
-     * @return The lunar month (a negative value indicates a leap month).
-     */
-    public int getMonth() {
-        return month.getMonthWithLeap();
-    }
-
-    /**
-     * Gets the day.
-     *
-     * @return The day of the month (1-30).
-     */
-    public int getDay() {
-        return day;
-    }
-
-    /**
-     * Gets the name of the day (e.g., "初一").
-     *
-     * @return The name of the day.
+     * @return the Chinese name (e.g., "初一", "十五")
      */
     public String getName() {
         return NAMES[day - 1];
@@ -151,102 +122,125 @@ public class LunarDay extends Loops {
 
     @Override
     public String toString() {
-        return month + getName();
+        return getLunarMonth() + getName();
     }
 
-    @Override
+    /**
+     * Gets the lunar day that is n days after this day.
+     *
+     * @param n the number of days to advance (can be negative)
+     * @return the lunar day after n days
+     */
     public LunarDay next(int n) {
         return getSolarDay().next(n).getLunarDay();
     }
 
     /**
-     * Checks if this lunar day is before another.
+     * Checks if this lunar day is before the target lunar day.
      *
-     * @param target The other lunar day.
-     * @return {@code true} if this day is before the target day.
+     * @param target the lunar day to compare with
+     * @return true if this day is before the target, false otherwise
      */
     public boolean isBefore(LunarDay target) {
-        int aYear = getYear();
-        int bYear = target.getYear();
-        if (aYear != bYear) {
-            return aYear < bYear;
+        if (year != target.getYear()) {
+            return year < target.getYear();
         }
-        int aMonth = getMonth();
-        int bMonth = target.getMonth();
-        if (aMonth != bMonth) {
-            return Math.abs(aMonth) < Math.abs(bMonth);
+        if (month != target.getMonth()) {
+            return Math.abs(month) < Math.abs(target.getMonth());
         }
         return day < target.getDay();
     }
 
     /**
-     * Checks if this lunar day is after another.
+     * Checks if this lunar day is after the target lunar day.
      *
-     * @param target The other lunar day.
-     * @return {@code true} if this day is after the target day.
+     * @param target the lunar day to compare with
+     * @return true if this day is after the target, false otherwise
      */
     public boolean isAfter(LunarDay target) {
-        int aYear = getYear();
-        int bYear = target.getYear();
-        if (aYear != bYear) {
-            return aYear > bYear;
+        if (year != target.getYear()) {
+            return year > target.getYear();
         }
-        int aMonth = getMonth();
-        int bMonth = target.getMonth();
-        if (aMonth != bMonth) {
-            return Math.abs(aMonth) >= Math.abs(bMonth);
+        if (month != target.getMonth()) {
+            return Math.abs(month) >= Math.abs(target.getMonth());
         }
         return day > target.getDay();
     }
 
     /**
-     * Gets the day of the week.
+     * Gets the day of week for this lunar day.
      *
-     * @return The {@link Week}.
+     * @return the day of week
      */
     public Week getWeek() {
         return getSolarDay().getWeek();
     }
 
     /**
-     * Gets the Sixty Cycle (Ganzhi) of this day.
+     * Gets the year's Sixty Cycle (Gan-Zhi) for this day (changes on Lichun).
      *
-     * @return The {@link SixtyCycle}.
+     * @return the Sixty Cycle
+     * @see SixtyCycleDay#getYear()
+     * @deprecated Use {@link SixtyCycleDay#getYear()} instead
+     */
+    @Deprecated
+    public SixtyCycle getYearSixtyCycle() {
+        return getSixtyCycleDay().getYear();
+    }
+
+    /**
+     * Gets the month's Sixty Cycle (Gan-Zhi) for this day (changes on solar terms).
+     *
+     * @return the Sixty Cycle
+     * @see SixtyCycleDay#getMonth()
+     * @deprecated Use {@link SixtyCycleDay#getMonth()} instead
+     */
+    @Deprecated
+    public SixtyCycle getMonthSixtyCycle() {
+        return getSixtyCycleDay().getMonth();
+    }
+
+    /**
+     * Gets the Sixty Cycle (Gan-Zhi) for this day.
+     *
+     * @return the Sixty Cycle
      */
     public SixtyCycle getSixtyCycle() {
-        int offset = (int) month.getFirstJulianDay().next(day - 12).getDay();
+        int offset = (int) getLunarMonth().getFirstJulianDay().next(day - 12).getDay();
         return SixtyCycle.fromName(HeavenStem.fromIndex(offset).getName() + EarthBranch.fromIndex(offset).getName());
     }
 
     /**
-     * Gets the Duty (Jian Chu) of this day.
+     * Gets the twelve duty spirits (Jian-Chu twelve value gods).
      *
-     * @return The {@link Duty}.
+     * @return the duty spirit
+     * @see SixtyCycleDay
      */
     public Duty getDuty() {
         return getSixtyCycleDay().getDuty();
     }
 
     /**
-     * Gets the Twelve Star (Huang Dao Hei Dao) of this day.
+     * Gets the twelve stars (Huangdao-Heidao twelve gods).
      *
-     * @return The {@link TwelveStar}.
+     * @return the twelve star spirit
+     * @see SixtyCycleDay
      */
     public TwelveStar getTwelveStar() {
         return getSixtyCycleDay().getTwelveStar();
     }
 
     /**
-     * Gets the Nine Star (Jiu Xing) of this day.
+     * Gets the nine stars for this day.
      *
-     * @return The {@link NineStar}.
+     * @return the nine star
      */
     public NineStar getNineStar() {
         SolarDay d = getSolarDay();
         SolarTerms dongZhi = SolarTerms.fromIndex(d.getYear(), 0);
-        SolarDay dongZhiSolar = dongZhi.getJulianDay().getSolarDay();
-        SolarDay xiaZhiSolar = dongZhi.next(12).getJulianDay().getSolarDay();
-        SolarDay dongZhiSolar2 = dongZhi.next(24).getJulianDay().getSolarDay();
+        SolarDay dongZhiSolar = dongZhi.getSolarDay();
+        SolarDay xiaZhiSolar = dongZhi.next(12).getSolarDay();
+        SolarDay dongZhiSolar2 = dongZhi.next(24).getSolarDay();
         int dongZhiIndex = dongZhiSolar.getLunarDay().getSixtyCycle().getIndex();
         int xiaZhiIndex = xiaZhiSolar.getLunarDay().getSixtyCycle().getIndex();
         int dongZhiIndex2 = dongZhiSolar2.getLunarDay().getSixtyCycle().getIndex();
@@ -267,33 +261,33 @@ public class LunarDay extends Loops {
     }
 
     /**
-     * Gets the direction of Jupiter (Tai Sui) for this day.
+     * Gets the Jupiter direction (Tai Sui position) for this day.
      *
-     * @return The {@link Direction}.
+     * @return the direction
      */
     public Direction getJupiterDirection() {
         int index = getSixtyCycle().getIndex();
         return index % 12 < 6 ? Element.fromIndex(index / 12).getDirection()
-                : month.getLunarYear().getJupiterDirection();
+                : LunarYear.fromYear(year).getJupiterDirection();
     }
 
     /**
-     * Gets the Daily Fetus Spirit (Tai Shen).
+     * Gets the fetus spirit for this day.
      *
-     * @return The {@link FetusDay}.
+     * @return the fetus day
      */
     public FetusDay getFetusDay() {
         return FetusDay.fromLunarDay(this);
     }
 
     /**
-     * Gets the day index within the lunar phase.
+     * Gets the moon phase day information.
      *
-     * @return The day index within the lunar phase.
+     * @return the moon phase day
      */
     public Phase.PhaseDay getPhaseDay() {
         SolarDay today = getSolarDay();
-        LunarMonth m = month.next(1);
+        LunarMonth m = getLunarMonth().next(1);
         Phase p = Phase.fromIndex(m.getYear(), m.getMonthWithLeap(), 0);
         SolarDay d = p.getSolarDay();
         while (d.isAfter(today)) {
@@ -304,51 +298,45 @@ public class LunarDay extends Loops {
     }
 
     /**
-     * Gets the lunar phase (Moon Phase).
+     * Gets the moon phase for this day.
      *
-     * @return The {@link Phase}.
+     * @return the moon phase
      */
     public Phase getPhase() {
         return getPhaseDay().getPhase();
     }
 
     /**
-     * Gets the Six Star (Liu Yao).
+     * Gets the six stars for this day.
      *
-     * @return The {@link SixStar}.
+     * @return the six star
      */
     public SixStar getSixStar() {
-        return SixStar.fromIndex((month.getMonth() + day - 2) % 6);
+        return SixStar.fromIndex((Math.abs(month) + day - 2) % 6);
     }
 
     /**
-     * Gets the corresponding Gregorian (Solar) day.
+     * Gets the solar day corresponding to this lunar day.
      *
-     * @return The {@link SolarDay}.
+     * @return the solar day
      */
     public SolarDay getSolarDay() {
-        if (null == solarDay) {
-            solarDay = month.getFirstJulianDay().next(day - 1).getSolarDay();
-        }
-        return solarDay;
+        return getLunarMonth().getFirstJulianDay().next(day - 1).getSolarDay();
     }
 
     /**
-     * Gets the corresponding Sixty Cycle (Ganzhi) day object.
+     * Gets the Sixty Cycle day for this lunar day.
      *
-     * @return The {@link SixtyCycleDay}.
+     * @return the Sixty Cycle day
      */
     public SixtyCycleDay getSixtyCycleDay() {
-        if (null == sixtyCycleDay) {
-            sixtyCycleDay = getSolarDay().getSixtyCycleDay();
-        }
-        return sixtyCycleDay;
+        return getSolarDay().getSixtyCycleDay();
     }
 
     /**
-     * Gets the Twenty-Eight Mansions (Xiu) for this day.
+     * Gets the twenty-eight star mansions for this day.
      *
-     * @return The {@link TwentyEightStar}.
+     * @return the twenty-eight star mansion
      */
     public TwentyEightStar getTwentyEightStar() {
         return TwentyEightStar.fromIndex(new int[] { 10, 18, 26, 6, 14, 22, 2 }[getSolarDay().getWeek().getIndex()])
@@ -356,34 +344,33 @@ public class LunarDay extends Loops {
     }
 
     /**
-     * Gets the traditional lunar festival for this day, if any.
+     * Gets the lunar festival for this day, if any.
      *
-     * @return The {@link LunarFestival}, or null if this day is not a festival.
+     * @return the lunar festival, or null if this day is not a festival
      */
     public LunarFestival getFestival() {
-        return LunarFestival.fromYmd(getYear(), getMonth(), day);
+        return LunarFestival.fromYmd(year, month, day);
     }
 
     /**
-     * Gets the list of {@code LunarHour} objects for this day.
+     * Gets the list of lunar hours for this day.
      *
-     * @return A list of {@link LunarHour} objects.
+     * @return the list of 12 two-hour periods (shichen) in this day
      */
     public List<LunarHour> getHours() {
         List<LunarHour> l = new ArrayList<>();
-        int y = getYear();
-        int m = getMonth();
-        l.add(LunarHour.fromYmdHms(y, m, day, 0, 0, 0));
+        l.add(LunarHour.fromYmdHms(year, month, day, 0, 0, 0));
         for (int i = 0; i < 24; i += 2) {
-            l.add(LunarHour.fromYmdHms(y, m, day, i + 1, 0, 0));
+            l.add(LunarHour.fromYmdHms(year, month, day, i + 1, 0, 0));
         }
         return l;
     }
 
     /**
-     * Gets the list of Gods (Shen Sha) for this day.
+     * Gets the list of gods and spirits (auspicious and inauspicious) for this day.
      *
-     * @return A list of {@link God}s.
+     * @return the list of gods
+     * @see SixtyCycleDay#getGods()
      */
     public List<God> getGods() {
         return getSixtyCycleDay().getGods();
@@ -392,34 +379,36 @@ public class LunarDay extends Loops {
     /**
      * Gets the list of recommended activities for this day.
      *
-     * @return A list of recommended {@link Taboo}s.
+     * @return the list of taboos representing recommended activities
+     * @see SixtyCycleDay#getRecommends()
      */
     public List<Taboo> getRecommends() {
         return getSixtyCycleDay().getRecommends();
     }
 
     /**
-     * Gets the list of avoided activities for this day.
+     * Gets the list of activities to avoid for this day.
      *
-     * @return A list of avoided {@link Taboo}s.
+     * @return the list of taboos representing activities to avoid
+     * @see SixtyCycleDay#getAvoids()
      */
     public List<Taboo> getAvoids() {
         return getSixtyCycleDay().getAvoids();
     }
 
     /**
-     * Gets the Minor Liu Ren for this day.
+     * Gets the Minor Six Ren divination for this day.
      *
-     * @return The {@link MinorRen}.
+     * @return the Minor Six Ren
      */
     public MinorRen getMinorRen() {
         return getLunarMonth().getMinorRen().next(day - 1);
     }
 
     /**
-     * Gets the Three Pillars (Year, Month, Day).
+     * Gets the three pillars (year, month, day pillars) for this day.
      *
-     * @return The {@link ThreePillars}.
+     * @return the three pillars
      */
     public ThreePillars getThreePillars() {
         return getSixtyCycleDay().getThreePillars();

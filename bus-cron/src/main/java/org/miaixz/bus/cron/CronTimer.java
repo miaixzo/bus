@@ -30,7 +30,7 @@ package org.miaixz.bus.cron;
 import java.io.Serial;
 import java.io.Serializable;
 
-import org.miaixz.bus.core.center.date.culture.en.Units;
+import org.miaixz.bus.core.center.date.Units;
 import org.miaixz.bus.core.xyz.ThreadKit;
 import org.miaixz.bus.logger.Logger;
 
@@ -54,6 +54,9 @@ public class CronTimer extends Thread implements Serializable {
      * Timer unit in milliseconds for a minute.
      */
     private final long TIMER_UNIT_MINUTE = Units.MINUTE.getMillis();
+    /**
+     * The scheduler instance for managing cron tasks.
+     */
     private final Scheduler scheduler;
     /**
      * A flag indicating whether the timer has been forcibly stopped.
@@ -87,6 +90,24 @@ public class CronTimer extends Thread implements Serializable {
                 millis < (2 * timerUnit);
     }
 
+    /**
+     * Executes the timer thread, checking for tasks at regular intervals. This method continuously checks the task list
+     * every minute (or second, depending on configuration) and executes any matching tasks. It handles edge cases such
+     * as system time changes (forward or backward) and ensures proper task execution timing.
+     * <p>
+     * The timer loop:
+     * <ol>
+     * <li>Spawns a launcher to check for matching tasks at the current time</li>
+     * <li>Calculates the next execution time point</li>
+     * <li>Handles edge cases like time rollbacks and catching up with missed executions</li>
+     * <li>Sleeps until the next scheduled time point</li>
+     * </ol>
+     * </p>
+     * <p>
+     * <b>Note:</b> This method is designed to be called by the thread's start mechanism and should not be invoked
+     * directly. The timer will continue running until {@link #stopTimer()} is called.
+     * </p>
+     */
     @Override
     public void run() {
         final long timerUnit = this.scheduler.config.isMatchSecond() ? TIMER_UNIT_SECOND : TIMER_UNIT_MINUTE;

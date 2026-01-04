@@ -52,6 +52,15 @@ public abstract class AbstractMessageHandler<T> implements Handler<T>, Monitor {
      */
     private final List<Plugin<T>> plugins = new ArrayList<>();
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * This implementation notifies all registered plugins after a read operation completes.
+     * </p>
+     *
+     * @param session  the communication session from which data was read
+     * @param readSize the number of bytes read from the channel
+     */
     @Override
     public final void afterRead(Session session, int readSize) {
         for (Plugin<T> plugin : plugins) {
@@ -59,6 +68,15 @@ public abstract class AbstractMessageHandler<T> implements Handler<T>, Monitor {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * This implementation notifies all registered plugins after a write operation completes.
+     * </p>
+     *
+     * @param session   the communication session to which data was written
+     * @param writeSize the number of bytes written to the channel
+     */
     @Override
     public final void afterWrite(Session session, int writeSize) {
         for (Plugin<T> plugin : plugins) {
@@ -66,6 +84,14 @@ public abstract class AbstractMessageHandler<T> implements Handler<T>, Monitor {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * This implementation notifies all registered plugins before a read operation begins.
+     * </p>
+     *
+     * @param session the communication session from which data will be read
+     */
     @Override
     public final void beforeRead(Session session) {
         for (Plugin<T> plugin : plugins) {
@@ -73,6 +99,14 @@ public abstract class AbstractMessageHandler<T> implements Handler<T>, Monitor {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * This implementation notifies all registered plugins before a write operation begins.
+     * </p>
+     *
+     * @param session the communication session to which data will be written
+     */
     @Override
     public final void beforeWrite(Session session) {
         for (Plugin<T> plugin : plugins) {
@@ -80,6 +114,16 @@ public abstract class AbstractMessageHandler<T> implements Handler<T>, Monitor {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * This implementation passes the channel through all registered plugins, allowing each to accept, reject, or wrap
+     * the channel. If any plugin returns {@code null}, the connection is rejected.
+     * </p>
+     *
+     * @param channel the asynchronous socket channel representing the incoming connection
+     * @return the accepted channel (potentially wrapped by plugins), or {@code null} to reject the connection
+     */
     @Override
     public final AsynchronousSocketChannel shouldAccept(AsynchronousSocketChannel channel) {
         AsynchronousSocketChannel acceptChannel = channel;
@@ -92,6 +136,16 @@ public abstract class AbstractMessageHandler<T> implements Handler<T>, Monitor {
         return acceptChannel;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * This implementation passes the message through all registered plugins. If all plugins return {@code true}, the
+     * message is forwarded to {@link #process0(Session, Object)} for business logic processing.
+     * </p>
+     *
+     * @param session the communication session through which the message was received
+     * @param data    the business message to be processed
+     */
     @Override
     public final void process(Session session, T data) {
         boolean flag = true;

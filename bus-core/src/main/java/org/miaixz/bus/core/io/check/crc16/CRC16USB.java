@@ -45,9 +45,6 @@ public class CRC16USB extends CRC16Checksum {
     private CRC16USB() {
     }
 
-    /**
-     * The serial version UID for serialization.
-     */
     @Serial
     private static final long serialVersionUID = 2852279770589L;
 

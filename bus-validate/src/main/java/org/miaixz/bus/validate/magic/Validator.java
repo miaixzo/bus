@@ -47,6 +47,10 @@ public interface Validator<T> {
      * @return A new validator whose result is always the opposite of the input validator's result.
      */
     static <T> Validator<T> not(Validator<T> validator) {
+        /**
+         * Negating validator implementation that inverts the result of the wrapped validator. This implementation
+         * applies logical NOT to the validation result.
+         */
         return (object, context) -> !validator.on(object, context);
     }
 

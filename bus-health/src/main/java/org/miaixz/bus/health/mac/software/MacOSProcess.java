@@ -148,16 +148,31 @@ public class MacOSProcess extends AbstractOSProcess {
         updateAttributes();
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return the process name
+     */
     @Override
     public String getName() {
         return this.name;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return the full path of the process executable
+     */
     @Override
     public String getPath() {
         return this.path;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return the command line used to start the process
+     */
     @Override
     public String getCommandLine() {
         return this.commandLine.get();
@@ -167,11 +182,21 @@ public class MacOSProcess extends AbstractOSProcess {
         return String.join(Symbol.SPACE, getArguments());
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return the list of arguments passed to the process
+     */
     @Override
     public List<String> getArguments() {
         return argsEnviron.get().getLeft();
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return a map of environment variables for the process
+     */
     @Override
     public Map<String, String> getEnvironmentVariables() {
         return argsEnviron.get().getRight();
@@ -247,46 +272,91 @@ public class MacOSProcess extends AbstractOSProcess {
         return Pair.of(Collections.unmodifiableList(args), Collections.unmodifiableMap(env));
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return the current working directory of the process
+     */
     @Override
     public String getCurrentWorkingDirectory() {
         return this.currentWorkingDirectory;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return the user name who owns the process
+     */
     @Override
     public String getUser() {
         return this.user;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return the user ID of the process owner
+     */
     @Override
     public String getUserID() {
         return this.userID;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return the group name that owns the process
+     */
     @Override
     public String getGroup() {
         return this.group;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return the group ID of the process owner
+     */
     @Override
     public String getGroupID() {
         return this.groupID;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return the state of the process
+     */
     @Override
     public State getState() {
         return this.state;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return the parent process ID
+     */
     @Override
     public int getParentProcessID() {
         return this.parentProcessID;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return the number of threads in the process
+     */
     @Override
     public int getThreadCount() {
         return this.threadCount;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return the list of thread details for the process
+     */
     @Override
     public List<OSThread> getThreadDetails() {
         long now = System.currentTimeMillis();
@@ -298,56 +368,111 @@ public class MacOSProcess extends AbstractOSProcess {
         }).collect(Collectors.toList());
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return the process scheduling priority
+     */
     @Override
     public int getPriority() {
         return this.priority;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return the virtual memory size in bytes
+     */
     @Override
     public long getVirtualSize() {
         return this.virtualSize;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return the resident set size (RSS) in bytes
+     */
     @Override
     public long getResidentSetSize() {
         return this.residentSetSize;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return the kernel time in milliseconds
+     */
     @Override
     public long getKernelTime() {
         return this.kernelTime;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return the user time in milliseconds
+     */
     @Override
     public long getUserTime() {
         return this.userTime;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return the process uptime in milliseconds
+     */
     @Override
     public long getUpTime() {
         return this.upTime;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return the process start time in milliseconds
+     */
     @Override
     public long getStartTime() {
         return this.startTime;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return the number of bytes read from disk
+     */
     @Override
     public long getBytesRead() {
         return this.bytesRead;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return the number of bytes written to disk
+     */
     @Override
     public long getBytesWritten() {
         return this.bytesWritten;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return the number of open file descriptors
+     */
     @Override
     public long getOpenFiles() {
         return this.openFiles;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return the soft limit of open files for the current process
+     */
     @Override
     public long getSoftOpenFileLimit() {
         if (getProcessID() == this.os.getProcessId()) {
@@ -359,6 +484,11 @@ public class MacOSProcess extends AbstractOSProcess {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return the hard limit of open files for the current process
+     */
     @Override
     public long getHardOpenFileLimit() {
         if (getProcessID() == this.os.getProcessId()) {
@@ -370,11 +500,21 @@ public class MacOSProcess extends AbstractOSProcess {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return the process bitness (32 or 64)
+     */
     @Override
     public int getBitness() {
         return this.bitness;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return the processor affinity mask
+     */
     @Override
     public long getAffinityMask() {
         // macOS doesn't do affinity. Return a bitmask of the current processors.
@@ -382,21 +522,41 @@ public class MacOSProcess extends AbstractOSProcess {
         return logicalProcessorCount < 64 ? (1L << logicalProcessorCount) - 1 : -1L;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return the number of minor page faults
+     */
     @Override
     public long getMinorFaults() {
         return this.minorFaults;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return the number of major page faults
+     */
     @Override
     public long getMajorFaults() {
         return this.majorFaults;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return the number of context switches
+     */
     @Override
     public long getContextSwitches() {
         return this.contextSwitches;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return {@code true} if the process attributes were successfully updated, {@code false} otherwise
+     */
     @Override
     public boolean updateAttributes() {
         long now = System.currentTimeMillis();

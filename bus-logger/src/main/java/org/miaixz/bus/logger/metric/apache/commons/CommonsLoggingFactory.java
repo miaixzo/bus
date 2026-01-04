@@ -48,20 +48,24 @@ public class CommonsLoggingFactory extends AbstractFactory {
         exists(org.apache.commons.logging.LogFactory.class);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Provider create(final String name) {
         return new CommonsLoggingProvider(name);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Provider create(final Class<?> clazz) {
         return new CommonsLoggingProvider(clazz);
     }
 
     /**
-     * Checks if the logging implementation exists and creates a logger for this factory class.
-     *
-     * @param logClassName the logging implementation class to check.
+     * {@inheritDoc}
      */
     @Override
     protected void exists(final Class<?> logClassName) {

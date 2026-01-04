@@ -37,7 +37,6 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.util.Date;
 
-import org.miaixz.bus.core.center.date.culture.en.Units;
 import org.miaixz.bus.core.center.date.format.FormatPeriod;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.xyz.DateKit;
@@ -50,9 +49,6 @@ import org.miaixz.bus.core.xyz.DateKit;
  */
 public class Between implements Serializable {
 
-    /**
-     * The serial version UID for serialization.
-     */
     @Serial
     private static final long serialVersionUID = 2852233282300L;
 

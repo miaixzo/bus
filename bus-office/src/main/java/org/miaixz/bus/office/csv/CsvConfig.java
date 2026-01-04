@@ -35,8 +35,10 @@ import java.util.Map;
 import org.miaixz.bus.core.lang.Symbol;
 
 /**
- * Base CSV configuration options. These options can be used for both reading and writing CSV, defining symbols such as
- * field separators and text delimiters.
+ * Base CSV configuration options.
+ * <p>
+ * These options can be used for both reading and writing CSV, defining symbols such as field separators and text
+ * delimiters.
  *
  * @param <T> The type of the subclass, used for returning {@code this}.
  * @author Kimi Liu
@@ -52,7 +54,7 @@ public class CsvConfig<T extends CsvConfig<T>> implements Serializable {
      */
     protected char fieldSeparator = Symbol.C_COMMA;
     /**
-     * Text delimiter, default is double quotes '"'
+     * Text delimiter, default is double quotes.
      */
     protected char textDelimiter = Symbol.C_DOUBLE_QUOTES;
     /**
@@ -76,7 +78,7 @@ public class CsvConfig<T extends CsvConfig<T>> implements Serializable {
     }
 
     /**
-     * Sets the text delimiter. Default is double quotes '"'
+     * Sets the text delimiter. Default is double quotes.
      *
      * @param textDelimiter The text delimiter character.
      * @return This configuration object, for chaining.

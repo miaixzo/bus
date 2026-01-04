@@ -247,6 +247,9 @@ public final class SslService {
 
     private final CompletionHandler<Integer, HandshakeModel> handshakeCompletionHandler = new CompletionHandler<>() {
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void completed(Integer result, HandshakeModel attachment) {
             if (result == -1) {
@@ -260,6 +263,9 @@ public final class SslService {
             }
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void failed(Throwable exc, HandshakeModel attachment) {
             attachment.setException(exc);

@@ -124,6 +124,16 @@ public class StreamExtractor implements Extractor {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Retrieves an input stream for the first archive entry matching the given predicate. The returned stream is the
+     * underlying archive stream, positioned at the matching entry.
+     * </p>
+     *
+     * @param predicate filter to select the desired entry (may be {@code null} for the first entry)
+     * @return an input stream for the matching entry, or {@code null} if no match is found
+     */
     @Override
     public InputStream getFirst(final Predicate<ArchiveEntry> predicate) {
         final ArchiveInputStream<?> in = this.in;
@@ -198,6 +208,13 @@ public class StreamExtractor implements Extractor {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Closes the archive stream and releases any associated resources. This method suppresses any exceptions that may
+     * occur.
+     * </p>
+     */
     @Override
     public void close() {
         IoKit.closeQuietly(this.in);

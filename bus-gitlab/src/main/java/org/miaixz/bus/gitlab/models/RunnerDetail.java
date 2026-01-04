@@ -53,11 +53,35 @@ public class RunnerDetail extends Runner {
     private RunnerAccessLevel accessLevel;
 
     /**
-     * Enum to use for RunnerDetail accessLevel property.
+     * Enumeration representing the access level for a GitLab CI/CD runner.
+     * <p>
+     * This enum defines the protection level for runners, determining which types of projects and branches the runner
+     * can execute jobs for. Access levels help control security and resource usage by restricting runner availability
+     * based on reference protection.
+     * </p>
+     *
+     * @since 17
      */
     public enum RunnerAccessLevel {
 
-        NOT_PROTECTED, REF_PROTECTED;
+        /**
+         * Indicates the runner is not protected.
+         * <p>
+         * This runner can execute jobs for all projects regardless of their visibility, including public and internal
+         * projects. It is the default access level for shared runners and provides no access restrictions.
+         * </p>
+         */
+        NOT_PROTECTED,
+
+        /**
+         * Indicates the runner is reference protected.
+         * <p>
+         * This runner can only execute jobs for protected references (branches and tags) in projects. Protected
+         * references are typically main branches or release tags that have additional security restrictions. This
+         * access level is useful for runners with access to sensitive resources or deployment credentials.
+         * </p>
+         */
+        REF_PROTECTED;
 
         private static JacksonJsonEnumHelper<RunnerAccessLevel> enumHelper = new JacksonJsonEnumHelper<>(
                 RunnerAccessLevel.class);

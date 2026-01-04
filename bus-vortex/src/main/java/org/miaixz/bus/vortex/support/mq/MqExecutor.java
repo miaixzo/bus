@@ -56,7 +56,6 @@ import reactor.core.scheduler.Schedulers;
  * This executor manages a cache of {@link Producer} instances, keyed by their broker URL. This allows the gateway to
  * efficiently execute messages to multiple different MQ brokers without creating new producers for each request. The
  * actual message sending is performed asynchronously on a dedicated thread pool to avoid blocking reactive threads.
- * </p>
  * <p>
  * Performance optimizations:
  * <ul>
@@ -65,14 +64,10 @@ import reactor.core.scheduler.Schedulers;
  * <li>Graceful shutdown with timeout handling</li>
  * <li>Rejection policy that CallerRunsPolicy to prevent message loss under load</li>
  * </ul>
- * </p>
- * <p>
- * The executor supports two response modes controlled by {@link Assets#getStream()}:
  * <ul>
  * <li>Buffering mode (stream = 1 or null): Returns a simple JSON acknowledgment response</li>
  * <li>Streaming mode (stream = 2): Returns the acknowledgment as a streaming response</li>
  * </ul>
- * </p>
  * Generic type parameters: {@code Executor<String, ServerResponse>}
  *
  * @author Kimi Liu
@@ -144,8 +139,7 @@ public class MqExecutor extends Coordinator<String, ServerResponse> {
      * Executes an MQ request using the provided context and String payload.
      * <p>
      * This method is required by the {@link org.miaixz.bus.vortex.Executor} interface. It sends the message to the MQ
-     * broker and returns an acknowledgment response. The response format (streaming vs buffering) is selected based on
-     * {@link Assets#getStream()}.
+     * broker and returns an acknowledgment response. The response format (streaming vs buffering) is selected based on.
      *
      * @param context The request context containing the assets configuration
      * @param input   The String payload to send to the message queue

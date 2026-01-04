@@ -83,6 +83,9 @@ public class SslAsynchronousSocketChannel extends AsynchronousSocketChannelProxy
         this.appReadBuffer = handshakeModel.getAppReadBuffer();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public <A> void read(
             ByteBuffer dst,
@@ -120,6 +123,9 @@ public class SslAsynchronousSocketChannel extends AsynchronousSocketChannelProxy
 
             int index = 0;
 
+            /**
+             * {@inheritDoc}
+             */
             @Override
             public void completed(Integer result, A attachment) {
                 if (result == AsynchronousChannelProvider.READ_MONITOR_SIGNAL) {
@@ -166,6 +172,9 @@ public class SslAsynchronousSocketChannel extends AsynchronousSocketChannelProxy
                 }
             }
 
+            /**
+             * {@inheritDoc}
+             */
             @Override
             public void failed(Throwable exc, A attachment) {
                 handler.failed(exc, attachment);
@@ -264,6 +273,9 @@ public class SslAsynchronousSocketChannel extends AsynchronousSocketChannelProxy
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Future<Integer> read(ByteBuffer dst) {
         FutureCompletionHandler<Integer, Object> readFuture = new FutureCompletionHandler<>();
@@ -271,6 +283,9 @@ public class SslAsynchronousSocketChannel extends AsynchronousSocketChannelProxy
         return readFuture;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public <A> void read(
             ByteBuffer[] dsts,
@@ -283,6 +298,9 @@ public class SslAsynchronousSocketChannel extends AsynchronousSocketChannelProxy
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public <A> void write(
             ByteBuffer src,
@@ -305,6 +323,9 @@ public class SslAsynchronousSocketChannel extends AsynchronousSocketChannelProxy
         }
         asynchronousSocketChannel.write(netWriteBuffer.buffer(), timeout, unit, attachment, new CompletionHandler<>() {
 
+            /**
+             * {@inheritDoc}
+             */
             @Override
             public void completed(Integer result, A attachment) {
                 if (result == -1) {
@@ -317,6 +338,9 @@ public class SslAsynchronousSocketChannel extends AsynchronousSocketChannelProxy
                 }
             }
 
+            /**
+             * {@inheritDoc}
+             */
             @Override
             public void failed(Throwable exc, A attachment) {
                 handler.failed(exc, attachment);
@@ -379,11 +403,17 @@ public class SslAsynchronousSocketChannel extends AsynchronousSocketChannelProxy
         netBuffer.flip();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Future<Integer> write(ByteBuffer src) {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public <A> void write(
             ByteBuffer[] srcs,
@@ -396,6 +426,9 @@ public class SslAsynchronousSocketChannel extends AsynchronousSocketChannelProxy
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void close() throws IOException {
         if (closed) {

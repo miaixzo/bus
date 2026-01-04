@@ -117,12 +117,26 @@ public final class PooledStringBuilder implements Appendable, CharSequence, Auto
         return this;
     }
 
+    /**
+     * Appends the specified character sequence to this sequence.
+     *
+     * @param s The character sequence to append.
+     * @return A reference to this object.
+     */
     @Override
     public PooledStringBuilder append(CharSequence s) {
         delegate.append(s);
         return this;
     }
 
+    /**
+     * Appends a subsequence of the specified character sequence to this sequence.
+     *
+     * @param s     The character sequence to append.
+     * @param start The index of the first character in the subsequence.
+     * @param end   The index of the character following the last character in the subsequence.
+     * @return A reference to this object.
+     */
     @Override
     public PooledStringBuilder append(CharSequence s, int start, int end) {
         delegate.append(s, start, end);
@@ -164,6 +178,12 @@ public final class PooledStringBuilder implements Appendable, CharSequence, Auto
         return this;
     }
 
+    /**
+     * Appends the specified character to this sequence.
+     *
+     * @param c The character to append.
+     * @return A reference to this object.
+     */
     @Override
     public PooledStringBuilder append(char c) {
         delegate.append(c);
@@ -463,11 +483,21 @@ public final class PooledStringBuilder implements Appendable, CharSequence, Auto
         return this;
     }
 
+    /**
+     * Returns a string representation of this sequence.
+     *
+     * @return A string representation of this sequence.
+     */
     @Override
     public String toString() {
         return delegate.toString();
     }
 
+    /**
+     * Returns the length of this character sequence.
+     *
+     * @return The number of characters in this sequence.
+     */
     @Override
     public int length() {
         return delegate.length();
@@ -507,6 +537,12 @@ public final class PooledStringBuilder implements Appendable, CharSequence, Auto
         delegate.setLength(newLength);
     }
 
+    /**
+     * Returns the character at the specified index.
+     *
+     * @param index The index of the character to return.
+     * @return The character at the specified index.
+     */
     @Override
     public char charAt(int index) {
         return delegate.charAt(index);
@@ -588,6 +624,13 @@ public final class PooledStringBuilder implements Appendable, CharSequence, Auto
         return delegate.substring(start);
     }
 
+    /**
+     * Returns a new character sequence that is a subsequence of this sequence.
+     *
+     * @param start The start index of the subsequence (inclusive).
+     * @param end   The end index of the subsequence (exclusive).
+     * @return The specified subsequence.
+     */
     @Override
     public CharSequence subSequence(int start, int end) {
         return delegate.subSequence(start, end);

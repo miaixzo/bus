@@ -167,26 +167,51 @@ public class MutableByte extends Number implements Comparable<MutableByte>, Muta
         return this;
     }
 
+    /**
+     * Returns the value of this MutableByte as a {@code byte}.
+     *
+     * @return The numeric value represented by this object after conversion to type {@code byte}.
+     */
     @Override
     public byte byteValue() {
         return value;
     }
 
+    /**
+     * Returns the value of this MutableByte as an {@code int}.
+     *
+     * @return The numeric value represented by this object after conversion to type {@code int}.
+     */
     @Override
     public int intValue() {
         return value;
     }
 
+    /**
+     * Returns the value of this MutableByte as a {@code long}.
+     *
+     * @return The numeric value represented by this object after conversion to type {@code long}.
+     */
     @Override
     public long longValue() {
         return value;
     }
 
+    /**
+     * Returns the value of this MutableByte as a {@code float}.
+     *
+     * @return The numeric value represented by this object after conversion to type {@code float}.
+     */
     @Override
     public float floatValue() {
         return value;
     }
 
+    /**
+     * Returns the value of this MutableByte as a {@code double}.
+     *
+     * @return The numeric value represented by this object after conversion to type {@code double}.
+     */
     @Override
     public double doubleValue() {
         return value;
@@ -212,6 +237,11 @@ public class MutableByte extends Number implements Comparable<MutableByte>, Muta
         return false;
     }
 
+    /**
+     * Returns the hash code for this MutableByte.
+     *
+     * @return The hash code based on the current value.
+     */
     @Override
     public int hashCode() {
         return value;
@@ -229,6 +259,11 @@ public class MutableByte extends Number implements Comparable<MutableByte>, Muta
         return CompareKit.compare(this.value, other.value);
     }
 
+    /**
+     * Returns the string representation of this MutableByte.
+     *
+     * @return The string representation of the current value.
+     */
     @Override
     public String toString() {
         return String.valueOf(value);

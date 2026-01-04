@@ -39,16 +39,35 @@ import java.io.InputStream;
  */
 public class LocalOfficeProvider extends AbstractProvider {
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param source the source file to convert
+     * @return null (not implemented in this version)
+     */
     @Override
     public Object convert(File source) {
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param source the input stream to convert
+     * @return null (not implemented in this version)
+     */
     @Override
     public Object convert(InputStream source) {
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param source      the input stream to convert
+     * @param closeStream whether to close the stream after conversion
+     * @return null (not implemented in this version)
+     */
     @Override
     public Object convert(InputStream source, boolean closeStream) {
         return null;

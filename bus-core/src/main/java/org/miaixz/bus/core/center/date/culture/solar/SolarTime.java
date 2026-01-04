@@ -27,152 +27,92 @@
 */
 package org.miaixz.bus.core.center.date.culture.solar;
 
-import org.miaixz.bus.core.center.date.culture.Loops;
-import org.miaixz.bus.core.center.date.culture.cn.JulianDay;
-import org.miaixz.bus.core.center.date.culture.cn.Phase;
-import org.miaixz.bus.core.center.date.culture.cn.climate.Climate;
-import org.miaixz.bus.core.center.date.culture.cn.sixty.SixtyCycleHour;
+import org.miaixz.bus.core.center.date.culture.JulianDay;
+import org.miaixz.bus.core.center.date.culture.Phase;
+import org.miaixz.bus.core.center.date.culture.climate.Climate;
 import org.miaixz.bus.core.center.date.culture.lunar.LunarDay;
 import org.miaixz.bus.core.center.date.culture.lunar.LunarHour;
 import org.miaixz.bus.core.center.date.culture.lunar.LunarMonth;
+import org.miaixz.bus.core.center.date.culture.parts.SecondParts;
+import org.miaixz.bus.core.center.date.culture.sixty.SixtyCycleHour;
 
 /**
- * Represents a specific time in the Gregorian calendar.
+ * Represents a specific time in the Gregorian calendar (year, month, day, hour, minute, second).
+ * <p>
+ * This class provides precise time representation and conversions between different calendar systems including Lunar,
+ * Sexagenary cycle, and moon phase calculations.
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class SolarTime extends Loops {
+public class SolarTime extends SecondParts {
 
     /**
-     * The solar day this time belongs to.
-     */
-    protected SolarDay day;
-
-    /**
-     * The hour of the day (0-23).
-     */
-    protected int hour;
-
-    /**
-     * The minute of the hour (0-59).
-     */
-    protected int minute;
-
-    /**
-     * The second of the minute (0-59).
-     */
-    protected int second;
-
-    /**
-     * Constructs a {@code SolarTime} with the given year, month, day, hour, minute, and second.
+     * Constructs a SolarTime instance.
      *
-     * @param year   The year.
-     * @param month  The month.
-     * @param day    The day.
-     * @param hour   The hour (0-23).
-     * @param minute The minute (0-59).
-     * @param second The second (0-59).
-     * @throws IllegalArgumentException if hour, minute, or second are out of valid range.
+     * @param year   the year (1-9999)
+     * @param month  the month (1-12)
+     * @param day    the day of month
+     * @param hour   the hour (0-23)
+     * @param minute the minute (0-59)
+     * @param second the second (0-59)
+     * @throws IllegalArgumentException if any parameter is invalid
      */
     public SolarTime(int year, int month, int day, int hour, int minute, int second) {
-        if (hour < 0 || hour > 23) {
-            throw new IllegalArgumentException(String.format("illegal hour: %d", hour));
-        }
-        if (minute < 0 || minute > 59) {
-            throw new IllegalArgumentException(String.format("illegal minute: %d", minute));
-        }
-        if (second < 0 || second > 59) {
-            throw new IllegalArgumentException(String.format("illegal second: %d", second));
-        }
-        this.day = SolarDay.fromYmd(year, month, day);
+        validate(year, month, day, hour, minute, second);
+        this.year = year;
+        this.month = month;
+        this.day = day;
         this.hour = hour;
         this.minute = minute;
         this.second = second;
     }
 
     /**
-     * Creates a {@code SolarTime} instance from the given year, month, day, hour, minute, and second.
+     * Creates a SolarTime from year, month, day, hour, minute, and second.
      *
-     * @param year   The year.
-     * @param month  The month.
-     * @param day    The day.
-     * @param hour   The hour.
-     * @param minute The minute.
-     * @param second The second.
-     * @return A new {@link SolarTime} instance.
+     * @param year   the year (1-9999)
+     * @param month  the month (1-12)
+     * @param day    the day of month
+     * @param hour   the hour (0-23)
+     * @param minute the minute (0-59)
+     * @param second the second (0-59)
+     * @return a new SolarTime instance
      */
     public static SolarTime fromYmdHms(int year, int month, int day, int hour, int minute, int second) {
         return new SolarTime(year, month, day, hour, minute, second);
     }
 
     /**
-     * Gets the solar day this time belongs to.
+     * Validates the time components.
      *
-     * @return The {@link SolarDay}.
+     * @param year   the year
+     * @param month  the month
+     * @param day    the day
+     * @param hour   the hour
+     * @param minute the minute
+     * @param second the second
+     * @throws IllegalArgumentException if validation fails
+     */
+    public static void validate(int year, int month, int day, int hour, int minute, int second) {
+        SecondParts.validate(hour, minute, second);
+        SolarDay.validate(year, month, day);
+    }
+
+    /**
+     * Gets the solar day containing this time.
+     *
+     * @return the SolarDay
      */
     public SolarDay getSolarDay() {
-        return day;
+        return SolarDay.fromYmd(year, month, day);
     }
 
     /**
-     * Gets the year of this solar time.
+     * Gets the time as a formatted string (HH:mm:ss).
      *
-     * @return The year.
-     */
-    public int getYear() {
-        return day.getYear();
-    }
-
-    /**
-     * Gets the month of this solar time.
-     *
-     * @return The month.
-     */
-    public int getMonth() {
-        return day.getMonth();
-    }
-
-    /**
-     * Gets the day of this solar time.
-     *
-     * @return The day.
-     */
-    public int getDay() {
-        return day.getDay();
-    }
-
-    /**
-     * Gets the hour of this solar time.
-     *
-     * @return The hour.
-     */
-    public int getHour() {
-        return hour;
-    }
-
-    /**
-     * Gets the minute of this solar time.
-     *
-     * @return The minute.
-     */
-    public int getMinute() {
-        return minute;
-    }
-
-    /**
-     * Gets the second of this solar time.
-     *
-     * @return The second.
-     */
-    public int getSecond() {
-        return second;
-    }
-
-    /**
-     * Gets the formatted time string (HH:mm:ss).
-     *
-     * @return The formatted time string.
+     * @return the formatted time string
      */
     public String getName() {
         return String.format("%02d:%02d:%02d", hour, minute, second);
@@ -180,18 +120,19 @@ public class SolarTime extends Loops {
 
     @Override
     public String toString() {
-        return String.format("%s %s", day, getName());
+        return String.format("%s %s", getSolarDay(), getName());
     }
 
     /**
-     * Checks if this solar time is before the target solar time.
+     * Checks if this time is before the target time.
      *
-     * @param target The target solar time.
-     * @return {@code true} if this time is before the target, {@code false} otherwise.
+     * @param target the solar time to compare with
+     * @return true if this time is before the target
      */
     public boolean isBefore(SolarTime target) {
-        if (!day.equals(target.getSolarDay())) {
-            return day.isBefore(target.getSolarDay());
+        SolarDay d = getSolarDay();
+        if (!d.equals(target.getSolarDay())) {
+            return d.isBefore(target.getSolarDay());
         }
         if (hour != target.getHour()) {
             return hour < target.getHour();
@@ -200,14 +141,15 @@ public class SolarTime extends Loops {
     }
 
     /**
-     * Checks if this solar time is after the target solar time.
+     * Checks if this time is after the target time.
      *
-     * @param target The target solar time.
-     * @return {@code true} if this time is after the target, {@code false} otherwise.
+     * @param target the solar time to compare with
+     * @return true if this time is after the target
      */
     public boolean isAfter(SolarTime target) {
-        if (!day.equals(target.getSolarDay())) {
-            return day.isAfter(target.getSolarDay());
+        SolarDay d = getSolarDay();
+        if (!d.equals(target.getSolarDay())) {
+            return d.isAfter(target.getSolarDay());
         }
         if (hour != target.getHour()) {
             return hour > target.getHour();
@@ -216,12 +158,13 @@ public class SolarTime extends Loops {
     }
 
     /**
-     * Gets the solar term for this solar time.
+     * Gets the solar term for this time. Determines which solar term this time falls into based on precise astronomical
+     * calculations.
      *
-     * @return The {@link SolarTerms} for this time.
+     * @return the SolarTerms
      */
     public SolarTerms getTerm() {
-        SolarTerms term = day.getTerm();
+        SolarTerms term = getSolarDay().getTerm();
         if (isBefore(term.getJulianDay().getSolarTime())) {
             term = term.next(-1);
         }
@@ -229,12 +172,12 @@ public class SolarTime extends Loops {
     }
 
     /**
-     * Gets the phenology (Hou) for this solar time.
+     * Gets the climate pentad for this time.
      *
-     * @return The {@link Climate} for this time.
+     * @return the Climate (pentad)
      */
     public Climate getPhenology() {
-        Climate p = day.getPhenology();
+        Climate p = getSolarDay().getPhenology();
         if (isBefore(p.getJulianDay().getSolarTime())) {
             p = p.next(-1);
         }
@@ -242,22 +185,22 @@ public class SolarTime extends Loops {
     }
 
     /**
-     * Gets the Julian day corresponding to this solar time.
+     * Gets the Julian Day for this time.
      *
-     * @return The {@link JulianDay} for this solar time.
+     * @return the JulianDay
      */
     public JulianDay getJulianDay() {
-        return JulianDay.fromYmdHms(getYear(), getMonth(), getDay(), hour, minute, second);
+        return JulianDay.fromYmdHms(year, month, day, hour, minute, second);
     }
 
     /**
-     * Subtracts a target {@code SolarTime} from this {@code SolarTime}, returning the difference in seconds.
+     * Calculates the difference in seconds between this time and the target time.
      *
-     * @param target The target {@code SolarTime}.
-     * @return The number of seconds difference.
+     * @param target the solar time to subtract from this time
+     * @return the number of seconds difference (positive if target is earlier)
      */
     public int subtract(SolarTime target) {
-        int days = day.subtract(target.getSolarDay());
+        int days = getSolarDay().subtract(target.getSolarDay());
         int cs = hour * 3600 + minute * 60 + second;
         int ts = target.getHour() * 3600 + target.getMinute() * 60 + target.getSecond();
         int seconds = cs - ts;
@@ -270,14 +213,14 @@ public class SolarTime extends Loops {
     }
 
     /**
-     * Advances this solar time by a specified number of seconds.
+     * Moves this time forward or backward by a specified number of seconds.
      *
-     * @param n The number of seconds to advance.
-     * @return The {@link SolarTime} after advancing by {@code n} seconds.
+     * @param n the number of seconds to move (positive for forward, negative for backward)
+     * @return the SolarTime n seconds from this time
      */
     public SolarTime next(int n) {
         if (n == 0) {
-            return SolarTime.fromYmdHms(getYear(), getMonth(), getDay(), hour, minute, second);
+            return SolarTime.fromYmdHms(year, month, day, hour, minute, second);
         }
         int ts = second + n;
         int tm = minute + ts / 60;
@@ -299,33 +242,34 @@ public class SolarTime extends Loops {
             td -= 1;
         }
 
-        SolarDay d = day.next(td);
+        SolarDay d = getSolarDay().next(td);
         return SolarTime.fromYmdHms(d.getYear(), d.getMonth(), d.getDay(), th, tm, ts);
     }
 
     /**
-     * Gets the lunar hour corresponding to this solar time.
+     * Converts this solar time to a lunar hour (Shichen). Each Shichen is a 2-hour period in the traditional Chinese
+     * timekeeping system.
      *
-     * @return The {@link LunarHour} for this solar time.
+     * @return the corresponding LunarHour
      */
     public LunarHour getLunarHour() {
-        LunarDay d = day.getLunarDay();
+        LunarDay d = getSolarDay().getLunarDay();
         return LunarHour.fromYmdHms(d.getYear(), d.getMonth(), d.getDay(), hour, minute, second);
     }
 
     /**
-     * Gets the Sixty Cycle Hour (GanZhi hour) corresponding to this solar time.
+     * Converts this solar time to a sexagenary cycle (Gan-Zhi) hour.
      *
-     * @return The {@link SixtyCycleHour} for this solar time.
+     * @return the corresponding SixtyCycleHour
      */
     public SixtyCycleHour getSixtyCycleHour() {
         return SixtyCycleHour.fromSolarTime(this);
     }
 
     /**
-     * Gets the lunar phase (Moon Phase) corresponding to this solar time.
+     * Gets the moon phase for this time.
      *
-     * @return The {@link Phase} for this solar time.
+     * @return the Phase
      */
     public Phase getPhase() {
         LunarMonth month = getLunarHour().getLunarDay().getLunarMonth().next(1);

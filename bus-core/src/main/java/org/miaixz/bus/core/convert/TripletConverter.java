@@ -39,9 +39,9 @@ import org.miaixz.bus.core.xyz.BeanKit;
 import org.miaixz.bus.core.xyz.TypeKit;
 
 /**
- * {@link Triplet} 转换器，支持以下类型转为Triple：
+ * Converter for {@link Triplet} objects, supports the following types to convert to Triplet:
  * <ul>
- * <li>Bean，包含{@code getLeft}、{@code getMiddle}和{@code getRight}方法</li>
+ * <li>Bean objects with {@code getLeft}, {@code getMiddle}, and {@code getRight} methods</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -53,21 +53,21 @@ public class TripletConverter extends ConverterWithRoot implements Serializable 
     private static final long serialVersionUID = 2852272275571L;
 
     /**
-     * 构造
+     * Constructs a new TripletConverter
      *
-     * @param rootConverter 根转换器，用于转换无法被识别的对象
+     * @param rootConverter the root converter for converting unrecognized objects
      */
     public TripletConverter(final Converter rootConverter) {
         super(rootConverter);
     }
 
     /**
-     * Map转Entry
+     * Converts Map to Triplet
      *
-     * @param leftType  键类型
-     * @param rightType 值类型
-     * @param map       被转换的map
-     * @return Entry
+     * @param leftType  the key type
+     * @param rightType the value type
+     * @param map       the map to convert
+     * @return the Triplet
      */
     private Triplet<?, ?, ?> mapToTriple(
             final Type leftType,
@@ -98,14 +98,14 @@ public class TripletConverter extends ConverterWithRoot implements Serializable 
     }
 
     /**
-     * 转换对象为指定键值类型的指定类型Map
+     * Converts an object to Map with specified key and value types
      *
-     * @param leftType   键类型
-     * @param middleType 中值类型
-     * @param rightType  值类型
-     * @param value      被转换的值
-     * @return 转换后的Map
-     * @throws ConvertException 转换异常或不支持的类型
+     * @param leftType   the key type
+     * @param middleType the middle value type
+     * @param rightType  the value type
+     * @param value      the value to convert
+     * @return the converted Map
+     * @throws ConvertException if conversion fails or type is unsupported
      */
     public Triplet<?, ?, ?> convert(
             final Type leftType,
@@ -116,7 +116,7 @@ public class TripletConverter extends ConverterWithRoot implements Serializable 
         if (value instanceof Map) {
             map = (Map) value;
         } else if (BeanKit.isReadableBean(value.getClass())) {
-            // 一次性只读场景，包装为Map效率更高
+            // For one-time read-only scenarios, wrapping as Map is more efficient
             map = BeanKit.toBeanMap(value);
         }
 

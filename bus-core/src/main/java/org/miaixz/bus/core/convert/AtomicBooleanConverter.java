@@ -50,9 +50,6 @@ public class AtomicBooleanConverter extends AbstractConverter {
      * Singleton instance.
      */
     public static final AtomicBooleanConverter INSTANCE = new AtomicBooleanConverter();
-    /**
-     * The serial version UID.
-     */
     @Serial
     private static final long serialVersionUID = 2852263652262L;
 

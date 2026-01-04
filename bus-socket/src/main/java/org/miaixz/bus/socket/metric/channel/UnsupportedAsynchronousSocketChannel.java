@@ -56,51 +56,157 @@ public class UnsupportedAsynchronousSocketChannel extends AsynchronousSocketChan
         super(asynchronousSocketChannel.provider());
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * This operation is not supported.
+     * </p>
+     *
+     * @param local the local address to bind to
+     * @return this channel
+     * @throws UnsupportedOperationException always
+     */
     @Override
     public AsynchronousSocketChannel bind(SocketAddress local) {
         throw new UnsupportedOperationException("bind operation is not supported");
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * This operation is not supported.
+     * </p>
+     *
+     * @param <T>   the type of the socket option value
+     * @param name  the socket option
+     * @param value the value of the socket option
+     * @return this channel
+     * @throws UnsupportedOperationException always
+     */
     @Override
     public <T> AsynchronousSocketChannel setOption(SocketOption<T> name, T value) {
         throw new UnsupportedOperationException("setOption operation is not supported");
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * This operation is not supported.
+     * </p>
+     *
+     * @param <T>  the type of the socket option value
+     * @param name the socket option
+     * @return the value of the socket option
+     * @throws UnsupportedOperationException always
+     */
     @Override
     public <T> T getOption(SocketOption<T> name) {
         throw new UnsupportedOperationException("getOption operation is not supported");
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * This operation is not supported.
+     * </p>
+     *
+     * @return a set of the socket options supported by this channel
+     * @throws UnsupportedOperationException always
+     */
     @Override
     public Set<SocketOption<?>> supportedOptions() {
         throw new UnsupportedOperationException("supportedOptions operation is not supported");
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * This operation is not supported.
+     * </p>
+     *
+     * @return this channel
+     * @throws UnsupportedOperationException always
+     */
     @Override
     public AsynchronousSocketChannel shutdownInput() {
         throw new UnsupportedOperationException("shutdownInput operation is not supported");
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * This operation is not supported.
+     * </p>
+     *
+     * @return this channel
+     * @throws UnsupportedOperationException always
+     */
     @Override
     public AsynchronousSocketChannel shutdownOutput() {
         throw new UnsupportedOperationException("shutdownOutput operation is not supported");
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * This operation is not supported.
+     * </p>
+     *
+     * @return the remote address
+     * @throws IOException                   if an I/O error occurs
+     * @throws UnsupportedOperationException always
+     */
     @Override
     public SocketAddress getRemoteAddress() throws IOException {
         throw new UnsupportedOperationException("getRemoteAddress operation is not supported");
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * This operation is not supported.
+     * </p>
+     *
+     * @param <A>        the type of the attachment
+     * @param remote     the remote address to connect to
+     * @param attachment the object to attach to the I/O operation
+     * @param handler    the completion handler
+     * @throws UnsupportedOperationException always
+     */
     @Override
     public <A> void connect(SocketAddress remote, A attachment, CompletionHandler<Void, ? super A> handler) {
         throw new UnsupportedOperationException("connect operation is not supported");
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * This operation is not supported.
+     * </p>
+     *
+     * @param remote the remote address to connect to
+     * @return a {@link Future} representing the pending result
+     * @throws UnsupportedOperationException always
+     */
     @Override
     public Future<Void> connect(SocketAddress remote) {
         throw new UnsupportedOperationException("connect operation is not supported");
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * This operation is not supported.
+     * </p>
+     *
+     * @param <A>        the type of the attachment
+     * @param dst        the buffer into which bytes are to be transferred
+     * @param timeout    the maximum time for the operation
+     * @param unit       the time unit of the timeout argument
+     * @param attachment the object to attach to the I/O operation
+     * @param handler    the handler for consuming the result
+     * @throws UnsupportedOperationException always
+     */
     @Override
     public <A> void read(
             ByteBuffer dst,
@@ -111,11 +217,37 @@ public class UnsupportedAsynchronousSocketChannel extends AsynchronousSocketChan
         throw new UnsupportedOperationException("read operation is not supported");
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * This operation is not supported.
+     * </p>
+     *
+     * @param dst the buffer into which bytes are to be transferred
+     * @return a {@link Future} representing the pending result
+     * @throws UnsupportedOperationException always
+     */
     @Override
     public Future<Integer> read(ByteBuffer dst) {
         throw new UnsupportedOperationException("read operation is not supported");
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * This operation is not supported.
+     * </p>
+     *
+     * @param <A>        the type of the attachment
+     * @param dsts       the buffers into which bytes are to be transferred
+     * @param offset     the offset within the buffer array
+     * @param length     the maximum number of buffers to be accessed
+     * @param timeout    the maximum time for the operation
+     * @param unit       the time unit of the timeout argument
+     * @param attachment the object to attach to the I/O operation
+     * @param handler    the handler for consuming the result
+     * @throws UnsupportedOperationException always
+     */
     @Override
     public <A> void read(
             ByteBuffer[] dsts,
@@ -128,6 +260,20 @@ public class UnsupportedAsynchronousSocketChannel extends AsynchronousSocketChan
         throw new UnsupportedOperationException("scattering read operation is not supported");
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * This operation is not supported.
+     * </p>
+     *
+     * @param <A>        the type of the attachment
+     * @param src        the buffer from which bytes are to be retrieved
+     * @param timeout    the maximum time for the operation
+     * @param unit       the time unit of the timeout argument
+     * @param attachment the object to attach to the I/O operation
+     * @param handler    the handler for consuming the result
+     * @throws UnsupportedOperationException always
+     */
     @Override
     public <A> void write(
             ByteBuffer src,
@@ -138,11 +284,37 @@ public class UnsupportedAsynchronousSocketChannel extends AsynchronousSocketChan
         throw new UnsupportedOperationException("write operation is not supported");
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * This operation is not supported.
+     * </p>
+     *
+     * @param src the buffer from which bytes are to be retrieved
+     * @return a {@link Future} representing the pending result
+     * @throws UnsupportedOperationException always
+     */
     @Override
     public Future<Integer> write(ByteBuffer src) {
         throw new UnsupportedOperationException("write operation is not supported");
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * This operation is not supported.
+     * </p>
+     *
+     * @param <A>        the type of the attachment
+     * @param srcs       the buffers from which bytes are to be retrieved
+     * @param offset     the offset within the buffer array
+     * @param length     the maximum number of buffers to be accessed
+     * @param timeout    the maximum time for the operation
+     * @param unit       the time unit of the timeout argument
+     * @param attachment the object to attach to the I/O operation
+     * @param handler    the handler for consuming the result
+     * @throws UnsupportedOperationException always
+     */
     @Override
     public <A> void write(
             ByteBuffer[] srcs,
@@ -155,16 +327,44 @@ public class UnsupportedAsynchronousSocketChannel extends AsynchronousSocketChan
         throw new UnsupportedOperationException("gathering write operation is not supported");
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * This operation is not supported.
+     * </p>
+     *
+     * @return the local address
+     * @throws IOException                   if an I/O error occurs
+     * @throws UnsupportedOperationException always
+     */
     @Override
     public SocketAddress getLocalAddress() throws IOException {
         throw new UnsupportedOperationException("getLocalAddress operation is not supported");
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * This operation is not supported.
+     * </p>
+     *
+     * @return {@code true} if the channel is open
+     * @throws UnsupportedOperationException always
+     */
     @Override
     public boolean isOpen() {
         throw new UnsupportedOperationException("isOpen operation is not supported");
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * This operation is not supported.
+     * </p>
+     *
+     * @throws IOException                   if an I/O error occurs
+     * @throws UnsupportedOperationException always
+     */
     @Override
     public void close() throws IOException {
         throw new UnsupportedOperationException("close operation is not supported");

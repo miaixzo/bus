@@ -43,9 +43,6 @@ public class CRC16Ansi extends CRC16Checksum {
     private CRC16Ansi() {
     }
 
-    /**
-     * The serial version UID for serialization.
-     */
     @Serial
     private static final long serialVersionUID = 2852278118286L;
 

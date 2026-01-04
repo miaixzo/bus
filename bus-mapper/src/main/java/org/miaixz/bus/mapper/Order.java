@@ -250,51 +250,104 @@ public interface Order extends org.miaixz.bus.core.Order {
             this.property = property != null ? property : "";
         }
 
+        /**
+         * {@inheritDoc}
+         *
+         * @return the sort direction
+         */
         @Override
         public EnumValue.Sort getDirection() {
             return direction;
         }
 
+        /**
+         * {@inheritDoc}
+         *
+         * @return the property name
+         */
         @Override
         public String getProperty() {
             return property;
         }
 
+        /**
+         * {@inheritDoc}
+         *
+         * @return true if ascending, false otherwise
+         */
         @Override
         public boolean isAscending() {
             return EnumValue.Sort.ASC.equals(direction);
         }
 
+        /**
+         * {@inheritDoc}
+         *
+         * @return true if descending, false otherwise
+         */
         @Override
         public boolean isDescending() {
             return EnumValue.Sort.DESC.equals(direction);
         }
 
+        /**
+         * {@inheritDoc}
+         *
+         * @param direction the new direction
+         * @return a new order with the specified direction
+         */
         @Override
         public org.miaixz.bus.core.Order withDirection(EnumValue.Sort direction) {
             return new SimpleOrder(direction, this.property);
         }
 
+        /**
+         * {@inheritDoc}
+         *
+         * @param property the new property
+         * @return a new order with the specified property
+         */
         @Override
         public org.miaixz.bus.core.Order withProperty(String property) {
             return new SimpleOrder(this.direction, property);
         }
 
+        /**
+         * {@inheritDoc}
+         *
+         * @return true if this order has a property, false otherwise
+         */
         @Override
         public boolean hasProperty() {
             return property != null && !property.trim().isEmpty();
         }
 
+        /**
+         * {@inheritDoc}
+         *
+         * @return the direction code
+         */
         @Override
         public String getDirectionCode() {
             return direction.getCode();
         }
 
+        /**
+         * {@inheritDoc}
+         *
+         * @return the order value (0 for default)
+         */
         @Override
         public int order() {
             return 0;
         }
 
+        /**
+         * {@inheritDoc}
+         *
+         * @param obj the object to compare
+         * @return true if equal, false otherwise
+         */
         @Override
         public boolean equals(Object obj) {
             if (this == obj)
@@ -306,11 +359,21 @@ public interface Order extends org.miaixz.bus.core.Order {
             return direction == other.direction && Objects.equals(property, other.property);
         }
 
+        /**
+         * {@inheritDoc}
+         *
+         * @return the hash code
+         */
         @Override
         public int hashCode() {
             return Objects.hash(direction, property);
         }
 
+        /**
+         * {@inheritDoc}
+         *
+         * @return the string representation
+         */
         @Override
         public String toString() {
             if (property.isEmpty()) {

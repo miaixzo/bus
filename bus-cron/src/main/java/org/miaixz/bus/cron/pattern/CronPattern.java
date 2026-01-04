@@ -28,7 +28,7 @@
 package org.miaixz.bus.cron.pattern;
 
 import org.miaixz.bus.core.center.date.Calendar;
-import org.miaixz.bus.core.center.date.culture.en.Week;
+import org.miaixz.bus.core.center.date.Week;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.xyz.CompareKit;
 import org.miaixz.bus.core.xyz.DateKit;
@@ -89,7 +89,13 @@ import java.util.*;
  */
 public class CronPattern {
 
+    /**
+     * The original cron expression string.
+     */
     private final String pattern;
+    /**
+     * The list of pattern matchers for each part of the cron expression.
+     */
     private final List<PatternMatcher> matchers;
 
     /**
@@ -332,6 +338,12 @@ public class CronPattern {
         return nextMatch(next);
     }
 
+    /**
+     * Checks if this CronPattern is equal to another object.
+     *
+     * @param o the object to compare with
+     * @return {@code true} if the objects are equal, {@code false} otherwise
+     */
     @Override
     public boolean equals(final Object o) {
         if (this == o) {
@@ -344,11 +356,21 @@ public class CronPattern {
         return Objects.equals(pattern, that.pattern);
     }
 
+    /**
+     * Returns the hash code of this CronPattern.
+     *
+     * @return the hash code based on the pattern string
+     */
     @Override
     public int hashCode() {
         return Objects.hash(pattern);
     }
 
+    /**
+     * Returns the string representation of this CronPattern.
+     *
+     * @return the cron pattern string
+     */
     @Override
     public String toString() {
         return this.pattern;

@@ -43,13 +43,10 @@ import reactor.core.publisher.Mono;
 /**
  * MCP protocol request router, acting as a pure request coordinator. It delegates all MCP asset lifecycle management to
  * the McpLifecycleExecutor and is only responsible for handling real-time listTools and callTool requests.
- * <p>
- * This router supports two response modes controlled by {@link Assets#getStream()}:
  * <ul>
  * <li>Buffering mode (stream = 1 or null): Buffers the complete tool result before returning</li>
  * <li>Streaming mode (stream = 2): Streams the tool result in chunks</li>
  * </ul>
- * </p>
  * Generic type parameters: {@code Router<ServerRequest, ServerResponse>}
  *
  * @author Kimi Liu

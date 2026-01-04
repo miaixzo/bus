@@ -94,6 +94,14 @@ public class FileLoader extends ResourceLoader implements Loader {
         this.root = root;
     }
 
+    /**
+     * Loads resources from the file system.
+     *
+     * @param path        the base path to search for resources.
+     * @param recursively whether to search for resources in subdirectories.
+     * @param filter      the filter to apply to resources.
+     * @return an enumeration of resources.
+     */
     @Override
     public Enumeration<Resource> load(String path, boolean recursively, Filter filter) {
         return new Enumerator(context, root, path, recursively, null != filter ? filter : Filters.ALWAYS);
@@ -146,6 +154,11 @@ public class FileLoader extends ResourceLoader implements Loader {
             }
         }
 
+        /**
+         * Returns {@code true} if there are more resources to enumerate.
+         *
+         * @return {@code true} if there are more resources, {@code false} otherwise.
+         */
         @Override
         public boolean hasMoreElements() {
             if (null != next) {

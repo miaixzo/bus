@@ -30,8 +30,7 @@ package org.miaixz.bus.core.center.date.culture.solar;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.miaixz.bus.core.center.date.culture.Loops;
-import org.miaixz.bus.core.center.date.culture.en.Quarter;
+import org.miaixz.bus.core.center.date.culture.parts.YearParts;
 
 /**
  * Represents a quarter in the Gregorian calendar.
@@ -39,106 +38,108 @@ import org.miaixz.bus.core.center.date.culture.en.Quarter;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class SolarQuarter extends Loops {
+public class SolarQuarter extends YearParts {
 
     /**
-     * The solar year this quarter belongs to.
+     * Chinese quarter names.
      */
-    protected SolarYear year;
+    public static final String[] NAMES = { "一季度", "二季度", "三季度", "四季度" };
 
     /**
-     * The index of the quarter within the year, 0-3.
+     * The index of the quarter (0-3).
      */
     protected int index;
 
     /**
-     * Constructs a {@code SolarQuarter} with the given year and index.
+     * Validates the year and quarter index.
      *
-     * @param year  The year.
-     * @param index The index of the quarter, 0-3.
-     * @throws IllegalArgumentException if the index is out of valid range.
+     * @param year  the year
+     * @param index the quarter index (0-3)
+     * @throws IllegalArgumentException if validation fails
+     */
+    public static void validate(int year, int index) {
+        if (index < 0 || index > 3) {
+            throw new IllegalArgumentException(String.format("illegal solar quarter index: %d", index));
+        }
+        SolarYear.validate(year);
+    }
+
+    /**
+     * Constructs a SolarQuarter instance.
+     *
+     * @param year  the year (1-9999)
+     * @param index the quarter index (0-3)
+     * @throws IllegalArgumentException if the index is not 0-3
      */
     public SolarQuarter(int year, int index) {
-        if (index < 0 || index > 3) {
-            throw new IllegalArgumentException(String.format("illegal solar season index: %d", index));
-        }
-        this.year = SolarYear.fromYear(year);
+        validate(year, index);
+        this.year = year;
         this.index = index;
     }
 
     /**
-     * Creates a {@code SolarQuarter} instance from the given year and index.
+     * Creates a SolarQuarter from year and index.
      *
-     * @param year  The year.
-     * @param index The index of the quarter.
-     * @return A new {@link SolarQuarter} instance.
+     * @param year  the year (1-9999)
+     * @param index the quarter index (0-3)
+     * @return a new SolarQuarter instance
      */
     public static SolarQuarter fromIndex(int year, int index) {
         return new SolarQuarter(year, index);
     }
 
     /**
-     * Gets the solar year this quarter belongs to.
+     * Gets the solar year containing this quarter.
      *
-     * @return The {@link SolarYear}.
+     * @return the SolarYear
      */
     public SolarYear getSolarYear() {
-        return year;
+        return SolarYear.fromYear(year);
     }
 
     /**
-     * Gets the year number.
+     * Gets the index of this quarter (0-3).
      *
-     * @return The year number.
-     */
-    public int getYear() {
-        return year.getYear();
-    }
-
-    /**
-     * Gets the index of the quarter within the year, 0-3.
-     *
-     * @return The index.
+     * @return the quarter index
      */
     public int getIndex() {
         return index;
     }
 
     /**
-     * Gets the name of this solar quarter.
+     * Gets the Chinese name of this quarter.
      *
-     * @return The name of this solar quarter.
+     * @return the Chinese quarter name
      */
     public String getName() {
-        return Quarter.getName(index);
+        return NAMES[index];
     }
 
     @Override
     public String toString() {
-        return year + getName();
+        return getSolarYear() + getName();
     }
 
     /**
-     * Gets the solar quarter after a specified number of quarters.
+     * Gets the next or previous quarter.
      *
-     * @param n The number of quarters to add.
-     * @return The {@link SolarQuarter} after {@code n} quarters.
+     * @param n the number of quarters to move (positive for forward, negative for backward)
+     * @return the SolarQuarter n quarters from this one
      */
     public SolarQuarter next(int n) {
         int i = index + n;
-        return fromIndex((getYear() * 4 + i) / 4, indexOf(i, 4));
+        return fromIndex((year * 4 + i) / 4, indexOf(i, 4));
     }
 
     /**
-     * Gets a list of all months in this solar quarter. A quarter has 3 months.
+     * Gets the list of months in this quarter. Each quarter contains 3 months.
      *
-     * @return A list of {@link SolarMonth} objects for this quarter.
+     * @return a list of 3 SolarMonth objects
      */
     public List<SolarMonth> getMonths() {
         List<SolarMonth> l = new ArrayList<>(3);
-        int y = getYear();
         for (int i = 1; i < 4; i++) {
-            l.add(SolarMonth.fromYm(y, index * 3 + i));
+            l.add(SolarMonth.fromYm(year, index * 3 + i));
         }
         return l;
     }

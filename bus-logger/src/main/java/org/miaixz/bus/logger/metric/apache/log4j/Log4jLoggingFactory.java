@@ -47,11 +47,17 @@ public class Log4jLoggingFactory extends AbstractFactory {
         exists(org.apache.logging.log4j.LogManager.class);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Provider create(final String name) {
         return new Log4jLoggingProvider(name);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Provider create(final Class<?> clazz) {
         return new Log4jLoggingProvider(clazz);

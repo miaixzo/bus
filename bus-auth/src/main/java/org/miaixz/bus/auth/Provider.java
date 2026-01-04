@@ -115,6 +115,11 @@ public interface Provider extends org.miaixz.bus.core.Provider {
         throw new AuthorizedException(ErrorCode._110001.getKey());
     }
 
+    /**
+     * Returns the provider type identifier.
+     *
+     * @return the provider type identifier, which is {@link EnumValue.Povider#AUTH}
+     */
     @Override
     default Object type() {
         return EnumValue.Povider.AUTH;

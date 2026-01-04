@@ -251,6 +251,11 @@ public class SM2 extends AbstractCrypto<SM2> {
         return this;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return this instance
+     */
     @Override
     public SM2 initKeys() {
         // Prevents the superclass from automatically generating a key pair.
@@ -615,6 +620,14 @@ public class SM2 extends AbstractCrypto<SM2> {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Re-initializes key parameters to prevent update failure when resetting the key.
+     *
+     * @param privateKey {@inheritDoc}
+     * @return this instance
+     */
     @Override
     public SM2 setPrivateKey(final PrivateKey privateKey) {
         super.setPrivateKey(privateKey);
@@ -647,6 +660,14 @@ public class SM2 extends AbstractCrypto<SM2> {
         return this;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Re-initializes key parameters to prevent update failure when resetting the key.
+     *
+     * @param publicKey {@inheritDoc}
+     * @return this instance
+     */
     @Override
     public SM2 setPublicKey(final PublicKey publicKey) {
         super.setPublicKey(publicKey);

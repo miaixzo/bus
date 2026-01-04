@@ -41,9 +41,6 @@ import org.miaixz.bus.core.xyz.TypeKit;
  */
 public class AtomicReferenceConverter extends AbstractConverter {
 
-    /**
-     * The serial version UID.
-     */
     @Serial
     private static final long serialVersionUID = 2852265266938L;
 

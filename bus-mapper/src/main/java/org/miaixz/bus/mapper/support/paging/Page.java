@@ -83,9 +83,6 @@ import java.util.List;
  */
 public class Page<T> extends ArrayList<T> {
 
-    /**
-     * The serial version UID for serialization.
-     */
     @Serial
     private static final long serialVersionUID = 2852289758798L;
 

@@ -33,7 +33,7 @@ import org.miaixz.bus.core.lang.exception.ConvertException;
 import org.miaixz.bus.core.lang.tuple.Tuple;
 
 /**
- * {@link Tuple}转换器
+ * Converter for {@link Tuple} objects
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -41,10 +41,21 @@ import org.miaixz.bus.core.lang.tuple.Tuple;
 public class TupleConverter implements Converter {
 
     /**
-     * 单例
+     * Singleton instance
      */
     public static final TupleConverter INSTANCE = new TupleConverter();
 
+    /**
+     * Converts the given value to a Tuple.
+     * <p>
+     * Converts the value to an Object array first, then creates a Tuple from the array.
+     * </p>
+     *
+     * @param targetType the target type (should be Tuple.class)
+     * @param value      the value to convert
+     * @return a Tuple containing the converted array elements
+     * @throws ConvertException if conversion fails
+     */
     @Override
     public Object convert(final Type targetType, final Object value) throws ConvertException {
         return Tuple.of(ArrayConverter.INSTANCE.convert(Object[].class, value));

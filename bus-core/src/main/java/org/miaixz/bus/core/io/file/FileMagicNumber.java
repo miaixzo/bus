@@ -51,6 +51,12 @@ public enum FileMagicNumber {
      */
     UNKNOWN(null, null) {
 
+        /**
+         * Always returns false for unknown type.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code false}
+         */
         @Override
         public boolean match(final byte[] bytes) {
             return false;
@@ -65,6 +71,12 @@ public enum FileMagicNumber {
      */
     JPEG("image/jpeg", "jpg") {
 
+        /**
+         * Checks if the given bytes match the JPEG file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match JPEG signature (FFD8FF)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             return bytes.length > 2 && Objects.equals(bytes[0], (byte) 0xff) && Objects.equals(bytes[1], (byte) 0xd8)
@@ -80,6 +92,12 @@ public enum FileMagicNumber {
      */
     JXR("image/vnd.ms-photo", "jxr") {
 
+        /**
+         * Checks if the given bytes match the JXR file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match JXR signature (4949BC)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             // file magic number https://www.iana.org/assignments/media-types/image/jxr
@@ -96,6 +114,12 @@ public enum FileMagicNumber {
      */
     APNG("image/apng", "apng") {
 
+        /**
+         * Checks if the given bytes match the APNG file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match APNG signature (89504E470D0A1A0A)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             final boolean b = ArrayKit.startWith(
@@ -140,6 +164,12 @@ public enum FileMagicNumber {
      */
     PNG("image/png", "png") {
 
+        /**
+         * Checks if the given bytes match the PNG file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match PNG signature (89504E47)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             return ArrayKit.startWith(bytes, (byte) 0x89, (byte) 0x50, (byte) 0x4e, (byte) 0x47);
@@ -154,6 +184,12 @@ public enum FileMagicNumber {
      */
     GIF("image/gif", "gif") {
 
+        /**
+         * Checks if the given bytes match the GIF file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match GIF signature (474946)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             return ArrayKit.startWith(bytes, (byte) 0x47, (byte) 0x49, (byte) 0x46);
@@ -168,6 +204,12 @@ public enum FileMagicNumber {
      */
     BMP("image/bmp", "bmp") {
 
+        /**
+         * Checks if the given bytes match the BMP file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match BMP signature (424D)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             return ArrayKit.startWith(bytes, (byte) 0x42, (byte) 0x4d);
@@ -182,6 +224,12 @@ public enum FileMagicNumber {
      */
     TIFF("image/tiff", "tiff") {
 
+        /**
+         * Checks if the given bytes match the TIFF file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match TIFF signature (49492A00 or 4D4D002A)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             return ArrayKit.startWith(bytes, (byte) 0x49, (byte) 0x49, (byte) 0x2a, (byte) 0x00)
@@ -197,6 +245,12 @@ public enum FileMagicNumber {
      */
     DWG("image/vnd.dwg", "dwg") {
 
+        /**
+         * Checks if the given bytes match the DWG file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match DWG signature (41433130)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             return ArrayKit.startWith(bytes, (byte) 0x41, (byte) 0x43, (byte) 0x31, (byte) 0x30);
@@ -211,6 +265,12 @@ public enum FileMagicNumber {
      */
     WEBP("image/webp", "webp") {
 
+        /**
+         * Checks if the given bytes match the WEBP file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match WEBP signature (57454250 at offset 8)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             return ArrayKit.isSubEquals(bytes, 8, (byte) 0x57, (byte) 0x45, (byte) 0x42, (byte) 0x50);
@@ -225,6 +285,12 @@ public enum FileMagicNumber {
      */
     PSD("image/vnd.adobe.photoshop", "psd") {
 
+        /**
+         * Checks if the given bytes match the PSD file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match PSD signature (38425053)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             return ArrayKit.startWith(bytes, (byte) 0x38, (byte) 0x42, (byte) 0x50, (byte) 0x53);
@@ -239,6 +305,12 @@ public enum FileMagicNumber {
      */
     ICO("image/x-icon", "ico") {
 
+        /**
+         * Checks if the given bytes match the ICO file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match ICO signature (00000100)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             return ArrayKit.startWith(bytes, (byte) 0x00, (byte) 0x00, (byte) 0x01, (byte) 0x00);
@@ -253,6 +325,12 @@ public enum FileMagicNumber {
      */
     XCF("image/x-xcf", "xcf") {
 
+        /**
+         * Checks if the given bytes match the XCF file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match XCF signature (67696D70207863662076)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             return ArrayKit.startWith(
@@ -280,6 +358,12 @@ public enum FileMagicNumber {
      */
     WAV("audio/x-wav", "wav") {
 
+        /**
+         * Checks if the given bytes match the WAV file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match WAV signature (52494646 and 57415645 at offset 8)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             return ArrayKit.startWith(bytes, (byte) 0x52, (byte) 0x49, (byte) 0x46, (byte) 0x46)
@@ -295,6 +379,12 @@ public enum FileMagicNumber {
      */
     MIDI("audio/midi", "midi") {
 
+        /**
+         * Checks if the given bytes match the MIDI file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match MIDI signature (4D546864)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             return ArrayKit.startWith(bytes, (byte) 0x4d, (byte) 0x54, (byte) 0x68, (byte) 0x64);
@@ -309,6 +399,12 @@ public enum FileMagicNumber {
      */
     MP3("audio/mpeg", "mp3") {
 
+        /**
+         * Checks if the given bytes match the MP3 file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match MP3 signature (494433 or FFFB or FFF3 or FFF2)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             return ArrayKit.startWith(bytes, (byte) 0x49, (byte) 0x44, (byte) 0x33)
@@ -326,6 +422,12 @@ public enum FileMagicNumber {
      */
     OGG("audio/ogg", "ogg") {
 
+        /**
+         * Checks if the given bytes match the OGG file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match OGG signature (4F676753)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             return ArrayKit.startWith(bytes, (byte) 0x4F, (byte) 0x67, (byte) 0x67, (byte) 0x53);
@@ -340,6 +442,12 @@ public enum FileMagicNumber {
      */
     FLAC("audio/x-flac", "flac") {
 
+        /**
+         * Checks if the given bytes match the FLAC file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match FLAC signature (664C6143)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             return ArrayKit.startWith(bytes, (byte) 0x66, (byte) 0x4c, (byte) 0x61, (byte) 0x43);
@@ -350,6 +458,12 @@ public enum FileMagicNumber {
      */
     M4A("audio/mp4", "m4a") {
 
+        /**
+         * Checks if the given bytes match the M4A file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match M4A signature (667479704D3441)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             return (bytes.length > 10 && Objects.equals(bytes[4], (byte) 0x66) && Objects.equals(bytes[5], (byte) 0x74)
@@ -365,6 +479,12 @@ public enum FileMagicNumber {
      */
     AAC("audio/aac", "aac") {
 
+        /**
+         * Checks if the given bytes match the AAC file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match AAC signature (FFF1 or FFF9)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             if (bytes.length < 1) {
@@ -380,6 +500,12 @@ public enum FileMagicNumber {
      */
     AMR("audio/amr", "amr") {
 
+        /**
+         * Checks if the given bytes match the AMR file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match AMR signature (23414D520A or 23414D5F4D43312E300A)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             return ArrayKit
@@ -405,6 +531,12 @@ public enum FileMagicNumber {
      */
     AC3("audio/ac3", "ac3") {
 
+        /**
+         * Checks if the given bytes match the AC3 file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match AC3 signature (0B77)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             return ArrayKit.startWith(bytes, (byte) 0x0b, (byte) 0x77);
@@ -415,6 +547,12 @@ public enum FileMagicNumber {
      */
     AIFF("audio/x-aiff", "aiff") {
 
+        /**
+         * Checks if the given bytes match the AIFF file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match AIFF signature (464F524D and 41494646)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             return bytes.length > 11 && Objects.equals(bytes[0], (byte) 0x46) && Objects.equals(bytes[1], (byte) 0x4f)
@@ -430,6 +568,12 @@ public enum FileMagicNumber {
      */
     WOFF("font/woff", "woff") {
 
+        /**
+         * Checks if the given bytes match the WOFF file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match WOFF signature (774F4646)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             if (bytes.length < 8) {
@@ -451,6 +595,12 @@ public enum FileMagicNumber {
      */
     WOFF2("font/woff2", "woff2") {
 
+        /**
+         * Checks if the given bytes match the WOFF2 file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match WOFF2 signature (774F4632)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             if (bytes.length < 8) {
@@ -472,6 +622,12 @@ public enum FileMagicNumber {
      */
     TTF("font/ttf", "ttf") {
 
+        /**
+         * Checks if the given bytes match the TTF file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match TTF signature (00010000000)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             return bytes.length > 4 && Objects.equals(bytes[0], (byte) 0x00) && Objects.equals(bytes[1], (byte) 0x01)
@@ -484,6 +640,12 @@ public enum FileMagicNumber {
      */
     OTF("font/otf", "otf") {
 
+        /**
+         * Checks if the given bytes match the OTF file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match OTF signature (4F54544F00)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             return bytes.length > 4 && Objects.equals(bytes[0], (byte) 0x4f) && Objects.equals(bytes[1], (byte) 0x54)
@@ -497,6 +659,13 @@ public enum FileMagicNumber {
      */
     EPUB("application/epub+zip", "epub") {
 
+        /**
+         * Checks if the given bytes match the EPUB file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match EPUB signature
+         *         (504B0304...6D696565747970656170706C69636174696F6E2F657075622B7A6970)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             return bytes.length > 58 && Objects.equals(bytes[0], (byte) 0x50) && Objects.equals(bytes[1], (byte) 0x4b)
@@ -522,6 +691,12 @@ public enum FileMagicNumber {
      */
     ZIP("application/zip", "zip") {
 
+        /**
+         * Checks if the given bytes match the ZIP file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match ZIP signature (504B0304, 504B0506, or 504B0708)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             if (bytes.length < 4) {
@@ -540,6 +715,12 @@ public enum FileMagicNumber {
      */
     TAR("application/x-tar", "tar") {
 
+        /**
+         * Checks if the given bytes match the TAR file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match TAR signature (7573746172 at offset 257)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             return bytes.length > 261 && Objects.equals(bytes[257], (byte) 0x75)
@@ -552,6 +733,12 @@ public enum FileMagicNumber {
      */
     RAR("application/x-rar-compressed", "rar") {
 
+        /**
+         * Checks if the given bytes match the RAR file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match RAR signature (526172211A0700 or 526172211A0701)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             return bytes.length > 6 && Objects.equals(bytes[0], (byte) 0x52) && Objects.equals(bytes[1], (byte) 0x61)
@@ -565,6 +752,12 @@ public enum FileMagicNumber {
      */
     GZ("application/gzip", "gz") {
 
+        /**
+         * Checks if the given bytes match the GZ file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match GZ signature (1F8B08)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             return bytes.length > 2 && Objects.equals(bytes[0], (byte) 0x1f) && Objects.equals(bytes[1], (byte) 0x8b)
@@ -576,6 +769,12 @@ public enum FileMagicNumber {
      */
     BZ2("application/x-bzip2", "bz2") {
 
+        /**
+         * Checks if the given bytes match the BZ2 file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match BZ2 signature (425A68)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             return bytes.length > 2 && Objects.equals(bytes[0], (byte) 0x42) && Objects.equals(bytes[1], (byte) 0x5a)
@@ -587,6 +786,12 @@ public enum FileMagicNumber {
      */
     SevenZ("application/x-7z-compressed", "7z") {
 
+        /**
+         * Checks if the given bytes match the 7Z file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match 7Z signature (377ABCAF271C00)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             return bytes.length > 6 && Objects.equals(bytes[0], (byte) 0x37) && Objects.equals(bytes[1], (byte) 0x7a)
@@ -600,6 +805,12 @@ public enum FileMagicNumber {
      */
     PDF("application/pdf", "pdf") {
 
+        /**
+         * Checks if the given bytes match the PDF file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match PDF signature (25504446)
+         */
         @Override
         public boolean match(byte[] bytes) {
             // Remove BOM header if present and skip three bytes
@@ -617,6 +828,12 @@ public enum FileMagicNumber {
      */
     EXE("application/x-msdownload", "exe") {
 
+        /**
+         * Checks if the given bytes match the EXE file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match EXE signature (4D5A)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             return bytes.length > 1 && Objects.equals(bytes[0], (byte) 0x4d) && Objects.equals(bytes[1], (byte) 0x5a);
@@ -627,6 +844,12 @@ public enum FileMagicNumber {
      */
     SWF("application/x-shockwave-flash", "swf") {
 
+        /**
+         * Checks if the given bytes match the SWF file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match SWF signature (435753 or 465753)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             return bytes.length > 2 && (Objects.equals(bytes[0], 0x43) || Objects.equals(bytes[0], (byte) 0x46))
@@ -638,6 +861,12 @@ public enum FileMagicNumber {
      */
     RTF("application/rtf", "rtf") {
 
+        /**
+         * Checks if the given bytes match the RTF file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match RTF signature (7B5C727466)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             return bytes.length > 4 && Objects.equals(bytes[0], (byte) 0x7b) && Objects.equals(bytes[1], (byte) 0x5c)
@@ -650,6 +879,12 @@ public enum FileMagicNumber {
      */
     NES("application/x-nintendo-nes-rom", "nes") {
 
+        /**
+         * Checks if the given bytes match the NES file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match NES signature (4E45531A)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             return bytes.length > 3 && Objects.equals(bytes[0], (byte) 0x4e) && Objects.equals(bytes[1], (byte) 0x45)
@@ -661,6 +896,12 @@ public enum FileMagicNumber {
      */
     CRX("application/x-google-chrome-extension", "crx") {
 
+        /**
+         * Checks if the given bytes match the CRX file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match CRX signature (43723234)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             return bytes.length > 3 && Objects.equals(bytes[0], (byte) 0x43) && Objects.equals(bytes[1], (byte) 0x72)
@@ -672,6 +913,12 @@ public enum FileMagicNumber {
      */
     CAB("application/vnd.ms-cab-compressed", "cab") {
 
+        /**
+         * Checks if the given bytes match the CAB file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match CAB signature (4D534346 or 49536328)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             if (bytes.length < 4) {
@@ -689,6 +936,12 @@ public enum FileMagicNumber {
      */
     PS("application/postscript", "ps") {
 
+        /**
+         * Checks if the given bytes match the PS file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match PS signature (2521)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             return bytes.length > 1 && Objects.equals(bytes[0], (byte) 0x25) && Objects.equals(bytes[1], (byte) 0x21);
@@ -699,6 +952,12 @@ public enum FileMagicNumber {
      */
     XZ("application/x-xz", "xz") {
 
+        /**
+         * Checks if the given bytes match the XZ file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match XZ signature (FD377A585A00)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             return bytes.length > 5 && Objects.equals(bytes[0], (byte) 0xFD) && Objects.equals(bytes[1], (byte) 0x37)
@@ -711,6 +970,12 @@ public enum FileMagicNumber {
      */
     SQLITE("application/x-sqlite3", "sqlite") {
 
+        /**
+         * Checks if the given bytes match the SQLITE file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match SQLITE signature (514C69746520666F726D6174203300)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             return bytes.length > 15 && Objects.equals(bytes[0], (byte) 0x53) && Objects.equals(bytes[1], (byte) 0x51)
@@ -728,6 +993,12 @@ public enum FileMagicNumber {
      */
     DEB("application/x-deb", "deb") {
 
+        /**
+         * Checks if the given bytes match the DEB file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match DEB signature (213C617263683E0A...64656269616E2D62696E617279)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             return bytes.length > 20 && Objects.equals(bytes[0], (byte) 0x21) && Objects.equals(bytes[1], (byte) 0x3c)
@@ -748,6 +1019,12 @@ public enum FileMagicNumber {
      */
     AR("application/x-unix-archive", "ar") {
 
+        /**
+         * Checks if the given bytes match the AR file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match AR signature (213C617263683E)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             return bytes.length > 6 && Objects.equals(bytes[0], (byte) 0x21) && Objects.equals(bytes[1], (byte) 0x3c)
@@ -761,6 +1038,12 @@ public enum FileMagicNumber {
      */
     LZOP("application/x-lzop", "lzo") {
 
+        /**
+         * Checks if the given bytes match the LZOP file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match LZOP signature (894C5A4F000D0A1A)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             return bytes.length > 7 && Objects.equals(bytes[0], (byte) 0x89) && Objects.equals(bytes[1], (byte) 0x4c)
@@ -774,6 +1057,12 @@ public enum FileMagicNumber {
      */
     LZ("application/x-lzip", "lz") {
 
+        /**
+         * Checks if the given bytes match the LZ file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match LZ signature (4C5A4950)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             return bytes.length > 3 && Objects.equals(bytes[0], (byte) 0x4c) && Objects.equals(bytes[1], (byte) 0x5a)
@@ -785,6 +1074,12 @@ public enum FileMagicNumber {
      */
     ELF("application/x-executable", "elf") {
 
+        /**
+         * Checks if the given bytes match the ELF file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match ELF signature (7F454C46)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             return bytes.length > 52 && Objects.equals(bytes[0], (byte) 0x7f) && Objects.equals(bytes[1], (byte) 0x45)
@@ -796,6 +1091,12 @@ public enum FileMagicNumber {
      */
     LZ4("application/x-lz4", "lz4") {
 
+        /**
+         * Checks if the given bytes match the LZ4 file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match LZ4 signature (04224D18)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             return bytes.length > 4 && Objects.equals(bytes[0], (byte) 0x04) && Objects.equals(bytes[1], (byte) 0x22)
@@ -808,6 +1109,12 @@ public enum FileMagicNumber {
      */
     BR("application/x-brotli", "br") {
 
+        /**
+         * Checks if the given bytes match the BR file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match BR signature (CEB2CF81)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             return bytes.length > 3 && Objects.equals(bytes[0], (byte) 0xce) && Objects.equals(bytes[1], (byte) 0xb2)
@@ -819,6 +1126,12 @@ public enum FileMagicNumber {
      */
     DCM("application/x-dicom", "dcm") {
 
+        /**
+         * Checks if the given bytes match the DCM file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match DCM signature (4449434D at offset 128)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             return bytes.length > 128 && Objects.equals(bytes[128], (byte) 0x44)
@@ -831,6 +1144,12 @@ public enum FileMagicNumber {
      */
     RPM("application/x-rpm", "rpm") {
 
+        /**
+         * Checks if the given bytes match the RPM file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match RPM signature (EDABEEDB)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             return bytes.length > 4 && Objects.equals(bytes[0], (byte) 0xed) && Objects.equals(bytes[1], (byte) 0xab)
@@ -842,6 +1161,12 @@ public enum FileMagicNumber {
      */
     ZSTD("application/x-zstd", "zst") {
 
+        /**
+         * Checks if the given bytes match the ZSTD file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match ZSTD signature (22-28 B52FFD or 50-5F 2A4D18)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             final int length = bytes.length;
@@ -867,6 +1192,12 @@ public enum FileMagicNumber {
      */
     MP4("video/mp4", "mp4") {
 
+        /**
+         * Checks if the given bytes match the MP4 file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match MP4 signature (667479704D534E56 or 6674797069736F6D)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             if (bytes.length < 13) {
@@ -888,6 +1219,12 @@ public enum FileMagicNumber {
      */
     AVI("video/x-msvideo", "avi") {
 
+        /**
+         * Checks if the given bytes match the AVI file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match AVI signature (52494646 and 41564920 at offset 8)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             return bytes.length > 11 && Objects.equals(bytes[0], (byte) 0x52) && Objects.equals(bytes[1], (byte) 0x49)
@@ -901,6 +1238,12 @@ public enum FileMagicNumber {
      */
     WMV("video/x-ms-wmv", "wmv") {
 
+        /**
+         * Checks if the given bytes match the WMV file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match WMV signature (3026B2758E66CF11A6D9)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             return bytes.length > 9 && Objects.equals(bytes[0], (byte) 0x30) && Objects.equals(bytes[1], (byte) 0x26)
@@ -915,6 +1258,12 @@ public enum FileMagicNumber {
      */
     M4V("video/x-m4v", "m4v") {
 
+        /**
+         * Checks if the given bytes match the M4V file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match M4V signature (667479704D345620 or 667479706D703432)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             if (bytes.length < 12) {
@@ -936,6 +1285,12 @@ public enum FileMagicNumber {
      */
     FLV("video/x-flv", "flv") {
 
+        /**
+         * Checks if the given bytes match the FLV file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match FLV signature (464C5601)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             return bytes.length > 3 && Objects.equals(bytes[0], (byte) 0x46) && Objects.equals(bytes[1], (byte) 0x4c)
@@ -947,6 +1302,12 @@ public enum FileMagicNumber {
      */
     MKV("video/x-matroska", "mkv") {
 
+        /**
+         * Checks if the given bytes match the MKV file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match MKV signature (1A45DFA3 and contains 4282886D6174726F736B61)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             // 0x42 0x82 0x88 0x6d 0x61 0x74 0x72 0x6f 0x73 0x6b 0x61
@@ -969,6 +1330,12 @@ public enum FileMagicNumber {
      */
     WEBM("video/webm", "webm") {
 
+        /**
+         * Checks if the given bytes match the WEBM file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match WEBM signature (1A45DFA3 and contains 4282887765626D)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             final boolean flag1 = bytes.length > 8 && Objects.equals(bytes[0], (byte) 0x1a)
@@ -989,6 +1356,13 @@ public enum FileMagicNumber {
      */
     MOV("video/quicktime", "mov") {
 
+        /**
+         * Checks if the given bytes match the MOV file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match MOV signature (66747970707420 or 6D6F6F76 or 66726565 or 6D646174 or
+         *         77696465 or 706E6F74 or 736B6970)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             if (bytes.length < 12) {
@@ -1018,6 +1392,12 @@ public enum FileMagicNumber {
      */
     MPEG("video/mpeg", "mpg") {
 
+        /**
+         * Checks if the given bytes match the MPEG file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match MPEG signature (000001B0-000001BF)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             return bytes.length > 3 && Objects.equals(bytes[0], (byte) 0x00) && Objects.equals(bytes[1], (byte) 0x00)
@@ -1029,6 +1409,12 @@ public enum FileMagicNumber {
      */
     RMVB("video/vnd.rn-realvideo", "rmvb") {
 
+        /**
+         * Checks if the given bytes match the RMVB file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match RMVB signature (2E524D46)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             return bytes.length > 4 && Objects.equals(bytes[0], (byte) 0x2E) && Objects.equals(bytes[1], (byte) 0x52)
@@ -1040,6 +1426,12 @@ public enum FileMagicNumber {
      */
     M3GP("video/3gpp", "3gp") {
 
+        /**
+         * Checks if the given bytes match the 3GP file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match 3GP signature (66747970336770)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             return bytes.length > 10 && Objects.equals(bytes[4], (byte) 0x66) && Objects.equals(bytes[5], (byte) 0x74)
@@ -1054,6 +1446,13 @@ public enum FileMagicNumber {
      */
     DOC("application/msword", "doc") {
 
+        /**
+         * Checks if the given bytes match the DOC file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match DOC signature (D0CF11E0A1B11AE1 with ECA5C100 or specific document
+         *         content)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             final byte[] byte1 = new byte[] { (byte) 0xd0, (byte) 0xcf, (byte) 0x11, (byte) 0xe0, (byte) 0xa1,
@@ -1081,6 +1480,12 @@ public enum FileMagicNumber {
      */
     XLS("application/vnd.ms-excel", "xls") {
 
+        /**
+         * Checks if the given bytes match the XLS file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match XLS signature (D0CF11E0A1B11AE1 with FDFFFFFF or 09081000000605...)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             final byte[] byte1 = new byte[] { (byte) 0xd0, (byte) 0xcf, (byte) 0x11, (byte) 0xe0, (byte) 0xa1,
@@ -1109,6 +1514,13 @@ public enum FileMagicNumber {
      */
     PPT("application/vnd.ms-powerpoint", "ppt") {
 
+        /**
+         * Checks if the given bytes match the PPT file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match PPT signature (D0CF11E0A1B11AE1 with A0461DF0 or 006E1EF0 or 0F00E803
+         *         or FDFFFFFF...)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             final byte[] byte1 = new byte[] { (byte) 0xd0, (byte) 0xcf, (byte) 0x11, (byte) 0xe0, (byte) 0xa1,
@@ -1140,6 +1552,12 @@ public enum FileMagicNumber {
      */
     DOCX("application/vnd.openxmlformats-officedocument.wordprocessingml.document", "docx") {
 
+        /**
+         * Checks if the given bytes match the DOCX file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match DOCX signature (ZIP with word/ content)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             return Objects.equals(FileMagicNumber.matchDocument(bytes), DOCX);
@@ -1150,6 +1568,12 @@ public enum FileMagicNumber {
      */
     PPTX("application/vnd.openxmlformats-officedocument.presentationml.presentation", "pptx") {
 
+        /**
+         * Checks if the given bytes match the PPTX file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match PPTX signature (ZIP with ppt/ content)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             return Objects.equals(FileMagicNumber.matchDocument(bytes), PPTX);
@@ -1160,6 +1584,12 @@ public enum FileMagicNumber {
      */
     XLSX("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "xlsx") {
 
+        /**
+         * Checks if the given bytes match the XLSX file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match XLSX signature (ZIP with xl/ content)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             return Objects.equals(FileMagicNumber.matchDocument(bytes), XLSX);
@@ -1170,6 +1600,12 @@ public enum FileMagicNumber {
      */
     WASM("application/wasm", "wasm") {
 
+        /**
+         * Checks if the given bytes match the WASM file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match WASM signature (0061736D01000000)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             return ArrayKit.startWith(
@@ -1189,6 +1625,12 @@ public enum FileMagicNumber {
      */
     DEX("application/vnd.android.dex", "dex") {
 
+        /**
+         * Checks if the given bytes match the DEX file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match DEX signature (64656X0A...70)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             return bytes.length > 36 && Objects.equals(bytes[0], (byte) 0x64) && Objects.equals(bytes[1], (byte) 0x65)
@@ -1201,6 +1643,12 @@ public enum FileMagicNumber {
      */
     DEY("application/vnd.android.dey", "dey") {
 
+        /**
+         * Checks if the given bytes match the DEY file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match DEY signature (6465790A... and contains DEX)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             return bytes.length > 100 && Objects.equals(bytes[0], (byte) 0x64) && Objects.equals(bytes[1], (byte) 0x65)
@@ -1213,6 +1661,13 @@ public enum FileMagicNumber {
      */
     EML("message/rfc822", "eml") {
 
+        /**
+         * Checks if the given bytes match the EML file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match EML signature (46726F6D202020 or 46726F6D203F3F3F or 46726F6D3A20 or
+         *         52657475726E2D506174683A20)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             if (bytes.length < 8) {
@@ -1238,6 +1693,12 @@ public enum FileMagicNumber {
      */
     MDB("application/vnd.ms-access", "mdb") {
 
+        /**
+         * Checks if the given bytes match the MDB file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match MDB signature (000100005374616E64617264204A6574204442)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             final byte[] byte1 = new byte[] { (byte) 0x00, (byte) 0x01, (byte) 0x00, (byte) 0x00, (byte) 0x53,
@@ -1251,6 +1712,12 @@ public enum FileMagicNumber {
      */
     CHM("application/vnd.ms-htmlhelp", "chm") {
 
+        /**
+         * Checks if the given bytes match the CHM file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match CHM signature (49545346)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             final byte[] byte1 = new byte[] { (byte) 0x49, (byte) 0x54, (byte) 0x53, (byte) 0x46 };
@@ -1263,6 +1730,12 @@ public enum FileMagicNumber {
      */
     CLASS("application/java-vm", "class") {
 
+        /**
+         * Checks if the given bytes match the CLASS file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match CLASS signature (CAFEBABE)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             final byte[] byte1 = new byte[] { (byte) 0xCA, (byte) 0xFE, (byte) 0xBA, (byte) 0xBE };
@@ -1274,6 +1747,12 @@ public enum FileMagicNumber {
      */
     TORRENT("application/x-bittorrent", "torrent") {
 
+        /**
+         * Checks if the given bytes match the TORRENT file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match TORRENT signature (64383A616E6E6F756E6365)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             final byte[] byte1 = new byte[] { (byte) 0x64, (byte) 0x38, (byte) 0x3A, (byte) 0x61, (byte) 0x6E,
@@ -1286,6 +1765,12 @@ public enum FileMagicNumber {
      */
     WPD("application/vnd.wordperfect", "wpd") {
 
+        /**
+         * Checks if the given bytes match the WPD file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match WPD signature (FF575043)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             final byte[] byte1 = new byte[] { (byte) 0xFF, (byte) 0x57, (byte) 0x50, (byte) 0x43 };
@@ -1297,6 +1782,12 @@ public enum FileMagicNumber {
      */
     DBX("", "dbx") {
 
+        /**
+         * Checks if the given bytes match the DBX file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match DBX signature (CFAD12FE)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             final byte[] byte1 = new byte[] { (byte) 0xCF, (byte) 0xAD, (byte) 0x12, (byte) 0xFE };
@@ -1308,6 +1799,12 @@ public enum FileMagicNumber {
      */
     PST("application/vnd.ms-outlook-pst", "pst") {
 
+        /**
+         * Checks if the given bytes match the PST file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match PST signature (2142444E)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             final byte[] byte1 = new byte[] { (byte) 0x21, (byte) 0x42, (byte) 0x44, (byte) 0x4E };
@@ -1319,6 +1816,12 @@ public enum FileMagicNumber {
      */
     RAM("audio/x-pn-realaudio", "ram") {
 
+        /**
+         * Checks if the given bytes match the RAM file signature.
+         *
+         * @param bytes the file bytes to check
+         * @return {@code true} if the bytes match RAM signature (2E7261FD00)
+         */
         @Override
         public boolean match(final byte[] bytes) {
             final byte[] byte1 = new byte[] { (byte) 0x2E, (byte) 0x72, (byte) 0x61, (byte) 0xFD, (byte) 0x00 };

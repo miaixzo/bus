@@ -41,6 +41,16 @@ import org.miaixz.bus.image.galaxy.data.VR;
 import org.miaixz.bus.image.nimble.codec.XPEGParser;
 import org.miaixz.bus.image.nimble.codec.mpeg.MPEGHeader;
 
+/**
+ * Parser for MP4 video file format, extracting metadata from MPEG-4 container files.
+ * <p>
+ * This parser reads the MP4 box structure to extract video metadata such as dimensions, frame rate, codec information,
+ * and timing data. It supports both AVC (H.264) and HEVC (H.265) video codecs.
+ * </p>
+ *
+ * @author Kimi Liu
+ * @since Java 17+
+ */
 public class MP4Parser implements XPEGParser {
 
     private static final int FileBoxType = 0x66747970; // ftyp;

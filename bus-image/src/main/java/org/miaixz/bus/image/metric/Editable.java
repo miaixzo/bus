@@ -27,6 +27,17 @@
 */
 package org.miaixz.bus.image.metric;
 
+/**
+ * Functional interface for editing or processing objects of type T.
+ * <p>
+ * This interface provides a simple {@link #process(Object)} method that takes an object of type T, processes or
+ * modifies it, and returns the result.
+ * </p>
+ *
+ * @param <T> the type of object to be processed
+ * @author Kimi Liu
+ * @since Java 17+
+ */
 @FunctionalInterface
 public interface Editable<T> {
 

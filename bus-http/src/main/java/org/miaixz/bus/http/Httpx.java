@@ -871,11 +871,31 @@ public class Httpx {
         String[] result = { Normal.EMPTY };
         call.enqueue(new Callback() {
 
+            /**
+             * Called when the request fails.
+             * <p>
+             * This method is invoked when the asynchronous HTTP request encounters an error.
+             * </p>
+             *
+             * @param call The {@link NewCall} that failed.
+             * @param e    The {@link IOException} that describes the failure.
+             */
             @Override
             public void onFailure(NewCall call, IOException e) {
                 Logger.error("Async request failed for URL [{}]: {}", builder.url, e.getMessage());
             }
 
+            /**
+             * Called when the response is received successfully.
+             * <p>
+             * This method is invoked when the asynchronous HTTP request completes successfully. The response body is
+             * processed and stored in the result array.
+             * </p>
+             *
+             * @param call     The {@link NewCall} that succeeded.
+             * @param response The {@link Response} received from the server.
+             * @throws IOException if an I/O error occurs while processing the response.
+             */
             @Override
             public void onResponse(NewCall call, Response response) throws IOException {
                 try {

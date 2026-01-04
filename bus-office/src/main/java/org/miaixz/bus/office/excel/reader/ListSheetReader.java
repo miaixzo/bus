@@ -61,6 +61,12 @@ public class ListSheetReader extends AbstractSheetReader<List<List<Object>>> {
         this.aliasFirstLine = aliasFirstLine;
     }
 
+    /**
+     * Reads the sheet and converts each row into a list of cell values.
+     *
+     * @param sheet The {@link Sheet} to read.
+     * @return A list of lists, where each inner list represents a row of cell values.
+     */
     @Override
     public List<List<Object>> read(final Sheet sheet) {
         final List<List<Object>> resultList = new ArrayList<>();

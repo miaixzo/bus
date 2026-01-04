@@ -53,6 +53,9 @@ import org.miaixz.bus.core.text.replacer.ReplacerChain;
  */
 public class XmlEscape extends ReplacerChain {
 
+    @Serial
+    private static final long serialVersionUID = 2852236260780L;
+
     /**
      * Lookup table for XML escape characters. This array defines the mapping from special characters to their XML
      * entity references.
@@ -63,11 +66,6 @@ public class XmlEscape extends ReplacerChain {
             { "<", "&lt;" }, // < - less-than
             { ">", "&gt;" }, // > - greater-than
     };
-    /**
-     * The serial version UID for serialization.
-     */
-    @Serial
-    private static final long serialVersionUID = 2852236260780L;
 
     /**
      * Constructs a new {@code XmlEscape} instance. Initializes the escape chain with the basic XML escape lookup

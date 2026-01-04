@@ -66,6 +66,14 @@ public abstract class MapRowHandler extends AbstractRowHandler<Map<String, Objec
         this.convertFunc = (rowList) -> IteratorKit.toMap(headerList, rowList, true);
     }
 
+    /**
+     * Handles a row of data from the Excel sheet. If the row is the header row, stores the header values. Otherwise,
+     * processes the row as data.
+     *
+     * @param sheetIndex The 0-based index of the current sheet.
+     * @param rowIndex   The 0-based row number of the current row.
+     * @param rowCells   The list of cell values in the row.
+     */
     @Override
     public void handle(final int sheetIndex, final long rowIndex, final List<Object> rowCells) {
         if (rowIndex == this.headerRowIndex) {

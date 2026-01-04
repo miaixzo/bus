@@ -56,6 +56,11 @@ public interface ProxyList<E> extends List<E> {
 
     @Override
     default boolean isEmpty() {
+        /**
+         * Checks if this proxy list is empty by delegating to the underlying list.
+         *
+         * @return {@code true} if the underlying list contains no elements, {@code false} otherwise.
+         */
         return getProxyList().isEmpty();
     }
 

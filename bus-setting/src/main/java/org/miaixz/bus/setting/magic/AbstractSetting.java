@@ -165,6 +165,13 @@ public abstract class AbstractSetting
 
             @Override
             public Object value(final String key, final Type valueType) {
+                /**
+                 * Gets the value for the specified key from the settings.
+                 *
+                 * @param key       the key whose value is to be returned
+                 * @param valueType the type to convert the value to
+                 * @return the value associated with the specified key, or null if not found
+                 */
                 return getObjectByGroup(key, group);
             }
 

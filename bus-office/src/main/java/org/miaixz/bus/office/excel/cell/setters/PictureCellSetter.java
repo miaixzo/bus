@@ -44,7 +44,13 @@ import org.miaixz.bus.office.excel.writer.ExcelDrawing;
  */
 public class PictureCellSetter implements CellSetter {
 
+    /**
+     * The picture data as a byte array.
+     */
     private final byte[] pictureData;
+    /**
+     * The picture type.
+     */
     private final ExcelPictureType pictureType;
 
     /**
@@ -76,6 +82,11 @@ public class PictureCellSetter implements CellSetter {
         this.pictureType = pictureType;
     }
 
+    /**
+     * Sets the picture value to the specified cell by creating a picture in the sheet.
+     *
+     * @param cell The {@link Cell} to set the value to.
+     */
     @Override
     public void setValue(final Cell cell) {
         final Sheet sheet = cell.getSheet();

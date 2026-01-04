@@ -38,19 +38,19 @@ import java.util.TimeZone;
 public class Configure {
 
     /**
-     * Time zone
+     * Time zone.
      */
     private TimeZone timezone = TimeZone.getDefault();
     /**
-     * Whether to support second matching
+     * Whether to support second matching.
      */
     private boolean matchSecond;
     /**
-     * Whether to use daemon thread
+     * Whether to use daemon thread.
      */
     private boolean daemon;
     /**
-     * Whether to use trigger queue
+     * Whether to use trigger queue.
      */
     private boolean useTriggerQueue;
 
@@ -62,9 +62,9 @@ public class Configure {
     }
 
     /**
-     * Creates Cron configuration
+     * Creates Cron configuration.
      *
-     * @return Cron configuration
+     * @return Cron configuration.
      */
     public static Configure of() {
         return new Configure();

@@ -763,10 +763,6 @@ public abstract class SegmentLock<L> {
         @Serial
         private static final long serialVersionUID = 2852280626061L;
 
-        long unused1;
-        long unused2;
-        long unused3;
-
         /**
          * Constructs a new {@code PaddedSemaphore} with the given number of permits and a non-fair policy.
          *

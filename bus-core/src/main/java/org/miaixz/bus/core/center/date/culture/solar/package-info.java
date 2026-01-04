@@ -26,7 +26,27 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Provides classes related to the Gregorian (Solar) calendar.
+ * Provides classes for Gregorian (Solar) calendar operations.
+ * <p>
+ * This package contains classes representing various components of the Gregorian calendar system, including years,
+ * quarters, half-years, months, weeks, days, and times. It also provides support for solar terms (the 24 seasonal
+ * periods), solar festivals, and conversions between the Gregorian calendar and other calendar systems (such as Lunar
+ * and Tibetan calendars).
+ * </p>
+ * <p>
+ * Key classes include:
+ * <ul>
+ * <li>{@link org.miaixz.bus.core.center.date.culture.solar.SolarYear} - Represents a year in the Gregorian
+ * calendar</li>
+ * <li>{@link org.miaixz.bus.core.center.date.culture.solar.SolarQuarter} - Represents a quarter (3-month period)</li>
+ * <li>{@link org.miaixz.bus.core.center.date.culture.solar.SolarMonth} - Represents a month</li>
+ * <li>{@link org.miaixz.bus.core.center.date.culture.solar.SolarWeek} - Represents a week</li>
+ * <li>{@link org.miaixz.bus.core.center.date.culture.solar.SolarDay} - Represents a day</li>
+ * <li>{@link org.miaixz.bus.core.center.date.culture.solar.SolarTime} - Represents a specific time (hour, minute,
+ * second)</li>
+ * <li>{@link org.miaixz.bus.core.center.date.culture.solar.SolarTerms} - Represents the 24 solar terms</li>
+ * <li>{@link org.miaixz.bus.core.center.date.culture.solar.SolarFestival} - Represents modern Gregorian festivals</li>
+ * </ul>
  *
  * @author Kimi Liu
  * @since Java 17+

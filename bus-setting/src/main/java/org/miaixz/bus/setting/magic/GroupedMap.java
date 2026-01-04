@@ -88,6 +88,14 @@ public class GroupedMap extends LinkedHashMap<String, LinkedHashMap<String, Stri
 
     @Override
     public LinkedHashMap<String, String> get(final Object key) {
+        /**
+         * Returns the value to which the specified key is mapped, or {@code null} if this map contains no mapping for
+         * the key. This method delegates to the parent LinkedHashMap's get method with thread safety.
+         *
+         * @param key the key whose associated value is to be returned
+         * @return the value to which the specified key is mapped, or {@code null} if this map contains no mapping for
+         *         the key
+         */
         readLock.lock();
         try {
             return super.get(key);

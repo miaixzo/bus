@@ -31,6 +31,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.miaixz.bus.core.lang.Symbol;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.sql.*;
 import java.util.ArrayList;
@@ -47,6 +48,7 @@ import java.util.List;
 @Setter
 public class TableEntity implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = -1L;
 
     /**

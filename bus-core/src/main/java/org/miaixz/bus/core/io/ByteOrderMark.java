@@ -64,27 +64,33 @@ public class ByteOrderMark implements Predicate<byte[]>, Comparable<ByteOrderMar
     /**
      * UTF-16BE BOM (Big-Endian).
      */
-    public static final ByteOrderMark UTF_16BE = new ByteOrderMark("UTF-16BE", (byte) 0xFE, (byte) 0xFF);
+    public static final ByteOrderMark UTF_16BE = new ByteOrderMark(Charset.DEFAULT_UTF_16_BE, (byte) 0xFE, (byte) 0xFF);
     /**
      * UTF-16LE BOM (Little-Endian).
      */
-    public static final ByteOrderMark UTF_16LE = new ByteOrderMark("UTF-16LE", (byte) 0xFF, (byte) 0xFE);
+    public static final ByteOrderMark UTF_16LE = new ByteOrderMark(Charset.DEFAULT_UTF_16_LE, (byte) 0xFF, (byte) 0xFE);
     /**
      * UTF-32BE BOM (Big-Endian).
      */
-    public static final ByteOrderMark UTF_32BE = new ByteOrderMark("UTF-32BE", (byte) 0x00, (byte) 0x00, (byte) 0xFE,
-            (byte) 0xFF);
+    public static final ByteOrderMark UTF_32BE = new ByteOrderMark(Charset.DEFAULT_UTF_32_BE, (byte) 0x00, (byte) 0x00,
+            (byte) 0xFE, (byte) 0xFF);
     /**
      * UTF-32LE BOM (Little-Endian).
      */
-    public static final ByteOrderMark UTF_32LE = new ByteOrderMark("UTF-32LE", (byte) 0xFF, (byte) 0xFE, (byte) 0x00,
-            (byte) 0x00);
+    public static final ByteOrderMark UTF_32LE = new ByteOrderMark(Charset.DEFAULT_UTF_32_LE, (byte) 0xFF, (byte) 0xFE,
+            (byte) 0x00, (byte) 0x00);
     /**
      * All predefined BOM information.
      */
     public static final ByteOrderMark[] ALL = new ByteOrderMark[] { UTF_32BE, UTF_32LE, UTF_8, UTF_16BE, UTF_16LE };
 
+    /**
+     * The character set name defined by this BOM.
+     */
     private final String charsetName;
+    /**
+     * The byte sequence that makes up this BOM.
+     */
     private final byte[] bytes;
 
     /**

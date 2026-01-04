@@ -72,6 +72,9 @@ public final class IdleStatePlugin<T> extends AbstractPlugin<T> {
         this.readMonitor = readMonitor;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public AsynchronousSocketChannel shouldAccept(AsynchronousSocketChannel channel) {
         return new IdleMonitorChannel(channel);
@@ -112,6 +115,9 @@ public final class IdleStatePlugin<T> extends AbstractPlugin<T> {
             }, IdleStatePlugin.this.idleTimeout, TimeUnit.MILLISECONDS);
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public <A> void read(
                 ByteBuffer dst,
@@ -125,6 +131,9 @@ public final class IdleStatePlugin<T> extends AbstractPlugin<T> {
             super.read(dst, timeout, unit, attachment, handler);
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public <A> void write(
                 ByteBuffer src,
@@ -138,6 +147,9 @@ public final class IdleStatePlugin<T> extends AbstractPlugin<T> {
             super.write(src, timeout, unit, attachment, handler);
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void close() throws IOException {
             if (task != null) {

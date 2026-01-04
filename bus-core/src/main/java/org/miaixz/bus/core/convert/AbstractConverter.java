@@ -60,9 +60,6 @@ public abstract class AbstractConverter implements Converter, Serializable {
     public AbstractConverter() {
     }
 
-    /**
-     * The serial version UID.
-     */
     @Serial
     private static final long serialVersionUID = 2852263159195L;
 

@@ -41,9 +41,6 @@ import org.miaixz.bus.core.lang.Assert;
  */
 public abstract class AbstractFilter implements BloomFilter {
 
-    /**
-     * The serial version UID for serialization.
-     */
     @Serial
     private static final long serialVersionUID = 2852235255163L;
 

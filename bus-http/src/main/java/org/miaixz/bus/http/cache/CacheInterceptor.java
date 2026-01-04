@@ -130,6 +130,18 @@ public class CacheInterceptor implements Interceptor {
                 || HTTP.CONTENT_TYPE.equalsIgnoreCase(fieldName);
     }
 
+    /**
+     * Intercepts the request to serve from cache and/or update the cache.
+     * <p>
+     * This method implements a complete HTTP caching strategy as defined in RFC 7234. It attempts to satisfy requests
+     * from the cache when possible, and validates cached responses with the server when needed. Fresh responses are
+     * written to the cache for future use.
+     * </p>
+     *
+     * @param chain The interceptor chain containing the request to process.
+     * @return The response, either from cache or network, according to HTTP caching semantics.
+     * @throws IOException if an I/O error occurs during network communication or cache operations.
+     */
     @Override
     public Response intercept(NewChain chain) throws IOException {
         Response cacheCandidate = cache != null ? cache.get(chain.request()) : null;
@@ -236,6 +248,18 @@ public class CacheInterceptor implements Interceptor {
 
             boolean cacheRequestClosed;
 
+            /**
+             * Reads bytes from the source and writes them to both the sink and the cache.
+             * <p>
+             * This method tees the data stream, ensuring that all bytes read from the response are also written to the
+             * cache. If an I/O error occurs, the cache request is aborted.
+             * </p>
+             *
+             * @param sink      The buffer to read bytes into.
+             * @param byteCount The maximum number of bytes to read.
+             * @return The number of bytes read, or -1 if the end of the stream has been reached.
+             * @throws IOException if an I/O error occurs.
+             */
             @Override
             public long read(Buffer sink, long byteCount) throws IOException {
                 long bytesRead;
@@ -262,11 +286,25 @@ public class CacheInterceptor implements Interceptor {
                 return bytesRead;
             }
 
+            /**
+             * Returns the timeout for the underlying source.
+             *
+             * @return The timeout configuration.
+             */
             @Override
             public Timeout timeout() {
                 return source.timeout();
             }
 
+            /**
+             * Closes the source and ensures the cache is properly updated.
+             * <p>
+             * Attempts to discard any remaining unread bytes before closing. If this fails, the cache request is
+             * aborted to prevent incomplete cache entries.
+             * </p>
+             *
+             * @throws IOException if an I/O error occurs during closing.
+             */
             @Override
             public void close() throws IOException {
                 if (!cacheRequestClosed

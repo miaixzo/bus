@@ -42,9 +42,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  */
 public abstract class StringReplacer implements UnaryOperator<CharSequence>, Serializable {
 
-    /**
-     * The serial version UID.
-     */
     @Serial
     private static final long serialVersionUID = 2852239827580L;
 

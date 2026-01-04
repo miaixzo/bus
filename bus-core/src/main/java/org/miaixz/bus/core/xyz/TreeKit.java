@@ -203,6 +203,9 @@ public class TreeKit {
      * @return The found node, or `null`.
      */
     public static <T> MapTree<T> getNode(final MapTree<T> node, final T id) {
+        if (null == node) {
+            return null;
+        }
         if (ObjectKit.equals(id, node.getId())) {
             return node;
         }

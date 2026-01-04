@@ -31,7 +31,7 @@ import java.io.Serial;
 import java.util.UUID;
 
 /**
- * UUID对象转换器转换器
+ * Converter for UUID objects
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -41,6 +41,16 @@ public class UUIDConverter extends AbstractConverter {
     @Serial
     private static final long serialVersionUID = 2852272763653L;
 
+    /**
+     * Converts the given value to a UUID.
+     * <p>
+     * Converts the value to a string first, then uses {@link UUID#fromString} to create the UUID.
+     * </p>
+     *
+     * @param targetClass the target class (should be UUID.class)
+     * @param value       the value to convert
+     * @return the converted UUID object
+     */
     @Override
     protected UUID convertInternal(final Class<?> targetClass, final Object value) {
         return UUID.fromString(convertToString(value));

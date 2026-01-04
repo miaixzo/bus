@@ -30,7 +30,6 @@ package org.miaixz.bus.core.center.date;
 import java.io.Serial;
 import java.util.Date;
 
-import org.miaixz.bus.core.center.date.culture.en.Various;
 import org.miaixz.bus.core.lang.range.Range;
 import org.miaixz.bus.core.xyz.DateKit;
 
@@ -43,9 +42,6 @@ import org.miaixz.bus.core.xyz.DateKit;
  */
 public class Boundary extends Range<DateTime> {
 
-    /**
-     * The serial version UID for serialization.
-     */
     @Serial
     private static final long serialVersionUID = 2852233385529L;
 

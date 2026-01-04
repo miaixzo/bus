@@ -50,9 +50,24 @@ import org.w3c.dom.Node;
  */
 public class XmlWriter {
 
+    /**
+     * The XML data source to be written.
+     */
     private final Source source;
+
+    /**
+     * The character encoding for the output.
+     */
     private java.nio.charset.Charset charset = Charset.UTF_8;
+
+    /**
+     * The number of spaces to use for indentation.
+     */
     private int indent;
+
+    /**
+     * Whether to omit the XML declaration in the output.
+     */
     private boolean omitXmlDeclaration;
 
     /**

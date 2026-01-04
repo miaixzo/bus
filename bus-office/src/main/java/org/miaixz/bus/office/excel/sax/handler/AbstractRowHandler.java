@@ -66,6 +66,13 @@ public abstract class AbstractRowHandler<T> implements RowHandler {
         this.endRowIndex = endRowIndex;
     }
 
+    /**
+     * Handles a row of data by checking row bounds and converting raw data.
+     *
+     * @param sheetIndex The 0-based index of the current sheet.
+     * @param rowIndex   The 0-based row number of the current row.
+     * @param rowCells   The list of cell values in the row.
+     */
     @Override
     public void handle(final int sheetIndex, final long rowIndex, final List<Object> rowCells) {
         Assert.notNull(convertFunc);

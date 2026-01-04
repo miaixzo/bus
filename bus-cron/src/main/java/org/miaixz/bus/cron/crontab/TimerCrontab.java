@@ -94,6 +94,11 @@ public class TimerCrontab {
         return delayMs;
     }
 
+    /**
+     * Returns the string representation of this task, which is its description.
+     *
+     * @return the task description, or {@code null} if no description is set.
+     */
     @Override
     public String toString() {
         return desc;

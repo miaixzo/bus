@@ -68,18 +68,47 @@ public class ClickWordProvider extends AbstractProvider {
         super(width, height, generator, interfereCount);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Creates a click-word CAPTCHA image where users need to click on specific characters or words in the correct
+     * order.
+     * </p>
+     *
+     * @param code the CAPTCHA code to render
+     * @return the generated click-word CAPTCHA image, or {@code null} if not yet implemented
+     */
     @Override
     protected Image createImage(String code) {
         // TODO: Implementation for creating the click-word CAPTCHA image goes here.
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Retrieves the CAPTCHA data for click-word verification. This typically includes the character positions or click
+     * coordinates.
+     * </p>
+     *
+     * @return the CAPTCHA data as a string, or {@code null} if not yet implemented
+     */
     @Override
     public String get() {
         // TODO: Implementation for getting the CAPTCHA code/data goes here.
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Verifies the user's click positions against the expected CAPTCHA answer. The verification checks if the clicked
+     * coordinates match the required positions.
+     * </p>
+     *
+     * @param inputCode the user's input or click data to verify
+     * @return {@code true} if the input matches the CAPTCHA, {@code false} otherwise or if not yet implemented
+     */
     @Override
     public boolean verify(String inputCode) {
         // TODO: Implementation for verifying the user's input goes here.

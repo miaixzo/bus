@@ -45,9 +45,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  */
 public class BytesResource implements Resource, Serializable {
 
-    /**
-     * The serial version UID for serialization.
-     */
     @Serial
     private static final long serialVersionUID = 2852230357020L;
 
@@ -80,31 +77,66 @@ public class BytesResource implements Resource, Serializable {
         this.name = name;
     }
 
+    /**
+     * Returns the name of this byte array resource.
+     *
+     * @return The name of the resource.
+     */
     @Override
     public String getName() {
         return this.name;
     }
 
+    /**
+     * Returns the URL of this byte array resource.
+     * <p>
+     * Returns {@code null} since a byte array resource does not have a URL.
+     *
+     * @return {@code null}.
+     */
     @Override
     public URL getUrl() {
         return null;
     }
 
+    /**
+     * Returns the size of this byte array resource.
+     *
+     * @return The size of the byte array in bytes.
+     */
     @Override
     public long size() {
         return this.bytes.length;
     }
 
+    /**
+     * Returns an input stream for this byte array resource.
+     *
+     * @return A new {@link ByteArrayInputStream} that reads from the byte array.
+     */
     @Override
     public InputStream getStream() {
         return new ByteArrayInputStream(this.bytes);
     }
 
+    /**
+     * Reads the content of this byte array resource as a string.
+     *
+     * @param charset The character set to use for decoding the bytes.
+     * @return The decoded string.
+     * @throws InternalException If an error occurs during decoding.
+     */
     @Override
     public String readString(final Charset charset) throws InternalException {
         return StringKit.toString(this.bytes, charset);
     }
 
+    /**
+     * Reads the content of this byte array resource as a byte array.
+     *
+     * @return A copy of the underlying byte array.
+     * @throws InternalException This implementation does not throw this exception.
+     */
     @Override
     public byte[] readBytes() throws InternalException {
         return this.bytes;

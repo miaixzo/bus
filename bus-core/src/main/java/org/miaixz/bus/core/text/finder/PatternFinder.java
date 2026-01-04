@@ -41,9 +41,6 @@ import org.miaixz.bus.core.lang.Normal;
  */
 public class PatternFinder extends TextFinder {
 
-    /**
-     * The serial version UID.
-     */
     @Serial
     private static final long serialVersionUID = 2852237367830L;
 
@@ -75,17 +72,36 @@ public class PatternFinder extends TextFinder {
         this.pattern = pattern;
     }
 
+    /**
+     * Sets the text to search and creates a new matcher for it.
+     *
+     * @param text The text to search in.
+     * @return This {@code PatternFinder} instance for chaining.
+     */
     @Override
     public TextFinder setText(final CharSequence text) {
         this.matcher = pattern.matcher(text);
         return super.setText(text);
     }
 
+    /**
+     * Sets the negative search direction. This operation is not supported for pattern matching.
+     *
+     * @param negative The negative flag (ignored).
+     * @return This method always throws an exception.
+     * @throws UnsupportedOperationException Always, as negative search is not supported for pattern matching.
+     */
     @Override
     public TextFinder setNegative(final boolean negative) {
         throw new UnsupportedOperationException("Negative is invalid for Pattern!");
     }
 
+    /**
+     * Finds the start position of the next pattern match.
+     *
+     * @param from The position to start searching from.
+     * @return The start position of the match, or -1 if no match is found.
+     */
     @Override
     public int start(final int from) {
         if (matcher.find(from)) {
@@ -104,6 +120,12 @@ public class PatternFinder extends TextFinder {
         return Normal.__1;
     }
 
+    /**
+     * Returns the end position of the pattern match.
+     *
+     * @param start The start position of the match.
+     * @return The end position of the match, or -1 if invalid.
+     */
     @Override
     public int end(final int start) {
         if (start < 0) {
@@ -119,6 +141,11 @@ public class PatternFinder extends TextFinder {
         return end <= limit ? end : Normal.__1;
     }
 
+    /**
+     * Resets the matcher to its initial state.
+     *
+     * @return This {@code PatternFinder} instance for chaining.
+     */
     @Override
     public PatternFinder reset() {
         this.matcher.reset();

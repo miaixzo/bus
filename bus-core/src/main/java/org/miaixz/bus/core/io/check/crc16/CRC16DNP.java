@@ -45,9 +45,6 @@ public class CRC16DNP extends CRC16Checksum {
     private CRC16DNP() {
     }
 
-    /**
-     * The serial version UID for serialization.
-     */
     @Serial
     private static final long serialVersionUID = 2852278821990L;
 

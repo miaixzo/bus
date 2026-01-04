@@ -34,7 +34,7 @@ import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 
 /**
- * {@link StackTraceElement} 转换器 只支持Map方式转换
+ * Converter for {@link StackTraceElement} objects, only supports Map conversion
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,6 +44,17 @@ public class StackTraceElementConverter extends AbstractConverter {
     @Serial
     private static final long serialVersionUID = 2852271899317L;
 
+    /**
+     * Converts the given value to a StackTraceElement.
+     * <p>
+     * Only supports conversion from Map with the following keys: {@code className}, {@code methodName},
+     * {@code fileName}, {@code lineNumber}.
+     * </p>
+     *
+     * @param targetClass the target class (should be StackTraceElement.class)
+     * @param value       the value to convert (should be a Map)
+     * @return the converted StackTraceElement object, or null if value is not a Map
+     */
     @Override
     protected StackTraceElement convertInternal(final Class<?> targetClass, final Object value) {
         if (value instanceof Map<?, ?> map) {

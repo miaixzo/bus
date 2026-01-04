@@ -36,6 +36,16 @@ import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.software.ApplicationInfo;
 
+/**
+ * Utility class for querying installed applications on AIX operating systems.
+ * <p>
+ * This class provides methods to retrieve information about installed software by executing the AIX-specific
+ * {@code lslpp} command and parsing its output.
+ * </p>
+ *
+ * @author Kimi Liu
+ * @since Java 17+
+ */
 public final class AixInstalledApps {
 
     private static final Pattern COLON_PATTERN = Pattern.compile(Symbol.COLON);

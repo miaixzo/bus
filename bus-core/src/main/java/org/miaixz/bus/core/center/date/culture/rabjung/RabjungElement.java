@@ -27,7 +27,7 @@
 */
 package org.miaixz.bus.core.center.date.culture.rabjung;
 
-import org.miaixz.bus.core.center.date.culture.cn.Element;
+import org.miaixz.bus.core.center.date.culture.Element;
 
 /**
  * Represents the Five Elements in the Tibetan calendar.

@@ -49,9 +49,6 @@ import org.miaixz.bus.core.xyz.UrlKit;
  */
 public class FileResource implements Resource, Serializable {
 
-    /**
-     * The serial version UID for serialization.
-     */
     @Serial
     private static final long serialVersionUID = 2852230925613L;
 
@@ -110,21 +107,42 @@ public class FileResource implements Resource, Serializable {
         this.name = ObjectKit.defaultIfNull(fileName, file::getName);
     }
 
+    /**
+     * Returns the name of this file resource.
+     *
+     * @return The name of the file.
+     */
     @Override
     public String getName() {
         return this.name;
     }
 
+    /**
+     * Returns the URL of this file resource.
+     *
+     * @return The URL representing the file path.
+     */
     @Override
     public URL getUrl() {
         return UrlKit.getURL(this.file);
     }
 
+    /**
+     * Returns the size of this file resource.
+     *
+     * @return The size of the file in bytes.
+     */
     @Override
     public long size() {
         return this.file.length();
     }
 
+    /**
+     * Returns an input stream for this file resource.
+     *
+     * @return An input stream for reading the file.
+     * @throws NotFoundException If the file does not exist.
+     */
     @Override
     public InputStream getStream() throws NotFoundException {
         if (!exists()) {
@@ -151,6 +169,11 @@ public class FileResource implements Resource, Serializable {
         return this.file.exists();
     }
 
+    /**
+     * Checks if this file resource has been modified since it was last accessed.
+     *
+     * @return {@code true} if the file has been modified, {@code false} otherwise.
+     */
     @Override
     public boolean isModified() {
         return this.lastModified != file.lastModified();

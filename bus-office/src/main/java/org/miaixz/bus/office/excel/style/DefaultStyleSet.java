@@ -103,6 +103,14 @@ public class DefaultStyleSet implements StyleSet, Serializable {
         this.cellStyleForHyperlink.setFont(font);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param reference the cell reference
+     * @param cellValue the cell value
+     * @param isHeader  whether this is a header cell
+     * @return the appropriate cell style for the given cell
+     */
     @Override
     public CellStyle getStyleFor(final CellReference reference, final Object cellValue, final boolean isHeader) {
         CellStyle style = null;

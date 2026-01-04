@@ -32,7 +32,7 @@ import java.time.Period;
 import java.time.temporal.TemporalAmount;
 
 /**
- * {@link Period}对象转换器
+ * Converter for {@link Period} objects.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,6 +42,16 @@ public class PeriodConverter extends AbstractConverter {
     @Serial
     private static final long serialVersionUID = 2852270870935L;
 
+    /**
+     * Converts the given value to a Period.
+     * <p>
+     * Supports conversion from TemporalAmount, Integer (days), and string representations.
+     * </p>
+     *
+     * @param targetClass the target class (should be Period.class)
+     * @param value       the value to convert
+     * @return the converted Period object
+     */
     @Override
     protected Period convertInternal(final Class<?> targetClass, final Object value) {
         if (value instanceof TemporalAmount) {

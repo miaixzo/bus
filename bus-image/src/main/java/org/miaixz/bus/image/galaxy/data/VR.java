@@ -34,6 +34,31 @@ import java.util.TimeZone;
 import org.miaixz.bus.core.lang.Symbol;
 
 /**
+ * Enumeration of DICOM Value Representations (VR). VR defines the data type and format of values that can be associated
+ * with a DICOM data element. Each VR specifies the value multiplicity, character set, and handling requirements for the
+ * corresponding DICOM attribute.
+ * <p>
+ * Common VRs include:
+ * <ul>
+ * <li>AE (Application Entity)</li>
+ * <li>AS (Age String)</li>
+ * <li>CS (Code String)</li>
+ * <li>DA (Date)</li>
+ * <li>DS (Decimal String)</li>
+ * <li>DT (Date Time)</li>
+ * <li>FD (Floating Point Double)</li>
+ * <li>FL (Floating Point Single)</li>
+ * <li>IS (Integer String)</li>
+ * <li>LO (Long String)</li>
+ * <li>PN (Person Name)</li>
+ * <li>SH (Short String)</li>
+ * <li>ST (Short Text)</li>
+ * <li>SQ (Sequence of Items)</li>
+ * <li>TM (Time)</li>
+ * <li>UI (Unique Identifier)</li>
+ * <li>UT (Unlimited Text)</li>
+ * </ul>
+ *
  * @author Kimi Liu
  * @since Java 17+
  */

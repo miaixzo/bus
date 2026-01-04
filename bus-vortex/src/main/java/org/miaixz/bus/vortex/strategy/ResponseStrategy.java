@@ -54,6 +54,20 @@ import reactor.core.publisher.Mono;
 @Order(Ordered.HIGHEST_PRECEDENCE + 5)
 public class ResponseStrategy extends AbstractStrategy {
 
+    /**
+     * Applies the response formatting strategy based on the requested format.
+     * <p>
+     * This method checks the format specified in the context and decorates the response accordingly:
+     * <ul>
+     * <li>XML format: Applies XML transformation decorator</li>
+     * <li>BINARY format: Applies binary stream handling decorator</li>
+     * <li>JSON format: No transformation needed (default)</li>
+     * </ul>
+     *
+     * @param exchange The current server exchange containing the request and response
+     * @param chain    The next strategy in the chain
+     * @return A Mono signaling completion of this strategy's processing
+     */
     @Override
     public Mono<Void> apply(ServerWebExchange exchange, Chain chain) {
         return Mono.deferContextual(contextView -> {
@@ -109,6 +123,21 @@ public class ResponseStrategy extends AbstractStrategy {
     private ServerHttpResponseDecorator processXml(ServerWebExchange exchange, Context context) {
         return new ServerHttpResponseDecorator(exchange.getResponse()) {
 
+            /**
+             * Intercepts and transforms the response body to XML format.
+             * <p>
+             * This override:
+             * <ol>
+             * <li>Collects the original response body buffers</li>
+             * <li>Merges them into a single byte array</li>
+             * <li>Converts to string (assumes original is JSON)</li>
+             * <li>Serializes to XML using the XML provider</li>
+             * <li>Wraps the XML result in a new DataBuffer</li>
+             * </ol>
+             *
+             * @param body The publisher emitting the original response body data buffers
+             * @return A Mono signaling completion of the write operation
+             */
             @Override
             public Mono<Void> writeWith(Publisher<? extends DataBuffer> body) {
                 // Convert response data stream to Flux
@@ -168,6 +197,15 @@ public class ResponseStrategy extends AbstractStrategy {
     private ServerHttpResponseDecorator processBinary(ServerWebExchange exchange, Context context) {
         return new ServerHttpResponseDecorator(exchange.getResponse()) {
 
+            /**
+             * Handles binary data streams without conversion.
+             * <p>
+             * This override ensures binary data (files, images, PDFs) is streamed directly without string conversion
+             * that could corrupt the data. It preserves the original binary stream and sets appropriate headers.
+             *
+             * @param body The publisher emitting the binary response data buffers
+             * @return A Mono signaling completion of the write operation
+             */
             @Override
             public Mono<Void> writeWith(Publisher<? extends DataBuffer> body) {
                 Logger.debug(true, "Response", "[{}] Processing binary stream response", context.getX_request_ipv4());

@@ -153,6 +153,12 @@ public class VKProvider extends AbstractProvider {
                 .build();
     }
 
+    /**
+     * {@inheritDoc} Refreshes the access token using a refresh token.
+     *
+     * @param authorization the authorization containing the refresh token
+     * @return a message containing the new access token
+     */
     @Override
     public Message refresh(Authorization authorization) {
         Map<String, String> form = new HashMap<>(7);
@@ -167,6 +173,12 @@ public class VKProvider extends AbstractProvider {
 
     }
 
+    /**
+     * {@inheritDoc} Revokes the authorization and invalidates the token.
+     *
+     * @param authorization the authorization to revoke
+     * @return a message indicating the result of the revocation
+     */
     @Override
     public Message revoke(Authorization authorization) {
         String response = doPostRevoke(authorization);

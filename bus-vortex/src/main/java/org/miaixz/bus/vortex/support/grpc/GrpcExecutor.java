@@ -51,14 +51,10 @@ import reactor.core.publisher.Mono;
  * <p>
  * This executor uses HTTP as transport protocol instead of direct gRPC, avoiding third-party gRPC library dependencies.
  * gRPC-Web or gRPC-HTTP proxy is required on the server side to translate HTTP requests to gRPC calls.
- * </p>
- * <p>
- * The executor supports two execution modes controlled by {@link Assets#getStream()}:
  * <ul>
  * <li>Buffering mode (stream = 1 or null): Buffers the complete response before returning</li>
  * <li>Streaming mode (stream = 2): Streams the response in chunks</li>
  * </ul>
- * </p>
  * Generic type parameters: {@code Executor<String, ServerResponse>}
  *
  * @author Kimi Liu
@@ -70,7 +66,7 @@ public class GrpcExecutor extends Coordinator<String, ServerResponse> {
      * Executes a gRPC request using the provided context and String payload.
      * <p>
      * This method is required by the {@link org.miaixz.bus.vortex.Executor} interface. It invokes the gRPC method and
-     * selects the appropriate execution strategy (streaming or buffering) based on {@link Assets#getStream()}.
+     * selects the appropriate execution strategy (streaming or buffering) based.
      *
      * @param context The request context containing the assets configuration
      * @param input   The String payload to send to the gRPC service

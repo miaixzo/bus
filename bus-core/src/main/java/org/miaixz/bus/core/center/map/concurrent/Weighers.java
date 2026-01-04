@@ -193,6 +193,13 @@ public final class Weighers {
         /** Singleton instance. */
         INSTANCE;
 
+        /**
+         * Returns the weight of the entry. Always returns {@code 1}.
+         *
+         * @param key   The key (not used in weight calculation).
+         * @param value The value (not used in weight calculation).
+         * @return {@code 1} as the weight.
+         */
         @Override
         public int weightOf(final Object key, final Object value) {
             return 1;
@@ -207,6 +214,12 @@ public final class Weighers {
         /** Singleton instance. */
         INSTANCE;
 
+        /**
+         * Returns the weight of the value. Always returns {@code 1}.
+         *
+         * @param value The value (not used in weight calculation).
+         * @return {@code 1} as the weight.
+         */
         @Override
         public int weightOf(final Object value) {
             return 1;
@@ -221,6 +234,12 @@ public final class Weighers {
         /** Singleton instance. */
         INSTANCE;
 
+        /**
+         * Returns the weight of the byte array value.
+         *
+         * @param value The byte array whose length determines the weight.
+         * @return The length of the byte array.
+         */
         @Override
         public int weightOf(final byte[] value) {
             return value.length;
@@ -235,6 +254,12 @@ public final class Weighers {
         /** Singleton instance. */
         INSTANCE;
 
+        /**
+         * Returns the weight of the iterable value (number of elements).
+         *
+         * @param values The iterable whose size determines the weight.
+         * @return The number of elements in the iterable.
+         */
         @Override
         public int weightOf(final Iterable<?> values) {
             if (values instanceof Collection<?>) {
@@ -252,6 +277,12 @@ public final class Weighers {
         /** Singleton instance. */
         INSTANCE;
 
+        /**
+         * Returns the weight of the collection value (number of elements).
+         *
+         * @param values The collection whose size determines the weight.
+         * @return The number of elements in the collection.
+         */
         @Override
         public int weightOf(final Collection<?> values) {
             return values.size();
@@ -266,6 +297,12 @@ public final class Weighers {
         /** Singleton instance. */
         INSTANCE;
 
+        /**
+         * Returns the weight of the list value (number of elements).
+         *
+         * @param values The list whose size determines the weight.
+         * @return The number of elements in the list.
+         */
         @Override
         public int weightOf(final List<?> values) {
             return values.size();
@@ -280,6 +317,12 @@ public final class Weighers {
         /** Singleton instance. */
         INSTANCE;
 
+        /**
+         * Returns the weight of the set value (number of elements).
+         *
+         * @param values The set whose size determines the weight.
+         * @return The number of elements in the set.
+         */
         @Override
         public int weightOf(final Set<?> values) {
             return values.size();
@@ -294,6 +337,12 @@ public final class Weighers {
         /** Singleton instance. */
         INSTANCE;
 
+        /**
+         * Returns the weight of the map value (number of entries).
+         *
+         * @param values The map whose size determines the weight.
+         * @return The number of entries in the map.
+         */
         @Override
         public int weightOf(final Map<?, ?> values) {
             return values.size();
@@ -318,6 +367,13 @@ public final class Weighers {
             this.weigher = weigher;
         }
 
+        /**
+         * Returns the weight of the map entry based on the wrapped weigher.
+         *
+         * @param key   The key (not used in weight calculation).
+         * @param value The value whose weight is determined by the wrapped weigher.
+         * @return The weight of the value as determined by the wrapped weigher.
+         */
         @Override
         public int weightOf(final K key, final V value) {
             return weigher.weightOf(value);

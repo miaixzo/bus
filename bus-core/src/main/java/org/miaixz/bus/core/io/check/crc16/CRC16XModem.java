@@ -45,9 +45,6 @@ public class CRC16XModem extends CRC16Checksum {
     private CRC16XModem() {
     }
 
-    /**
-     * The serial version UID for serialization.
-     */
     @Serial
     private static final long serialVersionUID = 2852285115000L;
 

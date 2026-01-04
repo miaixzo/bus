@@ -67,6 +67,11 @@ public interface Provider extends org.miaixz.bus.core.Provider {
      */
     byte[] decrypt(String key, byte[] content);
 
+    /**
+     * Returns the provider type identifier.
+     *
+     * @return the provider type identifier, which is {@link EnumValue.Povider#CRYPTO}
+     */
     @Override
     default Object type() {
         return EnumValue.Povider.CRYPTO;

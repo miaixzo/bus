@@ -155,6 +155,16 @@ public class ZookeeperMetrics implements Metrics {
         });
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Increments the hit counter for the specified pattern by adding the count to a queue. The count is asynchronously
+     * written to ZooKeeper in batches.
+     * </p>
+     *
+     * @param pattern The cache pattern name (e.g., cache name).
+     * @param count   The number to increment the hit counter by.
+     */
     @Override
     public void hitIncr(String pattern, int count) {
         if (count != 0) {
@@ -162,6 +172,16 @@ public class ZookeeperMetrics implements Metrics {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Increments the request counter for the specified pattern by adding the count to a queue. The count is
+     * asynchronously written to ZooKeeper in batches.
+     * </p>
+     *
+     * @param pattern The cache pattern name (e.g., cache name).
+     * @param count   The number to increment the request counter by.
+     */
     @Override
     public void reqIncr(String pattern, int count) {
         if (count != 0) {
@@ -169,6 +189,15 @@ public class ZookeeperMetrics implements Metrics {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Retrieves the current hit statistics for all cache patterns from ZooKeeper. This method reads the distributed
+     * counters and calculates the hit rate.
+     * </p>
+     *
+     * @return A map of cache patterns to their {@link Snapshot} statistics, including a summary entry.
+     */
     @Override
     public Map<String, Snapshot> getHitting() {
         Map<String, Snapshot> result = new LinkedHashMap<>();
@@ -191,18 +220,39 @@ public class ZookeeperMetrics implements Metrics {
         return result;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Resets the distributed counters for the specified pattern to zero.
+     * </p>
+     *
+     * @param pattern The cache pattern to reset.
+     */
     @Override
     public void reset(String pattern) {
         hitCounterMap.computeIfPresent(pattern, this::doReset);
         requireCounterMap.computeIfPresent(pattern, this::doReset);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Resets all distributed counters for all patterns to zero.
+     * </p>
+     */
     @Override
     public void resetAll() {
         hitCounterMap.forEach(this::doReset);
         requireCounterMap.forEach(this::doReset);
     }
 
+    /**
+     * Shuts down the ZooKeeper metrics service gracefully.
+     * <p>
+     * This method waits for all pending metrics to be written to ZooKeeper, then closes the ZooKeeper client
+     * connection. This method is called automatically when the application context is destroyed.
+     * </p>
+     */
     @PreDestroy
     public void tearDown() {
         while (hitQueue.size() > 0 || requireQueue.size() > 0) {

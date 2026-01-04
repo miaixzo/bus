@@ -27,8 +27,8 @@
 */
 package org.miaixz.bus.cron.pattern;
 
-import org.miaixz.bus.core.center.date.culture.en.Month;
-import org.miaixz.bus.core.center.date.culture.en.Week;
+import org.miaixz.bus.core.center.date.Month;
+import org.miaixz.bus.core.center.date.Week;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.CrontabException;
 
@@ -80,10 +80,22 @@ public enum Part {
      */
     YEAR(Calendar.YEAR, 1970, 2099);
 
+    /**
+     * Array of all Part enum constants for efficient iteration.
+     */
     private static final Part[] ENUMS = Part.values();
 
+    /**
+     * The corresponding {@link Calendar} field constant for this part.
+     */
     private final int calendarField;
+    /**
+     * The minimum allowed value for this part (inclusive).
+     */
     private final int min;
+    /**
+     * The maximum allowed value for this part (inclusive).
+     */
     private final int max;
 
     /**

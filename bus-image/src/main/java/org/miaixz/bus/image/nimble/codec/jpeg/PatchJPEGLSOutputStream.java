@@ -34,6 +34,16 @@ import javax.imageio.stream.ImageOutputStreamImpl;
 
 import org.miaixz.bus.logger.Logger;
 
+/**
+ * Output stream for patching JPEG-LS compressed image data.
+ * <p>
+ * This class extends {@link ImageOutputStreamImpl} to provide special handling for JPEG-LS (Lossless JPEG) compression,
+ * allowing modification of JPEG headers while preserving the compressed image data.
+ * </p>
+ *
+ * @author Kimi Liu
+ * @since Java 17+
+ */
 public class PatchJPEGLSOutputStream extends ImageOutputStreamImpl {
 
     private final ImageOutputStream ios;

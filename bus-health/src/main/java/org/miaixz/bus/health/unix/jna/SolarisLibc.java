@@ -76,7 +76,10 @@ public interface SolarisLibc extends CLibrary {
     int thr_self();
 
     /**
-     * Connection info
+     * JNA wrapper for the Solaris utmpx structure.
+     * <p>
+     * This class maps to the native Solaris utmpx structure representing user accounting database entries.
+     * </p>
      */
     @FieldOrder({ "ut_user", "ut_id", "ut_line", "ut_pid", "ut_type", "ut_exit", "ut_tv", "ut_session", "pad",
             "ut_syslen", "ut_host" })
@@ -96,7 +99,10 @@ public interface SolarisLibc extends CLibrary {
     }
 
     /**
-     * Part of utmpx structure
+     * JNA wrapper for the exit_status structure.
+     * <p>
+     * This class maps to the native Solaris exit_status structure which is part of utmpx.
+     * </p>
      */
     @FieldOrder({ "e_termination", "e_exit" })
     class Exit_status extends Structure {
@@ -106,7 +112,11 @@ public interface SolarisLibc extends CLibrary {
     }
 
     /**
-     * 32/64-bit timeval required for utmpx structure
+     * JNA wrapper for the timeval structure.
+     * <p>
+     * This class maps to the native Solaris timeval structure: {@code struct timeval { time_t tv_sec; suseconds_t
+     * tv_usec; }; }
+     * </p>
      */
     @FieldOrder({ "tv_sec", "tv_usec" })
     class Timeval extends Structure {

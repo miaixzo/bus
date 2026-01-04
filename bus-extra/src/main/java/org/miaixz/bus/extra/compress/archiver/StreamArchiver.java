@@ -135,6 +135,20 @@ public class StreamArchiver implements Archiver {
         return new StreamArchiver(charset, archiverName, out);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Adds a file or directory to the archive with optional filtering and path editing. Directories are processed
+     * recursively.
+     * </p>
+     *
+     * @param file           the file or directory to add
+     * @param path           the initial path within the archive (may be {@code null})
+     * @param fileNameEditor function to edit file names (may be {@code null})
+     * @param predicate      filter to select which files to add (may be {@code null})
+     * @return this {@code StreamArchiver} instance for method chaining
+     * @throws InternalException if an I/O error occurs during archiving
+     */
     @Override
     public StreamArchiver add(
             final File file,
@@ -165,6 +179,12 @@ public class StreamArchiver implements Archiver {
         return this;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Closes the archive stream, ensuring all data is flushed. This method suppresses any exceptions that may occur.
+     * </p>
+     */
     @Override
     public void close() {
         try {

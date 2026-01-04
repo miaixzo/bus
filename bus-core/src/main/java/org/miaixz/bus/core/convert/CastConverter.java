@@ -52,9 +52,6 @@ public class CastConverter implements MatcherConverter, Serializable {
      * Singleton instance.
      */
     public static final CastConverter INSTANCE = new CastConverter();
-    /**
-     * The serial version UID.
-     */
     @Serial
     private static final long serialVersionUID = 2852266109781L;
 

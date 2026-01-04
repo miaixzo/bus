@@ -115,7 +115,7 @@ public class ImageReader extends javax.imageio.ImageReader {
             return itemPointer.isEmpty();
         }
         if (Tag.isPrivateTag(tag)) {
-            return length > 1000; // 不将超过1KB的私有值读入内存
+            return length > 1000; // Do not read private values exceeding 1KB into memory
         }
         return switch (vr) {
             case OB, OD, OF, OL, OW, UN -> length > 64;
@@ -145,7 +145,7 @@ public class ImageReader extends javax.imageio.ImageReader {
     private ImageFileInputStream dis;
 
     static {
-        // 加载本地OpenCV库
+        // Load local OpenCV library
         OpenCVNativeLoader loader = new OpenCVNativeLoader();
         loader.init();
     }
@@ -187,7 +187,8 @@ public class ImageReader extends javax.imageio.ImageReader {
             keepRgbForLossyJpeg = param.getKeepRgbForLossyJpeg().orElse(Boolean.FALSE);
         }
         if (pmi == Photometric.RGB && !keepRgbForLossyJpeg) {
-            // 当RGB带有JFIF头或不是RGB组件时（某些制造商的错误），强制JPEG基线(1.2.840.10008.1.2.4.50)转换为YBR_FULL_422颜色模型。
+            // When RGB has JFIF header or is not RGB component (error from some manufacturers), force JPEG baseline
+            // (1.2.840.10008.1.2.4.50) to convert to YBR_FULL_422 color model.
             return !"RGB".equals(parser.getParams().colorPhotometricInterpretation());
         }
         return false;
@@ -202,7 +203,7 @@ public class ImageReader extends javax.imageio.ImageReader {
      * @return 如果需要转换返回true，否则返回false
      */
     private static boolean ybr2rgb(Photometric pmi, String tsuid, BooleanSupplier isYbrModel) {
-        // 仅适用于IJG本地解码器的选项
+        // Options only applicable to IJG native decoder
         switch (pmi) {
             case MONOCHROME1:
             case MONOCHROME2:
@@ -288,7 +289,7 @@ public class ImageReader extends javax.imageio.ImageReader {
             this.dis = (ImageFileInputStream) input;
             dis.setIncludeBulkData(ImageInputStream.IncludeBulkData.URI);
             dis.setBulkDataDescriptor(BULK_DATA_DESCRIPTOR);
-            // 避免将pixelData复制到临时文件
+            // Avoid copying pixelData to temporary file
             dis.setURI(dis.getPath().toUri().toString());
         } else if (input instanceof BytesWithImageDescriptor) {
             this.bdis = (BytesWithImageDescriptor) input;
@@ -770,8 +771,8 @@ public class ImageReader extends javax.imageio.ImageReader {
             bulkData = (BulkData) pixdata;
             bigendian = bulkData.bigEndian();
         } else if (dcm.getString(Tag.PixelDataProviderURL) != null) {
-            // TODO 处理JPIP
-            // 始终是小端序：
+            // TODO Handle JPIP
+            // Always little endian:
             // http://dicom.nema.org/medical/dicom/2017b/output/chtml/part05/sect_A.6.html
         } else if (pixdata instanceof Fragments) {
             pixeldataFragments = (Fragments) pixdata;
@@ -876,7 +877,7 @@ public class ImageReader extends javax.imageio.ImageReader {
             buf = new Mat(1, b.limit(), CvType.CV_8UC1);
             buf.put(0, 0, b.array());
             if (rawData) {
-                int bits = bitsStored <= 8 && desc.getBitsAllocated() > 8 ? 9 : bitsStored; // 修复#94
+                int bits = bitsStored <= 8 && desc.getBitsAllocated() > 8 ? 9 : bitsStored; // Fix #94
                 int streamVR = bdis.getPixelDataVR().numEndianBytes();
                 MatOfInt dicomparams = new MatOfInt(Imgcodecs.IMREAD_UNCHANGED, dcmFlags, desc.getColumns(),
                         desc.getRows(), Imgcodecs.DICOM_CP_UNKNOWN, desc.getSamples(), bits,
@@ -919,7 +920,7 @@ public class ImageReader extends javax.imageio.ImageReader {
             int nbFragments = fragments.size();
             int numberOfFrame = desc.getFrames();
             if (numberOfFrame >= nbFragments - 1) {
-                // nbFrames > nbFragments 永远不应该发生
+                // nbFrames > nbFragments should never happen
                 offsets = new long[1];
                 length = new int[offsets.length];
                 int index = frameIndex < nbFragments - 1 ? frameIndex + 1 : nbFragments - 1;
@@ -936,7 +937,7 @@ public class ImageReader extends javax.imageio.ImageReader {
                         length[i] = b.length();
                     }
                 } else {
-                    // 多帧图像，每帧可以有多个片段。
+                    // Multi-frame images, each frame can have multiple fragments.
                     if (fragmentsPositions.isEmpty()) {
                         try (SeekableByteChannel channel = Files
                                 .newByteChannel(dis.getPath(), StandardOpenOption.READ)) {
@@ -947,7 +948,7 @@ public class ImageReader extends javax.imageio.ImageReader {
                                     new JPEGParser(channel);
                                     fragmentsPositions.add(i);
                                 } catch (Exception e) {
-                                    // 不是jpeg流
+                                    // Not jpeg stream
                                 }
                             }
                         }

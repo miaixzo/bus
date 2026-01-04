@@ -369,6 +369,12 @@ public class Crypto implements Encryptor, Decryptor, Serializable {
         return HexKit.encodeString(update(data));
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param data {@inheritDoc}
+     * @return {@inheritDoc}
+     */
     @Override
     public byte[] encrypt(final byte[] data) {
         return encrypt(data, null);
@@ -394,6 +400,14 @@ public class Crypto implements Encryptor, Decryptor, Serializable {
         return SaltMagic.addMagic(result, salt);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param data    {@inheritDoc}
+     * @param out     {@inheritDoc}
+     * @param isClose {@inheritDoc}
+     * @throws InternalException {@inheritDoc}
+     */
     @Override
     public void encrypt(final InputStream data, final OutputStream out, final boolean isClose)
             throws InternalException {
@@ -429,6 +443,12 @@ public class Crypto implements Encryptor, Decryptor, Serializable {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param bytes {@inheritDoc}
+     * @return {@inheritDoc}
+     */
     @Override
     public byte[] decrypt(final byte[] bytes) {
         final int blockSize;
@@ -448,6 +468,14 @@ public class Crypto implements Encryptor, Decryptor, Serializable {
         return removePadding(decryptData, blockSize);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param data    {@inheritDoc}
+     * @param out     {@inheritDoc}
+     * @param isClose {@inheritDoc}
+     * @throws InternalException {@inheritDoc}
+     */
     @Override
     public void decrypt(final InputStream data, final OutputStream out, final boolean isClose)
             throws InternalException {

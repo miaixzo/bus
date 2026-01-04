@@ -32,7 +32,8 @@ import java.lang.reflect.Type;
 import org.miaixz.bus.core.xyz.TypeKit;
 
 /**
- * 带有匹配的转换器 判断目标对象是否满足条件，满足则转换，否则跳过 实现此接口同样可以不判断断言而直接转换
+ * A converter with matching capability. Determines whether the target object meets the conditions. If met, converts;
+ * otherwise skips. Implementing this interface can also directly convert without determining assertions.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -40,21 +41,22 @@ import org.miaixz.bus.core.xyz.TypeKit;
 public interface MatcherConverter extends Converter {
 
     /**
-     * 判断需要转换的对象是否匹配当前转换器，满足则转换，否则跳过
+     * Determines whether the object to be converted matches the current converter. If met, converts; otherwise skips.
      *
-     * @param targetType 转换的目标类型，不能为{@code null}
-     * @param rawType    目标原始类型，当targetType为Class时，和此参数一致，不能为{@code null}
-     * @param value      需要转换的值
-     * @return 是否匹配
+     * @param targetType the target type of the conversion, cannot be {@code null}
+     * @param rawType    the target raw type, consistent with this parameter when targetType is Class, cannot be
+     *                   {@code null}
+     * @param value      the value to be converted
+     * @return whether it matches
      */
     boolean match(Type targetType, Class<?> rawType, Object value);
 
     /**
-     * 判断需要转换的对象是否匹配当前转换器，满足则转换，否则跳过
+     * Determines whether the object to be converted matches the current converter. If met, converts; otherwise skips.
      *
-     * @param targetType 转换的目标类型
-     * @param value      需要转换的值
-     * @return 是否匹配
+     * @param targetType the target type of the conversion
+     * @param value      the value to be converted
+     * @return whether it matches
      */
     default boolean match(final Type targetType, final Object value) {
         return match(targetType, TypeKit.getClass(targetType), value);

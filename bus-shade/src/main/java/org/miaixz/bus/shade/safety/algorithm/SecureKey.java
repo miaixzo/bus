@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.shade.safety.algorithm;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -38,6 +39,7 @@ import java.io.Serializable;
  */
 public abstract class SecureKey implements Key, Serializable {
 
+    @Serial
     private static final long serialVersionUID = -1L;
 
     /**

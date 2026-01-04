@@ -41,10 +41,10 @@ import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.TypeKit;
 
 /**
- * {@link Map} 转换器，通过预定义key和value的类型，实现：
+ * {@link Map} converter that implements:
  * <ul>
- * <li>Map 转 Map，key和value类型自动转换</li>
- * <li>Bean 转 Map，字段和字段值类型自动转换</li>
+ * <li>Map to Map conversion with automatic key and value type conversion</li>
+ * <li>Bean to Map conversion with automatic field and value type conversion</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -56,14 +56,14 @@ public class MapConverter extends ConverterWithRoot implements MatcherConverter,
     private static final long serialVersionUID = 2852269171705L;
 
     /**
-     * 单例
+     * Singleton instance
      */
     public static final MapConverter INSTANCE = new MapConverter(CompositeConverter.getInstance());
 
     /**
-     * 构造
+     * Constructs a new MapConverter
      *
-     * @param rootConverter 根转换器，用于转换Map中键值对中的值，非{@code null}
+     * @param rootConverter the root converter for converting map entry values, must be non-{@code null}
      */
     public MapConverter(final Converter rootConverter) {
         super(rootConverter);
@@ -86,14 +86,14 @@ public class MapConverter extends ConverterWithRoot implements MatcherConverter,
     }
 
     /**
-     * 转换对象为指定键值类型的指定类型Map
+     * Converts an object to a Map with specified key and value types
      *
-     * @param targetType 目标的Map类型
-     * @param keyType    键类型
-     * @param valueType  值类型
-     * @param value      被转换的值
-     * @return 转换后的Map
-     * @throws ConvertException 转换异常或不支持的类型
+     * @param targetType the target Map type
+     * @param keyType    the key type
+     * @param valueType  the value type
+     * @param value      the value to convert
+     * @return the converted Map
+     * @throws ConvertException if conversion fails or type is unsupported
      */
     public Map<?, ?> convert(final Type targetType, final Type keyType, final Type valueType, final Object value)
             throws ConvertException {
@@ -104,7 +104,7 @@ public class MapConverter extends ConverterWithRoot implements MatcherConverter,
                 final Type[] typeArguments = TypeKit.getTypeArguments(valueClass);
                 if (null != typeArguments && 2 == typeArguments.length && Objects.equals(keyType, typeArguments[0])
                         && Objects.equals(valueType, typeArguments[1])) {
-                    // 对于键值对类型一致的Map对象，不再做转换，直接返回原对象
+                    // For Map objects with matching key-value types, return directly without conversion
                     return (Map) value;
                 }
             }
@@ -113,7 +113,7 @@ public class MapConverter extends ConverterWithRoot implements MatcherConverter,
             convertMapToMap(keyType, valueType, (Map) value, map);
         } else if (BeanKit.isWritableBean(value.getClass())) {
             map = BeanKit.beanToMap(value);
-            // 二次转换，转换键值类型
+            // Second conversion to convert key-value types
             map = convert(targetType, keyType, valueType, map);
         } else {
             throw new ConvertException("Unsupported to map from [{}] of type: {}", value, value.getClass().getName());
@@ -122,10 +122,10 @@ public class MapConverter extends ConverterWithRoot implements MatcherConverter,
     }
 
     /**
-     * Map转Map
+     * Converts Map to Map
      *
-     * @param srcMap    源Map
-     * @param targetMap 目标Map
+     * @param srcMap    the source Map
+     * @param targetMap the target Map
      */
     private void convertMapToMap(
             final Type keyType,

@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.miaixz.bus.core.center.date.culture.Loops;
-import org.miaixz.bus.core.center.date.culture.cn.Zodiac;
+import org.miaixz.bus.core.center.date.culture.Zodiac;
 
 /**
  * Represents a month in the Tibetan calendar. Only supports Tibetan calendar from December 1950 to December 2050.

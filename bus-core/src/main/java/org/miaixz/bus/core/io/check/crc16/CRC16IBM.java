@@ -45,9 +45,6 @@ public class CRC16IBM extends CRC16Checksum {
     public CRC16IBM() {
     }
 
-    /**
-     * The serial version UID for serialization.
-     */
     @Serial
     private static final long serialVersionUID = 2852278882528L;
 

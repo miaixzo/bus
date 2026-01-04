@@ -118,6 +118,9 @@ public abstract class HeartPlugin<T> extends AbstractPlugin<T> {
         this.timeoutCallback = timeoutCallback;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public final boolean process(Session session, T data) {
         sessionMap.put(session, System.currentTimeMillis());
@@ -125,6 +128,9 @@ public abstract class HeartPlugin<T> extends AbstractPlugin<T> {
         return !isHeartMessage(session, data);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public final void stateEvent(Status status, Session session, Throwable throwable) {
         switch (status) {

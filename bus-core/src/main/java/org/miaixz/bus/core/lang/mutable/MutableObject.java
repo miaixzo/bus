@@ -102,11 +102,21 @@ public class MutableObject<T> implements Mutable<T>, Serializable {
         return false;
     }
 
+    /**
+     * Returns the hash code for this MutableObject.
+     *
+     * @return The hash code based on the current value.
+     */
     @Override
     public int hashCode() {
         return Objects.hashCode(value);
     }
 
+    /**
+     * Returns the string representation of this MutableObject.
+     *
+     * @return The string representation of the current value, or "null" if the value is null.
+     */
     @Override
     public String toString() {
         return value == null ? "null" : value.toString();

@@ -45,9 +45,6 @@ public class CRC16Maxim extends CRC16Checksum {
     private CRC16Maxim() {
     }
 
-    /**
-     * The serial version UID for serialization.
-     */
     @Serial
     private static final long serialVersionUID = 2852279557397L;
 

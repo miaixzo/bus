@@ -62,8 +62,20 @@ public class NumberParser {
      * Singleton instance.
      */
     public static final NumberParser INSTANCE = of(null);
+
+    /**
+     * The string representation of "Not a Number".
+     */
     private static final String NaN = "NaN";
+
+    /**
+     * The locale to use for number formatting.
+     */
     private final Locale locale;
+
+    /**
+     * Whether to convert "NaN" to 0 instead of throwing an exception.
+     */
     private final boolean zeroIfNaN;
 
     /**

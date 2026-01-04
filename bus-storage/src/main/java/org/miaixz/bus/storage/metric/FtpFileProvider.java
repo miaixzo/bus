@@ -129,6 +129,19 @@ public class FtpFileProvider extends AbstractProvider {
      * @return A {@link Message} containing the result of the operation. If successful, the data field contains the file
      *         content as a byte array; otherwise, it contains error information.
      */
+    /**
+     * Downloads a file from the specified storage bucket and returns its content as a byte array.
+     * <p>
+     * This method reads the entire file content into memory as a byte array, making it suitable for images, PDFs, DOCX
+     * files, and other binary files. The underlying input stream is automatically closed using try-with-resources to
+     * prevent resource leaks.
+     * </p>
+     *
+     * @param bucket   The name of the storage bucket.
+     * @param fileName The name of the file to download.
+     * @return A {@link Message} containing the result of the operation. If successful, the data field contains the file
+     *         content as a byte array; otherwise, it contains error information.
+     */
     @Override
     public Message download(String bucket, String fileName) {
         try {

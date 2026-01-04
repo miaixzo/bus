@@ -98,6 +98,11 @@ public class IniPropertyService extends AbstractElement implements IniProperty {
 
     @Override
     public IniSection getSection() {
+        /**
+         * Gets the section to which this property belongs.
+         *
+         * @return the section containing this property, or null if this property is not in a section
+         */
         return this.section;
     }
 
