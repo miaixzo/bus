@@ -158,7 +158,7 @@ public class QualifierStrategy extends AbstractStrategy {
                         Mono<Void> validationMono = this.method(exchange, context, assets);
 
                         // 4. Chain authorization if the API is protected
-                        Mono<Void> authMono = (Consts.ONE != assets.getPolicy()) ? this.authorize(context)
+                        Mono<Void> authMono = (Consts.ZERO != assets.getPolicy()) ? this.authorize(context)
                                 : Mono.empty();
 
                         // 5. Execute validation then authorization sequentially
@@ -283,7 +283,8 @@ public class QualifierStrategy extends AbstractStrategy {
                 BeanKit.beanToMap(
                         delegate.getAuthorize(),
                         authMap,
-                        CopyOptions.of().setTransientSupport(false).setIgnoreCase(true));
+                        CopyOptions.of().setTransientSupport(false).setIgnoreCase(true).setIgnoreProperties("id"));
+
                 context.getParameters().putAll(authMap);
                 Logger.info(true, "Qualifier", "[{}] Authentication successful.", context.getX_request_ipv4());
                 return Mono.empty(); // Signal success

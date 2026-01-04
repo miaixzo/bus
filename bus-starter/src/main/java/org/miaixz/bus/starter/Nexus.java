@@ -67,8 +67,6 @@ public class Nexus implements Condition {
     private static final Map<String, Class<? extends Annotation>> FEATURES = Map.ofEntries(
             // Authentication and Authorization
             Map.entry(GeniusBuilder.AUTH, EnableAuth.class),
-            // Service Bridge
-            Map.entry(GeniusBuilder.BRIDGE, EnableBridge.class),
             // Cache Management
             Map.entry(GeniusBuilder.CACHE, EnableCache.class),
             // Cross-Origin Resource Sharing

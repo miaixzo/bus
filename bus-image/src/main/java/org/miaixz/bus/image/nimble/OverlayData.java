@@ -43,6 +43,13 @@ import org.opencv.core.CvType;
 /**
  * Represents DICOM overlay data for an image.
  *
+ * @param groupOffset      the group offset for the overlay
+ * @param rows             the number of rows in the overlay
+ * @param columns          the number of columns in the overlay
+ * @param imageFrameOrigin the image frame origin (1-based)
+ * @param framesInOverlay  the number of frames in the overlay
+ * @param origin           the overlay origin [row, column] (1-based)
+ * @param data             the overlay pixel data
  * @author Kimi Liu
  * @since Java 17+
  */

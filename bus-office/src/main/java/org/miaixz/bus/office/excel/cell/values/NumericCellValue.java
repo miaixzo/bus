@@ -43,6 +43,9 @@ import org.miaixz.bus.office.Builder;
  */
 public class NumericCellValue implements CellValue<Object> {
 
+    /**
+     * The cell object.
+     */
     private final Cell cell;
 
     /**
@@ -54,6 +57,11 @@ public class NumericCellValue implements CellValue<Object> {
         this.cell = cell;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return the cell value as Long, Double, LocalDateTime, or LocalTime
+     */
     @Override
     public Object getValue() {
         final double value = cell.getNumericCellValue();

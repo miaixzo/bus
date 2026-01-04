@@ -35,9 +35,9 @@ import java.io.*;
  */
 public class MLLPInputStream extends BufferedInputStream {
 
-    private static final int SOM = 0x0b; // 消息开始
-    private static final int EOM1 = 0x1c; // 消息字节1的结尾
-    private static final int EOM2 = 0x0d; // 消息字节2的结尾
+    private static final int SOM = 0x0b; // Message Start
+    private static final int EOM1 = 0x1c; // End of Message Byte 1
+    private static final int EOM2 = 0x0d; // End of Message Byte 2
     private final ByteArrayOutputStream readBuffer = new ByteArrayOutputStream();
     private boolean eom = true;
 

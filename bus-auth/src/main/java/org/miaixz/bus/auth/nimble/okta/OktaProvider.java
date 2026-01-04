@@ -141,7 +141,7 @@ public class OktaProvider extends AbstractProvider {
     @Override
     public Message refresh(Authorization authorization) {
         if (null == authorization.getRefresh()) {
-            return Message.builder().errcode(ErrorCode._100100.getKey()).errmsg(ErrorCode._100100.getValue()).build();
+            return Message.builder().errcode(ErrorCode._100113.getKey()).errmsg(ErrorCode._100113.getValue()).build();
         }
         String refreshUrl = refreshUrl(authorization.getRefresh());
         return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(this.getAuthToken(refreshUrl)).build();

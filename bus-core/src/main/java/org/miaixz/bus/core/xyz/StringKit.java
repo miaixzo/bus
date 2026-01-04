@@ -453,4 +453,35 @@ public class StringKit extends CharsBacker {
         return new String(newCodePoints, 0, outOffset);
     }
 
+    /**
+     * Reverses a string.
+     * <p>
+     * This method reverses the string by Unicode code points, correctly handling supplementary characters (such as
+     * emojis, combining marks, and other multi-char Unicode sequences) to ensure they are not split incorrectly.
+     * <p>
+     * {@code "abcd"} → {@code "dcba"}<br>
+     * {@code "abc"} → {@code "cba"}<br>
+     *
+     * @param text the string to be reversed
+     * @return the reversed string; returns {@code null} if the input is {@code null}
+     */
+    public static String reverseByCodePoint(String text) {
+        if (null == text) {
+            return null;
+        }
+
+        // Perform reversal by Unicode code point
+        StringBuilder result = new StringBuilder();
+        for (int i = text.length(); i > 0;) {
+            // Get the code point before the specified position
+            int codePoint = text.codePointBefore(i);
+            // Adjust the index based on the number of chars occupied by the code point
+            i -= Character.charCount(codePoint);
+            // Append the code point to the result
+            result.appendCodePoint(codePoint);
+        }
+
+        return result.toString();
+    }
+
 }

@@ -39,7 +39,9 @@ import org.miaixz.bus.core.xyz.StreamKit;
 import org.miaixz.bus.core.xyz.TypeKit;
 
 /**
- * 特殊类型转换器，如果不符合特殊类型，则返回{@code null}继续其它转换规则 对于特殊对象（如集合、Map、Enum、数组）等的转换器，实现转换 注意：此类中的转换器查找是通过遍历方式
+ * Converter for special types. Returns {@code null} if type doesn't match to continue with other conversion rules. For
+ * special objects (such as collections, Maps, Enums, arrays), implements conversion. Note: Converter lookup in this
+ * class is done by traversal.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -50,14 +52,15 @@ public class SpecialConverter extends ConverterWithRoot implements Serializable 
     private static final long serialVersionUID = 2852271836876L;
 
     /**
-     * 类型转换器集合 此集合初始化后不再加入新值，因此单例使用线程安全
+     * Set of type converters. This set does not add new values after initialization, so it is thread-safe for singleton
+     * use
      */
     private final Set<MatcherConverter> converterSet;
 
     /**
-     * 构造
+     * Constructs a new SpecialConverter
      *
-     * @param rootConverter 父转换器
+     * @param rootConverter the parent converter
      */
     public SpecialConverter(final Converter rootConverter) {
         super(rootConverter);
@@ -65,10 +68,10 @@ public class SpecialConverter extends ConverterWithRoot implements Serializable 
     }
 
     /**
-     * 从指定集合中查找满足条件的转换器
+     * Finds a matching converter from the specified set
      *
-     * @param type 类型
-     * @return 转换器
+     * @param type the type
+     * @return the converter
      */
     private static Converter getConverterFromSet(
             final Set<? extends MatcherConverter> converterSet,
@@ -80,31 +83,31 @@ public class SpecialConverter extends ConverterWithRoot implements Serializable 
     }
 
     /**
-     * 初始化默认转换器
+     * Initializes default converters
      *
-     * @param rootConverter 根转换器，用于递归子对象转换
-     * @return 转换器集合
+     * @param rootConverter the root converter for recursive sub-object conversion
+     * @return the set of converters
      */
     private static Set<MatcherConverter> initDefault(final Converter rootConverter) {
         final Set<MatcherConverter> converterSet = new LinkedHashSet<>(64);
 
-        // 集合转换（含有泛型参数，不可以默认强转）
+        // Collection conversion (with generic parameters, cannot default cast)
         converterSet.add(CollectionConverter.INSTANCE);
-        // Map类型（含有泛型参数，不可以默认强转）
+        // Map type (with generic parameters, cannot default cast)
         converterSet.add(new MapConverter(rootConverter));
-        // Entry类（含有泛型参数，不可以默认强转）
+        // Entry class (with generic parameters, cannot default cast)
         converterSet.add(new EntryConverter(rootConverter));
-        // 默认强转
+        // Default casting
         converterSet.add(CastConverter.INSTANCE);
-        // 日期、java.sql中的日期以及自定义日期统一处理
+        // Date, java.sql dates and custom dates unified processing
         converterSet.add(DateConverter.INSTANCE);
-        // 原始类型转换
+        // Primitive type conversion
         converterSet.add(PrimitiveConverter.INSTANCE);
-        // 数字类型转换
+        // Numeric type conversion
         converterSet.add(NumberConverter.INSTANCE);
-        // 枚举转换
+        // Enum conversion
         converterSet.add(EnumConverter.INSTANCE);
-        // 数组转换
+        // Array conversion
         converterSet.add(ArrayConverter.INSTANCE);
         // Record
         converterSet.add(RecordConverter.INSTANCE);
@@ -112,10 +115,10 @@ public class SpecialConverter extends ConverterWithRoot implements Serializable 
         converterSet.add(KBeanConverter.INSTANCE);
         // Class
         converterSet.add(ClassConverter.INSTANCE);
-        // // 空值转空Bean
+        // // Empty value to empty Bean
         converterSet.add(EmptyBeanConverter.INSTANCE);
 
-        // 日期相关
+        // Date related
         converterSet.add(TimeZoneConverter.INSTANCE);
         converterSet.add(ZoneIdConverter.INSTANCE);
 
@@ -128,13 +131,13 @@ public class SpecialConverter extends ConverterWithRoot implements Serializable 
     }
 
     /**
-     * 转换值
+     * Converts value
      *
-     * @param targetType 目标类型
-     * @param rawType    目标原始类型（即目标的Class）
-     * @param value      被转换的值
-     * @return 转换后的值，如果无转换器，返回{@code null}
-     * @throws ConvertException 转换异常，即找到了对应的转换器，但是转换失败
+     * @param targetType the target type
+     * @param rawType    the target raw type (i.e., target Class)
+     * @param value      the value to convert
+     * @return the converted value, returns {@code null} if no converter found
+     * @throws ConvertException if conversion fails, i.e., corresponding converter found but conversion failed
      */
     public Object convert(final Type targetType, final Class<?> rawType, final Object value) throws ConvertException {
         final Converter converter = getConverter(targetType, rawType, value);
@@ -142,12 +145,12 @@ public class SpecialConverter extends ConverterWithRoot implements Serializable 
     }
 
     /**
-     * 获得匹配的转换器
+     * Gets the matching converter
      *
-     * @param type    类型
-     * @param rawType 目标类型的Class
-     * @param value   被转换的值
-     * @return 转换器
+     * @param type    the type
+     * @param rawType the Class of target type
+     * @param value   the value to convert
+     * @return the converter
      */
     public Converter getConverter(final Type type, final Class<?> rawType, final Object value) {
         return getConverterFromSet(this.converterSet, type, rawType, value);

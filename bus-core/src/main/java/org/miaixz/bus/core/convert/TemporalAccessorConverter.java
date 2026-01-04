@@ -45,7 +45,7 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * JDK8中新加入的java.time包对象解析转换器 支持的对象包括：
+ * Converter for java.time package objects introduced in JDK8, supporting:
  *
  * <pre>
  * java.time.Instant
@@ -65,42 +65,45 @@ public class TemporalAccessorConverter extends AbstractConverter {
     @Serial
     private static final long serialVersionUID = 2852272056385L;
 
+    /**
+     * Singleton instance
+     */
     public static final TemporalAccessorConverter INSTANCE = new TemporalAccessorConverter();
 
     /**
-     * 日期格式化
+     * Date format pattern
      */
     private String format;
 
     /**
-     * 构造
+     * Constructs a new TemporalAccessorConverter
      */
     public TemporalAccessorConverter() {
         this(null);
     }
 
     /**
-     * 构造
+     * Constructs a new TemporalAccessorConverter with specified format
      *
-     * @param format 日期格式
+     * @param format the date format pattern
      */
     public TemporalAccessorConverter(final String format) {
         this.format = format;
     }
 
     /**
-     * 获取日期格式
+     * Gets the date format pattern
      *
-     * @return 设置日期格式
+     * @return the date format pattern
      */
     public String getFormat() {
         return format;
     }
 
     /**
-     * 设置日期格式
+     * Sets the date format pattern
      *
-     * @param format 日期格式
+     * @param format the date format pattern
      */
     public void setFormat(final String format) {
         this.format = format;
@@ -125,10 +128,10 @@ public class TemporalAccessorConverter extends AbstractConverter {
     }
 
     /**
-     * 通过反射从字符串转java.time中的对象
+     * Parses a string to java.time object using reflection
      *
-     * @param value 字符串值
-     * @return 日期对象
+     * @param value the string value
+     * @return the date object
      */
     private TemporalAccessor parseFromCharSequence(final Class<?> targetClass, final CharSequence value) {
         if (StringKit.isBlank(value)) {
@@ -165,12 +168,12 @@ public class TemporalAccessorConverter extends AbstractConverter {
     }
 
     /**
-     * 对于自定义格式的字符串，单独解析为{@link TemporalAccessor}
+     * For custom formatted strings, parse separately to {@link TemporalAccessor}
      *
-     * @param targetClass 目标类型
-     * @param value       日期字符串
-     * @param formatter   格式
-     * @return {@link TemporalAccessor}
+     * @param targetClass the target type
+     * @param value       the date string
+     * @param formatter   the formatter
+     * @return the {@link TemporalAccessor}
      */
     private TemporalAccessor parseWithFormat(
             final Class<?> targetClass,
@@ -187,11 +190,11 @@ public class TemporalAccessorConverter extends AbstractConverter {
     }
 
     /**
-     * 将Long型时间戳转换为java.time中的对象
+     * Converts Long timestamp to java.time object
      *
-     * @param targetClass 目标类型
-     * @param time        时间戳
-     * @return java.time中的对象
+     * @param targetClass the target type
+     * @param time        the timestamp
+     * @return the java.time object
      */
     private TemporalAccessor parseFromLong(final Class<?> targetClass, final Long time) {
         if (targetClass == Month.class) {
@@ -204,7 +207,7 @@ public class TemporalAccessorConverter extends AbstractConverter {
 
         final Instant instant;
         if (Fields.FORMAT_SECONDS.equals(this.format)) {
-            // Unix时间戳
+            // Unix timestamp in seconds
             instant = Instant.ofEpochSecond(time);
         } else {
             instant = Instant.ofEpochMilli(time);
@@ -213,10 +216,10 @@ public class TemporalAccessorConverter extends AbstractConverter {
     }
 
     /**
-     * 将TemporalAccessor型时间戳转换为java.time中的对象
+     * Converts TemporalAccessor to java.time object
      *
-     * @param temporalAccessor TemporalAccessor对象
-     * @return java.time中的对象
+     * @param temporalAccessor the TemporalAccessor object
+     * @return the java.time object
      */
     private TemporalAccessor parseFromTemporalAccessor(
             final Class<?> targetClass,
@@ -244,11 +247,11 @@ public class TemporalAccessorConverter extends AbstractConverter {
     }
 
     /**
-     * 将TemporalAccessor型时间戳转换为java.time中的对象
+     * Converts LocalDateTime to java.time object
      *
-     * @param targetClass   目标类
-     * @param localDateTime {@link LocalDateTime}对象
-     * @return java.time中的对象
+     * @param targetClass   the target class
+     * @param localDateTime the {@link LocalDateTime} object
+     * @return the java.time object
      */
     private TemporalAccessor parseFromLocalDateTime(final Class<?> targetClass, final LocalDateTime localDateTime) {
         if (Instant.class.equals(targetClass)) {
@@ -274,10 +277,10 @@ public class TemporalAccessorConverter extends AbstractConverter {
     }
 
     /**
-     * 将TemporalAccessor型时间戳转换为java.time中的对象
+     * Converts ZonedDateTime to java.time object
      *
-     * @param zonedDateTime {@link ZonedDateTime}对象
-     * @return java.time中的对象
+     * @param zonedDateTime the {@link ZonedDateTime} object
+     * @return the java.time object
      */
     private TemporalAccessor parseFromZonedDateTime(final Class<?> targetClass, final ZonedDateTime zonedDateTime) {
         if (Instant.class.equals(targetClass)) {
@@ -303,11 +306,11 @@ public class TemporalAccessorConverter extends AbstractConverter {
     }
 
     /**
-     * 将TemporalAccessor型时间戳转换为java.time中的对象
+     * Converts Instant to java.time object
      *
-     * @param instant {@link Instant}对象
-     * @param zoneId  时区ID，null表示当前系统默认的时区
-     * @return java.time中的对象
+     * @param instant the {@link Instant} object
+     * @param zoneId  the zone ID, null means system default timezone
+     * @return the java.time object
      */
     private TemporalAccessor parseFromInstant(final Class<?> targetClass, final Instant instant, ZoneId zoneId) {
         if (Instant.class.equals(targetClass)) {

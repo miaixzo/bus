@@ -434,41 +434,41 @@ public class SpecificCharacterSet {
     }
 
     /**
-     * 编解码器枚举，定义了DICOM中支持的各种字符集
+     * Codec enumeration defining various character sets supported in DICOM
      */
     private enum Codec {
 
-        /** ISO 646 (ASCII)字符集 */
+        /** ISO 646 (ASCII) Character Set */
         ISO_646(true, 0x2842, 0, 1),
 
-        /** ISO 8859-1 (Latin-1)字符集 */
+        /** ISO 8859-1 (Latin-1) Character Set */
         ISO_8859_1(true, 0x2842, 0x2d41, 1),
 
-        /** ISO 8859-2 (Latin-2)字符集 */
+        /** ISO 8859-2 (Latin-2) Character Set */
         ISO_8859_2(true, 0x2842, 0x2d42, 1),
 
-        /** ISO 8859-3 (Latin-3)字符集 */
+        /** ISO 8859-3 (Latin-3) Character Set */
         ISO_8859_3(true, 0x2842, 0x2d43, 1),
 
-        /** ISO 8859-4 (Latin-4)字符集 */
+        /** ISO 8859-4 (Latin-4) Character Set */
         ISO_8859_4(true, 0x2842, 0x2d44, 1),
 
-        /** ISO 8859-5 (Cyrillic)字符集 */
+        /** ISO 8859-5 (Cyrillic) Character Set */
         ISO_8859_5(true, 0x2842, 0x2d4c, 1),
 
-        /** ISO 8859-6 (Arabic)字符集 */
+        /** ISO 8859-6 (Arabic) Character Set */
         ISO_8859_6(true, 0x2842, 0x2d47, 1),
 
-        /** ISO 8859-7 (Greek)字符集 */
+        /** ISO 8859-7 (Greek) Character Set */
         ISO_8859_7(true, 0x2842, 0x2d46, 1),
 
-        /** ISO 8859-8 (Hebrew)字符集 */
+        /** ISO 8859-8 (Hebrew) Character Set */
         ISO_8859_8(true, 0x2842, 0x2d48, 1),
 
-        /** ISO 8859-9 (Latin-5)字符集 */
+        /** ISO 8859-9 (Latin-5) Character Set */
         ISO_8859_9(true, 0x2842, 0x2d4d, 1),
 
-        /** JIS X 0201字符集 */
+        /** JIS X 0201 Character Set */
         JIS_X_201(true, 0x284a, 0x2949, 1) {
 
             @Override
@@ -477,40 +477,40 @@ public class SpecificCharacterSet {
             }
         },
 
-        /** TIS-620 (Thai)字符集 */
+        /** TIS-620 (Thai) Character Set */
         TIS_620(true, 0x2842, 0x2d54, 1),
 
-        /** JIS X 0208字符集 */
+        /** JIS X 0208 Character Set */
         JIS_X_208(false, 0x2442, 0, 1),
 
-        /** JIS X 0212字符集 */
+        /** JIS X 0212 Character Set */
         JIS_X_212(false, 0x242844, 0, 2),
 
-        /** KS X 1001 (Korean)字符集 */
+        /** KS X 1001 (Korean) Character Set */
         KS_X_1001(false, 0, 0x242943, -1),
 
-        /** GB2312 (Simplified Chinese)字符集 */
+        /** GB2312 (Simplified Chinese) Character Set */
         GB2312(false, 0, 0x242941, -1),
 
-        /** UTF-8字符集 */
+        /** UTF-8 Character Set */
         UTF_8(true, 0, 0, -1),
 
-        /** GB18030字符集 */
+        /** GB18030 Character Set */
         GB18030(false, 0, 0, -1);
 
-        /** 字符集名称数组 */
+        /** Character Set Name Array */
         private static final String[] charsetNames = resetCharsetNames(new String[18]);
 
-        /** 是否包含ASCII标志 */
+        /** Whether Contains ASCII Flag */
         private final boolean containsASCII;
 
-        /** 转义序列0 */
+        /** Escape Sequence 0 */
         private final int escSeq0;
 
-        /** 转义序列1 */
+        /** Escape Sequence 1 */
         private final int escSeq1;
 
-        /** 每个字符的字节数 */
+        /** Bytes Per Character */
         private final int bytesPerChar;
 
         /**
@@ -762,26 +762,26 @@ public class SpecificCharacterSet {
     }
 
     /**
-     * G0/G1字符集范围枚举
+     * G0/G1 Character Set Range Enumeration
      */
     private enum G0G1 {
-        /** 仅G0 */
+        /** G0 Only */
         G0,
-        /** 仅G1 */
+        /** G1 Only */
         G1,
-        /** G0和G1 */
+        /** G0 and G1 */
         Both
     }
 
     /**
-     * 编码器类，用于将字符编码为字节
+     * Encoder class for encoding characters into bytes
      */
     private static final class Encoder {
 
-        /** 编解码器 */
+        /** Codec */
         final Codec codec;
 
-        /** 字符集编码器 */
+        /** Character Set Encoder */
         final CharsetEncoder encoder;
 
         /**
@@ -888,10 +888,11 @@ public class SpecificCharacterSet {
             Encoder enc1 = encoder(cachedEncoder1, codecs[0]);
             byte[] buf = new byte[strlen];
             ByteBuffer bb = ByteBuffer.wrap(buf);
-            // 尝试使用(0008,0005)特定字符集的value1指定的字符集编码整个字符串值
+            // Try to encode the entire string value using the character set specified by value1 of (0008,0005) specific
+            // character set
             if (!enc1.encode(cb, bb, 0, G0G1.Both, CodingErrorAction.REPORT)) {
-                // 根据VR特定的分隔符分割整个字符串值
-                // 并尝试分别编码每个组件
+                // Split the entire string value according to VR-specific delimiters
+                // And try to encode each component separately
                 Encoder[] encs = new Encoder[codecs.length];
                 encs[0] = enc1;
                 encs[1] = encoder(cachedEncoder2, codecs[1]);
@@ -901,7 +902,7 @@ public class SpecificCharacterSet {
                 int[] cur = { 0, 0 };
                 while (comps.hasMoreTokens()) {
                     String comp = comps.nextToken();
-                    if (comp.length() == 1 && delimiters.indexOf(comp.charAt(0)) >= 0) { // 如果是分隔符
+                    if (comp.length() == 1 && delimiters.indexOf(comp.charAt(0)) >= 0) { // If it is a delimiter
                         activateInitialCharacterSet(bb, cur);
                         bb.put((byte) comp.charAt(0));
                         continue;
@@ -923,10 +924,10 @@ public class SpecificCharacterSet {
          * @param cur  当前字符集索引
          */
         private void encodeComponent(Encoder[] encs, CharBuffer cb, ByteBuffer bb, int[] cur) {
-            // 尝试使用G1的当前活动字符集编码组件
+            // Try to encode component using G1's current active character set
             if (codecs[cur[1]].getEscSeq1() != 0 && encs[cur[1]].encode(cb, bb, 0, G0G1.G1, CodingErrorAction.REPORT))
                 return;
-            // 尝试使用G0的当前活动字符集编码组件，如果与G1不同
+            // Try to encode component using G0's current active character set, if different from G1
             if ((codecs[cur[1]].getEscSeq1() == 0 || codecs[cur[1]].getEscSeq0() != codecs[cur[0]].getEscSeq0())
                     && encs[cur[0]].encode(cb, bb, 0, G0G1.G0, CodingErrorAction.REPORT))
                 return;
@@ -953,9 +954,9 @@ public class SpecificCharacterSet {
                         encodeComponent(encs, cb.subSequence(i, i + 1), bb, cur);
                     }
                 } else {
-                    // 无法使用任何指定的字符集编码字符，
-                    // 使用G0的当前字符集编码它，使用字符集解码器的默认替换
-                    // 替换无法编码的字符
+                    // Unable to encode characters using any specified character set,
+                    // Use G0's current character set to encode it, using character set decoder's default replacement
+                    // Replace characters that cannot be encoded
                     bb.put(encs[cur[0]].replacement());
                 }
             }
@@ -997,7 +998,7 @@ public class SpecificCharacterSet {
                         case 0x2428:
                             if (cur < b.length && b[cur++] == 0x44) {
                                 codec[0] = Codec.JIS_X_212;
-                            } else { // 将无效的ESC序列解码为字符
+                            } else { // Decode invalid ESC sequence as characters
                                 sb.append(codec[0].decode(b, esc0, cur - esc0));
                             }
                             break;

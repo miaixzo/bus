@@ -45,9 +45,6 @@ public class CRC16X25 extends CRC16Checksum {
     private CRC16X25() {
     }
 
-    /**
-     * The serial version UID for serialization.
-     */
     @Serial
     private static final long serialVersionUID = 2852283680070L;
 

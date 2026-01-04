@@ -61,6 +61,9 @@ public abstract class LockedCache<K, V> extends AbstractCache<K, V> {
      */
     protected Lock lock = new ReentrantLock();
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void put(final K key, final V object, final long timeout) {
         lock.lock();
@@ -71,16 +74,25 @@ public abstract class LockedCache<K, V> extends AbstractCache<K, V> {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean containsKey(final K key) {
         return null != getOrRemoveExpired(key, false, false);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public V get(final K key, final boolean isUpdateLastAccess) {
         return getOrRemoveExpired(key, isUpdateLastAccess, true);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public V get(final K key, final boolean isUpdateLastAccess, final long timeout, final SupplierX<V> supplier) {
         V v = get(key, isUpdateLastAccess);
@@ -105,6 +117,9 @@ public abstract class LockedCache<K, V> extends AbstractCache<K, V> {
         return v;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Iterator<CacheObject<K, V>> cacheObjIterator() {
         CopiedIterator<CacheObject<K, V>> copiedIterator;
@@ -118,6 +133,9 @@ public abstract class LockedCache<K, V> extends AbstractCache<K, V> {
         return new CacheObjectIterator<>(copiedIterator);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public final int prune() {
         lock.lock();
@@ -128,6 +146,9 @@ public abstract class LockedCache<K, V> extends AbstractCache<K, V> {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void remove(final K key) {
         CacheObject<K, V> co;
@@ -142,6 +163,9 @@ public abstract class LockedCache<K, V> extends AbstractCache<K, V> {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void clear() {
         lock.lock();
@@ -160,6 +184,9 @@ public abstract class LockedCache<K, V> extends AbstractCache<K, V> {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String toString() {
         lock.lock();

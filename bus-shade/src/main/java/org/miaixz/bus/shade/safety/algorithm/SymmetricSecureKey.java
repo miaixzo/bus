@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.shade.safety.algorithm;
 
+import java.io.Serial;
+
 /**
  * Represents a symmetric secure key, extending {@link SecureKey} and implementing {@link SymmetricKey}. This class
  * holds the secret key and initialization vector (IV) for symmetric encryption schemes.
@@ -36,6 +38,7 @@ package org.miaixz.bus.shade.safety.algorithm;
  */
 public final class SymmetricSecureKey extends SecureKey implements SymmetricKey {
 
+    @Serial
     private static final long serialVersionUID = -1L;
 
     private final byte[] secretKey;

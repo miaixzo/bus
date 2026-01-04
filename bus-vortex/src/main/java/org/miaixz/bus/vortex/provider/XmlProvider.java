@@ -43,11 +43,13 @@ import reactor.core.scheduler.Schedulers;
  * This provider uses a two-step process: it first converts the Java object into a generic {@code Map} using
  * {@link JsonKit}, and then serializes that map into an XML string. This means the resulting XML structure will mirror
  * the object's JSON representation.
+ * <p>
+ * Generic type parameters: {@code Provider<Object, String>}
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class XmlProvider implements Provider {
+public class XmlProvider implements Provider<Object, String> {
 
     /**
      * Asynchronously serializes the given Java object into its XML string representation.
@@ -58,14 +60,14 @@ public class XmlProvider implements Provider {
      * The entire synchronous, CPU-bound operation is wrapped in a {@link Mono} and executed on the
      * {@code Schedulers.boundedElastic()} pool to avoid blocking the event loop.
      *
-     * @param bean The object to be serialized.
+     * @param input The object to be serialized.
      * @return A {@code Mono} emitting the serialized XML string.
      */
     @Override
-    public Mono<String> serialize(Object bean) {
+    public Mono<String> serialize(Object input) {
         // 1. Wrap the synchronous, blocking (CPU-bound) logic in fromCallable.
         return Mono.fromCallable(() -> {
-            Map<String, Object> map = JsonKit.toMap(bean);
+            Map<String, Object> map = JsonKit.toMap(input);
             String buffer = XmlKit.mapToXmlString(map, "response");
             return buffer.replaceFirst(" standalone=\"[^\"]*\"", Normal.EMPTY);
         })

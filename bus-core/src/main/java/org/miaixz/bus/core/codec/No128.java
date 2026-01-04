@@ -44,9 +44,6 @@ import java.util.Objects;
  */
 public class No128 extends Number implements Comparable<No128> {
 
-    /**
-     * The serial version UID for serialization.
-     */
     @Serial
     private static final long serialVersionUID = 2852280901728L;
 

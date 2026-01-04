@@ -380,9 +380,19 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
      */
     private enum CacheScheduler {
 
+        /**
+         * The singleton instance of the cache scheduler.
+         */
         INSTANCE;
 
+        /**
+         * A counter for generating unique cache task numbers.
+         */
         private final AtomicInteger cacheTaskNumber = new AtomicInteger(1);
+
+        /**
+         * The scheduled executor service for running periodic tasks.
+         */
         private ScheduledExecutorService scheduler;
 
         CacheScheduler() {
@@ -413,9 +423,24 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
     @Setter
     private static class CacheState implements Serializable {
 
+        /**
+         * The cached value.
+         */
         private final Object state;
+
+        /**
+         * The timestamp when the entry was written.
+         */
         private final long writeTime;
+
+        /**
+         * The timestamp of the last access to this entry.
+         */
         private long lastAccessTime;
+
+        /**
+         * The expiration timestamp calculated as write time + expire after write duration.
+         */
         private final long expireAfterWrite;
 
         CacheState(Object state, long expire) {

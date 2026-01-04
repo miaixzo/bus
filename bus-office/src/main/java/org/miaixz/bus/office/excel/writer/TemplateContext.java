@@ -63,6 +63,9 @@ public class TemplateContext {
      * </ol>
      */
     private static final Pattern VAR_PATTERN = Pattern.compile("(?<!\\\\)\\{([.$_a-zA-Z]+\\d*[.$_a-zA-Z]*)}");
+    /**
+     * Regular expression for escaped variables.
+     */
     private static final Pattern ESCAPE_VAR_PATTERN = Pattern.compile("\\\\\\{([.$_a-zA-Z]+\\d*[.$_a-zA-Z]*)\\\\}");
 
     /**
@@ -239,6 +242,11 @@ public class TemplateContext {
         });
     }
 
+    /**
+     * Returns the string representation of this template context.
+     *
+     * @return A string containing the variable map.
+     */
     @Override
     public String toString() {
         return "TemplateContext{" + "varMap=" + varMap + '}';

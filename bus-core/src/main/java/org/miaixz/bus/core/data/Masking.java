@@ -217,8 +217,8 @@ public class Masking {
 
     /**
      * [Chinese License Plate] The middle of the license plate is replaced with *. e.g.1: null - "" e.g.2: "" - ""
-     * e.g.3: 苏A60000 - 苏A6***0 e.g.4: 陕A12345D - 陕A1****D e.g.5: 京A123 - 京A123. If it is an incorrect license plate, it
-     * is not processed.
+     * e.g.3: SuA60000 - SuA6***0 e.g.4: ShanA12345D - ShanA1****D e.g.5: JingA123 - JingA123. If it is an incorrect
+     * license plate, it is not processed.
      *
      * @param carLicense The full license plate number.
      * @return The masked license plate.

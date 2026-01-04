@@ -72,11 +72,21 @@ public class FileObjectResource implements Resource {
         return this.fileObject;
     }
 
+    /**
+     * Returns the name of the file object.
+     *
+     * @return The name of the file.
+     */
     @Override
     public String getName() {
         return this.fileObject.getName();
     }
 
+    /**
+     * Returns the URL of the file object.
+     *
+     * @return The URL representing the file, or {@code null} if it cannot be converted to a URL.
+     */
     @Override
     public URL getUrl() {
         try {
@@ -86,11 +96,22 @@ public class FileObjectResource implements Resource {
         }
     }
 
+    /**
+     * Returns the size of the file object.
+     *
+     * @return The size of the file in bytes.
+     */
     @Override
     public long size() {
         return UrlKit.size(getUrl());
     }
 
+    /**
+     * Returns an input stream for the file object.
+     *
+     * @return An input stream for reading the file.
+     * @throws InternalException If an I/O error occurs while opening the stream.
+     */
     @Override
     public InputStream getStream() {
         try {
@@ -100,6 +121,14 @@ public class FileObjectResource implements Resource {
         }
     }
 
+    /**
+     * Returns a buffered reader for the file object.
+     * <p>
+     * The charset parameter is ignored by the underlying {@code FileObject.openReader()} method.
+     *
+     * @param charset The character set (ignored).
+     * @return A buffered reader for reading the file.
+     */
     @Override
     public BufferedReader getReader(final Charset charset) {
         try {

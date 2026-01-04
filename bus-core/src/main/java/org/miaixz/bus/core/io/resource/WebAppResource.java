@@ -41,9 +41,6 @@ import org.miaixz.bus.core.xyz.FileKit;
  */
 public class WebAppResource extends FileResource {
 
-    /**
-     * The serial version UID for serialization.
-     */
     @Serial
     private static final long serialVersionUID = 2852232920252L;
 

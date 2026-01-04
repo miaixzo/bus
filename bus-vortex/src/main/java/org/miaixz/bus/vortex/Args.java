@@ -27,13 +27,17 @@
 */
 package org.miaixz.bus.vortex;
 
+import java.util.Map;
+
+import org.miaixz.bus.core.net.Protocol;
+import org.miaixz.bus.vortex.strategy.QualifierStrategy;
+import org.miaixz.bus.vortex.strategy.RequestStrategy;
+import org.miaixz.bus.vortex.strategy.VettingStrategy;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import org.miaixz.bus.vortex.strategy.QualifierStrategy;
-import org.miaixz.bus.vortex.strategy.RequestStrategy;
-import org.miaixz.bus.vortex.strategy.VettingStrategy;
 
 /**
  * A central repository for constants defining the gateway's public API contract and for binding configuration
@@ -112,6 +116,13 @@ public class Args {
     public static final String REST_PATH_PREFIX = "/router/rest";
 
     /**
+     * The base URI path for requests to be forwarded to a Message Queue.
+     *
+     * @see org.miaixz.bus.vortex.strategy.RequestStrategy
+     */
+    public static final String MQ_PATH_PREFIX = "/router/mq";
+
+    /**
      * The base URI path for requests to the MCP (Miaixz Communication Protocol) hub.
      *
      * @see org.miaixz.bus.vortex.strategy.RequestStrategy
@@ -119,11 +130,11 @@ public class Args {
     public static final String MCP_PATH_PREFIX = "/router/mcp";
 
     /**
-     * The base URI path for requests to be forwarded to a Message Queue.
+     * The base URI path for standard gRPC requests.
      *
      * @see org.miaixz.bus.vortex.strategy.RequestStrategy
      */
-    public static final String MQ_PATH_PREFIX = "/router/mq";
+    public static final String GRPC_PATH_PREFIX = "/router/grpc";
 
     /**
      * The base URI path for WebSocket connections.
@@ -143,6 +154,22 @@ public class Args {
      * A constant for a default API version, e.g., "1.0".
      */
     public static final String DEFAULT_VERSION = "1.0";
+
+    /**
+     * Pre-built mapping table for mode to router key. Using static map for O(1) lookup instead of switch expression
+     * evaluation on every request.
+     */
+    public static final Map<Integer, String> MODE_TO_ROUTER = Map.of(
+            1,
+            Protocol.HTTP.getName(),
+            2,
+            Protocol.MQ.getName(),
+            3,
+            Protocol.MCP.getName(),
+            4,
+            Protocol.GRPC.getName(),
+            5,
+            Protocol.WS.getName());
 
     /**
      * Checks if the given path is a RESTful API proxy request path.
@@ -192,6 +219,16 @@ public class Args {
      */
     public static boolean isCstRequest(String path) {
         return path.startsWith(Args.CST_PATH_PREFIX);
+    }
+
+    /**
+     * Checks if the given path is a custom (gRPC) request path.
+     *
+     * @param path The URL path string to check.
+     * @return {@code true} if the path starts with the CST prefix, {@code false} otherwise.
+     */
+    public static boolean isGrpcRequest(String path) {
+        return path.startsWith(Args.GRPC_PATH_PREFIX);
     }
 
     /**

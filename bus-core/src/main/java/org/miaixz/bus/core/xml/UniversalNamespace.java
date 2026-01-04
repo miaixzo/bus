@@ -47,7 +47,14 @@ import org.w3c.dom.NodeList;
  */
 public class UniversalNamespace implements NamespaceContext {
 
+    /**
+     * The key used to store the default namespace in the prefix-to-URI mapping.
+     */
     private static final String DEFAULT_NS = "DEFAULT";
+
+    /**
+     * A bidirectional map storing namespace prefixes and their corresponding URIs.
+     */
     private final BiMap<String, String> prefixUri = new BiMap<>(new HashMap<>());
 
     /**

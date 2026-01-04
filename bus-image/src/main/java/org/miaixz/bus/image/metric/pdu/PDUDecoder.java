@@ -292,7 +292,7 @@ public class PDUDecoder extends PDVInputStream {
         int endpos = pos + itemLen - 4;
         while (pos < endpos) {
             int subItemType = get() & 0xff;
-            get(); // 跳过保留字节
+            get(); // Skip reserved bytes
             int subItemLen = getUnsignedShort();
             switch (subItemType) {
                 case ItemType.ABSTRACT_SYNTAX:
@@ -414,7 +414,7 @@ public class PDUDecoder extends PDVInputStream {
     public void decodeDIMSE() throws IOException {
         checkThread();
         if (pcid != -1)
-            return; // 已经在解码器DIMSE中
+            return; // Already in DIMSE decoder
 
         nextPDV(PDVType.COMMAND, -1);
 

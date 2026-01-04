@@ -177,12 +177,39 @@ public class AnnoHolder {
      */
     public static class Builder {
 
+        /**
+         * The method for which the holder is being built.
+         */
         private final Method method;
+
+        /**
+         * The cache name to use.
+         */
         private String cache;
+
+        /**
+         * The key prefix for cache entries.
+         */
         private String prefix;
+
+        /**
+         * The expiration time in milliseconds.
+         */
         private int expire;
+
+        /**
+         * A map of parameter indices to their {@link CacheKey} annotations.
+         */
         private Map<Integer, CacheKey> cacheKeyMap;
+
+        /**
+         * The index of the parameter to use as a multi-cache key, or -1 if not set.
+         */
         private int multiIndex = -1;
+
+        /**
+         * The identifier for the cache annotation.
+         */
         private String id;
 
         /**

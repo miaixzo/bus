@@ -53,7 +53,13 @@ import java.lang.reflect.Method;
  */
 public class InvokeCrontab implements Crontab {
 
+    /**
+     * The target object on which to invoke the method. For static methods, this is {@code null}.
+     */
     private final Object object;
+    /**
+     * The method to be invoked.
+     */
     private final Method method;
 
     /**
@@ -93,6 +99,15 @@ public class InvokeCrontab implements Crontab {
         }
     }
 
+    /**
+     * Executes the target method using reflection.
+     * <p>
+     * If the method is static, it is invoked directly on the class. If it is an instance method, it is invoked on the
+     * target object.
+     * </p>
+     *
+     * @throws CrontabException if the method invocation fails.
+     */
     @Override
     public void execute() {
         try {

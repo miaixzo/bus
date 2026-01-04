@@ -47,7 +47,14 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class XmlSaxReader {
 
+    /**
+     * The SAX parser factory used to create SAX parsers.
+     */
     private final javax.xml.parsers.SAXParserFactory factory;
+
+    /**
+     * The XML input source to be parsed.
+     */
     private final InputSource source;
 
     /**

@@ -34,7 +34,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * {@link Locale}对象转换器 只提供String转换支持
+ * Converter for {@link Locale} objects, only provides String conversion support
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,6 +44,17 @@ public class LocaleConverter extends AbstractConverter {
     @Serial
     private static final long serialVersionUID = 2852269079839L;
 
+    /**
+     * Converts the given value to a Locale.
+     * <p>
+     * Supports string format: {@code language}, {@code language_country}, or {@code language_country_variant} separated
+     * by underscores.
+     * </p>
+     *
+     * @param targetClass the target class (should be Locale.class)
+     * @param value       the value to convert (typically a String)
+     * @return the converted Locale object, or null if conversion fails
+     */
     @Override
     protected Locale convertInternal(final Class<?> targetClass, final Object value) {
         try {

@@ -63,18 +63,37 @@ public class ExcelWriteConfig extends ExcelConfig {
      */
     protected Comparator<String> aliasComparator;
 
+    /**
+     * Sets the header alias mapping and resets the alias comparator.
+     *
+     * @param headerAlias The mapping of header names to aliases.
+     * @return This {@code ExcelWriteConfig} instance for chaining.
+     */
     @Override
     public ExcelWriteConfig setHeaderAlias(final Map<String, String> headerAlias) {
         this.aliasComparator = null;
         return (ExcelWriteConfig) super.setHeaderAlias(headerAlias);
     }
 
+    /**
+     * Adds a header alias and resets the alias comparator.
+     *
+     * @param header The header name to alias.
+     * @param alias  The alias to use for the header.
+     * @return This {@code ExcelWriteConfig} instance for chaining.
+     */
     @Override
     public ExcelWriteConfig addHeaderAlias(final String header, final String alias) {
         this.aliasComparator = null;
         return (ExcelWriteConfig) super.addHeaderAlias(header, alias);
     }
 
+    /**
+     * Removes a header alias and resets the alias comparator.
+     *
+     * @param header The header name whose alias should be removed.
+     * @return This {@code ExcelWriteConfig} instance for chaining.
+     */
     @Override
     public ExcelWriteConfig removeHeaderAlias(final String header) {
         this.aliasComparator = null;

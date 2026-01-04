@@ -44,7 +44,7 @@ import org.miaixz.bus.core.lang.exception.ConvertException;
 import org.miaixz.bus.core.xyz.*;
 
 /**
- * 数字转换器 支持类型为：
+ * Converter for numeric types. Supported types:
  * <ul>
  * <li>{@code java.lang.Byte}</li>
  * <li>{@code java.lang.Short}</li>
@@ -67,29 +67,29 @@ public class NumberConverter extends AbstractConverter implements MatcherConvert
     private static final long serialVersionUID = 2852269279995L;
 
     /**
-     * 单例
+     * Singleton instance
      */
     public static final NumberConverter INSTANCE = new NumberConverter();
 
     /**
-     * 转换对象为数字，支持的对象包括：
+     * Converts an object to a number, supporting:
      * <ul>
-     * <li>Number对象</li>
+     * <li>Number objects</li>
      * <li>Boolean</li>
      * <li>byte[]</li>
      * <li>String</li>
      * </ul>
      *
-     * @param value      对象值
-     * @param targetType 目标的数字类型
-     * @param toStrFunc  转换为字符串的函数
-     * @return 转换后的数字
+     * @param value      the object value
+     * @param targetType the target number type
+     * @param toStrFunc  the function to convert to string
+     * @return the converted number
      */
     protected static Number convert(
             final Object value,
             final Class<? extends Number> targetType,
             final Function<Object, String> toStrFunc) {
-        // 枚举转换为数字默认为其顺序
+        // Convert enum to number, defaulting to its ordinal
         if (value instanceof Enum) {
             return convert(((Enum<?>) value).ordinal(), targetType, toStrFunc);
         }
@@ -161,7 +161,7 @@ public class NumberConverter extends AbstractConverter implements MatcherConvert
                 return new AtomicLong(number.longValue());
             }
         } else if (LongAdder.class == targetType) {
-            // jdk8 新增
+            // Added in JDK 8
             final Number number = convert(value, Long.class, toStrFunc);
             if (null != number) {
                 final LongAdder longValue = new LongAdder();
@@ -185,7 +185,7 @@ public class NumberConverter extends AbstractConverter implements MatcherConvert
             final String values = toStrFunc.apply((value));
             return MathKit.parseDouble(values);
         } else if (DoubleAdder.class == targetType) {
-            // jdk8 新增
+            // Added in JDK 8
             final Number number = convert(value, Double.class, toStrFunc);
             if (null != number) {
                 final DoubleAdder doubleAdder = new DoubleAdder();
@@ -210,11 +210,12 @@ public class NumberConverter extends AbstractConverter implements MatcherConvert
     }
 
     /**
-     * 转换为BigDecimal 如果给定的值为空，或者转换失败，返回默认值 转换失败不会报错
+     * Converts to BigDecimal. Returns default value if the given value is null or conversion fails. Conversion failure
+     * will not throw an exception.
      *
-     * @param value     被转换的值
-     * @param toStrFunc 转换为字符串的函数规则
-     * @return 结果
+     * @param value     the value to convert
+     * @param toStrFunc the function to convert to string
+     * @return the result
      */
     private static BigDecimal toBigDecimal(final Object value, final Function<Object, String> toStrFunc) {
         if (value instanceof Number) {
@@ -223,16 +224,17 @@ public class NumberConverter extends AbstractConverter implements MatcherConvert
             return ((boolean) value) ? BigDecimal.ONE : BigDecimal.ZERO;
         }
 
-        // 对于Double类型，先要转换为String，避免精度问题
+        // For Double type, convert to String first to avoid precision issues
         return MathKit.toBigDecimal(toStrFunc.apply(value));
     }
 
     /**
-     * 转换为BigInteger 如果给定的值为空，或者转换失败，返回默认值 转换失败不会报错
+     * Converts to BigInteger. Returns default value if the given value is null or conversion fails. Conversion failure
+     * will not throw an exception.
      *
-     * @param value     被转换的值
-     * @param toStrFunc 转换为字符串的函数规则
-     * @return 结果
+     * @param value     the value to convert
+     * @param toStrFunc the function to convert to string
+     * @return the result
      */
     private static BigInteger toBigInteger(final Object value, final Function<Object, String> toStrFunc) {
         if (value instanceof Long) {
@@ -262,10 +264,10 @@ public class NumberConverter extends AbstractConverter implements MatcherConvert
         }
 
         if (result.length() > 1) {
-            // 非单个字符才判断末尾的标识符
+            // Check trailing identifier for non-single characters
             final char c = Character.toUpperCase(result.charAt(result.length() - 1));
             if (c == 'D' || c == 'L' || c == 'F') {
-                // 类型标识形式（例如123.6D）
+                // Type identifier form (e.g., 123.6D)
                 return StringKit.subPre(result, -1);
             }
         }

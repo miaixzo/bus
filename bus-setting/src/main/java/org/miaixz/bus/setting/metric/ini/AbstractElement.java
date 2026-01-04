@@ -153,6 +153,11 @@ public abstract class AbstractElement implements IniElement {
 
     @Override
     public IniComment getComment() {
+        /**
+         * Gets the comment associated with this element, if any.
+         *
+         * @return the comment associated with this element, or null if there is no comment
+         */
         return comment;
     }
 

@@ -37,6 +37,9 @@ import org.apache.poi.ss.usermodel.Cell;
  */
 public class CharSequenceCellSetter implements CellSetter {
 
+    /**
+     * The char sequence value to set in the cell.
+     */
     private final CharSequence value;
 
     /**
@@ -48,6 +51,11 @@ public class CharSequenceCellSetter implements CellSetter {
         this.value = value;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param cell the cell to set the char sequence value in
+     */
     @Override
     public void setValue(final Cell cell) {
         cell.setCellValue(value.toString());

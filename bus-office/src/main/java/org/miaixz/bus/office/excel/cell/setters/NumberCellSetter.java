@@ -38,6 +38,9 @@ import org.miaixz.bus.core.xyz.MathKit;
  */
 public class NumberCellSetter implements CellSetter {
 
+    /**
+     * The number value to set in the cell.
+     */
     private final Number value;
 
     /**
@@ -49,6 +52,11 @@ public class NumberCellSetter implements CellSetter {
         this.value = value;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param cell the cell to set the number value in
+     */
     @Override
     public void setValue(final Cell cell) {
         // Avoid precision issues from float to double.

@@ -66,6 +66,14 @@ public final class AsynchronousChannelProvider extends java.nio.channels.spi.Asy
         this.lowMemory = lowMemory;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param nThreads      the number of threads for the group
+     * @param threadFactory the thread factory for creating new threads
+     * @return a new asynchronous channel group
+     * @throws IOException if an I/O error occurs
+     */
     @Override
     public java.nio.channels.AsynchronousChannelGroup openAsynchronousChannelGroup(
             int nThreads,
@@ -74,6 +82,14 @@ public final class AsynchronousChannelProvider extends java.nio.channels.spi.Asy
                 new ArrayBlockingQueue<>(nThreads), threadFactory), nThreads);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param executor    the executor service for the group
+     * @param initialSize the initial size of the group
+     * @return a new asynchronous channel group
+     * @throws IOException if an I/O error occurs
+     */
     @Override
     public java.nio.channels.AsynchronousChannelGroup openAsynchronousChannelGroup(
             ExecutorService executor,
@@ -81,12 +97,26 @@ public final class AsynchronousChannelProvider extends java.nio.channels.spi.Asy
         return new AsynchronousChannelGroup(this, executor, initialSize);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param group the asynchronous channel group, or {@code null} for the default group
+     * @return a new asynchronous server socket channel
+     * @throws IOException if an I/O error occurs
+     */
     @Override
     public java.nio.channels.AsynchronousServerSocketChannel openAsynchronousServerSocketChannel(
             java.nio.channels.AsynchronousChannelGroup group) throws IOException {
         return new AsynchronousServerSocketChannel(checkAndGet(group), lowMemory);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param group the asynchronous channel group, or {@code null} for the default group
+     * @return a new asynchronous socket channel
+     * @throws IOException if an I/O error occurs
+     */
     @Override
     public AsynchronousSocketChannel openAsynchronousSocketChannel(java.nio.channels.AsynchronousChannelGroup group)
             throws IOException {

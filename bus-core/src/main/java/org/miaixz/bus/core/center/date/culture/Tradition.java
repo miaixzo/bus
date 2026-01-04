@@ -28,6 +28,7 @@
 package org.miaixz.bus.core.center.date.culture;
 
 import org.miaixz.bus.core.center.date.Almanac;
+import org.miaixz.bus.core.center.date.Culture;
 
 /**
  * An abstract base class for traditional cultural elements, such as festivals or holidays.

@@ -45,9 +45,6 @@ public class CRC16Modbus extends CRC16Checksum {
     private CRC16Modbus() {
     }
 
-    /**
-     * The serial version UID for serialization.
-     */
     @Serial
     private static final long serialVersionUID = 2852279670851L;
 

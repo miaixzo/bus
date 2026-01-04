@@ -383,31 +383,69 @@ public class AnyTrustManager extends X509ExtendedTrustManager {
         return createTrustManager(loadKeyStore(type, url, password));
     }
 
+    /**
+     * Returns an empty array of accepted issuers since all certificates are trusted.
+     *
+     * @return an empty array of {@link X509Certificate}.
+     */
     @Override
     public X509Certificate[] getAcceptedIssuers() {
         return EMPTY_X509_CERTIFICATE_ARRAY;
     }
 
+    /**
+     * Checks that the client certificate chain is trusted. This implementation trusts all clients.
+     *
+     * @param chain    the peer certificate chain.
+     * @param authType the authentication type.
+     */
     @Override
     public void checkClientTrusted(final X509Certificate[] chain, final String authType) {
         // Trust all clients
     }
 
+    /**
+     * Checks that the server certificate chain is trusted. This implementation trusts all servers.
+     *
+     * @param chain    the peer certificate chain.
+     * @param authType the authentication type.
+     */
     @Override
     public void checkServerTrusted(final X509Certificate[] chain, final String authType) {
         // Trust all servers
     }
 
+    /**
+     * Checks that the client certificate chain is trusted. This implementation trusts all clients.
+     *
+     * @param x509Certificates the peer certificate chain.
+     * @param s                the authentication type.
+     * @param socket           the socket for the connection.
+     */
     @Override
     public void checkClientTrusted(final X509Certificate[] x509Certificates, final String s, final Socket socket) {
         // Trust all clients
     }
 
+    /**
+     * Checks that the server certificate chain is trusted. This implementation trusts all servers.
+     *
+     * @param x509Certificates the peer certificate chain.
+     * @param s                the authentication type.
+     * @param socket           the socket for the connection.
+     */
     @Override
     public void checkServerTrusted(final X509Certificate[] x509Certificates, final String s, final Socket socket) {
         // Trust all servers
     }
 
+    /**
+     * Checks that the client certificate chain is trusted. This implementation trusts all clients.
+     *
+     * @param x509Certificates the peer certificate chain.
+     * @param s                the authentication type.
+     * @param sslEngine        the engine for the connection.
+     */
     @Override
     public void checkClientTrusted(
             final X509Certificate[] x509Certificates,
@@ -416,6 +454,13 @@ public class AnyTrustManager extends X509ExtendedTrustManager {
         // Trust all clients
     }
 
+    /**
+     * Checks that the server certificate chain is trusted. This implementation trusts all servers.
+     *
+     * @param x509Certificates the peer certificate chain.
+     * @param s                the authentication type.
+     * @param sslEngine        the engine for the connection.
+     */
     @Override
     public void checkServerTrusted(
             final X509Certificate[] x509Certificates,

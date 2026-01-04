@@ -337,6 +337,15 @@ public class CacheControl {
         return immutable;
     }
 
+    /**
+     * Returns the HTTP Cache-Control header value for this instance.
+     * <p>
+     * The result is cached for performance. This method builds the header value by combining all the cache directives
+     * configured in this instance.
+     * </p>
+     *
+     * @return The Cache-Control header value.
+     */
     @Override
     public String toString() {
         String result = headerValue;

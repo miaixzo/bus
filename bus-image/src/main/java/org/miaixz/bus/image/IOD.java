@@ -55,9 +55,6 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class IOD extends ArrayList<IOD.DataElement> {
 
-    /**
-     * The serial version UID for serialization.
-     */
     @Serial
     private static final long serialVersionUID = 2852255015270L;
 

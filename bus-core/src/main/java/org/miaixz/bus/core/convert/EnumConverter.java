@@ -40,7 +40,7 @@ import org.miaixz.bus.core.lang.exception.ConvertException;
 import org.miaixz.bus.core.xyz.*;
 
 /**
- * 无泛型检查的枚举转换器
+ * Converter for enums without generic type checking
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -57,30 +57,30 @@ public class EnumConverter extends AbstractConverter implements MatcherConverter
     private static final long serialVersionUID = 2852268818368L;
 
     /**
-     * 单例
+     * Singleton instance
      */
     public static final EnumConverter INSTANCE = new EnumConverter();
     private static final WeakConcurrentMap<Class<?>, Map<Class<?>, Method>> VALUE_OF_METHOD_CACHE = new WeakConcurrentMap<>();
 
     /**
-     * 尝试转换，转换规则为：
+     * Attempts conversion with the following rules:
      * <ul>
-     * <li>如果实现{@link Enumers}接口，则调用fromInt或fromStr转换</li>
-     * <li>找到类似转换的静态方法调用实现转换且优先使用</li>
-     * <li>约定枚举类应该提供 valueOf(String) 和 valueOf(Integer)用于转换</li>
-     * <li>oriInt /name 转换托底</li>
+     * <li>If implementing {@link Enumers} interface, call fromInt or fromStr for conversion</li>
+     * <li>Find and use similar conversion static methods with priority</li>
+     * <li>Enum classes should provide valueOf(String) and valueOf(Integer) for conversion</li>
+     * <li>ordinal / name conversion as fallback</li>
      * </ul>
      *
-     * @param value     被转换的值
-     * @param enumClass enum类
-     * @return 对应的枚举值
+     * @param value     the value to convert
+     * @param enumClass the enum class
+     * @return the corresponding enum value
      */
     protected static Enum tryConvertEnum(final Object value, final Class enumClass) {
         if (value == null) {
             return null;
         }
 
-        // EnumItem实现转换
+        // EnumItem implementation conversion
         if (Enumers.class.isAssignableFrom(enumClass)) {
             final Enumers first = (Enumers) EnumKit.getEnumAt(enumClass, 0);
             if (null != first) {
@@ -92,8 +92,9 @@ public class EnumConverter extends AbstractConverter implements MatcherConverter
             }
         }
 
-        // 用户自定义方法
-        // 查找枚举中所有返回值为目标枚举对象的方法，如果发现方法参数匹配，就执行之
+        // User-defined methods
+        // Find all methods in the enum that return the target enum object. If a method with matching parameters is
+        // found, execute it
         try {
             final Map<Class<?>, Method> methodMap = getMethodMap(enumClass);
             if (MapKit.isNotEmpty(methodMap)) {
@@ -108,13 +109,14 @@ public class EnumConverter extends AbstractConverter implements MatcherConverter
             // ignore
         }
 
-        // oriInt 应该滞后使用 以 GB/T 2261.1-2003 性别编码为例，对应整数并非连续数字会导致数字转枚举时失败
-        // 0 - 未知的性别
-        // 1 - 男性
-        // 2 - 女性
-        // 5 - 女性改(变)为男性
-        // 6 - 男性改(变)为女性
-        // 9 - 未说明的性别
+        // ordinal should be used as a fallback. Taking GB/T 2261.1-2003 gender code as an example,
+        // the corresponding integer is not a continuous number, which will cause digital to enum conversion failure
+        // 0 - Unknown gender
+        // 1 - Male
+        // 2 - Female
+        // 5 - Female changed to male
+        // 6 - Male changed to female
+        // 9 - Unspecified gender
         Enum enumResult = null;
         if (value instanceof Integer) {
             enumResult = EnumKit.getEnumAt(enumClass, (Integer) value);
@@ -130,10 +132,10 @@ public class EnumConverter extends AbstractConverter implements MatcherConverter
     }
 
     /**
-     * 获取用于转换为enum的所有static方法
+     * Gets all static methods for converting to enum
      *
-     * @param enumClass 枚举类
-     * @return 转换方法map，key为方法参数类型，value为方法
+     * @param enumClass the enum class
+     * @return map of conversion methods, key is method parameter type, value is the method
      */
     private static Map<Class<?>, Method> getMethodMap(final Class<?> enumClass) {
         return VALUE_OF_METHOD_CACHE.computeIfAbsent(
@@ -153,7 +155,7 @@ public class EnumConverter extends AbstractConverter implements MatcherConverter
     protected Object convertInternal(final Class<?> targetClass, final Object value) {
         Enum enumValue = tryConvertEnum(value, targetClass);
         if (null == enumValue && !(value instanceof String)) {
-            // 最后尝试先将value转String，再valueOf转换
+            // Finally try to convert value to String first, then valueOf conversion
             enumValue = Enum.valueOf((Class) targetClass, convertToString(value));
         }
 

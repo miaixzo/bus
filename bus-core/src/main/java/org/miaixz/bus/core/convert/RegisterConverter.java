@@ -56,11 +56,12 @@ import org.miaixz.bus.core.xyz.StreamKit;
 import org.miaixz.bus.core.xyz.TypeKit;
 
 /**
- * 基于类型注册的转换器，提供两种注册方式，按照优先级依次为：
+ * A type-registration-based converter providing two registration methods, in order of priority:
  * <ol>
- * <li>按照匹配注册，使用{@link #register(MatcherConverter)}。
- * 注册后一旦给定的目标类型和值满足{@link MatcherConverter#match(Type, Class, Object)}，即可调用对应转换器转换。</li>
- * <li>按照类型注册，使用{@link #register(Type, Converter)}，目标类型一致，即可调用转换。</li>
+ * <li>Register by matching, using {@link #register(MatcherConverter)}. Once a given target type and value satisfies
+ * {@link MatcherConverter#match(Type, Class, Object)}, the corresponding converter is called for conversion.</li>
+ * <li>Register by type, using {@link #register(Type, Converter)}. When the target type matches, the converter is
+ * called.</li>
  * </ol>
  *
  * @author Kimi Liu
@@ -72,22 +73,22 @@ public class RegisterConverter extends ConverterWithRoot implements Serializable
     private static final long serialVersionUID = 2852271620270L;
 
     /**
-     * 默认类型转换器
+     * Default type converter map.
      */
     private final Map<Class<?>, Converter> defaultConverterMap;
     /**
-     * 用户自定义类型转换器，存储自定义匹配规则的一类对象的转换器
+     * User-defined type converter set, stores converters with custom matching rules for certain types of objects.
      */
     private volatile Set<MatcherConverter> converterSet;
     /**
-     * 用户自定义精确类型转换器 主要存储类型明确（无子类）的转换器
+     * User-defined precise type converter map, mainly stores converters for explicitly defined types (no subclasses).
      */
     private volatile Map<Type, Converter> customConverterMap;
 
     /**
-     * 构造
+     * Constructs a new RegisterConverter.
      *
-     * @param rootConverter 根转换器，用于子转换器转换
+     * @param rootConverter the root converter, used for sub-converter conversions
      */
     public RegisterConverter(final Converter rootConverter) {
         super(rootConverter);
@@ -95,14 +96,14 @@ public class RegisterConverter extends ConverterWithRoot implements Serializable
     }
 
     /**
-     * 初始化默认转换器
+     * Initializes the default converters.
      *
-     * @return 默认转换器
+     * @return the default converter map
      */
     private static Map<Class<?>, Converter> initDefault(final Converter rootConverter) {
         final Map<Class<?>, Converter> converterMap = new ConcurrentHashMap<>(64);
 
-        // 包装类转换器
+        // Wrapper class converters
         converterMap.put(Character.class, CharacterConverter.INSTANCE);
         converterMap.put(Boolean.class, BooleanConverter.INSTANCE);
         converterMap.put(AtomicBoolean.class, AtomicBooleanConverter.INSTANCE);// since 3.0.8
@@ -114,16 +115,16 @@ public class RegisterConverter extends ConverterWithRoot implements Serializable
         converterMap.put(URI.class, new URIConverter());
         converterMap.put(URL.class, new URLConverter());
 
-        // 日期时间
+        // Date and time
         converterMap.put(Calendar.class, new CalendarConverter());
-        // 可能抛出Provider org.apache.xerces.jaxp.datatype.DatatypeFactoryImpl not found，此处忽略
+        // May throw Provider org.apache.xerces.jaxp.datatype.DatatypeFactoryImpl not found, ignored here
         try {
             converterMap.put(XMLGregorianCalendar.class, new XMLGregorianCalendarConverter());
         } catch (final Exception ignore) {
             // ignore
         }
 
-        // 日期时间 JDK8+(since 5.0.0)
+        // Date and time JDK8+ (since 5.0.0)
         converterMap.put(TemporalAccessor.class, TemporalAccessorConverter.INSTANCE);
         converterMap.put(Instant.class, TemporalAccessorConverter.INSTANCE);
         converterMap.put(LocalDateTime.class, TemporalAccessorConverter.INSTANCE);
@@ -149,7 +150,7 @@ public class RegisterConverter extends ConverterWithRoot implements Serializable
         converterMap.put(AtomicIntegerArray.class, new AtomicIntegerArrayConverter());
         converterMap.put(AtomicLongArray.class, new AtomicLongArrayConverter());
 
-        // 其它类型
+        // Other types
         converterMap.put(Locale.class, new LocaleConverter());
         converterMap.put(Charset.class, new CharsetConverter());
         converterMap.put(Path.class, new PathConverter());
@@ -167,24 +168,24 @@ public class RegisterConverter extends ConverterWithRoot implements Serializable
 
     @Override
     public Object convert(final Type targetType, final Object value) throws ConvertException {
-        // 标准转换器
+        // Standard converter
         final Converter converter = getConverter(targetType, value, true);
         if (null != converter) {
             return converter.convert(targetType, value);
         }
 
-        // 无法转换
+        // Unable to convert
         throw new ConvertException("Can not support from {}: [{}] to [{}]", value.getClass().getName(), value,
                 targetType.getTypeName());
     }
 
     /**
-     * 获得转换器
+     * Gets the converter.
      *
-     * @param type          类型
-     * @param value         转换的值
-     * @param isCustomFirst 是否自定义转换器优先
-     * @return 转换器
+     * @param type          the type
+     * @param value         the value to be converted
+     * @param isCustomFirst whether custom converters have priority
+     * @return the converter
      */
     public Converter getConverter(final Type type, final Object value, final boolean isCustomFirst) {
         Converter converter;
@@ -209,10 +210,10 @@ public class RegisterConverter extends ConverterWithRoot implements Serializable
     }
 
     /**
-     * 获得默认转换器
+     * Gets the default converter.
      *
-     * @param type 类型
-     * @return 转换器
+     * @param type the type
+     * @return the converter
      */
     public Converter getDefaultConverter(final Type type) {
         final Class<?> key = null == type ? null : TypeKit.getClass(type);
@@ -220,31 +221,31 @@ public class RegisterConverter extends ConverterWithRoot implements Serializable
     }
 
     /**
-     * 获得匹配类型的自定义转换器
+     * Gets the custom converter matching the type.
      *
-     * @param type  类型
-     * @param value 被转换的值
-     * @return 转换器
+     * @param type  the type
+     * @param value the value to be converted
+     * @return the converter
      */
     public Converter getCustomConverter(final Type type, final Object value) {
         return StreamKit.of(converterSet).filter((predicate) -> predicate.match(type, value)).findFirst().orElse(null);
     }
 
     /**
-     * 获得指定类型对应的自定义转换器
+     * Gets the custom converter for the specified type.
      *
-     * @param type 类型
-     * @return 转换器
+     * @param type the type
+     * @return the converter
      */
     public Converter getCustomConverter(final Type type) {
         return (null == customConverterMap) ? null : customConverterMap.get(type);
     }
 
     /**
-     * 登记自定义转换器，登记的目标类型必须一致
+     * Registers a custom converter. The registered target type must be consistent.
      *
-     * @param type      转换的目标类型
-     * @param converter 转换器
+     * @param type      the target type of the conversion
+     * @param converter the converter
      * @return this
      */
     public RegisterConverter register(final Type type, final Converter converter) {
@@ -260,9 +261,10 @@ public class RegisterConverter extends ConverterWithRoot implements Serializable
     }
 
     /**
-     * 登记自定义转换器，符合{@link MatcherConverter#match(Type, Class, Object)}则使用其转换器
+     * Registers a custom converter. If it matches {@link MatcherConverter#match(Type, Class, Object)}, the converter is
+     * used.
      *
-     * @param converter 转换器
+     * @param converter the converter
      * @return this
      */
     public RegisterConverter register(final MatcherConverter converter) {

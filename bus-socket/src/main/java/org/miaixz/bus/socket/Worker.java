@@ -99,6 +99,16 @@ public final class Worker implements Runnable {
 
                     int i = 0;
 
+                    /**
+                     * {@inheritDoc}
+                     * <p>
+                     * This implementation creates threads with a descriptive name that includes the worker's hash code
+                     * and a sequence number.
+                     * </p>
+                     *
+                     * @param r the runnable task to be executed by the new thread
+                     * @return a newly created thread
+                     */
                     @Override
                     public Thread newThread(Runnable r) {
                         return new Thread(r, "smart-socket:udp-" + Worker.this.hashCode() + "-" + (++i));
@@ -119,6 +129,13 @@ public final class Worker implements Runnable {
         selector.wakeup();
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * This worker processes tasks from the request queue, handling channel registration, I/O events via the selector,
+     * and shutdown signals.
+     * </p>
+     */
     @Override
     public void run() {
         try {

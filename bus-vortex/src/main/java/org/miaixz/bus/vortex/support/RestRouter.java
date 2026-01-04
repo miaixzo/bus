@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.vortex.support;
 
-import org.miaixz.bus.vortex.Assets;
 import org.miaixz.bus.vortex.Context;
 import org.miaixz.bus.vortex.Router;
-import org.miaixz.bus.vortex.support.rest.RestService;
+import org.miaixz.bus.vortex.support.rest.RestExecutor;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
+
 import reactor.core.publisher.Mono;
 import reactor.util.annotation.NonNull;
 
@@ -41,43 +41,47 @@ import reactor.util.annotation.NonNull;
  * <p>
  * This class acts as a simple coordinator. Its sole responsibility is to retrieve the necessary context and asset
  * information for the current request and delegate the actual execution of the HTTP reverse proxy logic to the
- * {@link RestService}.
+ * {@link RestExecutor}.
+ * <p>
+ * Generic type parameters: {@code Router<ServerRequest, ServerResponse>}
  *
  * @author Kimi Liu
- * @see RestService
  * @since Java 17+
  */
-public class RestRouter implements Router {
+public class RestRouter implements Router<ServerRequest, ServerResponse> {
 
     /**
-     * The service responsible for executing the downstream HTTP request.
+     * The executor responsible for executing the downstream HTTP request.
      */
-    private final RestService service;
+    private final RestExecutor executor;
 
     /**
      * Constructs a new {@code RestRouter}.
+     * <p>
+     * This is the preferred constructor for the new architecture.
      *
-     * @param service The service that will perform the HTTP request execution.
+     * @param executor The executor that will perform the HTTP request execution.
      */
-    public RestRouter(RestService service) {
-        this.service = service;
+    public RestRouter(RestExecutor executor) {
+        this.executor = executor;
     }
 
     /**
      * Routes the request to a downstream HTTP service.
      * <p>
-     * This method retrieves the {@link Context} and its contained {@link Assets} from the reactive stream, then
-     * delegates the execution to the {@link RestService}.
+     * This method retrieves the {@link Context} from the reactive stream and delegates the execution to the
+     * {@link RestExecutor}.
      *
-     * @param request The current {@link ServerRequest}.
-     * @return A {@code Mono<ServerResponse>} containing the response from the downstream service.
+     * @param input The ServerRequest object (strongly typed)
+     * @return A {@code Mono<ServerResponse>} containing the ServerResponse from the downstream service.
      */
     @NonNull
     @Override
-    public Mono<ServerResponse> route(ServerRequest request) {
+    public Mono<ServerResponse> route(ServerRequest input) {
+        ServerRequest request = input;
         return Mono.deferContextual(contextView -> {
             final Context context = contextView.get(Context.class);
-            return this.service.execute(request, context, context.getAssets());
+            return this.executor.execute(context, request);
         });
     }
 

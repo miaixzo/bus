@@ -47,7 +47,6 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.Args;
 import org.miaixz.bus.mapper.Context;
-import org.miaixz.bus.mapper.Holder;
 import org.miaixz.bus.mapper.handler.ConditionHandler;
 
 /**
@@ -61,7 +60,7 @@ import org.miaixz.bus.mapper.handler.ConditionHandler;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class VisibleHandler<T> extends ConditionHandler<T> {
+public class VisibleHandler<T> extends ConditionHandler<T, VisibleConfig> {
 
     /**
      * Visible configuration from file (lowest priority).
@@ -85,6 +84,16 @@ public class VisibleHandler<T> extends ConditionHandler<T> {
     }
 
     /**
+     * Get the handler name for logging purposes.
+     *
+     * @return the handler name "Visible"
+     */
+    @Override
+    public String getHandler() {
+        return "Visible";
+    }
+
+    /**
      * Sets the visible-related configuration properties. This method is typically called during plugin initialization
      * to configure data perimeter behaviors.
      *
@@ -97,59 +106,75 @@ public class VisibleHandler<T> extends ConditionHandler<T> {
             return false;
         }
 
+        // Store all properties for dynamic lookup (in parent class)
+        this.properties = properties;
+
+        // Get current datasource key for static config initialization
+        String datasourceKey = getDatasourceKey();
+
         // Try to get provider from properties
-        VisibleProvider provider = null;
-        Object object = properties.get(Args.PROVIDER_KEY);
-        if (object instanceof VisibleProvider) {
-            provider = (VisibleProvider) object;
-        }
+        VisibleProvider provider = getProvider(properties, VisibleProvider.class);
 
         // Set provider if found
         if (provider == null) {
-            Logger.warn(false, "Mapper", "Provider not found, feature will not be enabled");
+            Logger.warn(false, getHandler(), "Provider not found, feature will not be enabled");
             return false;
         }
 
-        // Get current datasource key
-        String datasourceKey = Holder.getKey();
-        if (StringKit.isEmpty(datasourceKey)) {
-            // Use actual default datasource name or fallback to "default"
-            datasourceKey = "default";
+        // Build initial static config
+        this.config = buildVisibleConfig(datasourceKey, properties, provider);
+        return true;
+    }
+
+    @Override
+    protected String scope() {
+        return Args.VISIBLE_KEY;
+    }
+
+    @Override
+    protected VisibleConfig defaults() {
+        return config;
+    }
+
+    @Override
+    protected VisibleConfig capture() {
+        Context.MapperConfig context = Context.getMapperConfig();
+        return context != null ? context.getVisible() : null;
+    }
+
+    @Override
+    protected VisibleConfig derived(String datasourceKey, Properties properties) {
+        // Try to get provider from properties
+        VisibleProvider provider = getProvider(properties, VisibleProvider.class);
+
+        // Set provider if found
+        if (provider == null) {
+            return null;
         }
 
-        // Build configuration paths
+        return buildVisibleConfig(datasourceKey, properties, provider);
+    }
+
+    /**
+     * Build visible configuration from properties for a specific datasource.
+     *
+     * @param datasourceKey the datasource key
+     * @param properties    the properties
+     * @param provider      the visible provider
+     * @return the visible configuration
+     */
+    private VisibleConfig buildVisibleConfig(String datasourceKey, Properties properties, VisibleProvider provider) {
         String sharedPrefix = Args.SHARED_KEY + Symbol.DOT + Args.VISIBLE_KEY + Symbol.DOT;
         String dsPrefix = datasourceKey + Symbol.DOT + Args.VISIBLE_KEY + Symbol.DOT;
 
-        // Merge configuration: datasource-specific > shared > default
         String ignore = properties.getProperty(
                 dsPrefix + Args.PROP_IGNORE,
                 properties.getProperty(sharedPrefix + Args.PROP_IGNORE, Normal.EMPTY));
 
-        // Get ignore tables list
         List<String> ignoreTables = StringKit.isNotEmpty(ignore) ? Arrays.stream(ignore.split(Symbol.COMMA))
                 .map(String::trim).filter(ObjectKit::isNotEmpty).collect(Collectors.toList()) : Collections.emptyList();
 
-        // Build and store config
-        this.config = VisibleConfig.builder().provider(provider).ignore(ignoreTables).build();
-
-        return true;
-    }
-
-    /**
-     * Get current effective configuration with priority: Context > File Config.
-     *
-     * @return the effective visible configuration
-     */
-    private VisibleConfig getConfig() {
-        // 1. Highest priority: Context configuration
-        Context.MapperConfig context = Context.getMapperConfig();
-        if (context != null && context.getVisible() != null) {
-            return context.getVisible();
-        }
-
-        // 2. Lowest priority: File configuration
-        return config;
+        return VisibleConfig.builder().provider(provider).ignore(ignoreTables).build();
     }
 
     @Override
@@ -163,6 +188,12 @@ public class VisibleHandler<T> extends ConditionHandler<T> {
      * <p>
      * This method is called before SQL execution. It modifies the SQL to add perimeter conditions based on the current
      * user's data perimeter and the entity's {@link Visible} annotation.
+     * </p>
+     *
+     * <p>
+     * <strong>Performance Optimization:</strong> Checks if the SqlSource has already been replaced by our custom
+     * SqlSource. If yes, processing is skipped since the SQL has already been modified. This provides O(1) cache-like
+     * performance without the issues of request-level caching.
      * </p>
      *
      * @param executor      the MyBatis executor
@@ -182,63 +213,60 @@ public class VisibleHandler<T> extends ConditionHandler<T> {
             ResultHandler resultHandler,
             BoundSql boundSql) {
         // Get current configuration
-        VisibleConfig currentConfig = getConfig();
+        VisibleConfig currentConfig = current();
 
         // Skip if perimeter control is disabled
         if (currentConfig == null) {
-            Logger.debug(true, "Visible", "Visibility control disabled for query: {}", ms.getId());
+            Logger.debug(true, getHandler(), "Visibility control disabled: method={}", ms.getId());
             return true;
         }
 
         // Skip if perimeter filtering is ignored
         if (VisibleContext.isIgnore()) {
-            Logger.debug(true, "Visible", "Visibility filtering ignored for query: {}", ms.getId());
+            Logger.debug(true, getHandler(), "Visibility filtering ignored: method={}", ms.getId());
             return true;
         }
 
         // Skip if provider is not configured
         if (currentConfig.getProvider() == null) {
-            Logger.warn(true, "Visible", "Visibility provider not configured for query: {}", ms.getId());
+            Logger.warn(true, getHandler(), "Visibility provider not configured: method={}", ms.getId());
             return true;
         }
 
         // Only handle SELECT queries
         if (ms.getSqlCommandType() != SqlCommandType.SELECT) {
-            Logger.debug(true, "Visible", "Skipped non-SELECT query: {}", ms.getId());
+            Logger.debug(true, getHandler(), "Skipped non-SELECT: method={}", ms.getId());
             return true;
         }
+
+        String mapperId = ms.getId();
 
         // Get original SQL
         String originalSql = boundSql.getSql();
 
         // Create builder for current config and apply perimeter condition
         VisibleBuilder builder = new VisibleBuilder(currentConfig);
-        String modifiedSql = builder.applyVisibility(originalSql);
+        String actualSql = builder.applyVisibility(originalSql);
 
         // If SQL was modified, update the bound SQL
-        if (!originalSql.equals(modifiedSql)) {
-            Logger.debug(false, "Visible", "Applied visibility filter for query: {}", ms.getId());
-            // Use reflection to update SQL in BoundSql
-            try {
-                java.lang.reflect.Field field = BoundSql.class.getDeclaredField("sql");
-                field.setAccessible(true);
-                field.set(boundSql, modifiedSql);
-            } catch (Exception e) {
+        if (!originalSql.equals(actualSql)) {
+            Logger.debug(false, getHandler(), "Applied visibility filter: method={}", mapperId);
+            // Step 1: Use reflection to update SQL in BoundSql
+            if (setBoundSql(boundSql, actualSql)) {
+                Logger.debug(false, getHandler(), "Modified BoundSql.sql");
+            } else {
                 // If reflection fails, log warning and continue with original SQL
-                Logger.warn(false, "Visible", "Failed to update SQL: {}", e.getMessage(), e);
+                Logger.warn(false, getHandler(), "Failed to update SQL");
             }
+
+            // Step 2: Replace the SqlSource in MappedStatement
+            // This ensures subsequent getBoundSql() calls return the actual SQL
+            replaceSqlSource(ms, boundSql, actualSql);
         } else {
-            Logger.debug(false, "Visible", "SQL unchanged for query: {}", ms.getId());
+            Logger.debug(false, getHandler(), "SQL unchanged: method={}", mapperId);
         }
 
         return true;
-    }
-
-    /**
-     * Clear metadata cache (no-op since we don't cache builders anymore).
-     */
-    public void clear() {
-        // No-op: builder is created on-demand per SQL execution
     }
 
 }

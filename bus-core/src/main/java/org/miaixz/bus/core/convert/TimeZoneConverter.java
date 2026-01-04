@@ -35,7 +35,7 @@ import java.util.TimeZone;
 import org.miaixz.bus.core.xyz.ZoneKit;
 
 /**
- * TimeZone转换器
+ * Converter for TimeZone objects
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -46,15 +46,33 @@ public class TimeZoneConverter extends AbstractConverter implements MatcherConve
     private static final long serialVersionUID = 2852272228100L;
 
     /**
-     * 单例
+     * Singleton instance
      */
     public static final TimeZoneConverter INSTANCE = new TimeZoneConverter();
 
+    /**
+     * Checks if this converter can handle the conversion to the specified target type.
+     *
+     * @param targetType the target type
+     * @param rawType    the raw class of the target type
+     * @param value      the value to be converted
+     * @return {@code true} if the target type is assignable from TimeZone
+     */
     @Override
     public boolean match(final Type targetType, final Class<?> rawType, final Object value) {
         return TimeZone.class.isAssignableFrom(rawType);
     }
 
+    /**
+     * Converts the given value to a TimeZone.
+     * <p>
+     * Supports conversion from ZoneId and string representations.
+     * </p>
+     *
+     * @param targetClass the target class (should be TimeZone.class)
+     * @param value       the value to convert
+     * @return the converted TimeZone object
+     */
     @Override
     protected TimeZone convertInternal(final Class<?> targetClass, final Object value) {
         if (value instanceof ZoneId) {

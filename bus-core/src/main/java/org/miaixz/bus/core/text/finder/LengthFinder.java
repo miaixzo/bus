@@ -58,6 +58,12 @@ public class LengthFinder extends TextFinder {
         this.length = length;
     }
 
+    /**
+     * Calculates the start position based on the fixed length offset.
+     *
+     * @param from The starting position for the calculation.
+     * @return The calculated start position, or -1 if out of bounds.
+     */
     @Override
     public int start(final int from) {
         Assert.notNull(this.text, "Text to find must not be null!");
@@ -77,6 +83,12 @@ public class LengthFinder extends TextFinder {
         return -1;
     }
 
+    /**
+     * Returns the end position, which is the same as the start position for fixed-length segments.
+     *
+     * @param start The start position.
+     * @return The end position (same as start).
+     */
     @Override
     public int end(final int start) {
         return start;

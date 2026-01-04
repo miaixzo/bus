@@ -33,6 +33,7 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.Locale;
 
+import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.CharKit;
@@ -61,8 +62,20 @@ public class NumberParser {
      * Singleton instance.
      */
     public static final NumberParser INSTANCE = of(null);
+
+    /**
+     * The string representation of "Not a Number".
+     */
     private static final String NaN = "NaN";
+
+    /**
+     * The locale to use for number formatting.
+     */
     private final Locale locale;
+
+    /**
+     * Whether to convert "NaN" to 0 instead of throwing an exception.
+     */
     private final boolean zeroIfNaN;
 
     /**
@@ -364,16 +377,16 @@ public class NumberParser {
      * Performs number parsing using {@link NumberFormat}. If it is a {@link DecimalFormat}, it is configured to parse
      * into a BigDecimal to avoid precision loss.
      *
-     * @param numberStr The string to parse.
+     * @param number The string to parse.
      * @return The parsed Number.
      */
-    private Number doParse(String numberStr) {
+    private Number doParse(String number) {
         Locale locale = this.locale;
         if (null == locale) {
             locale = Locale.getDefault(Locale.Category.FORMAT);
         }
-        if (StringKit.startWith(numberStr, Symbol.C_PLUS)) {
-            numberStr = StringKit.subSuf(numberStr, 1);
+        if (StringKit.startWith(number, Symbol.C_PLUS)) {
+            number = StringKit.subSuf(number, 1);
         }
 
         try {
@@ -383,7 +396,7 @@ public class NumberParser {
                 // it.
                 ((DecimalFormat) format).setParseBigDecimal(true);
             }
-            return format.parse(numberStr);
+            return format.parse(Convert.toDBC(number));
         } catch (final ParseException e) {
             final NumberFormatException nfe = new NumberFormatException(e.getMessage());
             nfe.initCause(e);

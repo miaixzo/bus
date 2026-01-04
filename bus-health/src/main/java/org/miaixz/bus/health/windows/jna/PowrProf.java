@@ -111,6 +111,12 @@ public interface PowrProf extends com.sun.jna.platform.win32.PowrProf {
         }
     }
 
+    /**
+     * JNA wrapper for the BATTERY_QUERY_INFORMATION structure.
+     * <p>
+     * This class maps to the native Windows structure used to query battery information.
+     * </p>
+     */
     // MOVE?
     @FieldOrder({ "BatteryTag", "InformationLevel", "AtRate" })
     class BATTERY_QUERY_INFORMATION extends Structure implements AutoCloseable {
@@ -125,6 +131,19 @@ public interface PowrProf extends com.sun.jna.platform.win32.PowrProf {
         }
     }
 
+    /**
+     * JNA wrapper for the BATTERY_INFORMATION structure.
+     * <p>
+     * This class maps to the native Windows structure: {@code
+     * typedef struct _BATTERY_INFORMATION {
+     *     ULONG Capabilities;
+     *     BYTE Technology;
+     *     BYTE Reserved[3];
+     *     CHAR Chemistry[4];
+     *     ULONG DesignedCapacity; ULONG FullChargedCapacity; ULONG DefaultAlert1; ULONG DefaultAlert2; ULONG
+     * CriticalBias; ULONG CycleCount; } BATTERY_INFORMATION; }
+     * </p>
+     */
     @FieldOrder({ "Capabilities", "Technology", "Reserved", "Chemistry", "DesignedCapacity", "FullChargedCapacity",
             "DefaultAlert1", "DefaultAlert2", "CriticalBias", "CycleCount" })
     class BATTERY_INFORMATION extends Structure implements AutoCloseable {
@@ -146,6 +165,12 @@ public interface PowrProf extends com.sun.jna.platform.win32.PowrProf {
         }
     }
 
+    /**
+     * JNA wrapper for the BATTERY_WAIT_STATUS structure.
+     * <p>
+     * This class maps to the native Windows structure used to wait for battery status changes.
+     * </p>
+     */
     @FieldOrder({ "BatteryTag", "Timeout", "PowerState", "LowCapacity", "HighCapacity" })
     class BATTERY_WAIT_STATUS extends Structure implements AutoCloseable {
 
@@ -161,6 +186,13 @@ public interface PowrProf extends com.sun.jna.platform.win32.PowrProf {
         }
     }
 
+    /**
+     * JNA wrapper for the BATTERY_STATUS structure.
+     * <p>
+     * This class maps to the native Windows structure: {@code typedef struct _BATTERY_STATUS { ULONG PowerState; ULONG
+     * Capacity; ULONG Voltage; ULONG Rate; } BATTERY_STATUS; }
+     * </p>
+     */
     @FieldOrder({ "PowerState", "Capacity", "Voltage", "Rate" })
     class BATTERY_STATUS extends Structure implements AutoCloseable {
 
@@ -175,6 +207,13 @@ public interface PowrProf extends com.sun.jna.platform.win32.PowrProf {
         }
     }
 
+    /**
+     * JNA wrapper for the BATTERY_MANUFACTURE_DATE structure.
+     * <p>
+     * This class maps to the native Windows structure: {@code typedef struct _BATTERY_MANUFACTURE_DATE { UCHAR Day;
+     * UCHAR Month; USHORT Year; } BATTERY_MANUFACTURE_DATE; }
+     * </p>
+     */
     @FieldOrder({ "Day", "Month", "Year" })
     class BATTERY_MANUFACTURE_DATE extends Structure implements AutoCloseable {
 

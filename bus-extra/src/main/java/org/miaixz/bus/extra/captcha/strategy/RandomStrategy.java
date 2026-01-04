@@ -63,11 +63,29 @@ public class RandomStrategy extends AbstractStrategy {
         super(baseStr, length);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Generates a random CAPTCHA string by selecting characters randomly from the configured base character set.
+     * </p>
+     *
+     * @return a randomly generated CAPTCHA string of the configured length
+     */
     @Override
     public String generate() {
         return RandomKit.randomString(this.baseStr, this.length);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Verifies the user's input by performing a case-insensitive comparison with the generated CAPTCHA code.
+     * </p>
+     *
+     * @param code          the generated CAPTCHA code
+     * @param userInputCode the user's input to verify
+     * @return {@code true} if the user input matches the code (case-insensitive), {@code false} otherwise
+     */
     @Override
     public boolean verify(final String code, final String userInputCode) {
         if (StringKit.isNotBlank(userInputCode)) {

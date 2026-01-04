@@ -43,9 +43,6 @@ import org.miaixz.bus.core.lang.Assert;
  */
 public class HttpResource implements Resource, Serializable {
 
-    /**
-     * The serial version UID for serialization.
-     */
     @Serial
     private static final long serialVersionUID = 2852231136075L;
 
@@ -70,21 +67,41 @@ public class HttpResource implements Resource, Serializable {
         this.contentType = contentType;
     }
 
+    /**
+     * Returns the name of the underlying resource.
+     *
+     * @return The name of the resource.
+     */
     @Override
     public String getName() {
         return resource.getName();
     }
 
+    /**
+     * Returns the URL of the underlying resource.
+     *
+     * @return The URL of the resource.
+     */
     @Override
     public URL getUrl() {
         return resource.getUrl();
     }
 
+    /**
+     * Returns the size of the underlying resource.
+     *
+     * @return The size of the resource in bytes.
+     */
     @Override
     public long size() {
         return resource.size();
     }
 
+    /**
+     * Returns an input stream for the underlying resource.
+     *
+     * @return An input stream for reading the resource.
+     */
     @Override
     public InputStream getStream() {
         return resource.getStream();

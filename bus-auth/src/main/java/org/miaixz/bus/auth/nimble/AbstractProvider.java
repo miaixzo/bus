@@ -56,7 +56,7 @@ import org.miaixz.bus.http.Httpx;
  * implementations handled by subclasses.
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public abstract class AbstractProvider implements Provider {
 
@@ -156,7 +156,7 @@ public abstract class AbstractProvider implements Provider {
     }
 
     /**
-     * 构建 OAuth2 access token 的 URL.
+     * Builds the OAuth2 access token URL.
      *
      * @param code the authorization code
      * @return the access token URL
@@ -169,7 +169,7 @@ public abstract class AbstractProvider implements Provider {
     }
 
     /**
-     * 构建 OAuth2 refresh token 的 URL.
+     * Builds the OAuth2 refresh token URL.
      *
      * @param token the refresh token
      * @return the refresh token URL
@@ -181,7 +181,7 @@ public abstract class AbstractProvider implements Provider {
     }
 
     /**
-     * 构建 OAuth2 user info 的 URL.
+     * Builds the OAuth2 user info URL.
      *
      * @param authorization the access token
      * @return the user information URL
@@ -192,7 +192,7 @@ public abstract class AbstractProvider implements Provider {
     }
 
     /**
-     * 构建 OAuth2 撤销授权的 URL.
+     * Builds the OAuth2 revoke authorization URL.
      *
      * @param authorization the access token
      * @return the revoke authorization URL

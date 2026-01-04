@@ -48,7 +48,13 @@ import org.miaixz.bus.core.xyz.StringKit;
  */
 public class UrlPath {
 
+    /**
+     * The list of path segments.
+     */
     private List<CharSequence> segments;
+    /**
+     * Whether to append a trailing slash to the path.
+     */
     private boolean withEngTag;
 
     /**
@@ -171,6 +177,13 @@ public class UrlPath {
         return this;
     }
 
+    /**
+     * Returns the path string representation of this {@link UrlPath}.
+     * <p>
+     * This is equivalent to calling {@code build(null)}.
+     *
+     * @return The constructed path string.
+     */
     @Override
     public String toString() {
         return build(null);

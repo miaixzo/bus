@@ -73,6 +73,14 @@ public class NonAuthenticator extends Authenticator {
         return new NonAuthenticator(userName, password);
     }
 
+    /**
+     * Returns the password authentication for this request.
+     * <p>
+     * This method is called by the system when authentication is required.
+     * </p>
+     *
+     * @return The {@link PasswordAuthentication} object containing the username and password.
+     */
     @Override
     protected PasswordAuthentication getPasswordAuthentication() {
         return auth;

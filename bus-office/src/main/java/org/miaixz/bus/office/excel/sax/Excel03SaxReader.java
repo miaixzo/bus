@@ -120,6 +120,14 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
         this.rowHandler = rowHandler;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param file               the Excel file to read
+     * @param idOrRidOrSheetName the sheet identifier (sheet ID, rID, or sheet name)
+     * @return this reader instance for chaining
+     * @throws InternalException if an IOException occurs
+     */
     @Override
     public Excel03SaxReader read(final File file, final String idOrRidOrSheetName) throws InternalException {
         try (final POIFSFileSystem poifsFileSystem = new POIFSFileSystem(file, true)) {
@@ -129,6 +137,14 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
         }
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param excelStream        the input stream containing the Excel data
+     * @param idOrRidOrSheetName the sheet identifier (sheet ID, rID, or sheet name)
+     * @return this reader instance for chaining
+     * @throws InternalException if an IOException occurs
+     */
     @Override
     public Excel03SaxReader read(final InputStream excelStream, final String idOrRidOrSheetName)
             throws InternalException {

@@ -36,6 +36,9 @@ package org.miaixz.bus.cron.crontab;
  */
 public class RunnableCrontab implements Crontab {
 
+    /**
+     * The runnable task to be executed.
+     */
     private final Runnable runnable;
 
     /**

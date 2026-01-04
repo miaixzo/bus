@@ -81,6 +81,15 @@ public class StdLoader extends ResourceLoader implements Loader {
         this.classLoader = classLoader;
     }
 
+    /**
+     * Loads resources from the classpath.
+     *
+     * @param path        the base path to search for resources.
+     * @param recursively whether to search for resources in subdirectories.
+     * @param filter      the filter to apply to resources.
+     * @return an enumeration of resources.
+     * @throws IOException if an I/O error occurs during resource loading.
+     */
     @Override
     public Enumeration<Resource> load(String path, boolean recursively, Filter filter) throws IOException {
         while (path.startsWith(Symbol.SLASH))
@@ -162,6 +171,11 @@ public class StdLoader extends ResourceLoader implements Loader {
             }
         }
 
+        /**
+         * Returns {@code true} if there are more resources to enumerate.
+         *
+         * @return {@code true} if there are more resources, {@code false} otherwise.
+         */
         @Override
         public boolean hasMoreElements() {
             if (null != next) {

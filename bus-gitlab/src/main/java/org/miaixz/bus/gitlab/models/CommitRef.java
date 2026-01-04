@@ -44,9 +44,40 @@ public class CommitRef implements Serializable {
     private RefType type;
     private String name;
 
+    /**
+     * Enumeration representing the type of Git reference.
+     * <p>
+     * This enum defines the possible types of references that can be associated with a commit, allowing for
+     * categorization and filtering of references based on their nature.
+     * </p>
+     *
+     * @since 17
+     */
     public enum RefType {
 
-        BRANCH, TAG, ALL;
+        /**
+         * Represents a branch reference.
+         * <p>
+         * Branches are movable pointers to commits used for development lines.
+         * </p>
+         */
+        BRANCH,
+
+        /**
+         * Represents a tag reference.
+         * <p>
+         * Tags are fixed pointers to specific commits, often used for marking releases.
+         * </p>
+         */
+        TAG,
+
+        /**
+         * Represents all reference types (both branches and tags).
+         * <p>
+         * This value is used when no specific filtering is desired.
+         * </p>
+         */
+        ALL;
 
         private static JacksonJsonEnumHelper<RefType> enumHelper = new JacksonJsonEnumHelper<>(RefType.class);
 

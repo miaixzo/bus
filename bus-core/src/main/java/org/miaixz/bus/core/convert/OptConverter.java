@@ -32,7 +32,7 @@ import java.io.Serial;
 import org.miaixz.bus.core.lang.Optional;
 
 /**
- * {@link Optional}对象转换器
+ * Converter for {@link Optional} objects
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,6 +42,13 @@ public class OptConverter extends AbstractConverter {
     @Serial
     private static final long serialVersionUID = 2852269671795L;
 
+    /**
+     * Converts the given value to an Optional.
+     *
+     * @param targetClass the target class (should be Optional.class)
+     * @param value       the value to wrap in Optional
+     * @return an Optional containing the value, or empty if value is null
+     */
     @Override
     protected Optional<?> convertInternal(final Class<?> targetClass, final Object value) {
         return Optional.ofNullable(value);

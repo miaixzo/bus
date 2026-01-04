@@ -43,9 +43,6 @@ import org.miaixz.bus.image.Tag;
  */
 public class AttributeSelector implements Serializable {
 
-    /**
-     * The serial version UID for serialization.
-     */
     @Serial
     private static final long serialVersionUID = 2852259019856L;
 

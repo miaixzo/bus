@@ -33,7 +33,7 @@ import java.util.Iterator;
 import java.util.Queue;
 
 /**
- * 始终为空的队列，所有新增节点都丢弃
+ * A queue that is always empty, all added nodes are discarded.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -49,10 +49,10 @@ public class DiscardingQueue extends AbstractQueue<Object> {
     private static final DiscardingQueue INSTANCE = new DiscardingQueue();
 
     /**
-     * 获取单例的空队列
+     * Gets the singleton empty queue instance.
      *
-     * @param <E> 节点类型
-     * @return DiscardingQueue
+     * @param <E> the element type
+     * @return the DiscardingQueue instance
      */
     public static <E> Queue<E> getInstance() {
         return (Queue<E>) INSTANCE;

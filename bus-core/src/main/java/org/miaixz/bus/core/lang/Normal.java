@@ -812,13 +812,14 @@ public class Normal {
     /**
      * Strings representing a boolean true value.
      */
-    public static final String[] TRUE_ARRAY = { "true", "t", "yes", "y", "ok", "1", "on", "是", "真", "正确", "对", "對",
-            "√" };
+    public static final String[] TRUE_ARRAY = { "true", "yes", "y", "t", "ok", "correct", "success", "on", "1", "是",
+            "对", "真", "對", "正确", "开", "开启", "√", "☑" };
 
     /**
      * Strings representing a boolean false value.
      */
-    public static final String[] FALSE_ARRAY = { "false", "no", "n", "f", "0", "off", "否", "错", "錯", "假", "×" };
+    public static final String[] FALSE_ARRAY = { "false", "no", "n", "f", "wrong", "fail", "off", "0", "否", "错", "假",
+            "錯", "错误", "关", "关闭", "×", "☒" };
 
     /**
      * Lowercase character array for hexadecimal output.

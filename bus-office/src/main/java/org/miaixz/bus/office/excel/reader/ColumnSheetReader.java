@@ -54,6 +54,12 @@ public class ColumnSheetReader extends AbstractSheetReader<List<Object>> {
         super(new CellRangeAddress(startRowIndex, endRowIndex, columnIndex, columnIndex));
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param sheet the sheet to read from
+     * @return list of cell values from the specified column range
+     */
     @Override
     public List<Object> read(final Sheet sheet) {
         final List<Object> resultList = new ArrayList<>();

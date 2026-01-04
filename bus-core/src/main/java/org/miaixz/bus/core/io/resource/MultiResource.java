@@ -51,9 +51,6 @@ import org.miaixz.bus.core.xyz.ListKit;
  */
 public class MultiResource implements Resource, Iterable<Resource>, Iterator<Resource>, Serializable {
 
-    /**
-     * The serial version UID for serialization.
-     */
     @Serial
     private static final long serialVersionUID = 2852232202695L;
 
@@ -88,61 +85,127 @@ public class MultiResource implements Resource, Iterable<Resource>, Iterator<Res
         }
     }
 
+    /**
+     * Returns the name of the current resource pointed to by the cursor.
+     *
+     * @return The name of the current resource.
+     */
     @Override
     public String getName() {
         return resources.get(cursor).getName();
     }
 
+    /**
+     * Returns the URL of the current resource pointed to by the cursor.
+     *
+     * @return The URL of the current resource.
+     */
     @Override
     public URL getUrl() {
         return resources.get(cursor).getUrl();
     }
 
+    /**
+     * Returns the size of the current resource pointed to by the cursor.
+     *
+     * @return The size of the current resource in bytes.
+     */
     @Override
     public long size() {
         return resources.get(cursor).size();
     }
 
+    /**
+     * Returns an input stream for the current resource pointed to by the cursor.
+     *
+     * @return An input stream for reading the current resource.
+     */
     @Override
     public InputStream getStream() {
         return resources.get(cursor).getStream();
     }
 
+    /**
+     * Checks if the current resource pointed to by the cursor has been modified.
+     *
+     * @return {@code true} if the current resource has been modified, {@code false} otherwise.
+     */
     @Override
     public boolean isModified() {
         return resources.get(cursor).isModified();
     }
 
+    /**
+     * Returns a buffered reader for the current resource pointed to by the cursor.
+     *
+     * @param charset The character set to use for reading.
+     * @return A buffered reader for the current resource.
+     */
     @Override
     public BufferedReader getReader(final Charset charset) {
         return resources.get(cursor).getReader(charset);
     }
 
+    /**
+     * Reads the content of the current resource pointed to by the cursor as a string.
+     *
+     * @param charset The character set to use for reading.
+     * @return The content of the current resource as a string.
+     * @throws InternalException If an error occurs while reading the resource.
+     */
     @Override
     public String readString(final Charset charset) throws InternalException {
         return resources.get(cursor).readString(charset);
     }
 
+    /**
+     * Reads the content of the current resource pointed to by the cursor as a string using the default charset.
+     *
+     * @return The content of the current resource as a string.
+     * @throws InternalException If an error occurs while reading the resource.
+     */
     @Override
     public String readString() throws InternalException {
         return resources.get(cursor).readString();
     }
 
+    /**
+     * Reads the content of the current resource pointed to by the cursor as a byte array.
+     *
+     * @return The content of the current resource as a byte array.
+     * @throws InternalException If an error occurs while reading the resource.
+     */
     @Override
     public byte[] readBytes() throws InternalException {
         return resources.get(cursor).readBytes();
     }
 
+    /**
+     * Returns an iterator over all resources in this collection.
+     *
+     * @return An iterator over all resources.
+     */
     @Override
     public Iterator<Resource> iterator() {
         return resources.iterator();
     }
 
+    /**
+     * Checks if there are more resources to iterate over.
+     *
+     * @return {@code true} if there are more resources, {@code false} otherwise.
+     */
     @Override
     public boolean hasNext() {
         return cursor < resources.size();
     }
 
+    /**
+     * Moves to the next resource in the iteration.
+     *
+     * @return This {@code MultiResource} instance after advancing the cursor.
+     * @throws ConcurrentModificationException If there are no more resources to iterate over.
+     */
     @Override
     public synchronized Resource next() {
         if (cursor >= resources.size()) {
@@ -152,6 +215,9 @@ public class MultiResource implements Resource, Iterable<Resource>, Iterator<Res
         return this;
     }
 
+    /**
+     * Removes the current resource from the collection.
+     */
     @Override
     public void remove() {
         this.resources.remove(this.cursor);

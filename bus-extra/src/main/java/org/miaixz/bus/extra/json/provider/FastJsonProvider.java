@@ -65,56 +65,89 @@ public class FastJsonProvider extends AbstractJsonProvider {
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String toJsonString(Object object) {
         return JSON.toJSONString(object, FILTERS, WRITER_FEATURES);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String toJsonString(Object object, String format) {
         return JSON.toJSONString(object, format, FILTERS, WRITER_FEATURES);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public <T> T toPojo(String json, Class<T> clazz) {
         return JSON.parseObject(json, clazz);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public <T> T toPojo(Map map, Class<T> clazz) {
         return JSON.parseObject(JSON.toJSONString(map), clazz);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public <T> List<T> toList(String json) {
         return JSON.parseObject(json, LinkedList.class);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public <T> List<T> toList(String json, Class<T> clazz) {
         return JSON.parseArray(json, clazz);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public <T> List<T> toList(String json, Type type) {
         return JSON.parseObject(json, type);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public <K, V> Map<K, V> toMap(String json) {
         return JSON.parseObject(json, Map.class);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public <K, V> Map<K, V> toMap(Object object) {
         return toMap(JSON.toJSONString(object));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public <T> T getValue(String json, String field) {
         return (T) JSON.parseObject(json).get(field);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isJson(String json) {
         try {

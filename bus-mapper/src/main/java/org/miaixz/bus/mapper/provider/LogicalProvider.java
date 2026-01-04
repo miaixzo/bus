@@ -59,6 +59,12 @@ public class LogicalProvider {
     public static String select(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new LogicalSqlScript() {
 
+            /**
+             * Generates SQL for selecting records that are not logically deleted.
+             *
+             * @param entity the table metadata entity
+             * @return the generated SQL string
+             */
             @Override
             public String getSql(TableMeta entity) {
                 return "SELECT " + entity.baseColumnAsPropertyList() + " FROM " + entity.tableName() + where(
@@ -81,6 +87,12 @@ public class LogicalProvider {
     public static String selectColumns(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new LogicalSqlScript() {
 
+            /**
+             * Generates SQL for selecting columns with dynamic field selection.
+             *
+             * @param entity the table metadata entity
+             * @return the generated SQL string
+             */
             @Override
             public String getSql(TableMeta entity) {
                 return "SELECT " + choose(
@@ -115,6 +127,12 @@ public class LogicalProvider {
     public static String selectByCondition(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new LogicalSqlScript() {
 
+            /**
+             * Generates SQL for selecting records based on a Condition object.
+             *
+             * @param entity the table metadata entity
+             * @return the generated SQL string
+             */
             @Override
             public String getSql(TableMeta entity) {
                 return ifTest("startSql != null and startSql != ''", () -> "${startSql}") + "SELECT "
@@ -145,6 +163,12 @@ public class LogicalProvider {
     public static String countByCondition(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new LogicalSqlScript() {
 
+            /**
+             * Generates SQL for counting records based on a Condition object.
+             *
+             * @param entity the table metadata entity
+             * @return the generated SQL string
+             */
             @Override
             public String getSql(TableMeta entity) {
                 return ifTest("startSql != null and startSql != ''", () -> "${startSql}") + "SELECT COUNT("
@@ -175,6 +199,12 @@ public class LogicalProvider {
     public static String selectByPrimaryKey(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new LogicalSqlScript() {
 
+            /**
+             * Generates SQL for selecting a record by primary key.
+             *
+             * @param entity the table metadata entity
+             * @return the generated SQL string
+             */
             @Override
             public String getSql(TableMeta entity) {
                 return "SELECT " + entity.baseColumnAsPropertyList() + " FROM " + entity.tableName()
@@ -195,6 +225,12 @@ public class LogicalProvider {
     public static String selectCount(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new LogicalSqlScript() {
 
+            /**
+             * Generates SQL for counting records based on entity conditions.
+             *
+             * @param entity the table metadata entity
+             * @return the generated SQL string
+             */
             @Override
             public String getSql(TableMeta entity) {
                 return "SELECT COUNT(*)  FROM " + entity.tableName() + Symbol.LF + where(
@@ -214,6 +250,12 @@ public class LogicalProvider {
     public static String updateByCondition(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new LogicalSqlScript() {
 
+            /**
+             * Generates SQL for updating all fields by Condition.
+             *
+             * @param entity the table metadata entity
+             * @return the generated SQL string
+             */
             @Override
             public String getSql(TableMeta entity) {
                 return ifTest("condition.startSql != null and condition.startSql != ''", () -> "${condition.startSql}")
@@ -245,6 +287,12 @@ public class LogicalProvider {
     public static String updateByConditionSelective(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new LogicalSqlScript() {
 
+            /**
+             * Generates SQL for updating non-null fields by Condition.
+             *
+             * @param entity the table metadata entity
+             * @return the generated SQL string
+             */
             @Override
             public String getSql(TableMeta entity) {
                 return ifTest("condition.startSql != null and condition.startSql != ''", () -> "${condition.startSql}")
@@ -279,6 +327,12 @@ public class LogicalProvider {
     public static String updateByConditionSetValues(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new LogicalSqlScript() {
 
+            /**
+             * Generates SQL for updating with specified set values by Condition.
+             *
+             * @param entity the table metadata entity
+             * @return the generated SQL string
+             */
             @Override
             public String getSql(TableMeta entity) {
                 return ifTest("condition.startSql != null and condition.startSql != ''", () -> "${condition.startSql}")
@@ -307,6 +361,12 @@ public class LogicalProvider {
     public static String updateByPrimaryKey(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new LogicalSqlScript() {
 
+            /**
+             * Generates SQL for updating all fields by primary key.
+             *
+             * @param entity the table metadata entity
+             * @return the generated SQL string
+             */
             @Override
             public String getSql(TableMeta entity) {
                 return "UPDATE " + entity.tableName() + " SET "
@@ -329,6 +389,12 @@ public class LogicalProvider {
     public static String updateByPrimaryKeySelective(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new LogicalSqlScript() {
 
+            /**
+             * Generates SQL for updating non-null fields by primary key.
+             *
+             * @param entity the table metadata entity
+             * @return the generated SQL string
+             */
             @Override
             public String getSql(TableMeta entity) {
                 return "UPDATE " + entity.tableName()
@@ -357,6 +423,12 @@ public class LogicalProvider {
     public static String updateByPrimaryKeySelectiveWithForceFields(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new LogicalSqlScript() {
 
+            /**
+             * Generates SQL for updating non-null fields with forced fields by primary key.
+             *
+             * @param entity the table metadata entity
+             * @return the generated SQL string
+             */
             @Override
             public String getSql(TableMeta entity) {
                 return "UPDATE " + entity.tableName() + set(
@@ -387,6 +459,12 @@ public class LogicalProvider {
     public static String delete(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new LogicalSqlScript() {
 
+            /**
+             * Generates SQL for logically deleting records by conditions.
+             *
+             * @param entity the table metadata entity
+             * @return the generated SQL string
+             */
             @Override
             public String getSql(TableMeta entity) {
                 ColumnMeta logicColumn = getLogical(entity);
@@ -413,6 +491,12 @@ public class LogicalProvider {
     public static String deleteByPrimaryKey(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new LogicalSqlScript() {
 
+            /**
+             * Generates SQL for logically deleting a record by primary key.
+             *
+             * @param entity the table metadata entity
+             * @return the generated SQL string
+             */
             @Override
             public String getSql(TableMeta entity) {
                 ColumnMeta logicColumn = getLogical(entity);
@@ -433,6 +517,12 @@ public class LogicalProvider {
     public static String deleteByCondition(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new LogicalSqlScript() {
 
+            /**
+             * Generates SQL for logically deleting records by Condition.
+             *
+             * @param entity the table metadata entity
+             * @return the generated SQL string
+             */
             @Override
             public String getSql(TableMeta entity) {
                 ColumnMeta logicColumn = getLogical(entity);

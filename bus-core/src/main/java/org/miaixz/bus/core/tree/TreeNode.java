@@ -93,44 +93,88 @@ public class TreeNode<T> implements Node<T> {
         }
     }
 
+    /**
+     * Gets the unique identifier of the node.
+     *
+     * @return The node ID.
+     */
     @Override
     public T getId() {
         return id;
     }
 
+    /**
+     * Sets the unique identifier of the node.
+     *
+     * @param id The new node ID.
+     * @return This node instance for method chaining.
+     */
     @Override
     public TreeNode<T> setId(final T id) {
         this.id = id;
         return this;
     }
 
+    /**
+     * Gets the identifier of the parent node.
+     *
+     * @return The parent node ID.
+     */
     @Override
     public T getParentId() {
         return this.parentId;
     }
 
+    /**
+     * Sets the identifier of the parent node.
+     *
+     * @param parentId The new parent node ID.
+     * @return This node instance for method chaining.
+     */
     @Override
     public TreeNode<T> setParentId(final T parentId) {
         this.parentId = parentId;
         return this;
     }
 
+    /**
+     * Gets the name or label of the node.
+     *
+     * @return The node name.
+     */
     @Override
     public CharSequence getName() {
         return name;
     }
 
+    /**
+     * Sets the name or label of the node.
+     *
+     * @param name The new node name.
+     * @return This node instance for method chaining.
+     */
     @Override
     public TreeNode<T> setName(final CharSequence name) {
         this.name = name;
         return this;
     }
 
+    /**
+     * Gets the weight or order priority of the node.
+     *
+     * @return The node weight. A smaller value indicates a higher priority.
+     */
     @Override
     public Comparable<?> getWeight() {
         return weight;
     }
 
+    /**
+     * Sets the weight or order priority of the node.
+     *
+     * @param weight The new node weight. A smaller value indicates a higher priority.
+     * @return This node instance for method chaining.
+     */
     @Override
     public TreeNode<T> setWeight(final Comparable<?> weight) {
         this.weight = weight;
@@ -157,6 +201,12 @@ public class TreeNode<T> implements Node<T> {
         return this;
     }
 
+    /**
+     * Checks if this node is equal to another object. Two nodes are considered equal if they have the same ID.
+     *
+     * @param o The object to compare with.
+     * @return {@code true} if the objects are equal, {@code false} otherwise.
+     */
     @Override
     public boolean equals(final Object o) {
         if (this == o) {
@@ -169,6 +219,11 @@ public class TreeNode<T> implements Node<T> {
         return Objects.equals(id, treeNode.id);
     }
 
+    /**
+     * Returns the hash code of this node based on its ID.
+     *
+     * @return The hash code.
+     */
     @Override
     public int hashCode() {
         return Objects.hash(id);

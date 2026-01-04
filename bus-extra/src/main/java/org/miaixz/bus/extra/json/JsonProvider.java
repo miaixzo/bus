@@ -149,9 +149,9 @@ public interface JsonProvider extends Provider {
     boolean isJson(String json);
 
     /**
-     * Returns the type of this JSON provider.
+     * {@inheritDoc}
      *
-     * @return The provider type, which is {@link EnumValue.Povider#JSON}.
+     * @return {@inheritDoc}
      */
     @Override
     default Object type() {

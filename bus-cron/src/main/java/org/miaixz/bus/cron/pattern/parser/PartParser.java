@@ -30,8 +30,8 @@ package org.miaixz.bus.cron.pattern.parser;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.miaixz.bus.core.center.date.culture.en.Month;
-import org.miaixz.bus.core.center.date.culture.en.Week;
+import org.miaixz.bus.core.center.date.Month;
+import org.miaixz.bus.core.center.date.Week;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.CrontabException;
 import org.miaixz.bus.core.text.CharsBacker;
@@ -146,11 +146,11 @@ public class PartParser {
     /**
      * Parses an expression that may contain a step value.
      * <ul>
-     * <li><strong>a</strong> 或 <strong>*</strong></li>
-     * <li><strong>a&#47;b</strong> 或 <strong>*&#47;b</strong></li>
+     * <li><strong>a</strong> or <strong>*</strong></li>
+     * <li><strong>a&#47;b</strong> or <strong>*&#47;b</strong></li>
      * <li><strong>a-b/2</strong></li>
      * </ul>
-     * 
+     *
      * @param value The expression part string.
      * @return A list of integer values.
      */

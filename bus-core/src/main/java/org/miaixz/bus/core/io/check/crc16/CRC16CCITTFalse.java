@@ -45,9 +45,6 @@ public class CRC16CCITTFalse extends CRC16Checksum {
     private CRC16CCITTFalse() {
     }
 
-    /**
-     * The serial version UID for serialization.
-     */
     @Serial
     private static final long serialVersionUID = 2852278527996L;
 

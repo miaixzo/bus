@@ -103,61 +103,140 @@ public class TinyLoggingProvider extends AbstractProvider {
         }
     }
 
+    /**
+     * Gets the name of this logger.
+     *
+     * @return the name of this logger
+     */
     @Override
     public String getName() {
         return this.name;
     }
 
+    /**
+     * Checks whether TRACE level logging is enabled.
+     *
+     * @return {@code true} if TRACE level logging is enabled
+     */
     @Override
     public boolean isTraceEnabled() {
         return this.level <= Level.TRACE.ordinal();
     }
 
+    /**
+     * Logs a message at TRACE level with full context.
+     *
+     * @param fqcn   the fully qualified class name of the caller
+     * @param t      the throwable to log
+     * @param format the message format string
+     * @param args   the arguments to format into the message string
+     */
     @Override
     public void trace(final String fqcn, final Throwable t, final String format, final Object... args) {
         logIfEnabled(fqcn, Level.TRACE, t, format, args);
     }
 
+    /**
+     * Checks whether DEBUG level logging is enabled.
+     *
+     * @return {@code true} if DEBUG level logging is enabled
+     */
     @Override
     public boolean isDebugEnabled() {
         return this.level <= Level.DEBUG.ordinal();
     }
 
+    /**
+     * Logs a message at DEBUG level with full context.
+     *
+     * @param fqcn   the fully qualified class name of the caller
+     * @param t      the throwable to log
+     * @param format the message format string
+     * @param args   the arguments to format into the message string
+     */
     @Override
     public void debug(final String fqcn, final Throwable t, final String format, final Object... args) {
         logIfEnabled(fqcn, Level.DEBUG, t, format, args);
     }
 
+    /**
+     * Checks whether INFO level logging is enabled.
+     *
+     * @return {@code true} if INFO level logging is enabled
+     */
     @Override
     public boolean isInfoEnabled() {
         return this.level <= Level.INFO.ordinal();
     }
 
+    /**
+     * Logs a message at INFO level with full context.
+     *
+     * @param fqcn   the fully qualified class name of the caller
+     * @param t      the throwable to log
+     * @param format the message format string
+     * @param args   the arguments to format into the message string
+     */
     @Override
     public void info(final String fqcn, final Throwable t, final String format, final Object... args) {
         logIfEnabled(fqcn, Level.INFO, t, format, args);
     }
 
+    /**
+     * Checks whether WARN level logging is enabled.
+     *
+     * @return {@code true} if WARN level logging is enabled
+     */
     @Override
     public boolean isWarnEnabled() {
         return this.level <= Level.WARN.ordinal();
     }
 
+    /**
+     * Logs a message at WARN level with full context.
+     *
+     * @param fqcn   the fully qualified class name of the caller
+     * @param t      the throwable to log
+     * @param format the message format string
+     * @param args   the arguments to format into the message string
+     */
     @Override
     public void warn(final String fqcn, final Throwable t, final String format, final Object... args) {
         logIfEnabled(fqcn, Level.WARN, t, format, args);
     }
 
+    /**
+     * Checks whether ERROR level logging is enabled.
+     *
+     * @return {@code true} if ERROR level logging is enabled
+     */
     @Override
     public boolean isErrorEnabled() {
         return this.level <= Level.ERROR.ordinal();
     }
 
+    /**
+     * Logs a message at ERROR level with full context.
+     *
+     * @param fqcn   the fully qualified class name of the caller
+     * @param t      the throwable to log
+     * @param format the message format string
+     * @param args   the arguments to format into the message string
+     */
     @Override
     public void error(final String fqcn, final Throwable t, final String format, final Object... args) {
         logIfEnabled(fqcn, Level.ERROR, t, format, args);
     }
 
+    /**
+     * Logs a message at the specified level with full context.
+     *
+     * @param fqcn   the fully qualified class name of the caller
+     * @param level  the logging level
+     * @param t      the throwable to log
+     * @param format the message format string
+     * @param args   the arguments to format into the message string
+     */
     @Override
     public void log(
             final String fqcn,
@@ -168,6 +247,12 @@ public class TinyLoggingProvider extends AbstractProvider {
         logIfEnabled(fqcn, toTinyLevel(level), t, format, args);
     }
 
+    /**
+     * Checks whether logging is enabled for the specified level.
+     *
+     * @param level the logging level to check
+     * @return {@code true} if logging is enabled for the specified level
+     */
     @Override
     public boolean isEnabled(final org.miaixz.bus.logger.Level level) {
         return this.level <= toTinyLevel(level).ordinal();
@@ -212,6 +297,11 @@ public class TinyLoggingProvider extends AbstractProvider {
         };
     }
 
+    /**
+     * Gets the current logging level.
+     *
+     * @return the current logging level, or {@link org.miaixz.bus.logger.Level#OFF} if it cannot be determined
+     */
     @Override
     public org.miaixz.bus.logger.Level getLevel() {
         Level tinyLevel = provider.getMinimumLevel();

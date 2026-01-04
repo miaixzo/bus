@@ -35,7 +35,7 @@ import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.miaixz.bus.core.center.date.DateTime;
-import org.miaixz.bus.core.center.date.culture.en.Various;
+import org.miaixz.bus.core.center.date.Various;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;

@@ -102,7 +102,10 @@ public interface CoreGraphics extends Library {
     boolean CGRectMakeWithDictionaryRepresentation(CFDictionaryRef dict, CGRect rect);
 
     /**
-     * A point with X and Y coordinates.
+     * JNA wrapper for the CGPoint structure.
+     * <p>
+     * This class maps to the native macOS structure: {@code struct CGPoint { CGFloat x; CGFloat y; }; }
+     * </p>
      */
     @FieldOrder({ "x", "y" })
     class CGPoint extends Structure {
@@ -119,7 +122,10 @@ public interface CoreGraphics extends Library {
     }
 
     /**
-     * A size with width and height.
+     * JNA wrapper for the CGSize structure.
+     * <p>
+     * This class maps to the native macOS structure: {@code struct CGSize { CGFloat width; CGFloat height; }; }
+     * </p>
      */
     @FieldOrder({ "width", "height" })
     class CGSize extends Structure {
@@ -135,7 +141,10 @@ public interface CoreGraphics extends Library {
     }
 
     /**
-     * A rectangle with origin and size.
+     * JNA wrapper for the CGRect structure.
+     * <p>
+     * This class maps to the native macOS structure: {@code struct CGRect { CGPoint origin; CGSize size; }; }
+     * </p>
      */
     @FieldOrder({ "origin", "size" })
     class CGRect extends Structure implements AutoCloseable {

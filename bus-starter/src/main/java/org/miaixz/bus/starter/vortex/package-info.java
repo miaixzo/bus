@@ -26,7 +26,10 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Global access gateway support.
+ * Provides Vortex gateway configuration and Spring Boot integration.
+ * <p>
+ * This package contains auto-configuration classes, property bindings, and beans for setting up the Vortex reactive
+ * gateway in Spring Boot applications.
  *
  * @author Kimi Liu
  * @since Java 17+

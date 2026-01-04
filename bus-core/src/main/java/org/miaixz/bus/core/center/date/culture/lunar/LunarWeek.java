@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.core.center.date.culture.lunar;
 
+import org.miaixz.bus.core.center.date.culture.Week;
+import org.miaixz.bus.core.center.date.culture.parts.WeekParts;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import org.miaixz.bus.core.center.date.culture.Loops;
-import org.miaixz.bus.core.center.date.culture.cn.Week;
 
 /**
  * Represents a week in the Lunar calendar.
@@ -39,110 +39,67 @@ import org.miaixz.bus.core.center.date.culture.cn.Week;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class LunarWeek extends Loops {
+public class LunarWeek extends WeekParts {
 
     /**
-     * The lunar month this week belongs to.
-     */
-    protected LunarMonth month;
-
-    /**
-     * The index of the week within the month, 0-5.
-     */
-    protected int index;
-
-    /**
-     * The starting day of the week.
-     */
-    protected Week start;
-
-    /**
-     * Initializes a new LunarWeek instance.
+     * Constructs a LunarWeek instance.
      *
-     * @param year  The year.
-     * @param month The month.
-     * @param index The index of the week, 0-5.
-     * @param start The starting day of the week, 1-7 (1 for Monday, 7 for Sunday).
-     * @throws IllegalArgumentException if the index or start day is out of valid range.
+     * @param year  the lunar year
+     * @param month the lunar month
+     * @param index the week index (0-5)
+     * @param start the starting day of week (1-7 for Monday-Sunday, 0 for Sunday)
      */
     public LunarWeek(int year, int month, int index, int start) {
-        if (index < 0 || index > 5) {
-            throw new IllegalArgumentException(String.format("illegal lunar week index: %d", index));
-        }
-        if (start < 0 || start > 6) {
-            throw new IllegalArgumentException(String.format("illegal lunar week start: %d", start));
-        }
-        LunarMonth m = LunarMonth.fromYm(year, month);
-        if (index >= m.getWeekCount(start)) {
-            throw new IllegalArgumentException(String.format("illegal lunar week index: %d in month: %s", index, m));
-        }
-        this.month = m;
+        validate(year, month, index, start);
+        this.year = year;
+        this.month = month;
         this.index = index;
-        this.start = Week.fromIndex(start);
+        this.start = start;
     }
 
     /**
-     * Creates a new LunarWeek instance from year, month, week index, and start day.
+     * Creates a LunarWeek from year, month, index, and start day.
      *
-     * @param year  The year.
-     * @param month The month.
-     * @param index The index of the week, 0-5.
-     * @param start The starting day of the week, 1-7 (1 for Monday, 7 for Sunday).
-     * @return A new {@link LunarWeek} instance.
+     * @param year  the lunar year
+     * @param month the lunar month
+     * @param index the week index (0-5)
+     * @param start the starting day of week (1-7 for Monday-Sunday, 0 for Sunday)
+     * @return a new LunarWeek instance
      */
     public static LunarWeek fromYm(int year, int month, int index, int start) {
         return new LunarWeek(year, month, index, start);
     }
 
     /**
-     * Gets the lunar month this week belongs to.
+     * Validates the lunar year, month, week index, and start day.
      *
-     * @return The {@link LunarMonth}.
+     * @param year  the lunar year
+     * @param month the lunar month
+     * @param index the week index
+     * @param start the starting day of week
+     * @throws IllegalArgumentException if the parameters are invalid
+     */
+    public static void validate(int year, int month, int index, int start) {
+        WeekParts.validate(index, start);
+        LunarMonth m = LunarMonth.fromYm(year, month);
+        if (index >= m.getWeekCount(start)) {
+            throw new IllegalArgumentException(String.format("illegal lunar week index: %d in month: %s", index, m));
+        }
+    }
+
+    /**
+     * Gets the lunar month for this week.
+     *
+     * @return the lunar month
      */
     public LunarMonth getLunarMonth() {
-        return month;
+        return LunarMonth.fromYm(year, month);
     }
 
     /**
-     * Gets the year of this lunar week.
+     * Gets the name of this week (e.g., "第一周", "第二周").
      *
-     * @return The year.
-     */
-    public int getYear() {
-        return month.getYear();
-    }
-
-    /**
-     * Gets the month of this lunar week, with negative value indicating a leap month.
-     *
-     * @return The month.
-     */
-    public int getMonth() {
-        return month.getMonthWithLeap();
-    }
-
-    /**
-     * Gets the index of the week within the month, 0-5.
-     *
-     * @return The index.
-     */
-    public int getIndex() {
-        return index;
-    }
-
-    /**
-     * Gets the starting day of the week.
-     *
-     * @return The {@link Week} representing the start day.
-     */
-    public Week getStart() {
-        return start;
-    }
-
-    /**
-     * Gets the Chinese name of the week.
-     *
-     * @return The name of the week.
+     * @return the week name
      */
     public String getName() {
         return Week.WHICH[index];
@@ -150,58 +107,57 @@ public class LunarWeek extends Loops {
 
     @Override
     public String toString() {
-        return month + getName();
+        return getLunarMonth() + getName();
     }
 
     /**
-     * Gets the lunar week after a specified number of weeks.
+     * Gets the lunar week that is n weeks after this week.
      *
-     * @param n The number of weeks to add.
-     * @return The {@link LunarWeek} after {@code n} weeks.
+     * @param n the number of weeks to advance (can be negative)
+     * @return the lunar week after n weeks
      */
     public LunarWeek next(int n) {
-        int startIndex = start.getIndex();
         if (n == 0) {
-            return fromYm(getYear(), getMonth(), index, startIndex);
+            return fromYm(getYear(), getMonth(), index, start);
         }
         int d = index + n;
-        LunarMonth m = month;
+        LunarMonth m = getLunarMonth();
         if (n > 0) {
-            int weekCount = m.getWeekCount(startIndex);
+            int weekCount = m.getWeekCount(start);
             while (d >= weekCount) {
                 d -= weekCount;
                 m = m.next(1);
-                if (!LunarDay.fromYmd(m.getYear(), m.getMonthWithLeap(), 1).getWeek().equals(start)) {
+                if (m.getFirstDay().getWeek().getIndex() != start) {
                     d += 1;
                 }
-                weekCount = m.getWeekCount(startIndex);
+                weekCount = m.getWeekCount(start);
             }
         } else {
             while (d < 0) {
-                if (!LunarDay.fromYmd(m.getYear(), m.getMonthWithLeap(), 1).getWeek().equals(start)) {
+                if (m.getFirstDay().getWeek().getIndex() != start) {
                     d -= 1;
                 }
                 m = m.next(-1);
-                d += m.getWeekCount(startIndex);
+                d += m.getWeekCount(start);
             }
         }
-        return fromYm(m.getYear(), m.getMonthWithLeap(), d, startIndex);
+        return fromYm(m.getYear(), m.getMonthWithLeap(), d, start);
     }
 
     /**
      * Gets the first day of this week.
      *
-     * @return The first {@link LunarDay} of this week.
+     * @return the first lunar day of this week
      */
     public LunarDay getFirstDay() {
         LunarDay firstDay = LunarDay.fromYmd(getYear(), getMonth(), 1);
-        return firstDay.next(index * 7 - indexOf(firstDay.getWeek().getIndex() - start.getIndex(), 7));
+        return firstDay.next(index * 7 - indexOf(firstDay.getWeek().getIndex() - start, 7));
     }
 
     /**
-     * Gets a list of lunar days in this week.
+     * Gets the list of lunar days in this week.
      *
-     * @return A list of {@link LunarDay} objects for this week.
+     * @return the list of 7 lunar days
      */
     public List<LunarDay> getDays() {
         List<LunarDay> l = new ArrayList<>(7);

@@ -29,9 +29,8 @@ package org.miaixz.bus.starter.vortex;
 
 import org.miaixz.bus.spring.GeniusBuilder;
 import org.miaixz.bus.vortex.Args;
+import org.miaixz.bus.vortex.magic.Performance;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Bean;
-import org.springframework.web.server.adapter.ForwardedHeaderTransformer;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -73,18 +72,10 @@ public class VortexProperties {
     private Args.Mock mock = new Args.Mock();
 
     /**
-     * Registers a {@link ForwardedHeaderTransformer} bean.
+     * Performance optimization settings for request body processing and connection pooling.
      * <p>
-     * This bean is a core component in Spring WebFlux for handling forwarded headers from proxies (e.g.,
-     * X-Forwarded-For, X-Forwarded-Host). Once registered, it automatically wraps the {@code ServerHttpRequest},
-     * allowing subsequent filters and controllers to transparently access the original client information.
-     * </p>
-     *
-     * @return A new {@link ForwardedHeaderTransformer} instance.
+     * These settings allow fine-tuning of memory usage and throughput trade-offs.
      */
-    @Bean
-    public ForwardedHeaderTransformer forwardedHeaderTransformer() {
-        return new ForwardedHeaderTransformer();
-    }
+    private Performance performance = new Performance();
 
 }

@@ -28,6 +28,7 @@
 package org.miaixz.bus.core.lang;
 
 /**
+ * 
  * Enumeration for various internationalization (I18n) languages and locales. Each enum constant represents a specific
  * language or language-country combination, providing both a language code and a descriptive name.
  *
@@ -40,295 +41,585 @@ public enum I18n {
      * Automatically detect the language.
      */
     AUTO_DETECT(Normal.EMPTY, "Auto Detect"),
-    /** English */
+    /**
+     * English
+     */
     EN("en", "English"),
-    /** English (United States) */
+    /**
+     * English (United States)
+     */
     EN_US("en_US", "English (United States)"),
-    /** Arabic */
+    /**
+     * Arabic
+     */
     AR("ar", "Arabic"),
-    /** Arabic (United Arab Emirates) */
+    /**
+     * Arabic (United Arab Emirates)
+     */
     AR_AE("ar_AE", "Arabic (United Arab Emirates)"),
-    /** Arabic (Bahrain) */
+    /**
+     * Arabic (Bahrain)
+     */
     AR_BH("ar_BH", "Arabic (Bahrain)"),
-    /** Arabic (Algeria) */
+    /**
+     * Arabic (Algeria)
+     */
     AR_DZ("ar_DZ", "Arabic (Algeria)"),
-    /** Arabic (Egypt) */
+    /**
+     * Arabic (Egypt)
+     */
     AR_EG("ar_EG", "Arabic (Egypt)"),
-    /** Arabic (Iraq) */
+    /**
+     * Arabic (Iraq)
+     */
     AR_IQ("ar_IQ", "Arabic (Iraq)"),
-    /** Arabic (Jordan) */
+    /**
+     * Arabic (Jordan)
+     */
     AR_JO("ar_JO", "Arabic (Jordan)"),
-    /** Arabic (Kuwait) */
+    /**
+     * Arabic (Kuwait)
+     */
     AR_KW("ar_KW", "Arabic (Kuwait)"),
-    /** Arabic (Lebanon) */
+    /**
+     * Arabic (Lebanon)
+     */
     AR_LB("ar_LB", "Arabic (Lebanon)"),
-    /** Arabic (Libya) */
+    /**
+     * Arabic (Libya)
+     */
     AR_LY("ar_LY", "Arabic (Libya)"),
-    /** Arabic (Morocco) */
+    /**
+     * Arabic (Morocco)
+     */
     AR_MA("ar_MA", "Arabic (Morocco)"),
-    /** Arabic (Oman) */
+    /**
+     * Arabic (Oman)
+     */
     AR_OM("ar_OM", "Arabic (Oman)"),
-    /** Arabic (Qatar) */
+    /**
+     * Arabic (Qatar)
+     */
     AR_QA("ar_QA", "Arabic (Qatar)"),
-    /** Arabic (Saudi Arabia) */
+    /**
+     * Arabic (Saudi Arabia)
+     */
     AR_SA("ar_SA", "Arabic (Saudi Arabia)"),
-    /** Arabic (Sudan) */
+    /**
+     * Arabic (Sudan)
+     */
     AR_SD("ar_SD", "Arabic (Sudan)"),
-    /** Arabic (Syria) */
+    /**
+     * Arabic (Syria)
+     */
     AR_SY("ar_SY", "Arabic (Syria)"),
-    /** Arabic (Tunisia) */
+    /**
+     * Arabic (Tunisia)
+     */
     AR_TN("ar_TN", "Arabic (Tunisia)"),
-    /** Arabic (Yemen) */
+    /**
+     * Arabic (Yemen)
+     */
     AR_YE("ar_YE", "Arabic (Yemen)"),
-    /** Belarusian */
+    /**
+     * Belarusian
+     */
     BE("be", "Belarusian"),
-    /** Belarusian (Belarus) */
+    /**
+     * Belarusian (Belarus)
+     */
     BE_BY("be_BY", "Belarusian (Belarus)"),
-    /** Bulgarian */
+    /**
+     * Bulgarian
+     */
     BG("bg", "Bulgarian"),
-    /** Bulgarian (Bulgaria) */
+    /**
+     * Bulgarian (Bulgaria)
+     */
     BG_BG("bg_BG", "Bulgarian (Bulgaria)"),
-    /** Catalan */
+    /**
+     * Catalan
+     */
     CA("ca", "Catalan"),
-    /** Catalan (Spain) */
+    /**
+     * Catalan (Spain)
+     */
     CA_ES("ca_ES", "Catalan (Spain)"),
-    /** Catalan (Spain, Euro) */
+    /**
+     * Catalan (Spain, Euro)
+     */
     CA_ES_EURO("ca_ES_EURO", "Catalan (Spain, Euro)"),
-    /** Czech */
+    /**
+     * Czech
+     */
     CS("cs", "Czech"),
-    /** Czech (Czech Republic) */
+    /**
+     * Czech (Czech Republic)
+     */
     CS_CZ("cs_CZ", "Czech (Czech Republic)"),
-    /** Danish */
+    /**
+     * Danish
+     */
     DA("da", "Danish"),
-    /** Danish (Denmark) */
+    /**
+     * Danish (Denmark)
+     */
     DA_DK("da_DK", "Danish (Denmark)"),
-    /** German */
+    /**
+     * German
+     */
     DE("de", "German"),
-    /** German (Austria) */
+    /**
+     * German (Austria)
+     */
     DE_AT("de_AT", "German (Austria)"),
-    /** German (Austria, Euro) */
+    /**
+     * German (Austria, Euro)
+     */
     DE_AT_EURO("de_AT_EURO", "German (Austria, Euro)"),
-    /** German (Switzerland) */
+    /**
+     * German (Switzerland)
+     */
     DE_CH("de_CH", "German (Switzerland)"),
-    /** German (Germany) */
+    /**
+     * German (Germany)
+     */
     DE_DE("de_DE", "German (Germany)"),
-    /** German (Germany, Euro) */
+    /**
+     * German (Germany, Euro)
+     */
     DE_DE_EURO("de_DE_EURO", "German (Germany, Euro)"),
-    /** German (Luxembourg) */
+    /**
+     * German (Luxembourg)
+     */
     DE_LU("de_LU", "German (Luxembourg)"),
-    /** German (Luxembourg, Euro) */
+    /**
+     * German (Luxembourg, Euro)
+     */
     DE_LU_EURO("de_LU_EURO", "German (Luxembourg, Euro)"),
-    /** Greek */
+    /**
+     * Greek
+     */
     EL("el", "Greek"),
-    /** Greek (Greece) */
+    /**
+     * Greek (Greece)
+     */
     EL_GR("el_GR", "Greek (Greece)"),
-    /** English (Australia) */
+    /**
+     * English (Australia)
+     */
     EN_AU("en_AU", "English (Australia)"),
-    /** English (Canada) */
+    /**
+     * English (Canada)
+     */
     EN_CA("en_CA", "English (Canada)"),
-    /** English (United Kingdom) */
+    /**
+     * English (United Kingdom)
+     */
     EN_GB("en_GB", "English (United Kingdom)"),
-    /** English (Ireland) */
+    /**
+     * English (Ireland)
+     */
     EN_IE("en_IE", "English (Ireland)"),
-    /** English (Ireland, Euro) */
+    /**
+     * English (Ireland, Euro)
+     */
     EN_IE_EURO("en_IE_EURO", "English (Ireland, Euro)"),
-    /** English (New Zealand) */
+    /**
+     * English (New Zealand)
+     */
     EN_NZ("en_NZ", "English (New Zealand)"),
-    /** English (South Africa) */
+    /**
+     * English (South Africa)
+     */
     EN_ZA("en_ZA", "English (South Africa)"),
-    /** Spanish */
+    /**
+     * Spanish
+     */
     ES("es", "Spanish"),
-    /** Spanish (Bolivia) */
+    /**
+     * Spanish (Bolivia)
+     */
     ES_BO("es_BO", "Spanish (Bolivia)"),
-    /** Spanish (Argentina) */
+    /**
+     * Spanish (Argentina)
+     */
     ES_AR("es_AR", "Spanish (Argentina)"),
-    /** Spanish (Chile) */
+    /**
+     * Spanish (Chile)
+     */
     ES_CL("es_CL", "Spanish (Chile)"),
-    /** Spanish (Colombia) */
+    /**
+     * Spanish (Colombia)
+     */
     ES_CO("es_CO", "Spanish (Colombia)"),
-    /** Spanish (Costa Rica) */
+    /**
+     * Spanish (Costa Rica)
+     */
     ES_CR("es_CR", "Spanish (Costa Rica)"),
-    /** Spanish (Dominican Republic) */
+    /**
+     * Spanish (Dominican Republic)
+     */
     ES_DO("es_DO", "Spanish (Dominican Republic)"),
-    /** Spanish (Ecuador) */
+    /**
+     * Spanish (Ecuador)
+     */
     ES_EC("es_EC", "Spanish (Ecuador)"),
-    /** Spanish (Spain) */
+    /**
+     * Spanish (Spain)
+     */
     ES_ES("es_ES", "Spanish (Spain)"),
-    /** Spanish (Spain, Euro) */
+    /**
+     * Spanish (Spain, Euro)
+     */
     ES_ES_EURO("es_ES_EURO", "Spanish (Spain, Euro)"),
-    /** Spanish (Guatemala) */
+    /**
+     * Spanish (Guatemala)
+     */
     ES_GT("es_GT", "Spanish (Guatemala)"),
-    /** Spanish (Honduras) */
+    /**
+     * Spanish (Honduras)
+     */
     ES_HN("es_HN", "Spanish (Honduras)"),
-    /** Spanish (Mexico) */
+    /**
+     * Spanish (Mexico)
+     */
     ES_MX("es_MX", "Spanish (Mexico)"),
-    /** Spanish (Nicaragua) */
+    /**
+     * Spanish (Nicaragua)
+     */
     ES_NI("es_NI", "Spanish (Nicaragua)"),
-    /** Estonian */
+    /**
+     * Estonian
+     */
     ET("et", "Estonian"),
-    /** Spanish (Panama) */
+    /**
+     * Spanish (Panama)
+     */
     ES_PA("es_PA", "Spanish (Panama)"),
-    /** Spanish (Peru) */
+    /**
+     * Spanish (Peru)
+     */
     ES_PE("es_PE", "Spanish (Peru)"),
-    /** Spanish (Puerto Rico) */
+    /**
+     * Spanish (Puerto Rico)
+     */
     ES_PR("es_PR", "Spanish (Puerto Rico)"),
-    /** Spanish (Paraguay) */
+    /**
+     * Spanish (Paraguay)
+     */
     ES_PY("es_PY", "Spanish (Paraguay)"),
-    /** Spanish (El Salvador) */
+    /**
+     * Spanish (El Salvador)
+     */
     ES_SV("es_SV", "Spanish (El Salvador)"),
-    /** Spanish (Uruguay) */
+    /**
+     * Spanish (Uruguay)
+     */
     ES_UY("es_UY", "Spanish (Uruguay)"),
-    /** Spanish (Venezuela) */
+    /**
+     * Spanish (Venezuela)
+     */
     ES_VE("es_VE", "Spanish (Venezuela)"),
-    /** Estonian (Estonia) */
+    /**
+     * Estonian (Estonia)
+     */
     ET_EE("et_EE", "Estonian (Estonia)"),
-    /** Finnish */
+    /**
+     * Finnish
+     */
     FI("fi", "Finnish"),
-    /** Finnish (Finland) */
+    /**
+     * Finnish (Finland)
+     */
     FI_FI("fi_FI", "Finnish (Finland)"),
-    /** Finnish (Finland, Euro) */
+    /**
+     * Finnish (Finland, Euro)
+     */
     FI_FI_EURO("fi_FI_EURO", "Finnish (Finland, Euro)"),
-    /** French */
+    /**
+     * French
+     */
     FR("fr", "French"),
-    /** French (Belgium) */
+    /**
+     * French (Belgium)
+     */
     FR_BE("fr_BE", "French (Belgium)"),
-    /** French (Belgium, Euro) */
+    /**
+     * French (Belgium, Euro)
+     */
     FR_BE_EURO("fr_BE_EURO", "French (Belgium, Euro)"),
-    /** French (Canada) */
+    /**
+     * French (Canada)
+     */
     FR_CA("fr_CA", "French (Canada)"),
-    /** French (Switzerland) */
+    /**
+     * French (Switzerland)
+     */
     FR_CH("fr_CH", "French (Switzerland)"),
-    /** French (France) */
+    /**
+     * French (France)
+     */
     FR_FR("fr_FR", "French (France)"),
-    /** French (France, Euro) */
+    /**
+     * French (France, Euro)
+     */
     FR_FR_EURO("fr_FR_EURO", "French (France, Euro)"),
-    /** French (Luxembourg) */
+    /**
+     * French (Luxembourg)
+     */
     FR_LU("fr_LU", "French (Luxembourg)"),
-    /** French (Luxembourg, Euro) */
+    /**
+     * French (Luxembourg, Euro)
+     */
     FR_LU_EURO("fr_LU_EURO", "French (Luxembourg, Euro)"),
-    /** Croatian */
+    /**
+     * Croatian
+     */
     HR("hr", "Croatian"),
-    /** Croatian (Croatia) */
+    /**
+     * Croatian (Croatia)
+     */
     HR_HR("hr_HR", "Croatian (Croatia)"),
-    /** Hungarian */
+    /**
+     * Hungarian
+     */
     HU("hu", "Hungarian"),
-    /** Hungarian (Hungary) */
+    /**
+     * Hungarian (Hungary)
+     */
     HU_HU("hu_HU", "Hungarian (Hungary)"),
-    /** Icelandic */
+    /**
+     * Icelandic
+     */
     IS("is", "Icelandic"),
-    /** Icelandic (Iceland) */
+    /**
+     * Icelandic (Iceland)
+     */
     IS_IS("is_IS", "Icelandic (Iceland)"),
-    /** Italian */
+    /**
+     * Italian
+     */
     IT("it", "Italian"),
-    /** Italian (Switzerland) */
+    /**
+     * Italian (Switzerland)
+     */
     IT_CH("it_CH", "Italian (Switzerland)"),
-    /** Italian (Italy) */
+    /**
+     * Italian (Italy)
+     */
     IT_IT("it_IT", "Italian (Italy)"),
-    /** Italian (Italy, Euro) */
+    /**
+     * Italian (Italy, Euro)
+     */
     IT_IT_EURO("it_IT_EURO", "Italian (Italy, Euro)"),
-    /** Hebrew */
+    /**
+     * Hebrew
+     */
     IW("iw", "Hebrew"),
-    /** Hebrew (Israel) */
+    /**
+     * Hebrew (Israel)
+     */
     IW_IL("iw_IL", "Hebrew (Israel)"),
-    /** Japanese */
+    /**
+     * Japanese
+     */
     JA("ja", "Japanese"),
-    /** Japanese (Japan) */
+    /**
+     * Japanese (Japan)
+     */
     JA_JP("ja_JP", "Japanese (Japan)"),
-    /** Korean */
+    /**
+     * Korean
+     */
     KO("ko", "Korean"),
-    /** Korean (South Korea) */
+    /**
+     * Korean (South Korea)
+     */
     KO_KR("ko_KR", "Korean (South Korea)"),
-    /** Lithuanian */
+    /**
+     * Lithuanian
+     */
     LT("lt", "Lithuanian"),
-    /** Lithuanian (Lithuania) */
+    /**
+     * Lithuanian (Lithuania)
+     */
     LT_LT("lt_LT", "Lithuanian (Lithuania)"),
-    /** Latvian */
+    /**
+     * Latvian
+     */
     LV("lv", "Latvian"),
-    /** Latvian (Latvia) */
+    /**
+     * Latvian (Latvia)
+     */
     LV_LV("lv_LV", "Latvian (Latvia)"),
-    /** Macedonian */
+    /**
+     * Macedonian
+     */
     MK("mk", "Macedonian"),
-    /** Macedonian (Macedonia) */
+    /**
+     * Macedonian (Macedonia)
+     */
     MK_MK("mk_MK", "Macedonian (Macedonia)"),
-    /** Dutch */
+    /**
+     * Dutch
+     */
     NL("nl", "Dutch"),
-    /** Dutch (Belgium) */
+    /**
+     * Dutch (Belgium)
+     */
     NL_BE("nl_BE", "Dutch (Belgium)"),
-    /** Dutch (Belgium, Euro) */
+    /**
+     * Dutch (Belgium, Euro)
+     */
     NL_BE_EURO("nl_BE_EURO", "Dutch (Belgium, Euro)"),
-    /** Dutch (Netherlands) */
+    /**
+     * Dutch (Netherlands)
+     */
     NL_NL("nl_NL", "Dutch (Netherlands)"),
-    /** Dutch (Netherlands, Euro) */
+    /**
+     * Dutch (Netherlands, Euro)
+     */
     NL_NL_EURO("nl_NL_EURO", "Dutch (Netherlands, Euro)"),
-    /** Norwegian */
+    /**
+     * Norwegian
+     */
     NO("no", "Norwegian"),
-    /** Norwegian (Norway) */
+    /**
+     * Norwegian (Norway)
+     */
     NO_NO("no_NO", "Norwegian (Norway)"),
-    /** Norwegian (Norway, Nynorsk) */
+    /**
+     * Norwegian (Norway, Nynorsk)
+     */
     NO_NO_NY("no_NO_NY", "Norwegian (Norway, Nynorsk)"),
-    /** Polish */
+    /**
+     * Polish
+     */
     PL("pl", "Polish"),
-    /** Polish (Poland) */
+    /**
+     * Polish (Poland)
+     */
     PL_PL("pl_PL", "Polish (Poland)"),
-    /** Portuguese */
+    /**
+     * Portuguese
+     */
     PT("pt", "Portuguese"),
-    /** Portuguese (Brazil) */
+    /**
+     * Portuguese (Brazil)
+     */
     PT_BR("pt_BR", "Portuguese (Brazil)"),
-    /** Portuguese (Portugal) */
+    /**
+     * Portuguese (Portugal)
+     */
     PT_PT("pt_PT", "Portuguese (Portugal)"),
-    /** Portuguese (Portugal, Euro) */
+    /**
+     * Portuguese (Portugal, Euro)
+     */
     PT_PT_EURO("pt_PT_EURO", "Portuguese (Portugal, Euro)"),
-    /** Romanian */
+    /**
+     * Romanian
+     */
     RO("ro", "Romanian"),
-    /** Romanian (Romania) */
+    /**
+     * Romanian (Romania)
+     */
     RO_RO("ro_RO", "Romanian (Romania)"),
-    /** Russian */
+    /**
+     * Russian
+     */
     RU("ru", "Russian"),
-    /** Russian (Russia) */
+    /**
+     * Russian (Russia)
+     */
     RU_RU("ru_RU", "Russian (Russia)"),
-    /** Serbo-Croatian */
+    /**
+     * Serbo-Croatian
+     */
     SH("sh", "Serbo-Croatian"),
-    /** Serbo-Croatian (Yugoslavia) */
+    /**
+     * Serbo-Croatian (Yugoslavia)
+     */
     SH_YU("sh_YU", "Serbo-Croatian (Yugoslavia)"),
-    /** Slovak */
+    /**
+     * Slovak
+     */
     SK("sk", "Slovak"),
-    /** Slovak (Slovakia) */
+    /**
+     * Slovak (Slovakia)
+     */
     SK_SK("sk_SK", "Slovak (Slovakia)"),
-    /** Slovenian */
+    /**
+     * Slovenian
+     */
     SL("sl", "Slovenian"),
-    /** Slovenian (Slovenia) */
+    /**
+     * Slovenian (Slovenia)
+     */
     SL_SI("sl_SI", "Slovenian (Slovenia)"),
-    /** Albanian */
+    /**
+     * Albanian
+     */
     SQ("sq", "Albanian"),
-    /** Albanian (Albania) */
+    /**
+     * Albanian (Albania)
+     */
     SQ_AL("sq_AL", "Albanian (Albania)"),
-    /** Serbian */
+    /**
+     * Serbian
+     */
     SR("sr", "Serbian"),
-    /** Serbian (Yugoslavia) */
+    /**
+     * Serbian (Yugoslavia)
+     */
     SR_YU("sr_YU", "Serbian (Yugoslavia)"),
-    /** Swedish */
+    /**
+     * Swedish
+     */
     SV("sv", "Swedish"),
-    /** Swedish (Sweden) */
+    /**
+     * Swedish (Sweden)
+     */
     SV_SE("sv_SE", "Swedish (Sweden)"),
-    /** Thai */
+    /**
+     * Thai
+     */
     TH("th", "Thai"),
-    /** Thai (Thailand) */
+    /**
+     * Thai (Thailand)
+     */
     TH_TH("th_TH", "Thai (Thailand)"),
-    /** Turkish */
+    /**
+     * Turkish
+     */
     TR("tr", "Turkish"),
-    /** Turkish (Turkey) */
+    /**
+     * Turkish (Turkey)
+     */
     TR_TR("tr_TR", "Turkish (Turkey)"),
-    /** Ukrainian */
+    /**
+     * Ukrainian
+     */
     UK("uk", "Ukrainian"),
-    /** Ukrainian (Ukraine) */
+    /**
+     * Ukrainian (Ukraine)
+     */
     UK_UA("uk_UA", "Ukrainian (Ukraine)"),
-    /** Chinese */
+    /**
+     * Chinese
+     */
     ZH("zh", "Chinese"),
-    /** Chinese (Mainland China) */
+    /**
+     * Chinese (Mainland China)
+     */
     ZH_CN("zh_CN", "Chinese (Mainland China)"),
-    /** Chinese (Hong Kong) */
+    /**
+     * Chinese (Hong Kong)
+     */
     ZH_HK("zh_HK", "Chinese (Hong Kong)"),
-    /** Chinese (Taiwan) */
+    /**
+     * Chinese (Taiwan)
+     */
     ZH_TW("zh_TW", "Chinese (Taiwan)");
 
     /**

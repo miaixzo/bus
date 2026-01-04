@@ -138,10 +138,10 @@ public class StdioClient implements McpClient {
      *
      * @param toolName  The name of the tool to call.
      * @param arguments The arguments to pass to the tool.
-     * @return A {@link Mono} that emits the tool's result as a JSON string.
+     * @return A {@link Mono} that emits the tool's result as an Object.
      */
     @Override
-    public Mono<String> callTool(String toolName, Map<String, Object> arguments) {
+    public Mono<Object> callTool(String toolName, Map<String, Object> arguments) {
         return Mono.fromFuture(() -> {
             String requestId = UUID.randomUUID().toString();
             McpRequest request = new McpRequest("2.0", requestId, toolName, arguments);
@@ -158,7 +158,7 @@ public class StdioClient implements McpClient {
             }
 
             return future;
-        });
+        }).map(response -> (Object) response); // Cast String to Object to match interface
     }
 
     /**

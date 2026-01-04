@@ -206,11 +206,17 @@ public class TcpSession extends Session {
         return byteBuf;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ByteBuffer readBuffer() {
         return readBuffer.buffer();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void awaitRead() {
         modCount++;

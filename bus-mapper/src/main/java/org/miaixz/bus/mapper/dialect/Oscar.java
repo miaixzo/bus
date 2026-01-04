@@ -30,10 +30,10 @@ package org.miaixz.bus.mapper.dialect;
 import org.miaixz.bus.mapper.support.paging.Pageable;
 
 /**
- * Oscar (神通数据库) dialect.
+ * Oscar database dialect.
  *
  * <p>
- * Oscar is a Chinese domestic database that is Oracle-compatible.
+ * Oscar is a Chinese domestic database that is Oracle-compatible (神通数据库).
  * </p>
  *
  * <p>

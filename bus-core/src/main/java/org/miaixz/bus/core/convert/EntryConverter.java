@@ -40,12 +40,12 @@ import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.core.xyz.*;
 
 /**
- * {@link Map.Entry} 转换器，支持以下类型转为Entry
+ * Converter for {@link Map.Entry} objects, supports the following types to convert to Entry:
  * <ul>
  * <li>{@link Map}</li>
  * <li>{@link Map.Entry}</li>
- * <li>带分隔符的字符串，支持分隔符{@code :}、{@code =}、{@code ,}</li>
- * <li>Bean，包含{@code getKey}和{@code getValue}方法</li>
+ * <li>String with separators, supports separators {@code :}, {@code =}, {@code ,}</li>
+ * <li>Bean objects with {@code getKey} and {@code getValue} methods</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -57,18 +57,18 @@ public class EntryConverter extends ConverterWithRoot implements MatcherConverte
     private static final long serialVersionUID = 2852268537319L;
 
     /**
-     * 构造
+     * Constructs a new EntryConverter
      *
-     * @param converter 转换器，用于将Entry中key和value转换为指定类型的对象
+     * @param converter the converter for converting Entry key and value to specified type objects
      */
     public EntryConverter(final Converter converter) {
         super(converter);
     }
 
     /**
-     * 字符串转单个键值对的Map，支持分隔符{@code :}、{@code =}、{@code ,}
+     * Converts string to single key-value Map, supporting separators {@code :}, {@code =}, {@code ,}
      *
-     * @param text 字符串
+     * @param text the string
      * @return map or null
      */
     private static Map<CharSequence, CharSequence> strToMap(final CharSequence text) {
@@ -96,14 +96,14 @@ public class EntryConverter extends ConverterWithRoot implements MatcherConverte
     }
 
     /**
-     * 转换对象为指定键值类型的指定类型Map
+     * Converts an object to Map with specified key and value types
      *
-     * @param targetType 目标的Map类型
-     * @param keyType    键类型
-     * @param valueType  值类型
-     * @param value      被转换的值
-     * @return 转换后的Map
-     * @throws ConvertException 转换异常或不支持的类型
+     * @param targetType the target Map type
+     * @param keyType    the key type
+     * @param valueType  the value type
+     * @param value      the value to convert
+     * @return the converted Map
+     * @throws ConvertException if conversion fails or type is unsupported
      */
     public Map.Entry<?, ?> convert(final Type targetType, final Type keyType, final Type valueType, final Object value)
             throws ConvertException {
@@ -134,13 +134,13 @@ public class EntryConverter extends ConverterWithRoot implements MatcherConverte
     }
 
     /**
-     * Map转Entry
+     * Converts Map to Entry
      *
-     * @param targetType 目标的Map类型
-     * @param keyType    键类型
-     * @param valueType  值类型
-     * @param map        被转换的map
-     * @return Entry
+     * @param targetType the target Map type
+     * @param keyType    the key type
+     * @param valueType  the value type
+     * @param map        the map to convert
+     * @return the Entry
      */
     private Map.Entry<?, ?> mapToEntry(final Type targetType, final Type keyType, final Type valueType, final Map map) {
         final Object key;
@@ -150,7 +150,7 @@ public class EntryConverter extends ConverterWithRoot implements MatcherConverte
             key = entry.getKey();
             value = entry.getValue();
         } else {
-            // 忽略Map中其它属性
+            // Ignore other properties in Map
             key = map.get("key");
             value = map.get("value");
         }

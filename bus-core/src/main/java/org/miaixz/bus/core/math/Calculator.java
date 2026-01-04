@@ -113,7 +113,7 @@ public class Calculator {
 
             // If it's '+' or '-', determine if it's a sign (scientific notation), a binary operator, or a unary
             // operator
-            if (c == '+' || c == '-') {
+            if (c == Symbol.C_PLUS || c == Symbol.C_MINUS) {
                 // If the previous character written was 'e' or 'E', treat this as a sign for scientific notation
                 final int outLen = out.length();
                 if (outLen > 0) {
@@ -123,8 +123,8 @@ public class Calculator {
                         // '+' can be safely discarded (1e+3 == 1e3)
                         // '-' must be kept but should not be treated as a binary operator, so replace with '~'
                         // temporarily
-                        if (c == '-') {
-                            out.append('~');
+                        if (c == Symbol.C_MINUS) {
+                            out.append(Symbol.C_TILDE);
                         }
                         continue;
                     }
@@ -140,15 +140,15 @@ public class Calculator {
                     // Collect consecutive unary + or - (e.g., --+ - -> merge into a single net sign)
                     int k = i;
                     int minusCount = 0;
-                    while (k < arr.length && (arr[k] == '+' || arr[k] == '-')) {
-                        if (arr[k] == '-')
+                    while (k < arr.length && (arr[k] == Symbol.C_PLUS || arr[k] == Symbol.C_MINUS)) {
+                        if (arr[k] == Symbol.C_MINUS)
                             minusCount++;
                         k++;
                     }
                     final boolean netNegative = (minusCount % 2 == 1);
                     if (netNegative) {
                         // Mark unary minus with '~' (compatible with original implementation)
-                        out.append('~');
+                        out.append(Symbol.C_TILDE);
                     }
                     i = k - 1;
                 } else {
@@ -164,9 +164,9 @@ public class Calculator {
         // Special handling: if it starts with "~(", convert it to "0-(" (handled as 0 minus group)
         final String result = out.toString();
         final char[] resArr = result.toCharArray();
-        if (resArr.length >= 2 && resArr[0] == '~' && resArr[1] == '(') {
-            resArr[0] = '-';
-            return "0" + new String(resArr);
+        if (resArr.length >= 2 && resArr[0] == Symbol.C_TILDE && resArr[1] == Symbol.C_PARENTHESE_LEFT) {
+            resArr[0] = Symbol.C_MINUS;
+            return Symbol.ZERO + new String(resArr);
         } else {
             return result;
         }
@@ -180,7 +180,8 @@ public class Calculator {
      * @return {@code true} if the character indicates a unary context.
      */
     private static boolean isPrevCharOperatorOrLeftParen(final char c) {
-        return c == '+' || c == '-' || c == '*' || c == '/' || c == '(';
+        return c == Symbol.C_PERCENT || c == Symbol.C_PLUS || c == Symbol.C_MINUS || c == Symbol.C_STAR
+                || c == Symbol.C_SLASH || c == Symbol.C_PARENTHESE_LEFT;
     }
 
     /**
@@ -264,7 +265,7 @@ public class Calculator {
             }
         }
         // Push the last number if exists
-        if (count > 1 || (count == 1 && !isOperator(arr[currentIndex]))) {
+        if (count > 1 || (count == 1 && currentIndex < arr.length && !isOperator(arr[currentIndex]))) {// 最后一个字符不是括号或者其他运算符的则加入后缀式栈中
             postfixStack.push(new String(arr, currentIndex, count));
         }
 
@@ -316,12 +317,19 @@ public class Calculator {
      * @throws IllegalStateException If an unsupported operator is encountered.
      */
     private BigDecimal calculate(final String firstValue, final String secondValue, final char currentOp) {
+        final BigDecimal first = MathKit.toBigDecimal(firstValue);
+        final BigDecimal second = MathKit.toBigDecimal(secondValue);
+
+        if ((currentOp == Symbol.C_SLASH || currentOp == Symbol.C_PERCENT) && second.compareTo(BigDecimal.ZERO) == 0) {
+            throw new ArithmeticException("Division by zero: cannot divide " + firstValue + " by zero");
+        }
+
         return switch (currentOp) {
-            case Symbol.C_PLUS -> MathKit.add(firstValue, secondValue);
-            case Symbol.C_MINUS -> MathKit.sub(firstValue, secondValue);
-            case Symbol.C_STAR -> MathKit.mul(firstValue, secondValue);
-            case Symbol.C_SLASH -> MathKit.div(firstValue, secondValue);
-            case Symbol.C_PERCENT -> MathKit.toBigDecimal(firstValue).remainder(MathKit.toBigDecimal(secondValue));
+            case Symbol.C_PLUS -> MathKit.add(first, second);
+            case Symbol.C_MINUS -> MathKit.sub(first, second);
+            case Symbol.C_STAR -> MathKit.mul(first, second);
+            case Symbol.C_SLASH -> MathKit.div(first, second);
+            case Symbol.C_PERCENT -> first.remainder(second);
             default -> throw new IllegalStateException("Unexpected value: " + currentOp);
         };
     }

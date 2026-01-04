@@ -31,51 +31,59 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.vortex.Assets;
+import org.miaixz.bus.vortex.Context;
 import org.miaixz.bus.vortex.Router;
-import org.miaixz.bus.vortex.support.mcp.McpService;
+import org.miaixz.bus.vortex.support.mcp.McpExecutor;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 
 /**
  * MCP protocol request router, acting as a pure request coordinator. It delegates all MCP asset lifecycle management to
- * the McpLifecycleService and is only responsible for handling real-time listTools and callTool requests.
+ * the McpLifecycleExecutor and is only responsible for handling real-time listTools and callTool requests.
+ * <ul>
+ * <li>Buffering mode (stream = 1 or null): Buffers the complete tool result before returning</li>
+ * <li>Streaming mode (stream = 2): Streams the tool result in chunks</li>
+ * </ul>
+ * Generic type parameters: {@code Router<ServerRequest, ServerResponse>}
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class McpRouter implements Router {
+public class McpRouter implements Router<ServerRequest, ServerResponse> {
 
     /**
-     * The separator used to create unique tool names by prefixing the service name.
+     * The separator used to prefix tool names with their service ID for uniqueness.
      */
     private static final String TOOL_NAME_SEPARATOR = "::";
-    /**
-     * The service responsible for managing the lifecycle of all MCP clients. This dependency will be injected by the
-     * Spring container.
-     */
-    private final McpService service;
 
     /**
-     * Constructs a new McpRouter with an injected McpLifecycleService.
-     *
-     * @param service The McpLifecycleService instance to use for managing MCP clients.
+     * The executor responsible for managing the lifecycle of all MCP clients. This dependency will be injected by the
+     * Spring container.
      */
-    public McpRouter(McpService service) {
-        this.service = service;
+    private final McpExecutor executor;
+
+    /**
+     * Constructs a new McpRouter with an injected McpLifecycleExecutor.
+     *
+     * @param executor The McpLifecycleExecutor instance to use for managing MCP clients.
+     */
+    public McpRouter(McpExecutor executor) {
+        this.executor = executor;
     }
 
     /**
      * Routes an incoming request by determining the desired action (listTools or callTool) and delegating to the
      * appropriate handler.
      *
-     * @param request The incoming {@link ServerRequest}.
-     * @return A {@link Mono<ServerResponse>} with the result of the operation.
+     * @param input The ServerRequest object (strongly typed)
+     * @return A {@link Mono<ServerResponse>} with the result of the operation
      */
     @Override
-    public Mono<ServerResponse> route(ServerRequest request) {
+    public Mono<ServerResponse> route(ServerRequest input) {
+        ServerRequest request = input;
         // This logic is synchronous, fast, and non-blocking.
         String action = request.queryParam("action").orElse("listTools");
         if ("listTools".equalsIgnoreCase(action)) {
@@ -89,60 +97,50 @@ public class McpRouter implements Router {
 
     /**
      * Handles a request to list all available tools from all active MCP services. It aggregates tools from all clients
-     * managed by the McpLifecycleService.
+     * managed by the McpLifecycleExecutor.
      *
-     * @return A {@link Mono<ServerResponse>} containing a list of all available tools.
+     * @return A {@link Mono<ServerResponse>} containing a list of all available tools
      */
     private Mono<ServerResponse> listTools() {
-        // This assumes service.getTools() is already asynchronous and returns a Mono,
-        // which is implied by the original code's use of flatMap.
-        return this.service.getTools().flatMap(tools -> ServerResponse.ok().bodyValue(tools));
+        return this.executor.getTools().flatMap(tools -> ServerResponse.ok().bodyValue(tools));
     }
 
     /**
-     * Handles a request to call a specific tool. It parses the tool name to identify the target service, retrieves the
-     * corresponding client, and delegates the call.
+     * Handles a request to call a specific tool. It parses the tool name to identify the target service and delegates
+     * the call to the {@link McpExecutor}.
      *
      * @param request The incoming {@link ServerRequest} containing the tool name and arguments.
      * @return A {@link Mono<ServerResponse>} with the result from the tool execution.
      */
     private Mono<ServerResponse> callTool(ServerRequest request) {
-        // --- All this setup is fast, in-memory, and non-blocking ---
-        String prefixedToolName = request.queryParam("toolName").orElse(null);
-        if (StringKit.isEmpty(prefixedToolName)) {
-            return ServerResponse.badRequest().bodyValue("Missing required parameter: toolName");
-        }
+        return Mono.deferContextual(contextView -> {
+            final Context context = contextView.get(Context.class);
+            final Assets assets = context.getAssets();
 
-        String[] parts = prefixedToolName.split(TOOL_NAME_SEPARATOR, 2);
-        if (parts.length != 2) {
-            return ServerResponse.badRequest().bodyValue("Invalid toolName format. Expected 'serviceName::toolName'.");
-        }
+            // --- Parse tool name and arguments (fast, in-memory, non-blocking) ---
+            String prefixedToolName = request.queryParam("toolName").orElse(null);
+            if (StringKit.isEmpty(prefixedToolName)) {
+                return ServerResponse.badRequest().bodyValue("Missing required parameter: toolName");
+            }
 
-        String serviceName = parts[0];
-        String actualToolName = parts[1];
+            String[] parts = prefixedToolName.split(TOOL_NAME_SEPARATOR, 2);
+            if (parts.length != 2) {
+                return ServerResponse.badRequest()
+                        .bodyValue("Invalid toolName format. Expected 'serviceName::toolName'.");
+            }
 
-        // Extract all query parameters as arguments, excluding action and toolName.
-        Map<String, Object> arguments = request.queryParams().toSingleValueMap().entrySet().stream()
-                .filter(entry -> !entry.getKey().equals("action") && !entry.getKey().equals("toolName"))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-        // --- End of non-blocking setup ---
+            String serviceName = parts[0];
+            String actualToolName = parts[1];
 
-        // 1. Wrap the potentially blocking call `service.getMcp()` in fromCallable
-        // and offload it from the event loop.
-        return Mono.fromCallable(() -> this.service.getMcp(serviceName)).subscribeOn(Schedulers.boundedElastic())
-                .flatMap(client -> {
-                    // 2. This logic now runs after the client has been fetched asynchronously.
-                    if (client == null) {
-                        return ServerResponse.status(503)
-                                .bodyValue("Service '" + serviceName + "' is not available or not found.");
-                    }
+            // Extract all query parameters as arguments, excluding action and toolName.
+            Map<String, Object> arguments = request.queryParams().toSingleValueMap().entrySet().stream()
+                    .filter(entry -> !entry.getKey().equals("action") && !entry.getKey().equals("toolName"))
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+            // --- End of parsing ---
 
-                    // 3. The rest of the chain is already reactive.
-                    return client.callTool(actualToolName, arguments)
-                            .flatMap(result -> ServerResponse.ok().bodyValue(result)).onErrorResume(
-                                    e -> ServerResponse.status(500)
-                                            .bodyValue("{\"error\": \"Error calling tool: " + e.getMessage() + "\"}"));
-                });
+            // Delegate to executor
+            return this.executor.callToolAndFormat(serviceName, actualToolName, arguments, assets.getStream());
+        });
     }
 
 }

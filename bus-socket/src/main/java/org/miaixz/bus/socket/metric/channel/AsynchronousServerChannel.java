@@ -109,6 +109,11 @@ class AsynchronousServerChannel extends AsynchronousSocketChannel {
         this.lowMemory = lowMemory;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @throws IOException if an I/O error occurs while closing the channel
+     */
     @Override
     public final void close() throws IOException {
         IOException exception = null;
@@ -139,55 +144,138 @@ class AsynchronousServerChannel extends AsynchronousSocketChannel {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param local the local address to bind to
+     * @return this channel
+     * @throws IOException if an I/O error occurs
+     */
     @Override
     public final AsynchronousSocketChannel bind(SocketAddress local) throws IOException {
         channel.bind(local);
         return this;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param <T>   the type of the socket option value
+     * @param name  the socket option
+     * @param value the value of the socket option
+     * @return this channel
+     * @throws IOException if an I/O error occurs
+     */
     @Override
     public final <T> AsynchronousSocketChannel setOption(SocketOption<T> name, T value) throws IOException {
         channel.setOption(name, value);
         return this;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param <T>  the type of the socket option value
+     * @param name the socket option
+     * @return the value of the socket option
+     * @throws IOException if an I/O error occurs
+     */
     @Override
     public final <T> T getOption(SocketOption<T> name) throws IOException {
         return channel.getOption(name);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return a set of the socket options supported by this channel
+     */
     @Override
     public final Set<SocketOption<?>> supportedOptions() {
         return channel.supportedOptions();
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return this channel
+     * @throws IOException if an I/O error occurs
+     */
     @Override
     public final AsynchronousSocketChannel shutdownInput() throws IOException {
         channel.shutdownInput();
         return this;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return this channel
+     * @throws IOException if an I/O error occurs
+     */
     @Override
     public final AsynchronousSocketChannel shutdownOutput() throws IOException {
         channel.shutdownOutput();
         return this;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return the remote address, or {@code null} if the channel is not connected
+     * @throws IOException if an I/O error occurs
+     */
     @Override
     public final SocketAddress getRemoteAddress() throws IOException {
         return channel.getRemoteAddress();
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * This operation is not supported for server channels.
+     * </p>
+     *
+     * @param <A>        the type of the attachment
+     * @param remote     the remote address
+     * @param attachment the attachment object
+     * @param handler    the completion handler
+     * @throws UnsupportedOperationException always
+     */
     @Override
     public <A> void connect(SocketAddress remote, A attachment, CompletionHandler<Void, ? super A> handler) {
         throw new UnsupportedOperationException("Connect operation is not supported for AsynchronousServerChannel");
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * This operation is not supported for server channels.
+     * </p>
+     *
+     * @param remote the remote address
+     * @return a future representing the pending result
+     * @throws UnsupportedOperationException always
+     */
     @Override
     public Future<Void> connect(SocketAddress remote) {
         throw new UnsupportedOperationException("Connect operation is not supported for AsynchronousServerChannel");
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Timeout is not supported for read operations in this implementation.
+     * </p>
+     *
+     * @param <A>        the type of the attachment
+     * @param dst        the buffer into which bytes are to be transferred
+     * @param timeout    the maximum time for the operation (must be 0)
+     * @param unit       the time unit of the timeout argument
+     * @param attachment the object to attach to the I/O operation
+     * @param handler    the handler for consuming the result
+     * @throws UnsupportedOperationException if timeout is greater than 0
+     */
     @Override
     public final <A> void read(
             ByteBuffer dst,
@@ -223,6 +311,12 @@ class AsynchronousServerChannel extends AsynchronousSocketChannel {
         doRead(handler instanceof FutureCompletionHandler);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param readBuffer the buffer into which bytes are to be transferred
+     * @return a {@link Future} representing the pending result
+     */
     @Override
     public final Future<Integer> read(ByteBuffer readBuffer) {
         FutureCompletionHandler<Integer, Object> readFuture = new FutureCompletionHandler<>();
@@ -230,6 +324,22 @@ class AsynchronousServerChannel extends AsynchronousSocketChannel {
         return readFuture;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Scattering read is not supported in this implementation.
+     * </p>
+     *
+     * @param <A>        the type of the attachment
+     * @param dsts       the buffers into which bytes are to be transferred
+     * @param offset     the offset within the buffer array
+     * @param length     the maximum number of buffers to be accessed
+     * @param timeout    the maximum time for the operation
+     * @param unit       the time unit of the timeout argument
+     * @param attachment the object to attach to the I/O operation
+     * @param handler    the handler for consuming the result
+     * @throws UnsupportedOperationException always
+     */
     @Override
     public final <A> void read(
             ByteBuffer[] dsts,
@@ -242,6 +352,20 @@ class AsynchronousServerChannel extends AsynchronousSocketChannel {
         throw new UnsupportedOperationException("Scattering read is not supported");
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Timeout is not supported for write operations in this implementation.
+     * </p>
+     *
+     * @param <A>        the type of the attachment
+     * @param src        the buffer from which bytes are to be retrieved
+     * @param timeout    the maximum time for the operation (must be 0)
+     * @param unit       the time unit of the timeout argument
+     * @param attachment the object to attach to the I/O operation
+     * @param handler    the handler for consuming the result
+     * @throws UnsupportedOperationException if timeout is greater than 0
+     */
     @Override
     public final <A> void write(
             ByteBuffer src,
@@ -278,11 +402,37 @@ class AsynchronousServerChannel extends AsynchronousSocketChannel {
             ;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Future-based write is not supported in this implementation.
+     * </p>
+     *
+     * @param src the buffer from which bytes are to be retrieved
+     * @return a future representing the pending result
+     * @throws UnsupportedOperationException always
+     */
     @Override
     public final Future<Integer> write(ByteBuffer src) {
         throw new UnsupportedOperationException("Future-based write is not supported");
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Gathering write is not supported in this implementation.
+     * </p>
+     *
+     * @param <A>        the type of the attachment
+     * @param srcs       the buffers from which bytes are to be retrieved
+     * @param offset     the offset within the buffer array
+     * @param length     the maximum number of buffers to be accessed
+     * @param timeout    the maximum time for the operation
+     * @param unit       the time unit of the timeout argument
+     * @param attachment the object to attach to the I/O operation
+     * @param handler    the handler for consuming the result
+     * @throws UnsupportedOperationException always
+     */
     @Override
     public final <A> void write(
             ByteBuffer[] srcs,
@@ -295,6 +445,12 @@ class AsynchronousServerChannel extends AsynchronousSocketChannel {
         throw new UnsupportedOperationException("Gathering write is not supported");
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return the local address, or {@code null} if the channel is not bound
+     * @throws IOException if an I/O error occurs
+     */
     @Override
     public final SocketAddress getLocalAddress() throws IOException {
         return channel.getLocalAddress();
@@ -466,6 +622,11 @@ class AsynchronousServerChannel extends AsynchronousSocketChannel {
         writeBuffer = null;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return {@code true} if, and only if, this channel is open
+     */
     @Override
     public final boolean isOpen() {
         return channel.isOpen();

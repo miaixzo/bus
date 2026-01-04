@@ -102,8 +102,8 @@ public class PlaceholderParser implements UnaryOperator<String> {
      */
     public PlaceholderParser(final UnaryOperator<String> processor, final String prefix, final String suffix,
             final char escape) {
-        Assert.isFalse(CharsValidator.isEmpty(prefix), "开始符号不能为空");
-        Assert.isFalse(CharsValidator.isEmpty(suffix), "结束符号不能为空");
+        Assert.isFalse(CharsValidator.isEmpty(prefix), "Prefix symbol cannot be empty");
+        Assert.isFalse(CharsValidator.isEmpty(suffix), "Suffix symbol cannot be empty");
         this.processor = Objects.requireNonNull(processor);
         this.open = prefix;
         this.openLength = prefix.length();

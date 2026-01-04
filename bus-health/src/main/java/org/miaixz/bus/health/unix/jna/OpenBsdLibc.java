@@ -190,7 +190,10 @@ public interface OpenBsdLibc extends CLibrary {
     int getthrid();
 
     /**
-     * OpenBSD Cache stats for memory
+     * JNA wrapper for the bcachestats structure.
+     * <p>
+     * This class maps to the native OpenBSD buffer cache statistics structure.
+     * </p>
      */
     @FieldOrder({ "numbufs", "numbufpages", "numdirtypages", "numcleanpages", "pendingwrites", "pendingreads",
             "numwrites", "numreads", "cachehits", "busymapped", "dmapages", "highpages", "delwribufs", "kvaslots",
@@ -223,7 +226,11 @@ public interface OpenBsdLibc extends CLibrary {
     }
 
     /**
-     * Return type for BSD sysctl kern.boottime
+     * JNA wrapper for the timeval structure.
+     * <p>
+     * This class maps to the native OpenBSD timeval structure: {@code struct timeval { time_t tv_sec; suseconds_t
+     * tv_usec; }; }
+     * </p>
      */
     @FieldOrder({ "tv_sec", "tv_usec" })
     class Timeval extends Structure {

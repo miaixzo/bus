@@ -66,7 +66,7 @@ public interface McpClient extends Closeable {
      * @param arguments A map of arguments to be passed to the tool, which will be serialized.
      * @return A {@code Mono} emitting the string-based result from the tool execution.
      */
-    Mono<String> callTool(String toolName, Map<String, Object> arguments);
+    Mono<Object> callTool(String toolName, Map<String, Object> arguments);
 
     /**
      * Retrieves the list of tools provided by the MCP service.

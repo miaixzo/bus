@@ -33,9 +33,10 @@ import java.util.*;
 import org.miaixz.bus.core.center.BoundedCollection;
 
 /**
- * 有界优先队列 按照给定的排序规则，排序元素，当队列满时，按照给定的排序规则淘汰末尾元素（去除末尾元素）
+ * A bounded priority queue. Elements are sorted according to the given sorting rules. When the queue is full, the last
+ * element is eliminated according to the given sorting rules (removing the last element).
  *
- * @param <E> 成员类型
+ * @param <E> the element type
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -45,28 +46,28 @@ public class BoundedPriorityQueue<E> extends PriorityQueue<E> implements Bounded
     private static final long serialVersionUID = 2852278996807L;
 
     /**
-     * 容量
+     * The capacity.
      */
     private final int capacity;
     /**
-     * 比较器
+     * The comparator.
      */
     private final Comparator<? super E> comparator;
 
     /**
-     * 构造
+     * Constructs a new BoundedPriorityQueue.
      *
-     * @param capacity 容量
+     * @param capacity the capacity
      */
     public BoundedPriorityQueue(final int capacity) {
         this(capacity, null);
     }
 
     /**
-     * 构造
+     * Constructs a new BoundedPriorityQueue.
      *
-     * @param capacity   容量
-     * @param comparator 比较器
+     * @param capacity   the capacity
+     * @param comparator the comparator
      */
     public BoundedPriorityQueue(final int capacity, final Comparator<? super E> comparator) {
         super(capacity, (o1, o2) -> {
@@ -95,10 +96,10 @@ public class BoundedPriorityQueue<E> extends PriorityQueue<E> implements Bounded
     }
 
     /**
-     * 加入元素，当队列满时，淘汰末尾元素
+     * Adds an element. When the queue is full, the last element is eliminated.
      *
-     * @param e 元素
-     * @return 加入成功与否
+     * @param e the element
+     * @return whether the addition was successful
      */
     @Override
     public boolean offer(final E e) {
@@ -107,17 +108,17 @@ public class BoundedPriorityQueue<E> extends PriorityQueue<E> implements Bounded
             if (this.comparator().compare(e, head) <= 0) {
                 return true;
             }
-            // 当队列满时，就要淘汰顶端队列
+            // When the queue is full, eliminate the top element
             poll();
         }
         return super.offer(e);
     }
 
     /**
-     * 添加多个元素 参数为集合的情况请使用{@link PriorityQueue#addAll}
+     * Adds multiple elements. For collection parameters, please use {@link PriorityQueue#addAll}.
      *
-     * @param c 元素数组
-     * @return 是否发生改变
+     * @param c the element array
+     * @return whether any changes were made
      */
     public boolean addAll(final E[] c) {
         return this.addAll(Arrays.asList(c));
@@ -126,7 +127,7 @@ public class BoundedPriorityQueue<E> extends PriorityQueue<E> implements Bounded
     /**
      * Returns a sorted list of all elements in this queue.
      *
-     * @return 返回排序后的列表
+     * @return the sorted list
      */
     public ArrayList<E> toList() {
         final ArrayList<E> list = new ArrayList<>(this);

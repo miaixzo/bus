@@ -65,11 +65,23 @@ public class BCMac extends SimpleWrapper<org.bouncycastle.crypto.Mac> implements
         return mac;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param in    {@inheritDoc}
+     * @param inOff {@inheritDoc}
+     * @param len   {@inheritDoc}
+     */
     @Override
     public void update(final byte[] in, final int inOff, final int len) {
         this.raw.update(in, inOff, len);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return {@inheritDoc}
+     */
     @Override
     public byte[] doFinal() {
         final byte[] result = new byte[getMacLength()];
@@ -77,16 +89,29 @@ public class BCMac extends SimpleWrapper<org.bouncycastle.crypto.Mac> implements
         return result;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void reset() {
         this.raw.reset();
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return {@inheritDoc}
+     */
     @Override
     public int getMacLength() {
         return this.raw.getMacSize();
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return {@inheritDoc}
+     */
     @Override
     public String getAlgorithm() {
         return this.raw.getAlgorithmName();

@@ -71,6 +71,14 @@ public abstract class BeanRowHandler<T> extends AbstractRowHandler<T> {
         this.convertFunc = (rowList) -> BeanKit.toBean(IteratorKit.toMap(headerList, rowList), clazz);
     }
 
+    /**
+     * Handles a row of data from the Excel sheet. If the row is the header row, stores the header values. Otherwise,
+     * processes the row as data and converts it to a bean.
+     *
+     * @param sheetIndex The 0-based index of the current sheet.
+     * @param rowIndex   The 0-based row number of the current row.
+     * @param rowCells   The list of cell values in the row.
+     */
     @Override
     public void handle(final int sheetIndex, final long rowIndex, final List<Object> rowCells) {
         if (rowIndex == this.headerRowIndex) {

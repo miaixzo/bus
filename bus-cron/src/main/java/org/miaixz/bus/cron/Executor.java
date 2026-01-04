@@ -33,6 +33,8 @@ import org.miaixz.bus.cron.crontab.CronCrontab;
  * Represents a task executor that runs a specific cron job. Each executor is associated with a single task and manages
  * its execution lifecycle. It is designed to be run once and then discarded.
  *
+ * @param scheduler the scheduler managing this executor
+ * @param task      the cron task to execute
  * @author Kimi Liu
  * @since Java 17+
  */

@@ -84,11 +84,12 @@ public class NormalSpiLoader {
     }
 
     /**
-     * 加载第一个服务，如果用户定义了多个接口实现类，只获取第一个。
+     * Loads the first service. If the user has defined multiple interface implementation classes, only the first one is
+     * retrieved.
      *
-     * @param <T>   接口类型
-     * @param clazz 服务接口
-     * @return 第一个服务接口实现对象，无实现返回{@code null}
+     * @param <T>   The interface type.
+     * @param clazz The service interface.
+     * @return The first service interface implementation object, or {@code null} if no implementation is found.
      */
     public static <T> T loadFirst(final Class<T> clazz) {
         final Iterator<T> iterator = load(clazz).iterator();

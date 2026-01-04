@@ -1860,8 +1860,9 @@ public class Builder {
     }
 
     /**
-     * 将XML格式的密钥参数转化为{@link RSAPrivateCrtKeySpec}，XML为C#生成格式，类似于：
-     * 
+     * Converts XML-formatted key parameters to {@link RSAPrivateCrtKeySpec}. The XML is generated in C# format, similar
+     * to:
+     *
      * <pre>{@code
      * <RSAKeyValue>
      *     <Modulus>xx</Modulus>
@@ -1875,14 +1876,14 @@ public class Builder {
      * </RSAKeyValue>
      * }</pre>
      *
-     * @param xml xml格式密钥字符串
+     * @param xml XML-formatted key string
      * @return {@link RSAPrivateCrtKeySpec}
      */
     public static RSAPrivateCrtKeySpec xmlToRSAPrivateCrtKeySpec(final String xml) {
-        // 1. 解析XML
+        // 1. Parse XML
         final Element rootElement = XmlKit.getRootElement(XmlKit.parseXml(xml));
 
-        // 2. 提取各个字段
+        // 2. Extract each field
         final String modulusB64 = XmlKit.elementText(rootElement, "Modulus");
         final String exponentB64 = XmlKit.elementText(rootElement, "Exponent");
         final String pB64 = XmlKit.elementText(rootElement, "P");
@@ -1892,7 +1893,7 @@ public class Builder {
         final String inverseQB64 = XmlKit.elementText(rootElement, "InverseQ");
         final String dB64 = XmlKit.elementText(rootElement, "D");
 
-        // 3. Base64解码
+        // 3. Base64 decode
         final byte[] modulus = Base64.decode(modulusB64);
         final byte[] publicExponent = Base64.decode(exponentB64);
         final byte[] privateExponent = Base64.decode(dB64);
@@ -1902,7 +1903,7 @@ public class Builder {
         final byte[] primeExponentQ = Base64.decode(dqB64);
         final byte[] crtCoefficient = Base64.decode(inverseQB64);
 
-        // 4. 创建RSAPrivateCrtKeySpec
+        // 4. Create RSAPrivateCrtKeySpec
         return new RSAPrivateCrtKeySpec(new BigInteger(1, modulus), new BigInteger(1, publicExponent),
                 new BigInteger(1, privateExponent), new BigInteger(1, primeP), new BigInteger(1, primeQ),
                 new BigInteger(1, primeExponentP), new BigInteger(1, primeExponentQ),

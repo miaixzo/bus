@@ -79,6 +79,15 @@ public class MathStrategy implements CodeStrategy {
         this.resultHasNegativeNumber = resultHasNegativeNumber;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Generates a random math expression CAPTCHA code with two numbers and an operator (+, -, or *). The numbers are
+     * padded with spaces to the specified length for visual consistency.
+     * </p>
+     *
+     * @return a math expression string in the format "number1 operator number2="
+     */
     @Override
     public String generate() {
         final int limit = getLimit();
@@ -104,6 +113,16 @@ public class MathStrategy implements CodeStrategy {
         return StringKit.builder().append(number1).append(operator).append(number2).append('=').toString();
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Verifies the user's mathematical answer by evaluating the expression and comparing it with the user's input.
+     * </p>
+     *
+     * @param code          the generated math expression (e.g., "1 + 2 =")
+     * @param userInputCode the user's calculated answer
+     * @return {@code true} if the user's answer matches the calculated result, {@code false} otherwise
+     */
     @Override
     public boolean verify(final String code, final String userInputCode) {
         final int result;

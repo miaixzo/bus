@@ -49,6 +49,11 @@ public class BouncyCastleServiceProvider implements BouncyCastleProvider {
         Assert.notNull(org.bouncycastle.jce.provider.BouncyCastleProvider.class);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return {@inheritDoc}
+     */
     @Override
     public java.security.Provider create() {
         java.security.Provider provider = Security

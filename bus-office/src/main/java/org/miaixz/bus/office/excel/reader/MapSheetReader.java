@@ -46,6 +46,9 @@ import org.miaixz.bus.office.excel.xyz.RowKit;
  */
 public class MapSheetReader extends AbstractSheetReader<List<Map<Object, Object>>> {
 
+    /**
+     * The row index where the header is located.
+     */
     private final int headerRowIndex;
 
     /**
@@ -61,6 +64,12 @@ public class MapSheetReader extends AbstractSheetReader<List<Map<Object, Object>
         this.headerRowIndex = headerRowIndex;
     }
 
+    /**
+     * Reads the sheet and converts each row into a map with header keys.
+     *
+     * @param sheet The {@link Sheet} to read.
+     * @return A list of maps, where each map represents a row with header keys.
+     */
     @Override
     public List<Map<Object, Object>> read(final Sheet sheet) {
         // Boundary check.

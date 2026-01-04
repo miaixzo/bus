@@ -48,7 +48,7 @@ import org.miaixz.bus.pay.magic.Voucher;
 import org.miaixz.bus.pay.metric.AbstractProvider;
 
 /**
- * 支付宝支付相关接口
+ * Alipay payment related interfaces
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -71,92 +71,92 @@ public class AliPayProvider extends AbstractProvider<Voucher, Context> {
     }
 
     /**
-     * 获取接口请求的 URL
+     * Gets the API request URL
      *
-     * @return 返回完整的接口请求URL
+     * @return the complete API request URL
      */
     public String getUrl() {
         return getUrl(this.complex);
     }
 
     /**
-     * 获取接口请求的 URL
+     * Gets the API request URL
      *
-     * @param complex 支付 API 接口枚举
-     * @return 返回完整的接口请求URL
+     * @param complex the payment API interface enumeration
+     * @return the complete API request URL
      */
     public String getUrl(Complex complex) {
         return (complex.isSandbox() ? Registry.ALIPAY.sandbox() : Registry.ALIPAY.service()).concat(complex.method());
     }
 
     /**
-     * APP支付
+     * APP payment
      *
-     * @param model     请求参数
-     * @param notifyUrl 异步通知 URL
-     * @return 签名后的请求参数字符串
+     * @param model     the request parameters
+     * @param notifyUrl the asynchronous notification URL
+     * @return the signed request parameter string
      */
     public String appPay(Map<String, String> model, String notifyUrl) {
         return buildAppRequest(model, notifyUrl, null, "alipay.trade.app.pay");
     }
 
     /**
-     * APP支付（带应用授权）
+     * APP payment with application authorization
      *
-     * @param model     请求参数
-     * @param notifyUrl 异步通知 URL
-     * @param authToken 应用授权token
-     * @return 签名后的请求参数字符串
+     * @param model     the request parameters
+     * @param notifyUrl the asynchronous notification URL
+     * @param authToken the application authorization token
+     * @return the signed request parameter string
      */
     public String appPayWithToken(Map<String, String> model, String notifyUrl, String authToken) {
         return buildAppRequest(model, notifyUrl, authToken, "alipay.trade.app.pay");
     }
 
     /**
-     * WAP支付
+     * WAP payment
      *
-     * @param model     请求参数
-     * @param returnUrl 同步通知URL
-     * @param notifyUrl 异步通知URL
-     * @return WAP支付的HTML表单
+     * @param model     the request parameters
+     * @param returnUrl the synchronous notification URL
+     * @param notifyUrl the asynchronous notification URL
+     * @return the HTML form for WAP payment
      */
     public String wapPay(Map<String, String> model, String returnUrl, String notifyUrl) {
         return buildWapPay(model, returnUrl, notifyUrl, null);
     }
 
     /**
-     * WAP支付（带应用授权）
+     * WAP payment with application authorization
      *
-     * @param model     请求参数
-     * @param returnUrl 同步通知URL
-     * @param notifyUrl 异步通知URL
-     * @param authToken 应用授权token
-     * @return WAP支付的HTML表单
+     * @param model     the request parameters
+     * @param returnUrl the synchronous notification URL
+     * @param notifyUrl the asynchronous notification URL
+     * @param authToken the application authorization token
+     * @return the HTML form for WAP payment
      */
     public String wapPayWithToken(Map<String, String> model, String returnUrl, String notifyUrl, String authToken) {
         return buildWapPay(model, returnUrl, notifyUrl, authToken);
     }
 
     /**
-     * WAP支付（OutputStream兼容）
+     * WAP payment (OutputStream compatible)
      *
-     * @param model     请求参数
-     * @param returnUrl 同步通知URL
-     * @param notifyUrl 异步通知URL
-     * @return WAP支付的HTML表单
+     * @param model     the request parameters
+     * @param returnUrl the synchronous notification URL
+     * @param notifyUrl the asynchronous notification URL
+     * @return the HTML form for WAP payment
      */
     public String wapPayByOutput(Map<String, String> model, String returnUrl, String notifyUrl) {
         return buildWapPay(model, returnUrl, notifyUrl, null);
     }
 
     /**
-     * WAP支付（OutputStream兼容，带应用授权）
+     * WAP payment (OutputStream compatible, with application authorization)
      *
-     * @param model     请求参数
-     * @param returnUrl 同步通知URL
-     * @param notifyUrl 异步通知URL
-     * @param authToken 应用授权token
-     * @return WAP支付的HTML表单
+     * @param model     the request parameters
+     * @param returnUrl the synchronous notification URL
+     * @param notifyUrl the asynchronous notification URL
+     * @param authToken the application authorization token
+     * @return the HTML form for WAP payment
      */
     public String wapPayByOutputWithToken(
             Map<String, String> model,
@@ -167,92 +167,92 @@ public class AliPayProvider extends AbstractProvider<Voucher, Context> {
     }
 
     /**
-     * 统一收单交易支付（条形码、声波支付）
+     * Unified payment transaction (barcode, sound wave payment)
      *
-     * @param model     请求参数
-     * @param notifyUrl 异步通知URL
-     * @return API响应
+     * @param model     the request parameters
+     * @param notifyUrl the asynchronous notification URL
+     * @return the API response
      */
     public Map<String, Object> tradePay(Map<String, String> model, String notifyUrl) {
         return executeRequest(model, notifyUrl, null, "alipay.trade.pay");
     }
 
     /**
-     * 统一收单交易支付（证书模式）
+     * Unified payment transaction (certificate mode)
      *
-     * @param model     请求参数
-     * @param notifyUrl 异步通知URL
-     * @return API响应
+     * @param model     the request parameters
+     * @param notifyUrl the asynchronous notification URL
+     * @return the API response
      */
     public Map<String, Object> tradePayWithCert(Map<String, String> model, String notifyUrl) {
         return executeRequest(true, model, notifyUrl, null, "alipay.trade.pay");
     }
 
     /**
-     * 统一收单交易支付（带应用授权）
+     * Unified payment transaction with application authorization
      *
-     * @param model     请求参数
-     * @param notifyUrl 异步通知URL
-     * @param authToken 应用授权token
-     * @return API响应
+     * @param model     the request parameters
+     * @param notifyUrl the asynchronous notification URL
+     * @param authToken the application authorization token
+     * @return the API response
      */
     public Map<String, Object> tradePayWithToken(Map<String, String> model, String notifyUrl, String authToken) {
         return executeRequest(model, notifyUrl, authToken, "alipay.trade.pay");
     }
 
     /**
-     * 统一收单交易支付（证书模式，带应用授权）
+     * Unified payment transaction (certificate mode, with application authorization)
      *
-     * @param model     请求参数
-     * @param notifyUrl 异步通知URL
-     * @param authToken 应用授权token
-     * @return API响应
+     * @param model     the request parameters
+     * @param notifyUrl the asynchronous notification URL
+     * @param authToken the application authorization token
+     * @return the API response
      */
     public Map<String, Object> tradePayWithCertAndToken(Map<String, String> model, String notifyUrl, String authToken) {
         return executeRequest(true, model, notifyUrl, authToken, "alipay.trade.pay");
     }
 
     /**
-     * 统一收单线下交易预创建（扫码支付）
+     * Unified offline transaction pre-create (QR code payment)
      *
-     * @param model     请求参数
-     * @param notifyUrl 异步通知URL
-     * @return API响应
+     * @param model     the request parameters
+     * @param notifyUrl the asynchronous notification URL
+     * @return the API response
      */
     public Map<String, Object> tradePrecreate(Map<String, String> model, String notifyUrl) {
         return executeRequest(model, notifyUrl, null, "alipay.trade.precreate");
     }
 
     /**
-     * 统一收单线下交易预创建（证书模式）
+     * Unified offline transaction pre-create (certificate mode)
      *
-     * @param model     请求参数
-     * @param notifyUrl 异步通知URL
-     * @return API响应
+     * @param model     the request parameters
+     * @param notifyUrl the asynchronous notification URL
+     * @return the API response
      */
     public Map<String, Object> tradePrecreateWithCert(Map<String, String> model, String notifyUrl) {
         return executeRequest(true, model, notifyUrl, null, "alipay.trade.precreate");
     }
 
     /**
-     * 统一收单线下交易预创建（带应用授权）
+     * Unified offline transaction pre-create with application authorization
      *
-     * @param model     请求参数
-     * @param notifyUrl 异步通知URL
-     * @param authToken 应用授权token
-     * @return API响应
+     * @param model     the request parameters
+     * @param notifyUrl the asynchronous notification URL
+     * @param authToken the application authorization token
+     * @return the API response
      */
     public Map<String, Object> tradePrecreateWithToken(Map<String, String> model, String notifyUrl, String authToken) {
         return executeRequest(model, notifyUrl, authToken, "alipay.trade.precreate");
     }
 
     /**
-     * 统一收单线下交易预创建（证书模式，带应用授权）
+     * Unified offline transaction pre-create (certificate mode, with application authorization)
      *
-     * @param model     请求参数
-     * @param notifyUrl 异步通知URL
-     * @param authToken 应用授权token
-     * @return API响应
+     * @param model     the request parameters
+     * @param notifyUrl the asynchronous notification URL
+     * @param authToken the application authorization token
+     * @return the API response
      */
     public Map<String, Object> tradePrecreateWithCertAndToken(
             Map<String, String> model,
@@ -262,336 +262,336 @@ public class AliPayProvider extends AbstractProvider<Voucher, Context> {
     }
 
     /**
-     * 单笔转账到支付宝账户
+     * Single transfer to Alipay account
      *
-     * @param model 请求参数
-     * @return API响应
+     * @param model the request parameters
+     * @return the API response
      */
     public Map<String, Object> transfer(Map<String, String> model) {
         return executeRequest(model, null, null, "alipay.fund.trans.toaccount.transfer");
     }
 
     /**
-     * 单笔转账到支付宝账户（证书模式）
+     * Single transfer to Alipay account (certificate mode)
      *
-     * @param model 请求参数
-     * @return API响应
+     * @param model the request parameters
+     * @return the API response
      */
     public Map<String, Object> transferWithCert(Map<String, String> model) {
         return executeRequest(true, model, null, null, "alipay.fund.trans.toaccount.transfer");
     }
 
     /**
-     * 转账查询
+     * Transfer query
      *
-     * @param model 请求参数
-     * @return API响应
+     * @param model the request parameters
+     * @return the API response
      */
     public Map<String, Object> transferQuery(Map<String, String> model) {
         return executeRequest(model, null, null, "alipay.fund.trans.order.query");
     }
 
     /**
-     * 转账查询（证书模式）
+     * Transfer query (certificate mode)
      *
-     * @param model 请求参数
-     * @return API响应
+     * @param model the request parameters
+     * @return the API response
      */
     public Map<String, Object> transferQueryWithCert(Map<String, String> model) {
         return executeRequest(true, model, null, null, "alipay.fund.trans.order.query");
     }
 
     /**
-     * 统一转账
+     * Unified transfer
      *
-     * @param model     请求参数
-     * @param authToken 应用授权token
-     * @return API响应
+     * @param model     the request parameters
+     * @param authToken the application authorization token
+     * @return the API response
      */
     public Map<String, Object> uniTransfer(Map<String, String> model, String authToken) {
         return executeRequest(model, null, authToken, "alipay.fund.trans.uni.transfer");
     }
 
     /**
-     * 统一转账（证书模式）
+     * Unified transfer (certificate mode)
      *
-     * @param model     请求参数
-     * @param authToken 应用授权token
-     * @return API响应
+     * @param model     the request parameters
+     * @param authToken the application authorization token
+     * @return the API response
      */
     public Map<String, Object> uniTransferWithCert(Map<String, String> model, String authToken) {
         return executeRequest(true, model, null, authToken, "alipay.fund.trans.uni.transfer");
     }
 
     /**
-     * 转账业务单据查询
+     * Transfer business document query
      *
-     * @param model     请求参数
-     * @param authToken 应用授权token
-     * @return API响应
+     * @param model     the request parameters
+     * @param authToken the application authorization token
+     * @return the API response
      */
     public Map<String, Object> transCommonQuery(Map<String, String> model, String authToken) {
         return executeRequest(model, null, authToken, "alipay.fund.trans.common.query");
     }
 
     /**
-     * 转账业务单据查询（证书模式）
+     * Transfer business document query (certificate mode)
      *
-     * @param model     请求参数
-     * @param authToken 应用授权token
-     * @return API响应
+     * @param model     the request parameters
+     * @param authToken the application authorization token
+     * @return the API response
      */
     public Map<String, Object> transCommonQueryWithCert(Map<String, String> model, String authToken) {
         return executeRequest(true, model, null, authToken, "alipay.fund.trans.common.query");
     }
 
     /**
-     * 支付宝资金账户资产查询
+     * Alipay fund account asset query
      *
-     * @param model     请求参数
-     * @param authToken 应用授权token
-     * @return API响应
+     * @param model     the request parameters
+     * @param authToken the application authorization token
+     * @return the API response
      */
     public Map<String, Object> accountQuery(Map<String, String> model, String authToken) {
         return executeRequest(model, null, authToken, "alipay.fund.account.query");
     }
 
     /**
-     * 支付宝资金账户资产查询（证书模式）
+     * Alipay fund account asset query (certificate mode)
      *
-     * @param model     请求参数
-     * @param authToken 应用授权token
-     * @return API响应
+     * @param model     the request parameters
+     * @param authToken the application authorization token
+     * @return the API response
      */
     public Map<String, Object> accountQueryWithCert(Map<String, String> model, String authToken) {
         return executeRequest(true, model, null, authToken, "alipay.fund.account.query");
     }
 
     /**
-     * 统一收单线下交易查询
+     * Unified offline transaction query
      *
-     * @param model 请求参数
-     * @return API响应
+     * @param model the request parameters
+     * @return the API response
      */
     public Map<String, Object> tradeQuery(Map<String, String> model) {
         return executeRequest(model, null, null, "alipay.trade.query");
     }
 
     /**
-     * 统一收单线下交易查询（证书模式）
+     * Unified offline transaction query (certificate mode)
      *
-     * @param model 请求参数
-     * @return API响应
+     * @param model the request parameters
+     * @return the API response
      */
     public Map<String, Object> tradeQueryWithCert(Map<String, String> model) {
         return executeRequest(true, model, null, null, "alipay.trade.query");
     }
 
     /**
-     * 统一收单线下交易查询（带应用授权）
+     * Unified offline transaction query with application authorization
      *
-     * @param model     请求参数
-     * @param authToken 应用授权token
-     * @return API响应
+     * @param model     the request parameters
+     * @param authToken the application authorization token
+     * @return the API response
      */
     public Map<String, Object> tradeQueryWithToken(Map<String, String> model, String authToken) {
         return executeRequest(model, null, authToken, "alipay.trade.query");
     }
 
     /**
-     * 统一收单交易撤销
+     * Unified transaction cancellation
      *
-     * @param model     请求参数
-     * @param authToken 应用授权token
-     * @return API响应
+     * @param model     the request parameters
+     * @param authToken the application authorization token
+     * @return the API response
      */
     public Map<String, Object> tradeCancel(Map<String, String> model, String authToken) {
         return executeRequest(model, null, authToken, "alipay.trade.cancel");
     }
 
     /**
-     * 统一收单交易撤销
+     * Unified transaction cancellation (simple)
      *
-     * @param model 请求参数
-     * @return API响应
+     * @param model the request parameters
+     * @return the API response
      */
     public Map<String, Object> tradeCancelSimple(Map<String, String> model) {
         return executeRequest(model, null, null, "alipay.trade.cancel");
     }
 
     /**
-     * 统一收单交易撤销（证书模式）
+     * Unified transaction cancellation (certificate mode)
      *
-     * @param model 请求参数
-     * @return API响应
+     * @param model the request parameters
+     * @return the API response
      */
     public Map<String, Object> tradeCancelWithCert(Map<String, String> model) {
         return executeRequest(true, model, null, null, "alipay.trade.cancel");
     }
 
     /**
-     * 统一收单交易关闭
+     * Unified transaction close
      *
-     * @param model     请求参数
-     * @param authToken 应用授权token
-     * @return API响应
+     * @param model     the request parameters
+     * @param authToken the application authorization token
+     * @return the API response
      */
     public Map<String, Object> tradeClose(Map<String, String> model, String authToken) {
         return executeRequest(model, null, authToken, "alipay.trade.close");
     }
 
     /**
-     * 统一收单交易关闭
+     * Unified transaction close (simple)
      *
-     * @param model 请求参数
-     * @return API响应
+     * @param model the request parameters
+     * @return the API response
      */
     public Map<String, Object> tradeCloseSimple(Map<String, String> model) {
         return executeRequest(model, null, null, "alipay.trade.close");
     }
 
     /**
-     * 统一收单交易关闭（证书模式）
+     * Unified transaction close (certificate mode)
      *
-     * @param model 请求参数
-     * @return API响应
+     * @param model the request parameters
+     * @return the API response
      */
     public Map<String, Object> tradeCloseWithCert(Map<String, String> model) {
         return executeRequest(true, model, null, null, "alipay.trade.close");
     }
 
     /**
-     * 统一收单交易创建
+     * Unified transaction create
      *
-     * @param model     请求参数
-     * @param notifyUrl 异步通知URL
-     * @return API响应
+     * @param model     the request parameters
+     * @param notifyUrl the asynchronous notification URL
+     * @return the API response
      */
     public Map<String, Object> tradeCreate(Map<String, String> model, String notifyUrl) {
         return executeRequest(model, notifyUrl, null, "alipay.trade.create");
     }
 
     /**
-     * 统一收单交易创建（证书模式）
+     * Unified transaction create (certificate mode)
      *
-     * @param model     请求参数
-     * @param notifyUrl 异步通知URL
-     * @return API响应
+     * @param model     the request parameters
+     * @param notifyUrl the asynchronous notification URL
+     * @return the API response
      */
     public Map<String, Object> tradeCreateWithCert(Map<String, String> model, String notifyUrl) {
         return executeRequest(true, model, notifyUrl, null, "alipay.trade.create");
     }
 
     /**
-     * 统一收单交易创建（带应用授权）
+     * Unified transaction create with application authorization
      *
-     * @param model     请求参数
-     * @param notifyUrl 异步通知URL
-     * @param authToken 应用授权token
-     * @return API响应
+     * @param model     the request parameters
+     * @param notifyUrl the asynchronous notification URL
+     * @param authToken the application authorization token
+     * @return the API response
      */
     public Map<String, Object> tradeCreateWithToken(Map<String, String> model, String notifyUrl, String authToken) {
         return executeRequest(model, notifyUrl, authToken, "alipay.trade.create");
     }
 
     /**
-     * 统一收单交易退款
+     * Unified transaction refund
      *
-     * @param model 请求参数
-     * @return API响应
+     * @param model the request parameters
+     * @return the API response
      */
     public Map<String, Object> tradeRefund(Map<String, String> model) {
         return executeRequest(model, null, null, "alipay.trade.refund");
     }
 
     /**
-     * 统一收单交易退款（证书模式）
+     * Unified transaction refund (certificate mode)
      *
-     * @param model 请求参数
-     * @return API响应
+     * @param model the request parameters
+     * @return the API response
      */
     public Map<String, Object> tradeRefundWithCert(Map<String, String> model) {
         return executeRequest(true, model, null, null, "alipay.trade.refund");
     }
 
     /**
-     * 统一收单交易退款（带应用授权）
+     * Unified transaction refund with application authorization
      *
-     * @param model     请求参数
-     * @param authToken 应用授权token
-     * @return API响应
+     * @param model     the request parameters
+     * @param authToken the application authorization token
+     * @return the API response
      */
     public Map<String, Object> tradeRefundWithToken(Map<String, String> model, String authToken) {
         return executeRequest(model, null, authToken, "alipay.trade.refund");
     }
 
     /**
-     * 统一收单退款页面
+     * Unified refund page
      *
-     * @param model 请求参数
-     * @return API响应
+     * @param model the request parameters
+     * @return the API response
      */
     public Map<String, Object> tradePageRefund(Map<String, String> model) {
         return executeRequest(model, null, null, "alipay.trade.page.refund");
     }
 
     /**
-     * 统一收单退款页面（证书模式）
+     * Unified refund page (certificate mode)
      *
-     * @param model 请求参数
-     * @return API响应
+     * @param model the request parameters
+     * @return the API response
      */
     public Map<String, Object> tradePageRefundWithCert(Map<String, String> model) {
         return executeRequest(true, model, null, null, "alipay.trade.page.refund");
     }
 
     /**
-     * 统一收单退款页面（带应用授权）
+     * Unified refund page with application authorization
      *
-     * @param model     请求参数
-     * @param authToken 应用授权token
-     * @return API响应
+     * @param model     the request parameters
+     * @param authToken the application authorization token
+     * @return the API response
      */
     public Map<String, Object> tradePageRefundWithToken(Map<String, String> model, String authToken) {
         return executeRequest(model, null, authToken, "alipay.trade.page.refund");
     }
 
     /**
-     * 统一收单交易退款查询
+     * Unified transaction refund query
      *
-     * @param model 请求参数
-     * @return API响应
+     * @param model the request parameters
+     * @return the API response
      */
     public Map<String, Object> tradeRefundQuery(Map<String, String> model) {
         return executeRequest(model, null, null, "alipay.trade.fastpay.refund.query");
     }
 
     /**
-     * 统一收单交易退款查询（证书模式）
+     * Unified transaction refund query (certificate mode)
      *
-     * @param model 请求参数
-     * @return API响应
+     * @param model the request parameters
+     * @return the API response
      */
     public Map<String, Object> tradeRefundQueryWithCert(Map<String, String> model) {
         return executeRequest(true, model, null, null, "alipay.trade.fastpay.refund.query");
     }
 
     /**
-     * 统一收单交易退款查询（带应用授权）
+     * Unified transaction refund query with application authorization
      *
-     * @param model     请求参数
-     * @param authToken 应用授权token
-     * @return API响应
+     * @param model     the request parameters
+     * @param authToken the application authorization token
+     * @return the API response
      */
     public Map<String, Object> tradeRefundQueryWithToken(Map<String, String> model, String authToken) {
         return executeRequest(model, null, authToken, "alipay.trade.fastpay.refund.query");
     }
 
     /**
-     * 查询对账单下载地址
+     * Queries the bill download URL
      *
-     * @param model 请求参数
-     * @return 对账单下载URL
+     * @param model the request parameters
+     * @return the bill download URL
      */
     public String billDownloadUrl(Map<String, String> model) {
         Map<String, Object> response = executeRequest(
@@ -603,10 +603,10 @@ public class AliPayProvider extends AbstractProvider<Voucher, Context> {
     }
 
     /**
-     * 查询对账单下载地址（证书模式）
+     * Queries the bill download URL (certificate mode)
      *
-     * @param model 请求参数
-     * @return 对账单下载URL
+     * @param model the request parameters
+     * @return the bill download URL
      */
     public String billDownloadUrlWithCert(Map<String, String> model) {
         Map<String, Object> response = executeRequest(
@@ -619,138 +619,138 @@ public class AliPayProvider extends AbstractProvider<Voucher, Context> {
     }
 
     /**
-     * 查询对账单下载地址
+     * Queries the bill download URL
      *
-     * @param model 请求参数
-     * @return API响应
+     * @param model the request parameters
+     * @return the API response
      */
     public Map<String, Object> billDownloadUrlQuery(Map<String, String> model) {
         return executeRequest(model, null, null, "alipay.data.dataservice.bill.downloadurl.query");
     }
 
     /**
-     * 查询对账单下载地址（证书模式）
+     * Queries the bill download URL (certificate mode)
      *
-     * @param model 请求参数
-     * @return API响应
+     * @param model the request parameters
+     * @return the API response
      */
     public Map<String, Object> billDownloadUrlQueryWithCert(Map<String, String> model) {
         return executeRequest(true, model, null, null, "alipay.data.dataservice.bill.downloadurl.query");
     }
 
     /**
-     * 查询对账单下载地址（带应用授权）
+     * Queries the bill download URL with application authorization
      *
-     * @param model     请求参数
-     * @param authToken 应用授权token
-     * @return API响应
+     * @param model     the request parameters
+     * @param authToken the application authorization token
+     * @return the API response
      */
     public Map<String, Object> billDownloadUrlQueryWithToken(Map<String, String> model, String authToken) {
         return executeRequest(model, null, authToken, "alipay.data.dataservice.bill.downloadurl.query");
     }
 
     /**
-     * 查询对账单下载地址（证书模式，带应用授权）
+     * Queries the bill download URL (certificate mode, with application authorization)
      *
-     * @param model     请求参数
-     * @param authToken 应用授权token
-     * @return API响应
+     * @param model     the request parameters
+     * @param authToken the application authorization token
+     * @return the API response
      */
     public Map<String, Object> billDownloadUrlQueryWithCertAndToken(Map<String, String> model, String authToken) {
         return executeRequest(true, model, null, authToken, "alipay.data.dataservice.bill.downloadurl.query");
     }
 
     /**
-     * 统一收单交易结算
+     * Unified transaction settlement
      *
-     * @param model     请求参数
-     * @param authToken 应用授权token
-     * @return API响应
+     * @param model     the request parameters
+     * @param authToken the application authorization token
+     * @return the API response
      */
     public Map<String, Object> tradeOrderSettle(Map<String, String> model, String authToken) {
         return executeRequest(model, null, authToken, "alipay.trade.order.settle");
     }
 
     /**
-     * 统一收单交易结算
+     * Unified transaction settlement (simple)
      *
-     * @param model 请求参数
-     * @return API响应
+     * @param model the request parameters
+     * @return the API response
      */
     public Map<String, Object> tradeOrderSettleSimple(Map<String, String> model) {
         return executeRequest(model, null, null, "alipay.trade.order.settle");
     }
 
     /**
-     * 统一收单交易结算（证书模式）
+     * Unified transaction settlement (certificate mode)
      *
-     * @param model 请求参数
-     * @return API响应
+     * @param model the request parameters
+     * @return the API response
      */
     public Map<String, Object> tradeOrderSettleWithCert(Map<String, String> model) {
         return executeRequest(true, model, null, null, "alipay.trade.order.settle");
     }
 
     /**
-     * 电脑网站支付（PC支付）
+     * PC website payment
      *
-     * @param model     请求参数
-     * @param notifyUrl 异步通知URL
-     * @param returnUrl 同步通知URL
-     * @return HTML表单
+     * @param model     the request parameters
+     * @param notifyUrl the asynchronous notification URL
+     * @param returnUrl the synchronous notification URL
+     * @return the HTML form
      */
     public String tradePage(Map<String, String> model, String notifyUrl, String returnUrl) {
         return buildPagePay("POST", model, notifyUrl, returnUrl, null);
     }
 
     /**
-     * 电脑网站支付（PC支付，指定方法）
+     * PC website payment with specified method
      *
      * @param method    GET/POST
-     * @param model     请求参数
-     * @param notifyUrl 异步通知URL
-     * @param returnUrl 同步通知URL
-     * @return HTML表单或URL
+     * @param model     the request parameters
+     * @param notifyUrl the asynchronous notification URL
+     * @param returnUrl the synchronous notification URL
+     * @return the HTML form or URL
      */
     public String tradePageWithMethod(String method, Map<String, String> model, String notifyUrl, String returnUrl) {
         return buildPagePay(method, model, notifyUrl, returnUrl, null);
     }
 
     /**
-     * 电脑网站支付（PC支付，带应用授权）
+     * PC website payment with application authorization
      *
-     * @param model     请求参数
-     * @param notifyUrl 异步通知URL
-     * @param returnUrl 同步通知URL
-     * @param authToken 应用授权token
-     * @return HTML表单
+     * @param model     the request parameters
+     * @param notifyUrl the asynchronous notification URL
+     * @param returnUrl the synchronous notification URL
+     * @param authToken the application authorization token
+     * @return the HTML form
      */
     public String tradePageWithToken(Map<String, String> model, String notifyUrl, String returnUrl, String authToken) {
         return buildPagePay("POST", model, notifyUrl, returnUrl, authToken);
     }
 
     /**
-     * 电脑网站支付（PC支付，OutputStream兼容）
+     * PC website payment (OutputStream compatible)
      *
-     * @param model     请求参数
-     * @param notifyUrl 异步通知URL
-     * @param returnUrl 同步通知URL
-     * @return HTML表单
-     * @throws IOException IO异常
+     * @param model     the request parameters
+     * @param notifyUrl the asynchronous notification URL
+     * @param returnUrl the synchronous notification URL
+     * @return the HTML form
+     * @throws IOException if an I/O error occurs
      */
     public String tradePageByOutput(Map<String, String> model, String notifyUrl, String returnUrl) throws IOException {
         return buildPagePay("POST", model, notifyUrl, returnUrl, null);
     }
 
     /**
-     * 电脑网站支付（PC支付，OutputStream兼容，带应用授权）
+     * PC website payment (OutputStream compatible, with application authorization)
      *
-     * @param model     请求参数
-     * @param notifyUrl 异步通知URL
-     * @param returnUrl 同步通知URL
-     * @param authToken 应用授权token
-     * @return HTML表单
-     * @throws IOException IO异常
+     * @param model     the request parameters
+     * @param notifyUrl the asynchronous notification URL
+     * @param returnUrl the synchronous notification URL
+     * @param authToken the application authorization token
+     * @return the HTML form
+     * @throws IOException if an I/O error occurs
      */
     public String tradePageByOutputWithToken(
             Map<String, String> model,
@@ -761,232 +761,232 @@ public class AliPayProvider extends AbstractProvider<Voucher, Context> {
     }
 
     /**
-     * 资金预授权冻结
+     * Fund pre-authorization freeze
      *
-     * @param model 请求参数
-     * @return API响应
+     * @param model the request parameters
+     * @return the API response
      */
     public Map<String, Object> authOrderFreeze(Map<String, String> model) {
         return executeRequest(model, null, null, "alipay.fund.auth.order.freeze");
     }
 
     /**
-     * 资金预授权冻结（证书模式）
+     * Fund pre-authorization freeze (certificate mode)
      *
-     * @param model 请求参数
-     * @return API响应
+     * @param model the request parameters
+     * @return the API response
      */
     public Map<String, Object> authOrderFreezeWithCert(Map<String, String> model) {
         return executeRequest(true, model, null, null, "alipay.fund.auth.order.freeze");
     }
 
     /**
-     * 资金授权解冻
+     * Fund authorization unfreeze
      *
-     * @param model 请求参数
-     * @return API响应
+     * @param model the request parameters
+     * @return the API response
      */
     public Map<String, Object> authOrderUnfreeze(Map<String, String> model) {
         return executeRequest(model, null, null, "alipay.fund.auth.order.unfreeze");
     }
 
     /**
-     * 资金授权解冻（证书模式）
+     * Fund authorization unfreeze (certificate mode)
      *
-     * @param model 请求参数
-     * @return API响应
+     * @param model the request parameters
+     * @return the API response
      */
     public Map<String, Object> authOrderUnfreezeWithCert(Map<String, String> model) {
         return executeRequest(true, model, null, null, "alipay.fund.auth.order.unfreeze");
     }
 
     /**
-     * 资金预授权凭证创建
+     * Fund pre-authorization voucher create
      *
-     * @param model 请求参数
-     * @return API响应
+     * @param model the request parameters
+     * @return the API response
      */
     public Map<String, Object> authOrderVoucherCreate(Map<String, String> model) {
         return executeRequest(model, null, null, "alipay.fund.auth.order.voucher.create");
     }
 
     /**
-     * 资金预授权凭证创建（证书模式）
+     * Fund pre-authorization voucher create (certificate mode)
      *
-     * @param model 请求参数
-     * @return API响应
+     * @param model the request parameters
+     * @return the API response
      */
     public Map<String, Object> authOrderVoucherCreateWithCert(Map<String, String> model) {
         return executeRequest(true, model, null, null, "alipay.fund.auth.order.voucher.create");
     }
 
     /**
-     * 资金授权撤销
+     * Fund authorization cancel
      *
-     * @param model 请求参数
-     * @return API响应
+     * @param model the request parameters
+     * @return the API response
      */
     public Map<String, Object> authOperationCancel(Map<String, String> model) {
         return executeRequest(model, null, null, "alipay.fund.auth.operation.cancel");
     }
 
     /**
-     * 资金授权撤销（证书模式）
+     * Fund authorization cancel (certificate mode)
      *
-     * @param model 请求参数
-     * @return API响应
+     * @param model the request parameters
+     * @return the API response
      */
     public Map<String, Object> authOperationCancelWithCert(Map<String, String> model) {
         return executeRequest(true, model, null, null, "alipay.fund.auth.operation.cancel");
     }
 
     /**
-     * 资金授权操作查询
+     * Fund authorization operation detail query
      *
-     * @param model 请求参数
-     * @return API响应
+     * @param model the request parameters
+     * @return the API response
      */
     public Map<String, Object> authOperationDetailQuery(Map<String, String> model) {
         return executeRequest(model, null, null, "alipay.fund.auth.operation.detail.query");
     }
 
     /**
-     * 资金授权操作查询（证书模式）
+     * Fund authorization operation detail query (certificate mode)
      *
-     * @param model 请求参数
-     * @return API响应
+     * @param model the request parameters
+     * @return the API response
      */
     public Map<String, Object> authOperationDetailQueryWithCert(Map<String, String> model) {
         return executeRequest(true, model, null, null, "alipay.fund.auth.operation.detail.query");
     }
 
     /**
-     * 红包无线支付
+     * Red packet wireless payment
      *
-     * @param model 请求参数
-     * @return API响应
+     * @param model the request parameters
+     * @return the API response
      */
     public Map<String, Object> fundCouponOrderAppPay(Map<String, String> model) {
         return executeRequest(model, null, null, "alipay.fund.coupon.order.app.pay");
     }
 
     /**
-     * 红包无线支付（证书模式）
+     * Red packet wireless payment (certificate mode)
      *
-     * @param model 请求参数
-     * @return API响应
+     * @param model the request parameters
+     * @return the API response
      */
     public Map<String, Object> fundCouponOrderAppPayWithCert(Map<String, String> model) {
         return executeRequest(true, model, null, null, "alipay.fund.coupon.order.app.pay");
     }
 
     /**
-     * 红包页面支付
+     * Red packet page payment
      *
-     * @param model 请求参数
-     * @return API响应
+     * @param model the request parameters
+     * @return the API response
      */
     public Map<String, Object> fundCouponOrderPagePay(Map<String, String> model) {
         return executeRequest(model, null, null, "alipay.fund.coupon.order.page.pay");
     }
 
     /**
-     * 红包页面支付（证书模式）
+     * Red packet page payment (certificate mode)
      *
-     * @param model 请求参数
-     * @return API响应
+     * @param model the request parameters
+     * @return the API response
      */
     public Map<String, Object> fundCouponOrderPagePayWithCert(Map<String, String> model) {
         return executeRequest(true, model, null, null, "alipay.fund.coupon.order.page.pay");
     }
 
     /**
-     * 红包协议支付
+     * Red packet agreement payment
      *
-     * @param model 请求参数
-     * @return API响应
+     * @param model the request parameters
+     * @return the API response
      */
     public Map<String, Object> fundCouponOrderAgreementPay(Map<String, String> model) {
         return executeRequest(model, null, null, "alipay.fund.coupon.order.agreement.pay");
     }
 
     /**
-     * 红包协议支付（证书模式）
+     * Red packet agreement payment (certificate mode)
      *
-     * @param model 请求参数
-     * @return API响应
+     * @param model the request parameters
+     * @return the API response
      */
     public Map<String, Object> fundCouponOrderAgreementPayWithCert(Map<String, String> model) {
         return executeRequest(true, model, null, null, "alipay.fund.coupon.order.agreement.pay");
     }
 
     /**
-     * 红包打款
+     * Red packet disburse
      *
-     * @param model 请求参数
-     * @return API响应
+     * @param model the request parameters
+     * @return the API response
      */
     public Map<String, Object> fundCouponOrderDisburse(Map<String, String> model) {
         return executeRequest(model, null, null, "alipay.fund.coupon.order.disburse");
     }
 
     /**
-     * 红包打款（证书模式）
+     * Red packet disburse (certificate mode)
      *
-     * @param model 请求参数
-     * @return API响应
+     * @param model the request parameters
+     * @return the API response
      */
     public Map<String, Object> fundCouponOrderDisburseWithCert(Map<String, String> model) {
         return executeRequest(true, model, null, null, "alipay.fund.coupon.order.disburse");
     }
 
     /**
-     * 红包退回
+     * Red packet refund
      *
-     * @param model 请求参数
-     * @return API响应
+     * @param model the request parameters
+     * @return the API response
      */
     public Map<String, Object> fundCouponOrderRefund(Map<String, String> model) {
         return executeRequest(model, null, null, "alipay.fund.coupon.order.refund");
     }
 
     /**
-     * 红包退回（证书模式）
+     * Red packet refund (certificate mode)
      *
-     * @param model 请求参数
-     * @return API响应
+     * @param model the request parameters
+     * @return the API response
      */
     public Map<String, Object> fundCouponOrderRefundWithCert(Map<String, String> model) {
         return executeRequest(true, model, null, null, "alipay.fund.coupon.order.refund");
     }
 
     /**
-     * 红包查询
+     * Red packet operation query
      *
-     * @param model 请求参数
-     * @return API响应
+     * @param model the request parameters
+     * @return the API response
      */
     public Map<String, Object> fundCouponOperationQuery(Map<String, String> model) {
         return executeRequest(model, null, null, "alipay.fund.coupon.operation.query");
     }
 
     /**
-     * 红包查询（证书模式）
+     * Red packet operation query (certificate mode)
      *
-     * @param model 请求参数
-     * @return API响应
+     * @param model the request parameters
+     * @return the API response
      */
     public Map<String, Object> fundCouponOperationQueryWithCert(Map<String, String> model) {
         return executeRequest(true, model, null, null, "alipay.fund.coupon.operation.query");
     }
 
     /**
-     * 应用授权URL拼装
+     * Application authorization URL assembly
      *
-     * @param appId       应用编号
-     * @param redirectUri 回调URI
-     * @return 应用授权URL
-     * @throws java.io.UnsupportedEncodingException 编码异常
+     * @param appId       the application ID
+     * @param redirectUri the callback URI
+     * @return the application authorization URL
+     * @throws java.io.UnsupportedEncodingException if encoding is not supported
      */
     public String getOauth2Url(String appId, String redirectUri) throws java.io.UnsupportedEncodingException {
         return new StringBuffer().append("https://openauth.alipay.com/oauth2/appToAppAuth.htm?app_id=").append(appId)
@@ -994,132 +994,132 @@ public class AliPayProvider extends AbstractProvider<Voucher, Context> {
     }
 
     /**
-     * 使用app_auth_code换取app_auth_token
+     * Exchanges app_auth_code for app_auth_token
      *
-     * @param model 请求参数
-     * @return API响应
+     * @param model the request parameters
+     * @return the API response
      */
     public Map<String, Object> openAuthTokenApp(Map<String, String> model) {
         return executeRequest(model, null, null, "alipay.open.auth.token.app");
     }
 
     /**
-     * 使用app_auth_code换取app_auth_token（证书模式）
+     * Exchanges app_auth_code for app_auth_token (certificate mode)
      *
-     * @param model 请求参数
-     * @return API响应
+     * @param model the request parameters
+     * @return the API response
      */
     public Map<String, Object> openAuthTokenAppWithCert(Map<String, String> model) {
         return executeRequest(true, model, null, null, "alipay.open.auth.token.app");
     }
 
     /**
-     * 查询授权信息
+     * Queries authorization information
      *
-     * @param model 请求参数
-     * @return API响应
+     * @param model the request parameters
+     * @return the API response
      */
     public Map<String, Object> openAuthTokenAppQuery(Map<String, String> model) {
         return executeRequest(model, null, null, "alipay.open.auth.token.app.query");
     }
 
     /**
-     * 查询授权信息（证书模式）
+     * Queries authorization information (certificate mode)
      *
-     * @param model 请求参数
-     * @return API响应
+     * @param model the request parameters
+     * @return the API response
      */
     public Map<String, Object> openAuthTokenAppQueryWithCert(Map<String, String> model) {
         return executeRequest(true, model, null, null, "alipay.open.auth.token.app.query");
     }
 
     /**
-     * 地铁购票发码
+     * Metro ticket code generation
      *
-     * @param model 请求参数
-     * @return API响应
+     * @param model the request parameters
+     * @return the API response
      */
     public Map<String, Object> voucherGenerate(Map<String, String> model) {
         return executeRequest(model, null, null, "alipay.commerce.cityfacilitator.voucher.generate");
     }
 
     /**
-     * 地铁购票发码（证书模式）
+     * Metro ticket code generation (certificate mode)
      *
-     * @param model 请求参数
-     * @return API响应
+     * @param model the request parameters
+     * @return the API response
      */
     public Map<String, Object> voucherGenerateWithCert(Map<String, String> model) {
         return executeRequest(true, model, null, null, "alipay.commerce.cityfacilitator.voucher.generate");
     }
 
     /**
-     * 地铁购票发码退款
+     * Metro ticket code refund
      *
-     * @param model 请求参数
-     * @return API响应
+     * @param model the request parameters
+     * @return the API response
      */
     public Map<String, Object> metroRefund(Map<String, String> model) {
         return executeRequest(model, null, null, "alipay.commerce.cityfacilitator.voucher.refund");
     }
 
     /**
-     * 地铁购票发码退款（证书模式）
+     * Metro ticket code refund (certificate mode)
      *
-     * @param model 请求参数
-     * @return API响应
+     * @param model the request parameters
+     * @return the API response
      */
     public Map<String, Object> metroRefundWithCert(Map<String, String> model) {
         return executeRequest(true, model, null, null, "alipay.commerce.cityfacilitator.voucher.refund");
     }
 
     /**
-     * 地铁车站数据查询
+     * Metro station data query
      *
-     * @param model 请求参数
-     * @return API响应
+     * @param model the request parameters
+     * @return the API response
      */
     public Map<String, Object> stationQuery(Map<String, String> model) {
         return executeRequest(model, null, null, "alipay.commerce.cityfacilitator.station.query");
     }
 
     /**
-     * 地铁车站数据查询（证书模式）
+     * Metro station data query (certificate mode)
      *
-     * @param model 请求参数
-     * @return API响应
+     * @param model the request parameters
+     * @return the API response
      */
     public Map<String, Object> stationQueryWithCert(Map<String, String> model) {
         return executeRequest(true, model, null, null, "alipay.commerce.cityfacilitator.station.query");
     }
 
     /**
-     * 核销码批量查询
+     * Verification code batch query
      *
-     * @param model 请求参数
-     * @return API响应
+     * @param model the request parameters
+     * @return the API response
      */
     public Map<String, Object> voucherBatchQuery(Map<String, String> model) {
         return executeRequest(model, null, null, "alipay.commerce.cityfacilitator.voucher.batchquery");
     }
 
     /**
-     * 核销码批量查询（证书模式）
+     * Verification code batch query (certificate mode)
      *
-     * @param model 请求参数
-     * @return API响应
+     * @param model the request parameters
+     * @return the API response
      */
     public Map<String, Object> voucherBatchQueryWithCert(Map<String, String> model) {
         return executeRequest(true, model, null, null, "alipay.commerce.cityfacilitator.voucher.batchquery");
     }
 
     /**
-     * 批量转账
+     * Batch transfer
      *
-     * @param params     请求参数
-     * @param privateKey 私钥
-     * @param signType   签名类型
-     * @return 签名后的参数
+     * @param params     the request parameters
+     * @param privateKey the private key
+     * @param signType   the signature type
+     * @return the signed parameters
      */
     public Map<String, String> batchTrans(Map<String, String> params, String privateKey, String signType) {
         params.put("service", "batch_trans_notify");
@@ -1129,11 +1129,11 @@ public class AliPayProvider extends AbstractProvider<Voucher, Context> {
     }
 
     /**
-     * 生活缴费查询账单
+     * Life utility bill payment query
      *
-     * @param orderType       支付宝订单类型
-     * @param merchantOrderNo 业务流水号
-     * @return API响应
+     * @param orderType       the Alipay order type
+     * @param merchantOrderNo the business serial number
+     * @return the API response
      */
     public Map<String, Object> ebppBillGet(String orderType, String merchantOrderNo) {
         Map<String, String> model = new HashMap<>();
@@ -1143,11 +1143,11 @@ public class AliPayProvider extends AbstractProvider<Voucher, Context> {
     }
 
     /**
-     * 生活缴费查询账单（证书模式）
+     * Life utility bill payment query (certificate mode)
      *
-     * @param orderType       支付宝订单类型
-     * @param merchantOrderNo 业务流水号
-     * @return API响应
+     * @param orderType       the Alipay order type
+     * @param merchantOrderNo the business serial number
+     * @return the API response
      */
     public Map<String, Object> ebppBillGetWithCert(String orderType, String merchantOrderNo) {
         Map<String, String> model = new HashMap<>();
@@ -1157,231 +1157,231 @@ public class AliPayProvider extends AbstractProvider<Voucher, Context> {
     }
 
     /**
-     * H5刷脸认证初始化
+     * H5 face recognition initialization
      *
-     * @param model 请求参数
-     * @return API响应
+     * @param model the request parameters
+     * @return the API response
      */
     public Map<String, Object> identificationUserWebInit(Map<String, String> model) {
         return executeRequest(model, null, null, "zoloz.identification.user.web.initialize");
     }
 
     /**
-     * H5刷脸认证初始化（证书模式）
+     * H5 face recognition initialization (certificate mode)
      *
-     * @param model 请求参数
-     * @return API响应
+     * @param model the request parameters
+     * @return the API response
      */
     public Map<String, Object> identificationUserWebInitWithCert(Map<String, String> model) {
         return executeRequest(true, model, null, null, "zoloz.identification.user.web.initialize");
     }
 
     /**
-     * H5刷脸认证查询
+     * H5 face recognition query
      *
-     * @param model 请求参数
-     * @return API响应
+     * @param model the request parameters
+     * @return the API response
      */
     public Map<String, Object> identificationUserWebQuery(Map<String, String> model) {
         return executeRequest(model, null, null, "zoloz.identification.user.web.query");
     }
 
     /**
-     * H5刷脸认证查询（证书模式）
+     * H5 face recognition query (certificate mode)
      *
-     * @param model 请求参数
-     * @return API响应
+     * @param model the request parameters
+     * @return the API response
      */
     public Map<String, Object> identificationUserWebQueryWithCert(Map<String, String> model) {
         return executeRequest(true, model, null, null, "zoloz.identification.user.web.query");
     }
 
     /**
-     * 人脸入库
+     * Face enrollment
      *
-     * @param model 请求参数
-     * @return API响应
+     * @param model the request parameters
+     * @return the API response
      */
     public Map<String, Object> authenticationCustomerFaceManageCreate(Map<String, String> model) {
         return executeRequest(model, null, null, "zoloz.authentication.customer.facemanage.create");
     }
 
     /**
-     * 人脸入库（证书模式）
+     * Face enrollment (certificate mode)
      *
-     * @param model 请求参数
-     * @return API响应
+     * @param model the request parameters
+     * @return the API response
      */
     public Map<String, Object> authenticationCustomerFaceManageCreateWithCert(Map<String, String> model) {
         return executeRequest(true, model, null, null, "zoloz.authentication.customer.facemanage.create");
     }
 
     /**
-     * 人脸出库
+     * Face removal
      *
-     * @param model 请求参数
-     * @return API响应
+     * @param model the request parameters
+     * @return the API response
      */
     public Map<String, Object> authenticationCustomerFaceManageDelete(Map<String, String> model) {
         return executeRequest(model, null, null, "zoloz.authentication.customer.facemanage.delete");
     }
 
     /**
-     * 人脸出库（证书模式）
+     * Face removal (certificate mode)
      *
-     * @param model 请求参数
-     * @return API响应
+     * @param model the request parameters
+     * @return the API response
      */
     public Map<String, Object> authenticationCustomerFaceManageDeleteWithCert(Map<String, String> model) {
         return executeRequest(true, model, null, null, "zoloz.authentication.customer.facemanage.delete");
     }
 
     /**
-     * 人脸ftoken查询
+     * Face ftoken query
      *
-     * @param model 请求参数
-     * @return API响应
+     * @param model the request parameters
+     * @return the API response
      */
     public Map<String, Object> authenticationCustomerFtokenQuery(Map<String, String> model) {
         return executeRequest(model, null, null, "zoloz.authentication.customer.ftoken.query");
     }
 
     /**
-     * 人脸ftoken查询（证书模式）
+     * Face ftoken query (certificate mode)
      *
-     * @param model 请求参数
-     * @return API响应
+     * @param model the request parameters
+     * @return the API response
      */
     public Map<String, Object> authenticationCustomerFtokenQueryWithCert(Map<String, String> model) {
         return executeRequest(true, model, null, null, "zoloz.authentication.customer.ftoken.query");
     }
 
     /**
-     * 人脸初始化刷脸付
+     * Face smile pay initialize
      *
-     * @param model 请求参数
-     * @return API响应
+     * @param model the request parameters
+     * @return the API response
      */
     public Map<String, Object> authenticationSmilePayInitialize(Map<String, String> model) {
         return executeRequest(model, null, null, "zoloz.authentication.smilepay.initialize");
     }
 
     /**
-     * 人脸初始化刷脸付（证书模式）
+     * Face smile pay initialize (certificate mode)
      *
-     * @param model 请求参数
-     * @return API响应
+     * @param model the request parameters
+     * @return the API response
      */
     public Map<String, Object> authenticationSmilePayInitializeWithCert(Map<String, String> model) {
         return executeRequest(true, model, null, null, "zoloz.authentication.smilepay.initialize");
     }
 
     /**
-     * 人脸初始化唤起zim
+     * Face customer smile pay initialize (to invoke zim)
      *
-     * @param model 请求参数
-     * @return API响应
+     * @param model the request parameters
+     * @return the API response
      */
     public Map<String, Object> authenticationCustomerSmilePayInitialize(Map<String, String> model) {
         return executeRequest(model, null, null, "zoloz.authentication.customer.smilepay.initialize");
     }
 
     /**
-     * 人脸初始化唤起zim（证书模式）
+     * Face customer smile pay initialize (certificate mode, to invoke zim)
      *
-     * @param model 请求参数
-     * @return API响应
+     * @param model the request parameters
+     * @return the API response
      */
     public Map<String, Object> authenticationCustomerSmilePayInitializeWithCert(Map<String, String> model) {
         return executeRequest(true, model, null, null, "zoloz.authentication.customer.smilepay.initialize");
     }
 
     /**
-     * 生态激励项目ISV代签约
+     * Ecosystem incentive project ISV contract signing
      *
-     * @return API响应
+     * @return the API response
      */
     public Map<String, Object> commerceAdContractSign() {
         return executeRequest(new HashMap<>(), null, null, "alipay.commerce.ad.contract.sign");
     }
 
     /**
-     * 生态激励项目ISV代签约（证书模式）
+     * Ecosystem incentive project ISV contract signing (certificate mode)
      *
-     * @return API响应
+     * @return the API response
      */
     public Map<String, Object> commerceAdContractSignWithCert() {
         return executeRequest(true, new HashMap<>(), null, null, "alipay.commerce.ad.contract.sign");
     }
 
     /**
-     * 分账关系绑定
+     * Royalty relation binding
      *
-     * @param model 请求参数
-     * @return API响应
+     * @param model the request parameters
+     * @return the API response
      */
     public Map<String, Object> tradeRoyaltyRelationBind(Map<String, String> model) {
         return executeRequest(model, null, null, "alipay.trade.royalty.relation.bind");
     }
 
     /**
-     * 分账关系绑定（证书模式）
+     * Royalty relation binding (certificate mode)
      *
-     * @param model 请求参数
-     * @return API响应
+     * @param model the request parameters
+     * @return the API response
      */
     public Map<String, Object> tradeRoyaltyRelationBindWithCert(Map<String, String> model) {
         return executeRequest(true, model, null, null, "alipay.trade.royalty.relation.bind");
     }
 
     /**
-     * 分账关系解绑
+     * Royalty relation unbinding
      *
-     * @param model 请求参数
-     * @return API响应
+     * @param model the request parameters
+     * @return the API response
      */
     public Map<String, Object> tradeRoyaltyRelationUnbind(Map<String, String> model) {
         return executeRequest(model, null, null, "alipay.trade.royalty.relation.unbind");
     }
 
     /**
-     * 分账关系解绑（证书模式）
+     * Royalty relation unbinding (certificate mode)
      *
-     * @param model 请求参数
-     * @return API响应
+     * @param model the request parameters
+     * @return the API response
      */
     public Map<String, Object> tradeRoyaltyRelationUnbindWithCert(Map<String, String> model) {
         return executeRequest(true, model, null, null, "alipay.trade.royalty.relation.unbind");
     }
 
     /**
-     * 分账关系查询
+     * Royalty relation batch query
      *
-     * @param model 请求参数
-     * @return API响应
+     * @param model the request parameters
+     * @return the API response
      */
     public Map<String, Object> tradeRoyaltyRelationBatchQuery(Map<String, String> model) {
         return executeRequest(model, null, null, "alipay.trade.royalty.relation.batchquery");
     }
 
     /**
-     * 分账关系查询（证书模式）
+     * Royalty relation batch query (certificate mode)
      *
-     * @param model 请求参数
-     * @return API响应
+     * @param model the request parameters
+     * @return the API response
      */
     public Map<String, Object> tradeRoyaltyRelationBatchQueryWithCert(Map<String, String> model) {
         return executeRequest(true, model, null, null, "alipay.trade.royalty.relation.batchquery");
     }
 
     /**
-     * 构建APP支付请求
+     * Builds APP payment request
      *
-     * @param model     请求参数
-     * @param notifyUrl 异步通知URL
-     * @param authToken 应用授权token
-     * @param method    支付宝API方法
-     * @return 签名后的请求参数字符串
+     * @param model     the request parameters
+     * @param notifyUrl the asynchronous notification URL
+     * @param authToken the application authorization token
+     * @param method    the Alipay API method
+     * @return the signed request parameter string
      */
     private String buildAppRequest(Map<String, String> model, String notifyUrl, String authToken, String method) {
         Map<String, String> params = buildCommonParams(method, notifyUrl, authToken);
@@ -1396,13 +1396,13 @@ public class AliPayProvider extends AbstractProvider<Voucher, Context> {
     }
 
     /**
-     * 构建WAP支付表单
+     * Builds WAP payment form
      *
-     * @param model     请求参数
-     * @param returnUrl 同步通知URL
-     * @param notifyUrl 异步通知URL
-     * @param authToken 应用授权token
-     * @return HTML表单
+     * @param model     the request parameters
+     * @param returnUrl the synchronous notification URL
+     * @param notifyUrl the asynchronous notification URL
+     * @param authToken the application authorization token
+     * @return the HTML form
      */
     private String buildWapPay(Map<String, String> model, String returnUrl, String notifyUrl, String authToken) {
         Map<String, String> params = buildCommonParams("alipay.trade.wap.pay", notifyUrl, authToken);
@@ -1421,14 +1421,14 @@ public class AliPayProvider extends AbstractProvider<Voucher, Context> {
     }
 
     /**
-     * 构建PC支付表单或URL
+     * Builds PC payment form or URL
      *
      * @param method    GET/POST
-     * @param model     请求参数
-     * @param notifyUrl 异步通知URL
-     * @param returnUrl 同步通知URL
-     * @param authToken 应用授权token
-     * @return HTML表单或URL
+     * @param model     the request parameters
+     * @param notifyUrl the asynchronous notification URL
+     * @param returnUrl the synchronous notification URL
+     * @param authToken the application authorization token
+     * @return the HTML form or URL
      */
     private String buildPagePay(
             String method,
@@ -1461,12 +1461,12 @@ public class AliPayProvider extends AbstractProvider<Voucher, Context> {
     }
 
     /**
-     * 构建通用请求参数
+     * Builds common request parameters
      *
-     * @param method    支付宝API方法
-     * @param notifyUrl 异步通知URL
-     * @param authToken 应用授权token
-     * @return 参数Map
+     * @param method    the Alipay API method
+     * @param notifyUrl the asynchronous notification URL
+     * @param authToken the application authorization token
+     * @return the parameter map
      */
     private Map<String, String> buildCommonParams(String method, String notifyUrl, String authToken) {
         Map<String, String> params = new HashMap<>();
@@ -1485,13 +1485,13 @@ public class AliPayProvider extends AbstractProvider<Voucher, Context> {
     }
 
     /**
-     * 执行支付宝API请求
+     * Executes Alipay API request
      *
-     * @param model     请求参数
-     * @param notifyUrl 异步通知URL
-     * @param authToken 应用授权token
-     * @param method    支付宝API方法
-     * @return API响应
+     * @param model     the request parameters
+     * @param notifyUrl the asynchronous notification URL
+     * @param authToken the application authorization token
+     * @param method    the Alipay API method
+     * @return the API response
      */
     private Map<String, Object> executeRequest(
             Map<String, String> model,
@@ -1502,14 +1502,14 @@ public class AliPayProvider extends AbstractProvider<Voucher, Context> {
     }
 
     /**
-     * 执行支付宝API请求
+     * Executes Alipay API request
      *
-     * @param certModel 是否使用证书模式
-     * @param model     请求参数
-     * @param notifyUrl 异步通知URL
-     * @param authToken 应用授权token
-     * @param method    支付宝API方法
-     * @return API响应
+     * @param certModel whether to use certificate mode
+     * @param model     the request parameters
+     * @param notifyUrl the asynchronous notification URL
+     * @param authToken the application authorization token
+     * @param method    the Alipay API method
+     * @return the API response
      */
     private Map<String, Object> executeRequest(
             Boolean certModel,
@@ -1552,20 +1552,20 @@ public class AliPayProvider extends AbstractProvider<Voucher, Context> {
     }
 
     /**
-     * 执行HTTP请求
+     * Executes HTTP request
      *
-     * @param params 请求参数
-     * @return 响应字符串
+     * @param params the request parameters
+     * @return the response string
      */
     private String executeHttpRequest(Map<String, String> params) {
         return Httpx.post(getUrl(), params);
     }
 
     /**
-     * 执行证书模式HTTP请求
+     * Executes certificate mode HTTP request
      *
-     * @param params 请求参数
-     * @return 响应字符串
+     * @param params the request parameters
+     * @return the response string
      */
     private String executeCertRequest(Map<String, String> params) {
         throw new UnsupportedOperationException("Certificate mode not implemented");

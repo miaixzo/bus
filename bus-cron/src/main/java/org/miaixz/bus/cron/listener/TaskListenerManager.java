@@ -47,6 +47,9 @@ public class TaskListenerManager implements Serializable {
     @Serial
     private static final long serialVersionUID = 2852287805158L;
 
+    /**
+     * The list of task listeners to notify of events.
+     */
     private final List<TaskListener> listeners = new ArrayList<>();
 
     /**

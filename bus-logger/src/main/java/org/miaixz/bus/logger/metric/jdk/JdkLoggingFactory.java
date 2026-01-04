@@ -54,11 +54,23 @@ public class JdkLoggingFactory extends AbstractFactory {
         readConfig();
     }
 
+    /**
+     * Creates a logger provider for the specified name.
+     *
+     * @param name the name of the logger
+     * @return a new {@link Provider} instance
+     */
     @Override
     public Provider create(final String name) {
         return new JdkLoggingProvider(name);
     }
 
+    /**
+     * Creates a logger provider for the specified class.
+     *
+     * @param clazz the class for which to create the logger
+     * @return a new {@link Provider} instance
+     */
     @Override
     public Provider create(final Class<?> clazz) {
         return new JdkLoggingProvider(clazz);

@@ -37,11 +37,13 @@ import reactor.core.scheduler.Schedulers;
  * <p>
  * This class acts as a bridge between the gateway's format abstraction and the centralized {@link JsonKit} utility. It
  * ensures that all JSON serialization within the gateway is performed consistently and asynchronously.
+ * <p>
+ * Generic type parameters: {@code Provider<Object, String>}
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class JsonProvider implements Provider {
+public class JsonProvider implements Provider<Object, String> {
 
     /**
      * Asynchronously serializes the given Java object into its JSON string representation.
@@ -50,13 +52,13 @@ public class JsonProvider implements Provider {
      * and wraps it in a {@link Mono}. The work is executed on the {@code Schedulers.boundedElastic()} pool to avoid
      * blocking the event loop.
      *
-     * @param bean The object to be serialized.
+     * @param input The object to be serialized.
      * @return A {@code Mono} emitting the serialized JSON string.
      */
     @Override
-    public Mono<String> serialize(Object bean) {
+    public Mono<String> serialize(Object input) {
         // 1. Wrap the synchronous, blocking (CPU-bound) call in fromCallable.
-        return Mono.fromCallable(() -> JsonKit.toJsonString(bean))
+        return Mono.fromCallable(() -> JsonKit.toJsonString(input))
                 // 2. Offload the execution from the event loop to a safer thread pool.
                 .subscribeOn(Schedulers.boundedElastic());
     }

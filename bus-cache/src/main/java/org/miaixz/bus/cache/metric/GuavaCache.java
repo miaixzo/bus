@@ -71,6 +71,16 @@ public class GuavaCache<K, V> implements CacheX<K, V> {
         this.cache = CacheBuilder.newBuilder().maximumSize(size).expireAfterWrite(expire, TimeUnit.MILLISECONDS)
                 .build(new CacheLoader<>() {
 
+                    /**
+                     * Loads a value for the given key.
+                     * <p>
+                     * This implementation returns {@code null} by default, meaning the cache will not automatically
+                     * load values on misses. Users must explicitly populate the cache using the {@code write} methods.
+                     * </p>
+                     *
+                     * @param key The key to load a value for.
+                     * @return {@code null}, indicating no automatic loading.
+                     */
                     @Override
                     public V load(Object key) {
                         return null; // By default, does not load anything on miss.
@@ -98,13 +108,23 @@ public class GuavaCache<K, V> implements CacheX<K, V> {
         String expireAfterAccess = properties.getProperty(prefix + "expireAfterAccess");
         String expireAfterWrite = properties.getProperty(prefix + "expireAfterWrite");
         String initialCapacity = properties.getProperty(prefix + "initialCapacity");
-        // 使用链式调用构建CacheBuilder
+        // Build CacheBuilder using chained method calls
         this.cache = CacheBuilder.newBuilder()
                 .maximumSize(StringKit.isNotEmpty(maximumSize) ? Long.parseLong(maximumSize) : 1000)
                 .expireAfterAccess(Long.parseLong(expireAfterAccess), TimeUnit.MILLISECONDS)
                 .expireAfterWrite(Long.parseLong(expireAfterWrite), TimeUnit.MILLISECONDS)
                 .initialCapacity(Integer.parseInt(initialCapacity)).build(new CacheLoader<>() {
 
+                    /**
+                     * Loads a value for the given key.
+                     * <p>
+                     * This implementation returns {@code null} by default, meaning the cache will not automatically
+                     * load values on misses. Users must explicitly populate the cache using the {@code write} methods.
+                     * </p>
+                     *
+                     * @param key The key to load a value for.
+                     * @return {@code null}, indicating no automatic loading.
+                     */
                     @Override
                     public Object load(Object key) {
                         return null;

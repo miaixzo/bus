@@ -112,8 +112,8 @@ public class Converter extends Formatter {
      * @return The epoch millisecond timestamp.
      */
     public static long toEpochMilli(final TemporalAccessor temporalAccessor) {
-        if (temporalAccessor instanceof Month) {
-            return ((Month) temporalAccessor).getValue();
+        if (temporalAccessor instanceof java.time.Month) {
+            return ((java.time.Month) temporalAccessor).getValue();
         } else if (temporalAccessor instanceof DayOfWeek) {
             return ((DayOfWeek) temporalAccessor).getValue();
         } else if (temporalAccessor instanceof Era) {

@@ -92,46 +92,101 @@ public class InflaterStream extends InputStream {
         in = new java.util.zip.InflaterInputStream(pushback, new Inflater(nowrap), size);
     }
 
+    /**
+     * Reads the next byte of data from the underlying stream.
+     *
+     * @return The next byte of data, or {@code -1} if the end of the stream is reached.
+     * @throws IOException If an I/O error occurs.
+     */
     @Override
     public int read() throws IOException {
         return this.in.read();
     }
 
+    /**
+     * Reads up to {@code b.length} bytes of data from the underlying stream into an array of bytes.
+     *
+     * @param b The buffer into which the data is read.
+     * @return The total number of bytes read into the buffer, or {@code -1} if there is no more data.
+     * @throws IOException If an I/O error occurs.
+     */
     @Override
     public int read(final byte[] b) throws IOException {
         return in.read(b);
     }
 
+    /**
+     * Reads up to {@code len} bytes of data from the underlying stream into an array of bytes.
+     *
+     * @param b   The buffer into which the data is read.
+     * @param off The start offset in the buffer at which the data is written.
+     * @param len The maximum number of bytes to read.
+     * @return The total number of bytes read into the buffer, or {@code -1} if there is no more data.
+     * @throws IOException If an I/O error occurs.
+     */
     @Override
     public int read(final byte[] b, final int off, final int len) throws IOException {
         return in.read(b, off, len);
     }
 
+    /**
+     * Skips over and discards {@code n} bytes of data from the underlying stream.
+     *
+     * @param n The number of bytes to skip.
+     * @return The actual number of bytes skipped.
+     * @throws IOException If an I/O error occurs.
+     */
     @Override
     public long skip(final long n) throws IOException {
         return in.skip(n);
     }
 
+    /**
+     * Returns an estimate of the number of bytes that can be read from the underlying stream without blocking.
+     *
+     * @return An estimate of the number of bytes that can be read without blocking.
+     * @throws IOException If an I/O error occurs.
+     */
     @Override
     public int available() throws IOException {
         return in.available();
     }
 
+    /**
+     * Marks the current position in the underlying stream.
+     *
+     * @param readLimit The maximum limit of bytes that can be read before the mark position becomes invalid.
+     */
     @Override
     public void mark(final int readLimit) {
         in.mark(readLimit);
     }
 
+    /**
+     * Repositions the underlying stream to the position at the time the mark method was last called.
+     *
+     * @throws IOException If the stream has not been marked or if the mark has been invalidated.
+     */
     @Override
     public void reset() throws IOException {
         in.reset();
     }
 
+    /**
+     * Tests if the underlying stream supports the mark and reset methods.
+     *
+     * @return {@code true} if the stream supports mark/reset, {@code false} otherwise.
+     */
     @Override
     public boolean markSupported() {
         return in.markSupported();
     }
 
+    /**
+     * Closes the underlying stream and releases any system resources associated with it.
+     *
+     * @throws IOException If an I/O error occurs.
+     */
     @Override
     public void close() throws IOException {
         in.close();

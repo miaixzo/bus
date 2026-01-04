@@ -107,61 +107,97 @@ public class JdkLoggingProvider extends AbstractProvider {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getName() {
         return logger.getName();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isTraceEnabled() {
         return logger.isLoggable(Level.FINEST);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void trace(final String fqcn, final Throwable t, final String format, final Object... args) {
         logIfEnabled(fqcn, Level.FINEST, t, format, args);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isDebugEnabled() {
         return logger.isLoggable(Level.FINE);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void debug(final String fqcn, final Throwable t, final String format, final Object... args) {
         logIfEnabled(fqcn, Level.FINE, t, format, args);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isInfoEnabled() {
         return logger.isLoggable(Level.INFO);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void info(final String fqcn, final Throwable t, final String format, final Object... args) {
         logIfEnabled(fqcn, Level.INFO, t, format, args);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isWarnEnabled() {
         return logger.isLoggable(Level.WARNING);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void warn(final String fqcn, final Throwable t, final String format, final Object... args) {
         logIfEnabled(fqcn, Level.WARNING, t, format, args);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isErrorEnabled() {
         return logger.isLoggable(Level.SEVERE);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void error(final String fqcn, final Throwable t, final String format, final Object... args) {
         logIfEnabled(fqcn, Level.SEVERE, t, format, args);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void log(
             final String fqcn,
@@ -221,6 +257,9 @@ public class JdkLoggingProvider extends AbstractProvider {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public org.miaixz.bus.logger.Level getLevel() {
         Level jdkLevel = logger.getLevel();

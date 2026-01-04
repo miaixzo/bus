@@ -114,6 +114,19 @@ public class SevenZArchiver implements Archiver {
         return this.sevenZOutputFile;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Adds a file or directory to the 7-Zip archive with optional filtering and path editing. Directories are processed
+     * recursively.
+     * </p>
+     *
+     * @param file           the file or directory to add
+     * @param path           the initial path within the archive (may be {@code null})
+     * @param fileNameEditor function to edit file names (may be {@code null})
+     * @param filter         filter to select which files to add (may be {@code null})
+     * @return this {@code SevenZArchiver} instance for method chaining
+     */
     @Override
     public SevenZArchiver add(
             final File file,
@@ -128,6 +141,14 @@ public class SevenZArchiver implements Archiver {
         return this;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Finishes the archive creation, writing any pending data.
+     * </p>
+     *
+     * @return this {@code SevenZArchiver} instance for method chaining
+     */
     @Override
     public SevenZArchiver finish() {
         try {
@@ -138,6 +159,13 @@ public class SevenZArchiver implements Archiver {
         return this;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Closes the archive and its underlying resources. If this archiver was created with an OutputStream, writes the
+     * archive data to it.
+     * </p>
+     */
     @Override
     public void close() {
         try {

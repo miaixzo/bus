@@ -133,6 +133,13 @@ public abstract class AbstractProvider implements CaptchaProvider {
         this.font = new Font(Font.SANS_SERIF, Font.PLAIN, (int) (this.height * sizeBaseHeight));
     }
 
+    /**
+     * Creates a new CAPTCHA image and code.
+     * <p>
+     * This method generates a random CAPTCHA code, creates the corresponding image, and stores the image data for later
+     * use.
+     * </p>
+     */
     @Override
     public void create() {
         generateCode();
@@ -165,6 +172,14 @@ public abstract class AbstractProvider implements CaptchaProvider {
      */
     protected abstract Image createImage(String code);
 
+    /**
+     * Gets the CAPTCHA code.
+     * <p>
+     * If the CAPTCHA has not been created yet, this method will automatically create it first.
+     * </p>
+     *
+     * @return the CAPTCHA code string
+     */
     @Override
     public String get() {
         if (null == this.code) {
@@ -173,6 +188,12 @@ public abstract class AbstractProvider implements CaptchaProvider {
         return this.code;
     }
 
+    /**
+     * Verifies the user's input against the generated CAPTCHA code.
+     *
+     * @param userInputCode the code entered by the user
+     * @return {@code true} if the user input matches the CAPTCHA code, {@code false} otherwise
+     */
     @Override
     public boolean verify(final String userInputCode) {
         return this.generator.verify(get(), userInputCode);
@@ -202,6 +223,11 @@ public abstract class AbstractProvider implements CaptchaProvider {
         }
     }
 
+    /**
+     * Writes the CAPTCHA image data to an output stream.
+     *
+     * @param out the output stream to write the image data to
+     */
     @Override
     public void write(final OutputStream out) {
         IoKit.write(out, false, getImageBytes());

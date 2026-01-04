@@ -135,11 +135,30 @@ public class TimerTaskList implements Delayed {
         expire.set(-1L);
     }
 
+    /**
+     * Returns the remaining delay associated with this object. If the remaining delay is zero or negative, the delay
+     * has already elapsed.
+     *
+     * @param unit the time unit
+     * @return the remaining delay; zero or negative values indicate that the delay has already elapsed
+     */
     @Override
     public long getDelay(final TimeUnit unit) {
         return Math.max(0, unit.convert(expire.get() - System.currentTimeMillis(), TimeUnit.MILLISECONDS));
     }
 
+    /**
+     * Compares this object with the specified object for order. Returns a negative integer, zero, or a positive integer
+     * as this object is less than, equal to, or greater than the specified object.
+     * <p>
+     * The comparison is based on the expiration time of this task list. If the specified object is not a
+     * {@code TimerTaskList}, this method returns 0.
+     * </p>
+     *
+     * @param o the object to be compared
+     * @return a negative integer, zero, or a positive integer as this object is less than, equal to, or greater than
+     *         the specified object
+     */
     @Override
     public int compareTo(final Delayed o) {
         if (o instanceof TimerTaskList) {

@@ -615,6 +615,13 @@ public final class RealConnection extends Http2Connection.Listener implements Co
         noNewExchanges();
         return new RealWebSocket.Streams(true, source, sink) {
 
+            /**
+             * Closes the WebSocket streams and marks the exchange as complete.
+             * <p>
+             * This method is called when the WebSocket connection is being closed. It notifies the associated exchange
+             * that the body transfer is complete.
+             * </p>
+             */
             @Override
             public void close() {
                 exchange.bodyComplete(-1L, true, true, null);

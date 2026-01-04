@@ -115,7 +115,6 @@ module bus.starter {
     exports org.miaixz.bus.spring.metrics;
     exports org.miaixz.bus.spring.undertow;
     exports org.miaixz.bus.starter.annotation;
-    exports org.miaixz.bus.starter.bridge;
     exports org.miaixz.bus.starter.cache;
     exports org.miaixz.bus.starter.cors;
     exports org.miaixz.bus.starter.dubbo;

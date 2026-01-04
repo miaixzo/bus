@@ -72,7 +72,7 @@ public interface Decryptor {
     }
 
     /**
-     * Decrypts a string that is either Hex (16-进制) or Base64 encoded, using the specified key type.
+     * Decrypts a string that is either Hex (hexadecimal) or Base64 encoded, using the specified key type.
      *
      * @param data    The string to be decrypted, which must be in hexadecimal or Base64 format.
      * @param keyType The type of key to use for decryption.
@@ -83,8 +83,8 @@ public interface Decryptor {
     }
 
     /**
-     * Decrypts a string that is either Hex (16-进制) or Base64 encoded, and converts the result to a string using the
-     * specified charset.
+     * Decrypts a string that is either Hex (hexadecimal) or Base64 encoded, and converts the result to a string using
+     * the specified charset.
      *
      * @param data    The string to be decrypted, which must be in hexadecimal or Base64 format.
      * @param keyType The type of key to use for decryption.

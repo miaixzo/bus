@@ -46,6 +46,9 @@ import org.w3c.dom.NodeList;
  */
 public class XmlMapper {
 
+    /**
+     * The XML node to be transformed.
+     */
     private final Node node;
 
     /**

@@ -162,44 +162,68 @@ public class MapTree<T> extends LinkedHashMap<String, Object> implements Node<T>
         return TreeKit.getParentsName(this, includeCurrentNode);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public T getId() {
         return (T) this.get(nodeConfig.getIdKey());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public MapTree<T> setId(final T id) {
         this.put(nodeConfig.getIdKey(), id);
         return this;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public T getParentId() {
         return (T) this.get(nodeConfig.getParentIdKey());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public MapTree<T> setParentId(final T parentId) {
         this.put(nodeConfig.getParentIdKey(), parentId);
         return this;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public CharSequence getName() {
         return (CharSequence) this.get(nodeConfig.getNameKey());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public MapTree<T> setName(final CharSequence name) {
         this.put(nodeConfig.getNameKey(), name);
         return this;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Comparable<?> getWeight() {
         return (Comparable<?>) this.get(nodeConfig.getWeightKey());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public MapTree<T> setWeight(final Comparable<?> weight) {
         this.put(nodeConfig.getWeightKey(), weight);
@@ -273,7 +297,9 @@ public class MapTree<T> extends LinkedHashMap<String, Object> implements Node<T>
                 consumer.accept(node);
                 final List<MapTree<T>> children = node.getChildren();
                 if (CollKit.isNotEmpty(children)) {
-                    children.forEach(stack::push);
+                    for (int i = children.size() - 1; i >= 0; i--) {
+                        stack.push(children.get(i));
+                    }
                 }
             }
         }
@@ -361,6 +387,9 @@ public class MapTree<T> extends LinkedHashMap<String, Object> implements Node<T>
         this.put(key, value);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String toString() {
         final StringWriter stringWriter = new StringWriter();

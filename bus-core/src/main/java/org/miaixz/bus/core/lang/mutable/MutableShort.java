@@ -168,26 +168,51 @@ public class MutableShort extends Number implements Comparable<MutableShort>, Mu
         return this;
     }
 
+    /**
+     * Returns the value of this MutableShort as a {@code short}.
+     *
+     * @return The numeric value represented by this object after conversion to type {@code short}.
+     */
     @Override
     public short shortValue() {
         return value;
     }
 
+    /**
+     * Returns the value of this MutableShort as an {@code int}.
+     *
+     * @return The numeric value represented by this object after conversion to type {@code int}.
+     */
     @Override
     public int intValue() {
         return value;
     }
 
+    /**
+     * Returns the value of this MutableShort as a {@code long}.
+     *
+     * @return The numeric value represented by this object after conversion to type {@code long}.
+     */
     @Override
     public long longValue() {
         return value;
     }
 
+    /**
+     * Returns the value of this MutableShort as a {@code float}.
+     *
+     * @return The numeric value represented by this object after conversion to type {@code float}.
+     */
     @Override
     public float floatValue() {
         return value;
     }
 
+    /**
+     * Returns the value of this MutableShort as a {@code double}.
+     *
+     * @return The numeric value represented by this object after conversion to type {@code double}.
+     */
     @Override
     public double doubleValue() {
         return value;
@@ -213,6 +238,11 @@ public class MutableShort extends Number implements Comparable<MutableShort>, Mu
         return false;
     }
 
+    /**
+     * Returns the hash code for this MutableShort.
+     *
+     * @return The hash code based on the current value.
+     */
     @Override
     public int hashCode() {
         return value;
@@ -230,6 +260,11 @@ public class MutableShort extends Number implements Comparable<MutableShort>, Mu
         return CompareKit.compare(this.value, other.value);
     }
 
+    /**
+     * Returns the string representation of this MutableShort.
+     *
+     * @return The string representation of the current value.
+     */
     @Override
     public String toString() {
         return String.valueOf(value);

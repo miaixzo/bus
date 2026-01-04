@@ -269,6 +269,13 @@ public class Crypto extends AbstractCrypto<Crypto> {
         return this;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param algorithm {@inheritDoc}
+     * @param keyPair   {@inheritDoc}
+     * @return {@inheritDoc}
+     */
     @Override
     public Crypto init(final String algorithm, final KeyPair keyPair) {
         super.init(algorithm, keyPair);
@@ -276,6 +283,13 @@ public class Crypto extends AbstractCrypto<Crypto> {
         return this;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param data    {@inheritDoc}
+     * @param keyType {@inheritDoc}
+     * @return {@inheritDoc}
+     */
     @Override
     public byte[] encrypt(final byte[] data, final KeyType keyType) {
         final Key key = getKeyByType(keyType);
@@ -299,6 +313,13 @@ public class Crypto extends AbstractCrypto<Crypto> {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param data    {@inheritDoc}
+     * @param keyType {@inheritDoc}
+     * @return {@inheritDoc}
+     */
     @Override
     public byte[] decrypt(final byte[] data, final KeyType keyType) {
         final Key key = getKeyByType(keyType);

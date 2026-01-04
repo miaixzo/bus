@@ -42,9 +42,6 @@ import java.util.Collection;
  */
 public class MultiFileResource extends MultiResource {
 
-    /**
-     * The serial version UID for serialization.
-     */
     @Serial
     private static final long serialVersionUID = 2852232069651L;
 
@@ -114,6 +111,12 @@ public class MultiFileResource extends MultiResource {
         return this;
     }
 
+    /**
+     * Adds a single resource to this composite resource.
+     *
+     * @param resource The {@link Resource} to add.
+     * @return This {@code MultiFileResource} instance for method chaining.
+     */
     @Override
     public MultiFileResource add(final Resource resource) {
         return (MultiFileResource) super.add(resource);

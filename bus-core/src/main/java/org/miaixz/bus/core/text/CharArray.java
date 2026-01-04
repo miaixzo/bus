@@ -68,11 +68,22 @@ public class CharArray implements CharSequence, Iterable<Character> {
         this.value = copy ? value.clone() : value;
     }
 
+    /**
+     * Returns the length of the character array.
+     *
+     * @return The number of characters in the array.
+     */
     @Override
     public int length() {
         return value.length;
     }
 
+    /**
+     * Returns the character at the specified index. Supports negative indexing, where -1 refers to the last character.
+     *
+     * @param index The index of the character to return. Supports negative values.
+     * @return The character at the specified index.
+     */
     @Override
     public char charAt(int index) {
         if (index < 0) {
@@ -105,11 +116,25 @@ public class CharArray implements CharSequence, Iterable<Character> {
         return this.value;
     }
 
+    /**
+     * Returns a new {@code CharArray} that is a subsequence of this sequence.
+     *
+     * @param start the start index, inclusive
+     * @param end   the end index, exclusive
+     * @return a new {@code CharArray} containing the specified subsequence
+     */
     @Override
     public CharSequence subSequence(final int start, final int end) {
         return new CharArray(ArrayKit.sub(value, start, end), false);
     }
 
+    /**
+     * Checks if this {@code CharArray} is equal to another object. Two {@code CharArray} objects are equal if they
+     * contain the same characters in the same order.
+     *
+     * @param o The object to compare with.
+     * @return {@code true} if the objects are equal, {@code false} otherwise.
+     */
     @Override
     public boolean equals(final Object o) {
         if (this == o) {
@@ -122,16 +147,31 @@ public class CharArray implements CharSequence, Iterable<Character> {
         return Arrays.equals(value, charArray.value);
     }
 
+    /**
+     * Returns the hash code of this {@code CharArray} based on its contents.
+     *
+     * @return The hash code.
+     */
     @Override
     public int hashCode() {
         return Arrays.hashCode(value);
     }
 
+    /**
+     * Returns an iterator over the characters in this array.
+     *
+     * @return An iterator for the characters.
+     */
     @Override
     public Iterator<Character> iterator() {
         return new ArrayIterator<>(this.value);
     }
 
+    /**
+     * Returns a string representation of this {@code CharArray}.
+     *
+     * @return A string containing the characters in this array.
+     */
     @Override
     public String toString() {
         return String.valueOf(this.value);

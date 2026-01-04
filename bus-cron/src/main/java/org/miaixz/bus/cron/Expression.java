@@ -47,19 +47,61 @@ public final class Expression implements Serializable, Cloneable {
     @Serial
     private static final long serialVersionUID = 2852287029125L;
 
+    /**
+     * The maximum year value for cron expressions. Set to the current year plus 100.
+     */
     public static final int MAX_YEAR = Calendar.getInstance().get(Calendar.YEAR) + 100;
+    /**
+     * Constant representing the second field index.
+     */
     protected static final int SECOND = 0;
+    /**
+     * Constant representing the minute field index.
+     */
     protected static final int MINUTE = 1;
+    /**
+     * Constant representing the hour field index.
+     */
     protected static final int HOUR = 2;
+    /**
+     * Constant representing the day of month field index.
+     */
     protected static final int DAY_OF_MONTH = 3;
+    /**
+     * Constant representing the month field index.
+     */
     protected static final int MONTH = 4;
+    /**
+     * Constant representing the day of week field index.
+     */
     protected static final int DAY_OF_WEEK = 5;
+    /**
+     * Constant representing the year field index.
+     */
     protected static final int YEAR = 6;
+    /**
+     * Special value representing '*' in cron expressions.
+     */
     protected static final int ALL_SPEC_INT = 99; // '*'
+    /**
+     * Special value representing '?' in cron expressions.
+     */
     protected static final int NO_SPEC_INT = 98; // '?'
+    /**
+     * Integer wrapper for ALL_SPEC_INT.
+     */
     protected static final Integer ALL_SPEC = ALL_SPEC_INT;
+    /**
+     * Integer wrapper for NO_SPEC_INT.
+     */
     protected static final Integer NO_SPEC = NO_SPEC_INT;
+    /**
+     * Map of month name abbreviations to their numeric values.
+     */
     protected static final Map<String, Integer> monthMap = new HashMap<>(20);
+    /**
+     * Map of day name abbreviations to their numeric values.
+     */
     protected static final Map<String, Integer> dayMap = new HashMap<>(60);
 
     static {
@@ -85,21 +127,66 @@ public final class Expression implements Serializable, Cloneable {
         dayMap.put("SAT", 7);
     }
 
+    /**
+     * The original cron expression string.
+     */
     private final String cronExpression;
+    /**
+     * Set of valid second values.
+     */
     protected transient TreeSet<Integer> seconds;
+    /**
+     * Set of valid minute values.
+     */
     protected transient TreeSet<Integer> minutes;
+    /**
+     * Set of valid hour values.
+     */
     protected transient TreeSet<Integer> hours;
+    /**
+     * Set of valid day of month values.
+     */
     protected transient TreeSet<Integer> daysOfMonth;
+    /**
+     * Set of valid month values.
+     */
     protected transient TreeSet<Integer> months;
+    /**
+     * Set of valid day of week values.
+     */
     protected transient TreeSet<Integer> daysOfWeek;
+    /**
+     * Set of valid year values.
+     */
     protected transient TreeSet<Integer> years;
 
+    /**
+     * Flag indicating if the last day of week should be used.
+     */
     protected transient boolean lastdayOfWeek = false;
+    /**
+     * The Nth day of week (e.g., 3rd Friday).
+     */
     protected transient int nthdayOfWeek = 0;
+    /**
+     * Flag indicating if the last day of month should be used.
+     */
     protected transient boolean lastdayOfMonth = false;
+    /**
+     * Flag indicating if the nearest weekday should be used.
+     */
     protected transient boolean nearestWeekday = false;
+    /**
+     * Offset from the last day of month.
+     */
     protected transient int lastdayOffset = 0;
+    /**
+     * Flag indicating if the expression has been parsed.
+     */
     protected transient boolean expressionParsed = false;
+    /**
+     * The time zone for this cron expression.
+     */
     private TimeZone timeZone = null;
 
     /**
@@ -152,6 +239,12 @@ public final class Expression implements Serializable, Cloneable {
         return true;
     }
 
+    /**
+     * Validates that the given cron expression is valid by attempting to parse it.
+     *
+     * @param cronExpression the cron expression to validate
+     * @throws ParseException if the cron expression is invalid
+     */
     public static void validateExpression(String cronExpression) throws ParseException {
 
         new Expression(cronExpression);
@@ -177,10 +270,23 @@ public final class Expression implements Serializable, Cloneable {
         return ((null != timeAfter) && (timeAfter.equals(originalDate)));
     }
 
+    /**
+     * Returns the next valid time after the given date that satisfies the cron expression.
+     *
+     * @param date the date to start searching from
+     * @return the next valid date after the given date, or {@code null} if no valid time exists
+     */
     public Date getNextValidTimeAfter(Date date) {
         return getTimeAfter(date);
     }
 
+    /**
+     * Returns the next invalid time after the given date. This is the first time that does NOT satisfy the cron
+     * expression.
+     *
+     * @param date the date to start searching from
+     * @return the next invalid date after the given date
+     */
     public Date getNextInvalidTimeAfter(Date date) {
         long difference = 1000;
 
@@ -204,6 +310,11 @@ public final class Expression implements Serializable, Cloneable {
         return new Date(lastDate.getTime() + 1000);
     }
 
+    /**
+     * Returns the time zone for this cron expression. If no time zone has been set, returns the default time zone.
+     *
+     * @return the time zone for this cron expression
+     */
     public TimeZone getTimeZone() {
         if (null == timeZone) {
             timeZone = TimeZone.getDefault();
@@ -212,10 +323,20 @@ public final class Expression implements Serializable, Cloneable {
         return timeZone;
     }
 
+    /**
+     * Sets the time zone for this cron expression.
+     *
+     * @param timeZone the time zone to set
+     */
     public void setTimeZone(TimeZone timeZone) {
         this.timeZone = timeZone;
     }
 
+    /**
+     * Returns the string representation of the cron expression.
+     *
+     * @return the cron expression string
+     */
     @Override
     public String toString() {
         return cronExpression;
@@ -625,10 +746,20 @@ public final class Expression implements Serializable, Cloneable {
         return i;
     }
 
+    /**
+     * Returns the cron expression string.
+     *
+     * @return the cron expression string
+     */
     public String getCronExpression() {
         return cronExpression;
     }
 
+    /**
+     * Returns a summary of the cron expression, showing all the values for each field.
+     *
+     * @return a string summary of the cron expression
+     */
     public String getExpressionSummary() {
         StringBuilder buf = new StringBuilder();
 
@@ -952,6 +1083,14 @@ public final class Expression implements Serializable, Cloneable {
         return integer;
     }
 
+    /**
+     * Returns the next valid time after the given date that satisfies the cron expression. This method computes the
+     * time by iterating through the date fields until a valid match is found.
+     *
+     * @param afterTime the date to start searching from
+     * @return the next valid date after the given date, or {@code null} if no valid time exists within the supported
+     *         range
+     */
     public Date getTimeAfter(Date afterTime) {
 
         // Computation is based on Gregorian year only.
@@ -1433,10 +1572,26 @@ public final class Expression implements Serializable, Cloneable {
         }
     }
 
+    /**
+     * Internal data structure for holding parsed values and positions during expression parsing.
+     * <p>
+     * This class is used to store intermediate results when parsing numeric values from cron expression strings,
+     * tracking both the parsed value and the current position in the string.
+     * </p>
+     *
+     * @author Kimi Liu
+     * @since Java 17+
+     */
     class ValueSet {
 
+        /**
+         * The value parsed from the expression string.
+         */
         public int value;
 
+        /**
+         * The current position in the expression string.
+         */
         public int pos;
     }
 

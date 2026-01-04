@@ -249,7 +249,7 @@ public class HuaweiProvider extends AbstractProvider {
             String codeChallenge = Builder.codeChallenge(codeChallengeMethod, codeVerifier);
             builder.queryParam("code_challenge", codeChallenge)
                     .queryParam("code_challenge_method", codeChallengeMethod);
-            // 缓存 codeVerifier 十分钟
+            // Cache codeVerifier for ten minutes
             this.cache.write(cacheKey, codeVerifier, TimeUnit.MINUTES.toMillis(10));
         }
         return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(builder.build()).build();

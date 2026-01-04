@@ -34,7 +34,7 @@ import java.lang.reflect.Type;
 import org.miaixz.bus.core.lang.exception.ConvertException;
 
 /**
- * 原始类型转换器 支持类型为：
+ * Converter for primitive types. Supported types:
  * <ul>
  * <li>{@code byte}</li>
  * <li>{@code short}</li>
@@ -55,15 +55,34 @@ public class PrimitiveConverter extends AbstractConverter implements MatcherConv
     private static final long serialVersionUID = 2852271020075L;
 
     /**
-     * 单例对象
+     * Singleton instance
      */
     public static final PrimitiveConverter INSTANCE = new PrimitiveConverter();
 
+    /**
+     * Checks if this converter can handle the conversion to the specified target type.
+     *
+     * @param targetType the target type
+     * @param rawType    the raw class of the target type
+     * @param value      the value to be converted
+     * @return {@code true} if the raw type is a primitive type
+     */
     @Override
     public boolean match(final Type targetType, final Class<?> rawType, final Object value) {
         return rawType.isPrimitive();
     }
 
+    /**
+     * Converts the given value to a primitive type.
+     * <p>
+     * Delegates to the appropriate wrapper type converter (NumberConverter, CharacterConverter, BooleanConverter).
+     * </p>
+     *
+     * @param primitiveClass the primitive class to convert to
+     * @param value          the value to convert
+     * @return the converted primitive value (as wrapper type)
+     * @throws ConvertException if the target type is not supported or conversion fails
+     */
     @Override
     protected Object convertInternal(final Class<?> primitiveClass, final Object value) {
         final Object result;

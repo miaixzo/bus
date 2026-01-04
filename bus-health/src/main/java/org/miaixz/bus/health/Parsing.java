@@ -32,7 +32,6 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
@@ -154,7 +153,7 @@ public final class Parsing {
 
         // Check for UTF-16LE null terminator (00 00)
         if (len >= 2 && bytes[len - 1] == 0x00 && bytes[len - 2] == 0x00) {
-            return new String(bytes, StandardCharsets.UTF_16LE).trim();
+            return new String(bytes, Charset.UTF_16_LE).trim();
         }
 
         // Check for Windows-1252 (single null terminator)

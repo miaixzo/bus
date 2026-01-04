@@ -38,6 +38,9 @@ import org.apache.poi.ss.usermodel.RichTextString;
  */
 public class RichTextCellSetter implements CellSetter {
 
+    /**
+     * The rich text string value to set in the cell.
+     */
     private final RichTextString value;
 
     /**
@@ -49,6 +52,11 @@ public class RichTextCellSetter implements CellSetter {
         this.value = value;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param cell the cell to set the rich text string value in
+     */
     @Override
     public void setValue(final Cell cell) {
         cell.setCellValue(value);

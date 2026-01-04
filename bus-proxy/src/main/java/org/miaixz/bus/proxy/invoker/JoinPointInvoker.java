@@ -60,32 +60,65 @@ public class JoinPointInvoker implements ProxyChain {
     }
 
     @Override
+    /**
+     * Gets the proxy instance that the method was invoked on.
+     *
+     * @return The proxy instance.
+     */
     public Object getProxy() {
         return invocation.getProxy();
     }
 
     @Override
+    /**
+     * Gets the {@link Method} object for the method that was invoked.
+     *
+     * @return The invoked method.
+     */
     public Method getMethod() {
         return invocation.getMethod();
     }
 
     @Override
+    /**
+     * Gets the array of arguments that were passed to the method.
+     *
+     * @return The method arguments.
+     */
     public Object[] getArguments() {
         return invocation.getArguments();
     }
 
     @Override
+    /**
+     * Proceeds with the invocation of the original method on the target object.
+     *
+     * @return The result of the method invocation.
+     * @throws Throwable if the underlying method throws an exception.
+     */
     public Object proceed() throws Throwable {
         return invocation.proceed();
     }
 
     @Override
+    /**
+     * Gets the names of the method parameters. Note: This implementation returns the argument values, not their names.
+     *
+     * @return An array of parameter values.
+     */
     public Object[] getNames() {
         // This implementation returns the argument values, not their names.
         return getArguments();
     }
 
     @Override
+    /**
+     * Proceeds with the invocation, but with a new set of arguments.
+     *
+     * @param arguments The new arguments to use for the method invocation.
+     * @return The result of the method invocation.
+     * @throws Throwable if the underlying method throws an exception.
+     */
     public Object proceed(Object[] args) throws Throwable {
         return invocation.getMethod().invoke(target, args);
     }

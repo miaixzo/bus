@@ -27,6 +27,9 @@
 */
 package org.miaixz.bus.mapper.support.tenant;
 
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
+
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
@@ -79,7 +82,7 @@ public class TenantBuilder {
      */
     private final TenantConfig config;
     /**
-     * SQL cache (original SQL -> rewritten SQL).
+     * SQL cache (original SQL -> actual SQL).
      */
     private final Map<String, String> sqlCache;
 
@@ -98,7 +101,7 @@ public class TenantBuilder {
      *
      * @param originalSql the original SQL
      * @param tenantId    the tenant ID
-     * @return the rewritten SQL
+     * @return the actual SQL
      */
     public String handleSql(String originalSql, String tenantId) {
         // If tenant filtering is ignored, return original SQL directly
@@ -125,7 +128,7 @@ public class TenantBuilder {
      *
      * @param originalSql the original SQL
      * @param tenantId    the tenant ID
-     * @return the rewritten SQL
+     * @return the actual SQL
      */
     private String doHandleSql(String originalSql, String tenantId) {
         String sql = originalSql.trim();
@@ -150,7 +153,7 @@ public class TenantBuilder {
      *
      * @param sql      the original SQL
      * @param tenantId the tenant ID
-     * @return the rewritten SQL
+     * @return the actual SQL
      */
     private String handleSelect(String sql, String tenantId) {
         Matcher matcher = SELECT_PATTERN.matcher(sql);
@@ -169,14 +172,16 @@ public class TenantBuilder {
         // Build tenant condition
         String tenantCondition = buildTenantCondition(tenantId);
 
-        // Check if WHERE clause exists
+        // Check if WHERE clause exists in rest (which is everything after the table name)
         Matcher whereMatcher = WHERE_PATTERN.matcher(rest);
         if (whereMatcher.find()) {
-            // WHERE exists, add tenant filtering before conditions
-            String beforeWhere = rest.substring(0, whereMatcher.start());
-            String afterWhere = rest.substring(whereMatcher.end());
+            // WHERE exists, add tenant filtering after WHERE keyword
+            int whereStart = whereMatcher.start();
+            int whereEnd = whereMatcher.end();
+            String beforeWhere = rest.substring(0, whereEnd); // Includes "WHERE "
+            String afterWhere = rest.substring(whereEnd); // Original WHERE conditions
             return String.format(
-                    "SELECT %s FROM %s%s WHERE %s AND (%s)",
+                    "SELECT %s FROM %s%s%s AND (%s)",
                     extractSelectColumns(sql),
                     tableName,
                     beforeWhere,
@@ -198,7 +203,7 @@ public class TenantBuilder {
      *
      * @param sql      the original SQL
      * @param tenantId the tenant ID
-     * @return the rewritten SQL
+     * @return the actual SQL
      */
     private String handleInsert(String sql, String tenantId) {
         Matcher matcher = INSERT_PATTERN.matcher(sql);
@@ -233,7 +238,7 @@ public class TenantBuilder {
      *
      * @param sql      the original SQL
      * @param tenantId the tenant ID
-     * @return the rewritten SQL
+     * @return the actual SQL
      */
     private String handleUpdate(String sql, String tenantId) {
         Matcher matcher = UPDATE_PATTERN.matcher(sql);
@@ -267,7 +272,7 @@ public class TenantBuilder {
      *
      * @param sql      the original SQL
      * @param tenantId the tenant ID
-     * @return the rewritten SQL
+     * @return the actual SQL
      */
     private String handleDelete(String sql, String tenantId) {
         Matcher matcher = DELETE_PATTERN.matcher(sql);
@@ -316,7 +321,7 @@ public class TenantBuilder {
         if (selectIndex >= 0 && fromIndex > selectIndex) {
             return sql.substring(selectIndex + 6, fromIndex).trim();
         }
-        return "*";
+        return Symbol.STAR;
     }
 
     /**
@@ -327,10 +332,10 @@ public class TenantBuilder {
      */
     private String escapeSql(String value) {
         if (value == null) {
-            return "";
+            return Normal.EMPTY;
         }
         // Escape single quotes
-        return value.replace("'", "''");
+        return value.replace(Symbol.SINGLE_QUOTE, "''");
     }
 
     /**

@@ -63,9 +63,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  */
 public class PercentCodec implements Encoder<byte[], byte[]>, Serializable {
 
-    /**
-     * The serial version UID for serialization.
-     */
     @Serial
     private static final long serialVersionUID = 2852281130770L;
 

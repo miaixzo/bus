@@ -37,13 +37,14 @@ import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Assert;
 
 /**
- * JWT Claims 认证类，用于存储和处理 JWT 的 header 或 payload 数据。
+ * JWT Claims authentication class for storing and processing JWT header or payload data.
  * <p>
- * Claims 表示 JWT 中的键值对集合，支持解析 Base64 编码的 JSON 字符串，存储为 Map 结构， 并提供设置、获取和序列化功能。
+ * Claims represents a collection of key-value pairs in JWT, supporting parsing of Base64-encoded JSON strings, storing
+ * them as a Map structure, and providing setting, getting, and serialization functionality.
  * </p>
  *
  * @author Kimi Liu
- * @since Java 17+
+ * @since Java 21+
  */
 public class Claims implements Serializable {
 
@@ -51,19 +52,19 @@ public class Claims implements Serializable {
     private static final long serialVersionUID = 2852289137231L;
 
     /**
-     * Claims 数据存储，使用 Map 保存键值对
+     * Claims data storage, using Map to save key-value pairs.
      */
     private Map<String, Object> claims;
 
     /**
-     * 设置 Claims 属性。
+     * Sets a Claims property.
      * <p>
-     * 如果属性值为 null，则移除该属性；否则将属性名和值存入 Map。
+     * If the property value is null, removes the property; otherwise stores the property name and value in the Map.
      * </p>
      *
-     * @param name  属性名，不能为 null
-     * @param value 属性值
-     * @throws IllegalArgumentException 如果属性名为空
+     * @param name  the property name, cannot be null
+     * @param value the property value
+     * @throws IllegalArgumentException if the property name is null
      */
     public void setClaim(final String name, final Object value) {
         Assert.notNull(name, "Name must be not null!");
@@ -76,12 +77,12 @@ public class Claims implements Serializable {
     }
 
     /**
-     * 批量添加 Claims 属性。
+     * Batch adds Claims properties.
      * <p>
-     * 遍历提供的 Map，将每个键值对添加到 Claims 中。
+     * Iterates through the provided Map and adds each key-value pair to the Claims.
      * </p>
      *
-     * @param headerClaims 包含多个属性的 Map
+     * @param headerClaims a Map containing multiple properties
      */
     public void putAll(final Map<String, ?> headerClaims) {
         if (headerClaims != null && !headerClaims.isEmpty()) {
@@ -92,10 +93,10 @@ public class Claims implements Serializable {
     }
 
     /**
-     * 获取指定名称的属性值。
+     * Gets the property value for the specified name.
      *
-     * @param name 属性名
-     * @return 属性值，若不存在则返回 null
+     * @param name the property name
+     * @return the property value, or null if it does not exist
      */
     public Object getClaim(final String name) {
         init();
@@ -103,9 +104,9 @@ public class Claims implements Serializable {
     }
 
     /**
-     * 获取 Claims 的键值对集合。
+     * Gets the key-value pair collection of Claims.
      *
-     * @return Claims 的 Map 表示
+     * @return the Map representation of Claims
      */
     public Map<String, Object> getClaimsJson() {
         init();
@@ -113,14 +114,14 @@ public class Claims implements Serializable {
     }
 
     /**
-     * 解析 Base64 编码的 JSON 字符串并存储为 Claims。
+     * Parses a Base64-encoded JSON string and stores it as Claims.
      * <p>
-     * 将 Base64 解码后的 JSON 字符串解析为键值对，存入内部 Map。
+     * Parses the JSON string after Base64 decoding into key-value pairs and stores them in the internal Map.
      * </p>
      *
-     * @param tokenPart Base64 编码的 JSON 字符串
-     * @param charset   字符编码
-     * @throws IllegalArgumentException 如果 JSON 格式不正确
+     * @param tokenPart the Base64-encoded JSON string
+     * @param charset   the character encoding
+     * @throws IllegalArgumentException if the JSON format is incorrect
      */
     public void parse(final String tokenPart, final Charset charset) {
         String decoded = Base64.decodeString(tokenPart, charset);
@@ -128,9 +129,9 @@ public class Claims implements Serializable {
     }
 
     /**
-     * 将 Claims 转换为 JSON 字符串。
+     * Converts Claims to a JSON string.
      *
-     * @return JSON 格式的字符串表示
+     * @return the string representation in JSON format
      */
     @Override
     public String toString() {
@@ -139,9 +140,9 @@ public class Claims implements Serializable {
     }
 
     /**
-     * 初始化 Claims 的 Map 存储。
+     * Initializes the Map storage for Claims.
      * <p>
-     * 如果 claims 未初始化，则创建新的 HashMap。
+     * If claims is not initialized, creates a new HashMap.
      * </p>
      */
     private void init() {
@@ -151,14 +152,14 @@ public class Claims implements Serializable {
     }
 
     /**
-     * 解析 JSON 字符串为 Map。
+     * Parses a JSON string into a Map.
      * <p>
-     * 假设 JSON 为简单键值对（无嵌套），支持字符串和数字值。
+     * Assumes the JSON is simple key-value pairs (no nesting), supporting string and numeric values.
      * </p>
      *
-     * @param json JSON 字符串
-     * @return 解析后的 Map
-     * @throws IllegalArgumentException 如果 JSON 格式不正确
+     * @param json the JSON string
+     * @return the parsed Map
+     * @throws IllegalArgumentException if the JSON format is incorrect
      */
     private Map<String, Object> parseJsonString(String json) {
         Map<String, Object> result = new HashMap<>();
@@ -193,13 +194,14 @@ public class Claims implements Serializable {
     }
 
     /**
-     * 将 Map 转换为 JSON 字符串。
+     * Converts a Map to a JSON string.
      * <p>
-     * 将 Map 中的键值对序列化为 JSON 格式字符串，字符串值加引号，数字值不加引号。
+     * Serializes key-value pairs in the Map into a JSON format string, with string values quoted and numeric values
+     * unquoted.
      * </p>
      *
-     * @param map 键值对 Map
-     * @return JSON 字符串
+     * @param map the key-value pair Map
+     * @return the JSON string
      */
     private String toJsonString(Map<String, Object> map) {
         if (map == null || map.isEmpty()) {

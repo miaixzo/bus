@@ -30,7 +30,7 @@ package org.miaixz.bus.core.center.date.culture.solar;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.miaixz.bus.core.center.date.culture.Loops;
+import org.miaixz.bus.core.center.date.culture.parts.MonthParts;
 
 /**
  * Represents a month in the Gregorian calendar.
@@ -38,131 +38,115 @@ import org.miaixz.bus.core.center.date.culture.Loops;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class SolarMonth extends Loops {
+public class SolarMonth extends MonthParts {
 
     /**
-     * Names of solar months.
+     * Chinese month names (1月 to 12月).
      */
     public static final String[] NAMES = { "1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月" };
 
     /**
-     * Number of days in each month.
+     * Number of days in each month for a non-leap year.
      */
     public static final int[] DAYS = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 
     /**
-     * The solar year this month belongs to.
-     */
-    protected SolarYear year;
-
-    /**
-     * The month number.
-     */
-    protected int month;
-
-    /**
-     * Constructs a {@code SolarMonth} with the given year and month.
+     * Constructs a SolarMonth instance.
      *
-     * @param year  The year.
-     * @param month The month.
-     * @throws IllegalArgumentException if the month is out of valid range (1-12).
+     * @param year  the year (1-9999)
+     * @param month the month (1-12)
+     * @throws IllegalArgumentException if the month is invalid
      */
     public SolarMonth(int year, int month) {
-        if (month < 1 || month > 12) {
-            throw new IllegalArgumentException(String.format("illegal solar month: %d", month));
-        }
-        this.year = SolarYear.fromYear(year);
+        validate(year, month);
+        this.year = year;
         this.month = month;
     }
 
     /**
-     * Creates a {@code SolarMonth} instance from the given year and month.
+     * Creates a SolarMonth from year and month.
      *
-     * @param year  The year.
-     * @param month The month.
-     * @return A new {@link SolarMonth} instance.
+     * @param year  the year (1-9999)
+     * @param month the month (1-12)
+     * @return a new SolarMonth instance
      */
     public static SolarMonth fromYm(int year, int month) {
         return new SolarMonth(year, month);
     }
 
     /**
-     * Gets the solar year this month belongs to.
+     * Validates the year and month.
      *
-     * @return The {@link SolarYear}.
+     * @param year  the year
+     * @param month the month
+     * @throws IllegalArgumentException if validation fails
+     */
+    public static void validate(int year, int month) {
+        if (month < 1 || month > 12) {
+            throw new IllegalArgumentException(String.format("illegal solar month: %d", month));
+        }
+        SolarYear.validate(year);
+    }
+
+    /**
+     * Gets the solar year containing this month.
+     *
+     * @return the SolarYear
      */
     public SolarYear getSolarYear() {
-        return year;
+        return SolarYear.fromYear(year);
     }
 
     /**
-     * Gets the year number.
+     * Gets the number of days in this month. Note: October 1582 has only 21 days due to the Gregorian calendar reform.
      *
-     * @return The year number.
-     */
-    public int getYear() {
-        return year.getYear();
-    }
-
-    /**
-     * Gets the month number.
-     *
-     * @return The month number.
-     */
-    public int getMonth() {
-        return month;
-    }
-
-    /**
-     * Gets the number of days in this month (October 1582 has only 21 days).
-     *
-     * @return The number of days.
+     * @return the number of days in this month
      */
     public int getDayCount() {
-        if (1582 == getYear() && 10 == month) {
+        if (1582 == year && 10 == month) {
             return 21;
         }
         int d = DAYS[getIndexInYear()];
-        // Add one day for February in a leap year
-        if (2 == month && year.isLeap()) {
+        // Leap year adds one day to February
+        if (2 == month && getSolarYear().isLeap()) {
             d++;
         }
         return d;
     }
 
     /**
-     * Gets the index of this month within the year (0-11).
+     * Gets the index of this month within the year (0-11, where 0=January).
      *
-     * @return The index.
+     * @return the month index within the year
      */
     public int getIndexInYear() {
         return month - 1;
     }
 
     /**
-     * Gets the solar quarter this month belongs to.
+     * Gets the solar quarter containing this month.
      *
-     * @return The {@link SolarQuarter}.
+     * @return the SolarQuarter
      */
-    public SolarQuarter getQuarter() {
-        return SolarQuarter.fromIndex(getYear(), getIndexInYear() / 3);
+    public SolarQuarter getSeason() {
+        return SolarQuarter.fromIndex(year, getIndexInYear() / 3);
     }
 
     /**
      * Gets the number of weeks in this month.
      *
-     * @param start The starting day of the week, 1-7 (1 for Monday, 7 for Sunday).
-     * @return The number of weeks.
+     * @param start the start day of week (1=Monday, 2=Tuesday, ..., 0=Sunday)
+     * @return the number of weeks in this month
      */
     public int getWeekCount(int start) {
-        return (int) Math.ceil(
-                (indexOf(SolarDay.fromYmd(getYear(), month, 1).getWeek().getIndex() - start, 7) + getDayCount()) / 7D);
+        return (int) Math
+                .ceil((indexOf(SolarDay.fromYmd(year, month, 1).getWeek().getIndex() - start, 7) + getDayCount()) / 7D);
     }
 
     /**
-     * Gets the name of this solar month.
+     * Gets the Chinese name of this month (e.g., "1月", "2月").
      *
-     * @return The name of this solar month.
+     * @return the Chinese month name
      */
     public String getName() {
         return NAMES[getIndexInYear()];
@@ -170,49 +154,56 @@ public class SolarMonth extends Loops {
 
     @Override
     public String toString() {
-        return year + getName();
+        return getSolarYear() + getName();
     }
 
     /**
-     * Gets the solar month after a specified number of months.
+     * Gets the next or previous month.
      *
-     * @param n The number of months to add.
-     * @return The {@link SolarMonth} after {@code n} months.
+     * @param n the number of months to move (positive for forward, negative for backward)
+     * @return the SolarMonth n months from this one
      */
     public SolarMonth next(int n) {
         int i = month - 1 + n;
-        return fromYm((getYear() * 12 + i) / 12, indexOf(i, 12) + 1);
+        return fromYm((year * 12 + i) / 12, indexOf(i, 12) + 1);
     }
 
     /**
-     * Gets a list of all solar weeks in this month.
+     * Gets the list of weeks in this month.
      *
-     * @param start The starting day of the week, 1-7 (1 for Monday, 7 for Sunday).
-     * @return A list of {@link SolarWeek} objects for this month.
+     * @param start the start day of week (1=Monday, 2=Tuesday, ..., 0=Sunday)
+     * @return a list of SolarWeek objects in this month
      */
     public List<SolarWeek> getWeeks(int start) {
         int size = getWeekCount(start);
-        int y = getYear();
         List<SolarWeek> l = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {
-            l.add(SolarWeek.fromYm(y, month, i, start));
+            l.add(SolarWeek.fromYm(year, month, i, start));
         }
         return l;
     }
 
     /**
-     * Gets a list of all solar days in this month.
+     * Gets the list of days in this month.
      *
-     * @return A list of {@link SolarDay} objects for this month.
+     * @return a list of SolarDay objects in this month
      */
     public List<SolarDay> getDays() {
         int size = getDayCount();
-        int y = getYear();
         List<SolarDay> l = new ArrayList<>(size);
         for (int i = 1; i <= size; i++) {
-            l.add(SolarDay.fromYmd(y, month, i));
+            l.add(SolarDay.fromYmd(year, month, i));
         }
         return l;
+    }
+
+    /**
+     * Gets the first day of this month.
+     *
+     * @return the first SolarDay of this month
+     */
+    public SolarDay getFirstDay() {
+        return SolarDay.fromYmd(year, month, 1);
     }
 
 }

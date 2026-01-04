@@ -180,6 +180,15 @@ public class RSA extends Crypto {
                 .generatePublicKey(Algorithm.RSA_ECB_PKCS1.getValue(), new RSAPublicKeySpec(modulus, publicExponent));
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * When not using the BouncyCastle provider, the block size uses the default algorithm.
+     *
+     * @param data    {@inheritDoc}
+     * @param keyType {@inheritDoc}
+     * @return {@inheritDoc}
+     */
     @Override
     public byte[] encrypt(final byte[] data, final KeyType keyType) {
         // When not using the BouncyCastle provider, the block size uses the default algorithm.
@@ -190,6 +199,15 @@ public class RSA extends Crypto {
         return super.encrypt(data, keyType);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * When not using the BouncyCastle provider, the block size uses the default algorithm.
+     *
+     * @param bytes   {@inheritDoc}
+     * @param keyType {@inheritDoc}
+     * @return {@inheritDoc}
+     */
     @Override
     public byte[] decrypt(final byte[] bytes, final KeyType keyType) {
         // When not using the BouncyCastle provider, the block size uses the default algorithm.
@@ -200,6 +218,11 @@ public class RSA extends Crypto {
         return super.decrypt(bytes, keyType);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Attempts to initialize the cipher and handles NoSuchAlgorithmException by trying to add BouncyCastle provider.
+     */
     @Override
     protected void initCipher() {
         try {

@@ -45,11 +45,17 @@ public class NormalLoggingFactory extends AbstractFactory {
         super("System.out.println");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Provider create(final String name) {
         return new NormalLoggingProvider(name);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Provider create(final Class<?> clazz) {
         return new NormalLoggingProvider(clazz);

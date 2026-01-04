@@ -119,17 +119,19 @@ public abstract class HttpClient implements McpClient {
      * <p>
      * This default implementation assumes the remote service has an endpoint (e.g., {@code /mcp/call}) that accepts a
      * JSON object containing the tool name and arguments.
+     * <p>
+     * <b>Note:</b> Timeout and retry are handled at the VortexHandler framework level, not here.
      *
      * @param toolName  The name of the tool to call.
      * @param arguments The arguments required by the tool.
-     * @return A {@code Mono} emitting the raw string response from the tool execution.
+     * @return A {@code Mono} emitting the response object from the tool execution.
      */
     @Override
-    public Mono<String> callTool(String toolName, Map<String, Object> arguments) {
+    public Mono<Object> callTool(String toolName, Map<String, Object> arguments) {
         Logger.info("Calling tool '{}' on remote HTTP-based service with args: {}", toolName, arguments);
         return this.webClient.post().uri("/mcp/call") // Assuming a standard endpoint for tool calls
                 .bodyValue(Map.of("toolName", toolName, "arguments", arguments)).retrieve().bodyToMono(String.class)
-                .timeout(Duration.ofMillis(assets.getTimeout()));
+                .map(response -> response); // Cast String to Object to match interface
     }
 
     /**

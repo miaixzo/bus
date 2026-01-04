@@ -143,16 +143,32 @@ public class MapServiceLoader<S> extends AbstractServiceLoader<S> {
         this.serviceProperties = properties;
     }
 
+    /**
+     * Returns the number of services loaded.
+     *
+     * @return the number of services.
+     */
     @Override
     public int size() {
         return this.serviceProperties.size();
     }
 
+    /**
+     * Returns a list of all service names.
+     *
+     * @return an unmodifiable list of service names.
+     */
     @Override
     public List<String> getServiceNames() {
         return ListKit.view(this.serviceCache.keys());
     }
 
+    /**
+     * Gets the implementation class for the service by name.
+     *
+     * @param serviceName the name of the service as defined in the properties file.
+     * @return the service class, or {@code null} if not found.
+     */
     @Override
     public Class<S> getServiceClass(final String serviceName) {
         final String serviceClassName = this.serviceProperties.getProperty(serviceName);
@@ -162,22 +178,43 @@ public class MapServiceLoader<S> extends AbstractServiceLoader<S> {
         return ClassKit.loadClass(serviceClassName);
     }
 
+    /**
+     * Gets the service instance by name, using a cache. Multiple calls will return the same service object.
+     *
+     * @param serviceName the name of the service as defined in the properties file.
+     * @return the service object, or {@code null} if not found.
+     */
     @Override
     public S getService(final String serviceName) {
         return this.serviceCache.get(serviceName, () -> createService(serviceName));
     }
 
+    /**
+     * Returns an iterator over the services. The iterator will return the same service object for multiple calls.
+     *
+     * @return an iterator over the services.
+     */
     @Override
     public Iterator<S> iterator() {
         return new Iterator<>() {
 
             private final Iterator<String> nameIter = serviceProperties.stringPropertyNames().iterator();
 
+            /**
+             * Returns {@code true} if there are more services to iterate over.
+             *
+             * @return {@code true} if there are more services, {@code false} otherwise.
+             */
             @Override
             public boolean hasNext() {
                 return nameIter.hasNext();
             }
 
+            /**
+             * Returns the next service in the iteration.
+             *
+             * @return the next service.
+             */
             @Override
             public S next() {
                 return getService(nameIter.next());

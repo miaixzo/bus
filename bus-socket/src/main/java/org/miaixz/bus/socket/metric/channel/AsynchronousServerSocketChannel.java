@@ -71,12 +71,29 @@ final class AsynchronousServerSocketChannel extends java.nio.channels.Asynchrono
         this.lowMemory = lowMemory;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param local   the local address to bind to
+     * @param backlog the backlog to use for the connection
+     * @return this channel
+     * @throws IOException if an I/O error occurs
+     */
     @Override
     public java.nio.channels.AsynchronousServerSocketChannel bind(SocketAddress local, int backlog) throws IOException {
         serverSocketChannel.bind(local, backlog);
         return this;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param <T>   the type of the socket option value
+     * @param name  the socket option
+     * @param value the value of the socket option
+     * @return this channel
+     * @throws IOException if an I/O error occurs
+     */
     @Override
     public <T> java.nio.channels.AsynchronousServerSocketChannel setOption(SocketOption<T> name, T value)
             throws IOException {
@@ -84,16 +101,37 @@ final class AsynchronousServerSocketChannel extends java.nio.channels.Asynchrono
         return this;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param <T>  the type of the socket option value
+     * @param name the socket option
+     * @return the value of the socket option
+     * @throws IOException if an I/O error occurs
+     */
     @Override
     public <T> T getOption(SocketOption<T> name) throws IOException {
         return serverSocketChannel.getOption(name);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return a set of the socket options supported by this channel
+     */
     @Override
     public Set<SocketOption<?>> supportedOptions() {
         return serverSocketChannel.supportedOptions();
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param <A>        the type of the attachment
+     * @param attachment the object to attach to the I/O operation
+     * @param handler    the completion handler
+     * @throws AcceptPendingException if an accept operation is already in progress
+     */
     @Override
     public <A> void accept(A attachment, CompletionHandler<AsynchronousSocketChannel, ? super A> handler) {
         if (acceptPending) {
@@ -165,6 +203,11 @@ final class AsynchronousServerSocketChannel extends java.nio.channels.Asynchrono
         attachment = null;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return a {@link Future} representing the pending result
+     */
     @Override
     public Future<AsynchronousSocketChannel> accept() {
         FutureCompletionHandler<AsynchronousSocketChannel, Void> acceptFuture = new FutureCompletionHandler<>();
@@ -173,16 +216,32 @@ final class AsynchronousServerSocketChannel extends java.nio.channels.Asynchrono
         return acceptFuture;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return the local address, or {@code null} if the channel is not bound
+     * @throws IOException if an I/O error occurs
+     */
     @Override
     public SocketAddress getLocalAddress() throws IOException {
         return serverSocketChannel.getLocalAddress();
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return {@code true} if, and only if, this channel is open
+     */
     @Override
     public boolean isOpen() {
         return serverSocketChannel.isOpen();
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @throws IOException if an I/O error occurs
+     */
     @Override
     public void close() throws IOException {
         serverSocketChannel.close();

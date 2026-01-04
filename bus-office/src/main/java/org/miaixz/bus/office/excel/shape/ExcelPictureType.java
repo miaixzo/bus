@@ -78,6 +78,9 @@ public enum ExcelPictureType {
      */
     DIB(Workbook.PICTURE_TYPE_DIB);
 
+    /**
+     * The integer code representing the picture type.
+     */
     private final int value;
 
     /**

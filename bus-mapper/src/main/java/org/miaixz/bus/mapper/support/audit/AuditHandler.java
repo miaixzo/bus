@@ -35,11 +35,9 @@ import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.Args;
 import org.miaixz.bus.mapper.Context;
-import org.miaixz.bus.mapper.Holder;
 import org.miaixz.bus.mapper.handler.ConditionHandler;
 
 /**
@@ -78,7 +76,7 @@ import org.miaixz.bus.mapper.handler.ConditionHandler;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class AuditHandler<T> extends ConditionHandler<T> {
+public class AuditHandler<T> extends ConditionHandler<T, AuditConfig> {
 
     /**
      * Audit configuration from file (lowest priority).
@@ -102,6 +100,16 @@ public class AuditHandler<T> extends ConditionHandler<T> {
     }
 
     /**
+     * Get the handler name for logging purposes.
+     *
+     * @return the handler name "Audit"
+     */
+    @Override
+    public String getHandler() {
+        return "Audit";
+    }
+
+    /**
      * Sets the audit-related configuration properties. This method is typically called during plugin initialization to
      * configure SQL audit behaviors.
      *
@@ -114,31 +122,89 @@ public class AuditHandler<T> extends ConditionHandler<T> {
             return false;
         }
 
+        // Store all properties for dynamic lookup (in parent class)
+        this.properties = properties;
+
+        // Get current datasource key for static config initialization
+        String datasourceKey = getDatasourceKey();
+
         // Try to get provider from properties
-        AuditProvider provider = null;
-        Object providerObj = properties.get(Args.PROVIDER_KEY);
-        if (providerObj instanceof AuditProvider) {
-            provider = (AuditProvider) providerObj;
-        }
+        AuditProvider provider = getProvider(properties, AuditProvider.class);
 
         // Set provider if found
         if (provider == null) {
-            Logger.warn(false, "Mapper", "Provider not found, feature will not be enabled");
+            Logger.warn(false, getHandler(), "Provider not found, feature will not be enabled");
             return false;
         }
 
-        // Get current datasource key
-        String datasourceKey = Holder.getKey();
-        if (StringKit.isEmpty(datasourceKey)) {
-            // Use actual default datasource name or fallback to "default"
-            datasourceKey = "default";
+        // Build initial static config
+        this.config = buildAuditConfig(datasourceKey, properties, provider);
+        return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return the scope key for audit configuration
+     */
+    @Override
+    protected String scope() {
+        return Args.AUDIT_KEY;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return the default audit configuration
+     */
+    @Override
+    protected AuditConfig defaults() {
+        return config;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return the captured audit configuration from context
+     */
+    @Override
+    protected AuditConfig capture() {
+        Context.MapperConfig contextConfig = Context.getMapperConfig();
+        return contextConfig != null ? contextConfig.getAudit() : null;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param datasourceKey the datasource key
+     * @param properties    the properties
+     * @return the derived audit configuration
+     */
+    @Override
+    protected AuditConfig derived(String datasourceKey, Properties properties) {
+        // Try to get provider from properties
+        AuditProvider provider = getProvider(properties, AuditProvider.class);
+
+        // Set provider if found
+        if (provider == null) {
+            return null;
         }
 
-        // Build configuration paths
+        return buildAuditConfig(datasourceKey, properties, provider);
+    }
+
+    /**
+     * Build audit configuration from properties for a specific datasource.
+     *
+     * @param datasourceKey the datasource key
+     * @param properties    the properties
+     * @param provider      the audit provider
+     * @return the audit configuration
+     */
+    private AuditConfig buildAuditConfig(String datasourceKey, Properties properties, AuditProvider provider) {
         String sharedPrefix = Args.SHARED_KEY + Symbol.DOT + Args.AUDIT_KEY + Symbol.DOT;
         String dsPrefix = datasourceKey + Symbol.DOT + Args.AUDIT_KEY + Symbol.DOT;
 
-        // Merge configuration: datasource-specific > shared > default
         long slowSqlThreshold = Long.parseLong(
                 properties.getProperty(
                         dsPrefix + Args.AUDIT_SLOW_SQL_THRESHOLD,
@@ -160,50 +226,61 @@ public class AuditHandler<T> extends ConditionHandler<T> {
                         dsPrefix + Args.AUDIT_PRINT_CONSOLE,
                         properties.getProperty(sharedPrefix + Args.AUDIT_PRINT_CONSOLE, "false")));
 
-        this.config = AuditConfig.builder().slowSqlThreshold(slowSqlThreshold).logParameters(logParameters)
-                .provider(provider).logResults(logResults).logAllSql(logAllSql).printConsole(printConsole).build();
-
-        return true;
+        return AuditConfig.builder().slowSqlThreshold(slowSqlThreshold).logParameters(logParameters).provider(provider)
+                .logResults(logResults).logAllSql(logAllSql).printConsole(printConsole).build();
     }
 
     /**
-     * Get current effective configuration with priority: Context > File Config.
+     * {@inheritDoc}
      *
-     * @return the effective audit configuration
+     * @return the order value for this handler
      */
-    private AuditConfig getCurrentConfig() {
-        // 1. Highest priority: Context configuration
-        Context.MapperConfig contextConfig = Context.getMapperConfig();
-        if (contextConfig != null && contextConfig.getAudit() != null) {
-            return contextConfig.getAudit();
-        }
-
-        // 2. Lowest priority: File configuration
-        return config;
+    @Override
+    public int getOrder() {
+        return MIN_VALUE + 7;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param executor        the executor
+     * @param mappedStatement the mapped statement
+     * @param parameter       the parameter
+     * @return true if update should proceed, false otherwise
+     */
     @Override
     public boolean isUpdate(Executor executor, MappedStatement mappedStatement, Object parameter) {
         // Get current configuration
-        AuditConfig currentConfig = getCurrentConfig();
+        AuditConfig currentConfig = current();
         if (currentConfig == null || AuditContext.isIgnore()) {
-            Logger.debug(true, "Audit", "Audit disabled or ignored for update: {}", mappedStatement.getId());
+            Logger.debug(true, getHandler(), "Audit disabled or ignored for update: {}", mappedStatement.getId());
             return true;
         }
 
         // Create builder on-demand for current config and check if should ignore
         AuditBuilder builder = new AuditBuilder(currentConfig);
         if (builder.shouldIgnoreAudit(mappedStatement)) {
-            Logger.debug(true, "Audit", "Audit ignored for mapper: {}", mappedStatement.getId());
+            Logger.debug(true, getHandler(), "Audit ignored for mapper: {}", mappedStatement.getId());
             return true;
         }
 
-        Logger.debug(false, "Audit", "Starting audit for update: {}", mappedStatement.getId());
+        Logger.debug(false, getHandler(), "Starting audit for update: {}", mappedStatement.getId());
         // Start audit record
         builder.before(mappedStatement, parameter);
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param executor        the executor
+     * @param mappedStatement the mapped statement
+     * @param parameter       the parameter
+     * @param rowBounds       the row bounds
+     * @param resultHandler   the result handler
+     * @param boundSql        the bound SQL
+     * @return true if query should proceed, false otherwise
+     */
     @Override
     public boolean isQuery(
             Executor executor,
@@ -213,25 +290,36 @@ public class AuditHandler<T> extends ConditionHandler<T> {
             ResultHandler resultHandler,
             BoundSql boundSql) {
         // Get current configuration
-        AuditConfig currentConfig = getCurrentConfig();
+        AuditConfig currentConfig = current();
         if (currentConfig == null || AuditContext.isIgnore()) {
-            Logger.debug(true, "Audit", "Audit disabled or ignored for query: {}", mappedStatement.getId());
+            Logger.debug(true, getHandler(), "Audit disabled or ignored for query: {}", mappedStatement.getId());
             return true;
         }
 
         // Create builder on-demand for current config and check if should ignore
         AuditBuilder builder = new AuditBuilder(currentConfig);
         if (builder.shouldIgnoreAudit(mappedStatement)) {
-            Logger.debug(true, "Audit", "Audit ignored for mapper: {}", mappedStatement.getId());
+            Logger.debug(true, getHandler(), "Audit ignored for mapper: {}", mappedStatement.getId());
             return true;
         }
 
-        Logger.debug(false, "Audit", "Starting audit for query: {}", mappedStatement.getId());
+        Logger.debug(false, getHandler(), "Starting audit for query: {}", mappedStatement.getId());
         // Start audit record
         builder.before(mappedStatement, parameter, boundSql);
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param result          the query result
+     * @param executor        the executor
+     * @param mappedStatement the mapped statement
+     * @param parameter       the parameter
+     * @param rowBounds       the row bounds
+     * @param resultHandler   the result handler
+     * @param boundSql        the bound SQL
+     */
     @Override
     public void query(
             Object result,
@@ -242,9 +330,9 @@ public class AuditHandler<T> extends ConditionHandler<T> {
             ResultHandler resultHandler,
             BoundSql boundSql) {
         // End audit record
-        AuditConfig currentConfig = getCurrentConfig();
+        AuditConfig currentConfig = current();
         if (currentConfig != null) {
-            Logger.debug(false, "Audit", "Completing audit for query: {}", mappedStatement.getId());
+            Logger.debug(false, getHandler(), "Completing audit for query: {}", mappedStatement.getId());
             AuditBuilder builder = new AuditBuilder(currentConfig);
             builder.after(result, null);
         }

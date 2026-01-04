@@ -30,12 +30,12 @@ package org.miaixz.bus.core.center.date.culture.lunar;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.miaixz.bus.core.center.date.culture.Loops;
+import org.miaixz.bus.core.center.date.culture.Direction;
+import org.miaixz.bus.core.center.date.culture.Twenty;
 import org.miaixz.bus.core.center.date.culture.Vesta;
-import org.miaixz.bus.core.center.date.culture.cn.Direction;
-import org.miaixz.bus.core.center.date.culture.cn.Twenty;
-import org.miaixz.bus.core.center.date.culture.cn.sixty.SixtyCycle;
-import org.miaixz.bus.core.center.date.culture.cn.star.nine.NineStar;
+import org.miaixz.bus.core.center.date.culture.parts.YearParts;
+import org.miaixz.bus.core.center.date.culture.sixty.SixtyCycle;
+import org.miaixz.bus.core.center.date.culture.star.nine.NineStar;
 
 /**
  * Represents a year in the Lunar calendar.
@@ -43,10 +43,10 @@ import org.miaixz.bus.core.center.date.culture.cn.star.nine.NineStar;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class LunarYear extends Loops {
+public class LunarYear extends YearParts {
 
     /**
-     * Cache for leap months: {leapMonth:year}.
+     * Cached leap month data: maps leap month to list of years.
      */
     protected static final List<List<Integer>> LEAP = new ArrayList<>(12);
 
@@ -85,55 +85,50 @@ public class LunarYear extends Loops {
     }
 
     /**
-     * The year.
-     */
-    protected int year;
-
-    /**
-     * Constructs a {@code LunarYear} with the given year.
+     * Validates the lunar year.
      *
-     * @param year The year, supporting -1 to 9999.
-     * @throws IllegalArgumentException if the year is out of the supported range.
+     * @param year the lunar year
+     * @throws IllegalArgumentException if the year is out of valid range
      */
-    public LunarYear(int year) {
+    public static void validate(int year) {
         if (year < -1 || year > 9999) {
             throw new IllegalArgumentException(String.format("illegal lunar year: %d", year));
         }
+    }
+
+    /**
+     * Constructs a LunarYear instance.
+     *
+     * @param year the lunar year
+     */
+    public LunarYear(int year) {
+        validate(year);
         this.year = year;
     }
 
     /**
-     * Creates a {@code LunarYear} instance from the given year.
+     * Creates a LunarYear from the year.
      *
-     * @param year The year, supporting -1 to 9999.
-     * @return A new {@link LunarYear} instance.
+     * @param year the year (supports -1 to 9999)
+     * @return a new LunarYear instance
      */
     public static LunarYear fromYear(int year) {
         return new LunarYear(year);
     }
 
     /**
-     * Gets the year.
+     * Gets the Sixty Cycle (Gan-Zhi) for this year.
      *
-     * @return The year.
-     */
-    public int getYear() {
-        return year;
-    }
-
-    /**
-     * Gets the Sixty Cycle (GanZhi) of this lunar year.
-     *
-     * @return The {@link SixtyCycle} of this year.
+     * @return the Sixty Cycle
      */
     public SixtyCycle getSixtyCycle() {
         return SixtyCycle.fromIndex(year - 4);
     }
 
     /**
-     * Gets the total number of days in this lunar year.
+     * Gets the number of days in this year.
      *
-     * @return The total number of days.
+     * @return the number of days
      */
     public int getDayCount() {
         int n = 0;
@@ -144,47 +139,49 @@ public class LunarYear extends Loops {
     }
 
     /**
-     * Gets the number of months in this lunar year.
+     * Gets the number of months in this year.
      *
-     * @return The number of months. Typically 12, or 13 if there is a leap month.
+     * @return the number of months (12 or 13 if there's a leap month)
      */
     public int getMonthCount() {
         return getLeapMonth() < 1 ? 12 : 13;
     }
 
     /**
-     * Gets the name of this lunar year. According to the national standard "Compilation and Promulgation of the Lunar
-     * Calendar" GB/T 33661-2017, there are two naming methods for lunar years: GanZhi (Heavenly Stems and Earthly
-     * Branches) and Zodiac. This method defaults to the GanZhi naming method.
+     * Gets the name of this year following the Chinese national standard "Compilation and Promulgation of the Lunar
+     * Calendar" GB/T 33661-2017.
+     * <p>
+     * The standard defines two naming methods for lunar years: the Sixty Cycle (Gan-Zhi) method and the Zodiac animal
+     * method. By default, this method uses the Sixty Cycle method.
      *
-     * @return The name of the lunar year.
+     * @return the name (e.g., "农历甲子年")
      */
     public String getName() {
         return String.format("农历%s年", getSixtyCycle());
     }
 
     /**
-     * Gets the Twenty (Yun) for this lunar year.
+     * Gets the Yun (20-year cycle) for this year.
      *
-     * @return The {@link Twenty} for this year.
+     * @return the Yun
      */
     public Twenty getTwenty() {
         return Twenty.fromIndex((int) Math.floor((year - 1864) / 20D));
     }
 
     /**
-     * Gets the Nine Star (JiuXing) for this lunar year.
+     * Gets the nine stars for this year.
      *
-     * @return The {@link NineStar} for this year.
+     * @return the nine star
      */
     public NineStar getNineStar() {
         return NineStar.fromIndex(63 + getTwenty().getSixty().getIndex() * 3 - getSixtyCycle().getIndex());
     }
 
     /**
-     * Gets the Jupiter Direction (TaiSui方位) for this lunar year.
+     * Gets the Jupiter direction (Tai Sui position) for this year.
      *
-     * @return The {@link Direction} of Jupiter.
+     * @return the direction
      */
     public Direction getJupiterDirection() {
         return Direction.fromIndex(
@@ -192,19 +189,19 @@ public class LunarYear extends Loops {
     }
 
     /**
-     * Gets the lunar year after a specified number of years.
+     * Gets the lunar year that is n years after this year.
      *
-     * @param n The number of years to add.
-     * @return The {@link LunarYear} after {@code n} years.
+     * @param n the number of years to advance (can be negative)
+     * @return the lunar year after n years
      */
     public LunarYear next(int n) {
         return fromYear(year + n);
     }
 
     /**
-     * Gets the leap month of this lunar year.
+     * Gets the leap month for this year.
      *
-     * @return The leap month number (1 for leap January, 0 if no leap month).
+     * @return the leap month number (1-12), or 0 if there is no leap month
      */
     public int getLeapMonth() {
         if (year == -1) {
@@ -219,18 +216,18 @@ public class LunarYear extends Loops {
     }
 
     /**
-     * Gets the first month (Lunar Month, i.e., January, commonly known as ZhengYue).
+     * Gets the first month of this year (the first lunar month, also known as Zheng Yue).
      *
-     * @return The first {@link LunarMonth}.
+     * @return the first lunar month
      */
     public LunarMonth getFirstMonth() {
         return LunarMonth.fromYm(year, 1);
     }
 
     /**
-     * Gets a list of all months in this lunar year.
+     * Gets the list of months in this year.
      *
-     * @return A list of {@link LunarMonth} objects. Typically 12 months, or 13 if there is a leap month.
+     * @return the list of lunar months (typically 12 months, or 13 if there's a leap month)
      */
     public List<LunarMonth> getMonths() {
         List<LunarMonth> l = new ArrayList<>(13);
@@ -243,9 +240,9 @@ public class LunarYear extends Loops {
     }
 
     /**
-     * Gets the Vesta (ZaoMaTou) for this lunar year.
+     * Gets the kitchen god (Zao Ma Tou) for this year.
      *
-     * @return The {@link Vesta} for this year.
+     * @return the kitchen god
      */
     public Vesta getVesta() {
         return Vesta.fromLunarYear(year);

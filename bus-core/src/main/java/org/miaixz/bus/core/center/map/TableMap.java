@@ -98,21 +98,33 @@ public class TableMap<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>>, Ser
         this.values = ListKit.of(values);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int size() {
         return keys.size();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isEmpty() {
         return CollKit.isEmpty(keys);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean containsKey(final Object key) {
         return keys.contains(key);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean containsValue(final Object value) {
         return values.contains(value);
@@ -224,6 +236,9 @@ public class TableMap<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>>, Ser
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void clear() {
         keys.clear();
@@ -304,6 +319,9 @@ public class TableMap<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>>, Ser
         };
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void forEach(final BiConsumer<? super K, ? super V> action) {
         for (int i = 0; i < size(); i++) {
@@ -331,6 +349,9 @@ public class TableMap<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>>, Ser
         return removed;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void replaceAll(final BiFunction<? super K, ? super V, ? extends V> function) {
         for (int i = 0; i < size(); i++) {

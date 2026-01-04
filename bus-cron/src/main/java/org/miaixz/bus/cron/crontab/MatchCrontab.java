@@ -43,21 +43,30 @@ import java.util.concurrent.locks.Lock;
 public class MatchCrontab extends Repertoire {
 
     /**
-     * Constructor with default capacity of {@link Repertoire#DEFAULT_CAPACITY}
+     * Constructor with default capacity of {@link Repertoire#DEFAULT_CAPACITY}.
      */
     public MatchCrontab() {
         this(DEFAULT_CAPACITY);
     }
 
     /**
-     * Constructor
+     * Constructor.
      *
-     * @param initialCapacity Initial capacity
+     * @param initialCapacity Initial capacity.
      */
     public MatchCrontab(final int initialCapacity) {
         super(initialCapacity);
     }
 
+    /**
+     * Executes all tasks whose cron patterns match the given timestamp.
+     * <p>
+     * This implementation iterates through all tasks and checks if their patterns match the current time.
+     * </p>
+     *
+     * @param scheduler the scheduler that will execute the tasks.
+     * @param millis    the current timestamp in milliseconds.
+     */
     @Override
     public void execute(final Scheduler scheduler, final long millis) {
         final Lock readLock = lock.readLock();
@@ -70,10 +79,10 @@ public class MatchCrontab extends Repertoire {
     }
 
     /**
-     * Execute the corresponding Task if the time matches, without lock
+     * Execute the corresponding Task if the time matches, without lock.
      *
-     * @param scheduler {@link Scheduler}
-     * @param millis    Time in milliseconds
+     * @param scheduler {@link Scheduler}.
+     * @param millis    Time in milliseconds.
      */
     private void executeTaskIfMatchInternal(final Scheduler scheduler, final long millis) {
         final int size = size();

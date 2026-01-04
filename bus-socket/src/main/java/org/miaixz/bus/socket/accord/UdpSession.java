@@ -75,29 +75,44 @@ public class UdpSession extends Session {
         udpChannel.context.getProcessor().stateEvent(this, Status.NEW_SESSION, null);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public WriteBuffer writeBuffer() {
         return byteBuf;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ByteBuffer readBuffer() {
         throw new UnsupportedOperationException("Read buffer is not supported in a UDP session");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void awaitRead() {
         throw new UnsupportedOperationException("awaitRead is not supported in a UDP session");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void signalRead() {
         throw new UnsupportedOperationException("signalRead is not supported in a UDP session");
     }
 
     /**
+     * {@inheritDoc}
+     * <p>
      * To ensure messages are sent as much as possible, UDP does not support immediate close. This method will flush any
      * pending messages.
+     * </p>
      *
      * @param immediate if {@code true}, closes immediately; if {@code false}, closes after sending pending messages.
      */
@@ -106,11 +121,17 @@ public class UdpSession extends Session {
         byteBuf.flush();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public InetSocketAddress getLocalAddress() throws IOException {
         return (InetSocketAddress) udpChannel.getChannel().getLocalAddress();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public InetSocketAddress getRemoteAddress() {
         return (InetSocketAddress) remote;

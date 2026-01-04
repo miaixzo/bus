@@ -77,6 +77,14 @@ public class SpringCglibProvider implements Provider {
     }
 
     @Override
+    /**
+     * Creates a proxy object for the given target, applying the specified aspect.
+     *
+     * @param <T>    The type of the target object.
+     * @param target The object to be proxied.
+     * @param aspect The aspect implementation containing the advice logic.
+     * @return The proxied object.
+     */
     public <T> T proxy(final T target, final Aspect aspect) {
         final Class<?> targetClass = target.getClass();
 

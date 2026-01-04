@@ -41,9 +41,6 @@ import org.miaixz.bus.core.lang.Charset;
  */
 public class StringResource extends CharSequenceResource {
 
-    /**
-     * The serial version UID for serialization.
-     */
     @Serial
     private static final long serialVersionUID = 2852232676563L;
 

@@ -50,9 +50,6 @@ import org.miaixz.bus.core.xyz.UrlKit;
  */
 public class UrlResource implements Resource, Serializable {
 
-    /**
-     * The serial version UID for serialization.
-     */
     @Serial
     private static final long serialVersionUID = 2852232772701L;
 
@@ -102,21 +99,42 @@ public class UrlResource implements Resource, Serializable {
         this.name = ObjectKit.defaultIfNull(name, () -> (null != url ? FileName.getName(url.getPath()) : null));
     }
 
+    /**
+     * Returns the name of this URL resource.
+     *
+     * @return The name of the resource.
+     */
     @Override
     public String getName() {
         return this.name;
     }
 
+    /**
+     * Returns the URL of this resource.
+     *
+     * @return The URL of this resource.
+     */
     @Override
     public URL getUrl() {
         return this.url;
     }
 
+    /**
+     * Returns the size of this URL resource.
+     *
+     * @return The size of the resource in bytes.
+     */
     @Override
     public long size() {
         return UrlKit.size(this.url);
     }
 
+    /**
+     * Returns an input stream for this URL resource.
+     *
+     * @return An input stream for reading the resource.
+     * @throws InternalException If the resource URL is {@code null} or an error occurs while opening the stream.
+     */
     @Override
     public InputStream getStream() throws InternalException {
         if (null == this.url) {
@@ -125,6 +143,13 @@ public class UrlResource implements Resource, Serializable {
         return UrlKit.getStream(url);
     }
 
+    /**
+     * Checks if this URL resource has been modified since it was last accessed.
+     * <p>
+     * This method is only applicable to file URLs. For other URL types, it always returns {@code false}.
+     *
+     * @return {@code true} if this is a file URL and the file has been modified, {@code false} otherwise.
+     */
     @Override
     public boolean isModified() {
         // lastModified == 0 indicates that this resource is not a file resource

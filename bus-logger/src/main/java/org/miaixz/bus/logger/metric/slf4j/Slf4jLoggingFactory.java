@@ -70,6 +70,12 @@ public class Slf4jLoggingFactory extends AbstractFactory {
         final PrintStream err = System.err;
         System.setErr(new PrintStream(new OutputStream() {
 
+            /**
+             * Writes a single byte to the buffer. This implementation captures each character written to System.err by
+             * appending it to the buffer, which allows us to check if SLF4J reported a "no binding" error.
+             *
+             * @param b the byte to write
+             */
             @Override
             public void write(final int b) {
                 buf.append((char) b);
@@ -92,11 +98,23 @@ public class Slf4jLoggingFactory extends AbstractFactory {
         }
     }
 
+    /**
+     * Creates a logger provider for the specified name.
+     *
+     * @param name the name of the logger
+     * @return a new {@link Provider} instance
+     */
     @Override
     public Provider create(final String name) {
         return new Slf4jLoggingProvider(name);
     }
 
+    /**
+     * Creates a logger provider for the specified class.
+     *
+     * @param clazz the class for which to create the logger
+     * @return a new {@link Provider} instance
+     */
     @Override
     public Provider create(final Class<?> clazz) {
         return new Slf4jLoggingProvider(clazz);

@@ -367,7 +367,7 @@ public class Http2Connection implements Closeable {
 
     /**
      * Schedules a {@code RST_STREAM} frame to be sent to the peer.
-     * 
+     *
      * @param streamId  The stream ID.
      * @param errorCode The error code.
      */
@@ -375,6 +375,9 @@ public class Http2Connection implements Closeable {
         try {
             writerExecutor.execute(new NamedRunnable("Http %s stream %d", connectionName, streamId) {
 
+                /**
+                 * Executes the task to write a RST_STREAM frame.
+                 */
                 @Override
                 public void execute() {
                     try {
@@ -402,7 +405,7 @@ public class Http2Connection implements Closeable {
 
     /**
      * Schedules a {@code WINDOW_UPDATE} frame to be sent to the peer.
-     * 
+     *
      * @param streamId                The stream ID.
      * @param unacknowledgedBytesRead The number of bytes read but not yet acknowledged.
      */
@@ -410,6 +413,9 @@ public class Http2Connection implements Closeable {
         try {
             writerExecutor.execute(new NamedRunnable("Http Window Update %s stream %d", connectionName, streamId) {
 
+                /**
+                 * Executes the task to write a WINDOW_UPDATE frame.
+                 */
                 @Override
                 public void execute() {
                     try {
@@ -652,6 +658,9 @@ public class Http2Connection implements Closeable {
         try {
             writerExecutor.execute(new NamedRunnable("Http %s ping", connectionName) {
 
+                /**
+                 * Executes the task to send a degraded ping.
+                 */
                 @Override
                 public void execute() {
                     writePing(false, DEGRADED_PING, 0);
@@ -674,7 +683,7 @@ public class Http2Connection implements Closeable {
 
     /**
      * Schedules a PUSH_PROMISE frame to be sent to the client.
-     * 
+     *
      * @param streamId       The stream ID.
      * @param requestHeaders The request headers.
      */
@@ -689,6 +698,9 @@ public class Http2Connection implements Closeable {
         try {
             pushExecutorExecute(new NamedRunnable("Http %s Push Request[%s]", connectionName, streamId) {
 
+                /**
+                 * Executes the push promise request callback.
+                 */
                 @Override
                 public void execute() {
                     boolean cancel = pushObserver.onRequest(streamId, requestHeaders);
@@ -710,7 +722,7 @@ public class Http2Connection implements Closeable {
 
     /**
      * Schedules headers to be sent to the client for a pushed stream.
-     * 
+     *
      * @param streamId       The stream ID.
      * @param requestHeaders The request headers.
      * @param inFinished     Whether this is the last frame to be sent on this stream.
@@ -719,6 +731,9 @@ public class Http2Connection implements Closeable {
         try {
             pushExecutorExecute(new NamedRunnable("Http %s Push Headers[%s]", connectionName, streamId) {
 
+                /**
+                 * Executes the push headers callback.
+                 */
                 @Override
                 public void execute() {
                     boolean cancel = pushObserver.onHeaders(streamId, requestHeaders, inFinished);
@@ -742,7 +757,7 @@ public class Http2Connection implements Closeable {
     /**
      * Eagerly reads {@code byteCount} bytes from the source before launching a background task to process the data.
      * This avoids corrupting the stream.
-     * 
+     *
      * @param streamId   The stream ID.
      * @param source     The source of the data.
      * @param byteCount  The number of bytes to read.
@@ -758,6 +773,9 @@ public class Http2Connection implements Closeable {
             throw new IOException(buffer.size() + " != " + byteCount);
         pushExecutorExecute(new NamedRunnable("Http %s Push Data[%s]", connectionName, streamId) {
 
+            /**
+             * Executes the push data callback.
+             */
             @Override
             public void execute() {
                 try {
@@ -777,13 +795,16 @@ public class Http2Connection implements Closeable {
 
     /**
      * Schedules a {@code RST_STREAM} frame to be sent to the client for a pushed stream.
-     * 
+     *
      * @param streamId  The stream ID.
      * @param errorCode The error code.
      */
     void pushResetLater(final int streamId, final Http2ErrorCode errorCode) {
         pushExecutorExecute(new NamedRunnable("Http %s Push Reset[%s]", connectionName, streamId) {
 
+            /**
+             * Executes the push reset callback.
+             */
             @Override
             public void execute() {
                 pushObserver.onReset(streamId, errorCode);
@@ -866,6 +887,12 @@ public class Http2Connection implements Closeable {
 
         public static final Listener REFUSE_INCOMING_STREAMS = new Listener() {
 
+            /**
+             * Refuses incoming streams by closing them immediately.
+             *
+             * @param stream The new stream.
+             * @throws IOException if an I/O error occurs.
+             */
             @Override
             public void onStream(Http2Stream stream) throws IOException {
                 stream.close(Http2ErrorCode.REFUSED_STREAM, null);
@@ -907,6 +934,9 @@ public class Http2Connection implements Closeable {
             this.payload2 = payload2;
         }
 
+        /**
+         * Executes the ping operation.
+         */
         @Override
         public void execute() {
             writePing(reply, payload1, payload2);
@@ -919,6 +949,9 @@ public class Http2Connection implements Closeable {
             super("Http %s ping", connectionName);
         }
 
+        /**
+         * Executes the interval ping operation.
+         */
         @Override
         public void execute() {
             boolean failDueToMissingPong;
@@ -951,6 +984,9 @@ public class Http2Connection implements Closeable {
             this.reader = reader;
         }
 
+        /**
+         * Executes the reader loop to process incoming frames.
+         */
         @Override
         protected void execute() {
             Http2ErrorCode connectionErrorCode = Http2ErrorCode.INTERNAL_ERROR;
@@ -972,6 +1008,15 @@ public class Http2Connection implements Closeable {
             }
         }
 
+        /**
+         * Handles incoming DATA frames.
+         *
+         * @param inFinished Whether this is the last frame for this stream.
+         * @param streamId   The stream ID.
+         * @param source     The buffered source of the data.
+         * @param length     The length of the data in bytes.
+         * @throws IOException if an I/O error occurs.
+         */
         @Override
         public void data(boolean inFinished, int streamId, BufferSource source, int length) throws IOException {
             if (pushedStream(streamId)) {
@@ -991,6 +1036,14 @@ public class Http2Connection implements Closeable {
             }
         }
 
+        /**
+         * Handles incoming HEADERS frames.
+         *
+         * @param inFinished         Whether this is the last frame for this stream.
+         * @param streamId           The stream ID.
+         * @param associatedStreamId The ID of the stream this stream is associated with, or 0 if none.
+         * @param headerBlock        The list of header name-value pairs.
+         */
         @Override
         public void headers(boolean inFinished, int streamId, int associatedStreamId, List<Http2Header> headerBlock) {
             if (pushedStream(streamId)) {
@@ -1022,6 +1075,9 @@ public class Http2Connection implements Closeable {
                     streams.put(streamId, newStream);
                     listenerExecutor.execute(new NamedRunnable("Http %s stream %d", connectionName, streamId) {
 
+                        /**
+                         * Executes the stream creation callback.
+                         */
                         @Override
                         public void execute() {
                             try {
@@ -1043,6 +1099,12 @@ public class Http2Connection implements Closeable {
             stream.receiveHeaders(org.miaixz.bus.http.Builder.toHeaders(headerBlock), inFinished);
         }
 
+        /**
+         * Handles incoming RST_STREAM frames.
+         *
+         * @param streamId  The stream ID.
+         * @param errorCode The error code.
+         */
         @Override
         public void rstStream(int streamId, Http2ErrorCode errorCode) {
             if (pushedStream(streamId)) {
@@ -1055,11 +1117,20 @@ public class Http2Connection implements Closeable {
             }
         }
 
+        /**
+         * Handles incoming SETTINGS frames.
+         *
+         * @param clearPrevious Whether to clear all previous settings before applying these.
+         * @param settings      The settings to apply.
+         */
         @Override
         public void settings(boolean clearPrevious, Http2Settings settings) {
             try {
                 writerExecutor.execute(new NamedRunnable("Http %s ACK Settings", connectionName) {
 
+                    /**
+                     * Executes the task to apply and acknowledge settings.
+                     */
                     @Override
                     public void execute() {
                         applyAndAckSettings(clearPrevious, settings);
@@ -1101,6 +1172,9 @@ public class Http2Connection implements Closeable {
             }
             listenerExecutor.execute(new NamedRunnable("Http %s settings", connectionName) {
 
+                /**
+                 * Executes the settings change notification.
+                 */
                 @Override
                 public void execute() {
                     listener.onSettings(Http2Connection.this);
@@ -1108,11 +1182,21 @@ public class Http2Connection implements Closeable {
             });
         }
 
+        /**
+         * Handles acknowledgment of settings changes.
+         */
         @Override
         public void ackSettings() {
             // TODO: If we don't get this callback in a timely fashion, our settings aren't working.
         }
 
+        /**
+         * Handles incoming PING frames.
+         *
+         * @param reply    Whether this is a reply to a ping from the peer.
+         * @param payload1 The first payload integer.
+         * @param payload2 The second payload integer.
+         */
         @Override
         public void ping(boolean reply, int payload1, int payload2) {
             if (reply) {
@@ -1136,6 +1220,13 @@ public class Http2Connection implements Closeable {
             }
         }
 
+        /**
+         * Handles incoming GOAWAY frames.
+         *
+         * @param lastGoodStreamId The last good stream ID processed by the peer.
+         * @param errorCode        The error code.
+         * @param debugData        Debug data.
+         */
         @Override
         public void goAway(int lastGoodStreamId, Http2ErrorCode errorCode, ByteString debugData) {
             if (debugData.size() > 0) { // TODO: log the debugData
@@ -1156,6 +1247,12 @@ public class Http2Connection implements Closeable {
             }
         }
 
+        /**
+         * Handles incoming WINDOW_UPDATE frames.
+         *
+         * @param streamId            The stream ID, or 0 for the connection.
+         * @param windowSizeIncrement The the window size increment.
+         */
         @Override
         public void windowUpdate(int streamId, long windowSizeIncrement) {
             if (streamId == 0) {
@@ -1173,16 +1270,41 @@ public class Http2Connection implements Closeable {
             }
         }
 
+        /**
+         * Handles incoming PRIORITY frames.
+         *
+         * @param streamId         The stream ID.
+         * @param streamDependency The stream this stream depends on.
+         * @param weight           The weight of the stream.
+         * @param exclusive        Whether this stream has exclusive dependence.
+         */
         @Override
         public void priority(int streamId, int streamDependency, int weight, boolean exclusive) {
             // TODO: handle priority.
         }
 
+        /**
+         * Handles incoming PUSH_PROMISE frames.
+         *
+         * @param streamId         The stream ID.
+         * @param promisedStreamId The promised stream ID.
+         * @param requestHeaders   The request headers.
+         */
         @Override
         public void pushPromise(int streamId, int promisedStreamId, List<Http2Header> requestHeaders) {
             pushRequestLater(promisedStreamId, requestHeaders);
         }
 
+        /**
+         * Handles incoming ALTSVC frames.
+         *
+         * @param streamId The stream ID.
+         * @param origin   The origin.
+         * @param protocol The protocol.
+         * @param host     The host.
+         * @param port     The port.
+         * @param maxAge   The maximum age.
+         */
         @Override
         public void alternateService(
                 int streamId,

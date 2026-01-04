@@ -67,6 +67,11 @@ public class ProxySocketFactory extends SocketFactory {
         return new ProxySocketFactory(proxy);
     }
 
+    /**
+     * Creates an unconnected socket. If a proxy is configured, the socket will be created with the proxy.
+     *
+     * @return An unconnected socket.
+     */
     @Override
     public Socket createSocket() {
         if (proxy != null) {
@@ -75,6 +80,15 @@ public class ProxySocketFactory extends SocketFactory {
         return new Socket();
     }
 
+    /**
+     * Creates a socket and connects it to the specified port at the specified address. If a proxy is configured, the
+     * socket will be created with the proxy.
+     *
+     * @param address The address to connect to.
+     * @param port    The port number to connect to.
+     * @return The connected socket.
+     * @throws IOException If an I/O error occurs when creating the socket.
+     */
     @Override
     public Socket createSocket(final InetAddress address, final int port) throws IOException {
         if (proxy != null) {
@@ -85,6 +99,17 @@ public class ProxySocketFactory extends SocketFactory {
         return new Socket(address, port);
     }
 
+    /**
+     * Creates a socket, connects it to the specified port at the specified address, and binds it to the specified local
+     * address and port. If a proxy is configured, the socket will be created with the proxy.
+     *
+     * @param address   The remote address to connect to.
+     * @param port      The remote port number to connect to.
+     * @param localAddr The local address to bind to.
+     * @param localPort The local port number to bind to.
+     * @return The connected socket bound to the local address and port.
+     * @throws IOException If an I/O error occurs when creating the socket.
+     */
     @Override
     public Socket createSocket(
             final InetAddress address,
@@ -100,6 +125,15 @@ public class ProxySocketFactory extends SocketFactory {
         return new Socket(address, port, localAddr, localPort);
     }
 
+    /**
+     * Creates a socket and connects it to the specified port on the specified host. If a proxy is configured, the
+     * socket will be created with the proxy.
+     *
+     * @param host The host name to connect to.
+     * @param port The port number to connect to.
+     * @return The connected socket.
+     * @throws IOException If an I/O error occurs when creating the socket.
+     */
     @Override
     public Socket createSocket(final String host, final int port) throws IOException {
         if (proxy != null) {
@@ -110,6 +144,17 @@ public class ProxySocketFactory extends SocketFactory {
         return new Socket(host, port);
     }
 
+    /**
+     * Creates a socket, connects it to the specified port on the specified host, and binds it to the specified local
+     * address and port. If a proxy is configured, the socket will be created with the proxy.
+     *
+     * @param host      The host name to connect to.
+     * @param port      The remote port number to connect to.
+     * @param localAddr The local address to bind to.
+     * @param localPort The local port number to bind to.
+     * @return The connected socket bound to the local address and port.
+     * @throws IOException If an I/O error occurs when creating the socket.
+     */
     @Override
     public Socket createSocket(final String host, final int port, final InetAddress localAddr, final int localPort)
             throws IOException {

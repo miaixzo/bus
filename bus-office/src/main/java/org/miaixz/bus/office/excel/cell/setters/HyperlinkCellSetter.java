@@ -38,6 +38,9 @@ import org.apache.poi.ss.usermodel.Hyperlink;
  */
 public class HyperlinkCellSetter implements CellSetter {
 
+    /**
+     * The hyperlink value to set in the cell.
+     */
     private final Hyperlink value;
 
     /**
@@ -49,6 +52,11 @@ public class HyperlinkCellSetter implements CellSetter {
         this.value = value;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param cell the cell to set the hyperlink in
+     */
     @Override
     public void setValue(final Cell cell) {
         cell.setHyperlink(this.value);

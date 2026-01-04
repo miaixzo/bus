@@ -39,9 +39,6 @@ import java.util.EventObject;
  */
 public class SourceEvent extends EventObject implements Event {
 
-    /**
-     * The serial version UID for serialization.
-     */
     @Serial
     private static final long serialVersionUID = 2852251732571L;
 

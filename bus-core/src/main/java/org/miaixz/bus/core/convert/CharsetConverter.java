@@ -45,9 +45,6 @@ public class CharsetConverter extends AbstractConverter {
     public CharsetConverter() {
     }
 
-    /**
-     * The serial version UID.
-     */
     @Serial
     private static final long serialVersionUID = 2852266502058L;
 

@@ -96,22 +96,27 @@ public class AntPathMatcher {
      * A cache for compiled {@link AntPathStringMatcher} instances, mapping a pattern string to its matcher.
      */
     private final Map<String, AntPathStringMatcher> stringMatcherCache = new ConcurrentHashMap<>(256);
+
     /**
      * The path separator character used for tokenizing paths and patterns.
      */
     private String pathSeparator;
+
     /**
      * A cache for patterns that depend on the configured path separator.
      */
     private PathSeparatorPatternCache pathSeparatorPatternCache;
+
     /**
      * Whether path matching should be case-sensitive. Default is {@code true}.
      */
     private boolean caseSensitive = true;
+
     /**
      * Whether to trim whitespace from tokens. Default is {@code false}.
      */
     private boolean trimTokens = false;
+
     /**
      * A flag to control pattern caching. Can be null for automatic mode.
      */

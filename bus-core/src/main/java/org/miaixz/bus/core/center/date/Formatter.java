@@ -362,7 +362,7 @@ public class Formatter {
             return null;
         }
 
-        if (time instanceof Month) {
+        if (time instanceof java.time.Month) {
             return time.toString();
         }
 

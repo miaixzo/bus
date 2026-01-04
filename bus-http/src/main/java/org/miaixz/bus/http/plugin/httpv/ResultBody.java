@@ -113,6 +113,11 @@ public class ResultBody implements CoverResult.Body {
         this.response = response;
     }
 
+    /**
+     * Converts the response body to a generic map/object wrapper.
+     *
+     * @return The wrapped object.
+     */
     @Override
     public CoverWapper toWapper() {
         if (null == executor) {
@@ -121,6 +126,11 @@ public class ResultBody implements CoverResult.Body {
         return executor.doMsgConvert((Convertor c) -> c.toMapper(toByteStream(), charset));
     }
 
+    /**
+     * Converts the response body to an array.
+     *
+     * @return The array.
+     */
     @Override
     public CoverArray toArray() {
         if (null == executor) {
@@ -129,6 +139,13 @@ public class ResultBody implements CoverResult.Body {
         return executor.doMsgConvert((Convertor c) -> c.toArray(toByteStream(), charset));
     }
 
+    /**
+     * Converts the response body to a bean of the specified type.
+     *
+     * @param <T>  The type of the bean.
+     * @param type The class of the bean.
+     * @return The bean instance.
+     */
     @Override
     public <T> T toBean(Class<T> type) {
         if (null == executor) {
@@ -137,6 +154,13 @@ public class ResultBody implements CoverResult.Body {
         return executor.doMsgConvert((Convertor c) -> c.toBean(type, toByteStream(), charset));
     }
 
+    /**
+     * Converts the response body to a list of beans of the specified type.
+     *
+     * @param <T>  The type of the list items.
+     * @param type The class of the list items.
+     * @return The list of beans.
+     */
     @Override
     public <T> List<T> toList(Class<T> type) {
         if (null == executor) {
@@ -145,6 +169,11 @@ public class ResultBody implements CoverResult.Body {
         return executor.doMsgConvert((Convertor c) -> c.toList(type, toByteStream(), charset));
     }
 
+    /**
+     * Returns the media type of the response body.
+     *
+     * @return The media type, or null if unknown.
+     */
     @Override
     public MediaType getType() {
         ResponseBody body = response.body();
@@ -154,6 +183,11 @@ public class ResultBody implements CoverResult.Body {
         return null;
     }
 
+    /**
+     * Returns the length of the response body.
+     *
+     * @return The content length in bytes.
+     */
     @Override
     public long getLength() {
         ResponseBody body = response.body();
@@ -163,12 +197,23 @@ public class ResultBody implements CoverResult.Body {
         return 0;
     }
 
+    /**
+     * Specifies that the next callback should be executed on an I/O thread.
+     *
+     * @return This body instance for chaining.
+     */
     @Override
     public CoverResult.Body nextOnIO() {
         onIO = true;
         return this;
     }
 
+    /**
+     * Sets a callback for download progress updates.
+     *
+     * @param onProcess The progress callback.
+     * @return This body instance for chaining.
+     */
     @Override
     public CoverResult.Body setOnProcess(Callback<Progress> onProcess) {
         if (null == executor) {
@@ -182,24 +227,46 @@ public class ResultBody implements CoverResult.Body {
         return this;
     }
 
+    /**
+     * Sets the progress update interval in bytes.
+     *
+     * @param stepBytes The step size in bytes.
+     * @return This body instance for chaining.
+     */
     @Override
     public CoverResult.Body stepBytes(long stepBytes) {
         this.stepBytes = stepBytes;
         return this;
     }
 
+    /**
+     * Sets the progress update interval as a percentage of the total size.
+     *
+     * @param stepRate The step rate (0.0 to 1.0).
+     * @return This body instance for chaining.
+     */
     @Override
     public CoverResult.Body stepRate(double stepRate) {
         this.stepRate = stepRate;
         return this;
     }
 
+    /**
+     * Ignores the HTTP Range header when calculating the total download size.
+     *
+     * @return This body instance for chaining.
+     */
     @Override
     public CoverResult.Body setRangeIgnored() {
         this.rangeIgnored = true;
         return this;
     }
 
+    /**
+     * Returns the response body as an input stream.
+     *
+     * @return The input stream.
+     */
     @Override
     public InputStream toByteStream() {
         InputStream input;
@@ -231,6 +298,11 @@ public class ResultBody implements CoverResult.Body {
         return input;
     }
 
+    /**
+     * Returns the response body as a byte array.
+     *
+     * @return The byte array.
+     */
     @Override
     public byte[] toBytes() {
         if (cached) {
@@ -239,6 +311,11 @@ public class ResultBody implements CoverResult.Body {
         return bodyToBytes();
     }
 
+    /**
+     * Returns the response body as a character stream.
+     *
+     * @return The reader.
+     */
     @Override
     public Reader toCharStream() {
         if (cached || null != onProcess) {
@@ -251,6 +328,11 @@ public class ResultBody implements CoverResult.Body {
         return new CharArrayReader(new char[] {});
     }
 
+    /**
+     * Returns the response body as a string.
+     *
+     * @return The string.
+     */
     @Override
     public String toString() {
         if (cached || null != onProcess) {
@@ -267,16 +349,33 @@ public class ResultBody implements CoverResult.Body {
         return null;
     }
 
+    /**
+     * Returns the response body as a ByteString.
+     *
+     * @return The ByteString.
+     */
     @Override
     public ByteString toByteString() {
         return ByteString.of(toBytes());
     }
 
+    /**
+     * Downloads the response body to a file.
+     *
+     * @param filePath The file path.
+     * @return A Downloads object for tracking the download.
+     */
     @Override
     public Downloads toFile(String filePath) {
         return toFile(new File(filePath));
     }
 
+    /**
+     * Downloads the response body to a file.
+     *
+     * @param file The file to download to.
+     * @return A Downloads object for tracking the download.
+     */
     @Override
     public Downloads toFile(File file) {
         if (null == executor) {
@@ -297,6 +396,12 @@ public class ResultBody implements CoverResult.Body {
         return executor.download(coverHttp, file, toByteStream(), getRangeStart());
     }
 
+    /**
+     * Downloads the response body to a folder, using the filename from the response.
+     *
+     * @param dirPath The directory path.
+     * @return A Downloads object for tracking the download.
+     */
     @Override
     public Downloads toFolder(String dirPath) {
         String fileName = resolveFileName();
@@ -311,6 +416,12 @@ public class ResultBody implements CoverResult.Body {
         return toFile(file);
     }
 
+    /**
+     * Downloads the response body to a folder, using the filename from the response.
+     *
+     * @param dir The directory.
+     * @return A Downloads object for tracking the download.
+     */
     @Override
     public Downloads toFolder(File dir) {
         if (dir.exists() && !dir.isDirectory()) {
@@ -324,6 +435,11 @@ public class ResultBody implements CoverResult.Body {
         return toFolder(dir.getAbsolutePath());
     }
 
+    /**
+     * Enables caching of the response body in memory after the first read.
+     *
+     * @return This body instance for chaining.
+     */
     @Override
     public CoverResult.Body cache() {
         if (null != onProcess) {
@@ -333,6 +449,11 @@ public class ResultBody implements CoverResult.Body {
         return this;
     }
 
+    /**
+     * Closes the response and releases any resources.
+     *
+     * @return This body instance for chaining.
+     */
     @Override
     public CoverResult.Body close() {
         response.close();

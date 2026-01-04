@@ -26,7 +26,19 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Provides classes related to the Chinese Lunar calendar.
+ * Provides classes for representing and manipulating the Chinese Lunar calendar.
+ * <p>
+ * This package includes comprehensive support for lunar calendar calculations, including:
+ * <ul>
+ * <li>Lunar years, months, days, and hours</li>
+ * <li>Lunar festivals and traditional events</li>
+ * <li>Astronomical calculations (phases of the moon, solar terms)</li>
+ * <li>Traditional Chinese calendar concepts (Nine Stars, Sixty Cycle, etc.)</li>
+ * <li>Lunar quarters and weeks</li>
+ * </ul>
+ * <p>
+ * The implementation follows the Chinese national standard "Compilation and Promulgation of the Lunar Calendar" (GB/T
+ * 33661-2017).
  *
  * @author Kimi Liu
  * @since Java 17+

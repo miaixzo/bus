@@ -38,8 +38,17 @@ import org.miaixz.bus.cron.pattern.CronPattern;
  */
 public class CronCrontab implements Crontab {
 
+    /**
+     * The unique identifier for this task.
+     */
     private final String id;
+    /**
+     * The underlying cron task to be executed.
+     */
     private final Crontab crontab;
+    /**
+     * The cron pattern defining when this task should execute.
+     */
     private CronPattern pattern;
 
     /**

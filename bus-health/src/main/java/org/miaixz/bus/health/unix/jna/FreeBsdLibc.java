@@ -123,7 +123,10 @@ public interface FreeBsdLibc extends CLibrary {
     int thr_self(NativeLongByReference id);
 
     /**
-     * Connection info
+     * JNA wrapper for the FreeBSD utmpx structure.
+     * <p>
+     * This class maps to the native FreeBSD utmpx structure representing user accounting database entries.
+     * </p>
      */
     @FieldOrder({ "ut_type", "ut_tv", "ut_id", "ut_pid", "ut_user", "ut_line", "ut_host", "ut_spare" })
     class FreeBsdUtmpx extends Structure {
@@ -163,7 +166,11 @@ public interface FreeBsdLibc extends CLibrary {
     }
 
     /**
-     * Return type for BSD sysctl kern.boottime
+     * JNA wrapper for the timeval structure.
+     * <p>
+     * This class maps to the native FreeBSD timeval structure: {@code struct timeval { time_t tv_sec; suseconds_t
+     * tv_usec; }; }
+     * </p>
      */
     @FieldOrder({ "tv_sec", "tv_usec" })
     class Timeval extends Structure {
@@ -179,7 +186,10 @@ public interface FreeBsdLibc extends CLibrary {
     }
 
     /**
-     * CPU Ticks
+     * JNA wrapper for the CPU time statistics structure.
+     * <p>
+     * This class maps to the native FreeBSD CPU time tracking structure.
+     * </p>
      */
     @FieldOrder({ "cpu_ticks" })
     class CpTime extends Structure implements AutoCloseable {

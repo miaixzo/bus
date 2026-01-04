@@ -38,7 +38,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.TypeKit;
 
 /**
- * {@link Reference}转换器
+ * Converter for {@link Reference} objects.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -51,18 +51,30 @@ public class ReferenceConverter extends AbstractConverter {
     private final Converter rootConverter;
 
     /**
-     * 构造
+     * Constructs a new ReferenceConverter.
      *
-     * @param rootConverter 根转换器，用于转换Reference泛型的类型
+     * @param rootConverter the root converter, used to convert Reference generic types
      */
     public ReferenceConverter(final Converter rootConverter) {
         this.rootConverter = Assert.notNull(rootConverter);
     }
 
+    /**
+     * Converts the given value to a Reference object.
+     * <p>
+     * Supports WeakReference and SoftReference. The referenced value is converted using the root converter to match the
+     * generic type of the Reference.
+     * </p>
+     *
+     * @param targetClass the target Reference class
+     * @param value       the value to be referenced
+     * @return a WeakReference or SoftReference containing the converted value
+     * @throws UnsupportedOperationException if the target class is not a supported Reference type
+     */
     @Override
     protected Reference<?> convertInternal(final Class<?> targetClass, final Object value) {
 
-        // 尝试将值转换为Reference泛型的类型
+        // Try to convert the value to the type of the Reference generic
         Object targetValue = null;
         final Type paramType = TypeKit.getTypeArgument(targetClass);
         if (!TypeKit.isUnknown(paramType)) {

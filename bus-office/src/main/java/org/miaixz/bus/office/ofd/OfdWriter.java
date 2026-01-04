@@ -170,6 +170,9 @@ public class OfdWriter implements Serializable, Closeable {
         return this;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void close() {
         IoKit.closeQuietly(this.doc);

@@ -47,10 +47,29 @@ public class LambdaNodeConfig<T, R> extends NodeConfig {
     @Serial
     private static final long serialVersionUID = 2852250050652L;
 
+    /**
+     * The function for retrieving the ID of a node.
+     */
     private FunctionX<T, R> idKeyFun;
+
+    /**
+     * The function for retrieving the parent ID of a node.
+     */
     private FunctionX<T, R> parentIdKeyFun;
+
+    /**
+     * The function for retrieving the weight of a node.
+     */
     private FunctionX<T, Comparable<?>> weightKeyFun;
+
+    /**
+     * The function for retrieving the name of a node.
+     */
     private FunctionX<T, CharSequence> nameKeyFun;
+
+    /**
+     * The function for retrieving the list of child nodes.
+     */
     private FunctionX<T, List<T>> childrenKeyFun;
 
     /**

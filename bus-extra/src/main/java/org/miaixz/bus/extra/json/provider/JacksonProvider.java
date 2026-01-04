@@ -64,6 +64,9 @@ public class JacksonProvider extends AbstractJsonProvider {
                 .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String toJsonString(Object object) {
         try {
@@ -73,6 +76,9 @@ public class JacksonProvider extends AbstractJsonProvider {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String toJsonString(Object object, String format) {
         SimpleDateFormat sdf = new SimpleDateFormat(format);
@@ -83,6 +89,9 @@ public class JacksonProvider extends AbstractJsonProvider {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public <T> T toPojo(String json, Class<T> valueType) {
         try {
@@ -92,11 +101,17 @@ public class JacksonProvider extends AbstractJsonProvider {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public <T> T toPojo(Map fromMap, Class<T> clazz) {
         return objectMapper.convertValue(fromMap, clazz);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public <T> List<T> toList(String json) {
         try {
@@ -106,6 +121,9 @@ public class JacksonProvider extends AbstractJsonProvider {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public <T> List<T> toList(String json, Class<T> clazz) {
         try {
@@ -115,10 +133,16 @@ public class JacksonProvider extends AbstractJsonProvider {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public <T> List<T> toList(String json, Type type) {
         TypeReference<List<T>> typeReference = new TypeReference<>() {
 
+            /**
+             * {@inheritDoc}
+             */
             @Override
             public Type getType() {
                 return type;
@@ -131,6 +155,9 @@ public class JacksonProvider extends AbstractJsonProvider {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public <K, V> Map<K, V> toMap(String json) {
         try {
@@ -140,11 +167,17 @@ public class JacksonProvider extends AbstractJsonProvider {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public <K, V> Map<K, V> toMap(Object object) {
         return objectMapper.convertValue(object, Map.class);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public <T> T getValue(String json, String field) {
         try {
@@ -154,6 +187,9 @@ public class JacksonProvider extends AbstractJsonProvider {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isJson(String json) {
         try {

@@ -271,8 +271,8 @@ public class MaskingManager {
 
     /**
      * Masks a Chinese car license plate by replacing the middle part with the masking character (e.g., *). e.g.1: null
-     * - "" e.g.2: "" - "" e.g.3: 苏D40000 - 苏D4***0 e.g.4: 陕V12345A - 陕V1****A e.g.5: 京A123 - 京A123 If the car license
-     * plate is invalid, it is not processed.
+     * - "" e.g.2: "" - "" e.g.3: SuD40000 - SuD4***0 e.g.4: ShanV12345A - ShanV1****A e.g.5: JingA123 - JingA123 If the
+     * car license plate is invalid, it is not processed.
      *
      * @param carLicense The full car license plate number.
      * @return The masked car license plate.

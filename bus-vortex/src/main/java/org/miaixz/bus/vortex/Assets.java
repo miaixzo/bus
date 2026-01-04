@@ -29,10 +29,7 @@ package org.miaixz.bus.vortex;
 
 import org.miaixz.bus.vortex.strategy.VettingStrategy;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 /**
@@ -121,18 +118,36 @@ public class Assets {
     private String method;
 
     /**
-     * Upstream Protocol / Interaction Mode.
+     * Upstream Interaction Mode.
      * <p>
-     * Defines how the gateway interacts with the downstream service.
+     * All requests enter the gateway via HTTP, but this field defines how the gateway forwards or processes the request
+     * upstream.
      * </p>
      * <ul>
-     * <li>{@code 1}: <strong>HTTP/HTTPS</strong> - Standard reverse proxy (Restful/RPC).</li>
-     * <li>{@code 2}: <strong>Message Queue</strong> - Forwards payload to a broker (e.g., Kafka, RabbitMQ).</li>
-     * <li>{@code 3}: <strong>Server-Sent Events (SSE)</strong> - Maintains a streaming connection.</li>
-     * <li>{@code 4}: <strong>Standard I/O (STDIO)</strong> - Invokes a local executable/script via process pipe.</li>
+     * <li>{@code 1}: <strong>HTTP/HTTPS Reverse Proxy</strong> - Traditional REST/RPC forwarding.</li>
+     * <li>{@code 2}: <strong>Message Queue</strong> - Send payload to MQ broker (e.g., Kafka, RabbitMQ).</li>
+     * <li>{@code 3}: <strong>Model Context Protocol (MCP)</strong> - AI tool calling protocol (JSON-RPC based).</li>
+     * <li>{@code 4}: <strong>gRPC</strong> - High-performance RPC framework using Protocol Buffers.</li>
+     * <li>{@code 5}: <strong>WebSocket</strong> - Bidirectional real-time communication over persistent
+     * connections.</li>
      * </ul>
      */
     private Integer mode;
+
+    /**
+     * Streaming Output Flag.
+     * <p>
+     * Indicates whether the downstream response should be treated as a continuous stream (e.g., Server-Sent Events, AI
+     * generation, Large File Downloads).
+     * </p>
+     * <ul>
+     * <li>{@code 1}: <strong>Atomic (Default)</strong> <br>
+     * Gateway buffers the full response before sending it to the client. Best for standard APIs.</li> *
+     * <li>{@code 2}: <strong>Streaming</strong> <br>
+     * Gateway disables buffering and flushes data chunks immediately. Read timeouts may need to be extended.</li>
+     * </ul>
+     */
+    private Integer stream;
 
     /**
      * HTTP Request Method (Verb).
@@ -202,7 +217,8 @@ public class Assets {
      * The maximum number of automatic retry attempts for transient failures (e.g., network timeouts).
      * </p>
      */
-    private Integer retries;
+    @Builder.Default
+    private Integer retries = 3;
 
     /**
      * Request Timeout.
@@ -210,7 +226,8 @@ public class Assets {
      * The maximum duration (in milliseconds) the gateway waits for a downstream response.
      * </p>
      */
-    private Integer timeout;
+    @Builder.Default
+    private Integer timeout = 60;
 
     /**
      * Load Balancing Strategy.

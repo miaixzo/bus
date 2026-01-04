@@ -1,0 +1,7 @@
+[
+  {
+    "interfaces": [
+      "org.miaixz.bus.core.basic.service.Service"
+    ]
+  }
+]

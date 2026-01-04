@@ -33,7 +33,7 @@ import org.miaixz.bus.core.lang.exception.ConvertException;
 import org.miaixz.bus.core.xyz.ObjectKit;
 
 /**
- * 类型转换接口函数，根据给定的值和目标类型，由用户自定义转换规则。
+ * Type conversion interface function, user-defined conversion rules based on given value and target type
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,7 +42,7 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 public interface Converter {
 
     /**
-     * 返回原值的转换器，不做转换
+     * Returns a converter that returns the original value without conversion
      *
      * @return this
      */
@@ -51,36 +51,41 @@ public interface Converter {
     }
 
     /**
-     * 转换为指定类型 如果类型无法确定，将读取默认值的类型做为目标类型
+     * Converts to the specified type. If the type cannot be determined, the default value's type will be used as the
+     * target type
      *
-     * @param targetType 目标Type，非泛型类使用
-     * @param value      原始值，如果对象实现了此接口，则value为this
-     * @return 转换后的值
-     * @throws ConvertException 转换无法正常完成或转换异常时抛出此异常
+     * @param targetType target Type, used for non-generic classes
+     * @param value      the original value, if the object implements this interface, value is this
+     * @return the converted value
+     * @throws ConvertException throw this exception when conversion cannot be completed normally or conversion
+     *                          exception occurs
      */
     Object convert(Type targetType, Object value) throws ConvertException;
 
     /**
-     * 转换为指定类型 如果类型无法确定，将读取默认值的类型做为目标类型
+     * Converts to the specified type. If the type cannot be determined, the default value's type will be used as the
+     * target type
      *
-     * @param <T>        目标类型
-     * @param targetType 目标类型
-     * @param value      原始值，如果对象实现了此接口，则value为this
-     * @return 转换后的值
-     * @throws ConvertException 转换无法正常完成或转换异常时抛出此异常
+     * @param <T>        the target type
+     * @param targetType the target type
+     * @param value      the original value, if the object implements this interface, value is this
+     * @return the converted value
+     * @throws ConvertException throw this exception when conversion cannot be completed normally or conversion
+     *                          exception occurs
      */
     default <T> T convert(final Class<T> targetType, final Object value) throws ConvertException {
         return (T) convert((Type) targetType, value);
     }
 
     /**
-     * 转换值为指定类型，可选是否不抛异常转换 当转换失败时返回默认值
+     * Converts value to the specified type, optionally without throwing exceptions. Returns default value when
+     * conversion fails
      *
-     * @param <T>          目标类型
-     * @param targetType   目标类型
-     * @param value        值
-     * @param defaultValue 默认值
-     * @return 转换后的值
+     * @param <T>          the target type
+     * @param targetType   the target type
+     * @param value        the value
+     * @param defaultValue the default value
+     * @return the converted value
      */
     default <T> T convert(final Type targetType, final Object value, final T defaultValue) {
         return (T) ObjectKit.defaultIfNull(convert(targetType, value), defaultValue);

@@ -46,9 +46,6 @@ import org.miaixz.bus.core.text.CharsBacker;
  */
 public class StringFinder extends TextFinder {
 
-    /**
-     * The serial version UID.
-     */
     @Serial
     private static final long serialVersionUID = 2852237656798L;
 
@@ -152,6 +149,15 @@ public class StringFinder extends TextFinder {
         return map;
     }
 
+    /**
+     * Finds the start position of the string to search for.
+     * <p>
+     * Uses the Sunday algorithm for efficient substring searching.
+     * </p>
+     *
+     * @param from The position to start searching from.
+     * @return The start position of the match, or -1 if no match is found.
+     */
     @Override
     public int start(int from) {
         Assert.notNull(this.text, "Text to find must be not null!");
@@ -210,6 +216,12 @@ public class StringFinder extends TextFinder {
         return Normal.__1;
     }
 
+    /**
+     * Returns the end position of the match.
+     *
+     * @param start The start position of the match.
+     * @return The end position, or -1 if the start position is invalid.
+     */
     @Override
     public int end(final int start) {
         if (start < 0) {

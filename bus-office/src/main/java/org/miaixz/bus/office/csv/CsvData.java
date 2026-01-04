@@ -103,11 +103,21 @@ public class CsvData implements Iterable<CsvRow>, Serializable {
         return this.rows;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return iterator over the CSV rows
+     */
     @Override
     public Iterator<CsvRow> iterator() {
         return this.rows.iterator();
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return string representation of this CSV data
+     */
     @Override
     public String toString() {
         return "CsvData{" + "header=" + header + ", rows=" + rows + '}';

@@ -84,7 +84,19 @@ public interface LinuxLibc extends LibC, CLibrary {
     NativeLong syscall(NativeLong number, Object... args);
 
     /**
-     * Return type for getutxent()
+     * JNA wrapper for the utmpx structure.
+     * <p>
+     * This class maps to the native Linux utmpx structure: {@code
+     * struct utmpx {
+     *     short ut_type;
+     *     pid_t ut_pid;
+     *     char ut_line[UT_LINESIZE];
+     *     char ut_id[4];
+     *     char ut_user[UT_NAMESIZE];
+     *     char ut_host[UT_HOSTSIZE];
+     *     struct exit_status ut_exit; int ut_session; struct timeval ut_tv; int32_t ut_addr_v6[4]; char reserved[20];
+     * }; }
+     * </p>
      */
     @FieldOrder({ "ut_type", "ut_pid", "ut_line", "ut_id", "ut_user", "ut_host", "ut_exit", "ut_session", "ut_tv",
             "ut_addr_v6", "reserved" })
@@ -104,7 +116,10 @@ public interface LinuxLibc extends LibC, CLibrary {
     }
 
     /**
-     * Part of utmpx structure
+     * JNA wrapper for the exit_status structure.
+     * <p>
+     * This class maps to the native Linux exit_status structure which is part of utmpx.
+     * </p>
      */
     @FieldOrder({ "e_termination", "e_exit" })
     class Exit_status extends Structure {
@@ -114,7 +129,10 @@ public interface LinuxLibc extends LibC, CLibrary {
     }
 
     /**
-     * 32-bit timeval required for utmpx structure
+     * JNA wrapper for the timeval structure (32-bit version).
+     * <p>
+     * This class maps to the native Linux timeval structure: {@code struct timeval { int tv_sec; int tv_usec; }; }
+     * </p>
      */
     @FieldOrder({ "tv_sec", "tv_usec" })
     class Ut_Tv extends Structure {

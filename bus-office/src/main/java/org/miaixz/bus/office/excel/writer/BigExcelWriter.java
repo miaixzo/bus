@@ -171,6 +171,14 @@ public class BigExcelWriter extends ExcelWriter {
         super(sheet);
     }
 
+    /**
+     * Auto-sizes the specified column width for SXSSF sheets.
+     *
+     * @param columnIndex    The 0-based column index to auto-size.
+     * @param useMergedCells Whether to consider merged cells when calculating width.
+     * @param widthRatio     The width ratio multiplier to apply after auto-sizing.
+     * @return This {@code BigExcelWriter} instance for chaining.
+     */
     @Override
     public BigExcelWriter autoSizeColumn(final int columnIndex, final boolean useMergedCells, final float widthRatio) {
         final SXSSFSheet sheet = (SXSSFSheet) this.sheet;
@@ -180,6 +188,13 @@ public class BigExcelWriter extends ExcelWriter {
         return this;
     }
 
+    /**
+     * Auto-sizes all columns in the sheet for SXSSF sheets.
+     *
+     * @param useMergedCells Whether to consider merged cells when calculating width.
+     * @param widthRatio     The width ratio multiplier to apply after auto-sizing.
+     * @return This {@code BigExcelWriter} instance for chaining.
+     */
     @Override
     public BigExcelWriter autoSizeColumnAll(final boolean useMergedCells, final float widthRatio) {
         final SXSSFSheet sheet = (SXSSFSheet) this.sheet;
@@ -189,6 +204,14 @@ public class BigExcelWriter extends ExcelWriter {
         return this;
     }
 
+    /**
+     * Flushes the Excel workbook to the output stream. This method can only be called once.
+     *
+     * @param out        The output stream to write to.
+     * @param isCloseOut Whether to close the output stream after writing.
+     * @return This {@code ExcelWriter} instance for chaining.
+     * @throws InternalException If an I/O error occurs during writing.
+     */
     @Override
     public ExcelWriter flush(final OutputStream out, final boolean isCloseOut) throws InternalException {
         if (!isFlushed) {
@@ -198,6 +221,9 @@ public class BigExcelWriter extends ExcelWriter {
         return this;
     }
 
+    /**
+     * Closes the writer, flushing to the target file if set and cleaning up temporary files.
+     */
     @Override
     public void close() {
         if (null != this.targetFile && !isFlushed) {

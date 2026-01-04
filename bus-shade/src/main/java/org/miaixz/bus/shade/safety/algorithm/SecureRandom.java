@@ -29,6 +29,7 @@ package org.miaixz.bus.shade.safety.algorithm;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.Serial;
 
 import org.miaixz.bus.core.lang.Normal;
 
@@ -42,6 +43,7 @@ import org.miaixz.bus.core.lang.Normal;
  */
 public class SecureRandom extends java.security.SecureRandom {
 
+    @Serial
     private static final long serialVersionUID = -1L;
 
     /**

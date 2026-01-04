@@ -28,8 +28,6 @@
 package org.miaixz.bus.vortex;
 
 import org.miaixz.bus.vortex.handler.VortexHandler;
-import org.springframework.web.reactive.function.server.ServerRequest;
-import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 /**
@@ -38,18 +36,27 @@ import reactor.core.publisher.Mono;
  * A {@code Router} is the final step in the request processing pipeline, invoked by the {@link VortexHandler}. Its sole
  * responsibility is to take the fully processed request and translate it into an interaction with a specific backend
  * protocol, as defined by the matched {@link Assets}.
+ * <p>
+ * The interface uses generics to provide type safety for different protocol implementations:
+ * <ul>
+ * <li>{@code I} - The input type expected by the router (typically ServerRequest, but can be String or other
+ * types)</li>
+ * <li>{@code O} - The output type produced by the router (typically ServerResponse, String, or Object)</li>
+ * </ul>
  *
+ * @param <I> The input type expected by this router
+ * @param <O> The output type produced by this router
  * @author Kimi Liu
  * @since Java 17+
  */
-public interface Router {
+public interface Router<I, O> {
 
     /**
      * Routes the request to the target service.
      * <p>
      * Implementations of this method must retrieve the {@link Context} and {@link Assets} from the reactive stream to
      * get the necessary routing information. A typical implementation will look like this:
-     * 
+     *
      * <pre>{@code
      * return Mono.deferContextual(contextView -> {
      *     final Context context = contextView.get(Context.class);
@@ -57,10 +64,20 @@ public interface Router {
      *     // ... use assets and context to perform routing logic ...
      * });
      * }</pre>
+     * <p>
+     * Generic type parameters provide compile-time type safety:
+     * <ul>
+     * <li>REST/HTTP: {@code Router<ServerRequest, ServerResponse>}</li>
+     * <li>WebSocket: {@code Router<ServerRequest, ServerResponse>}</li>
+     * <li>gRPC: {@code Router<ServerRequest, String>}</li>
+     * <li>Message Queue: {@code Router<ServerRequest, String>}</li>
+     * <li>MCP: {@code Router<ServerRequest, ServerResponse>}</li>
+     * </ul>
      *
-     * @param request The current {@link ServerRequest} object.
-     * @return A {@code Mono<ServerResponse>} representing the asynchronous response from the downstream service.
+     * @param input An input object of type {@code I} (typically ServerRequest, but can be String payload or other
+     *              types).
+     * @return A {@code Mono<O>} representing the asynchronous response from the downstream service.
      */
-    Mono<ServerResponse> route(ServerRequest request);
+    Mono<O> route(I input);
 
 }

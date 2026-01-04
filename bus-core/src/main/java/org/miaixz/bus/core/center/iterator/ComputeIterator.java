@@ -113,6 +113,16 @@ public abstract class ComputeIterator<T> implements Iterator<T> {
     }
 
     /**
+     * Resets the state for re-traversal.
+     * <p>
+     * Clears the 'finished' flag and the 'next' buffer, allowing the iterator to start over from the beginning.
+     */
+    public void reset() {
+        this.finished = false;
+        this.next = null;
+    }
+
+    /**
      * Manually finishes the iterator, typically used for closing operations. After calling this method,
      * {@link #hasNext()} will return {@code false} and {@link #next()} will throw {@link NoSuchElementException}.
      */

@@ -47,8 +47,17 @@ public class ParameterizedType implements java.lang.reflect.ParameterizedType, S
     @Serial
     private static final long serialVersionUID = 2852276963509L;
 
+    /**
+     * The actual type arguments for this parameterized type.
+     */
     private final Type[] actualTypeArguments;
+    /**
+     * The owner type of this parameterized type, or {@code null} if this is a top-level type.
+     */
     private final Type ownerType;
+    /**
+     * The raw type (typically a class) of this parameterized type.
+     */
     private final Type rawType;
 
     /**
@@ -95,21 +104,47 @@ public class ParameterizedType implements java.lang.reflect.ParameterizedType, S
         return buf;
     }
 
+    /**
+     * Returns the actual type arguments for this parameterized type.
+     *
+     * @return An array of the actual type arguments.
+     */
     @Override
     public Type[] getActualTypeArguments() {
         return actualTypeArguments;
     }
 
+    /**
+     * Returns the owner type of this parameterized type.
+     * <p>
+     * Returns {@code null} if this is a top-level type or a static nested type.
+     *
+     * @return The owner type, or {@code null} if there is no owner.
+     */
     @Override
     public Type getOwnerType() {
         return ownerType;
     }
 
+    /**
+     * Returns the raw type of this parameterized type.
+     * <p>
+     * This is typically the {@link Class} object that declares the type.
+     *
+     * @return The raw type.
+     */
     @Override
     public Type getRawType() {
         return rawType;
     }
 
+    /**
+     * Returns the string representation of this parameterized type.
+     * <p>
+     * The format is: {@code owner.raw<arg1, arg2, ...>} or {@code raw<arg1, arg2, ...>}
+     *
+     * @return The string representation of this parameterized type.
+     */
     @Override
     public String toString() {
         final StringBuilder buf = new StringBuilder();

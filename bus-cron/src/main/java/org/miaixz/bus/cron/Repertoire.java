@@ -58,12 +58,12 @@ public abstract class Repertoire implements Serializable {
      */
     public static final int DEFAULT_CAPACITY = 256;
     /**
-     * Read-write lock to ensure thread safety
+     * Read-write lock to ensure thread safety.
      */
     public final ReadWriteLock lock;
     /**
      * Task table with one-to-one mapping of ID, pattern, and task. Uses TripleTable for storage to facilitate fast
-     * lookup and updates
+     * lookup and updates.
      */
     public final TripletTable<String, CronPattern, Crontab> table;
 
@@ -75,9 +75,9 @@ public abstract class Repertoire implements Serializable {
     }
 
     /**
-     * Constructor
+     * Constructor.
      *
-     * @param initialCapacity Capacity, i.e., the estimated maximum number of tasks
+     * @param initialCapacity Capacity, i.e., the estimated maximum number of tasks.
      */
     public Repertoire(final int initialCapacity) {
         lock = new ReentrantReadWriteLock();
@@ -85,27 +85,27 @@ public abstract class Repertoire implements Serializable {
     }
 
     /**
-     * Size of the task table, i.e., the number of added tasks
+     * Size of the task table, i.e., the number of added tasks.
      *
-     * @return Size of the task table, i.e., the number of added tasks
+     * @return Size of the task table, i.e., the number of added tasks.
      */
     public int size() {
         return this.table.size();
     }
 
     /**
-     * Whether the task table is empty
+     * Whether the task table is empty.
      *
-     * @return true if empty
+     * @return {@code true} if empty.
      */
     public boolean isEmpty() {
         return size() < 1;
     }
 
     /**
-     * Gets all IDs, returns an immutable list, i.e., the list cannot be modified
+     * Gets all IDs, returns an immutable list, i.e., the list cannot be modified.
      *
-     * @return List of IDs
+     * @return List of IDs.
      */
     public List<String> getIds() {
         final Lock readLock = lock.readLock();
@@ -118,9 +118,9 @@ public abstract class Repertoire implements Serializable {
     }
 
     /**
-     * Gets all scheduled tasks, returns an immutable list, i.e., the list cannot be modified
+     * Gets all scheduled tasks, returns an immutable list, i.e., the list cannot be modified.
      *
-     * @return List of scheduled tasks
+     * @return List of scheduled tasks.
      */
     public List<Crontab> getTasks() {
         final Lock readLock = lock.readLock();
@@ -133,10 +133,10 @@ public abstract class Repertoire implements Serializable {
     }
 
     /**
-     * Gets the {@link Crontab} at the specified position
+     * Gets the {@link Crontab} at the specified position.
      *
-     * @param index Position
-     * @return {@link Crontab}
+     * @param index Position.
+     * @return {@link Crontab}.
      */
     public Crontab getTask(final int index) {
         final Lock readLock = lock.readLock();
@@ -149,10 +149,10 @@ public abstract class Repertoire implements Serializable {
     }
 
     /**
-     * Gets the {@link Crontab} with the specified ID
+     * Gets the {@link Crontab} with the specified ID.
      *
-     * @param id ID
-     * @return {@link Crontab}
+     * @param id ID.
+     * @return {@link Crontab}.
      */
     public Crontab getTask(final String id) {
         final Lock readLock = lock.readLock();
@@ -165,9 +165,9 @@ public abstract class Repertoire implements Serializable {
     }
 
     /**
-     * Gets all cron patterns, returns an immutable list, i.e., the list cannot be modified
+     * Gets all cron patterns, returns an immutable list, i.e., the list cannot be modified.
      *
-     * @return List of cron patterns
+     * @return List of cron patterns.
      */
     public List<CronPattern> getPatterns() {
         final Lock readLock = lock.readLock();
@@ -180,10 +180,10 @@ public abstract class Repertoire implements Serializable {
     }
 
     /**
-     * Gets the {@link CronPattern} with the specified ID
+     * Gets the {@link CronPattern} with the specified ID.
      *
-     * @param id ID
-     * @return {@link CronPattern}
+     * @param id ID.
+     * @return {@link CronPattern}.
      */
     public CronPattern getPattern(final String id) {
         final Lock readLock = lock.readLock();
@@ -196,10 +196,10 @@ public abstract class Repertoire implements Serializable {
     }
 
     /**
-     * Gets the {@link CronPattern} at the specified position
+     * Gets the {@link CronPattern} at the specified position.
      *
-     * @param index Position
-     * @return {@link CronPattern}
+     * @param index Position.
+     * @return {@link CronPattern}.
      */
     public CronPattern getPattern(final int index) {
         final Lock readLock = lock.readLock();
@@ -212,12 +212,12 @@ public abstract class Repertoire implements Serializable {
     }
 
     /**
-     * Adds a new Task
+     * Adds a new Task.
      *
-     * @param id      ID
-     * @param pattern {@link CronPattern}
-     * @param crontab {@link Crontab}
-     * @return this
+     * @param id      ID.
+     * @param pattern {@link CronPattern}.
+     * @param crontab {@link Crontab}.
+     * @return this.
      */
     public Repertoire add(final String id, final CronPattern pattern, final Crontab crontab) {
         final Lock writeLock = lock.writeLock();
@@ -234,10 +234,10 @@ public abstract class Repertoire implements Serializable {
     }
 
     /**
-     * Removes a Task
+     * Removes a Task.
      *
-     * @param id ID of the Task
-     * @return Whether the removal was successful, {@code false} means no task with the corresponding ID was found
+     * @param id ID of the Task.
+     * @return Whether the removal was successful, {@code false} means no task with the corresponding ID was found.
      */
     public boolean remove(final String id) {
         final Lock writeLock = lock.writeLock();
@@ -276,6 +276,11 @@ public abstract class Repertoire implements Serializable {
         return false;
     }
 
+    /**
+     * Returns a string representation of the task table, showing all tasks with their IDs, patterns, and task objects.
+     *
+     * @return a string representation of the task table.
+     */
     @Override
     public String toString() {
         final int size = this.size();
@@ -293,10 +298,10 @@ public abstract class Repertoire implements Serializable {
 
     /**
      * Matches tasks based on the given timestamp, and if a match is successful, executes the corresponding Task using
-     * the scheduler
+     * the scheduler.
      *
-     * @param scheduler Scheduler
-     * @param millis    Timestamp
+     * @param scheduler Scheduler.
+     * @param millis    Timestamp.
      */
     public abstract void execute(final Scheduler scheduler, final long millis);
 

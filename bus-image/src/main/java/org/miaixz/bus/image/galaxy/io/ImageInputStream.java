@@ -48,6 +48,11 @@ import org.miaixz.bus.image.galaxy.data.*;
 import org.miaixz.bus.logger.Logger;
 
 /**
+ * A specialized input stream for reading DICOM image data. This class extends {@link FilterInputStream} to provide
+ * DICOM-specific reading capabilities, handling various DICOM encoding formats including Explicit VR Little Endian,
+ * Implicit VR, and deflated streams. It implements {@link ImageInputHandler} and {@link BulkDataCreator} for
+ * comprehensive DICOM data processing.
+ *
  * @author Kimi Liu
  * @since Java 17+
  */

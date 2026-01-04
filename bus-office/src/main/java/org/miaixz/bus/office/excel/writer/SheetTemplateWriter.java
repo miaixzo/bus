@@ -39,6 +39,9 @@ import org.apache.poi.ss.usermodel.Sheet;
  */
 public class SheetTemplateWriter {
 
+    /**
+     * The sheet being written to.
+     */
     private final Sheet sheet;
     /**
      * Excel output configuration.

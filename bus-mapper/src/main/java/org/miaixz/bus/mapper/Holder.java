@@ -86,7 +86,7 @@ public class Holder<T> implements org.miaixz.bus.core.Holder<T> {
      * lifecycle.
      * </p>
      */
-    private static String DEFAULT_KEY;
+    private static String DEFAULT_KEY = "default";
 
     /**
      * Gets the data source key for the current thread, including the default value.

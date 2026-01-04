@@ -42,7 +42,7 @@ import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 日期转换器
+ * Converter for date objects
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -54,12 +54,12 @@ public class XMLGregorianCalendarConverter extends AbstractConverter {
 
     private final DatatypeFactory datatypeFactory;
     /**
-     * 日期格式化
+     * Date format pattern
      */
     private String format;
 
     /**
-     * 构造
+     * Constructs a new XMLGregorianCalendarConverter
      */
     public XMLGregorianCalendarConverter() {
         try {
@@ -70,23 +70,34 @@ public class XMLGregorianCalendarConverter extends AbstractConverter {
     }
 
     /**
-     * 获取日期格式
+     * Gets the date format pattern
      *
-     * @return 设置日期格式
+     * @return the date format pattern
      */
     public String getFormat() {
         return format;
     }
 
     /**
-     * 设置日期格式
+     * Sets the date format pattern
      *
-     * @param format 日期格式
+     * @param format the date format pattern to set
      */
     public void setFormat(final String format) {
         this.format = format;
     }
 
+    /**
+     * Converts the given value to an XMLGregorianCalendar.
+     * <p>
+     * Supports conversion from GregorianCalendar, Date, Calendar, Long (milliseconds), and string representations.
+     * </p>
+     *
+     * @param targetClass the target class (should be XMLGregorianCalendar.class)
+     * @param value       the value to convert
+     * @return the converted XMLGregorianCalendar object
+     * @throws ConvertException if conversion fails
+     */
     @Override
     protected XMLGregorianCalendar convertInternal(final Class<?> targetClass, final Object value) {
         if (value instanceof GregorianCalendar) {

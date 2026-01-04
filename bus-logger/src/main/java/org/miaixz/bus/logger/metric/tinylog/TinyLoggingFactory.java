@@ -47,11 +47,17 @@ public class TinyLoggingFactory extends AbstractFactory {
         exists(org.tinylog.Logger.class);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Provider create(final String name) {
         return new TinyLoggingProvider(name);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Provider create(final Class<?> clazz) {
         return new TinyLoggingProvider(clazz);

@@ -115,6 +115,9 @@ public class HashedWheelTimer implements SocketTimer, Runnable {
         return (n < 0) ? 1 : (n >= 1073741824) ? 1073741824 : n + 1;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void shutdown() {
         running = false;
@@ -146,6 +149,9 @@ public class HashedWheelTimer implements SocketTimer, Runnable {
         return timeout;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public SocketTask schedule(Runnable runnable, long delay, TimeUnit unit) {
         long deadline = System.currentTimeMillis() + unit.toMillis(delay);
@@ -162,6 +168,9 @@ public class HashedWheelTimer implements SocketTimer, Runnable {
         return pendingTimeouts.get();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void run() {
         startTime = System.currentTimeMillis();
@@ -244,6 +253,9 @@ public class HashedWheelTimer implements SocketTimer, Runnable {
             this.deadline = deadline;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void cancel() {
             state = ST_CANCELLED;
@@ -267,11 +279,21 @@ public class HashedWheelTimer implements SocketTimer, Runnable {
             return state;
         }
 
+        /**
+         * {@inheritDoc}
+         *
+         * @return {@code true} if this task has been cancelled, {@code false} otherwise
+         */
         @Override
         public boolean isCancelled() {
             return state() == ST_CANCELLED;
         }
 
+        /**
+         * {@inheritDoc}
+         *
+         * @return {@code true} if this task has completed execution, {@code false} otherwise
+         */
         @Override
         public boolean isDone() {
             return state() == ST_EXPIRED;
@@ -288,6 +310,11 @@ public class HashedWheelTimer implements SocketTimer, Runnable {
             }
         }
 
+        /**
+         * {@inheritDoc}
+         *
+         * @return a string representation of this task
+         */
         @Override
         public String toString() {
             final long currentTime = System.nanoTime();

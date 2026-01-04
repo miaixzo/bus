@@ -84,31 +84,63 @@ public class Cache implements Closeable, Flushable {
      */
     public final InternalCache internalCache = new InternalCache() {
 
+        /**
+         * Retrieves a cached response for the given request.
+         *
+         * @param request The request to retrieve a cached response for.
+         * @return The cached response, or null if not found.
+         */
         @Override
         public Response get(Request request) {
             return Cache.this.get(request);
         }
 
+        /**
+         * Stores a response in the cache.
+         *
+         * @param response The response to store.
+         * @return A cache request for writing the response body.
+         */
         @Override
         public CacheRequest put(Response response) {
             return Cache.this.put(response);
         }
 
+        /**
+         * Removes a cached response for the given request.
+         *
+         * @param request The request to remove from the cache.
+         * @throws IOException if an I/O error occurs.
+         */
         @Override
         public void remove(Request request) throws IOException {
             Cache.this.remove(request);
         }
 
+        /**
+         * Updates a cached response with new network response metadata.
+         *
+         * @param cached  The cached response to update.
+         * @param network The network response with new metadata.
+         */
         @Override
         public void update(Response cached, Response network) {
             Cache.this.update(cached, network);
         }
 
+        /**
+         * Tracks a conditional cache hit.
+         */
         @Override
         public void trackConditionalCacheHit() {
             Cache.this.trackConditionalCacheHit();
         }
 
+        /**
+         * Tracks the response cache strategy.
+         *
+         * @param cacheStrategy The cache strategy used.
+         */
         @Override
         public void trackResponse(CacheStrategy cacheStrategy) {
             Cache.this.trackResponse(cacheStrategy);
@@ -337,6 +369,11 @@ public class Cache implements Closeable, Flushable {
             String nextUrl;
             boolean canRemove;
 
+            /**
+             * Returns true if there are more URLs to iterate.
+             *
+             * @return true if there are more URLs.
+             */
             @Override
             public boolean hasNext() {
                 if (null != nextUrl)
@@ -357,6 +394,11 @@ public class Cache implements Closeable, Flushable {
                 return false;
             }
 
+            /**
+             * Returns the next URL in the iteration.
+             *
+             * @return The next URL.
+             */
             @Override
             public String next() {
                 if (!hasNext())
@@ -367,6 +409,9 @@ public class Cache implements Closeable, Flushable {
                 return result;
             }
 
+            /**
+             * Removes the current URL from the cache.
+             */
             @Override
             public void remove() {
                 if (!canRemove)
@@ -751,6 +796,11 @@ public class Cache implements Closeable, Flushable {
             Source source = snapshot.getSource(ENTRY_BODY);
             bodySource = IoKit.buffer(new AssignSource(source) {
 
+                /**
+                 * Closes the snapshot and the underlying source.
+                 *
+                 * @throws IOException if an I/O error occurs.
+                 */
                 @Override
                 public void close() throws IOException {
                     snapshot.close();
@@ -759,11 +809,21 @@ public class Cache implements Closeable, Flushable {
             });
         }
 
+        /**
+         * Returns the content type of the response body.
+         *
+         * @return The media type, or null if unknown.
+         */
         @Override
         public MediaType contentType() {
             return null != contentType ? MediaType.valueOf(contentType) : null;
         }
 
+        /**
+         * Returns the content length of the response body.
+         *
+         * @return The content length in bytes, or -1 if unknown.
+         */
         @Override
         public long contentLength() {
             try {
@@ -773,6 +833,11 @@ public class Cache implements Closeable, Flushable {
             }
         }
 
+        /**
+         * Returns the buffered source for reading the response body.
+         *
+         * @return The buffered source.
+         */
         @Override
         public BufferSource source() {
             return bodySource;
@@ -799,6 +864,11 @@ public class Cache implements Closeable, Flushable {
             this.cacheOut = editor.newSink(ENTRY_BODY);
             this.body = new AssignSink(cacheOut) {
 
+                /**
+                 * Commits the cache entry when the body is closed.
+                 *
+                 * @throws IOException if an I/O error occurs.
+                 */
                 @Override
                 public void close() throws IOException {
                     synchronized (Cache.this) {
@@ -814,6 +884,9 @@ public class Cache implements Closeable, Flushable {
             };
         }
 
+        /**
+         * Aborts the cache request and discards any data written so far.
+         */
         @Override
         public void abort() {
             synchronized (Cache.this) {
@@ -830,6 +903,11 @@ public class Cache implements Closeable, Flushable {
             }
         }
 
+        /**
+         * Returns the sink for writing the response body.
+         *
+         * @return The sink.
+         */
         @Override
         public Sink body() {
             return body;

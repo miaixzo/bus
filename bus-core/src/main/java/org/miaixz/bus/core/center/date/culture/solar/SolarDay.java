@@ -28,26 +28,26 @@
 package org.miaixz.bus.core.center.date.culture.solar;
 
 import org.miaixz.bus.core.center.date.Holiday;
-import org.miaixz.bus.core.center.date.culture.Loops;
-import org.miaixz.bus.core.center.date.culture.cn.HiddenStems;
-import org.miaixz.bus.core.center.date.culture.cn.JulianDay;
-import org.miaixz.bus.core.center.date.culture.cn.Phase;
-import org.miaixz.bus.core.center.date.culture.cn.Week;
-import org.miaixz.bus.core.center.date.culture.cn.climate.Climate;
-import org.miaixz.bus.core.center.date.culture.cn.climate.ClimateDay;
-import org.miaixz.bus.core.center.date.culture.cn.dog.Dog;
-import org.miaixz.bus.core.center.date.culture.cn.dog.DogDay;
-import org.miaixz.bus.core.center.date.culture.cn.nine.Nine;
-import org.miaixz.bus.core.center.date.culture.cn.nine.NineDay;
-import org.miaixz.bus.core.center.date.culture.cn.plumrain.PlumRain;
-import org.miaixz.bus.core.center.date.culture.cn.plumrain.PlumRainDay;
-import org.miaixz.bus.core.center.date.culture.cn.sixty.HiddenStem;
-import org.miaixz.bus.core.center.date.culture.cn.sixty.HiddenStemDay;
-import org.miaixz.bus.core.center.date.culture.cn.sixty.SixtyCycleDay;
-import org.miaixz.bus.core.center.date.culture.en.Constellation;
+import org.miaixz.bus.core.center.date.Zodiac;
+import org.miaixz.bus.core.center.date.culture.HiddenStems;
+import org.miaixz.bus.core.center.date.culture.JulianDay;
+import org.miaixz.bus.core.center.date.culture.Phase;
+import org.miaixz.bus.core.center.date.culture.Week;
+import org.miaixz.bus.core.center.date.culture.climate.Climate;
+import org.miaixz.bus.core.center.date.culture.climate.ClimateDay;
+import org.miaixz.bus.core.center.date.culture.dog.Dog;
+import org.miaixz.bus.core.center.date.culture.dog.DogDay;
 import org.miaixz.bus.core.center.date.culture.lunar.LunarDay;
 import org.miaixz.bus.core.center.date.culture.lunar.LunarMonth;
+import org.miaixz.bus.core.center.date.culture.nine.Nine;
+import org.miaixz.bus.core.center.date.culture.nine.NineDay;
+import org.miaixz.bus.core.center.date.culture.parts.DayParts;
+import org.miaixz.bus.core.center.date.culture.plumrain.PlumRain;
+import org.miaixz.bus.core.center.date.culture.plumrain.PlumRainDay;
 import org.miaixz.bus.core.center.date.culture.rabjung.RabjungDay;
+import org.miaixz.bus.core.center.date.culture.sixty.HiddenStem;
+import org.miaixz.bus.core.center.date.culture.sixty.HiddenStemDay;
+import org.miaixz.bus.core.center.date.culture.sixty.SixtyCycleDay;
 
 /**
  * Represents a day in the Gregorian calendar.
@@ -55,114 +55,90 @@ import org.miaixz.bus.core.center.date.culture.rabjung.RabjungDay;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class SolarDay extends Loops {
+public class SolarDay extends DayParts {
 
     /**
-     * Names of solar days.
+     * Array of Chinese day names (1日 to 31日).
      */
     public static final String[] NAMES = { "1日", "2日", "3日", "4日", "5日", "6日", "7日", "8日", "9日", "10日", "11日", "12日",
             "13日", "14日", "15日", "16日", "17日", "18日", "19日", "20日", "21日", "22日", "23日", "24日", "25日", "26日", "27日",
             "28日", "29日", "30日", "31日" };
 
     /**
-     * The solar month this day belongs to.
-     */
-    protected SolarMonth month;
-
-    /**
-     * The day of the solar month.
-     */
-    protected int day;
-
-    /**
-     * Constructs a {@code SolarDay} with the given year, month, and day.
+     * Constructs a SolarDay instance.
      *
-     * @param year  The year.
-     * @param month The month.
-     * @param day   The day.
-     * @throws IllegalArgumentException if the day is out of valid range for the given month and year.
+     * @param year  the year (1-9999)
+     * @param month the month (1-12)
+     * @param day   the day of month
+     * @throws IllegalArgumentException if the date is invalid (e.g., February 30)
      */
     public SolarDay(int year, int month, int day) {
-        if (day < 1) {
-            throw new IllegalArgumentException(String.format("illegal solar day: %d-%d-%d", year, month, day));
-        }
-        SolarMonth m = SolarMonth.fromYm(year, month);
-        if (1582 == year && 10 == month) {
-            if ((day > 4 && day < 15) || day > 31) {
-                throw new IllegalArgumentException(String.format("illegal solar day: %d-%d-%d", year, month, day));
-            }
-        } else if (day > m.getDayCount()) {
-            throw new IllegalArgumentException(String.format("illegal solar day: %d-%d-%d", year, month, day));
-        }
-        this.month = m;
+        validate(year, month, day);
+        this.year = year;
+        this.month = month;
         this.day = day;
     }
 
     /**
-     * Creates a {@code SolarDay} instance from the given year, month, and day.
+     * Creates a SolarDay from year, month, and day values.
      *
-     * @param year  The year.
-     * @param month The month.
-     * @param day   The day.
-     * @return A new {@link SolarDay} instance.
+     * @param year  the year (1-9999)
+     * @param month the month (1-12)
+     * @param day   the day of month
+     * @return a new SolarDay instance
+     * @throws IllegalArgumentException if the date is invalid
      */
     public static SolarDay fromYmd(int year, int month, int day) {
         return new SolarDay(year, month, day);
     }
 
     /**
-     * Gets the solar month this day belongs to.
+     * Validates the given year, month, and day.
      *
-     * @return The {@link SolarMonth}.
+     * @param year  the year
+     * @param month the month
+     * @param day   the day
+     * @throws IllegalArgumentException if the date is invalid
+     */
+    public static void validate(int year, int month, int day) {
+        if (day < 1) {
+            throw new IllegalArgumentException(String.format("illegal solar day: %d-%d-%d", year, month, day));
+        }
+        if (1582 == year && 10 == month) {
+            if ((day > 4 && day < 15) || day > 31) {
+                throw new IllegalArgumentException(String.format("illegal solar day: %d-%d-%d", year, month, day));
+            }
+        } else if (day > SolarMonth.fromYm(year, month).getDayCount()) {
+            throw new IllegalArgumentException(String.format("illegal solar day: %d-%d-%d", year, month, day));
+        }
+    }
+
+    /**
+     * Gets the solar month containing this day.
+     *
+     * @return the SolarMonth
      */
     public SolarMonth getSolarMonth() {
-        return month;
+        return SolarMonth.fromYm(year, month);
     }
 
     /**
-     * Gets the year of this solar day.
+     * Gets the day of week.
      *
-     * @return The year.
-     */
-    public int getYear() {
-        return month.getYear();
-    }
-
-    /**
-     * Gets the month of this solar day.
-     *
-     * @return The month.
-     */
-    public int getMonth() {
-        return month.getMonth();
-    }
-
-    /**
-     * Gets the day of this solar day.
-     *
-     * @return The day.
-     */
-    public int getDay() {
-        return day;
-    }
-
-    /**
-     * Gets the week of this solar day.
-     *
-     * @return The {@link Week} of this day.
+     * @return the Week enum value
      */
     public Week getWeek() {
         return getJulianDay().getWeek();
     }
 
     /**
-     * Gets the constellation for this solar day.
+     * Gets the zodiac sign for this day.
      *
-     * @return The {@link Constellation} for this day.
+     * @return the Zodiac sign
      */
-    public Constellation getConstellation() {
-        int y = getMonth() * 100 + day;
-        return Constellation.get(
+    public Zodiac getZodiac() {
+        int y = month * 100 + day;
+        return Zodiac.get(
                 y > 1221 || y < 120 ? 9
                         : y < 219 ? 10
                                 : y < 321 ? 11
@@ -177,80 +153,67 @@ public class SolarDay extends Loops {
     }
 
     /**
-     * Gets the Chinese name of the solar day.
+     * Gets the Chinese name of this day (e.g., "1日", "2日").
      *
-     * @return The name of the solar day.
+     * @return the Chinese day name
      */
     public String getName() {
         return NAMES[day - 1];
     }
 
-    @Override
-    public String toString() {
-        return month + getName();
-    }
-
     /**
-     * Gets the solar day after a specified number of days.
+     * Gets the next or previous solar day.
      *
-     * @param n The number of days to add.
-     * @return The {@link SolarDay} after {@code n} days.
+     * @param n the number of days to move (positive for forward, negative for backward)
+     * @return the SolarDay n days from this day
      */
     public SolarDay next(int n) {
         return getJulianDay().next(n).getSolarDay();
     }
 
     /**
-     * Checks if this solar day is before the target solar day.
+     * Checks if this day is before the target day.
      *
-     * @param target The target solar day.
-     * @return {@code true} if this day is before the target, {@code false} otherwise.
+     * @param target the solar day to compare with
+     * @return true if this day is before the target
      */
     public boolean isBefore(SolarDay target) {
-        int aYear = getYear();
-        int bYear = target.getYear();
-        if (aYear != bYear) {
-            return aYear < bYear;
+        if (year != target.getYear()) {
+            return year < target.getYear();
         }
-        int aMonth = getMonth();
-        int bMonth = target.getMonth();
-        return aMonth != bMonth ? aMonth < bMonth : day < target.getDay();
+        return month != target.getMonth() ? month < target.getMonth() : day < target.getDay();
     }
 
     /**
-     * Checks if this solar day is after the target solar day.
+     * Checks if this day is after the target day.
      *
-     * @param target The target solar day.
-     * @return {@code true} if this day is after the target, {@code false} otherwise.
+     * @param target the solar day to compare with
+     * @return true if this day is after the target
      */
     public boolean isAfter(SolarDay target) {
-        int aYear = getYear();
-        int bYear = target.getYear();
-        if (aYear != bYear) {
-            return aYear > bYear;
+        if (year != target.getYear()) {
+            return year > target.getYear();
         }
-        int aMonth = getMonth();
-        int bMonth = target.getMonth();
-        return aMonth != bMonth ? aMonth > bMonth : day > target.getDay();
+        return month != target.getMonth() ? month > target.getMonth() : day > target.getDay();
     }
 
     /**
-     * Gets the solar term for this solar day.
+     * Gets the solar term for this day.
      *
-     * @return The {@link SolarTerms} for this day.
+     * @return the SolarTerms
      */
     public SolarTerms getTerm() {
         return getTermDay().getSolarTerm();
     }
 
     /**
-     * Gets the solar term day information for this solar day.
+     * Gets the solar term day information (which solar term and which day within that term).
      *
-     * @return The {@link SolarTermDay} for this day.
+     * @return the SolarTermDay containing the term and day index
      */
     public SolarTermDay getTermDay() {
-        int y = getYear();
-        int i = getMonth() * 2;
+        int y = year;
+        int i = month * 2;
         if (i == 24) {
             y += 1;
             i = 0;
@@ -265,36 +228,35 @@ public class SolarDay extends Loops {
     }
 
     /**
-     * Gets the solar week for this solar day.
+     * Gets the solar week containing this day.
      *
-     * @param start The starting day of the week, 1-7 (1 for Monday, 7 for Sunday).
-     * @return The {@link SolarWeek} for this day.
+     * @param start the start day of week (1=Monday, 2=Tuesday, ..., 0=Sunday)
+     * @return the SolarWeek
      */
     public SolarWeek getSolarWeek(int start) {
-        int y = getYear();
-        int m = getMonth();
         return SolarWeek.fromYm(
-                y,
-                m,
-                (int) Math.ceil((day + fromYmd(y, m, 1).getWeek().next(-start).getIndex()) / 7D) - 1,
+                year,
+                month,
+                (int) Math.ceil((day + fromYmd(year, month, 1).getWeek().next(-start).getIndex()) / 7D) - 1,
                 start);
     }
 
     /**
-     * Gets the phenology (Hou) for this solar day.
+     * Gets the climate pentad (five-day period) for this day.
      *
-     * @return The {@link Climate} for this day.
+     * @return the Climate (pentad)
      */
     public Climate getPhenology() {
-        return getClimateDay().getClimate();
+        return getPhenologyDay().getClimate();
     }
 
     /**
-     * Gets the climate day information (72 Hou) for this solar day.
+     * Gets the climate day information (which pentad and which day within that pentad). The 72 pentads system divides
+     * the solar year into 72 periods of approximately 5 days each.
      *
-     * @return The {@link ClimateDay} for this day.
+     * @return the ClimateDay containing the pentad and day index
      */
-    public ClimateDay getClimateDay() {
+    public ClimateDay getPhenologyDay() {
         SolarTermDay d = getTermDay();
         int dayIndex = d.getDayIndex();
         int index = dayIndex / 5;
@@ -306,34 +268,35 @@ public class SolarDay extends Loops {
     }
 
     /**
-     * Gets the Dog Day (SanFuTian) information for this solar day.
+     * Gets the Sanfu day (the three ten-day periods of the hottest season). Sanfu consists of: Toufu (first 10 days),
+     * Zhongfu (10-20 or 10-40 days), Mofu (last 10 days).
      *
-     * @return The {@link DogDay} for this day.
+     * @return the DogDay, or null if not in the Sanfu period
      */
     public DogDay getDogDay() {
         // Summer Solstice
-        SolarTerms xiaZhi = SolarTerms.fromIndex(getYear(), 12);
+        SolarTerms xiaZhi = SolarTerms.fromIndex(year, 12);
         SolarDay start = xiaZhi.getSolarDay();
-        // The 3rd Geng day after Summer Solstice, which is the 1st day of Chufu.
+        // The 3rd Geng day, which is the 1st day of the first period (Toufu)
         start = start.next(start.getLunarDay().getSixtyCycle().getHeavenStem().stepsTo(6) + 20);
         int days = subtract(start);
-        // Before Chufu
+        // Before the first period (Toufu)
         if (days < 0) {
             return null;
         }
         if (days < 10) {
             return new DogDay(Dog.fromIndex(0), days);
         }
-        // The 4th Geng day, 1st day of Zhongfu.
+        // The 4th Geng day, the 1st day of the middle period (Zhongfu)
         start = start.next(10);
         days = subtract(start);
         if (days < 10) {
             return new DogDay(Dog.fromIndex(1), days);
         }
-        // The 5th Geng day, 11th day of Zhongfu or 1st day of Mofu.
+        // The 5th Geng day, the 11th day of Zhongfu or the 1st day of the last period (Mofu)
         start = start.next(10);
         days = subtract(start);
-        // Autumn Begins
+        // Start of Autumn (Liqiu)
         if (xiaZhi.next(3).getSolarDay().isAfter(start)) {
             if (days < 10) {
                 return new DogDay(Dog.fromIndex(1), days + 10);
@@ -345,12 +308,12 @@ public class SolarDay extends Loops {
     }
 
     /**
-     * Gets the Nine Day (ShuJiuTian) information for this solar day.
+     * Gets the Shujiu day (the nine nine-day periods of the coldest season). Shujiu consists of 9 periods of 9 days
+     * each, starting from the Winter Solstice.
      *
-     * @return The {@link NineDay} for this day.
+     * @return the NineDay, or null if not in the Shujiu period
      */
     public NineDay getNineDay() {
-        int year = getYear();
         SolarDay start = SolarTerms.fromIndex(year + 1, 0).getSolarDay();
         if (isBefore(start)) {
             start = SolarTerms.fromIndex(year, 0).getSolarDay();
@@ -364,21 +327,21 @@ public class SolarDay extends Loops {
     }
 
     /**
-     * Gets the Plum Rain Day (MeiYuTian) information for this solar day (MeiYu starts on the first Bing day after
-     * Mangzhong, and ends on the first Wei day after Xiaoshu).
+     * Gets the Meiyu (plum rain) day information. Meiyu season begins on the first Bing day after Mangzhong and ends on
+     * the first Wei day after Xiaoshu.
      *
-     * @return The {@link PlumRainDay} for this day.
+     * @return the PlumRainDay, or null if not in the Meiyu period
      */
     public PlumRainDay getPlumRainDay() {
-        // Grain in Ear
-        SolarTerms grainInEar = SolarTerms.fromIndex(getYear(), 11);
+        // Grain in Ear (Mangzhong)
+        SolarTerms grainInEar = SolarTerms.fromIndex(year, 11);
         SolarDay start = grainInEar.getSolarDay();
-        // The first Bing day after Mangzhong
+        // The 1st Bing day after Grain in Ear (Mangzhong)
         start = start.next(start.getLunarDay().getSixtyCycle().getHeavenStem().stepsTo(2));
 
-        // Minor Heat
+        // Minor Heat (Xiaoshu)
         SolarDay end = grainInEar.next(2).getSolarDay();
-        // The first Wei day after Xiaoshu
+        // The 1st Wei day after Minor Heat (Xiaoshu)
         end = end.next(end.getLunarDay().getSixtyCycle().getEarthBranch().stepsTo(7));
 
         if (isBefore(start) || isAfter(end)) {
@@ -389,9 +352,10 @@ public class SolarDay extends Loops {
     }
 
     /**
-     * Gets the Hidden Stem Day (RenYuanSiLingFenYe) information for this solar day.
+     * Gets the hidden heavenly stem day (Renyuan Siling). This is used in Chinese astrology to determine the hidden
+     * stems in a day.
      *
-     * @return The {@link HiddenStemDay} for this day.
+     * @return the HiddenStemDay
      */
     public HiddenStemDay getHideHeavenStemDay() {
         int[] dayCounts = { 3, 5, 7, 9, 10, 30 };
@@ -425,40 +389,40 @@ public class SolarDay extends Loops {
     }
 
     /**
-     * Gets the index of this day within the year.
+     * Gets the index of this day within the year (0-based, Jan 1 = 0).
      *
-     * @return The index within the year (0-365 or 0-366 for leap years).
+     * @return the day index within the year
      */
     public int getIndexInYear() {
-        return subtract(fromYmd(getYear(), 1, 1));
+        return subtract(fromYmd(year, 1, 1));
     }
 
     /**
-     * Subtracts a target {@code SolarDay} from this {@code SolarDay}, returning the difference in days.
+     * Calculates the difference in days between this day and the target day.
      *
-     * @param target The target {@code SolarDay}.
-     * @return The number of days difference.
+     * @param target the solar day to subtract from this day
+     * @return the number of days difference (positive if target is earlier)
      */
     public int subtract(SolarDay target) {
         return (int) (getJulianDay().subtract(target.getJulianDay()));
     }
 
     /**
-     * Gets the Julian day corresponding to this solar day.
+     * Gets the Julian Day for this solar day (at noon).
      *
-     * @return The {@link JulianDay} for this solar day.
+     * @return the JulianDay
      */
     public JulianDay getJulianDay() {
-        return JulianDay.fromYmdHms(getYear(), getMonth(), day, 0, 0, 0);
+        return JulianDay.fromYmdHms(year, month, day, 0, 0, 0);
     }
 
     /**
-     * Gets the lunar day corresponding to this solar day.
+     * Converts this solar day to a lunar day.
      *
-     * @return The {@link LunarDay} for this solar day.
+     * @return the corresponding LunarDay
      */
     public LunarDay getLunarDay() {
-        LunarMonth m = LunarMonth.fromYm(getYear(), getMonth());
+        LunarMonth m = LunarMonth.fromYm(year, month);
         int days = subtract(m.getFirstJulianDay().getSolarDay());
         while (days < 0) {
             m = m.next(-1);
@@ -468,45 +432,45 @@ public class SolarDay extends Loops {
     }
 
     /**
-     * Gets the Sixty Cycle Day (GanZhi day) corresponding to this solar day.
+     * Converts this solar day to a sexagenary cycle (Gan-Zhi) day.
      *
-     * @return The {@link SixtyCycleDay} for this solar day.
+     * @return the corresponding SixtyCycleDay
      */
     public SixtyCycleDay getSixtyCycleDay() {
         return SixtyCycleDay.fromSolarDay(this);
     }
 
     /**
-     * Gets the statutory holiday for this day. Returns {@code null} if it's not a statutory holiday.
+     * Converts this solar day to a Tibetan calendar (Rabjung) day.
      *
-     * @return The {@link Holiday} if it's a holiday, otherwise {@code null}.
-     */
-    public Holiday getHoliday() {
-        return Holiday.fromYmd(getYear(), getMonth(), day);
-    }
-
-    /**
-     * Gets the modern Gregorian festival for this day. Returns {@code null} if it's not a modern Gregorian festival.
-     *
-     * @return The {@link SolarFestival} if it's a festival, otherwise {@code null}.
-     */
-    public SolarFestival getFestival() {
-        return SolarFestival.fromYmd(getYear(), getMonth(), day);
-    }
-
-    /**
-     * Gets the Tibetan day corresponding to this solar day.
-     *
-     * @return The {@link RabjungDay} for this solar day.
+     * @return the corresponding RabjungDay
      */
     public RabjungDay getRabByungDay() {
         return RabjungDay.fromSolarDay(this);
     }
 
     /**
-     * Gets the lunar phase day information (day index within the current phase).
+     * Gets the legal holiday for this day, if any.
      *
-     * @return The {@link Phase.PhaseDay} (the phase and the day index within it).
+     * @return the Holiday, or null if this day is not a legal holiday
+     */
+    public Holiday getLegalHoliday() {
+        return Holiday.fromYmd(year, month, day);
+    }
+
+    /**
+     * Gets the solar festival (modern festival) for this day, if any.
+     *
+     * @return the SolarFestival, or null if this day is not a solar festival
+     */
+    public SolarFestival getFestival() {
+        return SolarFestival.fromYmd(year, month, day);
+    }
+
+    /**
+     * Gets the moon phase day information (which phase and which day within that phase).
+     *
+     * @return the Phase.PhaseDay containing the phase and day index
      */
     public Phase.PhaseDay getPhaseDay() {
         LunarMonth month = getLunarDay().getLunarMonth().next(1);
@@ -520,12 +484,17 @@ public class SolarDay extends Loops {
     }
 
     /**
-     * Gets the lunar phase (Moon Phase) for this day.
+     * Gets the moon phase for this day.
      *
-     * @return The {@link Phase}.
+     * @return the Phase
      */
     public Phase getPhase() {
         return getPhaseDay().getPhase();
+    }
+
+    @Override
+    public String toString() {
+        return getSolarMonth() + getName();
     }
 
 }

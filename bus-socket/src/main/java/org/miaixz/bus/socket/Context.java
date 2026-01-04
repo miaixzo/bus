@@ -286,6 +286,11 @@ public final class Context {
         this.backlog = backlog;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return a string representation of this context
+     */
     @Override
     public String toString() {
         return "Context{" + "readBufferSize=" + readBufferSize + ", writeBufferSize=" + writeBufferSize

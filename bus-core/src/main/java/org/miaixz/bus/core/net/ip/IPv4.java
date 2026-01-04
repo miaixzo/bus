@@ -76,13 +76,7 @@ public class IPv4 {
     /**
      * The numeric value of the default localhost IP address (127.0.0.1).
      */
-    /**
-     * The numeric value of the default localhost IP address (127.0.0.1).
-     */
     public static final long LOCAL_IP_NUM = IPv4.ipv4ToLong(Protocol.HOST_IPV4);
-    /**
-     * The minimum numeric value for an IPv4 address (0.0.0.0).
-     */
     /**
      * The minimum numeric value for an IPv4 address (0.0.0.0).
      */
@@ -96,51 +90,30 @@ public class IPv4 {
      */
     public static final long IPV4_UNUSED_NUM_MAX = IPv4.ipv4ToLong(Protocol.IPV4_UNUSED_STR_MAX);
     /**
-     * The minimum possible mask bit length for IPv4 (0).
-     */
-    /**
      * The minimum possible mask bit length for IPv4 (0 represents no mask).
      */
     public static final int IPV4_MASK_BIT_MIN = 0;
     /**
      * The minimum valid mask bit length for a usable IPv4 network (1).
      */
-    /**
-     * The minimum valid mask bit length for a usable IPv4 network (1).
-     */
     public static final int IPV4_MASK_BIT_VALID_MIN = 1;
-    /**
-     * The string representation of the minimum valid IPv4 mask.
-     */
     /**
      * The minimum valid subnet mask string for IPv4 (128.0.0.0).
      */
     public static final String IPV4_MASK_VALID_MIN = MaskBit.get(IPV4_MASK_BIT_VALID_MIN);
 
     /**
-     * The maximum mask bit length for IPv4 (32).
-     */
-    /**
      * The maximum possible mask bit length for IPv4 (32 represents /32 mask).
      */
     public static final int IPV4_MASK_BIT_MAX = 32;
-    /**
-     * The string representation of the maximum IPv4 mask (255.255.255.255).
-     */
     /**
      * The maximum subnet mask string for IPv4 (255.255.255.255).
      */
     public static final String IPV4_MASK_MAX = MaskBit.get(IPV4_MASK_BIT_MAX);
     /**
-     * The minimum string representation of the IPv4 loopback address range.
-     */
-    /**
      * The minimum string representation of IPv4 loopback address range (127.0.0.0).
      */
     public static final String IPV4_LOOPBACK_STR_MIN = "127.0.0.0";
-    /**
-     * The minimum numeric value of the IPv4 loopback address range.
-     */
     /**
      * The minimum numeric value of IPv4 loopback address range (127.0.0.0).
      */

@@ -42,6 +42,9 @@ import org.miaixz.bus.office.excel.xyz.CellKit;
  */
 public class WalkSheetReader extends AbstractSheetReader<Void> {
 
+    /**
+     * The cell handler for processing each cell.
+     */
     private final BiConsumerX<Cell, Object> cellHandler;
 
     /**
@@ -57,6 +60,12 @@ public class WalkSheetReader extends AbstractSheetReader<Void> {
         this.cellHandler = cellHandler;
     }
 
+    /**
+     * Reads the sheet and processes each cell using the configured cell handler.
+     *
+     * @param sheet The {@link Sheet} to read.
+     * @return {@code null} as this reader processes cells through a handler.
+     */
     @Override
     public Void read(final Sheet sheet) {
         final int startRowIndex = Math.max(this.cellRangeAddress.getFirstRow(), sheet.getFirstRowNum());// Read starting

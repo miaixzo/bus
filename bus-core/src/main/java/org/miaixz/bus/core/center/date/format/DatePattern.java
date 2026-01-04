@@ -406,11 +406,26 @@ public class DatePattern {
             mValue = value;
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Returns the estimated length of the formatted output for this character literal.
+         *
+         * @return {@code 1} as a character literal has a fixed length
+         */
         @Override
         public int estimateLength() {
             return 1;
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Appends the character literal to the buffer.
+         *
+         * @param buffer   the buffer to append to
+         * @param calendar the calendar (ignored for character literals)
+         */
         @Override
         public void appendTo(final Appendable buffer, final Calendar calendar) throws IOException {
             buffer.append(mValue);
@@ -428,11 +443,26 @@ public class DatePattern {
             mValue = value;
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Returns the length of this string literal.
+         *
+         * @return the length of the string literal
+         */
         @Override
         public int estimateLength() {
             return mValue.length();
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Appends the string literal to the buffer.
+         *
+         * @param buffer   the buffer to append to
+         * @param calendar the calendar (ignored for string literals)
+         */
         @Override
         public void appendTo(final Appendable buffer, final Calendar calendar) throws IOException {
             buffer.append(mValue);
@@ -452,6 +482,13 @@ public class DatePattern {
             mValues = values;
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Returns the maximum length of any value in the text field array.
+         *
+         * @return the maximum length of the text values
+         */
         @Override
         public int estimateLength() {
             int max = 0;
@@ -464,6 +501,14 @@ public class DatePattern {
             return max;
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Appends the text value for the specified calendar field to the buffer.
+         *
+         * @param buffer   the buffer to append to
+         * @param calendar the calendar containing the field value
+         */
         @Override
         public void appendTo(final Appendable buffer, final Calendar calendar) throws IOException {
             buffer.append(mValues[calendar.get(mField)]);
@@ -481,16 +526,39 @@ public class DatePattern {
             mField = field;
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Returns the estimated maximum length for an unpadded number field.
+         *
+         * @return the estimated maximum length (4 digits)
+         */
         @Override
         public int estimateLength() {
             return 4;
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Appends the unpadded numeric value of the specified field to the buffer.
+         *
+         * @param buffer   the buffer to append to
+         * @param calendar the calendar containing the field value
+         */
         @Override
         public void appendTo(final Appendable buffer, final Calendar calendar) throws IOException {
             appendTo(buffer, calendar.get(mField));
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Appends the unpadded numeric value to the buffer.
+         *
+         * @param buffer the buffer to append to
+         * @param value  the value to append
+         */
         @Override
         public final void appendTo(final Appendable buffer, final int value) throws IOException {
             if (value < 10) {
@@ -513,16 +581,39 @@ public class DatePattern {
         UnpaddedMonthField() {
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Returns the estimated maximum length for an unpadded month field.
+         *
+         * @return the estimated maximum length (2 digits)
+         */
         @Override
         public int estimateLength() {
             return 2;
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Appends the unpadded month value (1-12) to the buffer.
+         *
+         * @param buffer   the buffer to append to
+         * @param calendar the calendar containing the month value
+         */
         @Override
         public void appendTo(final Appendable buffer, final Calendar calendar) throws IOException {
             appendTo(buffer, calendar.get(Calendar.MONTH) + 1);
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Appends the unpadded month value to the buffer.
+         *
+         * @param buffer the buffer to append to
+         * @param value  the month value (1-12)
+         */
         @Override
         public final void appendTo(final Appendable buffer, final int value) throws IOException {
             if (value < 10) {
@@ -549,16 +640,39 @@ public class DatePattern {
             mSize = size;
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Returns the padded size of this number field.
+         *
+         * @return the padded size
+         */
         @Override
         public int estimateLength() {
             return mSize;
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Appends the padded numeric value of the specified field to the buffer.
+         *
+         * @param buffer   the buffer to append to
+         * @param calendar the calendar containing the field value
+         */
         @Override
         public void appendTo(final Appendable buffer, final Calendar calendar) throws IOException {
             appendTo(buffer, calendar.get(mField));
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Appends the padded numeric value to the buffer.
+         *
+         * @param buffer the buffer to append to
+         * @param value  the value to append with padding
+         */
         @Override
         public final void appendTo(final Appendable buffer, final int value) throws IOException {
             appendFullDigits(buffer, value, mSize);
@@ -576,16 +690,39 @@ public class DatePattern {
             mField = field;
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Returns the length of a two-digit number field.
+         *
+         * @return {@code 2} for two-digit fields
+         */
         @Override
         public int estimateLength() {
             return 2;
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Appends the two-digit numeric value of the specified field to the buffer.
+         *
+         * @param buffer   the buffer to append to
+         * @param calendar the calendar containing the field value
+         */
         @Override
         public void appendTo(final Appendable buffer, final Calendar calendar) throws IOException {
             appendTo(buffer, calendar.get(mField));
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Appends the value as a two-digit number to the buffer.
+         *
+         * @param buffer the buffer to append to
+         * @param value  the value to append (will be formatted to 2 digits)
+         */
         @Override
         public final void appendTo(final Appendable buffer, final int value) throws IOException {
             if (value < 100) {
@@ -606,16 +743,39 @@ public class DatePattern {
         TwoDigitYearField() {
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Returns the length of a two-digit year field.
+         *
+         * @return {@code 2} for two-digit years
+         */
         @Override
         public int estimateLength() {
             return 2;
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Appends the two-digit year value to the buffer.
+         *
+         * @param buffer   the buffer to append to
+         * @param calendar the calendar containing the year value
+         */
         @Override
         public void appendTo(final Appendable buffer, final Calendar calendar) throws IOException {
             appendTo(buffer, calendar.get(Calendar.YEAR) % 100);
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Appends the two-digit value to the buffer.
+         *
+         * @param buffer the buffer to append to
+         * @param value  the value to append as two digits
+         */
         @Override
         public final void appendTo(final Appendable buffer, final int value) throws IOException {
             appendDigits(buffer, value);
@@ -632,16 +792,39 @@ public class DatePattern {
         TwoDigitMonthField() {
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Returns the length of a two-digit month field.
+         *
+         * @return {@code 2} for two-digit months
+         */
         @Override
         public int estimateLength() {
             return 2;
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Appends the two-digit month value (01-12) to the buffer.
+         *
+         * @param buffer   the buffer to append to
+         * @param calendar the calendar containing the month value
+         */
         @Override
         public void appendTo(final Appendable buffer, final Calendar calendar) throws IOException {
             appendTo(buffer, calendar.get(Calendar.MONTH) + 1);
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Appends the value as a two-digit month to the buffer.
+         *
+         * @param buffer the buffer to append to
+         * @param value  the month value to append (1-12)
+         */
         @Override
         public final void appendTo(final Appendable buffer, final int value) throws IOException {
             appendDigits(buffer, value);
@@ -659,11 +842,26 @@ public class DatePattern {
             mRule = rule;
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Returns the estimated length of the 12-hour field.
+         *
+         * @return the estimated length
+         */
         @Override
         public int estimateLength() {
             return mRule.estimateLength();
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Appends the 12-hour format value (1-12) to the buffer.
+         *
+         * @param buffer   the buffer to append to
+         * @param calendar the calendar containing the hour value
+         */
         @Override
         public void appendTo(final Appendable buffer, final Calendar calendar) throws IOException {
             int value = calendar.get(Calendar.HOUR);
@@ -673,6 +871,14 @@ public class DatePattern {
             mRule.appendTo(buffer, value);
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Appends the 12-hour format value to the buffer.
+         *
+         * @param buffer the buffer to append to
+         * @param value  the value to append
+         */
         @Override
         public void appendTo(final Appendable buffer, final int value) throws IOException {
             mRule.appendTo(buffer, value);
@@ -690,11 +896,26 @@ public class DatePattern {
             mRule = rule;
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Returns the estimated length of the 24-hour field.
+         *
+         * @return the estimated length
+         */
         @Override
         public int estimateLength() {
             return mRule.estimateLength();
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Appends the 24-hour format value (1-24) to the buffer.
+         *
+         * @param buffer   the buffer to append to
+         * @param calendar the calendar containing the hour value
+         */
         @Override
         public void appendTo(final Appendable buffer, final Calendar calendar) throws IOException {
             int value = calendar.get(Calendar.HOUR_OF_DAY);
@@ -704,6 +925,14 @@ public class DatePattern {
             mRule.appendTo(buffer, value);
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Appends the 24-hour format value to the buffer.
+         *
+         * @param buffer the buffer to append to
+         * @param value  the value to append
+         */
         @Override
         public void appendTo(final Appendable buffer, final int value) throws IOException {
             mRule.appendTo(buffer, value);
@@ -721,17 +950,40 @@ public class DatePattern {
             mRule = rule;
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Returns the estimated length of the day-in-week field.
+         *
+         * @return the estimated length
+         */
         @Override
         public int estimateLength() {
             return mRule.estimateLength();
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Appends the day of week as a number (1=Monday...7=Sunday) to the buffer.
+         *
+         * @param buffer   the buffer to append to
+         * @param calendar the calendar containing the day of week value
+         */
         @Override
         public void appendTo(final Appendable buffer, final Calendar calendar) throws IOException {
             final int value = calendar.get(Calendar.DAY_OF_WEEK);
             mRule.appendTo(buffer, value != Calendar.SUNDAY ? value - 1 : 7);
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Appends the day-in-week value to the buffer.
+         *
+         * @param buffer the buffer to append to
+         * @param value  the value to append
+         */
         @Override
         public void appendTo(final Appendable buffer, final int value) throws IOException {
             mRule.appendTo(buffer, value);
@@ -749,11 +1001,26 @@ public class DatePattern {
             mRule = rule;
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Returns the estimated length of the week-based year field.
+         *
+         * @return the estimated length
+         */
         @Override
         public int estimateLength() {
             return mRule.estimateLength();
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Appends the week-based year value to the buffer.
+         *
+         * @param buffer   the buffer to append to
+         * @param calendar the calendar containing the week year value
+         */
         @Override
         public void appendTo(final Appendable buffer, final Calendar calendar) throws IOException {
             int weekYear = calendar.getWeekYear();
@@ -763,6 +1030,14 @@ public class DatePattern {
             mRule.appendTo(buffer, weekYear);
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Appends the week year value to the buffer.
+         *
+         * @param buffer the buffer to append to
+         * @param value  the week year value to append
+         */
         @Override
         public void appendTo(final Appendable buffer, final int value) throws IOException {
             mRule.appendTo(buffer, value);
@@ -786,11 +1061,26 @@ public class DatePattern {
             mDaylight = getTimeZoneDisplay(timeZone, true, style, locale);
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Returns the maximum length of the standard or daylight timezone name.
+         *
+         * @return the maximum length of the timezone names
+         */
         @Override
         public int estimateLength() {
             return Math.max(mStandard.length(), mDaylight.length());
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Appends the timezone name (standard or daylight) to the buffer based on the calendar's DST offset.
+         *
+         * @param buffer   the buffer to append to
+         * @param calendar the calendar containing the timezone information
+         */
         @Override
         public void appendTo(final Appendable buffer, final Calendar calendar) throws IOException {
             final TimeZone zone = calendar.getTimeZone();
@@ -815,11 +1105,26 @@ public class DatePattern {
             mColon = colon;
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Returns the length of the timezone offset format.
+         *
+         * @return {@code 5} for the +/-HHMM or +/-HH:mm format
+         */
         @Override
         public int estimateLength() {
             return 5;
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Appends the timezone offset to the buffer in +/-HHMM or +/-HH:mm format.
+         *
+         * @param buffer   the buffer to append to
+         * @param calendar the calendar containing the timezone offset
+         */
         @Override
         public void appendTo(final Appendable buffer, final Calendar calendar) throws IOException {
             int offset = calendar.get(Calendar.ZONE_OFFSET) + calendar.get(Calendar.DST_OFFSET);
@@ -862,11 +1167,26 @@ public class DatePattern {
             };
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Returns the length of the ISO 8601 timezone format.
+         *
+         * @return the length of the format
+         */
         @Override
         public int estimateLength() {
             return length;
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Appends the timezone offset in ISO 8601 format to the buffer.
+         *
+         * @param buffer   the buffer to append to
+         * @param calendar the calendar containing the timezone offset
+         */
         @Override
         public void appendTo(final Appendable buffer, final Calendar calendar) throws IOException {
             int offset = calendar.get(Calendar.ZONE_OFFSET) + calendar.get(Calendar.DST_OFFSET);
@@ -908,11 +1228,26 @@ public class DatePattern {
             mLocale = locale;
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Computes the hash code for this timezone display key.
+         *
+         * @return the hash code
+         */
         @Override
         public int hashCode() {
             return (mStyle * 31 + mLocale.hashCode()) * 31 + mTimeZone.hashCode();
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Checks if this key is equal to another object.
+         *
+         * @param obj the object to compare with
+         * @return {@code true} if the objects are equal
+         */
         @Override
         public boolean equals(final Object obj) {
             if (this == obj) {

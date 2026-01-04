@@ -51,6 +51,9 @@ public abstract class AbstractFactory implements Factory {
         this.name = name;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getName() {
         return this.name;

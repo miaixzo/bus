@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.shade.screw.engine;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -47,6 +48,7 @@ import lombok.Setter;
 @Setter
 public class EngineFactory implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = -1L;
 
     /**

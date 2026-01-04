@@ -150,36 +150,101 @@ public abstract class AbstractPlugin<T> implements Plugin<T> {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * This default implementation always returns {@code true}, allowing the message processing pipeline to continue.
+     * Subclasses can override this method to implement custom message filtering or preprocessing logic.
+     * </p>
+     *
+     * @param session the communication session through which the message was received
+     * @param data    the message object to be processed
+     * @return {@code true} to allow the message to proceed to the next handler, {@code false} to stop processing
+     */
     @Override
     public boolean process(Session session, T data) {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * This default implementation does nothing. Subclasses can override to handle specific state events.
+     * </p>
+     *
+     * @param status    the status event that occurred
+     * @param session   the communication session associated with the event
+     * @param throwable the throwable associated with the event, if any
+     */
     @Override
     public void stateEvent(Status status, Session session, Throwable throwable) {
 
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * This default implementation returns the channel unchanged, allowing all connections. Subclasses can override to
+     * implement connection filtering or wrapping logic.
+     * </p>
+     *
+     * @param channel the asynchronous socket channel representing the incoming connection
+     * @return the accepted channel, or {@code null} to reject the connection
+     */
     @Override
     public AsynchronousSocketChannel shouldAccept(AsynchronousSocketChannel channel) {
         return channel;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * This default implementation does nothing. Subclasses can override to perform custom post-read operations.
+     * </p>
+     *
+     * @param session  the communication session from which data was read
+     * @param readSize the number of bytes read from the channel
+     */
     @Override
     public void afterRead(Session session, int readSize) {
 
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * This default implementation does nothing. Subclasses can override to perform custom post-write operations.
+     * </p>
+     *
+     * @param session   the communication session to which data was written
+     * @param writeSize the number of bytes written to the channel
+     */
     @Override
     public void afterWrite(Session session, int writeSize) {
 
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * This default implementation does nothing. Subclasses can override to perform custom pre-read operations.
+     * </p>
+     *
+     * @param session the communication session from which data will be read
+     */
     @Override
     public void beforeRead(Session session) {
 
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * This default implementation does nothing. Subclasses can override to perform custom pre-write operations.
+     * </p>
+     *
+     * @param session the communication session to which data will be written
+     */
     @Override
     public void beforeWrite(Session session) {
 

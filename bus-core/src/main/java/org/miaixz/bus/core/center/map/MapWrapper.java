@@ -88,71 +88,176 @@ public class MapWrapper<K, V>
         return this.raw;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Returns the number of key-value mappings in this map.
+     *
+     * @return the number of key-value mappings in this map
+     */
     @Override
     public int size() {
         return raw.size();
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Returns {@code true} if this map contains no key-value mappings.
+     *
+     * @return {@code true} if this map contains no key-value mappings
+     */
     @Override
     public boolean isEmpty() {
         return raw.isEmpty();
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Returns {@code true} if this map contains a mapping for the specified key.
+     *
+     * @param key the key whose presence in this map is to be tested
+     * @return {@code true} if this map contains a mapping for the specified key
+     */
     @Override
     public boolean containsKey(final Object key) {
         return raw.containsKey(key);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Returns {@code true} if this map maps one or more keys to the specified value.
+     *
+     * @param value value whose presence in this map is to be tested
+     * @return {@code true} if this map maps one or more keys to the specified value
+     */
     @Override
     public boolean containsValue(final Object value) {
         return raw.containsValue(value);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Returns the value to which the specified key is mapped, or {@code null} if this map contains no mapping for the
+     * key.
+     *
+     * @param key the key whose associated value is to be returned
+     * @return the value to which the specified key is mapped, or {@code null} if this map contains no mapping for the
+     *         key
+     */
     @Override
     public V get(final Object key) {
         return raw.get(key);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Associates the specified value with the specified key in this map.
+     *
+     * @param key   key with which the specified value is to be associated
+     * @param value value to be associated with the specified key
+     * @return the previous value associated with {@code key}, or {@code null} if there was no mapping for {@code key}
+     */
     @Override
     public V put(final K key, final V value) {
         return raw.put(key, value);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Removes the mapping for a key from this map if it is present.
+     *
+     * @param key key whose mapping is to be removed from the map
+     * @return the previous value associated with {@code key}, or {@code null} if there was no mapping for {@code key}
+     */
     @Override
     public V remove(final Object key) {
         return raw.remove(key);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Copies all of the mappings from the specified map to this map.
+     *
+     * @param m mappings to be stored in this map
+     */
     @Override
     public void putAll(final Map<? extends K, ? extends V> m) {
         raw.putAll(m);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Removes all of the mappings from this map. The map will be empty after this call returns.
+     */
     @Override
     public void clear() {
         raw.clear();
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Returns a {@link Collection} view of the values contained in this map.
+     *
+     * @return a collection view of the values contained in this map
+     */
     @Override
     public Collection<V> values() {
         return raw.values();
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Returns a {@link Set} view of the keys contained in this map.
+     *
+     * @return a set view of the keys contained in this map
+     */
     @Override
     public Set<K> keySet() {
         return raw.keySet();
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Returns a {@link Set} view of the mappings contained in this map.
+     *
+     * @return a set view of the mappings contained in this map
+     */
     @Override
     public Set<Entry<K, V>> entrySet() {
         return raw.entrySet();
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Returns an iterator over the entries in this map.
+     *
+     * @return an iterator over the entries in this map
+     */
     @Override
     public Iterator<Entry<K, V>> iterator() {
         return this.entrySet().iterator();
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Compares the specified object with this map for equality.
+     *
+     * @param o the object to be compared for equality with this map
+     * @return {@code true} if the specified object is equal to this map
+     */
     @Override
     public boolean equals(final Object o) {
         if (this == o) {
@@ -165,66 +270,189 @@ public class MapWrapper<K, V>
         return Objects.equals(raw, that.raw);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Returns the hash code value for this map.
+     *
+     * @return the hash code value for this map
+     */
     @Override
     public int hashCode() {
         return Objects.hash(raw);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Returns the string representation of this map.
+     *
+     * @return the string representation of this map
+     */
     @Override
     public String toString() {
         return raw.toString();
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Performs the given action for each entry in this map until all entries have been processed or the action throws
+     * an exception.
+     *
+     * @param action The action to be performed for each entry
+     */
     @Override
     public void forEach(final BiConsumer<? super K, ? super V> action) {
         raw.forEach(action);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Replaces each entry's value with the result of invoking the given function on that entry until all entries have
+     * been processed or the function throws an exception.
+     *
+     * @param function the function to apply to each entry
+     */
     @Override
     public void replaceAll(final BiFunction<? super K, ? super V, ? extends V> function) {
         raw.replaceAll(function);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * If the specified key is not already associated with a value, associates it with the given value and returns
+     * {@code null}, else returns the current value.
+     *
+     * @param key   key with which the specified value is to be associated
+     * @param value value to be associated with the specified key
+     * @return the previous value associated with the specified key, or {@code null} if there was no mapping for the key
+     */
     @Override
     public V putIfAbsent(final K key, final V value) {
         return raw.putIfAbsent(key, value);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Removes the entry for the specified key only if it is currently mapped to the specified value.
+     *
+     * @param key   key with which the specified value is associated
+     * @param value value expected to be associated with the specified key
+     * @return {@code true} if the value was removed
+     */
     @Override
     public boolean remove(final Object key, final Object value) {
         return raw.remove(key, value);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Replaces the entry for the specified key only if it is currently mapped to the specified value.
+     *
+     * @param key      key with which the specified value is associated
+     * @param oldValue value expected to be associated with the specified key
+     * @param newValue value to be associated with the specified key
+     * @return {@code true} if the value was replaced
+     */
     @Override
     public boolean replace(final K key, final V oldValue, final V newValue) {
         return raw.replace(key, oldValue, newValue);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Replaces the entry for the specified key only if it is currently mapped to some value.
+     *
+     * @param key   key with which the specified value is associated
+     * @param value value to be associated with the specified key
+     * @return the previous value associated with the specified key, or {@code null} if there was no mapping for the key
+     */
     @Override
     public V replace(final K key, final V value) {
         return raw.replace(key, value);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * If the specified key is not already associated with a value, attempts to compute its value using the given
+     * mapping function and enters it into this map unless {@code null}.
+     *
+     * @param key             key with which the specified value is to be associated
+     * @param mappingFunction the function to compute a value
+     * @return the current (existing or computed) value associated with the specified key, or {@code null} if the
+     *         computed value is {@code null}
+     */
     @Override
     public V computeIfAbsent(final K key, final Function<? super K, ? extends V> mappingFunction) {
         return raw.computeIfAbsent(key, mappingFunction);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Returns the value to which the specified key is mapped, or {@code defaultValue} if this map contains no mapping
+     * for the key.
+     *
+     * @param key          the key whose associated value is to be returned
+     * @param defaultValue the default mapping of the key
+     * @return the value to which the specified key is mapped, or {@code defaultValue} if this map contains no mapping
+     *         for the key
+     */
     @Override
     public V getOrDefault(final Object key, final V defaultValue) {
         return raw.getOrDefault(key, defaultValue);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * If the value for the specified key is present and non-null, attempts to compute a new mapping given the key and
+     * its current mapped value.
+     *
+     * @param key               key with which the specified value is to be associated
+     * @param remappingFunction the function to compute a value
+     * @return the new value associated with the specified key, or {@code null} if none
+     */
     @Override
     public V computeIfPresent(final K key, final BiFunction<? super K, ? super V, ? extends V> remappingFunction) {
         return raw.computeIfPresent(key, remappingFunction);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Attempts to compute a mapping for the specified key and its current mapped value (or {@code null} if there is no
+     * current mapping).
+     *
+     * @param key               key with which the specified value is to be associated
+     * @param remappingFunction the function to compute a value
+     * @return the new value associated with the specified key, or {@code null} if none
+     */
     @Override
     public V compute(final K key, final BiFunction<? super K, ? super V, ? extends V> remappingFunction) {
         return raw.compute(key, remappingFunction);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * If the specified key is not already associated with a value or is associated with {@code null}, associates it
+     * with the given non-null value.
+     *
+     * @param key               key with which the resulting value is to be associated
+     * @param value             the non-null value to be merged with the existing value associated with the key or, if
+     *                          no existing value or a null value is associated with the key, to be associated with the
+     *                          key
+     * @param remappingFunction the function to reapply a value to the key if it exists
+     * @return the new value associated with the specified key, or {@code null} if none
+     */
     @Override
     public V merge(final K key, final V value, final BiFunction<? super V, ? super V, ? extends V> remappingFunction) {
         return raw.merge(key, value, remappingFunction);

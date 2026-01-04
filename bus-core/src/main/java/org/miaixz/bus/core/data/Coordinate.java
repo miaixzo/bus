@@ -333,6 +333,12 @@ public class Coordinate {
             return this;
         }
 
+        /**
+         * Checks if this point is equal to another object.
+         *
+         * @param o The object to compare with.
+         * @return {@code true} if the objects are equal, {@code false} otherwise.
+         */
         @Override
         public boolean equals(final Object o) {
             if (this == o) {
@@ -345,11 +351,21 @@ public class Coordinate {
             return Double.compare(that.lng, lng) == 0 && Double.compare(that.lat, lat) == 0;
         }
 
+        /**
+         * Returns the hash code of this point.
+         *
+         * @return The hash code.
+         */
         @Override
         public int hashCode() {
             return Objects.hash(lng, lat);
         }
 
+        /**
+         * Returns the string representation of this point.
+         *
+         * @return The string representation.
+         */
         @Override
         public String toString() {
             return "Point{" + "lng=" + lng + ", lat=" + lat + '}';

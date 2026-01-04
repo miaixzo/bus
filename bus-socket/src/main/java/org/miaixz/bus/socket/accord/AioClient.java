@@ -172,6 +172,9 @@ public class AioClient {
                 socketChannel,
                 new CompletionHandler<Void, AsynchronousSocketChannel>() {
 
+                    /**
+                     * {@inheritDoc}
+                     */
                     @Override
                     public void completed(Void result, AsynchronousSocketChannel socketChannel) {
                         try {
@@ -191,6 +194,9 @@ public class AioClient {
                         }
                     }
 
+                    /**
+                     * {@inheritDoc}
+                     */
                     @Override
                     public void failed(Throwable exc, AsynchronousSocketChannel socketChannel) {
                         try {
@@ -221,6 +227,9 @@ public class AioClient {
         CompletableFuture<Session> future = new CompletableFuture<>();
         start(asynchronousChannelGroup, future, new CompletionHandler<>() {
 
+            /**
+             * {@inheritDoc}
+             */
             @Override
             public void completed(Session session, CompletableFuture<Session> future) {
                 if (future.isDone() || future.isCancelled()) {
@@ -230,6 +239,9 @@ public class AioClient {
                 }
             }
 
+            /**
+             * {@inheritDoc}
+             */
             @Override
             public void failed(Throwable exc, CompletableFuture<Session> future) {
                 future.completeExceptionally(exc);

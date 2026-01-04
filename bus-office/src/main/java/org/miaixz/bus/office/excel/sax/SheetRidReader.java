@@ -45,7 +45,9 @@ import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
- * Reads the mapping between sheetId and r:id in the sheet tag when reading Excel using SAX, similar to:
+ * Reads the mapping between sheetId and r:id in the sheet tag when reading Excel using SAX.
+ * <p>
+ * Similar to:
  * 
  * <pre>
  *  sheet name="Sheet6" sheetId="4" r:id="rId6"
@@ -156,6 +158,14 @@ public class SheetRidReader extends DefaultHandler {
         return ListKit.of(this.NAME_RID_MAP.keySet());
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param uri        the namespace URI
+     * @param localName  the local name
+     * @param qName      the qualified name
+     * @param attributes the attached attributes
+     */
     @Override
     public void startElement(
             final String uri,

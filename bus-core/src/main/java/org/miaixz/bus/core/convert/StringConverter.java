@@ -40,7 +40,7 @@ import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.XmlKit;
 
 /**
- * 字符串转换器，提供各种对象转换为字符串的逻辑封装
+ * String converter, provides encapsulation of various object-to-string conversion logic.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -53,10 +53,10 @@ public class StringConverter extends AbstractConverter {
     private Map<Class<?>, Function<Object, String>> stringer;
 
     /**
-     * 加入自定义对象类型的toString规则
+     * Adds custom toString rules for object types.
      *
-     * @param clazz          类型
-     * @param stringFunction 序列化函数
+     * @param clazz          the type
+     * @param stringFunction the serialization function
      * @return this
      */
     public StringConverter putStringer(final Class<?> clazz, final Function<Object, String> stringFunction) {
@@ -69,7 +69,7 @@ public class StringConverter extends AbstractConverter {
 
     @Override
     protected String convertInternal(final Class<?> targetClass, final Object value) {
-        // 自定义toString
+        // Custom toString
         if (MapKit.isNotEmpty(stringer)) {
             final Function<Object, String> stringFunction = stringer.get(targetClass);
             if (null != stringFunction) {
@@ -89,7 +89,7 @@ public class StringConverter extends AbstractConverter {
             return ((Type) value).getTypeName();
         }
 
-        // 其它情况
+        // Other cases
         return convertToString(value);
     }
 
