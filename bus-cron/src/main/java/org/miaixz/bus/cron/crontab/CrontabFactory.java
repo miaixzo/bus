@@ -44,7 +44,7 @@ public class CrontabFactory {
      * @param config The cron task configuration.
      * @return The task table.
      */
-    public static Repertoire create(Configure config) {
+    public static Repertoire of(Configure config) {
         return config.isUseTriggerQueue() ? new TriggerCrontab() : new MatchCrontab();
     }
 

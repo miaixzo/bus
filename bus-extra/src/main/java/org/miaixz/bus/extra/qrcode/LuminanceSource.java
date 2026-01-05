@@ -42,8 +42,17 @@ import java.awt.image.BufferedImage;
  */
 public final class LuminanceSource extends com.google.zxing.LuminanceSource {
 
+    /**
+     * The source buffered image.
+     */
     private final BufferedImage image;
+    /**
+     * The left offset of the region.
+     */
     private final int left;
+    /**
+     * The top offset of the region.
+     */
     private final int top;
 
     /**

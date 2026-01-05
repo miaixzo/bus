@@ -1,214 +1,692 @@
-#### 项目说明
----------------------------
-Windows • Linux • Mac OS • Unix (Solaris, FreeBSD)
+# 🏥 Bus Health: Cross-Platform System Health Monitoring Framework
 
-Supported features
---------------------------
+<p align="center">
+<strong>Cross-Platform, High-Performance System Health Monitoring Solution</strong>
+</p>
 
-* Computer System and firmware, baseboard
-* Operating System and Version/Build
-* Physical (core) and Logical (hyperthreaded) CPUs
-* System and per-processor load % and tick counters
-* CPU uptime, processes, and threads
-* Process uptime, CPU, memory usage
-* Physical and virtual memory used/available
-* Mounted filesystems (type, usable and total space)
-* Disk drives (model, serial, size) and partitions
-* Network interfaces (IPs, bandwidth in/out)
-* Battery state (% capacity, time remaining)
-* Connected displays (with EDID info)
-* USB Devices
-* Sensors (temperature, fan speeds, voltage)
+-----
 
-Output
--------------
-General information about the operating system and computer system.
+## 📖 Project Introduction
 
-```
-Apple macOS 10.14.6 (Mojave) build 18G84
-Booted: 2019-07-28T20:27:49Z
-Uptime: 10 days, 08:24:03
-Running without elevated permissions.
+**Bus Health** is a cross-platform system health monitoring framework based on OSHI (Operating System and Hardware Information). It provides a unified API for monitoring system and hardware information across Windows, Linux, macOS, and Unix systems. Designed with simplicity and performance in mind, it enables developers to easily obtain comprehensive system health metrics without worrying about underlying platform differences.
 
-manufacturer: Apple Inc.
-model: MacBook Pro (MacBookPro15,1)
-serialnumber: C03Z53B7LVDR
-```
+-----
 
-Processor identification.
+## ✨ Core Features
 
-```
-Intel(R) Core(TM) i9-9880H CPU @ 2.30GHz
- 1 physical CPU package(s)
- 8 physical CPU core(s)
- 16 logical CPU(s)
-Identifier: Intel64 Family 6 Model 158 Stepping 13
-ProcessorID: BFEBFBFF000906ED
-```
+### 🎯 Platform Support
 
-By measuring ticks (user, nice, system, idle, iowait, and irq) between time intervals, percent usage can be calculated.
-Per-processor information is also provided.
+* **Cross-Platform**: Supports Windows, Linux, macOS, Unix (Solaris, FreeBSD, AIX, OpenBSD)
+* **Unified API**: Single interface for all platforms, no platform-specific code required
+* **Zero Configuration**: Works out of the box with automatic platform detection
 
-```
-CPU, IOWait, and IRQ ticks @ 0 sec:[967282, 15484, 195343, 124216619], 6176, [4054, 2702]
-CPU, IOWait, and IRQ ticks @ 1 sec:[967308, 15484, 195346, 124216790], 6177, [4057, 2705]
-User: 13.0% Nice: 0.0% System: 1.5% Idle: 85.5%
-CPU load: 8.8%
-CPU load averages: 2.69 2.47 2.38
-CPU load per processor: 23.6% 1.3% 18.2% 0.7% 12.9% 0.7% 12.1% 1.3%
-Vendor Frequency: 2.3 GHz
-Max Frequency: 2.3 GHz
-Current Frequencies: 2.3 GHz, 2.3 GHz, 2.3 GHz, 2.3 GHz, 2.3 GHz, 2.3 GHz, 2.3 GHz, 2.3 GHz
-```
+### ⚡ System Information Monitoring
 
-Process information including CPU and memory per process is available.
+| Category | Features | Description |
+| :--- | :--- | :--- |
+| **CPU** | Usage, Load, Ticks | Real-time CPU load, per-processor stats, tick counters |
+| **Memory** | Physical, Virtual, Swap | Memory usage, availability, and swap statistics |
+| **Disk** | Storage, Partitions, Usage | Disk drives, partitions, file stores, I/O statistics |
+| **Network** | Interfaces, Bandwidth | Network interfaces, IP addresses, traffic monitoring |
+| **Process** | List, CPU, Memory | Process listing with CPU and memory usage per process |
+| **Hardware** | Sensors, Battery, Display | Temperature, fans, voltage, battery status, display info |
+| **System** | OS, Firmware, Baseboard | OS version, manufacturer, model, serial numbers |
 
-```
-Processes: 401, Threads: 1159
-   PID  %CPU %MEM       VSZ       RSS Name
- 55977  27.9  0.2   6.8 GiB  34.3 MiB java
- 51820  18.7  5.6   6.3 GiB 919.2 MiB eclipse
- 39272  11.2 17.8   7.1 GiB   2.8 GiB prl_vm_app
- 85316   6.5  2.9   5.6 GiB 471.4 MiB thunderbird
- 35301   5.4  0.5   1.7 GiB  89.8 MiB Microsoft Excel
+### 🔍 Advanced Capabilities
+
+* **Real-time Monitoring**: Track system metrics with configurable polling intervals
+* **EDID Parsing**: Detailed display information including manufacturer, model, resolution
+* **USB Device Enumeration**: List all connected USB devices with full details
+* **File System Monitoring**: Mount points, file types, usage statistics
+* **Network Traffic**: Real-time bandwidth monitoring (RX/TX bytes and packets)
+* **Battery Status**: Capacity, remaining time, power usage rate, voltage, temperature
+* **Sensor Data**: CPU temperature, fan speeds, voltage readings
+
+### 🛡️ Enterprise Features
+
+* **Lightweight**: Minimal memory footprint with lazy initialization using Memoizer pattern
+* **Thread-Safe**: All operations are thread-safe for concurrent access
+* **Flexible Querying**: Query specific metrics or get comprehensive system overview
+* **Formatted Output**: Built-in formatting for human-readable metrics (KB, MB, GB, TB)
+* **Custom Health Indicators**: Extend with custom health checks
+
+-----
+
+## 🚀 Quick Start
+
+### Maven Dependency
+
+```xml
+<dependency>
+    <groupId>org.miaixz</groupId>
+    <artifactId>bus-health</artifactId>
+    <version>x.x.x</version>
+</dependency>
 ```
 
-Memory and swapfile information is available.
+### Basic Usage
 
-```
-Memory: 11.6 GiB/32 GiB
-Swap used: 3.6 GiB/5 GiB
-```
+#### 1. Get System Information
 
-Statistics for the system battery are provided.
+```java
+import org.miaixz.bus.health.Provider;
 
-```
-Power Sources:
- Name: InternalBattery-0, Device Name: bq20z451,
- RemainingCapacityPercent: 100.0%, Time Remaining: 5:42, Time Remaining Instant: 5:42,
- Power Usage Rate: -16045.216mW, Voltage: 12.694V, Amperage: -1264.0mA,
- Power OnLine: false, Charging: false, Discharging: true,
- Capacity Units: MAH, Current Capacity: 7213, Max Capacity: 7315, Design Capacity: 7336,
- Cycle Count: 6, Chemistry: LIon, Manufacture Date: 2019-06-11, Manufacturer: SMP,
- SerialNumber: D869243A2U3J65JAB, Temperature: 30.46°C
-```
+public class HealthExample {
+    public static void main(String[] args) {
+        Provider provider = new Provider();
 
-The EDID for each Display is provided. This can be parsed with various utilities for detailed information. health
-provides a summary of selected data.
+        // Get all system information
+        Map<String, Object> allInfo = provider.getAll();
+        System.out.println(allInfo);
 
-```
-Displays:
- Display 0:
-  Manuf. ID=SAM, Product ID=2ad, Analog, Serial=HA19, ManufDate=3/2008, EDID v1.3
-  41 x 27 cm (16.1 x 10.6 in)
-  Preferred Timing: Clock 106MHz, Active Pixels 3840x2880
-  Range Limits: Field Rate 56-75 Hz vertical, 30-81 Hz horizontal, Max clock: 140 MHz
-  Monitor Name: SyncMaster
-  Serial Number: H9FQ345476
- Display 1:
-  Manuf. ID=SAM, Product ID=226, Analog, Serial=HA19, ManufDate=4/2007, EDID v1.3
-  41 x 26 cm (16.1 x 10.2 in)
-  Preferred Timing: Clock 106MHz, Active Pixels 3840x2880
-  Range Limits: Field Rate 56-75 Hz vertical, 30-81 Hz horizontal, Max clock: 140 MHz
-  Monitor Name: SyncMaster
-  Serial Number: HMCP431880
+        // Get specific information
+        Map<String, Object> cpuInfo = provider.getSingle(TID.CPU);
+        System.out.println(cpuInfo);
+    }
+}
 ```
 
-Disks and usage (reads, writes, transfer times) are shown, and partitions can be mapped to filesystems.
+#### 2. Monitor CPU Usage
 
-```
-Disks:
- disk0: (model: SanDisk Ultra II 960GB - S/N: 161008800550) size: 960.2 GB, reads: 1053132 (23.0 GiB), writes: 243792 (11.1 GiB), xfer: 73424854 ms
- |-- disk0s1: EFI (EFI System Partition) Maj:Min=1:1, size: 209.7 MB
- |-- disk0s2: Macintosh HD (Macintosh SSD) Maj:Min=1:2, size: 959.3 GB @ /
- disk1: (model: Disk Image - S/N: ) size: 960.0 GB, reads: 3678 (60.0 MiB), writes: 281 (8.6 MiB), xfer: 213627 ms
- |-- disk1s1: EFI (EFI System Partition) Maj:Min=1:4, size: 209.7 MB
- |-- disk1s2: Dropbox (disk image) Maj:Min=1:5, size: 959.7 GB @ /Volumes/Dropbox
+```java
+Provider provider = new Provider();
 
-```
-
-```
-Sensors:
- CPU Temperature: 69.8°C
- Fan Speeds:[4685, 4687]
- CPU Voltage: 3.9V
+// Get CPU information
+Cpu cpu = provider.getCpu();
+System.out.println("Physical Cores: " + cpu.getPhysicalCores());
+System.out.println("Logical Cores: " + cpu.getLogicalCores());
+System.out.println("Total Usage: " + cpu.getTotalUsage() + "%");
+System.out.println("User Usage: " + cpu.getUserUsage() + "%");
+System.out.println("System Usage: " + cpu.getSystemUsage() + "%");
+System.out.println("IO Wait: " + cpu.getIoWait() + "%");
 ```
 
-Attached USB devices can be listed:
+#### 3. Monitor Memory Usage
 
-```
-USB Devices:
- AppleUSBEHCI
- |-- Root Hub Simulation Simulation (Apple Inc.)
-     |-- IOUSBHostDevice
-         |-- IR Receiver (Apple Computer, Inc.)
-         |-- USB Receiver (Logitech)
- AppleUSBEHCI
- |-- Root Hub Simulation Simulation (Apple Inc.)
-     |-- FaceTime HD Camera (Built-in) (Apple Inc.) [s/n: DJHB1V077FDH5HL0]
-     |-- IOUSBHostDevice
-         |-- Apple Internal Keyboard / Trackpad (Apple Inc.)
-         |-- BRCM2070 Hub (Apple Inc.)
-             |-- Bluetooth USB Host Controller (Apple Inc.)
- AppleUSBEHCI
- |-- Root Hub Simulation Simulation (Apple Inc.)
-     |-- IOUSBHostDevice
-         |-- Apple Thunderbolt Display (Apple Inc.) [s/n: 162C0C25]
-         |-- Display Audio (Apple Inc.) [s/n: 162C0C25]
-         |-- FaceTime HD Camera (Display) (Apple Inc.) [s/n: CCGCAN000TDJ7DFX]
-         |-- USB2.0 Hub
-             |-- ANT USBStick2 (Dynastream Innovations) [s/n: 051]
-             |-- Fitbit Base Station (Fitbit Inc.)
+```java
+Provider provider = new Provider();
+
+// Get memory information
+Memory memory = provider.getMemory();
+System.out.println("Total Memory: " + memory.getTotal());
+System.out.println("Used Memory: " + memory.getUsed());
+System.out.println("Free Memory: " + memory.getFree());
+System.out.println("Usage: " + memory.getUsage() + "%");
 ```
 
-### Snapshots
+#### 4. Monitor Disk Usage
 
-* Snapshot releases may be deployed using `mvn clean deploy`
-    * The version number in the pom.xml must end in -SNAPSHOT
+```java
+Provider provider = new Provider();
 
-### Prepare
+// Get disk information
+List<Disk> disks = provider.getDisk();
+for (Disk disk : disks) {
+    System.out.println("Device: " + disk.getDeviceName());
+    System.out.println("Mount Point: " + disk.getMountPoint());
+    System.out.println("Total Space: " + provider.formatByte(disk.getTotalSpace()));
+    System.out.println("Used Space: " + provider.formatByte(disk.getUsedSpace()));
+    System.out.println("Free Space: " + provider.formatByte(disk.getFreeSpace()));
+    System.out.println("Usage: " + disk.getUsagePercent() + "%");
+}
+```
 
-* Make sure tests are green on [Travis CI](https://travis-ci.org/818000/bus).
-* Run `mvn clean test` on every OS you have access to
-* Choose an appropriate [version number](http://semver.org/) for the release
-    * Proactively change version numbers in the download links on [README.md](README.md).
-        * HTML-escape `&`, `<`, and `>` in any links in the site version
-    * Move "Your contribution here." to a new empty "Next" section
-    * Commit changes as a "prep for x.x release"
+#### 5. Monitor JVM Information
 
-### Release
+```java
+Provider provider = new Provider();
 
-*
+// Get JVM information
+Jvm jvm = provider.getJvm();
+System.out.println("JDK Version: " + jvm.getJdkVersion());
+System.out.println("JDK Home: " + jvm.getJdkHome());
+System.out.println("JVM Name: " + jvm.getJdkName());
+System.out.println("Total Memory: " + provider.formatByte(jvm.getTotalMemory()));
+System.out.println("Max Memory: " + provider.formatByte(jvm.getMaxMemory()));
+System.out.println("Free Memory: " + provider.formatByte(jvm.getFreeMemory()));
+System.out.println("Usage: " + jvm.getUsagePercent() + "%");
+System.out.println("Start Time: " + jvm.getStartTime());
+System.out.println("Uptime: " + jvm.getUptime() + "ms");
+```
 
-See [this page](http://central.sonatype.org/pages/apache-maven.html#performing-a-release-deployment-with-the-maven-release-plugin)
-for a summary of the below steps
+#### 6. Monitor Processes
 
-* `mvn clean deploy`
-    * Do a final snapshot release and fix any errors in the javadocs
-    * If license headers are rewritten as part of this deployment, commit the changes
-* `mvn release:clean`
-    * Takes a few seconds
-* `mvn release:prepare`
-    * Takes a few minutes
-    * This will ask for the version being released, removing -SNAPSHOT
-    * This will suggest the next version, increment appropriately
-* `mvn release:perform`
-    * Takes a few minutes.
-    * This pushes the release to the [Nexus](https://oss.sonatype.org/) staging repository
-* Log on to [Nexus](https://oss.sonatype.org/)
-  and [release the deployment from OSSRH to the Central Repository](http://central.sonatype.org/pages/releasing-the-deployment.html)
-  .
+```java
+Provider provider = new Provider();
 
-* Add a title and release notes [to the tag](https://github.com/818000/bus/tags) on GitHub and publish the release to
-  make
-  it current.
+// Get top 10 processes by CPU usage
+Map<String, Object> result = new HashMap<>();
+provider.appendProcessList(10, TID.PROCESS, result);
+List<Map<String, Object>> processes = (List<Map<String, Object>>) result.get(TID.PROCESS);
 
-* As development progresses, update version in [pom.xml](pom.xml) using -SNAPSHOT appended to the new version
-  using [Semantic Versioning](http://semver.org/) standards:
-    * Increment major version (x.0) for API-breaking changes or additions
-    * Increment minor version (x.1) for substantive additions, bugfixes and changes that are backwards compatible
-    * Increment patch version (x.x.1) for minor bugfixes or changes that are backwards compatible
+for (Map<String, Object> process : processes) {
+    System.out.println("PID: " + process.get("pid"));
+    System.out.println("Name: " + process.get("name"));
+    System.out.println("CPU: " + process.get(TID.CPU) + "%");
+}
+```
 
-Thank you for OSHI
--------------------
-Part of this article is from OSHI
+#### 7. Get Host Information
+
+```java
+Provider provider = new Provider();
+
+// Get host information (includes network statistics)
+Host host = provider.getHost();
+System.out.println("Host Name: " + host.getName());
+System.out.println("IP Address: " + host.getIp());
+System.out.println("OS: " + host.getOs());
+System.out.println("OS Arch: " + host.getOsArch());
+System.out.println("User Dir: " + host.getUserDir());
+System.out.println("RX Bytes/s: " + host.getRxBytesPerSecond() + "KB");
+System.out.println("TX Bytes/s: " + host.getTxBytesPerSecond() + "KB");
+```
+
+-----
+
+## 📝 Advanced Usage
+
+### 1. Access Hardware Abstraction Layer
+
+```java
+Provider provider = new Provider();
+HardwareAbstractionLayer hal = provider.getHardware();
+
+// Processor information
+CentralProcessor processor = hal.getProcessor();
+System.out.println("Processor ID: " + processor.getProcessorIdentifier());
+System.out.println("Physical Cores: " + processor.getPhysicalProcessorCount());
+System.out.println("Logical Cores: " + processor.getLogicalProcessorCount());
+
+// Memory information
+GlobalMemory globalMemory = hal.getMemory();
+System.out.println("Total Memory: " + globalMemory.getTotal());
+
+// Sensors
+Sensors sensors = hal.getSensors();
+System.out.println("CPU Temperature: " + sensors.getCpuTemperature());
+System.out.println("Fan Speeds: " + Arrays.toString(sensors.getFanSpeeds()));
+System.out.println("CPU Voltage: " + sensors.getCpuVoltage());
+
+// Power sources
+List<PowerSource> powerSources = hal.getPowerSources();
+for (PowerSource ps : powerSources) {
+    System.out.println("Name: " + ps.getName());
+    System.out.println("Remaining Capacity: " + ps.getRemainingCapacity() + "%");
+    System.out.println("Time Remaining: " + ps.getTimeRemaining());
+}
+
+// Network interfaces
+List<NetworkIF> networkIFs = hal.getNetworkIFs();
+for (NetworkIF net : networkIFs) {
+    System.out.println("Name: " + net.getName());
+    System.out.println("Display Name: " + net.getDisplayName());
+    System.out.println("IPv4: " + Arrays.toString(net.getIPv4addr()));
+}
+
+// Disk stores
+List<HWDiskStore> diskStores = hal.getDiskStores();
+for (HWDiskStore disk : diskStores) {
+    System.out.println("Model: " + disk.getModel());
+    System.out.println("Serial: " + disk.getSerial());
+    System.out.println("Size: " + disk.getSize());
+}
+
+// Displays
+List<Display> displays = hal.getDisplays();
+for (Display display : displays) {
+    System.out.println("EDID: " + new String(display.getEdid()));
+}
+```
+
+### 2. Access Operating System Information
+
+```java
+Provider provider = new Provider();
+OperatingSystem os = provider.getOperatingSystem();
+
+// OS info
+System.out.println("Family: " + os.getFamily());
+System.out.println("Manufacturer: " + os.getManufacturer());
+System.out.println("Version: " + os.getVersionInfo());
+
+// Processes
+List<OSProcess> processes = os.getProcesses(null, OperatingSystem.ProcessSorting.CPU_DESC, 10);
+for (OSProcess process : processes) {
+    System.out.println("PID: " + process.getProcessID());
+    System.out.println("Name: " + process.getName());
+    System.out.println("CPU Load: " + process.getProcessCpuLoadCumulative());
+    System.out.println("Memory: " + process.getResidentSetSize());
+}
+
+// File system
+FileSystem fileSystem = os.getFileSystem();
+Iterable<OSFileStore> fileStores = fileSystem.getFileStores();
+for (OSFileStore fs : fileStores) {
+    System.out.println("Name: " + fs.getName());
+    System.out.println("Mount: " + fs.getMount());
+    System.out.println("Type: " + fs.getType());
+    System.out.println("Total Space: " + fs.getTotalSpace());
+}
+```
+
+### 3. Custom Health Check
+
+```java
+public class CustomHealthCheck {
+
+    private final Provider provider = new Provider();
+
+    public Map<String, Object> checkSystemHealth() {
+        Map<String, Object> health = new HashMap<>();
+
+        // CPU health check
+        Cpu cpu = provider.getCpu();
+        health.put("cpu_healthy", cpu.getTotalUsage() < 80.0);
+        health.put("cpu_usage", cpu.getTotalUsage());
+
+        // Memory health check
+        Memory memory = provider.getMemory();
+        health.put("memory_healthy", memory.getUsage() < 80.0);
+        health.put("memory_usage", memory.getUsage());
+
+        // Disk health check
+        List<Disk> disks = provider.getDisk();
+        boolean diskHealthy = true;
+        for (Disk disk : disks) {
+            if (disk.getUsagePercent() > 80.0) {
+                diskHealthy = false;
+                break;
+            }
+        }
+        health.put("disk_healthy", diskHealthy);
+
+        return health;
+    }
+}
+```
+
+### 4. Scheduled Monitoring
+
+```java
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
+public class SystemMonitor {
+
+    private final Provider provider = new Provider();
+    private final ScheduledExecutorService scheduler =
+        Executors.newScheduledThreadPool(1);
+
+    public void startMonitoring() {
+        scheduler.scheduleAtFixedRate(() -> {
+            Cpu cpu = provider.getCpu();
+            Memory memory = provider.getMemory();
+
+            System.out.println("CPU Usage: " + cpu.getTotalUsage() + "%");
+            System.out.println("Memory Usage: " + memory.getUsage() + "%");
+
+            // Alert if usage is high
+            if (cpu.getTotalUsage() > 80.0) {
+                System.out.println("WARNING: High CPU usage!");
+            }
+            if (memory.getUsage() > 80.0) {
+                System.out.println("WARNING: High memory usage!");
+            }
+        }, 0, 5, TimeUnit.SECONDS);
+    }
+
+    public void stopMonitoring() {
+        scheduler.shutdown();
+    }
+}
+```
+
+### 5. Query Multiple Metrics
+
+```java
+Provider provider = new Provider();
+
+// Get multiple specific metrics
+List<String> metrics = Arrays.asList(
+    TID.CPU,
+    TID.MEMORY,
+    TID.DISK,
+    TID.JVM
+);
+
+Map<String, Object> result = provider.get(metrics);
+result.forEach((key, value) -> System.out.println(key + ": " + value));
+```
+
+-----
+
+## 📋 Type Identifier Reference
+
+### Available Metrics (TID)
+
+| Identifier | Description | Return Type |
+| :--- | :--- | :--- |
+| `TID.HOST` | Host information | `Host` |
+| `TID.CPU` | CPU usage and statistics | `Cpu` |
+| `TID.MEMORY` | Memory usage | `Memory` |
+| `TID.DISK` | Disk storage information | `List<Disk>` |
+| `TID.JVM` | JVM runtime information | `Jvm` |
+| `TID.ALL_DISK` | All disk usage percentage | `Double` |
+| `TID.PROCESS` | Top processes by CPU | `List<Map<String, Object>>` |
+| `TID.SYSTEM` | Computer system info | `ComputerSystem` |
+| `TID.PROCESSOR` | Processor details | `CentralProcessor` |
+| `TID.HARDWARE` | All hardware information | `Map<String, Object>` |
+| `TID.POWERSOURCES` | Battery/power source info | `Map<String, Object>` |
+| `TID.NETWORKIFS` | Network interface info | `Map<String, Object>` |
+
+-----
+
+## 💡 Best Practices
+
+### 1. Use Singleton Provider
+
+```java
+// ✅ Recommended: Reuse Provider instance
+private static final Provider PROVIDER = new Provider();
+
+public void checkHealth() {
+    Cpu cpu = PROVIDER.getCpu();
+    // ...
+}
+
+// ❌ Not Recommended: Create new instance each time
+public void checkHealth() {
+    Provider provider = new Provider(); // Wasteful
+    // ...
+}
+```
+
+### 2. Handle Platform Differences
+
+```java
+Provider provider = new Provider();
+OS osType = (OS) provider.type();
+
+switch (osType) {
+    case WINDOWS:
+        // Windows-specific logic
+        break;
+    case LINUX:
+        // Linux-specific logic
+        break;
+    case MACOS:
+        // macOS-specific logic
+        break;
+    default:
+        // Default logic
+}
+```
+
+### 3. Monitor Specific Metrics Only
+
+```java
+// ✅ Recommended: Query only what you need
+Map<String, Object> result = provider.getSingle(TID.CPU);
+
+// ❌ Not Recommended: Query all when only one metric is needed
+Map<String, Object> result = provider.getAll(); // Wasteful
+```
+
+### 4. Use Scheduled Monitoring
+
+```java
+// ✅ Recommended: Use scheduled executor for periodic checks
+ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+scheduler.scheduleAtFixedRate(() -> {
+    Cpu cpu = provider.getCpu();
+    // Log or alert based on cpu.getTotalUsage()
+}, 0, 5, TimeUnit.SECONDS);
+
+// ❌ Not Recommended: Busy waiting
+while (true) {
+    Cpu cpu = provider.getCpu();
+    Thread.sleep(5000); // Blocks thread
+}
+```
+
+### 5. Handle Exceptions Gracefully
+
+```java
+public Map<String, Object> safeGetCpu() {
+    try {
+        Cpu cpu = provider.getCpu();
+        return Map.of("cpu", cpu);
+    } catch (Exception e) {
+        Logger.error("Failed to get CPU info", e);
+        return Map.of("cpu", null, "error", e.getMessage());
+    }
+}
+```
+
+-----
+
+## ❓ Frequently Asked Questions
+
+### Q1: How to get real-time CPU usage?
+
+**A**: Use the `getCpu()` method which calculates usage over a 600ms interval:
+
+```java
+Cpu cpu = provider.getCpu();
+double totalUsage = cpu.getTotalUsage();
+```
+
+### Q2: Can I monitor remote systems?
+
+**A**: Bus Health monitors the local system. For remote monitoring, consider:
+- Exposing health endpoints via HTTP API
+- Using a monitoring agent that pushes metrics to a central server
+- Integrating with monitoring systems like Prometheus
+
+### Q3: How to get battery information on servers?
+
+**A**: Use the `getPowerSourceInfo()` method:
+
+```java
+Map<String, Object> powerInfo = provider.getPowerSourceInfo();
+List<PowerSource> powerSources = provider.getHardware().getPowerSources();
+
+for (PowerSource ps : powerSources) {
+    if (!ps.isPowerOnLine()) {
+        System.out.println("On battery: " + ps.getRemainingCapacity() + "%");
+    }
+}
+```
+
+### Q4: What permissions are required?
+
+**A**:
+- **Linux/Unix**: Most information works without special permissions
+- **Windows**: Generally no special permissions needed
+- **Some sensors**: May require elevated privileges depending on OS
+
+### Q5: How to reduce monitoring overhead?
+
+**A**:
+- Query only necessary metrics
+- Increase monitoring interval (e.g., 5-10 seconds instead of 1 second)
+- Use singleton Provider instance
+- Cache results when appropriate
+
+### Q6: Can I integrate with Spring Boot Actuator?
+
+**A**: Yes, create a custom health indicator:
+
+```java
+@Component
+public class SystemHealthIndicator implements HealthIndicator {
+
+    private final Provider provider = new Provider();
+
+    @Override
+    public Health health() {
+        Cpu cpu = provider.getCpu();
+        Memory memory = provider.getMemory();
+
+        if (cpu.getTotalUsage() > 90.0 || memory.getUsage() > 90.0) {
+            return Health.down()
+                .withDetail("cpu", cpu.getTotalUsage())
+                .withDetail("memory", memory.getUsage())
+                .build();
+        }
+
+        return Health.up()
+            .withDetail("cpu", cpu.getTotalUsage())
+            .withDetail("memory", memory.getUsage())
+            .build();
+    }
+}
+```
+
+### Q7: How to get network traffic statistics?
+
+**A**: Network statistics are calculated over a 3-second interval in `getHost()`:
+
+```java
+Host host = provider.getHost();
+System.out.println("RX: " + host.getRxBytesPerSecond() + " KB/s");
+System.out.println("TX: " + host.getTxBytesPerSecond() + " KB/s");
+```
+
+### Q8: Is it thread-safe?
+
+**A**: Yes, the Provider is thread-safe and can be safely used in multi-threaded environments.
+
+-----
+
+## 🔄 Version Compatibility
+
+| Bus Health Version | JDK Version | OSHI Version |
+| :--- | :--- | :--- |
+| 8.x | 17+ | 6.x+ |
+| 7.x | 11+ | 5.x+ |
+
+-----
+
+## 🚀 Performance Considerations
+
+### 1. Initialization Overhead
+
+- First access to each platform component (OS, Hardware) involves lazy initialization
+- Subsequent accesses use cached instances (Memoizer pattern)
+- Typical initialization: 50-200ms depending on platform
+
+### 2. Query Performance
+
+| Operation | Typical Time | Notes |
+| :--- | :--- | :--- |
+| `getCpu()` | 600ms | Includes measurement interval |
+| `getMemory()` | <10ms | Cached data |
+| `getDisk()` | 20-50ms | File system queries |
+| `getJvm()` | <5ms | JVM MXBean access |
+| `getHost()` | 3000ms | Includes network measurement |
+
+### 3. Memory Footprint
+
+- Provider instance: ~1KB
+- Cached platform instances: ~50-100KB
+- Query results: Variable depending on data volume
+
+### 4. Optimization Tips
+
+```java
+// Cache results if frequent polling is needed
+private Cpu cachedCpu;
+private long lastCpuUpdate = 0;
+
+public Cpu getCpuWithCache() {
+    long now = System.currentTimeMillis();
+    if (now - lastCpuUpdate > 5000) { // 5 second cache
+        cachedCpu = provider.getCpu();
+        lastCpuUpdate = now;
+    }
+    return cachedCpu;
+}
+```
+
+-----
+
+## 📊 Supported Platforms
+
+### Operating Systems
+
+| Platform | Status | Notes |
+| :--- | :--- | :--- |
+| **Windows** | ✅ Fully Supported | Windows 7/8/10/11, Server 2012+ |
+| **Linux** | ✅ Fully Supported | All major distributions |
+| **macOS** | ✅ Fully Supported | macOS 10.12+ |
+| **FreeBSD** | ✅ Supported | FreeBSD 10+ |
+| **OpenBSD** | ✅ Supported | OpenBSD 6+ |
+| **Solaris** | ✅ Supported | Solaris 10+ |
+| **AIX** | ✅ Supported | AIX 6+ |
+
+### Hardware Information
+
+| Category | Windows | Linux | macOS | Unix |
+| :--- | :--- | :--- | :--- | :--- |
+| **CPU** | ✅ | ✅ | ✅ | ✅ |
+| **Memory** | ✅ | ✅ | ✅ | ✅ |
+| **Disk** | ✅ | ✅ | ✅ | ✅ |
+| **Network** | ✅ | ✅ | ✅ | ✅ |
+| **Battery** | ✅ | ✅ | ✅ | ⚠️ |
+| **Sensors** | ✅ | ⚠️ | ✅ | ⚠️ |
+| **Display** | ✅ | ⚠️ | ✅ | ❌ |
+| **USB** | ✅ | ✅ | ✅ | ⚠️ |
+
+Legend: ✅ Full Support | ⚠️ Partial Support | ❌ Not Supported
+
+-----
+
+## 🔧 Configuration Examples
+
+### Maven Configuration
+
+```xml
+<dependency>
+    <groupId>org.miaixz</groupId>
+    <artifactId>bus-health</artifactId>
+    <version>8.5.0</version>
+</dependency>
+
+<!-- Optional: For better native library support -->
+<dependency>
+    <groupId>net.java.dev.jna</groupId>
+    <artifactId>jna-platform</artifactId>
+    <version>5.18.0</version>
+</dependency>
+```
+
+### Gradle Configuration
+
+```groovy
+implementation 'org.miaixz:bus-health:8.5.0'
+
+// Optional: For better native library support
+implementation 'net.java.dev.jna:jna-platform:5.18.0'
+```
+
+-----
+
+## 📚 Additional Resources
+
+- **Documentation**: [https://www.miaixz.org](https://www.miaixz.org)
+- **GitHub Repository**: [https://github.com/818000/bus](https://github.com/818000/bus)
+- **Issue Tracker**: [https://github.com/818000/bus/issues](https://github.com/818000/bus/issues)
+- **OSHI Project**: [https://github.com/oshi/oshi](https://github.com/oshi/oshi)
+
+-----
+
+## 🙏 Acknowledgments
+
+Part of this project is based on [OSHI](https://github.com/oshi/oshi) (Operating System and Hardware Information), licensed under the MIT License. We thank the OSHI team for their excellent work.
+
+-----
+
+**Built with ❤️ by the Miaixz Team**

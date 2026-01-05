@@ -50,7 +50,7 @@ public interface Factory {
      * @param name the name of the logger.
      * @return a new {@link Provider} instance.
      */
-    Provider create(String name);
+    Provider of(String name);
 
     /**
      * Creates a new logger instance for the specified class.
@@ -58,7 +58,7 @@ public interface Factory {
      * @param clazz the class for which to create the logger.
      * @return a new {@link Provider} instance.
      */
-    Provider create(Class<?> clazz);
+    Provider of(Class<?> clazz);
 
     /**
      * Gets a singleton logger instance with the specified name.
@@ -67,7 +67,7 @@ public interface Factory {
      * @return a singleton {@link Provider} instance.
      */
     default Provider getProvider(final String name) {
-        return Instances.get(getName() + name, () -> create(name));
+        return Instances.get(getName() + name, () -> of(name));
     }
 
     /**
@@ -77,7 +77,7 @@ public interface Factory {
      * @return a singleton {@link Provider} instance.
      */
     default Provider getProvider(final Class<?> clazz) {
-        return Instances.get(getName() + clazz.getName(), () -> create(clazz));
+        return Instances.get(getName() + clazz.getName(), () -> of(clazz));
     }
 
 }

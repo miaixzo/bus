@@ -161,7 +161,7 @@ public final class SslPlugin<T> extends AbstractPlugin<T> {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public AsynchronousSocketChannel shouldAccept(AsynchronousSocketChannel channel) {

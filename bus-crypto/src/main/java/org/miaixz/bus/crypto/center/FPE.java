@@ -195,6 +195,9 @@ public class FPE implements Serializable {
          */
         FF3_1("FF3-1");
 
+        /**
+         * The FPE mode value.
+         */
         private final String value;
 
         FPEMode(final String name) {

@@ -91,7 +91,7 @@ public class FreemarkerProvider implements TemplateProvider {
      * @return A new {@link Configuration} instance.
      * @throws InternalException if an {@link IOException} occurs during template loader setup.
      */
-    private static Configuration create(TemplateConfig config) {
+    private static Configuration of(TemplateConfig config) {
         if (null == config) {
             config = new TemplateConfig();
         }
@@ -132,12 +132,22 @@ public class FreemarkerProvider implements TemplateProvider {
         return cfg;
     }
 
+    /**
+     * Initializes the template provider with the given configuration. This method is designed to be overridden by
+     * subclasses for custom initialization.
+     *
+     * from the TemplateConfig and initializes the provider. Subclasses may override to add custom configuration
+     * settings or validation.
+     *
+     * @param config The template configuration, or null to use defaults.
+     * @return This provider instance for method chaining.
+     */
     @Override
     public TemplateProvider init(TemplateConfig config) {
         if (null == config) {
             config = TemplateConfig.DEFAULT;
         }
-        init(create(config));
+        init(of(config));
         return this;
     }
 
@@ -150,6 +160,15 @@ public class FreemarkerProvider implements TemplateProvider {
         this.cfg = freemarkerCfg;
     }
 
+    /**
+     * Gets a template by name. This method is designed to be overridden by subclasses for custom template retrieval.
+     *
+     * Subclasses may override to add caching, custom loading, or error handling.
+     *
+     * @param resource The name of the template resource.
+     * @return The template object.
+     * @throws InternalException if the template cannot be loaded.
+     */
     @Override
     public Template getTemplate(final String resource) {
         if (null == this.cfg) {

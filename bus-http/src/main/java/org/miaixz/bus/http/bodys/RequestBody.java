@@ -60,7 +60,7 @@ public abstract class RequestBody {
      * @param content     The content string.
      * @return A new {@link RequestBody} instance.
      */
-    public static RequestBody create(MediaType contentType, String content) {
+    public static RequestBody of(MediaType contentType, String content) {
         java.nio.charset.Charset charset = Charset.UTF_8;
         if (contentType != null) {
             charset = contentType.charset();
@@ -70,7 +70,7 @@ public abstract class RequestBody {
             }
         }
         byte[] bytes = content.getBytes(charset);
-        return create(contentType, bytes);
+        return of(contentType, bytes);
     }
 
     /**
@@ -80,7 +80,7 @@ public abstract class RequestBody {
      * @param content     The content as a {@link ByteString}.
      * @return A new {@link RequestBody} instance.
      */
-    public static RequestBody create(final MediaType contentType, final ByteString content) {
+    public static RequestBody of(final MediaType contentType, final ByteString content) {
         return new RequestBody() {
 
             @Override
@@ -108,8 +108,8 @@ public abstract class RequestBody {
      * @return A new {@link RequestBody} instance.
      * @throws NullPointerException if content is null.
      */
-    public static RequestBody create(final MediaType contentType, final byte[] content) {
-        return create(contentType, content, 0, content.length);
+    public static RequestBody of(final MediaType contentType, final byte[] content) {
+        return of(contentType, content, 0, content.length);
     }
 
     /**
@@ -123,7 +123,7 @@ public abstract class RequestBody {
      * @throws NullPointerException           if content is null.
      * @throws ArrayIndexOutOfBoundsException if the offset or byteCount are invalid.
      */
-    public static RequestBody create(
+    public static RequestBody of(
             final MediaType contentType,
             final byte[] content,
             final int offset,
@@ -159,7 +159,7 @@ public abstract class RequestBody {
      * @return A new {@link RequestBody} instance.
      * @throws NullPointerException if file is null.
      */
-    public static RequestBody create(final MediaType contentType, final File file) {
+    public static RequestBody of(final MediaType contentType, final File file) {
         if (null == file) {
             throw new NullPointerException("file == null");
         }

@@ -410,7 +410,7 @@ public class AnimatedGifEncoder {
     }
 
     /**
-     * Returns index of palette color closest to c
+     * Returns index of palette color closest to c.
      *
      * @param c The color to find the closest match for.
      * @return The index of the closest color in the palette.
@@ -478,7 +478,7 @@ public class AnimatedGifEncoder {
     }
 
     /**
-     * Extracts image pixels into byte array "pixels"
+     * Extracts image pixels into byte array "pixels".
      */
     protected void getImagePixels() {
         int w = image.getWidth();
@@ -497,7 +497,7 @@ public class AnimatedGifEncoder {
     }
 
     /**
-     * Writes Graphic Control Extension
+     * Writes Graphic Control Extension.
      *
      * @throws IOException if an I/O error occurs.
      */
@@ -530,7 +530,7 @@ public class AnimatedGifEncoder {
     }
 
     /**
-     * Writes Image Descriptor
+     * Writes Image Descriptor.
      *
      * @throws IOException if an I/O error occurs.
      */
@@ -555,7 +555,7 @@ public class AnimatedGifEncoder {
     }
 
     /**
-     * Writes Logical Screen Descriptor
+     * Writes Logical Screen Descriptor.
      *
      * @throws IOException if an I/O error occurs.
      */
@@ -590,7 +590,7 @@ public class AnimatedGifEncoder {
     }
 
     /**
-     * Writes color table
+     * Writes color table.
      *
      * @throws IOException if an I/O error occurs.
      */
@@ -603,7 +603,7 @@ public class AnimatedGifEncoder {
     }
 
     /**
-     * Encodes and writes pixel data
+     * Encodes and writes pixel data.
      *
      * @throws IOException if an I/O error occurs.
      */
@@ -613,7 +613,7 @@ public class AnimatedGifEncoder {
     }
 
     /**
-     * Write 16-bit value to output stream, LSB first
+     * Write 16-bit value to output stream, LSB first.
      *
      * @param value The integer value to write.
      * @throws IOException if an I/O error occurs.
@@ -624,7 +624,7 @@ public class AnimatedGifEncoder {
     }
 
     /**
-     * Writes string to output stream
+     * Writes string to output stream.
      *
      * @param s The string to write.
      * @throws IOException if an I/O error occurs.

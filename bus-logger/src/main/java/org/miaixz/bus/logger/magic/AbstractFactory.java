@@ -52,7 +52,7 @@ public abstract class AbstractFactory implements Factory {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public String getName() {

@@ -129,7 +129,7 @@ public final class MacNetworkIF extends AbstractNetworkIF {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public int getIfType() {
@@ -137,7 +137,7 @@ public final class MacNetworkIF extends AbstractNetworkIF {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public long getBytesRecv() {
@@ -145,7 +145,7 @@ public final class MacNetworkIF extends AbstractNetworkIF {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public long getBytesSent() {
@@ -153,7 +153,7 @@ public final class MacNetworkIF extends AbstractNetworkIF {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public long getPacketsRecv() {
@@ -161,7 +161,7 @@ public final class MacNetworkIF extends AbstractNetworkIF {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public long getPacketsSent() {
@@ -169,7 +169,7 @@ public final class MacNetworkIF extends AbstractNetworkIF {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public long getInErrors() {
@@ -177,7 +177,7 @@ public final class MacNetworkIF extends AbstractNetworkIF {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public long getOutErrors() {
@@ -185,7 +185,7 @@ public final class MacNetworkIF extends AbstractNetworkIF {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public long getInDrops() {
@@ -193,7 +193,7 @@ public final class MacNetworkIF extends AbstractNetworkIF {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public long getCollisions() {
@@ -201,7 +201,7 @@ public final class MacNetworkIF extends AbstractNetworkIF {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public long getSpeed() {
@@ -209,7 +209,7 @@ public final class MacNetworkIF extends AbstractNetworkIF {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public long getTimeStamp() {
@@ -217,7 +217,7 @@ public final class MacNetworkIF extends AbstractNetworkIF {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public boolean updateAttributes() {

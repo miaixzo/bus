@@ -48,18 +48,18 @@ public class TinyLoggingFactory extends AbstractFactory {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
-    public Provider create(final String name) {
+    public Provider of(final String name) {
         return new TinyLoggingProvider(name);
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
-    public Provider create(final Class<?> clazz) {
+    public Provider of(final Class<?> clazz) {
         return new TinyLoggingProvider(clazz);
     }
 

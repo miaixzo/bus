@@ -53,7 +53,7 @@ public class SoapX {
      * @param url The URL of the web service.
      * @return a new {@link SoapBuilder} instance.
      */
-    public static SoapBuilder create(final String url) {
+    public static SoapBuilder of(final String url) {
         return SoapBuilder.of(url);
     }
 
@@ -64,7 +64,7 @@ public class SoapX {
      * @param protocol The SOAP protocol to use (e.g., SOAP 1.1 or 1.2).
      * @return a new {@link SoapBuilder} instance.
      */
-    public static SoapBuilder create(final String url, final Protocol protocol) {
+    public static SoapBuilder of(final String url, final Protocol protocol) {
         return SoapBuilder.of(url, protocol);
     }
 
@@ -76,7 +76,7 @@ public class SoapX {
      * @param namespaceURI The namespace URI for the SOAP method.
      * @return a new {@link SoapBuilder} instance.
      */
-    public static SoapBuilder create(final String url, final Protocol protocol, final String namespaceURI) {
+    public static SoapBuilder of(final String url, final Protocol protocol, final String namespaceURI) {
         return SoapBuilder.of(url, protocol, namespaceURI);
     }
 

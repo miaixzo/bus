@@ -69,7 +69,7 @@ public class ClickWordProvider extends AbstractProvider {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * Creates a click-word CAPTCHA image where users need to click on specific characters or words in the correct
      * order.
@@ -85,7 +85,7 @@ public class ClickWordProvider extends AbstractProvider {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * Retrieves the CAPTCHA data for click-word verification. This typically includes the character positions or click
      * coordinates.
@@ -100,7 +100,7 @@ public class ClickWordProvider extends AbstractProvider {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * Verifies the user's click positions against the expected CAPTCHA answer. The verification checks if the clicked
      * coordinates match the required positions.

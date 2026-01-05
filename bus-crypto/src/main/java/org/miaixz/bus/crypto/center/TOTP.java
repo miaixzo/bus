@@ -84,6 +84,9 @@ import org.miaixz.bus.core.xyz.StringKit;
  */
 public class TOTP extends HOTP {
 
+    /**
+     * The time step for TOTP generation.
+     */
     private final Duration timeStep;
 
     /**

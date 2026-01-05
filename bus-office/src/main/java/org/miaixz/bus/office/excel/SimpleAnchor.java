@@ -123,7 +123,7 @@ public class SimpleAnchor implements ClientAnchor {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @return the x coordinate in EMU within the top-left cell
      */
@@ -133,7 +133,7 @@ public class SimpleAnchor implements ClientAnchor {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @param dx1 the x coordinate in EMU within the top-left cell
      */
@@ -143,7 +143,7 @@ public class SimpleAnchor implements ClientAnchor {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @return the y coordinate in EMU within the top-left cell
      */
@@ -153,7 +153,7 @@ public class SimpleAnchor implements ClientAnchor {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @param dy1 the y coordinate in EMU within the top-left cell
      */
@@ -163,7 +163,7 @@ public class SimpleAnchor implements ClientAnchor {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @return the x coordinate in EMU within the bottom-right cell
      */
@@ -173,7 +173,7 @@ public class SimpleAnchor implements ClientAnchor {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @param dx2 the x coordinate in EMU within the bottom-right cell
      */
@@ -183,7 +183,7 @@ public class SimpleAnchor implements ClientAnchor {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @return the y coordinate in EMU within the bottom-right cell
      */
@@ -193,7 +193,7 @@ public class SimpleAnchor implements ClientAnchor {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @param dy2 the y coordinate in EMU within the bottom-right cell
      */
@@ -203,7 +203,7 @@ public class SimpleAnchor implements ClientAnchor {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @return the column (0 based) of the first cell
      */
@@ -213,7 +213,7 @@ public class SimpleAnchor implements ClientAnchor {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @param col1 the column (0 based) of the first cell
      */
@@ -223,7 +223,7 @@ public class SimpleAnchor implements ClientAnchor {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @return the row (0 based) of the first cell
      */
@@ -233,7 +233,7 @@ public class SimpleAnchor implements ClientAnchor {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @param row1 the row (0 based) of the first cell
      */
@@ -243,7 +243,7 @@ public class SimpleAnchor implements ClientAnchor {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @return the column (0 based) of the second cell
      */
@@ -253,7 +253,7 @@ public class SimpleAnchor implements ClientAnchor {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @param col2 the column (0 based) of the second cell
      */
@@ -263,7 +263,7 @@ public class SimpleAnchor implements ClientAnchor {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @return the row (0 based) of the second cell.
      */
@@ -273,7 +273,7 @@ public class SimpleAnchor implements ClientAnchor {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @param row2 the row (0 based) of the second cell
      */
@@ -283,7 +283,7 @@ public class SimpleAnchor implements ClientAnchor {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @return the anchor type
      */
@@ -293,7 +293,7 @@ public class SimpleAnchor implements ClientAnchor {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @param anchorType the anchor type
      */

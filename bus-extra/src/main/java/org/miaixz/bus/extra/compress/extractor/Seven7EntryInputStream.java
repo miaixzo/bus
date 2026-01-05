@@ -75,6 +75,16 @@ public class Seven7EntryInputStream extends InputStream {
         this.size = size;
     }
 
+    /**
+     * Returns an estimate of the number of bytes that can be read.
+     * <p>
+     * This implementation returns the total size of the entry as an int, throwing an IOException if the size exceeds
+     * Integer.MAX_VALUE.
+     * </p>
+     *
+     * @return an estimate of the number of bytes that can be read
+     * @throws IOException if the size exceeds Integer.MAX_VALUE
+     */
     @Override
     public int available() throws IOException {
         try {
@@ -93,6 +103,16 @@ public class Seven7EntryInputStream extends InputStream {
         return this.readSize;
     }
 
+    /**
+     * Reads the next byte of data.
+     * <p>
+     * This implementation reads a single byte from the underlying 7Z archive entry and increments the read size
+     * counter.
+     * </p>
+     *
+     * @return the next byte of data, or -1 if the end of the stream is reached
+     * @throws IOException if an I/O error occurs
+     */
     @Override
     public int read() throws IOException {
         this.readSize++;

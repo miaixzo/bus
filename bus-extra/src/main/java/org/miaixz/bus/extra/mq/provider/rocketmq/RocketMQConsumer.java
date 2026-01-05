@@ -38,6 +38,7 @@ import org.miaixz.bus.core.lang.exception.MQueueException;
 import org.miaixz.bus.extra.mq.Consumer;
 import org.miaixz.bus.extra.mq.Message;
 import org.miaixz.bus.extra.mq.MessageHandler;
+import org.miaixz.bus.extra.mq.RawMessage;
 
 /**
  * RocketMQ consumer implementation class. This class provides an adapter for consuming messages from Apache RocketMQ,
@@ -91,7 +92,7 @@ public class RocketMQConsumer implements Consumer {
     public void subscribe(final MessageHandler messageHandler) {
         this.consumer.registerMessageListener((MessageListenerConcurrently) (msgs, context) -> {
             for (final MessageExt msg : msgs) {
-                messageHandler.handle(new RocketMQMessage(msg));
+                messageHandler.handle(new RawMessage(msg.getTopic(), msg.getBody()));
             }
             return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
         });
@@ -108,47 +109,6 @@ public class RocketMQConsumer implements Consumer {
     public void close() throws IOException {
         if (null != this.consumer) {
             this.consumer.shutdown();
-        }
-    }
-
-    /**
-     * An internal static nested class that wraps a RocketMQ {@link MessageExt} to conform to the {@link Message}
-     * interface. This allows RocketMQ messages to be processed by generic message handlers.
-     */
-    private static class RocketMQMessage implements Message {
-
-        /**
-         * The original RocketMQ {@link MessageExt} object that this object wraps.
-         */
-        private final MessageExt messageExt;
-
-        /**
-         * Constructs a {@code RocketMQMessage} with the specified native RocketMQ message object.
-         *
-         * @param messageExt The native RocketMQ {@link MessageExt} object to be wrapped.
-         */
-        private RocketMQMessage(final MessageExt messageExt) {
-            this.messageExt = messageExt;
-        }
-
-        /**
-         * Retrieves the topic name from the wrapped RocketMQ {@link MessageExt}.
-         *
-         * @return The name of the RocketMQ topic from which the message was consumed.
-         */
-        @Override
-        public String topic() {
-            return messageExt.getTopic();
-        }
-
-        /**
-         * Retrieves the message content (body) as a byte array from the wrapped RocketMQ {@link MessageExt}.
-         *
-         * @return The message content as a {@code byte[]}.
-         */
-        @Override
-        public byte[] content() {
-            return messageExt.getBody();
         }
     }
 

@@ -73,7 +73,7 @@ public final class IdleStatePlugin<T> extends AbstractPlugin<T> {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public AsynchronousSocketChannel shouldAccept(AsynchronousSocketChannel channel) {
@@ -116,7 +116,7 @@ public final class IdleStatePlugin<T> extends AbstractPlugin<T> {
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          */
         @Override
         public <A> void read(
@@ -132,7 +132,7 @@ public final class IdleStatePlugin<T> extends AbstractPlugin<T> {
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          */
         @Override
         public <A> void write(
@@ -148,7 +148,7 @@ public final class IdleStatePlugin<T> extends AbstractPlugin<T> {
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          */
         @Override
         public void close() throws IOException {

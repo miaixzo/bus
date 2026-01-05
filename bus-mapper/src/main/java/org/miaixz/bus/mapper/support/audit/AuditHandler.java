@@ -143,7 +143,7 @@ public class AuditHandler<T> extends ConditionHandler<T, AuditConfig> {
     }
 
     /**
-     * {@inheritDoc}
+     * Gets the scope key for audit configuration.
      *
      * @return the scope key for audit configuration
      */
@@ -153,7 +153,7 @@ public class AuditHandler<T> extends ConditionHandler<T, AuditConfig> {
     }
 
     /**
-     * {@inheritDoc}
+     * Gets the default audit configuration.
      *
      * @return the default audit configuration
      */
@@ -163,7 +163,7 @@ public class AuditHandler<T> extends ConditionHandler<T, AuditConfig> {
     }
 
     /**
-     * {@inheritDoc}
+     * Gets the captured audit configuration from context.
      *
      * @return the captured audit configuration from context
      */
@@ -174,7 +174,7 @@ public class AuditHandler<T> extends ConditionHandler<T, AuditConfig> {
     }
 
     /**
-     * {@inheritDoc}
+     * Gets the derived audit configuration for a specific datasource.
      *
      * @param datasourceKey the datasource key
      * @param properties    the properties
@@ -231,7 +231,7 @@ public class AuditHandler<T> extends ConditionHandler<T, AuditConfig> {
     }
 
     /**
-     * {@inheritDoc}
+     * Gets the order value for this handler.
      *
      * @return the order value for this handler
      */
@@ -241,7 +241,7 @@ public class AuditHandler<T> extends ConditionHandler<T, AuditConfig> {
     }
 
     /**
-     * {@inheritDoc}
+     * Checks if update should proceed with audit logging.
      *
      * @param executor        the executor
      * @param mappedStatement the mapped statement
@@ -271,7 +271,7 @@ public class AuditHandler<T> extends ConditionHandler<T, AuditConfig> {
     }
 
     /**
-     * {@inheritDoc}
+     * Checks if query should proceed with audit logging.
      *
      * @param executor        the executor
      * @param mappedStatement the mapped statement
@@ -310,7 +310,7 @@ public class AuditHandler<T> extends ConditionHandler<T, AuditConfig> {
     }
 
     /**
-     * {@inheritDoc}
+     * Processes query result and completes audit logging.
      *
      * @param result          the query result
      * @param executor        the executor

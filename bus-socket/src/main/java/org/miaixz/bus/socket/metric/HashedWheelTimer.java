@@ -116,7 +116,7 @@ public class HashedWheelTimer implements SocketTimer, Runnable {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public void shutdown() {
@@ -150,7 +150,7 @@ public class HashedWheelTimer implements SocketTimer, Runnable {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public SocketTask schedule(Runnable runnable, long delay, TimeUnit unit) {
@@ -169,7 +169,7 @@ public class HashedWheelTimer implements SocketTimer, Runnable {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public void run() {
@@ -254,7 +254,7 @@ public class HashedWheelTimer implements SocketTimer, Runnable {
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          */
         @Override
         public void cancel() {
@@ -280,7 +280,7 @@ public class HashedWheelTimer implements SocketTimer, Runnable {
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          *
          * @return {@code true} if this task has been cancelled, {@code false} otherwise
          */
@@ -290,7 +290,7 @@ public class HashedWheelTimer implements SocketTimer, Runnable {
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          *
          * @return {@code true} if this task has completed execution, {@code false} otherwise
          */
@@ -311,7 +311,7 @@ public class HashedWheelTimer implements SocketTimer, Runnable {
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          *
          * @return a string representation of this task
          */

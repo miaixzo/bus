@@ -217,7 +217,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter, ExcelWriteConfig> {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @param config the Excel write configuration
      * @return this writer instance for chaining
@@ -243,7 +243,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter, ExcelWriteConfig> {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public void close() {
@@ -265,7 +265,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter, ExcelWriteConfig> {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @param sheetIndex the zero-based sheet index
      * @return this writer instance for chaining
@@ -278,7 +278,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter, ExcelWriteConfig> {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @param sheetName the sheet name
      * @return this writer instance for chaining

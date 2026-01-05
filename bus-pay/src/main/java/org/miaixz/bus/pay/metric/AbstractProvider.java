@@ -272,7 +272,7 @@ public abstract class AbstractProvider<T extends Voucher, K extends Context> imp
             Httpd httpd = new Httpd().newBuilder()
                     .sslSocketFactory(getSslSocketFactory(certPath, null, certPass, protocol)).build();
             final Request request = new Request.Builder().url(url)
-                    .post(RequestBody.create(MediaType.APPLICATION_FORM_URLENCODED_TYPE, data)).build();
+                    .post(RequestBody.of(MediaType.APPLICATION_FORM_URLENCODED_TYPE, data)).build();
             NewCall call = httpd.newCall(request);
             return call.execute().body().string();
         } catch (Exception e) {
@@ -298,7 +298,7 @@ public abstract class AbstractProvider<T extends Voucher, K extends Context> imp
             Httpd httpd = new Httpd().newBuilder()
                     .sslSocketFactory(getSslSocketFactory(null, certFile, certPass, protocol)).build();
             final Request request = new Request.Builder().url(url)
-                    .post(RequestBody.create(MediaType.APPLICATION_FORM_URLENCODED_TYPE, data)).build();
+                    .post(RequestBody.of(MediaType.APPLICATION_FORM_URLENCODED_TYPE, data)).build();
             NewCall call = httpd.newCall(request);
             return call.execute().body().string();
         } catch (Exception e) {

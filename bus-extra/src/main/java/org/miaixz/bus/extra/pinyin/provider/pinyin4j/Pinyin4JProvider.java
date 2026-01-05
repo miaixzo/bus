@@ -98,6 +98,16 @@ public class Pinyin4JProvider implements PinyinProvider {
         Assert.notNull(PinyinHelper.class);
     }
 
+    /**
+     * Gets the pinyin of a single character. This method is designed to be overridden by subclasses for custom pinyin
+     * conversion.
+     *
+     * and returns the first result. Subclasses may override to add custom conversion logic.
+     *
+     * @param c    The character to convert.
+     * @param tone Whether to include tone marks.
+     * @return The pinyin string, or the original character if no pinyin is available.
+     */
     @Override
     public String getPinyin(final char c, final boolean tone) {
         String result;
@@ -110,6 +120,17 @@ public class Pinyin4JProvider implements PinyinProvider {
         return result;
     }
 
+    /**
+     * Gets the pinyin of a string. This method is designed to be overridden by subclasses for custom pinyin conversion.
+     *
+     * and joining with the separator. Subclasses may override to add custom conversion logic.
+     *
+     * @param str       The string to convert.
+     * @param separator The separator to use between pinyin strings.
+     * @param tone      Whether to include tone marks.
+     * @return The pinyin string.
+     * @throws InternalException if a bad pinyin output format combination occurs.
+     */
     @Override
     public String getPinyin(final String str, final String separator, final boolean tone) {
         final StringBuilder result = new StringBuilder();

@@ -72,6 +72,16 @@ public class FreemarkerTemplate implements Template, Serializable {
         return (null == freemarkerTemplate) ? null : new FreemarkerTemplate(freemarkerTemplate);
     }
 
+    /**
+     * Renders the template with the given data model to a writer. This method is designed to be overridden by
+     * subclasses for custom rendering logic.
+     *
+     * Subclasses may override to add pre/post-processing or error handling.
+     *
+     * @param bindingMap The data model to bind to the template.
+     * @param writer     The writer to output the rendered template to.
+     * @throws InternalException if a template exception or I/O error occurs.
+     */
     @Override
     public void render(final Map<?, ?> bindingMap, final Writer writer) {
         try {
@@ -83,6 +93,16 @@ public class FreemarkerTemplate implements Template, Serializable {
         }
     }
 
+    /**
+     * Renders the template with the given data model to an output stream. This method is designed to be overridden by
+     * subclasses for custom rendering logic.
+     *
+     * using the template's encoding and delegates to the render method. Subclasses may override to add custom stream
+     * handling.
+     *
+     * @param bindingMap The data model to bind to the template.
+     * @param out        The output stream to write the rendered template to.
+     */
     @Override
     public void render(final Map<?, ?> bindingMap, final OutputStream out) {
         render(bindingMap, IoKit.toWriter(out, Charset.forName(this.rawTemplate.getEncoding())));

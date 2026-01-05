@@ -130,7 +130,7 @@ public final class MonitorPlugin<T> extends AbstractPlugin<T> implements Runnabl
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public boolean process(Session session, T data) {
@@ -139,7 +139,7 @@ public final class MonitorPlugin<T> extends AbstractPlugin<T> implements Runnabl
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public void stateEvent(Status status, Session session, Throwable throwable) {
@@ -162,7 +162,7 @@ public final class MonitorPlugin<T> extends AbstractPlugin<T> implements Runnabl
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public void run() {
@@ -204,7 +204,7 @@ public final class MonitorPlugin<T> extends AbstractPlugin<T> implements Runnabl
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public void afterRead(Session session, int readSize) {
@@ -216,7 +216,7 @@ public final class MonitorPlugin<T> extends AbstractPlugin<T> implements Runnabl
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public void beforeRead(Session session) {
@@ -224,7 +224,7 @@ public final class MonitorPlugin<T> extends AbstractPlugin<T> implements Runnabl
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public void afterWrite(Session session, int writeSize) {
@@ -232,7 +232,7 @@ public final class MonitorPlugin<T> extends AbstractPlugin<T> implements Runnabl
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public void beforeWrite(Session session) {

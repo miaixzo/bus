@@ -91,7 +91,7 @@ public class Excel07SaxReader implements ExcelSaxReader<Excel07SaxReader> {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @param file               the Excel file to read
      * @param idOrRidOrSheetName the sheet identifier (sheet ID, rID, or sheet name)
@@ -108,7 +108,7 @@ public class Excel07SaxReader implements ExcelSaxReader<Excel07SaxReader> {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @param in                 the input stream containing the Excel data
      * @param idOrRidOrSheetName the sheet identifier (sheet ID, rID, or sheet name)

@@ -54,7 +54,7 @@ public class DateCellSetter implements CellSetter {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @param cell the cell to set the value in
      */

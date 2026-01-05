@@ -86,7 +86,7 @@ public class RateLimiterPlugin<T> extends AbstractPlugin<T> {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public AsynchronousSocketChannel shouldAccept(AsynchronousSocketChannel channel) {
@@ -133,7 +133,7 @@ public class RateLimiterPlugin<T> extends AbstractPlugin<T> {
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          */
         @Override
         public <A> void read(
@@ -169,7 +169,7 @@ public class RateLimiterPlugin<T> extends AbstractPlugin<T> {
             super.read(dst, timeout, unit, attachment, new CompletionHandler<>() {
 
                 /**
-                 * {@inheritDoc}
+                 * Description inherited from parent class or interface.
                  */
                 @Override
                 public void completed(Integer result, A attachment) {
@@ -188,7 +188,7 @@ public class RateLimiterPlugin<T> extends AbstractPlugin<T> {
                 }
 
                 /**
-                 * {@inheritDoc}
+                 * Description inherited from parent class or interface.
                  */
                 @Override
                 public void failed(Throwable exc, A attachment) {
@@ -198,7 +198,7 @@ public class RateLimiterPlugin<T> extends AbstractPlugin<T> {
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          */
         @Override
         public <A> void write(
@@ -234,7 +234,7 @@ public class RateLimiterPlugin<T> extends AbstractPlugin<T> {
             super.write(src, timeout, unit, attachment, new CompletionHandler<>() {
 
                 /**
-                 * {@inheritDoc}
+                 * Description inherited from parent class or interface.
                  */
                 @Override
                 public void completed(Integer result, A attachment) {
@@ -253,7 +253,7 @@ public class RateLimiterPlugin<T> extends AbstractPlugin<T> {
                 }
 
                 /**
-                 * {@inheritDoc}
+                 * Description inherited from parent class or interface.
                  */
                 @Override
                 public void failed(Throwable exc, A attachment) {

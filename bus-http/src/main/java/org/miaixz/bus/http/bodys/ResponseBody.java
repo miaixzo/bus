@@ -65,7 +65,7 @@ public abstract class ResponseBody implements Closeable {
      * @param content     The content string.
      * @return A new {@link ResponseBody} instance.
      */
-    public static ResponseBody create(MediaType contentType, String content) {
+    public static ResponseBody of(MediaType contentType, String content) {
         java.nio.charset.Charset charset = Charset.UTF_8;
         if (contentType != null) {
             charset = contentType.charset();
@@ -75,7 +75,7 @@ public abstract class ResponseBody implements Closeable {
             }
         }
         Buffer buffer = new Buffer().writeString(content, charset);
-        return create(contentType, buffer.size(), buffer);
+        return of(contentType, buffer.size(), buffer);
     }
 
     /**
@@ -85,9 +85,9 @@ public abstract class ResponseBody implements Closeable {
      * @param content     The content as a byte array.
      * @return A new {@link ResponseBody} instance.
      */
-    public static ResponseBody create(final MediaType contentType, byte[] content) {
+    public static ResponseBody of(final MediaType contentType, byte[] content) {
         Buffer buffer = new Buffer().write(content);
-        return create(contentType, content.length, buffer);
+        return of(contentType, content.length, buffer);
     }
 
     /**
@@ -97,9 +97,9 @@ public abstract class ResponseBody implements Closeable {
      * @param content     The content as a {@link ByteString}.
      * @return A new {@link ResponseBody} instance.
      */
-    public static ResponseBody create(MediaType contentType, ByteString content) {
+    public static ResponseBody of(MediaType contentType, ByteString content) {
         Buffer buffer = new Buffer().write(content);
-        return create(contentType, content.size(), buffer);
+        return of(contentType, content.size(), buffer);
     }
 
     /**
@@ -111,7 +111,7 @@ public abstract class ResponseBody implements Closeable {
      * @return A new {@link ResponseBody} instance.
      * @throws NullPointerException if content is null.
      */
-    public static ResponseBody create(final MediaType contentType, final long length, final BufferSource content) {
+    public static ResponseBody of(final MediaType contentType, final long length, final BufferSource content) {
         if (null == content) {
             throw new NullPointerException("source == null");
         }

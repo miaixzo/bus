@@ -50,7 +50,7 @@ import com.google.zxing.common.GlobalHistogramBinarizer;
 import com.google.zxing.common.HybridBinarizer;
 
 /**
- * QR code utility class based on Zxing, supporting:
+ * QR code utility class based on Zxing, supporting:.
  * <ul>
  * <li>QR code generation and recognition, see {@link BarcodeFormat#QR_CODE}</li>
  * <li>Barcode generation and recognition, see {@link BarcodeFormat#CODE_39} and many other standard formats</li>

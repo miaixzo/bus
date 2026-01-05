@@ -38,7 +38,7 @@ import org.miaixz.bus.core.xyz.HexKit;
 import org.miaixz.bus.core.xyz.IoKit;
 
 /**
- * Symmetric encryptor interface, providing methods for:
+ * Symmetric encryptor interface. This interface provides methods for:
  * <ul>
  * <li>Encrypting to byte arrays</li>
  * <li>Encrypting to hexadecimal strings</li>

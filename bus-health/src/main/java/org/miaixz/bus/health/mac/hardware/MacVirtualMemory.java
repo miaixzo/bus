@@ -113,7 +113,7 @@ final class MacVirtualMemory extends AbstractVirtualMemory {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public long getSwapUsed() {
@@ -121,7 +121,7 @@ final class MacVirtualMemory extends AbstractVirtualMemory {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public long getSwapTotal() {
@@ -129,7 +129,7 @@ final class MacVirtualMemory extends AbstractVirtualMemory {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public long getVirtualMax() {
@@ -137,7 +137,7 @@ final class MacVirtualMemory extends AbstractVirtualMemory {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public long getVirtualInUse() {
@@ -145,7 +145,7 @@ final class MacVirtualMemory extends AbstractVirtualMemory {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public long getSwapPagesIn() {
@@ -153,7 +153,7 @@ final class MacVirtualMemory extends AbstractVirtualMemory {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public long getSwapPagesOut() {

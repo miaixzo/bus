@@ -173,7 +173,7 @@ public class AioClient {
                 new CompletionHandler<Void, AsynchronousSocketChannel>() {
 
                     /**
-                     * {@inheritDoc}
+                     * Description inherited from parent class or interface.
                      */
                     @Override
                     public void completed(Void result, AsynchronousSocketChannel socketChannel) {
@@ -195,7 +195,7 @@ public class AioClient {
                     }
 
                     /**
-                     * {@inheritDoc}
+                     * Description inherited from parent class or interface.
                      */
                     @Override
                     public void failed(Throwable exc, AsynchronousSocketChannel socketChannel) {
@@ -228,7 +228,7 @@ public class AioClient {
         start(asynchronousChannelGroup, future, new CompletionHandler<>() {
 
             /**
-             * {@inheritDoc}
+             * Description inherited from parent class or interface.
              */
             @Override
             public void completed(Session session, CompletableFuture<Session> future) {
@@ -240,7 +240,7 @@ public class AioClient {
             }
 
             /**
-             * {@inheritDoc}
+             * Description inherited from parent class or interface.
              */
             @Override
             public void failed(Throwable exc, CompletableFuture<Session> future) {

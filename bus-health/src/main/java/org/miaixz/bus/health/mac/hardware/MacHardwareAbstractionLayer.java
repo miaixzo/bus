@@ -46,7 +46,7 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractHardwareAbstraction
 public final class MacHardwareAbstractionLayer extends AbstractHardwareAbstractionLayer {
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public ComputerSystem createComputerSystem() {
@@ -54,7 +54,7 @@ public final class MacHardwareAbstractionLayer extends AbstractHardwareAbstracti
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public GlobalMemory createMemory() {
@@ -62,7 +62,7 @@ public final class MacHardwareAbstractionLayer extends AbstractHardwareAbstracti
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public CentralProcessor createProcessor() {
@@ -70,7 +70,7 @@ public final class MacHardwareAbstractionLayer extends AbstractHardwareAbstracti
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public Sensors createSensors() {
@@ -78,7 +78,7 @@ public final class MacHardwareAbstractionLayer extends AbstractHardwareAbstracti
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public List<PowerSource> getPowerSources() {
@@ -86,7 +86,7 @@ public final class MacHardwareAbstractionLayer extends AbstractHardwareAbstracti
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public List<HWDiskStore> getDiskStores() {
@@ -94,7 +94,7 @@ public final class MacHardwareAbstractionLayer extends AbstractHardwareAbstracti
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public List<LogicalVolumeGroup> getLogicalVolumeGroups() {
@@ -102,7 +102,7 @@ public final class MacHardwareAbstractionLayer extends AbstractHardwareAbstracti
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public List<Display> getDisplays() {
@@ -110,7 +110,7 @@ public final class MacHardwareAbstractionLayer extends AbstractHardwareAbstracti
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public List<NetworkIF> getNetworkIFs(boolean includeLocalInterfaces) {
@@ -118,7 +118,7 @@ public final class MacHardwareAbstractionLayer extends AbstractHardwareAbstracti
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public List<UsbDevice> getUsbDevices(boolean tree) {
@@ -126,7 +126,7 @@ public final class MacHardwareAbstractionLayer extends AbstractHardwareAbstracti
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public List<SoundCard> getSoundCards() {
@@ -134,7 +134,7 @@ public final class MacHardwareAbstractionLayer extends AbstractHardwareAbstracti
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public List<GraphicsCard> getGraphicsCards() {

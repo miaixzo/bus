@@ -426,7 +426,7 @@ public final class Request {
          * @return this builder instance.
          */
         public Builder delete() {
-            return delete(RequestBody.create(null, Normal.EMPTY_BYTE_ARRAY));
+            return delete(RequestBody.of(null, Normal.EMPTY_BYTE_ARRAY));
         }
 
         /**

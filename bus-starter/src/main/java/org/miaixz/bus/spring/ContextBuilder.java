@@ -92,7 +92,7 @@ public class ContextBuilder extends WebUtils {
     /**
      * Thread-local storage for the current request ID.
      */
-    private static final ThreadLocal<String> REQUEST_ID = ThreadKit.createThreadLocal(false);
+    private static final ThreadLocal<String> REQUEST_ID = ThreadKit.newThreadLocal(false);
 
     /**
      * The default maximum number of entries for caches.

@@ -1861,20 +1861,7 @@ public class Builder {
 
     /**
      * Converts XML-formatted key parameters to {@link RSAPrivateCrtKeySpec}. The XML is generated in C# format, similar
-     * to:
-     *
-     * <pre>{@code
-     * <RSAKeyValue>
-     *     <Modulus>xx</Modulus>
-     *     <Exponent>xx</Exponent>
-     *     <P>xxxxxxxxx</P>
-     *     <Q>xxxxxxxxx</Q>
-     *     <DP>xxxxxxxx</DP>
-     *     <DQ>xxxxxxxx</DQ>
-     *     <InverseQ>xx</InverseQ>
-     *     <D>xxxxxxxxx</D>
-     * </RSAKeyValue>
-     * }</pre>
+     * to the following example.
      *
      * @param xml XML-formatted key string
      * @return {@link RSAPrivateCrtKeySpec}

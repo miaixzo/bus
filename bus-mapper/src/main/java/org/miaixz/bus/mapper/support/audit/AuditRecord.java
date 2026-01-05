@@ -115,7 +115,7 @@ public class AuditRecord {
      *
      * @return Audit record instance
      */
-    public static AuditRecord create() {
+    public static AuditRecord of() {
         return new AuditRecord();
     }
 

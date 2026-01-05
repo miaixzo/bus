@@ -105,7 +105,7 @@ public class Slf4jLoggingFactory extends AbstractFactory {
      * @return a new {@link Provider} instance
      */
     @Override
-    public Provider create(final String name) {
+    public Provider of(final String name) {
         return new Slf4jLoggingProvider(name);
     }
 
@@ -116,7 +116,7 @@ public class Slf4jLoggingFactory extends AbstractFactory {
      * @return a new {@link Provider} instance
      */
     @Override
-    public Provider create(final Class<?> clazz) {
+    public Provider of(final Class<?> clazz) {
         return new Slf4jLoggingProvider(clazz);
     }
 

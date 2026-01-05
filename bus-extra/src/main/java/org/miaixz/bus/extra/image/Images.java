@@ -63,11 +63,29 @@ public class Images implements Flushable, Serializable {
     @Serial
     private static final long serialVersionUID = 2852293153163L;
 
+    /**
+     * The source image.
+     */
     private final BufferedImage srcImage;
+    /**
+     * The target image.
+     */
     private Image targetImage;
+    /**
+     * The target image type.
+     */
     private String targetImageType;
+    /**
+     * Whether to position from the center.
+     */
     private boolean positionBaseCentre = true;
+    /**
+     * The quality of the output image.
+     */
     private float quality = -1;
+    /**
+     * The background color.
+     */
     private Color backgroundColor;
 
     /**
@@ -800,6 +818,13 @@ public class Images implements Flushable, Serializable {
         return this;
     }
 
+    /**
+     * Flushes the source and target images to free resources. This method is designed to be overridden by subclasses
+     * for custom resource cleanup. When overriding, ensure all image resources are properly released and the method is
+     * idempotent (safe to call multiple times).
+     *
+     * Subclasses should call {@code super.flush()} to ensure proper cleanup of inherited resources.
+     */
     @Override
     public void flush() {
         ImageKit.flush(this.srcImage);

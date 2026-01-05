@@ -55,7 +55,7 @@ public class ColumnSheetReader extends AbstractSheetReader<List<Object>> {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @param sheet the sheet to read from
      * @return list of cell values from the specified column range

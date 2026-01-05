@@ -47,7 +47,7 @@ public class JsonFactory {
      * @return The singleton {@link JsonProvider} instance.
      */
     public static JsonProvider get() {
-        return Instances.singletion(JsonFactory.class).create();
+        return Instances.singletion(JsonFactory.class).of();
     }
 
     /**
@@ -58,7 +58,7 @@ public class JsonFactory {
      * @return A new {@link JsonProvider} instance.
      * @throws InternalException if no JSON library (e.g., Jackson, Gson, Fastjson) is found on the classpath.
      */
-    public static JsonProvider create() {
+    public static JsonProvider of() {
         final JsonProvider engine = NormalSpiLoader.loadFirstAvailable(JsonProvider.class);
         if (null == engine) {
             throw new InternalException("No json jar found ! Please add one of it to your project !");

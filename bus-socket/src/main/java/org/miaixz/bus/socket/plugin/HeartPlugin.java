@@ -119,7 +119,7 @@ public abstract class HeartPlugin<T> extends AbstractPlugin<T> {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public final boolean process(Session session, T data) {
@@ -129,7 +129,7 @@ public abstract class HeartPlugin<T> extends AbstractPlugin<T> {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public final void stateEvent(Status status, Session session, Throwable throwable) {

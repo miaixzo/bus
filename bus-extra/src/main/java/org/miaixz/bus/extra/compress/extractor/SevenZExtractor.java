@@ -121,6 +121,16 @@ public class SevenZExtractor implements Extractor, RandomAccess {
         }
     }
 
+    /**
+     * Extracts (decompresses) archive entries to the specified directory.
+     * <p>
+     * This implementation extracts all entries matching the predicate to the target directory and closes the archive
+     * after extraction.
+     * </p>
+     *
+     * @param targetDir the target directory for extraction
+     * @param predicate filter to select which entries to extract (may be {@code null})
+     */
     @Override
     public void extract(final File targetDir, final Predicate<ArchiveEntry> predicate) {
         try {
@@ -132,6 +142,16 @@ public class SevenZExtractor implements Extractor, RandomAccess {
         }
     }
 
+    /**
+     * Gets an InputStream for the first matching archive entry.
+     * <p>
+     * This implementation iterates through archive entries and returns an InputStream for the first matching
+     * non-directory entry.
+     * </p>
+     *
+     * @param predicate filter to select which entry to get (may be {@code null})
+     * @return an InputStream for the first matching entry, or {@code null} if no match found
+     */
     @Override
     public InputStream getFirst(final Predicate<ArchiveEntry> predicate) {
         final SevenZFile sevenZFile = this.sevenZFile;
@@ -188,6 +208,12 @@ public class SevenZExtractor implements Extractor, RandomAccess {
         }
     }
 
+    /**
+     * Closes this extractor and releases any system resources.
+     * <p>
+     * This implementation closes the underlying SevenZFile quietly.
+     * </p>
+     */
     @Override
     public void close() {
         IoKit.closeQuietly(this.sevenZFile);

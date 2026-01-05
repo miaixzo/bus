@@ -28,21 +28,25 @@
 package org.miaixz.bus.extra.mq.provider.jms;
 
 import java.io.IOException;
+
 import org.miaixz.bus.core.lang.exception.MQueueException;
 import org.miaixz.bus.core.xyz.ByteKit;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.extra.mq.Consumer;
 import org.miaixz.bus.extra.mq.Message;
 import org.miaixz.bus.extra.mq.MessageHandler;
+
 import jakarta.jms.BytesMessage;
 import jakarta.jms.JMSException;
 import jakarta.jms.MessageConsumer;
 import jakarta.jms.TextMessage;
 
 /**
- * JMS (Java Message Service) message consumer implementation. This class acts as an adapter for consuming messages from
- * a JMS provider, converting JMS messages into the internal {@link Message} format and dispatching them to a
- * {@link MessageHandler}.
+ * JMS (Java Message Service) message consumer implementation.
+ * <p>
+ * This class acts as an adapter for consuming messages from a JMS provider, converting standard JMS messages into the
+ * internal {@link Message} format and dispatching them to a registered {@link MessageHandler}.
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -50,8 +54,8 @@ import jakarta.jms.TextMessage;
 public class JmsConsumer implements Consumer {
 
     /**
-     * The name of the consumer group to which this consumer belongs. This is used as the topic for the internal
-     * {@link Message} representation.
+     * The name of the consumer group to which this consumer belongs. This is used as the topic identifier for the
+     * internal {@link Message} representation.
      */
     private String consumerGroup;
 
@@ -85,66 +89,19 @@ public class JmsConsumer implements Consumer {
 
     /**
      * Subscribes to messages from the JMS topic/queue and registers a {@link MessageHandler} to process incoming
-     * messages. This method sets up a listener on the underlying {@link MessageConsumer} to convert JMS messages into
-     * the internal {@link Message} format.
+     * messages.
+     * <p>
+     * This method sets up an asynchronous message listener on the underlying {@link MessageConsumer}. When a JMS
+     * message acts as a trigger, it is wrapped in a {@link JmsMessage} and passed to the handler.
+     * </p>
      *
      * @param messageHandler The {@link MessageHandler} to be used for processing received messages.
-     * @throws MQueueException if a JMS error occurs during the subscription process or message handling.
+     * @throws MQueueException if a JMS error occurs during the subscription process.
      */
     @Override
     public void subscribe(final MessageHandler messageHandler) {
         try {
-            // Set the message listener to handle incoming JMS messages
-            this.consumer.setMessageListener(message -> {
-                // Create an anonymous Message implementation to wrap the JMS message
-                messageHandler.handle(new Message() {
-
-                    /**
-                     * Retrieves the message topic, which is represented by the consumer group name in this JMS consumer
-                     * implementation.
-                     *
-                     * @return The consumer group name as the topic of the message.
-                     */
-                    @Override
-                    public String topic() {
-                        return consumerGroup;
-                    }
-
-                    /**
-                     * Retrieves the content of the JMS message as a byte array. It supports {@link TextMessage} and
-                     * {@link BytesMessage} types.
-                     *
-                     * @return The message content as a {@code byte[]}.
-                     * @throws MQueueException if an error occurs while extracting content from the JMS message or if an
-                     *                         unsupported message type is encountered.
-                     */
-                    @Override
-                    public byte[] content() {
-                        try {
-                            // Handle text messages by converting their text content to bytes
-                            if (message instanceof TextMessage) {
-                                return ByteKit.toBytes(((TextMessage) message).getText());
-                            }
-                            // Handle byte messages by reading their body into a byte array
-                            else if (message instanceof BytesMessage) {
-                                final BytesMessage bytesMessage = (BytesMessage) message;
-                                // Create a byte array with the same length as the message body
-                                final byte[] bytes = new byte[(int) bytesMessage.getBodyLength()];
-                                // Read the byte message content into the array
-                                bytesMessage.readBytes(bytes);
-                                return bytes;
-                            }
-                            // Throw an exception for unsupported JMS message types
-                            else {
-                                throw new IllegalArgumentException(
-                                        "Unsupported message type: " + message.getClass().getName());
-                            }
-                        } catch (final JMSException e) {
-                            throw new MQueueException(e);
-                        }
-                    }
-                });
-            });
+            this.consumer.setMessageListener(message -> messageHandler.handle(new JmsMessage(consumerGroup, message)));
         } catch (final JMSException e) {
             throw new MQueueException(e);
         }
@@ -158,6 +115,43 @@ public class JmsConsumer implements Consumer {
     @Override
     public void close() throws IOException {
         IoKit.closeQuietly(this.consumer);
+    }
+
+    /**
+     * Encapsulation of a JMS Message. Adapts the Jakarta JMS Message interface to the internal {@link Message}
+     * interface.
+     *
+     * @param topic      The message topic, typically representing the consumer group in this context.
+     * @param jmsMessage The raw Jakarta JMS message instance.
+     */
+    private record JmsMessage(String topic, jakarta.jms.Message jmsMessage) implements Message {
+
+        /**
+         * Retrieves the content of the message as a byte array. Supports {@link TextMessage} and {@link BytesMessage}.
+         *
+         * @return The message content as a byte array.
+         * @throws MQueueException          If a JMS error occurs while reading the message.
+         * @throws IllegalArgumentException If the message type is not supported.
+         */
+        @Override
+        public byte[] content() {
+            try {
+                if (jmsMessage instanceof TextMessage textMessage) {
+                    return ByteKit.toBytes(textMessage.getText());
+                } else if (jmsMessage instanceof BytesMessage bytesMessage) {
+                    // Reset the stream to ensure we read from the beginning
+                    bytesMessage.reset();
+                    long length = bytesMessage.getBodyLength();
+                    byte[] data = new byte[(int) length];
+                    bytesMessage.readBytes(data);
+                    return data;
+                } else {
+                    throw new IllegalArgumentException("Unsupported message type: " + jmsMessage.getClass().getName());
+                }
+            } catch (final JMSException e) {
+                throw new MQueueException(e);
+            }
+        }
     }
 
 }

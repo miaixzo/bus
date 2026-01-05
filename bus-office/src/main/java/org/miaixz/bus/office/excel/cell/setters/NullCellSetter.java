@@ -44,7 +44,7 @@ public class NullCellSetter implements CellSetter {
     public static final NullCellSetter INSTANCE = new NullCellSetter();
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @param cell the cell to set the empty value in
      */

@@ -1598,7 +1598,7 @@ public class Keeper {
     }
 
     /**
-     * Generates an SM2 private key from a byte array, supporting various formats:
+     * Generates an SM2 private key from a byte array, supporting various formats.
      * <ul>
      * <li>D value</li>
      * <li>PKCS#8 format</li>
@@ -1636,7 +1636,7 @@ public class Keeper {
     }
 
     /**
-     * Generates an SM2 public key from a byte array, supporting various formats:
+     * Generates an SM2 public key from a byte array, supporting various formats.
      * <ul>
      * <li>Q value</li>
      * <li>X.509 format</li>

@@ -142,7 +142,7 @@ final class MacFirmware extends AbstractFirmware {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public String getManufacturer() {
@@ -150,7 +150,7 @@ final class MacFirmware extends AbstractFirmware {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public String getName() {
@@ -158,7 +158,7 @@ final class MacFirmware extends AbstractFirmware {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public String getDescription() {
@@ -166,7 +166,7 @@ final class MacFirmware extends AbstractFirmware {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public String getVersion() {
@@ -174,7 +174,7 @@ final class MacFirmware extends AbstractFirmware {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public String getReleaseDate() {

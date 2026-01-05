@@ -46,7 +46,7 @@ public class PinyinKit {
      * @return {@link PinyinProvider}
      */
     public static PinyinProvider createEngine(final String engineName) {
-        return PinyinFactory.create(engineName);
+        return PinyinFactory.of(engineName);
     }
 
     /**

@@ -468,12 +468,16 @@ public class IOD extends ArrayList<IOD.DataElement> {
         protected final ArrayList<Condition> childs = new ArrayList<>();
 
         /**
-         * {@inheritDoc}
+         * Adds a child condition to this composite condition.
+         *
+         * @param attrs the child condition to add
          */
         public abstract boolean match(Attributes attrs);
 
         /**
-         * {@inheritDoc}
+         * Adds a child condition to this composite condition.
+         *
+         * @param child the child condition to add
          */
         @Override
         public void addChild(Condition child) {
@@ -481,7 +485,9 @@ public class IOD extends ArrayList<IOD.DataElement> {
         }
 
         /**
-         * {@inheritDoc}
+         * Trims the condition tree and returns an optimized version.
+         *
+         * @return the trimmed condition
          */
         @Override
         public Condition trim() {
@@ -495,7 +501,7 @@ public class IOD extends ArrayList<IOD.DataElement> {
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          */
         @Override
         public boolean isEmpty() {
@@ -509,7 +515,10 @@ public class IOD extends ArrayList<IOD.DataElement> {
     public static class And extends CompositeCondition {
 
         /**
-         * {@inheritDoc}
+         * Checks if the condition matches the given attributes.
+         *
+         * @param attrs the attributes to check
+         * @return true if the condition matches, false otherwise
          */
         public boolean match(Attributes attrs) {
             for (Condition child : childs) {
@@ -526,7 +535,10 @@ public class IOD extends ArrayList<IOD.DataElement> {
     public static class Or extends CompositeCondition {
 
         /**
-         * {@inheritDoc}
+         * Checks if the condition matches the given attributes.
+         *
+         * @param attrs the attributes to check
+         * @return true if the condition matches, false otherwise
          */
         public boolean match(Attributes attrs) {
             for (Condition child : childs) {
@@ -559,7 +571,10 @@ public class IOD extends ArrayList<IOD.DataElement> {
         }
 
         /**
-         * {@inheritDoc}
+         * Checks if the condition matches the given attributes.
+         *
+         * @param attrs the attributes to check
+         * @return true if the condition matches, false otherwise
          */
         public boolean match(Attributes attrs) {
             return not != item(attrs).containsValue(tag);
@@ -658,7 +673,10 @@ public class IOD extends ArrayList<IOD.DataElement> {
         }
 
         /**
-         * {@inheritDoc}
+         * Checks if the condition matches the given attributes.
+         *
+         * @param attrs the attributes to check
+         * @return true if the condition matches, false otherwise
          */
         @Override
         public boolean match(Attributes attrs) {

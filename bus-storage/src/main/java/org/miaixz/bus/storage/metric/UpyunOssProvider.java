@@ -352,7 +352,7 @@ public class UpyunOssProvider extends AbstractProvider {
                     .addHeader("Authorization", "UPYUN " + context.getAccessKey() + ":" + putSignature)
                     .addHeader("Date", putDate).addHeader("Content-Length", String.valueOf(content.length))
                     .addHeader("Content-Type", MediaType.APPLICATION_OCTET_STREAM)
-                    .put(RequestBody.create(MediaType.valueOf(MediaType.APPLICATION_OCTET_STREAM), content)).build();
+                    .put(RequestBody.of(MediaType.valueOf(MediaType.APPLICATION_OCTET_STREAM), content)).build();
 
             try (Response response = this.client.newCall(putRequest).execute()) {
                 if (!response.isSuccessful()) {
@@ -435,7 +435,7 @@ public class UpyunOssProvider extends AbstractProvider {
                     .addHeader("Authorization", "UPYUN " + context.getAccessKey() + ":" + signature)
                     .addHeader("Date", date).addHeader("Content-Length", String.valueOf(content.length))
                     .addHeader("Content-Type", MediaType.APPLICATION_OCTET_STREAM)
-                    .put(RequestBody.create(MediaType.valueOf(MediaType.APPLICATION_OCTET_STREAM), content)).build();
+                    .put(RequestBody.of(MediaType.valueOf(MediaType.APPLICATION_OCTET_STREAM), content)).build();
 
             try (Response response = this.client.newCall(request).execute()) {
                 if (!response.isSuccessful()) {

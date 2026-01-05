@@ -50,7 +50,7 @@ public class PinyinFactory {
      * @return A singleton instance of {@link PinyinProvider}.
      */
     public static PinyinProvider get() {
-        final PinyinProvider engine = Instances.get(PinyinProvider.class.getName(), PinyinFactory::create);
+        final PinyinProvider engine = Instances.get(PinyinProvider.class.getName(), PinyinFactory::of);
         Logger.debug(
                 "Use [{}] Pinyin Provider As Default.",
                 StringKit.removeSuffix(engine.getClass().getSimpleName(), "Engine"));
@@ -58,12 +58,19 @@ public class PinyinFactory {
     }
 
     /**
-     * Creates a new {@link PinyinProvider} instance. This method returns a new engine instance each time it is called.
+     * Creates a new {@link PinyinProvider} instance based on the available Pinyin engine JARs. This method returns a
+     * new engine instance each time it is called.
      *
      * @return A new {@link PinyinProvider} instance.
+     * @throws InternalException if no Pinyin library is found or available.
      */
-    public static PinyinProvider create() {
-        return doCreate();
+    private static PinyinProvider of() {
+        final PinyinProvider engine = NormalSpiLoader.loadFirstAvailable(PinyinProvider.class);
+        if (null != engine) {
+            return engine;
+        }
+
+        throw new InternalException("No pinyin jar found !Please add one of it to your project !");
     }
 
     /**
@@ -74,7 +81,7 @@ public class PinyinFactory {
      * @return The {@link PinyinProvider} instance corresponding to the given name.
      * @throws InternalException if no engine with the specified name is found.
      */
-    public static PinyinProvider create(String name) throws InternalException {
+    public static PinyinProvider of(String name) throws InternalException {
         if (!StringKit.endWithIgnoreCase(name, "Provider")) {
             name = name + "Provider";
         }
@@ -85,22 +92,6 @@ public class PinyinFactory {
             }
         }
         throw new InternalException("No such provider named: " + name);
-    }
-
-    /**
-     * Creates a new {@link PinyinProvider} instance based on the available Pinyin engine JARs. This method returns a
-     * new engine instance each time it is called.
-     *
-     * @return A new {@link PinyinProvider} instance.
-     * @throws InternalException if no Pinyin library is found or available.
-     */
-    private static PinyinProvider doCreate() {
-        final PinyinProvider engine = NormalSpiLoader.loadFirstAvailable(PinyinProvider.class);
-        if (null != engine) {
-            return engine;
-        }
-
-        throw new InternalException("No pinyin jar found !Please add one of it to your project !");
     }
 
 }

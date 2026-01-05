@@ -56,11 +56,9 @@ public class GsonProvider extends AbstractJsonProvider {
                 // Custom deserializer for Map to prevent integers from being parsed as doubles.
                 .registerTypeAdapter(new TypeToken<Map<Object, Object>>() {
                 }.getType(),
-                        /**
-                         * Custom JSON deserializer for Map objects. This deserializer prevents Gson from converting
-                         * integer values to doubles during JSON deserialization by ensuring all primitive values are
-                         * converted to strings.
-                         */
+                        // Custom JSON deserializer for Map objects. This deserializer prevents Gson from converting
+                        // integer values to doubles during JSON deserialization by ensuring all primitive values are
+                        // converted to strings.
                         (JsonDeserializer<Map<Object, Object>>) (jsonElement, type, jsonDeserializationContext) -> {
                             Map<Object, Object> map = new LinkedHashMap<>();
                             JsonObject jsonObject = jsonElement.getAsJsonObject();
@@ -78,11 +76,9 @@ public class GsonProvider extends AbstractJsonProvider {
                 // Custom deserializer for List to handle mixed-type arrays.
                 .registerTypeAdapter(new TypeToken<List<Object>>() {
                 }.getType(),
-                        /**
-                         * Custom JSON deserializer for List objects. This deserializer handles mixed-type arrays by
-                         * processing JSON objects and primitives appropriately, extracting all entries from nested JSON
-                         * objects.
-                         */
+                        // Custom JSON deserializer for List objects. This deserializer handles mixed-type arrays by
+                        // processing JSON objects and primitives appropriately, extracting all entries from nested JSON
+                        // objects.
                         (JsonDeserializer<List<Object>>) (jsonElement, type, jsonDeserializationContext) -> {
                             List<Object> list = new LinkedList<>();
                             JsonArray jsonArray = jsonElement.getAsJsonArray();
@@ -101,7 +97,7 @@ public class GsonProvider extends AbstractJsonProvider {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public String toJsonString(Object object) {
@@ -109,7 +105,7 @@ public class GsonProvider extends AbstractJsonProvider {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public String toJsonString(Object object, String format) {
@@ -119,7 +115,7 @@ public class GsonProvider extends AbstractJsonProvider {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public <T> T toPojo(String json, Class<T> clazz) {
@@ -127,7 +123,7 @@ public class GsonProvider extends AbstractJsonProvider {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public <T> T toPojo(Map map, Class<T> clazz) {
@@ -135,7 +131,7 @@ public class GsonProvider extends AbstractJsonProvider {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public <T> List<T> toList(String json) {
@@ -145,7 +141,7 @@ public class GsonProvider extends AbstractJsonProvider {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public <T> List<T> toList(String json, Class<T> clazz) {
@@ -153,7 +149,7 @@ public class GsonProvider extends AbstractJsonProvider {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public <T> List<T> toList(String json, Type type) {
@@ -161,7 +157,7 @@ public class GsonProvider extends AbstractJsonProvider {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public <K, V> Map<K, V> toMap(String json) {
@@ -171,7 +167,7 @@ public class GsonProvider extends AbstractJsonProvider {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public <K, V> Map<K, V> toMap(Object object) {
@@ -181,7 +177,7 @@ public class GsonProvider extends AbstractJsonProvider {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public <T> T getValue(String json, String field) {
@@ -189,7 +185,7 @@ public class GsonProvider extends AbstractJsonProvider {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public boolean isJson(String json) {

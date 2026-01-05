@@ -248,7 +248,7 @@ public final class SslService {
     private final CompletionHandler<Integer, HandshakeModel> handshakeCompletionHandler = new CompletionHandler<>() {
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          */
         @Override
         public void completed(Integer result, HandshakeModel attachment) {
@@ -264,7 +264,7 @@ public final class SslService {
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          */
         @Override
         public void failed(Throwable exc, HandshakeModel attachment) {

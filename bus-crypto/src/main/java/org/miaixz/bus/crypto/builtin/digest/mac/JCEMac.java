@@ -107,9 +107,9 @@ public class JCEMac extends SimpleWrapper<javax.crypto.Mac> implements Mac {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
-     * @param in {@inheritDoc}
+     * @param in Description inherited from parent class or interface.
      */
     @Override
     public void update(final byte[] in) {
@@ -117,11 +117,11 @@ public class JCEMac extends SimpleWrapper<javax.crypto.Mac> implements Mac {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
-     * @param in    {@inheritDoc}
-     * @param inOff {@inheritDoc}
-     * @param len   {@inheritDoc}
+     * @param in    Description inherited from parent class or interface.
+     * @param inOff Description inherited from parent class or interface.
+     * @param len   Description inherited from parent class or interface.
      */
     @Override
     public void update(final byte[] in, final int inOff, final int len) {
@@ -129,9 +129,9 @@ public class JCEMac extends SimpleWrapper<javax.crypto.Mac> implements Mac {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
-     * @return {@inheritDoc}
+     * @return Description inherited from parent class or interface.
      */
     @Override
     public byte[] doFinal() {
@@ -139,7 +139,7 @@ public class JCEMac extends SimpleWrapper<javax.crypto.Mac> implements Mac {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public void reset() {
@@ -147,9 +147,9 @@ public class JCEMac extends SimpleWrapper<javax.crypto.Mac> implements Mac {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
-     * @return {@inheritDoc}
+     * @return Description inherited from parent class or interface.
      */
     @Override
     public int getMacLength() {
@@ -157,9 +157,9 @@ public class JCEMac extends SimpleWrapper<javax.crypto.Mac> implements Mac {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
-     * @return {@inheritDoc}
+     * @return Description inherited from parent class or interface.
      */
     @Override
     public String getAlgorithm() {

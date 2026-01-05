@@ -49,7 +49,7 @@ public interface SqlScript {
      * @return The cache key.
      */
     static String caching(ProviderContext providerContext, SqlScript sqlScript) {
-        TableMeta entity = MapperFactory.create(providerContext.getMapperType(), providerContext.getMapperMethod());
+        TableMeta entity = MapperFactory.of(providerContext.getMapperType(), providerContext.getMapperMethod());
         return Caching.cache(
                 providerContext,
                 entity,
@@ -66,7 +66,7 @@ public interface SqlScript {
      * @return The cache key.
      */
     static String caching(ProviderContext providerContext, EasySqlScript sqlScript) {
-        TableMeta entity = MapperFactory.create(providerContext.getMapperType(), providerContext.getMapperMethod());
+        TableMeta entity = MapperFactory.of(providerContext.getMapperType(), providerContext.getMapperMethod());
         return Caching.cache(
                 providerContext,
                 entity,

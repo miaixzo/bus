@@ -336,6 +336,16 @@ public class CommonsFtp extends AbstractFtp {
         }
     }
 
+    /**
+     * Lists files and directories in the specified path. This method is designed to be overridden by subclasses for
+     * custom listing logic. When overriding, ensure proper filtering of "." and ".." entries.
+     *
+     * Subclasses may override to add custom filtering, sorting, or enhanced error handling.
+     *
+     * @param path The directory path to list.
+     * @return A list of file and directory names, or null if the path is invalid.
+     * @throws InternalException if an I/O error occurs during listing.
+     */
     @Override
     public List<String> ls(final String path) {
         return ArrayKit.mapToList(lsFiles(path), FTPFile::getName);
@@ -409,6 +419,17 @@ public class CommonsFtp extends AbstractFtp {
         return ftpFiles;
     }
 
+    /**
+     * Renames a file or directory on the FTP server. This method is designed to be overridden by subclasses for custom
+     * rename logic. When overriding, ensure proper validation of paths and handling of atomic operations.
+     *
+     * Subclasses may override to add validation, logging, or transaction support.
+     *
+     * @param oldPath The current path of the file or directory.
+     * @param newPath The new path for the file or directory.
+     * @return {@code true} if the rename operation was successful.
+     * @throws InternalException if an I/O error occurs during the rename operation.
+     */
     @Override
     public boolean rename(String oldPath, String newPath) {
         try {
@@ -418,6 +439,16 @@ public class CommonsFtp extends AbstractFtp {
         }
     }
 
+    /**
+     * Creates a directory on the FTP server. This method is designed to be overridden by subclasses for custom
+     * directory creation logic. When overriding, ensure proper path validation and handling of existing directories.
+     *
+     * Subclasses may override to add recursive creation, permission setting, or enhanced error handling.
+     *
+     * @param dir The directory path to create.
+     * @return {@code true} if the directory was created successfully or already exists.
+     * @throws InternalException if an I/O error occurs during directory creation.
+     */
     @Override
     public boolean mkdir(final String dir) throws InternalException {
         try {
@@ -459,6 +490,17 @@ public class CommonsFtp extends AbstractFtp {
         return ArrayKit.isNotEmpty(ftpFileArr);
     }
 
+    /**
+     * Deletes a file on the FTP server. This method is designed to be overridden by subclasses for custom file deletion
+     * logic. When overriding, ensure proper validation of file paths and handling of permissions.
+     *
+     * and returns to the original directory if backToPwd is enabled. Subclasses may override to add validation,
+     * logging, or undo/redo support.
+     *
+     * @param path The path of the file to delete.
+     * @return {@code true} if the file was deleted successfully.
+     * @throws InternalException if an I/O error occurs during file deletion.
+     */
     @Override
     public boolean delFile(final String path) throws InternalException {
         final String pwd = pwd();
@@ -480,6 +522,17 @@ public class CommonsFtp extends AbstractFtp {
         return isSuccess;
     }
 
+    /**
+     * Deletes a directory and all its contents recursively on the FTP server. This method is designed to be overridden
+     * by subclasses for custom directory deletion logic. When overriding, ensure proper handling of symbolic links and
+     * circular references.
+     *
+     * Subclasses may override to add non-recursive deletion, progress tracking, or enhanced error handling.
+     *
+     * @param dirPath The path of the directory to delete.
+     * @return {@code true} if the directory was deleted successfully.
+     * @throws InternalException if an I/O error occurs during directory deletion.
+     */
     @Override
     public boolean delDir(final String dirPath) throws InternalException {
         final FTPFile[] dirs;
@@ -742,6 +795,17 @@ public class CommonsFtp extends AbstractFtp {
         }
     }
 
+    /**
+     * Gets an input stream for reading a remote file. This method is designed to be overridden by subclasses for custom
+     * stream handling. When overriding, ensure proper stream management and resource cleanup.
+     *
+     * and returns to the original directory if backToPwd is enabled. Subclasses may override to add buffering, progress
+     * monitoring, or enhanced error handling.
+     *
+     * @param path The path of the remote file to read.
+     * @return An input stream for reading the remote file.
+     * @throws InternalException if an I/O error occurs.
+     */
     @Override
     public InputStream getFileStream(final String path) {
         final String fileName = FileName.getName(path);
@@ -787,6 +851,14 @@ public class CommonsFtp extends AbstractFtp {
         return this.client;
     }
 
+    /**
+     * Closes the FTP connection and releases all resources. This method is designed to be overridden by subclasses for
+     * custom cleanup logic. When overriding, ensure the method is idempotent and all resources are properly released.
+     *
+     * Subclasses should call {@code super.close()} to ensure proper cleanup of inherited resources.
+     *
+     * @throws IOException if an I/O error occurs during disconnection.
+     */
     @Override
     public void close() throws IOException {
         if (null != this.client) {

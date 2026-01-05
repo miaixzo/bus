@@ -67,7 +67,7 @@ public final class AsynchronousChannelProvider extends java.nio.channels.spi.Asy
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @param nThreads      the number of threads for the group
      * @param threadFactory the thread factory for creating new threads
@@ -83,7 +83,7 @@ public final class AsynchronousChannelProvider extends java.nio.channels.spi.Asy
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @param executor    the executor service for the group
      * @param initialSize the initial size of the group
@@ -98,7 +98,7 @@ public final class AsynchronousChannelProvider extends java.nio.channels.spi.Asy
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @param group the asynchronous channel group, or {@code null} for the default group
      * @return a new asynchronous server socket channel
@@ -111,7 +111,7 @@ public final class AsynchronousChannelProvider extends java.nio.channels.spi.Asy
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @param group the asynchronous channel group, or {@code null} for the default group
      * @return a new asynchronous socket channel

@@ -600,7 +600,7 @@ public class Httpv {
                     // If it is a file download, it must be specified to operate in the IO thread.
                     return response;
                 }
-                ResponseBody newBody = ResponseBody.create(body.contentType(), body.bytes());
+                ResponseBody newBody = ResponseBody.of(body.contentType(), body.bytes());
                 return response.newBuilder().body(newBody).build();
             });
         }

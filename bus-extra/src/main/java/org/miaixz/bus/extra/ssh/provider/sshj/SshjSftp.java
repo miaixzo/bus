@@ -170,6 +170,16 @@ public class SshjSftp extends AbstractFtp {
         }
     }
 
+    /**
+     * Reconnects to the SFTP server if the connection has timed out. This method is designed to be overridden by
+     * subclasses for custom reconnection logic. When overriding, ensure proper exception handling and connection state
+     * validation.
+     *
+     * to change to the root directory. If that fails, it closes and reinitializes the connection. Subclasses should
+     * call {@code super.reconnectIfTimeout()} or implement equivalent reconnection logic.
+     *
+     * @return this {@code SshjSftp} instance for method chaining.
+     */
     @Override
     public AbstractFtp reconnectIfTimeout() {
         if (StringKit.isBlank(this.ftpConfig.getConnector().getHost())) {
@@ -184,6 +194,16 @@ public class SshjSftp extends AbstractFtp {
         return this;
     }
 
+    /**
+     * Changes the current working directory on the SFTP server. This method is designed to be overridden by subclasses
+     * for custom directory handling. When overriding, ensure proper exception handling and path normalization.
+     *
+     * then updates the working directory. Subclasses may override to add caching or validation.
+     *
+     * @param directory The target directory path.
+     * @return {@code true} if the directory change was successful.
+     * @throws InternalException if the directory does not exist or an I/O error occurs.
+     */
     @Override
     public boolean cd(final String directory) {
         final String newPath = getPath(directory);
@@ -196,11 +216,30 @@ public class SshjSftp extends AbstractFtp {
         }
     }
 
+    /**
+     * Returns the current working directory on the SFTP server. This method is designed to be overridden by subclasses
+     * for custom directory handling. When overriding, ensure proper exception handling and path normalization.
+     *
+     * Subclasses may override to add caching or custom path resolution.
+     *
+     * @return The current working directory path.
+     */
     @Override
     public String pwd() {
         return getPath(null);
     }
 
+    /**
+     * Renames a file or directory on the SFTP server. This method is designed to be overridden by subclasses for custom
+     * rename logic. When overriding, ensure proper validation of paths and handling of atomic operations.
+     *
+     * and verifies the file exists at the new location. Subclasses may override to add validation.
+     *
+     * @param oldPath The current path of the file or directory.
+     * @param newPath The new path for the file or directory.
+     * @return {@code true} if the rename operation was successful and the file exists at the new path.
+     * @throws InternalException if an I/O error occurs during the rename operation.
+     */
     @Override
     public boolean rename(final String oldPath, final String newPath) {
         try {
@@ -211,6 +250,16 @@ public class SshjSftp extends AbstractFtp {
         }
     }
 
+    /**
+     * Creates a directory on the SFTP server. This method is designed to be overridden by subclasses for custom
+     * directory creation logic. When overriding, ensure proper path validation and handling of existing directories.
+     *
+     * and verifies the directory was created. Subclasses may override to add recursive creation.
+     *
+     * @param dir The directory path to create.
+     * @return {@code true} if the directory was created successfully or already exists.
+     * @throws InternalException if an I/O error occurs during directory creation.
+     */
     @Override
     public boolean mkdir(final String dir) {
         try {
@@ -221,6 +270,16 @@ public class SshjSftp extends AbstractFtp {
         return containsFile(getPath(dir));
     }
 
+    /**
+     * Lists files and directories in the specified path. This method is designed to be overridden by subclasses for
+     * custom listing logic. When overriding, ensure proper filtering and error handling.
+     *
+     * Subclasses may override to add filtering, sorting, or enhanced error handling.
+     *
+     * @param path The directory path to list.
+     * @return A list of file and directory names, or null if the path is empty or an error occurs.
+     * @throws InternalException if an I/O error occurs during listing.
+     */
     @Override
     public List<String> ls(final String path) {
         final List<RemoteResourceInfo> infoList;
@@ -235,6 +294,16 @@ public class SshjSftp extends AbstractFtp {
         return null;
     }
 
+    /**
+     * Deletes a file on the SFTP server. This method is designed to be overridden by subclasses for custom file
+     * deletion logic. When overriding, ensure proper validation of file paths and handling of permissions.
+     *
+     * and verifies the file was deleted. Subclasses may override to add validation or logging.
+     *
+     * @param path The path of the file to delete.
+     * @return {@code true} if the file was deleted successfully.
+     * @throws InternalException if an I/O error occurs during file deletion.
+     */
     @Override
     public boolean delFile(final String path) {
         try {
@@ -245,6 +314,16 @@ public class SshjSftp extends AbstractFtp {
         }
     }
 
+    /**
+     * Deletes a directory on the SFTP server. This method is designed to be overridden by subclasses for custom
+     * directory deletion logic. When overriding, ensure proper handling of symbolic links and non-empty directories.
+     *
+     * and verifies the directory was deleted. Subclasses may override to add recursive deletion.
+     *
+     * @param dirPath The path of the directory to delete.
+     * @return {@code true} if the directory was deleted successfully.
+     * @throws InternalException if an I/O error occurs during directory deletion.
+     */
     @Override
     public boolean delDir(final String dirPath) {
         try {
@@ -255,6 +334,17 @@ public class SshjSftp extends AbstractFtp {
         }
     }
 
+    /**
+     * Uploads a file to the SFTP server. This method is designed to be overridden by subclasses for custom upload
+     * logic. When overriding, ensure proper handling of file paths and error conditions.
+     *
+     * then delegates to the underlying SFTP client. Subclasses may override to add progress monitoring.
+     *
+     * @param destPath The destination path on the server. If ending with "/", the filename is appended.
+     * @param file     The local file to upload.
+     * @return {@code true} if the upload was successful and the file exists on the server.
+     * @throws InternalException if an I/O error occurs during upload.
+     */
     @Override
     public boolean uploadFile(String destPath, final File file) {
         if (null == destPath) {
@@ -271,6 +361,16 @@ public class SshjSftp extends AbstractFtp {
         }
     }
 
+    /**
+     * Downloads a file from the SFTP server. This method is designed to be overridden by subclasses for custom download
+     * logic. When overriding, ensure proper handling of file paths and error conditions.
+     *
+     * Subclasses may override to add progress monitoring or resumption support.
+     *
+     * @param destPath The path of the remote file to download.
+     * @param outFile  The local file to save the downloaded content to.
+     * @throws InternalException if an I/O error occurs during download.
+     */
     @Override
     public void download(final String destPath, final File outFile) {
         try {
@@ -280,6 +380,17 @@ public class SshjSftp extends AbstractFtp {
         }
     }
 
+    /**
+     * Recursively downloads a folder from the SFTP server. This method is designed to be overridden by subclasses for
+     * custom recursive download logic. When overriding, ensure proper handling of directory structure and error
+     * conditions.
+     *
+     * all files from the source path. Subclasses may override to add filtering or parallel download.
+     *
+     * @param destPath  The remote directory path to download.
+     * @param targetDir The local directory to save files to.
+     * @throws InternalException if an I/O error occurs or the target is not a valid directory.
+     */
     @Override
     public void recursiveDownloadFolder(final String destPath, final File targetDir) {
         if (!targetDir.exists()) {
@@ -296,6 +407,16 @@ public class SshjSftp extends AbstractFtp {
         }
     }
 
+    /**
+     * Gets an input stream for reading a remote file. This method is designed to be overridden by subclasses for custom
+     * stream handling. When overriding, ensure proper stream management and resource cleanup.
+     *
+     * Subclasses may override to add buffering, progress monitoring, or enhanced error handling.
+     *
+     * @param path The path of the remote file to read.
+     * @return An input stream for reading the remote file.
+     * @throws InternalException if an I/O error occurs.
+     */
     @Override
     public InputStream getFileStream(final String path) {
         final RemoteFile remoteFile;
@@ -308,6 +429,12 @@ public class SshjSftp extends AbstractFtp {
         return remoteFile.new ReadAheadRemoteFileInputStream(16);
     }
 
+    /**
+     * Closes the SFTP connection and releases all resources. This method is designed to be overridden by subclasses for
+     * custom cleanup logic. When overriding, ensure the method is idempotent and all resources are properly released.
+     *
+     * Subclasses should call {@code super.close()} to ensure proper cleanup of inherited resources.
+     */
     @Override
     public void close() {
         IoKit.closeQuietly(this.session);

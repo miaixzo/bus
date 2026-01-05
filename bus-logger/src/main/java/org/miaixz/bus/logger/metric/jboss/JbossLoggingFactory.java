@@ -54,7 +54,7 @@ public class JbossLoggingFactory extends AbstractFactory {
      * @return a new {@link Provider} instance
      */
     @Override
-    public Provider create(final String name) {
+    public Provider of(final String name) {
         return new JbossLoggingProvider(name);
     }
 
@@ -65,7 +65,7 @@ public class JbossLoggingFactory extends AbstractFactory {
      * @return a new {@link Provider} instance
      */
     @Override
-    public Provider create(final Class<?> clazz) {
+    public Provider of(final Class<?> clazz) {
         return new JbossLoggingProvider(clazz);
     }
 

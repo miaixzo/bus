@@ -49,6 +49,9 @@ import com.google.zxing.common.BitMatrix;
  */
 public class SVGRender implements BitMatrixRender {
 
+    /**
+     * The QR code configuration used for rendering.
+     */
     private final QrConfig qrConfig;
 
     /**
@@ -60,6 +63,10 @@ public class SVGRender implements BitMatrixRender {
         this.qrConfig = qrConfig;
     }
 
+    /**
+     * Description inherited from parent class or interface.
+     *
+     */
     @Override
     public void render(final BitMatrix matrix, final OutputStream out) {
         // Renders the BitMatrix to the given OutputStream, using the configured charset.

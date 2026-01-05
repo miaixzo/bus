@@ -77,7 +77,7 @@ public class Builder {
     /**
      * An empty {@link ResponseBody} instance.
      */
-    public static final ResponseBody EMPTY_RESPONSE = ResponseBody.create(null, Normal.EMPTY_BYTE_ARRAY);
+    public static final ResponseBody EMPTY_RESPONSE = ResponseBody.of(null, Normal.EMPTY_BYTE_ARRAY);
     /**
      * The UTC (Coordinated Universal Time) timezone.
      */

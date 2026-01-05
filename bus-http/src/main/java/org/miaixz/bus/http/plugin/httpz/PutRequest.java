@@ -83,16 +83,16 @@ public class PutRequest extends HttpRequest {
             list.forEach(file -> {
                 RequestBody fileBody;
                 if (null != file.file) {
-                    fileBody = RequestBody.create(MediaType.APPLICATION_OCTET_STREAM_TYPE, file.file);
+                    fileBody = RequestBody.of(MediaType.APPLICATION_OCTET_STREAM_TYPE, file.file);
                 } else if (null != file.in) {
                     fileBody = createRequestBody(MediaType.APPLICATION_OCTET_STREAM_TYPE, file.in);
                 } else {
-                    fileBody = RequestBody.create(MediaType.valueOf(FileKit.getMimeType(file.name)), file.content);
+                    fileBody = RequestBody.of(MediaType.valueOf(FileKit.getMimeType(file.name)), file.content);
                 }
                 builder.addFormDataPart(file.part, file.name, fileBody);
             });
             if (null != body && !body.isEmpty()) {
-                builder.addPart(RequestBody.create(MediaType.MULTIPART_FORM_DATA_TYPE, body));
+                builder.addPart(RequestBody.of(MediaType.MULTIPART_FORM_DATA_TYPE, body));
             }
             return builder.build();
         } else if (null != body && !body.isEmpty()) {
@@ -102,7 +102,7 @@ public class PutRequest extends HttpRequest {
             } else {
                 contentType = MediaType.TEXT_PLAIN_TYPE;
             }
-            return RequestBody.create(contentType, body);
+            return RequestBody.of(contentType, body);
         } else {
             FormBody.Builder builder = new FormBody.Builder();
             addParam(builder);
@@ -139,7 +139,7 @@ public class PutRequest extends HttpRequest {
             params.forEach(
                     (k, v) -> builder.addPart(
                             Headers.of(HTTP.CONTENT_DISPOSITION, "form-data; name=" + k + Symbol.DOUBLE_QUOTES),
-                            RequestBody.create(null, v)));
+                            RequestBody.of(null, v)));
         }
     }
 

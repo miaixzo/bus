@@ -171,7 +171,7 @@ public class OfdWriter implements Serializable, Closeable {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public void close() {

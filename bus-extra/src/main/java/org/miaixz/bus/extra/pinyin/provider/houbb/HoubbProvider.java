@@ -65,6 +65,16 @@ public class HoubbProvider implements PinyinProvider {
         Assert.notNull(PinyinHelper.class);
     }
 
+    /**
+     * Gets the pinyin of a single character. This method is designed to be overridden by subclasses for custom pinyin
+     * conversion.
+     *
+     * Subclasses may override to add custom conversion logic.
+     *
+     * @param c    The character to convert.
+     * @param tone Whether to include tone marks.
+     * @return The pinyin string.
+     */
     @Override
     public String getPinyin(final char c, final boolean tone) {
         final String result;
@@ -72,6 +82,16 @@ public class HoubbProvider implements PinyinProvider {
         return result;
     }
 
+    /**
+     * Gets the pinyin of a string. This method is designed to be overridden by subclasses for custom pinyin conversion.
+     *
+     * Subclasses may override to add custom conversion logic.
+     *
+     * @param str       The string to convert.
+     * @param separator The separator to use between pinyin strings.
+     * @param tone      Whether to include tone marks.
+     * @return The pinyin string.
+     */
     @Override
     public String getPinyin(final String str, final String separator, final boolean tone) {
         final String result;

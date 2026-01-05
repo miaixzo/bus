@@ -50,7 +50,7 @@ public class TemplateFactory {
      * @return A singleton instance of {@link TemplateProvider}.
      */
     public static TemplateProvider get() {
-        final TemplateProvider engine = Instances.get(TemplateProvider.class.getName(), TemplateFactory::create);
+        final TemplateProvider engine = Instances.get(TemplateProvider.class.getName(), TemplateFactory::of);
         Logger.debug(
                 "Use [{}] Template Engine As Default.",
                 StringKit.removeSuffix(engine.getClass().getSimpleName(), "Engine"));
@@ -63,8 +63,8 @@ public class TemplateFactory {
      *
      * @return A new {@link TemplateProvider} instance.
      */
-    public static TemplateProvider create() {
-        return create(TemplateConfig.DEFAULT);
+    public static TemplateProvider of() {
+        return of(TemplateConfig.DEFAULT);
     }
 
     /**
@@ -74,8 +74,8 @@ public class TemplateFactory {
      * @param config The template configuration, including encoding, template file path, etc.
      * @return A new {@link TemplateProvider} instance.
      */
-    public static TemplateProvider create(final TemplateConfig config) {
-        return doCreate(config);
+    public static TemplateProvider of(final TemplateConfig config) {
+        return get(config);
     }
 
     /**
@@ -86,7 +86,7 @@ public class TemplateFactory {
      * @return A new {@link TemplateProvider} instance.
      * @throws InternalException if no template engine is found or available.
      */
-    private static TemplateProvider doCreate(final TemplateConfig config) {
+    private static TemplateProvider get(final TemplateConfig config) {
         final Class<? extends TemplateProvider> customEngineClass = config.getProvider();
         final TemplateProvider engine;
         if (null != customEngineClass) {

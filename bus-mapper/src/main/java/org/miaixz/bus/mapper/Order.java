@@ -251,7 +251,7 @@ public interface Order extends org.miaixz.bus.core.Order {
         }
 
         /**
-         * {@inheritDoc}
+         * Gets the sort direction.
          *
          * @return the sort direction
          */
@@ -261,7 +261,7 @@ public interface Order extends org.miaixz.bus.core.Order {
         }
 
         /**
-         * {@inheritDoc}
+         * Gets the property name.
          *
          * @return the property name
          */
@@ -271,7 +271,7 @@ public interface Order extends org.miaixz.bus.core.Order {
         }
 
         /**
-         * {@inheritDoc}
+         * Checks if this order is ascending.
          *
          * @return true if ascending, false otherwise
          */
@@ -281,7 +281,7 @@ public interface Order extends org.miaixz.bus.core.Order {
         }
 
         /**
-         * {@inheritDoc}
+         * Checks if this order is descending.
          *
          * @return true if descending, false otherwise
          */
@@ -291,7 +291,7 @@ public interface Order extends org.miaixz.bus.core.Order {
         }
 
         /**
-         * {@inheritDoc}
+         * Creates a new order with the specified direction.
          *
          * @param direction the new direction
          * @return a new order with the specified direction
@@ -302,7 +302,7 @@ public interface Order extends org.miaixz.bus.core.Order {
         }
 
         /**
-         * {@inheritDoc}
+         * Creates a new order with the specified property.
          *
          * @param property the new property
          * @return a new order with the specified property
@@ -313,7 +313,7 @@ public interface Order extends org.miaixz.bus.core.Order {
         }
 
         /**
-         * {@inheritDoc}
+         * Checks if this order has a property.
          *
          * @return true if this order has a property, false otherwise
          */
@@ -323,7 +323,7 @@ public interface Order extends org.miaixz.bus.core.Order {
         }
 
         /**
-         * {@inheritDoc}
+         * Gets the direction code string.
          *
          * @return the direction code
          */
@@ -333,7 +333,7 @@ public interface Order extends org.miaixz.bus.core.Order {
         }
 
         /**
-         * {@inheritDoc}
+         * Gets the order value.
          *
          * @return the order value (0 for default)
          */
@@ -343,7 +343,7 @@ public interface Order extends org.miaixz.bus.core.Order {
         }
 
         /**
-         * {@inheritDoc}
+         * Checks if this object is equal to another.
          *
          * @param obj the object to compare
          * @return true if equal, false otherwise
@@ -360,7 +360,7 @@ public interface Order extends org.miaixz.bus.core.Order {
         }
 
         /**
-         * {@inheritDoc}
+         * Gets the hash code for this object.
          *
          * @return the hash code
          */
@@ -370,7 +370,7 @@ public interface Order extends org.miaixz.bus.core.Order {
         }
 
         /**
-         * {@inheritDoc}
+         * Gets the string representation of this order.
          *
          * @return the string representation
          */

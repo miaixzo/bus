@@ -65,7 +65,7 @@ public class JacksonProvider extends AbstractJsonProvider {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public String toJsonString(Object object) {
@@ -77,7 +77,7 @@ public class JacksonProvider extends AbstractJsonProvider {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public String toJsonString(Object object, String format) {
@@ -90,7 +90,7 @@ public class JacksonProvider extends AbstractJsonProvider {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public <T> T toPojo(String json, Class<T> valueType) {
@@ -102,7 +102,7 @@ public class JacksonProvider extends AbstractJsonProvider {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public <T> T toPojo(Map fromMap, Class<T> clazz) {
@@ -110,7 +110,7 @@ public class JacksonProvider extends AbstractJsonProvider {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public <T> List<T> toList(String json) {
@@ -122,7 +122,7 @@ public class JacksonProvider extends AbstractJsonProvider {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public <T> List<T> toList(String json, Class<T> clazz) {
@@ -134,14 +134,14 @@ public class JacksonProvider extends AbstractJsonProvider {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public <T> List<T> toList(String json, Type type) {
         TypeReference<List<T>> typeReference = new TypeReference<>() {
 
             /**
-             * {@inheritDoc}
+             * Description inherited from parent class or interface.
              */
             @Override
             public Type getType() {
@@ -156,7 +156,7 @@ public class JacksonProvider extends AbstractJsonProvider {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public <K, V> Map<K, V> toMap(String json) {
@@ -168,7 +168,7 @@ public class JacksonProvider extends AbstractJsonProvider {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public <K, V> Map<K, V> toMap(Object object) {
@@ -176,7 +176,7 @@ public class JacksonProvider extends AbstractJsonProvider {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public <T> T getValue(String json, String field) {
@@ -188,7 +188,7 @@ public class JacksonProvider extends AbstractJsonProvider {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public boolean isJson(String json) {

@@ -173,7 +173,7 @@ public class AioServer {
         serverSocketChannel.accept(null, new CompletionHandler<AsynchronousSocketChannel, Void>() {
 
             /**
-             * {@inheritDoc}
+             * Description inherited from parent class or interface.
              */
             @Override
             public void completed(AsynchronousSocketChannel channel, Void attachment) {
@@ -189,7 +189,7 @@ public class AioServer {
             }
 
             /**
-             * {@inheritDoc}
+             * Description inherited from parent class or interface.
              */
             @Override
             public void failed(Throwable exc, Void attachment) {

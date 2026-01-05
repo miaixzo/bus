@@ -53,7 +53,7 @@ public class HyperlinkCellSetter implements CellSetter {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @param cell the cell to set the hyperlink in
      */

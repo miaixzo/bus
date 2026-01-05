@@ -58,7 +58,7 @@ public class TemporalAccessorCellSetter implements CellSetter {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @param cell the cell to set the temporal value in
      */

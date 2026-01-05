@@ -141,7 +141,7 @@ public abstract class AbstractProvider implements CaptchaProvider {
      * </p>
      */
     @Override
-    public void create() {
+    public void of() {
         generateCode();
 
         final ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -183,7 +183,7 @@ public abstract class AbstractProvider implements CaptchaProvider {
     @Override
     public String get() {
         if (null == this.code) {
-            create();
+            of();
         }
         return this.code;
     }
@@ -240,7 +240,7 @@ public abstract class AbstractProvider implements CaptchaProvider {
      */
     public byte[] getImageBytes() {
         if (null == this.imageBytes) {
-            create();
+            of();
         }
         return this.imageBytes;
     }

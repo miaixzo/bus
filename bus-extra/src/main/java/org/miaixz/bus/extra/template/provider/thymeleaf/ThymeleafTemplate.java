@@ -97,6 +97,15 @@ public class ThymeleafTemplate implements Template, Serializable {
         return (null == engine) ? null : new ThymeleafTemplate(engine, template, charset);
     }
 
+    /**
+     * Renders the template with the given data model to a writer. This method is designed to be overridden by
+     * subclasses for custom rendering logic.
+     *
+     * and processes the template. Subclasses may override to add custom processing.
+     *
+     * @param bindingMap The data model to bind to the template.
+     * @param writer     The writer to output the rendered template to.
+     */
     @Override
     public void render(final Map<?, ?> bindingMap, final Writer writer) {
         final Map<String, Object> map = Convert.convert(new TypeReference<>() {
@@ -105,6 +114,16 @@ public class ThymeleafTemplate implements Template, Serializable {
         this.engine.process(this.template, context, writer);
     }
 
+    /**
+     * Renders the template with the given data model to an output stream. This method is designed to be overridden by
+     * subclasses for custom rendering logic.
+     *
+     * using the template's charset and delegates to the render method. Subclasses may override to add custom stream
+     * handling.
+     *
+     * @param bindingMap The data model to bind to the template.
+     * @param out        The output stream to write the rendered template to.
+     */
     @Override
     public void render(final Map<?, ?> bindingMap, final OutputStream out) {
         render(bindingMap, IoKit.toWriter(out, this.charset));

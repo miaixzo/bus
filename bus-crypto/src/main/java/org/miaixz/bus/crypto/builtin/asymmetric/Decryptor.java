@@ -36,7 +36,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.crypto.Builder;
 
 /**
- * Asymmetric decryptor interface, providing methods for:
+ * Asymmetric decryptor interface. This interface provides methods for:
  * <ul>
  * <li>Decrypting from byte arrays</li>
  * <li>Decrypting from hexadecimal strings</li>

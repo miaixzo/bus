@@ -40,17 +40,20 @@ import com.google.zxing.common.GlobalHistogramBinarizer;
 import com.google.zxing.common.HybridBinarizer;
 
 /**
- * QR code (barcode, etc.) decoder
+ * QR code (barcode, etc.) decoder.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class QrDecoder implements Decoder<Image, String> {
 
+    /**
+     * Custom scanning configuration, including algorithm, encoding, complex mode, etc.
+     */
     private final Map<DecodeHintType, Object> hints;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param hints Custom scanning configuration, including algorithm, encoding, complex mode, etc.
      */
@@ -59,7 +62,7 @@ public class QrDecoder implements Decoder<Image, String> {
     }
 
     /**
-     * Create QR code (barcode, etc.) decoder to decode QR code (barcode, etc.) into the represented content string
+     * Create QR code (barcode, etc.) decoder to decode QR code (barcode, etc.) into the represented content string.
      *
      * @param isTryHarder   Whether to optimize accuracy
      * @param isPureBarcode Whether to use complex mode, set to true for scanning QR codes with logo
@@ -70,7 +73,7 @@ public class QrDecoder implements Decoder<Image, String> {
     }
 
     /**
-     * Create QR code (barcode, etc.) decoder
+     * Create QR code (barcode, etc.) decoder.
      *
      * @param hints Custom scanning configuration, including algorithm, encoding, complex mode, etc.
      * @return QrDecoder
@@ -80,7 +83,7 @@ public class QrDecoder implements Decoder<Image, String> {
     }
 
     /**
-     * Decode various types of codes, including QR codes and barcodes
+     * Decode various types of codes, including QR codes and barcodes.
      *
      * @param formatReader {@link MultiFormatReader}
      * @param binarizer    {@link Binarizer}
@@ -95,7 +98,7 @@ public class QrDecoder implements Decoder<Image, String> {
     }
 
     /**
-     * Create decoding options
+     * Create decoding options.
      *
      * @param isTryHarder   Whether to optimize accuracy
      * @param isPureBarcode Whether to use complex mode, set to true for scanning QR codes with logo
@@ -116,6 +119,13 @@ public class QrDecoder implements Decoder<Image, String> {
         return hints;
     }
 
+    /**
+     * Implementation of the Decoder interface to decode image data. This method is designed to be overridden by
+     * subclasses for custom decoding logic. When overriding, ensure thread-safety and proper handling of null results.
+     *
+     * @param image The image containing the code to decode
+     * @return The decoded content string, or null if decoding fails
+     */
     @Override
     public String decode(final Image image) {
         final MultiFormatReader formatReader = new MultiFormatReader();

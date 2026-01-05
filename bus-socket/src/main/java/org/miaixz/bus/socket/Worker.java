@@ -100,7 +100,7 @@ public final class Worker implements Runnable {
                     int i = 0;
 
                     /**
-                     * {@inheritDoc}
+                     * Description inherited from parent class or interface.
                      * <p>
                      * This implementation creates threads with a descriptive name that includes the worker's hash code
                      * and a sequence number.
@@ -130,7 +130,7 @@ public final class Worker implements Runnable {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * This worker processes tasks from the request queue, handling channel registration, I/O events via the selector,
      * and shutdown signals.

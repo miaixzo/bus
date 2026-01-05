@@ -76,7 +76,7 @@ public class UdpSession extends Session {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public WriteBuffer writeBuffer() {
@@ -84,7 +84,7 @@ public class UdpSession extends Session {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public ByteBuffer readBuffer() {
@@ -92,7 +92,7 @@ public class UdpSession extends Session {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public void awaitRead() {
@@ -100,7 +100,7 @@ public class UdpSession extends Session {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public void signalRead() {
@@ -108,7 +108,7 @@ public class UdpSession extends Session {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * To ensure messages are sent as much as possible, UDP does not support immediate close. This method will flush any
      * pending messages.
@@ -122,7 +122,7 @@ public class UdpSession extends Session {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public InetSocketAddress getLocalAddress() throws IOException {
@@ -130,7 +130,7 @@ public class UdpSession extends Session {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public InetSocketAddress getRemoteAddress() {

@@ -57,7 +57,7 @@ public class UnsupportedAsynchronousSocketChannel extends AsynchronousSocketChan
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * This operation is not supported.
      * </p>
@@ -72,7 +72,7 @@ public class UnsupportedAsynchronousSocketChannel extends AsynchronousSocketChan
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * This operation is not supported.
      * </p>
@@ -89,7 +89,7 @@ public class UnsupportedAsynchronousSocketChannel extends AsynchronousSocketChan
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * This operation is not supported.
      * </p>
@@ -105,7 +105,7 @@ public class UnsupportedAsynchronousSocketChannel extends AsynchronousSocketChan
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * This operation is not supported.
      * </p>
@@ -119,7 +119,7 @@ public class UnsupportedAsynchronousSocketChannel extends AsynchronousSocketChan
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * This operation is not supported.
      * </p>
@@ -133,7 +133,7 @@ public class UnsupportedAsynchronousSocketChannel extends AsynchronousSocketChan
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * This operation is not supported.
      * </p>
@@ -147,7 +147,7 @@ public class UnsupportedAsynchronousSocketChannel extends AsynchronousSocketChan
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * This operation is not supported.
      * </p>
@@ -162,7 +162,7 @@ public class UnsupportedAsynchronousSocketChannel extends AsynchronousSocketChan
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * This operation is not supported.
      * </p>
@@ -179,7 +179,7 @@ public class UnsupportedAsynchronousSocketChannel extends AsynchronousSocketChan
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * This operation is not supported.
      * </p>
@@ -194,7 +194,7 @@ public class UnsupportedAsynchronousSocketChannel extends AsynchronousSocketChan
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * This operation is not supported.
      * </p>
@@ -218,7 +218,7 @@ public class UnsupportedAsynchronousSocketChannel extends AsynchronousSocketChan
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * This operation is not supported.
      * </p>
@@ -233,7 +233,7 @@ public class UnsupportedAsynchronousSocketChannel extends AsynchronousSocketChan
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * This operation is not supported.
      * </p>
@@ -261,7 +261,7 @@ public class UnsupportedAsynchronousSocketChannel extends AsynchronousSocketChan
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * This operation is not supported.
      * </p>
@@ -285,7 +285,7 @@ public class UnsupportedAsynchronousSocketChannel extends AsynchronousSocketChan
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * This operation is not supported.
      * </p>
@@ -300,7 +300,7 @@ public class UnsupportedAsynchronousSocketChannel extends AsynchronousSocketChan
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * This operation is not supported.
      * </p>
@@ -328,7 +328,7 @@ public class UnsupportedAsynchronousSocketChannel extends AsynchronousSocketChan
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * This operation is not supported.
      * </p>
@@ -343,7 +343,7 @@ public class UnsupportedAsynchronousSocketChannel extends AsynchronousSocketChan
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * This operation is not supported.
      * </p>
@@ -357,7 +357,7 @@ public class UnsupportedAsynchronousSocketChannel extends AsynchronousSocketChan
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * This operation is not supported.
      * </p>

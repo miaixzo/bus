@@ -72,6 +72,17 @@ public class TinyPinyinProvider implements PinyinProvider {
         Pinyin.init(config);
     }
 
+    /**
+     * Gets the pinyin of a single character. This method is designed to be overridden by subclasses for custom pinyin
+     * conversion.
+     *
+     * Note that TinyPinyin does not support tone marks, so the tone parameter is ignored. Subclasses may override to
+     * add custom conversion logic.
+     *
+     * @param c    The character to convert.
+     * @param tone Whether to include tone marks (ignored in this implementation).
+     * @return The pinyin string in lowercase, or the original character if not Chinese.
+     */
     @Override
     public String getPinyin(final char c, final boolean tone) {
         if (!Pinyin.isChinese(c)) {
@@ -81,6 +92,17 @@ public class TinyPinyinProvider implements PinyinProvider {
         return Pinyin.toPinyin(c).toLowerCase();
     }
 
+    /**
+     * Gets the pinyin of a string. This method is designed to be overridden by subclasses for custom pinyin conversion.
+     *
+     * Note that TinyPinyin does not support tone marks, so the tone parameter is ignored. Subclasses may override to
+     * add custom conversion logic.
+     *
+     * @param str       The string to convert.
+     * @param separator The separator to use between pinyin strings.
+     * @param tone      Whether to include tone marks (ignored in this implementation).
+     * @return The pinyin string in lowercase.
+     */
     @Override
     public String getPinyin(final String str, final String separator, final boolean tone) {
         // TinyPinyin does not support tone marks, so the 'tone' parameter is ignored.

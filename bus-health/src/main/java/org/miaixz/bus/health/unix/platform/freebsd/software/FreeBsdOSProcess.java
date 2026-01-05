@@ -128,7 +128,7 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @return the process name
      */
@@ -138,7 +138,7 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @return the full path of the process executable
      */
@@ -148,7 +148,7 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @return the command line used to start the process
      */
@@ -163,7 +163,7 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @return the list of arguments passed to the process
      */
@@ -199,7 +199,7 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @return a map of environment variables for the process
      */
@@ -209,7 +209,7 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @return the current working directory of the process
      */
@@ -219,7 +219,7 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @return the state of the process
      */
@@ -229,7 +229,7 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @return the user name who owns the process
      */
@@ -239,7 +239,7 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @return the user ID of the process owner
      */
@@ -249,7 +249,7 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @return the group name that owns the process
      */
@@ -259,7 +259,7 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @return the group ID of the process owner
      */
@@ -269,7 +269,7 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @return the number of open file descriptors
      */
@@ -279,7 +279,7 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @return the parent process ID
      */
@@ -289,7 +289,7 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @return the number of threads in the process
      */
@@ -299,7 +299,7 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @return the process scheduling priority
      */
@@ -309,7 +309,7 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @return the virtual memory size in bytes
      */
@@ -319,7 +319,7 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @return the resident set size (RSS) in bytes
      */
@@ -329,7 +329,7 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @return the kernel time in milliseconds
      */
@@ -339,7 +339,7 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @return the user time in milliseconds
      */
@@ -349,7 +349,7 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @return the process uptime in milliseconds
      */
@@ -359,7 +359,7 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @return the process start time in milliseconds
      */
@@ -369,7 +369,7 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @return the number of bytes read from disk
      */
@@ -379,7 +379,7 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @return the number of bytes written to disk
      */
@@ -389,7 +389,7 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @return the processor affinity mask
      */
@@ -416,7 +416,7 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @return the soft limit of open files for the current process
      */
@@ -432,7 +432,7 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @return the hard limit of open files for the current process
      */
@@ -448,7 +448,7 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @return the process bitness (32 or 64)
      */
@@ -458,7 +458,7 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @return the list of thread details for the process
      */
@@ -499,7 +499,7 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @return {@code true} if the process attributes were successfully updated, {@code false} otherwise
      */
@@ -521,7 +521,7 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @return the number of minor page faults
      */
@@ -531,7 +531,7 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @return the number of major page faults
      */
@@ -541,7 +541,7 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @return the number of context switches
      */

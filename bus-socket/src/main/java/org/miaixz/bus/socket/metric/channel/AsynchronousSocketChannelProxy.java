@@ -65,7 +65,7 @@ public class AsynchronousSocketChannelProxy extends AsynchronousSocketChannel {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @param local the local address to bind to
      * @return this channel
@@ -77,7 +77,7 @@ public class AsynchronousSocketChannelProxy extends AsynchronousSocketChannel {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @param <T>   the type of the socket option value
      * @param name  the socket option
@@ -91,7 +91,7 @@ public class AsynchronousSocketChannelProxy extends AsynchronousSocketChannel {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @param <T>  the type of the socket option value
      * @param name the socket option
@@ -104,7 +104,7 @@ public class AsynchronousSocketChannelProxy extends AsynchronousSocketChannel {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @return a set of the socket options supported by this channel
      */
@@ -114,7 +114,7 @@ public class AsynchronousSocketChannelProxy extends AsynchronousSocketChannel {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @return this channel
      * @throws IOException if an I/O error occurs
@@ -125,7 +125,7 @@ public class AsynchronousSocketChannelProxy extends AsynchronousSocketChannel {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @return this channel
      * @throws IOException if an I/O error occurs
@@ -136,7 +136,7 @@ public class AsynchronousSocketChannelProxy extends AsynchronousSocketChannel {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @return the remote address, or {@code null} if the channel is not connected
      * @throws IOException if an I/O error occurs
@@ -147,7 +147,7 @@ public class AsynchronousSocketChannelProxy extends AsynchronousSocketChannel {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @param <A>        the type of the attachment
      * @param remote     the remote address to which this channel is to be connected
@@ -160,7 +160,7 @@ public class AsynchronousSocketChannelProxy extends AsynchronousSocketChannel {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @param remote the remote address to which this channel is to be connected
      * @return a {@link Future} representing the pending result
@@ -171,7 +171,7 @@ public class AsynchronousSocketChannelProxy extends AsynchronousSocketChannel {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @param <A>        the type of the attachment
      * @param dst        the buffer into which bytes are to be transferred
@@ -191,7 +191,7 @@ public class AsynchronousSocketChannelProxy extends AsynchronousSocketChannel {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @param dst the buffer into which bytes are to be transferred
      * @return a {@link Future} representing the pending result
@@ -202,7 +202,7 @@ public class AsynchronousSocketChannelProxy extends AsynchronousSocketChannel {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @param <A>        the type of the attachment
      * @param dsts       the buffers into which bytes are to be transferred
@@ -226,7 +226,7 @@ public class AsynchronousSocketChannelProxy extends AsynchronousSocketChannel {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @param <A>        the type of the attachment
      * @param src        the buffer from which bytes are to be retrieved
@@ -246,7 +246,7 @@ public class AsynchronousSocketChannelProxy extends AsynchronousSocketChannel {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @param src the buffer from which bytes are to be retrieved
      * @return a {@link Future} representing the pending result
@@ -257,7 +257,7 @@ public class AsynchronousSocketChannelProxy extends AsynchronousSocketChannel {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @param <A>        the type of the attachment
      * @param srcs       the buffers from which bytes are to be retrieved
@@ -281,7 +281,7 @@ public class AsynchronousSocketChannelProxy extends AsynchronousSocketChannel {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @return the local address, or {@code null} if the channel is not bound
      * @throws IOException if an I/O error occurs
@@ -292,7 +292,7 @@ public class AsynchronousSocketChannelProxy extends AsynchronousSocketChannel {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @return {@code true} if, and only if, this channel is open
      */
@@ -302,7 +302,7 @@ public class AsynchronousSocketChannelProxy extends AsynchronousSocketChannel {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @throws IOException if an I/O error occurs
      */

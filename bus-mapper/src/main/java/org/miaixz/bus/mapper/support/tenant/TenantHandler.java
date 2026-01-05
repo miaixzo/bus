@@ -144,7 +144,7 @@ public class TenantHandler<T> extends ConditionHandler<T, TenantConfig> {
     }
 
     /**
-     * {@inheritDoc}
+     * Gets the scope key for tenant configuration.
      *
      * @return the scope key for tenant configuration
      */
@@ -154,7 +154,7 @@ public class TenantHandler<T> extends ConditionHandler<T, TenantConfig> {
     }
 
     /**
-     * {@inheritDoc}
+     * Gets the default tenant configuration.
      *
      * @return the default tenant configuration
      */
@@ -164,7 +164,7 @@ public class TenantHandler<T> extends ConditionHandler<T, TenantConfig> {
     }
 
     /**
-     * {@inheritDoc}
+     * Gets the captured tenant configuration from context.
      *
      * @return the captured tenant configuration from context
      */
@@ -175,7 +175,7 @@ public class TenantHandler<T> extends ConditionHandler<T, TenantConfig> {
     }
 
     /**
-     * {@inheritDoc}
+     * Gets the derived tenant configuration for a specific datasource.
      *
      * @param datasourceKey the datasource key
      * @param properties    the properties
@@ -238,7 +238,7 @@ public class TenantHandler<T> extends ConditionHandler<T, TenantConfig> {
     }
 
     /**
-     * {@inheritDoc}
+     * Gets the order value for this handler.
      *
      * @return the order value for this handler
      */
@@ -248,7 +248,7 @@ public class TenantHandler<T> extends ConditionHandler<T, TenantConfig> {
     }
 
     /**
-     * {@inheritDoc}
+     * Checks if query should proceed with tenant filtering.
      *
      * @param executor      the executor
      * @param ms            the mapped statement
@@ -290,7 +290,7 @@ public class TenantHandler<T> extends ConditionHandler<T, TenantConfig> {
     }
 
     /**
-     * {@inheritDoc}
+     * Processes query result and applies tenant filtering.
      *
      * @param result        the query result
      * @param executor      the executor
@@ -314,7 +314,7 @@ public class TenantHandler<T> extends ConditionHandler<T, TenantConfig> {
     }
 
     /**
-     * {@inheritDoc}
+     * Processes update operation and applies tenant filtering.
      *
      * @param executor  the executor
      * @param ms        the mapped statement

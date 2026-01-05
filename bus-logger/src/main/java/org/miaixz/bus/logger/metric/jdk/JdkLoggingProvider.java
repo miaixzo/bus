@@ -108,7 +108,7 @@ public class JdkLoggingProvider extends AbstractProvider {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public String getName() {
@@ -116,7 +116,7 @@ public class JdkLoggingProvider extends AbstractProvider {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public boolean isTraceEnabled() {
@@ -124,7 +124,7 @@ public class JdkLoggingProvider extends AbstractProvider {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public void trace(final String fqcn, final Throwable t, final String format, final Object... args) {
@@ -132,7 +132,7 @@ public class JdkLoggingProvider extends AbstractProvider {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public boolean isDebugEnabled() {
@@ -140,7 +140,7 @@ public class JdkLoggingProvider extends AbstractProvider {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public void debug(final String fqcn, final Throwable t, final String format, final Object... args) {
@@ -148,7 +148,7 @@ public class JdkLoggingProvider extends AbstractProvider {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public boolean isInfoEnabled() {
@@ -156,7 +156,7 @@ public class JdkLoggingProvider extends AbstractProvider {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public void info(final String fqcn, final Throwable t, final String format, final Object... args) {
@@ -164,7 +164,7 @@ public class JdkLoggingProvider extends AbstractProvider {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public boolean isWarnEnabled() {
@@ -172,7 +172,7 @@ public class JdkLoggingProvider extends AbstractProvider {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public void warn(final String fqcn, final Throwable t, final String format, final Object... args) {
@@ -180,7 +180,7 @@ public class JdkLoggingProvider extends AbstractProvider {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public boolean isErrorEnabled() {
@@ -188,7 +188,7 @@ public class JdkLoggingProvider extends AbstractProvider {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public void error(final String fqcn, final Throwable t, final String format, final Object... args) {
@@ -196,7 +196,7 @@ public class JdkLoggingProvider extends AbstractProvider {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public void log(
@@ -258,7 +258,7 @@ public class JdkLoggingProvider extends AbstractProvider {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public org.miaixz.bus.logger.Level getLevel() {

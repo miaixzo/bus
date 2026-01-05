@@ -214,10 +214,10 @@ public class TEA implements Encryptor, Decryptor, Serializable {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
-     * @param data {@inheritDoc}
-     * @return {@inheritDoc}
+     * @param data Description inherited from parent class or interface.
+     * @return Description inherited from parent class or interface.
      */
     @Override
     public byte[] encrypt(final byte[] data) {
@@ -228,11 +228,11 @@ public class TEA implements Encryptor, Decryptor, Serializable {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
-     * @param data    {@inheritDoc}
-     * @param out     {@inheritDoc}
-     * @param isClose {@inheritDoc}
+     * @param data    Description inherited from parent class or interface.
+     * @param out     Description inherited from parent class or interface.
+     * @param isClose Description inherited from parent class or interface.
      */
     @Override
     public void encrypt(final InputStream data, final OutputStream out, final boolean isClose) {
@@ -240,10 +240,10 @@ public class TEA implements Encryptor, Decryptor, Serializable {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
-     * @param data {@inheritDoc}
-     * @return {@inheritDoc}
+     * @param data Description inherited from parent class or interface.
+     * @return Description inherited from parent class or interface.
      */
     @Override
     public byte[] decrypt(final byte[] data) {
@@ -254,11 +254,11 @@ public class TEA implements Encryptor, Decryptor, Serializable {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
-     * @param data    {@inheritDoc}
-     * @param out     {@inheritDoc}
-     * @param isClose {@inheritDoc}
+     * @param data    Description inherited from parent class or interface.
+     * @param out     Description inherited from parent class or interface.
+     * @param isClose Description inherited from parent class or interface.
      */
     @Override
     public void decrypt(final InputStream data, final OutputStream out, final boolean isClose) {

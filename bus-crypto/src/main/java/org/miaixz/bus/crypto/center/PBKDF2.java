@@ -44,6 +44,9 @@ import org.miaixz.bus.crypto.Keeper;
  */
 public class PBKDF2 {
 
+    /**
+     * The algorithm to use for PBKDF2.
+     */
     private String algorithm = Algorithm.PBKDF2WITHHMACSHA1.getValue();
 
     /**

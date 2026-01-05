@@ -125,7 +125,7 @@ public class StreamExtractor implements Extractor {
     }
 
     /**
-     * {@inheritDoc}
+     * Gets an InputStream for the first matching archive entry.
      * <p>
      * Retrieves an input stream for the first archive entry matching the given predicate. The returned stream is the
      * underlying archive stream, positioned at the matching entry.
@@ -209,7 +209,7 @@ public class StreamExtractor implements Extractor {
     }
 
     /**
-     * {@inheritDoc}
+     * Closes this extractor and releases any system resources.
      * <p>
      * Closes the archive stream and releases any associated resources. This method suppresses any exceptions that may
      * occur.
