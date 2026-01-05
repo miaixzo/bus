@@ -652,7 +652,7 @@ Legend: ✅ Full Support | ⚠️ Partial Support | ❌ Not Supported
 <dependency>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-health</artifactId>
-    <version>8.5.0</version>
+    <version>8.5.1</version>
 </dependency>
 
 <!-- Optional: For better native library support -->
@@ -666,7 +666,7 @@ Legend: ✅ Full Support | ⚠️ Partial Support | ❌ Not Supported
 ### Gradle Configuration
 
 ```groovy
-implementation 'org.miaixz:bus-health:8.5.0'
+implementation 'org.miaixz:bus-health:8.x.x'
 
 // Optional: For better native library support
 implementation 'net.java.dev.jna:jna-platform:5.18.0'

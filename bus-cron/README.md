@@ -75,7 +75,7 @@
 <dependency>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-cron</artifactId>
-    <version>8.5.0</version>
+    <version>8.5.1</version>
 </dependency>
 ```
 

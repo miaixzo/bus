@@ -35,7 +35,7 @@ To use Bus framework modules with Spring Boot style dependency management, add t
 <parent>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-parent</artifactId>
-    <version>8.5.0</version>
+    <version>8.5.1</version>
 </parent>
 ```
 
@@ -88,7 +88,7 @@ Or add individual modules as needed:
     <parent>
         <groupId>org.miaixz</groupId>
         <artifactId>bus-parent</artifactId>
-        <version>8.5.0</version>
+        <version>8.5.1</version>
     </parent>
 
     <groupId>com.example</groupId>
@@ -126,7 +126,7 @@ Or add individual modules as needed:
     <parent>
         <groupId>org.miaixz</groupId>
         <artifactId>bus-parent</artifactId>
-        <version>8.5.0</version>
+        <version>8.5.1</version>
     </parent>
 
     <groupId>com.example</groupId>
@@ -248,7 +248,7 @@ The parent POM configures the following plugins:
 <dependency>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-core</artifactId>
-    <version>8.5.0</version>  <!-- Unnecessary -->
+    <version>8.5.1</version>  <!-- Unnecessary -->
 </dependency>
 ```
 
@@ -277,7 +277,7 @@ Alternatively, import the BOM without using as parent:
         <dependency>
             <groupId>org.miaixz</groupId>
             <artifactId>bus-dependencies</artifactId>
-            <version>8.5.0</version>
+            <version>8.5.1</version>
             <type>pom</type>
             <scope>import</scope>
         </dependency>
@@ -309,7 +309,7 @@ No, Maven only allows one parent. However, you can import the Bus BOM:
         <dependency>
             <groupId>org.miaixz</groupId>
             <artifactId>bus-dependencies</artifactId>
-            <version>8.5.0</version>
+            <version>8.5.1</version>
             <type>pom</type>
             <scope>import</scope>
         </dependency>

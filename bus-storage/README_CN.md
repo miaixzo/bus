@@ -21,7 +21,7 @@ bus-storage 是一个全面的云存储组件，提供与多个云存储提供�
 <dependency>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-storage</artifactId>
-    <latestVersion>8.5.0</latestVersion>
+    <latestVersion>8.x.x</latestVersion>
 </dependency>
 ```
 

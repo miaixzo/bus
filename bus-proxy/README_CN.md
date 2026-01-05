@@ -38,7 +38,7 @@
 <dependency>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-proxy</artifactId>
-    <version>8.5.0</version>
+    <version>8.5.1</version>
 </dependency>
 ```
 

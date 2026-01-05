@@ -21,7 +21,7 @@ bus-storage is a comprehensive cloud storage component that provides unified int
 <dependency>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-storage</artifactId>
-    <latestVersion>8.5.0</latestVersion>
+    <latestVersion>8.x.x</latestVersion>
 </dependency>
 ```
 

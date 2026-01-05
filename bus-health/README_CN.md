@@ -652,7 +652,7 @@ public Cpu getCpuWithCache() {
 <dependency>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-health</artifactId>
-    <version>8.5.0</version>
+    <version>8.5.1</version>
 </dependency>
 
 <!-- 可选: 更好的本地库支持 -->
@@ -666,7 +666,7 @@ public Cpu getCpuWithCache() {
 ### Gradle 配置
 
 ```groovy
-implementation 'org.miaixz:bus-health:8.5.0'
+implementation 'org.miaixz:bus-health:8.x.x'
 
 // 可选: 更好的本地库支持
 implementation 'net.java.dev.jna:jna-platform:5.18.0'

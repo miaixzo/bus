@@ -71,7 +71,7 @@ The framework abstracts away protocol complexities, allowing developers to focus
 <dependency>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-auth</artifactId>
-    <version>8.5.0</version>
+    <version>8.5.1</version>
 </dependency>
 ```
 

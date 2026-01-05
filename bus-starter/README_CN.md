@@ -20,7 +20,7 @@ bus-starter 是一个全面的 Spring Boot 集成启动器，通过简单的注�
 <dependency>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-starter</artifactId>
-    <latestVersion>8.5.0</latestVersion>
+    <latestVersion>8.x.x</latestVersion>
 </dependency>
 ```
 

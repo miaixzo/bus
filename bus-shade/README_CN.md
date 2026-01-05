@@ -35,7 +35,7 @@ bus-shade 是一个功能强大的 Java 工具包，提供全面的 JAR 加密�
 <dependency>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-shade</artifactId>
-    <latestVersion>8.5.0</latestVersion>
+    <latestVersion>8.x.x</latestVersion>
 </dependency>
 ```
 
@@ -150,7 +150,7 @@ hold: false
 <plugin>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-shade-maven-plugin</artifactId>
-    <version>8.5.0</version>
+    <version>8.5.1</version>
     <executions>
         <execution>
             <phase>package</phase>
