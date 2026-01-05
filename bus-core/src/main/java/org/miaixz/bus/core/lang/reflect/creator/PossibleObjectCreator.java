@@ -128,7 +128,7 @@ public record PossibleObjectCreator<T>(Class<T> clazz) implements ObjectCreator<
      * @return A new instance of type {@code T}, or {@code null} if instantiation fails.
      */
     @Override
-    public T create() {
+    public T of() {
         Class<T> type = this.clazz;
 
         // Primitive types
@@ -141,7 +141,7 @@ public record PossibleObjectCreator<T>(Class<T> clazz) implements ObjectCreator<
 
         // Attempt instantiation using a default (no-arg) constructor
         try {
-            return DefaultObjectCreator.of(type).create();
+            return DefaultObjectCreator.of(type).of();
         } catch (final Exception e) {
             // ignore
         }

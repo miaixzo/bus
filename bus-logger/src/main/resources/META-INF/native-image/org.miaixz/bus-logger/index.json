@@ -4,9 +4,10 @@
     "override": true,
     "module": "org.miaixz:bus-logger",
     "default-for": "8\\.5\\.[0-9]",
-    "metadata-version": "8.5.0",
+    "metadata-version": "8.5.1",
     "tested-versions": [
-      "8.5.0"
+      "8.5.0",
+      "8.5.1"
     ]
   }
 ]

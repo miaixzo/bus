@@ -99,6 +99,11 @@ public class JarLoader extends ResourceLoader implements Loader {
         this.jarFile = jarFile;
     }
 
+    /**
+     * Load method.
+     *
+     * @return the Enumeration&lt;Resource&gt; value
+     */
     @Override
     public Enumeration<Resource> load(String path, boolean recursively, Filter filter) {
         while (path.startsWith(Symbol.SLASH))
@@ -156,6 +161,11 @@ public class JarLoader extends ResourceLoader implements Loader {
             this.entries = jarFile.entries();
         }
 
+        /**
+         * Hasmoreelements method.
+         *
+         * @return the boolean value
+         */
         @Override
         public boolean hasMoreElements() {
             if (null != next) {

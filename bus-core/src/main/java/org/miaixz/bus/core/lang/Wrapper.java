@@ -45,6 +45,11 @@ public interface Wrapper<T> extends Provider {
      */
     T getRaw();
 
+    /**
+     * Type method.
+     *
+     * @return the Object value
+     */
     @Override
     default Object type() {
         return EnumValue.Povider.TEMPLATE;

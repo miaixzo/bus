@@ -254,7 +254,7 @@ public interface Pageable extends Serializable {
         }
 
         /**
-         * {@inheritDoc}
+         * Gets the page number.
          *
          * @return the page number
          */
@@ -264,7 +264,7 @@ public interface Pageable extends Serializable {
         }
 
         /**
-         * {@inheritDoc}
+         * Gets the page size.
          *
          * @return the page size
          */
@@ -274,7 +274,7 @@ public interface Pageable extends Serializable {
         }
 
         /**
-         * {@inheritDoc}
+         * Gets the sorting information.
          *
          * @return the sorting information
          */
@@ -284,7 +284,7 @@ public interface Pageable extends Serializable {
         }
 
         /**
-         * {@inheritDoc}
+         * Checks if this pageable is unpaged.
          *
          * @return true if unpaged, false otherwise
          */
@@ -294,7 +294,7 @@ public interface Pageable extends Serializable {
         }
 
         /**
-         * {@inheritDoc}
+         * Gets a pageable for the previous page.
          *
          * @return a pageable for the previous page
          */
@@ -304,7 +304,7 @@ public interface Pageable extends Serializable {
         }
 
         /**
-         * {@inheritDoc}
+         * Gets a pageable for the next page.
          *
          * @return a pageable for the next page
          */
@@ -314,7 +314,7 @@ public interface Pageable extends Serializable {
         }
 
         /**
-         * {@inheritDoc}
+         * Gets a pageable for the first page.
          *
          * @return a pageable for the first page
          */
@@ -324,7 +324,7 @@ public interface Pageable extends Serializable {
         }
 
         /**
-         * {@inheritDoc}
+         * Gets a pageable with the specified page number.
          *
          * @param pageNo the new page number
          * @return a pageable with the new page number
@@ -355,7 +355,7 @@ public interface Pageable extends Serializable {
         }
 
         /**
-         * {@inheritDoc}
+         * Checks if this object is equal to another.
          *
          * @param obj the object to compare
          * @return true if equal, false otherwise
@@ -377,7 +377,7 @@ public interface Pageable extends Serializable {
         }
 
         /**
-         * {@inheritDoc}
+         * Gets the hash code for this object.
          *
          * @return the hash code
          */
@@ -390,7 +390,7 @@ public interface Pageable extends Serializable {
         }
 
         /**
-         * {@inheritDoc}
+         * Gets the string representation of this pageable.
          *
          * @return the string representation
          */

@@ -63,12 +63,12 @@ public class DatePattern {
     /**
      * Constructs a new {@code DatePattern}.
      *
-     * @param patternStr The date format pattern string.
-     * @param locale     The locale.
-     * @param timeZone   The timezone.
+     * @param pattern  The date format pattern string.
+     * @param locale   The locale.
+     * @param timeZone The timezone.
      */
-    public DatePattern(final String patternStr, final Locale locale, final TimeZone timeZone) {
-        this.rules = parsePattern(patternStr, locale, timeZone).toArray(new Rule[0]);
+    public DatePattern(final String pattern, final Locale locale, final TimeZone timeZone) {
+        this.rules = parsePattern(pattern, locale, timeZone).toArray(new Rule[0]);
     }
 
     /**
@@ -407,7 +407,7 @@ public class DatePattern {
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Returns the estimated length of the formatted output for this character literal.
          *
@@ -419,7 +419,7 @@ public class DatePattern {
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Appends the character literal to the buffer.
          *
@@ -444,7 +444,7 @@ public class DatePattern {
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Returns the length of this string literal.
          *
@@ -456,7 +456,7 @@ public class DatePattern {
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Appends the string literal to the buffer.
          *
@@ -483,7 +483,7 @@ public class DatePattern {
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Returns the maximum length of any value in the text field array.
          *
@@ -502,7 +502,7 @@ public class DatePattern {
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Appends the text value for the specified calendar field to the buffer.
          *
@@ -527,7 +527,7 @@ public class DatePattern {
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Returns the estimated maximum length for an unpadded number field.
          *
@@ -539,7 +539,7 @@ public class DatePattern {
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Appends the unpadded numeric value of the specified field to the buffer.
          *
@@ -552,7 +552,7 @@ public class DatePattern {
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Appends the unpadded numeric value to the buffer.
          *
@@ -582,7 +582,7 @@ public class DatePattern {
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Returns the estimated maximum length for an unpadded month field.
          *
@@ -594,7 +594,7 @@ public class DatePattern {
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Appends the unpadded month value (1-12) to the buffer.
          *
@@ -607,7 +607,7 @@ public class DatePattern {
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Appends the unpadded month value to the buffer.
          *
@@ -641,7 +641,7 @@ public class DatePattern {
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Returns the padded size of this number field.
          *
@@ -653,7 +653,7 @@ public class DatePattern {
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Appends the padded numeric value of the specified field to the buffer.
          *
@@ -666,7 +666,7 @@ public class DatePattern {
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Appends the padded numeric value to the buffer.
          *
@@ -691,7 +691,7 @@ public class DatePattern {
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Returns the length of a two-digit number field.
          *
@@ -703,7 +703,7 @@ public class DatePattern {
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Appends the two-digit numeric value of the specified field to the buffer.
          *
@@ -716,7 +716,7 @@ public class DatePattern {
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Appends the value as a two-digit number to the buffer.
          *
@@ -744,7 +744,7 @@ public class DatePattern {
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Returns the length of a two-digit year field.
          *
@@ -756,7 +756,7 @@ public class DatePattern {
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Appends the two-digit year value to the buffer.
          *
@@ -769,7 +769,7 @@ public class DatePattern {
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Appends the two-digit value to the buffer.
          *
@@ -793,7 +793,7 @@ public class DatePattern {
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Returns the length of a two-digit month field.
          *
@@ -805,7 +805,7 @@ public class DatePattern {
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Appends the two-digit month value (01-12) to the buffer.
          *
@@ -818,7 +818,7 @@ public class DatePattern {
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Appends the value as a two-digit month to the buffer.
          *
@@ -843,7 +843,7 @@ public class DatePattern {
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Returns the estimated length of the 12-hour field.
          *
@@ -855,7 +855,7 @@ public class DatePattern {
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Appends the 12-hour format value (1-12) to the buffer.
          *
@@ -872,7 +872,7 @@ public class DatePattern {
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Appends the 12-hour format value to the buffer.
          *
@@ -897,7 +897,7 @@ public class DatePattern {
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Returns the estimated length of the 24-hour field.
          *
@@ -909,7 +909,7 @@ public class DatePattern {
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Appends the 24-hour format value (1-24) to the buffer.
          *
@@ -926,7 +926,7 @@ public class DatePattern {
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Appends the 24-hour format value to the buffer.
          *
@@ -951,7 +951,7 @@ public class DatePattern {
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Returns the estimated length of the day-in-week field.
          *
@@ -963,7 +963,7 @@ public class DatePattern {
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Appends the day of week as a number (1=Monday...7=Sunday) to the buffer.
          *
@@ -977,7 +977,7 @@ public class DatePattern {
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Appends the day-in-week value to the buffer.
          *
@@ -1002,7 +1002,7 @@ public class DatePattern {
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Returns the estimated length of the week-based year field.
          *
@@ -1014,7 +1014,7 @@ public class DatePattern {
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Appends the week-based year value to the buffer.
          *
@@ -1031,7 +1031,7 @@ public class DatePattern {
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Appends the week year value to the buffer.
          *
@@ -1062,7 +1062,7 @@ public class DatePattern {
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Returns the maximum length of the standard or daylight timezone name.
          *
@@ -1074,7 +1074,7 @@ public class DatePattern {
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Appends the timezone name (standard or daylight) to the buffer based on the calendar's DST offset.
          *
@@ -1106,7 +1106,7 @@ public class DatePattern {
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Returns the length of the timezone offset format.
          *
@@ -1118,7 +1118,7 @@ public class DatePattern {
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Appends the timezone offset to the buffer in +/-HHMM or +/-HH:mm format.
          *
@@ -1168,7 +1168,7 @@ public class DatePattern {
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Returns the length of the ISO 8601 timezone format.
          *
@@ -1180,7 +1180,7 @@ public class DatePattern {
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Appends the timezone offset in ISO 8601 format to the buffer.
          *
@@ -1229,7 +1229,7 @@ public class DatePattern {
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Computes the hash code for this timezone display key.
          *
@@ -1241,19 +1241,19 @@ public class DatePattern {
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Checks if this key is equal to another object.
          *
-         * @param obj the object to compare with
+         * @param object the object to compare with
          * @return {@code true} if the objects are equal
          */
         @Override
-        public boolean equals(final Object obj) {
-            if (this == obj) {
+        public boolean equals(final Object object) {
+            if (this == object) {
                 return true;
             }
-            if (obj instanceof TimeZoneDisplayKey other) {
+            if (object instanceof TimeZoneDisplayKey other) {
                 return mTimeZone.equals(other.mTimeZone) && mStyle == other.mStyle && mLocale.equals(other.mLocale);
             }
             return false;

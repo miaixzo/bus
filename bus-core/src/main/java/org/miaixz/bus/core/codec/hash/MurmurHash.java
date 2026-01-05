@@ -98,6 +98,11 @@ public class MurmurHash implements Hash32<byte[]>, Hash64<byte[]>, Hash128<byte[
         return h;
     }
 
+    /**
+     * Encode method.
+     *
+     * @return the Number value
+     */
     @Override
     public Number encode(final byte[] bytes) {
         return hash128(bytes);

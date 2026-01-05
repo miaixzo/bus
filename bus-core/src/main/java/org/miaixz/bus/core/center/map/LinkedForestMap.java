@@ -391,21 +391,42 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
             }
         }
 
+        /**
+         * Gets the key of this entry.
+         *
+         * @return the key
+         */
         @Override
         public K getKey() {
             return key;
         }
 
+        /**
+         * Gets the weight of this node.
+         *
+         * @return the weight
+         */
         @Override
         public int getWeight() {
             return weight;
         }
 
+        /**
+         * Gets the value of this entry.
+         *
+         * @return the value
+         */
         @Override
         public V getValue() {
             return value;
         }
 
+        /**
+         * Sets the value of this entry.
+         *
+         * @param value the new value
+         * @return the old value
+         */
         @Override
         public V setValue(final V value) {
             final V oldVal = this.value;
@@ -444,6 +465,11 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
             return getRoot() == this;
         }
 
+        /**
+         * Getroot method.
+         *
+         * @return the TreeEntryNode&lt;K, V&gt; value
+         */
         @Override
         public TreeEntryNode<K, V> getRoot() {
             if (ObjectKit.isNotNull(this.root)) {
@@ -453,17 +479,30 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
             }, p -> !p.hasParent());
         }
 
+        /**
+         * Getdeclaredparent method.
+         *
+         * @return the TreeEntryNode&lt;K, V&gt; value
+         */
         @Override
         public TreeEntryNode<K, V> getDeclaredParent() {
             return parent;
         }
 
+        /**
+         * Getparent method.
+         *
+         * @return the TreeEntryNode&lt;K, V&gt; value
+         */
         @Override
         public TreeEntryNode<K, V> getParent(final K key) {
             return traverseParentNodes(false, p -> {
             }, p -> p.equalsKey(key));
         }
 
+        /**
+         * Foreachchild method.
+         */
         @Override
         public void forEachChild(final boolean includeSelf, final Consumer<TreeEntry<K, V>> nodeConsumer) {
             traverseChildNodes(includeSelf, (index, child) -> nodeConsumer.accept(child), null);
@@ -568,17 +607,28 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
             }, null);
         }
 
+        /**
+         * Getchild method.
+         *
+         * @return the TreeEntryNode&lt;K, V&gt; value
+         */
         @Override
         public TreeEntryNode<K, V> getChild(final K key) {
             return traverseChildNodes(false, (i, c) -> {
             }, (i, c) -> c.equalsKey(key));
         }
 
+        /**
+         * Getdeclaredchildren method.
+         */
         @Override
         public Map<K, TreeEntry<K, V>> getDeclaredChildren() {
             return new LinkedHashMap<>(this.children);
         }
 
+        /**
+         * Getchildren method.
+         */
         @Override
         public Map<K, TreeEntry<K, V>> getChildren() {
             final Map<K, TreeEntry<K, V>> childrenMap = new LinkedHashMap<>();
@@ -595,6 +645,12 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
             this.parent = null;
         }
 
+        /**
+         * Checks if this object equals another object.
+         *
+         * @param o the object to compare with
+         * @return true if the objects are equal, false otherwise
+         */
         @Override
         public boolean equals(final Object o) {
             if (this == o)
@@ -604,6 +660,11 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
             return ObjectKit.equals(this.getKey(), treeEntry.getKey());
         }
 
+        /**
+         * Returns the hash code value for this object.
+         *
+         * @return the hash code value
+         */
         @Override
         public int hashCode() {
             return Objects.hash(getKey());
@@ -640,21 +701,42 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
             this.entryNode = entryNode;
         }
 
+        /**
+         * Gets the key of this entry.
+         *
+         * @return the key
+         */
         @Override
         public K getKey() {
             return entryNode.getKey();
         }
 
+        /**
+         * Gets the value of this entry.
+         *
+         * @return the value
+         */
         @Override
         public TreeEntry<K, V> getValue() {
             return entryNode;
         }
 
+        /**
+         * Sets the value of this entry.
+         *
+         * @param value the new value
+         * @return the old value
+         */
         @Override
         public TreeEntry<K, V> setValue(final TreeEntry<K, V> value) {
             throw new UnsupportedOperationException();
         }
 
+        /**
+         * Gets the raw wrapped object.
+         *
+         * @return the raw object
+         */
         @Override
         public N getRaw() {
             return entryNode;

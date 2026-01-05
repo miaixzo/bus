@@ -177,6 +177,9 @@ public class ZipReader implements Closeable {
         return this;
     }
 
+    /**
+     * Close method.
+     */
     @Override
     public void close() throws InternalException {
         IoKit.closeQuietly(this.resource);

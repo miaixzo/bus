@@ -30,7 +30,7 @@ package org.miaixz.bus.cron;
 import java.io.Serial;
 import java.io.Serializable;
 
-import org.miaixz.bus.core.center.date.Units;
+import org.miaixz.bus.core.center.date.Chrono;
 import org.miaixz.bus.core.xyz.ThreadKit;
 import org.miaixz.bus.logger.Logger;
 
@@ -49,11 +49,11 @@ public class CronTimer extends Thread implements Serializable {
     /**
      * Timer unit in milliseconds for a second.
      */
-    private final long TIMER_UNIT_SECOND = Units.SECOND.getMillis();
+    private final long TIMER_UNIT_SECOND = Chrono.SECOND.getMillis();
     /**
      * Timer unit in milliseconds for a minute.
      */
-    private final long TIMER_UNIT_MINUTE = Units.MINUTE.getMillis();
+    private final long TIMER_UNIT_MINUTE = Chrono.MINUTE.getMillis();
     /**
      * The scheduler instance for managing cron tasks.
      */
@@ -102,7 +102,6 @@ public class CronTimer extends Thread implements Serializable {
      * <li>Handles edge cases like time rollbacks and catching up with missed executions</li>
      * <li>Sleeps until the next scheduled time point</li>
      * </ol>
-     * </p>
      * <p>
      * <b>Note:</b> This method is designed to be called by the thread's start mechanism and should not be invoked
      * directly. The timer will continue running until {@link #stopTimer()} is called.

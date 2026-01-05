@@ -73,11 +73,21 @@ public class FilterIterator<E> implements Iterator<E> {
         this.filter = filter;
     }
 
+    /**
+     * Returns true if the iteration has more elements.
+     *
+     * @return true if the iteration has more elements
+     */
     @Override
     public boolean hasNext() {
         return nextObjectSet || setNextObject();
     }
 
+    /**
+     * Returns the next element in the iteration.
+     *
+     * @return the next element
+     */
     @Override
     public E next() {
         if (!nextObjectSet && !setNextObject()) {
@@ -87,6 +97,9 @@ public class FilterIterator<E> implements Iterator<E> {
         return nextObject;
     }
 
+    /**
+     * Removes from the underlying collection the last element returned by this iterator.
+     */
     @Override
     public void remove() {
         if (nextObjectSet) {

@@ -221,13 +221,13 @@ public class CollKit extends CollectionStream {
         Collection<T> result = ObjectKit.clone(coll1);
         try {
             if (null == result) {
-                result = create(coll1.getClass());
+                result = of(coll1.getClass());
                 result.addAll(coll1);
             }
             result.removeAll(coll2);
         } catch (final UnsupportedOperationException e) {
             // Handle read-only collections
-            result = create(AbstractCollection.class);
+            result = of(AbstractCollection.class);
             result.addAll(coll1);
             result.removeAll(coll2);
         }
@@ -545,7 +545,7 @@ public class CollKit extends CollectionStream {
      * @param collectionType The collection type (e.g., `ArrayList.class`).
      * @return A new instance of the collection.
      */
-    public static <T> Collection<T> create(final Class<?> collectionType) {
+    public static <T> Collection<T> of(final Class<?> collectionType) {
         final Collection<T> list;
         if (collectionType.isAssignableFrom(AbstractCollection.class)) {
             list = new ArrayList<>();
@@ -570,7 +570,7 @@ public class CollKit extends CollectionStream {
             } catch (final Exception e) {
                 final Class<?> superclass = collectionType.getSuperclass();
                 if (null != superclass && collectionType != superclass) {
-                    return create(superclass);
+                    return of(superclass);
                 }
                 throw ExceptionKit.wrapRuntime(e);
             }
@@ -586,11 +586,11 @@ public class CollKit extends CollectionStream {
      * @param elementType    The element type, required for creating an `EnumSet`.
      * @return A new instance of the collection.
      */
-    public static <T> Collection<T> create(final Class<?> collectionType, final Class<T> elementType) {
+    public static <T> Collection<T> of(final Class<?> collectionType, final Class<T> elementType) {
         if (EnumSet.class.isAssignableFrom(collectionType)) {
             return (Collection<T>) EnumSet.noneOf((Class<Enum>) Assert.notNull(elementType));
         }
-        return create(collectionType);
+        return of(collectionType);
     }
 
     /**
@@ -698,7 +698,7 @@ public class CollKit extends CollectionStream {
         if (null == collection || null == editor) {
             return collection;
         }
-        final T collection2 = (T) create(collection.getClass());
+        final T collection2 = (T) of(collection.getClass());
         if (isEmpty(collection)) {
             return collection2;
         }
@@ -1725,6 +1725,11 @@ public class CollKit extends CollectionStream {
 
             private final List<Object> hashValList = new ArrayList<>();
 
+            /**
+             * Hash32 method.
+             *
+             * @return the int value
+             */
             @Override
             public int hash32(final T t) {
                 if (null == t || !BeanKit.isWritableBean(t.getClass())) {

@@ -35,32 +35,32 @@ import java.time.temporal.ChronoUnit;
  * @author Kimi Liu
  * @since Java 17+
  */
-public enum Units {
+public enum Chrono {
 
     /**
      * One millisecond.
      */
-    MS(1),
+    MILLISECOND(1, "毫秒"),
     /**
      * Number of milliseconds in one second.
      */
-    SECOND(1000),
+    SECOND(1000, "秒"),
     /**
      * Number of milliseconds in one minute.
      */
-    MINUTE(SECOND.getMillis() * 60),
+    MINUTE(SECOND.getMillis() * 60, "分"),
     /**
      * Number of milliseconds in one hour.
      */
-    HOUR(MINUTE.getMillis() * 60),
+    HOUR(MINUTE.getMillis() * 60, "小时"),
     /**
      * Number of milliseconds in one day.
      */
-    DAY(HOUR.getMillis() * 24),
+    DAY(HOUR.getMillis() * 24, "天"),
     /**
      * Number of milliseconds in one week.
      */
-    WEEK(DAY.getMillis() * 7);
+    WEEK(DAY.getMillis() * 7, "周");
 
     /**
      * The number of milliseconds for this unit.
@@ -68,52 +68,85 @@ public enum Units {
     private final long millis;
 
     /**
-     * Constructor for Units enum.
+     * The name of the level.
+     */
+    private final String name;
+
+    /**
+     * Constructor for Chrono enum.
      *
      * @param millis The number of milliseconds for this unit.
      */
-    Units(final long millis) {
+    Chrono(final long millis, final String name) {
         this.millis = millis;
+        this.name = name;
     }
 
     /**
-     * Converts {@link ChronoUnit} to the corresponding {@link Units}.
+     * Gets the number of milliseconds corresponding to this unit.
      *
-     * @param unit The {@link ChronoUnit} to convert.
-     * @return The corresponding {@link Units}, or {@code null} if the unit is not supported.
+     * @return The number of milliseconds.
      */
-    public static Units of(final ChronoUnit unit) {
-        switch (unit) {
+    public long getMillis() {
+        return this.millis;
+    }
+
+    /**
+     * Gets the name of the level.
+     *
+     * @return The name of the level.
+     */
+    public String getName() {
+        return this.name;
+    }
+
+    /**
+     * Converts {@link ChronoUnit} to the corresponding {@link Chrono}.
+     *
+     * @param chrono The {@link ChronoUnit} to convert.
+     * @return The corresponding {@link Chrono}, or {@code null} if the unit is not supported.
+     */
+    public static Chrono of(final ChronoUnit chrono) {
+        switch (chrono) {
             case MICROS:
-                return Units.MS;
+                return Chrono.MILLISECOND;
 
             case SECONDS:
-                return Units.SECOND;
+                return Chrono.SECOND;
 
             case MINUTES:
-                return Units.MINUTE;
+                return Chrono.MINUTE;
 
             case HOURS:
-                return Units.HOUR;
+                return Chrono.HOUR;
 
             case DAYS:
-                return Units.DAY;
+                return Chrono.DAY;
 
             case WEEKS:
-                return Units.WEEK;
+                return Chrono.WEEK;
         }
         return null;
     }
 
     /**
-     * Converts {@link Units} to the corresponding {@link ChronoUnit}.
+     * Converts this {@link Chrono} to the corresponding {@link ChronoUnit}.
      *
-     * @param unit The {@link Units} to convert.
      * @return The corresponding {@link ChronoUnit}.
      */
-    public static ChronoUnit toChronoUnit(final Units unit) {
-        switch (unit) {
-            case MS:
+    public ChronoUnit of() {
+        return Chrono.of(this);
+    }
+
+    /**
+     * Converts {@link Chrono} to the corresponding {@link ChronoUnit}.
+     *
+     * @param chrono The {@link Chrono} to convert.
+     * @return The corresponding {@link ChronoUnit}.
+     */
+    public static ChronoUnit of(final Chrono chrono) {
+        switch (chrono) {
+            case MILLISECOND:
                 return ChronoUnit.MICROS;
 
             case SECOND:
@@ -132,24 +165,6 @@ public enum Units {
                 return ChronoUnit.WEEKS;
         }
         return null;
-    }
-
-    /**
-     * Gets the number of milliseconds corresponding to this unit.
-     *
-     * @return The number of milliseconds.
-     */
-    public long getMillis() {
-        return this.millis;
-    }
-
-    /**
-     * Converts this {@link Units} to the corresponding {@link ChronoUnit}.
-     *
-     * @return The corresponding {@link ChronoUnit}.
-     */
-    public ChronoUnit toChronoUnit() {
-        return Units.toChronoUnit(this);
     }
 
 }

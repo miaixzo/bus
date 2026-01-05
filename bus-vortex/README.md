@@ -1,86 +1,108 @@
-#### 项目说明
+# 🌪️ Bus Vortex: High-Performance API Gateway
 
-基于spring webflux 开发的API网关,是一个分布式,全异步,高性能,可扩展 ,轻量级的API网关。 立足于spring巨人的肩膀上,灵感来自阿里云的API网关;
+<p align="center">
+<strong>Distributed, Asynchronous, Scalable, and Lightweight API Gateway</strong>
+</p>
 
-## 功能特点
+-----
 
-- 开箱即用，写完业务代码直接启动服务即可使用，无需其它配置
-- 参数自动校验，支持国际化参数校验（JSR-303）
-- 校验功能和结果返回功能实现各自独立，方便自定义实现或扩展
-- 采用注解来定义接口，维护简单方便
-- 支持i18n国际化消息返回
-- 采用数字签名进行参数验证
-- 采用appKey、secret形式接入平台，即需要给接入方提供一个appKey和secret
+## 📖 Project Introduction
 
-## 技术点
+**Bus Vortex** is a distributed, fully asynchronous, high-performance, scalable, and lightweight API gateway built on Spring WebFlux. Inspired by Taobao's Open Platform, it stands on the shoulders of the Spring ecosystem to provide enterprise-grade API routing and management capabilities.
 
-- 加密算法（MD5、AES、RSA）
-- Netty（编解码、长连接、断开重连）
-- 限流（漏桶策略、令牌桶策略）
-- 权限（RBAC、校验）
-- session（单机、分布式）
-- 注解（文档生成）
-- principal（jwt、accessToken）
-- SDK（Java、C#、JavaScript）
-- 格式化(xml,json)
+-----
 
-#### 功能①按参数路由：
+## ✨ Core Features
 
-Api接口类说明:
+### 🎯 Out-of-the-Box Experience
+
+* **Zero Configuration**: Start using immediately after adding annotations to your business code
+* **Automatic Parameter Validation**: Built-in support for JSR-303 internationalized parameter validation
+* **Modular Design**: Independent implementation of validation and result return functionality for easy customization
+* **Annotation-Driven**: Simple API definitions using annotations for easy maintenance
+* **i18n Support**: Built-in internationalization for error messages
+* **Digital Signature**: Parameter verification using digital signatures
+* **Secure Access**: Platform access via appKey and secret mechanism
+
+### 🛡️ Security & Reliability
+
+* **Signature Verification**: MD5, AES, RSA encryption algorithms for secure data transmission
+* **Rate Limiting**: Leaky bucket and token bucket strategies for traffic control
+* **Permission Control**: RBAC-based permission verification
+* **Session Management**: Support for both standalone and distributed sessions
+* **Authentication**: JWT and accessToken support
+* **Documentation**: Auto-generated API documentation
+
+### 🌍 Technology Stack
+
+- **Encryption**: MD5, AES, RSA
+- **Networking**: Netty (encoding/decoding, long connections, auto-reconnect)
+- **Rate Limiting**: Leaky bucket, token bucket algorithms
+- **Authorization**: RBAC, validation
+- **Session**: Standalone, distributed session management
+- **Documentation**: Annotation-based documentation generation
+- **Authentication**: JWT, accessToken
+- **SDK**: Java, C#, JavaScript
+- **Formats**: XML, JSON
+
+-----
+
+## 🚀 Feature 1: Parameter-Based Routing
+
+### API Interface Definition
 
 ```java
 public class Assets {
 
-    private String id;   //接口id 唯一
-    private String name; //接口名称
-    private String host; //目标主机名
-    private int port;    //目标端口
-    private String url;  //目标url
-    private String method; //对应请求参数method
-    private HttpMethod httpMethod;
-    private boolean principal; //是否需要token (0 不需要,1需要)
-    private boolean sign;  //返回内容是否加密(0 不需要,1需要) 需配置开启加密
-    private boolean firewall; // 防火墙,预留
-    private String version; //对应请求参数v
-    private String description; //接口描述
+    private String id;           // Unique API ID
+    private String name;         // API name
+    private String host;         // Target hostname
+    private int port;            // Target port
+    private String url;          // Target URL
+    private String method;       // Request method name
+    private HttpMethod httpMethod; // HTTP method
+    private boolean principal;   // Requires token (0: no, 1: yes)
+    private boolean sign;        // Encrypt response (0: no, 1: yes)
+    private boolean firewall;    // Firewall (reserved)
+    private String version;      // API version (matches request parameter 'v')
+    private String description;  // API description
 }
 ```
 
-请求参数说明:
+### Request Parameters
 
-| 参数     | 说明                                 |
-|--------|------------------------------------|
-| method | api的方法名   (xxx.xxx.xxx)            |
-| v      | api的版本号,和method 一起使用 (1.1 ,1.2)    |
-| format | 接口返回的格式,目前支持（json,xml） 两种          |
-| sign   | 在配置文件中开启解密配置,若请求中包含sign字段,则对请求字段解密 |
+| Parameter | Description |
+|:---|:---|
+| method | API method name (e.g., xxx.xxx.xxx) |
+| v | API version number, used with method (e.g., 1.1, 1.2) |
+| format | Return format (supports json, xml) |
+| sign | If decrypt is enabled in config and request contains sign field, decrypt request |
 
-配置文件说明:
+### Configuration File
 
 ```yaml
 extend:
   vortex:
     server:
-      port: 8765 #网关端口
-      path: /router/rest #网关path
+      port: 8765              # Gateway port
+      path: /router/rest      # Gateway path
       encrypt:
-        enabled: true  #是否开启加密
-        key: xxxxxx #加密key
-        type: AES #加密算法
-        offset: xxxxxx #偏移量
+        enabled: true         # Enable encryption
+        key: xxxxxx           # Encryption key
+        type: AES             # Encryption algorithm
+        offset: xxxxxx        # Offset
       decrypt:
-        enabled: true #是否开启解密
-        key: xxxxxx #解密key
-        type: AES #解密算法
-        offset: xxxx #偏移量
+        enabled: true         # Enable decryption
+        key: xxxxxx           # Decryption key
+        type: AES             # Decryption algorithm
+        offset: xxxx          # Offset
       limit:
-        enabled: true #是否开启限流
-
+        enabled: true         # Enable rate limiting
 ```
 
-集成方式说明:
+### Integration Steps
 
-1.在springboot启动类加上注解`@EnableVortex`
+#### 1. Add `@EnableVortex` Annotation to Spring Boot Main Class
 
 ```java
 @EnableVortex
@@ -91,111 +113,108 @@ public class TunnelApplication {
         SpringApplication app = new SpringApplication(TunnelApplication.class);
         app.run(args);
     }
-
 }
-
 ```
 
-2.实现至少包含一个`Registry`的 spring bean 保证缓中有接口
+#### 2. Implement a Spring Bean with `Registry` to Cache APIs
 
 ```java
-
 @Component
 public class DbAssetRegistriesImpl implements Registry {
-    //TODO
+    // TODO: Implement registry logic
 }
-
 ```
 
-3.实现一个`Authorize` 的 sping bean 保证身份认证功能正常
+#### 3. Implement an `Authorize` Spring Bean for Authentication
 
 ```java
 public class AuthProviderImpl implements Authorize {
-    //TODO
+    // TODO: Implement authentication logic
 }
 ```
 
-4.sping配置文件`application.yml`相应配置
+#### 4. Configure in `application.yml`
 
-扩展方式:
+### Extensibility
 
-可实现`webfilter` 对网关功能扩展,例如限流,日志,黑名单，熔断(目前暂未实现☺☺)等
+Implement `WebFilter` to extend gateway functionality, such as rate limiting, logging, blacklisting, circuit breaking (not yet implemented), etc.
 
 ```java
 @Component
 @Order("123")
 public class CustomFilter implements WebFilter {
-
+    // TODO: Implement filter logic
 }
 ```
 
-#### 功能②按版本路由：
+-----
 
-- **@ApiVersion**
+## 🚀 Feature 2: Version-Based Routing
 
-> * 通过此注解，自动为requestMappinginfo合并一个以版本号开头的路径；建议：大版本在类上配置，小版本可以通过配置在方法上，此时将替换类上面的大版本配置
+### @ApiVersion
 
-- **@ClientVersion**
+Automatically merges a version-prefixed path to RequestMappingInfo. **Recommendation**: Configure major versions at class level, minor versions can be configured at method level (will override class-level major version).
 
-> * 通过此注解，可以通过接口header中的cv,terminal参数路由倒不同的处理方法（handler
-    method，基于RequestMappingHandlerMapping中的getCustom**
-    Condition方法扩展）；
+### @ClientVersion
 
-- **@VersionMapping**
+Routes to different handler methods based on `cv` and `terminal` parameters in request headers (extends `getCustomCondition` method in `RequestMappingHandlerMapping`).
 
-> * 组合注解，实现了RequestMapping的功能，同时提供了上述两种注解的配置
+### @VersionMapping
 
-业务场景：
+Combines `RequestMapping` functionality with configurations for both `@ApiVersion` and `@ClientVersion`.
 
-- ApiVersion：替换之前的版本定义在路径中，导致的接口升级需要重新定义类或者在代码中做判断的问题
-- ClientVersion：碰到客户端已经在使用的接口，区分对待的情况下，通过通过ClientVersion优雅的避免在代码中写大量版本判断逻辑的问题
+### Business Scenarios
+
+- **ApiVersion**: Replaces version-defined paths that require redefining classes or writing conditional logic in code for API upgrades
+- **ClientVersion**: Elegantly avoids writing extensive version logic when dealing with interfaces already in use by clients
+
+### Example Usage
 
 ```java
-
 @RequestMapping("/t")
 @RestController
 @ApiVersion("5")
 public class TController {
-    //请求路径为/4/t/get
+    // Request path: /4/t/get
     @RequestMapping(value = "/get")
     public String get1() {
-        return "旧接口";
+        return "Old API";
     }
 
-    //请求路径为/5.1/t/get
+    // Request path: /5.1/t/get
     @RequestMapping(value = "/get", params = "data=tree")
     @ApiVersion("5.1")
-    //method的apiversion会优先于class上的,方便升级小版本
+    // Method's @ApiVersion takes precedence over class-level, convenient for minor version upgrades
     public String get2() {
-        return "新数据";
+        return "New data";
     }
 
-    //以下三个请求路径都是/c，
-    //通过header里的客户端类型（如果是从url参数取，修改TerminalVersionExpression即可）以及版本号路由到不同方法
+    // All three request paths are /c,
+    // Routes to different methods based on client type in header
+    // (can be modified to use URL parameters by changing TerminalVersionExpression)
     @GetMapping("/c")
     @ClientVersion(expression = {"1>6.0.0"})
     public String cvcheck1() {
-        return "6.0.0以上版本的1类型";
+        return "Type 1 client, version 6.0.0+";
     }
 
     @GetMapping("/c")
     @ClientVersion({@TerminalVersion(terminals = 2, op = VersionOperator.GT, version = "6.0.0")})
     public String cvcheck2() {
-        return "6.0.0以上版本的2类型";
+        return "Type 2 client, version > 6.0.0";
     }
 
     @GetMapping("/c")
     @ClientVersion({@TerminalVersion(terminals = 2, op = VersionOperator.LTE, version = "6.0.0")})
     public String cvcheck3() {
-        return "6.0.0以下版本的2类型";
+        return "Type 2 client, version <= 6.0.0";
     }
-
 }
-
 ```
 
-```java
+### Using @VersionMapping
 
+```java
 @RestController
 @VersionMapping(value = "/t", apiVersion = "5")
 public class TController {
@@ -204,6 +223,135 @@ public class TController {
     public String t() {
         return "5";
     }
-
 }
 ```
+
+-----
+
+## 📋 Quick Start
+
+### Maven Dependency
+
+```xml
+<dependency>
+    <groupId>org.miaixz</groupId>
+    <artifactId>bus-vortex</artifactId>
+    <version>x.x.x</version>
+</dependency>
+```
+
+### Enable Gateway
+
+```java
+@EnableVortex
+@SpringBootApplication
+public class Application {
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+    }
+}
+```
+
+### Configure Application Properties
+
+```yaml
+extend:
+  vortex:
+    server:
+      port: 8765
+      path: /router/rest
+```
+
+-----
+
+## 💡 Use Cases
+
+- **Microservices Gateway**: Unified entry point for microservices architecture
+- **API Version Management**: Smooth API upgrades with version-based routing
+- **Traffic Control**: Rate limiting and traffic shaping for high-concurrency scenarios
+- **Security Enhancement**: Signature verification, encryption, and access control
+- **Multi-Tenant Routing**: Route requests based on tenant-specific parameters
+
+-----
+
+## 🔧 Configuration Reference
+
+### Core Configuration
+
+| Property | Type | Default | Description |
+|:---|:---|:---|:---|
+| extend.vortex.server.port | int | 8765 | Gateway server port |
+| extend.vortex.server.path | String | /router/rest | Gateway routing path |
+| extend.vortex.encrypt.enabled | boolean | false | Enable encryption |
+| extend.vortex.encrypt.key | String | - | Encryption key |
+| extend.vortex.encrypt.type | String | AES | Encryption algorithm |
+| extend.vortex.decrypt.enabled | boolean | false | Enable decryption |
+| extend.vortex.limit.enabled | boolean | false | Enable rate limiting |
+
+-----
+
+## 🔄 Version Compatibility
+
+| Bus Vortex Version | Spring Boot Version | JDK Version |
+|:---|:---|:---|
+| 8.x | 3.x+ | 17+ |
+| 7.x | 2.x+ | 11+ |
+
+-----
+
+## 📊 Performance Characteristics
+
+- **Asynchronous Non-Blocking**: Built on WebFlux for high concurrency
+- **Low Latency**: Minimal routing overhead
+- **High Throughput**: Efficient request handling
+- **Scalable**: Horizontal scaling support
+
+-----
+
+## 🛠️ Advanced Topics
+
+### Custom Filters
+
+Implement `WebFilter` for custom request/response processing:
+
+```java
+@Component
+@Order(1)
+public class LoggingFilter implements WebFilter {
+    @Override
+    public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
+        // Custom logic
+        return chain.filter(exchange);
+    }
+}
+```
+
+### Dynamic Routing
+
+Register and update routes dynamically using `Registry` implementation.
+
+### Load Balancing
+
+Integrate with service discovery for automatic load balancing.
+
+-----
+
+## ❓ FAQ
+
+### Q: How to add custom encryption algorithms?
+
+A: Implement the encryption interface and configure it in the application properties.
+
+### Q: How to handle high concurrency?
+
+A: Enable rate limiting and configure thread pools appropriately.
+
+### Q: Can multiple versions coexist?
+
+A: Yes, use `@ApiVersion` and `@ClientVersion` for version-specific routing.
+
+-----
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.

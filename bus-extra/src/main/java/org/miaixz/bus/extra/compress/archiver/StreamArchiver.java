@@ -136,7 +136,8 @@ public class StreamArchiver implements Archiver {
     }
 
     /**
-     * {@inheritDoc}
+     * Adds a file or directory to the archive with optional filtering and path editing. Directories are processed
+     * recursively.
      * <p>
      * Adds a file or directory to the archive with optional filtering and path editing. Directories are processed
      * recursively.
@@ -180,7 +181,7 @@ public class StreamArchiver implements Archiver {
     }
 
     /**
-     * {@inheritDoc}
+     * Closes the archive stream, ensuring all data is flushed. This method suppresses any exceptions that may occur.
      * <p>
      * Closes the archive stream, ensuring all data is flushed. This method suppresses any exceptions that may occur.
      * </p>

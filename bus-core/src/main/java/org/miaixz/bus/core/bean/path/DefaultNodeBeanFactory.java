@@ -143,7 +143,7 @@ public class DefaultNodeBeanFactory implements NodeBeanFactory<Object> {
      * @throws UnsupportedOperationException if the node type is not supported for creation.
      */
     @Override
-    public Object create(final Object parent, final BeanPath<Object> beanPath) {
+    public Object of(final Object parent, final BeanPath<Object> beanPath) {
         if (parent instanceof Map || parent instanceof List || ArrayKit.isArray(parent)) {
             // Based on the next node type, determine the type of the current node name.
             final Node node = beanPath.next().getNode();

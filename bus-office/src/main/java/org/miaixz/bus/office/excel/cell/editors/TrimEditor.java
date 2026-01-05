@@ -39,7 +39,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class TrimEditor implements CellEditor {
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @param cell  the cell being edited
      * @param value the value to edit

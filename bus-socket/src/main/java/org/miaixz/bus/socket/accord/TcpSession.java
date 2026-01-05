@@ -207,7 +207,7 @@ public class TcpSession extends Session {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public ByteBuffer readBuffer() {
@@ -215,7 +215,7 @@ public class TcpSession extends Session {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public void awaitRead() {

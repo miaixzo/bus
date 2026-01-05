@@ -117,10 +117,10 @@ public class RepeatableMetaAnnotatedElement<T extends AnnotationMapping<Annotati
      * @return A {@code RepeatableMetaAnnotatedElement} instance representing the annotation structure on the
      *         {@link AnnotatedElement}.
      */
-    public static <A extends AnnotationMapping<Annotation>> RepeatableMetaAnnotatedElement<A> create(
+    public static <A extends AnnotationMapping<Annotation>> RepeatableMetaAnnotatedElement<A> of(
             final AnnotatedElement element,
             final BiFunction<A, Annotation, A> mappingFactory) {
-        return create(RepeatableAnnotationCollector.standard(), element, mappingFactory);
+        return of(RepeatableAnnotationCollector.standard(), element, mappingFactory);
     }
 
     /**
@@ -134,7 +134,7 @@ public class RepeatableMetaAnnotatedElement<T extends AnnotationMapping<Annotati
      * @return A {@code RepeatableMetaAnnotatedElement} instance representing the annotation structure on the
      *         {@link AnnotatedElement}.
      */
-    public static <A extends AnnotationMapping<Annotation>> RepeatableMetaAnnotatedElement<A> create(
+    public static <A extends AnnotationMapping<Annotation>> RepeatableMetaAnnotatedElement<A> of(
             final RepeatableAnnotationCollector collector,
             final AnnotatedElement element,
             final BiFunction<A, Annotation, A> mappingFactory) {

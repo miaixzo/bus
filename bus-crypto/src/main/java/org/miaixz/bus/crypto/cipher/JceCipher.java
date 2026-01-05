@@ -70,21 +70,48 @@ public class JceCipher extends SimpleWrapper<javax.crypto.Cipher> implements Cip
         super(Assert.notNull(cipher));
     }
 
+    /**
+     * Returns the algorithm name. This method is designed to be overridden by subclasses. Implementations should return
+     * the name of the algorithm used by this cipher.
+     *
+     * @return the algorithm name
+     */
     @Override
     public String getAlgorithm() {
         return this.raw.getAlgorithm();
     }
 
+    /**
+     * Returns the block size in bytes. This method is designed to be overridden by subclasses. Implementations should
+     * return the block size of the cipher.
+     *
+     * @return the block size in bytes, or 0 if the underlying algorithm is not a block cipher
+     */
     @Override
     public int getBlockSize() {
         return this.raw.getBlockSize();
     }
 
+    /**
+     * Returns the output buffer length required for processing the given input length. This method is designed to be
+     * overridden by subclasses. Implementations should calculate the output size based on the cipher's padding and
+     * mode.
+     *
+     * @param len the input length
+     * @return the output buffer length
+     */
     @Override
     public int getOutputSize(final int len) {
         return this.raw.getOutputSize(len);
     }
 
+    /**
+     * Initializes the cipher for encryption or decryption. This method is designed to be overridden by subclasses.
+     * Implementations should properly initialize the cipher with the given mode and parameters.
+     *
+     * @param mode       The operation mode (ENCRYPT_MODE or DECRYPT_MODE).
+     * @param parameters The cipher parameters including key and algorithm parameters.
+     */
     @Override
     public void init(final Algorithm.Type mode, final Parameters parameters) {
         Assert.isInstanceOf(JceParameters.class, parameters, "Only support JceParameters!");
@@ -169,6 +196,17 @@ public class JceCipher extends SimpleWrapper<javax.crypto.Cipher> implements Cip
         }
     }
 
+    /**
+     * Continues a multi-part encryption or decryption operation. This method is designed to be overridden by
+     * subclasses. Implementations should process the given input data and return the result.
+     *
+     * @param in     The input buffer.
+     * @param inOff  The offset in the input buffer where the data begins.
+     * @param len    The length of the data to process.
+     * @param out    The output buffer where the result should be stored.
+     * @param outOff The offset in the output buffer where the result should be stored.
+     * @return The number of bytes stored in the {@code out} buffer.
+     */
     @Override
     public int process(final byte[] in, final int inOff, final int len, final byte[] out, final int outOff) {
         try {
@@ -178,6 +216,14 @@ public class JceCipher extends SimpleWrapper<javax.crypto.Cipher> implements Cip
         }
     }
 
+    /**
+     * Finishes a multi-part encryption or decryption operation. This method is designed to be overridden by subclasses.
+     * Implementations should finalize the cipher operation and write any remaining output data.
+     *
+     * @param out    The output buffer.
+     * @param outOff The offset in the output buffer where the result should be stored.
+     * @return The number of bytes stored in the {@code out} buffer.
+     */
     @Override
     public int doFinal(final byte[] out, final int outOff) {
         try {
@@ -187,6 +233,15 @@ public class JceCipher extends SimpleWrapper<javax.crypto.Cipher> implements Cip
         }
     }
 
+    /**
+     * Processes the final data block and finishes the encryption or decryption operation. This method is designed to be
+     * overridden by subclasses. Implementations should process the final data block and return the complete result.
+     *
+     * @param data     The input data.
+     * @param inOffset The offset in the input data where processing should begin.
+     * @param inputLen The length of the input data to process.
+     * @return The result of the encryption or decryption operation.
+     */
     @Override
     public byte[] processFinal(final byte[] data, final int inOffset, final int inputLen) {
         try {

@@ -156,10 +156,9 @@ public class ZookeeperMetrics implements Metrics {
     }
 
     /**
-     * {@inheritDoc}
+     * Increments the hit counter for the specified pattern by adding the count to a queue.
      * <p>
-     * Increments the hit counter for the specified pattern by adding the count to a queue. The count is asynchronously
-     * written to ZooKeeper in batches.
+     * The count is asynchronously written to ZooKeeper in batches.
      * </p>
      *
      * @param pattern The cache pattern name (e.g., cache name).
@@ -173,10 +172,9 @@ public class ZookeeperMetrics implements Metrics {
     }
 
     /**
-     * {@inheritDoc}
+     * Increments the request counter for the specified pattern by adding the count to a queue.
      * <p>
-     * Increments the request counter for the specified pattern by adding the count to a queue. The count is
-     * asynchronously written to ZooKeeper in batches.
+     * The count is asynchronously written to ZooKeeper in batches.
      * </p>
      *
      * @param pattern The cache pattern name (e.g., cache name).
@@ -190,10 +188,9 @@ public class ZookeeperMetrics implements Metrics {
     }
 
     /**
-     * {@inheritDoc}
+     * Retrieves the current hit statistics for all cache patterns from ZooKeeper.
      * <p>
-     * Retrieves the current hit statistics for all cache patterns from ZooKeeper. This method reads the distributed
-     * counters and calculates the hit rate.
+     * This method reads the distributed counters and calculates the hit rate.
      * </p>
      *
      * @return A map of cache patterns to their {@link Snapshot} statistics, including a summary entry.
@@ -221,10 +218,7 @@ public class ZookeeperMetrics implements Metrics {
     }
 
     /**
-     * {@inheritDoc}
-     * <p>
      * Resets the distributed counters for the specified pattern to zero.
-     * </p>
      *
      * @param pattern The cache pattern to reset.
      */
@@ -235,10 +229,7 @@ public class ZookeeperMetrics implements Metrics {
     }
 
     /**
-     * {@inheritDoc}
-     * <p>
      * Resets all distributed counters for all patterns to zero.
-     * </p>
      */
     @Override
     public void resetAll() {

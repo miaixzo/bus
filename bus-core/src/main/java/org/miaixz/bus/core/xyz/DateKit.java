@@ -45,10 +45,6 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import org.miaixz.bus.core.center.date.*;
 import org.miaixz.bus.core.center.date.Calendar;
 import org.miaixz.bus.core.center.date.Formatter;
-import org.miaixz.bus.core.center.date.Quarter;
-import org.miaixz.bus.core.center.date.Units;
-import org.miaixz.bus.core.center.date.Various;
-import org.miaixz.bus.core.center.date.Week;
 import org.miaixz.bus.core.center.date.format.FormatBuilder;
 import org.miaixz.bus.core.center.date.format.FormatManager;
 import org.miaixz.bus.core.center.date.format.FormatPeriod;
@@ -498,6 +494,8 @@ public class DateKit extends Calendar {
     }
 
     /**
+     * Gets the current year.
+     *
      * @return The current year.
      */
     public static int thisYear() {
@@ -523,6 +521,8 @@ public class DateKit extends Calendar {
     }
 
     /**
+     * Gets the current week of the year.
+     *
      * @return The current week of the year.
      */
     public static int thisWeekOfYear() {
@@ -530,6 +530,8 @@ public class DateKit extends Calendar {
     }
 
     /**
+     * Gets the current week of the month.
+     *
      * @return The current week of the month.
      */
     public static int thisWeekOfMonth() {
@@ -537,6 +539,8 @@ public class DateKit extends Calendar {
     }
 
     /**
+     * Gets the current day of the month.
+     *
      * @return The current day of the month.
      */
     public static int thisDayOfMonth() {
@@ -544,6 +548,8 @@ public class DateKit extends Calendar {
     }
 
     /**
+     * Gets the current day of the week.
+     *
      * @return The current day of the week.
      */
     public static int thisDayOfWeek() {
@@ -551,6 +557,8 @@ public class DateKit extends Calendar {
     }
 
     /**
+     * Gets the current day of the week as a {@link Week} enum.
+     *
      * @return The current day of the week as a {@link Week} enum.
      */
     public static Week thisDayOfWeekEnum() {
@@ -558,6 +566,8 @@ public class DateKit extends Calendar {
     }
 
     /**
+     * Gets the current hour.
+     *
      * @param is24HourClock If true, returns the hour in 24-hour format.
      * @return The current hour.
      */
@@ -566,6 +576,8 @@ public class DateKit extends Calendar {
     }
 
     /**
+     * Gets the current minute.
+     *
      * @return The current minute.
      */
     public static int thisMinute() {
@@ -573,6 +585,8 @@ public class DateKit extends Calendar {
     }
 
     /**
+     * Gets the current second.
+     *
      * @return The current second.
      */
     public static int thisSecond() {
@@ -580,6 +594,8 @@ public class DateKit extends Calendar {
     }
 
     /**
+     * Gets the current millisecond.
+     *
      * @return The current millisecond.
      */
     public static int thisMillisecond() {
@@ -945,6 +961,8 @@ public class DateKit extends Calendar {
     }
 
     /**
+     * Gets yesterday's date.
+     *
      * @return Yesterday's date.
      */
     public static DateTime yesterday() {
@@ -952,6 +970,8 @@ public class DateKit extends Calendar {
     }
 
     /**
+     * Gets tomorrow's date.
+     *
      * @return Tomorrow's date.
      */
     public static DateTime tomorrow() {
@@ -959,6 +979,8 @@ public class DateKit extends Calendar {
     }
 
     /**
+     * Gets last week's date.
+     *
      * @return Last week's date.
      */
     public static DateTime lastWeek() {
@@ -966,6 +988,8 @@ public class DateKit extends Calendar {
     }
 
     /**
+     * Gets next week's date.
+     *
      * @return Next week's date.
      */
     public static DateTime nextWeek() {
@@ -973,6 +997,8 @@ public class DateKit extends Calendar {
     }
 
     /**
+     * Gets last month's date.
+     *
      * @return Last month's date.
      */
     public static DateTime lastMonth() {
@@ -980,6 +1006,8 @@ public class DateKit extends Calendar {
     }
 
     /**
+     * Gets next month's date.
+     *
      * @return Next month's date.
      */
     public static DateTime nextMonth() {
@@ -1094,11 +1122,12 @@ public class DateKit extends Calendar {
      *
      * @param beginDate The start date.
      * @param endDate   The end date.
-     * @param unit      The time unit for the difference.
-     * @return The difference.
+     * @param chrono    The chronological unit for measuring the time difference (e.g., {@link Chrono#MILLISECOND},
+     *                  {@link Chrono#SECOND}, {@link Chrono#MINUTE}, {@link Chrono#HOUR}, {@link Chrono#DAY}).
+     * @return The difference in the specified unit.
      */
-    public static long between(final Date beginDate, final Date endDate, final Units unit) {
-        return between(beginDate, endDate, unit, true);
+    public static long between(final Date beginDate, final Date endDate, final Chrono chrono) {
+        return between(beginDate, endDate, chrono, true);
     }
 
     /**
@@ -1106,12 +1135,13 @@ public class DateKit extends Calendar {
      *
      * @param beginDate The start date.
      * @param endDate   The end date.
-     * @param unit      The time unit for the difference.
-     * @param isAbs     If true, returns the absolute difference.
-     * @return The difference.
+     * @param chrono    The chronological unit for measuring the time difference (e.g., {@link Chrono#MILLISECOND},
+     *                  {@link Chrono#SECOND}, {@link Chrono#MINUTE}, {@link Chrono#HOUR}, {@link Chrono#DAY}).
+     * @param isAbs     If true, returns the absolute difference; otherwise, returns signed difference.
+     * @return The difference in the specified unit.
      */
-    public static long between(final Date beginDate, final Date endDate, final Units unit, final boolean isAbs) {
-        return new Between(beginDate, endDate, isAbs).between(unit);
+    public static long between(final Date beginDate, final Date endDate, final Chrono chrono, final boolean isAbs) {
+        return new Between(beginDate, endDate, isAbs).between(chrono);
     }
 
     /**
@@ -1122,7 +1152,7 @@ public class DateKit extends Calendar {
      * @return The difference in milliseconds.
      */
     public static long betweenMs(final Date beginDate, final Date endDate) {
-        return new Between(beginDate, endDate).between(Units.MS);
+        return new Between(beginDate, endDate).between(Chrono.MILLISECOND);
     }
 
     /**
@@ -1138,7 +1168,7 @@ public class DateKit extends Calendar {
             beginDate = beginOfDay(beginDate);
             endDate = beginOfDay(endDate);
         }
-        return between(beginDate, endDate, Units.DAY);
+        return between(beginDate, endDate, Chrono.DAY);
     }
 
     /**
@@ -1154,7 +1184,7 @@ public class DateKit extends Calendar {
             beginDate = beginOfDay(beginDate);
             endDate = beginOfDay(endDate);
         }
-        return between(beginDate, endDate, Units.WEEK);
+        return between(beginDate, endDate, Chrono.WEEK);
     }
 
     /**
@@ -1186,11 +1216,13 @@ public class DateKit extends Calendar {
      *
      * @param beginDate The start date.
      * @param endDate   The end date.
-     * @param level     The level of precision.
+     * @param chrono    The level of precision, representing the smallest chronological unit to display (e.g.,
+     *                  {@link Chrono#MILLISECOND}, {@link Chrono#SECOND}, {@link Chrono#MINUTE}, {@link Chrono#HOUR},
+     *                  {@link Chrono#DAY}).
      * @return The formatted string (e.g., "XX days XX hours XX minutes XX seconds").
      */
-    public static String formatBetween(final Date beginDate, final Date endDate, final FormatPeriod.Level level) {
-        return formatBetween(between(beginDate, endDate, Units.MS), level);
+    public static String formatBetween(final Date beginDate, final Date endDate, final Chrono chrono) {
+        return formatBetween(between(beginDate, endDate, Chrono.MILLISECOND), chrono);
     }
 
     /**
@@ -1201,18 +1233,20 @@ public class DateKit extends Calendar {
      * @return The formatted string.
      */
     public static String formatBetween(final Date beginDate, final Date endDate) {
-        return formatBetween(between(beginDate, endDate, Units.MS));
+        return formatBetween(between(beginDate, endDate, Chrono.MILLISECOND));
     }
 
     /**
      * Formats a duration in milliseconds into a human-readable string.
      *
      * @param betweenMs The duration in milliseconds.
-     * @param level     The level of precision.
+     * @param chrono    The level of precision, representing the smallest chronological unit to display (e.g.,
+     *                  {@link Chrono#MILLISECOND}, {@link Chrono#SECOND}, {@link Chrono#MINUTE}, {@link Chrono#HOUR},
+     *                  {@link Chrono#DAY}).
      * @return The formatted string.
      */
-    public static String formatBetween(final long betweenMs, final FormatPeriod.Level level) {
-        return FormatPeriod.of(betweenMs, level).format();
+    public static String formatBetween(final long betweenMs, final Chrono chrono) {
+        return FormatPeriod.of(betweenMs, chrono).format();
     }
 
     /**
@@ -1222,7 +1256,7 @@ public class DateKit extends Calendar {
      * @return The formatted string.
      */
     public static String formatBetween(final long betweenMs) {
-        return FormatPeriod.of(betweenMs, FormatPeriod.Level.MILLISECOND).format();
+        return FormatPeriod.of(betweenMs, Chrono.MILLISECOND).format();
     }
 
     /**

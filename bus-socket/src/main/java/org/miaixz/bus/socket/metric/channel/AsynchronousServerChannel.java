@@ -110,7 +110,7 @@ class AsynchronousServerChannel extends AsynchronousSocketChannel {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @throws IOException if an I/O error occurs while closing the channel
      */
@@ -145,7 +145,7 @@ class AsynchronousServerChannel extends AsynchronousSocketChannel {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @param local the local address to bind to
      * @return this channel
@@ -158,7 +158,7 @@ class AsynchronousServerChannel extends AsynchronousSocketChannel {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @param <T>   the type of the socket option value
      * @param name  the socket option
@@ -173,7 +173,7 @@ class AsynchronousServerChannel extends AsynchronousSocketChannel {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @param <T>  the type of the socket option value
      * @param name the socket option
@@ -186,7 +186,7 @@ class AsynchronousServerChannel extends AsynchronousSocketChannel {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @return a set of the socket options supported by this channel
      */
@@ -196,7 +196,7 @@ class AsynchronousServerChannel extends AsynchronousSocketChannel {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @return this channel
      * @throws IOException if an I/O error occurs
@@ -208,7 +208,7 @@ class AsynchronousServerChannel extends AsynchronousSocketChannel {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @return this channel
      * @throws IOException if an I/O error occurs
@@ -220,7 +220,7 @@ class AsynchronousServerChannel extends AsynchronousSocketChannel {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @return the remote address, or {@code null} if the channel is not connected
      * @throws IOException if an I/O error occurs
@@ -231,7 +231,7 @@ class AsynchronousServerChannel extends AsynchronousSocketChannel {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * This operation is not supported for server channels.
      * </p>
@@ -248,7 +248,7 @@ class AsynchronousServerChannel extends AsynchronousSocketChannel {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * This operation is not supported for server channels.
      * </p>
@@ -263,7 +263,7 @@ class AsynchronousServerChannel extends AsynchronousSocketChannel {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * Timeout is not supported for read operations in this implementation.
      * </p>
@@ -312,7 +312,7 @@ class AsynchronousServerChannel extends AsynchronousSocketChannel {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @param readBuffer the buffer into which bytes are to be transferred
      * @return a {@link Future} representing the pending result
@@ -325,7 +325,7 @@ class AsynchronousServerChannel extends AsynchronousSocketChannel {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * Scattering read is not supported in this implementation.
      * </p>
@@ -353,7 +353,7 @@ class AsynchronousServerChannel extends AsynchronousSocketChannel {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * Timeout is not supported for write operations in this implementation.
      * </p>
@@ -403,7 +403,7 @@ class AsynchronousServerChannel extends AsynchronousSocketChannel {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * Future-based write is not supported in this implementation.
      * </p>
@@ -418,7 +418,7 @@ class AsynchronousServerChannel extends AsynchronousSocketChannel {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * Gathering write is not supported in this implementation.
      * </p>
@@ -446,7 +446,7 @@ class AsynchronousServerChannel extends AsynchronousSocketChannel {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @return the local address, or {@code null} if the channel is not bound
      * @throws IOException if an I/O error occurs
@@ -623,7 +623,7 @@ class AsynchronousServerChannel extends AsynchronousSocketChannel {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @return {@code true} if, and only if, this channel is open
      */

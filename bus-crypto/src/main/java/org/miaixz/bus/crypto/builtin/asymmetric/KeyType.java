@@ -51,6 +51,9 @@ public enum KeyType {
      */
     SecretKey(Cipher.SECRET_KEY);
 
+    /**
+     * The integer value representing the key type.
+     */
     private final int value;
 
     /**

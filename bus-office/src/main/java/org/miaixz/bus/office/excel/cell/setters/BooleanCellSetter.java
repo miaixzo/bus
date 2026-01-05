@@ -52,7 +52,7 @@ public class BooleanCellSetter implements CellSetter {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @param cell the cell to set the boolean value in
      */

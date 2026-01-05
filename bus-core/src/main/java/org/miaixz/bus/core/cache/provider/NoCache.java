@@ -121,11 +121,21 @@ public class NoCache<K, V> implements Cache<K, V> {
     public Iterator<V> iterator() {
         return new Iterator<>() {
 
+            /**
+             * Returns true if the iteration has more elements.
+             *
+             * @return true if the iteration has more elements
+             */
             @Override
             public boolean hasNext() {
                 return false;
             }
 
+            /**
+             * Returns the next element in the iteration.
+             *
+             * @return the next element
+             */
             @Override
             public V next() {
                 throw new NoSuchElementException();

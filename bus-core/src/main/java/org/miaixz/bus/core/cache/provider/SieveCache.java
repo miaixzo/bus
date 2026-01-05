@@ -100,6 +100,13 @@ public class SieveCache<K, V> extends LockedCache<K, V> {
         this.lock = new ReentrantLock();
     }
 
+    /**
+     * Puts a value in the cache without acquiring a lock.
+     *
+     * @param key     the key
+     * @param object  the value
+     * @param timeout the timeout
+     */
     @Override
     protected void putWithoutLock(final K key, final V object, final long timeout) {
         final Mutable<K> keyObject = MutableObject.of(key);
@@ -160,6 +167,12 @@ public class SieveCache<K, V> extends LockedCache<K, V> {
         oldNode.next = null;
     }
 
+    /**
+     * Gets or removes an expired entry without acquiring a lock.
+     *
+     * @param key the key
+     * @return the cache object, or null if not found or expired
+     */
     @Override
     protected CacheObject<K, V> getOrRemoveExpiredWithoutLock(final K key) {
         final Mutable<K> keyObject = MutableObject.of(key);
@@ -177,6 +190,12 @@ public class SieveCache<K, V> extends LockedCache<K, V> {
         return co;
     }
 
+    /**
+     * Removes an entry from the cache without acquiring a lock.
+     *
+     * @param key the key
+     * @return the removed cache object
+     */
     @Override
     protected CacheObject<K, V> removeWithoutLock(final K key) {
         final Mutable<K> keyObject = MutableObject.of(key);

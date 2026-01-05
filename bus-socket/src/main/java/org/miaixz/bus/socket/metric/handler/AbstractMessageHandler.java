@@ -53,7 +53,7 @@ public abstract class AbstractMessageHandler<T> implements Handler<T>, Monitor {
     private final List<Plugin<T>> plugins = new ArrayList<>();
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * This implementation notifies all registered plugins after a read operation completes.
      * </p>
@@ -69,7 +69,7 @@ public abstract class AbstractMessageHandler<T> implements Handler<T>, Monitor {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * This implementation notifies all registered plugins after a write operation completes.
      * </p>
@@ -85,7 +85,7 @@ public abstract class AbstractMessageHandler<T> implements Handler<T>, Monitor {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * This implementation notifies all registered plugins before a read operation begins.
      * </p>
@@ -100,7 +100,7 @@ public abstract class AbstractMessageHandler<T> implements Handler<T>, Monitor {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * This implementation notifies all registered plugins before a write operation begins.
      * </p>
@@ -115,7 +115,7 @@ public abstract class AbstractMessageHandler<T> implements Handler<T>, Monitor {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * This implementation passes the channel through all registered plugins, allowing each to accept, reject, or wrap
      * the channel. If any plugin returns {@code null}, the connection is rejected.
@@ -137,7 +137,7 @@ public abstract class AbstractMessageHandler<T> implements Handler<T>, Monitor {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * This implementation passes the message through all registered plugins. If all plugins return {@code true}, the
      * message is forwarded to {@link #process0(Session, Object)} for business logic processing.

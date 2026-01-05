@@ -89,7 +89,7 @@ final class MacComputerSystem extends AbstractComputerSystem {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public String getManufacturer() {
@@ -97,7 +97,7 @@ final class MacComputerSystem extends AbstractComputerSystem {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public String getModel() {
@@ -105,7 +105,7 @@ final class MacComputerSystem extends AbstractComputerSystem {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public String getSerialNumber() {
@@ -113,7 +113,7 @@ final class MacComputerSystem extends AbstractComputerSystem {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public String getHardwareUUID() {
@@ -121,7 +121,7 @@ final class MacComputerSystem extends AbstractComputerSystem {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public Firmware createFirmware() {
@@ -129,7 +129,7 @@ final class MacComputerSystem extends AbstractComputerSystem {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public Baseboard createBaseboard() {

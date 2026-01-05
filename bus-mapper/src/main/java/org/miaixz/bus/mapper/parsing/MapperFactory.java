@@ -58,10 +58,10 @@ public abstract class MapperFactory {
      * @return The entity class metadata.
      * @throws RuntimeException if the corresponding entity class cannot be determined.
      */
-    public static TableMeta create(Class<?> mapperType, Method mapperMethod) {
+    public static TableMeta of(Class<?> mapperType, Method mapperMethod) {
         Optional<Class<?>> optionalClass = ClassMetaResolver.find(mapperType, mapperMethod);
         if (optionalClass.isPresent()) {
-            return create(optionalClass.getOrNull());
+            return of(optionalClass.getOrNull());
         }
         throw new RuntimeException("Can't obtain " + (mapperMethod != null ? mapperMethod.getName() + " method"
                 : mapperType.getSimpleName() + " interface") + " corresponding entity class");
@@ -74,7 +74,7 @@ public abstract class MapperFactory {
      * @return The entity class metadata.
      * @throws NullPointerException if the entity class information cannot be obtained.
      */
-    public static TableMeta create(Class<?> entityClass) {
+    public static TableMeta of(Class<?> entityClass) {
         // Create TableMeta without processing columns (fields); the returned TableMeta has been processed by all
         // chains.
         TableMeta tableMeta = Holder.TABLE_SCHEMA_CHAIN.createTable(entityClass);

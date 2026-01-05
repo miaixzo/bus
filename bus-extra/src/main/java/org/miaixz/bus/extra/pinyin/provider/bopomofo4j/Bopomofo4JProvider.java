@@ -64,6 +64,16 @@ public class Bopomofo4JProvider implements PinyinProvider {
         Bopomofo4j.local();
     }
 
+    /**
+     * Gets the pinyin of a single character. This method is designed to be overridden by subclasses for custom pinyin
+     * conversion.
+     *
+     * Subclasses may override to add custom conversion logic.
+     *
+     * @param c    The character to convert.
+     * @param tone Whether to include tone marks.
+     * @return The pinyin string.
+     */
     @Override
     public String getPinyin(final char c, final boolean tone) {
         return Bopomofo4j.pinyin(
@@ -74,6 +84,16 @@ public class Bopomofo4JProvider implements PinyinProvider {
                 Normal.EMPTY);
     }
 
+    /**
+     * Gets the pinyin of a string. This method is designed to be overridden by subclasses for custom pinyin conversion.
+     *
+     * Subclasses may override to add custom conversion logic.
+     *
+     * @param str       The string to convert.
+     * @param separator The separator to use between pinyin strings.
+     * @param tone      Whether to include tone marks.
+     * @return The pinyin string.
+     */
     @Override
     public String getPinyin(final String str, final String separator, final boolean tone) {
         return Bopomofo4j.pinyin(str, tone ? ToneType.WITH_VOWEL_TONE : ToneType.WITHOUT_TONE, false, false, separator);

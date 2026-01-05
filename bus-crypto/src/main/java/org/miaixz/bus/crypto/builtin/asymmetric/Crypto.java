@@ -270,11 +270,11 @@ public class Crypto extends AbstractCrypto<Crypto> {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
-     * @param algorithm {@inheritDoc}
-     * @param keyPair   {@inheritDoc}
-     * @return {@inheritDoc}
+     * @param algorithm Description inherited from parent class or interface.
+     * @param keyPair   Description inherited from parent class or interface.
+     * @return Description inherited from parent class or interface.
      */
     @Override
     public Crypto init(final String algorithm, final KeyPair keyPair) {
@@ -284,11 +284,11 @@ public class Crypto extends AbstractCrypto<Crypto> {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
-     * @param data    {@inheritDoc}
-     * @param keyType {@inheritDoc}
-     * @return {@inheritDoc}
+     * @param data    Description inherited from parent class or interface.
+     * @param keyType Description inherited from parent class or interface.
+     * @return Description inherited from parent class or interface.
      */
     @Override
     public byte[] encrypt(final byte[] data, final KeyType keyType) {
@@ -314,11 +314,11 @@ public class Crypto extends AbstractCrypto<Crypto> {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
-     * @param data    {@inheritDoc}
-     * @param keyType {@inheritDoc}
-     * @return {@inheritDoc}
+     * @param data    Description inherited from parent class or interface.
+     * @param keyType Description inherited from parent class or interface.
+     * @return Description inherited from parent class or interface.
      */
     @Override
     public byte[] decrypt(final byte[] data, final KeyType keyType) {

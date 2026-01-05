@@ -69,6 +69,11 @@ public class NullCompare<T> implements Comparator<T>, Serializable {
         this.comparator = (Comparator<T>) comparator;
     }
 
+    /**
+     * Compare method.
+     *
+     * @return the int value
+     */
     @Override
     public int compare(final T a, final T b) {
         if (a == b) {
@@ -83,6 +88,11 @@ public class NullCompare<T> implements Comparator<T>, Serializable {
         }
     }
 
+    /**
+     * Thencomparing method.
+     *
+     * @return the Comparator&lt;T&gt; value
+     */
     @Override
     public Comparator<T> thenComparing(final Comparator<? super T> other) {
         Objects.requireNonNull(other);

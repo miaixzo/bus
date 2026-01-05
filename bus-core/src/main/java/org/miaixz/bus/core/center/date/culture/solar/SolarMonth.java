@@ -152,6 +152,11 @@ public class SolarMonth extends MonthParts {
         return NAMES[getIndexInYear()];
     }
 
+    /**
+     * Returns the string representation of this object.
+     *
+     * @return the string representation
+     */
     @Override
     public String toString() {
         return getSolarYear() + getName();

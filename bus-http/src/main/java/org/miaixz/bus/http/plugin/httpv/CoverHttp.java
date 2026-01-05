@@ -753,8 +753,8 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
             if (null != bodyParams) {
                 for (String name : bodyParams.keySet()) {
                     byte[] value = bodyParams.get(name).getBytes(charset);
-                    RequestBody body = RequestBody.create(null, value);
-                    builder.addPart(MultipartBody.Part.createFormData(name, null, body));
+                    RequestBody body = RequestBody.of(null, value);
+                    builder.addPart(MultipartBody.Part.formData(name, null, body));
                 }
             }
             for (String name : files.keySet()) {
@@ -762,9 +762,9 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
                 MediaType type = httpv.contentType(file.type);
                 RequestBody bodyPart;
                 if (null != file.file) {
-                    bodyPart = RequestBody.create(type, file.file);
+                    bodyPart = RequestBody.of(type, file.file);
                 } else {
-                    bodyPart = RequestBody.create(type, file.content);
+                    bodyPart = RequestBody.of(type, file.content);
                 }
                 builder.addFormDataPart(name, file.fileName, bodyPart);
             }
@@ -796,14 +796,14 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
     private RequestBody toRequestBody(Object object) {
         if (object instanceof byte[] || object instanceof String) {
             byte[] body = object instanceof byte[] ? (byte[]) object : ((String) object).getBytes(charset);
-            return RequestBody.create(
+            return RequestBody.of(
                     MediaType.valueOf(
                             httpv.executor().doMsgConvert(bodyType, null).contentType + "; charset=" + charset.name()),
                     body);
         }
         CoverTasks.Executor.Data<byte[]> data = httpv.executor()
                 .doMsgConvert(bodyType, (Convertor c) -> c.serialize(object, dateFormat, charset));
-        return RequestBody.create(MediaType.valueOf(data.contentType + "; charset=" + charset.name()), data.data);
+        return RequestBody.of(MediaType.valueOf(data.contentType + "; charset=" + charset.name()), data.data);
     }
 
     /**

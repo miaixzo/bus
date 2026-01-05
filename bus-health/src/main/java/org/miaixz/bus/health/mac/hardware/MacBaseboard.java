@@ -100,7 +100,7 @@ final class MacBaseboard extends AbstractBaseboard {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public String getManufacturer() {
@@ -108,7 +108,7 @@ final class MacBaseboard extends AbstractBaseboard {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public String getModel() {
@@ -116,7 +116,7 @@ final class MacBaseboard extends AbstractBaseboard {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public String getVersion() {
@@ -124,7 +124,7 @@ final class MacBaseboard extends AbstractBaseboard {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public String getSerialNumber() {

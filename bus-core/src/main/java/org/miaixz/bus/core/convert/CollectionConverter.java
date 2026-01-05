@@ -97,8 +97,7 @@ public class CollectionConverter implements MatcherConverter, Serializable {
      */
     public Collection<?> convert(final Type collectionType, final Type elementType, final Object value) {
         // Create a new collection instance, compatible with EnumSet.
-        final Collection<?> collection = CollKit
-                .create(TypeKit.getClass(collectionType), TypeKit.getClass(elementType));
+        final Collection<?> collection = CollKit.of(TypeKit.getClass(collectionType), TypeKit.getClass(elementType));
         // Add all elements from the value, converting them to the target element type.
         return CollKit.addAll(collection, value, elementType);
     }

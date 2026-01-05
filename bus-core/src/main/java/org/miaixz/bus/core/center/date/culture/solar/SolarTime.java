@@ -118,6 +118,11 @@ public class SolarTime extends SecondParts {
         return String.format("%02d:%02d:%02d", hour, minute, second);
     }
 
+    /**
+     * Returns the string representation of this object.
+     *
+     * @return the string representation
+     */
     @Override
     public String toString() {
         return String.format("%s %s", getSolarDay(), getName());

@@ -163,7 +163,7 @@ public class MapTree<T> extends LinkedHashMap<String, Object> implements Node<T>
     }
 
     /**
-     * {@inheritDoc}
+     * Gets the unique identifier of this node.
      */
     @Override
     public T getId() {
@@ -171,7 +171,10 @@ public class MapTree<T> extends LinkedHashMap<String, Object> implements Node<T>
     }
 
     /**
-     * {@inheritDoc}
+     * Sets the unique identifier of this node.
+     *
+     * @param id The unique identifier.
+     * @return this
      */
     @Override
     public MapTree<T> setId(final T id) {
@@ -180,7 +183,7 @@ public class MapTree<T> extends LinkedHashMap<String, Object> implements Node<T>
     }
 
     /**
-     * {@inheritDoc}
+     * Gets the identifier of this node's parent.
      */
     @Override
     public T getParentId() {
@@ -188,7 +191,10 @@ public class MapTree<T> extends LinkedHashMap<String, Object> implements Node<T>
     }
 
     /**
-     * {@inheritDoc}
+     * Sets the identifier of this node's parent.
+     *
+     * @param parentId The parent node's identifier.
+     * @return this
      */
     @Override
     public MapTree<T> setParentId(final T parentId) {
@@ -197,7 +203,7 @@ public class MapTree<T> extends LinkedHashMap<String, Object> implements Node<T>
     }
 
     /**
-     * {@inheritDoc}
+     * Gets the name of this node.
      */
     @Override
     public CharSequence getName() {
@@ -205,7 +211,10 @@ public class MapTree<T> extends LinkedHashMap<String, Object> implements Node<T>
     }
 
     /**
-     * {@inheritDoc}
+     * Sets the name of this node.
+     *
+     * @param name The node name.
+     * @return this
      */
     @Override
     public MapTree<T> setName(final CharSequence name) {
@@ -214,7 +223,7 @@ public class MapTree<T> extends LinkedHashMap<String, Object> implements Node<T>
     }
 
     /**
-     * {@inheritDoc}
+     * Gets the weight of this node used for sorting.
      */
     @Override
     public Comparable<?> getWeight() {
@@ -222,7 +231,10 @@ public class MapTree<T> extends LinkedHashMap<String, Object> implements Node<T>
     }
 
     /**
-     * {@inheritDoc}
+     * Sets the weight of this node used for sorting.
+     *
+     * @param weight The weight value.
+     * @return this
      */
     @Override
     public MapTree<T> setWeight(final Comparable<?> weight) {
@@ -388,7 +400,7 @@ public class MapTree<T> extends LinkedHashMap<String, Object> implements Node<T>
     }
 
     /**
-     * {@inheritDoc}
+     * Returns a string representation of this tree node.
      */
     @Override
     public String toString() {

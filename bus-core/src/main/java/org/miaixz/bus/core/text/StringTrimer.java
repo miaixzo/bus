@@ -82,6 +82,11 @@ public class StringTrimer implements UnaryOperator<CharSequence>, Serializable {
         this.predicate = predicate;
     }
 
+    /**
+     * Apply method.
+     *
+     * @return the String value
+     */
     @Override
     public String apply(final CharSequence text) {
         if (StringKit.isEmpty(text)) {

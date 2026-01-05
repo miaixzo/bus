@@ -327,7 +327,7 @@ public abstract class EventListener {
          * @param call The call information.
          * @return The listener.
          */
-        EventListener create(NewCall call);
+        EventListener of(NewCall call);
     }
 
 }

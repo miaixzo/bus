@@ -161,7 +161,7 @@ public class CsvReader extends CsvBaseReader implements Iterable<CsvRow>, Closea
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @return iterator over CSV rows
      */
@@ -171,7 +171,7 @@ public class CsvReader extends CsvBaseReader implements Iterable<CsvRow>, Closea
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public void close() {

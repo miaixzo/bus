@@ -151,7 +151,7 @@ public abstract class AbstractPlugin<T> implements Plugin<T> {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * This default implementation always returns {@code true}, allowing the message processing pipeline to continue.
      * Subclasses can override this method to implement custom message filtering or preprocessing logic.
@@ -167,7 +167,7 @@ public abstract class AbstractPlugin<T> implements Plugin<T> {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * This default implementation does nothing. Subclasses can override to handle specific state events.
      * </p>
@@ -182,7 +182,7 @@ public abstract class AbstractPlugin<T> implements Plugin<T> {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * This default implementation returns the channel unchanged, allowing all connections. Subclasses can override to
      * implement connection filtering or wrapping logic.
@@ -197,7 +197,7 @@ public abstract class AbstractPlugin<T> implements Plugin<T> {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * This default implementation does nothing. Subclasses can override to perform custom post-read operations.
      * </p>
@@ -211,7 +211,7 @@ public abstract class AbstractPlugin<T> implements Plugin<T> {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * This default implementation does nothing. Subclasses can override to perform custom post-write operations.
      * </p>
@@ -225,7 +225,7 @@ public abstract class AbstractPlugin<T> implements Plugin<T> {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * This default implementation does nothing. Subclasses can override to perform custom pre-read operations.
      * </p>
@@ -238,7 +238,7 @@ public abstract class AbstractPlugin<T> implements Plugin<T> {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * This default implementation does nothing. Subclasses can override to perform custom pre-write operations.
      * </p>

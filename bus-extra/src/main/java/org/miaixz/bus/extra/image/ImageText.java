@@ -191,6 +191,10 @@ public class ImageText implements Serializable {
         this.alpha = alpha;
     }
 
+    /**
+     * Description inherited from parent class or interface.
+     *
+     */
     @Override
     public boolean equals(final Object o) {
         if (this == o) {
@@ -205,11 +209,19 @@ public class ImageText implements Serializable {
                 && Objects.equals(point, that.point);
     }
 
+    /**
+     * Description inherited from parent class or interface.
+     *
+     */
     @Override
     public int hashCode() {
         return Objects.hash(pressText, color, font, point, alpha);
     }
 
+    /**
+     * Description inherited from parent class or interface.
+     *
+     */
     @Override
     public String toString() {
         return "ImageText{" + "pressText='" + pressText + '\'' + ", color=" + color + ", font=" + font + ", point="

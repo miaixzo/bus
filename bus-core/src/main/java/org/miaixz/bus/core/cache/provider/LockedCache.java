@@ -62,7 +62,7 @@ public abstract class LockedCache<K, V> extends AbstractCache<K, V> {
     protected Lock lock = new ReentrantLock();
 
     /**
-     * {@inheritDoc}
+     * Adds a value to the cache with the specified timeout.
      */
     @Override
     public void put(final K key, final V object, final long timeout) {
@@ -75,7 +75,7 @@ public abstract class LockedCache<K, V> extends AbstractCache<K, V> {
     }
 
     /**
-     * {@inheritDoc}
+     * Checks if the cache contains the specified key.
      */
     @Override
     public boolean containsKey(final K key) {
@@ -83,7 +83,7 @@ public abstract class LockedCache<K, V> extends AbstractCache<K, V> {
     }
 
     /**
-     * {@inheritDoc}
+     * Gets a value from the cache.
      */
     @Override
     public V get(final K key, final boolean isUpdateLastAccess) {
@@ -91,7 +91,7 @@ public abstract class LockedCache<K, V> extends AbstractCache<K, V> {
     }
 
     /**
-     * {@inheritDoc}
+     * Gets a value from the cache, creating it if necessary using the provided supplier.
      */
     @Override
     public V get(final K key, final boolean isUpdateLastAccess, final long timeout, final SupplierX<V> supplier) {
@@ -118,7 +118,7 @@ public abstract class LockedCache<K, V> extends AbstractCache<K, V> {
     }
 
     /**
-     * {@inheritDoc}
+     * Returns an iterator over the cache objects.
      */
     @Override
     public Iterator<CacheObject<K, V>> cacheObjIterator() {
@@ -134,7 +134,7 @@ public abstract class LockedCache<K, V> extends AbstractCache<K, V> {
     }
 
     /**
-     * {@inheritDoc}
+     * Removes expired entries from the cache.
      */
     @Override
     public final int prune() {
@@ -147,7 +147,7 @@ public abstract class LockedCache<K, V> extends AbstractCache<K, V> {
     }
 
     /**
-     * {@inheritDoc}
+     * Removes a value from the cache.
      */
     @Override
     public void remove(final K key) {
@@ -164,7 +164,7 @@ public abstract class LockedCache<K, V> extends AbstractCache<K, V> {
     }
 
     /**
-     * {@inheritDoc}
+     * Removes all of the elements from this cache.
      */
     @Override
     public void clear() {
@@ -185,7 +185,7 @@ public abstract class LockedCache<K, V> extends AbstractCache<K, V> {
     }
 
     /**
-     * {@inheritDoc}
+     * Returns the string representation of this cache.
      */
     @Override
     public String toString() {

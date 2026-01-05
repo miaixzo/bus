@@ -87,7 +87,7 @@ public class TransCollection<F, T> extends AbstractCollection<T> {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * <p>
      * Returns an iterator that applies the transformation function to each element of the source collection as it is
@@ -99,7 +99,7 @@ public class TransCollection<F, T> extends AbstractCollection<T> {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * <p>
      * This operation clears the underlying source collection, effectively clearing this collection as well.
@@ -110,7 +110,7 @@ public class TransCollection<F, T> extends AbstractCollection<T> {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * <p>
      * This operation checks if the underlying source collection is empty.
@@ -121,7 +121,7 @@ public class TransCollection<F, T> extends AbstractCollection<T> {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * <p>
      * The specified action is applied to each transformed element of the collection. The transformation is performed
@@ -134,7 +134,7 @@ public class TransCollection<F, T> extends AbstractCollection<T> {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * <p>
      * Removes elements from the underlying source collection if their transformed value matches the given predicate.
@@ -147,7 +147,7 @@ public class TransCollection<F, T> extends AbstractCollection<T> {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * <p>
      * Returns a {@link Spliterator} that applies the transformation function to each element on-demand.
@@ -158,7 +158,7 @@ public class TransCollection<F, T> extends AbstractCollection<T> {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * <p>
      * This operation returns the size of the underlying source collection.

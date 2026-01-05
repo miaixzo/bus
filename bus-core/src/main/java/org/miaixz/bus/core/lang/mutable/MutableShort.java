@@ -83,6 +83,11 @@ public class MutableShort extends Number implements Comparable<MutableShort>, Mu
         this.value = Short.parseShort(value);
     }
 
+    /**
+     * Gets the value.
+     *
+     * @return the value
+     */
     @Override
     public Short get() {
         return this.value;
@@ -97,6 +102,9 @@ public class MutableShort extends Number implements Comparable<MutableShort>, Mu
         this.value = value;
     }
 
+    /**
+     * Set method.
+     */
     @Override
     public void set(final Number value) {
         this.value = value.shortValue();

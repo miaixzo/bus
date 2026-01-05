@@ -1,34 +1,588 @@
-#### 项目说明
+# 🎯 Bus Proxy: Dynamic Proxy and AOP Framework
 
-公共代理:使动态代理变得简单
+<p align="center">
+<strong>Make Dynamic Proxy Simple - JDK Dynamic Proxy and AOP Support</strong>
+</p>
 
-代理设计模式允许您提供“另一个对象的代理或占位符来控制对它的访问”。代理可以以多种方式使用，其中一些是:
+-----
 
-延迟初始化——代理充当实际实现的“替身”，允许仅在绝对必要时实例化它。
+## 📖 Project Introduction
 
-安全性——代理对象可以验证用户实际上拥有执行方法的权限(如EJB)。
+**Bus Proxy** provides a simplified and powerful approach to working with dynamic proxies in Java. It encapsulates JDK dynamic proxy functionality, making it easy to implement AOP (Aspect-Oriented Programming) patterns without requiring an IoC container.
 
-日志—代理可以记录evey方法调用，提供有价值的调试信息。
+The proxy design pattern allows you to provide a "surrogate or placeholder for another object to control access to it." Proxies can be used in various ways:
 
-性能监视——代理可以将每个方法调用记录到性能监视器，允许系统管理员查看系统的哪些部分可能陷入困境。
+* **Lazy Initialization**: Proxy acts as a stand-in for the actual implementation, instantiating it only when absolutely necessary
+* **Security**: Proxy objects can verify that the user has the permissions required to execute a method (like EJB)
+* **Logging**: Proxy can log every method call, providing valuable debugging information
+* **Performance Monitoring**: Proxy can log each method call to a performance monitor, allowing system administrators to see which parts of the system might be bogged down
 
-Proxy支持使用代理工厂、对象提供程序、调用程序和拦截器动态生成代理。
+-----
 
-JDK动态代理封装，提供非IOC下的切面支持
+## ✨ Core Features
 
-AOP模块主要针对JDK中动态代理进行封装，抽象动态代理为切面类Aspect，通过Builder代理工具类将切面对象与被代理对象融合，产生一个代理对象，从而可以针对每个方法执行前后做通用的功能。
+* **JDK Dynamic Proxy Encapsulation**: Simplified API for creating dynamic proxies
+* **Non-IoC AOP Support**: AOP functionality without requiring Spring or other IoC containers
+* **Interceptor Support**: Chain multiple interceptors for cross-cutting concerns
+* **Built-in Aspects**: Pre-built aspects for common scenarios
+* **Method Interception**: Intercept method calls before and after execution
+* **Flexible Configuration**: Easy to configure and customize proxy behavior
 
-在aop模块中，默认实现可以下两个切面对象：
+-----
 
-SimpleAspect 简单切面对象，不做任何操作，继承此对象可重写需要的方法即可，不必实现所有方法 TimeIntervalAspect
-执行时间切面对象，用于简单计算方法执行时间，然后通过日志打印方法执行时间
+## 🚀 Quick Start
 
-#### 原理
+### Maven Dependency
 
-动态代理对象的创建原理是假设创建的代理对象名为 $Proxy0：
+```xml
+<dependency>
+    <groupId>org.miaixz</groupId>
+    <artifactId>bus-proxy</artifactId>
+    <version>8.5.1</version>
+</dependency>
+```
 
-根据传入的interfaces动态生成一个类，实现interfaces中的接口 通过传入的classloder将刚生成的类加载到jvm中。即将$Proxy0类load
-调用$Proxy0的$Proxy0(InvocationHandler)
-构造函数 创建$Proxy0的对象，并且用interfaces参数遍历其所有接口的方法，并生成实现方法，这些实现方法的实现本质上是通过反射调用被代理对象的方法。
-将$Proxy0的实例返回给客户端。 当调用代理类的相应方法时，相当于调用
-InvocationHandler.invoke(Object, Method, Object []) 方法。
+### Basic Usage
+
+#### 1. Create a Simple Proxy
+
+```java
+// Define an interface
+public interface UserService {
+    String getUserName(Long userId);
+    void updateUser(User user);
+}
+
+// Implement the interface
+public class UserServiceImpl implements UserService {
+    @Override
+    public String getUserName(Long userId) {
+        return "John Doe";
+    }
+
+    @Override
+    public void updateUser(User user) {
+        // Update logic
+    }
+}
+
+// Create a proxy with logging
+UserService proxy = Builder.proxy(UserServiceImpl.class)
+    .addAspect(new SimpleAspect() {
+        @Override
+        public void before(Object target, Method method, Object[] args) {
+            System.out.println("Calling: " + method.getName());
+        }
+
+        @Override
+        public void after(Object target, Method method, Object[] args, Object result) {
+            System.out.println("Called: " + method.getName());
+        }
+    })
+    .build();
+```
+
+-----
+
+## 📝 Usage Examples
+
+### Example 1: Simple Aspect
+
+```java
+// Extend SimpleAspect and override needed methods
+public class LoggingAspect extends SimpleAspect {
+    @Override
+    public void before(Object target, Method method, Object[] args) {
+        System.out.println("Before: " + method.getName());
+    }
+
+    @Override
+    public void after(Object target, Method method, Object[] args, Object result) {
+        System.out.println("After: " + method.getName());
+    }
+}
+
+// Use the aspect
+UserService proxy = Builder.proxy(UserServiceImpl.class)
+    .addAspect(new LoggingAspect())
+    .build();
+```
+
+### Example 2: Time Interval Aspect
+
+```java
+// Measure method execution time
+UserService proxy = Builder.proxy(UserServiceImpl.class)
+    .addAspect(new TimeIntervalAspect())
+    .build();
+
+proxy.getUserName(1L);
+// Output: Method [getUserName] executed in [5] ms
+```
+
+### Example 3: Multiple Aspects
+
+```java
+// Chain multiple aspects
+UserService proxy = Builder.proxy(UserServiceImpl.class)
+    .addAspect(new LoggingAspect())
+    .addAspect(new TimeIntervalAspect())
+    .addAspect(new SecurityAspect())
+    .build();
+```
+
+### Example 4: Custom Aspect with Full Control
+
+```java
+public class TransactionAspect implements Aspect {
+    @Override
+    public Object intercept(Invocation invocation) throws Throwable {
+        Method method = invocation.getMethod();
+        Object[] args = invocation.getArgs();
+
+        // Begin transaction
+        System.out.println("Begin transaction");
+
+        try {
+            // Execute the actual method
+            Object result = invocation.proceed();
+
+            // Commit transaction
+            System.out.println("Commit transaction");
+
+            return result;
+        } catch (Exception e) {
+            // Rollback transaction
+            System.out.println("Rollback transaction");
+            throw e;
+        }
+    }
+}
+
+// Apply transaction aspect
+UserService proxy = Builder.proxy(UserServiceImpl.class)
+    .addAspect(new TransactionAspect())
+    .build();
+```
+
+### Example 5: Performance Monitoring
+
+```java
+public class PerformanceAspect extends SimpleAspect {
+    @Override
+    public void after(Object target, Method method, Object[] args, Object result) {
+        long endTime = System.currentTimeMillis();
+        long startTime = (long) ThreadLocal.get("startTime");
+        long duration = endTime - startTime;
+
+        if (duration > 1000) {
+            System.err.println("SLOW METHOD: " + method.getName() + " took " + duration + "ms");
+        }
+    }
+
+    @Override
+    public void before(Object target, Method method, Object[] args) {
+        ThreadLocal.put("startTime", System.currentTimeMillis());
+    }
+}
+```
+
+### Example 6: Security Check
+
+```java
+public class SecurityAspect extends SimpleAspect {
+    @Override
+    public void before(Object target, Method method, Object[] args) {
+        // Check if user has permission
+        String currentUser = SecurityContextHolder.getCurrentUser();
+
+        if (!hasPermission(currentUser, method)) {
+            throw new AccessDeniedException("User " + currentUser + " has no permission");
+        }
+    }
+
+    private boolean hasPermission(String user, Method method) {
+        // Permission check logic
+        return true;
+    }
+}
+```
+
+### Example 7: Proxy Factory Pattern
+
+```java
+// Using ProxyFactory for more control
+ProxyFactory factory = new ProxyFactory();
+
+factory.setTarget(new UserServiceImpl());
+factory.setInterfaces(UserService.class);
+factory.addAspect(new LoggingAspect());
+factory.addAspect(new TimeIntervalAspect());
+
+UserService proxy = factory.getProxy();
+```
+
+-----
+
+## 🔧 Built-in Aspects
+
+### SimpleAspect
+
+A no-op aspect that you can extend to override only the methods you need:
+
+```java
+public abstract class SimpleAspect implements Aspect {
+    @Override
+    public Object intercept(Invocation invocation) throws Throwable {
+        before(invocation.getTarget(), invocation.getMethod(), invocation.getArgs());
+
+        Object result;
+        try {
+            result = invocation.proceed();
+            after(invocation.getTarget(), invocation.getMethod(),
+                  invocation.getArgs(), result);
+            return result;
+        } catch (Exception e) {
+            onError(invocation.getTarget(), invocation.getMethod(),
+                    invocation.getArgs(), e);
+            throw e;
+        }
+    }
+
+    protected void before(Object target, Method method, Object[] args) {
+        // Override me
+    }
+
+    protected void after(Object target, Method method, Object[] args, Object result) {
+        // Override me
+    }
+
+    protected void onError(Object target, Method method, Object[] args, Throwable e) {
+        // Override me
+    }
+}
+```
+
+### TimeIntervalAspect
+
+Measures and logs method execution time:
+
+```java
+UserService proxy = Builder.proxy(UserServiceImpl.class)
+    .addAspect(new TimeIntervalAspect())
+    .build();
+```
+
+Output:
+```
+Method [getUserName] executed in [5] ms
+```
+
+-----
+
+## 💡 Advanced Usage
+
+### Method Filtering
+
+```java
+// Only intercept specific methods
+UserService proxy = Builder.proxy(UserServiceImpl.class)
+    .addAspect(new LoggingAspect())
+    .filter(method -> method.getName().startsWith("get"))
+    .build();
+```
+
+### Conditional Interception
+
+```java
+public class ConditionalAspect extends SimpleAspect {
+    @Override
+    protected void before(Object target, Method method, Object[] args) {
+        if (shouldIntercept(method)) {
+            doIntercept(method);
+        }
+    }
+
+    private boolean shouldIntercept(Method method) {
+        // Your condition logic
+        return method.isAnnotationPresent(Auditable.class);
+    }
+}
+```
+
+### Accessing Target Object
+
+```java
+public class TargetAwareAspect extends SimpleAspect {
+    @Override
+    protected void before(Object target, Method method, Object[] args) {
+        // Access the target object
+        if (target instanceof UserServiceImpl) {
+            UserServiceImpl impl = (UserServiceImpl) target;
+            // Do something with the target
+        }
+    }
+}
+```
+
+### Modifying Arguments
+
+```java
+public class ArgumentModifierAspect implements Aspect {
+    @Override
+    public Object intercept(Invocation invocation) throws Throwable {
+        Object[] args = invocation.getArgs();
+
+        // Modify arguments before execution
+        if (args.length > 0 && args[0] instanceof String) {
+            args[0] = ((String) args[0]).trim();
+        }
+
+        return invocation.proceed();
+    }
+}
+```
+
+### Modifying Return Value
+
+```java
+public class ReturnValueAspect implements Aspect {
+    @Override
+    public Object intercept(Invocation invocation) throws Throwable {
+        Object result = invocation.proceed();
+
+        // Modify return value
+        if (result instanceof String) {
+            result = ((String) result).toUpperCase();
+        }
+
+        return result;
+    }
+}
+```
+
+-----
+
+## 🔍 How It Works
+
+### Dynamic Proxy Creation Principle
+
+When creating a dynamic proxy object named `$Proxy0`:
+
+1. **Generate Class**: Dynamically generate a class that implements the specified interfaces based on the passed `interfaces`
+2. **Load Class**: Use the passed `classloader` to load the generated class into the JVM (i.e., load `$Proxy0` class)
+3. **Create Instance**: Call the `$Proxy0(InvocationHandler)` constructor to create the `$Proxy0` object
+4. **Implement Methods**: Iterate through all interface methods and generate implementations. These implementations essentially invoke the target object's methods via reflection
+5. **Return Proxy**: Return the `$Proxy0` instance to the client
+6. **Method Invocation**: When calling methods on the proxy class, it's equivalent to calling `InvocationHandler.invoke(Object, Method, Object[])`
+
+### Invocation Flow
+
+```
+Client Code
+    |
+    v
+Proxy Object ($Proxy0)
+    |
+    v
+InvocationHandler.invoke()
+    |
+    v
+Aspect.before() [if configured]
+    |
+    v
+Target Method (via reflection)
+    |
+    v
+Aspect.after() [if configured]
+    |
+    v
+Return to Client
+```
+
+-----
+
+## 💡 Best Practices
+
+### 1. Use Specific Interceptors
+
+```java
+// ✅ Recommended: Create specific interceptors for specific concerns
+public class LoggingInterceptor implements Interceptor {
+    // Logging logic only
+}
+
+public class TransactionInterceptor implements Interceptor {
+    // Transaction logic only
+}
+
+// ❌ Not Recommended: Mix multiple concerns in one aspect
+public class MegaAspect implements Aspect {
+    // Logging + Transaction + Security + ... (too much)
+}
+```
+
+### 2. Keep Interceptors Stateless
+
+```java
+// ✅ Recommended: Stateless interceptor
+public class LoggingInterceptor implements Interceptor {
+    @Override
+    public Object intercept(Invocation invocation) throws Throwable {
+        // No instance variables
+        log.info("Calling: " + invocation.getMethod().getName());
+        return invocation.proceed();
+    }
+}
+
+// ❌ Not Recommended: Stateful interceptor (thread-unsafe)
+public class StatefulInterceptor implements Interceptor {
+    private Method currentMethod;  // Not thread-safe!
+
+    @Override
+    public Object intercept(Invocation invocation) throws Throwable {
+        this.currentMethod = invocation.getMethod();
+        return invocation.proceed();
+    }
+}
+```
+
+### 3. Order Matters
+
+```java
+// Aspects are executed in the order they are added
+UserService proxy = Builder.proxy(UserServiceImpl.class)
+    .addAspect(new TransactionAspect())      // Outermost
+    .addAspect(new SecurityAspect())         // Middle
+    .addAspect(new LoggingAspect())          // Innermost
+    .build();
+
+// Execution order:
+// 1. TransactionAspect.before()
+// 2. SecurityAspect.before()
+// 3. LoggingAspect.before()
+// 4. Target method
+// 5. LoggingAspect.after()
+// 6. SecurityAspect.after()
+// 7. TransactionAspect.after()
+```
+
+### 4. Handle Exceptions Properly
+
+```java
+public class ExceptionHandlingAspect extends SimpleAspect {
+    @Override
+    protected void onError(Object target, Method method, Object[] args, Throwable e) {
+        // Log exception
+        logger.error("Error in " + method.getName(), e);
+
+        // Don't swallow the exception unless necessary
+        // Consider wrapping it in a more specific exception
+        if (e instanceof SQLException) {
+            throw new DataAccessException("Database error", e);
+        }
+    }
+}
+```
+
+### 5. Use Method Annotations
+
+```java
+// Define custom annotation
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+public @interface Cacheable {
+    int ttl() default 300;
+}
+
+// Check annotation in aspect
+public class CacheAspect extends SimpleAspect {
+    @Override
+    protected Object intercept(Invocation invocation) throws Throwable {
+        Method method = invocation.getMethod();
+
+        if (method.isAnnotationPresent(Cacheable.class)) {
+            Cacheable cacheable = method.getAnnotation(Cacheable.class);
+            // Cache logic
+        }
+
+        return invocation.proceed();
+    }
+}
+```
+
+-----
+
+## ❓ Frequently Asked Questions
+
+### Q1: Can I proxy classes instead of interfaces?
+
+No, JDK dynamic proxy only works with interfaces. For class proxying, consider using CGLIB or Byte Buddy.
+
+### Q2: How do I handle proxy performance?
+
+Dynamic proxy has minimal overhead (typically < 1ms per call). If you need maximum performance:
+
+```java
+// Cache proxy instances
+private static final UserService PROXY_CACHE =
+    Builder.proxy(UserServiceImpl.class)
+        .addAspect(new LoggingAspect())
+        .build();
+```
+
+### Q3: Can I use this with Spring?
+
+Yes! Bus Proxy can work alongside Spring AOP:
+
+```java
+@Configuration
+public class ProxyConfig {
+    @Bean
+    public UserService userService() {
+        UserServiceImpl impl = new UserServiceImpl();
+        return Builder.proxy(impl)
+            .addAspect(new LoggingAspect())
+            .build();
+    }
+}
+```
+
+### Q4: How do I debug proxy issues?
+
+Enable debug logging:
+
+```java
+public class DebugAspect extends SimpleAspect {
+    @Override
+    protected void before(Object target, Method method, Object[] args) {
+        System.out.println("Target: " + target.getClass().getName());
+        System.out.println("Method: " + method.getName());
+        System.out.println("Args: " + Arrays.toString(args));
+    }
+}
+```
+
+-----
+
+## 🔄 Version Compatibility
+
+| Bus Proxy Version | JDK Version | Spring Version | Status |
+| :--- | :--- | :--- | :--- |
+| **8.x** | 17+ | 6.x (optional) | Current |
+| 7.x | 11+ | 5.x (optional) | Maintenance |
+
+-----
+
+## 🔗 Related Modules
+
+* **[bus-core](../bus-core)**: Core utilities and reflection helpers
+* **[bus-aop](../bus-aop)**: Advanced AOP support
+* **[bus-starter](../bus-starter)**: Spring Boot integration
+
+-----
+
+## 📚 Additional Resources
+
+* [GitHub Repository](https://github.com/818000/bus)
+* [Java Dynamic Proxy Tutorial](https://docs.oracle.com/javase/8/docs/technotes/guides/reflection/proxy.html)

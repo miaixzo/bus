@@ -66,7 +66,7 @@ public class GifDecoder {
     public static final int STATUS_OK = 0;
 
     /**
-     * File read status: Error decoding file (may be partially decoded)
+     * File read status: Error decoding file (may be partially decoded).
      */
     public static final int STATUS_FORMAT_ERROR = 1;
 
@@ -376,7 +376,7 @@ public class GifDecoder {
     }
 
     /**
-     * Reads GIF image from stream
+     * Reads GIF image from stream.
      *
      * @param is BufferedInputStream containing GIF file.
      * @return read status code (0 = no errors)
@@ -403,7 +403,7 @@ public class GifDecoder {
     }
 
     /**
-     * Reads GIF image from stream
+     * Reads GIF image from stream.
      *
      * @param is InputStream containing GIF file.
      * @return read status code (0 = no errors)
@@ -432,7 +432,7 @@ public class GifDecoder {
     }
 
     /**
-     * Reads GIF file from specified file/URL source (URL assumed if name contains ":/" or "file:")
+     * Reads GIF file from specified file/URL source (URL assumed if name contains ":/" or "file:").
      *
      * @param name String containing source
      * @return read status code (0 = no errors)
@@ -576,7 +576,7 @@ public class GifDecoder {
     }
 
     /**
-     * Returns true if an error was encountered during reading/decoding
+     * Returns true if an error was encountered during reading/decoding.
      *
      * @return true if an error occurred.
      */
@@ -585,7 +585,7 @@ public class GifDecoder {
     }
 
     /**
-     * Initializes or re-initializes reader
+     * Initializes or re-initializes reader.
      */
     protected void init() {
         status = STATUS_OK;
@@ -638,7 +638,7 @@ public class GifDecoder {
     }
 
     /**
-     * Reads color table as 256 RGB integer values
+     * Reads color table as 256 RGB integer values.
      *
      * @param ncolors int number of colors to read
      * @return int array containing 256 colors (packed ARGB with full alpha)
@@ -720,7 +720,7 @@ public class GifDecoder {
     }
 
     /**
-     * Reads Graphics Control Extension values
+     * Reads Graphics Control Extension values.
      */
     protected void readGraphicControlExt() {
         read(); // block size
@@ -756,7 +756,7 @@ public class GifDecoder {
     }
 
     /**
-     * Reads next frame image
+     * Reads next frame image.
      */
     protected void readImage() {
         ix = readShort(); // (sub)image position & size
@@ -815,7 +815,7 @@ public class GifDecoder {
     }
 
     /**
-     * Reads Logical Screen Descriptor
+     * Reads Logical Screen Descriptor.
      */
     protected void readLSD() {
 
@@ -835,7 +835,7 @@ public class GifDecoder {
     }
 
     /**
-     * Reads Netscape extenstion to obtain iteration count
+     * Reads Netscape extenstion to obtain iteration count.
      */
     protected void readNetscapeExt() {
         do {
@@ -850,7 +850,7 @@ public class GifDecoder {
     }
 
     /**
-     * Reads next 16-bit value, LSB first
+     * Reads next 16-bit value, LSB first.
      *
      * @return the 16-bit value.
      */

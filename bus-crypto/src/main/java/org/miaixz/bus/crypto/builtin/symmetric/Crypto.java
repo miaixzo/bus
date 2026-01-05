@@ -370,10 +370,10 @@ public class Crypto implements Encryptor, Decryptor, Serializable {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
-     * @param data {@inheritDoc}
-     * @return {@inheritDoc}
+     * @param data Description inherited from parent class or interface.
+     * @return Description inherited from parent class or interface.
      */
     @Override
     public byte[] encrypt(final byte[] data) {
@@ -401,12 +401,12 @@ public class Crypto implements Encryptor, Decryptor, Serializable {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
-     * @param data    {@inheritDoc}
-     * @param out     {@inheritDoc}
-     * @param isClose {@inheritDoc}
-     * @throws InternalException {@inheritDoc}
+     * @param data    Description inherited from parent class or interface.
+     * @param out     Description inherited from parent class or interface.
+     * @param isClose Description inherited from parent class or interface.
+     * @throws InternalException Description inherited from parent class or interface.
      */
     @Override
     public void encrypt(final InputStream data, final OutputStream out, final boolean isClose)
@@ -444,10 +444,10 @@ public class Crypto implements Encryptor, Decryptor, Serializable {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
-     * @param bytes {@inheritDoc}
-     * @return {@inheritDoc}
+     * @param bytes Description inherited from parent class or interface.
+     * @return Description inherited from parent class or interface.
      */
     @Override
     public byte[] decrypt(final byte[] bytes) {
@@ -469,12 +469,12 @@ public class Crypto implements Encryptor, Decryptor, Serializable {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
-     * @param data    {@inheritDoc}
-     * @param out     {@inheritDoc}
-     * @param isClose {@inheritDoc}
-     * @throws InternalException {@inheritDoc}
+     * @param data    Description inherited from parent class or interface.
+     * @param out     Description inherited from parent class or interface.
+     * @param isClose Description inherited from parent class or interface.
+     * @throws InternalException Description inherited from parent class or interface.
      */
     @Override
     public void decrypt(final InputStream data, final OutputStream out, final boolean isClose)
@@ -541,6 +541,7 @@ public class Crypto implements Encryptor, Decryptor, Serializable {
      * Initializes the {@link JceCipher} for encryption or decryption mode.
      *
      * @param mode The mode, see {@link Algorithm.Type#ENCRYPT} or {@link Algorithm.Type#DECRYPT}.
+     * @param salt The salt for key derivation (optional, can be null).
      * @return The initialized {@link JceCipher}.
      */
     private JceCipher initMode(final Algorithm.Type mode, final byte[] salt) {

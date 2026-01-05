@@ -79,6 +79,11 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
      */
     private static final Strategy ABBREVIATED_YEAR_STRATEGY = new NumberStrategy(Calendar.YEAR) {
 
+        /**
+         * Modify method.
+         *
+         * @return the int value
+         */
         @Override
         int modify(final FastDateParser parser, final int iValue) {
             return iValue < 100 ? parser.adjustYear(iValue) : iValue;
@@ -90,6 +95,11 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
      */
     private static final Strategy NUMBER_MONTH_STRATEGY = new NumberStrategy(Calendar.MONTH) {
 
+        /**
+         * Modify method.
+         *
+         * @return the int value
+         */
         @Override
         int modify(final FastDateParser parser, final int iValue) {
             return iValue - 1;
@@ -126,6 +136,11 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
      */
     private static final Strategy DAY_OF_WEEK_STRATEGY = new NumberStrategy(Calendar.DAY_OF_WEEK) {
 
+        /**
+         * Modify method.
+         *
+         * @return the int value
+         */
         @Override
         int modify(final FastDateParser parser, final int iValue) {
             return iValue != 7 ? iValue + 1 : Calendar.SUNDAY;
@@ -147,6 +162,11 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
      */
     private static final Strategy HOUR24_OF_DAY_STRATEGY = new NumberStrategy(Calendar.HOUR_OF_DAY) {
 
+        /**
+         * Modify method.
+         *
+         * @return the int value
+         */
         @Override
         int modify(final FastDateParser parser, final int iValue) {
             return iValue == 24 ? 0 : iValue;
@@ -158,6 +178,11 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
      */
     private static final Strategy HOUR12_STRATEGY = new NumberStrategy(Calendar.HOUR) {
 
+        /**
+         * Modify method.
+         *
+         * @return the int value
+         */
         @Override
         int modify(final FastDateParser parser, final int iValue) {
             return iValue == 12 ? 0 : iValue;

@@ -39,6 +39,9 @@ import org.bouncycastle.crypto.engines.SM4Engine;
  */
 public class SM4Mac extends CBCBlockCipherMac {
 
+    /**
+     * The MAC size in bits.
+     */
     private static final int MAC_SIZE = 128;
 
     /**

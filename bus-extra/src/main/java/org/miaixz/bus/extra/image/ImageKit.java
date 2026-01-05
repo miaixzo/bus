@@ -66,27 +66,27 @@ import org.miaixz.bus.core.xyz.*;
 public class ImageKit {
 
     /**
-     * Graphics Interchange Format: GIF
+     * Graphics Interchange Format: GIF.
      */
     public static final String IMAGE_TYPE_GIF = "gif";
     /**
-     * Joint Photographic Experts Group: JPG
+     * Joint Photographic Experts Group: JPG.
      */
     public static final String IMAGE_TYPE_JPG = "jpg";
     /**
-     * Joint Photographic Experts Group: JPEG
+     * Joint Photographic Experts Group: JPEG.
      */
     public static final String IMAGE_TYPE_JPEG = "jpeg";
     /**
-     * Bitmap, the standard image file format in Windows OS: BMP
+     * Bitmap, the standard image file format in Windows OS: BMP.
      */
     public static final String IMAGE_TYPE_BMP = "bmp";
     /**
-     * Portable Network Graphics: PNG
+     * Portable Network Graphics: PNG.
      */
     public static final String IMAGE_TYPE_PNG = "png";
     /**
-     * Photoshop's proprietary format: PSD
+     * Photoshop's proprietary format: PSD.
      */
     public static final String IMAGE_TYPE_PSD = "psd";
 

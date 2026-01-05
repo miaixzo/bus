@@ -104,11 +104,21 @@ public class JulianDay extends Loops {
         return day;
     }
 
+    /**
+     * Gets the name of this object.
+     *
+     * @return the name
+     */
     @Override
     public String getName() {
         return String.valueOf(day);
     }
 
+    /**
+     * Returns the next element in the iteration.
+     *
+     * @return the next element
+     */
     @Override
     public JulianDay next(int n) {
         return fromJulianDay(day + n);

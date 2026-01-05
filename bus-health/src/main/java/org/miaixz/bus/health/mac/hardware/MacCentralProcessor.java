@@ -140,7 +140,7 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     protected CentralProcessor.ProcessorIdentifier queryProcessorId() {
@@ -208,7 +208,7 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     protected Tuple initProcessorCounts() {
@@ -294,7 +294,7 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public long[] querySystemCpuLoadTicks() {
@@ -318,7 +318,7 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public double[] getSystemLoadAverage(int nelem) {
@@ -334,7 +334,7 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public long[] queryCurrentFreq() {
@@ -351,7 +351,7 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public long queryContextSwitches() {
@@ -362,7 +362,7 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public long queryInterrupts() {
@@ -373,7 +373,7 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public long queryMaxFreq() {
@@ -384,7 +384,7 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public long[][] queryProcessorCpuLoadTicks() {

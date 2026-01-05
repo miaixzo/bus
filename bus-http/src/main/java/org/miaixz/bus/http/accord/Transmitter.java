@@ -88,7 +88,7 @@ public class Transmitter {
         this.client = client;
         this.connectionPool = Internal.instance.realConnectionPool(client.connectionPool());
         this.call = call;
-        this.eventListener = client.eventListenerFactory().create(call);
+        this.eventListener = client.eventListenerFactory().of(call);
         this.timeout.timeout(client.callTimeoutMillis(), TimeUnit.MILLISECONDS);
     }
 

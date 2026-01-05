@@ -38,7 +38,7 @@ import org.miaixz.bus.core.lang.exception.CryptoException;
 import org.miaixz.bus.crypto.Cipher;
 
 /**
- * An implementation of encryption and decryption based on the BouncyCastle library, wrapping:
+ * An implementation of encryption and decryption based on the BouncyCastle library. This class wraps:
  * <ul>
  * <li>{@link BufferedBlockCipher}</li>
  * <li>{@link BlockCipher}</li>
@@ -64,7 +64,7 @@ public class BCCipher implements Cipher, Wrapper<Object> {
      */
     private AEADBlockCipher aeadBlockCipher;
     /**
-     * {@link StreamCipher}
+     * {@link StreamCipher} for stream-based encryption.
      */
     private StreamCipher streamCipher;
 

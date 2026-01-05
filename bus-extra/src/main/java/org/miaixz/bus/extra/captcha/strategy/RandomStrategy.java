@@ -64,7 +64,7 @@ public class RandomStrategy extends AbstractStrategy {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * Generates a random CAPTCHA string by selecting characters randomly from the configured base character set.
      * </p>
@@ -77,7 +77,7 @@ public class RandomStrategy extends AbstractStrategy {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * Verifies the user's input by performing a case-insensitive comparison with the generated CAPTCHA code.
      * </p>

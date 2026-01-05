@@ -731,16 +731,32 @@ public class MapKit extends MapGets {
     public static <T> Map<T, T> reverse(final Map<T, T> map) {
         return edit(map, t -> new Entry<>() {
 
+            /**
+             * Gets the key of this entry.
+             *
+             * @return the key
+             */
             @Override
             public T getKey() {
                 return t.getValue();
             }
 
+            /**
+             * Gets the value of this entry.
+             *
+             * @return the value
+             */
             @Override
             public T getValue() {
                 return t.getKey();
             }
 
+            /**
+             * Sets the value of this entry.
+             *
+             * @param value the new value
+             * @return the old value
+             */
             @Override
             public T setValue(final T value) {
                 throw new UnsupportedOperationException("Unsupported setValue method !");

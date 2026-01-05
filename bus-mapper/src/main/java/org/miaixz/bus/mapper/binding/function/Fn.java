@@ -93,7 +93,7 @@ public interface Fn<T, R> extends Function<T, R>, Serializable {
      * @return A virtual table object (`FnArray`).
      */
     static <E> FnArray<E> of(Class<E> entityClass, String... columnNames) {
-        TableMeta entityTable = MapperFactory.create(entityClass);
+        TableMeta entityTable = MapperFactory.of(entityClass);
         Set<String> columnNameSet = Arrays.stream(columnNames).collect(Collectors.toSet());
         List<ColumnMeta> columns = entityTable.columns().stream()
                 .filter(column -> columnNameSet.contains(column.property())).collect(Collectors.toList());
@@ -181,7 +181,7 @@ public interface Fn<T, R> extends Function<T, R>, Serializable {
     default ColumnMeta toEntityColumn() {
         return FN_COLUMN_MAP.computeIfAbsent(this, key -> {
             ClassField classField = toClassField();
-            List<ColumnMeta> columns = MapperFactory.create(classField.getClazz()).columns();
+            List<ColumnMeta> columns = MapperFactory.of(classField.getClazz()).columns();
             return columns.stream().filter(column -> column.property().equals(classField.getField())).findFirst()
                     .orElseGet(
                             () -> columns.stream().filter(classField).findFirst().orElseThrow(

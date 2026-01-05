@@ -276,6 +276,9 @@ public class ZipWriter implements Closeable {
         return this;
     }
 
+    /**
+     * Close method.
+     */
     @Override
     public void close() throws InternalException {
         try {

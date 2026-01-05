@@ -87,7 +87,7 @@ public class BeetlProvider implements TemplateProvider {
      * @param config The {@link TemplateConfig} containing settings for the template engine.
      * @return A new {@link GroupTemplate} instance.
      */
-    private static GroupTemplate create(TemplateConfig config) {
+    private static GroupTemplate of(TemplateConfig config) {
         if (null == config) {
             config = TemplateConfig.DEFAULT;
         }
@@ -141,9 +141,19 @@ public class BeetlProvider implements TemplateProvider {
         return new GroupTemplate(loader, conf);
     }
 
+    /**
+     * Initializes the template provider with the given configuration. This method is designed to be overridden by
+     * subclasses for custom initialization.
+     *
+     * from the TemplateConfig and initializes the provider. Subclasses may override to add custom configuration
+     * settings or validation.
+     *
+     * @param config The template configuration, or null to use defaults.
+     * @return This provider instance for method chaining.
+     */
     @Override
     public TemplateProvider init(final TemplateConfig config) {
-        init(create(config));
+        init(of(config));
         return this;
     }
 
@@ -156,6 +166,14 @@ public class BeetlProvider implements TemplateProvider {
         this.engine = engine;
     }
 
+    /**
+     * Gets a template by name. This method is designed to be overridden by subclasses for custom template retrieval.
+     *
+     * Subclasses may override to add caching, custom loading, or error handling.
+     *
+     * @param resource The name of the template resource.
+     * @return The template object.
+     */
     @Override
     public Template getTemplate(final String resource) {
         if (null == this.engine) {

@@ -94,7 +94,7 @@ public final class AnnotationMappingProxy<T extends Annotation> implements Invoc
      * @return A new proxy instance of the specified annotation type.
      * @throws NullPointerException if {@code annotationType} or {@code mapping} is {@code null}.
      */
-    public static <A extends Annotation> A create(
+    public static <A extends Annotation> A of(
             final Class<? extends A> annotationType,
             final AnnotationMapping<A> mapping) {
         Objects.requireNonNull(annotationType);

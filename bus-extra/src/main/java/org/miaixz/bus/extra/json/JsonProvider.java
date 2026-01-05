@@ -149,9 +149,9 @@ public interface JsonProvider extends Provider {
     boolean isJson(String json);
 
     /**
-     * {@inheritDoc}
+     * Returns the provider type.
      *
-     * @return {@inheritDoc}
+     * @return the provider type identifier
      */
     @Override
     default Object type() {

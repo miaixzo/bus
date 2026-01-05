@@ -639,6 +639,11 @@ public final class UrlBuilder implements Builder<String> {
         }
     }
 
+    /**
+     * Returns the string representation of this object.
+     *
+     * @return the string representation
+     */
     @Override
     public String toString() {
         return build();

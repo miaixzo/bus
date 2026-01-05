@@ -78,6 +78,9 @@ public class OpcZipOutputStream extends ZipOutputStream {
         this.spec = new Zip64(out);
     }
 
+    /**
+     * Putnextentry method.
+     */
     @Override
     public void putNextEntry(final ZipEntry e) throws IOException {
         if (current != null) {
@@ -89,6 +92,9 @@ public class OpcZipOutputStream extends ZipOutputStream {
         entries.add(current);
     }
 
+    /**
+     * Closeentry method.
+     */
     @Override
     public void closeEntry() throws IOException {
         if (current == null) {
@@ -110,6 +116,9 @@ public class OpcZipOutputStream extends ZipOutputStream {
         crc.reset();
     }
 
+    /**
+     * Finish method.
+     */
     @Override
     public void finish() throws IOException {
         if (finished) {
@@ -147,6 +156,9 @@ public class OpcZipOutputStream extends ZipOutputStream {
         crc.update(b, off, len);
     }
 
+    /**
+     * Close method.
+     */
     @Override
     public void close() throws IOException {
         finish();

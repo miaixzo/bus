@@ -90,7 +90,7 @@ public class ThymeleafProvider implements TemplateProvider {
      * @param config The {@link TemplateConfig} containing settings for the template engine.
      * @return A new {@link TemplateEngine} instance.
      */
-    private static TemplateEngine create(TemplateConfig config) {
+    private static TemplateEngine of(TemplateConfig config) {
         if (null == config) {
             config = new TemplateConfig();
         }
@@ -141,13 +141,23 @@ public class ThymeleafProvider implements TemplateProvider {
         return engine;
     }
 
+    /**
+     * Initializes the template provider with the given configuration. This method is designed to be overridden by
+     * subclasses for custom initialization.
+     *
+     * from the TemplateConfig and initializes the provider. Subclasses may override to add custom configuration
+     * settings or validation.
+     *
+     * @param config The template configuration, or null to use defaults.
+     * @return This provider instance for method chaining.
+     */
     @Override
     public TemplateProvider init(TemplateConfig config) {
         if (null == config) {
             config = TemplateConfig.DEFAULT;
         }
         this.config = config;
-        init(create(config));
+        init(of(config));
         return this;
     }
 
@@ -160,6 +170,14 @@ public class ThymeleafProvider implements TemplateProvider {
         this.engine = engine;
     }
 
+    /**
+     * Gets a template by name. This method is designed to be overridden by subclasses for custom template retrieval.
+     *
+     * into a ThymeleafTemplate. Subclasses may override to add caching or custom loading.
+     *
+     * @param resource The name of the template resource.
+     * @return The template object.
+     */
     @Override
     public Template getTemplate(final String resource) {
         if (null == this.engine) {

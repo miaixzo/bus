@@ -58,6 +58,9 @@ public class ZipStream implements ZipResource {
         this.in = in;
     }
 
+    /**
+     * Read method.
+     */
     @Override
     public void read(final Consumer<ZipEntry> consumer, final int maxSizeDiff) {
         try {
@@ -73,6 +76,12 @@ public class ZipStream implements ZipResource {
         }
     }
 
+    /**
+     * Gets the input stream for the given path.
+     *
+     * @param path the path to the entry
+     * @return the input stream, or null if not found
+     */
     @Override
     public InputStream get(final String path) {
         try {
@@ -88,11 +97,20 @@ public class ZipStream implements ZipResource {
         return null;
     }
 
+    /**
+     * Gets the input stream for the given entry.
+     *
+     * @param entry the zip entry
+     * @return the input stream
+     */
     @Override
     public InputStream get(final ZipEntry entry) {
         return this.in;
     }
 
+    /**
+     * Close method.
+     */
     @Override
     public void close() throws IOException {
         IoKit.closeQuietly(this.in);

@@ -213,6 +213,11 @@ public class Vesta extends Loops {
         return String.format("%s人%s锄", byEarthBranch(2), byHeavenStem(3));
     }
 
+    /**
+     * Gets the name of this object.
+     *
+     * @return the name
+     */
     @Override
     public String getName() {
         return "灶马头";

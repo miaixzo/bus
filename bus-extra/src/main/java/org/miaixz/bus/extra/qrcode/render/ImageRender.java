@@ -46,7 +46,13 @@ import com.google.zxing.common.BitMatrix;
  */
 public class ImageRender implements BitMatrixRender {
 
+    /**
+     * The QR code configuration used for rendering.
+     */
     private final QrConfig config;
+    /**
+     * The image type (e.g., "png", "jpg").
+     */
     private final String imageType;
 
     /**
@@ -60,6 +66,10 @@ public class ImageRender implements BitMatrixRender {
         this.imageType = imageType;
     }
 
+    /**
+     * Description inherited from parent class or interface.
+     *
+     */
     @Override
     public void render(final BitMatrix matrix, final OutputStream out) {
         BufferedImage img = null;

@@ -418,11 +418,21 @@ public class DelegatePath extends SimpleWrapper<Path> implements Path, Resource 
 
             private final Iterator<Path> itr = raw.iterator();
 
+            /**
+             * Returns true if the iteration has more elements.
+             *
+             * @return true if the iteration has more elements
+             */
             @Override
             public boolean hasNext() {
                 return itr.hasNext();
             }
 
+            /**
+             * Returns the next element in the iteration.
+             *
+             * @return the next element
+             */
             @Override
             public Path next() {
                 if (!hasNext()) {

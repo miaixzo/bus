@@ -33,8 +33,8 @@ import java.util.Map;
 import org.miaixz.bus.core.lang.exception.MQueueException;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.extra.mq.Consumer;
-import org.miaixz.bus.extra.mq.Message;
 import org.miaixz.bus.extra.mq.MessageHandler;
+import org.miaixz.bus.extra.mq.RawMessage;
 
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.DeliverCallback;
@@ -92,39 +92,13 @@ public class RabbitMQConsumer implements Consumer {
         // Declare a non-durable, non-exclusive, non-auto-delete queue by default
         queueDeclare(false, false, false, null);
 
-        // Create a message delivery callback that wraps the RabbitMQ delivery into an internal Message
-        final DeliverCallback deliverCallback = (consumerTag, delivery) -> {
-            // Create an anonymous Message implementation to wrap the RabbitMQ delivery
-            messageHandler.handle(new Message() {
-
-                /**
-                 * Retrieves the message topic, which is represented by the consumer tag in this RabbitMQ consumer
-                 * implementation.
-                 *
-                 * @return The consumer tag as the topic of the message.
-                 */
-                @Override
-                public String topic() {
-                    return consumerTag;
-                }
-
-                /**
-                 * Retrieves the message content as a byte array from the RabbitMQ delivery.
-                 *
-                 * @return The message content as a {@code byte[]}.
-                 */
-                @Override
-                public byte[] content() {
-                    return delivery.getBody();
-                }
-            });
-        };
-
         try {
-            // Start consuming messages from the queue, with automatic acknowledgment
-            this.channel.basicConsume(this.topic, true, deliverCallback, consumerTag -> {
-                // Callback for when consumption is cancelled (empty implementation as per original code)
-            });
+            this.channel.basicConsume(
+                    this.topic,
+                    true,
+                    (consumerTag, delivery) -> messageHandler.handle(new RawMessage(consumerTag, delivery.getBody())),
+                    consumerTag -> {
+                    });
         } catch (final IOException e) {
             throw new MQueueException(e);
         }

@@ -457,7 +457,7 @@ public class ListKit {
             return null;
         }
 
-        List<T> result = PossibleObjectCreator.of(list.getClass()).create();
+        List<T> result = PossibleObjectCreator.of(list.getClass()).of();
         if (null == result) {
             result = new ArrayList<>(0);
         }

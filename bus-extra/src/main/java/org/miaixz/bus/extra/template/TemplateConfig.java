@@ -227,6 +227,15 @@ public class TemplateConfig implements Serializable {
         return this;
     }
 
+    /**
+     * Checks if this template config is equal to another object. This method is designed to be overridden by subclasses
+     * for custom equality logic.
+     *
+     * Subclasses may override to add additional field comparisons.
+     *
+     * @param o The object to compare with.
+     * @return {@code true} if the objects are equal, {@code false} otherwise.
+     */
     @Override
     public boolean equals(final Object o) {
         if (this == o) {
@@ -240,6 +249,14 @@ public class TemplateConfig implements Serializable {
                 && resourceMode == that.resourceMode && Objects.equals(provider, that.provider);
     }
 
+    /**
+     * Generates a hash code for this template config. This method is designed to be overridden by subclasses for custom
+     * hash code logic.
+     *
+     * Subclasses should override if they add additional fields to equals.
+     *
+     * @return The hash code.
+     */
     @Override
     public int hashCode() {
         return Objects.hash(charset, path, resourceMode, provider);

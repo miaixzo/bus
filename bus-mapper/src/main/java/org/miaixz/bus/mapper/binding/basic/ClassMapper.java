@@ -59,7 +59,7 @@ public interface ClassMapper<T> {
      * @return The entity table metadata.
      */
     default TableMeta entityTable() {
-        return MapperFactory.create(entityClass());
+        return MapperFactory.of(entityClass());
     }
 
     /**

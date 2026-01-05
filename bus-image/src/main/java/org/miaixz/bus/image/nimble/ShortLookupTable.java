@@ -81,7 +81,9 @@ public class ShortLookupTable extends LookupTable {
     }
 
     /**
-     * {@inheritDoc}
+     * Gets the length of the lookup table.
+     *
+     * @return the length of the lookup table
      */
     @Override
     public int length() {
@@ -100,7 +102,13 @@ public class ShortLookupTable extends LookupTable {
     }
 
     /**
-     * {@inheritDoc}
+     * Performs lookup transformation from byte array to byte array.
+     *
+     * @param src     the source array
+     * @param srcPos  the starting position in the source array
+     * @param dest    the destination array
+     * @param destPos the starting position in the destination array
+     * @param length  the number of elements to transform
      */
     @Override
     public void lookup(byte[] src, int srcPos, byte[] dest, int destPos, int length) {
@@ -109,7 +117,13 @@ public class ShortLookupTable extends LookupTable {
     }
 
     /**
-     * {@inheritDoc}
+     * Performs lookup transformation from short array to byte array.
+     *
+     * @param src     the source array
+     * @param srcPos  the starting position in the source array
+     * @param dest    the destination array
+     * @param destPos the starting position in the destination array
+     * @param length  the number of elements to transform
      */
     @Override
     public void lookup(short[] src, int srcPos, byte[] dest, int destPos, int length) {
@@ -118,7 +132,13 @@ public class ShortLookupTable extends LookupTable {
     }
 
     /**
-     * {@inheritDoc}
+     * Performs lookup transformation from byte array to short array.
+     *
+     * @param src     the source array
+     * @param srcPos  the starting position in the source array
+     * @param dest    the destination array
+     * @param destPos the starting position in the destination array
+     * @param length  the number of elements to transform
      */
     @Override
     public void lookup(byte[] src, int srcPos, short[] dest, int destPos, int length) {
@@ -127,7 +147,13 @@ public class ShortLookupTable extends LookupTable {
     }
 
     /**
-     * {@inheritDoc}
+     * Performs lookup transformation from short array to short array.
+     *
+     * @param src     the source array
+     * @param srcPos  the starting position in the source array
+     * @param dest    the destination array
+     * @param destPos the starting position in the destination array
+     * @param length  the number of elements to transform
      */
     @Override
     public void lookup(short[] src, int srcPos, short[] dest, int destPos, int length) {
@@ -136,7 +162,10 @@ public class ShortLookupTable extends LookupTable {
     }
 
     /**
-     * {@inheritDoc}
+     * Adjusts the output bit depth of this lookup table.
+     *
+     * @param outBits the new output bit depth
+     * @return this lookup table for chaining
      */
     @Override
     public LookupTable adjustOutBits(int outBits) {
@@ -157,7 +186,7 @@ public class ShortLookupTable extends LookupTable {
     }
 
     /**
-     * {@inheritDoc}
+     * Inverts this lookup table.
      */
     @Override
     public void inverse() {
@@ -168,7 +197,10 @@ public class ShortLookupTable extends LookupTable {
     }
 
     /**
-     * {@inheritDoc}
+     * Combines this lookup table with another.
+     *
+     * @param other the other lookup table to combine with
+     * @return this lookup table for chaining
      */
     @Override
     public LookupTable combine(LookupTable other) {

@@ -222,6 +222,11 @@ public class LunarMonth extends MonthParts {
         return (leap ? "闰" : "") + NAMES[month - 1];
     }
 
+    /**
+     * Returns the string representation of this object.
+     *
+     * @return the string representation
+     */
     @Override
     public String toString() {
         return getLunarYear() + getName();

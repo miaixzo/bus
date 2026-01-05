@@ -212,6 +212,9 @@ public class SetWrapper<E> extends SimpleWrapper<Set<E>> implements Set<E> {
         return raw.removeIf(filter);
     }
 
+    /**
+     * Removes all of the elements from this collection.
+     */
     @Override
     public void clear() {
         raw.clear();

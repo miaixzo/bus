@@ -74,6 +74,11 @@ public class BlobStringer implements Function<Object, String> {
         }
     }
 
+    /**
+     * Apply method.
+     *
+     * @return the String value
+     */
     @Override
     public String apply(final Object o) {
         return toString((Blob) o);

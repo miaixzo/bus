@@ -67,11 +67,19 @@ public class MutablePair<L, R> extends Pair<L, R> implements Mutable<MutablePair
         return new MutablePair<>(left, right);
     }
 
+    /**
+     * Gets the value.
+     *
+     * @return the value
+     */
     @Override
     public MutablePair<L, R> get() {
         return this;
     }
 
+    /**
+     * Set method.
+     */
     @Override
     public void set(final MutablePair<L, R> value) {
         this.left = value.left;

@@ -63,7 +63,7 @@ final class AsynchronousClientChannel extends AsynchronousServerChannel {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @param <A>        the type of the attachment
      * @param remote     the remote address to connect to
@@ -88,7 +88,7 @@ final class AsynchronousClientChannel extends AsynchronousServerChannel {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @param remote the remote address to connect to
      * @return a {@link Future} representing the pending result

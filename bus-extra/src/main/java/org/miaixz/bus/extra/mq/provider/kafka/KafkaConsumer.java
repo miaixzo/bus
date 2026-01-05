@@ -31,12 +31,14 @@ import java.io.IOException;
 import java.time.Duration;
 import java.util.Properties;
 import java.util.regex.Pattern;
+
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.ListKit;
 import org.miaixz.bus.extra.mq.Consumer;
 import org.miaixz.bus.extra.mq.Message;
 import org.miaixz.bus.extra.mq.MessageHandler;
+import org.miaixz.bus.extra.mq.RawMessage;
 
 /**
  * Kafka consumer implementation class. This class provides an adapter for consuming messages from Apache Kafka,
@@ -108,7 +110,7 @@ public class KafkaConsumer implements Consumer {
     @Override
     public void subscribe(final MessageHandler messageHandler) {
         for (final ConsumerRecord<String, byte[]> record : this.consumer.poll(Duration.ofMillis(3000))) {
-            messageHandler.handle(new ConsumerRecordMessage(record));
+            messageHandler.handle(new RawMessage(record.topic(), record.value()));
         }
     }
 
@@ -122,47 +124,6 @@ public class KafkaConsumer implements Consumer {
     @Override
     public void close() throws IOException {
         IoKit.nullSafeClose(this.consumer);
-    }
-
-    /**
-     * An internal static nested class that wraps a Kafka {@link ConsumerRecord} to conform to the {@link Message}
-     * interface. This allows Kafka records to be processed by generic message handlers.
-     */
-    private static class ConsumerRecordMessage implements Message {
-
-        /**
-         * The original Kafka {@link ConsumerRecord} that this object wraps.
-         */
-        private final ConsumerRecord<String, byte[]> record;
-
-        /**
-         * Constructs a {@code ConsumerRecordMessage} with the specified Kafka consumer record.
-         *
-         * @param record The Kafka {@link ConsumerRecord} to be wrapped.
-         */
-        private ConsumerRecordMessage(final ConsumerRecord<String, byte[]> record) {
-            this.record = record;
-        }
-
-        /**
-         * Retrieves the topic name from the wrapped Kafka {@link ConsumerRecord}.
-         *
-         * @return The name of the Kafka topic from which the message was consumed.
-         */
-        @Override
-        public String topic() {
-            return record.topic();
-        }
-
-        /**
-         * Retrieves the message content (value) as a byte array from the wrapped Kafka {@link ConsumerRecord}.
-         *
-         * @return The message content as a {@code byte[]}.
-         */
-        @Override
-        public byte[] content() {
-            return record.value();
-        }
     }
 
 }

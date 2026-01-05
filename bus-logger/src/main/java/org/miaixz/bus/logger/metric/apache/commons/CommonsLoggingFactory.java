@@ -49,29 +49,29 @@ public class CommonsLoggingFactory extends AbstractFactory {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
-    public Provider create(final String name) {
+    public Provider of(final String name) {
         return new CommonsLoggingProvider(name);
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
-    public Provider create(final Class<?> clazz) {
+    public Provider of(final Class<?> clazz) {
         return new CommonsLoggingProvider(clazz);
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     protected void exists(final Class<?> logClassName) {
         super.exists(logClassName);
         // This is to ensure that the logging framework is initialized.
-        create(CommonsLoggingFactory.class);
+        of(CommonsLoggingFactory.class);
     }
 
 }

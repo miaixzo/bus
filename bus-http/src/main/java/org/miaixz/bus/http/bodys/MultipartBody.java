@@ -321,8 +321,8 @@ public class MultipartBody extends RequestBody {
          * @return A new {@link Part} instance.
          * @throws NullPointerException if body is null.
          */
-        public static Part create(RequestBody body) {
-            return create(null, body);
+        public static Part of(RequestBody body) {
+            return of(null, body);
         }
 
         /**
@@ -334,7 +334,7 @@ public class MultipartBody extends RequestBody {
          * @throws NullPointerException     if body is null.
          * @throws IllegalArgumentException if headers contains Content-Type or Content-Length.
          */
-        public static Part create(Headers headers, RequestBody body) {
+        public static Part of(Headers headers, RequestBody body) {
             if (null == body) {
                 throw new NullPointerException("body == null");
             }
@@ -355,8 +355,8 @@ public class MultipartBody extends RequestBody {
          * @return A new {@link Part} instance.
          * @throws NullPointerException if name is null.
          */
-        public static Part createFormData(String name, String value) {
-            return createFormData(name, null, RequestBody.create(null, value));
+        public static Part formData(String name, String value) {
+            return formData(name, null, RequestBody.of(null, value));
         }
 
         /**
@@ -368,7 +368,7 @@ public class MultipartBody extends RequestBody {
          * @return A new {@link Part} instance.
          * @throws NullPointerException if name is null.
          */
-        public static Part createFormData(String name, String filename, RequestBody body) {
+        public static Part formData(String name, String filename, RequestBody body) {
             if (null == name) {
                 throw new NullPointerException("name == null");
             }
@@ -383,7 +383,7 @@ public class MultipartBody extends RequestBody {
             Headers headers = new Headers.Builder().addUnsafeNonAscii(HTTP.CONTENT_DISPOSITION, disposition.toString())
                     .build();
 
-            return create(headers, body);
+            return of(headers, body);
         }
 
         /**
@@ -470,7 +470,7 @@ public class MultipartBody extends RequestBody {
          * @return this builder instance.
          */
         public Builder addPart(RequestBody body) {
-            return addPart(Part.create(body));
+            return addPart(Part.of(body));
         }
 
         /**
@@ -481,7 +481,7 @@ public class MultipartBody extends RequestBody {
          * @return this builder instance.
          */
         public Builder addPart(Headers headers, RequestBody body) {
-            return addPart(Part.create(headers, body));
+            return addPart(Part.of(headers, body));
         }
 
         /**
@@ -492,7 +492,7 @@ public class MultipartBody extends RequestBody {
          * @return this builder instance.
          */
         public Builder addFormDataPart(String name, String value) {
-            return addPart(Part.createFormData(name, value));
+            return addPart(Part.formData(name, value));
         }
 
         /**
@@ -504,7 +504,7 @@ public class MultipartBody extends RequestBody {
          * @return this builder instance.
          */
         public Builder addFormDataPart(String name, String filename, RequestBody body) {
-            return addPart(Part.createFormData(name, filename, body));
+            return addPart(Part.formData(name, filename, body));
         }
 
         /**

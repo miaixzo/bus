@@ -230,16 +230,32 @@ public class SimpleCache<K, V> implements Iterable<Map.Entry<K, V>>, Serializabl
     public Iterator<Map.Entry<K, V>> iterator() {
         return new TransIterator<>(this.rawMap.entrySet().iterator(), (entry) -> new Map.Entry<>() {
 
+            /**
+             * Gets the key of this entry.
+             *
+             * @return the key
+             */
             @Override
             public K getKey() {
                 return entry.getKey().get();
             }
 
+            /**
+             * Gets the value of this entry.
+             *
+             * @return the value
+             */
             @Override
             public V getValue() {
                 return entry.getValue();
             }
 
+            /**
+             * Sets the value of this entry.
+             *
+             * @param value the new value
+             * @return the old value
+             */
             @Override
             public V setValue(final V value) {
                 return entry.setValue(value);

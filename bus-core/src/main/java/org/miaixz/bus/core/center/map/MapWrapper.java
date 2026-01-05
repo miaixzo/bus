@@ -89,7 +89,7 @@ public class MapWrapper<K, V>
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * Returns the number of key-value mappings in this map.
      *
@@ -101,7 +101,7 @@ public class MapWrapper<K, V>
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * Returns {@code true} if this map contains no key-value mappings.
      *
@@ -113,7 +113,7 @@ public class MapWrapper<K, V>
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * Returns {@code true} if this map contains a mapping for the specified key.
      *
@@ -126,7 +126,7 @@ public class MapWrapper<K, V>
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * Returns {@code true} if this map maps one or more keys to the specified value.
      *
@@ -139,7 +139,7 @@ public class MapWrapper<K, V>
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * Returns the value to which the specified key is mapped, or {@code null} if this map contains no mapping for the
      * key.
@@ -154,7 +154,7 @@ public class MapWrapper<K, V>
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * Associates the specified value with the specified key in this map.
      *
@@ -168,7 +168,7 @@ public class MapWrapper<K, V>
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * Removes the mapping for a key from this map if it is present.
      *
@@ -181,7 +181,7 @@ public class MapWrapper<K, V>
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * Copies all of the mappings from the specified map to this map.
      *
@@ -193,7 +193,7 @@ public class MapWrapper<K, V>
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * Removes all of the mappings from this map. The map will be empty after this call returns.
      */
@@ -203,7 +203,7 @@ public class MapWrapper<K, V>
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * Returns a {@link Collection} view of the values contained in this map.
      *
@@ -215,7 +215,7 @@ public class MapWrapper<K, V>
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * Returns a {@link Set} view of the keys contained in this map.
      *
@@ -227,7 +227,7 @@ public class MapWrapper<K, V>
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * Returns a {@link Set} view of the mappings contained in this map.
      *
@@ -239,7 +239,7 @@ public class MapWrapper<K, V>
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * Returns an iterator over the entries in this map.
      *
@@ -251,7 +251,7 @@ public class MapWrapper<K, V>
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * Compares the specified object with this map for equality.
      *
@@ -271,7 +271,7 @@ public class MapWrapper<K, V>
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * Returns the hash code value for this map.
      *
@@ -283,7 +283,7 @@ public class MapWrapper<K, V>
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * Returns the string representation of this map.
      *
@@ -295,7 +295,7 @@ public class MapWrapper<K, V>
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * Performs the given action for each entry in this map until all entries have been processed or the action throws
      * an exception.
@@ -308,7 +308,7 @@ public class MapWrapper<K, V>
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * Replaces each entry's value with the result of invoking the given function on that entry until all entries have
      * been processed or the function throws an exception.
@@ -321,7 +321,7 @@ public class MapWrapper<K, V>
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * If the specified key is not already associated with a value, associates it with the given value and returns
      * {@code null}, else returns the current value.
@@ -336,7 +336,7 @@ public class MapWrapper<K, V>
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * Removes the entry for the specified key only if it is currently mapped to the specified value.
      *
@@ -350,7 +350,7 @@ public class MapWrapper<K, V>
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * Replaces the entry for the specified key only if it is currently mapped to the specified value.
      *
@@ -365,7 +365,7 @@ public class MapWrapper<K, V>
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * Replaces the entry for the specified key only if it is currently mapped to some value.
      *
@@ -379,7 +379,7 @@ public class MapWrapper<K, V>
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * If the specified key is not already associated with a value, attempts to compute its value using the given
      * mapping function and enters it into this map unless {@code null}.
@@ -395,7 +395,7 @@ public class MapWrapper<K, V>
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * Returns the value to which the specified key is mapped, or {@code defaultValue} if this map contains no mapping
      * for the key.
@@ -411,7 +411,7 @@ public class MapWrapper<K, V>
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * If the value for the specified key is present and non-null, attempts to compute a new mapping given the key and
      * its current mapped value.
@@ -426,7 +426,7 @@ public class MapWrapper<K, V>
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * Attempts to compute a mapping for the specified key and its current mapped value (or {@code null} if there is no
      * current mapping).
@@ -441,7 +441,7 @@ public class MapWrapper<K, V>
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * If the specified key is not already associated with a value or is associated with {@code null}, associates it
      * with the given non-null value.

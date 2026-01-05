@@ -506,6 +506,11 @@ public final class RealSink implements BufferSink {
     public OutputStream outputStream() {
         return new OutputStream() {
 
+            /**
+             * Write method.
+             *
+             * @return the void value
+             */
             @Override
             public void write(int b) throws IOException {
                 if (closed)
@@ -514,6 +519,11 @@ public final class RealSink implements BufferSink {
                 emitCompleteSegments();
             }
 
+            /**
+             * Write method.
+             *
+             * @return the void value
+             */
             @Override
             public void write(byte[] data, int offset, int byteCount) throws IOException {
                 if (closed)
@@ -522,6 +532,11 @@ public final class RealSink implements BufferSink {
                 emitCompleteSegments();
             }
 
+            /**
+             * Flush method.
+             *
+             * @return the void value
+             */
             @Override
             public void flush() throws IOException {
                 if (!closed) {
@@ -529,11 +544,21 @@ public final class RealSink implements BufferSink {
                 }
             }
 
+            /**
+             * Close method.
+             *
+             * @return the void value
+             */
             @Override
             public void close() {
                 RealSink.this.close();
             }
 
+            /**
+             * Returns the string representation of this object.
+             *
+             * @return the string representation
+             */
             @Override
             public String toString() {
                 return RealSink.this + ".outputStream()";

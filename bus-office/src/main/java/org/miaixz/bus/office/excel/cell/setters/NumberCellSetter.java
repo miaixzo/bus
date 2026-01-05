@@ -53,7 +53,7 @@ public class NumberCellSetter implements CellSetter {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @param cell the cell to set the number value in
      */

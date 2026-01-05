@@ -1,4 +1,4 @@
-#### 项目说明
+# 🚀 GitLab API: Java library for GitLab REST API
 
 GitLab API (bus-gitlab) provides a full featured and easy to consume Java library for working with GitLab repositories
 via the GitLab REST API. Additionally, full support for working with GitLab webhooks and system hooks is also provided.

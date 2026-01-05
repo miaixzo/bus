@@ -77,6 +77,11 @@ public class InstanceCompare<T> implements Comparator<T> {
         this.instanceOrder = instanceOrder;
     }
 
+    /**
+     * Compare method.
+     *
+     * @return the int value
+     */
     @Override
     public int compare(final T o1, final T o2) {
         final int i1 = getOrder(o1);

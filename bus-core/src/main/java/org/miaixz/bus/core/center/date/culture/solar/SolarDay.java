@@ -492,6 +492,11 @@ public class SolarDay extends DayParts {
         return getPhaseDay().getPhase();
     }
 
+    /**
+     * Returns the string representation of this object.
+     *
+     * @return the string representation
+     */
     @Override
     public String toString() {
         return getSolarMonth() + getName();

@@ -81,7 +81,7 @@ public class AuditBuilder {
      * @return created audit record
      */
     public AuditRecord before(MappedStatement mappedStatement, Object parameter) {
-        AuditRecord record = AuditRecord.create().sqlId(mappedStatement.getId())
+        AuditRecord record = AuditRecord.of().sqlId(mappedStatement.getId())
                 .sqlType(mappedStatement.getSqlCommandType().name())
                 .parameter(config.isLogParameters() ? parameter : null).context(new HashMap<>(AuditContext.get()))
                 .start();
@@ -99,7 +99,7 @@ public class AuditBuilder {
      * @return created audit record
      */
     public AuditRecord before(MappedStatement mappedStatement, Object parameter, BoundSql boundSql) {
-        AuditRecord record = AuditRecord.create().sqlId(mappedStatement.getId())
+        AuditRecord record = AuditRecord.of().sqlId(mappedStatement.getId())
                 .sqlType(mappedStatement.getSqlCommandType().name()).sql(boundSql.getSql())
                 .parameter(config.isLogParameters() ? parameter : null).context(new HashMap<>(AuditContext.get()))
                 .start();

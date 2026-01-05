@@ -85,6 +85,11 @@ public class TripletConverter extends ConverterWithRoot implements Serializable 
                 TypeKit.isUnknown(rightType) ? right : converter.convert(rightType, right));
     }
 
+    /**
+     * Convert method.
+     *
+     * @return the Object value
+     */
     @Override
     public Object convert(Type targetType, final Object value) throws ConvertException {
         if (targetType instanceof TypeReference) {

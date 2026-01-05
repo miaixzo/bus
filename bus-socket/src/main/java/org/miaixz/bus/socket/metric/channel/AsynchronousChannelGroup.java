@@ -179,7 +179,7 @@ class AsynchronousChannelGroup extends java.nio.channels.AsynchronousChannelGrou
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @return {@code true} if this channel group has been shut down, {@code false} otherwise
      */
@@ -189,7 +189,7 @@ class AsynchronousChannelGroup extends java.nio.channels.AsynchronousChannelGrou
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @return {@code true} if all tasks have completed following shutdown, {@code false} otherwise
      */
@@ -199,7 +199,7 @@ class AsynchronousChannelGroup extends java.nio.channels.AsynchronousChannelGrou
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * This implementation interrupts all worker threads and shuts down both the read and common executor services.
      * </p>
@@ -217,7 +217,7 @@ class AsynchronousChannelGroup extends java.nio.channels.AsynchronousChannelGrou
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * This implementation delegates to {@link #shutdown()}.
      * </p>
@@ -228,7 +228,7 @@ class AsynchronousChannelGroup extends java.nio.channels.AsynchronousChannelGrou
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @param timeout the maximum time to wait
      * @param unit    the time unit of the timeout argument
@@ -276,7 +276,7 @@ class AsynchronousChannelGroup extends java.nio.channels.AsynchronousChannelGrou
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * This worker continuously processes I/O events by:
          * </p>

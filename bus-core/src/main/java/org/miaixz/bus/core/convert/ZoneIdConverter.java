@@ -50,11 +50,21 @@ public class ZoneIdConverter extends AbstractConverter implements MatcherConvert
      */
     public static final ZoneIdConverter INSTANCE = new ZoneIdConverter();
 
+    /**
+     * Match method.
+     *
+     * @return the boolean value
+     */
     @Override
     public boolean match(final Type targetType, final Class<?> rawType, final Object value) {
         return ZoneId.class.isAssignableFrom(rawType);
     }
 
+    /**
+     * Convertinternal method.
+     *
+     * @return the ZoneId value
+     */
     @Override
     protected ZoneId convertInternal(final Class<?> targetClass, final Object value) {
         if (value instanceof TimeZone) {

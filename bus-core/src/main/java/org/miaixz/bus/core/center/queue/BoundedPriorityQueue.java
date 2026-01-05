@@ -85,11 +85,21 @@ public class BoundedPriorityQueue<E> extends PriorityQueue<E> implements Bounded
         this.comparator = comparator;
     }
 
+    /**
+     * Returns true if this cache is full.
+     *
+     * @return true if this cache is full
+     */
     @Override
     public boolean isFull() {
         return size() == capacity;
     }
 
+    /**
+     * Maxsize method.
+     *
+     * @return the int value
+     */
     @Override
     public int maxSize() {
         return capacity;
@@ -135,6 +145,11 @@ public class BoundedPriorityQueue<E> extends PriorityQueue<E> implements Bounded
         return list;
     }
 
+    /**
+     * Returns an iterator over elements of type T.
+     *
+     * @return an Iterator
+     */
     @Override
     public Iterator<E> iterator() {
         return toList().iterator();

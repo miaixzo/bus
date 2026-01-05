@@ -229,11 +229,21 @@ public class TreeBuilder<E> implements Builder<MapTree<E>> {
         final Iterator<T> iterator = list.iterator();
         return append(new Iterator<>() {
 
+            /**
+             * Returns true if the iteration has more elements.
+             *
+             * @return true if the iteration has more elements
+             */
             @Override
             public boolean hasNext() {
                 return iterator.hasNext();
             }
 
+            /**
+             * Returns the next element in the iteration.
+             *
+             * @return the next element
+             */
             @Override
             public MapTree<E> next() {
                 final MapTree<E> node = new MapTree<>(config);

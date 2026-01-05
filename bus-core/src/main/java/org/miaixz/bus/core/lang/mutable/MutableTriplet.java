@@ -71,11 +71,19 @@ public class MutableTriplet<L, M, R> extends Triplet<L, M, R> implements Mutable
         return new MutableTriplet<>(left, middle, right);
     }
 
+    /**
+     * Gets the value.
+     *
+     * @return the value
+     */
     @Override
     public MutableTriplet<L, M, R> get() {
         return this;
     }
 
+    /**
+     * Set method.
+     */
     @Override
     public void set(final MutableTriplet<L, M, R> value) {
         this.left = value.left;

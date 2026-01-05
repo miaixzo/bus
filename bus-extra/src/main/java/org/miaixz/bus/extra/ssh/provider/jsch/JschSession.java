@@ -85,21 +85,55 @@ public class JschSession implements Session {
         this.timeout = timeout;
     }
 
+    /**
+     * Gets the underlying raw JSch session. This method is designed to be overridden by subclasses for custom session
+     * access.
+     *
+     * Subclasses may override to add validation or wrapping.
+     *
+     * @return The raw JSch {@link com.jcraft.jsch.Session}.
+     */
     @Override
     public com.jcraft.jsch.Session getRaw() {
         return this.raw;
     }
 
+    /**
+     * Checks if the session is connected. This method is designed to be overridden by subclasses for custom connection
+     * checks.
+     *
+     * Subclasses may override to add additional connection validation.
+     *
+     * @return {@code true} if the session is connected, {@code false} otherwise.
+     */
     @Override
     public boolean isConnected() {
         return null != this.raw && this.raw.isConnected();
     }
 
+    /**
+     * Closes the session and releases all resources. This method is designed to be overridden by subclasses for custom
+     * cleanup logic.
+     *
+     * Subclasses should call {@code super.close()} to ensure proper cleanup.
+     *
+     * @throws IOException if an error occurs during closing.
+     */
     @Override
     public void close() throws IOException {
         JschKit.close(this.raw);
     }
 
+    /**
+     * Binds a local port to a remote address (local port forwarding). This method is designed to be overridden by
+     * subclasses for custom port forwarding logic.
+     *
+     * Subclasses may override to add logging or validation.
+     *
+     * @param localAddress  The local address to bind.
+     * @param remoteAddress The remote address to forward to.
+     * @throws InternalException if port forwarding setup fails.
+     */
     @Override
     public void bindLocalPort(final InetSocketAddress localAddress, final InetSocketAddress remoteAddress)
             throws InternalException {
@@ -114,6 +148,14 @@ public class JschSession implements Session {
         }
     }
 
+    /**
+     * Unbinds a local port forwarding. This method is designed to be overridden by subclasses for custom port unbinding
+     * logic.
+     *
+     * Subclasses may override to add logging or validation.
+     *
+     * @param localAddress The local address to unbind.
+     */
     @Override
     public void unBindLocalPort(final InetSocketAddress localAddress) {
         try {
@@ -123,6 +165,16 @@ public class JschSession implements Session {
         }
     }
 
+    /**
+     * Binds a remote port to a local address (remote port forwarding). This method is designed to be overridden by
+     * subclasses for custom port forwarding logic.
+     *
+     * Subclasses may override to add logging or validation.
+     *
+     * @param remoteAddress The remote address to bind.
+     * @param localAddress  The local address to forward to.
+     * @throws InternalException if port forwarding setup fails.
+     */
     @Override
     public void bindRemotePort(final InetSocketAddress remoteAddress, final InetSocketAddress localAddress)
             throws InternalException {
@@ -137,6 +189,14 @@ public class JschSession implements Session {
         }
     }
 
+    /**
+     * Unbinds a remote port forwarding. This method is designed to be overridden by subclasses for custom port
+     * unbinding logic.
+     *
+     * Subclasses may override to add logging or validation.
+     *
+     * @param remoteAddress The remote address to unbind.
+     */
     @Override
     public void unBindRemotePort(final InetSocketAddress remoteAddress) {
         try {

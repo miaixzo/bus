@@ -73,6 +73,11 @@ public class CheckedLinkedBlockingQueue<E> extends LinkedBlockingQueue<E> {
         this.checker = checker;
     }
 
+    /**
+     * Associates the specified value with the specified key in this cache.
+     *
+     * @param e the element to add
+     */
     @Override
     public void put(final E e) throws InterruptedException {
         if (checker.test(e)) {
@@ -80,11 +85,21 @@ public class CheckedLinkedBlockingQueue<E> extends LinkedBlockingQueue<E> {
         }
     }
 
+    /**
+     * Offer method.
+     *
+     * @return the boolean value
+     */
     @Override
     public boolean offer(final E e, final long timeout, final TimeUnit unit) throws InterruptedException {
         return checker.test(e) && super.offer(e, timeout, unit);
     }
 
+    /**
+     * Offer method.
+     *
+     * @return the boolean value
+     */
     @Override
     public boolean offer(final E e) {
         return checker.test(e) && super.offer(e);

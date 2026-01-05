@@ -256,7 +256,7 @@ public class PartitionPool<T> implements ObjectPool<T> {
      * @return a new {@link Poolable} instance wrapping a newly created object, or {@code null} if object creation fails
      */
     protected Poolable<T> createPoolable() {
-        final T t = objectFactory.create();
+        final T t = objectFactory.of();
         return null == t ? null : wrapPoolable(t);
     }
 

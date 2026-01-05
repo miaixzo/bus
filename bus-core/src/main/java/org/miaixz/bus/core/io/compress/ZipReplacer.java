@@ -117,6 +117,9 @@ public class ZipReplacer implements Closeable {
         });
     }
 
+    /**
+     * Close method.
+     */
     @Override
     public void close() throws IOException {
         this.zipReader.close();

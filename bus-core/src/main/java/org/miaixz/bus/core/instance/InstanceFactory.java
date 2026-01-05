@@ -93,11 +93,17 @@ public final class InstanceFactory implements Instance {
         return getInstance().singleton(clazz, groupName);
     }
 
+    /**
+     * Singleton method.
+     */
     @Override
     public <T> T singleton(Class<T> clazz, String groupName) {
         return getSingleton(clazz, groupName, singletonMap);
     }
 
+    /**
+     * Singleton method.
+     */
     @Override
     public <T> T singleton(Class<T> clazz) {
         this.notNull(clazz);
@@ -105,6 +111,9 @@ public final class InstanceFactory implements Instance {
         return this.getSingleton(clazz, singletonMap);
     }
 
+    /**
+     * Threadlocal method.
+     */
     @Override
     public <T> T threadLocal(Class<T> clazz) {
         this.notNull(clazz);
@@ -124,6 +133,9 @@ public final class InstanceFactory implements Instance {
         return instance;
     }
 
+    /**
+     * Multiple method.
+     */
     @Override
     public <T> T multiple(Class<T> clazz) {
         this.notNull(clazz);
@@ -136,6 +148,9 @@ public final class InstanceFactory implements Instance {
         }
     }
 
+    /**
+     * Threadsafe method.
+     */
     @Override
     public <T> T threadSafe(Class<T> clazz) {
         if (clazz.isAnnotationPresent(ThreadSafe.class)) {

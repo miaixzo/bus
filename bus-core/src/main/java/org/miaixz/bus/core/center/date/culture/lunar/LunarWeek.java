@@ -105,6 +105,11 @@ public class LunarWeek extends WeekParts {
         return Week.WHICH[index];
     }
 
+    /**
+     * Returns the string representation of this object.
+     *
+     * @return the string representation
+     */
     @Override
     public String toString() {
         return getLunarMonth() + getName();
@@ -169,6 +174,12 @@ public class LunarWeek extends WeekParts {
         return l;
     }
 
+    /**
+     * Checks if this object equals another object.
+     *
+     * @param o the object to compare with
+     * @return true if the objects are equal, false otherwise
+     */
     @Override
     public boolean equals(Object o) {
         return o instanceof LunarWeek && getFirstDay().equals(((LunarWeek) o).getFirstDay());

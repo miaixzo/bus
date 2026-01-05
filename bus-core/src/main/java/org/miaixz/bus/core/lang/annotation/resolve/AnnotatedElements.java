@@ -566,16 +566,16 @@ public class AnnotatedElements {
         }
         collector = ObjectKit.defaultIfNull(collector, RepeatableAnnotationCollector.none());
         if (resolved) {
-            return RepeatableMetaAnnotatedElement.create(
+            return RepeatableMetaAnnotatedElement.of(
                     collector,
                     element,
                     (source, annotation) -> ResolvedAnnotationMapping
-                            .create((ResolvedAnnotationMapping) source, annotation, true));
+                            .of((ResolvedAnnotationMapping) source, annotation, true));
         }
-        return RepeatableMetaAnnotatedElement.create(
+        return RepeatableMetaAnnotatedElement.of(
                 collector,
                 element,
-                (source, annotation) -> GenericAnnotationMapping.create(annotation, Objects.isNull(source)));
+                (source, annotation) -> GenericAnnotationMapping.of(annotation, Objects.isNull(source)));
     }
 
     /**
@@ -609,9 +609,8 @@ public class AnnotatedElements {
             final AnnotatedElement element) {
         return RESOLVED_ELEMENT_CACHE.computeIfAbsent(
                 element,
-                ele -> MetaAnnotatedElement.create(
-                        element,
-                        (source, annotation) -> ResolvedAnnotationMapping.create(source, annotation, true)));
+                ele -> MetaAnnotatedElement
+                        .of(element, (source, annotation) -> ResolvedAnnotationMapping.of(source, annotation, true)));
     }
 
     /**
@@ -624,9 +623,9 @@ public class AnnotatedElements {
     public static MetaAnnotatedElement<GenericAnnotationMapping> getMetaElementCache(final AnnotatedElement element) {
         return ELEMENT_CACHE.computeIfAbsent(
                 element,
-                ele -> MetaAnnotatedElement.create(
+                ele -> MetaAnnotatedElement.of(
                         element,
-                        (source, annotation) -> GenericAnnotationMapping.create(annotation, Objects.isNull(source))));
+                        (source, annotation) -> GenericAnnotationMapping.of(annotation, Objects.isNull(source))));
     }
 
     /**
@@ -640,9 +639,8 @@ public class AnnotatedElements {
             final AnnotatedElement element) {
         return RESOLVED_REPEATABLE_ELEMENT_CACHE.computeIfAbsent(
                 element,
-                ele -> RepeatableMetaAnnotatedElement.create(
-                        element,
-                        (source, annotation) -> ResolvedAnnotationMapping.create(source, annotation, true)));
+                ele -> RepeatableMetaAnnotatedElement
+                        .of(element, (source, annotation) -> ResolvedAnnotationMapping.of(source, annotation, true)));
     }
 
     /**
@@ -656,9 +654,9 @@ public class AnnotatedElements {
             final AnnotatedElement element) {
         return REPEATABLE_ELEMENT_CACHE.computeIfAbsent(
                 element,
-                ele -> RepeatableMetaAnnotatedElement.create(
+                ele -> RepeatableMetaAnnotatedElement.of(
                         element,
-                        (source, annotation) -> GenericAnnotationMapping.create(annotation, Objects.isNull(source))));
+                        (source, annotation) -> GenericAnnotationMapping.of(annotation, Objects.isNull(source))));
     }
 
     /**
@@ -688,6 +686,9 @@ public class AnnotatedElements {
             this.annotations = Objects.requireNonNull(annotations);
         }
 
+        /**
+         * Getannotation method.
+         */
         @Override
         public <T extends Annotation> T getAnnotation(final Class<T> annotationClass) {
             return Stream.of(annotations)
@@ -695,11 +696,21 @@ public class AnnotatedElements {
                     .map(annotationClass::cast).orElse(null);
         }
 
+        /**
+         * Getannotations method.
+         *
+         * @return the Annotation[] value
+         */
         @Override
         public Annotation[] getAnnotations() {
             return annotations.clone();
         }
 
+        /**
+         * Getdeclaredannotations method.
+         *
+         * @return the Annotation[] value
+         */
         @Override
         public Annotation[] getDeclaredAnnotations() {
             return annotations.clone();
@@ -713,16 +724,29 @@ public class AnnotatedElements {
 
         static final EmptyElement INSTANCE = new EmptyElement();
 
+        /**
+         * Getannotation method.
+         */
         @Override
         public <T extends Annotation> T getAnnotation(final Class<T> annotationClass) {
             return null;
         }
 
+        /**
+         * Getannotations method.
+         *
+         * @return the Annotation[] value
+         */
         @Override
         public Annotation[] getAnnotations() {
             return new Annotation[0];
         }
 
+        /**
+         * Getdeclaredannotations method.
+         *
+         * @return the Annotation[] value
+         */
         @Override
         public Annotation[] getDeclaredAnnotations() {
             return new Annotation[0];

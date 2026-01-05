@@ -40,7 +40,7 @@ import java.io.InputStream;
 public class OnlineOfficeProvider extends AbstractProvider {
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @param source the source file to convert
      * @return null (not implemented in this version)
@@ -51,7 +51,7 @@ public class OnlineOfficeProvider extends AbstractProvider {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @param source the input stream to convert
      * @return null (not implemented in this version)
@@ -62,7 +62,7 @@ public class OnlineOfficeProvider extends AbstractProvider {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @param source      the input stream to convert
      * @param closeStream whether to close the stream after conversion

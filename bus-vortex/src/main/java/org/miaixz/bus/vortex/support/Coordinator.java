@@ -72,10 +72,15 @@ import reactor.core.publisher.Mono;
 public abstract class Coordinator<I, O> implements Executor<I, O> {
 
     /**
-     * {@inheritDoc}
+     * Builds the URL or connection target for the downstream service.
+     * <p>
+     * Description inherited from parent interface.
      * <p>
      * This implementation builds a URL string from the assets configuration. Subclasses that need different build
      * behavior should override this method.
+     *
+     * @param context The request context containing the assets configuration.
+     * @return A {@link Mono<String>} emitting the constructed URL string (e.g., "http://api.example.com:8080/v1").
      */
     @Override
     public Mono<String> build(Context context) {

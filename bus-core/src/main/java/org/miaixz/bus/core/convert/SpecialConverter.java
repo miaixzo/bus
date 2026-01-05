@@ -125,6 +125,11 @@ public class SpecialConverter extends ConverterWithRoot implements Serializable 
         return converterSet;
     }
 
+    /**
+     * Convert method.
+     *
+     * @return the Object value
+     */
     @Override
     public Object convert(final Type targetType, final Object value) throws ConvertException {
         return convert(targetType, TypeKit.getClass(targetType), value);

@@ -104,7 +104,7 @@ public class CsvData implements Iterable<CsvRow>, Serializable {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @return iterator over the CSV rows
      */
@@ -114,7 +114,7 @@ public class CsvData implements Iterable<CsvRow>, Serializable {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @return string representation of this CSV data
      */

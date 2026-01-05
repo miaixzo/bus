@@ -49,7 +49,9 @@ public interface StrategyProvider extends Provider {
     Object build(final Object object, final Context context);
 
     /**
-     * {@inheritDoc}
+     * Returns an identifier for the type or strategy that this provider supports.
+     * <p>
+     * Description inherited from parent interface.
      *
      * @return the provider type, which is always {@link EnumValue.Povider#SENSITIVE}
      */

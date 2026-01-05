@@ -122,6 +122,13 @@ public class RecyclableBatchThreadPoolExecutor {
         final int batchCount = (data.size() + batchSize - 1) / batchSize;
         return new AbstractList<>() {
 
+            /**
+             * Returns the value to which the specified key is mapped, or null if this cache contains no mapping for the
+             * key.
+             *
+             * @param key the key whose associated value is to be returned
+             * @return the value associated with the key, or null if no mapping
+             */
             @Override
             public List<T> get(final int index) {
                 final int from = index * batchSize;
@@ -129,6 +136,11 @@ public class RecyclableBatchThreadPoolExecutor {
                 return data.subList(from, to);
             }
 
+            /**
+             * Returns the number of elements in this collection.
+             *
+             * @return the number of elements
+             */
             @Override
             public int size() {
                 return batchCount;

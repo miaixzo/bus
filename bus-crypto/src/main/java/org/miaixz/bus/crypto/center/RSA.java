@@ -181,13 +181,13 @@ public class RSA extends Crypto {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * When not using the BouncyCastle provider, the block size uses the default algorithm.
      *
-     * @param data    {@inheritDoc}
-     * @param keyType {@inheritDoc}
-     * @return {@inheritDoc}
+     * @param data    Description inherited from parent class or interface.
+     * @param keyType Description inherited from parent class or interface.
+     * @return Description inherited from parent class or interface.
      */
     @Override
     public byte[] encrypt(final byte[] data, final KeyType keyType) {
@@ -200,13 +200,13 @@ public class RSA extends Crypto {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * When not using the BouncyCastle provider, the block size uses the default algorithm.
      *
-     * @param bytes   {@inheritDoc}
-     * @param keyType {@inheritDoc}
-     * @return {@inheritDoc}
+     * @param bytes   Description inherited from parent class or interface.
+     * @param keyType Description inherited from parent class or interface.
+     * @return Description inherited from parent class or interface.
      */
     @Override
     public byte[] decrypt(final byte[] bytes, final KeyType keyType) {
@@ -219,7 +219,7 @@ public class RSA extends Crypto {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * Attempts to initialize the cipher and handles NoSuchAlgorithmException by trying to add BouncyCastle provider.
      */

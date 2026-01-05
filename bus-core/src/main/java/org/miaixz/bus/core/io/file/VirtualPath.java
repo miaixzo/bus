@@ -98,7 +98,7 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * Virtual paths do not support file system operations, so this method throws an
      * {@link UnsupportedOperationException}.
@@ -109,7 +109,7 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * Virtual paths are always considered relative, so this method always returns {@code false}.
      */
@@ -119,7 +119,7 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * Virtual paths do not have a root component, so this method returns {@code null}.
      */
@@ -129,7 +129,7 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public Path getFileName() {
@@ -141,7 +141,7 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public Path getParent() {
@@ -153,7 +153,7 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public int getNameCount() {
@@ -167,7 +167,7 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public Path getName(final int index) {
@@ -182,7 +182,7 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public Path subpath(final int beginIndex, final int endIndex) {
@@ -204,7 +204,7 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public boolean startsWith(final Path other) {
@@ -215,7 +215,7 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public boolean startsWith(final String other) {
@@ -223,7 +223,7 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public boolean endsWith(final Path other) {
@@ -234,7 +234,7 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public boolean endsWith(final String other) {
@@ -242,7 +242,7 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public Path normalize() {
@@ -250,7 +250,7 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public Path resolve(final Path other) {
@@ -265,7 +265,7 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public Path resolve(final String other) {
@@ -277,7 +277,7 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public Path resolveSibling(final Path other) {
@@ -289,7 +289,7 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public Path resolveSibling(final String other) {
@@ -301,7 +301,7 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public Path relativize(final Path other) {
@@ -318,7 +318,7 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * Virtual paths do not support URI conversion, so this method throws an {@link UnsupportedOperationException}.
      */
@@ -328,7 +328,7 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * For a virtual path, this returns the path itself.
      */
@@ -338,7 +338,7 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * For a virtual path, this returns the path itself.
      */
@@ -348,7 +348,7 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public File toFile() {
@@ -356,7 +356,7 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * Virtual paths do not support watch services, so this method throws an {@link UnsupportedOperationException}.
      */
@@ -369,7 +369,7 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * Virtual paths do not support watch services, so this method throws an {@link UnsupportedOperationException}.
      */
@@ -379,7 +379,7 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public Iterator<Path> iterator() {
@@ -388,11 +388,21 @@ public class VirtualPath implements Path {
             private int index = 0;
             private final List<String> parts = CharsBacker.splitTrim(path, Symbol.SLASH);
 
+            /**
+             * Returns true if the iteration has more elements.
+             *
+             * @return true if the iteration has more elements
+             */
             @Override
             public boolean hasNext() {
                 return index < parts.size();
             }
 
+            /**
+             * Returns the next element in the iteration.
+             *
+             * @return the next element
+             */
             @Override
             public Path next() {
                 if (!hasNext()) {
@@ -404,7 +414,7 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public int compareTo(final Path other) {
@@ -415,7 +425,7 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public boolean equals(final Object other) {
@@ -429,7 +439,7 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public int hashCode() {
@@ -437,7 +447,7 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public String toString() {

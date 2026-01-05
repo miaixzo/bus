@@ -99,7 +99,7 @@ public class LineProvider extends AbstractProvider {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * Creates a CAPTCHA image with line interference patterns. The image is rendered with random lines as visual
      * interference and the provided code is drawn in colorful text.

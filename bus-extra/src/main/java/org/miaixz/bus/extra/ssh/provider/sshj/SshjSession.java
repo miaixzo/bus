@@ -96,16 +96,28 @@ public class SshjSession implements Session {
         }
     }
 
+    /**
+     * Description inherited from parent class or interface.
+     *
+     */
     @Override
     public net.schmizz.sshj.connection.channel.direct.Session getRaw() {
         return raw;
     }
 
+    /**
+     * Description inherited from parent class or interface.
+     *
+     */
     @Override
     public boolean isConnected() {
         return null != this.raw && (null == this.ssh || this.ssh.isConnected());
     }
 
+    /**
+     * Description inherited from parent class or interface.
+     *
+     */
     @Override
     public void close() throws IOException {
         IoKit.closeQuietly(this.raw);
@@ -122,6 +134,10 @@ public class SshjSession implements Session {
         return new SshjSftp(this.ssh, charset);
     }
 
+    /**
+     * Description inherited from parent class or interface.
+     *
+     */
     @Override
     public void bindLocalPort(final InetSocketAddress localAddress, final InetSocketAddress remoteAddress)
             throws InternalException {
@@ -144,6 +160,10 @@ public class SshjSession implements Session {
         this.localPortForwarderMap.put(localAddress.toString(), ss);
     }
 
+    /**
+     * Description inherited from parent class or interface.
+     *
+     */
     @Override
     public void unBindLocalPort(final InetSocketAddress localAddress) throws InternalException {
         if (MapKit.isEmpty(this.localPortForwarderMap)) {
@@ -153,6 +173,10 @@ public class SshjSession implements Session {
         IoKit.closeQuietly(this.localPortForwarderMap.remove(localAddress.toString()));
     }
 
+    /**
+     * Description inherited from parent class or interface.
+     *
+     */
     @Override
     public void bindRemotePort(final InetSocketAddress remoteAddress, final InetSocketAddress localAddress)
             throws InternalException {
@@ -165,6 +189,10 @@ public class SshjSession implements Session {
         }
     }
 
+    /**
+     * Description inherited from parent class or interface.
+     *
+     */
     @Override
     public void unBindRemotePort(final InetSocketAddress remoteAddress) {
         final String hostName = remoteAddress.getHostName();

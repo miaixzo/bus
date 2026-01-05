@@ -75,7 +75,7 @@ class ReconnectPlugin extends AbstractPlugin {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public void stateEvent(Status status, Session session, Throwable throwable) {

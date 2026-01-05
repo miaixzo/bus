@@ -61,11 +61,21 @@ public class ReplacerChain extends StringReplacer implements Chain<StringReplace
         }
     }
 
+    /**
+     * Returns an iterator over elements of type T.
+     *
+     * @return an Iterator
+     */
     @Override
     public Iterator<StringReplacer> iterator() {
         return replacers.iterator();
     }
 
+    /**
+     * Addchain method.
+     *
+     * @return the ReplacerChain value
+     */
     @Override
     public ReplacerChain addChain(final StringReplacer element) {
         replacers.add(element);

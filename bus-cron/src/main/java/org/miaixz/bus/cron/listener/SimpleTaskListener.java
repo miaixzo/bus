@@ -38,7 +38,11 @@ import org.miaixz.bus.cron.Executor;
 public class SimpleTaskListener implements TaskListener {
 
     /**
-     * {@inheritDoc}
+     * Triggered when a task is about to start.
+     * <p>
+     * Description inherited from parent interface.
+     *
+     * @param executor The {@link Executor} for the task that is starting.
      */
     @Override
     public void onStart(final Executor executor) {
@@ -46,7 +50,11 @@ public class SimpleTaskListener implements TaskListener {
     }
 
     /**
-     * {@inheritDoc}
+     * Triggered when a task has completed successfully.
+     * <p>
+     * Description inherited from parent interface.
+     *
+     * @param executor The {@link Executor} for the task that has succeeded.
      */
     @Override
     public void onSucceeded(final Executor executor) {
@@ -54,7 +62,12 @@ public class SimpleTaskListener implements TaskListener {
     }
 
     /**
-     * {@inheritDoc}
+     * Triggered when a task fails to execute.
+     * <p>
+     * Description inherited from parent interface.
+     *
+     * @param executor  The {@link Executor} for the task that has failed.
+     * @param exception The exception that caused the failure.
      */
     @Override
     public void onFailed(final Executor executor, final Throwable exception) {

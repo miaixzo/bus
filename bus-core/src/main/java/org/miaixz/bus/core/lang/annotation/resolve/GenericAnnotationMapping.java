@@ -78,7 +78,7 @@ public class GenericAnnotationMapping implements AnnotationMapping<Annotation> {
      * @param isRoot     {@code true} if this is a root annotation, {@code false} otherwise.
      * @return A new {@code GenericAnnotationMapping} instance.
      */
-    public static GenericAnnotationMapping create(final Annotation annotation, final boolean isRoot) {
+    public static GenericAnnotationMapping of(final Annotation annotation, final boolean isRoot) {
         return new GenericAnnotationMapping(annotation, isRoot);
     }
 

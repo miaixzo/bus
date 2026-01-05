@@ -55,6 +55,9 @@ import org.miaixz.bus.core.lang.Assert;
  */
 public class RenderHintsBuilder implements Builder<RenderingHints> {
 
+    /**
+     * The map of rendering hints.
+     */
     private final Map<RenderingHints.Key, Object> hintsMap;
 
     /**
@@ -265,6 +268,9 @@ public class RenderHintsBuilder implements Builder<RenderingHints> {
          */
         DEFAULT(RenderingHints.VALUE_ANTIALIAS_OFF);
 
+        /**
+         * The rendering hint value.
+         */
         private final Object value;
 
         Antialias(final Object value) {
@@ -323,6 +329,9 @@ public class RenderHintsBuilder implements Builder<RenderingHints> {
          */
         LCD_VBGR(RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_VBGR);
 
+        /**
+         * The rendering hint value.
+         */
         private final Object value;
 
         TextAntialias(final Object value) {
@@ -361,6 +370,9 @@ public class RenderHintsBuilder implements Builder<RenderingHints> {
          */
         DEFAULT(RenderingHints.VALUE_COLOR_RENDER_DEFAULT);
 
+        /**
+         * The rendering hint value.
+         */
         private final Object value;
 
         ColorRender(final Object value) {
@@ -399,6 +411,9 @@ public class RenderHintsBuilder implements Builder<RenderingHints> {
          */
         DEFAULT(RenderingHints.VALUE_RENDER_DEFAULT);
 
+        /**
+         * The rendering hint value.
+         */
         private final Object value;
 
         Render(final Object value) {
@@ -438,6 +453,9 @@ public class RenderHintsBuilder implements Builder<RenderingHints> {
          */
         DEFAULT(RenderingHints.VALUE_DITHER_DEFAULT);
 
+        /**
+         * The rendering hint value.
+         */
         private final Object value;
 
         Dither(final Object value) {
@@ -476,6 +494,9 @@ public class RenderHintsBuilder implements Builder<RenderingHints> {
          */
         DEFAULT(RenderingHints.VALUE_FRACTIONALMETRICS_DEFAULT);
 
+        /**
+         * The rendering hint value.
+         */
         private final Object value;
 
         FractionalMetrics(final Object value) {
@@ -516,6 +537,9 @@ public class RenderHintsBuilder implements Builder<RenderingHints> {
          */
         NEAREST_NEIGHBOR(RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
 
+        /**
+         * The rendering hint value.
+         */
         private final Object value;
 
         Interpolation(final Object value) {
@@ -554,6 +578,9 @@ public class RenderHintsBuilder implements Builder<RenderingHints> {
          */
         DEFAULT(RenderingHints.VALUE_ALPHA_INTERPOLATION_DEFAULT);
 
+        /**
+         * The rendering hint value.
+         */
         private final Object value;
 
         AlphaInterpolation(final Object value) {
@@ -592,6 +619,9 @@ public class RenderHintsBuilder implements Builder<RenderingHints> {
          */
         DEFAULT(RenderingHints.VALUE_STROKE_DEFAULT);
 
+        /**
+         * The rendering hint value.
+         */
         private final Object value;
 
         StrokeControl(final Object value) {

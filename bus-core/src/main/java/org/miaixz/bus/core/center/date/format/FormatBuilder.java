@@ -64,6 +64,11 @@ public class FormatBuilder extends Format implements PositionDateParser, FormatP
 
     private static final FormatCache<FormatBuilder> CACHE = new FormatCache<>() {
 
+        /**
+         * Createinstance method.
+         *
+         * @return the FormatBuilder value
+         */
         @Override
         protected FormatBuilder createInstance(final String pattern, final TimeZone timeZone, final Locale locale) {
             return new FormatBuilder(pattern, timeZone, locale);

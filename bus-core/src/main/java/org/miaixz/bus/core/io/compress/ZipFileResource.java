@@ -59,6 +59,9 @@ public class ZipFileResource implements ZipResource {
         this.zipFile = zipFile;
     }
 
+    /**
+     * Read method.
+     */
     @Override
     public void read(final Consumer<ZipEntry> consumer, final int maxSizeDiff) {
         final Enumeration<? extends ZipEntry> em = zipFile.entries();
@@ -67,6 +70,12 @@ public class ZipFileResource implements ZipResource {
         }
     }
 
+    /**
+     * Gets the input stream for the given path.
+     *
+     * @param path the path to the entry
+     * @return the input stream, or null if not found
+     */
     @Override
     public InputStream get(final String path) {
         final ZipFile zipFile = this.zipFile;
@@ -77,11 +86,20 @@ public class ZipFileResource implements ZipResource {
         return null;
     }
 
+    /**
+     * Gets the input stream for the given entry.
+     *
+     * @param entry the zip entry
+     * @return the input stream
+     */
     @Override
     public InputStream get(final ZipEntry entry) {
         return ZipKit.getStream(this.zipFile, entry);
     }
 
+    /**
+     * Close method.
+     */
     @Override
     public void close() throws IOException {
         IoKit.closeQuietly(this.zipFile);

@@ -37,7 +37,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.crypto.Builder;
 
 /**
- * Symmetric decryptor interface, providing:
+ * Symmetric decryptor interface. This interface provides:
  * <ul>
  * <li>Decrypt from bytes</li>
  * <li>Decrypt from Hex (hexadecimal)</li>

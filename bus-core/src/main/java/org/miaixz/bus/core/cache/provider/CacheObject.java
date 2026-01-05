@@ -130,6 +130,11 @@ public class CacheObject<K, V> implements Serializable {
         return this.lastAccess;
     }
 
+    /**
+     * Returns the string representation of this object.
+     *
+     * @return the string representation
+     */
     @Override
     public String toString() {
         return "CacheObject [key=" + key + ", value=" + object + ", lastAccess=" + lastAccess + ", accessCount="

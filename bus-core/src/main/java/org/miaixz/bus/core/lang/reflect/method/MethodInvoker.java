@@ -224,16 +224,31 @@ public class MethodInvoker implements Invoker {
         return this.method.getReturnType();
     }
 
+    /**
+     * Gets the name of this object.
+     *
+     * @return the name
+     */
     @Override
     public String getName() {
         return this.method.getName();
     }
 
+    /**
+     * Gettype method.
+     *
+     * @return the Type value
+     */
     @Override
     public Type getType() {
         return this.type;
     }
 
+    /**
+     * Gettypeclass method.
+     *
+     * @return the Class&lt;?&gt; value
+     */
     @Override
     public Class<?> getTypeClass() {
         return this.typeClass;

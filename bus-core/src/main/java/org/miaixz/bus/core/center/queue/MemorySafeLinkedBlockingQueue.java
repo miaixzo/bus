@@ -142,11 +142,21 @@ public class MemorySafeLinkedBlockingQueue<E> extends CheckedLinkedBlockingQueue
 
                 private volatile long maxAvailable = RuntimeKit.getFreeMemory();
 
+                /**
+                 * Getresult method.
+                 *
+                 * @return the Long value
+                 */
                 @Override
                 public Long getResult() {
                     return this.maxAvailable;
                 }
 
+                /**
+                 * Run method.
+                 *
+                 * @return the void value
+                 */
                 @Override
                 public void run() {
                     this.maxAvailable = RuntimeKit.getFreeMemory();

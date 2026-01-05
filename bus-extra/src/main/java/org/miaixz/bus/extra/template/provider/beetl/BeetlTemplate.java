@@ -71,12 +71,30 @@ public class BeetlTemplate implements Template, Serializable {
         return (null == beetlTemplate) ? null : new BeetlTemplate(beetlTemplate);
     }
 
+    /**
+     * Renders the template with the given data model to a writer. This method is designed to be overridden by
+     * subclasses for custom rendering logic.
+     *
+     * Subclasses may override to add custom binding or rendering logic.
+     *
+     * @param bindingMap The data model to bind to the template.
+     * @param writer     The writer to output the rendered template to.
+     */
     @Override
     public void render(final Map<?, ?> bindingMap, final Writer writer) {
         rawTemplate.binding(bindingMap);
         rawTemplate.renderTo(writer);
     }
 
+    /**
+     * Renders the template with the given data model to an output stream. This method is designed to be overridden by
+     * subclasses for custom rendering logic.
+     *
+     * Subclasses may override to add custom binding or rendering logic.
+     *
+     * @param bindingMap The data model to bind to the template.
+     * @param out        The output stream to write the rendered template to.
+     */
     @Override
     public void render(final Map<?, ?> bindingMap, final OutputStream out) {
         rawTemplate.binding(bindingMap);

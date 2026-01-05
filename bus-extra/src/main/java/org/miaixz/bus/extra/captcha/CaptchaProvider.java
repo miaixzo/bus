@@ -44,7 +44,7 @@ public interface CaptchaProvider extends Provider {
     /**
      * Creates a CAPTCHA. Implementations should generate both a random CAPTCHA string and a CAPTCHA image.
      */
-    void create();
+    void of();
 
     /**
      * Retrieves the text content of the generated CAPTCHA.

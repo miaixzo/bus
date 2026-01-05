@@ -510,7 +510,7 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * Returns {@code true} if this map contains no key-value mappings.
      *
@@ -522,7 +522,7 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * Returns the number of key-value mappings in this map.
      *
@@ -543,7 +543,7 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * Removes all of the mappings from this map. The map will be empty after this call returns.
      */
@@ -576,7 +576,7 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * Returns {@code true} if this map contains a mapping for the specified key.
      *
@@ -589,7 +589,7 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * Returns {@code true} if this map maps one or more keys to the specified value.
      *
@@ -608,7 +608,7 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * Returns the value to which the specified key is mapped, or {@code null} if this map contains no mapping for the
      * key.
@@ -645,7 +645,7 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * Maps the specified key to the specified value in this map. Neither the key nor the value can be {@code null}.
      * <p>
@@ -661,7 +661,7 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * If the specified key is not already associated with a value, associates it with the given value and performs the
      * necessary page replacement policy operations.
@@ -720,7 +720,7 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * Removes the mapping for a key from this map if it is present.
      * <p>
@@ -742,7 +742,7 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * Removes the entry for a key only if it is currently mapped to a given value.
      * <p>
@@ -779,7 +779,7 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * Replaces the entry for a key only if it is currently mapped to some value.
      * <p>
@@ -819,7 +819,7 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * Replaces the entry for a key only if currently mapped to the given value.
      * <p>
@@ -861,7 +861,7 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * Returns a {@link Set} view of the keys contained in this map. The set is backed by the map, so changes to the map
      * are reflected in the set, and vice-versa.
@@ -959,7 +959,7 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * Returns a {@link Collection} view of the values contained in this map. The collection is backed by the map, so
      * changes to the map are reflected in the collection, and vice-versa.
@@ -973,7 +973,7 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * Returns a {@link Set} view of the mappings contained in this map. The set is backed by the map, so changes to the
      * map are reflected in the set, and vice-versa.
@@ -1086,7 +1086,7 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
         IDLE {
 
             /**
-             * {@inheritDoc}
+             * Description inherited from parent class or interface.
              * <p>
              * Determines whether buffers should be drained when in idle state.
              *
@@ -1105,7 +1105,7 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
         REQUIRED {
 
             /**
-             * {@inheritDoc}
+             * Description inherited from parent class or interface.
              * <p>
              * Determines whether buffers should be drained when in required state.
              *
@@ -1124,7 +1124,7 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
         PROCESSING {
 
             /**
-             * {@inheritDoc}
+             * Description inherited from parent class or interface.
              * <p>
              * Determines whether buffers should be drained when already processing.
              *
@@ -1154,7 +1154,7 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
         INSTANCE;
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Accepts a key-value pair notification when an entry is evicted from the map. This implementation discards all
          * notifications.
@@ -1227,7 +1227,7 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Returns the previous node in the eviction deque.
          *
@@ -1239,7 +1239,7 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Sets the previous node in the eviction deque.
          *
@@ -1251,7 +1251,7 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Returns the next node in the eviction deque.
          *
@@ -1263,7 +1263,7 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Sets the next node in the eviction deque.
          *
@@ -1297,7 +1297,7 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Returns the weight of the entry for the given key and value.
          *
@@ -1488,7 +1488,7 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Executes the task to add the node to the eviction policy and update the weighted size.
          */
@@ -1517,7 +1517,7 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Executes the task to remove the node from the eviction policy and mark it as dead.
          */
@@ -1544,7 +1544,7 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Executes the task to update the weighted size and potentially evict entries.
          */
@@ -1565,7 +1565,7 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
         final ConcurrentLinkedHashMap<K, V> map = ConcurrentLinkedHashMap.this;
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Returns the number of keys in the map.
          *
@@ -1577,7 +1577,7 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Clears all keys from the map.
          */
@@ -1587,7 +1587,7 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Returns an iterator over the keys in the map.
          *
@@ -1599,7 +1599,7 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Returns {@code true} if this set contains the specified key.
          *
@@ -1612,7 +1612,7 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Removes the specified key from the map.
          *
@@ -1625,7 +1625,7 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Returns an array containing all of the keys in this set.
          *
@@ -1637,7 +1637,7 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Returns an array containing all of the keys in this set; the runtime type of the returned array is that of
          * the specified array.
@@ -1661,7 +1661,7 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
         K current;
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Returns {@code true} if the iteration has more keys.
          *
@@ -1673,7 +1673,7 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Returns the next element in the iteration.
          *
@@ -1687,7 +1687,7 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Removes from the underlying collection the last element returned by this iterator.
          */
@@ -1705,7 +1705,7 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
     final class Values extends AbstractCollection<V> {
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Returns the number of values in the map.
          *
@@ -1717,7 +1717,7 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Clears all values from the map.
          */
@@ -1727,7 +1727,7 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Returns an iterator over the values in the map.
          *
@@ -1739,7 +1739,7 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Returns {@code true} if this collection contains the specified value.
          *
@@ -1761,7 +1761,7 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
         Node<K, V> current;
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Returns {@code true} if the iteration has more values.
          *
@@ -1773,7 +1773,7 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Returns the next value in the iteration.
          *
@@ -1786,7 +1786,7 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Removes from the underlying collection the last element returned by this iterator.
          */
@@ -1806,7 +1806,7 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
         final ConcurrentLinkedHashMap<K, V> map = ConcurrentLinkedHashMap.this;
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Returns the number of entries in the map.
          *
@@ -1818,7 +1818,7 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Clears all entries from the map.
          */
@@ -1828,7 +1828,7 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Returns an iterator over the entries in the map.
          *
@@ -1840,7 +1840,7 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Returns {@code true} if this set contains the specified entry.
          *
@@ -1858,7 +1858,7 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Adds the specified entry to the map if not already present.
          *
@@ -1871,7 +1871,7 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Removes the specified entry from the map.
          *
@@ -1897,7 +1897,7 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
         Node<K, V> current;
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Returns {@code true} if the iteration has more entries.
          *
@@ -1909,7 +1909,7 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Returns the next entry in the iteration.
          *
@@ -1922,7 +1922,7 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Removes from the underlying collection the last element returned by this iterator.
          */
@@ -1947,7 +1947,7 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          * <p>
          * Sets the value for this entry, writing through to the underlying map.
          *

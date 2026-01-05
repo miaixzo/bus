@@ -382,7 +382,7 @@ public class Scheduler implements Serializable {
      * @return this {@link Scheduler} instance.
      */
     public Scheduler clear() {
-        this.repertoire = CrontabFactory.create(this.config);
+        this.repertoire = CrontabFactory.of(this.config);
         return this;
     }
 

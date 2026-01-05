@@ -79,6 +79,11 @@ public class StringStripper implements UnaryOperator<CharSequence>, Serializable
         this.stripAll = stripAll;
     }
 
+    /**
+     * Apply method.
+     *
+     * @return the String value
+     */
     @Override
     public String apply(final CharSequence charSequence) {
         return this.stripAll ? stripAll(charSequence) : stripOnce(charSequence);

@@ -63,11 +63,21 @@ public class KBeanConverter implements MatcherConverter, Serializable {
      */
     public static KBeanConverter INSTANCE = new KBeanConverter();
 
+    /**
+     * Match method.
+     *
+     * @return the boolean value
+     */
     @Override
     public boolean match(final Type targetType, final Class<?> rawType, final Object value) {
         return KotlinKit.isKotlinClass(rawType);
     }
 
+    /**
+     * Convert method.
+     *
+     * @return the Object value
+     */
     @Override
     public Object convert(final Type targetType, final Object value) throws ConvertException {
         Assert.notNull(targetType);

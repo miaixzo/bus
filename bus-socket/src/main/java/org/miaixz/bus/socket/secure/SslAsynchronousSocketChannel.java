@@ -84,7 +84,7 @@ public class SslAsynchronousSocketChannel extends AsynchronousSocketChannelProxy
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public <A> void read(
@@ -124,7 +124,7 @@ public class SslAsynchronousSocketChannel extends AsynchronousSocketChannelProxy
             int index = 0;
 
             /**
-             * {@inheritDoc}
+             * Description inherited from parent class or interface.
              */
             @Override
             public void completed(Integer result, A attachment) {
@@ -173,7 +173,7 @@ public class SslAsynchronousSocketChannel extends AsynchronousSocketChannelProxy
             }
 
             /**
-             * {@inheritDoc}
+             * Description inherited from parent class or interface.
              */
             @Override
             public void failed(Throwable exc, A attachment) {
@@ -274,7 +274,7 @@ public class SslAsynchronousSocketChannel extends AsynchronousSocketChannelProxy
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public Future<Integer> read(ByteBuffer dst) {
@@ -284,7 +284,7 @@ public class SslAsynchronousSocketChannel extends AsynchronousSocketChannelProxy
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public <A> void read(
@@ -299,7 +299,7 @@ public class SslAsynchronousSocketChannel extends AsynchronousSocketChannelProxy
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public <A> void write(
@@ -324,7 +324,7 @@ public class SslAsynchronousSocketChannel extends AsynchronousSocketChannelProxy
         asynchronousSocketChannel.write(netWriteBuffer.buffer(), timeout, unit, attachment, new CompletionHandler<>() {
 
             /**
-             * {@inheritDoc}
+             * Description inherited from parent class or interface.
              */
             @Override
             public void completed(Integer result, A attachment) {
@@ -339,7 +339,7 @@ public class SslAsynchronousSocketChannel extends AsynchronousSocketChannelProxy
             }
 
             /**
-             * {@inheritDoc}
+             * Description inherited from parent class or interface.
              */
             @Override
             public void failed(Throwable exc, A attachment) {
@@ -404,7 +404,7 @@ public class SslAsynchronousSocketChannel extends AsynchronousSocketChannelProxy
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public Future<Integer> write(ByteBuffer src) {
@@ -412,7 +412,7 @@ public class SslAsynchronousSocketChannel extends AsynchronousSocketChannelProxy
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public <A> void write(
@@ -427,7 +427,7 @@ public class SslAsynchronousSocketChannel extends AsynchronousSocketChannelProxy
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public void close() throws IOException {

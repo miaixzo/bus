@@ -50,9 +50,9 @@ public class BouncyCastleServiceProvider implements BouncyCastleProvider {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
-     * @return {@inheritDoc}
+     * @return Description inherited from parent class or interface.
      */
     @Override
     public java.security.Provider create() {

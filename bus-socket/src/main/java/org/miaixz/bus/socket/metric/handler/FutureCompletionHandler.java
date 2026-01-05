@@ -51,7 +51,7 @@ public final class FutureCompletionHandler<V, A> implements CompletionHandler<V,
     private Throwable exception;
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * This implementation sets the result and marks the future as complete, notifying any waiting threads.
      * </p>
@@ -69,7 +69,7 @@ public final class FutureCompletionHandler<V, A> implements CompletionHandler<V,
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * This implementation stores the exception to be thrown by {@code Future.get()} and marks the future as complete,
      * notifying any waiting threads.
@@ -88,7 +88,7 @@ public final class FutureCompletionHandler<V, A> implements CompletionHandler<V,
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * If the task has already completed or been cancelled, this method returns {@code false}. Otherwise, it marks the
      * task as cancelled and complete, notifying any waiting threads.
@@ -113,7 +113,7 @@ public final class FutureCompletionHandler<V, A> implements CompletionHandler<V,
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @return {@code true} if this task was cancelled before it completed normally
      */
@@ -123,7 +123,7 @@ public final class FutureCompletionHandler<V, A> implements CompletionHandler<V,
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @return {@code true} if this task completed
      */
@@ -133,7 +133,7 @@ public final class FutureCompletionHandler<V, A> implements CompletionHandler<V,
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * This implementation blocks until the task completes.
      * </p>
@@ -154,7 +154,7 @@ public final class FutureCompletionHandler<V, A> implements CompletionHandler<V,
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * This implementation blocks for at most the specified time.
      * </p>

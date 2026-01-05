@@ -150,10 +150,7 @@ public class Addables {
         private Object[] instance;
 
         /**
-         * {@inheritDoc}
-         * <p>
          * Initializes the array with the specified size.
-         * </p>
          *
          * @param type     The array class (e.g., {@code Object[].class}).
          * @param initSize The initial size of the array.
@@ -166,10 +163,7 @@ public class Addables {
         }
 
         /**
-         * {@inheritDoc}
-         * <p>
          * Adds all elements from the list to the array at sequential positions.
-         * </p>
          *
          * @param list The list of elements to add to the array.
          * @return This {@link Addable} instance for chaining.
@@ -183,7 +177,7 @@ public class Addables {
         }
 
         /**
-         * {@inheritDoc}
+         * Gets the populated array.
          *
          * @return The populated array.
          */
@@ -204,10 +198,7 @@ public class Addables {
         private Collection instance;
 
         /**
-         * {@inheritDoc}
-         * <p>
          * Initializes the collection by invoking its no-argument constructor.
-         * </p>
          *
          * @param type     The concrete collection class (e.g., {@code ArrayList.class}).
          * @param initSize The initial size hint (currently unused).
@@ -227,10 +218,7 @@ public class Addables {
         }
 
         /**
-         * {@inheritDoc}
-         * <p>
          * Adds all elements from the list to the collection.
-         * </p>
          *
          * @param list The list of elements to add.
          * @return This {@link Addable} instance for chaining.
@@ -242,7 +230,7 @@ public class Addables {
         }
 
         /**
-         * {@inheritDoc}
+         * Gets the populated collection.
          *
          * @return The populated collection.
          */
@@ -263,10 +251,7 @@ public class Addables {
         private Map instance;
 
         /**
-         * {@inheritDoc}
-         * <p>
          * Initializes the map by invoking its no-argument constructor.
-         * </p>
          *
          * @param type     The concrete map class (e.g., {@code HashMap.class}).
          * @param initSize The initial size hint (currently unused).
@@ -286,9 +271,9 @@ public class Addables {
         }
 
         /**
-         * {@inheritDoc}
+         * Adds all entries to the map.
          * <p>
-         * Adds all entries to the map. Each object in the list is expected to be a {@link Map.Entry}.
+         * Each object in the list is expected to be a {@link Map.Entry}.
          * </p>
          *
          * @param list A list of objects, where each object is expected to be a {@link Map.Entry}.
@@ -305,7 +290,7 @@ public class Addables {
         }
 
         /**
-         * {@inheritDoc}
+         * Gets the populated map.
          *
          * @return The populated map.
          */

@@ -57,6 +57,11 @@ public class RegexWithFlag {
         this.flag = flag;
     }
 
+    /**
+     * Returns the hash code value for this object.
+     *
+     * @return the hash code value
+     */
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -66,6 +71,12 @@ public class RegexWithFlag {
         return result;
     }
 
+    /**
+     * Checks if this object equals another object.
+     *
+     * @param object the object to compare with
+     * @return true if the objects are equal, false otherwise
+     */
     @Override
     public boolean equals(final Object object) {
         if (this == object) {

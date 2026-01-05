@@ -72,7 +72,7 @@ final class AsynchronousServerSocketChannel extends java.nio.channels.Asynchrono
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @param local   the local address to bind to
      * @param backlog the backlog to use for the connection
@@ -86,7 +86,7 @@ final class AsynchronousServerSocketChannel extends java.nio.channels.Asynchrono
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @param <T>   the type of the socket option value
      * @param name  the socket option
@@ -102,7 +102,7 @@ final class AsynchronousServerSocketChannel extends java.nio.channels.Asynchrono
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @param <T>  the type of the socket option value
      * @param name the socket option
@@ -115,7 +115,7 @@ final class AsynchronousServerSocketChannel extends java.nio.channels.Asynchrono
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @return a set of the socket options supported by this channel
      */
@@ -125,7 +125,7 @@ final class AsynchronousServerSocketChannel extends java.nio.channels.Asynchrono
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @param <A>        the type of the attachment
      * @param attachment the object to attach to the I/O operation
@@ -204,7 +204,7 @@ final class AsynchronousServerSocketChannel extends java.nio.channels.Asynchrono
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @return a {@link Future} representing the pending result
      */
@@ -217,7 +217,7 @@ final class AsynchronousServerSocketChannel extends java.nio.channels.Asynchrono
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @return the local address, or {@code null} if the channel is not bound
      * @throws IOException if an I/O error occurs
@@ -228,7 +228,7 @@ final class AsynchronousServerSocketChannel extends java.nio.channels.Asynchrono
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @return {@code true} if, and only if, this channel is open
      */
@@ -238,7 +238,7 @@ final class AsynchronousServerSocketChannel extends java.nio.channels.Asynchrono
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @throws IOException if an I/O error occurs
      */

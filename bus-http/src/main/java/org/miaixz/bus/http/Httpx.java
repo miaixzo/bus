@@ -307,7 +307,7 @@ public class Httpx {
                 data.append(key).append(Symbol.EQUAL).append(formMap.get(key)).append(Symbol.AND);
             }
         }
-        RequestBody requestBody = RequestBody.create(MediaType.TEXT_HTML_TYPE, data.toString());
+        RequestBody requestBody = RequestBody.of(MediaType.TEXT_HTML_TYPE, data.toString());
         Request request = new Request.Builder().url(url).post(requestBody).build();
         NewCall call = httpd.newCall(request);
         call.enqueue(callback);
@@ -746,14 +746,14 @@ public class Httpx {
         MediaType contentType = MediaType
                 .valueOf(MediaType.APPLICATION_FORM_URLENCODED + Symbol.SEMICOLON + Charset.DEFAULT_UTF_8);
         RequestBody bodyParams = RequestBody
-                .create(contentType, MapKit.isNotEmpty(formMap) ? formMap.toString() : Normal.EMPTY);
+                .of(contentType, MapKit.isNotEmpty(formMap) ? formMap.toString() : Normal.EMPTY);
         MultipartBody.Builder requestBodyBuilder = new MultipartBody.Builder()
                 .setType(MediaType.MULTIPART_FORM_DATA_TYPE).addFormDataPart("params", Normal.EMPTY, bodyParams);
 
         for (String path : list) {
             File file = new File(path);
             if (file.exists()) {
-                requestBodyBuilder.addFormDataPart("file", file.getName(), RequestBody.create(contentType, file));
+                requestBodyBuilder.addFormDataPart("file", file.getName(), RequestBody.of(contentType, file));
             } else {
                 Logger.warn("File not found: {}", path);
             }
@@ -821,7 +821,7 @@ public class Httpx {
         } else if (ArrayKit.contains(new String[] { HTTP.POST, HTTP.PUT, HTTP.DELETE, HTTP.PATCH }, method)) {
             RequestBody requestBody = null;
             if (StringKit.isNotEmpty(builder.data)) {
-                requestBody = RequestBody.create(MediaType.valueOf(contentType), builder.data);
+                requestBody = RequestBody.of(MediaType.valueOf(contentType), builder.data);
             } else if (MapKit.isNotEmpty(builder.formMap)) {
                 FormBody.Builder form = new FormBody.Builder(java.nio.charset.Charset.forName(Charset.DEFAULT_UTF_8));
                 builder.formMap.forEach((key, value) -> form.add(key, StringKit.toString(value)));

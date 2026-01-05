@@ -115,7 +115,8 @@ public class SevenZArchiver implements Archiver {
     }
 
     /**
-     * {@inheritDoc}
+     * Adds a file or directory to the 7-Zip archive with optional filtering and path editing. Directories are processed
+     * recursively.
      * <p>
      * Adds a file or directory to the 7-Zip archive with optional filtering and path editing. Directories are processed
      * recursively.
@@ -142,7 +143,7 @@ public class SevenZArchiver implements Archiver {
     }
 
     /**
-     * {@inheritDoc}
+     * Finishes the archive creation, writing any pending data.
      * <p>
      * Finishes the archive creation, writing any pending data.
      * </p>
@@ -160,7 +161,8 @@ public class SevenZArchiver implements Archiver {
     }
 
     /**
-     * {@inheritDoc}
+     * Closes the archive and its underlying resources. If this archiver was created with an OutputStream, writes the
+     * archive data to it.
      * <p>
      * Closes the archive and its underlying resources. If this archiver was created with an OutputStream, writes the
      * archive data to it.

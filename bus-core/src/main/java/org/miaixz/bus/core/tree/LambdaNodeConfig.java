@@ -172,6 +172,11 @@ public class LambdaNodeConfig<T, R> extends NodeConfig {
         return this;
     }
 
+    /**
+     * Getidkey method.
+     *
+     * @return the String value
+     */
     @Override
     public String getIdKey() {
         final FunctionX<?, ?> serFunction = getIdKeyFun();
@@ -181,6 +186,11 @@ public class LambdaNodeConfig<T, R> extends NodeConfig {
         return LambdaKit.getFieldName(serFunction);
     }
 
+    /**
+     * Getparentidkey method.
+     *
+     * @return the String value
+     */
     @Override
     public String getParentIdKey() {
         final FunctionX<?, ?> serFunction = getParentIdKeyFun();
@@ -190,6 +200,11 @@ public class LambdaNodeConfig<T, R> extends NodeConfig {
         return LambdaKit.getFieldName(serFunction);
     }
 
+    /**
+     * Getweightkey method.
+     *
+     * @return the String value
+     */
     @Override
     public String getWeightKey() {
         final FunctionX<?, ?> serFunction = getWeightKeyFun();
@@ -199,6 +214,11 @@ public class LambdaNodeConfig<T, R> extends NodeConfig {
         return LambdaKit.getFieldName(serFunction);
     }
 
+    /**
+     * Getnamekey method.
+     *
+     * @return the String value
+     */
     @Override
     public String getNameKey() {
         final FunctionX<?, ?> serFunction = getNameKeyFun();
@@ -208,6 +228,11 @@ public class LambdaNodeConfig<T, R> extends NodeConfig {
         return LambdaKit.getFieldName(serFunction);
     }
 
+    /**
+     * Getchildrenkey method.
+     *
+     * @return the String value
+     */
     @Override
     public String getChildrenKey() {
         final FunctionX<?, ?> serFunction = getChildrenKeyFun();

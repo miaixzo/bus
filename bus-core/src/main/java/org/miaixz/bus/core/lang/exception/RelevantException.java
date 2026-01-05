@@ -212,6 +212,11 @@ public class RelevantException extends IOException {
         return isCauseBy(cause, causeType);
     }
 
+    /**
+     * Getmessage method.
+     *
+     * @return the String value
+     */
     @Override
     public String getMessage() {
         if (this.errcode != null) {
@@ -220,6 +225,11 @@ public class RelevantException extends IOException {
         return super.getMessage();
     }
 
+    /**
+     * Getlocalizedmessage method.
+     *
+     * @return the String value
+     */
     @Override
     public String getLocalizedMessage() {
         if (errcode != null) {

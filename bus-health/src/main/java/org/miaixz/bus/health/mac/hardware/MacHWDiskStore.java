@@ -215,7 +215,7 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public long getReads() {
@@ -223,7 +223,7 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public long getReadBytes() {
@@ -231,7 +231,7 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public long getWrites() {
@@ -239,7 +239,7 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public long getWriteBytes() {
@@ -247,7 +247,7 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public long getCurrentQueueLength() {
@@ -255,7 +255,7 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public long getTransferTime() {
@@ -263,7 +263,7 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public long getTimeStamp() {
@@ -271,7 +271,7 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public List<HWPartition> getPartitions() {
@@ -279,7 +279,7 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public boolean updateAttributes() {
