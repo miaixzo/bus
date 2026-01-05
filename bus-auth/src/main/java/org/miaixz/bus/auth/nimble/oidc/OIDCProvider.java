@@ -72,7 +72,7 @@ public class OIDCProvider extends AbstractProvider {
     }
 
     /**
-     * {@inheritDoc} Builds the authorization URL for OIDC authentication.
+     * Builds the authorization URL for OIDC authentication.
      *
      * @param state the state parameter for CSRF protection
      * @return a message containing the authorization URL
@@ -90,7 +90,7 @@ public class OIDCProvider extends AbstractProvider {
     }
 
     /**
-     * {@inheritDoc} Exchanges the authorization code for an access token.
+     * Exchanges the authorization code for an access token.
      *
      * @param callback the callback containing the authorization code
      * @return a message containing the access token and related information
@@ -112,7 +112,7 @@ public class OIDCProvider extends AbstractProvider {
     }
 
     /**
-     * {@inheritDoc} Retrieves user information using the access token.
+     * Retrieves user information using the access token.
      *
      * @param authorization the authorization containing the access token
      * @return a message containing user claims and information

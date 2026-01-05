@@ -42,6 +42,6 @@ public interface ObjectCreator<T> {
      *
      * @return The created object.
      */
-    T create();
+    T of();
 
 }

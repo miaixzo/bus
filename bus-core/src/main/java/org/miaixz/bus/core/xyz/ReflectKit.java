@@ -487,7 +487,7 @@ public class ReflectKit {
      * @throws InternalException if instantiation fails.
      */
     public static <T> T newInstance(final String clazz) throws InternalException {
-        return (T) DefaultObjectCreator.of(clazz).create();
+        return (T) DefaultObjectCreator.of(clazz).of();
     }
 
     /**
@@ -500,7 +500,7 @@ public class ReflectKit {
      * @throws InternalException if instantiation fails.
      */
     public static <T> T newInstance(final Class<T> clazz, final Object... args) throws InternalException {
-        return DefaultObjectCreator.of(clazz, args).create();
+        return DefaultObjectCreator.of(clazz, args).of();
     }
 
     /**
@@ -511,7 +511,7 @@ public class ReflectKit {
      * @return The new instance, or `null` on failure.
      */
     public static <T> T newInstanceIfPossible(final Class<T> type) {
-        return PossibleObjectCreator.of(type).create();
+        return PossibleObjectCreator.of(type).of();
     }
 
 }

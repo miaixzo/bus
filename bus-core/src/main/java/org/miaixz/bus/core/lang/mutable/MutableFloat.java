@@ -83,6 +83,11 @@ public class MutableFloat extends Number implements Comparable<MutableFloat>, Mu
         this.value = Float.parseFloat(value);
     }
 
+    /**
+     * Gets the value.
+     *
+     * @return the value
+     */
     @Override
     public Float get() {
         return this.value;
@@ -97,6 +102,9 @@ public class MutableFloat extends Number implements Comparable<MutableFloat>, Mu
         this.value = value;
     }
 
+    /**
+     * Set method.
+     */
     @Override
     public void set(final Number value) {
         this.value = value.floatValue();

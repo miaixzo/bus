@@ -73,6 +73,11 @@ public class MutableBoolean implements Comparable<MutableBoolean>, Mutable<Boole
         this.value = Boolean.parseBoolean(value);
     }
 
+    /**
+     * Gets the value.
+     *
+     * @return the value
+     */
     @Override
     public Boolean get() {
         return this.value;
@@ -87,6 +92,9 @@ public class MutableBoolean implements Comparable<MutableBoolean>, Mutable<Boole
         this.value = value;
     }
 
+    /**
+     * Set method.
+     */
     @Override
     public void set(final Boolean value) {
         this.value = value;
@@ -112,6 +120,11 @@ public class MutableBoolean implements Comparable<MutableBoolean>, Mutable<Boole
         return false;
     }
 
+    /**
+     * Returns the hash code value for this object.
+     *
+     * @return the hash code value
+     */
     @Override
     public int hashCode() {
         return value ? Boolean.TRUE.hashCode() : Boolean.FALSE.hashCode();
@@ -129,6 +142,11 @@ public class MutableBoolean implements Comparable<MutableBoolean>, Mutable<Boole
         return Boolean.compare(this.value, other.value);
     }
 
+    /**
+     * Returns the string representation of this object.
+     *
+     * @return the string representation
+     */
     @Override
     public String toString() {
         return String.valueOf(value);

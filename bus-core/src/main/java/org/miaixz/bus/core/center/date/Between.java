@@ -29,12 +29,6 @@ package org.miaixz.bus.core.center.date;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.Period;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.Temporal;
 import java.util.Date;
 
 import org.miaixz.bus.core.center.date.format.FormatPeriod;
@@ -95,109 +89,15 @@ public class Between implements Serializable {
     }
 
     /**
-     * Creates a {@code Between} object. The earlier date is set as the beginning time, and the later date as the ending
-     * time. The interval always retains a positive absolute value.
+     * Calculates the duration between the two dates held by this object in the specified {@link Chrono}.
      *
-     * @param begin The starting date.
-     * @param end   The ending date.
-     * @return A new {@code Between} instance.
-     */
-    public static Between of(final Date begin, final Date end) {
-        return new Between(begin, end);
-    }
-
-    /**
-     * Creates a {@code Between} object.
-     *
-     * @param begin The starting date.
-     * @param end   The ending date.
-     * @param isAbs If {@code true}, the date interval will only retain a positive absolute value (swapping begin and
-     *              end if begin > end).
-     * @return A new {@code Between} instance.
-     */
-    public static Between of(final Date begin, final Date end, final boolean isAbs) {
-        return new Between(begin, end, isAbs);
-    }
-
-    /**
-     * Calculates the duration between two {@link Temporal} objects. If the end time is earlier than the start time, the
-     * result will be negative. The result is a {@link Duration} object, from which the difference in various units can
-     * be obtained by calling its {@code toXXX} methods.
-     *
-     * @param startTimeInclude The inclusive start time.
-     * @param endTimeExclude   The exclusive end time.
-     * @return A {@link Duration} object representing the time difference.
-     */
-    public static Duration between(final Temporal startTimeInclude, final Temporal endTimeExclude) {
-        return Duration.between(startTimeInclude, endTimeExclude);
-    }
-
-    /**
-     * Calculates the duration between two {@link LocalDateTime} objects. If the end time is earlier than the start
-     * time, the result will be negative. The result is a {@link Duration} object, from which the difference in various
-     * units can be obtained by calling its {@code toXXX} methods.
-     *
-     * @param startTimeInclude The inclusive start time.
-     * @param endTimeExclude   The exclusive end time.
-     * @return A {@link Duration} object representing the time difference.
-     * @see Between#between(Temporal, Temporal)
-     */
-    public static Duration between(final LocalDateTime startTimeInclude, final LocalDateTime endTimeExclude) {
-        return between(startTimeInclude, endTimeExclude);
-    }
-
-    /**
-     * Calculates the difference between two {@link Temporal} objects in a specified {@link ChronoUnit}. If the end time
-     * is earlier than the start time, the result will be negative.
-     *
-     * @param startTimeInclude The inclusive start time.
-     * @param endTimeExclude   The exclusive end time.
-     * @param unit             The {@link ChronoUnit} to measure the difference in.
-     * @return The time difference as a long value in the specified unit.
-     */
-    public static long between(final Temporal startTimeInclude, final Temporal endTimeExclude, final ChronoUnit unit) {
-        return unit.between(startTimeInclude, endTimeExclude);
-    }
-
-    /**
-     * Calculates the difference between two {@link LocalDateTime} objects in a specified {@link ChronoUnit}. If the end
-     * time is earlier than the start time, the result will be negative.
-     *
-     * @param startTimeInclude The inclusive start time.
-     * @param endTimeExclude   The exclusive end time.
-     * @param unit             The {@link ChronoUnit} to measure the difference in.
-     * @return The time difference as a long value in the specified unit.
-     * @see Between#between(Temporal, Temporal, ChronoUnit)
-     */
-    public static long between(
-            final LocalDateTime startTimeInclude,
-            final LocalDateTime endTimeExclude,
-            final ChronoUnit unit) {
-        return between(startTimeInclude, endTimeExclude, unit);
-    }
-
-    /**
-     * Calculates the period between two {@link LocalDate} objects. If the end date is earlier than the start date, the
-     * result will be negative. For example, the period between February 1st, 2011, and August 11th, 2021, would show a
-     * difference of 10 days and 6 months.
-     *
-     * @param startTimeInclude The inclusive start date.
-     * @param endTimeExclude   The exclusive end date.
-     * @return A {@link Period} object representing the date difference.
-     */
-    public static Period between(final LocalDate startTimeInclude, final LocalDate endTimeExclude) {
-        return Period.between(startTimeInclude, endTimeExclude);
-    }
-
-    /**
-     * Calculates the duration between the two dates held by this object in the specified {@link Units}.
-     *
-     * @param unit The unit of time to return the difference in (e.g., {@link Units#DAY}, {@link Units#HOUR}).
+     * @param chrono The chronological unit for measuring the time difference (e.g., {@link Chrono#MILLISECOND},
+     *               {@link Chrono#SECOND}, {@link Chrono#MINUTE}, {@link Chrono#HOUR}, {@link Chrono#DAY}).
      * @return The duration difference in the specified unit.
      */
-    public long between(final Units unit) {
+    public long between(final Chrono chrono) {
         final long diff = end - begin;
-        return diff / unit.getMillis();
+        return diff / chrono.getMillis();
     }
 
     /**
@@ -269,7 +169,7 @@ public class Between implements Serializable {
      *
      * @return The beginning date.
      */
-    public Date getBegin() {
+    public Date getBeginDate() {
         return DateKit.date(begin);
     }
 
@@ -278,29 +178,20 @@ public class Between implements Serializable {
      *
      * @return The ending date.
      */
-    public Date getEnd() {
+    public Date getEndDate() {
         return DateKit.date(end);
     }
 
     /**
      * Formats and outputs the time difference as a string.
      *
-     * @param unit  The date unit to format the difference in.
-     * @param level The level of detail for formatting (e.g., {@link FormatPeriod.Level#MILLISECOND}).
+     * @param chrono The chronological unit for calculating and formatting the difference (e.g.,
+     *               {@link Chrono#MILLISECOND}, {@link Chrono#SECOND}, {@link Chrono#MINUTE}, {@link Chrono#HOUR},
+     *               {@link Chrono#DAY}).
      * @return The formatted time difference string.
      */
-    public String toString(final Units unit, final FormatPeriod.Level level) {
-        return FormatPeriod.of(between(unit), level).format();
-    }
-
-    /**
-     * Formats and outputs the time difference as a string, using milliseconds as the default unit.
-     *
-     * @param level The level of detail for formatting.
-     * @return The formatted time difference string.
-     */
-    public String toString(final FormatPeriod.Level level) {
-        return toString(Units.MS, level);
+    public String toString(final Chrono chrono) {
+        return FormatPeriod.of(between(chrono), chrono).format();
     }
 
     /**
@@ -310,7 +201,7 @@ public class Between implements Serializable {
      */
     @Override
     public String toString() {
-        return toString(FormatPeriod.Level.MILLISECOND);
+        return toString(Chrono.MILLISECOND);
     }
 
 }

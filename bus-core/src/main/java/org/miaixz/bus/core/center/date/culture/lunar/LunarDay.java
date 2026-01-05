@@ -120,6 +120,11 @@ public class LunarDay extends DayParts {
         return NAMES[day - 1];
     }
 
+    /**
+     * Returns the string representation of this object.
+     *
+     * @return the string representation
+     */
     @Override
     public String toString() {
         return getLunarMonth() + getName();

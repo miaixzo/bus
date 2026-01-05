@@ -104,6 +104,12 @@ public abstract class AbstractBeanDesc implements BeanDesc {
         return null == desc ? null : desc.getField();
     }
 
+    /**
+     * Gets the property map.
+     *
+     * @param ignoreCase whether to ignore case when comparing keys
+     * @return the property map
+     */
     @Override
     public Map<String, PropDesc> getPropMap(final boolean ignoreCase) {
         return ignoreCase ? new CaseInsensitiveMap<>(1, this.propMap) : this.propMap;

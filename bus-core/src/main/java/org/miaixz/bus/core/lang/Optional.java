@@ -308,13 +308,24 @@ public class Optional<T> {
      */
     public Optional<T> ifPresent(final ConsumerX<? super T> action) {
         if (isPresent()) {
-            try {
-                action.accepting(value);
-            } catch (final Throwable e) {
-                this.throwable = e;
-            }
+            action.accept(value);
         }
         return this;
+    }
+
+    /**
+     * If a value is present, performs the given actions with the value. This is a dynamic extension of
+     * {@link #ifPresent(ConsumerX)}.
+     *
+     * @param actions A varargs array of actions to be performed if a value is present. An empty array will not throw
+     *                {@code NullPointerException}.
+     * @return This {@code Optional} instance.
+     * @throws NullPointerException if a value is present and any action in the array is {@code null}.
+     */
+    @SafeVarargs
+    public final Optional<T> ifPresents(final ConsumerX<T>... actions) throws NullPointerException {
+        return ifPresent(Stream.of(actions).reduce(ConsumerX::andThen).orElseGet(() -> o -> {
+        }));
     }
 
     /**
@@ -355,13 +366,11 @@ public class Optional<T> {
      */
     public <U> Optional<U> map(final FunctionX<? super T, ? extends U> mapper) {
         Objects.requireNonNull(mapper);
-        if (isFail()) {
-            return (Optional<U>) this;
-        } else if (isEmpty()) {
+        if (!isPresent()) {
             return empty();
-        } else {
-            return Optional.ofTry(() -> mapper.applying(value));
         }
+
+        return ofNullable(mapper.apply(value));
     }
 
     /**
@@ -396,18 +405,22 @@ public class Optional<T> {
     }
 
     /**
-     * If a value is present, performs the given actions with the value. This is a dynamic extension of
-     * {@link #ifPresent(ConsumerX)}.
+     * If a value is present, returns a sequential {@link Stream} containing only that value. Otherwise, returns an
+     * empty {@link Stream}. This method allows passing the value from an {@code Optional} to a {@link Stream}.
      *
-     * @param actions A varargs array of actions to be performed if a value is present. An empty array will not throw
-     *                {@code NullPointerException}.
-     * @return This {@code Optional} instance.
-     * @throws NullPointerException if a value is present and any action in the array is {@code null}.
+     * <pre>{@code
+     *     Stream<Optional<T>> os = ..
+     *     Stream<T> s = os.flatMap(Optional::stream)
+     * }</pre>
+     *
+     * @return A {@link Stream} containing the value if present, otherwise an empty {@link Stream}.
      */
-    @SafeVarargs
-    public final Optional<T> ifPresents(final ConsumerX<T>... actions) throws NullPointerException {
-        return ifPresent(Stream.of(actions).reduce(ConsumerX::andThen).orElseGet(() -> o -> {
-        }));
+    public Stream<T> stream() {
+        if (isEmpty()) {
+            return Stream.empty();
+        } else {
+            return Stream.of(value);
+        }
     }
 
     /**
@@ -427,25 +440,6 @@ public class Optional<T> {
         } else {
             final Optional<T> r = (Optional<T>) supplier.get();
             return Objects.requireNonNull(r);
-        }
-    }
-
-    /**
-     * If a value is present, returns a sequential {@link Stream} containing only that value. Otherwise, returns an
-     * empty {@link Stream}. This method allows passing the value from an {@code Optional} to a {@link Stream}.
-     *
-     * <pre>{@code
-     *     Stream<Optional<T>> os = ..
-     *     Stream<T> s = os.flatMap(Optional::stream)
-     * }</pre>
-     *
-     * @return A {@link Stream} containing the value if present, otherwise an empty {@link Stream}.
-     */
-    public Stream<T> stream() {
-        if (isEmpty()) {
-            return Stream.empty();
-        } else {
-            return Stream.of(value);
         }
     }
 

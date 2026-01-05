@@ -82,6 +82,11 @@ public class MutableByte extends Number implements Comparable<MutableByte>, Muta
         this.value = Byte.parseByte(value);
     }
 
+    /**
+     * Gets the value.
+     *
+     * @return the value
+     */
     @Override
     public Byte get() {
         return this.value;
@@ -96,6 +101,9 @@ public class MutableByte extends Number implements Comparable<MutableByte>, Muta
         this.value = value;
     }
 
+    /**
+     * Set method.
+     */
     @Override
     public void set(final Number value) {
         this.value = value.byteValue();

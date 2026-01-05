@@ -77,16 +77,30 @@ public class MutableObject<T> implements Mutable<T>, Serializable {
         return new MutableObject<>(value);
     }
 
+    /**
+     * Gets the value.
+     *
+     * @return the value
+     */
     @Override
     public T get() {
         return this.value;
     }
 
+    /**
+     * Set method.
+     */
     @Override
     public void set(final T value) {
         this.value = value;
     }
 
+    /**
+     * Checks if this object equals another object.
+     *
+     * @param object the object to compare with
+     * @return true if the objects are equal, false otherwise
+     */
     @Override
     public boolean equals(final Object object) {
         if (object == null) {

@@ -83,6 +83,11 @@ public class MutableLong extends Number implements Comparable<MutableLong>, Muta
         this.value = Long.parseLong(value);
     }
 
+    /**
+     * Gets the value.
+     *
+     * @return the value
+     */
     @Override
     public Long get() {
         return this.value;
@@ -97,6 +102,9 @@ public class MutableLong extends Number implements Comparable<MutableLong>, Muta
         this.value = value;
     }
 
+    /**
+     * Set method.
+     */
     @Override
     public void set(final Number value) {
         this.value = value.longValue();

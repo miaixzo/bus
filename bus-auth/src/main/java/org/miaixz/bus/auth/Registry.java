@@ -100,7 +100,7 @@ public enum Registry implements Complex {
     AFDIAN {
 
         /**
-         * {@inheritDoc} Returns the endpoint mappings for AfDian OAuth2 authentication.
+         * Returns the endpoint mappings for AfDian OAuth2 authentication.
          *
          * @return a map of endpoints including authorize, token, and userinfo URLs
          */
@@ -114,7 +114,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the OIDC protocol used by AfDian.
+         * Returns the OIDC protocol used by AfDian.
          *
          * @return the OIDC protocol
          */
@@ -124,7 +124,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the provider class for AfDian authentication.
+         * Returns the provider class for AfDian authentication.
          *
          * @return the ProginnProvider class
          */
@@ -139,7 +139,7 @@ public enum Registry implements Complex {
     ALIPAY {
 
         /**
-         * {@inheritDoc} Returns the endpoint mappings for Alipay OAuth2 authentication.
+         * Returns the endpoint mappings for Alipay OAuth2 authentication.
          *
          * @return a map of endpoints including authorize, token, and userinfo URLs
          */
@@ -153,7 +153,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the OIDC protocol used by Alipay.
+         * Returns the OIDC protocol used by Alipay.
          *
          * @return the OIDC protocol
          */
@@ -163,7 +163,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the provider class for Alipay authentication.
+         * Returns the provider class for Alipay authentication.
          *
          * @return the AlipayProvider class
          */
@@ -178,7 +178,7 @@ public enum Registry implements Complex {
     ALIYUN {
 
         /**
-         * {@inheritDoc} Returns the endpoint mappings for Aliyun OAuth2 authentication.
+         * Returns the endpoint mappings for Aliyun OAuth2 authentication.
          *
          * @return a map of endpoints including authorize, token, userinfo, and refresh URLs
          */
@@ -193,7 +193,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the OIDC protocol used by Aliyun.
+         * Returns the OIDC protocol used by Aliyun.
          *
          * @return the OIDC protocol
          */
@@ -203,7 +203,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the provider class for Aliyun authentication.
+         * Returns the provider class for Aliyun authentication.
          *
          * @return the AliyunProvider class
          */
@@ -218,7 +218,7 @@ public enum Registry implements Complex {
     AMAZON {
 
         /**
-         * {@inheritDoc} Returns the endpoint mappings for Amazon OAuth2 authentication.
+         * Returns the endpoint mappings for Amazon OAuth2 authentication.
          *
          * @return a map of endpoints including authorize, token, userinfo, and refresh URLs
          */
@@ -233,7 +233,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the OIDC protocol used by Amazon.
+         * Returns the OIDC protocol used by Amazon.
          *
          * @return the OIDC protocol
          */
@@ -243,7 +243,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the provider class for Amazon authentication.
+         * Returns the provider class for Amazon authentication.
          *
          * @return the AmazonProvider class
          */
@@ -258,7 +258,7 @@ public enum Registry implements Complex {
     APPLE {
 
         /**
-         * {@inheritDoc} Returns the endpoint mappings for Apple OAuth2 authentication.
+         * Returns the endpoint mappings for Apple OAuth2 authentication.
          *
          * @return a map of endpoints including authorize and token URLs
          */
@@ -272,7 +272,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the OIDC protocol used by Apple.
+         * Returns the OIDC protocol used by Apple.
          *
          * @return the OIDC protocol
          */
@@ -282,7 +282,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the provider class for Apple authentication.
+         * Returns the provider class for Apple authentication.
          *
          * @return the AppleProvider class
          */
@@ -297,7 +297,7 @@ public enum Registry implements Complex {
     BAIDU {
 
         /**
-         * {@inheritDoc} Returns the endpoint mappings for Baidu OAuth2 authentication.
+         * Returns the endpoint mappings for Baidu OAuth2 authentication.
          *
          * @return a map of endpoints including authorize, token, userinfo, revoke, and refresh URLs
          */
@@ -313,7 +313,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the OIDC protocol used by Baidu.
+         * Returns the OIDC protocol used by Baidu.
          *
          * @return the OIDC protocol
          */
@@ -323,7 +323,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the provider class for Baidu authentication.
+         * Returns the provider class for Baidu authentication.
          *
          * @return the BaiduProvider class
          */
@@ -338,7 +338,7 @@ public enum Registry implements Complex {
     CODING {
 
         /**
-         * {@inheritDoc} Returns the endpoint mappings for Coding OAuth2 authentication.
+         * Returns the endpoint mappings for Coding OAuth2 authentication.
          *
          * @return a map of endpoints including authorize, token, and userinfo URLs
          */
@@ -352,7 +352,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the OIDC protocol used by Coding.
+         * Returns the OIDC protocol used by Coding.
          *
          * @return the OIDC protocol
          */
@@ -362,7 +362,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the provider class for Coding authentication.
+         * Returns the provider class for Coding authentication.
          *
          * @return the CodingProvider class
          */
@@ -377,7 +377,7 @@ public enum Registry implements Complex {
     DINGTALK {
 
         /**
-         * {@inheritDoc} Returns the endpoint mappings for DingTalk OAuth2 authentication.
+         * Returns the endpoint mappings for DingTalk OAuth2 authentication.
          *
          * @return a map of endpoints including authorize, token, and userinfo URLs
          */
@@ -391,7 +391,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the OIDC protocol used by DingTalk.
+         * Returns the OIDC protocol used by DingTalk.
          *
          * @return the OIDC protocol
          */
@@ -401,7 +401,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the provider class for DingTalk authentication.
+         * Returns the provider class for DingTalk authentication.
          *
          * @return the DingTalkProvider class
          */
@@ -416,7 +416,7 @@ public enum Registry implements Complex {
     DINGTALK_ACCOUNT {
 
         /**
-         * {@inheritDoc} Returns the endpoint mappings for DingTalk Account OAuth2 authentication.
+         * Returns the endpoint mappings for DingTalk Account OAuth2 authentication.
          *
          * @return a map of endpoints including authorize, token, and userinfo URLs
          */
@@ -430,7 +430,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the OIDC protocol used by DingTalk Account.
+         * Returns the OIDC protocol used by DingTalk Account.
          *
          * @return the OIDC protocol
          */
@@ -440,7 +440,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the provider class for DingTalk Account authentication.
+         * Returns the provider class for DingTalk Account authentication.
          *
          * @return the DingTalkAccountProvider class
          */
@@ -455,7 +455,7 @@ public enum Registry implements Complex {
     DOUYIN {
 
         /**
-         * {@inheritDoc} Returns the endpoint mappings for Douyin OAuth2 authentication.
+         * Returns the endpoint mappings for Douyin OAuth2 authentication.
          *
          * @return a map of endpoints including authorize, token, userinfo, and refresh URLs
          */
@@ -470,7 +470,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the OIDC protocol used by Douyin.
+         * Returns the OIDC protocol used by Douyin.
          *
          * @return the OIDC protocol
          */
@@ -480,7 +480,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the provider class for Douyin authentication.
+         * Returns the provider class for Douyin authentication.
          *
          * @return the DouyinProvider class
          */
@@ -495,7 +495,7 @@ public enum Registry implements Complex {
     DOUYIN_MINI {
 
         /**
-         * {@inheritDoc} Returns the endpoint mappings for Douyin Mini Program OAuth2 authentication.
+         * Returns the endpoint mappings for Douyin Mini Program OAuth2 authentication.
          *
          * @return a map of endpoints including token URL
          */
@@ -514,7 +514,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the OIDC protocol used by Douyin Mini Program.
+         * Returns the OIDC protocol used by Douyin Mini Program.
          *
          * @return the OIDC protocol
          */
@@ -524,7 +524,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the provider class for Douyin Mini Program authentication.
+         * Returns the provider class for Douyin Mini Program authentication.
          *
          * @return the DouyinMiniProvider class
          */
@@ -539,7 +539,7 @@ public enum Registry implements Complex {
     ELEME {
 
         /**
-         * {@inheritDoc} Returns the endpoint mappings for Eleme OAuth2 authentication.
+         * Returns the endpoint mappings for Eleme OAuth2 authentication.
          *
          * @return a map of endpoints including authorize, token, userinfo, and refresh URLs
          */
@@ -554,7 +554,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the OIDC protocol used by Eleme.
+         * Returns the OIDC protocol used by Eleme.
          *
          * @return the OIDC protocol
          */
@@ -564,7 +564,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the provider class for Eleme authentication.
+         * Returns the provider class for Eleme authentication.
          *
          * @return the ElemeProvider class
          */
@@ -579,7 +579,7 @@ public enum Registry implements Complex {
     FACEBOOK {
 
         /**
-         * {@inheritDoc} Returns the endpoint mappings for Facebook OAuth2 authentication.
+         * Returns the endpoint mappings for Facebook OAuth2 authentication.
          *
          * @return a map of endpoints including authorize, token, and userinfo URLs
          */
@@ -593,7 +593,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the OIDC protocol used by Facebook.
+         * Returns the OIDC protocol used by Facebook.
          *
          * @return the OIDC protocol
          */
@@ -603,7 +603,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the provider class for Facebook authentication.
+         * Returns the provider class for Facebook authentication.
          *
          * @return the FacebookProvider class
          */
@@ -618,7 +618,7 @@ public enum Registry implements Complex {
     FEISHU {
 
         /**
-         * {@inheritDoc} Returns the endpoint mappings for Feishu OAuth2 authentication.
+         * Returns the endpoint mappings for Feishu OAuth2 authentication.
          *
          * @return a map of endpoints including authorize, token, userinfo, and refresh URLs
          */
@@ -633,7 +633,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the OIDC protocol used by Feishu.
+         * Returns the OIDC protocol used by Feishu.
          *
          * @return the OIDC protocol
          */
@@ -643,7 +643,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the provider class for Feishu authentication.
+         * Returns the provider class for Feishu authentication.
          *
          * @return the FeishuProvider class
          */
@@ -658,7 +658,7 @@ public enum Registry implements Complex {
     FIGMA {
 
         /**
-         * {@inheritDoc} Returns the endpoint mappings for Figma OAuth2 authentication.
+         * Returns the endpoint mappings for Figma OAuth2 authentication.
          *
          * @return a map of endpoints including authorize, token, userinfo, and refresh URLs
          */
@@ -673,7 +673,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the OIDC protocol used by Figma.
+         * Returns the OIDC protocol used by Figma.
          *
          * @return the OIDC protocol
          */
@@ -683,7 +683,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the provider class for Figma authentication.
+         * Returns the provider class for Figma authentication.
          *
          * @return the FigmaProvider class
          */
@@ -698,7 +698,7 @@ public enum Registry implements Complex {
     GITEE {
 
         /**
-         * {@inheritDoc} Returns the endpoint mappings for Gitee OAuth2 authentication.
+         * Returns the endpoint mappings for Gitee OAuth2 authentication.
          *
          * @return a map of endpoints including authorize, token, and userinfo URLs
          */
@@ -712,7 +712,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the OIDC protocol used by Gitee.
+         * Returns the OIDC protocol used by Gitee.
          *
          * @return the OIDC protocol
          */
@@ -722,7 +722,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the provider class for Gitee authentication.
+         * Returns the provider class for Gitee authentication.
          *
          * @return the GiteeProvider class
          */
@@ -737,7 +737,7 @@ public enum Registry implements Complex {
     GITHUB {
 
         /**
-         * {@inheritDoc} Returns the endpoint mappings for GitHub OAuth2 authentication.
+         * Returns the endpoint mappings for GitHub OAuth2 authentication.
          *
          * @return a map of endpoints including authorize, token, and userinfo URLs
          */
@@ -751,7 +751,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the OIDC protocol used by GitHub.
+         * Returns the OIDC protocol used by GitHub.
          *
          * @return the OIDC protocol
          */
@@ -761,7 +761,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the provider class for GitHub authentication.
+         * Returns the provider class for GitHub authentication.
          *
          * @return the GithubProvider class
          */
@@ -776,7 +776,7 @@ public enum Registry implements Complex {
     GITLAB {
 
         /**
-         * {@inheritDoc} Returns the endpoint mappings for GitLab OAuth2 authentication.
+         * Returns the endpoint mappings for GitLab OAuth2 authentication.
          *
          * @return a map of endpoints including authorize, token, and userinfo URLs
          */
@@ -790,7 +790,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the OIDC protocol used by GitLab.
+         * Returns the OIDC protocol used by GitLab.
          *
          * @return the OIDC protocol
          */
@@ -800,7 +800,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the provider class for GitLab authentication.
+         * Returns the provider class for GitLab authentication.
          *
          * @return the GitlabProvider class
          */
@@ -815,7 +815,7 @@ public enum Registry implements Complex {
     GOOGLE {
 
         /**
-         * {@inheritDoc} Returns the endpoint mappings for Google OAuth2 authentication.
+         * Returns the endpoint mappings for Google OAuth2 authentication.
          *
          * @return a map of endpoints including authorize, token, and userinfo URLs
          */
@@ -829,7 +829,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the OIDC protocol used by Google.
+         * Returns the OIDC protocol used by Google.
          *
          * @return the OIDC protocol
          */
@@ -839,7 +839,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the provider class for Google authentication.
+         * Returns the provider class for Google authentication.
          *
          * @return the GoogleProvider class
          */
@@ -854,7 +854,7 @@ public enum Registry implements Complex {
     HUAWEI {
 
         /**
-         * {@inheritDoc} Returns the endpoint mappings for Huawei OAuth2 authentication.
+         * Returns the endpoint mappings for Huawei OAuth2 authentication.
          *
          * @return a map of endpoints including authorize, token, userinfo, and refresh URLs
          */
@@ -869,7 +869,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the OIDC protocol used by Huawei.
+         * Returns the OIDC protocol used by Huawei.
          *
          * @return the OIDC protocol
          */
@@ -879,7 +879,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the provider class for Huawei authentication.
+         * Returns the provider class for Huawei authentication.
          *
          * @return the HuaweiProvider class
          */
@@ -894,7 +894,7 @@ public enum Registry implements Complex {
     JD {
 
         /**
-         * {@inheritDoc} Returns the endpoint mappings for JD OAuth2 authentication.
+         * Returns the endpoint mappings for JD OAuth2 authentication.
          *
          * @return a map of endpoints including authorize, token, userinfo, and refresh URLs
          */
@@ -909,7 +909,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the OIDC protocol used by JD.
+         * Returns the OIDC protocol used by JD.
          *
          * @return the OIDC protocol
          */
@@ -919,7 +919,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the provider class for JD authentication.
+         * Returns the provider class for JD authentication.
          *
          * @return the JdProvider class
          */
@@ -934,7 +934,7 @@ public enum Registry implements Complex {
     KUJIALE {
 
         /**
-         * {@inheritDoc} Returns the endpoint mappings for Kujiale OAuth2 authentication.
+         * Returns the endpoint mappings for Kujiale OAuth2 authentication.
          *
          * @return a map of endpoints including authorize, token, userinfo, and refresh URLs
          */
@@ -949,7 +949,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the OIDC protocol used by Kujiale.
+         * Returns the OIDC protocol used by Kujiale.
          *
          * @return the OIDC protocol
          */
@@ -959,7 +959,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the provider class for Kujiale authentication.
+         * Returns the provider class for Kujiale authentication.
          *
          * @return the KujialeProvider class
          */
@@ -974,7 +974,7 @@ public enum Registry implements Complex {
     LINE {
 
         /**
-         * {@inheritDoc} Returns the endpoint mappings for LINE OAuth2 authentication.
+         * Returns the endpoint mappings for LINE OAuth2 authentication.
          *
          * @return a map of endpoints including authorize, token, userinfo, refresh, and revoke URLs
          */
@@ -990,7 +990,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the OIDC protocol used by LINE.
+         * Returns the OIDC protocol used by LINE.
          *
          * @return the OIDC protocol
          */
@@ -1000,7 +1000,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the provider class for LINE authentication.
+         * Returns the provider class for LINE authentication.
          *
          * @return the LineProvider class
          */
@@ -1015,7 +1015,7 @@ public enum Registry implements Complex {
     LINKEDIN {
 
         /**
-         * {@inheritDoc} Returns the endpoint mappings for LinkedIn OAuth2 authentication.
+         * Returns the endpoint mappings for LinkedIn OAuth2 authentication.
          *
          * @return a map of endpoints including authorize, token, userinfo, and refresh URLs
          */
@@ -1030,7 +1030,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the OIDC protocol used by LinkedIn.
+         * Returns the OIDC protocol used by LinkedIn.
          *
          * @return the OIDC protocol
          */
@@ -1040,7 +1040,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the provider class for LinkedIn authentication.
+         * Returns the provider class for LinkedIn authentication.
          *
          * @return the LinkedinProvider class
          */
@@ -1055,7 +1055,7 @@ public enum Registry implements Complex {
     MEITUAN {
 
         /**
-         * {@inheritDoc} Returns the endpoint mappings for Meituan OAuth2 authentication.
+         * Returns the endpoint mappings for Meituan OAuth2 authentication.
          *
          * @return a map of endpoints including authorize, token, userinfo, and refresh URLs
          */
@@ -1070,7 +1070,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the OIDC protocol used by Meituan.
+         * Returns the OIDC protocol used by Meituan.
          *
          * @return the OIDC protocol
          */
@@ -1080,7 +1080,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the provider class for Meituan authentication.
+         * Returns the provider class for Meituan authentication.
          *
          * @return the MeituanProvider class
          */
@@ -1095,7 +1095,7 @@ public enum Registry implements Complex {
     MI {
 
         /**
-         * {@inheritDoc} Returns the endpoint mappings for Xiaomi OAuth2 authentication.
+         * Returns the endpoint mappings for Xiaomi OAuth2 authentication.
          *
          * @return a map of endpoints including authorize, token, userinfo, and refresh URLs
          */
@@ -1110,7 +1110,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the OIDC protocol used by Xiaomi.
+         * Returns the OIDC protocol used by Xiaomi.
          *
          * @return the OIDC protocol
          */
@@ -1120,7 +1120,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the provider class for Xiaomi authentication.
+         * Returns the provider class for Xiaomi authentication.
          *
          * @return the MiProvider class
          */
@@ -1135,7 +1135,7 @@ public enum Registry implements Complex {
     MICROSOFT {
 
         /**
-         * {@inheritDoc} Returns the endpoint mappings for Microsoft OAuth2 authentication.
+         * Returns the endpoint mappings for Microsoft OAuth2 authentication.
          *
          * @return a map of endpoints including authorize, token, userinfo, and refresh URLs
          */
@@ -1150,7 +1150,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the OIDC protocol used by Microsoft.
+         * Returns the OIDC protocol used by Microsoft.
          *
          * @return the OIDC protocol
          */
@@ -1160,7 +1160,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the provider class for Microsoft authentication.
+         * Returns the provider class for Microsoft authentication.
          *
          * @return the MicrosoftProvider class
          */
@@ -1175,7 +1175,7 @@ public enum Registry implements Complex {
     MICROSOFT_CN {
 
         /**
-         * {@inheritDoc} Returns the endpoint mappings for Microsoft China OAuth2 authentication.
+         * Returns the endpoint mappings for Microsoft China OAuth2 authentication.
          *
          * @return a map of endpoints including authorize, token, userinfo, and refresh URLs
          */
@@ -1190,7 +1190,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the OIDC protocol used by Microsoft China.
+         * Returns the OIDC protocol used by Microsoft China.
          *
          * @return the OIDC protocol
          */
@@ -1200,7 +1200,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the provider class for Microsoft China authentication.
+         * Returns the provider class for Microsoft China authentication.
          *
          * @return the MicrosoftCnProvider class
          */
@@ -1215,7 +1215,7 @@ public enum Registry implements Complex {
     OIDC {
 
         /**
-         * {@inheritDoc} Returns an empty endpoint map for generic OIDC providers.
+         * Returns an empty endpoint map for generic OIDC providers.
          *
          * @return an empty map
          */
@@ -1225,7 +1225,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the OIDC protocol.
+         * Returns the OIDC protocol.
          *
          * @return the OIDC protocol
          */
@@ -1235,7 +1235,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the provider class for generic OIDC authentication.
+         * Returns the provider class for generic OIDC authentication.
          *
          * @return the OIDCProvider class
          */
@@ -1250,7 +1250,7 @@ public enum Registry implements Complex {
     OKTA {
 
         /**
-         * {@inheritDoc} Returns the endpoint mappings for Okta OAuth2 authentication.
+         * Returns the endpoint mappings for Okta OAuth2 authentication.
          *
          * @return a map of endpoints including authorize, token, userinfo, refresh, and revoke URLs
          */
@@ -1266,7 +1266,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the OIDC protocol used by Okta.
+         * Returns the OIDC protocol used by Okta.
          *
          * @return the OIDC protocol
          */
@@ -1276,7 +1276,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the provider class for Okta authentication.
+         * Returns the provider class for Okta authentication.
          *
          * @return the OktaProvider class
          */
@@ -1291,7 +1291,7 @@ public enum Registry implements Complex {
     OSCHINA {
 
         /**
-         * {@inheritDoc} Returns the endpoint mappings for OSChina OAuth2 authentication.
+         * Returns the endpoint mappings for OSChina OAuth2 authentication.
          *
          * @return a map of endpoints including authorize, token, and userinfo URLs
          */
@@ -1305,7 +1305,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the OIDC protocol used by OSChina.
+         * Returns the OIDC protocol used by OSChina.
          *
          * @return the OIDC protocol
          */
@@ -1315,7 +1315,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the provider class for OSChina authentication.
+         * Returns the provider class for OSChina authentication.
          *
          * @return the OschinaProvider class
          */
@@ -1330,7 +1330,7 @@ public enum Registry implements Complex {
     PINTEREST {
 
         /**
-         * {@inheritDoc} Returns the endpoint mappings for Pinterest OAuth2 authentication.
+         * Returns the endpoint mappings for Pinterest OAuth2 authentication.
          *
          * @return a map of endpoints including authorize, token, and userinfo URLs
          */
@@ -1344,7 +1344,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the OIDC protocol used by Pinterest.
+         * Returns the OIDC protocol used by Pinterest.
          *
          * @return the OIDC protocol
          */
@@ -1354,7 +1354,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the provider class for Pinterest authentication.
+         * Returns the provider class for Pinterest authentication.
          *
          * @return the PinterestProvider class
          */
@@ -1369,7 +1369,7 @@ public enum Registry implements Complex {
     PROGINN {
 
         /**
-         * {@inheritDoc} Returns the endpoint mappings for Proginn OAuth2 authentication.
+         * Returns the endpoint mappings for Proginn OAuth2 authentication.
          *
          * @return a map of endpoints including authorize, token, and userinfo URLs
          */
@@ -1383,7 +1383,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the OIDC protocol used by Proginn.
+         * Returns the OIDC protocol used by Proginn.
          *
          * @return the OIDC protocol
          */
@@ -1393,7 +1393,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the provider class for Proginn authentication.
+         * Returns the provider class for Proginn authentication.
          *
          * @return the ProginnProvider class
          */
@@ -1408,7 +1408,7 @@ public enum Registry implements Complex {
     QQ {
 
         /**
-         * {@inheritDoc} Returns the endpoint mappings for QQ OAuth2 authentication.
+         * Returns the endpoint mappings for QQ OAuth2 authentication.
          *
          * @return a map of endpoints including authorize, token, userinfo, and refresh URLs
          */
@@ -1423,7 +1423,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the OIDC protocol used by QQ.
+         * Returns the OIDC protocol used by QQ.
          *
          * @return the OIDC protocol
          */
@@ -1433,7 +1433,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the provider class for QQ authentication.
+         * Returns the provider class for QQ authentication.
          *
          * @return the QqProvider class
          */
@@ -1448,7 +1448,7 @@ public enum Registry implements Complex {
     QQ_MINI {
 
         /**
-         * {@inheritDoc} Returns the endpoint mappings for QQ Mini Program OAuth2 authentication.
+         * Returns the endpoint mappings for QQ Mini Program OAuth2 authentication.
          *
          * @return a map of endpoints including token URL
          */
@@ -1460,7 +1460,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the OIDC protocol used by QQ Mini Program.
+         * Returns the OIDC protocol used by QQ Mini Program.
          *
          * @return the OIDC protocol
          */
@@ -1470,7 +1470,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the provider class for QQ Mini Program authentication.
+         * Returns the provider class for QQ Mini Program authentication.
          *
          * @return the QqMiniProvider class
          */
@@ -1485,7 +1485,7 @@ public enum Registry implements Complex {
     RENREN {
 
         /**
-         * {@inheritDoc} Returns the endpoint mappings for Renren OAuth2 authentication.
+         * Returns the endpoint mappings for Renren OAuth2 authentication.
          *
          * @return a map of endpoints including authorize, token, userinfo, and refresh URLs
          */
@@ -1500,7 +1500,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the OIDC protocol used by Renren.
+         * Returns the OIDC protocol used by Renren.
          *
          * @return the OIDC protocol
          */
@@ -1510,7 +1510,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the provider class for Renren authentication.
+         * Returns the provider class for Renren authentication.
          *
          * @return the RenrenProvider class
          */
@@ -1525,7 +1525,7 @@ public enum Registry implements Complex {
     REDNOTE_MARKET {
 
         /**
-         * {@inheritDoc} Returns the endpoint mappings for Rednote Market OAuth2 authentication.
+         * Returns the endpoint mappings for Rednote Market OAuth2 authentication.
          *
          * @return a map of endpoints including authorize, token, userinfo, and refresh URLs
          */
@@ -1540,7 +1540,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the OIDC protocol used by Rednote Market.
+         * Returns the OIDC protocol used by Rednote Market.
          *
          * @return the OIDC protocol
          */
@@ -1550,7 +1550,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the provider class for Rednote Market authentication.
+         * Returns the provider class for Rednote Market authentication.
          *
          * @return the RednoteMarketiProvider class
          */
@@ -1565,7 +1565,7 @@ public enum Registry implements Complex {
     SLACK {
 
         /**
-         * {@inheritDoc} Returns the endpoint mappings for Slack OAuth2 authentication.
+         * Returns the endpoint mappings for Slack OAuth2 authentication.
          *
          * @return a map of endpoints including authorize, token, userinfo, and revoke URLs
          */
@@ -1580,7 +1580,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the OIDC protocol used by Slack.
+         * Returns the OIDC protocol used by Slack.
          *
          * @return the OIDC protocol
          */
@@ -1590,7 +1590,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the provider class for Slack authentication.
+         * Returns the provider class for Slack authentication.
          *
          * @return the SlackProvider class
          */
@@ -1605,7 +1605,7 @@ public enum Registry implements Complex {
     STACK_OVERFLOW {
 
         /**
-         * {@inheritDoc} Returns the endpoint mappings for Stack Overflow OAuth2 authentication.
+         * Returns the endpoint mappings for Stack Overflow OAuth2 authentication.
          *
          * @return a map of endpoints including authorize, token, and userinfo URLs
          */
@@ -1619,7 +1619,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the OIDC protocol used by Stack Overflow.
+         * Returns the OIDC protocol used by Stack Overflow.
          *
          * @return the OIDC protocol
          */
@@ -1629,7 +1629,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the provider class for Stack Overflow authentication.
+         * Returns the provider class for Stack Overflow authentication.
          *
          * @return the StackOverflowProvider class
          */
@@ -1644,7 +1644,7 @@ public enum Registry implements Complex {
     TAOBAO {
 
         /**
-         * {@inheritDoc} Returns the endpoint mappings for Taobao OAuth2 authentication.
+         * Returns the endpoint mappings for Taobao OAuth2 authentication.
          *
          * @return a map of endpoints including authorize and token URLs
          */
@@ -1657,7 +1657,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the OIDC protocol used by Taobao.
+         * Returns the OIDC protocol used by Taobao.
          *
          * @return the OIDC protocol
          */
@@ -1667,7 +1667,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the provider class for Taobao authentication.
+         * Returns the provider class for Taobao authentication.
          *
          * @return the TaobaoProvider class
          */
@@ -1682,7 +1682,7 @@ public enum Registry implements Complex {
     TEAMBITION {
 
         /**
-         * {@inheritDoc} Returns the endpoint mappings for Teambition OAuth2 authentication.
+         * Returns the endpoint mappings for Teambition OAuth2 authentication.
          *
          * @return a map of endpoints including authorize, token, userinfo, and refresh URLs
          */
@@ -1697,7 +1697,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the OIDC protocol used by Teambition.
+         * Returns the OIDC protocol used by Teambition.
          *
          * @return the OIDC protocol
          */
@@ -1707,7 +1707,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the provider class for Teambition authentication.
+         * Returns the provider class for Teambition authentication.
          *
          * @return the TeambitionProvider class
          */
@@ -1722,7 +1722,7 @@ public enum Registry implements Complex {
     TOUTIAO {
 
         /**
-         * {@inheritDoc} Returns the endpoint mappings for Toutiao OAuth2 authentication.
+         * Returns the endpoint mappings for Toutiao OAuth2 authentication.
          *
          * @return a map of endpoints including authorize, token, and userinfo URLs
          */
@@ -1736,7 +1736,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the OIDC protocol used by Toutiao.
+         * Returns the OIDC protocol used by Toutiao.
          *
          * @return the OIDC protocol
          */
@@ -1746,7 +1746,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the provider class for Toutiao authentication.
+         * Returns the provider class for Toutiao authentication.
          *
          * @return the ToutiaoProvider class
          */
@@ -1761,7 +1761,7 @@ public enum Registry implements Complex {
     TWITTER {
 
         /**
-         * {@inheritDoc} Returns the endpoint mappings for Twitter OAuth2 authentication.
+         * Returns the endpoint mappings for Twitter OAuth2 authentication.
          *
          * @return a map of endpoints including authorize, token, and userinfo URLs
          */
@@ -1775,7 +1775,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the OIDC protocol used by Twitter.
+         * Returns the OIDC protocol used by Twitter.
          *
          * @return the OIDC protocol
          */
@@ -1785,7 +1785,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the provider class for Twitter authentication.
+         * Returns the provider class for Twitter authentication.
          *
          * @return the TwitterProvider class
          */
@@ -1800,7 +1800,7 @@ public enum Registry implements Complex {
     VK {
 
         /**
-         * {@inheritDoc} Returns the endpoint mappings for VK OAuth2 authentication.
+         * Returns the endpoint mappings for VK OAuth2 authentication.
          *
          * @return a map of endpoints including authorize, token, userinfo, revoke, and refresh URLs
          */
@@ -1816,7 +1816,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the OIDC protocol used by VK.
+         * Returns the OIDC protocol used by VK.
          *
          * @return the OIDC protocol
          */
@@ -1826,7 +1826,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the provider class for VK authentication.
+         * Returns the provider class for VK authentication.
          *
          * @return the VKProvider class
          */
@@ -1841,7 +1841,7 @@ public enum Registry implements Complex {
     WECHAT_EE {
 
         /**
-         * {@inheritDoc} Returns the endpoint mappings for WeChat Enterprise OAuth2 authentication.
+         * Returns the endpoint mappings for WeChat Enterprise OAuth2 authentication.
          *
          * @return a map of endpoints including authorize, token, and userinfo URLs
          */
@@ -1855,7 +1855,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the OIDC protocol used by WeChat Enterprise.
+         * Returns the OIDC protocol used by WeChat Enterprise.
          *
          * @return the OIDC protocol
          */
@@ -1865,7 +1865,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the provider class for WeChat Enterprise authentication.
+         * Returns the provider class for WeChat Enterprise authentication.
          *
          * @return the WeChatEeQrcodeProvider class
          */
@@ -1880,7 +1880,7 @@ public enum Registry implements Complex {
     WECHAT_EE_QRCODE {
 
         /**
-         * {@inheritDoc} Returns the endpoint mappings for WeChat Enterprise QR Code OAuth2 authentication.
+         * Returns the endpoint mappings for WeChat Enterprise QR Code OAuth2 authentication.
          *
          * @return a map of endpoints including authorize, token, and userinfo URLs
          */
@@ -1894,7 +1894,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the OIDC protocol used by WeChat Enterprise QR Code.
+         * Returns the OIDC protocol used by WeChat Enterprise QR Code.
          *
          * @return the OIDC protocol
          */
@@ -1904,7 +1904,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the provider class for WeChat Enterprise QR Code authentication.
+         * Returns the provider class for WeChat Enterprise QR Code authentication.
          *
          * @return the WeChatEeThirdQrcodeProvider class
          */
@@ -1919,7 +1919,7 @@ public enum Registry implements Complex {
     WECHAT_EE_WEB {
 
         /**
-         * {@inheritDoc} Returns the endpoint mappings for WeChat Enterprise Web OAuth2 authentication.
+         * Returns the endpoint mappings for WeChat Enterprise Web OAuth2 authentication.
          *
          * @return a map of endpoints including authorize, token, and userinfo URLs
          */
@@ -1933,7 +1933,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the OIDC protocol used by WeChat Enterprise Web.
+         * Returns the OIDC protocol used by WeChat Enterprise Web.
          *
          * @return the OIDC protocol
          */
@@ -1943,7 +1943,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the provider class for WeChat Enterprise Web authentication.
+         * Returns the provider class for WeChat Enterprise Web authentication.
          *
          * @return the WeChatEeWebProvider class
          */
@@ -1958,7 +1958,7 @@ public enum Registry implements Complex {
     WECHAT_MP {
 
         /**
-         * {@inheritDoc} Returns the endpoint mappings for WeChat MP OAuth2 authentication.
+         * Returns the endpoint mappings for WeChat MP OAuth2 authentication.
          *
          * @return a map of endpoints including authorize, token, userinfo, and refresh URLs
          */
@@ -1973,7 +1973,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the OIDC protocol used by WeChat MP.
+         * Returns the OIDC protocol used by WeChat MP.
          *
          * @return the OIDC protocol
          */
@@ -1983,7 +1983,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the provider class for WeChat MP authentication.
+         * Returns the provider class for WeChat MP authentication.
          *
          * @return the WeChatMpProvider class
          */
@@ -1998,7 +1998,7 @@ public enum Registry implements Complex {
     WECHAT_MINI {
 
         /**
-         * {@inheritDoc} Returns the endpoint mappings for WeChat Mini Program OAuth2 authentication.
+         * Returns the endpoint mappings for WeChat Mini Program OAuth2 authentication.
          *
          * @return a map of endpoints including token URL
          */
@@ -2010,7 +2010,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the OIDC protocol used by WeChat Mini Program.
+         * Returns the OIDC protocol used by WeChat Mini Program.
          *
          * @return the OIDC protocol
          */
@@ -2020,7 +2020,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the provider class for WeChat Mini Program authentication.
+         * Returns the provider class for WeChat Mini Program authentication.
          *
          * @return the WeChatMiniProvider class
          */
@@ -2035,7 +2035,7 @@ public enum Registry implements Complex {
     WECHAT_OPEN {
 
         /**
-         * {@inheritDoc} Returns the endpoint mappings for WeChat Open Platform OAuth2 authentication.
+         * Returns the endpoint mappings for WeChat Open Platform OAuth2 authentication.
          *
          * @return a map of endpoints including authorize, token, userinfo, and refresh URLs
          */
@@ -2050,7 +2050,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the OIDC protocol used by WeChat Open Platform.
+         * Returns the OIDC protocol used by WeChat Open Platform.
          *
          * @return the OIDC protocol
          */
@@ -2060,7 +2060,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the provider class for WeChat Open Platform authentication.
+         * Returns the provider class for WeChat Open Platform authentication.
          *
          * @return the WeChatOpenProvider class
          */
@@ -2075,7 +2075,7 @@ public enum Registry implements Complex {
     WEIBO {
 
         /**
-         * {@inheritDoc} Returns the endpoint mappings for Weibo OAuth2 authentication.
+         * Returns the endpoint mappings for Weibo OAuth2 authentication.
          *
          * @return a map of endpoints including authorize, token, userinfo, and revoke URLs
          */
@@ -2090,7 +2090,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the OIDC protocol used by Weibo.
+         * Returns the OIDC protocol used by Weibo.
          *
          * @return the OIDC protocol
          */
@@ -2100,7 +2100,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the provider class for Weibo authentication.
+         * Returns the provider class for Weibo authentication.
          *
          * @return the WeiboProvider class
          */
@@ -2115,7 +2115,7 @@ public enum Registry implements Complex {
     XIMALAYA {
 
         /**
-         * {@inheritDoc} Returns the endpoint mappings for Ximalaya OAuth2 authentication.
+         * Returns the endpoint mappings for Ximalaya OAuth2 authentication.
          *
          * @return a map of endpoints including authorize, token, and userinfo URLs
          */
@@ -2129,7 +2129,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the OIDC protocol used by Ximalaya.
+         * Returns the OIDC protocol used by Ximalaya.
          *
          * @return the OIDC protocol
          */
@@ -2139,7 +2139,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * {@inheritDoc} Returns the provider class for Ximalaya authentication.
+         * Returns the provider class for Ximalaya authentication.
          *
          * @return the XimalayaProvider class
          */

@@ -177,6 +177,11 @@ public class UncheckedException extends RuntimeException {
         this.errmsg = errmsg;
     }
 
+    /**
+     * Getmessage method.
+     *
+     * @return the String value
+     */
     @Override
     public String getMessage() {
         if (this.errcode != null) {
@@ -185,6 +190,11 @@ public class UncheckedException extends RuntimeException {
         return super.getMessage();
     }
 
+    /**
+     * Getlocalizedmessage method.
+     *
+     * @return the String value
+     */
     @Override
     public String getLocalizedMessage() {
         if (errcode != null) {

@@ -68,7 +68,7 @@ public final class FastStringWriter extends Writer {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public FastStringWriter append(final char c) {
@@ -77,7 +77,7 @@ public final class FastStringWriter extends Writer {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public FastStringWriter append(final CharSequence csq, final int start, final int end) {
@@ -86,7 +86,7 @@ public final class FastStringWriter extends Writer {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public FastStringWriter append(final CharSequence csq) {
@@ -95,7 +95,7 @@ public final class FastStringWriter extends Writer {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public void write(final int c) {
@@ -103,7 +103,7 @@ public final class FastStringWriter extends Writer {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public void write(final String text) {
@@ -111,7 +111,7 @@ public final class FastStringWriter extends Writer {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public void write(final String text, final int off, final int len) {
@@ -119,7 +119,7 @@ public final class FastStringWriter extends Writer {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public void write(final char[] c) {
@@ -127,7 +127,7 @@ public final class FastStringWriter extends Writer {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public void write(final char[] c, final int off, final int len) {

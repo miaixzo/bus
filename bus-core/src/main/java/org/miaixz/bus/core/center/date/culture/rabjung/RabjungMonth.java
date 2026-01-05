@@ -249,6 +249,11 @@ public class RabjungMonth extends Loops {
         return (leap ? "闰" : "") + ALIAS[month - 1];
     }
 
+    /**
+     * Returns the string representation of this object.
+     *
+     * @return the string representation
+     */
     @Override
     public String toString() {
         return year + getName();

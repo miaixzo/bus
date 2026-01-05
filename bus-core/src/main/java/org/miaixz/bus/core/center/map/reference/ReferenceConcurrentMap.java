@@ -362,16 +362,31 @@ public abstract class ReferenceConcurrentMap<K, V>
         final Set<Ref<K>> referenceSet = this.raw.keySet();
         return new AbstractSet<K>() {
 
+            /**
+             * Returns an iterator over elements of type T.
+             *
+             * @return an Iterator
+             */
             @Override
             public Iterator<K> iterator() {
                 final Iterator<Ref<K>> referenceIter = referenceSet.iterator();
                 return new Iterator<K>() {
 
+                    /**
+                     * Returns true if the iteration has more elements.
+                     *
+                     * @return true if the iteration has more elements
+                     */
                     @Override
                     public boolean hasNext() {
                         return referenceIter.hasNext();
                     }
 
+                    /**
+                     * Returns the next element in the iteration.
+                     *
+                     * @return the next element
+                     */
                     @Override
                     public K next() {
                         return unwrap(referenceIter.next());
@@ -379,6 +394,11 @@ public abstract class ReferenceConcurrentMap<K, V>
                 };
             }
 
+            /**
+             * Returns the number of elements in this collection.
+             *
+             * @return the number of elements
+             */
             @Override
             public int size() {
                 return referenceSet.size();
@@ -398,16 +418,31 @@ public abstract class ReferenceConcurrentMap<K, V>
         final Collection<Ref<V>> referenceValues = this.raw.values();
         return new AbstractCollection<>() {
 
+            /**
+             * Returns an iterator over elements of type T.
+             *
+             * @return an Iterator
+             */
             @Override
             public Iterator<V> iterator() {
                 final Iterator<Ref<V>> referenceIter = referenceValues.iterator();
                 return new Iterator<>() {
 
+                    /**
+                     * Returns true if the iteration has more elements.
+                     *
+                     * @return true if the iteration has more elements
+                     */
                     @Override
                     public boolean hasNext() {
                         return referenceIter.hasNext();
                     }
 
+                    /**
+                     * Returns the next element in the iteration.
+                     *
+                     * @return the next element
+                     */
                     @Override
                     public V next() {
                         return unwrap(referenceIter.next());
@@ -415,6 +450,11 @@ public abstract class ReferenceConcurrentMap<K, V>
                 };
             }
 
+            /**
+             * Returns the number of elements in this collection.
+             *
+             * @return the number of elements
+             */
             @Override
             public int size() {
                 return referenceValues.size();
@@ -434,31 +474,62 @@ public abstract class ReferenceConcurrentMap<K, V>
         final Set<Entry<Ref<K>, Ref<V>>> referenceEntrySet = this.raw.entrySet();
         return new AbstractSet<>() {
 
+            /**
+             * Returns an iterator over elements of type T.
+             *
+             * @return an Iterator
+             */
             @Override
             public Iterator<Entry<K, V>> iterator() {
                 final Iterator<Entry<Ref<K>, Ref<V>>> referenceIter = referenceEntrySet.iterator();
                 return new Iterator<>() {
 
+                    /**
+                     * Returns true if the iteration has more elements.
+                     *
+                     * @return true if the iteration has more elements
+                     */
                     @Override
                     public boolean hasNext() {
                         return referenceIter.hasNext();
                     }
 
+                    /**
+                     * Returns the next element in the iteration.
+                     *
+                     * @return the next element
+                     */
                     @Override
                     public Entry<K, V> next() {
                         final Entry<Ref<K>, Ref<V>> next = referenceIter.next();
                         return new Entry<>() {
 
+                            /**
+                             * Gets the key of this entry.
+                             *
+                             * @return the key
+                             */
                             @Override
                             public K getKey() {
                                 return unwrap(next.getKey());
                             }
 
+                            /**
+                             * Gets the value of this entry.
+                             *
+                             * @return the value
+                             */
                             @Override
                             public V getValue() {
                                 return unwrap(next.getValue());
                             }
 
+                            /**
+                             * Sets the value of this entry.
+                             *
+                             * @param value the new value
+                             * @return the old value
+                             */
                             @Override
                             public V setValue(final V value) {
                                 return unwrap(next.setValue(wrapValue(value)));
@@ -468,6 +539,11 @@ public abstract class ReferenceConcurrentMap<K, V>
                 };
             }
 
+            /**
+             * Returns the number of elements in this collection.
+             *
+             * @return the number of elements
+             */
             @Override
             public int size() {
                 return referenceEntrySet.size();
@@ -609,6 +685,13 @@ public abstract class ReferenceConcurrentMap<K, V>
 
         public static final Object NULL = new NullRef();
 
+        /**
+         * Returns the value to which the specified key is mapped, or null if this cache contains no mapping for the
+         * key.
+         *
+         * @param key the key whose associated value is to be returned
+         * @return the value associated with the key, or null if no mapping
+         */
         @Override
         public Object get() {
             return null;

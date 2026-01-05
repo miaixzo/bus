@@ -178,6 +178,11 @@ public class PathResolve {
 
         walkFiles(path, maxDepth, isFollowLinks, new SimpleFileVisitor<>() {
 
+            /**
+             * Visitfile method.
+             *
+             * @return the FileVisitResult value
+             */
             @Override
             public FileVisitResult visitFile(final Path path, final BasicFileAttributes attrs) {
                 final File file = path.toFile();

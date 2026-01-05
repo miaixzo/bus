@@ -97,16 +97,31 @@ public class FieldInvoker implements Invoker {
         return this.field;
     }
 
+    /**
+     * Gets the name of this object.
+     *
+     * @return the name
+     */
     @Override
     public String getName() {
         return this.field.getName();
     }
 
+    /**
+     * Gettype method.
+     *
+     * @return the Type value
+     */
     @Override
     public Type getType() {
         return field.getGenericType();
     }
 
+    /**
+     * Gettypeclass method.
+     *
+     * @return the Class&lt;?&gt; value
+     */
     @Override
     public Class<?> getTypeClass() {
         return field.getType();

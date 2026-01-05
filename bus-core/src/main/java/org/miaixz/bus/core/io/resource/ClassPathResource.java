@@ -162,6 +162,11 @@ public class ClassPathResource extends UrlResource {
         }
     }
 
+    /**
+     * Returns the string representation of this object.
+     *
+     * @return the string representation
+     */
     @Override
     public String toString() {
         return (null == this.path) ? super.toString() : Normal.CLASSPATH + this.path;

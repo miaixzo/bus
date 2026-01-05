@@ -69,7 +69,7 @@ public abstract class TransMap<K, V> extends MapWrapper<K, V> {
     }
 
     /**
-     * {@inheritDoc} The key is transformed before being used for the lookup.
+     * Description inherited from parent class or interface. The key is transformed before being used for the lookup.
      */
     @Override
     public V get(final Object key) {
@@ -77,7 +77,8 @@ public abstract class TransMap<K, V> extends MapWrapper<K, V> {
     }
 
     /**
-     * {@inheritDoc} The key and value are transformed before being put into the map.
+     * Description inherited from parent class or interface. The key and value are transformed before being put into the
+     * map.
      */
     @Override
     public V put(final K key, final V value) {
@@ -85,7 +86,8 @@ public abstract class TransMap<K, V> extends MapWrapper<K, V> {
     }
 
     /**
-     * {@inheritDoc} Each key and value from the source map are transformed before being put into this map.
+     * Description inherited from parent class or interface. Each key and value from the source map are transformed
+     * before being put into this map.
      */
     @Override
     public void putAll(final Map<? extends K, ? extends V> m) {
@@ -93,7 +95,8 @@ public abstract class TransMap<K, V> extends MapWrapper<K, V> {
     }
 
     /**
-     * {@inheritDoc} The key is transformed before the contains check is performed.
+     * Description inherited from parent class or interface. The key is transformed before the contains check is
+     * performed.
      */
     @Override
     public boolean containsKey(final Object key) {
@@ -101,7 +104,7 @@ public abstract class TransMap<K, V> extends MapWrapper<K, V> {
     }
 
     /**
-     * {@inheritDoc} The key is transformed before the removal operation.
+     * Description inherited from parent class or interface. The key is transformed before the removal operation.
      */
     @Override
     public V remove(final Object key) {
@@ -109,7 +112,8 @@ public abstract class TransMap<K, V> extends MapWrapper<K, V> {
     }
 
     /**
-     * {@inheritDoc} The key and value are transformed before the removal operation.
+     * Description inherited from parent class or interface. The key and value are transformed before the removal
+     * operation.
      */
     @Override
     public boolean remove(final Object key, final Object value) {
@@ -117,7 +121,8 @@ public abstract class TransMap<K, V> extends MapWrapper<K, V> {
     }
 
     /**
-     * {@inheritDoc} The key and values are transformed before the replacement operation.
+     * Description inherited from parent class or interface. The key and values are transformed before the replacement
+     * operation.
      */
     @Override
     public boolean replace(final K key, final V oldValue, final V newValue) {
@@ -125,7 +130,8 @@ public abstract class TransMap<K, V> extends MapWrapper<K, V> {
     }
 
     /**
-     * {@inheritDoc} The key and value are transformed before the replacement operation.
+     * Description inherited from parent class or interface. The key and value are transformed before the replacement
+     * operation.
      */
     @Override
     public V replace(final K key, final V value) {
@@ -133,7 +139,8 @@ public abstract class TransMap<K, V> extends MapWrapper<K, V> {
     }
 
     /**
-     * {@inheritDoc} The key and default value are transformed before the operation.
+     * Description inherited from parent class or interface. The key and default value are transformed before the
+     * operation.
      */
     @Override
     public V getOrDefault(final Object key, final V defaultValue) {
@@ -141,8 +148,8 @@ public abstract class TransMap<K, V> extends MapWrapper<K, V> {
     }
 
     /**
-     * {@inheritDoc} The key is transformed, and the values passed to and returned from the remapping function are also
-     * transformed.
+     * Description inherited from parent class or interface. The key is transformed, and the values passed to and
+     * returned from the remapping function are also transformed.
      */
     @Override
     public V computeIfPresent(final K key, final BiFunction<? super K, ? super V, ? extends V> remappingFunction) {
@@ -150,8 +157,8 @@ public abstract class TransMap<K, V> extends MapWrapper<K, V> {
     }
 
     /**
-     * {@inheritDoc} The key is transformed, and the values passed to and returned from the remapping function are also
-     * transformed.
+     * Description inherited from parent class or interface. The key is transformed, and the values passed to and
+     * returned from the remapping function are also transformed.
      */
     @Override
     public V compute(final K key, final BiFunction<? super K, ? super V, ? extends V> remappingFunction) {
@@ -159,8 +166,8 @@ public abstract class TransMap<K, V> extends MapWrapper<K, V> {
     }
 
     /**
-     * {@inheritDoc} The key and value are transformed, and the values passed to the remapping function are also
-     * transformed.
+     * Description inherited from parent class or interface. The key and value are transformed, and the values passed to
+     * the remapping function are also transformed.
      */
     @Override
     public V merge(final K key, final V value, final BiFunction<? super V, ? super V, ? extends V> remappingFunction) {
@@ -171,7 +178,8 @@ public abstract class TransMap<K, V> extends MapWrapper<K, V> {
     }
 
     /**
-     * {@inheritDoc} The key and value are transformed before being put into the map.
+     * Description inherited from parent class or interface. The key and value are transformed before being put into the
+     * map.
      */
     @Override
     public V putIfAbsent(final K key, final V value) {
@@ -179,7 +187,7 @@ public abstract class TransMap<K, V> extends MapWrapper<K, V> {
     }
 
     /**
-     * {@inheritDoc} The key is transformed before the operation.
+     * Description inherited from parent class or interface. The key is transformed before the operation.
      */
     @Override
     public V computeIfAbsent(final K key, final Function<? super K, ? extends V> mappingFunction) {

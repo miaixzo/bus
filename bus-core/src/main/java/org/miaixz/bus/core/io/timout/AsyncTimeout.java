@@ -256,6 +256,11 @@ public class AsyncTimeout extends Timeout {
     public final Sink sink(final Sink sink) {
         return new Sink() {
 
+            /**
+             * Write method.
+             *
+             * @return the void value
+             */
             @Override
             public void write(Buffer source, long byteCount) throws IOException {
                 IoKit.checkOffsetAndCount(source.size, 0, byteCount);
@@ -286,6 +291,11 @@ public class AsyncTimeout extends Timeout {
                 }
             }
 
+            /**
+             * Flush method.
+             *
+             * @return the void value
+             */
             @Override
             public void flush() throws IOException {
                 boolean throwOnTimeout = false;
@@ -300,6 +310,11 @@ public class AsyncTimeout extends Timeout {
                 }
             }
 
+            /**
+             * Close method.
+             *
+             * @return the void value
+             */
             @Override
             public void close() throws IOException {
                 boolean throwOnTimeout = false;
@@ -314,11 +329,21 @@ public class AsyncTimeout extends Timeout {
                 }
             }
 
+            /**
+             * Returns the timeout for cache entries in milliseconds.
+             *
+             * @return the timeout in milliseconds
+             */
             @Override
             public Timeout timeout() {
                 return AsyncTimeout.this;
             }
 
+            /**
+             * Returns the string representation of this object.
+             *
+             * @return the string representation
+             */
             @Override
             public String toString() {
                 return "AsyncTimeout.sink(" + sink + Symbol.PARENTHESE_RIGHT;
@@ -336,6 +361,11 @@ public class AsyncTimeout extends Timeout {
     public final Source source(final Source source) {
         return new Source() {
 
+            /**
+             * Read method.
+             *
+             * @return the long value
+             */
             @Override
             public long read(Buffer sink, long byteCount) throws IOException {
                 boolean throwOnTimeout = false;
@@ -351,6 +381,11 @@ public class AsyncTimeout extends Timeout {
                 }
             }
 
+            /**
+             * Close method.
+             *
+             * @return the void value
+             */
             @Override
             public void close() throws IOException {
                 boolean throwOnTimeout = false;
@@ -365,11 +400,21 @@ public class AsyncTimeout extends Timeout {
                 }
             }
 
+            /**
+             * Returns the timeout for cache entries in milliseconds.
+             *
+             * @return the timeout in milliseconds
+             */
             @Override
             public Timeout timeout() {
                 return AsyncTimeout.this;
             }
 
+            /**
+             * Returns the string representation of this object.
+             *
+             * @return the string representation
+             */
             @Override
             public String toString() {
                 return "AsyncTimeout.source(" + source + Symbol.PARENTHESE_RIGHT;

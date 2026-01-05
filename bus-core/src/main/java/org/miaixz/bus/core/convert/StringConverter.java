@@ -67,6 +67,11 @@ public class StringConverter extends AbstractConverter {
         return this;
     }
 
+    /**
+     * Convertinternal method.
+     *
+     * @return the String value
+     */
     @Override
     protected String convertInternal(final Class<?> targetClass, final Object value) {
         // Custom toString

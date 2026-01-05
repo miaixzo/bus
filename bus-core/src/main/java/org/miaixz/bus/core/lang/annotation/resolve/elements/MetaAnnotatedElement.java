@@ -108,7 +108,7 @@ public class MetaAnnotatedElement<T extends AnnotationMapping<Annotation>> imple
      * @return A {@code MetaAnnotatedElement} instance representing the annotation structure on the
      *         {@link AnnotatedElement}.
      */
-    public static <A extends AnnotationMapping<Annotation>> MetaAnnotatedElement<A> create(
+    public static <A extends AnnotationMapping<Annotation>> MetaAnnotatedElement<A> of(
             final AnnotatedElement element,
             final BiFunction<A, Annotation, A> mappingFactory) {
         return new MetaAnnotatedElement<>(element, mappingFactory);

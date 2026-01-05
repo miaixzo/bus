@@ -83,6 +83,11 @@ public class MutableInt extends Number implements Comparable<MutableInt>, Mutabl
         this.value = Integer.parseInt(value);
     }
 
+    /**
+     * Gets the value.
+     *
+     * @return the value
+     */
     @Override
     public Integer get() {
         return this.value;
@@ -97,6 +102,9 @@ public class MutableInt extends Number implements Comparable<MutableInt>, Mutabl
         this.value = value;
     }
 
+    /**
+     * Set method.
+     */
     @Override
     public void set(final Number value) {
         this.value = value.intValue();

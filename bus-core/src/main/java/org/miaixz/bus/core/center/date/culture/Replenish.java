@@ -77,6 +77,11 @@ public abstract class Replenish extends Tradition {
         return tradition;
     }
 
+    /**
+     * Returns the string representation of this object.
+     *
+     * @return the string representation
+     */
     @Override
     public String toString() {
         return String.format("%s第%d天", tradition, dayIndex + 1);

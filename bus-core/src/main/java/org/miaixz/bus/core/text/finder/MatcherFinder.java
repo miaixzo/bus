@@ -58,6 +58,11 @@ public class MatcherFinder extends TextFinder {
         this.matcher = matcher;
     }
 
+    /**
+     * Start method.
+     *
+     * @return the int value
+     */
     @Override
     public int start(final int from) {
         Assert.notNull(this.text, "Text to find must be not null!");
@@ -78,6 +83,11 @@ public class MatcherFinder extends TextFinder {
         return -1;
     }
 
+    /**
+     * End method.
+     *
+     * @return the int value
+     */
     @Override
     public int end(final int start) {
         if (start < 0) {

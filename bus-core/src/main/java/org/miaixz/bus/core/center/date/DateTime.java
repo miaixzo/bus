@@ -39,7 +39,6 @@ import java.util.TimeZone;
 
 import org.miaixz.bus.core.center.date.format.FormatBuilder;
 import org.miaixz.bus.core.center.date.format.FormatManager;
-import org.miaixz.bus.core.center.date.format.FormatPeriod;
 import org.miaixz.bus.core.center.date.format.parser.DateParser;
 import org.miaixz.bus.core.center.date.format.parser.PositionDateParser;
 import org.miaixz.bus.core.center.date.printer.FormatPrinter;
@@ -757,24 +756,13 @@ public class DateTime extends Date {
     /**
      * Calculates the duration between this date and another in a specific unit.
      *
-     * @param date The date to compare against.
-     * @param unit The time unit.
+     * @param date   The date to compare against.
+     * @param chrono The chronological unit for measuring the time difference (e.g., {@link Chrono#MILLISECOND},
+     *               {@link Chrono#SECOND}, {@link Chrono#MINUTE}, {@link Chrono#HOUR}, {@link Chrono#DAY}).
      * @return The duration in the specified unit.
      */
-    public long between(final Date date, final Units unit) {
-        return new Between(this, date).between(unit);
-    }
-
-    /**
-     * Calculates and formats the duration between this date and another.
-     *
-     * @param date        The date to compare against.
-     * @param unit        The time unit for calculation.
-     * @param formatLevel The level of detail for formatting.
-     * @return A formatted string representing the duration.
-     */
-    public String between(final Date date, final Units unit, final FormatPeriod.Level formatLevel) {
-        return new Between(this, date).toString(unit, formatLevel);
+    public long between(final Date date, final Chrono chrono) {
+        return new Between(this, date).between(chrono);
     }
 
     /**

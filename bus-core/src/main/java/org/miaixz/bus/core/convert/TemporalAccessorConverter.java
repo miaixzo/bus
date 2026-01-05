@@ -109,6 +109,11 @@ public class TemporalAccessorConverter extends AbstractConverter {
         this.format = format;
     }
 
+    /**
+     * Convertinternal method.
+     *
+     * @return the TemporalAccessor value
+     */
     @Override
     protected TemporalAccessor convertInternal(final Class<?> targetClass, final Object value) {
         if (value instanceof Long) {

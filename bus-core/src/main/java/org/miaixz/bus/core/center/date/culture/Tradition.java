@@ -39,7 +39,7 @@ import org.miaixz.bus.core.center.date.Culture;
 public abstract class Tradition implements Culture {
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      *
      * @return The name of the traditional element.
      */
@@ -49,7 +49,7 @@ public abstract class Tradition implements Culture {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * Compares this object with another based on their string representation.
      * 

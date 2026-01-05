@@ -125,6 +125,11 @@ public class LunarHour extends SecondParts {
         return EarthBranch.fromIndex(getIndexInDay()).getName() + "时";
     }
 
+    /**
+     * Returns the string representation of this object.
+     *
+     * @return the string representation
+     */
     @Override
     public String toString() {
         return getLunarDay() + getSixtyCycle().getName() + "时";

@@ -66,11 +66,21 @@ public abstract class AbstractFilter implements BloomFilter {
         this.bitSet = new BitSet(size);
     }
 
+    /**
+     * Contains method.
+     *
+     * @return the boolean value
+     */
     @Override
     public boolean contains(final String text) {
         return bitSet.get(hash(text));
     }
 
+    /**
+     * Add method.
+     *
+     * @return the boolean value
+     */
     @Override
     public boolean add(final String text) {
         final int hash = hash(text);

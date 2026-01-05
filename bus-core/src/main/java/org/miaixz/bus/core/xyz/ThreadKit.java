@@ -165,7 +165,7 @@ public class ThreadKit {
             final RejectedExecutionHandler handler) {
         return ExecutorBuilder.of().setCorePoolSize(nThreads).setMaxPoolSize(nThreads)
                 .setWorkQueue(new LinkedBlockingQueue<>(maximumQueueSize))
-                .setThreadFactory(createThreadFactory(threadNamePrefix)).setHandler(handler).build();
+                .setThreadFactory(newThreadFactory(threadNamePrefix)).setHandler(handler).build();
     }
 
     /**
@@ -373,6 +373,8 @@ public class ThreadKit {
     }
 
     /**
+     * Gets the current thread's stack trace.
+     *
      * @return The current thread's stack trace.
      */
     public static StackTraceElement[] getStackTrace() {
@@ -400,7 +402,7 @@ public class ThreadKit {
      * @param isInheritable If `true`, child threads will inherit the value from the parent thread.
      * @return The `ThreadLocal`.
      */
-    public static <T> ThreadLocal<T> createThreadLocal(final boolean isInheritable) {
+    public static <T> ThreadLocal<T> newThreadLocal(final boolean isInheritable) {
         if (isInheritable) {
             return new InheritableThreadLocal<>();
         } else {
@@ -415,7 +417,7 @@ public class ThreadKit {
      * @param supplier The supplier for the initial value.
      * @return The `ThreadLocal`.
      */
-    public static <T> ThreadLocal<T> createThreadLocal(final Supplier<? extends T> supplier) {
+    public static <T> ThreadLocal<T> newThreadLocal(final Supplier<? extends T> supplier) {
         return ThreadLocal.withInitial(supplier);
     }
 
@@ -424,7 +426,7 @@ public class ThreadKit {
      *
      * @return A `ThreadFactoryBuilder`.
      */
-    public static ThreadFactoryBuilder createThreadFactoryBuilder() {
+    public static ThreadFactoryBuilder newThreadFactoryBuilder() {
         return ThreadFactoryBuilder.of();
     }
 
@@ -434,8 +436,51 @@ public class ThreadKit {
      * @param threadNamePrefix The prefix for thread names.
      * @return A {@link ThreadFactory}.
      */
-    public static ThreadFactory createThreadFactory(final String threadNamePrefix) {
+    public static ThreadFactory newThreadFactory(final String threadNamePrefix) {
         return ThreadFactoryBuilder.of().setNamePrefix(threadNamePrefix).build();
+    }
+
+    /**
+     * Creates a named `ThreadFactory`.
+     *
+     * @param prefix   The thread name prefix.
+     * @param isDaemon If `true`, created threads will be daemon threads.
+     * @return A {@link ThreadFactory}.
+     */
+    public static ThreadFactory newNamedThreadFactory(final String prefix, final boolean isDaemon) {
+        return new NamedThreadFactory(prefix, isDaemon);
+    }
+
+    /**
+     * Creates a named `ThreadFactory`.
+     *
+     * @param prefix      The thread name prefix.
+     * @param threadGroup The thread group.
+     * @param isDaemon    If `true`, created threads will be daemon threads.
+     * @return A {@link ThreadFactory}.
+     */
+    public static ThreadFactory newNamedThreadFactory(
+            final String prefix,
+            final ThreadGroup threadGroup,
+            final boolean isDaemon) {
+        return new NamedThreadFactory(prefix, threadGroup, isDaemon);
+    }
+
+    /**
+     * Creates a named `ThreadFactory`.
+     *
+     * @param prefix      The thread name prefix.
+     * @param threadGroup The thread group.
+     * @param isDaemon    If `true`, created threads will be daemon threads.
+     * @param handler     The handler for uncaught exceptions.
+     * @return A {@link ThreadFactory}.
+     */
+    public static ThreadFactory newNamedThreadFactory(
+            final String prefix,
+            final ThreadGroup threadGroup,
+            final boolean isDaemon,
+            final UncaughtExceptionHandler handler) {
+        return new NamedThreadFactory(prefix, threadGroup, isDaemon, handler);
     }
 
     /**
@@ -536,49 +581,6 @@ public class ThreadKit {
     }
 
     /**
-     * Creates a named `ThreadFactory`.
-     *
-     * @param prefix   The thread name prefix.
-     * @param isDaemon If `true`, created threads will be daemon threads.
-     * @return A {@link ThreadFactory}.
-     */
-    public static ThreadFactory newNamedThreadFactory(final String prefix, final boolean isDaemon) {
-        return new NamedThreadFactory(prefix, isDaemon);
-    }
-
-    /**
-     * Creates a named `ThreadFactory`.
-     *
-     * @param prefix      The thread name prefix.
-     * @param threadGroup The thread group.
-     * @param isDaemon    If `true`, created threads will be daemon threads.
-     * @return A {@link ThreadFactory}.
-     */
-    public static ThreadFactory newNamedThreadFactory(
-            final String prefix,
-            final ThreadGroup threadGroup,
-            final boolean isDaemon) {
-        return new NamedThreadFactory(prefix, threadGroup, isDaemon);
-    }
-
-    /**
-     * Creates a named `ThreadFactory`.
-     *
-     * @param prefix      The thread name prefix.
-     * @param threadGroup The thread group.
-     * @param isDaemon    If `true`, created threads will be daemon threads.
-     * @param handler     The handler for uncaught exceptions.
-     * @return A {@link ThreadFactory}.
-     */
-    public static ThreadFactory newNamedThreadFactory(
-            final String prefix,
-            final ThreadGroup threadGroup,
-            final boolean isDaemon,
-            final UncaughtExceptionHandler handler) {
-        return new NamedThreadFactory(prefix, threadGroup, isDaemon, handler);
-    }
-
-    /**
      * Blocks the current thread, typically used to keep a main method from exiting.
      *
      * @param object The object to lock on.
@@ -614,7 +616,7 @@ public class ThreadKit {
      * @param corePoolSize The core pool size.
      * @return A {@link ScheduledThreadPoolExecutor}.
      */
-    public static ScheduledThreadPoolExecutor createScheduledExecutor(final int corePoolSize) {
+    public static ScheduledThreadPoolExecutor newScheduledExecutor(final int corePoolSize) {
         return new ScheduledThreadPoolExecutor(corePoolSize);
     }
 
@@ -656,7 +658,7 @@ public class ThreadKit {
             final TimeUnit timeUnit,
             final boolean fixedRateOrFixedDelay) {
         if (null == executor) {
-            executor = createScheduledExecutor(2);
+            executor = newScheduledExecutor(2);
         }
         if (fixedRateOrFixedDelay) {
             executor.scheduleAtFixedRate(command, initialDelay, period, timeUnit);

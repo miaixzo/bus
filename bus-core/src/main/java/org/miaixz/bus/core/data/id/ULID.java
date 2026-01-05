@@ -326,11 +326,24 @@ public class ULID implements Comparable<ULID>, Serializable {
         return new java.util.UUID(msb, lsb);
     }
 
+    /**
+     * Compares this object with the specified object for order.
+     *
+     * @param o the object to be compared
+     * @return a negative integer, zero, or a positive integer as this object is less than, equal to, or greater than
+     *         the specified object
+     */
     @Override
     public int compareTo(final ULID o) {
         return this.idValue.compareTo(o.idValue);
     }
 
+    /**
+     * Checks if this object equals another object.
+     *
+     * @param object the object to compare with
+     * @return true if the objects are equal, false otherwise
+     */
     @Override
     public boolean equals(final Object object) {
         if ((Objects.isNull(object)) || (object.getClass() != ULID.class)) {
@@ -340,11 +353,21 @@ public class ULID implements Comparable<ULID>, Serializable {
         return this.idValue.equals(id.idValue);
     }
 
+    /**
+     * Returns the hash code value for this object.
+     *
+     * @return the hash code value
+     */
     @Override
     public int hashCode() {
         return this.idValue.hashCode();
     }
 
+    /**
+     * Returns the string representation of this object.
+     *
+     * @return the string representation
+     */
     @Override
     public String toString() {
         final long msb = this.idValue.getMostSigBits();

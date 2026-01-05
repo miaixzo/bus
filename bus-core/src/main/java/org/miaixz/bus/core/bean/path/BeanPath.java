@@ -172,11 +172,21 @@ public class BeanPath<T> implements Iterator<BeanPath<T>> {
         return this.child;
     }
 
+    /**
+     * Returns true if the iteration has more elements.
+     *
+     * @return true if the iteration has more elements
+     */
     @Override
     public boolean hasNext() {
         return null != this.child;
     }
 
+    /**
+     * Returns the next element in the iteration.
+     *
+     * @return the next element
+     */
     @Override
     public BeanPath<T> next() {
         return new BeanPath<>(this.child, this.beanFactory);
@@ -217,7 +227,7 @@ public class BeanPath<T> implements Iterator<BeanPath<T>> {
         Object subBean = beanFactory.getValue(bean, this);
         if (null == subBean) {
             // Create intermediate objects if they don't exist.
-            subBean = beanFactory.create(bean, this);
+            subBean = beanFactory.of(bean, this);
             beanFactory.setValue(bean, subBean, this);
             // Re-get the value in case the setValue method modified it.
             subBean = beanFactory.getValue(bean, this);
@@ -232,6 +242,11 @@ public class BeanPath<T> implements Iterator<BeanPath<T>> {
         return bean;
     }
 
+    /**
+     * Returns the string representation of this object.
+     *
+     * @return the string representation
+     */
     @Override
     public String toString() {
         return "BeanPath{" + "node=" + node + ", child='" + child + '\'' + '}';

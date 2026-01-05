@@ -146,11 +146,21 @@ public class EnumConverter extends AbstractConverter implements MatcherConverter
                         .collect(Collectors.toMap(m -> m.getParameterTypes()[0], m -> m, (k1, k2) -> k1)));
     }
 
+    /**
+     * Match method.
+     *
+     * @return the boolean value
+     */
     @Override
     public boolean match(final Type targetType, final Class<?> rawType, final Object value) {
         return rawType.isEnum();
     }
 
+    /**
+     * Convertinternal method.
+     *
+     * @return the Object value
+     */
     @Override
     protected Object convertInternal(final Class<?> targetClass, final Object value) {
         Enum enumValue = tryConvertEnum(value, targetClass);

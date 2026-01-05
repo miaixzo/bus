@@ -110,6 +110,11 @@ public class ArrayWrapper<A, E> implements Wrapper<A>, Iterable<E> {
         return new ArrayWrapper<>(array);
     }
 
+    /**
+     * Gets the raw wrapped object.
+     *
+     * @return the raw object
+     */
     @Override
     public A getRaw() {
         return this.array;
@@ -678,11 +683,21 @@ public class ArrayWrapper<A, E> implements Wrapper<A>, Iterable<E> {
         return true;
     }
 
+    /**
+     * Returns an iterator over elements of type T.
+     *
+     * @return an Iterator
+     */
     @Override
     public Iterator<E> iterator() {
         return new ArrayIterator<>(this.array);
     }
 
+    /**
+     * Returns the string representation of this object.
+     *
+     * @return the string representation
+     */
     @Override
     public String toString() {
         return ArrayKit.toString(this.array);

@@ -84,6 +84,11 @@ public class EntryConverter extends ConverterWithRoot implements MatcherConverte
         return null;
     }
 
+    /**
+     * Convert method.
+     *
+     * @return the Object value
+     */
     @Override
     public Object convert(Type targetType, final Object value) throws ConvertException {
         if (targetType instanceof TypeReference) {
@@ -128,6 +133,11 @@ public class EntryConverter extends ConverterWithRoot implements MatcherConverte
         throw new ConvertException("Unsupported to map from [{}] of type: {}", value, value.getClass().getName());
     }
 
+    /**
+     * Match method.
+     *
+     * @return the boolean value
+     */
     @Override
     public boolean match(final Type targetType, final Class<?> rawType, final Object value) {
         return Map.Entry.class.isAssignableFrom(rawType);

@@ -154,7 +154,7 @@ public class VKProvider extends AbstractProvider {
     }
 
     /**
-     * {@inheritDoc} Refreshes the access token using a refresh token.
+     * Refreshes the access token using a refresh token.
      *
      * @param authorization the authorization containing the refresh token
      * @return a message containing the new access token
@@ -174,7 +174,7 @@ public class VKProvider extends AbstractProvider {
     }
 
     /**
-     * {@inheritDoc} Revokes the authorization and invalidates the token.
+     * Revokes the authorization and invalidates the token.
      *
      * @param authorization the authorization to revoke
      * @return a message indicating the result of the revocation

@@ -129,6 +129,9 @@ public class MutableEntry<K, V> extends AbstractEntry<K, V> implements Mutable<M
         return this;
     }
 
+    /**
+     * Set method.
+     */
     @Override
     public void set(final Map.Entry<K, V> pair) {
         this.key = pair.getKey();

@@ -258,6 +258,11 @@ public class WatchServiceWrapper extends SimpleWrapper<WatchService> implements 
         // Recursively register subdirectories up to maxDepth.
         PathResolve.walkFiles(path, maxDepth, new SimpleFileVisitor<>() {
 
+            /**
+             * Postvisitdirectory method.
+             *
+             * @return the FileVisitResult value
+             */
             @Override
             public FileVisitResult postVisitDirectory(final Path dir, final IOException exc) throws IOException {
                 // Continue adding directories.

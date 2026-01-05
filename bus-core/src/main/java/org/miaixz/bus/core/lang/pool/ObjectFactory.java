@@ -43,7 +43,7 @@ public interface ObjectFactory<T> {
      *
      * @return the newly created object
      */
-    T create();
+    T of();
 
     /**
      * Validates the usability of an object. This is typically used before borrowing an object from the pool or before

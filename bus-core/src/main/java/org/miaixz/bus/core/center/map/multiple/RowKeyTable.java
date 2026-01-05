@@ -104,7 +104,7 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public Map<R, Map<C, V>> rowMap() {
@@ -112,7 +112,7 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public V put(final R rowKey, final C columnKey, final V value) {
@@ -120,7 +120,7 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public V remove(final R rowKey, final C columnKey) {
@@ -136,7 +136,7 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public boolean isEmpty() {
@@ -144,7 +144,7 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public void clear() {
@@ -152,7 +152,7 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public boolean containsColumn(final C columnKey) {
@@ -168,7 +168,7 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public Map<C, Map<R, V>> columnMap() {
@@ -177,7 +177,7 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public Set<C> columnKeySet() {
@@ -186,7 +186,7 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public List<C> columnKeys() {
@@ -199,7 +199,7 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public Map<R, V> getColumn(final C columnKey) {
@@ -212,7 +212,7 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
     private class ColumnMap extends AbstractMap<C, Map<R, V>> {
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          */
         @Override
         public Set<Entry<C, Map<R, V>>> entrySet() {
@@ -226,7 +226,7 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
     private class ColumnMapEntrySet extends AbstractSet<Map.Entry<C, Map<R, V>>> {
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          */
         @Override
         public Iterator<Map.Entry<C, Map<R, V>>> iterator() {
@@ -234,7 +234,7 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          */
         @Override
         public int size() {
@@ -248,7 +248,7 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
     private class ColumnKeySet extends AbstractSet<C> {
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          */
         @Override
         public Iterator<C> iterator() {
@@ -256,7 +256,7 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          */
         @Override
         public int size() {
@@ -283,7 +283,7 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
         Iterator<Map.Entry<C, V>> entryIterator = Collections.emptyIterator();
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          */
         @Override
         protected C computeNext() {
@@ -323,7 +323,7 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
         }
 
         /**
-         * {@inheritDoc}
+         * Description inherited from parent class or interface.
          */
         @Override
         public Set<Entry<R, V>> entrySet() {
@@ -336,7 +336,7 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
         private class EntrySet extends AbstractSet<Map.Entry<R, V>> {
 
             /**
-             * {@inheritDoc}
+             * Description inherited from parent class or interface.
              */
             @Override
             public Iterator<Map.Entry<R, V>> iterator() {
@@ -344,7 +344,7 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
             }
 
             /**
-             * {@inheritDoc}
+             * Description inherited from parent class or interface.
              */
             @Override
             public int size() {
@@ -369,7 +369,7 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
             final Iterator<Entry<R, Map<C, V>>> iterator = raw.entrySet().iterator();
 
             /**
-             * {@inheritDoc}
+             * Description inherited from parent class or interface.
              */
             @Override
             protected Entry<R, V> computeNext() {
@@ -378,16 +378,32 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
                     if (entry.getValue().containsKey(columnKey)) {
                         return new AbstractEntry<>() {
 
+                            /**
+                             * Gets the key of this entry.
+                             *
+                             * @return the key
+                             */
                             @Override
                             public R getKey() {
                                 return entry.getKey();
                             }
 
+                            /**
+                             * Gets the value of this entry.
+                             *
+                             * @return the value
+                             */
                             @Override
                             public V getValue() {
                                 return entry.getValue().get(columnKey);
                             }
 
+                            /**
+                             * Sets the value of this entry.
+                             *
+                             * @param value the new value
+                             * @return the old value
+                             */
                             @Override
                             public V setValue(final V value) {
                                 return entry.getValue().put(columnKey, value);

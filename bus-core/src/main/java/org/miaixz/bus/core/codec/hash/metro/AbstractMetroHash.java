@@ -96,6 +96,11 @@ public abstract class AbstractMetroHash<R extends AbstractMetroHash<R>> implemen
         }
     }
 
+    /**
+     * Apply method.
+     *
+     * @return the R value
+     */
     @Override
     public R apply(final ByteBuffer input) {
         reset();

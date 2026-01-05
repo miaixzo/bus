@@ -55,7 +55,7 @@ public class ListWrapper<E> extends SimpleWrapper<List<E>> implements List<E> {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public int size() {
@@ -63,7 +63,7 @@ public class ListWrapper<E> extends SimpleWrapper<List<E>> implements List<E> {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public boolean isEmpty() {
@@ -71,7 +71,7 @@ public class ListWrapper<E> extends SimpleWrapper<List<E>> implements List<E> {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public boolean contains(final Object o) {
@@ -79,7 +79,7 @@ public class ListWrapper<E> extends SimpleWrapper<List<E>> implements List<E> {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public Iterator<E> iterator() {
@@ -87,7 +87,7 @@ public class ListWrapper<E> extends SimpleWrapper<List<E>> implements List<E> {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public void forEach(final Consumer<? super E> action) {
@@ -95,7 +95,7 @@ public class ListWrapper<E> extends SimpleWrapper<List<E>> implements List<E> {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public Object[] toArray() {
@@ -103,7 +103,7 @@ public class ListWrapper<E> extends SimpleWrapper<List<E>> implements List<E> {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public <T> T[] toArray(final T[] a) {
@@ -111,7 +111,7 @@ public class ListWrapper<E> extends SimpleWrapper<List<E>> implements List<E> {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public boolean add(final E e) {
@@ -119,7 +119,7 @@ public class ListWrapper<E> extends SimpleWrapper<List<E>> implements List<E> {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public boolean remove(final Object o) {
@@ -127,7 +127,7 @@ public class ListWrapper<E> extends SimpleWrapper<List<E>> implements List<E> {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public boolean containsAll(final Collection<?> c) {
@@ -135,7 +135,7 @@ public class ListWrapper<E> extends SimpleWrapper<List<E>> implements List<E> {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public boolean addAll(final Collection<? extends E> c) {
@@ -143,7 +143,7 @@ public class ListWrapper<E> extends SimpleWrapper<List<E>> implements List<E> {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public boolean addAll(final int index, final Collection<? extends E> c) {
@@ -151,7 +151,7 @@ public class ListWrapper<E> extends SimpleWrapper<List<E>> implements List<E> {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public boolean removeAll(final Collection<?> c) {
@@ -159,7 +159,7 @@ public class ListWrapper<E> extends SimpleWrapper<List<E>> implements List<E> {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public boolean removeIf(final Predicate<? super E> filter) {
@@ -167,7 +167,7 @@ public class ListWrapper<E> extends SimpleWrapper<List<E>> implements List<E> {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public boolean retainAll(final Collection<?> c) {
@@ -175,7 +175,7 @@ public class ListWrapper<E> extends SimpleWrapper<List<E>> implements List<E> {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public void replaceAll(final UnaryOperator<E> operator) {
@@ -183,7 +183,7 @@ public class ListWrapper<E> extends SimpleWrapper<List<E>> implements List<E> {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public void sort(final Comparator<? super E> c) {
@@ -191,7 +191,7 @@ public class ListWrapper<E> extends SimpleWrapper<List<E>> implements List<E> {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public void clear() {
@@ -199,7 +199,7 @@ public class ListWrapper<E> extends SimpleWrapper<List<E>> implements List<E> {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public E get(final int index) {
@@ -207,7 +207,7 @@ public class ListWrapper<E> extends SimpleWrapper<List<E>> implements List<E> {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public E set(final int index, final E element) {
@@ -215,7 +215,7 @@ public class ListWrapper<E> extends SimpleWrapper<List<E>> implements List<E> {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public void add(final int index, final E element) {
@@ -223,7 +223,7 @@ public class ListWrapper<E> extends SimpleWrapper<List<E>> implements List<E> {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public E remove(final int index) {
@@ -231,7 +231,7 @@ public class ListWrapper<E> extends SimpleWrapper<List<E>> implements List<E> {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public int indexOf(final Object o) {
@@ -239,7 +239,7 @@ public class ListWrapper<E> extends SimpleWrapper<List<E>> implements List<E> {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public int lastIndexOf(final Object o) {
@@ -247,7 +247,7 @@ public class ListWrapper<E> extends SimpleWrapper<List<E>> implements List<E> {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public ListIterator<E> listIterator() {
@@ -255,7 +255,7 @@ public class ListWrapper<E> extends SimpleWrapper<List<E>> implements List<E> {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public ListIterator<E> listIterator(final int index) {
@@ -263,7 +263,7 @@ public class ListWrapper<E> extends SimpleWrapper<List<E>> implements List<E> {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public List<E> subList(final int fromIndex, final int toIndex) {
@@ -271,7 +271,7 @@ public class ListWrapper<E> extends SimpleWrapper<List<E>> implements List<E> {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public Spliterator<E> spliterator() {
@@ -279,7 +279,7 @@ public class ListWrapper<E> extends SimpleWrapper<List<E>> implements List<E> {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public Stream<E> stream() {
@@ -287,7 +287,7 @@ public class ListWrapper<E> extends SimpleWrapper<List<E>> implements List<E> {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public Stream<E> parallelStream() {
@@ -295,7 +295,7 @@ public class ListWrapper<E> extends SimpleWrapper<List<E>> implements List<E> {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public int hashCode() {
@@ -303,7 +303,7 @@ public class ListWrapper<E> extends SimpleWrapper<List<E>> implements List<E> {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      */
     @Override
     public boolean equals(final Object object) {

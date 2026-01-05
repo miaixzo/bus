@@ -47,16 +47,31 @@ public class Timeout {
      */
     public static final Timeout NONE = new Timeout() {
 
+        /**
+         * Returns the timeout for cache entries in milliseconds.
+         *
+         * @return the timeout in milliseconds
+         */
         @Override
         public Timeout timeout(long timeout, TimeUnit unit) {
             return this;
         }
 
+        /**
+         * Deadlinenanotime method.
+         *
+         * @return the Timeout value
+         */
         @Override
         public Timeout deadlineNanoTime(long deadlineNanoTime) {
             return this;
         }
 
+        /**
+         * Throwifreached method.
+         *
+         * @return the void value
+         */
         @Override
         public void throwIfReached() {
         }

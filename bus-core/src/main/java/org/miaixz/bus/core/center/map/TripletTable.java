@@ -450,6 +450,11 @@ public class TripletTable<L, M, R> implements Iterable<Triplet<L, M, R>>, Serial
         return this;
     }
 
+    /**
+     * Returns an iterator over elements of type T.
+     *
+     * @return an Iterator
+     */
     @Override
     public Iterator<Triplet<L, M, R>> iterator() {
         final int size = this.size();
@@ -457,11 +462,21 @@ public class TripletTable<L, M, R> implements Iterable<Triplet<L, M, R>>, Serial
 
             private int index = -1;
 
+            /**
+             * Returns true if the iteration has more elements.
+             *
+             * @return true if the iteration has more elements
+             */
             @Override
             public boolean hasNext() {
                 return index + 1 < size;
             }
 
+            /**
+             * Returns the next element in the iteration.
+             *
+             * @return the next element
+             */
             @Override
             public Triplet<L, M, R> next() {
                 index++;

@@ -69,6 +69,11 @@ public class ExplorerCompare implements Comparator<CharSequence> {
      */
     public static final ExplorerCompare INSTANCE = new ExplorerCompare();
 
+    /**
+     * Compare method.
+     *
+     * @return the int value
+     */
     @Override
     public int compare(final CharSequence str1, final CharSequence str2) {
         final Iterator<String> i1 = splitStringPreserveDelimiter(str1).iterator();

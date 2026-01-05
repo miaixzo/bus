@@ -121,21 +121,41 @@ public class No128 extends Number implements Comparable<No128> {
         }
     }
 
+    /**
+     * Intvalue method.
+     *
+     * @return the int value
+     */
     @Override
     public int intValue() {
         return (int) longValue();
     }
 
+    /**
+     * Longvalue method.
+     *
+     * @return the long value
+     */
     @Override
     public long longValue() {
         return this.leastSigBits;
     }
 
+    /**
+     * Floatvalue method.
+     *
+     * @return the float value
+     */
     @Override
     public float floatValue() {
         return longValue();
     }
 
+    /**
+     * Doublevalue method.
+     *
+     * @return the double value
+     */
     @Override
     public double doubleValue() {
         return longValue();

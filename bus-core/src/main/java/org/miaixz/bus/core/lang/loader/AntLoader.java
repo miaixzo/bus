@@ -66,6 +66,11 @@ public class AntLoader extends PatternLoader implements Loader {
         super(delegate);
     }
 
+    /**
+     * Load method.
+     *
+     * @return the Enumeration&lt;Resource&gt; value
+     */
     @Override
     public Enumeration<Resource> load(String pattern, boolean recursively, Filter filter) throws IOException {
         if (Math.max(pattern.indexOf(Symbol.C_STAR), pattern.indexOf(Symbol.C_QUESTION_MARK)) < 0) {

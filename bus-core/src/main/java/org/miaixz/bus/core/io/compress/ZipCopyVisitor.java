@@ -69,6 +69,11 @@ public class ZipCopyVisitor extends SimpleFileVisitor<Path> {
         this.copyOptions = copyOptions;
     }
 
+    /**
+     * Previsitdirectory method.
+     *
+     * @return the FileVisitResult value
+     */
     @Override
     public FileVisitResult preVisitDirectory(final Path dir, final BasicFileAttributes attrs) throws IOException {
         final Path targetDir = resolveTarget(dir);
@@ -89,6 +94,11 @@ public class ZipCopyVisitor extends SimpleFileVisitor<Path> {
         return FileVisitResult.CONTINUE;
     }
 
+    /**
+     * Visitfile method.
+     *
+     * @return the FileVisitResult value
+     */
     @Override
     public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
         // If the target exists, whether it's a directory or a file, a FileAlreadyExistsException will be thrown. No

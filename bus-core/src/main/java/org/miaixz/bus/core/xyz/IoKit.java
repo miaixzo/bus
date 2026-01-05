@@ -1470,7 +1470,7 @@ public class IoKit {
         return new Sink() {
 
             /**
-             * {@inheritDoc}
+             * Description inherited from parent class or interface.
              */
             @Override
             public void write(Buffer source, long byteCount) throws IOException {
@@ -1493,7 +1493,7 @@ public class IoKit {
             }
 
             /**
-             * {@inheritDoc}
+             * Description inherited from parent class or interface.
              */
             @Override
             public void flush() throws IOException {
@@ -1501,7 +1501,7 @@ public class IoKit {
             }
 
             /**
-             * {@inheritDoc}
+             * Description inherited from parent class or interface.
              */
             @Override
             public void close() throws IOException {
@@ -1509,7 +1509,7 @@ public class IoKit {
             }
 
             /**
-             * {@inheritDoc}
+             * Description inherited from parent class or interface.
              */
             @Override
             public Timeout timeout() {
@@ -1517,7 +1517,7 @@ public class IoKit {
             }
 
             /**
-             * {@inheritDoc}
+             * Description inherited from parent class or interface.
              */
             @Override
             public String toString() {
@@ -1577,7 +1577,7 @@ public class IoKit {
         return new Source() {
 
             /**
-             * {@inheritDoc}
+             * Description inherited from parent class or interface.
              */
             @Override
             public long read(Buffer sink, long byteCount) throws IOException {
@@ -1609,7 +1609,7 @@ public class IoKit {
             }
 
             /**
-             * {@inheritDoc}
+             * Description inherited from parent class or interface.
              */
             @Override
             public void close() throws IOException {
@@ -1617,7 +1617,7 @@ public class IoKit {
             }
 
             /**
-             * {@inheritDoc}
+             * Description inherited from parent class or interface.
              */
             @Override
             public Timeout timeout() {
@@ -1625,7 +1625,7 @@ public class IoKit {
             }
 
             /**
-             * {@inheritDoc}
+             * Description inherited from parent class or interface.
              */
             @Override
             public String toString() {
@@ -1720,7 +1720,7 @@ public class IoKit {
         return new Sink() {
 
             /**
-             * {@inheritDoc}
+             * Description inherited from parent class or interface.
              */
             @Override
             public void write(Buffer source, long byteCount) throws IOException {
@@ -1728,14 +1728,14 @@ public class IoKit {
             }
 
             /**
-             * {@inheritDoc}
+             * Description inherited from parent class or interface.
              */
             @Override
             public void flush() {
             }
 
             /**
-             * {@inheritDoc}
+             * Description inherited from parent class or interface.
              */
             @Override
             public Timeout timeout() {
@@ -1743,7 +1743,7 @@ public class IoKit {
             }
 
             /**
-             * {@inheritDoc}
+             * Description inherited from parent class or interface.
              */
             @Override
             public void close() {
@@ -1784,7 +1784,7 @@ public class IoKit {
         return new AsyncTimeout() {
 
             /**
-             * {@inheritDoc}
+             * Description inherited from parent class or interface.
              */
             @Override
             protected IOException newTimeoutException(IOException cause) {
@@ -1796,7 +1796,7 @@ public class IoKit {
             }
 
             /**
-             * {@inheritDoc}
+             * Description inherited from parent class or interface.
              */
             @Override
             protected void timedOut() {

@@ -166,6 +166,11 @@ public class RegisterConverter extends ConverterWithRoot implements Serializable
         return converterMap;
     }
 
+    /**
+     * Convert method.
+     *
+     * @return the Object value
+     */
     @Override
     public Object convert(final Type targetType, final Object value) throws ConvertException {
         // Standard converter

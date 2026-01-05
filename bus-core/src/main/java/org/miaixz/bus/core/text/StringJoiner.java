@@ -343,11 +343,21 @@ public class StringJoiner implements Appendable, Serializable {
         return this;
     }
 
+    /**
+     * Append method.
+     *
+     * @return the StringJoiner value
+     */
     @Override
     public StringJoiner append(final CharSequence csq) {
         return append(csq, 0, StringKit.length(csq));
     }
 
+    /**
+     * Append method.
+     *
+     * @return the StringJoiner value
+     */
     @Override
     public StringJoiner append(CharSequence csq, final int startInclude, int endExclude) {
         if (null == csq) {
@@ -380,6 +390,11 @@ public class StringJoiner implements Appendable, Serializable {
         return this;
     }
 
+    /**
+     * Append method.
+     *
+     * @return the StringJoiner value
+     */
     @Override
     public StringJoiner append(final char c) {
         return append(String.valueOf(c));
@@ -413,6 +428,11 @@ public class StringJoiner implements Appendable, Serializable {
                 : (this.emptyResult == null ? -1 : this.emptyResult.length()));
     }
 
+    /**
+     * Returns the string representation of this object.
+     *
+     * @return the string representation
+     */
     @Override
     public String toString() {
         if (null == this.appendable) {

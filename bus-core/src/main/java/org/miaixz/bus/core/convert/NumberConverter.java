@@ -246,16 +246,31 @@ public class NumberConverter extends AbstractConverter implements MatcherConvert
         return MathKit.toBigInteger(toStrFunc.apply(value));
     }
 
+    /**
+     * Match method.
+     *
+     * @return the boolean value
+     */
     @Override
     public boolean match(final Type targetType, final Class<?> rawType, final Object value) {
         return Number.class.isAssignableFrom(rawType);
     }
 
+    /**
+     * Convertinternal method.
+     *
+     * @return the Number value
+     */
     @Override
     protected Number convertInternal(final Class<?> targetClass, final Object value) {
         return convert(value, (Class<? extends Number>) targetClass, this::convertToString);
     }
 
+    /**
+     * Converttostring method.
+     *
+     * @return the String value
+     */
     @Override
     protected String convertToString(final Object value) {
         final String result = StringKit.trim(super.convertToString(value));

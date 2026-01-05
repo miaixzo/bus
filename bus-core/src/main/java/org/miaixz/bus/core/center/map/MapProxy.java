@@ -102,61 +102,117 @@ public class MapProxy implements Map<Object, Object>, TypeGetter<Object>, Invoca
         return map.getOrDefault(key, defaultValue);
     }
 
+    /**
+     * Returns the number of elements in this collection.
+     *
+     * @return the number of elements
+     */
     @Override
     public int size() {
         return map.size();
     }
 
+    /**
+     * Returns true if this collection contains no elements.
+     *
+     * @return true if this collection contains no elements
+     */
     @Override
     public boolean isEmpty() {
         return map.isEmpty();
     }
 
+    /**
+     * Returns true if this cache contains a mapping for the specified key.
+     *
+     * @param key the key whose presence is to be tested
+     * @return true if this cache contains a mapping for the specified key
+     */
     @Override
     public boolean containsKey(final Object key) {
         return map.containsKey(key);
     }
 
+    /**
+     * Containsvalue method.
+     *
+     * @return the boolean value
+     */
     @Override
     public boolean containsValue(final Object value) {
         return map.containsValue(value);
     }
 
+    /**
+     * Returns the value to which the specified key is mapped, or null if this cache contains no mapping for the key.
+     *
+     * @param key the key whose associated value is to be returned
+     * @return the value associated with the key, or null if no mapping
+     */
     @Override
     public Object get(final Object key) {
         return map.get(key);
     }
 
+    /**
+     * Associates the specified value with the specified key in this cache.
+     *
+     * @param key   the key to associate the value with
+     * @param value the value to associate with the key
+     * @return the previous value associated with the key, or null if there was no mapping
+     */
     @Override
     public Object put(final Object key, final Object value) {
         return map.put(key, value);
     }
 
+    /**
+     * Removes from the underlying collection the last element returned by this iterator.
+     */
     @Override
     public Object remove(final Object key) {
         return map.remove(key);
     }
 
+    /**
+     * Putall method.
+     */
     @Override
     public void putAll(final Map<?, ?> m) {
         map.putAll(m);
     }
 
+    /**
+     * Removes all of the elements from this collection.
+     */
     @Override
     public void clear() {
         map.clear();
     }
 
+    /**
+     * Keyset method.
+     *
+     * @return the Set&lt;Object&gt; value
+     */
     @Override
     public Set<Object> keySet() {
         return map.keySet();
     }
 
+    /**
+     * Values method.
+     *
+     * @return the Collection&lt;Object&gt; value
+     */
     @Override
     public Collection<Object> values() {
         return map.values();
     }
 
+    /**
+     * Entryset method.
+     */
     @Override
     public Set<Entry<Object, Object>> entrySet() {
         return map.entrySet();

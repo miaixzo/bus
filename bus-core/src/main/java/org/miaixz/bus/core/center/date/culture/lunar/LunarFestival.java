@@ -224,6 +224,11 @@ public class LunarFestival extends Loops {
         return name;
     }
 
+    /**
+     * Returns the string representation of this object.
+     *
+     * @return the string representation
+     */
     @Override
     public String toString() {
         return String.format("%s %s", day, name);

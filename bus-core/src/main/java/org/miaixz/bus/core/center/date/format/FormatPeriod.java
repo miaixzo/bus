@@ -31,12 +31,12 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.function.Function;
 
-import org.miaixz.bus.core.center.date.Units;
+import org.miaixz.bus.core.center.date.Chrono;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * Duration formatter, used to format the duration between two dates. Depending on the {@link Level}, calling the
+ * Duration formatter, used to format the duration between two dates. Depending on the {@link Chrono level}, calling the
  * {@link #format()} method will return something like:
  * <ul>
  * <li>XX hours XX minutes XX seconds</li>
@@ -63,11 +63,11 @@ public class FormatPeriod implements Serializable {
     /**
      * The formatting level.
      */
-    private Level level;
+    private Chrono chrono;
     /**
      * The formatter function for levels.
      */
-    private Function<Level, String> formatter = Level::getName;
+    private Function<Chrono, String> formatter = Chrono::getName;
     /**
      * Whether it is in simple mode. This flag is used to customize whether to output parts with 0 in between. If
      * {@code true}, outputs "1 hour 3 seconds"; if {@code false}, outputs "1 hour 0 minutes 3 seconds".
@@ -82,14 +82,14 @@ public class FormatPeriod implements Serializable {
      * Constructs a {@code FormatPeriod} instance.
      *
      * @param betweenMs     The duration in milliseconds.
-     * @param level         The level, divided into 5 levels: day, hour, minute, second, millisecond. Formats to the
+     * @param chrono        The level, divided into 5 levels: day, hour, minute, second, millisecond. Formats to the
      *                      corresponding level based on the input level.
      * @param levelMaxCount The maximum number of formatting levels. If the number of levels is 1, but the level is up
      *                      to seconds, only one level will be displayed.
      */
-    public FormatPeriod(final long betweenMs, final Level level, final int levelMaxCount) {
+    public FormatPeriod(final long betweenMs, final Chrono chrono, final int levelMaxCount) {
         this.betweenMs = betweenMs;
-        this.level = level;
+        this.chrono = chrono;
         this.levelMaxCount = levelMaxCount;
     }
 
@@ -97,26 +97,26 @@ public class FormatPeriod implements Serializable {
      * Creates a {@link FormatPeriod} instance.
      *
      * @param betweenMs The duration in milliseconds.
-     * @param level     The level, divided into 5 levels: day, hour, minute, second, millisecond. Formats to the
+     * @param chrono    The level, divided into 5 levels: day, hour, minute, second, millisecond. Formats to the
      *                  corresponding level based on the input level.
      * @return A new {@link FormatPeriod} instance.
      */
-    public static FormatPeriod of(final long betweenMs, final Level level) {
-        return of(betweenMs, level, 0);
+    public static FormatPeriod of(final long betweenMs, final Chrono chrono) {
+        return of(betweenMs, chrono, 0);
     }
 
     /**
      * Creates a {@link FormatPeriod} instance.
      *
      * @param betweenMs     The duration in milliseconds.
-     * @param level         The level, divided into 5 levels: day, hour, minute, second, millisecond. Formats to the
+     * @param chrono        The level, divided into 5 levels: day, hour, minute, second, millisecond. Formats to the
      *                      corresponding level based on the input level.
      * @param levelMaxCount The maximum number of formatting levels. If the number of levels is 1, but the level is up
      *                      to seconds, only one level will be displayed.
      * @return A new {@link FormatPeriod} instance.
      */
-    public static FormatPeriod of(final long betweenMs, final Level level, final int levelMaxCount) {
-        return new FormatPeriod(betweenMs, level, levelMaxCount);
+    public static FormatPeriod of(final long betweenMs, final Chrono chrono, final int levelMaxCount) {
+        return new FormatPeriod(betweenMs, chrono, levelMaxCount);
     }
 
     /**
@@ -127,55 +127,55 @@ public class FormatPeriod implements Serializable {
     public String format() {
         final StringBuilder sb = new StringBuilder();
         if (betweenMs > 0) {
-            final long day = betweenMs / Units.DAY.getMillis();
-            final long hour = betweenMs / Units.HOUR.getMillis() - day * 24;
-            final long minute = betweenMs / Units.MINUTE.getMillis() - day * 24 * 60 - hour * 60;
+            final long day = betweenMs / Chrono.DAY.getMillis();
+            final long hour = betweenMs / Chrono.HOUR.getMillis() - day * 24;
+            final long minute = betweenMs / Chrono.MINUTE.getMillis() - day * 24 * 60 - hour * 60;
 
             final long BetweenOfSecond = ((day * 24 + hour) * 60 + minute) * 60;
-            final long second = betweenMs / Units.SECOND.getMillis() - BetweenOfSecond;
+            final long second = betweenMs / Chrono.SECOND.getMillis() - BetweenOfSecond;
             final long millisecond = betweenMs - (BetweenOfSecond + second) * 1000;
 
-            final int level = this.level.ordinal();
+            final int level = this.chrono.ordinal();
             int levelCount = 0;
 
             // Day
             if (isLevelCountValid(levelCount) && day > 0) {
-                sb.append(day).append(formatter.apply(Level.DAY)).append(separator);
+                sb.append(day).append(formatter.apply(Chrono.DAY)).append(separator);
                 levelCount++;
             }
 
             // Hour
-            if (isLevelCountValid(levelCount) && level >= Level.HOUR.ordinal()) {
+            if (isLevelCountValid(levelCount) && level >= Chrono.HOUR.ordinal()) {
                 if (hour > 0 || (!this.simpleMode && StringKit.isNotEmpty(sb))) {
-                    sb.append(hour).append(formatter.apply(Level.HOUR)).append(separator);
+                    sb.append(hour).append(formatter.apply(Chrono.HOUR)).append(separator);
                     levelCount++;
                 }
             }
 
             // Minute
-            if (isLevelCountValid(levelCount) && level >= Level.MINUTE.ordinal()) {
+            if (isLevelCountValid(levelCount) && level >= Chrono.MINUTE.ordinal()) {
                 if (minute > 0 || (!this.simpleMode && StringKit.isNotEmpty(sb))) {
-                    sb.append(minute).append(formatter.apply(Level.MINUTE)).append(separator);
+                    sb.append(minute).append(formatter.apply(Chrono.MINUTE)).append(separator);
                     levelCount++;
                 }
             }
 
             // Second
-            if (isLevelCountValid(levelCount) && level >= Level.SECOND.ordinal()) {
+            if (isLevelCountValid(levelCount) && level >= Chrono.SECOND.ordinal()) {
                 if (second > 0 || (!this.simpleMode && StringKit.isNotEmpty(sb))) {
-                    sb.append(second).append(formatter.apply(Level.SECOND)).append(separator);
+                    sb.append(second).append(formatter.apply(Chrono.SECOND)).append(separator);
                     levelCount++;
                 }
             }
 
             // Millisecond
-            if (isLevelCountValid(levelCount) && millisecond > 0 && level >= Level.MILLISECOND.ordinal()) {
-                sb.append(millisecond).append(formatter.apply(Level.MILLISECOND)).append(separator);
+            if (isLevelCountValid(levelCount) && millisecond > 0 && level >= Chrono.MILLISECOND.ordinal()) {
+                sb.append(millisecond).append(formatter.apply(Chrono.MILLISECOND)).append(separator);
             }
         }
 
         if (StringKit.isEmpty(sb)) {
-            sb.append(0).append(formatter.apply(this.level));
+            sb.append(0).append(formatter.apply(this.chrono));
         } else if (StringKit.isNotEmpty(separator)) {
             sb.delete(sb.length() - separator.length(), sb.length());
         }
@@ -206,20 +206,20 @@ public class FormatPeriod implements Serializable {
     /**
      * Gets the formatting level.
      *
-     * @return The {@link Level} of formatting.
+     * @return The {@link Chrono} of formatting.
      */
-    public Level getLevel() {
-        return level;
+    public Chrono getChrono() {
+        return chrono;
     }
 
     /**
      * Sets the formatting level.
      *
-     * @param level The {@link Level} of formatting.
+     * @param chrono The {@link Chrono} of formatting.
      * @return This {@code FormatPeriod} instance.
      */
-    public FormatPeriod setLevel(final Level level) {
-        this.level = level;
+    public FormatPeriod setChrono(final Chrono chrono) {
+        this.chrono = chrono;
         return this;
     }
 
@@ -241,7 +241,7 @@ public class FormatPeriod implements Serializable {
      * @param formatter The level formatter function.
      * @return This {@code FormatPeriod} instance.
      */
-    public FormatPeriod setFormatter(final Function<Level, String> formatter) {
+    public FormatPeriod setFormatter(final Function<Chrono, String> formatter) {
         this.formatter = formatter;
         return this;
     }
@@ -257,6 +257,11 @@ public class FormatPeriod implements Serializable {
         return this;
     }
 
+    /**
+     * Returns the string representation of this object.
+     *
+     * @return the string representation
+     */
     @Override
     public String toString() {
         return format();
@@ -271,56 +276,6 @@ public class FormatPeriod implements Serializable {
      */
     private boolean isLevelCountValid(final int levelCount) {
         return this.levelMaxCount <= 0 || levelCount < this.levelMaxCount;
-    }
-
-    /**
-     * Enumeration for formatting levels.
-     */
-    public enum Level {
-
-        /**
-         * Day
-         */
-        DAY("天"),
-        /**
-         * Hour
-         */
-        HOUR("小时"),
-        /**
-         * Minute
-         */
-        MINUTE("分"),
-        /**
-         * Second
-         */
-        SECOND("秒"),
-        /**
-         * Millisecond
-         */
-        MILLISECOND("毫秒");
-
-        /**
-         * The name of the level.
-         */
-        private final String name;
-
-        /**
-         * Constructs a {@code Level} enum constant.
-         *
-         * @param name The name of the level.
-         */
-        Level(final String name) {
-            this.name = name;
-        }
-
-        /**
-         * Gets the name of the level.
-         *
-         * @return The name of the level.
-         */
-        public String getName() {
-            return this.name;
-        }
     }
 
 }

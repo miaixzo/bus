@@ -168,16 +168,31 @@ public abstract class AbstractTable<R, C, V> implements Table<R, C, V> {
             this.value = value;
         }
 
+        /**
+         * Getrowkey method.
+         *
+         * @return the R value
+         */
         @Override
         public R getRowKey() {
             return rowKey;
         }
 
+        /**
+         * Getcolumnkey method.
+         *
+         * @return the C value
+         */
         @Override
         public C getColumnKey() {
             return columnKey;
         }
 
+        /**
+         * Gets the value of this entry.
+         *
+         * @return the value
+         */
         @Override
         public V getValue() {
             return value;
@@ -229,21 +244,39 @@ public abstract class AbstractTable<R, C, V> implements Table<R, C, V> {
      */
     private class Values extends AbstractCollection<V> {
 
+        /**
+         * Returns an iterator over elements of type T.
+         *
+         * @return an Iterator
+         */
         @Override
         public Iterator<V> iterator() {
             return new TransIterator<>(cellSet().iterator(), Cell::getValue);
         }
 
+        /**
+         * Contains method.
+         *
+         * @return the boolean value
+         */
         @Override
         public boolean contains(final Object o) {
             return containsValue((V) o);
         }
 
+        /**
+         * Removes all of the elements from this collection.
+         */
         @Override
         public void clear() {
             AbstractTable.this.clear();
         }
 
+        /**
+         * Returns the number of elements in this collection.
+         *
+         * @return the number of elements
+         */
         @Override
         public int size() {
             return AbstractTable.this.size();
@@ -255,6 +288,11 @@ public abstract class AbstractTable<R, C, V> implements Table<R, C, V> {
      */
     private class CellSet extends AbstractSet<Cell<R, C, V>> {
 
+        /**
+         * Contains method.
+         *
+         * @return the boolean value
+         */
         @Override
         public boolean contains(final Object o) {
             if (o instanceof Cell) {
@@ -267,6 +305,9 @@ public abstract class AbstractTable<R, C, V> implements Table<R, C, V> {
             return false;
         }
 
+        /**
+         * Removes from the underlying collection the last element returned by this iterator.
+         */
         @Override
         public boolean remove(final Object o) {
             if (contains(o)) {
@@ -277,16 +318,29 @@ public abstract class AbstractTable<R, C, V> implements Table<R, C, V> {
             return false;
         }
 
+        /**
+         * Removes all of the elements from this collection.
+         */
         @Override
         public void clear() {
             AbstractTable.this.clear();
         }
 
+        /**
+         * Returns an iterator over elements of type T.
+         *
+         * @return an Iterator
+         */
         @Override
         public Iterator<Table.Cell<R, C, V>> iterator() {
             return new AbstractTable<R, C, V>.CellIterator();
         }
 
+        /**
+         * Returns the number of elements in this collection.
+         *
+         * @return the number of elements
+         */
         @Override
         public int size() {
             return AbstractTable.this.size();
@@ -302,11 +356,21 @@ public abstract class AbstractTable<R, C, V> implements Table<R, C, V> {
         Map.Entry<R, Map<C, V>> rowEntry;
         Iterator<Map.Entry<C, V>> columnIterator = IteratorKit.empty();
 
+        /**
+         * Returns true if the iteration has more elements.
+         *
+         * @return true if the iteration has more elements
+         */
         @Override
         public boolean hasNext() {
             return rowIterator.hasNext() || columnIterator.hasNext();
         }
 
+        /**
+         * Returns the next element in the iteration.
+         *
+         * @return the next element
+         */
         @Override
         public Cell<R, C, V> next() {
             if (!columnIterator.hasNext()) {
@@ -317,6 +381,9 @@ public abstract class AbstractTable<R, C, V> implements Table<R, C, V> {
             return new SimpleCell<>(rowEntry.getKey(), columnEntry.getKey(), columnEntry.getValue());
         }
 
+        /**
+         * Removes from the underlying collection the last element returned by this iterator.
+         */
         @Override
         public void remove() {
             columnIterator.remove();

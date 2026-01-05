@@ -131,6 +131,9 @@ public class Deflate implements Closeable {
         return this;
     }
 
+    /**
+     * Close method.
+     */
     @Override
     public void close() {
         IoKit.closeQuietly(this.target);

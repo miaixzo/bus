@@ -181,10 +181,8 @@ public class ResolvedAnnotationMapping implements AnnotationMapping<Annotation> 
      * @param resolveAnnotationAttribute Whether to resolve annotation attributes (apply aliasing and overriding).
      * @return A new {@code ResolvedAnnotationMapping} instance.
      */
-    public static ResolvedAnnotationMapping create(
-            final Annotation annotation,
-            final boolean resolveAnnotationAttribute) {
-        return create(null, annotation, resolveAnnotationAttribute);
+    public static ResolvedAnnotationMapping of(final Annotation annotation, final boolean resolveAnnotationAttribute) {
+        return of(null, annotation, resolveAnnotationAttribute);
     }
 
     /**
@@ -197,7 +195,7 @@ public class ResolvedAnnotationMapping implements AnnotationMapping<Annotation> 
      * @param resolveAnnotationAttribute Whether to resolve annotation attributes (apply aliasing and overriding).
      * @return A new {@code ResolvedAnnotationMapping} instance.
      */
-    public static ResolvedAnnotationMapping create(
+    public static ResolvedAnnotationMapping of(
             final ResolvedAnnotationMapping source,
             final Annotation annotation,
             final boolean resolveAnnotationAttribute) {
@@ -296,7 +294,7 @@ public class ResolvedAnnotationMapping implements AnnotationMapping<Annotation> 
         if (Objects.isNull(proxied)) {
             synchronized (this) {
                 if (Objects.isNull(proxied)) {
-                    proxied = AnnotationMappingProxy.create(annotationType(), this);
+                    proxied = AnnotationMappingProxy.of(annotationType(), this);
                 }
             }
         }

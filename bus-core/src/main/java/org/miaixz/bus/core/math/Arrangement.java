@@ -338,6 +338,11 @@ public class Arrangement implements Serializable {
             }
         }
 
+        /**
+         * Returns true if the iteration has more elements.
+         *
+         * @return true if the iteration has more elements
+         */
         @Override
         public boolean hasNext() {
             if (end) {
@@ -350,6 +355,11 @@ public class Arrangement implements Serializable {
             return nextItem != null;
         }
 
+        /**
+         * Returns the next element in the iteration.
+         *
+         * @return the next element
+         */
         @Override
         public String[] next() {
             if (end && !nextPrepared) {

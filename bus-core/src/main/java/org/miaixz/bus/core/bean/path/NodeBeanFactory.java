@@ -46,7 +46,7 @@ public interface NodeBeanFactory<T> {
      * @param beanPath The current {@link BeanPath} instance.
      * @return The newly created Bean object.
      */
-    T create(final T parent, final BeanPath<T> beanPath);
+    T of(final T parent, final BeanPath<T> beanPath);
 
     /**
      * Retrieves the value of the node corresponding to the given Bean and {@link BeanPath}.

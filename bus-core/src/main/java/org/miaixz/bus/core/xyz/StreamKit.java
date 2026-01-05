@@ -282,7 +282,7 @@ public class StreamKit {
             return Stream.empty();
         }
         Objects.requireNonNull(predicate);
-        return createStatefulNewStream(source, TakeWhileSpliterator.create(source.spliterator(), predicate));
+        return createStatefulNewStream(source, TakeWhileSpliterator.of(source.spliterator(), predicate));
     }
 
     /**

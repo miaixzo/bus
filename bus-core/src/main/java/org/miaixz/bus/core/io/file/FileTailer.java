@@ -33,7 +33,7 @@ import java.nio.file.WatchKey;
 import java.util.Stack;
 import java.util.concurrent.*;
 
-import org.miaixz.bus.core.center.date.Units;
+import org.miaixz.bus.core.center.date.Chrono;
 import org.miaixz.bus.core.center.function.ConsumerX;
 import org.miaixz.bus.core.io.watch.SimpleWatcher;
 import org.miaixz.bus.core.io.watch.WatchKind;
@@ -123,7 +123,7 @@ public class FileTailer implements Serializable {
      * @throws InternalException if the file does not exist or is not a regular file.
      */
     public FileTailer(final File file, final ConsumerX<String> lineHandler, final int initReadLine) {
-        this(file, Charset.UTF_8, lineHandler, initReadLine, Units.SECOND.getMillis());
+        this(file, Charset.UTF_8, lineHandler, initReadLine, Chrono.SECOND.getMillis());
     }
 
     /**
@@ -135,7 +135,7 @@ public class FileTailer implements Serializable {
      * @throws InternalException if the file does not exist or is not a regular file.
      */
     public FileTailer(final File file, final java.nio.charset.Charset charset, final ConsumerX<String> lineHandler) {
-        this(file, charset, lineHandler, 0, Units.SECOND.getMillis());
+        this(file, charset, lineHandler, 0, Chrono.SECOND.getMillis());
     }
 
     /**
@@ -223,6 +223,11 @@ public class FileTailer implements Serializable {
                 @Serial
                 private static final long serialVersionUID = 2852571830580L;
 
+                /**
+                 * Ondelete method.
+                 *
+                 * @return the void value
+                 */
                 @Override
                 public void onDelete(final WatchEvent<?> event, final WatchKey key) {
                     super.onDelete(event, key);
@@ -334,6 +339,9 @@ public class FileTailer implements Serializable {
         @Serial
         private static final long serialVersionUID = 2852227591586L;
 
+        /**
+         * Accepting method.
+         */
         @Override
         public void accepting(final String line) {
             Console.log(line);

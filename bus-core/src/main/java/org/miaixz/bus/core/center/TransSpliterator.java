@@ -64,7 +64,7 @@ public class TransSpliterator<F, T> implements Spliterator<T> {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * Advances the spliterator and consumes the next element after applying the transformation function. The provided
      * action is performed on the transformed element.
@@ -75,7 +75,7 @@ public class TransSpliterator<F, T> implements Spliterator<T> {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * Applies the transformation function to each remaining element and then performs the given action on each
      * transformed element.
@@ -86,7 +86,7 @@ public class TransSpliterator<F, T> implements Spliterator<T> {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * If the underlying spliterator can be partitioned, this method returns a new {@code TransSpliterator} covering a
      * portion of the elements. The new spliterator shares the same transformation function.
@@ -98,7 +98,7 @@ public class TransSpliterator<F, T> implements Spliterator<T> {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * Returns an estimate of the number of elements that would be encountered by a traversal, which is delegated to the
      * underlying source spliterator.
@@ -109,7 +109,7 @@ public class TransSpliterator<F, T> implements Spliterator<T> {
     }
 
     /**
-     * {@inheritDoc}
+     * Description inherited from parent class or interface.
      * <p>
      * Returns the characteristics of this spliterator, which are derived from the source spliterator. This
      * implementation removes characteristics such as {@code DISTINCT}, {@code NONNULL}, and {@code SORTED} because the

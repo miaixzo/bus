@@ -276,11 +276,21 @@ public class ComparatorChain<E> implements Chain<Comparator<E>, ComparatorChain<
         return lock;
     }
 
+    /**
+     * Returns an iterator over elements of type T.
+     *
+     * @return an Iterator
+     */
     @Override
     public Iterator<Comparator<E>> iterator() {
         return this.chain.iterator();
     }
 
+    /**
+     * Addchain method.
+     *
+     * @return the ComparatorChain&lt;E&gt; value
+     */
     @Override
     public ComparatorChain<E> addChain(final Comparator<E> element) {
         return this.addComparator(element);
@@ -318,6 +328,11 @@ public class ComparatorChain<E> implements Chain<Comparator<E>, ComparatorChain<
         return 0;
     }
 
+    /**
+     * Returns the hash code value for this object.
+     *
+     * @return the hash code value
+     */
     @Override
     public int hashCode() {
         int hash = 0;
@@ -330,6 +345,12 @@ public class ComparatorChain<E> implements Chain<Comparator<E>, ComparatorChain<
         return hash;
     }
 
+    /**
+     * Checks if this object equals another object.
+     *
+     * @param object the object to compare with
+     * @return true if the objects are equal, false otherwise
+     */
     @Override
     public boolean equals(final Object object) {
         if (this == object) {

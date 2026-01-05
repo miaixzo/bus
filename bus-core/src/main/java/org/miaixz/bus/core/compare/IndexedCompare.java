@@ -88,6 +88,11 @@ public class IndexedCompare<T> implements Comparator<T> {
         }
     }
 
+    /**
+     * Compare method.
+     *
+     * @return the int value
+     */
     @Override
     public int compare(final T o1, final T o2) {
         final int index1 = getOrder(o1);

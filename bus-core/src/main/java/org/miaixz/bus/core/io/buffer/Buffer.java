@@ -153,24 +153,49 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
     public OutputStream outputStream() {
         return new OutputStream() {
 
+            /**
+             * Write method.
+             *
+             * @return the void value
+             */
             @Override
             public void write(int b) {
                 writeByte((byte) b);
             }
 
+            /**
+             * Write method.
+             *
+             * @return the void value
+             */
             @Override
             public void write(byte[] data, int offset, int byteCount) {
                 Buffer.this.write(data, offset, byteCount);
             }
 
+            /**
+             * Flush method.
+             *
+             * @return the void value
+             */
             @Override
             public void flush() {
             }
 
+            /**
+             * Close method.
+             *
+             * @return the void value
+             */
             @Override
             public void close() {
             }
 
+            /**
+             * Returns the string representation of this object.
+             *
+             * @return the string representation
+             */
             @Override
             public String toString() {
                 return Buffer.this + ".outputStream()";
@@ -254,6 +279,11 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
     public InputStream inputStream() {
         return new InputStream() {
 
+            /**
+             * Read method.
+             *
+             * @return the int value
+             */
             @Override
             public int read() {
                 if (size > 0)
@@ -261,20 +291,40 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
                 return -1;
             }
 
+            /**
+             * Read method.
+             *
+             * @return the int value
+             */
             @Override
             public int read(byte[] sink, int offset, int byteCount) {
                 return Buffer.this.read(sink, offset, byteCount);
             }
 
+            /**
+             * Available method.
+             *
+             * @return the int value
+             */
             @Override
             public int available() {
                 return (int) Math.min(size, Integer.MAX_VALUE);
             }
 
+            /**
+             * Close method.
+             *
+             * @return the void value
+             */
             @Override
             public void close() {
             }
 
+            /**
+             * Returns the string representation of this object.
+             *
+             * @return the string representation
+             */
             @Override
             public String toString() {
                 return Buffer.this + ".inputStream()";

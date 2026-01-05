@@ -97,7 +97,7 @@ public class DefaultObjectCreator<T> implements ObjectCreator<T> {
      * @return A new instance of type {@code T}.
      */
     @Override
-    public T create() {
+    public T of() {
         return MethodInvoker.invokeHandle(constructor, args);
     }
 

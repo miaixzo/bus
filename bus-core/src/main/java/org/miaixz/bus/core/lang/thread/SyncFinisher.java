@@ -131,6 +131,11 @@ public class SyncFinisher implements Closeable {
         for (int i = 0; i < this.threadSize; i++) {
             addWorker(new Worker() {
 
+                /**
+                 * Work method.
+                 *
+                 * @return the void value
+                 */
                 @Override
                 public void work() {
                     runnable.run();
@@ -149,6 +154,11 @@ public class SyncFinisher implements Closeable {
     public SyncFinisher addWorker(final Runnable runnable) {
         return addWorker(new Worker() {
 
+            /**
+             * Work method.
+             *
+             * @return the void value
+             */
             @Override
             public void work() {
                 runnable.run();

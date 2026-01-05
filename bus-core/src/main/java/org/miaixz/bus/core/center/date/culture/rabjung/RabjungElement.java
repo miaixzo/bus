@@ -121,6 +121,11 @@ public class RabjungElement extends Element {
         return next(-2);
     }
 
+    /**
+     * Gets the name of this object.
+     *
+     * @return the name
+     */
     @Override
     public String getName() {
         return super.getName().replace("金", "铁");

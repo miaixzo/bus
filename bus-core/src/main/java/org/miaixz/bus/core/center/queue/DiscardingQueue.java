@@ -58,31 +58,61 @@ public class DiscardingQueue extends AbstractQueue<Object> {
         return (Queue<E>) INSTANCE;
     }
 
+    /**
+     * Add method.
+     *
+     * @return the boolean value
+     */
     @Override
     public boolean add(final Object e) {
         return true;
     }
 
+    /**
+     * Offer method.
+     *
+     * @return the boolean value
+     */
     @Override
     public boolean offer(final Object e) {
         return true;
     }
 
+    /**
+     * Poll method.
+     *
+     * @return the Object value
+     */
     @Override
     public Object poll() {
         return null;
     }
 
+    /**
+     * Peek method.
+     *
+     * @return the Object value
+     */
     @Override
     public Object peek() {
         return null;
     }
 
+    /**
+     * Returns the number of elements in this collection.
+     *
+     * @return the number of elements
+     */
     @Override
     public int size() {
         return 0;
     }
 
+    /**
+     * Returns an iterator over elements of type T.
+     *
+     * @return an Iterator
+     */
     @Override
     public Iterator<Object> iterator() {
         return Collections.emptyIterator();

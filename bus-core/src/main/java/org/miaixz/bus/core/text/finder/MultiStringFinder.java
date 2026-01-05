@@ -310,6 +310,11 @@ public class MultiStringFinder {
             return directRouter[index];
         }
 
+        /**
+         * Returns the string representation of this object.
+         *
+         * @return the string representation
+         */
         @Override
         public String toString() {
             return value + ":" + nodeIndex;

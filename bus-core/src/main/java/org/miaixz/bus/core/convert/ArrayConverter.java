@@ -75,6 +75,11 @@ public class ArrayConverter extends AbstractConverter implements MatcherConverte
         this.ignoreElementError = ignoreElementError;
     }
 
+    /**
+     * Convertinternal method.
+     *
+     * @return the Object value
+     */
     @Override
     protected Object convertInternal(final Class<?> targetClass, final Object value) {
         final Class<?> targetComponentType = targetClass.isArray() ? targetClass.getComponentType() : targetClass;
