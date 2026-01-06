@@ -61,7 +61,7 @@
 <dependency>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-validate</artifactId>
-    <version>8.5.1</version>
+    <version>8.5.2</version>
 </dependency>
 ```
 

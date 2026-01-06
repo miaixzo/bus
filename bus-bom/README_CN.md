@@ -166,7 +166,7 @@ Bus BOM 管理所有 Bus 框架模块的版本:
 <dependency>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-core</artifactId>
-    <version>8.5.1</version>
+    <version>8.5.2</version>
 </dependency>
 ```
 
@@ -182,7 +182,7 @@ Bus BOM 管理所有 Bus 框架模块的版本:
 <dependency>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-core</artifactId>
-    <version>8.5.1</version>
+    <version>8.5.2</version>
 </dependency>
 ```
 
@@ -218,7 +218,7 @@ mvn help:effective-pom
         <dependency>
             <groupId>org.miaixz</groupId>
             <artifactId>bus-core</artifactId>
-            <version>8.5.1</version>
+            <version>8.5.2</version>
         </dependency>
         <!-- ... 其他依赖 ... -->
     </dependencies>

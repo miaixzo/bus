@@ -184,15 +184,12 @@ public class BCrypt {
             0x01c36ae4, 0xd6ebe1f9, 0x90d4f869, 0xa65cdea0, 0x3f09252d, 0xc208e69f, 0xb74e6132, 0xce77e25b, 0x578fdfe3,
             0x3ac372e6 };
 
-    // bcrypt IV: "OrpheanBeholderScryDoubt". The C implementation calls
-    // the name to make code comparison easier.
     /**
      * Constant for Blowfish ciphertext.
      */
     static private final int[] BF_CRYPT_CIPHERTEXT = { 0x4f727068, 0x65616e42, 0x65686f6c, 0x64657253, 0x63727944,
             0x6f756274 };
 
-    // Table for Base64 encoding
     /**
      * Table for Base64 encoding.
      */
@@ -201,7 +198,6 @@ public class BCrypt {
             'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1',
             '2', '3', '4', '5', '6', '7', '8', '9' };
 
-    // Table for Base64 decoding
     /**
      * Table for Base64 decoding.
      */
@@ -211,7 +207,6 @@ public class BCrypt {
             12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, -1, -1, -1, -1, -1, -1, 28, 29, 30, 31, 32,
             33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, -1, -1, -1, -1, -1 };
 
-    // Expanded Blowfish data
     /**
      * Expanded Blowfish P-array.
      */

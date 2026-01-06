@@ -73,7 +73,7 @@ The framework includes numerous production-ready plugins:
 <dependency>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-socket</artifactId>
-    <version>8.5.1</version>
+    <version>8.5.2</version>
 </dependency>
 ```
 

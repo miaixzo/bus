@@ -150,7 +150,7 @@ hold: false
 <plugin>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-shade-maven-plugin</artifactId>
-    <version>8.5.1</version>
+    <version>8.5.2</version>
     <executions>
         <execution>
             <phase>package</phase>

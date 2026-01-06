@@ -35,7 +35,7 @@
 <parent>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-parent</artifactId>
-    <version>8.5.1</version>
+    <version>8.x.x</version>
 </parent>
 ```
 
@@ -88,7 +88,7 @@
     <parent>
         <groupId>org.miaixz</groupId>
         <artifactId>bus-parent</artifactId>
-        <version>8.5.1</version>
+        <version>8.x.x</version>
     </parent>
 
     <groupId>com.example</groupId>
@@ -126,7 +126,7 @@
     <parent>
         <groupId>org.miaixz</groupId>
         <artifactId>bus-parent</artifactId>
-        <version>8.5.1</version>
+        <version>8.x.x</version>
     </parent>
 
     <groupId>com.example</groupId>
@@ -248,7 +248,7 @@ Bus Parent POM 管理以下主要依赖的版本:
 <dependency>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-core</artifactId>
-    <version>8.5.1</version>  <!-- 不必要 -->
+    <version>8.x.x</version>  <!-- 不必要 -->
 </dependency>
 ```
 
@@ -277,7 +277,7 @@ Bus Parent POM 管理以下主要依赖的版本:
         <dependency>
             <groupId>org.miaixz</groupId>
             <artifactId>bus-dependencies</artifactId>
-            <version>8.5.1</version>
+            <version>8.x.x</version>
             <type>pom</type>
             <scope>import</scope>
         </dependency>
@@ -309,7 +309,7 @@ Bus Parent POM 管理以下主要依赖的版本:
         <dependency>
             <groupId>org.miaixz</groupId>
             <artifactId>bus-dependencies</artifactId>
-            <version>8.5.1</version>
+            <version>8.x.x</version>
             <type>pom</type>
             <scope>import</scope>
         </dependency>

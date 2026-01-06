@@ -151,7 +151,7 @@ Supports **18+** medical imaging modalities:
 <dependency>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-image</artifactId>
-    <version>8.5.1</version>
+    <version>8.5.2</version>
 </dependency>
 ```
 

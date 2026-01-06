@@ -122,7 +122,7 @@
 <dependency>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-core</artifactId>
-    <version>8.5.1</version>
+    <version>8.5.2</version>
 </dependency>
 ```
 
