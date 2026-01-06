@@ -3,8 +3,8 @@
     "latest": true,
     "override": true,
     "module": "org.miaixz:bus-validate",
-    "default-for": "8\\.5\\.[0-9]",
-    "metadata-version": "8.5.1",
+    "default-for": "8\\.5\\.[0-9]+",
+    "metadata-version": "8.5.0",
     "tested-versions": [
       "8.5.0",
       "8.5.1"

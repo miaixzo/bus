@@ -239,12 +239,10 @@ public class TablePrefixHandler extends ConditionHandler<Object, TablePrefixConf
     }
 
     /**
-     * Process SQL by modifying the BoundSql parameter and replacing MappedStatement's SqlSource. This ensures that: 1.
-     * The current BoundSql instance is modified (visible to current execution) 2. Subsequent getBoundSql() calls return
-     * the actual SQL (via SqlSource replacement)
+     * Process SQL by modifying the BoundSql parameter and replacing MappedStatement's SqlSource.
      *
      * @param ms       the MappedStatement
-     * @param boundSql the BoundSql parameter (will be modified directly)
+     * @param boundSql the BoundSql from interceptor (will be modified directly)
      * @param config   the prefix configuration
      */
     private void processSqlInMappedStatement(MappedStatement ms, BoundSql boundSql, TablePrefixConfig config) {
@@ -255,10 +253,11 @@ public class TablePrefixHandler extends ConditionHandler<Object, TablePrefixConf
         }
 
         try {
-            // Get original SQL from the BoundSql parameter
-            String originalSql = boundSql.getSql();
+            // Get FRESH SQL from original SqlSource (to avoid stale SQL)
+            BoundSql freshBoundSql = getFreshBoundSql(ms, boundSql.getParameterObject());
+            String originalSql = freshBoundSql.getSql();
 
-            // Apply prefix directly
+            // Apply prefix to fresh SQL
             TablePrefixBuilder builder = new TablePrefixBuilder(prefix, config.getIgnore());
             String actualSql = builder.applyPrefix(originalSql);
 
@@ -267,9 +266,7 @@ public class TablePrefixHandler extends ConditionHandler<Object, TablePrefixConf
                 // This ensures the current BoundSql instance is modified for current execution
                 if (!setBoundSql(boundSql, actualSql)) {
                     Logger.warn(false, getHandler(), "Failed to modify BoundSql");
-                    // Fallback: continue with SqlSource replacement only
                 }
-
                 // Step 2: Replace the SqlSource in MappedStatement
                 // This ensures subsequent getBoundSql() calls return the actual SQL
                 replaceSqlSource(ms, boundSql, actualSql);

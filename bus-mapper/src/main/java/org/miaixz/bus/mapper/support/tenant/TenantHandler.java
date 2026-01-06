@@ -333,7 +333,7 @@ public class TenantHandler<T> extends ConditionHandler<T, TenantConfig> {
      *
      * @param ms        the MappedStatement
      * @param parameter the parameter object
-     * @param boundSql  the current BoundSql
+     * @param boundSql  the BoundSql from interceptor (will be modified directly)
      */
     private void handleSqlInMappedStatement(MappedStatement ms, Object parameter, BoundSql boundSql) {
         // Get current configuration
@@ -353,8 +353,9 @@ public class TenantHandler<T> extends ConditionHandler<T, TenantConfig> {
             return;
         }
 
-        // Get original SQL
-        String originalSql = boundSql.getSql();
+        // Get FRESH SQL from original SqlSource (to avoid stale SQL)
+        BoundSql freshBoundSql = getFreshBoundSql(ms, parameter);
+        String originalSql = freshBoundSql.getSql();
 
         // Check if SQL already contains tenant_id condition (e.g., from previous processing)
         // This prevents duplicate tenant conditions and avoids unnecessary re-processing
