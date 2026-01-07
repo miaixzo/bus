@@ -71,51 +71,6 @@
   },
   {
     "interfaces": [
-      "org.miaixz.bus.mapper.provider.BasicProvider"
-    ]
-  },
-  {
-    "interfaces": [
-      "org.miaixz.bus.mapper.provider.BatchProvider"
-    ]
-  },
-  {
-    "interfaces": [
-      "org.miaixz.bus.mapper.provider.ConditionProvider"
-    ]
-  },
-  {
-    "interfaces": [
-      "org.miaixz.bus.mapper.provider.EntityProvider"
-    ]
-  },
-  {
-    "interfaces": [
-      "org.miaixz.bus.mapper.provider.FunctionProvider"
-    ]
-  },
-  {
-    "interfaces": [
-      "org.miaixz.bus.mapper.provider.ListProvider"
-    ]
-  },
-  {
-    "interfaces": [
-      "org.miaixz.bus.mapper.provider.LogicalProvider"
-    ]
-  },
-  {
-    "interfaces": [
-      "org.miaixz.bus.mapper.provider.MapperProvider"
-    ]
-  },
-  {
-    "interfaces": [
-      "org.miaixz.bus.mapper.provider.NamingProvider"
-    ]
-  },
-  {
-    "interfaces": [
       "org.miaixz.bus.mapper.support.audit.AuditProvider"
     ]
   },

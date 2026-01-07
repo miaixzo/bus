@@ -31,7 +31,7 @@ package org.miaixz.bus.spring.banner;
  * Version banner generator.
  *
  * @author Kimi Liu
- * @since Java 21+
+ * @since Java 17+
  */
 public class VersionBanner extends AbstractBanner {
 

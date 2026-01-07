@@ -79,6 +79,7 @@ module bus.vortex {
     requires static io.netty.handler;
     requires static org.reactivestreams;
     requires static com.google.common;
+    requires bus.cache;
 
     exports org.miaixz.bus.vortex;
     exports org.miaixz.bus.vortex.filter;

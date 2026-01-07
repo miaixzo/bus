@@ -25,7 +25,7 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz;
+package org.miaixz.bus;
 
 import java.io.File;
 import java.io.IOException;
@@ -58,7 +58,7 @@ import java.util.stream.Collectors;
  * 
  * <pre>
  * // Maven integration (recommended):
- * {@code <java classname="org.miaixz.Nativex"
+ * {@code <java classname="org.miaixz.bus.Nativex"
  *           classpath="${project.build.outputDirectory}"
  *           fork="true"
  *           failonerror="false">
@@ -67,7 +67,7 @@ import java.util.stream.Collectors;
  *
  * // Direct execution:
  * {@code
- * java - cp < classpath > org.miaixz.Nativex[version]
+ * java - cp < classpath > org.miaixz.bus.Nativex[version]
  * }
  * </pre>
  *

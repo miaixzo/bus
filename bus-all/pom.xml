@@ -128,7 +128,7 @@
                         <configuration>
                             <target>
                                 <delete dir="${project.build.outputDirectory}/META-INF/native-image" includeemptydirs="true" />
-                                <java classname="org.miaixz.Nativex" classpath="${project.build.outputDirectory}" failonerror="false" fork="true">
+                                <java classname="org.miaixz.bus.Nativex" classpath="${project.build.outputDirectory}" failonerror="false" fork="true">
                                     <arg value="${project.version}" />
                                 </java>
 

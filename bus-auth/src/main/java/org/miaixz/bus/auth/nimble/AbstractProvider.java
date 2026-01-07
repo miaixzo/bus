@@ -56,7 +56,7 @@ import org.miaixz.bus.http.Httpx;
  * implementations handled by subclasses.
  *
  * @author Kimi Liu
- * @since Java 21+
+ * @since Java 17+
  */
 public abstract class AbstractProvider implements Provider {
 

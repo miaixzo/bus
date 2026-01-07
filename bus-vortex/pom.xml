@@ -136,6 +136,12 @@
             <version>${spring.boot.version}</version>
             <optional>true</optional>
         </dependency>
+        <dependency>
+            <groupId>org.miaixz</groupId>
+            <artifactId>bus-cache</artifactId>
+            <version>8.5.2</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
     <build>

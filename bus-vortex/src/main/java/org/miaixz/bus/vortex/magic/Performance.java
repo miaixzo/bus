@@ -45,6 +45,8 @@ import lombok.NoArgsConstructor;
  * <li>Streaming thresholds for memory optimization</li>
  * <li>Connection pool sizing for HTTP clients</li>
  * <li>Cache size limits for MQ producers</li>
+ * <li>Registry L2 cache configuration (Caffeine)</li>
+ * <li>Cluster synchronization configuration</li>
  * </ul>
  * <p>
  * <b>Default Values:</b>
@@ -54,6 +56,11 @@ import lombok.NoArgsConstructor;
  * <li>maxMultipartRequestSize: 512 MB</li>
  * <li>maxConnections: 500</li>
  * <li>maxProducerCacheSize: 100</li>
+ * <li>registryL2CacheSize: 10,000 (assets)</li>
+ * <li>registryL2CacheExpireMs: 300,000 (5 minutes)</li>
+ * <li>clusterSyncIntervalSeconds: 60 (1 minute)</li>
+ * <li>clusterFullSyncOnStartup: true</li>
+ * <li>clusterStartupDelaySeconds: 10</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -99,5 +106,53 @@ public class Performance {
      */
     @Builder.Default
     private int maxProducerCacheSize = 100;
+
+    /**
+     * Registry L2 cache maximum size (number of assets).
+     * <p>
+     * Used by AbstractRegistry's Caffeine cache for the second-level cache layer. When the cache exceeds this size,
+     * least-recently-used entries will be evicted.
+     * </p>
+     */
+    @Builder.Default
+    private long cacheSize = 10_000L;
+
+    /**
+     * Registry L2 cache expiration time in milliseconds.
+     * <p>
+     * Used by AbstractRegistry's Caffeine cache for time-based eviction. Entries that haven't been accessed within this
+     * duration will be automatically evicted. Default: 300,000ms (5 minutes).
+     * </p>
+     */
+    @Builder.Default
+    private long cacheExpireMs = 300_000L;
+
+    /**
+     * Cluster synchronization interval in seconds.
+     * <p>
+     * Used by ClusterSynchronizer implementations to determine how often to poll for changes. Default: 60 seconds (1
+     * minute).
+     * </p>
+     */
+    @Builder.Default
+    private int syncIntervalSeconds = 60;
+
+    /**
+     * Whether to perform full synchronization on startup.
+     * <p>
+     * If true, the application will fetch all data from the source on startup. Default: true.
+     * </p>
+     */
+    @Builder.Default
+    private boolean fullSyncOnStartup = true;
+
+    /**
+     * Startup delay before synchronization begins (in seconds).
+     * <p>
+     * Allows the application to initialize before starting cluster synchronization. Default: 10 seconds.
+     * </p>
+     */
+    @Builder.Default
+    private int startupDelaySeconds = 10;
 
 }

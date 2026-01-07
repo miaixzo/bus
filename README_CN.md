@@ -130,7 +130,7 @@ implementation 'org.miaixz:bus-all:x.x.x'
 
 点击以下任一链接，下载`bus-*-x.x.x.jar`即可：
 
-- [Maven中央库](https://repo1.maven.org/maven2/org/miaixz)
+- [Maven中央库](https://repo.maven.apache.org/maven2/org/miaixz)
 
 
 ### ✨ 测试使用

@@ -60,7 +60,13 @@ public class KParameter {
         METHOD_GET_NAME = MethodKit.getMethod(kParameterClass, "getName");
         METHOD_GET_TYPE = MethodKit.getMethod(kParameterClass, "getType");
 
-        final Class<?> kTypeClass = ClassKit.loadClass("kotlin.reflect.jvm.internal.KTypeImpl");
+        Class<?> kTypeClass;
+        try {
+            // Kotlin 2.3.0+
+            kTypeClass = ClassKit.loadClass("kotlin.reflect.jvm.internal.types.AbstractKType");
+        } catch (final Exception e) {
+            kTypeClass = ClassKit.loadClass("kotlin.reflect.jvm.internal.KTypeImpl");
+        }
         METHOD_GET_JAVA_TYPE = MethodKit.getMethod(kTypeClass, "getJavaType");
     }
 

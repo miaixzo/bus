@@ -124,6 +124,11 @@ public final class Holder {
                 performance.getMaxMultipartRequestSize() / (1024 * 1024));
         Logger.info(true, "Holder", "  - Max Connections: {}", performance.getMaxConnections());
         Logger.info(true, "Holder", "  - Max Producer Cache Size: {}", performance.getMaxProducerCacheSize());
+        Logger.info(true, "Holder", "  - L2 Cache Size: {}", performance.getCacheSize());
+        Logger.info(true, "Holder", "  - L2 Cache Expire: {} ms", performance.getCacheExpireMs());
+        Logger.info(true, "Holder", "  - Sync Interval: {} seconds", performance.getSyncIntervalSeconds());
+        Logger.info(true, "Holder", "  - Full Sync On Startup: {}", performance.isFullSyncOnStartup());
+        Logger.info(true, "Holder", "  - Startup Delay: {} seconds", performance.getStartupDelaySeconds());
     }
 
     /**
@@ -237,6 +242,61 @@ public final class Holder {
      */
     public static int getMaxProducerCacheSize() {
         return get().getMaxProducerCacheSize();
+    }
+
+    /**
+     * Gets the L2 cache maximum size (number of assets).
+     * <p>
+     * Used by AbstractRegistry's Caffeine cache for the second-level cache layer.
+     *
+     * @return The L2 cache maximum size
+     */
+    public static long getCacheSize() {
+        return get().getCacheSize();
+    }
+
+    /**
+     * Gets the L2 cache expiration time in milliseconds.
+     * <p>
+     * Used by AbstractRegistry's Caffeine cache for time-based eviction.
+     *
+     * @return The L2 cache expiration time in milliseconds
+     */
+    public static long getCacheExpireMs() {
+        return get().getCacheExpireMs();
+    }
+
+    /**
+     * Gets the synchronization interval in seconds.
+     * <p>
+     * Used by ClusterSynchronizer implementations to determine how often to poll for changes.
+     *
+     * @return The synchronization interval in seconds
+     */
+    public static int getSyncIntervalSeconds() {
+        return get().getSyncIntervalSeconds();
+    }
+
+    /**
+     * Gets whether to perform full synchronization on startup.
+     * <p>
+     * If true, the application will fetch all data from the source on startup.
+     *
+     * @return {@code true} if full sync on startup is enabled
+     */
+    public static boolean isFullSyncOnStartup() {
+        return get().isFullSyncOnStartup();
+    }
+
+    /**
+     * Gets the startup delay before synchronization begins (in seconds).
+     * <p>
+     * Allows the application to initialize before starting cluster synchronization.
+     *
+     * @return The startup delay in seconds
+     */
+    public static int getStartupDelaySeconds() {
+        return get().getStartupDelaySeconds();
     }
 
 }
