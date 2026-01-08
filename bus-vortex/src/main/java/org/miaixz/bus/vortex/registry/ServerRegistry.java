@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -107,7 +107,8 @@ public class ServerRegistry {
         // This method is already perfectly asynchronous. No changes needed.
         Mono<EnumValue.Lifecycle> statusMono = processProvider.getStatus(assets)
                 .defaultIfEmpty(EnumValue.Lifecycle.UNKNOWN);
-        Mono<Metrics> metricsMono = metricsProvider.getMetrics(assets.getId()).defaultIfEmpty(new Metrics(0, 0));
+        Mono<Metrics> metricsMono = metricsProvider.getMetrics(assets.getId())
+                .defaultIfEmpty(Metrics.builder().cpu(0).memory(0).build());
 
         return Mono.zip(statusMono, metricsMono, (status, metrics) -> new Transmit(assets.getName(), metrics, status));
     }

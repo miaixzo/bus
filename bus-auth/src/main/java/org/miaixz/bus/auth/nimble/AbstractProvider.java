@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -56,7 +56,7 @@ import org.miaixz.bus.http.Httpx;
  * implementations handled by subclasses.
  *
  * @author Kimi Liu
- * @since Java 21+
+ * @since Java 17+
  */
 public abstract class AbstractProvider implements Provider {
 

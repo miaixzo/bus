@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -237,7 +237,7 @@ public class ManageProvider implements ProcessProvider, MetricsProvider {
         return Mono.fromCallable(() -> {
             Process process = processMap.get(serviceId);
             if (process == null || !process.isAlive()) {
-                return new Metrics(0, 0);
+                return Metrics.builder().cpu(0).memory(0).build();
             }
 
             long pid = process.pid();
@@ -245,14 +245,14 @@ public class ManageProvider implements ProcessProvider, MetricsProvider {
             OSProcess osProcess = os.getProcess((int) pid);
 
             if (osProcess == null) {
-                return new Metrics(0, 0);
+                return Metrics.builder().cpu(0).memory(0).build();
             }
 
             // Calculate average CPU load over the process uptime
             double cpuLoad = 100d * (osProcess.getKernelTime() + osProcess.getUserTime()) / osProcess.getUpTime();
             long memoryUsage = osProcess.getResidentSetSize();
 
-            return new Metrics(cpuLoad, memoryUsage);
+            return Metrics.builder().cpu(cpuLoad).memory(memoryUsage).build();
         }).subscribeOn(Schedulers.boundedElastic());
     }
 

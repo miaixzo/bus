@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -241,8 +241,9 @@ public class VisibleHandler<T> extends ConditionHandler<T, VisibleConfig> {
 
         String mapperId = ms.getId();
 
-        // Get original SQL
-        String originalSql = boundSql.getSql();
+        // Get FRESH SQL from original SqlSource (to avoid stale SQL)
+        BoundSql freshBoundSql = getFreshBoundSql(ms, parameter);
+        String originalSql = freshBoundSql.getSql();
 
         // Create builder for current config and apply perimeter condition
         VisibleBuilder builder = new VisibleBuilder(currentConfig);
@@ -251,7 +252,7 @@ public class VisibleHandler<T> extends ConditionHandler<T, VisibleConfig> {
         // If SQL was modified, update the bound SQL
         if (!originalSql.equals(actualSql)) {
             Logger.debug(false, getHandler(), "Applied visibility filter: method={}", mapperId);
-            // Step 1: Use reflection to update SQL in BoundSql
+            // Step 1: Use reflection to update SQL in the original boundSql (from interceptor)
             if (setBoundSql(boundSql, actualSql)) {
                 Logger.debug(false, getHandler(), "Modified BoundSql.sql");
             } else {

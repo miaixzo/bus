@@ -693,6 +693,17 @@
     "queryAllPublicMethods": true
   },
   {
+    "name": "org.bouncycastle.jcajce.provider.asymmetric.ec.KeyFactorySpi$EC",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
     "name": "org.bouncycastle.jcajce.provider.asymmetric.util.EC5Util",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,

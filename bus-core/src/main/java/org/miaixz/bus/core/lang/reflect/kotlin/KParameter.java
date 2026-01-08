@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -60,7 +60,13 @@ public class KParameter {
         METHOD_GET_NAME = MethodKit.getMethod(kParameterClass, "getName");
         METHOD_GET_TYPE = MethodKit.getMethod(kParameterClass, "getType");
 
-        final Class<?> kTypeClass = ClassKit.loadClass("kotlin.reflect.jvm.internal.KTypeImpl");
+        Class<?> kTypeClass;
+        try {
+            // Kotlin 2.3.0+
+            kTypeClass = ClassKit.loadClass("kotlin.reflect.jvm.internal.types.AbstractKType");
+        } catch (final Exception e) {
+            kTypeClass = ClassKit.loadClass("kotlin.reflect.jvm.internal.KTypeImpl");
+        }
         METHOD_GET_JAVA_TYPE = MethodKit.getMethod(kTypeClass, "getJavaType");
     }
 

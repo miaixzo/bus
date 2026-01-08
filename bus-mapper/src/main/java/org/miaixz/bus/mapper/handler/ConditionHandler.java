@@ -200,13 +200,48 @@ public abstract class ConditionHandler<T, C> extends AbstractSqlHandler implemen
     }
 
     /**
-     * Replace the SqlSource in MappedStatement with a custom SqlSource.
+     * Gets the original SqlSource from a MappedStatement, unwrapping our custom SqlSource if present.
+     *
+     * @param ms the MappedStatement
+     * @return the original SqlSource before any interceptor modifications
+     */
+    protected org.apache.ibatis.mapping.SqlSource getOriginalSqlSource(MappedStatement ms) {
+        org.apache.ibatis.mapping.SqlSource currentSqlSource = ms.getSqlSource();
+
+        // If current SqlSource is already our custom SqlSource, get the original from it
+        if (currentSqlSource instanceof SqlSource customSqlSource) {
+            try {
+                return (org.apache.ibatis.mapping.SqlSource) FieldKit.getFieldValue(customSqlSource, "sqlSource");
+            } catch (Exception e) {
+                Logger.warn(false, getHandler(), "Failed to get original SqlSource: {}", e.getMessage());
+                return currentSqlSource;
+            }
+        }
+
+        return currentSqlSource;
+    }
+
+    /**
+     * Gets a fresh BoundSql from the original SqlSource (before any interceptor modifications). This ensures we get the
+     * correct SQL and parameter mappings for the current execution, not stale SQL from previous calls.
+     *
+     * @param ms        the MappedStatement
+     * @param parameter the parameter object
+     * @return a fresh BoundSql with correct SQL and parameter mappings
+     */
+    protected BoundSql getFreshBoundSql(MappedStatement ms, Object parameter) {
+        org.apache.ibatis.mapping.SqlSource originalSqlSource = getOriginalSqlSource(ms);
+        return originalSqlSource.getBoundSql(parameter);
+    }
+
+    /**
+     * Replaces the SqlSource in a MappedStatement with a custom SqlSource that preserves SQL modifications.
      * <p>
-     * The new SqlSource saves the actual SQL (after interceptor processing) and delegates parameter mapping to the
-     * original SqlSource. This ensures that:
+     * This method creates a new custom SqlSource that:
      * </p>
      * <ul>
-     * <li>Modified SQL (with table prefix, tenant conditions, etc.) is preserved globally</li>
+     * <li>Saves the actual SQL (after interceptor processing)</li>
+     * <li>Delegates to the original SqlSource for parameter mappings</li>
      * <li>Parameter mappings are dynamically generated based on current parameters</li>
      * <li>Subsequent interceptors can process the modified SQL correctly</li>
      * </ul>
@@ -218,22 +253,7 @@ public abstract class ConditionHandler<T, C> extends AbstractSqlHandler implemen
     protected void replaceSqlSource(MappedStatement ms, BoundSql boundSql, String actualSql) {
         try {
             // Get the original SqlSource before any interceptor modifications
-            // We'll save this to get correct parameter mappings on each call
-            org.apache.ibatis.mapping.SqlSource currentSqlSource = ms.getSqlSource();
-            org.apache.ibatis.mapping.SqlSource sqlSource;
-
-            // If current SqlSource is already our custom SqlSource, get the original from it
-            if (currentSqlSource instanceof SqlSource customSqlSource) {
-                try {
-                    sqlSource = (org.apache.ibatis.mapping.SqlSource) FieldKit
-                            .getFieldValue(customSqlSource, "sqlSource");
-                } catch (Exception e) {
-                    Logger.warn(false, getHandler(), "Failed to get original SqlSource: {}", e.getMessage());
-                    sqlSource = currentSqlSource;
-                }
-            } else {
-                sqlSource = currentSqlSource;
-            }
+            org.apache.ibatis.mapping.SqlSource sqlSource = getOriginalSqlSource(ms);
 
             // Create new custom SqlSource with actual SQL and original SqlSource
             SqlSource newSqlSource = new SqlSource(ms, actualSql, sqlSource);

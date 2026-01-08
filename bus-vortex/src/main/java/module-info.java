@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -79,6 +79,7 @@ module bus.vortex {
     requires static io.netty.handler;
     requires static org.reactivestreams;
     requires static com.google.common;
+    requires bus.cache;
 
     exports org.miaixz.bus.vortex;
     exports org.miaixz.bus.vortex.filter;

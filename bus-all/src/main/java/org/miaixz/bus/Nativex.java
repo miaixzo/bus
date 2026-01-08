@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -25,7 +25,7 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz;
+package org.miaixz.bus;
 
 import java.io.File;
 import java.io.IOException;
@@ -58,7 +58,7 @@ import java.util.stream.Collectors;
  * 
  * <pre>
  * // Maven integration (recommended):
- * {@code <java classname="org.miaixz.Nativex"
+ * {@code <java classname="org.miaixz.bus.Nativex"
  *           classpath="${project.build.outputDirectory}"
  *           fork="true"
  *           failonerror="false">
@@ -67,7 +67,7 @@ import java.util.stream.Collectors;
  *
  * // Direct execution:
  * {@code
- * java - cp < classpath > org.miaixz.Nativex[version]
+ * java - cp < classpath > org.miaixz.bus.Nativex[version]
  * }
  * </pre>
  *
@@ -906,9 +906,17 @@ public class Nativex {
     private void generateTopIndex(Set<String> processedVersions) throws IOException {
         Set<String> allTestedVersions = collectAllTestedVersions(processedVersions);
 
-        String latestVersion = allTestedVersions.stream().max(Comparator.naturalOrder()).orElse("unknown");
+        // metadata-version should be the latest actually processed version directory
+        String latestVersion = processedVersions.stream().max(Comparator.naturalOrder()).orElse("unknown");
 
-        String defaultForPattern = latestVersion.replace(".", "\\\\.") + "\\\\.[0-9]+";
+        // Generate default-for pattern: major.minor.* (e.g., "8.5.*" becomes "8\\.5\\.[0-9]+")
+        String[] versionParts = latestVersion.split("\\.");
+        String defaultForPattern;
+        if (versionParts.length >= 2) {
+            defaultForPattern = versionParts[0] + "\\\\." + versionParts[1] + "\\\\.[0-9]+";
+        } else {
+            defaultForPattern = latestVersion.replace(".", "\\\\.") + "\\\\.[0-9]+";
+        }
 
         StringBuilder metadataBuilder = new StringBuilder();
         metadataBuilder.append("[\n");
@@ -920,7 +928,7 @@ public class Nativex {
         metadataBuilder.append("    \"metadata-version\": \"").append(latestVersion).append("\",\n");
         metadataBuilder.append("    \"tested-versions\": [\n");
 
-        List<String> sortedVersions = allTestedVersions.stream().sorted(Comparator.reverseOrder()).toList();
+        List<String> sortedVersions = allTestedVersions.stream().sorted(Comparator.naturalOrder()).toList();
 
         for (int i = 0; i < sortedVersions.size(); i++) {
             metadataBuilder.append("      \"").append(sortedVersions.get(i)).append("\"");
