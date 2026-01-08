@@ -30,6 +30,7 @@ package org.miaixz.bus.spring.http;
 import java.io.IOException;
 
 import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.spring.ContextBuilder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -58,9 +59,10 @@ public class RuntimeContextBindingFilter extends OncePerRequestFilter {
     /**
      * Wraps the request and response if necessary.
      * <p>
-     * This method wraps the {@link HttpServletRequest} in a {@link MutableRequestWrapper} for HTTP methods that
-     * typically contain a body (POST, PATCH, PUT) to allow for repeatable reads. The {@link HttpServletResponse} is
-     * also wrapped to allow for response body manipulation or caching.
+     * This method initializes the request context, wraps the {@link HttpServletRequest} in a
+     * {@link MutableRequestWrapper} for HTTP methods that typically contain a body (POST, PATCH, PUT) to allow for
+     * repeatable reads. The {@link HttpServletResponse} is also wrapped to allow for response body manipulation or
+     * caching.
      * </p>
      *
      * @param request     The original HTTP request.
@@ -72,17 +74,25 @@ public class RuntimeContextBindingFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        final String method = request.getMethod();
-        // Only wrap requests with a body to improve performance.
-        if (HTTP.POST.equals(method) || HTTP.PATCH.equals(method) || HTTP.PUT.equals(method)) {
-            if (!(request instanceof MutableRequestWrapper)) {
-                request = new MutableRequestWrapper(request);
+        try {
+            // Initialize the request context (generates request ID and stores in ThreadLocal)
+            ContextBuilder.init();
+
+            final String method = request.getMethod();
+            // Only wrap requests with a body to improve performance.
+            if (HTTP.POST.equals(method) || HTTP.PATCH.equals(method) || HTTP.PUT.equals(method)) {
+                if (!(request instanceof MutableRequestWrapper)) {
+                    request = new MutableRequestWrapper(request);
+                }
             }
+            if (!(response instanceof MutableResponseWrapper)) {
+                response = new MutableResponseWrapper(response);
+            }
+            filterChain.doFilter(request, response);
+        } finally {
+            // Clean up the request context (removes ThreadLocal and clears cache)
+            ContextBuilder.clear();
         }
-        if (!(response instanceof MutableResponseWrapper)) {
-            response = new MutableResponseWrapper(response);
-        }
-        filterChain.doFilter(request, response);
     }
 
 }
