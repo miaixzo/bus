@@ -652,7 +652,7 @@ public Cpu getCpuWithCache() {
 <dependency>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-health</artifactId>
-    <version>8.5.2</version>
+    <version>8.x.x</version>
 </dependency>
 
 <!-- 可选: 更好的本地库支持 -->

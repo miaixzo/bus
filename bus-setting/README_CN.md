@@ -54,7 +54,7 @@
 <dependency>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-setting</artifactId>
-    <version>8.5.2</version>
+    <version>8.x.x</version>
 </dependency>
 ```
 

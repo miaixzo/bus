@@ -26,7 +26,7 @@
 </p>
 
 <p align="center">
-    <a target="_blank" href="README.md">EN</a> ｜  <a target="_blank" href="README_CN.md">CN</a>
+    <a target="_blank" href="README.md">EN</a> ｜ <a target="_blank" href="README_CN.md">CN</a>
 </p>
 
 

@@ -652,7 +652,7 @@ Legend: ✅ Full Support | ⚠️ Partial Support | ❌ Not Supported
 <dependency>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-health</artifactId>
-    <version>8.5.2</version>
+    <version>8.x.x</version>
 </dependency>
 
 <!-- Optional: For better native library support -->

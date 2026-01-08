@@ -122,7 +122,7 @@ Designed with **performance, reliability, and ease of use** in mind, Bus Core el
 <dependency>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-core</artifactId>
-    <version>8.5.2</version>
+    <version>8.x.x</version>
 </dependency>
 ```
 

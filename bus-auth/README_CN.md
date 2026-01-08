@@ -71,7 +71,7 @@
 <dependency>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-auth</artifactId>
-    <version>8.5.2</version>
+    <version>8.x.x</version>
 </dependency>
 ```
 
@@ -846,7 +846,7 @@ Bus Auth 支持 **40+** 提供程序，包括：
 
 [MIT License (MIT)](https://github.com/818000/bus/blob/main/LICENSE)
 
-版权所有 (c) 2015-2025 miaixz.org 及其他贡献者。
+版权所有 (c) 2015-2026 miaixz.org 及其他贡献者。
 
 -----
 

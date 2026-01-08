@@ -166,7 +166,7 @@ The Bus BOM manages versions for all Bus framework modules:
 <dependency>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-core</artifactId>
-    <version>8.5.2</version>
+    <version>8.x.x</version>
 </dependency>
 ```
 
@@ -182,7 +182,7 @@ If you need to override a specific version (not recommended):
 <dependency>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-core</artifactId>
-    <version>8.5.2</version>
+    <version>8.x.x</version>
 </dependency>
 ```
 
@@ -218,7 +218,7 @@ Or check the actual `bus-bom/pom.xml` file:
         <dependency>
             <groupId>org.miaixz</groupId>
             <artifactId>bus-core</artifactId>
-            <version>8.5.2</version>
+            <version>8.x.x</version>
         </dependency>
         <!-- ... other dependencies ... -->
     </dependencies>

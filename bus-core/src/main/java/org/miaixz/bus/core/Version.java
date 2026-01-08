@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -63,7 +63,7 @@ public class Version implements Comparable<Version>, Serializable {
     /**
      * The current version of the bus-core library.
      */
-    public static final String _VERSION = "8.5.2";
+    public static final String _VERSION = "8.5.3";
 
     /**
      * The original, unparsed version string.

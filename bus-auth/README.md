@@ -71,7 +71,7 @@ The framework abstracts away protocol complexities, allowing developers to focus
 <dependency>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-auth</artifactId>
-    <version>8.5.2</version>
+    <version>8.x.x</version>
 </dependency>
 ```
 
@@ -846,7 +846,7 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 [The MIT License (MIT)](https://github.com/818000/bus/blob/main/LICENSE)
 
-Copyright (c) 2015-2025 miaixz.org and other contributors.
+Copyright (c) 2015-2026 miaixz.org and other contributors.
 
 -----
 
