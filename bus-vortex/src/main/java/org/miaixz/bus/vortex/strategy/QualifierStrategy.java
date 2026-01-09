@@ -227,79 +227,120 @@ public class QualifierStrategy extends AbstractStrategy {
      * Orchestrates the authorization process by finding credentials and delegating validation to the
      * {@link AuthorizeProvider}.
      * <p>
-     * This method is only invoked for protected APIs.
+     * This method enforces the access control policy defined in the {@link Assets} configuration. The policy determines
+     * which credential types are accepted and the validation level required.
      *
      * @param context The request context.
      * @return A {@link Mono<Void>} that completes on success, or signals an error on failure.
      */
     protected Mono<Void> authorize(Context context) {
-        // If the asset is configured to not require a token, skip authorization.
-        if (Consts.ZERO == context.getAssets().getPolicy()) {
-            return Mono.empty();
-        }
+        final Integer policy = context.getAssets().getPolicy();
 
-        // Create a pre-configured builder for the Principal object.
-        Principal.PrincipalBuilder principalBuilder = Principal.builder().channel(context.getChannel().getType())
-                .context(context);
-
-        // 1. Prioritize finding a bearer token.
-        String token = this.getToken(context);
-        if (StringKit.isNotBlank(token)) {
-            context.setBearer(token);
-            // Type 1: Token-based authentication
-            principalBuilder.type(Consts.ONE).value(context.getBearer());
-            Logger.info(true, "Qualifier", "[{}] Attempting authentication with Token.", context.getX_request_ipv4());
-        }
-        // 2. If no token, search for an API key as a fallback.
-        else {
-            String apiKey = this.getApiKey(context);
-            if (StringKit.isBlank(apiKey)) {
-                // 3. No credentials found for a protected resource that requires them.
-                Logger.warn(
-                        false,
-                        "Qualifier",
-                        "[{}] No valid credentials (Token or API Key) were provided.",
-                        context.getX_request_ipv4());
-                // Return an error signal instead of throwing
-                return Mono.error(new ValidateException(ErrorCode._100806));
-            }
-            // Type 2: API Key-based authentication
-            principalBuilder.type(Consts.TWO).value(apiKey);
-            Logger.info(
-                    true,
-                    "Qualifier",
-                    "[{}] No token found. Attempting authentication with API Key.",
-                    context.getX_request_ipv4());
-        }
-
-        // 4. Delegate the validation to the provider.
-        // **OPTIMIZATION:** Call the asynchronous provider.authorize() directly
-        // and use .flatMap() to process the result.
-        // No fromCallable() or subscribeOn() is needed.
-        return this.provider.authorize(principalBuilder.build()).flatMap(delegate -> {
-            // 5. Process the final result from the provider.
-            if (delegate.isOk()) {
-                Map<String, Object> authMap = new HashMap<>();
-                BeanKit.beanToMap(
-                        delegate.getAuthorize(),
-                        authMap,
-                        CopyOptions.of().setTransientSupport(false).setIgnoreCase(true).setIgnoreProperties("id"));
-
-                context.getParameters().putAll(authMap);
-                Logger.info(true, "Qualifier", "[{}] Authentication successful.", context.getX_request_ipv4());
-                return Mono.empty(); // Signal success
-            }
-
+        // Validate policy value
+        if (policy == null || policy < Consts.ZERO || policy > Consts.FIVE) {
             Logger.error(
                     false,
                     "Qualifier",
-                    "[{}] Authentication failed - Error code: {}, message: {}",
+                    "[{}] Invalid policy value: {}. Must be between 0 and 5.",
                     context.getX_request_ipv4(),
-                    delegate.getMessage().errcode,
-                    delegate.getMessage().errmsg);
-            // Signal failure
-            return Mono.error(new ValidateException(delegate.getMessage().errcode, delegate.getMessage().errmsg));
-        });
+                    policy);
+            return Mono.error(new ValidateException(ErrorCode._116002));
+        }
+
+        // Policy 0: Anonymous access - no authentication required
+        if (Consts.ZERO.equals(policy)) {
+            Logger.info(true, "Qualifier", "[{}] Anonymous access granted.", context.getX_request_ipv4());
+            return Mono.empty();
+        }
+
+        // Determine acceptable credential types based on policy
+        // Policy 1, 2: Token ONLY (reject API Key even if provided)
+        // Policy 3, 4: API Key ONLY (reject Token even if provided)
+        // Policy 5: Token or API Key (both accepted)
+        final boolean acceptToken = Consts.ONE.equals(policy) || Consts.TWO.equals(policy)
+                || Consts.FIVE.equals(policy);
+        final boolean acceptApiKey = Consts.THREE.equals(policy) || Consts.FOUR.equals(policy)
+                || Consts.FIVE.equals(policy);
+
+        // Try to find acceptable credentials based on policy requirements
+        String credentialValue = null;
+
+        // 1. Policy 1, 2, 5: Must use Token (ignore API Key even if provided)
+        if (acceptToken) {
+            credentialValue = this.getToken(context);
+            if (StringKit.isNotBlank(credentialValue)) {
+                context.setBearer(credentialValue);
+                Logger.info(
+                        true,
+                        "Qualifier",
+                        "[{}] Using Token (required by policy={}).",
+                        context.getX_request_ipv4(),
+                        policy);
+            }
+        }
+
+        // 2. Policy 3, 4, 5: Must use API Key (ignore Token if policy is 3 or 4)
+        // Only check API Key if Token not found (for policy 5) or if policy is 3,4 (API Key only)
+        if (acceptApiKey) {
+            credentialValue = this.getApiKey(context);
+            if (StringKit.isNotBlank(credentialValue)) {
+                Logger.info(
+                        true,
+                        "Qualifier",
+                        "[{}] Using API Key (required by policy={}).",
+                        context.getX_request_ipv4(),
+                        policy);
+            }
+        }
+
+        // 3. Validate that required credential type was provided
+        if (credentialValue == null) {
+            Logger.warn(
+                    false,
+                    "Qualifier",
+                    "[{}] Required credential not provided for policy={}.",
+                    context.getX_request_ipv4(),
+                    policy);
+            return Mono.error(new ValidateException(ErrorCode._116002));
+        }
+
+        // 4. Delegate the validation to the provider
+        // The type field is set to the policy value, provider uses it to determine validation method
+        return this.provider.authorize(
+                Principal.builder().channel(context.getChannel().getType()).context(context).type(policy)
+                        .value(credentialValue).build())
+                .flatMap(delegate -> {
+                    // 5. Process the final result from the provider
+                    if (delegate.isOk()) {
+                        Map<String, Object> authMap = new HashMap<>();
+                        BeanKit.beanToMap(
+                                delegate.getAuthorize(),
+                                authMap,
+                                CopyOptions.of().setTransientSupport(false).setIgnoreCase(true)
+                                        .setIgnoreProperties("id"));
+
+                        context.getParameters().putAll(authMap);
+                        Logger.info(
+                                true,
+                                "Qualifier",
+                                "[{}] Authentication successful (policy={}).",
+                                context.getX_request_ipv4(),
+                                policy);
+                        return Mono.empty();
+                    }
+
+                    Logger.error(
+                            false,
+                            "Qualifier",
+                            "[{}] Authentication failed (policy={}) - Error code: {}, message: {}",
+                            context.getX_request_ipv4(),
+                            policy,
+                            delegate.getMessage().errcode,
+                            delegate.getMessage().errmsg);
+                    // Signal failure
+                    return Mono
+                            .error(new ValidateException(delegate.getMessage().errcode, delegate.getMessage().errmsg));
+                });
     }
 
     /**

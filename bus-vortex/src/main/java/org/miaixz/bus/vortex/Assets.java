@@ -174,18 +174,13 @@ public class Assets {
      * Specifies the authentication and authorization rigor required to access this asset.
      * </p>
      * <ul>
-     * <li>{@code 0}: <strong>Anonymous</strong> <br>
-     * Public access. No authentication required.</li>
-     *
-     * <li>{@code 1}: <strong>Authenticated</strong> <br>
-     * Requires a valid identity token (e.g., JWT Login). Verifies <i>who</i> the user is.</li>
-     *
-     * <li>{@code 2}: <strong>Authorized</strong> <br>
-     * Requires a valid token AND specific RBAC permissions/roles. Verifies <i>what</i> the user can do.</li>
-     *
-     * <li>{@code 3}: <strong>Strict/Licensed</strong> <br>
-     * Requires Authentication, Authorization, AND a valid system license/entitlement check. Usually for enterprise
-     * features.</li>
+     * <li>{@code 0}: Anonymous - No authentication required (should not reach provider)</li>
+     * <li>{@code 1}: Token - Basic token validation only</li>
+     * <li>{@code 2}: Token with Permissions - Token validation plus permission/role checks</li>
+     * <li>{@code 3}: AppKey - Basic API key validation only</li>
+     * <li>{@code 4}: AppKey with Permissions - API key validation plus permission/role checks</li>
+     * <li>{@code 5}: Enhanced Security - Credential validation with permissions and license verification</li>
+     * </ul>
      * </ul>
      */
     private Integer policy;

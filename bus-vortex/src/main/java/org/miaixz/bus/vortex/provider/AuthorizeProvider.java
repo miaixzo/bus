@@ -68,26 +68,33 @@ public interface AuthorizeProvider {
             return Mono.error(new ValidateException(ErrorCode._100806));
         }
 
+        // Determine acceptable credential types based on policy
+        // Policy 1, 2: Token ONLY (reject API Key even if provided)
+        // Policy 3, 4: API Key ONLY (reject Token even if provided)
+        // Policy 5: Token or API Key (both accepted)
+        final Integer type = principal.getType();
+        final boolean acceptToken = Consts.ONE.equals(type) || Consts.TWO.equals(type) || Consts.FIVE.equals(type);
+        final boolean acceptApiKey = Consts.THREE.equals(type) || Consts.FOUR.equals(type) || Consts.FIVE.equals(type);
+
         // Dispatch based on the credential type using an if-else if chain,
         // as case labels in a switch must be compile-time constants.
-        if (Consts.ONE.equals(principal.getType())) {
+        if (acceptToken) {
             return this.token(principal); // Now returns Mono<Delegate>
-        } else if (Consts.TWO.equals(principal.getType())) {
+        } else if (acceptApiKey) {
             return this.apiKey(principal); // Now returns Mono<Delegate>
-        } else {
-            Logger.warn(
-                    false,
-                    "Authorize",
-                    "Unsupported principal type: {}. Override the 'authorize' method to handle it.",
-                    principal.getType());
-            // Return a Mono emitting a Delegate with the error information.
-            return Mono.just(
-                    Delegate.builder()
-                            .message(
-                                    Message.builder().errcode(ErrorCode._100802.getKey())
-                                            .errmsg("Unsupported credential type: " + principal.getType()).build())
-                            .build());
         }
+        Logger.warn(
+                false,
+                "Authorize",
+                "Unsupported principal type: {}. Override the 'authorize' method to handle it.",
+                principal.getType());
+        // Return a Mono emitting a Delegate with the error information.
+        return Mono.just(
+                Delegate.builder()
+                        .message(
+                                Message.builder().errcode(ErrorCode._116002.getKey())
+                                        .errmsg("Unsupported credential type: " + principal.getType()).build())
+                        .build());
     }
 
     /**

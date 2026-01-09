@@ -39,10 +39,7 @@ import org.miaixz.bus.core.basic.entity.Authorize;
 import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.center.map.CaseInsensitiveMap;
 import org.miaixz.bus.core.data.id.ID;
-import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.lang.EnumValue;
-import org.miaixz.bus.core.lang.MediaType;
-import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.*;
 import org.miaixz.bus.core.lang.annotation.NonNull;
 import org.miaixz.bus.core.lang.annotation.Nullable;
 import org.miaixz.bus.core.net.url.UrlDecoder;
@@ -389,16 +386,16 @@ public class ContextBuilder extends WebUtils {
         if (StringKit.isEmpty(urlEncoded)) {
             return paramMap;
         }
-        String[] pairs = urlEncoded.split("&");
+        String[] pairs = urlEncoded.split(Symbol.AND);
         for (String pair : pairs) {
             if (pair.isEmpty()) {
                 continue;
             }
-            String[] keyValue = pair.split("=", 2);
+            String[] keyValue = pair.split(Symbol.EQUAL, 2);
             if (keyValue.length == 2) {
-                paramMap.put(keyValue[0], keyValue[1].split(","));
+                paramMap.put(keyValue[0], keyValue[1].split(Symbol.COMMA));
             } else if (keyValue.length == 1) {
-                paramMap.put(keyValue[0], new String[] { "" });
+                paramMap.put(keyValue[0], new String[] { Normal.EMPTY });
             }
         }
         return paramMap;
@@ -789,20 +786,19 @@ public class ContextBuilder extends WebUtils {
      * <li>Custom provider (set via {@link #setProvider(ContextProvider)})</li>
      * <li>Request headers (x_user_id)</li>
      * </ol>
-     * </p>
      *
      * @return The {@link Authorize} object, or null if not available.
      */
     public static Authorize getAuthorize() {
         try {
-            // 1. 优先从 ThreadLocal 获取（请求级别，最高优先级）
+            // 1. First, retrieve from ThreadLocal (request-level, highest priority)
             Authorize authorize = AUTHORIZATION_CONTEXT.get();
             if (authorize != null) {
                 Logger.info(true, "Context", "Authorize (from ThreadLocal): {}", authorize);
                 return authorize;
             }
 
-            // 2. 其次从全局 provider 获取（用于测试或特殊场景）
+            // 2. Second, retrieve from global provider (for testing or special scenarios)
             if (provider != null) {
                 authorize = provider.getAuthorize();
                 if (authorize != null) {
@@ -811,7 +807,7 @@ public class ContextBuilder extends WebUtils {
                 }
             }
 
-            // 3. 最后从 header 中解析（兜底逻辑）
+            // 3. Finally, parse from headers (fallback logic)
             String userId = getValue("x_user_id", EnumValue.Params.HEADER);
             if (StringKit.isEmpty(userId)) {
                 userId = getValue("x_user_id", EnumValue.Params.CONTEXT);
@@ -830,8 +826,8 @@ public class ContextBuilder extends WebUtils {
     /**
      * Sets the authorization information for the current request.
      * <p>
-     * This method stores the authorization information in a ThreadLocal variable,
-     * making it available throughout the request processing lifecycle.
+     * This method stores the authorization information in a ThreadLocal variable, making it available throughout the
+     * request processing lifecycle.
      * </p>
      *
      * @param authorize The authorization information to set.
@@ -850,8 +846,7 @@ public class ContextBuilder extends WebUtils {
      * @return The created {@link Authorize} object.
      * @deprecated Use {@link #setAuthorize(Authorize)} instead for more complete authorization information.
      */
-    @Deprecated
-    public static Authorize setAuthorize(String id) {
+    public static Authorize setAuthorize(@Nullable String id) {
         Authorize authorize = Authorize.builder().x_user_id(id).build();
         setAuthorize(authorize);
         return getAuthorize();
@@ -901,7 +896,8 @@ public class ContextBuilder extends WebUtils {
     }
 
     /**
-     * Clears the context for the current request, removing the request ID, authorization context, and associated cache entries.
+     * Clears the context for the current request, removing the request ID, authorization context, and associated cache
+     * entries.
      */
     public static void clear() {
         String requestId = REQUEST_ID.get();
