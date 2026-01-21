@@ -27,14 +27,19 @@
 */
 package org.miaixz.bus.vortex.strategy;
 
-import java.util.*;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.codec.binary.Base64;
-import org.miaixz.bus.core.lang.*;
+import org.miaixz.bus.core.lang.Algorithm;
+import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.SignatureException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.url.UrlEncoder;
@@ -234,9 +239,8 @@ public class VettingStrategy extends AbstractStrategy {
     protected Mono<Void> validateSignature(Context context) {
         return Mono.fromCallable(() -> {
             Map<String, Object> params = context.getParameters();
-            String key = ObjectKit.isNotEmpty(params.get(Args.APIKEY)) ? String.valueOf(params.get(Args.APIKEY))
+            String key = StringKit.isNotEmpty(getApiKey(context)) ? getApiKey(context)
                     : String.valueOf(params.get(Args.METHOD));
-
             if (!validateSign(key + params.get(Args.TIMESTAMP), context.getHttpMethod().name(), params)) {
                 throw new SignatureException(ErrorCode._100109);
             }

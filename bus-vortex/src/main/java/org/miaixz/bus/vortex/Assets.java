@@ -112,7 +112,7 @@ public class Assets {
      * The logical API method identifier.
      * <p>
      * A unique string key used for internal service lookup or logical binding, distinct from the HTTP method. Example:
-     * {@code "user.getProfile"}.
+     * {@code "vortex.user.get"}.
      * </p>
      */
     private String method;
@@ -171,16 +171,19 @@ public class Assets {
     /**
      * Access Control Policy / Security Level.
      * <p>
-     * Specifies the authentication and authorization rigor required to access this asset.
+     * Specifies the authentication and authorization rigor required to access this asset. Valid range: -1 to 6.
      * </p>
      * <ul>
-     * <li>{@code 0}: Anonymous - No authentication required (should not reach provider)</li>
+     * <li>{@code -1}: Reserved (not currently used)</li>
+     * <li>{@code 0}: Anonymous - No authentication required</li>
      * <li>{@code 1}: Token - Basic token validation only</li>
      * <li>{@code 2}: Token with Permissions - Token validation plus permission/role checks</li>
-     * <li>{@code 3}: AppKey - Basic API key validation only</li>
-     * <li>{@code 4}: AppKey with Permissions - API key validation plus permission/role checks</li>
-     * <li>{@code 5}: Enhanced Security - Credential validation with permissions and license verification</li>
-     * </ul>
+     * <li>{@code 3}: Token with Permissions and License - Token validation plus permission/role checks and license
+     * verification</li>
+     * <li>{@code 4}: AppKey - Basic API key validation only</li>
+     * <li>{@code 5}: AppKey with Permissions - API key validation plus permission/role checks</li>
+     * <li>{@code 6}: AppKey with Permissions and License - API key validation plus permission/role checks and license
+     * verification</li>
      * </ul>
      */
     private Integer policy;
@@ -267,6 +270,26 @@ public class Assets {
      * </p>
      */
     private Integer sort;
+
+    /**
+     * Mock Mode Flag.
+     * <p>
+     * Indicates whether this asset should return mock data instead of calling the downstream service.
+     * </p>
+     * <ul>
+     * <li>{@code 0} or {@code null}: Normal mode - calls downstream service</li>
+     * <li>{@code 1}: Mock mode enabled - returns data from {@link #result} field without downstream call</li>
+     * </ul>
+     */
+    private Integer mock;
+
+    /**
+     * Mock Response Data.
+     * <p>
+     * The data returned in mock mode for testing and development purposes.
+     * </p>
+     */
+    private String result;
 
     /**
      * API Version.

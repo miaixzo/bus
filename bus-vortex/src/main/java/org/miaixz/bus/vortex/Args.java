@@ -61,94 +61,78 @@ public class Args {
 
     /**
      * The mandatory parameter name for the logical API method to be invoked (e.g., "user.getProfile").
-     *
-     * @see QualifierStrategy
      */
     public static final String METHOD = "method";
+
     /**
      * The parameter name for specifying the desired response format (e.g., "json", "xml").
-     *
-     * @see QualifierStrategy
      */
     public static final String FORMAT = "format";
+
     /**
      * The parameter name for specifying the version of the requested API method (e.g., "v1", "1.0.0").
-     *
-     * @see QualifierStrategy
      */
     public static final String VERSION = "v";
+
     /**
      * The parameter name for the request signature, used for validation and integrity checks.
-     *
-     * @see VettingStrategy
      */
     public static final String SIGN = "sign";
+
     /**
      * The parameter name for the request timestamp (milliseconds since epoch), used for replay attack prevention.
-     *
-     * @see VettingStrategy
      */
     public static final String TIMESTAMP = "timestamp";
+
     /**
      * The parameter name for the client's API key, used for identification and signature validation.
-     *
-     * @see VettingStrategy
      */
-    public static final String APIKEY = "apiKey";
+    public static final String API_KEY = "api_key";
+
     /**
      * The HTTP header name for the bearer access token (e.g., JWT).
-     *
-     * @see QualifierStrategy
      */
     public static final String X_ACCESS_TOKEN = "X-Access-Token";
+
     /**
      * The HTTP header name for identifying the client channel (e.g., "web", "app", "mobile").
-     *
-     * @see QualifierStrategy
      */
     public static final String X_REMOTE_CHANNEL = "x_remote_channel";
 
     /**
      * The base URI path for standard RESTful API requests.
-     *
-     * @see org.miaixz.bus.vortex.strategy.RequestStrategy
      */
     public static final String REST_PATH_PREFIX = "/router/rest";
 
     /**
      * The base URI path for requests to be forwarded to a Message Queue.
-     *
-     * @see org.miaixz.bus.vortex.strategy.RequestStrategy
      */
     public static final String MQ_PATH_PREFIX = "/router/mq";
 
     /**
      * The base URI path for requests to the MCP (Miaixz Communication Protocol) hub.
-     *
-     * @see org.miaixz.bus.vortex.strategy.RequestStrategy
      */
     public static final String MCP_PATH_PREFIX = "/router/mcp";
 
     /**
      * The base URI path for standard gRPC requests.
-     *
-     * @see org.miaixz.bus.vortex.strategy.RequestStrategy
      */
     public static final String GRPC_PATH_PREFIX = "/router/grpc";
 
     /**
      * The base URI path for WebSocket connections.
-     *
-     * @see org.miaixz.bus.vortex.strategy.RequestStrategy
      */
     public static final String WS_PATH_PREFIX = "/router/ws";
 
     /**
      * The base URI path for custom (CST) requests.
-     *
-     * @see org.miaixz.bus.vortex.strategy.RequestStrategy
      */
     public static final String CST_PATH_PREFIX = "/router/cst";
+
+    /**
+     * The base URI path for CAS (Central Authentication Service) requests.
+     */
+    public static final String CAS_PATH_PREFIX = "/router/cas";
 
     /**
      * A constant for a default API version, e.g., "1.0".
@@ -178,7 +162,7 @@ public class Args {
      * @return {@code true} if the path starts with the REST prefix, {@code false} otherwise.
      */
     public static boolean isRestRequest(String path) {
-        return path.startsWith(Args.REST_PATH_PREFIX);
+        return path.startsWith(REST_PATH_PREFIX);
     }
 
     /**
@@ -188,7 +172,7 @@ public class Args {
      * @return {@code true} if the path starts with the MCP prefix, {@code false} otherwise.
      */
     public static boolean isMcpRequest(String path) {
-        return path.startsWith(Args.MCP_PATH_PREFIX);
+        return path.startsWith(MCP_PATH_PREFIX);
     }
 
     /**
@@ -198,7 +182,7 @@ public class Args {
      * @return {@code true} if the path starts with the MQ prefix, {@code false} otherwise.
      */
     public static boolean isMqRequest(String path) {
-        return path.startsWith(Args.MQ_PATH_PREFIX);
+        return path.startsWith(MQ_PATH_PREFIX);
     }
 
     /**
@@ -208,7 +192,7 @@ public class Args {
      * @return {@code true} if the path starts with the WebSocket prefix, {@code false} otherwise.
      */
     public static boolean isWsRequest(String path) {
-        return path.startsWith(Args.WS_PATH_PREFIX);
+        return path.startsWith(WS_PATH_PREFIX);
     }
 
     /**
@@ -218,29 +202,39 @@ public class Args {
      * @return {@code true} if the path starts with the CST prefix, {@code false} otherwise.
      */
     public static boolean isCstRequest(String path) {
-        return path.startsWith(Args.CST_PATH_PREFIX);
+        return path.startsWith(CST_PATH_PREFIX);
     }
 
     /**
-     * Checks if the given path is a custom (gRPC) request path.
+     * Checks if the given path is a CAS (Central Authentication Service) request path.
      *
      * @param path The URL path string to check.
-     * @return {@code true} if the path starts with the CST prefix, {@code false} otherwise.
+     * @return {@code true} if the path starts with the CAS prefix, {@code false} otherwise.
+     */
+    public static boolean isCasRequest(String path) {
+        return path.startsWith(CAS_PATH_PREFIX);
+    }
+
+    /**
+     * Checks if the given path is a gRPC request path.
+     *
+     * @param path The URL path string to check.
+     * @return {@code true} if the path starts with the gRPC prefix, {@code false} otherwise.
      */
     public static boolean isGrpcRequest(String path) {
-        return path.startsWith(Args.GRPC_PATH_PREFIX);
+        return path.startsWith(GRPC_PATH_PREFIX);
     }
 
     /**
-     * Checks if the given path matches any of the known gateway prefixes (REST, MCP, MQ, WS or CST). This method
-     * combines the individual check methods for convenience.
+     * Checks if the given path matches any of the known gateway prefixes (REST, MCP, MQ, WS, CAS, CST, or gRPC). This
+     * method combines the individual check methods for convenience.
      *
      * @param path The URL path string to check.
-     * @return {@code true} if the path is a REST, MCP, MQ, WS, or CST path, {@code false} otherwise.
+     * @return {@code true} if the path matches any known gateway prefix, {@code false} otherwise.
      */
     public static boolean isKnownRequest(String path) {
-        return isRestRequest(path) || isMcpRequest(path) || isMqRequest(path) || isWsRequest(path)
-                || isCstRequest(path);
+        return isRestRequest(path) || isMcpRequest(path) || isMqRequest(path) || isWsRequest(path) || isCasRequest(path)
+                || isCstRequest(path) || isGrpcRequest(path);
     }
 
     /**
@@ -255,21 +249,6 @@ public class Args {
          * Whether rate limiting is globally enabled.
          */
         private boolean enabled;
-    }
-
-    /**
-     * A configuration properties model for mocking settings, typically bound from application properties under a prefix
-     * like {@code vortex.mock}.
-     */
-    @Getter
-    @Setter
-    public static class Mock {
-
-        /**
-         * Whether mocking is globally enabled (e.g., to return dummy data instead of calling downstream services).
-         */
-        private boolean enabled;
-
     }
 
 }

@@ -33,6 +33,7 @@ import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.ParameterMapping;
 import org.apache.ibatis.session.Configuration;
+import org.miaixz.bus.mapper.dialect.Dialect;
 
 /**
  * A custom {@link org.apache.ibatis.mapping.SqlSource} that wraps a modified SQL while ensuring parameter mappings
@@ -51,6 +52,15 @@ import org.apache.ibatis.session.Configuration;
  * <li>Subsequent interceptors can process the modified SQL correctly</li>
  * <li>Correctness is prioritized over performance</li>
  * </ul>
+ *
+ * <p>
+ * <strong>Dynamic SQL Generation:</strong>
+ * </p>
+ * <p>
+ * For multi-datasource scenarios with different database dialects, this SqlSource supports dynamic SQL generation. If
+ * the underlying SqlMetaCache is dynamic (has a Dialect function), SQL will be generated at runtime based on the
+ * current datasource's dialect.
+ * </p>
  *
  * <p>
  * <strong>Why Pure Delegation?</strong>
@@ -91,16 +101,38 @@ public class SqlSource implements org.apache.ibatis.mapping.SqlSource {
     private final org.apache.ibatis.mapping.SqlSource sqlSource;
 
     /**
-     * Constructs a SqlSource with actual SQL and original SqlSource.
+     * The SQL metadata cache for dynamic SQL generation.
+     * <p>
+     * If this cache is dynamic, SQL will be generated at runtime based on the current dialect.
+     * </p>
+     */
+    private final SqlMetaCache cache;
+
+    /**
+     * Constructs a SqlSource with actual SQL and original SqlSource (static SQL).
      *
      * @param ms        the MappedStatement
      * @param actualSql the actual SQL (after interceptor processing)
      * @param sqlSource the original SqlSource before interceptor modifications
      */
     public SqlSource(MappedStatement ms, String actualSql, org.apache.ibatis.mapping.SqlSource sqlSource) {
+        this(ms, actualSql, sqlSource, null);
+    }
+
+    /**
+     * Constructs a SqlSource with actual SQL, original SqlSource, and SqlMetaCache (dynamic SQL support).
+     *
+     * @param ms        the MappedStatement
+     * @param actualSql the actual SQL (after interceptor processing)
+     * @param sqlSource the original SqlSource before interceptor modifications
+     * @param cache     the SQL metadata cache for dynamic SQL generation (optional)
+     */
+    public SqlSource(MappedStatement ms, String actualSql, org.apache.ibatis.mapping.SqlSource sqlSource,
+            SqlMetaCache cache) {
         this.configuration = ms.getConfiguration();
         this.actualSql = actualSql;
         this.sqlSource = sqlSource;
+        this.cache = cache;
     }
 
     /**
@@ -114,22 +146,35 @@ public class SqlSource implements org.apache.ibatis.mapping.SqlSource {
      * <li>Static SQL gets ParameterMappings that match the current parameter instance</li>
      * <li>No cache pollution: different parameter instances get different ParameterMappings when needed</li>
      * </ul>
+     * <p>
+     * If the underlying SqlMetaCache is dynamic, SQL will be generated at runtime based on the current datasource's
+     * dialect.
+     * </p>
      *
      * @param parameterObject the parameter object for the SQL execution
      * @return a BoundSql instance with actual SQL and correct parameter mappings
      */
     @Override
     public BoundSql getBoundSql(Object parameterObject) {
+        // Determine the SQL to use (static or dynamic)
+        String finalSql = actualSql;
+
+        if (cache != null && cache.isDynamic()) {
+            // Get dialect for current datasource and generate SQL dynamically
+            Dialect dialect = org.miaixz.bus.mapper.dialect.DialectRegistry.getDialect();
+            finalSql = cache.getSqlScript(dialect);
+        }
+
         // Delegate to original SqlSource to get correct ParameterMappings
         // The original SqlSource (e.g., DynamicSqlSource) handles dynamic SQL properly
-        BoundSql originalBoundSql = this.sqlSource.getBoundSql(parameterObject);
-        List<ParameterMapping> parameterMappings = originalBoundSql.getParameterMappings();
+        BoundSql boundSql = this.sqlSource.getBoundSql(parameterObject);
+        List<ParameterMapping> parameterMappings = boundSql.getParameterMappings();
 
-        // Create new BoundSql with actual SQL and parameter mappings from original
-        BoundSql newBoundSql = new BoundSql(this.configuration, this.actualSql, parameterMappings, parameterObject);
+        // Create new BoundSql with final SQL and parameter mappings from original
+        BoundSql newBoundSql = new BoundSql(this.configuration, finalSql, parameterMappings, parameterObject);
 
         // Copy additional parameters if present
-        originalBoundSql.getAdditionalParameters().forEach(newBoundSql::setAdditionalParameter);
+        boundSql.getAdditionalParameters().forEach(newBoundSql::setAdditionalParameter);
 
         return newBoundSql;
     }

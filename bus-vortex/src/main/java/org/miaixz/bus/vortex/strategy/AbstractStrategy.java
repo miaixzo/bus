@@ -32,8 +32,11 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.PORT;
 import org.miaixz.bus.core.net.Protocol;
+import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.vortex.Args;
+import org.miaixz.bus.vortex.Context;
 import org.miaixz.bus.vortex.Strategy;
 import org.miaixz.bus.vortex.magic.ErrorCode;
 import org.springframework.http.HttpHeaders;
@@ -299,6 +302,74 @@ public abstract class AbstractStrategy implements Strategy {
             return authority + Symbol.COLON + PORT._443.getPort();
         }
         return authority + Symbol.COLON + PORT._80.getPort();
+    }
+
+    /**
+     * Extracts the authentication token from the incoming request.
+     *
+     * <p>
+     * The token extraction follows a specific order of precedence to ensure compatibility with both standard and legacy
+     * authentication methods:
+     * </p>
+     *
+     * <ol>
+     * <li><b>Standard Authorization Header:</b> It first checks for the standard {@code Authorization: Bearer <token>}
+     * header. This is the preferred and most secure method.</li>
+     * <li><b>Custom Header for Backward Compatibility:</b> If the standard header is not found, it searches for a
+     * custom header, {@code X-Access-Token}. This check is performed against a list of common case variations (e.g.,
+     * {@code X_ACCESS_TOKEN}, {@code x_access_token}) to accommodate different client implementations.</li>
+     * <li><b>Request Parameter as Fallback:</b> As a final fallback, if no token is found in the headers, the method
+     * searches for the token in the request parameters (query string) using the same set of keys as the custom header.
+     * </li>
+     * </ol>
+     *
+     * @param context The incoming {@link ServerHttpRequest} context containing headers and parameters.
+     * @return The extracted token string, or {@code null} if no token is found in any of the checked locations.
+     */
+    protected String getToken(Context context) {
+        // 1. Prioritize the standard `Authorization` header with the `Bearer` scheme.
+        String authorization = context.getHeaders().get("Authorization");
+        if (StringKit.isNotEmpty(authorization) && authorization.startsWith("Bearer ")) {
+            return authorization.substring(7);
+        }
+
+        // 2. Check for a custom `X-Access-Token` header for backward compatibility.
+        final String[] keys = { Args.X_ACCESS_TOKEN, Args.X_ACCESS_TOKEN.toUpperCase(),
+                Args.X_ACCESS_TOKEN.toLowerCase(), "X_Access_Token", "X_ACCESS_TOKEN", "x_access_token" };
+        String token = MapKit.getFirstNonNull(context.getHeaders(), keys);
+        if (StringKit.isNotEmpty(token)) {
+            return token;
+        }
+
+        // 3. If not found in headers, search in request parameters as a fallback.
+        if (StringKit.isBlank(token)) {
+            token = Optional.ofNullable(MapKit.getFirstNonNull(context.getParameters(), keys)).map(Object::toString)
+                    .orElse(null);
+        }
+
+        return token;
+    }
+
+    /**
+     * Searches for an API key in a predefined list of request parameters and headers.
+     *
+     * @param context The request context.
+     * @return The found API key, or {@code null} if not present.
+     */
+    protected String getApiKey(Context context) {
+        final String[] keys = { "apiKey", "apikey", "api_key", "x_api_key", "api_id", "x_api_id", "X-API-ID",
+                "X-API-KEY", "API-KEY", "API-ID" };
+
+        // First, search in request parameters.
+        String apiKey = Optional.ofNullable(MapKit.getFirstNonNull(context.getParameters(), keys)).map(Object::toString)
+                .orElse(null);
+
+        // If not found, search in request headers.
+        if (StringKit.isBlank(apiKey)) {
+            apiKey = MapKit.getFirstNonNull(context.getHeaders(), keys);
+        }
+
+        return apiKey;
     }
 
 }

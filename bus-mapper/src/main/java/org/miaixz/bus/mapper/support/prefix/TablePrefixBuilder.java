@@ -58,9 +58,25 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class TablePrefixBuilder {
 
     /**
+     * SQL keywords that should never be treated as table names.
+     * <p>
+     * This list includes keywords that appear after UPDATE in SQL statements (e.g., "DO UPDATE SET" in PostgreSQL
+     * UPSERT). The regex pattern matches "UPDATE <word>", so we need to exclude SQL keywords like SET.
+     * </p>
+     */
+    private static final java.util.Set<String> SQL_KEYWORDS = java.util.Set.of(
+            "SET", // PostgreSQL UPSERT: DO UPDATE SET
+            "VALUES", // INSERT ... VALUES
+            "SELECT", // UPDATE ... SELECT
+            "WHERE", // UPDATE ... WHERE
+            "RETURNING" // UPDATE ... RETURNING (PostgreSQL)
+    );
+
+    /**
      * Pattern to match table names in SQL statements.
      * <p>
      * <b>Regex Group Definition:</b>
+     * </p>
      * <ol>
      * <li><b>Group 1 (Keyword):</b> Matches SQL keywords triggering a table reference (FROM, JOIN, INTO, UPDATE).</li>
      * <li><b>Group 2 (Schema):</b> Matches the optional schema/database prefix ending with a dot (e.g.,
@@ -69,7 +85,6 @@ public class TablePrefixBuilder {
      * <li><b>Group 4 (Table Name):</b> Matches the actual table name identifier.</li>
      * <li><b>Group 5 (End Quote):</b> Matches the closing delimiter (`, ", or ]).</li>
      * </ol>
-     * </p>
      */
     private static final Pattern TABLE_NAME_PATTERN = Pattern.compile("(?i)\\b(FROM|JOIN|INTO|UPDATE)\\s+" + // Group 1:
                                                                                                              // SQL
@@ -125,6 +140,11 @@ public class TablePrefixBuilder {
             String startDelim = matcher.group(3); // Starting delimiter (`"[)
             String tableName = matcher.group(4); // Actual table name
             String endDelim = matcher.group(5); // Ending delimiter (`"])
+
+            // Skip if matched "word" is an SQL keyword (e.g., "UPDATE SET" in UPSERT)
+            if (SQL_KEYWORDS.contains(tableName.toUpperCase())) {
+                continue;
+            }
 
             // Check if table should be ignored
             if (shouldIgnore(tableName)) {

@@ -38,7 +38,6 @@ import org.miaixz.bus.core.bean.copier.CopyOptions;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.BeanKit;
-import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.*;
@@ -236,12 +235,12 @@ public class QualifierStrategy extends AbstractStrategy {
     protected Mono<Void> authorize(Context context) {
         final Integer policy = context.getAssets().getPolicy();
 
-        // Validate policy value
-        if (policy == null || policy < Consts.ZERO || policy > Consts.FIVE) {
+        // Validate policy value (valid range: 0 to 6)
+        if (policy == null || policy < Consts.ZERO || policy > Consts.SIX) {
             Logger.error(
                     false,
                     "Qualifier",
-                    "[{}] Invalid policy value: {}. Must be between 0 and 5.",
+                    "[{}] Invalid policy value: {}. Must be between 0 and 6.",
                     context.getX_request_ipv4(),
                     policy);
             return Mono.error(new ValidateException(ErrorCode._116002));
@@ -254,18 +253,17 @@ public class QualifierStrategy extends AbstractStrategy {
         }
 
         // Determine acceptable credential types based on policy
-        // Policy 1, 2: Token ONLY (reject API Key even if provided)
-        // Policy 3, 4: API Key ONLY (reject Token even if provided)
-        // Policy 5: Token or API Key (both accepted)
+        // Policy 1-3: Token (1: basic, 2: with permissions, 3: with permissions and license)
+        // Policy 4-6: API Key (4: basic, 5: with permissions, 6: with permissions and license)
         final boolean acceptToken = Consts.ONE.equals(policy) || Consts.TWO.equals(policy)
-                || Consts.FIVE.equals(policy);
-        final boolean acceptApiKey = Consts.THREE.equals(policy) || Consts.FOUR.equals(policy)
-                || Consts.FIVE.equals(policy);
+                || Consts.THREE.equals(policy);
+        final boolean acceptApiKey = Consts.FOUR.equals(policy) || Consts.FIVE.equals(policy)
+                || Consts.SIX.equals(policy);
 
         // Try to find acceptable credentials based on policy requirements
         String credentialValue = null;
 
-        // 1. Policy 1, 2, 5: Must use Token (ignore API Key even if provided)
+        // 1. Policy 1-3: Must use Token
         if (acceptToken) {
             credentialValue = this.getToken(context);
             if (StringKit.isNotBlank(credentialValue)) {
@@ -279,8 +277,7 @@ public class QualifierStrategy extends AbstractStrategy {
             }
         }
 
-        // 2. Policy 3, 4, 5: Must use API Key (ignore Token if policy is 3 or 4)
-        // Only check API Key if Token not found (for policy 5) or if policy is 3,4 (API Key only)
+        // 2. Policy 4-6: Must use API Key
         if (acceptApiKey) {
             credentialValue = this.getApiKey(context);
             if (StringKit.isNotBlank(credentialValue)) {
@@ -341,74 +338,6 @@ public class QualifierStrategy extends AbstractStrategy {
                     return Mono
                             .error(new ValidateException(delegate.getMessage().errcode, delegate.getMessage().errmsg));
                 });
-    }
-
-    /**
-     * Extracts the authentication token from the incoming request.
-     *
-     * <p>
-     * The token extraction follows a specific order of precedence to ensure compatibility with both standard and legacy
-     * authentication methods:
-     * </p>
-     *
-     * <ol>
-     * <li><b>Standard Authorization Header:</b> It first checks for the standard {@code Authorization: Bearer <token>}
-     * header. This is the preferred and most secure method.</li>
-     * <li><b>Custom Header for Backward Compatibility:</b> If the standard header is not found, it searches for a
-     * custom header, {@code X-Access-Token}. This check is performed against a list of common case variations (e.g.,
-     * {@code X_ACCESS_TOKEN}, {@code x_access_token}) to accommodate different client implementations.</li>
-     * <li><b>Request Parameter as Fallback:</b> As a final fallback, if no token is found in the headers, the method
-     * searches for the token in the request parameters (query string) using the same set of keys as the custom header.
-     * </li>
-     * </ol>
-     *
-     * @param context The incoming {@link ServerHttpRequest} context containing headers and parameters.
-     * @return The extracted token string, or {@code null} if no token is found in any of the checked locations.
-     */
-    protected String getToken(Context context) {
-        // 1. Prioritize the standard `Authorization` header with the `Bearer` scheme.
-        String authorization = context.getHeaders().get("Authorization");
-        if (StringKit.isNotEmpty(authorization) && authorization.startsWith("Bearer ")) {
-            return authorization.substring(7);
-        }
-
-        // 2. Check for a custom `X-Access-Token` header for backward compatibility.
-        final String[] keys = { Args.X_ACCESS_TOKEN, Args.X_ACCESS_TOKEN.toUpperCase(),
-                Args.X_ACCESS_TOKEN.toLowerCase(), "X_Access_Token", "X_ACCESS_TOKEN", "x_access_token" };
-        String token = MapKit.getFirstNonNull(context.getHeaders(), keys);
-        if (StringKit.isNotEmpty(token)) {
-            return token;
-        }
-
-        // 3. If not found in headers, search in request parameters as a fallback.
-        if (StringKit.isBlank(token)) {
-            token = Optional.ofNullable(MapKit.getFirstNonNull(context.getParameters(), keys)).map(Object::toString)
-                    .orElse(null);
-        }
-
-        return token;
-    }
-
-    /**
-     * Searches for an API key in a predefined list of request parameters and headers.
-     *
-     * @param context The request context.
-     * @return The found API key, or {@code null} if not present.
-     */
-    protected String getApiKey(Context context) {
-        final String[] keys = { "apiKey", "apikey", "api_key", "x_api_key", "api_id", "x_api_id", "X-API-ID",
-                "X-API-KEY", "API-KEY", "API-ID" };
-
-        // First, search in request parameters.
-        String apiKey = Optional.ofNullable(MapKit.getFirstNonNull(context.getParameters(), keys)).map(Object::toString)
-                .orElse(null);
-
-        // If not found, search in request headers.
-        if (StringKit.isBlank(apiKey)) {
-            apiKey = MapKit.getFirstNonNull(context.getHeaders(), keys);
-        }
-
-        return apiKey;
     }
 
 }

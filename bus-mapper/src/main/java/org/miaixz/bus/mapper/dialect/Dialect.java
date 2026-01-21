@@ -27,7 +27,10 @@
 */
 package org.miaixz.bus.mapper.dialect;
 
+import org.miaixz.bus.mapper.parsing.ColumnMeta;
 import org.miaixz.bus.mapper.support.paging.Pageable;
+
+import java.util.List;
 
 /**
  * Database dialect interface providing database-specific SQL generation and capabilities.
@@ -145,6 +148,64 @@ public interface Dialect {
     boolean supportsUpsert();
 
     /**
+     * Gets the INSERT SQL template.
+     *
+     * <p>
+     * The template may contain placeholders that will be replaced with actual values using {@code String.format()}.
+     * Standard placeholders: {@code %s} for table name, columns, and values.
+     * </p>
+     *
+     * <p>
+     * Example templates:
+     * </p>
+     * <ul>
+     * <li>Most databases: {@code "INSERT INTO %s (%s) VALUES %s"}</li>
+     * <li>SQLite (optional): {@code "INSERT OR REPLACE INTO %s (%s) VALUES %s"}</li>
+     * </ul>
+     *
+     * @return the INSERT SQL template
+     */
+    default String getInsertTemplate() {
+        return "INSERT INTO %s (%s) VALUES %s";
+    }
+
+    /**
+     * Gets the UPDATE SQL template.
+     *
+     * @return the UPDATE SQL template
+     */
+    default String getUpdateTemplate() {
+        return "UPDATE %s SET %s%s";
+    }
+
+    /**
+     * Gets the SELECT SQL template.
+     *
+     * @return the SELECT SQL template
+     */
+    default String getSelectTemplate() {
+        return "SELECT %s FROM %s%s";
+    }
+
+    /**
+     * Gets the DELETE SQL template.
+     *
+     * @return the DELETE SQL template
+     */
+    default String getDeleteTemplate() {
+        return "DELETE FROM %s%s";
+    }
+
+    /**
+     * Gets the COUNT SQL template.
+     *
+     * @return the COUNT SQL template
+     */
+    default String getCountTemplate() {
+        return "SELECT COUNT(*) FROM %s%s";
+    }
+
+    /**
      * Gets the UPSERT SQL template.
      *
      * <p>
@@ -156,12 +217,41 @@ public interface Dialect {
     String getUpsertTemplate();
 
     /**
-     * Checks if the database supports JDBC batch operations efficiently.
+     * Builds complete dynamic UPSERT SQL with MyBatis dynamic tags for selective field insertion.
      *
-     * @return true if JDBC batch is recommended
+     * <p>
+     * This method generates the complete UPSERT SQL statement with dynamic fields (only non-null fields). The SQL
+     * includes database-specific UPSERT syntax with MyBatis {@code <if>} tags for conditional field inclusion.
+     * </p>
+     *
+     * <p>
+     * Examples of what each database returns:
+     * </p>
+     * <ul>
+     * <li>MySQL: {@code "INSERT INTO table (col1, col2) VALUES\n<foreach...>\nON DUPLICATE KEY UPDATE\n  <if test=
+     * '...'>col1 = VALUES(col1),</if>\n"}</li>
+     * <li>PostgreSQL/H2/CirroData:
+     * {@code "INSERT INTO table (col1, col2) VALUES\n<foreach...>\nON CONFLICT (id) DO UPDATE SET\n  <if test=
+     * '...'>col1 = EXCLUDED.col1,</if>\n"}</li>
+     * <li>SQLite: {@code "INSERT OR REPLACE INTO table (col1, col2) VALUES\n<foreach...>"}</li>
+     * </ul>
+     *
+     * @param tableName     Table name
+     * @param columnList    Dynamic column list (with MyBatis {@code <trim>} tags)
+     * @param valuesList    Dynamic values list (with MyBatis {@code <foreach>} tags)
+     * @param keyColumns    Comma-separated primary key column names
+     * @param updateColumns List of column metadata for updatable columns
+     * @param itemPrefix    The prefix for item variable in MyBatis (e.g., "list[0]", "")
+     * @return The complete dynamic UPSERT SQL statement, or null if not supported
      */
-    default boolean supportsJdbcBatch() {
-        return true; // Most databases support JDBC batch
+    default String buildUpsertSql(
+            String tableName,
+            String columnList,
+            String valuesList,
+            String keyColumns,
+            List<ColumnMeta> updateColumns,
+            String itemPrefix) {
+        return null;
     }
 
     /**

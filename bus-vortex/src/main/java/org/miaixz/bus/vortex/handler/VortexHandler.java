@@ -34,6 +34,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.*;
@@ -194,6 +195,55 @@ public class VortexHandler {
                             method,
                             path);
                     throw new ValidateException(ErrorCode._100800);
+                }
+
+                // Check if mock mode is enabled (mock = 1)
+                if (Integer.valueOf(Consts.ONE).equals(assets.getMock())) {
+                    Logger.info(
+                            true,
+                            "Vortex",
+                            "[{}] [{}] [{}] [MOCK_MODE] - Returning mock data for method: {}",
+                            ip,
+                            method,
+                            path,
+                            assets.getMethod());
+
+                    // Return mock response with post-handlers execution
+                    return handleMockResponse(context, assets).flatMap(
+                            response -> executePostHandlers(exchange, router, response, null).map(obj -> response))
+                            .doOnSuccess(serverResponse -> {
+                                long duration = System.currentTimeMillis() - context.getTimestamp();
+                                Logger.info(
+                                        false,
+                                        "Vortex",
+                                        "[{}] [{}] [{}] [MOCK_SUCCESS] - Method: {}, Duration: {}ms",
+                                        ip,
+                                        method,
+                                        path,
+                                        assets.getMethod(),
+                                        duration);
+                                if (serverResponse != null) {
+                                    Logger.info(
+                                            false,
+                                            "Vortex",
+                                            "[{}] [{}] [{}] [MOCK_COMPLETE] - Status: {}",
+                                            ip,
+                                            method,
+                                            path,
+                                            serverResponse.statusCode().value());
+                                }
+                            }).onErrorResume(Throwable.class, error -> {
+                                Logger.error(
+                                        false,
+                                        "Vortex",
+                                        "[{}] [{}] [{}] [MOCK_ERROR] - Error: {}",
+                                        ip,
+                                        method,
+                                        path,
+                                        error.getMessage());
+                                // Execute postHandle and afterCompletion even on mock error
+                                return executePostHandlers(exchange, router, null, error).then(Mono.error(error));
+                            });
                 }
 
                 // Actual routing with timeout + retry mechanism + post-interceptors
@@ -358,6 +408,61 @@ public class VortexHandler {
                     path,
                     maxRetries);
             return retrySignal.failure();
+        });
+    }
+
+    /**
+     * Handles mock mode responses by returning the mock data from Assets.result field.
+     * <p>
+     * This method is invoked when policy=-1 (mock mode). It bypasses the actual downstream service call and returns the
+     * pre-configured mock data directly. The mock data is formatted according to the requested format (JSON/XML/BINARY)
+     * specified in the context.
+     * </p>
+     *
+     * 
+     * @param context The request context
+     * @param assets  The asset configuration containing the mock data in result field
+     * @return A Mono of ServerResponse containing the mock data
+     */
+    private Mono<ServerResponse> handleMockResponse(Context context, Assets assets) {
+        return Mono.fromCallable(() -> {
+            String mockData = assets.getResult();
+
+            // If no mock data is configured, return empty response
+            if (mockData == null || mockData.isEmpty()) {
+                Logger.warn(
+                        true,
+                        "Vortex",
+                        "[{}] Mock mode enabled but no result data configured for method: {}",
+                        context.getX_request_ipv4(),
+                        assets.getMethod());
+                mockData = "{}";
+            }
+
+            Logger.info(
+                    true,
+                    "Vortex",
+                    "[{}] Returning mock data: {}",
+                    context.getX_request_ipv4(),
+                    mockData.length() > 200 ? mockData.substring(0, 200) + "..." : mockData);
+
+            return mockData;
+        }).flatMap(mockData -> {
+            // Build response based on the requested format
+            Formats format = context.getFormat();
+            if (format == null) {
+                format = Formats.JSON; // Default to JSON
+            }
+
+            return ServerResponse.ok().contentType(format.getMediaType()).bodyValue(mockData);
+        }).doOnSuccess(response -> {
+            long duration = System.currentTimeMillis() - context.getTimestamp();
+            Logger.info(
+                    false,
+                    "Vortex",
+                    "[{}] Mock response returned successfully - Duration: {}ms",
+                    context.getX_request_ipv4(),
+                    duration);
         });
     }
 
