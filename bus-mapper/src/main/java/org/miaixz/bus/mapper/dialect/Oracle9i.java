@@ -27,6 +27,9 @@
 */
 package org.miaixz.bus.mapper.dialect;
 
+import java.util.List;
+
+import org.miaixz.bus.mapper.parsing.ColumnMeta;
 import org.miaixz.bus.mapper.support.paging.Pageable;
 
 /**
@@ -102,6 +105,49 @@ public class Oracle9i extends AbstractDialect {
     @Override
     public String getUpsertTemplate() {
         return "MERGE INTO %s USING DUAL ON (%s) WHEN MATCHED THEN UPDATE SET %s WHEN NOT MATCHED THEN INSERT (%s) VALUES (%s)";
+    }
+
+    @Override
+    public String buildUpsertSql(
+            String tableName,
+            String columnList,
+            String valuesList,
+            String keyColumns,
+            List<ColumnMeta> updateColumns,
+            String itemPrefix) {
+        // Oracle9i: MERGE INTO ... USING DUAL ON (...) WHEN MATCHED THEN UPDATE SET ... WHEN NOT MATCHED THEN INSERT
+        // ... VALUES ...
+        // Same syntax as Oracle 12c+
+        StringBuilder sb = new StringBuilder();
+
+        // Build ON clause for primary key matching
+        sb.append("MERGE INTO ").append(tableName).append(" USING DUAL ON (");
+
+        String[] keyColArray = keyColumns.split(",\\s*");
+        for (int i = 0; i < keyColArray.length; i++) {
+            if (i > 0) {
+                sb.append(" AND ");
+            }
+            String colName = keyColArray[i].trim();
+            String paramRef = itemPrefix.isEmpty() ? "#{" + colName + "}" : "#{" + itemPrefix + "." + colName + "}";
+            sb.append(colName).append(" = ").append(paramRef);
+        }
+        sb.append(")\n");
+
+        // WHEN MATCHED THEN UPDATE SET clause with dynamic <if> tags
+        sb.append("WHEN MATCHED THEN UPDATE SET\n");
+        for (ColumnMeta col : updateColumns) {
+            sb.append("  <if test=\"").append(itemPrefix).append(".").append(col.property()).append(" != null\">")
+                    .append(col.column()).append(" = ").append(col.variables()).append(",</if>\n");
+        }
+
+        // WHEN NOT MATCHED THEN INSERT clause
+        sb.append("WHEN NOT MATCHED THEN INSERT\n");
+        sb.append("  ").append(columnList).append("\n");
+        sb.append("VALUES\n");
+        sb.append("  ").append(valuesList);
+
+        return sb.toString();
     }
 
     @Override

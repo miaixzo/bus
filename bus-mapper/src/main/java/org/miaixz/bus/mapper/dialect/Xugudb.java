@@ -28,6 +28,8 @@
 package org.miaixz.bus.mapper.dialect;
 
 import org.miaixz.bus.mapper.support.paging.Pageable;
+import java.util.List;
+import org.miaixz.bus.mapper.parsing.ColumnMeta;
 
 /**
  * Xugudb database dialect.
@@ -82,6 +84,51 @@ public class Xugudb extends AbstractDialect {
     @Override
     public String getUpsertTemplate() {
         return "MERGE INTO %s USING (VALUES %s) AS source (%s) ON %s WHEN MATCHED THEN UPDATE SET %s WHEN NOT MATCHED THEN INSERT (%s) VALUES (%s)";
+    }
+
+    @Override
+    public String buildUpsertSql(
+            String tableName,
+            String columnList,
+            String valuesList,
+            String keyColumns,
+            List<ColumnMeta> updateColumns,
+            String itemPrefix) {
+        // Xugudb: MERGE INTO ... USING (VALUES ...) AS source (...) ON (...) WHEN MATCHED THEN UPDATE SET ...
+        // WHEN NOT MATCHED THEN INSERT (...) VALUES (...) with dynamic <if> tags
+        StringBuilder sb = new StringBuilder();
+        sb.append("MERGE INTO ").append(tableName).append(" USING (VALUES (").append(valuesList)
+                .append(")) AS source (").append(columnList).append(")\n");
+
+        sb.append("ON (");
+        String[] keyColArray = keyColumns.split(",\\s*");
+        for (int i = 0; i < keyColArray.length; i++) {
+            if (i > 0) {
+                sb.append(" AND ");
+            }
+            String colName = keyColArray[i].trim();
+            sb.append("target.").append(colName).append(" = source.").append(colName);
+        }
+        sb.append(")\n");
+
+        sb.append("WHEN MATCHED THEN UPDATE SET\n");
+        for (ColumnMeta col : updateColumns) {
+            sb.append("  <if test=\"").append(itemPrefix).append(".").append(col.property())
+                    .append(" != null\">target.").append(col.column()).append(" = source.").append(col.column())
+                    .append(",</if>\n");
+        }
+
+        sb.append("WHEN NOT MATCHED THEN INSERT (").append(columnList).append(")\n");
+        sb.append("VALUES (");
+
+        StringBuilder sourceValues = new StringBuilder();
+        for (ColumnMeta col : updateColumns) {
+            sourceValues.append("<if test=\"").append(itemPrefix).append(".").append(col.property())
+                    .append(" != null\">source.").append(col.column()).append(",</if>");
+        }
+        sb.append(sourceValues).append(")");
+
+        return sb.toString();
     }
 
 }

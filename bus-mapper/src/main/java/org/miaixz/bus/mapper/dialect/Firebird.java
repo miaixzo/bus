@@ -27,6 +27,9 @@
 */
 package org.miaixz.bus.mapper.dialect;
 
+import java.util.List;
+
+import org.miaixz.bus.mapper.parsing.ColumnMeta;
 import org.miaixz.bus.mapper.support.paging.Pageable;
 
 /**
@@ -103,6 +106,26 @@ public class Firebird extends AbstractDialect {
     @Override
     public String getUpsertTemplate() {
         return "UPDATE OR INSERT INTO %s (%s) VALUES %s MATCHING (%s)";
+    }
+
+    @Override
+    public String buildUpsertSql(
+            String tableName,
+            String columnList,
+            String valuesList,
+            String keyColumns,
+            List<ColumnMeta> updateColumns,
+            String itemPrefix) {
+        // Firebird: UPDATE OR INSERT INTO ... VALUES ... MATCHING (...) with dynamic SQL for selective fields
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("UPDATE OR INSERT INTO ").append(tableName).append("\n");
+        sb.append("  ").append(columnList).append("\n");
+        sb.append("VALUES\n");
+        sb.append("  ").append(valuesList).append("\n");
+        sb.append("MATCHING (").append(keyColumns).append(")");
+
+        return sb.toString();
     }
 
     @Override

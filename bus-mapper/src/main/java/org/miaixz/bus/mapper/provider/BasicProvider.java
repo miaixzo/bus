@@ -418,7 +418,7 @@ public abstract class BasicProvider {
                                 columnList.toString(),
                                 valuesList.toString()));
             } else {
-                // MySQL/PostgreSQL/H2: Use buildUpsertSql()
+                // MySQL/PostgreSQL/H2/others: Use buildUpsertSql()
                 String keyColumns = entity.idColumns().stream().map(ColumnMeta::column)
                         .collect(Collectors.joining(", "));
                 String upsertSql = dialect.buildUpsertSql(
