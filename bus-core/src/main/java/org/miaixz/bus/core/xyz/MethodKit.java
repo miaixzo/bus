@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.xyz;
 
+import java.beans.Introspector;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Executable;
@@ -62,8 +63,83 @@ public class MethodKit {
     /**
      * Clears the method cache.
      */
-    synchronized static void clearCache() {
+    synchronized static void clear() {
         METHODS_CACHE.clear();
+    }
+
+    /**
+     * Converts the first character of a given string to uppercase.
+     *
+     * @param name The character sequence to process, can be a string or other CharSequence implementation.
+     * @return The string with the first letter capitalized, or null if the input is null.
+     * @see StringKit#upperFirst(CharSequence)
+     */
+    public static String capitalize(final CharSequence name) {
+        return StringKit.upperFirst(name);
+    }
+
+    /**
+     * Converts a name to standard field name format with specific capitalization rules:
+     * <ul>
+     * <li>First letter lowercase</li>
+     * <li>Acronyms remain uppercase (first and second letters are both uppercase)</li>
+     * </ul>
+     *
+     * <pre>
+     * Name = name
+     * name = name
+     * CPU  = CPU
+     * </pre>
+     *
+     * @param name The field name.
+     * @return The converted name.
+     * @see java.beans.Introspector#decapitalize(String)
+     */
+    public static String decapitalize(final CharSequence name) {
+        return Introspector.decapitalize(StringKit.toStringOrNull(name));
+    }
+
+    /**
+     * Gets the standard field name corresponding to a "set", "get", or "is" method name. Example: {@code setName}
+     * returns {@code name}.
+     *
+     * <pre>
+     * getName = name
+     * setName = name
+     * isName  = name
+     * </pre>
+     *
+     * @param getOrSetMethodName The "get", "set", or "is" method name.
+     * @return The field name if it's a standard getter/setter/isser, otherwise {@code null}.
+     */
+    public static String getGeneralField(final CharSequence getOrSetMethodName) {
+        final String getOrSetMethodNameStr = getOrSetMethodName.toString();
+        if (getOrSetMethodNameStr.startsWith("get") || getOrSetMethodNameStr.startsWith("set")) {
+            return StringKit.removePreAndLowerFirst(getOrSetMethodName, 3);
+        } else if (getOrSetMethodNameStr.startsWith("is")) {
+            return StringKit.removePreAndLowerFirst(getOrSetMethodName, 2);
+        }
+        return null;
+    }
+
+    /**
+     * Generates a setter method name from a field name. Example: {@code name} returns {@code setName}.
+     *
+     * @param fieldName The field name.
+     * @return The setter method name (e.g., setXxx).
+     */
+    public static String genSetter(final CharSequence fieldName) {
+        return StringKit.upperFirstAndAddPre(fieldName, "set");
+    }
+
+    /**
+     * Generates a getter method name from a field name.
+     *
+     * @param fieldName The field name.
+     * @return The getter method name (e.g., getXxx).
+     */
+    public static String genGetter(final CharSequence fieldName) {
+        return StringKit.upperFirstAndAddPre(fieldName, "get");
     }
 
     /**

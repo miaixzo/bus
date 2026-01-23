@@ -3319,7 +3319,7 @@ public class CharsBacker extends CharsValidator {
      *
      * <pre class="code">
      * replace(this.content, "(\d+)", parameters -> "-" + parameters.group(1) + "-")
-     * // Result: "ZZZaaabbbccc中文-1234-"
+     * // Result: "ZZZaaabbbcccChinese-1234-"
      * </pre>
      *
      * @param text       The string to replace.
@@ -3883,49 +3883,6 @@ public class CharsBacker extends CharsValidator {
             sb.append(text);
         }
         return sb;
-    }
-
-    /**
-     * Gets the standard field name corresponding to a "set", "get", or "is" method name. Example: {@code setName}
-     * returns {@code name}.
-     *
-     * <pre>
-     * getName = name
-     * setName = name
-     * isName  = name
-     * </pre>
-     *
-     * @param getOrSetMethodName The "get", "set", or "is" method name.
-     * @return The field name if it's a standard getter/setter/isser, otherwise {@code null}.
-     */
-    public static String getGeneralField(final CharSequence getOrSetMethodName) {
-        final String getOrSetMethodNameStr = getOrSetMethodName.toString();
-        if (getOrSetMethodNameStr.startsWith("get") || getOrSetMethodNameStr.startsWith("set")) {
-            return removePreAndLowerFirst(getOrSetMethodName, 3);
-        } else if (getOrSetMethodNameStr.startsWith("is")) {
-            return removePreAndLowerFirst(getOrSetMethodName, 2);
-        }
-        return null;
-    }
-
-    /**
-     * Generates a setter method name from a field name. Example: {@code name} returns {@code setName}.
-     *
-     * @param fieldName The field name.
-     * @return The setter method name (e.g., setXxx).
-     */
-    public static String genSetter(final CharSequence fieldName) {
-        return upperFirstAndAddPre(fieldName, "set");
-    }
-
-    /**
-     * Generates a getter method name from a field name.
-     *
-     * @param fieldName The field name.
-     * @return The getter method name (e.g., getXxx).
-     */
-    public static String genGetter(final CharSequence fieldName) {
-        return upperFirstAndAddPre(fieldName, "get");
     }
 
     /**

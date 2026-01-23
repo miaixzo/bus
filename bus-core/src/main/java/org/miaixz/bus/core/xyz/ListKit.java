@@ -176,6 +176,29 @@ public class ListKit {
     }
 
     /**
+     * Creates a new `CopyOnWriteArrayList` from a collection.
+     *
+     * @param <T>        The element type.
+     * @param collection The collection.
+     * @return A new `CopyOnWriteArrayList`.
+     */
+    public static <T> CopyOnWriteArrayList<T> ofCopyOnWrite(final Collection<T> collection) {
+        return (null == collection) ? (new CopyOnWriteArrayList<>()) : (new CopyOnWriteArrayList<>(collection));
+    }
+
+    /**
+     * Creates a new `CopyOnWriteArrayList` from an array.
+     *
+     * @param <T> The element type.
+     * @param ts  The elements.
+     * @return A new `CopyOnWriteArrayList`.
+     */
+    @SafeVarargs
+    public static <T> CopyOnWriteArrayList<T> ofCopyOnWrite(final T... ts) {
+        return (null == ts) ? (new CopyOnWriteArrayList<>()) : (new CopyOnWriteArrayList<>(ts));
+    }
+
+    /**
      * Returns an unmodifiable view of the specified array as a list.
      *
      * @param <T> The element type.
@@ -231,29 +254,6 @@ public class ListKit {
      */
     public static <T> List<T> singleton(final T element) {
         return Collections.singletonList(element);
-    }
-
-    /**
-     * Creates a new `CopyOnWriteArrayList` from a collection.
-     *
-     * @param <T>        The element type.
-     * @param collection The collection.
-     * @return A new `CopyOnWriteArrayList`.
-     */
-    public static <T> CopyOnWriteArrayList<T> ofCopyOnWrite(final Collection<T> collection) {
-        return (null == collection) ? (new CopyOnWriteArrayList<>()) : (new CopyOnWriteArrayList<>(collection));
-    }
-
-    /**
-     * Creates a new `CopyOnWriteArrayList` from an array.
-     *
-     * @param <T> The element type.
-     * @param ts  The elements.
-     * @return A new `CopyOnWriteArrayList`.
-     */
-    @SafeVarargs
-    public static <T> CopyOnWriteArrayList<T> ofCopyOnWrite(final T... ts) {
-        return (null == ts) ? (new CopyOnWriteArrayList<>()) : (new CopyOnWriteArrayList<>(ts));
     }
 
     /**
