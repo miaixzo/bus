@@ -1,7 +1,7 @@
-<p style="text-align: center;">
+<p align="center">
   <a href="https://www.miaixz.org"><img src="LOGO.svg" width="40%"></a>
 </p>
-<p style="text-align: center;text-decoration: none;">
+<p align="center">
   <a target="_blank" href="https://search.maven.org/search?q=org.miaixz">
     <img src="https://img.shields.io/badge/maven--central-v8.3.x-blue.svg?label=Maven%20Central" />
   </a>
@@ -25,7 +25,7 @@
   </a>
 </p>
 
-<p style="text-align: center;">
+<p align="center">
     <a target="_blank" href="README.md">EN</a> ｜ <a target="_blank" href="README_CN.md">CN</a>
 </p>
 
