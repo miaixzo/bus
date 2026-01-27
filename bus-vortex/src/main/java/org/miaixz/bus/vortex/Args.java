@@ -125,6 +125,11 @@ public class Args {
     public static final String WS_PATH_PREFIX = "/router/ws";
 
     /**
+     * The base URI path for Large Language Model (LLM) proxy requests.
+     */
+    public static final String LLM_PATH_PREFIX = "/router/llm";
+
+    /**
      * The base URI path for custom (CST) requests.
      */
     public static final String CST_PATH_PREFIX = "/router/cst";
@@ -153,7 +158,9 @@ public class Args {
             4,
             Protocol.GRPC.getName(),
             5,
-            Protocol.WS.getName());
+            Protocol.WS.getName(),
+            6,
+            "llm");
 
     /**
      * Checks if the given path is a RESTful API proxy request path.
@@ -226,15 +233,25 @@ public class Args {
     }
 
     /**
-     * Checks if the given path matches any of the known gateway prefixes (REST, MCP, MQ, WS, CAS, CST, or gRPC). This
-     * method combines the individual check methods for convenience.
+     * Checks if the given path is an LLM (Large Language Model) proxy request path.
+     *
+     * @param path The URL path string to check.
+     * @return {@code true} if the path starts with the LLM prefix, {@code false} otherwise.
+     */
+    public static boolean isLlmRequest(String path) {
+        return path.startsWith(LLM_PATH_PREFIX);
+    }
+
+    /**
+     * Checks if the given path matches any of the known gateway prefixes (REST, MCP, MQ, WS, CAS, CST, gRPC, or LLM).
+     * This method combines the individual check methods for convenience.
      *
      * @param path The URL path string to check.
      * @return {@code true} if the path matches any known gateway prefix, {@code false} otherwise.
      */
     public static boolean isKnownRequest(String path) {
         return isRestRequest(path) || isMcpRequest(path) || isMqRequest(path) || isWsRequest(path) || isCasRequest(path)
-                || isCstRequest(path) || isGrpcRequest(path);
+                || isCstRequest(path) || isGrpcRequest(path) || isLlmRequest(path);
     }
 
     /**

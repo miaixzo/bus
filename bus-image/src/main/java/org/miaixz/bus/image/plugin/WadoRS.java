@@ -28,6 +28,7 @@
 package org.miaixz.bus.image.plugin;
 
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.image.galaxy.media.MultipartParser;
 import org.miaixz.bus.logger.Logger;
@@ -102,7 +103,7 @@ public class WadoRS {
         if (header)
             requestProperties.put("Accept", accept);
         if (authorization != null)
-            requestProperties.put("Authorization", authorization);
+            requestProperties.put(HTTP.AUTHORIZATION, authorization);
         if (httpHeaders != null)
             for (String httpHeader : httpHeaders) {
                 int delim = httpHeader.indexOf(':');

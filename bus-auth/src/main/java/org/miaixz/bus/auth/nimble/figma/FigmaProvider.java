@@ -105,7 +105,7 @@ public class FigmaProvider extends AbstractProvider {
         Map<String, String> headers = new HashMap<>(3);
         headers.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
         headers.put(
-                "Authorization",
+                HTTP.AUTHORIZATION,
                 "Basic ".concat(
                         Base64.encode(
                                 (this.context.getClientId().concat(":").concat(this.context.getClientSecret()))
@@ -200,7 +200,7 @@ public class FigmaProvider extends AbstractProvider {
     public Message userInfo(Authorization authorization) {
         Map<String, String> headers = new HashMap<>(3);
         headers.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
-        headers.put("Authorization", "Bearer " + authorization.getToken());
+        headers.put(HTTP.AUTHORIZATION, HTTP.BEARER + authorization.getToken());
         String response = Httpx.get(this.complex.userinfo(), null, headers);
         try {
             Map<String, Object> data = JsonKit.toPojo(response, Map.class);

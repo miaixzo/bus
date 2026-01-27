@@ -147,7 +147,7 @@ public class FeishuProvider extends AbstractProvider {
         String token = authorization.getToken();
         Map<String, String> header = new HashMap<>();
         header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON);
-        header.put("Authorization", "Bearer " + token);
+        header.put(HTTP.AUTHORIZATION, HTTP.BEARER + token);
         String response = Httpx.get(this.complex.userinfo(), null, header);
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);

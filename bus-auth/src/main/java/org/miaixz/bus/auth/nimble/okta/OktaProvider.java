@@ -102,7 +102,7 @@ public class OktaProvider extends AbstractProvider {
         header.put("accept", MediaType.APPLICATION_JSON);
         header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
         header.put(
-                "Authorization",
+                HTTP.AUTHORIZATION,
                 "Basic " + Base64.encode(context.getClientId().concat(Symbol.COLON).concat(context.getClientSecret())));
 
         String response = Httpx.post(tokenUrl, null, header);
@@ -157,7 +157,7 @@ public class OktaProvider extends AbstractProvider {
     @Override
     public Message userInfo(Authorization authorization) {
         Map<String, String> header = new HashMap<>();
-        header.put("Authorization", "Bearer " + authorization.getToken());
+        header.put(HTTP.AUTHORIZATION, HTTP.BEARER + authorization.getToken());
 
         String response = Httpx.post(userInfoUrl(authorization), null, header);
         try {
@@ -204,7 +204,7 @@ public class OktaProvider extends AbstractProvider {
 
         Map<String, String> header = new HashMap<>();
         header.put(
-                "Authorization",
+                HTTP.AUTHORIZATION,
                 "Basic " + Base64.encode(context.getClientId().concat(Symbol.COLON).concat(context.getClientSecret())));
 
         Httpx.post(revokeUrl(authorization), params, header);

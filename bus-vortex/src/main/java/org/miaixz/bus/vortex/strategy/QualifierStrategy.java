@@ -145,7 +145,7 @@ public class QualifierStrategy extends AbstractStrategy {
                                 false,
                                 "Qualifier",
                                 "[{}] Assets not found for method: {}, version: {}",
-                                context.getX_request_ipv4(),
+                                context.getX_request_ip(),
                                 method,
                                 version);
                         return Mono.error(new ValidateException(ErrorCode._100800));
@@ -173,7 +173,7 @@ public class QualifierStrategy extends AbstractStrategy {
                                 true,
                                 "Qualifier",
                                 "[{}] Method: {}, Version: {} validated successfully",
-                                context.getX_request_ipv4(),
+                                context.getX_request_ip(),
                                 method,
                                 version);
                     }))
@@ -201,7 +201,7 @@ public class QualifierStrategy extends AbstractStrategy {
                         false,
                         "Qualifier",
                         "[{}] HTTP method mismatch, expected: {}, actual: {}",
-                        context.getX_request_ipv4(),
+                        context.getX_request_ip(),
                         expectedMethod,
                         request.getMethod());
 
@@ -241,14 +241,14 @@ public class QualifierStrategy extends AbstractStrategy {
                     false,
                     "Qualifier",
                     "[{}] Invalid policy value: {}. Must be between 0 and 6.",
-                    context.getX_request_ipv4(),
+                    context.getX_request_ip(),
                     policy);
             return Mono.error(new ValidateException(ErrorCode._116002));
         }
 
         // Policy 0: Anonymous access - no authentication required
         if (Consts.ZERO.equals(policy)) {
-            Logger.info(true, "Qualifier", "[{}] Anonymous access granted.", context.getX_request_ipv4());
+            Logger.info(true, "Qualifier", "[{}] Anonymous access granted.", context.getX_request_ip());
             return Mono.empty();
         }
 
@@ -272,7 +272,7 @@ public class QualifierStrategy extends AbstractStrategy {
                         true,
                         "Qualifier",
                         "[{}] Using Token (required by policy={}).",
-                        context.getX_request_ipv4(),
+                        context.getX_request_ip(),
                         policy);
             }
         }
@@ -285,7 +285,7 @@ public class QualifierStrategy extends AbstractStrategy {
                         true,
                         "Qualifier",
                         "[{}] Using API Key (required by policy={}).",
-                        context.getX_request_ipv4(),
+                        context.getX_request_ip(),
                         policy);
             }
         }
@@ -296,7 +296,7 @@ public class QualifierStrategy extends AbstractStrategy {
                     false,
                     "Qualifier",
                     "[{}] Required credential not provided for policy={}.",
-                    context.getX_request_ipv4(),
+                    context.getX_request_ip(),
                     policy);
             return Mono.error(new ValidateException(ErrorCode._116002));
         }
@@ -321,7 +321,7 @@ public class QualifierStrategy extends AbstractStrategy {
                                 true,
                                 "Qualifier",
                                 "[{}] Authentication successful (policy={}).",
-                                context.getX_request_ipv4(),
+                                context.getX_request_ip(),
                                 policy);
                         return Mono.empty();
                     }
@@ -330,7 +330,7 @@ public class QualifierStrategy extends AbstractStrategy {
                             false,
                             "Qualifier",
                             "[{}] Authentication failed (policy={}) - Error code: {}, message: {}",
-                            context.getX_request_ipv4(),
+                            context.getX_request_ip(),
                             policy,
                             delegate.getMessage().errcode,
                             delegate.getMessage().errmsg);

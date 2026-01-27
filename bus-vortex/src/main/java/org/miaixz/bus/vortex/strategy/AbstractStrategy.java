@@ -30,6 +30,7 @@ package org.miaixz.bus.vortex.strategy;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.net.PORT;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.MapKit;
@@ -328,8 +329,8 @@ public abstract class AbstractStrategy implements Strategy {
      */
     protected String getToken(Context context) {
         // 1. Prioritize the standard `Authorization` header with the `Bearer` scheme.
-        String authorization = context.getHeaders().get("Authorization");
-        if (StringKit.isNotEmpty(authorization) && authorization.startsWith("Bearer ")) {
+        String authorization = context.getHeaders().get(HTTP.AUTHORIZATION);
+        if (StringKit.isNotEmpty(authorization) && authorization.startsWith(HTTP.BEARER)) {
             return authorization.substring(7);
         }
 

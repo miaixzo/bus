@@ -81,6 +81,12 @@ public class Tracer extends Authorize {
     protected String x_child_id;
 
     /**
+     * Remote IPv4 address of the client making the request. Identifies the client's network origin.
+     */
+    @Transient
+    protected String x_request_ip;
+
+    /**
      * Local IPv6 address of the service handling the request. Used to identify the server processing the request.
      */
     @Transient
@@ -111,5 +117,26 @@ public class Tracer extends Authorize {
      */
     @Transient
     protected String x_request_terminal;
+
+    /**
+     * Gets the client IP address, preferring IPv4 over IPv6.
+     * <p>
+     * This method returns the IPv4 address if available. If IPv4 is not available or empty, it falls back to IPv6. If
+     * neither is available, it returns the legacy x_request_ip field.
+     *
+     * @return The client IP address (IPv4 preferred, IPv6 as fallback, or legacy IP)
+     */
+    public String getX_request_ip() {
+        // Priority 1: IPv4
+        if (x_request_ipv4 != null && !x_request_ipv4.isEmpty()) {
+            return x_request_ipv4;
+        }
+        // Priority 2: IPv6
+        if (x_request_ipv6 != null && !x_request_ipv6.isEmpty()) {
+            return x_request_ipv6;
+        }
+        // Priority 3: Legacy x_request_ip
+        return x_request_ip;
+    }
 
 }

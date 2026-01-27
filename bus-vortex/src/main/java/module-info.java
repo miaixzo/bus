@@ -90,6 +90,7 @@ module bus.vortex {
     exports org.miaixz.bus.vortex.strategy;
     exports org.miaixz.bus.vortex.support;
     exports org.miaixz.bus.vortex.support.grpc;
+    exports org.miaixz.bus.vortex.support.llm;
     exports org.miaixz.bus.vortex.support.mcp;
     exports org.miaixz.bus.vortex.support.mq;
     exports org.miaixz.bus.vortex.support.rest;

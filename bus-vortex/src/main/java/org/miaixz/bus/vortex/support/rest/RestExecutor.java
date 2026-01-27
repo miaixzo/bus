@@ -133,7 +133,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
 
         final String method = request.methodName();
         final String path = request.path();
-        final String ip = context.getX_request_ipv4();
+        final String ip = context.getX_request_ip();
 
         // 1. Build the base URL for the target service (synchronous, no I/O involved)
         String baseUrl = buildBaseUrl(context);

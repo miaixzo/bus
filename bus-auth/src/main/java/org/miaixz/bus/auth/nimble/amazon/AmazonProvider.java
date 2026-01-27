@@ -213,7 +213,7 @@ public class AmazonProvider extends AbstractProvider {
         this.checkToken(token);
         Map<String, String> header = new HashMap<>();
         header.put(HTTP.HOST, "api.amazon.com");
-        header.put(HTTP.AUTHORIZATION, "bearer " + token);
+        header.put(HTTP.AUTHORIZATION, HTTP.BEARER + token);
 
         String userInfo = Httpx.get(this.complex.userinfo(), new HashMap<>(0), header);
         try {

@@ -327,7 +327,7 @@ public class VettingStrategy extends AbstractStrategy {
         }
         params.put("x_request_id", x_request_id);
 
-        String x_request_ipv4 = context.getX_request_ipv4();
+        String x_request_ipv4 = context.getX_request_ip();
         if (StringKit.isEmpty(x_request_ipv4)) {
             x_request_ipv4 = this.getClientIp(exchange.getRequest());
             context.setX_request_ipv4(x_request_ipv4);

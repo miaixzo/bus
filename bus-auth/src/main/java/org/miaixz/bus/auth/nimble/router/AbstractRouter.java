@@ -37,6 +37,7 @@ import org.miaixz.bus.auth.magic.Claims;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.MediaType;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
@@ -214,7 +215,7 @@ public abstract class AbstractRouter implements OAuth2Router {
      */
     protected void addUserinfoHeaders(Map<String, String> headers, Authorization authorization) {
         if (authorization.getToken() != null) {
-            headers.put("Authorization", "Bearer " + authorization.getToken());
+            headers.put(HTTP.AUTHORIZATION, HTTP.BEARER + authorization.getToken());
         }
     }
 

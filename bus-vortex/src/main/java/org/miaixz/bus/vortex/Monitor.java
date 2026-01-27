@@ -73,11 +73,11 @@ public interface Monitor {
     /**
      * Records a database operation.
      *
-     * @param operation the operation type (e.g., "SELECT", "INSERT", "UPDATE")
-     * @param duration  operation duration
-     * @param rowCount  number of rows affected
+     * @param type     the operation type (e.g., "SELECT", "INSERT", "UPDATE")
+     * @param duration operation duration
+     * @param rowCount number of rows affected
      */
-    void operation(String operation, Duration duration, int rowCount);
+    void operation(String type, Duration duration, int rowCount);
 
     /**
      * Resets all collected statistics.

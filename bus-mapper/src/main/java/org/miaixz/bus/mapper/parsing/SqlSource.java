@@ -32,8 +32,10 @@ import java.util.List;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.ParameterMapping;
+import org.apache.ibatis.scripting.xmltags.XMLLanguageDriver;
 import org.apache.ibatis.session.Configuration;
 import org.miaixz.bus.mapper.dialect.Dialect;
+import org.miaixz.bus.mapper.dialect.DialectRegistry;
 
 /**
  * A custom {@link org.apache.ibatis.mapping.SqlSource} that wraps a modified SQL while ensuring parameter mappings
@@ -156,22 +158,28 @@ public class SqlSource implements org.apache.ibatis.mapping.SqlSource {
      */
     @Override
     public BoundSql getBoundSql(Object parameterObject) {
-        // Determine the SQL to use (static or dynamic)
-        String finalSql = actualSql;
-
+        // For dynamic SQL, we need to regenerate SqlSource at runtime based on dialect
         if (cache != null && cache.isDynamic()) {
             // Get dialect for current datasource and generate SQL dynamically
-            Dialect dialect = org.miaixz.bus.mapper.dialect.DialectRegistry.getDialect();
-            finalSql = cache.getSqlScript(dialect);
+            Dialect dialect = DialectRegistry.getDialect();
+            String dynamicSql = cache.getSqlScript(dialect);
+
+            // Parse the dynamic SQL through XMLLanguageDriver to handle <foreach>, <if>, etc.
+            XMLLanguageDriver xmlLanguageDriver = new XMLLanguageDriver();
+            org.apache.ibatis.mapping.SqlSource dynamicSqlSource = xmlLanguageDriver
+                    .createSqlSource(this.configuration, dynamicSql, parameterObject.getClass());
+
+            // Get BoundSql from the dynamically created SqlSource
+            return dynamicSqlSource.getBoundSql(parameterObject);
         }
 
+        // For static SQL, use the actual SQL with parameter mappings from original
         // Delegate to original SqlSource to get correct ParameterMappings
-        // The original SqlSource (e.g., DynamicSqlSource) handles dynamic SQL properly
         BoundSql boundSql = this.sqlSource.getBoundSql(parameterObject);
         List<ParameterMapping> parameterMappings = boundSql.getParameterMappings();
 
-        // Create new BoundSql with final SQL and parameter mappings from original
-        BoundSql newBoundSql = new BoundSql(this.configuration, finalSql, parameterMappings, parameterObject);
+        // Create new BoundSql with actual SQL and parameter mappings from original
+        BoundSql newBoundSql = new BoundSql(this.configuration, actualSql, parameterMappings, parameterObject);
 
         // Copy additional parameters if present
         boundSql.getAdditionalParameters().forEach(newBoundSql::setAdditionalParameter);

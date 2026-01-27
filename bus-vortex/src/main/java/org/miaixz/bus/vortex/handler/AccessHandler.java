@@ -66,7 +66,7 @@ public class AccessHandler extends AbstractHandler {
         return Mono.fromCallable(() -> {
             // Get context and IP
             Context context = exchange.getAttribute(Context.$);
-            String ip = (context != null) ? context.getX_request_ipv4() : "N/A";
+            String ip = (context != null) ? context.getX_request_ip() : "N/A";
 
             ServerHttpRequest request = exchange.getRequest();
             String path = request.getPath().value();
@@ -101,7 +101,7 @@ public class AccessHandler extends AbstractHandler {
         return Mono.fromRunnable(() -> {
             // Get context and IP
             Context context = exchange.getAttribute(Context.$);
-            String ip = (context != null) ? context.getX_request_ipv4() : "N/A";
+            String ip = (context != null) ? context.getX_request_ip() : "N/A";
 
             ServerHttpRequest request = exchange.getRequest();
             String path = request.getPath().value();
@@ -142,7 +142,7 @@ public class AccessHandler extends AbstractHandler {
         return Mono.fromRunnable(() -> {
             // Get context and IP
             Context context = exchange.getAttribute(Context.$);
-            String ip = (context != null) ? context.getX_request_ipv4() : "N/A";
+            String ip = (context != null) ? context.getX_request_ip() : "N/A";
 
             ServerHttpRequest request = exchange.getRequest();
             String path = request.getPath().value();

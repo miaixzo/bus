@@ -42,6 +42,7 @@ import org.miaixz.bus.core.data.id.ID;
 import org.miaixz.bus.core.lang.*;
 import org.miaixz.bus.core.lang.annotation.NonNull;
 import org.miaixz.bus.core.lang.annotation.Nullable;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.net.url.UrlDecoder;
 import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -936,8 +937,8 @@ public class ContextBuilder extends WebUtils {
      */
     public static String getToken() {
         // 1. Prioritize the standard `Authorization` header with the `Bearer` scheme.
-        String authorization = getHeaderValue("Authorization");
-        if (StringKit.isNotEmpty(authorization) && authorization.startsWith("Bearer ")) {
+        String authorization = getHeaderValue(HTTP.AUTHORIZATION);
+        if (StringKit.isNotEmpty(authorization) && authorization.startsWith(HTTP.BEARER)) {
             return authorization.substring(7);
         }
 

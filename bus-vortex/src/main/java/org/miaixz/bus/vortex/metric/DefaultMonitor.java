@@ -48,7 +48,21 @@ import org.miaixz.bus.vortex.magic.Metrics;
  * <li>Pure in-memory implementation with zero external dependencies</li>
  * <li>Thread-safe AtomicLong counters</li>
  * <li>Suitable for development and testing environments</li>
+ * <li>Singleton instance available via {@link #INSTANCE}</li>
  * </ul>
+ *
+ * <p>
+ * <b>Usage:</b>
+ * </p>
+ * 
+ * <pre>
+ * // Use singleton instance (recommended for most cases)
+ * Monitor monitor = DefaultMonitor.INSTANCE;
+ * registry.setMonitor(monitor);
+ *
+ * // Or create a new instance if needed
+ * Monitor monitor = new DefaultMonitor();
+ * </pre>
  *
  * <p>
  * <b>Production Environment Recommendations:</b>
@@ -63,6 +77,23 @@ import org.miaixz.bus.vortex.magic.Metrics;
  * @since Java 17+
  */
 public class DefaultMonitor implements Monitor {
+
+    /**
+     * Singleton instance of DefaultMonitor.
+     * <p>
+     * This instance can be shared across the application for centralized monitoring. It is thread-safe and suitable for
+     * most use cases where a single monitoring instance is sufficient.
+     * </p>
+     * <p>
+     * Example usage:
+     * </p>
+     * 
+     * <pre>
+     * Monitor monitor = DefaultMonitor.INSTANCE;
+     * cacheManager.setPerformanceMonitor(monitor);
+     * </pre>
+     */
+    public static final DefaultMonitor INSTANCE = new DefaultMonitor();
 
     /**
      * Total request counter.
@@ -128,11 +159,11 @@ public class DefaultMonitor implements Monitor {
     }
 
     @Override
-    public void operation(String operation, Duration duration, int rowCount) {
+    public void operation(String type, Duration duration, int rowCount) {
         dbOperationCount.incrementAndGet();
         dbDurationNs.addAndGet(duration.toNanos());
 
-        Logger.debug("DB operation: {}, duration={}ms, rows={}", operation, duration.toMillis(), rowCount);
+        Logger.debug(true, "Operation", "type={}, duration={}ms, rows={}", type, duration.toMillis(), rowCount);
     }
 
     @Override

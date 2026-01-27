@@ -289,7 +289,7 @@ public class RetryAndFollowUp implements Interceptor {
                 // is potentially annoying to the application layer since they have no
                 // way to retain them.
                 if (!Builder.sameConnection(userResponse.request().url(), url)) {
-                    requestBuilder.removeHeader("Authorization");
+                    requestBuilder.removeHeader(HTTP.AUTHORIZATION);
                 }
 
                 return requestBuilder.url(url).build();

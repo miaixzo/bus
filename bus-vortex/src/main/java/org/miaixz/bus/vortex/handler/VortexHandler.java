@@ -130,7 +130,7 @@ public class VortexHandler {
                 Logger.info(true, "Vortex", "[N/A] [{}] [{}] [CONTEXT_ERROR] - Request context is null", method, path);
                 throw new ValidateException(ErrorCode._116000);
             }
-            final String ip = context.getX_request_ipv4();
+            final String ip = context.getX_request_ip();
             ServerWebExchange exchange = request.exchange();
             Logger.info(true, "Vortex", "[{}] [{}] [{}] [REQUEST_START] - Request started", ip, method, path);
 
@@ -434,7 +434,7 @@ public class VortexHandler {
                         true,
                         "Vortex",
                         "[{}] Mock mode enabled but no result data configured for method: {}",
-                        context.getX_request_ipv4(),
+                        context.getX_request_ip(),
                         assets.getMethod());
                 mockData = "{}";
             }
@@ -443,7 +443,7 @@ public class VortexHandler {
                     true,
                     "Vortex",
                     "[{}] Returning mock data: {}",
-                    context.getX_request_ipv4(),
+                    context.getX_request_ip(),
                     mockData.length() > 200 ? mockData.substring(0, 200) + "..." : mockData);
 
             return mockData;
@@ -461,7 +461,7 @@ public class VortexHandler {
                     false,
                     "Vortex",
                     "[{}] Mock response returned successfully - Duration: {}ms",
-                    context.getX_request_ipv4(),
+                    context.getX_request_ip(),
                     duration);
         });
     }

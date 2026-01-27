@@ -385,6 +385,10 @@ public class HTTP {
      */
     public static final String AUTHORIZATION = "Authorization";
     /**
+     * HTTP Authorization header field name. RFC 7235, Section 4.2
+     */
+    public static final String BEARER = "Bearer ";
+    /**
      * HTTP Keep-Alive header field name for connection persistence. Non-standard (HTTP/1.0 extension)
      */
     public static final String KEEP_ALIVE = "Keep-Alive";

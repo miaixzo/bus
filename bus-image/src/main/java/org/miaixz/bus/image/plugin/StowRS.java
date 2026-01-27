@@ -32,6 +32,7 @@ import jakarta.json.stream.JsonGenerator;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.UID;
@@ -706,7 +707,7 @@ public class StowRS {
         requestProperties.put("Accept", requestAccept);
         requestProperties.put("Connection", "keep-alive");
         if (authorization != null)
-            requestProperties.put("Authorization", authorization);
+            requestProperties.put(HTTP.AUTHORIZATION, authorization);
         if (httpHeaders != null)
             for (String httpHeader : httpHeaders) {
                 int delim = httpHeader.indexOf(':');

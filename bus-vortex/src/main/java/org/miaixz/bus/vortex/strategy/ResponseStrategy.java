@@ -73,7 +73,7 @@ public class ResponseStrategy extends AbstractStrategy {
         return Mono.deferContextual(contextView -> {
             final Context context = contextView.get(Context.class);
             ServerWebExchange newExchange = exchange;
-            final String ip = context.getX_request_ipv4();
+            final String ip = context.getX_request_ip();
 
             // **DEBUG LOGGING:** Log response strategy parameters and format details
             Logger.info(
@@ -165,7 +165,7 @@ public class ResponseStrategy extends AbstractStrategy {
                                 false,
                                 "Response",
                                 "[{}] Response formatted to XML: {}",
-                                context.getX_request_ipv4(),
+                                context.getX_request_ip(),
                                 xmlString);
                         // Wrap the formatted data into a new data buffer
                         return bufferFactory().wrap(xmlString.getBytes(Charset.UTF_8));
@@ -208,7 +208,7 @@ public class ResponseStrategy extends AbstractStrategy {
              */
             @Override
             public Mono<Void> writeWith(Publisher<? extends DataBuffer> body) {
-                Logger.debug(true, "Response", "[{}] Processing binary stream response", context.getX_request_ipv4());
+                Logger.debug(true, "Response", "[{}] Processing binary stream response", context.getX_request_ip());
 
                 // Set headers *before* writing
                 getDelegate().getHeaders().setContentType(Formats.BINARY.getMediaType());
@@ -220,7 +220,7 @@ public class ResponseStrategy extends AbstractStrategy {
                             true,
                             "Response",
                             "[{}] Binary Flux detected, streaming directly",
-                            context.getX_request_ipv4());
+                            context.getX_request_ip());
                     return super.writeWith(body);
                 }
 
@@ -233,7 +233,7 @@ public class ResponseStrategy extends AbstractStrategy {
                             true,
                             "Response",
                             "[{}] Binary data chunk: {} bytes",
-                            context.getX_request_ipv4(),
+                            context.getX_request_ip(),
                             dataBuffer.readableByteCount());
                 }).then(super.writeWith(flux));
             }
