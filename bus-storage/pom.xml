@@ -87,7 +87,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <bus.version>8.5.5</bus.version>
         <lombok.version>1.18.42</lombok.version>
-        <jackson.version>2.20.0</jackson.version>
+        <jackson.version>2.21.0</jackson.version>
         <sardine.version>5.13</sardine.version>
         <jsch.version>2.27.2</jsch.version>
         <amazon.s3.version>2.40.15</amazon.s3.version>
@@ -252,7 +252,7 @@
             <plugin>
                 <groupId>org.sonatype.central</groupId>
                 <artifactId>central-publishing-maven-plugin</artifactId>
-                <version>0.9.0</version>
+                <version>0.10.0</version>
                 <extensions>true</extensions>
                 <configuration>
                     <publishingServerId>central</publishingServerId>
@@ -267,7 +267,7 @@
             <plugin>
                 <groupId>com.diffplug.spotless</groupId>
                 <artifactId>spotless-maven-plugin</artifactId>
-                <version>3.1.0</version>
+                <version>3.2.0</version>
                 <configuration>
                     <upToDateChecking>
                         <enabled>false</enabled>

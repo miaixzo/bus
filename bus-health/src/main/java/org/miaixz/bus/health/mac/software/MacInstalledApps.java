@@ -200,7 +200,8 @@ public final class MacInstalledApps {
                 pos = dictInner.indexOf("</date>", vOpen) + "</date>".length();
             } else if (startsWith(dictInner, vOpen, "<array>")) {
                 String inner = extractBalancedInner(dictInner, vOpen, "<array>", "</array>");
-                val = parseStringArray(inner);
+                String parsed = inner == null ? null : parseStringArray(inner);
+                val = parsed == null ? Normal.EMPTY : parsed;
                 pos = dictInner.indexOf("</array>", vOpen) + "</array>".length();
             } else {
                 // other irrelevant tags: go to next tag
