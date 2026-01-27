@@ -45,11 +45,11 @@ The goal is to create a comprehensive full-stack technical solution that rapidly
 
 Bus primarily has versions 3.x, 5.x, 6.x, and 8.x, as detailed below:
 
-| Version | Java    | Maven Repository                                                            | Main Features                                                           |
-|---------|---------|-----------------------------------------------------------------------------|-------------------------------------------------------------------------|
-| 5.x     | java 8  | [bus-all:5.x](https://central.sonatype.com/artifact/org.aoju/bus-all/5.9.9) | Compiled with java 8                                                    |
-| 6.x     | java 17 | [bus-all:6.x](https://central.sonatype.com/artifact/org.aoju/bus-all/6.6.1) | Compiled with java 17, uses Jakarta EE, compatible with java 11, 17     |
-| 8.x     | java 21 | [bus-all:8.x](https://central.sonatype.com/artifact/org.miaixz/bus-alll)    | Compiled with java 21, uses Jakarta EE, compatible with java 11, 17, 21 |
+| Java Version | Maven Repository                                                           | Main Features                                                           |
+|--------------|----------------------------------------------------------------------------|-------------------------------------------------------------------------|
+| Java 8       | [bus-all:5.x](https://central.sonatype.com/artifact/org.aoju/bus-all/5.9.9) | Compiled with java 8                                                    |
+| Java 17      | [bus-all:6.x](https://central.sonatype.com/artifact/org.aoju/bus-all/6.6.1) | Compiled with java 17, uses Jakarta EE, compatible with java 11, 17     |
+| Java 21      | [bus-all:8.x](https://central.sonatype.com/artifact/org.miaixz/bus-all)    | Compiled with java 21, uses Jakarta EE, compatible with java 11, 17, 21 |
 
 
 ### ✨ Component Information

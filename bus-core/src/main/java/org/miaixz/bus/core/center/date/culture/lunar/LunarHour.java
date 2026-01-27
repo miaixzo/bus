@@ -84,6 +84,7 @@ public class LunarHour extends SecondParts {
      * @param second the second (0-59)
      */
     public LunarHour(int year, int month, int day, int hour, int minute, int second) {
+        this.validate(year, month, day, hour, minute, second);
         this.year = year;
         this.month = month;
         this.day = day;

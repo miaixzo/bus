@@ -45,11 +45,11 @@ Bus (企业级应用/服务总线) 是一个基础框架、服务套件；基于
 
 Bus主要版本 3.x、5.x、6.x、8.x，具体如下：
 
-| 版本  | Java    | Maven仓库                                                                  | 主要特点                                     |
-|-----|---------|--------------------------------------------------------------------------|------------------------------------------|
-| 5.x | java 8  | [bus-all:5.x](https://mvnrepository.com/artifact/org.aoju/bus-all/5.9.9) | java 8 编译                                |
-| 6.x | java 17 | [bus-all:6.x](https://mvnrepository.com/artifact/org.aoju/bus-all/6.6.0) | java 17 编译,使用Jakarta EE,适配 java 11、17    |
-| 8.x | java 21 | [bus-all:8.x](https://mvnrepository.com/artifact/org.miaixz/bus-all)     | java 21 编译,使用Jakarta EE,适配 java 11、17、21 |
+| Java 版本   | Maven仓库                                                                  | 主要特点                                     |
+|-------------|----------------------------------------------------------------------------|-------------------------------------------------------------------------|
+| Java 8      | [bus-all:5.x](https://central.sonatype.com/artifact/org.aoju/bus-all/5.9.9) | Compiled with java 8                                                    |
+| Java 17     | [bus-all:6.x](https://central.sonatype.com/artifact/org.aoju/bus-all/6.6.1) | Compiled with java 17, uses Jakarta EE, compatible with java 11, 17     |
+| Java 21     | [bus-all:8.x](https://central.sonatype.com/artifact/org.miaixz/bus-all)    | Compiled with java 21, uses Jakarta EE, compatible with java 11, 17, 21 |
 
 
 ### ✨ 组件信息

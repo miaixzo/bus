@@ -218,7 +218,7 @@ public class SolarDay extends DayParts {
             y += 1;
             i = 0;
         }
-        SolarTerms term = SolarTerms.fromIndex(y, i);
+        SolarTerms term = SolarTerms.fromIndex(y, i + 1);
         SolarDay day = term.getSolarDay();
         while (isBefore(day)) {
             term = term.next(-1);
