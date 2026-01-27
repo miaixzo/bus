@@ -63,6 +63,19 @@ public class StringKit extends CharsBacker {
     }
 
     /**
+     * Converts char[] to String
+     *
+     * @param args The character array
+     * @return The string, returns null if the given value is null
+     */
+    public static String string(final char[] args) {
+        if (null == args) {
+            return null;
+        }
+        return new String(args);
+    }
+
+    /**
      * Converts an object to a string.
      *
      * <pre>
@@ -471,10 +484,10 @@ public class StringKit extends CharsBacker {
         }
 
         // Perform reversal by Unicode code point
-        StringBuilder result = new StringBuilder();
+        final StringBuilder result = new StringBuilder();
         for (int i = text.length(); i > 0;) {
             // Get the code point before the specified position
-            int codePoint = text.codePointBefore(i);
+            final int codePoint = text.codePointBefore(i);
             // Adjust the index based on the number of chars occupied by the code point
             i -= Character.charCount(codePoint);
             // Append the code point to the result

@@ -541,6 +541,19 @@ public class Validator {
     }
 
     /**
+     * Helper method: checks if a string contains only digits
+     *
+     * @param text The string
+     * @return Whether it contains only digits
+     */
+    public static boolean isNumeric(final String text) {
+        if (StringKit.isBlank(text)) {
+            return false;
+        }
+        return isMatchRegex("\\d+", text);
+    }
+
+    /**
      * Checks if the string contains any numbers.
      *
      * @param value the current string
@@ -1086,9 +1099,9 @@ public class Validator {
         Assert.notNull(value);
         Assert.notNull(min);
         Assert.notNull(max);
-        BigDecimal valBd = MathKit.toBigDecimal(value);
-        BigDecimal minBd = MathKit.toBigDecimal(min);
-        BigDecimal maxBd = MathKit.toBigDecimal(max);
+        final BigDecimal valBd = MathKit.toBigDecimal(value);
+        final BigDecimal minBd = MathKit.toBigDecimal(min);
+        final BigDecimal maxBd = MathKit.toBigDecimal(max);
         return valBd.compareTo(minBd) >= 0 && valBd.compareTo(maxBd) <= 0;
     }
 
