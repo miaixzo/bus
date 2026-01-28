@@ -506,37 +506,4 @@ public abstract class BasicProvider {
         return sql.toString();
     }
 
-    /**
-     * Builds dynamic column list without prefix (for single-record selective operations).
-     *
-     * <p>
-     * Generates dynamic SQL that includes only non-null columns for single-record operations.
-     * </p>
-     *
-     * @param entity Table metadata
-     * @param param  Parameter name (e.g., "entity", null for direct access)
-     * @return MyBatis dynamic SQL fragment
-     *
-     *         <p>
-     *         Example output (with param="entity"):
-     *         </p>
-     * 
-     *         <pre>
-     * &lt;trim prefix='(' suffix=')' suffixOverrides=','&gt;
-     *   &lt;if test='entity.name != null'&gt;name,&lt;/if&gt;
-     *   &lt;if test='entity.age != null'&gt;age,&lt;/if&gt;
-     * &lt;/trim&gt;
-     *         </pre>
-     */
-    protected static String buildDynamicColumnListWithoutPrefix(TableMeta entity, String param) {
-        StringBuilder sql = new StringBuilder();
-        sql.append("<trim prefix='(' suffix=')' suffixOverrides=','>\n");
-        for (ColumnMeta col : entity.insertColumns()) {
-            String test = param != null ? param + "." + col.property() + " != null" : col.property() + " != null";
-            sql.append("  <if test='").append(test).append("'>").append(col.column()).append(",</if>\n");
-        }
-        sql.append("</trim>");
-        return sql.toString();
-    }
-
 }

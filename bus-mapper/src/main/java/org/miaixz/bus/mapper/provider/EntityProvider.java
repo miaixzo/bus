@@ -61,17 +61,6 @@ import org.apache.ibatis.builder.annotation.ProviderContext;
 public class EntityProvider extends BasicProvider {
 
     /**
-     * Marks a method as unavailable and throws an exception.
-     *
-     * @param providerContext The provider context, containing method and interface information.
-     * @return The cache key.
-     * @throws UnsupportedOperationException if the method is not available.
-     */
-    public static String unsupported(ProviderContext providerContext) {
-        throw new UnsupportedOperationException(providerContext.getMapperMethod().getName() + " method not available");
-    }
-
-    /**
      * Saves an entity by inserting all its fields.
      *
      * @param providerContext The provider context, containing method and interface information.
@@ -228,6 +217,17 @@ public class EntityProvider extends BasicProvider {
      */
     public static String existsWithPrimaryKey(ProviderContext providerContext) {
         return cacheSql(providerContext, BasicProvider::buildExistsByPrimaryKey);
+    }
+
+    /**
+     * Marks a method as unavailable and throws an exception.
+     *
+     * @param providerContext The provider context, containing method and interface information.
+     * @return The cache key.
+     * @throws UnsupportedOperationException if the method is not available.
+     */
+    public static String unsupported(ProviderContext providerContext) {
+        throw new UnsupportedOperationException(providerContext.getMapperMethod().getName() + " method not available");
     }
 
 }
