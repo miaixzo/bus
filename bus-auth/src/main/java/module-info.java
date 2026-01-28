@@ -92,13 +92,16 @@ module bus.auth {
     exports org.miaixz.bus.auth.nimble.pinterest;
     exports org.miaixz.bus.auth.nimble.proginn;
     exports org.miaixz.bus.auth.nimble.qq;
+    exports org.miaixz.bus.auth.nimble.rednote;
     exports org.miaixz.bus.auth.nimble.renren;
+    exports org.miaixz.bus.auth.nimble.router;
     exports org.miaixz.bus.auth.nimble.slack;
     exports org.miaixz.bus.auth.nimble.stackoverflow;
     exports org.miaixz.bus.auth.nimble.taobao;
     exports org.miaixz.bus.auth.nimble.teambition;
     exports org.miaixz.bus.auth.nimble.toutiao;
     exports org.miaixz.bus.auth.nimble.twitter;
+    exports org.miaixz.bus.auth.nimble.vk;
     exports org.miaixz.bus.auth.nimble.wechat;
     exports org.miaixz.bus.auth.nimble.wechat.ee;
     exports org.miaixz.bus.auth.nimble.wechat.mini;

@@ -217,7 +217,7 @@ public class HexKit extends Hex {
      * @param value the float value to convert
      * @return the hexadecimal string
      */
-    public static String toHex(float value) {
+    public static String toHex(final float value) {
         return Integer.toHexString(Float.floatToIntBits(value));
     }
 
@@ -227,7 +227,7 @@ public class HexKit extends Hex {
      * @param value the hexadecimal string
      * @return the float value derived from the hex string
      */
-    public static float hexToFloat(String value) {
+    public static float hexToFloat(final String value) {
         return Float.intBitsToFloat(Integer.parseUnsignedInt(removeHexPrefix(value), 16));
     }
 
@@ -237,7 +237,7 @@ public class HexKit extends Hex {
      * @param value the double value to convert
      * @return the hexadecimal string
      */
-    public static String toHex(double value) {
+    public static String toHex(final double value) {
         return Long.toHexString(Double.doubleToLongBits(value));
     }
 
@@ -247,7 +247,7 @@ public class HexKit extends Hex {
      * @param value the hexadecimal string
      * @return the double value derived from the hex string
      */
-    public static double hexToDouble(String value) {
+    public static double hexToDouble(final String value) {
         return Double.longBitsToDouble(Long.parseUnsignedLong(removeHexPrefix(value), 16));
     }
 

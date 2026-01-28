@@ -35,7 +35,15 @@ import org.apache.ibatis.builder.annotation.ProviderContext;
  * <p>
  * This class uses BasicProvider's common SQL building methods to simplify code. Reduced from ~250 lines to ~170 lines
  * (32% reduction).
+ * <p>
+ * <strong>UPSERT Methods:</strong>
  * </p>
+ * <ul>
+ * <li>{@code insertUp()}: Insert or update with all fields (atomic operation)</li>
+ * <li>{@code insertUpSelective()}: Insert or update with non-null fields (atomic operation)</li>
+ * <li>Supports MySQL (ON DUPLICATE KEY UPDATE), PostgreSQL (ON CONFLICT), SQLite (INSERT OR REPLACE), Oracle (MERGE),
+ * H2, SQL Server, DB2</li>
+ * </ul>
  *
  * <p>
  * Performance optimizations:
@@ -43,6 +51,7 @@ import org.apache.ibatis.builder.annotation.ProviderContext;
  * <ul>
  * <li>Extends BasicProvider for code reuse</li>
  * <li>Uses cacheSql for unified caching mechanism</li>
+ * <li>Uses cacheSqlDynamic for database-specific SQL generation</li>
  * <li>Eliminates duplicate SQL building code</li>
  * </ul>
  *
@@ -50,17 +59,6 @@ import org.apache.ibatis.builder.annotation.ProviderContext;
  * @since Java 17+
  */
 public class EntityProvider extends BasicProvider {
-
-    /**
-     * Marks a method as unavailable and throws an exception.
-     *
-     * @param providerContext The provider context, containing method and interface information.
-     * @return The cache key.
-     * @throws UnsupportedOperationException if the method is not available.
-     */
-    public static String unsupported(ProviderContext providerContext) {
-        throw new UnsupportedOperationException(providerContext.getMapperMethod().getName() + " method not available");
-    }
 
     /**
      * Saves an entity by inserting all its fields.
@@ -73,6 +71,16 @@ public class EntityProvider extends BasicProvider {
     }
 
     /**
+     * Upserts an entity (insert if not exists, update if exists).
+     *
+     * @param providerContext The provider context, containing method and interface information.
+     * @return The cache key.
+     */
+    public static String insertUp(ProviderContext providerContext) {
+        return cacheSqlDynamic(providerContext, BasicProvider::buildInsertUp);
+    }
+
+    /**
      * Saves only the non-null fields of an entity.
      *
      * @param providerContext The provider context, containing method and interface information.
@@ -80,6 +88,16 @@ public class EntityProvider extends BasicProvider {
      */
     public static String insertSelective(ProviderContext providerContext) {
         return cacheSql(providerContext, BasicProvider::buildInsertSelective);
+    }
+
+    /**
+     * Upserts an entity with only non-null fields.
+     *
+     * @param providerContext The provider context, containing method and interface information.
+     * @return The cache key.
+     */
+    public static String insertUpSelective(ProviderContext providerContext) {
+        return cacheSqlDynamic(providerContext, BasicProvider::buildInsertUpSelective);
     }
 
     /**
@@ -199,6 +217,17 @@ public class EntityProvider extends BasicProvider {
      */
     public static String existsWithPrimaryKey(ProviderContext providerContext) {
         return cacheSql(providerContext, BasicProvider::buildExistsByPrimaryKey);
+    }
+
+    /**
+     * Marks a method as unavailable and throws an exception.
+     *
+     * @param providerContext The provider context, containing method and interface information.
+     * @return The cache key.
+     * @throws UnsupportedOperationException if the method is not available.
+     */
+    public static String unsupported(ProviderContext providerContext) {
+        throw new UnsupportedOperationException(providerContext.getMapperMethod().getName() + " method not available");
     }
 
 }

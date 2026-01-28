@@ -27,7 +27,10 @@
 */
 package org.miaixz.bus.vortex.strategy;
 
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -139,7 +142,7 @@ public class RequestStrategy extends AbstractStrategy {
                     true,
                     "Request",
                     "[{}] GET request processed - Path: {}, Params: {}",
-                    context.getX_request_ipv4(),
+                    context.getX_request_ip(),
                     exchange.getRequest().getURI().getPath(),
                     JsonKit.toJsonString(context.getParameters()));
         })
@@ -151,7 +154,7 @@ public class RequestStrategy extends AbstractStrategy {
                                 false,
                                 "Request",
                                 "[{}] Request processed - Path: {}, ExecutionTime: {}ms",
-                                context.getX_request_ipv4(),
+                                context.getX_request_ip(),
                                 exchange.getRequest().getURI().getPath(),
                                 (System.currentTimeMillis() - context.getTimestamp())));
     }
@@ -179,7 +182,7 @@ public class RequestStrategy extends AbstractStrategy {
                     true,
                     "Request",
                     "[{}] Large JSON request detected ({} bytes). Using optimized streaming processing.",
-                    context.getX_request_ipv4(),
+                    context.getX_request_ip(),
                     contentLength);
         }
 
@@ -222,7 +225,7 @@ public class RequestStrategy extends AbstractStrategy {
                         true,
                         "Request",
                         "[{}] Large JSON body cached in memory: {} bytes",
-                        context.getX_request_ipv4(),
+                        context.getX_request_ip(),
                         bytes.length);
             }
 
@@ -252,7 +255,7 @@ public class RequestStrategy extends AbstractStrategy {
                     true,
                     "Request",
                     "[{}] JSON request processed - Path: {}, Params: {}",
-                    context.getX_request_ipv4(),
+                    context.getX_request_ip(),
                     exchange.getRequest().getURI().getPath(),
                     JsonKit.toJsonString(jsonMap));
 
@@ -266,7 +269,7 @@ public class RequestStrategy extends AbstractStrategy {
                                 false,
                                 "Request",
                                 "[{}] Request processed - Path: {}, ExecutionTime: {}ms",
-                                context.getX_request_ipv4(),
+                                context.getX_request_ip(),
                                 exchange.getRequest().getURI().getPath(),
                                 (System.currentTimeMillis() - context.getTimestamp())))
                 // Add explicit error logging for failures within this stage
@@ -275,7 +278,7 @@ public class RequestStrategy extends AbstractStrategy {
                             false,
                             "Request",
                             "[{}] Failed to process JSON: {}",
-                            context.getX_request_ipv4(),
+                            context.getX_request_ip(),
                             e.getMessage());
                     return Mono.error(e); // Re-throw the original exception
                 });
@@ -367,7 +370,7 @@ public class RequestStrategy extends AbstractStrategy {
                                 false,
                                 "Request",
                                 "[{}] Request processed - Path: {}, ExecutionTime: {}ms",
-                                context.getX_request_ipv4(),
+                                context.getX_request_ip(),
                                 exchange.getRequest().getURI().getPath(),
                                 (System.currentTimeMillis() - context.getTimestamp())))
                 .onErrorResume(e -> {
@@ -375,7 +378,7 @@ public class RequestStrategy extends AbstractStrategy {
                             false,
                             "Request",
                             "[{}] Failed to process form: {}",
-                            context.getX_request_ipv4(),
+                            context.getX_request_ip(),
                             e.getMessage());
                     return Mono.error(e);
                 });
@@ -406,7 +409,7 @@ public class RequestStrategy extends AbstractStrategy {
                     true,
                     "Request",
                     "[{}] Multipart request ({} bytes) - using streaming processing for file uploads",
-                    context.getX_request_ipv4(),
+                    context.getX_request_ip(),
                     contentLength);
         }
 
@@ -454,7 +457,7 @@ public class RequestStrategy extends AbstractStrategy {
                     true,
                     "Request",
                     "[{}] Multipart request processed - Path: {}, Params: {}",
-                    context.getX_request_ipv4(),
+                    context.getX_request_ip(),
                     exchange.getRequest().getURI().getPath(),
                     JsonKit.toJsonString(formMap));
         })
@@ -465,7 +468,7 @@ public class RequestStrategy extends AbstractStrategy {
                                 false,
                                 "Request",
                                 "[{}] Request processed - Path: {}, ExecutionTime: {}ms",
-                                context.getX_request_ipv4(),
+                                context.getX_request_ip(),
                                 exchange.getRequest().getURI().getPath(),
                                 (System.currentTimeMillis() - context.getTimestamp())))
                 .onErrorResume(e -> {
@@ -473,7 +476,7 @@ public class RequestStrategy extends AbstractStrategy {
                             false,
                             "Request",
                             "[{}] Failed to process multipart: {}",
-                            context.getX_request_ipv4(),
+                            context.getX_request_ip(),
                             e.getMessage());
                     return Mono.error(e);
                 });

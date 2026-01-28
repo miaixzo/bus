@@ -40,7 +40,6 @@ import org.apache.ibatis.session.RowBounds;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.ObjectKit;
-import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.Args;
 import org.miaixz.bus.mapper.Context;
@@ -186,11 +185,6 @@ public class TenantHandler<T> extends ConditionHandler<T, TenantConfig> {
         // Try to get provider from properties
         TenantProvider provider = getProvider(properties, TenantProvider.class);
 
-        // If no provider, tenant feature is not enabled
-        if (provider == null) {
-            return null;
-        }
-
         return buildTenantConfig(datasourceKey, properties, provider);
     }
 
@@ -200,21 +194,35 @@ public class TenantHandler<T> extends ConditionHandler<T, TenantConfig> {
      * @param datasourceKey the datasource key
      * @param properties    the properties
      * @param provider      the tenant provider
-     * @return the tenant configuration
+     * @return the tenant configuration, or null if tenant feature is not configured
      */
     private TenantConfig buildTenantConfig(String datasourceKey, Properties properties, TenantProvider provider) {
         String sharedPrefix = Args.SHARED_KEY + Symbol.DOT + Args.TENANT_KEY + Symbol.DOT;
         String dsPrefix = datasourceKey + Symbol.DOT + Args.TENANT_KEY + Symbol.DOT;
 
-        // Merge configuration: datasource-specific > shared > default
-        String column = properties.getProperty(
-                dsPrefix + Args.TENANT_COLUMN,
-                properties.getProperty(sharedPrefix + Args.TENANT_COLUMN, Args.TENANT_ID));
+        // Check if tenant.column is explicitly configured (datasource-specific or shared)
+        // If not configured, tenant feature should be disabled
+        String column = properties.getProperty(dsPrefix + Args.TENANT_COLUMN);
+        if (column == null) {
+            column = properties.getProperty(sharedPrefix + Args.TENANT_COLUMN);
+        }
+
+        // If column is not configured, tenant feature is disabled
+        if (column == null || column.trim().isEmpty()) {
+            Logger.debug(
+                    false,
+                    getHandler(),
+                    "Tenant feature disabled: no column configured for datasource {}",
+                    datasourceKey);
+            return null;
+        }
+
         String ignoreTablesStr = properties.getProperty(
                 dsPrefix + Args.PROP_IGNORE,
                 properties.getProperty(sharedPrefix + Args.PROP_IGNORE, Normal.EMPTY));
 
         Logger.debug(false, getHandler(), "Building config for datasource: {}", datasourceKey);
+        Logger.debug(false, getHandler(), "Tenant column: {}", column);
         Logger.debug(false, getHandler(), "Ignore config key: {}", dsPrefix + Args.PROP_IGNORE);
         Logger.debug(false, getHandler(), "Ignore raw value: {}", ignoreTablesStr);
 
@@ -224,17 +232,12 @@ public class TenantHandler<T> extends ConditionHandler<T, TenantConfig> {
         Logger.debug(false, getHandler(), "Ignore parsed list: {}", ignoreTables);
 
         // If column is configured, create a default provider that gets tenant ID from TenantContext
-        TenantProvider finalProvider = provider;
-        if (finalProvider == null && StringKit.isNotEmpty(column)) {
+        if (provider == null) {
             // Create default provider that uses TenantContext
-            finalProvider = TenantContext::getTenantId;
+            provider = TenantContext::getTenantId;
         }
 
-        if (finalProvider == null) {
-            return null;
-        }
-
-        return TenantConfig.builder().column(column).ignore(ignoreTables).provider(finalProvider).build();
+        return TenantConfig.builder().column(column).ignore(ignoreTables).provider(provider).build();
     }
 
     /**

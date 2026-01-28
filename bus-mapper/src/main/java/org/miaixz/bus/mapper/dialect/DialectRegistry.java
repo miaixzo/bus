@@ -32,11 +32,15 @@ import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import javax.sql.DataSource;
 
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.mapper.Holder;
 import org.miaixz.bus.mapper.support.paging.Pageable;
 
 /**
@@ -48,9 +52,14 @@ import org.miaixz.bus.mapper.support.paging.Pageable;
  * </p>
  *
  * <p>
+ * For multi-datasource scenarios, this registry also caches dialects per datasource key to support dynamic datasource
+ * switching.
+ * </p>
+ *
+ * <p>
  * Example usage:
  * </p>
- * 
+ *
  * <pre>{@code
  * // Automatic detection from DataSource
  * Dialect dialect = DialectRegistry.getDialect(dataSource);
@@ -61,8 +70,14 @@ import org.miaixz.bus.mapper.support.paging.Pageable;
  * // Detection from JDBC URL
  * Dialect dialect = DialectRegistry.getDialectByUrl("jdbc:mysql://localhost:3306/test");
  *
+ * // Multi-datasource: get dialect for current thread's datasource
+ * Dialect dialect = DialectRegistry.getDialect();
+ *
  * // Register custom dialect
  * DialectRegistry.registerDialect(new MyCustomDialect());
+ *
+ * // Initialize dialect for a specific datasource key
+ * DialectRegistry.initializeDialect("mysql_ds", mysqlDataSource);
  * }</pre>
  *
  * @author Kimi Liu
@@ -84,6 +99,15 @@ public final class DialectRegistry {
      * JDBC URL to Dialect cache
      */
     private static final ConcurrentMap<String, Dialect> URL_CACHE = new ConcurrentHashMap<>();
+
+    /**
+     * Datasource key to Dialect cache for multi-datasource scenarios.
+     * <p>
+     * This cache is used when the application uses dynamic datasource switching via {@link Holder#setKey(String)}. The
+     * dialect is resolved based on the current datasource key.
+     * </p>
+     */
+    private static final ConcurrentMap<String, Dialect> DS_KEY_CACHE = new ConcurrentHashMap<>();
 
     /**
      * Default/unknown dialect (singleton)
@@ -255,6 +279,114 @@ public final class DialectRegistry {
     }
 
     /**
+     * Gets the dialect for the specified dialect name.
+     *
+     * <p>
+     * Supported dialect names: mysql, postgresql, oracle, sqlserver, sqlite, h2, db2, informix, etc.
+     * </p>
+     *
+     * @param dialectName the dialect name (case-insensitive)
+     * @return the detected dialect, or UnknownDialect if no match found
+     */
+    public static Dialect getDialectByName(String dialectName) {
+        if (dialectName == null || dialectName.isEmpty()) {
+            return UNKNOWN;
+        }
+
+        String lowerName = dialectName.toLowerCase();
+        for (Dialect dialect : DIALECTS) {
+            if (dialect.getDatabase().toLowerCase().equals(lowerName)
+                    || dialect.getDatabase().toLowerCase().replace(Symbol.SPACE, Normal.EMPTY).equals(lowerName)) {
+                return dialect;
+            }
+        }
+
+        return UNKNOWN;
+    }
+
+    /**
+     * Gets the database dialect for the current datasource.
+     *
+     * <p>
+     * This method determines the current datasource key from {@link Holder#getKey()} and returns the corresponding
+     * dialect from the cache. If not cached, it will attempt to detect from DynamicDataSource (if available).
+     * </p>
+     *
+     * <p>
+     * This is the recommended method for multi-datasource scenarios with dynamic datasource switching.
+     * </p>
+     *
+     * @return the database dialect, or {@link #UNKNOWN} if not found
+     */
+    public static Dialect getDialect() {
+        String dsKey = Holder.getKey();
+        return DS_KEY_CACHE.computeIfAbsent(dsKey, DialectRegistry::detectDialectFromKey);
+    }
+
+    /**
+     * Detects dialect for a specific datasource key.
+     *
+     * @param dsKey the datasource key
+     * @return the detected dialect
+     */
+    private static Dialect detectDialectFromKey(String dsKey) {
+        try {
+            // Try to get DataSource from DynamicDataSource (if available)
+            DataSource dataSource = getDataSource(dsKey);
+            if (dataSource != null) {
+                return getDialect(dataSource);
+            }
+        } catch (Exception e) {
+            // Ignore: DynamicDataSource may not be available
+        }
+        return UNKNOWN;
+    }
+
+    /**
+     * Gets DataSource by key from DynamicDataSource (if available).
+     *
+     * @param dsKey the datasource key
+     * @return the DataSource, or null if not found
+     */
+    private static DataSource getDataSource(String dsKey) {
+        try {
+            // Try to load DynamicDataSource class (may not be available in all environments)
+            Class<?> ddsClass = Class.forName("org.miaixz.bus.starter.jdbc.DynamicDataSource");
+            Object instance = ddsClass.getMethod("getInstance").invoke(null);
+            if (instance != null) {
+                Map<Object, Object> dataSources = (Map<Object, Object>) ddsClass.getMethod("getAllDataSources")
+                        .invoke(instance);
+
+                Object ds = dataSources.get(dsKey);
+                if (ds instanceof DataSource) {
+                    return (DataSource) ds;
+                }
+            }
+        } catch (Exception e) {
+            // DynamicDataSource not available
+        }
+        return null;
+    }
+
+    /**
+     * Initializes the dialect for a specific datasource key.
+     *
+     * <p>
+     * This method detects the dialect from the given DataSource and caches it for the specified datasource key. Should
+     * be called during application startup for each configured datasource.
+     * </p>
+     *
+     * @param dsKey      the datasource key (e.g., "master", "slave", "tenant_001")
+     * @param dataSource the datasource
+     */
+    public static void initializeDialect(String dsKey, DataSource dataSource) {
+        if (dsKey != null && dataSource != null) {
+            Dialect dialect = getDialect(dataSource);
+            DS_KEY_CACHE.put(dsKey, dialect);
+        }
+    }
+
+    /**
      * Clears all caches.
      *
      * <p>
@@ -264,6 +396,7 @@ public final class DialectRegistry {
     public static void clearCache() {
         DATASOURCE_CACHE.clear();
         URL_CACHE.clear();
+        DS_KEY_CACHE.clear();
     }
 
     /**
@@ -281,7 +414,7 @@ public final class DialectRegistry {
     private static class DefaultDialect extends AbstractDialect {
 
         public DefaultDialect() {
-            super("Unknown", "");
+            super("Unknown", Normal.EMPTY);
         }
 
         @Override

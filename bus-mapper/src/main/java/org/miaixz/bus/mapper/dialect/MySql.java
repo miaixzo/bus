@@ -27,6 +27,9 @@
 */
 package org.miaixz.bus.mapper.dialect;
 
+import java.util.List;
+
+import org.miaixz.bus.mapper.parsing.ColumnMeta;
 import org.miaixz.bus.mapper.support.paging.Pageable;
 
 /**
@@ -78,6 +81,29 @@ public class MySql extends AbstractDialect {
     @Override
     public String getUpsertTemplate() {
         return "INSERT INTO %s (%s) VALUES %s ON DUPLICATE KEY UPDATE %s";
+    }
+
+    @Override
+    public String buildUpsertSql(
+            String tableName,
+            String columnList,
+            String valuesList,
+            String keyColumns,
+            List<ColumnMeta> updateColumns,
+            String itemPrefix) {
+        // MySQL: INSERT INTO ... VALUES ... ON DUPLICATE KEY UPDATE with dynamic <if> tags
+        StringBuilder sb = new StringBuilder();
+        sb.append("INSERT INTO ").append(tableName).append(" (").append(columnList).append(") VALUES\n");
+        sb.append(valuesList);
+        sb.append("\nON DUPLICATE KEY UPDATE\n");
+
+        for (ColumnMeta col : updateColumns) {
+            String assignment = col.column() + " = VALUES(" + col.column() + ")";
+            sb.append("  <if test=\"").append(itemPrefix).append(".").append(col.property()).append(" != null\">")
+                    .append(assignment).append(",</if>\n");
+        }
+
+        return sb.toString();
     }
 
 }

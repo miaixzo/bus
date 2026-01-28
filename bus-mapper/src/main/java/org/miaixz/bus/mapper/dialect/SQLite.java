@@ -27,6 +27,9 @@
 */
 package org.miaixz.bus.mapper.dialect;
 
+import java.util.List;
+
+import org.miaixz.bus.mapper.parsing.ColumnMeta;
 import org.miaixz.bus.mapper.support.paging.Pageable;
 
 /**
@@ -69,6 +72,21 @@ public class SQLite extends AbstractDialect {
     @Override
     public String getUpsertTemplate() {
         return "INSERT OR REPLACE INTO %s (%s) VALUES %s";
+    }
+
+    @Override
+    public String buildUpsertSql(
+            String tableName,
+            String columnList,
+            String valuesList,
+            String keyColumns,
+            List<ColumnMeta> updateColumns,
+            String itemPrefix) {
+        // SQLite: INSERT OR REPLACE INTO ... VALUES ... (doesn't need UPDATE clause)
+        StringBuilder sb = new StringBuilder();
+        sb.append("INSERT OR REPLACE INTO ").append(tableName).append(" (").append(columnList).append(") VALUES\n");
+        sb.append(valuesList);
+        return sb.toString();
     }
 
 }

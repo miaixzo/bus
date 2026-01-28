@@ -38,7 +38,6 @@ import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.NetKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.spring.ContextBuilder;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -121,8 +120,7 @@ public class SentinelRequestHandler implements HandlerInterceptor {
     }
 
     /**
-     * Called after the request is completed and the view is rendered. This method is suitable for resource cleanup and
-     * final logging. It logs the response body and status, and clears the request context.
+     * Called after the request is completed and the view is rendered. This method is suitable for final logging.
      *
      * @param request   the current HTTP request.
      * @param response  the current HTTP response.
@@ -150,8 +148,6 @@ public class SentinelRequestHandler implements HandlerInterceptor {
         } else {
             Logger.info(false, "Sentinel", "Status: {}", response.getStatus());
         }
-        // Clean up the cache at the end of the request.
-        ContextBuilder.clear();
     }
 
     /**

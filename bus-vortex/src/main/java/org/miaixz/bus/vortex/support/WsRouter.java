@@ -90,7 +90,7 @@ public class WsRouter implements Router<ServerRequest, ServerResponse> {
         return Mono.deferContextual(contextView -> {
             final Context context = contextView.get(Context.class);
 
-            String ip = context.getX_request_ipv4();
+            String ip = context.getX_request_ip();
             String method = input.methodName();
             String path = input.path();
 

@@ -80,6 +80,11 @@ public class StrategyFactory {
     private final List<Strategy> wsChain;
 
     /**
+     * A specialized, minimal chain for LLM (Large Language Model) requests.
+     */
+    private final List<Strategy> llmChain;
+
+    /**
      * Constructs a new {@code StrategyFactory} and pre-calculates the strategy chains.
      *
      * @param chain A list of all available {@link Strategy} beans, injected by the Spring container.
@@ -138,6 +143,14 @@ public class StrategyFactory {
                 "WS Chain      ({} strategies): {}",
                 this.wsChain.size(),
                 getStrategyNames(this.wsChain));
+
+        this.llmChain = chain.stream().filter(this::isApplicableToLlm).collect(Collectors.toUnmodifiableList());
+        Logger.info(
+                true,
+                "Chain",
+                "LLM Chain     ({} strategies): {}",
+                this.llmChain.size(),
+                getStrategyNames(this.llmChain));
 
         Logger.info(true, "Chain", "StrategyFactory initialization complete.");
     }
@@ -216,7 +229,18 @@ public class StrategyFactory {
             return this.wsChain;
         }
 
-        // 5. For all other requests (e.g., REST), apply the full, default strategy chain.
+        // 5. LLM requests.
+        if (Args.isLlmRequest(path)) {
+            Logger.debug(
+                    true,
+                    "Chain",
+                    "{} Path matched LLM. Selected LLM Chain ({} strategies).",
+                    ipTag,
+                    this.llmChain.size());
+            return this.llmChain;
+        }
+
+        // 6. For all other requests (e.g., REST), apply the full, default strategy chain.
         Logger.debug(
                 true,
                 "Chain",
@@ -283,6 +307,21 @@ public class StrategyFactory {
         // For now, we assume all strategies apply to CST.
         // This logic is identical to default, but is kept separate for future customization.
         return true;
+    }
+
+    /**
+     * Determines if a strategy is applicable to LLM requests.
+     * <p>
+     * LLM requests are simple proxies similar to MCP; they don't need complex validation like method/version
+     * qualification or rate limiting. Authentication is handled at the router level via project API keys.
+     *
+     * @param strategy The strategy to check.
+     * @return {@code false} if the strategy is one of the business-logic strategies to be skipped for LLM, {@code true}
+     *         otherwise.
+     */
+    public boolean isApplicableToLlm(Strategy strategy) {
+        // LLM requests skip QualifierStrategy (method/version validation) and LimiterStrategy
+        return !(strategy instanceof QualifierStrategy || strategy instanceof LimiterStrategy);
     }
 
     /**

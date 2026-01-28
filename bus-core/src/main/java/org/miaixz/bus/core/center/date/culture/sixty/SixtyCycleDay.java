@@ -32,15 +32,12 @@ import java.util.List;
 
 import org.miaixz.bus.core.center.date.culture.*;
 import org.miaixz.bus.core.center.date.culture.fetus.FetusDay;
-import org.miaixz.bus.core.center.date.culture.star.nine.NineStar;
-import org.miaixz.bus.core.center.date.culture.star.twelve.TwelveStar;
-import org.miaixz.bus.core.center.date.culture.star.twentyeight.TwentyEightStar;
-import org.miaixz.bus.core.center.date.culture.lunar.LunarDay;
-import org.miaixz.bus.core.center.date.culture.lunar.LunarMonth;
-import org.miaixz.bus.core.center.date.culture.lunar.LunarYear;
 import org.miaixz.bus.core.center.date.culture.solar.SolarDay;
 import org.miaixz.bus.core.center.date.culture.solar.SolarTerms;
 import org.miaixz.bus.core.center.date.culture.solar.SolarTime;
+import org.miaixz.bus.core.center.date.culture.star.nine.NineStar;
+import org.miaixz.bus.core.center.date.culture.star.twelve.TwelveStar;
+import org.miaixz.bus.core.center.date.culture.star.twentyeight.TwentyEightStar;
 
 /**
  * Represents a Sixty-Year Cycle Day (干支日), a traditional Chinese calendar unit. The year changes at the Start of Spring
@@ -87,28 +84,12 @@ public class SixtyCycleDay extends Loops {
      * @param solarDay The Gregorian day.
      */
     public SixtyCycleDay(SolarDay solarDay) {
-        int solarYear = solarDay.getYear();
-        SolarDay springSolarDay = SolarTerms.fromIndex(solarYear, 3).getSolarDay();
-        LunarDay lunarDay = solarDay.getLunarDay();
-        LunarYear lunarYear = lunarDay.getLunarMonth().getLunarYear();
-        if (lunarYear.getYear() == solarYear) {
-            if (solarDay.isBefore(springSolarDay)) {
-                lunarYear = lunarYear.next(-1);
-            }
-        } else if (lunarYear.getYear() < solarYear) {
-            if (!solarDay.isBefore(springSolarDay)) {
-                lunarYear = lunarYear.next(1);
-            }
-        }
         SolarTerms term = solarDay.getTerm();
-        int index = term.getIndex() - 3;
-        if (index < 0 && term.getSolarDay().isAfter(springSolarDay)) {
-            index += 24;
-        }
+        int index = term.getIndex();
+        int offset = index < 3 ? (index == 0 ? -2 : -1) : ((index - 3) / 2);
         this.solarDay = solarDay;
-        this.month = new SixtyCycleMonth(SixtyCycleYear.fromYear(lunarYear.getYear()),
-                LunarMonth.fromYm(solarYear, 1).getSixtyCycle().next((int) Math.floor(index * 0.5)));
-        this.day = lunarDay.getSixtyCycle();
+        this.month = SixtyCycleYear.fromYear(term.getYear()).getFirstMonth().next(offset);
+        this.day = SixtyCycle.fromIndex(solarDay.subtract(SolarDay.fromYmd(2000, 1, 7)));
     }
 
     /**

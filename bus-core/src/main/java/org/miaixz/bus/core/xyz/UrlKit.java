@@ -787,9 +787,11 @@ public class UrlKit {
         }
 
         // Remove trailing '&'
-        final int lastIndex = builder.length() - 1;
-        if (lastIndex >= 0 && Symbol.C_AND == builder.charAt(lastIndex)) {
-            builder.deleteCharAt(lastIndex);
+        if (!builder.isEmpty()) {
+            final int lastIndex = builder.length() - 1;
+            if (Symbol.C_AND == builder.charAt(lastIndex)) {
+                builder.deleteCharAt(lastIndex);
+            }
         }
         return builder.toString();
     }

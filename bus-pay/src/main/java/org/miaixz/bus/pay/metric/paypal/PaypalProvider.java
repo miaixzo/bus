@@ -117,7 +117,7 @@ public class PaypalProvider extends AbstractProvider<Voucher, Context> {
         Map<String, String> headers = new HashMap<>(3);
         headers.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON);
         headers.put(
-                "Authorization",
+                HTTP.AUTHORIZATION,
                 accessToken.getTokenType().concat(Symbol.SPACE).concat(accessToken.getAccessToken()));
         if (StringKit.isNotEmpty(payPalRequestId)) {
             headers.put("PayPal-Request-Id", payPalRequestId);
@@ -160,7 +160,7 @@ public class PaypalProvider extends AbstractProvider<Voucher, Context> {
         headers.put("Accept", MediaType.APPLICATION_JSON);
         headers.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
         headers.put(
-                "Authorization",
+                HTTP.AUTHORIZATION,
                 "Basic ".concat(
                         Base64.encode(
                                 (this.context.getAppKey().concat(":").concat(this.context.getAppSecret()))

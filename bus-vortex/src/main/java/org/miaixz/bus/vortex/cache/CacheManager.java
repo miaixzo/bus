@@ -37,7 +37,7 @@ import org.miaixz.bus.cache.metric.GuavaCache;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Holder;
 import org.miaixz.bus.vortex.Monitor;
-import org.miaixz.bus.vortex.metrics.CacheStats;
+import org.miaixz.bus.vortex.metric.CacheStats;
 
 /**
  * A generic two-level cache manager combining L1 (ConcurrentHashMap) and L2 (Caffeine) caches.

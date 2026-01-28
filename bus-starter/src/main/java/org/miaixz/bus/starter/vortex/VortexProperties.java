@@ -67,11 +67,6 @@ public class VortexProperties {
     private Args.Limit limit = new Args.Limit();
 
     /**
-     * Security configuration, initialized by default.
-     */
-    private Args.Mock mock = new Args.Mock();
-
-    /**
      * Performance optimization settings for request body processing and connection pooling.
      * <p>
      * These settings allow fine-tuning of memory usage and throughput trade-offs.

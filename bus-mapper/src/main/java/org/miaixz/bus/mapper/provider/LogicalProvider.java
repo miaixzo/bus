@@ -32,6 +32,7 @@ import java.util.stream.Collectors;
 
 import org.apache.ibatis.builder.annotation.ProviderContext;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.Logical;
 import org.miaixz.bus.mapper.Args;
@@ -71,8 +72,8 @@ public class LogicalProvider {
                         () -> entity.whereColumns().stream().map(
                                 column -> ifTest(column.notNullTest(), () -> "AND " + column.columnEqualsProperty()))
                                 .collect(Collectors.joining(Symbol.LF)) + logicalCondition(entity, false))
-                        + entity.groupByColumn().orElse("") + entity.havingColumn().orElse("")
-                        + entity.orderByColumn().orElse("");
+                        + entity.groupByColumn().orElse(Normal.EMPTY) + entity.havingColumn().orElse(Normal.EMPTY)
+                        + entity.orderByColumn().orElse(Normal.EMPTY);
             }
         });
     }
@@ -112,8 +113,8 @@ public class LogicalProvider {
                                                                 () -> "AND " + column.columnEqualsProperty("entity.")))
                                                         .collect(Collectors.joining(Symbol.LF))))
                                         + logicalCondition(entity, false))
-                        + entity.groupByColumn().orElse("") + entity.havingColumn().orElse("")
-                        + entity.orderByColumn().orElse("");
+                        + entity.groupByColumn().orElse(Normal.EMPTY) + entity.havingColumn().orElse(Normal.EMPTY)
+                        + entity.orderByColumn().orElse(Normal.EMPTY);
             }
         });
     }
@@ -148,7 +149,7 @@ public class LogicalProvider {
                                 () -> ifParameterNotNull(() -> Args.CONDITION_WHERE_CLAUSE)
                                         + logicalCondition(entity, false))
                         + ifTest("orderByClause != null", () -> " Order BY ${orderByClause}")
-                        + ifTest("orderByClause == null", () -> entity.orderByColumn().orElse(""))
+                        + ifTest("orderByClause == null", () -> entity.orderByColumn().orElse(Normal.EMPTY))
                         + ifTest("endSql != null and endSql != ''", () -> "${endSql}");
             }
         });

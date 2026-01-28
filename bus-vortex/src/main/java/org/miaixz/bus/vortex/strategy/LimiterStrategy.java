@@ -107,7 +107,7 @@ public class LimiterStrategy extends AbstractStrategy {
             Assert.notNull(context.getAssets(), "Assets must be resolved by a preceding strategy.");
 
             String methodVersion = context.getAssets().getMethod() + context.getAssets().getVersion();
-            String clientIp = context.getX_request_ipv4(); // Populated by a preceding strategy
+            String clientIp = context.getX_request_ip(); // Populated by a preceding strategy
 
             Logger.debug(true, "Limiter", "[{}] Applying rate limits for: {}", clientIp, methodVersion);
             // --- End of sync setup ---

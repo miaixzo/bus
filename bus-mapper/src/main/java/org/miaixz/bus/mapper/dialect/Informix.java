@@ -27,6 +27,9 @@
 */
 package org.miaixz.bus.mapper.dialect;
 
+import java.util.List;
+
+import org.miaixz.bus.mapper.parsing.ColumnMeta;
 import org.miaixz.bus.mapper.support.paging.Pageable;
 
 /**
@@ -109,6 +112,58 @@ public class Informix extends AbstractDialect {
     @Override
     public String getUpsertTemplate() {
         return "MERGE INTO %s AS target USING (VALUES %s) AS source (%s) ON %s WHEN MATCHED THEN UPDATE SET %s WHEN NOT MATCHED THEN INSERT (%s) VALUES (%s)";
+    }
+
+    @Override
+    public String buildUpsertSql(
+            String tableName,
+            String columnList,
+            String valuesList,
+            String keyColumns,
+            List<ColumnMeta> updateColumns,
+            String itemPrefix) {
+        // Informix: MERGE INTO ... USING (VALUES ...) AS source (...) ON (...) WHEN MATCHED THEN UPDATE SET ...
+        // WHEN NOT MATCHED THEN INSERT (...) VALUES (...) with dynamic <if> tags for selective fields
+
+        StringBuilder sb = new StringBuilder();
+
+        // Build source column list for USING clause
+        sb.append("MERGE INTO ").append(tableName).append(" AS target\n");
+        sb.append("USING (VALUES (").append(valuesList).append(")) AS source (").append(columnList).append(")\n");
+
+        // Build ON clause for matching primary keys
+        sb.append("ON (");
+        String[] keyColArray = keyColumns.split(",\\s*");
+        for (int i = 0; i < keyColArray.length; i++) {
+            if (i > 0) {
+                sb.append(" AND ");
+            }
+            String colName = keyColArray[i].trim();
+            sb.append("target.").append(colName).append(" = source.").append(colName);
+        }
+        sb.append(")\n");
+
+        // WHEN MATCHED THEN UPDATE SET clause with dynamic <if> tags
+        sb.append("WHEN MATCHED THEN UPDATE SET\n");
+        for (ColumnMeta col : updateColumns) {
+            sb.append("  <if test=\"").append(itemPrefix).append(".").append(col.property())
+                    .append(" != null\">target.").append(col.column()).append(" = source.").append(col.column())
+                    .append(",</if>\n");
+        }
+
+        // WHEN NOT MATCHED THEN INSERT clause
+        sb.append("WHEN NOT MATCHED THEN INSERT (").append(columnList).append(")\n");
+        sb.append("VALUES (");
+
+        // Build source column references for VALUES clause
+        StringBuilder sourceValues = new StringBuilder();
+        for (ColumnMeta col : updateColumns) {
+            sourceValues.append("<if test=\"").append(itemPrefix).append(".").append(col.property())
+                    .append(" != null\">source.").append(col.column()).append(",</if>");
+        }
+        sb.append(sourceValues).append(")");
+
+        return sb.toString();
     }
 
     @Override

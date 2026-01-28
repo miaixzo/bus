@@ -113,7 +113,7 @@ public class SlackProvider extends AbstractProvider {
     public Message userInfo(Authorization authorization) {
         Map<String, String> header = new HashMap<>();
         header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
-        header.put("Authorization", "Bearer ".concat(authorization.getToken()));
+        header.put(HTTP.AUTHORIZATION, HTTP.BEARER.concat(authorization.getToken()));
         String userInfo = Httpx.get(userInfoUrl(authorization), null, header);
         Map<String, Object> object = JsonKit.toPojo(userInfo, Map.class);
         this.checkResponse(object);
@@ -140,7 +140,7 @@ public class SlackProvider extends AbstractProvider {
     public Message revoke(Authorization authorization) {
         Map<String, String> header = new HashMap<>();
         header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
-        header.put("Authorization", "Bearer ".concat(authorization.getToken()));
+        header.put(HTTP.AUTHORIZATION, HTTP.BEARER.concat(authorization.getToken()));
         String userInfo = Httpx.get(this.complex.revoke(), null, header);
         Map<String, Object> object = JsonKit.toPojo(userInfo, Map.class);
         this.checkResponse(object);

@@ -308,7 +308,7 @@ public class ElemeProvider extends AbstractProvider {
         header.put("x-eleme-requestid", requestId);
 
         if (auth) {
-            header.put("Authorization", this.getBasic(context.getClientId(), context.getClientSecret()));
+            header.put(HTTP.AUTHORIZATION, this.getBasic(context.getClientId(), context.getClientSecret()));
         }
         return header;
     }

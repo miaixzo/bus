@@ -51,7 +51,7 @@ public enum RednoteMarketiScope implements AuthorizeScope {
      */
     ad_query("ad_query", "Get promotion plan, promotion unit, and promotion creative information", false),
     /**
-     * Create & modify promotion plans, promotion units, and promotion creatives.
+     * Create / modify promotion plans, promotion units, and promotion creatives.
      */
     ad_manage("ad_manage", "Create & modify promotion plans, promotion units, and promotion creatives", false),
     /**

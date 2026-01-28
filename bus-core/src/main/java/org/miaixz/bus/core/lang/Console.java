@@ -199,6 +199,16 @@ public class Console {
     }
 
     /**
+     * Same as System.out.printf() method, formats and prints console log
+     *
+     * @param template The template
+     * @param values   The parameters
+     */
+    public static void printf(final String template, final Object... values) {
+        System.out.printf(template, values);
+    }
+
+    /**
      * Internal method to print a formatted message to {@code System.out} without a new line.
      *
      * @param template The text template, with "{}" as placeholders for arguments.

@@ -90,6 +90,140 @@ public class ErrorCode {
             .build();
 
     // =================================================================================================================
+    // HTTP Status Codes (Standard RFC 7231)
+    // =================================================================================================================
+
+    /**
+     * HTTP 200: OK.
+     */
+    public static final Errors _200 = ErrorRegistry.builder().key("200").value("OK").build();
+
+    /**
+     * HTTP 201: Created.
+     */
+    public static final Errors _201 = ErrorRegistry.builder().key("201").value("Created").build();
+
+    /**
+     * HTTP 202: Accepted.
+     */
+    public static final Errors _202 = ErrorRegistry.builder().key("202").value("Accepted").build();
+
+    /**
+     * HTTP 204: No Content.
+     */
+    public static final Errors _204 = ErrorRegistry.builder().key("204").value("No Content").build();
+
+    /**
+     * HTTP 301: Moved Permanently.
+     */
+    public static final Errors _301 = ErrorRegistry.builder().key("301").value("Moved Permanently").build();
+
+    /**
+     * HTTP 302: Found.
+     */
+    public static final Errors _302 = ErrorRegistry.builder().key("302").value("Found").build();
+
+    /**
+     * HTTP 304: Not Modified.
+     */
+    public static final Errors _304 = ErrorRegistry.builder().key("304").value("Not Modified").build();
+
+    /**
+     * HTTP 400: Bad Request.
+     */
+    public static final Errors _400 = ErrorRegistry.builder().key("400").value("Bad Request").build();
+
+    /**
+     * HTTP 401: Unauthorized.
+     */
+    public static final Errors _401 = ErrorRegistry.builder().key("401").value("Unauthorized").build();
+
+    /**
+     * HTTP 403: Forbidden.
+     */
+    public static final Errors _403 = ErrorRegistry.builder().key("403").value("Forbidden").build();
+
+    /**
+     * HTTP 404: Not Found.
+     */
+    public static final Errors _404 = ErrorRegistry.builder().key("404").value("Not Found").build();
+
+    /**
+     * HTTP 405: Method Not Allowed.
+     */
+    public static final Errors _405 = ErrorRegistry.builder().key("405").value("Method Not Allowed").build();
+
+    /**
+     * HTTP 406: Not Acceptable.
+     */
+    public static final Errors _406 = ErrorRegistry.builder().key("406").value("Not Acceptable").build();
+
+    /**
+     * HTTP 408: Request Timeout.
+     */
+    public static final Errors _408 = ErrorRegistry.builder().key("408").value("Request Timeout").build();
+
+    /**
+     * HTTP 409: Conflict.
+     */
+    public static final Errors _409 = ErrorRegistry.builder().key("409").value("Conflict").build();
+
+    /**
+     * HTTP 410: Gone.
+     */
+    public static final Errors _410 = ErrorRegistry.builder().key("410").value("Gone").build();
+
+    /**
+     * HTTP 413: Payload Too Large.
+     */
+    public static final Errors _413 = ErrorRegistry.builder().key("413").value("Payload Too Large").build();
+
+    /**
+     * HTTP 415: Unsupported Media Type.
+     */
+    public static final Errors _415 = ErrorRegistry.builder().key("415").value("Unsupported Media Type").build();
+
+    /**
+     * HTTP 422: Unprocessable Entity.
+     */
+    public static final Errors _422 = ErrorRegistry.builder().key("422").value("Unprocessable Entity").build();
+
+    /**
+     * HTTP 429: Too Many Requests.
+     */
+    public static final Errors _429 = ErrorRegistry.builder().key("429").value("Too Many Requests").build();
+
+    /**
+     * HTTP 500: Internal Server Error.
+     */
+    public static final Errors _500 = ErrorRegistry.builder().key("500").value("Internal Server Error").build();
+
+    /**
+     * HTTP 501: Not Implemented.
+     */
+    public static final Errors _501 = ErrorRegistry.builder().key("501").value("Not Implemented").build();
+
+    /**
+     * HTTP 502: Bad Gateway.
+     */
+    public static final Errors _502 = ErrorRegistry.builder().key("502").value("Bad Gateway").build();
+
+    /**
+     * HTTP 503: Service Unavailable.
+     */
+    public static final Errors _503 = ErrorRegistry.builder().key("503").value("Service Unavailable").build();
+
+    /**
+     * HTTP 504: Gateway Timeout.
+     */
+    public static final Errors _504 = ErrorRegistry.builder().key("504").value("Gateway Timeout").build();
+
+    /**
+     * HTTP 505: HTTP Version Not Supported.
+     */
+    public static final Errors _505 = ErrorRegistry.builder().key("505").value("HTTP Version Not Supported").build();
+
+    // =================================================================================================================
     // 1001xx: Request Parameters & Validation (Strictly Paired: Missing -> Invalid)
     // =================================================================================================================
 

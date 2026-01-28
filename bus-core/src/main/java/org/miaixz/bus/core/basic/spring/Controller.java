@@ -53,7 +53,7 @@ public class Controller {
      * @param data The data to be included in the response.
      * @return A response object.
      */
-    public static Object write(Object data) {
+    public Object write(Object data) {
         return write(data, false);
     }
 
@@ -64,7 +64,7 @@ public class Controller {
      * @param id   If true, extracts the "id" field from the data as the response data.
      * @return A response object.
      */
-    public static Object write(Object data, boolean id) {
+    public Object write(Object data, boolean id) {
         if (id) {
             return write(ErrorCode._SUCCESS, FieldKit.getFieldValue(data, "id"));
         }
@@ -77,7 +77,7 @@ public class Controller {
      * @param errcode The error code.
      * @return A response object.
      */
-    public static Object write(String errcode) {
+    public Object write(String errcode) {
         return write(errcode, Errors.require(errcode));
     }
 
@@ -87,7 +87,7 @@ public class Controller {
      * @param errors The error object.
      * @return A response object.
      */
-    public static Object write(Errors errors) {
+    public Object write(Errors errors) {
         return write(errors.getKey(), errors.getValue());
     }
 
@@ -98,7 +98,7 @@ public class Controller {
      * @param data    The data to be included in the response.
      * @return A response object.
      */
-    public static Object write(String errcode, Object data) {
+    public Object write(String errcode, Object data) {
         if (Errors.contains(errcode)) {
             return Message.builder().errcode(errcode).errmsg(Errors.require(errcode).getValue()).data(data).build();
         }
@@ -112,7 +112,7 @@ public class Controller {
      * @param data   The data to be included in the response.
      * @return A response object.
      */
-    public static Object write(Errors errors, Object data) {
+    public Object write(Errors errors, Object data) {
         if (Errors.contains(errors.getKey())) {
             return Message.builder().errcode(errors.getKey()).errmsg(errors.getValue()).data(data).build();
         }
@@ -126,7 +126,7 @@ public class Controller {
      * @param errmsg  The error message.
      * @return A response object.
      */
-    public static Object write(String errcode, String errmsg) {
+    public Object write(String errcode, String errmsg) {
         if (Errors.contains(errcode) && StringKit.isNotEmpty(errmsg)) {
             return Message.builder().errcode(errcode).errmsg(errmsg).build();
         }
@@ -141,7 +141,7 @@ public class Controller {
      * @param format  The format string.
      * @return A response object.
      */
-    public static Object write(String errcode, String errmsg, String format) {
+    public Object write(String errcode, String errmsg, String format) {
         if (StringKit.isNotEmpty(errcode) && StringKit.isNotEmpty(format)) {
             return Message.builder().errcode(errcode).errmsg(StringKit.format(format, errmsg)).build();
         }

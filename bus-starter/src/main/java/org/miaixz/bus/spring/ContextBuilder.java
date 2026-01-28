@@ -39,12 +39,10 @@ import org.miaixz.bus.core.basic.entity.Authorize;
 import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.center.map.CaseInsensitiveMap;
 import org.miaixz.bus.core.data.id.ID;
-import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.lang.EnumValue;
-import org.miaixz.bus.core.lang.MediaType;
-import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.*;
 import org.miaixz.bus.core.lang.annotation.NonNull;
 import org.miaixz.bus.core.lang.annotation.Nullable;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.net.url.UrlDecoder;
 import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -95,6 +93,11 @@ public class ContextBuilder extends WebUtils {
     private static final ThreadLocal<String> REQUEST_ID = ThreadKit.newThreadLocal(false);
 
     /**
+     * Thread-local storage for the current request authorization information.
+     */
+    private static final ThreadLocal<Authorize> AUTHORIZATION_CONTEXT = ThreadKit.newThreadLocal(false);
+
+    /**
      * The default maximum number of entries for caches.
      */
     private static final long DEFAULT_CACHE_SIZE = 1000;
@@ -108,6 +111,16 @@ public class ContextBuilder extends WebUtils {
      * The instance of the context provider for user and tenant information.
      */
     public static volatile ContextProvider provider;
+
+    /**
+     * Initializes the request context by generating a new request ID and storing it in a ThreadLocal.
+     * <p>
+     * This is a convenience method that should be called at the beginning of each request processing.
+     * </p>
+     */
+    public static void init() {
+        setRequestId();
+    }
 
     /**
      * Sets a custom context provider for retrieving user and tenant information.
@@ -374,16 +387,16 @@ public class ContextBuilder extends WebUtils {
         if (StringKit.isEmpty(urlEncoded)) {
             return paramMap;
         }
-        String[] pairs = urlEncoded.split("&");
+        String[] pairs = urlEncoded.split(Symbol.AND);
         for (String pair : pairs) {
             if (pair.isEmpty()) {
                 continue;
             }
-            String[] keyValue = pair.split("=", 2);
+            String[] keyValue = pair.split(Symbol.EQUAL, 2);
             if (keyValue.length == 2) {
-                paramMap.put(keyValue[0], keyValue[1].split(","));
+                paramMap.put(keyValue[0], keyValue[1].split(Symbol.COMMA));
             } else if (keyValue.length == 1) {
-                paramMap.put(keyValue[0], new String[] { "" });
+                paramMap.put(keyValue[0], new String[] { Normal.EMPTY });
             }
         }
         return paramMap;
@@ -766,18 +779,36 @@ public class ContextBuilder extends WebUtils {
     }
 
     /**
-     * Gets the authorization information for the current user, either from a custom provider or by parsing a user ID
-     * from the request context.
+     * Gets the authorization information for the current user.
+     * <p>
+     * This method retrieves authorization information in the following priority order:
+     * <ol>
+     * <li>ThreadLocal (set via {@link #setAuthorize(Authorize)}) - highest priority</li>
+     * <li>Custom provider (set via {@link #setProvider(ContextProvider)})</li>
+     * <li>Request headers (x_user_id)</li>
+     * </ol>
      *
      * @return The {@link Authorize} object, or null if not available.
      */
     public static Authorize getAuthorize() {
         try {
-            if (provider != null) {
-                Authorize authorize = provider.getAuthorize();
-                Logger.info(true, "Context", "Authorize: {}", authorize);
+            // 1. First, retrieve from ThreadLocal (request-level, highest priority)
+            Authorize authorize = AUTHORIZATION_CONTEXT.get();
+            if (authorize != null) {
+                Logger.info(true, "Context", "Authorize (from ThreadLocal): {}", authorize);
                 return authorize;
             }
+
+            // 2. Second, retrieve from global provider (for testing or special scenarios)
+            if (provider != null) {
+                authorize = provider.getAuthorize();
+                if (authorize != null) {
+                    Logger.info(true, "Context", "Authorize (from provider): {}", authorize);
+                    return authorize;
+                }
+            }
+
+            // 3. Finally, parse from headers (fallback logic)
             String userId = getValue("x_user_id", EnumValue.Params.HEADER);
             if (StringKit.isEmpty(userId)) {
                 userId = getValue("x_user_id", EnumValue.Params.CONTEXT);
@@ -793,14 +824,32 @@ public class ContextBuilder extends WebUtils {
         }
     }
 
-    public static Authorize setAuthorize(String id) {
-        ContextBuilder.setProvider(new ContextProvider() {
+    /**
+     * Sets the authorization information for the current request.
+     * <p>
+     * This method stores the authorization information in a ThreadLocal variable, making it available throughout the
+     * request processing lifecycle.
+     * </p>
+     *
+     * @param authorize The authorization information to set.
+     */
+    public static void setAuthorize(@Nullable Authorize authorize) {
+        AUTHORIZATION_CONTEXT.set(authorize);
+    }
 
-            @Override
-            public Authorize getAuthorize() {
-                return Authorize.builder().x_tenant_id(id).build();
-            }
-        });
+    /**
+     * Sets the authorization information for the current request using only a user ID.
+     * <p>
+     * This is a convenience method that creates an {@link Authorize} object with only the user ID.
+     * </p>
+     *
+     * @param id The user ID to set.
+     * @return The created {@link Authorize} object.
+     * @deprecated Use {@link #setAuthorize(Authorize)} instead for more complete authorization information.
+     */
+    public static Authorize setAuthorize(@Nullable String id) {
+        Authorize authorize = Authorize.builder().x_user_id(id).build();
+        setAuthorize(authorize);
         return getAuthorize();
     }
 
@@ -848,7 +897,8 @@ public class ContextBuilder extends WebUtils {
     }
 
     /**
-     * Clears the context for the current request, removing the request ID and associated cache entries.
+     * Clears the context for the current request, removing the request ID, authorization context, and associated cache
+     * entries.
      */
     public static void clear() {
         String requestId = REQUEST_ID.get();
@@ -857,6 +907,7 @@ public class ContextBuilder extends WebUtils {
             getParameterCache().remove(requestId);
             getBodyCache().remove(requestId);
             REQUEST_ID.remove();
+            AUTHORIZATION_CONTEXT.remove();
             Logger.debug(false, "Context", "Cleared: {}", requestId);
         } else {
             Logger.debug(false, "Context", "No request ID to clear");
@@ -886,8 +937,8 @@ public class ContextBuilder extends WebUtils {
      */
     public static String getToken() {
         // 1. Prioritize the standard `Authorization` header with the `Bearer` scheme.
-        String authorization = getHeaderValue("Authorization");
-        if (StringKit.isNotEmpty(authorization) && authorization.startsWith("Bearer ")) {
+        String authorization = getHeaderValue(HTTP.AUTHORIZATION);
+        if (StringKit.isNotEmpty(authorization) && authorization.startsWith(HTTP.BEARER)) {
             return authorization.substring(7);
         }
 

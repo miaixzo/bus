@@ -25,73 +25,127 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.vortex.metrics;
+package org.miaixz.bus.vortex.support.llm;
 
-import lombok.*;
-import org.miaixz.bus.vortex.Monitor;
+import java.util.List;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 /**
- * Cache statistics data structure for tracking cache access metrics.
+ * Response model for LLM chat completion responses.
  * <p>
- * A generic cache statistics container that tracks cache access patterns. Suitable for both L1 cache
- * (ConcurrentHashMap) and L2 cache (Caffeine) statistics.
- * </p>
- *
- * <p>
- * <b>Responsibility:</b>
- * </p>
- * <ul>
- * <li>Located in the {@code metrics} package as part of performance metrics collection</li>
- * <li>Coexists with {@link Monitor} and {@link org.miaixz.bus.vortex.magic.Metrics}</li>
- * <li>Focuses on being a data carrier without involving cache implementation details</li>
- * </ul>
- *
- * <p>
- * <b>Use Cases:</b>
- * </p>
- * <ul>
- * <li>Two-level cache statistics for {@link org.miaixz.bus.vortex.registry.AbstractRegistry}</li>
- * <li>Statistics for other cache implementations</li>
- * </ul>
- *
- * <p>
- * <b>Metrics:</b>
- * </p>
- * <ul>
- * <li>{@code hitCount}: Total number of cache hits</li>
- * <li>{@code missCount}: Total number of cache misses</li>
- * <li>{@code hitRate}: Cache hit rate (0.0 - 1.0)</li>
- * <li>{@code cacheSize}: Current size of L1 cache</li>
- * </ul>
+ * This model follows the OpenAIProvider Chat Completions API format. JsonKit will automatically handle snake_case to
+ * camelCase conversion.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 @Getter
 @Setter
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CacheStats {
+public class LlmResponse {
 
     /**
-     * Total number of cache hits.
+     * Unique identifier for the completion.
      */
-    private long hitCount;
+    private String id;
 
     /**
-     * Total number of cache misses.
+     * The object type (always "chat.completion").
      */
-    private long missCount;
+    private String object;
 
     /**
-     * Cache hit rate (0.0 - 1.0).
+     * Unix timestamp of when the completion was created.
      */
-    private double hitRate;
+    private Long created;
 
     /**
-     * Current size of L1 cache (ConcurrentHashMap).
+     * The model used for completion.
      */
-    private long cacheSize;
+    private String model;
+
+    /**
+     * The list of completion choices.
+     */
+    private List<Choice> choices;
+
+    /**
+     * Usage statistics for the request.
+     */
+    private Usage usage;
+
+    /**
+     * Represents a single completion choice.
+     */
+    @Getter
+    @Setter
+    public static class Choice {
+
+        /**
+         * The index of this choice.
+         */
+        private Integer index;
+
+        /**
+         * The generated message.
+         */
+        private Message message;
+
+        /**
+         * The reason the completion finished (stop, length, content_filter). JSON field: finish_reason
+         */
+        private String finishReason;
+
+    }
+
+    /**
+     * Represents a message in the response.
+     */
+    @Getter
+    @Setter
+    public static class Message {
+
+        /**
+         * The role of the message author.
+         */
+        private String role;
+
+        /**
+         * The content of the message.
+         */
+        private String content;
+
+    }
+
+    /**
+     * Token usage stastics.
+     */
+    @Getter
+    @Setter
+    public static class Usage {
+
+        /**
+         * Number of tokens in the prompt. JSON field: prompt_tokens
+         */
+        private Integer promptTokens;
+
+        /**
+         * Number of tokens in the completion. JSON field: completion_tokens
+         */
+        private Integer completionTokens;
+
+        /**
+         * Total number of tokens used. JSON field: total_tokens
+         */
+        private Integer totalTokens;
+
+    }
 
 }

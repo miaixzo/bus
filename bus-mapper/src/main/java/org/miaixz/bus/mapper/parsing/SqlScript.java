@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.mapper.parsing;
 
-import java.util.function.Supplier;
-
 import org.apache.ibatis.builder.annotation.ProviderContext;
+import org.miaixz.bus.core.center.function.BiFunctionX;
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.mapper.Caching;
 
@@ -59,20 +59,44 @@ public interface SqlScript {
     }
 
     /**
-     * Creates and caches an SQL script using an {@link EasySqlScript}.
+     * Creates and caches an SQL script with callback support.
      *
-     * @param providerContext The execution method context.
-     * @param sqlScript       The {@link EasySqlScript} implementation.
+     * <p>
+     * This method accepts a lambda that receives both entity and sqlScript helper, allowing you to use helper methods
+     * like {@code where()}, {@code ifTest()}, {@code foreach()} etc.
+     * </p>
+     *
+     * @param providerContext  The execution method context.
+     * @param sqlScriptBuilder The SQL builder function that accepts entity and sqlScript helper.
      * @return The cache key.
      */
-    static String caching(ProviderContext providerContext, EasySqlScript sqlScript) {
+    static String caching(ProviderContext providerContext, BiFunctionX<TableMeta, SqlScript, String> sqlScriptBuilder) {
         TableMeta entity = MapperFactory.of(providerContext.getMapperType(), providerContext.getMapperMethod());
+        SqlScript wrapper = SqlScriptWrapper.wrapSqlScript(providerContext, entity, null);
         return Caching.cache(
                 providerContext,
                 entity,
-                () -> String.format(
-                        "<script>\n%s\n</script>",
-                        SqlScriptWrapper.wrapSqlScript(providerContext, entity, sqlScript).getSql(entity)));
+                () -> String.format("<script>\n%s\n</script>", sqlScriptBuilder.apply(entity, wrapper)));
+    }
+
+    /**
+     * Creates and caches a dynamic SQL script that depends on database dialect.
+     *
+     * <p>
+     * This method is used for SQL that needs to be generated dynamically based on the current datasource's dialect. The
+     * SQL is not generated at cache time, but rather at execution time when the dialect is known.
+     * </p>
+     *
+     * @param providerContext The execution method context.
+     * @param sqlScript       The builder SQL script implementation with dialect support.
+     * @return The cache key.
+     */
+    static String cachingDynamic(ProviderContext providerContext, AidedSqlScript sqlScript) {
+        TableMeta entity = MapperFactory.of(providerContext.getMapperType(), providerContext.getMapperMethod());
+        return Caching.cacheDynamic(
+                providerContext,
+                entity,
+                dialect -> String.format("<script>\n%s\n</script>", sqlScript.getSql(entity, dialect)));
     }
 
     /**
@@ -381,7 +405,7 @@ public interface SqlScript {
     /**
      * A functional interface for supplying a string, ensuring it starts with a newline character.
      */
-    interface LRSupplier extends Supplier<String> {
+    interface LRSupplier extends SupplierX<String> {
 
         /**
          * Gets the string, ensuring it starts with a newline character.

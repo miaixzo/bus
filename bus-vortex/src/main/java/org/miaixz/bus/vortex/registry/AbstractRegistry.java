@@ -47,21 +47,21 @@ import reactor.core.publisher.Mono;
  * operations. It is designed to be extended by concrete registry implementations (e.g., {@link AssetsRegistry}), which
  * must provide a key generation strategy.
  * <p>
- * <b>性能优化（二级缓存架构）：</b>
+ * <b>Performance Optimization (Two-Level Cache Architecture):</b>
  * </p>
  * <ul>
- * <li>使用 {@link CacheManager} 管理二级缓存</li>
- * <li>一级缓存：ConcurrentHashMap（热数据，极快访问）</li>
- * <li>二级缓存：Caffeine（全量数据，LRU淘汰）</li>
- * <li>查询顺序：一级 → 二级 → null</li>
- * <li>更新策略：写入时同时更新两级缓存</li>
+ * <li>Uses {@link CacheManager} to manage two-level caching</li>
+ * <li>L1 Cache: ConcurrentHashMap (hot data, ultra-fast access)</li>
+ * <li>L2 Cache: Caffeine (full data set, LRU eviction)</li>
+ * <li>Query order: L1 → L2 → null</li>
+ * <li>Update strategy: Write-through to both cache levels</li>
  * </ul>
  * <p>
- * <b>职责划分：</b>
+ * <b>Responsibility Separation:</b>
  * </p>
  * <ul>
- * <li>AbstractRegistry：注册表业务逻辑</li>
- * <li>CacheManager：通用缓存管理（可被其他组件复用）</li>
+ * <li>AbstractRegistry: Registry business logic</li>
+ * <li>CacheManager: Generic cache management (reusable by other components)</li>
  * </ul>
  *
  * @param <T> The type of objects to be stored in the registry.
@@ -73,13 +73,13 @@ public abstract class AbstractRegistry<T> implements Registry<T>, InitializingBe
     /**
      * The underlying thread-safe map that stores the registered items.
      * <p>
-     * 一级缓存：ConcurrentHashMap，提供最快速的访问
+     * L1 Cache: ConcurrentHashMap, provides the fastest access.
      * </p>
      */
     private final Map<String, T> registry = new ConcurrentHashMap<>();
 
     /**
-     * 缓存管理器：封装二级缓存逻辑
+     * Cache Manager: Encapsulates L2 cache logic.
      */
     protected final CacheManager<String, T> cacheManager;
 
@@ -89,11 +89,10 @@ public abstract class AbstractRegistry<T> implements Registry<T>, InitializingBe
     protected Function<T, String> keyGenerator;
 
     /**
-     * 构造函数：初始化缓存管理器
+     * Constructor: Initializes the cache manager.
      */
     public AbstractRegistry() {
         this.cacheManager = new CacheManager<>();
-        Logger.debug("AbstractRegistry初始化: 使用CacheManager管理二级缓存");
     }
 
     /**
@@ -107,18 +106,24 @@ public abstract class AbstractRegistry<T> implements Registry<T>, InitializingBe
     }
 
     /**
-     * 设置性能监控器（可选）
+     * Sets the performance monitor (optional).
      * <p>
-     * 委托给 CacheManager
+     * Delegates to CacheManager.
      * </p>
      *
-     * @param monitor 性能监控器
+     * @param monitor The performance monitor.
      */
     public void setMonitor(Monitor monitor) {
         this.cacheManager.setPerformanceMonitor(monitor);
-        Logger.debug("性能监控器已设置: {}", monitor.getClass().getSimpleName());
+        Logger.debug("Performance monitor set: {}", monitor.getClass().getSimpleName());
     }
 
+    /**
+     * Registers an item in the registry using the configured key generator.
+     *
+     * @param item The item to register.
+     * @throws IllegalStateException If the key generator has not been set.
+     */
     @Override
     public void register(T item) {
         if (keyGenerator == null) {
@@ -127,20 +132,43 @@ public abstract class AbstractRegistry<T> implements Registry<T>, InitializingBe
         register(keyGenerator.apply(item), item);
     }
 
+    /**
+     * Registers an item in the registry with a specific key.
+     * <p>
+     * Updates both the registry (L1 cache) and the cache manager (L2 cache).
+     * </p>
+     *
+     * @param key  The unique key for the item.
+     * @param item The item to register.
+     */
     @Override
     public void register(String key, T item) {
-        // 同时更新 registry 和 cacheManager
+        // Update both registry and cacheManager
         this.registry.put(key, item);
         this.cacheManager.put(key, item);
     }
 
+    /**
+     * Removes an item from the registry by its key.
+     * <p>
+     * Removes from both the registry (L1 cache) and the cache manager (L2 cache).
+     * </p>
+     *
+     * @param key The key of the item to remove.
+     */
     @Override
     public void destroy(String key) {
-        // 同时从 registry 和 cacheManager 移除
+        // Remove from both registry and cacheManager
         this.registry.remove(key);
         this.cacheManager.remove(key);
     }
 
+    /**
+     * Removes an item from the registry using the configured key generator.
+     *
+     * @param item The item to remove.
+     * @throws IllegalStateException If the key generator has not been set.
+     */
     @Override
     public void destroy(T item) {
         if (keyGenerator == null) {
@@ -149,6 +177,12 @@ public abstract class AbstractRegistry<T> implements Registry<T>, InitializingBe
         destroy(keyGenerator.apply(item));
     }
 
+    /**
+     * Updates an item in the registry using the configured key generator.
+     *
+     * @param item The item to update.
+     * @throws IllegalStateException If the key generator has not been set.
+     */
     @Override
     public void update(T item) {
         if (keyGenerator == null) {
@@ -157,16 +191,25 @@ public abstract class AbstractRegistry<T> implements Registry<T>, InitializingBe
         update(keyGenerator.apply(item), item);
     }
 
+    /**
+     * Updates an item in the registry with a specific key.
+     * <p>
+     * Update is implemented as re-registration.
+     * </p>
+     *
+     * @param key  The unique key for the item.
+     * @param item The item to update.
+     */
     @Override
     public void update(String key, T item) {
-        // 更新就是重新注册
+        // Update is re-registration
         register(key, item);
     }
 
     /**
      * Asynchronously clears the registry and then calls the asynchronous {@link #init()} method.
      * <p>
-     * 同时清空 registry 和 cacheManager
+     * Clears both the registry (L1 cache) and the cache manager (L2 cache).
      * </p>
      *
      * @return A {@code Mono<Void>} that completes when the registry is cleared and re-initialized.
@@ -174,32 +217,52 @@ public abstract class AbstractRegistry<T> implements Registry<T>, InitializingBe
     @Override
     public Mono<Void> refresh() {
         return Mono.fromRunnable(() -> {
-            // 清空 registry 和 cacheManager
+            // Clear both registry and cacheManager
             this.registry.clear();
             this.cacheManager.clear();
         }).then(init()); // Chain to the async init() method
     }
 
+    /**
+     * Retrieves an item from the registry by its key.
+     * <p>
+     * Query order:
+     * </p>
+     * <ol>
+     * <li>Check L1 cache (registry)</li>
+     * <li>If not found, check L2 cache (cacheManager)</li>
+     * <li>If found in L2, promote to L1</li>
+     * <li>If not found in either, return null</li>
+     * </ol>
+     *
+     * @param key The key of the item to retrieve.
+     * @return The item associated with the key, or {@code null} if not found.
+     */
     @Override
     public T get(String key) {
-        // 1. 先查询 registry（一级缓存）
+        // 1. First query registry (L1 cache)
         T item = this.registry.get(key);
         if (item != null) {
             return item;
         }
 
-        // 2. registry 未命中，查询 cacheManager（二级缓存）
+        // 2. Registry miss, query cacheManager (L2 cache)
         item = this.cacheManager.get(key);
         if (item != null) {
-            // 二级缓存命中，同步到 registry
+            // L2 cache hit, promote to registry
             this.registry.put(key, item);
             return item;
         }
 
-        // 3. 完全未命中
+        // 3. Complete miss
         return null;
     }
 
+    /**
+     * Retrieves all items currently stored in the registry.
+     *
+     * @return A collection of all registered items.
+     */
     @Override
     public Collection<T> getAll() {
         return this.registry.values();
@@ -220,12 +283,12 @@ public abstract class AbstractRegistry<T> implements Registry<T>, InitializingBe
     }
 
     /**
-     * 获取缓存统计信息
+     * Retrieves cache statistics.
      * <p>
-     * 委托给 CacheManager
+     * Delegates to CacheManager.
      * </p>
      *
-     * @return 统计信息
+     * @return Statistics information.
      */
     public Object getStats() {
         return this.cacheManager.getStats();

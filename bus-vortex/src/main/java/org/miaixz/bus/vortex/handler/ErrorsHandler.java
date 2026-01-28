@@ -120,7 +120,7 @@ public class ErrorsHandler implements WebExceptionHandler {
             String exceptionName = ex.getClass().getSimpleName();
             String ip = "N/A";
             if (context != null) {
-                ip = context.getX_request_ipv4() != null ? context.getX_request_ipv4() : "N/A";
+                ip = context.getX_request_ip() != null ? context.getX_request_ip() : "N/A";
                 long executionTime = System.currentTimeMillis() - context.getTimestamp();
                 Logger.error(
                         false,

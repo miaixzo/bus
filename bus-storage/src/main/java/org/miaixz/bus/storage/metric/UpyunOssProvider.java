@@ -40,6 +40,7 @@ import org.miaixz.bus.core.center.date.Formatter;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.http.Httpd;
 import org.miaixz.bus.http.Request;
 import org.miaixz.bus.http.Response;
@@ -149,7 +150,7 @@ public class UpyunOssProvider extends AbstractProvider {
             String signature = generateSignature("GET", path, date, 0);
 
             Request request = new Request.Builder().url(this.context.getEndpoint() + path)
-                    .addHeader("Authorization", "UPYUN " + context.getAccessKey() + ":" + signature)
+                    .addHeader(HTTP.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + signature)
                     .addHeader("Date", date).get().build();
 
             try (Response response = this.client.newCall(request).execute()) {
@@ -209,7 +210,7 @@ public class UpyunOssProvider extends AbstractProvider {
             String signature = generateSignature("GET", path, date, 0);
 
             Request request = new Request.Builder().url(this.context.getEndpoint() + path)
-                    .addHeader("Authorization", "UPYUN " + context.getAccessKey() + ":" + signature)
+                    .addHeader(HTTP.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + signature)
                     .addHeader("Date", date).get().build();
 
             try (Response response = this.client.newCall(request).execute()) {
@@ -253,7 +254,7 @@ public class UpyunOssProvider extends AbstractProvider {
             String signature = generateSignature("GET", path, date, 0);
 
             Request request = new Request.Builder().url(this.context.getEndpoint() + path)
-                    .addHeader("Authorization", "UPYUN " + context.getAccessKey() + ":" + signature)
+                    .addHeader(HTTP.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + signature)
                     .addHeader("Date", date).addHeader("x-upyun-list-limit", "100").get().build();
 
             try (Response response = this.client.newCall(request).execute()) {
@@ -334,7 +335,7 @@ public class UpyunOssProvider extends AbstractProvider {
             String date = Formatter.HTTP_DATETIME_FORMAT_GMT.format(ZonedDateTime.now());
             String getSignature = generateSignature("GET", oldPath, date, 0);
             Request getRequest = new Request.Builder().url(this.context.getEndpoint() + oldPath)
-                    .addHeader("Authorization", "UPYUN " + context.getAccessKey() + ":" + getSignature)
+                    .addHeader(HTTP.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + getSignature)
                     .addHeader("Date", date).get().build();
 
             byte[] content;
@@ -349,7 +350,7 @@ public class UpyunOssProvider extends AbstractProvider {
             String putDate = Formatter.HTTP_DATETIME_FORMAT_GMT.format(ZonedDateTime.now());
             String putSignature = generateSignature("PUT", newPath, putDate, content.length);
             Request putRequest = new Request.Builder().url(this.context.getEndpoint() + newPath)
-                    .addHeader("Authorization", "UPYUN " + context.getAccessKey() + ":" + putSignature)
+                    .addHeader(HTTP.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + putSignature)
                     .addHeader("Date", putDate).addHeader("Content-Length", String.valueOf(content.length))
                     .addHeader("Content-Type", MediaType.APPLICATION_OCTET_STREAM)
                     .put(RequestBody.of(MediaType.valueOf(MediaType.APPLICATION_OCTET_STREAM), content)).build();
@@ -364,7 +365,7 @@ public class UpyunOssProvider extends AbstractProvider {
             String deleteDate = Formatter.HTTP_DATETIME_FORMAT_GMT.format(ZonedDateTime.now());
             String deleteSignature = generateSignature("DELETE", oldPath, deleteDate, 0);
             Request deleteRequest = new Request.Builder().url(this.context.getEndpoint() + oldPath)
-                    .addHeader("Authorization", "UPYUN " + context.getAccessKey() + ":" + deleteSignature)
+                    .addHeader(HTTP.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + deleteSignature)
                     .addHeader("Date", deleteDate).delete().build();
 
             try (Response response = this.client.newCall(deleteRequest).execute()) {
@@ -432,7 +433,7 @@ public class UpyunOssProvider extends AbstractProvider {
             String signature = generateSignature("PUT", requestPath, date, content.length);
 
             Request request = new Request.Builder().url(this.context.getEndpoint() + requestPath)
-                    .addHeader("Authorization", "UPYUN " + context.getAccessKey() + ":" + signature)
+                    .addHeader(HTTP.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + signature)
                     .addHeader("Date", date).addHeader("Content-Length", String.valueOf(content.length))
                     .addHeader("Content-Type", MediaType.APPLICATION_OCTET_STREAM)
                     .put(RequestBody.of(MediaType.valueOf(MediaType.APPLICATION_OCTET_STREAM), content)).build();
@@ -549,7 +550,7 @@ public class UpyunOssProvider extends AbstractProvider {
             String signature = generateSignature("DELETE", requestPath, date, 0);
 
             Request request = new Request.Builder().url(this.context.getEndpoint() + requestPath)
-                    .addHeader("Authorization", "UPYUN " + context.getAccessKey() + ":" + signature)
+                    .addHeader(HTTP.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + signature)
                     .addHeader("Date", date).delete().build();
 
             try (Response response = this.client.newCall(request).execute()) {

@@ -283,7 +283,7 @@ public class MailAccount implements Serializable {
      * @param isAuth {@code true} to enable authentication, {@code false} to disable it.
      * @return This {@code MailAccount} instance for method chaining.
      */
-    public MailAccount setAuth(final boolean isAuth) {
+    public MailAccount setAuth(final Boolean isAuth) {
         this.auth = isAuth;
         return this;
     }

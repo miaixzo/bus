@@ -34,7 +34,6 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.PORT;
 import org.miaixz.bus.vortex.*;
-import org.miaixz.bus.vortex.Holder;
 import org.miaixz.bus.vortex.filter.PrimaryFilter;
 import org.miaixz.bus.vortex.handler.ErrorsHandler;
 import org.miaixz.bus.vortex.handler.VortexHandler;
@@ -45,6 +44,8 @@ import org.miaixz.bus.vortex.registry.LimiterRegistry;
 import org.miaixz.bus.vortex.strategy.*;
 import org.miaixz.bus.vortex.support.*;
 import org.miaixz.bus.vortex.support.grpc.GrpcExecutor;
+import org.miaixz.bus.vortex.support.llm.LlmExecutor;
+import org.miaixz.bus.vortex.support.llm.LlmFactory;
 import org.miaixz.bus.vortex.support.mcp.McpExecutor;
 import org.miaixz.bus.vortex.support.mcp.server.ManageProvider;
 import org.miaixz.bus.vortex.support.mq.MqExecutor;
@@ -223,6 +224,18 @@ public class VortexConfiguration {
     }
 
     /**
+     * Configures and provides the LLM router bean. This router is responsible for handling Large Language Model proxy
+     * routing logic.
+     *
+     * @param executor The LlmExecutor instance to be used by the router.
+     * @return A new instance of LlmRouter.
+     */
+    @Bean(name = "llm")
+    public Router<ServerRequest, ServerResponse> llm(LlmExecutor executor) {
+        return new LlmRouter(executor);
+    }
+
+    /**
      * Provides the GrpcExecutor bean. This executor is responsible for executing gRPC requests to downstream services.
      *
      * @return A new instance of GrpcExecutor.
@@ -259,8 +272,8 @@ public class VortexConfiguration {
     /**
      * Provides the RestExecutor bean. This executor is responsible for executing HTTP requests to downstream services.
      * <p>
-     * The HTTP connection pool is obtained from {@link org.miaixz.bus.vortex.Holder#connectionProvider()} which is
-     * configured globally via {@code vortex.performance.maxConnections} property.
+     * The HTTP connection pool is obtained from {@link Holder#connectionProvider()} which is configured globally via
+     * {@code vortex.performance.maxConnections} property.
      *
      * @return A new instance of RestExecutor.
      */
@@ -277,6 +290,27 @@ public class VortexConfiguration {
     @Bean
     public WsExecutor wsExecutor() {
         return new WsExecutor();
+    }
+
+    /**
+     * Provides the LlmFactory bean. This factory creates and caches LLM provider instances.
+     *
+     * @return A new instance of LlmFactory.
+     */
+    @Bean
+    public LlmFactory llmProviderFactory() {
+        return new LlmFactory();
+    }
+
+    /**
+     * Provides the LlmExecutor bean. This executor handles LLM proxy requests.
+     *
+     * @param providerFactory The LLM provider factory.
+     * @return A new instance of LlmExecutor.
+     */
+    @Bean
+    public LlmExecutor llmExecutor(LlmFactory providerFactory) {
+        return new LlmExecutor(providerFactory);
     }
 
     /**

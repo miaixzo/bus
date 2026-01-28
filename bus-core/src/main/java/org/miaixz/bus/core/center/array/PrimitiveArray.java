@@ -28,11 +28,16 @@
 package org.miaixz.bus.core.center.array;
 
 import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
+import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.MathKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.RandomKit;
@@ -1497,6 +1502,534 @@ public class PrimitiveArray extends ArrayValidator {
      */
     public static boolean[] removeEle(final boolean[] array, final boolean element) throws IllegalArgumentException {
         return remove(array, indexOf(array, element));
+    }
+
+    /**
+     * Removes specified characters from a char array.
+     *
+     * @param array    The original char array
+     * @param elements The characters to remove
+     * @return A new array with specified characters removed
+     */
+    public static char[] removeElements(final char[] array, final char... elements) {
+        if (isEmpty(array) || isEmpty(elements)) {
+            return array;
+        }
+
+        return filter(array, t -> !ArrayKit.contains(elements, t));
+    }
+
+    /**
+     * Removes specified byte elements from a byte array.
+     *
+     * @param array    The original byte array
+     * @param elements The byte elements to remove
+     * @return A new array with specified elements removed
+     */
+    public static byte[] removeElements(final byte[] array, final byte... elements) {
+        if (isEmpty(array) || isEmpty(elements)) {
+            return array;
+        }
+
+        return filter(array, t -> !contains(elements, t));
+    }
+
+    /**
+     * Removes specified short elements from a short array.
+     *
+     * @param array    The original short array
+     * @param elements The short elements to remove
+     * @return A new array with specified elements removed
+     */
+    public static short[] removeElements(final short[] array, final short... elements) {
+        if (isEmpty(array) || isEmpty(elements)) {
+            return array;
+        }
+
+        return filter(array, t -> !contains(elements, t));
+    }
+
+    /**
+     * Removes specified int elements from an int array.
+     *
+     * @param array    The original int array
+     * @param elements The int elements to remove
+     * @return A new array with specified elements removed
+     */
+    public static int[] removeElements(final int[] array, final int... elements) {
+        if (isEmpty(array) || isEmpty(elements)) {
+            return array;
+        }
+
+        return filter(array, t -> !contains(elements, t));
+    }
+
+    /**
+     * Removes specified long elements from a long array.
+     *
+     * @param array    The original long array
+     * @param elements The long elements to remove
+     * @return A new array with specified elements removed
+     */
+    public static long[] removeElements(final long[] array, final long... elements) {
+        if (isEmpty(array) || isEmpty(elements)) {
+            return array;
+        }
+
+        return filter(array, t -> !contains(elements, t));
+    }
+
+    /**
+     * Removes specified float elements from a float array.
+     *
+     * @param array    The original float array
+     * @param elements The float elements to remove
+     * @return A new array with specified elements removed
+     */
+    public static float[] removeElements(final float[] array, final float... elements) {
+        if (isEmpty(array) || isEmpty(elements)) {
+            return array;
+        }
+
+        return filter(array, t -> !contains(elements, t));
+    }
+
+    /**
+     * Removes specified double elements from a double array.
+     *
+     * @param array    The original double array
+     * @param elements The double elements to remove
+     * @return A new array with specified elements removed
+     */
+    public static double[] removeElements(final double[] array, final double... elements) {
+        if (isEmpty(array) || isEmpty(elements)) {
+            return array;
+        }
+
+        return filter(array, t -> !contains(elements, t));
+    }
+
+    /**
+     * Removes specified boolean elements from a boolean array.
+     *
+     * @param array    The original boolean array
+     * @param elements The boolean elements to remove
+     * @return A new array with specified elements removed
+     */
+    public static boolean[] removeElements(final boolean[] array, final boolean... elements) {
+        if (isEmpty(array) || isEmpty(elements)) {
+            return array;
+        }
+
+        return filter(array, t -> !contains(elements, t));
+    }
+
+    /**
+     * Applies a specified operation to each array element and returns the modified elements.<br>
+     * This Editor implementation can achieve the following functions:
+     * <ol>
+     * <li>Filter out required objects, discard element objects if {@code null} is returned</li>
+     * <li>Modify element objects and return the modified objects</li>
+     * </ol>
+     *
+     * @param array  The array
+     * @param editor The editor interface, returns the original array if {@code null}
+     * @return The edited array
+     */
+    public static char[] edit(final char[] array, final UnaryOperator<Character> editor) {
+        if (null == array || null == editor) {
+            return array;
+        }
+
+        final List<Character> resultList = new ArrayList<>(array.length);
+        Character modified;
+        for (final Character t : array) {
+            modified = editor.apply(t);
+            if (null != modified) {
+                resultList.add(modified);
+            }
+        }
+
+        // Convert List to char[] array
+        final int size = resultList.size();
+        final char[] resultArray = new char[size];
+        for (int i = 0; i < size; i++) {
+            resultArray[i] = resultList.get(i);
+        }
+
+        return resultArray;
+    }
+
+    /**
+     * Applies a specified operation to each byte array element and returns the modified elements.<br>
+     * This Editor implementation can achieve the following functions:
+     * <ol>
+     * <li>Filter out required objects, discard element objects if {@code null} is returned</li>
+     * <li>Modify element objects and return the modified objects</li>
+     * </ol>
+     *
+     * @param array  The array
+     * @param editor The editor interface, returns the original array if {@code null}
+     * @return The edited array
+     */
+    public static byte[] edit(final byte[] array, final UnaryOperator<Byte> editor) {
+        if (null == array || null == editor) {
+            return array;
+        }
+
+        final List<Byte> resultList = new ArrayList<>(array.length);
+        Byte modified;
+        for (final Byte t : array) {
+            modified = editor.apply(t);
+            if (null != modified) {
+                resultList.add(modified);
+            }
+        }
+
+        // Convert List to byte[] array
+        final int size = resultList.size();
+        final byte[] resultArray = new byte[size];
+        for (int i = 0; i < size; i++) {
+            resultArray[i] = resultList.get(i);
+        }
+
+        return resultArray;
+    }
+
+    /**
+     * Applies a specified operation to each short array element and returns the modified elements.<br>
+     * This Editor implementation can achieve the following functions:
+     * <ol>
+     * <li>Filter out required objects, discard element objects if {@code null} is returned</li>
+     * <li>Modify element objects and return the modified objects</li>
+     * </ol>
+     *
+     * @param array  The array
+     * @param editor The editor interface, returns the original array if {@code null}
+     * @return The edited array
+     */
+    public static short[] edit(final short[] array, final UnaryOperator<Short> editor) {
+        if (null == array || null == editor) {
+            return array;
+        }
+
+        final List<Short> resultList = new ArrayList<>(array.length);
+        Short modified;
+        for (final Short t : array) {
+            modified = editor.apply(t);
+            if (null != modified) {
+                resultList.add(modified);
+            }
+        }
+
+        // Convert List to short[] array
+        final int size = resultList.size();
+        final short[] resultArray = new short[size];
+        for (int i = 0; i < size; i++) {
+            resultArray[i] = resultList.get(i);
+        }
+
+        return resultArray;
+    }
+
+    /**
+     * Applies a specified operation to each int array element and returns the modified elements.<br>
+     * This Editor implementation can achieve the following functions:
+     * <ol>
+     * <li>Filter out required objects, discard element objects if {@code null} is returned</li>
+     * <li>Modify element objects and return the modified objects</li>
+     * </ol>
+     *
+     * @param array  The array
+     * @param editor The editor interface, returns the original array if {@code null}
+     * @return The edited array
+     */
+    public static int[] edit(final int[] array, final UnaryOperator<Integer> editor) {
+        if (null == array || null == editor) {
+            return array;
+        }
+
+        final List<Integer> resultList = new ArrayList<>(array.length);
+        Integer modified;
+        for (final Integer t : array) {
+            modified = editor.apply(t);
+            if (null != modified) {
+                resultList.add(modified);
+            }
+        }
+
+        // Convert List to int[] array
+        final int size = resultList.size();
+        final int[] resultArray = new int[size];
+        for (int i = 0; i < size; i++) {
+            resultArray[i] = resultList.get(i);
+        }
+
+        return resultArray;
+    }
+
+    /**
+     * Applies a specified operation to each long array element and returns the modified elements.<br>
+     * This Editor implementation can achieve the following functions:
+     * <ol>
+     * <li>Filter out required objects, discard element objects if {@code null} is returned</li>
+     * <li>Modify element objects and return the modified objects</li>
+     * </ol>
+     *
+     * @param array  The array
+     * @param editor The editor interface, returns the original array if {@code null}
+     * @return The edited array
+     */
+    public static long[] edit(final long[] array, final UnaryOperator<Long> editor) {
+        if (null == array || null == editor) {
+            return array;
+        }
+
+        final List<Long> resultList = new ArrayList<>(array.length);
+        Long modified;
+        for (final Long t : array) {
+            modified = editor.apply(t);
+            if (null != modified) {
+                resultList.add(modified);
+            }
+        }
+
+        // Convert List to long[] array
+        final int size = resultList.size();
+        final long[] resultArray = new long[size];
+        for (int i = 0; i < size; i++) {
+            resultArray[i] = resultList.get(i);
+        }
+
+        return resultArray;
+    }
+
+    /**
+     * Applies a specified operation to each float array element and returns the modified elements.<br>
+     * This Editor implementation can achieve the following functions:
+     * <ol>
+     * <li>Filter out required objects, discard element objects if {@code null} is returned</li>
+     * <li>Modify element objects and return the modified objects</li>
+     * </ol>
+     *
+     * @param array  The array
+     * @param editor The editor interface, returns the original array if {@code null}
+     * @return The edited array
+     */
+    public static float[] edit(final float[] array, final UnaryOperator<Float> editor) {
+        if (null == array || null == editor) {
+            return array;
+        }
+
+        final List<Float> resultList = new ArrayList<>(array.length);
+        Float modified;
+        for (final Float t : array) {
+            modified = editor.apply(t);
+            if (null != modified) {
+                resultList.add(modified);
+            }
+        }
+
+        // Convert List to float[] array
+        final int size = resultList.size();
+        final float[] resultArray = new float[size];
+        for (int i = 0; i < size; i++) {
+            resultArray[i] = resultList.get(i);
+        }
+
+        return resultArray;
+    }
+
+    /**
+     * Applies a specified operation to each double array element and returns the modified elements.<br>
+     * This Editor implementation can achieve the following functions:
+     * <ol>
+     * <li>Filter out required objects, discard element objects if {@code null} is returned</li>
+     * <li>Modify element objects and return the modified objects</li>
+     * </ol>
+     *
+     * @param array  The array
+     * @param editor The editor interface, returns the original array if {@code null}
+     * @return The edited array
+     */
+    public static double[] edit(final double[] array, final UnaryOperator<Double> editor) {
+        if (null == array || null == editor) {
+            return array;
+        }
+
+        final List<Double> resultList = new ArrayList<>(array.length);
+        Double modified;
+        for (final Double t : array) {
+            modified = editor.apply(t);
+            if (null != modified) {
+                resultList.add(modified);
+            }
+        }
+
+        // Convert List to double[] array
+        final int size = resultList.size();
+        final double[] resultArray = new double[size];
+        for (int i = 0; i < size; i++) {
+            resultArray[i] = resultList.get(i);
+        }
+
+        return resultArray;
+    }
+
+    /**
+     * Applies a specified operation to each boolean array element and returns the modified elements.<br>
+     * This Editor implementation can achieve the following functions:
+     * <ol>
+     * <li>Filter out required objects, discard element objects if {@code null} is returned</li>
+     * <li>Modify element objects and return the modified objects</li>
+     * </ol>
+     *
+     * @param array  The array
+     * @param editor The editor interface, returns the original array if {@code null}
+     * @return The edited array
+     */
+    public static boolean[] edit(final boolean[] array, final UnaryOperator<Boolean> editor) {
+        if (null == array || null == editor) {
+            return array;
+        }
+
+        final List<Boolean> resultList = new ArrayList<>(array.length);
+        Boolean modified;
+        for (final Boolean t : array) {
+            modified = editor.apply(t);
+            if (null != modified) {
+                resultList.add(modified);
+            }
+        }
+
+        // Convert List to boolean[] array
+        final int size = resultList.size();
+        final boolean[] resultArray = new boolean[size];
+        for (int i = 0; i < size; i++) {
+            resultArray[i] = resultList.get(i);
+        }
+
+        return resultArray;
+    }
+
+    /**
+     * Filters array elements<br>
+     * Keeps elements where {@link Predicate#test(Object)} returns {@code true}
+     *
+     * @param array     The array
+     * @param predicate The filter interface for defining filter rules, returns the original array if {@code null}
+     * @return The filtered array
+     */
+    public static char[] filter(final char[] array, final Predicate<Character> predicate) {
+        if (null == array || null == predicate) {
+            return array;
+        }
+        return edit(array, t -> predicate.test(t) ? t : null);
+    }
+
+    /**
+     * Filters byte array elements<br>
+     * Keeps elements where {@link Predicate#test(Object)} returns {@code true}
+     *
+     * @param array     The array
+     * @param predicate The filter interface for defining filter rules, returns the original array if {@code null}
+     * @return The filtered array
+     */
+    public static byte[] filter(final byte[] array, final Predicate<Byte> predicate) {
+        if (null == array || null == predicate) {
+            return array;
+        }
+        return edit(array, t -> predicate.test(t) ? t : null);
+    }
+
+    /**
+     * Filters short array elements<br>
+     * Keeps elements where {@link Predicate#test(Object)} returns {@code true}
+     *
+     * @param array     The array
+     * @param predicate The filter interface for defining filter rules, returns the original array if {@code null}
+     * @return The filtered array
+     */
+    public static short[] filter(final short[] array, final Predicate<Short> predicate) {
+        if (null == array || null == predicate) {
+            return array;
+        }
+        return edit(array, t -> predicate.test(t) ? t : null);
+    }
+
+    /**
+     * Filters int array elements<br>
+     * Keeps elements where {@link Predicate#test(Object)} returns {@code true}
+     *
+     * @param array     The array
+     * @param predicate The filter interface for defining filter rules, returns the original array if {@code null}
+     * @return The filtered array
+     */
+    public static int[] filter(final int[] array, final Predicate<Integer> predicate) {
+        if (null == array || null == predicate) {
+            return array;
+        }
+        return edit(array, t -> predicate.test(t) ? t : null);
+    }
+
+    /**
+     * Filters long array elements<br>
+     * Keeps elements where {@link Predicate#test(Object)} returns {@code true}
+     *
+     * @param array     The array
+     * @param predicate The filter interface for defining filter rules, returns the original array if {@code null}
+     * @return The filtered array
+     */
+    public static long[] filter(final long[] array, final Predicate<Long> predicate) {
+        if (null == array || null == predicate) {
+            return array;
+        }
+        return edit(array, t -> predicate.test(t) ? t : null);
+    }
+
+    /**
+     * Filters float array elements<br>
+     * Keeps elements where {@link Predicate#test(Object)} returns {@code true}
+     *
+     * @param array     The array
+     * @param predicate The filter interface for defining filter rules, returns the original array if {@code null}
+     * @return The filtered array
+     */
+    public static float[] filter(final float[] array, final Predicate<Float> predicate) {
+        if (null == array || null == predicate) {
+            return array;
+        }
+        return edit(array, t -> predicate.test(t) ? t : null);
+    }
+
+    /**
+     * Filters double array elements<br>
+     * Keeps elements where {@link Predicate#test(Object)} returns {@code true}
+     *
+     * @param array     The array
+     * @param predicate The filter interface for defining filter rules, returns the original array if {@code null}
+     * @return The filtered array
+     */
+    public static double[] filter(final double[] array, final Predicate<Double> predicate) {
+        if (null == array || null == predicate) {
+            return array;
+        }
+        return edit(array, t -> predicate.test(t) ? t : null);
+    }
+
+    /**
+     * Filters boolean array elements<br>
+     * Keeps elements where {@link Predicate#test(Object)} returns {@code true}
+     *
+     * @param array     The array
+     * @param predicate The filter interface for defining filter rules, returns the original array if {@code null}
+     * @return The filtered array
+     */
+    public static boolean[] filter(final boolean[] array, final Predicate<Boolean> predicate) {
+        if (null == array || null == predicate) {
+            return array;
+        }
+        return edit(array, t -> predicate.test(t) ? t : null);
     }
 
     /**

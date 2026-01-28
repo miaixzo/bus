@@ -157,7 +157,7 @@ public class TwitterProvider extends AbstractProvider {
         form.put("oauth_signature", sign(form, "POST", baseUrl, context.getClientSecret(), null));
 
         Map<String, String> header = new HashMap<>();
-        header.put("Authorization", buildHeader(form));
+        header.put(HTTP.AUTHORIZATION, buildHeader(form));
         header.put("User-Agent", "'Httpx' HTTP Client Simple-Http");
         String requestToken = Httpx.post(baseUrl, null, header);
 
@@ -185,7 +185,7 @@ public class TwitterProvider extends AbstractProvider {
                 sign(headerMap, "POST", this.complex.token(), context.getClientSecret(), callback.getOauth_token()));
 
         Map<String, String> header = new HashMap<>();
-        header.put("Authorization", buildHeader(headerMap));
+        header.put(HTTP.AUTHORIZATION, buildHeader(headerMap));
         header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
 
         Map<String, String> form = new HashMap<>(3);
@@ -227,7 +227,7 @@ public class TwitterProvider extends AbstractProvider {
                         authorization.getOauthTokenSecret()));
 
         Map<String, String> header = new HashMap<>();
-        header.put("Authorization", buildHeader(form));
+        header.put(HTTP.AUTHORIZATION, buildHeader(form));
         String response = Httpx.get(userInfoUrl(authorization), null, header);
 
         // Parse JSON response using JsonKit

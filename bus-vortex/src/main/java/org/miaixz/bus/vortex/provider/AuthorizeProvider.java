@@ -53,8 +53,14 @@ public interface AuthorizeProvider {
 
     /**
      * Asynchronously validates the provided principal and performs the authorization process. This default method acts
-     * as a template, dispatching to the appropriate specific validation method (e.g., {@link #token(Principal)} or
-     * {@link #apiKey(Principal)}) based on the principal's type.
+     * as a template, dispatching to the appropriate specific validation method (e.g., {@link #token(Principal)},
+     * {@link #apiKey(Principal)}, or {@link #license(Principal)}) based on the principal's type (policy).
+     * <p>
+     * Policy dispatch logic:
+     * <ul>
+     * <li>Policy 1-3: Token-based authentication (policy 3 includes license verification)</li>
+     * <li>Policy 4-6: ApiKey-based authentication (policy 6 includes license verification)</li>
+     * </ul>
      * <p>
      * This method can be overridden to handle custom credential types or more complex dispatching logic.
      *
@@ -68,30 +74,50 @@ public interface AuthorizeProvider {
             return Mono.error(new ValidateException(ErrorCode._100806));
         }
 
+        final Integer type = principal.getType();
+
+        // Dispatch based on the policy type:
+        // Policy 1-3: Token-based (1: basic, 2: with permissions, 3: with permissions and license)
+        // Policy 4-6: ApiKey-based (4: basic, 5: with permissions, 6: with permissions and license)
+        final boolean isTokenBased = Consts.ONE.equals(type) || Consts.TWO.equals(type) || Consts.THREE.equals(type);
+        final boolean isApiKeyBased = Consts.FOUR.equals(type) || Consts.FIVE.equals(type) || Consts.SIX.equals(type);
+
+        // For policy 3 or 6: license verification required
+        final boolean requiresLicense = Consts.THREE.equals(type) || Consts.SIX.equals(type);
+
         // Dispatch based on the credential type using an if-else if chain,
         // as case labels in a switch must be compile-time constants.
-        if (Consts.ONE.equals(principal.getType())) {
-            return this.token(principal); // Now returns Mono<Delegate>
-        } else if (Consts.TWO.equals(principal.getType())) {
-            return this.apiKey(principal); // Now returns Mono<Delegate>
-        } else {
-            Logger.warn(
-                    false,
-                    "Authorize",
-                    "Unsupported principal type: {}. Override the 'authorize' method to handle it.",
-                    principal.getType());
-            // Return a Mono emitting a Delegate with the error information.
-            return Mono.just(
-                    Delegate.builder()
-                            .message(
-                                    Message.builder().errcode(ErrorCode._100802.getKey())
-                                            .errmsg("Unsupported credential type: " + principal.getType()).build())
-                            .build());
+        if (isTokenBased) {
+            // If license verification is required (policy 3), validate license first, then token
+            Mono<Delegate> chain = requiresLicense ? this.license(principal)
+                    .flatMap(delegate -> delegate.isOk() ? this.token(principal) : Mono.just(delegate)) : Mono.empty();
+
+            return chain.switchIfEmpty(this.token(principal));
+        } else if (isApiKeyBased) {
+            // If license verification is required (policy 6), validate license first, then apiKey
+            Mono<Delegate> chain = requiresLicense ? this.license(principal)
+                    .flatMap(delegate -> delegate.isOk() ? this.apiKey(principal) : Mono.just(delegate)) : Mono.empty();
+
+            return chain.switchIfEmpty(this.apiKey(principal));
         }
+        Logger.warn(
+                false,
+                "Authorize",
+                "Unsupported principal type: {}. Override the 'authorize' method to handle it.",
+                principal.getType());
+        // Return a Mono emitting a Delegate with the error information.
+        return Mono.just(
+                Delegate.builder()
+                        .message(
+                                Message.builder().errcode(ErrorCode._116002.getKey())
+                                        .errmsg("Unsupported credential type: " + principal.getType()).build())
+                        .build());
     }
 
     /**
      * Asynchronously validates a token-based principal (e.g., JWT, Opaque Token).
+     * <p>
+     * Used for policy 1-3 (Token-based authentication).
      * <p>
      * <strong>Warning:</strong> The default implementation of this method provides no security and always returns a
      * successful result. It is a placeholder and **must be overridden** with actual validation logic, such as JWT
@@ -117,6 +143,8 @@ public interface AuthorizeProvider {
     /**
      * Asynchronously validates an API key-based principal.
      * <p>
+     * Used for policy 4-6 (ApiKey-based authentication).
+     * <p>
      * <strong>Warning:</strong> The default implementation of this method provides no security and always returns a
      * successful result. It is a placeholder and **must be overridden** with actual validation logic, such as looking
      * up the API key in a database and checking its permissions.
@@ -129,6 +157,32 @@ public interface AuthorizeProvider {
                 true,
                 "Authorize",
                 "Executing default `apiKey` method. This provides no security and should be overridden.");
+        // Wrap the synchronous default result in Mono.just()
+        return Mono.just(
+                Delegate.builder()
+                        .message(
+                                Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+                                        .errmsg(ErrorCode._SUCCESS.getValue()).build())
+                        .authorize(Authorize.builder().build()).build());
+    }
+
+    /**
+     * Asynchronously validates a license-based principal for enhanced security.
+     * <p>
+     * Used for policy 3 (Token with license) and policy 6 (ApiKey with license).
+     * <p>
+     * <strong>Warning:</strong> The default implementation of this method provides no security and always returns a
+     * successful result. It is a placeholder and **must be overridden** with actual validation logic, such as license
+     * key verification against a database or license server.
+     *
+     * @param principal The {@link Principal} object containing the license credential.
+     * @return A {@code Mono<Delegate>} emitting the authorization result.
+     */
+    default Mono<Delegate> license(Principal principal) {
+        Logger.debug(
+                true,
+                "Authorize",
+                "Executing default `license` method. This provides no security and should be overridden.");
         // Wrap the synchronous default result in Mono.just()
         return Mono.just(
                 Delegate.builder()

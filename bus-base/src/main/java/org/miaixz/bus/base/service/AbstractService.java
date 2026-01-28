@@ -105,8 +105,7 @@ public class AbstractService<T extends BaseEntity, I extends Serializable, M ext
     /**
      * Persists a batch of entities, saving all fields for each entity.
      * <p>
-     * Unlike single insert, this method typically delegates directly to the mapper without the individual `setValue`
-     * hook loop for performance, unless handled within the mapper/interceptor.
+     * Automatically populates common metadata (status, creator, create time) before insertion.
      * </p>
      *
      * @param list the list of entities to insert
@@ -114,28 +113,43 @@ public class AbstractService<T extends BaseEntity, I extends Serializable, M ext
      */
     @Override
     public Object insertBatch(List<T> list) {
+        if (ObjectKit.isNotEmpty(list)) {
+            list.forEach(this::setValue);
+        }
         return mapper.insertBatch(list);
     }
 
     /**
      * Batch insert or update (Upsert) operation.
+     * <p>
+     * Automatically populates common metadata (status, creator, create time, modifier, update time) before operation.
+     * </p>
      *
      * @param list the list of entities to insert or update
      * @return the result of the batch operation
      */
     @Override
     public Object insertUpBatch(List<T> list) {
+        if (ObjectKit.isNotEmpty(list)) {
+            list.forEach(this::setValue);
+        }
         return mapper.insertUpBatch(list);
     }
 
     /**
      * Persists a batch of entities, saving only non-null fields.
+     * <p>
+     * Automatically populates common metadata (status, creator, create time) before insertion.
+     * </p>
      *
      * @param list the list of entities to insert
      * @return the list of inserted entities or operation result
      */
     @Override
     public Object insertSelectiveBatch(List<T> list) {
+        if (ObjectKit.isNotEmpty(list)) {
+            list.forEach(this::setValue);
+        }
         return mapper.insertSelectiveBatch(list);
     }
 
