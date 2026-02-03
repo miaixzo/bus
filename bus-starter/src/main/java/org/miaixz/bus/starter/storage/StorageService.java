@@ -48,6 +48,7 @@ import org.miaixz.bus.storage.metric.*;
  *
  * <ul>
  * <li>Cloud Storage Services: Aliyun OSS, Tencent COS, Huawei OBS, Amazon S3, Qiniu Cloud, Upyun, etc.</li>
+ * <li>Enterprise Collaboration: Microsoft SharePoint, OneDrive for Business</li>
  * <li>Local Storage: Local file system</li>
  * <li>Network Storage: FTP, SFTP, WebDAV, etc.</li>
  * <li>Code Hosting Storage: GitLab</li>
@@ -155,8 +156,17 @@ public class StorageService {
             case BAIDU:
                 return new BaiduBosProvider(context);
 
+            case BOX:
+                return new BoxProvider(context);
+
             case CLOUDFLARE_R2:
                 return new CloudflareR2Provider(context);
+
+            case DIGITALOCEAN:
+                return new DigitalOceanProvider(context);
+
+            case DROPBOX:
+                return new DropboxProvider(context);
 
             case FTP:
                 return new FtpFileProvider(context);
@@ -170,11 +180,20 @@ public class StorageService {
             case GOOGLE:
                 return new GoogleCsProvider(context);
 
+            case GOOGLE_DRIVE:
+                return new GoogleDriveProvider(context);
+
             case HUAWEI:
                 return new HuaweiObsProvider(context);
 
+            case IBM:
+                return new IBMCosProvider(context);
+
             case JD:
                 return new JdOssProvider(context);
+
+            case LINODE:
+                return new LinodeOssProvider(context);
 
             case LOCAL:
                 return new LocalFileProvider(context);
@@ -182,17 +201,23 @@ public class StorageService {
             case MINIO:
                 return new MinioOssProvider(context);
 
+            case ORACLE:
+                return new OracleOssProvider(context);
+
             case QINIU:
                 return new QiniuOssProvider(context);
-
-            case TENCENT:
-                return new TencentCosProvider(context);
 
             case SFTP:
                 return new SftpFileProvider(context);
 
+            case SHAREPOINT:
+                return new SharePointProvider(context);
+
             case SMB:
                 return new SmbFileProvider(context);
+
+            case TENCENT:
+                return new TencentCosProvider(context);
 
             case UPYUN:
                 return new UpyunOssProvider(context);

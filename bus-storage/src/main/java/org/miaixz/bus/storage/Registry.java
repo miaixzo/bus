@@ -56,9 +56,21 @@ public enum Registry {
      */
     BAIDU,
     /**
+     * Box Enterprise content management platform.
+     */
+    BOX,
+    /**
      * Cloudflare R2 Object Storage (S3 Compatible).
      */
     CLOUDFLARE_R2,
+    /**
+     * DigitalOcean Spaces (S3 Compatible).
+     */
+    DIGITALOCEAN,
+    /**
+     * Dropbox Business file sync and collaboration.
+     */
+    DROPBOX,
     /**
      * File Transfer Protocol (FTP).
      */
@@ -76,13 +88,25 @@ public enum Registry {
      */
     GOOGLE,
     /**
+     * Google Drive and Google Workspace.
+     */
+    GOOGLE_DRIVE,
+    /**
      * Huawei Cloud Object Storage Service (OBS).
      */
     HUAWEI,
     /**
+     * IBM Cloud Object Storage (S3 Compatible).
+     */
+    IBM,
+    /**
      * JD Cloud Object Storage Service (OBS).
      */
     JD,
+    /**
+     * Linode Object Storage (S3 Compatible).
+     */
+    LINODE,
     /**
      * Local file system storage.
      */
@@ -92,9 +116,9 @@ public enum Registry {
      */
     MINIO,
     /**
-     * MinIO Object Storage Service.
+     * Oracle Cloud Object Storage (S3 Compatible).
      */
-    ONEDRIVE,
+    ORACLE,
     /**
      * Qiniu Cloud Object Storage Service (OSS).
      */
@@ -103,6 +127,10 @@ public enum Registry {
      * Secure File Transfer Protocol (SFTP).
      */
     SFTP,
+    /**
+     * Microsoft SharePoint Online and OneDrive for Business.
+     */
+    SHAREPOINT,
     /**
      * Server Message Block (SMB) protocol for file sharing.
      */
