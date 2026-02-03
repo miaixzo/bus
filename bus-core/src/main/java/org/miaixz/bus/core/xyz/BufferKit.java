@@ -79,7 +79,7 @@ public class BufferKit {
      * @return A new ByteBuffer containing the copied portion.
      */
     public static ByteBuffer copy(final ByteBuffer src, final int start, final int end) {
-        return copy(src, ByteBuffer.allocate(end - start));
+        return ByteBuffer.wrap(Arrays.copyOfRange(src.array(), start, end));
     }
 
     /**

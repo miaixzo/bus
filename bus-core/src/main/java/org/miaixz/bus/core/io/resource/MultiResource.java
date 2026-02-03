@@ -197,7 +197,7 @@ public class MultiResource implements Resource, Iterable<Resource>, Iterator<Res
      */
     @Override
     public boolean hasNext() {
-        return cursor < resources.size();
+        return Math.max(cursor, 0) < resources.size();
     }
 
     /**
@@ -208,7 +208,7 @@ public class MultiResource implements Resource, Iterable<Resource>, Iterator<Res
      */
     @Override
     public synchronized Resource next() {
-        if (cursor >= resources.size()) {
+        if (!hasNext()) {
             throw new ConcurrentModificationException();
         }
         this.cursor++;

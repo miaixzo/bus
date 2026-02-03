@@ -89,7 +89,7 @@
         <lombok.version>1.18.42</lombok.version>
         <jackson.version>2.21.0</jackson.version>
         <sardine.version>5.13</sardine.version>
-        <jsch.version>2.27.2</jsch.version>
+        <jsch.version>2.27.7</jsch.version>
         <amazon.s3.version>2.40.15</amazon.s3.version>
         <smbj.version>0.14.0</smbj.version>
     </properties>
