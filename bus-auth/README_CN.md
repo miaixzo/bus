@@ -844,7 +844,7 @@ Bus Auth 支持 **40+** 提供程序，包括：
 
 ## 📄 许可证
 
-[MIT License (MIT)](https://github.com/818000/bus/blob/main/LICENSE)
+[Apache License Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
 版权所有 (c) 2015-2026 miaixz.org 及其他贡献者。
 

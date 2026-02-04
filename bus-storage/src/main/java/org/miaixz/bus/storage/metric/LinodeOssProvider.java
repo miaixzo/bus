@@ -1,27 +1,19 @@
 /*
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                               ~
- ~ The MIT License (MIT)                                                         ~
- ~                                                                               ~
  ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                    ~
  ~                                                                               ~
- ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
- ~ of this software and associated documentation files (the "Software"), to deal ~
- ~ in the Software without restriction, including without limitation the rights  ~
- ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
- ~ copies of the Software, and to permit persons to whom the Software is         ~
- ~ furnished to do so, subject to the following conditions:                      ~
+ ~ Licensed under the Apache License, Version 2.0 (the "License");               ~
+ ~ you may not use this file except in compliance with the License.              ~
+ ~ You may obtain a copy of the License at                                       ~
  ~                                                                               ~
- ~ The above copyright notice and this permission notice shall be included in    ~
- ~ all copies or substantial portions of the Software.                           ~
+ ~      https://www.apache.org/licenses/LICENSE-2.0                              ~
  ~                                                                               ~
- ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
- ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
- ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
- ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
- ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
- ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
- ~ THE SOFTWARE.                                                                 ~
+ ~ Unless required by applicable law or agreed to in writing, software           ~
+ ~ distributed under the License is distributed on an "AS IS" BASIS,             ~
+ ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.      ~
+ ~ See the License for the specific language governing permissions and           ~
+ ~ limitations under the License.                                                ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
@@ -30,11 +22,11 @@ package org.miaixz.bus.storage.metric;
 import org.miaixz.bus.storage.Context;
 
 /**
- * Storage service provider for Linode Object Storage.
- * This provider integrates with Linode Object Storage (now part of Akamai) using S3-compatible API.
+ * Storage service provider for Linode Object Storage. This provider integrates with Linode Object Storage (now part of
+ * Akamai) using S3-compatible API.
  * <p>
- * Linode Object Storage is a globally-available, S3-compatible storage service with Akamai CDN integration.
- * It provides high-performance object storage with predictable pricing.
+ * Linode Object Storage is a globally-available, S3-compatible storage service with Akamai CDN integration. It provides
+ * high-performance object storage with predictable pricing.
  * <p>
  * <strong>Configuration:</strong>
  * <ul>
@@ -46,6 +38,7 @@ import org.miaixz.bus.storage.Context;
  * </ul>
  * <p>
  * <strong>Endpoint Format:</strong>
+ * 
  * <pre>
  * Standard Endpoint:
  * https://{cluster-id}.linodeobjects.com
@@ -58,14 +51,10 @@ import org.miaixz.bus.storage.Context;
  * </pre>
  * <p>
  * <strong>Usage Example:</strong>
+ * 
  * <pre>{@code
- * Context context = Context.builder()
- *     .endpoint("https://us-east-1.linodeobjects.com")
- *     .bucket("my-bucket")
- *     .accessKey("your-access-key")
- *     .secretKey("your-secret-key")
- *     .region("us-east-1")
- *     .build();
+ * Context context = Context.builder().endpoint("https://us-east-1.linodeobjects.com").bucket("my-bucket")
+ *         .accessKey("your-access-key").secretKey("your-secret-key").region("us-east-1").build();
  *
  * LinodeOssProvider provider = new LinodeOssProvider(context);
  * provider.upload("file.txt", fileBytes);
@@ -74,20 +63,20 @@ import org.miaixz.bus.storage.Context;
  * <strong>Supported Regions:</strong>
  * <ul>
  * <li>Americas:
- *   <ul>
- *     <li>us-east-1 - Newark, NJ</li>
- *     <li>us-southeast-1 - Atlanta, GA</li>
- *   </ul>
+ * <ul>
+ * <li>us-east-1 - Newark, NJ</li>
+ * <li>us-southeast-1 - Atlanta, GA</li>
+ * </ul>
  * </li>
  * <li>Europe:
- *   <ul>
- *     <li>eu-central-1 - Frankfurt, Germany</li>
- *   </ul>
+ * <ul>
+ * <li>eu-central-1 - Frankfurt, Germany</li>
+ * </ul>
  * </li>
  * <li>Asia Pacific:
- *   <ul>
- *     <li>ap-south-1 - Singapore</li>
- *   </ul>
+ * <ul>
+ * <li>ap-south-1 - Singapore</li>
+ * </ul>
  * </li>
  * </ul>
  * <p>
@@ -105,6 +94,7 @@ import org.miaixz.bus.storage.Context;
  * </ul>
  * <p>
  * <strong>Akamai Integration:</strong>
+ * 
  * <pre>
  * Since Linode is now part of Akamai, you get:
  * - Access to Akamai's global CDN network
@@ -135,11 +125,10 @@ import org.miaixz.bus.storage.Context;
 public class LinodeOssProvider extends GenericS3Provider {
 
     /**
-     * Constructs a Linode Object Storage provider with the given context.
-     * Initializes the S3-compatible client using the provided credentials and endpoint configuration.
+     * Constructs a Linode Object Storage provider with the given context. Initializes the S3-compatible client using
+     * the provided credentials and endpoint configuration.
      * <p>
-     * The endpoint should follow the format:
-     * {@code https://{cluster-id}.linodeobjects.com}
+     * The endpoint should follow the format: {@code https://{cluster-id}.linodeobjects.com}
      * <p>
      * Where {cluster-id} is the Linode region identifier (e.g., us-east-1, eu-central-1, ap-south-1).
      * <p>
@@ -151,11 +140,11 @@ public class LinodeOssProvider extends GenericS3Provider {
      * <li>Optionally configure CORS for web access</li>
      * </ol>
      * <p>
-     * <strong>Note:</strong> Linode Object Storage is now part of Akamai Connected Cloud,
-     * providing enhanced global performance and reliability.
+     * <strong>Note:</strong> Linode Object Storage is now part of Akamai Connected Cloud, providing enhanced global
+     * performance and reliability.
      *
-     * @param context The storage context, containing endpoint, bucket name, access key, secret key, region,
-     *                and other configurations.
+     * @param context The storage context, containing endpoint, bucket name, access key, secret key, region, and other
+     *                configurations.
      * @throws IllegalArgumentException If required context parameters are missing or invalid.
      */
     public LinodeOssProvider(Context context) {

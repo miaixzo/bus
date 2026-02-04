@@ -1,27 +1,19 @@
 /*
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                               ~
- ~ The MIT License (MIT)                                                         ~
- ~                                                                               ~
  ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                    ~
  ~                                                                               ~
- ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
- ~ of this software and associated documentation files (the "Software"), to deal ~
- ~ in the Software without restriction, including without limitation the rights  ~
- ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
- ~ copies of the Software, and to permit persons to whom the Software is         ~
- ~ furnished to do so, subject to the following conditions:                      ~
+ ~ Licensed under the Apache License, Version 2.0 (the "License");               ~
+ ~ you may not use this file except in compliance with the License.              ~
+ ~ You may obtain a copy of the License at                                       ~
  ~                                                                               ~
- ~ The above copyright notice and this permission notice shall be included in    ~
- ~ all copies or substantial portions of the Software.                           ~
+ ~      https://www.apache.org/licenses/LICENSE-2.0                              ~
  ~                                                                               ~
- ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
- ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
- ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
- ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
- ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
- ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
- ~ THE SOFTWARE.                                                                 ~
+ ~ Unless required by applicable law or agreed to in writing, software           ~
+ ~ distributed under the License is distributed on an "AS IS" BASIS,             ~
+ ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.      ~
+ ~ See the License for the specific language governing permissions and           ~
+ ~ limitations under the License.                                                ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
@@ -47,16 +39,21 @@ import org.miaixz.bus.storage.metric.*;
  * It supports a variety of file storage methods, including but not limited to:
  *
  * <ul>
- * <li>Cloud Storage Services: Aliyun OSS, Tencent COS, Huawei OBS, Amazon S3, Qiniu Cloud, Upyun, etc.</li>
- * <li>Enterprise Collaboration: Microsoft SharePoint, OneDrive for Business</li>
+ * <li>Cloud Storage Services: Aliyun OSS, Tencent COS, Huawei OBS, Amazon S3, Qiniu Cloud, Upyun, Baidu BOS, JD Cloud,
+ * Volcengine TOS, etc.</li>
+ * <li>S3-Compatible Storage: Backblaze B2, Cloudflare R2, DigitalOcean Spaces, Wasabi, MinIO, Linode, IBM Cloud, Oracle
+ * Cloud, Contabo, Exoscale, Filebase, Kakao Cloud, Naver Cloud, NHN Cloud, OVHcloud, Sakura Cloud, Scaleway, Storj,
+ * Vultr, etc.</li>
+ * <li>Enterprise Collaboration: Microsoft SharePoint, OneDrive for Business, Box, Dropbox, Google Drive</li>
+ * <li>Personal Cloud Storage: Apple iCloud Drive, Mega</li>
  * <li>Local Storage: Local file system</li>
- * <li>Network Storage: FTP, SFTP, WebDAV, etc.</li>
+ * <li>Network Storage: FTP, SFTP, WebDAV, SMB</li>
  * <li>Code Hosting Storage: GitLab</li>
  * </ul>
  *
  * <p>
  * <strong>Usage Example:</strong>
- * 
+ *
  * <pre>{@code
  * // Create configuration
  * StorageProperties properties = new StorageProperties();
@@ -144,6 +141,9 @@ public class StorageService {
             case ALIYUN:
                 return new AliYunOssProvider(context);
 
+            case ALIYUN_INTL:
+                return new AlibabaCloudProvider(context);
+
             case AMAZON:
                 return new AmazonS3Provider(context);
 
@@ -162,11 +162,20 @@ public class StorageService {
             case CLOUDFLARE_R2:
                 return new CloudflareR2Provider(context);
 
+            case CONTABO:
+                return new ContaboProvider(context);
+
             case DIGITALOCEAN:
                 return new DigitalOceanProvider(context);
 
             case DROPBOX:
                 return new DropboxProvider(context);
+
+            case EXOSCALE:
+                return new ExoscaleProvider(context);
+
+            case FILEBASE:
+                return new FilebaseProvider(context);
 
             case FTP:
                 return new FtpFileProvider(context);
@@ -189,8 +198,14 @@ public class StorageService {
             case IBM:
                 return new IBMCosProvider(context);
 
+            case ICLOUD:
+                return new ICloudDriveProvider(context);
+
             case JD:
                 return new JdOssProvider(context);
+
+            case KAKAO:
+                return new KakaoCloudProvider(context);
 
             case LINODE:
                 return new LinodeOssProvider(context);
@@ -198,14 +213,32 @@ public class StorageService {
             case LOCAL:
                 return new LocalFileProvider(context);
 
+            case MEGA:
+                return new MegaProvider(context);
+
             case MINIO:
                 return new MinioOssProvider(context);
+
+            case NAVER:
+                return new NaverCloudProvider(context);
+
+            case NHN:
+                return new NhnCloudProvider(context);
 
             case ORACLE:
                 return new OracleOssProvider(context);
 
+            case OVHCLOUD:
+                return new OvhCloudProvider(context);
+
             case QINIU:
                 return new QiniuOssProvider(context);
+
+            case SAKURA:
+                return new SakuraCloudProvider(context);
+
+            case SCALEWAY:
+                return new ScalewayProvider(context);
 
             case SFTP:
                 return new SftpFileProvider(context);
@@ -216,14 +249,23 @@ public class StorageService {
             case SMB:
                 return new SmbFileProvider(context);
 
+            case STORJ:
+                return new StorjProvider(context);
+
             case TENCENT:
                 return new TencentCosProvider(context);
+
+            case TENCENT_INTL:
+                return new TencentCloudProvider(context);
 
             case UPYUN:
                 return new UpyunOssProvider(context);
 
             case VOLCENGINE:
                 return new VolcengineTosProvider(context);
+
+            case VULTR:
+                return new VultrProvider(context);
 
             case WASABI:
                 return new WasabiProvider(context);

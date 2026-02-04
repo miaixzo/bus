@@ -1,27 +1,19 @@
 /*
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                               ~
- ~ The MIT License (MIT)                                                         ~
- ~                                                                               ~
  ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                    ~
  ~                                                                               ~
- ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
- ~ of this software and associated documentation files (the "Software"), to deal ~
- ~ in the Software without restriction, including without limitation the rights  ~
- ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
- ~ copies of the Software, and to permit persons to whom the Software is         ~
- ~ furnished to do so, subject to the following conditions:                      ~
+ ~ Licensed under the Apache License, Version 2.0 (the "License");               ~
+ ~ you may not use this file except in compliance with the License.              ~
+ ~ You may obtain a copy of the License at                                       ~
  ~                                                                               ~
- ~ The above copyright notice and this permission notice shall be included in    ~
- ~ all copies or substantial portions of the Software.                           ~
+ ~      https://www.apache.org/licenses/LICENSE-2.0                              ~
  ~                                                                               ~
- ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
- ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
- ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
- ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
- ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
- ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
- ~ THE SOFTWARE.                                                                 ~
+ ~ Unless required by applicable law or agreed to in writing, software           ~
+ ~ distributed under the License is distributed on an "AS IS" BASIS,             ~
+ ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.      ~
+ ~ See the License for the specific language governing permissions and           ~
+ ~ limitations under the License.                                                ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
@@ -51,8 +43,8 @@ import org.miaixz.bus.storage.magic.Blob;
 import org.miaixz.bus.storage.magic.ErrorCode;
 
 /**
- * Storage service provider for Box Enterprise.
- * This provider integrates with Box using Box API v2 for enterprise content management.
+ * Storage service provider for Box Enterprise. This provider integrates with Box using Box API v2 for enterprise
+ * content management.
  * <p>
  * <strong>Supported Storage Locations:</strong>
  * <ul>
@@ -70,11 +62,9 @@ import org.miaixz.bus.storage.magic.ErrorCode;
  * </ul>
  * <p>
  * <strong>Usage Example:</strong>
+ * 
  * <pre>{@code
- * Context context = Context.builder()
- *     .bucket("0")
- *     .extension("your-oauth-access-token")
- *     .build();
+ * Context context = Context.builder().bucket("0").extension("your-oauth-access-token").build();
  *
  * BoxProvider provider = new BoxProvider(context);
  * provider.upload("document.pdf", fileBytes);
@@ -101,8 +91,8 @@ public class BoxProvider extends AbstractProvider {
     private static final String UPLOAD_BASE = "https://upload.box.com/api/2.0";
 
     /**
-     * Constructs a Box Enterprise storage provider with the given context.
-     * Initializes the HTTP client and validates the OAuth 2.0 access token.
+     * Constructs a Box Enterprise storage provider with the given context. Initializes the HTTP client and validates
+     * the OAuth 2.0 access token.
      *
      * @param context The storage context, containing endpoint, bucket (folder ID), and OAuth access token.
      * @throws IllegalArgumentException If required context parameters are missing or invalid.
@@ -218,8 +208,13 @@ public class BoxProvider extends AbstractProvider {
                         .build();
             }
         } catch (Exception e) {
-            Logger.error("Failed to download file: {} from bucket: {} to local file: {}. Error: {}", fileName, bucket,
-                    file.getAbsolutePath(), e.getMessage(), e);
+            Logger.error(
+                    "Failed to download file: {} from bucket: {} to local file: {}. Error: {}",
+                    fileName,
+                    bucket,
+                    file.getAbsolutePath(),
+                    e.getMessage(),
+                    e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
         }
     }
@@ -256,7 +251,8 @@ public class BoxProvider extends AbstractProvider {
                             extend.put("modified_at", entry.get("modified_at"));
 
                             String size = entry.get("size") != null ? entry.get("size").toString() : "0";
-                            blobs.add(Blob.builder().name((String) entry.get("name")).size(size).extend(extend).build());
+                            blobs.add(
+                                    Blob.builder().name((String) entry.get("name")).size(size).extend(extend).build());
                         }
                     }
                 }
@@ -265,7 +261,11 @@ public class BoxProvider extends AbstractProvider {
                         .data(blobs).build();
             }
         } catch (Exception e) {
-            Logger.error("Failed to list objects in bucket: {}. Error: {}", this.context.getBucket(), e.getMessage(), e);
+            Logger.error(
+                    "Failed to list objects in bucket: {}. Error: {}",
+                    this.context.getBucket(),
+                    e.getMessage(),
+                    e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
         }
     }
@@ -321,7 +321,10 @@ public class BoxProvider extends AbstractProvider {
             Request request = new Request.Builder().url(url)
                     .addHeader(HTTP.AUTHORIZATION, "Bearer " + context.getExtension())
                     .addHeader("Content-Type", MediaType.APPLICATION_JSON)
-                    .put(RequestBody.of(MediaType.valueOf(MediaType.APPLICATION_JSON), JsonKit.toJsonString(requestBody)))
+                    .put(
+                            RequestBody.of(
+                                    MediaType.valueOf(MediaType.APPLICATION_JSON),
+                                    JsonKit.toJsonString(requestBody)))
                     .build();
 
             try (Response response = client.newCall(request).execute()) {
@@ -333,8 +336,13 @@ public class BoxProvider extends AbstractProvider {
                         .build();
             }
         } catch (Exception e) {
-            Logger.error("Failed to rename file from: {} to: {} in bucket: {}, error: {}", oldName, newName, bucket,
-                    e.getMessage(), e);
+            Logger.error(
+                    "Failed to rename file from: {} to: {} in bucket: {}, error: {}",
+                    oldName,
+                    newName,
+                    bucket,
+                    e.getMessage(),
+                    e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
         }
     }
@@ -365,8 +373,7 @@ public class BoxProvider extends AbstractProvider {
     }
 
     /**
-     * Uploads a byte array to the specified storage bucket.
-     * Uses multipart/form-data for file upload.
+     * Uploads a byte array to the specified storage bucket. Uses multipart/form-data for file upload.
      *
      * @param bucket   The folder ID in Box.
      * @param path     The target path for the file (not used in Box).

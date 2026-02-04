@@ -1,33 +1,28 @@
 /*
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                               ~
- ~ The MIT License (MIT)                                                         ~
- ~                                                                               ~
  ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                    ~
  ~                                                                               ~
- ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
- ~ of this software and associated documentation files (the "Software"), to deal ~
- ~ in the Software without restriction, including without limitation the rights  ~
- ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
- ~ copies of the Software, and to permit persons to whom the Software is         ~
- ~ furnished to do so, subject to the following conditions:                      ~
+ ~ Licensed under the Apache License, Version 2.0 (the "License");               ~
+ ~ you may not use this file except in compliance with the License.              ~
+ ~ You may obtain a copy of the License at                                       ~
  ~                                                                               ~
- ~ The above copyright notice and this permission notice shall be included in    ~
- ~ all copies or substantial portions of the Software.                           ~
+ ~      https://www.apache.org/licenses/LICENSE-2.0                              ~
  ~                                                                               ~
- ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
- ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
- ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
- ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
- ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
- ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
- ~ THE SOFTWARE.                                                                 ~
+ ~ Unless required by applicable law or agreed to in writing, software           ~
+ ~ distributed under the License is distributed on an "AS IS" BASIS,             ~
+ ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.      ~
+ ~ See the License for the specific language governing permissions and           ~
+ ~ limitations under the License.                                                ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 package org.miaixz.bus.storage.metric;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
@@ -44,8 +39,8 @@ import org.miaixz.bus.extra.ssh.provider.jsch.JschSftp;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.storage.Builder;
 import org.miaixz.bus.storage.Context;
-import org.miaixz.bus.storage.magic.ErrorCode;
 import org.miaixz.bus.storage.magic.Blob;
+import org.miaixz.bus.storage.magic.ErrorCode;
 
 /**
  * Storage service provider for SFTP (SSH File Transfer Protocol). This provider allows interaction with SFTP servers

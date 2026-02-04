@@ -921,7 +921,7 @@ System.setProperty("bus.core.cache.size", "1000");
 
 ## 📄 许可证
 
-Bus Core采用[MIT许可证](https://github.com/818000/bus/blob/main/LICENSE)。
+[Apache License Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
 -----
 

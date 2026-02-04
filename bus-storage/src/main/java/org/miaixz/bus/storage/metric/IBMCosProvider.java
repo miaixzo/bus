@@ -1,27 +1,19 @@
 /*
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                               ~
- ~ The MIT License (MIT)                                                         ~
- ~                                                                               ~
  ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                    ~
  ~                                                                               ~
- ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
- ~ of this software and associated documentation files (the "Software"), to deal ~
- ~ in the Software without restriction, including without limitation the rights  ~
- ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
- ~ copies of the Software, and to permit persons to whom the Software is         ~
- ~ furnished to do so, subject to the following conditions:                      ~
+ ~ Licensed under the Apache License, Version 2.0 (the "License");               ~
+ ~ you may not use this file except in compliance with the License.              ~
+ ~ You may obtain a copy of the License at                                       ~
  ~                                                                               ~
- ~ The above copyright notice and this permission notice shall be included in    ~
- ~ all copies or substantial portions of the Software.                           ~
+ ~      https://www.apache.org/licenses/LICENSE-2.0                              ~
  ~                                                                               ~
- ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
- ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
- ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
- ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
- ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
- ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
- ~ THE SOFTWARE.                                                                 ~
+ ~ Unless required by applicable law or agreed to in writing, software           ~
+ ~ distributed under the License is distributed on an "AS IS" BASIS,             ~
+ ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.      ~
+ ~ See the License for the specific language governing permissions and           ~
+ ~ limitations under the License.                                                ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
@@ -30,11 +22,11 @@ package org.miaixz.bus.storage.metric;
 import org.miaixz.bus.storage.Context;
 
 /**
- * Storage service provider for IBM Cloud Object Storage.
- * This provider integrates with IBM Cloud Object Storage using S3-compatible API.
+ * Storage service provider for IBM Cloud Object Storage. This provider integrates with IBM Cloud Object Storage using
+ * S3-compatible API.
  * <p>
- * IBM Cloud Object Storage is a highly scalable, secure, and cost-effective object storage service
- * designed for enterprise workloads. It provides S3-compatible API for seamless integration.
+ * IBM Cloud Object Storage is a highly scalable, secure, and cost-effective object storage service designed for
+ * enterprise workloads. It provides S3-compatible API for seamless integration.
  * <p>
  * <strong>Configuration:</strong>
  * <ul>
@@ -46,6 +38,7 @@ import org.miaixz.bus.storage.Context;
  * </ul>
  * <p>
  * <strong>Endpoint Format:</strong>
+ * 
  * <pre>
  * Public Endpoints:
  * https://s3.{region}.cloud-object-storage.appdomain.cloud
@@ -65,14 +58,11 @@ import org.miaixz.bus.storage.Context;
  * </pre>
  * <p>
  * <strong>Usage Example:</strong>
+ * 
  * <pre>{@code
- * Context context = Context.builder()
- *     .endpoint("https://s3.us-south.cloud-object-storage.appdomain.cloud")
- *     .bucket("my-bucket")
- *     .accessKey("your-hmac-access-key")
- *     .secretKey("your-hmac-secret-key")
- *     .region("us-south")
- *     .build();
+ * Context context = Context.builder().endpoint("https://s3.us-south.cloud-object-storage.appdomain.cloud")
+ *         .bucket("my-bucket").accessKey("your-hmac-access-key").secretKey("your-hmac-secret-key").region("us-south")
+ *         .build();
  *
  * IBMCosProvider provider = new IBMCosProvider(context);
  * provider.upload("file.txt", fileBytes);
@@ -82,11 +72,11 @@ import org.miaixz.bus.storage.Context;
  * <ul>
  * <li>Cross Region: us, eu, ap (spans multiple data centers)</li>
  * <li>Regional:
- *   <ul>
- *     <li>Americas: us-south, us-east, ca-tor, br-sao</li>
- *     <li>Europe: eu-gb, eu-de, eu-es</li>
- *     <li>Asia Pacific: jp-tok, jp-osa, au-syd</li>
- *   </ul>
+ * <ul>
+ * <li>Americas: us-south, us-east, ca-tor, br-sao</li>
+ * <li>Europe: eu-gb, eu-de, eu-es</li>
+ * <li>Asia Pacific: jp-tok, jp-osa, au-syd</li>
+ * </ul>
  * </li>
  * <li>Single Data Center: Various locations worldwide</li>
  * </ul>
@@ -111,7 +101,7 @@ import org.miaixz.bus.storage.Context;
  * <li>Flex: Automatic tier optimization</li>
  * </ul>
  * <p>
- * <strong>Security & Compliance:</strong>
+ * <strong>Security &amp; Compliance:</strong>
  * <ul>
  * <li>HIPAA, PCI-DSS, SOC 2, ISO 27001 compliant</li>
  * <li>GDPR ready with EU data residency</li>
@@ -125,11 +115,10 @@ import org.miaixz.bus.storage.Context;
 public class IBMCosProvider extends GenericS3Provider {
 
     /**
-     * Constructs an IBM Cloud Object Storage provider with the given context.
-     * Initializes the S3-compatible client using the provided HMAC credentials and endpoint configuration.
+     * Constructs an IBM Cloud Object Storage provider with the given context. Initializes the S3-compatible client
+     * using the provided HMAC credentials and endpoint configuration.
      * <p>
-     * The endpoint should follow the format:
-     * {@code https://s3.{region}.cloud-object-storage.appdomain.cloud}
+     * The endpoint should follow the format: {@code https://s3.{region}.cloud-object-storage.appdomain.cloud}
      * <p>
      * Where {region} is the IBM Cloud region (e.g., us-south, eu-gb, jp-tok).
      * <p>

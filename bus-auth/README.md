@@ -844,7 +844,7 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## 📄 License
 
-[The MIT License (MIT)](https://github.com/818000/bus/blob/main/LICENSE)
+[Apache License Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
 Copyright (c) 2015-2026 miaixz.org and other contributors.
 

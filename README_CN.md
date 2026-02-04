@@ -20,9 +20,6 @@
   <a target="_blank" href="http://poi.apache.org">
     <img src="https://img.shields.io/badge/poi-5.4.x-blue.svg">
   </a>
-  <a target="_blank" href="https://github.com/818000/bus/blob/main/LICENSE">
-    <img src="https://img.shields.io/badge/license-MIT-green.svg">
-  </a>
 </p>
 
 <p align="center">

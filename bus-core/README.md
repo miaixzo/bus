@@ -921,7 +921,7 @@ Contributions are welcome! Please read our contributing guidelines before submit
 
 ## 📄 License
 
-Bus Core is licensed under the [MIT License](https://github.com/818000/bus/blob/main/LICENSE).
+[Apache License Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
 -----
 

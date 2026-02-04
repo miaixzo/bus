@@ -1,27 +1,19 @@
 /*
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  ~                                                                               ~
- ~ The MIT License (MIT)                                                         ~
- ~                                                                               ~
  ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                    ~
  ~                                                                               ~
- ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
- ~ of this software and associated documentation files (the "Software"), to deal ~
- ~ in the Software without restriction, including without limitation the rights  ~
- ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
- ~ copies of the Software, and to permit persons to whom the Software is         ~
- ~ furnished to do so, subject to the following conditions:                      ~
+ ~ Licensed under the Apache License, Version 2.0 (the "License");               ~
+ ~ you may not use this file except in compliance with the License.              ~
+ ~ You may obtain a copy of the License at                                       ~
  ~                                                                               ~
- ~ The above copyright notice and this permission notice shall be included in    ~
- ~ all copies or substantial portions of the Software.                           ~
+ ~      https://www.apache.org/licenses/LICENSE-2.0                              ~
  ~                                                                               ~
- ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
- ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
- ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
- ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
- ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
- ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
- ~ THE SOFTWARE.                                                                 ~
+ ~ Unless required by applicable law or agreed to in writing, software           ~
+ ~ distributed under the License is distributed on an "AS IS" BASIS,             ~
+ ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.      ~
+ ~ See the License for the specific language governing permissions and           ~
+ ~ limitations under the License.                                                ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
@@ -30,11 +22,11 @@ package org.miaixz.bus.storage.metric;
 import org.miaixz.bus.storage.Context;
 
 /**
- * Storage service provider for DigitalOcean Spaces.
- * This provider integrates with DigitalOcean Spaces using S3-compatible API.
+ * Storage service provider for DigitalOcean Spaces. This provider integrates with DigitalOcean Spaces using
+ * S3-compatible API.
  * <p>
- * DigitalOcean Spaces is a simple, scalable object storage service designed for developers.
- * It provides S3-compatible API with built-in CDN integration for fast content delivery.
+ * DigitalOcean Spaces is a simple, scalable object storage service designed for developers. It provides S3-compatible
+ * API with built-in CDN integration for fast content delivery.
  * <p>
  * <strong>Configuration:</strong>
  * <ul>
@@ -46,6 +38,7 @@ import org.miaixz.bus.storage.Context;
  * </ul>
  * <p>
  * <strong>Endpoint Format:</strong>
+ * 
  * <pre>
  * Standard Endpoint:
  * https://{region}.digitaloceanspaces.com
@@ -62,14 +55,10 @@ import org.miaixz.bus.storage.Context;
  * </pre>
  * <p>
  * <strong>Usage Example:</strong>
+ * 
  * <pre>{@code
- * Context context = Context.builder()
- *     .endpoint("https://nyc3.digitaloceanspaces.com")
- *     .bucket("my-space")
- *     .accessKey("your-access-key")
- *     .secretKey("your-secret-key")
- *     .region("nyc3")
- *     .build();
+ * Context context = Context.builder().endpoint("https://nyc3.digitaloceanspaces.com").bucket("my-space")
+ *         .accessKey("your-access-key").secretKey("your-secret-key").region("nyc3").build();
  *
  * DigitalOceanProvider provider = new DigitalOceanProvider(context);
  * provider.upload("file.txt", fileBytes);
@@ -78,21 +67,21 @@ import org.miaixz.bus.storage.Context;
  * <strong>Supported Regions:</strong>
  * <ul>
  * <li>Americas:
- *   <ul>
- *     <li>nyc3 - New York 3</li>
- *     <li>sfo3 - San Francisco 3</li>
- *   </ul>
+ * <ul>
+ * <li>nyc3 - New York 3</li>
+ * <li>sfo3 - San Francisco 3</li>
+ * </ul>
  * </li>
  * <li>Europe:
- *   <ul>
- *     <li>fra1 - Frankfurt 1</li>
- *     <li>ams3 - Amsterdam 3</li>
- *   </ul>
+ * <ul>
+ * <li>fra1 - Frankfurt 1</li>
+ * <li>ams3 - Amsterdam 3</li>
+ * </ul>
  * </li>
  * <li>Asia Pacific:
- *   <ul>
- *     <li>sgp1 - Singapore 1</li>
- *   </ul>
+ * <ul>
+ * <li>sgp1 - Singapore 1</li>
+ * </ul>
  * </li>
  * </ul>
  * <p>
@@ -109,6 +98,7 @@ import org.miaixz.bus.storage.Context;
  * </ul>
  * <p>
  * <strong>CDN Integration:</strong>
+ * 
  * <pre>
  * Enable CDN for your Space to get:
  * - Global content delivery
@@ -131,11 +121,10 @@ import org.miaixz.bus.storage.Context;
 public class DigitalOceanProvider extends GenericS3Provider {
 
     /**
-     * Constructs a DigitalOcean Spaces provider with the given context.
-     * Initializes the S3-compatible client using the provided credentials and endpoint configuration.
+     * Constructs a DigitalOcean Spaces provider with the given context. Initializes the S3-compatible client using the
+     * provided credentials and endpoint configuration.
      * <p>
-     * The endpoint should follow the format:
-     * {@code https://{region}.digitaloceanspaces.com}
+     * The endpoint should follow the format: {@code https://{region}.digitaloceanspaces.com}
      * <p>
      * Where {region} is the DigitalOcean region (e.g., nyc3, sfo3, sgp1, fra1, ams3).
      * <p>
@@ -147,8 +136,8 @@ public class DigitalOceanProvider extends GenericS3Provider {
      * <li>Optionally enable CDN for public content delivery</li>
      * </ol>
      *
-     * @param context The storage context, containing endpoint, bucket (space name), access key, secret key, region,
-     *                and other configurations.
+     * @param context The storage context, containing endpoint, bucket (space name), access key, secret key, region, and
+     *                other configurations.
      * @throws IllegalArgumentException If required context parameters are missing or invalid.
      */
     public DigitalOceanProvider(Context context) {

@@ -668,7 +668,7 @@ public class SensitiveConfig {
 
 ## 📄 许可证
 
-本项目基于 MIT 许可证开源 - 详见 [LICENSE](https://github.com/818000/bus/blob/main/LICENSE) 文件
+[Apache License Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
 -----
 
