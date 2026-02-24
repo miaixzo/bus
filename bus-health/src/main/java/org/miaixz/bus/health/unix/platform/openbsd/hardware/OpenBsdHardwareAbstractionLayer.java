@@ -26,6 +26,7 @@ import org.miaixz.bus.health.builtin.hardware.*;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractHardwareAbstractionLayer;
 import org.miaixz.bus.health.unix.hardware.BsdNetworkIF;
 import org.miaixz.bus.health.unix.hardware.UnixDisplay;
+import org.miaixz.bus.health.unix.hardware.UnixPrinter;
 
 /**
  * OpenBsdHardwareAbstractionLayer class.
@@ -89,6 +90,11 @@ public final class OpenBsdHardwareAbstractionLayer extends AbstractHardwareAbstr
     @Override
     public List<GraphicsCard> getGraphicsCards() {
         return OpenBsdGraphicsCard.getGraphicsCards();
+    }
+
+    @Override
+    public List<Printer> getPrinters() {
+        return UnixPrinter.getPrinters();
     }
 
 }

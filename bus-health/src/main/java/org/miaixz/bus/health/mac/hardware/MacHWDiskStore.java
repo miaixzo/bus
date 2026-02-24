@@ -401,6 +401,7 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
                                 String partBsdName = sdService.getStringProperty("BSD Name");
                                 String name = partBsdName;
                                 String type = Normal.EMPTY;
+                                String label = Normal.EMPTY;
                                 // Get the DiskArbitration dictionary for
                                 // this partition
                                 DADiskRef disk = DA
@@ -415,7 +416,9 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
                                         if (result == null) {
                                             name = type;
                                         } else {
-                                            name = CFKit.cfPointerToString(result);
+                                            String volumeName = CFKit.cfPointerToString(result);
+                                            name = volumeName;
+                                            label = volumeName;
                                         }
                                         diskInfo.release();
                                     }
@@ -428,8 +431,9 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
                                 String uuid = sdService.getStringProperty("UUID");
                                 partitions.add(
                                         new HWPartition(partBsdName, name, type, uuid == null ? Normal.UNKNOWN : uuid,
-                                                size == null ? 0L : size, bsdMajor == null ? 0 : bsdMajor,
+                                                label, size == null ? 0L : size, bsdMajor == null ? 0 : bsdMajor,
                                                 bsdMinor == null ? 0 : bsdMinor, mountPoint));
+                                // iterate
                                 // iterate
                                 sdService.release();
                                 sdService = IOKit.INSTANCE.IOIteratorNext(serviceIterator);

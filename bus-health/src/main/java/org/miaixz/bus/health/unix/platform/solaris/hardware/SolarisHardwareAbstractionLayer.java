@@ -25,6 +25,7 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.builtin.hardware.*;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractHardwareAbstractionLayer;
 import org.miaixz.bus.health.unix.hardware.UnixDisplay;
+import org.miaixz.bus.health.unix.hardware.UnixPrinter;
 
 /**
  * SolarisHardwareAbstractionLayer class.
@@ -88,6 +89,11 @@ public final class SolarisHardwareAbstractionLayer extends AbstractHardwareAbstr
     @Override
     public List<GraphicsCard> getGraphicsCards() {
         return SolarisGraphicsCard.getGraphicsCards();
+    }
+
+    @Override
+    public List<Printer> getPrinters() {
+        return UnixPrinter.getPrinters();
     }
 
 }

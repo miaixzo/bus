@@ -144,4 +144,13 @@ public interface HardwareAbstractionLayer {
      */
     List<GraphicsCard> getGraphicsCards();
 
+    /**
+     * Instantiates a list of {@link Printer} objects, representing printers.
+     *
+     * @return A list of Printer objects or an empty list if none are present.
+     */
+    default List<Printer> getPrinters() {
+        return Collections.emptyList();
+    }
+
 }

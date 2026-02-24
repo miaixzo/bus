@@ -27,6 +27,7 @@ import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.builtin.hardware.*;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractHardwareAbstractionLayer;
 import org.miaixz.bus.health.unix.hardware.UnixDisplay;
+import org.miaixz.bus.health.unix.hardware.UnixPrinter;
 import org.miaixz.bus.health.unix.platform.aix.driver.Lscfg;
 import org.miaixz.bus.health.unix.platform.aix.driver.perfstat.PerfstatDisk;
 
@@ -100,6 +101,11 @@ public final class AixHardwareAbstractionLayer extends AbstractHardwareAbstracti
     @Override
     public List<GraphicsCard> getGraphicsCards() {
         return AixGraphicsCard.getGraphicsCards(lscfg);
+    }
+
+    @Override
+    public List<Printer> getPrinters() {
+        return UnixPrinter.getPrinters();
     }
 
 }

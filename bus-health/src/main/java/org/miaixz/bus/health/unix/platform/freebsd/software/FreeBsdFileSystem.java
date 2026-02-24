@@ -36,7 +36,6 @@ import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.software.OSFileStore;
 import org.miaixz.bus.health.builtin.software.common.AbstractFileSystem;
-import org.miaixz.bus.health.linux.software.LinuxOSFileStore;
 import org.miaixz.bus.health.unix.platform.freebsd.BsdSysctlKit;
 
 /**
@@ -117,7 +116,8 @@ public final class FreeBsdFileSystem extends AbstractFileSystem {
             String options = split[3];
 
             // Skip non-local drives if requested, and exclude pseudo file systems
-            if ((localOnly && NETWORK_FS_TYPES.contains(type))
+            boolean isLocal = !NETWORK_FS_TYPES.contains(type);
+            if ((localOnly && !isLocal)
                     || !path.equals("/") && (PSEUDO_FS_TYPES.contains(type) || Builder.isFileStoreExcluded(
                             path,
                             volume,
@@ -152,7 +152,7 @@ public final class FreeBsdFileSystem extends AbstractFileSystem {
             String uuid = uuidMap.getOrDefault(name, Normal.EMPTY);
 
             fsList.add(
-                    new LinuxOSFileStore(name, volume, name, path, options, uuid, Normal.EMPTY, description, type,
+                    new FreeBsdOSFileStore(name, volume, name, path, options, uuid, isLocal, "", description, type,
                             freeSpace, usableSpace, totalSpace,
                             inodeFreeMap.containsKey(path) ? inodeFreeMap.get(path) : 0L,
                             inodeTotalMap.containsKey(path) ? inodeTotalMap.get(path) : 0L));

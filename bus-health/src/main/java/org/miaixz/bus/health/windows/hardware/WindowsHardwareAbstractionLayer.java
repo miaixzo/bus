@@ -94,4 +94,9 @@ public final class WindowsHardwareAbstractionLayer extends AbstractHardwareAbstr
         return WindowsGraphicsCard.getGraphicsCards();
     }
 
+    @Override
+    public List<Printer> getPrinters() {
+        return WindowsPrinter.getPrinters();
+    }
+
 }

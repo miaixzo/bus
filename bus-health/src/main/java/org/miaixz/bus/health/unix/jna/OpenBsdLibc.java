@@ -27,6 +27,9 @@ import com.sun.jna.Structure.FieldOrder;
 /**
  * C library for OpenBSD. This class should be considered non-API as it may be removed if/when its code is incorporated
  * into the JNA project.
+ *
+ * @author Kimi Liu
+ * @since Java 17+
  */
 public interface OpenBsdLibc extends CLibrary {
 

@@ -61,7 +61,7 @@ public class SolarisFileSystem extends AbstractFileSystem {
     private static final List<PathMatcher> FS_VOLUME_INCLUDES = Builder
             .loadAndParseFileSystemConfig(Config._UNIX_SOLARIS_FS_VOLUME_INCLUDES);
 
-    private static List<OSFileStore> getFileStoreMatching(String nameToMatch, boolean localOnly) {
+    static List<OSFileStore> getFileStoreMatching(String nameToMatch, boolean localOnly) {
         List<OSFileStore> fsList = new ArrayList<>();
 
         // Get inode usage data
@@ -110,7 +110,8 @@ public class SolarisFileSystem extends AbstractFileSystem {
             String options = split[3];
 
             // Skip non-local drives if requested, and exclude pseudo file systems
-            if ((localOnly && NETWORK_FS_TYPES.contains(type))
+            boolean isLocal = !NETWORK_FS_TYPES.contains(type);
+            if ((localOnly && !isLocal)
                     || !path.equals("/") && (PSEUDO_FS_TYPES.contains(type) || Builder.isFileStoreExcluded(
                             path,
                             volume,
@@ -147,17 +148,11 @@ public class SolarisFileSystem extends AbstractFileSystem {
             }
 
             fsList.add(
-                    new SolarisOSFileStore(name, volume, name, path, options, Normal.EMPTY, Normal.EMPTY, description,
-                            type, freeSpace, usableSpace, totalSpace,
-                            inodeFreeMap.containsKey(path) ? inodeFreeMap.get(path) : 0L,
-                            inodeTotalMap.containsKey(path) ? inodeTotalMap.get(path) : 0L));
+                    new SolarisOSFileStore(name, volume, name, path, options, "", isLocal, "", description, type,
+                            freeSpace, usableSpace, totalSpace, inodeFreeMap.getOrDefault(path, 0L),
+                            inodeTotalMap.getOrDefault(path, 0L)));
         }
         return fsList;
-    }
-
-    // Called by SolarisOSFileStore
-    static List<OSFileStore> getFileStoreMatching(String nameToMatch) {
-        return getFileStoreMatching(nameToMatch, false);
     }
 
     private static Pair<Long, Long> queryFileDescriptors() {

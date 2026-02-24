@@ -32,6 +32,9 @@ import com.sun.jna.ptr.PointerByReference;
 /**
  * C library with code common to all *nix-based operating systems. This class should be considered non-API as it may be
  * removed if/when its code is incorporated into the JNA project.
+ *
+ * @author Kimi Liu
+ * @since Java 17+
  */
 public interface CLibrary extends LibCAPI, Library {
 

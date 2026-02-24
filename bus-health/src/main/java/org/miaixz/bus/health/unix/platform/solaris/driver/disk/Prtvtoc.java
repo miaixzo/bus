@@ -49,6 +49,7 @@ public final class Prtvtoc {
         // Sample output - see man prtvtoc
         if (prtvotc.size() > 1) {
             int bytesPerSector = 0;
+            String volumeName = Normal.EMPTY;
             String[] split;
             // We have a result, parse partition table
             for (String line : prtvotc) {
@@ -59,6 +60,16 @@ public final class Prtvtoc {
                         split = Pattern.SPACES_PATTERN.split(line);
                         if (split.length > 0) {
                             bytesPerSector = Parsing.parseIntOrDefault(split[1], 0);
+                        }
+                    } else if (line.contains("Volume Name")) {
+                        // Format: "* Volume Name: <label>" or similar
+                        int idx = line.indexOf("Volume Name");
+                        String remainder = line.substring(idx + "Volume Name".length()).trim();
+                        if (remainder.startsWith(":")) {
+                            remainder = remainder.substring(1).trim();
+                        }
+                        if (!remainder.isEmpty()) {
+                            volumeName = remainder;
                         }
                     }
                 } else if (bytesPerSector > 0) {
@@ -161,12 +172,12 @@ public final class Prtvtoc {
                         // Fifth field is sector count
                         long partSize = bytesPerSector * Parsing.parseLongOrDefault(split[4], 0L);
                         // Seventh field (if present) is mount point
-                        String mountPoint = Normal.EMPTY;
+                        String mountPoint = "";
                         if (split.length > 6) {
                             mountPoint = split[6];
                         }
                         partList.add(
-                                new HWPartition(identification, name, type, Normal.EMPTY, partSize, major, minor,
+                                new HWPartition(identification, name, type, "", volumeName, partSize, major, minor,
                                         mountPoint));
                     }
                 }

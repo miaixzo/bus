@@ -124,7 +124,7 @@ public class MacFileSystem extends AbstractFileSystem {
         OPTIONS_MAP.put(MNT_NOATIME, "noatime");
     }
 
-    private static List<OSFileStore> getFileStoreMatching(String nameToMatch, boolean localOnly) {
+    static List<OSFileStore> getFileStoreMatching(String nameToMatch, boolean localOnly) {
         List<OSFileStore> fsList = new ArrayList<>();
 
         // Use getfsstat to find fileSystems
@@ -158,7 +158,9 @@ public class MacFileSystem extends AbstractFileSystem {
                     final int flags = fs[f].f_flags;
 
                     // Skip non-local drives if requested, and exclude pseudo file systems
-                    if ((localOnly && (flags & MNT_LOCAL) == 0)
+                    boolean isLocal = (flags & MNT_LOCAL) != 0;
+                    // Skip non-local drives if requested, and exclude pseudo file systems
+                    if ((localOnly && !isLocal)
                             || !path.equals("/") && (PSEUDO_FS_TYPES.contains(type) || Builder.isFileStoreExcluded(
                                     path,
                                     volume,
@@ -181,9 +183,6 @@ public class MacFileSystem extends AbstractFileSystem {
                     // getName() for / is still blank, so:
                     if (name.isEmpty()) {
                         name = file.getPath();
-                    }
-                    if (nameToMatch != null && !nameToMatch.equals(name)) {
-                        continue;
                     }
 
                     StringBuilder options = new StringBuilder((MNT_RDONLY & flags) == 0 ? "rw" : "ro");
@@ -236,11 +235,14 @@ public class MacFileSystem extends AbstractFileSystem {
                         }
                     }
 
+                    if (nameToMatch != null && !nameToMatch.equals(name)) {
+                        continue;
+                    }
+
                     fsList.add(
-                            new MacOSFileStore(name, volume, name, path, options.toString(),
-                                    uuid == null ? Normal.EMPTY : uuid, Normal.EMPTY, description, type,
-                                    file.getFreeSpace(), file.getUsableSpace(), file.getTotalSpace(), fs[f].f_ffree,
-                                    fs[f].f_files));
+                            new MacOSFileStore(name, volume, name, path, options.toString(), uuid == null ? "" : uuid,
+                                    isLocal, "", description, type, file.getFreeSpace(), file.getUsableSpace(),
+                                    file.getTotalSpace(), fs[f].f_ffree, fs[f].f_files));
                 }
                 daVolumeNameKey.release();
                 // Close DA session
@@ -248,11 +250,6 @@ public class MacFileSystem extends AbstractFileSystem {
             }
         }
         return fsList;
-    }
-
-    // Called by MacOSFileStore
-    static List<OSFileStore> getFileStoreMatching(String nameToMatch) {
-        return getFileStoreMatching(nameToMatch, false);
     }
 
     @Override

@@ -66,10 +66,7 @@ public class LinuxFileSystem extends AbstractFileSystem {
 
     private static final String UNICODE_SPACE = "\\040";
 
-    private static List<OSFileStore> getFileStoreMatching(
-            String nameToMatch,
-            Map<String, String> uuidMap,
-            boolean localOnly) {
+    static List<OSFileStore> getFileStoreMatching(String nameToMatch, Map<String, String> uuidMap, boolean localOnly) {
         List<OSFileStore> fsList = new ArrayList<>();
 
         Map<String, String> labelMap = queryLabelMap();
@@ -99,7 +96,8 @@ public class LinuxFileSystem extends AbstractFileSystem {
             String type = split[2];
 
             // Skip non-local drives if requested, and exclude pseudo file systems
-            if ((localOnly && NETWORK_FS_TYPES.contains(type))
+            boolean isLocal = !NETWORK_FS_TYPES.contains(type);
+            if ((localOnly && !isLocal)
                     || !path.equals("/") && (PSEUDO_FS_TYPES.contains(type) || Builder.isFileStoreExcluded(
                             path,
                             volume,
@@ -179,16 +177,11 @@ public class LinuxFileSystem extends AbstractFileSystem {
             }
 
             fsList.add(
-                    new LinuxOSFileStore(name, volume, labelMap.getOrDefault(path, name), path, options, uuid,
+                    new LinuxOSFileStore(name, volume, labelMap.getOrDefault(path, name), path, options, uuid, isLocal,
                             logicalVolume, description, type, freeSpace, usableSpace, totalSpace, freeInodes,
                             totalInodes));
         }
         return fsList;
-    }
-
-    // called from LinuxOSFileStore
-    static List<OSFileStore> getFileStoreMatching(String nameToMatch, Map<String, String> uuidMap) {
-        return getFileStoreMatching(nameToMatch, uuidMap, false);
     }
 
     private static Map<String, String> queryLabelMap() {

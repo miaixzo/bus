@@ -56,7 +56,7 @@ public class OpenBsdFileSystem extends AbstractFileSystem {
     private static final List<PathMatcher> FS_VOLUME_INCLUDES = Builder
             .loadAndParseFileSystemConfig(Config._UNIX_OPENBSD_FS_VOLUME_INCLUDES);
 
-    private static List<OSFileStore> getFileStoreMatching(String nameToMatch, boolean localOnly) {
+    static List<OSFileStore> getFileStoreMatching(String nameToMatch, boolean localOnly) {
         List<OSFileStore> fsList = new ArrayList<>();
 
         // Get inode usage data
@@ -102,7 +102,8 @@ public class OpenBsdFileSystem extends AbstractFileSystem {
                 String options = split[6];
 
                 // Skip non-local drives if requested, and exclude pseudo file systems
-                if ((localOnly && NETWORK_FS_TYPES.contains(type))
+                boolean isLocal = !NETWORK_FS_TYPES.contains(type);
+                if ((localOnly && !isLocal)
                         || !path.equals("/") && (PSEUDO_FS_TYPES.contains(type) || Builder.isFileStoreExcluded(
                                 path,
                                 volume,
@@ -143,7 +144,7 @@ public class OpenBsdFileSystem extends AbstractFileSystem {
                 }
 
                 fsList.add(
-                        new OpenBsdOSFileStore(name, volume, name, path, options, uuid, Normal.EMPTY, description, type,
+                        new OpenBsdOSFileStore(name, volume, name, path, options, uuid, isLocal, "", description, type,
                                 freeSpace, usableSpace, totalSpace, inodeFreeMap.getOrDefault(volume, 0L),
                                 inodeUsedlMap.getOrDefault(volume, 0L) + inodeFreeMap.getOrDefault(volume, 0L)));
             }
