@@ -58,6 +58,15 @@ public class CharSequenceReader extends Reader {
     /**
      * Constructs a new {@code CharSequenceReader}.
      *
+     * @param text The {@link CharSequence} to read from.
+     */
+    public CharSequenceReader(final CharSequence text) {
+        this(text, 0, Assert.notNull(text).length());
+    }
+
+    /**
+     * Constructs a new {@code CharSequenceReader}.
+     *
      * @param text         The {@link CharSequence} to read from.
      * @param startInclude The starting position (inclusive).
      * @param endExclude   The ending position (exclusive).

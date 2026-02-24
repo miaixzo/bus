@@ -78,7 +78,7 @@ public class SixtyCycleDay extends Loops {
     public SixtyCycleDay(SolarDay solarDay) {
         SolarTerms term = solarDay.getTerm();
         int index = term.getIndex();
-        int offset = index < 3 ? (index == 0 ? -2 : -1) : ((index - 3) / 2);
+        int offset = index < 3 ? (index == 0 ? -2 : -1) : (index - 3) / 2;
         this.solarDay = solarDay;
         this.month = SixtyCycleYear.fromYear(term.getYear()).getFirstMonth().next(offset);
         this.day = SixtyCycle.fromIndex(solarDay.subtract(SolarDay.fromYmd(2000, 1, 7)));

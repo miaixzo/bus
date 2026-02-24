@@ -853,7 +853,7 @@ public class PatternKit extends RegexValidator {
                 String replacement = replacementTemplate;
                 for (final String var : varNums) {
                     final int group = Integer.parseInt(var);
-                    replacement = replacement.replace("$" + var, matcher.group(group));
+                    replacement = StringKit.replace(replacement, "$" + var, matcher.group(group));
                 }
                 matcher.appendReplacement(sb, escape(replacement));
                 result = matcher.find();

@@ -4517,6 +4517,51 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
+     * Converts a {@link CharSequence} to a {@code char} array. *
+     * <p>
+     * This method provides a centralized way to extract characters from any CharSequence implementation. It includes
+     * specific optimizations for common types like {@link String}, {@link StringBuilder}, and {@link StringBuffer} to
+     * ensure high-performance execution.
+     * </p>
+     *
+     * @param cs the {@code CharSequence} to convert, may be {@code null}
+     * @return a new {@code char} array containing the characters, or {@code null} if the input is {@code null}
+     */
+    public static char[] toCharArray(final CharSequence cs) {
+        if (cs == null) {
+            return null;
+        }
+
+        final int length = cs.length();
+        if (length == 0) {
+            return new char[0];
+        }
+
+        // Performance optimization: Prioritize String implementation
+        // using the native toCharArray() method for maximum efficiency.
+        if (cs instanceof String) {
+            return ((String) cs).toCharArray();
+        }
+
+        // Handle other CharSequence implementations via manual or bulk copying
+        final char[] resultArray = new char[length];
+
+        if (cs instanceof StringBuilder) {
+            // Bulk copy: from source index 0 to length into destination array at index 0
+            ((StringBuilder) cs).getChars(0, length, resultArray, 0);
+        } else if (cs instanceof StringBuffer) {
+            // Bulk copy: from source index 0 to length into destination array at index 0
+            ((StringBuffer) cs).getChars(0, length, resultArray, 0);
+        } else {
+            // Fallback for generic CharSequence types (e.g., CharBuffer, custom implementations)
+            for (int i = 0; i < length; i++) {
+                resultArray[i] = cs.charAt(i);
+            }
+        }
+        return resultArray;
+    }
+
+    /**
      * Converts a string to an array of characters (integers representing Unicode code points).
      *
      * @param text        The string to convert.

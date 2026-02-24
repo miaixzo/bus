@@ -23,6 +23,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.miaixz.bus.core.center.date.culture.Loops;
+import org.miaixz.bus.core.center.date.culture.solar.SolarDay;
 import org.miaixz.bus.core.center.date.culture.solar.SolarTerms;
 import org.miaixz.bus.core.lang.EnumValue;
 
@@ -139,24 +140,29 @@ public class LunarFestival extends Loops {
         if (matcher.find()) {
             return new LunarFestival(EnumValue.Festival.DAY, LunarDay.fromYmd(year, month, day), null, matcher.group());
         }
+        LunarDay lunarDay = LunarDay.fromYmd(year, month, day);
+        SolarDay solarDay = lunarDay.getSolarDay();
         matcher = Pattern.compile("@\\d{2}1\\d{2}").matcher(DATA);
         while (matcher.find()) {
             String data = matcher.group();
-            SolarTerms solarTerms = SolarTerms.fromIndex(year, Integer.parseInt(data.substring(4), 10));
-            LunarDay lunarDay = solarTerms.getSolarDay().getLunarDay();
-            if (lunarDay.getYear() == year && lunarDay.getMonth() == month && lunarDay.getDay() == day) {
-                return new LunarFestival(EnumValue.Festival.TERM, lunarDay, solarTerms, data);
+            SolarTerms term = SolarTerms.fromIndex(year, Integer.parseInt(data.substring(4), 10));
+            SolarDay termDay = term.getSolarDay();
+            if (termDay.getYear() == solarDay.getYear() && termDay.getMonth() == solarDay.getMonth()
+                    && termDay.getDay() == solarDay.getDay()) {
+                return new LunarFestival(EnumValue.Festival.TERM, lunarDay, term, data);
             }
         }
-        matcher = Pattern.compile("@\\d{2}2").matcher(DATA);
-        if (!matcher.find()) {
-            return null;
+        if (month == 12 && day > 28) {
+            matcher = Pattern.compile("@\\d{2}2").matcher(DATA);
+            if (!matcher.find()) {
+                return null;
+            }
+            LunarDay nextDay = lunarDay.next(1);
+            if (nextDay.getMonth() == 1 && nextDay.getDay() == 1) {
+                return new LunarFestival(EnumValue.Festival.EVE, lunarDay, null, matcher.group());
+            }
         }
-        LunarDay lunarDay = LunarDay.fromYmd(year, month, day);
-        LunarDay nextDay = lunarDay.next(1);
-        return nextDay.getMonth() == 1 && nextDay.getDay() == 1
-                ? new LunarFestival(EnumValue.Festival.EVE, lunarDay, null, matcher.group())
-                : null;
+        return null;
     }
 
     /**

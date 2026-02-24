@@ -128,7 +128,7 @@ public class XmlMapper {
             final String nodeName = CollKit.getFirst(map.keySet());
             if (beanClass.getSimpleName().equalsIgnoreCase(nodeName)) {
                 // Convert only when the key matches the bean name
-                return BeanKit.toBean(CollKit.get(map.values(), 0), beanClass);
+                return BeanKit.toBean(CollKit.get(map.values(), 0), beanClass, copyOptions);
             }
         }
         return BeanKit.toBean(map, beanClass, copyOptions);
