@@ -45,8 +45,8 @@ import lombok.NoArgsConstructor;
  * <ul>
  * <li>streamingRequestThreshold: 10 MB</li>
  * <li>maxRequestSize: 100 MB</li>
- * <li>maxMultipartRequestSize: 512 MB</li>
- * <li>maxConnections: 500</li>
+ * <li>maxMultipartRequestSize: 1024 MB</li>
+ * <li>maxConnections: 5000</li>
  * <li>maxProducerCacheSize: 100</li>
  * <li>registryL2CacheSize: 10,000 (assets)</li>
  * <li>registryL2CacheExpireMs: 300,000 (5 minutes)</li>
