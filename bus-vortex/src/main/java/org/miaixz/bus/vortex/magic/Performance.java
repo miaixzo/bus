@@ -85,19 +85,19 @@ public class Performance {
      * Maximum size in bytes for multipart/form-data requests (file uploads).
      */
     @Builder.Default
-    private long maxMultipartRequestSize = 512 * 1024 * 1024;
+    private long maxMultipartRequestSize = 1024 * 1024 * 1024;
 
     /**
      * Maximum number of HTTP connections in the connection pool.
      */
     @Builder.Default
-    private int maxConnections = 500;
+    private int maxConnections = 5000;
 
     /**
      * Maximum number of MQ producer instances to cache.
      */
     @Builder.Default
-    private int maxProducerCacheSize = 100;
+    private int maxProducerCacheSize = 1000;
 
     /**
      * Registry L2 cache maximum size (number of assets).
