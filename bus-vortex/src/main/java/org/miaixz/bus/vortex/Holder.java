@@ -291,4 +291,13 @@ public final class Holder {
         return get().getStartupDelaySeconds();
     }
 
+    /**
+     * Gets the maximum allowed time difference (in minutes) between the client timestamp and the server time.
+     *
+     * @return The timestamp tolerance in minutes
+     */
+    public static int getTimestampToleranceMinutes() {
+        return get().getTimestampToleranceMinutes();
+    }
+
 }

@@ -43,6 +43,7 @@ import org.miaixz.bus.crypto.center.HMac;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Args;
 import org.miaixz.bus.vortex.Context;
+import org.miaixz.bus.vortex.Holder;
 import org.miaixz.bus.vortex.magic.ErrorCode;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -195,7 +196,7 @@ public class VettingStrategy extends AbstractStrategy {
             long currentTimestampMs = DateKit.current();
             long absoluteDifferenceMs = Math.abs(currentTimestampMs - clientTimestampMs);
 
-            if (absoluteDifferenceMs > TimeUnit.MINUTES.toMillis(10)) {
+            if (absoluteDifferenceMs > TimeUnit.MINUTES.toMillis(Holder.getTimestampToleranceMinutes())) {
                 logTimestampMismatch(clientTimestampMs, currentTimestampMs, absoluteDifferenceMs);
                 throw new ValidateException(ErrorCode._100111);
             }
