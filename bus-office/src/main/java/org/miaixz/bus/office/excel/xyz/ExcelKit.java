@@ -30,8 +30,8 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.miaixz.bus.core.lang.exception.DependencyException;
 import org.miaixz.bus.core.xyz.FileKit;
 import org.miaixz.bus.core.xyz.IoKit;
+import org.miaixz.bus.core.xyz.ListKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
-import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.office.Builder;
 import org.miaixz.bus.office.excel.reader.BigExcelReader;
 import org.miaixz.bus.office.excel.reader.ExcelReadConfig;
@@ -971,11 +971,9 @@ public class ExcelKit {
                     continue;
                 }
 
-                final java.util.List<Object> row = RowKit.readRow(poiRow, cellEditor);
-                final java.util.List<Object> projected = hasIncludeColumns
-                        ? RowKit.projectColumns(row, includeColumns)
-                        : row;
-                if (isSkippedRow(config, projected)) {
+                final List<Object> row = RowKit.readRow(poiRow, cellEditor);
+                final List<Object> projected = hasIncludeColumns ? RowKit.projectColumns(row, includeColumns) : row;
+                if (config.isIgnoreEmptyRow() && RowKit.isEmptyRow(projected)) {
                     globalRowIndex++;
                     continue;
                 }
